@@ -154,9 +154,9 @@ bool operator!=(const Grid& x, const Grid& y);
   from a system of generators specifying three of the points:
   \code
   Grid_Generator_System gs;
-  gs.insert(point(0*x + 0*y));
-  gs.insert(point(0*x + 2*y));
-  gs.insert(point(2*x + 0*y));
+  gs.insert(grid_point(0*x + 0*y));
+  gs.insert(grid_point(0*x + 2*y));
+  gs.insert(grid_point(2*x + 0*y));
   Grid gr(gs);
   \endcode
 
@@ -172,12 +172,31 @@ bool operator!=(const Grid& x, const Grid& y);
   from a system of generators specifying a point and a line:
   \code
   Grid_Generator_System gs;
-  gs.insert(point(0*x + 0*y));
-  gs.insert(line(x + y));
+  gs.insert(grid_point(0*x + 0*y));
+  gs.insert(grid_line(x + y));
   Grid gr(gs);
   \endcode
 
   \par Example 3
+  The following code builds a grid corresponding to the integral
+  points on the line \f$x = y\f$ in \f$\Rset^2\f$ constructed
+  by adding an equality and congruence to the universe grid:
+  \code
+  Congruence_System cgs;
+  cgs.insert(x - y == 0);
+  cgs.insert(x %= 0);
+  Grid gr(cgs);
+  \endcode
+  The following code builds the same grid as above, but starting
+  from a system of generators specifying a point and a parameter:
+  \code
+  Grid_Generator_System gs;
+  gs.insert(grid_point(0*x + 0*y));
+  gs.insert(parameter(x + y));
+  Grid gr(gs);
+  \endcode
+
+  \par Example 4
   The following code builds the grid corresponding to a plane by
   creating the universe grid in \f$\Rset^2\f$:
   \code
@@ -188,16 +207,16 @@ bool operator!=(const Grid& x, const Grid& y);
   generators (a point, and two lines).
   \code
   Grid gr(2, EMPTY);
-  gr.add_generator(point(0*x + 0*y));
-  gr.add_generator(line(x));
-  gr.add_generator(line(y));
+  gr.add_generator(grid_point(0*x + 0*y));
+  gr.add_generator(grid_line(x));
+  gr.add_generator(grid_line(y));
   \endcode
   Note that a generator system must contain a point when describing
   a grid.  To ensure that this is always the case it is required
   that the first generator inserted in an empty grid is a point
   (otherwise, an exception is thrown).
 
-  \par Example 4
+  \par Example 5
   The following code shows the use of the function
   <CODE>add_space_dimensions_and_embed</CODE>:
   \code
@@ -218,7 +237,7 @@ bool operator!=(const Grid& x, const Grid& y);
   \,\bigr\}.
   \f]
 
-  \par Example 5
+  \par Example 6
   The following code shows the use of the function
   <CODE>add_space_dimensions_and_project</CODE>:
   \code
@@ -232,14 +251,14 @@ bool operator!=(const Grid& x, const Grid& y);
   the singleton set
   \f$\bigl\{ (2, 0)^\transpose \bigr\} \sseq \Rset^2\f$.
 
-  \par Example 6
+  \par Example 7
   The following code shows the use of the function
   <CODE>affine_image</CODE>:
   \code
   Grid gr(2, EMPTY);
-  gr.add_generator(point(0*x + 0*y));
-  gr.add_generator(point(4*x + 0*y));
-  gr.add_generator(point(0*x + 2*y));
+  gr.add_generator(grid_point(0*x + 0*y));
+  gr.add_generator(grid_point(4*x + 0*y));
+  gr.add_generator(grid_point(0*x + 2*y));
   Linear_Expression expr = x + 3;
   gr.affine_image(x, expr);
   \endcode
@@ -265,14 +284,14 @@ bool operator!=(const Grid& x, const Grid& y);
   \endcode
   the resulting grid is every second point along the \f$x=y\f$ line.
 
-  \par Example 7
+  \par Example 8
   The following code shows the use of the function
   <CODE>affine_preimage</CODE>:
   \code
   Grid gr(2, EMPTY);
-  gr.add_generator(point(0*x + 0*y));
-  gr.add_generator(point(4*x + 0*y));
-  gr.add_generator(point(0*x + 2*y));
+  gr.add_generator(grid_point(0*x + 0*y));
+  gr.add_generator(grid_point(4*x + 0*y));
+  gr.add_generator(grid_point(0*x + 2*y));
   Linear_Expression expr = x + 3;
   gr.affine_preimage(x, expr);
   \endcode
@@ -296,7 +315,7 @@ bool operator!=(const Grid& x, const Grid& y);
   the resulting grid is every fourth line parallel to the \f$x\f$
   axis.
 
-  \par Example 8
+  \par Example 9
   For this example we also use the variables:
   \code
   Variable z(2);
@@ -306,7 +325,7 @@ bool operator!=(const Grid& x, const Grid& y);
   <CODE>remove_space_dimensions</CODE>:
   \code
   Grid_Generator_System gs;
-  gs.insert(point(3*x + y +0*z + 2*w));
+  gs.insert(grid_point(3*x + y +0*z + 2*w));
   Grid gr(gs);
   Variables_Set to_be_removed;
   to_be_removed.insert(y);
@@ -1400,7 +1419,6 @@ public:
   //! Same as grid_difference_assign(y).
   void difference_assign(const Grid& y);
 
-  // FIXME: Update to grids?
   /*! \brief
     Assigns to \p *this the \ref affine_relation "affine image" of \p
     *this under the function mapping variable \p var to the affine
@@ -1459,34 +1477,6 @@ public:
     were up-to-date remain up-to-date. Otherwise only generators remain
     up-to-date.
 
-    In other words, if \f$R\f$ is a \f$m_1 \times n_1\f$ matrix representing
-    the rays of the grid, \f$V\f$ is a \f$m_2 \times n_2\f$
-    matrix representing the points of the grid and
-    \f[
-      P = \bigl\{\,
-            \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
-          \bigm|
-            \vect{x} = \vect{\lambda} R + \vect{\mu} V,
-	    \vect{\lambda} \in \Rset^{m_1}_+,
-	    \vect{\mu} \in \Rset^{m_2}_+,
-	    \sum_{i = 0}^{m_1 - 1} \lambda_i = 1
-          \,\bigr\}
-    \f]
-    and \f$T\f$ is the affine transformation to apply to \f$P\f$, then
-    the resulting grid is
-    \f[
-      P' = \bigl\{\,
-             (x_0, \ldots, T(x_0, \ldots, x_{n-1}),
-                     \ldots, x_{n-1})^\mathrm{T}
-           \bigm|
-             (x_0, \ldots, x_{n-1})^\mathrm{T} \in P
-           \,\bigr\}.
-    \f]
-
-    Affine transformations are, for example:
-    - translations
-    - rotations
-    - symmetries.
     \endif
   */
   void affine_image(Variable var,
@@ -1494,7 +1484,6 @@ public:
 		    Coefficient_traits::const_reference denominator
 		    = Coefficient_one());
 
-  // FIXME: Update to grids?
   /*! \brief
     Assigns to \p *this the \ref affine_relation "affine preimage" of
     \p *this under the function mapping variable \p var to the affine
@@ -1551,34 +1540,6 @@ public:
     were up-to-date remain up-to-date. Otherwise only congruences remain
     up-to-date.
 
-    In other words, if \f$A\f$ is a \f$m \times n\f$ matrix representing
-    the congruences of the grid, \f$T\f$ is the affine transformation
-    to apply to \f$P\f$ and
-    \f[
-      P = \bigl\{\,
-            \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
-          \bigm|
-            A\vect{x} \geq \vect{0}
-          \,\bigr\}.
-    \f]
-    The resulting grid is
-    \f[
-      P' = \bigl\{\,
-             \vect{x} = (x_0, \ldots, x_{n-1}))^\mathrm{T}
-           \bigm|
-             A'\vect{x} \geq \vect{0}
-           \,\bigr\},
-    \f]
-    where \f$A'\f$ is defined as follows:
-    \f[
-      {a'}_{ij}
-        = \begin{cases}
-            a_{ij} * \mathrm{denominator} + a_{i\mathrm{var}}*\mathrm{expr}[j]
-              \quad \mathrm{for } j \neq \mathrm{var}; \\
-            \mathrm{expr}[\mathrm{var}] * a_{i\mathrm{var}},
-              \quad \text{for } j = \mathrm{var}.
-          \end{cases}
-    \f]
     \endif
   */
   void affine_preimage(Variable var,

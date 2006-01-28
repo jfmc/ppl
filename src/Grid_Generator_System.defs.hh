@@ -88,7 +88,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
     in \f$\Rset^2\f$:
     \code
   Grid_Generator_System gs;
-  gs.insert(line(x + 0*y));
+  gs.insert(grid_line(x + 0*y));
     \endcode
     As said above, this system of generators corresponds to
     an empty grid, because the line has no supporting point.
@@ -96,18 +96,18 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
     the \f$x\f$ axis, we can add the following code which
     inserts the origin of the space as a point:
     \code
-  gs.insert(point(0*x + 0*y));
+  gs.insert(grid_point(0*x + 0*y));
     \endcode
     Since space dimensions are automatically adjusted, the following
     code obtains the same effect:
     \code
-  gs.insert(point(0*x));
+  gs.insert(grid_point(0*x));
     \endcode
     In contrast, if we had added the following code, we would have
     defined a line parallel to the \f$x\f$ axis through
     the point \f$(0, 1)^\transpose \in \Rset^2\f$.
     \code
-  gs.insert(point(0*x + 1*y));
+  gs.insert(grid_point(0*x + 1*y));
     \endcode
 
     \par Example 2
@@ -124,7 +124,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
     \code
   Grid_Generator_System gs;
   gs.insert(parameter(x + 0*y));
-  gs.insert(point(0*x + 0*y));
+  gs.insert(grid_point(0*x + 0*y));
     \endcode
 
     \par Example 3
@@ -133,9 +133,9 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
     whose coordinates are integer multiple of 3.
     \code
   Grid_Generator_System gs;
-  gs.insert(point(0*x + 0*y));
-  gs.insert(point(0*x + 3*y));
-  gs.insert(point(3*x + 0*y));
+  gs.insert(grid_point(0*x + 0*y));
+  gs.insert(grid_point(0*x + 3*y));
+  gs.insert(grid_point(3*x + 0*y));
     \endcode
 
     \par Example 4
@@ -147,11 +147,11 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
     grid generator systems \p gs and \p gs1.
     \code
   Grid_Generator_System gs;
-  gs.insert(point(0*x + 0*y));
+  gs.insert(grid_point(0*x + 0*y));
   gs.insert(parameter(0*x + 3*y));
   gs.insert(parameter(3*x + 0*y));
   Grid_Generator_System gs1;
-  gs1.insert(point(3*x + 3*y));
+  gs1.insert(grid_point(3*x + 3*y));
   gs1.insert(parameter(0*x + 3*y));
   gs1.insert(parameter(3*x + 0*y));
     \endcode
@@ -162,7 +162,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
     lie on \f$x + y = 2\f$ in \f$\Rset^2\f$
     \code
   Grid_Generator_System gs;
-  gs.insert(point(1*x + 1*y));
+  gs.insert(grid_point(1*x + 1*y));
   gs.insert(parameter(1*x - 1*y));
     \endcode
 
@@ -321,11 +321,13 @@ public:
     \param denominator
     The denominator of the affine transformation;
 
-    We want to allow affine transformations (see the Introduction) having
-    any rational coefficients. Since the coefficients of the
-    constraints are integers we must also provide an integer \p denominator
-    that will be used as denominator of the affine transformation.
-    The denominator is required to be a positive integer.
+    We allow affine transformations (see the Section \ref
+    rational_grid_operations)to have rational
+    coefficients. Since the coefficients of linear expressions are
+    integers we also provide an integer \p denominator that will
+    be used as denominator of the affine transformation.  The
+    denominator is required to be a positive integer and its
+    default value is 1.
 
     The affine transformation assigns to each element of \p v -th
     column the follow expression:

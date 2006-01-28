@@ -1161,8 +1161,8 @@ public:
     were up-to-date remain up-to-date. Otherwise only generators remain
     up-to-date.
 
-    In other words, if \f$R\f$ is a \f$m_1 \times n_1\f$ matrix representing
-    the rays of the polyhedron, \f$V\f$ is a \f$m_2 \times n_2\f$
+    In other words, if \f$R\f$ is a \f$m_1 \times n\f$ matrix representing
+    the rays of the polyhedron, \f$V\f$ is a \f$m_2 \times n\f$
     matrix representing the points of the polyhedron and
     \f[
       P = \bigl\{\,
@@ -1171,7 +1171,7 @@ public:
             \vect{x} = \vect{\lambda} R + \vect{\mu} V,
 	    \vect{\lambda} \in \Rset^{m_1}_+,
 	    \vect{\mu} \in \Rset^{m_2}_+,
-	    \sum_{i = 0}^{m_1 - 1} \lambda_i = 1
+	    \sum_{i = 0}^{m_2 - 1} \mu_i = 1
           \,\bigr\}
     \f]
     and \f$T\f$ is the affine transformation to apply to \f$P\f$, then

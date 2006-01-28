@@ -433,12 +433,13 @@ private:
     \param denominator
     The denominator of the affine transformation.
 
-    We want to allow affine transformations (see the Section \ref
-    rational_grid_operations) having any rational
-    coefficients. Since the coefficients of the congruences are
-    integers we must also provide an integer \p denominator that will
+    We allow affine transformations (see the Section \ref
+    rational_grid_operations) to have rational
+    coefficients. Since the coefficients of linear expressions are
+    integers we also provide an integer \p denominator that will
     be used as denominator of the affine transformation.  The
-    denominator is required to be a positive integer.
+    denominator is required to be a positive integer and its default value
+    is 1.
 
     The affine transformation substitutes the matrix of congruences
     by a new matrix whose elements \f${a'}_{ij}\f$ are built from

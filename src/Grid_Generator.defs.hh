@@ -94,12 +94,12 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   The following code builds a line with direction \f$x-y-z\f$
   and having space dimension \f$3\f$:
   \code
-  Grid_Generator l = line(x - y - z);
+  Grid_Generator l = grid_line(x - y - z);
   \endcode
   By definition, the origin of the space is not a line, so that
   the following code throws an exception:
   \code
-  Grid_Generator l = line(0*x);
+  Grid_Generator l = grid_line(0*x);
   \endcode
 
   \par Example 2
@@ -125,22 +125,22 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   The following code builds the point
   \f$\vect{p} = (1, 0, 2)^\transpose \in \Rset^3\f$:
   \code
-  Grid_Generator p = point(1*x + 0*y + 2*z);
+  Grid_Generator p = grid_point(1*x + 0*y + 2*z);
   \endcode
   The same effect can be obtained by using the following code:
   \code
-  Grid_Generator p = point(x + 2*z);
+  Grid_Generator p = grid_point(x + 2*z);
   \endcode
   Similarly, the origin \f$\vect{0} \in \Rset^3\f$ can be defined
   using either one of the following lines of code:
   \code
-  Grid_Generator origin3 = point(0*x + 0*y + 0*z);
-  Grid_Generator origin3_alt = point(0*z);
+  Grid_Generator origin3 = grid_point(0*x + 0*y + 0*z);
+  Grid_Generator origin3_alt = grid_point(0*z);
   \endcode
   Note however that the following code would have defined
   a different point, namely \f$\vect{0} \in \Rset^2\f$:
   \code
-  Grid_Generator origin2 = point(0*y);
+  Grid_Generator origin2 = grid_point(0*y);
   \endcode
   The following two lines of code both define the only point
   having space dimension zero, namely \f$\vect{0} \in \Rset^0\f$.
@@ -155,9 +155,9 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   The point \f$\vect{p}\f$ specified in Example 3 above
   can also be obtained with the following code,
   where we provide a non-default value for the second argument
-  of the function <CODE>point</CODE> (the divisor):
+  of the function <CODE>grid_point</CODE> (the divisor):
   \code
-  Grid_Generator p = point(2*x + 0*y + 4*z, 2);
+  Grid_Generator p = grid_point(2*x + 0*y + 4*z, 2);
   \endcode
   Obviously, the divisor can be used to specify
   points having some non-integer (but rational) coordinates.
@@ -165,7 +165,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   \f$\vect{p1} = (-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
   can be specified by the following code:
   \code
-  Grid_Generator p1 = point(-15*x + 32*y + 21*z, 10);
+  Grid_Generator p1 = grid_point(-15*x + 32*y + 21*z, 10);
   \endcode
   If a zero divisor is provided, an exception is thrown.
 
@@ -212,7 +212,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   \endcode
   Therefore, for the point
   \code
-  Grid_Generator g1 = point(2*x - y + 3*z, 2);
+  Grid_Generator g1 = grid_point(2*x - y + 3*z, 2);
   \endcode
   we would obtain the following output:
   \code
