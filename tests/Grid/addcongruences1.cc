@@ -148,6 +148,85 @@ test4() {
   exit(1);
 }
 
+// add_recycled_congruences(cgs) -- space dimension exception
+
+void
+test5() {
+  nout << "test5:" << endl;
+
+  Congruence_System cgs;
+  cgs.insert((A + B %= 0) / 2);
+
+  Grid gr(1);
+
+  try {
+    gr.add_recycled_congruences(cgs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
+// add_congruences(cgs) -- space dimension exception
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Congruence_System cgs;
+  cgs.insert(B == 0);
+
+  Grid gr(1);
+
+  try {
+    gr.add_congruences(cgs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
+// add_recycled_congruences_and_minimize(cgs) -- space dimension
+// exception
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Congruence_System cgs;
+  cgs.insert(B == 0);
+
+  Grid gr(1);
+
+  try {
+    gr.add_recycled_congruences_and_minimize(cgs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  } catch (const std::invalid_argument& e) {}
+}
+
+// add_recycled_congruences, empty grid.
+
+void
+test8() {
+  nout << "test8:" << endl;
+
+  Congruence_System cgs;
+  cgs.insert((A + B %= 0) / 2);
+
+  Grid gr(2, EMPTY);
+  gr.add_recycled_congruences(cgs);
+
+  Grid known_gr(2, EMPTY);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -160,6 +239,10 @@ main() TRY {
   test2();
   test3();
   test4();
+  test5();
+  test6();
+  test7();
+  test8();
 
   return 0;
 }
