@@ -334,13 +334,13 @@ TFloat<float128_t>::build(bool negative, mpz_t mantissa, int exponent) {
   u.parts.msp = (negative ? MSP_SGN_MASK : 0);
   u.parts.msp |= static_cast<uint64_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 64);
 #if ULONG_MAX == 0xffffffffUL
-  mpz_export(&u.parts.lsp, 0, 1, 8, 0, 0, mantissa)
+  mpz_export(&u.parts.lsp, 0, 1, 8, 0, 0, mantissa);
 #else
   u.parts.lsp = mpz_get_ui(mantissa);
 #endif
   mpz_tdiv_q_2exp(mantissa, mantissa, 64);
 #if ULONG_MAX == 0xffffffffUL
-  mpz_export(&u.parts.lsp, 0, 1, 8, 0, 0, mantissa)
+  mpz_export(&u.parts.lsp, 0, 1, 8, 0, 0, mantissa);
 #else
   m = mpz_get_ui(mantissa);
 #endif
