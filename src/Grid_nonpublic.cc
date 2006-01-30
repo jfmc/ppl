@@ -504,9 +504,9 @@ PPL::Grid::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Grid::throw_dimension_incompatible(const char* method,
-					const char* ph_name,
-					const Grid& ph) const {
-  throw_dimension_incompatible(method, ph_name, ph.space_dimension());
+					const char* gr_name,
+					const Grid& gr) const {
+  throw_dimension_incompatible(method, gr_name, gr.space_dimension());
 }
 
 void
