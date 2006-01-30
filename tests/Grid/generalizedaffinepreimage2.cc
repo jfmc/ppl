@@ -29,6 +29,7 @@ namespace {
 Variable A(0);
 Variable B(1);
 Variable C(2);
+Variable D(3);
 
 // FIX Tests 1 to 13 are equivalent to tests 1 to 13 in
 // generalizedaffinepreimage1.cc.
@@ -269,6 +270,67 @@ test22() {
   exit(1);
 }
 
+// Right hand side expression of greater space dimension than the
+// grid.
+
+void
+test23() {
+  nout << "test23:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence(C %= -2);
+
+  try {
+    gr.generalized_affine_preimage(B + C, D + 2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Left hand side expression of space dimension greater than the grid.
+
+void
+test24() {
+  nout << "test24:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((C == -2) / 0);
+
+  try {
+    gr.generalized_affine_preimage(A + D, A + 2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Expressions having common variables, with a negative modulus.
+
+void
+test25() {
+  nout << "test25:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((C %= 0) / 3);
+  gr.add_congruence(A - B == 0);
+
+  gr.generalized_affine_preimage(A - B, C, -5);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(3);
+  known_gr.add_congruence((C %= 0) / 15);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -303,6 +365,9 @@ main() TRY {
   test20();
   test21();
   test22();
+  test23();
+  test24();
+  test25();
 
   return 0;
 }

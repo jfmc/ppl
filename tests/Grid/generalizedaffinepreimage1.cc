@@ -29,6 +29,7 @@ namespace {
 Variable A(0);
 Variable B(1);
 Variable C(2);
+Variable D(3);
 
 // Simplest expression.
 
@@ -138,13 +139,12 @@ test3() {
 
   // FIX check
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(-1*A));
+  known_gr.add_generator(grid_point(-A));
   known_gr.add_generator(grid_point(A));
   known_gr.add_generator(grid_line(B));
 
   if (gr1 == known_gr) {
 
-    // FIX known_gr should be same for gr1 and gr2?
     known_gr.add_generator(grid_point());
 
     // Congruence expression.
@@ -434,6 +434,106 @@ test10() {
   exit(1);
 }
 
+// Zero denominator.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((C == -2) / 0);
+  gr.add_congruence((A ==  0) / 0);
+
+  try {
+    gr.generalized_affine_preimage(B, A + 2, 0);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Expression of a greater space dimension than the grid.
+
+void
+test12() {
+  nout << "test12:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((C == -2) / 0);
+  gr.add_congruence((A ==  0) / 0);
+
+  try {
+    gr.generalized_affine_preimage(B, D + 2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Variable of a greater space dimension than the grid.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((C == -2) / 0);
+  gr.add_congruence((A ==  0) / 0);
+
+  try {
+    gr.generalized_affine_preimage(D, A + 2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Expression with a negative modulus, where the variable occurs in
+// the expression.
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Grid gr1(2);
+  gr1.add_congruence(A %= 0);
+  gr1.add_congruence((B %= 0) / 2);
+
+  Grid gr2 = gr1;
+
+  // Equality expression.
+  gr1.generalized_affine_preimage(B, A + B, 1, 0);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  Grid known_gr(2, EMPTY);
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(parameter(2*B));
+  known_gr.add_generator(parameter(A + B));
+
+  if (gr1 == known_gr) {
+
+    known_gr.add_generator(parameter(B));
+
+    // Congruence expression.
+    gr2.generalized_affine_preimage(B, A + B, 1, -7);
+
+    if (gr2 == known_gr)
+      return;
+
+    gr1 = gr2;
+    nout << "Grid gr2";
+  }
+  else
+    nout << "Grid gr1";
+
+  nout << " should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr1, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -452,6 +552,10 @@ main() TRY {
   test8();
   test9();
   test10();
+  test11();
+  test12();
+  test13();
+  test14();
 
   return 0;
 }
