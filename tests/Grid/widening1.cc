@@ -528,6 +528,61 @@ test15() {
   exit(1);
 }
 
+// Space dimension exception.
+
+void
+test16() {
+  nout << "test16:" << endl;
+
+  Grid gr1(3, EMPTY);
+  gr1.add_generator(grid_point(C, 3));
+  gr1.add_generator(grid_point(C + A - 2*B, 3));
+
+  Grid gr2(4, EMPTY);
+  gr2.add_generator(grid_point(C, 3));
+  gr2.add_generator(grid_point(2*C + A - 2*B, 6));
+
+  try {
+    gr2.widening_assign(gr1);
+    nout << "Exception expected." << endl;
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Minimizing the first congruence system finds the empty grid.
+
+void
+test17() {
+  nout << "test17:" << endl;
+
+  Grid gr1(3);
+  gr1.add_congruence(A == 0);
+  gr1.add_congruence(A == 1);
+
+  Grid gr2(3);
+  gr2.add_congruence(A == 0);
+  gr2.add_congruence(A == 1);
+
+  gr2.widening_assign(gr1);
+
+  if (find_variation(gr2))
+    exit(1);
+
+  Grid known_gr(3, EMPTY);
+
+  if (gr2 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr2 << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -551,6 +606,8 @@ main() TRY {
   test13();
   test14();
   test15();
+  test16();
+  test17();
 
   return 0;
 }
