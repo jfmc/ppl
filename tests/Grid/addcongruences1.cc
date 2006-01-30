@@ -227,6 +227,91 @@ test8() {
   exit(1);
 }
 
+// add_recycled_congruences_and_minimize, add empty system.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Grid gr(2, EMPTY);
+  gr.add_generator(grid_point(3*A + B));
+
+  Grid known_gr = gr;
+
+  Congruence_System cgs;
+
+  gr.add_recycled_congruences_and_minimize(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// add_recycled_congruences_and_minimize, add system of single trivial
+// congruence to zero dim grid.
+
+void
+test10() {
+  nout << "test10:" << endl;
+
+  Grid gr(0);
+
+  Grid known_gr = gr;
+
+  Congruence_System cgs;
+  cgs.insert(Congruence::zero_dim_integrality());
+
+  gr.add_recycled_congruences_and_minimize(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// add_recycled_congruences_and_minimize, add to empty grid.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Grid gr(2, EMPTY);
+
+  Grid known_gr = gr;
+
+  Congruence_System cgs;
+  cgs.insert(A + B == 0);
+
+  gr.add_recycled_congruences_and_minimize(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -243,6 +328,9 @@ main() TRY {
   test6();
   test7();
   test8();
+  test9();
+  test10();
+  test11();
 
   return 0;
 }
