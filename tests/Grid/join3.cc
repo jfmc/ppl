@@ -292,6 +292,29 @@ test8() {
   exit(1);
 }
 
+// Space dimension exception.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point(B + 0*C));
+
+  Grid gr1(gs);
+
+  Grid gr2(4);
+  gr2.add_congruence(A == 0);
+  gr2.add_congruence(B == 0);
+  gr2.add_congruence(C == 0);
+
+  try {
+    gr1.upper_bound_assign_if_exact(gr2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
 } // namespace
 
 int
@@ -308,6 +331,7 @@ main() TRY {
   test6();
   test7();
   test8();
+  test9();
 
   return 0;
 }
