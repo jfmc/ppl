@@ -348,12 +348,41 @@ test12() {
   nout << "test12:" << endl;
 
   Variable A(0);
-  Variable C(2);
 
   Grid gr(2, EMPTY);
 
   try {
     gr.add_generator(grid_line(A));
+    exit(1);
+  }
+  catch (std::invalid_argument) {}
+}
+
+// Try add parameter to empty grid.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Grid gr(2, EMPTY);
+
+  try {
+    gr.add_generator(parameter());
+    exit(1);
+  }
+  catch (std::invalid_argument) {}
+}
+
+// Try add parameter to zero dimension empty grid.
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Grid gr(0, EMPTY);
+
+  try {
+    gr.add_generator(parameter());
     exit(1);
   }
   catch (std::invalid_argument) {}
@@ -377,6 +406,8 @@ main() TRY {
   test10();
   test11();
   test12();
+  test13();
+  test14();
 
   return 0;
 }
