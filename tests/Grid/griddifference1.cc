@@ -1,4 +1,4 @@
-/* Test Grid::grid_difference_assign().
+/* Test Grid::grid_difference_assign() (a.k.a. Grid::difference_assign()).
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -72,7 +72,7 @@ test2() {
   Grid gr1;
   Grid gr2;
 
-  gr1.grid_difference_assign(gr2);
+  gr1.difference_assign(gr2);
 
   if (find_variation(gr1))
     exit(1);
@@ -169,7 +169,7 @@ test5() {
 
   Grid known_gr(gr1);
 
-  gr1.grid_difference_assign(gr2);
+  gr1.difference_assign(gr2);
 
   if (find_variation(gr1))
     exit(1);
@@ -333,7 +333,7 @@ test10() {
   gr2.add_congruence((A - B %= 0) / 2);
   gr2.add_congruence(A %= 0);
 
-  gr1.grid_difference_assign(gr2);
+  gr1.difference_assign(gr2);
 
   Grid known_gr(2);
   known_gr.add_congruence((A - B %= 1) / 2);
@@ -370,7 +370,7 @@ test11() {
   gr2.add_congruence((A + C %= 0) / 4);
   gr2.add_congruence((A + B %= 0) / 4);
 
-  gr1.grid_difference_assign(gr2);
+  gr1.difference_assign(gr2);
 
   Grid known_gr(3);
   known_gr.add_congruence((A %= 2) / 4);
@@ -392,6 +392,29 @@ test11() {
   exit(1);
 }
 
+// Space dimension exception.
+
+void
+test12() {
+  nout << "test12:" << endl;
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point(B + 0*C));
+
+  Grid gr1(gs);
+
+  Grid gr2(4);
+  gr2.add_congruence(A == 0);
+  gr2.add_congruence(B == 0);
+  gr2.add_congruence(C == 0);
+
+  try {
+    gr1.difference_assign(gr2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
 } // namespace
 
 int
@@ -411,6 +434,7 @@ main() TRY {
   test9();
   test10();
   test11();
+  test12();
 
   return 0;
 }
