@@ -186,11 +186,14 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
   // giving the system of constraints as the second argument.
   if (congruences_are_up_to_date())
     if (generators_are_up_to_date())
-      // Adds rows and/or columns to both matrices.
+      // Add rows and/or columns to both matrices.
       add_space_dimensions(gen_sys, con_sys, m);
-    else
+    else {
       // Only congruences are up-to-date so modify only them.
       con_sys.add_unit_rows_and_columns(m);
+      if (congruences_are_minimized())
+	dim_kinds.resize(con_sys.num_columns() - 1, EQUALITY);
+    }
   else {
     // Only generators are up-to-date so modify only them.
     assert(generators_are_up_to_date());
