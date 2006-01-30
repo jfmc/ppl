@@ -47,6 +47,7 @@ addcongruences1 \
 addconstraint1 \
 addconstraints1 \
 addgenerator1 \
+addgenerators1 \
 addspacedims1 addspacedims2 \
 affinedim1 \
 affineimage1 \
@@ -107,6 +108,8 @@ addconstraint1_SOURCES = addconstraint1.cc
 addconstraints1_SOURCES = addconstraints1.cc
 
 addgenerator1_SOURCES = addgenerator1.cc
+
+addgenerators1_SOURCES = addgenerators1.cc
 
 addspacedims1_SOURCES = addspacedims1.cc
 addspacedims2_SOURCES = addspacedims2.cc
