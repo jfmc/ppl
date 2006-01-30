@@ -29,6 +29,7 @@ namespace {
 Variable A(0);
 Variable B(1);
 Variable C(2);
+Variable D(3);
 
 // Tests 1 to 13 are equivalent to tests 1 to 13 in
 // generalizedaffineimage1.cc.
@@ -707,6 +708,39 @@ test22() {
   exit(1);
 }
 
+// Right hand side expression of greater space dimension than the
+// grid.
+
+void
+test23() {
+  nout << "test23:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence(C %= -2);
+
+  try {
+    gr.generalized_affine_image(B + C, D + 2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Left hand side expression of space dimension greater than the grid.
+
+void
+test24() {
+  nout << "test24:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((C == -2) / 0);
+
+  try {
+    gr.generalized_affine_image(A + D, A + 2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
 } // namespace
 
 int
@@ -737,6 +771,8 @@ main() TRY {
   test20();
   test21();
   test22();
+  test23();
+  test24();
 
   return 0;
 }

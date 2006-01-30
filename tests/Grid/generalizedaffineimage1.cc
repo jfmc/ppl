@@ -29,6 +29,7 @@ namespace {
 Variable A(0);
 Variable B(1);
 Variable C(2);
+Variable D(3);
 
 // Simplest expression.
 
@@ -415,6 +416,57 @@ test12() {
   exit(1);
 }
 
+// Zero denominator.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((C == -2) / 0);
+  gr.add_congruence((A ==  0) / 0);
+
+  try {
+    gr.generalized_affine_image(B, A + 2, 0);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Expression of a greater space dimension than the grid.
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((C == -2) / 0);
+  gr.add_congruence((A ==  0) / 0);
+
+  try {
+    gr.generalized_affine_image(B, D + 2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Variable of a greater space dimension than the grid.
+
+void
+test15() {
+  nout << "test15:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((C == -2) / 0);
+  gr.add_congruence((A ==  0) / 0);
+
+  try {
+    gr.generalized_affine_image(D, A + 2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
 } // namespace
 
 int
@@ -435,6 +487,9 @@ main() TRY {
   test10();
   test11();
   test12();
+  test13();
+  test14();
+  test15();
 
   return 0;
 }

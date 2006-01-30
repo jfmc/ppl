@@ -29,6 +29,7 @@ namespace {
 Variable A(0);
 Variable B(1);
 Variable C(2);
+Variable D(3);
 
 // The first twelve tests mirror those in affineimage1.cc.
 
@@ -643,6 +644,57 @@ test18() {
   exit(1);
 }
 
+// Zero denominator.
+
+void
+test19() {
+  nout << "test19:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((C == -2) / 0);
+  gr.add_congruence((A ==  0) / 0);
+
+  try {
+    gr.affine_preimage(B, A + 2, 0);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Expression of a greater space dimension than the grid.
+
+void
+test20() {
+  nout << "test20:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((C == -2) / 0);
+  gr.add_congruence((A ==  0) / 0);
+
+  try {
+    gr.affine_preimage(B, D + 2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Variable of a greater space dimension than the grid.
+
+void
+test21() {
+  nout << "test21:" << endl;
+
+  Grid gr(3);
+  gr.add_congruence((C == -2) / 0);
+  gr.add_congruence((A ==  0) / 0);
+
+  try {
+    gr.affine_preimage(D, A + 2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
 } // namespace
 
 int
@@ -669,6 +721,9 @@ main() TRY {
   test16();
   test17();
   test18();
+  test19();
+  test20();
+  test21();
 
   return 0;
 }
