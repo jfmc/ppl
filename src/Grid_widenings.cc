@@ -77,7 +77,7 @@ PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
   Grid& y = const_cast<Grid&>(const_y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
-    throw_dimension_incompatible("H79_widening_assign(y)", "y", y);
+    throw_dimension_incompatible("widening_assign(y)", "y", y);
 
   // As noted in definitions.dox, stable behaviour is only garaunteed
   // if y is contained in or equal to x.
