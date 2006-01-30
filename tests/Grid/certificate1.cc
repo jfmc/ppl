@@ -210,6 +210,39 @@ test6() {
   exit(1);
 }
 
+// Compare a grid to one that is more constrained, where the minimized
+// generators are used for the comparison.
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Grid gr1(3);
+  gr1.add_congruence(A + C %= 0);
+  gr1.add_congruence(B == 3);
+
+  Grid_Certificate grc1(gr1);
+
+  Grid gr2(3, EMPTY);
+  gr2.add_generator(grid_point(3*B + A + C));
+  gr2.add_generator_and_minimize(grid_point(3*B + A));
+
+  // Ensure up to date congruences and minimized generators.
+  gr2.affine_image(A, 1*A);
+  gr2.minimized_generators();
+
+  gr2.ascii_dump();
+
+  if (grc1.compare(gr2) == -1)
+    return;
+
+  nout << "gr1 should compare less than gr2." << endl
+       << "gr1:" << endl << gr1 << endl
+       << "gr2:" << endl << gr2 << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -224,6 +257,7 @@ main() TRY {
   test4();
   test5();
   test6();
+  test7();
 
   return 0;
 }
