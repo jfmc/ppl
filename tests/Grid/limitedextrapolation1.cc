@@ -469,6 +469,93 @@ test12() {
   exit(1);
 }
 
+// Exception due to space dimensions of grids.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Grid gr1(3, EMPTY);
+  gr1.add_generator(grid_point(C, 3));
+  gr1.add_generator(grid_point(C + A - 2*B, 3));
+
+  Grid gr2(5, EMPTY);
+  gr2.add_generator(grid_point(C, 3));
+  gr2.add_generator(grid_point(2*C + A - 2*B, 6));
+
+  Congruence_System cgs;
+  cgs.insert(A - 0*C == 3);
+
+  try {
+    gr2.limited_extrapolation_assign(gr1, cgs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Exception due to space dimension of congruence system.
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Grid gr1(2, EMPTY);
+  gr1.add_generator(grid_point(A));
+  gr1.add_generator(parameter(B, 3));
+
+  Grid gr2(2, EMPTY);
+  gr2.add_generator(grid_point(A));
+  gr2.add_generator(parameter(B, 6));
+
+  Congruence_System cgs;
+  cgs.insert(A - 0*C == 3);
+
+  try {
+    gr2.limited_extrapolation_assign(gr1, cgs);
+    nout << "Exception expected." << endl;
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Limit with an empty congruence system.
+
+void
+test15() {
+  nout << "test15:" << endl;
+
+  Grid gr1(3, EMPTY);
+  gr1.add_generator(grid_point());
+  gr1.add_generator(parameter(A, 3));
+
+  Grid gr2(3, EMPTY);
+  gr2.add_generator(grid_point());
+  gr2.add_generator(parameter(A, 6));
+
+  Congruence_System cgs;
+
+  gr2.limited_extrapolation_assign(gr1, cgs);
+
+  if (find_variation(gr2))
+    exit(1);
+
+  Grid known_gr = gr2;
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_line(A));
+
+  if (gr2 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr2 << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -489,6 +576,9 @@ main() TRY {
   test10();
   test11();
   test12();
+  test13();
+  test14();
+  test15();
 
   return 0;
 }
