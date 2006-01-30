@@ -38,14 +38,14 @@ TRACE(using std::cerr);
 // x x X 0                   x X 0 0
 // x x x X                   X 0 0 0
 //
-// Any of the x's can be zeroes.
+// Where X is greater than zero and x is an integer.
 bool
 Grid::lower_triangular(const Congruence_System& sys,
 		       const Dimension_Kinds& dim_kinds) {
   dimension_type num_cols = sys.num_columns() - 1;
   dimension_type row = sys.num_rows();
 
-  // Check squareness.
+  // Check for easy square failure case.
   if (row > num_cols)
     return false;
 
@@ -55,7 +55,7 @@ Grid::lower_triangular(const Congruence_System& sys,
       continue;
     const Congruence& cg = sys[--row];
     // Check diagonal.
-    if (cg[dim] == 0)
+    if (cg[dim] <= 0)
       return false;
     // Check elements following diagonal.
     dimension_type col = dim;
@@ -63,9 +63,9 @@ Grid::lower_triangular(const Congruence_System& sys,
       if (cg[col] != 0)
 	return false;
   }
-  assert(row == 0);
 
-  return true;
+  // Check squareness.
+  return row == 0;
 }
 
 // X x x x
@@ -73,14 +73,14 @@ Grid::lower_triangular(const Congruence_System& sys,
 // 0 0 X x
 // 0 0 0 X
 //
-// Any of the x's can be zeroes.
+// Where X is greater than zero and x is an integer.
 bool
 Grid::upper_triangular(const Grid_Generator_System& sys,
 		       const Dimension_Kinds& dim_kinds) {
   dimension_type num_cols = sys.space_dimension() + 1;
   dimension_type row = sys.num_generators();
 
-  // Check squareness.
+  // Check for easy square fail case.
   if (row > num_cols)
     return false;
 
@@ -91,7 +91,7 @@ Grid::upper_triangular(const Grid_Generator_System& sys,
       continue;
     const Grid_Generator& gen = sys[--row];
     // Check diagonal.
-    if (gen[num_cols] == 0)
+    if (gen[num_cols] <= 0)
       return false;
     // Check elements preceding diagonal.
     dimension_type col = num_cols;
@@ -99,9 +99,9 @@ Grid::upper_triangular(const Grid_Generator_System& sys,
       if (gen[col] != 0)
 	return false;
   }
-  assert(num_cols == row);
 
-  return true;
+  // Check for squareness.
+  return num_cols == row;
 }
 
 inline void
@@ -239,6 +239,8 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     }
   }
 
+  assert(lower_triangular(dest, dim_kinds));
+
   TRACE(cerr << "dest after init:" << endl);
   TRACE(dest.ascii_dump(cerr));
 
@@ -321,13 +323,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     TRACE(dest.ascii_dump(cerr));
   }
   // Set the modulus in every congruence.
-  TEMP_INTEGER(modulus);
-  Congruence& cg = dest[dest_num_rows - 1];
-  modulus = cg[0];
-  if (modulus < 0) {
-    neg_assign(modulus);
-    cg[0] = modulus;
-  }
+  Coefficient_traits::const_reference modulus = dest[dest_num_rows - 1][0];
   for (dimension_type row = 0; row < dest_num_rows; ++row) {
     Congruence& cg = dest[row];
     if (cg[dims] > 0)
@@ -337,16 +333,14 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   TRACE(cerr << "dest after setting moduli:" << endl);
   TRACE(dest.ascii_dump(cerr));
 
+  assert(lower_triangular(dest, dim_kinds));
+
 #ifdef STRONG_REDUCTION
   for (dimension_type dim = dims, i = 0; dim-- > 0; )
-    if (dim_kinds[dim] != CON_VIRTUAL) {
-      Congruence& row = dest[i];
-      if (row[dim] < 0)
-	row.negate(0, dim);
+    if (dim_kinds[dim] != CON_VIRTUAL)
       // Factor the "diagonal" congruence out of the preceding rows.
       reduce_reduced<Congruence_System, Congruence>
 	(dest, dim, i++, 0, dim, dim_kinds, false);
-    }
   TRACE(cerr << "dest after strong reduction:" << endl);
   TRACE(dest.ascii_dump(cerr));
 #endif
@@ -442,6 +436,8 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     }
   }
 
+  assert(upper_triangular(dest, dim_kinds));
+
   TRACE(cerr << "dest after init:" << endl);
   TRACE(dest.ascii_dump(cerr));
 
@@ -524,16 +520,14 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     TRACE(dest.ascii_dump(cerr));
   }
 
+  assert(upper_triangular(dest, dim_kinds));
+
 #ifdef STRONG_REDUCTION
   for (dimension_type dim = 0, i = 0; dim < dims; ++dim)
-    if (dim_kinds[dim] != GEN_VIRTUAL) {
-      Grid_Generator& row = dest[i];
-      if (row[dim] < 0)
-	row.negate(dim, dims - 1);
+    if (dim_kinds[dim] != GEN_VIRTUAL)
       // Factor the "diagonal" generator out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
 	(dest, dim, i++, dim, dims - 1, dim_kinds);
-    }
   TRACE(cerr << "dest after strong reduction:" << endl);
   TRACE(dest.ascii_dump(cerr));
 #endif
