@@ -940,11 +940,13 @@ PPL::Grid::add_generator(const Grid_Generator& g) {
 
   // Deal with zero-dimension case first.
   if (space_dim == 0) {
-    // Points are the only zero-dimension generators that can be
-    // created.
-    assert(g.is_point());
-    if (marked_empty())
+    // Points and parameters are the only zero-dimension generators
+    // that can be created.
+    if (marked_empty()) {
+      if (g.is_parameter())
+	throw_invalid_generator("add_generator(g)", "g");
       set_zero_dim_univ();
+    }
     assert(OK());
     return;
   }
@@ -1800,14 +1802,14 @@ generalized_affine_image(const Linear_Expression& lhs,
 
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
-  for ( ; lhs_space_dim > 0; lhs_space_dim--)
-    if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0)
-      break;
-  if (lhs_space_dim == 0) {
-    // All variables have zero coefficients, so `lhs' is a constant.
-    add_congruence((lhs %= rhs) / mod);
-    return;
+  do {
+    if (lhs_space_dim == 0) {
+      // All variables have zero coefficients, so `lhs' is a constant.
+      add_congruence((lhs %= rhs) / mod);
+      return;
+    }
   }
+  while (lhs.coefficient(Variable(--lhs_space_dim)) == 0);
 
   // Gather in `new_lines' the collections of all the lines having the
   // direction of variables occurring in `lhs'.  While at it, check
@@ -1815,7 +1817,7 @@ generalized_affine_image(const Linear_Expression& lhs,
   // `rhs'.
   Grid_Generator_System new_lines;
   bool lhs_vars_intersect_rhs_vars = false;
-  for (dimension_type i = lhs_space_dim; i-- > 0; )
+  for (dimension_type i = lhs_space_dim + 1; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
       new_lines.insert(Grid_Generator::line(Variable(i)));
       if (rhs.coefficient(Variable(i)) != 0)
@@ -1895,24 +1897,23 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   if (marked_empty())
     return;
 
-  // Compute the actual space dimension of `lhs',
-  // i.e., the highest dimension having a non-zero coefficient in `lhs'.
-  for ( ; lhs_space_dim > 0; --lhs_space_dim)
-    if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0)
-      break;
-
   TEMP_INTEGER(mod);
   if (modulus < 0)
     mod = -modulus;
   else
     mod = modulus;
 
-  // If all variables have zero coefficients, then `lhs' is a
-  // constant: in this case, preimage and image happen to be the same.
-  if (lhs_space_dim == 0) {
-    add_congruence((lhs %= rhs) / mod);
-    return;
+  // Compute the actual space dimension of `lhs',
+  // i.e., the highest dimension having a non-zero coefficient in `lhs'.
+  do {
+    if (lhs_space_dim == 0) {
+      // All variables have zero coefficients, so `lhs' is a constant.
+      // In this case, preimage and image happen to be the same.
+      add_congruence((lhs %= rhs) / mod);
+      return;
+    }
   }
+  while (lhs.coefficient(Variable(--lhs_space_dim)) == 0);
 
   // Gather in `new_lines' the collections of all the lines having
   // the direction of variables occurring in `lhs'.
@@ -1920,7 +1921,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   // occurring in both `lhs' and `rhs'.
   Grid_Generator_System new_lines;
   bool lhs_vars_intersect_rhs_vars = false;
-  for (dimension_type i = lhs_space_dim; i-- > 0; )
+  for (dimension_type i = lhs_space_dim + 1; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
       new_lines.insert(Grid_Generator::line(Variable(i)));
       if (rhs.coefficient(Variable(i)) != 0)
