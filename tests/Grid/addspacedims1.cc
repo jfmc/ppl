@@ -39,9 +39,6 @@ test1() {
 
   Grid gr(cgs);
 
-  if (find_variation(gr))
-    exit(1);
-
   gr.add_space_dimensions_and_embed(2);
 
   if (find_variation(gr))
@@ -51,9 +48,6 @@ test1() {
   known_cgs.insert((A + 0*E %= 0) / 2);
 
   Grid known_gr(known_cgs);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr == known_gr)
     return;
@@ -73,18 +67,12 @@ test2() {
 
   Grid gr(2, EMPTY);
 
-  if (find_variation(gr))
-    exit(1);
-
   gr.add_space_dimensions_and_embed(3);
 
   if (find_variation(gr))
     exit(1);
 
   Grid known_gr(5, EMPTY);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr == known_gr)
     return;
@@ -104,9 +92,6 @@ test3() {
 
   Grid gr(1);
 
-  if (find_variation(gr))
-    exit(1);
-
   gr.add_space_dimensions_and_embed(4);
 
   if (find_variation(gr))
@@ -118,9 +103,6 @@ test3() {
   }
 
   Grid known_gr(5);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr == known_gr)
     return;
@@ -149,9 +131,6 @@ test4() {
 
   Grid gr(gs);
 
-  if (find_variation(gr))
-    exit(1);
-
   gr.add_space_dimensions_and_embed(2);
 
   if (find_variation(gr))
@@ -163,9 +142,6 @@ test4() {
   known_cgs.insert((B == 0) / 0);
 
   Grid known_gr(known_cgs);
-
-  if (find_variation(known_gr))
-    exit(1);
 
   if (gr == known_gr)
     return;
@@ -206,8 +182,111 @@ test5() {
 
   Grid known_gr(known_cgs);
 
-  if (find_variation(known_gr))
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Space dimension exception.
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Grid gr(10);
+
+  try {
+    gr.add_space_dimensions_and_embed(Grid::max_space_dimension());
+  }
+  catch (const std::length_error& e) {}
+}
+
+// Zero dimension universe grid.
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Grid gr(0);
+
+  gr.add_space_dimensions_and_embed(13);
+
+  if (find_variation(gr))
     exit(1);
+
+  Grid known_gr(13);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Add to a grid which has minimized congruences.
+
+void
+test8() {
+  nout << "test8:" << endl;
+
+  Variable A(0);
+
+  Grid gr(2);
+  gr.add_congruence(A %= 0);
+
+  gr.minimized_congruences();
+
+  gr.add_space_dimensions_and_embed(2);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(4);
+  known_gr.add_congruence(A %= 0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Add to a grid which has out of date congruences and minimized
+// generators.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Grid gr(2, EMPTY);
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_line(A));
+
+  gr.minimized_generators();
+
+  gr.add_space_dimensions_and_embed(2);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(4);
+  known_gr.add_congruence(B == 0);
 
   if (gr == known_gr)
     return;
@@ -230,6 +309,10 @@ main() TRY {
   test3();
   test4();
   test5();
+  test6();
+  test7();
+  test8();
+  test9();
 
   return 0;
 }
