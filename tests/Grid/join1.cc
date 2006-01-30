@@ -274,6 +274,61 @@ test7() {
   exit(1);
 }
 
+// Space dimension exception.
+
+void
+test8() {
+  nout << "test8:" << endl;
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point(B + 0*C));
+
+  Grid gr1(gs);
+
+  Grid gr2(4);
+  gr2.add_congruence(A == 0);
+  gr2.add_congruence(B == 0);
+  gr2.add_congruence(C == 0);
+
+  try {
+    gr1.upper_bound_assign(gr2);
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Out-of-date generators in the first grid, which is empty.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Grid gr1(3);
+  gr1.add_congruence(A == 0);
+  gr1.add_congruence(A == 1);
+
+  Grid_Generator_System gs2;
+  gs2.insert(grid_point(B + 0*C));
+
+  Grid gr2(gs2);
+
+  Grid known_gr = gr2;
+
+  gr1.join_assign(gr2);
+
+  if (find_variation(gr1))
+    exit(1);
+
+  if (gr1 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr1 << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -289,6 +344,8 @@ main() TRY {
   test5();
   test6();
   test7();
+  test8();
+  test9();
 
   return 0;
 }
