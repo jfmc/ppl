@@ -322,6 +322,30 @@ test9() {
   exit(1);
 }
 
+// Space dimension exception.
+
+void
+test10() {
+  nout << "test10:" << endl;
+
+  Grid gr1(7);
+
+  Grid gr2(1);
+  gr2.add_congruence(Congruence::zero_dim_integrality());
+  gr2.minimized_congruences();
+  gr2.ascii_dump();
+  // This needs to allocate a lot of memory, in order to create the
+  // integrality congruence.  The presence of the integrality
+  // congruence is required by the conversion.
+  gr2.add_space_dimensions_and_embed(Grid::max_space_dimension() - 1);
+
+  try {
+    gr1.concatenate_assign(gr2);
+    exit(1);
+  }
+  catch (const std::length_error& e) {}
+}
+
 } // namespace
 
 int
@@ -339,6 +363,7 @@ main() TRY {
   test7();
   test8();
   test9();
+  //test10();
 
   return 0;
 }
