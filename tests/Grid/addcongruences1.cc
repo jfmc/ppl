@@ -312,6 +312,69 @@ test11() {
   exit(1);
 }
 
+// add_recycled_congruences_and_minimize, add empty system to grid
+// with minimized generators and up to date congruences.
+
+void
+test12() {
+  nout << "test12:" << endl;
+
+  Grid gr(2);
+
+  // Ensure both systems are up to date with only generators minimal.
+  gr.affine_image(A, 1*A);
+  gr.minimized_generators();
+
+  Congruence_System cgs;
+
+  gr.add_recycled_congruences_and_minimize(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(2);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// add_recycled_congruences_and_minimize, add empty system to grid
+// with up to date congruences and generators.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Grid gr(2);
+
+  // Ensure both systems are just up to date.
+  gr.affine_image(A, 1*A);
+
+  Congruence_System cgs;
+
+  gr.add_recycled_congruences_and_minimize(cgs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(2);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -331,6 +394,8 @@ main() TRY {
   test9();
   test10();
   test11();
+  test12();
+  test13();
 
   return 0;
 }
