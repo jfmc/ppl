@@ -260,6 +260,90 @@ test7() {
   exit(1);
 }
 
+// Empty variable set.
+
+void
+test8() {
+  nout << "test8:" << endl;
+
+  Grid gr(3, EMPTY);
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A));
+  gr.add_generator_and_minimize(grid_point(B));
+  gr.add_generator(grid_line(C));
+
+  Variables_Set vars;
+
+  Grid known_gr = gr;
+
+  gr.remove_space_dimensions(vars);
+
+  if (find_variation(gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Space dimension exception.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Grid gr(1, EMPTY);
+
+  Variables_Set vars;
+  vars.insert(B);
+
+  try {
+    gr.remove_space_dimensions(vars);
+    nout << "Exception expected." << endl;
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Zero dimension universe resulting grid.
+
+void
+test10() {
+  nout << "test10:" << endl;
+
+  Grid gr(3, EMPTY);
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A));
+  gr.add_generator_and_minimize(grid_point(B));
+  gr.add_generator(grid_line(C));
+
+  Variables_Set vars;
+  vars.insert(A);
+  vars.insert(B);
+  vars.insert(C);
+
+  gr.remove_space_dimensions(vars);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -275,6 +359,9 @@ main() TRY {
   test5();
   test6();
   test7();
+  test8();
+  test9();
+  test10();
 
   return 0;
 }
