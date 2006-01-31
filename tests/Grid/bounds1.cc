@@ -423,6 +423,24 @@ test12() {
   exit(1);
 }
 
+// Space dimension exception.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Grid gr(3, EMPTY);
+
+  Linear_Expression le = A + 2*B + 3*C + 4*D + 6*F;
+
+  try {
+    gr.bounds_from_above(le);
+    nout << "Exception expected." << endl;
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
 } // namespace
 
 int
@@ -443,6 +461,7 @@ main() TRY {
   test10();
   test11();
   test12();
+  test13();
 
   return 0;
 }
