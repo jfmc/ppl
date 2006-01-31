@@ -345,6 +345,64 @@ test11() {
   exit(1);
 }
 
+// Second paramter of greater dimension than grid.
+
+void
+test12() {
+  nout << "test12:" << endl;
+
+  Grid gr(1, EMPTY);
+
+  Variables_Set vars;
+  vars.insert(A);
+
+  try {
+    gr.fold_space_dimensions(vars, B);
+    nout << "Exception expected." << endl;
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Highest variable in set of greater dimension than grid.
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Grid gr(3, EMPTY);
+
+  Variables_Set vars;
+  vars.insert(B);
+
+  try {
+    gr.fold_space_dimensions(vars, B);
+    nout << "Exception expected." << endl;
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Dimension of highest variable in set greater than dimension of
+// grid.
+
+void
+test14() {
+  nout << "test14:" << endl;
+
+  Grid gr(1, EMPTY);
+
+  Variables_Set vars;
+  vars.insert(B);
+
+  try {
+    gr.fold_space_dimensions(vars, A);
+    nout << "Exception expected." << endl;
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
 } // namespace
 
 int
@@ -364,6 +422,9 @@ main() TRY {
   test9();
   test10();
   test11();
+  test12();
+  test13();
+  test14();
 
   return 0;
 }

@@ -243,6 +243,38 @@ test7() {
   exit(1);
 }
 
+// Variable of higher space dimension than grid.
+
+void
+test8() {
+  nout << "test8:" << endl;
+
+  Grid gr(1, EMPTY);
+
+  try {
+    gr.expand_space_dimension(B, 3);
+    nout << "Exception expected." << endl;
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Add more dimensions than are available.
+
+void
+test9() {
+  nout << "test9:" << endl;
+
+  Grid gr(10, EMPTY);
+
+  try {
+    gr.expand_space_dimension(B, Grid::max_space_dimension());
+    nout << "Exception expected." << endl;
+    exit(1);
+  }
+  catch (const std::length_error& e) {}
+}
+
 } // namespace
 
 int
@@ -258,6 +290,8 @@ main() TRY {
   test5();
   test6();
   test7();
+  test8();
+  test9();
 
   return 0;
 }
