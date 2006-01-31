@@ -292,6 +292,7 @@ test8() {
 
   try {
     gr1.upper_bound_assign(gr2);
+    nout << "Exception expected." << endl;
     exit(1);
   }
   catch (const std::invalid_argument& e) {}

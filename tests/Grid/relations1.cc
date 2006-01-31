@@ -147,6 +147,7 @@ test8() {
 
   try {
     gr.relation_with(grid_line(A + C));
+    nout << "Exception expected." << endl;
     exit(1);
   }
   catch (std::invalid_argument) {}

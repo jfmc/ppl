@@ -310,6 +310,7 @@ test9() {
 
   try {
     gr1.upper_bound_assign_if_exact(gr2);
+    nout << "Exception expected." << endl;
     exit(1);
   }
   catch (const std::invalid_argument& e) {}

@@ -341,6 +341,7 @@ test10() {
 
   try {
     gr1.concatenate_assign(gr2);
+    nout << "Exception expected." << endl;
     exit(1);
   }
   catch (const std::length_error& e) {}

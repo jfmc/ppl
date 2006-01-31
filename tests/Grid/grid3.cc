@@ -164,6 +164,7 @@ test5() {
 
   try {
     Grid gr(Constraint_System::max_space_dimension() + 1);
+    nout << "Exception expected." << endl;
     exit(1);
   }
   catch (const std::length_error& e) {}

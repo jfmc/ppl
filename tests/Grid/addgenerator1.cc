@@ -294,6 +294,7 @@ test9() {
 
   try {
     gr.add_generator(grid_point(A + C));
+    nout << "Exception expected." << endl;
     exit(1);
   }
   catch (std::invalid_argument) {}
@@ -353,6 +354,7 @@ test12() {
 
   try {
     gr.add_generator(grid_line(A));
+    nout << "Exception expected." << endl;
     exit(1);
   }
   catch (std::invalid_argument) {}

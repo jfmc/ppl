@@ -442,6 +442,7 @@ test14() {
 
   try {
     gr.add_congruence(A + C %= 0);
+    nout << "Exception expected." << endl;
     exit(1);
   }
   catch (std::invalid_argument) {}

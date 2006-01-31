@@ -202,6 +202,8 @@ test6() {
 
   try {
     gr.add_space_dimensions_and_embed(Grid::max_space_dimension());
+    nout << "Exception expected." << endl;
+    exit(1);
   }
   catch (const std::length_error& e) {}
 }
