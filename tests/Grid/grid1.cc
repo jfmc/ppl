@@ -24,13 +24,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+namespace {
+
+Variable A(0);
+Variable B(1);
+Variable C(2);
+
 // add_generator_and_minimize, one variable.
 
 void
 test1() {
   nout << "test1:" << endl;
-
-  Variable A(0);
 
   Grid_Generator_System gs;
   gs.insert(grid_point(A));
@@ -64,9 +68,6 @@ test1() {
 void
 test2() {
   nout << "test2:" << endl;
-
-  Variable A(0);
-  Variable B(1);
 
   Grid_Generator_System gs;
   gs.insert(grid_point(A + B));
@@ -104,9 +105,6 @@ void
 test3() {
   nout << "test3:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-
   Grid_Generator_System gs;
   gs.insert(grid_line(0*A +   B));
   gs.insert(grid_point(3*A + 4*B));
@@ -143,10 +141,6 @@ test3() {
 void
 test4() {
   nout << "test4:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Grid_Generator_System gs;
   gs.insert(grid_point(4*A -   B + 0*C, 3));
@@ -186,10 +180,6 @@ void
 test5() {
   nout << "test5:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Grid_Generator_System gs;
   gs.insert(grid_point(-1*A + 4*B + 3*C, 2));
   gs.insert(grid_line( 3*A + 2*B - 4*C));
@@ -225,10 +215,6 @@ test5() {
 void
 test6() {
   nout << "test6:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Grid_Generator_System gs;
   gs.insert(grid_point(-1*A + 4*B +  3*C, 2));
@@ -267,10 +253,6 @@ test6() {
 void
 test7() {
   nout << "test7:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Grid_Generator_System gs;
   gs.insert(grid_point(-1*A + 4*B + 3*C, 2));
@@ -311,10 +293,6 @@ void
 test8() {
   nout << "test8:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Grid_Generator_System gs;
   gs.insert(grid_point(A));
   gs.insert(grid_point(2*A));
@@ -353,10 +331,6 @@ void
 test9() {
   nout << "test9:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Grid_Generator_System gs;
   gs.insert(grid_point(A +   B));
   gs.insert(grid_point(A + 2*B));
@@ -392,10 +366,6 @@ test9() {
 void
 test10() {
   nout << "test10:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Grid_Generator_System gs;
   gs.insert(grid_point(A +   B + 0*C));
@@ -436,10 +406,6 @@ void
 test11() {
   nout << "test11:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Grid_Generator_System gs;
   gs.insert(grid_point(0*A + 7*B + 0*C, 3));
   gs.insert(grid_line(3*A + 2*B + 0*C));
@@ -475,10 +441,6 @@ test11() {
 void
 test12() {
   nout << "test12:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Grid_Generator_System gs;
   gs.insert(grid_point(-1*A + 0*B + 3*C, 4));
@@ -574,10 +536,6 @@ void
 test15() {
   nout << "test15:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Grid_Generator_System gs;
   gs.insert(grid_point( -A + 0*B + 3*C, 4));
   gs.insert(grid_line(0*A + 2*B + 0*C));
@@ -614,10 +572,6 @@ test15() {
 void
 test16() {
   nout << "test16:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Grid_Generator_System gs;
   gs.insert(grid_point(   A));
@@ -659,10 +613,6 @@ test16() {
 void
 test17() {
   nout << "test17:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Grid_Generator_System gs;
   gs.insert(grid_point(4*A -   B + 0*C, 3));
@@ -776,10 +726,6 @@ void
 test21() {
   nout << "test21:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Grid_Generator_System gs;
   gs.insert(grid_line(0*A + 2*B + 0*C));
 
@@ -798,10 +744,6 @@ test21() {
 void
 test22() {
   nout << "test22:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Grid_Generator_System gs;
   gs.insert(grid_point(0*C));
@@ -864,10 +806,13 @@ test24() {
 
   try {
     Grid gr(Grid::max_space_dimension() + 1);
+    nout << "Exception expected." << endl;
     exit(1);
   }
   catch (const std::length_error& e) {}
 }
+
+} // namespace
 
 int
 main() TRY {
