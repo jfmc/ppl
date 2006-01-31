@@ -24,15 +24,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+namespace {
+
+Variable A(0);
+Variable B(1);
+Variable C(2);
+
 // From congruences.
 
 void
 test1() {
   nout << "test1:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Congruence_System cgs;
   cgs.insert((A + 2*C %= 0) / 3);
@@ -135,9 +137,6 @@ void
 test4() {
   nout << "test4:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-
   Grid_Generator_System gs;
   gs.insert(grid_point(0*A));
   gs.insert(grid_point(2*A));
@@ -171,6 +170,82 @@ test4() {
   exit(1);
 }
 
+// Resulting grid the same.
+
+void
+test5() {
+  nout << "test5:" << endl;
+
+  Grid gr(3, EMPTY);
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A));
+  gr.add_generator_and_minimize(grid_point(B));
+  gr.add_generator(grid_line(C));
+
+  Grid known_gr = gr;
+
+  gr.remove_higher_space_dimensions(gr.space_dimension());
+
+  if (find_variation(gr))
+    exit(1);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+// Space dimension exception.
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Grid gr(1, EMPTY);
+
+  try {
+    gr.remove_higher_space_dimensions(6);
+    nout << "Exception expected." << endl;
+    exit(1);
+  }
+  catch (const std::invalid_argument& e) {}
+}
+
+// Zero dimension universe resulting grid.
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Grid gr(3, EMPTY);
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A));
+  gr.add_generator_and_minimize(grid_point(B));
+  gr.add_generator(grid_line(C));
+
+  gr.remove_higher_space_dimensions(0);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Grid known_gr(0);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
+} // namespace
+
 int
 main() TRY {
   set_handlers();
@@ -181,6 +256,9 @@ main() TRY {
   test2();
   test3();
   test4();
+  test5();
+  test6();
+  test7();
 
   return 0;
 }
