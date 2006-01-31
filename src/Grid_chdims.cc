@@ -373,7 +373,7 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
 
   // The resulting space dimension must be at most the maximum.
   if (m > max_space_dimension() - space_dimension())
-    throw_space_dimension_overflow("expand_dimension(v, m)",
+    throw_space_dimension_overflow("expand_space_dimension(v, m)",
 				   "adding m new space dimensions exceeds "
 				   "the maximum allowed space dimension");
 
