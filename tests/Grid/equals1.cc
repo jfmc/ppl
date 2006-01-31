@@ -25,11 +25,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+namespace {
+
+Variable A(0);
+Variable B(1);
+Variable C(2);
+
 void
 test1() {
   nout << "test1:" << endl;
-
-  Variable A(0);
 
   Grid_Generator_System gs;
   gs.insert(grid_point());
@@ -64,10 +68,6 @@ test1() {
 void
 test2() {
   nout << "test2:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Congruence_System cgs;
   cgs.insert(A - B %= 0);
@@ -106,10 +106,6 @@ void
 test3() {
   nout << "test3:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Congruence_System cgs;
   cgs.insert(A - B %= 0);
   cgs.insert((C %= 0) / 7);
@@ -146,9 +142,6 @@ test3() {
 void
 test4() {
   nout << "test4:" << endl;
-
-  Variable A(0);
-  Variable B(1);
 
   Grid_Generator_System gs;
   gs.insert(grid_point(0*A));
@@ -188,6 +181,113 @@ test4() {
   }
 }
 
+// Where the equality of two grids is decided by comparing the number
+// of equalities.
+
+void
+test5() {
+  nout << "test5:" << endl;
+
+  Grid gr1(3);
+  gr1.add_congruence(A == 0);
+
+  gr1.minimized_congruences();
+
+  Grid gr2(3);
+  gr2.add_congruence(B %= 0);
+
+  gr2.minimized_congruences();
+
+  if (gr1 == gr2) {
+    nout << "gr1 == gr2 should return false." << endl
+	 << "gr1:" << endl << gr1 << endl
+	 << "gr2:" << endl << gr2 << endl;
+
+    exit(1);
+  }
+
+  if (gr1 != gr2)
+    return;
+
+  nout << "gr != known_gr should return true." << endl
+       << "gr1:" << endl << gr1 << endl
+       << "gr2:" << endl << gr2 << endl;
+  exit(1);
+}
+
+// Where the equality of two grids is decided by comparing the number
+// of generators.
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Grid gr1(3, EMPTY);
+  gr1.add_generator(grid_point());
+
+  gr1.minimized_generators();
+
+  Grid gr2(3, EMPTY);
+  gr2.add_generator(grid_point());
+  gr2.add_generator(grid_line(A));
+
+  gr2.minimized_generators();
+
+  if (gr1 == gr2) {
+    nout << "gr1 == gr2 should return false." << endl
+	 << "gr1:" << endl << gr1 << endl
+	 << "gr2:" << endl << gr2 << endl;
+
+    exit(1);
+  }
+
+  if (gr1 != gr2)
+    return;
+
+  nout << "gr1 != gr2 should return true." << endl
+       << "gr1:" << endl << gr1 << endl
+       << "gr2:" << endl << gr2 << endl;
+  exit(1);
+}
+
+// Where the equality of two grids is decided by comparing the number
+// of lines.
+
+void
+test7() {
+  nout << "test7:" << endl;
+
+  Grid gr1(3, EMPTY);
+  gr1.add_generator(grid_point());
+  gr1.add_generator(parameter(B));
+
+  gr1.minimized_generators();
+
+  Grid gr2(3, EMPTY);
+  gr2.add_generator(grid_point());
+  gr2.add_generator(grid_line(A));
+
+  gr2.minimized_generators();
+
+  if (gr1 == gr2) {
+    nout << "gr1 == gr2 should return false." << endl
+	 << "gr1:" << endl << gr1 << endl
+	 << "gr2:" << endl << gr2 << endl;
+
+    exit(1);
+  }
+
+  if (gr1 != gr2)
+    return;
+
+  nout << "gr1 != gr2 should return true." << endl
+       << "gr1:" << endl << gr1 << endl
+       << "gr2:" << endl << gr2 << endl;
+  exit(1);
+}
+
+} // namespace
+
 int
 main() TRY {
   set_handlers();
@@ -198,6 +298,9 @@ main() TRY {
   test2();
   test3();
   test4();
+  test5();
+  test6();
+  test7();
 
   return 0;
 }
