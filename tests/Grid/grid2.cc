@@ -24,13 +24,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+namespace {
+
+Variable A(0);
+Variable B(1);
+Variable C(2);
+
 // add_congruence_and_minimize, one dimension.
 
 void
 test1() {
   nout << "test1:" << endl;
-
-  Variable A(0);
 
   Congruence_System cgs;
   cgs.insert((A %= 0) / 2);
@@ -66,9 +70,6 @@ test1() {
 void
 test2() {
   nout << "test2:" << endl;
-
-  Variable A(0);
-  Variable B(1);
 
   Congruence_System cgs;
   cgs.insert((A - 3*B %= 4) / 5);
@@ -110,8 +111,6 @@ void
 test3() {
   nout << "test3:" << endl;
 
-  Variable A(0);
-
   Congruence_System cgs;
   cgs.insert((A %= 0) / 3);
 
@@ -145,8 +144,6 @@ void
 test4() {
   nout << "test4:" << endl;
 
-  Variable A(0);
-
   Congruence_System cgs;
   cgs.insert((A %= 7) / 3);
 
@@ -179,9 +176,6 @@ test4() {
 void
 test5() {
   nout << "test5:" << endl;
-
-  Variable A(0);
-  Variable B(1);
 
   Congruence_System cgs;
   cgs.insert((A - B %= 0) / 3);
@@ -217,10 +211,6 @@ test5() {
 void
 test6() {
   nout << "test6:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Congruence_System cgs;
   cgs.insert(A %= 0);
@@ -259,10 +249,6 @@ void
 test7() {
   nout << "test7:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Congruence_System cgs;
   cgs.insert(  -A %= 64);
   cgs.insert(-6*A +   B + 0*C %= -8);
@@ -300,10 +286,6 @@ void
 test8() {
   nout << "test8:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Congruence_System cgs;
   cgs.insert((0*A %= -1) / 0);
   cgs.insert((  A %= -1) / 2);
@@ -333,10 +315,6 @@ test8() {
 void
 test9() {
   nout << "test9:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Congruence_System cgs;
   cgs.insert((A         %= 0) / 2);
@@ -377,10 +355,6 @@ void
 test10() {
   nout << "test10:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Congruence_System cgs;
   cgs.insert((A + 2*B +   C %= -2) / 5);
   cgs.insert((    3*B       %=  0) / 5);
@@ -420,10 +394,6 @@ void
 test11() {
   nout << "test11:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Congruence_System cgs;
   cgs.insert((3*A           %= -2) / 5);
   cgs.insert((      B + 2*C %=  0) / 5);
@@ -461,10 +431,6 @@ void
 test12() {
   nout << "test12:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Congruence_System cgs;
   cgs.insert((A %= 1) / 0);
   cgs.insert((B %= 1) / 0);
@@ -498,10 +464,6 @@ test12() {
 void
 test13() {
   nout << "test13:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Congruence_System cgs;
   cgs.insert((A %= 1) / 0);
@@ -538,10 +500,6 @@ void
 test14() {
   nout << "test14:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Congruence_System cgs;
   cgs.insert((C %= 2) / 5);
   cgs.insert((C %= 3) / 5);
@@ -573,9 +531,6 @@ void
 test15() {
   nout << "test15:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-
   Congruence_System cgs1;
   cgs1.insert(B %= 2);
 
@@ -585,8 +540,6 @@ test15() {
   gr.add_space_dimensions_and_embed(1);
 
   // gr.con_sys is likely to be expanded within capacity.
-
-  Variable C(2);
 
   Congruence_System cgs2;
   cgs2.insert(C %= 2);
@@ -622,10 +575,6 @@ void
 test16() {
   nout << "test16:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Congruence_System cgs;
   cgs.insert(Congruence::zero_dim_false());
 
@@ -653,10 +602,6 @@ test16() {
 void
 test17() {
   nout << "test17:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Congruence_System cgs;
   cgs.insert(Congruence::zero_dim_integrality());
@@ -738,6 +683,8 @@ test19() {
 
   exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {
