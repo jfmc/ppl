@@ -1184,9 +1184,7 @@ PPL::LP_Problem::is_satisfiable() const {
   case PARTIALLY_SATISFIABLE:
     {
       LP_Problem& x = const_cast<LP_Problem&>(*this);
-      // For each constraint apply incrementality.
-      // FIXME: probably there's a way to apply incrementality in one shot,
-      // this is only an attempt, but it should work.
+      // Apply incrementality to the pending Constraint_System.
       x.incrementality();
       if (status == UNSATISFIABLE)
 	return false;
