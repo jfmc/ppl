@@ -1022,9 +1022,8 @@ PPL::LP_Problem::compute_generator() const {
 	den_i= t_row[original_var];
 	  }
      else {
-       //  assert(false);
-	 num_i= t_row[0];
- 	den_i= -t_row[original_var];
+       num_i= t_row[0];
+       den_i= -t_row[original_var];
      }
     }
     else {
@@ -1046,7 +1045,6 @@ PPL::LP_Problem::compute_generator() const {
 	  split_den = t_row[split_var];
 	}
 	else {
-	  //assert(false);
 	  split_num = t_row[0];
  	  split_den = -t_row[split_var];
 	}
@@ -1189,22 +1187,12 @@ PPL::LP_Problem::is_satisfiable() const {
       // For each constraint apply incrementality.
       // FIXME: probably there's a way to apply incrementality in one shot,
       // this is only an attempt, but it should work.
-      // assert(x.pending_input_cs.num_rows() == 1);
       x.incrementality();
-      if (status == UNSATISFIABLE) {
-	// There are no more pending constraints.
-	x.pending_input_cs.clear();
-	assert(OK());
+      if (status == UNSATISFIABLE)
 	return false;
-      }
-      else {
-	 // There are no more pending constraints.
-	x.pending_input_cs.clear();
-	compute_generator();
-	assert(OK());
+      else
 	return true;
-      }
-      }
+    }
     break;
   case UNSOLVED:
     break;
@@ -1473,4 +1461,3 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
     is_artificial[i] ?  s << "true" : s << "false";
   }
 }
-
