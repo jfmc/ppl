@@ -4,6 +4,24 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.9  (released date to be decided)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+o  The class Grid... FIXME
+
+
+Bugfixes
+========
+
+o  SICStus interface on x86_64... FIXME
+
+o  BD_Shape with 128-bit floating point arguments on Mac OS X... FIXME
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.8  (released on January 20, 2006)
 --------------------------------------------------------------------------
 
