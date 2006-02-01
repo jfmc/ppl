@@ -342,7 +342,7 @@ TFloat<float128_t>::build(bool negative, mpz_t mantissa, int exponent) {
 #else
   u.parts.msp = mpz_get_ui(mantissa);
 #endif
-  u.parts.msp &= ((1UL << (MANTISSA_BITS - 64)) - 1);
+  u.parts.msp &= ((1ULL << (MANTISSA_BITS - 64)) - 1);
   if (negative)
     u.parts.msp |= MSP_SGN_MASK;
   u.parts.msp |= static_cast<uint64_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 64);
