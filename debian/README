@@ -1,0 +1,36 @@
+Building the Debian packages
+============================
+
+The simplest way to build the Debian packages is to run the following
+command in an up-to-date PPL directory.
+
+	dpkg-buildpackage -rsudo
+
+`dpkg-buildpackage' is available in the dpkg-dev package.  Here the
+`sudo' program (from the sudo package) is also required.  This will
+build the PPL using the standard GMP, C compiler and C++ compiler.
+Note that the configuration of GMP, at least on the Debian stable
+distribution, lacks the -fexceptions preprocessor flag, which is
+required for PPL memory bounds handling.
+
+Alternatively, the `pbuilder' program (from the pbuilder package) can
+be used to build a "clean-room" package.  `pbuilder' sets up a chroot
+of a minimal stable distribution and then builds the package inside
+the chroot.  This is good to verify the build dependencies.  It also
+may be required, to ensure that the PPL is built against the compiler
+and GMP from the stable distributions (if, for example, the build
+machine uses the testing or unstable distributions).  The command is
+
+	pbuilder FIX
+
+References
+----------
+
+ - Debian Library Packaging guide
+	 http://www.netfort.gr.jp/~dancer/column/libpkg-guide/libpkg-guide.html
+
+ - Debian New Maintainers' Guide
+	 http://www.debian.org/doc/maint-guide/
+
+ - Debian Developer's Reference
+	 http://www.debian.org/doc/developers-reference/
