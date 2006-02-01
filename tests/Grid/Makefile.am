@@ -29,7 +29,6 @@ VPATH = @srcdir@
 SUBDIRS =
 
 AM_CPPFLAGS = \
--D NOISY \
 -I$(top_srcdir)/src -I$(top_srcdir)/tests \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/utils \
