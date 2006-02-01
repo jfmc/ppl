@@ -83,7 +83,7 @@ TFloat<float32_t>::inc() {
 
 inline void
 TFloat<float32_t>::build(bool negative, mpz_t mantissa, int exponent) {
-  u.word = mpz_get_ui(mantissa);
+  u.word = mpz_get_ui(mantissa) & ((1UL << MANTISSA_BITS) - 1);
   if (negative)
     u.word |= SGN_MASK;
   u.word |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << MANTISSA_BITS;
@@ -168,7 +168,7 @@ TFloat<float64_t>::build(bool negative, mpz_t mantissa, int exponent) {
   u.parts.lsp = m;
   m >>= 32;
 #endif
-  u.parts.msp = m;
+  u.parts.msp = m & ((1UL << (MANTISSA_BITS - 32)) - 1);
   if (negative)
     u.parts.msp |= MSP_SGN_MASK;
   u.parts.msp |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 32);
@@ -342,6 +342,7 @@ TFloat<float128_t>::build(bool negative, mpz_t mantissa, int exponent) {
 #else
   u.parts.msp = mpz_get_ui(mantissa);
 #endif
+  u.parts.msp &= ((1UL << (MANTISSA_BITS - 64)) - 1);
   if (negative)
     u.parts.msp |= MSP_SGN_MASK;
   u.parts.msp |= static_cast<uint64_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 64);
