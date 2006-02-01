@@ -62,109 +62,386 @@ unsigned long num_iterations = 0;
 #endif // PPL_NOISY_SIMPLEX
 
 bool
-PPL::LP_Problem::incrementality(const Constraint& new_constraint) {
-  // If the new constraint has a space dimension greater than the original one,
-  // we have to perform some changes to the tableau.
-  dimension_type new_c_sd = new_constraint.space_dimension();
-  dimension_type input_cs_sd = input_cs.space_dimension();
-  if (new_c_sd > input_cs_sd) {
-    dimension_type space_diff = new_c_sd - input_cs_sd;
-    const dimension_type first_free_tableau_index = tableau.num_columns()-2;
-    // Every new variable must be inserted in the tableau and split.
-    tableau.add_zero_columns(2*space_diff);
-    for (dimension_type i = 0; i < space_diff; ++i) {
-      // Set `mapping' properly to store that every variable is split.
-      mapping.push_back(std::make_pair(first_free_tableau_index+i,
-				       first_free_tableau_index+i+space_diff));
-      // These are not artificial variables.
-      is_artificial.push_back(false);
-      is_artificial.push_back(false);
+PPL::LP_Problem::is_in_base(const dimension_type var_index,
+			    dimension_type& row_index) const {
+  for (row_index = base.size(); row_index-- > 0; )
+    if (base[row_index] == var_index)
+      return true;
+  return false;
+}
+
+void
+PPL::LP_Problem::unsplit(dimension_type var_index,
+			 std::vector<dimension_type>& nonfeasible_cs) {
+  // We are surely removing a non artificial column.
+  is_artificial.pop_back();
+
+  const dimension_type tableau_nrows = tableau.num_rows();
+  const dimension_type column = mapping[var_index].second;
+
+  for (dimension_type i = 0; i < tableau_nrows; ++i) {
+    // In the following case the negative side of the splitted Variable is
+    // in base: this means that the constraint will be nonfeasible.
+    if (base[i] == mapping[var_index].second) {
+      // CHECKME: I don't know if is possible that the positive and the
+      // negative part of a splitted Variable can be together in base: it
+      // seems that this case is not possible. The algorithm i have written
+      // requires that condition.
+      // This code is run only for testing purposes.
+      for (dimension_type j = 0; j < tableau_nrows; ++j) {
+ 	dimension_type test;
+	// Avoid a compiler warning.
+	test = 0;
+	assert(!is_in_base(mapping[var_index].first, test));
+      }
+      // We set base[i] to zero to keep track that that the constraint is not
+      // feasible by `last_generator'.
+      base[i] = 0;
+      nonfeasible_cs.push_back(i);
     }
-    // Update `new_c_sd'. The tableau is properly built.
-    new_c_sd = new_constraint.space_dimension();
   }
 
-  // Insert the new Constraint in the tableau.
-  tableau.add_zero_rows(1, Row::Flags());
+  const dimension_type tableau_cols = tableau.num_columns();
+  // Remove the column.
+  if (column != tableau_cols - 1) {
+    std::vector<dimension_type> cycle;
+    for (dimension_type j = tableau_cols - 1; j >= column; --j)
+      cycle.push_back(j);
+    cycle.push_back(0);
+    tableau.permute_columns(cycle);
+  }
+  tableau.remove_trailing_columns(1);
+
+  // var_index is no longer splitted.
+  mapping[var_index].second = 0;
+
+  // Adjust data structured, `shifting' the proper columns to the left by 1.
+  const dimension_type base_size = base.size();
+  for (dimension_type i = base_size; i-- > 0; )
+    if (base[i] > column)
+      --base[i];
+  const dimension_type mapping_size = mapping.size();
+  for (dimension_type i = mapping_size; i-- > 0; ) {
+    if (mapping[i].first > column)
+      --mapping[i].first;
+    if (mapping[i].second > column)
+      --mapping[i].second;
+  }
+}
+
+PPL::LP_Problem::Status
+PPL::LP_Problem::parseconstraints(const Constraint_System& cs,
+				  dimension_type& tableau_num_rows,
+				  dimension_type& num_slack_variables,
+				  std::deque<bool>& is_tableau_constraint,
+				  std::deque<bool>& nonnegative_variable,
+				  std::vector<dimension_type>& nonfeasiblecs) {
+  const dimension_type cs_num_rows = cs.num_rows();
+  const dimension_type cs_num_cols = cs.num_columns();
+  // Step 1:
+  // determine variables that are constrained to be nonnegative,
+  // detect (non-negativity or tautology) constraints that will not
+  // be part of the tableau and count the number of slack variables.
+
+  // Counters determining the dimensions of the tableau:
+  // initialized here, they will be updated while examining `cs'.
+  tableau_num_rows = cs_num_rows;
+  dimension_type tableau_num_cols = 2*(cs_num_cols - 1);
+  num_slack_variables = 0;
+
+  // On exit, `is_tableau_constraint[i]' will be true if and only if
+  // `cs[i]' is neither a tautology (e.g., 1 >= 0) nor a non-negativity
+  // constraint (e.g., X >= 0).
+  is_tableau_constraint = std::deque<bool> (cs_num_rows, true);
+
+  // On exit, `nonnegative_variable[j]' will be true if and only if
+  // Variable(j) is bound to be nonnegative in `cs'.
+  nonnegative_variable = std::deque<bool> (cs_num_cols - 1, false);
+
+  // Check for already known infos about space dimensions and store them in
+  // `nonnegative_variable'.
+  const dimension_type mapping_size = mapping.size();
+  for (dimension_type i = std::min(mapping_size, cs_num_cols); i-- > 1; )
+    if(mapping[i].second == 0) {
+      nonnegative_variable[i-1] = true;
+      --tableau_num_cols;
+    }
+
+  // Process each row of the `cs' matrix.
+  for (dimension_type i = cs_num_rows; i-- > 0; ) {
+    const Linear_Row& cs_i = cs[i];
+    bool found_a_nonzero_coeff = false;
+    bool found_many_nonzero_coeffs = false;
+    dimension_type nonzero_coeff_column_index = 0;
+    for (dimension_type j = cs_num_cols; j-- > 1; ) {
+      if (cs_i[j] != 0)
+	if (found_a_nonzero_coeff) {
+	  found_many_nonzero_coeffs = true;
+	  if (cs_i.is_ray_or_point_or_inequality())
+	    ++num_slack_variables;
+	  break;
+	}
+	else {
+	  nonzero_coeff_column_index = j;
+	  found_a_nonzero_coeff = true;
+	}
+    }
+    // If more than one coefficient is nonzero,
+    // continue with next constraint.
+    if (found_many_nonzero_coeffs)
+      continue;
+
+    if (!found_a_nonzero_coeff) {
+      // All coefficients are 0.
+      // The constraint is either trivially true or trivially false.
+      if (cs_i.is_ray_or_point_or_inequality()) {
+	if (cs_i[0] < 0)
+	  // A constraint such as -1 >= 0 is trivially false.
+	  return UNSATISFIABLE;
+      }
+      else
+	// The constraint is an equality.
+	if (cs_i[0] != 0)
+	  // A constraint such as 1 == 0 is trivially false.
+	  return UNSATISFIABLE;
+      // Here the constraint is trivially true.
+      is_tableau_constraint[i] = false;
+      --tableau_num_rows;
+      continue;
+    }
+    else {
+      // Here we have only one nonzero coefficient.
+      /*
+
+      We have the following methods:
+      A) Do split the variable and do add the constraint in the tableau.
+      B) Don't split the variable and do add the constraint in the tableau.
+      C) Don't split the variable and don't add the constraint in the tableau.
+
+      Let the constraint be (a*v + b relsym 0).
+      These are the 12 possible combinations we can have:
+                a |  b | relsym | method
+      ----------------------------------
+      1)       >0 | >0 |   >=   |   A
+      2)       >0 | >0 |   ==   |   A
+      3)       <0 | <0 |   >=   |   A
+      4)       >0 | =0 |   ==   |   B
+      5)       >0 | <0 |   ==   |   B
+      Note:    <0 | >0 |   ==   | impossible by strong normalization
+      Note:    <0 | =0 |   ==   | impossible by strong normalization
+      Note:    <0 | <0 |   ==   | impossible by strong normalization
+      6)       >0 | <0 |   >=   |   B
+      7)       >0 | =0 |   >=   |   C
+      8)       <0 | >0 |   >=   |   A
+      9)       <0 | =0 |   >=   |   A
+
+      The next lines will apply the correct method to each case.
+      */
+
+      // The variable index is not equal to the column index.
+      const dimension_type nonzero_var_index = nonzero_coeff_column_index - 1;
+
+      const int sgn_a = sgn(cs_i[nonzero_coeff_column_index]);
+      const int sgn_b = sgn(cs_i[0]);
+      // Cases 1-3: apply method A.
+      if (sgn_a == sgn_b) {
+	if (cs_i.is_ray_or_point_or_inequality())
+	  ++num_slack_variables;
+      }
+      // Cases 4-5: apply method B.
+      else if (cs_i.is_line_or_equality()) {
+	if (!nonnegative_variable[nonzero_var_index]) {
+	  nonnegative_variable[nonzero_var_index] = true;
+	  --tableau_num_cols;
+	}
+      }
+      // Case 6: apply method B.
+      else if (sgn_b < 0) {
+	if (!nonnegative_variable[nonzero_var_index]) {
+	  nonnegative_variable[nonzero_var_index] = true;
+	  --tableau_num_cols;
+	}
+	++num_slack_variables;
+      }
+      // Case 7: apply method C.
+      else if (sgn_a > 0) {
+	// This is the most important case in the incrementaluty solving:
+	// unsplit two Variables.
+	if (!nonnegative_variable[nonzero_var_index]) {
+	  nonnegative_variable[nonzero_var_index] = true;
+	  --tableau_num_cols;
+	  if (nonzero_coeff_column_index < mapping_size)
+	    unsplit(nonzero_coeff_column_index, nonfeasiblecs);
+	  is_tableau_constraint[i] = false;
+	}
+	else
+	  is_tableau_constraint[i] = false;
+	--tableau_num_rows;
+      }
+      // Cases 8-9: apply method A.
+      else
+	++num_slack_variables;
+    }
+  }
+  return SATISFIABLE;
+}
+
+bool
+PPL::LP_Problem::incrementality() {
+  const dimension_type num_original_rows = tableau.num_rows();
+  const dimension_type new_c_sd = pending_input_cs.space_dimension();
+  const dimension_type input_cs_sd = input_cs.space_dimension();
+  dimension_type new_rows, new_slacks, new_var_columns = 0;
+  std::deque<bool> is_tableau_constraint;
+  std::deque<bool> nonnegative_variable;
+  std::vector<dimension_type> nonfeasible_constraints;
+  // Check the new constraints to adjust the data structures.
+  parseconstraints(pending_input_cs, new_rows,
+		   new_slacks, is_tableau_constraint,
+		   nonnegative_variable, nonfeasible_constraints);
+  const dimension_type first_free_tableau_index = tableau.num_columns()-1;
+  if (new_c_sd > input_cs_sd) {
+    const dimension_type space_diff = new_c_sd - input_cs_sd;
+    for (dimension_type i = 0, j = 0; i < space_diff; ++i, ++j) {
+      // Set `mapping' properly to store that every variable is split.
+      // In the folliwing case the value of the orginal Variable can be
+      // negative.
+      if (!nonnegative_variable[input_cs_sd+i]) {
+	mapping.push_back(std::make_pair(first_free_tableau_index+j,
+					 first_free_tableau_index+1+j));
+	++j;
+	// These are not artificial variables.
+	is_artificial.push_back(false);
+	is_artificial.push_back(false);
+	new_var_columns += 2;
+      }
+      // The variable is nonnegative.
+      else {
+	mapping.push_back(std::make_pair(first_free_tableau_index+j, 0));
+	// This is not an artificial variable.
+	is_artificial.push_back(false);
+	++new_var_columns;
+      }
+    }
+  }
+
+  // Insert the constraints in the tableau, resizing this one if required
+  // and adding the necessary slack variables.
+  const dimension_type new_total_columns = new_var_columns + new_slacks;
+  if (new_rows > 0)
+    tableau.add_zero_rows(new_rows, Row::Flags());
+  if (new_total_columns > 0)
+    tableau.add_zero_columns(new_total_columns);
   dimension_type tableau_num_rows = tableau.num_rows();
-
-  // Insert the constraint, splitting if necessary.
-  const dimension_type new_constraint_size  = new_constraint.size();
-  for (dimension_type i = new_constraint_size; i-- > 1;) {
-    tableau[tableau_num_rows-1][mapping[i].first] = new_constraint[i];
-    if (mapping[i].second != 0)
-      tableau[tableau_num_rows-1][mapping[i].second] = -new_constraint[i];
-    // Inhomogeneous term.
-    tableau[tableau_num_rows-1][0] = new_constraint[0];
-  }
-
-  // Add a slack variable, if we have an inequality constraint.
-  if (new_constraint.is_ray_or_point_or_inequality()) {
-    tableau[tableau_num_rows-1][tableau.num_columns()-1] = -1;
-    tableau.add_zero_columns(1);
-    is_artificial.push_back(false);
-  }
-
-  // Prepare the tableau to the insertion of the artificial variable:
-  // this will be done at last.
-  tableau.add_zero_columns(1);
-  is_artificial.push_back(true);
   dimension_type tableau_num_columns = tableau.num_columns();
+  const dimension_type pending_cs_num_rows = pending_input_cs.num_rows();
+  const dimension_type pending_cs_num_cols = pending_input_cs.num_columns();
+  const dimension_type base_size = base.size();
+  // These indexes will  be used to insert slack and artificial variables.
+  dimension_type slack_index = tableau_num_columns-1;
+  dimension_type artificial_index = tableau_num_columns-1;
+  // Proceed with the insertion of the constraints.
+  for (dimension_type k = tableau_num_rows, i = pending_cs_num_rows; i-- > 0; )
+    if (is_tableau_constraint[i]) {
+      // Copy the original constraint in the tableau.
+      Row& tableau_k = tableau[--k];
+      const Linear_Row& cs_i = pending_input_cs[i];
+      for (dimension_type j = pending_cs_num_cols; j-- > 0; ) {
+	tableau_k[mapping[j].first] = cs_i[j];
+	// Split if needed.
+	if (mapping[j].second != 0)
+	  tableau_k[mapping[j].second] = -cs_i[j];
+      }
+      // Add the slack variable, if needed.
+      if (cs_i.is_ray_or_point_or_inequality()) {
+	tableau_k[--slack_index] = -1;
+	is_artificial.push_back(false);
+      }
+      for (dimension_type j = base_size; j-- > 0; )
+  	if (tableau_k[base[j]] != 0 && base[j] != 0)
+	  linear_combine(tableau_k, tableau[j], base[j]);
+    }
+
+  // Update variables.
   tableau_num_rows = tableau.num_rows();
-  Row& tableau_last_row = tableau[tableau_num_rows-1];
+  tableau_num_columns = tableau.num_columns();
 
-  // This will be the index of the artificial variable.
-  dimension_type artificial_variable = tableau_num_columns-2;
+  // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
+  // This simplifies the insertion of the artificial variables: the value of
+  // each artificial variable will be 1.
+  for (dimension_type i = tableau_num_rows; i-- > 0 ; ) {
+    Row& tableau_i = tableau[i];
+    if (tableau_i[0] > 0)
+      for (dimension_type j = tableau_num_columns; j-- > 0; )
+	neg_assign(tableau_i[j]);
+  }
 
-  // Prepare the cost matrix for the modified first phase.
+  // Prepare the tableau for the artificial variables.
+  const dimension_type nonfeasible_cs_size = nonfeasible_constraints.size();
+  if (new_rows + nonfeasible_cs_size > 0)
+    tableau.add_zero_columns(new_rows + nonfeasible_cs_size);
+  tableau_num_columns = tableau.num_columns();
+
+  // Set the working cost function with the right size.
   working_cost = Row(tableau_num_columns, Row::Flags());
 
-  // Split the variables in the cost function.
-  for (dimension_type i = mapping.size(); i-- > 1; )
-    if (mapping[i].second != 0)
-      working_cost[mapping[i].second] = -working_cost[mapping[i].first];
-  // Express the last row in terms of the variables in base.
-  dimension_type base_size = base.size();
-  for (dimension_type i = base_size; i-- > 0; )
-    if (tableau_last_row[base[i]] != 0)
-      linear_combine(tableau_last_row, tableau[i], base[i]);
+  // Insert artificial variables for the nonfeasible constraints.
+  for (dimension_type i = 0; i < nonfeasible_cs_size; ++i) {
+    tableau[nonfeasible_constraints[i]][artificial_index] = 1;
+    working_cost[artificial_index] = -1;
+    base[nonfeasible_constraints[i]] = artificial_index;
+    is_artificial.push_back(true);
+    ++artificial_index;
+  }
 
-  // Every inhomogeneous term, before starting the compute_simplex call, must
-  // be <= 0. If the condition is not satisfied, negate all the row.
-  if (tableau_last_row[0] > 0)
-    for (dimension_type i = tableau_num_columns; i-- > 0; )
-      neg_assign(tableau_last_row[i]);
-
-  // Now we are ready the set the value of the artificial_variable.
-  // This is the index of the inserted variable, this must be memorized in the
-  // `base' vector.
-  base.push_back(artificial_variable);
-  tableau_last_row[artificial_variable] = 1;
+  // Modify the tableau and the new cost function by adding
+  // the artificial variables (which enter the base).
+  // As for the cost function, all the artificial variables should have
+  // coefficient -1.
+  for (dimension_type i = num_original_rows; i < tableau_num_rows; ++i) {
+    tableau[i][artificial_index] = 1;
+    working_cost[artificial_index] = -1;
+    base.push_back(artificial_index);
+    is_artificial.push_back(true);
+    ++artificial_index;
+  }
 
   // Set the extra-coefficient of the cost functions to record its sign.
   // This is done to keep track of the possible sign's inversion.
   const dimension_type last_obj_index = working_cost.size() - 1;
   working_cost[last_obj_index] = 1;
-  working_cost[last_obj_index-1] = -1;
 
-  // Combine the cost funtion.
-  linear_combine(working_cost, tableau_last_row, base[base.size()-1]);
+  // Express the problem in terms of the variables in base.
+  for (dimension_type i = tableau_num_rows; i-- > 0; )
+    if(working_cost[base[i]] != 0)
+      linear_combine(working_cost, tableau[i], base[i]);
 
   // Now we are ready to solve the first phase.
   bool first_phase_succesful = compute_simplex();
+
 #if PPL_NOISY_SIMPLEX
   std::cout << "LP_Problem::solve: 1st phase ended at iteration "
-	    << num_iterations << "." << std::endl;
+ 	    << num_iterations << "." << std::endl;
 #endif
-  if (!first_phase_succesful || working_cost[0] != 0){
+
+  // Insert the pending constraints in `input_cs'.
+  for (dimension_type i = pending_cs_num_rows; i-- > 0; )
+    input_cs.insert(pending_input_cs[i]);
+
+  // The pending constraints are no more pending.
+  pending_input_cs.clear();
+
+  if (!first_phase_succesful || working_cost[0] != 0) {
     // The feasible region is empty.
-    is_artificial.pop_back();
     status = UNSATISFIABLE;
     return false;
   }
-  // Prepare *this for the second phase.
+
+  // Prepare *this for a possible second phase.
   erase_artificials();
+  compute_generator();
   status = SATISFIABLE;
+  assert(OK());
   return true;
 }
 
@@ -519,7 +796,7 @@ PPL::LP_Problem::erase_artificials() {
 PPL::LP_Problem_Status
 PPL::LP_Problem::compute_tableau() {
   assert(tableau.num_rows() == 0);
-  // FIXME
+
   Linear_System& cs = input_cs;
   const dimension_type cs_num_rows = cs.num_rows();
   const dimension_type cs_num_cols = cs.num_columns();
@@ -667,7 +944,7 @@ PPL::LP_Problem::compute_tableau() {
     }
 
   // Step 2:
-  // set the dimensions for the tableau and the cost function.
+  // set the dimensions for the tableau.
   if (tableau_num_rows > 0)
     tableau.add_zero_rows_and_columns(tableau_num_rows,
 				      tableau_num_cols,
@@ -693,7 +970,7 @@ PPL::LP_Problem::compute_tableau() {
 	tableau_k[--slack_index] = -1;
     }
 
-  // Split the variables in the tableau and cost function.
+  // Split the variables in the tableau.
   for (dimension_type i = mapping.size(); i-- > 1; ) {
     if (mapping[i].second != 0) {
       const dimension_type original_var = mapping[i].first;
@@ -722,20 +999,11 @@ PPL::LP_Problem::compute_tableau() {
   return OPTIMIZED_LP_PROBLEM;
 }
 
-bool
-PPL::LP_Problem::is_in_base(const dimension_type var_index,
-			    dimension_type& row_index) const {
-  for (row_index = base.size(); row_index-- > 0; )
-    if (base[row_index] == var_index)
-      return true;
-  return false;
-}
-
-PPL::Generator
+void
 PPL::LP_Problem::compute_generator() const {
   // We will store in num[] and in den[] the numerators and
   // the denominators of every variable of the original problem.
-  dimension_type original_space_dim = input_cs.space_dimension();
+  const dimension_type original_space_dim = input_cs.space_dimension();
   std::vector<Coefficient> num(original_space_dim);
   std::vector<Coefficient> den(original_space_dim);
   dimension_type row = 0;
@@ -749,14 +1017,15 @@ PPL::LP_Problem::compute_generator() const {
     const dimension_type original_var = mapping[i+1].first;
     if (is_in_base(original_var, row)) {
       const Row& t_row = tableau[row];
-      if (t_row[original_var] > 0) {
+       if (t_row[original_var] > 0) {
 	num_i= -t_row[0];
 	den_i= t_row[original_var];
-      }
-      else {
-	num_i= t_row[0];
-	den_i= -t_row[original_var];
-      }
+	  }
+     else {
+       //  assert(false);
+	 num_i= t_row[0];
+ 	den_i= -t_row[original_var];
+     }
     }
     else {
       num_i = 0;
@@ -777,8 +1046,9 @@ PPL::LP_Problem::compute_generator() const {
 	  split_den = t_row[split_var];
 	}
 	else {
+	  //assert(false);
 	  split_num = t_row[0];
-	  split_den = -t_row[split_var];
+ 	  split_den = -t_row[split_var];
 	}
 	// We compute the lcm to compute subsequently the difference
 	// between the 2 variables.
@@ -814,7 +1084,9 @@ PPL::LP_Problem::compute_generator() const {
   Linear_Expression expr;
   for (dimension_type i = original_space_dim; i-- > 0; )
     expr += num[i] * Variable(i);
-  return point(expr, lcm);
+
+  LP_Problem& x = const_cast<LP_Problem&>(*this);
+  x.last_generator = point(expr, lcm);
 }
 
 void
@@ -861,7 +1133,7 @@ PPL::LP_Problem::second_phase() {
 	    << num_iterations << "." << std::endl;
 #endif
   if (second_phase_successful) {
-    last_generator = compute_generator();
+    compute_generator();
     status = OPTIMIZED;
   }
   else
@@ -917,23 +1189,22 @@ PPL::LP_Problem::is_satisfiable() const {
       // For each constraint apply incrementality.
       // FIXME: probably there's a way to apply incrementality in one shot,
       // this is only an attempt, but it should work.
-      for (dimension_type i = x.pending_input_cs.num_rows(); i-- > 0; ) {
-	if (status != UNSATISFIABLE)
-	  x.incrementality(pending_input_cs[i]);
-	x.input_cs.insert(pending_input_cs[i]);
-      }
-      // There are no more pending constraints.
-      x.pending_input_cs.clear();
+      // assert(x.pending_input_cs.num_rows() == 1);
+      x.incrementality();
       if (status == UNSATISFIABLE) {
+	// There are no more pending constraints.
+	x.pending_input_cs.clear();
 	assert(OK());
 	return false;
       }
       else {
-	x.last_generator = compute_generator();
+	 // There are no more pending constraints.
+	x.pending_input_cs.clear();
+	compute_generator();
 	assert(OK());
 	return true;
       }
-    }
+      }
     break;
   case UNSOLVED:
     break;
@@ -1002,7 +1273,7 @@ PPL::LP_Problem::is_satisfiable() const {
   // The first phase has found a feasible solution. If only a satisfiability
   // check was requested, we can return that feasible solution.
   // Store the last succesfully computed generator.
-  x.last_generator = compute_generator();
+  compute_generator();
   x.status = SATISFIABLE;
   // Erase the slack variables.
   x.erase_artificials();
@@ -1016,8 +1287,9 @@ PPL::LP_Problem::OK() const {
   using std::endl;
   using std::cerr;
 #endif
-
-  // Constraint system should contain no strict inequalities.
+  const dimension_type input_sd = input_cs.space_dimension();
+  const dimension_type pending_input_sd = pending_input_cs.space_dimension();
+ // Constraint system should contain no strict inequalities.
   if (input_cs.has_strict_inequalities()) {
 #ifndef NDEBUG
     cerr << "The feasible region of the LP_Problem is defined by "
@@ -1029,7 +1301,7 @@ PPL::LP_Problem::OK() const {
   }
 
   // Constraint system and objective function should be dimension compatible.
-  const dimension_type space_dim = input_cs.space_dimension();
+  const dimension_type space_dim = std::max(input_sd, pending_input_sd);
   if (space_dim < input_obj_function.space_dimension()) {
 #ifndef NDEBUG
     cerr << "The LP_Problem and the objective function have "
@@ -1041,7 +1313,7 @@ PPL::LP_Problem::OK() const {
     return false;
   }
 
-  if (status == SATISFIABLE || status == UNBOUNDED || status == OPTIMIZED) {
+  if (status != UNSOLVED && status != UNSATISFIABLE)  {
     // Here `last_generator' has to be meaningful.
     // Check for dimension compatibility and actual feasibility.
     if (space_dim != last_generator.space_dimension()) {
@@ -1079,13 +1351,14 @@ PPL::LP_Problem::OK() const {
     // should be equal.
     if (tableau_ncols != is_artificial.size()+1) {
 #ifndef NDEBUG
-      cerr << "tableau and `is_artificial` have incompatible sizes" << endl;
+      cerr << "tableau and `is_artificial' have incompatible sizes" << endl;
       ascii_dump(cerr);
 #endif
       return false;
     }
     // The size  of `input_cs' and `mapping' should be equal.
-    if (input_cs.num_columns() != mapping.size()) {
+    if (std::max(input_cs.num_columns(), pending_input_cs.num_columns()
+		 )!= mapping.size()) {
 #ifndef NDEBUG
       cerr << "`input_cs' and `mapping' have incompatible sizes" << endl;
       ascii_dump(cerr);
@@ -1111,6 +1384,26 @@ PPL::LP_Problem::OK() const {
 #endif
 	return false;
       }
+    // The vector base should contain indices of tableau's columns.
+    for (dimension_type i = base.size(); i-- > 0; )
+      if (tableau[i][base[i]] == 0) {
+#ifndef NDEBUG
+	cerr << "tableau[base] contains a zero!" << endl;
+	ascii_dump(cerr);
+#endif
+	return false;
+      }
+
+    // The last column of the tableau must contain only zeroes.
+    for (dimension_type i = tableau_nrows; i-- > 0; )
+      if (tableau[i][tableau_ncols-1] != 0) {
+#ifndef NDEBUG
+	cerr << "the last column of the tableau must contain only"
+	  "zeroes"<< endl;
+	ascii_dump(cerr);
+#endif
+	return false;
+      }
 
   // FIXME: still to be completed...
   }
@@ -1125,6 +1418,8 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
 
   s << "input_cs\n";
   input_cs.ascii_dump(s);
+  s << "pending_input_cs\n";
+  pending_input_cs.ascii_dump(s);
   s << "\ninput_obj_function\n";
   input_obj_function.ascii_dump(s);
   s << "\nopt_mode " << (opt_mode == MAXIMIZATION ? "MAX" : "MIN") << "\n";
@@ -1154,7 +1449,7 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
 
   s << "\ntableau\n";
   tableau.ascii_dump(s);
-  s << "\nworking_cost\n";
+  s << "\nworking_cost(" << working_cost.size()<< ")\n";
   working_cost.ascii_dump(s);
 
   const dimension_type base_size = base.size();
@@ -1178,3 +1473,4 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
     is_artificial[i] ?  s << "true" : s << "false";
   }
 }
+

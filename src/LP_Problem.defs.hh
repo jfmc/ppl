@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Generator.defs.hh"
 #include <vector>
+#include <deque>
 #include <map>
 #include <iosfwd>
 //! A Linear Programming problem.
@@ -278,14 +279,11 @@ private:
 
   //! Applies incrementality on \p *this.
   /*!
-    \param new_constraint
-    The Constraint that will be inserted incrementally to `input_cs'.
-
     \return
     <CODE>true</CODE> if and only if the LP problem is satisfiable after
     applying incrementality, <CODE>false</CODE> otherwise.
   */
-  bool incrementality(const Constraint& constraint);
+  bool incrementality();
 
   /*! \brief
     Optimizes the current LP problem using the second phase of the
@@ -308,6 +306,47 @@ private:
   */
   LP_Problem_Status compute_tableau();
 
+
+
+  /*! \brief
+    Parses all the constraints passed to the method to know how to resize the
+    internal tableau during the incrementality process.
+
+    \return
+    <CODE>UNSATISFIABLE</CODE> if is detected a trivially false constraint,
+    <CODE>SATISFIABLE</CODE> otherwise.
+
+    \param cs
+    The Constraint_System to be checked.
+
+    \param new_num_rows
+    This will store the number of rows that has to be added to the original
+    tableau.
+
+    \param num_slack_variables
+    This will store the number of slack variables that has to be added to
+    the original tableau.
+
+    \param is_tableau_constraint
+    Every element of this vector will be set to <CODE>true</CODE> if the
+    associated pending constraint has to be inserted in the tableau,
+    <CODE>false</CODE> otherwise.
+
+    \param nonnegative_variable
+    This will encode for each variable if this one was splitted or not.
+    Every element of this vector will be set to <CODE>true</CODE> if the
+    associated variable is splitted, <CODE>false</CODE> otherwise.
+
+    \param nonfeasible_cs
+    This will containt all the row indexes of the tableau that are no more
+    satisfied after adding more contraints to \p *this.
+*/
+  Status parseconstraints(const Constraint_System& cs,
+			  dimension_type& new_num_rows,
+			  dimension_type& num_slack_variables,
+			  std::deque<bool>& is_tableau_constraint,
+			  std::deque<bool>& nonnegative_variable,
+			  std::vector<dimension_type>& nonfeasible_cs);
   /*! \brief
     Checks for optimality and, if it does not hold, computes the column
     index of the variable entering the base of the LP problem.
@@ -410,7 +449,26 @@ private:
   bool is_in_base(const dimension_type var_index,
 		  dimension_type& row_index) const;
 
-  Generator compute_generator() const;
+  /*! \brief
+    Computes a valid generator that satisifies all the constraints of the
+    Linear Programming problem associated to \p *this.
+  */
+  void compute_generator() const;
+
+ /*! \brief
+   Unsplits a variable in the tableau if a nonnegativity constraint is
+   detected.
+
+   \param var_index
+   The index of the variable that has to be unsplit.
+
+   \param nonfeasible_cs
+   This will contain all the row indexes that are no more satisfied by
+   the current computed generator after unsplitting a variable.
+ */
+  void unsplit(dimension_type var_index,
+	       std::vector<dimension_type>& nonfeasible_cs);
+
 };
 
 #include "LP_Problem.inlines.hh"
