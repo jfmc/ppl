@@ -85,7 +85,6 @@ test2() {
   if (find_variation(gr))
     exit(1);
 
-  // FIX check
   Grid_Generator_System known_gs;
   known_gs.insert(grid_point(0*A - 15*B, 5));
   known_gs.insert(grid_point(  A + 27*B, 5));

@@ -812,6 +812,42 @@ test24() {
   catch (const std::length_error& e) {}
 }
 
+// Example from Muller-Olm and Seidl SAS 2005 paper
+
+void
+test25() {
+  nout << "test25:" << endl;
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point(2*A + 0*B));
+  gs.insert(grid_point(30*A + 36*B));
+  gs.insert(grid_point(450*A + 564*B));
+
+  Grid gr(2, EMPTY);
+
+  gr.add_generators_and_minimize(gs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((A %= 2) / 28);
+  known_cgs.insert((B %= 0) / 12);
+
+  Grid known_gr(known_cgs);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -843,6 +879,7 @@ main() TRY {
   test22();
   test23();
   test24();
+  test25();
 
   return 0;
 }

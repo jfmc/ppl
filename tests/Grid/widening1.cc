@@ -389,12 +389,79 @@ test11() {
   exit(1);
 }
 
-// The example from FIX "Widening and Extrapolation Operators" in
-// RG.tex.
+// First case of Example 8 in Section 6 of [BagnaraDHMZ05TR].
 
 void
 test12() {
   nout << "test12:" << endl;
+
+  Grid gr1(2);
+  gr1.add_congruence(5*A + B %= 0);
+  gr1.add_congruence(22*A %= 0);
+
+  Grid gr2(2);
+  gr2.add_congruence(5*A + B %= 0);
+  gr2.add_congruence(44*A %= 0);
+
+  gr2.widening_assign(gr1);
+
+  if (find_variation(gr2))
+    exit(1);
+
+  Grid known_gr(2);
+  known_gr.add_congruence(5*A + B %= 0);
+
+  if (gr2 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr2 << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
+// Second case in Example 8 in Section 6 of [BagnaraDHMZ05TR].
+
+void
+test13() {
+  nout << "test13:" << endl;
+
+  Grid gr1(2);
+  gr1.add_congruence(9*A + B %= 0);
+  gr1.add_congruence(22*A %= 0);
+
+  Grid gr2(2);
+  gr2.add_congruence(9*A + B %= 0);
+  gr2.add_congruence(44*A %= 0);
+
+  gr2.widening_assign(gr1);
+
+  if (find_variation(gr2))
+    exit(1);
+
+  Grid known_gr(2);
+  known_gr.add_congruence(9*A + B %= 0);
+
+  if (gr2 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr2 << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
+// First case in Example 9 in Section 6 of [BagnaraDHMZ05TR].
+
+void
+test14() {
+  nout << "test14:" << endl;
 
   Grid gr1(2);
   gr1.add_congruence((A %= 0) / 2);
@@ -424,11 +491,45 @@ test12() {
   exit(1);
 }
 
+// Second case in Example 9 in Section 6 of [BagnaraDHMZ05TR]
+
+void
+test15() {
+  nout << "test15:" << endl;
+
+  Grid gr1(2);
+  gr1.add_congruence((A %= 0) / 2);
+  gr1.add_congruence((B %= 0) / 2);
+
+  Grid gr2(2);
+  gr2.add_congruence(A %= 0);
+  gr2.add_congruence((3*A + B %= 0) / 2);
+
+  gr2.widening_assign(gr1);
+
+  if (find_variation(gr2))
+    exit(1);
+
+  Grid known_gr(2);
+  known_gr.add_congruence((A + B %= 0) / 2);
+
+  if (gr2 == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr2 << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
 // Congruences and equalities.
 
 void
-test13() {
-  nout << "test13:" << endl;
+test16() {
+  nout << "test16:" << endl;
 
   Grid gr1(2);
   gr1.add_congruence((A %= 0) / 2);
@@ -461,8 +562,8 @@ test13() {
 // From generators.
 
 void
-test14() {
-  nout << "test14:" << endl;
+test17() {
+  nout << "test17:" << endl;
 
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(C, 3));
@@ -493,46 +594,12 @@ test14() {
   exit(1);
 }
 
-// FIX An example to show problems with using a direct equivalent of
-// the Halbwachs polyhedron widening for Grids.
-
-void
-test15() {
-  nout << "test15:" << endl;
-
-  Grid gr1(2);
-  gr1.add_congruence((A %= 0) / 2);
-  gr1.add_congruence((B %= 0) / 2);
-
-  Grid gr2(2);
-  gr2.add_congruence(A %= 0);
-  gr2.add_congruence((2*A + B %= 0) / 2);
-
-  gr2.widening_assign(gr1);
-
-  if (find_variation(gr2))
-    exit(1);
-
-  Grid known_gr(2);
-  known_gr.add_congruence((B %= 0) / 2);
-
-  if (gr2 == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
-}
 
 // Space dimension exception.
 
 void
-test16() {
-  nout << "test16:" << endl;
+test18() {
+  nout << "test18:" << endl;
 
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(C, 3));
@@ -553,8 +620,8 @@ test16() {
 // Minimizing the first congruence system finds the empty grid.
 
 void
-test17() {
-  nout << "test17:" << endl;
+test19() {
+  nout << "test19:" << endl;
 
   Grid gr1(3);
   gr1.add_congruence(A == 0);
@@ -608,6 +675,8 @@ main() TRY {
   test15();
   test16();
   test17();
+  test18();
+  test19();
 
   return 0;
 }
