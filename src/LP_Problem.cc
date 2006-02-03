@@ -1302,11 +1302,11 @@ PPL::LP_Problem::OK() const {
   if (status != UNSOLVED && status != UNSATISFIABLE)  {
     // Here `last_generator' has to be meaningful.
     // Check for dimension compatibility and actual feasibility.
-    if (space_dim != last_generator.space_dimension()) {
+    if (input_sd != last_generator.space_dimension()) {
 #ifndef NDEBUG
       cerr << "The LP_Problem and the cached feasible point have "
  	   << "incompatible space dimensions ("
- 	   << space_dim << " != " << last_generator.space_dimension() << ")."
+ 	   << input_sd << " != " << last_generator.space_dimension() << ")."
  	   << endl;
       ascii_dump(cerr);
 #endif
@@ -1343,8 +1343,7 @@ PPL::LP_Problem::OK() const {
       return false;
     }
     // The size  of `input_cs' and `mapping' should be equal.
-    if (std::max(input_cs.num_columns(), pending_input_cs.num_columns()
-		 )!= mapping.size()) {
+    if (input_cs.num_columns() != mapping.size()) {
 #ifndef NDEBUG
       cerr << "`input_cs' and `mapping' have incompatible sizes" << endl;
       ascii_dump(cerr);
