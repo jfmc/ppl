@@ -429,6 +429,9 @@ AC_CHECK_SIZEOF(long double)
 # Use C++ for the remaining checks.
 AC_LANG(C++)
 
+# Detect the binary format used by 64-bit floats.
+AC_CXX_FLOAT64_BINARY_FORMAT
+
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
