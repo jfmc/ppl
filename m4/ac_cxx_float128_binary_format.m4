@@ -70,9 +70,9 @@ convert(uint64_t msp, uint64_t lsp) {
 int
 main() {
   return (convert(0xaaacccaaacccaaacULL, 0xccaaacccaaacccaaULL)
-          == -2.9126628883453982064004517242532288e+976L &&
+          == -8.5585565388510043474134185399390263e-1644L &&
           convert(0xcccaaacccaaacccaULL, 0xaacccaaacccaaaccULL)
-          == -3.6599170164423507936822938310049653e-1634L)
+          == -1.245145811075115522107964569349668e+986L)
     ? 0 : 1;
 }
 
