@@ -153,6 +153,8 @@ main() {
   [Not zero if 128-bit floats use the Intel Double-Extended binary format.])
   ac_cxx_float128_binary_format="Intel Double-Extended",
   AC_DEFINE(CXX_FLOAT128_BINARY_FORMAT_IS_INTEL_DOUBLE_EXTENDED, 0))
+else
+AC_DEFINE(CXX_FLOAT128_BINARY_FORMAT_IS_INTEL_DOUBLE_EXTENDED, 0)
 fi
 
 AC_MSG_RESULT($ac_cxx_float128_binary_format)
