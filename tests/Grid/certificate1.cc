@@ -231,8 +231,6 @@ test7() {
   gr2.affine_image(A, 1*A);
   gr2.minimized_generators();
 
-  gr2.ascii_dump();
-
   if (grc1.compare(gr2) == -1)
     return;
 

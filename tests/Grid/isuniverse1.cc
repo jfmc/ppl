@@ -320,8 +320,6 @@ test15() {
 
   Grid gr(cgs);
 
-  gr.ascii_dump();
-
   if (gr.is_universe()) {
     nout << "Grid::is_universe should return false." << endl
 	 << "grid:" << endl << gr << endl;
