@@ -29,7 +29,12 @@ AC_LANG_PUSH(C++)
 AC_MSG_CHECKING([the binary format of 32-bit floats])
 ac_cxx_float32_binary_format=unknown
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
 
 #if SIZEOF_FLOAT == 4
 #define FLOAT32_TYPE float

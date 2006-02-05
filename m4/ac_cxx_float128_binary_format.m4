@@ -29,7 +29,12 @@ AC_LANG_PUSH(C++)
 AC_MSG_CHECKING([the binary format of 128-bit floats])
 ac_cxx_float128_binary_format=unknown
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
 
 #if SIZEOF_FLOAT == 16
 #define FLOAT128_TYPE float
@@ -88,7 +93,12 @@ main() {
 if test x"$ac_cxx_float128_binary_format" = x"unknown"
 then
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
 
 #if SIZEOF_FLOAT == 16
 #define FLOAT128_TYPE float
