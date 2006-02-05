@@ -75,7 +75,7 @@ main() {
 
 int
 main() {
-  return 0;
+  return 1;
 }
 
 #endif // !defined(FLOAT96_TYPE)
