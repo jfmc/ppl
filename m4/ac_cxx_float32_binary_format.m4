@@ -76,17 +76,12 @@ main() {
 
 #endif // !defined(FLOAT32_TYPE)
 ]])],
-  ac_cxx_float32_binary_format="IEEE754 Single Precision")
-AC_MSG_RESULT($ac_cxx_float32_binary_format)
-
-if test x"$ac_cxx_float32_binary_format" = x"IEEE754 Single Precision"
-then
-  value=1
-else
-  value=0
-fi
-AC_DEFINE_UNQUOTED(CXX_FLOAT32_BINARY_FORMAT_IS_IEEE754_SINGLE_PRECISION, $value,
+  AC_DEFINE(CXX_FLOAT32_BINARY_FORMAT_IS_IEEE754_SINGLE_PRECISION, 1,
   [Not zero if 32-bit floats use the IEEE754 Single Precision binary format.])
+  ac_cxx_float32_binary_format="IEEE754 Single Precision",
+  AC_DEFINE(CXX_FLOAT32_BINARY_FORMAT_IS_IEEE754_SINGLE_PRECISION, 0))
+
+AC_MSG_RESULT($ac_cxx_float32_binary_format)
 
 AC_LANG_POP(C++)
 CPPFLAGS="$ac_save_CPPFLAGS"

@@ -85,17 +85,12 @@ main() {
 
 #endif // !defined(FLOAT96_TYPE)
 ]])],
-  ac_cxx_float96_binary_format="Intel Double-Extended")
-AC_MSG_RESULT($ac_cxx_float96_binary_format)
+  AC_DEFINE(CXX_FLOAT96_BINARY_FORMAT_IS_INTEL_DOUBLE_EXTENDED, 1,
+    [Not zero if 96-bit floats use the Intel Double-Extended binary format.])
+  ac_cxx_float96_binary_format="Intel Double-Extended",
+  AC_DEFINE(CXX_FLOAT96_BINARY_FORMAT_IS_INTEL_DOUBLE_EXTENDED, 0))
 
-if test x"$ac_cxx_float96_binary_format" = x"Intel Double-Extended"
-then
-  value=1
-else
-  value=0
-fi
-AC_DEFINE_UNQUOTED(CXX_FLOAT96_BINARY_FORMAT_IS_INTEL_DOUBLE_EXTENDED, $value,
-  [Not zero if 96-bit floats use the Intel Double-Extended binary format.])
+AC_MSG_RESULT($ac_cxx_float96_binary_format)
 
 AC_LANG_POP(C++)
 CPPFLAGS="$ac_save_CPPFLAGS"
