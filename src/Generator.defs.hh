@@ -401,6 +401,7 @@ private:
   friend class Parma_Polyhedra_Library::Generator_System::const_iterator;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::LP_Problem;
 
   friend
   Parma_Polyhedra_Library

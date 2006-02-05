@@ -346,7 +346,8 @@ private:
 			  dimension_type& num_slack_variables,
 			  std::deque<bool>& is_tableau_constraint,
 			  std::deque<bool>& nonnegative_variable,
-			  std::vector<dimension_type>& nonfeasible_cs);
+			  std::vector<dimension_type>& nonfeasible_cs,
+			  std::vector<bool>& satisfied_ineqs);
   /*! \brief
     Checks for optimality and, if it does not hold, computes the column
     index of the variable entering the base of the LP problem.
@@ -468,6 +469,9 @@ private:
  */
   void unsplit(dimension_type var_index,
 	       std::vector<dimension_type>& nonfeasible_cs);
+
+  bool is_satisfied(const Constraint& constraint,
+		    Coefficient& sp);
 
 };
 

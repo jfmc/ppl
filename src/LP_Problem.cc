@@ -32,13 +32,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "Generator.defs.hh"
+#include "Scalar_Products.defs.hh"
 #include <stdexcept>
 #include <sstream>
 #include <map>
 #include <deque>
 #include <set>
 #include <algorithm>
-
 #ifndef PPL_NOISY_SIMPLEX
 #define PPL_NOISY_SIMPLEX 0
 #endif
@@ -129,13 +129,37 @@ PPL::LP_Problem::unsplit(dimension_type var_index,
   }
 }
 
+bool
+PPL::LP_Problem::is_satisfied(const Constraint& ineq, Coefficient& sp) {
+    Coefficient scalar_product_result = 0;
+    assert(ineq.is_inequality());
+    const Linear_Row& pending_row = ineq;
+    const Linear_Row& generator = last_generator;
+    // To rely to Scalar_Products::assign() we have to permorm a size check.
+    generator.size() <=  ineq.size() ?
+      Scalar_Products::assign(sp, generator, pending_row):
+      Scalar_Products::assign(sp, pending_row, generator);
+    // In the follwing case the constraint is already satisfied
+    // by `last_generator'.
+    if (sp >= 0)
+      return true;
+    return false;
+}
+
+
+
 PPL::LP_Problem::Status
 PPL::LP_Problem::parseconstraints(const Constraint_System& cs,
 				  dimension_type& tableau_num_rows,
 				  dimension_type& num_slack_variables,
 				  std::deque<bool>& is_tableau_constraint,
 				  std::deque<bool>& nonnegative_variable,
-				  std::vector<dimension_type>& nonfeasiblecs) {
+				  std::vector<dimension_type>& nonfeasiblecs,
+				  std::vector<bool>& satisfied_ineqs) {
+  satisfied_ineqs.clear();
+  satisfied_ineqs.insert(satisfied_ineqs.end(), pending_input_cs.num_rows(),
+			 false);
+
   const dimension_type cs_num_rows = cs.num_rows();
   const dimension_type cs_num_cols = cs.num_columns();
   // Step 1:
@@ -188,8 +212,12 @@ PPL::LP_Problem::parseconstraints(const Constraint_System& cs,
     }
     // If more than one coefficient is nonzero,
     // continue with next constraint.
-    if (found_many_nonzero_coeffs)
+    if (found_many_nonzero_coeffs) {
+      Coefficient sp = 0;
+      if (cs[i].is_inequality() && is_satisfied(cs[i], sp))
+	satisfied_ineqs[i] = true;
       continue;
+    }
 
     if (!found_a_nonzero_coeff) {
       // All coefficients are 0.
@@ -286,6 +314,7 @@ PPL::LP_Problem::parseconstraints(const Constraint_System& cs,
   return SATISFIABLE;
 }
 
+
 bool
 PPL::LP_Problem::incrementality() {
   const dimension_type num_original_rows = tableau.num_rows();
@@ -295,10 +324,12 @@ PPL::LP_Problem::incrementality() {
   std::deque<bool> is_tableau_constraint;
   std::deque<bool> nonnegative_variable;
   std::vector<dimension_type> nonfeasible_constraints;
+  std::vector<bool> satisfied_ineqs;
   // Check the new constraints to adjust the data structures.
   parseconstraints(pending_input_cs, new_rows,
 		   new_slacks, is_tableau_constraint,
-		   nonnegative_variable, nonfeasible_constraints);
+		   nonnegative_variable, nonfeasible_constraints,
+		   satisfied_ineqs);
   const dimension_type first_free_tableau_index = tableau.num_columns()-1;
   if (new_c_sd > input_cs_sd) {
     const dimension_type space_diff = new_c_sd - input_cs_sd;
@@ -333,11 +364,18 @@ PPL::LP_Problem::incrementality() {
   if (new_total_columns > 0)
     tableau.add_zero_columns(new_total_columns);
   dimension_type tableau_num_rows = tableau.num_rows();
+  // The following vector will be useful know if a constraint is feasible
+  // and doesn't require an additional artificial variable.
+  std::vector<bool> worked_out_row (tableau_num_rows, false);
   dimension_type tableau_num_columns = tableau.num_columns();
   const dimension_type pending_cs_num_rows = pending_input_cs.num_rows();
   const dimension_type pending_cs_num_cols = pending_input_cs.num_columns();
   const dimension_type base_size = base.size();
-  // These indexes will  be used to insert slack and artificial variables.
+  dimension_type num_satisfied_ineqs = 0;
+
+  // Sync the `base' vector size to the new tableau.
+  base.insert(base.end(), new_rows, 0);
+  // These indexes will be used to insert slack and artificial variables.
   dimension_type slack_index = tableau_num_columns-1;
   dimension_type artificial_index = tableau_num_columns-1;
   // Proceed with the insertion of the constraints.
@@ -356,9 +394,17 @@ PPL::LP_Problem::incrementality() {
       if (cs_i.is_ray_or_point_or_inequality()) {
 	tableau_k[--slack_index] = -1;
 	is_artificial.push_back(false);
+	// If the constraint is already satisfied, we will not use artificial
+	// variables to compute a feasible base: this to speed up
+	// the algorithm.
+	if (satisfied_ineqs[i]) {
+ 	  base[k] = slack_index;
+ 	  ++num_satisfied_ineqs;
+ 	  worked_out_row[k] = true;
+	}
       }
       for (dimension_type j = base_size; j-- > 0; )
-  	if (tableau_k[base[j]] != 0 && base[j] != 0)
+	if (tableau_k[base[j]] != 0 && base[j] != 0)
 	  linear_combine(tableau_k, tableau[j], base[j]);
     }
 
@@ -378,8 +424,12 @@ PPL::LP_Problem::incrementality() {
 
   // Prepare the tableau for the artificial variables.
   const dimension_type nonfeasible_cs_size = nonfeasible_constraints.size();
-  if (new_rows + nonfeasible_cs_size > 0)
-    tableau.add_zero_columns(new_rows + nonfeasible_cs_size);
+  const dimension_type artificial_cols = new_rows + nonfeasible_cs_size -
+    num_satisfied_ineqs;
+  if (artificial_cols > 0)
+    tableau.add_zero_columns(artificial_cols);
+
+  // Update status variables.
   tableau_num_columns = tableau.num_columns();
 
   // Set the working cost function with the right size.
@@ -399,9 +449,11 @@ PPL::LP_Problem::incrementality() {
   // As for the cost function, all the artificial variables should have
   // coefficient -1.
   for (dimension_type i = num_original_rows; i < tableau_num_rows; ++i) {
+    if (worked_out_row[i])
+      continue;
     tableau[i][artificial_index] = 1;
     working_cost[artificial_index] = -1;
-    base.push_back(artificial_index);
+    base[i] = artificial_index;
     is_artificial.push_back(true);
     ++artificial_index;
   }
@@ -1445,7 +1497,7 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
    // FIXME: no ascii_dump() for Generator?
    // last_generator.ascii_dump(s);
   s << "\nlast_generator\n";
-  s << last_generator << "\n";
+  //s << last_generator << "\n";
   s << std::endl;
   const dimension_type mapping_size = mapping.size();
   s << "\nmapping(" << mapping_size << ")\n";
