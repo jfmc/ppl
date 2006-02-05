@@ -29,7 +29,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gmp.h>
 #include <SWI-Prolog.h>
 #include <cassert>
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
 
 typedef term_t Prolog_term_ref;
 typedef atom_t Prolog_atom;

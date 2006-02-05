@@ -25,11 +25,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Limits.hh"
 #include "float.types.hh"
-#include <stdint.h>
 #include <cerrno>
 #include <cstdlib>
 #include <climits>
 #include <string>
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
 
 #if !HAVE_DECL_STRTOLL
 signed long long

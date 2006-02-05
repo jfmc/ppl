@@ -23,8 +23,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Float_inlines_hh
 #define PPL_Float_inlines_hh 1
 
-#include <stdint.h>
 #include <climits>
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
 
 namespace Parma_Polyhedra_Library {
 

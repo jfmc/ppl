@@ -26,9 +26,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "compiler.hh"
 #include "float.types.hh"
 #include <gmp.h>
-#include <stdint.h>
 #include <cassert>
 #include <cmath>
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
 
 #ifndef NAN
 #define NAN (HUGE_VAL - HUGE_VAL)
