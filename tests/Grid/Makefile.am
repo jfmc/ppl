@@ -49,7 +49,7 @@ addgenerator1 \
 addgenerators1 \
 addspacedims1 addspacedims2 \
 affinedim1 \
-affineimage1 \
+affineimage1 affineimage1_16 \
 affinepreimage1 \
 asciidumpload1 \
 bhz03widening1 \
@@ -77,7 +77,7 @@ griddifference1 \
 intersection1 intersection2 \
 isempty1 \
 isuniverse1 \
-join1 join2 join3 \
+join1 join1_16 join2 join3 \
 limitedextrapolation1 \
 mapspacedims1 \
 maxmin1 \
@@ -116,6 +116,8 @@ addspacedims2_SOURCES = addspacedims2.cc
 affinedim1_SOURCES = affinedim1.cc
 
 affineimage1_SOURCES = affineimage1.cc
+
+affineimage1_16_SOURCES = affineimage1_16.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 
@@ -185,6 +187,7 @@ isempty1_SOURCES = isempty1.cc
 isuniverse1_SOURCES = isuniverse1.cc
 
 join1_SOURCES = join1.cc
+join1_16_SOURCES = join1_16.cc
 join2_SOURCES = join2.cc
 join3_SOURCES = join3.cc
 
@@ -240,6 +243,8 @@ XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
 grid1_16 \
 grid2_16 \
+join1_16 \
+affineimage1_16 \
 timeelapse2
 
 if USE_INT64

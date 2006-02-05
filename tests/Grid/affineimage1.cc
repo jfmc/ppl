@@ -573,50 +573,6 @@ test18() {
   catch (const std::invalid_argument& e) {}
 }
 
-// Based on an example in a paper by Muller-Olm and Seidl in SAS 2005
-
-void
-test19() {
-  nout << "test19:" << endl;
-
-  Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(2*A + 0*B));
-
-  Grid gr0 = gr;  // first grid (using trivial transformation)
-
-  Grid gr1 = gr;  // second grid - initial state
-
-  gr1.generalized_affine_image(B, 18*A + B, 1, 0);
-  gr1.generalized_affine_image(A, 15*A, 1, 0);
-                  // second grid - 1 pass through procedure
-
-  Grid gr2 = gr;  // third grid - initial state
-
-  gr2.affine_image(B, 282*A + B);
-  gr2.affine_image(A, 225*A);
-                  // third grid - 2 passes through procedure
-
-  gr.join_assign(gr1); // join of gr0 and gr1
-
-  gr.join_assign(gr2); // join of gr0, gr1 and gr2
-
-  Grid known_gr(2);
-
-  known_gr.add_congruence((A %= 2) / 28);
-  known_gr.add_congruence((B %= 0) / 12);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
-}
-
 } // namespace
 
 int
@@ -643,7 +599,6 @@ main() TRY {
   test16();
   test17();
   test18();
-  test19();
 
   return 0;
 }

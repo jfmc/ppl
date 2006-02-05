@@ -25,15 +25,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
 // test4 from Chiara conversion_test.cc.
 
 void
 test1() {
   nout << "test1:" << endl;
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Grid_Generator_System gs;
   gs.insert(grid_point( 3*A +   B + 0*C, 4));
@@ -74,10 +75,6 @@ void
 test2() {
   nout << "test2:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Grid_Generator_System gs;
   gs.insert(grid_point( 3*A +   B + 0*C, 4));
   gs.insert(grid_point(11*A + 2*B + 0*C, 4));
@@ -116,11 +113,6 @@ void
 test3() {
   nout << "test3:" << endl;
 
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-
   Grid_Generator_System gs;
   gs.insert(grid_point(3*A + 7*B - 2*C + 3*D));
   gs.insert(grid_point(0*A + 0*B +   C +   D));
@@ -156,6 +148,42 @@ test3() {
   exit(1);
 }
 
+// Example from Muller-Olm and Seidl SAS 2005 paper
+
+void
+test4() {
+  nout << "test1:" << endl;
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point(2*A + 0*B));
+  gs.insert(grid_point(30*A + 36*B));
+  gs.insert(grid_point(450*A + 564*B));
+
+  Grid gr(2, EMPTY);
+
+  gr.add_generators_and_minimize(gs);
+
+  if (find_variation(gr))
+    exit(1);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((A %= 2) / 28);
+  known_cgs.insert((B %= 0) / 12);
+
+  Grid known_gr(known_cgs);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  dump_grids(gr, known_gr);
+
+  exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -165,6 +193,7 @@ main() TRY {
   test1();
   test2();
   test3();
+  test4();
 
   return 0;
 }
