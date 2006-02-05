@@ -80,17 +80,17 @@ main() {
 
 #endif // !defined(FLOAT64_TYPE)
 ]])],
-  ac_cxx_float64_binary_format=IEEE754)
+  ac_cxx_float64_binary_format="IEEE754 Double Precision")
 AC_MSG_RESULT($ac_cxx_float64_binary_format)
 
-if test x"$ac_cxx_float64_binary_format" = xIEEE754
+if test x"$ac_cxx_float64_binary_format" = x"IEEE754 Double Precision"
 then
   value=1
 else
   value=0
 fi
-AC_DEFINE_UNQUOTED(CXX_FLOAT64_BINARY_FORMAT_IS_IEEE754, $value,
-  [Not zero if 64-bit floats use the IEEE754 binary format.])
+AC_DEFINE_UNQUOTED(CXX_FLOAT64_BINARY_FORMAT_IS_IEEE754_DOUBLE_PRECISION, $value,
+  [Not zero if 64-bit floats use the IEEE754 Double Precision binary format.])
 
 AC_LANG_POP(C++)
 CPPFLAGS="$ac_save_CPPFLAGS"
