@@ -432,6 +432,9 @@ AC_LANG(C++)
 # Detect the binary format used by 64-bit floats.
 AC_CXX_FLOAT64_BINARY_FORMAT
 
+# Detect the binary format used by 96-bit floats.
+AC_CXX_FLOAT96_BINARY_FORMAT
+
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
