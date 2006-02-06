@@ -57,10 +57,12 @@ fma(long double x, long double y, long double z) {
 #endif
 }
 
+#if HAVE_DECL_RINTF
 inline float
 rint(float x) {
   return ::rintf(x);
 }
+#endif
 
 inline double
 rint(double x) {
