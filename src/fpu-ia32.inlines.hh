@@ -1,4 +1,4 @@
-/* ia32 Floating point unit related functions.
+/* ia32 floating point unit related functions.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
