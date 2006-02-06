@@ -148,6 +148,8 @@ Limits.hh \
 fpu.defs.hh \
 fpu-c99.inlines.hh \
 fpu-ia32.inlines.hh \
+fpu-none.inlines.hh \
+fpu-sparc.inlines.hh \
 Rounding_Dir.defs.hh \
 Rounding_Dir.inlines.hh \
 Result.defs.hh \
