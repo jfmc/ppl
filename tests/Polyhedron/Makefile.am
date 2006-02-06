@@ -1298,6 +1298,7 @@ nnc_smm1
 
 XFAIL_WITH_INT8_A = \
 $(XFAIL_WITH_INT8) \
+NNCminimize1 \
 boundedh79extrapolation1 \
 boundingbox4 \
 intersection1 \
