@@ -39,8 +39,12 @@ int fpu_check_inexact();
 
 #if i386
 #include "fpu-ia32.inlines.hh"
-#else
+#elif defined(HAVE_FENV_H)
 #include "fpu-c99.inlines.hh"
+#elif sparc
+#include "fpu-sparc.inlines.hh"
+#else
+#include "fpu-none.inlines.hh"
 #endif
 
 #endif // !defined(PPL_fpu_defs_hh)
