@@ -131,7 +131,6 @@ PPL::LP_Problem::unsplit(dimension_type var_index,
 
 bool
 PPL::LP_Problem::is_satisfied(const Constraint& ineq, Coefficient& sp) {
-    Coefficient scalar_product_result = 0;
     assert(ineq.is_inequality());
     const Linear_Row& pending_row = ineq;
     const Linear_Row& generator = last_generator;
@@ -1497,7 +1496,7 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
    // FIXME: no ascii_dump() for Generator?
    // last_generator.ascii_dump(s);
   s << "\nlast_generator\n";
-  //s << last_generator << "\n";
+  s << last_generator << "\n";
   s << std::endl;
   const dimension_type mapping_size = mapping.size();
   s << "\nmapping(" << mapping_size << ")\n";
