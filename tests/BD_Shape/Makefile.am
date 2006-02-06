@@ -91,9 +91,12 @@ check_PROGRAMS = \
 	universe1 \
 	writebdshape1 writebdshape2
 
+# This will be overriden by the `run_tests' script.
+TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=mpq_class
 
-TESTS = $(check_PROGRAMS)
+dist_check_SCRIPTS = run_tests
 
+TESTS = $(dist_check_SCRIPTS)
 
 XFAIL_TESTS =
 
