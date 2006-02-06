@@ -20,6 +20,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifdef HAVE_FENV_H
 #include <fenv.h>
 
 #if 0
@@ -91,3 +92,5 @@ fpu_check_inexact() {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+#endif // !defined(HAVE_FENV_H)
