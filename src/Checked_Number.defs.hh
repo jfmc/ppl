@@ -228,14 +228,20 @@ public:
   //! Direct initialization from an unsigned long long and rounding mode.
   Checked_Number(const unsigned long long y, Rounding_Dir dir);
 
+#if USEABLE_FLOAT
   //! Direct initialization from a float and rounding mode.
   Checked_Number(const float y, Rounding_Dir dir);
+#endif
 
+#if USEABLE_DOUBLE
   //! Direct initialization from a double and rounding mode.
   Checked_Number(const double y, Rounding_Dir dir);
+#endif
 
+#if USEABLE_LONG_DOUBLE
   //! Direct initialization from a long double and rounding mode.
   Checked_Number(const long double y, Rounding_Dir dir);
+#endif
 
   //! Direct initialization from a rational and rounding mode.
   Checked_Number(const mpq_class& y, Rounding_Dir dir);

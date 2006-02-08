@@ -30,28 +30,10 @@ namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
-inline double
-fma(double x, double y, double z) {
-#if HAVE_DECL_FMA
-  return ::fma(x, y, z);
-#else
-  return x*y + z;
-#endif
-}
-
 inline float
 fma(float x, float y, float z) {
 #if HAVE_DECL_FMAF
   return ::fmaf(x, y, z);
-#else
-  return x*y + z;
-#endif
-}
-
-inline long double
-fma(long double x, long double y, long double z) {
-#if HAVE_DECL_FMAL
-  return ::fmal(x, y, z);
 #else
   return x*y + z;
 #endif
@@ -65,8 +47,26 @@ rint(float x) {
 #endif
 
 inline double
+fma(double x, double y, double z) {
+#if HAVE_DECL_FMA
+  return ::fma(x, y, z);
+#else
+  return x*y + z;
+#endif
+}
+
+inline double
 rint(double x) {
   return ::rint(x);
+}
+
+inline long double
+fma(long double x, long double y, long double z) {
+#if HAVE_DECL_FMAL
+  return ::fmal(x, y, z);
+#else
+  return x*y + z;
+#endif
 }
 
 #if HAVE_DECL_RINTL
@@ -141,11 +141,11 @@ limit_precision(long double v) {
 template <typename Policy, typename T>
 inline Result
 classify_float(const T v, bool nan, bool inf, bool sign) {
-  typename Float<T>::Type f(v);
-  if ((nan || sign) && f.is_nan())
+  Float<T> f(v);
+  if ((nan || sign) && f.u.binary.is_nan())
     return VC_NAN;
   if (inf) {
-    int i = f.is_inf();
+    int i = f.u.binary.is_inf();
     if (i < 0)
       return VC_MINUS_INFINITY;
     if (i > 0)
@@ -164,29 +164,29 @@ classify_float(const T v, bool nan, bool inf, bool sign) {
 template <typename Policy, typename T>
 inline bool
 is_nan_float(const T v) {
-  typename Float<T>::Type f(v);
-  return f.is_nan();
+  Float<T> f(v);
+  return f.u.binary.is_nan();
 }
 
 template <typename Policy, typename T>
 inline bool
 is_minf_float(const T v) {
-  typename Float<T>::Type f(v);
-  return f.is_inf() < 0;
+  Float<T> f(v);
+  return f.u.binary.is_inf() < 0;
 }
 
 template <typename Policy, typename T>
 inline bool
 is_pinf_float(const T v) {
-  typename Float<T>::Type f(v);
-  return f.is_inf() > 0;
+  Float<T> f(v);
+  return f.u.binary.is_inf() > 0;
 }
 
 template <typename T>
 inline bool
 is_inf_float(const T v) {
-  typename Float<T>::Type f(v);
-  return f.is_inf() != 0;
+  Float<T> f(v);
+  return f.u.binary.is_inf() != 0;
 }
 
 template <typename Policy, typename T>
@@ -217,18 +217,18 @@ set_special_float(T& v, Result r) {
 template <typename T>
 inline void
 pred_float(T& v) {
-  typename Float<T>::Type f(v);
-  assert(!f.is_nan());
-  assert(f.is_inf() >= 0);
-  if (f.is_zero() > 0) {
-    f.negate();
-    f.inc();
+  Float<T> f(v);
+  assert(!f.u.binary.is_nan());
+  assert(f.u.binary.is_inf() >= 0);
+  if (f.u.binary.is_zero() > 0) {
+    f.u.binary.negate();
+    f.u.binary.inc();
   }
-  else if (f.sign_bit()) {
-    f.inc();
+  else if (f.u.binary.sign_bit()) {
+    f.u.binary.inc();
   }
   else {
-    f.dec();
+    f.u.binary.dec();
   }
   v = f.value();
 }
@@ -236,39 +236,21 @@ pred_float(T& v) {
 template <typename T>
 inline void
 succ_float(T& v) {
-  typename Float<T>::Type f(v);
-  assert(!f.is_nan());
-  assert(f.is_inf() <= 0);
-  if (f.is_zero() < 0) {
-    f.negate();
-    f.inc();
+  Float<T> f(v);
+  assert(!f.u.binary.is_nan());
+  assert(f.u.binary.is_inf() <= 0);
+  if (f.u.binary.is_zero() < 0) {
+    f.u.binary.negate();
+    f.u.binary.inc();
   }
-  else if (!f.sign_bit()) {
-    f.inc();
+  else if (!f.u.binary.sign_bit()) {
+    f.u.binary.inc();
   }
   else {
-    f.dec();
+    f.u.binary.dec();
   }
   v = f.value();
 }
-
-SPECIALIZE_CLASSIFY(float, float)
-SPECIALIZE_IS_NAN(float, float)
-SPECIALIZE_IS_MINF(float, float)
-SPECIALIZE_IS_PINF(float, float)
-SPECIALIZE_SET_SPECIAL(float, float)
-
-SPECIALIZE_CLASSIFY(float, double)
-SPECIALIZE_IS_NAN(float, double)
-SPECIALIZE_IS_MINF(float, double)
-SPECIALIZE_IS_PINF(float, double)
-SPECIALIZE_SET_SPECIAL(float, double)
-
-SPECIALIZE_CLASSIFY(float, long double)
-SPECIALIZE_IS_NAN(float, long double)
-SPECIALIZE_IS_MINF(float, long double)
-SPECIALIZE_IS_PINF(float, long double)
-SPECIALIZE_SET_SPECIAL(float, long double)
 
 template <typename Policy, typename To>
 inline Result
@@ -544,14 +526,21 @@ assign_float_int_exact(To& to, const From from, Rounding_Dir) {
 template <typename Policy, typename To, typename From>
 inline Result
 assign_float_int_inexact(To& to, const From from, Rounding_Dir dir) {
-  long double v = from;
-  return assign_float_float<Policy>(to, v, dir);
+  prepare_inexact<Policy>(dir);
+  if (fpu_direct_rounding(dir))
+    to = from;
+  else {
+    int old = fpu_save_rounding_direction(dir);
+    to = from;
+    fpu_restore_rounding_direction(old);
+  }
+  return result_relation<Policy>(dir);
 }
 
 template <typename Policy, typename To, typename From>
 inline Result
 assign_float_int(To& to, const From from, Rounding_Dir dir) {
-  if (sizeof(From) * 8 > Float<To>::Type::MANTISSA_BITS)
+  if (sizeof(From) * 8 > Float<To>::Binary::MANTISSA_BITS)
     return assign_float_int_inexact<Policy>(to, from, dir);
   else
     return assign_float_int_exact<Policy>(to, from, dir);
@@ -563,7 +552,9 @@ set_neg_overflow_float(T& to, Rounding_Dir dir) {
   switch (dir) {
   case ROUND_UP:
     {
-      to = Float<T>::Type::NEG_MAX;
+      Float<T> f;
+      f.u.binary.set_max(true);
+      to = f.value();
       return V_LT;
     }
   default:
@@ -578,7 +569,9 @@ set_pos_overflow_float(T& to, Rounding_Dir dir) {
   switch (dir) {
   case ROUND_DOWN:
     {
-      to = Float<T>::Type::POS_MAX;
+      Float<T> f;
+      f.u.binary.set_max(false);
+      to = f.value();
       return V_GT;
     }
   default:
@@ -598,7 +591,7 @@ assign_float_mpz(T& to, const mpz_class& _from, Rounding_Dir dir)
     return V_EQ;
   }
   size_t exponent = mpz_sizeinbase(from, 2) - 1;
-  if (exponent > (size_t) Float<T>::Type::EXPONENT_MAX) {
+  if (exponent > (size_t) Float<T>::Binary::EXPONENT_MAX) {
     if (sign < 0)
       return set_neg_overflow_float<Policy>(to, dir);
     else
@@ -608,15 +601,15 @@ assign_float_mpz(T& to, const mpz_class& _from, Rounding_Dir dir)
   size_t significative_bits = exponent - zeroes;
   mpz_t mantissa;
   mpz_init(mantissa);
-  if (exponent > Float<T>::Type::MANTISSA_BITS)
-    mpz_tdiv_q_2exp(mantissa, from, exponent - Float<T>::Type::MANTISSA_BITS);
+  if (exponent > Float<T>::Binary::MANTISSA_BITS)
+    mpz_tdiv_q_2exp(mantissa, from, exponent - Float<T>::Binary::MANTISSA_BITS);
   else
-    mpz_mul_2exp(mantissa, from, Float<T>::Type::MANTISSA_BITS - exponent);
-  typename Float<T>::Type f(to);
-  f.build(sign < 0, mantissa, exponent);
+    mpz_mul_2exp(mantissa, from, Float<T>::Binary::MANTISSA_BITS - exponent);
+  Float<T> f(to);
+  f.u.binary.build(sign < 0, mantissa, exponent);
   mpz_clear(mantissa);
   to = f.value();
-  if (significative_bits > Float<T>::Type::MANTISSA_BITS) {
+  if (significative_bits > Float<T>::Binary::MANTISSA_BITS) {
     if (sign < 0)
       return round_lt_float<Policy>(to, dir);
     else
@@ -637,7 +630,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
   mpz_srcptr den = _den.get_mpz_t();
   int sign = mpz_sgn(num);
   signed long exponent = mpz_sizeinbase(num, 2) - mpz_sizeinbase(den, 2);
-  if (exponent < Float<T>::Type::EXPONENT_MIN_DENORM) {
+  if (exponent < Float<T>::Binary::EXPONENT_MIN_DENORM) {
     to = 0;
   inexact:
     if (sign < 0)
@@ -645,16 +638,16 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
     else
       return round_gt_float<Policy>(to, dir);
   }
-  if (exponent > (signed int) Float<T>::Type::EXPONENT_MAX + 1) {
+  if (exponent > (signed int) Float<T>::Binary::EXPONENT_MAX + 1) {
   overflow:
     if (sign < 0)
       return set_neg_overflow_float<Policy>(to, dir);
     else
       return set_pos_overflow_float<Policy>(to, dir);
   }
-  unsigned int needed_bits = Float<T>::Type::MANTISSA_BITS + 1;
-  if (exponent < Float<T>::Type::EXPONENT_MIN)
-    needed_bits -= Float<T>::Type::EXPONENT_MIN - exponent;
+  unsigned int needed_bits = Float<T>::Binary::MANTISSA_BITS + 1;
+  if (exponent < Float<T>::Binary::EXPONENT_MIN)
+    needed_bits -= Float<T>::Binary::EXPONENT_MIN - exponent;
   mpz_t mantissa;
   mpz_init(mantissa);
   signed long shift = needed_bits - exponent;
@@ -678,15 +671,15 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
   }
   else
     --exponent;
-  if (exponent > (signed int)Float<T>::Type::EXPONENT_MAX) {
+  if (exponent > (signed int)Float<T>::Binary::EXPONENT_MAX) {
     mpz_clear(mantissa);
     goto overflow;
-  } else if (exponent < Float<T>::Type::EXPONENT_MIN - 1) {
+  } else if (exponent < Float<T>::Binary::EXPONENT_MIN - 1) {
     /* Denormalized */
-    exponent = Float<T>::Type::EXPONENT_MIN - 1;
+    exponent = Float<T>::Binary::EXPONENT_MIN - 1;
   }
-  typename Float<T>::Type f(to);
-  f.build(sign < 0, mantissa, exponent);
+  Float<T> f(to);
+  f.u.binary.build(sign < 0, mantissa, exponent);
   mpz_clear(mantissa);
   to = f.value();
   if (inexact)
@@ -770,16 +763,36 @@ assign_float_nan(To& to, const Not_A_Number&, Rounding_Dir) {
   return V_EQ;
 }
 
+#if USEABLE_FLOAT
 SPECIALIZE_ASSIGN(float_float_exact, float, float)
+#if USEABLE_DOUBLE
 SPECIALIZE_ASSIGN(float_float, float, double)
-SPECIALIZE_ASSIGN(float_float, float, long double)
 SPECIALIZE_ASSIGN(float_float_exact, double, float)
-SPECIALIZE_ASSIGN(float_float_exact, double, double)
-SPECIALIZE_ASSIGN(float_float, double, long double)
+#endif
+#if USEABLE_LONG_DOUBLE
+SPECIALIZE_ASSIGN(float_float, float, long double)
 SPECIALIZE_ASSIGN(float_float_exact, long double, float)
-SPECIALIZE_ASSIGN(float_float_exact, long double, double)
-SPECIALIZE_ASSIGN(float_float_exact, long double, long double)
+#endif
+#endif
 
+#if USEABLE_DOUBLE
+SPECIALIZE_ASSIGN(float_float_exact, double, double)
+#if USEABLE_LONG_DOUBLE
+SPECIALIZE_ASSIGN(float_float, double, long double)
+SPECIALIZE_ASSIGN(float_float_exact, long double, double)
+#endif
+#endif
+
+#if USEABLE_LONG_DOUBLE
+SPECIALIZE_ASSIGN(float_float_exact, long double, long double)
+#endif
+
+#if USEABLE_FLOAT
+SPECIALIZE_CLASSIFY(float, float)
+SPECIALIZE_IS_NAN(float, float)
+SPECIALIZE_IS_MINF(float, float)
+SPECIALIZE_IS_PINF(float, float)
+SPECIALIZE_SET_SPECIAL(float, float)
 SPECIALIZE_ASSIGN(float_int, float, signed char)
 SPECIALIZE_ASSIGN(float_int, float, signed short)
 SPECIALIZE_ASSIGN(float_int, float, signed int)
@@ -790,29 +803,8 @@ SPECIALIZE_ASSIGN(float_int, float, unsigned short)
 SPECIALIZE_ASSIGN(float_int, float, unsigned int)
 SPECIALIZE_ASSIGN(float_int, float, unsigned long)
 SPECIALIZE_ASSIGN(float_int, float, unsigned long long)
-
-SPECIALIZE_ASSIGN(float_int, double, signed char)
-SPECIALIZE_ASSIGN(float_int, double, signed short)
-SPECIALIZE_ASSIGN(float_int, double, signed int)
-SPECIALIZE_ASSIGN(float_int, double, signed long)
-SPECIALIZE_ASSIGN(float_int, double, signed long long)
-SPECIALIZE_ASSIGN(float_int, double, unsigned char)
-SPECIALIZE_ASSIGN(float_int, double, unsigned short)
-SPECIALIZE_ASSIGN(float_int, double, unsigned int)
-SPECIALIZE_ASSIGN(float_int, double, unsigned long)
-SPECIALIZE_ASSIGN(float_int, double, unsigned long long)
-
-SPECIALIZE_ASSIGN(float_int, long double, signed char)
-SPECIALIZE_ASSIGN(float_int, long double, signed short)
-SPECIALIZE_ASSIGN(float_int, long double, signed int)
-SPECIALIZE_ASSIGN(float_int, long double, signed long)
-SPECIALIZE_ASSIGN(float_int, long double, signed long long)
-SPECIALIZE_ASSIGN(float_int, long double, unsigned char)
-SPECIALIZE_ASSIGN(float_int, long double, unsigned short)
-SPECIALIZE_ASSIGN(float_int, long double, unsigned int)
-SPECIALIZE_ASSIGN(float_int, long double, unsigned long)
-SPECIALIZE_ASSIGN(float_int, long double, unsigned long long)
-
+SPECIALIZE_ASSIGN(float_mpz, float, mpz_class)
+SPECIALIZE_ASSIGN(float_mpz, double, mpz_class)
 SPECIALIZE_COPY(generic, float)
 SPECIALIZE_IS_INT(float, float)
 SPECIALIZE_ASSIGN(float_minf, float, Minus_Infinity)
@@ -837,7 +829,26 @@ SPECIALIZE_ADD_MUL(float, float, float, float)
 SPECIALIZE_SUB_MUL(float, float, float, float)
 SPECIALIZE_INPUT(generic, float)
 SPECIALIZE_OUTPUT(float, float)
+#endif
 
+#if USEABLE_DOUBLE
+SPECIALIZE_CLASSIFY(float, double)
+SPECIALIZE_IS_NAN(float, double)
+SPECIALIZE_IS_MINF(float, double)
+SPECIALIZE_IS_PINF(float, double)
+SPECIALIZE_SET_SPECIAL(float, double)
+SPECIALIZE_ASSIGN(float_int, double, signed char)
+SPECIALIZE_ASSIGN(float_int, double, signed short)
+SPECIALIZE_ASSIGN(float_int, double, signed int)
+SPECIALIZE_ASSIGN(float_int, double, signed long)
+SPECIALIZE_ASSIGN(float_int, double, signed long long)
+SPECIALIZE_ASSIGN(float_int, double, unsigned char)
+SPECIALIZE_ASSIGN(float_int, double, unsigned short)
+SPECIALIZE_ASSIGN(float_int, double, unsigned int)
+SPECIALIZE_ASSIGN(float_int, double, unsigned long)
+SPECIALIZE_ASSIGN(float_int, double, unsigned long long)
+SPECIALIZE_ASSIGN(float_mpz, long double, mpz_class)
+SPECIALIZE_ASSIGN(float_mpq, float, mpq_class)
 SPECIALIZE_COPY(generic, double)
 SPECIALIZE_IS_INT(float, double)
 SPECIALIZE_ASSIGN(float_minf, double, Minus_Infinity)
@@ -862,7 +873,26 @@ SPECIALIZE_ADD_MUL(float, double, double, double)
 SPECIALIZE_SUB_MUL(float, double, double, double)
 SPECIALIZE_INPUT(generic, double)
 SPECIALIZE_OUTPUT(float, double)
+#endif
 
+#if USEABLE_LONG_DOUBLE
+SPECIALIZE_CLASSIFY(float, long double)
+SPECIALIZE_IS_NAN(float, long double)
+SPECIALIZE_IS_MINF(float, long double)
+SPECIALIZE_IS_PINF(float, long double)
+SPECIALIZE_SET_SPECIAL(float, long double)
+SPECIALIZE_ASSIGN(float_int, long double, signed char)
+SPECIALIZE_ASSIGN(float_int, long double, signed short)
+SPECIALIZE_ASSIGN(float_int, long double, signed int)
+SPECIALIZE_ASSIGN(float_int, long double, signed long)
+SPECIALIZE_ASSIGN(float_int, long double, signed long long)
+SPECIALIZE_ASSIGN(float_int, long double, unsigned char)
+SPECIALIZE_ASSIGN(float_int, long double, unsigned short)
+SPECIALIZE_ASSIGN(float_int, long double, unsigned int)
+SPECIALIZE_ASSIGN(float_int, long double, unsigned long)
+SPECIALIZE_ASSIGN(float_int, long double, unsigned long long)
+SPECIALIZE_ASSIGN(float_mpq, double, mpq_class)
+SPECIALIZE_ASSIGN(float_mpq, long double, mpq_class)
 SPECIALIZE_COPY(generic, long double)
 SPECIALIZE_IS_INT(float, long double)
 SPECIALIZE_ASSIGN(float_minf, long double, Minus_Infinity)
@@ -887,13 +917,7 @@ SPECIALIZE_ADD_MUL(float, long double, long double, long double)
 SPECIALIZE_SUB_MUL(float, long double, long double, long double)
 SPECIALIZE_INPUT(generic, long double)
 SPECIALIZE_OUTPUT(float, long double)
-
-SPECIALIZE_ASSIGN(float_mpz, float, mpz_class)
-SPECIALIZE_ASSIGN(float_mpz, double, mpz_class)
-SPECIALIZE_ASSIGN(float_mpz, long double, mpz_class)
-SPECIALIZE_ASSIGN(float_mpq, float, mpq_class)
-SPECIALIZE_ASSIGN(float_mpq, double, mpq_class)
-SPECIALIZE_ASSIGN(float_mpq, long double, mpq_class)
+#endif
 
 } // namespace Checked
 

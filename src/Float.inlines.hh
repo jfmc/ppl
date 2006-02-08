@@ -33,169 +33,152 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline
-TFloat<float32_t>::TFloat(float32_t v) {
-  u._value = v;
-}
-
-inline float32_t
-TFloat<float32_t>::value() {
-  return u._value;
-}
-
 inline int
-TFloat<float32_t>::is_inf() const {
-  if (u.word == NEG_INF)
+float_ieee754_single::is_inf() const {
+  if (word == NEG_INF)
     return -1;
-  if (u.word == POS_INF)
+  if (word == POS_INF)
     return 1;
   return 0;
 }
 
 inline int
-TFloat<float32_t>::is_nan() const {
-  return (u.word & ~SGN_MASK) > POS_INF;
+float_ieee754_single::is_nan() const {
+  return (word & ~SGN_MASK) > POS_INF;
 }
 
 inline int
-TFloat<float32_t>::is_zero() const {
-  if (u.word == NEG_ZERO)
+float_ieee754_single::is_zero() const {
+  if (word == NEG_ZERO)
     return -1;
-  if (u.word == POS_ZERO)
+  if (word == POS_ZERO)
     return 1;
   return 0;
 }
 
 inline void
-TFloat<float32_t>::negate() {
-  u.word ^= SGN_MASK;
+float_ieee754_single::negate() {
+  word ^= SGN_MASK;
 }
 
 inline int
-TFloat<float32_t>::sign_bit() const {
-  return !!(u.word & SGN_MASK);
+float_ieee754_single::sign_bit() const {
+  return !!(word & SGN_MASK);
 }
 
 inline void
-TFloat<float32_t>::dec() {
-  u.word--;
+float_ieee754_single::dec() {
+  word--;
 }
 
 inline void
-TFloat<float32_t>::inc() {
-  u.word++;
+float_ieee754_single::inc() {
+  word++;
 }
 
 inline void
-TFloat<float32_t>::build(bool negative, mpz_t mantissa, int exponent) {
-  u.word = mpz_get_ui(mantissa) & ((1UL << MANTISSA_BITS) - 1);
+float_ieee754_single::set_max(bool negative) {
+  word = 0x7f7fffff;
   if (negative)
-    u.word |= SGN_MASK;
-  u.word |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << MANTISSA_BITS;
+    word |= SGN_MASK;
 }
 
-inline
-TFloat<float64_t>::TFloat(float64_t v) {
-  u._value = v;
-}
-
-inline float64_t
-TFloat<float64_t>::value() {
-  return u._value;
+inline void
+float_ieee754_single::build(bool negative, mpz_t mantissa, int exponent) {
+  word = mpz_get_ui(mantissa) & ((1UL << MANTISSA_BITS) - 1);
+  if (negative)
+    word |= SGN_MASK;
+  word |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << MANTISSA_BITS;
 }
 
 inline int
-TFloat<float64_t>::is_inf() const {
-  if (u.parts.lsp != LSP_INF)
+float_ieee754_double::is_inf() const {
+  if (lsp != LSP_INF)
     return 0;
-  if (u.parts.msp == MSP_NEG_INF)
+  if (msp == MSP_NEG_INF)
     return -1;
-  if (u.parts.msp == MSP_POS_INF)
+  if (msp == MSP_POS_INF)
     return 1;
   return 0;
 }
 
 inline int
-TFloat<float64_t>::is_nan() const {
-  uint32_t a = u.parts.msp & ~MSP_SGN_MASK;
-  return a > MSP_POS_INF || (a == MSP_POS_INF && u.parts.lsp != LSP_INF);
+float_ieee754_double::is_nan() const {
+  uint32_t a = msp & ~MSP_SGN_MASK;
+  return a > MSP_POS_INF || (a == MSP_POS_INF && lsp != LSP_INF);
 }
 
 inline int
-TFloat<float64_t>::is_zero() const {
-  if (u.parts.lsp != LSP_ZERO)
+float_ieee754_double::is_zero() const {
+  if (lsp != LSP_ZERO)
     return 0;
-  if (u.parts.msp == MSP_NEG_ZERO)
+  if (msp == MSP_NEG_ZERO)
     return -1;
-  if (u.parts.msp == MSP_POS_ZERO)
+  if (msp == MSP_POS_ZERO)
     return 1;
   return 0;
 }
 
 inline void
-TFloat<float64_t>::negate() {
-  u.parts.msp ^= MSP_SGN_MASK;
+float_ieee754_double::negate() {
+  msp ^= MSP_SGN_MASK;
 }
 
 inline int
-TFloat<float64_t>::sign_bit() const {
-  return !!(u.parts.msp & MSP_SGN_MASK);
+float_ieee754_double::sign_bit() const {
+  return !!(msp & MSP_SGN_MASK);
 }
 
 inline void
-TFloat<float64_t>::dec() {
-  if (u.parts.lsp == 0) {
-    u.parts.msp--;
-    u.parts.lsp = LSP_MAX;
+float_ieee754_double::dec() {
+  if (lsp == 0) {
+    msp--;
+    lsp = LSP_MAX;
   }
   else
-    u.parts.lsp--;
+    lsp--;
 }
 
 inline void
-TFloat<float64_t>::inc() {
-  if (u.parts.lsp == LSP_MAX) {
-    u.parts.msp++;
-    u.parts.lsp = 0;
+float_ieee754_double::inc() {
+  if (lsp == LSP_MAX) {
+    msp++;
+    lsp = 0;
   }
   else
-    u.parts.lsp++;
+    lsp++;
 }
 
 inline void
-TFloat<float64_t>::build(bool negative, mpz_t mantissa, int exponent) {
+float_ieee754_double::set_max(bool negative) {
+  msp = 0x7fefffff;
+  lsp = 0xffffffff;
+  if (negative)
+    msp |= MSP_SGN_MASK;
+}
+
+inline void
+float_ieee754_double::build(bool negative, mpz_t mantissa, int exponent) {
 #if ULONG_MAX == 0xffffffffUL
-  u.parts.lsp = mpz_get_ui(mantissa);
+  lsp = mpz_get_ui(mantissa);
   mpz_tdiv_q_2exp(mantissa, mantissa, 32);
   unsigned long m = mpz_get_ui(mantissa);
 #else
   unsigned long m = mpz_get_ui(mantissa);
-  u.parts.lsp = m;
+  lsp = m;
   m >>= 32;
 #endif
-  u.parts.msp = m & ((1UL << (MANTISSA_BITS - 32)) - 1);
+  msp = m & ((1UL << (MANTISSA_BITS - 32)) - 1);
   if (negative)
-    u.parts.msp |= MSP_SGN_MASK;
-  u.parts.msp |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 32);
-}
-
-#ifdef FLOAT96_TYPE
-
-inline
-TFloat<float96_t>::TFloat(float96_t v) {
-  u._value = v;
-}
-
-inline float96_t
-TFloat<float96_t>::value() {
-  return u._value;
+    msp |= MSP_SGN_MASK;
+  msp |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 32);
 }
 
 inline int
-TFloat<float96_t>::is_inf() const {
-  if (u.parts.lsp != LSP_INF)
+float_intel_double_extended::is_inf() const {
+  if (lsp != LSP_INF)
     return 0;
-  uint32_t a = u.parts.msp & MSP_NEG_INF;
+  uint32_t a = msp & MSP_NEG_INF;
   if (a == MSP_NEG_INF)
     return -1;
   if (a == MSP_POS_INF)
@@ -204,16 +187,16 @@ TFloat<float96_t>::is_inf() const {
 }
 
 inline int
-TFloat<float96_t>::is_nan() const {
-  return (u.parts.msp & MSP_POS_INF) == MSP_POS_INF &&
-    u.parts.lsp != LSP_INF;
+float_intel_double_extended::is_nan() const {
+  return (msp & MSP_POS_INF) == MSP_POS_INF &&
+    lsp != LSP_INF;
 }
 
 inline int
-TFloat<float96_t>::is_zero() const {
-  if (u.parts.lsp != LSP_ZERO)
+float_intel_double_extended::is_zero() const {
+  if (lsp != LSP_ZERO)
     return 0;
-  uint32_t a = u.parts.msp & MSP_NEG_INF;
+  uint32_t a = msp & MSP_NEG_INF;
   if (a == MSP_NEG_ZERO)
     return -1;
   if (a == MSP_POS_ZERO)
@@ -222,138 +205,187 @@ TFloat<float96_t>::is_zero() const {
 }
 
 inline void
-TFloat<float96_t>::negate() {
-  u.parts.msp ^= MSP_SGN_MASK;
+float_intel_double_extended::negate() {
+  msp ^= MSP_SGN_MASK;
 }
 
 inline int
-TFloat<float96_t>::sign_bit() const {
-  return !!(u.parts.msp & MSP_SGN_MASK);
+float_intel_double_extended::sign_bit() const {
+  return !!(msp & MSP_SGN_MASK);
 }
 
 inline void
-TFloat<float96_t>::dec() {
-  if ((u.parts.lsp & LSP_DMAX) == 0) {
-    u.parts.msp--;
-    u.parts.lsp = (u.parts.msp & MSP_NEG_INF) == 0 ? LSP_DMAX : LSP_NMAX;
+float_intel_double_extended::dec() {
+  if ((lsp & LSP_DMAX) == 0) {
+    msp--;
+    lsp = (msp & MSP_NEG_INF) == 0 ? LSP_DMAX : LSP_NMAX;
   }
   else
-    u.parts.lsp--;
+    lsp--;
 }
 
 inline void
-TFloat<float96_t>::inc() {
-  if ((u.parts.lsp & LSP_DMAX) == LSP_DMAX) {
-    u.parts.msp++;
-    u.parts.lsp = LSP_DMAX + 1;
+float_intel_double_extended::inc() {
+  if ((lsp & LSP_DMAX) == LSP_DMAX) {
+    msp++;
+    lsp = LSP_DMAX + 1;
   }
   else
-    u.parts.lsp++;
+    lsp++;
 }
 
 inline void
-TFloat<float96_t>::build(bool negative, mpz_t mantissa, int exponent) {
+float_intel_double_extended::set_max(bool negative) {
+  msp = 0x00007ffe;
+  lsp = 0xffffffffffffffffULL;
+  if (negative)
+    msp |= MSP_SGN_MASK;
+}
+
+inline void
+float_intel_double_extended::build(bool negative, mpz_t mantissa, int exponent) {
 #if ULONG_MAX == 0xffffffffUL
-  mpz_export(&u.parts.lsp, 0, 1, 8, 0, 0, mantissa);
+  mpz_export(&lsp, 0, 1, 8, 0, 0, mantissa);
 #else
-  u.parts.lsp = mpz_get_ui(mantissa);
+  lsp = mpz_get_ui(mantissa);
 #endif
-  u.parts.msp = (negative ? MSP_SGN_MASK : 0);
-  u.parts.msp |= static_cast<uint32_t>(exponent + EXPONENT_BIAS);
-}
-
-#endif
-
-#ifdef FLOAT128_TYPE
-
-inline
-TFloat<float128_t>::TFloat(float128_t v) {
-  u._value = v;
-}
-
-inline float128_t
-TFloat<float128_t>::value() {
-  return u._value;
+  msp = (negative ? MSP_SGN_MASK : 0);
+  msp |= static_cast<uint32_t>(exponent + EXPONENT_BIAS);
 }
 
 inline int
-TFloat<float128_t>::is_inf() const {
-  if (u.parts.lsp != LSP_INF)
+float_ieee754_quad::is_inf() const {
+  if (lsp != LSP_INF)
     return 0;
-  if (u.parts.msp == MSP_NEG_INF)
+  if (msp == MSP_NEG_INF)
     return -1;
-  if (u.parts.msp == MSP_POS_INF)
+  if (msp == MSP_POS_INF)
     return 1;
   return 0;
 }
 
 inline int
-TFloat<float128_t>::is_nan() const {
-  return (u.parts.msp & ~MSP_SGN_MASK) == MSP_POS_INF &&
-    u.parts.lsp != LSP_INF;
+float_ieee754_quad::is_nan() const {
+  return (msp & ~MSP_SGN_MASK) == MSP_POS_INF &&
+    lsp != LSP_INF;
 }
 
 inline int
-TFloat<float128_t>::is_zero() const {
-  if (u.parts.lsp != LSP_ZERO)
+float_ieee754_quad::is_zero() const {
+  if (lsp != LSP_ZERO)
     return 0;
-  if (u.parts.msp == MSP_NEG_ZERO)
+  if (msp == MSP_NEG_ZERO)
     return -1;
-  if (u.parts.msp == MSP_POS_ZERO)
+  if (msp == MSP_POS_ZERO)
     return 1;
   return 0;
 }
 
 inline void
-TFloat<float128_t>::negate() {
-  u.parts.msp ^= MSP_SGN_MASK;
+float_ieee754_quad::negate() {
+  msp ^= MSP_SGN_MASK;
 }
 
 inline int
-TFloat<float128_t>::sign_bit() const {
-  return !!(u.parts.msp & MSP_SGN_MASK);
+float_ieee754_quad::sign_bit() const {
+  return !!(msp & MSP_SGN_MASK);
 }
 
 inline void
-TFloat<float128_t>::dec() {
-  if (u.parts.lsp == 0) {
-    u.parts.msp--;
-    u.parts.lsp = LSP_MAX;
+float_ieee754_quad::dec() {
+  if (lsp == 0) {
+    msp--;
+    lsp = LSP_MAX;
   }
   else
-    u.parts.lsp--;
+    lsp--;
 }
 
 inline void
-TFloat<float128_t>::inc() {
-  if (u.parts.lsp == LSP_MAX) {
-    u.parts.msp++;
-    u.parts.lsp = 0;
+float_ieee754_quad::inc() {
+  if (lsp == LSP_MAX) {
+    msp++;
+    lsp = 0;
   }
   else
-    u.parts.lsp++;
+    lsp++;
 }
 
 inline void
-TFloat<float128_t>::build(bool negative, mpz_t mantissa, int exponent) {
+float_ieee754_quad::set_max(bool negative) {
+  msp = 0x7ffeffffffffffffULL;
+  lsp = 0xffffffffffffffffULL;
+  if (negative)
+    msp |= MSP_SGN_MASK;
+}
+
+inline void
+float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
 #if ULONG_MAX == 0xffffffffUL
-  mpz_export(&u.parts.lsp, 0, 1, 8, 0, 0, mantissa);
+  mpz_export(&lsp, 0, 1, 8, 0, 0, mantissa);
 #else
-  u.parts.lsp = mpz_get_ui(mantissa);
+  lsp = mpz_get_ui(mantissa);
 #endif
   mpz_tdiv_q_2exp(mantissa, mantissa, 64);
 #if ULONG_MAX == 0xffffffffUL
-  mpz_export(&u.parts.msp, 0, 1, 8, 0, 0, mantissa);
+  mpz_export(&msp, 0, 1, 8, 0, 0, mantissa);
 #else
-  u.parts.msp = mpz_get_ui(mantissa);
+  msp = mpz_get_ui(mantissa);
 #endif
-  u.parts.msp &= ((1ULL << (MANTISSA_BITS - 64)) - 1);
+  msp &= ((1ULL << (MANTISSA_BITS - 64)) - 1);
   if (negative)
-    u.parts.msp |= MSP_SGN_MASK;
-  u.parts.msp |= static_cast<uint64_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 64);
+    msp |= MSP_SGN_MASK;
+  msp |= static_cast<uint64_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 64);
 }
 
+#ifdef CXX_FLOAT_BINARY_FORMAT
+inline
+Float<float>::Float() {
+}
+
+inline
+Float<float>::Float(float v) {
+  u.number = v;
+}
+
+inline float
+Float<float>::value() {
+  return u.number;
+}
 #endif
+
+#ifdef CXX_DOUBLE_BINARY_FORMAT
+inline
+Float<double>::Float() {
+}
+
+inline
+Float<double>::Float(double v) {
+  u.number = v;
+}
+
+inline double
+Float<double>::value() {
+  return u.number;
+}
+#endif
+
+#ifdef CXX_LONG_DOUBLE_BINARY_FORMAT
+inline
+Float<long double>::Float() {
+}
+
+inline
+Float<long double>::Float(long double v) {
+  u.number = v;
+}
+
+inline long double
+Float<long double>::value() {
+  return u.number;
+}
+#endif
+
 
 } // namespace Parma_Polyhedra_Library
 

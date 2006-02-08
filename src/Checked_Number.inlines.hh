@@ -111,6 +111,11 @@ Checked_Number<T, Policy>::Checked_Number(const type x) { \
   Policy::handle_result(check_result(Checked::assign_ext<Policy, Default_From_Policy>(v, x, rounding_dir(dir)), dir)); \
 }
 
+#define COND_0(...)
+#define COND_1(...) __VA_ARGS__
+#define COND_(if, ...) COND_##if(__VA_ARGS__)
+#define COND(if, ...) COND_(if, __VA_ARGS__)
+
 DEF_CTOR(signed char)
 DEF_CTOR(signed short)
 DEF_CTOR(signed int)
@@ -121,9 +126,9 @@ DEF_CTOR(unsigned short)
 DEF_CTOR(unsigned int)
 DEF_CTOR(unsigned long)
 DEF_CTOR(unsigned long long)
-DEF_CTOR(float)
-DEF_CTOR(double)
-DEF_CTOR(long double)
+COND(USEABLE_FLOAT, DEF_CTOR(float))
+COND(USEABLE_DOUBLE, DEF_CTOR(double))
+COND(USEABLE_LONG_DOUBLE, DEF_CTOR(long double))
 DEF_CTOR(mpq_class&)
 DEF_CTOR(mpz_class&)
 
@@ -511,9 +516,9 @@ DEF_BINARY_OP_TYPE(f, fun, unsigned short) \
 DEF_BINARY_OP_TYPE(f, fun, unsigned int) \
 DEF_BINARY_OP_TYPE(f, fun, unsigned long) \
 DEF_BINARY_OP_TYPE(f, fun, unsigned long long) \
-DEF_BINARY_OP_TYPE(f, fun, float) \
-DEF_BINARY_OP_TYPE(f, fun, double) \
-DEF_BINARY_OP_TYPE(f, fun, long double) \
+COND(USEABLE_FLOAT, DEF_BINARY_OP_TYPE(f, fun, float)) \
+COND(USEABLE_DOUBLE, DEF_BINARY_OP_TYPE(f, fun, double)) \
+COND(USEABLE_LONG_DOUBLE, DEF_BINARY_OP_TYPE(f, fun, long double)) \
 DEF_BINARY_OP_TYPE(f, fun, mpz_class&) \
 DEF_BINARY_OP_TYPE(f, fun, mpq_class&)
 
@@ -555,9 +560,9 @@ DEF_COMPARE_TYPE(f, fun, unsigned short) \
 DEF_COMPARE_TYPE(f, fun, unsigned int) \
 DEF_COMPARE_TYPE(f, fun, unsigned long) \
 DEF_COMPARE_TYPE(f, fun, unsigned long long) \
-DEF_COMPARE_TYPE(f, fun, float) \
-DEF_COMPARE_TYPE(f, fun, double) \
-DEF_COMPARE_TYPE(f, fun, long double) \
+COND(USEABLE_FLOAT, DEF_COMPARE_TYPE(f, fun, float)) \
+COND(USEABLE_DOUBLE, DEF_COMPARE_TYPE(f, fun, double)) \
+COND(USEABLE_LONG_DOUBLE, DEF_COMPARE_TYPE(f, fun, long double)) \
 DEF_COMPARE_TYPE(f, fun, mpz_class&) \
 DEF_COMPARE_TYPE(f, fun, mpq_class&)
 
