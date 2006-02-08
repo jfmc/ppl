@@ -135,17 +135,15 @@ PPL::LP_Problem::is_satisfied(const Constraint& ineq, Coefficient& sp) {
     const Linear_Row& pending_row = ineq;
     const Linear_Row& generator = last_generator;
     // To rely to Scalar_Products::assign() we have to permorm a size check.
-    generator.size() <=  ineq.size() ?
-      Scalar_Products::assign(sp, generator, pending_row):
-      Scalar_Products::assign(sp, pending_row, generator);
+    generator.size() <= ineq.size() ?
+      Scalar_Products::homogeneous_assign(sp, generator, pending_row):
+      Scalar_Products::homogeneous_assign(sp, pending_row, generator);
     // In the follwing case the constraint is already satisfied
     // by `last_generator'.
-    if (sp >= 0)
+    if (sp >= -pending_row[0]*generator[0])
       return true;
     return false;
 }
-
-
 
 PPL::LP_Problem::Status
 PPL::LP_Problem::parseconstraints(const Constraint_System& cs,
