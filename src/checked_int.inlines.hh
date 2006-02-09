@@ -50,6 +50,30 @@ namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
+#ifndef HAVE_INT_FAST16_T
+typedef int16_t int_fast16_t;
+#endif
+
+#ifndef HAVE_INT_FAST32_T
+typedef int32_t int_fast32_t;
+#endif
+
+#ifndef HAVE_INT_FAST64_T
+typedef int64_t int_fast64_t;
+#endif
+
+#ifndef HAVE_UINT_FAST16_T
+typedef uint16_t uint_fast16_t;
+#endif
+
+#ifndef HAVE_UINT_FAST32_T
+typedef uint32_t uint_fast32_t;
+#endif
+
+#ifndef HAVE_UINT_FAST64_T
+typedef uint64_t uint_fast64_t;
+#endif
+
 template <typename Policy, typename Type>
 struct Extended_Int {
   static const Type plus_infinity = Limits<Type>::max;
