@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Init_defs_hh 1
 
 #include "Init.types.hh"
+#include "fpu.types.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Class for initialization and finalization.
@@ -43,7 +44,7 @@ class Parma_Polyhedra_Library::Init {
 private:
   //! Count the number of objects created.
   static unsigned int count;
-  static int old_rounding_direction;
+  static fpu_rounding_direction_type old_rounding_direction;
 
 public:
   //! Initializes the PPL.

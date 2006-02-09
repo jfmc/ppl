@@ -24,12 +24,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Init.defs.hh"
 #include "Variable.defs.hh"
-#include "Rounding_Dir.defs.hh"
+#include "fpu.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
 unsigned int PPL::Init::count = 0;
-int PPL::Init::old_rounding_direction = -1;
+
+PPL::fpu_rounding_direction_type PPL::Init::old_rounding_direction = -1;
 
 extern "C" void
 set_GMP_memory_allocation_functions(void)
@@ -51,7 +52,7 @@ PPL::Init::Init() {
     // ... and the default output function for Variable objects is set.
     Variable::set_output_function(Variable::default_output_function);
     old_rounding_direction = fpu_get_rounding_direction();
-    fpu_set_rounding_direction(ROUND_DIRECT);
+    fpu_set_rounding_direction(FPU_UPWARD);
   }
 }
 
