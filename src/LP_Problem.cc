@@ -1168,18 +1168,14 @@ PPL::LP_Problem::second_phase() {
   }
   // Solve the second phase problem.
   bool second_phase_successful = compute_simplex();
+  compute_generator();
 
 #if PPL_NOISY_SIMPLEX
   std::cout << "LP_Problem::solve: 2nd phase ended at iteration "
 	    << num_iterations << "." << std::endl;
 #endif
-  if (second_phase_successful) {
-    compute_generator();
-    status = OPTIMIZED;
-  }
-  else
-    status = UNBOUNDED;
-  assert(OK());
+ second_phase_successful ? status = OPTIMIZED : status = UNBOUNDED;
+ assert(OK());
 }
 
 void
