@@ -471,6 +471,9 @@ AC_CHECK_DECLS([ffs], , , [#include <strings.h>])
 AC_CHECK_DECLS([strtof,strtod,strtold,strtoll,strtoull], , , [#include <cstdlib>])
 AC_CHECK_DECLS([fma,fmaf,fmal,rintf,rintl], , , [#include <cmath>])
 
+# Checks for the availability of "fast" integral types.
+AC_CHECK_TYPES([int_fast16_t,int_fast32_t,int_fast64_t,uint_fast16_t,uint_fast32_t,uint_fast64_t])
+
 # Must link everything with libm.
 extra_libraries="${extra_libraries} -lm"
 
