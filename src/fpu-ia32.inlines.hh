@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define FPU_INEXACT      0x20
 
 #define FPU_ALL_EXCEPT \
-        (FPU_INEXACT | FPU_DIVBYZERO | FPU_UNDERFLOW | FPU_OVERFLOW | FPU_INVALID)
+  (FPU_INEXACT | FPU_DIVBYZERO | FPU_UNDERFLOW | FPU_OVERFLOW | FPU_INVALID)
 
 #define FPU_TONEAREST    0
 #define FPU_DOWNWARD     0x400
@@ -97,13 +97,13 @@ fpu_clear_exceptions() {
   __asm__ __volatile__ ("fnclex" : /* No outputs.  */);
 }
 
-inline int
+inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
   return fpu_get_control() & FPU_ROUNDING_MASK;
 }
 
 inline void
-fpu_set_rounding_direction(int dir) {
+fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
 #if HIJACK_FPU
   fpu_set_control(FPU_CONTROL_DEFAULT | dir);
 #else
@@ -112,8 +112,8 @@ fpu_set_rounding_direction(int dir) {
 #endif
 }
 
-inline int
-fpu_save_rounding_direction(int dir) {
+inline fpu_rounding_control_word_type
+fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
 #if HIJACK_FPU
   fpu_set_control(FPU_CONTROL_DEFAULT | dir);
   return 0;
@@ -133,19 +133,19 @@ fpu_reset_inexact() {
 #endif
 }
 
-inline int
-fpu_save_rounding_direction_reset_inexact(int dir) {
+inline fpu_rounding_control_word_type
+fpu_save_rounding_direction_reset_inexact(fpu_rounding_direction_type dir) {
   fpu_reset_inexact();
   return fpu_save_rounding_direction(dir);
 }
 
 inline void
-fpu_restore_rounding_direction(int control) {
-  used(control);
+fpu_restore_rounding_direction(fpu_rounding_control_word_type w) {
+  used(w);
 #if HIJACK_FPU
   fpu_set_control(FPU_CONTROL_DEFAULT);
 #else
-  fpu_set_control(control);
+  fpu_set_control(w);
 #endif
 }
 

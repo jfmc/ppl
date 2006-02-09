@@ -141,6 +141,7 @@ Ptr_Iterator.types.hh \
 DB_Row.types.hh \
 DB_Matrix.types.hh \
 BD_Shape.types.hh \
+fpu.types.hh \
 float.types.hh \
 Float.defs.hh \
 Float.inlines.hh \
