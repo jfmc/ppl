@@ -178,10 +178,14 @@ LP_Problem::optimizing_point() const {
 			    "*this doesn't have an optimizing point.");
 }
 
-inline const Constraint_System&
+inline Constraint_System
 LP_Problem::constraints() const {
-  // FIXME : what about the pending constraints?
-  return input_cs;
+  // FIXME : avoid the copy if possible.
+  Constraint_System cs(input_cs);
+  for (dimension_type i = 0,
+	 i_end = pending_input_cs.num_rows(); i != i_end; ++i)
+    cs.insert(pending_input_cs[i]);
+  return cs;
 }
 
 inline LP_Problem_Status
@@ -235,8 +239,6 @@ LP_Problem::clear() {
 
 inline dimension_type
 LP_Problem::max_space_dimension() {
-  // FIXME.
-  assert(false);
   return Constraint_System::max_space_dimension();
 }
 
@@ -259,7 +261,7 @@ LP_Problem::external_memory_in_bytes() const {
   n += base.capacity() * sizeof(dimension_type);
   n += is_artificial.capacity() * sizeof(bool);
   // CHECKME: is it right this way of computing the memory used by `mapping'?
-  n += mapping.capacity() * 2 * sizeof(dimension_type);
+  n += mapping.capacity() * sizeof(std::pair<dimension_type, dimension_type>);
   return n;
 }
 

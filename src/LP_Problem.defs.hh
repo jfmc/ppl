@@ -85,8 +85,13 @@ public:
   //! Returns the space dimension of the current LP problem.
   dimension_type space_dimension() const;
 
+#if 0 // FIXME: properly implement the following to avoid a copy.
   //! Returns the constraints defining the current feasible region.
   const Constraint_System& constraints() const;
+#else
+  //! Returns the constraints defining the current feasible region.
+  Constraint_System constraints() const;
+#endif
 
   //! Returns the current objective function.
   const Linear_Expression& objective_function() const;
@@ -470,8 +475,7 @@ private:
   void unsplit(dimension_type var_index,
 	       std::vector<dimension_type>& nonfeasible_cs);
 
-  bool is_satisfied(const Constraint& constraint,
-		    Coefficient& sp);
+  bool is_satisfied(const Constraint& constraint) const;
 
 };
 

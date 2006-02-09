@@ -34,6 +34,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <errno.h>
 #include <string.h>
 
+#ifndef PPL_USE_INCREMENTAL_SIMPLEX
+#define PPL_USE_INCREMENTAL_SIMPLEX 1
+#endif
+
+
 #ifdef HAVE_GETOPT_H
 # include <getopt.h>
 #endif
@@ -569,8 +574,50 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   ppl_LP_Problem_t lp;
   int mode = maximize
     ? PPL_LP_PROBLEM_MAXIMIZATION : PPL_LP_PROBLEM_MINIMIZATION;
+
+#if PPL_USE_INCREMENTAL_SIMPLEX
+  ppl_new_LP_Problem_trivial(&lp);
+  // Add a dummy contraint to have a correct space dimension.
+  ppl_dimension_type space_dim;
+  ppl_Linear_Expression_t dummy_le;
+  ppl_Constraint_t dummy_c;
+  ppl_Constraint_System_space_dimension(cs, &space_dim);
+  /*  fprintf(stderr, "\nSpace dimension: %d\n", space_dim); */
+  ppl_new_Linear_Expression_with_dimension(&dummy_le, space_dim);
+  ppl_new_Constraint(&dummy_c, dummy_le, PPL_CONSTRAINT_TYPE_EQUAL);
+  ppl_LP_Problem_add_constraint(lp, dummy_c);
+  ppl_delete_Linear_Expression(dummy_le);
+  ppl_delete_Constraint(dummy_c);
+  ppl_LP_Problem_set_objective_function(lp, objective);
+  ppl_LP_Problem_set_optimization_mode(lp, mode);
+
+  // Add the constraints in `cs' one at a time.
+  ppl_Constraint_System_const_iterator_t i;
+  ppl_Constraint_System_const_iterator_t iend;
+  ppl_new_Constraint_System_const_iterator(&i);
+  ppl_new_Constraint_System_const_iterator(&iend);
+  ppl_Constraint_System_begin(cs, i);
+  ppl_Constraint_System_end(cs, iend);
+  int counter;
+  counter = 0;
+  while (!ppl_Constraint_System_const_iterator_equal_test(i, iend)) {
+    ++counter;
+    fprintf(stderr, "\nSolving constraint %d\n", counter);
+    ppl_const_Constraint_t c;
+    ppl_Constraint_System_const_iterator_dereference(i, &c);
+    ppl_LP_Problem_add_constraint(lp, c);
+    status = ppl_LP_Problem_solve(lp);
+    if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE)
+      break;
+    ppl_Constraint_System_const_iterator_increment(i);
+  }
+  ppl_delete_Constraint_System_const_iterator(i);
+  ppl_delete_Constraint_System_const_iterator(iend);
+
+#else // PPL_USE_INCREMENTAL_SIMPLEX
   ppl_new_LP_Problem(&lp, cs, objective, mode);
   status = ppl_LP_Problem_solve(lp);
+#endif // PPL_USE_INCREMENTAL_SIMPLEX
 
   if (print_timings) {
     fprintf(stderr, "Time to solve the LP problem: ");

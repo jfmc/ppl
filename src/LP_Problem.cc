@@ -130,19 +130,14 @@ PPL::LP_Problem::unsplit(dimension_type var_index,
 }
 
 bool
-PPL::LP_Problem::is_satisfied(const Constraint& ineq, Coefficient& sp) {
-    assert(ineq.is_inequality());
-    const Linear_Row& pending_row = ineq;
-    const Linear_Row& generator = last_generator;
-    // To rely to Scalar_Products::assign() we have to permorm a size check.
-    generator.size() <= ineq.size() ?
-      Scalar_Products::homogeneous_assign(sp, generator, pending_row):
-      Scalar_Products::homogeneous_assign(sp, pending_row, generator);
-    // In the follwing case the constraint is already satisfied
-    // by `last_generator'.
-    if (sp >= -pending_row[0]*generator[0])
-      return true;
-    return false;
+PPL::LP_Problem::is_satisfied(const Constraint& ineq) const {
+  assert(ineq.is_inequality());
+  // Scalar_Products::sign() requires the second argument to be at least
+  // as large as the first one.
+  int sp_sign = last_generator.size() <= ineq.size()
+    ? Scalar_Products::sign(last_generator, ineq)
+    : Scalar_Products::sign(ineq, last_generator);
+  return sp_sign >= 0;
 }
 
 PPL::LP_Problem::Status
@@ -210,8 +205,7 @@ PPL::LP_Problem::parseconstraints(const Constraint_System& cs,
     // If more than one coefficient is nonzero,
     // continue with next constraint.
     if (found_many_nonzero_coeffs) {
-      Coefficient sp = 0;
-      if (cs[i].is_inequality() && is_satisfied(cs[i], sp))
+      if (cs[i].is_inequality() && is_satisfied(cs[i]))
 	satisfied_ineqs[i] = true;
       continue;
     }
