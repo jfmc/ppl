@@ -53,7 +53,7 @@ PPL::Init::Init() {
     Variable::set_output_function(Variable::default_output_function);
 #if PPL_CAN_CONTROL_FPU
     old_rounding_direction = fpu_get_rounding_direction();
-    fpu_set_rounding_direction(FPU_UPWARD);
+    fpu_set_rounding_direction(ROUND_DIRECT);
 #endif
   }
 }
