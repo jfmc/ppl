@@ -37,12 +37,12 @@ fpu_get_rounding_direction() {
 
 inline void
 fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
-  fpsetround(dir);
+  fpsetround((fp_rnd) dir);
 }
 
 inline fpu_rounding_control_word_type
 fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
-  return fpsetround(dir);
+  return fpsetround((fp_rnd) dir);
 }
 
 inline void
@@ -55,12 +55,12 @@ fpu_reset_inexact() {
 inline fpu_rounding_control_word_type
 fpu_save_rounding_direction_reset_inexact(fpu_rounding_direction_type dir) {
   fpu_reset_inexact();
-  return fpu_save_rounding_direction(dir);
+  return fpu_save_rounding_direction((fp_rnd) dir);
 }
 
 inline void
 fpu_restore_rounding_direction(fpu_rounding_control_word_type w) {
-  fpsetround(w);
+  fpsetround((fp_rnd) w);
 }
 
 inline int
