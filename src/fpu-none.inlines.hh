@@ -20,38 +20,50 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#include <stdexcept>
+
 namespace Parma_Polyhedra_Library {
 
 inline int
 fpu_get_rounding_direction() {
-  return -1;
+  throw std::logic_error("PPL::fpu_get_rounding_direction():"
+			 " cannot control the FPU");
 }
 
 inline void
 fpu_set_rounding_direction(int dir) {
+  throw std::logic_error("PPL::fpu_set_rounding_direction():"
+			 " cannot control the FPU");
 }
 
 inline int
 fpu_save_rounding_direction(int dir) {
-  return -1;
+  throw std::logic_error("PPL::fpu_save_rounding_direction():"
+			 " cannot control the FPU");
 }
 
 inline void
 fpu_reset_inexact() {
+  throw std::logic_error("PPL::fpu_reset_inexact():"
+			 " cannot control the FPU");
 }
 
 inline int
 fpu_save_rounding_direction_reset_inexact(int dir) {
-  return -1;
+  throw std::logic_error("PPL::fpu_save_rounding_direction_reset_inexact():"
+			 " cannot control the FPU");
 }
 
 inline void
 fpu_restore_rounding_direction(int dir) {
+  throw std::logic_error("PPL::fpu_restore_rounding_direction():"
+			 " cannot control the FPU");
 }
 
 inline int
 fpu_check_inexact() {
-  return -1;
+  throw std::logic_error("PPL::fpu_check_inexact():"
+			 " cannot control the FPU");
 }
 
 } // namespace Parma_Polyhedra_Library

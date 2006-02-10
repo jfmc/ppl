@@ -432,6 +432,9 @@ AC_CHECK_SIZEOF(long double)
 # Use C++ for the remaining checks.
 AC_LANG(C++)
 
+dnl Check for the possibility to control the FPU.
+AC_CHECK_FPU_CONTROL
+
 # Detect the binary format used by 32-bit floats.
 AC_CXX_FLOAT32_BINARY_FORMAT
 

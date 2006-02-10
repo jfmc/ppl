@@ -73,7 +73,7 @@ fpu_check_inexact();
 #include "fpu-ia32.inlines.hh"
 #elif defined(HAVE_FENV_H)
 #include "fpu-c99.inlines.hh"
-#elif sparc
+#elif sparc && defined(HAVE_IEEEFP_H)
 #include "fpu-sparc.inlines.hh"
 #else
 #include "fpu-none.inlines.hh"
