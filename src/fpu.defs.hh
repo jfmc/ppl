@@ -40,7 +40,7 @@ fpu_set_rounding_direction(fpu_rounding_direction_type dir);
   control word previously in use.
 */
 fpu_rounding_control_word_type
-fpu_save_rounding_direction(int fpu_rounding_direction_type);
+fpu_save_rounding_direction(fpu_rounding_direction_type dir);
 
 /*! \brief
   Sets the FPU rounding direction to \p dir, clears the <EM>inexact
