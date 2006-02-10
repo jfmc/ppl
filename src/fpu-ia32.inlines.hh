@@ -37,13 +37,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define FPU_TOWARDZERO   0xc00
 
 #define FPU_ROUNDING_MASK 0xc00
-#ifndef FPU_CONTROL_DEFAULT
-#define FPU_CONTROL_DEFAULT 0x37f
-#endif
 
-#ifndef HIJACK_FPU
-#define HIJACK_FPU 1
-#endif
+#define PPL_FPU_CONTROL_DEFAULT_BASE 0x37f
+// This MUST be congruent with the definition of ROUND_DIRECT
+#define PPL_FPU_CONTROL_DEFAULT (PPL_FPU_CONTROL_DEFAULT_BASE | FPU_UPWARD)
 
 namespace Parma_Polyhedra_Library {
 
@@ -104,33 +101,18 @@ fpu_get_rounding_direction() {
 
 inline void
 fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
-#if HIJACK_FPU
-  fpu_set_control(FPU_CONTROL_DEFAULT | dir);
-#else
-  int old = fpu_get_control();
-  fpu_set_control((old & ~FPU_ROUNDING_MASK) | dir);
-#endif
+  fpu_set_control(PPL_FPU_CONTROL_DEFAULT_BASE | dir);
 }
 
 inline fpu_rounding_control_word_type
 fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
-#if HIJACK_FPU
-  fpu_set_control(FPU_CONTROL_DEFAULT | dir);
+  fpu_set_control(PPL_FPU_CONTROL_DEFAULT_BASE | dir);
   return 0;
-#else
-  int old = fpu_get_control();
-  fpu_set_control((old & ~FPU_ROUNDING_MASK) | dir);
-  return old;
-#endif
 }
 
 inline void
 fpu_reset_inexact() {
-#if HIJACK_FPU
   fpu_clear_exceptions();
-#else
-  fpu_clear_status(FPU_INEXACT);
-#endif
 }
 
 inline fpu_rounding_control_word_type
@@ -140,13 +122,8 @@ fpu_save_rounding_direction_reset_inexact(fpu_rounding_direction_type dir) {
 }
 
 inline void
-fpu_restore_rounding_direction(fpu_rounding_control_word_type w) {
-  used(w);
-#if HIJACK_FPU
-  fpu_set_control(FPU_CONTROL_DEFAULT);
-#else
-  fpu_set_control(w);
-#endif
+fpu_restore_rounding_direction(fpu_rounding_control_word_type) {
+  fpu_set_control(PPL_FPU_CONTROL_DEFAULT);
 }
 
 inline int
