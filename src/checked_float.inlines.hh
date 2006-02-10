@@ -86,7 +86,6 @@ fpu_inverse_rounding(Rounding_Dir dir) {
   return dir == ROUND_INVERSE;
 }
 
-//
 // The FPU mode is "round down".
 //
 // The result of the rounded down multiplication is thus computed directly.
@@ -354,7 +353,8 @@ neg_float(Type& to, const Type from, Rounding_Dir) {
 template <typename Policy, typename Type>
 inline Result
 add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x))
+      || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
   if (CHECK_P(Policy::check_inf_add_inf, is_inf_float(x) && x == -y))
     return V_INF_ADD_INF;
@@ -374,7 +374,8 @@ add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 template <typename Policy, typename Type>
 inline Result
 sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x))
+      || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
   if (CHECK_P(Policy::check_inf_sub_inf, is_inf_float(x) && x == y))
     return V_INF_SUB_INF;
@@ -394,7 +395,8 @@ sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 template <typename Policy, typename Type>
 inline Result
 mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x))
+      || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
   if (CHECK_P(Policy::check_inf_mul_zero, (x == 0 && is_inf_float(y)) ||
 	    (y == 0 && is_inf_float(x))))
@@ -415,7 +417,8 @@ mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 template <typename Policy, typename Type>
 inline Result
 div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x))
+      || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
   if (CHECK_P(Policy::check_inf_div_inf, is_inf_float(x) && is_inf_float(y)))
       return V_INF_DIV_INF;
@@ -439,7 +442,8 @@ div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 template <typename Policy, typename Type>
 inline Result
 rem_float(Type& to, const Type x, const Type y, Rounding_Dir) {
-  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x))
+      || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
   if (CHECK_P(Policy::check_inf_mod, is_inf_float(x)))
     return V_INF_MOD;
@@ -602,7 +606,9 @@ assign_float_mpz(T& to, const mpz_class& _from, Rounding_Dir dir)
   mpz_t mantissa;
   mpz_init(mantissa);
   if (exponent > Float<T>::Binary::MANTISSA_BITS)
-    mpz_tdiv_q_2exp(mantissa, from, exponent - Float<T>::Binary::MANTISSA_BITS);
+    mpz_tdiv_q_2exp(mantissa,
+		    from,
+		    exponent - Float<T>::Binary::MANTISSA_BITS);
   else
     mpz_mul_2exp(mantissa, from, Float<T>::Binary::MANTISSA_BITS - exponent);
   Float<T> f(to);
@@ -690,7 +696,9 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
 template <typename Policy, typename Type>
 inline Result
 add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(to)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(to))
+      || CHECK_P(Policy::check_nan_args, is_nan<Policy>(x))
+      || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
   prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
@@ -708,7 +716,9 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 template <typename Policy, typename Type>
 inline Result
 sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(to)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(x)) || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(to))
+      || CHECK_P(Policy::check_nan_args, is_nan<Policy>(x))
+      || CHECK_P(Policy::check_nan_args, is_nan<Policy>(y)))
     return VC_NAN;
   prepare_inexact<Policy>(dir);
   if (fpu_direct_rounding(dir))
@@ -725,7 +735,8 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 
 template <typename Policy, typename Type>
 inline Result
-output_float(std::ostream& os, Type& from, const Numeric_Format&, Rounding_Dir) {
+output_float(std::ostream& os, Type& from, const Numeric_Format&,
+	     Rounding_Dir) {
   if (from == 0)
     os << "0";
   else if (is_minf<Policy>(from))
@@ -909,7 +920,8 @@ SPECIALIZE_MUL2EXP(float, long double, long double)
 SPECIALIZE_DIV2EXP(float, long double, long double)
 SPECIALIZE_SQRT(float, long double, long double)
 SPECIALIZE_GCD(exact, long double, long double, long double)
-SPECIALIZE_GCDEXT(exact, long double, long double, long double, long double, long double)
+SPECIALIZE_GCDEXT(exact, long double, long double, long double,
+		  long double, long double)
 SPECIALIZE_LCM(gcd_exact, long double, long double, long double)
 SPECIALIZE_SGN(float, long double)
 SPECIALIZE_CMP(float, long double, long double)
