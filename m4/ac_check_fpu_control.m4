@@ -25,8 +25,8 @@ AC_DEFUN([AC_CHECK_FPU_CONTROL],
 AC_LANG_PUSH(C++)
 AC_CHECK_HEADERS([fenv.h ieeefp.h])
 AC_MSG_CHECKING([for the possibility to control the FPU])
-AC_COMPILE_IFELSE(
-[int
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+int
 main() {
 #if i386
 #elif defined(HAVE_FENV_H)
@@ -37,7 +37,8 @@ main() {
 
   ;
   return 0;
-}],
+}
+]])],
   AC_MSG_RESULT(yes)
   ac_cv_can_control_fpu=1,
   AC_MSG_RESULT(no)
