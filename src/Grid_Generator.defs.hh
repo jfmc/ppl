@@ -53,7 +53,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
 } // namespace std
 
 //! A line, parameter or point.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of the class Grid_Generator is one of the following:
 
   - a line \f$\vect{l} = (a_0, \ldots, a_{n-1})^\transpose\f$;

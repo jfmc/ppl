@@ -68,7 +68,7 @@ swap(Parma_Polyhedra_Library::Congruence_System& x,
 } // namespace std
 
 //! A system of congruences.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class Congruence_System is a system of congruences,
     i.e., a multiset of objects of the class Congruence.
     When inserting congruences in a system, space dimensions are
@@ -217,7 +217,7 @@ public:
   static const Congruence_System& zero_dim_empty();
 
   //! An iterator over a system of congruences.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     A const_iterator is used to provide read-only access
     to each congruence contained in an object of Congruence_System.
 

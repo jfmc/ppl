@@ -61,7 +61,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
 
 
 //! A system of grid generators.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class Grid_Generator_System is a system of
     grid generators, i.e., a multiset of objects of the class
     Grid_Generator (lines, parameters and points).
@@ -174,7 +174,8 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
     will be available, where original generators may have been
     reordered, removed (if they are duplicate or redundant), etc.
 */
-class Parma_Polyhedra_Library::Grid_Generator_System : private Generator_System {
+class Parma_Polyhedra_Library::Grid_Generator_System
+  : private Generator_System {
 public:
   // FIXME: Add wrappers of any other public Generator_System methods.
 
@@ -225,25 +226,25 @@ public:
   void recycling_insert(Grid_Generator_System& gs);
 
   //! An iterator over a system of grid generators
-  /*!
-      A const_iterator is used to provide read-only access
-      to each generator contained in an object of Grid_Generator_System.
+  /*! \ingroup PPL_CXX_interface
+    A const_iterator is used to provide read-only access
+    to each generator contained in an object of Grid_Generator_System.
 
-      \par Example
-      The following code prints the system of generators
-      of the grid <CODE>gr</CODE>:
-      \code
+    \par Example
+    The following code prints the system of generators
+    of the grid <CODE>gr</CODE>:
+    \code
   const Grid_Generator_System& gs = gr.generators();
   for (Grid_Generator_System::const_iterator i = gs.begin(),
-         gs_end = gs.end(); i != gs_end; ++i)
+        gs_end = gs.end(); i != gs_end; ++i)
     cout << *i << endl;
-      \endcode
-      The same effect can be obtained more concisely by using
-      more features of the STL:
-      \code
+    \endcode
+    The same effect can be obtained more concisely by using
+    more features of the STL:
+    \code
   const Generator_System& gs = gr.generators();
   copy(gs.begin(), gs.end(), ostream_iterator<Grid_Generator>(cout, "\n"));
-      \endcode
+    \endcode
   */
   class const_iterator : private Generator_System::const_iterator {
   public:

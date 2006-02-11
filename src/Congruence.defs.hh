@@ -109,7 +109,7 @@ swap(Parma_Polyhedra_Library::Congruence& x,
 } // namespace std
 
 //! A linear congruence.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of the class Congruence is a congruence:
   - \f$\cg = \sum_{i=0}^{n-1} a_i x_i + b = 0 \pmod m\f$
 

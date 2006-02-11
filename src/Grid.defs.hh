@@ -97,8 +97,8 @@ bool operator!=(const Grid& x, const Grid& y);
 
 
 //! A grid.
-/*!
-  An object of the class Grid represents a grid.
+/*! \ingroup PPL_CXX_interface
+  An object of the class Grid represents a rational grid.
 
   A grid can be specified as either a finite system of congruences
   or a finite system of generators (see Section \ref
