@@ -378,8 +378,22 @@ CREDITS.cc:	CREDITS.cc.dist
 
 endif !HAVE_PERL
 
+if USE_PRECOMPILED_HEADERS
+
+ppl.hh.gch: ppl.hh
+	$(CXXCOMPILE) -xc++-header -o $@ $<
+
+PRECOMPILED = ppl.hh.gch
+
+else
+
+PRECOMPILED =
+
+endif
+
 BUILT_SOURCES = \
 $(noinst_HEADERS) \
+$(PRECOMPILED) \
 BUGS.cc \
 COPYING.cc \
 CREDITS.cc
