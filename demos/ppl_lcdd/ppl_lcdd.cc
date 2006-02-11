@@ -34,7 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #if defined(USE_PPL)
 
-#include "ppl_install.hh"
+#include "ppl.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 

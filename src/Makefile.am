@@ -338,11 +338,7 @@ $(NO_UNDEFINED_FLAG) \
 
 noinst_HEADERS = \
 ppl.hh \
-ppl_include_files.hh \
-ppl_install.hh
-
-ppl.hh:	ppl_install.hh
-	cat ppl_install.hh >$@
+ppl_include_files.hh
 
 ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	rm -f $@
@@ -353,7 +349,7 @@ ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 
 if HAVE_PERL
 
-ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(INCLUDE_FILES) $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
+ppl.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(INCLUDE_FILES) $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/ppl_header.hh >$@
@@ -370,7 +366,7 @@ CREDITS.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
 
 else !HAVE_PERL
 
-ppl_install.hh:	ppl_install.hh.dist
+ppl.hh:	ppl.hh.dist
 	cp -f $< $@
 
 BUGS.cc:	BUGS.cc.dist
@@ -388,19 +384,18 @@ BUGS.cc \
 COPYING.cc \
 CREDITS.cc
 
-# ppl.hh and ppl_install.hh are not distributed.
-# ppl_install.hh.dist, which is distributed, is a copy of ppl_install.hh;
+# ppl.hh is not distributed.
+# ppl.hh.dist, which is distributed, is a copy of ppl.hh;
 # likewise for BUGS.cc.dist, COPYING.cc.dist and CREDITS.cc.dist.
 dist-hook:
-	mv -f $(distdir)/ppl_install.hh $(distdir)/ppl_install.hh.dist
+	mv -f $(distdir)/ppl.hh $(distdir)/ppl.hh.dist
 	mv -f $(distdir)/BUGS.cc $(distdir)/BUGS.cc.dist
 	mv -f $(distdir)/COPYING.cc $(distdir)/COPYING.cc.dist
 	mv -f $(distdir)/CREDITS.cc $(distdir)/CREDITS.cc.dist
-	rm -f $(distdir)/ppl.hh
 
-install-data-local: ppl_install.hh
+install-data-local: ppl.hh
 	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	$(INSTALL_DATA) ppl_install.hh $(DESTDIR)$(includedir)/ppl.hh
+	$(INSTALL_DATA) ppl.hh $(DESTDIR)$(includedir)/ppl.hh
 
 uninstall-local:
 	rm -f $(DESTDIR)$(includedir)/ppl.hh
