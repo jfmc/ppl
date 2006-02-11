@@ -2,8 +2,12 @@
 *.lo
 .deps
 .libs
+BUGS.cc
+COPYING.cc
+CREDITS.cc
 Makefile
 Makefile.in
+ppl-config.cc
 ppl.hh
 ppl_include_files.hh
 version.hh
