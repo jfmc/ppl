@@ -72,7 +72,7 @@ void gcd_assign(GMP_Integer& x,
 		const GMP_Integer& y, const GMP_Integer& z);
 
 //! Extended GCD.
-/*!
+/*! \relates GMP_Integer
   Assigns to \p x the greatest common divisor of \p y and \p z, and to
   \p s and \p t the values such that \p y * \p s + \p z * \p t = \p x.
 */
