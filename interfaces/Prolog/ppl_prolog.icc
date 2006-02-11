@@ -21,7 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl.hh"
-#include "pwl_install.hh"
+#include "pwl.hh"
 #include "track_allocation.hh"
 #include <set>
 #include <vector>

@@ -21,7 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl.hh"
-#include "pwl_install.hh"
+#include "pwl.hh"
 
 // Include gmp.h before SWI-Prolog.h.  This is required in order
 // to get access to interface functions dealing with GMP numbers

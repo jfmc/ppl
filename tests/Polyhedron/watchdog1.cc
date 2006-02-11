@@ -21,7 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include "pwl_install.hh"
+#include "pwl.hh"
 #include "timings.hh"
 
 namespace {
