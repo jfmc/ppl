@@ -288,7 +288,7 @@ private:
     <CODE>true</CODE> if and only if the LP problem is satisfiable after
     applying incrementality, <CODE>false</CODE> otherwise.
   */
-  bool incrementality();
+  bool process_pending_constraints();
 
   /*! \brief
     Optimizes the current LP problem using the second phase of the
@@ -346,13 +346,14 @@ private:
     This will containt all the row indexes of the tableau that are no more
     satisfied after adding more contraints to \p *this.
 */
-  Status parseconstraints(const Constraint_System& cs,
-			  dimension_type& new_num_rows,
-			  dimension_type& num_slack_variables,
-			  std::deque<bool>& is_tableau_constraint,
-			  std::deque<bool>& nonnegative_variable,
-			  std::vector<dimension_type>& nonfeasible_cs,
-			  std::vector<bool>& satisfied_ineqs);
+  bool parse_constraints(const Constraint_System& cs,
+			 dimension_type& new_num_rows,
+			 dimension_type& num_slack_variables,
+			 std::deque<bool>& is_tableau_constraint,
+			 std::deque<bool>& nonnegative_variable,
+			 std::vector<dimension_type>& nonfeasible_cs,
+			 std::deque<bool>& satisfied_ineqs,
+			 const bool bootstrap);
   /*! \brief
     Checks for optimality and, if it does not hold, computes the column
     index of the variable entering the base of the LP problem.
