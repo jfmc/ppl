@@ -235,7 +235,7 @@ Polyhedra_Powerset<C_Polyhedron>
   *this = nnc_this;
 }
 
-/*! \relates Polyhedra_Powerset */
+/*! \relates Parma_Polyhedra_Library::Polyhedra_Powerset */
 template <typename PH>
 inline bool
 check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps) {
@@ -244,7 +244,7 @@ check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps) {
   return check_containment(pph, pps);
 }
 
-/*! \relates Polyhedra_Powerset */
+/*! \relates Parma_Polyhedra_Library::Polyhedra_Powerset */
 template <>
 inline bool
 check_containment(const C_Polyhedron& ph,
