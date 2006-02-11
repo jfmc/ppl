@@ -1510,8 +1510,7 @@ Moreover, as we have already used the symbol \f$\cG\f$ to
 denote a generator system, we will use \f$\cL\f$ to denote
 a rational grids.
 
-\subsection Congruence_Relations
-   Congruences and Congruence Relations
+\subsection Congruence_Relations Congruences and Congruence Relations
 
 For any \f$a, b, f \in \Rset\f$,
 \f$a \equiv_f b\f$ denotes the <EM>congruence</EM>
@@ -1614,7 +1613,7 @@ Then
   for all points \f$\vect{p} \in \cL\f$ and all \f$\lambda \in \Rset\f$.
 
 
-\subsection Grid_Generator_Representation The Generator Representation
+\subsection Grid_Generator_Representation The Grid Generator Representation
 
 We can generate any rational grid in \f$\Gset_n\f$
 from a finite subset of its points, parameters and lines;
@@ -1649,7 +1648,7 @@ above, the generator system \f$(L, Q, P)\f$ can be easily converted to
 the generator system \f$(L, \emptyset, Q_{\vect{p}} \union P)\f$
 that generates the same grid.
 
-\subsection Grid_Minimized_Representations Minimized Representations
+\subsection Grid_Minimized_Representations Minimized Grid Representations
 
 A <EM>minimized</EM> congruence system \f$\cC\f$ for \f$\cL\f$
 is such that, if \f$\cC'\f$ is another congruence system for \f$\cL\f$,
@@ -1727,7 +1726,7 @@ In this section we briefly describe operations on rational grids
 that are provided by the library.
 These are similar to those described in Section \ref Operations_on_Convex_Polyhedra.
 
-\subsection Grid_Intersection_and__Join Grid Intersection and Grid Join
+\subsection Grid_Intersection_and_Join Grid Intersection and Grid Join
 
 For any pair of grids \f$\cL_1, \cL_2 \in \Gset_n\f$,
 the <EM>intersection</EM> of \f$\cL_1\f$ and \f$\cL_2\f$,
@@ -2153,7 +2152,7 @@ congruence relations that can occur in this additional parameter.
 The <EM>bounded</EM> extrapolation operators further enhance each one
 of the limited extrapolation operators described above, by ensuring
 that their results cannot be worse than the smallest
-\ref rectilinear_grids "rectilinear grid" that contains the two argument grids.
+\ref Rectilinear_Grids "rectilinear grid" that contains the two argument grids.
 
 \section use_of_library Using the Library
 

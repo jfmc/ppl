@@ -123,7 +123,7 @@ bool operator!=(const Grid& x, const Grid& y);
   - most operations working on a grid and another object (another
     grid, a congruence, a generator, a set of variables, etc.) will
     throw an exception if the grid and the object are not
-    dimension-compatible (see Section \ref grid_space_dimensions);
+    dimension-compatible (see Section \ref Grid_Space_Dimensions);
   - the only ways in which the space dimension of a grid can be
     changed are with <EM>explicit</EM> calls to operators provided for
     that purpose, and with standard copy, assignment and swap
@@ -613,8 +613,8 @@ public:
   dimension_type space_dimension() const;
 
   /*! \brief
-    Returns \f$0\f$, if \p *this is empty; otherwise, returns the \ref
-    affine_dimension "affine dimension" of \p *this.
+    Returns \f$0\f$, if \p *this is empty; otherwise, returns
+    the \ref Grid_Affine_Dimension "affine dimension" of \p *this.
   */
   dimension_type affine_dimension() const;
 
@@ -1258,9 +1258,8 @@ public:
   */
   void add_recycled_constraints(Constraint_System& cs);
 
-  //! Adds the equality constraints in \p cs to \p *this, reducing the
-  //! result.
-  /*!
+  /*! \brief
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
@@ -1405,7 +1404,7 @@ public:
   bool upper_bound_assign_if_exact(const Grid& y);
 
   /*! \brief
-    Assigns to \p *this the \ref grid_difference "grid-difference" of
+    Assigns to \p *this the \ref Grid_Difference "grid-difference" of
     \p *this and \p y.
 
     The grid difference between grids x and y is the smallest grid
@@ -1420,7 +1419,8 @@ public:
   void difference_assign(const Grid& y);
 
   /*! \brief
-    Assigns to \p *this the \ref affine_relation "affine image" of \p
+    Assigns to \p *this the \ref Grid_Affine_Transformation
+    "affine image" of \p
     *this under the function mapping variable \p var to the affine
     expression specified by \p expr and \p denominator.
 
@@ -1485,7 +1485,8 @@ public:
 		    = Coefficient_one());
 
   /*! \brief
-    Assigns to \p *this the \ref affine_relation "affine preimage" of
+    Assigns to \p *this the \ref Grid_Affine_Transformation
+    "affine preimage" of
     \p *this under the function mapping variable \p var to the affine
     expression specified by \p expr and \p denominator.
 
@@ -1548,8 +1549,8 @@ public:
 		         = Coefficient_one());
 
   /*! \brief
-    Assigns to \p *this the image of \p *this with respect to the \ref
-    Generalized_Affine_Relations "generalized affine relation"
+    Assigns to \p *this the image of \p *this with respect to
+    the \ref Grid_Generalized_Image "generalized affine relation"
     \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
     \pmod{\mathrm{modulus}}\f$.
 
@@ -1582,7 +1583,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
-    \ref Generalized_Affine_Relations "generalized affine relation"
+    \ref Grid_Generalized_Image "generalized affine relation"
     \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
     \pmod{\mathrm{modulus}}\f$.
 
@@ -1614,8 +1615,8 @@ public:
 				   = Coefficient_one());
 
   /*! \brief
-    Assigns to \p *this the image of \p *this with respect to the \ref
-    grid_generalized_image "generalized affine relation"
+    Assigns to \p *this the image of \p *this with respect to
+    the \ref Grid_Generalized_Image "generalized affine relation"
     \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
 
     \param lhs
@@ -1640,7 +1641,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
-    \ref grid_generalized_image "generalized affine relation"
+    \ref Grid_Generalized_Image "generalized affine relation"
     \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
 
     \param lhs
@@ -1664,7 +1665,7 @@ public:
 				   = Coefficient_one());
 
   /*! \brief
-    Assigns to \p *this the result of computing the \ref grid_time_elapse
+    Assigns to \p *this the result of computing the \ref Grid_Time_Elapse
     "time-elapse" between \p *this and \p y.
 
     \exception std::invalid_argument
@@ -1676,8 +1677,8 @@ public:
   void topological_closure_assign();
 
   /*! \brief
-    Assigns to \p *this the result of computing the \ref grid_widening
-    Grid widening between \p *this and \p y.
+    Assigns to \p *this the result of computing the \ref Grid_Widening
+    "Grid widening" between \p *this and \p y.
 
     \param y
     A grid that <EM>must</EM> be contained in \p *this;
@@ -1685,7 +1686,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref Widening_with_Tokens "widening with tokens" delay technique).
+    \ref Grid_Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -1693,7 +1694,7 @@ public:
   void widening_assign(const Grid& y, unsigned* tp = NULL);
 
   /*! \brief
-    Improves the result of the \ref grid_widening Grid widening
+    Improves the result of the \ref Grid_Widening "Grid widening"
     computation by also enforcing those congruences in \p cgs that are
     satisfied by all the points of \p *this.
 
@@ -1706,7 +1707,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref Widening_with_Tokens "widening with tokens" delay technique).
+    \ref Grid_Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
@@ -1775,7 +1776,7 @@ public:
   void add_space_dimensions_and_project(dimension_type m);
 
   /*! \brief
-    Assigns to \p *this the \ref grid_concatenate "concatenation" of
+    Assigns to \p *this the \ref Grid_Concatenate "concatenation" of
     \p *this and \p y, taken in this order.
 
     \exception std::length_error
@@ -1807,8 +1808,8 @@ public:
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
   /*! \brief
-    Remaps the dimensions of the vector space according to a \ref
-    map_space_dimensions "partial function".
+    Remaps the dimensions of the vector space according to
+    a \ref Grid_Map_Space_Dimensions "partial function".
 
     If \p pfunc maps only some of the dimensions of \p *this then the
     rest will be projected away.
@@ -1850,8 +1851,8 @@ public:
     dimension of the vector space enclosing the grid.
 
     The result is undefined if \p pfunc does not encode a partial
-    function with the properties described in the \ref
-    map_space_dimensions "specification of the mapping operator".
+    function with the properties described in the
+    \ref Grid_Map_Space_Dimensions "specification of the mapping operator".
   */
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);
@@ -1875,7 +1876,7 @@ public:
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
     and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
     then the \f$k\f$-th space dimension is
-    \ref expand_space_dimension "expanded" to \p m new space dimensions
+    \ref Grid_Expand_Space_Dimension "expanded" to \p m new space dimensions
     \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
   */
   void expand_space_dimension(Variable var, dimension_type m);
@@ -1900,7 +1901,7 @@ public:
     \p to_be_folded is a set of variables whose maximum space dimension
     is also less than or equal to \f$n\f$, and \p var is not a member
     of \p to_be_folded, then the space dimensions corresponding to
-    variables in \p to_be_folded are \ref fold_space_dimensions "folded"
+    variables in \p to_be_folded are \ref Grid_Fold_Space_Dimensions "folded"
     into the \f$k\f$-th space dimension.
   */
   void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
@@ -1928,8 +1929,8 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by \ref
-    ascii_dump) and sets \p *this accordingly.
+    Loads from \p s an ASCII representation (as produced by
+    \ref ascii_dump) and sets \p *this accordingly.
 
      \return
      <CODE>true</CODE> if successful, else <CODE>false</CODE>.
