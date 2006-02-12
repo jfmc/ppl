@@ -128,7 +128,6 @@ test3() {
     exit(1);
 
   Congruence_System known_cgs;
-  // FIXME: Confirm that this is the correct result.
   known_cgs.insert((  9*A +   0*B +  0*C + 0*D %=   0) / 27);
   known_cgs.insert((-18*A +  27*B +  0*C + 0*D %=   0) / 27);
   known_cgs.insert((-90*A + 135*B + 27*C + 0*D %=  27) / 27);

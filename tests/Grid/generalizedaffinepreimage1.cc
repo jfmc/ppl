@@ -137,7 +137,6 @@ test3() {
   if (find_variation(gr1))
     exit(1);
 
-  // FIX check
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point(-A));
   known_gr.add_generator(grid_point(A));
@@ -186,7 +185,6 @@ test4() {
   if (find_variation(gr1))
     exit(1);
 
-  // FIX check
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point(-3*A));
   known_gr.add_generator(grid_point(A));
@@ -194,7 +192,6 @@ test4() {
 
   if (gr1 == known_gr) {
 
-    // FIX known_gr should be same for gr1 and gr2?
     known_gr.add_generator(grid_point(-A));
 
     // Congruence expression.
@@ -236,7 +233,6 @@ test5() {
   if (find_variation(gr1))
     exit(1);
 
-  // FIX check
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point(-2*A));
   known_gr.add_generator(grid_point(2*A));
@@ -244,7 +240,6 @@ test5() {
 
   if (gr1 == known_gr) {
 
-    // FIX known_gr should be same for gr1 and gr2?
     known_gr.add_generator(grid_point());
 
     // Congruence expression.
@@ -286,8 +281,6 @@ test6() {
   Grid known_gr(3, EMPTY);
   known_gr.add_generator(grid_point(2*A));
   known_gr.add_generator(grid_point(2*A + 3*B));
-  // FIX check
-  //known_gr.add_generator(grid_line(A + C));
   known_gr.add_generator(grid_line(3*A + C));
   known_gr.add_generator(grid_point(4*A));  // Original modulus.
   known_gr.add_generator(grid_point(7*A));  // Transformation modulus.
@@ -322,8 +315,6 @@ test7() {
   Grid known_gr(3, EMPTY);
   known_gr.add_generator(grid_point(2*A));
   known_gr.add_generator(grid_point(2*A + 3*B));
-  // FIX check
-  //known_gr.add_generator(grid_line(A + C));
   known_gr.add_generator(grid_line(3*A + C));
   known_gr.add_generator(grid_point(4*A));  // Original modulus.
 

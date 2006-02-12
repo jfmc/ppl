@@ -31,14 +31,11 @@ Variable B(1);
 Variable C(2);
 Variable D(3);
 
-// FIX Tests 1 to 13 are equivalent to tests 1 to 13 in
-// generalizedaffinepreimage1.cc.
-
 // Expressions both constants.
 
 void
-test14() {
-  nout << "test14:" << endl;
+test1() {
+  nout << "test1:" << endl;
 
   Grid gr(2);
   gr.add_congruence(A %= 0);
@@ -69,8 +66,8 @@ test14() {
 // Left hand side constant.
 
 void
-test15() {
-  nout << "test15:" << endl;
+test2() {
+  nout << "test2:" << endl;
 
   Grid gr(2);
   gr.add_congruence(A %= 0);
@@ -80,7 +77,6 @@ test15() {
   if (find_variation(gr))
     exit(1);
 
-  // FIX check
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(A + B));
@@ -101,8 +97,8 @@ test15() {
 // Expressions with unique variables.
 
 void
-test16() {
-  nout << "test16:" << endl;
+test3() {
+  nout << "test3:" << endl;
 
   Grid gr(3);
   gr.add_congruence(A - B == 0);
@@ -134,8 +130,8 @@ test16() {
 // Simple expressions having common variables.
 
 void
-test17() {
-  nout << "test17:" << endl;
+test4() {
+  nout << "test4:" << endl;
 
   Grid gr(2);
   gr.add_congruence(A - B == 0);
@@ -163,8 +159,8 @@ test17() {
 // Expressions having common variables.
 
 void
-test18() {
-  nout << "test18:" << endl;
+test5() {
+  nout << "test5:" << endl;
 
   Grid gr(2);
   gr.add_congruence((A %= 0) / 1);
@@ -190,13 +186,49 @@ test18() {
   exit(1);
 }
 
-// FIX add an equivalent of one of the ph tests
+// Test similar to the test in
+// ppl/tests/Polyhedron/generalizedaffinepreimage4.cc
+
+void
+test6() {
+  nout << "test6:" << endl;
+
+  Grid gr(2, EMPTY);
+  gr.add_generator(grid_point(A + B));
+  gr.add_generator(grid_point(2*A));
+  gr.add_generator(grid_point(2*A + 2*B));
+  gr.add_generator(grid_point(3*A + B));
+
+  Grid known_gr(gr);
+
+  gr.generalized_affine_preimage(B, B+2, 1, 5);
+
+  if (find_variation(gr))
+    exit(1);
+
+// A longer way of computing the generalized affine preimage below.
+  known_gr.add_space_dimensions_and_embed(1);
+  known_gr.add_congruence((B %= C+2) / 5);
+  Variables_Set vset;
+  vset.insert(B);
+  known_gr.remove_space_dimensions(vset);
+
+  if (gr == known_gr)
+    return;
+
+  nout << "Grid should equal known grid." << endl
+       << " grid:" << endl << gr << endl
+       << "known:" << endl << known_gr << endl;
+
+  exit(1);
+}
+
 
 // Expressions having common variables.
 
 void
-test20() {
-  nout << "test20:" << endl;
+test7() {
+  nout << "test7:" << endl;
 
   Grid gr(3);
   gr.add_congruence((C %= 0) / 3);
@@ -207,7 +239,6 @@ test20() {
   if (find_variation(gr))
     exit(1);
 
-  // FIX check
   Grid known_gr(3);
 
   if (gr == known_gr)
@@ -224,8 +255,8 @@ test20() {
 // generalized_affine_preimage must minimize the grid.
 
 void
-test21() {
-  nout << "test21:" << endl;
+test8() {
+  nout << "test8:" << endl;
 
   Grid gr(2);
   gr.add_congruence(A - B == 0);
@@ -249,8 +280,8 @@ test21() {
 // generalized_affine_preimage must minimize the grid.
 
 void
-test22() {
-  nout << "test22:" << endl;
+test9() {
+  nout << "test9:" << endl;
 
   Grid gr(2);
   gr.add_congruence(A - B == 0);
@@ -274,8 +305,8 @@ test22() {
 // grid.
 
 void
-test23() {
-  nout << "test23:" << endl;
+test10() {
+  nout << "test10:" << endl;
 
   Grid gr(3);
   gr.add_congruence(C %= -2);
@@ -290,8 +321,8 @@ test23() {
 // Left hand side expression of space dimension greater than the grid.
 
 void
-test24() {
-  nout << "test24:" << endl;
+test11() {
+  nout << "test11:" << endl;
 
   Grid gr(3);
   gr.add_congruence((C == -2) / 0);
@@ -306,8 +337,8 @@ test24() {
 // Expressions having common variables, with a negative modulus.
 
 void
-test25() {
-  nout << "test25:" << endl;
+test12() {
+  nout << "test12:" << endl;
 
   Grid gr(3);
   gr.add_congruence((C %= 0) / 3);
@@ -339,7 +370,6 @@ main() TRY {
 
   nout << "generalizedaffinepreimage2:" << endl;
 
-#if 0
   test1();
   test2();
   test3();
@@ -352,22 +382,6 @@ main() TRY {
   test10();
   test11();
   test12();
-  test13();
-#endif
-  test14();
-  test15();
-  test16();
-  test17();
-  test18();
-#if 0
-  test19();
-#endif
-  test20();
-  test21();
-  test22();
-  test23();
-  test24();
-  test25();
 
   return 0;
 }
