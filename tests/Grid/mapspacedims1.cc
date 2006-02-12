@@ -27,7 +27,6 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
-#if NOISY
 void
 print_function(const PFunction& function, const std::string& intro = "",
 	       std::ostream& s = std::cout) {
@@ -35,7 +34,6 @@ print_function(const PFunction& function, const std::string& intro = "",
     s << intro << endl;
   function.print(s);
 }
-#endif
 
 // Empty grid, empty mapping.
 
