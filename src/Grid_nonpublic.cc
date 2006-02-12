@@ -385,12 +385,12 @@ PPL::Grid::minimize() const {
       }
       else {
 #ifndef NDEBUG
-	simplify(gr.con_sys, gr.dim_kinds);
-#else
 	// Both systems are up to date, and the empty case is handled
 	// above, so the grid should contain points.
 	bool empty = simplify(gr.con_sys, gr.dim_kinds);
 	assert(!empty);
+#else
+	simplify(gr.con_sys, gr.dim_kinds);
 #endif
 	gr.set_congruences_minimized();
 	if (!generators_are_minimized()) {
