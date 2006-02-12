@@ -34,7 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define VERY_NOISY 0
 #endif
 
-bool
+static bool
 check_noisy(const char* environment_variable) {
 #if HAVE_DECL_GETENV 
   return getenv(environment_variable) != 0;
