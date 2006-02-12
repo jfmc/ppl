@@ -55,7 +55,7 @@ test1() {
 int
 main() TRY {
 
-  test1();
+  DO_TEST(test1);
 
   return 0;
 

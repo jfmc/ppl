@@ -34,8 +34,6 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point( 3*A +   B + 0*C, 4));
   gs.insert(grid_point(11*A + 2*B + 0*C, 4));
@@ -73,8 +71,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point( 3*A +   B + 0*C, 4));
   gs.insert(grid_point(11*A + 2*B + 0*C, 4));
@@ -111,8 +107,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(3*A + 7*B - 2*C + 3*D));
   gs.insert(grid_point(0*A + 0*B +   C +   D));
@@ -151,8 +145,6 @@ test3() {
 
 void
 test4() {
-  nout << "test1:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(2*A + 0*B));
   gs.insert(grid_point(30*A + 36*B));
@@ -189,10 +181,10 @@ main() TRY {
 
   nout << "grid1_16:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
 
   return 0;
 }

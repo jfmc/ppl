@@ -36,8 +36,6 @@ Variable E(4);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A - B == 0);
   gr.add_congruence(A %= 0);
@@ -67,8 +65,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr(4, EMPTY);
 
   Variables_Set vars;
@@ -95,8 +91,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr(7, UNIVERSE);
 
   Variables_Set vars;
@@ -124,8 +118,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(0*A));
   gs.insert(grid_point(2*A));
@@ -160,8 +152,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Variables_Set vars;
   vars.insert(B);
   vars.insert(D);
@@ -199,8 +189,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr(3);
   gr.add_congruence(A - B == 0);
   gr.add_congruence(A %= 0);
@@ -231,8 +219,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(A));
@@ -264,8 +250,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(A));
@@ -295,8 +279,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Grid gr(1, EMPTY);
 
   Variables_Set vars;
@@ -314,8 +296,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(A));
@@ -352,16 +332,16 @@ main() TRY {
 
   nout << "removespacedims1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
 
   return 0;
 }

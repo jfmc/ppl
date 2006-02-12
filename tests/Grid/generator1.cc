@@ -34,8 +34,6 @@ Variable C(2);
 
 static void
 test1() {
-  nout << "test1:" << endl;
-
   Grid_Generator a(grid_point(A + 2*B + 3*C));
   if (find_variation(a))
     exit(1);
@@ -57,8 +55,6 @@ test1() {
 
 static void
 test2() {
-  nout << "test2:" << endl;
-
   Grid_Generator a(grid_point(A + 2*B + 3*C, 5));
   if (find_variation(a))
     exit(1);
@@ -80,8 +76,6 @@ test2() {
 
 static void
 test3() {
-  nout << "test3:" << endl;
-
   Grid_Generator a(grid_line(A + 2*B + 3*C));
   if (find_variation(a))
     exit(1);
@@ -103,8 +97,6 @@ test3() {
 
 static void
 test4() {
-  nout << "test4:" << endl;
-
   Grid_Generator a(parameter(A + 2*B + 3*C));
   if (find_variation(a))
     exit(1);
@@ -126,8 +118,6 @@ test4() {
 
 static void
 test5() {
-  nout << "test5:" << endl;
-
   Grid_Generator a(parameter(A + 2*B + 3*C, 4));
   if (find_variation(a))
     exit(1);
@@ -149,8 +139,6 @@ test5() {
 
 static void
 test6() {
-  nout << "test6:" << endl;
-
   Grid_Generator a(grid_point(- A + 2*B + 3*C, 4));
   if (find_variation(a))
     exit(1);
@@ -172,8 +160,6 @@ test6() {
 
 static void
 test7() {
-  nout << "test7:" << endl;
-
   Grid_Generator a(grid_point(- A + 2*B + 3*C, 4));
   if (find_variation(a))
     exit(1);
@@ -195,8 +181,6 @@ test7() {
 
 static void
 test8() {
-  nout << "test8:" << endl;
-
   Grid_Generator g = grid_point(- A + 2*B + 3*C, 4);
   Grid_Generator& g_ref = g;
 
@@ -221,8 +205,6 @@ test8() {
 
 static void
 test9() {
-  nout << "test9:" << endl;
-
   Linear_Expression le;
   Grid_Generator a(grid_point(le));
   if (find_variation(a))
@@ -249,15 +231,15 @@ main() TRY {
 
   nout << "generator1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
 
   return 0;
 }

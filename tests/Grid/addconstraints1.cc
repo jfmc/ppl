@@ -35,8 +35,6 @@ Variable D(3);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(3);
 
   Constraint_System cs;
@@ -68,8 +66,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Constraint_System cs;
   cs.insert(B == 0);
   cs.insert(A >= 0);
@@ -101,8 +97,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Constraint_System cs;
   cs.insert(B < 0);
   cs.insert(A >= 0);
@@ -133,8 +127,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Constraint_System cs;
   cs.insert(B < 0);
   cs.insert(B > 0);
@@ -166,8 +158,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Constraint_System cs;
   cs.insert(2*B == 3);
   cs.insert(A == 0);
@@ -199,8 +189,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Constraint_System cs;
   cs.insert(2*B >= 3);
   cs.insert(2*A == 7);
@@ -231,8 +219,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Constraint_System cs;
   cs.insert(2*B >= 3);
   cs.insert(D == 0);
@@ -264,8 +250,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Constraint_System cs;
   cs.insert(2*B > 2);
   cs.insert(2*D == 0);
@@ -295,8 +279,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Constraint_System cs;
   cs.insert(2*B > 6);
   cs.insert(2*C == 6*D);
@@ -326,8 +308,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Constraint_System cs;
   cs.insert(A + B == 0);
 
@@ -344,8 +324,6 @@ test10() {
 
 void
 test11() {
-  nout << "test11:" << endl;
-
   Constraint_System cs;
   cs.insert(B == 0);
 
@@ -363,8 +341,6 @@ test11() {
 
 void
 test12() {
-  nout << "test12:" << endl;
-
   Constraint_System cs;
   cs.insert(B == 0);
 
@@ -381,8 +357,6 @@ test12() {
 
 void
 test13() {
-  nout << "test13:" << endl;
-
   Constraint_System cs;
   cs.insert(B == 0);
 
@@ -399,8 +373,6 @@ test13() {
 
 void
 test14() {
-  nout << "test14:" << endl;
-
   Constraint_System cs;
   cs.insert(A + B == 0);
 
@@ -417,8 +389,6 @@ test14() {
 
 void
 test15() {
-  nout << "test15:" << endl;
-
   Constraint_System cs;
   cs.insert(A + B == 0);
 
@@ -435,8 +405,6 @@ test15() {
 
 void
 test16() {
-  nout << "test16:" << endl;
-
   Constraint_System cs;
   cs.insert(A + B == 0);
 
@@ -454,8 +422,6 @@ test16() {
 
 void
 test17() {
-  nout << "test17:" << endl;
-
   Constraint_System cs;
   cs.insert(A + B == 0);
 
@@ -472,8 +438,6 @@ test17() {
 
 void
 test18() {
-  nout << "test18:" << endl;
-
   Constraint_System cs;
   cs.insert(A + B == 0);
 
@@ -494,24 +458,24 @@ main() TRY {
 
   nout << "addconstraints1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
-  test13();
-  test14();
-  test15();
-  test16();
-  test17();
-  test18();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
 
   return 0;
 }

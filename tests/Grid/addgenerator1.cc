@@ -30,8 +30,6 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Variable A(0);
 
   Grid gr(1, EMPTY);
@@ -57,8 +55,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -86,8 +82,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -118,8 +112,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -154,8 +146,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -187,8 +177,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -219,8 +207,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -249,8 +235,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -285,8 +269,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Variable A(0);
   Variable C(2);
 
@@ -304,8 +286,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Grid gr(0, EMPTY);
   gr.add_generator(grid_point());
 
@@ -325,8 +305,6 @@ test10() {
 
 void
 test11() {
-  nout << "test11:" << endl;
-
   Grid gr(0);
   gr.add_generator(grid_point());
 
@@ -346,8 +324,6 @@ test11() {
 
 void
 test12() {
-  nout << "test12:" << endl;
-
   Variable A(0);
 
   Grid gr(2, EMPTY);
@@ -364,8 +340,6 @@ test12() {
 
 void
 test13() {
-  nout << "test13:" << endl;
-
   Grid gr(2, EMPTY);
 
   try {
@@ -379,8 +353,6 @@ test13() {
 
 void
 test14() {
-  nout << "test14:" << endl;
-
   Grid gr(0, EMPTY);
 
   try {
@@ -396,20 +368,20 @@ main() TRY {
 
   nout << "addgenerator1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
-  test13();
-  test14();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
 
   return 0;
 }

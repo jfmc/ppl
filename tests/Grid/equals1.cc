@@ -33,8 +33,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point());
   gs.insert(grid_point(3*A));
@@ -67,8 +65,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Congruence_System cgs;
   cgs.insert(A - B %= 0);
   cgs.insert((C %= 0) / 7);
@@ -104,8 +100,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Congruence_System cgs;
   cgs.insert(A - B %= 0);
   cgs.insert((C %= 0) / 7);
@@ -141,8 +135,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(0*A));
   gs.insert(grid_point(1*A));
@@ -186,8 +178,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid gr1(3);
   gr1.add_congruence(A == 0);
 
@@ -220,8 +210,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point());
 
@@ -255,8 +243,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point());
   gr1.add_generator(parameter(B));
@@ -294,13 +280,13 @@ main() TRY {
 
   nout << "equals1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
 
   return 0;
 }

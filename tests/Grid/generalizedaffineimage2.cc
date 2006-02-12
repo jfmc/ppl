@@ -38,8 +38,6 @@ Variable D(3);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((B %= 0) / 2);
@@ -69,8 +67,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence(B %= 0);
@@ -101,8 +97,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A + B %= 0) / 2);
@@ -133,8 +127,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A + B %= 0) / 2);
@@ -165,8 +157,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A + B %= 0) / 2);
@@ -197,8 +187,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A + B %= 0) / 2);
@@ -229,8 +217,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A - B %= 0) / 2);
@@ -261,8 +247,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A - B %= 0) / 2);
@@ -293,8 +277,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Grid gr(3);
   gr.add_congruence((B %= 0) / 3);
   gr.add_congruence((A - 2*C %= 0) / 2);
@@ -327,8 +309,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Grid gr(3);
   gr.add_congruence((B %= 0) / 3);
   gr.add_congruence((A - 2*C %= 0) / 2);
@@ -372,8 +352,6 @@ test10() {
 
 void
 test11() {
-  nout << "test11:" << endl;
-
   Grid gr(5, EMPTY);
 
   gr.generalized_affine_image(4*A, A - 2*C + 3, 7);
@@ -399,8 +377,6 @@ test11() {
 
 void
 test12() {
-  nout << "test12:" << endl;
-
   Grid gr(1);
   gr.add_congruence(A == 0);
   gr.add_congruence(A == 3);
@@ -428,8 +404,6 @@ test12() {
 
 void
 test13() {
-  nout << "test13:" << endl;
-
   Grid gr(1);
 
   gr.generalized_affine_image(1*A, A + 2);
@@ -455,8 +429,6 @@ test13() {
 
 void
 test14() {
-  nout << "test14:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A %= 0);
 
@@ -487,8 +459,6 @@ test14() {
 
 void
 test15() {
-  nout << "test15:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A %= 0);
 
@@ -518,8 +488,6 @@ test15() {
 
 void
 test16() {
-  nout << "test16:" << endl;
-
   Grid gr(3);
   gr.add_congruence(A - B == 0);
   gr.add_congruence((C %= 0) / 3);
@@ -551,8 +519,6 @@ test16() {
 
 void
 test17() {
-  nout << "test17:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A - B == 0);
 
@@ -579,8 +545,6 @@ test17() {
 
 void
 test18() {
-  nout << "test18:" << endl;
-
   Grid gr(2);
   gr.add_congruence((A %= 0) / 1);
   gr.add_congruence((B %= 0) / 2);
@@ -610,8 +574,6 @@ test18() {
 
 void
 test19() {
-  nout << "test19:" << endl;
-
   Grid gr(3);
   gr.add_congruence(C == 0);
   gr.add_congruence(A + 3*B == 2);
@@ -638,8 +600,6 @@ test19() {
 
 void
 test20() {
-  nout << "test20:" << endl;
-
   Grid gr(3);
   gr.add_congruence((C %= 0) / 3);
   gr.add_congruence(A - 2*B == 1);
@@ -666,8 +626,6 @@ test20() {
 
 void
 test21() {
-  nout << "test21:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A - B == 0);
 
@@ -688,8 +646,6 @@ test21() {
 
 void
 test22() {
-  nout << "test22:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A - B == 0);
 
@@ -713,8 +669,6 @@ test22() {
 
 void
 test23() {
-  nout << "test23:" << endl;
-
   Grid gr(3);
   gr.add_congruence(C %= -2);
 
@@ -729,8 +683,6 @@ test23() {
 
 void
 test24() {
-  nout << "test24:" << endl;
-
   Grid gr(3);
   gr.add_congruence((C == -2) / 0);
 
@@ -749,30 +701,30 @@ main() TRY {
 
   nout << "generalizedaffineimage2:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
-  test13();
-  test14();
-  test15();
-  test16();
-  test17();
-  test18();
-  test19();
-  test20();
-  test21();
-  test22();
-  test23();
-  test24();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
+  DO_TEST(test21);
+  DO_TEST(test22);
+  DO_TEST(test23);
+  DO_TEST(test24);
 
   return 0;
 }

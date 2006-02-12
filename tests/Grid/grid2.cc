@@ -34,8 +34,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Congruence_System cgs;
   cgs.insert((A %= 0) / 2);
 
@@ -69,8 +67,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Congruence_System cgs;
   cgs.insert((A - 3*B %= 4) / 5);
 
@@ -108,8 +104,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Congruence_System cgs;
   cgs.insert((A %= 0) / 3);
 
@@ -141,8 +135,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Congruence_System cgs;
   cgs.insert((A %= 7) / 3);
 
@@ -174,8 +166,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Congruence_System cgs;
   cgs.insert((A - B %= 0) / 3);
 
@@ -209,8 +199,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Congruence_System cgs;
   cgs.insert(A %= 0);
   cgs.insert(A + B %= 0);
@@ -246,8 +234,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Congruence_System cgs;
   cgs.insert(  -A %= 64);
   cgs.insert(-6*A +   B + 0*C %= -8);
@@ -283,8 +269,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Congruence_System cgs;
   cgs.insert((0*A %= -1) / 0);
   cgs.insert((  A %= -1) / 2);
@@ -313,8 +297,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Congruence_System cgs;
   cgs.insert((A         %= 0) / 2);
   cgs.insert((    B     %= 0) / 2);
@@ -352,8 +334,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Congruence_System cgs;
   cgs.insert((A + 2*B +   C %= -2) / 5);
   cgs.insert((    3*B       %=  0) / 5);
@@ -391,8 +371,6 @@ test10() {
 
 void
 test11() {
-  nout << "test11:" << endl;
-
   Congruence_System cgs;
   cgs.insert((3*A           %= -2) / 5);
   cgs.insert((      B + 2*C %=  0) / 5);
@@ -428,8 +406,6 @@ test11() {
 
 void
 test12() {
-  nout << "test12:" << endl;
-
   Congruence_System cgs;
   cgs.insert((A %= 1) / 0);
   cgs.insert((B %= 1) / 0);
@@ -462,8 +438,6 @@ test12() {
 
 void
 test13() {
-  nout << "test13:" << endl;
-
   Congruence_System cgs;
   cgs.insert((A %= 1) / 0);
   cgs.insert(B %= 1);
@@ -497,8 +471,6 @@ test13() {
 
 void
 test14() {
-  nout << "test14:" << endl;
-
   Congruence_System cgs;
   cgs.insert((C %= 2) / 5);
   cgs.insert((C %= 3) / 5);
@@ -528,8 +500,6 @@ test14() {
 
 void
 test15() {
-  nout << "test15:" << endl;
-
   Congruence_System cgs1;
   cgs1.insert(B %= 2);
 
@@ -572,8 +542,6 @@ test15() {
 
 void
 test16() {
-  nout << "test16:" << endl;
-
   Congruence_System cgs;
   cgs.insert(Congruence::zero_dim_false());
 
@@ -600,8 +568,6 @@ test16() {
 
 void
 test17() {
-  nout << "test17:" << endl;
-
   Congruence_System cgs;
   cgs.insert(Congruence::zero_dim_integrality());
 
@@ -629,8 +595,6 @@ test17() {
 
 void
 test18() {
-  nout << "test18:" << endl;
-
   Grid gr(0);
 
   Congruence_System cgs;
@@ -657,8 +621,6 @@ test18() {
 
 void
 test19() {
-  nout << "test19:" << endl;
-
   Grid gr(0);
 
   Congruence_System cgs;
@@ -691,25 +653,25 @@ main() TRY {
 
   nout << "grid2:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
-  test13();
-  test14();
-  test15();
-  test16();
-  test17();
-  test18();
-  test19();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
 
   return 0;
 }

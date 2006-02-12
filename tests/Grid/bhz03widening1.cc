@@ -36,8 +36,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   GSet grs1(2, EMPTY);
   Grid gr1(2);
   gr1.add_congruence(A %= 0);
@@ -72,8 +70,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   GSet grs1(2, EMPTY);
   Grid gr1(2);
   gr1.add_congruence(A - B %= 0);
@@ -120,8 +116,8 @@ main() TRY {
 
   nout << "bhz03widening1:" << endl;
 
-  test1();
-  test2();
+  DO_TEST(test1);
+  DO_TEST(test2);
 
   return 0;
 }

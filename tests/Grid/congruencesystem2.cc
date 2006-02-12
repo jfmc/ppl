@@ -86,8 +86,6 @@ Variable B(1);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Test_Congruence_System cgs0((A - B %= 0) / 7);
   if (find_variation(cgs0))
     exit(1);
@@ -168,8 +166,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Test_Congruence_System cgs0((A - B %= 0) / 7);
   if (find_variation(cgs0))
     exit(1);
@@ -248,8 +244,8 @@ int
 main() TRY {
   set_handlers();
 
-  test1();
-  test2();
+  DO_TEST(test1);
+  DO_TEST(test2);
 
   return 0;
 }

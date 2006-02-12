@@ -34,8 +34,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(A));
 
@@ -67,8 +65,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(A + B));
 
@@ -103,8 +99,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_line(0*A +   B));
   gs.insert(grid_point(3*A + 4*B));
@@ -140,8 +134,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(4*A -   B + 0*C, 3));
   gs.insert(grid_line(2*A + 3*B + 0*C));
@@ -178,8 +170,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(-1*A + 4*B + 3*C, 2));
   gs.insert(grid_line( 3*A + 2*B - 4*C));
@@ -214,8 +204,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(-1*A + 4*B +  3*C, 2));
   gs.insert(grid_point( 2*A + 6*B -    C, 2));
@@ -252,8 +240,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(-1*A + 4*B + 3*C, 2));
   gs.insert(grid_line( 2*A +   B - 2*C));
@@ -291,8 +277,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(A));
   gs.insert(grid_point(2*A));
@@ -329,8 +313,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(A +   B));
   gs.insert(grid_point(A + 2*B));
@@ -365,8 +347,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(A +   B + 0*C));
   gs.insert(grid_point(A + 2*B + 0*C));
@@ -404,8 +384,6 @@ test10() {
 
 void
 test11() {
-  nout << "test11:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(0*A + 7*B + 0*C, 3));
   gs.insert(grid_line(3*A + 2*B + 0*C));
@@ -440,8 +418,6 @@ test11() {
 
 void
 test12() {
-  nout << "test12:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(-1*A + 0*B + 3*C, 4));
   gs.insert(grid_line( 3*A + 2*B + 0*C));
@@ -478,8 +454,6 @@ test12() {
 
 void
 test13() {
-  nout << "test13:" << endl;
-
   Grid gr(1, EMPTY);
 
   if (find_variation(gr))
@@ -503,8 +477,6 @@ test13() {
 
 void
 test14() {
-  nout << "test14:" << endl;
-
   Grid gr(112, EMPTY);
 
   if (find_variation(gr))
@@ -534,8 +506,6 @@ test14() {
 
 void
 test15() {
-  nout << "test15:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point( -A + 0*B + 3*C, 4));
   gs.insert(grid_line(0*A + 2*B + 0*C));
@@ -571,8 +541,6 @@ test15() {
 
 void
 test16() {
-  nout << "test16:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(   A));
   gs.insert(grid_point( 2*A +    B));
@@ -612,8 +580,6 @@ test16() {
 
 void
 test17() {
-  nout << "test17:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(4*A -   B + 0*C, 3));
   gs.insert(grid_line(2*A + 3*B));
@@ -649,8 +615,6 @@ test17() {
 
 void
 test18() {
-  nout << "test18:" << endl;
-
   Grid gr(1);
 
   if (find_variation(gr))
@@ -674,8 +638,6 @@ test18() {
 
 void
 test19() {
-  nout << "test19:" << endl;
-
   Grid gr(21);
 
   if (find_variation(gr))
@@ -699,8 +661,6 @@ test19() {
 
 void
 test20() {
-  nout << "test20:" << endl;
-
   Grid gr(0);
 
   if (find_variation(gr))
@@ -724,8 +684,6 @@ test20() {
 
 void
 test21() {
-  nout << "test21:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_line(0*A + 2*B + 0*C));
 
@@ -743,8 +701,6 @@ test21() {
 
 void
 test22() {
-  nout << "test22:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(0*C));
   gs.insert(grid_line(A));
@@ -775,8 +731,6 @@ test22() {
 
 void
 test23() {
-  nout << "test23:" << endl;
-
   Grid gr(0, EMPTY);
 
   gr = Grid(0);
@@ -802,8 +756,6 @@ test23() {
 
 void
 test24() {
-  nout << "test24:" << endl;
-
   try {
     Grid gr(Grid::max_space_dimension() + 1);
     nout << "Exception expected." << endl;
@@ -820,29 +772,29 @@ main() TRY {
 
   nout << "grid1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
-  test13();
-  test14();
-  test15();
-  test16();
-  test17();
-  test18();
-  test20();
-  test21();
-  test22();
-  test23();
-  test24();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test20);
+  DO_TEST(test21);
+  DO_TEST(test22);
+  DO_TEST(test23);
+  DO_TEST(test24);
 
   return 0;
 }

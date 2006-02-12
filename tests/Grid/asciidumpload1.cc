@@ -33,8 +33,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr1(1, EMPTY);
 
   stringstream ss1;
@@ -55,8 +53,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr1(3, EMPTY);
 
   stringstream ss1;
@@ -77,8 +73,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr1(4, EMPTY);
 
   stringstream ss1;
@@ -99,8 +93,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid gr1(4, EMPTY);
   gr1.add_generator(grid_point(3*A + C));
   gr1.add_generator(parameter(3*A));
@@ -124,8 +116,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(3*A + C));
   gr1.add_generator(parameter(3*A));
@@ -153,11 +143,11 @@ main() TRY {
 
   nout << "asciidumpload1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
 
   return 0;
 }

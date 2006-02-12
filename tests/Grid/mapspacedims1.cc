@@ -41,8 +41,6 @@ print_function(const PFunction& function, const std::string& intro = "",
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   PFunction function;
 
   Grid gr(3, EMPTY);
@@ -67,8 +65,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -110,8 +106,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -151,8 +145,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -191,8 +183,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -227,8 +217,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -270,8 +258,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -310,8 +296,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   PFunction function;
   function.insert(0, 1);
   function.insert(1, 0);
@@ -339,8 +323,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -383,15 +365,15 @@ main() TRY {
 
   nout << "mapspacedims1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
 
   return 0;
 }

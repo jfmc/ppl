@@ -28,8 +28,6 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -66,8 +64,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr(2, EMPTY);
 
   gr.add_space_dimensions_and_project(3);
@@ -91,8 +87,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr(1);
 
   gr.add_space_dimensions_and_project(4);
@@ -127,8 +121,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid gr(1);
 
   gr.add_space_dimensions_and_project(3);
@@ -161,8 +153,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -204,8 +194,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -249,8 +237,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr(10);
 
   try {
@@ -265,8 +251,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid gr(0);
 
   gr.add_space_dimensions_and_project(13);
@@ -290,8 +274,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -325,8 +307,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -364,16 +344,16 @@ main() TRY {
 
   nout << "addspacedims2:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
 
   return 0;
 }

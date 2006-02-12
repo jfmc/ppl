@@ -34,8 +34,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Constraint_System cs;
   cs.insert(B == 0);
   cs.insert(A >= 0);
@@ -65,8 +63,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Constraint_System cs;
   cs.insert(B < 0);
   cs.insert(A >= 0);
@@ -95,8 +91,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Constraint_System cs;
   cs.insert(2*B == A);
   cs.insert(A >= 0);
@@ -128,8 +122,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Constraint_System cs;
   cs.insert(2*B >= A);
   cs.insert(A >= 0);
@@ -160,8 +152,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   try {
     Grid gr(Constraint_System::max_space_dimension() + 1);
     nout << "Exception expected." << endl;
@@ -178,11 +168,11 @@ main() TRY {
 
   nout << "grid3:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
 
   return 0;
 }

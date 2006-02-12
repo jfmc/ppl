@@ -35,8 +35,6 @@ Variable D(3);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(2);
   gr.add_constraint(A == 3);
   gr.add_constraint(B >= 0);
@@ -63,8 +61,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Constraint_System cs;
   cs.insert(B + 0*C == 0);
 
@@ -96,8 +92,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr(4);
   gr.add_constraint_and_minimize(2*A == C);
   gr.add_constraint_and_minimize(D == 0);
@@ -126,8 +120,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid gr(4);
   gr.add_congruence(D == 4);
 
@@ -153,8 +145,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid gr(4);
 
   Grid known_gr = gr;
@@ -180,8 +170,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr(3);
   gr.add_congruence_and_minimize(C == 4*A);
 
@@ -207,8 +195,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr(3);
   gr.add_congruence((B == 0) / 0);
 
@@ -235,8 +221,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid gr(1);
 
   try {
@@ -250,8 +234,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Grid gr(1);
 
   try {
@@ -269,15 +251,15 @@ main() TRY {
 
   nout << "addconstraint1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
 
   return 0;
 }

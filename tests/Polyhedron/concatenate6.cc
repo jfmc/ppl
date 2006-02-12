@@ -92,8 +92,8 @@ int
 main() TRY {
   set_handlers();
 
-  test1();
-  test2();
+  DO_TEST(test1);
+  DO_TEST(test2);
 
   return 0;
 }

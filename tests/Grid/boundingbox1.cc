@@ -39,8 +39,6 @@ Variable D(3);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Bounding_Box box(SPACE_DIM);
 
   Grid gr(box, From_Bounding_Box());
@@ -66,8 +64,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Bounding_Box box(SPACE_DIM);
   box.raise_lower_bound(1, true, 2, 3);
   box.lower_upper_bound(1, true, 2, 3);
@@ -96,8 +92,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Bounding_Box box(SPACE_DIM);
   box.raise_lower_bound(0, true, -2, 3);
   box.lower_upper_bound(0, true, -2, 3);
@@ -128,8 +122,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Bounding_Box box(3);
   box.raise_lower_bound(2, true, 15, 5);
   box.lower_upper_bound(2, true, 15, 5);
@@ -160,8 +152,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Bounding_Box box(0);
 
   Grid gr(box, From_Bounding_Box());
@@ -184,8 +174,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Bounding_Box box(2);
   box.set_empty();
 
@@ -209,8 +197,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Bounding_Box box(4);
   box.raise_lower_bound(3, true, 4, 1);
   box.lower_upper_bound(3, true, 4, 1);
@@ -236,8 +222,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Bounding_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.lower_upper_bound(0, true, 1, 1);
@@ -266,8 +250,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Bounding_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.raise_lower_bound(1, true, 0, 1);
@@ -295,8 +277,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Bounding_Box box(2);
   box.lower_upper_bound(0, true, 3, 7);
   box.raise_lower_bound(1, true, 0, 1);
@@ -325,8 +305,6 @@ test10() {
 
 void
 test11() {
-  nout << "test11:" << endl;
-
   Bounding_Box box(2);
   box.raise_lower_bound(0, true, 3, 7);
   box.lower_upper_bound(0, true, 3, 7);
@@ -355,8 +333,6 @@ test11() {
 
 void
 test12() {
-  nout << "test12:" << endl;
-
   Bounding_Box box(0);
   box.set_empty();
 
@@ -384,18 +360,18 @@ main() TRY {
 
   nout << "boundingbox1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
 
   return 0;
 }

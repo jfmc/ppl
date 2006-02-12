@@ -30,8 +30,6 @@ namespace {
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   for (unsigned int dim = 0; dim < 10; ++dim) {
 
     // Universe.
@@ -84,7 +82,7 @@ main() TRY {
 
   nout << "copyconstruct1:" << endl;
 
-  test1();
+  DO_TEST(test1);
 
   return 0;
 }

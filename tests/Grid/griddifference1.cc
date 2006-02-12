@@ -34,8 +34,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr1(1);
   gr1.add_congruence(A %= 0);
 
@@ -67,8 +65,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr1;
   Grid gr2;
 
@@ -95,8 +91,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr1(2);
   gr1.add_congruence((A - B %= 0) / 3);
   gr1.add_congruence((A %= 0) / 2);
@@ -128,8 +122,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid gr1(2);
   gr1.add_congruence((A - B %= 0) / 3);
   gr1.add_congruence((A %= 0) / 2);
@@ -190,8 +182,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr1(2, EMPTY);
 
   Grid gr2(2);
@@ -220,8 +210,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point());
   gr1.add_generator(grid_point(A - 2*C));
@@ -259,8 +247,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid gr1(0);
 
   Grid gr2(0);
@@ -289,8 +275,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Grid gr1(2, EMPTY);
   gr1.add_generator(grid_point());
   gr1.add_generator(grid_line(A));
@@ -322,8 +306,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Grid gr1(2, EMPTY);
   gr1.add_generator(grid_point());
   gr1.add_generator(grid_point(A));
@@ -359,8 +341,6 @@ test10() {
 
 void
 test11() {
-  nout << "test11:" << endl;
-
   Grid gr1(3);
   gr1.add_congruence((A %= 0) / 2);
   gr1.add_congruence(B == 0);
@@ -396,8 +376,6 @@ test11() {
 
 void
 test12() {
-  nout << "test12:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(B + 0*C));
 
@@ -424,18 +402,18 @@ main() TRY {
 
   nout << "griddifference1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
 
   return 0;
 }

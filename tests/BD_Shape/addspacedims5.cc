@@ -71,8 +71,8 @@ test2() {
 int
 main() TRY {
 
-  test1();
-  test2();
+  DO_TEST(test1);
+  DO_TEST(test2);
 
   return 0;
 }

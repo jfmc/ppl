@@ -37,8 +37,6 @@ Variable D(3);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point(2*B - 2*C));
 
@@ -65,8 +63,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr(3);
   gr.add_congruence((A %= 1) / 6);
   gr.add_congruence((3*A - 6*B %= 3) / 0);
@@ -94,8 +90,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point(2*A + 2*B));
   gr.add_generator(grid_line(C));
@@ -124,8 +118,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid gr(3);
   gr.add_congruence((B %= 2) / 0);
   gr.add_congruence((3*A %= 4) / 5);
@@ -153,8 +145,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point(4*A + 6*B, 3));
   gr.add_generator(grid_point(9*A + 6*B, 3));
@@ -200,8 +190,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point(4*A));
   gr.add_generator(grid_point(7*A));
@@ -245,8 +233,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr(1, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(2*A));
@@ -288,8 +274,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point(A));
   gr.add_generator(grid_point(7*A + 3*B));
@@ -341,10 +325,7 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   // Out-of-date congruences.
-
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(3*A + 3*B));
@@ -385,8 +366,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point());
   gs.insert(grid_point(2*A, 15));
@@ -417,8 +396,6 @@ test10() {
 
 void
 test11() {
-  nout << "test11:" << endl;
-
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point(-2*A, 3));
 
@@ -442,8 +419,6 @@ test11() {
 
 void
 test12() {
-  nout << "test12:" << endl;
-
   Grid gr(2, EMPTY);
 
   gr.affine_preimage(A, 11*A - B + 1);
@@ -465,10 +440,7 @@ test12() {
 
 void
 test13() {
-  nout << "test13:" << endl;
-
   // Out-of-date congruences.
-
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point(5*A + 4*B, 7));
 
@@ -506,8 +478,6 @@ test13() {
 
 void
 test14() {
-  nout << "test14:" << endl;
-
   Grid gr(3);
   gr.add_congruence((A %= 0) / 4);
   gr.add_congruence((B %= 0) / 2);
@@ -535,8 +505,6 @@ test14() {
 
 void
 test15() {
-  nout << "test15:" << endl;
-
   Grid gr(2);
   gr.add_congruence((A %= 0) / 4);
   gr.add_congruence((B %= 0) / 2);
@@ -565,8 +533,6 @@ test15() {
 
 void
 test16() {
-  nout << "test16:" << endl;
-
   Grid gr(2);
   gr.add_congruence((A %= 0) / 4);
   gr.add_congruence((B %= 0) / 2);
@@ -593,8 +559,6 @@ test16() {
 
 void
 test17() {
-  nout << "test17:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A == 3);
   gr.add_congruence(B == 0);
@@ -620,8 +584,6 @@ test17() {
 
 void
 test18() {
-  nout << "test18:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A == 3);
   gr.add_congruence(B == 3);
@@ -648,8 +610,6 @@ test18() {
 
 void
 test19() {
-  nout << "test19:" << endl;
-
   Grid gr(3);
   gr.add_congruence((C == -2) / 0);
   gr.add_congruence((A ==  0) / 0);
@@ -665,8 +625,6 @@ test19() {
 
 void
 test20() {
-  nout << "test20:" << endl;
-
   Grid gr(3);
   gr.add_congruence((C == -2) / 0);
   gr.add_congruence((A ==  0) / 0);
@@ -682,8 +640,6 @@ test20() {
 
 void
 test21() {
-  nout << "test21:" << endl;
-
   Grid gr(3);
   gr.add_congruence((C == -2) / 0);
   gr.add_congruence((A ==  0) / 0);
@@ -703,27 +659,27 @@ main() TRY {
 
   nout << "affinepreimage1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
-  test13();
-  test14();
-  test15();
-  test16();
-  test17();
-  test18();
-  test19();
-  test20();
-  test21();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
+  DO_TEST(test21);
 
   return 0;
 }

@@ -34,8 +34,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr1(3);
   gr1.add_congruence(A + C %= 0);
   gr1.add_congruence(B == 3);
@@ -63,8 +61,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr1(3);
   gr1.add_congruence(A + C %= 0);
   gr1.add_congruence(B == 3);
@@ -89,8 +85,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr1(3);
   gr1.add_congruence(A + C %= 0);
   gr1.add_congruence(B == 3);
@@ -122,8 +116,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(3*B + A));
   gr1.add_generator(grid_point(3*B + A + C));
@@ -153,8 +145,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid gr1(3);
   gr1.add_congruence((A + C %= 0) / 2);
   gr1.add_congruence((B %= 0) / 3);
@@ -188,8 +178,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr1(0);
 
   Grid_Certificate grc1(gr1);
@@ -215,8 +203,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr1(3);
   gr1.add_congruence(A + C %= 0);
   gr1.add_congruence(B == 3);
@@ -249,13 +235,13 @@ main() TRY {
 
   nout << "certificate1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
 
   return 0;
 }

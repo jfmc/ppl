@@ -32,8 +32,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(2, EMPTY);
 
   if (gr.relation_with(grid_point(A)) == Poly_Gen_Relation::nothing())
@@ -46,8 +44,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr(2);
 
   if (gr.relation_with(grid_point(A)) == Poly_Gen_Relation::subsumes())
@@ -60,8 +56,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point());
   gs.insert(grid_point(B));
@@ -79,7 +73,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
 
   Grid gr(2);
   gr.add_congruence((A %= 0) / 0);
@@ -94,8 +87,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid gr(2);
   gr.add_congruence((A - B %= 1) / 2);
   gr.add_congruence((A %= 1) / 3);
@@ -111,8 +102,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr(2);
   gr.add_congruence(2*A %= 0);
 
@@ -126,8 +115,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr(2);
   gr.add_congruence(2*A %= 0);
 
@@ -141,8 +128,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid gr(2);
 
   try {
@@ -157,8 +142,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Grid gr(0);
 
   if (gr.relation_with(grid_point()) == Poly_Gen_Relation::subsumes())
@@ -175,15 +158,15 @@ main() TRY {
 
   nout << "relations1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
 
   return 0;
 }

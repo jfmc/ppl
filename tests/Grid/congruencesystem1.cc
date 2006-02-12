@@ -33,8 +33,6 @@ public:
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Test_Congruence_System cgs0;
   if (find_variation(cgs0))
     exit(1);
@@ -72,8 +70,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -101,8 +97,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Variable A(3);
   Variable B(7);
   Variable C(4);
@@ -125,8 +119,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Variable A(0);
   Variable B(1);
 
@@ -153,8 +145,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -176,8 +166,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -219,8 +207,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -242,13 +228,13 @@ int
 main() TRY {
   set_handlers();
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
 
   return 0;
 }

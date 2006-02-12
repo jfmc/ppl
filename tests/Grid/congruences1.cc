@@ -35,8 +35,6 @@ Variable D(3);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr1(7, EMPTY);
 
   Grid known_gr = gr1;
@@ -61,8 +59,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr1(7);
 
   Grid known_gr = gr1;
@@ -87,8 +83,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr1(0, EMPTY);
 
   Grid known_gr = gr1;
@@ -113,8 +107,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid gr1(0);
 
   Grid known_gr = gr1;
@@ -139,8 +131,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid gr1(3);
   gr1.add_congruence((A + B %= 3) / 7);
   gr1.add_congruence((A %= 0) / 5);
@@ -167,8 +157,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr1(3);
   gr1.add_generator(grid_point(10*B));
   gr1.add_generator(grid_point(10*A + 10*B));
@@ -196,8 +184,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr1(3);
   gr1.add_congruence(Congruence::zero_dim_integrality());
 
@@ -228,8 +214,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid gr1(0);
   gr1.add_congruence(Congruence::zero_dim_integrality());
 
@@ -263,14 +247,14 @@ main() TRY {
 
   nout << "congruences1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
 
   return 0;
 }

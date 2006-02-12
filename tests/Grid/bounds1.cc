@@ -35,8 +35,6 @@ Variable F(5);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(7, EMPTY);
 
   if (gr.bounds_from_above(Linear_Expression(0))
@@ -50,8 +48,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr(0, EMPTY);
 
   if (gr.bounds_from_above(Linear_Expression(3))
@@ -65,8 +61,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr(0);
 
   if (gr.bounds_from_above(Linear_Expression(1))
@@ -80,8 +74,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator_and_minimize(grid_point(3*A + 2*B, 3));
 
@@ -116,8 +108,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator_and_minimize(grid_line(B));
@@ -154,8 +144,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator_and_minimize(grid_line(2*A + B));
@@ -192,8 +180,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator_and_minimize(grid_line(A + 2*B));
@@ -229,8 +215,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator_and_minimize(grid_point(A + 2*B));
@@ -267,8 +251,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_line(A));
@@ -307,8 +289,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_line(A));
@@ -348,8 +328,6 @@ test10() {
 
 void
 test11() {
-  nout << "test11:" << endl;
-
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_line(3*B + C));
@@ -387,8 +365,6 @@ test11() {
 
 void
 test12() {
-  nout << "test12:" << endl;
-
   Grid gr_gs_min(6, EMPTY);
   gr_gs_min.add_generator_and_minimize(grid_point(7*A - 11*B + 19*F));
 
@@ -427,8 +403,6 @@ test12() {
 
 void
 test13() {
-  nout << "test13:" << endl;
-
   Grid gr(3, EMPTY);
 
   Linear_Expression le = A + 2*B + 3*C + 4*D + 6*F;
@@ -449,19 +423,19 @@ main() TRY {
 
   nout << "bounds1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
-  test13();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
 
   return 0;
 }

@@ -29,8 +29,6 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -96,7 +94,7 @@ main() TRY {
 
   nout << "grid1_gmp:" << endl;
 
-  test1();
+  DO_TEST(test1);
 
   return 0;
 }

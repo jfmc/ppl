@@ -32,8 +32,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(6, EMPTY);
 
   Grid known_gr = gr;
@@ -50,8 +48,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr(5);
 
   Grid known_gr = gr;
@@ -66,8 +62,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(0*C));
   gs.insert(grid_line(A));
@@ -92,8 +86,8 @@ int
 main() TRY {
   set_handlers();
 
-  test1();
-  test2();
-  test3();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
 }
 CATCH

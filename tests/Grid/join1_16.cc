@@ -37,8 +37,6 @@ Variable D(3);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr0(4); // initial point
   gr0.add_congruence(A == 2);
   gr0.add_congruence(B == 0);
@@ -98,7 +96,7 @@ main() TRY {
 
   nout << "join1:" << endl;
 
-  test1();
+  DO_TEST(test1);
 
   return 0;
 }

@@ -135,9 +135,9 @@ test3() {
 int
 main() TRY {
 
-  test1();
-  test2();
-  test3();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
 
   return 0;
 

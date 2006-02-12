@@ -28,8 +28,6 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -68,8 +66,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -101,8 +97,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -134,8 +128,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -172,8 +164,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -210,8 +200,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr1(0);
   Grid gr2(0);
 
@@ -236,8 +224,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -283,13 +269,13 @@ main() TRY {
 
   nout << "intersection2:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
 
   return 0;
 }

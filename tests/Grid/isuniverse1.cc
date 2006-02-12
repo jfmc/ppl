@@ -36,8 +36,6 @@ Variable E(4);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(1);
 
   if (gr.is_universe())
@@ -52,8 +50,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr(6);
 
   if (gr.is_universe())
@@ -68,8 +64,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr(0);
 
   if (gr.is_universe())
@@ -84,8 +78,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid gr(0, EMPTY);
 
   if (gr.is_universe()) {
@@ -99,8 +91,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid gr(2, EMPTY);
 
   if (gr.is_universe()) {
@@ -114,8 +104,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Congruence_System cgs;
   cgs.insert((A + B + C %= 0) / 3);
 
@@ -132,8 +120,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Congruence_System cgs;
   cgs.insert((0*C %= 6) / 3);
 
@@ -151,8 +137,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(A + 3*E));
 
@@ -169,8 +153,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(A + 3*E));
   gs.insert(grid_line(A));
@@ -193,8 +175,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Congruence_System cgs;
   cgs.insert((A + B + C %= 0) / 3);
 
@@ -215,8 +195,6 @@ test10() {
 
 void
 test11() {
-  nout << "test11:" << endl;
-
   Congruence_System cgs;
   cgs.insert((0*C %= 3) / 3);
 
@@ -238,8 +216,6 @@ test11() {
 
 void
 test12() {
-  nout << "test12:" << endl;
-
   Congruence_System cgs;
   cgs.insert((0*C %= 4) / 2);
 
@@ -261,8 +237,6 @@ test12() {
 
 void
 test13() {
-  nout << "test13:" << endl;
-
   Congruence_System cgs;
   cgs.insert((A + 0*C %= 4) / 2);
 
@@ -289,8 +263,6 @@ test13() {
 
 void
 test14() {
-  nout << "test14:" << endl;
-
   Congruence_System cgs;
   cgs.insert(0*C == 0);
 
@@ -313,8 +285,6 @@ test14() {
 
 void
 test15() {
-  nout << "test15:" << endl;
-
   Congruence_System cgs;
   cgs.insert(A == 3);
 
@@ -335,20 +305,20 @@ main() TRY {
 
   nout << "isuniverse1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test11();
-  test12();
-  test13();
-  test14();
-  test15();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 
   return 0;
 }

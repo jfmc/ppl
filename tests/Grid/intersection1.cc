@@ -34,8 +34,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Congruence_System cgs1;
   cgs1.insert((A %= 1) / 2);
 
@@ -75,8 +73,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Congruence_System cgs1;
   cgs1.insert((A + 0*C %= 0) / 2);
 
@@ -117,8 +113,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Congruence_System cgs;
   cgs.insert((B + 0*C %= 0) / 2);
 
@@ -152,8 +146,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Congruence_System cgs;
   cgs.insert((B + 0*C %= 0) / 2);
 
@@ -187,8 +179,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Congruence_System cgs;
   cgs.insert((5*A + 3*B + C %= 7) / 9);
 
@@ -225,8 +215,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Congruence_System cgs;
   cgs.insert((2*B + 2*C %= 1) / 3);
 
@@ -263,8 +251,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Congruence_System cgs;
   Linear_Expression le;
   cgs.insert((le %= le) / 1);	// (0 %= 0) / 1
@@ -299,8 +285,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid_Generator_System gs1;
   gs1.insert(grid_point(A + C));
   gs1.insert(grid_line(C));
@@ -343,8 +327,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Grid gr1(1, EMPTY);
   gr1.add_generator(grid_point());
 
@@ -365,15 +347,15 @@ main() TRY {
 
   nout << "intersection1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
 
   return 0;
 }

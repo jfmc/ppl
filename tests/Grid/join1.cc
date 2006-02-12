@@ -32,8 +32,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid_Generator_System gs1;
   gs1.insert(grid_point(C));
 
@@ -68,8 +66,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr1(3);
   Grid gr2(3);
 
@@ -94,8 +90,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr1(3);
 
   Grid_Generator_System gs;
@@ -127,8 +121,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid_Generator_System gs1;
   gs1.insert(grid_point(0*C));
   gs1.insert(grid_line(A));
@@ -165,8 +157,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid_Generator_System gs1;
   gs1.insert(grid_point(0*C));
   gs1.insert(grid_line(A));
@@ -204,8 +194,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr1(3);
   gr1.add_congruence(A == 0);
   gr1.add_congruence(B == 0);
@@ -241,8 +229,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(B + 0*C));
 
@@ -278,8 +264,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid_Generator_System gs;
   gs.insert(grid_point(B + 0*C));
 
@@ -302,8 +286,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Grid gr1(3);
   gr1.add_congruence(A == 0);
   gr1.add_congruence(A == 1);
@@ -338,15 +320,15 @@ main() TRY {
 
   nout << "join1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
 
   return 0;
 }

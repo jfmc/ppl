@@ -35,8 +35,6 @@ Variable D(3);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point(2*A + 0*B));
 
@@ -83,7 +81,7 @@ main() TRY {
 
   nout << "affineimage1:" << endl;
 
-  test1();
+  DO_TEST(test1);
 
   return 0;
 }

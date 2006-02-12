@@ -35,8 +35,6 @@ Variable D(3);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(3);
 
   Variables_Set to_fold;
@@ -63,8 +61,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr(3, EMPTY);
 
   Variables_Set to_fold;
@@ -88,8 +84,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr(3);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A + B + C %= 2) / 3);
@@ -114,8 +108,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid gr(2);
   gr.add_congruence(A %= 1);
   gr.add_congruence((B %= 1) / 3);
@@ -142,8 +134,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point(A + 2*B + 2*C));
   gr.add_generator(grid_point(A + 2*B + 4*C));
@@ -172,8 +162,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr(3);
   gr.add_congruence((A %= 2) / 3);
   gr.add_congruence((B %= 8) / 9);
@@ -202,8 +190,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr(4);
   gr.add_congruence((A - B %= 3) / 4);
   gr.add_congruence((C %= 5) / 9);
@@ -231,8 +217,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid gr(4);
   gr.add_congruence((A %= 0) / 2);
   gr.add_congruence((B %= 0) / 9);
@@ -264,8 +248,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Grid gr(4);
   gr.add_congruence((A - B %= 0) / 9);
   gr.add_congruence((C %= 0) / 6);
@@ -293,8 +275,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Grid gr(1);
   gr.add_congruence((A %= 3) / 7);
 
@@ -319,8 +299,6 @@ test10() {
 
 void
 test11() {
-  nout << "test11:" << endl;
-
   Grid gr(3);
   gr.add_congruence(A - B == 0);
   gr.add_congruence(A %= 0);
@@ -349,8 +327,6 @@ test11() {
 
 void
 test12() {
-  nout << "test12:" << endl;
-
   Grid gr(1, EMPTY);
 
   Variables_Set vars;
@@ -368,8 +344,6 @@ test12() {
 
 void
 test13() {
-  nout << "test13:" << endl;
-
   Grid gr(3, EMPTY);
 
   Variables_Set vars;
@@ -388,8 +362,6 @@ test13() {
 
 void
 test14() {
-  nout << "test14:" << endl;
-
   Grid gr(1, EMPTY);
 
   Variables_Set vars;
@@ -411,20 +383,20 @@ main() TRY {
 
   nout << "foldspacedims1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
-  test13();
-  test14();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
 
   return 0;
 }

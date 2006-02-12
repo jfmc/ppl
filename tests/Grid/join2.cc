@@ -32,8 +32,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid_Generator_System gs1;
   gs1.insert(grid_point(A + 0*C));
 
@@ -68,8 +66,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr1(3);
   Grid gr2(3);
 
@@ -98,8 +94,8 @@ main() TRY {
 
   nout << "join2:" << endl;
 
-  test1();
-  test2();
+  DO_TEST(test1);
+  DO_TEST(test2);
 
   return 0;
 }

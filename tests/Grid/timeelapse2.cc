@@ -35,8 +35,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point());
   gr1.add_generator(grid_point(A + 2*B - 3*C, 3));
@@ -74,7 +72,7 @@ main() TRY {
 
   nout << "timeelapse2:" << endl;
 
-  test1();
+  DO_TEST(test1);
 
   return 0;
 }

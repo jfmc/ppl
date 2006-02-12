@@ -33,8 +33,6 @@ Variable D(3);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(7, EMPTY);
 
   if (gr.affine_dimension() == 0)
@@ -47,8 +45,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr(0, EMPTY);
 
   if (gr.affine_dimension() == 0)
@@ -61,8 +57,6 @@ test2() {
 
 void
 test3() {
-  nout << "test3:" << endl;
-
   Grid gr(0);
 
   if (gr.affine_dimension() == 0)
@@ -75,8 +69,6 @@ test3() {
 
 void
 test4() {
-  nout << "test4:" << endl;
-
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator_and_minimize(grid_point(3*A + 2*B));
 
@@ -107,8 +99,6 @@ test4() {
 
 void
 test5() {
-  nout << "test5:" << endl;
-
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point(3*A + 2*B));
   gr_gs_min.add_generator_and_minimize(grid_line(C));
@@ -141,8 +131,6 @@ test5() {
 
 void
 test6() {
-  nout << "test6:" << endl;
-
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point(3*A + 2*B));
   gr_gs_min.add_generator_and_minimize(grid_point(3*A + B));
@@ -176,8 +164,6 @@ test6() {
 
 void
 test7() {
-  nout << "test7:" << endl;
-
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point(3*A + 2*B));
   gr_gs_min.add_generator(grid_point(3*A + B));
@@ -212,8 +198,6 @@ test7() {
 
 void
 test8() {
-  nout << "test8:" << endl;
-
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_point(A));
@@ -248,8 +232,6 @@ test8() {
 
 void
 test9() {
-  nout << "test9:" << endl;
-
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_point(A));
@@ -286,8 +268,6 @@ test9() {
 
 void
 test10() {
-  nout << "test10:" << endl;
-
   Grid gr_gs_min(4, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_line(B));
@@ -326,16 +306,16 @@ main() TRY {
 
   nout << "affinedim1:" << endl;
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
+  DO_TEST(test1);
+  DO_TEST(test2);
+  DO_TEST(test3);
+  DO_TEST(test4);
+  DO_TEST(test5);
+  DO_TEST(test6);
+  DO_TEST(test7);
+  DO_TEST(test8);
+  DO_TEST(test9);
+  DO_TEST(test10);
 
   return 0;
 }

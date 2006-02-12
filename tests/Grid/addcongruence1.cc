@@ -37,8 +37,6 @@ Variable C(2);
 
 void
 test1() {
-  nout << "test1:" << endl;
-
   Grid gr(2);
 
   gr.add_congruence((A + B %= 0) / 6);
@@ -64,8 +62,6 @@ test1() {
 
 void
 test2() {
-  nout << "test2:" << endl;
-
   Grid gr(3, EMPTY);
 
   gr.add_congruence((A + B + C %= 0) / 3);
@@ -93,8 +89,8 @@ main() TRY {
 
   nout << "addcongruence1:" << endl;
 
-  test1();
-  test2();
+  DO_TEST(test1);
+  DO_TEST(test2);
 
   return 0;
 }
