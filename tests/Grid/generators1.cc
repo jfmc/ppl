@@ -283,6 +283,96 @@ test9() {
   exit(1);
 }
 
+// Skew grid in 3D defined with generators with a non-integral parameter.
+
+void
+test10() {
+  nout << "test10:" << endl;
+
+  Grid gr1(3, EMPTY);
+  gr1.add_generator(grid_point(3*B, 2));
+  gr1.add_generator(grid_point(5*A + 2*B));
+  gr1.add_generator(parameter(11*B, 2));
+  gr1.add_generator(grid_line(C));
+
+  Grid known_gr = gr1;
+
+  Grid_Generator_System gs = gr1.generators();
+
+  Grid gr2(gs);
+
+  if (known_gr == gr2)
+    return;
+
+  nout << "Reproduced grid should equal known grid." << endl
+       << "grid:" << endl << gr2 << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
+// Grid defined with an integral point but non-integral parameter.
+
+void
+test11() {
+  nout << "test11:" << endl;
+
+  Grid gr1(3, EMPTY);
+  gr1.add_generator(grid_point(3*B));
+  gr1.add_generator(grid_point(5*A + 2*B));
+  gr1.add_generator(parameter(11*B, 2));
+  gr1.add_generator(grid_line(C));
+
+  Grid known_gr = gr1;
+
+  Grid_Generator_System gs = gr1.generators();
+
+  Grid gr2(gs);
+
+  if (known_gr == gr2)
+    return;
+
+  nout << "Reproduced grid should equal known grid." << endl
+       << "grid:" << endl << gr2 << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
+// Grid defined with an integral point and parameter.
+
+void
+test12() {
+  nout << "test12:" << endl;
+
+  Grid gr1(3, EMPTY);
+  gr1.add_generator(grid_point(3*B));
+  gr1.add_generator(grid_point(5*A + 2*B));
+  gr1.add_generator(parameter(11*B));
+  gr1.add_generator(grid_line(C));
+
+  Grid known_gr = gr1;
+
+  Grid_Generator_System gs = gr1.generators();
+
+  Grid gr2(gs);
+
+  if (known_gr == gr2)
+    return;
+
+  nout << "Reproduced grid should equal known grid." << endl
+       << "grid:" << endl << gr2 << endl
+       << "known grid:" << endl << known_gr << endl;
+
+  dump_grids(gr2, known_gr);
+
+  exit(1);
+}
+
 } // namespace
 
 int
@@ -300,6 +390,8 @@ main() TRY {
   test7();
   test8();
   test9();
+  test10();
+  test11();
 
   return 0;
 }
