@@ -1496,58 +1496,53 @@ then an extrapolation operator will be obtained.
 \section sect_rational_grids Rational Grids
 
 In this section we introduce rational grids
-as considered by the library.
+as provided by the library.
+See also \ref BDHMZ05 "[BDHMZ05]" for a detailed description of this domain.
 
-Note that previously the terminology `lattice'
-instead of `grid' has been used for elements of domains
-similar to the grids domain described here.
-However, to avoid any confusion with the use of
-`lattice' in its set-theoretic context (which is particularly
-relevant when working in the framework of abstract interpretation), we
-prefer the terminology `grid' for sets of vectors that can represent
-discrete and linearly repetitive information.
-Moreover, as we have already used the symbol \f$\cG\f$ to
-denote a generator system, we will use \f$\cL\f$ to denote
-a rational grids.
+The libary supports two representations for the grids domain;
+<EM>congruence systems</EM> and <EM>grid generator systems</EM>.
+We first describe <EM>linear congruence relations</EM> which form the elements
+of a congruence system.
 
 \subsection Congruence_Relations Congruences and Congruence Relations
 
 For any \f$a, b, f \in \Rset\f$,
 \f$a \equiv_f b\f$ denotes the <EM>congruence</EM>
 \f$\exists \mu \in \Zset \st a - b = \mu f\f$.
-In the case that \f$f = 0\f$, the congruence,
-which is said to be <EM>singular</EM>, denotes the
-equality \f$a = b\f$.
 
+Let \f$\Sset \in \{ \Qset, \Rset \}\f$.
 For each vector
-\f$\vect{a} \in \Qset^n \setdiff \{\vect{0}\}\f$ and scalars
-\f$b, f \in \Qset\f$,
-the <EM>linear congruence relation</EM>
-\f$\bigl(\langle \vect{a}, \vect{x} \rangle \equiv_f b\bigr)\f$
+\f$\vect{a} \in \Sset^n \setdiff \{\vect{0}\}\f$ and scalars
+\f$b, f \in \Sset\f$,
+the notation \f$\langle \vect{a}, \vect{x} \rangle \equiv_f b\f$
+stands for the <EM>linear congruence relation in \f$\Sset^n\f$</EM>
+defined by the set of vectors
+\f[
+  \bigl\{\,
+    \vect{v} \in \Rset^n
+  \bigm|
+    \exists \mu \in \Zset \st
+      \langle \vect{a}, \vect{v} \rangle = b + \mu f
+  \,\bigr\};
+\f]
+when \f$f \neq 0\f$, the relation is said to be
+<EM>proper</EM>;
+\f$\langle \vect{a}, \vect{x} \rangle \equiv_0 b\f$ (i.e., when \f$f = 0\f$)
+denotes the equality \f$\langle \vect{a}, \vect{x} \rangle = b\f$.
+\f$f\f$ is called the <EM>frequency</EM> or <EM>modulus</EM> and
+\f$b\f$ the <EM>base value</EM> of the relation.
+Thus, provided \f$\vect{a} \neq \vect{0}\f$,
+the relation \f$\langle \vect{a}, \vect{x} \rangle \equiv_f b\f$
 defines the set of affine hyperplanes
-\f$
-  \big\{
-    \langle \vect{a}, \vect{x} \rangle = b + \mu f
+\f[
+  \big\{\,
+    \bigl(\langle \vect{a}, \vect{x} \rangle = b + \mu f\bigr)
   \bigm|
     \mu \in \Zset
-  \bigr\}
-\f$
-in \f$\Qset^n\f$;
-\f$f\f$ is called the <EM>frequency</EM> and
-\f$b\f$ the <EM>base value</EM> of the relation.
-
-When \f$f = 0\f$, the congruence relation
-is <EM>singular</EM> and defines the unique hyperplane
-\f$\langle \vect{a}, \vect{x} \rangle = b\f$.
-When \f$f \neq 0\f$, the congruence relation is said to be
-<EM>non-singular</EM>
-and defines an infinite set of discrete hyperplanes.
-
-Any vector that satisfies one of the equalities
-\f$\langle \vect{a}, \vect{x} \rangle = b + \mu f\f$
-for  any \f$\mu \in \Zset\f$ is said to
-<EM>satisfy</EM> the congruence relation
-\f$\langle \vect{a}, \vect{x} \rangle \equiv_f b\f$.
+  \,\bigr\};
+\f]
+if \f$b \equiv_f 0\f$, \f$\langle \vect{0}, \vect{x} \rangle \equiv_f b\f$
+defines the universe \f$\Rset^n\f$ and the empty set, otherwise.
 
 \subsection Rational_Grids Rational Grids
 
@@ -1592,11 +1587,10 @@ be a finite set of vectors.
 For all scalars \f$\mu_1, \ldots, \mu_k \in \Zset\f$,
 the vector \f$\vect{v} = \sum_{j=1}^k \mu_j \vect{x}_j\f$
 is said to be a <EM>integer</EM> combination of the vectors in \f$S\f$.
-FIXME: define the notion of integer affine combination.
 
 We denote by \f$\inthull(S)\f$
 (resp., \f$\intaffinehull(S)\f$)
-the set of all the integer (resp., integer affine)
+the set of all the integer (resp., integer and affine)
 combinations of the vectors in \f$S\f$.
 
 \subsection Points_Parameters_Lines Points, Parameters and Lines
@@ -1626,8 +1620,9 @@ If \f$L, Q, P\f$ are each finite subsets of \f$\Qset^n\f$ and
   \cL = \linearhull(L) + \inthull(Q) + \intaffinehull(P)
 \f]
 where the symbol '\f$+\f$' denotes the Minkowski's sum,
-then we have shown [FIXME: add citation]
-that \f$\cL \in \Gset_n\f$ is a rational grid.
+then \f$\cL \in \Gset_n\f$ is a rational grid
+(see Section 4.4 in \ref Sch99 "[Sch99]" and
+also Proposition 8 in \ref BDHMZ05 "[BDHMZ05]").
 The 3-tuple \f$(L, Q, P)\f$
 is said to be a <EM>generator system</EM> for \f$\cL\f$
 and we write \f$\cL = \ggen(L, Q, P)\f$.
@@ -1639,28 +1634,13 @@ If \f$P \neq \emptyset\f$, then
 where, for some \f$\vect{p} \in P\f$,
 \f$Q_{\vect{p}} = \{\, \vect{p} + \vect{q} \mid \vect{q} \in Q \,\}\f$.
 
-Currently, the user interface to the library only provides support for
-points and lines as the generators of a grid.
-This is not a problem because, for any
-non-empty grid \f$\cL = \ggen(L, Q, P)\f$,
-there must be at least one point \f$\vect{p}\f$ in \f$P\f$ and, as indicated
-above, the generator system \f$(L, Q, P)\f$ can be easily converted to
-the generator system \f$(L, \emptyset, Q_{\vect{p}} \union P)\f$
-that generates the same grid.
-
 \subsection Grid_Minimized_Representations Minimized Grid Representations
 
 A <EM>minimized</EM> congruence system \f$\cC\f$ for \f$\cL\f$
 is such that, if \f$\cC'\f$ is another congruence system for \f$\cL\f$,
 then \f$\card \cC \leq \card \cC'\f$.
-[FIXME: the following should probably be moved elsewhere.]
-More precisely, a congruence system \f$\cC\f$
-is <EM>minimized</EM> if, for each variable \f$x_i\f$,
-there is at most one congruence relation
-\f$\bigl(\langle \vect{a}, \vect{x} \rangle \equiv_f b\bigr) \in \cC\f$
-where  \f$a_i \neq 0\f$ and \f$a_{i+1}, \ldots, a_n = 0\f$.
-Thus a minimized congruence system for a non-empty grid
-has no more than \f$n\f$ congruence relations.
+Note that a minimized congruence system for a non-empty grid
+has at most \f$n\f$ congruence relations.
 
 Similarly, a <EM>minimized</EM> generator system
 \f$\cG = (L, Q, P)\f$ for \f$\cL\f$
@@ -1668,23 +1648,8 @@ is such that, if \f$\cG' = (L', Q', P')\f$ is
 another generator system for \f$\cL\f$,
 then \f$\card L \leq \card L'\f$ and
 \f$\card Q + \card P \leq \card Q' + \card P'\f$.
-[FIXME: the following should probably be moved elsewhere.]
-More precisely, a generator system \f$\cG = (L, Q, P)\f$ for
-a non-empty grid \f$\cL\f$
-is <EM>minimized</EM> if \f$\card P = 1\f$,
-and, for each \f$i \in \{1, \ldots, n\}\f$,
-there is at most one vector in \f$L \union Q\f$
-whose first \f$i-1\f$ coordinates are zero
-and whose \f$i\f$th coordinate is non-zero.
-Thus a minimized generator system for a grid
+Note that a minimized generator system for a grid
 has no more than a total of \f$n+1\f$ lines, parameters and points.
-
-As parameters are not currently suppported by the user-interface to the grids,
-a minimized generator system
-\f$\bigl(L, Q, \{\vect{p}\}\bigr)\f$ is returned to the user as the pair
-\f$\bigl(L, Q_{\vect{p}} \union \{\vect{p}\}\bigr)\f$
-where
-\f$Q_{\vect{p}} = \{ \vect{p} + \vect{q} \mid \vect{q} \in Q\}\f$.
 
 \subsection Grids_Double_Description_Grids Double Description for Grids
 
@@ -1916,21 +1881,25 @@ and, for \f$ k = 0 \f$, \f$ \ldots \f$, \f$ n-1 \f$,
 
 \subsection Grid_Affine_Transformation Affine Images and Preimages
 
-As for convex polyhedra, \ref affine_relation
-"affine image and preimage" operators for grids are provided:
+As for convex polyhedra (see \ref Single_Update_Affine_Functions
+"Single-Update Affine Functions"),
+the library provides affine image and preimage operators for grids:
 given a variable \f$x_k\f$ and
-linear expression \f$\mathrm{expr} = \sum_{i=0}^{n-1} a_i x_i + b\f$,
+linear expression \f$\mathrm{expr} = \langle \vect{a}, \vect{x} \rangle + b\f$,
 these determine the affine transformation
-\f$\phi\f$ that transforms any point
-\f$(x_0, \ldots, x_{n-1})^\transpose\f$
-in the grid \f$\cL\f$ to
+\f$\fund{\phi = \bigl(x'_k = \langle \vect{a}, \vect{x} \rangle + b\bigr)}
+        {\Rset^n}{\Rset^n}\f$
+that transforms any point
+\f$(v_0, \ldots, v_{n-1})^\transpose\f$
+in a grid \f$\cL\f$ to
 \f[
-   \Bigl(x_0, \ldots, \bigl(\textstyle{\sum_{i=0}^{n-1}} a_i x_i + b\bigr),
-                   \ldots, x_{n-1}\Bigr)^\transpose.
+   \Bigl(v_0, \ldots, \bigl(\textstyle{\sum_{i=0}^{n-1}} a_i v_i + b\bigr),
+                   \ldots, v_{n-1}\Bigr)^\transpose.
 \f]
 
-The affine image operator computes the affine image
-of \f$\cL\f$ under \f$\phi\f$.
+The <EM>affine image</EM> operator computes the affine image
+of a grid \f$\cL\f$ under
+\f$x'_k = \langle \vect{a}, \vect{x} \rangle + b\f$.
 For instance,
 suppose the grid \f$\cL\f$
 to be transformed is the non-relational grid in \f$\Rset^2\f$
@@ -1957,11 +1926,12 @@ If the considered variable is as before (i.e., \f$k = 0\f$)
 but the linear expression is  \f$x_1\f$
 (so that \f$a_0 = 0, a_1 = 1, b = 0\f$),
 then the resulting grid \f$\cL_2\f$
-is all the points on the \f$x_2\f$ axes where the \f$x_2\f$ coordinate
-is a multiple of 3.
+is the grid containing all the points
+whose coordinates are integral multiples of 3 and lie on
+line \f$x = y\f$.
 
 The affine preimage operator computes the affine preimage
-of \f$\cL\f$ under \f$\phi\f$.
+of a grid \f$\cL\f$ under \f$\phi\f$.
 For instance,
 suppose now that we apply the affine
 preimage operator as given in the first example
@@ -1972,35 +1942,39 @@ then we get the original grid \f$\cL\f$ back.
 If, on the other hand, we apply the affine
 preimage operator as given in the second example
 using variable \f$x_0\f$ and linear expression \f$x_1\f$ to \f$\cL_2\f$,
-then the resulting grid is unchanged.
+then the resulting grid will consist of
+all the points in \f$\Rset^2\f$ where the \f$y\f$
+coordinate is an integral multiple of 3.
 
 Observe that provided the coefficient \f$a_k\f$ of the considered variable
 in the linear expression is non-zero, the affine transformation is invertible.
 
 \subsection Grid_Generalized_Image Generalized Affine Images
 
-The library provides other operators
-that are generalizations of the affine image operator.
-Given a grid \f$\cL \in \Gset_n\f$,
-an affine expression \f$\mathrm{lhs} = \sum_{i=0}^{n-1} a'_i x_i + b'\f$,
-an affine expression
-\f$\mathrm{rhs} = \sum_{i=0}^{n-1} a_i x_i + b\f$,
-and a modulo \f$f\f$,
-the image of \f$\cL\f$ with respect to the transfer function
-\f$\mathrm{lhs} \equiv_f \mathrm{rhs}\f$ is defined as
-  \f[
-    \sset{
-      (w_0, \ldots, w_{n-1})^\transpose \in \Rset^n
-    }{
-      (v_0, \ldots, v_{n-1})^\transpose \in \cL, \\
-      \bigl(
-        i \in \{0, \ldots, n-1\} \land a'_i = 0
-          \implies
-            w_i = v_i
-      \bigr), \\
-      \sum_{i=0}^{n-1} a'_i w_i + b' \equiv_f \sum_{i=0}^{n-1} a_i v_i + b
-    }.
-  \f]
+Similarly to convex polyhedra (see \ref Generalized_Affine_Relations
+"Generalized Affine Relations"), the library provides two other grid operators
+that are generalizations of the single update affine image and
+preimage operators for grids.
+The <EM>generalized affine image</EM> operator
+\f$\fund{\phi = (\mathrm{lhs}', \mathrm{rhs}, f)}{\Rset^n}{\Rset^n}\f$, where
+\f$\mathrm{lhs} = \langle \vect{c}, \vect{x} \rangle + d\f$ and
+\f$\mathrm{rhs} = \langle \vect{a}, \vect{x} \rangle + b\f$
+are affine expressions and \f$f \in \Qset\f$, is defined as
+\f[
+  \forall \vect{v} \in \Rset^n, \vect{w} \in \Rset^n
+    \itc
+      (\vect{v}, \vect{w}) \in \phi
+        \iff
+          \bigl(
+            \langle \vect{c}, \vect{w} \rangle + d
+              \equiv_f \langle \vect{a}, \vect{v} \rangle + b
+          \bigr)
+            \land
+          \Bigl(
+            \bigland_{0 \leq i < n, c_i = 0}
+              w_i = v_i
+          \Bigr).
+\f]
 Note that, when \f$\mathrm{lhs} = x_k\f$ and \f$f = 0\f$,
 so that the transfer function is an equality,
 then the above operator
@@ -2054,7 +2028,7 @@ A grid \f$\cL\f$ <EM>subsumes</EM> a generator \f$g\f$ if
 adding \f$g\f$ to any generator system representing \f$\cL\f$
 does not change \f$\cL\f$.
 
-\subsection Rectilinear_Grids Boxes and Rectilinear Grids
+\subsection Rectilinear_Grids Rectilinear Grids and Covering Boxes
 
 Consider again the  \ref bounding_boxes "boxes" used for convex polyhedra.
 An \f$n\f$-dimensional <EM>rational box</EM> is a box
@@ -2094,36 +2068,27 @@ and, also, a covering box for any given grid.
 
 \subsection Grid_Widening Widening Operators
 
-The proposed widening for grids follows closely the standard
-\ref H79_widening "H79-widening" for convex polyhedra
-which is, in turn, based on that specified in the PhD thesis of N. Halbwachs
-\ref Hal79 "[Hal79]", also described in \ref HPR97 "[HPR97]".
-
+The library provides a <EM>grid widening</EM> operator for the domain of grids.
+This follows the specification provided in \ref BDHMZ05 "[BDHMZ05]".
 Note that, as for the widenings provided for convex polyhedra,
 the widening \f$\cL_1 \widen \cL_2\f$ of two
 grids \f$\cL_1, \cL_2 \in \Gset_n\f$ requires as a precondition that
 \f$\cL_1 \sseq \cL_2\f$.
 
-Let \f$\cL_1 = \gcon(\cC_1)\f$ and \f$\cL_2  = \gcon(\cC_2)\in \Gset_n\f$
-where \f$\cL_1 \sseq \cL_2\f$,
-\f$\cC_1\f$ and \f$\cC_2\f$ are congruence systems in \f$\Rset^n\f$
-and \f$\cC_1\f$ is either inconsistent or in minimal form.
-Then the <EM>grid widening</EM>
-\f$\cL_1 \widen \cL_2 \in \Gset_n\f$ is defined as
-- \f$\cL_2\f$, if
-    \f$\cL_1 = \emptyset\f$ or if \f$\pdim(\cL_1) < \pdim(\cL_2)\f$;
-- \f$\gcon(\cC)\f$, otherwise,
-
-where
-\f$
-  \cC
-    =
-      \Bigl\{\,
-        \beta \in \cC_1
-      \Bigm|
-        \cL_2 \sseq \gcon\bigl( \{ \beta \} \bigr)
-      \,\Bigr\}.
-\f$
+\note
+As is the case for the other operators on grids, the
+implementation overwrites one of the two grid arguments with the
+result of the widening application.
+It is worth stressing that, if grid \f$\cL_1\f$
+and \f$\cL_2\f$ (where \f$\cL_1 \sseq \cL_2\f$) are identified by program
+variables <CODE>l_1</CODE> and <CODE>l_2</CODE>, respectively, then the
+call <CODE>l_2.grid_widening_assign(l_1)</CODE> will assign the grid
+\f$\cL_1 \widen \cL_2\f$ to variable <CODE>l_2</CODE>.  Namely, it is the
+bigger grid\f$\cL_2\f$ which is overwritten by the result of the
+widening. The smaller grid is not modified.
+The same observation holds for all flavors of widenings and extrapolation
+operators that are implemented in the library and for all the foreign
+language interfaces.
 
 \subsection Grid_Widening_with_Tokens Widening with Tokens
 
@@ -2278,6 +2243,17 @@ T.&nbsp;Bultan, R.&nbsp;Gerber, and W.&nbsp;Pugh.
 
 </DD>
 
+
+<DT> [BDHMZ05] </DT>
+<DD>
+\anchor BDHMZ05
+R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Zaffanella.
+  A Linear Domain for Analyzing the Distribution of Numerical Values.
+  Technical report 2005.06, School of Computing, University of Leeds, UK, 2005.
+  Available at
+  <A HREF="http://www.comp.leeds.ac.uk/research/pubs/reports.shtml">http://www.comp.leeds.ac.uk/research/pubs/reports.shtml</A>.
+
+</DD>
 
 <DT> [BHMZ05] </DT>
 <DD>
