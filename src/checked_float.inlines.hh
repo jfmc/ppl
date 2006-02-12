@@ -735,7 +735,7 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 
 template <typename Policy, typename Type>
 inline Result
-output_float(std::ostream& os, Type& from, const Numeric_Format&,
+output_float(std::ostream& os, const Type from, const Numeric_Format&,
 	     Rounding_Dir) {
   if (from == 0)
     os << "0";
