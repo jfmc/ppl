@@ -30,23 +30,51 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define NOISY 0
 #endif
 
-#if NOISY
-static std::ostream& nout = std::cout;
-#else
-#include <fstream>
-static std::ofstream nout;
-#endif
-
 #ifndef VERY_NOISY
 #define VERY_NOISY 0
 #endif
 
-#if VERY_NOISY
-static std::ostream& vnout = std::cout;
+bool
+check_noisy(const char* environment_variable) {
+#if HAVE_DECL_GETENV 
+  return getenv(environment_variable) != 0;
 #else
-#include <fstream>
-static std::ofstream vnout;
+#if NOISY
+  if (strcmp(environment_variable, "PPL_NOISY_TESTS") == 0)
+    return true;
 #endif
+#if VERY_NOISY
+  if (strcmp(environment_variable, "PPL_VERY_NOISY_TESTS") == 0)
+    return true;
+#endif
+  return false;
+#endif
+}
+
+template<typename CharT, typename Traits = std::char_traits<CharT> >
+class nullbuf : public std::basic_streambuf<CharT, Traits> {
+protected:
+  virtual typename Traits::int_type overflow(typename Traits::int_type c) {
+    return Traits::not_eof(c);
+  }
+};
+
+template <class CharT, class Traits = std::char_traits<CharT> >
+class noisy_ostream : public std::basic_ostream<CharT, Traits> {
+private:
+  nullbuf<CharT, Traits> black_hole;
+
+public:
+  noisy_ostream(const std::basic_ostream<CharT, Traits>& os,
+		const char* environment_variable)
+    : std::basic_ostream<CharT, Traits>(check_noisy(environment_variable)
+					? os.rdbuf()
+					: &black_hole) {
+  }
+};
+
+static noisy_ostream<char> nout(std::cout, "PPL_NOISY_TESTS");
+static noisy_ostream<char> vnout(std::cout, "PPL_VERY_NOISY_TESTS");
 
 // FIX use inline function?
 #define dump_grids(grid,known_grid)			\
