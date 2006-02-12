@@ -70,9 +70,8 @@ test(string input_string, string expected_output, string expected_residual,
   if (result != expected_result 
       || residual != expected_residual
       || output != expected_output) {
-#if NOISY
-    using std::cout;
-    cout << "input = " << input_string
+
+    nout << "input = " << input_string
          << endl
          << "expected result = " << expected_result
          << ", actual result = " << result
@@ -83,7 +82,7 @@ test(string input_string, string expected_output, string expected_residual,
          << "expected residual = " << expected_residual
          << ", actual residual = " << residual
          << endl;
-#endif
+
     exit(1);
   }
 }

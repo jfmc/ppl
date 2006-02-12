@@ -26,10 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -39,9 +35,7 @@ main() TRY {
 
   C_Polyhedron ph(2, EMPTY);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   C_Polyhedron known_result(ph);
 
@@ -50,9 +44,7 @@ main() TRY {
 
   int retval = (ph == known_result) ? 0 : 1;
 
-#if NOISY
   print_constraints(ph, "*** After adding congruences ***");
-#endif
 
   return retval;
 }

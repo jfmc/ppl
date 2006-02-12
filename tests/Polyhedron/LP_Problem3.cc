@@ -25,13 +25,10 @@
 #include "timings.hh"
 #include <iostream>
 #include <vector>
+
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 int
 main() {
@@ -127,14 +124,12 @@ main() {
   // lpp.solve();
   pg = lpp.optimizing_point();
   //   lpp.evaluate_objective_function(pg, a, b);
-#if NOISY
-  cout << endl << "Optimum computed by LP_Problem solving the problem in one"
+  nout << endl << "Optimum computed by LP_Problem solving the problem in one"
     " shot is "<< a << "/" << b << endl <<" Computed Generator ";
   print_generator(pg);
-  cout << "Elapsed Time:" ;
-  print_clock(cout);
-  cout << endl;
-#endif
+  nout << "Elapsed Time:" ;
+  print_clock(nout);
+  nout << endl;
   // Reset `cs' to apply old style incrementality.
   cs.clear();
   start_clock();
@@ -142,15 +137,13 @@ main() {
     cs.insert(cs_vector[i]);
     cs.primal_simplex(cost, MAXIMIZATION, a, b, pg);
   }
-#if NOISY
-  cout << endl << "Optimum computed by Constraint_System::primal_simplex"
+  nout << endl << "Optimum computed by Constraint_System::primal_simplex"
     " adding constraints  `incrementally' is "<< a <<
     "/" << b << endl <<" Computed Generator ";
   print_generator(pg);
-  cout << "Elapsed Time:" ;
-  print_clock(cout);
-  cout << endl;
-#endif
+  nout << "Elapsed Time:" ;
+  print_clock(nout);
+  nout << endl;
 
   // Now test incrementality.
   cs.clear();
@@ -163,12 +156,10 @@ main() {
     incremental_lpp.solve();
   }
   pg = incremental_lpp.optimizing_point();
-#if NOISY
-  cout << endl << "Optimum computed applying incrementality is "<< a <<
+  nout << endl << "Optimum computed applying incrementality is "<< a <<
     "/" << b << endl << " Computed Generator " << endl;
   print_generator(pg);
-  cout << "Elapsed Time:" ;
-  print_clock(cout);
-  cout << endl;
-#endif
+  nout << "Elapsed Time:" ;
+  print_clock(nout);
+  nout << endl;
 }
