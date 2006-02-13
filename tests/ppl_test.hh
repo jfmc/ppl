@@ -174,8 +174,8 @@ check_result(const BD_Shape<T>& computed_result,
 */
 bool
 copy_compare(Grid& a, Grid& b) {
-  Grid tem_a = a;
-  Grid tem_b = b;
+  const Grid tem_a = a;
+  const Grid tem_b = b;
   return tem_a == tem_b;
 }
 
