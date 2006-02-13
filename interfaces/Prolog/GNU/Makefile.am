@@ -48,7 +48,7 @@ pkglib_DATA = ppl_gprolog.pl
 ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 	gplc --c-compiler $(CXX) -o $@ \
 		$(srcdir)/ppl_gprolog.pl .libs/libppl_gprolog.a \
-		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
+		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
 
 # Notice: we are linking with libppl_gprolog.a statically.
 # This is a kludge until we understand whether and if libtool
@@ -57,12 +57,12 @@ gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq.pl
 	gplc --c-compiler $(CXX) -o $@ \
 		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../tests/clpq.pl .libs/libppl_gprolog.a \
-		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
+		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
 gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq2.pl
 	gplc --c-compiler $(CXX) -o $@ \
 		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../tests/clpq2.pl .libs/libppl_gprolog.a \
-		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
+		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
