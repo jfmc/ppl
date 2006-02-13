@@ -37,9 +37,12 @@ main() TRY {
 
   print_constraints(bd, "*** bd ***");
 
-  BD_Shape<mpq_class> known_result(bd);
-
   bd.generalized_affine_image(e1, GREATER_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(B <= 5);
 
   int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
 
