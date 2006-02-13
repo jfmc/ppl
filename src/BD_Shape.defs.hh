@@ -446,6 +446,9 @@ public:
   /*!
     Builds the smallest BDS containing the polyhedron defined by \p gs.
     The BDS inherits the space dimension of \p gs.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
   */
   BD_Shape(const Generator_System& gs);
 

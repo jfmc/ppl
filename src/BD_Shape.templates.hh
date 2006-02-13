@@ -42,9 +42,16 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
   using Implementation::BD_Shapes::max_assign;
   using Implementation::BD_Shapes::div_round_up;
 
-  const dimension_type space_dim = space_dimension();
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
+  if (gs_begin == gs_end) {
+    // An empty generator system defines the empty polyhedron.
+    set_empty();
+    assert(OK());
+    return;
+  }
+
+  const dimension_type space_dim = space_dimension();
   DB_Row<N>& dbm_0 = dbm[0];
   N tmp;
 
@@ -101,12 +108,11 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
     }
   }
 
-  if (!point_seen) {
-    // If no point was found in `gs', the corresponding polyhedron is empty.
-    set_empty();
-    assert(OK());
-    return;
-  }
+  if (!point_seen)
+    // The generator system is not empty, but contains no points.
+    throw std::invalid_argument("PPL::BD_Shape<T>::BD_Shape(gs):\n"
+				"the non-empty generator system gs "
+				"contains no points.");
 
   // Going through all the lines and rays.
   for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
