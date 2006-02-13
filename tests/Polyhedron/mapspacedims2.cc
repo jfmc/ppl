@@ -21,19 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include "PFunction.hh"
-
-namespace {
-
-void
-print_function(const PFunction& function, const std::string& intro = "",
-	       std::ostream& s = nout) {
-  if (!intro.empty())
-    s << intro << endl;
-  function.print(s);
-}
-
-} // namespace
 
 int
 main() TRY {
@@ -43,12 +30,12 @@ main() TRY {
   Variable y(1);
   Variable z(2);
 
-  PFunction rotate_right;
+  Partial_Function rotate_right;
   rotate_right.insert(0, 1);
   rotate_right.insert(1, 2);
   rotate_right.insert(2, 0);
 
-  PFunction rotate_left;
+  Partial_Function rotate_left;
   rotate_left.insert(0, 2);
   rotate_left.insert(1, 0);
   rotate_left.insert(2, 1);

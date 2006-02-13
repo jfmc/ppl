@@ -22,23 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#include "PFunction.hh"
-#include <string>
-#include <ostream>
-
-namespace {
-
-void
-print_function(const PFunction& function,
-	       const std::string& intro = "",
-	       std::ostream& s = nout) {
-  if (!intro.empty())
-    s << intro << endl;
-  function.print(s);
-}
-
-} // namespace
-
 int
 main() TRY {
   Variable A(0);
@@ -54,7 +37,7 @@ main() TRY {
   cs.insert(B - A == 0);
   TBD_Shape bd(cs);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 2);
   function.insert(1, 1);
   function.insert(3, 0);

@@ -1,4 +1,4 @@
-/* Test BD_Shape::map_space_dimensions().
+/* Partial_Function class declaration.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,27 +20,35 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_test.hh"
+#ifndef PPL_Partial_Function_defs_hh
+#define PPL_Partial_Function_defs_hh 1
 
-int
-main() TRY {
-  Partial_Function function;
-  function.insert(0, 1);
-  function.insert(1, 0);
+#include "ppl.hh"
+#include "Partial_Function.types.hh"
+#include <map>
+#include <iosfwd>
 
-  TBD_Shape bd(0);
+class Parma_Polyhedra_Library::Partial_Function {
+private:
+  typedef Parma_Polyhedra_Library::dimension_type dim_t;
 
-  print_constraints(bd, "*** bd ***");
-  print_function(function, "*** function ***");
+public:
+  Partial_Function();
+  bool has_empty_codomain() const;
+  dim_t max_in_codomain() const;
+  bool maps(dim_t i, dim_t& j) const;
 
-  bd.map_space_dimensions(function);
+  void print(std::ostream& s) const;
 
-  BD_Shape<mpq_class> known_result(0);
+  void insert(dim_t x, dim_t y);
 
-  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
 
-  print_constraints(bd, "*** bd.map_space_dimension(function) ***");
+private:
+  typedef std::map<unsigned, unsigned, std::less<dim_t> > Map;
+  Map map;
+  dim_t max;
+};
 
-  return retval;
-}
-CATCH
+#include "Partial_Function.inlines.hh"
+
+#endif // !defined(PPL_Partial_Function_defs_hh)

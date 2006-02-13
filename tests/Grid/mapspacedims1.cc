@@ -21,25 +21,16 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include "PFunction.hh"
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
-void
-print_function(const PFunction& function, const std::string& intro = "",
-	       std::ostream& s = std::cout) {
-  if (!intro.empty())
-    s << intro << endl;
-  function.print(s);
-}
-
 // Empty grid, empty mapping.
 
 void
 test1() {
-  PFunction function;
+  Partial_Function function;
 
   Grid gr(3, EMPTY);
 
@@ -67,7 +58,7 @@ test2() {
   Variable B(1);
   Variable C(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 2);
   function.insert(2, 0);
   function.insert(1, 1);
@@ -108,7 +99,7 @@ test3() {
   Variable B(1);
   Variable C(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 1);
   function.insert(2, 0);
 
@@ -147,7 +138,7 @@ test4() {
   Variable B(1);
   Variable C(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(2, 0);
   function.insert(3, 2);
   function.insert(4, 1);
@@ -184,7 +175,7 @@ test5() {
   Variable A(0);
   Variable B(1);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 0);
   function.insert(1, 1);
 
@@ -218,7 +209,7 @@ test6() {
   Variable A(0);
   Variable B(1);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
   function.insert(2, 2);
@@ -259,7 +250,7 @@ test7() {
   Variable A(0);
   Variable B(1);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 0);
   function.insert(2, 1);
   function.insert(3, 2);
@@ -294,7 +285,7 @@ test7() {
 
 void
 test8() {
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
 
@@ -325,7 +316,7 @@ test9() {
   Variable B(1);
   Variable C(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
 

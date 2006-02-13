@@ -21,19 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include "PFunction.hh"
-
-namespace {
-
-void
-print_function(const PFunction& function, const std::string& intro = "",
-	       std::ostream& s = nout) {
-  if (!intro.empty())
-    s << intro << endl;
-  function.print(s);
-}
-
-} // namespace
 
 int
 main() TRY {
@@ -45,7 +32,7 @@ main() TRY {
   C_Polyhedron ph(2);
   ph.add_constraint(-A + B == 0);
 
-  PFunction rotate_right;
+  Partial_Function rotate_right;
   rotate_right.insert(0, 1);
   rotate_right.insert(1, 0);
 

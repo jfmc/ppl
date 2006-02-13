@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_print_hh
 #define PPL_print_hh 1
 
+#include "ppl.hh"
+#include "Partial_Function.types.hh"
 #include <string>
 #include <iostream>
 
@@ -128,5 +130,10 @@ void
 print_generators(const Parma_Polyhedra_Library::Polyhedron& ph,
 		 const std::string& intro = "",
 		 std::ostream& s = nout);
+
+void
+print_function(const Parma_Polyhedra_Library::Partial_Function& function,
+	       const std::string& intro = "",
+	       std::ostream& s = nout);
 
 #endif // !defined(PPL_print_hh)

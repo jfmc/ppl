@@ -20,18 +20,11 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
-
-#include "Congruence_System.defs.hh"
-#include "Constraint.defs.hh"
-#include "Generator.defs.hh"
-#include "Constraint_System.defs.hh"
-#include "Generator_System.defs.hh"
-#include "Polyhedron.defs.hh"
-#include "BD_Shape.defs.hh"
+#include "ppl.hh"
+#include "print.hh"
+#include "Partial_Function.defs.hh"
 #include <iostream>
 #include <string>
-#include "print.hh"
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -109,4 +102,12 @@ print_generators(const Generator_System& gs,
       s << ",\n";
   }
   s << (printed_something ? "." : "false.") << std::endl;
+}
+
+void
+print_function(const Partial_Function& function,
+	       const std::string& intro, std::ostream& s) {
+  if (!intro.empty())
+    s << intro << std::endl;
+  function.print(s);
 }

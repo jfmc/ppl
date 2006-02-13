@@ -1,4 +1,4 @@
-/* Implementation of class PFunction (non-inline functions).
+/* Implementation of class Partial_Function (non-inline functions).
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,35 +22,34 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "globals.defs.hh"
-#include "Variable.defs.hh"
-#include "PFunction.hh"
-
+#include "Partial_Function.defs.hh"
 #include <stdexcept>
 #include <iostream>
 
+namespace PPL = Parma_Polyhedra_Library;
+
 void
-PFunction::insert(dim_t x, dim_t y) {
+PPL::Partial_Function::insert(dim_t x, dim_t y) {
  std::pair<Map::iterator, bool> stat = map.insert(Map::value_type(x, y));
  if (!stat.second)
-   throw std::runtime_error("PFunction::insert(x, y) called"
+   throw std::runtime_error("Partial_Function::insert(x, y) called"
 			    " with `x' already in domain");
  if (y > max)
    max = y;
 }
 
-PFunction::dim_t
-PFunction::max_in_codomain() const {
+PPL::Partial_Function::dim_t
+PPL::Partial_Function::max_in_codomain() const {
   if (has_empty_codomain())
-    throw std::runtime_error("PFunction::max_in_codomain() called"
+    throw std::runtime_error("Partial_Function::max_in_codomain() called"
 			     " when has_empty_codomain()");
   return max;
 }
 
 bool
-PFunction::maps(dim_t x, dim_t& y) const {
+PPL::Partial_Function::maps(dim_t x, dim_t& y) const {
   if (has_empty_codomain())
-    throw std::runtime_error("PFunction::maps() called"
+    throw std::runtime_error("Partial_Function::maps() called"
 			     " when has_empty_codomain()");
   Map::const_iterator i = map.find(x);
   if (i != map.end()) {
@@ -62,7 +61,7 @@ PFunction::maps(dim_t x, dim_t& y) const {
 }
 
 void
-PFunction::print(std::ostream& s) const {
+PPL::Partial_Function::print(std::ostream& s) const {
   using namespace Parma_Polyhedra_Library;
   using namespace IO_Operators;
 

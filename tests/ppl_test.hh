@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl.hh"
 #include "print.hh"
 #include "ehandlers.hh"
+#include "Partial_Function.defs.hh"
 #include "Random_Number_Generator.defs.hh"
 #include <stdexcept>
 #include <sstream>

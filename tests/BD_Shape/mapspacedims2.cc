@@ -22,24 +22,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#include "PFunction.hh"
-#include <string>
-#include <ostream>
-
 namespace {
 
 void
-print_function(const PFunction& function,
-	       const std::string& intro = "",
-	       std::ostream& s = nout) {
-  if (!intro.empty())
-    s << intro << endl;
-  function.print(s);
-}
-
-void
 test1() {
-  PFunction function;
+  Partial_Function function;
 
   TBD_Shape bd1(3);
 
@@ -60,7 +47,7 @@ test1() {
 
 void
 test2() {
-  PFunction function;
+  Partial_Function function;
 
   TBD_Shape bd1(3, EMPTY);
 
@@ -81,7 +68,7 @@ test2() {
 
 void
 test3() {
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
 
@@ -108,7 +95,7 @@ test4() {
   Variable y(1);
   Variable z(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 0);
   function.insert(2, 1);
 
@@ -141,7 +128,7 @@ test5() {
   Variable y(1);
   Variable z(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(2, 0);
 
   Constraint_System cs;
@@ -174,7 +161,7 @@ test6() {
   Variable y(1);
   Variable z(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(2, 1);
   function.insert(1, 0);
 

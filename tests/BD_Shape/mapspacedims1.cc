@@ -22,25 +22,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#include "PFunction.hh"
-#include <string>
-#include <ostream>
-
-void
-print_function(const PFunction& function,
-	       const std::string& intro = "",
-	       std::ostream& s = nout) {
-  if (!intro.empty())
-    s << intro << endl;
-  function.print(s);
-}
-
 int
 main() TRY {
   Variable x(0);
   Variable y(1);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
 
