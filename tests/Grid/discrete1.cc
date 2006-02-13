@@ -35,7 +35,7 @@ void
 test1() {
   Grid gr(7, EMPTY);
 
-  if (gr.is_pointed())
+  if (gr.is_discrete())
     return;
 
   exit(1);
@@ -48,7 +48,7 @@ test2() {
 
   Grid gr(0, EMPTY);
 
-  if (gr.is_pointed())
+  if (gr.is_discrete())
     return;
 
   exit(1);
@@ -60,7 +60,7 @@ void
 test3() {
   Grid gr(0);
 
-  if (gr.is_pointed())
+  if (gr.is_discrete())
     return;
 
   exit(1);
@@ -85,15 +85,15 @@ test4() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  if (gr_gs_min.is_pointed())
-    if (gr_gs_needs_min.is_pointed())
-      if (gr_cgs_needs_min.is_pointed())
+  if (gr_gs_min.is_discrete())
+    if (gr_gs_needs_min.is_discrete())
+      if (gr_cgs_needs_min.is_discrete())
 	return;
       else nout << "gr_cgs_needs_min";
     else nout << "gr_gs_needs_min";
   else nout << "gr_gs_min";
 
-  nout << " should be pointed." << endl;
+  nout << " should be discrete." << endl;
 
   exit(1);
 }
@@ -124,18 +124,18 @@ test5() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
   assert(copy_compare(gr_cgs_needs_min, gr_cgs_min));
 
-  if (gr_gs_min.is_pointed())
+  if (gr_gs_min.is_discrete())
     nout << "gr_gs_min";
-  else if (gr_gs_needs_min.is_pointed())
+  else if (gr_gs_needs_min.is_discrete())
     nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.is_pointed())
+  else if (gr_cgs_needs_min.is_discrete())
     nout << "gr_cgs_needs_min";
-  else if (gr_cgs_min.is_pointed())
+  else if (gr_cgs_min.is_discrete())
     nout << "gr_cgs_min";
   else
     return;
 
-  nout << " was pointed." << endl;
+  nout << " was discrete." << endl;
 
   exit(1);
 }
@@ -160,15 +160,15 @@ test6() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  if (gr_gs_min.is_pointed())
-    if (gr_gs_needs_min.is_pointed())
-      if (gr_cgs_needs_min.is_pointed())
+  if (gr_gs_min.is_discrete())
+    if (gr_gs_needs_min.is_discrete())
+      if (gr_cgs_needs_min.is_discrete())
 	return;
       else nout << "gr_cgs_needs_min";
     else nout << "gr_gs_needs_min";
   else nout << "gr_gs_min";
 
-  nout << " should be pointed." << endl;
+  nout << " should be discrete." << endl;
 
   exit(1);
 }
@@ -194,16 +194,16 @@ test7() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  if (gr_gs_min.is_pointed())
+  if (gr_gs_min.is_discrete())
     nout << "gr_gs_min";
-  else if (gr_gs_needs_min.is_pointed())
+  else if (gr_gs_needs_min.is_discrete())
     nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.is_pointed())
+  else if (gr_cgs_needs_min.is_discrete())
     nout << "gr_cgs_needs_min";
   else
     return;
 
-  nout << " was pointed." << endl;
+  nout << " was discrete." << endl;
 
   exit(1);
 }
@@ -229,15 +229,15 @@ test8() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  if (gr_gs_min.is_pointed())
-    if (gr_gs_needs_min.is_pointed())
-      if (gr_cgs_needs_min.is_pointed())
+  if (gr_gs_min.is_discrete())
+    if (gr_gs_needs_min.is_discrete())
+      if (gr_cgs_needs_min.is_discrete())
 	return;
       else nout << "gr_cgs_needs_min";
     else nout << "gr_gs_needs_min";
   else nout << "gr_gs_min";
 
-  nout << " should be pointed." << endl;
+  nout << " should be discrete." << endl;
 
   exit(1);
 }
@@ -265,16 +265,16 @@ test9() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  if (gr_gs_min.is_pointed())
+  if (gr_gs_min.is_discrete())
     nout << "gr_gs_min";
-  else if (gr_gs_needs_min.is_pointed())
+  else if (gr_gs_needs_min.is_discrete())
     nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.is_pointed())
+  else if (gr_cgs_needs_min.is_discrete())
     nout << "gr_cgs_needs_min";
   else
     return;
 
-  nout << " was pointed." << endl;
+  nout << " was discrete." << endl;
 
   exit(1);
 }
@@ -300,16 +300,16 @@ test10() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  if (gr_gs_min.is_pointed())
+  if (gr_gs_min.is_discrete())
     nout << "gr_gs_min";
-  else if (gr_gs_needs_min.is_pointed())
+  else if (gr_gs_needs_min.is_discrete())
     nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.is_pointed())
+  else if (gr_cgs_needs_min.is_discrete())
     nout << "gr_cgs_needs_min";
   else
     return;
 
-  nout << " was pointed." << endl;
+  nout << " was discrete." << endl;
 
   exit(1);
 }
@@ -322,7 +322,7 @@ test11() {
   gr.add_congruence(A == 1);
   gr.add_congruence(A == 2);
 
-  if (gr.is_pointed())
+  if (gr.is_discrete())
     return;
 
   exit(1);
@@ -334,7 +334,7 @@ int
 main() TRY {
   set_handlers();
 
-  nout << "pointed1:" << endl;
+  nout << "discrete1:" << endl;
 
   DO_TEST(test1);
   DO_TEST(test2);

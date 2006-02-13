@@ -676,13 +676,13 @@ public:
   */
   bool is_disjoint_from(const Grid& y) const;
 
-  //! Returns <CODE>true</CODE> if and only if \p *this is pointed.
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
   /*!
-    A grid is pointed if it can be defined by a generator system which
+    A grid is discrete if it can be defined by a generator system which
     contains only points and parameters.  This includes the empty grid
     and any grid in dimension zero.
   */
-  bool is_pointed() const;
+  bool is_discrete() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
   bool is_bounded() const;

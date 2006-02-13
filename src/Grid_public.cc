@@ -521,8 +521,8 @@ PPL::Grid::is_bounded() const {
 }
 
 bool
-PPL::Grid::is_pointed() const {
-  // A zero-dimensional or empty grid is pointed.
+PPL::Grid::is_discrete() const {
+  // A zero-dimensional or empty grid is discrete.
   if (space_dim == 0 || marked_empty())
     return true;
 

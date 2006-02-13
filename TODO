@@ -12,9 +12,6 @@ Enhancements for PPL 0.9
   checked.
 - Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
 - Write a manual page for ppl (3).
-- Complete the implementation of any missing Grid operators, including
-  deciding whether covered (or bounded) widening and extrapolation
-  operators are required.
 - Check that the Grid tests cover all the code.
 
 

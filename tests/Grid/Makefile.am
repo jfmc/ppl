@@ -85,7 +85,7 @@ membytes1 membytes2 \
 mincongruences1 \
 mingenerators1 \
 outputoperator1 \
-pointed1 \
+discrete1 \
 relations1 relations2 \
 removespacedims1 removespacedims2 \
 timeelapse1 timeelapse2 \
@@ -206,7 +206,7 @@ mingenerators1_SOURCES = mingenerators1.cc
 
 outputoperator1_SOURCES = outputoperator1.cc
 
-pointed1_SOURCES = pointed1.cc
+discrete1_SOURCES = discrete1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
