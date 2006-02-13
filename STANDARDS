@@ -445,15 +445,21 @@ o  Normally, test code should produce no output at all (independently from
    (e.g., print_constraints, print_generators, etc.) are directed to
    stream `nout', so that they will normally discard the output too.
 
-o  By defining the preprocessor variables NOISY and VERY_NOISY to a value
-   other than zero, the streams `nout' and `vnout' will be redirected to
-   standard output and become noisy. Thus, if some output is (locally and
-   temporarily) needed for debugging purposes, one option is to add
+o  By defining the environment variables `PPL_NOISY_TESTS' and/or
+   `PPL_VERY_NOISY_TESTS' to any value, the streams `nout' and `vnout'
+   will be redirected to standard output and become noisy.
+
+o  On very weird platforms the above mechanism may not be supported.
+   In these rare cases, the same effect can be obtained by defining
+   the preprocessor variables NOISY and/or VERY_NOISY to any value other
+   than zero and recompiling the test program.  Thus, if some output is
+   (locally and temporarily) needed for debugging purposes, one option
+   is to add
 
       #define NOISY 1
       #define VERY_NOISY 1
 
-   as the very first line of the test source file.
+   as the very first line of the test source file and recompile it.
 
 o  To avoid repeated namespace qualifications, the header file `ppl_test.hh'
    adds a using directive for the whole PPL namespace. It also adds a
