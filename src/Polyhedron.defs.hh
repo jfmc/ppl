@@ -2470,5 +2470,6 @@ void swap(Parma_Polyhedra_Library::Polyhedron& x,
 
 #include "Ph_Status.inlines.hh"
 #include "Polyhedron.inlines.hh"
+#include "Polyhedron.templates.hh"
 
 #endif // !defined(PPL_Polyhedron_defs_hh)

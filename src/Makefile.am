@@ -228,6 +228,7 @@ Grid_Certificate.inlines.hh \
 Polyhedron.defs.hh \
 Ph_Status.inlines.hh \
 Polyhedron.inlines.hh \
+Polyhedron.templates.hh \
 Grid.defs.hh \
 Grid_Status.inlines.hh \
 Grid.inlines.hh \

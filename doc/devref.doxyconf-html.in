@@ -570,6 +570,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Polyhedron.types.hh \
                          @srcdir@/../src/Polyhedron.defs.hh \
                          @srcdir@/../src/Polyhedron.inlines.hh \
+                         @srcdir@/../src/Polyhedron.templates.hh \
                          @srcdir@/../src/Polyhedron_public.cc \
                          @srcdir@/../src/Polyhedron_nonpublic.cc \
                          @srcdir@/../src/Polyhedron_widenings.cc \
