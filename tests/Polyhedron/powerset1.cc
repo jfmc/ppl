@@ -159,9 +159,6 @@ main() TRY {
   nout << "Total memory: " << ps3.total_memory_in_bytes() << std::endl
        << "External memory: " << ps3.external_memory_in_bytes() << std::endl;
 
-  if (!ps3.OK())
-    exit(1);
-
   ps3.omega_reduce();
 
   if (ps3.size() == 0)

@@ -43,7 +43,7 @@ main() TRY {
   // leading to an inconsistent state.
   ph1 = ph1;
 
-  ph1.OK();
+  (void) ph1.OK();
 
   return 0;
 }

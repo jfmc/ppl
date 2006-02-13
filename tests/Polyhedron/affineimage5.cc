@@ -39,8 +39,6 @@ main() TRY {
 
   ph.affine_image(B, A-B+2, -3);
 
-  ph.OK(true);
-
   C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(2*A));
   known_result.add_generator(point(2*A - B));

@@ -43,7 +43,7 @@ main() TRY {
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(B >= 1);
 
-  int retval = (ph == known_result && ph.OK(true)) ? 0 : 1;
+  int retval = (ph == known_result) ? 0 : 1;
 
   print_constraints(ph,
 		    "*** After ph.add_constraint_and_minimize(B >= 1) ***");

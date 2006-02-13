@@ -38,7 +38,6 @@ const char* my_file = "writerelation1.dat";
 void
 test1() {
   Poly_Con_Relation rel(Poly_Con_Relation::nothing());
-  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -49,7 +48,6 @@ test1() {
 void
 test2() {
   Poly_Gen_Relation rel(Poly_Gen_Relation::nothing());
-  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -60,7 +58,6 @@ test2() {
 void
 test3() {
   Poly_Con_Relation rel(Poly_Con_Relation::is_disjoint());
-  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -71,7 +68,6 @@ test3() {
 void
 test4() {
   Poly_Gen_Relation rel(Poly_Gen_Relation::subsumes());
-  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);

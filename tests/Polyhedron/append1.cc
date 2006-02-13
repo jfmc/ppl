@@ -86,9 +86,7 @@ main() TRY {
     dimensions_to_remove.insert(D);
     dimensions_to_remove.insert(F);
     dimensions_to_remove.insert(E);
-    assert(current.OK());
     current.remove_space_dimensions(dimensions_to_remove);
-    assert(current.OK());
 
     print_constraints(current, "*** after remove_space_dimensions ***");
 

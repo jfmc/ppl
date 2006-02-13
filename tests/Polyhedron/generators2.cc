@@ -45,9 +45,6 @@ main() TRY {
 
   C_Polyhedron ph(gs);
 
-  if (!ph.OK())
-    exit(1);
-
   int result = (ph == known_result ? 0 : 1);
 
   print_generators(ph, "*** ph ***");

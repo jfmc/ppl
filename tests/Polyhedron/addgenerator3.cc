@@ -46,7 +46,7 @@ main() TRY {
   known_gs.insert(ray(A));
   C_Polyhedron known_result(known_gs);
 
-  int retval = (ph == known_result && ph.OK(true)) ? 0 : 1;
+  int retval = (ph == known_result) ? 0 : 1;
 
   print_generators(ph,
 		    "*** After ph.add_generator_and_minimize(ray(A)) ***");

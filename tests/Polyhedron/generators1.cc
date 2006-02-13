@@ -41,7 +41,7 @@ main() TRY {
   known_result.add_constraint(x == -1);
   known_result.add_constraint(y == -1);
 
-  int retval = (ph == known_result && ph.OK()) ? 0 : 1;
+  int retval = (ph == known_result) ? 0 : 1;
 
   print_constraints(ph, "*** ph constraints ***");
   print_generators(ph, "*** ph generators ***");
