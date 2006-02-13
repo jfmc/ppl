@@ -32,7 +32,6 @@ main() TRY {
   Variable x6(5);
 
   TBD_Shape bd1(6);
-
   bd1.add_constraint(x2 - x3 <= 0);
   bd1.add_constraint(x3 <= 2);
   bd1.add_constraint(x6 - x5 <= 2);
@@ -44,16 +43,16 @@ main() TRY {
   Variables_Set to_be_removed;
   to_be_removed.insert(x3);
   to_be_removed.insert(x5);
+
   bd1.remove_space_dimensions(to_be_removed);
 
-  TBD_Shape known_result(4);
-
+  BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(x2 <= 2);
   known_result.add_constraint(x4 <= 5);
 
-  print_constraints(bd1, "*** bd1.remove_space_dimensions({x3,x5}) ***");
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  print_constraints(bd1, "*** bd1.remove_space_dimensions({x3,x5}) ***");
 
   return retval;
 }

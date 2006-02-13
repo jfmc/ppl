@@ -28,15 +28,13 @@ main() TRY {
   Variable B(1);
 
   TBD_Shape bd1(2);
-  TBD_Shape bd2(2);
-  TBD_Shape known_result(2);
-
   bd1.add_constraint(A <= 4);
   bd1.add_constraint(A >= 1);
   bd1.add_constraint(B <= 3);
   bd1.add_constraint(-B <= -1);
   bd1.add_constraint(A - B <= 1);
 
+  TBD_Shape bd2(2);
   bd2.add_constraint(B - A <= -1);
   bd2.add_constraint(A <= 3);
   bd2.add_constraint(-B <= 5);
@@ -44,14 +42,9 @@ main() TRY {
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  if (bd1.bds_hull_assign_and_minimize(bd2)) {
+  bd1.bds_hull_assign_and_minimize(bd2);
 
-    print_constraints(bd1, "*** bd1.bds_hull_assign_and_minimize(bd2) ***");
-
-  }
-  else
-    nout << endl << "The two BD_Shape are empty." << endl;
-
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B >= -5);
   known_result.add_constraint(A >= -4);
@@ -59,7 +52,9 @@ main() TRY {
   known_result.add_constraint(A - B <= 8);
   known_result.add_constraint(B - A <= 2);
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+
+  print_constraints(bd1, "*** bd1.bds_hull_assign_and_minimize(bd2) ***");
 
   return retval;
 }

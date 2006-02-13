@@ -35,17 +35,17 @@ main() TRY {
 
   print_constraints(bd, "*** bd ***");
 
-  TBD_Shape known_result(2);
+  bd.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, Linear_Expression(1));
+
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 5);
 
-  bd.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, Linear_Expression(1));
+  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
 
   print_constraints(bd, "*** bd.generalized_affine_image(A, "
                         "GREATER_THAN_OR_EQUAL, 1) ***");
-
-  int retval = (bd == known_result) ? 0 : 1;
 
   return retval;
 }

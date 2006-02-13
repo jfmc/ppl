@@ -35,23 +35,23 @@ main() TRY {
   bd.add_constraint(A - B <= 0);
   bd.add_constraint(B - C == 2);
   bd.add_constraint(C - A <= -2);
-  
+
   print_constraints(bd, "*** bd ***");
 
-  TBD_Shape known_result(3);
+  bd.generalized_affine_image(-B, LESS_THAN_OR_EQUAL, Linear_Expression(1));
+
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(A - C == 2);
   known_result.add_constraint(C >= -2);
   known_result.add_constraint(C <= 2);
   known_result.add_constraint(B >= -1);
-  
-  bd.generalized_affine_image(-B, LESS_THAN_OR_EQUAL, Linear_Expression(1));
- 
+
+  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
+
   print_constraints(bd, "*** bd.generalized_affine_image(-B, "
                         "LESS_THAN_OR_EQUAL, 1) ***");
-
-  int retval = (bd == known_result) ? 0 : 1;
 
   return retval;
 }

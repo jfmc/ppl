@@ -30,7 +30,6 @@ main() TRY {
 
   TBD_Shape bd1(3);
   TBD_Shape bd2(3);
-
   bd2.add_constraint(y - x <= -1);
   bd2.add_constraint(x <= 3);
   bd2.add_constraint(y >= -5);
@@ -38,19 +37,14 @@ main() TRY {
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  TBD_Shape known_result(bd2);
+  BD_Shape<mpq_class> known_result(bd2);
 
-  if (bd1.intersection_assign_and_minimize(bd2)) {
+  bd1.intersection_assign_and_minimize(bd2);
 
-    print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
 
-  }
-  else
-    nout << endl << "One of the two BD_Shape is empty." <<endl;
-
-  int retval = (bd1 == known_result) ? 0 : 1;
+  print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
   return retval;
-
 }
 CATCH

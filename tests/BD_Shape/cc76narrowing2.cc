@@ -29,11 +29,9 @@ main() TRY {
   Variable z(2);
 
   TBD_Shape bd1(4);
-  TBD_Shape bd2(4);
-  TBD_Shape known_result(4);
-
   bd1.add_constraint(z <= 1);
 
+  TBD_Shape bd2(4);
   bd2.add_constraint(-y <= 3);
   bd2.add_constraint(-x <= 2);
   bd2.add_constraint(x <= 3);
@@ -45,6 +43,7 @@ main() TRY {
 
   bd2.CC76_narrowing_assign(bd1);
 
+  BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(z <= 1);
   known_result.add_constraint(-y <= 3);
   known_result.add_constraint(y <= 7);
@@ -55,11 +54,10 @@ main() TRY {
   known_result.add_constraint(z - y <= 3);
   known_result.add_constraint(z - x <= 2);
 
+  int retval = (BD_Shape<mpq_class>(bd2) == known_result) ? 0 : 1;
+
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
-  int retval = (bd2 == known_result) ? 0 : 1;
-
   return retval;
-
 }
 CATCH

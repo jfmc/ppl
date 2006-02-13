@@ -30,8 +30,6 @@ main() TRY {
   Variable D(3);
 
   TBD_Shape bd1(4);
-  TBD_Shape bd2(4);
-
   bd1.add_constraint(A >= 0);
   bd1.add_constraint(B >= 0);
   bd1.add_constraint(B <= 25);
@@ -49,6 +47,7 @@ main() TRY {
   bd1.add_constraint(C - D <= 4);
   bd1.add_constraint(D - C <= 4);
 
+  TBD_Shape bd2(4);
   bd2.add_constraint(A >= 0);
   bd2.add_constraint(B >= 0);
   bd2.add_constraint(B <= 26);
@@ -79,21 +78,22 @@ main() TRY {
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
+  BD_Shape<mpq_class> known_result(4);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(B <= 26);
+  known_result.add_constraint(C >= 0);
+  known_result.add_constraint(D >= 0);
+  known_result.add_constraint(B - A <= 26);
+  known_result.add_constraint(B - C <= 2);
+  known_result.add_constraint(B - D <= 2);
+  known_result.add_constraint(C - D <= 4);
+
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+
   print_constraints(bd1,
 		    "bd1.limited_CC76_extrapolation_assign(bd2, cs) ***");
 
- TBD_Shape known_result(4);
- known_result.add_constraint(A >= 0);
- known_result.add_constraint(B >= 0);
- known_result.add_constraint(B <= 26);
- known_result.add_constraint(C >= 0);
- known_result.add_constraint(D >= 0);
- known_result.add_constraint(B - A <= 26);
- known_result.add_constraint(B - C <= 2);
- known_result.add_constraint(B - D <= 2);
- known_result.add_constraint(C - D <= 4);
-
-  return bd1 == known_result ? 0 : 1;
-
+  return retval;
 }
 CATCH

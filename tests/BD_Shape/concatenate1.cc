@@ -35,13 +35,12 @@ main() TRY {
   Variable x9(8);
 
   TBD_Shape bd1(6);
-  TBD_Shape bd2(3);
-
   bd1.add_constraint(x2 - x3 <= 0);
   bd1.add_constraint(x3 <= 2);
   bd1.add_constraint(x6 - x5 <= 2);
   bd1.add_constraint(x5 <= 3);
 
+  TBD_Shape bd2(3);
   bd2.add_constraint(x2 - x3 <= 2);
   bd2.add_constraint(x3 <= 7);
 
@@ -50,8 +49,7 @@ main() TRY {
 
   bd1.concatenate_assign(bd2);
 
-  TBD_Shape known_result(9);
-
+  BD_Shape<mpq_class> known_result(9);
   known_result.add_constraint(x2 - x3 <= 0);
   known_result.add_constraint(x3 <= 2);
   known_result.add_constraint(x6 - x5 <= 2);
@@ -59,9 +57,9 @@ main() TRY {
   known_result.add_constraint(x8 - x9 <= 2);
   known_result.add_constraint(x9 <= 7);
 
-  print_constraints(bd1, "*** bd1.concatenate_assign(bd2) ***");
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  print_constraints(bd1, "*** bd1.concatenate_assign(bd2) ***");
 
   return retval;
 }

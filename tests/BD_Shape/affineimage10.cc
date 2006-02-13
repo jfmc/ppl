@@ -31,18 +31,17 @@ test1() {
   Variable z(2);
 
   TBD_Shape bd(3);
-
   bd.add_constraint(x <= 1);
   bd.add_constraint(y <= 2);
- 
+
   print_constraints(bd, "*** bd ***");
 
-  TBD_Shape known_result(3);
-  known_result.add_constraint(y <= 2);
-  
   bd.affine_image(x, 2*y + z + 2, 4);
 
-  bool ok = (bd == known_result);
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(y <= 2);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_image(x, 2*y + z + 2, 4) ***");
 

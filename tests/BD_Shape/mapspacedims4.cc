@@ -48,11 +48,11 @@ main() TRY {
 
   bd.map_space_dimensions(function);
 
-  TBD_Shape known_result(0);
+  BD_Shape<mpq_class> known_result(0);
+
+  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
 
   print_constraints(bd, "*** bd.map_space_dimension(function) ***");
-
-  int retval = (bd == known_result) ? 0 : 1;
 
   return retval;
 }

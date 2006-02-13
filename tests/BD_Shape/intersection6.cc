@@ -26,18 +26,18 @@ int
 main() TRY {
   TBD_Shape bd1;
   TBD_Shape bd2;
-  TBD_Shape known_result;
 
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  bd2.intersection_assign(bd1);
+  bd1.intersection_assign(bd2);
 
-  print_constraints(bd2, "*** bd2.intersection_assign(bd1) ***");
+  BD_Shape<mpq_class> known_result;
 
-  int retval = (bd2 == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+
+  print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
   return retval;
-
 }
 CATCH

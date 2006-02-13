@@ -30,13 +30,13 @@ main() TRY {
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  Constraint_System cs;
-  cs.insert(Linear_Expression(-4) >= 0);
-  TBD_Shape known_result(cs);
-
   bd1.bds_difference_assign(bd2);
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  Constraint_System cs;
+  cs.insert(Linear_Expression(-4) >= 0);
+  BD_Shape<mpq_class> known_result(cs);
+
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
 
   print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
 

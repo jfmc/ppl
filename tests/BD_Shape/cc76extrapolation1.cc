@@ -28,13 +28,11 @@ main() TRY {
   Variable y(1);
 
   TBD_Shape bd1(3);
-  TBD_Shape bd2(3);
-  TBD_Shape known_result(3);
-
   bd1.add_constraint(x <= 1);
   bd1.add_constraint(x - y <= 2);
   bd1.add_constraint(y - x <= 7);
 
+  TBD_Shape bd2(3);
   bd2.add_constraint(x - y <= 2);
   bd2.add_constraint(-x <= 3);
   bd2.add_constraint(x <= 0);
@@ -45,14 +43,14 @@ main() TRY {
 
   bd1.CC76_extrapolation_assign(bd2);
 
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(x - y <= 2);
 
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+
   print_constraints(bd1, "*** bd1.CC76_extrapolation_assign(bd2) ***");
 
-  int retval = (bd1 == known_result) ? 0 : 1;
-
   return retval;
-
 }
 CATCH

@@ -42,13 +42,13 @@ main() TRY {
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  TBD_Shape known_result(bd1);
+  BD_Shape<mpq_class> known_result(bd1);
 
   bd1.bds_difference_assign(bd2);
 
-  print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
 
   return retval;
 }

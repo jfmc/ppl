@@ -41,12 +41,12 @@ main() TRY {
 
   oc1.time_elapse_assign(oc2);
 
-  TBD_Shape known_result(2);
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(y >= 1);
 
-  print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
+  int retval = (BD_Shape<mpq_class>(oc1) == known_result) ? 0 : 1;
 
-  int retval = (oc1 == known_result) ? 0 : 1;
+  print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
 
   return retval;
 }

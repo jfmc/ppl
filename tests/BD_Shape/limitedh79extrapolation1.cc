@@ -49,15 +49,15 @@ main() TRY {
 
   print_constraints(cs, "*** cs ***");
 
-  TBD_Shape computed_result = bd1;
-  computed_result.limited_H79_extrapolation_assign(bd2, cs);
+  bd1.limited_H79_extrapolation_assign(bd2, cs);
 
-  TBD_Shape known_result(2);
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(y >= 3);
 
-  print_constraints(computed_result,
-		    "*** bd1.limited_H79_extrapolation_assign(bd2) ****");
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
 
-  return (computed_result == known_result) ? 0 : 1;
+  print_constraints(bd1, "*** bd1.limited_H79_extrapolation_assign(bd2) ****");
+
+  return retval;
 }
 CATCH

@@ -27,12 +27,14 @@ namespace {
 void
 test1() {
   TBD_Shape bd1(0, EMPTY);
-  TBD_Shape known_result(3, EMPTY);
 
   print_constraints(bd1, "*** bd1 ***");
 
   bd1.add_space_dimensions_and_project(3);
-  bool ok = (bd1 == known_result);
+
+  BD_Shape<mpq_class> known_result(3, EMPTY);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.add_space_dimension_and_project(3) ***");
 
@@ -48,17 +50,18 @@ test2() {
   Variable D(3);
 
   TBD_Shape bd1(0);
-  TBD_Shape known_result(4);
-  known_result.add_constraint(A == 0);
-  known_result.add_constraint(B == 0);
-  known_result.add_constraint(C == 0);
-  known_result.add_constraint(D == 0);
 
   print_constraints(bd1, "*** bd1 ***");
 
   bd1.add_space_dimensions_and_project(4);
 
-  bool ok = (bd1 == known_result);
+  BD_Shape<mpq_class> known_result(4);
+  known_result.add_constraint(A == 0);
+  known_result.add_constraint(B == 0);
+  known_result.add_constraint(C == 0);
+  known_result.add_constraint(D == 0);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.add_space_dimensions_and_project(4) ***");
 

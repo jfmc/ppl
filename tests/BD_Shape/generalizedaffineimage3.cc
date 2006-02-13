@@ -34,9 +34,9 @@ main() TRY {
 
   bd.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B + 1);
 
-  TBD_Shape known_result(2, EMPTY);
+  BD_Shape<mpq_class> known_result(2, EMPTY);
 
-  int retval = (bd == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
 
   print_constraints(bd, "*** bd.generalized_affine_image"
 		    "(A, LESS_THAN_OR_EQUAL, B + 1) ***");

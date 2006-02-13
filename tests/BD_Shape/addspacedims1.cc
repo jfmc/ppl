@@ -1,4 +1,4 @@
-/* Test BD_Shape::add_space_dimensions_and_embed(): 
+/* Test BD_Shape::add_space_dimensions_and_embed():
    we add two variables to a BD_Shape.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -30,24 +30,23 @@ main() TRY {
   Variable z(2);
 
   TBD_Shape bd(2);
-
   bd.add_constraint(x <= 2);
 
   print_constraints(bd, "*** bd ***");
 
   bd.add_space_dimensions_and_embed(2);
+  bd.add_constraint(z <= 2);
 
-  TBD_Shape known_result(4);
+  BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(z <= 2);
 
-  bd.add_constraint(z <= 2);
+  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
 
-  print_constraints(bd, "*** bd.add_space_dimensions_and_embed(2) and bd.add_constraint(z <= 2) ***");
-
-  int retval = (bd == known_result) ? 0 : 1;
+  print_constraints(bd,
+		    "*** bd.add_space_dimensions_and_embed(2) "
+		    "and bd.add_constraint(z <= 2) ***");
 
   return retval;
-
 }
 CATCH

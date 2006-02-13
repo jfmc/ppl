@@ -29,9 +29,9 @@ test1() {
   Generator_System gs;
   TBD_Shape bd(gs);
 
-  TBD_Shape known_result(0, EMPTY);
+  BD_Shape<mpq_class> known_result(0, EMPTY);
 
-  bool ok = (bd == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd ***");
 
@@ -45,16 +45,22 @@ test2() {
 
   Generator_System gs;
   gs.insert(closure_point(V));
-  TBD_Shape bd(gs);
 
-  TBD_Shape known_result(11, EMPTY);
+  try {
+    // It is illegal to build a BD_Shape starting from a non-empty
+    // generator system having no points.
+    TBD_Shape bd(gs);
 
-  bool ok = (bd == known_result);
-
-  print_constraints(bd, "*** bd ***");
-
-  if (!ok)
+    // It is an error if the exception is not thrown.
     exit(1);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    // It is an error if the wrong exception is thrown.
+    exit(1);
+  }
 }
 
 void
@@ -63,16 +69,23 @@ test3() {
 
   Generator_System gs;
   gs.insert(ray(V));
-  TBD_Shape bd(gs);
 
-  TBD_Shape known_result(11, EMPTY);
+  try {
+    // It is illegal to build a BD_Shape starting from a non-empty
+    // generator system having no points.
+    TBD_Shape bd(gs);
 
-  bool ok = (bd == known_result);
-
-  print_constraints(bd, "*** bd ***");
-
-  if (!ok)
+    // It is an error if the exception is not thrown.
     exit(1);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return;
+  }
+  catch (...) {
+    // It is an error if the wrong exception is thrown.
+    exit(1);
+  }
 }
 
 void
@@ -88,7 +101,7 @@ test4() {
   gs.insert(point(2*A + 3*B + 4*C + 5*D));
   TBD_Shape bd(gs);
 
-  TBD_Shape known_result(4);
+  BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(B >= 2);
   known_result.add_constraint(C >= 3);
@@ -99,7 +112,7 @@ test4() {
   known_result.add_constraint(C == D-1);
   known_result.add_constraint(C <= A+2);
 
-  bool ok = (bd == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd ***");
 
@@ -123,7 +136,7 @@ test5() {
 
   TBD_Shape bd(ph.generators());
 
-  TBD_Shape known_result(4);
+  BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(C <= 30);
   known_result.add_constraint(D >= 4);
   known_result.add_constraint(D <= 10);
@@ -133,7 +146,7 @@ test5() {
   known_result.add_constraint(C - D <= 23);
   known_result.add_constraint(C - D >= 8);
 
-  bool ok = (bd == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd ***");
 

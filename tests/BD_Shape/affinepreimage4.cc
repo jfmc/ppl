@@ -35,10 +35,10 @@ main() TRY {
 
   bd.affine_preimage(B, Linear_Expression(3));
 
-  TBD_Shape known_result(2);
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 2);
 
-  int retval = (bd == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
 
   print_constraints(bd, "*** bd.affine_preimage(B, 3) ***");
 

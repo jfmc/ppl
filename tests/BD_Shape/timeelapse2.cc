@@ -28,13 +28,11 @@ main() TRY {
   Variable y(1);
 
   TBD_Shape oc1(2);
-
   oc1.add_constraint(x >= 0);
   oc1.add_constraint(y >= 0);
   oc1.add_constraint(x + y - 2 <= 0);
 
   TBD_Shape oc2(2);
-
   oc2.add_constraint(x >= 2);
   oc2.add_constraint(x <= 4);
   oc2.add_constraint(y == 3);
@@ -44,14 +42,13 @@ main() TRY {
 
   oc1.time_elapse_assign(oc2);
 
-  TBD_Shape known_result(2);
-
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(y >= 0);
 
-  print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
+  int retval = (BD_Shape<mpq_class>(oc1) == known_result) ? 0 : 1;
 
-  int retval = (oc1 == known_result) ? 0 : 1;
+  print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
 
   return retval;
 }

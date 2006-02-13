@@ -29,12 +29,10 @@ main() TRY {
   Variable z(2);
 
   TBD_Shape bd1(4);
-  TBD_Shape bd2(4);
-  TBD_Shape known_result(4);
-
   bd1.add_constraint(x - y <= 4);
   bd1.add_constraint(x <= 3);
 
+  TBD_Shape bd2(4);
   bd2.add_constraint(x - y <= 5);
   bd2.add_constraint(-y <= -2);
   bd2.add_constraint(z - x <= 0);
@@ -45,17 +43,17 @@ main() TRY {
 
   bd1.intersection_assign(bd2);
 
+  BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(x - y <= 4);
   known_result.add_constraint(x <= 3);
   known_result.add_constraint(-y <= -2);
   known_result.add_constraint(z - x <= 0);
   known_result.add_constraint(y - z <= -1);
 
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
- int retval = (bd1 == known_result) ? 0 : 1;
-
- return retval;
-
+  return retval;
 }
 CATCH

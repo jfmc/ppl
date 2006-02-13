@@ -32,7 +32,7 @@ main() TRY {
   TBD_Shape bd2(3);
 
   bd1.add_constraint(z <= 1);
-  TBD_Shape known_result(3, EMPTY);
+  BD_Shape<mpq_class> known_result(3, EMPTY);
 
   bd2.add_constraint(-y <= 3);
   bd2.add_constraint(x >= 4);
@@ -45,11 +45,10 @@ main() TRY {
 
   bd2.CC76_narrowing_assign(bd1);
 
+  int retval = (BD_Shape<mpq_class>(bd2) == known_result) ? 0 : 1;
+
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
-  int retval = (bd2 == known_result) ? 0 : 1;
-
   return retval;
-
 }
 CATCH

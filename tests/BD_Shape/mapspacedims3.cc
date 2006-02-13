@@ -64,14 +64,16 @@ main() TRY {
 
   bd.map_space_dimensions(function);
 
-  TBD_Shape known_result(3);
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A == 0);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(B - C == 0);
 
+  int result = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
+
   print_constraints(bd, "*** bd.map_space_dimensions(function) ***");
 
-  return bd == known_result ? 0 : 1;
+  return result;
 }
 CATCH

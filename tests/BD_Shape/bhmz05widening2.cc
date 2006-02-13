@@ -33,9 +33,9 @@ main() TRY {
 
   bd1.BHMZ05_widening_assign(bd2);
 
-  TBD_Shape known_result;
+  BD_Shape<mpq_class> known_result;
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
 
   print_constraints(bd1, "*** After bd1.BHMZ05_widening_assign(bd2) ***");
 

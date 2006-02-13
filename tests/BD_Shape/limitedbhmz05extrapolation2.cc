@@ -29,23 +29,18 @@ main() TRY {
 
   Constraint_System cs1;
   cs1.insert(x >= 0);
-  cs1.insert(x <= 1);
+  cs1.insert(x <= 2);
   cs1.insert(y >= 0);
   cs1.insert(x - y >= 0);
 
-  TBD_Shape bd1(cs1);
-
-  print_constraints(bd1, "*** bd1 ****");
-
   Constraint_System cs2;
   cs2.insert(x >= 0);
-  cs2.insert(x <= 2);
+  cs2.insert(x <= 1);
   cs2.insert(y >= 0);
   cs2.insert(x - y >= 0);
 
+  TBD_Shape bd1(cs1);
   TBD_Shape bd2(cs2);
-
-  print_constraints(bd2, "*** bd2 ****");
 
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -53,20 +48,23 @@ main() TRY {
   cs.insert(x <= 5);
   cs.insert(y <= 5);
 
+  print_constraints(bd1, "*** bd1 ****");
+  print_constraints(bd2, "*** bd2 ****");
   print_constraints(cs, "*** cs ****");
 
-  TBD_Shape computed_result = bd2;
-  computed_result.limited_BHMZ05_extrapolation_assign(bd1, cs);
+  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
 
-  TBD_Shape known_result(2);
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(x <= 5);
   known_result.add_constraint(y - x <= 0);
   known_result.add_constraint(x >= 0);
 
-  print_constraints(computed_result,
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+
+  print_constraints(bd1,
 		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
 
-  return (computed_result == known_result) ? 0 : 1;
+  return retval;
 }
 CATCH

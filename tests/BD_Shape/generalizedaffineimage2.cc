@@ -35,13 +35,13 @@ main() TRY {
 
   print_constraints(bd, "*** bd ***");
 
-  TBD_Shape known_result(bd);
+  BD_Shape<mpq_class> known_result(bd);
 
   bd.generalized_affine_image(A, EQUAL, A + 2);
 
   known_result.affine_image(A, A + 2);
 
-  int retval = (bd == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
 
   print_constraints(bd, "*** bd.generalized_affine_image"
 		    "(A, EQUAL, A + 2) ***");

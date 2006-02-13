@@ -31,23 +31,21 @@ main() TRY {
   Variable w(3);
 
   TBD_Shape bd(2);
-
   bd.add_constraint(x <= 2);
 
   print_constraints(bd, "*** bd ***");
 
   bd.add_space_dimensions_and_project(2);
 
-  TBD_Shape known_result(4);
+  BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(w == 0);
   known_result.add_constraint(z == 0);
 
+  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
+
   print_constraints(bd, "*** bd.add_space_dimensions_and_project(2) ***");
 
-  int retval = (bd == known_result) ? 0 : 1;
-
   return retval;
-
 }
 CATCH

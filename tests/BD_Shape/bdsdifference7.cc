@@ -44,7 +44,7 @@ main() TRY {
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  TBD_Shape known_result(2);
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(B >= 0);
@@ -52,7 +52,7 @@ main() TRY {
 
   bd1.bds_difference_assign(bd2);
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
 
   print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
   print_constraints(known_result, "*** known_result ***");

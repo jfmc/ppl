@@ -28,12 +28,14 @@ namespace {
 void
 test1() {
   TBD_Shape bd1(0, UNIVERSE);
-  TBD_Shape known_result(3, UNIVERSE);
 
   print_constraints(bd1, "*** bd1 ***");
 
   bd1.add_space_dimensions_and_embed(3);
-  bool ok = (bd1 == known_result);
+
+  BD_Shape<mpq_class> known_result(3, UNIVERSE);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.add_space_dimension_and_embed(3) ***");
 
@@ -49,17 +51,18 @@ test2() {
   Variable D(3);
 
   TBD_Shape bd1(0);
-  TBD_Shape known_result(4);
-  known_result.add_constraint(A == 0);
-  known_result.add_constraint(B == 0);
-  known_result.add_constraint(C == 0);
-  known_result.add_constraint(D == 0);
 
   print_constraints(bd1, "*** bd1 ***");
 
   bd1.add_space_dimensions_and_project(4);
 
-  bool ok = (bd1 == known_result);
+  BD_Shape<mpq_class> known_result(4);
+  known_result.add_constraint(A == 0);
+  known_result.add_constraint(B == 0);
+  known_result.add_constraint(C == 0);
+  known_result.add_constraint(D == 0);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.add_space_dimensions_and_project(4) ***");
 
@@ -77,15 +80,15 @@ test3() {
   bd1.add_constraint(A == 1);
   bd1.add_constraint(C - B >= 9);
 
-  TBD_Shape known_result(bd1);
+  BD_Shape<mpq_class> known_result(bd1);
 
   print_constraints(bd1, "*** bd1 ***");
 
- bd1.add_space_dimensions_and_project(0);
+  bd1.add_space_dimensions_and_project(0);
 
   print_constraints(bd1, "*** bd1.add_space_dimensions_and_project(0) ***");
 
-  bool ok = (bd1 == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   if (!ok)
     exit(1);
@@ -99,16 +102,17 @@ test4() {
   Variable D(3);
 
   TBD_Shape bd1(1);
-  TBD_Shape known_result(4);
-  known_result.add_constraint(B == 0);
-  known_result.add_constraint(C == 0);
-  known_result.add_constraint(D == 0);
 
   print_constraints(bd1, "*** bd1 ***");
 
   bd1.add_space_dimensions_and_project(3);
 
-  bool ok = (bd1 == known_result);
+  BD_Shape<mpq_class> known_result(4);
+  known_result.add_constraint(B == 0);
+  known_result.add_constraint(C == 0);
+  known_result.add_constraint(D == 0);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.add_space_dimensions_and_project(3) ***");
 

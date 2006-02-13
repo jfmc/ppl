@@ -25,23 +25,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 int
 main() TRY {
   TBD_Shape bd1;
-  TBD_Shape known_result;
-
-    print_constraints(bd1, "*** bd1 ****");
-
   TBD_Shape bd2;
-
-  print_constraints(bd2, "*** bd2 ****");
-
   Constraint_System cs;
 
+  print_constraints(bd1, "*** bd1 ****");
+  print_constraints(bd2, "*** bd2 ****");
   print_constraints(cs, "*** cs ****");
 
   bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
 
+  BD_Shape<mpq_class> known_result;
+
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+
   print_constraints(bd1,
 		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
 
-  return (bd1 == known_result) ? 0 : 1;
+  return retval;
 }
 CATCH

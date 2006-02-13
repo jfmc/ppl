@@ -42,16 +42,16 @@ main() TRY {
   oc2.add_constraint(y >= -1);
   oc2.add_constraint(z >= 2);
 
-  TBD_Shape known_result(3, EMPTY);
-
   print_constraints(oc1, "**** oc1 ****");
   print_constraints(oc2, "**** oc2 ****");
 
   oc1.time_elapse_assign(oc2);
 
-  print_constraints(oc1, "**** oc1.time_elapse_assign(oc2) ****");
+  BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  int retval = (oc1 == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(oc1) == known_result) ? 0 : 1;
+
+  print_constraints(oc1, "**** oc1.time_elapse_assign(oc2) ****");
 
   return retval;
 }

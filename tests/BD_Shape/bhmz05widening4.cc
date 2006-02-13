@@ -29,11 +29,9 @@ main() TRY {
   Variable C(2);
 
   TBD_Shape bd1(3);
-  TBD_Shape bd2(3);
-  TBD_Shape known_result(3);
-
   bd1.add_constraint(A - B <= 1);
 
+  TBD_Shape bd2(3);
   bd2.add_constraint(A - B <= 1);
   bd2.add_constraint(A - C <= 1);
   bd2.add_constraint(C - B <= 0);
@@ -43,11 +41,12 @@ main() TRY {
 
   bd1.BHMZ05_widening_assign(bd2);
 
+  BD_Shape<mpq_class> known_result(3);
+
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+
   print_constraints(bd1, "*** bd1.BHMZ05_widening_assign(bd2) ***");
 
-  int retval = (bd1 == known_result) ? 0 : 1;
-
   return retval;
-
 }
 CATCH

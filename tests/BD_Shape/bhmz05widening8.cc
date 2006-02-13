@@ -34,8 +34,6 @@ main() TRY {
 
   TBD_Shape bd1(cs1);
 
-  print_constraints(bd1, "*** bd1 ****");
-
   Constraint_System cs2;
   cs2.insert(x <= 1);
   cs2.insert(y >= 0);
@@ -43,16 +41,18 @@ main() TRY {
 
   TBD_Shape bd2(cs2);
 
+  print_constraints(bd1, "*** bd1 ****");
   print_constraints(bd2, "*** bd2 ****");
 
-  TBD_Shape computed_result = bd2;
-  computed_result.BHMZ05_widening_assign(bd1);
+  BD_Shape<mpq_class> known_result(bd2);
 
-  TBD_Shape known_result = bd2;
+  bd2.BHMZ05_widening_assign(bd1);
 
-  print_constraints(computed_result,
+  int retval = (BD_Shape<mpq_class>(bd2) == known_result) ? 0 : 1;
+
+  print_constraints(bd2,
 		    "*** bd2.BHMZ05_widening_assign(bd1) ***");
 
-  return computed_result == known_result ? 0 : 1;
+  return retval;
 }
 CATCH

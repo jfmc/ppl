@@ -32,22 +32,22 @@ test1() {
   TBD_Shape bd1(3, EMPTY);
   TBD_Shape bd2(3, EMPTY);
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
-
-  TBD_Shape known_result(bd1);
-
   Constraint_System cs;
   cs.insert(x <= 1);
   cs.insert(y >= 4);
 
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(cs, "*** cs ***");
+
+  BD_Shape<mpq_class> known_result(bd1);
+
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 
-  print_constraints(cs, "*** cs ***");
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2) ***");
-
-  bool ok = (bd1 == known_result);
 
   if (!ok)
     exit(1);
@@ -64,25 +64,24 @@ test2() {
   cs1.insert(x - y >= 2);
 
   TBD_Shape bd1(cs1);
-
   TBD_Shape bd2(2, EMPTY);
+
+  Constraint_System cs2;
+  cs2.insert(x <= 0);
+  cs2.insert(y >= 3);
 
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-
- Constraint_System cs2;
- cs2.insert(x <= 0);
- cs2.insert(y >= 3);
-
- bd1.limited_CC76_extrapolation_assign(bd2, cs2);
-
- TBD_Shape known_result(bd1);
-
   print_constraints(cs2, "*** cs2 ***");
+
+  BD_Shape<mpq_class> known_result(bd1);
+
+  bd1.limited_CC76_extrapolation_assign(bd2, cs2);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2, cs2) ***");
-
-  bool ok = (bd1 == known_result);
 
   if (!ok)
     exit(1);

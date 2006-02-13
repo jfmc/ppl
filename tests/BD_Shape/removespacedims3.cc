@@ -30,19 +30,18 @@ test1() {
   Variable x2(1);
 
   TBD_Shape bd(2);
-
   bd.add_constraint(x1 <= 2);
   bd.add_constraint(x2 <= 10);
 
   print_constraints(bd, "*** bd ***");
 
-  TBD_Shape known_result(0, UNIVERSE);
-
   bd.remove_higher_space_dimensions(0);
 
-  print_constraints(bd, "*** bd.remove_higher_space_dimensions(0) ***");
+  BD_Shape<mpq_class> known_result(0, UNIVERSE);
 
-  bool ok = (bd == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd, "*** bd.remove_higher_space_dimensions(0) ***");
 
   if (!ok)
     exit(1);
@@ -56,7 +55,6 @@ test2() {
   Variable x4(3);
 
   TBD_Shape bd(4);
-
   bd.add_constraint(x1 - x2 <=1);
   bd.add_constraint(x2 - x3 <= -2);
   bd.add_constraint(x3 - x1 <= 0);
@@ -67,13 +65,11 @@ test2() {
 
   bd.remove_higher_space_dimensions(1);
 
+  BD_Shape<mpq_class> known_result(1, EMPTY);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
   print_constraints(bd, "*** bd.remove_higher_space_dimensions(1) ***");
-
-  TBD_Shape known_result(1, EMPTY);
-
-  print_constraints(known_result, "*** known_result ***");
-
-  bool ok = (bd == known_result);
 
   if (!ok)
     exit(1);
@@ -88,7 +84,6 @@ test3() {
   Variable x5(4);
 
   TBD_Shape bd(5);
-
   bd.add_constraint(x1 - x2 <=1);
   bd.add_constraint(x2 - x3 <= 2);
   bd.add_constraint(x3 - x1 <= 0);
@@ -100,17 +95,15 @@ test3() {
 
   bd.remove_higher_space_dimensions(3);
 
-  print_constraints(bd, "*** bd.remove_higher_space_dimensions(3) ***");
-
-  TBD_Shape known_result(3);
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x1 - x2 <=1);
   known_result.add_constraint(x2 - x3 <= 2);
   known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 5);
 
-  print_constraints(known_result, "*** known_result ***");
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
-  bool ok = (bd == known_result);
+  print_constraints(bd, "*** bd.remove_higher_space_dimensions(3) ***");
 
   if (!ok)
     exit(1);
@@ -123,7 +116,6 @@ test4() {
   Variable x3(2);
 
   TBD_Shape bd(3);
-
   bd.add_constraint(x1 - x2 <=1);
   bd.add_constraint(x2 - x3 <= 2);
   bd.add_constraint(x3 - x1 <= 0);
@@ -131,15 +123,13 @@ test4() {
 
   print_constraints(bd, "*** bd ***");
 
+  BD_Shape<mpq_class> known_result(bd);
+
   bd.remove_higher_space_dimensions(3);
 
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
   print_constraints(bd, "*** bd.remove_higher_space_dimensions(3) ***");
-
-  TBD_Shape known_result(bd);
-
-  print_constraints(known_result, "*** known_result ***");
-
-  bool ok = (bd == known_result);
 
   if (!ok)
     exit(1);

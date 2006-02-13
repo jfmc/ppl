@@ -67,8 +67,8 @@ main() TRY {
 
   // Force the closure of `bd1'.
   bd1 == bd2;
-  
-  TBD_Shape known_widening(4);
+
+  BD_Shape<mpq_class> known_widening(4);
   known_widening.add_constraint(A >= 0);
   known_widening.add_constraint(B >= 0);
   known_widening.add_constraint(C >= 0);
@@ -92,9 +92,10 @@ main() TRY {
   // Force the closure of `bd1'.
   bd1 == bd2;
 
+  int retval = (BD_Shape<mpq_class>(bd1) == known_widening) ? 0 : 1;
+
   print_constraints(bd1, "*** bd1.closure_assign() ***");
 
-  return bd1 == known_widening ? 0 : 1;
-
+  return retval;
 }
 CATCH

@@ -30,13 +30,10 @@ main() TRY {
   Variable C(2);
 
   TBD_Shape bd1(3);
-
   bd1.add_constraint(A >= 0);
   bd1.add_constraint(B >= 0);
   bd1.add_constraint(B - C == 1);
   bd1.add_constraint(C - A <= 9);
-
-  TBD_Shape known_result(bd1);
 
   Constraint_System cs = bd1.constraints();
   TBD_Shape bd2(cs);
@@ -45,7 +42,9 @@ main() TRY {
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
 
-  int retval = (bd2 == known_result) ? 0 : 1;
+  BD_Shape<mpq_class> known_result(bd1);
+
+  int retval = (BD_Shape<mpq_class>(bd2) == known_result) ? 0 : 1;
 
   return retval;
 }

@@ -33,19 +33,19 @@ main() TRY {
   bd.add_constraint(A >= 0);
   bd.add_constraint(A <= 4);
   bd.add_constraint(B <= 5);
-  
+
   print_constraints(bd, "*** bd ***");
 
-  TBD_Shape known_result(2);
-  known_result.add_constraint(A >= 0);
-  known_result.add_constraint(A <= 4); 
-  known_result.add_constraint(B <= 9);
-  
   bd.generalized_affine_image(e1, EQUAL, e2);
 
-  print_constraints(bd, "*** bd.generalized_affine_image(B-3,EQUAL, B+1) ***");
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A <= 4);
+  known_result.add_constraint(B <= 9);
 
-  int retval = (bd == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
+
+  print_constraints(bd, "*** bd.generalized_affine_image(B-3,EQUAL, B+1) ***");
 
   return retval;
 }

@@ -37,12 +37,12 @@ main() TRY {
 
   bd.affine_preimage(A, B-1);
 
-  TBD_Shape known_result(2);
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B >= 0);
 
-  int retval = (bd == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
 
-    print_constraints(bd, "*** bd.affine_preimage(A, B-1) ***");
+  print_constraints(bd, "*** bd.affine_preimage(A, B-1) ***");
 
   return retval;
 }

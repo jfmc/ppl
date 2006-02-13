@@ -28,22 +28,22 @@ main() TRY {
   Variable y(1);
 
   TBD_Shape bd1(2);
-  TBD_Shape bd2(0, EMPTY);
-  TBD_Shape known_result(2, EMPTY);
-
   bd1.add_constraint(x <= 3);
   bd1.add_constraint(x - y <= 4);
+
+  TBD_Shape bd2(0, EMPTY);
 
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
   bd1.concatenate_assign(bd2);
 
+  BD_Shape<mpq_class> known_result(2, EMPTY);
+
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+
   print_constraints(bd1, "*** bd1.concatenate_assign(bd2) ***");
 
-  int retval = (bd1 == known_result) ? 0 : 1;
-
   return retval;
-
 }
 CATCH

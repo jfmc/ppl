@@ -27,20 +27,21 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  TBD_Shape bd1(2);
   Constraint_System cs;
   cs.insert(A >= 0);
   cs.insert(B == 5);
+
+  TBD_Shape bd1(2);
   bd1.add_constraints_and_minimize(cs);
 
   print_constraints(bd1, "*** bd1.add_constraints_and_minimize(cs) ***");
 
-  TBD_Shape known_result(2);
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B == 5);
   known_result.add_constraint(B - A <= 5);
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
 
   print_constraints(known_result, "*** known_result ***");
 

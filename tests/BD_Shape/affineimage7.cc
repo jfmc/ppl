@@ -28,24 +28,22 @@ main() TRY {
   Variable y(1);
 
   TBD_Shape bd1(3);
-
   bd1.add_constraint(x <= 2);
   bd1.add_constraint(x - y <= 3);
   bd1.add_constraint(y <= 2);
 
   print_constraints(bd1, "*** bd1 ***");
 
-  TBD_Shape known_result(3);
+  bd1.affine_image(y, 3*x + 3, 3);
+
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y - x == 1);
 
-  bd1.affine_image(y, 3*x + 3, 3);
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
 
   print_constraints(bd1, "*** bd1.affine_image(y, 3*x + 3, 3) ***");
 
-  int retval = (bd1 == known_result) ? 0 : 1;
-
   return retval;
-
 }
 CATCH

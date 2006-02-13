@@ -37,13 +37,13 @@ main() TRY {
 
   print_constraints(bd, "*** bd ***");
 
+  BD_Shape<mpq_class> known_result(bd);
+
   bd.generalized_affine_image(e1, GREATER_THAN_OR_EQUAL, e2);
 
-  TBD_Shape known_result(bd);
- 
-  int retval = (bd == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
 
-  print_constraints(bd, "*** bd.generalized_affine_image(A, " 
+  print_constraints(bd, "*** bd.generalized_affine_image(A, "
                         "GREATER_THAN_OR_EQUAL, A) ***");
 
   return retval;

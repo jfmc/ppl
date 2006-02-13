@@ -30,13 +30,11 @@ main() TRY {
   Variable x4(3);
 
   TBD_Shape bd1(5);
-  TBD_Shape bd2(5);
-  TBD_Shape known_result(5);
-
   bd1.add_constraint(x1 <= 5);
   bd1.add_constraint(x2 <= -1);
   bd1.add_constraint(x1 -x2 <= 10);
 
+  TBD_Shape bd2(5);
   bd2.add_constraint(x1  <= 2);
   bd2.add_constraint(x4 <= 7);
   bd2.add_constraint(x1 - x2 <= 20);
@@ -47,12 +45,13 @@ main() TRY {
 
   bd1.bds_hull_assign(bd2);
 
-  print_constraints(bd1, "*** bd1.bds_hull_assign(bd2) ***");
-
+  BD_Shape<mpq_class> known_result(5);
   known_result.add_constraint(x1 <= 5);
   known_result.add_constraint(x1 - x2 <= 20);
 
-  int retval = (bd1 == known_result) ? 0 : 1;
+  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+
+  print_constraints(bd1, "*** bd1.bds_hull_assign(bd2) ***");
 
   return retval;
 }
