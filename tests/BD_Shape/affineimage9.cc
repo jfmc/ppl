@@ -30,7 +30,6 @@ test1() {
   Variable y(1);
 
   TBD_Shape bd(2);
-
   bd.add_constraint(x <= 1);
   bd.add_constraint(x >= 0);
   bd.add_constraint(y <= 2);
@@ -48,19 +47,9 @@ test1() {
   known_result.add_constraint(y - x <= 1);
   known_result.add_constraint(5*x - 5*y <= 3);
 
-  TBD_Shape T_known_result(known_result);
-  bool ok = bd.contains(T_known_result);
+  bool ok = check_result(bd, known_result, "3.70e-7", "2.10e-7", "1.44e-7");
 
   print_constraints(bd, "*** bd.affine_image(x, -2*x - 3*y + 1, -5) ***");
-
-  if (ok) {
-    Checked_Number<mpq_class, Extended_Number_Policy> distance;
-    rectilinear_distance_assign(distance, T_known_result, bd, ROUND_UP);
-
-    nout << "Rectilinear distance = " << distance << endl;
-
-    ok = (distance <= 2);
-  }
 
   if (!ok)
     exit(1);
@@ -73,21 +62,20 @@ test2() {
   Variable z(2);
 
   TBD_Shape bd(3);
-
   bd.add_constraint(x <= 1);
   bd.add_constraint(y <= 2);
   bd.add_constraint(z >= 3);
 
   print_constraints(bd, "*** bd ***");
 
-  TBD_Shape known_result(3);
+  bd.affine_image(z, x + 2*y -3*z + 2, 4);
+
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(2*z <= -1);
 
-  bd.affine_image(z, x + 2*y -3*z + 2, 4);
-
-  bool ok = (bd == known_result);
+  bool ok = check_result(bd, known_result);
 
   print_constraints(bd, "*** bd.affine_image(z, x + 2*y -3*z + 2, 4) ***");
 
@@ -103,7 +91,6 @@ test3() {
   Variable D(3);
 
   TBD_Shape bd(4);
-
   bd.add_constraint(A <= 1);
   bd.add_constraint(B <= 2);
   bd.add_constraint(B >= 1);
@@ -112,7 +99,9 @@ test3() {
 
   print_constraints(bd, "*** bd ***");
 
-  TBD_Shape known_result(4);
+  bd.affine_image(A, -B + 2*C + 1, -3);
+
+  BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B <= 2);
   known_result.add_constraint(B >= 1);
@@ -120,9 +109,7 @@ test3() {
   known_result.add_constraint(D == 3);
   known_result.add_constraint(3*B - 3*A <= 5);
 
-  bd.affine_image(A, -B + 2*C + 1, -3);
-
-  bool ok = (bd == known_result);
+  bool ok = check_result(bd, known_result, "7.95e-8", "7.95e-8", "7.95e-8");
 
   print_constraints(bd, "*** bd.affine_image(A, -B + 2*C + 1, -3) ***");
 

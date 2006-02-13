@@ -37,14 +37,14 @@ test1() {
 
   print_constraints(bd, "*** bd ***");
 
+  bd.affine_image(x, -x);
+
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x >= -1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(z >= 3);
 
-  bd.affine_image(x, -x);
-
-  bool ok = check_result(bd, known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_image(x, -x) ***");
 
@@ -65,14 +65,14 @@ test2() {
 
   print_constraints(bd, "*** bd ***");
 
+  bd.affine_image(x, -z);
+
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= -3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(z >= 3);
 
-  bd.affine_image(x, -z);
-
-  bool ok = check_result(bd, known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_image(x, -z) ***");
 
@@ -92,15 +92,15 @@ test3() {
 
   print_constraints(bd, "*** bd ***");
 
+  bd.affine_image(x, -y + 1);
+
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 0);
   known_result.add_constraint(x >= -1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= 1);
 
-  bd.affine_image(x, -y + 1);
-
-  bool ok = check_result(bd, known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_image(x, -y + 1) ***");
 
@@ -120,12 +120,12 @@ test4() {
 
   print_constraints(bd, "*** bd ***");
 
+  bd.affine_image(x, -2*y + 1, -2);
+
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(2*x - 2*y == -1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= 1);
-
-  bd.affine_image(x, -2*y + 1, -2);
 
   bool ok = check_result(bd, known_result);
 
@@ -147,13 +147,13 @@ test5() {
 
   print_constraints(bd, "*** bd ***");
 
+  bd.affine_image(x, -2*y + 1, 2);
+
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(2*x <= -1);
   known_result.add_constraint(2*x >= -3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= 1);
-
-  bd.affine_image(x, -2*y + 1, 2);
 
   bool ok = check_result(bd, known_result);
 
@@ -176,6 +176,8 @@ test6() {
 
   print_constraints(bd, "*** bd ***");
 
+  bd.affine_image(x, 2*x + y + 1);
+
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 5);
   known_result.add_constraint(x >= 0);
@@ -184,9 +186,7 @@ test6() {
   known_result.add_constraint(x - y <= 3);
   known_result.add_constraint(x - y >= 1);
 
-  bd.affine_image(x, 2*x + y + 1);
-
-  bool ok = check_result(bd, known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_image(x, 2*x + y + 1) ***");
 
@@ -207,6 +207,8 @@ test7() {
 
   print_constraints(bd, "*** bd ***");
 
+  bd.affine_image(x, -2*x + y + 1);
+
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 3);
   known_result.add_constraint(x >= -2);
@@ -215,9 +217,7 @@ test7() {
   known_result.add_constraint(x - y <= 1);
   known_result.add_constraint(x - y >= -1);
 
-  bd.affine_image(x, -2*x + y + 1);
-
-  bool ok = check_result(bd, known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_image(x, -2*x + y + 1) ***");
 
@@ -238,13 +238,13 @@ test8() {
 
   print_constraints(bd, "*** bd ***");
 
+  bd.affine_image(x, 2*x - 3*y + 1, 5);
+
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(5*x <= 6);
   known_result.add_constraint(x >= -1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
-
-  bd.affine_image(x, 2*x - 3*y + 1, 5);
 
   bool ok = check_result(bd, known_result, "9.54e-8", "6.75e-8", "4.77e-8");
 
@@ -267,13 +267,13 @@ test9() {
 
   print_constraints(bd, "*** bd ***");
 
+  bd.affine_image(x, -2*x - 3*y + 1, 5);
+
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(5*x <= 4);
   known_result.add_constraint(5*x >= -7);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y >= -1);
-
-  bd.affine_image(x, -2*x - 3*y + 1, 5);
 
   bool ok = check_result(bd, known_result, "2.15e-7", "1.36e-7", "9.54e-8");
 

@@ -39,11 +39,11 @@ test1() {
 
   bd.affine_preimage(A, 4*B + 6*C + 2, -2);
 
-  TBD_Shape known_result(3);
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(C >= 0);
 
-  bool ok = (bd == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_preimage(A, 4*B + 6*C + 2, -2) ***");
 
@@ -66,12 +66,12 @@ test2() {
 
   bd.affine_preimage(A, 2*A + 3*C + 2, 2);
 
-  TBD_Shape known_result(3);
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= -2);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(C >= 0);
 
-  bool ok = (bd == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_preimage(A, 2*A + 3*C + 2, 2) ***");
 
@@ -94,12 +94,12 @@ test3() {
 
   bd.affine_preimage(A, 2*A + 3*C + 2, 2);
 
-  TBD_Shape known_result(3);
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= -2);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(C >= 0);
 
-  bool ok = (bd == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_preimage(A, -3*A + C - 1, 2) ***");
 
@@ -122,11 +122,11 @@ test4() {
 
   bd.affine_preimage(A, 3*A + C - 1, -2);
 
-  TBD_Shape known_result(3);
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(C >= 0);
 
-  bool ok = (bd == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_preimage(A, 3*A + C - 1, -2) ***");
 
@@ -149,11 +149,11 @@ test5() {
 
   bd.affine_preimage(A, -3*A + C - 1, -2);
 
-  TBD_Shape known_result(3);
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(C >= 0);
 
-  bool ok = (bd == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_preimage(A, -3*A + C - 1, -2) ***");
 
@@ -178,13 +178,13 @@ test6() {
 
   bd.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3);
 
-  TBD_Shape known_result(4);
+  BD_Shape<mpq_class> known_result(4);
   known_result.add_constraint(A == 2);
   known_result.add_constraint(B == 0);
   known_result.add_constraint(C >= -3);
   known_result.add_constraint(5*D <= 14);
 
-  bool ok = (bd == known_result);
+  bool ok = check_result(bd, known_result, "7.63e-7", "3.82e-7", "1.91e-7");
 
   print_constraints(bd, "*** bd.affine_preimage"
 		        "(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
@@ -208,12 +208,12 @@ test7() {
 
   bd.affine_preimage(B, -B);
 
-  TBD_Shape known_result(3);
+  BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= -1);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C >= 0);
 
-  bool ok = (bd == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_preimage(B, -B) ***");
 
@@ -234,11 +234,11 @@ test8() {
 
   print_constraints(bd, "*** bd ***");
 
-  TBD_Shape known_result(bd);
+  BD_Shape<mpq_class> known_result(bd);
 
   bd.affine_preimage(B, -B, -1);
 
-  bool ok = (bd == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_preimage(B, -B, -1) ***");
 
