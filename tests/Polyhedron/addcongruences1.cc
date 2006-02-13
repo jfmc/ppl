@@ -46,7 +46,7 @@ main() TRY {
   cgs.insert(x %= 3);
   cgs.insert(y == 3);
 
-  print_constraints(cs, "*** cgs ***");
+  print_constraints(cgs, "*** cgs ***");
 
   ph.add_congruences(cgs);
 
