@@ -24,8 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ieeefp.h>
 
 #define FPU_TONEAREST ((int) FP_RN)
-#define FPU_UPWARD ((int) FP_RM)
-#define FPU_DOWNWARD ((int) FP_RP)
+#define FPU_UPWARD ((int) FP_RP)
+#define FPU_DOWNWARD ((int) FP_RM)
 #define FPU_TOWARDZERO ((int) FP_RZ)
 
 namespace Parma_Polyhedra_Library {
