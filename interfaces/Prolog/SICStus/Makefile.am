@@ -49,6 +49,7 @@ ppl_sicstus_sd_la_LDFLAGS = -module -avoid-version
 ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la
 	$(LIBTOOL) --mode=link --tag=CXX \
 	spld --main=prolog \
+		--cflag=`echo '$(AM_CXXFLAGS) $(CXXFLAGS)' | tr " " ","` \
 		--resources=ppl_sicstus.s.o -o $@ \
 		$(top_builddir)/src/libppl.la \
 		$(top_builddir)/Watchdog/src/libpwl.la \
