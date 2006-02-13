@@ -2,6 +2,12 @@ Enhancements for PPL 0.9
 ========================
 
 - Reduce the number of FIXMEs to no more than 20.
+- Fix all places where a method/function/constructor "returns" an object
+  that has not been subjected to OK().  Notice that useless invocation
+  to OK() must be avoided as well.  Just to make an example,
+  Polyhedron::Polyhedron(const Topology topol, Generator_System& gs)
+  has computation paths such that the constructed object is not
+  checked.
 - Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
 - Write a manual page for ppl (3).
 - Complete the implementation of any missing Grid operators, including
