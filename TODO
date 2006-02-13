@@ -1,11 +1,20 @@
 Enhancements for PPL 0.9
 ========================
 
-- Develop a C and Prolog interfaces for all the supported domains.
-- Incorporate the domain of intervals.
 - Reduce the number of FIXMEs to no more than 20.
 - Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
 - Write a manual page for ppl (3).
+- Complete the implementation of any missing Grid operators, including
+  deciding whether covered (or bounded) widening and extrapolation
+  operators are required.
+- Check that the Grid tests cover all the code.
+
+
+Enhancements for PPL 0.10
+=========================
+
+- Develop a C and Prolog interfaces for all the supported domains.
+- Incorporate the domain of intervals.
 - Provide a single, generic implementation to replace all our status
   classes.
 - Clearly explain, in the documentation, how (not) to use
@@ -15,12 +24,9 @@ Enhancements for PPL 0.9
 - Provide a generic implementation for the `widening with tokens'.
 - Transform LP_Problem into an incremental solver and add to it support
   for abandoning costly computations.
-- Complete the implementation of any missing Grid operators, including
-  deciding whether covered (or bounded) widening and extrapolation
-  operators are required.
-- Check that the Grid tests cover all the code.
 
-Enhancements for PPL 0.9 or later versions
+
+Enhancements for PPL 0.10 or later versions
 ==========================================
 
 - Implement void Polyhedron::envelope_assign(const Polyhedron& y).
