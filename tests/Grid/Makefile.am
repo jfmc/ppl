@@ -63,6 +63,7 @@ congruences1 \
 congruencesystem1 congruencesystem2 \
 contains1 contains2 \
 copyconstruct1 \
+discrete1 \
 disjoint1 \
 equals1 \
 expandspacedim1 \
@@ -85,7 +86,6 @@ membytes1 membytes2 \
 mincongruences1 \
 mingenerators1 \
 outputoperator1 \
-discrete1 \
 relations1 relations2 \
 removespacedims1 removespacedims2 \
 timeelapse1 timeelapse2 \
@@ -148,6 +148,8 @@ contains2_SOURCES = contains2.cc
 
 copyconstruct1_SOURCES = copyconstruct1.cc
 
+discrete1_SOURCES = discrete1.cc
+
 disjoint1_SOURCES = disjoint1.cc
 
 equals1_SOURCES = equals1.cc
@@ -205,8 +207,6 @@ mincongruences1_SOURCES = mincongruences1.cc
 mingenerators1_SOURCES = mingenerators1.cc
 
 outputoperator1_SOURCES = outputoperator1.cc
-
-discrete1_SOURCES = discrete1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc

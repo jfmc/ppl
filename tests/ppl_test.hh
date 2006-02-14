@@ -174,7 +174,7 @@ check_result(const BD_Shape<T>& computed_result,
   representation of \p a and \p b stays the same.
 */
 bool
-copy_compare(Grid& a, Grid& b) {
+copy_compare(const Grid& a, const Grid& b) {
   const Grid tem_a = a;
   const Grid tem_b = b;
   return tem_a == tem_b;
