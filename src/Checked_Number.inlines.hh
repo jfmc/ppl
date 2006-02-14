@@ -641,8 +641,6 @@ DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
 DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
 DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)
 
-DEF_ASSIGN_FUN3_3(exact_div_assign, div_assign_r)
-
 DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul_assign_r)
 
 DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)
@@ -657,6 +655,12 @@ DEF_ASSIGN_FUN3_3(lcm_assign, lcm_assign_r)
 #undef DEF_ASSIGN_FUN2_2
 #undef DEF_ASSIGN_FUN3_2
 #undef DEF_ASSIGN_FUN3_3
+
+template <typename T, typename Policy>
+inline void
+exact_div_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checked_Number<T, Policy>& z) {
+  Policy::handle_result(div_assign_r(x, y, z, ROUND_NOT_NEEDED));
+}
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
