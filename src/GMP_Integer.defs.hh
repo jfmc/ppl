@@ -95,8 +95,13 @@ void add_mul_assign(GMP_Integer& x,
 void sub_mul_assign(GMP_Integer& x,
 		    const GMP_Integer& y, const GMP_Integer& z);
 
-//! Assigns to \p x the quotient of the integer division of \p y by \p z.
-/*! \relates GMP_Integer */
+/*! \brief
+  If \p z divides \p y, assigns to \p x the quotient of the integer
+  division of \p y and \p z.
+
+  \relates GMP_Integer
+  The behavior is undefined if \p z does not divide \p y.
+*/
 void exact_div_assign(GMP_Integer& x,
 		      const GMP_Integer& y, const GMP_Integer& z);
 

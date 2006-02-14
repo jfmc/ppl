@@ -637,8 +637,13 @@ lcm_assign(Checked_Number<T, Policy>& x,
 	   const Checked_Number<T, Policy>& y,
 	   const Checked_Number<T, Policy>& z);
 
-//! Assigns to \p x the integer division of \p y and \p z.
-/*! \relates Checked_Number */
+/*! \brief
+  If \p z divides \p y, assigns to \p x the quotient of the integer
+  division of \p y and \p z.
+
+  \relates Checked_Number
+  The behavior is undefined if \p z does not divide \p y.
+*/
 template <typename T, typename Policy>
 void
 exact_div_assign(Checked_Number<T, Policy>& x,
