@@ -90,6 +90,8 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
   else
     // Here cg_size == old_num_columns.
     add_row(cg);
+
+  assert(OK());
 }
 
 void
@@ -113,6 +115,8 @@ PPL::Congruence_System::insert(const Constraint& c) {
     add_recycled_row(cg);
   }
   operator[](rows.size()-1).strong_normalize();
+
+  assert(OK());
 }
 
 void
@@ -142,6 +146,8 @@ PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
       std::swap(new_cg[j], old_cg[j]);
     std::swap(new_cg[mod_index], old_cg[cgs_num_cols]); // Modulus.
   }
+
+  assert(OK());
 }
 
 void
@@ -207,6 +213,7 @@ PPL::Congruence_System::normalize_moduli() {
       operator[](row)[row_size-1] = lcm;
     }
   }
+  assert(OK());
 }
 
 bool

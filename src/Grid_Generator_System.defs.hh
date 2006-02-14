@@ -112,7 +112,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
 
     \par Example 2
     The following code builds a system of generators corresponding
-    to the grid corresponding to the integral points on the \f$x\f$ axes;
+    to the grid consisting of all the integral points on the \f$x\f$ axes;
     that is, all points satisfying the congruence relation
     \f[
       \bigl\{\,
