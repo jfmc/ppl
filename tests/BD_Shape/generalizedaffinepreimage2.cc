@@ -100,11 +100,11 @@ test3() {
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd) ==  known_result);
+  bool ok = check_result(bd,  known_result);
 
   print_constraints(bd,
 		    "*** bd.generalized_affine_preimage(B, "
-		    "EQUAL, -1) ***");
+		    "EQUAL, 3*A+2) ***");
 
   if (!ok)
     exit(1);
