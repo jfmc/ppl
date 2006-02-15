@@ -60,7 +60,7 @@ print_constraints(const Constraint_System& cs,
 }
 
 void
-print_constraints(const Congruence_System& cs,
+print_congruences(const Congruence_System& cs,
 		  const std::string& intro, std::ostream& s) {
   if (!intro.empty())
     s << intro << std::endl;
@@ -74,6 +74,20 @@ print_constraints(const Congruence_System& cs,
   }
   s << (printed_something ? "." : "true.") << std::endl;
 }
+
+// FIXME: why this?
+void
+print_constraints(const Congruence_System& cs,
+		  const std::string& intro, std::ostream& s) {
+  print_congruences(cs, intro, s);
+}
+
+void
+print_congruences(const Grid& gr,
+		  const std::string& intro, std::ostream& s) {
+  print_constraints(gr.congruences(), intro, s);
+}
+
 void
 print_generator(const Generator& g,
 		const std::string& intro, std::ostream& s) {
