@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 bool
-test1() {
+test01() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -55,7 +55,7 @@ test1() {
 }
 
 bool
-test2() {
+test02() {
   Variable A(0);
   Variable B(1);
 
@@ -81,7 +81,7 @@ test2() {
 }
 
 bool
-test3() {
+test03() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -112,7 +112,7 @@ test3() {
 
 
 BEGIN_MAIN
-  NEW_TEST(test1);
-  NEW_TEST(test2);
-  NEW_TEST(test3);
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
 END_MAIN

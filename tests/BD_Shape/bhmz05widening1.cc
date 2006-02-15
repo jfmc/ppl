@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 bool
-test1() {
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -56,7 +56,7 @@ test1() {
 }
 
 bool
-test2() {
+test02() {
   TBD_Shape bd1;
   TBD_Shape bd2(0, EMPTY);
 
@@ -75,7 +75,7 @@ test2() {
 }
 
 bool
-test3() {
+test03() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -122,7 +122,7 @@ test3() {
 }
 
 bool
-test4() {
+test04() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -150,7 +150,7 @@ test4() {
 }
 
 bool
-test5() {
+test05() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -180,7 +180,7 @@ test5() {
 }
 
 TBD_Shape
-aux_test6(int i, Variable a, Variable b, Variable c) {
+aux_test06(int i, Variable a, Variable b, Variable c) {
   using namespace IO_Operators;
 
   TBD_Shape bd(3);
@@ -208,21 +208,21 @@ aux_test6(int i, Variable a, Variable b, Variable c) {
 }
 
 bool
-test6() {
+test06() {
   using namespace IO_Operators;
 
   Variable a(0);
   Variable b(1);
   Variable c(2);
   unsigned i = 0;
-  TBD_Shape m_i = aux_test6(i, a, b, c);
+  TBD_Shape m_i = aux_test06(i, a, b, c);
   TBD_Shape m_i_next;
   while (i < 100) {
 
     nout << "*** m_" << i << " ***" << endl
 	 << m_i << endl;
 
-    m_i_next = aux_test6(++i, a, b, c);
+    m_i_next = aux_test06(++i, a, b, c);
     m_i_next.bds_hull_assign(m_i);
     m_i_next.BHMZ05_widening_assign(m_i);
     // Force closure.
@@ -247,7 +247,7 @@ test6() {
 }
 
 bool
-test7() {
+test07() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -276,7 +276,7 @@ test7() {
 }
 
 bool
-test8() {
+test08() {
   Variable x(0);
   Variable y(1);
 
@@ -312,12 +312,12 @@ test8() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test1);
-  NEW_TEST(test2);
-  NEW_TEST(test3);
-  NEW_TEST(test4);
-  NEW_TEST(test5);
-  NEW_TEST(test6);
-  NEW_TEST(test7);
-  NEW_TEST(test8);
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
 END_MAIN

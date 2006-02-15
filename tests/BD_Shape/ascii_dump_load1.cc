@@ -35,9 +35,9 @@ namespace {
 const char* my_file = "ascii_dump_load1.dat";
 
 bool
-test1() {
+test01() {
 
-  nout << "test1()" << endl;
+  nout << "test01()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -69,9 +69,9 @@ test1() {
 }
 
 bool
-test2() {
+test02() {
 
-  nout << "test2()" << endl;
+  nout << "test02()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -103,9 +103,9 @@ test2() {
 }
 
 bool
-test3() {
+test03() {
 
-  nout << "test3()" << endl;
+  nout << "test03()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -137,9 +137,9 @@ test3() {
 }
 
 bool
-test4() {
+test04() {
 
-  nout << "test4()" << endl;
+  nout << "test04()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -171,9 +171,9 @@ test4() {
 }
 
 bool
-test5() {
+test05() {
 
-  nout << "test5()" << endl;
+  nout << "test05()" << endl;
 
   Variable A(0);
   Variable B(1);
@@ -208,7 +208,7 @@ test5() {
 }
 
 bool
-test6() {
+test06() {
   Variable A(0);
   Variable B(1);
 
@@ -237,10 +237,10 @@ test6() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test1);
-  NEW_TEST(test2);
-  NEW_TEST(test3);
-  NEW_TEST(test4);
-  NEW_TEST(test5);
-  NEW_TEST(test6);
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
 END_MAIN

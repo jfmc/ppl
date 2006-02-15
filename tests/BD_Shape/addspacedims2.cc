@@ -1,5 +1,4 @@
-/* Test BD_Shape::add_space_dimensions_and_project(): 
-   we add two variables to a BD_Shape.
+/* Test BD_Shape::add_space_dimensions_and_project().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,8 +28,8 @@ namespace {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test1);
-  NEW_TEST(test2);
-  NEW_TEST(test3);
-  NEW_TEST(test4);
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
 END_MAIN

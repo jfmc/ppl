@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 bool
-test1() {
+test01() {
   typedef Polyhedra_Powerset<TBD_Shape> BDS_Set;
 
   Variable A(0);
@@ -89,5 +89,5 @@ test1() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test1);
+  NEW_TEST(test01);
 END_MAIN

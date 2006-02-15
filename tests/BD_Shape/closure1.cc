@@ -354,7 +354,7 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
          << endl; \
   } while (0)
 
-bool test1() {
+bool test01() {
   BD_Shape<mpq_class> qbd1(126);
   add_edges(qbd1, hawaii, sizeof(hawaii)/sizeof(Edge));
 
@@ -375,5 +375,5 @@ bool test1() {
 }
 
 BEGIN_MAIN
-  NEW_TEST(test1);
+  NEW_TEST(test01);
 END_MAIN

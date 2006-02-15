@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 bool
-test1() {
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -57,7 +57,7 @@ test1() {
 }
 
 bool
-test2() {
+test02() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -132,7 +132,7 @@ test2() {
 }
 
 bool
-test3() {
+test03() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -209,7 +209,7 @@ test3() {
 }
 
 bool
-test4() {
+test04() {
   Variable A(0);
   Variable B(1);
 
@@ -240,7 +240,7 @@ test4() {
 }
 
 TBD_Shape
-aux_test5(int i, Variable a, Variable b, Variable c) {
+aux_test05(int i, Variable a, Variable b, Variable c) {
   using namespace IO_Operators;
 
   TBD_Shape bd(3);
@@ -268,21 +268,21 @@ aux_test5(int i, Variable a, Variable b, Variable c) {
 }
 
 bool
-test5() {
+test05() {
   using namespace IO_Operators;
 
   Variable a(0);
   Variable b(1);
   Variable c(2);
   unsigned i = 0;
-  TBD_Shape m_i = aux_test5(i, a, b, c);
+  TBD_Shape m_i = aux_test05(i, a, b, c);
   TBD_Shape m_i_next;
   while (i < 100) {
 
     nout << "*** m_" << i << " ***" << endl
 	 << m_i << endl;
 
-    m_i_next = aux_test5(++i, a, b, c);
+    m_i_next = aux_test05(++i, a, b, c);
     TBD_Shape::base_type* no_stop_points = 0;
     m_i_next.CC76_extrapolation_assign(m_i, no_stop_points, no_stop_points);
     m_i_next.bds_hull_assign(m_i);
@@ -301,7 +301,7 @@ test5() {
 }
 
 bool
-test6() {
+test06() {
   TBD_Shape bd1(0);
 
   TBD_Shape bd2(0, EMPTY);
@@ -322,7 +322,7 @@ test6() {
 }
 
 bool
-test7() {
+test07() {
   TBD_Shape bd1(2, EMPTY);
   TBD_Shape bd2(2, EMPTY);
   BD_Shape<mpq_class> known_result(bd2);
@@ -341,7 +341,7 @@ test7() {
 }
 
 bool
-test8() {
+test08() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -372,7 +372,7 @@ test8() {
 }
 
 bool
-test9() {
+test09() {
   Variable A(0);
   Variable B(1);
 
@@ -433,14 +433,14 @@ test10() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test1);
-  NEW_TEST(test2);
-  NEW_TEST(test3);
-  NEW_TEST(test4);
-  NEW_TEST(test5);
-  NEW_TEST(test6);
-  NEW_TEST(test7);
-  NEW_TEST(test8);
-  NEW_TEST(test9);
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
   NEW_TEST(test10);
 END_MAIN

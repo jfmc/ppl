@@ -27,7 +27,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 namespace {
 
 bool
-test1() {
+test01() {
   // The zero-dim universe BDS.
   TBD_Shape bd(0);
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) > 0);
@@ -42,7 +42,7 @@ test1() {
 }
 
 bool
-test2() {
+test02() {
   // The zero-dim universe BDS.
   TBD_Shape bd(0);
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) > 1);
@@ -56,7 +56,7 @@ test2() {
 }
 
 bool
-test3() {
+test03() {
   // The zero-dim universe BDS.
   TBD_Shape bd(0);
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) > 0);
@@ -70,7 +70,7 @@ test3() {
 }
 
 bool
-test4() {
+test04() {
   // An empty BDS.
   TBD_Shape bd(1);
   bd.add_constraint(Linear_Expression(0) >= 1);
@@ -90,7 +90,7 @@ test4() {
 }
 
 bool
-test5() {
+test05() {
   Variable A(0);
   Variable B(1);
   Constraint_System cs(A - B == 3);
@@ -108,7 +108,7 @@ test5() {
 }
 
 bool
-test6() {
+test06() {
   Variable A(0);
   Variable B(1);
   Constraint_System cs(A - B <= 3);
@@ -125,7 +125,7 @@ test6() {
 }
 
 bool
-test7() {
+test07() {
   Variable A(0);
 
   Constraint_System cs;
@@ -144,7 +144,7 @@ test7() {
 }
 
 bool
-test8() {
+test08() {
   Variable A(0);
   Variable B(1);
 
@@ -166,7 +166,7 @@ test8() {
 }
 
 bool
-test9() {
+test09() {
   Variable A(0);
   Variable B(1);
 
@@ -384,15 +384,15 @@ test19() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test1);
-  NEW_TEST(test2);
-  NEW_TEST(test3);
-  NEW_TEST(test4);
-  NEW_TEST(test5);
-  NEW_TEST(test6);
-  NEW_TEST(test7);
-  NEW_TEST(test8);
-  NEW_TEST(test9);
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
   NEW_TEST(test10);
   NEW_TEST(test11);
   NEW_TEST(test12);

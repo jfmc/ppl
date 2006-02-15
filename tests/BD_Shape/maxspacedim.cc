@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 bool
-test1() {
+test01() {
   BD_Shape<mpq_class> bd1(1);
   BD_Shape<long> bd2(1);
   BD_Shape<int> bd3(1);
@@ -88,5 +88,5 @@ test1() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test1);
+  NEW_TEST(test01);
 END_MAIN

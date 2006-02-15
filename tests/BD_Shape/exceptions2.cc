@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 bool
-test1() {
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -50,7 +50,7 @@ test1() {
 }
 
 bool
-test2() {
+test02() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -76,7 +76,7 @@ test2() {
 }
 
 bool
-test3() {
+test03() {
   TBD_Shape bd1(5);
   TBD_Shape bd2(10);
 
@@ -99,7 +99,7 @@ test3() {
 }
 
 bool
-test4() {
+test04() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -136,7 +136,7 @@ test4() {
 }
 
 bool
-test5() {
+test05() {
   Variable y(1);
 
   TBD_Shape bd1(1);
@@ -164,7 +164,7 @@ test5() {
 }
 
 bool
-test6() {
+test06() {
   Variable x(0);
   Variable y(1);
 
@@ -200,7 +200,7 @@ test6() {
 }
 
 bool
-test7() {
+test07() {
   Variable x(0);
   Variable y(1);
 
@@ -231,7 +231,7 @@ test7() {
 }
 
 bool
-test8() {
+test08() {
   Variable x(0);
   Variable y(1);
 
@@ -257,7 +257,7 @@ test8() {
 }
 
 bool
-test9() {
+test09() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -419,15 +419,15 @@ test14() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test1);
-  NEW_TEST(test2);
-  NEW_TEST(test3);
-  NEW_TEST(test4);
-  NEW_TEST(test5);
-  NEW_TEST(test6);
-  NEW_TEST(test7);
-  NEW_TEST(test8);
-  NEW_TEST(test9);
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
   NEW_TEST(test10);
   NEW_TEST(test11);
   NEW_TEST(test12);

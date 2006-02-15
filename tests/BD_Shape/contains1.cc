@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 bool
-test1() {
+test01() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -53,7 +53,7 @@ test1() {
 }
 
 bool
-test2() {
+test02() {
   TBD_Shape bd1;
   TBD_Shape bd2(0, EMPTY);
 
@@ -71,7 +71,7 @@ test2() {
 }
 
 bool
-test3() {
+test03() {
   TBD_Shape bd1(0, EMPTY);
   TBD_Shape bd2(0, EMPTY);
 
@@ -91,7 +91,7 @@ test3() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test1);
-  NEW_TEST(test2);
-  NEW_TEST(test3);
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
 END_MAIN
