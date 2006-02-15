@@ -88,10 +88,37 @@ test03() {
   return ok;
 }
 
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd1(3);
+  bd1.add_constraint(x - y >= 0);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraint(x - y == 0);
+
+  try {
+    // This is an invalid use of Polyhedron::contains(): it is
+    // illegal to apply this method to two polyhedra that are not
+    // dimension-compatible.
+    bd1.contains(bd2);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
   NEW_TEST(test01);
   NEW_TEST(test02);
   NEW_TEST(test03);
+  NEW_TEST(test04);
 END_MAIN

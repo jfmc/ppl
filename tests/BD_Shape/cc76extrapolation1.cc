@@ -430,6 +430,48 @@ test10() {
   return ok;
 }
 
+bool
+test11() {
+  TBD_Shape bd1(1);
+  TBD_Shape bd2(2);
+
+  try {
+    // This is an invalid use of the function
+    // BD_Shape::CC76_extrapolation_assign(bd): it is
+    // illegal to apply this function to two polyhedra that are not
+    // dimension-compatible.
+    bd2.CC76_extrapolation_assign(bd1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool
+test12() {
+  TBD_Shape bd1(5);
+  TBD_Shape bd2(10);
+
+  try {
+    // This is an invalid use of the function
+    // BD_Shape::CC76_widening_assign(bd2): it is illegal to apply
+    // this function to two polyhedra that are not dimensional
+    // compatible.
+    bd2.CC76_extrapolation_assign(bd1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -443,4 +485,6 @@ BEGIN_MAIN
   NEW_TEST(test08);
   NEW_TEST(test09);
   NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
 END_MAIN

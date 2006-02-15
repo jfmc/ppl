@@ -119,6 +119,56 @@ test04() {
   return ok;
 }
 
+bool
+test05() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(x >= y);
+
+  try {
+    // This is an incorrect use of the function
+    // BD_Shape::affine_preimage(v, expr, d): it is illegal
+    // to apply to a expression with the denominator
+    // equal to zero.
+    Coefficient d = 0;
+    bd.affine_preimage(x, x + 1, d);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool
+test06() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(x >= y);
+
+  try {
+    // This is an incorrect use of the function
+    // BD_Shape::affine_preimage(v, expr, d): it is illegal
+    // to apply it to an expression whose space dimension is
+    // greather than the space dimension of the BDS.
+    bd.affine_preimage(y, z);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -126,4 +176,6 @@ BEGIN_MAIN
   NEW_TEST(test02);
   NEW_TEST(test03);
   NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
 END_MAIN

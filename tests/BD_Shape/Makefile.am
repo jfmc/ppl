@@ -54,7 +54,6 @@ check_PROGRAMS = \
 	contains1 \
 	empty1 \
 	equality1 \
-	exceptions1 exceptions2 exceptions3 \
 	fromgensys1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffinepreimage1 generalizedaffinepreimage2 \
@@ -67,7 +66,7 @@ check_PROGRAMS = \
 	mapspacedims1 \
 	maxspacedim \
 	minconstraints1 \
-	relations1 relations2 \
+	relations1 relations2 relations3 \
 	removespacedims1 \
 	timeelapse1 \
 	universe1 \
@@ -129,15 +128,10 @@ empty1_SOURCES = empty1.cc
 
 equality1_SOURCES = equality1.cc
 
-exceptions1_SOURCES = exceptions1.cc
-exceptions2_SOURCES = exceptions2.cc
-exceptions3_SOURCES = exceptions3.cc
-
 fromgensys1_SOURCES = fromgensys1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
-generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
 
 generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
@@ -162,6 +156,7 @@ minconstraints1_SOURCES = minconstraints1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
+relations3_SOURCES = relations3.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 

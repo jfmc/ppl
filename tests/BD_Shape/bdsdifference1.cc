@@ -244,6 +244,26 @@ test07() {
   return ok;
 }
 
+bool
+test08() {
+  TBD_Shape bd1(3);
+  TBD_Shape bd2(5);
+
+  try {
+    // This is an incorrect use of function
+    // BD_Shape::bds_difference_assign(bd2): it is impossible to apply
+    // this function to two polyhedra of different dimensions.
+    bd1.bds_difference_assign(bd2);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -254,4 +274,5 @@ BEGIN_MAIN
   NEW_TEST(test05);
   NEW_TEST(test06);
   NEW_TEST(test07);
+  NEW_TEST(test08);
 END_MAIN

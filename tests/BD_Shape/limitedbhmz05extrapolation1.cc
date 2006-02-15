@@ -413,6 +413,101 @@ test09() {
   return ok;
 }
 
+bool
+test10() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(x - y >= 0);
+  bd1.add_constraint(x >= 0);
+  bd1.add_constraint(x <= 2);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraint(x - y >= 0);
+  bd2.add_constraint(x >= 0);
+  bd2.add_constraint(x <= 5);
+
+  Constraint_System cs;
+  cs.insert(z <= 5);
+
+  try {
+    // This is an invalid use of the function
+    // BD_Shape::limited_BHMZ05_extrapolation_assign(bd, cs): it is
+    // illegal to apply this function to a system of constraints that
+    // is not dimension-compatible with the two polyhedra.
+    bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool
+test11() {
+  Variable y(1);
+
+  TBD_Shape bd1(1);
+  TBD_Shape bd2(2);
+
+  Constraint_System cs;
+  cs.insert(y <= 9);
+
+  try {
+    // This is an invalid use of the function
+    // BD_Shape::limited_BHMZ05_extrapolation_assign(bd2, cs): it is
+    // illegal to apply this function to two polyhedra that are not
+    // dimension-compatible.
+    bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool
+test12() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(x - y >= 0);
+  bd1.add_constraint(x >= 0);
+  bd1.add_constraint(x <= 2);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraint(x - y >= 0);
+  bd2.add_constraint(x >= 0);
+  bd2.add_constraint(x <= 5);
+
+  Constraint_System cs;
+  cs.insert(x < 5);
+
+  try {
+    // This is an invalid use of the function
+    // BD_Shape::limited_BHMZ05_extrapolation_assign(bd, cs): it is
+    // illegal to apply this function to a system of constraints that
+    // has a strict-inequality.
+    bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -425,4 +520,7 @@ BEGIN_MAIN
   NEW_TEST(test07);
   NEW_TEST(test08);
   NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
 END_MAIN

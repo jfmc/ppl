@@ -178,6 +178,32 @@ test05() {
   return ok;
 }
 
+bool
+test06() {
+  Variable y(1);
+
+  TBD_Shape bd1(1);
+  TBD_Shape bd2(2);
+
+  Constraint_System cs;
+  cs.insert(y >= 6);
+
+  try {
+    // This is an invalid use of the function
+    // BD_Shape::CC76_narrowing_assign(bd2, cs): it is
+    // illegal to apply this function to two polyhedra that are not
+    // dimension-compatible.
+    bd2.CC76_narrowing_assign(bd1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -186,4 +212,5 @@ BEGIN_MAIN
   NEW_TEST(test03);
   NEW_TEST(test04);
   NEW_TEST(test05);
+  NEW_TEST(test06);
 END_MAIN

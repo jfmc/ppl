@@ -163,6 +163,51 @@ test04() {
   return ok;
 }
 
+bool
+test05() {
+  TBD_Shape bd1(12);
+  TBD_Shape bd2(5);
+
+  try {
+    // This is an incorrect use of function
+    // BD_Shape::bds_hull_assign(bd2): it is impossible to apply
+    // this function to two polyhedra of different dimensions.
+    bd1.bds_hull_assign(bd2);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool
+test06() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(x >= y);
+
+  TBD_Shape bd2(3);
+
+  try {
+    // This is an invalid use of function
+    // BD_Shape::bds_hull_assign_and_minimize(bd2): it is illegal
+    // to apply this function to two polyhedra of different dimensions.
+    bd1.bds_hull_assign_and_minimize(bd2);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -170,4 +215,6 @@ BEGIN_MAIN
   NEW_TEST(test02);
   NEW_TEST(test03);
   NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
 END_MAIN

@@ -263,6 +263,51 @@ test08() {
   return ok;
 }
 
+bool
+test09() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(x >= y);
+
+  TBD_Shape bd2(3);
+
+  try {
+    // This is an invalid use of function
+    // BD_Shape::intersection_assign_and_minimize(bd2): it is illegal
+    // to apply this function to two polyhedra of different dimensions.
+    bd1.intersection_assign_and_minimize(bd2);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool
+test10() {
+  TBD_Shape bd1(7);
+  TBD_Shape bd2(15);
+
+  try {
+    // This is an invalid use of function
+    // BD_Shape::intersection_assign(bd2): it is illegal
+    // to apply this function to two polyhedra of different dimensions.
+    bd1.intersection_assign(bd2);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -274,4 +319,6 @@ BEGIN_MAIN
   NEW_TEST(test06);
   NEW_TEST(test07);
   NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
 END_MAIN

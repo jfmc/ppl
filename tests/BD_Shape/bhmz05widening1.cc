@@ -309,6 +309,27 @@ test08() {
   return ok;
 }
 
+bool
+test09() {
+  TBD_Shape bd1(5);
+  TBD_Shape bd2(10);
+
+  try {
+    // This is an invalid use of the function
+    // BD_Shape::BHMZ05_widening_assign(bd1): it is illegal to apply
+    // this function to two polyhedra that are not dimensional
+    // compatible.
+    bd2.BHMZ05_widening_assign(bd1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -320,4 +341,5 @@ BEGIN_MAIN
   NEW_TEST(test06);
   NEW_TEST(test07);
   NEW_TEST(test08);
+  NEW_TEST(test09);
 END_MAIN

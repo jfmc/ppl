@@ -172,6 +172,31 @@ test05() {
   return ok;
 }
 
+bool
+test06() {
+  Variable x(0);
+
+  TBD_Shape bd1(1);
+  bd1.add_constraint(x == 1);
+
+  TBD_Shape bd2(2);
+
+  try {
+    // This is an invalid use of the function
+    // BD_Shape::time_elapse_assign(bd2): it is
+    // illegal to apply this function to two polyhedra that are not
+    // dimension-compatible.
+    bd1.time_elapse_assign(bd2);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -180,4 +205,5 @@ BEGIN_MAIN
   NEW_TEST(test03);
   NEW_TEST(test04);
   NEW_TEST(test05);
+  NEW_TEST(test06);
 END_MAIN

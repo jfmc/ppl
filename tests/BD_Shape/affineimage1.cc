@@ -313,6 +313,138 @@ test11() {
   return ok;
 }
 
+bool
+test12() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(x - y >= 0);
+  bd.add_constraint(x >= 0);
+  bd.add_constraint(x <= 2);
+
+  Linear_Expression coeff1 = x + 1;
+
+  try {
+    // This is an incorrect use of function
+    // BD_Shape::affine_image(v, expr,d): it is illegal applying
+    // the function with a linear expression with the denominator equal to
+    // zero.
+    Coefficient d = 0;
+    bd.affine_image(x, coeff1, d);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool
+test13() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd(1);
+  bd.add_constraint(x >= 1);
+
+  try {
+    // This is an invalid used of the function
+    // BD_Shape::affine_image(v, expr, d): it is illegal to
+    // apply this function to a variable that is not in the space of
+    // the polyhedron.
+    bd.affine_image(y, x + 1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool
+test14() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(x >= 1);
+  bd.add_constraint(y >= 1);
+
+  try {
+    // This is an invalid used of the function
+    // BD_Shape::affine_image(v, expr, d): it is illegal to
+    // use a variable in the expression that does not appear in the
+    // space of the polyhedron.
+    bd.affine_image(y, x + z + 1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool
+test15() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(x - y >= 0);
+  bd.add_constraint(x >= 0);
+  bd.add_constraint(x <= 2);
+
+  Linear_Expression coeff1 = 2*x + 1;
+
+  try {
+    // This is an incorrect use of function
+    // BD_Shape::affine_image(v, expr,d): it is illegal applying
+    // the function with a linear expression with the denominator equal to
+    // zero.
+    Coefficient d = 3;
+    bd.affine_image(x, coeff1, d);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool
+test16() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(x >= 1);
+  bd.add_constraint(y >= 1);
+
+  try {
+    // This is an invalid used of the function
+    // BD_Shape::affine_image(v, expr, d): it is illegal to
+    // use two variables in the expression.
+    bd.affine_image(y, y - x);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -327,4 +459,9 @@ BEGIN_MAIN
   NEW_TEST(test09);
   NEW_TEST(test10);
   NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+  NEW_TEST(test15);
+  NEW_TEST(test16);
 END_MAIN

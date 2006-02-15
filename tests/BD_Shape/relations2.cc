@@ -381,6 +381,31 @@ test19() {
   return rel == known_result;
 }
 
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(A >= 1);
+
+  try {
+    // This is an incorrect use of function
+    // BD_Shape::relation_with(c):
+    // it is illegal to use a constraint with three
+    // dimensions.
+    Poly_Con_Relation rel = bd.relation_with(A - C - B <= 2);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -403,4 +428,5 @@ BEGIN_MAIN
   NEW_TEST(test17);
   NEW_TEST(test18);
   NEW_TEST(test19);
+  NEW_TEST(test20);
 END_MAIN

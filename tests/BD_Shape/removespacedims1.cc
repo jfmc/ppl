@@ -243,6 +243,59 @@ test07() {
   return ok;
 }
 
+bool
+test08() {
+  TBD_Shape bd(5);
+
+  try {
+    // This is an invalid use of the function
+    // BD_Shape::remove_higher_dimensions(n): it is illegal to erase
+    // a variable that is not in the space of the polyhedron.
+    bd.remove_higher_space_dimensions(7);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool
+test09() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  Constraint_System cs;
+  cs.insert(x <= 3);
+  cs.insert(y - z <= 2);
+  TBD_Shape bd(cs);
+
+  Variables_Set to_be_removed;
+  to_be_removed.insert(z);
+
+  bd.remove_space_dimensions(to_be_removed);
+
+  try {
+    to_be_removed.insert(x);
+    // This is an incorrect use use of function
+    // BD_Shape::remove_dimensions(to_be_remove).
+    // Here the set `to_be_removed' still contains variable `z'.
+    // This variable is now beyond the space dimension,
+    // so that a dimension-incompatibility exception is obtained.
+    bd.remove_space_dimensions(to_be_removed);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -253,4 +306,6 @@ BEGIN_MAIN
   NEW_TEST(test05);
   NEW_TEST(test06);
   NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
 END_MAIN
