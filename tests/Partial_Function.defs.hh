@@ -23,14 +23,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Partial_Function_defs_hh
 #define PPL_Partial_Function_defs_hh 1
 
-#include "ppl.hh"
 #include "Partial_Function.types.hh"
+#include "ppl.hh"
 #include <map>
 #include <iosfwd>
 
 class Parma_Polyhedra_Library::Partial_Function {
 private:
-  typedef Parma_Polyhedra_Library::dimension_type dim_t;
+  typedef dimension_type dim_t;
 
 public:
   Partial_Function();
@@ -41,7 +41,6 @@ public:
   void print(std::ostream& s) const;
 
   void insert(dim_t x, dim_t y);
-
 
 private:
   typedef std::map<unsigned, unsigned, std::less<dim_t> > Map;

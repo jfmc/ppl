@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test1() {
   BD_Shape<mpq_class> bd1(1);
   BD_Shape<long> bd2(1);
   BD_Shape<int> bd3(1);
@@ -79,8 +81,12 @@ main() TRY {
     print_constraints(bd4, "*** bd4 ***");
 
   }
-
-  return 0;
-
+  // FIXME!!!
+  return true;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test1);
+END_MAIN

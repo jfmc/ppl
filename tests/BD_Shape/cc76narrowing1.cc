@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test1() {
   Variable x(0);
   Variable y(1);
 
@@ -51,11 +53,137 @@ main() TRY {
   known_result.add_constraint(-y <= 8);
   known_result.add_constraint(y <= 8);
 
-  int retval = (BD_Shape<mpq_class>(bd2) == known_result) ? 0 : 1;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
 
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
-  return retval;
+  return ok;
 }
-CATCH
 
+bool
+test2() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TBD_Shape bd1(4);
+  bd1.add_constraint(z <= 1);
+
+  TBD_Shape bd2(4);
+  bd2.add_constraint(-y <= 3);
+  bd2.add_constraint(-x <= 2);
+  bd2.add_constraint(x <= 3);
+  bd2.add_constraint(y - x <= 4);
+  bd2.add_constraint(z <= 0);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bd2.CC76_narrowing_assign(bd1);
+
+  BD_Shape<mpq_class> known_result(4);
+  known_result.add_constraint(z <= 1);
+  known_result.add_constraint(-y <= 3);
+  known_result.add_constraint(y <= 7);
+  known_result.add_constraint(-x <= 2);
+  known_result.add_constraint(x <= 3);
+  known_result.add_constraint(y - x <= 4);
+  known_result.add_constraint(x - y <= 6);
+  known_result.add_constraint(z - y <= 3);
+  known_result.add_constraint(z - x <= 2);
+
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+
+  print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
+
+  return ok;
+}
+
+bool
+test3() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TBD_Shape bd1(3);
+  TBD_Shape bd2(3);
+
+  bd1.add_constraint(z <= 1);
+  BD_Shape<mpq_class> known_result(3, EMPTY);
+
+  bd2.add_constraint(-y <= 3);
+  bd2.add_constraint(x >= 4);
+  bd2.add_constraint(x <= 3);
+  bd2.add_constraint(y - x <= 4);
+  bd2.add_constraint(z <= 0);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bd2.CC76_narrowing_assign(bd1);
+
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+
+  print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
+
+  return ok;
+}
+
+bool
+test4() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TBD_Shape bd1(3);
+  bd1.add_constraint(z <= 1);
+  bd1.add_constraint(z >= 3);
+
+  TBD_Shape bd2(3);
+  bd2.add_constraint(-y <= 3);
+  bd2.add_constraint(x >= 4);
+  bd2.add_constraint(x <= 3);
+  bd2.add_constraint(y - x <= 4);
+  bd2.add_constraint(z <= 0);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bd2.CC76_narrowing_assign(bd1);
+
+  BD_Shape<mpq_class> known_result(3, EMPTY);
+
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+
+  print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
+
+  return ok;
+}
+
+bool
+test5() {
+  TBD_Shape bd1;
+  TBD_Shape bd2(0, EMPTY);
+  BD_Shape<mpq_class> known_result(bd2);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bd2.CC76_narrowing_assign(bd1);
+
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+
+  print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+  NEW_TEST(test4);
+  NEW_TEST(test5);
+END_MAIN

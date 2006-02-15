@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test1() {
   Variable x(0);
   Variable y(1);
   // Variable z(2);
@@ -45,6 +47,11 @@ main() TRY {
   nout << "*** bd2.is_universe() ***" << endl;
   nout << (universe2 ? "true" : "false") << endl;
 
-  return (universe1 != universe2) ? 0 : 1;
+  return universe1 != universe2;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test1);
+END_MAIN

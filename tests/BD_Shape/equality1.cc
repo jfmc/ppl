@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-void
+bool
 test1() {
   Variable x(0);
   Variable y(1);
@@ -45,11 +45,10 @@ test1() {
   bool known_result = false;
   bool ok = ((bd1 == bd2) == known_result);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test2() {
   TBD_Shape bd1(0, EMPTY);
   TBD_Shape bd2(0);
@@ -60,11 +59,10 @@ test2() {
   bool known_result = false;
   bool ok = ((bd1 == bd2) == known_result);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test3() {
   TBD_Shape bd1(0);
   TBD_Shape bd2(0, EMPTY);
@@ -75,11 +73,10 @@ test3() {
   bool known_result = false;
   bool ok = ((bd1 == bd2) == known_result);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test4() {
   Variable A(0);
   Variable B(1);
@@ -98,11 +95,10 @@ test4() {
   bool known_result = false;
   bool ok = ((bd1 == bd2) == known_result);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test5() {
   Variable A(0);
   Variable B(1);
@@ -121,21 +117,15 @@ test5() {
   bool known_result = false;
   bool ok = ((bd1 == bd2) == known_result);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-
-  return 0;
-
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+  NEW_TEST(test4);
+  NEW_TEST(test5);
+END_MAIN

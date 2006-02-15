@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-void
+bool
 test1() {
   Variable x(0);
   Variable y(1);
@@ -57,11 +57,10 @@ test1() {
 
   bool ok = (affine_dim1 == affine_dim2);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test2() {
   Variable A(0);
   Variable B(1);
@@ -102,11 +101,10 @@ test2() {
 
   bool ok = (affine_dim1 == affine_dim2);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test3() {
   Variable A(0);
   Variable B(1);
@@ -148,11 +146,10 @@ test3() {
 
   bool ok = (affine_dim1 == affine_dim2);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test4() {
   Variable A(0);
   Variable B(1);
@@ -188,11 +185,10 @@ test4() {
 
   bool ok = (affine_dim1 == affine_dim2);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test5() {
   Variable A(0);
   Variable B(1);
@@ -225,22 +221,16 @@ test5() {
 
   bool ok = (affine_dim1 == affine_dim2);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+  NEW_TEST(test4);
+  NEW_TEST(test5);
+END_MAIN
 

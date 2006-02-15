@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-void
+bool
 test1() {
   Generator_System gs;
   TBD_Shape bd(gs);
@@ -35,11 +35,10 @@ test1() {
 
   print_constraints(bd, "*** bd ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test2() {
   Variable V(10);
 
@@ -52,18 +51,19 @@ test2() {
     TBD_Shape bd(gs);
 
     // It is an error if the exception is not thrown.
-    exit(1);
+    return false;
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
+bool
 test3() {
   Variable V(10);
 
@@ -76,19 +76,19 @@ test3() {
     TBD_Shape bd(gs);
 
     // It is an error if the exception is not thrown.
-    exit(1);
+    return false;
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
-    return;
+    return true;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
-    exit(1);
+    return false;
   }
 }
 
-void
+bool
 test4() {
   Variable A(0);
   Variable B(1);
@@ -116,11 +116,10 @@ test4() {
 
   print_constraints(bd, "*** bd ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test5() {
   Variable A(0);
   Variable B(1);
@@ -150,21 +149,15 @@ test5() {
 
   print_constraints(bd, "*** bd ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+  NEW_TEST(test4);
+  NEW_TEST(test5);
+END_MAIN

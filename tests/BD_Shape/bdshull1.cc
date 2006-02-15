@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test1() {
   Variable x1(0);
   Variable x2(1);
   Variable x3(2);
@@ -49,10 +51,123 @@ main() TRY {
   known_result.add_constraint(x1 <= 5);
   known_result.add_constraint(x1 - x2 <= 20);
 
-  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
 
   print_constraints(bd1, "*** bd1.bds_hull_assign(bd2) ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test2() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd1(3);
+  bd1.add_constraint(x <= 4);
+  bd1.add_constraint(-x <= -1);
+  bd1.add_constraint(y <= 3);
+  bd1.add_constraint(-y <= -1);
+  bd1.add_constraint(x - y <= 1);
+
+  TBD_Shape bd2(3);
+  bd2.add_constraint(y - x <= -1);
+  bd2.add_constraint(x <= 3);
+  bd2.add_constraint(-y <= 5);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bd1.bds_hull_assign(bd2);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(x <= 4);
+  known_result.add_constraint(y >= -5);
+  known_result.add_constraint(x >= -4);
+  known_result.add_constraint(y <= 3);
+  known_result.add_constraint(x - y <= 8);
+  known_result.add_constraint(y - x <= 2);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1, "*** bd1.bds_hull_assign(bd2) ***");
+
+  return ok;
+}
+
+bool
+test3() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(x <= 4);
+  bd1.add_constraint(-x <= -1);
+  bd1.add_constraint(y <= 3);
+  bd1.add_constraint(-y <= -1);
+  bd1.add_constraint(x - y <= 1);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraint(y - x <= -1);
+  bd2.add_constraint(x <= 3);
+  bd2.add_constraint(x >= 5);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  BD_Shape<mpq_class> known_result(bd1);
+
+  bd1.bds_hull_assign(bd2);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1, "*** bd1.bds_hull_assign(bd2) ***");
+
+  return ok;
+}
+
+bool
+test4() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(A <= 4);
+  bd1.add_constraint(A >= 1);
+  bd1.add_constraint(B <= 3);
+  bd1.add_constraint(-B <= -1);
+  bd1.add_constraint(A - B <= 1);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraint(B - A <= -1);
+  bd2.add_constraint(A <= 3);
+  bd2.add_constraint(-B <= 5);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bd1.bds_hull_assign_and_minimize(bd2);
+
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A <= 4);
+  known_result.add_constraint(B >= -5);
+  known_result.add_constraint(A >= -4);
+  known_result.add_constraint(B <= 3);
+  known_result.add_constraint(A - B <= 8);
+  known_result.add_constraint(B - A <= 2);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1, "*** bd1.bds_hull_assign_and_minimize(bd2) ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+  NEW_TEST(test4);
+END_MAIN

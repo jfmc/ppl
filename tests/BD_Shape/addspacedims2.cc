@@ -23,29 +23,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  Variable x(0);
-  //Variable y(1);
-  Variable z(2);
-  Variable w(3);
+namespace {
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x <= 2);
 
-  print_constraints(bd, "*** bd ***");
+} // namespace
 
-  bd.add_space_dimensions_and_project(2);
-
-  BD_Shape<mpq_class> known_result(4);
-  known_result.add_constraint(x <= 2);
-  known_result.add_constraint(w == 0);
-  known_result.add_constraint(z == 0);
-
-  int retval = (BD_Shape<mpq_class>(bd) == known_result) ? 0 : 1;
-
-  print_constraints(bd, "*** bd.add_space_dimensions_and_project(2) ***");
-
-  return retval;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+  NEW_TEST(test4);
+END_MAIN

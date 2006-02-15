@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test1() {
   Variable x(0);
   Variable y(1);
 
@@ -39,10 +41,89 @@ main() TRY {
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y <= 2);
 
-  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
 
   print_constraints(bd1, "*** bd1.affine_preimage(x, y) ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test2() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(B >= 0);
+  bd.add_constraint(A - B - 3 >= 0);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.affine_preimage(A, B-1);
+
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(B >= 0);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+
+  print_constraints(bd, "*** bd.affine_preimage(A, B-1) ***");
+
+  return ok;
+}
+
+bool
+test3() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 2);
+  bd.add_constraint(B >= 0);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.affine_preimage(A, 2*A + 2, 2);
+
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A >= 1);
+  known_result.add_constraint(B >= 0);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+
+  print_constraints(bd, "*** bd.affine_preimage(A, 2*A + 2, 2) ***");
+
+  return ok;
+}
+
+bool
+test4() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 2);
+  bd.add_constraint(B >= 0);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.affine_preimage(B, Linear_Expression(3));
+
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A >= 2);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+
+  print_constraints(bd, "*** bd.affine_preimage(B, 3) ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+  NEW_TEST(test4);
+END_MAIN

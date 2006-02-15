@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-void
+bool
 test1() {
   Variable A(0);
   Variable B(1);
@@ -51,11 +51,10 @@ test1() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "EQUAL, -1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test2() {
   Variable A(0);
   Variable B(1);
@@ -78,11 +77,10 @@ test2() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "GREATER_THAN_OR_EQUAL, -1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test3() {
   Variable A(0);
   Variable B(1);
@@ -106,21 +104,15 @@ test3() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "EQUAL, 3*A+2) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 } // namespace
 
 
 
-int
-main() TRY {
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+END_MAIN

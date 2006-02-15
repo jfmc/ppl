@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test1() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -40,15 +42,56 @@ main() TRY {
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  bool result = bd1.contains(bd2);
+  bool ok = bd1.contains(bd2);
 
   nout << "*** bd1.contains(bd2) ***"
        << endl
-       << (result ? "true" : "false")
+       << (ok ? "true" : "false")
        << endl;
 
-  int retval = result ? 0 : 1;
-
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test2() {
+  TBD_Shape bd1;
+  TBD_Shape bd2(0, EMPTY);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool ok = bd1.contains(bd2);
+
+  nout << "*** bd1.contains(bd2) ***"
+       << endl
+       << (ok ? "true" : "false")
+       << endl;
+
+  return ok;
+}
+
+bool
+test3() {
+  TBD_Shape bd1(0, EMPTY);
+  TBD_Shape bd2(0, EMPTY);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool ok = bd1.contains(bd2);
+
+  nout << "*** bd1.contains(bd2) ***"
+       << endl
+       << (ok ? "true" : "false")
+       << endl;
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+END_MAIN

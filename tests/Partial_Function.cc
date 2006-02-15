@@ -20,8 +20,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
-
 #include "Partial_Function.defs.hh"
 #include <stdexcept>
 #include <iostream>
@@ -62,7 +60,6 @@ PPL::Partial_Function::maps(dim_t x, dim_t& y) const {
 
 void
 PPL::Partial_Function::print(std::ostream& s) const {
-  using namespace Parma_Polyhedra_Library;
   using namespace IO_Operators;
 
   if (has_empty_codomain())

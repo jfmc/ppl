@@ -354,8 +354,7 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
          << endl; \
   } while (0)
 
-int
-main() TRY {
+bool test1() {
   BD_Shape<mpq_class> qbd1(126);
   add_edges(qbd1, hawaii, sizeof(hawaii)/sizeof(Edge));
 
@@ -364,14 +363,17 @@ main() TRY {
 
   BD_Shape<mpq_class> qbd2(tbd);
   if (!qbd2.contains(qbd1))
-    exit(1);
+    return false;
 
+  // FIXME!!!
 #if 1
   DISTANCE(double, float);
   DISTANCE(double, mpq_class);
   DISTANCE(int, double);
 #endif
-
-  return 0;
+  return true;
 }
-CATCH
+
+BEGIN_MAIN
+  NEW_TEST(test1);
+END_MAIN

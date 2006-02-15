@@ -20,6 +20,9 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_ppl_test_hh
+#define PPL_ppl_test_hh 1
+
 #include "ppl.hh"
 #include "print.hh"
 #include "ehandlers.hh"
@@ -27,9 +30,50 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Random_Number_Generator.defs.hh"
 #include <stdexcept>
 #include <sstream>
+#include <list>
+#include <string>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
+
+#define BEGIN_MAIN				\
+int						\
+main() try {					\
+  set_handlers();				\
+  list<string> failed_tests;
+
+#define END_MAIN							\
+  if (failed_tests.empty())						\
+    return 0;								\
+  else {								\
+    std::cerr << "failed tests: ";					\
+    copy(failed_tests.begin(), failed_tests.end(),			\
+	 ostream_iterator<string>(cerr, " "));				\
+    std::cerr << std::endl;						\
+    return 1;								\
+  }									\
+}									\
+catch (const std::overflow_error& e) {					\
+  std::cerr << "arithmetic overflow (" << e.what() << ")"		\
+            << std::endl;						\
+  exit(1);								\
+}									\
+catch (const std::exception& e) {					\
+  std::cerr << "std::exception caught: "				\
+	    << e.what() << " (type == " << typeid(e).name() << ")"	\
+	    << std::endl;						\
+  exit(1);								\
+}
+
+#define DO_TEST(name)			 \
+  nout << "\n=== " #name " ===" << endl; \
+  name();
+
+#define NEW_TEST(name)			 \
+  nout << "\n=== " #name " ===" << endl; \
+  if (!name())				 \
+    failed_tests.push_back(#name);
+
 
 // Turn s into a string: PPL_TEST_STR(x + y) => "x + y".
 #define PPL_TEST_STR(s) #s
@@ -51,10 +95,6 @@ using std::endl;
 #define BD_SHAPE_INSTANCE mpq_class
 #endif
 
-#define DO_TEST(name) \
-  nout << "\n=== " #name " ===" << endl; \
-  name();
-
 namespace Parma_Polyhedra_Library {
 
 //! Utility typedef to allow a macro argument to denote the long double type.
@@ -65,20 +105,7 @@ typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
 
 bool
 check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
-	       const char* max_d_s, const char* d_name) {
-  Checked_Number<mpq_class, Extended_Number_Policy>
-    max_d((max_d_s ? max_d_s : "0"), ROUND_NOT_NEEDED);
-  assert(max_d >= 0);
-  if (d > max_d) {
-    Checked_Number<float, Extended_Number_Policy> dd(d, ROUND_UP);
-    nout << "Excessive " << d_name << " distance " << dd
-	 << ": should be at most " << max_d << "."
-	 << endl;
-    return false;
-  }
-  else
-    return true;
-}
+	       const char* max_d_s, const char* d_name);
 
 template <typename T>
 bool
@@ -149,7 +176,7 @@ check_result(const BD_Shape<T>& computed_result,
 }
 
 template <>
-bool
+inline bool
 check_result(const BD_Shape<mpq_class>& computed_result,
 	     const BD_Shape<mpq_class>& known_result,
 	     const char*,
@@ -173,10 +200,11 @@ check_result(const BD_Shape<T>& computed_result,
   Comparing temporary copies ensures that the underlying
   representation of \p a and \p b stays the same.
 */
-bool
-copy_compare(const Grid& a, const Grid& b) {
-  const Grid tem_a = a;
-  const Grid tem_b = b;
+template <typename T>
+inline bool
+copy_compare(const T& a, const T& b) {
+  const T tem_a = a;
+  const T tem_b = b;
   return tem_a == tem_b;
 }
 
@@ -240,3 +268,5 @@ find_variation(T& a) {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_ppl_test_hh)

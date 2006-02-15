@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test1() {
   Variable x(0);
   Variable y(1);
 
@@ -51,11 +53,376 @@ main() TRY {
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(y >= 3);
 
-  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
 
   print_constraints(bd1,
 		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ****");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test2() {
+  Variable x(0);
+  Variable y(1);
+
+  Constraint_System cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(x <= 2);
+  cs1.insert(y >= 0);
+  cs1.insert(x - y >= 0);
+
+  Constraint_System cs2;
+  cs2.insert(x >= 0);
+  cs2.insert(x <= 1);
+  cs2.insert(y >= 0);
+  cs2.insert(x - y >= 0);
+
+  TBD_Shape bd1(cs1);
+  TBD_Shape bd2(cs2);
+
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(y >= 0);
+  cs.insert(x <= 5);
+  cs.insert(y <= 5);
+
+  print_constraints(bd1, "*** bd1 ****");
+  print_constraints(bd2, "*** bd2 ****");
+  print_constraints(cs, "*** cs ****");
+
+  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(x <= 5);
+  known_result.add_constraint(y - x <= 0);
+  known_result.add_constraint(x >= 0);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1,
+		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+
+  return ok;
+}
+
+bool
+test3() {
+  Variable x(0);
+  Variable y(1);
+
+  Constraint_System cs1;
+  cs1.insert(x >= 3);
+  cs1.insert(x <= 2);
+  cs1.insert(y >= 0);
+  cs1.insert(x - y >= 0);
+
+  Constraint_System cs2;
+  cs2.insert(x >= 2);
+  cs2.insert(x <= 1);
+  cs2.insert(y >= 0);
+  cs2.insert(x - y >= 0);
+
+  TBD_Shape bd1(cs1);
+  TBD_Shape bd2(cs2);
+
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(y >= 0);
+  cs.insert(x <= 5);
+  cs.insert(y <= 5);
+
+  print_constraints(bd1, "*** bd1 ****");
+  print_constraints(bd2, "*** bd2 ****");
+  print_constraints(cs, "*** cs ****");
+
+  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+
+  BD_Shape<mpq_class> known_result(bd2);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1,
+		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+
+  return ok;
+}
+
+bool
+test4() {
+  Variable x(0);
+  Variable y(1);
+
+  Constraint_System cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(x <= 1);
+  cs1.insert(y >= 0);
+  cs1.insert(x - y >= 0);
+
+  Constraint_System cs2;
+  cs2.insert(x >= 3);
+  cs2.insert(x <= 2);
+  cs2.insert(y >= 0);
+  cs2.insert(x - y >= 0);
+
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(y >= 0);
+  cs.insert(x + y <= 0);
+  cs.insert(x - y >= 0);
+  cs.insert(x <= 5);
+  cs.insert(y <= 5);
+
+  TBD_Shape bd1(cs1);
+  TBD_Shape bd2(cs2);
+  BD_Shape<mpq_class> known_result(bd1);
+
+  print_constraints(bd1, "*** bd1 ****");
+  print_constraints(bd2, "*** bd2 ****");
+  print_constraints(cs, "*** cs ****");
+
+  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1,
+		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+
+  return ok;
+}
+
+bool
+test5() {
+  TBD_Shape bd1;
+  TBD_Shape bd2;
+  Constraint_System cs;
+
+  print_constraints(bd1, "*** bd1 ****");
+  print_constraints(bd2, "*** bd2 ****");
+  print_constraints(cs, "*** cs ****");
+
+  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+
+  BD_Shape<mpq_class> known_result;
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1,
+		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+
+  return ok;
+}
+
+bool
+test6() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  Constraint_System cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(x <= 2);
+  cs1.insert(y >= 0);
+  cs1.insert(x - y >= 0);
+  cs1.insert(z <= 0);
+
+  Constraint_System cs2;
+  cs2.insert(x >= 0);
+  cs2.insert(x <= 1);
+  cs2.insert(y >= 0);
+  cs2.insert(x - y >= 0);
+  cs2.insert(z <= 0);
+
+  TBD_Shape bd1(cs1);
+  TBD_Shape bd2(cs2);
+
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(y >= 0);
+  cs.insert(x <= 5);
+  cs.insert(y <= 5);
+  cs.insert(x - y + z <= 5);
+
+  print_constraints(bd1, "*** bd1 ****");
+  print_constraints(bd2, "*** bd2 ****");
+  print_constraints(cs, "*** cs ****");
+
+  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(x <= 5);
+  known_result.add_constraint(y - x <= 0);
+  known_result.add_constraint(x >= 0);
+  known_result.add_constraint(z <= 0);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1,
+		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+
+  return ok;
+}
+
+bool
+test7() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  Constraint_System cs1;
+  cs1.insert(x == 0);
+  cs1.insert(y >= 0);
+  cs1.insert(x - y >= 0);
+  cs1.insert(z <= 0);
+
+  Constraint_System cs2;
+  cs2.insert(x == 0);
+  cs2.insert(y >= 0);
+  cs2.insert(x - y >= 0);
+  cs2.insert(z <= -1);
+
+  TBD_Shape bd1(cs1);
+  TBD_Shape bd2(cs2);
+
+  Constraint_System cs;
+  cs.insert(x == 0);
+  cs.insert(y >= 0);
+  cs.insert(y <= 5);
+  cs.insert(x - y + z <= 5);
+
+  print_constraints(bd1, "*** bd1 ****");
+  print_constraints(bd2, "*** bd2 ****");
+  print_constraints(cs, "*** cs ****");
+
+  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(y - x <= 0);
+  known_result.add_constraint(x == 0);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1,
+		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+
+  return ok;
+}
+
+bool
+test8() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  Constraint_System cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(x <= 2);
+  cs1.insert(y >= 0);
+  cs1.insert(x - y >= 0);
+  cs1.insert(z <= 0);
+
+  Constraint_System cs2;
+  cs2.insert(x >= 0);
+  cs2.insert(x <= 1);
+  cs2.insert(y >= 0);
+  cs2.insert(x - y >= 0);
+  cs2.insert(z <= 0);
+
+  TBD_Shape bd1(cs1);
+  TBD_Shape bd2(cs2);
+
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(y >= 0);
+  cs.insert(x <= 5);
+  cs.insert(y <= 5);
+  cs.insert(2*x - 3*y <= 5);
+
+  print_constraints(bd1, "*** bd1 ****");
+  print_constraints(bd2, "*** bd2 ****");
+  print_constraints(cs, "*** cs ****");
+
+  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(x <= 5);
+  known_result.add_constraint(y - x <= 0);
+  known_result.add_constraint(x >= 0);
+  known_result.add_constraint(z <= 0);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1,
+		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+
+  return ok;
+}
+
+bool
+test9() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  Constraint_System cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(x <= 2);
+  cs1.insert(y >= 0);
+  cs1.insert(x - y >= 0);
+  cs1.insert(z <= 0);
+
+  Constraint_System cs2;
+  cs2.insert(x >= 0);
+  cs2.insert(x <= 1);
+  cs2.insert(y >= 0);
+  cs2.insert(x - y >= 0);
+  cs2.insert(z <= 0);
+
+  TBD_Shape bd1(cs1);
+  TBD_Shape bd2(cs2);
+
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(y >= 0);
+  cs.insert(x <= 5);
+  cs.insert(y <= 5);
+  cs.insert(x - y >= 0);
+
+  print_constraints(bd1, "*** bd1 ****");
+  print_constraints(bd2, "*** bd2 ****");
+  print_constraints(cs, "*** cs ****");
+
+  bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(x <= 5);
+  known_result.add_constraint(y - x <= 0);
+  known_result.add_constraint(x >= 0);
+  known_result.add_constraint(z <= 0);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1,
+		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+  NEW_TEST(test4);
+  NEW_TEST(test5);
+  NEW_TEST(test6);
+  NEW_TEST(test7);
+  NEW_TEST(test8);
+  NEW_TEST(test9);
+END_MAIN

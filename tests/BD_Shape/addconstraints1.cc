@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test1() {
   Variable A(0);
   Variable B(1);
 
@@ -41,10 +43,15 @@ main() TRY {
   known_result.add_constraint(B == 5);
   known_result.add_constraint(B - A <= 5);
 
-  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
 
   print_constraints(known_result, "*** known_result ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test1);
+END_MAIN

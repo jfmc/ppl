@@ -26,8 +26,8 @@ using std::invalid_argument;
 
 namespace {
 
-void
-error1() {
+bool
+test1() {
   Variable x(0);
   Variable y(1);
 
@@ -46,12 +46,13 @@ error1() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error2() {
+bool
+test2() {
   TBD_Shape bd1(7);
   TBD_Shape bd2(15);
 
@@ -65,12 +66,13 @@ error2() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error3() {
+bool
+test3() {
   TBD_Shape bd(5);
 
   try {
@@ -83,12 +85,13 @@ error3() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error4() {
+bool
+test4() {
   Variable x(0);
   Variable y(1);
 
@@ -107,12 +110,13 @@ error4() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error5() {
+bool
+test5() {
   Variable y(1);
 
   TBD_Shape bd(1);
@@ -128,12 +132,13 @@ error5() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error6() {
+bool
+test6() {
   Variable x(0);
   Variable y(1);
 
@@ -152,12 +157,13 @@ error6() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error7() {
+bool
+test7() {
   TBD_Shape bd1(5);
   TBD_Shape bd2(10);
 
@@ -172,12 +178,13 @@ error7() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error8() {
+bool
+test8() {
   Variable y(1);
 
   TBD_Shape bd1(1);
@@ -197,12 +204,13 @@ error8() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error9() {
+bool
+test9() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -231,12 +239,13 @@ error9() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error10() {
+bool
+test10() {
   Variable x(0);
   Variable y(1);
 
@@ -256,12 +265,13 @@ error10() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error11() {
+bool
+test11() {
 
   TBD_Shape bd1(3);
   TBD_Shape bd2(5);
@@ -276,12 +286,13 @@ error11() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error12() {
+bool
+test12() {
 
   TBD_Shape bd1(12);
   TBD_Shape bd2(5);
@@ -296,12 +307,13 @@ error12() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error13() {
+bool
+test13() {
   Variable x(0);
   Variable y(1);
 
@@ -320,12 +332,13 @@ error13() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error14() {
+bool
+test14() {
   Variable y(1);
 
   TBD_Shape bd1(1);
@@ -345,12 +358,13 @@ error14() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error15() {
+bool
+test15() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -378,12 +392,13 @@ error15() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error16() {
+bool
+test16() {
   Variable x(0);
   Variable y(1);
 
@@ -411,12 +426,13 @@ error16() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
-void
-error17() {
+bool
+test17() {
   Variable x(0);
 
   TBD_Shape bd1(1);
@@ -435,33 +451,29 @@ error17() {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
-    exit(1);
+    return false;
   }
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-
-  error1();
-  error2();
-  error3();
-  error4();
-  error5();
-  error6();
-  error7();
-  error8();
-  error9();
-  error10();
-  error11();
-  error12();
-  error13();
-  error14();
-  error15();
-  error16();
-  error17();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+  NEW_TEST(test4);
+  NEW_TEST(test5);
+  NEW_TEST(test6);
+  NEW_TEST(test7);
+  NEW_TEST(test8);
+  NEW_TEST(test9);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+  NEW_TEST(test15);
+  NEW_TEST(test16);
+  NEW_TEST(test17);
+END_MAIN

@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-void
+bool
 test1() {
   Variable A(0);
   Variable B(1);
@@ -48,11 +48,10 @@ test1() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "GREATER_THAN_OR_EQUAL, -1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test2() {
   Variable A(0);
   Variable B(1);
@@ -73,11 +72,10 @@ test2() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, -1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test3() {
   Variable A(0);
   Variable B(1);
@@ -100,11 +98,10 @@ test3() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, -B+1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test4() {
   Variable A(0);
   Variable B(1);
@@ -127,11 +124,10 @@ test4() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, B+1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test5() {
   Variable A(0);
   Variable B(1);
@@ -154,11 +150,10 @@ test5() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, 2*B+1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test6() {
   Variable A(0);
   Variable B(1);
@@ -181,11 +176,10 @@ test6() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, -2*B+1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test7() {
   Variable A(0);
   Variable B(1);
@@ -208,11 +202,10 @@ test7() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, 3*A-2*B+1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test8() {
   Variable A(0);
   Variable B(1);
@@ -235,11 +228,10 @@ test8() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, -3*A-2*B+1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test9() {
   Variable A(0);
   Variable B(1);
@@ -267,17 +259,16 @@ test9() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test10() {
   // If the Coefficient type is not wide enough, do nothing.
   if (std::numeric_limits<Coefficient>::is_bounded
       && (std::numeric_limits<Coefficient>::min() > -203
 	  || std::numeric_limits<Coefficient>::max() < 629))
-    return;
+    return true;
 
   Variable A(0);
   Variable B(1);
@@ -307,11 +298,10 @@ test10() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test11() {
   Variable A(0);
   Variable B(1);
@@ -336,11 +326,10 @@ test11() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test12() {
   Variable A(0);
   Variable B(1);
@@ -370,11 +359,10 @@ test12() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test13() {
   Variable A(0);
   Variable B(1);
@@ -402,11 +390,10 @@ test13() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "GREATER_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test14() {
   Variable A(0);
   Variable B(1);
@@ -436,11 +423,10 @@ test14() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test15() {
   Variable A(0);
   Variable B(1);
@@ -467,31 +453,25 @@ test15() {
 		    "*** bd.generalized_affine_preimage(B, "
 		    "GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+  NEW_TEST(test4);
+  NEW_TEST(test5);
+  NEW_TEST(test6);
+  NEW_TEST(test7);
+  NEW_TEST(test8);
+  NEW_TEST(test9);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+  NEW_TEST(test15);
+END_MAIN

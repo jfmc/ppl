@@ -22,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test1() {
   typedef Polyhedra_Powerset<TBD_Shape> BDS_Set;
 
   Variable A(0);
@@ -75,7 +75,7 @@ main() TRY {
   bdss1.BGP99_extrapolation_assign
     (bdss2, widen_fun_ref(&TBD_Shape::H79_widening_assign), 3);
 
-  int retval = bdss1.geometrically_equals(known_result) ? 0 : 1;
+  bool ok = bdss1.geometrically_equals(known_result);
 
   nout
     << "*** bdss1.BGP99_extrapolation_assign"
@@ -83,6 +83,11 @@ main() TRY {
     << endl
     << bdss1 << endl;
 
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test1);
+END_MAIN

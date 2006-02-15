@@ -22,10 +22,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+namespace {
 
-int
-main() TRY {
+bool
+test1() {
+  using namespace IO_Operators;
+
   Variable x(0);
 
   Constraint_System cs1, cs2, cs3, cs4;
@@ -51,13 +53,18 @@ main() TRY {
 
     nout << "ps12 covers ps3." << endl;
 
-    return 0;
+    return true;
   }
   else {
 
     nout << "ps12 does not cover ps3." << endl;
 
-    return 0;
+    return false;
   }
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test1);
+END_MAIN

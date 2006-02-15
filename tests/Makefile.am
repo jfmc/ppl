@@ -33,6 +33,7 @@ files.hh \
 files.cc \
 print.hh \
 print.cc \
+ppl_test.cc \
 BBox.cc \
 Partial_Function.cc
 

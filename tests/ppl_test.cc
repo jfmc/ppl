@@ -1,4 +1,4 @@
-/* Test BD_Shape::bds_difference_assign().
+/* Implementation of simple print functions used in test programs.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,39 +22,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  Variable x(0);
-  Variable y(1);
+namespace PPL = Parma_Polyhedra_Library;
 
-  TBD_Shape bd1(2);
-  bd1.add_constraint(x <= 2);
-  bd1.add_constraint(x >= 0);
-  bd1.add_constraint(y <= 5);
-  bd1.add_constraint(y >= 2);
+using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::IO_Operators;
 
-  TBD_Shape bd2(2);
-  bd2.add_constraint(x <= 3);
-  bd2.add_constraint(x >= 1);
-  bd2.add_constraint(y <= 4);
-  bd2.add_constraint(y >= 1);
-
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
-
-  bd1.bds_difference_assign(bd2);
-
-  BD_Shape<mpq_class> known_result(2);
-  known_result.add_constraint(x >= 0);
-  known_result.add_constraint(x <= 2);
-  known_result.add_constraint(y <= 5);
-  known_result.add_constraint(y >= 2);
-  known_result.add_constraint(y - x >= 1);
-
-  int retval = (BD_Shape<mpq_class>(bd1) == known_result) ? 0 : 1;
-
-  print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
-
-  return retval;
+bool
+PPL::check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
+		    const char* max_d_s, const char* d_name) {
+  Checked_Number<mpq_class, Extended_Number_Policy>
+    max_d((max_d_s ? max_d_s : "0"), ROUND_NOT_NEEDED);
+  assert(max_d >= 0);
+  if (d > max_d) {
+    Checked_Number<float, Extended_Number_Policy> dd(d, ROUND_UP);
+    nout << "Excessive " << d_name << " distance " << dd
+	 << ": should be at most " << max_d << "."
+	 << endl;
+    return false;
+  }
+  else
+    return true;
 }
-CATCH

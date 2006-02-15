@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-void
+bool
 test1() {
   TBD_Shape bd1(0, EMPTY);
 
@@ -39,11 +39,10 @@ test1() {
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test2() {
   TBD_Shape bd1(0, UNIVERSE);
 
@@ -58,11 +57,10 @@ test2() {
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test3() {
   Variable A(0);
   Variable B(1);
@@ -87,19 +85,40 @@ test3() {
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
+}
+
+bool
+test4() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd1(3);
+  bd1.add_constraint(A >= 0);
+  bd1.add_constraint(B >= 0);
+  bd1.add_constraint(B - C == 1);
+  bd1.add_constraint(C - A <= 9);
+
+  Constraint_System cs = bd1.constraints();
+  TBD_Shape bd2(cs);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(cs, "*** cs ***");
+
+  BD_Shape<mpq_class> known_result(bd1);
+
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test1);
+  NEW_TEST(test2);
+  NEW_TEST(test3);
+  NEW_TEST(test4);
+END_MAIN

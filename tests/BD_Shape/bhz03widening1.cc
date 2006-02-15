@@ -24,16 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-Variable A(0);
-Variable B(1);
+bool
+test1() {
+  Variable A(0);
+  Variable B(1);
 
-typedef Polyhedra_Powerset<TBD_Shape> PSet;
-
-} // namespace
-
-int
-main() TRY {
-  set_handlers();
+  typedef Polyhedra_Powerset<TBD_Shape> PSet;
 
   TBD_Shape p(2);
   TBD_Shape q(2);
@@ -71,6 +67,11 @@ main() TRY {
 
   nout << "P.BHZ03(Q, H79)" << " = " << P << endl;
 
-  return (P.geometrically_covers(old_P) && P.geometrically_covers(Q)) ? 0 : 1;
+  return P.geometrically_covers(old_P) && P.geometrically_covers(Q);
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test1);
+END_MAIN
