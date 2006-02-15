@@ -290,6 +290,61 @@ test10() {
   return ok;
 }
 
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+  Linear_Expression e1(A);
+  Linear_Expression e2(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(A <= 4);
+  bd.add_constraint(B <= 5);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_image(e1, EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A == 1);
+  known_result.add_constraint(B <= 5);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+
+  print_constraints(bd, "*** bd.generalized_affine_image(A, EQUAL, 1) ***");
+
+  return ok;
+}
+
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+  Linear_Expression e1(B - 3);
+  Linear_Expression e2(B + 1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(A <= 4);
+  bd.add_constraint(B <= 5);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_image(e1, EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A <= 4);
+  known_result.add_constraint(B <= 9);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+
+  print_constraints(bd, "*** bd.generalized_affine_image(B-3,EQUAL, B+1) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -303,4 +358,6 @@ BEGIN_MAIN
   NEW_TEST(test08);
   NEW_TEST(test09);
   NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
 END_MAIN

@@ -57,7 +57,6 @@ check_PROGRAMS = \
 	exceptions1 exceptions2 exceptions3 \
 	fromgensys1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
-	generalizedaffineimage3 \
 	generalizedaffinepreimage1 generalizedaffinepreimage2 \
 	geomcovers1 \
 	h79widening1 \
