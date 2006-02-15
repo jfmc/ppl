@@ -222,9 +222,6 @@ Polyhedra_Powerset<PH>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-namespace Implementation {
-namespace Polyhedra_Powersets {
-
 template <>
 inline void
 Polyhedra_Powerset<C_Polyhedron>
@@ -235,7 +232,7 @@ Polyhedra_Powerset<C_Polyhedron>
   *this = nnc_this;
 }
 
-/*! \relates Parma_Polyhedra_Library::Polyhedra_Powerset */
+/*! \relates Polyhedra_Powerset */
 template <typename PH>
 inline bool
 check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps) {
@@ -244,7 +241,7 @@ check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps) {
   return check_containment(pph, pps);
 }
 
-/*! \relates Parma_Polyhedra_Library::Polyhedra_Powerset */
+/*! \relates Polyhedra_Powerset */
 template <>
 inline bool
 check_containment(const C_Polyhedron& ph,
@@ -252,10 +249,6 @@ check_containment(const C_Polyhedron& ph,
   return check_containment(NNC_Polyhedron(ph),
 			   Polyhedra_Powerset<NNC_Polyhedron>(ps));
 }
-
-} // namespace Polyhedra_Powersets
-
-} // namespace Implementation
 
 } // namespace Parma_Polyhedra_Library
 
