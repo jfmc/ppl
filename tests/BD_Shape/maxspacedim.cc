@@ -42,7 +42,7 @@ test01() {
        << "of Rational is: "
        << endl
        << max_spacedim1
-       << endl; 
+       << endl;
 
   nout << endl
        << "The maximum space-dimension of a system of bounded differences "
@@ -50,7 +50,7 @@ test01() {
        << "of long: "
        << endl
        << max_spacedim2
-       << endl; 
+       << endl;
 
   nout << endl
        << "The maximum space-dimension of a system of bounded differences "
@@ -58,7 +58,7 @@ test01() {
        << "of int: "
        << endl
        << max_spacedim3
-       << endl; 
+       << endl;
 
   nout << endl
        << "The maximum space-dimension of a system of bounded differences "
