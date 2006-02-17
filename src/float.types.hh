@@ -41,10 +41,11 @@ namespace Parma_Polyhedra_Library {
 #elif SIZEOF_FLOAT == 16
 #if CXX_FLOAT128_BINARY_FORMAT_IS_IEEE754_QUAD_PRECISION
 #define CXX_FLOAT_BINARY_FORMAT float_ieee754_quad
-#endif
 #elif CXX_FLOAT128_BINARY_FORMAT_IS_INTEL_DOUBLE_EXTENDED
 #define CXX_FLOAT_BINARY_FORMAT float_intel_double_extended
 #endif
+#endif
+
 #if SIZEOF_DOUBLE == 4
 #if CXX_FLOAT32_BINARY_FORMAT_IS_IEEE754_SINGLE_PRECISION
 #define CXX_DOUBLE_BINARY_FORMAT float_ieee754_single
@@ -60,10 +61,11 @@ namespace Parma_Polyhedra_Library {
 #elif SIZEOF_DOUBLE == 16
 #if CXX_FLOAT128_BINARY_FORMAT_IS_IEEE754_QUAD_PRECISION
 #define CXX_DOUBLE_BINARY_FORMAT float_ieee754_quad
-#endif
 #elif CXX_FLOAT128_BINARY_FORMAT_IS_INTEL_DOUBLE_EXTENDED
 #define CXX_DOUBLE_BINARY_FORMAT float_intel_double_extended
 #endif
+#endif
+
 #if SIZEOF_LONG_DOUBLE == 4
 #if CXX_FLOAT32_BINARY_FORMAT_IS_IEEE754_SINGLE_PRECISION
 #define CXX_LONG_DOUBLE_BINARY_FORMAT float_ieee754_single
@@ -79,9 +81,9 @@ namespace Parma_Polyhedra_Library {
 #elif SIZEOF_LONG_DOUBLE == 16
 #if CXX_FLOAT128_BINARY_FORMAT_IS_IEEE754_QUAD_PRECISION
 #define CXX_LONG_DOUBLE_BINARY_FORMAT float_ieee754_quad
-#endif
 #elif CXX_FLOAT128_BINARY_FORMAT_IS_INTEL_DOUBLE_EXTENDED
 #define CXX_LONG_DOUBLE_BINARY_FORMAT float_intel_double_extended
+#endif
 #endif
 
 } // namespace Parma_Polyhedra_Library
