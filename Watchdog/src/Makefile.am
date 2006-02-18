@@ -104,9 +104,9 @@ libpwl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPWL_LT_CURRENT):$(LIBPWL_LT_REVISION):$(LIBPWL_LT_AGE)
 
-noinst_HEADERS = \
-pwl.hh \
-pwl_include_files.hh
+include_HEADERS = pwl.hh
+
+nodist_noinst_HEADERS = pwl_include_files.hh
 
 pwl_include_files.hh: $(INCLUDE_FILES) Makefile
 	rm -f $@
@@ -130,19 +130,13 @@ pwl.hh:	pwl.hh.dist
 endif !HAVE_PERL
 
 BUILT_SOURCES = \
-$(noinst_HEADERS)
+$(include_HEADERS) \
+$(nodist_noinst_HEADERS)
 
 # pwl.hh is not distributed.
 # pwl.hh.dist, which is distributed, is a copy of pwl.hh.
 dist-hook:
 	mv -f $(distdir)/pwl.hh $(distdir)/pwl.hh.dist
-
-install-data-local: pwl.hh
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	$(INSTALL_DATA) pwl.hh $(DESTDIR)$(includedir)/pwl.hh
-
-uninstall-local:
-	rm -f $(DESTDIR)$(includedir)/pwl.hh
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)
 

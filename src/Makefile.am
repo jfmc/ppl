@@ -337,9 +337,9 @@ libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
-noinst_HEADERS = \
-ppl.hh \
-ppl_include_files.hh
+include_HEADERS = ppl.hh
+
+nodist_noinst_HEADERS = ppl_include_files.hh
 
 ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	rm -f $@
@@ -347,6 +347,8 @@ ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	do \
 	  printf "#include \"%s\"\n" $$file >>$@; \
 	done
+
+EXTRA_DIST = ppl_header.hh ppl-config.cc.in version.hh.in
 
 if HAVE_PERL
 
@@ -393,7 +395,8 @@ PRECOMPILED =
 endif
 
 BUILT_SOURCES = \
-$(noinst_HEADERS) \
+$(include_HEADERS) \
+$(nodist_noinst_HEADERS) \
 $(PRECOMPILED) \
 BUGS.cc \
 COPYING.cc \
@@ -407,14 +410,5 @@ dist-hook:
 	mv -f $(distdir)/BUGS.cc $(distdir)/BUGS.cc.dist
 	mv -f $(distdir)/COPYING.cc $(distdir)/COPYING.cc.dist
 	mv -f $(distdir)/CREDITS.cc $(distdir)/CREDITS.cc.dist
-
-install-data-local: ppl.hh
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	$(INSTALL_DATA) ppl.hh $(DESTDIR)$(includedir)/ppl.hh
-
-uninstall-local:
-	rm -f $(DESTDIR)$(includedir)/ppl.hh
-
-EXTRA_DIST = ppl_header.hh ppl-config.cc.in version.hh.in
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)
