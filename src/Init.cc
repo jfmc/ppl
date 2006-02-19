@@ -56,7 +56,8 @@ PPL::Init::Init() {
     old_rounding_direction = fpu_get_rounding_direction();
     fpu_set_rounding_direction(ROUND_DIRECT);
 #endif
-    set_rational_sqrt_precision_parameter(0);
+    // FIXME: is 3200 a magic number?
+    set_rational_sqrt_precision_parameter(3200);
   }
 }
 

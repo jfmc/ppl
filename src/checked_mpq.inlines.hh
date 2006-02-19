@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_checked_mpq_inlines_hh 1
 
 #include <sstream>
+#include <climits>
+#include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
@@ -312,7 +314,8 @@ SPECIALIZE_ABS(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-add_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
+add_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y,
+	    Rounding_Dir) {
   to += x * y;
   return V_EQ;
 }
@@ -321,21 +324,22 @@ SPECIALIZE_ADD_MUL(mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-sub_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
+sub_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y,
+	    Rounding_Dir) {
   to -= x * y;
   return V_EQ;
 }
 
 SPECIALIZE_SUB_MUL(mpq, mpq_class, mpq_class, mpq_class)
 
-extern mpz_class rational_sqrt_precision_parameter;
+extern unsigned long rational_sqrt_precision_parameter;
 
 template <typename Policy>
 inline Result
 sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_sqrt_neg, from < 0))
     return set_special<Policy>(to, V_SQRT_NEG);
-  const unsigned long k = 3200;
+  const unsigned long k = rational_sqrt_precision_parameter;
   mpz_class& to_num = to.get_num();
   mul2exp<Policy>(to_num, from.get_num(), 2*k, dir);
   Result rdiv = div<Policy>(to_num, to_num, from.get_den(), dir);
@@ -381,16 +385,27 @@ external_memory_in_bytes(const mpq_class& x) {
 
 } // namespace Checked
 
-//! Returns the precision parameter used for rational sqrt calculations.
-inline mpz_class
+//! Returns the precision parameter used for rational square root calculations.
+inline unsigned
 rational_sqrt_precision_parameter() {
   return Checked::rational_sqrt_precision_parameter;
 }
 
-//! Sets the precision parameter used for rational sqrt calculations to \p p.
+//! Sets the precision parameter used for rational square root calculations.
+/*!
+  If \p p is less than or equal to <CODE>INT_MAX</CODE>, sets the
+  precision parameter used for rational square root calculations to \p p.
+
+  \exception std::invalid_argument
+  Thrown if \p p is greater than <CODE>INT_MAX</CODE>.
+*/
 inline void
-set_rational_sqrt_precision_parameter(const mpz_class& p) {
-  Checked::rational_sqrt_precision_parameter = p;
+set_rational_sqrt_precision_parameter(const unsigned p) {
+  if (p <= INT_MAX)
+    Checked::rational_sqrt_precision_parameter = p;
+  else
+    throw std::invalid_argument("PPL::set_rational_sqrt_precision_parameter(p)"
+				" with p > INT_MAX");
 }
 
 } // namespace Parma_Polyhedra_Library
