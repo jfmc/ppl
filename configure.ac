@@ -791,6 +791,21 @@ fi
 text_md5sum="$MD5SUM -t"
 no_undefined=no
 
+case "${host_cpu}" in
+alpha*)
+  if test x"$GCC" = xyes
+  then
+    CFLAGS="$CFLAGS -mfp-rounding-mode=d"
+    CXXFLAGS="$CXXFLAGS -mfp-rounding-mode=d"
+  else
+    CFLAGS="$CFLAGS -fprm d"
+    CXXFLAGS="$CXXFLAGS -fprm d"
+  fi
+  ;;
+*)
+  ;;
+esac
+
 case "${host_os}" in
 darwin*)
   if test x"$GCC" = xyes
