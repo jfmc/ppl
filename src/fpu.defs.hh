@@ -69,11 +69,14 @@ fpu_check_inexact();
 
 } // namespace Parma_Polyhedra_Library
 
-#if i386
+#if defined(__i386__)
 #include "fpu-ia32.inlines.hh"
 #elif defined(HAVE_FENV_H)
 #include "fpu-c99.inlines.hh"
-#elif sparc && defined(HAVE_IEEEFP_H)
+#elif defined(HAVE_IEEEFP_H)						\
+  && (defined(__sparc)							\
+      || defined(sparc)							\
+      || defined(__sparc__))
 #include "fpu-sparc.inlines.hh"
 #else
 #include "fpu-none.inlines.hh"
