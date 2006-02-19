@@ -24,7 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_checked_float_inlines_hh 1
 
 #include "Float.defs.hh"
+#ifndef __alpha
 #include <cmath>
+#endif
 
 namespace Parma_Polyhedra_Library {
 
@@ -32,7 +34,7 @@ namespace Checked {
 
 inline float
 fma(float x, float y, float z) {
-#if HAVE_DECL_FMAF
+#if HAVE_DECL_FMAF && !defined(__alpha)
   return ::fmaf(x, y, z);
 #else
   return x*y + z;
@@ -48,7 +50,7 @@ rint(float x) {
 
 inline double
 fma(double x, double y, double z) {
-#if HAVE_DECL_FMA
+#if HAVE_DECL_FMA && !defined(__alpha)
   return ::fma(x, y, z);
 #else
   return x*y + z;
@@ -62,7 +64,7 @@ rint(double x) {
 
 inline long double
 fma(long double x, long double y, long double z) {
-#if HAVE_DECL_FMAL
+#if HAVE_DECL_FMAL && !defined(__alpha)
   return ::fmal(x, y, z);
 #else
   return x*y + z;
