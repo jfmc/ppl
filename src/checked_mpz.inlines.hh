@@ -31,7 +31,7 @@ template <typename Policy>
 inline Result
 round_lt_mpz(mpz_class& to, Rounding_Dir dir) {
   if (dir == ROUND_DOWN) {
-    to--;
+    --to;
     return V_GT;
   }
   return V_LT;
@@ -41,7 +41,7 @@ template <typename Policy>
 inline Result
 round_gt_mpz(mpz_class& to, Rounding_Dir dir) {
   if (dir == ROUND_UP) {
-    to++;
+    ++to;
     return V_LT;
   }
   return V_GT;
@@ -71,7 +71,9 @@ inline Result
 classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
   if (Policy::store_nan || Policy::store_infinity) {
     mp_size_field_t s = get_mp_size(v);
-    if (Policy::store_nan && (nan || sign) && s == Limits<mp_size_field_t>::min + 1)
+    if (Policy::store_nan
+	&& (nan || sign)
+	&& s == Limits<mp_size_field_t>::min + 1)
       return VC_NAN;
     if (!inf && !sign)
       return VC_NORMAL;
@@ -92,7 +94,8 @@ SPECIALIZE_CLASSIFY(mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_nan_mpz(const mpz_class& v) {
-  return Policy::store_nan && get_mp_size(v) == Limits<mp_size_field_t>::min + 1;
+  return Policy::store_nan
+    && get_mp_size(v) == Limits<mp_size_field_t>::min + 1;
 }
 
 SPECIALIZE_IS_NAN(mpz, mpz_class)
@@ -100,7 +103,8 @@ SPECIALIZE_IS_NAN(mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_minf_mpz(const mpz_class& v) {
-  return Policy::store_infinity && get_mp_size(v) == Limits<mp_size_field_t>::min;
+  return Policy::store_infinity
+    && get_mp_size(v) == Limits<mp_size_field_t>::min;
 }
 
 SPECIALIZE_IS_MINF(mpz, mpz_class)
@@ -108,7 +112,8 @@ SPECIALIZE_IS_MINF(mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_pinf_mpz(const mpz_class& v) {
-  return Policy::store_infinity && get_mp_size(v) == Limits<mp_size_field_t>::max;
+  return Policy::store_infinity
+    && get_mp_size(v) == Limits<mp_size_field_t>::max;
 }
 
 SPECIALIZE_IS_PINF(mpz, mpz_class)
@@ -337,7 +342,8 @@ SPECIALIZE_MUL(mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir dir) {
+div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
+	Rounding_Dir dir) {
   if (CHECK_P(Policy::check_div_zero, ::sgn(y) == 0))
     return set_special<Policy>(to, V_DIV_ZERO);
   mpz_srcptr n = x.get_mpz_t();
@@ -415,7 +421,8 @@ SPECIALIZE_ABS(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-add_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
+add_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
+	    Rounding_Dir) {
   mpz_addmul(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
@@ -424,7 +431,8 @@ SPECIALIZE_ADD_MUL(mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-sub_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
+sub_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
+	    Rounding_Dir) {
   mpz_submul(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
@@ -442,8 +450,10 @@ SPECIALIZE_GCD(mpz, mpz_class, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-gcdext_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, mpz_class& s, mpz_class& t, Rounding_Dir) {
-  mpz_gcdext(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t(), s.get_mpz_t(), t.get_mpz_t());
+gcdext_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
+	   mpz_class& s, mpz_class& t, Rounding_Dir) {
+  mpz_gcdext(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t(),
+	     s.get_mpz_t(), t.get_mpz_t());
   return V_EQ;
 }
 
@@ -498,7 +508,8 @@ SPECIALIZE_CMP(mp, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-output_mpz(std::ostream& os, const mpz_class& from, const Numeric_Format&, Rounding_Dir) {
+output_mpz(std::ostream& os, const mpz_class& from, const Numeric_Format&,
+	   Rounding_Dir) {
   os << from;
   return V_EQ;
 }
