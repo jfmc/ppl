@@ -328,6 +328,8 @@ sub_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir)
 
 SPECIALIZE_SUB_MUL(mpq, mpq_class, mpq_class, mpq_class)
 
+extern mpz_class rational_sqrt_precision_parameter;
+
 template <typename Policy>
 inline Result
 sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
@@ -378,6 +380,18 @@ external_memory_in_bytes(const mpq_class& x) {
 }
 
 } // namespace Checked
+
+//! Returns the precision parameter used for rational sqrt calculations.
+inline mpz_class
+rational_sqrt_precision_parameter() {
+  return Checked::rational_sqrt_precision_parameter;
+}
+
+//! Sets the precision parameter used for rational sqrt calculations to \p p.
+inline void
+set_rational_sqrt_precision_parameter(const mpz_class& p) {
+  Checked::rational_sqrt_precision_parameter = p;
+}
 
 } // namespace Parma_Polyhedra_Library
 

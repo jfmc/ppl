@@ -27,6 +27,9 @@ namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
+//! Holds the precision parameter used for rational sqrt calculations.
+mpz_class rational_sqrt_precision_parameter;
+
 struct number_struct {
   unsigned int base;
   bool neg_mantissa;

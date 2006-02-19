@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Init.defs.hh"
 #include "Variable.defs.hh"
 #include "fpu.defs.hh"
+#include "checked.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -55,6 +56,7 @@ PPL::Init::Init() {
     old_rounding_direction = fpu_get_rounding_direction();
     fpu_set_rounding_direction(ROUND_DIRECT);
 #endif
+    set_rational_sqrt_precision_parameter(0);
   }
 }
 
