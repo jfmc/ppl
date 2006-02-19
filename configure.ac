@@ -747,6 +747,8 @@ AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE, test x$YAP_PROLOG = xyap)
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
+AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
+AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
 
 # Checks for programs.
 AC_CHECK_PROG(MD5SUM, md5sum, md5sum)
