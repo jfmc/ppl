@@ -84,7 +84,7 @@ Linear_Expression::space_dimension() const {
 }
 
 inline Coefficient_traits::const_reference
-Linear_Expression::coefficient(Variable v) const {
+Linear_Expression::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
     return Coefficient_zero();
   return Linear_Row::coefficient(v.id());

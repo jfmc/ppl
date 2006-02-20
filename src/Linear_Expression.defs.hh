@@ -58,10 +58,12 @@ operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n);
 /*! \relates Linear_Expression */
 Linear_Expression
 operator+(const Linear_Expression& e1, const Linear_Expression& e2);
+
 //! Returns the linear expression \p n + \p e.
 /*! \relates Linear_Expression */
 Linear_Expression
 operator+(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
 //! Returns the linear expression \p e + \p n.
 /*! \relates Linear_Expression */
 Linear_Expression
@@ -71,6 +73,7 @@ operator+(const Linear_Expression& e, Coefficient_traits::const_reference n);
 /*! \relates Linear_Expression */
 Linear_Expression
 operator+(const Linear_Expression& e);
+
 //! Returns the linear expression - \p e.
 /*! \relates Linear_Expression */
 Linear_Expression
@@ -80,10 +83,12 @@ operator-(const Linear_Expression& e);
 /*! \relates Linear_Expression */
 Linear_Expression
 operator-(const Linear_Expression& e1, const Linear_Expression& e2);
+
 //! Returns the linear expression \p n - \p e.
 /*! \relates Linear_Expression */
 Linear_Expression
 operator-(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
 //! Returns the linear expression \p e - \p n.
 /*! \relates Linear_Expression */
 Linear_Expression
@@ -93,6 +98,7 @@ operator-(const Linear_Expression& e, Coefficient_traits::const_reference n);
 /*! \relates Linear_Expression */
 Linear_Expression
 operator*(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
 //! Returns the linear expression \p e * \p n.
 /*! \relates Linear_Expression */
 Linear_Expression
@@ -102,6 +108,7 @@ operator*(const Linear_Expression& e, Coefficient_traits::const_reference n);
 /*! \relates Linear_Expression */
 Linear_Expression&
 operator+=(Linear_Expression& e1, const Linear_Expression& e2);
+
 //! Returns the linear expression \p e + \p v and assigns it to \p e.
 /*! \relates Linear_Expression
   \exception std::length_error
@@ -109,7 +116,8 @@ operator+=(Linear_Expression& e1, const Linear_Expression& e2);
   <CODE>Linear_Expression::max_space_dimension()</CODE>.
  */
 Linear_Expression&
-operator+=(Linear_Expression& e, const Variable v);
+operator+=(Linear_Expression& e, Variable v);
+
 //! Returns the linear expression \p e + \p n and assigns it to \p e.
 /*! \relates Linear_Expression */
 Linear_Expression&
@@ -119,6 +127,7 @@ operator+=(Linear_Expression& e, Coefficient_traits::const_reference n);
 /*! \relates Linear_Expression */
 Linear_Expression&
 operator-=(Linear_Expression& e1, const Linear_Expression& e2);
+
 //! Returns the linear expression \p e - \p v and assigns it to \p e.
 /*! \relates Linear_Expression
   \exception std::length_error
@@ -126,7 +135,8 @@ operator-=(Linear_Expression& e1, const Linear_Expression& e2);
   <CODE>Linear_Expression::max_space_dimension()</CODE>.
  */
 Linear_Expression&
-operator-=(Linear_Expression& e, const Variable v);
+operator-=(Linear_Expression& e, Variable v);
+
 //! Returns the linear expression \p e - \p n and assigns it to \p e.
 /*! \relates Linear_Expression */
 Linear_Expression&
@@ -227,7 +237,7 @@ public:
     Thrown if the space dimension of \p v exceeds
     <CODE>Linear_Expression::max_space_dimension()</CODE>.
   */
-  Linear_Expression(const Variable v);
+  Linear_Expression(Variable v);
 
   //! Builds the linear expression corresponding to constraint \p c.
   /*!
@@ -367,7 +377,7 @@ private:
 				      const Linear_Expression& e2);
   friend Linear_Expression&
   Parma_Polyhedra_Library::operator+=(Linear_Expression& e,
-				      const Variable v);
+				      Variable v);
   friend Linear_Expression&
   Parma_Polyhedra_Library::operator+=(Linear_Expression& e,
 				      Coefficient_traits::const_reference n);
@@ -377,7 +387,7 @@ private:
 				      const Linear_Expression& e2);
   friend Linear_Expression&
   Parma_Polyhedra_Library::operator-=(Linear_Expression& e,
-				      const Variable v);
+				      Variable v);
   friend Linear_Expression&
   Parma_Polyhedra_Library::operator-=(Linear_Expression& e,
 				      Coefficient_traits::const_reference n);
