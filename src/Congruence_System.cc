@@ -170,10 +170,19 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
   }
 
   // Copy the rows of `y', forcing size and capacity.
+  const dimension_type x_mod_index = x.num_columns() - 1;
+  const dimension_type y_mod_index = y_n_cols - 1;
   for (dimension_type i = y_n_rows; i-- > 0; ) {
     Row copy(y[i], x.row_size, x.row_capacity);
     std::swap(copy, x[x_n_rows+i]);
+    // Swap the modulus to the correct column.
+    std::swap(copy[x_mod_index], copy[y_mod_index]);
   }
+//   // Copy the rows of `y', forcing size and capacity.
+//   for (dimension_type i = y_n_rows; i-- > 0; ) {
+//     Row copy(y[i], x.row_size, x.row_capacity);
+//     std::swap(copy, x[x_n_rows+i]);
+//   }
   assert(OK());
 }
 

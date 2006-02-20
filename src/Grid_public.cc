@@ -1087,7 +1087,7 @@ PPL::Grid::add_recycled_congruences_and_minimize(Congruence_System& cgs) {
 
   congruences_are_up_to_date() || update_congruences();
 
-  con_sys.insert(cgs);
+  con_sys.recycling_insert(cgs);
 
   clear_congruences_minimized();
 
