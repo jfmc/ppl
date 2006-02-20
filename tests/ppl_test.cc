@@ -22,6 +22,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 #include <csignal>
+#ifdef HAVE_FENV_H
+#include <fenv.h>
+#endif
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -79,8 +82,23 @@ fpe_handler(int sig, siginfo_t* sip, void*) {
   }
   if (s != 0)
     cerr << "SIGFPE caught (cause: " << s << ")" << endl;
-  else
+  else {
     cerr << "SIGFPE caught (unknown si_code " << sip->si_code << ")" << endl;
+#ifdef HAVE_FENV_H
+    cerr << "Inquire with fetestexcept(): ";
+    if (fetestexcept(FE_INEXACT))
+      cerr << "FE_INEXACT ";
+    if (fetestexcept(FE_DIVBYZERO))
+      cerr << "FE_DIVBYZERO ";
+    if (fetestexcept(FE_UNDERFLOW))
+      cerr << "FE_UNDERFLOW ";
+    if (fetestexcept(FE_OVERFLOW))
+      cerr << "FE_OVERFLOW ";
+    if (fetestexcept(FE_INVALID))
+      cerr << "FE_INVALID ";
+    cerr << endl;
+#endif
+  }
   exit(1);
 }
 
