@@ -59,7 +59,7 @@ typedef struct
   unsigned int data_offset;
   unsigned short data_selector;
   unsigned short unused5;
-} fenv_t;
+} ia32_fenv_t;
 
 inline int
 fpu_get_control() {
@@ -83,7 +83,7 @@ fpu_get_status() {
 inline void
 fpu_clear_status(unsigned short bits) {
   /* There is no fldsw instruction */
-  fenv_t env;
+  ia32_fenv_t env;
   __asm__ ("fnstenv %0" : "=m" (env));
   env.status_word &= ~bits;
   __asm__ ("fldenv %0" : : "m" (env));
