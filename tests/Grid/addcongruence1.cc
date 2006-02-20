@@ -22,76 +22,119 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 // Many cases are covered in addgenerator1, in which the known grid is
 // always created with Grid::add_congruence.
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-
 // add_congruence_and_minimize
 
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
 
-  gr.add_congruence((A + B %= 0) / 6);
-  gr.add_congruence_and_minimize((A + B %= 0) / 3);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.add_congruence((A + B %= 0) / 6);
+
+  print_congruences(gr,
+		    "*** gr.add_congruence((A + B %= 0) / 6) ***");
+
+  gr.add_congruence_and_minimize((A + B %= 0) / 3);
 
   Grid known_gr(2);
   known_gr.add_congruence((A + B %= 0) / 6);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr) ;
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+	"*** gr.add_congruence_and_minimize((A + B %= 0) / 3) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Add to an empty grid.
 
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(3, EMPTY);
+
+  print_congruences(gr, "*** gr ***");
 
   gr.add_congruence((A + B + C %= 0) / 3);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(3, EMPTY);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_congruence((A + B + C %= 0) / 3) ***");
 
-  exit(1);
+  return ok;
+}
+
+  // Add a congruence with less dimensions than the grid.
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr(3);
+  gr.add_congruence((B %= 0) / 7);
+  gr.add_congruence((A %= 0) / 7);
+
+  Grid known_gr(3, EMPTY);
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(parameter(7*A));
+  known_gr.add_generator(parameter(7*B));
+  known_gr.add_generator(grid_line(C));
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "***  gr.add_congruence((A %= 0) / 7) ***");
+
+  return ok;
+}
+
+  // Add a congruence and minimize with less dimensions than the grid.
+
+
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr(3);
+  gr.add_congruence((B %= 0) / 7);
+  gr.add_congruence_and_minimize((A %= 0) / 7);
+
+  Grid known_gr(3, EMPTY);
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(parameter(7*A));
+  known_gr.add_generator(parameter(7*B));
+  known_gr.add_generator(grid_line(C));
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "***  gr.add_congruence((A %= 0) / 7) ***");
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "addcongruence1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+END_MAIN
