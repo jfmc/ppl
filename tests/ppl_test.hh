@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl.hh"
 #include "print.hh"
-#include "ehandlers.hh"
 #include "Partial_Function.defs.hh"
 #include "Random_Number_Generator.defs.hh"
 #include <stdexcept>
@@ -35,6 +34,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
+
+void
+set_handlers();
+
+#define TRY try
+
+#define CATCH \
+catch (const std::overflow_error& e) { \
+  std::cerr << "arithmetic overflow (" << e.what() << ")" \
+            << std::endl; \
+  exit(1); \
+} \
+catch (const std::exception& e) { \
+  std::cerr << "std::exception caught: " \
+            << e.what() << " (type == " << typeid(e).name() << ")" \
+            << std::endl; \
+  exit(1); \
+}
 
 #define BEGIN_MAIN				\
 int						\

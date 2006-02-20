@@ -27,8 +27,6 @@ AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
 check_LIBRARIES = libppl_tests.a
 
 libppl_tests_a_SOURCES = \
-ehandlers.hh \
-ehandlers.cc \
 files.hh \
 files.cc \
 print.hh \
