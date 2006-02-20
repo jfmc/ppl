@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// add_congruence_and_minimize
+// Test add_congruence_and_minimize.
 
 bool
 test01() {
@@ -79,7 +79,7 @@ test02() {
   return ok;
 }
 
-  // Add a congruence with less dimensions than the grid.
+// Add a congruence with less dimensions than the grid.
 
 bool
 test03() {
@@ -104,8 +104,7 @@ test03() {
   return ok;
 }
 
-  // Add a congruence and minimize with less dimensions than the grid.
-
+// Add a congruence and minimize with less dimensions than the grid.
 
 bool
 test04() {
