@@ -133,12 +133,27 @@ print_generator(const Parma_Polyhedra_Library::Generator& g,
 		std::ostream& s = nout);
 
 void
+print_generator(const Parma_Polyhedra_Library::Grid_Generator& g,
+		const std::string& intro = "",
+		std::ostream& s = nout);
+
+void
 print_generators(const Parma_Polyhedra_Library::Generator_System& gs,
 		 const std::string& intro = "",
 		 std::ostream& s = nout);
 
 void
+print_generators(const Parma_Polyhedra_Library::Grid_Generator_System& gs,
+		 const std::string& intro = "",
+		 std::ostream& s = nout);
+
+void
 print_generators(const Parma_Polyhedra_Library::Polyhedron& ph,
+		 const std::string& intro = "",
+		 std::ostream& s = nout);
+
+void
+print_generators(const Parma_Polyhedra_Library::Grid& gr,
 		 const std::string& intro = "",
 		 std::ostream& s = nout);
 

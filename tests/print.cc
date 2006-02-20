@@ -97,9 +97,23 @@ print_generator(const Generator& g,
 }
 
 void
+print_generator(const Grid_Generator& g,
+		const std::string& intro, std::ostream& s) {
+  if (!intro.empty())
+    s << intro << "\n";
+  s << g << std::endl;
+}
+
+void
 print_generators(const Polyhedron& ph,
 		 const std::string& intro, std::ostream& s) {
   print_generators(ph.generators(), intro, s);
+}
+
+void
+print_generators(const Grid& gr,
+		 const std::string& intro, std::ostream& s) {
+  print_generators(gr.generators(), intro, s);
 }
 
 void
@@ -109,6 +123,22 @@ print_generators(const Generator_System& gs,
     s << intro << "\n";
   Generator_System::const_iterator i = gs.begin();
   Generator_System::const_iterator gs_end = gs.end();
+  bool printed_something = i != gs_end;
+  while (i != gs_end) {
+    s << *i++;
+    if (i != gs_end)
+      s << ",\n";
+  }
+  s << (printed_something ? "." : "false.") << std::endl;
+}
+
+void
+print_generators(const Grid_Generator_System& gs,
+		 const std::string& intro, std::ostream& s) {
+  if (!intro.empty())
+    s << intro << "\n";
+  Grid_Generator_System::const_iterator i = gs.begin();
+  Grid_Generator_System::const_iterator gs_end = gs.end();
   bool printed_something = i != gs_end;
   while (i != gs_end) {
     s << *i++;
