@@ -75,9 +75,12 @@ fpe_handler(int sig, siginfo_t* sip, void*) {
     s = "subscript out of range";
     break;
   default:
-    s = "unknown";
+    break;
   }
-  cerr << "SIGFPE caught (cause: " << s << ")" << endl;
+  if (s != 0)
+    cerr << "SIGFPE caught (cause: " << s << ")" << endl;
+  else
+    cerr << "SIGFPE caught (unknown si_code " << sip->si_code << ")" << endl;
   exit(1);
 }
 
