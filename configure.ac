@@ -797,11 +797,11 @@ case "${host_cpu}" in
 alpha*)
   if test x"$GCC" = xyes
   then
-    CFLAGS="$CFLAGS -mfp-rounding-mode=d"
-    CXXFLAGS="$CXXFLAGS -mfp-rounding-mode=d"
+    CFLAGS="$CFLAGS -mfp-rounding-mode=d -mieee"
+    CXXFLAGS="$CXXFLAGS -mfp-rounding-mode=d -mieee"
   else
-    CFLAGS="$CFLAGS -fprm d"
-    CXXFLAGS="$CXXFLAGS -fprm d"
+    CFLAGS="$CFLAGS -fprm d -ieee -underflow_to_zero"
+    CXXFLAGS="$CXXFLAGS -fprm d -ieee -underflow_to_zero"
   fi
   ;;
 *)
