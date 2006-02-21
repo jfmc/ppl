@@ -121,7 +121,7 @@ guarded_compute_open_hypercube_generators(dimension_type dimension,
     exit(1);
   }
   // Should never get here.
-  return false;
+  exit(1);
 }
 
 } // namespace
