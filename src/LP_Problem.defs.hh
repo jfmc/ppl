@@ -282,11 +282,11 @@ private:
   //! The last successfully computed feasible or optimizing point.
   Generator last_generator;
 
-  //! Applies incrementality on \p *this.
+  //! Processes the pending constraints of \p *this.
   /*!
     \return
     <CODE>true</CODE> if and only if the LP problem is satisfiable after
-    applying incrementality, <CODE>false</CODE> otherwise.
+    processing the pending constraints, <CODE>false</CODE> otherwise.
   */
   bool process_pending_constraints();
 
@@ -311,11 +311,9 @@ private:
   */
   LP_Problem_Status compute_tableau();
 
-
-
   /*! \brief
     Parses all the constraints passed to the method to know how to resize the
-    internal tableau during the incrementality process.
+    internal tableau.
 
     \return
     <CODE>UNSATISFIABLE</CODE> if is detected a trivially false constraint,
@@ -342,16 +340,29 @@ private:
     Every element of this vector will be set to <CODE>true</CODE> if the
     associated variable is splitted, <CODE>false</CODE> otherwise.
 
-    \param nonfeasible_cs
-    This will containt all the row indexes of the tableau that are no more
+    \param unfeasible_tableau_rows
+    This will contain all the row indexes of the tableau that are no more
     satisfied after adding more contraints to \p *this.
+
+    \param satisfied_ineqs
+    This will contain all the row indexes of the tableau that are already
+    satisfied by `last_generator' and do not require artificial variables to
+    have a starting feasible base.
+
+    \param bool bootstrap
+    This boolean encodes if `parse_constraints' is called for the first time or
+    not. If set to <CODE>false</CODE>, is called for the first time and so
+    \p *this doesn't have a valid `last_generator'.
+    If set to <CODE>true</CODE>, `parse_constraints' is not called for the
+    first time and so \p *this has a valid `last_generator'.
+
 */
   bool parse_constraints(const Constraint_System& cs,
 			 dimension_type& new_num_rows,
 			 dimension_type& num_slack_variables,
 			 std::deque<bool>& is_tableau_constraint,
 			 std::deque<bool>& nonnegative_variable,
-			 std::vector<dimension_type>& nonfeasible_cs,
+			 std::vector<dimension_type>& unfeasible_tableau_rows,
 			 std::deque<bool>& satisfied_ineqs,
 			 const bool bootstrap);
   /*! \brief

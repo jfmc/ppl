@@ -209,6 +209,8 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
     // If more than one coefficient is nonzero,
     // continue with next constraint.
     if (found_many_nonzero_coeffs) {
+      // Check for satisfiabilty of the inequality. This can be done if we
+      // have a feasible point of *this: `bootstap' assures that condition.
       if (!bootstrap && cs[i].is_inequality() && is_satisfied(cs[i]))
 	satisfied_ineqs[i] = true;
       continue;
@@ -324,7 +326,8 @@ PPL::LP_Problem::process_pending_constraints() {
   std::deque<bool> satisfied_ineqs;
   // Check the new constraints to adjust the data structures.
   // If `false' is returned, the pending constraints are trivially
-  // unfeasible.
+  // unfeasible. Call `parse_constraints' with `bootstrap' parameter set
+  // to false: *this now has have a feasible point.
   if (!parse_constraints(pending_input_cs, new_rows,
 			 new_slacks, is_tableau_constraint,
 			 nonnegative_variable, unfeasible_tableau_rows,
@@ -451,7 +454,9 @@ PPL::LP_Problem::process_pending_constraints() {
   }
 
   // Modify the tableau and the new cost function by adding
-  // the artificial variables (which enter the base).
+  // the artificial variables (which enter the base). Note that if an
+  // inequality was satisfied by `last_generator', this will be not procesed.
+  // This information in encoded in `worked_out_row'.
   // As for the cost function, all the artificial variables should have
   // coefficient -1.
   for (dimension_type i = num_original_rows; i < tableau_num_rows; ++i) {
@@ -859,7 +864,8 @@ PPL::LP_Problem::compute_tableau() {
   std::deque<bool> satisfied_ineqs;
   // Totally useless in this case because the tableau now is empty.
   std::vector<dimension_type> unfeasible_tableau_rows;
-
+  // Call `parse_constraints' with `bootstrap' parameter set to true:
+  // *this now doesn't have a feasible point.
   if (!parse_constraints(input_cs, tableau_num_rows, num_slack_variables,
 			 is_tableau_constraint, nonnegative_variable,
 			 unfeasible_tableau_rows, satisfied_ineqs, true))
