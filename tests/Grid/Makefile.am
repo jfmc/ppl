@@ -47,8 +47,8 @@ addgenerator1 \
 addgenerators1 \
 addspacedims1 \
 affinedim1 \
-affineimage1 affineimage1_16 \
-affinepreimage1 \
+affineimage1 affineimage1_16 affineimage2 \
+affinepreimage1 affinepreimage2 \
 asciidumpload1 \
 bhz03widening1 \
 bounded1 \
