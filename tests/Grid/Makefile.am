@@ -21,6 +21,11 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+CHECKER =
+#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+TESTS_ENVIRONMENT = $(CHECKER)
+
 AM_CPPFLAGS = \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/src -I$(top_srcdir)/tests \

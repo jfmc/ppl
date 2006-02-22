@@ -21,7 +21,7 @@
 # site: http://www.cs.unipr.it/ppl/ .
 
 CHECKER =
-#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(srcdir)/valgrind_suppressions
+#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/valgrind_suppressions
 
 TESTS_ENVIRONMENT = $(CHECKER)
 
