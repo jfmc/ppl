@@ -115,12 +115,12 @@ print_constraints(const Parma_Polyhedra_Library::BD_Shape<T>& bd,
 void
 print_constraints(const Parma_Polyhedra_Library::Congruence_System& cgs,
 		  const std::string& intro = "",
-		  std::ostream& s = std::nout);
+		  std::ostream& s = nout);
 
 void
 print_congruences(const Parma_Polyhedra_Library::Congruence_System& cgs,
 		  const std::string& intro = "",
-		  std::ostream& s = std::nout);
+		  std::ostream& s = nout);
 
 void
 print_congruences(const Parma_Polyhedra_Library::Grid& gr,
