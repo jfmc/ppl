@@ -22,269 +22,249 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
-
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
 
 // Tests 1 to 13 are equivalent to tests 1 to 13 in
 // generalizedaffineimage1.cc.
 
 // Simplest expression.
 
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((B %= 0) / 2);
 
-  gr.generalized_affine_image(1*B, Linear_Expression::zero(), 0);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(1*B, Linear_Expression::zero(), 0);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(A));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+   "*** gr.generalized_affine_image(1*B, Linear_Expression::zero(), 0) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Simplest expression, with denominator.
 
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence(B %= 0);
 
-  gr.generalized_affine_image(2*B, Linear_Expression::zero());
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(2*B, Linear_Expression::zero());
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(A));
   known_gr.add_generator(grid_point(B, 2));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+    "*** gr.generalized_affine_image(2*B, Linear_Expression::zero()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Simple expression.
 
-void
-test3() {
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A + B %= 0) / 2);
 
-  gr.generalized_affine_image(1*B, A + 1);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(1*B, A + 1);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(A - B));
   known_gr.add_generator(grid_point(B));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(1*B, A + 1) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Simple expression, with denominator.
 
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A + B %= 0) / 2);
 
-  gr.generalized_affine_image(2*B, A + 1);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(2*B, A + 1);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(A));
   known_gr.add_generator(grid_point(B, 2));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(2*B, A + 1) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Simple expression, with denominator and modulus.
 
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A + B %= 0) / 2);
 
-  gr.generalized_affine_image(2*B, A + 1, 3);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(2*B, A + 1, 3);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point(B, 2));
   known_gr.add_generator(grid_point(A + B));
   known_gr.add_generator(grid_point(2*B));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(2*B, A + 1, 3) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Simple expression, with denominator and modulus.
 
-void
-test6() {
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A + B %= 0) / 2);
 
-  gr.generalized_affine_image(2*B, A + 1, 3);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(2*B, A + 1, 3);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point(B, 2));
   known_gr.add_generator(grid_point(A + B));
   known_gr.add_generator(grid_point(2*B));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(2*B, A + 1, 3) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Negative denominator.
 
-void
-test7() {
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A - B %= 0) / 2);
 
-  gr.generalized_affine_image(-2*B, A + 2);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(-2*B, A + 2);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point(-B, 2));
   known_gr.add_generator(grid_point(2*A + -3*B, 2));
   known_gr.add_generator(grid_point(-B));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(-2*B, A + 2) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Negative modulus.
 
-void
-test8() {
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A - B %= 0) / 2);
 
-  gr.generalized_affine_image(1*B, A + 2, -7);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(1*B, A + 2, -7);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point(2*B));
   known_gr.add_generator(grid_point(A + 3*B));
   known_gr.add_generator(grid_point(9*B));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(1*B, A + 2, -7) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Expression of many variables.
 
-void
-test9() {
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(3);
   gr.add_congruence((B %= 0) / 3);
   gr.add_congruence((A - 2*C %= 0) / 2);
 
-  gr.generalized_affine_image(1*A, A - C + 2, 5);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(1*A, A - C + 2, 5);
 
   Grid known_gr(3, EMPTY);
   known_gr.add_generator(grid_point(2*A));
@@ -293,209 +273,184 @@ test9() {
   known_gr.add_generator(grid_point(4*A));  // Original modulus.
   known_gr.add_generator(grid_point(7*A));  // Transformation modulus.
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(1*A, A - C + 2, 5) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Equality expression.
 
-void
+bool
 test10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(3);
   gr.add_congruence((B %= 0) / 3);
   gr.add_congruence((A - 2*C %= 0) / 2);
 
+  print_congruences(gr, "*** gr ***");
+
   gr.generalized_affine_image(1*A, A - C + 2, 0);
 
-  if (find_variation(gr))
-    exit(1);
+  Grid known_gr = Grid(3);
+  known_gr.add_congruence((B %= 0) / 3);
+  known_gr.add_congruence((A - 2*C %= 0) / 2);
 
-  Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point(2*A));
-  known_gr.add_generator(grid_point(2*A + 3*B));
-  known_gr.add_generator(grid_line(A + C));
-  known_gr.add_generator(grid_point(4*A));  // Original modulus.
+  known_gr.affine_image(A, A - C + 2);
 
-  if (gr == known_gr) {
-    gr = Grid(3);
-    gr.add_congruence((B %= 0) / 3);
-    gr.add_congruence((A - 2*C %= 0) / 2);
+  bool ok = (gr == known_gr);
 
-    gr.affine_image(A, A - C + 2);
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(1*A, A - C + 2, 0) ***");
 
-    if (gr == known_gr)
-      return;
-
-    nout << "affine_image";
-  }
-  else
-    nout << "generalized_affine_image";
-
-  nout << " grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Empty grid.
 
-void
+bool
 test11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(5, EMPTY);
+
+  print_congruences(gr, "*** gr ***");
 
   gr.generalized_affine_image(4*A, A - 2*C + 3, 7);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(5, EMPTY);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(1*A, A + 2) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Empty with congruences.
 
-void
+bool
 test12() {
+  Variable A(0);
+
   Grid gr(1);
   gr.add_congruence(A == 0);
   gr.add_congruence(A == 3);
 
-  gr.generalized_affine_image(1*A, A + 2);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(1*A, A + 2);
 
   Grid known_gr(1, EMPTY);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(1*A, A + 2) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Universe.
 
-void
+bool
 test13() {
+  Variable A(0);
+
   Grid gr(1);
+
+  print_congruences(gr, "*** gr ***");
 
   gr.generalized_affine_image(1*A, A + 2);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(1);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(1*A, A + 2) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Expressions both constants.
 
-void
+bool
 test14() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence(A %= 0);
 
+  print_congruences(gr, "*** gr ***");
+
   gr.generalized_affine_image(Linear_Expression::zero(),
 			      Linear_Expression(1));
-
-  if (find_variation(gr))
-    exit(1);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(A));
   known_gr.add_generator(grid_line(B));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+    "*** gr.generalized_affine_image(Linear_Expression::zero(), Linear_Expression(1)) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Left hand side constant.
 
-void
+bool
 test15() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence(A %= 0);
 
-  gr.generalized_affine_image(Linear_Expression::zero(), A - B, 5);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(Linear_Expression::zero(), A - B, 5);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(A + B));
   known_gr.add_generator(grid_point(5*A));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+   "*** gr.generalized_affine_image(Linear_Expression::zero(), A - B, 5) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Expressions with unique variables.
 
-void
+bool
 test16() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(3);
   gr.add_congruence(A - B == 0);
   gr.add_congruence((C %= 0) / 3);
 
-  gr.generalized_affine_image(A - B, C);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(A - B, C);
 
   Grid known_gr(3, EMPTY);
   known_gr.add_generator(grid_point());
@@ -503,229 +458,114 @@ test16() {
   known_gr.add_generator(grid_point(B));
   known_gr.add_generator(grid_point(3*C));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(A - B, C) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Simple expressions having common variables.
 
-void
+bool
 test17() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence(A - B == 0);
 
-  gr.generalized_affine_image(A - B, A, 0);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(A - B, A, 0);
 
   Grid known_gr(2);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(A - B, A, 0) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Expressions having common variables.
 
-void
+bool
 test18() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence((A %= 0) / 1);
   gr.add_congruence((B %= 0) / 2);
 
-  gr.generalized_affine_image(A + 2*B, A - B, 3);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(A + 2*B, A - B, 3);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(B, 2));
   known_gr.add_generator(grid_line(2*A - B));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(A + 2*B, A - B, 3) ***");
 
-  exit(1);
+  return ok;
 }
 
 // The equivalent of test1 from Polyhedron/generalizedaffineimage10.cc
 // (expressions with unique variables).
 
-void
+bool
 test19() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(3);
   gr.add_congruence(C == 0);
   gr.add_congruence(A + 3*B == 2);
 
-  gr.generalized_affine_image(A - C, B + 3, 0);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.generalized_affine_image(A - C, B + 3, 0);
 
   Grid known_gr(3);
   known_gr.add_congruence(A - C == B + 3);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.generalized_affine_image(A - C, B + 3, 0) ***");
 
-  exit(1);
-}
-
-// Expressions having common variables.
-
-void
-test20() {
-  Grid gr(3);
-  gr.add_congruence((C %= 0) / 3);
-  gr.add_congruence(A - 2*B == 1);
-
-  gr.generalized_affine_image(A - B + C, 2*A - B - C, 5);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Grid known_gr(3);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
-}
-
-// Expressions having common variables, where generalized_affine_image
-// must minimize the grid.
-
-void
-test21() {
-  Grid gr(2);
-  gr.add_congruence(A - B == 0);
-
-  gr.generalized_affine_image(A - B, 2*A - 2*B, 5);
-
-  Grid known_gr(2);
-  known_gr.add_congruence((A - B %= 0) / 5);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
-}
-
-void
-test22() {
-  Grid gr(2);
-  gr.add_congruence(A - B == 0);
-
-  gr.generalized_affine_image(2*A - 2*B, A - B, 5);
-
-  Grid known_gr(2);
-  known_gr.add_congruence((2*A - 2*B %= 0) / 5);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
-}
-
-// Right hand side expression of greater space dimension than the
-// grid.
-
-void
-test23() {
-  Grid gr(3);
-  gr.add_congruence(C %= -2);
-
-  try {
-    gr.generalized_affine_image(B + C, D + 2);
-    exit(1);
-  }
-  catch (const std::invalid_argument& e) {}
-}
-
-// Left hand side expression of space dimension greater than the grid.
-
-void
-test24() {
-  Grid gr(3);
-  gr.add_congruence((C == -2) / 0);
-
-  try {
-    gr.generalized_affine_image(A + D, A + 2);
-    exit(1);
-  }
-  catch (const std::invalid_argument& e) {}
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "generalizedaffineimage2:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-  DO_TEST(test19);
-  DO_TEST(test20);
-  DO_TEST(test21);
-  DO_TEST(test22);
-  DO_TEST(test23);
-  DO_TEST(test24);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+  NEW_TEST(test15);
+  NEW_TEST(test16);
+  NEW_TEST(test17);
+  NEW_TEST(test18);
+  NEW_TEST(test19);
+END_MAIN

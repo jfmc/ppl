@@ -26,104 +26,104 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-
 // The first twelve tests mirror those in affineimage1.cc.
 
 // Grid defined by generators.
 
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point(2*B - 2*C));
 
-  gr.affine_preimage(B, A + 2, 1);
+  print_generators(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.affine_preimage(B, A + 2, 1);
 
   Grid known_gr(3);
   known_gr.add_congruence((C == -2) / 0);
   known_gr.add_congruence((A ==  0) / 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_generators(gr,
+        "*** gr.affine_preimage(B, A + 2, 1) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Grid defined by congruences.
 
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(3);
   gr.add_congruence((A %= 1) / 6);
   gr.add_congruence((3*A - 6*B %= 3) / 0);
 
-  gr.affine_preimage(A, A + B + 1);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.affine_preimage(A, A + B + 1);
 
   Grid known_gr(3);
   known_gr.add_congruence((A - B %= 0) / 0);
   known_gr.add_congruence((A %= 0) / 3);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.affine_preimage(A, A + B + 1) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Denominator.
 
-void
-test3() {
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point(2*A + 2*B));
   gr.add_generator(grid_line(C));
 
-  gr.affine_preimage(A, A + 1, 2);
+  print_generators(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.affine_preimage(A, A + 1, 2);
 
   Grid known_gr(3);
   known_gr.add_congruence((A %= 3) / 0);
   known_gr.add_congruence((B %= 2) / 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.affine_preimage(A, A + 1, 2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Invertible transformation with denominator, modulus and up-to-date
 // congruences.
 
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(3);
   gr.add_congruence((B %= 2) / 0);
   gr.add_congruence((3*A %= 4) / 5);
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
 
   gr.affine_preimage(A, A + 1, 3);
 
@@ -131,24 +131,29 @@ test4() {
   known_gr.add_congruence((A %= 3) / 5);
   known_gr.add_congruence((B %= 2) / 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.affine_preimage(A, A + 1, 3) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Simple invertible transformation with denominator and modulus.
+// Congruences are out-of-date
 
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point(4*A + 6*B, 3));
   gr.add_generator(grid_point(9*A + 6*B, 3));
   gr.add_generator(grid_line(C));
+
+  print_generators(gr, "*** gr ***");
 
   gr.affine_preimage(A, A + 1, 3);
 
@@ -157,45 +162,58 @@ test5() {
   known_gr.add_generator(grid_point(8*A + 2*B));
   known_gr.add_generator(grid_line(C));
 
-  if (gr == known_gr) {
+  bool ok = (gr == known_gr);
 
-    // Up-to-date, minimized congruences.
+  print_generators(gr,
+        "*** gr.affine_preimage(A, A + 1, 3) ***");
 
-    gr = Grid(3);
-    gr.add_congruence((3*A %= 4) / 5);
-    gr.add_congruence((B %= 2) / 0);
+  return ok;
+}
 
-    // Minimize the congruences.
-    if (find_variation(gr))
-      exit(1);
+// Simple invertible transformation with denominator and modulus.
+// Congruences are up-to-date
 
-    gr.affine_preimage(A, A + 1, 3);
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-    if (gr == known_gr)
-      return;
+  Grid gr = Grid(3);
+  gr.add_congruence((3*A %= 4) / 5);
+  gr.add_congruence((B %= 2) / 0);
 
-    nout << "Congruence";
-  }
-  else
-    nout << "Generator";
+  print_congruences(gr, "*** gr ***");
 
-  nout << " grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  gr.affine_preimage(A, A + 1, 3);
 
-  exit(1);
+  Grid known_gr(3, EMPTY);
+  known_gr.add_generator(grid_point(3*A + 2*B));
+  known_gr.add_generator(grid_point(8*A + 2*B));
+  known_gr.add_generator(grid_line(C));
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+        "*** gr.affine_preimage(A, A + 1, 3) ***");
+
+  return ok;
 }
 
 // Invertible transformation which changes the modulus.
+// Congruences are out-of-date
 
-void
-test6() {
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point(4*A));
   gr.add_generator(grid_point(7*A));
   gr.add_generator(grid_point(6*A + B));
 
-  // Out-of-date congruences.
+  print_generators(gr, "*** gr ***");
 
   gr.affine_preimage(A, 3*A + 2*B + 4);
 
@@ -204,40 +222,55 @@ test6() {
   known_gr.add_generator(grid_point(A));
   known_gr.add_generator(grid_point(B));
 
-  if (gr == known_gr) {
+  bool ok = (gr == known_gr);
 
-    // Up-to-date congruences.
+  print_generators(gr,
+        "*** gr.affine_preimage(A, 3*A + 2*B + 4) ***");
 
-    gr = Grid(2);
-    gr.add_congruence((A - 2*B %= 4) / 3);
-    gr.add_congruence(B %= 0);
+  return ok;
+}
 
-    gr.affine_preimage(A, 3*A + 2*B + 4);
+// Invertible transformation which changes the modulus.
+// Congruences are up-to-date
 
-    if (gr == known_gr)
-      return;
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
 
-    nout << "Up-to-date cgs";
-  }
-  else
-    nout << "Out-of-date cgs";
+  Grid gr = Grid(2);
+  gr.add_congruence((A - 2*B %= 4) / 3);
+  gr.add_congruence(B %= 0);
 
-  nout << " grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr ***");
 
-  exit(1);
+  gr.affine_preimage(A, 3*A + 2*B + 4);
+
+  Grid known_gr(2, EMPTY);
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(A));
+  known_gr.add_generator(grid_point(B));
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+        "*** gr.affine_preimage(A, 3*A + 2*B + 4) ***");
+
+  return ok;
 }
 
 // One dimension.
+// Congruences are out-of-date
 
-void
-test7() {
+bool
+test09() {
+  Variable A(0);
+
   Grid gr(1, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(2*A));
 
-  // Out-of-date congruences.
+  print_generators(gr, "*** gr ***");
 
   gr.affine_preimage(A, 2*A);
 
@@ -245,41 +278,55 @@ test7() {
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(A));
 
-  if (gr == known_gr) {
+  bool ok = (gr == known_gr);
 
-    // Up-to-date congruences.
+  print_generators(gr,
+        "*** gr.affine_preimage(A, 2*A) ***");
 
-    gr = Grid(1);
-    gr.add_congruence((A %= 0) / 2);
+  return ok;
+}
 
-    gr.affine_preimage(A, 2*A);
+// One dimension.
+// Congruences are up-to-date
 
-    if (gr == known_gr)
-      return;
+bool
+test10() {
+  Variable A(0);
 
-    nout << "Up-to-date cgs";
-  }
-  else
-    nout << "Out-of-date cgs";
+  Grid gr = Grid(1);
+  gr.add_congruence((A %= 0) / 2);
 
-  nout << " grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr ***");
 
-  exit(1);
+  gr.affine_preimage(A, 2*A);
+
+  Grid known_gr(1, EMPTY);
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(A));
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+        "*** gr.affine_preimage(A, 2*A) ***");
+
+  return ok;
 }
 
 // The first affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
+// Congruences are out-of-date
 
-void
-test8() {
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point(A));
   gr.add_generator(grid_point(7*A + 3*B));
   gr.add_generator(grid_point(10*A));
 
-  // Out-of-date congruences.
+  print_generators(gr, "*** gr ***");
 
   gr.affine_preimage(A, 3*A + 2*B + 1);
 
@@ -288,47 +335,61 @@ test8() {
   known_gr.add_generator(grid_point(3*A));
   known_gr.add_generator(grid_point(3*B));
 
-  if (gr == known_gr) {
+  bool ok = (gr == known_gr);
 
-    // Up-to-date, minimized congruences.
+  print_generators(gr,
+        "*** gr.affine_preimage(A, 3*A + 2*B + 1) ***");
 
-    gr = Grid(2);
-    // FIX Confirm that this should fail when Grid_nonpublic.cc
-    //     BE_LAZY=0.
-    //gr.add_congruence((3*A - 6*B %= 3) / 9);
-    gr.add_congruence((A - 2*B %= 1) / 9);
-    gr.add_congruence((B %= 0) / 3);
+  return ok;
+}
 
-    // Minimize the congruences.
-    if (find_variation(gr))
-      exit(1);
+// The first affine_image example described at anchor
+// grid_affine_transformation in definitions.dox.
+// Congruences are up-to-date
 
-    gr.affine_preimage(A, 3*A + 2*B + 1);
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
 
-    if (gr == known_gr)
-      return;
+  Grid gr = Grid(2);
+  // FIX Confirm that this should fail when Grid_nonpublic.cc
+  //     BE_LAZY=0.
+  //gr.add_congruence((3*A - 6*B %= 3) / 9);
+  gr.add_congruence((A - 2*B %= 1) / 9);
+  gr.add_congruence((B %= 0) / 3);
 
-    nout << "Up-to-date cgs";
-  }
-  else
-    nout << "Out-of-date cgs";
+  print_congruences(gr, "*** gr ***");
 
-  nout << " grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  gr.affine_preimage(A, 3*A + 2*B + 1);
 
-  exit(1);
+  Grid known_gr(2, EMPTY);
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(3*A));
+  known_gr.add_generator(grid_point(3*B));
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+        "*** gr.affine_preimage(A, 3*A + 2*B + 1) ***");
+
+  return ok;
 }
 
 // The second affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
+// Congruences are out-of-date
 
-void
-test9() {
-  // Out-of-date congruences.
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(3*A + 3*B));
+
+  print_generators(gr, "*** gr ***");
 
   gr.affine_preimage(A, B);
 
@@ -337,350 +398,60 @@ test9() {
   known_gr.add_generator(grid_line(A));
   known_gr.add_generator(grid_point(3*B));
 
-  if (gr == known_gr) {
+  bool ok = (gr == known_gr);
 
-    // Up-to-date congruences.
+  print_generators(gr,
+        "***  ***");
 
-    gr = Grid(2);
-    gr.add_congruence((A - B == 0) / 0);
-    gr.add_congruence((A %= 0) / 3);
-
-    gr.affine_preimage(A, B);
-
-    if (gr == known_gr)
-      return;
-
-    nout << "Up-to-date cgs";
-  }
-  else
-    nout << "Out-of-date cgs";
-
-  nout << " grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
-// Denominator, with generators having a variety of divisors.
+// The second affine_image example described at anchor
+// grid_affine_transformation in definitions.dox.
+// Congruences are up-to-date
 
-void
-test10() {
-  Grid_Generator_System gs;
-  gs.insert(grid_point());
-  gs.insert(grid_point(2*A, 15));
-  gs.insert(grid_point(5*B, 10));
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
 
-  // The divisors are normalized on construction.
-  Grid gr(gs);
+  Grid gr = Grid(2);
+  gr.add_congruence((A - B == 0) / 0);
+  gr.add_congruence((A %= 0) / 3);
 
-  // All divisors should change, even when the coefficient of A is 0.
-  gr.affine_preimage(A, 2*A, 5);
+  print_congruences(gr, "*** gr ***");
 
-  Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A, 3));
-  known_gr.add_generator(grid_point(B, 2));
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
-}
-
-// Negative denominator.
-
-void
-test11() {
-  Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(-2*A, 3));
-
-  gr.affine_preimage(A, B + 2, -3);
+  gr.affine_preimage(A, B);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_line(A));
+  known_gr.add_generator(grid_point(3*B));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.affine_preimage(A, B) ***");
 
-  exit(1);
-}
-
-// Empty grid.
-
-void
-test12() {
-  Grid gr(2, EMPTY);
-
-  gr.affine_preimage(A, 11*A - B + 1);
-
-  Grid known_gr(2, EMPTY);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
-}
-
-// A negative coefficient of the variable to transform and a negative
-// denominator.
-
-void
-test13() {
-  // Out-of-date congruences.
-  Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(5*A + 4*B, 7));
-
-  gr.affine_preimage(B, A - B, -1);
-
-  Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(5*A + 9*B, 7));
-
-  if (gr == known_gr) {
-
-    // Up-to-date congruences.
-
-    gr = Grid(2);
-    gr.add_congruence((7*A == 5) / 0);
-    gr.add_congruence((7*B == 4) / 0);
-
-    gr.affine_preimage(B, A - B, -1);
-
-    if (gr == known_gr)
-      return;
-
-    nout << "Up-to-date cgs";
-  }
-  else
-    nout << "Out-of-date cgs";
-
-  nout << " grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
-}
-
-// Shift a rectilinear pointed grid along A.
-
-void
-test14() {
-  Grid gr(3);
-  gr.add_congruence((A %= 0) / 4);
-  gr.add_congruence((B %= 0) / 2);
-
-  gr.affine_preimage(A, A + 3);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Grid known_gr(3);
-  known_gr.add_congruence((A %= -3) / 4);
-  known_gr.add_congruence((B %= 0) / 2);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
-}
-
-// Slant a rectilinear pointed grid along A == -B.
-
-void
-test15() {
-  Grid gr(2);
-  gr.add_congruence((A %= 0) / 4);
-  gr.add_congruence((B %= 0) / 2);
-
-  gr.affine_preimage(A, A + B);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Grid known_gr(2);
-  known_gr.add_congruence((A + B %= 0) / 4);
-  known_gr.add_congruence((A %= 0) / 2);
-  known_gr.add_congruence((B %= 0) / 2);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
-}
-
-// Expand a rectilinear pointed grid to a sequence of lines.
-
-void
-test16() {
-  Grid gr(2);
-  gr.add_congruence((A %= 0) / 4);
-  gr.add_congruence((B %= 0) / 2);
-
-  gr.affine_preimage(A, B);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Grid known_gr(2);
-  known_gr.add_congruence((B %= 0) / 4);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
-}
-
-// Transform a grid into the empty grid.
-
-void
-test17() {
-  Grid gr(2);
-  gr.add_congruence(A == 3);
-  gr.add_congruence(B == 0);
-
-  gr.affine_preimage(B, A);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Grid known_gr(2, EMPTY);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
-}
-
-// Transform away the constraint on a dimension (B).
-
-void
-test18() {
-  Grid gr(2);
-  gr.add_congruence(A == 3);
-  gr.add_congruence(B == 3);
-
-  gr.affine_preimage(B, A);
-
-  if (find_variation(gr))
-    exit(1);
-
-  Grid known_gr(2);
-  known_gr.add_congruence(A == 3);
-
-  if (gr == known_gr)
-    return;
-
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
-}
-
-// Zero denominator.
-
-void
-test19() {
-  Grid gr(3);
-  gr.add_congruence((C == -2) / 0);
-  gr.add_congruence((A ==  0) / 0);
-
-  try {
-    gr.affine_preimage(B, A + 2, 0);
-    exit(1);
-  }
-  catch (const std::invalid_argument& e) {}
-}
-
-// Expression of a greater space dimension than the grid.
-
-void
-test20() {
-  Grid gr(3);
-  gr.add_congruence((C == -2) / 0);
-  gr.add_congruence((A ==  0) / 0);
-
-  try {
-    gr.affine_preimage(B, D + 2);
-    exit(1);
-  }
-  catch (const std::invalid_argument& e) {}
-}
-
-// Variable of a greater space dimension than the grid.
-
-void
-test21() {
-  Grid gr(3);
-  gr.add_congruence((C == -2) / 0);
-  gr.add_congruence((A ==  0) / 0);
-
-  try {
-    gr.affine_preimage(D, A + 2);
-    exit(1);
-  }
-  catch (const std::invalid_argument& e) {}
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
 
-  nout << "affinepreimage1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-  DO_TEST(test19);
-  DO_TEST(test20);
-  DO_TEST(test21);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+END_MAIN

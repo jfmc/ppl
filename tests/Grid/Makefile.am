@@ -45,10 +45,10 @@ addconstraint1 \
 addconstraints1 \
 addgenerator1 \
 addgenerators1 \
-addspacedims1 addspacedims2 \
+addspacedims1 \
 affinedim1 \
-affineimage1 affineimage1_16 \
-affinepreimage1 \
+affineimage1 affineimage1_16 affineimage2 \
+affinepreimage1 affinepreimage2 \
 asciidumpload1 \
 bhz03widening1 \
 bounded1 \
@@ -109,15 +109,15 @@ addgenerator1_SOURCES = addgenerator1.cc
 addgenerators1_SOURCES = addgenerators1.cc
 
 addspacedims1_SOURCES = addspacedims1.cc
-addspacedims2_SOURCES = addspacedims2.cc
 
 affinedim1_SOURCES = affinedim1.cc
 
 affineimage1_SOURCES = affineimage1.cc
-
+affineimage2_SOURCES = affineimage2.cc
 affineimage1_16_SOURCES = affineimage1_16.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
+affinepreimage2_SOURCES = affinepreimage2.cc
 
 asciidumpload1_SOURCES = asciidumpload1.cc
 

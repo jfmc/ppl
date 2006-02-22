@@ -22,45 +22,40 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
-
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
 
 // add_constraint
 
-void
-test1() {
-  Grid gr(2);
-  gr.add_constraint(A == 3);
-  gr.add_constraint(B >= 0);
+bool
+test01() {
 
-  if (find_variation(gr))
-    exit(1);
+  Variable A(0);
+  Variable B(1);
+
+  Grid gr(2);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_constraint(A == 3);
+  print_congruences(gr, "*** gr.add_constraint(A == 3) ***");
+  gr.add_constraint(B >= 0);
 
   Grid known_gr(2);
   known_gr.add_congruence(A == 3);
+  bool ok = (gr == known_gr);
 
-  if (gr == known_gr)
-    return;
+  print_congruences(gr, "*** gr.add_constraint(B >= 0) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Add an NNC constraint with add_constraint.
 
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Constraint_System cs;
   cs.insert(B + 0*C == 0);
 
@@ -68,199 +63,191 @@ test2() {
 
   Grid gr(3);
 
-  gr.add_constraint(*ph.constraints().begin());
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.add_constraint(*ph.constraints().begin());
 
   Grid known_gr(3);
   known_gr.add_congruence(B == 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_constraint(*ph.constraints().begin()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_constraint_and_minimize(cs)
 
-void
-test3() {
-  Grid gr(4);
-  gr.add_constraint_and_minimize(2*A == C);
-  gr.add_constraint_and_minimize(D == 0);
-  gr.add_constraint_and_minimize(B > 2);
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
 
-  if (find_variation(gr))
-    exit(1);
+  Grid gr(4);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_constraint_and_minimize(2*A == C);
+  print_congruences(gr, "*** gr.add_constraint_and_minimize(2*A == C) ***");
+  gr.add_constraint_and_minimize(D == 0);
+  print_congruences(gr, "*** gr.add_constraint_and_minimize(D == 0) ***");
+  gr.add_constraint_and_minimize(B > 2);
 
   Grid known_gr(4);
   known_gr.add_congruence(2*A == C);
   known_gr.add_congruence(D == 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_constraint_and_minimize(B > 2) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_congruence(c), adding equality
 
-void
-test4() {
+bool
+test04() {
+  Variable D(3);
+
   Grid gr(4);
+  print_congruences(gr, "*** gr ***");
+
   gr.add_congruence(D == 4);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(4);
+
   known_gr.add_congruence(D == 4);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_congruence(D == 4) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_congruence(c), where grid stays the same
 
-void
-test5() {
+bool
+test05() {
+  Variable D(3);
+
   Grid gr(4);
+  print_congruences(gr, "*** gr ***");
 
   Grid known_gr = gr;
 
   gr.add_congruence(D > 4);
 
-  if (find_variation(gr))
-    exit(1);
+  bool ok = (gr == known_gr);
 
-  if (gr == known_gr)
-    return;
+  print_congruences(gr, "*** gr.add_congruence(D > 4) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_congruence_and_minimize(c), add equality.
 
-void
-test6() {
-  Grid gr(3);
-  gr.add_congruence_and_minimize(C == 4*A);
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-  if (find_variation(gr))
-    exit(1);
+  Grid gr(3);
+
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_congruence_and_minimize(C == 4*A);
 
   Grid known_gr(3);
   known_gr.add_congruence(C == 4*A);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** add_congruence_and_minimize(C == 4*A) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_congruence_and_minimize(c), where grid stays the same.
 
-void
-test7() {
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(3);
   gr.add_congruence((B == 0) / 0);
 
   Grid known_gr = gr;
 
+  print_congruences(gr, "*** gr ***");
+
   gr.add_congruence_and_minimize(C > 4*A);
 
-  if (find_variation(gr))
-    exit(1);
+  bool ok = (gr == known_gr);
 
-  if (gr == known_gr)
-    return;
+  print_congruences(gr,
+      "*** gr.add_congruence_and_minimize(C > 4*A) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_constraint -- space dimension exception
 
-void
-test8() {
+bool
+test08() {
+  Variable B(1);
+
   Grid gr(1);
 
   try {
     gr.add_constraint(B == 0);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_constraint_and_minimize -- space dimension exception
 
-void
-test9() {
+bool
+test09() {
+  Variable B(1);
+
   Grid gr(1);
 
   try {
     gr.add_constraint_and_minimize(B == 0);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "addconstraint1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+END_MAIN

@@ -22,20 +22,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
-
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
 
 // add_congruences_and_minimize(cs)
 
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(3);
+
+  print_congruences(gr, "*** gr ***");
 
   Constraint_System cs;
   cs.insert(B == 0);
@@ -44,28 +43,24 @@ test1() {
 
   gr.add_congruences_and_minimize(cs);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(3);
   known_gr.add_congruence(B == 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_congruences_and_minimize(cs) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_constraints
 
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Constraint_System cs;
   cs.insert(B == 0);
   cs.insert(A >= 0);
@@ -73,30 +68,28 @@ test2() {
 
   Grid gr(3);
 
-  gr.add_constraints(cs);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.add_constraints(cs);
 
   Grid known_gr(3);
   known_gr.add_congruence(B == 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_constraints(cs) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_constraints, resulting grid empty.
 
-void
-test3() {
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Constraint_System cs;
   cs.insert(B < 0);
   cs.insert(A >= 0);
@@ -104,29 +97,28 @@ test3() {
 
   Grid gr(3);
 
-  gr.add_constraints(cs);
+  print_congruences(gr, "*** gr ***");
 
-  if (find_variation(gr))
-    exit(1);
+  gr.add_constraints(cs);
 
   Grid known_gr(3);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_constraints(cs) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_congruences(cs)
 
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   Constraint_System cs;
   cs.insert(B < 0);
   cs.insert(B > 0);
@@ -134,180 +126,178 @@ test4() {
   cs.insert(C > 0);
 
   Grid gr(3);
-  gr.add_congruences(cs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_congruences(cs);
 
   Grid known_gr(3);
   known_gr.add_congruence(A == 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_congruences(cs) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_recycled_congruences(cs)
 
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Constraint_System cs;
   cs.insert(2*B == 3);
   cs.insert(A == 0);
   cs.insert(C > 0);
 
   Grid gr(3);
-  gr.add_recycled_congruences(cs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_recycled_congruences(cs);
 
   Grid known_gr(3);
   known_gr.add_congruence(A == 0);
   known_gr.add_congruence(2*B == 3);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_recycled_congruences(cs) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_recycled_congruences_and_minimize(cs)
 
-void
-test6() {
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Constraint_System cs;
   cs.insert(2*B >= 3);
   cs.insert(2*A == 7);
   cs.insert(C > 0);
 
   Grid gr(3);
-  gr.add_recycled_congruences_and_minimize(cs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_recycled_congruences_and_minimize(cs);
 
   Grid known_gr(3);
   known_gr.add_congruence(2*A == 7);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_recycled_congruences_and_minimize(cs) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_constraints_and_minimize(cs)
 
-void
-test7() {
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   Constraint_System cs;
   cs.insert(2*B >= 3);
   cs.insert(D == 0);
   cs.insert(2*A == C);
 
   Grid gr(4);
-  gr.add_constraints_and_minimize(cs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_constraints_and_minimize(cs);
 
   Grid known_gr(4);
   known_gr.add_congruence(2*A == C);
   known_gr.add_congruence(D == 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_constraints_and_minimize(cs) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_recycled_constraints
 
-void
-test8() {
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   Constraint_System cs;
   cs.insert(2*B > 2);
   cs.insert(2*D == 0);
 
   Grid gr(4);
-  gr.add_recycled_constraints(cs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_recycled_constraints(cs);
 
   Grid known_gr(4);
   known_gr.add_congruence(D == 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_recycled_constraints(cs) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_recycled_constraints_and_minimize
 
-void
-test9() {
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   Constraint_System cs;
   cs.insert(2*B > 6);
   cs.insert(2*C == 6*D);
 
   Grid gr(4);
-  gr.add_recycled_constraints_and_minimize(cs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_recycled_constraints_and_minimize(cs);
 
   Grid known_gr(4);
   known_gr.add_congruence(C == 3*D);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_recycled_constraints_and_minimize(cs) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // add_recycled_congruences(cs) -- space dimension exception
 
-void
+bool
 test10() {
+  Variable A(0);
+  Variable B(1);
+
   Constraint_System cs;
   cs.insert(A + B == 0);
 
@@ -315,15 +305,23 @@ test10() {
 
   try {
     gr.add_recycled_congruences(cs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_congruences(cs) -- space dimension exception
 
-void
+bool
 test11() {
+  Variable A(0);
+  Variable B(1);
+
   Constraint_System cs;
   cs.insert(B == 0);
 
@@ -331,16 +329,24 @@ test11() {
 
   try {
     gr.add_congruences(cs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_recycled_congruences_and_minimize(cs) -- space dimension
 // exception
 
-void
+bool
 test12() {
+  Variable A(0);
+  Variable B(1);
+
   Constraint_System cs;
   cs.insert(B == 0);
 
@@ -348,15 +354,23 @@ test12() {
 
   try {
     gr.add_recycled_congruences_and_minimize(cs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_congruences_and_minimize(cs) -- space dimension exception
 
-void
+bool
 test13() {
+  Variable A(0);
+  Variable B(1);
+
   Constraint_System cs;
   cs.insert(B == 0);
 
@@ -364,15 +378,23 @@ test13() {
 
   try {
     gr.add_congruences_and_minimize(cs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_constraints(cs) -- space dimension exception
 
-void
+bool
 test14() {
+  Variable A(0);
+  Variable B(1);
+
   Constraint_System cs;
   cs.insert(A + B == 0);
 
@@ -380,15 +402,23 @@ test14() {
 
   try {
     gr.add_constraints(cs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_constraints(cs) -- space dimension exception
 
-void
+bool
 test15() {
+  Variable A(0);
+  Variable B(1);
+
   Constraint_System cs;
   cs.insert(A + B == 0);
 
@@ -396,15 +426,23 @@ test15() {
 
   try {
     gr.add_constraints(cs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_recycled_constraints(cs) -- space dimension exception
 
-void
+bool
 test16() {
+  Variable A(0);
+  Variable B(1);
+
   Constraint_System cs;
   cs.insert(A + B == 0);
 
@@ -412,16 +450,24 @@ test16() {
 
   try {
     gr.add_recycled_constraints(cs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_recycled_constraints_and_minimize(cs) -- space dimension
 // exception
 
-void
+bool
 test17() {
+  Variable A(0);
+  Variable B(1);
+
   Constraint_System cs;
   cs.insert(A + B == 0);
 
@@ -429,15 +475,23 @@ test17() {
 
   try {
     gr.add_recycled_constraints_and_minimize(cs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_constraints_and_minimize(cs) -- space dimension exception
 
-void
+bool
 test18() {
+  Variable A(0);
+  Variable B(1);
+
   Constraint_System cs;
   cs.insert(A + B == 0);
 
@@ -445,38 +499,35 @@ test18() {
 
   try {
     gr.add_constraints_and_minimize(cs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "addconstraints1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+  NEW_TEST(test15);
+  NEW_TEST(test16);
+  NEW_TEST(test17);
+  NEW_TEST(test18);
+END_MAIN

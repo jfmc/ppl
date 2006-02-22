@@ -22,21 +22,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
-
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
 
 // Based on an example in a paper by Muller-Olm and Seidl in SAS 2005
 
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point(2*A + 0*B));
+
+  print_congruences(gr, "*** gr ***");
 
   Grid gr0 = gr;  // first grid (using trivial transformation)
 
@@ -54,6 +54,9 @@ test1() {
 
   gr.join_assign(gr1); // join of gr0 and gr1
 
+  print_congruences(gr,
+        "*** gr.join_assign(gr1) ***");
+
   gr.join_assign(gr2); // join of gr0, gr1 and gr2
 
   Grid known_gr(2);
@@ -61,28 +64,16 @@ test1() {
   known_gr.add_congruence((A %= 2) / 28);
   known_gr.add_congruence((B %= 0) / 12);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.join_assign(gr2) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "affineimage1:" << endl;
-
-  DO_TEST(test1);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+END_MAIN

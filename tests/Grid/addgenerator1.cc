@@ -22,96 +22,87 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 // grid1.cc also tests add_generator_and_minimize.
 
 // One dimension.
 
-void
-test1() {
+bool
+test01() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point(-A));
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_generator(grid_point(-A));
 
   Grid known_gr(1);
   known_gr.add_congruence((A == -1) / 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_generator(grid_point(-A)) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Two dimensions.
 
-void
-test2() {
+bool
+test02() {
   Variable A(0);
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(A + B));
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+  gr.add_generator(grid_point(A + B));
 
   Grid known_gr(2);
   known_gr.add_congruence((A == 1) / 0);
   known_gr.add_congruence((B == 1) / 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_generator(grid_point(A + B)) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Add many generators to grid of two dimensions.
 
-void
-test3() {
+bool
+test03() {
   Variable A(0);
   Variable B(1);
 
   Grid gr(2, EMPTY);
+
+  print_congruences(gr, "*** gr ***");
+
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(A + 2*B));
   gr.add_generator(grid_point(A + B));
   gr.add_generator(grid_point(2*A + 2*B));
   gr.add_generator(grid_line(A));
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(2);
   known_gr.add_congruence(B %= 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_generator(...) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Add NNC generators.
 
-void
-test4() {
+bool
+test04() {
   Variable A(0);
   Variable B(1);
 
@@ -122,153 +113,141 @@ test4() {
 
   Grid gr(2, EMPTY);
 
+  print_congruences(gr, "*** gr ***");
+
   for (Grid_Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     gr.add_generator(*i);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(2);
   known_gr.add_congruence((4*A + 4*B == 7) / 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_generator(*i) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Add generators to a grid of a higher space dimension.
 
-void
-test5() {
+bool
+test05() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
   Variable D(3);
 
   Grid gr(4, EMPTY);
+  print_congruences(gr, "*** gr ***");
+
   gr.add_generator(grid_point(7*A, 3));
+  print_congruences(gr, "*** gr.add_generator(grid_point(7*A, 3)) ***");
   gr.add_generator(grid_line(A - B));
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(4);
+
   known_gr.add_congruence((3*A + 3*B == 7) / 0);
   known_gr.add_congruence((C == 0) / 0);
   known_gr.add_congruence((D == 0) / 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_generator(grid_line(A - B)) ***");
 
-  exit(1);
+  return ok;
 }
 
 // add_generator_and_minimize
 
-void
-test6() {
+bool
+test06() {
   Variable A(0);
   Variable B(1);
 
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(2*A + 2*B));
+
+  print_congruences(gr, "*** gr ***");
+
   gr.add_generator(grid_point(8*A + 8*B));
 
   gr.add_generator_and_minimize(grid_line(A));
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(2);
   known_gr.add_congruence((B %= 0) / 2);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_generator_and_minimize(grid_line(A)) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Add a generator to a universe grid.
 
-void
-test7() {
+bool
+test07() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
   Variable D(3);
 
   Grid gr(4);
-  gr.add_generator(grid_point(12*A + 7*D));
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_generator(grid_point(12*A + 7*D));
 
   Grid known_gr(4);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "***  ***");
 
-  exit(1);
+  return ok;
 }
 
 // add_generator_and_minimize, adding a generator with a divisor to a
 // grid of many generators.
 
-void
-test8() {
+bool
+test08() {
   Variable A(0);
   Variable B(1);
 
   Grid gr(2, EMPTY);
+
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(A));
 
+  print_congruences(gr, "*** gr ***");
+
   // Minimize the grid.
-  if (find_variation(gr))
-    exit(1);
 
   gr.add_generator_and_minimize(grid_point(B, 3));
-
-  if (find_variation(gr))
-    exit(1);
 
   Grid known_gr(2);
   known_gr.add_congruence(A %= 0);
   known_gr.add_congruence(3*B %= 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_generator_and_minimize(grid_point(B, 3)) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Space dimension exception.
 
-void
-test9() {
+bool
+test09() {
   Variable A(0);
   Variable C(2);
 
@@ -276,53 +255,59 @@ test9() {
 
   try {
     gr.add_generator(grid_point(A + C));
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (std::invalid_argument) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // Zero dimensions empty.
 
-void
+bool
 test10() {
   Grid gr(0, EMPTY);
+
+  print_congruences(gr, "*** gr ***");
+
   gr.add_generator(grid_point());
 
   Grid known_gr(0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_generator(grid_point()) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Zero dimension universe.
 
-void
+bool
 test11() {
   Grid gr(0);
+
+  print_congruences(gr, "*** gr ***");
+
   gr.add_generator(grid_point());
 
   Grid known_gr(0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_generator(grid_point()) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Space dimension exception.
 
-void
+bool
 test12() {
   Variable A(0);
 
@@ -330,59 +315,65 @@ test12() {
 
   try {
     gr.add_generator(grid_line(A));
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (std::invalid_argument) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // Try add parameter to empty grid.
 
-void
+bool
 test13() {
   Grid gr(2, EMPTY);
 
   try {
     gr.add_generator(parameter());
-    exit(1);
   }
-  catch (std::invalid_argument) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // Try add parameter to zero dimension empty grid.
 
-void
+bool
 test14() {
   Grid gr(0, EMPTY);
 
   try {
     gr.add_generator(parameter());
-    exit(1);
   }
-  catch (std::invalid_argument) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "addgenerator1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+END_MAIN

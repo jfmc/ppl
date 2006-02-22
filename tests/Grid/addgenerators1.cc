@@ -22,20 +22,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
-
-Variable A(0);
-Variable B(1);
-Variable C(2);
 
 // grid1*.cc use add_generators_and_minimize often.
 
 // add_recycled_generators -- space dimension exception.
 
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+
   Grid_Generator_System gs;
   gs.insert(grid_point(B));
 
@@ -43,15 +40,23 @@ test1() {
 
   try {
     gr.add_recycled_generators(gs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_recycled_generators_and_minimize -- space dimension exception.
 
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
   Grid_Generator_System gs;
   gs.insert(grid_point(B));
 
@@ -59,66 +64,69 @@ test2() {
 
   try {
     gr.add_recycled_generators_and_minimize(gs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_recycled_generators -- zero dimension universe.
 
-void
-test3() {
+bool
+test03() {
   Grid_Generator_System gs;
   gs.insert(grid_point());
 
   Grid gr(0);
-  gr.add_recycled_generators(gs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_generators(gr, "*** gr ***");
+
+  gr.add_recycled_generators(gs);
 
   Grid known_gr(0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_recycled_generators(gs) ***");
 
-  exit(1);
+  return ok;
 }
 
 // add_recycled_generators -- zero dimension empty.
 
-void
-test4() {
+bool
+test04() {
   Grid_Generator_System gs;
   gs.insert(grid_point());
 
   Grid gr(0, EMPTY);
-  gr.add_recycled_generators(gs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_generators(gr, "*** gr ***");
+
+  gr.add_recycled_generators(gs);
 
   Grid known_gr(0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_recycled_generators(gs) ***");
 
-  exit(1);
+  return ok;
 }
 
 // add_recycled_generators -- add system with a single parameter
 // generator to the zero dimension empty grid.
 
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+
   Grid_Generator_System gs;
   gs.insert(parameter(A));
 
@@ -133,16 +141,23 @@ test5() {
 
   try {
     gr.add_recycled_generators(gs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_recycled_generators_and_minimize -- add system with a single
 // parameter generator to the zero dimension empty grid.
 
-void
-test6() {
+bool
+test06() {
+  Variable A(0);
+
   Grid_Generator_System gs;
   gs.insert(parameter(A));
 
@@ -157,16 +172,23 @@ test6() {
 
   try {
     gr.add_recycled_generators_and_minimize(gs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_recycled_generators -- add system with a single parameter
 // generator to the empty grid.
 
-void
-test7() {
+bool
+test07() {
+  Variable A(0);
+
   Grid_Generator_System gs;
   gs.insert(parameter(A));
 
@@ -174,41 +196,45 @@ test7() {
 
   try {
     gr.add_recycled_generators(gs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_recycled_generators_and_minimize -- add to the zero dim grid.
 
-void
-test8() {
+bool
+test08() {
   Grid_Generator_System gs;
   gs.insert(grid_point());
 
   Grid gr(0, EMPTY);
   gr.add_recycled_generators_and_minimize(gs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_generators(gr, "*** gr ***");
 
   Grid known_gr(0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_recycled_generators_and_minimize(gs) ***");
 
-  exit(1);
+  return ok;
 }
 
 // add_recycled_generators_and_minimize -- try add system with a
 // single parameter generator to the empty grid.
 
-void
-test9() {
+bool
+test09() {
+  Variable A(0);
+
   Grid_Generator_System gs;
   gs.insert(parameter(A));
 
@@ -216,56 +242,50 @@ test9() {
 
   try {
     gr.add_recycled_generators_and_minimize(gs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_recycled_generators_and_minimize -- add an empty system.
 
-void
+bool
 test10() {
   Grid_Generator_System gs;
 
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point());
 
+  print_generators(gr, "*** gr ***");
+
   Grid known_gr = gr;
 
   gr.add_recycled_generators_and_minimize(gs);
 
-  if (find_variation(gr))
-    exit(1);
+  bool ok = (gr == known_gr);
 
-  if (gr == known_gr)
-    return;
+  print_generators(gr,
+      "*** gr.add_recycled_generators_and_minimize(gs) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "addgenerators1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+END_MAIN

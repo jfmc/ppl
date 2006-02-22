@@ -26,124 +26,127 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-
 // add_congruences
 
-void
-test1() {
+bool
+test01() {
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Congruence_System cgs;
   cgs.insert((A %= 0) / 2);
   cgs.insert((B == 0) / 2);
 
   Grid gr(2);
-  gr.add_congruences(cgs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_congruences(cgs);
 
   Grid known_gr(2);
   known_gr.add_congruence((A %= 0) / 2);
   known_gr.add_congruence((B == 0) / 2);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_congruences(cgs) ***");
 
-  exit(1);
+  return ok;
 }
 
 // add_recycled_congruences
 
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
   Congruence_System cgs;
   cgs.insert((A + B %= 0) / 2);
 
   Grid gr(2);
-  gr.add_recycled_congruences(cgs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_recycled_congruences(cgs);
 
   Grid known_gr(2);
   known_gr.add_congruence((A + B %= 0) / 2);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_recycled_congruences(cgs) ***");
 
-  exit(1);
+  return ok;
 }
 
 // add_congruences_and_minimize
 
-void
-test3() {
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
   Congruence_System cgs;
   cgs.insert((A %= 0) / 2);
   cgs.insert(A + B == 0);
 
   Grid gr(2);
-  gr.add_congruences_and_minimize(cgs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_congruences_and_minimize(cgs);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(2*A - 2*B));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.add_congruences_and_minimize(cgs) ***");
 
-  exit(1);
+  return ok;
 }
 
 // add_recycled_congruences_and_minimize
 
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
   Congruence_System cgs;
   cgs.insert((B %= 0) / 2);
   cgs.insert(A - B == 0);
 
   Grid gr(2);
-  gr.add_recycled_congruences_and_minimize(cgs);
 
-  if (find_variation(gr))
-    exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_recycled_congruences_and_minimize(cgs);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(2*A + 2*B));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
 
-  exit(1);
+  return ok;
 }
 
 // add_recycled_congruences(cgs) -- space dimension exception
 
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Congruence_System cgs;
   cgs.insert((A + B %= 0) / 2);
 
@@ -151,15 +154,22 @@ test5() {
 
   try {
     gr.add_recycled_congruences(cgs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_congruences(cgs) -- space dimension exception
 
-void
-test6() {
+bool
+test06() {
+  Variable B(1);
+
   Congruence_System cgs;
   cgs.insert(B == 0);
 
@@ -167,16 +177,23 @@ test6() {
 
   try {
     gr.add_congruences(cgs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_recycled_congruences_and_minimize(cgs) -- space dimension
 // exception
 
-void
-test7() {
+bool
+test07() {
+  Variable B(1);
+
   Congruence_System cgs;
   cgs.insert(B == 0);
 
@@ -184,38 +201,52 @@ test7() {
 
   try {
     gr.add_recycled_congruences_and_minimize(cgs);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // add_recycled_congruences, empty grid.
 
-void
-test8() {
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
   Congruence_System cgs;
   cgs.insert((A + B %= 0) / 2);
 
   Grid gr(2, EMPTY);
+
+  print_congruences(gr, "*** gr ***");
+
   gr.add_recycled_congruences(cgs);
 
   Grid known_gr(2, EMPTY);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** add_recycled_congruences(cgs) ***");
 
-  exit(1);
+  return ok;
 }
 
 // add_recycled_congruences_and_minimize, add empty system.
 
-void
-test9() {
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2, EMPTY);
+
+  print_congruences(gr, "*** gr ***");
+
   gr.add_generator(grid_point(3*A + B));
 
   Grid known_gr = gr;
@@ -224,25 +255,23 @@ test9() {
 
   gr.add_recycled_congruences_and_minimize(cgs);
 
-  if (find_variation(gr))
-    exit(1);
+  bool ok = (gr == known_gr);
 
-  if (gr == known_gr)
-    return;
+  print_congruences(gr,
+      "*** gr.add_recycled_congruences_and_minimize(cgs ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
 // add_recycled_congruences_and_minimize, add system of single trivial
 // congruence to zero dim grid.
 
-void
+bool
 test10() {
+
   Grid gr(0);
+
+  print_congruences(gr, "*** gr ***");
 
   Grid known_gr = gr;
 
@@ -251,24 +280,24 @@ test10() {
 
   gr.add_recycled_congruences_and_minimize(cgs);
 
-  if (find_variation(gr))
-    exit(1);
+  bool ok = (gr == known_gr);
 
-  if (gr == known_gr)
-    return;
+  print_congruences(gr,
+      "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
 // add_recycled_congruences_and_minimize, add to empty grid.
 
-void
+bool
 test11() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2, EMPTY);
+
+  print_congruences(gr, "*** gr ***");
 
   Grid known_gr = gr;
 
@@ -277,100 +306,114 @@ test11() {
 
   gr.add_recycled_congruences_and_minimize(cgs);
 
-  if (find_variation(gr))
-    exit(1);
+  bool ok = (gr == known_gr);
 
-  if (gr == known_gr)
-    return;
+  print_congruences(gr,
+      "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
 // add_recycled_congruences_and_minimize, add empty system to grid
 // with minimized generators and up to date congruences.
 
-void
+bool
 test12() {
+  Variable A(0);
+
   Grid gr(2);
 
   // Ensure both systems are up to date with only generators minimal.
   gr.affine_image(A, 1*A);
   gr.minimized_generators();
 
+  print_congruences(gr, "*** gr ***");
+
   Congruence_System cgs;
 
   gr.add_recycled_congruences_and_minimize(cgs);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(2);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+      "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
 
-  exit(1);
+  return ok;
 }
 
 // add_recycled_congruences_and_minimize, add empty system to grid
 // with up to date congruences and generators.
 
-void
+bool
 test13() {
+  Variable A(0);
+
   Grid gr(2);
 
   // Ensure both systems are just up to date.
   gr.affine_image(A, 1*A);
 
+  print_congruences(gr, "*** gr ***");
+
   Congruence_System cgs;
 
   gr.add_recycled_congruences_and_minimize(cgs);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(2);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr,
+        "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
 
-  exit(1);
+  return ok;
+}
+
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+
+  Grid gr1(2);
+
+  Congruence_System cgs;
+  cgs.insert((A %= 0) / 7);
+
+  gr1.add_recycled_congruences_and_minimize(cgs);
+  print_generators(gr1, "gr1: ");
+  print_congruences(gr1, "gr1: ");
+
+  Grid gr2(2);
+  gr2.add_congruence((A %= 0) / 7);
+  print_generators(gr2, "gr2: ");
+  print_congruences(gr2, "gr2: ");
+
+  Grid known_gr = gr2;
+
+  bool ok = (gr1 == known_gr);
+
+  print_congruences(gr1, "*** gr2.add_congruence_and_minimize((22*A %= 3) / 7) ***");
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "addcongruences1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+END_MAIN

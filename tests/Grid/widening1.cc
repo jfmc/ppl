@@ -22,293 +22,294 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
-
-Variable A(0);
-Variable B(1);
-Variable C(2);
 
 // Initially empty.
 
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+
   Grid gr1(2, EMPTY);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
 
+  print_congruences(gr2, "*** gr2 ***");
+
   Grid known_gr = gr2;
 
   gr2.widening_assign(gr1);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = (gr2 == known_gr);
 
-  if (gr2 == known_gr)
-    return;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Empty after minimization.
 
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+
   Grid gr1(1);
   gr1.add_congruence(A == 0);
   gr1.add_congruence(A == 1);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(1);
   gr2.add_congruence(A %= 0);
 
+  print_congruences(gr2, "*** gr2 ***");
+
   Grid known_gr = gr2;
 
   gr2.widening_assign(gr1);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = (gr2 == known_gr);
 
-  if (gr2 == known_gr)
-    return;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Both empty.
 
-void
-test3() {
+bool
+test03() {
+  Variable A(0);
+
   Grid gr1(1);
   gr1.add_congruence(A == 0);
   gr1.add_congruence(A == 1);
 
+  print_congruences(gr1, "*** gr1 ***");
+
   Grid gr2(1, EMPTY);
+
+  print_congruences(gr2, "*** gr2 ***");
 
   Grid known_gr = gr2;
 
   gr2.widening_assign(gr1);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = (gr2 == known_gr);
 
-  if (gr2 == known_gr)
-    return;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // An equality that becomes a congruence.
 
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr1(2);
   gr1.add_congruence(A == 0);
   gr1.add_congruence(B == 1);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A == 0);
   gr2.add_congruence(B %= 1);
 
+  print_congruences(gr2, "*** gr2 ***");
+
   Grid known_gr = gr2;
 
   gr2.widening_assign(gr1);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = (gr2 == known_gr);
 
-  if (gr2 == known_gr)
-    return;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Keep all congruences.
 
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3);
   gr1.add_congruence((A %= 0) / 2);
   gr1.add_congruence((B %= 0) / 2);
   gr1.add_congruence(C %= 0);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(3);
   gr2.add_congruence((A %= 0) / 2);
   gr2.add_congruence(C %= 0);
 
+  print_congruences(gr2, "*** gr2 ***");
+
   Grid known_gr = gr2;
 
   gr2.widening_assign(gr1);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = (gr2 == known_gr);
 
-  if (gr2 == known_gr)
-    return;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Keep some congruences.
 
-void
-test6() {
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3);
   gr1.add_congruence((A %= 0) / 2);
   gr1.add_congruence((B %= 0) / 2);
   gr1.add_congruence(C %= 0);
 
+  print_congruences(gr1, "*** gr1 ***");
+
   Grid gr2(3);
   gr2.add_congruence(A %= 0);
   gr2.add_congruence((B %= 0) / 2);
   gr2.add_congruence(C %= 0);
 
-  gr2.widening_assign(gr1);
+  print_congruences(gr2, "*** gr2 ***");
 
-  if (find_variation(gr2))
-    exit(1);
+  gr2.widening_assign(gr1);
 
   Grid known_gr(3);
   known_gr.add_congruence((B %= 0) / 2);
   known_gr.add_congruence(C %= 0);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Already minimized.
 
-void
-test7() {
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3);
   gr1.add_congruence((A %= 0) / 2);
   gr1.add_congruence((B %= 0) / 2);
   gr1.add_congruence((C %= 0) / 3);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(3);
   gr2.add_congruence(A %= 0);
   gr2.add_congruence((B %= 0) / 2);
   gr2.add_congruence(C %= 0);
 
-  if (find_variation(gr2) || find_variation(gr2))
-    exit(1);
+  print_congruences(gr2, "*** gr2 ***");
 
   gr2.widening_assign(gr1);
 
   Grid known_gr(3);
   known_gr.add_congruence((B %= 0) / 2);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Both universe.
 
-void
-test8() {
+bool
+test08() {
   Grid gr1(5);
   Grid gr2(5);
+
+  print_congruences(gr1, "*** gr1 ***");
+
+  print_congruences(gr2, "*** gr2 ***");
 
   gr2.widening_assign(gr1);
 
   Grid known_gr(5);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Widening when increasing to universe.
 
-void
-test9() {
+bool
+test09() {
+  Variable A(0);
+
   Grid gr1(4);
   gr1.add_congruence((A %= 0) / 4);
 
+  print_congruences(gr1, "*** gr1 ***");
+
   Grid gr2(4);
+
+  print_congruences(gr2, "*** gr2 ***");
 
   gr2.widening_assign(gr1);
 
-  if (find_variation(gr2))
-    exit(1);
-
   Grid known_gr(4);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Tokens.
 
-void
+bool
 test10() {
+  using namespace IO_Operators;
+
+  Variable A(0);
+
   Grid gr1(2);
   gr1.add_congruence((A %= 0) / 4);
 
+  print_congruences(gr1, "*** gr1 ***");
+
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
+
+  print_congruences(gr2, "*** gr2 ***");
 
   unsigned int tokens = 4;
 
@@ -316,330 +317,318 @@ test10() {
 
   gr2.widening_assign(gr1, &tokens);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = ((gr2 == known_gr) && (tokens == 3));
 
-#define TOKEN_MSG "`tokens' should be 3."
-#define TOKENS 3
+  nout << "*** `tokens' should be 3 ***" << tokens << endl;
 
-  if (gr2 == known_gr)
-    if (tokens == TOKENS)
-      return;
-    else
-      nout << TOKEN_MSG << endl;
-  else {
-    nout << "Grid should equal known grid." << endl;
-    tokens == TOKENS || nout << TOKEN_MSG << endl;
-  }
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1, &tokens) ***");
 
-  nout << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Zero dimension.
 
-void
+bool
 test11() {
   Grid gr1(0);
 
+  print_congruences(gr1, "*** gr1 ***");
+
   Grid gr2(0);
+
+  print_congruences(gr2, "*** gr2 ***");
 
   gr2.widening_assign(gr1);
 
-  if (find_variation(gr2))
-    exit(1);
-
   Grid known_gr(0);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // First case of Example 8 in Section 6 of [BagnaraDHMZ05TR].
 
-void
+bool
 test12() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr1(2);
   gr1.add_congruence(5*A + B %= 0);
   gr1.add_congruence(22*A %= 0);
+
+  print_congruences(gr1, "gr1: ");
 
   Grid gr2(2);
   gr2.add_congruence(5*A + B %= 0);
   gr2.add_congruence(44*A %= 0);
 
-  gr2.widening_assign(gr1);
+  print_congruences(gr2, "gr2: ");
 
-  if (find_variation(gr2))
-    exit(1);
+  gr2.widening_assign(gr1);
 
   Grid known_gr(2);
   known_gr.add_congruence(5*A + B %= 0);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Second case in Example 8 in Section 6 of [BagnaraDHMZ05TR].
 
-void
+bool
 test13() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr1(2);
   gr1.add_congruence(9*A + B %= 0);
   gr1.add_congruence(22*A %= 0);
+
+  print_congruences(gr1, "gr1: ");
 
   Grid gr2(2);
   gr2.add_congruence(9*A + B %= 0);
   gr2.add_congruence(44*A %= 0);
 
-  gr2.widening_assign(gr1);
+  print_congruences(gr2, "gr2: ");
 
-  if (find_variation(gr2))
-    exit(1);
+  gr2.widening_assign(gr1);
 
   Grid known_gr(2);
   known_gr.add_congruence(9*A + B %= 0);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // First case in Example 9 in Section 6 of [BagnaraDHMZ05TR].
 
-void
+bool
 test14() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr1(2);
   gr1.add_congruence((A %= 0) / 2);
   gr1.add_congruence((B %= 0) / 2);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
   gr2.add_congruence((A + B %= 0) / 2);
 
-  gr2.widening_assign(gr1);
+  print_congruences(gr2, "*** gr2 ***");
 
-  if (find_variation(gr2))
-    exit(1);
+  gr2.widening_assign(gr1);
 
   Grid known_gr(2);
   known_gr.add_congruence((A + B %= 0) / 2);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Second case in Example 9 in Section 6 of [BagnaraDHMZ05TR]
 
-void
+bool
 test15() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr1(2);
   gr1.add_congruence((A %= 0) / 2);
   gr1.add_congruence((B %= 0) / 2);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
   gr2.add_congruence((3*A + B %= 0) / 2);
 
-  gr2.widening_assign(gr1);
+  print_congruences(gr2, "*** gr2 ***");
 
-  if (find_variation(gr2))
-    exit(1);
+  gr2.widening_assign(gr1);
 
   Grid known_gr(2);
   known_gr.add_congruence((A + B %= 0) / 2);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Congruences and equalities.
 
-void
+bool
 test16() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr1(2);
   gr1.add_congruence((A %= 0) / 2);
   gr1.add_congruence((A - B == 0) / 6);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
   gr2.add_congruence((A - B == 0) / 3);
 
-  gr2.widening_assign(gr1);
+  print_congruences(gr2, "*** gr2 ***");
 
-  if (find_variation(gr2))
-    exit(1);
+  gr2.widening_assign(gr1);
 
   Grid known_gr(2);
   known_gr.add_congruence((A - B == 0) / 3);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // From generators.
 
-void
+bool
 test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(C, 3));
   gr1.add_generator(grid_point(C + A - 2*B, 3));
+
+  print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
   gr2.add_generator(grid_point(C, 3));
   gr2.add_generator(grid_point(2*C + A - 2*B, 6));
 
-  gr2.widening_assign(gr1);
+  print_generators(gr2, "*** gr2 ***");
 
-  if (find_variation(gr2))
-    exit(1);
+  gr2.widening_assign(gr1);
 
   Grid known_gr(3, EMPTY);
   known_gr.add_generator(grid_point(C, 3));
   known_gr.add_generator(grid_line(A - 2*B));
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 
 // Space dimension exception.
 
-void
+bool
 test18() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(C, 3));
   gr1.add_generator(grid_point(C + A - 2*B, 3));
+
+  print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(4, EMPTY);
   gr2.add_generator(grid_point(C, 3));
   gr2.add_generator(grid_point(2*C + A - 2*B, 6));
 
+  print_generators(gr2, "*** gr2 ***");
+
   try {
     gr2.widening_assign(gr1);
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (const std::invalid_argument& e) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // Minimizing the first congruence system finds the empty grid.
 
-void
+bool
 test19() {
+  Variable A(0);
+
   Grid gr1(3);
   gr1.add_congruence(A == 0);
   gr1.add_congruence(A == 1);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(3);
   gr2.add_congruence(A == 0);
   gr2.add_congruence(A == 1);
 
-  gr2.widening_assign(gr1);
+  print_congruences(gr2, "*** gr2 ***");
 
-  if (find_variation(gr2))
-    exit(1);
+  gr2.widening_assign(gr1);
 
   Grid known_gr(3, EMPTY);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2,
+        "*** gr2.widening_assign(gr1) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
 
-  nout << "widening1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-  DO_TEST(test19);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+  NEW_TEST(test15);
+  NEW_TEST(test16);
+  NEW_TEST(test17);
+  NEW_TEST(test18);
+  NEW_TEST(test19);
+END_MAIN
