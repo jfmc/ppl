@@ -16,3 +16,9 @@
    fun:*
    obj:/bin/rm
 }
+{
+   4
+   Memcheck:Leak
+   fun:*
+   obj:/usr/bin/make
+}
