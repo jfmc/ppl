@@ -24,56 +24,55 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-Variable E(4);
-Variable F(5);
-
 // Empty.
 
-void
-test1() {
+bool
+test01() {
   Grid gr(7, EMPTY);
 
-  if (gr.bounds_from_above(Linear_Expression(0))
-      && gr.bounds_from_below(Linear_Expression(0)))
-    return;
+  print_congruences(gr, "*** gr ***");
 
-  exit(1);
+  bool ok = (gr.bounds_from_above(Linear_Expression(0))
+	     && gr.bounds_from_below(Linear_Expression(0)));
+
+  return ok;
 }
 
 // Zero dimension empty.
 
-void
-test2() {
+bool
+test02() {
   Grid gr(0, EMPTY);
 
-  if (gr.bounds_from_above(Linear_Expression(3))
-      && gr.bounds_from_below(Linear_Expression(3)))
-    return;
+  print_congruences(gr, "*** gr ***");
 
-  exit(1);
+  bool ok = (gr.bounds_from_above(Linear_Expression(3))
+	     && gr.bounds_from_below(Linear_Expression(3)));
+
+  return ok;
 }
 
 // Zero dimension universe.
 
-void
-test3() {
+bool
+test03() {
   Grid gr(0);
 
-  if (gr.bounds_from_above(Linear_Expression(1))
-      && gr.bounds_from_below(Linear_Expression(1)))
-    return;
+  print_congruences(gr, "*** gr ***");
 
-  exit(1);
+  bool ok = (gr.bounds_from_above(Linear_Expression(1))
+	     && gr.bounds_from_below(Linear_Expression(1)));
+
+  return ok;
 }
 
 // Point.
 
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator_and_minimize(grid_point(3*A + 2*B, 3));
 
@@ -88,26 +87,29 @@ test4() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = A + B;
-  if (gr_gs_min.bounds_from_above(le)
-      && gr_gs_min.bounds_from_below(le))
-    if (gr_gs_needs_min.bounds_from_above(le)
-	&& gr_gs_needs_min.bounds_from_below(le))
-      if (gr_cgs_needs_min.bounds_from_above(le)
-	  && gr_cgs_needs_min.bounds_from_below(le))
-	return;
-      else nout << "gr_cgs_needs_min";
-    else nout << "gr_gs_needs_min";
-  else nout << "gr_gs_min";
+  bool ok =
+    (gr_gs_min.bounds_from_above(le) &&
+       gr_gs_min.bounds_from_below(le) &&
+         gr_gs_needs_min.bounds_from_above(le) &&
+	   gr_gs_needs_min.bounds_from_below(le) &&
+             gr_cgs_needs_min.bounds_from_above(le) &&
+	       gr_cgs_needs_min.bounds_from_below(le)
+     );
 
-  nout << " should bound expr from above and below." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min **");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min **");
 
-  exit(1);
+  return ok;
 }
 
 // Rectilinear line.
 
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator_and_minimize(grid_line(B));
@@ -123,27 +125,30 @@ test5() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A - B;
-  if (gr_gs_min.bounds_from_above(le)
-      || gr_gs_min.bounds_from_below(le))
-    nout << "gr_gs_min";
-  else if (gr_gs_needs_min.bounds_from_above(le)
-	   || gr_gs_needs_min.bounds_from_below(le))
-    nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.bounds_from_above(le)
-	   || gr_cgs_needs_min.bounds_from_below(le))
-    nout << "gr_cgs_needs_min";
-  else
-    return;
 
-  nout << " bounded expr." << endl;
+  bool ok =
+    (!gr_gs_min.bounds_from_above(le) &&
+       !gr_gs_min.bounds_from_below(le) &&
+         !gr_gs_needs_min.bounds_from_above(le) &&
+	   !gr_gs_needs_min.bounds_from_below(le) &&
+             !gr_cgs_needs_min.bounds_from_above(le) &&
+	       !gr_cgs_needs_min.bounds_from_below(le)
+     );
 
-  exit(1);
+  print_congruences(gr_gs_min, "*** gr_gs_min **");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min **");
+
+  return ok;
 }
 
 // Line.
 
-void
-test6() {
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator_and_minimize(grid_line(2*A + B));
@@ -159,27 +164,29 @@ test6() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A + B;
-  if (gr_gs_min.bounds_from_above(le)
-      || gr_gs_min.bounds_from_below(le))
-    nout << "gr_gs_min";
-  else if (gr_gs_needs_min.bounds_from_above(le)
-	   || gr_gs_needs_min.bounds_from_below(le))
-    nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.bounds_from_above(le)
-	   || gr_cgs_needs_min.bounds_from_below(le))
-    nout << "gr_cgs_needs_min";
-  else
-    return;
+  bool ok =
+    (!gr_gs_min.bounds_from_above(le) &&
+       !gr_gs_min.bounds_from_below(le) &&
+         !gr_gs_needs_min.bounds_from_above(le) &&
+	   !gr_gs_needs_min.bounds_from_below(le) &&
+             !gr_cgs_needs_min.bounds_from_above(le) &&
+	       !gr_cgs_needs_min.bounds_from_below(le)
+     );
 
-  nout << " bounded expr." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min **");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min **");
 
-  exit(1);
+  return ok;
 }
 
 // A line along expr in the grid.
 
-void
-test7() {
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator_and_minimize(grid_line(A + 2*B));
@@ -195,26 +202,30 @@ test7() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A - B;
-  if (gr_gs_min.bounds_from_above(le)
-      && gr_gs_min.bounds_from_below(le))
-    if (gr_gs_needs_min.bounds_from_above(le)
-	&& gr_gs_needs_min.bounds_from_below(le))
-      if (gr_cgs_needs_min.bounds_from_above(le)
-	  && gr_cgs_needs_min.bounds_from_below(le))
-	return;
-      else nout << "gr_cgs_needs_min";
-    else nout << "gr_gs_needs_min";
-  else nout << "gr_gs_min";
+  bool ok =
+    (gr_gs_min.bounds_from_above(le) &&
+       gr_gs_min.bounds_from_below(le) &&
+         gr_gs_needs_min.bounds_from_above(le) &&
+	   gr_gs_needs_min.bounds_from_below(le) &&
+             gr_cgs_needs_min.bounds_from_above(le) &&
+	       gr_cgs_needs_min.bounds_from_below(le)
+     );
 
-  nout << " should bound expr from above and below." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min **");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min **");
 
-  exit(1);
+  return ok;
 }
+
 
 // A parameter along expr in the grid.
 
-void
-test8() {
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator_and_minimize(grid_point(A + 2*B));
@@ -231,26 +242,29 @@ test8() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A - B;
-  if (gr_gs_min.bounds_from_above(le)
-      && gr_gs_min.bounds_from_below(le))
-    if (gr_gs_needs_min.bounds_from_above(le)
-	&& gr_gs_needs_min.bounds_from_below(le))
-      if (gr_cgs_needs_min.bounds_from_above(le)
-	  && gr_cgs_needs_min.bounds_from_below(le))
-	return;
-      else nout << "gr_cgs_needs_min";
-    else nout << "gr_gs_needs_min";
-  else nout << "gr_gs_min";
+  bool ok =
+    (gr_gs_min.bounds_from_above(le) &&
+       gr_gs_min.bounds_from_below(le) &&
+         gr_gs_needs_min.bounds_from_above(le) &&
+	   gr_gs_needs_min.bounds_from_below(le) &&
+             gr_cgs_needs_min.bounds_from_above(le) &&
+	       gr_cgs_needs_min.bounds_from_below(le)
+     );
 
-  nout << " should bound expr from above and below." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min **");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min **");
 
-  exit(1);
+  return ok;
 }
 
 // Two lines which combine to cover any line bounded by expr.
 
-void
-test9() {
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_line(A));
@@ -267,28 +281,31 @@ test9() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = A - B;
-  if (gr_gs_min.bounds_from_above(le)
-      || gr_gs_min.bounds_from_below(le))
-    nout << "gr_gs_min";
-  else if (gr_gs_needs_min.bounds_from_above(le)
-	   || gr_gs_needs_min.bounds_from_below(le))
-    nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.bounds_from_above(le)
-	   || gr_cgs_needs_min.bounds_from_below(le))
-    nout << "gr_cgs_needs_min";
-  else
-    return;
+  bool ok =
+    (!gr_gs_min.bounds_from_above(le) &&
+       !gr_gs_min.bounds_from_below(le) &&
+         !gr_gs_needs_min.bounds_from_above(le) &&
+	   !gr_gs_needs_min.bounds_from_below(le) &&
+             !gr_cgs_needs_min.bounds_from_above(le) &&
+	       !gr_cgs_needs_min.bounds_from_below(le)
+     );
 
-  nout << " bounded expr." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min **");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min **");
 
-  exit(1);
+  return ok;
 }
 
 // In three dimensions, lines and parameters which combine to include
 // expr.
 
-void
+bool
 test10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_line(A));
@@ -307,27 +324,30 @@ test10() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A + B - C;
-  if (gr_gs_min.bounds_from_above(le)
-      || gr_gs_min.bounds_from_below(le))
-    nout << "gr_gs_min";
-  else if (gr_gs_needs_min.bounds_from_above(le)
-	   || gr_gs_needs_min.bounds_from_below(le))
-    nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.bounds_from_above(le)
-	   || gr_cgs_needs_min.bounds_from_below(le))
-    nout << "gr_cgs_needs_min";
-  else
-    return;
+   bool ok =
+    (!gr_gs_min.bounds_from_above(le) &&
+       !gr_gs_min.bounds_from_below(le) &&
+         !gr_gs_needs_min.bounds_from_above(le) &&
+	   !gr_gs_needs_min.bounds_from_below(le) &&
+             !gr_cgs_needs_min.bounds_from_above(le) &&
+	       !gr_cgs_needs_min.bounds_from_below(le)
+     );
 
-  nout << " bounded expr." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min **");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min **");
 
-  exit(1);
+  return ok;
 }
 
 // Grid which bounds a 3D expr.
 
-void
+bool
 test11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_line(3*B + C));
@@ -345,26 +365,33 @@ test11() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A + B - 3*C;
-  if (gr_gs_min.bounds_from_above(le)
-      && gr_gs_min.bounds_from_below(le))
-    if (gr_gs_needs_min.bounds_from_above(le)
-	&& gr_gs_needs_min.bounds_from_below(le))
-      if (gr_cgs_needs_min.bounds_from_above(le)
-	  && gr_cgs_needs_min.bounds_from_below(le))
-	return;
-      else nout << "gr_cgs_needs_min";
-    else nout << "gr_gs_needs_min";
-  else nout << "gr_gs_min";
+  bool ok =
+    (gr_gs_min.bounds_from_above(le) &&
+       gr_gs_min.bounds_from_below(le) &&
+         gr_gs_needs_min.bounds_from_above(le) &&
+	   gr_gs_needs_min.bounds_from_below(le) &&
+             gr_cgs_needs_min.bounds_from_above(le) &&
+	       gr_cgs_needs_min.bounds_from_below(le)
+     );
 
-  nout << " should bound expr from above and below." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min **");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min **");
 
-  exit(1);
+  return ok;
 }
 
 // Point in 6D.
 
-void
+bool
 test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+  Variable F(5);
+
   Grid gr_gs_min(6, EMPTY);
   gr_gs_min.add_generator_and_minimize(grid_point(7*A - 11*B + 19*F));
 
@@ -383,60 +410,63 @@ test12() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = A + 2*B + 3*C + 4*D + 6*F;
-  if (gr_gs_min.bounds_from_above(le)
-      && gr_gs_min.bounds_from_below(le))
-    if (gr_gs_needs_min.bounds_from_above(le)
-	&& gr_gs_needs_min.bounds_from_below(le))
-      if (gr_cgs_needs_min.bounds_from_above(le)
-	  && gr_cgs_needs_min.bounds_from_below(le))
-	return;
-      else nout << "gr_cgs_needs_min";
-    else nout << "gr_gs_needs_min";
-  else nout << "gr_gs_min";
+  bool ok =
+    (gr_gs_min.bounds_from_above(le) &&
+       gr_gs_min.bounds_from_below(le) &&
+         gr_gs_needs_min.bounds_from_above(le) &&
+	   gr_gs_needs_min.bounds_from_below(le) &&
+             gr_cgs_needs_min.bounds_from_above(le) &&
+	       gr_cgs_needs_min.bounds_from_below(le)
+     );
 
-  nout << " should bound expr from above and below." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min **");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min **");
 
-  exit(1);
+  return ok;
 }
 
 // Space dimension exception.
 
-void
+bool
 test13() {
+  Variable A(0);
+  Variable B(1);
+  Variable D(3);
+  Variable E(4);
+  Variable F(5);
+  Variable C(2);
+
   Grid gr(3, EMPTY);
 
   Linear_Expression le = A + 2*B + 3*C + 4*D + 6*F;
 
   try {
     gr.bounds_from_above(le);
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (const std::invalid_argument& e) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "bounds1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+END_MAIN

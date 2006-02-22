@@ -22,133 +22,162 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
-
-Variable A(0);
-Variable C(2);
 
 // One dimension universe and empty.
 
-void
-test1() {
+bool
+test01() {
   Grid gr1(1, EMPTY);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   stringstream ss1;
   gr1.ascii_dump(ss1);
 
+  gr1.ascii_dump(vnout);
+
   Grid gr2(1);
+
+  print_congruences(gr2, "*** gr2 ***");
 
   stringstream ss2;
   gr2.ascii_dump(ss2);
 
-  if (ss1.str().compare(ss1.str())) {
-    nout << "Outputs from ascii_dump matched." << endl;
-    exit(1);
-  }
+  gr2.ascii_dump(vnout);
+
+  bool ok = (ss2.str().compare(ss1.str()));
+
+  return ok;
 }
 
 // Many dimensioned universe and empty.
 
-void
-test2() {
+bool
+test02() {
   Grid gr1(3, EMPTY);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   stringstream ss1;
   gr1.ascii_dump(ss1);
 
+  gr1.ascii_dump(vnout);
+
   Grid gr2(3);
+
+  print_congruences(gr2, "*** gr2 ***");
 
   stringstream ss2;
   gr2.ascii_dump(ss2);
 
-  if (ss1.str().compare(ss1.str())) {
-    nout << "Outputs from operator<< matched." << endl;
-    exit(1);
-  }
+  gr2.ascii_dump(vnout);
+
+  bool ok = (ss2.str().compare(ss1.str()));
+
+  return ok;
 }
 
 // Universe and empty, mixed dimensions.
 
-void
-test3() {
+bool
+test03() {
   Grid gr1(4, EMPTY);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   stringstream ss1;
   gr1.ascii_dump(ss1);
 
+  gr1.ascii_dump(vnout);
+
   Grid gr2(3);
+
+  print_congruences(gr2, "*** gr2 ***");
 
   stringstream ss2;
   gr2.ascii_dump(ss2);
 
-  if (ss1.str().compare(ss1.str())) {
-    nout << "Outputs from operator<< matched." << endl;
-    exit(1);
-  }
+  gr2.ascii_dump(vnout);
+
+  bool ok = (ss2.str().compare(ss1.str()));
+
+  return ok;
 }
 
 // Grids of same dimensions.
 
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable C(2);
+
   Grid gr1(4, EMPTY);
   gr1.add_generator(grid_point(3*A + C));
   gr1.add_generator(parameter(3*A));
 
+  print_generators(gr1, "*** gr1 ***");
+
   stringstream ss1;
   gr1.ascii_dump(ss1);
+
+  gr1.ascii_dump(vnout);
 
   Grid gr2(4);
   gr2.add_congruence(3*A == 0);
 
+  print_congruences(gr2, "*** gr2 ***");
+
   stringstream ss2;
   gr2.ascii_dump(ss2);
 
-  if (ss1.str().compare(ss1.str())) {
-    nout << "Outputs from operator<< matched." << endl;
-    exit(1);
-  }
+  gr2.ascii_dump(vnout);
+
+  bool ok = (ss2.str().compare(ss1.str()));
+
+  return ok;
 }
 
 // Grids of mixed dimensions.
 
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(3*A + C));
   gr1.add_generator(parameter(3*A));
 
+  print_generators(gr1, "*** gr1 ***");
+
   stringstream ss1;
   gr1.ascii_dump(ss1);
+
+  gr1.ascii_dump(vnout);
 
   Grid gr2(4);
   gr2.add_congruence(3*A == 0);
 
+  print_congruences(gr2, "*** gr2 ***");
+
   stringstream ss2;
   gr2.ascii_dump(ss2);
 
-  if (ss1.str().compare(ss1.str())) {
-    nout << "Outputs from operator<< matched." << endl;
-    exit(1);
-  }
+  gr2.ascii_dump(vnout);
+
+  bool ok = (ss2.str().compare(ss1.str()));
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "asciidumpload1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+END_MAIN
