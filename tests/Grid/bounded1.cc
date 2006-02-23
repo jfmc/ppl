@@ -86,12 +86,9 @@ test04() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  bool ok =
-    (
-      (gr_gs_min.is_bounded()) &&
-        (gr_gs_needs_min.is_bounded()) &&
-         (gr_cgs_needs_min.is_bounded())
-      );
+  bool ok = gr_gs_min.is_bounded()
+    && gr_gs_needs_min.is_bounded()
+    && gr_cgs_needs_min.is_bounded();
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -123,12 +120,9 @@ test05() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  bool ok =
-    (
-      (!gr_gs_min.is_bounded()) &&
-        (!gr_gs_needs_min.is_bounded()) &&
-         (!gr_cgs_needs_min.is_bounded())
-      );
+  bool ok = !gr_gs_min.is_bounded()
+    && !gr_gs_needs_min.is_bounded()
+    && !gr_cgs_needs_min.is_bounded();
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -161,12 +155,9 @@ test06() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  bool ok =
-    (
-      (!gr_gs_min.is_bounded()) &&
-        (!gr_gs_needs_min.is_bounded()) &&
-         (!gr_cgs_needs_min.is_bounded())
-      );
+  bool ok = !gr_gs_min.is_bounded()
+    && !gr_gs_needs_min.is_bounded()
+    && !gr_cgs_needs_min.is_bounded();
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -200,12 +191,9 @@ test07() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  bool ok =
-    (
-      (!gr_gs_min.is_bounded()) &&
-        (!gr_gs_needs_min.is_bounded()) &&
-         (!gr_cgs_needs_min.is_bounded())
-      );
+  bool ok = !gr_gs_min.is_bounded()
+    && !gr_gs_needs_min.is_bounded()
+    && !gr_cgs_needs_min.is_bounded();
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -238,12 +226,9 @@ test08() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  bool ok =
-    (
-      (!gr_gs_min.is_bounded()) &&
-        (!gr_gs_needs_min.is_bounded()) &&
-         (!gr_cgs_needs_min.is_bounded())
-      );
+  bool ok = !gr_gs_min.is_bounded()
+    && !gr_gs_needs_min.is_bounded()
+    && !gr_cgs_needs_min.is_bounded();
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -279,12 +264,9 @@ test09() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  bool ok =
-    (
-      (!gr_gs_min.is_bounded()) &&
-        (!gr_gs_needs_min.is_bounded()) &&
-         (!gr_cgs_needs_min.is_bounded())
-      );
+  bool ok = !gr_gs_min.is_bounded()
+    && !gr_gs_needs_min.is_bounded()
+    && !gr_cgs_needs_min.is_bounded();
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -319,12 +301,9 @@ test10() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  bool ok =
-    (
-      (!gr_gs_min.is_bounded()) &&
-        (!gr_gs_needs_min.is_bounded()) &&
-         (!gr_cgs_needs_min.is_bounded())
-      );
+  bool ok = !gr_gs_min.is_bounded()
+    && !gr_gs_needs_min.is_bounded()
+    && !gr_cgs_needs_min.is_bounded();
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -361,12 +340,9 @@ test11() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  bool ok =
-    (
-      (gr_gs_min.is_bounded()) &&
-        (gr_gs_needs_min.is_bounded()) &&
-         (gr_cgs_needs_min.is_bounded())
-      );
+  bool ok = gr_gs_min.is_bounded()
+    && gr_gs_needs_min.is_bounded()
+    && gr_cgs_needs_min.is_bounded();
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");

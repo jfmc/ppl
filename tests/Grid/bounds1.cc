@@ -87,14 +87,12 @@ test04() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = A + B;
-  bool ok =
-    (gr_gs_min.bounds_from_above(le) &&
-       gr_gs_min.bounds_from_below(le) &&
-         gr_gs_needs_min.bounds_from_above(le) &&
-	   gr_gs_needs_min.bounds_from_below(le) &&
-             gr_cgs_needs_min.bounds_from_above(le) &&
-	       gr_cgs_needs_min.bounds_from_below(le)
-     );
+  bool ok = gr_gs_min.bounds_from_above(le)
+    && gr_gs_min.bounds_from_below(le)
+    && gr_gs_needs_min.bounds_from_above(le)
+    && gr_gs_needs_min.bounds_from_below(le)
+    && gr_cgs_needs_min.bounds_from_above(le)
+    && gr_cgs_needs_min.bounds_from_below(le);
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -126,14 +124,12 @@ test05() {
 
   Linear_Expression le = 2*A - B;
 
-  bool ok =
-    (!gr_gs_min.bounds_from_above(le) &&
-       !gr_gs_min.bounds_from_below(le) &&
-         !gr_gs_needs_min.bounds_from_above(le) &&
-	   !gr_gs_needs_min.bounds_from_below(le) &&
-             !gr_cgs_needs_min.bounds_from_above(le) &&
-	       !gr_cgs_needs_min.bounds_from_below(le)
-     );
+  bool ok = !gr_gs_min.bounds_from_above(le)
+    && !gr_gs_min.bounds_from_below(le)
+    && !gr_gs_needs_min.bounds_from_above(le)
+    && !gr_gs_needs_min.bounds_from_below(le)
+    && !gr_cgs_needs_min.bounds_from_above(le)
+    && !gr_cgs_needs_min.bounds_from_below(le);
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -164,14 +160,12 @@ test06() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A + B;
-  bool ok =
-    (!gr_gs_min.bounds_from_above(le) &&
-       !gr_gs_min.bounds_from_below(le) &&
-         !gr_gs_needs_min.bounds_from_above(le) &&
-	   !gr_gs_needs_min.bounds_from_below(le) &&
-             !gr_cgs_needs_min.bounds_from_above(le) &&
-	       !gr_cgs_needs_min.bounds_from_below(le)
-     );
+  bool ok = !gr_gs_min.bounds_from_above(le)
+    && !gr_gs_min.bounds_from_below(le)
+    && !gr_gs_needs_min.bounds_from_above(le)
+    && !gr_gs_needs_min.bounds_from_below(le)
+    && !gr_cgs_needs_min.bounds_from_above(le)
+    && !gr_cgs_needs_min.bounds_from_below(le);
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -202,14 +196,12 @@ test07() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A - B;
-  bool ok =
-    (gr_gs_min.bounds_from_above(le) &&
-       gr_gs_min.bounds_from_below(le) &&
-         gr_gs_needs_min.bounds_from_above(le) &&
-	   gr_gs_needs_min.bounds_from_below(le) &&
-             gr_cgs_needs_min.bounds_from_above(le) &&
-	       gr_cgs_needs_min.bounds_from_below(le)
-     );
+  bool ok = gr_gs_min.bounds_from_above(le)
+    && gr_gs_min.bounds_from_below(le)
+    && gr_gs_needs_min.bounds_from_above(le)
+    && gr_gs_needs_min.bounds_from_below(le)
+    && gr_cgs_needs_min.bounds_from_above(le)
+    && gr_cgs_needs_min.bounds_from_below(le);
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -242,14 +234,12 @@ test08() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A - B;
-  bool ok =
-    (gr_gs_min.bounds_from_above(le) &&
-       gr_gs_min.bounds_from_below(le) &&
-         gr_gs_needs_min.bounds_from_above(le) &&
-	   gr_gs_needs_min.bounds_from_below(le) &&
-             gr_cgs_needs_min.bounds_from_above(le) &&
-	       gr_cgs_needs_min.bounds_from_below(le)
-     );
+  bool ok = gr_gs_min.bounds_from_above(le)
+    && gr_gs_min.bounds_from_below(le)
+    && gr_gs_needs_min.bounds_from_above(le)
+    && gr_gs_needs_min.bounds_from_below(le)
+    && gr_cgs_needs_min.bounds_from_above(le)
+    && gr_cgs_needs_min.bounds_from_below(le);
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -281,14 +271,12 @@ test09() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = A - B;
-  bool ok =
-    (!gr_gs_min.bounds_from_above(le) &&
-       !gr_gs_min.bounds_from_below(le) &&
-         !gr_gs_needs_min.bounds_from_above(le) &&
-	   !gr_gs_needs_min.bounds_from_below(le) &&
-             !gr_cgs_needs_min.bounds_from_above(le) &&
-	       !gr_cgs_needs_min.bounds_from_below(le)
-     );
+  bool ok = !gr_gs_min.bounds_from_above(le)
+    && !gr_gs_min.bounds_from_below(le)
+    && !gr_gs_needs_min.bounds_from_above(le)
+    && !gr_gs_needs_min.bounds_from_below(le)
+    && !gr_cgs_needs_min.bounds_from_above(le)
+    && !gr_cgs_needs_min.bounds_from_below(le);
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -324,14 +312,12 @@ test10() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A + B - C;
-   bool ok =
-    (!gr_gs_min.bounds_from_above(le) &&
-       !gr_gs_min.bounds_from_below(le) &&
-         !gr_gs_needs_min.bounds_from_above(le) &&
-	   !gr_gs_needs_min.bounds_from_below(le) &&
-             !gr_cgs_needs_min.bounds_from_above(le) &&
-	       !gr_cgs_needs_min.bounds_from_below(le)
-     );
+   bool ok = !gr_gs_min.bounds_from_above(le)
+     && !gr_gs_min.bounds_from_below(le)
+     && !gr_gs_needs_min.bounds_from_above(le)
+     && !gr_gs_needs_min.bounds_from_below(le)
+     && !gr_cgs_needs_min.bounds_from_above(le)
+     && !gr_cgs_needs_min.bounds_from_below(le);
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -365,14 +351,12 @@ test11() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A + B - 3*C;
-  bool ok =
-    (gr_gs_min.bounds_from_above(le) &&
-       gr_gs_min.bounds_from_below(le) &&
-         gr_gs_needs_min.bounds_from_above(le) &&
-	   gr_gs_needs_min.bounds_from_below(le) &&
-             gr_cgs_needs_min.bounds_from_above(le) &&
-	       gr_cgs_needs_min.bounds_from_below(le)
-     );
+  bool ok = gr_gs_min.bounds_from_above(le)
+    && gr_gs_min.bounds_from_below(le)
+    && gr_gs_needs_min.bounds_from_above(le)
+    && gr_gs_needs_min.bounds_from_below(le)
+    && gr_cgs_needs_min.bounds_from_above(le)
+    && gr_cgs_needs_min.bounds_from_below(le);
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
@@ -410,14 +394,12 @@ test12() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = A + 2*B + 3*C + 4*D + 6*F;
-  bool ok =
-    (gr_gs_min.bounds_from_above(le) &&
-       gr_gs_min.bounds_from_below(le) &&
-         gr_gs_needs_min.bounds_from_above(le) &&
-	   gr_gs_needs_min.bounds_from_below(le) &&
-             gr_cgs_needs_min.bounds_from_above(le) &&
-	       gr_cgs_needs_min.bounds_from_below(le)
-     );
+  bool ok = gr_gs_min.bounds_from_above(le)
+    && gr_gs_min.bounds_from_below(le)
+    && gr_gs_needs_min.bounds_from_above(le)
+    && gr_gs_needs_min.bounds_from_below(le)
+    && gr_cgs_needs_min.bounds_from_above(le)
+    && gr_cgs_needs_min.bounds_from_below(le);
 
   print_congruences(gr_gs_min, "*** gr_gs_min **");
   print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min **");
