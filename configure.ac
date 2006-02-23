@@ -750,9 +750,13 @@ AC_PROG_LIBTOOL
 AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
 AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
 
-# Checks for programs.
+# Checks for md5sum.
 AC_CHECK_PROG(MD5SUM, md5sum, md5sum)
 AM_CONDITIONAL(HAVE_MD5SUM, test x$MD5SUM = xmd5sum)
+if test x$MD5SUM = xmd5sum
+then
+  AC_TEXT_MD5SUM
+fi
 
 # Check for the GLPK library.
 AC_LANG_PUSH(C)
@@ -790,7 +794,6 @@ then
 fi
 
 # System-dependent adjustments.
-text_md5sum="$MD5SUM -t"
 no_undefined=no
 
 case "${host_cpu}" in
@@ -815,7 +818,6 @@ darwin*)
     CFLAGS="$CFLAGS -Wno-long-double"
     CXXFLAGS="$CXXFLAGS -Wno-long-double"
   fi
-  text_md5sum="$MD5SUM"
   ;;
 cygwin)
   no_undefined=yes
@@ -829,7 +831,6 @@ AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
 AC_SUBST(coefficient_mnemonic)
-AC_SUBST(text_md5sum)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
