@@ -60,6 +60,14 @@ print_constraints(const Constraint_System& cs,
 }
 
 void
+print_congruence(const Congruence& c,
+		 const std::string& intro, std::ostream& s) {
+  if (!intro.empty())
+    s << intro << "\n";
+  s << c << std::endl;
+}
+
+void
 print_congruences(const Congruence_System& cs,
 		  const std::string& intro, std::ostream& s) {
   if (!intro.empty())

@@ -30,10 +30,10 @@ bool
 test01() {
   Grid gr(7, EMPTY);
 
-  print_congruences(gr, "*** gr ***");
-
   bool ok = (gr.bounds_from_above(Linear_Expression(0))
 	     && gr.bounds_from_below(Linear_Expression(0)));
+
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -44,10 +44,10 @@ bool
 test02() {
   Grid gr(0, EMPTY);
 
-  print_congruences(gr, "*** gr ***");
-
   bool ok = (gr.bounds_from_above(Linear_Expression(3))
 	     && gr.bounds_from_below(Linear_Expression(3)));
+
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -58,10 +58,10 @@ bool
 test03() {
   Grid gr(0);
 
-  print_congruences(gr, "*** gr ***");
-
   bool ok = (gr.bounds_from_above(Linear_Expression(1))
 	     && gr.bounds_from_below(Linear_Expression(1)));
+
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }

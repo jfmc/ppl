@@ -22,34 +22,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
-
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-Variable E(4);
 
 // From congruences.
 
-void
-test1() {
+bool
+test01() {
+  Variable B(1);
+  Variable A(0);
+
   Congruence_System cgs;
   cgs.insert((A %= 0) / 2);
 
   Grid gr1(cgs);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   cgs.clear();
   cgs.insert((A %= 1) / 2);
 
   Grid gr2(cgs);
 
-  gr1.concatenate_assign(gr2);
+  print_congruences(gr2, "*** gr2 ***");
 
-  if (find_variation(gr1))
-    exit(1);
+  gr1.concatenate_assign(gr2);
 
   Congruence_System known_cgs;
   known_cgs.insert((A %= 0) / 2);
@@ -57,88 +53,93 @@ test1() {
 
   Grid known_gr(known_cgs);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.concatenate_assign(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // First grid empty.
 
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable C(2);
+
   Grid gr1(2, EMPTY);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Congruence_System cgs;
   cgs.insert((A + 0*C %= 0) / 2);
 
   Grid gr2(cgs);
 
-  gr1.concatenate_assign(gr2);
+  print_congruences(gr2, "*** gr2 ***");
 
-  if (find_variation(gr1))
-    exit(1);
+  gr1.concatenate_assign(gr2);
 
   Grid known_gr(5, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.concatenate_assign(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Second grid empty.
 
-void
-test3() {
+bool
+test03() {
+  Variable A(0);
+  Variable C(2);
+
   Congruence_System cgs;
   cgs.insert((A + 0*C %= 0) / 2);
 
   Grid gr1(cgs);
 
+  print_congruences(gr1, "*** gr1 ***");
+
   Grid gr2(2, EMPTY);
+
+  print_congruences(gr2, "*** gr2 ***");
 
   gr1.concatenate_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(5, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.concatenate_assign(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // First grid a universe.
 
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   Grid gr1(1, UNIVERSE);
 
   Grid_Generator_System gs;
   gs.insert(grid_point(A));
   gs.insert(grid_point(A + C));
 
+  print_generators(gr1, "*** gr1 ***");
+
   Grid gr2(gs);
 
-  gr1.concatenate_assign(gr2);
+  print_generators(gr2, "*** gr2 ***");
 
-  if (find_variation(gr1))
-    exit(1);
+  gr1.concatenate_assign(gr2);
 
   Grid_Generator_System known_gs;
   known_gs.insert(grid_point(B));
@@ -147,25 +148,30 @@ test4() {
 
   Grid known_gr(known_gs);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.concatenate_assign(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // From generators.
 
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+
   Grid_Generator_System gs;
   gs.insert(grid_point(A));
   gs.insert(grid_point(A + C));
 
   Grid gr1(gs);
+
+  print_generators(gr1, "*** gr1 ***");
 
   gs.clear();
   gs.insert(grid_point(0*B));
@@ -173,10 +179,9 @@ test5() {
 
   Grid gr2(gs);
 
-  gr1.concatenate_assign(gr2);
+  print_generators(gr2, "*** gr2 ***");
 
-  if (find_variation(gr1))
-    exit(1);
+  gr1.concatenate_assign(gr2);
 
   Congruence_System known_cgs;
   known_cgs.insert((A == 1) / 0);
@@ -187,126 +192,123 @@ test5() {
 
   Grid known_gr(known_cgs);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.concatenate_assign(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // First grid empty via the congruence system.
 
-void
-test6() {
+bool
+test06() {
+  Variable A(0);
+
   Grid gr1(1);
   gr1.add_congruence((A %= 0) / 2);
   gr1.add_congruence((A %= 1) / 2);
 
+  print_congruences(gr1, "*** gr1 ***");
+
   Grid gr2(2);
+
+  print_congruences(gr2, "*** gr2 ***");
 
   gr1.concatenate_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(3, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.concatenate_assign(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Second grid empty via the congruence system.
 
-void
-test7() {
+bool
+test07() {
+  Variable A(0);
+
   Grid gr1(2);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(1);
   gr2.add_congruence((A %= 0) / 2);
   gr2.add_congruence((A %= 1) / 2);
 
-  gr1.concatenate_assign(gr2);
+  print_congruences(gr2, "*** gr2 ***");
 
-  if (find_variation(gr1))
-    exit(1);
+  gr1.concatenate_assign(gr2);
 
   Grid known_gr(3, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.concatenate_assign(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Zero dimension universe.
 
-void
-test8() {
+bool
+test08() {
+  Variable A(0);
+
   Grid gr1(0);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(1);
   gr2.add_congruence((A %= 0) / 2);
 
-  gr1.concatenate_assign(gr2);
+  print_congruences(gr2, "*** gr2 ***");
 
-  if (find_variation(gr1))
-    exit(1);
+  gr1.concatenate_assign(gr2);
 
   Grid known_gr(1);
   known_gr.add_congruence((A %= 0) / 2);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.concatenate_assign(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Zero dimension empty.
 
-void
-test9() {
+bool
+test09() {
+  Variable A(0);
+
   Grid gr1(0, EMPTY);
+
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(1);
   gr2.add_congruence((A %= 0) / 2);
 
-  gr1.concatenate_assign(gr2);
+  print_congruences(gr2, "*** gr2 ***");
 
-  if (find_variation(gr1))
-    exit(1);
+  gr1.concatenate_assign(gr2);
 
   Grid known_gr(1, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.concatenate_assign(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Space dimension exception.
 
-void
+bool
 test10() {
   Grid gr1(7);
 
@@ -317,35 +319,33 @@ test10() {
   // This needs to allocate a lot of memory, in order to create the
   // integrality congruence.  The presence of the integrality
   // congruence is required by the conversion.
+
   gr2.add_space_dimensions_and_embed(Grid::max_space_dimension() - 1);
+  print_congruences(gr2, "*** gr2 ***");
 
   try {
     gr1.concatenate_assign(gr2);
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (const std::length_error& e) {}
+  catch (const std::length_error& e) {
+    nout << "max_space_dimension_exceeded: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "concatenate1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  //test10();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  //  NEW_TEST(test10);
+END_MAIN

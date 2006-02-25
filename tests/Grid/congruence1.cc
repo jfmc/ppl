@@ -22,13 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
-
-Variable A(0);
-Variable B(1);
-Variable C(2);
 
 class Test_Congruence : public Congruence {
 public:
@@ -40,322 +34,280 @@ public:
 
 // Negative inhomogeneous term.
 
-static void
-test1() {
+static bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Test_Congruence a((A + 2*B + 3*C %= 5) / 7);
-  if (find_variation(a))
-    exit(1);
   a.strong_normalize();
 
   Test_Congruence b((A %= 5 - 3*C - 2*B) / 7);
-  if (find_variation(b))
-    exit(1);
   b.strong_normalize();
 
-  if (a == b)
-    return;
+  bool ok (a == b);
 
-  nout << "Test_Congruences a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
 }
 
 // Positive inhomogeneous term.
 
-static void
-test2() {
+static bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Test_Congruence a((A + 2*B + 3*C %= -5) / 7);
-  if (find_variation(a))
-    exit(1);
   a.strong_normalize();
 
   Test_Congruence b((A %= -5 - 3*C - 2*B) / 7);
-  if (find_variation(b))
-    exit(1);
   b.strong_normalize();
 
-  if (a == b)
-    return;
+  bool ok (a == b);
 
-  nout << "Test_Congruences a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
 }
 
 // Common factors and reducible positive inhomogeneous term.
 
-static void
-test3() {
+static bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Test_Congruence a((16*A + 2*B + 8*C + 64 %= 0) / 4);
-  if (find_variation(a))
-    exit(1);
   a.strong_normalize();
 
   Test_Congruence b((16*A + 2*B %= - 64 - 8*C) / 4);
   b.strong_normalize();
-  if (find_variation(b))
-    exit(1);
 
-  if (a == b)
-    return;
+  bool ok (a == b);
 
-  nout << "Test_Congruences a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
 }
 
 // Negative first coefficient.
 
-static void
-test4() {
+static bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Test_Congruence a((- A + 2*B + 3*C %= 5) / 7);
-  if (find_variation(a))
-    exit(1);
   a.strong_normalize();
 
   Test_Congruence b((- A %= - 2*B + 5 - 3*C) / 7);
-  if (find_variation(b))
-    exit(1);
   b.strong_normalize();
 
-  if (a == b)
-    return;
+  bool ok (a == b);
 
-  nout << "Test_Congruences a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
 }
 
 // Constructed with only the %= operator.
 
-static void
-test5() {
+static bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Test_Congruence c(A + 4*B + 3*C %= 5);
   Test_Congruence a(c);
   //Test_Congruence a = (A + 4*B + 3*C %= 5);
   //Test_Congruence a(A + 4*B + 3*C %= 5);
-  if (find_variation(a))
-    exit(1);
   a.strong_normalize();
 
   Test_Congruence b(A + 4*B %= 5 - 3*C);
-  if (find_variation(b))
-    exit(1);
   b.strong_normalize();
 
-  if (a == b)
-    return;
+  bool ok (a == b);
 
-  nout << "Test_Congruences a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
 }
 
 // Equality congruence (a modulus of 0).
 
-static void
-test6() {
+static bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Test_Congruence a((3*A + 24*B + 3*C %= -19) / 0);
-  if (find_variation(a))
-    exit(1);
   a.strong_normalize();
 
   Test_Congruence b((3*A + 24*B %= -19 - 3*C) / 0);
-  if (find_variation(b))
-    exit(1);
   b.strong_normalize();
 
-  if (a == b)
-    return;
+  bool ok (a == b);
 
-  nout << "Test_Congruences a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
 }
 
 // Constructed from a Constraint with the `/' operator.
 
-static void
-test7() {
+static bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Test_Congruence a((A + 4*B + 3*C == 17) / 3);
-  if (find_variation(a))
-    exit(1);
   a.strong_normalize();
 
   Test_Congruence b((A + 4*B == 17 - 3*C) / 3);
-  if (find_variation(b))
-    exit(1);
   b.strong_normalize();
 
-  if (a == b)
-    return;
+  bool ok (a == b);
 
-  nout << "Test_Congruences a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
 }
 
 // Constructed from a Constraint.
 
-static void
-test8() {
+static bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Test_Congruence a(A + 4*B + 3*C == 17);
-  if (find_variation(a))
-    exit(1);
   a.strong_normalize();
 
   Test_Congruence b(A + 4*B == 17 - 3*C);
-  if (find_variation(b))
-    exit(1);
   b.strong_normalize();
 
-  if (a == b)
-    return;
+  bool ok (a == b);
 
-  nout << "Test_Congruences a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
 }
 
 // Set modulus with `/='.
 
-static void
-test9() {
+static bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Test_Congruence a(A + 4*B + 3*C == 17);
   a /= 3;
-  if (find_variation(a))
-    exit(1);
   a.strong_normalize();
 
   Test_Congruence b(A + 4*B == 17 - 3*C);
   b /= 3;
-  if (find_variation(b))
-    exit(1);
   b.strong_normalize();
 
-  if (a == b)
-    return;
+  bool ok (a == b);
 
-  nout << "Test_Congruences a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
 }
 
 // is_trivial_true and is_trivial_false.
 
-static void
+static bool
 test10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Test_Congruence a(0*A + 0*B + 0*C %= 17);
-  if (find_variation(a))
-    exit(1);
-  if (!a.is_trivial_true()) {
-    nout << "is_trivial_true(" << a << ") should have returned true." << endl;
-    exit(1);
-  }
-  if (a.is_trivial_false()) {
-    nout << "is_trivial_false(" << a << ") should have returned false." << endl;
-    exit(1);
-  }
+
+  bool ok = (a.is_trivial_true()) && (!a.is_trivial_false());
+
+  print_congruence(a, "*** a(0*A + 0*B + 0*C %= 17) ***");
 
   a = Test_Congruence((0*A + 0*B + 0*C %= 0) / 3);
-  if (find_variation(a))
-    exit(1);
-  if (!a.is_trivial_true()) {
-    nout << "is_trivial_true(" << a << ") should have returned true." << endl;
-    exit(1);
-  }
-  if (a.is_trivial_false()) {
-    nout << "is_trivial_false(" << a << ") should have returned false." << endl;
-    exit(1);
-  }
+  ok &= a.is_trivial_true()
+    && !a.is_trivial_false();
 
   a = Test_Congruence((0*A + 0*B + 8 %= 0) / 4);
-  if (find_variation(a))
-    exit(1);
-  if (!a.is_trivial_true()) {
-    nout << "is_trivial_true(" << a << ") should have returned true." << endl;
-    exit(1);
-  }
-  if (a.is_trivial_false()) {
-    nout << "is_trivial_false(" << a << ") should have returned false." << endl;
-    exit(1);
-  }
+  ok &= a.is_trivial_true()
+    && !a.is_trivial_false();
+
+  print_congruence(a, "*** a = Test_Congruence((0*A + 0*B + 8 %= 0) / 4) ***");
 
   a = Test_Congruence(0*A + 0*B %= 17);
   a /= 0;
-  if (find_variation(a))
-    exit(1);
-  if (a.is_trivial_true()) {
-    nout << "is_trivial_true(" << a << ") should have returned false." << endl;
-    exit(1);
-  }
-  if (!a.is_trivial_false()) {
-    nout << "is_trivial_false(" << a << ") should have returned true." << endl;
-    exit(1);
-  }
+  ok &= !a.is_trivial_true()
+    && a.is_trivial_false();
+
+  print_congruence(a, "*** a = Test_Congruence(0*A + 0*B %= 17) ***");
 
   a = Test_Congruence((0*A + 0*B + 3 %= 0) / 0);
   a.strong_normalize();
-  if (find_variation(a))
-    exit(1);
-  if (a.is_trivial_true()) {
-    nout << "is_trivial_true(" << a << ") should have returned false." << endl;
-    exit(1);
-  }
-  if (!a.is_trivial_false()) {
-    nout << "is_trivial_false(" << a << ") should have returned true." << endl;
-    exit(1);
-  }
+  ok &= !a.is_trivial_true()
+    && a.is_trivial_false();
+
+  print_congruence(a, "*** a = Test_Congruence((0*A + 0*B + 3 %= 0) / 0) ***");
 
   a = Test_Congruence((0*A + 0*B + 4 %= 0) / 3);
   a.strong_normalize();
-  if (find_variation(a))
-    exit(1);
-  if (a.is_trivial_true()) {
-    nout << "is_trivial_true(" << a << ") should have returned false." << endl;
-    exit(1);
-  }
-  if (!a.is_trivial_false()) {
-    nout << "is_trivial_false(" << a << ") should have returned true." << endl;
-    exit(1);
-  }
+  ok &= !a.is_trivial_true()
+    && a.is_trivial_false();
+
+  print_congruence(a, "*** a = Test_Congruence((0*A + 0*B + 4 %= 0) / 3) ***");
+
+  return ok;
 }
 
 // Negative moduli.
 
-static void
+static bool
 test11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Test_Congruence a((A + 4*B + 3*C %= -4) / -3);
   a.strong_normalize();
-  if (find_variation(a))
-    exit(1);
 
   Test_Congruence b((A + 4*B %= -1 - 3*C) / -3);
-  if (find_variation(b))
-    exit(1);
   b.strong_normalize();
 
-  if (a == b)
-    return;
+  bool ok (a == b);
 
-  nout << "Test_Congruences a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
 }
 
 // Negative modulus and negative first coefficient.
 
-static void
+static bool
 test12() {
   Variable x0(0);
   Variable x1(1);
@@ -364,85 +316,75 @@ test12() {
   Variable x4(4);
 
   Test_Congruence a((-x0 + 4*x1 + 3*x2 + 17*x3 + 2*x4 %= -4) / -3);
-  if (find_variation(a))
-    exit(1);
   a.strong_normalize();
 
   Test_Congruence b((-x0 + 4*x1 %= - 3*x2 - 17*x3 - 2*x4 - 4) / -3);
   b.strong_normalize();
-  if (find_variation(b))
-    exit(1);
 
-  if (a == b)
-    return;
+  bool ok (a == b);
 
-  nout << "Test_Congruences a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
 }
 
 // Create from empty linear expression.
 
-static void
+static bool
 test13() {
   Linear_Expression le;
   Test_Congruence a(le %= le);
   a.strong_normalize();
-  if (find_variation(a))
-    exit(1);
 
   Test_Congruence b(le %= 0);
   b.strong_normalize();
-  if (find_variation(b))
-    exit(1);
 
-  if (a == b)
-    return;
+  bool ok (a == b);
 
-  nout << "Test_Congruences a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
 }
 
 // Space dimension exception.
 
-static void
+static bool
 test14() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(2);
 
   try {
     gr.add_congruence(A + C %= 0);
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (std::invalid_argument) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "congruence1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+END_MAIN

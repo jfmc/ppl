@@ -24,74 +24,58 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
-
-Variable A(0);
-Variable B(1);
-Variable C(2);
 
 #define SPACE_DIM 2
 
 // Universe box.
 
-void
-test1() {
+bool
+test01() {
   Bounding_Box box(SPACE_DIM);
 
   Grid gr(box, From_Covering_Box());
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(SPACE_DIM, EMPTY);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr(box, From_Covering_Box()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // The box is the positive quadrant.
 
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
   Bounding_Box box(SPACE_DIM);
   box.raise_lower_bound(0, true, 0, 1);
   box.raise_lower_bound(1, true, 0, 1);
 
   Grid gr(box, From_Covering_Box());
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(SPACE_DIM);
   known_gr.add_congruence(A == 0);
   known_gr.add_congruence(B == 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr(box, From_Covering_Box()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // A bounded box in 2D.
 
-void
-test3() {
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
   Bounding_Box box(SPACE_DIM);
   box.raise_lower_bound(0, true, -2, 3);
   box.lower_upper_bound(0, true, 4, 1);
@@ -100,29 +84,25 @@ test3() {
 
   Grid gr(box, From_Covering_Box());
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(SPACE_DIM);
   known_gr.add_congruence((3*A %= -2) / 14);
   known_gr.add_congruence((B %= -10) / 14);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr(box, From_Covering_Box()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // A 3D box which is bounded in 2D.
 
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Bounding_Box box(3);
   box.raise_lower_bound(0, true, -2, 3);
   box.lower_upper_bound(0, true, 4, 1);
@@ -132,52 +112,39 @@ test4() {
 
   Grid gr(box, From_Covering_Box());
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(3, EMPTY);
   known_gr.add_generator(grid_point(-2*A - 30*B + 15*C, 3));
   known_gr.add_generator(grid_point(4*A - 10*B + 5*C));
   known_gr.add_generator(grid_point(-2*A + 12*B + 15*C, 3));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr(box, From_Covering_Box()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Zero-dimensional box.
 
-void
-test5() {
+bool
+test05() {
   Bounding_Box box(0);
 
   Grid gr(box, From_Covering_Box());
 
   Grid known_gr;
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr(box, From_Covering_Box()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Empty box in 2D.
 
-void
-test6() {
+bool
+test06() {
   Bounding_Box box(2);
   box.set_empty();
 
@@ -185,22 +152,17 @@ test6() {
 
   Grid known_gr(2, EMPTY);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr(box, From_Covering_Box()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // A box which is a point.
 
-void
-test7() {
+bool
+test07() {
   Bounding_Box box(2);
   box.raise_lower_bound(0, true, 2, 1);
   box.lower_upper_bound(0, true, 2, 1);
@@ -211,22 +173,20 @@ test7() {
 
   Grid known_gr(2);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr(box, From_Covering_Box()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Unit square.
 
-void
-test8() {
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
   Bounding_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.lower_upper_bound(0, true, 1, 1);
@@ -241,22 +201,20 @@ test8() {
 
   Grid known_gr(known_cgs);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr(box, From_Covering_Box()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Simple box with divisor.
 
-void
-test9() {
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
   Bounding_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.raise_lower_bound(1, true, 0, 1);
@@ -268,22 +226,20 @@ test9() {
   known_gr.add_congruence(A == 0);
   known_gr.add_congruence(2*B %= 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr(box, From_Covering_Box()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Box with a dimension bounded only from above.
 
-void
+bool
 test10() {
+  Variable A(0);
+  Variable B(1);
+
   Bounding_Box box(2);
   box.lower_upper_bound(0, true, 3, 7);
   box.raise_lower_bound(1, true, 0, 1);
@@ -295,22 +251,17 @@ test10() {
   known_gr.add_congruence(7*A == 3);
   known_gr.add_congruence(2*B %= 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr(box, From_Covering_Box()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Box with a dimension having an open bound, where the open bound
 // makes the box empty.
 
-void
+bool
 test11() {
   Bounding_Box box(2);
   box.raise_lower_bound(1, true, 0, 1);
@@ -318,27 +269,21 @@ test11() {
   box.raise_lower_bound(1, false, 1, 2);
   box.lower_upper_bound(1, true, 1, 2);
 
-  bool caught = false;
-
   try {
     Grid gr(box, From_Covering_Box());
   }
-  catch (std::invalid_argument e) {
-    caught = true;
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
   }
-
-  if (caught)
-    return;
-
-  nout << "Construction should have thrown std::invalid_argument."
-       << endl;
-
-  exit(1);
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // Zero-dimensional empty box.
 
-void
+bool
 test12() {
   Bounding_Box box(0);
   box.set_empty();
@@ -347,39 +292,26 @@ test12() {
 
   Grid known_gr(0, EMPTY);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr(box, From_Covering_Box()) ***");
 
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "coveringbox1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+END_MAIN

@@ -22,68 +22,49 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
 // Universe and empty grids of the first ten dimensions.
 
-void
-test1() {
+bool
+test01() {
+  bool ok = true;
   for (unsigned int dim = 0; dim < 10; ++dim) {
+
+    nout << "dimension: " << dim << endl;
 
     // Universe.
 
     Grid gr(dim);
+    print_congruences(gr, "*** gr ***");
 
     Grid gr_copy = gr;
-
-    if (find_variation(gr_copy))
-      exit(1);
+    print_congruences(gr_copy, "*** gr_copy ***");
 
     Grid known_gr(dim);
 
-    if (gr_copy == known_gr) {
+    ok &= (gr_copy == known_gr);
+    if (ok) {
 
       // Empty.
 
       gr = Grid(dim, EMPTY);
+      print_generators(gr, "*** gr ***");
 
       Grid gr_copy = gr;
-
-      if (find_variation(gr_copy))
-	exit(1);
+      print_generators(gr_copy, "*** gr_copy ***");
 
       Grid known_gr(dim, EMPTY);
 
-      if (gr_copy == known_gr)
-	continue;
-
-      nout << "Copied empty grid should equal known grid." << endl;
+      ok &= (gr_copy == known_gr);
     }
-    else
-      nout << "Copied universe grid should equal known grid." << endl;
+  };
 
-    nout << "dimension: " << dim << endl
-	 << " grid:" << endl << gr_copy << endl
-	 << "known:" << endl << known_gr << endl;
-
-    dump_grids(gr, known_gr);
-
-    exit(1);
-  }
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "copyconstruct1:" << endl;
-
-  DO_TEST(test1);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+END_MAIN

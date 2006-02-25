@@ -58,8 +58,8 @@ certificate1 \
 concatenate1 \
 congruence1 \
 congruences1 \
-congruencesystem1 congruencesystem2 \
-contains1 contains2 \
+congruencesystem1 \
+contains1 \
 copyconstruct1 \
 discrete1 \
 disjoint1 \
@@ -139,10 +139,8 @@ congruence1_SOURCES = congruence1.cc
 congruences1_SOURCES = congruences1.cc
 
 congruencesystem1_SOURCES = congruencesystem1.cc
-congruencesystem2_SOURCES = congruencesystem2.cc
 
 contains1_SOURCES = contains1.cc
-contains2_SOURCES = contains2.cc
 
 copyconstruct1_SOURCES = copyconstruct1.cc
 

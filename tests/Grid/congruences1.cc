@@ -22,19 +22,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
-
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
 
 // Empty grid.
 
-void
-test1() {
+bool
+test01() {
   Grid gr1(7, EMPTY);
 
   Grid known_gr = gr1;
@@ -43,46 +36,39 @@ test1() {
 
   Grid gr2(cgs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(cgs, "*** cgs ***");
+  print_congruences(gr2, "*** gr2(cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Universe grid.
 
-void
-test2() {
+bool
+test02() {
   Grid gr1(7);
 
   Grid known_gr = gr1;
 
   Congruence_System cgs = gr1.congruences();
 
+  print_congruences(cgs, "*** cgs ***");
+
   Grid gr2(cgs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(gr2, "*** gr2(cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Zero dimension empty grid.
 
-void
-test3() {
+bool
+test03() {
   Grid gr1(0, EMPTY);
 
   Grid known_gr = gr1;
@@ -91,22 +77,18 @@ test3() {
 
   Grid gr2(cgs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(cgs, "*** cgs ***");
+  print_congruences(gr2, "*** gr2(cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Zero dimension universe grid.
 
-void
-test4() {
+bool
+test04() {
   Grid gr1(0);
 
   Grid known_gr = gr1;
@@ -115,22 +97,21 @@ test4() {
 
   Grid gr2(cgs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(cgs, "*** cgs ***");
+  print_congruences(gr2, "*** gr2(cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Skew grid in 3D.
 
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr1(3);
   gr1.add_congruence((A + B %= 3) / 7);
   gr1.add_congruence((A %= 0) / 5);
@@ -141,49 +122,44 @@ test5() {
 
   Grid gr2(cgs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(cgs, "*** cgs ***");
+  print_congruences(gr2, "*** gr2(cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // 3D rectilinear grid defined by generators.
 
-void
-test6() {
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr1(3);
   gr1.add_generator(grid_point(10*B));
   gr1.add_generator(grid_point(10*A + 10*B));
 
   Grid known_gr = gr1;
 
-  Congruence_System gs = gr1.congruences();
+  Congruence_System cgs = gr1.congruences();
 
-  Grid gr2(gs);
+  Grid gr2(cgs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(cgs, "*** cgs ***");
+  print_congruences(gr2, "*** gr2(cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Get a reference to the congruences, empty the grid, use the
 // reference to create a new grid.
 
-void
-test7() {
+bool
+test07() {
   Grid gr1(3);
   gr1.add_congruence(Congruence::zero_dim_integrality());
 
@@ -197,23 +173,19 @@ test7() {
 
   Grid gr2(cgs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(cgs, "*** cgs ***");
+  print_congruences(gr2, "*** gr2(cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // In zero dimensions get a reference to the universe congruences,
 // empty the grid, use the reference to create a new grid.
 
-void
-test8() {
+bool
+test08() {
   Grid gr1(0);
   gr1.add_congruence(Congruence::zero_dim_integrality());
 
@@ -227,35 +199,23 @@ test8() {
 
   Grid gr2(cgs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(cgs, "*** cgs ***");
+  print_congruences(gr2, "*** gr2(cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "congruences1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+END_MAIN

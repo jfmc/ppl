@@ -32,8 +32,12 @@ Variable C(2);
 
 // Compare a grid to one that is more constrained (due to equalities).
 
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3);
   gr1.add_congruence(A + C %= 0);
   gr1.add_congruence(B == 3);
@@ -46,21 +50,23 @@ test1() {
 
   Grid_Certificate grc2(gr2);
 
-  if (grc1.compare(grc2) == -1)
-    return;
+  bool ok = grc1.compare(grc2) == -1;
 
-  nout << "gr1 should compare less than gr2." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-  exit(1);
+  return ok;
 }
 
 // Compare a grid to one that is more constrained (due to proper
 // congruences).
 
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3);
   gr1.add_congruence(A + C %= 0);
   gr1.add_congruence(B == 3);
@@ -71,20 +77,22 @@ test2() {
   gr2.add_generator(grid_point(3*B + A));
   gr2.add_generator(grid_point(3*B + A + C));
 
-  if (grc1.compare(gr2) == -1)
-    return;
+  bool ok = grc1.compare(gr2) == -1;
 
-  nout << "gr1 should compare less than gr2." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-  exit(1);
+  return ok;
 }
 
 // Compare a grid to an equally constrained one.
 
-void
-test3() {
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3);
   gr1.add_congruence(A + C %= 0);
   gr1.add_congruence(B == 3);
@@ -98,24 +106,23 @@ test3() {
 
   Grid_Certificate grc2(gr2);
 
-  if (grc1.compare(grc2) == 0)
-    if (grc1.is_stabilizing(gr2))
-      nout << "gr1 is stabilizing with respect to gr2." << endl;
-    else
-      return;
-  else
-    nout << "gr1 should compare equal to gr2." << endl;
+  bool ok = grc1.compare(grc2) == 0
+    && !grc1.is_stabilizing(gr2);
 
-  nout << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-  exit(1);
+  return ok;
 }
 
 // Compare a grid to one that is less constrained (due to equalities).
 
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(3*B + A));
   gr1.add_generator(grid_point(3*B + A + C));
@@ -126,25 +133,24 @@ test4() {
   gr2.add_congruence(A + C %= 0);
   gr2.add_congruence(B == 3);
 
-  if (grc1.compare(gr2) == 1)
-    if (grc1.is_stabilizing(gr2))
-      return;
-    else
-      nout << "gr1 should be stabilising with respect to gr2." << endl;
-  else
-    nout << "gr1 should compare greater than gr2." << endl;
+  bool ok = grc1.compare(gr2) == 1
+    && grc1.is_stabilizing(gr2);
 
-  nout << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-  exit(1);
+  return ok;
 }
 
 // Compare a grid to one that is less constrained (due to proper
 // congruences).
 
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3);
   gr1.add_congruence((A + C %= 0) / 2);
   gr1.add_congruence((B %= 0) / 3);
@@ -160,24 +166,19 @@ test5() {
 
   Grid_Certificate::Compare cmp;
 
-  if (cmp(grc1, grc2))
-    if (grc1.is_stabilizing(gr2))
-      return;
-    else
-      nout << "gr1 should be stabilising with respect to gr2." << endl;
-  else
-    nout << "gr1 should compare greater than gr2." << endl;
+  bool ok = cmp(grc1, grc2)
+    && grc1.is_stabilizing(gr2);
 
-  nout << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-  exit(1);
+  return ok;
 }
 
 // Compare certificates for zero dimension universe grids.
 
-void
-test6() {
+bool
+test06() {
   Grid gr1(0);
 
   Grid_Certificate grc1(gr1);
@@ -186,23 +187,23 @@ test6() {
 
   Grid_Certificate grc2(gr2);
 
-  if (grc1.compare(grc2) == 0)
-    return;
+  bool ok (grc1.compare(grc2) == 0);
 
-  nout << "gr1 should compare equal to gr2." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-  dump_grids(gr1, gr2);
-
-  exit(1);
+  return ok;
 }
 
 // Compare a grid to one that is more constrained, where the minimized
 // generators are used for the comparison.
 
-void
-test7() {
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3);
   gr1.add_congruence(A + C %= 0);
   gr1.add_congruence(B == 3);
@@ -217,32 +218,22 @@ test7() {
   gr2.affine_image(A, 1*A);
   gr2.minimized_generators();
 
-  if (grc1.compare(gr2) == -1)
-    return;
+  bool ok = (grc1.compare(gr2) == -1);
 
-  nout << "gr1 should compare less than gr2." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-  exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "certificate1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+END_MAIN
