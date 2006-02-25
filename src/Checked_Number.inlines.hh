@@ -458,7 +458,7 @@ Checked_Number<T, Policy>::operator=(const From& y) {
 template <typename T, typename Policy>
 inline Checked_Number<T, Policy>&
 Checked_Number<T, Policy>::operator=(const Not_A_Number& y) {
-  Policy::handle_result(assign_r(*this, y, Policy::ROUND_IGNORE));
+  Policy::handle_result(assign_r(*this, y, ROUND_IGNORE));
   return *this;
 }
 template <typename T, typename Policy>
