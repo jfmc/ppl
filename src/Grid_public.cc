@@ -443,7 +443,7 @@ PPL::Grid::relation_with(const Grid_Generator& g) const {
     : Poly_Gen_Relation::nothing();
 }
 
-inline bool
+bool
 PPL::Grid::is_empty() const {
   if (marked_empty())
     return true;
