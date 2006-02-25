@@ -1,4 +1,4 @@
-/* Test building a polyhedron from closed interval-based bounding box.
+/* Test NNC_Polyhedron::shrink_bounding_box().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,236 +21,198 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include "BBox.hh"
 
 namespace {
 
-// The box is the xy plane.
-void
-test1() {
-  Bounding_Box box(2);
+bool
+test01() {
+  // An unbounded NNC polyhedron in 4D but bounded in 2D
+  // with strict inequality and closure points at the lower bound.
+  Variable x(1);
+  Variable y(2);
+  Variable z(3);
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  NNC_Polyhedron ph(4);
+  ph.add_constraint(3 * x + y > 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
+  ph.add_constraint(z >= 5);
 
-  C_Polyhedron known_ph(box.space_dimension());
+  BBox pbox(ph.space_dimension());
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
-  print_generators(ph, "*** test1 ph ***");
-  print_generators(known_ph, "*** test1 known_ph ***");
+  BBox nbox(ph.space_dimension());
+  ph.shrink_bounding_box(nbox);
 
-  if (ph != known_ph)
-    exit(1);
+  print_constraints(ph, "*** test01 ph ***");
+  nbox.print(nout, "*** test01 nbox ***");
+  pbox.print(nout, "*** test01 pbox ***");
+
+  BBox known_nbox(4);
+  known_nbox.raise_lower_bound(1, false, -2, 3);
+  known_nbox.lower_upper_bound(1, true, 4, 1);
+  known_nbox.raise_lower_bound(2, false, -10, 1);
+  known_nbox.lower_upper_bound(2, true, 4, 1);
+  known_nbox.raise_lower_bound(3, true, 5, 1);
+
+  BBox known_pbox(4);
+  known_pbox.lower_upper_bound(1, true, 4, 1);
+  known_pbox.lower_upper_bound(2, true, 4, 1);
+  known_pbox.raise_lower_bound(3, true, 5, 1);
+
+  known_nbox.print(nout, "*** test9 known_nbox ***");
+  known_pbox.print(nout, "*** test9 known_pbox ***");
+
+  return (nbox == known_nbox && pbox == known_pbox && nbox <= pbox);
 }
 
-// This box is the closed +ve quadrant.
-void
-test2() {
-  Bounding_Box box(2);
-  box.raise_lower_bound(0, true, 0, 1);
-  box.raise_lower_bound(1, true, 0, 1);
-
-  C_Polyhedron ph(box, From_Bounding_Box());
-
+bool
+test02() {
+  // A bounded NNC polyhedron with strict inequalities
+  // causing upper and lower bounds of the box to be open.
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron known_ph(box.space_dimension());
-  known_ph.add_constraint(x >= 0);
-  known_ph.add_constraint(y >= 0);
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(3 * x + y >= 2);
+  ph.add_constraint(x < 4);
+  ph.add_constraint(y <= 4);
 
-  print_generators(ph, "*** test2 ph ***");
-  print_generators(known_ph, "*** test2 known_ph ***");
+  BBox pbox(ph.space_dimension());
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
-  if (ph != known_ph)
-    exit(1);
+  BBox nbox(ph.space_dimension());
+  ph.shrink_bounding_box(nbox);
+
+  print_constraints(ph, "*** test02 ph ***");
+  nbox.print(nout, "*** test02 nbox ***");
+  pbox.print(nout, "*** test02 pbox ***");
+
+  BBox known_nbox(2);
+  known_nbox.raise_lower_bound(0, true, -2, 3);
+  known_nbox.lower_upper_bound(0, false, 4, 1);
+  known_nbox.raise_lower_bound(1, false, -10, 1);
+  known_nbox.lower_upper_bound(1, true, 4, 1);
+
+  BBox known_pbox(2);
+  known_pbox.lower_upper_bound(0, false, 4, 1);
+  known_pbox.lower_upper_bound(1, true, 4, 1);
+
+  known_nbox.print(nout, "*** test02 known_nbox ***");
+  known_pbox.print(nout, "*** test02 known_pbox ***");
+
+  return (nbox == known_nbox && pbox == known_pbox && nbox <= pbox);
 }
 
-// A bounded box in 2D.
-void
-test3() {
-  Bounding_Box box(2);
-  box.raise_lower_bound(0, true, -2, 3);
-  box.lower_upper_bound(0, true, 4, 1);
-  box.raise_lower_bound(1, true, -10, 1);
-  box.lower_upper_bound(1, true, 12, 3);
-
-  C_Polyhedron ph(box, From_Bounding_Box());
-
+bool
+test03() {
+  // An empty polyhedron in 2D defined using strict constraints.
   Variable x(0);
   Variable y(1);
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(x > 0);
+  ph.add_constraint(x < 0);
+  ph.add_constraint(y > 0);
+  ph.add_constraint(y < 0);
 
-  C_Polyhedron known_ph(box.space_dimension());
-  known_ph.add_constraint(3*x >= -2);
-  known_ph.add_constraint(x <= 4);
-  known_ph.add_constraint(y <= 4);
-  known_ph.add_constraint(y >= -10);
+  Bounding_Box pbox(2);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
-  print_generators(ph, "*** test3 ph ***");
-  print_generators(known_ph, "*** test3 known_ph ***");
+  Bounding_Box nbox(2);
+  ph.shrink_bounding_box(nbox);
 
-  if (ph != known_ph)
-    exit(1);
+  NNC_Polyhedron known_ph(2, EMPTY);
+  NNC_Polyhedron known_pph(pbox, From_Bounding_Box());
+  NNC_Polyhedron known_nph(nbox, From_Bounding_Box());
+
+  print_generators(ph, "*** test03 ph ***");
+  print_generators(known_pph, "*** test03 known_pph ***");
+  print_generators(known_nph, "*** test03 known_nph ***");
+
+  return (ph == known_ph && ph == known_nph && ph == known_ph);
 }
 
-// This is a unbounded closed box in 4D but bounded in 2D.
-void
-test4() {
+bool
+test04() {
+  // An unbounded box in 4D but bounded in 2D with strict inequalities.
   Bounding_Box box(4);
-  box.raise_lower_bound(1, true, -2, 3);
+  box.raise_lower_bound(1, false, -2, 3);
   box.lower_upper_bound(1, true, 4, 1);
-  box.raise_lower_bound(2, true, -10, 1);
+  box.raise_lower_bound(2, false, -10, 1);
   box.lower_upper_bound(2, true, 12, 3);
   box.raise_lower_bound(3, true, 15, 3);
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  NNC_Polyhedron ph(box, From_Bounding_Box());
 
   Variable x(1);
   Variable y(2);
   Variable z(3);
 
-  C_Polyhedron known_ph(box.space_dimension());
-  known_ph.add_constraint(3*x >= -2);
+  NNC_Polyhedron known_ph(box.space_dimension());
+  known_ph.add_constraint(3*x > -2);
   known_ph.add_constraint(x <= 4);
   known_ph.add_constraint(y <= 4);
-  known_ph.add_constraint(y >= -10);
+  known_ph.add_constraint(y > -10);
   known_ph.add_constraint(z >= 5);
 
-  print_generators(ph, "*** test4 ph ***");
-  print_generators(known_ph, "*** test4 known_ph ***");
+  print_generators(ph, "*** test04 ph ***");
+  print_generators(known_ph, "*** test04 known_ph ***");
 
-  if (ph != known_ph)
-    exit(1);
+  return (ph == known_ph);
 }
 
-// This is a zero-dimensional box.
-void
-test5() {
-  Bounding_Box box(0);
+bool
+test05() {
+  // A bounded NNC polyhedron with strict inequalities
+  // causing upper and lower bounds of the box to be open.
+  Bounding_Box box(4);
+  box.raise_lower_bound(1, true, -2, 3);
+  box.lower_upper_bound(1, false, 4, 1);
+  box.raise_lower_bound(2, false, -10, 1);
+  box.lower_upper_bound(2, true, 12, 3);
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  NNC_Polyhedron ph(box, From_Bounding_Box());
 
-  C_Polyhedron known_ph;
+  Variable x(1);
+  Variable y(2);
 
-  print_generators(ph, "*** test5 ph ***");
-  print_generators(known_ph, "*** test5 known_ph ***");
+  NNC_Polyhedron known_ph(box.space_dimension());
+  known_ph.add_constraint(3*x >= -2);
+  known_ph.add_constraint(x < 4);
+  known_ph.add_constraint(y <= 4);
+  known_ph.add_constraint(y > -10);
 
-   if (ph != known_ph)
-     exit(1);
+  print_generators(ph, "*** test05 ph ***");
+  print_generators(known_ph, "*** test05 known_ph ***");
+
+  return (ph == known_ph);
 }
 
-// This is an empty closed box in 2D.
-void
-test6() {
+bool
+test06() {
+  // An empty box in 2D.
   Bounding_Box box(2);
   box.set_empty();
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  NNC_Polyhedron ph(box, From_Bounding_Box());
 
-  print_constraints(ph, "*** test6 ph ***");
+  print_constraints(ph, "*** test06 ph ***");
 
-  C_Polyhedron known_ph(2, EMPTY);
+  NNC_Polyhedron known_ph(2, EMPTY);
 
-  print_constraints(known_ph, "*** test6 known_ph ***");
+  print_constraints(known_ph, "*** test06 known_ph ***");
 
-  if (ph != known_ph)
-    exit(1);
-}
-
-// This box is a single point.
-void
-test7() {
-  Bounding_Box box(2);
-  box.raise_lower_bound(0, true, 2, 1);
-  box.lower_upper_bound(0, true, 2, 1);
-  box.raise_lower_bound(1, true, 4, 1);
-  box.lower_upper_bound(1, true, 4, 1);
-
-  C_Polyhedron ph(box, From_Bounding_Box());
-
-  Variable x(0);
-  Variable y(1);
-
-  C_Polyhedron known_ph(box.space_dimension());
-  known_ph.add_constraint(x == 2);
-  known_ph.add_constraint(y == 4);
-
-  print_generators(ph, "*** test7 ph ***");
-  print_generators(known_ph, "*** test7 known_ph ***");
-
-  if (ph != known_ph)
-    exit(1);
-}
-
-// This box is a closed unit square.
-void
-test8() {
-  Bounding_Box box(2);
-  box.raise_lower_bound(0, true, 0, 1);
-  box.lower_upper_bound(0, true, 1, 1);
-  box.raise_lower_bound(1, true, 0, 1);
-  box.lower_upper_bound(1, true, 1, 1);
-
-  C_Polyhedron ph(box, From_Bounding_Box());
-
-  Variable x(0);
-  Variable y(1);
-
-  Constraint_System known_cs;
-  known_cs.insert(x >= 0);
-  known_cs.insert(x <= 1);
-  known_cs.insert(y >= 0);
-  known_cs.insert(y <= 1);
-
-  C_Polyhedron known_ph(known_cs);
-
-  print_generators(ph, "*** test8 ph generators ***");
-  print_generators(known_ph, "*** test8 known_ph ***");
-
-  if (ph != known_ph)
-    exit(1);
-}
-
-// Constructs the polyhedron { x >= 0, x <= 1/2, y >= 0 }
-// from the corresponding box.
-void
-test9() {
-  Bounding_Box box(2);
-  box.raise_lower_bound(0, true, 0, 1);
-  box.lower_upper_bound(0, true, 1, 2);
-  box.raise_lower_bound(1, true, 0, 1);
-
-  C_Polyhedron ph(box, From_Bounding_Box());
-
-  print_generators(ph, "*** test9 ph ***");
-
-  Variable x(0);
-  Variable y(1);
-
-  C_Polyhedron known_ph(box.space_dimension());
-  known_ph.add_constraint(x >= 0);
-  known_ph.add_constraint(2*x <= 1);
-  known_ph.add_constraint(y >= 0);
-
-  print_generators(known_ph, "*** test9 known_ph ***");
-
-  if (ph != known_ph)
-    exit(1);
+  return (ph == known_ph);
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05); // This fails with int8_t and assertions.
+  NEW_TEST(test06);
+END_MAIN

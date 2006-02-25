@@ -84,7 +84,7 @@ ORIGINAL_TESTS = \
 	boundedaffinepreimage1 boundedaffinepreimage2 boundedaffinepreimage3 \
 	boundedbhrz03extrapolation1 \
 	boundedh79extrapolation1 \
-	boundingbox1 boundingbox2 boundingbox3 boundingbox4 boundingbox5 \
+	boundingbox1 boundingbox2 boundingbox3 \
 	bounds1 bounds2 \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	concatenate6 concatenate7 \
@@ -201,7 +201,7 @@ DERIVED_TESTS = \
 	nnc_boundedaffinepreimage3 \
 	nnc_boundedbhrz03extrapolation1 \
 	nnc_boundedh79extrapolation1 \
-	nnc_boundingbox1 nnc_boundingbox3 nnc_boundingbox5 \
+	nnc_boundingbox1 nnc_boundingbox2 \
 	nnc_bounds1 nnc_bounds2 \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
 	nnc_concatenate5 nnc_concatenate6 nnc_concatenate7 \
@@ -427,8 +427,6 @@ boundedh79extrapolation1_SOURCES = boundedh79extrapolation1.cc
 boundingbox1_SOURCES = boundingbox1.cc
 boundingbox2_SOURCES = boundingbox2.cc
 boundingbox3_SOURCES = boundingbox3.cc
-boundingbox4_SOURCES = boundingbox4.cc
-boundingbox5_SOURCES = boundingbox5.cc
 
 bounds1_SOURCES = bounds1.cc
 bounds2_SOURCES = bounds2.cc
@@ -892,10 +890,8 @@ nnc_boundedh79extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_boundingbox1_SOURCES = boundingbox1.cc
 nnc_boundingbox1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_boundingbox3_SOURCES = boundingbox3.cc
-nnc_boundingbox3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_boundingbox5_SOURCES = boundingbox5.cc
-nnc_boundingbox5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_boundingbox2_SOURCES = boundingbox2.cc
+nnc_boundingbox2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounds1_SOURCES = bounds1.cc
 nnc_bounds1_CXXFLAGS = $(DERIVED_CXXFLAGS)
