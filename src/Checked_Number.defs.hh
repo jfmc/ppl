@@ -475,6 +475,13 @@ private:
   T v;
 };
 
+template <typename T, typename Policy>
+bool is_not_a_number(const Checked_Number<T, Policy>& x);
+template <typename T, typename Policy>
+bool is_minus_infinity(const Checked_Number<T, Policy>& x);
+template <typename T, typename Policy>
+bool is_plus_infinity(const Checked_Number<T, Policy>& x);
+
 template <typename To>
 Result assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir);
 template <typename To>

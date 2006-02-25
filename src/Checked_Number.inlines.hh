@@ -276,6 +276,24 @@ Checked_Number<T, Policy>::classify(bool nan, bool inf, bool sign) const {
   return Checked::classify<Policy>(v, nan, inf, sign);
 }
 
+template <typename T, typename Policy>
+inline bool
+is_not_a_number(const Checked_Number<T, Policy>& x) {
+  return Checked::is_nan<Policy>(x.raw_value());
+}
+
+template <typename T, typename Policy>
+inline bool
+is_minus_infinity(const Checked_Number<T, Policy>& x) {
+  return Checked::is_minf<Policy>(x.raw_value());
+}
+
+template <typename T, typename Policy>
+inline bool
+is_plus_infinity(const Checked_Number<T, Policy>& x) {
+  return Checked::is_pinf<Policy>(x.raw_value());
+}
+
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline memory_size_type
