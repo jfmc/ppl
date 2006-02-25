@@ -34,14 +34,14 @@ namespace Checked {
 template <typename Policy>
 inline Result
 classify_mpq(const mpq_class& v, bool nan, bool inf, bool sign) {
-  if ((Policy::store_nan || Policy::store_infinity)
+  if ((Policy::handle_nan || Policy::handle_infinity)
       && ::sgn(v.get_den()) == 0) {
     int s = ::sgn(v.get_num());
-    if (Policy::store_nan && (nan || sign) && s == 0)
+    if (Policy::handle_nan && (nan || sign) && s == 0)
       return VC_NAN;
     if (!inf && !sign)
       return VC_NORMAL;
-    if (Policy::store_infinity) {
+    if (Policy::handle_infinity) {
       if (s < 0)
 	return inf ? VC_MINUS_INFINITY : V_LT;
       if (s > 0)
@@ -58,7 +58,7 @@ SPECIALIZE_CLASSIFY(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_nan_mpq(const mpq_class& v) {
-  return Policy::store_nan
+  return Policy::handle_nan
     && ::sgn(v.get_den()) == 0
     && ::sgn(v.get_num()) == 0;
 }
@@ -68,7 +68,7 @@ SPECIALIZE_IS_NAN(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_minf_mpq(const mpq_class& v) {
-  return Policy::store_infinity
+  return Policy::handle_infinity
     && ::sgn(v.get_den()) == 0
     && ::sgn(v.get_num()) < 0;
 }
@@ -78,7 +78,7 @@ SPECIALIZE_IS_MINF(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_pinf_mpq(const mpq_class& v) {
-  return Policy::store_infinity
+  return Policy::handle_infinity
     && ::sgn(v.get_den()) == 0
     && ::sgn(v.get_num()) > 0;
 }
@@ -97,11 +97,11 @@ template <typename Policy>
 inline Result
 set_special_mpq(mpq_class& v, Result r) {
   Result c = classify(r);
-  if (Policy::store_nan && c == VC_NAN) {
+  if (Policy::handle_nan && c == VC_NAN) {
     v.get_num() = 0;
     v.get_den() = 0;
   }
-  else if (Policy::store_infinity) {
+  else if (Policy::handle_infinity) {
     switch (c) {
     case VC_MINUS_INFINITY:
       v.get_num() = -1;

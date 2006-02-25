@@ -69,15 +69,15 @@ set_mp_size(mpz_class &v, mp_size_field_t size) {
 template <typename Policy>
 inline Result
 classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
-  if (Policy::store_nan || Policy::store_infinity) {
+  if (Policy::handle_nan || Policy::handle_infinity) {
     mp_size_field_t s = get_mp_size(v);
-    if (Policy::store_nan
+    if (Policy::handle_nan
 	&& (nan || sign)
 	&& s == Limits<mp_size_field_t>::min + 1)
       return VC_NAN;
     if (!inf && !sign)
       return VC_NORMAL;
-    if (Policy::store_infinity) {
+    if (Policy::handle_infinity) {
       if (s == Limits<mp_size_field_t>::min)
 	return inf ? VC_MINUS_INFINITY : V_LT;
       if (s == Limits<mp_size_field_t>::max)
@@ -94,7 +94,7 @@ SPECIALIZE_CLASSIFY(mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_nan_mpz(const mpz_class& v) {
-  return Policy::store_nan
+  return Policy::handle_nan
     && get_mp_size(v) == Limits<mp_size_field_t>::min + 1;
 }
 
@@ -103,7 +103,7 @@ SPECIALIZE_IS_NAN(mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_minf_mpz(const mpz_class& v) {
-  return Policy::store_infinity
+  return Policy::handle_infinity
     && get_mp_size(v) == Limits<mp_size_field_t>::min;
 }
 
@@ -112,7 +112,7 @@ SPECIALIZE_IS_MINF(mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_pinf_mpz(const mpz_class& v) {
-  return Policy::store_infinity
+  return Policy::handle_infinity
     && get_mp_size(v) == Limits<mp_size_field_t>::max;
 }
 
@@ -130,9 +130,9 @@ template <typename Policy>
 inline Result
 set_special_mpz(mpz_class& v, Result r) {
   Result c = classify(r);
-  if (Policy::store_nan && c == VC_NAN)
+  if (Policy::handle_nan && c == VC_NAN)
     set_mp_size(v, Limits<mp_size_field_t>::min + 1);
-  else if (Policy::store_infinity) {
+  else if (Policy::handle_infinity) {
     switch (c) {
     case VC_MINUS_INFINITY:
       set_mp_size(v, Limits<mp_size_field_t>::min);
@@ -270,7 +270,7 @@ SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, mpq_class)
 template <typename Policy, typename To>
 inline Result
 assign_mp_minf(To& to, const Minus_Infinity&, Rounding_Dir) {
-  if (Policy::store_infinity) {
+  if (Policy::handle_infinity) {
     set_special<Policy>(to, VC_MINUS_INFINITY);
     return V_EQ;
   }
@@ -280,7 +280,7 @@ assign_mp_minf(To& to, const Minus_Infinity&, Rounding_Dir) {
 template <typename Policy, typename To>
 inline Result
 assign_mp_pinf(To& to, const Plus_Infinity&, Rounding_Dir) {
-  if (Policy::store_infinity) {
+  if (Policy::handle_infinity) {
     set_special<Policy>(to, VC_PLUS_INFINITY);
     return V_EQ;
   }
@@ -290,7 +290,7 @@ assign_mp_pinf(To& to, const Plus_Infinity&, Rounding_Dir) {
 template <typename Policy, typename To>
 inline Result
 assign_mp_nan(To& to, const Not_A_Number&, Rounding_Dir) {
-  if (Policy::store_nan) {
+  if (Policy::handle_nan) {
     set_special<Policy>(to, VC_NAN);
     return V_EQ;
   }

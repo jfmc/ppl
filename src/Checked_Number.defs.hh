@@ -32,43 +32,43 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Checked_Number_Transparent_Policy {
-  //! Check for overflowed result.
+  //! Checks for overflowed result.
   static const int check_overflow = 0;
 
-  //! Check for attempts to add infinities with different sign.
+  //! Checks for attempts to add infinities with different sign.
   static const int check_inf_add_inf = 0;
 
-  //! Check for attempts to sub infinities with same sign.
+  //! Checks for attempts to sub infinities with same sign.
   static const int check_inf_sub_inf = 0;
 
-  //! Check for attempts to mul infinities by zero.
+  //! Checks for attempts to mul infinities by zero.
   static const int check_inf_mul_zero = 0;
 
-  //! Check for attempts to divide by zero.
+  //! Checks for attempts to divide by zero.
   static const int check_div_zero = 0;
 
-  //! Check for attempts to divide infinities.
+  //! Checks for attempts to divide infinities.
   static const int check_inf_div_inf = 0;
 
-  //! Check for attempts to compute remainder of infinities.
+  //! Checks for attempts to compute remainder of infinities.
   static const int check_inf_mod = 0;
 
-  //! Check for attempts to take the square root of a negative number.
+  //! Checks for attempts to take the square root of a negative number.
   static const int check_sqrt_neg = 0;
 
-  //! Store unknown special value.
-  static const int store_nan = 0;
+  //! Handles not-a-number special value.
+  static const int handle_nan = 0;
 
-  //! Store overflow special values.
-  static const int store_infinity = 0;
+  //! Handles infinity special values.
+  static const int handle_infinity = 0;
 
   //! Representation is identical to primitive.
   static const int convertible = 1;
 
-  //! Check for FPU inexact result.
+  //! Checks for FPU inexact result.
   static const int fpu_check_inexact = 0;
 
-  //! Check for NaN arguments
+  //! Checks for NaN arguments
   static const int check_nan_args = 0;
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
@@ -90,8 +90,8 @@ struct Checked_Number_Default_Policy {
   static const int check_inf_div_inf = 0;
   static const int check_inf_mod = 0;
   static const int check_sqrt_neg = 0;
-  static const int store_nan = 0;
-  static const int store_infinity = 0;
+  static const int handle_nan = 0;
+  static const int handle_infinity = 0;
   static const int convertible = 1;
   static const int fpu_check_inexact = 0;
   static const int check_nan_args = 1;
@@ -115,8 +115,8 @@ struct Extended_Number_Policy {
   static const int check_inf_div_inf = 0;
   static const int check_inf_mod = 0;
   static const int check_sqrt_neg = 0;
-  static const int store_nan = 1;
-  static const int store_infinity = 1;
+  static const int handle_nan = 1;
+  static const int handle_infinity = 1;
   // Don't uncomment the following.
   // The compile time error on conversions is the expected behaviour.
   // static const int convertible = 0;
