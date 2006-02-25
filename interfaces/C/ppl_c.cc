@@ -266,7 +266,10 @@ CATCH_ALL
 
 int
 ppl_version(const char** p) try {
-  *p = version();
+  // Note: use explicit qualification to avoid clashes on, e.g.,
+  // Solaris 2.9, where `version' is the name of an enum defined in
+  // math.h.
+  *p = Parma_Polyhedra_Library::version();
   return 0;
 }
 CATCH_ALL
