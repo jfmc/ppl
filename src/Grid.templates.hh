@@ -338,7 +338,7 @@ Grid::get_covering_box(Box& box) const {
 	}
 	const Grid_Generator& point = *first_point;
 	// Convert the point `gen' to a parameter.
-	for (dimension_type dim = 0; dim < num_dims; ++dim)
+	for (dimension_type dim = 0; dim <= num_dims; ++dim)
 	  gen[dim] -= point[dim];
 	gen.divisor() = point.divisor();
       }
