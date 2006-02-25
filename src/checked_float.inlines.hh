@@ -604,7 +604,7 @@ assign_float_mpz(T& to, const mpz_class& _from, Rounding_Dir dir)
       return set_pos_overflow_float<Policy>(to, dir);
   }
   unsigned long zeroes = mpn_scan1(from->_mp_d, 0);
-  size_t significative_bits = exponent - zeroes;
+  size_t meaningful_bits = exponent - zeroes;
   mpz_t mantissa;
   mpz_init(mantissa);
   if (exponent > Float<T>::Binary::MANTISSA_BITS)
@@ -617,7 +617,7 @@ assign_float_mpz(T& to, const mpz_class& _from, Rounding_Dir dir)
   f.u.binary.build(sign < 0, mantissa, exponent);
   mpz_clear(mantissa);
   to = f.value();
-  if (significative_bits > Float<T>::Binary::MANTISSA_BITS) {
+  if (meaningful_bits > Float<T>::Binary::MANTISSA_BITS) {
     if (sign < 0)
       return round_lt_float<Policy>(to, dir);
     else

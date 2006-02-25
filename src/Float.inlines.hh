@@ -245,7 +245,7 @@ float_intel_double_extended::set_max(bool negative) {
 inline void
 float_intel_double_extended::build(bool negative, mpz_t mantissa, int exponent) {
 #if ULONG_MAX == 0xffffffffUL
-  mpz_export(&lsp, 0, 1, 8, 0, 0, mantissa);
+  mpz_export(&lsp, 0, -1, 8, 0, 0, mantissa);
 #else
   lsp = mpz_get_ui(mantissa);
 #endif
@@ -322,16 +322,11 @@ float_ieee754_quad::set_max(bool negative) {
 inline void
 float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
 #if ULONG_MAX == 0xffffffffUL
-  mpz_export(&lsp, 0, 1, 8, 0, 0, mantissa);
+  mpz_export(&lsp, 0, -1, 8, 0, 0, mantissa);
 #else
   lsp = mpz_get_ui(mantissa);
 #endif
-  mpz_tdiv_q_2exp(mantissa, mantissa, 64);
-#if ULONG_MAX == 0xffffffffUL
   mpz_export(&msp, 0, 1, 8, 0, 0, mantissa);
-#else
-  msp = mpz_get_ui(mantissa);
-#endif
   msp &= ((1ULL << (MANTISSA_BITS - 64)) - 1);
   if (negative)
     msp |= MSP_SGN_MASK;

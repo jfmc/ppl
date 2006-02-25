@@ -514,7 +514,7 @@ assign_signed_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
       to = from.get_si();
     else {
       To v;
-      mpz_export(&v, 0, 1, sizeof(To), 0, 0, from.get_mpz_t());
+      mpz_export(&v, 0, -1, sizeof(To), 0, 0, from.get_mpz_t());
       if (::sgn(from) < 0)
 	return neg<Policy>(to, v, dir);
       to = v;
@@ -541,7 +541,7 @@ assign_signed_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
 	return V_EQ;
       }
       To v;
-      mpz_export(&v, 0, 1, sizeof(To), 0, 0, m);
+      mpz_export(&v, 0, -1, sizeof(To), 0, 0, m);
       if (v >= 0) {
 	if (::sgn(from) < 0)
 	  return neg<Policy>(to, v, dir);
@@ -566,7 +566,7 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
     if (sizeof(To) <= sizeof(unsigned long))
       to = from.get_ui();
     else
-      mpz_export(&to, 0, 1, sizeof(To), 0, 0, from.get_mpz_t());
+      mpz_export(&to, 0, -1, sizeof(To), 0, 0, from.get_mpz_t());
     return V_EQ;
   }
   if (::sgn(from) < 0)
@@ -587,7 +587,7 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
       if (sz == 0)
 	to = 0;
       else
-	mpz_export(&to, 0, 1, sizeof(To), 0, 0, m);
+	mpz_export(&to, 0, -1, sizeof(To), 0, 0, m);
       return V_EQ;
     }
   }
