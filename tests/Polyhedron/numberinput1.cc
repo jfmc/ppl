@@ -40,8 +40,8 @@ struct Test_Extended_Number_Policy {
   static const int check_inf_div_inf = 0;
   static const int check_inf_mod = 0;
   static const int check_sqrt_neg = 0;
-  static const int store_nan = 1;
-  static const int store_infinity = 1;
+  static const int handle_nan = 1;
+  static const int handle_infinity = 1;
   static const int fpu_check_inexact = 0;
   static const int check_nan_args = 1;
   static const Rounding_Dir ROUND_DEFAULT = ROUND_UP;
