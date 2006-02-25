@@ -31,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator.types.hh"
 #include "Linear_Row.defs.hh"
 #include "Coefficient.types.hh"
-#include "Variable.types.hh"
+#include "Variable.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
 #include "Congruence_System.types.hh"
@@ -59,6 +59,21 @@ operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n);
 Linear_Expression
 operator+(const Linear_Expression& e1, const Linear_Expression& e2);
 
+//! Returns the linear expression \p v + \p w.
+/*! \relates Linear_Expression */
+Linear_Expression
+operator+(Variable v, Variable w);
+
+//! Returns the linear expression \p v + \p e.
+/*! \relates Linear_Expression */
+Linear_Expression
+operator+(Variable v, const Linear_Expression& e);
+
+//! Returns the linear expression \p e + \p v.
+/*! \relates Linear_Expression */
+Linear_Expression
+operator+(const Linear_Expression& e, Variable v);
+
 //! Returns the linear expression \p n + \p e.
 /*! \relates Linear_Expression */
 Linear_Expression
@@ -83,6 +98,21 @@ operator-(const Linear_Expression& e);
 /*! \relates Linear_Expression */
 Linear_Expression
 operator-(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the linear expression \p v - \p w.
+/*! \relates Linear_Expression */
+Linear_Expression
+operator-(Variable v, Variable w);
+
+//! Returns the linear expression \p v - \p e.
+/*! \relates Linear_Expression */
+Linear_Expression
+operator-(Variable v, const Linear_Expression& e);
+
+//! Returns the linear expression \p e - \p v.
+/*! \relates Linear_Expression */
+Linear_Expression
+operator-(const Linear_Expression& e, Variable v);
 
 //! Returns the linear expression \p n - \p e.
 /*! \relates Linear_Expression */

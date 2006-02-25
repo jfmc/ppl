@@ -84,7 +84,7 @@ Linear_Expression::space_dimension() const {
 }
 
 inline Coefficient_traits::const_reference
-Linear_Expression::coefficient(const Variable v) const {
+Linear_Expression::coefficient(Variable v) const {
   if (v.space_dimension() > space_dimension())
     return Coefficient_zero();
   return Linear_Row::coefficient(v.id());
@@ -125,8 +125,49 @@ operator+(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
+operator+(const Variable v, const Variable w) {
+  // FIXME: provide a better implementation.
+  return Linear_Expression(v) + Linear_Expression(w);
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator+(const Variable v, const Linear_Expression& e) {
+  // FIXME: provide a better implementation.
+  return e + Linear_Expression(v);
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator+(const Linear_Expression& e, const Variable v) {
+  return v + e;
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
 operator-(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   return -n + e;
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator-(const Variable v, const Variable w) {
+  // FIXME: provide a better implementation.
+  return Linear_Expression(v) - Linear_Expression(w);
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator-(const Variable v, const Linear_Expression& e) {
+  // FIXME: provide a better implementation.
+  return Linear_Expression(v) - e;
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator-(const Linear_Expression& e, const Variable v) {
+  // FIXME: provide a better implementation.
+  return e - Linear_Expression(v);
 }
 
 /*! \relates Linear_Expression */
