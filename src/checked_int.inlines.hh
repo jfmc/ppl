@@ -509,19 +509,11 @@ SPECIALIZE_ASSIGN(int_float, unsigned long long, long double)
 template <typename Policy, typename To>
 inline Result
 assign_signed_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
-  if (!Policy::check_overflow) {
-    if (sizeof(To) <= sizeof(signed long))
-      to = from.get_si();
-    else {
-      To v;
-      mpz_export(&v, 0, -1, sizeof(To), 0, 0, from.get_mpz_t());
-      if (::sgn(from) < 0)
-	return neg<Policy>(to, v, dir);
-      to = v;
-    }
-    return V_EQ;
-  }
   if (sizeof(To) <= sizeof(signed long)) {
+    if (!Policy::check_overflow) {
+      to = from.get_si();
+      return V_EQ;
+    }
     if (from.fits_slong_p()) {
       signed long v = from.get_si();
       if (v < Limits<To>::min)
@@ -562,16 +554,13 @@ SPECIALIZE_ASSIGN(signed_int_mpz, signed long long, mpz_class)
 template <typename Policy, typename To>
 inline Result
 assign_unsigned_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
-  if (!Policy::check_overflow) {
-    if (sizeof(To) <= sizeof(unsigned long))
-      to = from.get_ui();
-    else
-      mpz_export(&to, 0, -1, sizeof(To), 0, 0, from.get_mpz_t());
-    return V_EQ;
-  }
-  if (::sgn(from) < 0)
+  if (CHECK_P(Policy::check_overflow, ::sgn(from) < 0))
     return set_neg_overflow_int<Policy>(to, dir);
   if (sizeof(To) <= sizeof(unsigned long)) {
+    if (!Policy::check_overflow) {
+      to = from.get_ui();
+      return V_EQ;
+    }
     if (from.fits_ulong_p()) {
       unsigned long v = from.get_ui();
       if (v > Limits<To>::max)

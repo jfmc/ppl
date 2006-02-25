@@ -321,12 +321,10 @@ float_ieee754_quad::set_max(bool negative) {
 
 inline void
 float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
-#if ULONG_MAX == 0xffffffffUL
-  mpz_export(&lsp, 0, -1, 8, 0, 0, mantissa);
-#else
-  lsp = mpz_get_ui(mantissa);
-#endif
-  mpz_export(&msp, 0, 1, 8, 0, 0, mantissa);
+  uint64_t parts[2];
+  mpz_export(parts, 0, -1, 8, 0, 0, mantissa);
+  lsp = parts[0];
+  msp = parts[1];
   msp &= ((1ULL << (MANTISSA_BITS - 64)) - 1);
   if (negative)
     msp |= MSP_SGN_MASK;
