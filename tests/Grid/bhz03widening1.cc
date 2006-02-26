@@ -28,48 +28,50 @@ typedef Polyhedra_Powerset<Grid> GSet;
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-
 // Joins of grids in powersets shows that series is stabilising.
 
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+
   GSet grs1(2, EMPTY);
   Grid gr1(2);
   gr1.add_congruence(A %= 0);
   gr1.add_congruence(B %= 0);
   grs1.add_disjunct(gr1);
 
+  nout << "*** grs1 ***" << endl << grs1 << endl;
+
   GSet grs2(2, EMPTY);
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
   grs2.add_disjunct(gr2);
+
+  nout << "*** grs2 ***" << endl << grs2 << endl;
 
   GSet known_grs = grs2;
 
   grs2.BHZ03_widening_assign<Grid_Certificate>
     (grs1, widen_fun_ref(&Grid::widening_assign));
 
-  if (find_variation(grs2))
-    exit(1);
+  bool ok = (grs2 == known_grs);
 
-  if (grs2 == known_grs)
-    return;
+  nout
+    << "*** grs2.BHZ03_widening_assign<Grid_Certificate>(grs1, widen_fun_ref(&Grid::widening_assign)) ***"
+    << endl << grs2 << endl;
 
-  nout << "Grid set should equal known grid set." << endl
-       << " grid:" << endl << grs2 << endl
-       << "known:" << endl << known_grs << endl;
-
-  exit(1);
+  return ok;
 }
 
 // Widening falls back to a singleton join of the grids in the larger
 // grid set.
 
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
   GSet grs1(2, EMPTY);
   Grid gr1(2);
   gr1.add_congruence(A - B %= 0);
@@ -77,6 +79,8 @@ test2() {
   gr2.add_congruence((A %= 0) / 2);
   grs1.add_disjunct(gr1);
   grs1.add_disjunct(gr2);
+
+  nout << "*** grs1 ***" << endl << grs1 << endl;
 
   GSet grs2(2, EMPTY);
   Grid gr3(2);
@@ -86,39 +90,28 @@ test2() {
   grs2.add_disjunct(gr3);
   grs2.add_disjunct(gr4);
 
+  nout << "*** grs2 ***" << endl << grs2 << endl;
+
   Grid known_gr = gr3;
   known_gr.upper_bound_assign(gr4);
 
   grs2.BHZ03_widening_assign<Grid_Certificate>
     (grs1, widen_fun_ref(&Grid::widening_assign));
 
-  if (find_variation(grs2))
-    exit(1);
-
   GSet known_grs(2, EMPTY);
   known_grs.add_disjunct(known_gr);
 
-  if (grs2 == known_grs)
-    return;
+  bool ok = (grs2 == known_grs);
 
-  nout << "Grid set should equal known grid set." << endl
-       << " grid:" << endl << grs2 << endl
-       << "known:" << endl << known_grs << endl;
+  nout
+    << "*** grs2.BHZ03_widening_assign<Grid_Certificate>(grs1, widen_fun_ref(&Grid::widening_assign)) ***"
+    << endl << grs2 << endl;
 
-  exit(1);
+  return ok;
 }
 
 } // namespace
-
-int
-main() TRY {
-  set_handlers();
-
-  nout << "bhz03widening1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+END_MAIN
