@@ -132,7 +132,7 @@ install-html:
 	  test -f $$ball || test -f $(srcdir)/$$ball || $(MAKE) $$ball; \
 	  dir=`basename $$ball .tar.gz`; \
 	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir; \
-	  tar zxf `if test -f $$ball; then echo .; else echo $(srcdir); fi`/$$ball; \
+	  gunzip -c `if test -f $$ball; then echo .; else echo $(srcdir); fi`/$$ball | tar xf - ; \
 	  for file in $$dir/*; do \
 	    $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir/`basename $$file`; \
 	  done; \
