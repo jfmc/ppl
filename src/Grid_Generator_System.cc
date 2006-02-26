@@ -319,7 +319,8 @@ PPL::Grid_Generator_System::OK() const {
 
 /*! \relates Parma_Polyhedra_Library::Grid_Generator_System */
 std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator_System& gs) {
+PPL::IO_Operators::operator<<(std::ostream& s,
+			      const Grid_Generator_System& gs) {
   Grid_Generator_System::const_iterator i = gs.begin();
   const Grid_Generator_System::const_iterator gs_end = gs.end();
   if (i == gs_end)

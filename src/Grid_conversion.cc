@@ -202,7 +202,8 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
   // `source' must be regular.
   if (diagonal_lcm == 0)
-    throw std::runtime_error("PPL internal error: Grid::conversion: source matrix singular.");
+    throw std::runtime_error("PPL internal error: Grid::conversion:"
+			     " source matrix is singular.");
 
   dest.resize_no_copy(dest_num_rows, dims + 1 /* moduli */);
 
@@ -393,7 +394,8 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   // `source' must be regular.
   if (diagonal_lcm == 0)
-    throw std::runtime_error("PPL internal error: Grid::conversion: source matrix singular.");
+    throw std::runtime_error("PPL internal error: Grid::conversion:"
+			     " source matrix is singular.");
 
   dest.set_index_first_pending_row(dest_num_rows);
   dest.resize_no_copy(dest_num_rows, dims + 1 /* parameter divisor */);

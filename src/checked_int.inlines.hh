@@ -194,7 +194,9 @@ SPECIALIZE_COPY(generic, unsigned long long)
 template <typename Policy, typename Type>
 inline Result
 classify_int(const Type v, bool nan, bool inf, bool sign) {
-  if (Policy::handle_nan && (nan || sign) && v == Extended_Int<Policy, Type>::not_a_number)
+  if (Policy::handle_nan
+      && (nan || sign)
+      && v == Extended_Int<Policy, Type>::not_a_number)
     return VC_NAN;
   if (!inf & !sign)
     return VC_NORMAL;
@@ -245,7 +247,8 @@ SPECIALIZE_IS_NAN(int, unsigned long long)
 template <typename Policy, typename Type>
 inline bool
 is_minf_int(const Type v) {
-  return Policy::handle_infinity && v == Extended_Int<Policy, Type>::minus_infinity;
+  return Policy::handle_infinity
+    && v == Extended_Int<Policy, Type>::minus_infinity;
 }
 
 SPECIALIZE_IS_MINF(int, signed char)
@@ -262,7 +265,8 @@ SPECIALIZE_IS_MINF(int, unsigned long long)
 template <typename Policy, typename Type>
 inline bool
 is_pinf_int(const Type v) {
-  return Policy::handle_infinity && v == Extended_Int<Policy, Type>::plus_infinity;
+  return Policy::handle_infinity
+    && v == Extended_Int<Policy, Type>::plus_infinity;
 }
 
 SPECIALIZE_IS_PINF(int, signed char)
@@ -329,9 +333,11 @@ template <typename Policy, typename To, typename From>
 inline Result
 assign_signed_int_signed_int(To& to, const From from, Rounding_Dir dir) {
   if (sizeof(To) <= sizeof(From)) {
-    if (CHECK_P(Policy::check_overflow, from < static_cast<From>(Extended_Int<Policy, To>::min)))
+    if (CHECK_P(Policy::check_overflow,
+		from < static_cast<From>(Extended_Int<Policy, To>::min)))
       return set_neg_overflow_int<Policy>(to, dir);
-    if (CHECK_P(Policy::check_overflow, from > static_cast<From>(Extended_Int<Policy, To>::max)))
+    if (CHECK_P(Policy::check_overflow,
+		from > static_cast<From>(Extended_Int<Policy, To>::max)))
       return set_pos_overflow_int<Policy>(to, dir);
   }
   to = To(from);
@@ -342,7 +348,8 @@ template <typename Policy, typename To, typename From>
 inline Result
 assign_signed_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
   if (sizeof(To) <= sizeof(From)) {
-    if (CHECK_P(Policy::check_overflow, from > static_cast<From>(Extended_Int<Policy, To>::max)))
+    if (CHECK_P(Policy::check_overflow,
+		from > static_cast<From>(Extended_Int<Policy, To>::max)))
       return set_pos_overflow_int<Policy>(to, dir);
   }
   to = To(from);
@@ -355,7 +362,8 @@ assign_unsigned_int_signed_int(To& to, const From from, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_overflow, from < 0))
     return set_neg_overflow_int<Policy>(to, dir);
   if (sizeof(To) < sizeof(From)) {
-    if (CHECK_P(Policy::check_overflow, from > static_cast<From>(Extended_Int<Policy, To>::max)))
+    if (CHECK_P(Policy::check_overflow,
+		from > static_cast<From>(Extended_Int<Policy, To>::max)))
       return set_pos_overflow_int<Policy>(to, dir);
   }
   to = To(from);
@@ -366,7 +374,8 @@ template <typename Policy, typename To, typename From>
 inline Result
 assign_unsigned_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
   if (sizeof(To) <= sizeof(From)) {
-    if (CHECK_P(Policy::check_overflow, from > static_cast<From>(Extended_Int<Policy, To>::max)))
+    if (CHECK_P(Policy::check_overflow,
+		from > static_cast<From>(Extended_Int<Policy, To>::max)))
       return set_pos_overflow_int<Policy>(to, dir);
   }
   to = To(from);
@@ -390,8 +399,10 @@ SPECIALIZE_ASSIGN(signed_int_unsigned_int, Larger, Smaller)
 SPECIALIZE_ASSIGN(signed_int_unsigned_int, Smaller, Larger) \
 SPECIALIZE_ASSIGN(unsigned_int_signed_int, Larger, Smaller)
 
-#define ASSIGN_SIGNED(Type) SPECIALIZE_ASSIGN(signed_int_signed_int, Type, Type)
-#define ASSIGN_UNSIGNED(Type) SPECIALIZE_ASSIGN(unsigned_int_unsigned_int, Type, Type)
+#define ASSIGN_SIGNED(Type) \
+SPECIALIZE_ASSIGN(signed_int_signed_int, Type, Type)
+#define ASSIGN_UNSIGNED(Type) \
+SPECIALIZE_ASSIGN(unsigned_int_unsigned_int, Type, Type)
 
 ASSIGN_SIGNED(signed char)
 ASSIGN_SIGNED(signed short)
@@ -542,7 +553,9 @@ assign_signed_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
       }
     }
   }
-  return ::sgn(from) < 0 ? set_neg_overflow_int<Policy>(to, dir) : set_pos_overflow_int<Policy>(to, dir);
+  return ::sgn(from) < 0
+    ? set_neg_overflow_int<Policy>(to, dir)
+    : set_pos_overflow_int<Policy>(to, dir);
 }
 
 SPECIALIZE_ASSIGN(signed_int_mpz, signed char, mpz_class)
@@ -903,7 +916,8 @@ inline Result
 neg_signed_int(Type& to, const Type from, Rounding_Dir dir) {
   if (Policy::check_overflow && Larger<Type>::use_for_neg)
     return neg_int_larger<Policy>(to, from, dir);
-  if (CHECK_P(Policy::check_overflow, (from < -Extended_Int<Policy, Type>::max)))
+  if (CHECK_P(Policy::check_overflow,
+	      (from < -Extended_Int<Policy, Type>::max)))
     return set_pos_overflow_int<Policy>(to, dir);
   to = -from;
   return V_EQ;
@@ -942,7 +956,8 @@ inline Result
 add_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (Policy::check_overflow && Larger<Type>::use_for_add)
     return add_int_larger<Policy>(to, x, y, dir);
-  if (CHECK_P(Policy::check_overflow, (x > Extended_Int<Policy, Type>::max - y)))
+  if (CHECK_P(Policy::check_overflow,
+	      (x > Extended_Int<Policy, Type>::max - y)))
     return set_pos_overflow_int<Policy>(to, dir);
   to = x + y;
   return V_EQ;
@@ -970,7 +985,8 @@ inline Result
 sub_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (Policy::check_overflow && Larger<Type>::use_for_sub)
     return sub_int_larger<Policy>(to, x, y, dir);
-  if (CHECK_P(Policy::check_overflow, (x < Extended_Int<Policy, Type>::min + y)))
+  if (CHECK_P(Policy::check_overflow,
+	      (x < Extended_Int<Policy, Type>::min + y)))
     return set_neg_overflow_int<Policy>(to, dir);
   to = x - y;
   return V_EQ;
@@ -1188,7 +1204,8 @@ mul2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
       return V_EQ;
     }
   }
-  Type mask = ((static_cast<Type>(1) << exp) - 1) << (sizeof(Type) * 8 - 1 - exp);
+  Type mask = ((static_cast<Type>(1) << exp) - 1)
+    << (sizeof(Type) * 8 - 1 - exp);
   Type n;
   if (x < 0) {
     if ((x & mask) != mask)
@@ -1292,7 +1309,8 @@ sub_mul_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 
 template <typename Policy, typename Type>
 inline Result
-output_char(std::ostream& os, Type& from, const Numeric_Format&, Rounding_Dir) {
+output_char(std::ostream& os, Type& from,
+	    const Numeric_Format&, Rounding_Dir) {
   os << (int) from;
   return V_EQ;
 }

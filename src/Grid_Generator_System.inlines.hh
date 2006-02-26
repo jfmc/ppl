@@ -149,12 +149,14 @@ Grid_Generator_System::const_iterator::operator++(int) {
 }
 
 inline bool
-Grid_Generator_System::const_iterator::operator==(const const_iterator& y) const {
+Grid_Generator_System
+::const_iterator::operator==(const const_iterator& y) const {
   return Generator_System::const_iterator::operator==(y);
 }
 
 inline bool
-Grid_Generator_System::const_iterator::operator!=(const const_iterator& y) const {
+Grid_Generator_System
+::const_iterator::operator!=(const const_iterator& y) const {
   return Generator_System::const_iterator::operator!=(y);
 }
 
@@ -171,7 +173,8 @@ Grid_Generator_System::end() const {
 }
 
 inline
-Grid_Generator_System::const_iterator::const_iterator(const Generator_System::const_iterator& y)
+Grid_Generator_System
+::const_iterator::const_iterator(const Generator_System::const_iterator& y)
   : Generator_System::const_iterator::const_iterator(y) {
 }
 
@@ -227,7 +230,8 @@ Grid_Generator_System::erase_to_end(dimension_type first_to_erase) {
 }
 
 inline void
-Grid_Generator_System::permute_columns(const std::vector<dimension_type>& cycles) {
+Grid_Generator_System
+::permute_columns(const std::vector<dimension_type>& cycles) {
   return Generator_System::permute_columns(cycles);
 }
 

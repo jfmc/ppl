@@ -171,7 +171,8 @@ float_ieee754_double::build(bool negative, mpz_t mantissa, int exponent) {
   msp = m & ((1UL << (MANTISSA_BITS - 32)) - 1);
   if (negative)
     msp |= MSP_SGN_MASK;
-  msp |= static_cast<uint32_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 32);
+  msp |= static_cast<uint32_t>(exponent + EXPONENT_BIAS)
+    << (MANTISSA_BITS - 32);
 }
 
 inline int
@@ -243,7 +244,8 @@ float_intel_double_extended::set_max(bool negative) {
 }
 
 inline void
-float_intel_double_extended::build(bool negative, mpz_t mantissa, int exponent) {
+float_intel_double_extended::build(bool negative,
+				   mpz_t mantissa, int exponent) {
 #if ULONG_MAX == 0xffffffffUL
   mpz_export(&lsp, 0, -1, 8, 0, 0, mantissa);
 #else
@@ -328,7 +330,8 @@ float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
   msp &= ((1ULL << (MANTISSA_BITS - 64)) - 1);
   if (negative)
     msp |= MSP_SGN_MASK;
-  msp |= static_cast<uint64_t>(exponent + EXPONENT_BIAS) << (MANTISSA_BITS - 64);
+  msp |= static_cast<uint64_t>(exponent + EXPONENT_BIAS)
+    << (MANTISSA_BITS - 64);
 }
 
 #ifdef CXX_FLOAT_BINARY_FORMAT

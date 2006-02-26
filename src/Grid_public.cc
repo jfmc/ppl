@@ -770,7 +770,8 @@ PPL::Grid::OK(bool check_not_empty) const {
 	  if (g.is_equal_to(g_copy))
 	    continue;
 #ifndef NDEBUG
-	  cerr << "Generators are declared minimized, but they change under reduction.\n"
+	  cerr << "Generators are declared minimized,"
+	    " but they change under reduction.\n"
 	       << "Here is the generator system:\n";
 	  gen_sys.ascii_dump(cerr);
 	  cerr << "and here is the minimized form of the temporary copy:\n";
@@ -1488,7 +1489,8 @@ PPL::Grid::grid_difference_assign(const Grid& y) {
       // and its 2-complement (i.e. the grid defined by the congruence
       // (2e %= 0) / m) then add the 2-complement to the potential
       // result.
-      if (x.relation_with((2*e %= 0) / m).implies(Poly_Con_Relation::is_included())) {
+      if (x.relation_with((2*e %= 0) / m)
+	  .implies(Poly_Con_Relation::is_included())) {
 	Grid z = x;
 	z.add_congruence((2*e %= m) / (2*m));
 	new_grid.join_assign(z);

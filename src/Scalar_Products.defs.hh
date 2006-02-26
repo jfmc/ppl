@@ -50,9 +50,11 @@ public:
   //! Computes the scalar product of \p g and \p c and assigns it to \p z.
   static void assign(Coefficient& z, const Generator& g, const Constraint& c);
   //! Computes the scalar product of \p g and \p cg and assigns it to \p z.
-  static void assign(Coefficient& z, const Grid_Generator& g, const Congruence& cg);
+  static void assign(Coefficient& z,
+		     const Grid_Generator& g, const Congruence& cg);
   //! Computes the scalar product of \p cg and \p g and assigns it to \p z.
-  static void assign(Coefficient& z, const Congruence& cg, const Grid_Generator& g);
+  static void assign(Coefficient& z,
+		     const Congruence& cg, const Grid_Generator& g);
 
   //! Returns the sign of the scalar product between \p x and \p y.
   static int sign(const Linear_Row& x, const Linear_Row& y);
@@ -147,7 +149,8 @@ public:
   //! \brief
   //! Returns the sign of the \e homogeneous scalar product of \p e and \p g,
   //! where the inhomogeneous terms are ignored,
-  static int homogeneous_sign(const Linear_Expression& e, const Grid_Generator& g);
+  static int homogeneous_sign(const Linear_Expression& e,
+			      const Grid_Generator& g);
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

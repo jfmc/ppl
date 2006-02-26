@@ -736,7 +736,8 @@ sgn(const Checked_Number<T, Policy>& x);
 template <typename T1, typename Policy1,
 	  typename T2, typename Policy2>
 int
-cmp(const Checked_Number<T1, Policy1>& x, const Checked_Number<T2, Policy2>& y);
+cmp(const Checked_Number<T1, Policy1>& x,
+    const Checked_Number<T2, Policy2>& y);
 
 //@} // Relational Operators and Comparison Functions
 

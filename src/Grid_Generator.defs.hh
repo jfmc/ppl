@@ -249,7 +249,10 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is a parameter.
   bool is_parameter() const;
 
-  //! Returns <CODE>true</CODE> if and only if \p *this is a line or a parameter.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is a line or
+    a parameter.
+  */
   bool is_line_or_parameter() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is a point.
