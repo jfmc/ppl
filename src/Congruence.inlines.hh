@@ -142,7 +142,8 @@ inline Coefficient_traits::const_reference
 Congruence::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
-  return (*this)[v.id()+1];}
+  return (*this)[v.id()+1];
+}
 
 inline Coefficient_traits::const_reference
 Congruence::inhomogeneous_term() const {
