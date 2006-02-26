@@ -89,7 +89,7 @@ check-local: ppl_lpsol
 	for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
-	  grep -q $$file tough_examples && continue; \
+	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
 	  for m in -m -M; \
 	  do \
 	    echo "*** ppl_lpsol -e $$m -oobtained $$file" >>obtained; \
@@ -100,7 +100,7 @@ check-local: ppl_lpsol
 	for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
-	  grep -q $$file tough_examples && continue; \
+	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
 	  for m in -m -M; \
 	  do \
 	    echo "*** ppl_lpsol -s $$m -oobtained $$file" >>obtained; \

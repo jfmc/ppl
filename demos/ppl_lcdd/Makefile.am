@@ -108,7 +108,7 @@ check-local: ppl_lcdd
 	for path in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; \
 	do \
 	  file=`basename $$path`; \
-	  grep -q $$file tough_examples && continue; \
+	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
 	  echo -n $$file " " >>obtained; \
 	  echo ppl_lcdd $$path; \
 	  ./ppl_lcdd $$path | $(TEXT_MD5SUM) >>obtained; \
