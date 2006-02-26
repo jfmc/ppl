@@ -188,8 +188,8 @@ float_intel_double_extended::is_inf() const {
 
 inline int
 float_intel_double_extended::is_nan() const {
-  return (msp & MSP_POS_INF) == MSP_POS_INF &&
-    lsp != LSP_INF;
+  return (msp & MSP_POS_INF) == MSP_POS_INF
+    && lsp != LSP_INF;
 }
 
 inline int
@@ -266,8 +266,8 @@ float_ieee754_quad::is_inf() const {
 
 inline int
 float_ieee754_quad::is_nan() const {
-  return (msp & ~MSP_SGN_MASK) == MSP_POS_INF &&
-    lsp != LSP_INF;
+  return (msp & ~MSP_SGN_MASK) == MSP_POS_INF
+    && lsp != LSP_INF;
 }
 
 inline int
