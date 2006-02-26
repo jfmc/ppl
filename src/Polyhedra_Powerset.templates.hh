@@ -439,7 +439,7 @@ is_cert_multiset_stabilizing(const std::map<Cert, size_type,
   }
   // Here xi == xend or yi == yend.
   // Stabilization is achieved if `y_cert_ms' still has other elements.
-  return (yi != yend);
+  return yi != yend;
 }
 
 template <typename PH>

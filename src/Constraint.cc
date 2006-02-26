@@ -97,10 +97,10 @@ PPL::Constraint::is_inconsistent() const {
   if (x.all_homogeneous_terms_are_zero())
     // The inhomogeneous term is the only non-zero coefficient.
     if (is_equality())
-      return (x[0] != 0);
+      return x[0] != 0;
     else
       // Non-strict inequality constraint.
-      return (x[0] < 0);
+      return x[0] < 0;
   else
     // There is a non-zero homogeneous coefficient.
     if (is_necessarily_closed())
