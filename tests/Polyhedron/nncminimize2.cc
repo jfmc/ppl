@@ -45,9 +45,11 @@ test01() {
   ph.add_generator(point(-483589*A - 16983*B - 824243*C + 106969*D - 273921*E));
   ph.add_generator(point(554952*A - 155460*B - 572886*C - 91530*D + 575571*E));
   ph.ascii_dump(vnout);
+  vnout << endl;
 
   const Generator_System& gs = ph.minimized_generators();
   ph.ascii_dump(vnout);
+  vnout << endl;
 
   if (!ph.OK())
     return false;
