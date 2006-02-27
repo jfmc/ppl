@@ -1,5 +1,4 @@
-/* Test Polyhedron::affine_image(): we apply this function to a
-   polyhedron defined by its system of constraints.
+/* Test Polyhedron::affine_image().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,31 +22,53 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= B);
-  ph.add_constraint(B >= 0);
-  ph.add_constraint(A <= 3);
-
-  print_constraints(ph, "--- ph ---");
-
-  ph.affine_image(A, A+B+1);
-
-  C_Polyhedron known_result(2);
-  known_result.add_constraint(A -2*B - 1 >= 0);
-  known_result.add_constraint(B >= 0);
-  known_result.add_constraint(A - B <= 4);
-
-  int retval = (ph == known_result) ? 0 : 1;
-
-  print_constraints(ph, "--- ph after ph.affine_image(A, A+B+1) ---");
-
-  return retval;
+void
+my_output_function(std::ostream& s, const Variable& v) {
+  s << char('i' + v.id());
 }
-CATCH
+
+bool
+test01() {
+  Variable i(0);
+  Variable j(1);
+
+  // Install the alternate output function.
+  Variable::set_output_function(my_output_function);
+
+  NNC_Polyhedron p1(2);
+  p1.add_constraint(j == 0);
+  p1.add_constraint(i >= 0);
+
+  NNC_Polyhedron p2(2);
+  p2.add_constraint(j == 0);
+  p2.add_constraint(-i > 0);
+
+  print_constraints(p1, "*** p1 ***");
+  print_constraints(p2, "*** p2 ***");
+
+  p1.affine_image(j, i+2);
+  p2.affine_image(j, i);
+
+  print_constraints(p1, "*** p1.affine_image(j, i+2) ***");
+  print_constraints(p2, "*** p2.affine_image(j, i) ***");
+
+  p1.poly_hull_assign_and_minimize(p2);
+
+  NNC_Polyhedron known_result(2);
+  known_result.add_constraint(i - j >= -2);
+  known_result.add_constraint(-i + j >= 0);
+
+  bool ok = (p1 == known_result);
+
+  print_constraints(p1, "*** p1.poly_hull_assign_and_minimize(p2) ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+END_MAIN
