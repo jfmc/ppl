@@ -40,7 +40,26 @@ $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 bin_PROGRAMS = ppl_sicstus
 ppl_sicstus_SOURCES =
 
-pkglib_DATA = ppl_sicstus.s.o ppl_sicstus.pl
+if ENABLE_SHARED
+
+pkglib_DATA = ppl_sicstus.pl ppl_sicstus.s.o
+
+ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la | ppl_sicstus_sd.la
+	$(LIBTOOL) --mode=link --tag=CXX \
+	splfr $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o -o $@ \
+		$(top_builddir)/src/libppl.la \
+		$(top_builddir)/Watchdog/src/libpwl.la \
+		@extra_libraries@
+
+install-data-local: ppl_sicstus.so
+	$(LIBTOOL) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) \
+		$< $(DESTDIR)$(pkglibdir)/$<
+
+else !ENABLE_SHARED
+
+pkglib_DATA = ppl_sicstus.pl
+
+endif !ENABLE_SHARED
 
 noinst_LTLIBRARIES = ppl_sicstus_sd.la
 ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
@@ -55,19 +74,17 @@ ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(top_buildd
 		$(top_builddir)/Watchdog/src/libpwl.la \
 		@extra_libraries@
 
+if ENABLE_STATIC
+
+ppl_sicstus.s.o: ppl_sicstus.pl | ppl_sicstus_sd.la
+	splfr --static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
+
+else !ENABLE_STATIC
+
 ppl_sicstus.s.o: ppl_sicstus.pl | ppl_sicstus_sd.la
 	splfr --static $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o
 
-ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la | ppl_sicstus_sd.la
-	$(LIBTOOL) --mode=link --tag=CXX \
-	splfr $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o -o $@ \
-		$(top_builddir)/src/libppl.la \
-		$(top_builddir)/Watchdog/src/libpwl.la \
-		@extra_libraries@
-
-install-data-local: ppl_sicstus.so
-	$(LIBTOOL) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) \
-		$< $(DESTDIR)$(pkglibdir)/$<
+endif !ENABLE_STATIC
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
