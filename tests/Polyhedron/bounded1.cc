@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -33,8 +35,13 @@ main() TRY {
 
   print_constraints(ph1, "*** ph1 ***");
 
-  if (ph1.is_bounded())
-    return 1;
+  return !ph1.is_bounded();
+}
+
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
 
   // This is a bounded polyhedron (it is a square);
   C_Polyhedron ph2(2);
@@ -45,16 +52,26 @@ main() TRY {
 
   print_constraints(ph2, "*** ph2 ***");
 
-  if (!ph2.is_bounded())
-    return 1;
+  return ph2.is_bounded();
+}
+
+bool
+test03() {
+  Variable x(0);
+  Variable y(1);
 
   // This is a universal, zero-dimensional polyhedron.
   C_Polyhedron ph3;
 
   print_constraints(ph3, "*** ph3 ***");
 
-  if (!ph3.is_bounded())
-    return 1;
+  return ph3.is_bounded();
+}
+
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
 
   // This is an empty, zero-dimensional polyhedron.
   C_Polyhedron ph4;
@@ -62,17 +79,28 @@ main() TRY {
 
   print_constraints(ph4, "*** ph4 ***");
 
-  if (!ph4.is_bounded())
-    return 1;
+  return ph4.is_bounded();
+}
+
+bool
+test05() {
+  Variable x(0);
+  Variable y(1);
 
   // This is an empty polyhedron.
   C_Polyhedron ph5(4, EMPTY);
 
   print_constraints(ph5, "*** ph5 ***");
 
-  if (!ph5.is_bounded())
-    return 1;
-
-  return 0;
+  return ph5.is_bounded();
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+END_MAIN
