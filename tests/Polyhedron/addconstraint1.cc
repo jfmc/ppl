@@ -1,6 +1,4 @@
-/* Test Polyhedron::add_constraint(): we add the equalities and
-   the non-strict inequalities of a non-necessary closed polyhedron
-   to a closed polyhedron.
+/* Test Polyhedron::add_constraint().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -46,10 +44,63 @@ main() TRY {
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B == 5);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
+  bool ok = (ph2 == known_result);
 
   print_constraints(ph2, "*** ph2 ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, EMPTY);
+
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron known_result(ph);
+
+  ph.add_constraint(A == B);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** After ph.add_constraint(A == B) ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(A <= 2);
+  ph.add_constraint(A >= -1);
+
+  print_constraints(ph, "*** ph ***");
+
+  ph.add_constraint_and_minimize(B >= 1);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(B >= 1);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph,
+		    "*** After ph.add_constraint_and_minimize(B >= 1) ***");
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+END_MAIN
