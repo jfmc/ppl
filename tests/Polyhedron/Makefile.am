@@ -43,8 +43,7 @@ ORIGINAL_TESTS = \
 	CbecomesNNC1 \
 	NNCbecomesC1 \
 	addcongruence1 \
-	addcongruences1 addcongruences2 addcongruences3 addcongruences4 \
-	addcongruences5 \
+	addcongruences1 \
 	addconstraint1 addconstraint2 addconstraint3 \
 	addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
@@ -163,8 +162,7 @@ ORIGINAL_TESTS = \
 
 DERIVED_TESTS = \
 	nnc_addcongruence1 \
-	nnc_addcongruences1 nnc_addcongruences2 nnc_addcongruences3 \
-	nnc_addcongruences4 nnc_addcongruences5 \
+	nnc_addcongruences1 \
 	nnc_addconstraint2 nnc_addconstraint3 \
 	nnc_addconstraints1 nnc_addconstraints2 nnc_addconstraints3 \
 	nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
@@ -274,10 +272,6 @@ NNCbecomesC1_SOURCES = NNCbecomesC1.cc
 addcongruence1_SOURCES = addcongruence1.cc
 
 addcongruences1_SOURCES = addcongruences1.cc
-addcongruences2_SOURCES = addcongruences2.cc
-addcongruences3_SOURCES = addcongruences3.cc
-addcongruences4_SOURCES = addcongruences4.cc
-addcongruences5_SOURCES = addcongruences5.cc
 
 addconstraint1_SOURCES = addconstraint1.cc
 addconstraint2_SOURCES = addconstraint2.cc
@@ -684,14 +678,6 @@ nnc_addcongruence1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addcongruences1_SOURCES = addcongruences1.cc
 nnc_addcongruences1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addcongruences2_SOURCES = addcongruences2.cc
-nnc_addcongruences2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addcongruences3_SOURCES = addcongruences3.cc
-nnc_addcongruences3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addcongruences4_SOURCES = addcongruences4.cc
-nnc_addcongruences4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addcongruences5_SOURCES = addcongruences5.cc
-nnc_addcongruences5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addconstraint2_SOURCES = addconstraint2.cc
 nnc_addconstraint2_CXXFLAGS = $(DERIVED_CXXFLAGS)
