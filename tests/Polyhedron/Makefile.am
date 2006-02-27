@@ -48,10 +48,7 @@ ORIGINAL_TESTS = \
 	addconstraints1 addconstraints2 \
 	addgenerator1 addgenerator2 \
 	addgenerators1 addgenerators2 \
-	addspacedims1 addspacedims2 addspacedims3 addspacedims4 \
-	addspacedims5 addspacedims6 addspacedims7 addspacedims8 \
-	addspacedims9 addspacedims10 addspacedims11 addspacedims12 \
-	addspacedims13 \
+	addspacedims1 addspacedims2 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
 	affineimage6 affineimage7 affineimage8 affineimage9 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
@@ -160,8 +157,7 @@ DERIVED_TESTS = \
 	nnc_addconstraints1 \
 	nnc_addgenerator1 \
 	nnc_addgenerators1 \
-	nnc_addspacedims1 nnc_addspacedims2 nnc_addspacedims3 \
-	nnc_addspacedims4 nnc_addspacedims9 nnc_addspacedims12 \
+	nnc_addspacedims1 \
 	nnc_affineimage1 nnc_affineimage2 nnc_affineimage3 nnc_affineimage4 \
 	nnc_affineimage5 nnc_affineimage6 nnc_affineimage7 nnc_affineimage8 \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
@@ -273,17 +269,6 @@ addgenerators2_SOURCES = addgenerators2.cc
 
 addspacedims1_SOURCES = addspacedims1.cc
 addspacedims2_SOURCES = addspacedims2.cc
-addspacedims3_SOURCES = addspacedims3.cc
-addspacedims4_SOURCES = addspacedims4.cc
-addspacedims5_SOURCES = addspacedims5.cc
-addspacedims6_SOURCES = addspacedims6.cc
-addspacedims7_SOURCES = addspacedims7.cc
-addspacedims8_SOURCES = addspacedims8.cc
-addspacedims9_SOURCES = addspacedims9.cc
-addspacedims10_SOURCES = addspacedims10.cc
-addspacedims11_SOURCES = addspacedims11.cc
-addspacedims12_SOURCES = addspacedims12.cc
-addspacedims13_SOURCES = addspacedims13.cc
 
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
@@ -653,16 +638,6 @@ nnc_addgenerators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addspacedims1_SOURCES = addspacedims1.cc
 nnc_addspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addspacedims2_SOURCES = addspacedims2.cc
-nnc_addspacedims2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addspacedims3_SOURCES = addspacedims3.cc
-nnc_addspacedims3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addspacedims4_SOURCES = addspacedims4.cc
-nnc_addspacedims4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addspacedims9_SOURCES = addspacedims9.cc
-nnc_addspacedims9_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addspacedims12_SOURCES = addspacedims12.cc
-nnc_addspacedims12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affineimage1_SOURCES = affineimage1.cc
 nnc_affineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
