@@ -324,55 +324,55 @@ case "${enableval}" in
 native-int8)
   AC_MSG_RESULT([native 8 bits integers])
   coefficient_kind=native
-  coefficient_type=int8_t
+  coefficient_bits=8
   coefficient_mnemonic=nint8
   ;;
 native-int16)
   AC_MSG_RESULT([native 16 bits integers])
   coefficient_kind=native
-  coefficient_type=int16_t
+  coefficient_bits=16
   coefficient_mnemonic=nint16
   ;;
 native-int32)
   AC_MSG_RESULT([native 32 bits integers])
   coefficient_kind=native
-  coefficient_type=int32_t
+  coefficient_bits=32
   coefficient_mnemonic=nint32
   ;;
 native-int64)
   AC_MSG_RESULT([native 64 bits integers])
   coefficient_kind=native
-  coefficient_type="int64_t"
+  coefficient_bits=64
   coefficient_mnemonic=nint64
   ;;
 checked-int8)
   AC_MSG_RESULT([checked 8 bits integers])
   coefficient_kind=checked
-  coefficient_type=int8_t
+  coefficient_bits=8
   coefficient_mnemonic=int8
   ;;
 checked-int16)
   AC_MSG_RESULT([checked 16 bits integers])
   coefficient_kind=checked
-  coefficient_type=int16_t
+  coefficient_bits=16
   coefficient_mnemonic=int16
   ;;
 checked-int32)
   AC_MSG_RESULT([checked 32 bits integers])
   coefficient_kind=checked
-  coefficient_type=int32_t
+  coefficient_bits=32
   coefficient_mnemonic=int32
   ;;
 checked-int64)
   AC_MSG_RESULT([checked 64 bits integers])
   coefficient_kind=checked
-  coefficient_type="int64_t"
+  coefficient_bits=64
   coefficient_mnemonic=int64
   ;;
 mpz)
   AC_MSG_RESULT([GMP mpz])
   coefficient_kind=unbounded
-  coefficient_type=mpz_class
+  coefficient_bits=0
   coefficient_mnemonic=mpz
   ;;
 *)
@@ -382,26 +382,29 @@ esac
 
 AM_CONDITIONAL(USE_NATIVE_INTEGERS, test x"$coefficient_kind" = xnative)
 AM_CONDITIONAL(USE_CHECKED_INTEGERS, test x"$coefficient_kind" = xchecked)
-AM_CONDITIONAL(USE_INT8, test x"$coefficient_type" = xint8_t)
-AM_CONDITIONAL(USE_INT16, test x"$coefficient_type" = xint16_t)
-AM_CONDITIONAL(USE_INT32, test x"$coefficient_type" = xint32_t)
-AM_CONDITIONAL(USE_INT64, test x"$coefficient_type" = xint64_t)
-AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_type" = xmpz_class)
+AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_kind" = xunbounded)
+AM_CONDITIONAL(USE_INT8, test x"$coefficient_bits" = x8)
+AM_CONDITIONAL(USE_INT16, test x"$coefficient_bits" = x16)
+AM_CONDITIONAL(USE_INT32, test x"$coefficient_bits" = x32)
+AM_CONDITIONAL(USE_INT64, test x"$coefficient_bits" = x64)
 
 
 if test x"$coefficient_kind" = xnative
 then
-  ctype="Parma_Polyhedra_Library::Checked_Number<$coefficient_type, Checked_Number_Transparent_Policy>"
-  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $ctype, [The integral type used to represent coefficients.])
+  coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t, Checked_Number_Transparent_Policy>"
+  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $coefficient_type, [The integral type used to represent coefficients.])
+  AC_DEFINE_UNQUOTED(COEFFICIENT_BITS, $coefficient_bits, [The number of bits of coefficients; 0 if unbounded.])
   AC_DEFINE(NATIVE_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a native one.])
 elif test x"$coefficient_kind" = xchecked
 then
-  ctype="Parma_Polyhedra_Library::Checked_Number<$coefficient_type>"
-  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $ctype, [The integral type used to represent coefficients.])
+  coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t>"
+  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $coefficient_type)
+  AC_DEFINE_UNQUOTED(COEFFICIENT_BITS, $coefficient_bits)
   AC_DEFINE(CHECKED_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a checked one.])
-elif test x"$coefficient_type" = xmpz_class
+elif test x"$coefficient_kind" = xunbounded
 then
-  AC_DEFINE(COEFFICIENT_TYPE, mpz_class, [The integral type used to represent coefficients.])
+  AC_DEFINE(COEFFICIENT_TYPE, mpz_class)
+  AC_DEFINE(COEFFICIENT_BITS, 0)
   AC_DEFINE(GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
 fi
 
