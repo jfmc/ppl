@@ -42,7 +42,7 @@ $(top_builddir)/src/libppl.la \
 ORIGINAL_TESTS = \
 	CbecomesNNC1 \
 	NNCbecomesC1 \
-	addcongruence1 addcongruence2 addcongruence3 addcongruence4 addcongruence5 \
+	addcongruence1 \
 	addcongruences1 addcongruences2 addcongruences3 addcongruences4 \
 	addcongruences5 \
 	addconstraint1 addconstraint2 addconstraint3 \
@@ -162,8 +162,7 @@ ORIGINAL_TESTS = \
 	writevariable1
 
 DERIVED_TESTS = \
-	nnc_addcongruence1 nnc_addcongruence2 nnc_addcongruence3 \
-	nnc_addcongruence4 nnc_addcongruence5 \
+	nnc_addcongruence1 \
 	nnc_addcongruences1 nnc_addcongruences2 nnc_addcongruences3 \
 	nnc_addcongruences4 nnc_addcongruences5 \
 	nnc_addconstraint2 nnc_addconstraint3 \
@@ -273,10 +272,6 @@ CbecomesNNC1_SOURCES = CbecomesNNC1.cc
 NNCbecomesC1_SOURCES = NNCbecomesC1.cc
 
 addcongruence1_SOURCES = addcongruence1.cc
-addcongruence2_SOURCES = addcongruence2.cc
-addcongruence3_SOURCES = addcongruence3.cc
-addcongruence4_SOURCES = addcongruence4.cc
-addcongruence5_SOURCES = addcongruence5.cc
 
 addcongruences1_SOURCES = addcongruences1.cc
 addcongruences2_SOURCES = addcongruences2.cc
@@ -686,14 +681,6 @@ DERIVED_CXXFLAGS = -DDERIVED_TEST $(AM_CXXFLAGS)
 
 nnc_addcongruence1_SOURCES = addcongruence1.cc
 nnc_addcongruence1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addcongruence2_SOURCES = addcongruence2.cc
-nnc_addcongruence2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addcongruence3_SOURCES = addcongruence3.cc
-nnc_addcongruence3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addcongruence4_SOURCES = addcongruence4.cc
-nnc_addcongruence4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addcongruence5_SOURCES = addcongruence5.cc
-nnc_addcongruence5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addcongruences1_SOURCES = addcongruences1.cc
 nnc_addcongruences1_CXXFLAGS = $(DERIVED_CXXFLAGS)
