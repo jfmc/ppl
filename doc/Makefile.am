@@ -69,6 +69,10 @@ HTML_DIRS = \
 ppl-user-@VERSION@-html \
 ppl-devref-@VERSION@-html
 
+TEMP_HTML_DIRS = \
+user.html-dir \
+devref.html-dir
+
 DIST_HTML_DOCS = \
 ppl-user-@VERSION@-html.tar.gz
 
@@ -275,6 +279,6 @@ ppl.sty \
 README.doc
 
 mostlyclean-local:
-	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) *.aux *.log
+	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) $(TEMP_HTML_DIRS) *.aux *.log
 
 CLEANFILES = $(DIST_HTML_DOCS) $(DIST_PDF_DOCS) $(DIST_PS_DOCS)
