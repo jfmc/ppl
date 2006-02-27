@@ -42,26 +42,31 @@ libppl_gprolog_la_LDFLAGS = -module -avoid-version
 
 pkglib_DATA = ppl_gprolog.pl
 
-# Notice: we are linking with libppl_gprolog.a statically.
-# This is a kludge until we understand whether and if libtool
-# and gplc can interoperate.
+if ENABLE_SHARED
+
+LIBPPL_GPROLOG = .libs/libppl_gprolog.so
+
+else !ENABLE_SHARED
+
+LIBPPL_GPROLOG = .libs/libppl_gprolog.a
+
+endif !ENABLE_SHARED
+
 ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 	gplc --c-compiler $(CXX) -o $@ \
-		$(srcdir)/ppl_gprolog.pl .libs/libppl_gprolog.a \
+		$(srcdir)/ppl_gprolog.pl $(LIBPPL_GPROLOG) \
 		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
 
-# Notice: we are linking with libppl_gprolog.a statically.
-# This is a kludge until we understand whether and if libtool
-# and gplc can interoperate.
 gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq.pl
 	gplc --c-compiler $(CXX) -o $@ \
 		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
-		$(srcdir)/../tests/clpq.pl .libs/libppl_gprolog.a \
+		$(srcdir)/../tests/clpq.pl $(LIBPPL_GPROLOG) \
 		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
+
 gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq2.pl
 	gplc --c-compiler $(CXX) -o $@ \
 		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
-		$(srcdir)/../tests/clpq2.pl .libs/libppl_gprolog.a \
+		$(srcdir)/../tests/clpq2.pl $(LIBPPL_GPROLOG) \
 		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
 
 CLPQ_TESTS_NONSTRICT = \
@@ -115,6 +120,7 @@ pl_check_test: gnu_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/src/libpwl.la \
+		-dlopen libppl_gprolog.la \
 		./ppl_gprolog <script_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
@@ -124,6 +130,7 @@ clpq_test: gp_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/src/libpwl.la \
+		-dlopen libppl_gprolog.la \
 		./gp_clpq <$(SCRIPT_CLPQ) >obtained_clpq
 	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 
@@ -133,6 +140,7 @@ clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/src/libpwl.la \
+		-dlopen libppl_gprolog.la \
 		./gp_clpq2 <$(SCRIPT_CLPQ2) >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
