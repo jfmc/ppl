@@ -49,8 +49,7 @@ ORIGINAL_TESTS = \
 	addgenerator1 addgenerator2 \
 	addgenerators1 addgenerators2 \
 	addspacedims1 addspacedims2 \
-	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
-	affineimage6 affineimage7 affineimage8 affineimage9 \
+	affineimage1 affineimage2 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
 	affinepreimage9 affinepreimage10 affinepreimage11 affinepreimage12 \
@@ -158,8 +157,7 @@ DERIVED_TESTS = \
 	nnc_addgenerator1 \
 	nnc_addgenerators1 \
 	nnc_addspacedims1 \
-	nnc_affineimage1 nnc_affineimage2 nnc_affineimage3 nnc_affineimage4 \
-	nnc_affineimage5 nnc_affineimage6 nnc_affineimage7 nnc_affineimage8 \
+	nnc_affineimage1 \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
 	nnc_affinepreimage4 nnc_affinepreimage5 nnc_affinepreimage6 \
 	nnc_affinepreimage7 nnc_affinepreimage8 nnc_affinepreimage9 \
@@ -272,13 +270,6 @@ addspacedims2_SOURCES = addspacedims2.cc
 
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
-affineimage3_SOURCES = affineimage3.cc
-affineimage4_SOURCES = affineimage4.cc
-affineimage5_SOURCES = affineimage5.cc
-affineimage6_SOURCES = affineimage6.cc
-affineimage7_SOURCES = affineimage7.cc
-affineimage8_SOURCES = affineimage8.cc
-affineimage9_SOURCES = affineimage9.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
@@ -641,20 +632,6 @@ nnc_addspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affineimage1_SOURCES = affineimage1.cc
 nnc_affineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_affineimage2_SOURCES = affineimage2.cc
-nnc_affineimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_affineimage3_SOURCES = affineimage3.cc
-nnc_affineimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_affineimage4_SOURCES = affineimage4.cc
-nnc_affineimage4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_affineimage5_SOURCES = affineimage5.cc
-nnc_affineimage5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_affineimage6_SOURCES = affineimage6.cc
-nnc_affineimage6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_affineimage7_SOURCES = affineimage7.cc
-nnc_affineimage7_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_affineimage8_SOURCES = affineimage8.cc
-nnc_affineimage8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinepreimage1_SOURCES = affinepreimage1.cc
 nnc_affinepreimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
