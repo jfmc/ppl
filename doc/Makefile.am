@@ -240,9 +240,13 @@ ppl-user-@VERSION@.pdf: user.latex-dir
 ppl-devref-@VERSION@.pdf: devref.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
-ppl-%-@VERSION@-html: %.doxyconf-html $(DEVREF_STUFF)
-	rm -rf %.html-dir
-	$(TEX_ENV) $(DOXYGEN) $< && rm -rf $@ && mv -f %.html-dir $@
+ppl-user-@VERSION@-html: user.doxyconf-html $(DEVREF_STUFF)
+	rm -rf user.html-dir
+	$(TEX_ENV) $(DOXYGEN) $< && rm -rf $@ && mv -f user.html-dir $@
+
+ppl-devref-@VERSION@-html: devref.doxyconf-html $(DEVREF_STUFF)
+	rm -rf devref.html-dir
+	$(TEX_ENV) $(DOXYGEN) $< && rm -rf $@ && mv -f devref.html-dir $@
 
 %.tar: %
 	tar cf $@ $<
