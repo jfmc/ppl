@@ -598,10 +598,10 @@ BEGIN_MAIN
   NEW_TEST(test01);
   NEW_TEST(test02);
   NEW_TEST(test03);
-  NEW_TEST(test04); // This will fail on int8_t.
-  NEW_TEST(test05); // This will fail on int8_t.
+  NEW_TEST_F8(test04);
+  NEW_TEST_F8(test05);
   NEW_TEST(test06);
   NEW_TEST(test07);
-  NEW_TEST(test08); // This will fail on int8_t.
+  NEW_TEST_F8(test08);
   NEW_TEST(test09);
 END_MAIN

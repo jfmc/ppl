@@ -213,6 +213,6 @@ BEGIN_MAIN
   NEW_TEST(test02);
   NEW_TEST(test03);
   NEW_TEST(test04);
-  NEW_TEST(test05); // This fails with int8_t and assertions.
+  NEW_TEST_F8A(test05);
   NEW_TEST(test06);
 END_MAIN
