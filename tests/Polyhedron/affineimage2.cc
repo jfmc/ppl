@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 void
-my_output_function(std::ostream& s, const Variable& v) {
+aux_test01(std::ostream& s, const Variable& v) {
   s << char('i' + v.id());
 }
 
@@ -35,7 +35,7 @@ test01() {
   Variable j(1);
 
   // Install the alternate output function.
-  Variable::set_output_function(my_output_function);
+  Variable::set_output_function(aux_test01);
 
   NNC_Polyhedron p1(2);
   p1.add_constraint(j == 0);
