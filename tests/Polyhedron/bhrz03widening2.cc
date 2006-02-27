@@ -22,38 +22,240 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
   Generator_System gs1;
-  gs1.insert(point(2*A));
-  gs1.insert(closure_point(A+B));
-  gs1.insert(closure_point(3*A+B));
-  NNC_Polyhedron ph1(gs1);
+  gs1.insert(point());
+  gs1.insert(ray(B));
+  gs1.insert(ray(-A + B));
+  C_Polyhedron ph1(gs1);
 
   Generator_System gs2;
-  gs2.insert(point(2*A));
-  gs2.insert(closure_point(B));
-  gs2.insert(closure_point(4*A+B));
-  NNC_Polyhedron ph2(gs2);
+  gs2.insert(point());
+  gs2.insert(ray(B));
+  gs2.insert(ray(-A - B));
+  C_Polyhedron ph2(gs2);
 
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 
   ph2.BHRZ03_widening_assign(ph1);
 
-  NNC_Polyhedron known_result(2);
-  known_result.add_constraint(B >= 0);
-  known_result.add_constraint(B < 1);
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A <= 0);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
+  bool ok = (ph2 == known_result);
 
-  print_constraints(ph2, "*** After BHRZ03_widening_assign ***");
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs1;
+  gs1.insert(point());
+  gs1.insert(ray(-A));
+  gs1.insert(ray(-A - B));
+  C_Polyhedron ph1(gs1);
+
+  Generator_System gs2;
+  gs2.insert(point());
+  gs2.insert(ray(-A));
+  gs2.insert(ray(A - B));
+  C_Polyhedron ph2(gs2);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+
+  ph2.BHRZ03_widening_assign(ph1);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(B <= 0);
+
+  bool ok = (ph2 == known_result);
+
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs1;
+  gs1.insert(point());
+  gs1.insert(ray(-B));
+  gs1.insert(ray(A - B));
+  C_Polyhedron ph1(gs1);
+
+  Generator_System gs2;
+  gs2.insert(point());
+  gs2.insert(ray(-B));
+  gs2.insert(ray(A + B));
+  C_Polyhedron ph2(gs2);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+
+  ph2.BHRZ03_widening_assign(ph1);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A >= 0);
+
+  bool ok = (ph2 == known_result);
+
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs1;
+  gs1.insert(point());
+  gs1.insert(ray(-A));
+  gs1.insert(ray(-A + B));
+  C_Polyhedron ph1(gs1);
+
+  Generator_System gs2;
+  gs2.insert(point());
+  gs2.insert(ray(-A));
+  gs2.insert(ray(A + B));
+  C_Polyhedron ph2(gs2);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+
+  ph2.BHRZ03_widening_assign(ph1);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(B >= 0);
+
+  bool ok = (ph2 == known_result);
+
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs1;
+  gs1.insert(point());
+  gs1.insert(ray(-B));
+  gs1.insert(ray(-A - B));
+  C_Polyhedron ph1(gs1);
+
+  Generator_System gs2;
+  gs2.insert(point());
+  gs2.insert(ray(-B));
+  gs2.insert(ray(-A + B));
+  C_Polyhedron ph2(gs2);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+
+  ph2.BHRZ03_widening_assign(ph1);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A <= 0);
+
+  bool ok = (ph2 == known_result);
+
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs1;
+  gs1.insert(point());
+  gs1.insert(ray(A));
+  gs1.insert(ray(A - B));
+  C_Polyhedron ph1(gs1);
+
+  Generator_System gs2;
+  gs2.insert(point());
+  gs2.insert(ray(A));
+  gs2.insert(ray(-A - B));
+  C_Polyhedron ph2(gs2);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+
+  ph2.BHRZ03_widening_assign(ph1);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(B <= 0);
+
+  bool ok = (ph2 == known_result);
+
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs1;
+  gs1.insert(point());
+  gs1.insert(ray(B));
+  gs1.insert(ray(A + B));
+  C_Polyhedron ph1(gs1);
+
+  Generator_System gs2;
+  gs2.insert(point());
+  gs2.insert(ray(B));
+  gs2.insert(ray(A - B));
+  C_Polyhedron ph2(gs2);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+
+  ph2.BHRZ03_widening_assign(ph1);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A >= 0);
+
+  bool ok = (ph2 == known_result);
+
+  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+END_MAIN

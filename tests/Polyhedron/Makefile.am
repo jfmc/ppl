@@ -66,8 +66,7 @@ ORIGINAL_TESTS = \
 	boundedh79extrapolation1 \
 	boundingbox1 boundingbox2 boundingbox3 \
 	bounds1 bounds2 \
-	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
-	concatenate6 concatenate7 \
+	concatenate1 \
 	congruences1 \
 	constraints1 constraints2 constraints3 constraints4 constraints5 \
 	contains1 contains2 contains3 contains4 contains5 \
@@ -168,8 +167,7 @@ DERIVED_TESTS = \
 	nnc_boundedh79extrapolation1 \
 	nnc_boundingbox1 nnc_boundingbox2 \
 	nnc_bounds1 nnc_bounds2 \
-	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
-	nnc_concatenate5 nnc_concatenate6 nnc_concatenate7 \
+	nnc_concatenate1 \
 	nnc_congruences1 \
 	nnc_constraints1 nnc_constraints2 nnc_constraints3 nnc_constraints4 \
 	nnc_constraints5 \
@@ -309,12 +307,6 @@ bounds1_SOURCES = bounds1.cc
 bounds2_SOURCES = bounds2.cc
 
 concatenate1_SOURCES = concatenate1.cc
-concatenate2_SOURCES = concatenate2.cc
-concatenate3_SOURCES = concatenate3.cc
-concatenate4_SOURCES = concatenate4.cc
-concatenate5_SOURCES = concatenate5.cc
-concatenate6_SOURCES = concatenate6.cc
-concatenate7_SOURCES = concatenate7.cc
 
 congruences1_SOURCES = congruences1.cc
 
@@ -658,18 +650,6 @@ nnc_bounds2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_concatenate1_SOURCES = concatenate1.cc
 nnc_concatenate1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_concatenate2_SOURCES = concatenate2.cc
-nnc_concatenate2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_concatenate3_SOURCES = concatenate3.cc
-nnc_concatenate3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_concatenate4_SOURCES = concatenate4.cc
-nnc_concatenate4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_concatenate5_SOURCES = concatenate5.cc
-nnc_concatenate5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_concatenate6_SOURCES = concatenate6.cc
-nnc_concatenate6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_concatenate7_SOURCES = concatenate7.cc
-nnc_concatenate7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_congruences1_SOURCES = congruences1.cc
 nnc_congruences1_CXXFLAGS = $(DERIVED_CXXFLAGS)
