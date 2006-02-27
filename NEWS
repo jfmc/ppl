@@ -22,6 +22,9 @@ o  SICStus interface on x86_64... FIXME
 
 o  BD_Shape with 128-bit floating point arguments on Mac OS X... FIXME
 
+o  Fixed a bug in an internal method that, under some circumstances,
+   could cause a wrong result to be computed.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.8  (released on January 20, 2006)
