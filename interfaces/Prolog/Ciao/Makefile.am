@@ -25,6 +25,7 @@ abs_srcdir = @abs_srcdir@
 EXTRA_DIST = ppl_ciao.pl ciao_clpq.pl ciao_clpq2.pl ciao_pl_check.pl
 
 if BUILD_CIAO_PROLOG_INTERFACE
+if ENABLE_SHARED
 
 AM_CPPFLAGS = \
 -I$(top_builddir)/src \
@@ -156,4 +157,5 @@ mostlyclean-local:
 	  rm -f ppl_ciao.pl; \
 	fi
 
+endif ENABLE_SHARED
 endif BUILD_CIAO_PROLOG_INTERFACE
