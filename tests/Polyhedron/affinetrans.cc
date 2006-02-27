@@ -22,18 +22,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable x(0);
   Variable y(1);
+
   Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + 3*y));
   gs.insert(point(3*x + 0*y));
   gs.insert(point(3*x + 3*y));
   C_Polyhedron ph(gs);
+
   Linear_Expression expr = x + 4;
 
   C_Polyhedron p1(ph);
@@ -62,13 +64,18 @@ main() TRY {
   gs2_known_result.insert(point(-1*x + 3*y));
   C_Polyhedron p2_known_result(gs2_known_result);
 
-  int retval = ((p1 == p1_known_result) && (p2 == p2_known_result)) ? 0 : 1;
+  bool ok = (p1 == p1_known_result && p2 == p2_known_result);
 
   print_generators(p1 ,"*** p1 ***");
   print_generators(p1_known_result, "*** p1_known_result ***");
   print_generators(p2 ,"*** p2 ***");
   print_generators(p2_known_result, "*** p2_known_result ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+END_MAIN
