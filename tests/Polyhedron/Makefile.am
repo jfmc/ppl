@@ -44,11 +44,8 @@ ORIGINAL_TESTS = \
 	NNCbecomesC1 \
 	addcongruence1 \
 	addcongruences1 \
-	addconstraint1 addconstraint2 addconstraint3 \
-	addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
-	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
-	addconstraints9 addconstraints10 addconstraints11 \
-	addconstraints12 addconstraints13 \
+	addconstraint1 \
+	addconstraints1 addconstraints2 \
 	addgenerator1 addgenerator2 addgenerator3 addgenerator4 \
 	addgenerator5 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
@@ -163,11 +160,8 @@ ORIGINAL_TESTS = \
 DERIVED_TESTS = \
 	nnc_addcongruence1 \
 	nnc_addcongruences1 \
-	nnc_addconstraint2 nnc_addconstraint3 \
-	nnc_addconstraints1 nnc_addconstraints2 nnc_addconstraints3 \
-	nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
-	nnc_addconstraints7 nnc_addconstraints8 nnc_addconstraints9 \
-	nnc_addconstraints10 nnc_addconstraints13 \
+	nnc_addconstraint1 \
+	nnc_addconstraints1 \
 	nnc_addgenerator3 nnc_addgenerator5 \
 	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
 	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
@@ -274,22 +268,9 @@ addcongruence1_SOURCES = addcongruence1.cc
 addcongruences1_SOURCES = addcongruences1.cc
 
 addconstraint1_SOURCES = addconstraint1.cc
-addconstraint2_SOURCES = addconstraint2.cc
-addconstraint3_SOURCES = addconstraint3.cc
 
 addconstraints1_SOURCES = addconstraints1.cc
 addconstraints2_SOURCES = addconstraints2.cc
-addconstraints3_SOURCES = addconstraints3.cc
-addconstraints4_SOURCES = addconstraints4.cc
-addconstraints5_SOURCES = addconstraints5.cc
-addconstraints6_SOURCES = addconstraints6.cc
-addconstraints7_SOURCES = addconstraints7.cc
-addconstraints8_SOURCES = addconstraints8.cc
-addconstraints9_SOURCES = addconstraints9.cc
-addconstraints10_SOURCES = addconstraints10.cc
-addconstraints11_SOURCES = addconstraints11.cc
-addconstraints12_SOURCES = addconstraints12.cc
-addconstraints13_SOURCES = addconstraints13.cc
 
 addgenerator1_SOURCES = addgenerator1.cc
 addgenerator2_SOURCES = addgenerator2.cc
@@ -679,33 +660,11 @@ nnc_addcongruence1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_addcongruences1_SOURCES = addcongruences1.cc
 nnc_addcongruences1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_addconstraint2_SOURCES = addconstraint2.cc
-nnc_addconstraint2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addconstraint3_SOURCES = addconstraint3.cc
-nnc_addconstraint3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addconstraint1_SOURCES = addconstraint1.cc
+nnc_addconstraint1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addconstraints1_SOURCES = addconstraints1.cc
 nnc_addconstraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addconstraints2_SOURCES = addconstraints2.cc
-nnc_addconstraints2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addconstraints3_SOURCES = addconstraints3.cc
-nnc_addconstraints3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addconstraints4_SOURCES = addconstraints4.cc
-nnc_addconstraints4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addconstraints5_SOURCES = addconstraints5.cc
-nnc_addconstraints5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addconstraints6_SOURCES = addconstraints6.cc
-nnc_addconstraints6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addconstraints7_SOURCES = addconstraints7.cc
-nnc_addconstraints7_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addconstraints8_SOURCES = addconstraints8.cc
-nnc_addconstraints8_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addconstraints9_SOURCES = addconstraints9.cc
-nnc_addconstraints9_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addconstraints10_SOURCES = addconstraints10.cc
-nnc_addconstraints10_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addconstraints13_SOURCES = addconstraints13.cc
-nnc_addconstraints13_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addgenerator3_SOURCES = addgenerator3.cc
 nnc_addgenerator3_CXXFLAGS = $(DERIVED_CXXFLAGS)
