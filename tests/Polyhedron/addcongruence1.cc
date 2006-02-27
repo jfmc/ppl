@@ -1,5 +1,4 @@
-/* Test Polyhedron::add_congruence(): add equalities and congruences
-   to a closed polyhedron.
+/* Test Polyhedron::add_congruence().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,28 +22,108 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
   C_Polyhedron ph(2);
-
   ph.add_congruence(A %= 0);
   ph.add_congruence((B == 5) / 0);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(B == 5);
 
-  int retval = (ph == known_result) ? 0 : 1;
+  bool ok = (ph == known_result);
 
   print_constraints(ph, "*** ph ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+
+  ph.add_congruence((A + B %= 3) / 4);
+  ph.add_congruence((A == -1) / 0);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A == -1);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, EMPTY);
+
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron known_result(ph);
+
+  ph.add_congruence((A - B == 0) / 0);
+  ph.add_congruence((A + B %= 1) / 2);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph after adding congruences ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  C_Polyhedron ph(0);
+
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron known_result(0);
+
+  ph.add_congruence((Linear_Expression::zero() %= 0) / 2);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph after adding congruence ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  C_Polyhedron ph(0);
+
+  print_constraints(ph, "*** ph ***");
+
+  ph.add_congruence((Linear_Expression::zero() %= 1) / 0);
+
+  C_Polyhedron known_result(0, EMPTY);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** ph after adding congruence ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+END_MAIN
