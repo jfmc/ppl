@@ -42,8 +42,6 @@ $(top_builddir)/src/libppl.la \
 ORIGINAL_TESTS = \
 	CbecomesNNC1 \
 	NNCbecomesC1 \
-	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
-	NNCminimize6 \
 	addcongruence1 addcongruence2 addcongruence3 addcongruence4 addcongruence5 \
 	addcongruences1 addcongruences2 addcongruences3 addcongruences4 \
 	addcongruences5 \
@@ -132,7 +130,7 @@ ORIGINAL_TESTS = \
 	memory1 memory2 \
 	minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
 	mingenerators1 mingenerators2 mingenerators3 \
-	nncminimize2 \
+	nncminimize1 nncminimize2 \
 	numberinput1 \
 	onepoint \
 	permute \
@@ -273,13 +271,6 @@ DERIVED_TESTS = \
 CbecomesNNC1_SOURCES = CbecomesNNC1.cc
 
 NNCbecomesC1_SOURCES = NNCbecomesC1.cc
-
-NNCminimize1_SOURCES = NNCminimize1.cc
-NNCminimize2_SOURCES = NNCminimize2.cc
-NNCminimize3_SOURCES = NNCminimize3.cc
-NNCminimize4_SOURCES = NNCminimize4.cc
-NNCminimize5_SOURCES = NNCminimize5.cc
-NNCminimize6_SOURCES = NNCminimize6.cc
 
 addcongruence1_SOURCES = addcongruence1.cc
 addcongruence2_SOURCES = addcongruence2.cc
@@ -576,6 +567,7 @@ mingenerators3_SOURCES = mingenerators3.cc
 
 numberinput1_SOURCES = numberinput1.cc
 
+nncminimize1_SOURCES = nncminimize1.cc
 nncminimize2_SOURCES = nncminimize2.cc
 
 onepoint_SOURCES = onepoint.cc
