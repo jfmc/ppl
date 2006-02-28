@@ -57,6 +57,7 @@ catch (const std::exception& e) { \
 int						\
 main() try {					\
   set_handlers();				\
+  bool succeeded = false;			\
   list<string> failed_tests;
 
 #define END_MAIN							\
@@ -90,14 +91,24 @@ catch (const std::exception& e) {					\
   nout << "\n=== " #name " ===" << endl; \
   name();
 
+#define RUN_TEST(name)			 \
+  try {					 \
+    succeeded = name();			 \
+  }					 \
+  catch (...) {				 \
+    succeeded = false;			 \
+  }
+
 #define NEW_TEST(name)			 \
   ANNOUNCE_TEST(name);			 \
-  if (!name())				 \
+  RUN_TEST(name);			 \
+  if (!succeeded)			 \
     failed_tests.push_back(#name);
 
 #define NEW_TEST_F(name)		 \
   ANNOUNCE_TEST(name);			 \
-  if (name())				 \
+  RUN_TEST(name);			 \
+  if (succeeded)			 \
     failed_tests.push_back(#name);
 
 #if COEFFICIENT_BITS == 0
@@ -140,14 +151,14 @@ catch (const std::exception& e) {					\
 #define NEW_TEST_F32(name) NEW_TEST(name)
 #define NEW_TEST_F16(name) NEW_TEST(name)
 #define NEW_TEST_F8(name) NEW_TEST_F(name)
-#define NEW_TEST_F8A(name) NEW_TEST_F(name)
+#define NEW_TEST_F8A(name) NEW_TEST(name)
 
 #else
 
 #define NEW_TEST_F64(name) NEW_TEST(name)
 #define NEW_TEST_F32(name) NEW_TEST(name)
 #define NEW_TEST_F16(name) NEW_TEST(name)
-#define NEW_TEST_F8(name) NEW_TEST(name)
+#define NEW_TEST_F8(name) NEW_TEST_F(name)
 #define NEW_TEST_F8A(name) NEW_TEST_F(name)
 
 #endif // !defined(NDEBUG)
