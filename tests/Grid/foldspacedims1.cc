@@ -22,46 +22,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-
 // Universe grid.
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test1() {
   Grid gr(3);
+  print_congruences(gr, "*** gr ***");
 
   Variables_Set to_fold;
   to_fold.insert(A);
 
   gr.fold_space_dimensions(to_fold, B);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(2);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.fold_space_dimensions(to_fold, B) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
 // Empty grid.
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test2() {
   Grid gr(3, EMPTY);
+  print_congruences(gr, "*** gr ***");
 
   Variables_Set to_fold;
   to_fold.insert(A);
@@ -70,23 +62,23 @@ test2() {
 
   Grid known_gr(2, EMPTY);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.fold_space_dimensions(to_fold, B) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
 // Trivial fold.
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test3() {
   Grid gr(3);
   gr.add_congruence(A %= 0);
   gr.add_congruence((A + B + C %= 2) / 3);
+  print_congruences(gr, "*** gr ***");
 
   Grid known_gr = gr;
 
@@ -94,23 +86,22 @@ test3() {
 
   gr.fold_space_dimensions(to_fold, B);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.fold_space_dimensions(to_fold, B) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
 // Simple fold from congruences.
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test4() {
   Grid gr(2);
   gr.add_congruence(A %= 1);
   gr.add_congruence((B %= 1) / 3);
+  print_congruences(gr, "*** gr ***");
 
   Variables_Set to_fold;
   to_fold.insert(A);
@@ -120,24 +111,24 @@ test4() {
   Grid known_gr(1);
   known_gr.add_congruence(A %= 1);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.fold_space_dimensions(to_fold, B) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
 // Simple fold from generators.
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test5() {
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point(A + 2*B + 2*C));
   gr.add_generator(grid_point(A + 2*B + 4*C));
   gr.add_generator(grid_point(A + 6*B + 2*C));
+  print_generators(gr, "*** gr ***");
 
   Variables_Set to_fold;
   to_fold.insert(C);
@@ -148,24 +139,24 @@ test5() {
   known_gr.add_generator(grid_point(A + 2*B));
   known_gr.add_generator(grid_point(A + 4*B));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.fold_space_dimensions(to_fold, B) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
-// Test folding several dimensions into a higher dimension.
+// Folding several dimensions into a higher dimension.
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test6() {
   Grid gr(3);
   gr.add_congruence((A %= 2) / 3);
   gr.add_congruence((B %= 8) / 9);
   gr.add_congruence((C == 17) / 0);
+  print_congruences(gr, "*** gr ***");
 
   Variables_Set to_fold;
   to_fold.insert(A);
@@ -176,24 +167,25 @@ test6() {
   Grid known_gr(1);
   known_gr.add_congruence((A %= 2) / 3);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.fold_space_dimensions(to_fold, C) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
-// Test folding dimensions into a lower dimension.
+// Folding dimensions into a lower dimension.
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
 
-void
-test7() {
   Grid gr(4);
   gr.add_congruence((A - B %= 3) / 4);
   gr.add_congruence((C %= 5) / 9);
   gr.add_congruence((D %= 2) / 6);
+  print_congruences(gr, "*** gr ***");
 
   Variables_Set to_fold;
   to_fold.insert(C);
@@ -203,25 +195,26 @@ test7() {
 
   Grid known_gr(2);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.fold_space_dimensions(to_fold, A) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
-// Test folding dimensions into an intermediate dimension.
+// Folding dimensions into an intermediate dimension.
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
 
-void
-test8() {
   Grid gr(4);
   gr.add_congruence((A %= 0) / 2);
   gr.add_congruence((B %= 0) / 9);
   gr.add_congruence((C %= 0) / 6);
   gr.add_congruence((D %= 0) / 12);
+  print_congruences(gr, "*** gr ***");
 
   Variables_Set to_fold;
   to_fold.insert(B);
@@ -233,25 +226,26 @@ test8() {
   known_gr.add_congruence((A %= 0) / 2);
   known_gr.add_congruence((B %= 0) / 3);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.fold_space_dimensions(to_fold, C) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
 // Test folding dimensions of a relational grid into an intermediate
 // dimension.
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
 
-void
-test9() {
   Grid gr(4);
   gr.add_congruence((A - B %= 0) / 9);
   gr.add_congruence((C %= 0) / 6);
   gr.add_congruence((D %= 0) / 12);
+  print_congruences(gr, "*** gr ***");
 
   Variables_Set to_fold;
   to_fold.insert(B);
@@ -261,22 +255,20 @@ test9() {
 
   Grid known_gr(2);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.fold_space_dimensions(to_fold, C) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
 // One dimension.
-
-void
+bool
 test10() {
+  Variable A(0);
+
   Grid gr(1);
   gr.add_congruence((A %= 3) / 7);
+  print_congruences(gr, "*** gr ***");
 
   Grid known_gr = gr;
 
@@ -284,25 +276,25 @@ test10() {
 
   gr.fold_space_dimensions(to_fold, A);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.fold_space_dimensions(to_fold, A) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
 // Test folding dimensions of a relational grid into an intermediate
 // dimension, where the resulting grid is smaller than the universe.
-
-void
+bool
 test11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr(3);
   gr.add_congruence(A - B == 0);
   gr.add_congruence(A %= 0);
   gr.add_congruence(C == 0);
+  print_congruences(gr, "*** gr ***");
 
   Variables_Set to_fold;
   to_fold.insert(A);
@@ -313,20 +305,18 @@ test11() {
   known_gr.add_congruence(A %= 0);
   known_gr.add_congruence(B %= 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.fold_space_dimensions(to_fold, C) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr << endl
-       << "known:" << endl << known_gr << endl;
-
-  exit(1);
+  return ok;
 }
 
-// Second paramter of greater dimension than grid.
-
-void
+// Second parameer of greater dimension than grid.
+bool
 test12() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(1, EMPTY);
 
   Variables_Set vars;
@@ -334,16 +324,21 @@ test12() {
 
   try {
     gr.fold_space_dimensions(vars, B);
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (const std::invalid_argument& e) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // Highest variable in set of greater dimension than grid.
-
-void
+bool
 test13() {
+  Variable B(1);
+
   Grid gr(3, EMPTY);
 
   Variables_Set vars;
@@ -351,17 +346,23 @@ test13() {
 
   try {
     gr.fold_space_dimensions(vars, B);
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (const std::invalid_argument& e) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // Dimension of highest variable in set greater than dimension of
 // grid.
-
-void
+bool
 test14() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(1, EMPTY);
 
   Variables_Set vars;
@@ -369,35 +370,31 @@ test14() {
 
   try {
     gr.fold_space_dimensions(vars, A);
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (const std::invalid_argument& e) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "foldspacedims1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+END_MAIN

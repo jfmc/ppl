@@ -22,105 +22,80 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-Variable E(4);
-
 // Universe.
+bool
+test01() {
+  Variable A(0);
 
-void
-test1() {
   Grid gr(3);
+  print_congruences(gr, "*** gr ***");
 
   gr.expand_space_dimension(A, 1);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(4);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.expand_space_dimension(A, 1) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Empty.
+bool
+test02() {
+  Variable B(1);
 
-void
-test2() {
   Grid gr(3, EMPTY);
+  print_congruences(gr, "*** gr ***");
 
   gr.expand_space_dimension(B, 1);
 
   Grid known_gr(4, EMPTY);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.expand_space_dimension(B, 1) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Trivial expansion.
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test3() {
   Grid gr(2);
   gr.add_congruence(A %= 0);
   gr.add_congruence(A + B %= 2);
 
   gr.expand_space_dimension(A, 0);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(2);
   known_gr.add_congruence(A %= 0);
   known_gr.add_congruence(A + B %= 2);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.expand_space_dimension(A, 0) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // From generators, expanding one dimension.
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test4() {
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point(A));
   gr.add_generator(grid_point(A + 2*B));
   gr.add_generator(grid_point());
+  print_generators(gr, "***  ***");
 
   gr.expand_space_dimension(A, 1);
-
-  if (find_variation(gr))
-    exit(1);
 
   Grid known_gr(3, EMPTY);
   known_gr.add_generator(grid_point());
@@ -128,79 +103,69 @@ test4() {
   known_gr.add_generator(grid_point(A + 2*B));
   known_gr.add_generator(grid_point(C));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.expand_space_dimension(A, 1) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // From congruences, expanding one dimension.
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test5() {
   Grid gr(2);
   gr.add_congruence((A + B %= 2) / 7);
+  print_generators(gr, "***  ***");
 
   gr.expand_space_dimension(A, 1);
-
-  if (find_variation(gr))
-    exit(1);
 
   Grid known_gr(3);
   known_gr.add_congruence((A + B     %= 2) / 7);
   known_gr.add_congruence((    B + C %= 2) / 7);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.expand_space_dimension(A, 1) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // From congruences, expanding two dimensions.
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
 
-void
-test6() {
   Grid gr(2);
   gr.add_congruence((A + 2*B %= 3) / 5);
+  print_generators(gr, "***  ***");
 
   gr.expand_space_dimension(B, 2);
-
-  if (find_variation(gr))
-    exit(1);
 
   Grid known_gr(4);
   known_gr.add_congruence((A + 2*B             %= 3) / 5);
   known_gr.add_congruence((A       + 2*C       %= 3) / 5);
   known_gr.add_congruence((A             + 2*D %= 3) / 5);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.expand_space_dimension(B, 2) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // From congruences, with an equality.
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
 
-void
-test7() {
   Grid gr(3);
   gr.add_congruence(2*C == 1);
   gr.add_congruence(A - B %= 0);
@@ -208,73 +173,66 @@ test7() {
   gr.expand_space_dimension(A, 1);
   gr.expand_space_dimension(C, 1);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(5);
   known_gr.add_congruence(2*C == 1);
   known_gr.add_congruence(2*E == 1);
   known_gr.add_congruence(A - B         %= 0);
   known_gr.add_congruence(  - B + D     %= 0);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
+  print_congruences(gr, "*** gr.expand_space_dimension(...) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
-
-  dump_grids(gr, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Variable of higher space dimension than grid.
+bool
+test08() {
+  Variable B(1);
 
-void
-test8() {
   Grid gr(1, EMPTY);
 
   try {
     gr.expand_space_dimension(B, 3);
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (const std::invalid_argument& e) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // Add more dimensions than are available.
+bool
+test09() {
+  Variable B(1);
 
-void
-test9() {
   Grid gr(10, EMPTY);
 
   try {
     gr.expand_space_dimension(B, Grid::max_space_dimension());
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (const std::length_error& e) {}
+  catch (const std::length_error& e) {
+    nout << "length_error: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "expandspacedim1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+END_MAIN

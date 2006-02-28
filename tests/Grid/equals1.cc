@@ -23,56 +23,44 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
+// Grids the same, gr defined by generatorss and known_gr by congruences.
+bool
+test01() {
+  Variable A(0);
 
-void
-test1() {
   Grid_Generator_System gs;
   gs.insert(grid_point());
   gs.insert(grid_point(3*A));
 
   Grid gr(gs);
 
-  if (find_variation(gr))
-    exit(1);
-
   Congruence_System known_cgs;
   known_cgs.insert((A %= 0) / 3);
 
   Grid known_gr(known_cgs);
 
-  if (gr != known_gr) {
-    nout << "gr != known_gr should return false." << endl
-	 << "grid:" << endl << gr << endl
-	 << "known grid:" << endl << known_gr << endl;
-    exit(1);
-  }
+  bool ok = (gr == known_gr);
 
-  if (gr == known_gr)
-    return;
+  print_congruences(gr, "*** gr ***");
+  print_congruences(known_gr, "*** known_gr ***");
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
-  exit(1);
+  return ok;
 }
 
-void
-test2() {
+// Grids the same, gr defined by congruences and known_gr by generators.
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Congruence_System cgs;
   cgs.insert(A - B %= 0);
   cgs.insert((C %= 0) / 7);
 
   Grid gr(cgs);
-
-  if (find_variation(gr))
-    exit(1);
 
   Grid_Generator_System gs;
   gs.insert(grid_point());
@@ -82,32 +70,26 @@ test2() {
 
   Grid known_gr(gs);
 
-  if (gr != known_gr) {
-    nout << "gr != known_gr should return false." << endl
-	 << "grid:" << endl << gr << endl
-	 << "known grid:" << endl << known_gr << endl;
-    exit(1);
-  }
+  bool ok = (gr == known_gr);
 
-  if (gr == known_gr)
-    return;
+  print_congruences(gr, "*** gr ***");
+  print_congruences(known_gr, "*** known_gr ***");
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
-  exit(1);
+  return ok;
 }
 
-void
-test3() {
+// Grids differ, gr defined by congruences and known_gr by generators.
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Congruence_System cgs;
   cgs.insert(A - B %= 0);
   cgs.insert((C %= 0) / 7);
 
   Grid gr(cgs);
-
-  if (find_variation(gr))
-    exit(1);
 
   Grid_Generator_System gs;
   gs.insert(grid_point());
@@ -117,32 +99,25 @@ test3() {
 
   Grid known_gr(gs);
 
-  if (gr == known_gr) {
-    nout << "gr == known_gr should return false." << endl
-	 << "grid:" << endl << gr << endl
-	 << "known grid:" << endl << known_gr << endl;
-    exit(1);
-  }
+  bool ok = (gr != known_gr);
 
-  if (gr != known_gr)
-    return;
+  print_congruences(gr, "*** gr ***");
+  print_congruences(known_gr, "*** known_gr ***");
 
-  nout << "gr != known_gr should return true." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
-  exit(1);
+  return ok;
 }
 
-void
-test4() {
+// Grids differ by the affine dimension and are defined by points.
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
   Grid_Generator_System gs;
   gs.insert(grid_point(0*A));
   gs.insert(grid_point(1*A));
 
-  Grid gr1(gs);
-
-  if (find_variation(gr1))
-    exit(1);
+  Grid gr(gs);
 
   Grid_Generator_System known_gs;
   known_gs.insert(grid_point(0*A + 0*B));
@@ -151,33 +126,21 @@ test4() {
 
   Grid known_gr(known_gs);
 
-  if (gr1 == known_gr) {
-    nout << "gr == known_gr should return false." << endl
-	 << "grid:" << endl << gr1 << endl
-	 << "known grid:" << endl << known_gr << endl;
-    exit(1);
-  }
+  bool ok = (gr != known_gr);
 
-  gs.clear();
-  gs.insert(grid_point(0*A + 0*B));
-  gs.insert(grid_point(1*A + 0*B));
-  gs.insert(grid_line(0*A + 1*B));
+  print_congruences(gr, "*** gr ***");
+  print_congruences(known_gr, "*** known_gr ***");
 
-  Grid gr2(gs);
-
-  if (gr1 == gr2) {
-    nout << "gr1 == gr2 should return false." << endl
-	 << "gr1:" << endl << gr1 << endl
-	 << "gr2:" << endl << gr2 << endl;
-    exit(1);
-  }
+  return ok;
 }
 
 // Where the equality of two grids is decided by comparing the number
 // of equalities.
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test5() {
   Grid gr1(3);
   gr1.add_congruence(A == 0);
 
@@ -188,28 +151,19 @@ test5() {
 
   gr2.minimized_congruences();
 
-  if (gr1 == gr2) {
-    nout << "gr1 == gr2 should return false." << endl
-	 << "gr1:" << endl << gr1 << endl
-	 << "gr2:" << endl << gr2 << endl;
+  bool ok = (gr1 != gr2);
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-    exit(1);
-  }
-
-  if (gr1 != gr2)
-    return;
-
-  nout << "gr != known_gr should return true." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
-  exit(1);
+  return ok;
 }
 
 // Where the equality of two grids is decided by comparing the number
 // of generators.
+bool
+test06() {
+  Variable A(0);
 
-void
-test6() {
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point());
 
@@ -221,28 +175,20 @@ test6() {
 
   gr2.minimized_generators();
 
-  if (gr1 == gr2) {
-    nout << "gr1 == gr2 should return false." << endl
-	 << "gr1:" << endl << gr1 << endl
-	 << "gr2:" << endl << gr2 << endl;
+  bool ok = (gr1 != gr2);
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-    exit(1);
-  }
-
-  if (gr1 != gr2)
-    return;
-
-  nout << "gr1 != gr2 should return true." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
-  exit(1);
+  return ok;
 }
 
 // Where the equality of two grids is decided by comparing the number
 // of lines.
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test7() {
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point());
   gr1.add_generator(parameter(B));
@@ -255,39 +201,21 @@ test7() {
 
   gr2.minimized_generators();
 
-  if (gr1 == gr2) {
-    nout << "gr1 == gr2 should return false." << endl
-	 << "gr1:" << endl << gr1 << endl
-	 << "gr2:" << endl << gr2 << endl;
+  bool ok = (gr1 != gr2);
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-    exit(1);
-  }
-
-  if (gr1 != gr2)
-    return;
-
-  nout << "gr1 != gr2 should return true." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
-  exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "equals1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+END_MAIN

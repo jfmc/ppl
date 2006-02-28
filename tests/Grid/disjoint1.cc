@@ -26,14 +26,11 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-
 // Grid of points and empty grid.
+bool
+test01() {
+  Variable A(0);
 
-void
-test1() {
   Grid_Generator_System gs;
   gs.insert(grid_point(A));
 
@@ -41,20 +38,18 @@ test1() {
 
   Grid gr2(1, EMPTY);
 
-  if (gr1.is_disjoint_from(gr2))
-    return;
+  bool ok = (gr1.is_disjoint_from(gr2));
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-  nout << "gr1 intersected gr2." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
-
-  exit(1);
+  return ok;
 }
 
 // Empty grid and grid of points.
+bool
+test02() {
+  Variable B(1);
 
-void
-test2() {
   Grid gr1(2, EMPTY);
 
   Grid_Generator_System gs;
@@ -63,71 +58,65 @@ test2() {
 
   Grid gr2(gs);
 
-  if (gr1.is_disjoint_from(gr2))
-    return;
+  bool ok = (gr1.is_disjoint_from(gr2));
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-  nout << "gr1 intersected gr2." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
-
-  exit(1);
+  return ok;
 }
 
 // Both empty.
-
-void
-test3() {
+bool
+test03() {
   Grid gr1(4, EMPTY);
 
   Grid gr2(4, EMPTY);
 
-  if (gr1.is_disjoint_from(gr2))
-    return;
+  bool ok = (gr1.is_disjoint_from(gr2));
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-  nout << "gr1 intersected gr2." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
-
-  exit(1);
+  return ok;
 }
 
 // Zero dimension universes.
-
-void
-test4() {
+bool
+test04() {
   Grid gr1(0);
 
   Grid gr2(0);
 
-  if (gr1.is_disjoint_from(gr2)) {
-    nout << "gr1 should intersect gr2." << endl
-	 << "gr1:" << endl << gr1 << endl
-	 << "gr2:" << endl << gr2 << endl;
+  bool ok = (!gr1.is_disjoint_from(gr2));
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-    exit(1);
-  }
+  return ok;
 }
 
 // Grid and itself.
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test5() {
   Grid gr(3);
   gr.add_congruence(A - B %= 0);
   gr.add_congruence(C %= 0);
 
-  if (gr.is_disjoint_from(gr)) {
-    nout << "gr should intersect gr." << endl
-	 << "gr:" << endl << gr << endl;
+  bool ok = (!gr.is_disjoint_from(gr));
+  print_congruences(gr, "*** gr ***");
 
-    exit(1);
-  }
+  return ok;
 }
 
 // Two grids which alternate AB planes along C.
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test6() {
   Grid gr1(3);
   gr1.add_congruence(A - B %= 0);
   gr1.add_congruence((C %= 0) / 2);
@@ -138,20 +127,20 @@ test6() {
   gr2.add_generator(grid_point(C + B));
   gr2.add_generator(grid_point(3*C));
 
-  if (gr1.is_disjoint_from(gr2))
-    return;
+  bool ok = (gr1.is_disjoint_from(gr2));
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-  nout << "gr1 intersected gr2." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
-
-  exit(1);
+  return ok;
 }
 
 // A sequence of points and a plane.
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test7() {
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(A + B + C));
   gr1.add_generator(grid_point(3*A + 3*B + 3*C));
@@ -160,20 +149,20 @@ test7() {
   gr2.add_congruence(A - B %= 0);
   gr2.add_congruence(C == 0);
 
-  if (gr1.is_disjoint_from(gr2))
-    return;
+  bool ok = (gr1.is_disjoint_from(gr2));
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-  nout << "gr1 intersected gr2." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
-
-  exit(1);
+  return ok;
 }
 
 // A line and a plane.
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test8() {
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(A + B + C));
   gr1.add_generator(grid_line(3*A + 3*B + 3*C));
@@ -182,44 +171,35 @@ test8() {
   gr2.add_congruence(A - B %= 0);
   gr2.add_congruence(C == 0);
 
-  if (gr1.is_disjoint_from(gr2)) {
-    nout << "gr1 should intersect gr2." << endl
-	 << "gr1:" << endl << gr1 << endl
-	 << "gr2:" << endl << gr2 << endl;
+  bool ok = (!gr1.is_disjoint_from(gr2));
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
-    exit(1);
-  }
-
-  return;
+  return ok;
 }
 
 // CHINA contains example that showed an error in cgs::is_included_in.
+bool
+test09() {
+  Variable A(0);
 
-void
-test9() {
   Grid gr1(1, EMPTY);
   gr1.add_generator(grid_point());
+  gr1.minimized_generators();
 
   Grid gr2(1, EMPTY);
   gr2.add_generator(grid_point(A));
+  gr2.minimized_generators();
 
-  // Minimize both grids.
-  if (find_variation(gr1) || find_variation(gr2))
-    exit(1);
+  bool ok = (gr1.is_disjoint_from(gr2));
+  print_congruences(gr2, "*** gr2 ***");
+  print_congruences(gr1, "*** gr1.is_disjoint_from(gr2) ***");
 
-  if (gr1.is_disjoint_from(gr2))
-    return;
-
-  nout << "gr1 intersected gr2." << endl
-       << "gr1:" << endl << gr1 << endl
-       << "gr2:" << endl << gr2 << endl;
-
-  exit(1);
+  return ok;
 }
 
 // Space dimension exception.
-
-void
+bool
 test10() {
   Grid gr1(1, EMPTY);
   gr1.add_generator(grid_point());
@@ -228,30 +208,27 @@ test10() {
 
   try {
     gr1.is_disjoint_from(gr2);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "disjoint1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+END_MAIN

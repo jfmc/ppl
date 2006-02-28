@@ -24,53 +24,48 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-
 // Empty.
-
-void
-test1() {
+bool
+test01() {
   Grid gr(7, EMPTY);
 
-  if (gr.is_discrete())
-    return;
+  bool ok = (gr.is_discrete());
 
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Zero dimension empty.
-
-void
-test2() {
+bool
+test02() {
 
   Grid gr(0, EMPTY);
 
-  if (gr.is_discrete())
-    return;
+  bool ok = (gr.is_discrete());
 
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Zero dimension universe.
-
-void
-test3() {
+bool
+test03() {
   Grid gr(0);
 
-  if (gr.is_discrete())
-    return;
+  bool ok = (gr.is_discrete());
 
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Point.
-
-void
-test4() {
-  nout << "test4:" << endl;
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
 
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator_and_minimize(grid_point(3*A + 2*B));
@@ -85,23 +80,24 @@ test4() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  if (gr_gs_min.is_discrete())
-    if (gr_gs_needs_min.is_discrete())
-      if (gr_cgs_needs_min.is_discrete())
-	return;
-      else nout << "gr_cgs_needs_min";
-    else nout << "gr_gs_needs_min";
-  else nout << "gr_gs_min";
+  bool ok = (gr_gs_min.is_discrete())
+    && (gr_gs_needs_min.is_discrete())
+    && (gr_cgs_needs_min.is_discrete());
 
-  nout << " should be discrete." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min ***");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min ***");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  exit(1);
+  return ok;
 }
 
 // Line.
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test5() {
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point(3*A + 2*B));
   gr_gs_min.add_generator_and_minimize(grid_line(C));
@@ -124,26 +120,26 @@ test5() {
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
   assert(copy_compare(gr_cgs_needs_min, gr_cgs_min));
 
-  if (gr_gs_min.is_discrete())
-    nout << "gr_gs_min";
-  else if (gr_gs_needs_min.is_discrete())
-    nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.is_discrete())
-    nout << "gr_cgs_needs_min";
-  else if (gr_cgs_min.is_discrete())
-    nout << "gr_cgs_min";
-  else
-    return;
+  bool ok = (!gr_gs_min.is_discrete())
+    && (!gr_gs_needs_min.is_discrete())
+    && (!gr_cgs_needs_min.is_discrete())
+    && (!gr_cgs_min.is_discrete());
 
-  nout << " was discrete." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min ***");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min ***");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
+  print_congruences(gr_cgs_min, "*** gr_cgs_min ***");
 
-  exit(1);
+  return ok;
 }
 
 // Rectilinear.
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test6() {
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point(3*A + 2*B));
   gr_gs_min.add_generator_and_minimize(grid_point(3*A + B));
@@ -160,23 +156,24 @@ test6() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  if (gr_gs_min.is_discrete())
-    if (gr_gs_needs_min.is_discrete())
-      if (gr_cgs_needs_min.is_discrete())
-	return;
-      else nout << "gr_cgs_needs_min";
-    else nout << "gr_gs_needs_min";
-  else nout << "gr_gs_min";
+  bool ok = (gr_gs_min.is_discrete())
+    && (gr_gs_needs_min.is_discrete())
+    && (gr_cgs_needs_min.is_discrete());
 
-  nout << " should be discrete." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min ***");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min ***");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  exit(1);
+  return ok;
 }
 
 // Rectilinear with lines.
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test7() {
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point(3*A + 2*B));
   gr_gs_min.add_generator(grid_point(3*A + B));
@@ -194,24 +191,23 @@ test7() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  if (gr_gs_min.is_discrete())
-    nout << "gr_gs_min";
-  else if (gr_gs_needs_min.is_discrete())
-    nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.is_discrete())
-    nout << "gr_cgs_needs_min";
-  else
-    return;
+  bool ok = (!gr_gs_min.is_discrete())
+    && (!gr_gs_needs_min.is_discrete())
+    && (!gr_cgs_needs_min.is_discrete());
 
-  nout << " was discrete." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min ***");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min ***");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  exit(1);
+  return ok;
 }
 
 // Skew.
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test8() {
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_point(A));
@@ -229,23 +225,24 @@ test8() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  if (gr_gs_min.is_discrete())
-    if (gr_gs_needs_min.is_discrete())
-      if (gr_cgs_needs_min.is_discrete())
-	return;
-      else nout << "gr_cgs_needs_min";
-    else nout << "gr_gs_needs_min";
-  else nout << "gr_gs_min";
+  bool ok = (gr_gs_min.is_discrete())
+    && (gr_gs_needs_min.is_discrete())
+    && (gr_cgs_needs_min.is_discrete());
 
-  nout << " should be discrete." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min ***");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min ***");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  exit(1);
+  return ok;
 }
 
 // Skew with lines.
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test9() {
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_point(A));
@@ -265,24 +262,25 @@ test9() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  if (gr_gs_min.is_discrete())
-    nout << "gr_gs_min";
-  else if (gr_gs_needs_min.is_discrete())
-    nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.is_discrete())
-    nout << "gr_cgs_needs_min";
-  else
-    return;
+  bool ok = (!gr_gs_min.is_discrete())
+    && (!gr_gs_needs_min.is_discrete())
+    && (!gr_cgs_needs_min.is_discrete());
 
-  nout << " was discrete." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min ***");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min ***");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  exit(1);
+  return ok;
 }
 
 // Plane.
-
-void
+bool
 test10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   Grid gr_gs_min(4, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_line(B));
@@ -300,54 +298,45 @@ test10() {
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
-  if (gr_gs_min.is_discrete())
-    nout << "gr_gs_min";
-  else if (gr_gs_needs_min.is_discrete())
-    nout << "gr_gs_needs_min";
-  else if (gr_cgs_needs_min.is_discrete())
-    nout << "gr_cgs_needs_min";
-  else
-    return;
+  bool ok = (!gr_gs_min.is_discrete())
+    && (!gr_gs_needs_min.is_discrete())
+    && (!gr_cgs_needs_min.is_discrete());
 
-  nout << " was discrete." << endl;
+  print_congruences(gr_gs_min, "*** gr_gs_min ***");
+  print_congruences(gr_gs_needs_min, "*** gr_gs_needs_min ***");
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  exit(1);
+  return ok;
 }
 
 // Empty.
-
-void
+bool
 test11() {
+  Variable A(0);
+
   Grid gr(3);
   gr.add_congruence(A == 1);
   gr.add_congruence(A == 2);
 
-  if (gr.is_discrete())
-    return;
+  bool ok (gr.is_discrete());
 
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "discrete1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+END_MAIN
