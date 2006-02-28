@@ -111,12 +111,6 @@ print_constraints(const Parma_Polyhedra_Library::BD_Shape<T>& bd,
   s << bd << std::endl;
 }
 
-// FIXME: why this?
-void
-print_constraints(const Parma_Polyhedra_Library::Congruence_System& cgs,
-		  const std::string& intro = "",
-		  std::ostream& s = nout);
-
 void
 print_congruence(const Parma_Polyhedra_Library::Congruence& c,
 		 const std::string& intro = "",

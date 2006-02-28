@@ -83,17 +83,10 @@ print_congruences(const Congruence_System& cs,
   s << (printed_something ? "." : "true.") << std::endl;
 }
 
-// FIXME: why this?
-void
-print_constraints(const Congruence_System& cs,
-		  const std::string& intro, std::ostream& s) {
-  print_congruences(cs, intro, s);
-}
-
 void
 print_congruences(const Grid& gr,
 		  const std::string& intro, std::ostream& s) {
-  print_constraints(gr.congruences(), intro, s);
+  print_congruences(gr.congruences(), intro, s);
 }
 
 void
