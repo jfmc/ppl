@@ -68,7 +68,7 @@ test02() {
   cgs.insert(B == 7);
 
   print_constraints(ph1, "*** ph1 ***");
-  print_constraints(cgs, "*** cgs ***");
+  print_congruences(cgs, "*** cgs ***");
 
   ph1.add_congruences(cgs);
 
@@ -141,7 +141,7 @@ bool test05() {
   Congruence_System cgs;
   cgs.insert(Linear_Expression(-1) %= 0);
 
-  print_constraints(cgs, "*** cgs ***");
+  print_congruences(cgs, "*** cgs ***");
 
   ph.add_congruences(cgs);
 
