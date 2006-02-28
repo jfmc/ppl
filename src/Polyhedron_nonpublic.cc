@@ -58,12 +58,11 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
 
   if (kind == EMPTY)
     status.set_empty();
-  else
-    if (num_dimensions > 0) {
-      con_sys.add_low_level_constraints();
-      con_sys.adjust_topology_and_space_dimension(topol, num_dimensions);
-      set_constraints_minimized();
-    }
+  else if (num_dimensions > 0) {
+    con_sys.add_low_level_constraints();
+    con_sys.adjust_topology_and_space_dimension(topol, num_dimensions);
+    set_constraints_minimized();
+  }
   space_dim = num_dimensions;
   assert(OK());
 }
@@ -195,6 +194,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
   if (gs.num_rows() == 0) {
     space_dim = gs.space_dimension();
     status.set_empty();
+    assert(OK());
     return;
   }
 
@@ -239,6 +239,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
   // we already checked for both the topology-compatibility
   // and the supporting point.
   space_dim = 0;
+  assert(OK());
 }
 
 PPL::Polyhedron::Polyhedron(const Topology topol, Generator_System& gs)
@@ -253,6 +254,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, Generator_System& gs)
   if (gs.num_rows() == 0) {
     space_dim = gs.space_dimension();
     status.set_empty();
+    assert(OK());
     return;
   }
 
@@ -297,6 +299,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, Generator_System& gs)
   // we already checked for both the topology-compatibility
   // and the supporting point.
   space_dim = 0;
+  assert(OK());
 }
 
 PPL::Polyhedron&
