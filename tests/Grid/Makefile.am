@@ -47,7 +47,7 @@ addgenerator1 \
 addgenerators1 \
 addspacedims1 \
 affinedim1 \
-affineimage1 affineimage1_16 affineimage2 \
+affineimage1 affineimage2 \
 affinepreimage1 affinepreimage2 \
 asciidumpload1 \
 bhz03widening1 \
@@ -114,7 +114,6 @@ affinedim1_SOURCES = affinedim1.cc
 
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
-affineimage1_16_SOURCES = affineimage1_16.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
@@ -240,7 +239,6 @@ $(XFAIL_WITH_INT16) \
 grid1_16 \
 grid2_16 \
 join1_16 \
-affineimage1_16 \
 timeelapse2
 
 if USE_INT64
