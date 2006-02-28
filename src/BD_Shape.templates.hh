@@ -1314,7 +1314,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
     // and above.
     while (src < tbr_next) {
       dbm[dst] = dbm[src];
-      for (dimension_type i = 0; i <= old_space_dim; ++i) {
+      for (dimension_type i = old_space_dim + 1; i-- > 0; ) {
 	DB_Row<N>& dbm_i = dbm[i];
 	dbm_i[dst] = dbm_i[src];
       }
@@ -1327,7 +1327,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // Moving the remaining rows and columns.
   while (src <= old_space_dim) {
     dbm[dst] = dbm[src];
-    for (dimension_type i = 0; i <= old_space_dim; ++i) {
+    for (dimension_type i = old_space_dim + 1; i-- > 0; ) {
       DB_Row<N>& dbm_i = dbm[i];
       dbm_i[dst] = dbm_i[src];
     }
