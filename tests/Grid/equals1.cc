@@ -208,6 +208,37 @@ test07() {
   return ok;
 }
 
+// No equalities and no lines, number of congruences and generators
+// are the same. But the generators are different.
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr1(3, EMPTY);
+  gr1.add_generator(grid_point());
+  gr1.add_generator(parameter(A));
+  gr1.add_generator(parameter(B));
+  gr1.add_generator(parameter(C));
+
+  gr1.minimized_generators();
+
+  Grid gr2(3, EMPTY);
+  gr2.add_generator(grid_point());
+  gr2.add_generator(parameter(2*A));
+  gr2.add_generator(parameter(2*B));
+  gr2.add_generator(parameter(2*C));
+
+  gr2.minimized_generators();
+
+  bool ok = (gr1 != gr2);
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -218,4 +249,5 @@ BEGIN_MAIN
   NEW_TEST(test05);
   NEW_TEST(test06);
   NEW_TEST(test07);
+  NEW_TEST(test08);
 END_MAIN
