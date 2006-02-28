@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // add_constraint
-
 bool
 test01() {
 
@@ -49,7 +48,6 @@ test01() {
 }
 
 // Add an NNC constraint with add_constraint.
-
 bool
 test02() {
   Variable A(0);
@@ -79,7 +77,6 @@ test02() {
 }
 
 // add_constraint_and_minimize(cs)
-
 bool
 test03() {
   Variable A(0);
@@ -108,7 +105,6 @@ test03() {
 }
 
 // add_congruence(c), adding equality
-
 bool
 test04() {
   Variable D(3);
@@ -130,7 +126,6 @@ test04() {
 }
 
 // add_congruence(c), where grid stays the same
-
 bool
 test05() {
   Variable D(3);
@@ -150,7 +145,6 @@ test05() {
 }
 
 // add_congruence_and_minimize(c), add equality.
-
 bool
 test06() {
   Variable A(0);
@@ -174,7 +168,6 @@ test06() {
 }
 
 // add_congruence_and_minimize(c), where grid stays the same.
-
 bool
 test07() {
   Variable A(0);
@@ -199,7 +192,6 @@ test07() {
 }
 
 // add_constraint -- space dimension exception
-
 bool
 test08() {
   Variable B(1);
@@ -219,7 +211,6 @@ test08() {
 }
 
 // add_constraint_and_minimize -- space dimension exception
-
 bool
 test09() {
   Variable B(1);

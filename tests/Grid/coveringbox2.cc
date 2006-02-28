@@ -70,7 +70,6 @@ operator==(const Bounding_Box& x, const Bounding_Box& y) {
 
 // Rectilinear grid defined by points with the origin
 // not a point of the grid or a point of the covering box..
-
 bool
 test01() {
   Variable A(0);
@@ -110,7 +109,6 @@ test01() {
 }
 
 // Skew grid.
-
 bool
 test02() {
   Variable A(0);
@@ -150,7 +148,6 @@ test02() {
 }
 
 // Skew grid, with a divisor.
-
 bool
 test03() {
   Variable A(0);
@@ -193,7 +190,6 @@ test03() {
 #define SPACE_DIM 3
 
 // Grid containing a line.
-
 bool
 test04() {
   Variable A(0);
@@ -236,7 +232,6 @@ test04() {
 }
 
 // Universe grid.
-
 bool
 test05() {
   Bounding_Box box1(SPACE_DIM);
@@ -272,7 +267,6 @@ test05() {
 }
 
 // Grid which is a single point.
-
 bool
 test06() {
   Variable A(0);
@@ -310,7 +304,6 @@ test06() {
 }
 
 // Empty grid.
-
 bool
 test07() {
   Bounding_Box box1(SPACE_DIM);
@@ -351,7 +344,6 @@ test07() {
 }
 
 // A grid which get_covering_box has to minimize.
-
 bool
 test08() {
   Variable A(0);
@@ -396,7 +388,6 @@ test08() {
 }
 
 // A grid defined by congruences.
-
 bool
 test09() {
   Variable A(0);
@@ -438,7 +429,6 @@ test09() {
 }
 
 // Grid where the only line is the final generator.
-
 bool
 test10() {
   Variable A(0);
@@ -490,7 +480,6 @@ test10() {
 // A grid where, for a particular dimension (D), many coefficients
 // between the first and last rows contribute towards the size of the
 // resulting interval.
-
 bool
 test11() {
   Variable A(0);
@@ -540,7 +529,6 @@ test11() {
 
 // A grid where all the points have the same value in one of the
 // dimensions (B).
-
 bool
 test12() {
   Variable A(0);
@@ -586,7 +574,6 @@ test12() {
 }
 
 // An empty grid defined by congruences.
-
 bool
 test13() {
   Variable A(0);
@@ -633,7 +620,6 @@ test13() {
 // Grid which is a single point, with a divisor, such that the
 // fractions for some intervals (B and C) will be reduced before being
 // assigned to the intervals.
-
 bool
 test14() {
   Variable A(0);
@@ -674,7 +660,6 @@ test14() {
 // Many-pointed grid, with a divisor, such that the fractions for some
 // intervals (B and C) will be reduced before being assigned to the
 // intervals.
-
 bool
 test15() {
   Variable A(0);
@@ -722,7 +707,6 @@ test15() {
 #define SPACE_DIM 0
 
 // Zero dimension empty grid.
-
 bool
 test16() {
   Bounding_Box box1(SPACE_DIM);
@@ -753,7 +737,6 @@ test16() {
 }
 
 // Zero dimension universe grid.
-
 bool
 test17() {
   Bounding_Box box1(SPACE_DIM);
@@ -787,7 +770,6 @@ test17() {
 
 // Rectilinear grid as in test01 but this time
 // defined by a point and 2 parameters.
-
 bool
 test18() {
   Variable A(0);
@@ -830,7 +812,6 @@ test18() {
 #define SPACE_DIM 4
 
 // 4D grid defined with points and parameters.
-
 bool
 test19() {
   Variable A(0);

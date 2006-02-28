@@ -29,7 +29,6 @@ namespace {
 // The first twelve tests mirror those in affineimage1.cc.
 
 // Grid defined by generators.
-
 bool
 test01() {
   Variable A(0);
@@ -56,7 +55,6 @@ test01() {
 }
 
 // Grid defined by congruences.
-
 bool
 test02() {
   Variable A(0);
@@ -84,7 +82,6 @@ test02() {
 }
 
 // Denominator.
-
 bool
 test03() {
   Variable A(0);
@@ -113,7 +110,6 @@ test03() {
 
 // Invertible transformation with denominator, modulus and up-to-date
 // congruences.
-
 bool
 test04() {
   Variable A(0);
@@ -141,7 +137,6 @@ test04() {
 
 // Simple invertible transformation with denominator and modulus.
 // Congruences are out-of-date
-
 bool
 test05() {
   Variable A(0);
@@ -172,7 +167,6 @@ test05() {
 
 // Simple invertible transformation with denominator and modulus.
 // Congruences are up-to-date
-
 bool
 test06() {
   Variable A(0);
@@ -202,7 +196,6 @@ test06() {
 
 // Invertible transformation which changes the modulus.
 // Congruences are out-of-date
-
 bool
 test07() {
   Variable A(0);
@@ -232,7 +225,6 @@ test07() {
 
 // Invertible transformation which changes the modulus.
 // Congruences are up-to-date
-
 bool
 test08() {
   Variable A(0);
@@ -261,7 +253,6 @@ test08() {
 
 // One dimension.
 // Congruences are out-of-date
-
 bool
 test09() {
   Variable A(0);
@@ -288,7 +279,6 @@ test09() {
 
 // One dimension.
 // Congruences are up-to-date
-
 bool
 test10() {
   Variable A(0);
@@ -315,7 +305,6 @@ test10() {
 // The first affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
 // Congruences are out-of-date
-
 bool
 test11() {
   Variable A(0);
@@ -346,7 +335,6 @@ test11() {
 // The first affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
 // Congruences are up-to-date
-
 bool
 test12() {
   Variable A(0);
@@ -379,7 +367,6 @@ test12() {
 // The second affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
 // Congruences are out-of-date
-
 bool
 test13() {
   Variable A(0);
@@ -409,7 +396,6 @@ test13() {
 // The second affine_image example described at anchor
 // grid_affine_transformation in definitions.dox.
 // Congruences are up-to-date
-
 bool
 test14() {
   Variable A(0);

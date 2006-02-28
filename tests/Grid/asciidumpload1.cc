@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // One dimension universe and empty.
-
 bool
 test01() {
   Grid gr1(1, EMPTY);
@@ -52,7 +51,6 @@ test01() {
 }
 
 // Many dimensioned universe and empty.
-
 bool
 test02() {
   Grid gr1(3, EMPTY);
@@ -79,7 +77,6 @@ test02() {
 }
 
 // Universe and empty, mixed dimensions.
-
 bool
 test03() {
   Grid gr1(4, EMPTY);
@@ -106,7 +103,6 @@ test03() {
 }
 
 // Grids of same dimensions.
-
 bool
 test04() {
   Variable A(0);
@@ -139,7 +135,6 @@ test04() {
 }
 
 // Grids of mixed dimensions.
-
 bool
 test05() {
   Variable A(0);

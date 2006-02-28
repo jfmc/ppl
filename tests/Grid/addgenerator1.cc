@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 // grid1.cc also tests add_generator_and_minimize.
 
 // One dimension.
-
 bool
 test01() {
   Variable A(0);
@@ -48,7 +47,6 @@ test01() {
 }
 
 // Two dimensions.
-
 bool
 test02() {
   Variable A(0);
@@ -100,7 +98,6 @@ test03() {
 }
 
 // Add NNC generators.
-
 bool
 test04() {
   Variable A(0);
@@ -131,7 +128,6 @@ test04() {
 }
 
 // Add generators to a grid of a higher space dimension.
-
 bool
 test05() {
   Variable A(0);
@@ -161,7 +157,6 @@ test05() {
 }
 
 // add_generator_and_minimize
-
 bool
 test06() {
   Variable A(0);
@@ -189,7 +184,6 @@ test06() {
 }
 
 // Add a generator to a universe grid.
-
 bool
 test07() {
   Variable A(0);
@@ -215,7 +209,6 @@ test07() {
 
 // add_generator_and_minimize, adding a generator with a divisor to a
 // grid of many generators.
-
 bool
 test08() {
   Variable A(0);
@@ -245,7 +238,6 @@ test08() {
 }
 
 // Space dimension exception.
-
 bool
 test09() {
   Variable A(0);
@@ -266,7 +258,6 @@ test09() {
 }
 
 // Zero dimensions empty.
-
 bool
 test10() {
   Grid gr(0, EMPTY);
@@ -286,7 +277,6 @@ test10() {
 }
 
 // Zero dimension universe.
-
 bool
 test11() {
   Grid gr(0);
@@ -306,7 +296,6 @@ test11() {
 }
 
 // Space dimension exception.
-
 bool
 test12() {
   Variable A(0);
@@ -326,7 +315,6 @@ test12() {
 }
 
 // Try add parameter to empty grid.
-
 bool
 test13() {
   Grid gr(2, EMPTY);
@@ -344,7 +332,6 @@ test13() {
 }
 
 // Try add parameter to zero dimension empty grid.
-
 bool
 test14() {
   Grid gr(0, EMPTY);

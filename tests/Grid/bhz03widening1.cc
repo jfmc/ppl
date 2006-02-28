@@ -29,7 +29,6 @@ typedef Polyhedra_Powerset<Grid> GSet;
 namespace {
 
 // Joins of grids in powersets shows that series is stabilising.
-
 bool
 test01() {
   Variable A(0);
@@ -66,7 +65,6 @@ test01() {
 
 // Widening falls back to a singleton join of the grids in the larger
 // grid set.
-
 bool
 test02() {
   Variable A(0);

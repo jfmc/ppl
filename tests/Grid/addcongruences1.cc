@@ -27,7 +27,6 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 namespace {
 
 // add_congruences
-
 bool
 test01() {
 
@@ -57,7 +56,6 @@ test01() {
 }
 
 // add_recycled_congruences
-
 bool
 test02() {
   Variable A(0);
@@ -83,7 +81,6 @@ test02() {
 }
 
 // add_congruences_and_minimize
-
 bool
 test03() {
   Variable A(0);
@@ -111,7 +108,6 @@ test03() {
 }
 
 // add_recycled_congruences_and_minimize
-
 bool
 test04() {
   Variable A(0);
@@ -140,7 +136,6 @@ test04() {
 }
 
 // add_recycled_congruences(cgs) -- space dimension exception
-
 bool
 test05() {
   Variable A(0);
@@ -189,7 +184,6 @@ test06() {
 
 // add_recycled_congruences_and_minimize(cgs) -- space dimension
 // exception
-
 bool
 test07() {
   Variable B(1);
@@ -212,7 +206,6 @@ test07() {
 }
 
 // add_recycled_congruences, empty grid.
-
 bool
 test08() {
   Variable A(0);
@@ -237,7 +230,6 @@ test08() {
 }
 
 // add_recycled_congruences_and_minimize, add empty system.
-
 bool
 test09() {
   Variable A(0);
@@ -265,7 +257,6 @@ test09() {
 
 // add_recycled_congruences_and_minimize, add system of single trivial
 // congruence to zero dim grid.
-
 bool
 test10() {
 
@@ -289,7 +280,6 @@ test10() {
 }
 
 // add_recycled_congruences_and_minimize, add to empty grid.
-
 bool
 test11() {
   Variable A(0);
@@ -316,7 +306,6 @@ test11() {
 
 // add_recycled_congruences_and_minimize, add empty system to grid
 // with minimized generators and up to date congruences.
-
 bool
 test12() {
   Variable A(0);
@@ -345,7 +334,6 @@ test12() {
 
 // add_recycled_congruences_and_minimize, add empty system to grid
 // with up to date congruences and generators.
-
 bool
 test13() {
   Variable A(0);
@@ -371,6 +359,8 @@ test13() {
   return ok;
 }
 
+// add_recycled_congruences_and_minimize, add congruence in 1D to
+// universe grid in 2D.
 bool
 test14() {
   Variable A(0);

@@ -28,7 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Test add_congruence_and_minimize.
-
 bool
 test01() {
   Variable A(0);
@@ -57,7 +56,6 @@ test01() {
 }
 
 // Add to an empty grid.
-
 bool
 test02() {
   Variable A(0);
@@ -80,7 +78,6 @@ test02() {
 }
 
 // Add a congruence with less dimensions than the grid.
-
 bool
 test03() {
   Variable A(0);
@@ -105,7 +102,6 @@ test03() {
 }
 
 // Add a congruence and minimize with less dimensions than the grid.
-
 bool
 test04() {
   Variable A(0);

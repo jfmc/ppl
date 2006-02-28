@@ -27,7 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Universe box.
-
 bool
 test01() {
   Bounding_Box box(2);
@@ -45,7 +44,6 @@ test01() {
 }
 
 // A 2D box which is a line parallel to the x axis.
-
 bool
 test02() {
   Variable B(1);
@@ -68,7 +66,6 @@ test02() {
 }
 
 // A 2D box that is a point, with divisors.
-
 bool
 test03() {
   Variable A(0);
@@ -94,7 +91,6 @@ test03() {
 }
 
 // A 3D box which is a 2D plane.
-
 bool
 test04() {
   Variable A(0);
@@ -124,7 +120,6 @@ test04() {
 }
 
 // Zero-dimensional box.
-
 bool
 test05() {
   Bounding_Box box(0);
@@ -142,7 +137,6 @@ test05() {
 }
 
 // Empty box in 2D.
-
 bool
 test06() {
   Bounding_Box box(2);
@@ -161,7 +155,6 @@ test06() {
 }
 
 // A 4D box containing a single 3D space.
-
 bool
 test07() {
   Variable A(0);
@@ -187,7 +180,6 @@ test07() {
 }
 
 // Unit square.
-
 bool
 test08() {
   Bounding_Box box(2);
@@ -209,7 +201,6 @@ test08() {
 }
 
 // Simple box with divisor and an interval bounded only from below.
-
 bool
 test09() {
   Bounding_Box box(2);
@@ -230,7 +221,6 @@ test09() {
 }
 
 // Box with a dimension bounded only from above.
-
 bool
 test10() {
   Bounding_Box box(2);
@@ -252,7 +242,6 @@ test10() {
 
 // An otherwise valid box having a dimension with an open bound, where
 // the open bound makes the box empty.
-
 bool
 test11() {
   Bounding_Box box(2);
@@ -274,7 +263,6 @@ test11() {
 }
 
 // Zero-dimensional empty box.
-
 bool
 test12() {
   Bounding_Box box(0);

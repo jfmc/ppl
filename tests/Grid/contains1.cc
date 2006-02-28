@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Grid of points containing empty grid.
-
 bool
 test01() {
   Variable A(0);
@@ -46,7 +45,6 @@ test01() {
 }
 
 // Empty grid and grid of points.
-
 bool
 test02() {
   Variable B(1);
@@ -68,7 +66,6 @@ test02() {
 }
 
 // Both empty.
-
 bool
 test03() {
   Grid gr1(4, EMPTY);
@@ -84,7 +81,6 @@ test03() {
 }
 
 // Zero dimension universes.
-
 bool
 test04() {
   Grid gr1(0);
@@ -100,7 +96,6 @@ test04() {
 }
 
 // Self containment.
-
 bool
 test05() {
   Variable A(0);
@@ -119,7 +114,6 @@ test05() {
 }
 
 // A grid strictly containing another.
-
 bool
 test06() {
   Variable A(0);
@@ -143,7 +137,6 @@ test06() {
 }
 
 // test06, the other way round.
-
 bool
 test07() {
   Variable A(0);
@@ -167,7 +160,6 @@ test07() {
 }
 
 // CHINA example that showed an error in cgs::is_included_in.
-
 bool
 test08() {
   Variable A(0);
@@ -178,8 +170,7 @@ test08() {
   Grid gr2(1, EMPTY);
   gr2.add_generator(grid_point(A));
 
-  // Minimize both grids.
-  bool ok = (gr1.OK() && gr2.OK());
+  bool ok = !gr1.contains(gr2) && !gr2.contains(gr1);
 
   print_generators(gr1, "*** gr1 ***");
   print_generators(gr2, "*** gr2 ***");
@@ -188,7 +179,6 @@ test08() {
 }
 
 // Space dimension exception
-
 bool
 test09() {
   Grid gr1(1, EMPTY);

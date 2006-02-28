@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 
 // From congruences, adding to both congruences and generators.
-
 bool
 test01() {
   Variable A(0);
@@ -53,7 +52,6 @@ test01() {
 }
 
 // An empty grid.
-
 bool
 test02() {
   Grid gr(2, EMPTY);
@@ -73,7 +71,6 @@ test02() {
 }
 
 // A universe grid.
-
 bool
 test03() {
   Grid gr(1);
@@ -93,7 +90,6 @@ test03() {
 }
 
 // From generators.
-
 bool
 test04() {
   Variable A(0);
@@ -128,7 +124,6 @@ test04() {
 
 // From congruences, where dimensions are only added to the grid's
 // congruence system.
-
 bool
 test05() {
   Variable A(0);
@@ -161,7 +156,6 @@ test05() {
 }
 
 // Space dimension exception.
-
 bool
 test06() {
   Grid gr(10);
@@ -179,7 +173,6 @@ test06() {
 }
 
 // Zero dimension universe grid.
-
 bool
 test07() {
   Grid gr(0);
@@ -199,7 +192,6 @@ test07() {
 }
 
 // Add to a grid which has minimized congruences.
-
 bool
 test08() {
   Variable A(0);
@@ -226,7 +218,6 @@ test08() {
 
 // Add to a grid which has out of date congruences and minimized
 // generators.
-
 bool
 test09() {
   Variable A(0);
@@ -256,7 +247,6 @@ test09() {
 }
 
 // From congruences.
-
 bool
 test10() {
   Variable A(0);
@@ -289,7 +279,6 @@ test10() {
 }
 
 // Empty grid.
-
 bool
 test11() {
   Grid gr(2, EMPTY);
@@ -309,7 +298,6 @@ test11() {
 }
 
 // Universe grid, compared to congruences.
-
 bool
 test12() {
   Grid gr(1);
@@ -340,7 +328,6 @@ test12() {
 }
 
 // Universe grid, compared to generators.
-
 bool
 test13() {
   Grid gr(1);
@@ -367,7 +354,6 @@ test13() {
 }
 
 // From generators.
-
 bool
 test14() {
   Variable A(0);
@@ -405,7 +391,6 @@ test14() {
 
 // From generators, where dimensions are only added to the grid's
 // generator system.
-
 bool
 test15() {
   Variable A(0);
@@ -445,7 +430,6 @@ test15() {
 }
 
 // Space dimension exception.
-
 bool
 test16() {
   Grid gr(10);
@@ -462,7 +446,6 @@ test16() {
 }
 
 // Zero dimension universe grid.
-
 bool
 test17() {
   Grid gr(0);
@@ -482,7 +465,6 @@ test17() {
 }
 
 // Add to a grid which has minimized congruences.
-
 bool
 test18() {
   Variable A(0);
@@ -512,7 +494,6 @@ test18() {
 
 // Add to a grid which has out of date congruences and minimized
 // generators.
-
 bool
 test19() {
   Variable A(0);

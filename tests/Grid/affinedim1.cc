@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Empty.
-
 bool
 test01() {
   Grid gr(7, EMPTY);
@@ -38,7 +37,6 @@ test01() {
 }
 
 // Zero dimension empty.
-
 bool
 test02() {
   Grid gr(0, EMPTY);
@@ -51,7 +49,6 @@ test02() {
 }
 
 // Zero dimension universe.
-
 bool
 test03() {
   Grid gr(0);
@@ -64,7 +61,6 @@ test03() {
 }
 
 // Point.
-
 bool
 test04() {
   Variable A(0);
@@ -95,7 +91,6 @@ test04() {
 }
 
 // Line.
-
 bool
 test05() {
   Variable A(0);
@@ -130,7 +125,6 @@ test05() {
 }
 
 // Rectilinear.
-
 bool
 test06() {
   Variable A(0);
@@ -166,7 +160,6 @@ test06() {
 }
 
 // Rectilinear with lines.
-
 bool
 test07() {
   Variable A(0);
@@ -203,7 +196,6 @@ test07() {
 }
 
 // Skew.
-
 bool
 test08() {
   Variable A(0);
@@ -240,7 +232,6 @@ test08() {
 }
 
 // Skew with lines.
-
 bool
 test09() {
   Variable A(0);
@@ -279,7 +270,6 @@ test09() {
 }
 
 // Plane.
-
 bool
 test10() {
   Variable A(0);

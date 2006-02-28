@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Empty.
-
 bool
 test01() {
   Grid gr(7, EMPTY);
@@ -39,7 +38,6 @@ test01() {
 }
 
 // Zero dimension empty.
-
 bool
 test02() {
   Grid gr(0, EMPTY);
@@ -53,7 +51,6 @@ test02() {
 }
 
 // Zero dimension universe.
-
 bool
 test03() {
   Grid gr(0);
@@ -67,7 +64,6 @@ test03() {
 }
 
 // Point.
-
 bool
 test04() {
   Variable A(0);
@@ -102,7 +98,6 @@ test04() {
 }
 
 // Rectilinear line.
-
 bool
 test05() {
   Variable A(0);
@@ -139,7 +134,6 @@ test05() {
 }
 
 // Line.
-
 bool
 test06() {
   Variable A(0);
@@ -175,7 +169,6 @@ test06() {
 }
 
 // A line along expr in the grid.
-
 bool
 test07() {
   Variable A(0);
@@ -212,7 +205,6 @@ test07() {
 
 
 // A parameter along expr in the grid.
-
 bool
 test08() {
   Variable A(0);
@@ -249,7 +241,6 @@ test08() {
 }
 
 // Two lines which combine to cover any line bounded by expr.
-
 bool
 test09() {
   Variable A(0);
@@ -287,7 +278,6 @@ test09() {
 
 // In three dimensions, lines and parameters which combine to include
 // expr.
-
 bool
 test10() {
   Variable A(0);
@@ -327,7 +317,6 @@ test10() {
 }
 
 // Grid which bounds a 3D expr.
-
 bool
 test11() {
   Variable A(0);
@@ -366,7 +355,6 @@ test11() {
 }
 
 // Point in 6D.
-
 bool
 test12() {
   Variable A(0);
@@ -409,7 +397,6 @@ test12() {
 }
 
 // Space dimension exception.
-
 bool
 test13() {
   Variable A(0);

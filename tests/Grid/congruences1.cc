@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Empty grid.
-
 bool
 test01() {
   Grid gr1(7, EMPTY);
@@ -45,7 +44,6 @@ test01() {
 }
 
 // Universe grid.
-
 bool
 test02() {
   Grid gr1(7);
@@ -66,7 +64,6 @@ test02() {
 }
 
 // Zero dimension empty grid.
-
 bool
 test03() {
   Grid gr1(0, EMPTY);
@@ -86,7 +83,6 @@ test03() {
 }
 
 // Zero dimension universe grid.
-
 bool
 test04() {
   Grid gr1(0);
@@ -106,7 +102,6 @@ test04() {
 }
 
 // Skew grid in 3D.
-
 bool
 test05() {
   Variable A(0);
@@ -131,7 +126,6 @@ test05() {
 }
 
 // 3D rectilinear grid defined by generators.
-
 bool
 test06() {
   Variable A(0);
@@ -157,7 +151,6 @@ test06() {
 
 // Get a reference to the congruences, empty the grid, use the
 // reference to create a new grid.
-
 bool
 test07() {
   Grid gr1(3);
@@ -183,7 +176,6 @@ test07() {
 
 // In zero dimensions get a reference to the universe congruences,
 // empty the grid, use the reference to create a new grid.
-
 bool
 test08() {
   Grid gr1(0);

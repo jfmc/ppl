@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Denominator, with generators having a variety of divisors.
-
 bool
 test01() {
   Variable A(0);
@@ -58,7 +57,6 @@ test01() {
 }
 
 // Negative denominator.
-
 bool
 test02() {
   Variable A(0);
@@ -84,7 +82,6 @@ test02() {
 }
 
 // Empty grid.
-
 bool
 test03() {
   Variable A(0);
@@ -109,7 +106,6 @@ test03() {
 // A negative coefficient of the variable to transform and a negative
 // denominator.
 // Congruences are out-of-date
-
 bool
 test04() {
   Variable A(0);
@@ -136,7 +132,6 @@ test04() {
 // A negative coefficient of the variable to transform and a negative
 // denominator.
 // Congruences are up-to-date
-
 bool
 test05() {
   Variable A(0);
@@ -162,7 +157,6 @@ test05() {
 }
 
 // Shift a rectilinear pointed grid along A.
-
 bool
 test06() {
   Variable A(0);
@@ -189,7 +183,6 @@ test06() {
 }
 
 // Slant a rectilinear pointed grid along A == -B.
-
 bool
 test07() {
   Variable A(0);
@@ -215,7 +208,6 @@ test07() {
 }
 
 // Expand a rectilinear pointed grid to a sequence of lines.
-
 bool
 test08() {
   Variable A(0);
@@ -241,7 +233,6 @@ test08() {
 }
 
 // Transform a grid into the empty grid.
-
 bool
 test09() {
   Variable A(0);
@@ -266,7 +257,6 @@ test09() {
 }
 
 // Transform away the constraint on a dimension (B).
-
 bool
 test10() {
   Variable A(0);
@@ -292,7 +282,6 @@ test10() {
 }
 
 // Zero denominator.
-
 bool
 test11() {
   Variable A(0);
@@ -316,7 +305,6 @@ test11() {
 }
 
 // Expression of a greater space dimension than the grid.
-
 bool
 test12() {
   Variable A(0);
@@ -341,7 +329,6 @@ test12() {
 }
 
 // Variable of a greater space dimension than the grid.
-
 bool
 test13() {
   Variable A(0);

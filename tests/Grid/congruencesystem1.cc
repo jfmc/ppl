@@ -38,7 +38,6 @@ public:
 };
 
 // Public constructors.
-
 bool
 test01() {
   Test_Congruence_System cgs0;
@@ -66,7 +65,6 @@ test01() {
 }
 
 // operator=
-
 bool
 test02() {
   Variable A(0);
@@ -87,7 +85,6 @@ test02() {
 }
 
 // space_dimension
-
 bool
 test03() {
   Variable A(3);
@@ -104,7 +101,6 @@ test03() {
 }
 
 // clear
-
 bool
 test04() {
   Variable A(0);
@@ -124,7 +120,6 @@ test04() {
 }
 
 // insert
-
 bool
 test05() {
   Variable A(0);
@@ -145,7 +140,6 @@ test05() {
 }
 
 // num_[non_]equalities
-
 bool
 test06() {
   Variable A(0);
@@ -166,7 +160,6 @@ test06() {
 }
 
 // insert, including a row with all terms zero and an equality.
-
 bool
 test07() {
   Variable A(0);
@@ -197,7 +190,6 @@ test07() {
    FIXME: If Generator::ascii_dump was public this could take a
           Generator.
 */
-
 bool
 fulfils(const Grid_Generator_System& gs,
 	const Test_Congruence_System& cgs,
@@ -229,7 +221,6 @@ fails_to_satisfy(const Grid_Generator_System& gs,
 }
 
 // Divisor of 1.
-
 bool
 test08() {
   Variable A(0);
@@ -324,7 +315,6 @@ test08() {
 }
 
 // Divisors greater than 1.
-
 bool
 test09() {
   Variable A(0);

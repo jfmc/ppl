@@ -29,7 +29,6 @@ namespace {
 #define SPACE_DIM 2
 
 // Universe box.
-
 bool
 test01() {
   Bounding_Box box(SPACE_DIM);
@@ -46,7 +45,6 @@ test01() {
 }
 
 // The box is the positive quadrant.
-
 bool
 test02() {
   Variable A(0);
@@ -70,7 +68,6 @@ test02() {
 }
 
 // A bounded box in 2D.
-
 bool
 test03() {
   Variable A(0);
@@ -96,7 +93,6 @@ test03() {
 }
 
 // A 3D box which is bounded in 2D.
-
 bool
 test04() {
   Variable A(0);
@@ -125,7 +121,6 @@ test04() {
 }
 
 // Zero-dimensional box.
-
 bool
 test05() {
   Bounding_Box box(0);
@@ -142,7 +137,6 @@ test05() {
 }
 
 // Empty box in 2D.
-
 bool
 test06() {
   Bounding_Box box(2);
@@ -160,7 +154,6 @@ test06() {
 }
 
 // A box which is a point.
-
 bool
 test07() {
   Bounding_Box box(2);
@@ -181,7 +174,6 @@ test07() {
 }
 
 // Unit square.
-
 bool
 test08() {
   Variable A(0);
@@ -209,7 +201,6 @@ test08() {
 }
 
 // Simple box with divisor.
-
 bool
 test09() {
   Variable A(0);
@@ -234,7 +225,6 @@ test09() {
 }
 
 // Box with a dimension bounded only from above.
-
 bool
 test10() {
   Variable A(0);
@@ -260,7 +250,6 @@ test10() {
 
 // Box with a dimension having an open bound, where the open bound
 // makes the box empty.
-
 bool
 test11() {
   Bounding_Box box(2);
@@ -282,7 +271,6 @@ test11() {
 }
 
 // Zero-dimensional empty box.
-
 bool
 test12() {
   Bounding_Box box(0);

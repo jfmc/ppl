@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // add_congruences_and_minimize(cs)
-
 bool
 test01() {
   Variable A(0);
@@ -54,7 +53,6 @@ test01() {
 }
 
 // add_constraints
-
 bool
 test02() {
   Variable A(0);
@@ -83,7 +81,6 @@ test02() {
 }
 
 // add_constraints, resulting grid empty.
-
 bool
 test03() {
   Variable A(0);
@@ -111,7 +108,6 @@ test03() {
 }
 
 // add_congruences(cs)
-
 bool
 test04() {
   Variable A(0);
@@ -142,7 +138,6 @@ test04() {
 }
 
 // add_recycled_congruences(cs)
-
 bool
 test05() {
   Variable A(0);
@@ -172,7 +167,6 @@ test05() {
 }
 
 // add_recycled_congruences_and_minimize(cs)
-
 bool
 test06() {
   Variable A(0);
@@ -233,7 +227,6 @@ test07() {
 }
 
 // add_recycled_constraints
-
 bool
 test08() {
   Variable A(0);
@@ -262,7 +255,6 @@ test08() {
 }
 
 // add_recycled_constraints_and_minimize
-
 bool
 test09() {
   Variable A(0);
@@ -292,7 +284,6 @@ test09() {
 }
 
 // add_recycled_congruences(cs) -- space dimension exception
-
 bool
 test10() {
   Variable A(0);
@@ -316,7 +307,6 @@ test10() {
 }
 
 // add_congruences(cs) -- space dimension exception
-
 bool
 test11() {
   Variable A(0);
@@ -341,7 +331,6 @@ test11() {
 
 // add_recycled_congruences_and_minimize(cs) -- space dimension
 // exception
-
 bool
 test12() {
   Variable A(0);
@@ -365,7 +354,6 @@ test12() {
 }
 
 // add_congruences_and_minimize(cs) -- space dimension exception
-
 bool
 test13() {
   Variable A(0);
@@ -389,7 +377,6 @@ test13() {
 }
 
 // add_constraints(cs) -- space dimension exception
-
 bool
 test14() {
   Variable A(0);
@@ -413,7 +400,6 @@ test14() {
 }
 
 // add_constraints(cs) -- space dimension exception
-
 bool
 test15() {
   Variable A(0);
@@ -437,7 +423,6 @@ test15() {
 }
 
 // add_recycled_constraints(cs) -- space dimension exception
-
 bool
 test16() {
   Variable A(0);
@@ -462,7 +447,6 @@ test16() {
 
 // add_recycled_constraints_and_minimize(cs) -- space dimension
 // exception
-
 bool
 test17() {
   Variable A(0);
@@ -486,7 +470,6 @@ test17() {
 }
 
 // add_constraints_and_minimize(cs) -- space dimension exception
-
 bool
 test18() {
   Variable A(0);

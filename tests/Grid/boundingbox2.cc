@@ -67,7 +67,6 @@ operator==(const Bounding_Box& x, const Bounding_Box& y) {
 }
 
 // Minimized rectilinear grid.
-
 bool
 test01() {
   Variable A(0);
@@ -98,7 +97,6 @@ test01() {
 }
 
 // Skew grid.
-
 bool
 test02() {
   Variable A(0);
@@ -129,7 +127,6 @@ test02() {
 }
 
 // Skew grid, with a divisor.
-
 bool
 test03() {
   Variable A(0);
@@ -159,7 +156,6 @@ test03() {
 }
 
 // Grid containing a line.
-
 bool
 test04() {
   Variable A(0);
@@ -187,7 +183,6 @@ test04() {
 }
 
 // Universe grid.
-
 bool
 test05() {
   Bounding_Box box(3);
@@ -210,7 +205,6 @@ test05() {
 }
 
 // Grid which is a single point.
-
 bool
 test06() {
   Variable A(0);
@@ -251,7 +245,6 @@ test06() {
 }
 
 // Empty grid.
-
 bool
 test07() {
   Bounding_Box box1(3);
@@ -282,7 +275,6 @@ test07() {
 }
 
 // A grid with redundant generators.
-
 bool
 test08() {
   Variable A(0);
@@ -312,7 +304,6 @@ test08() {
 }
 
 // A grid defined by congruences.
-
 bool
 test09() {
   Variable A(0);
@@ -343,7 +334,6 @@ test09() {
 
 // An otherwise valid box having a dimension with an open bound, where
 // the open bound makes the box empty.
-
 bool
 test10() {
   Bounding_Box box(2);
@@ -367,7 +357,6 @@ test10() {
 }
 
 // An empty grid defined by congruences.
-
 bool
 test11() {
   Variable A(0);
@@ -403,7 +392,6 @@ test11() {
 
 // Simple grid where all the points have the same value in one of the
 // dimensions (B).
-
 bool
 test12() {
   Variable A(0);
@@ -439,7 +427,6 @@ test12() {
 // Simple grid, with a divisor, such that the fractions for some
 // intervals (B and C) will be reduced before being assigned to the
 // intervals.
-
 bool
 test13() {
   Variable A(0);
@@ -472,7 +459,6 @@ test13() {
 }
 
 // Zero dimension empty grid.
-
 bool
 test14() {
   Bounding_Box box(0);
@@ -494,7 +480,6 @@ test14() {
 }
 
 // Zero dimension universe grid.
-
 bool
 test15() {
   Bounding_Box box(0);

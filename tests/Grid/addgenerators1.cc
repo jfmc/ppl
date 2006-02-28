@@ -27,7 +27,6 @@ namespace {
 // grid1*.cc use add_generators_and_minimize often.
 
 // add_recycled_generators -- space dimension exception.
-
 bool
 test01() {
   Variable A(0);
@@ -51,7 +50,6 @@ test01() {
 }
 
 // add_recycled_generators_and_minimize -- space dimension exception.
-
 bool
 test02() {
   Variable A(0);
@@ -75,7 +73,6 @@ test02() {
 }
 
 // add_recycled_generators -- zero dimension universe.
-
 bool
 test03() {
   Grid_Generator_System gs;
@@ -98,7 +95,6 @@ test03() {
 }
 
 // add_recycled_generators -- zero dimension empty.
-
 bool
 test04() {
   Grid_Generator_System gs;
@@ -122,7 +118,6 @@ test04() {
 
 // add_recycled_generators -- add system with a single parameter
 // generator to the zero dimension empty grid.
-
 bool
 test05() {
   Variable A(0);
@@ -153,7 +148,6 @@ test05() {
 
 // add_recycled_generators_and_minimize -- add system with a single
 // parameter generator to the zero dimension empty grid.
-
 bool
 test06() {
   Variable A(0);
@@ -184,7 +178,6 @@ test06() {
 
 // add_recycled_generators -- add system with a single parameter
 // generator to the empty grid.
-
 bool
 test07() {
   Variable A(0);
@@ -207,7 +200,6 @@ test07() {
 }
 
 // add_recycled_generators_and_minimize -- add to the zero dim grid.
-
 bool
 test08() {
   Grid_Generator_System gs;
@@ -230,7 +222,6 @@ test08() {
 
 // add_recycled_generators_and_minimize -- try add system with a
 // single parameter generator to the empty grid.
-
 bool
 test09() {
   Variable A(0);
@@ -253,7 +244,6 @@ test09() {
 }
 
 // add_recycled_generators_and_minimize -- add an empty system.
-
 bool
 test10() {
   Grid_Generator_System gs;

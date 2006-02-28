@@ -33,7 +33,6 @@ public:
 };
 
 // Negative inhomogeneous term.
-
 static bool
 test01() {
   Variable A(0);
@@ -55,7 +54,6 @@ test01() {
 }
 
 // Positive inhomogeneous term.
-
 static bool
 test02() {
   Variable A(0);
@@ -77,7 +75,6 @@ test02() {
 }
 
 // Common factors and reducible positive inhomogeneous term.
-
 static bool
 test03() {
   Variable A(0);
@@ -99,7 +96,6 @@ test03() {
 }
 
 // Negative first coefficient.
-
 static bool
 test04() {
   Variable A(0);
@@ -121,7 +117,6 @@ test04() {
 }
 
 // Constructed with only the %= operator.
-
 static bool
 test05() {
   Variable A(0);
@@ -146,7 +141,6 @@ test05() {
 }
 
 // Equality congruence (a modulus of 0).
-
 static bool
 test06() {
   Variable A(0);
@@ -168,7 +162,6 @@ test06() {
 }
 
 // Constructed from a Constraint with the `/' operator.
-
 static bool
 test07() {
   Variable A(0);
@@ -190,7 +183,6 @@ test07() {
 }
 
 // Constructed from a Constraint.
-
 static bool
 test08() {
   Variable A(0);
@@ -212,7 +204,6 @@ test08() {
 }
 
 // Set modulus with `/='.
-
 static bool
 test09() {
   Variable A(0);
@@ -236,7 +227,6 @@ test09() {
 }
 
 // is_trivial_true and is_trivial_false.
-
 static bool
 test10() {
   Variable A(0);
@@ -284,7 +274,6 @@ test10() {
 }
 
 // Negative moduli.
-
 static bool
 test11() {
   Variable A(0);
@@ -330,7 +319,6 @@ test12() {
 }
 
 // Create from empty linear expression.
-
 static bool
 test13() {
   Linear_Expression le;
@@ -349,7 +337,6 @@ test13() {
 }
 
 // Space dimension exception.
-
 static bool
 test14() {
   Variable A(0);

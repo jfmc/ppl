@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Based on an example in a paper by Muller-Olm and Seidl in SAS 2005
-
 bool
 test01() {
   Variable A(0);
@@ -75,5 +74,5 @@ test01() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test01);
+  NEW_TEST_F8(test01);
 END_MAIN

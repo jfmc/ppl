@@ -31,7 +31,6 @@ Variable B(1);
 Variable C(2);
 
 // Compare a grid to one that is more constrained (due to equalities).
-
 bool
 test01() {
   Variable A(0);
@@ -60,7 +59,6 @@ test01() {
 
 // Compare a grid to one that is more constrained (due to proper
 // congruences).
-
 bool
 test02() {
   Variable A(0);
@@ -86,7 +84,6 @@ test02() {
 }
 
 // Compare a grid to an equally constrained one.
-
 bool
 test03() {
   Variable A(0);
@@ -116,7 +113,6 @@ test03() {
 }
 
 // Compare a grid to one that is less constrained (due to equalities).
-
 bool
 test04() {
   Variable A(0);
@@ -144,7 +140,6 @@ test04() {
 
 // Compare a grid to one that is less constrained (due to proper
 // congruences).
-
 bool
 test05() {
   Variable A(0);
@@ -176,7 +171,6 @@ test05() {
 }
 
 // Compare certificates for zero dimension universe grids.
-
 bool
 test06() {
   Grid gr1(0);
@@ -197,7 +191,6 @@ test06() {
 
 // Compare a grid to one that is more constrained, where the minimized
 // generators are used for the comparison.
-
 bool
 test07() {
   Variable A(0);

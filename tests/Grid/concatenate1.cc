@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // From congruences.
-
 bool
 test01() {
   Variable B(1);
@@ -61,7 +60,6 @@ test01() {
 }
 
 // First grid empty.
-
 bool
 test02() {
   Variable A(0);
@@ -90,7 +88,6 @@ test02() {
 }
 
 // Second grid empty.
-
 bool
 test03() {
   Variable A(0);
@@ -119,7 +116,6 @@ test03() {
 }
 
 // First grid a universe.
-
 bool
 test04() {
   Variable A(0);
@@ -156,7 +152,6 @@ test04() {
 }
 
 // From generators.
-
 bool
 test05() {
   Variable A(0);
@@ -200,7 +195,6 @@ test05() {
 }
 
 // First grid empty via the congruence system.
-
 bool
 test06() {
   Variable A(0);
@@ -227,7 +221,6 @@ test06() {
 }
 
 // Second grid empty via the congruence system.
-
 bool
 test07() {
   Variable A(0);
@@ -254,7 +247,6 @@ test07() {
 }
 
 // Zero dimension universe.
-
 bool
 test08() {
   Variable A(0);
@@ -281,7 +273,6 @@ test08() {
 }
 
 // Zero dimension empty.
-
 bool
 test09() {
   Variable A(0);
@@ -307,7 +298,6 @@ test09() {
 }
 
 // Space dimension exception.
-
 bool
 test10() {
   Grid gr1(7);

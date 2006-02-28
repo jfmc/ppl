@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Denominator, with generators having a variety of divisors.
-
 bool
 test01() {
   Variable A(0);
@@ -58,7 +57,6 @@ test01() {
 }
 
 // Negative denominator.
-
 bool
 test02() {
   Variable A(0);
@@ -83,7 +81,6 @@ test02() {
 }
 
 // Empty grid.
-
 bool
 test03() {
   Variable A(0);
@@ -106,7 +103,6 @@ test03() {
 }
 
 // Shift a rectilinear pointed grid along A.
-
 bool
 test04() {
   Variable A(0);
@@ -134,7 +130,6 @@ test04() {
 }
 
 // Slant a rectilinear pointed grid along A == B.
-
 bool
 test05() {
   Variable A(0);
@@ -162,7 +157,6 @@ test05() {
 }
 
 // Compress a rectilinear pointed grid to a line of points.
-
 bool
 test06() {
   Variable A(0);
@@ -190,7 +184,6 @@ test06() {
 }
 
 // Zero denominator.
-
 bool
 test07() {
   Variable A(0);
@@ -214,7 +207,6 @@ test07() {
 }
 
 // Expression of a greater space dimension than the grid.
-
 bool
 test08() {
   Variable A(0);
@@ -239,7 +231,6 @@ test08() {
 }
 
 // Variable of a greater space dimension than the grid.
-
 bool
 test09() {
   Variable A(0);
@@ -263,6 +254,53 @@ test09() {
   return true;
 }
 
+// Based on an example in a paper by Muller-Olm and Seidl in SAS 2005
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Grid gr(2, EMPTY);
+  gr.add_generator(grid_point(2*A + 0*B));
+
+  print_congruences(gr, "*** gr ***");
+
+  Grid gr0 = gr;  // first grid (using trivial transformation)
+
+  Grid gr1 = gr;  // second grid - initial state
+
+  gr1.generalized_affine_image(B, 18*A + B, 1, 0);
+  gr1.generalized_affine_image(A, 15*A, 1, 0);
+                  // second grid - 1 pass through procedure
+
+  Grid gr2 = gr;  // third grid - initial state
+
+  gr2.affine_image(B, 282*A + B);
+  gr2.affine_image(A, 225*A);
+                  // third grid - 2 passes through procedure
+
+  gr.join_assign(gr1); // join of gr0 and gr1
+
+  print_congruences(gr,
+        "*** gr.join_assign(gr1) ***");
+
+  gr.join_assign(gr2); // join of gr0, gr1 and gr2
+
+  Grid known_gr(2);
+
+  known_gr.add_congruence((A %= 2) / 28);
+  known_gr.add_congruence((B %= 0) / 12);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+        "*** gr.join_assign(gr2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -275,4 +313,5 @@ BEGIN_MAIN
   NEW_TEST(test07);
   NEW_TEST(test08);
   NEW_TEST(test09);
+//  NEW_TEST_F8(test10);
 END_MAIN
