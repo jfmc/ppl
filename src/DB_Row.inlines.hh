@@ -105,6 +105,7 @@ void
 DB_Row_Impl_Handler<T>::Impl::construct_upward_approximation(const U& y) {
   const dimension_type y_size = y.size();
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < y_size; ++i) {
     construct(vec_[i], y[i], ROUND_UP);
     bump_size();
@@ -114,6 +115,7 @@ DB_Row_Impl_Handler<T>::Impl::construct_upward_approximation(const U& y) {
   if (y_size > 0) {
     vec_[0] = y[0];
     bump_size();
+    // Construct in direct order: will destroy in reverse order.
     for (dimension_type i = 1; i < y_size; ++i) {
       construct(vec_[i], y[i], ROUND_UP);
       bump_size();
@@ -354,6 +356,7 @@ Impl::expand_within_capacity(const dimension_type new_size) {
   if (size() == 0 && new_size > 0)
     bump_size();
 #endif
+  // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = size(); i < new_size; ++i) {
     new (&vec_[i]) T(PLUS_INFINITY);
     bump_size();
@@ -383,6 +386,7 @@ void
 DB_Row_Impl_Handler<T>::Impl::copy_construct_coefficients(const Impl& y) {
   const dimension_type y_size = y.size();
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < y_size; ++i) {
     new (&vec_[i]) T(y.vec_[i]);
     bump_size();
@@ -392,6 +396,7 @@ DB_Row_Impl_Handler<T>::Impl::copy_construct_coefficients(const Impl& y) {
   if (y_size > 0) {
     vec_[0] = y.vec_[0];
     bump_size();
+    // Construct in direct order: will destroy in reverse order.
     for (dimension_type i = 1; i < y_size; ++i) {
       new (&vec_[i]) T(y.vec_[i]);
       bump_size();
