@@ -313,5 +313,5 @@ BEGIN_MAIN
   NEW_TEST(test07);
   NEW_TEST(test08);
   NEW_TEST(test09);
-//  NEW_TEST_F8(test10);
+  NEW_TEST_F8(test10);
 END_MAIN
