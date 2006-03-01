@@ -63,7 +63,7 @@ ORIGINAL_TESTS = \
 	boundedbhrz03extrapolation1 \
 	boundedh79extrapolation1 \
 	boundingbox1 boundingbox2 boundingbox3 \
-	bounds1 bounds2 \
+	bounds1 \
 	cnncconversion1 \
 	concatenate1 \
 	congruences1 \
@@ -165,7 +165,7 @@ DERIVED_TESTS = \
 	nnc_boundedbhrz03extrapolation1 \
 	nnc_boundedh79extrapolation1 \
 	nnc_boundingbox1 nnc_boundingbox2 \
-	nnc_bounds1 nnc_bounds2 \
+	nnc_bounds1 \
 	nnc_concatenate1 \
 	nnc_congruences1 \
 	nnc_constraints1 nnc_constraints2 nnc_constraints3 nnc_constraints4 \
@@ -299,7 +299,6 @@ boundingbox2_SOURCES = boundingbox2.cc
 boundingbox3_SOURCES = boundingbox3.cc
 
 bounds1_SOURCES = bounds1.cc
-bounds2_SOURCES = bounds2.cc
 
 cnncconversion1_SOURCES = cnncconversion1.cc
 
@@ -642,8 +641,6 @@ nnc_boundingbox2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounds1_SOURCES = bounds1.cc
 nnc_bounds1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_bounds2_SOURCES = bounds2.cc
-nnc_bounds2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_concatenate1_SOURCES = concatenate1.cc
 nnc_concatenate1_CXXFLAGS = $(DERIVED_CXXFLAGS)
