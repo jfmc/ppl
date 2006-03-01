@@ -56,7 +56,7 @@ test01() {
   BDS_Set bdss2(bdss1);
   bdss1.add_disjunct(bds4);
 
-  using namespace Parma_Polyhedra_Library::IO_Operators;
+  using namespace IO_Operators;
   nout << "*** bdss1 ***" << endl
        << bdss1 << endl;
   nout << "*** bdss2 ***" << endl

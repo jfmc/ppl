@@ -26,8 +26,6 @@ namespace {
 
 bool
 test01() {
-  using namespace IO_Operators;
-
   Variable A(0);
   Variable B(1);
 
@@ -42,6 +40,7 @@ test01() {
 
   const Constraint_System cs = bd.minimized_constraints();
 
+  using namespace IO_Operators;
   nout << "*** bd.minimized_constraints() ***" << endl;
 
   dimension_type num_constraints = 0;

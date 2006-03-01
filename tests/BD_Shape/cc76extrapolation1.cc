@@ -241,8 +241,6 @@ test04() {
 
 TBD_Shape
 aux_test05(int i, Variable a, Variable b, Variable c) {
-  using namespace IO_Operators;
-
   TBD_Shape bd(3);
   if (i == 0) {
     bd.add_constraint(0 <= a-b);
@@ -259,6 +257,7 @@ aux_test05(int i, Variable a, Variable b, Variable c) {
     bd.add_constraint(      a-c <= i);
   }
 
+  using namespace IO_Operators;
   nout << "*** n_" << i << " ***" << endl
        << bd << endl;
 
@@ -269,8 +268,6 @@ aux_test05(int i, Variable a, Variable b, Variable c) {
 
 bool
 test05() {
-  using namespace IO_Operators;
-
   Variable a(0);
   Variable b(1);
   Variable c(2);
@@ -279,6 +276,7 @@ test05() {
   TBD_Shape m_i_next;
   while (i < 100) {
 
+    using namespace IO_Operators;
     nout << "*** m_" << i << " ***" << endl
 	 << m_i << endl;
 

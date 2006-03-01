@@ -26,8 +26,6 @@ namespace {
 
 bool
 test01() {
-  using namespace IO_Operators;
-
   Variable x(0);
 
   Constraint_System cs1, cs2, cs3, cs4;
@@ -46,6 +44,7 @@ test01() {
   Polyhedra_Powerset<TBD_Shape> ps3(1, EMPTY);
   ps3.add_disjunct(bd3);
 
+  using namespace IO_Operators;
   nout << "ps12 = " << ps12 << endl
        << " ps3 = " << ps3 << endl;
 

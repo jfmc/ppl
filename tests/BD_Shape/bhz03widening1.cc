@@ -56,8 +56,7 @@ test01() {
   Q.add_disjunct(q);
   Q.add_disjunct(s);
 
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-
+  using namespace IO_Operators;
   nout << "P = " << P << endl
        << "Q = " << Q << endl;
 

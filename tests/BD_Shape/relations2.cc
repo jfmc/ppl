@@ -22,8 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
 bool
@@ -33,6 +31,7 @@ test01() {
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) > 0);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(0 > 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
@@ -48,6 +47,7 @@ test02() {
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) > 1);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(0 > 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
@@ -62,6 +62,7 @@ test03() {
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) > 0);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(1 > 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
@@ -80,6 +81,7 @@ test04() {
   Poly_Con_Relation rel = bd.relation_with(A > 0);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(A > 0) = " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
@@ -99,6 +101,7 @@ test05() {
   Poly_Con_Relation rel = bd.relation_with(A - B > 3);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(A - B > 3) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
@@ -117,6 +120,7 @@ test06() {
   Poly_Con_Relation rel = bd.relation_with(A - B > 3);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(A - B > 3) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
@@ -136,6 +140,7 @@ test07() {
   Poly_Con_Relation rel = bd.relation_with(A > 0);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(A > 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
@@ -158,6 +163,7 @@ test08() {
   Poly_Con_Relation rel = bd.relation_with(A - B > 1);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(A - B > 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
@@ -180,6 +186,7 @@ test09() {
   Poly_Con_Relation rel = bd.relation_with(A > 0);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(A > 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
@@ -202,6 +209,7 @@ test10() {
   Poly_Con_Relation rel = bd.relation_with(B - A > 1);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(B - A > 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
@@ -219,6 +227,7 @@ test11() {
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) >= 1);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(1 >= 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
@@ -239,6 +248,7 @@ test12() {
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) > 1);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(1 > 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
@@ -261,6 +271,7 @@ test13() {
   Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) == 1);
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(1 == 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
@@ -282,6 +293,7 @@ test14() {
   Poly_Gen_Relation rel2 = bd.relation_with(point(-B));
 
   print_constraints(bd, "*** bd ***");
+  using namespace IO_Operators;
   nout << "bd.relation_with(point(B)) == " << rel1 << endl;
   nout << "bd.relation_with(point(-B)) == " << rel2 << endl;
 
@@ -300,6 +312,7 @@ test15() {
   Poly_Gen_Relation rel = bd.relation_with(ray(-A));
 
   print_constraints(bd, "*** bd ***");
+  using namespace IO_Operators;
   nout << "bd.relation_with(ray(-A)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
@@ -317,6 +330,7 @@ test16() {
   Poly_Gen_Relation rel = bd.relation_with(line(A));
 
   print_constraints(bd, "*** bd ***");
+  using namespace IO_Operators;
   nout << "bd.relation_with(line(A)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
@@ -336,6 +350,7 @@ test17() {
   Poly_Gen_Relation rel = bd.relation_with(closure_point(A));
 
   print_constraints(bd, "*** bd ***");
+  using namespace IO_Operators;
   nout << "bd.relation_with(closure_point(A)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
@@ -355,6 +370,7 @@ test18() {
   Poly_Gen_Relation rel = bd.relation_with(ray(A + B));
 
   print_constraints(bd, "*** bd ***");
+  using namespace IO_Operators;
   nout << "bd.relation_with(ray(A + B)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
@@ -374,6 +390,7 @@ test19() {
   Poly_Gen_Relation rel = bd.relation_with(point(2*A));
 
   print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
   nout << "bd.relation_with(point(2*A)) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
