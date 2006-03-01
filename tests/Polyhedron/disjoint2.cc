@@ -24,9 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-C_Polyhedron
-half_strip(const Generator& p, const Linear_Expression& e) {
-  assert(p.is_point());
+NNC_Polyhedron
+half_strip(const Generator& p,
+	   const Linear_Expression& e,
+	   bool closed = true) {
+  assert((p.is_point() && closed) || (p.is_closure_point() && ! closed));
 
   Linear_Expression e1(p);
   e1 += 3*Variable(0);
@@ -34,21 +36,29 @@ half_strip(const Generator& p, const Linear_Expression& e) {
   Generator_System gs;
   gs.insert(p);
   gs.insert(ray(e));
-  gs.insert(point(e1, p.divisor()));
-  C_Polyhedron ph(gs);
+  if (closed)
+    gs.insert(point(e1, p.divisor()));
+  else {
+    gs.insert(closure_point(e1, p.divisor()));
+    e1 -= Variable(0);
+    e1 += e.coefficient(Variable(1)) * p.divisor() * Variable(1);
+    gs.insert(point(e1));
+  }
+  NNC_Polyhedron ph(gs);
   return ph;
 }
 
-void
-test1() {
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1 = half_strip(point(A + B), B);
+  NNC_Polyhedron ph1 = half_strip(point(A + B), B);
 
-  C_Polyhedron ph2(2, EMPTY);
-  ph2.add_generator(point(2*A + B));
-  ph2.add_generator(point(4*A + 3*B));
+  NNC_Polyhedron ph2(2, EMPTY);
+  ph2.add_generator(point(3*A + B));
+  ph2.add_generator(closure_point(2*A + B));
+  ph2.add_generator(closure_point(4*A + 3*B));
   ph2.add_generator(ray(A - B));
 
   bool disjoint = ph1.is_disjoint_from(ph2);
@@ -56,54 +66,52 @@ test1() {
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 
-  if (disjoint)
-    exit(1);
+  return !disjoint;
 }
 
-void
-test2() {
+bool
+test02() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1 = half_strip(point(A + B), B);
-  C_Polyhedron ph2 = half_strip(point(4*A + B), B);
+  NNC_Polyhedron ph1 = half_strip(point(A + B), B);
+  NNC_Polyhedron ph2 = half_strip(closure_point(4*A + B), B, false);
 
   bool disjoint = ph1.is_disjoint_from(ph2);
 
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 
-  if (disjoint)
-    exit(1);
+  return disjoint;
 }
 
-void
-test3() {
+bool
+test03() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1 = half_strip(point(A + B), B);
-  C_Polyhedron ph2 = half_strip(point(A + B), -B);
+  NNC_Polyhedron ph1 = half_strip(point(A + B), B);
+  NNC_Polyhedron ph2 = half_strip(closure_point(A + B), -B, false);
 
   bool disjoint = ph1.is_disjoint_from(ph2);
 
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 
-  if (disjoint)
-    exit(1);
+  return disjoint;
 }
 
-void
-test4() {
+bool
+test04() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1 = half_strip(point(), B);
+  NNC_Polyhedron ph1 = half_strip(point(), B);
 
-  C_Polyhedron ph2(2, EMPTY);
-  ph2.add_generator(point(2*A - 2*B));
-  ph2.add_generator(point(-2*A + 2*B));
+  NNC_Polyhedron ph2(2, EMPTY);
+  ph2.add_generator(point(-2*A - 2*B));
+  ph2.add_generator(closure_point(2*A - 2*B));
+  ph2.add_generator(closure_point(-2*A + 2*B));
   ph2.add_generator(ray(-A - B));
 
   bool disjoint = ph1.is_disjoint_from(ph2);
@@ -111,21 +119,14 @@ test4() {
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
 
-  if (disjoint)
-    exit(1);
+  return disjoint;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+END_MAIN

@@ -22,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -39,12 +39,107 @@ main() TRY {
   ph2.add_constraint(B >= 1);
   ph2.add_constraint(B <= 2);
 
-  int retval = ph1.is_disjoint_from(ph2) ? 0 : 1;
+  bool ok = ph1.is_disjoint_from(ph2);
 
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 
-  return retval;
+  return ok;
 }
-CATCH
 
+C_Polyhedron
+half_strip(const Generator& p, const Linear_Expression& e) {
+  assert(p.is_point());
+
+  Linear_Expression e1(p);
+  e1 += 3*Variable(0);
+
+  Generator_System gs;
+  gs.insert(p);
+  gs.insert(ray(e));
+  gs.insert(point(e1, p.divisor()));
+  C_Polyhedron ph(gs);
+  return ph;
+}
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1 = half_strip(point(A + B), B);
+
+  C_Polyhedron ph2(2, EMPTY);
+  ph2.add_generator(point(2*A + B));
+  ph2.add_generator(point(4*A + 3*B));
+  ph2.add_generator(ray(A - B));
+
+  bool disjoint = ph1.is_disjoint_from(ph2);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+
+  return !disjoint;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1 = half_strip(point(A + B), B);
+  C_Polyhedron ph2 = half_strip(point(4*A + B), B);
+
+  bool disjoint = ph1.is_disjoint_from(ph2);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+
+  return !disjoint;
+}
+
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1 = half_strip(point(A + B), B);
+  C_Polyhedron ph2 = half_strip(point(A + B), -B);
+
+  bool disjoint = ph1.is_disjoint_from(ph2);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+
+  return !disjoint;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1 = half_strip(point(), B);
+
+  C_Polyhedron ph2(2, EMPTY);
+  ph2.add_generator(point(2*A - 2*B));
+  ph2.add_generator(point(-2*A + 2*B));
+  ph2.add_generator(ray(-A - B));
+
+  bool disjoint = ph1.is_disjoint_from(ph2);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+
+  return !disjoint;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+END_MAIN
