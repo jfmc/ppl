@@ -25,11 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-void
-my_output_function(std::ostream& s, const Variable& v) {
-  s << char('x' + v.id());
-}
-
 const C_Polyhedron&
 aux1_test01(unsigned n) {
   Variable x(0);
@@ -121,10 +116,15 @@ aux2_test01(unsigned n) {
   return s;
 }
 
+void
+aux3_test01(std::ostream& s, const Variable& v) {
+  s << char('x' + v.id());
+}
+
 bool
 test01() {
   // Install the alternate output function.
-  Variable::set_output_function(my_output_function);
+  Variable::set_output_function(aux3_test01);
 
   Polyhedra_Powerset<C_Polyhedron> T = aux2_test01(0);
 
@@ -264,6 +264,6 @@ test02() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test01); // Fails with int16_t.
-  NEW_TEST(test02); // Fails with int8_t.
+  NEW_TEST_F16(test01);
+  NEW_TEST_F8(test02);
 END_MAIN
