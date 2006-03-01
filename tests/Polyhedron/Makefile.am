@@ -55,8 +55,7 @@ ORIGINAL_TESTS = \
 	ascii_dump_load5 ascii_dump_load6 ascii_dump_load7 \
 	bgp99extrapolation1 \
 	bhrz03widening1 bhrz03widening2 bhrz03widening3 \
-	bhz03widening1 bhz03widening2 bhz03widening3 bhz03widening4 \
-	bhz03widening5 bhz03widening6 \
+	bhz03widening1 \
 	bounded1 \
 	boundedaffineimage1 boundedaffineimage2 boundedaffineimage3 \
 	boundedaffinepreimage1 boundedaffinepreimage2 boundedaffinepreimage3 \
@@ -273,11 +272,6 @@ bhrz03widening2_SOURCES = bhrz03widening2.cc
 bhrz03widening3_SOURCES = bhrz03widening3.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
-bhz03widening2_SOURCES = bhz03widening2.cc
-bhz03widening3_SOURCES = bhz03widening3.cc
-bhz03widening4_SOURCES = bhz03widening4.cc
-bhz03widening5_SOURCES = bhz03widening5.cc
-bhz03widening6_SOURCES = bhz03widening6.cc
 
 bounded1_SOURCES = bounded1.cc
 
