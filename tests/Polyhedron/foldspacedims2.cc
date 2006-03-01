@@ -24,14 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-
 // Test with an empty polyhedron.
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+
   NNC_Polyhedron ph1(3, EMPTY);
 
   print_constraints(ph1, "*** ph1 ***");
@@ -48,13 +46,16 @@ test1() {
 
   print_constraints(ph1, "*** After folding {A} into B ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Trivial fold.
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   NNC_Polyhedron ph1(3);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A + B + C < 2);
@@ -74,13 +75,15 @@ test2() {
 
   print_constraints(ph1, "*** After folding {} into B ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test as given in [GopanDMDRS04] on page 519 but with strict constraints.
-void
-test3() {
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
   NNC_Polyhedron ph1(2);
   ph1.add_constraint(A > 1);
   ph1.add_constraint(A < 3);
@@ -103,13 +106,16 @@ test3() {
 
   print_constraints(ph1, "***  After folding {A} into B ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test folding several dimensions into a higher dimension.
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   NNC_Polyhedron ph1(3);
   ph1.add_constraint(A > 1);
   ph1.add_constraint(A <= 3);
@@ -134,13 +140,17 @@ test4() {
 
   print_constraints(ph1, "***  After folding {A,B} into C ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test folding dimensions into a lower dimension.
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   NNC_Polyhedron ph1(4);
   ph1.add_constraint(A > 0);
   ph1.add_constraint(A + B < 2);
@@ -166,13 +176,17 @@ test5() {
 
   print_constraints(ph1, "***  After folding {C,D} into A ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test folding dimensions into an intermediate dimension.
-void
-test6() {
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   NNC_Polyhedron ph1(4);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(B > 0);
@@ -201,22 +215,16 @@ test6() {
 
   print_constraints(ph1, "***  After folding {B,D} into C ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+END_MAIN

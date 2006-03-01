@@ -24,14 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-
 // Test with a universe polyhedron.
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+
   C_Polyhedron ph1(3);
 
   print_generators(ph1, "*** ph1 ***");
@@ -48,13 +46,15 @@ test1() {
 
   print_generators(ph1, "*** After folding {A} into B ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test with an empty polyhedron.
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
   C_Polyhedron ph1(3, EMPTY);
 
   print_constraints(ph1, "*** ph1 ***");
@@ -71,13 +71,16 @@ test2() {
 
   print_constraints(ph1, "*** After folding {A} into B ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Trivial fold.
-void
-test3() {
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   C_Polyhedron ph1(3);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A + B + C <= 2);
@@ -97,13 +100,15 @@ test3() {
 
   print_constraints(ph1, "*** After folding {} into B ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test as given in [GopanDMDRS04] on page 519.
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
   C_Polyhedron ph1(2);
   ph1.add_constraint(A >= 1);
   ph1.add_constraint(A <= 3);
@@ -126,15 +131,18 @@ test4() {
 
   print_constraints(ph1, "***  After folding {A} into B ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test that takes the expected result of the expand operation
 // example given in [GopanDMDRS04] on page 519 and folds it to recover
 // the unexpanded polyhedron.
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   C_Polyhedron ph1(3, EMPTY);
   ph1.add_generator(point(A + 2*B + 2*C));
   ph1.add_generator(point(A + 2*B + 3*C));
@@ -163,13 +171,16 @@ test5() {
 
   print_generators(ph1, "***  After folding {C} into B ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test folding several dimensions into a higher dimension.
-void
-test6() {
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   C_Polyhedron ph1(3);
   ph1.add_constraint(A >= 1);
   ph1.add_constraint(A <= 3);
@@ -194,13 +205,16 @@ test6() {
 
   print_constraints(ph1, "***  After folding {A,B} into C ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test fold_space_dimensions() when there are rays.
-void
-test7() {
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   C_Polyhedron ph1(3, EMPTY);
   ph1.add_generator(point(A));
   ph1.add_generator(ray(A + B));
@@ -224,13 +238,17 @@ test7() {
 
   print_generators(ph1, "***  After folding {C} into B ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test folding dimensions into a lower dimension.
-void
-test8() {
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   C_Polyhedron ph1(4);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A + B <= 2);
@@ -256,13 +274,17 @@ test8() {
 
   print_constraints(ph1, "***  After folding {C,D} into A ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test folding dimensions into an intermediate dimension.
-void
-test9() {
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   C_Polyhedron ph1(4);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(B >= 0);
@@ -291,25 +313,19 @@ test9() {
 
   print_constraints(ph1, "***  After folding {B,D} into C ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+END_MAIN
