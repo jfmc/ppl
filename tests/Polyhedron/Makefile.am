@@ -40,8 +40,6 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-	CbecomesNNC1 \
-	NNCbecomesC1 \
 	addcongruence1 \
 	addcongruences1 \
 	addconstraint1 \
@@ -66,6 +64,7 @@ ORIGINAL_TESTS = \
 	boundedh79extrapolation1 \
 	boundingbox1 boundingbox2 boundingbox3 \
 	bounds1 bounds2 \
+	cnncconversion1 \
 	concatenate1 \
 	congruences1 \
 	constraints1 constraints2 constraints3 constraints4 constraints5 \
@@ -232,10 +231,6 @@ DERIVED_TESTS = \
 # Sources for the tests
 #
 
-CbecomesNNC1_SOURCES = CbecomesNNC1.cc
-
-NNCbecomesC1_SOURCES = NNCbecomesC1.cc
-
 addcongruence1_SOURCES = addcongruence1.cc
 
 addcongruences1_SOURCES = addcongruences1.cc
@@ -305,6 +300,8 @@ boundingbox3_SOURCES = boundingbox3.cc
 
 bounds1_SOURCES = bounds1.cc
 bounds2_SOURCES = bounds2.cc
+
+cnncconversion1_SOURCES = cnncconversion1.cc
 
 concatenate1_SOURCES = concatenate1.cc
 

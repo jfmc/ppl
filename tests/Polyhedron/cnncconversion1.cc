@@ -1,4 +1,4 @@
-/* Test NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron& y).
+/* Test conversions between C_Polyhedron and NNC_Polyhedron.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -41,10 +41,63 @@ main() TRY {
   known_result.add_constraint(A - B >= 0);
   known_result.add_constraint(A >= 0);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
+  bool ok = (ph2 == known_result);
 
   print_constraints(ph2, "*** ph2 ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
+
+  NNC_Polyhedron ph1(3);
+  ph1.add_constraint(x >= 5);
+  ph1.add_constraint(y > x - 3);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  C_Polyhedron ph2(ph1);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(3);
+  known_result.add_constraint(x >= 5);
+  known_result.add_constraint(y >= x - 3);
+
+  return ph2 == known_result;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  NNC_Polyhedron ph1(2);
+  ph1.add_constraint(A < 2);
+  ph1.add_constraint(B > 0);
+  ph1.add_constraint(A - B > 0);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  C_Polyhedron ph2(ph1);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(A - B >= 0);
+
+  return ph2 == known_result;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+END_MAIN
