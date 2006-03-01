@@ -46,7 +46,7 @@ test01() {
 
   bool ok = ps12.geometrically_covers(ps3);
 
-  using IO_Operators::operator<<;
+  using namespace IO_Operators;
   nout << "ps12 = " << ps12 << endl
        << " ps3 = " << ps3 << endl;
 
