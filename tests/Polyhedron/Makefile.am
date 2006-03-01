@@ -80,9 +80,7 @@ ORIGINAL_TESTS = \
 	generators1 \
 	geomcovers1 \
 	h79widening1 h79widening2 \
-	intersection1 intersection2 intersection3 intersection4 \
-	intersection5 intersection6 intersection7 intersection8 \
-	intersection9 intersection10 intersection11 \
+	intersection1 \
 	limitedbhrz03extrapolation1 \
 	limitedh79extrapolation1 limitedh79extrapolation2 \
 	limitedh79extrapolation3 limitedh79extrapolation4 \
@@ -169,10 +167,7 @@ DERIVED_TESTS = \
 	nnc_generators1 \
 	nnc_geomcovers1 \
 	nnc_h79widening1 \
-	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
-	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
-	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
-	nnc_intersection10 nnc_intersection11 \
+	nnc_intersection1 \
 	nnc_limitedbhrz03extrapolation1 \
 	nnc_limitedh79extrapolation1 nnc_limitedh79extrapolation2 \
 	nnc_limitedh79extrapolation3 nnc_limitedh79extrapolation4 \
@@ -315,16 +310,6 @@ h79widening1_SOURCES = h79widening1.cc
 h79widening2_SOURCES = h79widening2.cc
 
 intersection1_SOURCES = intersection1.cc
-intersection2_SOURCES = intersection2.cc
-intersection3_SOURCES = intersection3.cc
-intersection4_SOURCES = intersection4.cc
-intersection5_SOURCES = intersection5.cc
-intersection6_SOURCES = intersection6.cc
-intersection7_SOURCES = intersection7.cc
-intersection8_SOURCES = intersection8.cc
-intersection9_SOURCES = intersection9.cc
-intersection10_SOURCES = intersection10.cc
-intersection11_SOURCES = intersection11.cc
 
 limitedbhrz03extrapolation1_SOURCES = limitedbhrz03extrapolation1.cc
 
@@ -620,26 +605,6 @@ nnc_h79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_intersection1_SOURCES = intersection1.cc
 nnc_intersection1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_intersection2_SOURCES = intersection2.cc
-nnc_intersection2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_intersection3_SOURCES = intersection3.cc
-nnc_intersection3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_intersection4_SOURCES = intersection4.cc
-nnc_intersection4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_intersection5_SOURCES = intersection5.cc
-nnc_intersection5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_intersection6_SOURCES = intersection6.cc
-nnc_intersection6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_intersection7_SOURCES = intersection7.cc
-nnc_intersection7_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_intersection8_SOURCES = intersection8.cc
-nnc_intersection8_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_intersection9_SOURCES = intersection9.cc
-nnc_intersection9_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_intersection10_SOURCES = intersection10.cc
-nnc_intersection10_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_intersection11_SOURCES = intersection11.cc
-nnc_intersection11_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_limitedbhrz03extrapolation1_SOURCES = limitedbhrz03extrapolation1.cc
 nnc_limitedbhrz03extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
