@@ -122,42 +122,42 @@ catch (const std::exception& e) {					\
 #elif COEFFICIENT_BITS == 64
 
 #define NEW_TEST_F64(name) NEW_TEST_F(name)
-#define NEW_TEST_F32(name) NEW_TEST_F(name)
-#define NEW_TEST_F16(name) NEW_TEST_F(name)
-#define NEW_TEST_F8(name) NEW_TEST_F(name)
-#define NEW_TEST_F8A(name) NEW_TEST_F(name)
+#define NEW_TEST_F32(name) NEW_TEST(name)
+#define NEW_TEST_F16(name) NEW_TEST(name)
+#define NEW_TEST_F8(name) NEW_TEST(name)
+#define NEW_TEST_F8A(name) NEW_TEST(name)
 
 #elif COEFFICIENT_BITS == 32
 
-#define NEW_TEST_F64(name) NEW_TEST(name)
+#define NEW_TEST_F64(name) NEW_TEST_F(name)
 #define NEW_TEST_F32(name) NEW_TEST_F(name)
-#define NEW_TEST_F16(name) NEW_TEST_F(name)
-#define NEW_TEST_F8(name) NEW_TEST_F(name)
-#define NEW_TEST_F8A(name) NEW_TEST_F(name)
+#define NEW_TEST_F16(name) NEW_TEST(name)
+#define NEW_TEST_F8(name) NEW_TEST(name)
+#define NEW_TEST_F8A(name) NEW_TEST(name)
 
 #elif COEFFICIENT_BITS == 16
 
-#define NEW_TEST_F64(name) NEW_TEST(name)
-#define NEW_TEST_F32(name) NEW_TEST(name)
+#define NEW_TEST_F64(name) NEW_TEST_F(name)
+#define NEW_TEST_F32(name) NEW_TEST_F(name)
 #define NEW_TEST_F16(name) NEW_TEST_F(name)
-#define NEW_TEST_F8(name) NEW_TEST_F(name)
-#define NEW_TEST_F8A(name) NEW_TEST_F(name)
+#define NEW_TEST_F8(name) NEW_TEST(name)
+#define NEW_TEST_F8A(name) NEW_TEST(name)
 
 #elif COEFFICIENT_BITS == 8
 
 #ifdef NDEBUG
 
-#define NEW_TEST_F64(name) NEW_TEST(name)
-#define NEW_TEST_F32(name) NEW_TEST(name)
-#define NEW_TEST_F16(name) NEW_TEST(name)
+#define NEW_TEST_F64(name) NEW_TEST_F(name)
+#define NEW_TEST_F32(name) NEW_TEST_F(name)
+#define NEW_TEST_F16(name) NEW_TEST_F(name)
 #define NEW_TEST_F8(name) NEW_TEST_F(name)
 #define NEW_TEST_F8A(name) NEW_TEST(name)
 
 #else
 
-#define NEW_TEST_F64(name) NEW_TEST(name)
-#define NEW_TEST_F32(name) NEW_TEST(name)
-#define NEW_TEST_F16(name) NEW_TEST(name)
+#define NEW_TEST_F64(name) NEW_TEST_F(name)
+#define NEW_TEST_F32(name) NEW_TEST_F(name)
+#define NEW_TEST_F16(name) NEW_TEST_F(name)
 #define NEW_TEST_F8(name) NEW_TEST_F(name)
 #define NEW_TEST_F8A(name) NEW_TEST_F(name)
 
