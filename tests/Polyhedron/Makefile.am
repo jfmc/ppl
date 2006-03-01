@@ -67,7 +67,7 @@ ORIGINAL_TESTS = \
 	concatenate1 \
 	congruences1 \
 	constraints1 \
-	contains1 contains2 contains3 contains4 contains5 \
+	contains1 contains2 \
 	disjoint1 disjoint2 disjoint3 \
 	dualhypercubes \
 	empty1 \
@@ -166,7 +166,7 @@ DERIVED_TESTS = \
 	nnc_concatenate1 \
 	nnc_congruences1 \
 	nnc_constraints1 \
-	nnc_contains1 nnc_contains2 \
+	nnc_contains1 \
 	nnc_disjoint1 nnc_disjoint2 \
 	nnc_empty1 \
 	nnc_equals1 \
@@ -297,9 +297,6 @@ constraints1_SOURCES = constraints1.cc
 
 contains1_SOURCES = contains1.cc
 contains2_SOURCES = contains2.cc
-contains3_SOURCES = contains3.cc
-contains4_SOURCES = contains4.cc
-contains5_SOURCES = contains5.cc
 
 disjoint1_SOURCES = disjoint1.cc
 disjoint2_SOURCES = disjoint2.cc
@@ -628,8 +625,6 @@ nnc_constraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_contains1_SOURCES = contains1.cc
 nnc_contains1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_contains2_SOURCES = contains2.cc
-nnc_contains2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_disjoint1_SOURCES = disjoint1.cc
 nnc_disjoint1_CXXFLAGS = $(DERIVED_CXXFLAGS)
