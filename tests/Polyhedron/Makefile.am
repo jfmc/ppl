@@ -57,8 +57,8 @@ ORIGINAL_TESTS = \
 	bhrz03widening1 bhrz03widening2 bhrz03widening3 \
 	bhz03widening1 \
 	bounded1 \
-	boundedaffineimage1 boundedaffineimage2 boundedaffineimage3 \
-	boundedaffinepreimage1 boundedaffinepreimage2 boundedaffinepreimage3 \
+	boundedaffineimage1 \
+	boundedaffinepreimage1 \
 	boundedbhrz03extrapolation1 \
 	boundedh79extrapolation1 \
 	boundingbox1 boundingbox2 boundingbox3 \
@@ -157,10 +157,8 @@ DERIVED_TESTS = \
 	nnc_bgp99extrapolation1 \
 	nnc_bhrz03widening1 nnc_bhrz03widening2 \
 	nnc_bounded1 \
-	nnc_boundedaffineimage1 nnc_boundedaffineimage2 \
-	nnc_boundedaffineimage3 \
-	nnc_boundedaffinepreimage1 nnc_boundedaffinepreimage2 \
-	nnc_boundedaffinepreimage3 \
+	nnc_boundedaffineimage1 \
+	nnc_boundedaffinepreimage1 \
 	nnc_boundedbhrz03extrapolation1 \
 	nnc_boundedh79extrapolation1 \
 	nnc_boundingbox1 nnc_boundingbox2 \
@@ -276,12 +274,8 @@ bhz03widening1_SOURCES = bhz03widening1.cc
 bounded1_SOURCES = bounded1.cc
 
 boundedaffineimage1_SOURCES = boundedaffineimage1.cc
-boundedaffineimage2_SOURCES = boundedaffineimage2.cc
-boundedaffineimage3_SOURCES = boundedaffineimage3.cc
 
 boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
-boundedaffinepreimage2_SOURCES = boundedaffinepreimage2.cc
-boundedaffinepreimage3_SOURCES = boundedaffinepreimage3.cc
 
 boundedbhrz03extrapolation1_SOURCES = boundedbhrz03extrapolation1.cc
 
@@ -605,17 +599,9 @@ nnc_bounded1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 nnc_boundedaffineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_boundedaffineimage2_SOURCES = boundedaffineimage2.cc
-nnc_boundedaffineimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_boundedaffineimage3_SOURCES = boundedaffineimage3.cc
-nnc_boundedaffineimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
 nnc_boundedaffinepreimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_boundedaffinepreimage2_SOURCES = boundedaffinepreimage2.cc
-nnc_boundedaffinepreimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_boundedaffinepreimage3_SOURCES = boundedaffinepreimage3.cc
-nnc_boundedaffinepreimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_boundedbhrz03extrapolation1_SOURCES = boundedbhrz03extrapolation1.cc
 nnc_boundedvhrz03extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)

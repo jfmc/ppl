@@ -22,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -48,12 +48,73 @@ main() TRY {
   kr2.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B+3);
   kr1.intersection_assign(kr2);
 
-  int retval = (ph == kr1) ? 0 : 1;
+  bool ok = (ph == kr1);
 
-  print_generators(ph, "--- ph after "
-		   "ph.bounded_affine_image(A, 7-B, B+3)"
-		   " ---");
+  print_generators(ph,
+		   "--- ph.bounded_affine_image(A, 7-B, B+3) ---");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(A <= 4);
+  ph.add_constraint(B >= 0);
+  ph.add_constraint(B <= 4);
+  ph.add_constraint(A - B <= 2);
+  ph.add_constraint(A - B >= -2);
+
+  print_constraints(ph, "--- ph ---");
+
+  C_Polyhedron kr1 = ph;
+  C_Polyhedron kr2 = ph;
+
+  ph.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3);
+
+  kr1.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, 7-3*A+2*B);
+  kr2.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B+5*A-3);
+  kr1.intersection_assign(kr2);
+
+  bool ok = (ph == kr1);
+
+  print_generators(ph,
+		   "--- ph.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3) ---");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(A <= 4);
+  ph.add_constraint(A == B);
+
+  print_constraints(ph, "--- ph ---");
+
+  ph.bounded_affine_image(A, A+5, B);
+
+  C_Polyhedron kr1(2, EMPTY);
+
+  bool ok = (ph == kr1);
+
+  print_generators(ph, "--- ph.bounded_affine_image(A, A+5, B) ---");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST_F8(test02);
+  NEW_TEST(test03);
+END_MAIN
