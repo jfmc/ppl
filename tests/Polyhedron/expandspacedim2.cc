@@ -24,14 +24,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-
 // Test using constraints for NNC polyhedron.
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
 
   NNC_Polyhedron ph1(2);
   ph1.add_constraint(A - B > 2);
@@ -57,13 +56,17 @@ test1() {
 
   print_constraints(ph1, "*** After ph1.expand_space_dimension(B, 2) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test using generators for NNC polyhedron.
-void
-test2() {
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   NNC_Polyhedron ph1(2, EMPTY);
   ph1.add_generator(point(A));
   ph1.add_generator(closure_point(A + B));
@@ -88,19 +91,12 @@ test2() {
 
   print_generators(ph1, "***  After ph1.expand_space_dimension(A, 2) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+END_MAIN

@@ -24,15 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-Variable E(4);
-
 // Test with a universe polyhedron.
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+
   C_Polyhedron ph1(3);
 
   print_constraints(ph1, "*** ph1 ***");
@@ -45,13 +41,15 @@ test1() {
 
   print_constraints(ph1, "*** After ph1.expand_space_dimension(A, 1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test with an empty polyhedron.
-void
-test2() {
+bool
+test02() {
+  //  Variable A(0);
+  Variable B(1);
+
   C_Polyhedron ph1(3, EMPTY);
 
   print_constraints(ph1, "*** ph1 ***");
@@ -64,13 +62,18 @@ test2() {
 
   print_constraints(ph1, "*** After ph1.expand_space_dimension(B, 1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test trivial expansion.
-void
-test3() {
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+
   C_Polyhedron ph1(2);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A + B <= 2);
@@ -87,13 +90,16 @@ test3() {
 
   print_constraints(ph1, "*** After ph1.expand_space_dimension(A, 0) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test with given generators.
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   C_Polyhedron ph1(2, EMPTY);
   ph1.add_generator(point(A));
   ph1.add_generator(point(A + B));
@@ -114,13 +120,16 @@ test4() {
 
   print_generators(ph1, "***  After ph1.expand_space_dimension(A, 1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test with given constraints.
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   C_Polyhedron ph1(2);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A + B <= 2);
@@ -139,13 +148,17 @@ test5() {
 
   print_constraints(ph1, "*** After ph1.expand_space_dimension(A, 1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test using constraints expanding 2 dimensions.
-void
-test6() {
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
   C_Polyhedron ph1(2);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A + B <= 2);
@@ -166,13 +179,18 @@ test6() {
 
   print_constraints(ph1, "*** After ph1.expand_space_dimension(A, 2) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test using constraints with equality constraint.
-void
-test7() {
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+
   C_Polyhedron ph1(3);
   ph1.add_constraint(A <= 1);
   ph1.add_constraint(C == 1);
@@ -199,13 +217,16 @@ test7() {
 		    "***  After ph1.expand_space_dimension(A, 1);"
 		    " ph1.expand_space_dimension(C, 1) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test as given in [GopanDMDRS04] on page 519.
-void
-test8() {
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   C_Polyhedron ph1(2, EMPTY);
   ph1.add_generator(point(A + 2*B));
   ph1.add_generator(point(A + 3*B));
@@ -230,25 +251,18 @@ test8() {
 
   print_generators(ph1, "***  After ph1.expand_space_dimension(A, 2) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+END_MAIN
