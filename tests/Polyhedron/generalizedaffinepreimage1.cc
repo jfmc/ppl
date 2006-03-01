@@ -22,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -43,12 +43,81 @@ main() TRY {
   known_result.add_constraint(0 <= A);
   known_result.add_constraint(A <= 3);
 
-  int retval = (ph == known_result) ? 0 : 1;
+  bool ok = (ph == known_result);
 
   print_generators(ph, "--- ph after "
 		   "ph.generalized_affine_preimage"
 		   "(B, GREATER_THAN_OR_EQUAL, A+2) ---");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(A <= 4);
+  ph.add_constraint(B <= 5);
+  ph.add_constraint(A <= B);
+
+  print_constraints(ph, "--- ph ---");
+
+  ph.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, A+2, -2);
+
+  C_Polyhedron known_result(2, EMPTY);
+  known_result.add_generator(point());
+  known_result.add_generator(point(4*A));
+  known_result.add_generator(line(B));
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "--- ph after "
+		   "ph.generalized_affine_preimage"
+                   "(B, GREATER_THAN_OR_EQUAL, A+2, -2) ---");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(2*A <= 3);
+  ph.add_constraint(7*A >= 2);
+  ph.add_constraint(3*B >= 1);
+  ph.add_constraint(2*A >= B);
+
+  print_generators(ph, "--- ph ---");
+
+  // A longer way of computing the generalized affine preimage below.
+  C_Polyhedron known_result(ph);
+  known_result.add_space_dimensions_and_embed(1);
+  Variable C(2);
+  known_result.add_constraint(-3*B >= A-C+2);
+  Variables_Set vset;
+  vset.insert(B);
+  known_result.remove_space_dimensions(vset);
+
+  ph.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, A-B+2, -3);
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "--- ph after "
+		   "ph.generalized_affine_preimage"
+		   "(B, LESS_THAN_OR_EQUAL, A-B+2, -3) ---");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST_F8(test03);
+END_MAIN

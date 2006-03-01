@@ -77,7 +77,6 @@ ORIGINAL_TESTS = \
 	foldspacedims1 foldspacedims2 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffinepreimage1 generalizedaffinepreimage2 \
-	generalizedaffinepreimage3 generalizedaffinepreimage4 \
 	generators1 generators2 generators3 generators4 generators5 \
 	generators6 generators7 \
 	geomcovers1 \
@@ -168,8 +167,7 @@ DERIVED_TESTS = \
 	nnc_expandspacedim1 \
 	nnc_foldspacedims1 \
 	nnc_generalizedaffineimage1 \
-	nnc_generalizedaffinepreimage1 nnc_generalizedaffinepreimage2 \
-	nnc_generalizedaffinepreimage3 \
+	nnc_generalizedaffinepreimage1 \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 nnc_generators6 nnc_generators7 \
 	nnc_geomcovers1 \
@@ -312,8 +310,6 @@ generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 
 generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
-generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
-generalizedaffinepreimage4_SOURCES = generalizedaffinepreimage4.cc
 
 generators1_SOURCES = generators1.cc
 generators2_SOURCES = generators2.cc
@@ -628,10 +624,6 @@ nnc_generalizedaffineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 nnc_generalizedaffinepreimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
-nnc_generalizedaffinepreimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
-nnc_generalizedaffinepreimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generators1_SOURCES = generators1.cc
 nnc_generators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
