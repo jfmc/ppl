@@ -76,5 +76,5 @@ test01() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test01);
+  NEW_TEST_F64(test01);
 END_MAIN
