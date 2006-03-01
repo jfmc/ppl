@@ -77,8 +77,7 @@ ORIGINAL_TESTS = \
 	foldspacedims1 foldspacedims2 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffinepreimage1 generalizedaffinepreimage2 \
-	generators1 generators2 generators3 generators4 generators5 \
-	generators6 generators7 \
+	generators1 \
 	geomcovers1 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
 	h79widening6 h79widening7 h79widening8 \
@@ -168,8 +167,7 @@ DERIVED_TESTS = \
 	nnc_foldspacedims1 \
 	nnc_generalizedaffineimage1 \
 	nnc_generalizedaffinepreimage1 \
-	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
-	nnc_generators5 nnc_generators6 nnc_generators7 \
+	nnc_generators1 \
 	nnc_geomcovers1 \
 	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
 	nnc_h79widening6 nnc_h79widening7 nnc_h79widening8 \
@@ -312,12 +310,6 @@ generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
 
 generators1_SOURCES = generators1.cc
-generators2_SOURCES = generators2.cc
-generators3_SOURCES = generators3.cc
-generators4_SOURCES = generators4.cc
-generators5_SOURCES = generators5.cc
-generators6_SOURCES = generators6.cc
-generators7_SOURCES = generators7.cc
 
 geomcovers1_SOURCES = geomcovers1.cc
 
@@ -627,18 +619,6 @@ nnc_generalizedaffinepreimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generators1_SOURCES = generators1.cc
 nnc_generators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_generators2_SOURCES = generators2.cc
-nnc_generators2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_generators3_SOURCES = generators3.cc
-nnc_generators3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_generators4_SOURCES = generators4.cc
-nnc_generators4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_generators5_SOURCES = generators5.cc
-nnc_generators5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_generators6_SOURCES = generators6.cc
-nnc_generators6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_generators7_SOURCES = generators7.cc
-nnc_generators7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_geomcovers1_SOURCES = geomcovers1.cc
 nnc_geomcovers1_CXXFLAGS = $(DERIVED_CXXFLAGS)
