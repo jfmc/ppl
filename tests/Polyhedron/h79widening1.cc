@@ -1,4 +1,4 @@
-/* Test Polyhedron::H79_widening_assign() with empty polyhedra.
+/* Test Polyhedron::H79_widening_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,15 +22,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
 namespace {
 
 bool
-try_H79_widening_assign(C_Polyhedron& ph1, const C_Polyhedron& ph2,
-			// Note intentional call-by-value!
-			C_Polyhedron known_result) {
+aux_test01(C_Polyhedron& ph1, const C_Polyhedron& ph2,
+	   // Note intentional call-by-value!
+	   C_Polyhedron known_result) {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 
@@ -41,12 +38,8 @@ try_H79_widening_assign(C_Polyhedron& ph1, const C_Polyhedron& ph2,
   return ph1 == known_result;
 }
 
-} // namespace
-
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -64,20 +57,198 @@ main() TRY {
   C_Polyhedron ph2_3(ph2_1);
   C_Polyhedron ph2_4(ph2_1);
 
-  if (!try_H79_widening_assign(ph1_1, ph2_1, ph1_1))
-    return 1;
-
+  bool ok = aux_test01(ph1_1, ph2_1, ph1_1)
+    && aux_test01(ph2_3, ph2_4, ph2_3);
 
   // FIXME: this must be reactivated (in some form) when we will
   //        have a decent error policy for H79_widening_assign().
 #if 0
   if (!try_H79_widening_assign(ph2_2, ph1_2, ph1_2))
-    return 1;
+    return false;
 #endif
 
-  if (!try_H79_widening_assign(ph2_3, ph2_4, ph2_3))
-    return 1;
-
-  return 0;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 2);
+  ph1.add_constraint(B >= 0);
+
+  C_Polyhedron ph2(2);
+  ph2.add_constraint(A >= 0);
+  ph2.add_constraint(B >= 0);
+  ph2.add_constraint(A-B >= 2);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  ph1.H79_widening_assign(ph2);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(B >= 0);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** After H79_widening_assign ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs1;
+  gs1.insert(point());
+  gs1.insert(ray(A));
+  gs1.insert(ray(A + B));
+  C_Polyhedron ph1(gs1);
+
+  Generator_System gs2;
+  gs2.insert(point());
+  gs2.insert(ray(A));
+  gs2.insert(ray(A + 2*B));
+  C_Polyhedron ph2(gs2);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+
+  ph2.H79_widening_assign(ph1);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(B >= 0);
+
+  bool ok = (ph2 == known_result);
+
+  print_constraints(ph2, "*** After ph2.H79_widening_assign(ph1) ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  C_Polyhedron ph1;
+  C_Polyhedron ph2(0, EMPTY);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  ph1.H79_widening_assign(ph2);
+
+  C_Polyhedron known_result;
+  known_result = ph1;
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** After ph1.H79_widening_assign(ph2) ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(-A - 2*B >= -6);
+  ph1.add_constraint(B >= 0);
+  ph1.add_constraint(A - 2*B >= 2);
+
+  C_Polyhedron ph2(2);
+  ph2.add_constraint(-A - 2*B >= -10);
+  ph2.add_constraint(B >= 0);
+  ph2.add_constraint(A - 2*B >= 2);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  ph2.H79_widening_assign(ph1);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(A - 2*B >= 2);
+
+  bool ok = (ph2 == known_result);
+
+  print_constraints(ph2, "*** After ph2.H79_widening_assign(ph1) ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(-A + B >= 2);
+  ph1.add_constraint(A >= 0);
+
+  C_Polyhedron ph2(2);
+  ph2.add_constraint(-A + B >= 3);
+  ph2.add_constraint(A - B >= -8);
+  ph2.add_constraint(A >= 1);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  ph1.H79_widening_assign(ph2);
+
+  bool ok = ph1.is_universe();
+
+  print_constraints(ph1, "*** After H79_widening_assign ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(B >= 0);
+  // The addition of the following generator shows a bug
+  // that was affecting PPL version 0.6.1 (now corrected).
+  ph1.add_generator(line(A));
+
+  C_Polyhedron ph2(2);
+  ph2.add_constraint(A >= 0);
+  ph2.add_constraint(B >= 0);
+
+  // Avoid computing the constraints of ph1.
+  C_Polyhedron ph1_copy = ph1;
+  print_constraints(ph1_copy, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  ph1.H79_widening_assign(ph2);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(B >= 0);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** After H79_widening_assign ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+END_MAIN
