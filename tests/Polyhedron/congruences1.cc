@@ -22,13 +22,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-int
-main() TRY {
-  set_handlers();
-
+bool test01() {
   Variable x(0);
   Variable y(1);
 
@@ -43,10 +39,15 @@ main() TRY {
   C_Polyhedron known_result(2);
   known_result.add_constraint(y == 3);
 
-  int retval = (known_result == ph) ? 0 : 1;
+  bool ok = (ph == known_result);
 
   print_constraints(ph, "*** After add_congruences ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+NEW_TEST(test01);
+END_MAIN
