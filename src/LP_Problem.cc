@@ -39,6 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <deque>
 #include <set>
 #include <algorithm>
+
 #ifndef PPL_NOISY_SIMPLEX
 #define PPL_NOISY_SIMPLEX 0
 #endif
@@ -47,8 +48,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iostream>
 #endif
 
-#ifndef PPL_SIMPLEX_ENABLE_STEEPEST_EDGE
-#define PPL_SIMPLEX_ENABLE_STEEPEST_EDGE 1
+#ifndef PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+#define PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT 0
 #endif
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -506,7 +507,53 @@ PPL::LP_Problem::process_pending_constraints() {
   assert(OK());
   return true;
 }
+#if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+PPL::dimension_type
+PPL::LP_Problem::steepest_edge() const {
+  const dimension_type tableau_num_rows = tableau.num_rows();
+  assert(tableau_num_rows == base.size());
+  double challenger_num = 0;
+  double challenger_den = 0;
+  double challenger_value = 0;
+  double current_value = 0;
+  dimension_type entering_index = 0;
+  const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
+  for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
+    const Coefficient& cost_j = working_cost[j];
+    if (sgn(cost_j) == cost_sign) {
+      // We can't compute the (exact) square root of abs(\Delta x_j).
+      // The workaround is to compute the square of `cost[j]'.
+      challenger_num = fabs(raw_value(cost_j).get_d());
+      // Due to our integer implementation, the `1' term in the denominator
+      // of the original formula has to be replaced by `squared_lcm_basis'.
+      challenger_den = 1;
+      for (dimension_type i = tableau_num_rows; i-- > 0; ) {
+	const Coefficient& tableau_ij = tableau[i][j];
+	if (tableau_ij != 0) {
+	  mpq_class real_coeff(raw_value(tableau[i][j]).get_d(),
+			       raw_value(tableau[i][base[i]]).get_d());
+	  double float_tableau_value = real_coeff.get_d();
+	  challenger_den += float_tableau_value * float_tableau_value;
+	}
+      }
+      // Initialization during the first loop.
+      if (entering_index == 0) {
+	current_value = challenger_num / sqrt(challenger_den);
+	entering_index = j;
+ 	continue;
+      }
+      challenger_value = challenger_num / sqrt(challenger_den);
+      // Update the values, if the challeger wins.
+      if (challenger_value > current_value) {
+	std::swap(challenger_value, current_value);
+	entering_index = j;
+      }
+    }
+  }
+  return entering_index;
+}
 
+#else
 PPL::dimension_type
 PPL::LP_Problem::steepest_edge() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
@@ -577,6 +624,7 @@ PPL::LP_Problem::steepest_edge() const {
   }
   return entering_index;
 }
+#endif
 
 // See pag. 47 of Papadimitriou.
 
@@ -704,18 +752,79 @@ PPL::LP_Problem
 
 // See pag 49 of Papadimitriou.
 
+#if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
+bool
+PPL::LP_Problem::compute_simplex() {
+  const dimension_type allowed_non_increasing_loops = 200;
+  dimension_type non_increased_times = 0;
+  bool call_textbook = false;
+  Coefficient cost_sgn_coeff = working_cost[working_cost.size()-1];
+  Coefficient current_num = working_cost[0]*sgn(cost_sgn_coeff);
+  Coefficient current_den = abs(cost_sgn_coeff);
+  assert(tableau.num_columns() == working_cost.size());
+  const dimension_type tableau_num_rows = tableau.num_rows();
+  while (true) {
+    // Choose the index of the variable entering the base, if any.
+    const dimension_type entering_var_index = call_textbook ?
+      get_entering_var_index() : steepest_edge();
+
+    // If no entering index was computed, the problem is solved.
+    if (entering_var_index == 0)
+      return true;
+
+    // Choose the index of the row exiting the base.
+    const dimension_type exiting_base_index
+      = get_exiting_base_index(entering_var_index);
+    // If no exiting index was computed, the problem is unbounded.
+    if (exiting_base_index == tableau_num_rows)
+      return false;
+
+    // We have not reached the optimality or unbounded condition:
+    // compute the new base and the corresponding vertex of the
+    // feasible region.
+    pivot(entering_var_index, exiting_base_index);
+
+    // Now begins the objective function's value check to choose between
+    // the  `textbook' and the float `steepest-edge` technique.
+    cost_sgn_coeff = working_cost[working_cost.size()-1];
+    Coefficient challenger = working_cost[0] * sgn(cost_sgn_coeff);
+    Coefficient current = current_num * abs(cost_sgn_coeff);
+    //  If the following condition fails, probably there's a bug.
+    assert(challenger >= current);
+      // If the value of the objective function doesn't improve,
+      // keep track of that.
+    if (challenger == current) {
+      ++non_increased_times;
+      // In the following case we will proceed using the `textbook'
+      // technique, until the objective function is not improved.
+      if (non_increased_times > allowed_non_increasing_loops)
+	call_textbook = true;
+    }
+    // The objective function has an improvement, reset `non_increased_times'.
+    else {
+      non_increased_times = 0;
+      if (call_textbook)
+	call_textbook = false;
+      current_num = working_cost[0]*sgn(working_cost[working_cost.size()-1]);
+      current_den = abs(working_cost[working_cost.size()-1]);
+    }
+#if PPL_NOISY_SIMPLEX
+    ++num_iterations;
+    if (num_iterations % 200 == 0)
+      std::cout << "Primal Simplex: iteration "
+		<< num_iterations << "." << std::endl;
+#endif
+  }
+}
+
+#else
 bool
 PPL::LP_Problem::compute_simplex() {
   assert(tableau.num_columns() == working_cost.size());
   const dimension_type tableau_num_rows = tableau.num_rows();
   while (true) {
     // Choose the index of the variable entering the base, if any.
-    const dimension_type entering_var_index
-#if PPL_SIMPLEX_ENABLE_STEEPEST_EDGE
-      = steepest_edge();
-#else
-    = get_entering_var_index();
-#endif
+    const dimension_type entering_var_index = steepest_edge();
     // If no entering index was computed, the problem is solved.
     if (entering_var_index == 0)
       return true;
@@ -735,13 +844,13 @@ PPL::LP_Problem::compute_simplex() {
     ++num_iterations;
     if (num_iterations % 200 == 0)
       std::cout << "Primal Simplex: iteration "
-		<< num_iterations << "." << std::endl;
+                << num_iterations << "." << std::endl;
 #endif
   }
 }
+#endif
 
 // See pag 28  Papadimitriou.
-
 void
 PPL::LP_Problem::prepare_first_phase() {
   // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
