@@ -25,10 +25,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+// An unbounded NNC polyhedron in 4D but bounded in 2D
+// with strict inequality and closure points at the lower bound.
 bool
 test01() {
-  // An unbounded NNC polyhedron in 4D but bounded in 2D
-  // with strict inequality and closure points at the lower bound.
   Variable x(1);
   Variable y(2);
   Variable z(3);
@@ -64,13 +64,13 @@ test01() {
   known_nbox.print(nout, "*** test9 known_nbox ***");
   known_pbox.print(nout, "*** test9 known_pbox ***");
 
-  return (nbox == known_nbox && pbox == known_pbox && nbox <= pbox);
+  return nbox == known_nbox && pbox == known_pbox && nbox <= pbox;
 }
 
+// A bounded NNC polyhedron with strict inequalities
+// causing upper and lower bounds of the box to be open.
 bool
 test02() {
-  // A bounded NNC polyhedron with strict inequalities
-  // causing upper and lower bounds of the box to be open.
   Variable x(0);
   Variable y(1);
 
@@ -102,12 +102,12 @@ test02() {
   known_nbox.print(nout, "*** test02 known_nbox ***");
   known_pbox.print(nout, "*** test02 known_pbox ***");
 
-  return (nbox == known_nbox && pbox == known_pbox && nbox <= pbox);
+  return nbox == known_nbox && pbox == known_pbox && nbox <= pbox;
 }
 
+// An empty polyhedron in 2D defined using strict constraints.
 bool
 test03() {
-  // An empty polyhedron in 2D defined using strict constraints.
   Variable x(0);
   Variable y(1);
   NNC_Polyhedron ph(2);
@@ -130,12 +130,12 @@ test03() {
   print_generators(known_pph, "*** test03 known_pph ***");
   print_generators(known_nph, "*** test03 known_nph ***");
 
-  return (ph == known_ph && ph == known_nph && ph == known_ph);
+  return ph == known_ph && ph == known_nph && ph == known_ph;
 }
 
+// An unbounded box in 4D but bounded in 2D with strict inequalities.
 bool
 test04() {
-  // An unbounded box in 4D but bounded in 2D with strict inequalities.
   Bounding_Box box(4);
   box.raise_lower_bound(1, false, -2, 3);
   box.lower_upper_bound(1, true, 4, 1);
@@ -159,13 +159,13 @@ test04() {
   print_generators(ph, "*** test04 ph ***");
   print_generators(known_ph, "*** test04 known_ph ***");
 
-  return (ph == known_ph);
+  return ph == known_ph;
 }
 
+// A bounded NNC polyhedron with strict inequalities
+// causing upper and lower bounds of the box to be open.
 bool
 test05() {
-  // A bounded NNC polyhedron with strict inequalities
-  // causing upper and lower bounds of the box to be open.
   Bounding_Box box(4);
   box.raise_lower_bound(1, true, -2, 3);
   box.lower_upper_bound(1, false, 4, 1);
@@ -186,12 +186,12 @@ test05() {
   print_generators(ph, "*** test05 ph ***");
   print_generators(known_ph, "*** test05 known_ph ***");
 
-  return (ph == known_ph);
+  return ph == known_ph;
 }
 
+// An empty box in 2D.
 bool
 test06() {
-  // An empty box in 2D.
   Bounding_Box box(2);
   box.set_empty();
 
@@ -203,7 +203,7 @@ test06() {
 
   print_constraints(known_ph, "*** test06 known_ph ***");
 
-  return (ph == known_ph);
+  return ph == known_ph;
 }
 
 } // namespace

@@ -40,7 +40,7 @@ test01() {
 
   known_box.print(nout, "*** known_box ***");
 
-  return (nbox == known_box);
+  return nbox == known_box;
 }
 
 } // namespace
