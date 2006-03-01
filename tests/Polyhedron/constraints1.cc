@@ -1,6 +1,4 @@
-/* Test Polyhedron::constraints(): we compute the system of
-   constraints of a polyhedron that is defined by a system of
-   constraints that contains only a trivially false constraint.
+/* Test Polyhedron::constraints().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable A(0);
 
   C_Polyhedron ph1(2);
@@ -40,10 +38,128 @@ main() TRY {
   Constraint_System cs = ph1.constraints();
   C_Polyhedron ph2(cs);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
+  bool ok = (ph2 == known_result);
 
   print_constraints(cs, "*** cs ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  C_Polyhedron ph1(3, EMPTY);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  C_Polyhedron known_result = ph1;
+
+  Constraint_System cs = ph1.constraints();
+  C_Polyhedron ph2(cs);
+
+  bool ok = (ph2 == known_result);
+
+  print_constraints(cs, "*** cs ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  C_Polyhedron ph1(0);
+  ph1.add_constraint(Linear_Expression::zero() == 1);
+  C_Polyhedron known_result(ph1);
+
+  const Constraint_System cs = ph1.constraints();
+
+  C_Polyhedron ph2(cs);
+
+  bool ok = (ph2 == known_result);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.generators();
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(B >= 0);
+
+  C_Polyhedron known_result(ph1);
+
+  Constraint_System cs = ph1.constraints();
+  C_Polyhedron ph2(cs);
+
+  bool ok = (ph2 == known_result);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+  print_constraints(cs, "*** cs ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2, EMPTY);
+  ph1.add_generator(point());
+  ph1.constraints();
+  ph1.add_generator(ray(A));
+  ph1.add_generator(ray(B));
+
+  C_Polyhedron known_result(ph1);
+
+  Constraint_System cs = ph1.constraints();
+  C_Polyhedron ph2(cs);
+
+  bool ok = (ph2 == known_result);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+  print_constraints(cs, "*** cs ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint_and_minimize(A >= 0);
+  ph.add_constraint(B >= 0);
+
+  print_constraints(ph, "*** ph ***");
+
+  Constraint_System cs = ph.constraints();
+  cs.insert(A >= B);
+
+  print_constraints(cs, "*** cs ***");
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(A >= B);
+
+  return C_Polyhedron(cs) == known_result;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+END_MAIN
