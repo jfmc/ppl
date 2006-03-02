@@ -212,7 +212,6 @@ if test x"$enable_more_assertions" = xyes
 then
   enable_assertions=yes
   AC_DEFINE(EXTRA_ROW_DEBUG, 1, [Enable more assertions when defined.])
-  debug_flag="-DEXTRA_ROW_DEBUG=1"
 fi
 
 if test x"$enable_assertions" = xno
