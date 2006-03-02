@@ -76,7 +76,7 @@ griddifference1 \
 intersection1 \
 isempty1 \
 isuniverse1 \
-join1 join1_16 join2 join3 \
+join1 join2 \
 limitedextrapolation1 \
 mapspacedims1 \
 maxmin1 \
@@ -179,9 +179,7 @@ isempty1_SOURCES = isempty1.cc
 isuniverse1_SOURCES = isuniverse1.cc
 
 join1_SOURCES = join1.cc
-join1_16_SOURCES = join1_16.cc
 join2_SOURCES = join2.cc
-join3_SOURCES = join3.cc
 
 limitedextrapolation1_SOURCES = limitedextrapolation1.cc
 
@@ -229,7 +227,6 @@ $(XFAIL_WITH_INT32)
 
 XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
-join1_16 \
 timeelapse2
 
 if USE_INT64
