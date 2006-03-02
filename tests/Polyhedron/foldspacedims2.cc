@@ -224,7 +224,7 @@ BEGIN_MAIN
   NEW_TEST(test01);
   NEW_TEST(test02);
   NEW_TEST_F8(test03);
-  NEW_TEST_F8(test04);
+  NEW_TEST_F8A(test04);
   NEW_TEST(test05);
   NEW_TEST(test06);
 END_MAIN
