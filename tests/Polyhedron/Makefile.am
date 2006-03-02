@@ -822,23 +822,6 @@ $(XFAIL_WITH_INT32)
 
 XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
-NNCminimize2 \
-NNCminimize4 \
-bgp99extrapolation2 \
-bhrz03widening14 \
-bhrz03widening15 \
-bhrz03widening18 \
-bhz03widening1 \
-bhz03widening4 \
-bhz03widening6 \
-boundedaffineimage2 \
-boundedaffinepreimage2 \
-boundedbhrz03extrapolation1 \
-foldspacedims1 \
-foldspacedims2 \
-generalizedaffineimage3 \
-generalizedaffineimage7 \
-generalizedaffinepreimage3 \
 mapspacedims2 \
 max_min2 \
 membytes1 \
@@ -847,12 +830,6 @@ polydifference9 \
 randphull1 \
 removespacedims2 \
 smm1 \
-nnc_bgp99extrapolation2 \
-nnc_boundedaffineimage2 \
-nnc_boundedaffinepreimage2 \
-nnc_boundedbhrz03extrapolation1 \
-nnc_generalizedaffineimage3 \
-nnc_generalizedaffinepreimage3 \
 nnc_max_min2 \
 nnc_membytes1 \
 nnc_onepoint \
@@ -862,15 +839,7 @@ nnc_smm1
 
 XFAIL_WITH_INT8_A = \
 $(XFAIL_WITH_INT8) \
-NNCminimize1 \
-boundedh79extrapolation1 \
-boundingbox4 \
-intersection1 \
-intersection2 \
 membytes2 \
-nnc_boundedh79extrapolation1 \
-nnc_intersection1 \
-nnc_intersection2 \
 nnc_membytes2 \
 nnc_removespacedims2
 
