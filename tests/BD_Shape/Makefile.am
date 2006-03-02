@@ -31,7 +31,8 @@ $(TEST_CPPFLAGS) \
 -I$(top_srcdir)/src \
 -I$(top_srcdir)/tests \
 -I$(top_srcdir)/utils \
-@extra_includes@
+@extra_includes@ \
+@debug_flag@
 
 LDADD = \
 $(top_builddir)/utils/libppl_utils.a \

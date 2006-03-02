@@ -31,7 +31,8 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/Watchdog/src \
 -I$(top_srcdir)/utils \
 -I$(top_srcdir)/tests \
-@extra_includes@
+@extra_includes@ \
+@debug_flag@
 
 LDADD = \
 $(top_builddir)/utils/libppl_utils.a \
