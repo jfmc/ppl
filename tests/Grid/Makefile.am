@@ -61,6 +61,7 @@ congruences1 \
 congruencesystem1 \
 contains1 \
 copyconstruct1 \
+coveringbox1 coveringbox2 \
 discrete1 \
 disjoint1 \
 equals1 \
@@ -70,10 +71,9 @@ generalizedaffineimage1 generalizedaffineimage2 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generator1 \
 generators1 \
-coveringbox1 coveringbox2 \
-grid1 grid1_gmp grid1_64 grid1_16 grid2 grid2_16 grid3 \
+grid1 grid2 grid3 \
 griddifference1 \
-intersection1 intersection2 \
+intersection1 \
 isempty1 \
 isuniverse1 \
 join1 join1_16 join2 join3 \
@@ -167,17 +167,12 @@ coveringbox1_SOURCES = coveringbox1.cc
 coveringbox2_SOURCES = coveringbox2.cc
 
 grid1_SOURCES = grid1.cc
-grid1_gmp_SOURCES = grid1_gmp.cc
-grid1_16_SOURCES = grid1_16.cc
-grid1_64_SOURCES = grid1_64.cc
 grid2_SOURCES = grid2.cc
-grid2_16_SOURCES = grid2_16.cc
 grid3_SOURCES = grid3.cc
 
 griddifference1_SOURCES = griddifference1.cc
 
 intersection1_SOURCES = intersection1.cc
-intersection2_SOURCES = intersection2.cc
 
 isempty1_SOURCES = isempty1.cc
 
@@ -224,20 +219,16 @@ writecongruencesystem_SOURCES = writecongruencesystem.cc
 XFAIL_ALWAYS =
 
 XFAIL_WITH_INT64 = \
-$(XFAIL_ALWAYS) \
-grid1_gmp
+$(XFAIL_ALWAYS)
 
 XFAIL_WITH_INT32 = \
-$(XFAIL_WITH_INT64) \
-grid1_64
+$(XFAIL_WITH_INT64)
 
 XFAIL_WITH_INT16 = \
 $(XFAIL_WITH_INT32)
 
 XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
-grid1_16 \
-grid2_16 \
 join1_16 \
 timeelapse2
 

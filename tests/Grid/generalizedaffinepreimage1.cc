@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Simplest expression.
-
 bool
 test01() {
   Variable A(0);
@@ -66,6 +65,7 @@ test01() {
   return ok;
 }
 
+// Simple expression, including positive modulus.
 bool
 test02() {
   Variable A(0);
@@ -107,7 +107,6 @@ test02() {
 }
 
 // Simple expression, including negative modulus.
-
 bool
 test03() {
   Variable A(0);
@@ -151,7 +150,6 @@ test03() {
 }
 
 // Simple expression, with denominator.
-
 bool
 test04() {
   Variable A(0);
@@ -195,7 +193,6 @@ test04() {
 }
 
 // Negative denominator.
-
 bool
 test05() {
   Variable A(0);
@@ -239,7 +236,6 @@ test05() {
 }
 
 // Expression of many variables.
-
 bool
 test06() {
   Variable A(0);
@@ -270,7 +266,6 @@ test06() {
 }
 
 // Equality expression.
-
 bool
 test07() {
   Variable A(0);
@@ -300,7 +295,6 @@ test07() {
 }
 
 // Empty grid.
-
 bool
 test08() {
   Variable A(0);
@@ -324,7 +318,6 @@ test08() {
 }
 
 // Empty with congruences.
-
 bool
 test09() {
   Variable A(0);
@@ -348,7 +341,6 @@ test09() {
 }
 
 // Universe.
-
 bool
 test10() {
   Variable A(0);
@@ -370,7 +362,6 @@ test10() {
 }
 
 // Zero denominator.
-
 bool
 test11() {
   Variable A(0);
@@ -394,7 +385,6 @@ test11() {
 }
 
 // Expression of a greater space dimension than the grid.
-
 bool
 test12() {
   Variable A(0);
@@ -419,7 +409,6 @@ test12() {
 }
 
 // Variable of a greater space dimension than the grid.
-
 bool
 test13() {
   Variable A(0);
@@ -445,7 +434,6 @@ test13() {
 
 // Expression with a 0 modulus, where the variable occurs in
 // the expression.
-
 bool
 test14() {
   Variable A(0);
@@ -476,7 +464,6 @@ test14() {
 
 // Expression with a negative modulus, where the variable occurs in
 // the expression.
-
 bool
 test15() {
   Variable A(0);

@@ -22,19 +22,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-
 // Empty grid.
-
-void
-test1() {
+bool
+test01() {
   Grid gr1(7, EMPTY);
 
   Grid known_gr = gr1;
@@ -43,22 +35,16 @@ test1() {
 
   Grid gr2(gs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_generators(gr2, "*** gr2 ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Universe grid.
-
-void
-test2() {
+bool
+test02() {
   Grid gr1(7);
 
   Grid known_gr = gr1;
@@ -67,22 +53,16 @@ test2() {
 
   Grid gr2(gs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_generators(gr2, "*** gr2 ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Zero dimension empty grid.
-
-void
-test3() {
+bool
+test03() {
   Grid gr1(0, EMPTY);
 
   Grid known_gr = gr1;
@@ -91,22 +71,16 @@ test3() {
 
   Grid gr2(gs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_generators(gr2, "*** gr2 ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Zero dimension universe grid.
-
-void
-test4() {
+bool
+test04() {
   Grid gr1(0);
 
   Grid known_gr = gr1;
@@ -115,22 +89,20 @@ test4() {
 
   Grid gr2(gs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_generators(gr2, "*** gr2 ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Skew grid in 3D.
+bool
+test05() {
+  Variable A(0);
+  Variable C(2);
+  Variable B(1);
 
-void
-test5() {
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(3*B));
   gr1.add_generator(grid_point(5*A + 2*B));
@@ -143,22 +115,19 @@ test5() {
 
   Grid gr2(gs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_generators(gr2, "*** gr2 ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // 3D rectilinear grid defined by congruences.
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test6() {
   Grid gr1(3);
   gr1.add_congruence((A %= 0) / 10);
   gr1.add_congruence((B %= 10) / 0);
@@ -169,23 +138,17 @@ test6() {
 
   Grid gr2(gs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_generators(gr2, "*** gr2 ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Get a reference to the empty generators, add a point, use the
 // reference to create a new grid.
-
-void
-test7() {
+bool
+test07() {
   Grid gr1(3, EMPTY);
 
   const Grid_Generator_System& gs = gr1.generators();
@@ -198,23 +161,17 @@ test7() {
 
   Grid gr2(gs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_generators(gr2, "*** gr2 ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // In zero dimensions get a reference to the universe generators,
 // empty the grid, and then use the reference to create a new grid.
-
-void
-test8() {
+bool
+test08() {
   Grid gr1(0);
 
   const Grid_Generator_System& gs = gr1.generators();
@@ -227,22 +184,18 @@ test8() {
 
   Grid gr2(gs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_generators(gr2, "*** gr2 ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Empty grid, where updating the generators finds the grid empty.
+bool
+test09() {
+  Variable A(0);
 
-void
-test9() {
   Grid gr1(7);
   gr1.add_congruence(A == 1);
   gr1.add_congruence(A == 0);
@@ -253,23 +206,19 @@ test9() {
 
   Grid gr2(gs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_generators(gr2, "*** gr2 ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Skew grid in 3D defined with generators with a non-integral parameter.
-
-void
+bool
 test10() {
-  nout << "test10:" << endl;
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(3*B, 2));
@@ -283,23 +232,19 @@ test10() {
 
   Grid gr2(gs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_generators(gr2, "*** gr2 ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Grid defined with an integral point but non-integral parameter.
-
-void
+bool
 test11() {
-  nout << "test11:" << endl;
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(3*B));
@@ -313,23 +258,19 @@ test11() {
 
   Grid gr2(gs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_generators(gr2, "*** gr2 ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Grid defined with an integral point and parameter.
-
-void
+bool
 test12() {
-  nout << "test12:" << endl;
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(3*B));
@@ -343,36 +284,26 @@ test12() {
 
   Grid gr2(gs);
 
-  if (known_gr == gr2)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Reproduced grid should equal known grid." << endl
-       << "grid:" << endl << gr2 << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_generators(gr2, "*** gr2 ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+END_MAIN

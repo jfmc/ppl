@@ -22,225 +22,188 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-
 // Point.
+static bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-static void
-test1() {
   Grid_Generator a(grid_point(A + 2*B + 3*C));
-  if (find_variation(a))
-    exit(1);
 
   Grid_Generator b(grid_point(3*C + A + 2*B));
-  if (find_variation(b))
-    exit(1);
 
-  if (a == b)
-    return;
+  bool ok = (a == b);
 
-  nout << "Grid_Generator a should equal Grid_Generator b." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
 }
 
 // Point with divisor.
+static bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-static void
-test2() {
   Grid_Generator a(grid_point(A + 2*B + 3*C, 5));
-  if (find_variation(a))
-    exit(1);
 
   Grid_Generator b(grid_point(15*C + 5*A + 10*B, 25));
-  if (find_variation(b))
-    exit(1);
 
-  if (a == b)
-    return;
+  bool ok = (a == b);
 
-  nout << "Grid_Generator a should equal Grid_Generator b." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
 }
 
 // Line.
+static bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-static void
-test3() {
   Grid_Generator a(grid_line(A + 2*B + 3*C));
-  if (find_variation(a))
-    exit(1);
 
   Grid_Generator b(grid_line(15*C + 5*A + 10*B));
-  if (find_variation(b))
-    exit(1);
 
-  if (a == b)
-    return;
+  bool ok = (a == b);
 
-  nout << "Grid_Generator a should equal Grid_Generator b." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
 }
 
 // Parameter.
+static bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-static void
-test4() {
   Grid_Generator a(parameter(A + 2*B + 3*C));
-  if (find_variation(a))
-    exit(1);
 
   Grid_Generator b(parameter(2*B + 2*A - A + 3*C));
-  if (find_variation(b))
-    exit(1);
 
-  if (a == b)
-    return;
+  bool ok = (a == b);
 
-  nout << "Grid_Generator a should equal Grid_Generator b." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
 }
 
 // Parameter with divisor.
+static bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-static void
-test5() {
   Grid_Generator a(parameter(A + 2*B + 3*C, 4));
-  if (find_variation(a))
-    exit(1);
 
   Grid_Generator b(parameter(6*B + 3*A + 9*C, 12));
-  if (find_variation(b))
-    exit(1);
 
-  if (a == b)
-    return;
+  bool ok = (a == b);
 
-  nout << "Grid_Generator a should equal Grid_Generator b." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
 }
 
 // Negative first coefficient.
+static bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-static void
-test6() {
   Grid_Generator a(grid_point(- A + 2*B + 3*C, 4));
-  if (find_variation(a))
-    exit(1);
 
   Grid_Generator b(grid_point(6*B - 3*A + 9*C, 12));
-  if (find_variation(b))
-    exit(1);
 
-  if (a == b)
-    return;
+  bool ok = (a == b);
 
-  nout << "Grid_Generator a should equal Grid_Generator b." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
 }
 
 // Construction from Generator.
+static bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-static void
-test7() {
   Grid_Generator a(grid_point(- A + 2*B + 3*C, 4));
-  if (find_variation(a))
-    exit(1);
 
   Grid_Generator b(grid_point(6*B - 3*A + 9*C, 12));
-  if (find_variation(b))
-    exit(1);
 
-  if (a == b)
-    return;
+  bool ok = (a == b);
 
-  nout << "Grid_Generator a should equal Grid_Generator b." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
 }
 
 // Construction from reference to Generator.
+static bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-static void
-test8() {
   Grid_Generator g = grid_point(- A + 2*B + 3*C, 4);
   Grid_Generator& g_ref = g;
 
   Grid_Generator a(g_ref);
-  if (find_variation(a))
-    exit(1);
 
   Grid_Generator b(grid_point(6*B - 3*A + 9*C, 12));
-  if (find_variation(b))
-    exit(1);
 
-  if (a == b)
-    return;
+  bool ok = (a == b);
 
-  nout << "Grid_Generator a should equal Grid_Generator b." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
 }
 
 // Create from empty linear expression.
-
-static void
-test9() {
+static bool
+test09() {
   Linear_Expression le;
   Grid_Generator a(grid_point(le));
-  if (find_variation(a))
-    exit(1);
 
   Grid_Generator b(grid_point(le));
-  if (find_variation(b))
-    exit(1);
 
-  if (a == b)
-    return;
+  bool ok = (a == b);
 
-  nout << "Grid_Generators a and b should be equal." << endl
-       << "a:" << endl << a << endl
-       << "b:" << endl << b << endl;
-  exit(1);
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
 }
 
 } // namespace
-
-int
-main() TRY {
-  set_handlers();
-
-  nout << "generator1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+END_MAIN

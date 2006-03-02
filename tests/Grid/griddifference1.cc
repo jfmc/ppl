@@ -22,78 +22,61 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-
 // Simple grids.
+bool
+test01() {
+  Variable A(0);
 
-void
-test1() {
   Grid gr1(1);
   gr1.add_congruence(A %= 0);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(1);
   gr2.add_congruence((A %= 0) / 2);
 
   gr1.grid_difference_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(1, EMPTY);
   known_gr.add_generator(grid_point(A));
   known_gr.add_generator(grid_point(3*A));
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Both universe.
-
-void
-test2() {
+bool
+test02() {
   Grid gr1;
+  print_congruences(gr1, "*** gr1 ***");
   Grid gr2;
 
   gr1.difference_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(0, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // First contained in second.
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test3() {
   Grid gr1(2);
   gr1.add_congruence((A - B %= 0) / 3);
   gr1.add_congruence((A %= 0) / 2);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
@@ -101,30 +84,25 @@ test3() {
 
   gr1.grid_difference_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(2, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Second contains single equality.
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test4() {
   Grid gr1(2);
   gr1.add_congruence((A - B %= 0) / 3);
   gr1.add_congruence((A %= 0) / 2);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A == 5);
@@ -133,26 +111,18 @@ test4() {
 
   gr1.grid_difference_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
+  bool ok = (gr1 == known_gr);
 
-  if (gr1 == known_gr)
-    return;
+  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // First empty.
-
-void
-test5() {
-  nout << "test5:" << endl;
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
 
   Grid gr1(2);
   gr1.add_congruence(A + 2*B %= 0);
@@ -163,57 +133,48 @@ test5() {
 
   gr1.difference_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
+  bool ok = (gr1 == known_gr);
 
-  if (gr1 == known_gr)
-    return;
+  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Second empty.
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test6() {
   Grid gr1(2, EMPTY);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A + 2*B %= 0);
 
   gr1.grid_difference_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(2, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // More complex example, from generators.
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test7() {
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point());
   gr1.add_generator(grid_point(A - 2*C));
   gr1.add_generator(grid_point(3*B));
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
   gr2.add_generator(grid_point(A));
@@ -223,62 +184,48 @@ test7() {
 
   gr1.grid_difference_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(3);
   known_gr.add_congruence(2*A + C == 0);
   known_gr.add_congruence((B %= 0) / 3);
   known_gr.add_congruence((A %= 0) / 2);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Zero dimension grids.
-
-void
-test8() {
+bool
+test08() {
   Grid gr1(0);
 
   Grid gr2(0);
 
   gr1.grid_difference_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(0, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // The smallest resulting grid is the first grid, even though the
 // first grid has more points than the second.
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test9() {
   Grid gr1(2, EMPTY);
   gr1.add_generator(grid_point());
   gr1.add_generator(grid_line(A));
   gr1.add_generator(grid_point(B));
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence((B %= 0) / 3);
@@ -287,29 +234,25 @@ test9() {
 
   gr1.grid_difference_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
+  bool ok = (gr1 == known_gr);
 
-  if (gr1 == known_gr)
-    return;
+  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Simpler example where the resulting grid contains points.
 
-void
+bool
 test10() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr1(2, EMPTY);
   gr1.add_generator(grid_point());
   gr1.add_generator(grid_point(A));
   gr1.add_generator(grid_point(B));
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence((A - B %= 0) / 2);
@@ -321,30 +264,26 @@ test10() {
   known_gr.add_congruence((A - B %= 1) / 2);
   known_gr.add_congruence(A %= 0);
 
-  if (find_variation(gr1))
-    exit(1);
+  bool ok = (gr1 == known_gr);
 
-  if (gr1 == known_gr)
-    return;
+  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Where the 2-complements of more than one congruence are added to
 // the result.
-
-void
+bool
 test11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3);
   gr1.add_congruence((A %= 0) / 2);
   gr1.add_congruence(B == 0);
   gr1.add_congruence(C == 0);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(3);
   gr2.add_congruence((A + C %= 0) / 4);
@@ -357,25 +296,20 @@ test11() {
   known_gr.add_congruence(B == 0);
   known_gr.add_congruence(C == 0);
 
-  if (find_variation(gr1))
-    exit(1);
+  bool ok = (gr1 == known_gr);
 
-  if (gr1 == known_gr)
-    return;
+  print_congruences(gr1, "*** gr1.grid_difference_assign(gr2) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Space dimension exception.
-
-void
+bool
 test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid_Generator_System gs;
   gs.insert(grid_point(B + 0*C));
 
@@ -388,33 +322,28 @@ test12() {
 
   try {
     gr1.difference_assign(gr2);
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (const std::invalid_argument& e) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 } // namespace
-
-int
-main() TRY {
-  set_handlers();
-
-  nout << "griddifference1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+END_MAIN

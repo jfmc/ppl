@@ -28,7 +28,6 @@ namespace {
 // generalizedaffineimage1.cc.
 
 // Simplest expression.
-
 bool
 test01() {
   Variable A(0);
@@ -55,7 +54,6 @@ test01() {
 }
 
 // Simplest expression, with denominator.
-
 bool
 test02() {
   Variable A(0);
@@ -83,7 +81,6 @@ test02() {
 }
 
 // Simple expression.
-
 bool
 test03() {
   Variable A(0);
@@ -111,7 +108,6 @@ test03() {
 }
 
 // Simple expression, with denominator.
-
 bool
 test04() {
   Variable A(0);
@@ -139,7 +135,6 @@ test04() {
 }
 
 // Simple expression, with denominator and modulus.
-
 bool
 test05() {
   Variable A(0);
@@ -167,7 +162,6 @@ test05() {
 }
 
 // Simple expression, with denominator and modulus.
-
 bool
 test06() {
   Variable A(0);
@@ -195,7 +189,6 @@ test06() {
 }
 
 // Negative denominator.
-
 bool
 test07() {
   Variable A(0);
@@ -223,7 +216,6 @@ test07() {
 }
 
 // Negative modulus.
-
 bool
 test08() {
   Variable A(0);
@@ -251,7 +243,6 @@ test08() {
 }
 
 // Expression of many variables.
-
 bool
 test09() {
   Variable A(0);
@@ -282,7 +273,6 @@ test09() {
 }
 
 // Equality expression.
-
 bool
 test10() {
   Variable A(0);
@@ -312,7 +302,6 @@ test10() {
 }
 
 // Empty grid.
-
 bool
 test11() {
   Variable A(0);
@@ -336,7 +325,6 @@ test11() {
 }
 
 // Empty with congruences.
-
 bool
 test12() {
   Variable A(0);
@@ -360,7 +348,6 @@ test12() {
 }
 
 // Universe.
-
 bool
 test13() {
   Variable A(0);
@@ -382,7 +369,6 @@ test13() {
 }
 
 // Expressions both constants.
-
 bool
 test14() {
   Variable A(0);
@@ -410,7 +396,6 @@ test14() {
 }
 
 // Left hand side constant.
-
 bool
 test15() {
   Variable A(0);
@@ -437,7 +422,6 @@ test15() {
 }
 
 // Expressions with unique variables.
-
 bool
 test16() {
   Variable A(0);
@@ -467,7 +451,6 @@ test16() {
 }
 
 // Simple expressions having common variables.
-
 bool
 test17() {
   Variable A(0);
@@ -491,7 +474,6 @@ test17() {
 }
 
 // Expressions having common variables.
-
 bool
 test18() {
   Variable A(0);
@@ -520,7 +502,6 @@ test18() {
 
 // The equivalent of test1 from Polyhedron/generalizedaffineimage10.cc
 // (expressions with unique variables).
-
 bool
 test19() {
   Variable A(0);

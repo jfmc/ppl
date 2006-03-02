@@ -22,137 +22,138 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-Variable E(4);
-
 // One dimension.
-
-void
-test1() {
+bool
+test01() {
   Grid gr(1);
 
-  if (gr.is_universe())
-    return;
+  bool ok = (gr.is_universe());
 
-  nout << "Grid should be universe." << endl
-       << "grid:" << endl << gr << endl;
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Many dimensions.
 
-void
-test2() {
+bool
+test02() {
   Grid gr(6);
 
-  if (gr.is_universe())
-    return;
+  bool ok = (gr.is_universe());
 
-  nout << "Grid should be universe." << endl
-       << "grid:" << endl << gr << endl;
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Zero dimension universe.
 
-void
-test3() {
+bool
+test03() {
   Grid gr(0);
 
-  if (gr.is_universe())
-    return;
+  bool ok = (gr.is_universe());
 
-  nout << "Grid should be universe." << endl
-       << "grid:" << endl << gr << endl;
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Zero dimension empty.
 
-void
-test4() {
+bool
+test04() {
   Grid gr(0, EMPTY);
 
-  if (gr.is_universe()) {
-    nout << "Grid::is_universe should return false." << endl
-	 << "grid:" << endl << gr << endl;
-    exit(1);
-  }
+  bool ok = (!gr.is_universe());
+
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Empty grid.
 
-void
-test5() {
+bool
+test05() {
   Grid gr(2, EMPTY);
 
-  if (gr.is_universe()) {
-    nout << "Grid::is_universe should return false." << endl
-	 << "grid:" << endl << gr << endl;
-    exit(1);
-  }
+  bool ok = (!gr.is_universe());
+
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Grid of congruences.
 
-void
-test6() {
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Congruence_System cgs;
   cgs.insert((A + B + C %= 0) / 3);
 
   Grid gr(cgs);
 
-  if (gr.is_universe()) {
-    nout << "Grid::is_universe should return false." << endl
-	 << "grid:" << endl << gr << endl;
-    exit(1);
-  }
+  bool ok = (!gr.is_universe());
+
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Universe grid of congruences.
 
-void
-test7() {
+bool
+test07() {
+  Variable C(2);
+
   Congruence_System cgs;
   cgs.insert((0*C %= 6) / 3);
 
   Grid gr(cgs);
 
-  if (gr.is_universe())
-    return;
+  bool ok = (gr.is_universe());
 
-  nout << "Grid should be universe." << endl
-       << "grid:" << endl << gr << endl;
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Grid of generators.
 
-void
-test8() {
+bool
+test08() {
+  Variable A(0);
+  Variable E(4);
+
   Grid_Generator_System gs;
   gs.insert(grid_point(A + 3*E));
 
   Grid gr(gs);
 
-  if (gr.is_universe()) {
-    nout << "Grid::is_universe should return false." << endl
-	 << "grid:" << endl << gr << endl;
-    exit(1);
-  }
+  bool ok = (!gr.is_universe());
+
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Universe grid of generators.
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
 
-void
-test9() {
   Grid_Generator_System gs;
   gs.insert(grid_point(A + 3*E));
   gs.insert(grid_line(A));
@@ -163,80 +164,82 @@ test9() {
 
   Grid gr(gs);
 
-  if (gr.is_universe())
-    return;
+  bool ok = (gr.is_universe());
 
-  nout << "Grid should be universe." << endl
-       << "grid:" << endl << gr << endl;
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Minimized congruences.
-
-void
+bool
 test10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Congruence_System cgs;
   cgs.insert((A + B + C %= 0) / 3);
 
   Grid gr(cgs);
 
   // Minimize the congruences.
-  if (find_variation(gr))
-    exit(1);
+  gr.minimized_congruences();
 
-  if (gr.is_universe()) {
-    nout << "Grid::is_universe should return false." << endl
-	 << "grid:" << endl << gr << endl;
-    exit(1);
-  }
+  bool ok = (!gr.is_universe());
+
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Minimized universe congruences.
-
-void
+bool
 test11() {
+  Variable C(2);
+
   Congruence_System cgs;
   cgs.insert((0*C %= 3) / 3);
 
   Grid gr(cgs);
 
   // Minimize the congruences.
-  if (find_variation(gr))
-    exit(1);
+  gr.minimized_congruences();
 
-  if (gr.is_universe())
-    return;
+  bool ok = (gr.is_universe());
 
-  nout << "Grid should be universe." << endl
-       << "grid:" << endl << gr << endl;
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Minimized universe congruences.
-
-void
+bool
 test12() {
+  Variable C(2);
+
   Congruence_System cgs;
   cgs.insert((0*C %= 4) / 2);
 
   Grid gr(cgs);
 
   // Minimize the congruences.
-  if (find_variation(gr))
-    exit(1);
+  gr.minimized_congruences();
 
-  if (gr.is_universe())
-    return;
+  bool ok = (gr.is_universe());
 
-  nout << "Grid should be universe." << endl
-       << "grid:" << endl << gr << endl;
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Universe after remove_space_dimensions.
 
-void
+bool
 test13() {
+  Variable A(0);
+  Variable C(2);
+
   Congruence_System cgs;
   cgs.insert((A + 0*C %= 4) / 2);
 
@@ -248,78 +251,71 @@ test13() {
   gr.remove_space_dimensions(vars);
 
   // Minimize the congruences.
-  if (find_variation(gr))
-    exit(1);
+  gr.minimized_congruences();
 
-  if (gr.is_universe())
-    return;
+  bool ok = (gr.is_universe());
 
-  nout << "Grid should be universe." << endl
-       << "grid:" << endl << gr << endl;
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Empty from a simple constraint.
 
-void
+bool
 test14() {
+  Variable C(2);
+
   Congruence_System cgs;
   cgs.insert(0*C == 0);
 
   Grid gr(cgs);
 
   // Minimize the congruences.
-  if (find_variation(gr))
-    exit(1);
+  gr.minimized_congruences();
 
-  if (gr.is_universe())
-    return;
+  bool ok = (gr.is_universe());
 
-  nout << "Grid should be universe." << endl
-       << "grid:" << endl << gr << endl;
-  exit(1);
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 // Congruences before minimization, where a point is required to
 // determine that the grid is a strict subset of the universe.
 
-void
+bool
 test15() {
+  Variable A(0);
+
   Congruence_System cgs;
   cgs.insert(A == 3);
 
   Grid gr(cgs);
 
-  if (gr.is_universe()) {
-    nout << "Grid::is_universe should return false." << endl
-	 << "grid:" << endl << gr << endl;
-    exit(1);
-  }
+  bool ok = (!gr.is_universe());
+
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "isuniverse1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+  NEW_TEST(test15);
+END_MAIN

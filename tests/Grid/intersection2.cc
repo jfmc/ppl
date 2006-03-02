@@ -25,9 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 // Simple grids, one dimension.
-
-void
-test1() {
+bool
+test01() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -39,12 +38,11 @@ test1() {
   cgs2.insert((2*A + 0*C %= 0) / 2);
 
   Grid gr1(cgs1);
+  print_congruences(gr1, "*** gr1 ***");
   Grid gr2(cgs2);
+  print_congruences(gr2, "*** gr2 ***");
 
   gr1.intersection_assign_and_minimize(gr2);
-
-  if (find_variation(gr1))
-    exit(1);
 
   Congruence_System known_cgs;
   known_cgs.insert((A + 0*C %= 0) / 2);
@@ -52,20 +50,16 @@ test1() {
 
   Grid known_gr(known_cgs);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr.intersection_assign_and_minimize(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // First grid empty.
-
-void
-test2() {
+bool
+test02() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -74,29 +68,23 @@ test2() {
   cgs.insert((A + B + C %= 0) / 2);
 
   Grid gr1(3, EMPTY);
+  print_congruences(gr1, "*** gr1 ***");
   Grid gr2(cgs);
 
   gr1.intersection_assign_and_minimize(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(3, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr.intersection_assign_and_minimize(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Second grid empty.
-
-void
-test3() {
+bool
+test03() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -105,29 +93,23 @@ test3() {
   cgs.insert((A + B + C %= 0) / 2);
 
   Grid gr1(cgs);
+  print_congruences(gr1, "*** gr1 ***");
   Grid gr2(3, EMPTY);
 
   gr1.intersection_assign_and_minimize(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(3, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr.intersection_assign_and_minimize(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // First grid universe.
-
-void
-test4() {
+bool
+test04() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -137,12 +119,10 @@ test4() {
   cgs.insert((5*A + 3*B + C %= 7) / 9);
 
   Grid gr1(3, UNIVERSE);
+  print_congruences(gr1, "*** gr1 ***");
   Grid gr2(cgs);
 
   gr1.intersection_assign_and_minimize(gr2);
-
-  if (find_variation(gr1))
-    exit(1);
 
   Congruence_System known_cgs;
   known_cgs.insert((  A +   B + C %= 7) / 9);
@@ -150,20 +130,16 @@ test4() {
 
   Grid known_gr(known_cgs);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr.intersection_assign_and_minimize(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Second grid universe.
-
-void
-test5() {
+bool
+test05() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -173,12 +149,10 @@ test5() {
   cgs.insert((2*B %= 1) / 3);
 
   Grid gr1(cgs);
+  print_congruences(gr1, "*** gr1 ***");
   Grid gr2(3, UNIVERSE);
 
   gr1.intersection_assign_and_minimize(gr2);
-
-  if (find_variation(gr1))
-    exit(1);
 
   Congruence_System known_cgs;
   known_cgs.insert((2*B + 2*C %= 1) / 3);
@@ -186,44 +160,35 @@ test5() {
 
   Grid known_gr(known_cgs);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr.intersection_assign_and_minimize(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Zero dimension grids.
-
-void
-test6() {
+bool
+test06() {
   Grid gr1(0);
+  print_congruences(gr1, "*** gr1 ***");
   Grid gr2(0);
+  print_congruences(gr2, "*** gr2 ***");
 
   gr1.intersection_assign_and_minimize(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(0);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr.intersection_assign_and_minimize(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
 // Many dimension grids from generators.
-
-void
-test7() {
+bool
+test07() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -237,14 +202,13 @@ test7() {
   gs2.insert(grid_point(A + B));
 
   Grid gr1(gs1);
+  print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
   gr2.add_generators(gs2);
+  print_generators(gr2, "*** gr2 ***");
 
   gr1.intersection_assign_and_minimize(gr2);
-
-  if (find_variation(gr1))
-    exit(1);
 
   Congruence_System known_cgs;
   known_cgs.insert((C == 0) / 0);
@@ -253,30 +217,19 @@ test7() {
 
   Grid known_gr(known_cgs);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_generators(gr1, "*** gr.intersection_assign_and_minimize(gr2) ***");
 
-  exit(1);
+  return ok;
 }
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "intersection2:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+END_MAIN

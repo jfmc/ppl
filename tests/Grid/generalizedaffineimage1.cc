@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Simplest expression.
-
 bool
 test01() {
   Variable A(0);
@@ -50,7 +49,6 @@ test01() {
 }
 
 // Simplest expression, with denominator.
-
 bool
 test02() {
   Variable A(0);
@@ -78,7 +76,6 @@ test02() {
 }
 
 // Simple expression.
-
 bool
 test03() {
   Variable A(0);
@@ -106,7 +103,6 @@ test03() {
 }
 
 // Simple expression, with denominator.
-
 bool
 test04() {
   Variable A(0);
@@ -134,7 +130,6 @@ test04() {
 }
 
 // Simple expression, with denominator and modulus.
-
 bool
 test05() {
   Variable A(0);
@@ -162,7 +157,6 @@ test05() {
 }
 
 // Negative denominator.
-
 bool
 test06() {
   Variable A(0);
@@ -190,7 +184,6 @@ test06() {
 }
 
 // Negative modulus.
-
 bool
 test07() {
   Variable A(0);
@@ -218,7 +211,6 @@ test07() {
 }
 
 // Expression of many variables.
-
 bool
 test08() {
   Variable A(0);
@@ -250,7 +242,6 @@ test08() {
 
 // Equality expression comparing
 // generalized_affine_image and affine_image
-
 bool
 test09() {
   Variable A(0);
@@ -280,7 +271,6 @@ test09() {
 }
 
 // Empty grid.
-
 bool
 test10() {
   Variable A(0);
@@ -304,7 +294,6 @@ test10() {
 }
 
 // Empty with congruences.
-
 bool
 test11() {
   Variable A(0);
@@ -328,7 +317,6 @@ test11() {
 }
 
 // Universe.
-
 bool
 test12() {
   Variable A(0);
@@ -350,7 +338,6 @@ test12() {
 }
 
 // Zero denominator.
-
 bool
 test13() {
   Variable A(0);
@@ -374,7 +361,6 @@ test13() {
 }
 
 // Expression of a greater space dimension than the grid.
-
 bool
 test14() {
   Variable A(0);
@@ -399,7 +385,6 @@ test14() {
 }
 
 // Variable of a greater space dimension than the grid.
-
 bool
 test15() {
   Variable A(0);
@@ -424,7 +409,6 @@ test15() {
 }
 
 // Expressions having common variables.
-
 bool
 test16() {
   Variable A(0);
@@ -451,7 +435,6 @@ test16() {
 
 // Expressions having common variables, where generalized_affine_image
 // must minimize the grid.
-
 bool
 test17() {
   Variable A(0);
@@ -475,6 +458,7 @@ test17() {
   return ok;
 }
 
+// Expressions having common variables.
 bool
 test18() {
   Variable A(0);
@@ -500,7 +484,6 @@ test18() {
 
 // Right hand side expression of greater space dimension than the
 // grid.
-
 bool
 test19() {
   Variable A(0);
@@ -524,7 +507,6 @@ test19() {
 }
 
 // Left hand side expression of space dimension greater than the grid.
-
 bool
 test20() {
   Variable A(0);

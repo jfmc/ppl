@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Expressions both constants.
-
 bool
 test01() {
   Variable A(0);
@@ -53,7 +52,6 @@ test01() {
 }
 
 // Left hand side constant.
-
 bool
 test02() {
   Variable A(0);
@@ -80,7 +78,6 @@ test02() {
 }
 
 // Expressions with unique variables.
-
 bool
 test03() {
   Variable A(0);
@@ -110,7 +107,6 @@ test03() {
 }
 
 // Simple expressions having common variables.
-
 bool
 test04() {
   Variable A(0);
@@ -135,7 +131,6 @@ test04() {
 }
 
 // Expressions having common variables.
-
 bool
 test05() {
   Variable A(0);
@@ -164,7 +159,6 @@ test05() {
 
 // Test0 similar to the test in
 // ppl/test0s/Polyhedron/generalizedaffinepreimage4.cc
-
 bool
 test06() {
   Variable A(0);
@@ -200,7 +194,6 @@ test06() {
 
 
 // Expressions having common variables.
-
 bool
 test07() {
   Variable A(0);
@@ -227,7 +220,6 @@ test07() {
 
 // Expressions having common variables, where
 // generalized_affine_preimage must minimize the grid.
-
 bool
 test08() {
   Variable A(0);
@@ -253,7 +245,6 @@ test08() {
 
 // Expressions having common variables, where
 // generalized_affine_preimage must minimize the grid.
-
 bool
 test09() {
   Variable A(0);
@@ -279,7 +270,6 @@ test09() {
 
 // Right hand side expression of greater space dimension than the
 // grid.
-
 bool
 test10() {
   Variable A(0);
@@ -303,7 +293,6 @@ test10() {
 }
 
 // Left hand side expression of space dimension greater than the grid.
-
 bool
 test11() {
   Variable A(0);
@@ -327,7 +316,6 @@ test11() {
 }
 
 // Expressions having common variables, with a negative modulus.
-
 bool
 test12() {
   Variable A(0);
