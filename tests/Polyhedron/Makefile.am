@@ -86,15 +86,15 @@ ORIGINAL_TESTS = \
 	linearpartition1 \
 	linexpression1 \
 	linearsystem1 \
-	lpproblem1 lpproblem2 lpproblem3 \
-	mapspacedims1 mapspacedims2 mapspacedims3  mapspacedims4 \
+	lpproblem1 \
+	mapspacedims1 \
 	matrix1 \
-	max_min1 max_min2 \
+	max_min1 \
 	maxspacedim1 \
 	mc91 \
 	membytes1 membytes2 \
 	memory1 memory2 \
-	minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
+	minconstraints1 minconstraints2 \
 	mingenerators1 mingenerators2 mingenerators3 \
 	nncminimize1 nncminimize2 \
 	numberinput1 \
@@ -168,12 +168,11 @@ DERIVED_TESTS = \
 	nnc_limitedbhrz03extrapolation1 \
 	nnc_limitedh79extrapolation1 \
 	nnc_linearpartition1 \
-	nnc_mapspacedims1 nnc_mapspacedims2 nnc_mapspacedims3 \
-	nnc_mapspacedims4 \
-	nnc_max_min1 nnc_max_min2 \
+	nnc_mapspacedims1 \
+	nnc_max_min1 \
 	nnc_mc91 \
 	nnc_membytes1 nnc_membytes2 \
-	nnc_minconstraints1 nnc_minconstraints2 \
+	nnc_minconstraints1 \
 	nnc_mingenerators1 nnc_mingenerators2 \
 	nnc_onepoint \
 	nnc_permute \
@@ -313,18 +312,12 @@ linexpression1_SOURCES = linexpression1.cc
 linearsystem1_SOURCES = linearsystem1.cc
 
 lpproblem1_SOURCES = lpproblem1.cc
-lpproblem2_SOURCES = lpproblem2.cc
-lpproblem3_SOURCES = lpproblem3.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
-mapspacedims2_SOURCES = mapspacedims2.cc
-mapspacedims3_SOURCES = mapspacedims3.cc
-mapspacedims4_SOURCES = mapspacedims4.cc
 
 matrix1_SOURCES = matrix1.cc
 
 max_min1_SOURCES = max_min1.cc
-max_min2_SOURCES = max_min2.cc
 
 maxspacedim1_SOURCES = maxspacedim1.cc
 
@@ -338,8 +331,6 @@ memory2_SOURCES = memory2.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 minconstraints2_SOURCES = minconstraints2.cc
-minconstraints3_SOURCES = minconstraints3.cc
-minconstraints4_SOURCES = minconstraints4.cc
 
 mingenerators1_SOURCES = mingenerators1.cc
 mingenerators2_SOURCES = mingenerators2.cc
@@ -596,17 +587,9 @@ nnc_linearpartition1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_mapspacedims1_SOURCES = mapspacedims1.cc
 nnc_mapspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_mapspacedims2_SOURCES = mapspacedims2.cc
-nnc_mapspacedims2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_mapspacedims3_SOURCES = mapspacedims3.cc
-nnc_mapspacedims3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_mapspacedims4_SOURCES = mapspacedims4.cc
-nnc_mapspacedims4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_max_min1_SOURCES = max_min1.cc
 nnc_max_min1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_max_min2_SOURCES = max_min2.cc
-nnc_max_min2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_mc91_SOURCES = mc91.cc
 nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -618,8 +601,6 @@ nnc_membytes2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_minconstraints1_SOURCES = minconstraints1.cc
 nnc_minconstraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_minconstraints2_SOURCES = minconstraints2.cc
-nnc_minconstraints2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_mingenerators1_SOURCES = mingenerators1.cc
 nnc_mingenerators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -775,9 +756,6 @@ XFAIL_ALWAYS =
 XFAIL_WITH_INT64 = \
 $(XFAIL_ALWAYS) \
 dualhypercubes \
-lpproblem1 \
-lpproblem2 \
-lpproblem3 \
 randphull2 \
 nnc_randphull2
 
@@ -789,15 +767,12 @@ $(XFAIL_WITH_INT32)
 
 XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
-mapspacedims2 \
-max_min2 \
 membytes1 \
 onepoint \
 polydifference9 \
 randphull1 \
 removespacedims2 \
 smm1 \
-nnc_max_min2 \
 nnc_membytes1 \
 nnc_onepoint \
 nnc_polydifference9 \
