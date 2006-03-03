@@ -1,5 +1,4 @@
-/* Test Polyhedron::minimized_constraints(): we apply this function
-   to an empty polyhedron.
+/* Test Polyhedron::minimized_constraints().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,25 +22,46 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
-  C_Polyhedron ph1(2, EMPTY);
-
-  print_constraints(ph1, "*** ph1 ***");
-
-  C_Polyhedron known_result;
-  known_result = ph1;
+bool
+test01() {
+  NNC_Polyhedron ph1;
 
   Constraint_System cs = ph1.minimized_constraints();
 
-  C_Polyhedron ph2(cs);
+  NNC_Polyhedron ph2(cs);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
+  bool ok = (ph1 == ph2);
 
+  print_constraints(ph1, "*** ph1 ***");
   print_constraints(cs, "*** cs ***");
+  print_constraints(ph2, "*** ph2 ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable x(0), y(1);
+
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(x < 1);
+  cs.insert(y > 0);
+
+  NNC_Polyhedron ph(cs);
+  ph.minimized_constraints();
+
+  // FIXME: checking what?
+  return true;
+}
+
+} // namespace
+
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+END_MAIN
+
