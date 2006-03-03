@@ -324,7 +324,12 @@ BEGIN_MAIN
   NEW_TEST(test03);
   NEW_TEST(test04);
   NEW_TEST(test05);
+  // test06() only fails when using C_Polyhedron and 8 bit coefficients.
+#ifdef DERIVED_TEST
+  NEW_TEST(test06);
+#else
   NEW_TEST_F8(test06);
+#endif // !defined(DERIVED_TEST)
   NEW_TEST(test07);
   NEW_TEST(test08);
   NEW_TEST(test09);
