@@ -83,10 +83,8 @@ ORIGINAL_TESTS = \
 	h79widening1 h79widening2 \
 	intersection1 \
 	limitedbhrz03extrapolation1 \
-	limitedh79extrapolation1 limitedh79extrapolation2 \
-	limitedh79extrapolation3 limitedh79extrapolation4 \
-	linearpartition1 linearpartition2 \
-	linearpartition3 linearpartition4 \
+	limitedh79extrapolation1 \
+	linearpartition1 \
 	linexpression1 \
 	linearsystem1 \
 	lpproblem1 lpproblem2 lpproblem3 \
@@ -170,10 +168,8 @@ DERIVED_TESTS = \
 	nnc_h79widening1 \
 	nnc_intersection1 \
 	nnc_limitedbhrz03extrapolation1 \
-	nnc_limitedh79extrapolation1 nnc_limitedh79extrapolation2 \
-	nnc_limitedh79extrapolation3 nnc_limitedh79extrapolation4 \
-	nnc_linearpartition1 nnc_linearpartition2 \
-	nnc_linearpartition3 nnc_linearpartition4 \
+	nnc_limitedh79extrapolation1 \
+	nnc_linearpartition1 \
 	nnc_mapspacedims1 nnc_mapspacedims2 nnc_mapspacedims3 \
 	nnc_mapspacedims4 \
 	nnc_max_min1 nnc_max_min2 \
@@ -315,14 +311,8 @@ intersection1_SOURCES = intersection1.cc
 limitedbhrz03extrapolation1_SOURCES = limitedbhrz03extrapolation1.cc
 
 limitedh79extrapolation1_SOURCES = limitedh79extrapolation1.cc
-limitedh79extrapolation2_SOURCES = limitedh79extrapolation2.cc
-limitedh79extrapolation3_SOURCES = limitedh79extrapolation3.cc
-limitedh79extrapolation4_SOURCES = limitedh79extrapolation4.cc
 
 linearpartition1_SOURCES = linearpartition1.cc
-linearpartition2_SOURCES = linearpartition2.cc
-linearpartition3_SOURCES = linearpartition3.cc
-linearpartition4_SOURCES = linearpartition4.cc
 
 linexpression1_SOURCES = linexpression1.cc
 
@@ -612,21 +602,9 @@ nnc_limitedbhrz03extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_limitedh79extrapolation1_SOURCES = limitedh79extrapolation1.cc
 nnc_limitedh79extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_limitedh79extrapolation2_SOURCES = limitedh79extrapolation2.cc
-nnc_limitedh79extrapolation2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_limitedh79extrapolation3_SOURCES = limitedh79extrapolation3.cc
-nnc_limitedh79extrapolation3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_limitedh79extrapolation4_SOURCES = limitedh79extrapolation4.cc
-nnc_limitedh79extrapolation4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_linearpartition1_SOURCES = linearpartition1.cc
 nnc_linearpartition1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_linearpartition2_SOURCES = linearpartition2.cc
-nnc_linearpartition2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_linearpartition3_SOURCES = linearpartition3.cc
-nnc_linearpartition3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_linearpartition4_SOURCES = linearpartition4.cc
-nnc_linearpartition4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_mapspacedims1_SOURCES = mapspacedims1.cc
 nnc_mapspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
