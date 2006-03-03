@@ -44,7 +44,7 @@ if ENABLE_SHARED
 
 pkglib_DATA = ppl_sicstus.pl ppl_sicstus.s.o
 
-ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la | ppl_sicstus_sd.la
+ppl_sicstus.so: ppl_sicstus.pl $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la .libs/ppl_sicstus_sd.o
 	$(LIBTOOL) --mode=link --tag=CXX \
 	splfr $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o -o $@ \
 		$(top_builddir)/src/libppl.la \
@@ -76,12 +76,12 @@ ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(top_buildd
 
 if ENABLE_STATIC
 
-ppl_sicstus.s.o: ppl_sicstus.pl | ppl_sicstus_sd.la
+ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
 	splfr --static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
 
 else !ENABLE_STATIC
 
-ppl_sicstus.s.o: ppl_sicstus.pl | ppl_sicstus_sd.la
+ppl_sicstus.s.o: ppl_sicstus.pl .libs/ppl_sicstus_sd.o
 	splfr --static $(srcdir)/ppl_sicstus.pl .libs/ppl_sicstus_sd.o
 
 endif !ENABLE_STATIC
