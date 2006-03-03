@@ -52,8 +52,7 @@ ORIGINAL_TESTS = \
 	affinepreimage1 \
 	affinetrans \
 	append1 append2 \
-	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
-	ascii_dump_load5 ascii_dump_load6 ascii_dump_load7 \
+	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 \
 	bgp99extrapolation1 \
 	bhrz03widening1 bhrz03widening2 bhrz03widening3 \
 	bhz03widening1 \
@@ -140,8 +139,7 @@ DERIVED_TESTS = \
 	nnc_affinepreimage1 \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
-	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
-	nnc_ascii_dump_load6 nnc_ascii_dump_load7 \
+	nnc_ascii_dump_load1 nnc_ascii_dump_load2 \
 	nnc_bgp99extrapolation1 \
 	nnc_bhrz03widening1 nnc_bhrz03widening2 \
 	nnc_bounded1 \
@@ -234,10 +232,6 @@ append2_SOURCES = append2.cc
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 ascii_dump_load2_SOURCES = ascii_dump_load2.cc
 ascii_dump_load3_SOURCES = ascii_dump_load3.cc
-ascii_dump_load4_SOURCES = ascii_dump_load4.cc
-ascii_dump_load5_SOURCES = ascii_dump_load5.cc
-ascii_dump_load6_SOURCES = ascii_dump_load6.cc
-ascii_dump_load7_SOURCES = ascii_dump_load7.cc
 
 bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
 
@@ -509,12 +503,6 @@ nnc_ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 nnc_ascii_dump_load1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_ascii_dump_load2_SOURCES = ascii_dump_load2.cc
 nnc_ascii_dump_load2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_ascii_dump_load3_SOURCES = ascii_dump_load3.cc
-nnc_ascii_dump_load3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_ascii_dump_load6_SOURCES = ascii_dump_load6.cc
-nnc_ascii_dump_load6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_ascii_dump_load7_SOURCES = ascii_dump_load7.cc
-nnc_ascii_dump_load7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
 nnc_bgp99extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -874,10 +862,6 @@ MOSTLYCLEANFILES = \
 ascii_dump_load1.dat \
 ascii_dump_load2.dat \
 ascii_dump_load3.dat \
-ascii_dump_load4.dat \
-ascii_dump_load5.dat \
-ascii_dump_load6.dat \
-ascii_dump_load7.dat \
 matrix1.dat \
 linearsystem1.dat \
 writeconsys1.dat \
