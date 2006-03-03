@@ -24,15 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "files.hh"
 #include <fstream>
 
-using std::fstream;
-using std::ios_base;
-
 namespace {
 
-const char* data_file = "linearsystem1.dat";
+bool
+test01() {
+  const char* data_file = "linearsystem1.dat";
 
-void
-ascii_dump_load() {
   Variable A(0);
   Variable B(1);
 
@@ -52,6 +49,8 @@ ascii_dump_load() {
     row.strong_normalize();
     ls1.insert(row);
 
+    using std::fstream;
+    using std::ios_base;
     fstream f;
     open(f, data_file, ios_base::out);
     ls1.ascii_dump(f);
@@ -71,18 +70,13 @@ ascii_dump_load() {
     nout << "m2.ascii_dump() gives" << endl;
     ls2.ascii_dump(nout);
 
-    exit(1);
+    return false;
   }
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  ascii_dump_load();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+END_MAIN
