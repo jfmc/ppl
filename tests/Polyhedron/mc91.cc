@@ -22,13 +22,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+namespace {
 
-typedef Polyhedra_Powerset<C_Polyhedron> PCS;
-
-int
-main() TRY {
-  set_handlers();
+bool
+test01() {
+  typedef Polyhedra_Powerset<C_Polyhedron> PCS;
 
   Variable x(0);
   Variable y(1);
@@ -44,6 +42,7 @@ main() TRY {
   PCS p1(2, EMPTY);
   p1.add_disjunct(ph1);
 
+  using namespace IO_Operators;
   nout << p1 << endl;
 
   PCS p2(2, EMPTY);
@@ -64,6 +63,12 @@ main() TRY {
 
   y_91.add_constraint(y == 91);
 
+  // FIXME.
   return 0;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+END_MAIN
