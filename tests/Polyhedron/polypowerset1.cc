@@ -22,22 +22,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
-Variable x(0);
-
-void
-test1() {
+bool
+test01() {
   Constraint_System cs = Constraint_System::zero_dim_empty();
   Polyhedra_Powerset<C_Polyhedron> ps(cs);
-  if (!ps.OK())
-    exit(1);
+  return ps.OK();
 }
 
-void
-test2() {
+bool
+test02() {
+  Variable x(0);
   Constraint_System cs;
   Polyhedra_Powerset<NNC_Polyhedron> nnc_ps(1, EMPTY);
 
@@ -53,12 +49,12 @@ test2() {
 
   Polyhedra_Powerset<C_Polyhedron> c_ps(nnc_ps);
 
-  if (!c_ps.OK())
-    exit(1);
+  return c_ps.OK();
 }
 
-void
-test3() {
+bool
+test03() {
+  Variable x(0);
   Constraint_System cs;
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
 
@@ -76,12 +72,12 @@ test3() {
 
   Polyhedra_Powerset<NNC_Polyhedron> nnc_ps(c_ps);
 
-  if (!nnc_ps.OK())
-    exit(1);
+  return nnc_ps.OK();
 }
 
-void
-test4() {
+bool
+test04() {
+  Variable x(0);
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
@@ -96,12 +92,11 @@ test4() {
 
   c_ps.concatenate_assign(c_ps);
 
-  if (!c_ps.OK())
-    exit(1);
+  return c_ps.OK();
 }
 
-void
-test5() {
+bool
+test05() {
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
 
   bool ok = c_ps.is_bottom();
@@ -113,12 +108,12 @@ test5() {
   c_ps.total_memory_in_bytes();
   c_ps.external_memory_in_bytes();
 
-  if (!ok || !ok1)
-    exit(1);
+  return ok && ok1;
 }
 
-void
-test6() {
+bool
+test06() {
+  Variable x(0);
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -132,12 +127,12 @@ test6() {
 
   bool ok = c_ps1.definitely_entails(c_ps);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test7() {
+bool
+test07() {
+  Variable x(0);
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
@@ -152,12 +147,12 @@ test7() {
 
   bool ok = (c_ps.size() == 2);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test8() {
+bool
+test08() {
+  Variable x(0);
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
@@ -173,21 +168,19 @@ test8() {
 
   bool ok = (c_ps.size() == 1);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test9() {
+bool
+test09() {
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   bool ok = (c_ps.space_dimension() == 1);
-
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test10() {
+  Variable x(0);
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -208,12 +201,12 @@ test10() {
 
   bool ok1 = c_ps.empty();
 
-  if (!ok || !ok1)
-    exit(1);
+  return ok && ok1;
 }
 
-void
+bool
 test11() {
+  Variable x(0);
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
@@ -225,13 +218,12 @@ test11() {
   c_ps1 = c_ps;
 
   bool ok = !c_ps.empty();
-
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test12() {
+  Variable x(0);
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
@@ -243,13 +235,12 @@ test12() {
   c_ps.swap(c_ps1);
 
   bool ok = (c_ps.empty() && !c_ps1.empty());
-
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test13() {
+  Variable x(0);
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
@@ -275,12 +266,12 @@ test13() {
   bool ok = c_ps.definitely_entails(c_ps2);
   bool ok1 = !c_ps2.definitely_entails(c_ps);
 
-  if (!ok || !ok1)
-    exit(1);
+  return ok && ok1;
 }
 
-void
+bool
 test14() {
+  Variable x(0);
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
@@ -306,12 +297,12 @@ test14() {
   bool ok = c_ps.definitely_entails(c_ps2);
   bool ok1 = !c_ps2.definitely_entails(c_ps);
 
-  if (!ok || !ok1)
-    exit(1);
+  return ok && ok1;
 }
 
-void
+bool
 test15() {
+  Variable x(0);
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
@@ -336,12 +327,12 @@ test15() {
   bool ok = c_ps.definitely_entails(c_ps_expected);
   bool ok1 = !c_ps_expected.definitely_entails(c_ps);
 
-  if (!ok || !ok1)
-    exit(1);
+  return ok && ok1;
 }
 
-void
+bool
 test16() {
+  Variable x(0);
   Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
@@ -366,32 +357,26 @@ test16() {
   bool ok1 = c_ps_expected.definitely_entails(c_ps);
   bool ok2 = (c_ps.size() == 1);
 
-  if (!ok || !ok1 || !ok2)
-    exit(1);
+  return ok && ok1 && ok2;
 }
 
 } // namespace
 
-int main() TRY {
-  set_handlers();
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+  NEW_TEST(test15);
+  NEW_TEST(test16);
+END_MAIN
