@@ -1,5 +1,4 @@
-/* Test Polyhedron::relation_with(g): we verify that a generator
-   is not subsumed by an empty polyhedron.
+/* Test Polyhedron::relation_with(c) and Polyhedron::relation_with(g).
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,27 +22,107 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+using namespace IO_Operators;
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
-  Variable x(0);
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
 
-  C_Polyhedron ph(2, EMPTY);
-  print_constraints(ph, "--- ph ---");
+  Generator_System gs1;
+  gs1.insert(point());
+  gs1.insert(line(A + B));
+  C_Polyhedron ph1(gs1);
 
-  Generator g = point(x);
-  print_generator(g, "--- g ---");
+  Generator_System gs2;
+  gs2.insert(ray(A));
+  gs2.insert(point(B));
+  gs2.insert(point(-B));
+  C_Polyhedron ph2(gs2);
 
-  Poly_Gen_Relation rel = ph.relation_with(g);
+  Poly_Con_Relation rel1 = ph1.relation_with(A == 0);
+  Poly_Con_Relation rel2 = ph2.relation_with(A == 0);
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+  nout << "ph1.relation_with(A == 0) == " << rel1 << endl;
+  nout << "ph2.relation_with(A == 0) == " << rel2 << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+  return rel1 == known_result && rel2 == known_result;
+}
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs;
+  gs.insert(point(A));
+  gs.insert(line(B));
+  C_Polyhedron ph(gs);
+
+  Poly_Con_Relation rel = ph.relation_with(B > 0);
+
+  print_generators(ph, "*** ph ***");
+  nout << "ph.relation_with(B > 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+  return rel == known_result;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.generators();
+  ph.add_constraint(A >= 2);
+  ph.add_constraint(B == 0);
+
+  Poly_Gen_Relation rel = ph.relation_with(ray(A + B));
 
   Poly_Gen_Relation known_rel = Poly_Gen_Relation::nothing();
-  int retval = (rel == known_rel) ? 0 : 1;
 
-  nout << "ph.relation_with(v(A)) == " << rel << endl;
+  bool ok = (rel == known_rel);
 
-  return retval;
+  print_constraints(ph, "*** ph ***");
+  nout << "ph.relation_with(ray(A + B)) == " << rel << endl;
+
+  return ok;
 }
-CATCH
+
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, EMPTY);
+  ph.add_generator(point());
+  ph.constraints();
+  ph.add_generator(ray(A));
+  ph.add_generator(ray(B));
+
+  Poly_Con_Relation rel = ph.relation_with(A == 0);
+
+  Poly_Con_Relation known_rel = Poly_Con_Relation::strictly_intersects();
+
+  bool ok = (rel == known_rel);
+
+  print_constraints(ph, "*** ph ***");
+  nout << "ph.relation_with(A == 0) == " << rel << endl;
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+END_MAIN

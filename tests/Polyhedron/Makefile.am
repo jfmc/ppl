@@ -105,10 +105,7 @@ ORIGINAL_TESTS = \
 	polypowerset1 \
 	powerset1 \
 	randphull1 randphull2 \
-	relations1 relations2 relations3 relations4 relations5 relations6 \
-	relations7 relations8 relations9 relations10 relations11 \
-	relations12 relations13 relations14 relations15 relations16 \
-	relations17 relations18 relations19 \
+	relations1 relations2 relations3 \
 	removespacedims1 removespacedims2 removespacedims3 removespacedims4 \
 	removespacedims5 removespacedims6 removespacedims7 removespacedims8 \
 	removespacedims9 removespacedims10 \
@@ -176,10 +173,7 @@ DERIVED_TESTS = \
 	nnc_polydifference1 \
 	nnc_polyhull1 \
 	nnc_randphull1 nnc_randphull2 \
-	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
-	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
-	nnc_relations9 nnc_relations10 nnc_relations12 nnc_relations13 \
-	nnc_relations14 nnc_relations15 nnc_relations16 nnc_relations19 \
+	nnc_relations1 nnc_relations2 \
 	nnc_removespacedims1 nnc_removespacedims2 nnc_removespacedims3 \
 	nnc_removespacedims4 nnc_removespacedims5 nnc_removespacedims6 \
 	nnc_removespacedims8 nnc_removespacedims9 nnc_removespacedims10 \
@@ -355,22 +349,6 @@ randphull2_LDADD = $(LDADD) -lm
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 relations3_SOURCES = relations3.cc
-relations4_SOURCES = relations4.cc
-relations5_SOURCES = relations5.cc
-relations6_SOURCES = relations6.cc
-relations7_SOURCES = relations7.cc
-relations8_SOURCES = relations8.cc
-relations9_SOURCES = relations9.cc
-relations10_SOURCES = relations10.cc
-relations11_SOURCES = relations11.cc
-relations12_SOURCES = relations12.cc
-relations13_SOURCES = relations13.cc
-relations14_SOURCES = relations14.cc
-relations15_SOURCES = relations15.cc
-relations16_SOURCES = relations16.cc
-relations17_SOURCES = relations17.cc
-relations18_SOURCES = relations18.cc
-relations19_SOURCES = relations19.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 removespacedims2_SOURCES = removespacedims2.cc
@@ -604,34 +582,6 @@ nnc_relations1_SOURCES = relations1.cc
 nnc_relations1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_relations2_SOURCES = relations2.cc
 nnc_relations2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations3_SOURCES = relations3.cc
-nnc_relations3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations4_SOURCES = relations4.cc
-nnc_relations4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations5_SOURCES = relations5.cc
-nnc_relations5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations6_SOURCES = relations6.cc
-nnc_relations6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations7_SOURCES = relations7.cc
-nnc_relations7_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations8_SOURCES = relations8.cc
-nnc_relations8_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations9_SOURCES = relations9.cc
-nnc_relations9_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations10_SOURCES = relations10.cc
-nnc_relations10_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations12_SOURCES = relations12.cc
-nnc_relations12_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations13_SOURCES = relations13.cc
-nnc_relations13_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations14_SOURCES = relations14.cc
-nnc_relations14_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations15_SOURCES = relations15.cc
-nnc_relations15_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations16_SOURCES = relations16.cc
-nnc_relations16_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_relations19_SOURCES = relations19.cc
-nnc_relations19_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_removespacedims1_SOURCES = removespacedims1.cc
 nnc_removespacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
