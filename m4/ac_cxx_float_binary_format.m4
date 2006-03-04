@@ -1,5 +1,4 @@
-dnl A function to check whether the C++ compiler provides long double
-dnl numbers that have bigger range or precision than double.
+dnl A function to detect the binary format used by C++ floats.
 dnl Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -21,40 +20,60 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 dnl
-AC_DEFUN([AC_CXX_SUPPORTS_LONG_DOUBLE],
+AC_DEFUN([AC_CXX_FLOAT_BINARY_FORMAT],
 [
 ac_save_CPPFLAGS="$CPPFLAGS"
 ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
-AC_MSG_CHECKING([whether the C++ compiler provides proper long doubles])
+AC_MSG_CHECKING([the binary format of C++ floats])
+ac_cxx_float_binary_format=unknown
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-#include <cfloat>
+#include <limits>
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
 
-long double f = 0.0;
+#if SIZEOF_FLOAT == 4
 
-int main() {
-  return ((LDBL_MAX <= DBL_MAX) && (DBL_EPSILON <= LDBL_EPSILON)
-	  && (LDBL_MAX_EXP <= DBL_MAX_EXP) && (LDBL_MANT_DIG <= DBL_MANT_DIG))
-    ? 1
-    : 0;
+inline float
+convert(uint32_t x) {
+  union {
+    float value;
+    uint32_t word;
+  } u;
+
+  u.word = x;
+  return u.value;
 }
-]])],
-  AC_MSG_RESULT(yes)
-  ac_cxx_supports_long_double=yes,
-  AC_MSG_RESULT(no)
-  ac_cxx_supports_long_double=no,
-  AC_MSG_RESULT(no)
-  ac_cxx_supports_long_double=no)
 
-if test x"$ac_cxx_supports_long_double" = xyes
-then
-  value=1
-else
-  value=0
-fi
-AC_DEFINE_UNQUOTED(CXX_SUPPORTS_LONG_DOUBLE, $value,
-  [Not zero if the C++ compiler provides long double numbers that have bigger range or precision than double.])
+int
+main() {
+  return std::numeric_limits<float>::is_iec559
+    && (convert(0xaaacccaaUL)
+	== -3.069535185924732179074680971098132431507110595703125e-13
+    &&  convert(0xcccaaaccUL)
+	== -106255968)
+  ? 0 : 1;
+}
+
+#else // SIZEOF_FLOAT != 4
+
+int
+main() {
+  return 1;
+}
+
+#endif // SIZEOF_FLOAT != 4
+]])],
+  AC_DEFINE(CXX_FLOAT_BINARY_FORMAT, float_ieee754_single,
+  [The binary format of C++ floats, if supported; undefined otherwise.])
+  ac_cxx_float_binary_format="IEEE754 Single Precision")
+
+AC_MSG_RESULT($ac_cxx_float_binary_format)
 
 AC_LANG_POP(C++)
 CPPFLAGS="$ac_save_CPPFLAGS"

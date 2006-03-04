@@ -1,4 +1,4 @@
-dnl A function to detect the binary format used by 64-bit floats.
+dnl A function to detect the binary format used by C++ doubles.
 dnl Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,15 +20,16 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 dnl
-AC_DEFUN([AC_CXX_FLOAT64_BINARY_FORMAT],
+AC_DEFUN([AC_CXX_DOUBLE_BINARY_FORMAT],
 [
 ac_save_CPPFLAGS="$CPPFLAGS"
 ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
-AC_MSG_CHECKING([the binary format of 64-bit floats])
-ac_cxx_float64_binary_format=unknown
+AC_MSG_CHECKING([the binary format of C++ doubles])
+ac_cxx_double_binary_format=unknown
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#include <limits>
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
@@ -36,21 +37,12 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <inttypes.h>
 #endif
 
-#if SIZEOF_FLOAT == 8
-#define FLOAT64_TYPE float
-#elif SIZEOF_DOUBLE == 8
-#define FLOAT64_TYPE double
-#elif SIZEOF_LONG_DOUBLE == 8
-#define FLOAT64_TYPE long double
-#endif
+#if SIZEOF_DOUBLE == 8
 
-#ifdef FLOAT64_TYPE
-typedef FLOAT64_TYPE float64_t;
-
-float64_t
+double
 convert(uint32_t msp, uint32_t lsp) {
   union {
-    float64_t value;
+    double value;
     struct {
 #ifdef WORDS_BIGENDIAN
       uint32_t msp;
@@ -69,28 +61,28 @@ convert(uint32_t msp, uint32_t lsp) {
 
 int
 main() {
-  return (convert(0xaaacccaaUL, 0xacccaaacUL)
-	  == -4.018242396032647e-103 &&
-	  convert(0xcccaaaccUL, 0xcaaacccaUL)
+  return std::numeric_limits<double>::is_iec559
+    && (convert(0xaaacccaaUL, 0xacccaaacUL)
+	== -4.018242396032647e-103
+    &&	convert(0xcccaaaccUL, 0xcaaacccaUL)
 	  == -85705035845709846787631445265530356117787053916987832397725696.0)
     ? 0 : 1;
 }
 
-#else // !defined(FLOAT64_TYPE)
+#else // SIZEOF_FLOAT != 8
 
 int
 main() {
   return 1;
 }
 
-#endif // !defined(FLOAT64_TYPE)
+#endif // SIZEOF_FLOAT != 8
 ]])],
-  AC_DEFINE(CXX_FLOAT64_BINARY_FORMAT_IS_IEEE754_DOUBLE_PRECISION, 1,
-  [Not zero if 64-bit floats use the IEEE754 Double Precision binary format.])
-  ac_cxx_float64_binary_format="IEEE754 Double Precision",
-  AC_DEFINE(CXX_FLOAT64_BINARY_FORMAT_IS_IEEE754_DOUBLE_PRECISION, 0))
+  AC_DEFINE(CXX_DOUBLE_BINARY_FORMAT, float_ieee754_double,
+  [The binary format of C++ doubles, if supported; undefined otherwise.])
+  ac_cxx_double_binary_format="IEEE754 Double Precision")
 
-AC_MSG_RESULT($ac_cxx_float64_binary_format)
+AC_MSG_RESULT($ac_cxx_double_binary_format)
 
 AC_LANG_POP(C++)
 CPPFLAGS="$ac_save_CPPFLAGS"

@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_checked_int_inlines_hh 1
 
 #include "Limits.hh"
-#include "float.types.hh"
 #include <cerrno>
 #include <cstdlib>
 #include <climits>

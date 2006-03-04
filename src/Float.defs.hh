@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Float_defs_hh 1
 
 #include "compiler.hh"
-#include "float.types.hh"
 #include <gmp.h>
 #include <cassert>
 #include <cmath>
@@ -196,7 +195,7 @@ public:
 };
 
 #ifdef CXX_FLOAT_BINARY_FORMAT
-#define USEABLE_FLOAT CXX_FLOAT_IS_IEC_559
+#define USEABLE_FLOAT 1
 template <>
 class Float<float> {
 public:
@@ -215,7 +214,7 @@ public:
 #endif
 
 #ifdef CXX_DOUBLE_BINARY_FORMAT
-#define USEABLE_DOUBLE CXX_DOUBLE_IS_IEC_559
+#define USEABLE_DOUBLE 1
 template <>
 class Float<double> {
 public:
@@ -234,7 +233,7 @@ public:
 #endif
 
 #ifdef CXX_LONG_DOUBLE_BINARY_FORMAT
-#define USEABLE_LONG_DOUBLE CXX_LONG_DOUBLE_IS_IEC_559
+#define USEABLE_LONG_DOUBLE 1
 template <>
 class Float<long double> {
 public:

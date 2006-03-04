@@ -456,39 +456,20 @@ AC_LANG(C++)
 dnl Check for the possibility to control the FPU.
 AC_CHECK_FPU_CONTROL
 
-# Detect the binary format used by 32-bit floats.
-AC_CXX_FLOAT32_BINARY_FORMAT
+# Detect the binary format used by C++ floats.
+AC_CXX_FLOAT_BINARY_FORMAT
 
-# Detect the binary format used by 64-bit floats.
-AC_CXX_FLOAT64_BINARY_FORMAT
+# Detect the binary format used by C++ doubles.
+AC_CXX_DOUBLE_BINARY_FORMAT
 
-# Detect the binary format used by 96-bit floats.
-AC_CXX_FLOAT96_BINARY_FORMAT
-
-# Detect the binary format used by 128-bit floats.
-AC_CXX_FLOAT128_BINARY_FORMAT
+# Detect the binary format used by C++ long doubles.
+AC_CXX_LONG_DOUBLE_BINARY_FORMAT
 
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
-
-# Check whether the C++ compiler provides long double numbers that
-# have bigger range or precision than double.
-AC_CXX_SUPPORTS_LONG_DOUBLE
-
-# Check whether C++ floats comply with IEC 559.
-AC_CXX_FLOAT_IS_IEC_559
-
-# Check whether C++ doubles comply with IEC 559.
-AC_CXX_DOUBLE_IS_IEC_559
-
-# Check whether C++ long doubles comply with IEC 559.
-AC_CXX_LONG_DOUBLE_IS_IEC_559
-
-# Check whether the C++ compiler supports long long integers.
-AC_CXX_SUPPORTS_LONG_LONG
 
 # Checks for the availability of C library functions in C++.
 AC_CHECK_DECLS([ffs], , , [#include <strings.h>])
