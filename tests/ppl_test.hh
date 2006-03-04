@@ -83,83 +83,96 @@ catch (const std::exception& e) {					\
   exit(1);								\
 }
 
-#define ANNOUNCE_TEST(name)		 \
-  nout << "\n=== " #name " ===" << endl
+#define ANNOUNCE_TEST(test)		 \
+  nout << "\n=== " #test " ===" << endl
 
-#define DO_TEST(name)			 \
-  ANNOUNCE_TEST(name);			 \
-  nout << "\n=== " #name " ===" << endl; \
-  name();
+#define DO_TEST(test)			 \
+  ANNOUNCE_TEST(test);			 \
+  nout << "\n=== " #test " ===" << endl; \
+  test();
 
-#define RUN_TEST(name)			 \
-  try {					 \
-    succeeded = name();			 \
-  }					 \
-  catch (...) {				 \
-    succeeded = false;			 \
+#define RUN_TEST(test)							\
+  try {									\
+    succeeded = test();							\
+  }									\
+  catch (const std::overflow_error& e) {				\
+    nout << "arithmetic overflow (" << e.what() << ")"			\
+	 << std::endl;							\
+    succeeded = false;							\
+  }									\
+  catch (const std::exception& e) {					\
+    nout << "std::exception caught: "					\
+	 << e.what() << " (type == " << typeid(e).name() << ")"		\
+	 << std::endl;							\
+    succeeded = false;							\
+  }									\
+  catch (...) {								\
+    nout << "unknown exception caught"					\
+	 << std::endl;							\
+    succeeded = false;							\
   }
 
-#define NEW_TEST(name)			 \
-  ANNOUNCE_TEST(name);			 \
-  RUN_TEST(name);			 \
+#define NEW_TEST(test)			 \
+  ANNOUNCE_TEST(test);			 \
+  RUN_TEST(test);			 \
   if (!succeeded)			 \
-    failed_tests.push_back(#name);
+    failed_tests.push_back(#test);
 
-#define NEW_TEST_F(name)		 \
-  ANNOUNCE_TEST(name);			 \
-  RUN_TEST(name);			 \
+#define NEW_TEST_F(test)		 \
+  ANNOUNCE_TEST(test);			 \
+  RUN_TEST(test);			 \
   if (succeeded)			 \
-    failed_tests.push_back(#name);
+    failed_tests.push_back(#test);
 
 #if COEFFICIENT_BITS == 0
 
-#define NEW_TEST_F64(name) NEW_TEST(name)
-#define NEW_TEST_F32(name) NEW_TEST(name)
-#define NEW_TEST_F16(name) NEW_TEST(name)
-#define NEW_TEST_F8(name) NEW_TEST(name)
-#define NEW_TEST_F8A(name) NEW_TEST(name)
+#define NEW_TEST_F64(test) NEW_TEST(test)
+#define NEW_TEST_F32(test) NEW_TEST(test)
+#define NEW_TEST_F16(test) NEW_TEST(test)
+#define NEW_TEST_F8(test) NEW_TEST(test)
+#define NEW_TEST_F8A(test) NEW_TEST(test)
 
 #elif COEFFICIENT_BITS == 64
 
-#define NEW_TEST_F64(name) NEW_TEST_F(name)
-#define NEW_TEST_F32(name) NEW_TEST(name)
-#define NEW_TEST_F16(name) NEW_TEST(name)
-#define NEW_TEST_F8(name) NEW_TEST(name)
-#define NEW_TEST_F8A(name) NEW_TEST(name)
+#define NEW_TEST_F64(test) NEW_TEST_F(test)
+#define NEW_TEST_F32(test) NEW_TEST(test)
+#define NEW_TEST_F16(test) NEW_TEST(test)
+#define NEW_TEST_F8(test) NEW_TEST(test)
+#define NEW_TEST_F8A(test) NEW_TEST(test)
 
 #elif COEFFICIENT_BITS == 32
 
-#define NEW_TEST_F64(name) NEW_TEST_F(name)
-#define NEW_TEST_F32(name) NEW_TEST_F(name)
-#define NEW_TEST_F16(name) NEW_TEST(name)
-#define NEW_TEST_F8(name) NEW_TEST(name)
-#define NEW_TEST_F8A(name) NEW_TEST(name)
+#define NEW_TEST_F64(test) NEW_TEST_F(test)
+#define NEW_TEST_F32(test) NEW_TEST_F(test)
+#define NEW_TEST_F16(test) NEW_TEST(test)
+#define NEW_TEST_F8(test) NEW_TEST(test)
+#define NEW_TEST_F8A(test) NEW_TEST(test)
 
 #elif COEFFICIENT_BITS == 16
 
-#define NEW_TEST_F64(name) NEW_TEST_F(name)
-#define NEW_TEST_F32(name) NEW_TEST_F(name)
-#define NEW_TEST_F16(name) NEW_TEST_F(name)
-#define NEW_TEST_F8(name) NEW_TEST(name)
-#define NEW_TEST_F8A(name) NEW_TEST(name)
+#define NEW_TEST_F64(test) NEW_TEST_F(test)
+#define NEW_TEST_F32(test) NEW_TEST_F(test)
+#define NEW_TEST_F16(test) NEW_TEST_F(test)
+#define NEW_TEST_F8(test) NEW_TEST(test)
+#define NEW_TEST_F8A(test) NEW_TEST(test)
 
 #elif COEFFICIENT_BITS == 8
 
 #ifdef NDEBUG
 
-#define NEW_TEST_F64(name) NEW_TEST_F(name)
-#define NEW_TEST_F32(name) NEW_TEST_F(name)
-#define NEW_TEST_F16(name) NEW_TEST_F(name)
-#define NEW_TEST_F8(name) NEW_TEST_F(name)
-#define NEW_TEST_F8A(name) NEW_TEST(name)
+#define NEW_TEST_F64(test) NEW_TEST_F(test)
+#define NEW_TEST_F32(test) NEW_TEST_F(test)
+#define NEW_TEST_F16(test) NEW_TEST_F(test)
+#define NEW_TEST_F8(test) NEW_TEST_F(test)
+#define NEW_TEST_F8A(test) NEW_TEST(test)
 
 #else
 
-#define NEW_TEST_F64(name) NEW_TEST_F(name)
-#define NEW_TEST_F32(name) NEW_TEST_F(name)
-#define NEW_TEST_F16(name) NEW_TEST_F(name)
-#define NEW_TEST_F8(name) NEW_TEST_F(name)
-#define NEW_TEST_F8A(name) NEW_TEST_F(name)
+#define NEW_TEST_F64(test) NEW_TEST_F(test)
+#define NEW_TEST_F32(test) NEW_TEST_F(test)
+#define NEW_TEST_F16(test) NEW_TEST_F(test)
+#define NEW_TEST_F8(test) NEW_TEST_F(test)
+#define NEW_TEST_F8A(test) NEW_TEST_F(test)
 
 #endif // !defined(NDEBUG)
 
