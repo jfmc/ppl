@@ -95,7 +95,7 @@ ORIGINAL_TESTS = \
 	membytes1 membytes2 \
 	memory1 memory2 \
 	minconstraints1 minconstraints2 \
-	mingenerators1 mingenerators2 mingenerators3 \
+	mingenerators1 mingenerators2 \
 	nncminimize1 nncminimize2 \
 	numberinput1 \
 	onepoint \
@@ -173,11 +173,10 @@ DERIVED_TESTS = \
 	nnc_mc91 \
 	nnc_membytes1 nnc_membytes2 \
 	nnc_minconstraints1 \
-	nnc_mingenerators1 nnc_mingenerators2 \
+	nnc_mingenerators1 \
 	nnc_onepoint \
 	nnc_permute \
-	nnc_polydifference1 nnc_polydifference3 nnc_polydifference4 \
-	nnc_polydifference6 nnc_polydifference7 nnc_polydifference9 \
+	nnc_polydifference1 \
 	nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
 	nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 nnc_polyhull8 \
 	nnc_polyhull9 nnc_polyhull10 \
@@ -334,7 +333,6 @@ minconstraints2_SOURCES = minconstraints2.cc
 
 mingenerators1_SOURCES = mingenerators1.cc
 mingenerators2_SOURCES = mingenerators2.cc
-mingenerators3_SOURCES = mingenerators3.cc
 
 numberinput1_SOURCES = numberinput1.cc
 
@@ -347,13 +345,6 @@ permute_SOURCES = permute.cc
 
 polydifference1_SOURCES = polydifference1.cc
 polydifference2_SOURCES = polydifference2.cc
-polydifference3_SOURCES = polydifference3.cc
-polydifference4_SOURCES = polydifference4.cc
-polydifference5_SOURCES = polydifference5.cc
-polydifference6_SOURCES = polydifference6.cc
-polydifference7_SOURCES = polydifference7.cc
-polydifference8_SOURCES = polydifference8.cc
-polydifference9_SOURCES = polydifference9.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
@@ -604,8 +595,6 @@ nnc_minconstraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_mingenerators1_SOURCES = mingenerators1.cc
 nnc_mingenerators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_mingenerators2_SOURCES = mingenerators2.cc
-nnc_mingenerators2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_onepoint_SOURCES = onepoint.cc
 nnc_onepoint_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -615,16 +604,6 @@ nnc_permute_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_polydifference1_SOURCES = polydifference1.cc
 nnc_polydifference1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polydifference3_SOURCES = polydifference3.cc
-nnc_polydifference3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polydifference4_SOURCES = polydifference4.cc
-nnc_polydifference4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polydifference6_SOURCES = polydifference6.cc
-nnc_polydifference6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polydifference7_SOURCES = polydifference7.cc
-nnc_polydifference7_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polydifference9_SOURCES = polydifference9.cc
-nnc_polydifference9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_polyhull1_SOURCES = polyhull1.cc
 nnc_polyhull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -768,14 +747,10 @@ $(XFAIL_WITH_INT32)
 XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
 membytes1 \
-onepoint \
-polydifference9 \
 randphull1 \
 removespacedims2 \
 smm1 \
 nnc_membytes1 \
-nnc_onepoint \
-nnc_polydifference9 \
 nnc_randphull1 \
 nnc_smm1
 
