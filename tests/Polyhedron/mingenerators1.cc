@@ -1,5 +1,4 @@
-/* Test Polyhedron::minimized_generators(): we apply this function
-   to a polyhedron defined by a redundant system of generators.
+/* Test Polyhedron::minimized_generators().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -51,10 +50,36 @@ main() TRY {
   known_gs.insert(ray(B));
   C_Polyhedron known_result(known_gs);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
+  bool ok = (ph2 == known_result);
 
   print_generators(ph2, "*** ph2 ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  C_Polyhedron ph1(2, EMPTY);
+
+  print_generators(ph1, "*** ph1 ***");
+
+  C_Polyhedron known_result = ph1;
+
+  Generator_System gs = ph1.minimized_generators();
+
+  C_Polyhedron ph2(2, EMPTY);
+  ph2.add_generators(gs);
+
+  bool ok = (ph2 == known_result);
+
+  print_generators(gs, "*** gs ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+END_MAIN

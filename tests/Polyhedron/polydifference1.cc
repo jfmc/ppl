@@ -22,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -64,11 +64,213 @@ main() TRY {
 
   known_result.poly_difference_assign(ph3);
 
-  int retval = (computed_result == known_result) ? 0 : 1;
+  bool ok = (computed_result == known_result);
 
   print_generators(computed_result, "*** After poly_difference_assign ***");
   print_generators(known_result, "*** known_result ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  C_Polyhedron ph1;
+  C_Polyhedron ph2;
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  Constraint_System cs;
+  cs.insert(Linear_Expression(-4) >= 0);
+  C_Polyhedron known_result(cs);
+
+  ph1.poly_difference_assign(ph2);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A <= 2);
+  ph1.add_constraint(B == 0);
+
+  C_Polyhedron ph2(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A <= 2);
+  ph1.add_constraint(B >= 0);
+  ph1.add_constraint(B <= 2);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(2, EMPTY);
+
+  ph1.poly_difference_assign(ph2);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable A(0);
+
+  C_Polyhedron ph1(1);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A <= 7);
+  C_Polyhedron ph2(1);
+  ph2.add_constraint(A == 5);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(ph1);
+
+  ph1.poly_difference_assign(ph2);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1,
+		    "**After ph1.poly_difference_assign(ph2)**");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2, EMPTY);
+  C_Polyhedron ph2(2);
+  ph2.add_constraint(A == B);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(ph1);
+
+  ph1.poly_difference_assign(ph2);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A + B == 0);
+  C_Polyhedron ph2(2, EMPTY);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(ph1);
+
+  ph1.poly_difference_assign(ph2);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+
+  return ok;
+}
+
+// Creating a rectangle.
+C_Polyhedron
+aux_test07(int lx, int ly, int dx, int dy) {
+  Variable x(0);
+  Variable y(1);
+  C_Polyhedron ph(2, EMPTY);
+  ph.add_generator(point((lx+0*dx)*x + (ly+0*dy)*y));
+  ph.add_generator(point((lx+1*dx)*x + (ly+0*dy)*y));
+  ph.add_generator(point((lx+1*dx)*x + (ly+1*dy)*y));
+  ph.add_generator(point((lx+0*dx)*x + (ly+1*dy)*y));
+  return ph;
+}
+
+bool
+test07() {
+  Polyhedra_Powerset<C_Polyhedron> cross(2, EMPTY);
+  cross.add_disjunct(aux_test07(0, 3, 9, 3));
+  cross.add_disjunct(aux_test07(3, 0, 3, 9));
+
+  using namespace IO_Operators;
+  nout << "cross = " << cross << endl;
+
+  Polyhedra_Powerset<C_Polyhedron> squares(2, EMPTY);
+  squares.add_disjunct(aux_test07(1, 4, 1, 1));
+  squares.add_disjunct(aux_test07(4, 4, 1, 1));
+  squares.add_disjunct(aux_test07(7, 4, 1, 1));
+  squares.add_disjunct(aux_test07(4, 1, 1, 1));
+  squares.add_disjunct(aux_test07(4, 7, 1, 1));
+
+  nout << "squares = " << squares << endl;
+
+  Polyhedra_Powerset<C_Polyhedron> difference = cross;
+  difference.poly_difference_assign(squares);
+
+  nout << "cross - squares = " << difference << endl;
+
+  Polyhedra_Powerset<C_Polyhedron> intersection = difference;
+  intersection.meet_assign(squares);
+
+  nout << "(cross - squares) inters squares = " << intersection << endl;
+
+  // When using Polyhedra_Powerset<NNC_Polyhedron>, intersection will be
+  // empty.  When using Polyhedra_Powerset<C_Polyhedron>,
+  // intersection will consist of objects of affine dimension at most 1.
+  bool ok1 = true;
+  for (Polyhedra_Powerset<C_Polyhedron>::const_iterator
+	 i = intersection.begin(), in_end = intersection.end();
+       i != in_end; ++i)
+    if (i->element().affine_dimension() > 1) {
+      nout << "intersection contains " << i->element() << "," << endl
+	   << "which is of affine dimension greater than 1" << endl;
+      ok1 = false;
+    }
+
+  Polyhedra_Powerset<C_Polyhedron> re_union = difference;
+  re_union.upper_bound_assign(squares);
+
+  nout << "(cross - squares) union squares = " << re_union << endl;
+  re_union.pairwise_reduce();
+  nout << "<Above union pairwise reduced>  = " << re_union << endl;
+
+  bool ok2 = re_union.geometrically_equals(cross);
+
+  if (!ok2)
+    nout << "Union does not give back the original!" << endl;
+
+  return ok1 && ok2;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST_F8(test07);
+END_MAIN

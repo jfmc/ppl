@@ -1,5 +1,4 @@
-/* Test Polyhedron::minimized_generators(): we apply this function
-   to an empty polyhedron.
+/* Test Polyhedron::minimized_generators().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,25 +22,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
-  C_Polyhedron ph1(2, EMPTY);
-
-  print_generators(ph1, "*** ph1 ***");
-
-  C_Polyhedron known_result = ph1;
+bool
+test01() {
+  NNC_Polyhedron ph1;
 
   Generator_System gs = ph1.minimized_generators();
 
-  C_Polyhedron ph2(2, EMPTY);
-  ph2.add_generators(gs);
+  NNC_Polyhedron ph2(gs);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
+  bool ok = (ph1 == ph2);
 
+  print_generators(ph1, "*** ph1 ***");
   print_generators(gs, "*** gs ***");
+  print_generators(ph2, "*** ph2 ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+END_MAIN

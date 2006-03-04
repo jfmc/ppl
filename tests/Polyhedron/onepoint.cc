@@ -22,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -41,11 +41,16 @@ main() TRY {
   known_result.add_constraint(16*y == -9);
   known_result.add_constraint(z == 0);
 
-  int retval = (ph == known_result) ? 0 : 1;
+  bool ok = (ph == known_result);
 
   print_constraints(ph, "*** ph ***");
   print_constraints(known_result, "*** known_result ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST_F8(test01);
+END_MAIN
