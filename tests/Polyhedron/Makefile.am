@@ -100,9 +100,7 @@ ORIGINAL_TESTS = \
 	numberinput1 \
 	onepoint \
 	permute \
-	polydifference1 polydifference2 polydifference3 polydifference4 \
-	polydifference5 polydifference6 polydifference7 polydifference8 \
-	polydifference9 \
+	polydifference1 polydifference2 \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
 	polyhull7 polyhull8 polyhull9 polyhull10 polyhull11 \
 	polypowerset1 \
