@@ -32,16 +32,10 @@ ac_check_sicstus_prolog.m4 \
 ac_check_swi_prolog.m4 \
 ac_check_xsb_prolog.m4 \
 ac_cxx_attribute_weak.m4 \
-ac_cxx_double_is_iec_559.m4 \
+ac_cxx_double_binary_format.m4 \
 ac_cxx_flexible_arrays.m4 \
-ac_cxx_float128_binary_format.m4 \
-ac_cxx_float32_binary_format.m4 \
-ac_cxx_float64_binary_format.m4 \
-ac_cxx_float96_binary_format.m4 \
-ac_cxx_float_is_iec_559.m4 \
-ac_cxx_long_double.m4 \
-ac_cxx_long_double_is_iec_559.m4 \
-ac_cxx_long_long.m4 \
+ac_cxx_long_binary_format.m4 \
+ac_cxx_long_double_binary_format.m4 \
 lib-ld.m4 \
 lib-link.m4 \
 lib-prefix.m4

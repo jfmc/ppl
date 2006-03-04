@@ -776,31 +776,31 @@ assign_float_nan(To& to, const Not_A_Number&, Rounding_Dir) {
   return V_EQ;
 }
 
-#if USEABLE_FLOAT
+#if PPL_SUPPORTED_FLOAT
 SPECIALIZE_ASSIGN(float_float_exact, float, float)
-#if USEABLE_DOUBLE
+#if PPL_SUPPORTED_DOUBLE
 SPECIALIZE_ASSIGN(float_float, float, double)
 SPECIALIZE_ASSIGN(float_float_exact, double, float)
 #endif
-#if USEABLE_LONG_DOUBLE
+#if PPL_SUPPORTED_LONG_DOUBLE
 SPECIALIZE_ASSIGN(float_float, float, long double)
 SPECIALIZE_ASSIGN(float_float_exact, long double, float)
 #endif
 #endif
 
-#if USEABLE_DOUBLE
+#if PPL_SUPPORTED_DOUBLE
 SPECIALIZE_ASSIGN(float_float_exact, double, double)
-#if USEABLE_LONG_DOUBLE
+#if PPL_SUPPORTED_LONG_DOUBLE
 SPECIALIZE_ASSIGN(float_float, double, long double)
 SPECIALIZE_ASSIGN(float_float_exact, long double, double)
 #endif
 #endif
 
-#if USEABLE_LONG_DOUBLE
+#if PPL_SUPPORTED_LONG_DOUBLE
 SPECIALIZE_ASSIGN(float_float_exact, long double, long double)
 #endif
 
-#if USEABLE_FLOAT
+#if PPL_SUPPORTED_FLOAT
 SPECIALIZE_CLASSIFY(float, float)
 SPECIALIZE_IS_NAN(float, float)
 SPECIALIZE_IS_MINF(float, float)
@@ -844,7 +844,7 @@ SPECIALIZE_INPUT(generic, float)
 SPECIALIZE_OUTPUT(float, float)
 #endif
 
-#if USEABLE_DOUBLE
+#if PPL_SUPPORTED_DOUBLE
 SPECIALIZE_CLASSIFY(float, double)
 SPECIALIZE_IS_NAN(float, double)
 SPECIALIZE_IS_MINF(float, double)
@@ -888,7 +888,7 @@ SPECIALIZE_INPUT(generic, double)
 SPECIALIZE_OUTPUT(float, double)
 #endif
 
-#if USEABLE_LONG_DOUBLE
+#if PPL_SUPPORTED_LONG_DOUBLE
 SPECIALIZE_CLASSIFY(float, long double)
 SPECIALIZE_IS_NAN(float, long double)
 SPECIALIZE_IS_MINF(float, long double)

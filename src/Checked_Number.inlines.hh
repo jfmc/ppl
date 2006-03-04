@@ -140,9 +140,9 @@ DEF_CTOR(unsigned short)
 DEF_CTOR(unsigned int)
 DEF_CTOR(unsigned long)
 DEF_CTOR(unsigned long long)
-COND(USEABLE_FLOAT, DEF_CTOR(float))
-COND(USEABLE_DOUBLE, DEF_CTOR(double))
-COND(USEABLE_LONG_DOUBLE, DEF_CTOR(long double))
+COND(PPL_SUPPORTED_FLOAT, DEF_CTOR(float))
+COND(PPL_SUPPORTED_DOUBLE, DEF_CTOR(double))
+COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_CTOR(long double))
 DEF_CTOR(mpq_class&)
 DEF_CTOR(mpz_class&)
 
@@ -582,9 +582,9 @@ DEF_BINARY_OP_TYPE(f, fun, unsigned short) \
 DEF_BINARY_OP_TYPE(f, fun, unsigned int) \
 DEF_BINARY_OP_TYPE(f, fun, unsigned long) \
 DEF_BINARY_OP_TYPE(f, fun, unsigned long long) \
-COND(USEABLE_FLOAT, DEF_BINARY_OP_TYPE(f, fun, float)) \
-COND(USEABLE_DOUBLE, DEF_BINARY_OP_TYPE(f, fun, double)) \
-COND(USEABLE_LONG_DOUBLE, DEF_BINARY_OP_TYPE(f, fun, long double)) \
+COND(PPL_SUPPORTED_FLOAT, DEF_BINARY_OP_TYPE(f, fun, float)) \
+COND(PPL_SUPPORTED_DOUBLE, DEF_BINARY_OP_TYPE(f, fun, double)) \
+COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_BINARY_OP_TYPE(f, fun, long double)) \
 DEF_BINARY_OP_TYPE(f, fun, mpz_class&) \
 DEF_BINARY_OP_TYPE(f, fun, mpq_class&)
 
@@ -627,9 +627,9 @@ DEF_COMPARE_TYPE(f, fun, unsigned short) \
 DEF_COMPARE_TYPE(f, fun, unsigned int) \
 DEF_COMPARE_TYPE(f, fun, unsigned long) \
 DEF_COMPARE_TYPE(f, fun, unsigned long long) \
-COND(USEABLE_FLOAT, DEF_COMPARE_TYPE(f, fun, float)) \
-COND(USEABLE_DOUBLE, DEF_COMPARE_TYPE(f, fun, double)) \
-COND(USEABLE_LONG_DOUBLE, DEF_COMPARE_TYPE(f, fun, long double)) \
+COND(PPL_SUPPORTED_FLOAT, DEF_COMPARE_TYPE(f, fun, float)) \
+COND(PPL_SUPPORTED_DOUBLE, DEF_COMPARE_TYPE(f, fun, double)) \
+COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_COMPARE_TYPE(f, fun, long double)) \
 DEF_COMPARE_TYPE(f, fun, mpz_class&) \
 DEF_COMPARE_TYPE(f, fun, mpq_class&)
 

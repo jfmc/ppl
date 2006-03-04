@@ -193,11 +193,21 @@ main() {
 #endif // SIZEOF_LONG_DOUBLE != 16
 ]])],
   AC_DEFINE(CXX_LONG_DOUBLE_BINARY_FORMAT, float_intel_double_extended,
-  [The binary format of C++ long doubles, if supported; undefined otherwise.])
+    [The binary format of C++ long doubles, if supported; undefined otherwise.])
   ac_cxx_long_double_binary_format="Intel Double-Extended")
 fi
 
 AC_MSG_RESULT($ac_cxx_long_double_binary_format)
+
+if test x"$ac_cxx_long_double_binary_format" = x"unknown"
+then
+  ac_supported_long_double=0
+else
+  ac_supported_long_double=1
+fi
+AM_CONDITIONAL(SUPPORTED_LONG_DOUBLE, test $ac_supported_long_double = 1)
+AC_DEFINE_UNQUOTED(PPL_SUPPORTED_LONG_DOUBLE, $ac_supported_long_double,
+  [Not zero if long doubles are supported.])
 
 AC_LANG_POP(C++)
 CPPFLAGS="$ac_save_CPPFLAGS"

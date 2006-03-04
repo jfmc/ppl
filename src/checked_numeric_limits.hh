@@ -86,13 +86,13 @@ struct numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
   : public numeric_limits<T> {						\
 };
 
-#if USEABLE_FLOAT
+#if PPL_SUPPORTED_FLOAT
 PPL_SPECIALIZE_LIMITS_FLOAT(float)
 #endif
-#if USEABLE_DOUBLE
+#if PPL_SUPPORTED_DOUBLE
 PPL_SPECIALIZE_LIMITS_FLOAT(double)
 #endif
-#if USEABLE_LONG_DOUBLE
+#if PPL_SUPPORTED_LONG_DOUBLE
 PPL_SPECIALIZE_LIMITS_FLOAT(long double)
 #endif
 

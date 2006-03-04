@@ -194,8 +194,7 @@ public:
   static const bool fpu_related = false;
 };
 
-#ifdef CXX_FLOAT_BINARY_FORMAT
-#define USEABLE_FLOAT 1
+#if PPL_SUPPORTED_FLOAT
 template <>
 class Float<float> {
 public:
@@ -209,12 +208,9 @@ public:
   float value();
   static const bool fpu_related = true;
 };
-#else
-#define USEABLE_FLOAT 0
 #endif
 
-#ifdef CXX_DOUBLE_BINARY_FORMAT
-#define USEABLE_DOUBLE 1
+#if PPL_SUPPORTED_DOUBLE
 template <>
 class Float<double> {
 public:
@@ -228,12 +224,9 @@ public:
   double value();
   static const bool fpu_related = true;
 };
-#else
-#define USEABLE_DOUBLE 0
 #endif
 
-#ifdef CXX_LONG_DOUBLE_BINARY_FORMAT
-#define USEABLE_LONG_DOUBLE 1
+#if PPL_SUPPORTED_LONG_DOUBLE
 template <>
 class Float<long double> {
 public:
@@ -247,8 +240,6 @@ public:
   long double value();
   static const bool fpu_related = true;
 };
-#else
-#define USEABLE_LONG_DOUBLE 0
 #endif
 
 } // namespace Parma_Polyhedra_Library

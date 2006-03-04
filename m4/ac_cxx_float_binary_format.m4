@@ -70,10 +70,20 @@ main() {
 #endif // SIZEOF_FLOAT != 4
 ]])],
   AC_DEFINE(CXX_FLOAT_BINARY_FORMAT, float_ieee754_single,
-  [The binary format of C++ floats, if supported; undefined otherwise.])
+    [The binary format of C++ floats, if supported; undefined otherwise.])
   ac_cxx_float_binary_format="IEEE754 Single Precision")
 
 AC_MSG_RESULT($ac_cxx_float_binary_format)
+
+if test x"$ac_cxx_float_binary_format" = x"unknown"
+then
+  ac_supported_float=0
+else
+  ac_supported_float=1
+fi
+AM_CONDITIONAL(SUPPORTED_FLOAT, test $ac_supported_float = 1)
+AC_DEFINE_UNQUOTED(PPL_SUPPORTED_FLOAT, $ac_supported_float,
+  [Not zero if floats are supported.])
 
 AC_LANG_POP(C++)
 CPPFLAGS="$ac_save_CPPFLAGS"

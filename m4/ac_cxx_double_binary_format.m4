@@ -79,10 +79,20 @@ main() {
 #endif // SIZEOF_FLOAT != 8
 ]])],
   AC_DEFINE(CXX_DOUBLE_BINARY_FORMAT, float_ieee754_double,
-  [The binary format of C++ doubles, if supported; undefined otherwise.])
+    [The binary format of C++ doubles, if supported; undefined otherwise.])
   ac_cxx_double_binary_format="IEEE754 Double Precision")
 
 AC_MSG_RESULT($ac_cxx_double_binary_format)
+
+if test x"$ac_cxx_double_binary_format" = x"unknown"
+then
+  ac_supported_double=0
+else
+  ac_supported_double=1
+fi
+AM_CONDITIONAL(SUPPORTED_DOUBLE, test $ac_supported_double = 1)
+AC_DEFINE_UNQUOTED(PPL_SUPPORTED_DOUBLE, $ac_supported_double,
+  [Not zero if doubles are supported.])
 
 AC_LANG_POP(C++)
 CPPFLAGS="$ac_save_CPPFLAGS"
