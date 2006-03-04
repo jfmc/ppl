@@ -101,8 +101,7 @@ ORIGINAL_TESTS = \
 	onepoint \
 	permute \
 	polydifference1 polydifference2 \
-	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
-	polyhull7 polyhull8 polyhull9 polyhull10 polyhull11 \
+	polyhull1 polyhull2 \
 	polypowerset1 \
 	powerset1 \
 	randphull1 randphull2 \
@@ -175,9 +174,7 @@ DERIVED_TESTS = \
 	nnc_onepoint \
 	nnc_permute \
 	nnc_polydifference1 \
-	nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
-	nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 nnc_polyhull8 \
-	nnc_polyhull9 nnc_polyhull10 \
+	nnc_polyhull1 \
 	nnc_randphull1 nnc_randphull2 \
 	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
 	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
@@ -346,15 +343,6 @@ polydifference2_SOURCES = polydifference2.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
-polyhull3_SOURCES = polyhull3.cc
-polyhull4_SOURCES = polyhull4.cc
-polyhull5_SOURCES = polyhull5.cc
-polyhull6_SOURCES = polyhull6.cc
-polyhull7_SOURCES = polyhull7.cc
-polyhull8_SOURCES = polyhull8.cc
-polyhull9_SOURCES = polyhull9.cc
-polyhull10_SOURCES = polyhull10.cc
-polyhull11_SOURCES = polyhull11.cc
 
 polypowerset1_SOURCES = polypowerset1.cc
 
@@ -605,24 +593,6 @@ nnc_polydifference1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_polyhull1_SOURCES = polyhull1.cc
 nnc_polyhull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polyhull2_SOURCES = polyhull2.cc
-nnc_polyhull2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polyhull3_SOURCES = polyhull3.cc
-nnc_polyhull3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polyhull4_SOURCES = polyhull4.cc
-nnc_polyhull4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polyhull5_SOURCES = polyhull5.cc
-nnc_polyhull5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polyhull6_SOURCES = polyhull6.cc
-nnc_polyhull6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polyhull7_SOURCES = polyhull7.cc
-nnc_polyhull7_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polyhull8_SOURCES = polyhull8.cc
-nnc_polyhull8_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polyhull9_SOURCES = polyhull9.cc
-nnc_polyhull9_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_polyhull10_SOURCES = polyhull10.cc
-nnc_polyhull10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
