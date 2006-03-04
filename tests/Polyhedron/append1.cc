@@ -101,7 +101,7 @@ main() TRY {
   expected.add_constraint(B >= 0);
   expected.add_constraint(C >= B);
 
-    print_constraints(expected, "*** expected ***");
+  print_constraints(expected, "*** expected ***");
 
   return current == expected ? 0 : 1;
 }
