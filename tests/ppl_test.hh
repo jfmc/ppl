@@ -129,6 +129,7 @@ catch (const std::exception& e) {					\
 #define NEW_TEST_F64(test) NEW_TEST(test)
 #define NEW_TEST_F32(test) NEW_TEST(test)
 #define NEW_TEST_F16(test) NEW_TEST(test)
+#define NEW_TEST_F16A(test) NEW_TEST(test)
 #define NEW_TEST_F8(test) NEW_TEST(test)
 #define NEW_TEST_F8A(test) NEW_TEST(test)
 
@@ -137,6 +138,7 @@ catch (const std::exception& e) {					\
 #define NEW_TEST_F64(test) NEW_TEST_F(test)
 #define NEW_TEST_F32(test) NEW_TEST(test)
 #define NEW_TEST_F16(test) NEW_TEST(test)
+#define NEW_TEST_F16A(test) NEW_TEST(test)
 #define NEW_TEST_F8(test) NEW_TEST(test)
 #define NEW_TEST_F8A(test) NEW_TEST(test)
 
@@ -145,16 +147,31 @@ catch (const std::exception& e) {					\
 #define NEW_TEST_F64(test) NEW_TEST_F(test)
 #define NEW_TEST_F32(test) NEW_TEST_F(test)
 #define NEW_TEST_F16(test) NEW_TEST(test)
+#define NEW_TEST_F16A(test) NEW_TEST(test)
 #define NEW_TEST_F8(test) NEW_TEST(test)
 #define NEW_TEST_F8A(test) NEW_TEST(test)
 
 #elif COEFFICIENT_BITS == 16
 
+#ifdef NDEBUG
+
 #define NEW_TEST_F64(test) NEW_TEST_F(test)
 #define NEW_TEST_F32(test) NEW_TEST_F(test)
 #define NEW_TEST_F16(test) NEW_TEST_F(test)
+#define NEW_TEST_F16A(test) NEW_TEST(test)
 #define NEW_TEST_F8(test) NEW_TEST(test)
 #define NEW_TEST_F8A(test) NEW_TEST(test)
+
+#else
+
+#define NEW_TEST_F64(test) NEW_TEST_F(test)
+#define NEW_TEST_F32(test) NEW_TEST_F(test)
+#define NEW_TEST_F16(test) NEW_TEST_F(test)
+#define NEW_TEST_F16A(test) NEW_TEST_F(test)
+#define NEW_TEST_F8(test) NEW_TEST(test)
+#define NEW_TEST_F8A(test) NEW_TEST(test)
+
+#endif // !defined(NDEBUG)
 
 #elif COEFFICIENT_BITS == 8
 
@@ -163,6 +180,7 @@ catch (const std::exception& e) {					\
 #define NEW_TEST_F64(test) NEW_TEST_F(test)
 #define NEW_TEST_F32(test) NEW_TEST_F(test)
 #define NEW_TEST_F16(test) NEW_TEST_F(test)
+#define NEW_TEST_F16A(test) NEW_TEST_F(test)
 #define NEW_TEST_F8(test) NEW_TEST_F(test)
 #define NEW_TEST_F8A(test) NEW_TEST(test)
 
@@ -171,6 +189,7 @@ catch (const std::exception& e) {					\
 #define NEW_TEST_F64(test) NEW_TEST_F(test)
 #define NEW_TEST_F32(test) NEW_TEST_F(test)
 #define NEW_TEST_F16(test) NEW_TEST_F(test)
+#define NEW_TEST_F16A(test) NEW_TEST_F(test)
 #define NEW_TEST_F8(test) NEW_TEST_F(test)
 #define NEW_TEST_F8A(test) NEW_TEST_F(test)
 
