@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# NOTE: mpq_class must be the first in the list.  See Makefile.am.
-instances="mpq_class float double long_double mpz_class int8_t int16_t int32_t int64_t"
-
 mpz_class_XFAIL_TESTS=
 mpq_class_XFAIL_TESTS=
 int8_t_XFAIL_TESTS=
@@ -17,6 +14,8 @@ if [ -z "$MAKE" ]
 then
     MAKE=make
 fi
+
+instances=`MAKEFLAGS='' $MAKE -s print_INSTANCES`
 
 check_PROGRAMS=`MAKEFLAGS='' $MAKE -s print_check_PROGRAMS`
 

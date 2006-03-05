@@ -87,8 +87,33 @@ TESTS = $(dist_check_SCRIPTS)
 
 XFAIL_TESTS =
 
+if SUPPORTED_FLOAT
+FLOAT_INSTANCE=float
+endif
+if SUPPORTED_DOUBLE
+DOUBLE_INSTANCE=double
+endif
+if SUPPORTED_LONG_DOUBLE
+LONG_DOUBLE_INSTANCE=long_double
+endif
+
+# NOTE: mpq_class must be the first in the list.
+INSTANCES = \
+mpq_class \
+$(FLOAT_INSTANCE) \
+$(DOUBLE_INSTANCE) \
+$(LONG_DOUBLE_INSTANCE) \
+mpz_class \
+int8_t \
+int16_t \
+int32_t \
+int64_t
+
 print_check_PROGRAMS:
 	echo $(check_PROGRAMS)
+
+print_INSTANCES:
+	echo $(INSTANCES)
 
 #
 # Sources for the tests
