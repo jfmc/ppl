@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.9pre3],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.9pre4],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -777,6 +777,7 @@ then
 fi
 
 # System-dependent adjustments.
+cygwin=no
 no_undefined=no
 
 case "${host_cpu}" in
@@ -803,11 +804,14 @@ darwin*)
   fi
   ;;
 cygwin)
+  cygwin=yes
   no_undefined=yes
   ;;
 *)
   ;;
 esac
+
+AM_CONDITIONAL(CYGWIN, test x$cygwin = xyes)
 AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 
 AC_SUBST(extra_includes)
