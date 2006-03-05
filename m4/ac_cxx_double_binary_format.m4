@@ -69,14 +69,14 @@ main() {
     ? 0 : 1;
 }
 
-#else // SIZEOF_FLOAT != 8
+#else // SIZEOF_DOUBLE != 8
 
 int
 main() {
   return 1;
 }
 
-#endif // SIZEOF_FLOAT != 8
+#endif // SIZEOF_DOUBLE != 8
 ]])],
   AC_DEFINE(CXX_DOUBLE_BINARY_FORMAT, float_ieee754_double,
     [The binary format of C++ doubles, if supported; undefined otherwise.])
