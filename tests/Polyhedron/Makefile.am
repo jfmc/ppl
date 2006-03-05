@@ -106,18 +106,15 @@ ORIGINAL_TESTS = \
 	powerset1 \
 	randphull1 randphull2 \
 	relations1 relations2 relations3 \
-	removespacedims1 removespacedims2 removespacedims3 removespacedims4 \
-	removespacedims5 removespacedims6 removespacedims7 removespacedims8 \
-	removespacedims9 removespacedims10 \
+	removespacedims1 removespacedims2 \
 	smm1 \
-	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
-	timeelapse6 timeelapse7 timeelapse8 timeelapse9 \
-	topclosed1 topclosed2 topclosed3 \
-	topclosure1 topclosure2 topclosure3 topclosure4 \
-	universe1 universe2 universe3 universe4 universe5 universe6 universe7 \
+	timeelapse1 timeelapse2 \
+	topclosed1 \
+	topclosure1 \
+	universe1 universe2 \
 	writeconsys1 \
-	writegensys1 writegensys2 writegensys3 \
-	writepolyhedron1 writepolyhedron2 writepolyhedron3 \
+	writegensys1 \
+	writepolyhedron1 writepolyhedron2 \
 	writerelation1 \
 	writevariable1
 
@@ -174,15 +171,11 @@ DERIVED_TESTS = \
 	nnc_polyhull1 \
 	nnc_randphull1 nnc_randphull2 \
 	nnc_relations1 nnc_relations2 \
-	nnc_removespacedims1 nnc_removespacedims2 nnc_removespacedims3 \
-	nnc_removespacedims4 nnc_removespacedims5 nnc_removespacedims6 \
-	nnc_removespacedims8 nnc_removespacedims9 nnc_removespacedims10 \
+	nnc_removespacedims1 \
 	nnc_smm1 \
-	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
-	nnc_timeelapse8 nnc_timeelapse9 \
-	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 \
-	nnc_universe5 nnc_universe7 \
-	nnc_writepolyhedron2 nnc_writepolyhedron3
+	nnc_timeelapse1 \
+	nnc_universe1 \
+	nnc_writepolyhedron1
 
 #
 # Sources for the tests
@@ -352,53 +345,25 @@ relations3_SOURCES = relations3.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 removespacedims2_SOURCES = removespacedims2.cc
-removespacedims3_SOURCES = removespacedims3.cc
-removespacedims4_SOURCES = removespacedims4.cc
-removespacedims5_SOURCES = removespacedims5.cc
-removespacedims6_SOURCES = removespacedims6.cc
-removespacedims7_SOURCES = removespacedims7.cc
-removespacedims8_SOURCES = removespacedims8.cc
-removespacedims9_SOURCES = removespacedims9.cc
-removespacedims10_SOURCES = removespacedims10.cc
 
 smm1_SOURCES = smm1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
 timeelapse2_SOURCES = timeelapse2.cc
-timeelapse3_SOURCES = timeelapse3.cc
-timeelapse4_SOURCES = timeelapse4.cc
-timeelapse5_SOURCES = timeelapse5.cc
-timeelapse6_SOURCES = timeelapse6.cc
-timeelapse7_SOURCES = timeelapse7.cc
-timeelapse8_SOURCES = timeelapse8.cc
-timeelapse9_SOURCES = timeelapse9.cc
 
 topclosed1_SOURCES = topclosed1.cc
-topclosed2_SOURCES = topclosed2.cc
-topclosed3_SOURCES = topclosed3.cc
 
 topclosure1_SOURCES = topclosure1.cc
-topclosure2_SOURCES = topclosure2.cc
-topclosure3_SOURCES = topclosure3.cc
-topclosure4_SOURCES = topclosure4.cc
 
 universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc
-universe3_SOURCES = universe3.cc
-universe4_SOURCES = universe4.cc
-universe5_SOURCES = universe5.cc
-universe6_SOURCES = universe6.cc
-universe7_SOURCES = universe7.cc
 
 writeconsys1_SOURCES = writeconsys1.cc
 
 writegensys1_SOURCES = writegensys1.cc
-writegensys2_SOURCES = writegensys2.cc
-writegensys3_SOURCES = writegensys3.cc
 
 writepolyhedron1_SOURCES = writepolyhedron1.cc
 writepolyhedron2_SOURCES = writepolyhedron2.cc
-writepolyhedron3_SOURCES = writepolyhedron3.cc
 
 writerelation1_SOURCES = writerelation1.cc
 
@@ -585,56 +550,18 @@ nnc_relations2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_removespacedims1_SOURCES = removespacedims1.cc
 nnc_removespacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removespacedims2_SOURCES = removespacedims2.cc
-nnc_removespacedims2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removespacedims3_SOURCES = removespacedims3.cc
-nnc_removespacedims3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removespacedims4_SOURCES = removespacedims4.cc
-nnc_removespacedims4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removespacedims5_SOURCES = removespacedims5.cc
-nnc_removespacedims5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removespacedims6_SOURCES = removespacedims6.cc
-nnc_removespacedims6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removespacedims8_SOURCES = removespacedims8.cc
-nnc_removespacedims8_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removespacedims9_SOURCES = removespacedims9.cc
-nnc_removespacedims9_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removespacedims10_SOURCES = removespacedims10.cc
-nnc_removespacedims10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_smm1_SOURCES = smm1.cc
 nnc_smm1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_timeelapse2_SOURCES = timeelapse2.cc
-nnc_timeelapse2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_timeelapse5_SOURCES = timeelapse5.cc
-nnc_timeelapse5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_timeelapse6_SOURCES = timeelapse6.cc
-nnc_timeelapse6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_timeelapse7_SOURCES = timeelapse7.cc
-nnc_timeelapse7_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_timeelapse8_SOURCES = timeelapse8.cc
-nnc_timeelapse8_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_timeelapse9_SOURCES = timeelapse9.cc
-nnc_timeelapse9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_timeelapse1_SOURCES = timeelapse1.cc
+nnc_timeelapse1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_universe1_SOURCES = universe1.cc
 nnc_universe1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_universe2_SOURCES = universe2.cc
-nnc_universe2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_universe3_SOURCES = universe3.cc
-nnc_universe3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_universe4_SOURCES = universe4.cc
-nnc_universe4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_universe5_SOURCES = universe5.cc
-nnc_universe5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_universe7_SOURCES = universe7.cc
-nnc_universe7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_writepolyhedron2_SOURCES = writepolyhedron2.cc
-nnc_writepolyhedron2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_writepolyhedron3_SOURCES = writepolyhedron3.cc
-nnc_writepolyhedron3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_writepolyhedron1_SOURCES = writepolyhedron1.cc
+nnc_writepolyhedron1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 watchdog1_SRCS = watchdog1.cc
 
@@ -666,7 +593,6 @@ XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
 membytes1 \
 randphull1 \
-removespacedims2 \
 smm1 \
 nnc_membytes1 \
 nnc_randphull1 \
@@ -675,9 +601,7 @@ nnc_smm1
 XFAIL_WITH_INT8_A = \
 $(XFAIL_WITH_INT8) \
 membytes2 \
-nnc_membytes2 \
-nnc_removespacedims2
-
+nnc_membytes2
 
 if USE_INT64
 
@@ -734,10 +658,7 @@ matrix1.dat \
 linearsystem1.dat \
 writeconsys1.dat \
 writegensys1.dat \
-writegensys2.dat \
-writegensys3.dat \
 writepolyhedron1.dat \
 writepolyhedron2.dat \
-writepolyhedron3.dat \
 writerelation1.dat \
 writevariable1.dat
