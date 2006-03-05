@@ -500,8 +500,8 @@ test13() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST_F8(test01);
-  NEW_TEST_F8(test02);
+  NEW_TEST(test01);
+  NEW_TEST(test02);
   NEW_TEST(test03);
   NEW_TEST(test04);
   NEW_TEST(test05);
