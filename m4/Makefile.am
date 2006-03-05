@@ -34,7 +34,7 @@ ac_check_xsb_prolog.m4 \
 ac_cxx_attribute_weak.m4 \
 ac_cxx_double_binary_format.m4 \
 ac_cxx_flexible_arrays.m4 \
-ac_cxx_long_binary_format.m4 \
+ac_cxx_float_binary_format.m4 \
 ac_cxx_long_double_binary_format.m4 \
 lib-ld.m4 \
 lib-link.m4 \
