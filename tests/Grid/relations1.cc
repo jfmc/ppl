@@ -24,150 +24,157 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-
 // Empty grid and point.
+bool
+test01() {
+  Variable A(0);
 
-void
-test1() {
   Grid gr(2, EMPTY);
+  print_congruences(gr, "*** gr ***");
 
-  if (gr.relation_with(grid_point(A)) == Poly_Gen_Relation::nothing())
-    return;
+  bool ok = (gr.relation_with(grid_point(A)) == Poly_Gen_Relation::nothing());
 
-  exit(1);
+  return ok;
 }
 
 // Universe and point.
+bool
+test02() {
+  Variable A(0);
 
-void
-test2() {
   Grid gr(2);
+  print_congruences(gr, "*** gr ***");
 
-  if (gr.relation_with(grid_point(A)) == Poly_Gen_Relation::subsumes())
-    return;
+  bool ok = (gr.relation_with(grid_point(A)) == Poly_Gen_Relation::subsumes());
 
-  exit(1);
+  return ok;
 }
 
 // Lined grid and point.
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test3() {
   Grid_Generator_System gs;
   gs.insert(grid_point());
   gs.insert(grid_point(B));
   gs.insert(grid_line(A));
 
   Grid gr(gs);
+  print_congruences(gr, "*** gr ***");
 
-  if (gr.relation_with(grid_point(A + B)) == Poly_Gen_Relation::subsumes())
-    return;
+  bool ok
+    = (gr.relation_with(grid_point(A + B)) == Poly_Gen_Relation::subsumes());
 
-  exit(1);
+  return ok;
 }
 
 // Equality and point.
 
-void
-test4() {
+bool
+test04() {
+  Variable A(0);
 
   Grid gr(2);
   gr.add_congruence((A %= 0) / 0);
+  print_congruences(gr, "*** gr ***");
 
-  if (gr.relation_with(grid_point(2*A)) == Poly_Gen_Relation::nothing())
-    return;
+  bool ok
+     = (gr.relation_with(grid_point(2*A)) == Poly_Gen_Relation::nothing());
 
-  exit(1);
+  return ok;
 }
 
 // Congruences and points.
 
-void
-test5() {
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence((A - B %= 1) / 2);
   gr.add_congruence((A %= 1) / 3);
+  print_congruences(gr, "*** gr ***");
 
-  if (gr.relation_with(grid_point()) == Poly_Gen_Relation::nothing()
-      && gr.relation_with(grid_point(-B)) == Poly_Gen_Relation::nothing())
-    return;
+  bool ok = (gr.relation_with(grid_point()) == Poly_Gen_Relation::nothing()
+       && gr.relation_with(grid_point(-B)) == Poly_Gen_Relation::nothing());
 
-  exit(1);
+  return ok;
 }
 
 // Congruence and parameter.
 
-void
-test6() {
+bool
+test06() {
+  Variable A(0);
+
   Grid gr(2);
   gr.add_congruence(2*A %= 0);
+  print_congruences(gr, "*** gr ***");
 
-  if (gr.relation_with(parameter(A, 2)) == Poly_Gen_Relation::subsumes())
-    return;
+  bool ok
+    = (gr.relation_with(parameter(A, 2)) == Poly_Gen_Relation::subsumes());
 
-  exit(1);
+  return ok;
 }
 
 // Congruence and line.
 
-void
-test7() {
+bool
+test07() {
+  Variable A(0);
+
   Grid gr(2);
   gr.add_congruence(2*A %= 0);
+  print_congruences(gr, "*** gr ***");
 
-  if (gr.relation_with(grid_line(A)) == Poly_Gen_Relation::nothing())
-    return;
+  bool ok = (gr.relation_with(grid_line(A)) == Poly_Gen_Relation::nothing());
 
-  exit(1);
+  return ok;
 }
 
 // Space dimension exception.
+bool
+test08() {
+  Variable A(0);
+  Variable C(2);
 
-void
-test8() {
   Grid gr(2);
 
   try {
     gr.relation_with(grid_line(A + C));
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (std::invalid_argument) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // Zero dimension universe grid.
-
-void
-test9() {
+bool
+test09() {
   Grid gr(0);
 
-  if (gr.relation_with(grid_point()) == Poly_Gen_Relation::subsumes())
-    return;
+  bool ok = (gr.relation_with(grid_point()) == Poly_Gen_Relation::subsumes());
 
-  exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "relations1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+END_MAIN

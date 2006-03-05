@@ -22,24 +22,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-Variable E(4);
-
 // Initially empty.
+bool
+test01() {
+  Variable A(0);
 
-void
-test1() {
   Grid gr1(2, EMPTY);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
+  print_congruences(gr2, "*** gr2 ***");
 
   Congruence_System cgs((A %= 0) / 2);
 
@@ -47,31 +42,26 @@ test1() {
 
   gr2.limited_extrapolation_assign(gr1, cgs);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = (gr2 == known_gr);
 
-  if (gr2 == known_gr)
-    return;
+  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Empty after minimization.
+bool
+test02() {
+  Variable A(0);
 
-void
-test2() {
   Grid gr1(1);
   gr1.add_congruence(A == 0);
   gr1.add_congruence(A == 1);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(1);
   gr2.add_congruence(A %= 0);
+  print_congruences(gr2, "*** gr2 ***");
 
   Congruence_System cgs((A %= 0) / 3);
 
@@ -79,32 +69,28 @@ test2() {
 
   gr2.limited_extrapolation_assign(gr1, cgs);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = (gr2 == known_gr);
 
-  if (gr2 == known_gr)
-    return;
+  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Equivalent of just widening.
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test3() {
   Grid gr1(2);
   gr1.add_congruence(A == 0);
   gr1.add_congruence(B == 1);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A == 0);
   gr2.add_congruence(B %= 1);
+  print_congruences(gr2, "*** gr2 ***");
 
   Grid known_gr = gr2;
 
@@ -112,33 +98,30 @@ test3() {
 
   gr2.limited_extrapolation_assign(gr1, cgs);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = (gr2 == known_gr);
 
-  if (gr2 == known_gr)
-    return;
+  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Keep all congruences, including a limiting congruence.
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test4() {
   Grid gr1(3);
   gr1.add_congruence((A %= 0) / 2);
   gr1.add_congruence((B %= 0) / 2);
   gr1.add_congruence(C %= 0);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(3);
   gr2.add_congruence((A %= 0) / 2);
   gr2.add_congruence(C %= 0);
+  print_congruences(gr2, "*** gr2 ***");
 
   Grid known_gr = gr2;
 
@@ -146,34 +129,31 @@ test4() {
 
   gr2.limited_extrapolation_assign(gr1, cgs);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = (gr2 == known_gr);
 
-  if (gr2 == known_gr)
-    return;
+  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Keep some congruences.
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-void
-test5() {
   Grid gr1(3);
   gr1.add_congruence((A %= 0) / 2);
   gr1.add_congruence((B %= 0) / 2);
   gr1.add_congruence(C %= 0);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(3);
   gr2.add_congruence(A %= 0);
   gr2.add_congruence((B %= 0) / 2);
   gr2.add_congruence(C %= 0);
+  print_congruences(gr2, "*** gr2 ***");
 
   Congruence_System cgs(A + 0*C %= 0);
 
@@ -181,26 +161,20 @@ test5() {
 
   gr2.limited_extrapolation_assign(gr1, cgs);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = (gr2 == known_gr);
 
-  if (gr2 == known_gr)
-    return;
+  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Both universe.
+bool
+test06() {
+  Variable E(4);
 
-void
-test6() {
   Grid gr1(5);
+  print_congruences(gr1, "*** gr1 ***");
   Grid gr2(5);
 
   Congruence_System cgs(0*E %= 0);
@@ -209,29 +183,28 @@ test6() {
 
   Grid known_gr(5);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Keeping many limiting congruences.
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test7() {
   Grid gr1(2);
   gr1.add_congruence((A %= 0) / 4);
   gr1.add_congruence((B %= 0) / 4);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence((A %= 0) / 2);
   gr2.add_congruence(B %= 0);
+  print_congruences(gr2, "*** gr2 ***");
 
   Congruence_System cgs;
   cgs.insert(A %= 0);
@@ -239,32 +212,28 @@ test7() {
 
   gr2.limited_extrapolation_assign(gr1, cgs);
 
-  if (find_variation(gr2))
-    exit(1);
-
   Grid known_gr(cgs);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Tokens.
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test8() {
   Grid gr1(2);
   gr1.add_congruence((A %= 0) / 4);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
+  print_congruences(gr2, "*** gr2 ***");
 
   unsigned int tokens = 6;
 
@@ -275,39 +244,32 @@ test8() {
 
   gr2.limited_extrapolation_assign(gr1, cgs, &tokens);
 
-  if (find_variation(gr2))
-    exit(1);
-
+#undef TOKENS
 #define TOKENS 5
-#define TOKEN_MSG "`tokens' should be " PPL_TEST_XSTR(TOKENS) "."
 
-  if (gr2 == known_gr)
-    if (tokens == TOKENS)
-      return;
-    else
-      nout << TOKEN_MSG << endl;
-  else {
-    nout << "Grid should equal known grid." << endl;
-    tokens == TOKENS || nout << TOKEN_MSG << endl;
-  }
+  bool ok = (gr2 == known_gr) && (tokens == TOKENS);
 
-  nout << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  nout << "tokens: before " << TOKENS << ", after " << tokens << endl;
 
-  dump_grids(gr2, known_gr);
+  print_congruences(gr2,
+     "*** gr2.limited_extrapolation_assign(gr1, cgs, &tokens) ***");
 
-  exit(1);
+  return ok;
 }
 
 // 0 tokens.
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test9() {
   Grid gr1(2);
   gr1.add_congruence((A %= 0) / 4);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
+  print_congruences(gr2, "*** gr2 ***");
 
 #undef TOKENS
 #define TOKENS 0
@@ -321,107 +283,89 @@ test9() {
 
   gr2.limited_extrapolation_assign(gr1, cgs, &tokens);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = (gr2 == known_gr) && (tokens == TOKENS);
 
-#define TOKEN_MSG "`tokens' should be " PPL_TEST_XSTR(TOKENS) "."
+  nout << "tokens: before " << TOKENS << ", after " << tokens << endl;
 
-  if (gr2 == known_gr)
-    if (tokens == TOKENS)
-      return;
-    else
-      nout << TOKEN_MSG << endl;
-  else {
-    nout << "Grid should equal known grid." << endl;
-    tokens == TOKENS || nout << TOKEN_MSG << endl;
-  }
+  print_congruences(gr2,
+     "*** gr2.limited_extrapolation_assign(gr1, cgs, &tokens) ***");
 
-  nout << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Zero dimension.
-
-void
+bool
 test10() {
   Grid gr1(0);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(0);
+  print_congruences(gr2, "*** gr2 ***");
 
-  Congruence_System cgs((Linear_Expression::zero() %= Linear_Expression::zero()) / 4);
+  Congruence_System cgs(
+     (Linear_Expression::zero() %= Linear_Expression::zero()) / 4);
 
   gr2.limited_extrapolation_assign(gr1, cgs);
 
-  if (find_variation(gr2))
-    exit(1);
-
   Grid known_gr(0);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Congruences and equalities.
-
-void
+bool
 test11() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr1(2);
   gr1.add_congruence(A %= 0);
   gr1.add_congruence((A - B == 0) / 27);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
   gr2.add_congruence((A - B == 0) / 9);
+  print_congruences(gr2, "*** gr2 ***");
 
   Congruence_System cgs;
   cgs.insert((A - B == 0) / 3);
 
   gr2.limited_extrapolation_assign(gr1, cgs);
 
-  if (find_variation(gr2))
-    exit(1);
-
   Grid known_gr(2);
   known_gr.add_congruence(A %= 0);
   known_gr.add_congruence((A - B == 0) / 3);
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // From generators, with a limiting equality.
-
-void
+bool
 test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(C, 3));
   gr1.add_generator(grid_line(A - 2*B));
   gr1.add_generator(grid_point(C + 3*A + 3*C, 3));
+  print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
   gr2.add_generator(grid_point(C, 3));
   gr2.add_generator(grid_line(A - 2*B));
   gr2.add_generator(grid_line(A + C));
+  print_generators(gr2, "*** gr2 ***");
 
   Grid known_gr = gr2;
 
@@ -430,126 +374,123 @@ test12() {
 
   gr2.limited_extrapolation_assign(gr1, cgs);
 
-  if (find_variation(gr2))
-    exit(1);
+  bool ok = (gr2 == known_gr);
 
-  if (gr2 == known_gr)
-    return;
+  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Exception due to space dimensions of grids.
-
-void
+bool
 test13() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(C, 3));
   gr1.add_generator(grid_point(C + A - 2*B, 3));
+  print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(5, EMPTY);
   gr2.add_generator(grid_point(C, 3));
   gr2.add_generator(grid_point(2*C + A - 2*B, 6));
+  print_generators(gr2, "*** gr2 ***");
 
   Congruence_System cgs;
   cgs.insert(A - 0*C == 3);
 
   try {
     gr2.limited_extrapolation_assign(gr1, cgs);
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (const std::invalid_argument& e) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // Exception due to space dimension of congruence system.
-
-void
+bool
 test14() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr1(2, EMPTY);
   gr1.add_generator(grid_point(A));
   gr1.add_generator(parameter(B, 3));
+  print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(2, EMPTY);
   gr2.add_generator(grid_point(A));
   gr2.add_generator(parameter(B, 6));
+  print_generators(gr2, "*** gr2 ***");
 
   Congruence_System cgs;
   cgs.insert(A - 0*C == 3);
 
   try {
     gr2.limited_extrapolation_assign(gr1, cgs);
-    nout << "Exception expected." << endl;
-    exit(1);
   }
-  catch (const std::invalid_argument& e) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // Limit with an empty congruence system.
-
-void
+bool
 test15() {
+  Variable A(0);
+
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point());
   gr1.add_generator(parameter(A, 3));
+  print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
   gr2.add_generator(grid_point());
   gr2.add_generator(parameter(A, 6));
+  print_generators(gr2, "*** gr2 ***");
 
   Congruence_System cgs;
 
   gr2.limited_extrapolation_assign(gr1, cgs);
-
-  if (find_variation(gr2))
-    exit(1);
 
   Grid known_gr = gr2;
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_line(A));
 
-  if (gr2 == known_gr)
-    return;
+  bool ok = (gr2 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr2 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
 
-  dump_grids(gr2, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "limitedextrapolation1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+  NEW_TEST(test15);
+END_MAIN

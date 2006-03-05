@@ -22,38 +22,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
 // Empty grid, empty mapping.
-
-void
-test1() {
+bool
+test01() {
   Partial_Function function;
 
   Grid gr(3, EMPTY);
+  print_congruences(gr, "*** gr ***");
 
   gr.map_space_dimensions(function);
 
   Grid known_gr(0, EMPTY);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.map_space_dimensions(function) ***");
 
-  dump_grids(gr,known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Mapping all dimensions.
-
-void
-test2() {
+bool
+test02() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -69,6 +61,7 @@ test2() {
   gs.insert(grid_point(A));
 
   Grid gr(gs);
+  print_generators(gr, "*** gr ***");
 
   gr.map_space_dimensions(function);
 
@@ -79,22 +72,16 @@ test2() {
 
   Grid known_gr(known_gs);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.map_space_dimensions(function) ***");
 
-  dump_grids(gr,known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Mapping all dimensions, with overlap.
-
-void
-test3() {
+bool
+test03() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -109,6 +96,7 @@ test3() {
   gs.insert(grid_line(A - C));
 
   Grid gr(gs);
+  print_generators(gr, "*** gr ***");
 
   gr.map_space_dimensions(function);
 
@@ -118,22 +106,16 @@ test3() {
   known_gs.insert(grid_line(B - A));
   Grid known_gr(known_gs);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.map_space_dimensions(function) ***");
 
-  dump_grids(gr,known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Mapping more dimensions than there are in the grid.
-
-void
-test4() {
+bool
+test04() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -149,6 +131,7 @@ test4() {
   gs.insert(grid_point(B));
 
   Grid gr(gs);
+  print_generators(gr, "*** gr ***");
 
   gr.map_space_dimensions(function);
 
@@ -156,22 +139,16 @@ test4() {
   known_gs.insert(grid_point(0*C));
   Grid known_gr(known_gs);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.map_space_dimensions(function) ***");
 
-  dump_grids(gr,known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Mapping all dimensions to themselves.
-
-void
-test5() {
+bool
+test05() {
   Variable A(0);
   Variable B(1);
 
@@ -186,26 +163,21 @@ test5() {
   gs.insert(grid_point(A + B));
 
   Grid gr(gs);
+  print_generators(gr, "*** gr ***");
   Grid known_gr(gr);
 
   gr.map_space_dimensions(function);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.map_space_dimensions(function) ***");
 
-  dump_grids(gr,known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Mapping all additional dimensions (in the mapping) to themselves.
-
-void
-test6() {
+bool
+test06() {
   Variable A(0);
   Variable B(1);
 
@@ -222,6 +194,7 @@ test6() {
   gs.insert(grid_point(A + 2*B));
 
   Grid gr(gs);
+  print_generators(gr, "*** gr ***");
 
   gr.map_space_dimensions(function);
 
@@ -231,22 +204,16 @@ test6() {
   known_gr.add_generator(grid_point(2*A));
   known_gr.add_generator(grid_point(2*A + B));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.map_space_dimensions(function) ***");
 
-  dump_grids(gr,known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Mapping new dimensions over existing ones.
-
-void
-test7() {
+bool
+test07() {
   Variable A(0);
   Variable B(1);
 
@@ -262,6 +229,7 @@ test7() {
   gs.insert(grid_line(A + B));
 
   Grid gr(gs);
+  print_generators(gr, "*** gr ***");
 
   gr.map_space_dimensions(function);
 
@@ -269,49 +237,38 @@ test7() {
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_line(A));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.map_space_dimensions(function) ***");
 
-  dump_grids(gr,known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Mapping away a dimension in an empty grid.
-
-void
-test8() {
+bool
+test08() {
   Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
 
   Grid gr(3, EMPTY);
+  print_generators(gr, "*** gr ***");
 
   gr.map_space_dimensions(function);
 
   Grid known_gr(2, EMPTY);
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.map_space_dimensions(function) ***");
 
-  dump_grids(gr,known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // A minimized grid in which the point contains factors and the
 // divisor is greater than one.
-
-void
-test9() {
+bool
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -325,8 +282,8 @@ test9() {
   gr.add_generator(grid_point(4*A + B, 2));
 
   // Force minimization.
-  if (find_variation(gr))
-    exit(1);
+  gr.minimized_generators();
+  print_generators(gr, "*** gr ***");
 
   gr.map_space_dimensions(function);
 
@@ -334,36 +291,23 @@ test9() {
   known_gr.add_generator(grid_point(4*B, 2));
   known_gr.add_generator(grid_point(4*B + A, 2));
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << "grid:" << endl << gr << endl
-       << "known grid:" << endl << known_gr << endl;
+  print_congruences(gr, "*** gr.map_space_dimensions(function) ***");
 
-  dump_grids(gr,known_gr);
-
-  exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "mapspacedims1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+END_MAIN

@@ -24,44 +24,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
   Congruence_System cgs;
 
-  if (!cgs.OK()) {
-    nout << "cgs.OK() failed" << endl << "ASCII dump: ";
-    cgs.ascii_dump(nout);
-    return 1;
-  }
+  bool ok = (cgs.OK());
 
   stringstream ss;
   ss << cgs;
-  if (ss.str().compare("true")) {
-    nout << "  output: " << ss.str() << endl
-	 << "expected: true" << endl;
-    return 1;
-  }
+  ok &= (!ss.str().compare("true"));
 
   cgs.insert(A - 2*B %= 2);
   cgs.insert(2*A %= 4);
-  if (find_variation(cgs))
-    exit(1);
 
 #define OUTPUT "A - 2*B = 0 (mod 1), 2*A = 0 (mod 1)"
 
   ss.str("");
   ss << cgs;
-  if (ss.str().compare(OUTPUT)) {
-    nout << "  output: " << ss.str() << endl
-	 << "expected: " OUTPUT << endl;
-    return 1;
-  }
+  ok &= (!ss.str().compare(OUTPUT));
 
-  return 0;
+  print_congruences(cgs, "*** cgs ***");
+
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+END_MAIN
+

@@ -445,9 +445,6 @@ test10() {
 
   gr.get_covering_box(box1);
 
-  if (find_variation(gr))
-    exit(1);
-
   Bounding_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 1, 1);

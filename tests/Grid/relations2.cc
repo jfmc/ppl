@@ -22,107 +22,115 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-
 // A proper congruence and a disjoint point.
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test1() {
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point(A - B));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((A - B %= 1) / 2) == Poly_Con_Relation::is_disjoint())
-    return;
+  bool ok
+    = gr.relation_with((A - B %= 1) / 2) == Poly_Con_Relation::is_disjoint();
 
-  exit(1);
+  return ok;
 }
 
 // A proper congruence and an included grid.
+bool
+test02() {
+  Variable A(0);
 
-void
-test2() {
   Grid gr(1, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(4*A));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((A %= 0) / 2) == Poly_Con_Relation::is_included())
-    return;
+  bool ok
+    = (gr.relation_with((A %= 0) / 2) == Poly_Con_Relation::is_included());
 
-  exit(1);
+  return ok;
 }
 
 // A proper congruence and an intersected grid.
+bool
+test03() {
+  Variable A(0);
+  Variable C(2);
 
-void
-test3() {
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(2*A));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((A + C %= 0) / 3) == Poly_Con_Relation::strictly_intersects())
-    return;
+  bool ok
+    =  (gr.relation_with((A + C %= 0) / 3) == Poly_Con_Relation::strictly_intersects());
 
-  exit(1);
+  return ok;
 }
 
 // A line and equalities.
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test4() {
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(grid_line(A));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((A + 0*B %= 0) / 0) == Poly_Con_Relation::strictly_intersects()
-      && gr.relation_with((B + 0*B %= -2) / 0) == Poly_Con_Relation::is_disjoint())
-    return;
+  bool ok
+     = (gr.relation_with((A + 0*B %= 0) / 0) == Poly_Con_Relation::strictly_intersects()
+	&& gr.relation_with((B + 0*B %= -2) / 0) == Poly_Con_Relation::is_disjoint());
 
-  exit(1);
+  return ok;
 }
 
 // Inclusion of a point.
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test5() {
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point(A + B));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with(A + 0*B %= 0) == Poly_Con_Relation::is_included())
-    return;
+  bool ok
+    = (gr.relation_with(A + 0*B %= 0) == Poly_Con_Relation::is_included());
 
-  exit(1);
+  return ok;
 }
 
 // Empty grid.
 
-void
-test6() {
-  nout << "test6:" << endl;
+bool
+test06() {
+  Variable B(1);
 
   Grid gr(2, EMPTY);
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((B %= 0) / 2)
+  bool ok = (gr.relation_with((B %= 0) / 2)
       == (Poly_Con_Relation::is_included()
-	  && Poly_Con_Relation::is_disjoint()))
-    return;
+	  && Poly_Con_Relation::is_disjoint()));
 
-  exit(1);
+  return ok;
 }
 
 // Zero dimension universe grid.
-
-void
-test7() {
+bool
+test07() {
   Grid gr;
+  print_generators(gr, "*** gr ***");
 
-  if (// Trivially false congruence.
+  bool ok
+    = (// Trivially false congruence.
       gr.relation_with(Congruence::zero_dim_false())
       == Poly_Con_Relation::is_disjoint()
       // False congruence.
@@ -142,208 +150,227 @@ test7() {
       == Poly_Con_Relation::is_included()
       // Integrality congruence.
       && gr.relation_with(Congruence::zero_dim_integrality())
-      == Poly_Con_Relation::is_included())
-    return;
+      == Poly_Con_Relation::is_included());
 
-  exit(1);
+  return ok;
 }
 
 // A congruence and a disjoint grid.
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test8() {
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(grid_point(2*A + 5*B));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((5*A - 2*B == 1) / 0)
-      == Poly_Con_Relation::is_disjoint())
-    return;
+  bool ok
+    = (gr.relation_with((5*A - 2*B == 1) / 0)
+      == Poly_Con_Relation::is_disjoint());
 
-  exit(1);
+  return ok;
 }
 
 // A congruence and a disjoint grid.
+bool
+test09() {
+  Variable A(0);
+  Variable D(3);
 
-void
-test9() {
   Grid gr(4);
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with(A - 2*D %= 0)
-      == Poly_Con_Relation::strictly_intersects())
-    return;
+  bool ok
+    = (gr.relation_with(A - 2*D %= 0)
+       == Poly_Con_Relation::strictly_intersects());
 
-  exit(1);
+  return ok;
 }
 
 // Point with a divisor that is greater than zero.
-
-void
+bool
 test10() {
+  Variable A(0);
+
   Grid gr(3, EMPTY);
   gr.add_generator(grid_point(A, 2));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((A %= 3) / 0)
+  bool ok
+    = (gr.relation_with((A %= 3) / 0)
       == Poly_Con_Relation::is_disjoint()
       && gr.relation_with((2*A %= 1) / 0)
       == Poly_Con_Relation::is_included()
       && gr.relation_with(2*A %= 1)
-      == Poly_Con_Relation::is_included())
-    return;
+      == Poly_Con_Relation::is_included());
 
-  exit(1);
+  return ok;
 }
 
 // Grid with a divisor that is greater than zero: seperate spaces.
-
-void
+bool
 test11() {
+  Variable A(0);
+
   Grid gr(1, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(parameter(A, 5));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((10*A %= 1) / 0)
-      == Poly_Con_Relation::is_disjoint())
-    return;
+  bool ok = (gr.relation_with((10*A %= 1) / 0)
+      == Poly_Con_Relation::is_disjoint());
 
-  exit(1);
+  return ok;
 }
 
 // Grid with a divisor that is greater than zero: inclusion.
-
-void
+bool
 test12() {
+  Variable A(0);
+
   Grid gr(1, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(parameter(A, 5));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((10*A %= 0) / 1)
-      == Poly_Con_Relation::is_included())
-    return;
+  bool ok
+    = (gr.relation_with((10*A %= 0) / 1)
+      == Poly_Con_Relation::is_included());
 
-  exit(1);
+  return ok;
 }
 
 // Grid with a divisor that is greater than zero: strict intersection.
-
-void
+bool
 test13() {
+  Variable A(0);
+
   Grid gr(1, EMPTY);
   gr.add_generator(grid_point());
   gr.add_generator(parameter(A, 5));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with(A %= 0)
-      == Poly_Con_Relation::strictly_intersects())
-    return;
+  bool ok
+    = (gr.relation_with(A %= 0)
+      == Poly_Con_Relation::strictly_intersects());
 
-  exit(1);
+  return ok;
 }
 
 // Space dimension exception.
-
-void
+bool
 test14() {
-  nout << "test14:" << endl;
+  Variable A(0);
+  Variable B(1);
 
   Grid gr(1);
+  print_generators(gr, "*** gr ***");
 
   try {
     gr.relation_with(A + B %= 0);
-    exit(1);
   }
-  catch (std::invalid_argument) {}
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
 }
 
 // Empty grid, where updating finds the grid empty.
-
-void
+bool
 test15() {
+  Variable A(0);
+  Variable B(1);
+
   Grid gr(2);
   gr.add_congruence(A == 1);
   gr.add_congruence(A == 2);
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((B %= 0) / 2)
-      == (Poly_Con_Relation::is_included()
-	  && Poly_Con_Relation::is_disjoint()))
-    return;
+  bool ok
+    = (gr.relation_with((B %= 0) / 2)
+        == (Poly_Con_Relation::is_included()
+	    && Poly_Con_Relation::is_disjoint()));
 
-  exit(1);
+  return ok;
 }
 
 // Generators that require the relation_with(cg) GCD calculation.
-
-void
+bool
 test16() {
+  Variable A(0);
+
   Grid gr(1, EMPTY);
   gr.add_generator(grid_point(A));
   gr.add_generator(grid_point(3*A));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((A %= 0) / 4)
-      == Poly_Con_Relation::is_disjoint())
-    return;
+  bool ok
+    = (gr.relation_with((A %= 0) / 4)
+      == Poly_Con_Relation::is_disjoint());
 
-  exit(1);
+  return ok;
 }
 
 // Strict intersection, where generators require the relation_with(cg)
 // GCD calculation.
-
-void
+bool
 test17() {
+  Variable A(0);
+
   Grid gr(1, EMPTY);
   gr.add_generator(grid_point(3*A));
   gr.add_generator(grid_point(6*A));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((A %= 0) / 8)
-      == Poly_Con_Relation::strictly_intersects())
-    return;
+  bool ok
+    = (gr.relation_with((A %= 0) / 8)
+      == Poly_Con_Relation::strictly_intersects());
 
-  exit(1);
+  return ok;
 }
 
 // Strict intersection, where generators require the relation_with(cg)
 // GCD calculation, with a parameter.
-
-void
+bool
 test18() {
+  Variable A(0);
+
   Grid gr(1, EMPTY);
   gr.add_generator(grid_point(3*A));
   gr.add_generator(parameter(3*A));
+  print_generators(gr, "*** gr ***");
 
-  if (gr.relation_with((A %= 0) / 8)
-      == Poly_Con_Relation::strictly_intersects())
-    return;
+  bool ok
+    = (gr.relation_with((A %= 0) / 8)
+      == Poly_Con_Relation::strictly_intersects());
 
-  exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "relations2:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+  NEW_TEST(test13);
+  NEW_TEST(test14);
+  NEW_TEST(test15);
+  NEW_TEST(test16);
+  NEW_TEST(test17);
+  NEW_TEST(test18);
+END_MAIN

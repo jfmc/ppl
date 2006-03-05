@@ -22,347 +22,319 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-
 // Zero dimension.
-
-void
-test1() {
+bool
+test01() {
   Grid gr1(0);
+  print_generators(gr1, "*** gr1 ***");
   Grid gr2(0);
+  print_generators(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
-
-  if (find_variation(gr1))
-    exit(1);
 
   Grid known_gr(0);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.time_elapse_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Zero dimension, second grid empty.
-
-void
-test2() {
+bool
+test02() {
   Grid gr1(0);
+  print_generators(gr1, "*** gr1 ***");
   Grid gr2(0, EMPTY);
+  print_generators(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
-
-  if (find_variation(gr1))
-    exit(1);
 
   Grid known_gr(0, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.time_elapse_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // First grid empty.
+bool
+test03() {
+  Variable A(0);
 
-void
-test3() {
   Grid gr1(4, EMPTY);
+  print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(4);
   gr2.add_congruence(A %= 3);
+  print_congruences(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(4, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.time_elapse_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Second grid empty.
+bool
+test04() {
+  Variable A(0);
 
-void
-test4() {
   Grid gr1(4);
   gr1.add_congruence(A %= 3);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(4, EMPTY);
+  print_generators(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
-
   Grid known_gr(4, EMPTY);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.time_elapse_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Second grid a single point at the origin.
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test5() {
   Grid gr1(2);
   gr1.add_congruence(A + 2*B %= 0);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2, EMPTY);
   gr2.add_generator(grid_point());
+  print_generators(gr2, "*** gr2 ***");
 
   Grid known_gr(gr1);
 
   gr1.time_elapse_assign(gr2);
 
-  if (find_variation(gr1))
-    exit(1);
+  bool ok = (gr1 == known_gr);
 
-  if (gr1 == known_gr)
-    return;
+  print_congruences(gr1, "*** gr1.time_elapse_assign(gr2) ***");
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
-
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
-// One dimension grids of equalities.
 
-void
-test6() {
+// One dimension grids of equalities.
+bool
+test06() {
+  Variable A(0);
+
   Grid gr1(1);
   gr1.add_congruence(A == 2);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(1);
   gr2.add_congruence(A == 1);
+  print_congruences(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
-
-  if (find_variation(gr1))
-    exit(1);
 
   Grid known_gr(1);
   known_gr.add_congruence(A %= 0);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.time_elapse_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // One dimension grids with congruences.
+bool
+test07() {
+  Variable A(0);
 
-void
-test7() {
   Grid gr1(1);
   gr1.add_congruence(A == 2);
+  print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(1);
   gr2.add_congruence((A %= 0) / 3);
+  print_congruences(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
-
-  if (find_variation(gr1))
-    exit(1);
 
   Grid known_gr(1);
   known_gr.add_congruence((A %= 2) / 3);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.time_elapse_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Multi-dimension grids.
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test8() {
   Grid gr1(2);
   gr1.add_congruence((A - B %= 1) / 6);
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence((A %= 0) / 2);
   gr2.add_congruence(B == 0);
+  print_congruences(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
-
-  if (find_variation(gr1))
-    exit(1);
 
   Grid known_gr(2);
   known_gr.add_congruence((A - B %= 1) / 2);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.time_elapse_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Multi-dimension grids with denominators, in timeelapse2.
 
 // Multi-dimension grids from generators in sub-optimal form.
+bool
+test09() {
+  Variable A(0);
+  Variable D(3);
 
-void
-test9() {
   Grid gr1(4, EMPTY);
   gr1.add_generator(grid_point());
   gr1.add_generator(grid_point(2*A));
   gr1.add_generator(grid_point(4*A));
   gr1.add_generator(grid_point(D));
+  print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(4, EMPTY);
   gr2.add_generator(grid_point(A));
+  print_generators(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
-
-  if (find_variation(gr1))
-    exit(1);
 
   Grid known_gr(4, EMPTY);
   known_gr.add_generator(grid_point());
   known_gr.add_generator(grid_point(A));
   known_gr.add_generator(grid_point(D));
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.time_elapse_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // A grid of a single point, where the position of the second grid
 // causes the result to be more dense than the second grid.
-
-void
+bool
 test10() {
+  Variable A(0);
+
   Grid gr1(1);
   gr1.add_congruence(A == 2);
+  print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(1);
   gr2.add_congruence((A %= 1) / 3);
+  print_congruences(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
-
-  if (find_variation(gr1))
-    exit(1);
 
   Grid known_gr(1);
   known_gr.add_congruence(A %= 0);
 
-  if (gr1 == known_gr)
-    return;
+  bool ok = (gr1 == known_gr);
 
-  nout << "Grid should equal known grid." << endl
-       << " grid:" << endl << gr1 << endl
-       << "known:" << endl << known_gr << endl;
+  print_congruences(gr1, "*** gr1.time_elapse_assign(gr2) ***");
 
-  dump_grids(gr1, known_gr);
-
-  exit(1);
+  return ok;
 }
 
 // Space dimension exception.
-
-void
+bool
 test11() {
   Grid gr1(1, EMPTY);
   gr1.add_generator(grid_point());
+  print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(19, EMPTY);
+  print_generators(gr2, "*** gr2 ***");
 
   try {
     gr1.time_elapse_assign(gr2);
-    nout << "Exception expected." << endl;
-    exit(1);
-  } catch (const std::invalid_argument& e) {}
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+// Multi-dimension grids with denominators.
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr1(3, EMPTY);
+  gr1.add_generator(grid_point());
+  gr1.add_generator(grid_point(A + 2*B - 3*C, 3));
+  print_generators(gr1, "*** gr1 ***");
+
+  Grid gr2(3, EMPTY);
+  gr2.add_generator(grid_point(3*A - B + 4*C, 7));
+  print_generators(gr2, "*** gr2 ***");
+
+  gr1.time_elapse_assign(gr2);
+
+  Grid known_gr(3, EMPTY);
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(grid_point(A + 2*B - 3*C, 3));
+  known_gr.add_generator(grid_point(3*A - B + 4*C, 7));
+
+  bool ok = (gr1 == known_gr);
+
+  print_congruences(gr1, "*** gr1.time_elapse_assign(gr2) ***");
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "timeelapse1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST_F8(test12);
+END_MAIN

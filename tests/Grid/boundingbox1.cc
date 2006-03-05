@@ -103,9 +103,6 @@ test04() {
 
   Grid gr(box, From_Bounding_Box());
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid known_gr(3, EMPTY);
   known_gr.add_generator(grid_point(3*C));
   known_gr.add_generator(grid_line(A));

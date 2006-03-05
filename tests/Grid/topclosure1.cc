@@ -24,44 +24,46 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-
 // Empty.
-
-void
-test1() {
+bool
+test01() {
   Grid gr(6, EMPTY);
+  print_generators(gr, "*** gr ***");
 
   Grid known_gr = gr;
 
   gr.topological_closure_assign();
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  exit(1);
+  print_generators(gr, "*** gr.topological_closure_assign() ***");
+
+  return ok;
 }
 
 // Universe
-
-void
-test2() {
+bool
+test02() {
   Grid gr(5);
+  print_generators(gr, "*** gr ***");
 
   Grid known_gr = gr;
 
   gr.topological_closure_assign();
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  exit(1);
+  print_generators(gr, "*** gr.topological_closure_assign() ***");
+
+  return ok;
 }
 
-void
-test3() {
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid_Generator_System gs;
   gs.insert(grid_point(0*C));
   gs.insert(grid_line(A));
@@ -69,25 +71,23 @@ test3() {
   gs.insert(parameter(-C));
 
   Grid gr(gs);
+  print_generators(gr, "*** gr ***");
 
   Grid known_gr = gr;
 
   gr.topological_closure_assign();
 
-  if (gr == known_gr)
-    return;
+  bool ok = (gr == known_gr);
 
-  exit(1);
+  print_generators(gr, "*** gr.topological_closure_assign() ***");
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+END_MAIN

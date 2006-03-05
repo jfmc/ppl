@@ -81,13 +81,13 @@ join1 join2 \
 limitedextrapolation1 \
 mapspacedims1 \
 maxmin1 \
-membytes1 membytes2 \
-mincongruences1 \
+membytes1 \
 mingenerators1 \
+mincongruences1 \
 outputoperator1 \
 relations1 relations2 \
-removespacedims1 removespacedims2 \
-timeelapse1 timeelapse2 \
+removespacedims1 \
+timeelapse1 \
 topclosed1 \
 topclosure1 \
 widening1 \
@@ -189,7 +189,6 @@ mapspacedims1_SOURCES = mapspacedims1.cc
 maxmin1_SOURCES = maxmin1.cc
 
 membytes1_SOURCES = membytes1.cc
-membytes2_SOURCES = membytes2.cc
 
 mincongruences1_SOURCES = mincongruences1.cc
 
@@ -201,11 +200,8 @@ relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
-removespacedims2_SOURCES = removespacedims2.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
-
-timeelapse2_SOURCES = timeelapse2.cc
 
 topclosed1_SOURCES = topclosed1.cc
 
@@ -227,8 +223,7 @@ XFAIL_WITH_INT16 = \
 $(XFAIL_WITH_INT32)
 
 XFAIL_WITH_INT8 = \
-$(XFAIL_WITH_INT16) \
-timeelapse2
+$(XFAIL_WITH_INT16)
 
 if USE_INT64
 

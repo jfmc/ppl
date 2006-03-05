@@ -26,13 +26,9 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
-Variable A(0);
-Variable C(2);
-
 // One dimension universe and empty.
-
-void
-test1() {
+bool
+test01() {
   Grid gr1(1, EMPTY);
 
   stringstream ss1;
@@ -43,16 +39,14 @@ test1() {
   stringstream ss2;
   ss2 << gr2;
 
-  if (ss1.str().compare(ss1.str())) {
-    nout << "Outputs from operator<< matched." << endl;
-    exit(1);
-  }
+  bool ok = (ss2.str().compare(ss1.str()));
+
+  return ok;
 }
 
 // Many dimensioned universe and empty.
-
-void
-test2() {
+bool
+test02() {
   Grid gr1(3, EMPTY);
 
   stringstream ss1;
@@ -63,16 +57,14 @@ test2() {
   stringstream ss2;
   ss2 << gr2;
 
-  if (ss1.str().compare(ss1.str())) {
-    nout << "Outputs from operator<< matched." << endl;
-    exit(1);
-  }
+  bool ok = (ss2.str().compare(ss1.str()));
+
+  return ok;
 }
 
 // Universe and empty, mixed dimensions.
-
-void
-test3() {
+bool
+test03() {
   Grid gr1(4, EMPTY);
 
   stringstream ss1;
@@ -83,16 +75,17 @@ test3() {
   stringstream ss2;
   ss2 << gr2;
 
-  if (ss1.str().compare(ss1.str())) {
-    nout << "Outputs from operator<< matched." << endl;
-    exit(1);
-  }
+  bool ok = (ss2.str().compare(ss1.str()));
+
+  return ok;
 }
 
 // Grids of same dimensions.
+bool
+test04() {
+  Variable A(0);
+  Variable C(2);
 
-void
-test4() {
   Grid gr1(4, EMPTY);
   gr1.add_generator(grid_point(3*A + C));
   gr1.add_generator(parameter(3*A));
@@ -106,16 +99,17 @@ test4() {
   stringstream ss2;
   ss2 << gr2;
 
-  if (ss1.str().compare(ss1.str())) {
-    nout << "Outputs from operator<< matched." << endl;
-    exit(1);
-  }
+  bool ok = (ss2.str().compare(ss1.str()));
+
+  return ok;
 }
 
 // Grids of mixed dimensions.
+bool
+test05() {
+  Variable A(0);
+  Variable C(2);
 
-void
-test5() {
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(3*A + C));
   gr1.add_generator(parameter(3*A));
@@ -129,26 +123,17 @@ test5() {
   stringstream ss2;
   ss2 << gr2;
 
-  if (ss1.str().compare(ss1.str())) {
-    nout << "Outputs from operator<< matched." << endl;
-    exit(1);
-  }
+  bool ok = (ss2.str().compare(ss1.str()));
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "outputoperator1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+END_MAIN

@@ -27,27 +27,22 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-Variable E(4);
-Variable F(5);
-
-void
+bool
 check_both(Grid& gr, Linear_Expression& le, string grid_name) {
   Grid_Generator ext_pnt(grid_point());
   bool dummy;
   Coefficient ext_n, ext_d;
 
-  if (gr.minimize(le, ext_n, ext_d, dummy, ext_pnt)
-      || gr.maximize(le, ext_n, ext_d, dummy, ext_pnt)) {
+  bool ok = (!gr.minimize(le, ext_n, ext_d, dummy, ext_pnt)
+      && !gr.maximize(le, ext_n, ext_d, dummy, ext_pnt));
+
+  if (!ok)
     nout << grid_name << " bounded expr" << endl;
-    exit(1);
-  }
+
+  return ok;
 }
 
-void
+bool
 check_minimize(Grid& gr, Linear_Expression& le,
 	       Coefficient expected_n, Coefficient expected_d,
 	       Grid_Generator& expected_pnt, string grid_name) {
@@ -56,27 +51,19 @@ check_minimize(Grid& gr, Linear_Expression& le,
   bool dummy;
   Coefficient inf_n, inf_d;
 
-  if (gr.minimize(le, inf_n, inf_d, dummy, inf_pnt))
-    if (inf_n == expected_n)
-      if (inf_d == expected_d)
-	if (inf_pnt == expected_pnt)
-	  return;
-	else
-	  nout << grid_name << " min point " << inf_pnt << " (expected "
-	       << expected_pnt << ")" << endl;
-      else
-	nout << grid_name << " inf_d " << inf_d
-	     << " (expected " << expected_d << ")" << endl;
-    else
-      nout << grid_name << " inf_n " << inf_n
-	   << " (expected " << expected_n << ")" << endl;
-  else
-    nout << " should bound expr from below." << endl;
+  bool ok = (gr.minimize(le, inf_n, inf_d, dummy, inf_pnt)
+    && inf_n == expected_n
+    && inf_d == expected_d
+    && inf_pnt == expected_pnt);
 
-  exit(1);
+  if (!ok)
+    nout << "grid name " << grid_name << " min point " << inf_pnt
+	        << " (expected " << expected_pnt << ")" << endl;
+
+  return ok;
 }
 
-void
+bool
 check_maximize(Grid& gr, Linear_Expression& le,
 	       Coefficient expected_n, Coefficient expected_d,
 	       Grid_Generator& expected_pnt, string grid_name) {
@@ -85,79 +72,77 @@ check_maximize(Grid& gr, Linear_Expression& le,
   bool dummy;
   Coefficient sup_n, sup_d;
 
-  if (gr.maximize(le, sup_n, sup_d, dummy, sup_pnt))
-    if (sup_n == expected_n)
-      if (sup_d == expected_d)
-	if (sup_pnt == expected_pnt)
-	  return;
-	else
-	  nout << grid_name << " max point " << sup_pnt << " (expected "
-	       << expected_pnt << ")" << endl;
-      else
-	nout << grid_name << " sup_d " << sup_d
-	     << " (expected " << expected_d << ")" << endl;
-    else
-      nout << grid_name << " sup_n " << sup_n
-	   << " (expected " << expected_n << ")" << endl;
-  else
-    nout << " should bound expr from above." << endl;
+  bool ok = (gr.maximize(le, sup_n, sup_d, dummy, sup_pnt)
+    && sup_n == expected_n
+    && sup_d == expected_d
+	     && sup_pnt == expected_pnt);
 
-  exit(1);
+  if (!ok)
+    nout << "grid name " << grid_name << " max point " << sup_pnt
+	        << " (expected " << expected_pnt << ")" << endl;
+
+  return ok;
 }
 
 // Empty.
-
-void
-test1() {
+bool
+test01() {
   Grid gr(7, EMPTY);
 
   Coefficient extr_n, extr_d;
   bool dummy;
   Grid_Generator pnt(grid_point());
 
-  if (gr.maximize(Linear_Expression(0), extr_n, extr_d, dummy, pnt)
-      || gr.minimize(Linear_Expression(0), extr_n, extr_d, dummy, pnt))
-    exit(1);
+  bool ok = (!gr.maximize(Linear_Expression(0), extr_n, extr_d, dummy, pnt)
+	     && !gr.minimize(Linear_Expression(0), extr_n, extr_d, dummy, pnt));
+  return ok;
 }
 
 // Zero dimension empty.
-
-void
-test2() {
+bool
+test02() {
   Grid gr(0, EMPTY);
+  print_congruences(gr, "*** gr ***");
 
   Linear_Expression le = Linear_Expression::zero();
 
-  check_both(gr, le, "gr");
+  return check_both(gr, le, "gr");
 }
 
 // Zero dimension universe.
-
-void
-test3() {
+bool
+test03() {
   Grid gr(0);
+  print_congruences(gr, "*** gr ***");
 
   Linear_Expression le = Linear_Expression::zero();
 
   Grid_Generator exp_pnt(grid_point());
 
-  check_maximize(gr, le, 0, 1, exp_pnt, "gr");
-  check_minimize(gr, le, 0, 1, exp_pnt, "gr");
+  bool ok = check_maximize(gr, le, 0, 1, exp_pnt, "gr")
+    && check_minimize(gr, le, 0, 1, exp_pnt, "gr");
+
+  return ok;
 }
 
 // Point.
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test4() {
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator_and_minimize(grid_point(3*A + 2*B, 3));
+  print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(2, EMPTY);
   gr_gs_needs_min.add_generator(grid_point(3*A + 2*B, 3));
+  print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(2);
   gr_cgs_needs_min.add_congruence(A == 1);
   gr_cgs_needs_min.add_congruence(3*B == 2);
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
@@ -166,80 +151,103 @@ test4() {
 
   Grid_Generator exp_pnt(grid_point(3*A + 2*B, 3));
 
-  check_maximize(gr_gs_min, le, 5, 3, exp_pnt, "gr_gs_min");
-  check_minimize(gr_gs_min, le, 5, 3, exp_pnt, "gr_gs_min");
+  bool ok = check_maximize(gr_gs_min, le, 5, 3, exp_pnt, "gr_gs_min")
+    && check_minimize(gr_gs_min, le, 5, 3, exp_pnt, "gr_gs_min");
 
-  check_maximize(gr_gs_needs_min, le, 5, 3, exp_pnt, "gr_gs_needs_min");
-  check_minimize(gr_gs_needs_min, le, 5, 3, exp_pnt, "gr_gs_needs_min");
+  ok &= check_maximize(
+        gr_gs_needs_min, le, 5, 3, exp_pnt, "gr_gs_needs_min")
+    && check_minimize(gr_gs_needs_min, le, 5, 3, exp_pnt, "gr_gs_needs_min");
 
-  check_maximize(gr_cgs_needs_min, le, 5, 3, exp_pnt, "gr_cgs_needs_min");
-  check_minimize(gr_cgs_needs_min, le, 5, 3, exp_pnt, "gr_cgs_needs_min");
+  ok &= check_maximize(
+        gr_cgs_needs_min, le, 5, 3, exp_pnt, "gr_cgs_needs_min")
+    && check_minimize(gr_cgs_needs_min, le, 5, 3, exp_pnt, "gr_cgs_needs_min");
+
+  return ok;
 }
 
 // Rectilinear line.
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test5() {
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator_and_minimize(grid_line(B));
+  print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(2, EMPTY);
   gr_gs_needs_min.add_generator(grid_point());
   gr_gs_needs_min.add_generator(grid_line(B));
+  print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(2);
   gr_cgs_needs_min.add_congruence(A == 0);
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A - B;
 
-  check_both(gr_gs_min, le, "gr_gs_min");
-  check_both(gr_gs_needs_min, le, "gr_gs_needs_min");
-  check_both(gr_cgs_needs_min, le, "gr_cgs_needs_min");
+  bool ok = check_both(gr_gs_min, le, "gr_gs_min")
+    && check_both(gr_gs_needs_min, le, "gr_gs_needs_min")
+    && check_both(gr_cgs_needs_min, le, "gr_cgs_needs_min");
+
+  return ok;
 }
 
 // Line.
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test6() {
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator_and_minimize(grid_line(2*A + B));
+  print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(2, EMPTY);
   gr_gs_needs_min.add_generator(grid_point());
   gr_gs_needs_min.add_generator(grid_line(2*A + B));
+  print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(2);
   gr_cgs_needs_min.add_congruence(A - 2*B == 0);
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A + B;
 
-  check_both(gr_gs_min, le, "gr_gs_min");
-  check_both(gr_gs_needs_min, le, "gr_gs_needs_min");
-  check_both(gr_cgs_needs_min, le, "gr_cgs_needs_min");
+  bool ok = check_both(gr_gs_min, le, "gr_gs_min")
+    && check_both(gr_gs_needs_min, le, "gr_gs_needs_min")
+    && check_both(gr_cgs_needs_min, le, "gr_cgs_needs_min");
+
+  return ok;
 }
 
 // A line along the equality `expr == 0'.
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test7() {
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator_and_minimize(grid_line(A + 2*B));
+  print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(2, EMPTY);
   gr_gs_needs_min.add_generator(grid_point());
   gr_gs_needs_min.add_generator(grid_line(A + 2*B));
+  print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(2);
   gr_cgs_needs_min.add_congruence(2*A - B == 0);
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
@@ -248,31 +256,40 @@ test7() {
 
   Grid_Generator exp_pnt(grid_point(0*B));
 
-  check_maximize(gr_gs_min, le, 0, 1, exp_pnt, "gr_gs_min");
-  check_minimize(gr_gs_min, le, 0, 1, exp_pnt, "gr_gs_min");
+  bool ok = check_maximize(gr_gs_min, le, 0, 1, exp_pnt, "gr_gs_min")
+    && check_minimize(gr_gs_min, le, 0, 1, exp_pnt, "gr_gs_min");
 
-  check_maximize(gr_gs_needs_min, le, 0, 1, exp_pnt, "gr_gs_needs_min");
-  check_minimize(gr_gs_needs_min, le, 0, 1, exp_pnt, "gr_gs_needs_min");
+  ok &= check_maximize(gr_gs_needs_min, le, 0, 1, exp_pnt, "gr_gs_needs_min")
+    && check_minimize(gr_gs_needs_min, le, 0, 1, exp_pnt, "gr_gs_needs_min");
 
-  check_maximize(gr_cgs_needs_min, le, 0, 1, exp_pnt, "gr_cgs_needs_min");
-  check_minimize(gr_cgs_needs_min, le, 0, 1, exp_pnt, "gr_cgs_needs_min");
+  ok &= check_maximize(
+          gr_cgs_needs_min, le, 0, 1, exp_pnt, "gr_cgs_needs_min")
+    && check_minimize(
+          gr_cgs_needs_min, le, 0, 1, exp_pnt, "gr_cgs_needs_min");
+
+  return ok;
 }
 
 // A parameter along the equality `expr == 0'.
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test8() {
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator_and_minimize(grid_point(A + 2*B));
+  print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(2, EMPTY);
   gr_gs_needs_min.add_generator(grid_point());
   gr_gs_needs_min.add_generator(grid_point(A + 2*B));
+  print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(2);
   gr_cgs_needs_min.add_congruence(2*A - B == 0);
   gr_cgs_needs_min.add_congruence((B %= 0) / 2);
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
@@ -281,87 +298,112 @@ test8() {
 
   Grid_Generator exp_pnt(grid_point(0*B));
 
-  check_maximize(gr_gs_min, le, 0, 1, exp_pnt, "gr_gs_min");
-  check_minimize(gr_gs_min, le, 0, 1, exp_pnt, "gr_gs_min");
+  bool ok = check_maximize(gr_gs_min, le, 0, 1, exp_pnt, "gr_gs_min")
+    && check_minimize(gr_gs_min, le, 0, 1, exp_pnt, "gr_gs_min");
 
-  check_maximize(gr_gs_needs_min, le, 0, 1, exp_pnt, "gr_gs_needs_min");
-  check_minimize(gr_gs_needs_min, le, 0, 1, exp_pnt, "gr_gs_needs_min");
+  ok &= check_maximize(gr_gs_needs_min, le, 0, 1, exp_pnt, "gr_gs_needs_min")
+    && check_minimize(gr_gs_needs_min, le, 0, 1, exp_pnt, "gr_gs_needs_min");
 
-  check_maximize(gr_cgs_needs_min, le, 0, 1, exp_pnt, "gr_cgs_needs_min");
-  check_minimize(gr_cgs_needs_min, le, 0, 1, exp_pnt, "gr_cgs_needs_min");
+  ok &= check_maximize(
+          gr_cgs_needs_min, le, 0, 1, exp_pnt, "gr_cgs_needs_min")
+    && check_minimize(
+          gr_cgs_needs_min, le, 0, 1, exp_pnt, "gr_cgs_needs_min");
+
+  return ok;
 }
 
 // Two lines which combine to cover any (affine) line defined by expr.
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
 
-void
-test9() {
   Grid gr_gs_min(2, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_line(A));
   gr_gs_min.add_generator_and_minimize(grid_line(B));
+  print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(2, EMPTY);
   gr_gs_needs_min.add_generator(grid_point());
   gr_gs_needs_min.add_generator(grid_line(A));
   gr_gs_needs_min.add_generator(grid_line(B));
+  print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(2);
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = A - B;
 
-  check_both(gr_gs_min, le, "gr_gs_min");
-  check_both(gr_gs_needs_min, le, "gr_gs_needs_min");
-  check_both(gr_cgs_needs_min, le, "gr_cgs_needs_min");
+  bool ok = check_both(gr_gs_min, le, "gr_gs_min")
+    && check_both(gr_gs_needs_min, le, "gr_gs_needs_min")
+    && check_both(gr_cgs_needs_min, le, "gr_cgs_needs_min");
+
+  return ok;
 }
 
 // In three dimensions, lines and parameters which combine to include
 // expr.
-
-void
+bool
 test10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point());
   gr_gs_min.add_generator(grid_line(A));
   gr_gs_min.add_generator_and_minimize(grid_point(B + C));
+  print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(3, EMPTY);
   gr_gs_needs_min.add_generator(grid_point());
   gr_gs_needs_min.add_generator(grid_line(A));
   gr_gs_needs_min.add_generator(grid_point(B + C));
+  print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(3);
   gr_cgs_needs_min.add_congruence(B - C == 0);
   gr_cgs_needs_min.add_congruence(B %= 0);
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
 
   Linear_Expression le = 2*A + B - C;
 
-  check_both(gr_gs_min, le, "gr_gs_min");
-  check_both(gr_gs_needs_min, le, "gr_gs_needs_min");
-  check_both(gr_cgs_needs_min, le, "gr_cgs_needs_min");
+  bool ok = check_both(gr_gs_min, le, "gr_gs_min")
+    && check_both(gr_gs_needs_min, le, "gr_gs_needs_min")
+    && check_both(gr_cgs_needs_min, le, "gr_cgs_needs_min");
+
+  return ok;
 }
 
 // Grid which bounds a 3D expr.
-
-void
+bool
 test11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
   Grid gr_gs_min(3, EMPTY);
   gr_gs_min.add_generator(grid_point(A));
   gr_gs_min.add_generator(grid_line(3*B + C));
   gr_gs_min.add_generator_and_minimize(grid_line(A - 2*B));
+  print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(3, EMPTY);
   gr_gs_needs_min.add_generator(grid_point(A));
   gr_gs_needs_min.add_generator(grid_line(3*B + C));
   gr_gs_needs_min.add_generator(grid_line(A - 2*B));
+  print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(3);
   gr_cgs_needs_min.add_congruence(2*A + B - 3*C - 2 == 0);
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
@@ -370,27 +412,39 @@ test11() {
 
   Grid_Generator exp_pnt1(grid_point(2*B + 0*C));
 
-  check_maximize(gr_gs_min, le, 2, 1, exp_pnt1, "gr_gs_min");
-  check_minimize(gr_gs_min, le, 2, 1, exp_pnt1, "gr_gs_min");
+  bool ok = check_maximize(gr_gs_min, le, 2, 1, exp_pnt1, "gr_gs_min")
+    && check_minimize(gr_gs_min, le, 2, 1, exp_pnt1, "gr_gs_min");
 
-  check_maximize(gr_gs_needs_min, le, 2, 1, exp_pnt1, "gr_gs_needs_min");
-  check_minimize(gr_gs_needs_min, le, 2, 1, exp_pnt1, "gr_gs_needs_min");
+  ok &= check_maximize(gr_gs_needs_min, le, 2, 1, exp_pnt1, "gr_gs_needs_min")
+    &&check_minimize(gr_gs_needs_min, le, 2, 1, exp_pnt1, "gr_gs_needs_min");
 
   Grid_Generator exp_pnt2(grid_point(-2*C, 3));
 
-  check_maximize(gr_cgs_needs_min, le, 2, 1, exp_pnt2, "gr_cgs_needs_min");
-  check_minimize(gr_cgs_needs_min, le, 2, 1, exp_pnt2, "gr_cgs_needs_min");
+  ok &= check_maximize(
+          gr_cgs_needs_min, le, 2, 1, exp_pnt2, "gr_cgs_needs_min")
+    && check_minimize(
+          gr_cgs_needs_min, le, 2, 1, exp_pnt2, "gr_cgs_needs_min");
+
+  return ok;
 }
 
 // Point in 6D.
-
-void
+bool
 test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+  Variable F(5);
+
   Grid gr_gs_min(6, EMPTY);
   gr_gs_min.add_generator_and_minimize(grid_point(7*A - 11*B + 19*F));
+  print_generators(gr_gs_min, "*** gr_gs_min ***");
 
   Grid gr_gs_needs_min(6, EMPTY);
   gr_gs_needs_min.add_generator(grid_point(7*A - 11*B + 19*F));
+  print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
 
   Grid gr_cgs_needs_min(6);
   gr_cgs_needs_min.add_congruence(A == 7);
@@ -399,6 +453,7 @@ test12() {
   gr_cgs_needs_min.add_congruence(D == 0);
   gr_cgs_needs_min.add_congruence(E == 0);
   gr_cgs_needs_min.add_congruence(F == 19);
+  print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
   assert(copy_compare(gr_gs_min, gr_gs_needs_min));
   assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
@@ -407,37 +462,33 @@ test12() {
 
   Grid_Generator exp_pnt(grid_point(7*A - 11*B + 19*F));
 
-  check_maximize(gr_gs_min, le, 99, 1, exp_pnt, "gr_gs_min");
-  check_minimize(gr_gs_min, le, 99, 1, exp_pnt, "gr_gs_min");
+  bool ok = check_maximize(gr_gs_min, le, 99, 1, exp_pnt, "gr_gs_min")
+    && check_minimize(gr_gs_min, le, 99, 1, exp_pnt, "gr_gs_min");
 
-  check_maximize(gr_gs_needs_min, le, 99, 1, exp_pnt, "gr_gs_needs_min");
-  check_minimize(gr_gs_needs_min, le, 99, 1, exp_pnt, "gr_gs_needs_min");
+  ok &= check_maximize(gr_gs_needs_min, le, 99, 1, exp_pnt, "gr_gs_needs_min")
+    &&check_minimize(gr_gs_needs_min, le, 99, 1, exp_pnt, "gr_gs_needs_min");
 
-  check_maximize(gr_cgs_needs_min, le, 99, 1, exp_pnt, "gr_cgs_needs_min");
-  check_minimize(gr_cgs_needs_min, le, 99, 1, exp_pnt, "gr_cgs_needs_min");
+  ok &= check_maximize(
+          gr_cgs_needs_min, le, 99, 1, exp_pnt, "gr_cgs_needs_min")
+    && check_minimize(
+          gr_cgs_needs_min, le, 99, 1, exp_pnt, "gr_cgs_needs_min");
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  nout << "maxmin1:" << endl;
-
-  DO_TEST(test1);
-  DO_TEST(test2);
-  DO_TEST(test3);
-  DO_TEST(test4);
-  DO_TEST(test5);
-  DO_TEST(test6);
-  DO_TEST(test7);
-  DO_TEST(test8);
-  DO_TEST(test9);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+  NEW_TEST(test07);
+  NEW_TEST(test08);
+  NEW_TEST(test09);
+  NEW_TEST(test10);
+  NEW_TEST(test11);
+  NEW_TEST(test12);
+END_MAIN

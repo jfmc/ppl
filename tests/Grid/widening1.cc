@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 // Initially empty.
-
 bool
 test01() {
   Variable A(0);
@@ -52,7 +51,6 @@ test01() {
 }
 
 // Empty after minimization.
-
 bool
 test02() {
   Variable A(0);
@@ -81,7 +79,6 @@ test02() {
 }
 
 // Both empty.
-
 bool
 test03() {
   Variable A(0);
@@ -109,7 +106,6 @@ test03() {
 }
 
 // An equality that becomes a congruence.
-
 bool
 test04() {
   Variable A(0);
@@ -140,7 +136,6 @@ test04() {
 }
 
 // Keep all congruences.
-
 bool
 test05() {
   Variable A(0);
@@ -173,7 +168,6 @@ test05() {
 }
 
 // Keep some congruences.
-
 bool
 test06() {
   Variable A(0);
@@ -209,7 +203,6 @@ test06() {
 }
 
 // Already minimized.
-
 bool
 test07() {
   Variable A(0);
@@ -244,7 +237,6 @@ test07() {
 }
 
 // Both universe.
-
 bool
 test08() {
   Grid gr1(5);
@@ -294,7 +286,6 @@ test09() {
 }
 
 // Tokens.
-
 bool
 test10() {
   using namespace IO_Operators;
@@ -328,7 +319,6 @@ test10() {
 }
 
 // Zero dimension.
-
 bool
 test11() {
   Grid gr1(0);
@@ -352,7 +342,6 @@ test11() {
 }
 
 // First case of Example 8 in Section 6 of [BagnaraDHMZ05TR].
-
 bool
 test12() {
   Variable A(0);
@@ -384,7 +373,6 @@ test12() {
 }
 
 // Second case in Example 8 in Section 6 of [BagnaraDHMZ05TR].
-
 bool
 test13() {
   Variable A(0);
@@ -416,7 +404,6 @@ test13() {
 }
 
 // First case in Example 9 in Section 6 of [BagnaraDHMZ05TR].
-
 bool
 test14() {
   Variable A(0);
@@ -448,7 +435,6 @@ test14() {
 }
 
 // Second case in Example 9 in Section 6 of [BagnaraDHMZ05TR]
-
 bool
 test15() {
   Variable A(0);
@@ -480,7 +466,6 @@ test15() {
 }
 
 // Congruences and equalities.
-
 bool
 test16() {
   Variable A(0);
@@ -512,7 +497,6 @@ test16() {
 }
 
 // From generators.
-
 bool
 test17() {
   Variable A(0);
@@ -547,7 +531,6 @@ test17() {
 
 
 // Space dimension exception.
-
 bool
 test18() {
   Variable A(0);
@@ -579,7 +562,6 @@ test18() {
 }
 
 // Minimizing the first congruence system finds the empty grid.
-
 bool
 test19() {
   Variable A(0);

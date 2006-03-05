@@ -96,9 +96,6 @@ test03() {
 
   gr.add_generators_and_minimize(gs);
 
-  if (find_variation(gr))
-    exit(1);
-
   Grid_Generator_System known_gs;
   known_gs.insert(grid_line(0*A +   B));
   known_gs.insert(grid_point(3*A + 4*B));
@@ -163,9 +160,6 @@ test05() {
   print_generators(gr, "*** gr ***");
 
   gr.add_generators_and_minimize(gs);
-
-  if (find_variation(gr))
-    exit(1);
 
   Congruence_System known_cgs;
   known_cgs.insert(0*A + 0*B + 0*C %= -1);
