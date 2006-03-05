@@ -1,5 +1,4 @@
-/* Test operator<<(std::ostream&, const Polyhedron&): the polyhedron
-   is described by its system of constraints but it is empty.
+/* Test operator<<(std::ostream&, const Polyhedron&).
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,40 +21,51 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+
 #include "files.hh"
 #include <fstream>
 
 using std::fstream;
 using std::ios_base;
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+using namespace IO_Operators;
 
 namespace {
 
-const char* my_file = "writepolyhedron2.dat";
+bool
+test01() {
+  const char* my_file = "writepolyhedron2.dat";
+  Variable x1(0);
+  Variable x2(1);
+  Variable x3(2);
+  Variable x4(3);
 
-} // namespace
+  NNC_Polyhedron ph(4);
 
-int
-main() TRY {
-  set_handlers();
-
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  C_Polyhedron ph(3);
-  ph.add_constraint(  A - B       >= 3);
-  ph.add_constraint(    - B +   C >= 3);
-  ph.add_constraint(  A - B       <= 1);
-  ph.add_constraint(  A - B + 3*C >= 3);
-  ph.add_constraint(3*A     + 2*C >= 3);
+  ph.add_constraint(     +x2-x3-x4 <= 0);
+  ph.add_constraint(-  x1   +x3-x4 <  0);
+  ph.add_constraint(+  x1   -x3-x4 <= 0);
+  ph.add_constraint(-2*x1+x2+x3-x4 <  0);
+  ph.add_constraint(           +x4 <= 1);
+  ph.add_constraint(        +x3    <  1);
+  ph.add_constraint(-  x1+x2+x3    <= 1);
+  ph.add_constraint(        -x3    <  0);
+  ph.add_constraint(-  x1          <= 0);
+  ph.add_constraint(     -x2       <  0);
+  ph.add_constraint(     +x2       <= 1);
+  ph.add_constraint(+  x1          <  1);
+  ph.add_constraint(+  x1-x2+x3+x4 <= 2);
 
   fstream f;
   open(f, my_file, ios_base::out);
   f << ph << endl;
   close(f);
-
-  return 0;
+  // FIXME.
+  return true;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+END_MAIN

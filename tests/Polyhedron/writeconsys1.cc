@@ -27,18 +27,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 using std::fstream;
 using std::ios_base;
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+using namespace IO_Operators;
 
 namespace {
 
-const char* my_file = "writeconsys1.dat";
-
-} // namespace
-
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
+  const char* my_file = "writeconsys1.dat";
   Variable A(0);
   Variable B(1);
 
@@ -52,6 +47,12 @@ main() TRY {
   f << ph.constraints() << endl;
   close(f);
 
-  return 0;
+  // FIXME.
+  return true;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+END_MAIN

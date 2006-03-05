@@ -1,5 +1,4 @@
-/* Test Polyhedron::is_universe(): we apply this function
-   to a three-dimensional polyhedron.
+/* Test Polyhedron::is_universe().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   C_Polyhedron ph(3);
   print_constraints(ph, "--- ph ---");
 
@@ -37,6 +36,129 @@ main() TRY {
        << (universe ? "true" : "false")
        << endl;
 
-  return universe ? 0 : 1;
+  return universe;
 }
-CATCH
+
+bool
+test02() {
+  Variable x(0);
+  Variable z(2);
+
+  C_Polyhedron ph(3);
+  ph.add_constraint(x >= z);
+  ph.add_constraint(z == 3);
+
+  print_constraints(ph, "--- ph ---");
+
+  bool universe = ph.is_universe();
+
+  nout << "*** ph.is_universe() ***"
+       << endl
+       << (universe ? "true" : "false")
+       << endl;
+
+  return !universe;
+}
+
+bool
+test03() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(y == 0);
+  ph.add_constraint(x >= 1);
+  ph.add_constraint(x <= 3);
+
+  Constraint_System cs = ph.constraints();
+  print_constraints(ph, "--- ph ---");
+
+  bool universe = ph.is_universe();
+
+  nout << "*** ph.is_universe() ***"
+       << endl
+       << (universe ? "true" : "false")
+       << endl;
+
+  return !universe;
+}
+
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(3);
+  ph.add_constraint(x >= 1);
+  ph.add_constraint(y >= 1);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
+
+  Constraint_System cs = ph.constraints();
+  print_constraints(ph, "--- ph ---");
+
+  bool universe = ph.is_universe();
+
+  nout << "*** ph.is_universe() ***"
+       << endl
+       << (universe ? "true" : "false")
+       << endl;
+
+  return !universe;
+}
+
+bool
+test05() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  C_Polyhedron ph(3);
+  ph.add_constraint(x - y - z >= 0);
+
+  print_constraints(ph, "--- ph ---");
+
+  bool universe = ph.is_universe();
+
+  nout << "*** ph.is_universe() ***"
+       << endl
+       << (universe ? "true" : "false")
+       << endl;
+
+  return !universe;
+}
+
+bool
+test06() {
+  Variable x(0);
+  Variable y(1);
+
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(ray(-x));
+  gs.insert(ray(x + y));
+  gs.insert(ray(x - y));
+
+  C_Polyhedron ph(gs);
+  print_generators(ph, "--- ph ---");
+
+  bool universe = ph.is_universe();
+
+  nout << "*** ph.is_universe() ***"
+       << endl
+       << (universe ? "true" : "false")
+       << endl;
+
+  return universe;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+  NEW_TEST(test04);
+  NEW_TEST(test05);
+  NEW_TEST(test06);
+END_MAIN

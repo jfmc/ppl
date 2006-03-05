@@ -1,4 +1,4 @@
-/* Test time_elapse_assign() with NECESSARY_CLOSED polyhedra.
+/* Test time_elapse_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,36 +22,111 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph1(2);
-  ph1.add_constraint(x >= 1);
-  ph1.add_constraint(x <= 3);
-  ph1.add_constraint(y >= 1);
-  ph1.add_constraint(y <= 3);
+  NNC_Polyhedron ph1(2);
 
-  C_Polyhedron ph2(2);
-  ph2.add_constraint(y == 5);
+  ph1.add_constraint(x >= 0);
+  ph1.add_constraint(y >= 0);
+  ph1.add_constraint(x + y - 2 <= 0);
+
+  NNC_Polyhedron ph2(2);
+
+  ph2.add_constraint(x > 2);
+  ph2.add_constraint(x < 4);
+  ph2.add_constraint(y == 3);
 
   print_constraints(ph1, "**** ph1 ****");
   print_constraints(ph2, "**** ph2 ****");
 
   ph1.time_elapse_assign(ph2);
 
-  C_Polyhedron known_result(2, EMPTY);
-  known_result.add_generator(point(y));
-  known_result.add_generator(ray(y));
-  known_result.add_generator(line(x));
+  Generator_System known_gs;
+  known_gs.insert(point());
+  known_gs.insert(point(2*x));
+  known_gs.insert(point(2*y));
+  known_gs.insert(ray(2*x + 3*y));
+  known_gs.insert(ray(4*x + 3*y));
 
-  int retval = (ph1 == known_result) ? 0 : 1;
+  NNC_Polyhedron known_result(known_gs);
+
+  bool ok = (ph1 == known_result);
 
   print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
+
+  Constraint_System cs1;
+  cs1.insert(x > 3);
+  cs1.insert(y > 3);
+  NNC_Polyhedron ph(cs1);
+
+  NNC_Polyhedron ph1(ph);
+
+  Generator_System gs;
+  gs.insert(point(x + y));
+  NNC_Polyhedron ph2(gs);
+
+  print_constraints(ph1, "**** ph1 ****");
+  print_generators(ph2, "**** ph2 ****");
+
+  ph1.time_elapse_assign(ph2);
+
+  bool ok = (ph1 == ph);
+
+  print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
+
+ return ok;
+}
+
+bool
+test03() {
+  Variable x(0);
+  Variable y(1);
+
+  NNC_Polyhedron ph1(2);
+  ph1.add_constraint(x == 3);
+  ph1.add_constraint(y > 2);
+
+  NNC_Polyhedron ph2(2);
+  ph2.add_constraint(x > 3);
+  ph2.add_constraint(y > 2);
+
+  print_constraints(ph1, "**** ph1 ****");
+  print_constraints(ph2, "**** ph2 ****");
+
+  ph1.time_elapse_assign(ph2);
+
+  Generator_System gs;
+  gs.insert(closure_point(3*x + 2*y));
+  gs.insert(point(3*x + 3*y));
+  gs.insert(ray(y));
+  gs.insert(ray(x));
+
+  NNC_Polyhedron known_result(gs);
+
+  bool ok = (ph1 == known_result);
+
+  print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  NEW_TEST(test01);
+  NEW_TEST(test02);
+  NEW_TEST(test03);
+END_MAIN
