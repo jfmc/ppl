@@ -1,22 +1,13 @@
-Enhancements for PPL 0.9
-========================
-
-- Reduce the number of FIXMEs to no more than 20.
-- Fix tests/Polyhedron/polypowerset1.cc so that it does real tests
-  instead of calling the OK() methods.
-- Fix all places where a method/function/constructor "returns" an object
-  that has not been subjected to OK().  Notice that useless invocation
-  to OK() must be avoided as well.
-- Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
-- Write a manual page for ppl (3).
-- Check that the Grid tests cover all the code.
-
 
 Enhancements for PPL 0.10
 =========================
 
 - Develop a C and Prolog interfaces for all the supported domains.
 - Incorporate the domain of intervals.
+- Reduce the number of FIXMEs to no more than 20.
+- Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
+- Write a manual page for ppl (3).
+- Check that the Grid tests cover all the code.
 - Provide a single, generic implementation to replace all our status
   classes.
 - Clearly explain, in the documentation, how (not) to use
