@@ -122,6 +122,17 @@ print_constraints(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
   s << pps << std::endl;
 }
 
+template <typename PH>
+void
+print_congruences(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (!intro.empty())
+    s << intro << std::endl;
+  s << pps << std::endl;
+}
+
 void
 print_congruence(const Parma_Polyhedra_Library::Congruence& c,
 		 const std::string& intro = "",

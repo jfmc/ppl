@@ -26,10 +26,6 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-
 // Compare a grid to one that is more constrained (due to equalities).
 bool
 test01() {

@@ -40,14 +40,14 @@ test01() {
   gr1.add_congruence(B %= 0);
   grs1.add_disjunct(gr1);
 
-  nout << "*** grs1 ***" << endl << grs1 << endl;
+  print_congruences<Grid>(grs1, "*** grs1 ***");
 
   GSet grs2(2, EMPTY);
   Grid gr2(2);
   gr2.add_congruence(A %= 0);
   grs2.add_disjunct(gr2);
 
-  nout << "*** grs2 ***" << endl << grs2 << endl;
+  print_congruences<Grid>(grs2, "*** grs2 ***");
 
   GSet known_grs = grs2;
 
@@ -56,9 +56,7 @@ test01() {
 
   bool ok = (grs2 == known_grs);
 
-  nout
-    << "*** grs2.BHZ03_widening_assign<Grid_Certificate>(grs1, widen_fun_ref(&Grid::widening_assign)) ***"
-    << endl << grs2 << endl;
+  print_congruences<Grid>(grs1, "*** grs2.BHZ03_widening_assign<Grid_Certificate>(grs1, widen_fun_ref(&Grid::widening_assign) ***");
 
   return ok;
 }
@@ -78,7 +76,7 @@ test02() {
   grs1.add_disjunct(gr1);
   grs1.add_disjunct(gr2);
 
-  nout << "*** grs1 ***" << endl << grs1 << endl;
+  print_congruences<Grid>(grs1, "*** grs1 ***");
 
   GSet grs2(2, EMPTY);
   Grid gr3(2);
@@ -88,7 +86,7 @@ test02() {
   grs2.add_disjunct(gr3);
   grs2.add_disjunct(gr4);
 
-  nout << "*** grs2 ***" << endl << grs2 << endl;
+  print_congruences<Grid>(grs2, "*** grs2 ***");
 
   Grid known_gr = gr3;
   known_gr.upper_bound_assign(gr4);
@@ -101,9 +99,7 @@ test02() {
 
   bool ok = (grs2 == known_grs);
 
-  nout
-    << "*** grs2.BHZ03_widening_assign<Grid_Certificate>(grs1, widen_fun_ref(&Grid::widening_assign)) ***"
-    << endl << grs2 << endl;
+  print_congruences<Grid>(grs1, "*** grs2.BHZ03_widening_assign<Grid_Certificate>(grs1, widen_fun_ref(&Grid::widening_assign) ***");
 
   return ok;
 }
