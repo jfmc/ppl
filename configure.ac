@@ -778,6 +778,7 @@ fi
 
 # System-dependent adjustments.
 cygwin=no
+darwin=no
 no_undefined=no
 
 case "${host_cpu}" in
@@ -797,6 +798,7 @@ esac
 
 case "${host_os}" in
 darwin*)
+  darwin=yes
   if test x"$GCC" = xyes
   then
     CFLAGS="$CFLAGS -Wno-long-double"
@@ -811,7 +813,8 @@ cygwin)
   ;;
 esac
 
-AM_CONDITIONAL(CYGWIN, test x$cygwin = xyes)
+AM_CONDITIONAL(HOST_OS_CYGWIN, test x$cygwin = xyes)
+AM_CONDITIONAL(HOST_OS_DARWIN, test x$darwin = xyes)
 AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 
 AC_SUBST(extra_includes)

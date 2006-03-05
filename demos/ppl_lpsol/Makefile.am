@@ -82,15 +82,23 @@ $(TOUGH_EXAMPLES_FOR_ENUM_IF_ASSERTIONS_ENABLED)
 TOUGH_EXAMPLES_FOR_SIMPLEX = \
 ship08l.mps
 
-if CYGWIN
+if HOST_OS_CYGWIN
 
 DIFF_COMMAND = echo "diff suppressed on Cygwin"
 
-else !CYGWIN
+else !HOST_OS_CYGWIN
+
+if HOST_OS_DARWIN
+
+DIFF_COMMAND = echo "diff suppressed on Darwin"
+
+else !HOST_OS_DARWIN
 
 DIFF_COMMAND = diff -u --ignore-all-space $(srcdir)/$(EXPECTED) obtained
 
-endif !CYGWIN
+endif !HOST_OS_DARWIN
+
+endif !HOST_OS_CYGWIN
 
 check-local: ppl_lpsol
 	echo -n >obtained
