@@ -76,27 +76,31 @@ Grid::reduce_reduced(M& sys, dimension_type dim, dimension_type pivot_index,
 
       TEMP_INTEGER(row_dim);
       row_dim = row[dim];
-      TEMP_INTEGER(num_rows);
-      num_rows = row_dim / pivot_dim;
+      // num_rows_to_subtract may be positive or negative.
+      TEMP_INTEGER(num_rows_to_subtract);
+      num_rows_to_subtract = row_dim / pivot_dim;
 
-      // Ensure that after subtracting num_rows * r_dim from row_dim,
+      // Ensure that after subtracting num_rows_to_subtract * r_dim
+      // from row_dim,
       // -pivot_dim_half < row_dim <= pivot_dim_half.  E.g., if pivot[dim] =
       // 9, then after strong reduction -5 < row_dim <= 5.
       Coefficient& row_dim_rem = row_dim;
       row_dim_rem %= pivot_dim;
       if (row_dim_rem < 0) {
 	if (row_dim_rem <= -pivot_dim_half)
-	  --num_rows;
+	  --num_rows_to_subtract;
       }
       else if (row_dim_rem > 0 && row_dim_rem > pivot_dim_half)
-	num_rows++;
+	num_rows_to_subtract++;
 
-      // Subtract num_rows copies of pivot from row i.  Only the
+      // Subtract num_rows_to_subtract copies of pivot from row i.  Only the
       // entries from dim need to be subtracted, as the preceding
       // entries are all zero.
-      if (num_rows != 0)
+      // If num_rows_to_subtract is negative, these copies of pivot are
+      // added to row i.
+      if (num_rows_to_subtract != 0)
 	for (dimension_type col = start; col <= end; ++col)
-	  row[col] -= num_rows * pivot[col];
+	  row[col] -= num_rows_to_subtract * pivot[col];
     }
   }
 }
