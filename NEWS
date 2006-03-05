@@ -4,23 +4,33 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.9  (released date to be decided)
+NEWS for version 0.9  (released on March 12, 2006)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
 
-o  The class Grid... FIXME
+o  The class Grid provides a complete implementation of the relational
+   domain of rational grids.  This can represent all sets that can
+   be expressed by the conjunction of a finite number of congruence
+   equations.  Operations provided include everything that is needed
+   in the field of static analysis and verification, including affine
+   images, preimages and their generalizations, grid-difference and
+   widening operators.  This is the first time such a complete domain
+   is made freely available to the community.
 
-o  Several portability improvements.
+o  Several important portability improvements.  Among other things,
+   it is now possible to build only the static libraries or only
+   the shared libraries.  (Notice that some interfaces depend on
+   the availability of the shared libraries: these will not be built
+   when shared libraries are disabled.)
 
 
 Bugfixes
 ========
 
-o  SICStus interface on x86_64... FIXME
-
-o  BD_Shape with 128-bit floating point arguments on Mac OS X... FIXME
+o  Fixed a bug whereby the SICStus Prolog interface could not be built
+   on x86_64.
 
 o  Fixed a bug in an internal method that, under some circumstances,
    could cause a wrong result to be computed.
