@@ -82,6 +82,16 @@ $(TOUGH_EXAMPLES_FOR_ENUM_IF_ASSERTIONS_ENABLED)
 TOUGH_EXAMPLES_FOR_SIMPLEX = \
 ship08l.mps
 
+if CYGWIN
+
+DIFF_COMMAND = echo "diff suppressed on Cygwin"
+
+else !CYGWIN
+
+DIFF_COMMAND = diff -u --ignore-all-space $(srcdir)/$(EXPECTED) obtained
+
+endif !CYGWIN
+
 check-local: ppl_lpsol
 	echo -n >obtained
 	echo $(TOUGH_EXAMPLES_FOR_ENUM) >tough_examples
@@ -107,7 +117,7 @@ check-local: ppl_lpsol
 	    ./ppl_lpsol -s $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
-	diff -u --ignore-all-space $(srcdir)/$(EXPECTED) obtained
+	$(DIFF_COMMAND)
 
 MOSTLYCLEANFILES = \
 tough_examples \
