@@ -579,7 +579,6 @@ XFAIL_ALWAYS =
 
 XFAIL_WITH_INT64 = \
 $(XFAIL_ALWAYS) \
-dualhypercubes \
 randphull2 \
 nnc_randphull2
 
