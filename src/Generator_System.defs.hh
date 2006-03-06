@@ -244,10 +244,10 @@ public:
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
-				Generator,
-				void,
-			   	const Generator*,
-		   		const Generator&> {
+			   Generator,
+			   ptrdiff_t,
+			   const Generator*,
+			   const Generator&> {
   public:
     //! Default constructor.
     const_iterator();

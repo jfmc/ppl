@@ -246,7 +246,13 @@ public:
   copy(gs.begin(), gs.end(), ostream_iterator<Grid_Generator>(cout, "\n"));
     \endcode
   */
-  class const_iterator : private Generator_System::const_iterator {
+  class const_iterator
+    : public std::iterator<std::forward_iterator_tag,
+			   Grid_Generator,
+			   ptrdiff_t,
+			   const Grid_Generator*,
+			   const Grid_Generator&>,
+      private Generator_System::const_iterator {
   public:
     //! Default constructor.
     const_iterator();

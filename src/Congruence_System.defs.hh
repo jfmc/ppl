@@ -234,7 +234,7 @@ public:
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
 			   Congruence,
-			   void,
+			   ptrdiff_t,
 			   const Congruence*,
 			   const Congruence&> {
   public:
