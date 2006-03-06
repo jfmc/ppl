@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <algorithm>
 
 namespace {
 
@@ -69,16 +70,16 @@ test01() {
 
   NNC_Polyhedron known_result(gs);
 
-  // FIXME: find a way to correctly check if the output
-  // is strongly minimized.
-  // return ph == known_result && ph.generators().num_rows() == 8;
   bool ok = (ph == known_result);
+
+  const Generator_System& min_gs = ph.minimized_generators();
+  bool ok1 = (std::distance(min_gs.begin(), min_gs.end()) == 8);
 
   nout << "After NNC minimization" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 
-  return ok;
+  return ok && ok1;
 }
 
 bool
@@ -126,10 +127,10 @@ test02() {
 
   NNC_Polyhedron known_result(gs);
 
-  // FIXME: find a way to correctly check if the output
-  // is strongly minimized.
-  // return ph == known_result && ph.generators().num_rows() == 8;
   bool ok = (ph == known_result);
+
+  const Generator_System& min_gs = ph.minimized_generators();
+  bool ok1 = (std::distance(min_gs.begin(), min_gs.end()) == 8);
 
   nout << "After NNC minimization" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
@@ -139,7 +140,7 @@ test02() {
   print_constraints(known_result.constraints(), "*** known constraints ***");
   print_generators(known_result.generators(), "*** known generators ***");
 
-  return ok;
+  return ok && ok1;
 }
 
 bool
@@ -194,19 +195,18 @@ test03() {
   gs.insert(point(x + y, 4));
   gs.insert(point(x + 4*y, 4));
   gs.insert(point(4*x + y, 4));
-
   NNC_Polyhedron known_result(gs);
 
-  // FIXME: find a way to correctly check if the output
-  // is strongly minimized.
-  //return ph == known_result && ph.generators().num_rows() == 7;
   bool ok = (ph == known_result);
+
+  const Generator_System& min_gs = ph.minimized_generators();
+  bool ok1 = (std::distance(min_gs.begin(), min_gs.end()) == 4);
 
   nout << "After NNC minimization" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 
-  return ok;
+  return ok && ok1;
 }
 
 bool
@@ -255,11 +255,10 @@ test04() {
   gs.insert(point(x + y));
 
   NNC_Polyhedron known_result(gs);
-
-  // FIXME: find a way to correctly check if the output
-  // is strongly minimized.
-  // return ph == known_result && ph.generators().num_rows() == 5;
   bool ok = (ph == known_result);
+
+  const Generator_System& min_gs = ph.minimized_generators();
+  bool ok1 = (std::distance(min_gs.begin(), min_gs.end()) == 5);
 
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
@@ -268,7 +267,7 @@ test04() {
 		    "*** known_result constraints ***");
   print_generators(known_result.generators(),
 		   "*** known_result generators ***");
-  return ok;
+  return ok && ok1;
 }
 
 bool
@@ -295,17 +294,12 @@ test05() {
 
   NNC_Polyhedron copy_ph1(ph1);
 
-  int num_constraints = 0;
-  for (Constraint_System::const_iterator i = ph1.constraints().begin(),
-	 cs_end = ph1.constraints().end(); i != cs_end; ++i)
-    ++num_constraints;
+  const Constraint_System& ph1_cs = ph1.constraints();
+  const int num_constraints = std::distance(ph1_cs.begin(), ph1_cs.end());
 
-  ph1.minimized_constraints();
-
-  int num_minimized_constraints = 0;
-  for (Constraint_System::const_iterator i = ph1.constraints().begin(),
-	 cs_end = ph1.constraints().end(); i != cs_end; ++i)
-    ++num_minimized_constraints;
+  const Constraint_System& ph1_min_cs = ph1.minimized_constraints();
+  const int num_minimized_constraints = std::distance(ph1_min_cs.begin(),
+						      ph1_min_cs.end());
 
   print_constraints(ph1, "*** After ph1.minimized_constraints() ***");
   nout << "num_constraints = " << num_constraints << endl;

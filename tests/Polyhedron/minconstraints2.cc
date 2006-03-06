@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <algorithm>
 
 namespace {
 
@@ -32,7 +33,10 @@ test01() {
 
   NNC_Polyhedron ph2(cs);
 
-  bool ok = (ph1 == ph2);
+  const Constraint_System& min_cs = ph2.minimized_constraints();
+
+  bool ok = (ph1 == ph2
+	     && min_cs.begin() == min_cs.end());
 
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(cs, "*** cs ***");
@@ -43,7 +47,8 @@ test01() {
 
 bool
 test02() {
-  Variable x(0), y(1);
+  Variable x(0);
+  Variable y(1);
 
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -51,10 +56,8 @@ test02() {
   cs.insert(y > 0);
 
   NNC_Polyhedron ph(cs);
-  ph.minimized_constraints();
-
-  // FIXME: checking what?
-  return true;
+  const Constraint_System& min_cs = ph.minimized_constraints();
+  return std::distance(min_cs.begin(), min_cs.end()) == 3;
 }
 
 } // namespace
