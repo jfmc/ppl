@@ -60,9 +60,13 @@ afiro.mps
 
 EXPECTED = expected_$(COEFFICIENT_MNEMONIC)_a
 
+CHECK_OPTION =
+
 else !ASSERTIONS_ENABLED
 
 EXPECTED = expected_$(COEFFICIENT_MNEMONIC)
+
+CHECK_OPTION = -c
 
 endif !ASSERTIONS_ENABLED
 
@@ -111,7 +115,7 @@ check-local: ppl_lpsol
 	  for m in -m -M; \
 	  do \
 	    echo "*** ppl_lpsol -e $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -e $$m -oobtained $$path >/dev/null; \
+	    ./ppl_lpsol -e $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
 	echo $(TOUGH_EXAMPLES_FOR_SIMPLEX) >tough_examples
@@ -122,7 +126,7 @@ check-local: ppl_lpsol
 	  for m in -m -M; \
 	  do \
 	    echo "*** ppl_lpsol -s $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -s $$m -oobtained $$path >/dev/null; \
+	    ./ppl_lpsol -s $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
 	$(DIFF_COMMAND)
