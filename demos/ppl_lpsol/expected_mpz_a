@@ -3,27 +3,23 @@ Unfeasible problem.
 *** ppl_lpsol -e -M -oobtained bgprtr.mps
 Unfeasible problem.
 *** ppl_lpsol -e -m -oobtained ex1.mps
-Optimum value:
--3.75
+Optimum value: -3.75
 Optimum location:
 x1 = 1.25
 x2 = 2.5
 *** ppl_lpsol -e -M -oobtained ex1.mps
-Optimum value:
-2.5
+Optimum value: 2.5
 Optimum location:
 x1 = 2.5
 x2 = 0
 *** ppl_lpsol -e -m -oobtained sample.mps
-Optimum value:
--733.3333333
+Optimum value: -733.3333333
 Optimum location:
 x1 = 33.33333333
 x2 = 66.66666667
 x3 = 0
 *** ppl_lpsol -e -M -oobtained sample.mps
-Optimum value:
-0
+Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
@@ -31,14 +27,12 @@ x3 = 0
 *** ppl_lpsol -e -m -oobtained unboundedmin.mps
 Unbounded problem.
 *** ppl_lpsol -e -M -oobtained unboundedmin.mps
-Optimum value:
-0
+Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
 *** ppl_lpsol -s -m -oobtained adlittle.mps
-Optimum value:
-225494.9632
+Optimum value: 225494.9632
 Optimum location:
 ...100 = 22.85454545
 ...101 = 0.5454545455
@@ -140,8 +134,7 @@ Optimum location:
 *** ppl_lpsol -s -M -oobtained adlittle.mps
 Unbounded problem.
 *** ppl_lpsol -s -m -oobtained afiro.mps
-Optimum value:
--464.7531429
+Optimum value: -464.7531429
 Optimum location:
 X01 = 80
 X02 = 25.5
@@ -176,8 +169,7 @@ X37 = 17.50496094
 X38 = 157.5682954
 X39 = 0
 *** ppl_lpsol -s -M -oobtained afiro.mps
-Optimum value:
-3438.2921
+Optimum value: 3438.2921
 Optimum location:
 X01 = 54.5
 X02 = 0
@@ -216,8 +208,7 @@ Unfeasible problem.
 *** ppl_lpsol -s -M -oobtained bgprtr.mps
 Unfeasible problem.
 *** ppl_lpsol -s -m -oobtained blend.mps
-Optimum value:
--30.81214985
+Optimum value: -30.81214985
 Optimum location:
 1 = 20.94480195
 2 = 10.17092161
@@ -305,8 +296,7 @@ Optimum location:
 *** ppl_lpsol -s -M -oobtained blend.mps
 Unbounded problem.
 *** ppl_lpsol -s -m -oobtained boeing1.mps
-Optimum value:
--335.2135675
+Optimum value: -335.2135675
 Optimum location:
 PBOSHNL0 = 0
 PBOSHNL1 = 12
@@ -693,8 +683,7 @@ N1051AC4 = 0
 N1051AC5 = 4.651904242
 N1051AC6 = 20
 *** ppl_lpsol -s -M -oobtained boeing1.mps
-Optimum value:
-286.9746573
+Optimum value: 286.9746573
 Optimum location:
 PBOSHNL0 = 0
 PBOSHNL1 = 10
@@ -1081,8 +1070,7 @@ N1051AC4 = 0
 N1051AC5 = 20
 N1051AC6 = 11.52971853
 *** ppl_lpsol -s -m -oobtained boeing2.mps
-Optimum value:
--315.018728
+Optimum value: -315.018728
 Optimum location:
 PBOSORD0 = 302
 PBOSORD1 = 0
@@ -1228,8 +1216,7 @@ N1200AC4 = 0
 N1201AC2 = 14
 N1201AC4 = 0
 *** ppl_lpsol -s -M -oobtained boeing2.mps
-Optimum value:
--73.36896911
+Optimum value: -73.36896911
 Optimum location:
 PBOSORD0 = 277
 PBOSORD1 = 0
@@ -1375,20 +1362,17 @@ N1200AC4 = 0.9244444444
 N1201AC2 = 4.094407129
 N1201AC4 = 0
 *** ppl_lpsol -s -m -oobtained ex1.mps
-Optimum value:
--3.75
+Optimum value: -3.75
 Optimum location:
 x1 = 1.25
 x2 = 2.5
 *** ppl_lpsol -s -M -oobtained ex1.mps
-Optimum value:
-2.5
+Optimum value: 2.5
 Optimum location:
 x1 = 2.5
 x2 = 0
 *** ppl_lpsol -s -m -oobtained kb2.mps
-Optimum value:
--1749.90013
+Optimum value: -1749.90013
 Optimum location:
 BAL.3EBW = 0.8118235251
 BHC.3EBW = 0
@@ -1432,8 +1416,7 @@ WRO73PBW = 2009.742955
 WMO73RBW = 5651.99315
 WRO73RBW = 6262.646874
 *** ppl_lpsol -s -M -oobtained kb2.mps
-Optimum value:
-0
+Optimum value: 0
 Optimum location:
 BAL.3EBW = 0
 BHC.3EBW = 0
@@ -1477,38 +1460,33 @@ WRO73PBW = 0
 WMO73RBW = 0
 WRO73RBW = 0
 *** ppl_lpsol -s -m -oobtained mip.mps
-Optimum value:
-24.07692308
+Optimum value: 24.07692308
 Optimum location:
 X1 = 2.615384615
 X2 = 2
 X3 = 0.7692307692
 X4 = 3
 *** ppl_lpsol -s -M -oobtained mip.mps
-Optimum value:
-46.42857143
+Optimum value: 46.42857143
 Optimum location:
 X1 = 4
 X2 = 4.571428571
 X3 = 0.5714285714
 X4 = 3
 *** ppl_lpsol -s -m -oobtained sample.mps
-Optimum value:
--733.3333333
+Optimum value: -733.3333333
 Optimum location:
 x1 = 33.33333333
 x2 = 66.66666667
 x3 = 0
 *** ppl_lpsol -s -M -oobtained sample.mps
-Optimum value:
-0
+Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
 x3 = 0
 *** ppl_lpsol -s -m -oobtained sc105.mps
-Optimum value:
--52.20206121
+Optimum value: -52.20206121
 Optimum location:
 COL00001 = 0
 COL00002 = 10.84845409
@@ -1614,8 +1592,7 @@ COL00101 = 26.37637065
 COL00102 = 123.0897297
 COL00103 = 123.0897297
 *** ppl_lpsol -s -M -oobtained sc105.mps
-Optimum value:
-0
+Optimum value: 0
 Optimum location:
 COL00001 = 0
 COL00002 = 50
@@ -1721,8 +1698,7 @@ COL00101 = 20
 COL00102 = 93.33333333
 COL00103 = 0
 *** ppl_lpsol -s -m -oobtained sc50a.mps
-Optimum value:
--64.57507706
+Optimum value: -64.57507706
 Optimum location:
 COL00001 = 0
 COL00002 = 16.56869221
@@ -1773,8 +1749,7 @@ COL00046 = 20.25950793
 COL00047 = 94.54437032
 COL00048 = 94.54437032
 *** ppl_lpsol -s -M -oobtained sc50a.mps
-Optimum value:
-0
+Optimum value: 0
 Optimum location:
 COL00001 = 20
 COL00002 = 55
@@ -1825,8 +1800,7 @@ COL00046 = 17
 COL00047 = 79.33333333
 COL00048 = 0
 *** ppl_lpsol -s -m -oobtained sc50b.mps
-Optimum value:
--70
+Optimum value: -70
 Optimum location:
 COL00001 = 30
 COL00002 = 28
@@ -1877,8 +1851,7 @@ COL00046 = 40.9948
 COL00047 = 61.4922
 COL00048 = 102.487
 *** ppl_lpsol -s -M -oobtained sc50b.mps
-Optimum value:
-0
+Optimum value: 0
 Optimum location:
 COL00001 = 0
 COL00002 = 0
@@ -1931,8 +1904,7 @@ COL00048 = 0
 *** ppl_lpsol -s -m -oobtained unboundedmin.mps
 Unbounded problem.
 *** ppl_lpsol -s -M -oobtained unboundedmin.mps
-Optimum value:
-0
+Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
