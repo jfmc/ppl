@@ -70,5 +70,5 @@ test01() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST_F8A(test01);
+  DO_TEST_F8A(test01);
 END_MAIN

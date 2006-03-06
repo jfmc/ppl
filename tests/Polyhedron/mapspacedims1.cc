@@ -423,21 +423,21 @@ test12() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test01);
-  NEW_TEST(test02);
-  NEW_TEST(test03);
-  NEW_TEST(test04);
-  NEW_TEST(test05);
-  NEW_TEST(test06);
-  NEW_TEST(test07);
-  NEW_TEST(test08);
-  NEW_TEST(test09);
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
   // test10() only fails when using C_Polyhedron and 8 bit coefficients.
 #ifdef DERIVED_TEST
-  NEW_TEST(test10);
+  DO_TEST(test10);
 #else
-  NEW_TEST_F8(test10);
+  DO_TEST_F8(test10);
 #endif // !defined(DERIVED_TEST)
-  NEW_TEST(test11);
-  NEW_TEST(test12);
+  DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN

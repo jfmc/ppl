@@ -375,10 +375,10 @@ test06() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST_F8A(test01);
-  NEW_TEST_F8(test02);
-  NEW_TEST(test03);
-  NEW_TEST_F8(test04);
-  NEW_TEST(test05);
-  NEW_TEST(test06);
+  DO_TEST_F8A(test01);
+  DO_TEST_F8(test02);
+  DO_TEST(test03);
+  DO_TEST_F8(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN

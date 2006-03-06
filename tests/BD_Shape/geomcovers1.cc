@@ -65,5 +65,5 @@ test01() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test01);
+  DO_TEST(test01);
 END_MAIN

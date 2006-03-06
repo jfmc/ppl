@@ -279,6 +279,6 @@ test02() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test01);
-  NEW_TEST(test02);
+  DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN

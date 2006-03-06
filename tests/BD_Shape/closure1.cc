@@ -375,5 +375,5 @@ bool test01() {
 }
 
 BEGIN_MAIN
-  NEW_TEST(test01);
+  DO_TEST(test01);
 END_MAIN

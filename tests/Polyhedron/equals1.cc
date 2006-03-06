@@ -57,5 +57,5 @@ test01() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST_F32(test01);
+  DO_TEST_F32(test01);
 END_MAIN

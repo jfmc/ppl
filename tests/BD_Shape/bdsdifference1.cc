@@ -267,12 +267,12 @@ test08() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test01);
-  NEW_TEST(test02);
-  NEW_TEST(test03);
-  NEW_TEST(test04);
-  NEW_TEST(test05);
-  NEW_TEST(test06);
-  NEW_TEST(test07);
-  NEW_TEST(test08);
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN

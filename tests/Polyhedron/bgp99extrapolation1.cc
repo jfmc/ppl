@@ -264,6 +264,6 @@ test02() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST_F16(test01);
-  NEW_TEST_F8(test02);
+  DO_TEST_F16(test01);
+  DO_TEST_F8(test02);
 END_MAIN

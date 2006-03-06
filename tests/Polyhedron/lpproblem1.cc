@@ -758,7 +758,7 @@ test03() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST_F64(test01);
-  NEW_TEST_F64(test02);
-  NEW_TEST_F64(test03);
+  DO_TEST_F64(test01);
+  DO_TEST_F64(test02);
+  DO_TEST_F64(test03);
 END_MAIN

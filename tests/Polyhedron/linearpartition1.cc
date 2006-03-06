@@ -291,8 +291,8 @@ test04() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test01);
-  NEW_TEST(test02);
-  NEW_TEST(test03);
-  NEW_TEST(test04);
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN

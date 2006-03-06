@@ -469,20 +469,20 @@ test16() {
 } // namespace
 
 BEGIN_MAIN
-  NEW_TEST(test01);
-  NEW_TEST(test02);
-  NEW_TEST(test03);
-  NEW_TEST(test04);
-  NEW_TEST(test05);
-  NEW_TEST_F64(test06);
-  NEW_TEST_F32(test07);
-  NEW_TEST_F8(test08);
-  NEW_TEST_F8(test09);
-  NEW_TEST_F8(test10);
-  NEW_TEST_F8(test11);
-  NEW_TEST(test12);
-  NEW_TEST(test13);
-  NEW_TEST(test14);
-  NEW_TEST(test15);
-  NEW_TEST_F8(test16);
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST_F64(test06);
+  DO_TEST_F32(test07);
+  DO_TEST_F8(test08);
+  DO_TEST_F8(test09);
+  DO_TEST_F8(test10);
+  DO_TEST_F8(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST_F8(test16);
 END_MAIN
