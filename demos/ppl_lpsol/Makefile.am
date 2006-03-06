@@ -88,7 +88,10 @@ ship08l.mps
 
 if HOST_OS_CYGWIN
 
-DIFF_COMMAND = echo "diff suppressed on Cygwin"
+DIFF_COMMAND = \
+grep -e "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
+&& grep -e "^Optimum value: " obtained >obtained_optima \
+&& diff -u --ignore-all-space expected_optima obtained_optima
 
 else !HOST_OS_CYGWIN
 
@@ -133,7 +136,9 @@ check-local: ppl_lpsol
 
 MOSTLYCLEANFILES = \
 tough_examples \
-obtained
+obtained \
+expected_optima \
+obtained_optima
 
 endif HAVE_GLPK
 endif BUILD_C_INTERFACE
