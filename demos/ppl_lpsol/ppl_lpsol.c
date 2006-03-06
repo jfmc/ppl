@@ -181,7 +181,6 @@ process_options(int argc, char* argv[]) {
 
     case 'c':
       check_optimum = 1;
-      fatal("option --check (-c) not implemented yet");
       break;
 
     case 'm':
@@ -608,6 +607,18 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 }
 
 static void
+check_feasibility(ppl_const_Constraint_System_t cs,
+		  ppl_const_Generator_t g) {
+  ppl_Polyhedron_t ph;
+  unsigned int relation;
+  ppl_new_C_Polyhedron_from_Constraint_System(&ph, cs);
+  relation = ppl_Polyhedron_relation_with_Generator(ph, g);
+  ppl_delete_Polyhedron(ph);
+  if (relation != PPL_POLY_GEN_RELATION_SUBSUMES)
+    fprintf(stderr, "The computed optimum is NOT a feasible point!\n");
+}
+
+static void
 solve(char* file_name) {
   ppl_Constraint_System_t ppl_cs;
   ppl_Generator_t optimum_value;
@@ -787,9 +798,6 @@ solve(char* file_name) {
 			    optimum_d,
 			    optimum_value);
 
-  ppl_delete_Constraint_System(ppl_cs);
-  ppl_delete_Linear_Expression(ppl_objective_le);
-
   if (optimum_found) {
     mpq_init(optimum);
     ppl_Coefficient_to_mpz_t(optimum_n, tmp_z);
@@ -809,8 +817,15 @@ solve(char* file_name) {
       ppl_io_fprint_variable(output_file, i);
       fprintf(output_file, " = %.10g\n", mpq_get_d(tmp1_q));
     }
+    if (check_optimum) {
+      // TODO: currently checking only feasibility.
+      // Find a way to also check for optimality.
+      check_feasibility(ppl_cs, optimum_value);
+    }
   }
 
+  ppl_delete_Constraint_System(ppl_cs);
+  ppl_delete_Linear_Expression(ppl_objective_le);
   ppl_delete_Coefficient(optimum_d);
   ppl_delete_Coefficient(optimum_n);
   ppl_delete_Generator(optimum_value);
