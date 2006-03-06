@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "timings.hh"
 #include <vector>
 
-using std::vector;
-
 #ifndef EXP_EVAL
 #define EXP_EVAL 0
 #endif
@@ -110,7 +108,7 @@ NNC_dual_hypercube(const dimension_type dims,
 void
 build_polyhedra(const dimension_type dims,
 		const int perc,
-		vector<NNC_Polyhedron>& ph) {
+		std::vector<NNC_Polyhedron>& ph) {
 
   Linear_Expression weight_center;
 
@@ -146,7 +144,7 @@ build_polyhedra(const dimension_type dims,
 }
 
 void
-computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
+computation(std::vector<NNC_Polyhedron>& ph, bool enhanced) {
   nout << endl;
   if (enhanced)
     nout << "Enhanced computation: ";
@@ -250,11 +248,9 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
   ph[0].constraints().ascii_dump(vnout);
 }
 
-} // namespace
-
-int
-main() TRY {
-  vector<NNC_Polyhedron> ph;
+bool
+test01() {
+  std::vector<NNC_Polyhedron> ph;
 
 #if EXP_EVAL
   dimension_type first_dim = 4;
@@ -283,7 +279,12 @@ main() TRY {
       build_polyhedra(dims, perc, ph);
       computation(ph, true);
     }
-
-  return 0;
+  // FIXME: check the cardinalities of the results obtained.
+  return true;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST_F64(test01);
+END_MAIN
