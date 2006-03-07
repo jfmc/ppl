@@ -222,6 +222,9 @@ PPL::Congruence_System::normalize_moduli() {
 
 bool
 PPL::Congruence_System::is_equal_to(const Congruence_System& cgs) const {
+  if (num_rows() != cgs.num_rows())
+    return false;
+
   for (dimension_type row = 0; row < cgs.num_rows(); ++row)
     for (dimension_type col = 0; col < cgs.num_columns(); ++col) {
       if (operator[](row)[col] == cgs[row][col])
