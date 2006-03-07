@@ -19,6 +19,10 @@ To be more precise, the Parma Polyhedra Library (PPL) can handle:
   + convex polyhedra defined by systems of bounded differences with
     a wide choice of integer, rational or floating point coefficients;
 
+  + all grids (or, equivalently, lattices); a grid is defined by a set of
+    congruence relations with rational coefficients and consists of the set of
+    all points that satisfy these relations.
+
   + finite powersets of the above;
 
   + linear programming problems, solved with an implementation of the
