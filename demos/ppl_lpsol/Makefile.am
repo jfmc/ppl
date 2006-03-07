@@ -101,7 +101,7 @@ DIFF_COMMAND = echo "diff suppressed on Darwin"
 
 else !HOST_OS_DARWIN
 
-DIFF_COMMAND = diff -u --ignore-all-space $(srcdir)/$(EXPECTED) obtained
+DIFF_COMMAND = diff -u $(srcdir)/$(EXPECTED) obtained
 
 endif !HOST_OS_DARWIN
 
