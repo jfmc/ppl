@@ -156,7 +156,7 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
 
   const dimension_type x_n_rows = x.num_rows();
   const dimension_type y_n_rows = y.num_rows();
-  const dimension_type old_n_cols = num_columns();
+  const dimension_type old_n_cols = x.num_columns();
   const dimension_type y_n_cols = y.num_columns();
   // Grow to the required size.
   if (old_n_cols >= y_n_cols)
@@ -176,7 +176,7 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
     Row copy(y[i], x.row_size, x.row_capacity);
     std::swap(copy, x[x_n_rows+i]);
     // Swap the modulus to the correct column.
-    std::swap(copy[x_mod_index], copy[y_mod_index]);
+    std::swap(x[x_n_rows+i][x_mod_index], x[x_n_rows+i][y_mod_index]);
   }
   assert(OK());
 }
