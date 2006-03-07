@@ -212,7 +212,7 @@ Contains the forward declarations of type names (in particular, the
 one for "Xtype") and other useful typedef's.
 
 b) Xtype.defs.hh
-Contains the definition of the type, togheter with the declaration of
+Contains the definition of the type, together with the declaration of
 any function that, even though not being formally part of the type, is
 nonetheless related to it and should therefore be considered part of
 its interface.
@@ -412,24 +412,34 @@ Standards for the Test Programs
 o  Include the header file `ppl_test.hh' to include common declarations
    for test code (see below).
 
-o  Place the test code either in the main function or in test functions
-   which are called from main. Name the test functions test1, test2, etc.
+o  Place the test code in test functions that return a Boolean value.
+   Name the test functions test01, test02, etc.
 
-o  On failure immediately exit the test program with a return value
-   other than zero. Do this by calling `exit' in a test function, or
-   `return' in the main function. Return zero on success.
+o  Each test program should contain no more than 20 test functions.
 
-o  Wrap function main with TRY and CATCH, as follows.  This adds code
-   to print an error message if an exception reaches the top level.
+o  The test functions should be written
 
-	int
-	main() TRY {
+        // Comment describing the test...
+        bool
+          test10() {
+            // ... test code ...
+        }
 
-	 // body of main
+   where the 10 in "test10" indicates that it is the 10th test function
+   in the program.
 
-	 return 0;
-	}
-	CATCH
+o  The test functions should return true if the test succeeds and false
+   if it fails.
+
+o  Following all the test functions, include:
+
+        BEGIN_MAIN
+          DO_TEST(test01);
+          DO_TEST(test02);
+          ...
+        END_MAIN
+
+   where every test function in the program is included in the list.
 
 o  Normally, test code should produce no output at all (independently from
    whether the test succeeded or failed). Output is only meant to help
