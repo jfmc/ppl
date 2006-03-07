@@ -174,9 +174,9 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
   const dimension_type y_mod_index = y_n_cols - 1;
   for (dimension_type i = y_n_rows; i-- > 0; ) {
     Row copy(y[i], x.row_size, x.row_capacity);
-    std::swap(copy, x[x_n_rows+i]);
     // Swap the modulus to the correct column.
-    std::swap(x[x_n_rows+i][x_mod_index], x[x_n_rows+i][y_mod_index]);
+    std::swap(copy[x_mod_index], copy[y_mod_index]);
+    std::swap(copy, x[x_n_rows+i]);
   }
   assert(OK());
 }
