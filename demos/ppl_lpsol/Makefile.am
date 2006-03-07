@@ -89,8 +89,8 @@ ship08l.mps
 if HOST_OS_CYGWIN
 
 DIFF_COMMAND = \
-grep -e "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
-&& grep -e "^Optimum value: " obtained >obtained_optima \
+grep "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
+&& grep "^Optimum value: " obtained >obtained_optima \
 && diff -u expected_optima obtained_optima
 
 else !HOST_OS_CYGWIN
@@ -98,13 +98,26 @@ else !HOST_OS_CYGWIN
 if HOST_OS_DARWIN
 
 DIFF_COMMAND = \
-grep -e "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
-&& grep -e "^Optimum value: " obtained >obtained_optima \
+grep "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
+&& grep "^Optimum value: " obtained >obtained_optima \
 && diff -u expected_optima obtained_optima
 
 else !HOST_OS_DARWIN
 
+if HOST_OS_SOLARIS
+
+DIFF_COMMAND = \
+grep "^Optimum value: " $(srcdir)/$(EXPECTED) \
+| sed -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >expected_optima \
+&& grep "^Optimum value: " obtained \
+| sed -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >obtained_optima \
+&& diff -u expected_optima obtained_optima
+
+else !HOST_OS_SOLARIS
+
 DIFF_COMMAND = diff -u $(srcdir)/$(EXPECTED) obtained
+
+endif !HOST_OS_SOLARIS
 
 endif !HOST_OS_DARWIN
 
