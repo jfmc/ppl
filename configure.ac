@@ -779,6 +779,7 @@ fi
 # System-dependent adjustments.
 cygwin=no
 darwin=no
+solaris=no
 no_undefined=no
 
 case "${host_cpu}" in
@@ -797,6 +798,10 @@ alpha*)
 esac
 
 case "${host_os}" in
+cygwin)
+  cygwin=yes
+  no_undefined=yes
+  ;;
 darwin*)
   darwin=yes
   if test x"$GCC" = xyes
@@ -805,9 +810,8 @@ darwin*)
     CXXFLAGS="$CXXFLAGS -Wno-long-double"
   fi
   ;;
-cygwin)
-  cygwin=yes
-  no_undefined=yes
+solaris*)
+  solaris=yes
   ;;
 *)
   ;;
@@ -815,6 +819,7 @@ esac
 
 AM_CONDITIONAL(HOST_OS_CYGWIN, test x$cygwin = xyes)
 AM_CONDITIONAL(HOST_OS_DARWIN, test x$darwin = xyes)
+AM_CONDITIONAL(HOST_OS_SOLARIS, test x$solaris = xyes)
 AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 
 AC_SUBST(extra_includes)
