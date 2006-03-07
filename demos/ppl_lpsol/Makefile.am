@@ -91,13 +91,16 @@ if HOST_OS_CYGWIN
 DIFF_COMMAND = \
 grep -e "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
 && grep -e "^Optimum value: " obtained >obtained_optima \
-&& diff -u --ignore-all-space expected_optima obtained_optima
+&& diff -u expected_optima obtained_optima
 
 else !HOST_OS_CYGWIN
 
 if HOST_OS_DARWIN
 
-DIFF_COMMAND = echo "diff suppressed on Darwin"
+DIFF_COMMAND = \
+grep -e "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
+&& grep -e "^Optimum value: " obtained >obtained_optima \
+&& diff -u expected_optima obtained_optima
 
 else !HOST_OS_DARWIN
 
