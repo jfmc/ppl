@@ -309,7 +309,8 @@ private:
     <CODE>OPTIMIZED_LP_PROBLEM></CODE> if the problem is neither trivially
     unfeasible nor trivially unbounded (the tableau was computed successfully).
   */
-  LP_Problem_Status compute_tableau();
+  LP_Problem_Status compute_tableau(std::vector<dimension_type>&
+				    worked_out_row);
 
   /*! \brief
     Parses all the constraints passed to the method to know how to resize the
@@ -456,7 +457,7 @@ private:
     inserts the "sign" to the cost functions, and makes the necessary pivoting
     operations to express the problem with the 1st phase base.
   */
-  void prepare_first_phase();
+  void prepare_first_phase(std::vector<dimension_type> worked_out_rows);
 
   /*! \brief
     Drop unnecessary artificial variables from the tableau and get ready

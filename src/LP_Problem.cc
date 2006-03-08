@@ -371,9 +371,9 @@ PPL::LP_Problem::process_pending_constraints() {
 
   // Resize the tableau and adding the necessary columns for artificial and
   // slack variables.
-  dimension_type num_satisfied_ineqs = 0;
-  num_satisfied_ineqs = std::count(satisfied_ineqs.begin(),
-				   satisfied_ineqs.end(), true);
+  dimension_type num_satisfied_ineqs = std::count(satisfied_ineqs.begin(),
+						  satisfied_ineqs.end(),
+						  true);
   const dimension_type unfeasible_tableau_rows_size =
     unfeasible_tableau_rows.size();
   const dimension_type artificial_cols = new_rows +
@@ -852,7 +852,8 @@ PPL::LP_Problem::compute_simplex() {
 
 // See pag 28  Papadimitriou.
 void
-PPL::LP_Problem::prepare_first_phase() {
+PPL::LP_Problem::prepare_first_phase(const std::vector<dimension_type>
+				     worked_out_rows) {
   // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
   // This simplifies the insertion of the artificial variables: the value of
   // each artificial variable will be 1.
@@ -863,10 +864,12 @@ PPL::LP_Problem::prepare_first_phase() {
       for (dimension_type j = tableau_old_n_cols; j-- > 0; )
 	neg_assign(tableau_i[j]);
   }
-
+  int num_satisfied_rows =  worked_out_rows.size();
+  num_satisfied_rows -= std::count(worked_out_rows.begin(),
+				   worked_out_rows.end(), (dimension_type) 0);
   // Add the columns for all the artificial variables, plus an additional
   // column for the sign of the cost function.
-  tableau.add_zero_columns(tableau.num_rows() + 1);
+  tableau.add_zero_columns(tableau.num_rows() - num_satisfied_rows + 1);
 
   for (dimension_type i = tableau.num_columns()-1 ; i-- > 0; )
     is_artificial.push_back(false);
@@ -878,14 +881,23 @@ PPL::LP_Problem::prepare_first_phase() {
   // the artificial variables (which enter the base).
   // As for the cost function, all the artificial variables should have
   // coefficient -1.
-  for (dimension_type i = 0; i < tableau.num_rows(); ++i) {
-    const dimension_type j = tableau_old_n_cols + i;
-    tableau[i][j] = 1;
-    working_cost[j] = -1;
-    base[i] = j;
-    is_artificial[j] = true;
+  for (dimension_type i = 0,k = 0; i < tableau.num_rows(); ++i) {
+    // If the previously inserted slack variable has the oppisite sign of the
+    // inhomogeneous term, we can omit the artificial variable. This can save
+    // a lot of time.
+    if (worked_out_rows[i] == 0) {
+      const dimension_type j = tableau_old_n_cols + k;
+      tableau[i][j] = 1;
+      working_cost[j] = -1;
+      base[i] = j;
+      is_artificial[j] = true;
+      ++k;
+    }
+    // The slack variable match our needs, so there is no need to insert
+    // an artificial variable.
+    else
+      base[i] = worked_out_rows[i];
   }
-
   // Set the extra-coefficient of the cost functions to record its sign.
   // This is done to keep track of the possible sign's inversion.
   const dimension_type last_obj_index = working_cost.size() - 1;
@@ -893,7 +905,8 @@ PPL::LP_Problem::prepare_first_phase() {
 
   // Express the problem in terms of the variables in base.
   for (dimension_type i = tableau.num_rows(); i-- > 0; )
-    linear_combine(working_cost, tableau[i], base[i]);
+    if(working_cost[base[i]] != 0)
+      linear_combine(working_cost, tableau[i], base[i]);
 }
 
 //See pag 55-56 Papadimitriou.
@@ -965,7 +978,8 @@ PPL::LP_Problem::erase_artificials() {
 // See pag 55 of Papadimitriou.
 
 PPL::LP_Problem_Status
-PPL::LP_Problem::compute_tableau() {
+PPL::LP_Problem::compute_tableau(std::vector<dimension_type>&
+				 worked_out_rows) {
   dimension_type tableau_num_rows = 0;
   dimension_type num_slack_variables = 0;
   std::deque<bool> is_tableau_constraint;
@@ -986,8 +1000,8 @@ PPL::LP_Problem::compute_tableau() {
   dimension_type tableau_num_cols = 2*cs_num_cols - 1;
   // The slack variables will be columns in the tableau.
   dimension_type num_nonnegative = std::count(nonnegative_variable.begin(),
-					      nonnegative_variable.end(), true);
-
+					      nonnegative_variable.end(),
+					      true);
   tableau_num_cols += num_slack_variables - num_nonnegative;
   mapping.push_back(std::make_pair(0, 0));
   for (dimension_type i = 1; i < input_cs.num_columns(); ++i)
@@ -1007,7 +1021,7 @@ PPL::LP_Problem::compute_tableau() {
     tableau.add_zero_rows_and_columns(tableau_num_rows,
 				      tableau_num_cols,
 				      Row::Flags());
-
+  worked_out_rows = std::vector<dimension_type>(tableau_num_rows, 0);
   // Phase 3:
   // insert all the (possibly transformed) constraints that are not
   // nonnegativity constraints. The transformation includes both
@@ -1024,10 +1038,16 @@ PPL::LP_Problem::compute_tableau() {
       for (dimension_type j = cs_num_cols; j-- > 0; )
 	tableau_k[j] = cs_i[j];
       // Add the slack variable, if needed.
-      if (cs_i.is_ray_or_point_or_inequality())
+      if (cs_i.is_ray_or_point_or_inequality()) {
 	tableau_k[--slack_index] = -1;
+	// Check if the slack variable can avoid an artificial one: in this
+	// case store the slack_index in worked_out_rows[k]. This happens
+	// if the inhomogeneous term has the opposite sign of
+	// tableau_k[slack_index]
+	if (sgn(tableau_k[0]) == -sgn(tableau_k[slack_index]))
+	  worked_out_rows[k] = slack_index;
+      }
     }
-
   // Split the variables in the tableau.
   for (dimension_type i = mapping.size(); i-- > 1; ) {
     if (mapping[i].second != 0) {
@@ -1258,7 +1278,8 @@ PPL::LP_Problem::is_satisfiable() const {
   x.is_artificial.clear();
 
   // Compute the initial tableau.
-  LP_Problem_Status s_status = x.compute_tableau();
+  std::vector<dimension_type> worked_out_rows;
+  LP_Problem_Status s_status = x.compute_tableau(worked_out_rows);
   // Check for trivial cases.
   switch (s_status) {
   case UNFEASIBLE_LP_PROBLEM:
@@ -1289,17 +1310,17 @@ PPL::LP_Problem::is_satisfiable() const {
   // Actually solve the LP problem.
   x.base = std::vector<dimension_type> (x.tableau.num_rows());
 
-  // Adds the necessary slack variables to get the 1st phase problem.
-  x.prepare_first_phase();
+  // Adds the necessary artificial variables to get the 1st phase problem.
+  x.prepare_first_phase(worked_out_rows);
   // Solve the first phase of the primal simplex algorithm.
   bool first_phase_successful = x.compute_simplex();
-
+ 
 #if PPL_NOISY_SIMPLEX
   std::cout << "LP_Problem::solve: 1st phase ended at iteration "
 	    << num_iterations << "." << std::endl;
 #endif
   // If the first phase problem was not solved or if we found an optimum
-  // value different from zero, then the origianl problem is unfeasible.
+  // value different from zero, then the original problem is unfeasible.
   if (!first_phase_successful || x.working_cost[0] != 0){
     x.status = UNSATISFIABLE;
     return false;
