@@ -420,13 +420,10 @@ PPL::Grid_Generator_System
   if (new_dimension == space_dim)
     return;
 
-  if (new_dimension == 0)
-    clear();
-  else {
-    // Swap the parameter divisor column into the column that will
-    // become the last column.
-    swap_columns(new_dimension + 1, space_dim + 1);
-    Matrix::remove_trailing_columns(space_dim - new_dimension);
-    remove_invalid_lines_and_rays();
-  }
+  // Swap the parameter divisor column into the column that will
+  // become the last column.
+  swap_columns(new_dimension + 1, space_dim + 1);
+  Matrix::remove_trailing_columns(space_dim - new_dimension);
+  remove_invalid_lines_and_rays();
+  assert(OK());
 }
