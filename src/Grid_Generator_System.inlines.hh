@@ -67,7 +67,7 @@ Grid_Generator_System::space_dimension() const {
 inline void
 Grid_Generator_System::clear() {
   Generator_System::clear();
-  add_zero_columns(1);		// Parameter divisor column.
+  add_zero_columns(2);		// Parameter divisor column.
   set_sorted(false);
   unset_pending_rows();
 }
