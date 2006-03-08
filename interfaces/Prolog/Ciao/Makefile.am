@@ -48,28 +48,12 @@ ppl_ciao.po: ppl_ciao.pl
 	fi
 	ciaoc -c ppl_ciao.pl
 
-ciao_clpq: .libs/libppl_ciao.so ppl_ciao.po ciao_clpq.pl ../tests/clpq.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ciao_clpq.pl .; \
-	fi
-	cp -f $(srcdir)/../tests/clpq.pl .
-	ciaoc -o $@ ciao_clpq.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_clpq.pl; \
-	fi
-	rm -f clpq.pl
-
-ciao_clpq2: .libs/libppl_ciao.so ppl_ciao.po ciao_clpq.pl ../tests/clpq2.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ciao_clpq2.pl .; \
-	fi
-	cp -f $(srcdir)/../tests/clpq2.pl .
-	ciaoc -o $@ ciao_clpq2.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_clpq2.pl; \
-	fi
-	rm -f clpq2.pl
-
+# All the invocations of `ciaoc' to build `ciao_pl_check', `ciao_clpq'
+# and `ciao_clpq2' will try to build identical glue files (e.g.,
+# `ppl_ciao_LINUXi86.so').  On parallel builds, this may cause errors.
+# This is why we make `ciao_clpq' and `ciao_clpq2' depend on `ciao_pl_check':
+# building the latter will build the glue files once and for all;  after
+# that, `ciao_clpq' and `ciao_clpq2' can be built in parallel.
 ciao_pl_check: .libs/libppl_ciao.so ppl_ciao.po ciao_pl_check.pl ../tests/pl_check.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/ciao_pl_check.pl .; \
@@ -80,6 +64,29 @@ ciao_pl_check: .libs/libppl_ciao.so ppl_ciao.po ciao_pl_check.pl ../tests/pl_che
 	  rm -f ciao_pl_check.pl; \
 	fi
 	rm -f pl_check.pl
+
+ciao_clpq: .libs/libppl_ciao.so ppl_ciao.po ciao_clpq.pl ../tests/clpq.pl | ciao_pl_check
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/ciao_clpq.pl .; \
+	fi
+	cp -f $(srcdir)/../tests/clpq.pl .
+	ciaoc -o $@ ciao_clpq.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f ciao_clpq.pl; \
+	fi
+	rm -f clpq.pl
+
+ciao_clpq2: .libs/libppl_ciao.so ppl_ciao.po ciao_clpq.pl ../tests/clpq2.pl | ciao_pl_check
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/ciao_clpq2.pl .; \
+	fi
+	cp -f $(srcdir)/../tests/clpq2.pl .
+	ciaoc -o $@ ciao_clpq2.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f ciao_clpq2.pl; \
+	fi
+	rm -f clpq2.pl
+
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
