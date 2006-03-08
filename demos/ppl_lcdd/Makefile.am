@@ -103,13 +103,13 @@ $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 
 check-local: ppl_lcdd
 	echo $(TOUGH_EXAMPLES) >tough_examples
-	echo $ECHO_N "$ECHO_C" >obtained
+	echo $(ECHO_N) "$(ECHO_C)" >obtained
 	LANG=C; \
 	for path in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; \
 	do \
 	  file=`basename $$path`; \
 	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
-	  echo $ECHO_N $$file " $ECHO_C" >>obtained; \
+	  echo $(ECHO_N) $$file " $(ECHO_C)" >>obtained; \
 	  echo ppl_lcdd $$path; \
 	  ./ppl_lcdd $$path | $(TEXT_MD5SUM) >>obtained; \
 	done

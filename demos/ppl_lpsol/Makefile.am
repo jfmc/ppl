@@ -124,7 +124,7 @@ endif !HOST_OS_DARWIN
 endif !HOST_OS_CYGWIN
 
 check-local: ppl_lpsol
-	echo $ECHO_N "$ECHO_C" >obtained
+	echo $(ECHO_N) "$(ECHO_C)" >obtained
 	echo $(TOUGH_EXAMPLES_FOR_ENUM) >tough_examples
 	LANG=C; \
 	for path in $(srcdir)/examples/*.mps; \
