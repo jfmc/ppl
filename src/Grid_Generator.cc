@@ -43,8 +43,9 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
   if (d == 0)
     throw std::invalid_argument("PPL::parameter(e, d):\n"
 				"d == 0.");
+  // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e,
-		       e.space_dimension() + 2 /* parameter divisor */);
+		       e.space_dimension() + 2);
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
   g[0] = 0;
   // Using this constructor saves reallocation when creating the
@@ -67,8 +68,9 @@ PPL::Grid_Generator::point(const Linear_Expression& e,
   if (d == 0)
     throw std::invalid_argument("PPL::grid_point(e, d):\n"
 				"d == 0.");
+  // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e,
-		       e.space_dimension() + 2 /* parameter divisor */);
+		       e.space_dimension() + 2);
   Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
   g[0] = d;
   // Using this constructor saves reallocation when creating the
@@ -93,8 +95,9 @@ PPL::Grid_Generator::line(const Linear_Expression& e) {
     throw std::invalid_argument("PPL::grid_line(e):\n"
 				"e == 0, but the origin cannot be a line.");
 
+  // Add 2 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e,
-		       e.space_dimension() + 2 /* parameter divisor */);
+		       e.space_dimension() + 2);
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
   g[0] = 0;
   // Using this constructor saves reallocation when creating the
@@ -119,7 +122,8 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
   assert(y.size() > 0);
   dimension_type sz = size() - 1;
   dimension_type y_sz = y.size() - 1;
-  std::swap(operator[](sz), y[y_sz]); // Parameter divisors.
+  // Swap parameter divisors.
+  std::swap(operator[](sz), y[y_sz]);
   for (dimension_type j = (sz > y_sz ? y_sz : sz); j-- > 0; )
     std::swap(operator[](j), y[j]);
 }
@@ -166,7 +170,8 @@ PPL::Grid_Generator::is_equal_to(const Grid_Generator& y) const {
 
 bool
 PPL::Grid_Generator::all_homogeneous_terms_are_zero() const {
-  for (dimension_type i = size() - 1 /* parameter divisor */; --i > 0; )
+  // Start at size() - 1 to avoid the extra grid generator column.
+  for (dimension_type i = size() - 1; --i > 0; )
     if (operator[](i) != 0)
       return false;
   return true;

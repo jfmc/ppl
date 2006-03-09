@@ -55,19 +55,22 @@ Grid_Generator_System::Grid_Generator_System(const Grid_Generator& g)
 
 inline dimension_type
 Grid_Generator_System::max_space_dimension() {
-  return Generator_System::max_space_dimension() - 1 /* parameter divisor */;
+  // Grid generators use an extra column for the parameter divisor.
+  return Generator_System::max_space_dimension() - 1;
 }
 
 inline dimension_type
 Grid_Generator_System::space_dimension() const {
   assert(Generator_System::space_dimension() > 0);
-  return Generator_System::space_dimension() - 1 /* parameter divisor */;
+  // Grid generators use an extra column for the parameter divisor.
+  return Generator_System::space_dimension() - 1;
 }
 
 inline void
 Grid_Generator_System::clear() {
   Generator_System::clear();
-  add_zero_columns(2);		// Parameter divisor column.
+  // For grid generators, two extra columns are needed.
+  add_zero_columns(2);
   set_sorted(false);
   unset_pending_rows();
 }
