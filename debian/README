@@ -19,9 +19,8 @@ of a minimal stable distribution and then builds the package inside
 the chroot.  This is good to verify the build dependencies.  It also
 may be required, to ensure that the PPL is built against the compiler
 and GMP from the stable distributions (if, for example, the build
-machine uses the testing or unstable distributions).  The command is
+machine uses the testing or unstable distributions).
 
-	pbuilder FIX
 
 References
 ----------
