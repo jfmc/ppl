@@ -1044,7 +1044,7 @@ PPL::LP_Problem::compute_tableau(std::vector<dimension_type>&
 	// case store the slack_index in worked_out_rows[k]. This happens
 	// if the inhomogeneous term has the opposite sign of
 	// tableau_k[slack_index]
-	if (sgn(tableau_k[0]) == -sgn(tableau_k[slack_index]))
+	if (tableau_k[0] >= 0)
 	  worked_out_rows[k] = slack_index;
       }
     }
