@@ -13,9 +13,9 @@ See the file CREDITS for a list of people and organizations that
 contributed to the PWL.
 
 Here is the contents of the PWL 0.5 source distribution
-(2 directories, 57 files):
+(2 directories, 56 files):
 
-Watchdog/
+Watchdog
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -68,9 +68,8 @@ Watchdog/
 |   |-- Watchdog.defs.hh
 |   |-- Watchdog.inlines.hh
 |   |-- Watchdog.types.hh
-|   |-- pwl_header.hh
-|   |-- pwl_include_files.hh
-|   `-- pwl_install.hh.dist
+|   |-- pwl.hh.dist
+|   `-- pwl_header.hh
 `-- utils
     |-- Makefile.am
     |-- Makefile.in

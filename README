@@ -64,9 +64,9 @@ For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.9 source distribution
-(26 directories, 1140 files):
+(27 directories, 924 files):
 
-ppl-0.8
+ppl-0.9
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -132,9 +132,8 @@ ppl-0.8
 |   |   |-- Watchdog.defs.hh
 |   |   |-- Watchdog.inlines.hh
 |   |   |-- Watchdog.types.hh
-|   |   |-- pwl_header.hh
-|   |   |-- pwl_include_files.hh
-|   |   `-- pwl_install.hh.dist
+|   |   |-- pwl.hh.dist
+|   |   `-- pwl_header.hh
 |   `-- utils
 |       |-- Makefile.am
 |       |-- Makefile.in
@@ -150,10 +149,10 @@ ppl-0.8
 |-- debian
 |   |-- Makefile.am
 |   |-- Makefile.in
+|   |-- README
 |   |-- changelog
 |   |-- compat
 |   |-- control
-|   |-- control.prologs
 |   |-- libppl-c.dirs
 |   |-- libppl-c.install
 |   |-- libppl-c.links
@@ -163,14 +162,10 @@ ppl-0.8
 |   |-- libppl-dev.docs
 |   |-- libppl-dev.install
 |   |-- libppl-dev.links
-|   |-- libppl-gprolog.links
 |   |-- libppl-pwl.copyright.in
 |   |-- libppl-pwl.dirs
 |   |-- libppl-pwl.docs
 |   |-- libppl-pwl.install
-|   |-- libppl-sicstus.links
-|   |-- libppl-swi.links
-|   |-- libppl-yap.links
 |   |-- libppl.copyright.in
 |   |-- libppl.dirs
 |   |-- libppl.docs
@@ -361,9 +356,9 @@ ppl-0.8
 |   |-- gpl.tex
 |   |-- gpl.txt
 |   |-- ppl-config.1
-|   |-- ppl-user-0.8pre10-html.tar.gz
-|   |-- ppl-user-0.8pre10.pdf
-|   |-- ppl-user-0.8pre10.ps.gz
+|   |-- ppl-user-0.9-html.tar.gz
+|   |-- ppl-user-0.9.pdf
+|   |-- ppl-user-0.9.ps.gz
 |   |-- ppl.sty
 |   |-- ppl_lcdd.1
 |   |-- ppl_lpsol.1
@@ -522,17 +517,17 @@ ppl-0.8
 |-- m4
 |   |-- Makefile.am
 |   |-- Makefile.in
+|   |-- ac_check_fpu_control.m4
 |   |-- ac_check_gmp.m4
 |   |-- ac_check_sicstus_prolog.m4
 |   |-- ac_check_swi_prolog.m4
 |   |-- ac_check_xsb_prolog.m4
 |   |-- ac_cxx_attribute_weak.m4
-|   |-- ac_cxx_double_is_iec_559.m4
+|   |-- ac_cxx_double_binary_format.m4
 |   |-- ac_cxx_flexible_arrays.m4
-|   |-- ac_cxx_float_is_iec_559.m4
-|   |-- ac_cxx_long_double.m4
-|   |-- ac_cxx_long_double_is_iec_559.m4
-|   |-- ac_cxx_long_long.m4
+|   |-- ac_cxx_float_binary_format.m4
+|   |-- ac_cxx_long_double_binary_format.m4
+|   |-- ac_text_md5sum.m4
 |   |-- lib-ld.m4
 |   |-- lib-link.m4
 |   |-- lib-prefix.m4
@@ -547,6 +542,7 @@ ppl-0.8
 |   |-- BD_Shape.cc
 |   |-- BD_Shape.defs.hh
 |   |-- BD_Shape.inlines.hh
+|   |-- BD_Shape.templates.hh
 |   |-- BD_Shape.types.hh
 |   |-- BHRZ03_Certificate.cc
 |   |-- BHRZ03_Certificate.defs.hh
@@ -572,6 +568,14 @@ ppl-0.8
 |   |-- Coefficient.inlines.hh
 |   |-- Coefficient.types.hh
 |   |-- Coefficient_traits_template.hh
+|   |-- Congruence.cc
+|   |-- Congruence.defs.hh
+|   |-- Congruence.inlines.hh
+|   |-- Congruence.types.hh
+|   |-- Congruence_System.cc
+|   |-- Congruence_System.defs.hh
+|   |-- Congruence_System.inlines.hh
+|   |-- Congruence_System.types.hh
 |   |-- Constraint.cc
 |   |-- Constraint.defs.hh
 |   |-- Constraint.inlines.hh
@@ -603,6 +607,31 @@ ppl-0.8
 |   |-- Generator_System.defs.hh
 |   |-- Generator_System.inlines.hh
 |   |-- Generator_System.types.hh
+|   |-- Grid.defs.hh
+|   |-- Grid.inlines.hh
+|   |-- Grid.templates.hh
+|   |-- Grid.types.hh
+|   |-- Grid_Certificate.cc
+|   |-- Grid_Certificate.defs.hh
+|   |-- Grid_Certificate.inlines.hh
+|   |-- Grid_Certificate.types.hh
+|   |-- Grid_Generator.cc
+|   |-- Grid_Generator.defs.hh
+|   |-- Grid_Generator.inlines.hh
+|   |-- Grid_Generator.types.hh
+|   |-- Grid_Generator_System.cc
+|   |-- Grid_Generator_System.defs.hh
+|   |-- Grid_Generator_System.inlines.hh
+|   |-- Grid_Generator_System.types.hh
+|   |-- Grid_Status.cc
+|   |-- Grid_Status.idefs.hh
+|   |-- Grid_Status.inlines.hh
+|   |-- Grid_chdims.cc
+|   |-- Grid_conversion.cc
+|   |-- Grid_nonpublic.cc
+|   |-- Grid_public.cc
+|   |-- Grid_simplify.cc
+|   |-- Grid_widenings.cc
 |   |-- H79_Certificate.cc
 |   |-- H79_Certificate.defs.hh
 |   |-- H79_Certificate.inlines.hh
@@ -656,9 +685,11 @@ ppl-0.8
 |   |-- Polyhedra_Powerset.cc
 |   |-- Polyhedra_Powerset.defs.hh
 |   |-- Polyhedra_Powerset.inlines.hh
+|   |-- Polyhedra_Powerset.templates.hh
 |   |-- Polyhedra_Powerset.types.hh
 |   |-- Polyhedron.defs.hh
 |   |-- Polyhedron.inlines.hh
+|   |-- Polyhedron.templates.hh
 |   |-- Polyhedron.types.hh
 |   |-- Polyhedron_chdims.cc
 |   |-- Polyhedron_nonpublic.cc
@@ -666,6 +697,7 @@ ppl-0.8
 |   |-- Polyhedron_widenings.cc
 |   |-- Powerset.defs.hh
 |   |-- Powerset.inlines.hh
+|   |-- Powerset.templates.hh
 |   |-- Powerset.types.hh
 |   |-- Ptr_Iterator.defs.hh
 |   |-- Ptr_Iterator.inlines.hh
@@ -710,10 +742,12 @@ ppl-0.8
 |   |-- checked_numeric_limits.hh
 |   |-- compiler.hh
 |   |-- conversion.cc
-|   |-- float.types.hh
 |   |-- fpu-c99.inlines.hh
 |   |-- fpu-ia32.inlines.hh
+|   |-- fpu-none.inlines.hh
+|   |-- fpu-sparc.inlines.hh
 |   |-- fpu.defs.hh
+|   |-- fpu.types.hh
 |   |-- globals.cc
 |   |-- globals.defs.hh
 |   |-- globals.inlines.hh
@@ -725,9 +759,8 @@ ppl-0.8
 |   |-- namespaces.hh
 |   |-- ppl-config.cc
 |   |-- ppl-config.cc.in
+|   |-- ppl.hh.dist
 |   |-- ppl_header.hh
-|   |-- ppl_include_files.hh
-|   |-- ppl_install.hh.dist
 |   |-- simplify.cc
 |   |-- swapping_sort.icc
 |   |-- version.cc
@@ -740,303 +773,165 @@ ppl-0.8
 |   |   |-- Makefile.in
 |   |   |-- addconstraints1.cc
 |   |   |-- addspacedims1.cc
-|   |   |-- addspacedims2.cc
-|   |   |-- addspacedims3.cc
-|   |   |-- addspacedims4.cc
-|   |   |-- addspacedims5.cc
-|   |   |-- addspacedims6.cc
-|   |   |-- addspacedims7.cc
 |   |   |-- affinedimension1.cc
 |   |   |-- affineimage1.cc
-|   |   |-- affineimage10.cc
 |   |   |-- affineimage2.cc
-|   |   |-- affineimage3.cc
-|   |   |-- affineimage4.cc
-|   |   |-- affineimage5.cc
-|   |   |-- affineimage6.cc
-|   |   |-- affineimage7.cc
-|   |   |-- affineimage8.cc
-|   |   |-- affineimage9.cc
 |   |   |-- affinepreimage1.cc
 |   |   |-- affinepreimage2.cc
-|   |   |-- affinepreimage3.cc
-|   |   |-- affinepreimage4.cc
-|   |   |-- affinepreimage5.cc
 |   |   |-- ascii_dump_load1.cc
-|   |   |-- ascii_dump_load2.cc
 |   |   |-- bdsdifference1.cc
-|   |   |-- bdsdifference2.cc
-|   |   |-- bdsdifference3.cc
-|   |   |-- bdsdifference4.cc
-|   |   |-- bdsdifference5.cc
-|   |   |-- bdsdifference6.cc
-|   |   |-- bdsdifference7.cc
 |   |   |-- bdshull1.cc
-|   |   |-- bdshull2.cc
-|   |   |-- bdshull3.cc
-|   |   |-- bdshull4.cc
 |   |   |-- bgp99extrapolation1.cc
 |   |   |-- bhmz05widening1.cc
-|   |   |-- bhmz05widening2.cc
-|   |   |-- bhmz05widening3.cc
-|   |   |-- bhmz05widening4.cc
-|   |   |-- bhmz05widening5.cc
-|   |   |-- bhmz05widening6.cc
-|   |   |-- bhmz05widening7.cc
-|   |   |-- bhmz05widening8.cc
 |   |   |-- bhz03widening1.cc
 |   |   |-- cc76extrapolation1.cc
-|   |   |-- cc76extrapolation2.cc
-|   |   |-- cc76extrapolation3.cc
-|   |   |-- cc76extrapolation4.cc
-|   |   |-- cc76extrapolation5.cc
-|   |   |-- cc76extrapolation6.cc
 |   |   |-- cc76narrowing1.cc
-|   |   |-- cc76narrowing2.cc
-|   |   |-- cc76narrowing3.cc
-|   |   |-- cc76narrowing4.cc
-|   |   |-- cc76narrowing5.cc
 |   |   |-- closure1.cc
 |   |   |-- concatenate1.cc
-|   |   |-- concatenate2.cc
-|   |   |-- concatenate3.cc
-|   |   |-- concatenate4.cc
-|   |   |-- concatenate5.cc
 |   |   |-- constraints1.cc
-|   |   |-- constraints2.cc
 |   |   |-- contains1.cc
-|   |   |-- contains2.cc
-|   |   |-- contains3.cc
 |   |   |-- empty1.cc
-|   |   |-- empty2.cc
-|   |   |-- empty3.cc
-|   |   |-- empty4.cc
-|   |   |-- empty5.cc
 |   |   |-- equality1.cc
-|   |   |-- exceptions1.cc
-|   |   |-- exceptions2.cc
-|   |   |-- exceptions3.cc
 |   |   |-- fromgensys1.cc
 |   |   |-- generalizedaffineimage1.cc
-|   |   |-- generalizedaffineimage10.cc
-|   |   |-- generalizedaffineimage11.cc
-|   |   |-- generalizedaffineimage12.cc
-|   |   |-- generalizedaffineimage13.cc
-|   |   |-- generalizedaffineimage14.cc
 |   |   |-- generalizedaffineimage2.cc
-|   |   |-- generalizedaffineimage3.cc
-|   |   |-- generalizedaffineimage4.cc
-|   |   |-- generalizedaffineimage5.cc
-|   |   |-- generalizedaffineimage6.cc
-|   |   |-- generalizedaffineimage7.cc
-|   |   |-- generalizedaffineimage8.cc
-|   |   |-- generalizedaffineimage9.cc
 |   |   |-- generalizedaffinepreimage1.cc
 |   |   |-- generalizedaffinepreimage2.cc
 |   |   |-- geomcovers1.cc
 |   |   |-- h79widening1.cc
 |   |   |-- intersection1.cc
-|   |   |-- intersection2.cc
-|   |   |-- intersection3.cc
-|   |   |-- intersection4.cc
-|   |   |-- intersection5.cc
-|   |   |-- intersection6.cc
-|   |   |-- intersection7.cc
-|   |   |-- intersection8.cc
 |   |   |-- limitedbhmz05extrapolation1.cc
-|   |   |-- limitedbhmz05extrapolation2.cc
-|   |   |-- limitedbhmz05extrapolation3.cc
-|   |   |-- limitedbhmz05extrapolation4.cc
-|   |   |-- limitedbhmz05extrapolation5.cc
-|   |   |-- limitedbhmz05extrapolation6.cc
-|   |   |-- limitedbhmz05extrapolation7.cc
-|   |   |-- limitedbhmz05extrapolation8.cc
-|   |   |-- limitedbhmz05extrapolation9.cc
 |   |   |-- limitedcc76extrapolation1.cc
-|   |   |-- limitedcc76extrapolation2.cc
-|   |   |-- limitedcc76extrapolation3.cc
 |   |   |-- limitedh79extrapolation1.cc
 |   |   |-- mapspacedims1.cc
-|   |   |-- mapspacedims2.cc
-|   |   |-- mapspacedims3.cc
-|   |   |-- mapspacedims4.cc
 |   |   |-- maxspacedim.cc
 |   |   |-- minconstraints1.cc
 |   |   |-- relations1.cc
 |   |   |-- relations2.cc
 |   |   |-- relations3.cc
-|   |   |-- relations4.cc
-|   |   |-- relations5.cc
 |   |   |-- removespacedims1.cc
-|   |   |-- removespacedims2.cc
-|   |   |-- removespacedims3.cc
 |   |   |-- run_tests
 |   |   |-- timeelapse1.cc
-|   |   |-- timeelapse2.cc
-|   |   |-- timeelapse3.cc
-|   |   |-- timeelapse4.cc
-|   |   |-- timeelapse5.cc
 |   |   |-- universe1.cc
-|   |   |-- writebdshape1.cc
-|   |   `-- writebdshape2.cc
-|   |-- Makefile.am
-|   |-- Makefile.in
-|   |-- PFunction.cc
-|   |-- PFunction.hh
-|   |-- Polyhedron
-|   |   |-- CbecomesNNC1.cc
+|   |   `-- writebdshape1.cc
+|   |-- Grid
 |   |   |-- Makefile.am
 |   |   |-- Makefile.in
-|   |   |-- NNCbecomesC1.cc
-|   |   |-- NNCminimize1.cc
-|   |   |-- NNCminimize2.cc
-|   |   |-- NNCminimize3.cc
-|   |   |-- NNCminimize4.cc
-|   |   |-- NNCminimize5.cc
-|   |   |-- NNCminimize6.cc
-|   |   |-- README
+|   |   |-- addcongruence1.cc
+|   |   |-- addcongruences1.cc
 |   |   |-- addconstraint1.cc
-|   |   |-- addconstraint2.cc
-|   |   |-- addconstraint3.cc
 |   |   |-- addconstraints1.cc
-|   |   |-- addconstraints10.cc
-|   |   |-- addconstraints11.cc
-|   |   |-- addconstraints12.cc
-|   |   |-- addconstraints13.cc
-|   |   |-- addconstraints2.cc
-|   |   |-- addconstraints3.cc
-|   |   |-- addconstraints4.cc
-|   |   |-- addconstraints5.cc
-|   |   |-- addconstraints6.cc
-|   |   |-- addconstraints7.cc
-|   |   |-- addconstraints8.cc
-|   |   |-- addconstraints9.cc
 |   |   |-- addgenerator1.cc
-|   |   |-- addgenerator2.cc
-|   |   |-- addgenerator3.cc
-|   |   |-- addgenerator4.cc
-|   |   |-- addgenerator5.cc
 |   |   |-- addgenerators1.cc
-|   |   |-- addgenerators10.cc
-|   |   |-- addgenerators11.cc
-|   |   |-- addgenerators12.cc
-|   |   |-- addgenerators13.cc
-|   |   |-- addgenerators2.cc
-|   |   |-- addgenerators3.cc
-|   |   |-- addgenerators4.cc
-|   |   |-- addgenerators5.cc
-|   |   |-- addgenerators6.cc
-|   |   |-- addgenerators7.cc
-|   |   |-- addgenerators8.cc
-|   |   |-- addgenerators9.cc
 |   |   |-- addspacedims1.cc
-|   |   |-- addspacedims10.cc
-|   |   |-- addspacedims11.cc
-|   |   |-- addspacedims12.cc
-|   |   |-- addspacedims13.cc
-|   |   |-- addspacedims2.cc
-|   |   |-- addspacedims3.cc
-|   |   |-- addspacedims4.cc
-|   |   |-- addspacedims5.cc
-|   |   |-- addspacedims6.cc
-|   |   |-- addspacedims7.cc
-|   |   |-- addspacedims8.cc
-|   |   |-- addspacedims9.cc
+|   |   |-- affinedim1.cc
 |   |   |-- affineimage1.cc
 |   |   |-- affineimage2.cc
-|   |   |-- affineimage3.cc
-|   |   |-- affineimage4.cc
-|   |   |-- affineimage5.cc
-|   |   |-- affineimage6.cc
-|   |   |-- affineimage7.cc
-|   |   |-- affineimage8.cc
-|   |   |-- affineimage9.cc
 |   |   |-- affinepreimage1.cc
-|   |   |-- affinepreimage10.cc
-|   |   |-- affinepreimage11.cc
-|   |   |-- affinepreimage12.cc
 |   |   |-- affinepreimage2.cc
-|   |   |-- affinepreimage3.cc
-|   |   |-- affinepreimage4.cc
-|   |   |-- affinepreimage5.cc
-|   |   |-- affinepreimage6.cc
-|   |   |-- affinepreimage7.cc
-|   |   |-- affinepreimage8.cc
-|   |   |-- affinepreimage9.cc
+|   |   |-- asciidumpload1.cc
+|   |   |-- bhz03widening1.cc
+|   |   |-- bounded1.cc
+|   |   |-- boundingbox1.cc
+|   |   |-- boundingbox2.cc
+|   |   |-- bounds1.cc
+|   |   |-- certificate1.cc
+|   |   |-- concatenate1.cc
+|   |   |-- congruence1.cc
+|   |   |-- congruences1.cc
+|   |   |-- congruencesystem1.cc
+|   |   |-- contains1.cc
+|   |   |-- copyconstruct1.cc
+|   |   |-- coveringbox1.cc
+|   |   |-- coveringbox2.cc
+|   |   |-- discrete1.cc
+|   |   |-- disjoint1.cc
+|   |   |-- equals1.cc
+|   |   |-- expandspacedim1.cc
+|   |   |-- foldspacedims1.cc
+|   |   |-- generalizedaffineimage1.cc
+|   |   |-- generalizedaffineimage2.cc
+|   |   |-- generalizedaffinepreimage1.cc
+|   |   |-- generalizedaffinepreimage2.cc
+|   |   |-- generator1.cc
+|   |   |-- generators1.cc
+|   |   |-- grid1.cc
+|   |   |-- grid2.cc
+|   |   |-- grid3.cc
+|   |   |-- griddifference1.cc
+|   |   |-- intersection1.cc
+|   |   |-- isempty1.cc
+|   |   |-- isuniverse1.cc
+|   |   |-- join1.cc
+|   |   |-- join2.cc
+|   |   |-- limitedextrapolation1.cc
+|   |   |-- mapspacedims1.cc
+|   |   |-- maxmin1.cc
+|   |   |-- membytes1.cc
+|   |   |-- mincongruences1.cc
+|   |   |-- mingenerators1.cc
+|   |   |-- outputoperator1.cc
+|   |   |-- relations1.cc
+|   |   |-- relations2.cc
+|   |   |-- removespacedims1.cc
+|   |   |-- timeelapse1.cc
+|   |   |-- topclosed1.cc
+|   |   |-- topclosure1.cc
+|   |   |-- widening1.cc
+|   |   `-- writecongruencesystem.cc
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- Partial_Function.cc
+|   |-- Partial_Function.defs.hh
+|   |-- Partial_Function.inlines.hh
+|   |-- Partial_Function.types.hh
+|   |-- Polyhedron
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- README
+|   |   |-- addcongruence1.cc
+|   |   |-- addcongruences1.cc
+|   |   |-- addconstraint1.cc
+|   |   |-- addconstraints1.cc
+|   |   |-- addconstraints2.cc
+|   |   |-- addgenerator1.cc
+|   |   |-- addgenerator2.cc
+|   |   |-- addgenerators1.cc
+|   |   |-- addgenerators2.cc
+|   |   |-- addspacedims1.cc
+|   |   |-- addspacedims2.cc
+|   |   |-- affineimage1.cc
+|   |   |-- affineimage2.cc
+|   |   |-- affinepreimage1.cc
 |   |   |-- affinetrans.cc
 |   |   |-- append1.cc
 |   |   |-- append2.cc
 |   |   |-- ascii_dump_load1.cc
 |   |   |-- ascii_dump_load2.cc
 |   |   |-- ascii_dump_load3.cc
-|   |   |-- ascii_dump_load4.cc
-|   |   |-- ascii_dump_load5.cc
-|   |   |-- ascii_dump_load6.cc
-|   |   |-- ascii_dump_load7.cc
 |   |   |-- bgp99extrapolation1.cc
-|   |   |-- bgp99extrapolation2.cc
 |   |   |-- bhrz03widening1.cc
-|   |   |-- bhrz03widening10.cc
-|   |   |-- bhrz03widening11.cc
-|   |   |-- bhrz03widening12.cc
-|   |   |-- bhrz03widening13.cc
-|   |   |-- bhrz03widening14.cc
-|   |   |-- bhrz03widening15.cc
-|   |   |-- bhrz03widening16.cc
-|   |   |-- bhrz03widening17.cc
-|   |   |-- bhrz03widening18.cc
-|   |   |-- bhrz03widening19.cc
 |   |   |-- bhrz03widening2.cc
 |   |   |-- bhrz03widening3.cc
-|   |   |-- bhrz03widening4.cc
-|   |   |-- bhrz03widening5.cc
-|   |   |-- bhrz03widening6.cc
-|   |   |-- bhrz03widening7.cc
-|   |   |-- bhrz03widening8.cc
-|   |   |-- bhrz03widening9.cc
 |   |   |-- bhz03widening1.cc
-|   |   |-- bhz03widening2.cc
-|   |   |-- bhz03widening3.cc
-|   |   |-- bhz03widening4.cc
-|   |   |-- bhz03widening5.cc
-|   |   |-- bhz03widening6.cc
 |   |   |-- bounded1.cc
 |   |   |-- boundedaffineimage1.cc
-|   |   |-- boundedaffineimage2.cc
-|   |   |-- boundedaffineimage3.cc
 |   |   |-- boundedaffinepreimage1.cc
-|   |   |-- boundedaffinepreimage2.cc
-|   |   |-- boundedaffinepreimage3.cc
 |   |   |-- boundedbhrz03extrapolation1.cc
 |   |   |-- boundedh79extrapolation1.cc
 |   |   |-- boundingbox1.cc
 |   |   |-- boundingbox2.cc
 |   |   |-- boundingbox3.cc
-|   |   |-- boundingbox4.cc
-|   |   |-- boundingbox5.cc
 |   |   |-- bounds1.cc
-|   |   |-- bounds2.cc
 |   |   |-- bug2.cc
+|   |   |-- cnncconversion1.cc
 |   |   |-- concatenate1.cc
-|   |   |-- concatenate2.cc
-|   |   |-- concatenate3.cc
-|   |   |-- concatenate4.cc
-|   |   |-- concatenate5.cc
-|   |   |-- concatenate6.cc
-|   |   |-- concatenate7.cc
+|   |   |-- congruences1.cc
 |   |   |-- constraints1.cc
-|   |   |-- constraints2.cc
-|   |   |-- constraints3.cc
-|   |   |-- constraints4.cc
-|   |   |-- constraints5.cc
 |   |   |-- contains1.cc
 |   |   |-- contains2.cc
-|   |   |-- contains3.cc
-|   |   |-- contains4.cc
-|   |   |-- contains5.cc
 |   |   |-- disjoint1.cc
 |   |   |-- disjoint2.cc
-|   |   |-- disjoint3.cc
 |   |   |-- dualhypercubes.cc
 |   |   |-- empty1.cc
 |   |   |-- equals1.cc
@@ -1048,71 +943,23 @@ ppl-0.8
 |   |   |-- foldspacedims1.cc
 |   |   |-- foldspacedims2.cc
 |   |   |-- generalizedaffineimage1.cc
-|   |   |-- generalizedaffineimage10.cc
-|   |   |-- generalizedaffineimage11.cc
-|   |   |-- generalizedaffineimage12.cc
-|   |   |-- generalizedaffineimage13.cc
-|   |   |-- generalizedaffineimage14.cc
 |   |   |-- generalizedaffineimage2.cc
-|   |   |-- generalizedaffineimage3.cc
-|   |   |-- generalizedaffineimage4.cc
-|   |   |-- generalizedaffineimage5.cc
-|   |   |-- generalizedaffineimage6.cc
-|   |   |-- generalizedaffineimage7.cc
-|   |   |-- generalizedaffineimage8.cc
-|   |   |-- generalizedaffineimage9.cc
 |   |   |-- generalizedaffinepreimage1.cc
 |   |   |-- generalizedaffinepreimage2.cc
-|   |   |-- generalizedaffinepreimage3.cc
-|   |   |-- generalizedaffinepreimage4.cc
 |   |   |-- generators1.cc
-|   |   |-- generators2.cc
-|   |   |-- generators3.cc
-|   |   |-- generators4.cc
-|   |   |-- generators5.cc
-|   |   |-- generators6.cc
-|   |   |-- generators7.cc
 |   |   |-- geomcovers1.cc
 |   |   |-- h79widening1.cc
 |   |   |-- h79widening2.cc
-|   |   |-- h79widening3.cc
-|   |   |-- h79widening4.cc
-|   |   |-- h79widening5.cc
-|   |   |-- h79widening6.cc
-|   |   |-- h79widening7.cc
-|   |   |-- h79widening8.cc
 |   |   |-- intersection1.cc
-|   |   |-- intersection10.cc
-|   |   |-- intersection11.cc
-|   |   |-- intersection2.cc
-|   |   |-- intersection3.cc
-|   |   |-- intersection4.cc
-|   |   |-- intersection5.cc
-|   |   |-- intersection6.cc
-|   |   |-- intersection7.cc
-|   |   |-- intersection8.cc
-|   |   |-- intersection9.cc
 |   |   |-- limitedbhrz03extrapolation1.cc
 |   |   |-- limitedh79extrapolation1.cc
-|   |   |-- limitedh79extrapolation2.cc
-|   |   |-- limitedh79extrapolation3.cc
-|   |   |-- limitedh79extrapolation4.cc
 |   |   |-- linearpartition1.cc
-|   |   |-- linearpartition2.cc
-|   |   |-- linearpartition3.cc
-|   |   |-- linearpartition4.cc
 |   |   |-- linearsystem1.cc
 |   |   |-- linexpression1.cc
 |   |   |-- lpproblem1.cc
-|   |   |-- lpproblem2.cc
-|   |   |-- lpproblem3.cc
 |   |   |-- mapspacedims1.cc
-|   |   |-- mapspacedims2.cc
-|   |   |-- mapspacedims3.cc
-|   |   |-- mapspacedims4.cc
 |   |   |-- matrix1.cc
 |   |   |-- max_min1.cc
-|   |   |-- max_min2.cc
 |   |   |-- maxspacedim1.cc
 |   |   |-- mc91.cc
 |   |   |-- membytes1.cc
@@ -1121,108 +968,46 @@ ppl-0.8
 |   |   |-- memory2.cc
 |   |   |-- minconstraints1.cc
 |   |   |-- minconstraints2.cc
-|   |   |-- minconstraints3.cc
-|   |   |-- minconstraints4.cc
 |   |   |-- mingenerators1.cc
 |   |   |-- mingenerators2.cc
-|   |   |-- mingenerators3.cc
+|   |   |-- nncminimize1.cc
+|   |   |-- nncminimize2.cc
 |   |   |-- numberinput1.cc
 |   |   |-- onepoint.cc
 |   |   |-- permute.cc
 |   |   |-- polydifference1.cc
 |   |   |-- polydifference2.cc
-|   |   |-- polydifference3.cc
-|   |   |-- polydifference4.cc
-|   |   |-- polydifference5.cc
-|   |   |-- polydifference6.cc
-|   |   |-- polydifference7.cc
-|   |   |-- polydifference8.cc
-|   |   |-- polydifference9.cc
 |   |   |-- polyhull1.cc
-|   |   |-- polyhull10.cc
-|   |   |-- polyhull11.cc
 |   |   |-- polyhull2.cc
-|   |   |-- polyhull3.cc
-|   |   |-- polyhull4.cc
-|   |   |-- polyhull5.cc
-|   |   |-- polyhull6.cc
-|   |   |-- polyhull7.cc
-|   |   |-- polyhull8.cc
-|   |   |-- polyhull9.cc
 |   |   |-- polypowerset1.cc
 |   |   |-- powerset1.cc
 |   |   |-- randphull1.cc
 |   |   |-- randphull2.cc
 |   |   |-- relations1.cc
-|   |   |-- relations10.cc
-|   |   |-- relations11.cc
-|   |   |-- relations12.cc
-|   |   |-- relations13.cc
-|   |   |-- relations14.cc
-|   |   |-- relations15.cc
-|   |   |-- relations16.cc
-|   |   |-- relations17.cc
-|   |   |-- relations18.cc
-|   |   |-- relations19.cc
 |   |   |-- relations2.cc
 |   |   |-- relations3.cc
-|   |   |-- relations4.cc
-|   |   |-- relations5.cc
-|   |   |-- relations6.cc
-|   |   |-- relations7.cc
-|   |   |-- relations8.cc
-|   |   |-- relations9.cc
 |   |   |-- removespacedims1.cc
-|   |   |-- removespacedims10.cc
 |   |   |-- removespacedims2.cc
-|   |   |-- removespacedims3.cc
-|   |   |-- removespacedims4.cc
-|   |   |-- removespacedims5.cc
-|   |   |-- removespacedims6.cc
-|   |   |-- removespacedims7.cc
-|   |   |-- removespacedims8.cc
-|   |   |-- removespacedims9.cc
 |   |   |-- smm1.cc
 |   |   |-- timeelapse1.cc
 |   |   |-- timeelapse2.cc
-|   |   |-- timeelapse3.cc
-|   |   |-- timeelapse4.cc
-|   |   |-- timeelapse5.cc
-|   |   |-- timeelapse6.cc
-|   |   |-- timeelapse7.cc
-|   |   |-- timeelapse8.cc
-|   |   |-- timeelapse9.cc
 |   |   |-- topclosed1.cc
-|   |   |-- topclosed2.cc
-|   |   |-- topclosed3.cc
 |   |   |-- topclosure1.cc
-|   |   |-- topclosure2.cc
-|   |   |-- topclosure3.cc
-|   |   |-- topclosure4.cc
 |   |   |-- universe1.cc
 |   |   |-- universe2.cc
-|   |   |-- universe3.cc
-|   |   |-- universe4.cc
-|   |   |-- universe5.cc
-|   |   |-- universe6.cc
-|   |   |-- universe7.cc
 |   |   |-- watchdog1.cc
 |   |   |-- writeconsys1.cc
 |   |   |-- writegensys1.cc
-|   |   |-- writegensys2.cc
-|   |   |-- writegensys3.cc
 |   |   |-- writepolyhedron1.cc
 |   |   |-- writepolyhedron2.cc
-|   |   |-- writepolyhedron3.cc
 |   |   |-- writerelation1.cc
 |   |   `-- writevariable1.cc
 |   |-- Random_Number_Generator.defs.hh
 |   |-- Random_Number_Generator.inlines.hh
 |   |-- Random_Number_Generator.types.hh
-|   |-- ehandlers.cc
-|   |-- ehandlers.hh
 |   |-- files.cc
 |   |-- files.hh
+|   |-- ppl_test.cc
 |   |-- ppl_test.hh
 |   |-- print.cc
 |   `-- print.hh
