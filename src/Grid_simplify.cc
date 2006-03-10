@@ -568,6 +568,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     assert(ret == true);
 #endif
     // Don't erase the last row as this will be changed to the integrality row.
+    // FIXME Simplify and improve code if possible.
     if (reduced_num_rows > 0)
       sys.erase_to_end(reduced_num_rows);
     else
