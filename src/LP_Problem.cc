@@ -1042,8 +1042,7 @@ PPL::LP_Problem::compute_tableau(std::vector<dimension_type>&
 	tableau_k[--slack_index] = -1;
 	// Check if the slack variable can avoid an artificial one: in this
 	// case store the slack_index in worked_out_rows[k]. This happens
-	// if the inhomogeneous term has the opposite sign of
-	// tableau_k[slack_index]
+	// if the inhomogeneous term is >=0.
 	if (tableau_k[0] >= 0)
 	  worked_out_rows[k] = slack_index;
       }
