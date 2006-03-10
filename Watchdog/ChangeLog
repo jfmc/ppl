@@ -1,3 +1,56 @@
+2006-03-10 Friday 16:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.14): Updated.
+
+2006-03-05 Sunday 17:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.20), config.sub (1.19): Updated.
+
+2006-02-18 Saturday 07:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Makefile.am (1.7): Do not distribute ppl_include_files.hh and
+	  pwl_include_files.hh.  Now ppl.hh and pwl.hh installation can be
+	  completely delegated to Automake.
+
+2006-02-11 Saturday 11:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: .cvsignore (1.2), Makefile.am (1.6): We now directly create
+	  `pwl.hh': `pwl_install.hh' does not exist any longer.
+
+2006-02-11 Saturday 11:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* utils/.cvsignore (1.2): Ignore more built files and directories.
+
+2006-01-25 Wednesday 21:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Makefile.in (grids.4): Makefile.in is automatically
+	  generated: it should not be under CVS.
+
+2006-01-25 Wednesday 19:31  Matthew Mundell <mattm@comp.leeds.ac.uk>
+
+	* CREDITS, ChangeLog, NEWS, README (grids.[1,3,2,3]): Eighth and
+	  last merge from the main trunk.
+
+2006-01-20 Friday 09:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (ppl-0_8-branch.2): Mark ChangeLog.
+
+2006-01-20 Friday 09:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (ppl-0_8-branch.1): Updated.
+
+2006-01-17 Tuesday 15:51  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* CREDITS (1.2): "inexistent" replaced by "non-existent".
+
+2006-01-17 Tuesday 14:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.13): Updated.
+
+2006-01-16 Monday 22:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.14): Updated.
+
 2006-01-16 Monday 14:37  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* NEWS (1.8): Release date decided.
