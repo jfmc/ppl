@@ -496,6 +496,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       dim_kinds[dim] = CON_VIRTUAL;
     }
     else {
+      // row_index != num_rows
       if (row_index != pivot_index)
 	std::swap(sys[row_index], sys[pivot_index]);
       Congruence& pivot = sys[pivot_index];
@@ -551,7 +552,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       ++pivot_index;
     }
     TRACE(sys.ascii_dump(cerr));
-  }
+  } // end for (dimension_type dim = num_cols; dim-- > 0; )
 
   dimension_type& reduced_num_rows = pivot_index; // For clearer naming.
 
@@ -566,7 +567,11 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
        num_cols);		// row size
     assert(ret == true);
 #endif
-    sys.erase_to_end(reduced_num_rows);
+    // Don't erase the last row as this will be changed to the integrality row.
+    if (reduced_num_rows > 0)
+      sys.erase_to_end(reduced_num_rows);
+    else
+      sys.erase_to_end(1);
   }
 
   assert(sys.num_rows() == reduced_num_rows
