@@ -72,10 +72,6 @@ Efficiency Issues
 - Provide a better implementation of computing squares in LP_Problem's
   steepest-edge to avoid big numbers.
 
-- In LP_Problem consider to check if a slack variable can avoid to
-  insert an artificial variable also in the incremental implementation.
-  In this case this check could cost a little.
-
 Cutting-Plane Methods
 =====================
 
