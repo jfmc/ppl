@@ -1,3 +1,19 @@
+2006-03-11 Saturday 08:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.lsm.in (1.8): Updated.
+
+2006-03-10 Friday 19:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* debian/README (1.2): Incomplete sentence removed.
+
+2006-03-10 Friday 18:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* debian/changelog (1.4): Updated for PPL 0.9.
+
+2006-03-10 Friday 17:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.25), Watchdog/ChangeLog (1.15): Updated.
+
 2006-03-10 Friday 17:00  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* doc/: README.doc (1.10), devref.tex (1.20), user.tex (1.21):
