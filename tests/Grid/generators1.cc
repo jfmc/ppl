@@ -291,6 +291,88 @@ test12() {
   return ok;
 }
 
+// inserted generator system has more space dimensions that
+// the old generator system.
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point(3*A, 2));
+
+  Grid_Generator_System gs1;
+  gs1.insert(grid_point(5*A + 2*B, 3));
+  gs1.insert(parameter(11*C, 2));
+
+  gs.recycling_insert(gs1);
+
+  Grid gr(gs);
+
+  Grid known_gr(3, EMPTY);
+  known_gr.add_generator(grid_point(3*A, 2));
+  known_gr.add_generator(grid_point(5*A + 2*B, 3));
+  known_gr.add_generator(parameter(11*C, 2));
+
+  bool ok = (gr == known_gr);
+
+  print_generators(gr, "*** gr ***");
+
+  return ok;
+}
+
+// test clear() for nonempty generator system.
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point(3*A, 2));
+  gs.insert(grid_point(5*A + 2*B, 3));
+  gs.insert(parameter(11*C, 2));
+
+  print_generators(gs, "*** gs ***");
+
+  gs.clear();
+
+  Grid gr(gs);
+
+  Grid known_gr(0, EMPTY);
+
+  bool ok = (gr == known_gr);
+
+  print_generators(gr, "*** gr ***");
+  nout << "gr.space_dimension = " << gr.space_dimension() << endl;
+
+  return ok;
+}
+
+// test clear() for empty generator system.
+// This test showed a bug in the code for clear() in
+// Grid_Generator_System.inlines.hh which is now corrected.
+bool
+test15() {
+  Grid_Generator_System gs;
+
+  print_generators(gs, "*** gs ***");
+
+  gs.clear();
+
+  Grid gr(gs);
+
+  Grid known_gr(0, EMPTY);
+
+  bool ok = (gr == known_gr);
+
+  print_generators(gr, "*** gr ***");
+  nout << "gr.space_dimension = " << gr.space_dimension() << endl;
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -306,4 +388,7 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST_F8(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

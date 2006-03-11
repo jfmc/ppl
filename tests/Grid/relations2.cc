@@ -352,6 +352,24 @@ test18() {
   return ok;
 }
 
+// generators are not up-to-date and the grid is empty.
+bool
+test19() {
+  Variable A(0);
+
+  Grid gr(1);
+  gr.add_congruence((A %= 0) / 2);
+  gr.add_congruence((A %= 1) / 2);
+  print_congruences(gr, "*** gr ***");
+
+  bool ok
+    = (gr.relation_with((A %= 0) / 8)
+      == (Poly_Con_Relation::is_included()
+	    && Poly_Con_Relation::is_disjoint()));
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -373,4 +391,5 @@ BEGIN_MAIN
   DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN

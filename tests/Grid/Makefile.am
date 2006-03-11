@@ -50,7 +50,7 @@ addspacedims1 \
 affinedim1 \
 affineimage1 affineimage2 \
 affinepreimage1 affinepreimage2 \
-asciidumpload1 \
+asciidumpload1 asciidumpload2 \
 bhz03widening1 \
 bounded1 \
 boundingbox1 boundingbox2 \
@@ -120,6 +120,7 @@ affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
 
 asciidumpload1_SOURCES = asciidumpload1.cc
+asciidumpload2_SOURCES = asciidumpload2.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
 

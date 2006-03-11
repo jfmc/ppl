@@ -492,6 +492,39 @@ test18() {
   return true;
 }
 
+// Construct a congruence system from a constraint system
+bool
+test19() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+  cs.insert(B == 0);
+  cs.insert(A >= 0);
+  cs.insert(C > 0);
+
+  Congruence_System cgs(cs);
+
+  Grid gr(3);
+  Grid gr1(3);
+
+  gr.add_constraints(cs);
+  gr1.add_congruences(cgs);
+  print_congruences(gr, "*** gr.add_constraints(cs) ***");
+  print_congruences(gr1, "*** gr1.add_congruences(cgs) ***");
+  bool ok = (gr1 == gr);
+
+  Grid known_gr(3);
+  known_gr.add_congruence(B == 0);
+
+  ok &= (gr == known_gr);
+
+  print_congruences(gr, "*** gr.add_constraints(cs) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -513,4 +546,5 @@ BEGIN_MAIN
   DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN

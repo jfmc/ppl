@@ -102,12 +102,12 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  Grid_Generator_System gs;
-  gs.insert(grid_point(0*A));
-  gs.insert(grid_point(2*A));
-  gs.insert(grid_point(3*B));
+  Grid_Generator_System ggs;
+  ggs.insert(grid_point(0*A));
+  ggs.insert(grid_point(2*A));
+  ggs.insert(grid_point(3*B));
 
-  Grid gr(gs);
+  Grid gr(ggs);
   print_congruences(gr, "*** gr.remove_space_dimensions(vars) ***");
 
   Variables_Set vars;
@@ -149,13 +149,13 @@ test05() {
 
   gr.remove_space_dimensions(vars);
 
-  Grid_Generator_System known_gs;
-  known_gs.insert(grid_point());
-  known_gs.insert(grid_line(2*A - B));
-  known_gs.insert(grid_point(3*B, 2));
-  known_gs.insert(grid_line(C));
+  Grid_Generator_System known_ggs;
+  known_ggs.insert(grid_point());
+  known_ggs.insert(grid_line(2*A - B));
+  known_ggs.insert(grid_point(3*B, 2));
+  known_ggs.insert(grid_line(C));
 
-  Grid known_gr(known_gs);
+  Grid known_gr(known_ggs);
 
   bool ok = (gr == known_gr);
 
@@ -221,7 +221,6 @@ test07() {
 }
 
 // Empty variable set.
-
 bool
 test08() {
   Variable A(0);
@@ -249,7 +248,6 @@ test08() {
 }
 
 // Space dimension exception.
-
 bool
 test09() {
   Variable B(1);
@@ -317,12 +315,12 @@ test11() {
 
   gr.remove_higher_space_dimensions(2);
 
-  Grid_Generator_System known_gs;
-  known_gs.insert(grid_point(0*B));
-  known_gs.insert(grid_line(A));
-  known_gs.insert(grid_line(B));
+  Grid_Generator_System known_ggs;
+  known_ggs.insert(grid_point(0*B));
+  known_ggs.insert(grid_line(A));
+  known_ggs.insert(grid_line(B));
 
-  Grid known_gr(known_gs);
+  Grid known_gr(known_ggs);
 
   bool ok = (gr == known_gr);
 
@@ -370,12 +368,12 @@ test14() {
   Variable A(0);
   Variable B(1);
 
-  Grid_Generator_System gs;
-  gs.insert(grid_point(0*A));
-  gs.insert(grid_point(2*A));
-  gs.insert(grid_point(3*B));
+  Grid_Generator_System ggs;
+  ggs.insert(grid_point(0*A));
+  ggs.insert(grid_point(2*A));
+  ggs.insert(grid_point(3*B));
 
-  Grid gr(gs);
+  Grid gr(ggs);
   print_generators(gr, "*** gr ***");
 
   gr.remove_higher_space_dimensions(1);
@@ -393,7 +391,6 @@ test14() {
 }
 
 // Resulting grid the same.
-
 bool
 test15() {
   Variable A(0);
@@ -461,6 +458,55 @@ test17() {
   return ok;
 }
 
+// Remove all space dimensions from a nonempty generator system.
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator_System ggs;
+  ggs.insert(grid_point());
+  ggs.insert(grid_point(A));
+  ggs.insert(grid_point(B));
+  ggs.insert(grid_line(C));
+  print_generators(ggs, "*** ggs ***");
+
+  ggs.remove_higher_space_dimensions(0);
+  print_generators(ggs, "*** ggs.remove_higher_space_dimensions(0) ***");
+
+  Grid gr(ggs);
+
+  Grid known_gr(0);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.remove_higher_space_dimensions(0) ***");
+
+  return ok;
+}
+
+
+// Remove all space dimensions from an empty generator system.
+// Showed a bug in remove_higher_space_dimensions() which is now corrected.
+bool
+test19() {
+  Grid_Generator_System ggs;
+  print_generators(ggs, "*** ggs ***");
+
+  ggs.remove_higher_space_dimensions(0);
+  print_generators(ggs, "*** ggs.remove_higher_space_dimensions(0) ***");
+
+  Grid gr(ggs);
+
+  Grid known_gr(0, EMPTY);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.remove_higher_space_dimensions(0) ***");
+
+  return ok;
+}
 } // namespace
 
 BEGIN_MAIN
@@ -481,4 +527,6 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN

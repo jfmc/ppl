@@ -71,13 +71,12 @@ test03() {
 }
 
 // Equality and point.
-
 bool
 test04() {
   Variable A(0);
 
   Grid gr(2);
-  gr.add_congruence((A %= 0) / 0);
+  gr.add_congruence(A == 0);
   print_congruences(gr, "*** gr ***");
 
   bool ok
@@ -87,7 +86,6 @@ test04() {
 }
 
 // Congruences and points.
-
 bool
 test05() {
   Variable A(0);
@@ -105,7 +103,6 @@ test05() {
 }
 
 // Congruence and parameter.
-
 bool
 test06() {
   Variable A(0);
@@ -121,7 +118,6 @@ test06() {
 }
 
 // Congruence and line.
-
 bool
 test07() {
   Variable A(0);

@@ -158,7 +158,6 @@ test05() {
 }
 
 // cong_test0 from Chiara Convert_Test.cc.
-
 bool
 test06() {
   Variable A(0);
@@ -273,7 +272,7 @@ test09() {
   return ok;
 }
 
-// cong_test4 from Chiara Convert_Test.cc -- in grid4.cc.
+// cong_test4 from Chiara Convert_Test.cc -- in grid3.cc.
 
 // cong_test5 from Chiara Convert_Test.cc.
 bool
@@ -476,7 +475,6 @@ test16() {
 }
 
 // Zero dimension universe grid.
-
 bool
 test17() {
   Congruence_System cgs;
@@ -495,7 +493,6 @@ test17() {
 
 // add_recycled_congruence, add empty system to zero dimension
 // universe.
-
 bool
 test18() {
   Grid gr(0);
@@ -513,7 +510,6 @@ test18() {
 }
 
 // add_recycled_congruence, zero dimension empty.
-
 bool
 test19() {
   Grid gr(0);

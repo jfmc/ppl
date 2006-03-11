@@ -177,7 +177,6 @@ test07() {
 }
 
 // Empty grid, where minimizing the congruences finds the grid empty.
-
 bool
 test08() {
   Variable A(0);

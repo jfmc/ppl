@@ -466,6 +466,60 @@ test16() {
   return ok;
 }
 
+// OK(true) and OK(false) test.
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs;
+  cgs.insert((3*A %= 2) / 3);
+
+  Grid gr(3);
+
+  gr.add_congruences_and_minimize(cgs);
+
+  bool ok = (gr.OK(true) && gr.OK(false));
+  print_generators(gr, "*** gr.add_congruences_and_minimize(cgs) ***");
+
+  Grid gr1(1, EMPTY);
+
+  if (ok)
+    ok = (!gr1.OK(true) && gr1.OK(false));
+  print_generators(gr1, "*** gr1(1, EMPTY) ***");
+
+  Grid gr2(0);
+
+  if (ok)
+    ok = (gr2.OK(true) && gr2.OK(false));
+  print_generators(gr2, "*** gr2(0) ***");
+
+  return ok;
+}
+
+// Non-zero dimension universe when there are two congruences.
+// This showed a bug in Grid_simplify which is now corrected.
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);;
+
+  Congruence_System cgs1(0*A == 0);
+  cgs1.insert(0*B == 0);
+  print_congruences(cgs1, "*** cgs1 ***");
+
+  Grid gr(cgs1);
+  print_congruences(gr, "*** gr(cgs1) ***");
+
+  Grid known_gr(2);
+  print_congruences(known_gr, "*** known_gr ***");
+
+  bool ok = (gr == known_gr);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -485,4 +539,6 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST_F8(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
 END_MAIN

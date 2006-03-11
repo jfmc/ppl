@@ -299,7 +299,7 @@ test09() {
 
 // Space dimension exception.
 bool
-test10() {
+test11() {
   Grid gr1(7);
 
   Grid gr2(1);
@@ -310,8 +310,7 @@ test10() {
   // integrality congruence.  The presence of the integrality
   // congruence is required by the conversion.
 
-  gr2.add_space_dimensions_and_embed(Grid::max_space_dimension() - 1);
-  print_congruences(gr2, "*** gr2 ***");
+  gr2.add_space_dimensions_and_project(Grid::max_space_dimension() - 1);
 
   try {
     gr1.concatenate_assign(gr2);
@@ -337,5 +336,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-  //  DO_TEST(test10);
+  // DO_TEST(test11);
 END_MAIN

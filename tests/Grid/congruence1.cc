@@ -270,6 +270,12 @@ test10() {
 
   print_congruence(a, "*** a = Test_Congruence((0*A + 0*B + 4 %= 0) / 3) ***");
 
+  a = Test_Congruence((0*A + 1*B %= 1) / 3);
+  ok &= !a.is_trivial_true()
+    && !a.is_trivial_false();
+
+  print_congruence(a, "*** a = Test_Congruence((0*A + 1*B %= 1) / 3) ***");
+
   return ok;
 }
 
@@ -295,7 +301,6 @@ test11() {
 }
 
 // Negative modulus and negative first coefficient.
-
 static bool
 test12() {
   Variable x0(0);

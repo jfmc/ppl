@@ -227,16 +227,17 @@ test09() {
 
   Grid gr(2, EMPTY);
   gr.add_generator(grid_point());
+  gr.add_generator(grid_point(B));
   gr.add_generator(grid_line(A));
 
   gr.minimized_generators();
 
-  print_congruences(gr, "*** gr ***");
+  print_generators(gr, "*** gr ***");
 
   gr.add_space_dimensions_and_embed(2);
 
   Grid known_gr(4);
-  known_gr.add_congruence(B == 0);
+  known_gr.add_congruence(B %= 0);
 
   bool ok = (gr == known_gr);
 
@@ -435,9 +436,10 @@ test16() {
   Grid gr(10);
 
   try {
+    gr.add_space_dimensions_and_project(Grid::max_space_dimension());
   }
   catch (const std::length_error& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+    nout << "max_space_dimension_exceeded: " << e.what() << endl;
   }
   catch (...) {
     return false;

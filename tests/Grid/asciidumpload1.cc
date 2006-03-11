@@ -22,6 +22,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
+#include "files.hh"
+#include <string>
+#include <fstream>
+
+using std::string;
+using std::fstream;
+using std::ios_base;
+
 namespace {
 
 // One dimension universe and empty.
