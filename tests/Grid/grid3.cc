@@ -486,7 +486,7 @@ test17() {
   Grid gr1(1, EMPTY);
 
   if (ok)
-    ok = (!gr1.OK(true) && gr1.OK(false));
+    ok = (gr1.OK(false));
   print_generators(gr1, "*** gr1(1, EMPTY) ***");
 
   Grid gr2(0);

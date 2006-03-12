@@ -59,7 +59,7 @@ certificate1 \
 concatenate1 \
 congruence1 \
 congruences1 \
-congruencesystem1 \
+congruences2 \
 contains1 \
 copyconstruct1 \
 coveringbox1 coveringbox2 \
@@ -86,7 +86,7 @@ mingenerators1 \
 mincongruences1 \
 outputoperator1 \
 relations1 relations2 \
-removespacedims1 \
+removespacedims1 removespacedims2 \
 timeelapse1 \
 topclosed1 \
 topclosure1 \
@@ -138,8 +138,7 @@ concatenate1_SOURCES = concatenate1.cc
 congruence1_SOURCES = congruence1.cc
 
 congruences1_SOURCES = congruences1.cc
-
-congruencesystem1_SOURCES = congruencesystem1.cc
+congruences2_SOURCES = congruences2.cc
 
 contains1_SOURCES = contains1.cc
 
@@ -201,6 +200,7 @@ relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
+removespacedims2_SOURCES = removespacedims2.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
 

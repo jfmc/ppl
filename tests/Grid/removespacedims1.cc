@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+// Testing remove_space_dimensions
+
 // Simple grid.
 bool
 test01() {
@@ -220,9 +222,40 @@ test07() {
   return ok;
 }
 
-// Empty variable set.
+// The resulting grid contains a line that is all zeros.
 bool
 test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr(3, EMPTY);
+  gr.add_generator(grid_point());
+  gr.add_generator(grid_point(A));
+  gr.add_generator(parameter(B));
+  gr.add_generator(grid_line(C));
+  print_congruences(gr, "*** gr.remove_space_dimensions(vars) ***");
+
+  Variables_Set vars;
+  vars.insert(C);
+
+  gr.remove_space_dimensions(vars);
+
+
+  Grid known_gr(2);
+  known_gr.add_congruence(A %= 0);
+  known_gr.add_congruence(B %= 0);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr ***");
+
+  return ok;
+}
+
+// Empty variable set.
+bool
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -245,29 +278,6 @@ test08() {
   print_congruences(gr, "*** gr.remove_space_dimensions(vars) ***");
 
   return ok;
-}
-
-// Space dimension exception.
-bool
-test09() {
-  Variable B(1);
-
-  Grid gr(1, EMPTY);
-  print_congruences(gr, "*** gr ***");
-
-  Variables_Set vars;
-  vars.insert(B);
-
-  try {
-    gr.remove_space_dimensions(vars);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-  }
-  catch (...) {
-    return false;
-  }
-  return true;
 }
 
 // Zero dimension universe resulting grid.
@@ -300,129 +310,19 @@ test10() {
   return ok;
 }
 
-// From congruences.
-bool
-test11() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Congruence_System cgs;
-  cgs.insert((A + 2*C %= 0) / 3);
-
-  Grid gr(cgs);
-  print_generators(gr, "*** gr ***");
-
-  gr.remove_higher_space_dimensions(2);
-
-  Grid_Generator_System known_ggs;
-  known_ggs.insert(grid_point(0*B));
-  known_ggs.insert(grid_line(A));
-  known_ggs.insert(grid_line(B));
-
-  Grid known_gr(known_ggs);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr.remove_higher_space_dimensions(2) ***");
-
-  return ok;
-}
-
-// Empty grid.
-bool
-test12() {
-  Grid gr(2, EMPTY);
-  print_generators(gr, "*** gr ***");
-
-  gr.remove_higher_space_dimensions(1);
-
-  Grid known_gr(1, EMPTY);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr.remove_higher_space_dimensions(1) ***");
-
-  return ok;
-}
-
-// Universe grid.
-bool
-test13() {
-  Grid gr(7);
-
-  gr.remove_higher_space_dimensions(3);
-
-  Grid known_gr(3);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr.remove_higher_space_dimensions(3) ***");
-
-  return ok;
-}
-
-// From generators.
-bool
-test14() {
-  Variable A(0);
-  Variable B(1);
-
-  Grid_Generator_System ggs;
-  ggs.insert(grid_point(0*A));
-  ggs.insert(grid_point(2*A));
-  ggs.insert(grid_point(3*B));
-
-  Grid gr(ggs);
-  print_generators(gr, "*** gr ***");
-
-  gr.remove_higher_space_dimensions(1);
-
-  Congruence_System known_cgs;
-  known_cgs.insert((A %= 0) / 2);
-
-  Grid known_gr(known_cgs);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr.remove_higher_space_dimensions(1) ***");
-
-  return ok;
-}
-
-// Resulting grid the same.
-bool
-test15() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
-  gr.add_generator_and_minimize(grid_point(B));
-  gr.add_generator(grid_line(C));
-  print_generators(gr, "*** gr ***");
-
-  Grid known_gr = gr;
-
-  gr.remove_higher_space_dimensions(gr.space_dimension());
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr.remove_higher_space_dimensions() ***");
-
-  return ok;
-}
-
 // Space dimension exception.
 bool
-test16() {
+test11() {
+  Variable B(1);
+
   Grid gr(1, EMPTY);
-  print_generators(gr, "*** gr ***");
+  print_congruences(gr, "*** gr ***");
+
+  Variables_Set vars;
+  vars.insert(B);
 
   try {
-    gr.remove_higher_space_dimensions(6);
+    gr.remove_space_dimensions(vars);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -433,80 +333,6 @@ test16() {
   return true;
 }
 
-// Zero dimension universe resulting grid.
-bool
-test17() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
-  gr.add_generator_and_minimize(grid_point(B));
-  gr.add_generator(grid_line(C));
-  print_generators(gr, "*** gr ***");
-
-  gr.remove_higher_space_dimensions(0);
-
-  Grid known_gr(0);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr.remove_higher_space_dimensions(0) ***");
-
-  return ok;
-}
-
-// Remove all space dimensions from a nonempty generator system.
-bool
-test18() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid_Generator_System ggs;
-  ggs.insert(grid_point());
-  ggs.insert(grid_point(A));
-  ggs.insert(grid_point(B));
-  ggs.insert(grid_line(C));
-  print_generators(ggs, "*** ggs ***");
-
-  ggs.remove_higher_space_dimensions(0);
-  print_generators(ggs, "*** ggs.remove_higher_space_dimensions(0) ***");
-
-  Grid gr(ggs);
-
-  Grid known_gr(0);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr.remove_higher_space_dimensions(0) ***");
-
-  return ok;
-}
-
-
-// Remove all space dimensions from an empty generator system.
-// Showed a bug in remove_higher_space_dimensions() which is now corrected.
-bool
-test19() {
-  Grid_Generator_System ggs;
-  print_generators(ggs, "*** ggs ***");
-
-  ggs.remove_higher_space_dimensions(0);
-  print_generators(ggs, "*** ggs.remove_higher_space_dimensions(0) ***");
-
-  Grid gr(ggs);
-
-  Grid known_gr(0, EMPTY);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr, "*** gr.remove_higher_space_dimensions(0) ***");
-
-  return ok;
-}
 } // namespace
 
 BEGIN_MAIN
@@ -521,12 +347,4 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
-  DO_TEST(test14);
-  DO_TEST(test15);
-  DO_TEST(test16);
-  DO_TEST(test17);
-  DO_TEST(test18);
-  DO_TEST(test19);
 END_MAIN

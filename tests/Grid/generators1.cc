@@ -100,8 +100,8 @@ test04() {
 bool
 test05() {
   Variable A(0);
-  Variable C(2);
   Variable B(1);
+  Variable C(2);
 
   Grid gr1(3, EMPTY);
   gr1.add_generator(grid_point(3*B));
@@ -373,6 +373,79 @@ test15() {
   return ok;
 }
 
+// space_dimension
+bool
+test16() {
+  Variable A(3);
+  Variable B(7);
+  Variable C(4);
+
+  Grid_Generator_System ggs(grid_point(A - 3*B + 21*C, 21));
+
+  bool ok = (ggs.space_dimension() == 8);
+
+  print_generators(ggs, "*** ggs ***");
+
+  return ok;
+}
+
+// Recycling_insert
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator_System ggs1;
+  ggs1.insert(parameter(11*B));
+  ggs1.insert(grid_line(C));
+  ggs1.insert(grid_point(3*B));
+
+  Grid_Generator_System ggs;
+  ggs.recycling_insert(ggs1);
+  print_generators(ggs, "*** ggs ***");
+
+  Grid gr(ggs);
+
+  Grid known_gr(3, EMPTY);
+  known_gr.add_generator(grid_point(3*B));
+  known_gr.add_generator(parameter(11*B));
+  known_gr.add_generator(grid_line(C));
+
+  bool ok = (gr == known_gr);
+
+  print_generators(gr, "*** gr(ggs} ***");
+
+  return ok;
+}
+
+// Comparing Systems with different space dimensions
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable E(4);
+
+  Grid_Generator_System ggs;
+  ggs.insert(grid_point(3*B));
+  ggs.insert(grid_line(E));
+  print_generators(ggs, "*** ggs ***");
+
+  Grid gr(ggs);
+
+  Grid known_gr(3, EMPTY);
+  known_gr.add_generator(grid_point(3*B));
+  known_gr.add_generator(parameter(11*B));
+  known_gr.add_generator(grid_line(C));
+
+  bool ok = (gr != known_gr);
+
+  print_generators(gr, "*** gr(ggs} ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -391,4 +464,7 @@ BEGIN_MAIN
   DO_TEST_F8(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
 END_MAIN

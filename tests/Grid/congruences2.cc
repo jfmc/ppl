@@ -404,6 +404,25 @@ test09() {
   return ok;
 }
 
+// clear empty congruence system
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  Test_Congruence_System cgs0;
+
+  print_congruences(cgs0, "*** cgs0 ***");
+
+  cgs0.clear();
+
+  bool ok = (cgs0.space_dimension() == 0);
+
+  print_congruences(cgs0, "*** cgs0.clear() ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -416,4 +435,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

@@ -199,6 +199,245 @@ test08() {
   return ok;
 }
 
+// Concatenate two 1D universe (empty) congruence systems
+// to give a 2D universe.
+bool
+test09() {
+  Variable A(0);
+
+  Grid gr1(1);
+  Congruence_System cgs1 = gr1.congruences();
+  print_congruences(cgs1, "*** cgs1 ***");
+
+  Congruence_System cgs2 = gr1.congruences();
+  print_congruences(cgs2, "*** cgs1 ***");
+
+  cgs1.concatenate(cgs2);
+  print_congruences(cgs1, "*** cgs1.concatenate(cgs1) ***");
+
+  Grid gr(cgs1);
+  print_congruences(gr, "*** gr(cgs1) ***");
+
+  Grid known_gr(2);
+  print_congruences(known_gr, "*** known_gr ***");
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr(cgs1) ***");
+
+  return ok;
+}
+
+// add congruence systems to a congruence system with smaller space
+// dimension.
+// This test showed a bug in Congruence_System insert(), now corrected.
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  Congruence_System cgs1;
+  cgs1.insert((A %= 0) / 2);
+  cgs.insert(cgs1);
+  cgs1.insert((A + B %= 0) / 2);
+  cgs.recycling_insert(cgs1);
+
+  Grid gr(2);
+
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_recycled_congruences(cgs);
+
+  Grid known_gr(2);
+  known_gr.add_congruence((A %= 0) / 2);
+  known_gr.add_congruence((A + B %= 0) / 2);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.add_recycled_congruences(cgs) ***");
+
+  return ok;
+}
+
+// add congruence systems to a congruence system
+// with larger space dimension.
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  Congruence_System cgs1;
+  cgs.insert((A + B %= 0) / 2);
+  cgs1.insert((A %= 0) / 2);
+  cgs.insert(cgs1);
+  print_congruences(cgs, "*** cgs ***");
+  print_congruences(cgs1, "*** cgs1 ***");
+
+  Grid gr(2);
+
+  print_congruences(gr, "*** gr ***");
+
+  gr.add_recycled_congruences(cgs);
+
+  Grid known_gr(2);
+  known_gr.add_congruence((A %= 0) / 2);
+  known_gr.add_congruence((A + B %= 0) / 2);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.add_recycled_congruences(cgs) ***");
+
+  return ok;
+}
+
+// Test is_equal_to() for same congruence systems.
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs1;
+  cgs1.insert((A %= 0) / 2);
+  cgs1.insert((A + B %= 0) / 2);
+  Congruence_System cgs(cgs1);
+  bool ok = cgs.is_equal_to(cgs1);
+  print_congruences(cgs, "*** cgs ***");
+  print_congruences(cgs1, "*** cgs1 ***");
+
+  return ok;
+}
+
+// Test is_equal_to() for congruence systems with different numbers
+// numbers of congruences.
+// This test showed a bug in Congruence_System is_equal_to(), now corrected.
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs1;
+  cgs1.insert((A %= 0) / 2);
+  cgs1.insert((A + B %= 0) / 2);
+  Congruence_System cgs(cgs1);
+  cgs1.insert((B %= 0) / 2);
+
+  bool ok = !cgs.is_equal_to(cgs1);
+  print_congruences(cgs, "*** cgs ***");
+  print_congruences(cgs1, "*** cgs1 ***");
+
+  return ok;
+}
+
+// Test is_equal_to() for different congruence systems with the same
+// number of congruences.
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs1;
+  Congruence_System cgs2;
+  cgs1.insert((A %= 0) / 2);
+  cgs1.insert((A + B %= 0) / 2);
+  cgs2.insert((B %= 0) / 2);
+  cgs2.insert((A + B %= 0) / 2);
+  bool ok = !cgs1.is_equal_to(cgs2);
+  print_congruences(cgs1, "*** cgs1 ***");
+  print_congruences(cgs2, "*** cgs2 ***");
+
+  return ok;
+}
+
+// Test has_linear_equalities() for congruence systems.
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  cgs.insert((A + B %= 0) / 2);
+  print_congruences(cgs, "*** cgs.insert((A + B %= 0) / 2) ***");
+  bool ok = !cgs.has_linear_equalities();
+
+  cgs.insert(A == 0);
+  print_congruences(cgs, "*** cgs.insert(A == 0) ***");
+  ok &= cgs.has_linear_equalities();
+
+  return ok;
+}
+
+// Test num_equalities() for congruence systems.
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+
+  Congruence_System cgs;
+  cgs.insert((A + B %= 0) / 2);
+  cgs.insert(A == 0);
+  print_congruences(cgs, "*** cgs ***");
+
+  bool ok = ((cgs.num_equalities() == 1)
+               && (cgs.num_proper_congruences() == 1));
+
+  return ok;
+}
+
+// Add to a non-empty congruence system a nonempty constraint system
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+
+
+  Congruence_System cgs;
+  cgs.insert(A %= 0);
+  cgs.insert(B == 0);
+
+  Congruence_System known_cgs;
+  known_cgs.insert(B == 0);
+  known_cgs.insert(A %= 0);
+
+  print_congruences(cgs, "*** cgs ***");
+
+  Grid gr(cgs);
+  Grid known_gr(known_cgs);
+
+  bool ok = (gr == known_gr);
+
+  return ok;
+}
+
+// Concatenate two 1D universe congruence systems each with
+// a single trivial congruence to give a 2D universe.
+bool
+test18() {
+  Variable A(0);
+
+  Congruence_System cgs1(0*A == 0);
+  print_congruences(cgs1, "*** cgs1 ***");
+
+  Congruence_System cgs2(0*A == 0);
+  print_congruences(cgs2, "*** cgs2 ***");
+
+  cgs1.concatenate(cgs2);
+  print_congruences(cgs1, "*** cgs1.concatenate(cgs1) ***");
+
+  Grid gr(cgs1);
+  print_congruences(gr, "*** gr(cgs1) ***");
+
+  Grid known_gr(2);
+  print_congruences(known_gr, "*** known_gr ***");
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr(cgs1) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -210,4 +449,14 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
 END_MAIN
