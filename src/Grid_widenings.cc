@@ -79,7 +79,7 @@ PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
-  // As noted in definitions.dox, stable behaviour is only garaunteed
+  // As noted in definitions.dox, stable behaviour is only guaranteed
   // if y is contained in or equal to x.
 #ifndef NDEBUG
   {
