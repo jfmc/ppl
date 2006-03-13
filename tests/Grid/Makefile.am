@@ -259,4 +259,5 @@ XFAIL_TESTS = $(XFAIL_SET)
 check_PROGRAMS = $(TESTS)
 
 MOSTLYCLEANFILES = \
+ascii_dump_load1.dat \
 writecongruencesystem.dat
