@@ -1694,6 +1694,24 @@ public:
   void widening_assign(const Grid& y, unsigned* tp = NULL);
 
   /*! \brief
+    Assigns to \p *this the result of computing the \ref Grid_Widening
+    "Grid widening" between \p *this and \p y.
+    This widening uses the generator systems.
+
+    \param y
+    A grid that <EM>must</EM> be contained in \p *this;
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Grid_Widening_with_Tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  void generator_widening_assign(const Grid& y, unsigned* tp = NULL);
+
+  /*! \brief
     Improves the result of the \ref Grid_Widening "Grid widening"
     computation by also enforcing those congruences in \p cgs that are
     satisfied by all the points of \p *this.
@@ -1713,6 +1731,31 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
   */
   void limited_extrapolation_assign(const Grid& y,
+				    const Congruence_System& cgs,
+				    unsigned* tp = NULL);
+
+
+  /*! \brief
+    Improves the result of the generator variant of the
+    \ref Grid_Widening "Grid widening"
+    computation by also enforcing those congruences in \p cgs that are
+    satisfied by all the points of \p *this.
+
+    \param y
+    A grid that <EM>must</EM> be contained in \p *this;
+
+    \param cgs
+    The system of congruences used to improve the widened grid;
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Grid_Widening_with_Tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this, \p y and \p cs are dimension-incompatible.
+  */
+  void limited_generator_extrapolation_assign(const Grid& y,
 				    const Congruence_System& cgs,
 				    unsigned* tp = NULL);
 
@@ -2188,6 +2231,10 @@ private:
   //! Copies a widened selection of congruences from \p y to \p selected_cgs.
   void select_wider_congruences(const Grid& y,
 				Congruence_System& selected_cgs) const;
+
+  //! Copies widened generators from \p y to \p widened_ggs.
+  void select_wider_generators(const Grid& y,
+				Grid_Generator_System& widened_ggs) const;
 
   //@} // Widening- and Extrapolation-Related Functions
 

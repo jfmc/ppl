@@ -332,6 +332,13 @@ public:
   bool is_equal_to(const Grid_Generator& y) const;
 
   /*! \brief
+    Returns <CODE>true</CODE> if \p *this is equal to \p gg in
+    dimension \p dim.
+  */
+  bool is_equal_at_dimension(dimension_type dim,
+			     const Grid_Generator& gg) const;
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if all the homogeneous terms
     of \p *this are \f$0\f$.
   */

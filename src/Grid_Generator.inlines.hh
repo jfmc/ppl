@@ -79,6 +79,12 @@ Grid_Generator::is_parameter_or_point() const {
   return is_ray_or_point_or_inequality();
 }
 
+inline bool
+Grid_Generator::is_equal_at_dimension(dimension_type dim,
+				  const Grid_Generator& gg) const {
+  return operator[](dim) * gg.divisor() == gg[dim] * divisor();
+}
+
 inline void
 Grid_Generator::set_is_line() {
   Generator::set_is_line();
