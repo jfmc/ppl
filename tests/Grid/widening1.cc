@@ -1,4 +1,4 @@
-/* Test Grid::widening_assign().
+/* Test Grid::congruence_widening_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -40,12 +40,12 @@ test01() {
 
   Grid known_gr = gr2;
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -68,12 +68,12 @@ test02() {
 
   Grid known_gr = gr2;
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -95,12 +95,12 @@ test03() {
 
   Grid known_gr = gr2;
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -125,12 +125,12 @@ test04() {
 
   Grid known_gr = gr2;
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -157,12 +157,12 @@ test05() {
 
   Grid known_gr = gr2;
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -188,7 +188,7 @@ test06() {
 
   print_congruences(gr2, "*** gr2 ***");
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(3);
   known_gr.add_congruence((B %= 0) / 2);
@@ -197,7 +197,7 @@ test06() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -223,7 +223,7 @@ test07() {
 
   print_congruences(gr2, "*** gr2 ***");
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(3);
   known_gr.add_congruence((B %= 0) / 2);
@@ -231,7 +231,7 @@ test07() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -246,20 +246,19 @@ test08() {
 
   print_congruences(gr2, "*** gr2 ***");
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(5);
 
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
 
 // Widening when increasing to universe.
-
 bool
 test09() {
   Variable A(0);
@@ -273,14 +272,14 @@ test09() {
 
   print_congruences(gr2, "*** gr2 ***");
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(4);
 
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -306,14 +305,14 @@ test10() {
 
   Grid known_gr = gr2;
 
-  gr2.widening_assign(gr1, &tokens);
+  gr2.congruence_widening_assign(gr1, &tokens);
 
   bool ok = ((gr2 == known_gr) && (tokens == 3));
 
   nout << "*** `tokens' should be 3 ***" << tokens << endl;
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1, &tokens) ***");
+        "*** gr2.congruence_widening_assign(gr1, &tokens) ***");
 
   return ok;
 }
@@ -329,14 +328,14 @@ test11() {
 
   print_congruences(gr2, "*** gr2 ***");
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(0);
 
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -359,7 +358,7 @@ test12() {
 
   print_congruences(gr2, "gr2: ");
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(2);
   known_gr.add_congruence(5*A + B %= 0);
@@ -367,7 +366,7 @@ test12() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -390,7 +389,7 @@ test13() {
 
   print_congruences(gr2, "gr2: ");
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(2);
   known_gr.add_congruence(9*A + B %= 0);
@@ -398,7 +397,7 @@ test13() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -421,7 +420,7 @@ test14() {
 
   print_congruences(gr2, "*** gr2 ***");
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(2);
   known_gr.add_congruence((A + B %= 0) / 2);
@@ -429,7 +428,7 @@ test14() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -452,7 +451,7 @@ test15() {
 
   print_congruences(gr2, "*** gr2 ***");
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(2);
   known_gr.add_congruence((A + B %= 0) / 2);
@@ -460,7 +459,7 @@ test15() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -483,7 +482,7 @@ test16() {
 
   print_congruences(gr2, "*** gr2 ***");
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(2);
   known_gr.add_congruence((A - B == 0) / 3);
@@ -491,7 +490,7 @@ test16() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -515,7 +514,7 @@ test17() {
 
   print_generators(gr2, "*** gr2 ***");
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(3, EMPTY);
   known_gr.add_generator(grid_point(C, 3));
@@ -524,7 +523,7 @@ test17() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -550,7 +549,7 @@ test18() {
   print_generators(gr2, "*** gr2 ***");
 
   try {
-    gr2.widening_assign(gr1);
+    gr2.congruence_widening_assign(gr1);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -578,14 +577,14 @@ test19() {
 
   print_congruences(gr2, "*** gr2 ***");
 
-  gr2.widening_assign(gr1);
+  gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(3, EMPTY);
 
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+        "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }

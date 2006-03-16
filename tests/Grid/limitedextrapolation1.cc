@@ -1,4 +1,4 @@
-/* Test Grid::limited_extrapolation_assign().
+/* Test Grid::limited_congruence_extrapolation_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -40,11 +40,11 @@ test01() {
 
   Grid known_gr = gr2;
 
-  gr2.limited_extrapolation_assign(gr1, cgs);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs);
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
+  print_congruences(gr2, "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs) ***");
 
   return ok;
 }
@@ -67,11 +67,11 @@ test02() {
 
   Grid known_gr = gr2;
 
-  gr2.limited_extrapolation_assign(gr1, cgs);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs);
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
+  print_congruences(gr2, "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs) ***");
 
   return ok;
 }
@@ -96,11 +96,11 @@ test03() {
 
   Congruence_System cgs(B %= 0);
 
-  gr2.limited_extrapolation_assign(gr1, cgs);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs);
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
+  print_congruences(gr2, "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs) ***");
 
   return ok;
 }
@@ -127,11 +127,11 @@ test04() {
 
   Congruence_System cgs(C %= 0);
 
-  gr2.limited_extrapolation_assign(gr1, cgs);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs);
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
+  print_congruences(gr2, "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs) ***");
 
   return ok;
 }
@@ -159,11 +159,11 @@ test05() {
 
   Grid known_gr = gr2;
 
-  gr2.limited_extrapolation_assign(gr1, cgs);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs);
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
+  print_congruences(gr2, "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs) ***");
 
   return ok;
 }
@@ -179,13 +179,13 @@ test06() {
 
   Congruence_System cgs(0*E %= 0);
 
-  gr2.limited_extrapolation_assign(gr1, cgs);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs);
 
   Grid known_gr(5);
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
+  print_congruences(gr2, "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs) ***");
 
   return ok;
 }
@@ -210,13 +210,13 @@ test07() {
   cgs.insert(A %= 0);
   cgs.insert(B %= 0);
 
-  gr2.limited_extrapolation_assign(gr1, cgs);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs);
 
   Grid known_gr(cgs);
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
+  print_congruences(gr2, "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs) ***");
 
   return ok;
 }
@@ -242,7 +242,7 @@ test08() {
 
   Grid known_gr = gr2;
 
-  gr2.limited_extrapolation_assign(gr1, cgs, &tokens);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs, &tokens);
 
 #undef TOKENS
 #define TOKENS 5
@@ -252,7 +252,7 @@ test08() {
   nout << "tokens: before " << TOKENS << ", after " << tokens << endl;
 
   print_congruences(gr2,
-     "*** gr2.limited_extrapolation_assign(gr1, cgs, &tokens) ***");
+     "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs, &tokens) ***");
 
   return ok;
 }
@@ -281,14 +281,14 @@ test09() {
 
   Grid known_gr(2);
 
-  gr2.limited_extrapolation_assign(gr1, cgs, &tokens);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs, &tokens);
 
   bool ok = (gr2 == known_gr) && (tokens == TOKENS);
 
   nout << "tokens: before " << TOKENS << ", after " << tokens << endl;
 
   print_congruences(gr2,
-     "*** gr2.limited_extrapolation_assign(gr1, cgs, &tokens) ***");
+     "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs, &tokens) ***");
 
   return ok;
 }
@@ -305,13 +305,13 @@ test10() {
   Congruence_System cgs(
      (Linear_Expression::zero() %= Linear_Expression::zero()) / 4);
 
-  gr2.limited_extrapolation_assign(gr1, cgs);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs);
 
   Grid known_gr(0);
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
+  print_congruences(gr2, "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs) ***");
 
   return ok;
 }
@@ -335,7 +335,7 @@ test11() {
   Congruence_System cgs;
   cgs.insert((A - B == 0) / 3);
 
-  gr2.limited_extrapolation_assign(gr1, cgs);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs);
 
   Grid known_gr(2);
   known_gr.add_congruence(A %= 0);
@@ -343,7 +343,7 @@ test11() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
+  print_congruences(gr2, "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs) ***");
 
   return ok;
 }
@@ -372,11 +372,11 @@ test12() {
   Congruence_System cgs;
   cgs.insert(A - 0*C == 3);
 
-  gr2.limited_extrapolation_assign(gr1, cgs);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs);
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
+  print_congruences(gr2, "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs) ***");
 
   return ok;
 }
@@ -402,7 +402,7 @@ test13() {
   cgs.insert(A - 0*C == 3);
 
   try {
-    gr2.limited_extrapolation_assign(gr1, cgs);
+    gr2.limited_congruence_extrapolation_assign(gr1, cgs);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -434,7 +434,7 @@ test14() {
   cgs.insert(A - 0*C == 3);
 
   try {
-    gr2.limited_extrapolation_assign(gr1, cgs);
+    gr2.limited_congruence_extrapolation_assign(gr1, cgs);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -462,7 +462,7 @@ test15() {
 
   Congruence_System cgs;
 
-  gr2.limited_extrapolation_assign(gr1, cgs);
+  gr2.limited_congruence_extrapolation_assign(gr1, cgs);
 
   Grid known_gr = gr2;
   known_gr.add_generator(grid_point());
@@ -470,7 +470,7 @@ test15() {
 
   bool ok = (gr2 == known_gr);
 
-  print_congruences(gr2, "*** gr2.limited_extrapolation_assign(gr1, cgs) ***");
+  print_congruences(gr2, "*** gr2.limited_congruence_extrapolation_assign(gr1, cgs) ***");
 
   return ok;
 }

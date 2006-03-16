@@ -2068,24 +2068,26 @@ and, also, a covering box for any given grid.
 
 \subsection Grid_Widening Widening Operators
 
-The library provides a <EM>grid widening</EM> operator for the domain of grids.
-This follows the specification provided in \ref BDHMZ05 "[BDHMZ05]".
+The library provides <EM>grid widening</EM> operators for the domain of grids.
+The congruence widening and generator widening
+follow the specifications provided in \ref BDHMZ05 "[BDHMZ05]".
+The third widening uses either
+the congruence or the generator widening, the exact rule governing this choice
+at the time of the call is left to the implementation.
 Note that, as for the widenings provided for convex polyhedra,
-the widening \f$\cL_1 \widen \cL_2\f$ of two
-grids \f$\cL_1, \cL_2 \in \Gset_n\f$ requires as a precondition that
+all the operations provided by the library
+for computing a widening \f$\cL_1 \widen \cL_2\f$ of
+grids \f$\cL_1, \cL_2 \in \Gset_n\f$ require as a precondition that
 \f$\cL_1 \sseq \cL_2\f$.
 
 \note
 As is the case for the other operators on grids, the
 implementation overwrites one of the two grid arguments with the
 result of the widening application.
-It is worth stressing that, if grid \f$\cL_1\f$
-and \f$\cL_2\f$ (where \f$\cL_1 \sseq \cL_2\f$) are identified by program
-variables <CODE>l_1</CODE> and <CODE>l_2</CODE>, respectively, then the
-call <CODE>l_2.grid_widening_assign(l_1)</CODE> will assign the grid
-\f$\cL_1 \widen \cL_2\f$ to variable <CODE>l_2</CODE>.  Namely, it is the
-bigger grid\f$\cL_2\f$ which is overwritten by the result of the
-widening. The smaller grid is not modified.
+It is worth stressing that, in any widening operation that computes the
+widening \f$\cL_1 \widen \cL_2\f$, the resulting grid will be assigned
+to overwrite the store containing the bigger grid \f$\cL_2\f$.
+The smaller grid \f$\cL_1\f$ is not modified.
 The same observation holds for all flavors of widenings and extrapolation
 operators that are implemented in the library and for all the foreign
 language interfaces.
@@ -2097,7 +2099,7 @@ for convex polyhedra.
 
 \subsection Grid_Extrapolation Extrapolation Operators
 
-Besides the two widening operators, the library also implements several
+Besides the widening operators, the library also implements several
 <EM>extrapolation</EM> operators, which differ from widenings in that
 their use along an upper iteration sequence does not ensure convergence
 in a finite number of steps.
@@ -2113,11 +2115,6 @@ by the corresponding widening operator. Note that,
 as in the case for convex polyhedra, a convergence guarantee
 can only be obtained by suitably restricting the set of
 congruence relations that can occur in this additional parameter.
-
-The <EM>bounded</EM> extrapolation operators further enhance each one
-of the limited extrapolation operators described above, by ensuring
-that their results cannot be worse than the smallest
-\ref Rectilinear_Grids "rectilinear grid" that contains the two argument grids.
 
 \section use_of_library Using the Library
 

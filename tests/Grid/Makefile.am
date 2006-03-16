@@ -78,7 +78,7 @@ intersection1 \
 isempty1 \
 isuniverse1 \
 join1 join2 \
-limitedextrapolation1 limitedextrapolation2 \
+limitedextrapolation1 limitedextrapolation2 limitedextrapolation3 \
 mapspacedims1 \
 maxmin1 \
 membytes1 \
@@ -90,7 +90,7 @@ removespacedims1 removespacedims2 \
 timeelapse1 \
 topclosed1 \
 topclosure1 \
-widening1 widening2 \
+widening1 widening2  widening3\
 writecongruencesystem
 
 #
@@ -184,6 +184,7 @@ join2_SOURCES = join2.cc
 
 limitedextrapolation1_SOURCES = limitedextrapolation1.cc
 limitedextrapolation2_SOURCES = limitedextrapolation2.cc
+limitedextrapolation3_SOURCES = limitedextrapolation3.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
@@ -211,6 +212,7 @@ topclosure1_SOURCES = topclosure1.cc
 
 widening1_SOURCES = widening1.cc
 widening2_SOURCES = widening2.cc
+widening3_SOURCES = widening3.cc
 
 writecongruencesystem_SOURCES = writecongruencesystem.cc
 

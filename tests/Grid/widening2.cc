@@ -1,4 +1,4 @@
-/* Test Grid::widening_assign().
+/* Test Grid::generator_widening_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -419,6 +419,37 @@ test13() {
   return ok;
 }
 
+// Space dimension exception.
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr1(3, EMPTY);
+  gr1.add_generator(grid_point(C, 3));
+  gr1.add_generator(grid_point(C + A - 2*B, 3));
+
+  print_generators(gr1, "*** gr1 ***");
+
+  Grid gr2(4, EMPTY);
+  gr2.add_generator(grid_point(C, 3));
+  gr2.add_generator(grid_point(2*C + A - 2*B, 6));
+
+  print_generators(gr2, "*** gr2 ***");
+
+  try {
+    gr2.generator_widening_assign(gr1);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -435,4 +466,5 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
 END_MAIN
