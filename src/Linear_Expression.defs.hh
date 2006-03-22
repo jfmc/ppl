@@ -430,13 +430,20 @@ private:
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
 						    const Linear_Expression& e);
 
+  // FIXME: this friend declaration must be avoided.
   friend Congruence
   Parma_Polyhedra_Library::operator%=(const Linear_Expression& e1,
 				      const Linear_Expression& e2);
 
+  // FIXME: this friend declaration must be avoided.
   friend Congruence
   Parma_Polyhedra_Library::operator%=(const Linear_Expression& e,
 				      Coefficient_traits::const_reference n);
+
+  // FIXME: this friend declaration must be avoided.
+  friend Congruence
+  Parma_Polyhedra_Library::operator%=(Coefficient_traits::const_reference n,
+				      const Linear_Expression& e);
 };
 
 #include "Linear_Expression.inlines.hh"

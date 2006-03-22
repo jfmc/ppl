@@ -237,7 +237,8 @@ test10() {
 
   bool ok = (a.is_trivial_true()) && (!a.is_trivial_false());
 
-  print_congruence(a, "*** a(0*A + 0*B + 0*C %= 17) ***");
+  print_congruence(a,
+    "*** a(0*A + 0*B + 0*C %= 17) ***");
 
   a = Test_Congruence((0*A + 0*B + 0*C %= 0) / 3);
   ok &= a.is_trivial_true()
@@ -247,34 +248,39 @@ test10() {
   ok &= a.is_trivial_true()
     && !a.is_trivial_false();
 
-  print_congruence(a, "*** a = Test_Congruence((0*A + 0*B + 8 %= 0) / 4) ***");
+  print_congruence(a,
+    "*** a = Test_Congruence((0*A + 0*B + 8 %= 0) / 4) ***");
 
   a = Test_Congruence(0*A + 0*B %= 17);
   a /= 0;
   ok &= !a.is_trivial_true()
     && a.is_trivial_false();
 
-  print_congruence(a, "*** a = Test_Congruence(0*A + 0*B %= 17) ***");
+  print_congruence(a,
+    "*** a = Test_Congruence(0*A + 0*B %= 17) ***");
 
   a = Test_Congruence((0*A + 0*B + 3 %= 0) / 0);
   a.strong_normalize();
   ok &= !a.is_trivial_true()
     && a.is_trivial_false();
 
-  print_congruence(a, "*** a = Test_Congruence((0*A + 0*B + 3 %= 0) / 0) ***");
+  print_congruence(a,
+    "*** a = Test_Congruence((0*A + 0*B + 3 %= 0) / 0) ***");
 
   a = Test_Congruence((0*A + 0*B + 4 %= 0) / 3);
   a.strong_normalize();
   ok &= !a.is_trivial_true()
     && a.is_trivial_false();
 
-  print_congruence(a, "*** a = Test_Congruence((0*A + 0*B + 4 %= 0) / 3) ***");
+  print_congruence(a,
+    "*** a = Test_Congruence((0*A + 0*B + 4 %= 0) / 3) ***");
 
   a = Test_Congruence((0*A + 1*B %= 1) / 3);
   ok &= !a.is_trivial_true()
     && !a.is_trivial_false();
 
-  print_congruence(a, "*** a = Test_Congruence((0*A + 1*B %= 1) / 3) ***");
+  print_congruence(a,
+    "*** a = Test_Congruence((0*A + 1*B %= 1) / 3) ***");
 
   return ok;
 }
@@ -303,16 +309,16 @@ test11() {
 // Negative modulus and negative first coefficient.
 static bool
 test12() {
-  Variable x0(0);
-  Variable x1(1);
-  Variable x2(2);
-  Variable x3(3);
-  Variable x4(4);
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
 
-  Test_Congruence a((-x0 + 4*x1 + 3*x2 + 17*x3 + 2*x4 %= -4) / -3);
+  Test_Congruence a((-A + 4*B + 3*C + 17*D + 2*E %= -4) / -3);
   a.strong_normalize();
 
-  Test_Congruence b((-x0 + 4*x1 %= - 3*x2 - 17*x3 - 2*x4 - 4) / -3);
+  Test_Congruence b((-A + 4*B %= - 3*C - 17*D - 2*E - 4) / -3);
   b.strong_normalize();
 
   bool ok (a == b);
@@ -341,9 +347,30 @@ test13() {
   return ok;
 }
 
-// Space dimension exception.
+// Only an inhomogeneous term on left hand side.
 static bool
 test14() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Test_Congruence a((-5 %= A + 2*B + 3*C) / 7);
+  a.strong_normalize();
+
+  Test_Congruence b((A %= -5 - 3*C - 2*B) / 7);
+  b.strong_normalize();
+
+  bool ok (a == b);
+
+  print_congruence(a, "*** a ***");
+  print_congruence(b, "*** b ***");
+
+  return ok;
+}
+
+// Space dimension exception.
+static bool
+test15() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -379,4 +406,5 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

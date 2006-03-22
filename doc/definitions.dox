@@ -2094,7 +2094,7 @@ language interfaces.
 
 \subsection Grid_Widening_with_Tokens Widening with Tokens
 
-This will be as for \ref Widening_with_Tokens "widening with tokens"
+This is as for \ref Widening_with_Tokens "widening with tokens"
 for convex polyhedra.
 
 \subsection Grid_Extrapolation Extrapolation Operators

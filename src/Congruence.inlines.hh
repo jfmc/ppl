@@ -75,9 +75,26 @@ Congruence::operator=(const Congruence& c) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence */
+// FIXME: this implementation is just an executable specification;
+//        a proper implementation will not require friendship of
+//        class Linear_Expression.
 inline Congruence
 operator%=(const Linear_Expression& e,
 	   const Coefficient_traits::const_reference n) {
+  // Ensure that diff has capacity for the modulus.
+  Linear_Expression diff(e, e.space_dimension() + 2);
+  diff -= n;
+  Congruence cg(diff, 1, false);
+  return cg;
+}
+
+/*! \relates Parma_Polyhedra_Library::Congruence */
+// FIXME: this implementation is just an executable specification;
+//        a proper implementation will not require friendship of
+//        class Linear_Expression.
+inline Congruence
+operator%=(const Coefficient_traits::const_reference n,
+	   const Linear_Expression& e) {
   // Ensure that diff has capacity for the modulus.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;

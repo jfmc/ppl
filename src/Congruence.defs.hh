@@ -79,6 +79,12 @@ Congruence
 operator%=(const Linear_Expression& e,
 	   const Coefficient_traits::const_reference n);
 
+//! Returns the congruence \f$n = e \pmod{1}\f$.
+/*! \relates Congruence */
+Congruence
+operator%=(const Coefficient_traits::const_reference n,
+	   const Linear_Expression& e);
+
 //! Returns a copy of \p cg, multiplying \p k into the copy's modulus.
 /*!
     If \p cg represents the congruence \f$ e_1 = e_2
@@ -432,12 +438,19 @@ private:
 			       const char* v_name,
 			       Variable v) const;
 
+  // FIXME: this friend declaration must be avoided.
   friend Congruence
   PPL::operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
 
+  // FIXME: this friend declaration must be avoided.
   friend Congruence
   PPL::operator%=(const Linear_Expression& e,
 		  const Coefficient_traits::const_reference n);
+
+  // FIXME: this friend declaration must be avoided.
+  friend Congruence
+  PPL::operator%=(const Coefficient_traits::const_reference n,
+		  const Linear_Expression& e);
 
   friend Congruence
   PPL::operator/(const Congruence& cg,
