@@ -326,65 +326,6 @@ copy_compare(const T& a, const T& b) {
   return tem_a == tem_b;
 }
 
-//! Look for variation in \p a.
-/*!
-  Return <CODE>true</CODE> if \p a contains variation from
-  consistency, else return <CODE>false</CODE>.  Variation can be found
-  via the OK method, or via a comparison between \p a and an object
-  created from the ASCII dump of \p a.
-
-  It is assumed that \p a is up to date.
-
-  If the loading of the ASCII dump fails then an error message is
-  printed and `exit' is called.
-
-  \p T must provide:
-    void ascii_dump(std::ostream& s) const;
-    bool ascii_load(std::istream& s);
-  and there must be a:
-    bool operator==(const T& x, const T& y);
-*/
-template <typename T>
-static bool
-find_variation(T& a) {
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-
-  if (!a.OK()) {
-    nout << "OK() failed\nASCII dump:" << endl;
-    a.ascii_dump(nout);
-    return true;
-  }
-
-  /* FIX In some PPL classes (e.g. Congruence) the simple constructors
-     are private. */
-  //T b;
-  T b(a);
-  stringstream dump;
-  a.ascii_dump(dump);
-  if (!b.ascii_load(dump)) {
-    nout << "Failed to load `b' from the ASCII dump of `a'." << endl;
-    nout << "ASCII dump of `a':" << endl;
-    nout << dump.str();
-    exit(1);
-  }
-
-  if (a == b)
-    return false;
-
-  nout << "`b' loaded from ASCII dump of `a' should equal `a'" << endl
-       << "ASCII dump of `a':" << endl
-       << "------------------" << endl;
-  a.ascii_dump(nout);
-  nout << "ASCII dump of `b' (after comparison):" << endl
-       << "-------------------------------------" << endl;
-  b.ascii_dump(nout);
-  nout << "ASCII dump of `a' (after comparison):" << endl
-       << "-------------------------------------" << endl;
-  a.ascii_dump(nout);
-
-  return true;
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_ppl_test_hh)
