@@ -36,9 +36,13 @@ TRACE(using std::cerr);
 #ifdef STRONG_REDUCTION
 template <typename M, typename R>
 void
-Grid::reduce_reduced(M& sys, dimension_type dim, dimension_type pivot_index,
-		     dimension_type start, dimension_type end,
-		     Dimension_Kinds& dim_kinds, bool generators) {
+Grid::reduce_reduced(M& sys,
+		     const dimension_type dim,
+		     const dimension_type pivot_index,
+		     const dimension_type start,
+		     const dimension_type end,
+		     const Dimension_Kinds& dim_kinds,
+		     const bool generators) {
   R& pivot = sys[pivot_index];
 
   TEMP_INTEGER(pivot_dim);
@@ -81,9 +85,9 @@ Grid::reduce_reduced(M& sys, dimension_type dim, dimension_type pivot_index,
       num_rows_to_subtract = row_dim / pivot_dim;
 
       // Ensure that after subtracting num_rows_to_subtract * r_dim
-      // from row_dim,
-      // -pivot_dim_half < row_dim <= pivot_dim_half.  E.g., if pivot[dim] =
-      // 9, then after strong reduction -5 < row_dim <= 5.
+      // from row_dim, -pivot_dim_half < row_dim <= pivot_dim_half.
+      // E.g., if pivot[dim] = 9, then after strong reduction
+      // -5 < row_dim <= 5.
       Coefficient& row_dim_rem = row_dim;
       row_dim_rem %= pivot_dim;
       if (row_dim_rem < 0) {
@@ -131,8 +135,9 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
 }
 
 inline void
-Grid::reduce_equality_with_equality(Congruence& row, Congruence& pivot,
-				    dimension_type column) {
+Grid::reduce_equality_with_equality(Congruence& row,
+				    const Congruence& pivot,
+				    const dimension_type column) {
   TRACE(cerr << "reduce_equality_with_equality" << endl);
   // Assume two equalities.
   assert(row.modulus() == 0 && pivot.modulus() == 0);
@@ -157,9 +162,9 @@ Grid::reduce_equality_with_equality(Congruence& row, Congruence& pivot,
 template <typename R>
 void
 Grid::reduce_pc_with_pc(R& row, R& pivot,
-			dimension_type column,
-			dimension_type start,
-			dimension_type end) {
+			const dimension_type column,
+			const dimension_type start,
+			const dimension_type end) {
   TEMP_INTEGER(gcd);
   TEMP_INTEGER(s);
   TEMP_INTEGER(t);
@@ -196,8 +201,8 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
 
 void
 Grid::reduce_parameter_with_line(Grid_Generator& row,
-				 Grid_Generator& pivot,
-				 dimension_type column,
+				 const Grid_Generator& pivot,
+				 const dimension_type column,
 				 Grid_Generator_System& sys) {
   // Very similar to reduce_congruence_with_equality below.  Any
   // change here may be needed there too.
@@ -248,8 +253,8 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
 
 void
 Grid::reduce_congruence_with_equality(Congruence& row,
-				      Congruence& pivot,
-				      dimension_type column,
+				      const Congruence& pivot,
+				      const dimension_type column,
 				      Congruence_System& sys) {
   // Very similar to reduce_parameter_with_line above.  Any change
   // here may be needed there too.
@@ -437,9 +442,8 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // divisor.
   TRACE(cerr << "updating param divisors" << endl);
   Coefficient_traits::const_reference system_divisor = sys[0][0];
-  for (dimension_type row = 1, dim = 1, num_cols = sys.num_columns() - 1;
-       dim < num_cols;
-       ++dim)
+  for (dimension_type row = 1, dim = 1,
+	 num_cols = sys.num_columns() - 1; dim < num_cols; ++dim)
     switch (dim_kinds[dim]) {
     case PARAMETER:
       sys[row].divisor() = system_divisor;

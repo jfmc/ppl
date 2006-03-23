@@ -2297,7 +2297,7 @@ private:
   */
   void add_space_dimensions(Congruence_System& cgs,
 			    Grid_Generator_System& gs,
-			    const dimension_type dims);
+			    dimension_type dims);
 
   //! Adds new space dimensions to the given systems.
   /*!
@@ -2315,7 +2315,7 @@ private:
   */
   void add_space_dimensions(Grid_Generator_System& gs,
 			    Congruence_System& cgs,
-			    const dimension_type dims);
+			    dimension_type dims);
 
   //! \name Minimization-related Static Member Functions
   //@{
@@ -2404,7 +2404,7 @@ private:
   */
   // A member of Grid for access to Matrix::rows.
   static void reduce_equality_with_equality(Congruence& row,
-					    Congruence& pivot,
+					    const Congruence& pivot,
 					    dimension_type col);
 
   //! Reduces \p row using \p pivot.
@@ -2431,7 +2431,7 @@ private:
   */
   // A member of Grid for access to Matrix::rows.
   static void reduce_parameter_with_line(Grid_Generator& row,
-					 Grid_Generator& pivot,
+					 const Grid_Generator& pivot,
 					 dimension_type col,
 					 Grid_Generator_System& sys);
 
@@ -2443,7 +2443,7 @@ private:
   */
   // A member of Grid for access to Matrix::rows.
   static void reduce_congruence_with_equality(Congruence& row,
-					      Congruence& pivot,
+					      const Congruence& pivot,
 					      dimension_type col,
 					      Congruence_System& sys);
 
@@ -2457,21 +2457,23 @@ private:
   static void reduce_reduced(M& sys, dimension_type dim,
 			     dimension_type pivot_index,
 			     dimension_type start, dimension_type end,
-			     Dimension_Kinds& dim_kinds,
+			     const Dimension_Kinds& dim_kinds,
 			     bool generators = true);
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Matrix::rows and cgs::operator[].
   static void multiply_grid(const Coefficient& multiplier,
 			    Congruence& cg, Congruence_System& dest,
-			    const dimension_type num_rows,
-			    const dimension_type num_dims);
+			    dimension_type num_rows,
+			    dimension_type num_dims);
 
   //! Multiply the elements of \p dest by \p multiplier.
   // A member of Grid for access to Grid_Generator::operator[].
-  static void multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
-			    Grid_Generator_System& dest, const dimension_type num_rows,
-			    const dimension_type num_dims);
+  static void multiply_grid(const Coefficient& multiplier,
+			    Grid_Generator& gen,
+			    Grid_Generator_System& dest,
+			    dimension_type num_rows,
+			    dimension_type num_dims);
 
   /*! \brief
     If \p sys is lower triangular return <CODE>true</CODE>, else
