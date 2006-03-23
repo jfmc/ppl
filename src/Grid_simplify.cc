@@ -73,8 +73,9 @@ Grid::reduce_reduced(M& sys,
     while (dim_kinds[kinds_index] == virtual_kind)
       kinds_index += jump;
 
+    // row_kind CONGRUENCE is included as PARAMETER
     if (row_kind == line_or_equality
-	|| (row_kind == PARAMETER // a.k.a. CONGRUENCE
+	|| (row_kind == PARAMETER
 	    && dim_kinds[kinds_index] == PARAMETER)) {
       R& row = sys[row_index];
 
@@ -125,7 +126,9 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
   row[column] = 0;
-  for (dimension_type col = pivot.size() - 2 /* parameter divisor, index */;
+  // pivot.size() - 1 is the index for the parameter divisor
+  // so we start reducing the line at index pivot.size() - 2.
+  for (dimension_type col = pivot.size() - 2;
        col > column;
        --col) {
     Coefficient& row_col = row[col];
@@ -293,7 +296,8 @@ Grid::reduce_congruence_with_equality(Congruence& row,
       for (dimension_type col = 0; col < num_cols; ++col)
         row[col] *= red_pivot_col;
   }
-  --num_cols;			// Modulus.
+  // column num_cols contains the modulus, so start at the next column.
+  --num_cols;
   row[column] = 0;
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
@@ -322,12 +326,14 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   TRACE(cerr << "sys:" << endl);
   TRACE(sys.ascii_dump(cerr));
   assert(sys.num_generators() > 0);
-  assert(sys.num_columns() > 0); // For reduce_pc_with_pc.
+  // For reduce_pc_with_pc.
+  assert(sys.num_columns() > 0);
 
   // Changes here may also be required in the congruence version
   // below.
 
-  dimension_type num_cols = sys.num_columns() - 1 /* parameter divisor */;
+  // Subtract one to allow for the parameter divisor column
+  dimension_type num_cols = sys.num_columns() - 1;
 
   if (dim_kinds.size() != num_cols)
     dim_kinds.resize(num_cols);
@@ -428,9 +434,12 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 #ifndef NDEBUG
     bool ret = rows_are_zero<Grid_Generator_System,Grid_Generator>
       (sys,
-       pivot_index,		 // index of first
-       sys.num_generators() - 1, // index of last
-       sys.num_columns() - 1);	 // row size
+       // index of first
+       pivot_index,
+       // index of last
+       sys.num_generators() - 1,
+       // row size
+       sys.num_columns() - 1);
     assert(ret == true);
 #endif
     sys.erase_to_end(pivot_index);
@@ -564,7 +573,8 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
     TRACE(sys.ascii_dump(cerr));
   } // end for (dimension_type dim = num_cols; dim-- > 0; )
 
-  dimension_type& reduced_num_rows = pivot_index; // For clearer naming.
+  // For clearer naming.
+  dimension_type& reduced_num_rows = pivot_index;
 
   // Clip any zero rows from the end of the matrix.
   if (num_rows > 1 && num_rows > reduced_num_rows) {
@@ -572,9 +582,12 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
 #ifndef NDEBUG
     bool ret = rows_are_zero<Congruence_System,Congruence>
       (sys,
-       reduced_num_rows,	// index of first
-       num_rows - 1,		// index of last
-       num_cols);		// row size
+       // index of first
+       reduced_num_rows,
+       // index of last
+       num_rows - 1,
+       // row size
+       num_cols);
     assert(ret == true);
 #endif
     // Don't erase the last row as this will be changed to the integrality row.
