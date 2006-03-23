@@ -130,7 +130,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
   // as the second argument.
   if (constraints_are_up_to_date())
     if (generators_are_up_to_date()) {
-      // `sat_c' must be up to date for add_space_dimensions(...).
+      // `sat_c' must be up to date for add_space_dimensions().
       if (!sat_c_is_up_to_date())
 	update_sat_c();
       // Adds rows and/or columns to both matrices.
@@ -230,7 +230,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   // giving the system of constraints as the second argument.
   if (constraints_are_up_to_date())
     if (generators_are_up_to_date()) {
-      // `sat_g' must be up to date for add_space_dimensions(...).
+      // `sat_g' must be up to date for add_space_dimensions().
       if (!sat_g_is_up_to_date())
 	update_sat_g();
       // Adds rows and/or columns to both matrices.

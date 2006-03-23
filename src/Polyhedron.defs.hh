@@ -1116,7 +1116,7 @@ public:
 
     \param denominator
     The denominator of the affine expression (optional argument with
-    default value 1.)
+    default value 1).
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
@@ -1210,7 +1210,7 @@ public:
 
     \param denominator
     The denominator of the affine expression (optional argument with
-    default value 1.)
+    default value 1).
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
@@ -1306,7 +1306,7 @@ public:
 
     \param denominator
     The denominator of the right hand side affine expression (optional
-    argument with default value 1.)
+    argument with default value 1).
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
@@ -1338,7 +1338,7 @@ public:
 
     \param denominator
     The denominator of the right hand side affine expression (optional
-    argument with default value 1.)
+    argument with default value 1).
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
@@ -1420,7 +1420,7 @@ public:
 
     \param denominator
     The (common) denominator for the lower and upper bounding
-    affine expressions (optional argument with default value 1.)
+    affine expressions (optional argument with default value 1).
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
@@ -1452,7 +1452,7 @@ public:
 
     \param denominator
     The (common) denominator for the lower and upper bounding
-    affine expressions (optional argument with default value 1.)
+    affine expressions (optional argument with default value 1).
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)

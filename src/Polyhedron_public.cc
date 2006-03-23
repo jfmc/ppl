@@ -1455,7 +1455,7 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(Generator_System& gs) {
 
   if (minimize()) {
     obtain_sorted_generators_with_sat_g();
-    // This call to `add_and_minimize(...)' cannot return `false'.
+    // This call to `add_and_minimize()' cannot return `false'.
     add_and_minimize(false, gen_sys, con_sys, sat_g, gs);
     clear_sat_c_up_to_date();
   }
