@@ -100,7 +100,7 @@ Grid::reduce_reduced(M& sys, dimension_type dim, dimension_type pivot_index,
       // added to row i.
       if (num_rows_to_subtract != 0)
 	for (dimension_type col = start; col <= end; ++col)
-	  row[col] -= num_rows_to_subtract * pivot[col];
+	  sub_mul_assign(row[col], num_rows_to_subtract, pivot[col]);
     }
   }
 }
@@ -123,8 +123,11 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
   row[column] = 0;
   for (dimension_type col = pivot.size() - 2 /* parameter divisor, index */;
        col > column;
-       --col)
-    row[col] = (red_pivot_col * row[col]) - (red_row_col * pivot[col]);
+       --col) {
+    Coefficient& row_col = row[col];
+    row_col *= red_pivot_col;
+    sub_mul_assign(row_col, red_row_col, pivot[col]);
+  }
 }
 
 inline void
@@ -144,8 +147,11 @@ Grid::reduce_equality_with_equality(Congruence& row, Congruence& pivot,
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
   row[column] = 0;
-  for (dimension_type col = 0; col < column; ++col)
-    row[col] = (red_pivot_col * row[col]) - (red_row_col * pivot[col]);
+  for (dimension_type col = 0; col < column; ++col) {
+    Coefficient& row_col = row[col];
+    row_col *= red_pivot_col;
+    sub_mul_assign(row_col, red_row_col, pivot[col]);
+  }
 }
 
 template <typename R>
@@ -237,7 +243,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // row[column] is zero.
   row[column] = 0;
   for (dimension_type col = num_cols - 1; col > column; --col)
-    row[col] -= red_row_col * pivot[col];
+    sub_mul_assign(row[col], red_row_col, pivot[col]);
 }
 
 void
@@ -287,7 +293,7 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
   for (dimension_type col = 0; col < column; ++col)
-    row[col] -= red_row_a * pivot[col];
+    sub_mul_assign(row[col], red_row_a, pivot[col]);
 }
 
 #ifndef NDEBUG
