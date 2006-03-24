@@ -405,12 +405,12 @@ private:
   //! Negates the elements from index \p start to index \p end.
   void negate(dimension_type start, dimension_type end);
 
-  //! Returns the divisor of \p *this.
+  //! Sets the divisor of \p *this to \p d.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this is a line.
   */
-  Coefficient& divisor();
+  void set_divisor(Coefficient_traits::const_reference d);
 
   //! Sets the Linear_Row kind to <CODE>LINE_OR_EQUALITY</CODE>.
   void set_is_line();

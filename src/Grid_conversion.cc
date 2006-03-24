@@ -540,7 +540,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   for (dimension_type row = 1, dim = 1; dim < dims; ++dim)
     switch (dim_kinds[dim]) {
     case PARAMETER:
-      dest[row].divisor() = system_divisor;
+      dest[row].set_divisor(system_divisor);
     case LINE:
       ++row;
     case GEN_VIRTUAL:

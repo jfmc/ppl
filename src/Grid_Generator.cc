@@ -51,7 +51,7 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
   // Using this constructor saves reallocation when creating the
   // coefficients.
   Grid_Generator gg(g);
-  gg.divisor() = d;
+  gg.set_divisor(d);
 
   // If the divisor is negative, negate it and all the coefficients of
   // the parameter.  This ensures that divisors are always positive.
@@ -186,7 +186,7 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
 
     TEMP_INTEGER(factor);
     factor = d / divisor();
-    divisor() = d;
+    set_divisor(d);
     assert(factor > 0);
     if (factor > 1)
       for (dimension_type col = size() - 2; col >= 1; --col)

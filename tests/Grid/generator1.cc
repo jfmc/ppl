@@ -363,9 +363,7 @@ test17() {
       e += (i + 1) * a.coefficient(Variable(i)) * Variable(i);
   Grid_Generator b = parameter(e, 2);
 
-  // FIXME: what is wanted here is
-  // Grid_Generator c(parameter(2*A - 2*B + 9*C, a.divisor()));
-  Grid_Generator c(parameter(2*A - 2*B + 9*C, 2));
+  Grid_Generator c(parameter(2*A - 2*B + 9*C, a.divisor()));
 
   bool ok = (b.is_equivalent_to(c));
   print_generator(b, "*** b ***");

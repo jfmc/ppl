@@ -455,7 +455,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
 	 num_cols = sys.num_columns() - 1; dim < num_cols; ++dim)
     switch (dim_kinds[dim]) {
     case PARAMETER:
-      sys[row].divisor() = system_divisor;
+      sys[row].set_divisor(system_divisor);
     case LINE:
       ++row;
     case GEN_VIRTUAL:

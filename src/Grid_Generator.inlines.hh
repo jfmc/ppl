@@ -94,13 +94,13 @@ Grid_Generator::is_parameter_or_point() const {
   return is_ray_or_point_or_inequality();
 }
 
-inline Coefficient&
-Grid_Generator::divisor() {
-  if (is_line())
-    throw_invalid_argument("divisor()", "*this is a line");
+inline void
+Grid_Generator::set_divisor(Coefficient_traits::const_reference d) {
+  assert(!is_line());
   if (is_line_or_parameter())
-    return Generator::operator[](size() - 1);
-  return Generator::operator[](0);
+    Generator::operator[](size() - 1) = d;
+  else
+    Generator::operator[](0) = d;
 }
 
 inline Coefficient_traits::const_reference
@@ -109,7 +109,8 @@ Grid_Generator::divisor() const {
     throw_invalid_argument("divisor()", "*this is a line");
   if (is_line_or_parameter())
     return Generator::operator[](size() - 1);
-  return Generator::operator[](0);
+  else
+    return Generator::operator[](0);
 }
 
 inline bool

@@ -246,7 +246,7 @@ Grid::shrink_bounding_box(Box& box) const {
       // Convert the point `gen' to a parameter.
       for (dimension_type dim = 0; dim < num_dims; ++dim)
 	gen[dim] -= point[dim];
-      gen.divisor() = point.divisor();
+      gen.set_divisor(point.divisor());
     }
     for (dimension_type col = num_dims; col > 0; )
       if (gen[col--] != 0)
@@ -340,7 +340,7 @@ Grid::get_covering_box(Box& box) const {
 	// Convert the point `gen' to a parameter.
 	for (dimension_type dim = 0; dim <= num_dims; ++dim)
 	  gen[dim] -= point[dim];
-	gen.divisor() = point.divisor();
+	gen.set_divisor(point.divisor());
       }
       for (dimension_type dim = 0; dim < num_dims; ++dim)
 	if (!interval_emptiness[dim])
