@@ -205,7 +205,7 @@ PPL::Congruence_System::normalize_moduli() {
 
     // Represent every row using the LCM as the modulus.
     dimension_type row_size = operator[](0).size();
-    for (dimension_type row = num_rows(); row-- > 0; ) {
+    for (row = num_rows(); row-- > 0; ) {
       TEMP_INTEGER(modulus);
       modulus = operator[](row).modulus();
       if (modulus <= 0 || modulus == lcm)
