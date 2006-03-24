@@ -346,6 +346,32 @@ test16() {
   return ok;
 }
 
+// Getting coefficients of dimensions and rebuilding a generator from
+// them. This is based on Example 6 in Grid_Generator.defs.hh
+static bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator a(grid_point(2*A - B + 3*C, 2));
+  print_generator(a, "*** a ***");
+
+  Linear_Expression e;
+
+  for (int i = a.space_dimension() - 1; i >= 0; i--)
+      e += (i + 1) * a.coefficient(Variable(i)) * Variable(i);
+  Grid_Generator b = parameter(e, 2);
+
+  Grid_Generator c(parameter(2*A - 2*B + 9*C, 2));
+
+  bool ok = (b.is_equivalent_to(c));
+  print_generator(b, "*** b ***");
+
+  return ok;
+}
+
+
 } // namespace
 BEGIN_MAIN
   DO_TEST(test01);
@@ -364,4 +390,5 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN

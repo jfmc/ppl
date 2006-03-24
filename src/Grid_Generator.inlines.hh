@@ -113,6 +113,13 @@ Grid_Generator::negate(dimension_type start, dimension_type end) {
     neg_assign(operator[](start++));
 }
 
+inline Coefficient_traits::const_reference
+Grid_Generator::coefficient(const Variable v) const {
+  if (v.space_dimension() > space_dimension())
+    throw_dimension_incompatible("coefficient(v)", "v", v);
+  return Generator::coefficient(v);
+}
+
 inline Coefficient&
 Grid_Generator::divisor() {
   if (is_line())

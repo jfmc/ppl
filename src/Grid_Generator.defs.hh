@@ -272,7 +272,7 @@ public:
   */
   static Grid_Generator line(const Linear_Expression& e);
 
-  //! Returns the parameter at \p e.
+  //! Returns the parameter of direction \p e and size \p e/d.
   /*!
     Both \p e and \p d are optional arguments, with default values
     Linear_Expression::zero() and Coefficient_one(), respectively.
@@ -303,6 +303,14 @@ public:
 
   //! Assignment operator.
   Grid_Generator& operator=(const Generator& g);
+
+  //! Returns the coefficient of \p v in \p *this.
+  /*!
+    \exception std::invalid_argument
+    Thrown if the index of \p v is greater than or equal to the
+    space dimension of \p *this.
+  */
+  Coefficient_traits::const_reference coefficient(Variable v) const;
 
   //! Returns the divisor of \p *this.
   /*!
