@@ -570,7 +570,7 @@ Polyhedra_Powerset<PH>::ascii_dump(std::ostream& s) const {
     xi->element().ascii_dump(s);
 }
 
-PPL_OUTPUT_TEMPLATE_DEFINITIONS(PH, Polyhedra_Powerset<PH>);
+PPL_OUTPUT_TEMPLATE_DEFINITIONS(PH, Polyhedra_Powerset<PH>)
 
 template <typename PH>
 bool
