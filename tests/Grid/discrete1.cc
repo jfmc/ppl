@@ -77,8 +77,8 @@ test04() {
   gr_cgs_needs_min.add_congruence(A == 3);
   gr_cgs_needs_min.add_congruence(B == 2);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = (gr_gs_min.is_discrete())
     && (gr_gs_needs_min.is_discrete())
@@ -116,9 +116,8 @@ test05() {
   // Minimize the congruences.
   gr_cgs_min.minimized_congruences();
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
-  assert(copy_compare(gr_cgs_needs_min, gr_cgs_min));
+  // Grids gr_gs_min, gr_gs_needs_min, gr_cgs_needs_min and gr_cgs_min
+  // are the same grids.
 
   bool ok = (!gr_gs_min.is_discrete())
     && (!gr_gs_needs_min.is_discrete())
@@ -153,8 +152,8 @@ test06() {
   gr_cgs_needs_min.add_congruence(B %= 0);
   gr_cgs_needs_min.add_congruence(C == 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = (gr_gs_min.is_discrete())
     && (gr_gs_needs_min.is_discrete())
@@ -188,8 +187,8 @@ test07() {
   gr_cgs_needs_min.add_congruence(A == 3);
   gr_cgs_needs_min.add_congruence(B %= 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = (!gr_gs_min.is_discrete())
     && (!gr_gs_needs_min.is_discrete())
@@ -222,8 +221,8 @@ test08() {
   gr_cgs_needs_min.add_congruence((4*B %= 0) / 3);
   gr_cgs_needs_min.add_congruence(A - B %= 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = (gr_gs_min.is_discrete())
     && (gr_gs_needs_min.is_discrete())
@@ -259,8 +258,8 @@ test09() {
   gr_cgs_needs_min.add_congruence((4*B %= 0) / 3);
   gr_cgs_needs_min.add_congruence(A - B %= 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = (!gr_gs_min.is_discrete())
     && (!gr_gs_needs_min.is_discrete())
@@ -295,8 +294,8 @@ test10() {
   gr_cgs_needs_min.add_congruence(A == 0);
   gr_cgs_needs_min.add_congruence(D == 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = (!gr_gs_min.is_discrete())
     && (!gr_gs_needs_min.is_discrete())

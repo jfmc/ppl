@@ -79,8 +79,8 @@ test04() {
   gr_cgs_needs_min.add_congruence(A == 3);
   gr_cgs_needs_min.add_congruence(B == 2);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = gr_gs_min.is_bounded()
     && gr_gs_needs_min.is_bounded()
@@ -112,8 +112,8 @@ test05() {
   gr_cgs_needs_min.add_congruence(A == 3);
   gr_cgs_needs_min.add_congruence(B == 2);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = !gr_gs_min.is_bounded()
     && !gr_gs_needs_min.is_bounded()
@@ -146,8 +146,8 @@ test06() {
   gr_cgs_needs_min.add_congruence(B %= 0);
   gr_cgs_needs_min.add_congruence(C == 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = !gr_gs_min.is_bounded()
     && !gr_gs_needs_min.is_bounded()
@@ -181,8 +181,8 @@ test07() {
   gr_cgs_needs_min.add_congruence(A == 3);
   gr_cgs_needs_min.add_congruence(B %= 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = !gr_gs_min.is_bounded()
     && !gr_gs_needs_min.is_bounded()
@@ -215,8 +215,8 @@ test08() {
   gr_cgs_needs_min.add_congruence((4*B %= 0) / 3);
   gr_cgs_needs_min.add_congruence(A - B %= 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = !gr_gs_min.is_bounded()
     && !gr_gs_needs_min.is_bounded()
@@ -241,7 +241,6 @@ test09() {
   gr_gs_min.add_generator(grid_point(A));
   gr_gs_min.add_generator(grid_line(C));
   gr_gs_min.add_generator_and_minimize(grid_point(3*A + 3*B, 4));
-
   Grid gr_gs_needs_min(3, EMPTY);
   gr_gs_needs_min.add_generator(grid_point());
   gr_gs_needs_min.add_generator(grid_point(A));
@@ -252,8 +251,8 @@ test09() {
   gr_cgs_needs_min.add_congruence((4*B %= 0) / 3);
   gr_cgs_needs_min.add_congruence(A - B %= 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = !gr_gs_min.is_bounded()
     && !gr_gs_needs_min.is_bounded()
@@ -288,8 +287,8 @@ test10() {
   gr_cgs_needs_min.add_congruence(A == 0);
   gr_cgs_needs_min.add_congruence(D == 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = !gr_gs_min.is_bounded()
     && !gr_gs_needs_min.is_bounded()
@@ -326,8 +325,8 @@ test11() {
   gr_cgs_needs_min.add_congruence(E == 0);
   gr_cgs_needs_min.add_congruence(F == 19);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = gr_gs_min.is_bounded()
     && gr_gs_needs_min.is_bounded()

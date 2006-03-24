@@ -76,8 +76,8 @@ test04() {
   gr_cgs_needs_min.add_congruence(A == 3);
   gr_cgs_needs_min.add_congruence(B == 2);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = gr_gs_min.affine_dimension() == 0
     && gr_gs_needs_min.affine_dimension() == 0
@@ -110,8 +110,8 @@ test05() {
   gr_cgs_needs_min.add_congruence(A == 3);
   gr_cgs_needs_min.add_congruence(B == 2);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = gr_gs_min.affine_dimension() == 1
     && gr_gs_needs_min.affine_dimension() == 1
@@ -145,8 +145,8 @@ test06() {
   gr_cgs_needs_min.add_congruence(B %= 0);
   gr_cgs_needs_min.add_congruence(C == 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = gr_gs_min.affine_dimension() == 1
     && gr_gs_needs_min.affine_dimension() == 1
@@ -181,8 +181,8 @@ test07() {
   gr_cgs_needs_min.add_congruence(A == 3);
   gr_cgs_needs_min.add_congruence(B %= 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = gr_gs_min.affine_dimension() == 2
     && gr_gs_needs_min.affine_dimension() == 2
@@ -217,8 +217,8 @@ test08() {
   gr_cgs_needs_min.add_congruence((4*B %= 0) / 3);
   gr_cgs_needs_min.add_congruence(A - B %= 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = gr_gs_min.affine_dimension() == 2
     && gr_gs_needs_min.affine_dimension() == 2
@@ -255,8 +255,8 @@ test09() {
   gr_cgs_needs_min.add_congruence((4*B %= 0) / 3);
   gr_cgs_needs_min.add_congruence(A - B %= 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = gr_gs_min.affine_dimension() == 3
     && gr_gs_needs_min.affine_dimension() == 3
@@ -291,8 +291,8 @@ test10() {
   gr_cgs_needs_min.add_congruence(A == 0);
   gr_cgs_needs_min.add_congruence(D == 0);
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   bool ok = gr_gs_min.affine_dimension() == 2
     && gr_gs_needs_min.affine_dimension() == 2

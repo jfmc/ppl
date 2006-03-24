@@ -144,8 +144,8 @@ test04() {
   gr_cgs_needs_min.add_congruence(3*B == 2);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   Linear_Expression le = A + B;
 
@@ -185,8 +185,8 @@ test05() {
   gr_cgs_needs_min.add_congruence(A == 0);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   Linear_Expression le = 2*A - B;
 
@@ -217,8 +217,8 @@ test06() {
   gr_cgs_needs_min.add_congruence(A - 2*B == 0);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   Linear_Expression le = 2*A + B;
 
@@ -249,8 +249,8 @@ test07() {
   gr_cgs_needs_min.add_congruence(2*A - B == 0);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   Linear_Expression le = 2*A - B;
 
@@ -291,8 +291,8 @@ test08() {
   gr_cgs_needs_min.add_congruence((B %= 0) / 2);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   Linear_Expression le = 2*A - B;
 
@@ -333,8 +333,8 @@ test09() {
   Grid gr_cgs_needs_min(2);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   Linear_Expression le = A - B;
 
@@ -370,8 +370,8 @@ test10() {
   gr_cgs_needs_min.add_congruence(B %= 0);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   Linear_Expression le = 2*A + B - C;
 
@@ -405,8 +405,8 @@ test11() {
   gr_cgs_needs_min.add_congruence(2*A + B - 3*C - 2 == 0);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   Linear_Expression le = 2*A + B - 3*C;
 
@@ -455,8 +455,8 @@ test12() {
   gr_cgs_needs_min.add_congruence(F == 19);
   print_congruences(gr_cgs_needs_min, "*** gr_cgs_needs_min ***");
 
-  assert(copy_compare(gr_gs_min, gr_gs_needs_min));
-  assert(copy_compare(gr_gs_needs_min, gr_cgs_needs_min));
+  // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
+  // same grids.
 
   Linear_Expression le = A + 2*B + 3*C + 4*D + 6*F;
 
