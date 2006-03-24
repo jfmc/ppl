@@ -27,6 +27,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline void
+Congruence_System::insert(const Congruence& cg) {
+  insert_verbatim(cg);
+  static_cast<Congruence&>(operator[](rows.size()-1)).strong_normalize();
+  assert(OK());
+}
+
 inline
 Congruence_System::Congruence_System()
   : Matrix(0, 2) {
@@ -83,13 +90,6 @@ inline void
 Congruence_System::clear() {
   Matrix::clear();
   add_zero_columns(2);		// Modulus and constant term.
-}
-
-inline void
-Congruence_System::insert(const Congruence& cg) {
-  insert_verbatim(cg);
-  static_cast<Congruence&>(operator[](rows.size()-1)).strong_normalize();
-  assert(OK());
 }
 
 inline void

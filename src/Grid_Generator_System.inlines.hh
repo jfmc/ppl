@@ -28,6 +28,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline void
+Grid_Generator_System::set_sorted(bool b) {
+  Generator_System::set_sorted(b);
+}
+
+inline void
+Grid_Generator_System::unset_pending_rows() {
+  Generator_System::unset_pending_rows();
+}
+
 inline
 Grid_Generator_System::Grid_Generator_System()
   : Generator_System(NECESSARILY_CLOSED) {
@@ -199,16 +209,6 @@ Grid_Generator_System::operator[](const dimension_type k) const {
 inline void
 Grid_Generator_System::ascii_dump(std::ostream& s) const {
   return Generator_System::ascii_dump(s);
-}
-
-inline void
-Grid_Generator_System::set_sorted(bool b) {
-  Generator_System::set_sorted(b);
-}
-
-inline void
-Grid_Generator_System::unset_pending_rows() {
-  Generator_System::unset_pending_rows();
 }
 
 inline void
