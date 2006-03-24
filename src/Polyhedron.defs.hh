@@ -1819,7 +1819,7 @@ public:
   */
   void swap(Polyhedron& y);
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief

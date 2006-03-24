@@ -2895,7 +2895,7 @@ PPL::Polyhedron::ascii_dump(std::ostream& s) const {
   s << "\n";
 }
 
-PPL_OUTPUT_DEFINITIONS(Polyhedron);
+PPL_OUTPUT_DEFINITIONS(Polyhedron)
 
 bool
 PPL::Polyhedron::ascii_load(std::istream& s) {

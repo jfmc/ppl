@@ -202,7 +202,7 @@ PPL::Grid_Generator_System
     x.remove_invalid_lines_and_rays();
 }
 
-PPL_OUTPUT_DEFINITIONS(Grid_Generator_System);
+PPL_OUTPUT_DEFINITIONS(Grid_Generator_System)
 
 bool
 PPL::Grid_Generator_System::ascii_load(std::istream& s) {

@@ -1032,4 +1032,4 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
   s << "\n";
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(LP_Problem);
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(LP_Problem)

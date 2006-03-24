@@ -373,7 +373,7 @@ public:
   //! Returns a constant reference to the \p k- th generator of the system.
   const Grid_Generator& operator[](dimension_type k) const;
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief

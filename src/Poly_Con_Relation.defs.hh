@@ -156,7 +156,7 @@ public:
   */
   static Poly_Con_Relation saturates();
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
   //! True if and only if \p *this implies \p y.
   bool implies(const Poly_Con_Relation& y) const;

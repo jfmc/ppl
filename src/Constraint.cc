@@ -234,7 +234,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint::Type& t) {
   return s;
 }
 
-PPL_OUTPUT_DEFINITIONS(Constraint);
+PPL_OUTPUT_DEFINITIONS(Constraint)
 
 bool
 PPL::Constraint::OK() const {

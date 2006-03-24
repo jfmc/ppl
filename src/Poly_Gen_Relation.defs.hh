@@ -129,7 +129,7 @@ public:
   //! Adding the generator would not change the polyhedron.
   static Poly_Gen_Relation subsumes();
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
   //! True if and only if \p *this implies \p y.
   bool implies(const Poly_Gen_Relation& y) const;

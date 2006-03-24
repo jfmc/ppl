@@ -298,7 +298,7 @@ public:
   //! Clears the matrix deallocating all its rows.
   void clear();
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by \ref ascii_dump)

@@ -150,7 +150,7 @@ PPL::Saturation_Matrix::ascii_dump(std::ostream& s) const {
   }
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Saturation_Matrix);
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Saturation_Matrix)
 
 bool
 PPL::Saturation_Matrix::ascii_load(std::istream& s) {

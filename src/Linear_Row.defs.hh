@@ -174,7 +174,7 @@ public:
     */
     bool operator!=(const Flags& y) const;
 
-    PPL_OUTPUT_DECLARATIONS;
+    PPL_OUTPUT_DECLARATIONS
 
     //! Uses the ASCII Flags representation from \p s to recreate *this.
     /*!
@@ -365,7 +365,7 @@ public:
   */
   bool all_homogeneous_terms_are_zero() const;
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
   //! Uses the ASCII Linear_Row representation from \p s to recreate *this.
   /*!

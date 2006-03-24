@@ -400,7 +400,7 @@ PPL::Congruence_System::ascii_dump(std::ostream& s) const {
       x[i].ascii_dump(s);
 }
 
-PPL_OUTPUT_DEFINITIONS(Congruence_System);
+PPL_OUTPUT_DEFINITIONS(Congruence_System)
 
 bool
 PPL::Congruence_System::ascii_load(std::istream& s) {

@@ -336,4 +336,4 @@ PPL::Grid_Generator::OK() const {
   return true;
 }
 
-PPL_OUTPUT_DEFINITIONS(Grid_Generator);
+PPL_OUTPUT_DEFINITIONS(Grid_Generator)

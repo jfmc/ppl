@@ -2127,7 +2127,7 @@ PPL::Grid::ascii_dump(std::ostream& s) const {
   s << endl;
 }
 
-PPL_OUTPUT_DEFINITIONS(Grid);
+PPL_OUTPUT_DEFINITIONS(Grid)
 
 bool
 PPL::Grid::ascii_load(std::istream& s) {

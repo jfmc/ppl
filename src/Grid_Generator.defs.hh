@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Grid_Generator_defs_hh 1
 
 #include "Grid_Generator.types.hh"
+#include "Coefficient.defs.hh"
 #include "Grid_Generator_System.defs.hh"
 #include "Generator.defs.hh"
 #include "Grid.types.hh"
@@ -377,7 +378,7 @@ public:
   */
   void coefficient_swap(Grid_Generator& y);
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief

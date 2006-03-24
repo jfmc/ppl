@@ -50,7 +50,7 @@ PPL::Poly_Gen_Relation::ascii_dump(std::ostream& s) const {
   }
 }
 
-PPL_OUTPUT_DEFINITIONS(Poly_Gen_Relation);
+PPL_OUTPUT_DEFINITIONS(Poly_Gen_Relation)
 
 /*! \relates Parma_Polyhedra_Library::Poly_Gen_Relation */
 std::ostream&

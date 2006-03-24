@@ -131,7 +131,7 @@ PPL::Linear_System::ascii_dump(std::ostream& s) const {
     x[i].ascii_dump(s);
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_System);
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_System)
 
 bool
 PPL::Linear_System::ascii_load(std::istream& s) {

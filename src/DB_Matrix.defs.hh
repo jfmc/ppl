@@ -209,7 +209,7 @@ public:
   const DB_Row<T>& operator[](dimension_type k) const;
   //@}
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by \ref ascii_dump)

@@ -154,7 +154,7 @@ PPL::Linear_Row::Flags::ascii_dump(std::ostream& s) const {
     << is_nnc;
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_Row::Flags);
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_Row::Flags)
 
 bool
 PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
@@ -187,7 +187,7 @@ PPL::Linear_Row::ascii_dump(std::ostream& s) const {
   s << "\n";
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_Row);
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_Row)
 
 bool
 PPL::Linear_Row::ascii_load(std::istream& s) {

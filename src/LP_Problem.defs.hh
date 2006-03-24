@@ -191,7 +191,7 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief

@@ -104,7 +104,7 @@ public:
     */
     bool operator!=(const Flags& y) const;
 
-    PPL_OUTPUT_DECLARATIONS;
+    PPL_OUTPUT_DECLARATIONS
 
     //! Uses the ASCII Flags representation from \p s to recreate *this.
     /*!
@@ -289,7 +289,7 @@ public:
   */
   void normalize();
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
   //! Uses the ASCII Row representation at \p s to recreate *this.
   /*!

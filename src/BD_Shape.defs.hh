@@ -1118,7 +1118,7 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
-  PPL_OUTPUT_DECLARATIONS;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief

@@ -103,14 +103,14 @@ operator%=(Coefficient_traits::const_reference n, const Linear_Expression& e) {
 /*! \relates Parma_Polyhedra_Library::Congruence */
 inline Congruence
 operator/(const Congruence& cg, Coefficient_traits::const_reference k) {
-  Congruence ret (cg, k);
+  Congruence ret(cg, k);
   return ret;
 }
 
 /*! \relates Congruence */
 inline Congruence
 operator/(const Constraint& c, Coefficient_traits::const_reference m) {
-  Congruence ret (c);
+  Congruence ret(c);
   return ret / m;
 }
 

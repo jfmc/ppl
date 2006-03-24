@@ -213,7 +213,7 @@ PPL::Congruence::ascii_dump(std::ostream& s) const {
   s << std::endl;
 }
 
-PPL_OUTPUT_DEFINITIONS(Congruence);
+PPL_OUTPUT_DEFINITIONS(Congruence)
 
 bool
 PPL::Congruence::ascii_load(std::istream& s) {

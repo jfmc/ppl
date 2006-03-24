@@ -81,7 +81,7 @@ PPL::Polyhedron::Status::ascii_dump(std::ostream& s) const {
     << (test_sat_g_up_to_date() ? '+' : '-') << satg_upd << ' ';
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Polyhedron::Status);
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Polyhedron::Status)
 
 bool
 PPL::Polyhedron::Status::ascii_load(std::istream& s) {
