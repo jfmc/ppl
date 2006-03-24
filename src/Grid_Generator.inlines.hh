@@ -34,6 +34,21 @@ Grid_Generator::Grid_Generator(Generator g)
 }
 
 inline dimension_type
+Grid_Generator::size() const {
+  return Generator::size();
+}
+
+inline Coefficient&
+Grid_Generator::operator[](dimension_type k) {
+  return Generator::operator[](k);
+}
+
+inline Coefficient_traits::const_reference
+Grid_Generator::operator[](dimension_type k) const {
+  return Generator::operator[](k);
+}
+
+inline dimension_type
 Grid_Generator::space_dimension() const {
   return Generator::space_dimension() - 1;
 }
@@ -79,9 +94,27 @@ Grid_Generator::is_parameter_or_point() const {
   return is_ray_or_point_or_inequality();
 }
 
+inline Coefficient&
+Grid_Generator::divisor() {
+  if (is_line())
+    throw_invalid_argument("divisor()", "*this is a line");
+  if (is_line_or_parameter())
+    return Generator::operator[](size() - 1);
+  return Generator::operator[](0);
+}
+
+inline Coefficient_traits::const_reference
+Grid_Generator::divisor() const {
+  if (is_line())
+    throw_invalid_argument("divisor()", "*this is a line");
+  if (is_line_or_parameter())
+    return Generator::operator[](size() - 1);
+  return Generator::operator[](0);
+}
+
 inline bool
 Grid_Generator::is_equal_at_dimension(dimension_type dim,
-				  const Grid_Generator& gg) const {
+				      const Grid_Generator& gg) const {
   return operator[](dim) * gg.divisor() == gg[dim] * divisor();
 }
 
@@ -120,24 +153,6 @@ Grid_Generator::coefficient(const Variable v) const {
   return Generator::coefficient(v);
 }
 
-inline Coefficient&
-Grid_Generator::divisor() {
-  if (is_line())
-    throw_invalid_argument("divisor()", "*this is a line");
-  if (is_line_or_parameter())
-    return Generator::operator[](size() - 1);
-  return Generator::operator[](0);
-}
-
-inline Coefficient_traits::const_reference
-Grid_Generator::divisor() const {
-  if (is_line())
-    throw_invalid_argument("divisor()", "*this is a line");
-  if (is_line_or_parameter())
-    return Generator::operator[](size() - 1);
-  return Generator::operator[](0);
-}
-
 inline memory_size_type
 Grid_Generator::total_memory_in_bytes() const {
   return Generator::total_memory_in_bytes();
@@ -153,11 +168,6 @@ Grid_Generator::strong_normalize() {
   Generator::strong_normalize();
 }
 
-inline dimension_type
-Grid_Generator::size() const {
-  return Generator::size();
-}
-
 inline void
 Grid_Generator::swap(Grid_Generator& y) {
   Generator::swap(y);
@@ -171,16 +181,6 @@ Grid_Generator::ascii_dump(std::ostream& s) const {
 inline bool
 Grid_Generator::ascii_load(std::istream& s) {
   return Generator::ascii_load(s);
-}
-
-inline Coefficient&
-Grid_Generator::operator[](dimension_type k) {
-  return Generator::operator[](k);
-}
-
-inline Coefficient_traits::const_reference
-Grid_Generator::operator[](dimension_type k) const {
-  return Generator::operator[](k);
 }
 
 /*! \relates Grid_Generator */
