@@ -79,8 +79,7 @@ Congruence::operator=(const Congruence& c) {
 //        a proper implementation will not require friendship of
 //        class Linear_Expression.
 inline Congruence
-operator%=(const Linear_Expression& e,
-	   const Coefficient_traits::const_reference n) {
+operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   // Ensure that diff has capacity for the modulus.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
@@ -93,8 +92,7 @@ operator%=(const Linear_Expression& e,
 //        a proper implementation will not require friendship of
 //        class Linear_Expression.
 inline Congruence
-operator%=(const Coefficient_traits::const_reference n,
-	   const Linear_Expression& e) {
+operator%=(Coefficient_traits::const_reference n, const Linear_Expression& e) {
   // Ensure that diff has capacity for the modulus.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
@@ -104,22 +102,20 @@ operator%=(const Coefficient_traits::const_reference n,
 
 /*! \relates Parma_Polyhedra_Library::Congruence */
 inline Congruence
-operator/(const Congruence& cg,
-	  const Coefficient_traits::const_reference k) {
+operator/(const Congruence& cg, Coefficient_traits::const_reference k) {
   Congruence ret (cg, k);
   return ret;
 }
 
 /*! \relates Congruence */
 inline Congruence
-operator/(const Constraint& c,
-	  const Coefficient_traits::const_reference m) {
+operator/(const Constraint& c, Coefficient_traits::const_reference m) {
   Congruence ret (c);
   return ret / m;
 }
 
 inline Congruence&
-Congruence::operator/=(const Coefficient_traits::const_reference k) {
+Congruence::operator/=(Coefficient_traits::const_reference k) {
   if (k >= 0)
     (*this)[size()-1] *= k;
   else

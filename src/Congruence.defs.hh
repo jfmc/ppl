@@ -76,14 +76,12 @@ operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the congruence \f$e = n \pmod{1}\f$.
 /*! \relates Congruence */
 Congruence
-operator%=(const Linear_Expression& e,
-	   const Coefficient_traits::const_reference n);
+operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n);
 
 //! Returns the congruence \f$n = e \pmod{1}\f$.
 /*! \relates Congruence */
 Congruence
-operator%=(const Coefficient_traits::const_reference n,
-	   const Linear_Expression& e);
+operator%=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns a copy of \p cg, multiplying \p k into the copy's modulus.
 /*!
@@ -93,14 +91,12 @@ operator%=(const Coefficient_traits::const_reference n,
   \relates Congruence
 */
 Congruence
-operator/(const Congruence& cg,
-	  const Coefficient_traits::const_reference k);
+operator/(const Congruence& cg, Coefficient_traits::const_reference k);
 
 //! Creates a congruence from \p c, with \p m as the modulus.
 /*! \relates Congruence */
 Congruence
-operator/(const Constraint& c,
-	  const Coefficient_traits::const_reference m);
+operator/(const Constraint& c, Coefficient_traits::const_reference m);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -262,7 +258,7 @@ public:
     the congruence \f$ e_1 = e_2 \pmod{mk}\f$.
   */
   Congruence&
-  operator/=(const Coefficient_traits::const_reference k);
+  operator/=(Coefficient_traits::const_reference k);
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is a trivially
@@ -445,20 +441,20 @@ private:
   // FIXME: this friend declaration must be avoided.
   friend Congruence
   PPL::operator%=(const Linear_Expression& e,
-		  const Coefficient_traits::const_reference n);
+		  Coefficient_traits::const_reference n);
 
   // FIXME: this friend declaration must be avoided.
   friend Congruence
-  PPL::operator%=(const Coefficient_traits::const_reference n,
+  PPL::operator%=(Coefficient_traits::const_reference n,
 		  const Linear_Expression& e);
 
   friend Congruence
   PPL::operator/(const Congruence& cg,
-		 const Coefficient_traits::const_reference k);
+		 Coefficient_traits::const_reference k);
 
   friend Congruence
   PPL::operator/(const Constraint& c,
-		 const Coefficient_traits::const_reference m);
+		 Coefficient_traits::const_reference m);
 
   friend bool
   PPL::operator==(const Congruence& x, const Congruence& y);

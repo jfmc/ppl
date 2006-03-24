@@ -54,6 +54,11 @@ operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
 Congruence
 operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n);
 
+//! Returns the congruence \f$n = e \pmod{1}\f$.
+/*! \relates Congruence */
+Congruence
+operator%=(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
 //! Returns the linear expression \p e1 + \p e2.
 /*! \relates Linear_Expression */
 Linear_Expression
