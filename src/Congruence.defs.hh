@@ -395,21 +395,21 @@ private:
 
   //! Constructs from Linear_Expression \p le, using modulus \p m.
   /*!
-     Builds a congruence with modulus \p m, stealing the coefficients
-     from \p le.
+    Builds a congruence with modulus \p m, stealing the coefficients
+    from \p le.
 
-     \param le
-     The Linear_Expression holding the coefficients.
+    \param le
+    The Linear_Expression holding the coefficients.
 
-     \param m
-     The modulus for the congruence.
+    \param m
+    The modulus for the congruence.
 
-     \param capacity
-     If <CODE>true</CODE> then the size of the \p le row is expanded
-     and the modulus is stored in the extra space.  In this case it is
-     assumed that \p le has spare capacity of at least one element.
-     If <CODE>false</CODE> then the modulus is stored in the last
-     element of the \p le row.
+    \param capacity
+    If <CODE>true</CODE> then the size of the \p le row is expanded
+    and the modulus is stored in the extra space.  In this case it is
+    assumed that \p le has spare capacity of at least one element.
+    If <CODE>false</CODE> then the modulus is stored in the last
+    element of the \p le row.
   */
   Congruence(Linear_Expression& le,
 	     Coefficient_traits::const_reference m,
