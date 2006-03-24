@@ -55,25 +55,6 @@ inline
 Congruence::~Congruence() {
 }
 
-inline const Congruence&
-Congruence::zero_dim_integrality() {
-  static const Congruence zdi(Linear_Expression::zero() %= Coefficient(-1));
-  return zdi;
-}
-
-inline const Congruence&
-Congruence::zero_dim_false() {
-  static const Congruence
-    zdf((Linear_Expression::zero() %= Coefficient_one()) / 0);
-  return zdf;
-}
-
-inline Congruence&
-Congruence::operator=(const Congruence& c) {
-  Row::operator=(c);
-  return *this;
-}
-
 /*! \relates Parma_Polyhedra_Library::Congruence */
 // FIXME: this implementation is just an executable specification;
 //        a proper implementation will not require friendship of
@@ -105,6 +86,25 @@ inline Congruence
 operator/(const Congruence& cg, Coefficient_traits::const_reference k) {
   Congruence ret(cg, k);
   return ret;
+}
+
+inline const Congruence&
+Congruence::zero_dim_integrality() {
+  static const Congruence zdi(Linear_Expression::zero() %= Coefficient(-1));
+  return zdi;
+}
+
+inline const Congruence&
+Congruence::zero_dim_false() {
+  static const Congruence
+    zdf((Linear_Expression::zero() %= Coefficient_one()) / 0);
+  return zdf;
+}
+
+inline Congruence&
+Congruence::operator=(const Congruence& c) {
+  Row::operator=(c);
+  return *this;
 }
 
 /*! \relates Congruence */

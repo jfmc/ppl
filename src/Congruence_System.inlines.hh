@@ -27,6 +27,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline Congruence&
+Congruence_System::operator[](const dimension_type k) {
+  return static_cast<Congruence&>(Matrix::operator[](k));
+}
+
+inline const Congruence&
+Congruence_System::operator[](const dimension_type k) const {
+  return static_cast<const Congruence&>(Matrix::operator[](k));
+}
+
 inline void
 Congruence_System::insert(const Congruence& cg) {
   insert_verbatim(cg);
@@ -64,16 +74,6 @@ inline Congruence_System&
 Congruence_System::operator=(const Congruence_System& y) {
   Matrix::operator=(y);
   return *this;
-}
-
-inline Congruence&
-Congruence_System::operator[](const dimension_type k) {
-  return static_cast<Congruence&>(Matrix::operator[](k));
-}
-
-inline const Congruence&
-Congruence_System::operator[](const dimension_type k) const {
-  return static_cast<const Congruence&>(Matrix::operator[](k));
 }
 
 inline dimension_type
