@@ -375,7 +375,7 @@ private:
     The column index of the variable that enters the base. If no such
     variable exists, optimality was achieved and <CODE>0</CODE> is retuned.
   */
-  dimension_type get_entering_var_index() const;
+  dimension_type textbook_entering_index() const;
 
   /*! \brief
     Computes the row index of the variable exiting the base
@@ -444,7 +444,7 @@ private:
     lcm of all the variables in base to get the good ``weight'' of each
     Coefficient of the tableau.
   */
-  dimension_type steepest_edge() const;
+  dimension_type steepest_edge_entering_index() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and if only the algorithm successfully

@@ -509,7 +509,7 @@ PPL::LP_Problem::process_pending_constraints() {
 }
 #if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 PPL::dimension_type
-PPL::LP_Problem::steepest_edge() const {
+PPL::LP_Problem::steepest_edge_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
   double challenger_num = 0;
@@ -555,7 +555,7 @@ PPL::LP_Problem::steepest_edge() const {
 
 #else
 PPL::dimension_type
-PPL::LP_Problem::steepest_edge() const {
+PPL::LP_Problem::steepest_edge_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
   // The square of the lcm of all the coefficients of variables in base.
@@ -629,7 +629,7 @@ PPL::LP_Problem::steepest_edge() const {
 // See pag. 47 of Papadimitriou.
 
 PPL::dimension_type
-PPL::LP_Problem::get_entering_var_index() const {
+PPL::LP_Problem::textbook_entering_index() const {
   // The variable entering the base is the first one whose coefficient
   // in the cost function has the same sign the cost function itself.
   // If no such variable exists, then we met the optimality condition
@@ -766,7 +766,7 @@ PPL::LP_Problem::compute_simplex() {
   while (true) {
     // Choose the index of the variable entering the base, if any.
     const dimension_type entering_var_index = call_textbook ?
-      get_entering_var_index() : steepest_edge();
+      textbook_entering_index() : steepest_edge_entering_index();
 
     // If no entering index was computed, the problem is solved.
     if (entering_var_index == 0)
@@ -824,7 +824,7 @@ PPL::LP_Problem::compute_simplex() {
   const dimension_type tableau_num_rows = tableau.num_rows();
   while (true) {
     // Choose the index of the variable entering the base, if any.
-    const dimension_type entering_var_index = steepest_edge();
+    const dimension_type entering_var_index = steepest_edge_entering_index();
     // If no entering index was computed, the problem is solved.
     if (entering_var_index == 0)
       return true;
