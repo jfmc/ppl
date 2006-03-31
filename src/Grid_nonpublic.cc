@@ -253,7 +253,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
       ext_d = 1;
       included = true;
       if (point)
-	*point = Grid_Generator::point();
+	*point = grid_point();
       return true;
     }
     if (!generators_are_minimized()) {
@@ -289,7 +289,7 @@ PPL::Grid::set_zero_dim_univ() {
   space_dim = 0;
   con_sys.clear();
   gen_sys.clear();
-  gen_sys.insert(Grid_Generator::point());
+  gen_sys.insert(grid_point());
 }
 
 void

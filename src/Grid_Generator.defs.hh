@@ -53,30 +53,30 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
 
 } // namespace std
 
-//! A line, parameter or point.
+//! A grid line, parameter or grid point.
 /*! \ingroup PPL_CXX_interface
   An object of the class Grid_Generator is one of the following:
 
-  - a line \f$\vect{l} = (a_0, \ldots, a_{n-1})^\transpose\f$;
+  - a grid_line \f$\vect{l} = (a_0, \ldots, a_{n-1})^\transpose\f$;
 
   - a parameter
     \f$\vect{q} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
 
-  - a point
+  - a grid_point
     \f$\vect{p} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
 
   where \f$n\f$ is the dimension of the space
-  and, for points and parameters, \f$d > 0\f$ is the divisor.
+  and, for grid_points and parameters, \f$d > 0\f$ is the divisor.
 
   \par How to build a grid generator.
   Each type of generator is built by applying the corresponding
-  function (<CODE>line</CODE>, <CODE>parameter</CODE> or <CODE>point</CODE>)
-  to a linear expression;
+  function (<CODE>grid_line</CODE>, <CODE>parameter</CODE>
+  or <CODE>grid_point</CODE>) to a linear expression;
   the space dimension of the generator is defined as the space dimension
   of the corresponding linear expression.
   Linear expressions used to define a generator should be homogeneous
   (any constant term will be simply ignored).
-  When defining points and parameters, an optional Coefficient argument
+  When defining grid points and parameters, an optional Coefficient argument
   can be used as a common <EM>divisor</EM> for all the coefficients
   occurring in the provided linear expression;
   the default value for this argument is 1.
@@ -92,7 +92,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   \endcode
 
   \par Example 1
-  The following code builds a line with direction \f$x-y-z\f$
+  The following code builds a grid line with direction \f$x-y-z\f$
   and having space dimension \f$3\f$:
   \code
   Grid_Generator l = grid_line(x - y - z);
@@ -123,7 +123,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   \endcode
 
   \par Example 3
-  The following code builds the point
+  The following code builds the grid point
   \f$\vect{p} = (1, 0, 2)^\transpose \in \Rset^3\f$:
   \code
   Grid_Generator p = grid_point(1*x + 0*y + 2*z);
@@ -143,7 +143,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   \code
   Grid_Generator origin2 = grid_point(0*y);
   \endcode
-  The following two lines of code both define the only point
+  The following two lines of code both define the only grid point
   having space dimension zero, namely \f$\vect{0} \in \Rset^0\f$.
   In the second case we exploit the fact that the first argument
   of the function <CODE>point</CODE> is optional.
@@ -153,7 +153,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   \endcode
 
   \par Example 4
-  The point \f$\vect{p}\f$ specified in Example 3 above
+  The grid point \f$\vect{p}\f$ specified in Example 3 above
   can also be obtained with the following code,
   where we provide a non-default value for the second argument
   of the function <CODE>grid_point</CODE> (the divisor):
@@ -162,7 +162,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   \endcode
   Obviously, the divisor can be used to specify
   points having some non-integer (but rational) coordinates.
-  For instance, the point
+  For instance, the grid point
   \f$\vect{p1} = (-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
   can be specified by the following code:
   \code
@@ -171,7 +171,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   If a zero divisor is provided, an exception is thrown.
 
   \par Example 5
-  Parameters, like points can have a divisor.
+  Parameters, like grid points can have a divisor.
   For instance, the parameter
   \f$\vect{q} = (1, 0, 2)^\transpose \in \Rset^3\f$ can be defined:
   \code
@@ -195,13 +195,13 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   \par Example 6
   The following code shows how it is possible to access each single
   coefficient of a grid generator.
-  If <CODE>g1</CODE> is a point having coordinates
+  If <CODE>g1</CODE> is a grid point having coordinates
   \f$(a_0, \ldots, a_{n-1})^\transpose\f$,
   we construct the parameter <CODE>g2</CODE> having coordinates
   \f$(a_0, 2 a_1, \ldots, (i+1)a_i, \ldots, n a_{n-1})^\transpose\f$.
   \code
   if (g1.is_point()) {
-    cout << "Point g1: " << g1 << endl;
+    cout << "Grid point g1: " << g1 << endl;
     Linear_Expression e;
     for (int i = g1.space_dimension() - 1; i >= 0; i--)
       e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
@@ -209,18 +209,18 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
     cout << "Parameter g2: " << g2 << endl;
   }
   else
-    cout << "Grid Generator g1 is not a point." << endl;
+    cout << "Grid Generator g1 is not a grid point." << endl;
   \endcode
-  Therefore, for the point
+  Therefore, for the grid point
   \code
   Grid_Generator g1 = grid_point(2*x - y + 3*z, 2);
   \endcode
   we would obtain the following output:
   \code
-  Point g1: p((2*A - B + 3*C)/2)
+  Grid point g1: p((2*A - B + 3*C)/2)
   Parameter g2: parameter((2*A - 2*B + 9*C)/2)
   \endcode
-  When working with points and parameters, be careful not to confuse
+  When working with grid points and parameters, be careful not to confuse
   the notion of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
   these are equivalent only when the divisor is 1.
 */
@@ -233,11 +233,11 @@ public:
 
   //! The generator type.
   enum Type {
-    /*! The generator is a line. */
+    /*! The generator is a grid line. */
     LINE,
     /*! The generator is a parameter. */
     PARAMETER,
-    /*! The generator is a point. */
+    /*! The generator is a grid point. */
     POINT
   };
 
@@ -271,7 +271,7 @@ public:
     Thrown if the homogeneous part of \p e represents the origin of
     the vector space.
   */
-  static Grid_Generator line(const Linear_Expression& e);
+  static Grid_Generator grid_line(const Linear_Expression& e);
 
   //! Returns the parameter of direction \p e and size \p e/d.
   /*!
@@ -294,7 +294,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p d is zero.
   */
-  static Grid_Generator point(const Linear_Expression& e
+  static Grid_Generator grid_point(const Linear_Expression& e
 			      = Linear_Expression::zero(),
 			      Coefficient_traits::const_reference d
 			      = Coefficient_one());
@@ -460,7 +460,7 @@ namespace Parma_Polyhedra_Library {
 
 /*! \brief
   Shorthand for Grid_Generator
-  Grid_Generator::line(const Linear_Expression& e).
+  Grid_Generator::grid_line(const Linear_Expression& e).
 */
 /*! \relates Grid_Generator */
 Grid_Generator grid_line(const Linear_Expression& e);
@@ -477,7 +477,7 @@ parameter(const Linear_Expression& e = Linear_Expression::zero(),
 
 /*! \brief
   Shorthand for Grid_Generator
-  Grid_Generator::point(const Linear_Expression& e,
+  Grid_Generator::grid_point(const Linear_Expression& e,
   Coefficient_traits::const_reference d).
 */
 /*! \relates Grid_Generator */

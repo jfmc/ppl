@@ -91,7 +91,7 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
       }
       else if (box.get_upper_bound(k, closed, u_n, u_d))
 	// An interval can only be a point or the universe.
-	throw_invalid_argument("Grid(box, from_covering_box)",
+	throw_invalid_argument("Grid(box, from_bounding_box)",
 			       "box");
       // A universe interval allows any value in dimension k.
     }

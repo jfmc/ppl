@@ -63,7 +63,7 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
 }
 
 PPL::Grid_Generator
-PPL::Grid_Generator::point(const Linear_Expression& e,
+PPL::Grid_Generator::grid_point(const Linear_Expression& e,
 			   Coefficient_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::grid_point(e, d):\n"
@@ -89,7 +89,7 @@ PPL::Grid_Generator::point(const Linear_Expression& e,
 }
 
 PPL::Grid_Generator
-PPL::Grid_Generator::line(const Linear_Expression& e) {
+PPL::Grid_Generator::grid_line(const Linear_Expression& e) {
   // The origin of the space cannot be a line.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::grid_line(e):\n"

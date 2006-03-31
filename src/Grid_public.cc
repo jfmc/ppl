@@ -78,12 +78,12 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a. PARAMETER */;
 
     // Trivially true point.
-    gen_sys.insert(Grid_Generator::point(0*(Variable(0))));
+    gen_sys.insert(grid_point(0*(Variable(0))));
 
     // A line for each dimension.
     dimension_type dim = 0;
     while (dim < num_dimensions) {
-      gen_sys.insert(Grid_Generator::line(Variable(dim++)));
+      gen_sys.insert(grid_line(Variable(dim++)));
       dim_kinds[dim] = CON_VIRTUAL /* a.k.a. LINE */;
     }
   }
@@ -1856,7 +1856,7 @@ generalized_affine_image(const Linear_Expression& lhs,
   bool lhs_vars_intersect_rhs_vars = false;
   for (dimension_type i = lhs_space_dim + 1; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
-      new_lines.insert(Grid_Generator::line(Variable(i)));
+      new_lines.insert(grid_line(Variable(i)));
       if (rhs.coefficient(Variable(i)) != 0)
 	lhs_vars_intersect_rhs_vars = true;
     }
@@ -1960,7 +1960,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   bool lhs_vars_intersect_rhs_vars = false;
   for (dimension_type i = lhs_space_dim + 1; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
-      new_lines.insert(Grid_Generator::line(Variable(i)));
+      new_lines.insert(grid_line(Variable(i)));
       if (rhs.coefficient(Variable(i)) != 0)
 	lhs_vars_intersect_rhs_vars = true;
     }

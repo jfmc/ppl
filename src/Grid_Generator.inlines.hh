@@ -199,7 +199,7 @@ operator!=(const Grid_Generator& x, const Grid_Generator& y) {
 /*! \relates Grid_Generator */
 inline Grid_Generator
 grid_line(const Linear_Expression& e) {
-  return Grid_Generator::line(e);
+  return Grid_Generator::grid_line(e);
 }
 
 /*! \relates Grid_Generator */
@@ -213,7 +213,7 @@ parameter(const Linear_Expression& e,
 inline Grid_Generator
 grid_point(const Linear_Expression& e,
 	   Coefficient_traits::const_reference d) {
-  return Grid_Generator::point(e, d);
+  return Grid_Generator::grid_point(e, d);
 }
 
 } // namespace Parma_Polyhedra_Library
