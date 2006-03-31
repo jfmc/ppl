@@ -48,7 +48,7 @@ test01() {
   return ok;
 }
 
-// Grid(cs), resulting grid empty.
+// Grid(cs), resulting grid universe.
 bool
 test02() {
   Variable A(0);
@@ -71,9 +71,27 @@ test02() {
   return ok;
 }
 
-// Grid(const cs)
+// Grid(cs), cs empty and resulting grid universe.
 bool
 test03() {
+
+  Constraint_System cs;
+  print_constraints(cs, "*** cs ***");
+
+  Grid gr(cs);
+
+  Grid known_gr(0);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr(cs) ***");
+
+  return ok;
+}
+
+// Grid(const cs)
+bool
+test04() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -99,7 +117,7 @@ test03() {
 
 // Grid(const cs), resulting grid empty.
 bool
-test04() {
+test05() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -124,7 +142,7 @@ test04() {
 
 // Space dimension exception.
 bool
-test05() {
+test06() {
   try {
     Grid gr(Constraint_System::max_space_dimension() + 1);
   }
@@ -139,7 +157,7 @@ test05() {
 
 // Even bigger values (param_test8 from Chiara Convert_Test.cc).
 bool
-test06() {
+test07() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -194,7 +212,7 @@ test06() {
 
 // Bigger values (param_test7a from Chiara Convert_Test.cc).
 bool
-test07() {
+test08() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -225,7 +243,7 @@ test07() {
 
 // test4 from Chiara conversion_test.cc.
 bool
-test08 () {
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -259,7 +277,7 @@ test08 () {
 
 // param_test4 from Chiara Convert_Test.cc.
 bool
-test09() {
+test10() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -292,7 +310,7 @@ test09() {
 
 // add_generators_and_minimize, with more rows than columns.
 bool
-test10() {
+test11() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -327,7 +345,7 @@ test10() {
 
 // Example from Muller-Olm and Seidl SAS 2005 paper
 bool
-test11() {
+test12() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -358,7 +376,7 @@ test11() {
 
 // A generator system with only a line.
 bool
-test12() {
+test13() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -380,7 +398,7 @@ test12() {
 
 // A generator system containing a parameter.
 bool
-test13() {
+test14() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -405,7 +423,7 @@ test13() {
 
 // Assignment of universe grid, zero dimensions.
 bool
-test14() {
+test15() {
   Grid gr(0, EMPTY);
 
   gr = Grid(0);
@@ -421,7 +439,7 @@ test14() {
 
 // Space dimension exception.
 bool
-test15() {
+test16() {
   try {
     Grid gr(Grid::max_space_dimension() + 1);
   }
@@ -436,7 +454,7 @@ test15() {
 
 // cong_test4 from Chiara Convert_Test.cc.
 bool
-test16() {
+test17() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -468,7 +486,7 @@ test16() {
 
 // OK(true) and OK(false) test.
 bool
-test17() {
+test18() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -501,7 +519,7 @@ test17() {
 // Non-zero dimension universe when there are two congruences.
 // This showed a bug in Grid_simplify which is now corrected.
 bool
-test18() {
+test19() {
   Variable A(0);
   Variable B(1);;
 
@@ -541,4 +559,5 @@ BEGIN_MAIN
   DO_TEST_F8(test16);
   DO_TEST(test17);
   DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN
