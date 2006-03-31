@@ -78,12 +78,12 @@ PPL::Grid::Grid(dimension_type num_dimensions,
     dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a. PARAMETER */;
 
     // Trivially true point.
-    gen_sys.insert(grid_point(0*(Variable(0))));
+    gen_sys.insert(Grid_Generator::point(0*(Variable(0))));
 
     // A line for each dimension.
     dimension_type dim = 0;
     while (dim < num_dimensions) {
-      gen_sys.insert(grid_line(Variable(dim++)));
+      gen_sys.insert(Grid_Generator::line(Variable(dim++)));
       dim_kinds[dim] = CON_VIRTUAL /* a.k.a. LINE */;
     }
   }
@@ -116,13 +116,30 @@ PPL::Grid::Grid(const Grid& y)
 }
 
 PPL::Grid::Grid(const Constraint_System& ccs) {
-  if (ccs.space_dimension() > max_space_dimension())
+  dimension_type space_dim = ccs.space_dimension();
+
+  if (space_dim > max_space_dimension())
     throw_space_dimension_overflow("Grid(ccs)",
 				   "the space dimension of ccs "
 				   "exceeds the maximum allowed "
 				   "space dimension");
+  if (space_dim == 0) {
+    // See if an inconsistent congruence has been passed.
+    for (Constraint_System::const_iterator i = ccs.begin(),
+         ccs_end = ccs.end(); i != ccs_end; ++i)
+      if (i->is_inconsistent()) {
+	// Inconsistent constraint found: the grid is empty.
+	set_empty();
+	assert(OK());
+	return;
+      }
+    set_zero_dim_univ();
+    assert(OK());
+    return;
+  }
+
   Congruence_System cgs;
-  cgs.insert(0*Variable(ccs.space_dimension() - 1) %= 1);
+  cgs.insert(0*Variable(space_dim - 1) %= 1);
   for (Constraint_System::const_iterator i = ccs.begin(),
          ccs_end = ccs.end(); i != ccs_end; ++i)
     if (i->is_equality())
@@ -130,17 +147,35 @@ PPL::Grid::Grid(const Constraint_System& ccs) {
   construct(cgs);
 }
 
-PPL::Grid::Grid(Constraint_System& cs) {
-  if (cs.space_dimension() > max_space_dimension())
-    throw_space_dimension_overflow("Grid(cs)",
-				   "the space dimension of cs "
+PPL::Grid::Grid(Constraint_System& ccs) {
+  dimension_type space_dim = ccs.space_dimension();
+
+  if (space_dim > max_space_dimension())
+    throw_space_dimension_overflow("Grid(ccs)",
+				   "the space dimension of ccs "
 				   "exceeds the maximum allowed "
 				   "space dimension");
-  // FIXME: Adapt and use cs instead of using a copy.
+
+  if (space_dim == 0) {
+    // See if an inconsistent congruence has been passed.
+    for (Constraint_System::const_iterator i = ccs.begin(),
+         ccs_end = ccs.end(); i != ccs_end; ++i)
+      if (i->is_inconsistent()) {
+	// Inconsistent constraint found: the grid is empty.
+	set_empty();
+	assert(OK());
+	return;
+      }
+    set_zero_dim_univ();
+    assert(OK());
+    return;
+  }
+
+  // FIXME: Adapt and use ccs instead of using a copy.
   Congruence_System cgs;
-  cgs.insert(0*Variable(cs.space_dimension() - 1) %= 1);
-  for (Constraint_System::const_iterator i = cs.begin(),
-         cs_end = cs.end(); i != cs_end; ++i)
+  cgs.insert(0*Variable(space_dim - 1) %= 1);
+  for (Constraint_System::const_iterator i = ccs.begin(),
+         ccs_end = ccs.end(); i != ccs_end; ++i)
     if (i->is_equality())
       cgs.insert(*i);
   construct(cgs);
