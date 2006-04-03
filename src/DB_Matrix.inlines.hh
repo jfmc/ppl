@@ -387,7 +387,7 @@ DB_Matrix<T>::ascii_dump(std::ostream& s) const {
   }
 }
 
-PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, DB_Matrix<T>);
+PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, DB_Matrix<T>)
 
 template <typename T>
 bool

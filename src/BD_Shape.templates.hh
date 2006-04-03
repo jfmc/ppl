@@ -3565,7 +3565,7 @@ BD_Shape<T>::ascii_dump(std::ostream& s) const {
   }
 }
 
-PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, BD_Shape<T>);
+PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, BD_Shape<T>)
 
 template <typename T>
 bool

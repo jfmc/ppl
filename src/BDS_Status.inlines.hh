@@ -224,7 +224,7 @@ BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
     << (test_shortest_path_reduced() ? yes : no) << sp_reduced << sep;
 }
 
-PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(T, BD_Shape<T>::Status);
+PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(T, BD_Shape<T>::Status)
 
 template <typename T>
 bool
