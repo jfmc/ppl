@@ -546,18 +546,18 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
-  DO_TEST_F64(test06);
-  DO_TEST_F32(test07);
-  DO_TEST_F8(test08);
+  DO_TEST(test06);
+  DO_TEST_F64(test07);
+  DO_TEST_F32(test08);
   DO_TEST_F8(test09);
   DO_TEST_F8(test10);
   DO_TEST_F8(test11);
-  DO_TEST(test12);
+  DO_TEST_F8(test12);
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
-  DO_TEST_F8(test16);
-  DO_TEST(test17);
+  DO_TEST(test16);
+  DO_TEST_F8(test17);
   DO_TEST(test18);
   DO_TEST(test19);
 END_MAIN
