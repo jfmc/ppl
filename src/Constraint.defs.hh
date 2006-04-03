@@ -50,10 +50,12 @@ operator!=(const Constraint& x, const Constraint& y);
 /*! \relates Constraint */
 Constraint
 operator==(const Linear_Expression& e1, const Linear_Expression& e2);
+
 //! Returns the constraint \p e = \p n.
 /*! \relates Constraint */
 Constraint
 operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n = \p e.
 /*! \relates Constraint */
 Constraint
@@ -63,10 +65,12 @@ operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
+
 //! Returns the constraint \p e \<= \p n.
 /*! \relates Constraint */
 Constraint
 operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n \<= \p e.
 /*! \relates Constraint */
 Constraint
@@ -76,10 +80,12 @@ operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
+
 //! Returns the constraint \p e \>= \p n.
 /*! \relates Constraint */
 Constraint
 operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n \>= \p e.
 /*! \relates Constraint */
 Constraint
@@ -89,10 +95,12 @@ operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator<(const Linear_Expression& e1, const Linear_Expression& e2);
+
 //! Returns the constraint \p e \< \p n.
 /*! \relates Constraint */
 Constraint
 operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n \< \p e.
 /*! \relates Constraint */
 Constraint
@@ -102,10 +110,12 @@ operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator>(const Linear_Expression& e1, const Linear_Expression& e2);
+
 //! Returns the constraint \p e \> \p n.
 /*! \relates Constraint */
 Constraint
 operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n \> \p e.
 /*! \relates Constraint */
 Constraint
