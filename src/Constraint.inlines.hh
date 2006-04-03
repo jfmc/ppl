@@ -154,12 +154,30 @@ operator==(const Linear_Expression& e1, const Linear_Expression& e2) {
 
 /*! \relates Constraint */
 inline Constraint
+operator==(const Variable v1, const Variable v2) {
+  // TODO: this is just an executable specification.
+  // As this is frequently used by client code, it is important
+  // to provide a more efficient implementation.
+  return Linear_Expression(v1) == Linear_Expression(v2);
+}
+
+/*! \relates Constraint */
+inline Constraint
 operator>=(const Linear_Expression& e1, const Linear_Expression& e2) {
   Linear_Expression diff = e1 - e2;
   Constraint c(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
   // Enforce normalization.
   c.normalize();
   return c;
+}
+
+/*! \relates Constraint */
+inline Constraint
+operator>=(const Variable v1, const Variable v2) {
+  // TODO: this is just an executable specification.
+  // As this is frequently used by client code, it is important
+  // to provide a more efficient implementation.
+  return Linear_Expression(v1) >= Linear_Expression(v2);
 }
 
 /*! \relates Constraint */
@@ -179,6 +197,15 @@ operator>(const Linear_Expression& e1, const Linear_Expression& e2) {
 
   Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
   return c;
+}
+
+/*! \relates Constraint */
+inline Constraint
+operator>(const Variable v1, const Variable v2) {
+  // TODO: this is just an executable specification.
+  // As this is frequently used by client code, it is important
+  // to provide a more efficient implementation.
+  return Linear_Expression(v1) > Linear_Expression(v2);
 }
 
 /*! \relates Constraint */
@@ -259,6 +286,12 @@ operator<=(const Linear_Expression& e1, const Linear_Expression& e2) {
 
 /*! \relates Constraint */
 inline Constraint
+operator<=(const Variable v1, const Variable v2) {
+  return v2 >= v1;
+}
+
+/*! \relates Constraint */
+inline Constraint
 operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e) {
   return e >= n;
 }
@@ -273,6 +306,12 @@ operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 inline Constraint
 operator<(const Linear_Expression& e1, const Linear_Expression& e2) {
   return e2 > e1;
+}
+
+/*! \relates Constraint */
+inline Constraint
+operator<(const Variable v1, const Variable v2) {
+  return v2 > v1;
 }
 
 /*! \relates Constraint */

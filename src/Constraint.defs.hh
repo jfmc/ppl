@@ -51,6 +51,11 @@ operator!=(const Constraint& x, const Constraint& y);
 Constraint
 operator==(const Linear_Expression& e1, const Linear_Expression& e2);
 
+//! Returns the constraint \p v1 = \p v2.
+/*! \relates Constraint */
+Constraint
+operator==(Variable v1, Variable v2);
+
 //! Returns the constraint \p e = \p n.
 /*! \relates Constraint */
 Constraint
@@ -65,6 +70,11 @@ operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \<= \p v2.
+/*! \relates Constraint */
+Constraint
+operator<=(Variable v1, Variable v2);
 
 //! Returns the constraint \p e \<= \p n.
 /*! \relates Constraint */
@@ -81,6 +91,11 @@ operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 Constraint
 operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
 
+//! Returns the constraint \p v1 \>= \p v2.
+/*! \relates Constraint */
+Constraint
+operator>=(Variable v1, Variable v2);
+
 //! Returns the constraint \p e \>= \p n.
 /*! \relates Constraint */
 Constraint
@@ -96,6 +111,11 @@ operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 Constraint
 operator<(const Linear_Expression& e1, const Linear_Expression& e2);
 
+//! Returns the constraint \p v1 \< \p v2.
+/*! \relates Constraint */
+Constraint
+operator<(Variable v1, Variable v2);
+
 //! Returns the constraint \p e \< \p n.
 /*! \relates Constraint */
 Constraint
@@ -110,6 +130,11 @@ operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator>(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \> \p v2.
+/*! \relates Constraint */
+Constraint
+operator>(Variable v1, Variable v2);
 
 //! Returns the constraint \p e \> \p n.
 /*! \relates Constraint */
