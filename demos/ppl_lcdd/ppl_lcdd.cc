@@ -129,11 +129,11 @@ struct option long_options[] = {
   {"max-cpu",        required_argument, 0, 'C'},
   {"max-memory",     required_argument, 0, 'R'},
   {"help",           no_argument,       0, 'h'},
-  {"version",        no_argument,       0, 'V'},
   {"output",         required_argument, 0, 'o'},
   {"timings",        no_argument,       0, 't'},
   {"verbose",        no_argument,       0, 'v'},
 #if defined(USE_PPL)
+  {"version",        no_argument,       0, 'V'},
   {"check",          required_argument, 0, 'c'},
 #endif
   {0, 0, 0, 0}
@@ -145,11 +145,11 @@ static const char* usage_string
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
 "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stdout\n"
-"  -V, --version           prints version information to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           produces lots of output\n"
 #if defined(USE_PPL)
+"  -V, --version           prints version information to stdout\n"
 "  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
 #endif
 #ifndef HAVE_GETOPT_H
@@ -160,9 +160,9 @@ static const char* usage_string
 "Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
 #if defined(USE_PPL)
-#define OPTION_LETTERS "C:R:hVo:tvc:"
+#define OPTION_LETTERS "C:R:ho:tvVc:"
 #else
-#define OPTION_LETTERS "C:R:hVo:tv"
+#define OPTION_LETTERS "C:R:ho:tv"
 #endif
 
 const char* program_name = 0;
@@ -361,11 +361,6 @@ process_options(int argc, char* argv[]) {
       exit(0);
       break;
 
-    case 'V':
-      fprintf(stdout, "%s\n", PPL_VERSION);
-      exit(0);
-      break;
-
     case 'C':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
@@ -394,9 +389,18 @@ process_options(int argc, char* argv[]) {
       verbose = true;
       break;
 
+#if defined(USE_PPL)
+
+    case 'V':
+      fprintf(stdout, "%s\n", PPL_VERSION);
+      exit(0);
+      break;
+
     case 'c':
       check_file_name = optarg;
       break;
+
+#endif
 
     default:
       abort();
