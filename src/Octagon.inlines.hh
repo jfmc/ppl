@@ -242,9 +242,8 @@ strong_coherence_local_step(T& result, const T& a, const T& b, const T& c) {
   else {
     // Compute (a+b)/2 into `result', rounding the result towards plus infinity.
     T sum;
-    assign_add(sum, a, b, ROUND_UP);
-    T two(2);
-    assign_div(result, sum, two, ROUND_UP);
+    add_assign_r(sum, a, b, ROUND_UP);
+    div2exp_assign_r(result, sum, 1, ROUND_UP);
     Implementation::Octagons::assign_min(result, c);
   }
 }

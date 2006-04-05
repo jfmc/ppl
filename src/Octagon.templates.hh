@@ -33,11 +33,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <algorithm>
 
+// FIXME: this is only to get access to
+// Implementation::BD_Shapes::div_round_up().
+#include "BD_Shape.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
 void
 Octagon<T>::add_constraint(const Constraint& c) {
+  using Implementation::BD_Shapes::div_round_up;
+
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
   if (c_space_dim > space_dim)
@@ -230,9 +236,8 @@ Octagon<T>::is_strong_coherent() const {
 	  // Compute (m_i_ci + m_cj_j)/2 into `d', rounding the result
 	  // towards plus infinity.
 	  N sum;
-	  assign_add(sum, m_i_ci, m_cj_j, ROUND_UP);
-	  N two(2);
-	  assign_div(d, sum, two, ROUND_UP);
+	  add_assign_r(sum, m_i_ci, m_cj_j, ROUND_UP);
+	  div2exp_assign_r(d, sum, 1, ROUND_UP);
 	}
 	if (r_i[j] > d)
 	  return false;
@@ -617,7 +622,7 @@ Octagon<T>::strong_closure_assign3() const {
 	 m_end = x.matrix.row_end(); i != m_end; ++i) {
     typename OR_Matrix<N>::row_reference_type r = *i;
     assert(is_plus_infinity(r[i.index()]));
-    assign(r[i.index()], 0, ROUND_IGNORE);
+    assign_r(r[i.index()], 0, ROUND_NOT_NEEDED);
   }
 
   // This algorithm is given by two step, first one is the `closure' that
@@ -662,9 +667,9 @@ Octagon<T>::strong_closure_assign3() const {
 #if 1
 	  if (!is_plus_infinity(x_ck_j) || !is_plus_infinity(x_k_j)) {
 	    N sub_sum1;
-	    assign_add(sub_sum1, x_ck_ci, x_k_j, ROUND_UP);
+	    add_assign_r(sub_sum1, x_ck_ci, x_k_j, ROUND_UP);
 	    N sub_sum2;
-	    assign_add(sub_sum2, x_k_ci, x_ck_j, ROUND_UP);
+	    add_assign_r(sub_sum2, x_k_ci, x_ck_j, ROUND_UP);
 	    Implementation::Octagons::assign_min(x_i[j], sub_sum1, sub_sum2);
 	  }
 #else
@@ -672,12 +677,12 @@ Octagon<T>::strong_closure_assign3() const {
 	  N& x_i_j = x_i[j];
 	  if (!is_plus_infinity(x_ck_ci) && !is_plus_infinity(x_k_j)) {
 	    N sub_sum3;
-	    assign_add(sub_sum3, x_ck_ci, x_k_j, ROUND_UP);
+	    add_assign_r(sub_sum3, x_ck_ci, x_k_j, ROUND_UP);
 	    Implementation::Octagons::assign_min(x_i_j, sub_sum3);
 	  }
 	  if(!is_plus_infinity(x_k_ci) && !is_plus_infinity(x_ck_j)) {
 	    N sub_sum4;
-	    assign_add(sub_sum4, x_k_ci, x_ck_j, ROUND_UP);
+	    add_assign_r(sub_sum4, x_k_ci, x_ck_j, ROUND_UP);
 	    Implementation::Octagons::assign_min(x_i_j, sub_sum4);
 	  }
 
@@ -704,9 +709,9 @@ Octagon<T>::strong_closure_assign3() const {
 #if 1
 	  if (!is_plus_infinity(x_ck_j) || !is_plus_infinity(x_k_j)) {
 	    N sub_sum1;
-	    assign_add(sub_sum1, x_i_k, x_k_j, ROUND_UP);
+	    add_assign_r(sub_sum1, x_i_k, x_k_j, ROUND_UP);
 	    N sub_sum2;
-	    assign_add(sub_sum1, x_i_ck, x_ck_j, ROUND_UP);
+	    add_assign_r(sub_sum1, x_i_ck, x_ck_j, ROUND_UP);
 	    Implementation::Octagons::assign_min(x_i[j], sub_sum1, sub_sum2);
 	  }
 #else
@@ -714,12 +719,12 @@ Octagon<T>::strong_closure_assign3() const {
 	    N& x_i_j = x_i[j];
 	    if (!is_plus_infinity(x_i_k) && !is_plus_infinity(x_k_j)) {
 	      N sub_sum3;
-	      assign_add(sub_sum3, x_i_k, x_k_j, ROUND_UP);
+	      add_assign_r(sub_sum3, x_i_k, x_k_j, ROUND_UP);
 	      Implementation::Octagons::assign_min(x_i_j, sub_sum3);
 	    }
 	    if(!is_plus_infinity(x_i_ck) && !is_plus_infinity(x_ck_j)) {
 	      N sub_sum4;
-	      assign_add(sub_sum4, x_i_ck, x_ck_j, ROUND_UP);
+	      add_assign_r(sub_sum4, x_i_ck, x_ck_j, ROUND_UP);
 	      Implementation::Octagons::assign_min(x_i_j, sub_sum4);
 	    }
 #endif
@@ -740,9 +745,9 @@ Octagon<T>::strong_closure_assign3() const {
 #if 1
 	  if (!is_plus_infinity(x_cj_k) || !is_plus_infinity(x_cj_ck)) {
 	    N sub_sum1;
-	    assign_add(sub_sum1, x_i_k, x_cj_ck, ROUND_UP);
+	    add_assign_r(sub_sum1, x_i_k, x_cj_ck, ROUND_UP);
 	    N sub_sum2;
-	    assign_add(sub_sum1, x_i_ck, x_cj_k, ROUND_UP);
+	    add_assign_r(sub_sum1, x_i_ck, x_cj_k, ROUND_UP);
 	    Implementation::Octagons::assign_min(x_i[j], sub_sum1, sub_sum2);
 	  }
 #else
@@ -750,12 +755,12 @@ Octagon<T>::strong_closure_assign3() const {
 	    N& x_i_j = x_i[j];
 	    if (!is_plus_infinity(x_i_k) && !is_plus_infinity(x_cj_ck)) {
 	      N sub_sum3;
-	      assign_add(sub_sum3, x_i_k, x_cj_ck, ROUND_UP);
+	      add_assign_r(sub_sum3, x_i_k, x_cj_ck, ROUND_UP);
 	      Implementation::Octagons::assign_min(x_i_j, sub_sum3);
 	    }
 	    if(!is_plus_infinity(x_i_ck) && !is_plus_infinity(x_cj_k)) {
 	      N sub_sum4;
-	      assign_add(sub_sum4, x_i_ck, x_cj_k, ROUND_UP);
+	      add_assign_r(sub_sum4, x_i_ck, x_cj_k, ROUND_UP);
 	      Implementation::Octagons::assign_min(x_i_j, sub_sum4);
 	    }
 #endif
@@ -808,9 +813,8 @@ Octagon<T>::strong_closure_assign3() const {
 	    N& x_i_j = x_i[j];
 	    N d;
 	    N sub_sum;
-	    N two(2);
-	    assign_add(sub_sum, x_i_ci, x_cj_j, ROUND_UP);
-	    assign_div(d, sub_sum, two, ROUND_UP);
+	    add_assign_r(sub_sum, x_i_ci, x_cj_j, ROUND_UP);
+	    div2exp_assign_r(d, sub_sum, 1, ROUND_UP);
 	    Implementation::Octagons::assign_min(x_i_j, d);
 	  }
 	}
@@ -851,7 +855,7 @@ Octagon<T>::strong_closure_assign1() const {
        i != m_end; ++i) {
     typename OR_Matrix<N>::row_reference_type r = *i;
     assert(is_plus_infinity(r[i.index()]));
-    assign(r[i.index()], 0, ROUND_IGNORE);
+    assign_r(r[i.index()], 0, ROUND_NOT_NEEDED);
   }
 
   // This algorithm is a modification of the Floyd-Warshall algorithm for
@@ -902,17 +906,17 @@ Octagon<T>::strong_closure_assign1() const {
 	// Avoid to do unnecessary sums.
 	if (check_sum) {
 	  N sub_sum1;
-	  assign_add(sub_sum1, x_kk_ci, x_k_j, ROUND_UP);
+	  add_assign_r(sub_sum1, x_kk_ci, x_k_j, ROUND_UP);
 	  N sub_sum2;
-	  assign_add(sub_sum2, x_k_ci, x_kk_j, ROUND_UP);
+	  add_assign_r(sub_sum2, x_k_ci, x_kk_j, ROUND_UP);
 	  N sub_sub_sum3;
-	  assign_add(sub_sub_sum3, x_kk_ci, x_k_kk, ROUND_UP);
+	  add_assign_r(sub_sub_sum3, x_kk_ci, x_k_kk, ROUND_UP);
 	  N sub_sum3;
-	  assign_add(sub_sum3, sub_sub_sum3, x_kk_j, ROUND_UP);
+	  add_assign_r(sub_sum3, sub_sub_sum3, x_kk_j, ROUND_UP);
 	  N sub_sub_sum4;
-	  assign_add(sub_sub_sum4, x_k_ci, x_kk_k, ROUND_UP);
+	  add_assign_r(sub_sub_sum4, x_k_ci, x_kk_k, ROUND_UP);
 	  N sub_sum4;
-	  assign_add(sub_sum4, sub_sub_sum4, x_k_j, ROUND_UP);
+	  add_assign_r(sub_sum4, sub_sub_sum4, x_k_j, ROUND_UP);
 	  assign_min(aux_i_j, sub_sum1, sub_sum2, sub_sum3, sub_sum4);
 	}
       }
@@ -942,17 +946,17 @@ Octagon<T>::strong_closure_assign1() const {
 	// Avoid to do unnecessary sums.
 	if (check_sum) {
 	  N sub_sum1;
-	  assign_add(sub_sum1, x_i_k, x_k_j, ROUND_UP);
+	  add_assign_r(sub_sum1, x_i_k, x_k_j, ROUND_UP);
 	  N sub_sum2;
-	  assign_add(sub_sum2, x_i_kk, x_kk_j, ROUND_UP);
+	  add_assign_r(sub_sum2, x_i_kk, x_kk_j, ROUND_UP);
 	  N sub_sub_sum3;
-	  assign_add(sub_sub_sum3, x_i_kk, x_kk_k, ROUND_UP);
+	  add_assign_r(sub_sub_sum3, x_i_kk, x_kk_k, ROUND_UP);
 	  N sub_sum3;
-	  assign_add(sub_sum3, sub_sub_sum3, x_k_j, ROUND_UP);
+	  add_assign_r(sub_sum3, sub_sub_sum3, x_k_j, ROUND_UP);
 	  N sub_sub_sum4;
-	  assign_add(sub_sub_sum4, x_i_k, x_k_kk, ROUND_UP);
+	  add_assign_r(sub_sub_sum4, x_i_k, x_k_kk, ROUND_UP);
 	  N sub_sum4;
-	  assign_add(sub_sum4, sub_sub_sum4, x_kk_j, ROUND_UP);
+	  add_assign_r(sub_sum4, sub_sub_sum4, x_kk_j, ROUND_UP);
 	  assign_min(aux_i_j, sub_sum1, sub_sum2, sub_sum3, sub_sum4);
 	}
       }
@@ -976,17 +980,17 @@ Octagon<T>::strong_closure_assign1() const {
 	// Avoid to do unnecessary sums.
 	if (check_sum) {
 	  N sum1;
-	  assign_add(sum1, x_i_k, x_cj_kk, ROUND_UP);
+	  add_assign_r(sum1, x_i_k, x_cj_kk, ROUND_UP);
 	  N sum2;
-	  assign_add(sum2, x_i_kk, x_cj_k, ROUND_UP);
+	  add_assign_r(sum2, x_i_kk, x_cj_k, ROUND_UP);
 	  N sub_sub_sum3;
-	  assign_add(sub_sub_sum3, x_i_kk, x_kk_k, ROUND_UP);
+	  add_assign_r(sub_sub_sum3, x_i_kk, x_kk_k, ROUND_UP);
 	  N sum3;
-	  assign_add(sum3, sub_sub_sum3, x_cj_kk, ROUND_UP);
+	  add_assign_r(sum3, sub_sub_sum3, x_cj_kk, ROUND_UP);
 	  N sub_sub_sum4;
-	  assign_add(sub_sub_sum4, x_i_k, x_k_kk, ROUND_UP);
+	  add_assign_r(sub_sub_sum4, x_i_k, x_k_kk, ROUND_UP);
 	  N sum4;
-	  assign_add(sum4, sub_sub_sum4, x_cj_k, ROUND_UP);
+	  add_assign_r(sum4, sub_sub_sum4, x_cj_k, ROUND_UP);
 	  assign_min(aux_i_j, sum1, sum2, sum3, sum4);
 	}
       }
@@ -1072,7 +1076,7 @@ Octagon<T>::strong_closure_assign() const {
 	 m_end = x.matrix.row_end(); i != m_end; ++i) {
     typename OR_Matrix<N>::row_reference_type r = *i;
     assert(is_plus_infinity(r[i.index()]));
-    assign(r[i.index()], 0, ROUND_IGNORE);
+    assign_r(r[i.index()], 0, ROUND_NOT_NEEDED);
   }
 
   // This algorithm is given by two step, first one is the `closure' that
@@ -1114,7 +1118,7 @@ Octagon<T>::strong_closure_assign() const {
 	  if (!is_plus_infinity(x_k_j)) {
 	    N& x_i_j = (j < rs_i) ? x_i[j] : x_cj[coherent_index(i)];
 	    N sum;
-	    assign_add(sum, x_i_k, x_k_j, ROUND_UP);
+	    add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
 	    assign_min(x_i_j, sum);
 	  }
 	}
@@ -1164,10 +1168,9 @@ Octagon<T>::strong_closure_assign() const {
 	  if (!is_plus_infinity(x_cj_j)) {
 	    N& x_i_j = x_i[j];
 	    N sum;
-	    assign_add(sum,x_i_ci, x_cj_j, ROUND_UP);
-	    N two(2);
+	    add_assign_r(sum,x_i_ci, x_cj_j, ROUND_UP);
 	    N d;
-	    assign_div(d, sum, two, ROUND_UP);
+	    div2exp_assign_r(d, sum, 1, ROUND_UP);
 	    assign_min(x_i_j, d);
 	  }
 	}
@@ -1207,7 +1210,7 @@ Octagon<T>::strong_closure_assign5() const {
   // Fill the main diagonal with zeros.
   for (dimension_type i = n_rows; i-- > 0;) {
     assert(is_plus_infinity(x.matrix[i][i]));
-    assign(x.matrix[i][i], 0, ROUND_IGNORE);
+    assign_r(x.matrix[i][i], 0, ROUND_NOT_NEEDED);
   }
 
   // This algorithm is given by two step, first one is the `closure' that
@@ -1233,7 +1236,7 @@ Octagon<T>::strong_closure_assign5() const {
 	  const N& m_k_j = position_cell(matrix, k, j);
 	  if (!is_plus_infinity(m_k_j)) {
 	    N& m_i_j = position_cell(x.matrix, i, j);
-	    assign_add(sum, m_i_k, m_k_j, ROUND_UP);
+	    add_assign_r(sum, m_i_k, m_k_j, ROUND_UP);
 	    assign_min(m_i_j, sum);
 	  }
 	}
@@ -1276,9 +1279,9 @@ Octagon<T>::strong_closure_assign5() const {
 	  if (!is_plus_infinity(x_cj_j)) {
 	    N& x_i_j = position_cell(x.matrix, i, j);
 	    N sub_sum;
-	    assign_add(sub_sum, x_i_ci, x_cj_j, ROUND_UP);
+	    add_assign_r(sub_sum, x_i_ci, x_cj_j, ROUND_UP);
 	    N d;
-	    assign_div(d, sub_sum, 2, ROUND_UP);
+	    div_assign_r(d, sub_sum, 2, ROUND_UP);
 	    assign_min(x_i_j, d);
 	  }
 	}
@@ -1377,12 +1380,12 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       if (!is_plus_infinity(x_i_j)) {
 	if (!is_plus_infinity(x_v_i)) {
 	  N sum1;
-	  assign_add(sum1, x_v_i, x_i_j, ROUND_UP);
+	  add_assign_r(sum1, x_v_i, x_i_j, ROUND_UP);
 	  assign_min(x_v_j, sum1);
 	}
 	if(!is_plus_infinity(x_cv_i)) {
 	  N sum2;
-	  assign_add(sum2, x_cv_i, x_i_j, ROUND_UP);
+	  add_assign_r(sum2, x_cv_i, x_i_j, ROUND_UP);
 	  assign_min(x_cv_j, sum2);
 	}
       }
@@ -1390,12 +1393,12 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       if (!is_plus_infinity(x_ci_j)) {
 	if (!is_plus_infinity(x_v_ci)) {
 	  N sum3;
-	  assign_add(sum3, x_v_ci, x_ci_j, ROUND_UP);
+	  add_assign_r(sum3, x_v_ci, x_ci_j, ROUND_UP);
 	  assign_min(x_v_j, sum3);
 	}
 	if(!is_plus_infinity(x_cv_i)) {
 	  N sum4;
-	  assign_add(sum4, x_cv_ci, x_ci_j, ROUND_UP);
+	  add_assign_r(sum4, x_cv_ci, x_ci_j, ROUND_UP);
 	  assign_min(x_cv_j, sum4);
 	}
       }
@@ -1416,12 +1419,12 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       if (!is_plus_infinity(x_cj_ci)) {
 	if (!is_plus_infinity(x_v_i)) {
 	  N sum1;
-	  assign_add(sum1, x_v_i, x_cj_ci, ROUND_UP);
+	  add_assign_r(sum1, x_v_i, x_cj_ci, ROUND_UP);
 	  assign_min(x_v_j, sum1);
 	}
 	if (!is_plus_infinity(x_cv_i)) {
 	  N sum2;
-	  assign_add(sum2, x_cv_i, x_cj_ci, ROUND_UP);
+	  add_assign_r(sum2, x_cv_i, x_cj_ci, ROUND_UP);
 	  assign_min(x_cv_j, sum2);
 	}
       }
@@ -1429,12 +1432,12 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       if (!is_plus_infinity(x_cj_i)) {
 	if (!is_plus_infinity(x_v_ci)) {
 	  N sum3;
-	  assign_add(sum3, x_v_ci, x_cj_i, ROUND_UP);
+	  add_assign_r(sum3, x_v_ci, x_cj_i, ROUND_UP);
 	  assign_min(x_v_j, sum3);
 	}
 	if (!is_plus_infinity(x_cv_ci)) {
 	  N sum4;
-	  assign_add(sum4, x_cv_ci, x_cj_i, ROUND_UP);
+	  add_assign_r(sum4, x_cv_ci, x_cj_i, ROUND_UP);
 	  assign_min(x_cv_j, sum4);
 	}
       }
@@ -1455,12 +1458,12 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       if(!is_plus_infinity(x_cj_ci)) {
 	if(!is_plus_infinity(x_v_i)) {
 	  N sum1;
-	  assign_add(sum1, x_v_i, x_cj_ci, ROUND_UP);
+	  add_assign_r(sum1, x_v_i, x_cj_ci, ROUND_UP);
 	  assign_min(x_cj_cv, sum1);
 	}
 	if(!is_plus_infinity(x_cv_i)) {
 	  N sum2;
-	  assign_add(sum2, x_cv_i, x_cj_ci, ROUND_UP);
+	  add_assign_r(sum2, x_cv_i, x_cj_ci, ROUND_UP);
 	  assign_min(x_cj_v, sum2);
 	}
       }
@@ -1468,12 +1471,12 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       if(!is_plus_infinity(x_cj_i)) {
 	if(!is_plus_infinity(x_v_ci)) {
 	  N sum3;
-	  assign_add(sum3, x_v_ci, x_cj_i, ROUND_UP);
+	  add_assign_r(sum3, x_v_ci, x_cj_i, ROUND_UP);
 	  assign_min(x_cj_cv, sum3);
 	}
 	if(!is_plus_infinity(x_cv_ci)) {
 	  N sum4;
-	  assign_add(sum4, x_cv_ci, x_cj_i, ROUND_UP);
+	  add_assign_r(sum4, x_cv_ci, x_cj_i, ROUND_UP);
 	  assign_min(x_cj_v, sum4);
 	}
       }
@@ -1505,12 +1508,12 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       if (!is_plus_infinity(x_i_j)) {
 	if (!is_plus_infinity(x_ci_cv)) {
 	  N sum1;
-	  assign_add(sum1, x_ci_cv, x_i_j, ROUND_UP);
+	  add_assign_r(sum1, x_ci_cv, x_i_j, ROUND_UP);
 	  assign_min(x_v_j, sum1);
 	}
 	if (!is_plus_infinity(x_ci_v)) {
 	  N sum2;
-	  assign_add(sum2, x_ci_v, x_i_j, ROUND_UP);
+	  add_assign_r(sum2, x_ci_v, x_i_j, ROUND_UP);
 	  assign_min(x_cv_j, sum2);
 	}
       }
@@ -1518,12 +1521,12 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       if (!is_plus_infinity(x_ci_j)) {
 	if (!is_plus_infinity(x_i_cv)) {
 	  N sum3;
-	  assign_add(sum3, x_i_cv, x_ci_j, ROUND_UP);
+	  add_assign_r(sum3, x_i_cv, x_ci_j, ROUND_UP);
 	  assign_min(x_v_j, sum3);
 	}
 	if (!is_plus_infinity(x_i_v)) {
 	  N sum4;
-	  assign_add(sum4, x_i_v, x_ci_j, ROUND_UP);
+	  add_assign_r(sum4, x_i_v, x_ci_j, ROUND_UP);
 	  assign_min(x_cv_j, sum4);
 	}
       }
@@ -1544,12 +1547,12 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       if (!is_plus_infinity(x_i_j)) {
 	if (!is_plus_infinity(x_ci_cv)) {
 	  N sum1;
-	  assign_add(sum1, x_ci_cv, x_i_j, ROUND_UP);
+	  add_assign_r(sum1, x_ci_cv, x_i_j, ROUND_UP);
 	  assign_min(x_cj_cv, sum1);
 	}
      	if (!is_plus_infinity(x_ci_v)) {
 	  N sum2;
-	  assign_add(sum2, x_ci_v, x_i_j, ROUND_UP);
+	  add_assign_r(sum2, x_ci_v, x_i_j, ROUND_UP);
 	  assign_min(x_cj_v, sum2);
 	}
       }
@@ -1557,12 +1560,12 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       if (!is_plus_infinity(x_ci_j)) {
 	if (!is_plus_infinity(x_i_cv)) {
 	  N sum3;
-	  assign_add(sum3, x_i_cv, x_ci_j, ROUND_UP);
+	  add_assign_r(sum3, x_i_cv, x_ci_j, ROUND_UP);
 	  assign_min(x_cj_cv, sum3);
 	}
 	if (!is_plus_infinity(x_i_v)) {
 	  N sum4;
-	  assign_add(sum4, x_i_v, x_ci_j, ROUND_UP);
+	  add_assign_r(sum4, x_i_v, x_ci_j, ROUND_UP);
 	  assign_min(x_cj_v, sum4);
 	}
       }
@@ -1583,12 +1586,12 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       if (!is_plus_infinity(x_cj_ci)) {
 	if (!is_plus_infinity(x_ci_cv)) {
 	  N sum1;
-	  assign_add(sum1, x_ci_cv, x_cj_ci, ROUND_UP);
+	  add_assign_r(sum1, x_ci_cv, x_cj_ci, ROUND_UP);
 	  assign_min(x_cj_cv, sum1);
 	}
 	if(!is_plus_infinity(x_ci_v)) {
 	  N sum2;
-	  assign_add(sum2, x_ci_v, x_cj_ci, ROUND_UP);
+	  add_assign_r(sum2, x_ci_v, x_cj_ci, ROUND_UP);
 	  assign_min(x_cj_v, sum2);
 	}
       }
@@ -1596,12 +1599,12 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       if (!is_plus_infinity(x_cj_i)) {
 	if (!is_plus_infinity(x_i_cv)) {
 	  N sum3;
-	  assign_add(sum3, x_i_cv, x_cj_i, ROUND_UP);
+	  add_assign_r(sum3, x_i_cv, x_cj_i, ROUND_UP);
 	  assign_min(x_cj_cv, sum3);
 	}
 	if(!is_plus_infinity(x_i_v)) {
 	  N sum4;
-	  assign_add(sum4, x_i_v, x_cj_i, ROUND_UP);
+	  add_assign_r(sum4, x_i_v, x_cj_i, ROUND_UP);
 	  assign_min(x_cj_v, sum4);
 	}
       }
@@ -1620,17 +1623,17 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
     // Avoid to do unnecessary sums.
     if (!is_plus_infinity(x_v_cv) && !is_plus_infinity(x_ci_i)){
       N sub_sum1;
-      assign_add(sub_sum1, x_v_cv, x_ci_i, ROUND_UP);
+      add_assign_r(sub_sum1, x_v_cv, x_ci_i, ROUND_UP);
       N d;
-      assign_div(d, sub_sum1, 2, ROUND_UP);
+      div_assign_r(d, sub_sum1, 2, ROUND_UP);
       assign_min(x_v_i, d);
     }
     // Avoid to do unnecessary sums.
     if (!is_plus_infinity(x_cv_v) && !is_plus_infinity(x_ci_i)){
       N sub_sum2;
-      assign_add(sub_sum2, x_cv_v, x_ci_i, ROUND_UP);
+      add_assign_r(sub_sum2, x_cv_v, x_ci_i, ROUND_UP);
       N d;
-      assign_div(d, sub_sum2, 2, ROUND_UP);
+      div_assign_r(d, sub_sum2, 2, ROUND_UP);
       assign_min(x_cv_i, d);
     }
   }
@@ -1647,17 +1650,17 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
     // Avoid to do unnecessary sums.
     if (!is_plus_infinity(x_v_cv) && !is_plus_infinity(x_ci_i)){
       N sub_sum1;
-      assign_add(sub_sum1, x_v_cv, x_ci_i, ROUND_UP);
+      add_assign_r(sub_sum1, x_v_cv, x_ci_i, ROUND_UP);
       N d;
-      assign_div(d, sub_sum1, 2, ROUND_UP);
+      div_assign_r(d, sub_sum1, 2, ROUND_UP);
       assign_min(x_ci_cv, d);
     }
     // Avoid to do unnecessary sums.
     if (!is_plus_infinity(x_cv_v) && !is_plus_infinity(x_ci_i)){
       N sub_sum2;
-      assign_add(sub_sum2, x_cv_v, x_ci_i, ROUND_UP);
+      add_assign_r(sub_sum2, x_cv_v, x_ci_i, ROUND_UP);
       N d;
-      assign_div(d, sub_sum2, 2, ROUND_UP);
+      div_assign_r(d, sub_sum2, 2, ROUND_UP);
       assign_min(x_ci_v, d);
     }
   }
@@ -1684,17 +1687,17 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       N& x_cv_j = x_cv[j];
       N& x_i_j = x_i[j];
       N sum1;
-      assign_add(sum1, x_cv_ci, x_v_j, ROUND_UP);
+      add_assign_r(sum1, x_cv_ci, x_v_j, ROUND_UP);
       N sum2;
-      assign_add(sum2, x_v_ci, x_cv_j, ROUND_UP);
+      add_assign_r(sum2, x_v_ci, x_cv_j, ROUND_UP);
       N sub_sum3;
-      assign_add(sub_sum3, x_cv_ci, x_v_cv, ROUND_UP);
+      add_assign_r(sub_sum3, x_cv_ci, x_v_cv, ROUND_UP);
       N sum3;
-      assign_add(sum3, sub_sum3, x_cv_j, ROUND_UP);
+      add_assign_r(sum3, sub_sum3, x_cv_j, ROUND_UP);
       N sub_sum4;
-      assign_add(sub_sum4, x_v_ci, x_cv_v, ROUND_UP);
+      add_assign_r(sub_sum4, x_v_ci, x_cv_v, ROUND_UP);
       N sum4;
-      assign_add(sum4, sub_sum4, x_v_j, ROUND_UP);
+      add_assign_r(sum4, sub_sum4, x_v_j, ROUND_UP);
       assign_min(x_i_j, sum1, sum2, sum3, sum4);
     }
   }
@@ -1715,17 +1718,17 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       N& x_cv_j = x_cv[j];
       N& x_i_j = x_i[j];
       N sum1;
-      assign_add(sum1, x_i_v, x_v_j, ROUND_UP);
+      add_assign_r(sum1, x_i_v, x_v_j, ROUND_UP);
       N sum2;
-      assign_add(sum2, x_i_cv, x_cv_j, ROUND_UP);
+      add_assign_r(sum2, x_i_cv, x_cv_j, ROUND_UP);
       N sub_sum3;
-      assign_add(sub_sum3, x_i_v, x_v_cv, ROUND_UP);
+      add_assign_r(sub_sum3, x_i_v, x_v_cv, ROUND_UP);
       N sum3;
-      assign_add(sum3, sub_sum3, x_cv_j, ROUND_UP);
+      add_assign_r(sum3, sub_sum3, x_cv_j, ROUND_UP);
       N sub_sum4;
-      assign_add(sub_sum4, x_i_cv, x_cv_v, ROUND_UP);
+      add_assign_r(sub_sum4, x_i_cv, x_cv_v, ROUND_UP);
       N sum4;
-      assign_add(sum4, sub_sum4, x_v_j, ROUND_UP);
+      add_assign_r(sum4, sub_sum4, x_v_j, ROUND_UP);
       assign_min(x_i_j, sum1, sum2, sum3, sum4);
     }
     // Case: v < j <= i.
@@ -1742,17 +1745,17 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       N& x_cj_cv = x_cj[cv];
       N& x_i_j = x_i[j];
       N sum1;
-      assign_add(sum1, x_i_v, x_cj_cv, ROUND_UP);
+      add_assign_r(sum1, x_i_v, x_cj_cv, ROUND_UP);
       N sum2;
-      assign_add(sum2, x_i_cv, x_cj_v, ROUND_UP);
+      add_assign_r(sum2, x_i_cv, x_cj_v, ROUND_UP);
       N sub_sum3;
-      assign_add(sub_sum3, x_i_v, x_v_cv, ROUND_UP);
+      add_assign_r(sub_sum3, x_i_v, x_v_cv, ROUND_UP);
       N sum3;
-      assign_add(sum3, sub_sum3, x_cj_v, ROUND_UP);
+      add_assign_r(sum3, sub_sum3, x_cj_v, ROUND_UP);
       N sub_sum4;
-      assign_add(sub_sum4, x_i_cv, x_cv_v, ROUND_UP);
+      add_assign_r(sub_sum4, x_i_cv, x_cv_v, ROUND_UP);
       N sum4;
-      assign_add(sum4, sub_sum4, x_cj_cv, ROUND_UP);
+      add_assign_r(sum4, sub_sum4, x_cj_cv, ROUND_UP);
       assign_min(x_i_j, sum1, sum2, sum3, sum4);
     }
   }
@@ -1779,9 +1782,9 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
 	  if (!is_plus_infinity(x_cj_j)) {
 	    N& x_i_j = x_i[j];
 	    N sub_sum;
-	    assign_add(sub_sum, x_i_ci, x_cj_j, ROUND_UP);
+	    add_assign_r(sub_sum, x_i_ci, x_cj_j, ROUND_UP);
 	    N d;
-	    assign_div(d, sub_sum, 2, ROUND_UP);
+	    div_assign_r(d, sub_sum, 2, ROUND_UP);
 	    assign_min(x_i_j, d);
 	  }
 	}
@@ -1857,7 +1860,7 @@ Octagon<T>::incremental_strong_closure_assign1(Variable var) const {
 	if (!is_plus_infinity(m_k_v)) {
 	  N& m_i_v = position_cell(x.matrix, i, v);
 	  N sum1;
-	  assign_add(sum1, m_i_k, m_k_v, ROUND_UP);
+	  add_assign_r(sum1, m_i_k, m_k_v, ROUND_UP);
 	  assign_min(m_i_v, sum1);
 	}
 
@@ -1865,7 +1868,7 @@ Octagon<T>::incremental_strong_closure_assign1(Variable var) const {
 	if (!is_plus_infinity(m_k_cv)) {
 	  N& m_i_cv = position_cell(x.matrix, i, cv);
 	  N sum2;
-	  assign_add(sum2, m_i_k, m_k_cv, ROUND_UP);
+	  add_assign_r(sum2, m_i_k, m_k_cv, ROUND_UP);
 	  assign_min(m_i_cv, sum2);
 	}
       }
@@ -1877,7 +1880,7 @@ Octagon<T>::incremental_strong_closure_assign1(Variable var) const {
 	if (!is_plus_infinity(m_v_k)) {
 	  N& m_v_i = position_cell(x.matrix, v, i);
 	  N sum3;
-	  assign_add(sum3, m_v_k, m_k_i, ROUND_UP);
+	  add_assign_r(sum3, m_v_k, m_k_i, ROUND_UP);
 	  assign_min(m_v_i, sum3);
 	}
 
@@ -1885,7 +1888,7 @@ Octagon<T>::incremental_strong_closure_assign1(Variable var) const {
 	if (!is_plus_infinity(m_cv_k)) {
 	  N& m_cv_i = position_cell(x.matrix, cv, i);
 	  N sum4;
-	  assign_add(sum4, m_cv_k, m_k_i, ROUND_UP);
+	  add_assign_r(sum4, m_cv_k, m_k_i, ROUND_UP);
 	  assign_min(m_cv_i, sum4);
 	}
       }
@@ -1903,7 +1906,7 @@ Octagon<T>::incremental_strong_closure_assign1(Variable var) const {
 	if (!is_plus_infinity(m_v_j)) {
 	  N& m_i_j = position_cell(x.matrix, i, j);
 	  N sum1;
-	  assign_add(sum1, m_i_v, m_v_j, ROUND_UP);
+	  add_assign_r(sum1, m_i_v, m_v_j, ROUND_UP);
 	  assign_min(m_i_j, sum1);
 	}
       }
@@ -1912,7 +1915,7 @@ Octagon<T>::incremental_strong_closure_assign1(Variable var) const {
 	if (!is_plus_infinity(m_cv_j)) {
 	  N& m_i_j = position_cell(x.matrix, i, j);
 	  N sum2;
-	  assign_add(sum2, m_i_cv, m_cv_j, ROUND_UP);
+	  add_assign_r(sum2, m_i_cv, m_cv_j, ROUND_UP);
 	  assign_min(m_i_j, sum2);
 	}
       }
@@ -1956,9 +1959,9 @@ Octagon<T>::incremental_strong_closure_assign1(Variable var) const {
 	  if (!is_plus_infinity(x_cj_j)) {
 	    N& x_i_j = position_cell(x.matrix, i, j);
 	    N sum;
-	    assign_add(sum, x_i_ci, x_cj_j, ROUND_UP);
+	    add_assign_r(sum, x_i_ci, x_cj_j, ROUND_UP);
 	    N d;
-	    assign_div(d, sum, 2, ROUND_UP);
+	    div_assign_r(d, sum, 2, ROUND_UP);
 	    assign_min(x_i_j, d);
 	  }
 	}
@@ -2045,7 +2048,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	if (!is_plus_infinity(m_k_v)) {
 	  N& m_i_v = (v < rs_i) ? m_i[v] : m_cv[coherent_index(i)];
 	  N sum1;
-	  assign_add(sum1, m_i_k, m_k_v, ROUND_UP);
+	  add_assign_r(sum1, m_i_k, m_k_v, ROUND_UP);
 	  assign_min(m_i_v, sum1);
 	}
 
@@ -2053,7 +2056,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	if (!is_plus_infinity(m_k_cv)) {
 	  N& m_i_cv = (cv < rs_i) ? m_i[cv] : m_v[coherent_index(i)];
 	  N sum2;
-	  assign_add(sum2, m_i_k, m_k_cv, ROUND_UP);
+	  add_assign_r(sum2, m_i_k, m_k_cv, ROUND_UP);
 	  assign_min(m_i_cv, sum2);
 	}
       }
@@ -2065,7 +2068,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	if (!is_plus_infinity(m_v_k)) {
 	  N& m_v_i = (i < rs_v) ? m_v[i] : m_ci[cv];
 	  N sum3;
-	  assign_add(sum3, m_v_k, m_k_i, ROUND_UP);
+	  add_assign_r(sum3, m_v_k, m_k_i, ROUND_UP);
 	  assign_min(m_v_i, sum3);
 	}
 
@@ -2073,7 +2076,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	if (!is_plus_infinity(m_cv_k)) {
 	  N& m_cv_i = (i < rs_v) ? m_cv[i] : m_ci[v];
 	  N sum4;
-	  assign_add(sum4, m_cv_k, m_k_i, ROUND_UP);
+	  add_assign_r(sum4, m_cv_k, m_k_i, ROUND_UP);
 	  assign_min(m_cv_i, sum4);
 	}
       }
@@ -2097,7 +2100,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	const N& m_v_j = (j < rs_v) ? m_v[j] : m_cj[cv];
 	if (!is_plus_infinity(m_v_j)) {
 	  N sum1;
-	  assign_add(sum1, m_i_v, m_v_j, ROUND_UP);
+	  add_assign_r(sum1, m_i_v, m_v_j, ROUND_UP);
 	  assign_min(m_i_j, sum1);
 	}
       }
@@ -2106,7 +2109,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	const N& m_cv_j = (j < rs_v) ? m_cv[j] : m_cj[v];
 	if (!is_plus_infinity(m_cv_j)) {
 	  N sum2;
-	  assign_add(sum2, m_i_cv, m_cv_j, ROUND_UP);
+	  add_assign_r(sum2, m_i_cv, m_cv_j, ROUND_UP);
 	  assign_min(m_i_j, sum2);
 	}
       }
@@ -2153,9 +2156,9 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	  if (!is_plus_infinity(x_cj_j)) {
 	    N& x_i_j = x_i[j];
 	    N sum;
-	    assign_add(sum, x_i_ci, x_cj_j, ROUND_UP);
+	    add_assign_r(sum, x_i_ci, x_cj_j, ROUND_UP);
 	    N d;
-	    assign_div(d, sum, 2, ROUND_UP);
+	    div_assign_r(d, sum, 2, ROUND_UP);
 	    assign_min(x_i_j, d);
 	  }
 	}
@@ -2388,8 +2391,8 @@ Octagon<T>::transitive_reduction_assign() const {
 	    d = PLUS_INFINITY;
 	  else {
 	    N sum;
-	    assign_add(sum, m_i_ci, m_cj_j, ROUND_UP);
-	    assign_div(d, sum, 2, ROUND_UP);
+	    add_assign_r(sum, m_i_ci, m_cj_j, ROUND_UP);
+	    div_assign_r(d, sum, 2, ROUND_UP);
 	  }
 	  if(ci != j)
 	    // Checks if the constraint is obtainable by strong-coherence.
@@ -2415,7 +2418,7 @@ Octagon<T>::transitive_reduction_assign() const {
 		// 3. m_i_j = m_ck_ci + m_k_j.
 		if (k < j) {
 		  N c;
-		  assign_add(c, m_i[k], matrix[cj][ck], ROUND_UP);
+		  add_assign_r(c, m_i[k], matrix[cj][ck], ROUND_UP);
 		  if (m_i_j >= c) {
 		    to_add = false;
 		    break;
@@ -2423,7 +2426,7 @@ Octagon<T>::transitive_reduction_assign() const {
 		}
 		else if (k < i) {
 		  N c;
-		  assign_add(c, m_i[k], matrix[k][j], ROUND_UP);
+		  add_assign_r(c, m_i[k], matrix[k][j], ROUND_UP);
 		  if (m_i_j >= c) {
 		    to_add = false;
 		    break;
@@ -2431,7 +2434,7 @@ Octagon<T>::transitive_reduction_assign() const {
 		}
 		else {
 		  N c;
-		  assign_add(c, matrix[ck][ci], matrix[k][j], ROUND_UP);
+		  add_assign_r(c, matrix[ck][ci], matrix[k][j], ROUND_UP);
 		  if (m_i_j >= c) {
 		    to_add = false;
 		    break;
@@ -2612,8 +2615,8 @@ Octagon<T>::add_space_dimensions_and_project(dimension_type m) {
     typename OR_Matrix<N>::row_reference_type x_i = *i;
     typename OR_Matrix<N>::row_reference_type x_ci = *(i+1);
     dimension_type ind = i.index();
-    x_i[ind+1] = 0;
-    x_ci[ind] = 0;
+    assign_r(x_i[ind+1], 0, ROUND_NOT_NEEDED);
+    assign_r(x_ci[ind], 0, ROUND_NOT_NEEDED);
   }
 
   if (marked_strongly_closed())
@@ -3237,22 +3240,22 @@ Octagon<T>::affine_image(const Variable var,
 	    typename OR_Matrix<N>::row_reference_type x_ii = *(i+1);
 	    for (dimension_type h = k; h-- > 0; ) {
 	      if (h != n_var && h != n_var+1) {
-		assign_add(x_i[h], x_i[h], c, ROUND_UP);
-		assign_add(x_ii[h], x_ii[h], d, ROUND_UP);
+		add_assign_r(x_i[h], x_i[h], c, ROUND_UP);
+		add_assign_r(x_ii[h], x_ii[h], d, ROUND_UP);
 	      }
 	      else
-		assign_add(m_nv1_nv, m_nv1_nv, d, ROUND_UP);
+		add_assign_r(m_nv1_nv, m_nv1_nv, d, ROUND_UP);
 	    }
 	    for (typename OR_Matrix<N>::row_iterator iend = matrix.row_end();
 		 i != iend; ++i) {
 	      typename OR_Matrix<N>::row_reference_type r = *i;
 	      dimension_type rs = i.row_size();
 	      if (rs != k) {
-		assign_add(r[n_var], r[n_var], d, ROUND_UP);
-		assign_add(r[n_var+1], r[n_var+1], c, ROUND_UP);
+		add_assign_r(r[n_var], r[n_var], d, ROUND_UP);
+		add_assign_r(r[n_var+1], r[n_var+1], c, ROUND_UP);
 	      }
 	      else
-		assign_add(m_nv_nv1, m_nv_nv1, c, ROUND_UP);
+		add_assign_r(m_nv_nv1, m_nv_nv1, c, ROUND_UP);
 	    }
 	  }
 	}
@@ -3285,22 +3288,22 @@ Octagon<T>::affine_image(const Variable var,
 	    typename OR_Matrix<N>::row_reference_type x_ii = *(i+1);
 	    for (dimension_type h = k; h-- > 0; ) {
 	      if (h != n_var && h != n_var+1) {
-		assign_add(x_i[h], x_i[h], c, ROUND_UP);
-		assign_add(x_ii[h], x_ii[h], d, ROUND_UP);
+		add_assign_r(x_i[h], x_i[h], c, ROUND_UP);
+		add_assign_r(x_ii[h], x_ii[h], d, ROUND_UP);
 	      }
 	      else
-		assign_add(m_nv1_nv, m_nv1_nv, d, ROUND_UP);
+		add_assign_r(m_nv1_nv, m_nv1_nv, d, ROUND_UP);
 	    }
 	    for (typename OR_Matrix<N>::row_iterator iend = matrix.row_end();
 		 i != iend; ++i) {
 	      typename OR_Matrix<N>::row_reference_type r = *i;
 	      dimension_type rs = i.row_size();
 	      if (rs != k) {
-		assign_add(r[n_var], r[n_var], d, ROUND_UP);
-		assign_add(r[n_var+1], r[n_var+1], c, ROUND_UP);
+		add_assign_r(r[n_var], r[n_var], d, ROUND_UP);
+		add_assign_r(r[n_var+1], r[n_var+1], c, ROUND_UP);
 	      }
 	      else
-		assign_add(m_nv_nv1, m_nv_nv1, c, ROUND_UP);
+		add_assign_r(m_nv_nv1, m_nv_nv1, c, ROUND_UP);
 	    }
 	  }
 	  status.reset_strongly_closed();
@@ -3402,9 +3405,8 @@ Octagon<T>::affine_image(const Variable var,
 	const N& double_up_approx_i =  m_j1[j_0];
 	if (!is_plus_infinity(double_up_approx_i)) {
 	  N up_approx_i;
-	  N two(2);
-	  assign_div(up_approx_i, double_up_approx_i, two, ROUND_UP);
-	  assign_add_mul(pos_sum, coeff_i, up_approx_i, ROUND_UP);
+	  div2exp_assign_r(up_approx_i, double_up_approx_i, 1, ROUND_UP);
+	  add_assign_r_mul(pos_sum, coeff_i, up_approx_i, ROUND_UP);
 	}
 	else {
 	  ++pos_pinf_count;
@@ -3416,9 +3418,9 @@ Octagon<T>::affine_image(const Variable var,
 	const N& double_up_approx_minus_i = m_j0[j_1];
 	if (!is_plus_infinity(double_up_approx_minus_i)) {
 	  N up_approx_minus_i;
-	  N two(2);
-	  assign_div(up_approx_minus_i, double_up_approx_minus_i, two, ROUND_UP);
-	  assign_add_mul(neg_sum, coeff_i, up_approx_minus_i, ROUND_UP);
+	  div2exp_assign_r(up_approx_minus_i,
+			   double_up_approx_minus_i, 1, ROUND_UP);
+	  add_assign_r_mul(neg_sum, coeff_i, up_approx_minus_i, ROUND_UP);
 	}
 	else {
 	  ++neg_pinf_count;
@@ -3437,10 +3439,9 @@ Octagon<T>::affine_image(const Variable var,
 	const N& double_up_approx_minus_i = m_j0[j_1];
 	if (!is_plus_infinity(double_up_approx_minus_i)) {
 	  N up_approx_minus_i;
-	  N two(2);
-	  assign_div(up_approx_minus_i,
-		     double_up_approx_minus_i, two, ROUND_UP);
-	  assign_add_mul(pos_sum,
+	  div2exp_assign_r(up_approx_minus_i,
+			   double_up_approx_minus_i, 1, ROUND_UP);
+	  add_assign_r_mul(pos_sum,
 			 minus_coeff_i, up_approx_minus_i, ROUND_UP);
 	}
 	else {
@@ -3453,9 +3454,8 @@ Octagon<T>::affine_image(const Variable var,
 	const N& double_up_approx_i = m_j1[j_0];
 	if (!is_plus_infinity(double_up_approx_i)) {
 	  N up_approx_i;
-	  N two(2);
-	  assign_div(up_approx_i, double_up_approx_i, two, ROUND_UP);
-	  assign_add_mul(neg_sum, minus_coeff_i, up_approx_i, ROUND_UP);
+	  div2exp_assign_r(up_approx_i, double_up_approx_i, 1, ROUND_UP);
+	  add_assign_r_mul(neg_sum, minus_coeff_i, up_approx_i, ROUND_UP);
 	}
 	else {
 	  ++neg_pinf_count;
@@ -3489,14 +3489,13 @@ Octagon<T>::affine_image(const Variable var,
   if (pos_pinf_count <= 1) {
     // Compute quotient (if needed).
     if (down_sc_den != 1)
-      assign_div(pos_sum, pos_sum, down_sc_den, ROUND_UP);
+      div_assign_r(pos_sum, pos_sum, down_sc_den, ROUND_UP);
     // Add the upper bound constraint, if meaningful.
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
-      N two(2);
       N double_pos_sum = pos_sum;
       //      double_pos_sum *= two;
-      assign_mul(double_pos_sum, pos_sum, two, ROUND_IGNORE);
+      mul2exp_assign_r(double_pos_sum, pos_sum, 1, ROUND_IGNORE);
       typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var+1;
       typename OR_Matrix<N>::row_reference_type r = *i;
       assign(r[n_var], double_pos_sum, ROUND_UP);
@@ -3525,14 +3524,13 @@ Octagon<T>::affine_image(const Variable var,
   if (neg_pinf_count <= 1) {
     // Compute quotient (if needed).
     if (down_sc_den != 1)
-      assign_div(neg_sum, neg_sum, down_sc_den, ROUND_UP);
+      div_assign_r(neg_sum, neg_sum, down_sc_den, ROUND_UP);
     // Add the lower bound constraint, if meaningful.
     if (neg_pinf_count == 0) {
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
-      N two(2);
       N double_neg_sum = neg_sum;
       //      double_neg_sum *= two;
-      assign_mul(double_neg_sum, neg_sum, two, ROUND_IGNORE);
+      mul2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
       typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
       typename OR_Matrix<N>::row_reference_type r_i = *i;
       assign(r_i[n_var+1], double_neg_sum, ROUND_UP);
@@ -3841,17 +3839,17 @@ Octagon<T>::generalized_affine_image(Variable var,
 	  for (dimension_type h = k; h-- > 0; ) {
 	    if (h != n_var[0] && h != n_var[1]) {
 	      x_i[h] = PLUS_INFINITY;
-	      assign_add(x_ii[h], x_ii[h], d, ROUND_UP);
+	      add_assign_r(x_ii[h], x_ii[h], d, ROUND_UP);
 	    }
 	    else
-	      assign_add(m_nv1_nv, m_nv1_nv, d, ROUND_UP);
+	      add_assign_r(m_nv1_nv, m_nv1_nv, d, ROUND_UP);
 	  }
 	  for (typename OR_Matrix<N>::row_iterator iend = matrix.row_end();
 	       i != iend; ++i) {
 	    typename OR_Matrix<N>::row_reference_type r = *i;
 	    dimension_type rs = i.row_size();
 	    if (rs != k) {
-	      assign_add(r[n_var[0]], r[n_var[0]], d, ROUND_UP);
+	      add_assign_r(r[n_var[0]], r[n_var[0]], d, ROUND_UP);
 	      r[n_var[1]] = PLUS_INFINITY;;
 	    }
 	    else
@@ -3916,7 +3914,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 	  typename OR_Matrix<N>::row_reference_type x_ii = *(i+1);
 	  for (dimension_type h = k; h-- > 0; ) {
 	    if (h != n_var[0] && h != n_var[1]) {
-	      assign_add(x_i[h], x_i[h], c, ROUND_UP);
+	      add_assign_r(x_i[h], x_i[h], c, ROUND_UP);
 	      x_ii[h] = PLUS_INFINITY;
 	    }
 	    else
@@ -3928,10 +3926,10 @@ Octagon<T>::generalized_affine_image(Variable var,
 	    dimension_type rs = i.row_size();
 	    if (rs != k) {
 	      r[n_var[0]] = PLUS_INFINITY;
-	      assign_add(r[n_var[1]], r[n_var[1]], c, ROUND_UP);
+	      add_assign_r(r[n_var[1]], r[n_var[1]], c, ROUND_UP);
 	    }
 	    else
-	      assign_add(m_nv_nv1, m_nv_nv1, c, ROUND_UP);
+	      add_assign_r(m_nv_nv1, m_nv_nv1, c, ROUND_UP);
 	  }
 	}
 
@@ -3992,7 +3990,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 	      if (up_sum_ninf)
 		if (!is_plus_infinity(m_j1_j0)) {
 		  N c;
-		  assign_div(c, m_j1_j0, 2, ROUND_UP);
+		  div_assign_r(c, m_j1_j0, 2, ROUND_UP);
 		  Coefficient a;
 		  Coefficient b;
 		  //		  c.numer_denom(a, b);
@@ -4030,7 +4028,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 	      if (up_sum_ninf)
 		if (!is_plus_infinity(m_j0_j1)) {
 		  N c;
-		  assign_div(c, m_j0_j1, 2, ROUND_UP);
+		  div_assign_r(c, m_j0_j1, 2, ROUND_UP);
 		  Coefficient a;
 		  Coefficient b;
 		  Implementation::Octagons::numer_denom(c, a, b);
@@ -4098,7 +4096,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 		  Coefficient b;
 		  N c1;
 		  N div;
-		  assign_div(div, m_j0_j1, 2, ROUND_UP);
+		  div_assign_r(div, m_j0_j1, 2, ROUND_UP);
 		  neg_assign_r(c1, div, ROUND_DOWN);
 		  Implementation::Octagons::numer_denom(c1, a, b);
 		  if (dnm1 % b == 0) {
@@ -4125,7 +4123,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 		if (!is_plus_infinity(m_j1_j0)) {
 		  N c1;
 		  N div;
-		  assign_div(div, m_j1_j0, 2, ROUND_UP);
+		  div_assign_r(div, m_j1_j0, 2, ROUND_UP);
 		  neg_assign_r(c1, div, ROUND_DOWN);
 		  Coefficient a;
 		  Coefficient b;
@@ -4620,9 +4618,9 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 	  else
 	    s << ", ";
 	  N half_up_c_ii_i;
-	  assign_div(half_up_c_ii_i, c_ii_i, 2, ROUND_UP);
+	  div_assign_r(half_up_c_ii_i, c_ii_i, 2, ROUND_UP);
 	  N half_dw_c_ii_i;
-	  assign_div(half_dw_c_ii_i, c_ii_i, 2, ROUND_DOWN);
+	  div_assign_r(half_dw_c_ii_i, c_ii_i, 2, ROUND_DOWN);
 	  if (half_up_c_ii_i == half_dw_c_ii_i)
 	    s << v_i << " == " << half_up_c_ii_i;
 	  else {
@@ -4641,7 +4639,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 	    s << v_i;
 	    //	    N half_c_i_ii = negate_round_down(div_round_up(c_i_ii, 2));
 	    N half_up_c_i_ii;
-	    assign_div(half_up_c_i_ii, c_i_ii, 2, ROUND_UP);
+	    div_assign_r(half_up_c_i_ii, c_i_ii, 2, ROUND_UP);
 	    N half_c_i_ii;
 	    neg_assign_r(half_c_i_ii, half_up_c_i_ii, ROUND_DOWN);
 	    s << " >= " << half_c_i_ii;
@@ -4654,7 +4652,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 	      s << ", ";
 	    s << v_i;
 	    N half_c_ii_i;
-	    assign_div(half_c_ii_i, c_ii_i, 2, ROUND_UP);
+	    div_assign_r(half_c_ii_i, c_ii_i, 2, ROUND_UP);
 	    s << " <= " << half_c_ii_i;
 	  }
 	}
