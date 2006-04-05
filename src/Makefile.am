@@ -142,6 +142,8 @@ Ptr_Iterator.types.hh \
 DB_Row.types.hh \
 DB_Matrix.types.hh \
 BD_Shape.types.hh \
+OR_Matrix.types.hh \
+Octagon.types.hh \
 fpu.types.hh \
 Float.defs.hh \
 Float.inlines.hh \
@@ -250,6 +252,11 @@ BD_Shape.defs.hh \
 BDS_Status.inlines.hh \
 BD_Shape.inlines.hh \
 BD_Shape.templates.hh \
+OR_Matrix.defs.hh \
+OR_Matrix.inlines.hh \
+Octagon.defs.hh \
+Octagon.inlines.hh \
+Octagon.templates.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
@@ -306,6 +313,7 @@ Grid_public.cc \
 Grid_chdims.cc \
 Grid_widenings.cc \
 BD_Shape.cc \
+Octagon.cc \
 Polyhedra_Powerset.cc \
 Row.cc \
 Linear_Row.cc \

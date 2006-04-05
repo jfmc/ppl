@@ -1,0 +1,78 @@
+/* Test Octagon::contains().
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#include "ppl_test.hh"
+
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+#ifndef NOISY
+#define NOISY 0
+#endif
+
+#ifndef NOISY
+#define NOIY 0
+#endif
+
+int
+main() TRY {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Constraint_System cs1;
+  cs1.insert(A + D >= 0);
+  cs1.insert(C >= 0);
+  cs1.insert(B >= 0);
+  cs1.insert(A == 0);
+
+  TOctagon oc1(cs1);
+
+  Constraint_System cs2;
+  cs2.insert(D == 0);
+  cs2.insert(C == 0);
+  cs2.insert(B == 0);
+  cs2.insert(A == 0);
+
+  TOctagon oc2(cs2);
+
+#if NOISY
+  print_constraints(oc1, "*** oc1 ***");
+  print_constraints(oc2, "*** oc2 ***");
+#endif
+
+  bool result = oc1.contains(oc2);
+
+#if NOISY
+  cout << "*** oc1.contains(oc2) ***"
+       << endl
+       << (result ? "true" : "false")
+       << endl;
+#endif
+
+  int retval = result ? 0 : 1;
+
+  return retval;
+}
+CATCH

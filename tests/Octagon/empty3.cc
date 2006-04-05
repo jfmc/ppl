@@ -1,0 +1,89 @@
+/* Different ways of creating an empty Octagon.
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#include "ppl_test.hh"
+
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+#ifndef NOISY
+#define NOISY 0
+#endif
+
+int
+
+main() TRY {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+
+  TOctagon oc1(5);
+  TOctagon oc2(5);
+
+
+  oc1.add_constraint(A <= 3);
+  oc1.add_constraint(D <= 3);
+  oc1.add_constraint(B - A <= 0);
+  oc1.add_constraint(C - A <= -2);
+  oc1.add_constraint(E - A <= 2);
+  oc1.add_constraint(-B <= 0);
+  oc1.add_constraint(C - B <= 5);
+  oc1.add_constraint(D - C <= -6);
+  oc1.add_constraint(A - D <= 5);
+  oc1.add_constraint(E - D <= 2);
+  oc1.add_constraint(-E <= -5);
+  oc1.add_constraint(C - E <= 7);
+
+  bool empty = oc1.is_empty();
+
+#if NOISY
+  cout << "*** oc1.is_empty() ***" << endl;
+  cout << (empty ? "true" : "false") << endl;
+#endif
+
+  oc2.add_constraint(A <= 3);
+  oc2.add_constraint(D <= 3);
+  oc2.add_constraint(B - A <= 0);
+  oc2.add_constraint(C - A <= 2);
+  oc2.add_constraint(E - A <= 2);
+  oc2.add_constraint(-B <= 0);
+  oc2.add_constraint(C - B <= 5);
+  oc2.add_constraint(D - C <= 6);
+  oc2.add_constraint(A - D <= 5);
+  oc2.add_constraint(E - D <= 2);
+  oc2.add_constraint(-E <= 5);
+  oc2.add_constraint(C - E <= 7);
+
+  bool empty1 = oc2.is_empty();
+
+#if NOISY
+  cout << "*** oc2.is_empty() ***" << endl;
+  cout << (empty1 ? "true" : "false") << endl;
+#endif
+
+  return (!empty1 && empty) ? 0 : 1;
+
+}
+CATCH
