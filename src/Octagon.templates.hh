@@ -3145,6 +3145,8 @@ void
 Octagon<T>::affine_image(const Variable var,
                          const Linear_Expression& expr,
 			 Coefficient_traits::const_reference denominator) {
+  using Implementation::BD_Shapes::div_round_up;
+
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("affine_image(v, e, d)", "d == 0");
@@ -3366,8 +3368,8 @@ Octagon<T>::affine_image(const Variable var,
   // const Coefficient& minus_b = -b;
   const Coefficient& sc_b = is_sc ? b : minus_b;
   const Coefficient& minus_sc_b = is_sc ? minus_b : b;
-  //  const Coefficient& minus_den = -denominator;
-  const Coefficient& sc_den = is_sc ? denominator : minus_den;
+  // const Coefficient& minus_den = -denominator;
+  // const Coefficient& sc_den = is_sc ? denominator : minus_den;
   const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
   Linear_Expression minus_expr;
   if (!is_sc)
@@ -3385,8 +3387,8 @@ Octagon<T>::affine_image(const Variable var,
   dimension_type neg_pinf_count = 0;
 
   // Approximate the inhomogeneous term.
-  assign(pos_sum, sc_b, ROUND_UP);
-  assign(neg_sum, minus_sc_b, ROUND_UP);
+  assign_r(pos_sum, sc_b, ROUND_UP);
+  assign_r(neg_sum, minus_sc_b, ROUND_UP);
 
   for (dimension_type i = w; i > 0; --i) {
     const Coefficient& sc_i = sc_expr.coefficient(Variable(i));
@@ -3399,14 +3401,14 @@ Octagon<T>::affine_image(const Variable var,
     const int sign_i = sgn(sc_i);
     if (sign_i > 0) {
       N coeff_i;
-      assign(coeff_i, sc_i, ROUND_UP);
+      assign_r(coeff_i, sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
 	const N& double_up_approx_i =  m_j1[j_0];
 	if (!is_plus_infinity(double_up_approx_i)) {
 	  N up_approx_i;
 	  div2exp_assign_r(up_approx_i, double_up_approx_i, 1, ROUND_UP);
-	  add_assign_r_mul(pos_sum, coeff_i, up_approx_i, ROUND_UP);
+	  add_mul_assign_r(pos_sum, coeff_i, up_approx_i, ROUND_UP);
 	}
 	else {
 	  ++pos_pinf_count;
@@ -3420,7 +3422,7 @@ Octagon<T>::affine_image(const Variable var,
 	  N up_approx_minus_i;
 	  div2exp_assign_r(up_approx_minus_i,
 			   double_up_approx_minus_i, 1, ROUND_UP);
-	  add_assign_r_mul(neg_sum, coeff_i, up_approx_minus_i, ROUND_UP);
+	  add_mul_assign_r(neg_sum, coeff_i, up_approx_minus_i, ROUND_UP);
 	}
 	else {
 	  ++neg_pinf_count;
@@ -3433,7 +3435,7 @@ Octagon<T>::affine_image(const Variable var,
       neg_assign_r(minus_sc_i, sc_i, ROUND_IGNORE);
       //      Coefficient minus_sc_i = - sc_i;
       N minus_coeff_i;
-      assign(minus_coeff_i, minus_sc_i, ROUND_UP);
+      assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
 	const N& double_up_approx_minus_i = m_j0[j_1];
@@ -3441,7 +3443,7 @@ Octagon<T>::affine_image(const Variable var,
 	  N up_approx_minus_i;
 	  div2exp_assign_r(up_approx_minus_i,
 			   double_up_approx_minus_i, 1, ROUND_UP);
-	  add_assign_r_mul(pos_sum,
+	  add_mul_assign_r(pos_sum,
 			 minus_coeff_i, up_approx_minus_i, ROUND_UP);
 	}
 	else {
@@ -3455,7 +3457,7 @@ Octagon<T>::affine_image(const Variable var,
 	if (!is_plus_infinity(double_up_approx_i)) {
 	  N up_approx_i;
 	  div2exp_assign_r(up_approx_i, double_up_approx_i, 1, ROUND_UP);
-	  add_assign_r_mul(neg_sum, minus_coeff_i, up_approx_i, ROUND_UP);
+	  add_mul_assign_r(neg_sum, minus_coeff_i, up_approx_i, ROUND_UP);
 	}
 	else {
 	  ++neg_pinf_count;
@@ -3482,7 +3484,7 @@ Octagon<T>::affine_image(const Variable var,
   // rounding downwards, which is achieved as usual by rounding upwards
   // `minus_sc_den' and negating again the result.
   N down_sc_den;
-  assign(down_sc_den, minus_sc_den, ROUND_UP);
+  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
   neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
 
   // Exploit the upper approximation, if possible.
@@ -3498,7 +3500,7 @@ Octagon<T>::affine_image(const Variable var,
       mul2exp_assign_r(double_pos_sum, pos_sum, 1, ROUND_IGNORE);
       typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var+1;
       typename OR_Matrix<N>::row_reference_type r = *i;
-      assign(r[n_var], double_pos_sum, ROUND_UP);
+      assign_r(r[n_var], double_pos_sum, ROUND_UP);
       // Deduce constraints of the form `v - u', where `u != v'.
       //      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
     }
@@ -3510,12 +3512,12 @@ Octagon<T>::affine_image(const Variable var,
 // 	if (num_var < pos_pinf_index) {
 // 	  typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*pos_pinf_index;
 // 	  typename OR_Matrix<N>::row_reference_type r_i = *i;
-// 	  assign(r_i[n_var], pos_sum, ROUND_UP);
+// 	  assign_r(r_i[n_var], pos_sum, ROUND_UP);
 // 	}
 // 	if (num_var > pos_pinf_index) {
 //  	  typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
 //  	  typename OR_Matrix<N>::row_reference_type r_i = *i;
-// 	  assign(r_i[2*pos_pinf_index], pos_sum, ROUND_UP);
+// 	  assign_r(r_i[2*pos_pinf_index], pos_sum, ROUND_UP);
 // 	}
 //       }
   }
@@ -3533,7 +3535,7 @@ Octagon<T>::affine_image(const Variable var,
       mul2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
       typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
       typename OR_Matrix<N>::row_reference_type r_i = *i;
-      assign(r_i[n_var+1], double_neg_sum, ROUND_UP);
+      assign_r(r_i[n_var+1], double_neg_sum, ROUND_UP);
       // Deduce constraints of the form `u - v', where `u != v'.
       //     deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, neg_sum);
     }
@@ -3546,12 +3548,12 @@ Octagon<T>::affine_image(const Variable var,
 // 	if (neg_pinf_index < num_var) {
 // 	  typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
 // 	  typename OR_Matrix<N>::row_reference_type r_i = *i;
-// 	  assign(r_i[2*neg_pinf_index], neg_sum, ROUND_UP);
+// 	  assign_r(r_i[2*neg_pinf_index], neg_sum, ROUND_UP);
 // 	}
 // 	if (neg_pinf_index > num_var) {
 // 	  typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*neg_pinf_index + 1;
 // 	  typename OR_Matrix<N>::row_reference_type r_i = *i;
-// 	  assign(r_i[n_var+1], neg_sum, ROUND_UP);
+// 	  assign_r(r_i[n_var+1], neg_sum, ROUND_UP);
 // 	}
   }
 

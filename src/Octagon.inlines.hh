@@ -36,6 +36,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <algorithm>
 
+// FIXME: this is only to get access to
+// Implementation::BD_Shapes::div_round_up().
+#include "BD_Shape.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
@@ -53,7 +57,7 @@ numer_denom(const Checked_Number<T, Policy>& from,
 	 && !is_minus_infinity(from)
 	 && !is_plus_infinity(from));
   mpq_class q;
-  assign(q, raw_value(from), ROUND_IGNORE);
+  assign_r(q, raw_value(from), ROUND_IGNORE);
   num = q.get_num();
   den = q.get_den();
 }
@@ -285,6 +289,8 @@ inline void
 Octagon<T>::add_octagonal_constraint(typename OR_Matrix<N>::row_iterator i,
 				     const dimension_type j,
 				     N k) {
+  using Implementation::BD_Shapes::div_round_up;
+
   // Private method: the caller has to ensure the following.
   assert(i.index() < 2*space_dim && j < i.row_size() && i.index() != j);
   typename OR_Matrix<N>::row_reference_type r = *i;
@@ -303,6 +309,8 @@ Octagon<T>::add_octagonal_constraint(typename OR_Matrix<N>::row_iterator i,
 				     const dimension_type j,
 				     Coefficient_traits::const_reference num,
 				     Coefficient_traits::const_reference den) {
+  using Implementation::BD_Shapes::div_round_up;
+
   // Private method: the caller has to ensure the following.
   assert(i.index() < 2*space_dim && j < i.row_size() && i.index() != j);
   assert(den != 0);
@@ -387,11 +395,11 @@ template <typename T>
 inline void
 Octagon<T>::CC76_extrapolation_assign(const Octagon& y) {
   static N stop_points[] = {
-    N(-2),
-    N(-1),
-    N(0),
-    N(1),
-    N(2)
+    N(-2, ROUND_UP),
+    N(-1, ROUND_UP),
+    N( 0, ROUND_UP),
+    N( 1, ROUND_UP),
+    N( 2, ROUND_UP)
   };
   // Recalled the CC76_extrapolation_assign(const Octagon& y,
   //                                        Iterator first, Iterator last)

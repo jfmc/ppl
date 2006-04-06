@@ -110,7 +110,7 @@ OR_Matrix<T>::Pseudo_Row<U>::operator=(const Pseudo_Row& y) {
 
 template <typename T>
 template <typename U>
-inline 
+inline
 OR_Matrix<T>::Pseudo_Row<U>::~Pseudo_Row() {
 }
 
@@ -486,7 +486,7 @@ OR_Matrix<T>::erase_to_end(dimension_type first_to_erase) {
     // If `first_to_erase' is an odd number, we erase the successive row
     // because the total number of rows must be an even number.
     // So we add `1' to `first_to_erase'.
-    resize_no_copy(first_to_erase);  
+    resize_no_copy(first_to_erase);
  }
 
 /*! \relates OR_Matrix */
@@ -536,7 +536,7 @@ OR_Matrix<T>::grow(const dimension_type new_nrows) {
       for (dimension_type i = num_rows_; i-- > 0; )
 	for (dimension_type j = row_size(i); j-- > 0; )
 	  new_matrix[i][j] = (*this)[i][j];
-      swap(new_matrix); 
+      swap(new_matrix);
       return;
     }
   }
@@ -547,12 +547,12 @@ inline void
 OR_Matrix<T>::resize_no_copy(const dimension_type new_nrows) {
   dimension_type old_size = vec.size();
   dimension_type new_size = new_nrows*(new_nrows/2 + 1);
-  
-  if (new_size > old_size) 
+
+  if (new_size > old_size)
     grow(new_nrows);
   else if (new_size < old_size)
     vec.shrink(new_size);
-  
+
   num_rows_ = new_nrows;
 }
 
@@ -575,7 +575,7 @@ OR_Matrix<T>::ascii_dump(std::ostream& s) const {
   dimension_type nrows = x.num_rows_;
   s << nrows << separator
     << std::endl;
-  for (const_row_iterator i = x.row_begin(), xend = x.row_end(); 
+  for (const_row_iterator i = x.row_begin(), xend = x.row_end();
        i != xend; ++i) {
     const_row_reference_type r = *i;
     dimension_type rs = i.row_size();
@@ -586,7 +586,7 @@ OR_Matrix<T>::ascii_dump(std::ostream& s) const {
     s << std::endl;
   }
 }
-  
+
 template <typename T>
 inline bool
 OR_Matrix<T>::ascii_load(std::istream& s) {
@@ -595,14 +595,15 @@ OR_Matrix<T>::ascii_load(std::istream& s) {
     return false;
   resize_no_copy(nrows);
   OR_Matrix& x = *this;
-//   for (const_row_iterator i = x.row_begin(), xend = x.row_end(); 
+//   for (const_row_iterator i = x.row_begin(), xend = x.row_end();
 //        i != xend; ++i) {
 //     const_row_reference_type r = *i;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
     dimension_type rs = row_size(i);
     for (dimension_type j = 0; j < rs; ++j) {
-      using namespace IO_Operators;
-      if (!(s >> x[i][j]))
+      Result r = input(x[i][j], s, ROUND_UP);
+      // FIXME: V_CVT_STR_UNK is probably not the only possible error.
+      if (!s || r == V_CVT_STR_UNK)
 	return false;
     }
   }
@@ -660,7 +661,7 @@ IO_Operators::operator<<(std::ostream& s, const OR_Matrix<T>& m) {
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
-  
+
 /*! \relates Parma_Polyhedra_Library::OR_Matrix */
 template <typename T>
 inline void
