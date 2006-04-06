@@ -30,17 +30,6 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-#if NOISY
-static void
-print_function(const Partial_Function& function, const string& intro = "",
-	       ostream& s = cout) {
-  if (!intro.empty())
-    s << intro << endl;
-  function.print(s);
-}
-#endif
-
-
 static void
 test1() {
   Partial_Function function;

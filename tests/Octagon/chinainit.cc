@@ -29,17 +29,6 @@ using namespace Parma_Polyhedra_Library;
 #ifndef NOISY
 #define NOISY 0
 #endif
-#include "Partial_Function.defs.hh"
-
-#if NOISY
-static void
-print_function(const PFunction& function, const string& intro = "",
-	       ostream& s = cout) {
-  if (!intro.empty())
-    s << intro << endl;
-  function.print(s);
-}
-#endif
 
 TOctagon
 init(dimension_type num_vars) {
