@@ -63,9 +63,9 @@ static void test2() {
   cout << "oct.relation_with(v()) == " << rel << endl;
 #endif
 
-  
+
   Poly_Gen_Relation known_result = Poly_Gen_Relation::subsumes();
-  
+
   if (rel != known_result)
     exit(1);
 }
@@ -85,7 +85,7 @@ static void test3() {
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
 
-  if (rel != known_result) 
+  if (rel != known_result)
     exit(1);
 }
 
@@ -109,7 +109,7 @@ static void test4() {
   Poly_Gen_Relation known_result1 = Poly_Gen_Relation::subsumes();
   Poly_Gen_Relation known_result2 = Poly_Gen_Relation::nothing();
 
-  if (rel1 != known_result1 && rel2 != known_result2) 
+  if (rel1 != known_result1 && rel2 != known_result2)
     exit(1);
 }
 
@@ -129,7 +129,7 @@ static void test5() {
 #endif
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
-  if (rel != known_result) 
+  if (rel != known_result)
     exit(1);
 }
 
@@ -149,7 +149,7 @@ static void test6() {
 #endif
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::subsumes();
-  if (rel != known_result) 
+  if (rel != known_result)
     exit(1);;
 }
 
@@ -169,7 +169,7 @@ static void test7() {
 #endif
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
-  if (rel != known_result) 
+  if (rel != known_result)
     exit(1);
 }
 
@@ -189,8 +189,8 @@ static void test8() {
 #endif
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
-  
-  if (rel != known_result) 
+
+  if (rel != known_result)
     exit(1);
 }
 
@@ -210,8 +210,8 @@ static void test9() {
 #endif
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
-  
-  if (rel != known_result) 
+
+  if (rel != known_result)
     exit(1);
 }
 

@@ -41,14 +41,14 @@ test1() {
   oc.add_constraint(B <= 0);
   oc.add_constraint(C >= 0);
 
-  Linear_Expression expr(4*B + 6*C + 2);  
-  
+  Linear_Expression expr(4*B + 6*C + 2);
+
 #if NOISY
   print_constraints(oc, "*** oc ***");
 #endif
 
-  oc.affine_preimage(A, expr, -2); 
-  
+  oc.affine_preimage(A, expr, -2);
+
   TOctagon known_result(3);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(C >= 0);
@@ -74,14 +74,14 @@ test2() {
   oc.add_constraint(B <= 0);
   oc.add_constraint(C >= 0);
 
-  Linear_Expression expr(-2*A + 3*C + 2);  
+  Linear_Expression expr(-2*A + 3*C + 2);
 
 #if NOISY
   print_constraints(oc, "*** oc ***");
 #endif
-  
-  oc.affine_preimage(A, expr, 2); 
- 
+
+  oc.affine_preimage(A, expr, 2);
+
   TOctagon known_result(3);
   known_result.add_constraint(A >= 2);
   known_result.add_constraint(B <= 0);
@@ -108,13 +108,13 @@ test3() {
   oc.add_constraint(B <= 0);
   oc.add_constraint(C >= 0);
 
-  Linear_Expression expr(3*A + C - 1);  
+  Linear_Expression expr(3*A + C - 1);
 
 #if NOISY
   print_constraints(oc, "*** oc ***");
 #endif
-  
-  oc.affine_preimage(A, expr, 2); 
+
+  oc.affine_preimage(A, expr, 2);
 
   TOctagon known_result(3);
   known_result.add_constraint(A <= 0);
@@ -143,15 +143,15 @@ test4() {
   oc.add_constraint(B == 0);
   oc.add_constraint(C >= -3);
   oc.add_constraint(D <= 5);
-  
-  Linear_Expression expr(4*A - B + 2*C + 5*D - 1);  
+
+  Linear_Expression expr(4*A - B + 2*C + 5*D - 1);
 
 #if NOISY
   print_constraints(oc, "*** oc ***");
 #endif
 
-  oc.affine_preimage(D, expr, 3); 
-  
+  oc.affine_preimage(D, expr, 3);
+
   TOctagon known_result(4);
   known_result.add_constraint(A == 2);
   known_result.add_constraint(B == 0);
@@ -168,7 +168,7 @@ test4() {
     exit(1);
 }
 
-int 
+int
 main() TRY {
 
   test1();
@@ -177,7 +177,7 @@ main() TRY {
   test4();
 
   return 0;
-} 
+}
 CATCH
 
 

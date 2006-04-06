@@ -126,7 +126,7 @@ ascii_dump_load3_SOURCES = ascii_dump_load3.cc
 ascii_dump_load4_SOURCES = ascii_dump_load4.cc
 
 cc76extrapolation1_SOURCES = cc76extrapolation1.cc
-cc76extrapolation2_SOURCES = cc76extrapolation2.cc 
+cc76extrapolation2_SOURCES = cc76extrapolation2.cc
 cc76extrapolation3_SOURCES = cc76extrapolation3.cc
 cc76extrapolation4_SOURCES = cc76extrapolation4.cc
 cc76extrapolation5_SOURCES = cc76extrapolation5.cc

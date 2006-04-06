@@ -69,9 +69,9 @@ static void test2() {
 #endif
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
-  
+
   if (rel != known_result)
-    exit(1); 
+    exit(1);
 }
 
 static void test3() {
@@ -94,7 +94,7 @@ static void test3() {
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
   if (rel != known_result)
-    exit(1); 
+    exit(1);
 }
 
 static void test4() {
@@ -116,7 +116,7 @@ static void test4() {
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
   if (rel != known_result)
-    exit(1); 
+    exit(1);
 }
 
 static void test5() {
@@ -141,9 +141,9 @@ static void test5() {
 #endif
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
-  
+
   if (rel != known_result)
-    exit(1); 
+    exit(1);
 }
 
 static void test6() {
@@ -167,9 +167,9 @@ static void test6() {
 #endif
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
-  
+
   if (rel != known_result)
-    exit(1); 
+    exit(1);
 }
 
 static void test7() {
@@ -180,7 +180,7 @@ static void test7() {
   cs.insert(A == 0);
   cs.insert(B <= -1);
   cs.insert(A - B <= 2);
- 
+
   TOctagon oct(cs);
 
   Poly_Con_Relation rel = oct.relation_with(Constraint::zero_dim_false());
@@ -205,10 +205,10 @@ static void test8() {
   oct.add_constraint(x == 1);
   oct.add_constraint(y <= 0);
   oct.add_constraint(z >= 2);
-  
+
   Constraint c(x > 1);
   Poly_Con_Relation rel = oct.relation_with(c);
-  
+
 #if NOISY
   print_constraints(oct, "--- oct ---");
   print_constraint(c, "--- c ---");
@@ -257,7 +257,7 @@ static void test9() {
   Variable F1(31);
   Variable G1(32);
   Variable H1(33);
- 
+
   TOctagon oct(34);
   oct.add_constraint(C >= 4);
   oct.add_constraint(D >= 1);

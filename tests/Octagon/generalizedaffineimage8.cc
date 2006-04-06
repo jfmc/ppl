@@ -35,7 +35,7 @@ test1() {
   Variable x(0);
   Variable y(1);
   Linear_Expression expr(-y + 1);
- 
+
   TOctagon oct(2);
   oct.add_constraint(x <= 4);
   oct.add_constraint(x >= -6);
@@ -51,7 +51,7 @@ test1() {
   bool ok = (oct == known_result);
 
 #if NOISY
-  print_constraints(oct, "*** oct.generalized_affine_image(y, " 
+  print_constraints(oct, "*** oct.generalized_affine_image(y, "
                          "LESS_THAN_OR_EQUAL, -y + 1) ***");
 #endif
 
@@ -75,7 +75,7 @@ test2() {
   TOctagon known_result(2);
   known_result.add_constraint(x >= -7);
   known_result.add_constraint(y == 0);
- 
+
   bool ok = (oct == known_result);
 
 #if NOISY
@@ -106,7 +106,7 @@ test3() {
   bool ok = (oct == known_result);
 
 #if NOISY
-  print_constraints(oct, "*** oct.generalized_affine_image(B, " 
+  print_constraints(oct, "*** oct.generalized_affine_image(B, "
                          "LESS_THAN_OR_EQUAL, 3*B + 1, 2) ***");
 #endif
 
@@ -151,18 +151,18 @@ test5() {
 
   oct.add_constraint(B <= 1);
   oct.add_constraint(A + B == 0);
-  
+
   oct.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, expr, 2);
-  
+
   TOctagon known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B <= 1);
   known_result.add_constraint(A + B >= 1);
- 
+
   bool ok = (oct == known_result);
 
 #if NOISY
-  print_constraints(oct, "*** oct.generalized_affine_image(A, " 
+  print_constraints(oct, "*** oct.generalized_affine_image(A, "
 		    "GREATER_THAN_OR_EQUAL, 2*A + 3, 2) ***");
 #endif
 
@@ -238,13 +238,13 @@ test8() {
   Variable B(1);
   Variable C(2);
   Linear_Expression expr(-B - 2);
-  
+
   TOctagon oct(3);
-  
+
   oct.add_constraint(A - B == 0);
   oct.add_constraint(B <= 1);
   oct.add_constraint(C + A <= 2);
-  
+
   oct.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, expr, 3);
 
   TOctagon known_result(3);
@@ -269,19 +269,19 @@ test9() {
   Variable B(1);
   Variable C(2);
   Linear_Expression expr(4*A -2*C + 3);
-  
+
   TOctagon oct(3);
-  
+
   oct.add_constraint(A - B == 0);
   oct.add_constraint(B <= 1);
   oct.add_constraint(C + A <= 2);
-  
+
   oct.generalized_affine_image(B, LESS_THAN_OR_EQUAL, expr, -3);
 
   TOctagon known_result(3);
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(C + A <= 2);
-  
+
   bool ok = (oct == known_result);
 
 #if NOISY

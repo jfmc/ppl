@@ -46,7 +46,7 @@ static void test1() {
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_included();
 
-  if (rel != known_result) 
+  if (rel != known_result)
     exit(1);
 }
 
@@ -57,7 +57,7 @@ static void test2() {
   TOctagon oct(2);
   oct.add_constraint(A == 1);
   oct.add_constraint(B >= 2);
-  
+
   Poly_Con_Relation rel = oct.relation_with(Linear_Expression(1) > 1);
 
 #if NOISY
@@ -68,7 +68,7 @@ static void test2() {
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_disjoint();
 
-  if (rel != known_result) 
+  if (rel != known_result)
     exit(1);
 }
 
@@ -81,7 +81,7 @@ static void test3() {
   oct.add_constraint(A == 1);
   oct.add_constraint(B >= 2);
   oct.add_constraint(C <= 1);
-   
+
   Poly_Con_Relation rel = oct.relation_with(Linear_Expression(1) == 1);
 
 #if NOISY
@@ -92,7 +92,7 @@ static void test3() {
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_included();
 
-  if (rel != known_result) 
+  if (rel != known_result)
     exit(1);
 }
 
@@ -110,8 +110,8 @@ static void test4() {
 #endif
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
-  
-  if (rel != known_result) 
+
+  if (rel != known_result)
     exit(1);
 }
 

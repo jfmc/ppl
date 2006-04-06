@@ -51,7 +51,7 @@ main() TRY {
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B - A >= 2);
- 
+
   int retval = (oct == known_result) ? 0 : 1;
 
 #if NOISY

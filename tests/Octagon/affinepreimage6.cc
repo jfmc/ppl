@@ -48,7 +48,7 @@ test1() {
 #endif
 
   oc.affine_preimage(B, expr);
-  
+
   TOctagon known_result(3);
   known_result.add_constraint(A >= 2);
   known_result.add_constraint(C >= 0);
@@ -81,7 +81,7 @@ test2() {
 #endif
 
   oc.affine_preimage(B, expr);
- 
+
   TOctagon known_result(3);
   known_result.add_constraint(A >= 2);
   known_result.add_constraint(C >= 0);
@@ -148,7 +148,7 @@ test4() {
 #endif
 
   oc.affine_preimage(A, expr);
-  
+
   TOctagon known_result(3);
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(B >= 0);
@@ -208,8 +208,8 @@ test6() {
   oc.add_constraint(B >= 0);
   oc.add_constraint(C >= 0);
 
-  Linear_Expression expr(2*B - C - 1);  
-  
+  Linear_Expression expr(2*B - C - 1);
+
 #if NOISY
   print_constraints(oc, "*** oc ***");
 #endif
@@ -242,7 +242,7 @@ test7() {
   oc.add_constraint(B >= 0);
   oc.add_constraint(C >= 0);
 
-  Linear_Expression expr(2*B - 2*C - 2);  
+  Linear_Expression expr(2*B - 2*C - 2);
 
 #if NOISY
   print_constraints(oc, "*** oc ***");
@@ -276,7 +276,7 @@ test8() {
   oc.add_constraint(B >= 0);
   oc.add_constraint(C >= 0);
 
-  Linear_Expression expr(2*B - 2*C - 2);  
+  Linear_Expression expr(2*B - 2*C - 2);
 
 #if NOISY
   print_constraints(oc, "*** oc ***");
@@ -309,14 +309,14 @@ test9() {
   oc.add_constraint(B <= 0);
   oc.add_constraint(C >= 0);
 
-  Linear_Expression expr(4*B + 6*C + 2);  
-  
+  Linear_Expression expr(4*B + 6*C + 2);
+
 #if NOISY
   print_constraints(oc, "*** oc ***");
 #endif
 
-  oc.affine_preimage(C, expr, 2); 
-  
+  oc.affine_preimage(C, expr, 2);
+
   TOctagon known_result(3);
   known_result.add_constraint(A <= -1);
   known_result.add_constraint(B <= 0);
@@ -343,14 +343,14 @@ test10() {
   oc.add_constraint(B <= 0);
   oc.add_constraint(C >= 0);
 
-  Linear_Expression expr(4*B + 6*C + 2);  
-  
+  Linear_Expression expr(4*B + 6*C + 2);
+
 #if NOISY
   print_constraints(oc, "*** oc ***");
 #endif
 
-  oc.affine_preimage(C, expr, -2); 
-  
+  oc.affine_preimage(C, expr, -2);
+
   TOctagon known_result(3);
   known_result.add_constraint(A <= -1);
   known_result.add_constraint(B <= 0);
@@ -365,7 +365,7 @@ test10() {
     exit(1);
 }
 
-int 
+int
 main() TRY {
 
   test1();
@@ -380,5 +380,5 @@ main() TRY {
   test10();
 
   return 0;
-} 
+}
 CATCH

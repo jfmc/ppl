@@ -171,7 +171,7 @@ static void test8() {
   cs.insert(A >= 1);
   cs.insert(B >= 0);
   cs.insert(A + B <= 3);
- 
+
   TOctagon oct(cs);
 
   Poly_Con_Relation rel = oct.relation_with(A + B >= 1);
@@ -195,7 +195,7 @@ static void test9() {
   cs.insert(A >= 1);
   cs.insert(B >= 0);
   cs.insert(A + B <= 3);
- 
+
   TOctagon oct(cs);
 
   Poly_Con_Relation rel = oct.relation_with(B - A >= 1);
@@ -219,7 +219,7 @@ static void test10() {
   cs.insert(A == 0);
   cs.insert(B <= -1);
   cs.insert(A - B <= 2);
- 
+
   TOctagon oct(cs);
 
   Poly_Con_Relation rel = oct.relation_with(B - A == 1);

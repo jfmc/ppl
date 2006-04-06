@@ -45,15 +45,15 @@ main() TRY {
 #if NOISY
   cout << endl
        << "The maximum space-dimension of an octagon of Rational is: "
-       << endl << max_spacedim1 << endl; 
+       << endl << max_spacedim1 << endl;
 
   cout << endl
        << "The maximum space-dimension of an octagon of long: "
-       << endl << max_spacedim2 << endl; 
+       << endl << max_spacedim2 << endl;
 
   cout << endl
        << "The maximum space-dimension of an octagon of int: "
-       << endl << max_spacedim3 << endl; 
+       << endl << max_spacedim3 << endl;
 
   cout << endl
        << "The maximum space-dimension of an octagon of signed char"

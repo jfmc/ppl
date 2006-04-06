@@ -1,4 +1,4 @@
-/* Test Octagon::add_space_dimensions_and_embed(): 
+/* Test Octagon::add_space_dimensions_and_embed():
    we add two variables to a Octagon.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 

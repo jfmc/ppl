@@ -49,7 +49,7 @@ test1() {
   bool ok = (oct == known_result);
 
 #if NOISY
-  print_constraints(oct, "*** oct.generalized_affine_image(x + 2, " 
+  print_constraints(oct, "*** oct.generalized_affine_image(x + 2, "
                          "LESS_THAN_OR_EQUAL, x - 2) ***");
 #endif
 
@@ -69,7 +69,7 @@ test2() {
 
   TOctagon known_result(oct);
 
- 
+
   bool ok = (oct == known_result);
 
 #if NOISY
@@ -93,7 +93,7 @@ test3() {
   oct.add_constraint(B >= 0);
 
   oct.generalized_affine_image(e1, LESS_THAN_OR_EQUAL, e2);
- 
+
   TOctagon known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B <= 1);
@@ -155,7 +155,7 @@ test5() {
   TOctagon known_result(2);
   known_result.add_constraint(A >= -1);
   known_result.add_constraint(B <= 2);
- 
+
   bool ok = (oct == known_result);
 
 #if NOISY
@@ -210,7 +210,7 @@ test7() {
   Variable C(2);
   Linear_Expression e1(C + 1);
   Linear_Expression e2(A + 2);
- 
+
   TOctagon oct(3);
 
   oct.add_constraint(A - B == 0);
@@ -240,15 +240,15 @@ test8() {
   Variable C(2);
   Linear_Expression e1(B - 1);
   Linear_Expression e2(A - 2);
-  
+
   TOctagon oct(3);
-  
+
   oct.add_constraint(A - B == 0);
   oct.add_constraint(B <= 1);
   oct.add_constraint(C + A <= 2);
-  
+
   oct.generalized_affine_image(e1, GREATER_THAN_OR_EQUAL, e2);
-  
+
   TOctagon known_result(3);
   known_result.add_constraint(B - A >= -1);
   known_result.add_constraint(C + A <= 2);
@@ -272,22 +272,22 @@ test9() {
   Variable C(2);
   Linear_Expression e1(-C + 3);
   Linear_Expression e2(-B + 4);
-  
+
   TOctagon oct(3);
-  
+
   oct.add_constraint(A - B == 0);
   oct.add_constraint(B <= 1);
   oct.add_constraint(C + A <= 2);
-  
+
   oct.generalized_affine_image(e1, LESS_THAN_OR_EQUAL, e2);
- 
+
   TOctagon known_result(3);
   known_result.add_constraint(C >= B - 1);
   known_result.add_constraint(A - B == 0);
   known_result.add_constraint(B <= 1);
   known_result.add_constraint(C - A >= -1);
   known_result.add_constraint(A <= 1);
-   
+
   bool ok = (oct == known_result);
 
 #if NOISY
@@ -320,9 +320,9 @@ test10() {
   known_result.add_constraint(C + A <= 1);
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(B + A <= 2);
- 
+
   oct.generalized_affine_image(e1, GREATER_THAN_OR_EQUAL, e2);
- 
+
   bool ok = (oct == known_result);
 
 #if NOISY

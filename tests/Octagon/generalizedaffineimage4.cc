@@ -56,7 +56,7 @@ main() TRY {
   oct.generalized_affine_image(x, GREATER_THAN_OR_EQUAL, expr, 2);
 
 #if NOISY
-  print_constraints(oct, "*** oct.generalized_affine_image(x," 
+  print_constraints(oct, "*** oct.generalized_affine_image(x,"
                          "GREATER_THAN_OR_EQUAL, 2*x - 2, 2) ***");
 #endif
 

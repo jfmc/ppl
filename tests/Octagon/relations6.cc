@@ -39,15 +39,15 @@ static void test1() {
   oct.add_constraint(A + B <= 3);
 
   Poly_Gen_Relation rel = oct.relation_with(ray(A + B));
-  
+
 #if NOISY
   print_constraints(oct, "*** oct ***");
   cout << "oct.relation_with(ray(A + B)) == " << rel << endl;
 #endif
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
-  
-  if (rel != known_result) 
+
+  if (rel != known_result)
     exit(1);
 }
 
@@ -61,15 +61,15 @@ static void test2() {
   oct.add_constraint(A - B >= 0);
 
   Poly_Gen_Relation rel = oct.relation_with(ray(-2*B));
-  
+
 #if NOISY
   print_constraints(oct, "*** oct ***");
   cout << "oct.relation_with(ray(-2*B)) == " << rel << endl;
 #endif
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::subsumes();
-  
-  if (rel != known_result) 
+
+  if (rel != known_result)
     exit(1);
 }
 
@@ -79,5 +79,5 @@ int main() TRY {
   test2();
 
   return 0;
-} 
+}
 CATCH
