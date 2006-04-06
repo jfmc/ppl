@@ -1,4 +1,4 @@
-/* Different ways of creating an universe Octagon.
+/* Test Octagon::is_universe().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,42 +22,62 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
+bool
+test01() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
 
-  TOctagon oc1(4);
-  TOctagon oc2(4);
+  TOctagon oc(4);
+  oc.add_constraint(-x <= 4);
+  oc.add_constraint(y - x <= 0);
+  oc.add_constraint(x - y <= -5);
 
+  bool universe = oc.is_universe();
 
-  oc1.add_constraint(-x <= 4);
-  oc1.add_constraint(y - x <= 0);
-  oc1.add_constraint(x - y <= -5);
+  nout << "*** oc.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
 
-  bool universe = oc1.is_universe();
-
-#if NOISY
-  cout << "*** oc1.is_universe() ***" << endl;
-  cout << (universe ? "true" : "false") << endl;
-#endif
-
-  bool universe1 = oc2.is_universe();
-
-#if NOISY
-  cout << "*** oc2.is_universe() ***" << endl;
-  cout << (universe1 ? "true" : "false") << endl;
-#endif
-
-  return (universe != universe1) ? 0 : 1;
-
+  return !universe;
 }
-CATCH
+
+bool
+test02() {
+  TOctagon oc(4);
+
+  bool universe = oc.is_universe();
+
+  nout << "*** oc.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return universe;
+}
+
+bool
+test03() {
+  Variable x(0);
+  Variable y(1);
+
+  TOctagon oc(3);
+  oc.add_constraint(x >= 1);
+  oc.add_constraint(y >= 1);
+  oc.add_constraint(x <= 4);
+  oc.add_constraint(y <= 4);
+
+  bool universe = oc.is_universe();
+
+  nout << "*** oc.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return !universe;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+END_MAIN

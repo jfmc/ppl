@@ -85,7 +85,7 @@ ORIGINAL_TESTS = \
 	removespacedims4 removespacedims5 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	timeelapse6 timeelapse7 timeelapse8 timeelapse9 \
-	universe1 universe2 \
+	universe1 \
 	writeoctagon1 writeoctagon2 writeoctagon3
 
 #
@@ -254,7 +254,6 @@ timeelapse8_SOURCES = timeelapse8.cc
 timeelapse9_SOURCES = timeelapse9.cc
 
 universe1_SOURCES = universe1.cc
-universe2_SOURCES = universe2.cc
 
 writeoctagon1_SOURCES = writeoctagon1.cc
 writeoctagon2_SOURCES = writeoctagon2.cc
