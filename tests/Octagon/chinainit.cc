@@ -29,7 +29,7 @@ using namespace Parma_Polyhedra_Library;
 #ifndef NOISY
 #define NOISY 0
 #endif
-#include "PFunction.hh"
+#include "Partial_Function.defs.hh"
 
 #if NOISY
 static void
@@ -58,7 +58,7 @@ init(dimension_type num_vars) {
 
 int
 main() TRY {
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
   function.insert(3, 2);

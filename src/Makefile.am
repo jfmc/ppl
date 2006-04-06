@@ -255,6 +255,7 @@ BD_Shape.templates.hh \
 OR_Matrix.defs.hh \
 OR_Matrix.inlines.hh \
 Octagon.defs.hh \
+Og_Status.inlines.hh \
 Octagon.inlines.hh \
 Octagon.templates.hh \
 Determinate.types.hh \
@@ -274,7 +275,8 @@ algorithms.hh
 NESTED_INCLUDE_FILES = \
 Ph_Status.idefs.hh \
 Grid_Status.idefs.hh \
-BDS_Status.idefs.hh
+BDS_Status.idefs.hh \
+Og_Status.idefs.hh
 
 libppl_la_SOURCES = \
 Bounding_Box.cc \

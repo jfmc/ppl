@@ -29,11 +29,10 @@ using namespace Parma_Polyhedra_Library;
 #ifndef NOISY
 #define NOISY 0
 #endif
-#include "PFunction.hh"
 
 #if NOISY
 static void
-print_function(const PFunction& function, const string& intro = "",
+print_function(const Partial_Function& function, const string& intro = "",
 	       ostream& s = cout) {
   if (!intro.empty())
     s << intro << endl;
@@ -44,7 +43,7 @@ print_function(const PFunction& function, const string& intro = "",
 
 static void
 test1() {
-  PFunction function;
+  Partial_Function function;
 
   TOctagon oc1(3);
 
@@ -69,7 +68,7 @@ test1() {
 
 static void
 test2() {
-  PFunction function;
+  Partial_Function function;
 
   TOctagon oc1(3, EMPTY);
 
@@ -94,7 +93,7 @@ test2() {
 
 static void
 test3() {
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
 
@@ -125,7 +124,7 @@ test4() {
   Variable y(1);
   Variable z(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 0);
   function.insert(2, 1);
 
@@ -162,7 +161,7 @@ test5() {
   Variable y(1);
   Variable z(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(2, 0);
 
   Constraint_System cs;
@@ -208,7 +207,7 @@ test6() {
   Variable y(1);
   Variable z(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(2, 1);
   function.insert(1, 0);
 
@@ -248,7 +247,7 @@ test6() {
 
 static void
 test7() {
-  PFunction function;
+  Partial_Function function;
 
   TOctagon oc1;
 
@@ -277,7 +276,7 @@ test8() {
   Variable y(1);
   Variable z(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(2, 1);
   function.insert(1, 0);
   function.insert(0, 2);

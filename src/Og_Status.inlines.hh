@@ -149,32 +149,32 @@ Octagon<T>::Status::OK() const {
 namespace Implementation {
  
 namespace Octagons {
-  // These are the keywords that indicate the individual assertions.
-  const std::string zero_dim_univ = "ZE";
-  const std::string empty = "EM";
-  const std::string strong_closed = "SC";
-  const char yes = '+';
-  const char no = '-';
-  const char sep = ' ';
-    
-  /*! \relates Parma_Polyhedra_Library::Octagon<T>::Status
-    Reads a keyword and its associated on/off flag from \p s.
-    Returns <CODE>true</CODE> if the operation is successful,
-    returns <CODE>false</CODE> otherwise.
-    When successful, \p positive is set to <CODE>true</CODE> if the flag
-    is on; it is set to <CODE>false</CODE> otherwise.
-  */
-  bool
-  get_field(std::istream& s, const std::string& keyword, bool& positive) {
-    std::string str;
-    if (!(s >> str)
-	|| (str[0] != yes && str[0] != no)
-	|| str.substr(1) != keyword)
-      return false;
-    positive = (str[0] == yes);
-    return true;
-  }
-    
+// These are the keywords that indicate the individual assertions.
+const std::string zero_dim_univ = "ZE";
+const std::string empty = "EM";
+const std::string strong_closed = "SC";
+const char yes = '+';
+const char no = '-';
+const char sep = ' ';
+
+/*! \relates Parma_Polyhedra_Library::Octagon<T>::Status
+  Reads a keyword and its associated on/off flag from \p s.
+  Returns <CODE>true</CODE> if the operation is successful,
+  returns <CODE>false</CODE> otherwise.
+  When successful, \p positive is set to <CODE>true</CODE> if the flag
+  is on; it is set to <CODE>false</CODE> otherwise.
+*/
+inline bool
+get_field(std::istream& s, const std::string& keyword, bool& positive) {
+  std::string str;
+  if (!(s >> str)
+      || (str[0] != yes && str[0] != no)
+      || str.substr(1) != keyword)
+    return false;
+  positive = (str[0] == yes);
+  return true;
+}
+
 } // namespace Octagons
 
 } // namespace Implementation

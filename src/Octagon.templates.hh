@@ -276,6 +276,8 @@ Octagon<T>::is_transitively_reduced() const {
 template <typename T>
 Poly_Con_Relation
 Octagon<T>::relation_with(const Constraint& c) const {
+  using Implementation::BD_Shapes::div_round_up;
+
   dimension_type c_space_dim = c.space_dimension();
 
   // Dimension-compatibility check.
@@ -456,7 +458,7 @@ Octagon<T>::relation_with(const Generator& g) const {
     const bool dimension_incompatible = x.space_dimension() > g_space_dim;
     N negated_c_i_ii;
     const bool is_unary_equality
-      = assign_neg(negated_c_i_ii, c_i_ii, ROUND_IGNORE) == V_EQ
+      = neg_assign_r(negated_c_i_ii, c_i_ii, ROUND_NOT_NEEDED) == V_EQ
       && negated_c_i_ii == c_ii_i;
     if (is_unary_equality) {
       // The constraint has form ax = b.
@@ -524,11 +526,11 @@ Octagon<T>::relation_with(const Generator& g) const {
       // FIXME! Find better names.
       N negated_c_ii_jj;
       const bool is_binary_equality
-	= assign_neg(negated_c_ii_jj, c_ii_jj, ROUND_IGNORE) == V_EQ
+	= neg_assign_r(negated_c_ii_jj, c_ii_jj, ROUND_NOT_NEEDED) == V_EQ
 	&& negated_c_ii_jj == c_i_j;
       N negated_c_i_jj;
       const bool is_a_binary_equality
-	= assign_neg(negated_c_i_jj, c_i_jj, ROUND_IGNORE) == V_EQ
+	= neg_assign_r(negated_c_i_jj, c_i_jj, ROUND_NOT_NEEDED) == V_EQ
 	&& negated_c_i_jj == c_ii_j;
 
       Coefficient g_coefficient_y;
@@ -1281,7 +1283,7 @@ Octagon<T>::strong_closure_assign5() const {
 	    N sub_sum;
 	    add_assign_r(sub_sum, x_i_ci, x_cj_j, ROUND_UP);
 	    N d;
-	    div_assign_r(d, sub_sum, 2, ROUND_UP);
+	    div2exp_assign_r(d, sub_sum, 1, ROUND_UP);
 	    assign_min(x_i_j, d);
 	  }
 	}
@@ -1321,7 +1323,10 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
   for (typename OR_Matrix<N>::row_iterator i = x.matrix.row_begin(),
 	 m_end = x.matrix.row_end(); i != m_end; ++i) {
     typename OR_Matrix<N>::row_reference_type r = *i;
-    r[i.index()] = 0;
+    assert(is_plus_infinity(r[i.index()]));
+    assign_r(r[i.index()], 0, ROUND_NOT_NEEDED);
+
+//     r[i.index()] = 0;
   }
 
   // This algorithm uses the incremental Floyd-Warshall algorithm.
@@ -1625,7 +1630,7 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       N sub_sum1;
       add_assign_r(sub_sum1, x_v_cv, x_ci_i, ROUND_UP);
       N d;
-      div_assign_r(d, sub_sum1, 2, ROUND_UP);
+      div2exp_assign_r(d, sub_sum1, 1, ROUND_UP);
       assign_min(x_v_i, d);
     }
     // Avoid to do unnecessary sums.
@@ -1633,7 +1638,7 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       N sub_sum2;
       add_assign_r(sub_sum2, x_cv_v, x_ci_i, ROUND_UP);
       N d;
-      div_assign_r(d, sub_sum2, 2, ROUND_UP);
+      div2exp_assign_r(d, sub_sum2, 1, ROUND_UP);
       assign_min(x_cv_i, d);
     }
   }
@@ -1652,7 +1657,7 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       N sub_sum1;
       add_assign_r(sub_sum1, x_v_cv, x_ci_i, ROUND_UP);
       N d;
-      div_assign_r(d, sub_sum1, 2, ROUND_UP);
+      div2exp_assign_r(d, sub_sum1, 1, ROUND_UP);
       assign_min(x_ci_cv, d);
     }
     // Avoid to do unnecessary sums.
@@ -1660,7 +1665,7 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
       N sub_sum2;
       add_assign_r(sub_sum2, x_cv_v, x_ci_i, ROUND_UP);
       N d;
-      div_assign_r(d, sub_sum2, 2, ROUND_UP);
+      div2exp_assign_r(d, sub_sum2, 1, ROUND_UP);
       assign_min(x_ci_v, d);
     }
   }
@@ -1784,7 +1789,7 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
 	    N sub_sum;
 	    add_assign_r(sub_sum, x_i_ci, x_cj_j, ROUND_UP);
 	    N d;
-	    div_assign_r(d, sub_sum, 2, ROUND_UP);
+	    div2exp_assign_r(d, sub_sum, 1, ROUND_UP);
 	    assign_min(x_i_j, d);
 	  }
 	}
@@ -1799,9 +1804,15 @@ Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
 	 m_end = x.matrix.row_end(); i != m_end; ++i) {
     typename OR_Matrix<N>::row_reference_type r = *i;
     N& x_i_i = r[i.index()];
-    if (x_i_i < 0)
+    if (x_i_i < 0) {
       x.status.set_empty();
-    x_i_i = PLUS_INFINITY;
+      return;
+    }
+    else {
+      assert(x_i_i == 0);
+      // Restore PLUS_INFINITY on the main diagonal.
+      x_i_i = PLUS_INFINITY;
+    }
   }
 
   assert(OK());
@@ -1961,7 +1972,7 @@ Octagon<T>::incremental_strong_closure_assign1(Variable var) const {
 	    N sum;
 	    add_assign_r(sum, x_i_ci, x_cj_j, ROUND_UP);
 	    N d;
-	    div_assign_r(d, sum, 2, ROUND_UP);
+	    div2exp_assign_r(d, sum, 1, ROUND_UP);
 	    assign_min(x_i_j, d);
 	  }
 	}
@@ -2004,7 +2015,9 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
   for (typename OR_Matrix<N>::row_iterator i = x.matrix.row_begin(),
 	 m_end = x.matrix.row_end(); i != m_end; ++i) {
     typename OR_Matrix<N>::row_reference_type r = *i;
-    r[i.index()] = 0;
+    assert(is_plus_infinity(r[i.index()]));
+    assign_r(r[i.index()], 0, ROUND_NOT_NEEDED);
+    //    r[i.index()] = 0;
   }
 
   // This algorithm uses the incremental Floyd-Warshall algorithm.
@@ -2158,7 +2171,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	    N sum;
 	    add_assign_r(sum, x_i_ci, x_cj_j, ROUND_UP);
 	    N d;
-	    div_assign_r(d, sum, 2, ROUND_UP);
+	    div2exp_assign_r(d, sum, 1, ROUND_UP);
 	    assign_min(x_i_j, d);
 	  }
 	}
@@ -2230,10 +2243,10 @@ Octagon<T>::transitive_reduction_assign() const {
     for (dimension_type j = 0; j < i; ++j) {
       dimension_type cj = coherent_index(j);
       N neg_m_ci_cj;
-      assign_neg(neg_m_ci_cj, m_ci[cj], ROUND_DOWN);
+      neg_assign_r(neg_m_ci_cj, m_ci[cj], ROUND_DOWN);
       // Check for zero-equivalence.
       N neg_up_m_ci_cj;
-      assign_neg(neg_up_m_ci_cj, m_ci[cj], ROUND_UP);
+      neg_assign_r(neg_up_m_ci_cj, m_ci[cj], ROUND_UP);
       if (neg_m_ci_cj == neg_up_m_ci_cj &&
 	  neg_m_ci_cj == m_i[j]) {
 	dimension_type& ld_i = leader[i];
@@ -2253,10 +2266,10 @@ Octagon<T>::transitive_reduction_assign() const {
     for (dimension_type j = 0; j < i; ++j) {
       dimension_type cj = coherent_index(j);
       N neg_m_ci_cj;
-      assign_neg(neg_m_ci_cj, m_ci[cj], ROUND_DOWN);
+      neg_assign_r(neg_m_ci_cj, m_ci[cj], ROUND_DOWN);
       // Check for zero-equivalence.
       N neg_up_m_ci_cj;
-      assign_neg(neg_up_m_ci_cj, m_ci[cj], ROUND_UP);
+      neg_assign_r(neg_up_m_ci_cj, m_ci[cj], ROUND_UP);
       if (neg_m_ci_cj == neg_up_m_ci_cj &&
 	  neg_m_ci_cj == m_i[j])
 	next[j] = i;
@@ -2392,7 +2405,7 @@ Octagon<T>::transitive_reduction_assign() const {
 	  else {
 	    N sum;
 	    add_assign_r(sum, m_i_ci, m_cj_j, ROUND_UP);
-	    div_assign_r(d, sum, 2, ROUND_UP);
+	    div2exp_assign_r(d, sum, 1, ROUND_UP);
 	  }
 	  if(ci != j)
 	    // Checks if the constraint is obtainable by strong-coherence.
@@ -2871,7 +2884,8 @@ Octagon<T>::CC76_extrapolation_assign(const Octagon& y,
       Iterator k = std::lower_bound(first, last, elem);
       if (k != last) {
 	if (elem < *k)
-	  elem = *k;
+	  //	  elem = *k;
+	  assign_r(elem, *k, ROUND_UP);
       }
       else
 	elem = PLUS_INFINITY;
@@ -2887,6 +2901,8 @@ template <typename T>
 void
 Octagon<T>::get_limiting_octagon(const Constraint_System& cs,
 				 Octagon& limiting_octagon) const {
+  using Implementation::BD_Shapes::div_round_up;
+
   const dimension_type cs_space_dim = cs.space_dimension();
   // Private method: the caller has to ensure the following.
   assert(cs_space_dim <= space_dim);
@@ -3202,7 +3218,7 @@ Octagon<T>::affine_image(const Variable var,
   const dimension_type k = matrix.row_size(n_var);
 
 //   TEMP_INTEGER(minus_den);
-//   neg_assign_r(minus_den, denominator, ROUND_IGNORE);
+//   neg_assign_r(minus_den, denominator, ROUND_NOT_NEEDED);
   Coefficient minus_den = -denominator;
   if (t == 0) {
     // Case 1: expr == b.
@@ -3318,29 +3334,30 @@ Octagon<T>::affine_image(const Variable var,
 	typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
 	// Remove all constraints on `var'.
 	forget_all_octagonal_constraints(i, n_var);
+	dimension_type h = 2*w;
 	// Add the new constraint `var - w = b/denominator'.
 	if (coeff == denominator) {
 	  if (num_var < w) {
-	    typename OR_Matrix<N>::row_iterator j = matrix.row_begin() + 2*w;
+	    typename OR_Matrix<N>::row_iterator j = matrix.row_begin() + h;
 	    add_octagonal_constraint(j, num_var, b, denominator);
 	    add_octagonal_constraint(j+1, num_var+1, b, minus_den);
 	  }
 	  else if (num_var > w) {
-	    add_octagonal_constraint(i+1, w+1, b, denominator);
-	    add_octagonal_constraint(i, w, b, minus_den);
+	    add_octagonal_constraint(i+1, h+1, b, denominator);
+	    add_octagonal_constraint(i, h, b, minus_den);
 	  }
 	}
 	else {
 	// Add the new constraint `var + w = b/denominator'.
 	  if (num_var < w) {
-	    typename OR_Matrix<N>::row_iterator j = matrix.row_begin() + 2*w;
+	    typename OR_Matrix<N>::row_iterator j = matrix.row_begin() + h;
 	    add_octagonal_constraint(j+1, num_var, b, denominator);
 	    add_octagonal_constraint(j, num_var+1, b, minus_den);
 	  }
 	  else if (num_var > w) {
 	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-	    add_octagonal_constraint(i+1, w, b, denominator);
-	    add_octagonal_constraint(i, w+1, b, minus_den);
+	    add_octagonal_constraint(i+1, h, b, denominator);
+	    add_octagonal_constraint(i, h+1, b, minus_den);
 	  }
 	}
 	status.reset_strongly_closed();
@@ -3363,7 +3380,7 @@ Octagon<T>::affine_image(const Variable var,
 //     // `expr'.
   const bool is_sc = (denominator > 0);
   TEMP_INTEGER(minus_b);
-  neg_assign_r(minus_b, b, ROUND_IGNORE);
+  neg_assign_r(minus_b, b, ROUND_NOT_NEEDED);
 
   // const Coefficient& minus_b = -b;
   const Coefficient& sc_b = is_sc ? b : minus_b;
@@ -3432,7 +3449,7 @@ Octagon<T>::affine_image(const Variable var,
     }
     else if (sign_i < 0) {
       TEMP_INTEGER(minus_sc_i);
-      neg_assign_r(minus_sc_i, sc_i, ROUND_IGNORE);
+      neg_assign_r(minus_sc_i, sc_i, ROUND_NOT_NEEDED);
       //      Coefficient minus_sc_i = - sc_i;
       N minus_coeff_i;
       assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
@@ -3444,7 +3461,7 @@ Octagon<T>::affine_image(const Variable var,
 	  div2exp_assign_r(up_approx_minus_i,
 			   double_up_approx_minus_i, 1, ROUND_UP);
 	  add_mul_assign_r(pos_sum,
-			 minus_coeff_i, up_approx_minus_i, ROUND_UP);
+			   minus_coeff_i, up_approx_minus_i, ROUND_UP);
 	}
 	else {
 	  ++pos_pinf_count;
@@ -3496,7 +3513,6 @@ Octagon<T>::affine_image(const Variable var,
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
       N double_pos_sum = pos_sum;
-      //      double_pos_sum *= two;
       mul2exp_assign_r(double_pos_sum, pos_sum, 1, ROUND_IGNORE);
       typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var+1;
       typename OR_Matrix<N>::row_reference_type r = *i;
@@ -3700,6 +3716,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 				     const Linear_Expression&  expr ,
 				     Coefficient_traits::const_reference
 				     denominator) {
+  using Implementation::BD_Shapes::div_round_up;
 
   // The denominator cannot be zero.
   if (denominator == 0)
@@ -3992,7 +4009,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 	      if (up_sum_ninf)
 		if (!is_plus_infinity(m_j1_j0)) {
 		  N c;
-		  div_assign_r(c, m_j1_j0, 2, ROUND_UP);
+		  div2exp_assign_r(c, m_j1_j0, 1, ROUND_UP);
 		  Coefficient a;
 		  Coefficient b;
 		  //		  c.numer_denom(a, b);
@@ -4030,7 +4047,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 	      if (up_sum_ninf)
 		if (!is_plus_infinity(m_j0_j1)) {
 		  N c;
-		  div_assign_r(c, m_j0_j1, 2, ROUND_UP);
+		  div2exp_assign_r(c, m_j0_j1, 1, ROUND_UP);
 		  Coefficient a;
 		  Coefficient b;
 		  Implementation::Octagons::numer_denom(c, a, b);
@@ -4098,7 +4115,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 		  Coefficient b;
 		  N c1;
 		  N div;
-		  div_assign_r(div, m_j0_j1, 2, ROUND_UP);
+		  div2exp_assign_r(div, m_j0_j1, 1, ROUND_UP);
 		  neg_assign_r(c1, div, ROUND_DOWN);
 		  Implementation::Octagons::numer_denom(c1, a, b);
 		  if (dnm1 % b == 0) {
@@ -4125,7 +4142,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 		if (!is_plus_infinity(m_j1_j0)) {
 		  N c1;
 		  N div;
-		  div_assign_r(div, m_j1_j0, 2, ROUND_UP);
+		  div2exp_assign_r(div, m_j1_j0, 1, ROUND_UP);
 		  neg_assign_r(c1, div, ROUND_DOWN);
 		  Coefficient a;
 		  Coefficient b;
@@ -4620,9 +4637,9 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 	  else
 	    s << ", ";
 	  N half_up_c_ii_i;
-	  div_assign_r(half_up_c_ii_i, c_ii_i, 2, ROUND_UP);
+	  div2exp_assign_r(half_up_c_ii_i, c_ii_i, 1, ROUND_UP);
 	  N half_dw_c_ii_i;
-	  div_assign_r(half_dw_c_ii_i, c_ii_i, 2, ROUND_DOWN);
+	  div2exp_assign_r(half_dw_c_ii_i, c_ii_i, 1, ROUND_DOWN);
 	  if (half_up_c_ii_i == half_dw_c_ii_i)
 	    s << v_i << " == " << half_up_c_ii_i;
 	  else {
@@ -4641,7 +4658,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 	    s << v_i;
 	    //	    N half_c_i_ii = negate_round_down(div_round_up(c_i_ii, 2));
 	    N half_up_c_i_ii;
-	    div_assign_r(half_up_c_i_ii, c_i_ii, 2, ROUND_UP);
+	    div2exp_assign_r(half_up_c_i_ii, c_i_ii, 1, ROUND_UP);
 	    N half_c_i_ii;
 	    neg_assign_r(half_c_i_ii, half_up_c_i_ii, ROUND_DOWN);
 	    s << " >= " << half_c_i_ii;
@@ -4654,7 +4671,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 	      s << ", ";
 	    s << v_i;
 	    N half_c_ii_i;
-	    div_assign_r(half_c_ii_i, c_ii_i, 2, ROUND_UP);
+	    div2exp_assign_r(half_c_ii_i, c_ii_i, 1, ROUND_UP);
 	    s << " <= " << half_c_ii_i;
 	  }
 	}
