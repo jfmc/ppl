@@ -59,7 +59,7 @@ main() TRY {
 
   TOctagon known_result = init(6);
 
-  for (dimension_type i = 10; i < 100; ++i) {
+  for (dimension_type i = 10; i < 50; ++i) {
     TOctagon oc = init(i);
     oc.map_space_dimensions(function);
     if (oc != known_result) {

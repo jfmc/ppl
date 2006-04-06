@@ -86,7 +86,7 @@ init1(dimension_type n_vars) {
 
 int
 main() TRY {
-  for (dimension_type i = 10; i < 30; ++i) {
+  for (dimension_type i = 10; i < 20; ++i) {
     TOctagon oc1 = init(i);
     TOctagon oc2 = init1(i);
     TOctagon known_result = init1(i);
