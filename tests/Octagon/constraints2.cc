@@ -1,6 +1,6 @@
 /* Test Octagon::constraints(): we compute the system of constraints
    of an octagon that is declared empty.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

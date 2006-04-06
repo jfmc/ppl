@@ -1,7 +1,7 @@
 /* Test Octagon::add_space_dimensions_and_embed() and
    Octagon::add_space_dimensions_and_project(): the number of dimensions
    to add is zero.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
