@@ -47,7 +47,7 @@ test01() {
   known_result.add_constraint(-y <= -2);
   known_result.add_constraint(x - y <= 4);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -82,7 +82,7 @@ test02() {
   known_result.add_constraint(z - x <= 0);
   known_result.add_constraint(y - z <= -1);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -120,7 +120,7 @@ test03() {
   known_result.add_constraint(y - x <= -1);
   known_result.add_constraint(x - y <= 1);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -152,7 +152,7 @@ test04() {
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -184,7 +184,7 @@ test05() {
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2, "*** bd2.intersection_assign(bd1) ***");
 
@@ -203,7 +203,7 @@ test06() {
 
   BD_Shape<mpq_class> known_result;
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -230,7 +230,7 @@ test07() {
 
   bd1.intersection_assign(bd2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 
@@ -256,7 +256,7 @@ test08() {
 
   bd1.intersection_assign_and_minimize(bd2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
 

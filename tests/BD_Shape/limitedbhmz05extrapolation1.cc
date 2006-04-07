@@ -53,7 +53,7 @@ test01() {
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(y >= 3);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
 		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ****");
@@ -99,7 +99,7 @@ test02() {
   known_result.add_constraint(y - x <= 0);
   known_result.add_constraint(x >= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
 		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
@@ -141,7 +141,7 @@ test03() {
 
   BD_Shape<mpq_class> known_result(bd2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
 		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
@@ -184,7 +184,7 @@ test04() {
 
   bd1.limited_BHMZ05_extrapolation_assign(bd2, cs);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
 		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
@@ -206,7 +206,7 @@ test05() {
 
   BD_Shape<mpq_class> known_result;
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
 		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
@@ -257,7 +257,7 @@ test06() {
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(z <= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
 		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
@@ -303,7 +303,7 @@ test07() {
   known_result.add_constraint(y - x <= 0);
   known_result.add_constraint(x == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
 		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
@@ -354,7 +354,7 @@ test08() {
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(z <= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
 		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");
@@ -405,7 +405,7 @@ test09() {
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(z <= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
 		    "*** bd1.limited_BHMZ05_extrapolation_assign(bd2) ***");

@@ -42,7 +42,7 @@ test01() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(x, y) ***");
 
@@ -68,7 +68,7 @@ test02() {
   known_result.add_constraint(x - y <= 7);
   known_result.add_constraint(x <= 6);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(x, x + 4) ***");
 
@@ -93,7 +93,7 @@ test03() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x == 4);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(x, 4) ***");
 
@@ -116,7 +116,7 @@ test04() {
 
   bd1.affine_image(x, x);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(x, x) ***");
 
@@ -142,7 +142,7 @@ test05() {
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(x, 2*x - 2, 2) ***");
 
@@ -167,7 +167,7 @@ test06() {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y - x == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(y, 2*x, 2) ***");
 
@@ -192,7 +192,7 @@ test07() {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y - x == 1);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_image(y, 3*x + 3, 3) ***");
 

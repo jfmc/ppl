@@ -52,7 +52,7 @@ test01() {
   known_result.add_constraint(x2 <= 2);
   known_result.add_constraint(x4 <= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.remove_space_dimensions({x3,x5}) ***");
 

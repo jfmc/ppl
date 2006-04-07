@@ -352,7 +352,7 @@ test10() {
   known_result.add_constraint(y >= 3);
   known_result.add_constraint(y - x >= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1,
 		    "*** bd1.limited_CC76_extrapolation_assign(bd2) ***");
