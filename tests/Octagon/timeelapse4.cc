@@ -42,7 +42,7 @@ main() TRY {
   oc2.add_constraint(x >= 3);
   oc2.add_constraint(y >= 2);
 
-  TOctagon known_result(oc2);
+  Octagon<mpq_class> known_result(oc2);
 
 #if NOISY
   print_constraints(oc1, "**** oc1 ****");

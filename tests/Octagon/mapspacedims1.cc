@@ -42,7 +42,7 @@ test1() {
 
   oc1.map_space_dimensions(function);
 
-  TOctagon known_result;
+  Octagon<mpq_class> known_result;
 
   bool ok = (oc1 == known_result);
 
@@ -67,7 +67,7 @@ test2() {
 
   oc1.map_space_dimensions(function);
 
-  TOctagon known_result(0, EMPTY);
+  Octagon<mpq_class> known_result(0, EMPTY);
 
   bool ok = (oc1 == known_result);
 
@@ -94,7 +94,7 @@ test3() {
 
   oc1.map_space_dimensions(function);
 
-  TOctagon known_result(2, EMPTY);
+  Octagon<mpq_class> known_result(2, EMPTY);
 
   bool ok = (oc1 == known_result);
 
@@ -129,7 +129,7 @@ test4() {
 
   oc1.map_space_dimensions(function);
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
   known_result.add_constraint(x == 1);
   known_result.add_constraint(y - x <= 3);
 
@@ -167,7 +167,7 @@ test5() {
 
  oc1.map_space_dimensions(function);
 
-  TOctagon known_result(1);
+  Octagon<mpq_class> known_result(1);
   known_result.add_constraint(x <= 4);
 
 #if NOISY
@@ -215,7 +215,7 @@ test6() {
 
   oc1.map_space_dimensions(function);
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y - x <= 7);
@@ -246,7 +246,7 @@ test7() {
 
   oc1.map_space_dimensions(function);
 
-  TOctagon known_result;
+  Octagon<mpq_class> known_result;
 
   bool ok = (oc1 == known_result);
 
@@ -283,7 +283,7 @@ test8() {
   print_constraints(oc1, "*** oc1 ***");
 #endif
 
-  TOctagon known_result(3, EMPTY);
+  Octagon<mpq_class> known_result(3, EMPTY);
   if (known_result != oc1)
     cout << "The oc1 is not empty!" << endl;
 

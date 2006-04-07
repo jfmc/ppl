@@ -49,7 +49,7 @@ tests1() {
 
   oc.affine_image(A, expr, 1);
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C >= 1);
@@ -83,7 +83,7 @@ tests2() {
 
   oc.affine_image(A, expr, 1);
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C <= 1);
 
@@ -117,7 +117,7 @@ tests3() {
 
   oc.affine_image(A, expr, 1);
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C <= 1);
   known_result.add_constraint(A <= -2);
@@ -153,7 +153,7 @@ tests4() {
 
   oc.affine_image(A, expr, 1);
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C <= 1);
   known_result.add_constraint(A <= -2);
@@ -196,7 +196,7 @@ tests5() {
 
   oc.affine_image(A, expr, 1);
 
-  TOctagon known_result(4);
+  Octagon<mpq_class> known_result(4);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C <= 1);
   known_result.add_constraint(D >= 1);

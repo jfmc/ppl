@@ -54,7 +54,7 @@ main() TRY {
   oc2.add_constraint(F + E <= 2);
   oc2.add_constraint(E - F <= 8);
 
-  TOctagon known_result(6);
+  Octagon<mpq_class> known_result(6);
 
 #if NOISY
   print_constraints(oc1, "**** oc1 ****");

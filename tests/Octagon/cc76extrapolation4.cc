@@ -36,7 +36,7 @@ test1() {
 
   TOctagon oct2(0, EMPTY);
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
 #if NOISY
   print_constraints(oct1, "*** oct1 ***");
@@ -63,7 +63,7 @@ test2() {
 
   TOctagon oct2(2, EMPTY);
 
-  TOctagon known_result(oct2);
+  Octagon<mpq_class> known_result(oct2);
 
 #if NOISY
   print_constraints(oct1, "*** oct1 ***");
@@ -96,7 +96,7 @@ test3() {
   oct2.add_constraint(A - B >= 2);
   oct2.add_constraint(B - A >= 1);
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
 #if NOISY
   print_constraints(oct1, "*** oct1 ***");
@@ -129,7 +129,7 @@ test4() {
   oct2.add_constraint(B == -1);
 
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
 
 #if NOISY
   print_constraints(oct1, "*** oct1 ***");
@@ -163,7 +163,7 @@ test5() {
   oct2.add_constraint(C <= 3);
   oct2.add_constraint(B >= 3);
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(B >= 1);
   known_result.add_constraint(C - B <= 2);
 

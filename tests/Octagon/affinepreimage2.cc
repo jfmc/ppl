@@ -47,7 +47,7 @@ main() TRY {
   Linear_Expression expr(B - 1);
   oc.affine_preimage(A, expr);
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
   known_result.add_constraint(B >= 0);
 
   int retval = (oc == known_result) ? 0 : 1;

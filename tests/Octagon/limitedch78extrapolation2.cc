@@ -60,7 +60,7 @@ main() TRY {
   TOctagon computed_result = oct1;
   computed_result.limited_CH78_extrapolation_assign(oct2, cs);
 
-  TOctagon known_result(1);
+  Octagon<mpq_class> known_result(1);
   known_result.add_constraint(x >= 0);
 
 #if NOISY

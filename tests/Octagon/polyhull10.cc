@@ -89,7 +89,7 @@ main() TRY {
   for (dimension_type i = 10; i < 20; ++i) {
     TOctagon oc1 = init(i);
     TOctagon oc2 = init1(i);
-    TOctagon known_result = init1(i);
+    Octagon<mpq_class> known_result = init1(i);
     oc1.poly_hull_assign(oc2);
     if (oc1 != known_result) {
 #if NOISY

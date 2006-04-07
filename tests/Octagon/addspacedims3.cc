@@ -51,7 +51,7 @@ main() TRY {
 
   oc.add_space_dimensions_and_project(2);
 
-  TOctagon known_result(4);
+  Octagon<mpq_class> known_result(4);
   known_result.add_constraint(z == 0);
   known_result.add_constraint(w == 0);
   known_result.add_constraint(x >= 2);

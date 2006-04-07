@@ -50,7 +50,7 @@ main() TRY {
   oc2.add_constraint(y >= 4);
   oc2.add_constraint(z >= 2);
 
-  TOctagon known_result(3, EMPTY);
+  Octagon<mpq_class> known_result(3, EMPTY);
 
 #if NOISY
   print_constraints(oc1, "**** oc1 ****");

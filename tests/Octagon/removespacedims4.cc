@@ -52,7 +52,7 @@ main() TRY {
   oc.remove_space_dimensions(to_be_removed);
 
   // A 7-dim space, empty polyhedron.
-  TOctagon known_result(7, EMPTY);
+  Octagon<mpq_class> known_result(7, EMPTY);
 
   int retval = (known_result == oc) ? 0 : 1;
 

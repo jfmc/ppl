@@ -54,7 +54,7 @@ main() TRY {
   print_constraints(oct2, "*** oct2 ***");
 #endif
 
-  TOctagon known_result(2, EMPTY);
+  Octagon<mpq_class> known_result(2, EMPTY);
 
   oct1.poly_difference_assign(oct2);
 

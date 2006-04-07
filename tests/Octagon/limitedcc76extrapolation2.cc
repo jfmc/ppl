@@ -40,7 +40,7 @@ test1() {
   print_constraints(oct2, "*** oct2 ***");
 #endif
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
   Constraint_System cs;
 
@@ -79,7 +79,7 @@ test2() {
   print_constraints(cs, "*** cs ***");
 #endif
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -115,7 +115,7 @@ test3() {
   print_constraints(cs, "*** cs ***");
 #endif
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -154,7 +154,7 @@ test4() {
   print_constraints(cs, "*** cs ***");
 #endif
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(A <= 5);
   known_result.add_constraint(B >= 1);
 
@@ -194,7 +194,7 @@ test5() {
   print_constraints(cs, "*** cs ***");
 #endif
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
   known_result.add_constraint(B >= 1);
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
@@ -233,7 +233,7 @@ test6() {
   print_constraints(cs, "*** cs ***");
 #endif
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
   known_result.add_constraint(B >= 1);
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
@@ -274,7 +274,7 @@ test7() {
   print_constraints(cs, "*** cs ***");
 #endif
 
-  TOctagon known_result(2, EMPTY);
+  Octagon<mpq_class> known_result(2, EMPTY);
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -313,7 +313,7 @@ test8() {
   print_constraints(cs, "*** cs ***");
 #endif
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -356,7 +356,7 @@ test9() {
   print_constraints(cs, "*** cs ***");
 #endif
 
-  TOctagon known_result(4);
+  Octagon<mpq_class> known_result(4);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(C - D == 5);
 
@@ -397,7 +397,7 @@ test10() {
   print_constraints(cs, "*** cs ***");
 #endif
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 

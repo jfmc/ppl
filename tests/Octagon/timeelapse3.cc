@@ -49,7 +49,7 @@ main() TRY {
 #endif
   oc1.time_elapse_assign(oc2);
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
   known_result.add_constraint(y >= 1);
 
 #if NOISY

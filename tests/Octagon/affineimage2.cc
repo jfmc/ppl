@@ -36,7 +36,7 @@ main() TRY {
   Linear_Expression expr(-y);
 
   TOctagon oc1(3);
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
 
   oc1.add_constraint(x <= 2);
   oc1.add_constraint(x - y <= 3);

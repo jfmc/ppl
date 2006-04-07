@@ -54,7 +54,7 @@ main() TRY {
 
   oct1.remove_higher_space_dimensions(3);
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
 
   known_result.add_constraint(x1 >= 1);
   known_result.add_constraint(x1 + x3 >= 2);

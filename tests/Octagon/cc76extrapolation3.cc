@@ -63,7 +63,7 @@ main() TRY {
 
   oc1.CC76_extrapolation_assign(oc2);
 
-  TOctagon known_result(4);
+  Octagon<mpq_class> known_result(4);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(D >= -1);

@@ -36,7 +36,7 @@ main() TRY {
 
   TOctagon oc1;
   TOctagon oc2(0, EMPTY);
-  TOctagon known_result;
+  Octagon<mpq_class> known_result;
 
 #if NOISY
   print_constraints(oc1, "*** oc1 ***");

@@ -48,7 +48,7 @@ main() TRY {
 
   oc.affine_preimage(B, expr);
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(A >= 2);
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(B >= 2);

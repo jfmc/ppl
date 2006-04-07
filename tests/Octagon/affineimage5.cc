@@ -46,7 +46,7 @@ main() TRY {
   print_constraints(oc1, "*** oc1 ***");
 #endif
 
-  TOctagon known_result(oc1);
+  Octagon<mpq_class> known_result(oc1);
 
   oc1.affine_image(x, expr);
 

@@ -54,7 +54,7 @@ main() TRY {
 
   oct1.poly_hull_assign(oct2);
 
-  TOctagon known_result(oct2);
+  Octagon<mpq_class> known_result(oct2);
 
 #if NOISY
   print_constraints(oct1, "*** oct1.poly_hull_assign(oct2) ***");

@@ -46,7 +46,7 @@ main() TRY {
 
   oct.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A+2);
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B - A >= 2);

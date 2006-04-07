@@ -46,7 +46,7 @@ main() TRY {
   print_constraints(oct, "*** oct ***");
 #endif
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(x >= 2);
   known_result.add_constraint(x <= 5);
   known_result.add_constraint(x - y <= 1);

@@ -49,7 +49,7 @@ main() TRY {
   oc2.add_constraint(y >= 2);
   oc2.add_constraint(z >= 2);
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(x >= 1);
   known_result.add_constraint(y >= 1);
   known_result.add_constraint(z >= 1);

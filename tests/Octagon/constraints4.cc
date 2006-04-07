@@ -34,7 +34,7 @@ test1() {
 
   TOctagon oct1(0, EMPTY);
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
   TOctagon oct2(cs.space_dimension(), EMPTY);
@@ -56,7 +56,7 @@ test2() {
 
   TOctagon oct1(0);
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
   TOctagon oct2(cs);
@@ -83,7 +83,7 @@ test3() {
   oct1.add_constraint(A >= 0);
   oct1.add_constraint(B >= 0);
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
   oct1.contains(oct1);
 
@@ -112,7 +112,7 @@ test4() {
   oct1.add_constraint(A == 0);
   oct1.add_constraint(B >= 1);
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
   oct1.contains(oct1);
 
@@ -141,7 +141,7 @@ test5() {
   oct1.add_constraint(A + B == 0);
   oct1.add_constraint(B <= 1);
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
   oct1.contains(oct1);
 
@@ -172,7 +172,7 @@ test6() {
   oct1.add_constraint(B <= 1);
   oct1.add_constraint(C + A <= 2);
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
   oct1.contains(oct1);
 

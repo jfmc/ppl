@@ -40,7 +40,7 @@ test1() {
   print_constraints(oc2, "*** oc2 ***");
 #endif
 
-  TOctagon known_result(3, EMPTY);
+  Octagon<mpq_class> known_result(3, EMPTY);
 
   oc1.CC76_narrowing_assign(oc2);
 
@@ -65,7 +65,7 @@ test2() {
   print_constraints(oc2, "*** oc2 ***");
 #endif
 
-  TOctagon known_result(0);
+  Octagon<mpq_class> known_result(0);
 
   oc1.CC76_narrowing_assign(oc2);
 
@@ -90,7 +90,7 @@ test3() {
   print_constraints(oc2, "*** oc2 ***");
 #endif
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
 
   oc1.CC76_narrowing_assign(oc2);
 
@@ -115,7 +115,7 @@ test4() {
   print_constraints(oc2, "*** oc2 ***");
 #endif
 
-  TOctagon known_result(0, EMPTY);
+  Octagon<mpq_class> known_result(0, EMPTY);
 
   oc1.CC76_narrowing_assign(oc2);
 
@@ -140,7 +140,7 @@ test5() {
   print_constraints(oc2, "*** oc2 ***");
 #endif
 
-  TOctagon known_result(0);
+  Octagon<mpq_class> known_result(0);
 
   oc1.CC76_narrowing_assign(oc2);
 
@@ -173,7 +173,7 @@ test6() {
   print_constraints(oc2, "*** oc2 ***");
 #endif
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
   known_result.add_constraint(A <= 3);
   known_result.add_constraint(A + B <= 5);
   known_result.add_constraint(A - B <= 0);

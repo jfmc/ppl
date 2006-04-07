@@ -59,7 +59,7 @@ main() TRY {
   TOctagon computed_result = oct2;
   computed_result.CH78_widening_assign(oct1);
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(x >= 0);

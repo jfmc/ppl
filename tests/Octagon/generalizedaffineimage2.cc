@@ -45,7 +45,7 @@ main() TRY {
   print_constraints(oct, "*** oct ***");
 #endif
 
-  TOctagon known_result(oct);
+  Octagon<mpq_class> known_result(oct);
 
   oct.generalized_affine_image(A, EQUAL, A + 2);
 

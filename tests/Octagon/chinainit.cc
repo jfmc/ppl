@@ -57,7 +57,7 @@ main() TRY {
   print_function(function, "*** function ***");
 #endif
 
-  TOctagon known_result = init(6);
+  Octagon<mpq_class> known_result = init(6);
 
   for (dimension_type i = 10; i < 50; ++i) {
     TOctagon oc = init(i);

@@ -43,7 +43,7 @@ main() TRY {
 
   oct.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B + 1);
 
-  TOctagon known_result(2, EMPTY);
+  Octagon<mpq_class> known_result(2, EMPTY);
 
   int retval = (oct == known_result) ? 0 : 1;
 

@@ -46,7 +46,7 @@ test1() {
   if (oct1 != oct2)
     cout << "The two octagons are no-empty!" << endl;
 
-  TOctagon known_result(2, EMPTY);
+  Octagon<mpq_class> known_result(2, EMPTY);
 
   Constraint_System cs;
   cs.insert(A <= 2);
@@ -86,7 +86,7 @@ test2() {
   oct2.add_constraint(A <= 3);
   oct2.add_constraint(A >= 5);
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(C <= 4);
   known_result.add_constraint(B >= 2);
 

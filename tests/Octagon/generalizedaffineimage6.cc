@@ -42,7 +42,7 @@ test1() {
 
   oct.generalized_affine_image(y, LESS_THAN_OR_EQUAL, expr);
 
-  TOctagon known_result(2 , EMPTY);
+  Octagon<mpq_class> known_result(2 , EMPTY);
 
   bool ok = (oct == known_result);
 
@@ -64,7 +64,7 @@ test2() {
   TOctagon oct1(2, EMPTY);
   oct1.generalized_affine_image(x, EQUAL, expr);
 
-  TOctagon known_result(oct1);
+  Octagon<mpq_class> known_result(oct1);
 
 
   bool ok = (oct1 == known_result);
@@ -90,7 +90,7 @@ test3() {
 
   oct.generalized_affine_image(A, LESS_THAN_OR_EQUAL, expr);
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(A <= 3);
 
@@ -116,7 +116,7 @@ test4() {
   oct.add_constraint(A == 0);
   oct.add_constraint(B >= 1);
 
-  TOctagon known_result(oct);
+  Octagon<mpq_class> known_result(oct);
 
   oct.generalized_affine_image(B, EQUAL, expr);
 
@@ -145,7 +145,7 @@ test5() {
 
   oct.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, expr);
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
   known_result.add_constraint(A >= 2);
   known_result.add_constraint(B <= 1);
 
@@ -175,7 +175,7 @@ test6() {
 
   oct.generalized_affine_image(C, LESS_THAN_OR_EQUAL, expr);
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
 
   known_result.add_constraint(A - B == 0);
   known_result.add_constraint(B <= 1);
@@ -208,7 +208,7 @@ test7() {
   oct.add_constraint(B <= 1);
   oct.add_constraint(C + A <= 2);
 
-  TOctagon known_result(oct);
+  Octagon<mpq_class> known_result(oct);
 
   oct.generalized_affine_image(C, EQUAL, expr);
 
@@ -239,7 +239,7 @@ test8() {
 
   oct.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, expr);
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(A - B <= 2);
   known_result.add_constraint(C + A <= 2);
   known_result.add_constraint(A <= 1);
@@ -270,7 +270,7 @@ test9() {
 
   oct.generalized_affine_image(B, LESS_THAN_OR_EQUAL, expr);
 
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(B <= C + 3);
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(C + A <= 2);
@@ -301,7 +301,7 @@ test10() {
   C_Polyhedron ph(oct.constraints());
   ph.generalized_affine_image(B, EQUAL, expr);
 
-  TOctagon known_result(oct);
+  Octagon<mpq_class> known_result(oct);
 
   oct.generalized_affine_image(B, EQUAL, expr);
 

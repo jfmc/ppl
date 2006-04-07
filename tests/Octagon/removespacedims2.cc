@@ -57,7 +57,7 @@ main() TRY {
   oc1.remove_space_dimensions(to_be_removed);
 
 
-  TOctagon known_result(4);
+  Octagon<mpq_class> known_result(4);
 
   known_result.add_constraint(x2 <= 2);
 

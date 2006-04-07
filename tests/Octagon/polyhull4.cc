@@ -37,7 +37,7 @@ main() TRY {
 
   TOctagon oct1(3);
   TOctagon oct2(3);
-  TOctagon known_result(3);
+  Octagon<mpq_class> known_result(3);
 
   oct1.add_constraint(x1 <= 1);
   oct1.add_constraint(- x1 - x2 >= 1);

@@ -46,7 +46,7 @@ main() TRY {
 
   oc.affine_preimage(B, expr);
 
-  TOctagon known_result(2);
+  Octagon<mpq_class> known_result(2);
   known_result.add_constraint(A >= 2);
 
   int retval = (oc == known_result) ? 0 : 1;

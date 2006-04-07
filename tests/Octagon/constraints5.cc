@@ -52,7 +52,7 @@ main() TRY {
   print_constraints(oct1, "*** oct constraints ***");
 #endif
 
-  TOctagon known_result = oct1;
+  Octagon<mpq_class> known_result = oct1;
 
   Constraint_System cs = oct1.constraints();
   TOctagon oct2(cs);
