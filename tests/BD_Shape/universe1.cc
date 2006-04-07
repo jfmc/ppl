@@ -28,30 +28,36 @@ bool
 test01() {
   Variable x(0);
   Variable y(1);
-  // Variable z(2);
 
-  TBD_Shape bd1(4);
-  TBD_Shape bd2(4);
+  TBD_Shape bd(4);
 
-  bd1.add_constraint(-x <= 4);
-  bd1.add_constraint(y - x <= 0);
-  bd1.add_constraint(x - y <= -5);
+  bd.add_constraint(-x <= 4);
+  bd.add_constraint(y - x <= 0);
+  bd.add_constraint(x - y <= -5);
 
-  bool universe1 = bd1.is_universe();
+  bool universe = bd.is_universe();
 
-  nout << "*** bd1.is_universe() ***" << endl;
-  nout << (universe1 ? "true" : "false") << endl;
+  nout << "*** bd.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
 
-  bool universe2 = bd2.is_universe();
+  return !universe;
+}
 
-  nout << "*** bd2.is_universe() ***" << endl;
-  nout << (universe2 ? "true" : "false") << endl;
+bool
+test02() {
+  TBD_Shape bd(4);
 
-  return universe1 != universe2;
+  bool universe = bd.is_universe();
+
+  nout << "*** bd.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return universe;
 }
 
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN
