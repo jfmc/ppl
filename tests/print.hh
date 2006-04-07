@@ -111,6 +111,17 @@ print_constraints(const Parma_Polyhedra_Library::BD_Shape<T>& bd,
   s << bd << std::endl;
 }
 
+template <typename T>
+void
+print_constraints(const Parma_Polyhedra_Library::Octagon<T>& oc,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (!intro.empty())
+    s << intro << std::endl;
+  s << oc << std::endl;
+}
+
 template <typename PH>
 void
 print_constraints(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
