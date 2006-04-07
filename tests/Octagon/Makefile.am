@@ -55,8 +55,7 @@ ORIGINAL_TESTS = \
 	ch78widening9 ch78widening10 ch78widening11 ch78widening12 \
 	ch78widening13 \
 	chinainit \
-	concatenate1 concatenate2 concatenate3 concatenate4  concatenate5 \
-	concatenate6 concatenate7 concatenate8 \
+	concatenate1 \
 	constraints1 constraints2 constraints3 constraints4 constraints5 \
 	contains1 contains2 contains3 contains4 contains5 contains6 \
 	contains7 contains8 \
@@ -151,13 +150,6 @@ ch78widening13_SOURCES = ch78widening13.cc
 chinainit_SOURCES = chinainit.cc
 
 concatenate1_SOURCES = concatenate1.cc
-concatenate2_SOURCES = concatenate2.cc
-concatenate3_SOURCES = concatenate3.cc
-concatenate4_SOURCES = concatenate4.cc
-concatenate5_SOURCES = concatenate5.cc
-concatenate6_SOURCES = concatenate6.cc
-concatenate7_SOURCES = concatenate7.cc
-concatenate8_SOURCES = concatenate8.cc
 
 constraints1_SOURCES = constraints1.cc
 constraints2_SOURCES = constraints2.cc
