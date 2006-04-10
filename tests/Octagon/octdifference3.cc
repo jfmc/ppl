@@ -1,4 +1,4 @@
-/* Test Octagon::poly_difference_assign().
+/* Test Octagon::oct_difference_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -46,13 +46,13 @@ main() TRY {
 #endif
   Octagon<mpq_class> known_result(oct1);
 
-  oct1.poly_difference_assign(oct2);
+  oct1.oct_difference_assign(oct2);
 
   int retval = (oct1 == known_result) ? 0 : 1;
 
 #if NOISY
   print_constraints(oct1,
-		    "**After oct1.poly_difference_assign(oct2)**");
+		    "**After oct1.oct_difference_assign(oct2)**");
 #endif
   return retval;
 }

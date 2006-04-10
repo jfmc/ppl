@@ -1,5 +1,5 @@
-/* Test Octagon::poly_difference_assign(): if `oct1' is
-   contained in `oct2', the result of `oct1.poly_difference_assign(oct2)'
+/* Test Octagon::oct_difference_assign(): if `oct1' is
+   contained in `oct2', the result of `oct1.oct_difference_assign(oct2)'
    is an empty octagon.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -56,12 +56,12 @@ main() TRY {
 
   Octagon<mpq_class> known_result(2, EMPTY);
 
-  oct1.poly_difference_assign(oct2);
+  oct1.oct_difference_assign(oct2);
 
   int retval = (oct1 == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(oct1, "*** After oct1.poly_difference_assign(oct2) ***");
+  print_constraints(oct1, "*** After oct1.oct_difference_assign(oct2) ***");
 #endif
   return retval;
 }
