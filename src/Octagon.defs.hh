@@ -662,13 +662,13 @@ public:
   bool poly_hull_assign_and_minimize(const Octagon& y);
 
   //! \brief
-  //! Assigns to \p *this the \ref poly_difference "poly-difference" of
+  //! Assigns to \p *this the \ref oct_difference "oct-difference" of
   //! \p *this and \p y.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void poly_difference_assign(const Octagon& y);
+  void oct_difference_assign(const Octagon& y);
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine image"
@@ -1122,6 +1122,20 @@ private:
   */
   void get_limiting_octagon(const Constraint_System& cs,
 			    Octagon& limiting_octagon) const;
+  //! Compute the (zero-equivalence classes) next relation.
+  /*!
+    It is assumed that the octagon is not empty and strongly closed.
+  */
+  void compute_nexts(std::vector<dimension_type>& next) const;
+
+  //! Compute the leaders of zero-equivalence classes.
+  /*!
+    It is assumed that the Octagon is not empty and strongly closed.
+  */
+  void compute_leaders(std::vector<dimension_type>& next,
+		       std::vector<dimension_type>& no_sing_leaders,
+		       bool& exist_sing_class,
+		       dimension_type& sing_leader) const;
 
   //! Removes the reduntant constraints.
   void transitive_reduction_assign() const;

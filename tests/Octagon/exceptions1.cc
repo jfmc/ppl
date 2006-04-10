@@ -295,9 +295,9 @@ error11() {
 
   try {
     // This is an incorrect use of function
-    // Octagon::poly_difference_assign(oc2): it is impossible to apply
+    // Octagon::oct_difference_assign(oc2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
-    oc1.poly_difference_assign(oc2);
+    oc1.oct_difference_assign(oc2);
   }
   catch(invalid_argument& e) {
 #if NOISY

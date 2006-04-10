@@ -2185,305 +2185,206 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
   assert(OK());
 }
 
-// FIXME!!!!
+template <typename T>
+void
+Octagon<T>::compute_nexts(std::vector<dimension_type>& next) const {
+  assert(!marked_empty() && marked_strongly_closed());
+  assert(next.size() == 0);
+  // Variables are ordered according to their index.
+  // The vector `next' is used to indicate which variable
+  // immediately follows a given one in the corresponding equivalence class.
+  const dimension_type next_size = matrix.num_rows();
+  // Initially, each variable is next of its own zero-equivalence class.
+  next.reserve(next_size);
+  for (dimension_type i = 0; i < next_size; ++i)
+    next.push_back(i);
+  // Now compute actual nexts.
+  for (dimension_type i = next_size; i-- > 0; )  {
+    typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin()+i;
+    typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
+    typename OR_Matrix<N>::const_row_reference_type m_ci = (i%2) ?
+          *(i_iter-1) : *(i_iter+1);
+    for (dimension_type j = 0; j < i; ++j) {
+    //for (dimension_type j = i; j-- > 0; ) {
+      dimension_type cj = coherent_index(j);
+      N neg_m_ci_cj;
+      if (neg_assign_r(neg_m_ci_cj, m_ci[cj], ROUND_NOT_NEEDED) == V_EQ
+	      && neg_m_ci_cj == m_i[j]) {
+        // Choose as next the variable having the greaterer index.
+        next[j] = i;
+      }
+    }
+  }  
+}
+
+template <typename T>
+void
+Octagon<T>::compute_leaders(std::vector<dimension_type>& next,
+			    std::vector<dimension_type>& no_sing_leaders, 
+			    bool& exist_sing_class, 
+			    dimension_type& sing_leader) const {
+  assert(!marked_empty() && marked_strongly_closed());
+  assert(no_sing_leaders.size() == 0);
+  dimension_type next_size = next.size();
+  std::deque<bool> dealt_with(next_size, false);
+  for (dimension_type i = 0; i < next_size; ++i) {
+    dimension_type nxt_i = next[i];
+    if (!dealt_with[i]) {
+      // The index is a leader. 
+      // Now check if it is a leader of a singular class or not. 
+      if (nxt_i == coherent_index(i)) {
+        exist_sing_class = true;
+        sing_leader = i;
+      }
+      else
+        no_sing_leaders.push_back(i);
+    }
+    // The following index isn't a leader.
+    dealt_with[nxt_i] = true;
+  }
+}
+
 template <typename T>
 void
 Octagon<T>::transitive_reduction_assign() const {
   Octagon<T> backup_copy(*this);
 
-  // This algorithm is a minimization algorithm.
-  // Given a constraints system, it constructs an equivalent reduced
-  // system removing redundant constraints.
-  dimension_type n_rows = matrix.num_rows();
-
-  // We close to find tightest constraints.
+  // First find the tightest constraints for this octagon.
   strong_closure_assign();
 
-  // If `*this' is empty, then this operation is not necessary.
+  // If `*this' is empty, then there is nothing to reduce.
   if (marked_empty())
     return;
 
-  // The vector `leader' is used to indicate the smallest variable
-  // that belongs to the equivalence class.
-  std::vector<dimension_type> leader(n_rows);
-
-  // The vector `next' is used to indicate the smallest next
-  // equivalent node that has to be connected with node `i'.
-  // If the node is the greatest node of the class, then it has got itself
-  // as next node.
-  std::vector<dimension_type> next(n_rows);
-
-  // The vector `sing' is used to indicate if the equivalence class
-  // is singular (true) or not (false). A class is singular iff
-  // it contains nodes and their coherent nodes.
-  std::vector<bool> sing(n_rows);
-
-  // We store the three vectors.
-  for (dimension_type i = n_rows; i-- > 0; ) {
-    leader[i] = i;
-    next[i] = i;
-    sing[i] = false;
-  }
-
-  // Step 1: we store really the vectors with the corrected value.
-  // Two nodes are equivalent or zero-equivalent, if there is
-  // a zero-cycle containing them both.
-  // That is traslated here below as follow:
-  // if i > j and x_i_j == -(x_ci_cj), then:
-  // 1. leader[i] = leader[j].
-  // If `i' is equivalent to its coherent node `c_i', then
-  // the class is singular and so:
-  // 2. sing[ld_i] = true.
-  for (typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin(),
-	 iend = matrix.row_end(); i_iter != iend; ++i_iter) {
-    typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
-    dimension_type i = i_iter.index();
-    typename OR_Matrix<N>::const_row_iterator ci_iter = (i%2) ? i_iter-1 : i_iter+1;
-    typename OR_Matrix<N>::const_row_reference_type m_ci = *ci_iter;
-    for (dimension_type j = 0; j < i; ++j) {
-      dimension_type cj = coherent_index(j);
-      N neg_m_ci_cj;
-      neg_assign_r(neg_m_ci_cj, m_ci[cj], ROUND_DOWN);
-      // Check for zero-equivalence.
-      N neg_up_m_ci_cj;
-      neg_assign_r(neg_up_m_ci_cj, m_ci[cj], ROUND_UP);
-      if (neg_m_ci_cj == neg_up_m_ci_cj &&
-	  neg_m_ci_cj == m_i[j]) {
-	dimension_type& ld_i = leader[i];
-	ld_i = leader[j];
-	if (cj == ld_i)
-	  sing[ld_i] = true;
-      }
-    }
-  }
-
-  // Store `next' vector.
-  for (dimension_type i = n_rows; i-- > 0; ) {
-    typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin()+i;
-    typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
-    typename OR_Matrix<N>::const_row_iterator ci_iter = (i%2) ? i_iter-1 : i_iter+1;
-    typename OR_Matrix<N>::const_row_reference_type m_ci = *ci_iter;
-    for (dimension_type j = 0; j < i; ++j) {
-      dimension_type cj = coherent_index(j);
-      N neg_m_ci_cj;
-      neg_assign_r(neg_m_ci_cj, m_ci[cj], ROUND_DOWN);
-      // Check for zero-equivalence.
-      N neg_up_m_ci_cj;
-      neg_assign_r(neg_up_m_ci_cj, m_ci[cj], ROUND_UP);
-      if (neg_m_ci_cj == neg_up_m_ci_cj &&
-	  neg_m_ci_cj == m_i[j])
-	next[j] = i;
-    }
-  }
-  // If the class is singular, then we connect all positive node between them.
-  for(dimension_type i = 0; i < n_rows; i += 2) {
-    if (sing[leader[i]] == true)
-      next[i] = next[i+1];
-  }
-
-  // Step 2: If a variable has got a definite value, then
-  // we could  remove all binary constraints with this
-  // variable and others leaders variable.
-  Octagon<T>& x = const_cast<Octagon<T>&>(*this);
-  typename OR_Matrix<N>::row_iterator m_end = x.matrix.row_end();
-  for (typename OR_Matrix<N>::row_iterator iter = x.matrix.row_begin();
-       iter != m_end; iter += 2) {
-    typename OR_Matrix<N>::row_reference_type x_i = *iter;
-    typename OR_Matrix<N>::row_reference_type x_ci = *(iter+1);
-    dimension_type rs_i = iter.row_size();
-    dimension_type i = iter.index();
-    dimension_type ld_i = leader[i];
-    dimension_type ci = coherent_index(i);
-    if (ld_i == i && leader[ci] == i) {
-      // Remove the constraints in the rows.
-      for (dimension_type j = 0; j < i; j += 2)
-	if (j == leader[j]) {
-	  dimension_type cj = coherent_index(j);
-	  x_i[j] = PLUS_INFINITY;
-	  x_ci[cj] = PLUS_INFINITY;
-	  x_i[cj] = PLUS_INFINITY;
-	  x_ci[j] = PLUS_INFINITY;
-	}
-      // Remove the constraints in the columns.
-      for (typename OR_Matrix<N>::row_iterator j_iter = x.matrix.row_begin()+rs_i;
-	   j_iter != m_end; j_iter += 2) {
-	typename OR_Matrix<N>::row_reference_type x_j = *j_iter;
-	typename OR_Matrix<N>::row_reference_type x_cj = *(j_iter+1);
-	dimension_type j = j_iter.index();
-	if (j == leader[j]) {
-	  x_j[i] = PLUS_INFINITY;
-	  x_j[ci] = PLUS_INFINITY;
-	  x_cj[i] = PLUS_INFINITY;
-	  x_cj[ci] = PLUS_INFINITY;
-	}
-      }
-    }
-  }
+  // Step 1: compute zero-equivalence classes.
+  // Variables corresponding to indices `i' and `j' are zero-equivalent
+  // if they lie on a zero-weight loop; since the matrix is strongly
+  // closed, this happens if and only if matrix[i][j] == -matrix[ci][cj].
+  std::vector<dimension_type> no_sing_leaders;
+  dimension_type sing_leader = 0;
+  bool exist_sing_class = false;
+  std::vector<dimension_type> next;
+  compute_nexts(next);
+  compute_leaders(next, no_sing_leaders, exist_sing_class, sing_leader);
+  const dimension_type num_no_sing_leaders = no_sing_leaders.size();
 
   Octagon<T> aux(space_dim);
-  // Step 3: we add only no-redundant constraints to auxiliary octagon.
-  // We construct a ``cycle'' with the nodes in the same equivalence
-  // class. Moreover, considering leaders,
-  // we added only the constraints that aren't obtained by closure or by
-  // strong-coherence.
-  typename OR_Matrix<N>::row_iterator aux_iter = aux.matrix.row_begin();
-  for(typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin(),
-	 iend = matrix.row_end(); i_iter != iend; ++i_iter) {
-    typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
-    dimension_type i = i_iter.index();
-    typename OR_Matrix<N>::row_reference_type aux_i = *(aux_iter + i);
-    dimension_type nxt_i = next[i];
-    dimension_type ld_i = leader[i];
-    dimension_type ci = coherent_index(i);
-    dimension_type c_ld_i = coherent_index(ld_i);
-    // If `i' is a no-leader, then we must connect `i' with its next node.
-    if (ld_i != i) {
-      // If the equivalence class is no-singular, we add the constraints
-      // of the positive class no-singular, because the constraints of
-      // dual class are obtainable by coherence of the positive class.
-      if (sing[ld_i] == false && ld_i%2 == 0) {
-	// The greatest node of the class must to connected to leader.
-	if (nxt_i != i)
-	  aux.matrix[nxt_i][i] = matrix[nxt_i][i];
-	else
-	  aux.matrix[ci][c_ld_i] = matrix[ci][c_ld_i];
+  // Step 2: add to auxiliary octagon only no-redundant
+  // constraints and construct a 0-cycle using only 
+  // the leaders of the non-singular classes.
+  for (dimension_type li = 0; li < num_no_sing_leaders; ++li) {
+    const dimension_type i = no_sing_leaders[li];
+    const dimension_type ci = coherent_index(i);
+    typename OR_Matrix<N>::const_row_reference_type m_i =
+      *(matrix.row_begin()+i);
+    typename OR_Matrix<N>::row_reference_type aux_i =
+      *(aux.matrix.row_begin()+i);
+    if (i%2 == 0) {
+      // Each positive equivalence class must have a single 0-cycle
+      // connecting all equivalent variables in increasing order.
+      // Note: by coherence assumption, the variables in the
+      // corresponding negative equivalence class are
+      // automatically connected.
+      if (i != next[i]) {
+        dimension_type j = i; 
+        dimension_type nxt_j = next[j];
+        while (j != nxt_j) { 
+          aux.matrix[nxt_j][j] = matrix[nxt_j][j];
+          j = nxt_j;
+          nxt_j = next[j];
+        }
+        const dimension_type cj = coherent_index(j);
+        aux.matrix[cj][ci] = matrix[cj][ci];
       }
-      // If the class is singular, we connected only the positive node.
-      if (sing[ld_i] == true && i%2 == 0)
-	// The greatest node of the class must to connected to its coherent
-	// node.
-	if (nxt_i == ci)
-	  aux.matrix[ci][i] = matrix[ci][i];
-	else
-	  aux.matrix[nxt_i][i] = matrix[nxt_i][i];
     }
-    // `i' is a leader.
-    // The no-redundant constraints are added in the auxiliary octagon `aux'.
-    // A constraint is redundant, if we could obtain it by strong-closure
-    // (closure and strong-coherence).
-    else {
-      // The class has at least two different variables (two nodes
-      // not coherent between them).
-      if (nxt_i != i) {
-	// This check work always with singular class. If the class
-	// is no-singular, then `i' has to be connected with its next node,
-	// iff `i' is a positive leader (All constraints of
-	// dual class are obtainable by coherence).
-	if (ld_i%2 == 0)
-	  aux.matrix[nxt_i][i] = matrix[nxt_i][i];
-	// In the singular class with more than 2 nodes, we
-	// connected l;eader with its coherent node.
-	if (sing[ld_i] == true)
-	  aux.matrix[i][ci] = matrix[i][ci];
-      }
-      else {
-	// The singular class has only two coherent nodes.
-	if (leader[ci] == i) {
-	  aux.matrix[i][ci] = matrix[i][ci];
-	  aux.matrix[ci][i] = matrix[ci][i];
-	}
-      }
 
-      dimension_type rs_i = i_iter.row_size();
+    dimension_type rs_li = (li%2) ? li :li+1;
+    // Check if the constraint is redundant.
+    for (dimension_type lj = 0 ; lj <= rs_li; ++lj) {    
+      const dimension_type j = no_sing_leaders[lj];
+      const dimension_type cj = coherent_index(j);
+      const N& m_i_j = m_i[j];
       const N& m_i_ci = m_i[ci];
-      for (dimension_type j = 0; j < rs_i; ++j) {
-	// Checks if the constraint is no-redundant, and in this case
-	// it is added in the auxiliary octagon.
-	bool to_add = true;
-	// `j' is a leader. We consider only the constraints between leaders.
-	if (j != i && leader[j] == j) {
-	  dimension_type cj = coherent_index(j);
-	  const N& m_cj_j = matrix[cj][j];
-	  const N& m_i_j = m_i[j];
-	  N d;
-	  // Assigns to `d':
-	  // plus_infinity,        if `m_i_ci' or/and `m_cj_j' are plus infinity;
-	  // (m_i_ci + m_cj_j)/2,  otherwise.
-	  if (is_plus_infinity(m_i_ci) ||
- 	      is_plus_infinity(m_cj_j))
-	    d = PLUS_INFINITY;
-	  else {
-	    N sum;
-	    add_assign_r(sum, m_i_ci, m_cj_j, ROUND_UP);
-	    div2exp_assign_r(d, sum, 1, ROUND_UP);
-	  }
-	  if(ci != j)
-	    // Checks if the constraint is obtainable by strong-coherence.
-	    if (m_i_j >= d)
-	      to_add = false;
-
-	  // If the constraint is already redundant, because it is
-	  // obtainable by strong-coherence, it is not necessary
-	  // to control if the constraint is redundant also by closure.
-	  if (to_add)
-	    for (dimension_type k = 0; k < n_rows; ++k) {
-	      if (k == leader[k] && k != i && k != j) {
-		dimension_type ck = coherent_index(k);
-		// The constraint m_i_j is redundant, if there is a path from i
-		// to j (i = i_0, ... , i_n = j), such that
-		// m_i_j = sum_{k=0}^{n-1} m_{i_k}_{i_(k+1)}. In this case
-		// the `m_i_j' constraint isn't added to auxiliary matrix.
-		// Since the octagon is already closed, the above relation
-		// is reduced to three case, in accordance with k, i, j inter-depend:
-		// exit k such that
-		// 1. m_i_j = m_i_k + m_k_j, or
-		// 2. m_i_j = m_i_k + m_cj_ck, or
-		// 3. m_i_j = m_ck_ci + m_k_j.
-		if (k < j) {
-		  N c;
-		  add_assign_r(c, m_i[k], matrix[cj][ck], ROUND_UP);
-		  if (m_i_j >= c) {
-		    to_add = false;
-		    break;
-		  }
-		}
-		else if (k < i) {
-		  N c;
-		  add_assign_r(c, m_i[k], matrix[k][j], ROUND_UP);
-		  if (m_i_j >= c) {
-		    to_add = false;
-		    break;
-		  }
-		}
-		else {
-		  N c;
-		  add_assign_r(c, matrix[ck][ci], matrix[k][j], ROUND_UP);
-		  if (m_i_j >= c) {
-		    to_add = false;
-		    break;
-		  }
-		}
-	      }
-	    }
-
-	  // After to have checked if the constraint is redundant
-	  // by strong-coherence or by closure, if it is no-redundant,
-	  // it is added in `aux'.
-	  if (to_add)
-	    aux_i[j] = m_i_j;
+      bool to_add = true;
+      // Control if the constraint is redundant by strong-coherence,
+      // that is:
+      // m_i_j >= (m_i_ci + m_cj_j)/2,   where j != ci.
+      if (j != ci) {
+        N d;
+        //assign_add_div_r(d, m_i_ci, matrix[cj][j], 2, ROUND_UP);
+        add_assign_r(d, m_i_ci, matrix[cj][j], ROUND_UP);
+        div2exp_assign_r(d, d, 1, ROUND_UP);
+        if (m_i_j >= d) {
+	  to_add = false;
+          continue;
 	}
       }
+      // Control if the constraint is redundant by strong closure, that is
+      // if there is a path from i to j (i = i_0, ... , i_n = j), such that 
+      // m_i_j = sum_{k=0}^{n-1} m_{i_k}_{i_(k+1)}. 
+      // Since the octagon is already strongly closed, the above relation
+      // is reduced to three case, in accordance with k, i, j inter-depend:
+      // exit k such that
+      // 1.) m_i_j >= m_i_k   + m_cj_ck,   if k < j < i; or
+      // 2.) m_i_j >= m_i_k   + m_k,_j,    if j < k < i; or
+      // 3.) m_i_j >= m_ck_ci + m_k_j,     if j < i < k.
+      // Note: `i > j'. 
+      for (dimension_type lk = 0; lk < num_no_sing_leaders; ++lk) {    
+	const dimension_type k = no_sing_leaders[lk];
+	if (k != i && k != j) {
+	  dimension_type ck = coherent_index(k);
+          N c;
+          if (k < j) 
+	    // Case 1.
+	    add_assign_r(c, m_i[k], matrix[cj][ck], ROUND_UP);
+	  else if (k < i) 
+	    // Case 2.
+	    add_assign_r(c, m_i[k], matrix[k][j], ROUND_UP);
+	  else 
+	    // Case 3.
+	    add_assign_r(c, matrix[ck][ci], matrix[k][j], ROUND_UP);
+
+          // Checks if the constraint is redundant.
+          if (m_i_j >= c) {
+	    to_add = false;
+	    break;
+	  }
+	}
+      }
+
+      // The constraint is not redundant.
+      if (to_add)
+	aux_i[j] = m_i_j;
     }
   }
-  //std::swap(aux, x);
+
+  // If there exist a singular equivalence class, then it must have a
+  // single 0-cycle connecting all the positive and negative equivalent
+  // variables.
+  // Note: the singular class is not connected with the other classes.
+  if (exist_sing_class) {
+    aux.matrix[sing_leader][sing_leader+1] = matrix[sing_leader][sing_leader+1];
+    if (next[sing_leader+1] != sing_leader+1) {
+      dimension_type j = sing_leader;
+      dimension_type nxt_jj = next[j+1];
+      while (nxt_jj != j+1) {
+	aux.matrix[nxt_jj][j] = matrix[nxt_jj][j];
+	j = nxt_jj;
+	nxt_jj = next[j+1];
+      }
+      aux.matrix[j+1][j] = matrix[j+1][j];
+    }
+    else
+      aux.matrix[sing_leader+1][sing_leader] = matrix[sing_leader+1][sing_leader];    
+  }
+  
+  Octagon<T>& x = const_cast<Octagon<T>&>(*this);
   aux.status.reset_strongly_closed();
   x = aux;
   assert(aux == backup_copy);
-
-  // This method not preserve the closure.
-  //x.status.reset_strongly_closed();
   assert(is_transitively_reduced());
-
-#if 0
-  if (!is_transitively_reduced()) {
-    using namespace IO_Operators;
-    std::cout << "TRANSITIVE REDUCTION BUG!" << std::endl
-	      << backup_copy << std::endl
-	      << "RESULT" << std::endl
-	      << *this << std::endl;
-  }
-#endif
 }
+
 
 template <typename T>
 void
@@ -2518,10 +2419,10 @@ Octagon<T>::poly_hull_assign(const Octagon& y) {
 
 template <typename T>
 void
-Octagon<T>::poly_difference_assign(const Octagon& y) {
+Octagon<T>::oct_difference_assign(const Octagon& y) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
-    throw_dimension_incompatible("poly_difference_assign(y)", y);
+    throw_dimension_incompatible("oct_difference_assign(y)", y);
 
   Octagon& x = *this;
 
@@ -2558,6 +2459,12 @@ Octagon<T>::poly_difference_assign(const Octagon& y) {
   for (Constraint_System::const_iterator i = y_cs.begin(),
 	 y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
     const Constraint& c = *i;
+    // If the octagon `x' is included the octagon defined by `c',
+    // then `c' _must_ be skipped, as adding its complement to `x'
+    // would result in the empty octagon, and as we would obtain 
+    // a result that is less precise than the oct_difference.
+    if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
+      continue;
     Octagon z = x;
     const Linear_Expression e = Linear_Expression(c);
     bool change = false;

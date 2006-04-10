@@ -75,7 +75,7 @@ ORIGINAL_TESTS = \
 	limitedch78extrapolation5 limitedch78extrapolation6 \
 	mapspacedims1 \
 	maxspacedim \
-	polydifference1 polydifference2 polydifference3 \
+	octdifference1 octdifference2 octdifference3 \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
 	polyhull7 polyhull8 polyhull9 polyhull10 \
 	relations1 relations2 relations3 relations4 relations5 \
@@ -207,9 +207,9 @@ mapspacedims1_SOURCES = mapspacedims1.cc
 
 maxspacedim_SOURCES = maxspacedim.cc
 
-polydifference1_SOURCES = polydifference1.cc
-polydifference2_SOURCES = polydifference2.cc
-polydifference3_SOURCES = polydifference3.cc
+octdifference1_SOURCES = octdifference1.cc
+octdifference2_SOURCES = octdifference2.cc
+octdifference3_SOURCES = octdifference3.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
