@@ -531,6 +531,13 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  /*! \brief
+    Returns \f$0\f$, if \p *this is empty; otherwise, returns the
+    \ref Affine_Independence_and_Affine_Dimension "affine dimension"
+    of \p *this.
+  */
+  dimension_type affine_dimension() const;
+
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is
   //! an empty octagon.
@@ -1136,6 +1143,12 @@ private:
 		       std::vector<dimension_type>& no_sing_leaders,
 		       bool& exist_sing_class,
 		       dimension_type& sing_leader) const;
+
+  //! Compute the leaders of zero-equivalence classes.
+  /*!
+    It is assumed that the Octagon is not empty and strongly closed.
+  */
+  void compute_leaders(std::vector<dimension_type>& leaders) const;
 
   //! Removes the reduntant constraints.
   void transitive_reduction_assign() const;

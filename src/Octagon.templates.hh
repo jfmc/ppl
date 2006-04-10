@@ -103,6 +103,36 @@ Octagon<T>::add_constraint(const Constraint& c) {
 }
 
 template <typename T>
+dimension_type
+Octagon<T>::affine_dimension() const {
+  const dimension_type n_rows = matrix.num_rows();
+
+  // Strong closure is necessary to detect emptiness
+  // and all (possibly implicit) equalities.
+  strong_closure_assign();
+  if (marked_empty())
+    return 0;
+
+  // The vector `leaders' is used to represent no-singular 
+  // equivalence classes:
+  // `leaders[i] == i' if and only if `i' is the leader of its
+  // equivalence class (i.e., the minimum index in the class);
+  std::vector<dimension_type> leaders;
+  compute_leaders(leaders);
+
+  // Due to the splitting of variables, the affine dimension is the
+  // number of non-singular positive zero-equivalence classes.
+  dimension_type affine_dim = 0;
+  for (dimension_type i = 0; i < n_rows; i += 2) { 
+    const dimension_type ci = coherent_index(i);
+    // Note: disregard the singular equivalence class.
+    if (leaders[i] == i && i != ci)
+      ++affine_dim;
+  }
+  return affine_dim;
+}
+
+template <typename T>
 void
 Octagon<T>::concatenate_assign(const Octagon<T>& y) {
   // If `y' is an empty 0-dim space octagon, let `*this' become empty.
@@ -2215,6 +2245,38 @@ Octagon<T>::compute_nexts(std::vector<dimension_type>& next) const {
       }
     }
   }  
+}
+
+template <typename T>
+void
+Octagon<T>::compute_leaders(std::vector<dimension_type>& leaders) const {
+  assert(!marked_empty() && marked_strongly_closed());
+  assert(leaders.size() == 0);
+  // Variables are ordered according to their index.
+  // The vector `leaders' is used to indicate the smallest variable
+  // that belongs to the corresponding equivalence class.
+  const dimension_type leader_size = matrix.num_rows();
+  // Initially, each variable is leader of its own zero-equivalence class.
+  leaders.reserve(leader_size);
+  for (dimension_type i = 0; i < leader_size; ++i)
+    leaders.push_back(i);
+  // Now compute actual leaders.
+  for (typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin(),
+	 iend = matrix.row_end(); i_iter != iend; ++i_iter) {
+    typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
+    dimension_type i = i_iter.index();
+    typename OR_Matrix<N>::const_row_reference_type m_ci = 
+      (i%2) ? *(i_iter-1) : *(i_iter+1);
+    for (dimension_type j = 0; j < i; ++j) {
+      dimension_type cj = coherent_index(j);
+      N neg_m_ci_cj;
+      if (neg_assign_r(neg_m_ci_cj, m_ci[cj], ROUND_NOT_NEEDED) == V_EQ
+	      && neg_m_ci_cj == m_i[j]) {
+        // Choose as leader the variable having the smaller index.
+	leaders[i] = leaders[j];
+      }
+    }  
+  }
 }
 
 template <typename T>
