@@ -631,458 +631,6 @@ Octagon<T>::relation_with(const Generator& g) const {
 
 template <typename T>
 void
-Octagon<T>::strong_closure_assign3() const {
-  // Do something only if necessary.
-  if (marked_empty() || marked_strongly_closed())
-    return;
-
-  // Zero-dimensional octagons are necessarily strongly closed.
-  if (space_dim == 0)
-    return;
-
-#ifndef NDEBUG
-  Octagon x_copy = *this;
-  x_copy.strong_closure_assign1();
-#endif
-
-  // Even though the octagon will not change, its internal representation
-  // is going to be modified by the closure algorithm.
-  Octagon& x = const_cast<Octagon<T>&>(*this);
-
-  // Fill the main diagonal with zeros.
-  for (typename OR_Matrix<N>::row_iterator i = x.matrix.row_begin(),
-	 m_end = x.matrix.row_end(); i != m_end; ++i) {
-    typename OR_Matrix<N>::row_reference_type r = *i;
-    assert(is_plus_infinity(r[i.index()]));
-    assign_r(r[i.index()], 0, ROUND_NOT_NEEDED);
-  }
-
-  // This algorithm is given by two step, first one is the `closure' that
-  // uses a modification of the Floyd-Warshall algorithm,
-  // the second one is the `strong-coherence'.
-  // It is important to note that after the strong-coherence,
-  // the octagon is closed yet.
-  // The step of closure is divided in three cases that describe
-  // how the three indexes `i', `j' and `k' (used in this algorithm)
-  // interdepende.
-  // We recall that, given an index `h', we indicate with `ch'
-  // the index such that:
-  // ch = h + 1, if h is even number or
-  // ch = h - 1, if h is odd.
-
-  // Step 1: closure.
-  for (typename OR_Matrix<N>::row_iterator k_iter = x.matrix.row_begin(),
-	 k_end = x.matrix.row_end(); k_iter != k_end; ++k_iter) {
-    typename OR_Matrix<N>::row_reference_type x_k = *k_iter;
-    dimension_type rs_k = k_iter.row_size();
-    dimension_type k = k_iter.index();
-    typename OR_Matrix<N>::row_iterator ck_iter = (k%2) ? k_iter-1 : k_iter+1;
-    typename OR_Matrix<N>::row_reference_type x_ck = *ck_iter;
-    dimension_type ck = ck_iter.index();
-    // First case: i < rs_k e rs_k > j.
-    // Indicated with `m' the matrix of `*this', in this case
-    // the step is given the following way:
-    // m_i_j = min(m_i_j,
-    //             m_ck_ci + m_k_j,
-    //             m_k_ci + m_ck_j).
-    for (dimension_type i = 0; i < rs_k; ++i) {
-      dimension_type ci = coherent_index(i);
-      N& x_ck_ci = x_ck[ci];
-      N& x_k_ci = x_k[ci];
-      if (!is_plus_infinity(x_ck_ci) || !is_plus_infinity(x_k_ci)) {
-	typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin()+i;
-	typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-	dimension_type rs_i = i_iter.row_size();
-	for (dimension_type j = 0; j < rs_i; ++j) {
-	  N& x_k_j = x_k[j];
-	  N& x_ck_j = x_ck[j];
-#if 1
-	  if (!is_plus_infinity(x_ck_j) || !is_plus_infinity(x_k_j)) {
-	    N sub_sum1;
-	    add_assign_r(sub_sum1, x_ck_ci, x_k_j, ROUND_UP);
-	    N sub_sum2;
-	    add_assign_r(sub_sum2, x_k_ci, x_ck_j, ROUND_UP);
-	    Implementation::Octagons::assign_min(x_i[j], sub_sum1, sub_sum2);
-	  }
-#else
-	  // Try to avoid computing unnecessaty additions.
-	  N& x_i_j = x_i[j];
-	  if (!is_plus_infinity(x_ck_ci) && !is_plus_infinity(x_k_j)) {
-	    N sub_sum3;
-	    add_assign_r(sub_sum3, x_ck_ci, x_k_j, ROUND_UP);
-	    Implementation::Octagons::assign_min(x_i_j, sub_sum3);
-	  }
-	  if(!is_plus_infinity(x_k_ci) && !is_plus_infinity(x_ck_j)) {
-	    N sub_sum4;
-	    add_assign_r(sub_sum4, x_k_ci, x_ck_j, ROUND_UP);
-	    Implementation::Octagons::assign_min(x_i_j, sub_sum4);
-	  }
-
-#endif
-	}
-      }
-    }
-    // Second case: i >= rs_k.
-    for (typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin()+rs_k,
-	   iend = x.matrix.row_end(); i_iter != iend; ++i_iter) {
-      typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-      dimension_type rs_i = i_iter.row_size();
-      N& x_i_k = x_i[k];
-      N& x_i_ck = x_i[ck];
-      if (!is_plus_infinity(x_i_k) || !is_plus_infinity(x_i_ck)) {
-	// And j < rs_k.
-	// the step is given the following way:
-	// m_i_j = min(m_i_j,
-	//             m_i_k + m_k_j,
-	//             m_i_ck + m_ck_j).
-	for (dimension_type j = 0; j < rs_k; ++j) {
-	  N& x_k_j = x_k[j];
-	  N& x_ck_j = x_ck[j];
-#if 1
-	  if (!is_plus_infinity(x_ck_j) || !is_plus_infinity(x_k_j)) {
-	    N sub_sum1;
-	    add_assign_r(sub_sum1, x_i_k, x_k_j, ROUND_UP);
-	    N sub_sum2;
-	    add_assign_r(sub_sum1, x_i_ck, x_ck_j, ROUND_UP);
-	    Implementation::Octagons::assign_min(x_i[j], sub_sum1, sub_sum2);
-	  }
-#else
-	  // Try to avoid computing unnecessaty additions.
-	    N& x_i_j = x_i[j];
-	    if (!is_plus_infinity(x_i_k) && !is_plus_infinity(x_k_j)) {
-	      N sub_sum3;
-	      add_assign_r(sub_sum3, x_i_k, x_k_j, ROUND_UP);
-	      Implementation::Octagons::assign_min(x_i_j, sub_sum3);
-	    }
-	    if(!is_plus_infinity(x_i_ck) && !is_plus_infinity(x_ck_j)) {
-	      N sub_sum4;
-	      add_assign_r(sub_sum4, x_i_ck, x_ck_j, ROUND_UP);
-	      Implementation::Octagons::assign_min(x_i_j, sub_sum4);
-	    }
-#endif
-
-	}
-
-	// And j >= rs_k.
-	// the step is given the following way:
-	// m_i_j = min(m_i_j,
-	//             m_i_k + m_cj_ck,
-	//             m_i_ck + m_cj_k).
-	for (dimension_type j = rs_k; j < rs_i; ++j) {
-	  dimension_type cj = coherent_index(j);
-	  dimension_type ck = coherent_index(k);
-	  typename OR_Matrix<N>::row_reference_type x_cj = *(x.matrix.row_begin()+cj);
-	  N& x_cj_k = x_cj[k];
-	  N& x_cj_ck = x_cj[ck];
-#if 1
-	  if (!is_plus_infinity(x_cj_k) || !is_plus_infinity(x_cj_ck)) {
-	    N sub_sum1;
-	    add_assign_r(sub_sum1, x_i_k, x_cj_ck, ROUND_UP);
-	    N sub_sum2;
-	    add_assign_r(sub_sum1, x_i_ck, x_cj_k, ROUND_UP);
-	    Implementation::Octagons::assign_min(x_i[j], sub_sum1, sub_sum2);
-	  }
-#else
-	  // Try to avoid computing unnecessaty additions.
-	    N& x_i_j = x_i[j];
-	    if (!is_plus_infinity(x_i_k) && !is_plus_infinity(x_cj_ck)) {
-	      N sub_sum3;
-	      add_assign_r(sub_sum3, x_i_k, x_cj_ck, ROUND_UP);
-	      Implementation::Octagons::assign_min(x_i_j, sub_sum3);
-	    }
-	    if(!is_plus_infinity(x_i_ck) && !is_plus_infinity(x_cj_k)) {
-	      N sub_sum4;
-	      add_assign_r(sub_sum4, x_i_ck, x_cj_k, ROUND_UP);
-	      Implementation::Octagons::assign_min(x_i_j, sub_sum4);
-	    }
-#endif
-
-	}
-      }
-    }
-  }
-
-  // Check for emptyness: the octagon is empty if and only if there is a
-  // negative value in the main diagonal.
-  for (typename OR_Matrix<N>::row_iterator i = x.matrix.row_begin(),
-	 m_end = x.matrix.row_end(); i != m_end; ++i) {
-    typename OR_Matrix<N>::row_reference_type r = *i;
-    N& x_i_i = r[i.index()];
-    if (x_i_i < 0) {
-      x.status.set_empty();
-      return;
-    }
-    else {
-      assert(x_i_i == 0);
-      // Restore PLUS_INFINITY on the main diagonal.
-      x_i_i = PLUS_INFINITY;
-    }
-  }
-
-  // The octagon is not empty and it is now strongly closed.
-  x.status.set_strongly_closed();
-
-  // Step 2: we enforce the strong coherence.
-  // The strong-coherence is: for every indexes i and j
-  // m_i_j <= (m_i_ci + m_cj_j)/2
-  // where ci = i + 1, if i is even number or
-  //       ci = i - 1, if i is odd.
-  // Ditto for cj.
-  for (typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin(),
-	 i_end = x.matrix.row_end(); i_iter != i_end; ++i_iter) {
-    typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-    dimension_type rs_i = i_iter.row_size();
-    dimension_type i = i_iter.index();
-    dimension_type ci = coherent_index(i);
-    N& x_i_ci = x_i[ci];
-    // Avoid to do unnecessary sums.
-    if (!is_plus_infinity(x_i_ci))
-      for (dimension_type j = 0; j < rs_i; ++j) {
-	if (i != j) {
-	  dimension_type cj = coherent_index(j);
-	  N& x_cj_j = x.matrix[cj][j];
-	  if (!is_plus_infinity(x_cj_j)) {
-	    N& x_i_j = x_i[j];
-	    N d;
-	    N sub_sum;
-	    add_assign_r(sub_sum, x_i_ci, x_cj_j, ROUND_UP);
-	    div2exp_assign_r(d, sub_sum, 1, ROUND_UP);
-	    Implementation::Octagons::assign_min(x_i_j, d);
-	  }
-	}
-      }
-  }
-
-#ifndef NDEBUG
-  assert(matrix == x_copy.matrix);
-#endif
-
-}
-
-template <typename T>
-void
-Octagon<T>::strong_closure_assign1() const {
-  using Implementation::Octagons::assign_min;
-
-  // Do something only if necessary.
-  if (marked_empty() || marked_strongly_closed())
-    return;
-
-  // Zero-dimensional octagons are necessarily strongly closed.
-  if (space_dim == 0)
-    return;
-
-  // Even though the octagon will not change, its internal representation
-  // is going to be modified by the closure algorithm.
-  Octagon& x = const_cast<Octagon<T>&>(*this);
-
-  // We need the auxiliary matrix, 'cause, when we interleave the two steps,
-  // introduced below, we choose the right element between that element we obtain
-  // by closure step and that element we obtain by successive coherence step.
-  OR_Matrix<N> aux(2*space_dim);
-
-  typename OR_Matrix<N>::row_iterator m_end = x.matrix.row_end();
-  // Fill the main diagonal with zeros.
-  for (typename OR_Matrix<N>::row_iterator i = x.matrix.row_begin();
-       i != m_end; ++i) {
-    typename OR_Matrix<N>::row_reference_type r = *i;
-    assert(is_plus_infinity(r[i.index()]));
-    assign_r(r[i.index()], 0, ROUND_NOT_NEEDED);
-  }
-
-  // This algorithm is a modification of the Floyd-Warshall algorithm for
-  // the pseudo-triangular matrix. It consists for every k to interleave
-  // a step of closure with a step of strong coherence.
-  // The step of closure is divided in three cases that describe
-  // how the three indexes `i', `j' and `k' (used in this algorithm)
-  // interdepende.
-  // We recall that, given an index `h', we indicate with `ch'
-  // the index such that:
-  // ch = h + 1, if h is even number or
-  // ch = h - 1, if h is odd.
-  for (typename OR_Matrix<N>::row_iterator k_iter = x.matrix.row_begin();
-       k_iter != m_end; k_iter += 2) {
-    typename OR_Matrix<N>::row_reference_type x_k = *k_iter;
-    typename OR_Matrix<N>::row_reference_type x_kk = *(k_iter+1);
-    dimension_type k = k_iter.index();
-    N& x_k_kk = x_k[k+1];
-    N& x_kk_k = x_kk[k];
-    dimension_type rs_k = k_iter.row_size();
-
-    bool check_sum;
-    // Step1: closure.
-    // First case: i < rs_k e rs_k > j.
-    // Indicated with `m' the matrix of `*this', in this case
-    // the step is given the following way:
-    // m_i_j = min(m_i_j,
-    //             m_kk_ci + m_k_j,
-    //             m_k_ci + m_kk_j,
-    //             m_kk_ci + m_k_kk + m_kk_j,
-    //             m_k_ci + m_kk_k + m_k_j).
-    for (typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin(),
-	   a_iter = aux.row_begin(), i_end = i_iter+rs_k;
-	 i_iter != i_end; ++i_iter, ++a_iter) {
-      typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-      typename OR_Matrix<N>::row_reference_type aux_i = *a_iter;
-      dimension_type rs_i = i_iter.row_size();
-      dimension_type ci = coherent_index(i_iter.index());
-      N& x_k_ci = x_k[ci];
-      N& x_kk_ci = x_kk[ci];
-      check_sum = !is_plus_infinity(x_kk_ci) || !is_plus_infinity(x_k_ci);
-      for (dimension_type j = 0; j < rs_i; ++j) {
-	N& x_k_j = x_k[j];
-	N& x_kk_j = x_kk[j];
-	// Now we compute the sums for the minimum of the closure.
-	N& aux_i_j = aux_i[j];
-	aux_i_j = x_i[j];
-	// Avoid to do unnecessary sums.
-	if (check_sum) {
-	  N sub_sum1;
-	  add_assign_r(sub_sum1, x_kk_ci, x_k_j, ROUND_UP);
-	  N sub_sum2;
-	  add_assign_r(sub_sum2, x_k_ci, x_kk_j, ROUND_UP);
-	  N sub_sub_sum3;
-	  add_assign_r(sub_sub_sum3, x_kk_ci, x_k_kk, ROUND_UP);
-	  N sub_sum3;
-	  add_assign_r(sub_sum3, sub_sub_sum3, x_kk_j, ROUND_UP);
-	  N sub_sub_sum4;
-	  add_assign_r(sub_sub_sum4, x_k_ci, x_kk_k, ROUND_UP);
-	  N sub_sum4;
-	  add_assign_r(sub_sum4, sub_sub_sum4, x_k_j, ROUND_UP);
-	  assign_min(aux_i_j, sub_sum1, sub_sum2, sub_sum3, sub_sum4);
-	}
-      }
-    }
-
-    // Second case: i >= rs_k.
-    for (typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin()+rs_k,
-	   a_iter = aux.row_begin()+rs_k; i_iter != m_end; ++i_iter, ++a_iter) {
-      typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-      typename OR_Matrix<N>::row_reference_type aux_i = *a_iter;
-      N& x_i_k = x_i[k];
-      N& x_i_kk = x_i[k+1];
-      check_sum = !is_plus_infinity(x_i_kk) || !is_plus_infinity(x_i_k);
-      // And j < rs_k.
-      // the step is given the following way:
-      // m_i_j = min(m_i_j,
-      //             m_i_k + m_k_j,
-      //             m_i_kk + m_kk_j,
-      //             m_i_k + m_k_kk + m_kk_j,
-      //             m_i_kk + m_kk_k + m_k_j).
-      for (dimension_type j = 0; j < rs_k; ++j) {
-	N& x_k_j = x_k[j];
-	N& x_kk_j = x_kk[j];
-	// Now we compute the sums for the minimum of the closure.
-	N& aux_i_j = aux_i[j];
-	aux_i_j = x_i[j];
-	// Avoid to do unnecessary sums.
-	if (check_sum) {
-	  N sub_sum1;
-	  add_assign_r(sub_sum1, x_i_k, x_k_j, ROUND_UP);
-	  N sub_sum2;
-	  add_assign_r(sub_sum2, x_i_kk, x_kk_j, ROUND_UP);
-	  N sub_sub_sum3;
-	  add_assign_r(sub_sub_sum3, x_i_kk, x_kk_k, ROUND_UP);
-	  N sub_sum3;
-	  add_assign_r(sub_sum3, sub_sub_sum3, x_k_j, ROUND_UP);
-	  N sub_sub_sum4;
-	  add_assign_r(sub_sub_sum4, x_i_k, x_k_kk, ROUND_UP);
-	  N sub_sum4;
-	  add_assign_r(sub_sum4, sub_sub_sum4, x_kk_j, ROUND_UP);
-	  assign_min(aux_i_j, sub_sum1, sub_sum2, sub_sum3, sub_sum4);
-	}
-      }
-
-      // And j >= rs_k.
-      // the step is given the following way:
-      // m_i_j = min(m_i_j,
-      //             m_i_k + m_cj_kk,
-      //             m_i_kk + m_cj_k,
-      //             m_i_k + m_k_kk + m_cj_kk,
-      //             m_i_kk + m_kk_k + m_cj_k).
-      dimension_type rs_i = i_iter.row_size();
-      for (dimension_type j = rs_k; j < rs_i; ++j) {
-	dimension_type cj = coherent_index(j);
-	typename OR_Matrix<N>::row_reference_type x_cj = *(x.matrix.row_begin()+cj);
-	N& x_cj_k = x_cj[k];
-	N& x_cj_kk = x_cj[k+1];
-	// Now we compute the sums for the minimum of the closure.
-	N& aux_i_j = aux_i[j];
-	aux_i_j = x_i[j];
-	// Avoid to do unnecessary sums.
-	if (check_sum) {
-	  N sum1;
-	  add_assign_r(sum1, x_i_k, x_cj_kk, ROUND_UP);
-	  N sum2;
-	  add_assign_r(sum2, x_i_kk, x_cj_k, ROUND_UP);
-	  N sub_sub_sum3;
-	  add_assign_r(sub_sub_sum3, x_i_kk, x_kk_k, ROUND_UP);
-	  N sum3;
-	  add_assign_r(sum3, sub_sub_sum3, x_cj_kk, ROUND_UP);
-	  N sub_sub_sum4;
-	  add_assign_r(sub_sub_sum4, x_i_k, x_k_kk, ROUND_UP);
-	  N sum4;
-	  add_assign_r(sum4, sub_sub_sum4, x_cj_k, ROUND_UP);
-	  assign_min(aux_i_j, sum1, sum2, sum3, sum4);
-	}
-      }
-    }
-
-    // Step2: strong-coherence.
-    // The step of strong coherence consist: for every indexes i and j
-    // m_i_j = min(m_i_j, (m_i_ci + m_cj_j)/2).
-    for (typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin(),
-	   ai_iter = aux.row_begin(); i_iter != m_end; i_iter += 2, ai_iter += 2) {
-      typename OR_Matrix<N>::row_reference_type aux_i = *ai_iter;
-      typename OR_Matrix<N>::row_reference_type aux_ii = *(ai_iter+1);
-      typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-      typename OR_Matrix<N>::row_reference_type x_ii = *(i_iter+1);
-      dimension_type i = i_iter.index();
-      N& aux_i_ii = aux_i[i+1];
-      N& aux_ii_i = aux_ii[i];
-      dimension_type rs_i = i_iter.row_size();
-      typename OR_Matrix<N>::row_iterator aj_iter = aux.row_begin();
-      for (dimension_type j = 0; j < rs_i; j += 2, aj_iter += 2) {
-	typename OR_Matrix<N>::row_reference_type aux_j = *aj_iter;
-	typename OR_Matrix<N>::row_reference_type aux_jj = *(aj_iter+1);
-	N& aux_j_jj = aux_j[j+1];
-	N& aux_jj_j = aux_jj[j];
-	strong_coherence_local_step(x_i[j], aux_i_ii,
-				    aux_jj_j, aux_i[j]);
-	strong_coherence_local_step(x_ii[j], aux_ii_i,
-				    aux_jj_j, aux_ii[j]);
-	strong_coherence_local_step(x_i[j+1], aux_i_ii,
-				    aux_j_jj, aux_i[j+1]);
-	strong_coherence_local_step(x_ii[j+1], aux_ii_i,
-				    aux_j_jj, aux_ii[j+1]);
-      }
-    }
-  }
-
-  // Check for emptyness: the octagon is empty if and only if there is a
-  // negative value in the main diagonal.
-  for (typename OR_Matrix<N>::row_iterator i = x.matrix.row_begin();
-       i != m_end; ++i) {
-    typename OR_Matrix<N>::row_reference_type r = *i;
-    N& x_i_i = r[i.index()];
-    if (x_i_i < 0 ) {
-      x.status.set_empty();
-      return;
-    }
-    else {
-      assert(x_i_i == 0);
-      // Restore PLUS_INFINITY on the main diagonal.
-      x_i_i = PLUS_INFINITY;
-    }
-  }
-
-  // The octagon is not empty and it is now strongly closed.
-  x.status.set_strongly_closed();
-
-}
-
-template <typename T>
-void
 Octagon<T>::strong_closure_assign() const {
   using Implementation::Octagons::assign_min;
 
@@ -1093,11 +641,6 @@ Octagon<T>::strong_closure_assign() const {
   // Zero-dimensional octagons are necessarily strongly closed.
   if (space_dim == 0)
     return;
-
-#ifndef NDEBUG
-  Octagon x_copy = *this;
-  x_copy.strong_closure_assign1();
-#endif
 
   // Even though the octagon will not change, its internal representation
   // is going to be modified by the closure algorithm.
@@ -1208,812 +751,6 @@ Octagon<T>::strong_closure_assign() const {
 	}
       }
   }
-
-#ifndef NDEBUG
-  assert(matrix == x_copy.matrix);
-#endif
-
-}
-
-template <typename T>
-void
-Octagon<T>::strong_closure_assign5() const {
-  using Implementation::Octagons::assign_min;
-
-  // Do something only if necessary.
-  if (marked_empty() || marked_strongly_closed())
-    return;
-
-  // Zero-dimensional octagons are necessarily strongly closed.
-  if (space_dim == 0)
-    return;
-
-#ifndef NDEBUG
-  Octagon x_copy = *this;
-  x_copy.strong_closure_assign1();
-#endif
-
-  // Even though the octagon will not change, its internal representation
-  // is going to be modified by the closure algorithm.
-  Octagon& x = const_cast<Octagon<T>&>(*this);
-
-  dimension_type n_rows = 2*space_dim;
-
-  // Fill the main diagonal with zeros.
-  for (dimension_type i = n_rows; i-- > 0;) {
-    assert(is_plus_infinity(x.matrix[i][i]));
-    assign_r(x.matrix[i][i], 0, ROUND_NOT_NEEDED);
-  }
-
-  // This algorithm is given by two step, first one is the `closure' that
-  // uses a modification of the Floyd-Warshall algorithm,
-  // the second one is the `strong-coherence'.
-  // It is important to note that after the strong-coherence,
-  // the octagon is closed yet.
-  // The step of closure is divided in three cases that describe
-  // how the three indexes `i', `j' and `k' (used in this algorithm)
-  // interdepende.
-  // We recall that, given an index `h', we indicate with `ch'
-  // the index such that:
-  // ch = h + 1, if h is even number or
-  // ch = h - 1, if h is odd.
-
-  // Step 1: closure.
-  N sum;
-  for (dimension_type k = n_rows; k-- > 0; ) {
-    for (dimension_type i = n_rows; i-- > 0; ) {
-      const N& m_i_k = position_cell(matrix, i, k);
-      if (!is_plus_infinity(m_i_k))
-	for (dimension_type j = n_rows; j-- > 0; ) {
-	  const N& m_k_j = position_cell(matrix, k, j);
-	  if (!is_plus_infinity(m_k_j)) {
-	    N& m_i_j = position_cell(x.matrix, i, j);
-	    add_assign_r(sum, m_i_k, m_k_j, ROUND_UP);
-	    assign_min(m_i_j, sum);
-	  }
-	}
-    }
-  }
-
-  // Check for emptyness: the octagon is empty if and only if there is a
-  // negative value in the main diagonal.
-  for (dimension_type i = n_rows; i-- > 0; ) {
-    N& x_i_i = x.matrix[i][i];
-    if (x_i_i < 0) {
-      x.status.set_empty();
-      return;
-    }
-    else {
-      assert(x_i_i == 0);
-      // Restore PLUS_INFINITY on the main diagonal.
-      x_i_i = PLUS_INFINITY;
-    }
-  }
-
-  // The octagon is not empty and it is now strongly closed.
-  x.status.set_strongly_closed();
-
-  // Step 2: we enforce the strong coherence.
-  // The strong-coherence is: for every indexes i and j
-  // m_i_j <= (m_i_ci + m_cj_j)/2
-  // where ci = i + 1, if i is even number or
-  //       ci = i - 1, if i is odd.
-  // Ditto for cj.
-  for (dimension_type i = n_rows; i-- > 0; ) {
-    dimension_type ci = coherent_index(i);
-    N& x_i_ci = position_cell(x.matrix, i, ci);
-    // Avoid to do unnecessary sums.
-    if (!is_plus_infinity(x_i_ci))
-      for (dimension_type j = n_rows; j-- > 0; ) {
-	if (i != j) {
-	  dimension_type cj = coherent_index(j);
-	  N& x_cj_j = position_cell(x.matrix, cj, j);
-	  if (!is_plus_infinity(x_cj_j)) {
-	    N& x_i_j = position_cell(x.matrix, i, j);
-	    N sub_sum;
-	    add_assign_r(sub_sum, x_i_ci, x_cj_j, ROUND_UP);
-	    N d;
-	    div2exp_assign_r(d, sub_sum, 1, ROUND_UP);
-	    assign_min(x_i_j, d);
-	  }
-	}
-      }
-  }
-
-#ifndef NDEBUG
-  assert(matrix == x_copy.matrix);
-#endif
-
-}
-
-template <typename T>
-void
-Octagon<T>::incremental_strong_closure_assign_of_mine(Variable var) const {
-  using Implementation::Octagons::assign_min;
-
-  // `var' should be one of the dimensions of the octagon.
-  dimension_type num_var = var.id() + 1;
-  if (num_var > space_dim)
-    throw_dimension_incompatible("incremental_strong_closure_assign_of_mine(v)", var.id());
-
-  // If `*this' is already empty or closed,
-  // then the incremental_strong_closure_assign is not necessary.
-  if (marked_empty() || marked_strongly_closed())
-    return;
-
-  // If `*this' is zero-dimensional,
-  // then it is necessarily a closed octagon.
-  if (space_dim == 0)
-    return;
-
-  Octagon& x = const_cast<Octagon<T>&>(*this);
-  dimension_type n_rows = matrix.num_rows();
-
-  // Fill the main diagonal with zeros.
-  for (typename OR_Matrix<N>::row_iterator i = x.matrix.row_begin(),
-	 m_end = x.matrix.row_end(); i != m_end; ++i) {
-    typename OR_Matrix<N>::row_reference_type r = *i;
-    assert(is_plus_infinity(r[i.index()]));
-    assign_r(r[i.index()], 0, ROUND_NOT_NEEDED);
-
-//     r[i.index()] = 0;
-  }
-
-  // This algorithm uses the incremental Floyd-Warshall algorithm.
-  // It is constituted by two steps: first we modify all
-  // constraints on variable `var'. Infact,
-  // the constraints on variable v are changed, and it is possible
-  // that these constraints aren't tightest anymore; then
-  // second we change also the other constraints.
-  // For each step we must apply two rules: a transitivity rule and a
-  // strong-coherence rule.
-  // Since the matrix, contening all constraints, is pseudo-triangular,
-  // the two rules are divided in many cases, that describe
-  // how the three indexes `i', `j' and `v' (used in this algorithm)
-  // interdepende.
-  // We recall that, given an index `h', we indicate with `ch'
-  // the index such that:
-  // ch = h + 1, if h is even number or
-  // ch = h - 1, if h is odd.
-
-
-  // Step 1: Modify all constraints on variable `var'.
-  // Rule: TRANSITIVITY. Here we use `v' to indicate one of
-  // the indeces of variable `var', the other index is indicated with `cv'.
-  dimension_type v = 2*var.id();
-  dimension_type cv = coherent_index(v);
-  typename OR_Matrix<N>::row_iterator v_iter = x.matrix.row_begin() + v;
-  typename OR_Matrix<N>::row_reference_type x_v = *v_iter;
-  typename OR_Matrix<N>::row_reference_type x_cv = *(v_iter+1);
-  dimension_type rs_v = v_iter.row_size();
-  typename OR_Matrix<N>::row_iterator rs_vend = x.matrix.row_begin() + rs_v;
-  N& x_v_cv = x_v[cv];
-  N& x_cv_v = x_cv[v];
-  // Case 1. i <= v.
-  for (typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin();
-       i_iter != rs_vend; ++i_iter) {
-    typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-    dimension_type i = i_iter.index();
-    typename OR_Matrix<N>::row_reference_type x_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
-    dimension_type ci = coherent_index(i);
-    dimension_type rs_i = i_iter.row_size();
-    N& x_v_i = x_v[i];
-    N& x_cv_i = x_cv[i];
-    N& x_v_ci = x_v[ci];
-    N& x_cv_ci = x_cv[ci];
-    // Case 1.A: j <= i.
-    // The transitivity assumption is the following: for each `i, j'
-    // m_v_j = min(m_v_j,
-    //             m_v_i + m_i_j,
-    //             m_v_ci + m_ci_j).
-    // Analogous for m_cv_j.
-    for (dimension_type j = 0; j < rs_i; ++j) {
-      N& x_v_j = x_v[j];
-      N& x_cv_j = x_cv[j];
-      N& x_i_j = x_i[j];
-      N& x_ci_j = x_ci[j];
-      if (!is_plus_infinity(x_i_j)) {
-	if (!is_plus_infinity(x_v_i)) {
-	  N sum1;
-	  add_assign_r(sum1, x_v_i, x_i_j, ROUND_UP);
-	  assign_min(x_v_j, sum1);
-	}
-	if(!is_plus_infinity(x_cv_i)) {
-	  N sum2;
-	  add_assign_r(sum2, x_cv_i, x_i_j, ROUND_UP);
-	  assign_min(x_cv_j, sum2);
-	}
-      }
-      // Avoid to do unnecessary sums.
-      if (!is_plus_infinity(x_ci_j)) {
-	if (!is_plus_infinity(x_v_ci)) {
-	  N sum3;
-	  add_assign_r(sum3, x_v_ci, x_ci_j, ROUND_UP);
-	  assign_min(x_v_j, sum3);
-	}
-	if(!is_plus_infinity(x_cv_i)) {
-	  N sum4;
-	  add_assign_r(sum4, x_cv_ci, x_ci_j, ROUND_UP);
-	  assign_min(x_cv_j, sum4);
-	}
-      }
-    }
-    // Case 1.B: i < j <= v.
-    // The transitivity assumption is the following: for each `i, j'
-    // m_v_j = min(m_v_j,
-    //             m_v_i + m_cj_ci,
-    //             m_v_ci + m_cj_i).
-    for (typename OR_Matrix<N>::row_iterator j_iter = x.matrix.row_begin() + rs_i;
-	 j_iter != rs_vend; ++j_iter) {
-      dimension_type j = j_iter.index();
-      typename OR_Matrix<N>::row_reference_type x_cj = (j%2) ? *(j_iter-1) : *(j_iter+1);
-      N& x_v_j = x_v[j];
-      N& x_cv_j = x_cv[j];
-      N& x_cj_ci = x_cj[ci];
-      N& x_cj_i = x_cj[i];
-      if (!is_plus_infinity(x_cj_ci)) {
-	if (!is_plus_infinity(x_v_i)) {
-	  N sum1;
-	  add_assign_r(sum1, x_v_i, x_cj_ci, ROUND_UP);
-	  assign_min(x_v_j, sum1);
-	}
-	if (!is_plus_infinity(x_cv_i)) {
-	  N sum2;
-	  add_assign_r(sum2, x_cv_i, x_cj_ci, ROUND_UP);
-	  assign_min(x_cv_j, sum2);
-	}
-      }
-      // Avoid to do unnecessary sums.
-      if (!is_plus_infinity(x_cj_i)) {
-	if (!is_plus_infinity(x_v_ci)) {
-	  N sum3;
-	  add_assign_r(sum3, x_v_ci, x_cj_i, ROUND_UP);
-	  assign_min(x_v_j, sum3);
-	}
-	if (!is_plus_infinity(x_cv_ci)) {
-	  N sum4;
-	  add_assign_r(sum4, x_cv_ci, x_cj_i, ROUND_UP);
-	  assign_min(x_cv_j, sum4);
-	}
-      }
-    }
-    // Case 1.C: v < j.
-    // The transitivity assumption is the following: for each `i, j'
-    // m_cj_cv = min(m_cj_cv,
-    //               m_v_i + m_cj_ci,
-    //               m_v_ci + m_cj_i).
-    for (typename OR_Matrix<N>::row_iterator j_iter = rs_vend,
-	   jend = x.matrix.row_end(); j_iter != jend; ++j_iter) {
-      dimension_type j = j_iter.index();
-      typename OR_Matrix<N>::row_reference_type x_cj = (j%2) ? *(j_iter-1) : *(j_iter+1);
-      N& x_cj_v = x_cj[v];
-      N& x_cj_cv = x_cj[cv];
-      N& x_cj_ci = x_cj[ci];
-      N& x_cj_i = x_cj[i];
-      if(!is_plus_infinity(x_cj_ci)) {
-	if(!is_plus_infinity(x_v_i)) {
-	  N sum1;
-	  add_assign_r(sum1, x_v_i, x_cj_ci, ROUND_UP);
-	  assign_min(x_cj_cv, sum1);
-	}
-	if(!is_plus_infinity(x_cv_i)) {
-	  N sum2;
-	  add_assign_r(sum2, x_cv_i, x_cj_ci, ROUND_UP);
-	  assign_min(x_cj_v, sum2);
-	}
-      }
-      // Avoid to do unnecessary sums.
-      if(!is_plus_infinity(x_cj_i)) {
-	if(!is_plus_infinity(x_v_ci)) {
-	  N sum3;
-	  add_assign_r(sum3, x_v_ci, x_cj_i, ROUND_UP);
-	  assign_min(x_cj_cv, sum3);
-	}
-	if(!is_plus_infinity(x_cv_ci)) {
-	  N sum4;
-	  add_assign_r(sum4, x_cv_ci, x_cj_i, ROUND_UP);
-	  assign_min(x_cj_v, sum4);
-	}
-      }
-    }
-  }
-
-  // Step 2: i > v!
-  for (typename OR_Matrix<N>::row_iterator i_iter = rs_vend,
-	 iend = x.matrix.row_end(); i_iter != iend; ++i_iter) {
-    typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-    dimension_type i = i_iter.index();
-    dimension_type ci = coherent_index(i);
-    typename OR_Matrix<N>::row_reference_type x_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
-    dimension_type rs_i = i_iter.row_size();
-    N& x_ci_v = x_ci[v];
-    N& x_ci_cv = x_ci[cv];
-    N& x_i_v = x_i[v];
-    N& x_i_cv = x_i[cv];
-    // Case 2.A: j <= v.
-    // The transitivity assumption is the following: for each `i, j'
-    // m_v_j = min(m_v_j,
-    //             m_ci_cv + m_i_j,
-    //             m_i_cv + m_ci_j).
-    for (dimension_type j = 0; j < rs_v; ++j) {
-      N& x_v_j = x_v[j];
-      N& x_cv_j = x_cv[j];
-      N& x_i_j = x_i[j];
-      N& x_ci_j = x_ci[j];
-      if (!is_plus_infinity(x_i_j)) {
-	if (!is_plus_infinity(x_ci_cv)) {
-	  N sum1;
-	  add_assign_r(sum1, x_ci_cv, x_i_j, ROUND_UP);
-	  assign_min(x_v_j, sum1);
-	}
-	if (!is_plus_infinity(x_ci_v)) {
-	  N sum2;
-	  add_assign_r(sum2, x_ci_v, x_i_j, ROUND_UP);
-	  assign_min(x_cv_j, sum2);
-	}
-      }
-      // Avoid to do unnecessary sums.
-      if (!is_plus_infinity(x_ci_j)) {
-	if (!is_plus_infinity(x_i_cv)) {
-	  N sum3;
-	  add_assign_r(sum3, x_i_cv, x_ci_j, ROUND_UP);
-	  assign_min(x_v_j, sum3);
-	}
-	if (!is_plus_infinity(x_i_v)) {
-	  N sum4;
-	  add_assign_r(sum4, x_i_v, x_ci_j, ROUND_UP);
-	  assign_min(x_cv_j, sum4);
-	}
-      }
-    }
-    // Case 2.B: v < j <= i.
-    // The transitivity assumption is the following: for each `i, j'
-    // m_cj_cv = min(m_cj_cv,
-    //               m_ci_cv + m_i_j,
-    //               m_i_cv + m_ci_j).
-    for (typename OR_Matrix<N>::row_iterator j_iter = rs_vend,
-	   jend = x.matrix.row_begin()+rs_i; j_iter != jend; ++j_iter) {
-      dimension_type j = j_iter.index();
-      typename OR_Matrix<N>::row_reference_type x_cj = (j%2) ? *(j_iter-1) : *(j_iter+1);
-      N& x_cj_v = x_cj[v];
-      N& x_cj_cv = x_cj[cv];
-      N& x_i_j = x_i[j];
-      N& x_ci_j = x_ci[j];
-      if (!is_plus_infinity(x_i_j)) {
-	if (!is_plus_infinity(x_ci_cv)) {
-	  N sum1;
-	  add_assign_r(sum1, x_ci_cv, x_i_j, ROUND_UP);
-	  assign_min(x_cj_cv, sum1);
-	}
-     	if (!is_plus_infinity(x_ci_v)) {
-	  N sum2;
-	  add_assign_r(sum2, x_ci_v, x_i_j, ROUND_UP);
-	  assign_min(x_cj_v, sum2);
-	}
-      }
-      // Avoid to do unnecessary sums.
-      if (!is_plus_infinity(x_ci_j)) {
-	if (!is_plus_infinity(x_i_cv)) {
-	  N sum3;
-	  add_assign_r(sum3, x_i_cv, x_ci_j, ROUND_UP);
-	  assign_min(x_cj_cv, sum3);
-	}
-	if (!is_plus_infinity(x_i_v)) {
-	  N sum4;
-	  add_assign_r(sum4, x_i_v, x_ci_j, ROUND_UP);
-	  assign_min(x_cj_v, sum4);
-	}
-      }
-    }
-    // Case 2.C: i < j.
-    // The transitivity assumption is the following: for each `i, j'
-    // m_cj_cv = min(m_cj_cv,
-    //               m_ci_cv + m_cj_ci,
-    //               m_i_cv + m_cj_i).
-    for (typename OR_Matrix<N>::row_iterator j_iter = x.matrix.row_begin()+rs_i,
-	   jend = x.matrix.row_end(); j_iter != jend; ++j_iter) {
-      dimension_type j = j_iter.index();
-      typename OR_Matrix<N>::row_reference_type x_cj = (j%2) ? *(j_iter-1) : *(j_iter+1);
-      N& x_cj_v = x_cj[v];
-      N& x_cj_cv = x_cj[cv];
-      N& x_cj_ci = x_cj[ci];
-      N& x_cj_i = x_cj[i];
-      if (!is_plus_infinity(x_cj_ci)) {
-	if (!is_plus_infinity(x_ci_cv)) {
-	  N sum1;
-	  add_assign_r(sum1, x_ci_cv, x_cj_ci, ROUND_UP);
-	  assign_min(x_cj_cv, sum1);
-	}
-	if(!is_plus_infinity(x_ci_v)) {
-	  N sum2;
-	  add_assign_r(sum2, x_ci_v, x_cj_ci, ROUND_UP);
-	  assign_min(x_cj_v, sum2);
-	}
-      }
-      // Avoid to do unnecessary sums.
-      if (!is_plus_infinity(x_cj_i)) {
-	if (!is_plus_infinity(x_i_cv)) {
-	  N sum3;
-	  add_assign_r(sum3, x_i_cv, x_cj_i, ROUND_UP);
-	  assign_min(x_cj_cv, sum3);
-	}
-	if(!is_plus_infinity(x_i_v)) {
-	  N sum4;
-	  add_assign_r(sum4, x_i_v, x_cj_i, ROUND_UP);
-	  assign_min(x_cj_v, sum4);
-	}
-      }
-    }
-  }
-
-  // Rule STRONG-COHERENCE: Now, we apply the strong-coherence always on `var':
-  // Case: i <= v.
-  // m_v_i = min(m_v_i,
-  //            (m_v_cv + m_ci_i)/2 ).
-  for (dimension_type i = 0; i < rs_v; ++i) {
-    dimension_type ci = coherent_index(i);
-    N& x_ci_i = x.matrix[ci][i];
-    N& x_v_i = x_v[i];
-    N& x_cv_i = x_cv[i];
-    // Avoid to do unnecessary sums.
-    if (!is_plus_infinity(x_v_cv) && !is_plus_infinity(x_ci_i)){
-      N sub_sum1;
-      add_assign_r(sub_sum1, x_v_cv, x_ci_i, ROUND_UP);
-      N d;
-      div2exp_assign_r(d, sub_sum1, 1, ROUND_UP);
-      assign_min(x_v_i, d);
-    }
-    // Avoid to do unnecessary sums.
-    if (!is_plus_infinity(x_cv_v) && !is_plus_infinity(x_ci_i)){
-      N sub_sum2;
-      add_assign_r(sub_sum2, x_cv_v, x_ci_i, ROUND_UP);
-      N d;
-      div2exp_assign_r(d, sub_sum2, 1, ROUND_UP);
-      assign_min(x_cv_i, d);
-    }
-  }
-  // Case: i > v.
-  // m_ci_cv = min(m_ci_cv,
-  //              (m_v_cv + m_ci_i)/2 ).
-  for (dimension_type i = rs_v; i < n_rows; ++i) {
-    dimension_type ci = coherent_index(i);
-    typename OR_Matrix<N>::row_iterator ci_iter = x.matrix.row_begin()+ci;
-    typename OR_Matrix<N>::row_reference_type x_ci = *ci_iter;
-    N& x_ci_i = x_ci[i];
-    N& x_ci_v = x_ci[v];
-    N& x_ci_cv = x_ci[cv];
-    // Avoid to do unnecessary sums.
-    if (!is_plus_infinity(x_v_cv) && !is_plus_infinity(x_ci_i)){
-      N sub_sum1;
-      add_assign_r(sub_sum1, x_v_cv, x_ci_i, ROUND_UP);
-      N d;
-      div2exp_assign_r(d, sub_sum1, 1, ROUND_UP);
-      assign_min(x_ci_cv, d);
-    }
-    // Avoid to do unnecessary sums.
-    if (!is_plus_infinity(x_cv_v) && !is_plus_infinity(x_ci_i)){
-      N sub_sum2;
-      add_assign_r(sub_sum2, x_cv_v, x_ci_i, ROUND_UP);
-      N d;
-      div2exp_assign_r(d, sub_sum2, 1, ROUND_UP);
-      assign_min(x_ci_v, d);
-    }
-  }
-
-  // Step 2: finally we find the tighter constraints also
-  // for the other variable using the right value of `var'.
-  // And thus, we apply in primis the transitivity assumption.
-
-  // Case: j <= i <= v.
-  // m_i_j = min(m_i_j,
-  //             m_cv_i + m_v_j,
-  //             m_v_ci + m_cv_j,
-  //             m_cv_ci + m_v_cv + m_cv_j,
-  //             m_v_ci + m_cv_v + m_v_j).
-  for (dimension_type i = 0; i < rs_v; ++i){
-    dimension_type ci = coherent_index(i);
-    typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin()+i;
-    typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-    dimension_type rs_i = i_iter.row_size();
-    N& x_v_ci = x_v[ci];
-    N& x_cv_ci = x_cv[ci];
-    for (dimension_type j = 0; j < rs_i; ++j) {
-      N& x_v_j = x_v[j];
-      N& x_cv_j = x_cv[j];
-      N& x_i_j = x_i[j];
-      N sum1;
-      add_assign_r(sum1, x_cv_ci, x_v_j, ROUND_UP);
-      N sum2;
-      add_assign_r(sum2, x_v_ci, x_cv_j, ROUND_UP);
-      N sub_sum3;
-      add_assign_r(sub_sum3, x_cv_ci, x_v_cv, ROUND_UP);
-      N sum3;
-      add_assign_r(sum3, sub_sum3, x_cv_j, ROUND_UP);
-      N sub_sum4;
-      add_assign_r(sub_sum4, x_v_ci, x_cv_v, ROUND_UP);
-      N sum4;
-      add_assign_r(sum4, sub_sum4, x_v_j, ROUND_UP);
-      assign_min(x_i_j, sum1, sum2, sum3, sum4);
-    }
-  }
-  // Case: j <= v < i.
-  // m_i_j = min(m_i_j,
-  //             m_i_v + m_v_j,
-  //             m_i_cv + m_cv_j,
-  //             m_i_v + m_v_cv + m_cv_j,
-  //             m_i_cv + m_cv_v + m_v_j).
-  for (typename OR_Matrix<N>::row_iterator i_iter = rs_vend,
-	 iend = x.matrix.row_end(); i_iter != iend; ++i_iter) {
-    typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-    dimension_type rs_i = i_iter.row_size();
-    N& x_i_v = x_i[v];
-    N& x_i_cv = x_i[cv];
-    for (dimension_type j = 0; j < rs_v; ++j){
-      N& x_v_j = x_v[j];
-      N& x_cv_j = x_cv[j];
-      N& x_i_j = x_i[j];
-      N sum1;
-      add_assign_r(sum1, x_i_v, x_v_j, ROUND_UP);
-      N sum2;
-      add_assign_r(sum2, x_i_cv, x_cv_j, ROUND_UP);
-      N sub_sum3;
-      add_assign_r(sub_sum3, x_i_v, x_v_cv, ROUND_UP);
-      N sum3;
-      add_assign_r(sum3, sub_sum3, x_cv_j, ROUND_UP);
-      N sub_sum4;
-      add_assign_r(sub_sum4, x_i_cv, x_cv_v, ROUND_UP);
-      N sum4;
-      add_assign_r(sum4, sub_sum4, x_v_j, ROUND_UP);
-      assign_min(x_i_j, sum1, sum2, sum3, sum4);
-    }
-    // Case: v < j <= i.
-    // m_i_j = min(m_i_j,
-    //             m_i_v + m_cj_cv,
-    //             m_i_cv + m_cj_v,
-    //             m_i_v + m_v_cv + m_cj_v,
-    //             m_i_cv + m_cv_v + m_cj_cv).
-    for (dimension_type j = rs_v; j < rs_i; ++j) {
-      dimension_type cj = coherent_index(j);
-      typename OR_Matrix<N>::row_iterator cj_iter = x.matrix.row_begin()+cj;
-      typename OR_Matrix<N>::row_reference_type x_cj = *cj_iter;
-      N& x_cj_v = x_cj[v];
-      N& x_cj_cv = x_cj[cv];
-      N& x_i_j = x_i[j];
-      N sum1;
-      add_assign_r(sum1, x_i_v, x_cj_cv, ROUND_UP);
-      N sum2;
-      add_assign_r(sum2, x_i_cv, x_cj_v, ROUND_UP);
-      N sub_sum3;
-      add_assign_r(sub_sum3, x_i_v, x_v_cv, ROUND_UP);
-      N sum3;
-      add_assign_r(sum3, sub_sum3, x_cj_v, ROUND_UP);
-      N sub_sum4;
-      add_assign_r(sub_sum4, x_i_cv, x_cv_v, ROUND_UP);
-      N sum4;
-      add_assign_r(sum4, sub_sum4, x_cj_cv, ROUND_UP);
-      assign_min(x_i_j, sum1, sum2, sum3, sum4);
-    }
-  }
-
-  // Rule STRONG-COHERENCE.
-  // The strong-coherence is: for every indexes i and j
-  // m_i_j <= (m_i_ci + m_cj_j)/2
-  // where ci = i + 1, if i is even number or
-  //       ci = i - 1, if i is odd.
-  // Ditto for cj.
-  for (typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin(),
-	 i_end = x.matrix.row_end(); i_iter != i_end; ++i_iter) {
-    typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-    dimension_type rs_i = i_iter.row_size();
-    dimension_type i = i_iter.index();
-    dimension_type ci = coherent_index(i);
-    N& x_i_ci = x_i[ci];
-    // Avoid to do unnecessary sums.
-    if (!is_plus_infinity(x_i_ci))
-      for (dimension_type j = 0; j < rs_i; ++j) {
-	if (i != j) {
-	  dimension_type cj = coherent_index(j);
-	  N& x_cj_j = x.matrix[cj][j];
-	  if (!is_plus_infinity(x_cj_j)) {
-	    N& x_i_j = x_i[j];
-	    N sub_sum;
-	    add_assign_r(sub_sum, x_i_ci, x_cj_j, ROUND_UP);
-	    N d;
-	    div2exp_assign_r(d, sub_sum, 1, ROUND_UP);
-	    assign_min(x_i_j, d);
-	  }
-	}
-      }
-  }
-
-  // Now we check if the octagon is empty and fill the diagonal
-  // with plus_infinity.
-  // An octagon is empty if there is a negative element in the diagonal.
-  x.status.set_strongly_closed();
-  for (typename OR_Matrix<N>::row_iterator i = x.matrix.row_begin(),
-	 m_end = x.matrix.row_end(); i != m_end; ++i) {
-    typename OR_Matrix<N>::row_reference_type r = *i;
-    N& x_i_i = r[i.index()];
-    if (x_i_i < 0) {
-      x.status.set_empty();
-      return;
-    }
-    else {
-      assert(x_i_i == 0);
-      // Restore PLUS_INFINITY on the main diagonal.
-      x_i_i = PLUS_INFINITY;
-    }
-  }
-
-  assert(OK());
-}
-
-template <typename T>
-void
-Octagon<T>::incremental_strong_closure_assign1(Variable var) const {
-  using Implementation::Octagons::assign_min;
-
-  // `var' should be one of the dimensions of the octagon.
-  dimension_type num_var = var.id() + 1;
-  if (num_var > space_dim)
-    throw_dimension_incompatible("incremental_strong_closure_assign1(v)", var.id());
-
-  // If `*this' is already empty or closed,
-  // then the incremental_strong_closure_assign is not necessary.
-  if (marked_empty() || marked_strongly_closed())
-    return;
-
-  // If `*this' is zero-dimensional,
-  // then it is necessarily a closed octagon.
-  if (space_dim == 0)
-    return;
-
-#ifndef NDEBUG
-  Octagon x_copy = *this;
-  x_copy.incremental_strong_closure_assign_of_mine(var);
-#endif
-
-  Octagon& x = const_cast<Octagon<T>&>(*this);
-  dimension_type n_rows = matrix.num_rows();
-
-  // Fill the main diagonal with zeros.
-  for (dimension_type i = n_rows; i-- > 0; )
-    x.matrix[i][i] = 0;
-
-  // This algorithm uses the incremental Floyd-Warshall algorithm.
-  // It is constituted by two steps: first we modify all
-  // constraints on variable `var'. Infact,
-  // the constraints on variable v are changed, and it is possible
-  // that these constraints aren't tightest anymore; then
-  // second we change also the other constraints.
-
-  // Step 1: Modify all constraints on variable `var'.
-  const dimension_type v = var.id();
-  const dimension_type cv = v + 1;
-
-  // Step 1: incremental Floyd-Warshall.
-  for (dimension_type k = 0; k < n_rows; ++k) {
-    // First of all we modify the columns on variable `var'.
-    for (dimension_type i = 0; i < n_rows; ++i) {
-      const N& m_i_k = position_cell(x.matrix, i, k);
-      if (!is_plus_infinity(m_i_k)) {
-	const N& m_k_v = position_cell(x.matrix, k, v);
-	if (!is_plus_infinity(m_k_v)) {
-	  N& m_i_v = position_cell(x.matrix, i, v);
-	  N sum1;
-	  add_assign_r(sum1, m_i_k, m_k_v, ROUND_UP);
-	  assign_min(m_i_v, sum1);
-	}
-
-	const N& m_k_cv = position_cell(x.matrix, k, cv);
-	if (!is_plus_infinity(m_k_cv)) {
-	  N& m_i_cv = position_cell(x.matrix, i, cv);
-	  N sum2;
-	  add_assign_r(sum2, m_i_k, m_k_cv, ROUND_UP);
-	  assign_min(m_i_cv, sum2);
-	}
-      }
-
-      // Then we modify the rights on variable `var'.
-      const N& m_k_i = position_cell(x.matrix, k, i);
-      if (!is_plus_infinity(m_k_i)) {
-	const N& m_v_k = position_cell(x.matrix, v, k);
-	if (!is_plus_infinity(m_v_k)) {
-	  N& m_v_i = position_cell(x.matrix, v, i);
-	  N sum3;
-	  add_assign_r(sum3, m_v_k, m_k_i, ROUND_UP);
-	  assign_min(m_v_i, sum3);
-	}
-
-	const N& m_cv_k = position_cell(x.matrix, cv, k);
-	if (!is_plus_infinity(m_cv_k)) {
-	  N& m_cv_i = position_cell(x.matrix, cv, i);
-	  N sum4;
-	  add_assign_r(sum4, m_cv_k, m_k_i, ROUND_UP);
-	  assign_min(m_cv_i, sum4);
-	}
-      }
-    }
-  }
-
-  // Step 2: finally we find the tighter constraints also
-  // for the other variable using the right value of `var'.
-  for (dimension_type i = 0; i < n_rows; ++i) {
-    const N& m_i_v = position_cell(x.matrix, i, v);
-    const N& m_i_cv = position_cell(x.matrix, i, cv);
-    for (dimension_type j = 0; j < n_rows; ++j) {
-      if (!is_plus_infinity(m_i_v)) {
-	const N& m_v_j = position_cell(x.matrix, v, j);
-	if (!is_plus_infinity(m_v_j)) {
-	  N& m_i_j = position_cell(x.matrix, i, j);
-	  N sum1;
-	  add_assign_r(sum1, m_i_v, m_v_j, ROUND_UP);
-	  assign_min(m_i_j, sum1);
-	}
-      }
-      if (!is_plus_infinity(m_i_cv)) {
-	const N& m_cv_j = position_cell(x.matrix, cv, j);
-	if (!is_plus_infinity(m_cv_j)) {
-	  N& m_i_j = position_cell(x.matrix, i, j);
-	  N sum2;
-	  add_assign_r(sum2, m_i_cv, m_cv_j, ROUND_UP);
-	  assign_min(m_i_j, sum2);
-	}
-      }
-    }
-  }
-
-
-  // Check for emptyness:the octagon is empty if and only if there is a
-  // negative value in the main diagonal.
-  for (dimension_type i = n_rows; i-- > 0; ) {
-    N& x_i_i = x.matrix[i][i];
-    if (x_i_i < 0) {
-      x.status.set_empty();
-      return;
-    }
-    else {
-      assert(x_i_i == 0);
-      // Restore PLUS_INFINITY on the main diagonal.
-      x_i_i = PLUS_INFINITY;
-    }
-  }
-
-  // The octagon is not empty and it is now strongly closed.
-  x.status.set_strongly_closed();
-
-  // Step 2: we enforce the strong coherence.
-  // The strong-coherence is: for every indexes i and j
-  // m_i_j <= (m_i_ci + m_cj_j)/2
-  // where ci = i + 1, if i is even number or
-  //       ci = i - 1, if i is odd.
-  // Ditto for cj.
-  for (dimension_type i = 0; i < n_rows; ++i) {
-    dimension_type ci = coherent_index(i);
-    N& x_i_ci = position_cell(x.matrix, i, ci);
-    // Avoid to do unnecessary sums.
-    if (!is_plus_infinity(x_i_ci))
-      for (dimension_type j = 0; j < n_rows; ++j) {
-	if (i != j) {
-	  dimension_type cj = coherent_index(j);
-	  N& x_cj_j = position_cell(x.matrix, cj, j);
-	  if (!is_plus_infinity(x_cj_j)) {
-	    N& x_i_j = position_cell(x.matrix, i, j);
-	    N sum;
-	    add_assign_r(sum, x_i_ci, x_cj_j, ROUND_UP);
-	    N d;
-	    div2exp_assign_r(d, sum, 1, ROUND_UP);
-	    assign_min(x_i_j, d);
-	  }
-	}
-      }
-  }
-
-#ifndef NDEBUG
-  assert(matrix == x_copy.matrix);
-#endif
-
-  assert(OK());
 }
 
 template <typename T>
@@ -2033,11 +770,6 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
   // Zero-dimensional octagons are necessarily strongly closed.
   if (space_dim == 0)
     return;
-
-#ifndef NDEBUG
-  Octagon x_copy = *this;
-  x_copy.incremental_strong_closure_assign_of_mine(var);
-#endif
 
   Octagon& x = const_cast<Octagon<T>&>(*this);
 
@@ -2207,10 +939,6 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	}
       }
   }
-
-#ifndef NDEBUG
-  assert(matrix == x_copy.matrix);
-#endif
 
   assert(OK());
 }
@@ -3127,6 +1855,219 @@ Octagon<T>::CC76_narrowing_assign(const Octagon& y) {
 
 template <typename T>
 void
+Octagon<T>
+::deduce_v_minus_u_bounds(const dimension_type v,
+			  const dimension_type last_v,
+			  const Linear_Expression& sc_expr,
+			  Coefficient_traits::const_reference sc_den,
+			  const N& pos_sum) {
+  // Deduce constraints of the form `v - u', where `u != v'.
+  // Note: the strongly closure is able to deduce the constraint
+  // `v - u <= ub_v - lb_u'. We can be more precise if variable `u'
+  // played an active role in the computation of the upper bound for `v',
+  // i.e., if the corresponding coefficient `q == expr_u/den' is
+  // greater than zero. In particular:
+  // if `q >= 1',    then `v - u <= ub_v - ub_u';
+  // if `0 < q < 1', then `v - u <= ub_v - (q*ub_u + (1-q)*lb_u)'.
+  mpq_class mpq_sc_den;
+  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
+  // No need to consider indices greater than `last_v'.
+  for (dimension_type u = last_v; u > 0; --u)
+    if (u != v) {
+      typename OR_Matrix<N>::row_iterator i_u = matrix.row_begin() + 2*u;
+      const Coefficient& expr_u = sc_expr.coefficient(Variable(u));
+      if (expr_u > 0)
+	if (expr_u >= sc_den) {
+	  // Deducing `v - u <= ub_v - ub_u'.
+	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
+	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
+	  N r_cu_u;
+	  div2exp_assign_r(r_cu_u, r_cu[2*u], 1, ROUND_UP);
+	  if (v < u)
+	    sub_assign_r(r_u[2*v], pos_sum, r_cu_u, ROUND_UP);
+	  else if (v > u) {
+	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
+	    typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
+	    sub_assign_r(r_cv[2*u+1], pos_sum, r_cu_u, ROUND_UP);
+	  }
+	}
+	else {
+	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
+	  if (!is_plus_infinity(r_u[2*u+1])) {
+	    // Let `ub_u' and `lb_u' be the known upper and lower bound
+	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
+	    // rational coefficient of `u' in `sc_expr/sc_den',
+	    // the upper bound for `v - u' is computed as
+	    // `ub_v - (q * ub_u + (1-q) * lb_u)', i.e.,
+	    // `pos_sum + (-lb_u) - q * (ub_u + (-lb_u))'.
+	    mpq_class double_minus_lb_u;
+	    assign_r(double_minus_lb_u, r_u[2*u+1], ROUND_NOT_NEEDED);
+	    mpq_class minus_lb_u;
+	    div2exp_assign_r(minus_lb_u, double_minus_lb_u, 1, ROUND_UP);
+	    mpq_class q;
+	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
+	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+	    mpq_class double_ub_u;
+	    typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
+	    assign_r(double_ub_u, r_cu[2*u], ROUND_NOT_NEEDED);
+	    mpq_class ub_u;
+	    div2exp_assign_r(ub_u, double_ub_u, 1, ROUND_UP);
+	    // Compute `ub_u - lb_u'.
+	    add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
+	    // Compute `(-lb_u) - q * (ub_u - lb_u)'.
+	    sub_mul_assign_r(minus_lb_u, q, ub_u, ROUND_NOT_NEEDED);
+	    N up_approx;
+	    assign_r(up_approx, minus_lb_u, ROUND_UP);
+	    // Deducing `v - u <= ub_v - (q * ub_u + (1-q) * lb_u)'.
+	    if (v < u)
+	      add_assign_r(r_u[2*v], pos_sum, up_approx, ROUND_UP);
+	    else if (v > u) {
+	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
+	      typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
+	      add_assign_r(r_cv[2*u+1], pos_sum, up_approx, ROUND_UP);
+	    }
+	  }
+	}
+      //       else {
+// 	TEMP_INTEGER(minus_expr_u);
+// 	neg_assign_r(minus_expr_u, expr_u, ROUND_NOT_NEEDED);
+// 	if (expr_u < 0 && minus_expr_u >= sc_den) {
+// 	  // Deducing `v + u <= ub_v + ub_u'.
+// 	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
+// 	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
+// 	  N r_u_cu;
+// 	  div2exp_assign_r(r_u_cu, r_u[2*u+1], 1, ROUND_UP);
+// 	  if (v < u)
+// 	    add_assign_r(r_cu[2*v], pos_sum, r_u_cu, ROUND_UP);
+// 	  else if (v > u) {
+// 	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
+// 	    typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
+// 	    add_assign_r(r_cv[2*u], pos_sum, r_u_cu, ROUND_UP);
+// 	  }
+// 	}
+// 	else {
+// 	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
+// 	  if (!is_plus_infinity(r_u[2*u+1])) {
+// 	    // Let `ub_u' and `lb_u' be the known upper and lower bound
+// 	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
+// 	    // rational coefficient of `u' in `sc_expr/sc_den',
+// 	    // the upper bound for `v + u' is computed as
+// 	    // `ub_v + (q * ub_u + (1-q) * lb_u)', i.e.,
+// 	    // `pos_sum + lb_u + q * (ub_u + (-lb_u))'.
+// 	    mpq_class double_minus_lb_u;
+// 	    assign_r(double_minus_lb_u, r_u[2*u+1], ROUND_NOT_NEEDED);
+// 	    mpq_class minus_lb_u;
+// 	    div2exp_assign_r(minus_lb_u, double_minus_lb_u, 1, ROUND_UP);
+// 	    mpq_class lb_u;
+// 	    neg_assign_r(lb_u, minus_lb_u, ROUND_NOT_NEEDED);
+// 	    mpq_class q;
+// 	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
+// 	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+// 	    mpq_class double_ub_u;
+// 	    typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
+// 	    assign_r(double_ub_u, r_cu[2*u], ROUND_NOT_NEEDED);
+// 	    mpq_class ub_u;
+// 	    div2exp_assign_r(ub_u, double_ub_u, 1, ROUND_UP);
+// 	    // Compute `ub_u - lb_u'.
+// 	    add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
+// 	    // Compute `lb_u + q * (ub_u - lb_u)'.
+// 	    add_mul_assign_r(lb_u, q, ub_u, ROUND_NOT_NEEDED);
+// 	    N up_approx;
+// 	    assign_r(up_approx, lb_u, ROUND_UP);
+// 	    // Deducing `v + u <= ub_v + (q * ub_u + (1-q) * lb_u)'.
+// 	    if (v < u)
+// 	      add_assign_r(r_cu[2*v], pos_sum, up_approx, ROUND_UP);
+// 	    else if (v > u) {
+// 	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
+// 	      typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
+// 	      add_assign_r(r_cv[2*u], pos_sum, up_approx, ROUND_UP);
+// 	    }
+// 	  }
+// 	}
+    }
+}
+
+template <typename T>
+void
+Octagon<T>
+::deduce_u_minus_v_bounds(const dimension_type v,
+			  const dimension_type last_v,
+			  const Linear_Expression& sc_expr,
+			  Coefficient_traits::const_reference sc_den,
+			  const N& neg_sum) {
+  // Deduce constraints of the form `u - v', where `u != v'.
+  // Note: the strongly closure is able to deduce the constraint
+  // `u - v <= ub_u - lb_v'. We can be more precise if variable `u'
+  // played an active role in the computation of the lower bound for `v',
+  // i.e., if the corresponding coefficient `q == expr_u/den' is
+  // greater than zero. In particular:
+  // if `q >= 1',    then `u - v <= lb_u - lb_v';
+  // if `0 < q < 1', then `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
+  mpq_class mpq_sc_den;
+  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
+  // No need to consider indices greater than `last_v'.
+  for (dimension_type u = last_v; u > 0; --u)
+    if (u != v) {
+      typename OR_Matrix<N>::row_iterator i_u = matrix.row_begin() + 2*u;
+      const Coefficient& expr_u = sc_expr.coefficient(Variable(u));
+      if (expr_u > 0)
+	if (expr_u >= sc_den) {
+	  // Deducing `u - v <= lb_u - lb_v',
+	  // i.e., `u - v <= (-lb_v) - (-lb_u)'.
+	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
+ 	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
+	  N r_cu_u;
+	  div2exp_assign_r(r_cu_u, r_cu[2*u], 1, ROUND_UP);
+	  if (v < u) 
+	    sub_assign_r(r_cu[2*v+1], neg_sum, r_cu_u, ROUND_UP);
+	  else if (v > u) {
+	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
+	    typename OR_Matrix<N>::row_reference_type r_v = *i_v;
+	    sub_assign_r(r_v[2*u], neg_sum, r_cu_u, ROUND_UP);
+	  }
+	}
+	else {
+	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
+	  if (!is_plus_infinity(r_cu[2*u])) {
+	    // Let `ub_u' and `lb_u' be the known upper and lower bound
+	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
+	    // rational coefficient of `u' in `sc_expr/sc_den',
+	    // the upper bound for `u - v' is computed as
+	    // `(q * lb_u + (1-q) * ub_u) - lb_v', i.e.,
+	    // `ub_u - q * (ub_u + (-lb_u)) + neg_sum'.
+	    mpq_class double_ub_u;
+	    assign_r(double_ub_u, r_cu[2*u], ROUND_NOT_NEEDED);
+	    mpq_class ub_u;
+	    div2exp_assign_r(ub_u, double_ub_u, 1, ROUND_UP);
+	    mpq_class q;
+	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
+	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+	    mpq_class double_minus_lb_u;
+	    typename OR_Matrix<N>::row_reference_type r_u = *i_u;
+	    assign_r(double_minus_lb_u, r_u[2*u+1], ROUND_NOT_NEEDED);
+	    mpq_class minus_lb_u;
+	    div2exp_assign_r(minus_lb_u, double_minus_lb_u, 1, ROUND_UP);
+	    // Compute `ub_u - lb_u'.
+	    add_assign_r(minus_lb_u, minus_lb_u, ub_u, ROUND_NOT_NEEDED);
+	    // Compute `ub_u - q * (ub_u - lb_u)'.
+	    sub_mul_assign_r(ub_u, q, minus_lb_u, ROUND_NOT_NEEDED);
+	    N up_approx;
+	    assign_r(up_approx, ub_u, ROUND_UP);
+	    // Deducing `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
+	    if (v < u) 
+	      add_assign_r(r_cu[2*v+1], up_approx, neg_sum, ROUND_UP);
+	    else if (v > u) {
+	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
+	      typename OR_Matrix<N>::row_reference_type r_v = *i_v;
+	      add_assign_r(r_v[2*u], up_approx, neg_sum, ROUND_UP);
+	    }
+	  }
+	}
+    }
+}
+
+template <typename T>
+void
 Octagon<T>::affine_image(const Variable var,
                          const Linear_Expression& expr,
 			 Coefficient_traits::const_reference denominator) {
@@ -3186,9 +2127,8 @@ Octagon<T>::affine_image(const Variable var,
   const dimension_type n_var = 2*num_var;
   const dimension_type k = matrix.row_size(n_var);
 
-//   TEMP_INTEGER(minus_den);
-//   neg_assign_r(minus_den, denominator, ROUND_NOT_NEEDED);
-  Coefficient minus_den = -denominator;
+  TEMP_INTEGER(minus_den);
+  neg_assign_r(minus_den, denominator, ROUND_NOT_NEEDED);
   if (t == 0) {
     // Case 1: expr == b.
     // Remove all constraints on `var'.
@@ -3293,8 +2233,9 @@ Octagon<T>::affine_image(const Variable var,
 		add_assign_r(m_nv_nv1, m_nv_nv1, c, ROUND_UP);
 	    }
 	  }
-	  status.reset_strongly_closed();
-	}
+	  //  status.reset_strongly_closed();
+	  incremental_strong_closure_assign(var);
+ 	}
       }
 
       else {
@@ -3308,8 +2249,8 @@ Octagon<T>::affine_image(const Variable var,
 	if (coeff == denominator) {
 	  if (num_var < w) {
 	    typename OR_Matrix<N>::row_iterator j = matrix.row_begin() + h;
-	    add_octagonal_constraint(j, num_var, b, denominator);
-	    add_octagonal_constraint(j+1, num_var+1, b, minus_den);
+	    add_octagonal_constraint(j, n_var, b, denominator);
+	    add_octagonal_constraint(j+1, n_var+1, b, minus_den);
 	  }
 	  else if (num_var > w) {
 	    add_octagonal_constraint(i+1, h+1, b, denominator);
@@ -3320,8 +2261,8 @@ Octagon<T>::affine_image(const Variable var,
 	// Add the new constraint `var + w = b/denominator'.
 	  if (num_var < w) {
 	    typename OR_Matrix<N>::row_iterator j = matrix.row_begin() + h;
-	    add_octagonal_constraint(j+1, num_var, b, denominator);
-	    add_octagonal_constraint(j, num_var+1, b, minus_den);
+	    add_octagonal_constraint(j+1, n_var, b, denominator);
+	    add_octagonal_constraint(j, n_var+1, b, minus_den);
 	  }
 	  else if (num_var > w) {
 	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
@@ -3329,7 +2270,7 @@ Octagon<T>::affine_image(const Variable var,
 	    add_octagonal_constraint(i, h+1, b, minus_den);
 	  }
 	}
-	status.reset_strongly_closed();
+	incremental_strong_closure_assign(var);
       }
       assert(OK());
       return;
@@ -3351,11 +2292,9 @@ Octagon<T>::affine_image(const Variable var,
   TEMP_INTEGER(minus_b);
   neg_assign_r(minus_b, b, ROUND_NOT_NEEDED);
 
-  // const Coefficient& minus_b = -b;
   const Coefficient& sc_b = is_sc ? b : minus_b;
   const Coefficient& minus_sc_b = is_sc ? minus_b : b;
-  // const Coefficient& minus_den = -denominator;
-  // const Coefficient& sc_den = is_sc ? denominator : minus_den;
+  const Coefficient& sc_den = is_sc ? denominator : minus_den;
   const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
   Linear_Expression minus_expr;
   if (!is_sc)
@@ -3419,7 +2358,6 @@ Octagon<T>::affine_image(const Variable var,
     else if (sign_i < 0) {
       TEMP_INTEGER(minus_sc_i);
       neg_assign_r(minus_sc_i, sc_i, ROUND_NOT_NEEDED);
-      //      Coefficient minus_sc_i = - sc_i;
       N minus_coeff_i;
       assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
       // Approximating `sc_expr'.
@@ -3488,6 +2426,7 @@ Octagon<T>::affine_image(const Variable var,
       assign_r(r[n_var], double_pos_sum, ROUND_UP);
       // Deduce constraints of the form `v - u', where `u != v'.
       //      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
+      deduce_v_minus_u_bounds(num_var, w, sc_expr, sc_den, pos_sum);
     }
 //     else
 //       // Here `pos_pinf_count == 1'.
@@ -3516,13 +2455,13 @@ Octagon<T>::affine_image(const Variable var,
     if (neg_pinf_count == 0) {
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
       N double_neg_sum = neg_sum;
-      //      double_neg_sum *= two;
       mul2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
       typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
       typename OR_Matrix<N>::row_reference_type r_i = *i;
       assign_r(r_i[n_var+1], double_neg_sum, ROUND_UP);
       // Deduce constraints of the form `u - v', where `u != v'.
       //     deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, neg_sum);
+      deduce_u_minus_v_bounds(num_var, w, sc_expr, sc_den, neg_sum);
     }
 //     else
 //       // Here `neg_pinf_count == 1'.
@@ -3553,7 +2492,7 @@ Octagon<T>::affine_image(const Variable var,
 //       add_octagonal_constraint(k, n_var+1, -2*low_sum, denominator*dnm1);
 //   }
 
-//  incremental_strong_closure_assign(var);
+  incremental_strong_closure_assign(var);
   assert(OK());
 }
 

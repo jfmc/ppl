@@ -1123,6 +1123,49 @@ private:
   void forget_all_octagonal_constraints(typename OR_Matrix<N>::row_iterator i,
 					dimension_type v);
 
+  //! An helper function for the computation of affine relations.
+  /*!
+    For each octagon index \p u (less than or equal to \p last_v and different
+    from \p v), deduce constraints of the form <CODE>v - u \<= c</CODE>,
+    starting from \p pos_sum which is an upper bound for \p v.
+
+    The strong closure is able to deduce the constraint
+    <CODE>v - u \<= ub_v - lb_u</CODE>. We can be more precise if variable
+    \p u played an active role in the computation of the upper bound for
+    \p v, i.e., if the corresponding coefficient
+    <CODE>q == sc_expr[u]/sc_den</CODE> is greater than zero. In particular:
+      - if <CODE>q \>= 1</CODE>, then <CODE>v - u \<= ub_v - ub_u</CODE>;
+      - if <CODE>0 \< q \< 1</CODE>, then
+        <CODE>v - u \<= ub_v - (q*ub_u + (1-q)*lb_u)</CODE>.
+  */
+  void deduce_v_minus_u_bounds(dimension_type v,
+			       dimension_type last_v,
+			       const Linear_Expression& sc_expr,
+			       Coefficient_traits::const_reference sc_den,
+			       const N& pos_sum);
+
+  //! An helper function for the computation of affine relations.
+  /*!
+    For each octagon index \p u (less than or equal to \p last_v and different
+    from \p v), deduce constraints of the form <CODE>u - v \<= c</CODE>,
+    starting from \p neg_sum which is a lower bound for \p v.
+
+    The strong closure is able to deduce the constraint
+    <CODE>u - v \<= ub_u - lb_v</CODE>. We can be more precise if variable
+    \p u played an active role in the computation of the lower bound for
+    \p v, i.e., if the corresponding coefficient
+    <CODE>q == sc_expr[u]/sc_den</CODE> is greater than zero.
+    In particular:
+      - if <CODE>q \>= 1</CODE>, then <CODE>u - v \<= lb_u - lb_v</CODE>;
+      - if <CODE>0 \< q \< 1</CODE>, then
+        <CODE>u - v \<= (q*lb_u + (1-q)*ub_u) - lb_v</CODE>.
+  */
+  void deduce_u_minus_v_bounds(dimension_type v,
+			       dimension_type last_v,
+			       const Linear_Expression& sc_expr,
+			       Coefficient_traits::const_reference sc_den,
+			       const N& neg_sum);
+
   /*! \brief
     Adds to \p limiting_octagon the octagonal differences in \p cs
     that are satisfied by \p *this.
