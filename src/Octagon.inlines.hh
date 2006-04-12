@@ -62,6 +62,7 @@ numer_denom(const Checked_Number<T, Policy>& from,
   den = q.get_den();
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Assigns to \p x the minimum between \p x and \p y.
 /*! \relates Parma_Polyhedra_Library::Octagon */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
