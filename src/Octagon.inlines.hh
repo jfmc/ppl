@@ -62,26 +62,6 @@ numer_denom(const Checked_Number<T, Policy>& from,
   den = q.get_den();
 }
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Divides \p x by \p y into \p to, rounding the result towards plus infinity.
-/*! \relates Parma_Polyhedra_Library::Octagon */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename T, typename Policy>
-inline void
-div_round_up(Checked_Number<T, Policy>& to,
-	     Coefficient_traits::const_reference x,
-	     Coefficient_traits::const_reference y) {
-  mpq_class qx;
-  mpq_class qy;
-  // Note: this code assumes that a Coefficient is always convertible
-  // to an mpq_class without loss of precision.
-  assign_r(qx, x, ROUND_NOT_NEEDED);
-  assign_r(qy, y, ROUND_NOT_NEEDED);
-  div_assign_r(qx, qx, qy, ROUND_NOT_NEEDED);
-  assign_r(to, qx, ROUND_UP);
-}
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-
 //! Assigns to \p x the minimum between \p x and \p y.
 /*! \relates Parma_Polyhedra_Library::Octagon */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
