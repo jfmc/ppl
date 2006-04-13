@@ -301,6 +301,92 @@ test10() {
   return ok;
 }
 
+// Example from Muller-Olm and Seidl SAS 2005 paper
+bool
+test11() {
+
+  Variable A(0);
+  Variable B(1);
+
+  Grid_Generator_System ggs;
+  ggs.insert(grid_point(A + 0*B));
+
+  Grid gr1(ggs);
+  Grid gr(2, EMPTY);
+
+  for(int j = 0; j < 4; j++) {
+    gr.add_generators_and_minimize(ggs);
+
+    for(int i = 0; i < j; i++) {
+      gr.affine_image(A, 3*A);
+      gr.affine_image(B, B + A);
+    }
+    for(int i = 0; i < j; i++) {
+      gr.affine_image(A, 5*A);
+      gr.affine_image(B, B + A);
+    }
+    gr1.join_assign(gr);
+  }
+
+  gr.add_generators_and_minimize(ggs);
+
+  bool ok = (gr == gr1);
+
+  print_congruences(gr1, "*** gr1 ***");
+  print_generators(gr1, "*** gr1 ***");
+  print_congruences(gr, "*** gr ***");
+  print_generators(gr, "*** gr ***");
+
+  return ok;
+}
+
+// Example from Muller-Olm and Seidl ESOP 2005 paper
+bool
+test12() {
+
+  Variable A(0);
+  Variable B(1);
+
+  Coefficient* tem1 = new Coefficient("7654321");
+  Coefficient* tem2 = new Coefficient("69246289");
+  Coefficient* tem3 = new Coefficient("4294967296");
+
+  Grid_Generator_System ggs;
+  ggs.insert(grid_point(A));
+  ggs.insert(parameter(*tem3*A));
+  ggs.insert(parameter(*tem3*B));
+
+  Grid gr1(ggs);
+  Grid gr(2, EMPTY);
+
+  for(int j = 0; j < 3; j++) {
+    gr.add_generators_and_minimize(ggs);
+
+    for(int i = 0; i < j; i++) {
+      gr.affine_image(A, *tem1*A);
+      gr.affine_image(B, B + A);
+    }
+    for(int i = 0; i < j; i++) {
+      gr.affine_image(A, *tem2*A);
+      gr.affine_image(B, B + A);
+    }
+    gr1.join_assign(gr);
+  }
+
+  gr.add_generators_and_minimize(ggs);
+
+  delete tem1; delete tem2; delete tem3;
+
+  bool ok = (gr == gr1);
+
+  print_congruences(gr1, "*** gr1 ***");
+  print_generators(gr1, "*** gr1 ***");
+  print_congruences(gr, "*** gr ***");
+  print_generators(gr, "*** gr ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -314,4 +400,6 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST_F16A(test10);
+  DO_TEST_F16(test11);
+  DO_TEST_F64(test12);
 END_MAIN

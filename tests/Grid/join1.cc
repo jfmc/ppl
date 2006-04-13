@@ -312,50 +312,45 @@ test10() {
   Variable C(2);
   Variable D(3);
 
-  Grid gr0(4); // initial point
+  // initial point
+  Grid gr0(4);
   gr0.add_congruence(A == 2);
   gr0.add_congruence(B == 0);
 
-  Grid gr1(4); // a pass through the procedure may do nothing
+  // a pass through the procedure may do nothing
+  Grid gr1(gr0);
   gr1.add_congruence(A == C);
   gr1.add_congruence(B == D);
 
-  gr1.intersection_assign(gr0); // add the inital point
-  print_congruences(gr1, "*** gr1 ***");
-
-  Grid gr2(4); // one non-trivial pass through procedure
+  // one non-trivial pass through procedure
+  Grid gr2(gr0);
   gr2.add_congruence(15 * A == C);
   gr2.add_congruence(18 * A + B == D);
+  // combine alternative paths 1 and 2
+  gr2.join_assign(gr1);
 
-  gr2.intersection_assign(gr0); // add the inital point
-  print_congruences(gr2, "*** gr2 ***");
-
-  Grid gr3(4); // two non-trivial passes through procedure
+  // two non-trivial passes through procedure
+  Grid gr3(gr0);
   gr3.add_congruence(225 * A == C);
   gr3.add_congruence(282 * A + B == D);
-
-  gr3.intersection_assign(gr0); // add the inital point
-  print_congruences(gr3, "*** gr3 ***");
-
-  gr1.join_assign(gr2); // combine alternative paths 1 and 2
-  print_generators(gr1, "*** gr1.join_assign(gr2) ***");
-  gr1.join_assign(gr3); // combine alternative paths 1, 2 and 3
-  print_generators(gr1, "*** gr1.join_assign(gr3) ***");
+  // combine alternative paths 1, 2 and 3
+  gr3.join_assign(gr2);
 
   Variables_Set vars;
   vars.insert(A);
   vars.insert(B);
 
-  gr1.remove_space_dimensions(vars);
+  gr3.remove_space_dimensions(vars);
 
-  Grid known_gr(2); // as in paper
+  // as in paper
+  Grid known_gr(2);
 
   known_gr.add_congruence((A %= 2) / 28);
   known_gr.add_congruence((B %= 0) / 12);
 
-  bool ok = (gr1 == known_gr);
+  bool ok = (gr3 == known_gr);
 
-  print_congruences(gr1, "*** gr1.remove_space_dimensions(vars) ***");
+  print_congruences(gr3, "*** gr3.remove_space_dimensions(vars) ***");
 
   return ok;
 }
