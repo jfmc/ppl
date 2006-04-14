@@ -589,13 +589,12 @@ OR_Matrix<T>::ascii_load(std::istream& s) {
     return false;
   resize_no_copy(nrows);
   OR_Matrix& x = *this;
-//   for (const_row_iterator i = x.row_begin(), xend = x.row_end();
-//        i != xend; ++i) {
-//     const_row_reference_type r = *i;
-  for (dimension_type i = 0; i < x.num_rows(); ++i) {
-    dimension_type rs = row_size(i);
+  for (row_iterator i = x.row_begin(), xend = x.row_end();
+       i != xend; ++i) {
+    row_reference_type r_i = *i;
+    dimension_type rs = i.row_size();
     for (dimension_type j = 0; j < rs; ++j) {
-      Result r = input(x[i][j], s, ROUND_UP);
+      Result r = input(r_i[j], s, ROUND_UP);
       // FIXME: V_CVT_STR_UNK is probably not the only possible error.
       if (!s || r == V_CVT_STR_UNK)
 	return false;
