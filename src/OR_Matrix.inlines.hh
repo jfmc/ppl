@@ -514,25 +514,22 @@ template <typename T>
 inline void
 OR_Matrix<T>::grow(const dimension_type new_nrows) {
   assert(new_nrows%2 == 0);
+  // Make sure to add an even number on new rows.
   assert(new_nrows >= num_rows_);
   dimension_type new_size = new_nrows*(new_nrows/2 + 1);
   if (new_nrows > num_rows_) {
     if (new_size <= vec_capacity) {
       // We can recycle the old vec.
-      //      vec.grow_no_copy(new_size);
       vec.expand_within_capacity(new_size);
       num_rows_ = new_nrows;
     }
     else {
       // We cannot even recycle the old vec.
       OR_Matrix<T> new_matrix(new_nrows);
-      //       element_iterator j = new_matrix.element_begin();
-      //       for (const_element_iterator i = element_begin(), mend = element_end();
-      // 	   i != mend; ++i, ++j)
-      // 	*j = *i;
-      for (dimension_type i = num_rows_; i-- > 0; )
-	for (dimension_type j = row_size(i); j-- > 0; )
-	  new_matrix[i][j] = (*this)[i][j];
+      element_iterator j = new_matrix.element_begin();
+      for (element_iterator i = element_begin(), mend = element_end();
+      	   i != mend; ++i, ++j)
+      	*j = *i;
       swap(new_matrix);
       return;
     }
