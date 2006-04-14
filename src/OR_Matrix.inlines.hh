@@ -640,12 +640,12 @@ OR_Matrix<T>::OK() const {
 template <typename T>
 inline std::ostream&
 IO_Operators::operator<<(std::ostream& s, const OR_Matrix<T>& m) {
-  dimension_type n_rows = m.num_rows();
-  for (dimension_type i = 0; i < n_rows; ++i) {
-    dimension_type n_columns = OR_Matrix<T>::row_size(i);
-    for (dimension_type j = 0; j < n_columns; ++j) {
-      s << m[i][j] << " ";
-    }
+  for (typename OR_Matrix<T>::const_row_iterator m_iter = m.row_begin(),
+	 m_end = m.row_end(); m_iter != m_end; ++m_iter) {
+    typename OR_Matrix<T>::const_row_reference_type r_m = *m_iter; 
+    dimension_type mr_size = m_iter.row_size();
+    for (dimension_type j = 0; j < mr_size; ++j) 
+      s << r_m[j] << " "; 
     s << std::endl;
   }
   return s;
