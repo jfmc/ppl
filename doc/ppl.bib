@@ -112,31 +112,48 @@
   URL = "http://www.cs.unipr.it/ppl/Documentation/Bagnara98SCP.pdf"
 }
 
-@Techreport{BagnaraDHMZ05TR,
+@Misc{BagnaraDHMZ06a,
   Author = "R. Bagnara and K. Dobson and P. M. Hill and M. Mundell
             and E. Zaffanella",
-  Title = "A Linear Domain for Analyzing the Distribution of Numerical Values",
-  Number = "2005.06",
-  Type = "Report",
-  Institution = "School of Computing, University of Leeds, UK",
-  Year = 2005,
-  Note = "Available at
-          \url{http://www.comp.leeds.ac.uk/research/pubs/reports.shtml}",
-  Abstract = "This paper explores the abstract domain of \emph{grids},
-              a domain that is able to represent sets of equally
-              spaced points and hyperplanes over an $n$-dimensional
-              vector space.  Such a domain is useful for the static
-              analysis of the patterns of distribution of the values
-              program variables can take.  Besides the bare abstract
-              domain, we present a complete set of operations on grids
-              that includes all that is necessary to define the
-              abstract semantics and the widening operators required
-              to compute it in a finite number of steps.  The
-              definition of the domain and its operations exploit
-              well-known techniques from linear algebra as well as a
-              dual representation that allows, among other things, for
-              a concise and efficient implementation.",
-  URL = "http://www.cs.unipr.it/ppl/Documentation/BagnaraDHMZ05TR.pdf"
+  Title = "Grids: A Domain for Analyzing the Distribution of Numerical Values",
+  Year = 2006,
+  Note = "Submitted for publication.  Available at
+         \url{http://www.comp.leeds.ac.uk/hill/Papers/papers.html}.",
+  Abstract = "This paper explores the abstract domain of grids,
+          a domain that is able to represent sets of equally spaced
+          points and hyperplanes over an n-dimensional vector space.
+          Such a domain is useful for the static analysis of the
+          patterns of distribution of the values program variables can
+          take.  We present the domain, its representation and the
+          basic operations on grids necessary to define the abstract
+          semantics.  We show how the definition of the domain and its
+          operations exploit well-known techniques from linear algebra
+          as well as a dual representation that allows, among other
+          things, for a concise and efficient implementation."
+}
+
+@Misc{BagnaraDHMZ06b,
+  Author = "R. Bagnara and K. Dobson and P. M. Hill and M. Mundell
+            and E. Zaffanella",
+  Title = "A Practical Tool for Analyzing the Distribution
+           of Numerical Values",
+  Year = 2006,
+  Note = "Submitted for publication.  Available at
+         \url{http://www.comp.leeds.ac.uk/hill/Papers/papers.html}.",
+  Abstract = "The abstract domain of grids (or lattices) is a domain
+         that is able to represent sets of equally spaced points and
+         hyperplanes over an n-dimensional vector space.  Such a
+         domain is useful for the static analysis of the patterns of
+         distribution of the values that program variables can take.
+         This paper explores how this domain may be used in program
+         analysis, describing grid operations such as affine image,
+         affine preimage and widenings needed by such an application.
+         The paper also shows how any grid may be approximated by a
+         less precise non-relational grid and describes how such an
+         approximation can be computed.  Illustrative examples show
+         how the domain may be used in the analysis of programs
+         containing simple assignment statements, while loops and
+         recursive procedures."
 }
 
 @Misc{BagnaraHMZ04EA,
