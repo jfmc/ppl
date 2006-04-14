@@ -483,9 +483,6 @@ OR_Matrix<T>::erase_to_end(dimension_type first_to_erase) {
   assert(first_to_erase%2 == 1);
   assert(first_to_erase <= num_rows() - 1);
   if (first_to_erase < num_rows() - 2)
-    // If `first_to_erase' is an odd number, we erase the successive row
-    // because the total number of rows must be an even number.
-    // So we add `1' to `first_to_erase'.
     resize_no_copy(first_to_erase);
  }
 
