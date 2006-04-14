@@ -277,11 +277,10 @@ public:
 
   //! Builds a matrix with specified dimensions.
   /*!
-    \param n_rows      The number of rows and columns of the matrix that
-                       will be created.
+    \param n_rows      
+    The number of rows of the matrix that will be created.
 
-    This constructor creates a square \p n_rows \f$\times\f$ \p n_columns
-    matrix.
+    This constructor creates a matrix with  \p n_rows rows.
   */
   OR_Matrix(dimension_type n_rows);
 
@@ -322,21 +321,21 @@ public:
   void swap(OR_Matrix& y);
 
 
-  //! Makes the matrix grow by adding more rows and more columns.
+  //! Makes the matrix grow by adding more rows.
   /*!
-    \param new_n_rows      The number of rows  and columns of the
-                           resized matrix.
+    \param new_n_rows      
+    The number of rows of the resized matrix.
 
     A new matrix, with the specified dimensions, is created.
-    The contents of the old matrix are copied upper, left-hand corner
-    of the new matrix, which is then assigned to \p *this.
+    The contents of the old matrix are copied in the new matrix, 
+    which is then assigned to \p *this.
   */
   void grow(dimension_type new_n_rows);
 
   //! Resizes the matrix without worrying about the old contents.
   /*!
-    \param new_n_rows      The number of rows and columns of the
-                           resized matrix.
+    \param new_n_rows      
+    The number of rows of the resized matrix.
 
     A new matrix, with the specified dimensions, is created
     without copying the content of the old matrix and assigned
@@ -349,9 +348,10 @@ public:
   //! greater than or equal to \p new_n_rows.
   void remove_rows(dimension_type new_n_rows);
 
-  //! Adds \p n non-zero rows and columns to the matrix.
+  //! Adds \p n non-zero rows to the matrix.
   /*!
-    \param n      The number of rows and columns to be added.
+    \param n      
+    The number of rows to be added.
 
     Turn the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$(r+n) \times (c+n)\f$ matrix
