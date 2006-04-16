@@ -588,11 +588,10 @@ OR_Matrix<T>::ascii_load(std::istream& s) {
   if (!(s >> nrows))
     return false;
   resize_no_copy(nrows);
-  OR_Matrix& x = *this;
-  for (row_iterator i = x.row_begin(), xend = x.row_end();
-       i != xend; ++i) {
+  for (row_iterator i = row_begin(),
+	 this_row_end = row_end(); i != this_row_end; ++i) {
     row_reference_type r_i = *i;
-    dimension_type rs = i.row_size();
+    const dimension_type rs = i.row_size();
     for (dimension_type j = 0; j < rs; ++j) {
       Result r = input(r_i[j], s, ROUND_UP);
       // FIXME: V_CVT_STR_UNK is probably not the only possible error.
