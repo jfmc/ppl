@@ -320,5 +320,6 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 } // namespace Parma_Polyhedra_Library
 
 #include "DB_Matrix.inlines.hh"
+#include "DB_Matrix.templates.hh"
 
 #endif // !defined(PPL_DB_Matrix_defs_hh)
