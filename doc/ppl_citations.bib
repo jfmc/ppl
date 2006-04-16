@@ -86,6 +86,41 @@
               benchmark case study."
 }
 
+@MastersThesis{Ellenbogen04th,
+  Author = "R. Ellenbogen",
+  Title = "Fully Automatic Verification of Absence of Errors
+           via Interprocedural Integer Analysis",
+  School = "School of  Computer Science, Tel-Aviv University",
+  Address = "Tel-Aviv, Israel",
+  Month = dec,
+  Year = 2004,
+  Abstract = "We present a interprocedural C String Static Verifier
+              (iCSSV), a whole program analysis algorithm for
+              verifying the safety of string operations in C
+              programs. The algorithm automatically proves linear
+              relationships among pointer expressions. The algorithm
+              is conservative, i.e., it infers only valid
+              relationships although it may fail to detect some of
+              them. The algorithm is targeted to programs with
+              ``shallow'' pointers and complex integer
+              relationships. Therefore, the algorithm combines
+              context-sensitive flow-insensitive pointer analysis of
+              pointer updates with contextsensitive and flow-sensitive
+              integer analysis of properties of allocation
+              sites. Context-sensitivity is achieved by specializing
+              pointer aliases to the context and functional integer
+              analysis. The algorithm is powerful enough to verify the
+              absence of string manipulation errors such as accesses
+              beyond buffer length and null terminating
+              character. Here the interprocedural analysis guarantees
+              that our algorithm is fully automatic, i.e., does not
+              require user annotations or any other intervention. A
+              prototype of the algorithm was implemented. Several
+              novel techniques are employed to make the
+              interprocedural analysis of realistic programs
+              feasible."
+}
+
 @Inproceedings{Frehse04,
   Author = "G. Frehse",
   Title = "Compositional Verification of Hybrid Systems
