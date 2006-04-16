@@ -545,6 +545,44 @@
               examples are encouraging."
 }
 
+@InProceedings{SankaranarayananSM06,
+  Author = "S. Sankaranarayanan and H. B. Sipma and Z. Manna",
+  Title = "Fixed Point Iteration for Computing the Time Elapse Operator",
+  Booktitle = "Hybrid Systems: Computation and Control:
+               Proceedings of the 9th International Workshop (HSCC 2006)",
+  Address = "Santa Barbara, CA, USA",
+  Editor = "J. Hespanha and A. Tiwari",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 3927,
+  Pages = "537--551",
+  Year = 2006,
+  ISBN = "3-540-33170-0",
+  Abstract = "We investigate techniques for automatically generating
+              symbolic approximations to the time solution of a system
+              of differential equations. This is an important
+              primitive operation for the safety analysis of
+              continuous and hybrid systems. In this paper we design a
+              \emph{time elapse} operator that computes a symbolic
+              over-approximation of time solutions to a continuous
+              system starting from a given initial region. Our
+              approach is iterative over the cone of functions (drawn
+              from a suitable universe) that are non negative over the
+              initial region. At each stage, we iteratively remove
+              functions from the cone whose Lie derivatives do not lie
+              inside the current iterate. If the iteration converges,
+              the set of states defined by the final iterate is shown
+              to contain all the time successors of the initial
+              region. The convergence of the iteration can be forced
+              using abstract interpretation operations such as
+              widening and narrowing.  We instantiate our technique to
+              linear hybrid systems with piecewise-affine dynamics to
+              compute polyhedral approximations to the time
+              successors. Using our prototype implementation TimePass,
+              we demonstrate the performance of our technique on
+              benchmark examples."
+}
+
 @Inproceedings{SongCR05,
   Author = "H. Song and K. Compton and W. Rounds",
   Title = "{SPHIN:} A Model Checker for Reconfigurable Hybrid Systems
