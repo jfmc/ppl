@@ -34,11 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <errno.h>
 #include <string.h>
 
-#ifndef PPL_USE_INCREMENTAL_SIMPLEX
-#define PPL_USE_INCREMENTAL_SIMPLEX 1
-#endif
-
-
 #ifdef HAVE_GETOPT_H
 # include <getopt.h>
 #endif
@@ -77,17 +72,19 @@ static const char* ppl_source_version = PPL_VERSION;
 
 #ifdef HAVE_GETOPT_H
 static struct option long_options[] = {
-  {"check",          no_argument,       0, 'c'},
-  {"help",           no_argument,       0, 'h'},
-  {"min",            no_argument,       0, 'm'},
-  {"max",            no_argument,       0, 'M'},
-  {"max-cpu",        required_argument, 0, 'C'},
-  {"max-memory",     required_argument, 0, 'V'},
-  {"output",         required_argument, 0, 'o'},
-  {"enumerate",      no_argument,       0, 'e'},
-  {"simplex",        no_argument,       0, 's'},
-  {"timings",        no_argument,       0, 't'},
-  {"verbose",        no_argument,       0, 'v'},
+  {"check",           no_argument,       0, 'c'},
+  {"help",            no_argument,       0, 'h'},
+  {"incremental",     no_argument,       0, 'i'},
+  {"min",             no_argument,       0, 'm'},
+  {"max",             no_argument,       0, 'M'},
+  {"max-cpu",         required_argument, 0, 'C'},
+  {"max-memory",      required_argument, 0, 'V'},
+  {"output",          required_argument, 0, 'o'},
+  {"enumerate",       no_argument,       0, 'e'},
+  {"no-optimization", no_argument,       0, 'n'},
+  {"simplex",         no_argument,       0, 's'},
+  {"timings",         no_argument,       0, 't'},
+  {"verbose",         no_argument,       0, 'v'},
   {0, 0, 0, 0}
 };
 #endif
@@ -95,7 +92,9 @@ static struct option long_options[] = {
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
 "  -c, --check             checks plausibility of the optimum value found\n"
+"  -i, --incremental       solves the problem incrementally\n"
 "  -m, --min               minimizes the objective function\n"
+"  -n, --no-optimization   checks for satisfiability\n"
 "  -M, --max               maximizes the objective function (default)\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
 "  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
@@ -112,7 +111,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "bcemMC:V:ho:stv"
+#define OPTION_LETTERS "bceimnMC:V:ho:stv"
 
 static const char* program_name = 0;
 
@@ -125,6 +124,8 @@ static int use_simplex = 0;
 static int print_timings = 0;
 static int verbose = 0;
 static int maximize = 1;
+static int incremental = 0;
+static int no_optimization = 0;
 
 static void
 my_exit(int status) {
@@ -164,6 +165,8 @@ process_options(int argc, char* argv[]) {
 #endif
   int enumerate_required = 0;
   int simplex_required = 0;
+  int incremental_required = 0;
+  int no_optimization_required = 0;
   int c;
   char* endptr;
   long l;
@@ -237,18 +240,33 @@ process_options(int argc, char* argv[]) {
       verbose = 1;
       break;
 
+    case 'i':
+      incremental_required = 1;
+      break;
+
+    case 'n':
+      no_optimization_required = 1;
+      break;
+
     default:
       abort();
     }
   }
 
-  if (enumerate_required && simplex_required)
-    fatal("--enumerate and --simplex are incompatible options");
+  if (enumerate_required && (simplex_required || incremental_required ||
+			     no_optimization_required))
+      fatal("Some incompatible options were given to lp_problem");
 
   if (enumerate_required)
     use_simplex = 0;
   else if (simplex_required)
     use_simplex = 1;
+
+  if (incremental_required)
+    incremental = 1;
+
+  if (no_optimization_required)
+    no_optimization = 1;
 
   if (optind >= argc) {
     if (verbose)
@@ -575,49 +593,56 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   int mode = maximize
     ? PPL_LP_PROBLEM_MAXIMIZATION : PPL_LP_PROBLEM_MINIMIZATION;
 
-#if PPL_USE_INCREMENTAL_SIMPLEX
-  ppl_new_LP_Problem_trivial(&lp);
-  // Add a dummy contraint to have a correct space dimension.
-  ppl_dimension_type space_dim;
-  ppl_Linear_Expression_t dummy_le;
-  ppl_Constraint_t dummy_c;
-  ppl_Constraint_System_space_dimension(cs, &space_dim);
-  /*  fprintf(stderr, "\nSpace dimension: %d\n", space_dim); */
-  ppl_new_Linear_Expression_with_dimension(&dummy_le, space_dim);
-  ppl_new_Constraint(&dummy_c, dummy_le, PPL_CONSTRAINT_TYPE_EQUAL);
-  ppl_LP_Problem_add_constraint(lp, dummy_c);
-  ppl_delete_Linear_Expression(dummy_le);
-  ppl_delete_Constraint(dummy_c);
-  ppl_LP_Problem_set_objective_function(lp, objective);
-  ppl_LP_Problem_set_optimization_mode(lp, mode);
+  if(incremental) {
+    ppl_new_LP_Problem_trivial(&lp);
+    // Add a dummy contraint to have a correct space dimension.
+    ppl_dimension_type space_dim;
+    ppl_Linear_Expression_t dummy_le;
+    ppl_Constraint_t dummy_c;
+    ppl_Constraint_System_space_dimension(cs, &space_dim);
+    /*  fprintf(stderr, "\nSpace dimension: %d\n", space_dim); */
+    ppl_new_Linear_Expression_with_dimension(&dummy_le, space_dim);
+    ppl_new_Constraint(&dummy_c, dummy_le, PPL_CONSTRAINT_TYPE_EQUAL);
+    ppl_LP_Problem_add_constraint(lp, dummy_c);
+    ppl_delete_Linear_Expression(dummy_le);
+    ppl_delete_Constraint(dummy_c);
+    ppl_LP_Problem_set_objective_function(lp, objective);
+    ppl_LP_Problem_set_optimization_mode(lp, mode);
 
-  // Add the constraints in `cs' one at a time.
-  ppl_Constraint_System_const_iterator_t i;
-  ppl_Constraint_System_const_iterator_t iend;
-  ppl_new_Constraint_System_const_iterator(&i);
-  ppl_new_Constraint_System_const_iterator(&iend);
-  ppl_Constraint_System_begin(cs, i);
-  ppl_Constraint_System_end(cs, iend);
-  int counter;
-  counter = 0;
-  while (!ppl_Constraint_System_const_iterator_equal_test(i, iend)) {
-    ++counter;
-    fprintf(stderr, "\nSolving constraint %d\n", counter);
-    ppl_const_Constraint_t c;
-    ppl_Constraint_System_const_iterator_dereference(i, &c);
-    ppl_LP_Problem_add_constraint(lp, c);
-    status = ppl_LP_Problem_solve(lp);
-    if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE)
-      break;
-    ppl_Constraint_System_const_iterator_increment(i);
+    // Add the constraints in `cs' one at a time.
+    ppl_Constraint_System_const_iterator_t i;
+    ppl_Constraint_System_const_iterator_t iend;
+    ppl_new_Constraint_System_const_iterator(&i);
+    ppl_new_Constraint_System_const_iterator(&iend);
+    ppl_Constraint_System_begin(cs, i);
+    ppl_Constraint_System_end(cs, iend);
+    int counter;
+    counter = 0;
+    while (!ppl_Constraint_System_const_iterator_equal_test(i, iend)) {
+      ++counter;
+      fprintf(stdout, "\nSolving constraint %d\n", counter);
+      ppl_const_Constraint_t c;
+      ppl_Constraint_System_const_iterator_dereference(i, &c);
+      ppl_LP_Problem_add_constraint(lp, c);
+
+      if(no_optimization) {
+	status = ppl_LP_Problem_is_satisfiable(lp);
+	if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE)
+	  break;
+      }
+      else
+	status = ppl_LP_Problem_solve(lp);
+      ppl_Constraint_System_const_iterator_increment(i);
+    }
+    ppl_delete_Constraint_System_const_iterator(i);
+    ppl_delete_Constraint_System_const_iterator(iend);
   }
-  ppl_delete_Constraint_System_const_iterator(i);
-  ppl_delete_Constraint_System_const_iterator(iend);
 
-#else // PPL_USE_INCREMENTAL_SIMPLEX
-  ppl_new_LP_Problem(&lp, cs, objective, mode);
-  status = ppl_LP_Problem_solve(lp);
-#endif // PPL_USE_INCREMENTAL_SIMPLEX
+  else {
+    ppl_new_LP_Problem(&lp, cs, objective, mode);
+    status = no_optimization ? ppl_LP_Problem_is_satisfiable(lp) :
+                               ppl_LP_Problem_solve(lp);
+ }
 
   if (print_timings) {
     fprintf(stderr, "Time to solve the LP problem: ");
@@ -631,6 +656,13 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     /* FIXME: check!!! */
     return 0;
   }
+
+  else if (status != PPL_LP_PROBLEM_STATUS_UNFEASIBLE && no_optimization) {
+    fprintf(output_file, "Feasible problem.\n");
+    /* FIXME: check!!! */
+    return 0;
+  }
+
   else if (status == PPL_LP_PROBLEM_STATUS_UNBOUNDED) {
     fprintf(output_file, "Unbounded problem.\n");
     /* FIXME: check!!! */
