@@ -620,7 +620,8 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     counter = 0;
     while (!ppl_Constraint_System_const_iterator_equal_test(i, iend)) {
       ++counter;
-      fprintf(stdout, "\nSolving constraint %d\n", counter);
+      if (verbose)
+	fprintf(stdout, "\nSolving constraint %d\n", counter);
       ppl_const_Constraint_t c;
       ppl_Constraint_System_const_iterator_dereference(i, &c);
       ppl_LP_Problem_add_constraint(lp, c);
