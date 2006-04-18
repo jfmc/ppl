@@ -1,5 +1,5 @@
 /* Octagon class declaration.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -555,6 +554,13 @@ public:
   */
   bool contains(const Octagon& y) const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this strictly contains \p y.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool strictly_contains(const Octagon& y) const;
+
   //! \brief
   //! Returns the relations holding between the octagon \p *this
   //! and the constraint \p c.
@@ -647,35 +653,54 @@ public:
   */
   bool intersection_assign_and_minimize(const Octagon& y);
 
-  //! \brief
-  //! Assigns to \p *this the smallest octagon that contains
-  //! the convex union of \p *this and \p y.
-  /*!
+  /*! \brief
+    Assigns to \p *this the smallest octagon that contains
+    the convex union of \p *this and \p y.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void poly_hull_assign(const Octagon& y);
+  void oct_hull_assign(const Octagon& y);
 
-  //! \brief
-  //! Assigns to \p *this the smallest octagon that contains
-  //! the convex union of \p *this and \p y.
-  /*!
+  //! Same as oct_hull_assign.
+  void upper_bound_assign(const Octagon& y);
+
+  /*! \brief
+    Assigns to \p *this the smallest octagon that contains
+    the convex union of \p *this and \p y.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool poly_hull_assign_and_minimize(const Octagon& y);
+  bool oct_hull_assign_and_minimize(const Octagon& y);
 
-  //! \brief
-  //! Assigns to \p *this the \ref oct_difference "oct-difference" of
-  //! \p *this and \p y.
-  /*!
+  /*! \brief
+    If the oct-hull of \p *this and \p y is exact, it is assigned
+    to \p *this and <CODE>true</CODE> is returned,
+    otherwise <CODE>false</CODE> is returned.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool oct_hull_assign_if_exact(const Octagon& y);
+
+  //! Same as oct_hull_assign_if_exact.
+  bool upper_bound_assign_if_exact(const Octagon& y);
+
+  /*! \brief
+    Assigns to \p *this the \ref oct_difference "oct-difference" of
+    \p *this and \p y.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void oct_difference_assign(const Octagon& y);
+
+  //! Same as oct_difference_assign.
+  void difference_assign(const Octagon& y);
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine image"
@@ -826,10 +851,15 @@ public:
     \param y
     An octagon that <EM>must</EM> be contained in \p *this.
 
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref widening_with_tokens "widening with tokens" delay technique).
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void CH78_widening_assign(const Octagon& y);
+  void CH78_widening_assign(const Octagon& y, unsigned* tp = 0);
 
   //! \brief
   //! Improves the result of the \ref CH78_widening "CH78-widening"
@@ -841,8 +871,8 @@ public:
 
     \param cs
     The system of constraints used to improve the widened octagon.
-    \
-    param tp
+
+    \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
     \ref widening_with_tokens "widening with tokens" delay technique).

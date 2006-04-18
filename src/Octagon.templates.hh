@@ -34,7 +34,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 
 // FIXME: this is only to get access to
-// Implementation::BD_Shapes::div_round_up().
+// Implementation::BD_Shapes::div_round_up(),
+// Implementation::BD_Shapes::numer_denom(),
+// Implementation::BD_Shapes::min_assign().
 #include "BD_Shape.defs.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -632,7 +634,7 @@ Octagon<T>::relation_with(const Generator& g) const {
 template <typename T>
 void
 Octagon<T>::strong_closure_assign() const {
-  using Implementation::Octagons::assign_min;
+  using Implementation::BD_Shapes::min_assign;
 
   // Do something only if necessary.
   if (marked_empty() || marked_strongly_closed())
@@ -694,7 +696,7 @@ Octagon<T>::strong_closure_assign() const {
 	    N& x_i_j = (j < rs_i) ? x_i[j] : x_cj[coherent_index(i)];
 	    N sum;
 	    add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
-	    assign_min(x_i_j, sum);
+	    min_assign(x_i_j, sum);
 	  }
 	}
       }
@@ -746,7 +748,7 @@ Octagon<T>::strong_closure_assign() const {
 	    add_assign_r(sum,x_i_ci, x_cj_j, ROUND_UP);
 	    N d;
 	    div2exp_assign_r(d, sum, 1, ROUND_UP);
-	    assign_min(x_i_j, d);
+	    min_assign(x_i_j, d);
 	  }
 	}
       }
@@ -756,7 +758,7 @@ Octagon<T>::strong_closure_assign() const {
 template <typename T>
 void
 Octagon<T>::incremental_strong_closure_assign(Variable var) const {
-  using Implementation::Octagons::assign_min;
+  using Implementation::BD_Shapes::min_assign;
 
   // `var' should be one of the dimensions of the octagon.
   dimension_type num_var = var.id() + 1;
@@ -824,7 +826,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	  N& m_i_v = (v < rs_i) ? m_i[v] : m_cv[coherent_index(i)];
 	  N sum1;
 	  add_assign_r(sum1, m_i_k, m_k_v, ROUND_UP);
-	  assign_min(m_i_v, sum1);
+	  min_assign(m_i_v, sum1);
 	}
 
 	const N& m_k_cv = (cv < rs_k) ? m_k[cv] : m_v[coherent_index(k)];
@@ -832,7 +834,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	  N& m_i_cv = (cv < rs_i) ? m_i[cv] : m_v[coherent_index(i)];
 	  N sum2;
 	  add_assign_r(sum2, m_i_k, m_k_cv, ROUND_UP);
-	  assign_min(m_i_cv, sum2);
+	  min_assign(m_i_cv, sum2);
 	}
       }
 
@@ -844,7 +846,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	  N& m_v_i = (i < rs_v) ? m_v[i] : m_ci[cv];
 	  N sum3;
 	  add_assign_r(sum3, m_v_k, m_k_i, ROUND_UP);
-	  assign_min(m_v_i, sum3);
+	  min_assign(m_v_i, sum3);
 	}
 
 	const N& m_cv_k = (k < rs_v) ? m_cv[k] : m_ck[v];
@@ -852,7 +854,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	  N& m_cv_i = (i < rs_v) ? m_cv[i] : m_ci[v];
 	  N sum4;
 	  add_assign_r(sum4, m_cv_k, m_k_i, ROUND_UP);
-	  assign_min(m_cv_i, sum4);
+	  min_assign(m_cv_i, sum4);
 	}
       }
     }
@@ -876,7 +878,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	if (!is_plus_infinity(m_v_j)) {
 	  N sum1;
 	  add_assign_r(sum1, m_i_v, m_v_j, ROUND_UP);
-	  assign_min(m_i_j, sum1);
+	  min_assign(m_i_j, sum1);
 	}
       }
       const N& m_i_cv = (cv < rs_i) ? m_i[cv] : m_v[coherent_index(i)];
@@ -885,7 +887,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	if (!is_plus_infinity(m_cv_j)) {
 	  N sum2;
 	  add_assign_r(sum2, m_i_cv, m_cv_j, ROUND_UP);
-	  assign_min(m_i_j, sum2);
+	  min_assign(m_i_j, sum2);
 	}
       }
     }
@@ -934,7 +936,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 	    add_assign_r(sum, x_i_ci, x_cj_j, ROUND_UP);
 	    N d;
 	    div2exp_assign_r(d, sum, 1, ROUND_UP);
-	    assign_min(x_i_j, d);
+	    min_assign(x_i_j, d);
 	  }
 	}
       }
@@ -1178,12 +1180,12 @@ Octagon<T>::transitive_reduction_assign() const {
 
 template <typename T>
 void
-Octagon<T>::poly_hull_assign(const Octagon& y) {
+Octagon<T>::oct_hull_assign(const Octagon& y) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
-    throw_dimension_incompatible("poly_hull_assign(y)", y);
+    throw_dimension_incompatible("oct_hull_assign(y)", y);
 
-  // The poly-hull of an octagon `oc' with an empty octagon is `oc'.
+  // The hull of an octagon `x' with an empty octagon is `x'.
   y.strong_closure_assign();
   if (y.marked_empty())
     return;
@@ -1193,7 +1195,7 @@ Octagon<T>::poly_hull_assign(const Octagon& y) {
     return;
   }
 
-  // The poly_hull consist to costruct '*this' with the maximum
+  // The oct-hull consist to costruct '*this' with the maximum
   // elements selected from '*this' or 'y'.
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
@@ -1263,15 +1265,15 @@ Octagon<T>::oct_difference_assign(const Octagon& y) {
     if (c.is_equality()) {
       Octagon w = x;
       if (w.add_constraint_and_minimize(e <= 0))
-	new_oct.poly_hull_assign(w);
+	new_oct.oct_hull_assign(w);
       change = z.add_constraint_and_minimize(e >= 0);
     }
     if (change)
-      new_oct.poly_hull_assign(z);
+      new_oct.oct_hull_assign(z);
   }
   *this = new_oct;
   // The result is still transitively closed, because both
-  // poly_hull_assign() and add_constraint_and_minimize()
+  // oct_hull_assign() and add_constraint_and_minimize()
   // preserve closure.
   assert(OK());
 }
@@ -1705,7 +1707,8 @@ Octagon<T>::limited_CC76_extrapolation_assign(const Octagon& y,
 
 template <typename T>
 void
-Octagon<T>::CH78_widening_assign(const Octagon& y) {
+Octagon<T>::CH78_widening_assign(const Octagon& y,
+				 unsigned* /*tp*/) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
     throw_dimension_incompatible("CH78_widening_assign(y)", y);
@@ -2625,6 +2628,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 				     Coefficient_traits::const_reference
 				     denominator) {
   using Implementation::BD_Shapes::div_round_up;
+  using Implementation::BD_Shapes::numer_denom;
 
   // The denominator cannot be zero.
   if (denominator == 0)
@@ -2920,8 +2924,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 		  div2exp_assign_r(c, m_j1_j0, 1, ROUND_UP);
 		  Coefficient a;
 		  Coefficient b;
-		  //		  c.numer_denom(a, b);
-		  Implementation::Octagons::numer_denom(c, a, b);
+		  numer_denom(c, a, b);
 		  // Pseudo max_com_div, ma non proprio.
 		  // Controlla se b divide perfettamente `dnm', se si` aggiorna b,
 		  // altrimenti rimette a posto dnm.
@@ -2958,7 +2961,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 		  div2exp_assign_r(c, m_j0_j1, 1, ROUND_UP);
 		  Coefficient a;
 		  Coefficient b;
-		  Implementation::Octagons::numer_denom(c, a, b);
+		  numer_denom(c, a, b);
 		  if (dnm % b == 0) {
 		    b = dnm/b;
 		    up_sum += (a*expr_coeff_var*b);
@@ -3025,7 +3028,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 		  N div;
 		  div2exp_assign_r(div, m_j0_j1, 1, ROUND_UP);
 		  neg_assign_r(c1, div, ROUND_DOWN);
-		  Implementation::Octagons::numer_denom(c1, a, b);
+		  numer_denom(c1, a, b);
 		  if (dnm1 % b == 0) {
 		    b = dnm1/b;
 		    low_sum += (a*expr_coeff_var*b);
@@ -3054,7 +3057,7 @@ Octagon<T>::generalized_affine_image(Variable var,
 		  neg_assign_r(c1, div, ROUND_DOWN);
 		  Coefficient a;
 		  Coefficient b;
-		  Implementation::Octagons::numer_denom(c1, a, b);
+		  numer_denom(c1, a, b);
 		  // Lower bound.
 		  if (dnm1 % b == 0) {
 		    b = dnm1/b;
@@ -3357,6 +3360,8 @@ Octagon<T>::generalized_affine_image(const Linear_Expression& lhs,
 template <typename T>
 Constraint_System
 Octagon<T>::constraints() const {
+  using Implementation::BD_Shapes::numer_denom;
+
   Constraint_System cs;
   if (space_dim == 0) {
     if (marked_empty())
@@ -3388,8 +3393,7 @@ Octagon<T>::constraints() const {
 	Variable x(i/2);
 	Coefficient a;
 	Coefficient b;
-	//	c_ii_i.numer_denom(b, a);
-	Implementation::Octagons::numer_denom(c_ii_i, b, a);
+	numer_denom(c_ii_i, b, a);
 	a *= 2;
 	cs.insert(a*x == b);
       }
@@ -3399,8 +3403,7 @@ Octagon<T>::constraints() const {
 	  Variable x(i/2);
 	  Coefficient a;
 	  Coefficient b;
-	  //	  c_i_ii.numer_denom(b, a);
-	  Implementation::Octagons::numer_denom(c_i_ii, b, a);
+	  numer_denom(c_i_ii, b, a);
 	  a *= 2;
 	  cs.insert(-a*x <= b);
 	}
@@ -3408,8 +3411,7 @@ Octagon<T>::constraints() const {
 	  Variable x(i/2);
 	  Coefficient a;
 	  Coefficient b;
-	  //	  c_ii_i.numer_denom(b, a);
-	  Implementation::Octagons::numer_denom(c_ii_i, b, a);
+	  numer_denom(c_ii_i, b, a);
 	  a *= 2;
 	  cs.insert(a*x <= b);
 	}
@@ -3436,8 +3438,7 @@ Octagon<T>::constraints() const {
 	  Variable y(i/2);
 	  Coefficient a;
 	  Coefficient b;
-	  //	  c_i_j.numer_denom(b, a);
-	  Implementation::Octagons::numer_denom(c_i_j, b, a);
+	  numer_denom(c_i_j, b, a);
 	  cs.insert(a*x - a*y == b);
 	}
 	else {
@@ -3447,8 +3448,7 @@ Octagon<T>::constraints() const {
 	    Variable y(i/2);
 	    Coefficient a;
 	    Coefficient b;
-	    //	    c_i_j.numer_denom(b, a);
-	    Implementation::Octagons::numer_denom(c_i_j, b, a);
+	    numer_denom(c_i_j, b, a);
 	    cs.insert(a*x - a*y <= b);
 	  }
 	  if (!is_plus_infinity(c_ii_jj)) {
@@ -3456,8 +3456,7 @@ Octagon<T>::constraints() const {
 	    Variable y(i/2);
 	    Coefficient a;
 	    Coefficient b;
-	    //	    c_ii_jj.numer_denom(b, a);
-	    Implementation::Octagons::numer_denom(c_ii_jj, b, a);
+	    numer_denom(c_ii_jj, b, a);
 	    cs.insert(a*y - a*x <= b);
 	  }
 	}
@@ -3476,8 +3475,7 @@ Octagon<T>::constraints() const {
 	  Variable y(i/2);
 	  Coefficient a;
 	  Coefficient b;
-	  //	  c_ii_j.numer_denom(b, a);
-	  Implementation::Octagons::numer_denom(c_ii_j, b, a);
+	  numer_denom(c_ii_j, b, a);
 	  cs.insert(a*x + a*y == b);
 	}
 	else {
@@ -3487,8 +3485,7 @@ Octagon<T>::constraints() const {
 	    Variable y(i/2);
 	    Coefficient a;
 	    Coefficient b;
-	    //	    c_i_jj.numer_denom(b, a);
-	    Implementation::Octagons::numer_denom(c_i_jj, b, a);
+	    numer_denom(c_i_jj, b, a);
 	    cs.insert(-a*x - a*y <= b);
 	  }
 	  if (!is_plus_infinity(c_ii_j)) {
@@ -3496,8 +3493,7 @@ Octagon<T>::constraints() const {
 	    Variable y(i/2);
 	    Coefficient a;
 	    Coefficient b;
-	    //	    c_ii_j.numer_denom(b, a);
-	    Implementation::Octagons::numer_denom(c_ii_j, b, a);
+	    numer_denom(c_ii_j, b, a);
 	    cs.insert(a*x + a*y <= b);
 	  }
 	}

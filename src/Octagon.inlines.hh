@@ -42,70 +42,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace Implementation {
-namespace Octagons {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Extract the numerator and denominator components of \p from.
-/*! \relates Parma_Polyhedra_Library::Octagon */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename T, typename Policy>
-inline void
-numer_denom(const Checked_Number<T, Policy>& from,
-	    Coefficient& num, Coefficient& den) {
-  assert(!is_not_a_number(from)
-	 && !is_minus_infinity(from)
-	 && !is_plus_infinity(from));
-  mpq_class q;
-  assign_r(q, raw_value(from), ROUND_IGNORE);
-  num = q.get_num();
-  den = q.get_den();
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Assigns to \p x the minimum between \p x and \p y.
-/*! \relates Parma_Polyhedra_Library::Octagon */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename N>
-inline void
-assign_min(N& x, const N& y) {
-  if (x > y)
-    x = y;
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Assigns to \p x the minimum among three values.
-/*! \relates Parma_Polyhedra_Library::Octagon */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename N>
-inline void
-assign_min(N& x, const N& x1, const N& x2) {
-  if (x > x1)
-    x = x1;
-  if (x > x2)
-    x = x2;
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Assigns to \p x the minimum among five values.
-/*! \relates Parma_Polyhedra_Library::Octagon */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename N>
-inline void
-assign_min(N& x, const N& x1, const N& x2, const N& x3, const N& x4) {
-  if (x > x1)
-    x = x1;
-  if (x > x2)
-    x = x2;
-  if (x > x3)
-    x = x3;
-  if (x > x4)
-    x = x4;
-}
-
-} // namespace Octagons
-} // namespace Implementation
-
 template <typename T>
 inline dimension_type
 Octagon<T>::max_space_dimension() {
@@ -248,7 +184,7 @@ strong_coherence_local_step(T& result, const T& a, const T& b, const T& c) {
     T sum;
     add_assign_r(sum, a, b, ROUND_UP);
     div2exp_assign_r(result, sum, 1, ROUND_UP);
-    Implementation::Octagons::assign_min(result, c);
+    Implementation::BD_Shapes::min_assign(result, c);
   }
 }
 
@@ -460,12 +396,43 @@ Octagon<T>::is_empty() const {
 
 template <typename T>
 inline bool
-Octagon<T>::poly_hull_assign_and_minimize(const Octagon& y) {
-  // The closure is not necessary because the poly_hull preserves it.
-  poly_hull_assign(y);
+Octagon<T>::strictly_contains(const Octagon& y) const {
+  const Octagon<T>& x = *this;
+  return x.contains(y) && !y.contains(x);
+}
+
+template <typename T>
+inline bool
+Octagon<T>::oct_hull_assign_and_minimize(const Octagon& y) {
+  oct_hull_assign(y);
   return !marked_empty();
 }
 
+
+template <typename T>
+inline void
+Octagon<T>::upper_bound_assign(const Octagon& y) {
+  oct_hull_assign(y);
+}
+
+template <typename T>
+inline bool
+Octagon<T>::oct_hull_assign_if_exact(const Octagon&) {
+  // TODO: this must be properly implemented.
+  return false;
+}
+
+template <typename T>
+inline bool
+Octagon<T>::upper_bound_assign_if_exact(const Octagon& y) {
+  return oct_hull_assign_if_exact(y);
+}
+
+template <typename T>
+inline void
+Octagon<T>::difference_assign(const Octagon& y) {
+  oct_difference_assign(y);
+}
 
 } // namespace Parma_Polyhedra_Library
 
