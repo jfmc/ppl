@@ -49,7 +49,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 #ifndef PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
-#define PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT 0
+#define PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT 1
 #endif
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -528,10 +528,12 @@ PPL::LP_Problem::steepest_edge_entering_index() const {
       // of the original formula has to be replaced by `squared_lcm_basis'.
       challenger_den = 1;
       for (dimension_type i = tableau_num_rows; i-- > 0; ) {
-	const Coefficient& tableau_ij = tableau[i][j];
+	const Row& tableau_i = tableau[i];
+	const Coefficient& tableau_ij = tableau_i[j];
 	if (tableau_ij != 0) {
-	  mpq_class real_coeff(raw_value(tableau[i][j]).get_d(),
-			       raw_value(tableau[i][base[i]]).get_d());
+	  mpq_class real_coeff(tableau_ij, tableau_i[base[i]]);
+	  // FIXME: we may have undefined behavior in the following line!
+	  // See the GMP documentation.
 	  double float_tableau_value = real_coeff.get_d();
 	  challenger_den += float_tableau_value * float_tableau_value;
 	}
