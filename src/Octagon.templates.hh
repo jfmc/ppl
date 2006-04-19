@@ -124,7 +124,7 @@ Octagon<T>::affine_dimension() const {
   if (marked_empty())
     return 0;
 
-  // The vector `leaders' is used to represent no-singular 
+  // The vector `leaders' is used to represent no-singular
   // equivalence classes:
   // `leaders[i] == i' if and only if `i' is the leader of its
   // equivalence class (i.e., the minimum index in the class);
@@ -134,7 +134,7 @@ Octagon<T>::affine_dimension() const {
   // Due to the splitting of variables, the affine dimension is the
   // number of non-singular positive zero-equivalence classes.
   dimension_type affine_dim = 0;
-  for (dimension_type i = 0; i < n_rows; i += 2) { 
+  for (dimension_type i = 0; i < n_rows; i += 2) {
     const dimension_type ci = coherent_index(i);
     // Note: disregard the singular equivalence class.
     if (leaders[i] == i && i != ci)
@@ -983,7 +983,7 @@ Octagon<T>::compute_nexts(std::vector<dimension_type>& next) const {
         next[j] = i;
       }
     }
-  }  
+  }
 }
 
 template <typename T>
@@ -1004,7 +1004,7 @@ Octagon<T>::compute_leaders(std::vector<dimension_type>& leaders) const {
 	 iend = matrix.row_end(); i_iter != iend; ++i_iter) {
     typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
     dimension_type i = i_iter.index();
-    typename OR_Matrix<N>::const_row_reference_type m_ci = 
+    typename OR_Matrix<N>::const_row_reference_type m_ci =
       (i%2) ? *(i_iter-1) : *(i_iter+1);
     for (dimension_type j = 0; j < i; ++j) {
       dimension_type cj = coherent_index(j);
@@ -1014,15 +1014,15 @@ Octagon<T>::compute_leaders(std::vector<dimension_type>& leaders) const {
         // Choose as leader the variable having the smaller index.
 	leaders[i] = leaders[j];
       }
-    }  
+    }
   }
 }
 
 template <typename T>
 void
 Octagon<T>::compute_leaders(std::vector<dimension_type>& next,
-			    std::vector<dimension_type>& no_sing_leaders, 
-			    bool& exist_sing_class, 
+			    std::vector<dimension_type>& no_sing_leaders,
+			    bool& exist_sing_class,
 			    dimension_type& sing_leader) const {
   assert(!marked_empty() && marked_strongly_closed());
   assert(no_sing_leaders.size() == 0);
@@ -1031,8 +1031,8 @@ Octagon<T>::compute_leaders(std::vector<dimension_type>& next,
   for (dimension_type i = 0; i < next_size; ++i) {
     dimension_type nxt_i = next[i];
     if (!dealt_with[i]) {
-      // The index is a leader. 
-      // Now check if it is a leader of a singular class or not. 
+      // The index is a leader.
+      // Now check if it is a leader of a singular class or not.
       if (nxt_i == coherent_index(i)) {
         exist_sing_class = true;
         sing_leader = i;
@@ -1071,7 +1071,7 @@ Octagon<T>::transitive_reduction_assign() const {
 
   Octagon<T> aux(space_dim);
   // Step 2: add to auxiliary octagon only no-redundant
-  // constraints and construct a 0-cycle using only 
+  // constraints and construct a 0-cycle using only
   // the leaders of the non-singular classes.
   for (dimension_type li = 0; li < num_no_sing_leaders; ++li) {
     const dimension_type i = no_sing_leaders[li];
@@ -1087,9 +1087,9 @@ Octagon<T>::transitive_reduction_assign() const {
       // corresponding negative equivalence class are
       // automatically connected.
       if (i != next[i]) {
-        dimension_type j = i; 
+        dimension_type j = i;
         dimension_type nxt_j = next[j];
-        while (j != nxt_j) { 
+        while (j != nxt_j) {
           aux.matrix[nxt_j][j] = matrix[nxt_j][j];
           j = nxt_j;
           nxt_j = next[j];
@@ -1101,7 +1101,7 @@ Octagon<T>::transitive_reduction_assign() const {
 
     dimension_type rs_li = (li%2) ? li :li+1;
     // Check if the constraint is redundant.
-    for (dimension_type lj = 0 ; lj <= rs_li; ++lj) {    
+    for (dimension_type lj = 0 ; lj <= rs_li; ++lj) {
       const dimension_type j = no_sing_leaders[lj];
       const dimension_type cj = coherent_index(j);
       const N& m_i_j = m_i[j];
@@ -1121,27 +1121,27 @@ Octagon<T>::transitive_reduction_assign() const {
 	}
       }
       // Control if the constraint is redundant by strong closure, that is
-      // if there is a path from i to j (i = i_0, ... , i_n = j), such that 
-      // m_i_j = sum_{k=0}^{n-1} m_{i_k}_{i_(k+1)}. 
+      // if there is a path from i to j (i = i_0, ... , i_n = j), such that
+      // m_i_j = sum_{k=0}^{n-1} m_{i_k}_{i_(k+1)}.
       // Since the octagon is already strongly closed, the above relation
       // is reduced to three case, in accordance with k, i, j inter-depend:
       // exit k such that
       // 1.) m_i_j >= m_i_k   + m_cj_ck,   if k < j < i; or
       // 2.) m_i_j >= m_i_k   + m_k,_j,    if j < k < i; or
       // 3.) m_i_j >= m_ck_ci + m_k_j,     if j < i < k.
-      // Note: `i > j'. 
-      for (dimension_type lk = 0; lk < num_no_sing_leaders; ++lk) {    
+      // Note: `i > j'.
+      for (dimension_type lk = 0; lk < num_no_sing_leaders; ++lk) {
 	const dimension_type k = no_sing_leaders[lk];
 	if (k != i && k != j) {
 	  dimension_type ck = coherent_index(k);
           N c;
-          if (k < j) 
+          if (k < j)
 	    // Case 1.
 	    add_assign_r(c, m_i[k], matrix[cj][ck], ROUND_UP);
-	  else if (k < i) 
+	  else if (k < i)
 	    // Case 2.
 	    add_assign_r(c, m_i[k], matrix[k][j], ROUND_UP);
-	  else 
+	  else
 	    // Case 3.
 	    add_assign_r(c, matrix[ck][ci], matrix[k][j], ROUND_UP);
 
@@ -1176,9 +1176,9 @@ Octagon<T>::transitive_reduction_assign() const {
       aux.matrix[j+1][j] = matrix[j+1][j];
     }
     else
-      aux.matrix[sing_leader+1][sing_leader] = matrix[sing_leader+1][sing_leader];    
+      aux.matrix[sing_leader+1][sing_leader] = matrix[sing_leader+1][sing_leader];
   }
-  
+
   Octagon<T>& x = const_cast<Octagon<T>&>(*this);
   aux.status.reset_strongly_closed();
   x = aux;
@@ -1262,7 +1262,7 @@ Octagon<T>::oct_difference_assign(const Octagon& y) {
     const Constraint& c = *i;
     // If the octagon `x' is included the octagon defined by `c',
     // then `c' _must_ be skipped, as adding its complement to `x'
-    // would result in the empty octagon, and as we would obtain 
+    // would result in the empty octagon, and as we would obtain
     // a result that is less precise than the oct_difference.
     if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
       continue;
@@ -1299,15 +1299,7 @@ Octagon<T>::add_space_dimensions_and_embed(dimension_type m) {
 
   // To embed an n-dimension space octagon in a (n+m)-dimension space,
   // we just add `m' variables in the matrix of constraints.
-  matrix.grow(2*new_dim);
-  // Fill the bottom of the matrix with plus_infinity.
-  for (typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*space_dim,
-	 iend = matrix.row_end(); i != iend; ++i) {
-    typename OR_Matrix<N>::row_reference_type r = *i;
-    dimension_type rs_i = i.row_size();
-    for (dimension_type j = 0; j < rs_i; ++j)
-      r[j] = PLUS_INFINITY;
-  }
+  matrix.grow(new_dim);
   space_dim = new_dim;
   // If `*this' was the zero-dim space universe octagon,
   // then we can set the strongly closure flag.
@@ -1452,7 +1444,7 @@ Octagon<T>::map_space_dimensions(const PartialFunction& pfunc) {
   }
 
   // We create a new matrix with the new space dimension.
-  OR_Matrix<N> x(2*new_space_dim);
+  OR_Matrix<N> x(new_space_dim);
   for (typename OR_Matrix<N>::row_iterator i_iter = matrix.row_begin(),
 	 i_end = matrix.row_end(); i_iter != i_end; i_iter += 2) {
     dimension_type new_i;
@@ -1941,62 +1933,89 @@ Octagon<T>
 	    }
 	  }
 	}
-      //       else {
-// 	TEMP_INTEGER(minus_expr_u);
-// 	neg_assign_r(minus_expr_u, expr_u, ROUND_NOT_NEEDED);
-// 	if (expr_u < 0 && minus_expr_u >= sc_den) {
-// 	  // Deducing `v + u <= ub_v + ub_u'.
-// 	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
-// 	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-// 	  N r_u_cu;
-// 	  div2exp_assign_r(r_u_cu, r_u[2*u+1], 1, ROUND_UP);
-// 	  if (v < u)
-// 	    add_assign_r(r_cu[2*v], pos_sum, r_u_cu, ROUND_UP);
-// 	  else if (v > u) {
-// 	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
-// 	    typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
-// 	    add_assign_r(r_cv[2*u], pos_sum, r_u_cu, ROUND_UP);
-// 	  }
-// 	}
-// 	else {
-// 	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
-// 	  if (!is_plus_infinity(r_u[2*u+1])) {
-// 	    // Let `ub_u' and `lb_u' be the known upper and lower bound
-// 	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
-// 	    // rational coefficient of `u' in `sc_expr/sc_den',
-// 	    // the upper bound for `v + u' is computed as
-// 	    // `ub_v + (q * ub_u + (1-q) * lb_u)', i.e.,
-// 	    // `pos_sum + lb_u + q * (ub_u + (-lb_u))'.
-// 	    mpq_class double_minus_lb_u;
-// 	    assign_r(double_minus_lb_u, r_u[2*u+1], ROUND_NOT_NEEDED);
-// 	    mpq_class minus_lb_u;
-// 	    div2exp_assign_r(minus_lb_u, double_minus_lb_u, 1, ROUND_UP);
-// 	    mpq_class lb_u;
-// 	    neg_assign_r(lb_u, minus_lb_u, ROUND_NOT_NEEDED);
-// 	    mpq_class q;
-// 	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
-// 	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-// 	    mpq_class double_ub_u;
-// 	    typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-// 	    assign_r(double_ub_u, r_cu[2*u], ROUND_NOT_NEEDED);
-// 	    mpq_class ub_u;
-// 	    div2exp_assign_r(ub_u, double_ub_u, 1, ROUND_UP);
-// 	    // Compute `ub_u - lb_u'.
-// 	    add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
-// 	    // Compute `lb_u + q * (ub_u - lb_u)'.
-// 	    add_mul_assign_r(lb_u, q, ub_u, ROUND_NOT_NEEDED);
-// 	    N up_approx;
-// 	    assign_r(up_approx, lb_u, ROUND_UP);
-// 	    // Deducing `v + u <= ub_v + (q * ub_u + (1-q) * lb_u)'.
-// 	    if (v < u)
-// 	      add_assign_r(r_cu[2*v], pos_sum, up_approx, ROUND_UP);
-// 	    else if (v > u) {
-// 	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
-// 	      typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
-// 	      add_assign_r(r_cv[2*u], pos_sum, up_approx, ROUND_UP);
-// 	    }
-// 	  }
-// 	}
+    }
+}
+
+template <typename T>
+void
+Octagon<T>
+::deduce_v_plus_u_bounds(const dimension_type v,
+			 const dimension_type last_v,
+			 const Linear_Expression& sc_expr,
+			 Coefficient_traits::const_reference sc_den,
+			 const N& pos_sum) {
+  // Deduce constraints of the form `v + u', where `u != v'.
+  // Note: the strongly closure is able to deduce the constraint
+  // `v + u <= ub_v + ub_u'. We can be more precise if variable `u'
+  // played an active role in the computation of the upper bound for `v',
+  // i.e., if the corresponding coefficient `q == expr_u/den' is
+  // less than zero. In particular:
+  // if `q <= -1',    then `v + u <= ub_v + lb_u';
+  // if `-1 < q < 0', then `v + u <= ub_v + (q*lb_u + (1-q)*ub_u)'.
+  mpq_class mpq_sc_den;
+  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
+  // No need to consider indices greater than `last_v'.
+  for (dimension_type u = last_v; u > 0; --u)
+    if (u != v) {
+      typename OR_Matrix<N>::row_iterator i_u = matrix.row_begin() + 2*u;
+      const Coefficient& expr_u = sc_expr.coefficient(Variable(u));
+      if (expr_u < 0) {
+	TEMP_INTEGER(minus_expr_u);
+	neg_assign_r(minus_expr_u, expr_u, ROUND_NOT_NEEDED);
+	if (minus_expr_u >= sc_den) {
+	  // Deducing `v + u <= ub_v + lb_u'.
+	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
+	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
+	  N r_u_cu;
+	  div2exp_assign_r(r_u_cu, r_u[2*u+1], 1, ROUND_UP);
+	  if (v < u)
+	    sub_assign_r(r_cu[2*v], pos_sum, r_u_cu, ROUND_UP);
+	  else if (v > u) {
+	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
+	    typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
+	    sub_assign_r(r_cv[2*u], pos_sum, r_u_cu, ROUND_UP);
+	  }
+	}
+	else {
+	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
+	  if (!is_plus_infinity(r_cu[2*u])) {
+	    // Let `ub_u' and `lb_u' be the known upper and lower bound
+	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
+	    // rational coefficient of `u' in `sc_expr/sc_den',
+	    // the upper bound for `v + u' is computed as
+	    // `ub_v + (q * lb_u + (1-q) * ub_u)', i.e.,
+	    // `pos_sum + ub_u + q * (lb_u - ub_u)'.
+	    mpq_class double_ub_u;
+	    assign_r(double_ub_u, r_cu[2*u], ROUND_NOT_NEEDED);
+	    mpq_class ub_u;
+	    div2exp_assign_r(ub_u, double_ub_u, 1, ROUND_UP);
+	    mpq_class q;
+	    assign_r(q, minus_expr_u, ROUND_NOT_NEEDED);
+	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+	    mpq_class double_minus_lb_u;
+	    typename OR_Matrix<N>::row_reference_type r_u = *i_u;
+	    assign_r(double_minus_lb_u, r_u[2*u+1], ROUND_NOT_NEEDED);
+	    mpq_class minus_lb_u;
+	    div2exp_assign_r(minus_lb_u, double_minus_lb_u, 1, ROUND_UP);
+	    mpq_class lb_u;
+	    neg_assign_r(lb_u, minus_lb_u, ROUND_NOT_NEEDED);
+	    // Compute `lb_u - ub_u'.
+	    sub_assign_r(lb_u, lb_u, ub_u, ROUND_NOT_NEEDED);
+	    // Compute `ub_u + q * (lb_u - ub_u)'.
+	    add_mul_assign_r(ub_u, q, lb_u, ROUND_NOT_NEEDED);
+	    N up_approx;
+	    assign_r(up_approx, ub_u, ROUND_UP);
+	    // Deducing `v + u <= ub_v + (q * lb_u + (1-q) * ub_u)'.
+	    if (v < u)
+	      add_assign_r(r_cu[2*v], pos_sum, up_approx, ROUND_UP);
+	    else if (v > u) {
+	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
+	      typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
+	      add_assign_r(r_cv[2*u], pos_sum, up_approx, ROUND_UP);
+	    }
+	  }
+	}
+      }
     }
 }
 
@@ -2031,7 +2050,7 @@ Octagon<T>
  	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
 	  N r_cu_u;
 	  div2exp_assign_r(r_cu_u, r_cu[2*u], 1, ROUND_UP);
-	  if (v < u) 
+	  if (v < u)
 	    sub_assign_r(r_cu[2*v+1], neg_sum, r_cu_u, ROUND_UP);
 	  else if (v > u) {
 	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
@@ -2067,7 +2086,7 @@ Octagon<T>
 	    N up_approx;
 	    assign_r(up_approx, ub_u, ROUND_UP);
 	    // Deducing `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
-	    if (v < u) 
+	    if (v < u)
 	      add_assign_r(r_cu[2*v+1], up_approx, neg_sum, ROUND_UP);
 	    else if (v > u) {
 	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
@@ -2076,6 +2095,89 @@ Octagon<T>
 	    }
 	  }
 	}
+    }
+}
+
+template <typename T>
+void
+Octagon<T>
+::deduce_u_plus_v_bounds(const dimension_type v,
+			 const dimension_type last_v,
+			 const Linear_Expression& sc_expr,
+			 Coefficient_traits::const_reference sc_den,
+			 const N& neg_sum) {
+  // Deduce constraints of the form `u + v', where `u != v'.
+  // Note: the strongly closure is able to deduce the constraint
+  // `u + v <= ub_u + up_v'. We can be more precise if variable `u'
+  // played an active role in the computation of the lower bound for `v',
+  // i.e., if the corresponding coefficient `q == expr_u/den' is
+  // less than zero. In particular:
+  // if `q <= -1',    then `u + v <= lb_u + ub_v';
+  // if `-1 < q < 0', then `u + v <= (q*lb_u + (1-q)*ub_u) + ub_v'.
+  mpq_class mpq_sc_den;
+  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
+  // No need to consider indices greater than `last_v'.
+  for (dimension_type u = last_v; u > 0; --u)
+    if (u != v) {
+      typename OR_Matrix<N>::row_iterator i_u = matrix.row_begin() + 2*u;
+      const Coefficient& expr_u = sc_expr.coefficient(Variable(u));
+      if (expr_u < 0) {
+	TEMP_INTEGER(minus_expr_u);
+	neg_assign_r(minus_expr_u, expr_u, ROUND_NOT_NEEDED);
+	if (minus_expr_u >= sc_den) {
+	  // Deducing `u + v <= lb_u + ub_v'.
+	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
+	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
+	  N r_u_cu;
+	  div2exp_assign_r(r_u_cu, r_u[2*u+1], 1, ROUND_UP);
+	  if (v < u)
+	    sub_assign_r(r_cu[2*v], neg_sum, r_u_cu, ROUND_UP);
+	  else if (v > u) {
+	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
+	    typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
+	    sub_assign_r(r_cv[2*u], neg_sum, r_u_cu, ROUND_UP);
+	  }
+	}
+	else {
+	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
+	  if (!is_plus_infinity(r_cu[2*u])) {
+	    // Let `ub_u' and `lb_u' be the known upper and lower bound
+	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
+	    // rational coefficient of `u' in `sc_expr/sc_den',
+	    // the upper bound for `u + v' is computed as
+	    // `(q * lb_u + (1-q) * ub_u) + ub_v', i.e.,
+	    // `pos_sum + ub_u + q * (lb_u - ub_u)'.
+	    mpq_class double_ub_u;
+	    assign_r(double_ub_u, r_cu[2*u], ROUND_NOT_NEEDED);
+	    mpq_class ub_u;
+	    div2exp_assign_r(ub_u, double_ub_u, 1, ROUND_UP);
+	    mpq_class q;
+	    assign_r(q, minus_expr_u, ROUND_NOT_NEEDED);
+	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+	    mpq_class double_minus_lb_u;
+	    typename OR_Matrix<N>::row_reference_type r_u = *i_u;
+	    assign_r(double_minus_lb_u, r_u[2*u+1], ROUND_NOT_NEEDED);
+	    mpq_class minus_lb_u;
+	    div2exp_assign_r(minus_lb_u, double_minus_lb_u, 1, ROUND_UP);
+	    mpq_class lb_u;
+	    neg_assign_r(lb_u, minus_lb_u, ROUND_NOT_NEEDED);
+	    // Compute `lb_u - ub_u'.
+	    sub_assign_r(lb_u, lb_u, ub_u, ROUND_NOT_NEEDED);
+	    // Compute `ub_u + q * (lb_u - ub_u)'.
+	    add_mul_assign_r(ub_u, q, lb_u, ROUND_NOT_NEEDED);
+	    N up_approx;
+	    assign_r(up_approx, ub_u, ROUND_UP);
+	    // Deducing `u + v <= (q * lb_u + (1-q) * ub_u) + up_v'.
+	    if (v < u)
+	      add_assign_r(r_cu[2*v], neg_sum, up_approx, ROUND_UP);
+	    else if (v > u) {
+	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
+	      typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
+	      add_assign_r(r_cv[2*u], neg_sum, up_approx, ROUND_UP);
+	    }
+	  }
+	}
+      }
     }
 }
 
@@ -2180,10 +2282,12 @@ Octagon<T>::affine_image(const Variable var,
 	    typename OR_Matrix<N>::row_reference_type x_ii = *(i+1);
 	    for (dimension_type h = k; h-- > 0; ) {
 	      if (h != n_var && h != n_var+1) {
+		// Controllare che c e d siano assegnati alle caselle giuste!!!
 		add_assign_r(x_i[h], x_i[h], c, ROUND_UP);
 		add_assign_r(x_ii[h], x_ii[h], d, ROUND_UP);
 	      }
 	      else
+		// Dovrebbe essere giusto l'assignamento di d.
 		add_assign_r(m_nv1_nv, m_nv1_nv, d, ROUND_UP);
 	    }
 	    for (typename OR_Matrix<N>::row_iterator iend = matrix.row_end();
@@ -2191,10 +2295,12 @@ Octagon<T>::affine_image(const Variable var,
 	      typename OR_Matrix<N>::row_reference_type r = *i;
 	      dimension_type rs = i.row_size();
 	      if (rs != k) {
+		// Controllare che c e d siano assegnati alle caselle giuste!!!
 		add_assign_r(r[n_var], r[n_var], d, ROUND_UP);
 		add_assign_r(r[n_var+1], r[n_var+1], c, ROUND_UP);
 	      }
 	      else
+		// Dovrebbe essere giusto l'assignamento di c.
 		add_assign_r(m_nv_nv1, m_nv_nv1, c, ROUND_UP);
 	    }
 	  }
@@ -2440,6 +2546,8 @@ Octagon<T>::affine_image(const Variable var,
       // Deduce constraints of the form `v - u', where `u != v'.
       //      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
       deduce_v_minus_u_bounds(num_var, w, sc_expr, sc_den, pos_sum);
+      // Deduce constraints of the form `v + u', where `u != v'.
+      deduce_v_plus_u_bounds(num_var, w, sc_expr, sc_den, pos_sum);
     }
 //     else
 //       // Here `pos_pinf_count == 1'.
@@ -2475,6 +2583,8 @@ Octagon<T>::affine_image(const Variable var,
       // Deduce constraints of the form `u - v', where `u != v'.
       //     deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, neg_sum);
       deduce_u_minus_v_bounds(num_var, w, sc_expr, sc_den, neg_sum);
+      // Deduce constraints of the form `u + v', where `u != v'.
+      deduce_u_plus_v_bounds(num_var, w, sc_expr, sc_den, neg_sum);
     }
 //     else
 //       // Here `neg_pinf_count == 1'.

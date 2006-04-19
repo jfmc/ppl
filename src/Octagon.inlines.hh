@@ -52,7 +52,7 @@ template <typename T>
 inline
 Octagon<T>::Octagon(const dimension_type num_dimensions,
 		    const Degenerate_Element kind)
-  : matrix(2*num_dimensions), space_dim(num_dimensions), status() {
+  : matrix(num_dimensions), space_dim(num_dimensions), status() {
   if (kind == EMPTY)
     status.set_empty();
   else if (num_dimensions > 0) {
@@ -71,7 +71,7 @@ Octagon<T>::Octagon(const Octagon& y)
 template <typename T>
 inline
 Octagon<T>::Octagon(const Constraint_System& cs)
-  : matrix(2*cs.space_dimension()),
+  : matrix(cs.space_dimension()),
     space_dim(cs.space_dimension()) {
   if (cs.space_dimension() > 0)
     // A (non zero-dim) universe octagon is strong closed.
