@@ -290,7 +290,7 @@ Octagon<T>::is_strong_coherent() const {
 
 template <typename T>
 bool
-Octagon<T>::is_transitively_reduced() const {
+Octagon<T>::is_strongly_reduced() const {
   // An empty octagon is already transitively reduced.
   if (marked_empty())
     return true;
@@ -1047,7 +1047,7 @@ Octagon<T>::compute_leaders(std::vector<dimension_type>& next,
 
 template <typename T>
 void
-Octagon<T>::transitive_reduction_assign() const {
+Octagon<T>::strong_reduction_assign() const {
   Octagon<T> backup_copy(*this);
 
   // First find the tightest constraints for this octagon.
@@ -1183,7 +1183,7 @@ Octagon<T>::transitive_reduction_assign() const {
   aux.status.reset_strongly_closed();
   x = aux;
   assert(aux == backup_copy);
-  assert(is_transitively_reduced());
+  assert(is_strongly_reduced());
 }
 
 
@@ -1540,7 +1540,8 @@ template <typename T>
 template <typename Iterator>
 void
 Octagon<T>::CC76_extrapolation_assign(const Octagon& y,
-				      Iterator first, Iterator last) {
+				      Iterator first, Iterator last,
+				      unsigned* tp) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
     throw_dimension_incompatible("CC76_extrapolation_assign(y)", y);
@@ -1568,13 +1569,24 @@ Octagon<T>::CC76_extrapolation_assign(const Octagon& y,
   if (y.marked_empty())
     return;
 
-  // We compare a constraint of `y' at the time to the corresponding
-  // constraint of `*this'. If the value of constraint of `y' is
-  // less than `*this' one, we further compare the constraint of
-  // `*this' to elements in a sorted container, given by the user,
-  // and, if in the container there is a value that is greater than
-  // or equal to the value of the constraint, we take this value,
-  // otherwise we remove this constraint.
+  // If there are tokens available, work on a temporary copy.
+  if (tp != 0 && *tp > 0) {
+    Octagon<T> x_tmp(*this);
+    x_tmp.CC76_extrapolation_assign(y, first, last, 0);
+    // If the widening was not precise, use one of the available tokens.
+    if (!contains(x_tmp))
+      --(*tp);
+    return;
+  }
+
+  // Compare each constraint in `y' to the corresponding one in `*this'.
+  // The constraint in `*this' is kept as is if it is stronger than or
+  // equal to the constraint in `y'; otherwise, the inhomogeneous term
+  // of the constraint in `*this' is further compared with elements taken
+  // from a sorted container (the stop-points, provided by the user), and
+  // is replaced by the first entry, if any, which is greater than or equal
+  // to the inhomogeneous term. If no such entry exists, the constraint
+  // is removed altogether.
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
 	 iend = matrix.element_end(); i != iend; ++i, ++j) {
@@ -1592,7 +1604,6 @@ Octagon<T>::CC76_extrapolation_assign(const Octagon& y,
     }
   }
 
-  // This method not preserve the closure.
   status.reset_strongly_closed();
   assert(OK());
 }
@@ -1734,7 +1745,7 @@ Octagon<T>::CH78_widening_assign(const Octagon& y,
     return;
 
   // Minimize `y'.
-  y.transitive_reduction_assign();
+  y.strong_reduction_assign();
   // If `y' is empty, we return.
   if (y.marked_empty())
     return;

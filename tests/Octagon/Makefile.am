@@ -49,8 +49,7 @@ ORIGINAL_TESTS = \
 	affinepreimage5 affinepreimage6 affinepreimage7 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
 	bhz03widening1 \
-	cc76extrapolation1 cc76extrapolation2 cc76extrapolation3 \
-	cc76extrapolation4 cc76extrapolation5 \
+	cc76extrapolation1 \
 	cc76narrowing1 \
 	ch78widening1 ch78widening2 ch78widening3 ch78widening4 \
 	ch78widening5 ch78widening6 ch78widening7 ch78widening8 \
@@ -130,10 +129,6 @@ ascii_dump_load4_SOURCES = ascii_dump_load4.cc
 bhz03widening1_SOURCES = bhz03widening1.cc
 
 cc76extrapolation1_SOURCES = cc76extrapolation1.cc
-cc76extrapolation2_SOURCES = cc76extrapolation2.cc
-cc76extrapolation3_SOURCES = cc76extrapolation3.cc
-cc76extrapolation4_SOURCES = cc76extrapolation4.cc
-cc76extrapolation5_SOURCES = cc76extrapolation5.cc
 
 cc76narrowing1_SOURCES = cc76narrowing1.cc
 

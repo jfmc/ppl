@@ -329,7 +329,7 @@ Octagon<T>::intersection_assign_and_minimize(const Octagon& y) {
 
 template <typename T>
 inline void
-Octagon<T>::CC76_extrapolation_assign(const Octagon& y) {
+Octagon<T>::CC76_extrapolation_assign(const Octagon& y, unsigned* tp) {
   static N stop_points[] = {
     N(-2, ROUND_UP),
     N(-1, ROUND_UP),
@@ -337,14 +337,11 @@ Octagon<T>::CC76_extrapolation_assign(const Octagon& y) {
     N( 1, ROUND_UP),
     N( 2, ROUND_UP)
   };
-  // Recalled the CC76_extrapolation_assign(const Octagon& y,
-  //                                        Iterator first, Iterator last)
-  // where the container is given by default.
-  CC76_extrapolation_assign
-    (y,
-     stop_points,
-     stop_points
-     + sizeof(stop_points)/sizeof(stop_points[0]));
+  CC76_extrapolation_assign(y,
+			    stop_points, 
+			    stop_points
+			    + sizeof(stop_points)/sizeof(stop_points[0]),
+			    tp);
 }
 
 template <typename T>

@@ -817,11 +817,15 @@ public:
     \param y
     An octagon that <EM>must</EM> be contained in \p *this.
 
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  // FIXME!!!
-  void CC76_extrapolation_assign(const Octagon& y);
+  void CC76_extrapolation_assign(const Octagon& y, unsigned* tp = 0);
 
   //! \brief
   //! Assigns to \p *this the result of computing the
@@ -836,13 +840,18 @@ public:
     \param last
     An iterator that points to the last stop_point.
 
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  // FIXME!!!!
   template <typename Iterator>
   void CC76_extrapolation_assign(const Octagon& y,
-				 Iterator first, Iterator last);
+				 Iterator first, Iterator last,
+				 unsigned* tp = 0);
 
   //! \brief
   //! Assigns to \p *this the result of computing the
@@ -1267,12 +1276,12 @@ private:
   void compute_leaders(std::vector<dimension_type>& leaders) const;
 
   //! Removes the reduntant constraints.
-  void transitive_reduction_assign() const;
+  void strong_reduction_assign() const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! is a reduced octagon.
-  bool is_transitively_reduced() const;
+  bool is_strongly_reduced() const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if in the octagon taken two at a time
