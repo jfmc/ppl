@@ -70,6 +70,7 @@ ORIGINAL_TESTS = \
 	limitedcc76extrapolation1 \
 	mapspacedims1 \
 	maxspacedim \
+	minconstraints1 \
 	octdifference1 octdifference2 octdifference3 \
 	octhull1 \
 	relations1 relations2 relations3 relations4 relations5 \
@@ -180,6 +181,8 @@ limitedcc76extrapolation1_SOURCES = limitedcc76extrapolation1.cc
 mapspacedims1_SOURCES = mapspacedims1.cc
 
 maxspacedim_SOURCES = maxspacedim.cc
+
+minconstraints1_SOURCES = minconstraints1.cc
 
 octdifference1_SOURCES = octdifference1.cc
 octdifference2_SOURCES = octdifference2.cc

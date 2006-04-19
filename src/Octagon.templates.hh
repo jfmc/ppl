@@ -1049,7 +1049,6 @@ Octagon<T>::compute_leaders(std::vector<dimension_type>& next,
 template <typename T>
 void
 Octagon<T>::strong_reduction_assign() const {
-  Octagon<T> backup_copy(*this);
 
   // First find the tightest constraints for this octagon.
   strong_closure_assign();
@@ -1182,8 +1181,17 @@ Octagon<T>::strong_reduction_assign() const {
 
   Octagon<T>& x = const_cast<Octagon<T>&>(*this);
   aux.status.reset_strongly_closed();
-  x = aux;
-  assert(aux == backup_copy);
+
+#ifndef NDEBUG
+  {
+    // We assume that `aux' is equal to `*this'.
+    const Octagon x_copy = *this;
+    const Octagon y_copy = aux;
+    assert(x_copy == y_copy);
+  }
+#endif
+
+  std::swap(x, aux);
   assert(is_strongly_reduced());
 }
 

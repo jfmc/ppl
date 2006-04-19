@@ -221,6 +221,13 @@ change(bool changed, T& cell, T coeff) {
 }
 
 template <typename T>
+inline Constraint_System
+Octagon<T>::minimized_constraints() const {
+  strong_reduction_assign();
+  return constraints();
+}
+
+template <typename T>
 inline void
 Octagon<T>::add_octagonal_constraint(typename OR_Matrix<N>::row_iterator i,
 				     const dimension_type j,
