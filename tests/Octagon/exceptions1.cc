@@ -318,9 +318,9 @@ error12() {
 
   try {
     // This is an incorrect use of function
-    // Octagon::poly_hull_assign(oc2): it is impossible to apply
+    // Octagon::oct_hull_assign(oc2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
-    oc1.poly_hull_assign(oc2);
+    oc1.oct_hull_assign(oc2);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -344,9 +344,9 @@ error13() {
 
   try {
     // This is an invalid use of function
-    // Octagon::poly_hull_assign_and_minimize(oc2): it is illegal
+    // Octagon::oct_hull_assign_and_minimize(oc2): it is illegal
     // to apply this function to two polyhedra of different dimensions.
-    oc1.poly_hull_assign_and_minimize(oc2);
+    oc1.oct_hull_assign_and_minimize(oc2);
   }
   catch (invalid_argument& e) {
 #if NOISY

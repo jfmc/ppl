@@ -78,15 +78,21 @@ Octagon<T>::add_constraint(const Constraint& c) {
   if (coeff < 0)
     coeff = -coeff;
 
-  bool changed = false;
+  bool is_oct_changed = false;
   // Compute the bound for `r_j', rounding towards plus infinity.
   N d;
   div_round_up(d, term, coeff);
-  changed = change(changed, r_j, d);
+  if (r_j > d) {
+    r_j = d;
+    is_oct_changed = true;
+  }
 
   if (c.is_equality()) {
     // Select the right row of the cell.
-    (i%2 == 0) ? ++k : --k;
+   if (i%2 == 0)
+      ++k;
+    else
+      --k;
 
     typename OR_Matrix<N>::row_reference_type r1 = *k;
     // Select the right column of the cell.
@@ -95,11 +101,14 @@ Octagon<T>::add_constraint(const Constraint& c) {
     N& r1_h = r1[h];
     N d;
     div_round_up(d, -term, coeff);
-    changed = change(changed, r1_h, d);
+    if (r1_h > d) {
+      r1_h = d;
+      is_oct_changed = true;
+    }
   }
 
   // This method not preserve closure.
-  if (changed && marked_strongly_closed())
+  if (is_oct_changed && marked_strongly_closed())
     status.reset_strongly_closed();
   assert(OK());
 }

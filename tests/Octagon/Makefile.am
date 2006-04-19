@@ -78,8 +78,7 @@ ORIGINAL_TESTS = \
 	mapspacedims1 \
 	maxspacedim \
 	octdifference1 octdifference2 octdifference3 \
-	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
-	polyhull7 polyhull8 polyhull9 polyhull10 \
+	octhull1 \
 	relations1 relations2 relations3 relations4 relations5 \
 	relations6 \
 	removespacedims1 removespacedims2 removespacedims3 \
@@ -217,16 +216,7 @@ octdifference1_SOURCES = octdifference1.cc
 octdifference2_SOURCES = octdifference2.cc
 octdifference3_SOURCES = octdifference3.cc
 
-polyhull1_SOURCES = polyhull1.cc
-polyhull2_SOURCES = polyhull2.cc
-polyhull3_SOURCES = polyhull3.cc
-polyhull4_SOURCES = polyhull4.cc
-polyhull5_SOURCES = polyhull5.cc
-polyhull6_SOURCES = polyhull6.cc
-polyhull7_SOURCES = polyhull7.cc
-polyhull8_SOURCES = polyhull8.cc
-polyhull9_SOURCES = polyhull9.cc
-polyhull10_SOURCES = polyhull10.cc
+octhull1_SOURCES = octhull1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
