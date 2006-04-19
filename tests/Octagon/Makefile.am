@@ -51,7 +51,7 @@ ORIGINAL_TESTS = \
 	bhz03widening1 \
 	cc76extrapolation1 cc76extrapolation2 cc76extrapolation3 \
 	cc76extrapolation4 cc76extrapolation5 \
-	cc76narrowing1 cc76narrowing2 \
+	cc76narrowing1 \
 	ch78widening1 ch78widening2 ch78widening3 ch78widening4 \
 	ch78widening5 ch78widening6 ch78widening7 ch78widening8 \
 	ch78widening9 ch78widening10 ch78widening11 ch78widening12 \
@@ -136,7 +136,6 @@ cc76extrapolation4_SOURCES = cc76extrapolation4.cc
 cc76extrapolation5_SOURCES = cc76extrapolation5.cc
 
 cc76narrowing1_SOURCES = cc76narrowing1.cc
-cc76narrowing2_SOURCES = cc76narrowing2.cc
 
 ch78widening1_SOURCES = ch78widening1.cc
 ch78widening2_SOURCES = ch78widening2.cc

@@ -1826,10 +1826,10 @@ Octagon<T>::CC76_narrowing_assign(const Octagon& y) {
 
 #ifndef NDEBUG
   {
-    // We assume that `y' is contained in or equal to `*this'.
+    // We assume that `*this' is contained in or equal to `y'.
     const Octagon x_copy = *this;
     const Octagon y_copy = y;
-    assert(x_copy.contains(y_copy));
+    assert(y_copy.contains(x_copy));
   }
 #endif
 
@@ -1837,30 +1837,31 @@ Octagon<T>::CC76_narrowing_assign(const Octagon& y) {
   // we simply return '*this'.
   if (space_dim == 0)
     return;
-
-  strong_closure_assign();
-  // If `*this' is empty, since `*this' contains `y', `y' is empty too.
-  if (marked_empty())
-    return;
+   
   y.strong_closure_assign();
-  // If `y' is empty, we return.
+  // If `y' is empty, since `y' contains `*this', `*this' is empty too.
+  if (y.marked_empty()) 
+    return;
+  strong_closure_assign();
+  // If `*this' is empty, we return.
   if (y.marked_empty())
     return;
 
   // We consider a constraint of `*this', if its value is `plus_infinity',
   // we take the value of the corresponding constraint of `y'.
-  bool changed = false;
+  bool is_oct_changed = false;
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
        iend = matrix.element_end(); i != iend; ++i, ++j) {
-    //    if (i->is_plus_infinity()){
-    if (is_plus_infinity(*i)){
+     if (!is_plus_infinity(*i) &&
+	 !is_plus_infinity(*j) &&
+	 *i != *j){
       *i = *j;
-      changed = true;
+      is_oct_changed = true;
     }
   }
 
-  if (changed && marked_strongly_closed())
+  if (is_oct_changed && marked_strongly_closed())
     status.reset_strongly_closed();
   assert(OK());
 }
