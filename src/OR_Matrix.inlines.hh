@@ -389,7 +389,7 @@ template <typename T>
 inline void
 OR_Matrix<T>::swap(OR_Matrix& y) {
   std::swap(vec, y.vec);
-  std::swap(num_rows_, y.num_rows_);
+  std::swap(space_dim, y.space_dim);
   std::swap(vec_capacity, y.vec_capacity);
 }
 
@@ -420,15 +420,15 @@ template <typename T>
 inline
 OR_Matrix<T>::OR_Matrix()
   : vec(),
-    num_rows_(0),
+    space_dim(0),
     vec_capacity(0) {
 }
 
 template <typename T>
 inline
-OR_Matrix<T>::OR_Matrix(dimension_type nrows)
-  : vec(nrows*(nrows/2+1)),
-    num_rows_(nrows),
+OR_Matrix<T>::OR_Matrix(dimension_type dim)
+  : vec(2*dim*(dim+1)),
+    space_dim(dim),
     vec_capacity(vec.size()) {
 }
 
@@ -461,13 +461,13 @@ OR_Matrix<T>::operator[](dimension_type k) const {
 template <typename T>
 inline dimension_type
 OR_Matrix<T>::space_dimension() const {
-  return num_rows_/2;
+  return space_dim;
 }
 
 template <typename T>
 inline dimension_type
 OR_Matrix<T>::num_rows() const {
-  return num_rows_;
+  return 2*space_dimension();
 }
 
 template <typename T>
@@ -480,10 +480,9 @@ OR_Matrix<T>::clear() {
 template <typename T>
 inline void
 OR_Matrix<T>::erase_to_end(dimension_type first_to_erase) {
-  assert(first_to_erase%2 == 1);
   assert(first_to_erase <= num_rows() - 1);
-  if (first_to_erase < num_rows() - 2)
-    resize_no_copy(first_to_erase);
+  if (first_to_erase < num_rows() - 1)
+    resize_no_copy((first_to_erase+1)/2);
  }
 
 /*! \relates OR_Matrix */
@@ -497,7 +496,7 @@ template <typename T>
 inline
 OR_Matrix<T>::OR_Matrix(const OR_Matrix& y)
   : vec(y.vec),
-    num_rows_(y.num_rows_),
+    space_dim(y.space_dim),
     vec_capacity(compute_capacity(y.vec.size())) {
 }
 
@@ -505,27 +504,25 @@ template <typename T>
 inline OR_Matrix<T>&
 OR_Matrix<T>::operator=(const OR_Matrix& y) {
   vec = y.vec;
-  num_rows_ = y.num_rows_;
+  space_dim = y.space_dim;
   vec_capacity = compute_capacity(y.vec.size());
   return *this;
 }
 
 template <typename T>
 inline void
-OR_Matrix<T>::grow(const dimension_type new_nrows) {
-  assert(new_nrows%2 == 0);
-  // Make sure to add an even number on new rows.
-  assert(new_nrows >= num_rows_);
-  dimension_type new_size = new_nrows*(new_nrows/2 + 1);
-  if (new_nrows > num_rows_) {
+OR_Matrix<T>::grow(const dimension_type new_dim) {
+  assert(new_dim >= space_dim);
+  dimension_type new_size = 2*new_dim*(new_dim + 1);
+  if (new_dim > space_dim) {
     if (new_size <= vec_capacity) {
       // We can recycle the old vec.
       vec.expand_within_capacity(new_size);
-      num_rows_ = new_nrows;
+      space_dim = new_dim;
     }
     else {
       // We cannot even recycle the old vec.
-      OR_Matrix<T> new_matrix(new_nrows);
+      OR_Matrix<T> new_matrix(new_dim);
       element_iterator j = new_matrix.element_begin();
       for (element_iterator i = element_begin(), mend = element_end();
       	   i != mend; ++i, ++j)
@@ -538,26 +535,26 @@ OR_Matrix<T>::grow(const dimension_type new_nrows) {
 
 template <typename T>
 inline void
-OR_Matrix<T>::resize_no_copy(const dimension_type new_nrows) {
+OR_Matrix<T>::resize_no_copy(const dimension_type new_dim) {
   dimension_type old_size = vec.size();
-  dimension_type new_size = new_nrows*(new_nrows/2 + 1);
+  dimension_type new_size = 2*new_dim*(new_dim + 1);
 
   if (new_size > old_size)
-    grow(new_nrows);
+    grow(new_dim);
   else if (new_size < old_size)
     vec.shrink(new_size);
 
-  num_rows_ = new_nrows;
+  space_dim = new_dim;
 }
 
 template <typename T>
 inline void
 OR_Matrix<T>::remove_rows(const dimension_type new_n_rows) {
-  assert(new_n_rows < num_rows_);
+  assert(new_n_rows < num_rows());
   // Since we are removing rows, reallocation will
   // not take place and the old contents of the first
   // `new_n_rows' rows will be preserved.
-  resize_no_copy(new_n_rows);
+  resize_no_copy(new_n_rows/2);
 }
 
 
@@ -566,8 +563,8 @@ inline void
 OR_Matrix<T>::ascii_dump(std::ostream& s) const {
   const OR_Matrix<T>& x = *this;
   const char separator = ' ';
-  dimension_type nrows = x.num_rows_;
-  s << nrows << separator
+  dimension_type space = x.space_dimension();
+  s << space << separator
     << std::endl;
   for (const_row_iterator i = x.row_begin(), xend = x.row_end();
        i != xend; ++i) {
@@ -584,10 +581,10 @@ OR_Matrix<T>::ascii_dump(std::ostream& s) const {
 template <typename T>
 inline bool
 OR_Matrix<T>::ascii_load(std::istream& s) {
-  dimension_type nrows;
-  if (!(s >> nrows))
+  dimension_type space;
+  if (!(s >> space))
     return false;
-  resize_no_copy(nrows);
+  resize_no_copy(space);
   for (row_iterator i = row_begin(),
 	 this_row_end = row_end(); i != this_row_end; ++i) {
     row_reference_type r_i = *i;
@@ -607,15 +604,14 @@ OR_Matrix<T>::ascii_load(std::istream& s) {
 template <typename T>
 inline bool
 operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y) {
-  return x.num_rows_ == y.num_rows_ && x.vec == y.vec;
+  return x.space_dim == y.space_dim && x.vec == y.vec;
 }
 
 template <typename T>
 inline void
 OR_Matrix<T>::add_rows(dimension_type n) {
   assert(n > 0);
-  assert(n%2 == 0);
-  grow(num_rows_ + n);
+  grow(space_dim + n);
   assert(OK());
 }
 
@@ -625,7 +621,7 @@ OR_Matrix<T>::OK() const {
   dimension_type space = space_dimension();
   if (space == 0)
     return vec.size() == 0;
-  if (num_rows_%2 == 1)
+  if (num_rows()%2 == 1)
     return false;
   if (vec.size() != 2*space*(space + 1))
     return false;

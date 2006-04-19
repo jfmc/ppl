@@ -277,12 +277,12 @@ public:
 
   //! Builds a matrix with specified dimensions.
   /*!
-    \param n_rows      
-    The number of rows of the matrix that will be created.
+    \param space_dim      
+    The space dimension of the matrix that will be created.
 
-    This constructor creates a matrix with  \p n_rows rows.
+    This constructor creates a matrix with \p n_rows rows.
   */
-  OR_Matrix(dimension_type n_rows);
+  OR_Matrix(dimension_type space_dim);
 
   //! Copy-constructor.
   OR_Matrix(const OR_Matrix& y);
@@ -301,8 +301,8 @@ private:
   */
   DB_Row<T> vec;
 
-  //! Contains the number of rows of the matrix.
-  dimension_type num_rows_;
+  //! Contains the dimension of the space of the matrix.
+  dimension_type space_dim;
 
   //! Contains the capacity of the vec.
   dimension_type vec_capacity;
@@ -323,25 +323,25 @@ public:
 
   //! Makes the matrix grow by adding more rows.
   /*!
-    \param new_n_rows      
-    The number of rows of the resized matrix.
+    \param new_dim      
+    The new dimension of the resized matrix.
 
     A new matrix, with the specified dimensions, is created.
     The contents of the old matrix are copied in the new matrix, 
     which is then assigned to \p *this.
   */
-  void grow(dimension_type new_n_rows);
+  void grow(dimension_type new_dim);
 
   //! Resizes the matrix without worrying about the old contents.
   /*!
-    \param new_n_rows      
-    The number of rows of the resized matrix.
+    \param new_dim      
+    The new dimension of the resized matrix.
 
     A new matrix, with the specified dimensions, is created
     without copying the content of the old matrix and assigned
     to \p *this.
   */
-  void resize_no_copy(dimension_type new_n_rows);
+  void resize_no_copy(dimension_type new_dim);
 
   //! \brief
   //! Makes the matrix shrink by removing those rows having an index
