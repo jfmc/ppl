@@ -1539,6 +1539,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
   // Private method: the caller has to ensure the following.
   assert(cs_space_dim <= space_dimension());
 
+  shortest_path_closure_assign();
   bool changed = false;
   for (Constraint_System::const_iterator i = cs.begin(),
 	 iend = cs.end(); i != iend; ++i) {
