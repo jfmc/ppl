@@ -64,14 +64,13 @@ ORIGINAL_TESTS = \
 	generalizedaffineimage5 generalizedaffineimage6 \
 	generalizedaffineimage7 generalizedaffineimage8 \
 	generalizedaffineimage9 \
-	intersection1 intersection2 intersection3 intersection4 intersection5 \
-	intersection6 intersection7 \
+	intersection1 \
 	limitedbhmz05extrapolation1 \
 	limitedcc76extrapolation1 \
 	mapspacedims1 \
 	maxspacedim \
 	minconstraints1 \
-	octdifference1 octdifference2 octdifference3 \
+	octdifference1 \
 	octhull1 \
 	relations1 relations2 relations3 relations4 relations5 \
 	relations6 \
@@ -167,12 +166,6 @@ generalizedaffineimage8_SOURCES = generalizedaffineimage8.cc
 generalizedaffineimage9_SOURCES = generalizedaffineimage9.cc
 
 intersection1_SOURCES = intersection1.cc
-intersection2_SOURCES = intersection2.cc
-intersection3_SOURCES = intersection3.cc
-intersection4_SOURCES = intersection4.cc
-intersection5_SOURCES = intersection5.cc
-intersection6_SOURCES = intersection6.cc
-intersection7_SOURCES = intersection7.cc
 
 limitedbhmz05extrapolation1_SOURCES = limitedbhmz05extrapolation1.cc
 
@@ -185,8 +178,6 @@ maxspacedim_SOURCES = maxspacedim.cc
 minconstraints1_SOURCES = minconstraints1.cc
 
 octdifference1_SOURCES = octdifference1.cc
-octdifference2_SOURCES = octdifference2.cc
-octdifference3_SOURCES = octdifference3.cc
 
 octhull1_SOURCES = octhull1.cc
 

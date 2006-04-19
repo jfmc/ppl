@@ -24,17 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -43,26 +36,99 @@ main() TRY {
   oct1.add_constraint(A <= -2);
   oct1.add_constraint(B == 0);
 
+  print_constraints(oct1, "*** oct1 ***");
+
   TOctagon oct2(2);
   oct2.add_constraint(A >= 0);
   oct2.add_constraint(A <= 2);
   oct2.add_constraint(B >= 0);
   oct2.add_constraint(B <= 2);
-
-#if NOISY
-  print_constraints(oct1, "*** oct1 ***");
+ 
   print_constraints(oct2, "*** oct2 ***");
-#endif
-
-  Octagon<mpq_class> known_result(2, EMPTY);
 
   oct1.oct_difference_assign(oct2);
 
-  int retval = (oct1 == known_result) ? 0 : 1;
+  Octagon<mpq_class> known_result(2, EMPTY);
+ 
+  bool ok = (Octagon<mpq_class>(oct1) == known_result);
 
-#if NOISY
-  print_constraints(oct1, "*** After oct1.oct_difference_assign(oct2) ***");
-#endif
-  return retval;
+  print_constraints(oct1, "*** oct1.oct_difference_assign(oc2) ***");
+
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  TOctagon oct1(0);
+  TOctagon oct2(0);
+
+  print_constraints(oct1, "*** oct1 ***"); 
+  print_constraints(oct2, "*** oct2 ***");
+
+  oct1.oct_difference_assign(oct2);
+
+  Octagon<mpq_class> known_result(0, EMPTY);
+ 
+  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  print_constraints(oct1, "*** oct1.intersection_assign(oc2) ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+
+  TOctagon oct1(1);
+  oct1.add_constraint(A >= 0);
+  oct1.add_constraint(A <= 7);
+
+  print_constraints(oct1, "*** oct1 ***");
+
+  TOctagon oct2(1);
+  oct2.add_constraint(A == 5); 
+
+  print_constraints(oct2, "*** oct2 ***");
+
+  oct1.oct_difference_assign(oct2);
+
+  Octagon<mpq_class> known_result(1);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A <= 7);
+ 
+  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  print_constraints(oct1, "*** oct1.intersection_assign(oc2) ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  TOctagon oc1(3);
+  TOctagon oc2(5);
+
+  try {
+    // This is an incorrect use of function
+    // Octagon::oct_difference_assign(oc2): it is impossible to apply
+    // this function to two polyhedra of different dimensions.
+    oc1.oct_difference_assign(oc2);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+END_MAIN
