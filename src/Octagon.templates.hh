@@ -154,24 +154,23 @@ Octagon<T>::concatenate_assign(const Octagon<T>& y) {
     return;
   }
 
-  // If `*this' is an empty 0-dim space octagon, then it is sufficient
+  // If `*this' is an empty 0-dim space octagon, then it is sufficient 
   // to adjust the dimension of the vector space.
-  if (space_dim == 0) {
-    if (marked_empty())
+  if (space_dim == 0 && marked_empty()) {
       add_space_dimensions_and_embed(y.space_dim);
-    else
-      *this = y;
-    return;
+      assert(OK());
+    return; 
   }
 
   // This is the old number of rows in the matrix. It is equal to
   // the first index of columns to change.
   dimension_type onr = matrix.num_rows();
-  // First we increase the space dimension of `*this' by adding
+  // First we increase the space dimension of `*this' by adding 
   // `y.space_dimension()' new dimensions.
   // The matrix for the new octagon is obtained
   // by leaving the old system of constraints in the upper left-hand side
-  // and placing the constraints of `y' in the lower right-hand side.
+  // (where they are at the present) and placing the constraints of `y' in the 
+  // lower right-hand side.
   add_space_dimensions_and_embed(y.space_dim);
   typename OR_Matrix<N>::const_element_iterator y_it = y.matrix.element_begin();
   for(typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + onr,
@@ -296,6 +295,8 @@ Octagon<T>::is_strongly_reduced() const {
     return true;
 
   Octagon x = *this;
+  // An octagon is reduced if removing any constraint, 
+  // the obtained octagon is different from previous one. 
   for (typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin(),
 	 iend = matrix.row_end(); iter != iend; ++iter) {
     typename OR_Matrix<N>::const_row_reference_type m_i = *iter;
