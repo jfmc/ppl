@@ -49,12 +49,9 @@ ORIGINAL_TESTS = \
 	affinepreimage5 affinepreimage6 affinepreimage7 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
 	bhz03widening1 \
+	bhmz05widening1 \
 	cc76extrapolation1 \
 	cc76narrowing1 \
-	ch78widening1 ch78widening2 ch78widening3 ch78widening4 \
-	ch78widening5 ch78widening6 ch78widening7 ch78widening8 \
-	ch78widening9 ch78widening10 ch78widening11 ch78widening12 \
-	ch78widening13 \
 	chinainit \
 	concatenate1 \
 	constraints1 constraints2 constraints3 constraints4 constraints5 \
@@ -69,11 +66,8 @@ ORIGINAL_TESTS = \
 	generalizedaffineimage9 \
 	intersection1 intersection2 intersection3 intersection4 intersection5 \
 	intersection6 intersection7 \
-	limitedcc76extrapolation1 limitedcc76extrapolation2 \
-	limitedcc76extrapolation3 \
-	limitedch78extrapolation1 limitedch78extrapolation2 \
-	limitedch78extrapolation3 limitedch78extrapolation4 \
-	limitedch78extrapolation5 limitedch78extrapolation6 \
+	limitedbhmz05extrapolation1 \
+	limitedcc76extrapolation1 \
 	mapspacedims1 \
 	maxspacedim \
 	octdifference1 octdifference2 octdifference3 \
@@ -128,23 +122,11 @@ ascii_dump_load4_SOURCES = ascii_dump_load4.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
 
+bhmz05widening1_SOURCES = bhmz05widening1.cc
+
 cc76extrapolation1_SOURCES = cc76extrapolation1.cc
 
 cc76narrowing1_SOURCES = cc76narrowing1.cc
-
-ch78widening1_SOURCES = ch78widening1.cc
-ch78widening2_SOURCES = ch78widening2.cc
-ch78widening3_SOURCES = ch78widening3.cc
-ch78widening4_SOURCES = ch78widening4.cc
-ch78widening5_SOURCES = ch78widening5.cc
-ch78widening6_SOURCES = ch78widening6.cc
-ch78widening7_SOURCES = ch78widening7.cc
-ch78widening8_SOURCES = ch78widening8.cc
-ch78widening9_SOURCES = ch78widening9.cc
-ch78widening10_SOURCES = ch78widening10.cc
-ch78widening11_SOURCES = ch78widening11.cc
-ch78widening12_SOURCES = ch78widening12.cc
-ch78widening13_SOURCES = ch78widening13.cc
 
 chinainit_SOURCES = chinainit.cc
 
@@ -191,16 +173,9 @@ intersection5_SOURCES = intersection5.cc
 intersection6_SOURCES = intersection6.cc
 intersection7_SOURCES = intersection7.cc
 
-limitedcc76extrapolation1_SOURCES = limitedcc76extrapolation1.cc
-limitedcc76extrapolation2_SOURCES = limitedcc76extrapolation2.cc
-limitedcc76extrapolation3_SOURCES = limitedcc76extrapolation3.cc
+limitedbhmz05extrapolation1_SOURCES = limitedbhmz05extrapolation1.cc
 
-limitedch78extrapolation1_SOURCES = limitedch78extrapolation1.cc
-limitedch78extrapolation2_SOURCES = limitedch78extrapolation2.cc
-limitedch78extrapolation3_SOURCES = limitedch78extrapolation3.cc
-limitedch78extrapolation4_SOURCES = limitedch78extrapolation4.cc
-limitedch78extrapolation5_SOURCES = limitedch78extrapolation5.cc
-limitedch78extrapolation6_SOURCES = limitedch78extrapolation6.cc
+limitedcc76extrapolation1_SOURCES = limitedcc76extrapolation1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 

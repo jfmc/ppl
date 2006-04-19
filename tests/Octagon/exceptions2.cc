@@ -98,10 +98,10 @@ error3() {
 
   try {
     // This is an invalid use of the function
-    // Octagon::limited_CH78_extrapolation_assign(bd, cs): it is
+    // Octagon::limited_BHMZ05_extrapolation_assign(bd, cs): it is
     // illegal to apply this function to a system of constraints that
     // has a strict-inequality.
-    oc2.limited_CH78_extrapolation_assign(oc1, cs);
+    oc2.limited_BHMZ05_extrapolation_assign(oc1, cs);
   }
   catch (invalid_argument& e) {
 #if NOISY

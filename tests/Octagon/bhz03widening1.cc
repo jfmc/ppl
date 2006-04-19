@@ -62,7 +62,7 @@ test01() {
 
   PSet old_P = P;
   P.BHZ03_widening_assign<H79_Certificate>
-    (Q, widen_fun_ref(&TOctagon::CH78_widening_assign));
+    (Q, widen_fun_ref(&TOctagon::BHMZ05_widening_assign));
 
   nout << "P.BHZ03(Q, H79)" << " = " << P << endl;
 

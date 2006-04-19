@@ -419,7 +419,7 @@ bool extract_octagonal_difference(const Constraint& c,
 
   \par Example 4
   The following code shows the use of the function
-  <CODE>CH78_widening_assign</CODE>:
+  <CODE>BHMZ05_widening_assign</CODE>:
   \code
     Octagon<T> oc1(2);
     oc1.add_constraint(x >= 0);
@@ -431,7 +431,7 @@ bool extract_octagonal_difference(const Constraint& c,
     oc2.add_constraint(y >= 0);
     oc2.add_constraint(x + y >= 0);
 
-    oc1.CH78_widening_assign(oc2);
+    oc1.BHMZ05_widening_assign(oc2);
   \endcode
   In this example the starting octagon oc1 is the first quadrant
   and oc2 is an half-plane in \f$\Rset^2\f$. The resulting octagon
@@ -855,7 +855,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the result of computing the
-  //! \ref CH78_widening "CH78-widening" between \p *this and \p y.
+  //! \ref BHMZ05_widening "BHMZ05-widening" between \p *this and \p y.
   /*!
     \param y
     An octagon that <EM>must</EM> be contained in \p *this.
@@ -868,10 +868,10 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void CH78_widening_assign(const Octagon& y, unsigned* tp = 0);
+  void BHMZ05_widening_assign(const Octagon& y, unsigned* tp = 0);
 
   //! \brief
-  //! Improves the result of the \ref CH78_widening "CH78-widening"
+  //! Improves the result of the \ref BHMZ05_widening "BHMZ05-widening"
   //! computation by also enforcing those constraints in \p cs that are
   //! satisfied by all the points of \p *this.
   /*!
@@ -890,9 +890,9 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible or
     if there is in \p cs a strict inequality.
   */
-  void limited_CH78_extrapolation_assign(const Octagon& y,
-					 const Constraint_System& cs,
-					 unsigned* tp = 0);
+  void limited_BHMZ05_extrapolation_assign(const Octagon& y,
+					   const Constraint_System& cs,
+					   unsigned* tp = 0);
 
   //! \brief
   //! Restores from \p y the constraints of \p *this, lost by

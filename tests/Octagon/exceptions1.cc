@@ -428,10 +428,10 @@ error16() {
 
   try {
     // This is an invalid use of the function
-    // Octagon::CH78_widening_assign(oc2): it is illegal to apply
+    // Octagon::BHMZ05_widening_assign(oc2): it is illegal to apply
     // this function to two polyhedra that are not dimensional
     // compatible.
-    oc2.CH78_widening_assign(oc1);
+    oc2.BHMZ05_widening_assign(oc1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -455,10 +455,10 @@ error17() {
 
   try {
     // This is an invalid use of the function
-    // Octagon::limited_CH78_extrapolation_assign(oc2, cs): it is
+    // Octagon::limited_BHMZ05_extrapolation_assign(oc2, cs): it is
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
-    oc2.limited_CH78_extrapolation_assign(oc1, cs);
+    oc2.limited_BHMZ05_extrapolation_assign(oc1, cs);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -491,10 +491,10 @@ error18() {
 
   try {
     // This is an invalid use of the function
-    // Octagon::limited_CH78_extrapolation_assign(oc, cs): it is
+    // Octagon::limited_BHMZ05_extrapolation_assign(oc, cs): it is
     // illegal to apply this function to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
-    oc2.limited_CH78_extrapolation_assign(oc1, cs);
+    oc2.limited_BHMZ05_extrapolation_assign(oc1, cs);
   }
   catch (invalid_argument& e) {
 #if NOISY

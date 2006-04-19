@@ -1619,6 +1619,7 @@ Octagon<T>::get_limiting_octagon(const Constraint_System& cs,
   assert(cs_space_dim <= space_dim);
 
   bool changed = false;
+  strong_closure_assign();
   for (Constraint_System::const_iterator i = cs.begin(),
 	 iend = cs.end(); i != iend; ++i) {
     const Constraint& c = *i;
@@ -1649,7 +1650,10 @@ Octagon<T>::get_limiting_octagon(const Constraint_System& cs,
 	else {
 	  // Select the right row of the cell.
 	  typename OR_Matrix<N>::const_row_iterator ck = (i%2 == 0) ? ++k : --k;
-	  (i%2 == 0) ? ++h : --h;
+	  if (i%2 == 0)
+	    ++h;
+	  else
+	    --h;
 	  typename OR_Matrix<N>::const_row_reference_type r1 = *ck;
 	  typename OR_Matrix<N>::row_reference_type s1 = *h;
 	  // Select the right column of the cell.
@@ -1673,7 +1677,7 @@ template <typename T>
 void
 Octagon<T>::limited_CC76_extrapolation_assign(const Octagon& y,
 					      const Constraint_System& cs,
-					      unsigned* /*tp*/) {
+					      unsigned* tp) {
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
@@ -1712,18 +1716,18 @@ Octagon<T>::limited_CC76_extrapolation_assign(const Octagon& y,
 
   Octagon<T> limiting_octagon(space_dim, UNIVERSE);
   get_limiting_octagon(cs, limiting_octagon);
-  CC76_extrapolation_assign(y);
+  CC76_extrapolation_assign(y, tp);
   intersection_assign(limiting_octagon);
   assert(OK());
 }
 
 template <typename T>
 void
-Octagon<T>::CH78_widening_assign(const Octagon& y,
-				 unsigned* /*tp*/) {
+Octagon<T>::BHMZ05_widening_assign(const Octagon& y,
+				   unsigned* tp) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
-    throw_dimension_incompatible("CH78_widening_assign(y)", y);
+    throw_dimension_incompatible("BHMZ05_widening_assign(y)", y);
 
 #ifndef NDEBUG
   {
@@ -1734,26 +1738,37 @@ Octagon<T>::CH78_widening_assign(const Octagon& y,
   }
 #endif
 
-  // If both octagons are zero-dimensional, since `*this' contains `y',
-  // we simply return '*this'.
-  if (space_dim == 0)
+  // Compute the affine dimension of `y'.
+  const dimension_type y_affine_dim = y.affine_dimension();
+  // If the affine dimension of `y' is zero, then either `y' is
+  // zero-dimensional, or it is empty, or it is a singleton.
+  // In all cases, due to the inclusion hypothesis, the result is `*this'.
+  if (y_affine_dim == 0)
     return;
 
-  strong_closure_assign();
-  // If `*this' is empty, since `*this' contains `y', `y' is empty too.
-  if (marked_empty())
+  // If the affine dimension has changed, due to the inclusion hypothesis,
+  // the result is `*this'.
+  const dimension_type x_affine_dim = affine_dimension();
+  assert(x_affine_dim >= y_affine_dim);
+  if (x_affine_dim != y_affine_dim)
     return;
 
+  // If there are tokens available, work on a temporary copy.
+  if (tp != 0 && *tp > 0) {
+    Octagon<T> x_tmp(*this);
+    x_tmp.BHMZ05_widening_assign(y, 0);
+    // If the widening was not precise, use one of the available tokens.
+    if (!contains(x_tmp))
+      --(*tp);
+    return;
+  }
+
+  // Here no token is available.
+  assert(marked_strongly_closed() && y.marked_strongly_closed());
   // Minimize `y'.
   y.strong_reduction_assign();
-  // If `y' is empty, we return.
-  if (y.marked_empty())
-    return;
 
   // Extrapolate unstable bounds.
-  // We compare a constraint of `y' at the time to the corresponding
-  // constraint of `*this'. If the value of constraint of `y' is
-  // less than of `*this' one, we remove this constraint.
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
        iend = matrix.element_end(); i != iend; ++i, ++j) {
@@ -1765,21 +1780,19 @@ Octagon<T>::CH78_widening_assign(const Octagon& y,
       elem = PLUS_INFINITY;
     }
   }
-
-  // This method not preserve the closure.
   status.reset_strongly_closed();
   assert(OK());
 }
 
 template <typename T>
 void
-Octagon<T>::limited_CH78_extrapolation_assign(const Octagon& y,
+Octagon<T>::limited_BHMZ05_extrapolation_assign(const Octagon& y,
 					      const Constraint_System& cs,
-					      unsigned* /*tp*/) {
+					      unsigned* tp) {
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
-    throw_dimension_incompatible("limited_CH78_extrapolation_assign(y, cs)",
+    throw_dimension_incompatible("limited_BHMZ05_extrapolation_assign(y, cs)",
 				 y);
   // `cs' must be dimension-compatible with the two octagons.
   const dimension_type cs_space_dim = cs.space_dimension();
@@ -1790,7 +1803,7 @@ Octagon<T>::limited_CH78_extrapolation_assign(const Octagon& y,
   if (cs.has_strict_inequalities())
     throw_constraint_incompatible("limited_CH78_extrapolation_assign(y, cs)");
 
-  // The limited CH78-extrapolation between two octagons in a
+  // The limited BHMZ05-extrapolation between two octagons in a
   // zero-dimensional space is a octagon in a zero-dimensional
   // space, too.
   if (space_dim == 0)
@@ -1812,10 +1825,9 @@ Octagon<T>::limited_CH78_extrapolation_assign(const Octagon& y,
   if (y.marked_empty())
     return;
 
-
   Octagon<T> limiting_octagon(space_dim, UNIVERSE);
   get_limiting_octagon(cs, limiting_octagon);
-  CH78_widening_assign(y);
+  BHMZ05_widening_assign(y, tp);
   intersection_assign(limiting_octagon);
   assert(OK());
 }
