@@ -154,22 +154,22 @@ Octagon<T>::concatenate_assign(const Octagon<T>& y) {
     return;
   }
 
-  // If `*this' is an empty 0-dim space octagon, then it is sufficient 
+  // If `*this' is an empty 0-dim space octagon, then it is sufficient
   // to adjust the dimension of the vector space.
   if (space_dim == 0 && marked_empty()) {
       add_space_dimensions_and_embed(y.space_dim);
       assert(OK());
-    return; 
+    return;
   }
 
   // This is the old number of rows in the matrix. It is equal to
   // the first index of columns to change.
   dimension_type onr = matrix.num_rows();
-  // First we increase the space dimension of `*this' by adding 
+  // First we increase the space dimension of `*this' by adding
   // `y.space_dimension()' new dimensions.
   // The matrix for the new octagon is obtained
   // by leaving the old system of constraints in the upper left-hand side
-  // (where they are at the present) and placing the constraints of `y' in the 
+  // (where they are at the present) and placing the constraints of `y' in the
   // lower right-hand side.
   add_space_dimensions_and_embed(y.space_dim);
   typename OR_Matrix<N>::const_element_iterator y_it = y.matrix.element_begin();
@@ -295,8 +295,8 @@ Octagon<T>::is_strongly_reduced() const {
     return true;
 
   Octagon x = *this;
-  // An octagon is reduced if removing any constraint, 
-  // the obtained octagon is different from previous one. 
+  // An octagon is reduced if removing any constraint,
+  // the obtained octagon is different from previous one.
   for (typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin(),
 	 iend = matrix.row_end(); iter != iend; ++iter) {
     typename OR_Matrix<N>::const_row_reference_type m_i = *iter;
@@ -1861,10 +1861,10 @@ Octagon<T>::CC76_narrowing_assign(const Octagon& y) {
   // we simply return '*this'.
   if (space_dim == 0)
     return;
-   
+
   y.strong_closure_assign();
   // If `y' is empty, since `y' contains `*this', `*this' is empty too.
-  if (y.marked_empty()) 
+  if (y.marked_empty())
     return;
   strong_closure_assign();
   // If `*this' is empty, we return.
@@ -2079,15 +2079,15 @@ Octagon<T>
 	  // Deducing `u - v <= lb_u - lb_v',
 	  // i.e., `u - v <= (-lb_v) - (-lb_u)'.
 	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
- 	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-	  N r_cu_u;
-	  div2exp_assign_r(r_cu_u, r_cu[2*u], 1, ROUND_UP);
+	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
+	  N r_u_cu;
+	  div2exp_assign_r(r_u_cu, r_u[2*u+1], 1, ROUND_UP);
 	  if (v < u)
-	    sub_assign_r(r_cu[2*v+1], neg_sum, r_cu_u, ROUND_UP);
+	    sub_assign_r(r_cu[2*v+1], neg_sum, r_u_cu, ROUND_UP);
 	  else if (v > u) {
 	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
 	    typename OR_Matrix<N>::row_reference_type r_v = *i_v;
-	    sub_assign_r(r_v[2*u], neg_sum, r_cu_u, ROUND_UP);
+	    sub_assign_r(r_v[2*u], neg_sum, r_u_cu, ROUND_UP);
 	  }
 	}
 	else {
@@ -2133,19 +2133,19 @@ Octagon<T>
 template <typename T>
 void
 Octagon<T>
-::deduce_u_plus_v_bounds(const dimension_type v,
-			 const dimension_type last_v,
-			 const Linear_Expression& sc_expr,
-			 Coefficient_traits::const_reference sc_den,
-			 const N& neg_sum) {
-  // Deduce constraints of the form `u + v', where `u != v'.
+::deduce_minus_v_minus_u_bounds(const dimension_type v,
+				const dimension_type last_v,
+				const Linear_Expression& sc_expr,
+				Coefficient_traits::const_reference sc_den,
+				const N& neg_sum) {
+  // Deduce constraints of the form `- v - u', where `u != v'.
   // Note: the strongly closure is able to deduce the constraint
-  // `u + v <= ub_u + up_v'. We can be more precise if variable `u'
+  // `- v - u <= - lb_v - lb_u'. We can be more precise if variable `u'
   // played an active role in the computation of the lower bound for `v',
   // i.e., if the corresponding coefficient `q == expr_u/den' is
   // less than zero. In particular:
-  // if `q <= -1',    then `u + v <= lb_u + ub_v';
-  // if `-1 < q < 0', then `u + v <= (q*lb_u + (1-q)*ub_u) + ub_v'.
+  // if `q <= -1',    then `-v - u <= -lb_v - ub_u';
+  // if `-1 < q < 0', then `-v - u <= -lb_v - (q*ub_u + (1-q)*lb_u)'.
   mpq_class mpq_sc_den;
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
   // No need to consider indices greater than `last_v'.
@@ -2157,55 +2157,59 @@ Octagon<T>
 	TEMP_INTEGER(minus_expr_u);
 	neg_assign_r(minus_expr_u, expr_u, ROUND_NOT_NEEDED);
 	if (minus_expr_u >= sc_den) {
-	  // Deducing `u + v <= lb_u + ub_v'.
+	  // Deducing `-v - u <= -lb_v - ub_u'.
 	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
 	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-	  N r_u_cu;
-	  div2exp_assign_r(r_u_cu, r_u[2*u+1], 1, ROUND_UP);
+	  N r_cu_u;
+	  div2exp_assign_r(r_cu_u, r_cu[2*u], 1, ROUND_UP);
+	  N negated_r_cu_u;
+	  neg_assign_r(negated_r_cu_u, r_cu_u, ROUND_NOT_NEEDED);
 	  if (v < u)
-	    sub_assign_r(r_cu[2*v], neg_sum, r_u_cu, ROUND_UP);
+	    sub_assign_r(r_cu[2*v+1], negated_r_cu_u, neg_sum, ROUND_UP);
 	  else if (v > u) {
 	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
-	    typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
-	    sub_assign_r(r_cv[2*u], neg_sum, r_u_cu, ROUND_UP);
+	    typename OR_Matrix<N>::row_reference_type r_v = *i_v;
+	    sub_assign_r(r_v[2*u+1], negated_r_cu_u, neg_sum, ROUND_UP);
 	  }
 	}
 	else {
-	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-	  if (!is_plus_infinity(r_cu[2*u])) {
+	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
+	  if (!is_plus_infinity(r_u[2*u+1])) {
 	    // Let `ub_u' and `lb_u' be the known upper and lower bound
 	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
 	    // rational coefficient of `u' in `sc_expr/sc_den',
-	    // the upper bound for `u + v' is computed as
-	    // `(q * lb_u + (1-q) * ub_u) + ub_v', i.e.,
-	    // `pos_sum + ub_u + q * (lb_u - ub_u)'.
-	    mpq_class double_ub_u;
-	    assign_r(double_ub_u, r_cu[2*u], ROUND_NOT_NEEDED);
-	    mpq_class ub_u;
-	    div2exp_assign_r(ub_u, double_ub_u, 1, ROUND_UP);
+	    // the upper bound for `-v - u' is computed as
+	    //`-lb_v - (q*ub_u + (1-q)*lb_u)', i.e.,
+	    // `-neg_sum - lb_u + q * (lb_u - ub_u)'.
+	    mpq_class double_lb_u;
+	    assign_r(double_lb_u, r_u[2*u+1], ROUND_NOT_NEEDED);
+	    mpq_class lb_u;
+	    div2exp_assign_r(lb_u, double_lb_u, 1, ROUND_UP);
 	    mpq_class q;
 	    assign_r(q, minus_expr_u, ROUND_NOT_NEEDED);
 	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-	    mpq_class double_minus_lb_u;
-	    typename OR_Matrix<N>::row_reference_type r_u = *i_u;
-	    assign_r(double_minus_lb_u, r_u[2*u+1], ROUND_NOT_NEEDED);
-	    mpq_class minus_lb_u;
-	    div2exp_assign_r(minus_lb_u, double_minus_lb_u, 1, ROUND_UP);
-	    mpq_class lb_u;
-	    neg_assign_r(lb_u, minus_lb_u, ROUND_NOT_NEEDED);
+	    mpq_class double_ub_u;
+	    typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
+	    assign_r(double_ub_u, r_cu[2*u], ROUND_NOT_NEEDED);
+	    mpq_class ub_u;
+	    div2exp_assign_r(ub_u, double_ub_u, 1, ROUND_UP);
+	    mpq_class minus_ub_u;
+	    neg_assign_r(minus_ub_u, ub_u, ROUND_NOT_NEEDED);
 	    // Compute `lb_u - ub_u'.
-	    sub_assign_r(lb_u, lb_u, ub_u, ROUND_NOT_NEEDED);
-	    // Compute `ub_u + q * (lb_u - ub_u)'.
-	    add_mul_assign_r(ub_u, q, lb_u, ROUND_NOT_NEEDED);
+	    add_assign_r(minus_ub_u, lb_u, minus_ub_u, ROUND_NOT_NEEDED);
+	    mpq_class minus_lb_u;
+	    neg_assign_r(minus_lb_u, lb_u, ROUND_NOT_NEEDED);
+	    // Compute `-lb_u + q * (lb_u - ub_u)'.
+	    add_mul_assign_r(minus_lb_u, q, minus_ub_u, ROUND_NOT_NEEDED);
 	    N up_approx;
-	    assign_r(up_approx, ub_u, ROUND_UP);
-	    // Deducing `u + v <= (q * lb_u + (1-q) * ub_u) + up_v'.
+	    assign_r(up_approx, minus_lb_u, ROUND_UP);
+	    // Deducing `-v - u <= -lb_v - (q * ub_u + (1-q) * lb_u)'.
 	    if (v < u)
-	      add_assign_r(r_cu[2*v], neg_sum, up_approx, ROUND_UP);
+	      add_assign_r(r_u[2*v+1], up_approx,neg_sum, ROUND_UP);
 	    else if (v > u) {
 	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
-	      typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
-	      add_assign_r(r_cv[2*u], neg_sum, up_approx, ROUND_UP);
+	      typename OR_Matrix<N>::row_reference_type r_v = *i_v;
+	      add_assign_r(r_v[2*u+1], up_approx, neg_sum, ROUND_UP);
 	    }
 	  }
 	}
@@ -2251,8 +2255,8 @@ Octagon<T>::affine_image(const Variable var,
   // unary.
   Coefficient coeff;
 
-  // Index of the last non-zero coefficient in `expr', if any.
-  dimension_type w = 0;
+  // Variable-index of the last non-zero coefficient in `expr', if any.
+  dimension_type last_var_id = 0;
 
   // Get information about the number of non-zero coefficients in `expr'.
   // The `expr' must not be in two or plus variables.
@@ -2261,9 +2265,10 @@ Octagon<T>::affine_image(const Variable var,
       if (t++ == 1)
 	break;
       else {
-        w = i;
-	coeff = expr.coefficient(Variable(w));
+        last_var_id = i;
+	coeff = expr.coefficient(Variable(last_var_id));
       }
+  // `w' is the variable with index `last_var_id'.
   // Now we know the form of `expr':
   // - If t == 0, then expr == b, with `b' a constant;
   // - If t == 1, then expr == a*w + b, where `w' can be `v' or another
@@ -2292,7 +2297,7 @@ Octagon<T>::affine_image(const Variable var,
   if (t == 1) {
     if (coeff == denominator || coeff == minus_den) {
       // Case 2: expr = coeff*w + b, with coeff = +/- denominator.
-      if (w == num_var) {
+      if (last_var_id == num_var) {
 	// `expr' is of the form: coeff*v + b.
 	// The `expr' is of the form: -denominator*var + n.
 	// First we adjust the matrix of the octagon, swapping x_i^+ with x_i^-.
@@ -2395,27 +2400,27 @@ Octagon<T>::affine_image(const Variable var,
 	typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
 	// Remove all constraints on `var'.
 	forget_all_octagonal_constraints(i, n_var);
-	dimension_type h = 2*w;
+	dimension_type h = 2*last_var_id;
 	// Add the new constraint `var - w = b/denominator'.
 	if (coeff == denominator) {
-	  if (num_var < w) {
+	  if (num_var < last_var_id) {
 	    typename OR_Matrix<N>::row_iterator j = matrix.row_begin() + h;
 	    add_octagonal_constraint(j, n_var, b, denominator);
 	    add_octagonal_constraint(j+1, n_var+1, b, minus_den);
 	  }
-	  else if (num_var > w) {
+	  else if (num_var > last_var_id) {
 	    add_octagonal_constraint(i+1, h+1, b, denominator);
 	    add_octagonal_constraint(i, h, b, minus_den);
 	  }
 	}
 	else {
 	// Add the new constraint `var + w = b/denominator'.
-	  if (num_var < w) {
+	  if (num_var < last_var_id) {
 	    typename OR_Matrix<N>::row_iterator j = matrix.row_begin() + h;
 	    add_octagonal_constraint(j+1, n_var, b, denominator);
 	    add_octagonal_constraint(j, n_var+1, b, minus_den);
 	  }
-	  else if (num_var > w) {
+	  else if (num_var > last_var_id) {
 	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
 	    add_octagonal_constraint(i+1, h, b, denominator);
 	    add_octagonal_constraint(i, h+1, b, minus_den);
@@ -2431,14 +2436,15 @@ Octagon<T>::affine_image(const Variable var,
   // General case.
   // Either t == 2, so that
   // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2,
-  // We find the maximum value `up_sum' of `expr' and the minimum value
-  // `low_sum'. Then we remove all the constraints with the `var' and
-  // we add the constraints:
-  // low_sum <= var,
-  // up_sum  >= var.
-//   else {
-//     // Approximations rispectively from above and from below of the
-//     // `expr'.
+  // or t == 1, expr == a*w + b, but a <> +/- denominator.
+  // We will remove all the constraints on `var' and add back
+  // constraints providing upper and lower bounds for `var'.
+
+  // Compute upper approximations for `expr' and `-expr'
+  // into `pos_sum' and `neg_sum', respectively, taking into account
+  // the sign of `denominator'.
+  // Note: approximating `-expr' from above and then negating the
+  // result is the same as approximating `expr' from below.
   const bool is_sc = (denominator > 0);
   TEMP_INTEGER(minus_b);
   neg_assign_r(minus_b, b, ROUND_NOT_NEEDED);
@@ -2447,6 +2453,9 @@ Octagon<T>::affine_image(const Variable var,
   const Coefficient& minus_sc_b = is_sc ? minus_b : b;
   const Coefficient& sc_den = is_sc ? denominator : minus_den;
   const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+  // NOTE: here, for optimization purposes, `minus_expr' is only assigned
+  // when `denominator' is negative. Do not use it unless you are sure
+  // it has been correctly assigned.
   Linear_Expression minus_expr;
   if (!is_sc)
     minus_expr = -expr;
@@ -2466,7 +2475,7 @@ Octagon<T>::affine_image(const Variable var,
   assign_r(pos_sum, sc_b, ROUND_UP);
   assign_r(neg_sum, minus_sc_b, ROUND_UP);
 
-  for (dimension_type i = w; i > 0; --i) {
+  for (dimension_type i = last_var_id + 1; i-- > 0; ) {
     const Coefficient& sc_i = sc_expr.coefficient(Variable(i));
     const dimension_type j_0 = 2*i;
     const dimension_type j_1 = j_0 + 1;
@@ -2576,27 +2585,42 @@ Octagon<T>::affine_image(const Variable var,
       typename OR_Matrix<N>::row_reference_type r = *i;
       assign_r(r[n_var], double_pos_sum, ROUND_UP);
       // Deduce constraints of the form `v - u', where `u != v'.
-      //      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
-      deduce_v_minus_u_bounds(num_var, w, sc_expr, sc_den, pos_sum);
+      deduce_v_minus_u_bounds(num_var, last_var_id, sc_expr, sc_den, pos_sum);
       // Deduce constraints of the form `v + u', where `u != v'.
-      deduce_v_plus_u_bounds(num_var, w, sc_expr, sc_den, pos_sum);
+      deduce_v_plus_u_bounds(num_var, last_var_id, sc_expr, sc_den, pos_sum);
     }
-//     else
-//       // Here `pos_pinf_count == 1'.
-//       if (pos_pinf_index != num_var
-// 	  && sc_expr.coefficient(Variable(pos_pinf_index)) == sc_den) {
-// 	// Add the constraint `v - pos_pinf_index <= pos_sum'.
-// 	if (num_var < pos_pinf_index) {
-// 	  typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*pos_pinf_index;
-// 	  typename OR_Matrix<N>::row_reference_type r_i = *i;
-// 	  assign_r(r_i[n_var], pos_sum, ROUND_UP);
-// 	}
-// 	if (num_var > pos_pinf_index) {
-//  	  typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-//  	  typename OR_Matrix<N>::row_reference_type r_i = *i;
-// 	  assign_r(r_i[2*pos_pinf_index], pos_sum, ROUND_UP);
-// 	}
-//       }
+    else
+      // Here `pos_pinf_count == 1'.
+      if (pos_pinf_index != num_var) {
+	if (sc_expr.coefficient(Variable(pos_pinf_index)) == sc_den) {
+	  // Add the constraint `v - pos_pinf_index <= pos_sum'.
+	  if (num_var < pos_pinf_index) {
+	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*pos_pinf_index;
+	    typename OR_Matrix<N>::row_reference_type r_i = *i;
+	    assign_r(r_i[n_var], pos_sum, ROUND_UP);
+	  }
+	  if (num_var > pos_pinf_index) {
+	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
+	    typename OR_Matrix<N>::row_reference_type r_ci = *(i+1);
+	    assign_r(r_ci[2*pos_pinf_index+1], pos_sum, ROUND_UP);
+	  }
+	}
+	else {
+	  if (sc_expr.coefficient(Variable(pos_pinf_index)) == minus_sc_den) {
+	    // Add the constraint `v + pos_pinf_index <= pos_sum'.
+	    if (num_var < pos_pinf_index) {
+	      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*pos_pinf_index;
+	      typename OR_Matrix<N>::row_reference_type r_ci = *(i+1);
+	      assign_r(r_ci[n_var], pos_sum, ROUND_UP);
+	    }
+	    if (num_var > pos_pinf_index) {
+	      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
+	      typename OR_Matrix<N>::row_reference_type r_ci = *(i+1);
+	      assign_r(r_ci[2*pos_pinf_index], pos_sum, ROUND_UP);
+	    }
+	  }
+	}
+      }
   }
 
   // Exploit the lower approximation, if possible.
@@ -2613,39 +2637,46 @@ Octagon<T>::affine_image(const Variable var,
       typename OR_Matrix<N>::row_reference_type r_i = *i;
       assign_r(r_i[n_var+1], double_neg_sum, ROUND_UP);
       // Deduce constraints of the form `u - v', where `u != v'.
-      //     deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, neg_sum);
-      deduce_u_minus_v_bounds(num_var, w, sc_expr, sc_den, neg_sum);
-      // Deduce constraints of the form `u + v', where `u != v'.
-      deduce_u_plus_v_bounds(num_var, w, sc_expr, sc_den, neg_sum);
+      deduce_u_minus_v_bounds(num_var, last_var_id, sc_expr, sc_den, neg_sum);
+      // Deduce constraints of the form `-v - u', where `u != v'.
+      deduce_minus_v_minus_u_bounds(num_var, last_var_id,
+				    sc_expr, sc_den, neg_sum);
     }
-//     else
-//       // Here `neg_pinf_count == 1'.
-//       if (neg_pinf_index != num_var
-// 	  && sc_expr.coefficient(Variable(neg_pinf_index)) == sc_den)
-// 	// Add the constraint `v - neg_pinf_index >= -neg_sum',
-// 	// i.e., `neg_pinf_index - v <= neg_sum'.
-// 	if (neg_pinf_index < num_var) {
-// 	  typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-// 	  typename OR_Matrix<N>::row_reference_type r_i = *i;
-// 	  assign_r(r_i[2*neg_pinf_index], neg_sum, ROUND_UP);
-// 	}
-// 	if (neg_pinf_index > num_var) {
-// 	  typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*neg_pinf_index + 1;
-// 	  typename OR_Matrix<N>::row_reference_type r_i = *i;
-// 	  assign_r(r_i[n_var+1], neg_sum, ROUND_UP);
-// 	}
+    else
+      // Here `neg_pinf_count == 1'.
+      if (neg_pinf_index != num_var) {
+	if (sc_expr.coefficient(Variable(neg_pinf_index)) == sc_den) {
+	// Add the constraint `v - neg_pinf_index >= -neg_sum',
+	// i.e., `neg_pinf_index - v <= neg_sum'.
+	  if (neg_pinf_index < num_var) {
+	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
+	    typename OR_Matrix<N>::row_reference_type r_i = *i;
+	    assign_r(r_i[2*neg_pinf_index], neg_sum, ROUND_UP);
+	  }
+	  if (neg_pinf_index > num_var) {
+	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*neg_pinf_index;
+	    typename OR_Matrix<N>::row_reference_type r_ci = *(i+1);
+	    assign_r(r_ci[n_var+1], neg_sum, ROUND_UP);
+	  }
+	}
+	else {
+	  if (sc_expr.coefficient(Variable(neg_pinf_index)) == minus_sc_den) {
+	    // Add the constraint `v + neg_pinf_index >= -neg_sum',
+	    // i.e., `-neg_pinf_index - v <= neg_sum'.
+	    if (neg_pinf_index < num_var) {
+	      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
+	      typename OR_Matrix<N>::row_reference_type r_i = *i;
+	      assign_r(r_i[2*neg_pinf_index+1], neg_sum, ROUND_UP);
+	    }
+	    if (neg_pinf_index > num_var) {
+	      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*neg_pinf_index;
+	      typename OR_Matrix<N>::row_reference_type r_i = *i;
+	      assign_r(r_i[n_var+1], neg_sum, ROUND_UP);
+	    }
+	  }
+	}
+      }
   }
-
-//     typename OR_Matrix<N>::row_iterator k = matrix.row_begin() + n_var;
-//     // Added the right constraints, if necessary.
-//     if (up_sum_ninf)
-//       //  add_constraint(denominator*dnm*var <= up_sum);
-//       add_octagonal_constraint(k+1, n_var, 2*up_sum, denominator*dnm);
-//     if (low_sum_ninf)
-//       //      std::cout << n_var[0] << std::endl << n_var[1] << std::endl;
-//       //     add_constraint(denominator*dnm1*var >= low_sum);
-//       add_octagonal_constraint(k, n_var+1, -2*low_sum, denominator*dnm1);
-//   }
 
   incremental_strong_closure_assign(var);
   assert(OK());
@@ -2667,23 +2698,27 @@ Octagon<T>::affine_preimage(const Variable var,
   const dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", "e", expr);
+  
   // `var' should be one of the dimensions of the octagon.
   dimension_type num_var = var.id();
   if (space_dim < num_var + 1)
     throw_dimension_incompatible("affine_preimage(v, e, d)", var.id());
 
-  // Any affine trasformation of an empty octagon is empty.
+  strong_closure_assign();
+  // The image of an empty octagon is empty too.
   if (marked_empty())
     return;
 
+  const Coefficient b = expr.inhomogeneous_term();
   // Index of the non-zero component of `expr'.
   dimension_type j = 0;
 
-  // Number of non-zero components of `expr'.
+  // Number of non-zero coefficients in `expr': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t = 0;
 
-  // Value of inhomogeneous term of `expr' in the case `expr' is a
-  // unary.
+  // Value of inhomogeneous term of `expr' when `expr' contains only one
+  // variable.
   Coefficient coeff;
 
   // Compute the number of the non-zero components of `expr'.
@@ -3660,17 +3695,14 @@ template <typename T>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
   typedef typename Octagon<T>::coefficient_type N;
-  assert(c.OK());
   if (c.is_universe())
-    s << "true" << std::endl;
+    s << "true";
   else {
     // We control empty octagon.
     if (c.marked_empty())
-      s << "false" << std::endl;
+      s << "false";
     else {
       bool first = true;
-
-      // We print the unary constraints as `X <=/>=/== C'.
       for (typename OR_Matrix<N>::const_row_iterator i_iter = c.matrix.row_begin(),
 	     i_end = c.matrix.row_end(); i_iter != i_end; i_iter += 2) {
 	dimension_type i = i_iter.index();
@@ -3679,48 +3711,42 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 	typename OR_Matrix<N>::const_row_reference_type r_ii = *(i_iter + 1);
 	const N& c_i_ii = r_i[i+1];
 	const N& c_ii_i = r_ii[i];
-	//	N negated_c_i_ii = negate_round_down(c_i_ii);
 	N negated_c_i_ii;
-	neg_assign_r(negated_c_i_ii, c_i_ii, ROUND_DOWN);
-	N negated_up_c_i_ii;
-	neg_assign_r(negated_up_c_i_ii, c_i_ii, ROUND_UP);
-	//	if (negated_c_i_ii == negate_round_up(c_i_ii) &&
-	if (negated_c_i_ii == negated_up_c_i_ii &&
-	    negated_c_i_ii == c_ii_i) {
-	    // We will print an equality.
+	if (neg_assign_r(negated_c_i_ii, c_i_ii, ROUND_NOT_NEEDED) == V_EQ
+	    && negated_c_i_ii == c_ii_i) {
+	  // We will print an equality.
 	  if (first)
 	    first = false;
 	  else
 	    s << ", ";
-	  N half_up_c_ii_i;
-	  div2exp_assign_r(half_up_c_ii_i, c_ii_i, 1, ROUND_UP);
-	  N half_dw_c_ii_i;
-	  div2exp_assign_r(half_dw_c_ii_i, c_ii_i, 1, ROUND_DOWN);
-	  if (half_up_c_ii_i == half_dw_c_ii_i)
-	    s << v_i << " == " << half_up_c_ii_i;
-	  else {
-	    s << v_i << " >= " << half_dw_c_ii_i;
-	    s << ", ";
-	    s << v_i << " <= " << half_up_c_ii_i;
-	  }
+	  // We have got an equality constraint with one Variable.
+	  N half_c_ii_i;
+	  // FIXME!
+	  // If the bound is an even number we simply divide, otherwise
+	  // we write the constraint in the form:
+	  // `2*variable_i == bound'. 
+	  if (div2exp_assign_r(half_c_ii_i, c_ii_i, 1, ROUND_NOT_NEEDED)
+	      == V_EQ)
+	    s << v_i << " == " << half_c_ii_i;
+	  else
+	    s << " 2*" << v_i << " == " << c_ii_i;
 	}
 	else {
+	  // We will print a non-strict inequality.
 	  if (!is_plus_infinity(c_i_ii)) {
-	    // Variable(i) >= cost.
 	    if (first)
 	      first = false;
+	    // We have got a constraint with an only Variable.
 	    else
 	      s << ", " ;
 	    s << v_i;
-	    //	    N half_c_i_ii = negate_round_down(div_round_up(c_i_ii, 2));
-	    N half_up_c_i_ii;
-	    div2exp_assign_r(half_up_c_i_ii, c_i_ii, 1, ROUND_UP);
-	    N half_c_i_ii;
-	    neg_assign_r(half_c_i_ii, half_up_c_i_ii, ROUND_DOWN);
-	    s << " >= " << half_c_i_ii;
+	    N minus_c_i_ii;
+	    neg_assign_r(minus_c_i_ii, c_i_ii, ROUND_DOWN);
+	    N minus_half_c_i_ii;
+	    div2exp_assign_r(minus_half_c_i_ii, minus_c_i_ii, 1, ROUND_NOT_NEEDED);
+	    s << " >= " << minus_half_c_i_ii;
 	  }
 	  if(!is_plus_infinity(c_ii_i)) {
-	    // Variable(i) <= cost.
 	    if (first)
 	      first = false;
 	    else
@@ -3733,32 +3759,24 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 	}
       }
 
-
       for (typename OR_Matrix<N>::const_row_iterator i_iter = c.matrix.row_begin(),
 	     i_end = c.matrix.row_end(); i_iter != i_end; i_iter += 2) {
 	dimension_type i = i_iter.index();
 	Variable v_i = Variable(i/2);
 	typename OR_Matrix<N>::const_row_reference_type r_i = *i_iter;
 	typename OR_Matrix<N>::const_row_reference_type r_ii = *(i_iter + 1);
-	// We print the binary constraints as `X - Y <=/>=/== C'.
 	for (dimension_type j = 0; j < i; j += 2) {
 	  Variable v_j = Variable(j/2);
 	  const N& c_ii_jj = r_ii[j+1];
 	  const N& c_i_j = r_i[j];
-	  //	  N negated_c_ii_jj = negate_round_down(c_ii_jj);
 	  N negated_c_ii_jj;
-	  neg_assign_r(negated_c_ii_jj, c_ii_jj, ROUND_DOWN);
-	  N negated_up_c_ii_jj;
-	  neg_assign_r(negated_up_c_ii_jj, c_ii_jj, ROUND_UP);
-	  //	  if (negated_c_ii_jj == negate_round_up(c_ii_jj) &&
-	  if (negated_c_ii_jj == negated_up_c_ii_jj &&
-	      negated_c_ii_jj == c_i_j) {
-	    // We will print an equality of the form X - Y == C.
+	  if (neg_assign_r(negated_c_ii_jj, c_ii_jj, ROUND_NOT_NEEDED) == V_EQ
+	      && negated_c_ii_jj == c_i_j) {
+	    // We will print an equality.
 	    if (first)
 	      first = false;
 	    else
 	      s << ", ";
-	    //    if (c_i_j.is_nonnegative()) {
 	    if (c_i_j >= 0) {
 	      s << v_j << " - " << v_i << " == " << c_i_j;
 	    }
@@ -3767,21 +3785,20 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 	    }
 	  }
 	  else {
-	    // 0, 1, 2 inequality constraints of the form X - Y <=/>= C.
+	    // We will print a non-strict inequality.
 	    if (!is_plus_infinity(c_i_j)) {
 	      if (first)
 		first = false;
 	      else
 		s << ", ";
-	      //	      if (c_i_j.is_nonnegative()) {
+	      // We have got a constraint with two Variables.
 	      if (c_i_j >= 0) {
 		s << v_j << " - " << v_i << " <= " << c_i_j;
 	      }
 	      else {
-		N negated_down_c_i_j;
-		neg_assign_r(negated_down_c_i_j, c_i_j, ROUND_DOWN);
-		//		s << v_i << " - " << v_j << " >= " << negate_round_down(c_i_j);
-		s << v_i << " - " << v_j << " >= " << negated_down_c_i_j;
+		N negated_c_i_j;
+		neg_assign_r(negated_c_i_j, c_i_j, ROUND_DOWN);
+		s << v_i << " - " << v_j << " >= " << negated_c_i_j;
 	      }
 	    }
 	    if (!is_plus_infinity(c_ii_jj)) {
@@ -3789,31 +3806,23 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 		first = false;
 	      else
 		s << ", ";
-	      //	      if (c_ii_jj.is_nonnegative()) {
 	      if (c_ii_jj >= 0) {
 		s << v_i << " - " << v_j << " <= " << c_ii_jj;
 	      }
 	      else {
-		N negated_down_c_ii_jj;
-		neg_assign_r(negated_down_c_ii_jj, c_ii_jj, ROUND_DOWN);
-		//		s << v_j << " - " << v_i << " >= " << negate_round_down(c_ii_jj);
-		s << v_j << " - " << v_i << " >= " << negated_down_c_ii_jj;
+		N negated_c_ii_jj;
+		neg_assign_r(negated_c_ii_jj, c_ii_jj, ROUND_DOWN);
+		s << v_j << " - " << v_i << " >= " << negated_c_ii_jj;
 	      }
 	    }
 	  }
 
-	  // We print the binary constraints as `X + Y <=/>=/== C'.
 	  const N& c_i_jj = r_i[j+1];
 	  const N& c_ii_j = r_ii[j];
-	  //	  N negated_c_i_jj = negate_round_down(c_i_jj);
 	  N negated_c_i_jj;
-	  neg_assign_r(negated_c_i_jj, c_i_jj, ROUND_DOWN);
-	  N negated_up_c_i_jj;
-	  neg_assign_r(negated_up_c_i_jj, c_i_jj, ROUND_UP);
-	  //	  if (negated_c_i_jj == negate_round_up(c_i_jj) &&
-	  if (negated_c_i_jj == negated_up_c_i_jj &&
-	      negated_c_i_jj == c_ii_j) {
-	    // We will print an equality of the form X + Y == C.
+	  if (neg_assign_r(negated_c_i_jj, c_i_jj, ROUND_NOT_NEEDED) == V_EQ
+	      && negated_c_i_jj == c_ii_j) {
+	    // We will print an equality.
 	    if (first)
 	      first = false;
 	    else
@@ -3821,16 +3830,16 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 	    s << v_j << " + " << v_i << " == " << c_ii_j;
 	  }
 	  else {
-	    // 0, 1, 2 inequality constraints of the form X + Y <=/>= C.
+	    // We will print a non_strict inequality.
 	    if (!is_plus_infinity(c_i_jj)) {
 	      if (first)
 		first = false;
 	      else
 		s << ", ";
-	      N negated_down_c_i_jj;
-	      neg_assign_r(negated_down_c_i_jj, c_i_jj, ROUND_DOWN);
-	      //	      s << v_j << " + " << v_i << " >= " << negate_round_down(c_i_jj);
-	      s << v_j << " + " << v_i << " >= " << negated_down_c_i_jj;
+	      // We have got a constraint with two Variables.
+	      N negated_c_i_jj;
+	      neg_assign_r(negated_c_i_jj, c_i_jj, ROUND_DOWN);
+	      s << v_j << " + " << v_i << " >= " << negated_c_i_jj;
 	    }
 	    if (!is_plus_infinity(c_ii_j)) {
 	      if (first)
