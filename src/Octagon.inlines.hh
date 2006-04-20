@@ -269,7 +269,7 @@ Octagon<T>::forget_all_octagonal_constraints(typename OR_Matrix<N>::row_iterator
   assert(v < 2*space_dim && i.index() < 2*space_dim);
   typename OR_Matrix<N>::row_reference_type r_i = *i;
   typename OR_Matrix<N>::row_reference_type r_ii = *(++i);
-  for (dimension_type h = matrix.row_size(v); h-- > 0; ) {
+  for (dimension_type h = i.row_size(); h-- > 0; ) {
     r_i[h] = PLUS_INFINITY;
     r_ii[h] = PLUS_INFINITY;
   }
