@@ -1,4 +1,3 @@
-
 /* SWI Prolog interface.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -19,10 +18,7 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ .
-
-
-*/
+site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl.hh"
 #include "pwl.hh"
@@ -405,27 +401,6 @@ PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_timeout_exception_atom, 1)
   PL_EXTENSION_ENTRY(ppl_set_timeout, 1)
   PL_EXTENSION_ENTRY(ppl_reset_timeout, 0)
-  PL_EXTENSION_ENTRY(ppl_new_LP_Problem_trivial, 1)
-  PL_EXTENSION_ENTRY(ppl_new_LP_Problem, 4)
-  PL_EXTENSION_ENTRY(ppl_new_LP_Problem_from_LP_Problem, 2)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_swap, 2)
-  PL_EXTENSION_ENTRY(ppl_delete_LP_Problem, 1)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_space_dimension, 2)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_constraints, 2)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_objective_function, 2)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_optimization_mode, 2)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_clear, 1)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_add_constraint, 2)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_add_constraints, 2)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_set_objective_function, 2)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_set_optimization_mode, 2)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_is_satisfiable, 1)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_solve, 2)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_feasible_point, 2)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_optimizing_point, 2)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_optimal_value, 3)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_evaluate_objective_function, 4)
-  PL_EXTENSION_ENTRY(ppl_LP_Problem_OK, 1)
   PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_space_dimension, 3)
   PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_space_dimension, 3)
   PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_C_Polyhedron, 2)
@@ -443,8 +418,8 @@ PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_space_dimension, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_affine_dimension, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_get_constraints, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_get_generators, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_get_minimized_constraints, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_get_generators, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_get_minimized_generators, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_relation_with_constraint, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_relation_with_generator, 3)
@@ -466,12 +441,12 @@ PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_equals_Polyhedron, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_OK, 1)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_add_constraint, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_add_generator, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_add_constraint_and_minimize, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_add_generator, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_add_generator_and_minimize, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_add_constraints, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_add_generators, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_add_constraints_and_minimize, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_add_generators, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_add_generators_and_minimize, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_intersection_assign, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_intersection_assign_and_minimize, 2)
@@ -488,16 +463,20 @@ PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs, 4)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_time_elapse_assign, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens, 4)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_H79_widening_assign_with_tokens, 4)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_BHRZ03_widening_assign, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_H79_widening_assign, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens, 5)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens, 5)
+  PL_EXTENSION_ENTRY(
+           ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens, 5)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign, 3)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_limited_H79_extrapolation_assign, 3)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens, 5)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens, 5)
+  PL_EXTENSION_ENTRY(
+           ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens, 5)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign, 3)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_H79_widening_assign_with_tokens, 4)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_H79_widening_assign, 2)
+  PL_EXTENSION_ENTRY(
+           ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens, 5)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_limited_H79_extrapolation_assign, 3)
+  PL_EXTENSION_ENTRY(
+           ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens, 5)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_bounded_H79_extrapolation_assign, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_add_space_dimensions_and_project, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_add_space_dimensions_and_embed, 2)
@@ -507,6 +486,27 @@ PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_expand_space_dimension, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_fold_space_dimensions, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_map_space_dimensions, 2)
+  PL_EXTENSION_ENTRY(ppl_new_LP_Problem_trivial, 1)
+  PL_EXTENSION_ENTRY(ppl_new_LP_Problem, 4)
+  PL_EXTENSION_ENTRY(ppl_new_LP_Problem_from_LP_Problem, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_swap, 2)
+  PL_EXTENSION_ENTRY(ppl_delete_LP_Problem, 1)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_space_dimension, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_constraints, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_objective_function, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_optimization_mode, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_clear, 1)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_add_constraint, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_add_constraints, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_set_objective_function, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_set_optimization_mode, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_is_satisfiable, 1)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_solve, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_feasible_point, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_optimizing_point, 2)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_optimal_value, 3)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_evaluate_objective_function, 4)
+  PL_EXTENSION_ENTRY(ppl_LP_Problem_OK, 1)
   { NULL, 0, NULL, 0 }
 };
 
