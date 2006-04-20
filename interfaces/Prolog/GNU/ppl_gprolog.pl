@@ -1,3 +1,4 @@
+
 /* GNU Prolog interface: GNU Prolog part.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -18,7 +19,9 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ . */
+site: http://www.cs.unipr.it/ppl/ .
+
+*/
 
 :- foreign(ppl_version_major(+term)).
 :- foreign(ppl_version_minor(+term)).
@@ -36,129 +39,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_timeout_exception_atom(+term)).
 :- foreign(ppl_set_timeout(+term)).
 :- foreign(ppl_reset_timeout).
-:- foreign(ppl_new_C_Polyhedron_from_space_dimension(+term, +term,
-                                                            +term)).
-:- foreign(ppl_new_NNC_Polyhedron_from_space_dimension(+term, +term,
-                                                            +term)).
-:- foreign(ppl_new_C_Polyhedron_from_C_Polyhedron(+term, +term)).
-:- foreign(ppl_new_C_Polyhedron_from_NNC_Polyhedron(+term, +term)).
-:- foreign(ppl_new_NNC_Polyhedron_from_C_Polyhedron(+term, +term)).
-:- foreign(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(+term, +term)).
-:- foreign(ppl_new_C_Polyhedron_from_constraints(+term, +term)).
-:- foreign(ppl_new_NNC_Polyhedron_from_constraints(+term, +term)).
-:- foreign(ppl_new_C_Polyhedron_from_generators(+term, +term)).
-:- foreign(ppl_new_NNC_Polyhedron_from_generators(+term, +term)).
-:- foreign(ppl_new_C_Polyhedron_from_bounding_box(+term, +term)).
-:- foreign(ppl_new_NNC_Polyhedron_from_bounding_box(+term, +term)).
-:- foreign(ppl_Polyhedron_swap(+term, +term)).
-:- foreign(ppl_delete_Polyhedron(+term)).
-:- foreign(ppl_Polyhedron_space_dimension(+term, +term)).
-:- foreign(ppl_Polyhedron_affine_dimension(+term, +term)).
-:- foreign(ppl_Polyhedron_get_constraints(+term, +term)).
-:- foreign(ppl_Polyhedron_get_minimized_constraints(+term, +term)).
-:- foreign(ppl_Polyhedron_get_generators(+term, +term)).
-:- foreign(ppl_Polyhedron_get_minimized_generators(+term, +term)).
-:- foreign(ppl_Polyhedron_relation_with_constraint(+term, +term, +term)).
-:- foreign(ppl_Polyhedron_relation_with_generator(+term, +term, +term)).
-:- foreign(ppl_Polyhedron_get_bounding_box(+term, +term, +term)).
-:- foreign(ppl_Polyhedron_is_empty(+term)).
-:- foreign(ppl_Polyhedron_is_universe(+term)).
-:- foreign(ppl_Polyhedron_is_bounded(+term)).
-:- foreign(ppl_Polyhedron_bounds_from_above(+term, +term)).
-:- foreign(ppl_Polyhedron_bounds_from_below(+term, +term)).
-:- foreign(ppl_Polyhedron_maximize(+term, +term, +term, +term, +term)).
-:- foreign(ppl_Polyhedron_minimize(+term, +term, +term, +term, +term)).
-:- foreign(ppl_Polyhedron_maximize_with_point(+term, +term, +term, +term,
-                                              +term, +term)).
-:- foreign(ppl_Polyhedron_minimize_with_point(+term, +term, +term, +term,
-                                              +term, +term)).
-:- foreign(ppl_Polyhedron_is_topologically_closed(+term)).
-:- foreign(ppl_Polyhedron_contains_Polyhedron(+term, +term)).
-:- foreign(ppl_Polyhedron_strictly_contains_Polyhedron(+term, +term)).
-:- foreign(ppl_Polyhedron_is_disjoint_from_Polyhedron(+term, +term)).
-:- foreign(ppl_Polyhedron_equals_Polyhedron(+term, +term)).
-:- foreign(ppl_Polyhedron_OK(+term)).
-:- foreign(ppl_Polyhedron_add_constraint(+term, +term)).
-:- foreign(ppl_Polyhedron_add_constraint_and_minimize(+term, +term)).
-:- foreign(ppl_Polyhedron_add_generator(+term, +term)).
-:- foreign(ppl_Polyhedron_add_generator_and_minimize(+term, +term)).
-:- foreign(ppl_Polyhedron_add_constraints(+term, +term)).
-:- foreign(ppl_Polyhedron_add_constraints_and_minimize(+term, +term)).
-:- foreign(ppl_Polyhedron_add_generators(+term, +term)).
-:- foreign(ppl_Polyhedron_add_generators_and_minimize(+term, +term)).
-:- foreign(ppl_Polyhedron_intersection_assign(+term, +term)).
-:- foreign(ppl_Polyhedron_intersection_assign_and_minimize(+term, +term)).
-:- foreign(ppl_Polyhedron_poly_hull_assign(+term, +term)).
-:- foreign(ppl_Polyhedron_poly_hull_assign_and_minimize(+term, +term)).
-:- foreign(ppl_Polyhedron_poly_difference_assign(+term, +term)).
-:- foreign(ppl_Polyhedron_affine_image(+term, +term, +term, +term)).
-:- foreign(ppl_Polyhedron_affine_preimage(+term, +term, +term, +term)).
-:- foreign(ppl_Polyhedron_bounded_affine_image(+term, +term,
-                                               +term, +term, +term)).
-:- foreign(ppl_Polyhedron_bounded_affine_preimage(+term, +term,
-                                                  +term, +term, +term)).
-:- foreign(ppl_Polyhedron_generalized_affine_image(+term, +term,
-						   +term, +term, +term)).
-:- foreign(ppl_Polyhedron_generalized_affine_preimage(+term, +term,
-						      +term, +term, +term)).
-:- foreign(ppl_Polyhedron_generalized_affine_image_lhs_rhs(+term, +term,
-							   +term, +term)).
-:- foreign(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs(+term, +term,
-							      +term, +term)).
-:- foreign(ppl_Polyhedron_time_elapse_assign(+term, +term)).
-:- foreign(ppl_Polyhedron_topological_closure_assign(+term)).
-:- foreign(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(+term,
-							    +term,
-							    +term,
-							    +term)).
-:- foreign(ppl_Polyhedron_BHRZ03_widening_assign(+term, +term)).
-:- foreign(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(
-                                                              +term,
-							      +term,
-							      +term,
-							      +term,
-							      +term)).
-:- foreign(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+term,
-							      +term,
-							      +term)).
-:- foreign(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(
-                                                              +term,
-							      +term,
-							      +term,
-							      +term,
-							      +term)).
-:- foreign(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+term,
-							      +term,
-							      +term)).
-:- foreign(ppl_Polyhedron_H79_widening_assign_with_tokens(+term,
-							 +term,
-							 +term,
-							 +term)).
-:- foreign(ppl_Polyhedron_H79_widening_assign(+term, +term)).
-:- foreign(ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(+term,
-							   +term,
-							   +term,
-							   +term,
-							   +term)).
-:- foreign(ppl_Polyhedron_limited_H79_extrapolation_assign(+term,
-							   +term,
-							   +term)).
-:- foreign(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(+term,
-							   +term,
-							   +term,
-							   +term,
-							   +term)).
-:- foreign(ppl_Polyhedron_bounded_H79_extrapolation_assign(+term,
-							   +term,
-							   +term)).
-:- foreign(ppl_Polyhedron_add_space_dimensions_and_project(+term, +term)).
-:- foreign(ppl_Polyhedron_add_space_dimensions_and_embed(+term, +term)).
-:- foreign(ppl_Polyhedron_concatenate_assign(+term, +term)).
-:- foreign(ppl_Polyhedron_remove_space_dimensions(+term, +term)).
-:- foreign(ppl_Polyhedron_remove_higher_space_dimensions(+term, +term)).
-:- foreign(ppl_Polyhedron_expand_space_dimension(+term, +term, +term)).
-:- foreign(ppl_Polyhedron_fold_space_dimensions(+term, +term, +term)).
-:- foreign(ppl_Polyhedron_map_space_dimensions(+term, +term)).
 :- foreign(ppl_new_LP_Problem_trivial(+term)).
 :- foreign(ppl_new_LP_Problem(+term, +term, +term, +term)).
 :- foreign(ppl_new_LP_Problem_from_LP_Problem(+term, +term)).
@@ -180,3 +60,86 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_LP_Problem_optimal_value(+term, +term, +term)).
 :- foreign(ppl_LP_Problem_evaluate_objective_function(+term, +term, +term, +term)).
 :- foreign(ppl_LP_Problem_OK(+term)).
+:- foreign(ppl_new_C_Polyhedron_from_space_dimension(+term, +term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_space_dimension(+term, +term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_C_Polyhedron(+term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_NNC_Polyhedron(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_C_Polyhedron(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(+term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_constraints(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_constraints(+term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_generators(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_generators(+term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_bounding_box(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_bounding_box(+term, +term)).
+:- foreign(ppl_Polyhedron_swap(+term, +term)).
+:- foreign(ppl_delete_Polyhedron(+term)).
+:- foreign(ppl_Polyhedron_space_dimension(+term, +term)).
+:- foreign(ppl_Polyhedron_affine_dimension(+term, +term)).
+:- foreign(ppl_Polyhedron_get_constraints(+term, +term)).
+:- foreign(ppl_Polyhedron_get_generators(+term, +term)).
+:- foreign(ppl_Polyhedron_get_minimized_constraints(+term, +term)).
+:- foreign(ppl_Polyhedron_get_minimized_generators(+term, +term)).
+:- foreign(ppl_Polyhedron_relation_with_constraint(+term, +term, +term)).
+:- foreign(ppl_Polyhedron_relation_with_generator(+term, +term, +term)).
+:- foreign(ppl_Polyhedron_get_bounding_box(+term, +term, +term)).
+:- foreign(ppl_Polyhedron_is_empty(+term)).
+:- foreign(ppl_Polyhedron_is_universe(+term)).
+:- foreign(ppl_Polyhedron_is_bounded(+term)).
+:- foreign(ppl_Polyhedron_bounds_from_above(+term, +term)).
+:- foreign(ppl_Polyhedron_bounds_from_below(+term, +term)).
+:- foreign(ppl_Polyhedron_maximize(+term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_maximize_with_point(+term, +term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_minimize(+term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_minimize_with_point(+term, +term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_is_topologically_closed(+term)).
+:- foreign(ppl_Polyhedron_topological_closure_assign(+term)).
+:- foreign(ppl_Polyhedron_contains_Polyhedron(+term, +term)).
+:- foreign(ppl_Polyhedron_strictly_contains_Polyhedron(+term, +term)).
+:- foreign(ppl_Polyhedron_is_disjoint_from_Polyhedron(+term, +term)).
+:- foreign(ppl_Polyhedron_equals_Polyhedron(+term, +term)).
+:- foreign(ppl_Polyhedron_OK(+term)).
+:- foreign(ppl_Polyhedron_add_constraint(+term, +term)).
+:- foreign(ppl_Polyhedron_add_generator(+term, +term)).
+:- foreign(ppl_Polyhedron_add_constraint_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_add_generator_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_add_constraints(+term, +term)).
+:- foreign(ppl_Polyhedron_add_generators(+term, +term)).
+:- foreign(ppl_Polyhedron_add_constraints_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_add_generators_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_intersection_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_intersection_assign_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_poly_hull_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_poly_hull_assign_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_poly_difference_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_affine_image(+term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_affine_preimage(+term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_bounded_affine_image(+term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_bounded_affine_preimage(+term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_generalized_affine_image(+term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_generalized_affine_preimage(+term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_generalized_affine_image_lhs_rhs(+term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs(+term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_time_elapse_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(+term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_H79_widening_assign_with_tokens(+term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_BHRZ03_widening_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_H79_widening_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(+term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(+term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+term, +term, +term)).
+:- foreign(ppl_Polyhedron_limited_H79_extrapolation_assign(+term, +term, +term)).
+:- foreign(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(+term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(+term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+term, +term, +term)).
+:- foreign(ppl_Polyhedron_bounded_H79_extrapolation_assign(+term, +term, +term)).
+:- foreign(ppl_Polyhedron_add_space_dimensions_and_project(+term, +term)).
+:- foreign(ppl_Polyhedron_add_space_dimensions_and_embed(+term, +term)).
+:- foreign(ppl_Polyhedron_concatenate_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_remove_space_dimensions(+term, +term)).
+:- foreign(ppl_Polyhedron_remove_higher_space_dimensions(+term, +term)).
+:- foreign(ppl_Polyhedron_expand_space_dimension(+term, +term, +term)).
+:- foreign(ppl_Polyhedron_fold_space_dimensions(+term, +term, +term)).
+:- foreign(ppl_Polyhedron_map_space_dimensions(+term, +term)).
+
+

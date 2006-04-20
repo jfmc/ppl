@@ -1,3 +1,4 @@
+
 /* YAP Prolog interface: system-dependent part.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -18,7 +19,9 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ . */
+site: http://www.cs.unipr.it/ppl/ .
+
+*/
 
 #include "ppl.hh"
 #include "pwl.hh"
@@ -491,87 +494,6 @@ YAP_STUB_1(ppl_set_timeout_exception_atom)
 YAP_STUB_1(ppl_timeout_exception_atom)
 YAP_STUB_1(ppl_set_timeout)
 YAP_STUB_0(ppl_reset_timeout)
-YAP_STUB_3(ppl_new_C_Polyhedron_from_space_dimension)
-YAP_STUB_3(ppl_new_NNC_Polyhedron_from_space_dimension)
-YAP_STUB_2(ppl_new_C_Polyhedron_from_C_Polyhedron)
-YAP_STUB_2(ppl_new_C_Polyhedron_from_NNC_Polyhedron)
-YAP_STUB_2(ppl_new_NNC_Polyhedron_from_C_Polyhedron)
-YAP_STUB_2(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron)
-YAP_STUB_2(ppl_new_C_Polyhedron_from_constraints)
-YAP_STUB_2(ppl_new_NNC_Polyhedron_from_constraints)
-YAP_STUB_2(ppl_new_C_Polyhedron_from_generators)
-YAP_STUB_2(ppl_new_NNC_Polyhedron_from_generators)
-YAP_STUB_2(ppl_new_C_Polyhedron_from_bounding_box)
-YAP_STUB_2(ppl_new_NNC_Polyhedron_from_bounding_box)
-YAP_STUB_2(ppl_Polyhedron_swap)
-YAP_STUB_1(ppl_delete_Polyhedron)
-YAP_STUB_2(ppl_Polyhedron_space_dimension)
-YAP_STUB_2(ppl_Polyhedron_affine_dimension)
-YAP_STUB_2(ppl_Polyhedron_get_constraints)
-YAP_STUB_2(ppl_Polyhedron_get_minimized_constraints)
-YAP_STUB_2(ppl_Polyhedron_get_generators)
-YAP_STUB_2(ppl_Polyhedron_get_minimized_generators)
-YAP_STUB_3(ppl_Polyhedron_relation_with_constraint)
-YAP_STUB_3(ppl_Polyhedron_relation_with_generator)
-YAP_STUB_3(ppl_Polyhedron_get_bounding_box)
-YAP_STUB_1(ppl_Polyhedron_is_empty)
-YAP_STUB_1(ppl_Polyhedron_is_universe)
-YAP_STUB_1(ppl_Polyhedron_is_bounded)
-YAP_STUB_2(ppl_Polyhedron_bounds_from_above)
-YAP_STUB_2(ppl_Polyhedron_bounds_from_below)
-YAP_STUB_5(ppl_Polyhedron_maximize)
-YAP_STUB_6(ppl_Polyhedron_maximize_with_point)
-YAP_STUB_5(ppl_Polyhedron_minimize)
-YAP_STUB_6(ppl_Polyhedron_minimize_with_point)
-YAP_STUB_1(ppl_Polyhedron_is_topologically_closed)
-YAP_STUB_2(ppl_Polyhedron_contains_Polyhedron)
-YAP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron)
-YAP_STUB_2(ppl_Polyhedron_is_disjoint_from_Polyhedron)
-YAP_STUB_2(ppl_Polyhedron_equals_Polyhedron)
-YAP_STUB_1(ppl_Polyhedron_OK)
-YAP_STUB_2(ppl_Polyhedron_add_constraint)
-YAP_STUB_2(ppl_Polyhedron_add_constraint_and_minimize)
-YAP_STUB_2(ppl_Polyhedron_add_generator)
-YAP_STUB_2(ppl_Polyhedron_add_generator_and_minimize)
-YAP_STUB_2(ppl_Polyhedron_add_constraints)
-YAP_STUB_2(ppl_Polyhedron_add_constraints_and_minimize)
-YAP_STUB_2(ppl_Polyhedron_add_generators)
-YAP_STUB_2(ppl_Polyhedron_add_generators_and_minimize)
-YAP_STUB_2(ppl_Polyhedron_intersection_assign)
-YAP_STUB_2(ppl_Polyhedron_intersection_assign_and_minimize)
-YAP_STUB_2(ppl_Polyhedron_poly_hull_assign)
-YAP_STUB_2(ppl_Polyhedron_poly_hull_assign_and_minimize)
-YAP_STUB_2(ppl_Polyhedron_poly_difference_assign)
-YAP_STUB_4(ppl_Polyhedron_affine_image)
-YAP_STUB_4(ppl_Polyhedron_affine_preimage)
-YAP_STUB_5(ppl_Polyhedron_bounded_affine_image)
-YAP_STUB_5(ppl_Polyhedron_bounded_affine_preimage)
-YAP_STUB_5(ppl_Polyhedron_generalized_affine_image)
-YAP_STUB_5(ppl_Polyhedron_generalized_affine_preimage)
-YAP_STUB_4(ppl_Polyhedron_generalized_affine_image_lhs_rhs)
-YAP_STUB_4(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs)
-YAP_STUB_2(ppl_Polyhedron_time_elapse_assign)
-YAP_STUB_1(ppl_Polyhedron_topological_closure_assign)
-YAP_STUB_4(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens)
-YAP_STUB_2(ppl_Polyhedron_BHRZ03_widening_assign)
-YAP_STUB_5(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens)
-YAP_STUB_3(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign)
-YAP_STUB_5(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens)
-YAP_STUB_3(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign)
-YAP_STUB_4(ppl_Polyhedron_H79_widening_assign_with_tokens)
-YAP_STUB_2(ppl_Polyhedron_H79_widening_assign)
-YAP_STUB_5(ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens)
-YAP_STUB_3(ppl_Polyhedron_limited_H79_extrapolation_assign)
-YAP_STUB_5(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens)
-YAP_STUB_3(ppl_Polyhedron_bounded_H79_extrapolation_assign)
-YAP_STUB_2(ppl_Polyhedron_add_space_dimensions_and_project)
-YAP_STUB_2(ppl_Polyhedron_add_space_dimensions_and_embed)
-YAP_STUB_2(ppl_Polyhedron_concatenate_assign)
-YAP_STUB_2(ppl_Polyhedron_remove_space_dimensions)
-YAP_STUB_2(ppl_Polyhedron_remove_higher_space_dimensions)
-YAP_STUB_3(ppl_Polyhedron_expand_space_dimension)
-YAP_STUB_3(ppl_Polyhedron_fold_space_dimensions)
-YAP_STUB_2(ppl_Polyhedron_map_space_dimensions)
 YAP_STUB_1(ppl_new_LP_Problem_trivial)
 YAP_STUB_4(ppl_new_LP_Problem)
 YAP_STUB_2(ppl_new_LP_Problem_from_LP_Problem)
@@ -593,6 +515,87 @@ YAP_STUB_2(ppl_LP_Problem_optimizing_point)
 YAP_STUB_3(ppl_LP_Problem_optimal_value)
 YAP_STUB_4(ppl_LP_Problem_evaluate_objective_function)
 YAP_STUB_1(ppl_LP_Problem_OK)
+YAP_STUB_3(ppl_new_C_Polyhedron_from_space_dimension)
+YAP_STUB_3(ppl_new_NNC_Polyhedron_from_space_dimension)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_C_Polyhedron)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_NNC_Polyhedron)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_C_Polyhedron)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_constraints)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_constraints)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_generators)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_generators)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_bounding_box)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_bounding_box)
+YAP_STUB_2(ppl_Polyhedron_swap)
+YAP_STUB_1(ppl_delete_Polyhedron)
+YAP_STUB_2(ppl_Polyhedron_space_dimension)
+YAP_STUB_2(ppl_Polyhedron_affine_dimension)
+YAP_STUB_2(ppl_Polyhedron_get_constraints)
+YAP_STUB_2(ppl_Polyhedron_get_generators)
+YAP_STUB_2(ppl_Polyhedron_get_minimized_constraints)
+YAP_STUB_2(ppl_Polyhedron_get_minimized_generators)
+YAP_STUB_3(ppl_Polyhedron_relation_with_constraint)
+YAP_STUB_3(ppl_Polyhedron_relation_with_generator)
+YAP_STUB_3(ppl_Polyhedron_get_bounding_box)
+YAP_STUB_1(ppl_Polyhedron_is_empty)
+YAP_STUB_1(ppl_Polyhedron_is_universe)
+YAP_STUB_1(ppl_Polyhedron_is_bounded)
+YAP_STUB_2(ppl_Polyhedron_bounds_from_above)
+YAP_STUB_2(ppl_Polyhedron_bounds_from_below)
+YAP_STUB_5(ppl_Polyhedron_maximize)
+YAP_STUB_6(ppl_Polyhedron_maximize_with_point)
+YAP_STUB_5(ppl_Polyhedron_minimize)
+YAP_STUB_6(ppl_Polyhedron_minimize_with_point)
+YAP_STUB_1(ppl_Polyhedron_is_topologically_closed)
+YAP_STUB_1(ppl_Polyhedron_topological_closure_assign)
+YAP_STUB_2(ppl_Polyhedron_contains_Polyhedron)
+YAP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron)
+YAP_STUB_2(ppl_Polyhedron_is_disjoint_from_Polyhedron)
+YAP_STUB_2(ppl_Polyhedron_equals_Polyhedron)
+YAP_STUB_1(ppl_Polyhedron_OK)
+YAP_STUB_2(ppl_Polyhedron_add_constraint)
+YAP_STUB_2(ppl_Polyhedron_add_generator)
+YAP_STUB_2(ppl_Polyhedron_add_constraint_and_minimize)
+YAP_STUB_2(ppl_Polyhedron_add_generator_and_minimize)
+YAP_STUB_2(ppl_Polyhedron_add_constraints)
+YAP_STUB_2(ppl_Polyhedron_add_generators)
+YAP_STUB_2(ppl_Polyhedron_add_constraints_and_minimize)
+YAP_STUB_2(ppl_Polyhedron_add_generators_and_minimize)
+YAP_STUB_2(ppl_Polyhedron_intersection_assign)
+YAP_STUB_2(ppl_Polyhedron_intersection_assign_and_minimize)
+YAP_STUB_2(ppl_Polyhedron_poly_hull_assign)
+YAP_STUB_2(ppl_Polyhedron_poly_hull_assign_and_minimize)
+YAP_STUB_2(ppl_Polyhedron_poly_difference_assign)
+YAP_STUB_4(ppl_Polyhedron_affine_image)
+YAP_STUB_4(ppl_Polyhedron_affine_preimage)
+YAP_STUB_5(ppl_Polyhedron_bounded_affine_image)
+YAP_STUB_5(ppl_Polyhedron_bounded_affine_preimage)
+YAP_STUB_5(ppl_Polyhedron_generalized_affine_image)
+YAP_STUB_5(ppl_Polyhedron_generalized_affine_preimage)
+YAP_STUB_4(ppl_Polyhedron_generalized_affine_image_lhs_rhs)
+YAP_STUB_4(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs)
+YAP_STUB_2(ppl_Polyhedron_time_elapse_assign)
+YAP_STUB_4(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens)
+YAP_STUB_4(ppl_Polyhedron_H79_widening_assign_with_tokens)
+YAP_STUB_2(ppl_Polyhedron_BHRZ03_widening_assign)
+YAP_STUB_2(ppl_Polyhedron_H79_widening_assign)
+YAP_STUB_5(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens)
+YAP_STUB_5(ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens)
+YAP_STUB_3(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign)
+YAP_STUB_3(ppl_Polyhedron_limited_H79_extrapolation_assign)
+YAP_STUB_5(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens)
+YAP_STUB_5(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens)
+YAP_STUB_3(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign)
+YAP_STUB_3(ppl_Polyhedron_bounded_H79_extrapolation_assign)
+YAP_STUB_2(ppl_Polyhedron_add_space_dimensions_and_project)
+YAP_STUB_2(ppl_Polyhedron_add_space_dimensions_and_embed)
+YAP_STUB_2(ppl_Polyhedron_concatenate_assign)
+YAP_STUB_2(ppl_Polyhedron_remove_space_dimensions)
+YAP_STUB_2(ppl_Polyhedron_remove_higher_space_dimensions)
+YAP_STUB_3(ppl_Polyhedron_expand_space_dimension)
+YAP_STUB_3(ppl_Polyhedron_fold_space_dimensions)
+YAP_STUB_2(ppl_Polyhedron_map_space_dimensions)
 
 #define YAP_USER_C_PREDICATE(name, arity) \
  YAP_UserCPredicate(#name, reinterpret_cast<int(*)()>(yap_stub_##name), arity)
@@ -616,91 +619,6 @@ init() {
   YAP_USER_C_PREDICATE(ppl_timeout_exception_atom, 1);
   YAP_USER_C_PREDICATE(ppl_set_timeout, 1);
   YAP_USER_C_PREDICATE(ppl_reset_timeout, 0);
-  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_space_dimension, 3);
-  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_space_dimension, 3);
-  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_C_Polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_constraints, 2);
-  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_constraints, 2);
-  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_generators, 2);
-  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_generators, 2);
-  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_bounding_box, 2);
-  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_bounding_box, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_swap, 2);
-  YAP_USER_C_PREDICATE(ppl_delete_Polyhedron, 1);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_affine_dimension, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_constraints, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_minimized_constraints, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_generators, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_minimized_generators, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_relation_with_constraint, 3);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_relation_with_generator, 3);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_bounding_box, 3);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_empty, 1);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_universe, 1);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_bounded, 1);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounds_from_above, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounds_from_below, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_maximize, 5);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_maximize_with_point, 6);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_minimize, 5);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_minimize_with_point, 6);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_topologically_closed, 1);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_contains_Polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_disjoint_from_Polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_equals_Polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_OK, 1);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraint, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraint_and_minimize, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generator, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generator_and_minimize, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraints, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraints_and_minimize, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generators, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generators_and_minimize, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_intersection_assign, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_intersection_assign_and_minimize, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_hull_assign, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_hull_assign_and_minimize, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_difference_assign, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_affine_image, 4);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_affine_preimage, 4);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_affine_image, 5);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_affine_preimage, 5);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_image, 5);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_preimage, 5);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_image_lhs_rhs, 4);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs, 4);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_time_elapse_assign, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_topological_closure_assign, 1);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens, 4);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_BHRZ03_widening_assign, 2);
-  YAP_USER_C_PREDICATE(
-          ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens, 5);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign, 3);
-  YAP_USER_C_PREDICATE(
-          ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens, 5);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign, 3);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_H79_widening_assign_with_tokens, 4);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_H79_widening_assign, 2);
-  YAP_USER_C_PREDICATE(
-          ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens, 5);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_H79_extrapolation_assign, 3);
-  YAP_USER_C_PREDICATE(
-          ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens, 5);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_H79_extrapolation_assign, 3);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_space_dimensions_and_project, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_space_dimensions_and_embed, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_concatenate_assign, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_remove_space_dimensions, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_remove_higher_space_dimensions, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_expand_space_dimension, 3);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_fold_space_dimensions, 3);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_map_space_dimensions, 2);
   YAP_USER_C_PREDICATE(ppl_new_LP_Problem_trivial, 1);
   YAP_USER_C_PREDICATE(ppl_new_LP_Problem, 4);
   YAP_USER_C_PREDICATE(ppl_new_LP_Problem_from_LP_Problem, 2);
@@ -722,4 +640,85 @@ init() {
   YAP_USER_C_PREDICATE(ppl_LP_Problem_optimal_value, 3);
   YAP_USER_C_PREDICATE(ppl_LP_Problem_evaluate_objective_function, 4);
   YAP_USER_C_PREDICATE(ppl_LP_Problem_OK, 1);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_space_dimension, 3);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_space_dimension, 3);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_C_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_generators, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_generators, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_bounding_box, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_bounding_box, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_swap, 2);
+  YAP_USER_C_PREDICATE(ppl_delete_Polyhedron, 1);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_affine_dimension, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_generators, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_minimized_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_minimized_generators, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_relation_with_constraint, 3);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_relation_with_generator, 3);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_bounding_box, 3);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_empty, 1);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_universe, 1);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_bounded, 1);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounds_from_above, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounds_from_below, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_maximize, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_maximize_with_point, 6);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_minimize, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_minimize_with_point, 6);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_topologically_closed, 1);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_topological_closure_assign, 1);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_contains_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_disjoint_from_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_equals_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_OK, 1);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraint, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generator, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraint_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generator_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generators, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraints_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generators_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_intersection_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_intersection_assign_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_hull_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_hull_assign_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_difference_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_affine_image, 4);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_affine_preimage, 4);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_affine_image, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_affine_preimage, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_image, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_preimage, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_image_lhs_rhs, 4);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_preimage_lhs_rhs, 4);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_time_elapse_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens, 4);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_H79_widening_assign_with_tokens, 4);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_BHRZ03_widening_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_H79_widening_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign, 3);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_H79_extrapolation_assign, 3);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign, 3);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_H79_extrapolation_assign, 3);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_space_dimensions_and_project, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_add_space_dimensions_and_embed, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_concatenate_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_remove_space_dimensions, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_remove_higher_space_dimensions, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_expand_space_dimension, 3);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_fold_space_dimensions, 3);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_map_space_dimensions, 2);
 }
