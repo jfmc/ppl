@@ -55,9 +55,8 @@ ORIGINAL_TESTS = \
 	chinainit \
 	concatenate1 \
 	constraints1 constraints2 constraints3 constraints4 constraints5 \
-	contains1 contains2 contains3 contains4 contains5 contains6 \
-	contains7 contains8 \
-	empty1 empty2 empty3 \
+	contains1 \
+	empty1 \
 	exceptions1 exceptions2 exceptions3 \
 	fromgensys1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
@@ -138,17 +137,8 @@ constraints4_SOURCES = constraints4.cc
 constraints5_SOURCES = constraints5.cc
 
 contains1_SOURCES = contains1.cc
-contains2_SOURCES = contains2.cc
-contains3_SOURCES = contains3.cc
-contains4_SOURCES = contains4.cc
-contains5_SOURCES = contains5.cc
-contains6_SOURCES = contains6.cc
-contains7_SOURCES = contains7.cc
-contains8_SOURCES = contains8.cc
 
 empty1_SOURCES = empty1.cc
-empty2_SOURCES = empty2.cc
-empty3_SOURCES = empty3.cc
 
 exceptions1_SOURCES = exceptions1.cc
 exceptions2_SOURCES = exceptions2.cc

@@ -22,44 +22,109 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
   TOctagon oc1(2, EMPTY);
 
+  bool empty1 = oc1.is_empty();
+
+  nout << "*** oc1.is_empty() ***" << endl;
+  nout << (empty1 ? "true" : "false ") << endl;
+
   TOctagon oc2(2, UNIVERSE);
 
-  bool empty = oc1.is_empty();
-  bool universe = oc2.is_universe();
+  bool empty2 = oc2.is_empty();
 
+  nout << "*** oc2.is_empty() ***" << endl;
+  nout << (empty2 ? "true" : "false") << endl;
 
-#if NOISY
-  cout << "*** oc1.is_empty() ***" << endl;
-  cout << (empty ? "true" : "false ") << endl;
-  cout << "*** oc2.is_empty() ***" << endl;
-  cout << (oc2.is_empty() ? "true" : "false") << endl;
-  cout << "*** oc2.is_universe() ***" << endl;
-  cout << (universe ? "true" : "false") << endl;
-#endif
-
-  oc1.add_constraint(A <= 0);
-  oc2.add_constraint(A <= 0);
-
-#if NOISY
-  print_constraints(oc1, "*** oc1.add_constraint(A <= 0) ***");
-  print_constraints(oc2, "*** oc2.add_constraint(A <= 0) ***");
-#endif
-
-  return (universe && empty) ? 0 : 1;
-
+  return empty1 && !empty2;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagon oc(3);
+
+  oc.add_constraint(A == 0);
+  oc.add_constraint(C >= 0);
+  oc.add_constraint(B - C >= 1);
+
+  print_constraints(oc, "*** oc ***");
+
+  bool empty = oc.is_empty();
+
+  nout << "*** oc.is_empty() ***" << endl;
+  nout << (empty ? "true" : "false") << endl;
+
+  return !empty;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+
+  TOctagon oc1(5);
+  oc1.add_constraint(A <= 3);
+  oc1.add_constraint(D <= 3);
+  oc1.add_constraint(B - A <= 0);
+  oc1.add_constraint(C - A <= -2);
+  oc1.add_constraint(E - A <= 2);
+  oc1.add_constraint(-B <= 0);
+  oc1.add_constraint(C - B <= 5);
+  oc1.add_constraint(D - C <= -6);
+  oc1.add_constraint(A - D <= 5);
+  oc1.add_constraint(E - D <= 2);
+  oc1.add_constraint(-E <= -5);
+  oc1.add_constraint(C - E <= 7);
+
+  print_constraints(oc1, "*** oc1 ***");
+
+  bool empty = oc1.is_empty();
+
+  nout << "*** oc1.is_empty() ***" << endl;
+  nout << (empty ? "true" : "false") << endl;
+
+  TOctagon oc2(5);
+  oc2.add_constraint(A <= 3);
+  oc2.add_constraint(D <= 3);
+  oc2.add_constraint(B - A <= 0);
+  oc2.add_constraint(C - A <= 2);
+  oc2.add_constraint(E - A <= 2);
+  oc2.add_constraint(-B <= 0);
+  oc2.add_constraint(C - B <= 5);
+  oc2.add_constraint(D - C <= 6);
+  oc2.add_constraint(A - D <= 5);
+  oc2.add_constraint(E - D <= 2);
+  oc2.add_constraint(-E <= 5);
+  oc2.add_constraint(C - E <= 7);
+
+  print_constraints(oc2, "*** oc2 ***");
+
+  bool empty1 = oc2.is_empty();
+
+  nout << "*** oc2.is_empty() ***" << endl;
+  nout << (empty1 ? "true" : "false") << endl;
+
+  return empty && !empty1;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+END_MAIN
