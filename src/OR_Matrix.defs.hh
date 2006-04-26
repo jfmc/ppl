@@ -424,12 +424,6 @@ public:
   */
   bool ascii_load(std::istream& s);
 
-  /*! \brief
-    Erases from the matrix all the rows but those having
-    an index less than \p first_to_erase.
-  */
-  void erase_to_end(dimension_type first_to_erase);
-
   friend bool Parma_Polyhedra_Library::operator==<T>(const OR_Matrix<T>& x,
 						     const OR_Matrix<T>& y);
 

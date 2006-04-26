@@ -469,14 +469,6 @@ OR_Matrix<T>::clear() {
   OR_Matrix<T>().swap(*this);
 }
 
-template <typename T>
-inline void
-OR_Matrix<T>::erase_to_end(const dimension_type first_to_erase) {
-  assert(first_to_erase <= num_rows() - 1);
-  if (first_to_erase < num_rows() - 1)
-    resize_no_copy((first_to_erase+1)/2);
- }
-
 /*! \relates OR_Matrix */
 template <typename T>
 inline bool
