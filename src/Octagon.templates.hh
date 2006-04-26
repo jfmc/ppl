@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <vector>
 #include <deque>
+#include <string>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -40,6 +41,156 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BD_Shape.defs.hh"
 
 namespace Parma_Polyhedra_Library {
+
+// template <typename T>
+// Octagon<T>::Octagon(const Polyhedron& ph, const Complexity_Class complexity)
+//   : matrix(0), space_dim(0), status() {
+//   using Implementation::BD_Shapes::div_round_up;
+//   const dimension_type num_dimensions = ph.space_dimension();
+
+//   if (ph.marked_empty()) {
+//     *this = Octagon(num_dimensions, EMPTY);
+//     return;
+//   }
+
+//   if (num_dimensions == 0) {
+//     *this = Octagon(num_dimensions, UNIVERSE);
+//     return;
+//   }
+
+//   // Build from generators when we do not care about complexity
+//   // or when the process has polynomial complexity.
+//   if (complexity == ANY_COMPLEXITY
+//       || (!ph.has_pending_constraints() && ph.generators_are_up_to_date())) {
+//     *this = Octagon(ph.generators());
+//     return;
+//   }
+
+//   // We cannot afford exponential complexity, we do not have a complete set
+//   // of generators for the polyhedron, and the polyhedron is not trivially
+//   // empty or zero-dimensional.  Constraints, however, are up to date.
+//   assert(ph.constraints_are_up_to_date());
+
+//   if (!ph.has_something_pending() && ph.constraints_are_minimized()) {
+//     // If the constraint system of the polyhedron is minimized,
+//     // the test `is_universe()' has polynomial complexity.
+//     if (ph.is_universe()) {
+//       *this = Octagon(num_dimensions, UNIVERSE);
+//       return;
+//     }
+//   }
+
+//   // See if there is at least one inconsistent constraint in `ph.con_sys'.
+//   for (Constraint_System::const_iterator i = ph.con_sys.begin(),
+// 	 cs_end = ph.con_sys.end(); i != cs_end; ++i)
+//     if (i->is_inconsistent()) {
+//       *this = Octagon(num_dimensions, EMPTY);
+//       return;
+//     }
+
+//   // If `complexity' allows it, use simplex to derive the exact (modulo
+//   // the fact that our OSs are topologically closed) variable bounds.
+//   if (complexity == SIMPLEX_COMPLEXITY) {
+//     LP_Problem lp;
+//     lp.set_optimization_mode(MAXIMIZATION);
+
+//     const Constraint_System& ph_cs = ph.constraints();
+//     if (!ph_cs.has_strict_inequalities())
+//       lp.add_constraints(ph_cs);
+//     else
+//       // Adding to `lp' a topologically closed version of `ph_cs'.
+//       for (Constraint_System::const_iterator i = ph_cs.begin(),
+// 	     iend = ph_cs.end(); i != iend; ++i) {
+// 	const Constraint& c = *i;
+// 	lp.add_constraint(c.is_equality()
+// 			  ? (Linear_Expression(c) == 0)
+// 			  : (Linear_Expression(c) >= 0));
+//       }
+
+//     // Check for unsatisfiability.
+//     if (!lp.is_satisfiable()) {
+//       *this = Octagon(num_dimensions, EMPTY);
+//       return;
+//     }
+
+//     // Get all the upper bounds.
+//     LP_Problem_Status lp_status;
+//     Generator g(point());
+//     TEMP_INTEGER(num);
+//     TEMP_INTEGER(den);
+//     for (dimension_type i = 0; i < num_dimensions; ++i) {
+//       Variable x(i);
+//       // Evaluate optimal upper bound for `x <= ub'.
+//       lp.set_objective_function(x);
+//       lp_status = lp.solve();
+//       if (lp_status == UNBOUNDED_LP_PROBLEM)
+// 	// CHECK ME.
+// 	matrix[i][i+1] = PLUS_INFINITY;
+//       else {
+// 	assert(lp_status == OPTIMIZED_LP_PROBLEM);
+// 	g = lp.optimizing_point();
+// 	lp.evaluate_objective_function(g, num, den);
+// 	num *= 2;
+// 	div_round_up(matrix[i][i+1], num, den);
+//       }
+//       // Evaluate optimal upper bound for `x - y <= ub'.
+//       for (dimension_type j = 0; j < num_dimensions; ++j) {
+// 	if (i == j)
+// 	  continue;
+// 	Variable y(j);
+// 	lp.set_objective_function(x - y);
+// 	lp_status = lp.solve();
+// 	if (lp_status == UNBOUNDED_LP_PROBLEM)
+// 	  // FIXME.
+// 	  matrix[j][i] = PLUS_INFINITY;
+// 	else {
+// 	  assert(lp_status == OPTIMIZED_LP_PROBLEM);
+// 	  g = lp.optimizing_point();
+// 	  lp.evaluate_objective_function(g, num, den);
+// 	  // FIXME.
+// 	  div_round_up(matrix[j][i], num, den);
+// 	}
+//       }
+//       // Evaluate optimal upper bound for `x + y <= ub'.
+//       for (dimension_type j = 0; j < num_dimensions; ++j) {
+// 	if (i == j)
+// 	  continue;
+// 	Variable y(j);
+// 	lp.set_objective_function(x + y);
+// 	lp_status = lp.solve();
+// 	if (lp_status == UNBOUNDED_LP_PROBLEM)
+// 	  // FIXME.
+// 	  matrix[j][i] = PLUS_INFINITY;
+// 	else {
+// 	  assert(lp_status == OPTIMIZED_LP_PROBLEM);
+// 	  g = lp.optimizing_point();
+// 	  lp.evaluate_objective_function(g, num, den);
+// 	  // FIXME.
+// 	  div_round_up(matrix[j][i], num, den);
+// 	}
+//       }
+//       // Evaluate optimal upper bound for `-x <= ub'.
+//       lp.set_objective_function(-x);
+//       lp_status = lp.solve();
+//       if (lp_status == UNBOUNDED_LP_PROBLEM)
+// 	// CHECK ME.
+// 	matrix[i+1][i] = PLUS_INFINITY;
+//       else {
+// 	assert(lp_status == OPTIMIZED_LP_PROBLEM);
+// 	g = lp.optimizing_point();
+// 	lp.evaluate_objective_function(g, num, den);
+// 	// CHECK ME.
+// 	num *= 2;
+// 	div_round_up(matrix[i+1][i], num, den);
+//       }
+//     }
+//     status.set_strongly_closed();
+//     return;
+//   }
+
+//   // Extract easy-to-find bounds from constraints.
+//   *this = Octagon(ph.con_sys);
+// }
 
 template <typename T>
 Octagon<T>::Octagon(const Generator_System& gs)
@@ -265,7 +416,7 @@ Octagon<T>::add_constraint(const Constraint& c) {
 
   if (c.is_equality()) {
     // Select the right row of the cell.
-   if (i%2 == 0)
+    if (i%2 == 0)
       ++k;
     else
       --k;
@@ -819,79 +970,129 @@ void
 Octagon<T>::strong_closure_assign() const {
   using Implementation::BD_Shapes::min_assign;
 
-  // Do something only if necessary.
-  if (marked_empty() || marked_strongly_closed())
-    return;
-
-  // Zero-dimensional octagons are necessarily strongly closed.
-  if (space_dim == 0)
+  // Do something only if necessary (zero-dim implies strong closure).
+  if (marked_empty() || marked_strongly_closed() || space_dim == 0)
     return;
 
   // Even though the octagon will not change, its internal representation
   // is going to be modified by the closure algorithm.
   Octagon& x = const_cast<Octagon<T>&>(*this);
 
+  // Use these type aliases for short.
+  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  // Avoid recomputations.
+  const dimension_type n_rows = x.matrix.num_rows();
+  const Row_Iterator m_begin = x.matrix.row_begin();
+  const Row_Iterator m_end = x.matrix.row_end();
+
   // Fill the main diagonal with zeros.
-  for (typename OR_Matrix<N>::row_iterator i = x.matrix.row_begin(),
-	 m_end = x.matrix.row_end(); i != m_end; ++i) {
-    typename OR_Matrix<N>::row_reference_type r = *i;
-    assert(is_plus_infinity(r[i.index()]));
-    assign_r(r[i.index()], 0, ROUND_NOT_NEEDED);
+  for (Row_Iterator i = m_begin; i != m_end; ++i) {
+    assert(is_plus_infinity((*i)[i.index()]));
+    assign_r((*i)[i.index()], 0, ROUND_NOT_NEEDED);
   }
 
-  // This algorithm is given by two step, first one is the `closure' that
-  // uses a modification of the Floyd-Warshall algorithm,
-  // the second one is the `strong-coherence'.
+  // This algorithm is given by two steps: the first one is a simple
+  // adaptation of the `shortest-path closure' using the Floyd-Warshall
+  // algorithm; the second one is the `strong-coherence' algorithm.
   // It is important to note that after the strong-coherence,
-  // the octagon is closed yet.
-  // The step of closure is divided in three cases that describe
-  // how the three indexes `i', `j' and `k' (used in this algorithm)
-  // interdepende.
+  // the octagon is still shortest-path closed and hence, strongly closed.
+
+  // The first step (shortest-path closure) is divided in three cases
+  // depending on the relations between the three matrix indexes (i, j, k).
   // We recall that, given an index `h', we indicate with `ch'
   // the index such that:
   // ch = h + 1, if h is even number or
   // ch = h - 1, if h is odd.
 
   // Step 1: closure.
-  for (typename OR_Matrix<N>::row_iterator k_iter = x.matrix.row_begin(),
-	 k_end = x.matrix.row_end(); k_iter != k_end; ++k_iter) {
-    dimension_type k = k_iter.index();
-    dimension_type rs_k = k_iter.row_size();
-    typename OR_Matrix<N>::row_reference_type x_k = *k_iter;
-    typename OR_Matrix<N>::row_iterator ck_iter = (k%2) ? k_iter-1 : k_iter+1;
-    typename OR_Matrix<N>::row_reference_type x_ck = *ck_iter;
+  for (Row_Iterator k_iter = m_begin; k_iter != m_end; ++k_iter) {
+    const dimension_type k = k_iter.index();
+    const dimension_type ck = coherent_index(k);
+    const dimension_type rs_k = k_iter.row_size();
+    Row_Reference x_k = *k_iter;
+    Row_Iterator ck_iter = (k%2) ? k_iter-1 : k_iter+1;
+    Row_Reference x_ck = *ck_iter;
 
-    for (typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin(),
-	   i_end = x.matrix.row_end(); i_iter != i_end; ++i_iter) {
-      dimension_type i = i_iter.index();
-      dimension_type rs_i = i_iter.row_size();
-      typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-      typename OR_Matrix<N>::row_iterator ci_iter = (i%2) ? i_iter-1 : i_iter+1;
-      typename OR_Matrix<N>::row_reference_type x_ci = *ci_iter;
-      const N& x_i_k = (k < rs_i) ? x_i[k] : x_ck[coherent_index(i)];
+    for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
+      const dimension_type i = i_iter.index();
+      const dimension_type ci = coherent_index(i);
+      const dimension_type rs_i = i_iter.row_size();
+      Row_Reference x_i = *i_iter;
+      const N& x_i_k = (k < rs_i) ? x_i[k] : x_ck[ci];
       if (!is_plus_infinity(x_i_k)) {
-	dimension_type n_rows = 2*space_dim;
+	Row_Reference x_ci = *((i%2) ? i_iter-1 : i_iter+1);
+	// CHECK ME: is this optimization really worth it?
+#if 0
+	// UNOPTIMIZED VERSION.
+	// The conditional expressions in the following inner loop
+	// are optimized away by splitting it into three loops.
 	for (dimension_type j = 0; j < n_rows; ++j) {
-	  dimension_type cj = coherent_index(j);
-	  typename OR_Matrix<N>::row_reference_type x_cj = *(x.matrix.row_begin()+cj);
-	  const N& x_k_j = (j < rs_k) ? x_k[j] : x_cj[coherent_index(k)];
+	  Row_Reference x_cj = *(m_begin + coherent_index(j));
+	  const N& x_k_j = (j < rs_k) ? x_k[j] : x_cj[ck];
 	  if (!is_plus_infinity(x_k_j)) {
-	    N& x_i_j = (j < rs_i) ? x_i[j] : x_cj[coherent_index(i)];
+	    N& x_i_j = (j < rs_i) ? x_i[j] : x_cj[ci];
 	    N sum;
 	    add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
 	    min_assign(x_i_j, sum);
 	  }
 	}
+#else
+	// OPTIMIZED VERSION.
+	const dimension_type min_rs = std::min(rs_i, rs_k);
+	const dimension_type max_rs = std::max(rs_i, rs_k);
+	// The first part of the optimized inner loop.
+	for (dimension_type j = 0; j < min_rs; ++j) {
+	  Row_Reference x_cj = *(m_begin + coherent_index(j));
+	  const N& x_k_j = x_k[j];
+	  if (!is_plus_infinity(x_k_j)) {
+	    N sum;
+	    add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
+	    min_assign(x_i[j], sum);
+	  }
+	}
+	// The second part of the optimized inner loop:
+        // note that the following two are mutually exclusive loops.
+	if (rs_i == min_rs)
+	  for (dimension_type j = rs_i; j < rs_k; ++j) {
+	    Row_Reference x_cj = *(m_begin + coherent_index(j));
+	    const N& x_k_j = x_k[j];
+	    if (!is_plus_infinity(x_k_j)) {
+	      N sum;
+	      add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
+	      min_assign(x_cj[ci], sum);
+	    }
+	  }
+	else
+	  for (dimension_type j = rs_k; j < rs_i; ++j) {
+	    Row_Reference x_cj = *(m_begin + coherent_index(j));
+	    const N& x_k_j = x_cj[ck];
+	    if (!is_plus_infinity(x_k_j)) {
+	      N sum;
+	      add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
+	      min_assign(x_i[j], sum);
+	    }
+	  }
+	// The third part of the optimized inner loop.
+	for (dimension_type j = max_rs; j < n_rows; ++j) {
+	  Row_Reference x_cj = *(m_begin + coherent_index(j));
+	  const N& x_k_j = x_cj[ck];
+	  if (!is_plus_infinity(x_k_j)) {
+	    N sum;
+	    add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
+	    min_assign(x_cj[ci], sum);
+	  }
+	}
+	// Optimization of inner loop ends here.
+#endif
       }
     }
   }
 
   // Check for emptyness: the octagon is empty if and only if there is a
   // negative value in the main diagonal.
-  for (typename OR_Matrix<N>::row_iterator i = x.matrix.row_begin(),
-	 m_end = x.matrix.row_end(); i != m_end; ++i) {
-    typename OR_Matrix<N>::row_reference_type r = *i;
-    N& x_i_i = r[i.index()];
+  for (Row_Iterator i = m_begin; i != m_end; ++i) {
+    N& x_i_i = (*i)[i.index()];
     if (x_i_i < 0) {
       x.status.set_empty();
       return;
@@ -903,39 +1104,32 @@ Octagon<T>::strong_closure_assign() const {
     }
   }
 
-  // The octagon is not empty and it is now strongly closed.
-  x.status.set_strongly_closed();
-
   // Step 2: we enforce the strong coherence.
   // The strong-coherence is: for every indexes i and j
   // m_i_j <= (m_i_ci + m_cj_j)/2
   // where ci = i + 1, if i is even number or
   //       ci = i - 1, if i is odd.
   // Ditto for cj.
-  for (typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin(),
-	 i_end = x.matrix.row_end(); i_iter != i_end; ++i_iter) {
-    typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-    dimension_type rs_i = i_iter.row_size();
-    dimension_type i = i_iter.index();
-    dimension_type ci = coherent_index(i);
-    N& x_i_ci = x_i[ci];
+  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
+    Row_Reference x_i = *i_iter;
+    const dimension_type i = i_iter.index();
+    const N& x_i_ci = x_i[coherent_index(i)];
     // Avoid to do unnecessary sums.
     if (!is_plus_infinity(x_i_ci))
-      for (dimension_type j = 0; j < rs_i; ++j) {
+      for (dimension_type j = 0, rs_i = i_iter.row_size(); j < rs_i; ++j)
 	if (i != j) {
-	  dimension_type cj = coherent_index(j);
-	  N& x_cj_j = x.matrix[cj][j];
+	  const N& x_cj_j = x.matrix[coherent_index(j)][j];
 	  if (!is_plus_infinity(x_cj_j)) {
-	    N& x_i_j = x_i[j];
-	    N sum;
-	    add_assign_r(sum,x_i_ci, x_cj_j, ROUND_UP);
-	    N d;
-	    div2exp_assign_r(d, sum, 1, ROUND_UP);
-	    min_assign(x_i_j, d);
+	    N semi_sum;
+	    add_assign_r(semi_sum, x_i_ci, x_cj_j, ROUND_UP);
+	    div2exp_assign_r(semi_sum, semi_sum, 1, ROUND_UP);
+	    min_assign(x_i[j], semi_sum);
 	  }
 	}
-      }
   }
+
+  // The octagon is not empty and it is now strongly closed.
+  x.status.set_strongly_closed();
 }
 
 template <typename T>
@@ -991,7 +1185,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
   for (typename OR_Matrix<N>::row_iterator k_iter = x.matrix.row_begin(),
 	 k_end = x.matrix.row_end(); k_iter != k_end; ++k_iter) {
     dimension_type k = k_iter.index();
-    dimension_type rs_k = k_iter.row_size();
+    const dimension_type rs_k = k_iter.row_size();
     typename OR_Matrix<N>::row_reference_type m_k = *k_iter;
     typename OR_Matrix<N>::row_reference_type m_ck = (k%2) ? *(k_iter-1) : *(k_iter+1);
 
@@ -1587,7 +1781,7 @@ Octagon<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
     }
   }
   // Update the space dimension.
-  matrix.remove_rows(2*new_space_dim);
+  matrix.shrink(new_space_dim);
   space_dim = new_space_dim;
   assert(OK());
 }
@@ -2633,7 +2827,7 @@ Octagon<T>::affine_image(const Variable var,
 
   N pos_sum;
   N neg_sum;
-  // Indices of the variables that are unbounded in `this->dbm'.
+  // Indices of the variables that are unbounded in `this->matrix'.
   // (The initializations are just to quiet a compiler warning.)
   dimension_type pos_pinf_index = 0;
   dimension_type neg_pinf_index = 0;
@@ -3887,7 +4081,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 	  // FIXME!
 	  // If the bound is an even number we simply divide, otherwise
 	  // we write the constraint in the form:
-	  // `2*variable_i == bound'. 
+	  // `2*variable_i == bound'.
 	  if (div2exp_assign_r(half_c_ii_i, c_ii_i, 1, ROUND_NOT_NEEDED)
 	      == V_EQ)
 	    s << v_i << " == " << half_c_ii_i;
@@ -4022,13 +4216,11 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 template <typename T>
 void
 Octagon<T>::ascii_dump(std::ostream& s) const {
-  using std::endl;
-
   s << "space_dim "
     << space_dim
-    << endl;
+    << "\n";
   status.ascii_dump(s);
-  s << endl;
+  s << "\n";
   matrix.ascii_dump(s);
 }
 
@@ -4096,11 +4288,10 @@ Octagon<T>::OK() const {
     const N& m_i_i = r[i.index()];
     if (!is_plus_infinity(m_i_i)) {
 #ifndef NDEBUG
-      dimension_type j = i.index();
+      const dimension_type j = i.index();
       using namespace Parma_Polyhedra_Library::IO_Operators;
       std::cerr << "Octagon::matrix[" << j << "][" << j << "] = "
-		<< m_i_i << "!  (+inf was expected.)"
-		<< std::endl;
+		<< m_i_i << "!  (+inf was expected.)\n";
 #endif
       return false;
     }
@@ -4113,8 +4304,7 @@ Octagon<T>::OK() const {
     x.strong_closure_assign();
     if (x.matrix != matrix) {
 #ifndef NDEBUG
-      std::cerr << "Octagon is marked as transitively closed but is it not!"
-		<< std::endl;
+      std::cerr << "Octagon is marked as strongly closed but is it not!\n";
 #endif
       return false;
     }
@@ -4124,8 +4314,7 @@ Octagon<T>::OK() const {
   if (marked_strongly_closed())
     if (!is_strong_coherent()) {
 #ifndef NDEBUG
-      std::cerr << "Octagon is not strong-coherent!"
-		<< std::endl;
+      std::cerr << "Octagon is not strong-coherent!\n";
 #endif
       return false;
     }
@@ -4141,7 +4330,7 @@ Octagon<T>::throw_dimension_incompatible(const char* method,
 					 const Octagon& y) const {
   std::ostringstream s;
   s << "PPL::";
-  s << "Octagon::" << method << ":" << std::endl
+  s << "Octagon::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", y->space_dimension() == " << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -4153,7 +4342,7 @@ Octagon<T>::throw_dimension_incompatible(const char* method,
 					 dimension_type required_dim) const {
   std::ostringstream s;
   s << "PPL::";
-  s << "Octagon::" << method << ":" << std::endl
+  s << "Octagon::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", required dimension == " << required_dim << ".";
   throw std::invalid_argument(s.str());
@@ -4165,7 +4354,7 @@ Octagon<T>::throw_dimension_incompatible(const char* method,
 					 const Constraint& c) const {
   std::ostringstream s;
   s << "PPL::";
-  s << "Octagon::" << method << ":" << std::endl
+  s << "Octagon::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", c->space_dimension == " << c.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -4177,7 +4366,7 @@ Octagon<T>::throw_dimension_incompatible(const char* method,
 					 const Generator& g) const {
   std::ostringstream s;
   s << "PPL::";
-  s << "Octagon::" << method << ":" << std::endl
+  s << "Octagon::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", g->space_dimension == " << g.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -4187,7 +4376,7 @@ template <typename T>
 void
 Octagon<T>::throw_constraint_incompatible(const char* method) const {
   std::ostringstream s;
-  s << "PPL::Octagon::" << method << ":" << std::endl
+  s << "PPL::Octagon::" << method << ":\n"
     << "the constraint is incompatible.";
   throw std::invalid_argument(s.str());
 }
@@ -4198,7 +4387,7 @@ Octagon<T>::throw_expression_too_complex(const char* method,
 					 const Linear_Expression& e) const {
   using namespace IO_Operators;
   std::ostringstream s;
-  s << "PPL::Octagon::" << method << ":" << std::endl
+  s << "PPL::Octagon::" << method << ":\n"
     << e << " is too complex.";
   throw std::invalid_argument(s.str());
 }
@@ -4211,7 +4400,7 @@ Octagon<T>::throw_dimension_incompatible(const char* method,
 					 const Linear_Expression& y) const {
   std::ostringstream s;
   s << "PPL::";
-  s << "Octagon::" << method << ":" << std::endl
+  s << "Octagon::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", " << name_row << "->space_dimension() == "
     << y.space_dimension() << ".";
@@ -4225,7 +4414,7 @@ Octagon<T>::throw_generic(const char* method,
 			  const char* reason) const {
   std::ostringstream s;
   s << "PPL::";
-  s << "Octagon::" << method << ":" << std::endl
+  s << "Octagon::" << method << ":\n"
     << reason;
   throw std::invalid_argument(s.str());
 }

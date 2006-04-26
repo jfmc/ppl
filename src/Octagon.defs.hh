@@ -49,35 +49,33 @@ namespace IO_Operators {
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Octagon
   Writes a textual representation of \p oct on \p s:
-  <CODE>false</CODE> is written if \p oct is an empty octagon;
-  <CODE>true</CODE> is written if \p oct is a universe octagon;
+  <CODE>false</CODE> is written if \p oct is an empty polyhedron;
+  <CODE>true</CODE> is written if \p oct is a universe polyhedron;
   a system of constraints defining \p oct is written otherwise,
   all constraints separated by ", ".
 */
 template <typename T>
 std::ostream&
-operator<<(std::ostream& s, const Octagon<T>& c);
+operator<<(std::ostream& s, const Octagon<T>& oct);
 
 } // namespace IO_Operators
 
-//! \brief
-//! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y are the same octagon.
-/*!
+/*! \brief
+  Returns <CODE>true</CODE> if and only if \p x and \p y are the same octagon.
+
   \relates Octagon
-  Note that \p x and \p y may be dimension-incompatible
-  octagons: in that case, the value <CODE>false</CODE> is returned.
+  Note that \p x and \p y may be dimension-incompatible shapes:
+  in this case, the value <CODE>false</CODE> is returned.
 */
 template <typename T>
 bool operator==(const Octagon<T>& x, const Octagon<T>& y);
 
-//! \brief
-//! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y are different octagons.
-/*!
+/*! \brief
+  Returns <CODE>true</CODE> if and only if \p x and \p y are different shapes.
+
   \relates Octagon
-  Note that \p x and \p y may be dimension-incompatible
-  octagons: in that case, the value <CODE>true</CODE> is returned.
+  Note that \p x and \p y may be dimension-incompatible shapes:
+  in this case, the value <CODE>true</CODE> is returned.
 */
 template <typename T>
 bool operator!=(const Octagon<T>& x, const Octagon<T>& y);
@@ -86,8 +84,7 @@ bool operator!=(const Octagon<T>& x, const Octagon<T>& y);
 //! Decodes the constraint \p c as an octagonal difference.
 /*!
   \return
-  <CODE>true</CODE> if the constraint \p c is an
-  "octagonal difference";
+  <CODE>true</CODE> if the constraint \p c is an octagonal difference;
   <CODE>false</CODE> otherwise.
 
   \param c
@@ -133,205 +130,66 @@ bool extract_octagonal_difference(const Constraint& c,
 
 } // namespace Parma_Polyhedra_Library
 
-//! \brief
-//! A class representing a restricted kind of convex polyhedra called
-//! <EM>octagons</EM>.
+//! An octagonal shape.
 /*!
-  The templatic class Octagon<T> allow the efficient representation of
-  a restricted kind of <EM>closed</EM> convex polyhedra called
-  <EM>octagons</EM>. The closed affine half-spaces that characterize
-  the polyhedron can be expressed by constraints of the form
+  The class template Octagon<T> allows for the efficient representation
+  of a restricted kind of <EM>topologically closed</EM> convex polyhedra
+  called <EM>octagonal shapes</EM> (OSs, for short).  The name comes
+  from the fact that, in a vector space of dimension 2, bounded OSs
+  are polygons with at most eight sides.
+  The closed affine half-spaces that characterize the OS can be expressed
+  by constraints of the form
   \f[
-    ax_i + bx_j \leq c
+    ax_i + bx_j \leq k
   \f]
-  where \f$a, b \in \{-1, 0, 1\}\f$ and \f$c\f$ belongs to some family of
-  extended numbers that is provided by the template argument \p T.
-  This family of extended numbers must provide representation
-  for \f$ -\infty \f$, \f$0\f$,\f$ +\infty \f$ (and,
-  consequently for <EM>nan</EM>,
-  <EM>not a number</EM>, since this arises as the ``result'' of
-  undefined sums like \f$ +\infty + (-\infty) \f$), and,
-  of course must be closed with respect to the operations specified below.
+  where \f$a, b \in \{-1, 0, 1\}\f$ and \f$k\f$ is a rational number,
+  which are called <EM>octagonal constraints</EM>.
 
-  The class T must provide the following methods:
+  Based on the class template type parameter \p T, a family of extended
+  numbers is built and used to approximate the inhomogeneous term of
+  octagonal constraints. These extended numbers provide a representation
+  for the value \f$+\infty\f$, as well as <EM>rounding-aware</EM>
+  implementations for several arithmetic functions.
+  The value of the type parameter \p T may be one of the following:
+    - a bounded precision integer type (e.g., \c int32_t or \c int64_t);
+    - a bounded precision floating point type (e.g., \c float or \c double);
+    - an unbounded integer or rational type, as provided by GMP
+      (i.e., \c mpz_class or \c mpq_class).
 
-  \code
-    T()
-  \endcode
-  is the default constructor: no assumption is made on the particular
-  object constructed, provided <CODE>T().OK()</CODE> gives <CODE>true</CODE>
-  (see below).
-  \code
-    T(int y)
-  \endcode
-  costructs the object that best approximates \p y, from below,
-  if \f$ y < 0 \f$ and from above, if \f$ y > 0 \f$.
-  \code
-    ~T()
-  \endcode
-  is the destructor.
-  \code
-    T(const T& y)
-  \endcode
-  is the ordinary copy constructor.
-  \code
-   static const T& plus_infinity()
-  \endcode
-  returns a representation for \f$ +\infty \f$.
-  \code
-    bool is_plus_infinity() const
-  \endcode
-  returns <CODE>true</CODE> if and only if \p *this represents \f$ +\infty \f$.
-  \code
-    bool is_nan() const
-  \endcode
-  returns <CODE>true</CODE> if and only \p *this represents
-  the  <EM>not a number</EM> value.
-  \code
-    bool is_negative() const
-  \endcode
-  returns <CODE>true</CODE> if and only if \p *this is negative.
-  \code
-    bool is_nonnegative() const
-  \endcode
-  returns <CODE>true</CODE> if and only if \p *this is non-negative.
-  \code
-    bool OK() const
-  \endcode
-  returns <CODE>true</CODE> if and only if \p *this satisfies all
-  its invariants.
-  \code
-    T& operator=(const T& y)
-  \endcode
-  is the ordinary assignment operator.
-  \code
-    void numer_denom(Integer& num, Integer& den) const
-  \endcode
-  sets num and den to the numerator and the denominator of \p *this,
-  where \p *this must be a finite value.
-  \code
-    std::ostream& operator<<(std::ostream& s, const T& x)
-  \endcode
-  writes a textual representation of \p x to \p s.
-  \code
-    std::istream& operator>>(std::istream& s, T& x)
-  \endcode
-  reads a textual representation of an object of type T and
-  assigns it to \p x.
-  \code
-    bool operator==(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is equal to \p y.
-  \code
-    bool operator!=(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x and \p y are different.
-  \code
-    bool operator>(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is greater than \p y.
-  \code
-    bool operator>=(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is greater than or
-  equal to \p y.
-  \code
-    bool operator<(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is less than \p y.
-  \code
-    bool operator<=(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is less than or
-  equal to \p y.
-  \code
-    T add_round_up(const T& x, const T& y)
-  \endcode
-  returns an approximation from above of the sum of \p x and \p y.
-  \code
-    T negate_round_up(const T& x)
-  \endcode
-  returns an approximation from above of the opposite of \p x.
-  \code
-    T negate_round_down(const T& x)
-  \endcode
-  returns an approximation from below of the opposite of \p x.
-  \code
-    T div_round_up(T x, int y)
-  \endcode
-  returns an approximation from above of the division of \p x
-  by \p y.
-  \code
-    T div_round_down(T x, int y)
-  \endcode
-  returns an approximation from below of the division of \p x
-  by \p y.
-  \code
-  template <>
-    T div_round_up<T>(const Integer& x, const Integer& y)
-  \endcode
-  returns an approximation from above of division of \p x by \p y.
+  The user interface for OSs is meant to be as similar as possible to
+  the one developed for the polyhedron class C_Polyhedron.  At the
+  interface level, octagonal constraints are specified using objects of
+  type Constraint: such a constraint is an octagonal constraint if it is
+  of the form
+    \f[
+      a_i x_i + a_j x_j \relsym b
+    \f]
+  where \f$\mathord{\relsym} \in \{ \leq, =, \geq \}\f$ and
+  \f$a_i\f$, \f$a_j\f$, \f$b\f$ are integer coefficients such that
+  \f$a_i = 0\f$, or \f$a_j = 0\f$, or \f$\abs{a_i} = \abs{a_j}\f$.
+  The user is warned that the above Constraint object will be mapped
+  into a <EM>correct</EM> approximation that, depending on the expressive
+  power of the chosen template argument \p T, may loose some precision.
+  In particular, constraint objects that do not encode an octagonal
+  constraint will be simply (and safely) ignored.
 
+  For instance, a Constraint object encoding \f$3x + 3y \leq 1\f$ will be
+  approximated by:
+    - \f$x + y \leq 1\f$,
+      if \p T is a (bounded or unbounded) integer type;
+    - \f$x + y \leq \frac{1}{3}\f$,
+      if \p T is the unbounded rational type \c mpq_class;
+    - \f$x + y \leq k\f$, where \f$k > \frac{1}{3}\f$,
+      if \p T is a floating point type (having no exact representation
+      for \f$\frac{1}{3}\f$).
 
-  The name <EM>octagons</EM> comes from the fact that in \f$\Rset^2\f$
-  bounded octagons are polygons with at most eight sides (in which case
-  all angles are equal to \f$ {3 \over 4} \pi \f$).
+  On the other hand, a Constraint object encoding \f$3x - y \leq 1\f$
+  will be safely ignored in all of the above cases.
 
-  Then the methods that add constraints to octagons ignore all constraints
-  that are not of the form:
-  \f[
-    ax_i + bx_j \relsym c
-  \f]
-  where \f$a, b \in \{-1, 0, 1\}\f$, \f$c\f$ belongs to the class T and
-  \f$ \mathord{\relsym} \in \{ \leq, =, \geq \} \f$.
-
-  If the constraint is in the form \f$ ax_i + bx_j \leq c \f$
-  we have the following approximation:
-  \f[
-    ax_i + bx_j \leq c\uparrow
-  \f]
-
-  else if the constraint is in the form \f$ ax_i + bx_j \geq c \f$
-  we have the following approximation:
-  \f[
-    ax_i + bx_j \geq c\downarrow
-  \f]
-
-  otherwise if the constraint is in the form \f$ ax_i + bx_j = c \f$
-  we have the following approximations:
-  \f[
-    \begin{cases}
-        ax_i + bx_j = c, & \text{if } c = c\uparrow
-                    = c\downarrow; \\
-
-        ax_i + bx_j \geq c\downarrow \text{ and }
-	ax_i + bx_j \leq c\uparrow,  & \text{otherwise.}
-    \end{cases}
-  \f]
-
-  Moreover the constraints actually inserted depend on the expressive
-  power of T.
-
-  A special attention is necessary towards the methods that assign
-  an affine transformation. The only possible transformations are
-  of the form:
-  \f[
-    \mathrm{var}' \relsym \frac{\mathrm{ay +b}}{\mathrm{denominator}}
-  \f]
-  or
-  \f[
-    \mathrm{var}' \relsym \frac{\mathrm{c \cdot var  + d}}{\mathrm{denominator}}
-  \f]
-  where \f$\mathord{y}\f$ is a variable different to \f$\mathord{var}\f$,
-  \f$a \in \{-denominator, 0, denominator\}\f$, \f$c \in \{0, denominator\}\f$,
-  \f$ b \f$, \f$ d\f$ are costants and
-  \f$\mathord{\relsym} \in \{ \leq, =, \geq \}\f$.
-  In all the other cases the methods throw exceptions.
-
-  \par
-  In all the examples it is assumed the class T is defined as above
-  and that variables <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
-  are defined (where they are used) as follows:
+  In the following examples it is assumed that the type argument \p T
+  is one of the possible instances listed above and that variables
+  <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE> are defined
+  (where they are used) as follows:
   \code
     Variable x(0);
     Variable y(1);
@@ -339,8 +197,8 @@ bool extract_octagonal_difference(const Constraint& c,
   \endcode
 
   \par Example 1
-  The following code builds an octagon corresponding to
-  a cube in \f$\Rset^3\f$, given as a system of constraints:
+  The following code builds an OS corresponding to a cube in \f$\Rset^3\f$,
+  given as a system of constraints:
   \code
     Constraint_System cs;
     cs.insert(x >= 0);
@@ -349,19 +207,11 @@ bool extract_octagonal_difference(const Constraint& c,
     cs.insert(y <= 3);
     cs.insert(z >= 0);
     cs.insert(z <= 3);
-    Octagon<T> oc(cs);
+    Octagon<T> oct(cs);
   \endcode
-  The following code builds the same octagon as above,
-  in fact the only inserted constraints must be of the form
-  \f[
-    ax_i + bx_j \leq c
-  \f]
-  or
-  \f[
-    ax_i + bx_j = c
-  \f]
-  with \f$a, b \in \{-1, 0, 1\}\f$ and \f$c\f$ belongs to class T,
-  the others are ignored (in this example the constraints 7, 8, 9
+  Since only those constraints having the syntactic form of an
+  <EM>octagonal constraint</EM> are considered, the following code
+  will build the same OS as above (i.e., the constraints 7, 8, and 9
   are ignored):
   \code
     Constraint_System cs;
@@ -374,8 +224,10 @@ bool extract_octagonal_difference(const Constraint& c,
     cs.insert(x - 3*y <= 5);    // (7)
     cs.insert(x - y + z <= 5);  // (8)
     cs.insert(x + y + z <= 5);  // (9)
-    Octagon<T> oc(cs);
+    Octagon<T> oct(cs);
   \endcode
+
+  // ENEA: checked up to this point.
 
   \par Example 2
   The following code shows the use of the function
@@ -478,31 +330,35 @@ bool extract_octagonal_difference(const Constraint& c,
 template <typename T>
 class Parma_Polyhedra_Library::Octagon {
 private:
-  //! \brief
-  //! The (extended) numeric type of the inhomogeneous term of
-  //! the inequalities defining an octagon.
+  /*! \brief
+    The (extended) numeric type of the inhomogeneous term of
+    the inequalities defining an OS.
+  */
   typedef Checked_Number<T, Extended_Number_Policy> N;
 
 public:
-  //! \brief
-  //! The numeric base type upon which octagons are built.
+  //! The numeric base type upon which OSs are built.
   typedef T base_type;
 
-  //! \brief
-  //! The (extended) numeric type of the inhomogeneous term of the
-  //! inequalities defining an octagon.
+  /*! \brief
+    The (extended) numeric type of the inhomogeneous term of the
+    inequalities defining an OS.
+  */
   typedef N coefficient_type;
 
- //! Returns the maximum space dimension that an octagon can handle.
+  //! Returns the maximum space dimension that an OS can handle.
   static dimension_type max_space_dimension();
 
-  //! Builds an universe or empty octagon of the specified space dimension.
+  //! \name Constructors, Assignment, Swap and Destructor
+  //@{
+
+  //! Builds an universe or empty OS of the specified space dimension.
   /*!
     \param num_dimensions
-    The number of dimensions of the vector space enclosing the octagon.
+    The number of dimensions of the vector space enclosing the OS;
 
     \param kind
-    Specifies whether the universe or the empty octagon has to be built.
+    Specifies whether the universe or the empty OS has to be built.
   */
   explicit Octagon(dimension_type num_dimensions = 0,
 		   Degenerate_Element kind = UNIVERSE);
@@ -510,32 +366,60 @@ public:
   //! Ordinary copy-constructor.
   Octagon(const Octagon& x);
 
-  //! Builds an octagon from the system of constraints \p cs.
+  //! Builds an OS from the system of constraints \p cs.
   /*!
-    The octagon inherits the space dimension of \p cs.
+    The OS inherits the space dimension of \p cs.
 
     \param cs
-    The system of constraints defining the octagon.
+    A system of constraints: constraints that are not
+    \ref Octagonal_Shapes "octagonal constraints"
+    are ignored (even though they may have contributed
+    to the space dimension).
 
     \exception std::invalid_argument
     Thrown if the system of constraints \p cs contains strict inequalities.
   */
   Octagon(const Constraint_System& cs);
 
-  //! Builds an octagon from the system of generators \p gs.
+  //! Builds an OS from the system of generators \p gs.
   /*!
-    Builds the smallest Octagon containing the polyhedron defined by \p gs.
-    The octagon inherits the space dimension of \p gs.
+    Builds the smallest OS containing the polyhedron defined by \p gs.
+    The OS inherits the space dimension of \p gs.
 
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
   Octagon(const Generator_System& gs);
 
-  //! \brief
-  //! The assignment operator.
-  //! (\p *this and \p y can be dimension-incompatible.)
+  //! Builds an OS from the polyhedron \p ph.
+  /*!
+    Builds an OS containing \p ph using algorithms whose complexity
+    does not exceed the one specified by \p complexity.  If
+    \p complexity is \p ANY_COMPLEXITY, then the OS built is the
+    smallest one containing \p ph.
+  */
+  // FIXME: this has to be implemented.
+  Octagon(const Polyhedron& ph, Complexity_Class complexity = ANY_COMPLEXITY);
+
+  /*! \brief
+    The assignment operator.
+    (\p *this and \p y can be dimension-incompatible.)
+  */
   Octagon& operator=(const Octagon& y);
+
+  /*! \brief
+    Swaps \p *this with octagon \p y.
+    (\p *this and \p y can be dimension-incompatible.)
+  */
+  void swap(Octagon& y);
+
+  //! Destructor.
+  ~Octagon();
+
+  //@} Constructors, Assignment, Swap and Destructor
+
+  //! \name Member Functions that Do Not Modify the Octagonal_Shape
+  //@{
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
@@ -547,20 +431,16 @@ public:
   */
   dimension_type affine_dimension() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is
-  //! an empty octagon.
-  bool is_empty() const;
+  //! Returns the system of constraints defining \p *this.
+  Constraint_System constraints() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! is an universe octagon.
-  bool is_universe() const;
+  //! Returns a minimized system of constraints defining \p *this.
+  Constraint_System minimized_constraints() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
-  /*
-    exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool contains(const Octagon& y) const;
 
@@ -571,55 +451,76 @@ public:
   */
   bool strictly_contains(const Octagon& y) const;
 
-  //! \brief
-  //! Returns the relations holding between the octagon \p *this
-  //! and the constraint \p c.
-  /*!
+  /*! \brief
+    Returns the relations holding between \p *this and the constraint \p c.
+
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible
-                                or if \p c is not a bounded difference.
+    or if \p c is a strict inequality or if \p c is not an octagonal
+    constraint.
   */
   Poly_Con_Relation relation_with(const Constraint& c) const;
 
-  //! \brief
-  //! Returns the relations holding between the octagon \p *this
-  //! and the generator \p g.
-  /*!
+  /*! \brief
+    Returns the relations holding between \p *this and the generator \p g.
+
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
   Poly_Gen_Relation relation_with(const Generator& g) const;
 
-  //! \name Space-Dimension Preserving Member Functions that May Modify the Octagon
+  //! Returns <CODE>true</CODE> if and only if \p *this is an empty OS.
+  bool is_empty() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is a universe OS.
+  bool is_universe() const;
+
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
+  //@} Member Functions that Do Not Modify the Octagonal_Shape
+
+  //! \name Space-Dimension Preserving Member Functions that May Modify the Octagonal_Shape
   //@{
 
-  //! \brief
-  //! Adds a copy of constraint \p c to the system of constraints
-  //! of \p *this.
-  /*!
+  /*! \brief
+    Adds a copy of constraint \p c to the system of constraints
+    defining \p *this.
+
+    \param c
+    The constraint to be added. If it is not an octagonal constraint, it
+    will be simply ignored.
+
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible,
     or \p c is a strict inequality.
   */
   void add_constraint(const Constraint& c);
 
-  //! \brief
-  //! Adds a copy of constraint \p c to the system of constraints
-  //! of \p *this.
-  /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \exception std::invalid_argument thrown if \p *this and constraint \p c
-                                     are dimension-incompatible
-				     or \p c is a strict inequality.
+  /*! \brief
+    Adds a copy of constraint \p c to the system of constraints
+    defining \p *this.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param c
+    The constraint to be added. If it is not an octagonal constraint, it
+    will be simply ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible
+    or \p c is a strict inequality.
   */
   bool add_constraint_and_minimize(const Constraint& c);
 
-  //! \brief
-  //! Adds the constraints in \p cs to the system of constraints
-  //! defining \p *this.
-  /*!
+  /*! \brief
+    Adds the constraints in \p cs to the system of constraints
+    defining \p *this.
+
     \param  cs
-    The constraints that will be added to the current system of constraints.
+    The constraints that will be added. Constraints that are not octagonal
+    constraints will be simply ignored.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
@@ -627,16 +528,16 @@ public:
   */
   void add_constraints(const Constraint_System& cs);
 
-  //! \brief
-  //! Adds the constraints in \p cs to the system of constraints
-  //! of \p *this.
-  /*!
+  /*! \brief
+    Adds the constraints in \p cs to the system of constraints
+    defining \p *this.
+
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \param  cs
-    The constraints that will be added to the current system of
-    constraints .
+    The constraints that will be added. Constraints that are not octagonal
+    constraints will be simply ignored.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible,
@@ -644,7 +545,6 @@ public:
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
-  //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
     \exception std::invalid_argument
@@ -664,7 +564,7 @@ public:
   bool intersection_assign_and_minimize(const Octagon& y);
 
   /*! \brief
-    Assigns to \p *this the smallest octagon that contains
+    Assigns to \p *this the smallest OS that contains
     the convex union of \p *this and \p y.
 
     \exception std::invalid_argument
@@ -672,11 +572,8 @@ public:
   */
   void oct_hull_assign(const Octagon& y);
 
-  //! Same as oct_hull_assign.
-  void upper_bound_assign(const Octagon& y);
-
   /*! \brief
-    Assigns to \p *this the smallest octagon that contains
+    Assigns to \p *this the smallest OS that contains
     the convex union of \p *this and \p y.
 
     \return
@@ -686,6 +583,9 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool oct_hull_assign_and_minimize(const Octagon& y);
+
+  //! Same as oct_hull_assign.
+  void upper_bound_assign(const Octagon& y);
 
   /*! \brief
     If the oct-hull of \p *this and \p y is exact, it is assigned
@@ -712,11 +612,11 @@ public:
   //! Same as oct_difference_assign.
   void difference_assign(const Octagon& y);
 
-  //! \brief
-  //! Assigns to \p *this the \ref affine_transformation "affine image"
-  //! of \p *this under the function mapping variable \p var into the
-  //! affine expression specified by \p expr and \p denominator.
-  /*!
+  /*! \brief
+    Assigns to \p *this the \ref affine_transformation "affine image"
+    of \p *this under the function mapping variable \p var into the
+    affine expression specified by \p expr and \p denominator.
+
     \param var
     The variable to which the affine expression is assigned.
 
@@ -735,11 +635,11 @@ public:
 		    Coefficient_traits::const_reference  denominator
 		    = Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the \ref affine_transformation "affine preimage"
-  //! of \p *this under the function mapping variable \p var into the
-  //! affine expression specified by \p expr and \p denominator.
-  /*!
+  /*! \brief
+    Assigns to \p *this the \ref affine_transformation "affine preimage"
+    of \p *this under the function mapping variable \p var into the
+    affine expression specified by \p expr and \p denominator.
+
     \param var
     The variable to which the affine expression is substituted.
 
@@ -758,13 +658,13 @@ public:
 		       Coefficient_traits::const_reference denominator
 		       = Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer function"
-  //! \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
-  //! where \f$\mathord{\relsym}\f$ is the relation symbol encoded
-  //! by \p relsym.
-  /*!
+  /*! \brief
+    Assigns to \p *this the image of \p *this with respect to the
+    \ref generalized_image "generalized affine transfer function"
+    \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+    where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+    by \p relsym.
+
     \param var
     The left hand side variable of the generalized affine transfer function.
 
@@ -788,12 +688,12 @@ public:
 				Coefficient_traits::const_reference denominator
 				= Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer function"
-  //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
-  //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
-  /*!
+  /*! \brief
+    Assigns to \p *this the image of \p *this with respect to the
+    \ref generalized_image "generalized affine transfer function"
+    \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+    \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+
     \param lhs
     The left hand side affine expression.
 
@@ -811,21 +711,21 @@ public:
 				Relation_Symbol relsym,
 				const Linear_Expression& rhs);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref time_elapse "time-elapse" between \p *this and \p y.
-  /*!
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref time_elapse "time-elapse" between \p *this and \p y.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void time_elapse_assign(const Octagon& y);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
-  /*!
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
+
     \param y
-    An octagon that <EM>must</EM> be contained in \p *this.
+    An OS that <EM>must</EM> be contained in \p *this.
 
     \param tp
     An optional pointer to an unsigned variable storing the number of
@@ -837,12 +737,12 @@ public:
   */
   void CC76_extrapolation_assign(const Octagon& y, unsigned* tp = 0);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
-  /*!
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
+
     \param y
-    An octagon that <EM>must</EM> be contained in \p *this.
+    An OS that <EM>must</EM> be contained in \p *this.
 
     \param first
     An iterator that points to the first stop_point.
@@ -863,12 +763,12 @@ public:
 				 Iterator first, Iterator last,
 				 unsigned* tp = 0);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref BHMZ05_widening "BHMZ05-widening" between \p *this and \p y.
-  /*!
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref BHMZ05_widening "BHMZ05-widening" between \p *this and \p y.
+
     \param y
-    An octagon that <EM>must</EM> be contained in \p *this.
+    An OS that <EM>must</EM> be contained in \p *this.
 
     \param tp
     An optional pointer to an unsigned variable storing the number of
@@ -880,16 +780,16 @@ public:
   */
   void BHMZ05_widening_assign(const Octagon& y, unsigned* tp = 0);
 
-  //! \brief
-  //! Improves the result of the \ref BHMZ05_widening "BHMZ05-widening"
-  //! computation by also enforcing those constraints in \p cs that are
-  //! satisfied by all the points of \p *this.
-  /*!
+  /*! \brief
+    Improves the result of the \ref BHMZ05_widening "BHMZ05-widening"
+    computation by also enforcing those constraints in \p cs that are
+    satisfied by all the points of \p *this.
+
     \param y
-    An octagon that <EM>must</EM> be contained in \p *this.
+    An OS that <EM>must</EM> be contained in \p *this.
 
     \param cs
-    The system of constraints used to improve the widened octagon.
+    The system of constraints used to improve the widened OS.
 
     \param tp
     An optional pointer to an unsigned variable storing the number of
@@ -904,31 +804,31 @@ public:
 					   const Constraint_System& cs,
 					   unsigned* tp = 0);
 
-  //! \brief
-  //! Restores from \p y the constraints of \p *this, lost by
-  //! \ref CC76_extrapolation "CC76-extrapolation" applications.
-  /*!
+  /*! \brief
+    Restores from \p y the constraints of \p *this, lost by
+    \ref CC76_extrapolation "CC76-extrapolation" applications.
+
     \param y
-    An octagon that <EM>must</EM> be contained in \p *this.
+    An OS that <EM>must</EM> be contained in \p *this.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void CC76_narrowing_assign(const Octagon& y);
 
-  //! \brief
-  //! Improves the result of the \ref CC76_extrapolation "CC76-extrapolation"
-  //! computation by also enforcing those constraints in \p cs that are
-  //! satisfied by all the points of \p *this.
-  /*!
+  /*! \brief
+    Improves the result of the \ref CC76_extrapolation "CC76-extrapolation"
+    computation by also enforcing those constraints in \p cs that are
+    satisfied by all the points of \p *this.
+
     \param y
-    An octagon that <EM>must</EM> be contained in \p *this.
+    An OS that <EM>must</EM> be contained in \p *this.
 
     \param cs
-    The system of constraints used to improvethe widened octagon.
+    The system of constraints used to improve the widened OS.
 
     \param tp
-    An optional pointer to an unsigned variablestoring the number of
+    An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
     \ref widening_with_tokens "widening with tokens" delay technique).
 
@@ -942,28 +842,19 @@ public:
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
 
-  //! Returns the system of constraints defining \p *this.
-  Constraint_System constraints() const;
-
-  //! Returns a minimized system of constraints defining \p *this.
-  Constraint_System minimized_constraints() const;
-
   //! \name Member Functions that May Modify the Dimension of the Vector Space
   //@{
 
-  //! \brief
-  //! Adds \p m new dimensions and embeds the old octagon
-  //! into the new space.
+  //! Adds \p m new dimensions and embeds the old OS into the new space.
   /*!
     \param m
     The number of dimensions to add.
 
-    The new dimensions will be those having the highest indexes
-    in the new octagon, which is characterized by a system
-    of constraints in which the variables running through
-    the new dimensions are not constrained.
-    For instance, when starting from the octagon \f$\cO \sseq \Rset^2\f$
-    and adding a third dimension, the result will be the octagon
+    The new dimensions will be those having the highest indexes in the new OS,
+    which is characterized by a system of constraints in which the variables
+    running through the new dimensions are not constrained.
+    For instance, when starting from the OS \f$\cO \sseq \Rset^2\f$
+    and adding a third dimension, the result will be the OS
     \f[
       \bigl\{\,
         (x, y, z)^\transpose \in \Rset^3
@@ -974,19 +865,19 @@ public:
   */
   void add_space_dimensions_and_embed(dimension_type m);
 
-  //! \brief
-  //! Adds \p m new dimensions to the octagon
-  //! and does not embed it in the new space.
-  /*!
+  /*! \brief
+    Adds \p m new dimensions to the OS
+    and does not embed it in the new space.
+
     \param m
     The number of dimensions to add.
 
     The new dimensions will be those having the highest indexes
-    in the new octagon, which is characterized by a system
+    in the new OS, which is characterized by a system
     of constraints in which the variables running through
     the new dimensions are all constrained to be equal to 0.
-    For instance, when starting from the octagon \f$\cO \sseq \Rset^2\f$
-    and adding a third dimension, the result will be the octagon
+    For instance, when starting from the OS \f$\cO \sseq \Rset^2\f$
+    and adding a third dimension, the result will be the OS
     \f[
       \bigl\{\,
         (x, y, 0)^\transpose \in \Rset^3
@@ -997,14 +888,14 @@ public:
   */
   void add_space_dimensions_and_project(dimension_type m);
 
-  //! \brief
-  //! Seeing an octagon as a set of tuples (its points), assigns
-  //! to \p *this all the tuples that can be obtained by concatenating,
-  //! in the order given, a tuple of \p *this with a tuple of \p y.
-  /*!
-    Let \f$O \sseq \Rset^n\f$ and \f$P \sseq \Rset^m\f$ be the octagons
+  /*! \brief
+    Seeing an OS as a set of tuples (its points), assigns
+    to \p *this all the tuples that can be obtained by concatenating,
+    in the order given, a tuple of \p *this with a tuple of \p y.
+
+    Let \f$O \sseq \Rset^n\f$ and \f$P \sseq \Rset^m\f$ be the OSs
     represented, on entry, by \p *this and \p y, respectively.
-    Upon successful completion, \p *this will represent the octagon
+    Upon successful completion, \p *this will represent the OS
     \f$R \sseq \Rset^{n+m}\f$ such that
     \f[
       R
@@ -1034,20 +925,20 @@ public:
   */
   void remove_space_dimensions(const Variables_Set& to_be_removed);
 
-  //! \brief
-  //! Removes the higher dimensions so that the resulting space
-  //! will have dimension \p new_dimension.
-  /*!
+  /*! \brief
+    Removes the higher dimensions so that the resulting space
+    will have dimension \p new_dimension.
+
     \exception std::invalid_argument
     Thrown if \p new_dimension is greater than the space dimension
     of \p *this.
   */
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
-  //! \brief
-  //! Remaps the dimensions of the vector space
-  //! according to a \ref map_space_dimensions "partial function".
-  /*!
+  /*! \brief
+    Remaps the dimensions of the vector space
+    according to a \ref map_space_dimensions "partial function".
+
     \param pfunc
     The partial function specifying the destiny of each dimension.
 
@@ -1085,45 +976,25 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
-  //! \name Miscellaneous Member Functions
-  //@{
-
-  //! Destructor.
-  ~Octagon();
-
-  //! \brief
-  //! Swaps \p *this with octagon \p y.
-  //! (\p *this and \p y can be dimension-incompatible.)
-  void swap(Octagon& y);
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump(std::ostream& s) const;
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
+    and sets \p *this accordingly.  Returns <CODE>true</CODE> if successful,
+    <CODE>false</CODE> otherwise.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
-
-  //@} // Miscellaneous Member Functions
 
   friend bool Parma_Polyhedra_Library::operator==<T>(const Octagon<T>& x,
 						     const Octagon<T>& y);
 
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
-
 private:
-  //! The matrix that represents the octagon.
+  //! The matrix that represents the octagonal shape.
   OR_Matrix<N> matrix;
 
-  //! Dimension of the space of the octagon.
+  //! Dimension of the space of the octagonal shape.
   dimension_type space_dim;
 
   // Please, do not move the following include directive:
@@ -1139,25 +1010,26 @@ private:
   //! The status flags to keep track of the internal state.
   Status status;
 
-  //! Returns <CODE>true</CODE> if the octagon is known to be empty.
+  //! Returns <CODE>true</CODE> if the OS is known to be empty.
   /*!
     The return value <CODE>false</CODE> does not necessarily
     implies that \p *this is non-empty.
   */
   bool marked_empty() const;
 
-  //! Returns <CODE>true</CODE> if the octagon is known to be
-  //! strongly closed.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if \c this->matrix is known to be
+    strongly closed.
+
     The return value <CODE>false</CODE> does not necessarily
-    implies that \p *this is not strongly closed.
+    implies that \c this->matrix is not strongly closed.
   */
   bool marked_strongly_closed() const;
 
-  //! Turns \p *this into a zero-dimensional universe octagon.
+  //! Turns \p *this into a zero-dimensional universe OS.
   void set_zero_dim_univ();
 
-  //! Turns \p *this into an empty octagon.
+  //! Turns \p *this into an empty OS.
   void set_empty();
 
   //! Adds the constraint <CODE>i[j] <= k/den</CODE>.
@@ -1288,12 +1160,13 @@ private:
   */
   void compute_leaders(std::vector<dimension_type>& leaders) const;
 
-  //! Removes the reduntant constraints.
+  //! Removes the redundant constraints from \c this->matrix.
   void strong_reduction_assign() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! is a reduced octagon.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \c this->matrix
+    is strongly reduced.
+  */
   bool is_strongly_reduced() const;
 
   //! \brief
@@ -1301,16 +1174,12 @@ private:
   //! unary constraints, there is also the constraint that represent their sum.
   bool is_strong_coherent() const;
 
-  //! Puts in \p *this all implicit constraints and computes the tighter ones.
+  //! Assigns to \c this->matrix its strong closure.
   /*!
-    It is a logical, necessary operation to many methods for the
-    exactitude and the correctness of the solution.
-    It allows to obtain implicit constraints (e.g. if the octagon
-    is represented with these constraints: \f$ x \leq 1 \f$, \f$ y \leq 1 \f$,
-    then there is an implicit constraint \f$ x + y \leq 2 \f$)
-    and tighter constraints (e.g. if the octagon
-    is represented with these constraints: \f$ x \leq 1 \f$, \f$ x - y \leq 0 \f$,
-    \f$ y \leq 0 \f$, then we obtain the constraint \f$ x \leq 0 \f$).
+    Strong closure is a necessary condition for the precision and/or
+    the correctness of many methods. It explicity records into \c matrix
+    those constraints that are implicitly obtainable by the other ones,
+    therefore obtaining a canonical representation for the OS.
   */
   void strong_closure_assign() const;
 

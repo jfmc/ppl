@@ -28,9 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include <cassert>
-#include <vector>
-#include <deque>
-#include <string>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -292,7 +289,8 @@ Octagon<T>::add_constraints_and_minimize(const Constraint_System& cs) {
 
 template <typename T>
 inline void
-Octagon<T>::remove_higher_space_dimensions(const dimension_type new_dimension) {
+Octagon<T>
+::remove_higher_space_dimensions(const dimension_type new_dimension) {
   // Dimension-compatibility check.
   if (new_dimension > space_dim)
     throw_dimension_incompatible("remove_higher_space_dimension(nd)",
@@ -300,13 +298,13 @@ Octagon<T>::remove_higher_space_dimensions(const dimension_type new_dimension) {
   // The removal of no dimensions from any octagon is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from an octagon in a 0-dim space.
-  if(new_dimension == space_dim) {
+  if (new_dimension == space_dim) {
     assert(OK());
     return;
   }
 
   strong_closure_assign();
-  matrix.remove_rows(2*new_dimension);
+  matrix.shrink(new_dimension);
   // When we remove all dimensions from a non-empty octagon,
   // we obtain the zero-dimensional universe octagon.
   if (new_dimension == 0 && !marked_empty())
