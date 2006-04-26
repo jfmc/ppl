@@ -1737,7 +1737,7 @@ Octagon<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // When removing _all_ dimensions from an octagon,
   // we obtain the zero-dimensional octagon.
   if (new_space_dim == 0) {
-    matrix.resize_no_copy(0);
+    matrix.shrink(0);
     if (!marked_empty())
       // We set the zero_dim_univ flag.
       set_zero_dim_univ();
