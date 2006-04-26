@@ -254,6 +254,7 @@ BD_Shape.inlines.hh \
 BD_Shape.templates.hh \
 OR_Matrix.defs.hh \
 OR_Matrix.inlines.hh \
+OR_Matrix.templates.hh \
 Octagon.defs.hh \
 Og_Status.inlines.hh \
 Octagon.inlines.hh \

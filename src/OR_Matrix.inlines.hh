@@ -1,4 +1,4 @@
-/* DBMatrix class implementation: inline functions.
+/* OR_Matrix class implementation: inline functions.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -28,26 +28,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Checked_Number.defs.hh"
 #include "C_Polyhedron.defs.hh"
 #include <cassert>
-#include <vector>
-#include <deque>
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include <algorithm>
 #include "checked.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
-dimension_type
-OR_Matrix<T>::row_first_element_index(dimension_type k) {
+inline dimension_type
+OR_Matrix<T>::row_first_element_index(const dimension_type k) {
   return ((k+1)*(k+1))/2;
 }
 
 template <typename T>
-dimension_type
-OR_Matrix<T>::row_size(dimension_type k) {
+inline dimension_type
+OR_Matrix<T>::row_size(const dimension_type k) {
   return (k+2) & ~dimension_type(1);
 }
 
@@ -117,7 +111,7 @@ OR_Matrix<T>::Pseudo_Row<U>::~Pseudo_Row() {
 template <typename T>
 template <typename U>
 inline U&
-OR_Matrix<T>::Pseudo_Row<U>::operator[](dimension_type k) const {
+OR_Matrix<T>::Pseudo_Row<U>::operator[](const dimension_type k) const {
 #if EXTRA_ROW_DEBUG
   assert(k < size_);
 #endif
@@ -127,7 +121,8 @@ OR_Matrix<T>::Pseudo_Row<U>::operator[](dimension_type k) const {
 template <typename T>
 template <typename U>
 inline
-OR_Matrix<T>::any_row_iterator<U>::any_row_iterator(dimension_type n_rows)
+OR_Matrix<T>::any_row_iterator<U>
+::any_row_iterator(const dimension_type n_rows)
   : e(n_rows) {
 }
 
@@ -148,7 +143,8 @@ template <typename T>
 template <typename U>
 template <typename V>
 inline
-OR_Matrix<T>::any_row_iterator<U>::any_row_iterator(const any_row_iterator<V>& y)
+OR_Matrix<T>::any_row_iterator<U>
+::any_row_iterator(const any_row_iterator<V>& y)
   : value(y.value),
     e(y.e),
     i(y.i) {
@@ -275,7 +271,7 @@ OR_Matrix<T>::any_row_iterator<U>::operator+(difference_type m) const {
 template <typename T>
 template <typename U>
 inline typename OR_Matrix<T>::template any_row_iterator<U>
-OR_Matrix<T>::any_row_iterator<U>::operator-(difference_type m) const {
+OR_Matrix<T>::any_row_iterator<U>::operator-(const difference_type m) const {
   any_row_iterator r = *this;
   r -= m;
   return r;
@@ -284,14 +280,16 @@ OR_Matrix<T>::any_row_iterator<U>::operator-(difference_type m) const {
 template <typename T>
 template <typename U>
 inline bool
-OR_Matrix<T>::any_row_iterator<U>::operator==(const any_row_iterator& y) const {
+OR_Matrix<T>::any_row_iterator<U>
+::operator==(const any_row_iterator& y) const {
   return e == y.e;
 }
 
 template <typename T>
 template <typename U>
 inline bool
-OR_Matrix<T>::any_row_iterator<U>::operator!=(const any_row_iterator& y) const {
+OR_Matrix<T>::any_row_iterator<U>
+::operator!=(const any_row_iterator& y) const {
   return e != y.e;
 }
 
@@ -305,7 +303,8 @@ OR_Matrix<T>::any_row_iterator<U>::operator<(const any_row_iterator& y) const {
 template <typename T>
 template <typename U>
 inline bool
-OR_Matrix<T>::any_row_iterator<U>::operator<=(const any_row_iterator& y) const {
+OR_Matrix<T>::any_row_iterator<U>
+::operator<=(const any_row_iterator& y) const {
   return e <= y.e;
 }
 
@@ -319,7 +318,8 @@ OR_Matrix<T>::any_row_iterator<U>::operator>(const any_row_iterator& y) const {
 template <typename T>
 template <typename U>
 inline bool
-OR_Matrix<T>::any_row_iterator<U>::operator>=(const any_row_iterator& y) const {
+OR_Matrix<T>::any_row_iterator<U>
+::operator>=(const any_row_iterator& y) const {
   return e >= y.e;
 }
 
@@ -412,26 +412,18 @@ isqrt(unsigned long x)
 template <typename T>
 inline dimension_type
 OR_Matrix<T>::max_num_rows() {
+  // FIXME: this deserves a comment.
   dimension_type k = isqrt(2*DB_Row<T>::max_size() + 1);
   return (k-1) & ~dimension_type(1);
 }
 
 template <typename T>
 inline
-OR_Matrix<T>::OR_Matrix()
-  : vec(),
-    space_dim(0),
-    vec_capacity(0) {
-}
-
-template <typename T>
-inline
-OR_Matrix<T>::OR_Matrix(dimension_type dim)
+OR_Matrix<T>::OR_Matrix(const dimension_type dim)
   : vec(2*dim*(dim+1)),
     space_dim(dim),
     vec_capacity(vec.size()) {
 }
-
 
 template <typename T>
 inline
@@ -479,7 +471,7 @@ OR_Matrix<T>::clear() {
 
 template <typename T>
 inline void
-OR_Matrix<T>::erase_to_end(dimension_type first_to_erase) {
+OR_Matrix<T>::erase_to_end(const dimension_type first_to_erase) {
   assert(first_to_erase <= num_rows() - 1);
   if (first_to_erase < num_rows() - 1)
     resize_no_copy((first_to_erase+1)/2);
@@ -513,8 +505,8 @@ template <typename T>
 inline void
 OR_Matrix<T>::grow(const dimension_type new_dim) {
   assert(new_dim >= space_dim);
-  dimension_type new_size = 2*new_dim*(new_dim + 1);
   if (new_dim > space_dim) {
+    const dimension_type new_size = 2*new_dim*(new_dim + 1);
     if (new_size <= vec_capacity) {
       // We can recycle the old vec.
       vec.expand_within_capacity(new_size);
@@ -524,8 +516,11 @@ OR_Matrix<T>::grow(const dimension_type new_dim) {
       // We cannot even recycle the old vec.
       OR_Matrix<T> new_matrix(new_dim);
       element_iterator j = new_matrix.element_begin();
-      for (element_iterator i = element_begin(), mend = element_end();
-      	   i != mend; ++i, ++j)
+      for (element_iterator i = element_begin(),
+	     mend = element_end(); i != mend; ++i, ++j)
+	// FIXME: this assignment is costly when using mpz_class or
+	// mpq_class. Provide a "copy_or_swap()" method that swaps
+	// the implementation of coefficients when appropriate.
       	*j = *i;
       swap(new_matrix);
       return;
@@ -535,69 +530,21 @@ OR_Matrix<T>::grow(const dimension_type new_dim) {
 
 template <typename T>
 inline void
-OR_Matrix<T>::resize_no_copy(const dimension_type new_dim) {
-  dimension_type old_size = vec.size();
-  dimension_type new_size = 2*new_dim*(new_dim + 1);
-
-  if (new_size > old_size)
-    grow(new_dim);
-  else if (new_size < old_size)
-    vec.shrink(new_size);
-
+OR_Matrix<T>::shrink(const dimension_type new_dim) {
+  assert(new_dim <= space_dim);
+  const dimension_type new_size = 2*new_dim*(new_dim + 1);
+  vec.shrink(new_size);
   space_dim = new_dim;
 }
 
 template <typename T>
 inline void
-OR_Matrix<T>::remove_rows(const dimension_type new_n_rows) {
-  assert(new_n_rows < num_rows());
-  // Since we are removing rows, reallocation will
-  // not take place and the old contents of the first
-  // `new_n_rows' rows will be preserved.
-  resize_no_copy(new_n_rows/2);
-}
-
-
-template <typename T>
-inline void
-OR_Matrix<T>::ascii_dump(std::ostream& s) const {
-  const OR_Matrix<T>& x = *this;
-  const char separator = ' ';
-  dimension_type space = x.space_dimension();
-  s << space << separator
-    << std::endl;
-  for (const_row_iterator i = x.row_begin(), xend = x.row_end();
-       i != xend; ++i) {
-    const_row_reference_type r = *i;
-    dimension_type rs = i.row_size();
-    for (dimension_type j = 0; j < rs; ++j) {
-      using namespace IO_Operators;
-      s << r[j] << separator;
-    }
-    s << std::endl;
-  }
-}
-
-template <typename T>
-inline bool
-OR_Matrix<T>::ascii_load(std::istream& s) {
-  dimension_type space;
-  if (!(s >> space))
-    return false;
-  resize_no_copy(space);
-  for (row_iterator i = row_begin(),
-	 this_row_end = row_end(); i != this_row_end; ++i) {
-    row_reference_type r_i = *i;
-    const dimension_type rs = i.row_size();
-    for (dimension_type j = 0; j < rs; ++j) {
-      Result r = input(r_i[j], s, ROUND_UP);
-      // FIXME: V_CVT_STR_UNK is probably not the only possible error.
-      if (!s || r == V_CVT_STR_UNK)
-	return false;
-    }
-  }
-  assert(OK());
-  return true;
+OR_Matrix<T>::resize_no_copy(const dimension_type new_dim) {
+  if (new_dim > space_dim)
+    // FIXME: here we might unnecessarily copy!
+    grow(new_dim);
+  else if (new_dim < space_dim)
+    shrink(new_dim);
 }
 
 /*! \relates OR_Matrix */
@@ -605,45 +552,6 @@ template <typename T>
 inline bool
 operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y) {
   return x.space_dim == y.space_dim && x.vec == y.vec;
-}
-
-template <typename T>
-inline void
-OR_Matrix<T>::add_rows(dimension_type n) {
-  assert(n > 0);
-  grow(space_dim + n);
-  assert(OK());
-}
-
-template <typename T>
-inline bool
-OR_Matrix<T>::OK() const {
-  dimension_type space = space_dimension();
-  if (space == 0)
-    return vec.size() == 0;
-  if (num_rows()%2 == 1)
-    return false;
-  if (vec.size() != 2*space*(space + 1))
-    return false;
-  if (!vec.OK(vec.size(), vec_capacity))
-    return false;
-  // All checks passed.
-  return true;
-}
-
-/*! \relates Parma_Polyhedra_Library::OR_Matrix */  //FIXME!!
-template <typename T>
-inline std::ostream&
-IO_Operators::operator<<(std::ostream& s, const OR_Matrix<T>& m) {
-  for (typename OR_Matrix<T>::const_row_iterator m_iter = m.row_begin(),
-	 m_end = m.row_end(); m_iter != m_end; ++m_iter) {
-    typename OR_Matrix<T>::const_row_reference_type r_m = *m_iter; 
-    dimension_type mr_size = m_iter.row_size();
-    for (dimension_type j = 0; j < mr_size; ++j) 
-      s << r_m[j] << " "; 
-    s << std::endl;
-  }
-  return s;
 }
 
 } // namespace Parma_Polyhedra_Library
