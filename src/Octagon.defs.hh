@@ -522,6 +522,16 @@ public:
   */
   Octagon(const Constraint_System& cs);
 
+  //! Builds an octagon from the system of generators \p gs.
+  /*!
+    Builds the smallest Octagon containing the polyhedron defined by \p gs.
+    The octagon inherits the space dimension of \p gs.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+  */
+  Octagon(const Generator_System& gs);
+
   //! \brief
   //! The assignment operator.
   //! (\p *this and \p y can be dimension-incompatible.)

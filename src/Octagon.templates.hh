@@ -42,6 +42,182 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
+Octagon<T>::Octagon(const Generator_System& gs)
+  : matrix(gs.space_dimension()), 
+    space_dim(gs.space_dimension()), status(){
+  using Implementation::BD_Shapes::max_assign;
+  using Implementation::BD_Shapes::div_round_up;
+
+  const Generator_System::const_iterator gs_begin = gs.begin();
+  const Generator_System::const_iterator gs_end = gs.end();
+  if (gs_begin == gs_end) {
+    // An empty generator system defines the empty polyhedron.
+    set_empty();
+    assert(OK());
+    return;
+  }
+
+  typename OR_Matrix<N>::row_iterator mat_begin = matrix.row_begin();
+  N tmp;
+
+  bool mat_initialized = false;
+  bool point_seen = false;
+  // Going through all the points and closure points.
+  for (Generator_System::const_iterator k = gs_begin; k != gs_end; ++k) {
+    const Generator& g = *k;
+    switch (g.type()) {
+    case Generator::POINT:
+      point_seen = true;
+      // Intentionally fall through.
+    case Generator::CLOSURE_POINT:
+      if (!mat_initialized) {
+	// When handling the first (closure) point, we initialize the DBM.
+	mat_initialized = true;
+	const Coefficient& d = g.divisor();
+	for (dimension_type i = 0; i < space_dim; ++i) {
+	  const Coefficient& g_i = g.coefficient(Variable(i));
+	  const dimension_type di = 2*i;
+	  typename OR_Matrix<N>::row_reference_type x_i = *(mat_begin+di);
+	  typename OR_Matrix<N>::row_reference_type x_ii = *(mat_begin+di+1);
+	  for (dimension_type j = 0; j < i; ++j) {
+	    const Coefficient& g_j = g.coefficient(Variable(j));
+	    const dimension_type dj = 2*j;
+	    // Set for any point the hyperplanes passing in the point
+	    // and having the octagonal gradient.
+	    // Let be P = [P_1, P_2, ..., P_n] point.
+	    // Hyperplanes: X_i - X_j = P_i - P_j.
+	    div_round_up(x_i[dj], g_j - g_i, d);
+	    div_round_up(x_ii[dj+1], g_i - g_j, d);
+	    // Hyperplanes: X_i + X_j = P_i + P_j.
+	    div_round_up(x_i[dj+1], -g_j - g_i, d);
+	    div_round_up(x_ii[dj], g_i + g_j, d);
+	  }
+	  // Hyperplanes: X_i = P_i. 
+	  div_round_up(x_i[di+1], -g_i - g_i, d);
+	  div_round_up(x_ii[di], g_i + g_i, d);
+	}
+      }
+      else {
+	// This is not the first point: the matrix already contains
+	// valid values and we must compute maxima.
+	const Coefficient& d = g.divisor();
+	for (dimension_type i = 0; i < space_dim; ++i) {
+	  const Coefficient& g_i = g.coefficient(Variable(i));
+	  const dimension_type di = 2*i;
+	  typename OR_Matrix<N>::row_reference_type x_i = *(mat_begin+di);
+	  typename OR_Matrix<N>::row_reference_type x_ii = *(mat_begin+di+1);
+	  for (dimension_type j = 0; j < i; ++j) {
+	    const Coefficient& g_j = g.coefficient(Variable(j));
+	    const dimension_type dj = 2*j;
+	    // Set for any point the straight lines passing in the point
+	    // and having the octagonal gradient; compute maxima values.
+	    // Let be P = [P_1, P_2, ..., P_n] point.
+	    // Hyperplane: X_i - X_j = max (P_i - P_j, const).
+	    div_round_up(tmp, g_j - g_i, d);
+	    max_assign(x_i[dj], tmp);
+	    div_round_up(tmp, g_i - g_j, d);
+	    max_assign(x_ii[dj+1], tmp);
+	    // Hyperplane: X_i + X_j = max (P_i + P_j, const).
+	    div_round_up(tmp, -g_j - g_i, d);
+	    max_assign(x_i[dj+1], tmp);
+	    div_round_up(tmp, g_i + g_j, d);
+	    max_assign(x_ii[dj], tmp);
+	  }
+	  // Hyperplane: X_i = max (P_i, const).
+	  div_round_up(tmp, -g_i - g_i, d);
+	  max_assign(x_i[di+1], tmp);
+	  div_round_up(tmp, g_i + g_i, d);
+	  max_assign(x_ii[di], tmp);
+	}
+      }
+      break;
+    default:
+      // Lines and rays temporarily ignored.
+      break;
+    }
+  }
+
+  if (!point_seen)
+    // The generator system is not empty, but contains no points.
+    throw std::invalid_argument("PPL::Octagon<T>::Octagon(gs):\n"
+				"the non-empty generator system gs "
+				"contains no points.");
+
+  // Going through all the lines and rays.
+  for (Generator_System::const_iterator k = gs_begin; k != gs_end; ++k) {
+    const Generator& g = *k;
+    switch (g.type()) {
+    case Generator::LINE:
+	for (dimension_type i = 0; i < space_dim; ++i) {
+	  const Coefficient& g_i = g.coefficient(Variable(i));
+	  const dimension_type di = 2*i;
+	  typename OR_Matrix<N>::row_reference_type x_i = *(mat_begin+di);
+	  typename OR_Matrix<N>::row_reference_type x_ii = *(mat_begin+di+1);
+	  for (dimension_type j = 0; j < i; ++j) {
+	    const Coefficient& g_j = g.coefficient(Variable(j));
+	    const dimension_type dj = 2*j;
+	    // Set for any line the right limit.
+	    if (g_i != g_j) {	    
+	      // Hyperplane: X_i - X_j <=/>= +Inf.
+	      x_i[dj] = PLUS_INFINITY;
+	      x_ii[dj+1] = PLUS_INFINITY;
+	    }
+	    if (g_i != -g_j) {	    
+	      // Hyperplane: X_i + X_j <=/>= +Inf.
+	      x_i[dj+1] = PLUS_INFINITY;
+	      x_ii[dj] = PLUS_INFINITY;
+	    }
+	  }
+	  if (g_i != 0) {	    
+	    // Hyperplane: X_i <=/>= +Inf.
+	    x_i[di+1] = PLUS_INFINITY;
+	    x_ii[di] = PLUS_INFINITY;
+	  }
+	}
+      break;
+    case Generator::RAY:
+	for (dimension_type i = 0; i < space_dim; ++i) {
+	  const Coefficient& g_i = g.coefficient(Variable(i));
+	  const dimension_type di = 2*i;
+	  typename OR_Matrix<N>::row_reference_type x_i = *(mat_begin+di);
+	  typename OR_Matrix<N>::row_reference_type x_ii = *(mat_begin+di+1);
+	  for (dimension_type j = 0; j < i; ++j) {
+	    const Coefficient& g_j = g.coefficient(Variable(j));
+	    const dimension_type dj = 2*j;
+	    // Set for any ray the right limit in the case
+	    // of the binary constraints.
+	    if (g_i < g_j)	    
+	      // Hyperplane: X_i - X_j >= +Inf.
+	      x_i[dj] = PLUS_INFINITY;
+	    if (g_i > g_j)	    
+	      // Hyperplane: X_i - X_j <= +Inf.
+	      x_ii[dj+1] = PLUS_INFINITY;
+	    if (g_i < -g_j)	    
+	      // Hyperplane: X_i + X_j >= +Inf.
+	      x_i[dj+1] = PLUS_INFINITY;
+	    if (g_i > -g_j)	    
+	      // Hyperplane: X_i + X_j <= +Inf.
+	      x_ii[dj] = PLUS_INFINITY;
+	  }
+	  // Case: unary constraints.
+	  if (g_i < 0)	    
+	    // Hyperplane: X_i  = +Inf.
+	    x_i[di+1] = PLUS_INFINITY;
+	  if (g_i > 0)	    
+	    // Hyperplane: X_i  = +Inf.
+	    x_ii[di] = PLUS_INFINITY;
+	}
+      break;
+    default:
+      // Points and closure points already dealt with.
+      break;
+    }
+  }
+  status.set_strongly_closed();
+  assert(OK());
+}
+
+template <typename T>
 void
 Octagon<T>::add_constraint(const Constraint& c) {
   using Implementation::BD_Shapes::div_round_up;
@@ -243,7 +419,6 @@ Octagon<T>::is_universe() const {
   return true;
 }
 
-// FIXME!!!
 template <typename T>
 bool
 Octagon<T>::is_strong_coherent() const {
@@ -251,7 +426,7 @@ Octagon<T>::is_strong_coherent() const {
   // is also strong-coherent, as it must be.
   dimension_type num_rows = matrix.num_rows();
 
-  // The strong-coherence is: for every indexes i and j
+  // The strong-coherence is: for every indexes i and j (and i != j)
   // matrix[i][j] <= (matrix[i][ci] + matrix[cj][j])/2
   // where ci = i + 1, if i is even number or
   //       ci = i - 1, if i is odd.
@@ -259,30 +434,25 @@ Octagon<T>::is_strong_coherent() const {
   for (dimension_type i = 0; i < num_rows; ++i) {
     dimension_type ci = coherent_index(i);
     typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin() + i;
-    typename OR_Matrix<N>::const_row_reference_type r_i = *iter;
-    const N& m_i_ci = r_i[ci];
-    for (dimension_type j = 0; j < matrix.row_size(i); ++j) {
+    typename OR_Matrix<N>::const_row_reference_type m_i = *iter;
+    const N& m_i_ci = m_i[ci];
+    const dimension_type rs_i = matrix.row_size(i);
+    for (dimension_type j = 0; j < rs_i; ++j)   
+      // Note: on the main diagonal only PLUS_INFINITY can occur.
       if (i != j){
 	dimension_type cj = coherent_index(j);
-	N d;
 	const N& m_cj_j = matrix[cj][j];
-	// Assigns to `d':
-	// plus_infinity,         if `m_i_ci' or/and `m_cj_j' are plus infinity;
-	// (m_i_ci + m_cj_j)/2,   otherwise.
-	if (is_plus_infinity(m_i_ci) ||
-	    is_plus_infinity(m_cj_j))
-	  d = PLUS_INFINITY;
-	else {
+	if (!is_plus_infinity(m_i_ci) &&
+	    !is_plus_infinity(m_cj_j)) {
+	  N d;
 	  // Compute (m_i_ci + m_cj_j)/2 into `d', rounding the result
 	  // towards plus infinity.
-	  N sum;
-	  add_assign_r(sum, m_i_ci, m_cj_j, ROUND_UP);
-	  div2exp_assign_r(d, sum, 1, ROUND_UP);
+	  add_assign_r(d, m_i_ci, m_cj_j, ROUND_UP);
+	  div2exp_assign_r(d, d, 1, ROUND_UP);
+	  if (m_i[j] > d)
+	    return false;
 	}
-	if (r_i[j] > d)
-	  return false;
       }
-    }
   }
   return true;
 }
@@ -398,7 +568,10 @@ Octagon<T>::relation_with(const Constraint& c) const {
 
   // Select the cell to be checked for the ">=" part of constraint.
   // Select the right row of the cell.
-  (i%2 == 0) ? ++k : --k;
+  if (i%2 == 0)
+    ++k;
+  else
+    --k;
     typename OR_Matrix<N>::const_row_reference_type r1 = *k;
   // Select the right column of the cell.
   dimension_type h = coherent_index(j);
@@ -1367,8 +1540,8 @@ Octagon<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   dimension_type new_space_dim = space_dim - to_be_removed.size();
 
   strong_closure_assign();
-  // When removing _all_ dimensions from a non-empty octagon,
-  // we obtain the zero-dimensional universe octagon.
+  // When removing _all_ dimensions from an octagon,
+  // we obtain the zero-dimensional octagon.
   if (new_space_dim == 0) {
     matrix.resize_no_copy(0);
     if (!marked_empty())
@@ -1381,7 +1554,7 @@ Octagon<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
 
   // We consider every variable and we check if it is to be removed.
   // If it is to be removed, we pass to the successive one, elsewhere
-  // we move its cells in the right position.
+  // we move its elements in the right position.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   dimension_type ftr = tbr->id();
   dimension_type i = ftr + 1;
@@ -1433,16 +1606,10 @@ Octagon<T>::map_space_dimensions(const PartialFunction& pfunc) {
     return;
   }
 
-  const dimension_type new_space_dim = pfunc.max_in_codomain() + 1;
-  // If the new dimension of space is strict less than the old one,
-  // since we don't want to loose solutions, we must close. In fact,
-  // we have this octagon:
-  // x - y <= 1;
-  // y     <= 2.
-  // and we have this function:
-  // x --> x.
-  // If we don't close, we loose the constraint: x <= 3.
-  if (new_space_dim < space_dim)
+  const dimension_type new_space_dim = pfunc.max_in_codomain() + 1;  
+  // If we are going to actually reduce the space dimension,
+  // then shortest-path closure is required to keep precision.
+    if (new_space_dim < space_dim)
     strong_closure_assign();
 
   // If the octagon is empty, then it is sufficient to adjust
@@ -1463,34 +1630,34 @@ Octagon<T>::map_space_dimensions(const PartialFunction& pfunc) {
     if (pfunc.maps(i, new_i)) {
       typename OR_Matrix<N>::row_reference_type r_i = *i_iter;
       typename OR_Matrix<N>::row_reference_type r_ii = *(i_iter + 1);
-      dimension_type new_i_ = 2*new_i;
-      typename OR_Matrix<N>::row_iterator x_iter = x.row_begin() + new_i_;
+      dimension_type double_new_i = 2*new_i;
+      typename OR_Matrix<N>::row_iterator x_iter = x.row_begin() + double_new_i;
       typename OR_Matrix<N>::row_reference_type x_i = *x_iter;
       typename OR_Matrix<N>::row_reference_type x_ii = *(x_iter + 1);
       for(dimension_type j = 0; j <= i; ++j) {
 	dimension_type new_j;
 	// If also the second variable is mapped, we work.
 	if (pfunc.maps(j, new_j)) {
-	  dimension_type j_ = 2*j;
-	  dimension_type new_j_ = 2*new_j;
+	  dimension_type dj = 2*j;
+	  dimension_type double_new_j = 2*new_j;
 	  // Mapped the constraints, exchanging the indexes.
 	  // Attention: our matrix is pseudo-triangular.
 	  // If new_j > new_i, we must consider, as rows, the rows of the variable
 	  // new_j, and not of new_i ones.
 	  if (new_i >= new_j) {
-	    x_i[new_j_] = r_i[j_];
-	    x_ii[new_j_] = r_ii[j_];
-	    x_ii[new_j_+1] = r_ii[j_ + 1];
-	    x_i[new_j_+1] = r_i[j_ + 1];
+	    x_i[double_new_j] = r_i[dj];
+	    x_ii[double_new_j] = r_ii[dj];
+	    x_ii[double_new_j+1] = r_ii[dj + 1];
+	    x_i[double_new_j+1] = r_i[dj + 1];
 	  }
 	  else {
-	    typename OR_Matrix<N>::row_iterator xj_iter = x.row_begin() + new_j_;
+	    typename OR_Matrix<N>::row_iterator xj_iter = x.row_begin() + double_new_j;
 	    typename OR_Matrix<N>::row_reference_type x_j = *xj_iter;
 	    typename OR_Matrix<N>::row_reference_type x_jj = *(xj_iter + 1);
-	    x_jj[new_i_+1] = r_i[j_];
-	    x_jj[new_i_] = r_ii[j_];
-	    x_j[new_i_+1] = r_i[j_+1];
-	    x_j[new_i_] = r_ii[j_+1];
+	    x_jj[double_new_i+1] = r_i[dj];
+	    x_jj[double_new_i] = r_ii[dj];
+	    x_j[double_new_i+1] = r_i[dj+1];
+	    x_j[double_new_i] = r_ii[dj+1];
 	  }
 
 	}
@@ -1500,7 +1667,6 @@ Octagon<T>::map_space_dimensions(const PartialFunction& pfunc) {
 
   std::swap(matrix, x);
   space_dim = new_space_dim;
-
   assert(OK());
 }
 
@@ -1627,7 +1793,7 @@ Octagon<T>::get_limiting_octagon(const Constraint_System& cs,
   // Private method: the caller has to ensure the following.
   assert(cs_space_dim <= space_dim);
 
-  bool changed = false;
+  bool is_oct_changed = false;
   strong_closure_assign();
   for (Constraint_System::const_iterator i = cs.begin(),
 	 iend = cs.end(); i != iend; ++i) {
@@ -1643,7 +1809,6 @@ Octagon<T>::get_limiting_octagon(const Constraint_System& cs,
       // Select the cell to be modified for the "<=" part of the constraint.
       typename OR_Matrix<N>::const_row_iterator k = matrix.row_begin() + i;
       typename OR_Matrix<N>::const_row_reference_type r = *k;
-      const N& r_j = r[j];
       OR_Matrix<N>& lo_mat = limiting_octagon.matrix;
       typename OR_Matrix<N>::row_iterator h = lo_mat.row_begin() + i;
       typename OR_Matrix<N>::row_reference_type s = *h;
@@ -1653,9 +1818,12 @@ Octagon<T>::get_limiting_octagon(const Constraint_System& cs,
       // Compute the bound for `r_j', rounding towards plus infinity.
       N d;
       div_round_up(d, term, coeff);
-      if (r_j <= d)
+      if (r[j] <= d)
 	if (c.is_inequality())
-	  changed = change(changed, s_j, d);
+	  if (s_j > d) {
+	    s_j = d;
+	    is_oct_changed = true;
+	  }
 	else {
 	  // Select the right row of the cell.
 	  typename OR_Matrix<N>::const_row_iterator ck = (i%2 == 0) ? ++k : --k;
@@ -1667,18 +1835,20 @@ Octagon<T>::get_limiting_octagon(const Constraint_System& cs,
 	  typename OR_Matrix<N>::row_reference_type s1 = *h;
 	  // Select the right column of the cell.
 	  dimension_type cj = coherent_index(j);
-	  const N& r1_cj = r1[cj];
 	  N& s1_cj = s1[cj];
 	  div_round_up(d, -term, coeff);
-	  if (r1_cj <= d)
-	    changed = change(changed, s1_cj, d);
+	  if (r1[cj] <= d)
+	    if (s1_cj > d) {
+	      s1_cj = d;
+	      is_oct_changed = true;
+	    }	   
 	}
 
     }
   }
   // In general, adding a constraint does not preserve the strongly
   // closure of the octagon.
-  if (changed && limiting_octagon.marked_strongly_closed())
+  if (is_oct_changed && limiting_octagon.marked_strongly_closed())
     limiting_octagon.status.reset_strongly_closed();
 }
 
@@ -2739,7 +2909,7 @@ Octagon<T>::affine_preimage(const Variable var,
   // Attention: in the case t == 1, if z is `var', the coefficient
   // a must be equal to `denominator; if z is a different variable, then
   // it happen that |a| == |denominator|.
-  Coefficient b = expr.inhomogeneous_term();
+  //  Coefficient b = expr.inhomogeneous_term();
   dimension_type n_var[2] = {2*num_var, 2*num_var + 1};
   //  dimension_type k = matrix.row_size(n_var[0]);
 
@@ -3561,6 +3731,7 @@ Octagon<T>::constraints() const {
     // For the time being, we force the dimension with the following line.
     cs.insert(0*Variable(space_dim-1) <= 0);
 
+    // Go through all the unary constraints in `matrix'.
     for (typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin(),
     	   i_end = matrix.row_end(); i_iter != i_end; i_iter += 2) {
       dimension_type i = i_iter.index();
@@ -3570,13 +3741,9 @@ Octagon<T>::constraints() const {
       const N& c_ii_i = r_ii[i];
       // We have the unary constraints.
       N negated_c_i_ii;
-      neg_assign_r(negated_c_i_ii, c_i_ii, ROUND_DOWN);
-      N negated_up_c_i_ii;
-      neg_assign_r(negated_up_c_i_ii, c_i_ii, ROUND_UP);
-      if (negated_c_i_ii == negated_up_c_i_ii &&
-	  negated_c_i_ii == c_ii_i) {
-	// We have one equality constraint of the following form:
-	// ax = b.
+      if (neg_assign_r(negated_c_i_ii, c_i_ii, ROUND_NOT_NEEDED) == V_EQ
+	  && negated_c_i_ii == c_ii_i) {
+	// We have a unary equality constraint.
 	Variable x(i/2);
 	Coefficient a;
 	Coefficient b;
@@ -3584,8 +3751,8 @@ Octagon<T>::constraints() const {
 	a *= 2;
 	cs.insert(a*x == b);
       }
-      // We have 0, 1 or 2 inequality constraints.
       else {
+	// We have 0, 1 or 2 inequality constraints.
 	if (!is_plus_infinity(c_i_ii)) {
 	  Variable x(i/2);
 	  Coefficient a;
@@ -3604,7 +3771,7 @@ Octagon<T>::constraints() const {
 	}
       }
     }
-    // We have the binary constraints.
+    //  Go through all the binary constraints in `matrix'.
     for (typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin(),
     	   i_end = matrix.row_end(); i_iter != i_end; i_iter += 2) {
       dimension_type i = i_iter.index();
@@ -3613,14 +3780,11 @@ Octagon<T>::constraints() const {
       for (dimension_type j = 0; j < i; j += 2) {
 	const N& c_i_j = r_i[j];
 	const N& c_ii_jj = r_ii[j+1];
-	// We have one equality constraint of the following form:
-	// ax - ay = b.
 	N negated_c_ii_jj;
-	neg_assign_r(negated_c_ii_jj, c_ii_jj, ROUND_DOWN);
-	N negated_up_c_ii_jj;
-	neg_assign_r(negated_up_c_ii_jj, c_ii_jj, ROUND_UP);
-	if (negated_c_ii_jj == negated_up_c_ii_jj &&
-	    negated_c_ii_jj == c_i_j) {
+	if (neg_assign_r(negated_c_ii_jj, c_ii_jj, ROUND_NOT_NEEDED) == V_EQ
+	    && negated_c_ii_jj == c_i_j) {
+	  // We have one equality constraint of the following form:
+	  // ax - ay = b.
 	  Variable x(j/2);
 	  Variable y(i/2);
 	  Coefficient a;
@@ -3653,11 +3817,10 @@ Octagon<T>::constraints() const {
 	// We have one equality constraint of the following form:
 	// ax + ay = b.
 	N negated_c_i_jj;
-	neg_assign_r(negated_c_i_jj, c_i_jj, ROUND_DOWN);
-	N negated_up_c_i_jj;
-	neg_assign_r(negated_up_c_i_jj, c_i_jj, ROUND_UP);
-	if (negated_c_i_jj == negated_up_c_i_jj &&
-	    negated_c_i_jj == c_ii_j) {
+	if (neg_assign_r(negated_c_i_jj, c_i_jj, ROUND_NOT_NEEDED) == V_EQ
+	    && negated_c_i_jj == c_ii_j) {
+	  // We have one equality constraint of the following form:
+	  // ax + ay = b.
 	  Variable x(j/2);
 	  Variable y(i/2);
 	  Coefficient a;
@@ -3909,7 +4072,24 @@ Octagon<T>::OK() const {
   if (space_dim == 0)
     return true;
 
-  // On the diagonal we must have plus infinity.
+  // MINUS_INFINITY cannot occur at all.
+  for (typename OR_Matrix<N>::const_row_iterator i = matrix.row_begin(),
+	 iend = matrix.row_end(); i != iend; ++i) {
+    typename OR_Matrix<N>::const_row_reference_type x_i = *i;
+    dimension_type rs_i = i.row_size();
+    for (dimension_type j = 0; j < rs_i; ++j) 
+      if (is_minus_infinity(x_i[j])) {
+#ifndef NDEBUG
+      using namespace Parma_Polyhedra_Library::IO_Operators;
+      std::cerr << "Octagon::matrix[" << i.index() << "][" << j << "] = "
+		<< x_i[j] << "!"
+		<< std::endl;
+#endif
+      return false;
+    }
+  }
+
+  // On the main diagonal only PLUS_INFINITY can occur.
   for (typename OR_Matrix<N>::const_row_iterator i = matrix.row_begin(),
 	 m_end = matrix.row_end(); i != m_end; ++i) {
     typename OR_Matrix<N>::const_row_reference_type r = *i;
@@ -3939,7 +4119,6 @@ Octagon<T>::OK() const {
       return false;
     }
   }
-
 
   // A closed octagon must be strong-coherent.
   if (marked_strongly_closed())
