@@ -73,14 +73,12 @@ ORIGINAL_TESTS = \
 	minconstraints1 \
 	octdifference1 \
 	octhull1 \
-	relations1 relations2 relations3 relations4 relations5 \
-	relations6 \
-	removespacedims1 removespacedims2 removespacedims3 \
-	removespacedims4 removespacedims5 \
-	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
-	timeelapse6 timeelapse7 timeelapse8 timeelapse9 \
+	relatwithcons1 relatwithcons2 \
+	relatwithgen1 \
+	removespacedims1 \
+	timeelapse1 \
 	universe1 \
-	writeoctagon1 writeoctagon2 writeoctagon3
+	writeoctagon1 
 
 #
 # Sources for the tests
@@ -184,34 +182,18 @@ octdifference1_SOURCES = octdifference1.cc
 
 octhull1_SOURCES = octhull1.cc
 
-relations1_SOURCES = relations1.cc
-relations2_SOURCES = relations2.cc
-relations3_SOURCES = relations3.cc
-relations4_SOURCES = relations4.cc
-relations5_SOURCES = relations5.cc
-relations6_SOURCES = relations6.cc
+relatwithcons1_SOURCES = relatwithcons1.cc
+relatwithcons2_SOURCES = relatwithcons2.cc
+
+relatwithgen1_SOURCES = relatwithgen1.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
-removespacedims2_SOURCES = removespacedims2.cc
-removespacedims3_SOURCES = removespacedims3.cc
-removespacedims4_SOURCES = removespacedims4.cc
-removespacedims5_SOURCES = removespacedims5.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
-timeelapse2_SOURCES = timeelapse2.cc
-timeelapse3_SOURCES = timeelapse3.cc
-timeelapse4_SOURCES = timeelapse4.cc
-timeelapse5_SOURCES = timeelapse5.cc
-timeelapse6_SOURCES = timeelapse6.cc
-timeelapse7_SOURCES = timeelapse7.cc
-timeelapse8_SOURCES = timeelapse8.cc
-timeelapse9_SOURCES = timeelapse9.cc
 
 universe1_SOURCES = universe1.cc
 
 writeoctagon1_SOURCES = writeoctagon1.cc
-writeoctagon2_SOURCES = writeoctagon2.cc
-writeoctagon3_SOURCES = writeoctagon3.cc
 
 TESTS = $(ORIGINAL_TESTS)
 

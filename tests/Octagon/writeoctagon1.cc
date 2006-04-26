@@ -22,38 +22,77 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
   TOctagon oc1(3);
-  TOctagon oc2(3);
-
   oc1.add_constraint(x + y == 3);
   oc1.add_constraint(x - y == 4);
 
-  bool always_true1 = oc1.contains(oc1);
+   print_constraints(oc1, "*** oc1 ***");
 
+  TOctagon oc2(3);
   oc2.add_constraint(x - y == 5);
   oc2.add_constraint(x + y == -1);
 
-  bool always_true2 = oc2.contains(oc2);
-
-#if NOISY
-   print_constraints(oc1, "*** oc1 ***");
    print_constraints(oc2, "*** oc2 ***");
-#endif
 
-   int retval = (always_true1 == always_true2) ? 0 : 1;
-  return retval;
-
+   // FIXME!
+  return true;
 }
-CATCH
+
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
+
+  TOctagon oc1(3);
+  oc1.add_constraint(-x - y <= 3);
+  oc1.add_constraint(-x + y <= 4); 
+
+  print_constraints(oc1, "*** oc1 ***");
+
+  TOctagon oc2(3);
+  oc2.add_constraint(x - y <= 3);
+  oc2.add_constraint(x + y <= 4);
+
+  print_constraints(oc2, "*** oc2 ***");
+
+  // FIXME!!!
+  return true;
+}
+
+bool
+test03() {
+  Variable x(0);
+  Variable y(1);
+
+  TOctagon oc1(3);
+
+  oc1.add_constraint(x - y >= 4);
+  oc1.add_constraint(x - y <= 4);
+
+  print_constraints(oc1, "*** oc1 ***");
+
+  TOctagon oc2(3);
+
+  oc2.add_constraint(x + y <= 3);
+  oc2.add_constraint(x + y >= 3);
+
+  print_constraints(oc2, "*** oc2 ***");
+
+  // FIXME!!!
+  return true;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+END_MAIN
