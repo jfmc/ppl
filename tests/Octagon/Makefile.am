@@ -54,7 +54,7 @@ ORIGINAL_TESTS = \
 	cc76narrowing1 \
 	chinainit \
 	concatenate1 \
-	constraints1 constraints2 constraints3 constraints4 constraints5 \
+	constraints1 \
 	contains1 \
 	empty1 \
 	exceptions1 exceptions2 exceptions3 \
@@ -131,10 +131,6 @@ chinainit_SOURCES = chinainit.cc
 concatenate1_SOURCES = concatenate1.cc
 
 constraints1_SOURCES = constraints1.cc
-constraints2_SOURCES = constraints2.cc
-constraints3_SOURCES = constraints3.cc
-constraints4_SOURCES = constraints4.cc
-constraints5_SOURCES = constraints5.cc
 
 contains1_SOURCES = contains1.cc
 
