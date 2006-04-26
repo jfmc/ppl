@@ -195,29 +195,18 @@ coherent_index(const dimension_type& i) {
 
 template <typename T>
 inline const T&
-position_cell(const OR_Matrix<T>& mat, const dimension_type i,
-	      const dimension_type j) {
+get_matrix_element(const OR_Matrix<T>& mat, const dimension_type i,
+		   const dimension_type j) {
   return (j < mat.row_size(i)) ? mat[i][j]
     : mat[coherent_index(j)][coherent_index(i)];
 }
 
 template <typename T>
 inline T&
-position_cell(OR_Matrix<T>& mat, const dimension_type i,
-	      const dimension_type j) {
+get_matrix_element(OR_Matrix<T>& mat, const dimension_type i,
+		   const dimension_type j) {
   return (j < mat.row_size(i)) ? mat[i][j]
     : mat[coherent_index(j)][coherent_index(i)];
-}
-
-template <typename T>
-inline bool
-change(bool changed, T& cell, T coeff) {
-  changed = false;
-  if (cell > coeff) {
-    cell = coeff;
-    changed = true;
-  }
-  return changed;
 }
 
 template <typename T>
