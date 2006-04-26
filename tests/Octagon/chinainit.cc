@@ -22,12 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
+namespace {
 
 TOctagon
 init(dimension_type num_vars) {
@@ -44,8 +39,8 @@ init(dimension_type num_vars) {
   return oc;
 }
 
-int
-main() TRY {
+bool
+test01(){
   Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
@@ -53,9 +48,9 @@ main() TRY {
   function.insert(5, 3);
   function.insert(7, 4);
   function.insert(9, 5);
-#if NOISY
+
   print_function(function, "*** function ***");
-#endif
+
 
   Octagon<mpq_class> known_result = init(6);
 
@@ -63,15 +58,18 @@ main() TRY {
     TOctagon oc = init(i);
     oc.map_space_dimensions(function);
     if (oc != known_result) {
-#if NOISY
       print_constraints(oc, "*** oc ***");
       print_constraints(known_result, "*** known_result ***");
-#endif
-      return 1;
+      return false;
     }
   }
 
-  return 0;
+  return true;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN
 
