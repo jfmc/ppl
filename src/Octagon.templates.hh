@@ -998,12 +998,10 @@ Octagon<T>::strong_closure_assign() const {
   // It is important to note that after the strong-coherence,
   // the octagon is still shortest-path closed and hence, strongly closed.
 
-  // The first step (shortest-path closure) is divided in three cases
-  // depending on the relations between the three matrix indexes (i, j, k).
-  // We recall that, given an index `h', we indicate with `ch'
-  // the index such that:
-  // ch = h + 1, if h is even number or
-  // ch = h - 1, if h is odd.
+  // Recall that, given an index `h', we indicate with `ch' the coherent
+  // index, i.e., the index such that:
+  //   ch = h + 1, if h is an even number;
+  //   ch = h - 1, if h is an odd number.
 
   // Step 1: closure.
   for (Row_Iterator k_iter = m_begin; k_iter != m_end; ++k_iter) {
@@ -1022,28 +1020,28 @@ Octagon<T>::strong_closure_assign() const {
       const N& x_i_k = (k < rs_i) ? x_i[k] : x_ck[ci];
       if (!is_plus_infinity(x_i_k)) {
 	Row_Reference x_ci = *((i%2) ? i_iter-1 : i_iter+1);
-	// CHECK ME: is this optimization really worth it?
-#if 0
-	// UNOPTIMIZED VERSION.
-	// The conditional expressions in the following inner loop
-	// are optimized away by splitting it into three loops.
-	for (dimension_type j = 0; j < n_rows; ++j) {
-	  Row_Reference x_cj = *(m_begin + coherent_index(j));
-	  const N& x_k_j = (j < rs_k) ? x_k[j] : x_cj[ck];
-	  if (!is_plus_infinity(x_k_j)) {
-	    N& x_i_j = (j < rs_i) ? x_i[j] : x_cj[ci];
-	    N sum;
-	    add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
-	    min_assign(x_i_j, sum);
-	  }
-	}
-#else
-	// OPTIMIZED VERSION.
+
+//      UNOPTIMIZED VERSION OF THE INNER LOOP
+//      The conditional expressions in the following inner loop
+//      are optimized away by splitting it into three loops.
+// 	for (dimension_type j = 0; j < n_rows; ++j) {
+// 	  Row_Reference x_cj = *(m_begin + coherent_index(j));
+// 	  const N& x_k_j = (j < rs_k) ? x_k[j] : x_cj[ck];
+// 	  if (!is_plus_infinity(x_k_j)) {
+// 	    N& x_i_j = (j < rs_i) ? x_i[j] : x_cj[ci];
+// 	    N sum;
+// 	    add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
+// 	    min_assign(x_i_j, sum);
+// 	  }
+// 	}
+
+	// OPTIMIZED VERSION OF THE INNER LOOP STARTS HERE.
+	// The inner loop is divided in four loops, based on the relation
+	// between the three indices `k', `i', and `j'.
 	const dimension_type min_rs = std::min(rs_i, rs_k);
 	const dimension_type max_rs = std::max(rs_i, rs_k);
 	// The first part of the optimized inner loop.
 	for (dimension_type j = 0; j < min_rs; ++j) {
-	  Row_Reference x_cj = *(m_begin + coherent_index(j));
 	  const N& x_k_j = x_k[j];
 	  if (!is_plus_infinity(x_k_j)) {
 	    N sum;
@@ -1051,40 +1049,81 @@ Octagon<T>::strong_closure_assign() const {
 	    min_assign(x_i[j], sum);
 	  }
 	}
-	// The second part of the optimized inner loop:
-        // note that the following two are mutually exclusive loops.
-	if (rs_i == min_rs)
-	  for (dimension_type j = rs_i; j < rs_k; ++j) {
-	    Row_Reference x_cj = *(m_begin + coherent_index(j));
+	// The second part of the optimized inner loop.
+        // NOTE: the following two are mutually exclusive loops.
+	if (rs_i == min_rs) {
+	  // Note: both `rs_i' and `rs_k' are even numbers;
+	  // unrolling two iterations so as to optimize away
+	  // the computation of coeherent indexes.
+	  for (dimension_type j = rs_i; j < rs_k; j += 2) {
+	    // The loop body for index `j'.
 	    const N& x_k_j = x_k[j];
 	    if (!is_plus_infinity(x_k_j)) {
 	      N sum;
 	      add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
-	      min_assign(x_cj[ci], sum);
+	      assert(coherent_index(j) == j+1);
+	      min_assign(x.matrix[j+1][ci], sum);
+	    }
+	    // The loop body for index `j+1'.
+	    const N& x_k_j1 = x_k[j+1];
+	    if (!is_plus_infinity(x_k_j1)) {
+	      N sum;
+	      add_assign_r(sum, x_i_k, x_k_j1, ROUND_UP);
+	      assert(coherent_index(j+1) == j);
+	      min_assign(x.matrix[j][ci], sum);
 	    }
 	  }
-	else
-	  for (dimension_type j = rs_k; j < rs_i; ++j) {
-	    Row_Reference x_cj = *(m_begin + coherent_index(j));
-	    const N& x_k_j = x_cj[ck];
+	}
+	else {
+	  // Note: both `rs_i' and `rs_k' are even numbers;
+	  // unrolling two iterations so as to optimize away
+	  // the computation of coeherent indexes.
+	  for (dimension_type j = rs_k; j < rs_i; j += 2) {
+	    // The loop body for index `j'.
+	    assert(coeherent_index(j) == j+1);
+	    const N& x_k_j = x.matrix[j+1][ck];
 	    if (!is_plus_infinity(x_k_j)) {
 	      N sum;
 	      add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
 	      min_assign(x_i[j], sum);
 	    }
+	    // The loop body for index `j+1'.
+	    assert(coeherent_index(j+1) == j);
+	    const N& x_k_j1 = x.matrix[j][ck];
+	    if (!is_plus_infinity(x_k_j1)) {
+	      N sum;
+	      add_assign_r(sum, x_i_k, x_k_j1, ROUND_UP);
+	      min_assign(x_i[j+1], sum);
+	    }
 	  }
+	}
 	// The third part of the optimized inner loop.
-	for (dimension_type j = max_rs; j < n_rows; ++j) {
-	  Row_Reference x_cj = *(m_begin + coherent_index(j));
+	// Note: both `max_rs' and `n_rows' are even numbers;
+	// unrolling two iterations so as to optimize away
+	// the computation of coherent indexes.
+	for (dimension_type j = max_rs; j < n_rows; j += 2) {
+	  // The loop body for index `j'.
+	  assert(coeherent_index(j) == j+1);
+	  Row_Iterator x_cj_iter = m_begin + (j+1);
+	  Row_Reference x_cj = *x_cj_iter;
 	  const N& x_k_j = x_cj[ck];
 	  if (!is_plus_infinity(x_k_j)) {
 	    N sum;
 	    add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
 	    min_assign(x_cj[ci], sum);
 	  }
+	  // The loop body for index `j+1'.
+	  assert(coeherent_index(j+1) == j);
+	  Row_Reference x_cj1 = *(--x_cj_iter);
+	  const N& x_k_j1 = x_cj1[ck];
+	  if (!is_plus_infinity(x_k_j1)) {
+	    N sum;
+	    add_assign_r(sum, x_i_k, x_k_j1, ROUND_UP);
+	    min_assign(x_cj1[ci], sum);
+	  }
 	}
-	// Optimization of inner loop ends here.
-#endif
+	// OPTIMIZED VERSION OF INNER LOOP ENDS HERE.
+
       }
     }
   }
