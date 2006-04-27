@@ -1054,7 +1054,7 @@ Octagon<T>::strong_closure_assign() const {
 	if (rs_i == min_rs) {
 	  // Note: both `rs_i' and `rs_k' are even numbers;
 	  // unrolling two iterations so as to optimize away
-	  // the computation of coeherent indexes.
+	  // the computation of coherent indexes.
 	  for (dimension_type j = rs_i; j < rs_k; j += 2) {
 	    // The loop body for index `j'.
 	    const N& x_k_j = x_k[j];
@@ -1077,10 +1077,10 @@ Octagon<T>::strong_closure_assign() const {
 	else {
 	  // Note: both `rs_i' and `rs_k' are even numbers;
 	  // unrolling two iterations so as to optimize away
-	  // the computation of coeherent indexes.
+	  // the computation of coherent indexes.
 	  for (dimension_type j = rs_k; j < rs_i; j += 2) {
 	    // The loop body for index `j'.
-	    assert(coeherent_index(j) == j+1);
+	    assert(coherent_index(j) == j+1);
 	    const N& x_k_j = x.matrix[j+1][ck];
 	    if (!is_plus_infinity(x_k_j)) {
 	      N sum;
@@ -1088,7 +1088,7 @@ Octagon<T>::strong_closure_assign() const {
 	      min_assign(x_i[j], sum);
 	    }
 	    // The loop body for index `j+1'.
-	    assert(coeherent_index(j+1) == j);
+	    assert(coherent_index(j+1) == j);
 	    const N& x_k_j1 = x.matrix[j][ck];
 	    if (!is_plus_infinity(x_k_j1)) {
 	      N sum;
@@ -1103,7 +1103,7 @@ Octagon<T>::strong_closure_assign() const {
 	// the computation of coherent indexes.
 	for (dimension_type j = max_rs; j < n_rows; j += 2) {
 	  // The loop body for index `j'.
-	  assert(coeherent_index(j) == j+1);
+	  assert(coherent_index(j) == j+1);
 	  Row_Iterator x_cj_iter = m_begin + (j+1);
 	  Row_Reference x_cj = *x_cj_iter;
 	  const N& x_k_j = x_cj[ck];
@@ -1113,7 +1113,7 @@ Octagon<T>::strong_closure_assign() const {
 	    min_assign(x_cj[ci], sum);
 	  }
 	  // The loop body for index `j+1'.
-	  assert(coeherent_index(j+1) == j);
+	  assert(coherent_index(j+1) == j);
 	  Row_Reference x_cj1 = *(--x_cj_iter);
 	  const N& x_k_j1 = x_cj1[ck];
 	  if (!is_plus_infinity(x_k_j1)) {
