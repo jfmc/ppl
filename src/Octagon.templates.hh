@@ -4056,6 +4056,9 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
 	  }
 	  N approx_lv;
 	  div2exp_assign_r(approx_lv, double_approx_lv, 1, ROUND_UP);
+	  N den;
+	  assign_r(den, denominator, ROUND_UP);
+	  div_assign_r(coeff_lv, coeff_lv, den, ROUND_UP);
 	  add_mul_assign_r(sum, coeff_lv, approx_lv, ROUND_UP);
 	  mul2exp_assign_r(sum, sum, 1, ROUND_IGNORE);
 	  typename OR_Matrix<N>::row_iterator iter_v = matrix.row_begin() + n_var;
@@ -4112,6 +4115,9 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
 	  }
 	  N approx_lv;
 	  div2exp_assign_r(approx_lv, double_approx_lv, 1, ROUND_UP);
+	  N den;
+	  assign_r(den, denominator, ROUND_UP);
+	  div_assign_r(coeff_lv, coeff_lv, den, ROUND_UP);
 	  add_mul_assign_r(sum, coeff_lv, approx_lv, ROUND_UP);
 	  mul2exp_assign_r(sum, sum, 1, ROUND_IGNORE);
 	  typename OR_Matrix<N>::row_iterator iter_v = matrix.row_begin() + n_var;

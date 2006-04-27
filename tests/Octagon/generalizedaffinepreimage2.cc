@@ -232,6 +232,31 @@ test08() {
   return true;
 }
 
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  Octagon<mpq_class> oct(2);
+  oct.add_constraint(B - A <= 2);
+  oct.add_constraint(B <= 5);
+
+  print_constraints(oct, "*** oct ***");
+
+  oct.generalized_affine_preimage(A, LESS_THAN_OR_EQUAL, B, 5);
+
+  Octagon<mpq_class> known_result(2);
+  known_result.add_constraint(B <= 3);
+
+  bool ok = (oct == known_result);
+
+  print_constraints(oct,
+		    "*** oct.generalized_affine_preimage(A, "
+		    "LESS_THAN_OR_EQUAL, B, 5) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -243,4 +268,5 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
