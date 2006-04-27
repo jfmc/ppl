@@ -1324,19 +1324,19 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 
 template <typename T>
 void
-Octagon<T>::compute_nexts(std::vector<dimension_type>& next) const {
+Octagon<T>::compute_successors(std::vector<dimension_type>& successor) const {
   assert(!marked_empty() && marked_strongly_closed());
-  assert(next.size() == 0);
+  assert(successor.size() == 0);
   // Variables are ordered according to their index.
-  // The vector `next' is used to indicate which variable
+  // The vector `successor' is used to indicate which variable
   // immediately follows a given one in the corresponding equivalence class.
-  const dimension_type next_size = matrix.num_rows();
-  // Initially, each variable is next of its own zero-equivalence class.
-  next.reserve(next_size);
-  for (dimension_type i = 0; i < next_size; ++i)
-    next.push_back(i);
-  // Now compute actual nexts.
-  for (dimension_type i = next_size; i-- > 0; )  {
+  const dimension_type successor_size = matrix.num_rows();
+  // Initially, each variable is successor of its own zero-equivalence class.
+  successor.reserve(successor_size);
+  for (dimension_type i = 0; i < successor_size; ++i)
+    successor.push_back(i);
+  // Now compute actual successors.
+  for (dimension_type i = successor_size; i-- > 0; )  {
     typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin()+i;
     typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
     typename OR_Matrix<N>::const_row_reference_type m_ci = (i%2) ?
@@ -1347,8 +1347,8 @@ Octagon<T>::compute_nexts(std::vector<dimension_type>& next) const {
       N neg_m_ci_cj;
       if (neg_assign_r(neg_m_ci_cj, m_ci[cj], ROUND_NOT_NEEDED) == V_EQ
 	      && neg_m_ci_cj == m_i[j]) {
-        // Choose as next the variable having the greaterer index.
-        next[j] = i;
+        // Choose as successor the variable having the greaterer index.
+        successor[j] = i;
       }
     }
   }
@@ -1388,16 +1388,16 @@ Octagon<T>::compute_leaders(std::vector<dimension_type>& leaders) const {
 
 template <typename T>
 void
-Octagon<T>::compute_leaders(std::vector<dimension_type>& next,
+Octagon<T>::compute_leaders(std::vector<dimension_type>& successor,
 			    std::vector<dimension_type>& no_sing_leaders,
 			    bool& exist_sing_class,
 			    dimension_type& sing_leader) const {
   assert(!marked_empty() && marked_strongly_closed());
   assert(no_sing_leaders.size() == 0);
-  dimension_type next_size = next.size();
-  std::deque<bool> dealt_with(next_size, false);
-  for (dimension_type i = 0; i < next_size; ++i) {
-    dimension_type nxt_i = next[i];
+  dimension_type successor_size = successor.size();
+  std::deque<bool> dealt_with(successor_size, false);
+  for (dimension_type i = 0; i < successor_size; ++i) {
+    dimension_type nxt_i = successor[i];
     if (!dealt_with[i]) {
       // The index is a leader.
       // Now check if it is a leader of a singular class or not.
@@ -1431,9 +1431,9 @@ Octagon<T>::strong_reduction_assign() const {
   std::vector<dimension_type> no_sing_leaders;
   dimension_type sing_leader = 0;
   bool exist_sing_class = false;
-  std::vector<dimension_type> next;
-  compute_nexts(next);
-  compute_leaders(next, no_sing_leaders, exist_sing_class, sing_leader);
+  std::vector<dimension_type> successor;
+  compute_successors(successor);
+  compute_leaders(successor, no_sing_leaders, exist_sing_class, sing_leader);
   const dimension_type num_no_sing_leaders = no_sing_leaders.size();
 
   Octagon<T> aux(space_dim);
@@ -1453,13 +1453,13 @@ Octagon<T>::strong_reduction_assign() const {
       // Note: by coherence assumption, the variables in the
       // corresponding negative equivalence class are
       // automatically connected.
-      if (i != next[i]) {
+      if (i != successor[i]) {
         dimension_type j = i;
-        dimension_type nxt_j = next[j];
+        dimension_type nxt_j = successor[j];
         while (j != nxt_j) {
           aux.matrix[nxt_j][j] = matrix[nxt_j][j];
           j = nxt_j;
-          nxt_j = next[j];
+          nxt_j = successor[j];
         }
         const dimension_type cj = coherent_index(j);
         aux.matrix[cj][ci] = matrix[cj][ci];
@@ -1479,7 +1479,6 @@ Octagon<T>::strong_reduction_assign() const {
       // m_i_j >= (m_i_ci + m_cj_j)/2,   where j != ci.
       if (j != ci) {
         N d;
-        //assign_add_div_r(d, m_i_ci, matrix[cj][j], 2, ROUND_UP);
         add_assign_r(d, m_i_ci, matrix[cj][j], ROUND_UP);
         div2exp_assign_r(d, d, 1, ROUND_UP);
         if (m_i_j >= d) {
@@ -1532,13 +1531,13 @@ Octagon<T>::strong_reduction_assign() const {
   // Note: the singular class is not connected with the other classes.
   if (exist_sing_class) {
     aux.matrix[sing_leader][sing_leader+1] = matrix[sing_leader][sing_leader+1];
-    if (next[sing_leader+1] != sing_leader+1) {
+    if (successor[sing_leader+1] != sing_leader+1) {
       dimension_type j = sing_leader;
-      dimension_type nxt_jj = next[j+1];
+      dimension_type nxt_jj = successor[j+1];
       while (nxt_jj != j+1) {
 	aux.matrix[nxt_jj][j] = matrix[nxt_jj][j];
 	j = nxt_jj;
-	nxt_jj = next[j+1];
+	nxt_jj = successor[j+1];
       }
       aux.matrix[j+1][j] = matrix[j+1][j];
     }

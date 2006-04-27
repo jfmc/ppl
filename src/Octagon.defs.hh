@@ -1139,17 +1139,17 @@ private:
   */
   void get_limiting_octagon(const Constraint_System& cs,
 			    Octagon& limiting_octagon) const;
-  //! Compute the (zero-equivalence classes) next relation.
+  //! Compute the (zero-equivalence classes) successor relation.
   /*!
     It is assumed that the octagon is not empty and strongly closed.
   */
-  void compute_nexts(std::vector<dimension_type>& next) const;
+  void compute_successors(std::vector<dimension_type>& successor) const;
 
   //! Compute the leaders of zero-equivalence classes.
   /*!
     It is assumed that the Octagon is not empty and strongly closed.
   */
-  void compute_leaders(std::vector<dimension_type>& next,
+  void compute_leaders(std::vector<dimension_type>& successor,
 		       std::vector<dimension_type>& no_sing_leaders,
 		       bool& exist_sing_class,
 		       dimension_type& sing_leader) const;
