@@ -120,7 +120,7 @@ test04() {
 
   bd.generalized_affine_preimage(A, LESS_THAN_OR_EQUAL, B, 5);
 
-  BD_Shape<mpq_class> known_result(3);
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B <= 3);
 
   bool ok = (bd == known_result);
