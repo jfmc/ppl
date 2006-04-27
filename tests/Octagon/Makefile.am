@@ -85,16 +85,8 @@ affineimage2_SOURCES = affineimage2.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
-affinepreimage3_SOURCES = affinepreimage3.cc
-affinepreimage4_SOURCES = affinepreimage4.cc
-affinepreimage5_SOURCES = affinepreimage5.cc
-affinepreimage6_SOURCES = affinepreimage6.cc
-affinepreimage7_SOURCES = affinepreimage7.cc
 
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc
-ascii_dump_load2_SOURCES = ascii_dump_load2.cc
-ascii_dump_load3_SOURCES = ascii_dump_load3.cc
-ascii_dump_load4_SOURCES = ascii_dump_load4.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
 
@@ -114,21 +106,12 @@ contains1_SOURCES = contains1.cc
 
 empty1_SOURCES = empty1.cc
 
-exceptions1_SOURCES = exceptions1.cc
-exceptions2_SOURCES = exceptions2.cc
-exceptions3_SOURCES = exceptions3.cc
-
 fromgensys1_SOURCES = fromgensys1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
 generalizedaffineimage4_SOURCES = generalizedaffineimage4.cc
-generalizedaffineimage5_SOURCES = generalizedaffineimage5.cc
-generalizedaffineimage6_SOURCES = generalizedaffineimage6.cc
-generalizedaffineimage7_SOURCES = generalizedaffineimage7.cc
-generalizedaffineimage8_SOURCES = generalizedaffineimage8.cc
-generalizedaffineimage9_SOURCES = generalizedaffineimage9.cc
 
 generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
