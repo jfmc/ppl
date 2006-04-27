@@ -270,6 +270,27 @@ Octagon<T>::forget_all_octagonal_constraints(typename OR_Matrix<N>::row_iterator
 
 template <typename T>
 inline void
+Octagon<T>::forget_binary_octagonal_constraints(const dimension_type v) {
+  assert(v < space_dim);
+  const dimension_type double_v = 2*v;
+  const dimension_type h = double_v + 2;
+  for (typename OR_Matrix<N>::row_iterator iter_h = matrix.row_begin() + h,
+	 iter_end = matrix.row_end(); iter_h != iter_end; ++iter_h) {
+    typename OR_Matrix<N>::row_reference_type r_h = *iter_h;
+    r_h[double_v] = PLUS_INFINITY;
+    r_h[double_v+1] = PLUS_INFINITY;
+  }
+  typename OR_Matrix<N>::row_iterator iter_v = matrix.row_begin() + double_v;
+  typename OR_Matrix<N>::row_reference_type r_v = *iter_v;
+  typename OR_Matrix<N>::row_reference_type r_cv = *(++iter_v);
+  for (dimension_type k = double_v; k-- > 0; ) {
+    r_v[k] = PLUS_INFINITY;
+    r_cv[k] = PLUS_INFINITY;
+  }
+}
+
+template <typename T>
+inline void
 Octagon<T>::add_constraints(const Constraint_System& cs) {
   // This method not preserve closure.
   // Seen add_constraint().
@@ -332,7 +353,7 @@ Octagon<T>::CC76_extrapolation_assign(const Octagon& y, unsigned* tp) {
     N( 2, ROUND_UP)
   };
   CC76_extrapolation_assign(y,
-			    stop_points, 
+			    stop_points,
 			    stop_points
 			    + sizeof(stop_points)/sizeof(stop_points[0]),
 			    tp);
