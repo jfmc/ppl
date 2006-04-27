@@ -22,43 +22,167 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-int
-main() TRY {
-  Variable x(0);
-  Variable y(1);
-  Linear_Expression expr(-y);
+  TOctagon oc(3);
+  oc.add_constraint(C >= 1);
+  oc.add_constraint(B >= 0);
+  oc.add_constraint(A + B >= 2);
 
-  TOctagon oc1(3);
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_image(A, C + B, 1);
+
   Octagon<mpq_class> known_result(3);
+  known_result.add_constraint(A >= 1);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(C >= 1);
+  known_result.add_constraint(B - A <= -1);
+  known_result.add_constraint(C - A <= 0);
 
-  oc1.add_constraint(x <= 2);
-  oc1.add_constraint(x - y <= 3);
-  oc1.add_constraint(y <= 2);
+  bool ok = (Octagon<mpq_class>(oc) == known_result);
 
+  print_constraints(oc, "*** oc.affine_image(A, C + B, 1) ***");
 
-#if NOISY
-  print_constraints(oc1, "*** oc1 ***");
-#endif
-
-  oc1.affine_image(x, expr);
-
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(x + y == 0);
-
-#if NOISY
-  print_constraints(oc1, "*** oc1.affine_image(x, -y) ***");
-#endif
-
-  int retval = (oc1 == known_result) ? 0 : 1;
-
-  return retval;
-
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagon oc(3);
+  oc.add_constraint(C <= 1);
+  oc.add_constraint(B >= 0);
+  oc.add_constraint(A + B >= 2);
+
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_image(A, C + B, 1);
+
+  Octagon<mpq_class> known_result(3);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(C <= 1);
+  known_result.add_constraint(A - B <= 1);
+  known_result.add_constraint(A - C >= 0);
+
+  bool ok = (Octagon<mpq_class>(oc) == known_result);
+
+  print_constraints(oc, "*** oc.affine_image(A, C + B, 1) ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagon oc(3);
+  oc.add_constraint(C <= 1);
+  oc.add_constraint(B >= 0);
+  oc.add_constraint(A + B >= 2);
+  oc.add_constraint(A >= 2);
+
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_image(A, -A, 1);
+
+  Octagon<mpq_class> known_result(3);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(C <= 1);
+  known_result.add_constraint(A <= -2);
+
+  bool ok = (Octagon<mpq_class>(oc) == known_result);
+
+  print_constraints(oc, "*** oc.affine_image(A, -A, 1) ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagon oc(3);
+  oc.add_constraint(C <= 1);
+  oc.add_constraint(B >= 0);
+  oc.add_constraint(A + B <= 2);
+  oc.add_constraint(-A + B <= 1);
+  oc.add_constraint(A >= 2);
+
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_image(A, -A, 1);
+
+  Octagon<mpq_class> known_result(3);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(C <= 1);
+  known_result.add_constraint(A <= -2);
+  known_result.add_constraint(-A + B <= 2);
+  known_result.add_constraint(A + B <= 1);
+
+  bool ok = (Octagon<mpq_class>(oc) == known_result);
+
+  print_constraints(oc, "*** oc.affine_image(A, -A, 1) ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  TOctagon oc(4);
+  oc.add_constraint(C <= 1);
+  oc.add_constraint(B >= 0);
+  oc.add_constraint(A + C <= 3);
+  oc.add_constraint(A <= 2);
+  oc.add_constraint(A >= 1);
+  oc.add_constraint(D >= 1);
+  oc.add_constraint(D <= 2);
+
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_image(A, -A + 2*D, 1);
+ 
+  Octagon<mpq_class> known_result(4);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(C <= 1);
+  known_result.add_constraint(D >= 1);
+  known_result.add_constraint(D <= 2);
+  known_result.add_constraint(A <= 3);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A - D <= 1);
+  known_result.add_constraint(D - A <= 1);
+
+  bool ok = (Octagon<mpq_class>(oc) == known_result);
+
+  print_constraints(oc, "*** oc.affine_image(A, -A + 2*D, 1) ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+END_MAIN
