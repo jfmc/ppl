@@ -412,7 +412,9 @@ isqrt(unsigned long x)
 template <typename T>
 inline dimension_type
 OR_Matrix<T>::max_num_rows() {
-  // FIXME: this deserves a comment.
+  // Compute the maximum number of rows that
+  // are contained in a DB_Row that allocates
+  // a pseudo-triangular matrix.
   dimension_type k = isqrt(2*DB_Row<T>::max_size() + 1);
   return (k-1) & ~dimension_type(1);
 }

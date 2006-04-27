@@ -60,13 +60,30 @@ operator<<(std::ostream& s, const OR_Matrix<T>& m);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A matrix representing octagonal constraints.
 /*!
-  An object of this class represents a constraint system.
-  Each OR_Matrix object can be viewed as a multiset of rows
-  (where each row implements a constraint system)and is
-  characterized by the row dimensions (the number of rows).
-  Given a constraint x_j - x_i <= c, at the i-th row and the j-th column
-  in the OR_Matrix, we insert the element c. If there is not a constraint,
-  we insert plus_infinity.
+  An OR_Matrix object is a DB_Row object that allows
+  the representation of a \em pseudo-triangular matrix, 
+  like the following:
+
+<PRE>
+         _ _
+   0    |_|_|
+   1    |_|_|_ _
+   2    |_|_|_|_|
+   3    |_|_|_|_|_ _
+   4    |_|_|_|_|_|_|
+   5    |_|_|_|_|_|_|
+         . . . 
+         _ _ _ _ _ _       _
+ 2n-2   |_|_|_|_|_|_| ... |_|
+ 2n-1   |_|_|_|_|_|_| ... |_|
+         0 1 2 3 4 5  ... 2n-1
+
+</PRE>
+
+  It is characterized by parameter n that defines the structure,
+  and such that there are 2*n rows (and 2*n columns).
+  It provides row_iterators for the access to the rows
+  and element_iterators for the access to the elements.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
@@ -279,7 +296,8 @@ public:
     \param space_dim
     The space dimension of the matrix that will be created.
 
-    This constructor creates a matrix with \p n_rows rows.
+    This constructor creates a matrix with \p 2*space_dim rows.
+    Each element is inizialized to plus infinity.
   */
   OR_Matrix(dimension_type space_dim);
 
@@ -295,8 +313,11 @@ public:
 private:
   //! Contains the rows of the matrix.
   /*!
-    FIXME: insert here a description of the allocation of the rows (plural)
-    of the OR_Matrix into the single row provided by \p vec (singular).
+    Creates a DB_Row which contains the rows of the OR_Matrix 
+    inserting each successive row to the end of the vec.
+    To contain all the elements of OR_Matrix the size of the DB_Row
+    is 2*n*(n+1), where the n is the caracteristic parameter of
+    OR_Matrix.
   */
   DB_Row<T> vec;
 
@@ -328,9 +349,12 @@ public:
     \param new_dim
     The new dimension of the resized matrix.
 
-    A new matrix, with the specified dimensions, is created.
-    The contents of the old matrix are copied in the new matrix,
-    which is then assigned to \p *this.
+    Adds new rows of right dimension to the end if
+    there is enough capacity; otherwise, creates a new matrix, 
+    with the specified dimension, copying the old elements 
+    in the upper part of the new matrix, which is 
+    then assigned to \p *this.
+    Each new element is inizialized to plus infinity.
   */
   void grow(dimension_type new_dim);
 
@@ -339,9 +363,8 @@ public:
     \param new_dim
     The new dimension of the resized matrix.
 
-    A new matrix, with the specified dimensions, is created.
-    The contents of the old matrix, up to the specified dimension limit,
-    are copied in the new matrix, which is then assigned to \p *this.
+    Erases from matrix to the end the rows with index
+    greater than 2*new_dim-1.
   */
   void shrink(dimension_type new_dim);
 
@@ -350,13 +373,19 @@ public:
     \param new_dim
     The new dimension of the resized matrix.
 
-    A new matrix, with the specified dimensions, is created
-    without copying the content of the old matrix and assigned
-    to \p *this.
+    If the new dimension is greater than the old one, it
+    adds new rows of right dimension to the end if
+    there is enough capacity; otherwise, it creates a new matrix, 
+    with the specified dimension, copying the old elements 
+    in the upper part of the new matrix, which is 
+    then assigned to \p *this. In this case each element is 
+    inizialized to plus infinity.
+    If the new dimension is less than the old one, it erase
+    from matrix to the end the rows with index greater than 2*new_dim-1
   */
   void resize_no_copy(dimension_type new_dim);
 
-  //! Returns the space-dimension of the rows in the matrix.
+  //! Returns the space-dimension of the matrix.
   dimension_type space_dimension() const;
 
   //! Returns the number of rows in the matrix.
