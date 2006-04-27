@@ -710,6 +710,35 @@ public:
   void generalized_affine_image(const Linear_Expression& lhs,
 				Relation_Symbol relsym,
 				const Linear_Expression& rhs);
+  /*! \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Generalized_Affine_Relations "affine relation"
+    \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+    where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+    by \p relsym.
+
+    \param var
+    The left hand side variable of the generalized affine transfer function.
+
+    \param relsym
+    The relation symbol.
+
+    \param expr
+    The numerator of the right hand side affine expression.
+
+    \param denominator
+    The denominator of the right hand side affine expression.
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this
+    are dimension-incompatible or if \p var is not a dimension
+    of \p *this or if \p relsym is a strict relation symbol.
+  */
+  void generalized_affine_preimage(Variable var,
+				   Relation_Symbol relsym,
+				   const Linear_Expression& expr,
+				   Coefficient_traits::const_reference
+				   denominator = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1046,6 +1075,9 @@ private:
   //! Removes all the constraints on row/column \p v.
   void forget_all_octagonal_constraints(typename OR_Matrix<N>::row_iterator i,
 					dimension_type v);
+
+  //! Removes all binary constraints on row/column \p v.
+  void forget_binary_octagonal_constraints(dimension_type v);
 
   //! An helper function for the computation of affine relations.
   /*!
