@@ -53,7 +53,6 @@ ORIGINAL_TESTS = \
 	constraints1 \
 	contains1 \
 	empty1 \
-	exceptions1 exceptions2 exceptions3 \
 	fromgensys1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
