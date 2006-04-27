@@ -39,7 +39,7 @@ test01() {
   oc2.add_constraint(x - y == 5);
   oc2.add_constraint(x + y == -1);
 
-   print_constraints(oc2, "*** oc2 ***");
+  print_constraints(oc2, "*** oc2 ***");
 
    // FIXME!
   return true;

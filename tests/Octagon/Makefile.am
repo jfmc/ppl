@@ -39,15 +39,11 @@ $(top_builddir)/tests/libppl_tests.a \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-	addspacedims1 addspacedims2 addspacedims3 addspacedims4 \
-	addspacedims5 addspacedims6 addspacedims7 addspacedims8 \
+	addspacedims1 \
 	affinedimension1 \
-	affineimage1 affineimage2 affineimage3 affineimage4 \
-	affineimage5 affineimage6 affineimage7 affineimage8 \
-	affineimage9 affineimage10 \
-	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
-	affinepreimage5 affinepreimage6 affinepreimage7 \
-	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
+	affineimage1 affineimage2 \
+	affinepreimage1 affinepreimage2 \
+	ascii_dump_load1 \
 	bhz03widening1 \
 	bhmz05widening1 \
 	cc76extrapolation1 \
@@ -61,9 +57,7 @@ ORIGINAL_TESTS = \
 	fromgensys1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
-	generalizedaffineimage5 generalizedaffineimage6 \
-	generalizedaffineimage7 generalizedaffineimage8 \
-	generalizedaffineimage9 \
+	generalizedaffinepreimage1 generalizedaffinepreimage2 \
 	intersection1 \
 	limitedbhmz05extrapolation1 \
 	limitedcc76extrapolation1 \
@@ -84,26 +78,11 @@ ORIGINAL_TESTS = \
 #
 
 addspacedims1_SOURCES = addspacedims1.cc
-addspacedims2_SOURCES = addspacedims2.cc
-addspacedims3_SOURCES = addspacedims3.cc
-addspacedims4_SOURCES = addspacedims4.cc
-addspacedims5_SOURCES = addspacedims5.cc
-addspacedims6_SOURCES = addspacedims6.cc
-addspacedims7_SOURCES = addspacedims7.cc
-addspacedims8_SOURCES = addspacedims8.cc
 
 affinedimension1_SOURCES = affinedimension1.cc
 
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
-affineimage3_SOURCES = affineimage3.cc
-affineimage4_SOURCES = affineimage4.cc
-affineimage5_SOURCES = affineimage5.cc
-affineimage6_SOURCES = affineimage6.cc
-affineimage7_SOURCES = affineimage7.cc
-affineimage8_SOURCES = affineimage8.cc
-affineimage9_SOURCES = affineimage9.cc
-affineimage10_SOURCES = affineimage10.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
@@ -151,6 +130,9 @@ generalizedaffineimage6_SOURCES = generalizedaffineimage6.cc
 generalizedaffineimage7_SOURCES = generalizedaffineimage7.cc
 generalizedaffineimage8_SOURCES = generalizedaffineimage8.cc
 generalizedaffineimage9_SOURCES = generalizedaffineimage9.cc
+
+generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
+generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
 
 intersection1_SOURCES = intersection1.cc
 
