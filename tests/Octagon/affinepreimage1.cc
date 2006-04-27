@@ -22,42 +22,193 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
+bool
+test01() {
   Variable x(0);
   Variable y(1);
-  Linear_Expression expr(y);
 
   TOctagon oc1(3);
-  Octagon<mpq_class> known_result(3);
-
   oc1.add_constraint(x <= 2);
   oc1.add_constraint(x - y <= 3);
   oc1.add_constraint(y <= 2);
 
-
-#if NOISY
   print_constraints(oc1, "*** oc1 ***");
-#endif
 
-  oc1.affine_preimage(x, expr);
+  oc1.affine_preimage(x, y);
 
+  Octagon<mpq_class> known_result(3);
   known_result.add_constraint(y <= 2);
 
-#if NOISY
+  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+
   print_constraints(oc1, "*** oc1.affine_preimage(x, y) ***");
-#endif
 
-  int retval = (oc1 == known_result) ? 0 : 1;
-
-  return retval;
-
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagon oc(2);
+  oc.add_constraint(A >= 0);
+  oc.add_constraint(B >= 0);
+  oc.add_constraint(A - B - 3 >= 0);
+
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_preimage(A, B - 1);
+
+  Octagon<mpq_class> known_result(2);
+  known_result.add_constraint(B >= 0);
+
+  bool ok = (Octagon<mpq_class>(oc) == known_result);
+
+  print_constraints(oc, "*** oc.affine_preimage(A, B-1) ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagon oc(2);
+  oc.add_constraint(A >= 2);
+  oc.add_constraint(B >= 0);
+  oc.add_constraint(A + B >= 2);
+
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_preimage(A, 2*A + 2, 2);
+
+  Octagon<mpq_class> known_result(2);
+  known_result.add_constraint(A >= 1);
+  known_result.add_constraint(B >= 0);
+
+  bool ok = (Octagon<mpq_class>(oc) == known_result);
+
+  print_constraints(oc, "*** oc.affine_preimage(A, 2*A + 2, 2) ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagon oc(2);
+  oc.add_constraint(A >= 2);
+  oc.add_constraint(B >= 0);
+
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_preimage(B, Linear_Expression(3));
+
+  Octagon<mpq_class> known_result(2);
+  known_result.add_constraint(A >= 2);
+
+  bool ok = (Octagon<mpq_class>(oc) == known_result);
+
+  print_constraints(oc, "*** oc.affine_preimage(B, 3) ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagon oc(3);
+  oc.add_constraint(A >= 2);
+  oc.add_constraint(B >= 0);
+  oc.add_constraint(C >= 0);
+
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_preimage(B, B - 2);
+
+  Octagon<mpq_class> known_result(3);
+  known_result.add_constraint(A >= 2);
+  known_result.add_constraint(C >= 0);
+  known_result.add_constraint(B >= 2);
+
+  bool ok = (Octagon<mpq_class>(oc) == known_result);
+
+  print_constraints(oc, "*** oc.affine_preimage(B, B - 2) ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TOctagon oct(3);
+  oct.add_constraint(x + y >= 0);
+  oct.add_constraint(x >= 0);
+  oct.add_constraint(z <= 2);
+
+  try {
+    // This is an invalid use of the function
+    // Octagon::affine_preimage(v, e, d): it is illegal applying
+    // the function with a linear expression with the denominator equal to
+    // zero.
+    Coefficient d = 0;
+    oct.affine_preimage(y, y + 1, d);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool
+test07() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TOctagon oct(2);
+  oct.add_constraint(x - y >= 2);
+  oct.add_constraint(y <= 7);
+
+  try {
+    // This is an invalid use of function
+    // Octagon::affine_preimage(v, expr, d): it is illegal to
+    // apply this function to a variable that is not in the space of
+    // the polyhedron.
+    oct.affine_preimage(x, z - 2);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+END_MAIN
