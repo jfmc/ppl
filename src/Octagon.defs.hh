@@ -1061,13 +1061,13 @@ private:
   //! Turns \p *this into an empty OS.
   void set_empty();
 
-  //! Adds the constraint <CODE>i[j] <= k/den</CODE>.
-  void add_octagonal_constraint(typename OR_Matrix<N>::row_iterator i,
+  //! Adds the constraint <CODE>matrix[i][j] <= k</CODE>.
+  void add_octagonal_constraint(const dimension_type i,
 				const dimension_type j,
 				N k);
 
-  //! Adds the constraint <CODE>i[j] <= num/den</CODE>.
-  void add_octagonal_constraint(typename OR_Matrix<N>::row_iterator i,
+  //! Adds the constraint <CODE>matrix[i][j] <= num/den</CODE>.
+  void add_octagonal_constraint(const dimension_type i,
 				const dimension_type j,
 				Coefficient_traits::const_reference num,
 				Coefficient_traits::const_reference den);

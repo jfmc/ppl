@@ -215,17 +215,18 @@ Octagon<T>::minimized_constraints() const {
 
 template <typename T>
 inline void
-Octagon<T>::add_octagonal_constraint(typename OR_Matrix<N>::row_iterator i,
+Octagon<T>::add_octagonal_constraint(const dimension_type i,
 				     const dimension_type j,
 				     N k) {
   using Implementation::BD_Shapes::div_round_up;
 
   // Private method: the caller has to ensure the following.
-  assert(i.index() < 2*space_dim && j < i.row_size() && i.index() != j);
-  typename OR_Matrix<N>::row_reference_type r = *i;
-  N& r_j = r[j];
-  if (r_j > k) {
-    r_j = k;
+  assert(i < 2*space_dim && j < 2*space_dim && i != j);
+  typename OR_Matrix<N>::row_iterator i_iter = matrix.row_begin() + i;
+  typename OR_Matrix<N>::row_reference_type r_i = *i_iter;
+  N& r_i_j = r_i[j];
+  if (r_i_j > k) {
+    r_i_j = k;
     if (marked_strongly_closed())
       status.reset_strongly_closed();
   }
@@ -234,14 +235,14 @@ Octagon<T>::add_octagonal_constraint(typename OR_Matrix<N>::row_iterator i,
 
 template <typename T>
 inline void
-Octagon<T>::add_octagonal_constraint(typename OR_Matrix<N>::row_iterator i,
+Octagon<T>::add_octagonal_constraint(const dimension_type i,
 				     const dimension_type j,
 				     Coefficient_traits::const_reference num,
 				     Coefficient_traits::const_reference den) {
   using Implementation::BD_Shapes::div_round_up;
 
   // Private method: the caller has to ensure the following.
-  assert(i.index() < 2*space_dim && j < i.row_size() && i.index() != j);
+  assert(i < 2*space_dim && j < 2*space_dim && i != j);
   assert(den != 0);
   N k;
   div_round_up(k, num, den);
