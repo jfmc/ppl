@@ -4103,7 +4103,7 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
 	typename OR_Matrix<N>::row_iterator last_v = matrix.row_begin() + lv_index;
 	typename OR_Matrix<N>::row_reference_type r_v = *last_v;
 	typename OR_Matrix<N>::row_reference_type r_cv = *(++last_v);
-	const N& double_approx_lv = (sign_lv > 0) ? r_cv[lv_index] : r_v[lv_index+1];
+	const N& double_approx_lv = (sign_lv > 0) ? r_v[lv_index+1] : r_cv[lv_index];
 	if (!is_plus_infinity(double_approx_lv)) {
 	  N coeff_lv;
 	  if (sign_lv > 0)
@@ -4121,7 +4121,7 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
 	  add_mul_assign_r(sum, coeff_lv, approx_lv, ROUND_UP);
 	  mul2exp_assign_r(sum, sum, 1, ROUND_IGNORE);
 	  typename OR_Matrix<N>::row_iterator iter_v = matrix.row_begin() + n_var;
-	  add_octagonal_constraint(iter_v+1, n_var, sum);
+	  add_octagonal_constraint(iter_v, n_var+1, sum);
 	}
       }
       break;

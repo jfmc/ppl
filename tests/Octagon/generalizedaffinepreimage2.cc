@@ -257,6 +257,106 @@ test09() {
   return ok;
 }
 
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  Octagon<mpq_class> oct(2);
+  oct.add_constraint(B - A <= 2);
+  oct.add_constraint(B <= 5);
+
+  print_constraints(oct, "*** oct ***");
+
+  oct.generalized_affine_preimage(A, LESS_THAN_OR_EQUAL, B + 3, 5);
+
+  Octagon<mpq_class> known_result(2);
+  known_result.add_constraint(5*B <= 18);
+
+  bool ok = (oct == known_result);
+
+  print_constraints(oct,
+		    "*** oct.generalized_affine_preimage(A, "
+		    "LESS_THAN_OR_EQUAL, B + 3, 5) ***");
+
+  return ok;
+}
+
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+
+  Octagon<mpq_class> oct(2);
+  oct.add_constraint(B - A >= 2);
+  oct.add_constraint(B >= 1);
+
+  print_constraints(oct, "*** oct ***");
+
+  oct.generalized_affine_preimage(A, GREATER_THAN_OR_EQUAL, B + 3, 5);
+
+  Octagon<mpq_class> known_result(2);
+  known_result.add_constraint(5*B >= 14);
+
+  bool ok = (oct == known_result);
+
+  print_constraints(oct,
+		    "*** oct.generalized_affine_preimage(A, "
+		    "GREATER_THAN_OR_EQUAL, B + 3, 5) ***");
+
+  return ok;
+}
+
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+
+  Octagon<mpq_class> oct(2);
+  oct.add_constraint(B - A >= 2);
+  oct.add_constraint(B <= 4);
+
+  print_constraints(oct, "*** oct ***");
+
+  oct.generalized_affine_preimage(A, GREATER_THAN_OR_EQUAL, -B + 3, 5);
+
+  Octagon<mpq_class> known_result(2);
+  known_result.add_constraint(B <= 4);
+  known_result.add_constraint(5*B >= 9);
+
+  bool ok = (oct == known_result);
+
+  print_constraints(oct,
+		    "*** oct.generalized_affine_preimage(A, "
+		    "GREATER_THAN_OR_EQUAL, -B + 3, 5) ***");
+
+  return ok;
+}
+
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+
+  Octagon<mpq_class> oct(2);
+  oct.add_constraint(B - A >= 2);
+  oct.add_constraint(B <= 1);
+
+  print_constraints(oct, "*** oct ***");
+
+  oct.generalized_affine_preimage(A, GREATER_THAN_OR_EQUAL, -B + 3, 5);
+
+  Octagon<mpq_class> known_result(2, EMPTY);
+
+  bool ok = (oct == known_result);
+
+  print_constraints(oct,
+		    "*** oct.generalized_affine_preimage(A, "
+		    "GREATER_THAN_OR_EQUAL, -B + 3, 5) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -269,4 +369,8 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN
