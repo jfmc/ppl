@@ -58,8 +58,9 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
   bool dbm_initialized = false;
   bool point_seen = false;
   // Going through all the points and closure points.
-  for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
-    const Generator& g = *i;
+  for (Generator_System::const_iterator gs_i = gs_begin;
+       gs_i != gs_end; ++gs_i) {
+    const Generator& g = *gs_i;
     switch (g.type()) {
     case Generator::POINT:
       point_seen = true;
@@ -115,8 +116,9 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 				"contains no points.");
 
   // Going through all the lines and rays.
-  for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
-    const Generator& g = *i;
+  for (Generator_System::const_iterator gs_i = gs_begin;
+       gs_i != gs_end; ++gs_i) {
+    const Generator& g = *gs_i;
     switch (g.type()) {
     case Generator::LINE:
       for (dimension_type i = space_dim; i > 0; --i) {
@@ -3612,7 +3614,7 @@ BD_Shape<T>::OK() const {
     if (is_minus_infinity(dbm[i][j])) {
 #ifndef NDEBUG
       using namespace Parma_Polyhedra_Library::IO_Operators;
-      std::cerr << "BD_Shape::dbm[" << i << "][" << i << "] = "
+      std::cerr << "BD_Shape::dbm[" << i << "][" << j << "] = "
 		<< dbm[i][i] << "!"
 		<< std::endl;
 #endif
@@ -3653,7 +3655,7 @@ BD_Shape<T>::OK() const {
 	if (!redundancy_dbm[i][j] && is_plus_infinity(dbm[i][j])) {
 #ifndef NDEBUG
 	  using namespace Parma_Polyhedra_Library::IO_Operators;
-	  std::cerr << "BD_Shape::dbm[" << i << "][" << i << "] = "
+	  std::cerr << "BD_Shape::dbm[" << i << "][" << j << "] = "
 		    << dbm[i][i] << " is marked as non-redundant!"
 		    << std::endl;
 #endif
