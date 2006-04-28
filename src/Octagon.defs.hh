@@ -1073,8 +1073,7 @@ private:
 				Coefficient_traits::const_reference den);
 
   //! Removes all the constraints on row/column \p v.
-  void forget_all_octagonal_constraints(typename OR_Matrix<N>::row_iterator i,
-					dimension_type v);
+  void forget_all_octagonal_constraints(dimension_type v);
 
   //! Removes all binary constraints on row/column \p v.
   void forget_binary_octagonal_constraints(dimension_type v);

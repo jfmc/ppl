@@ -2685,8 +2685,7 @@ Octagon<T>::affine_image(const Variable var,
   if (t == 0) {
     // Case 1: expr == b.
     // Remove all constraints on `var'.
-    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-    forget_all_octagonal_constraints(i, n_var);
+    forget_all_octagonal_constraints(n_var);
     b *= 2;
     // Add the constraint `var == b/denominator'.
     add_octagonal_constraint(n_var+1, n_var, b, denominator);
@@ -2733,7 +2732,7 @@ Octagon<T>::affine_image(const Variable var,
 	else {
 	  // Here `coeff == -denominator'.
 	  // Remove the binary constraints on `var'.
-	  forget_binary_octagonal_constraints(num_var);
+	  forget_binary_octagonal_constraints(n_var);
  	  typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
  	  typename OR_Matrix<N>::row_reference_type x_i = *i;
  	  typename OR_Matrix<N>::row_reference_type x_ii = *(i+1);
@@ -2769,9 +2768,8 @@ Octagon<T>::affine_image(const Variable var,
       else {
 	// Here `w != var', so that `expr' is of the form
 	// +/-denominator * w + b.
-	typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
 	// Remove all constraints on `var'.
-	forget_all_octagonal_constraints(i, n_var);
+	forget_all_octagonal_constraints(n_var);
 	dimension_type h = 2*last_var_id;
 	// Add the new constraint `var - w = b/denominator'.
 	if (coeff == denominator) {
@@ -2923,8 +2921,7 @@ Octagon<T>::affine_image(const Variable var,
   }
 
   // Remove all constraints with var in the rows.
-  typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-  forget_all_octagonal_constraints(i, n_var);
+  forget_all_octagonal_constraints(n_var);
   // Return immediately if no approximation could be computed.
   if (pos_pinf_count > 1 && neg_pinf_count > 1) {
     assert(OK());
@@ -3109,8 +3106,7 @@ Octagon<T>::affine_preimage(const Variable var,
 
   if (t == 0) {
     // Case 1: expr = n; remove all costraints on `var'.
-    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-    forget_all_octagonal_constraints(i, n_var);
+    forget_all_octagonal_constraints(n_var);
     assert(OK());
     return;
   }
@@ -3127,8 +3123,7 @@ Octagon<T>::affine_preimage(const Variable var,
     else {
       // `expr == a*w + b', where `w != var'.
       // Remove all constraints on `var'.
-      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-      forget_all_octagonal_constraints(i, n_var);
+      forget_all_octagonal_constraints(n_var);
     }
     assert(OK());
     return;
@@ -3155,8 +3150,7 @@ Octagon<T>::affine_preimage(const Variable var,
   }
   else {
     // The transformation is not invertible: all constraints on `var' are lost.
-    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-    forget_all_octagonal_constraints(i, n_var);
+    forget_all_octagonal_constraints(n_var);
   }
   assert(OK());
 }
@@ -3245,8 +3239,7 @@ if (marked_empty())
   if (t == 0) {
     // Case 1: expr = b.
     // Remove all constraints on `var'.
-    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-    forget_all_octagonal_constraints(i, n_var);
+    forget_all_octagonal_constraints(n_var);
     // Strong closure is lost.
     status.reset_strongly_closed();
     switch (relsym) {
@@ -3314,33 +3307,28 @@ if (marked_empty())
 	      mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
 	      add_assign_r(m_nv1_nv, m_nv_nv1, d, ROUND_UP);
 	      m_nv_nv1 = PLUS_INFINITY;
-	      forget_binary_octagonal_constraints(num_var);
+	      forget_binary_octagonal_constraints(n_var);
 	    }
 	  }
 	  else {
 	    // Here `w != v', so that `expr' is the form
 	    // +/- denominator*w + b.
 	    // Remove all constraints on `v'.
-	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-	    forget_all_octagonal_constraints(i, n_var);
+	    forget_all_octagonal_constraints(n_var);
 	    const dimension_type h = 2*last_var_id;
 	    if (a == denominator) {
 	      // Add the new constraint `v - w <= b/denominator'.
-	      if (num_var < last_var_id) {
+	      if (num_var < last_var_id) 
 		add_octagonal_constraint(h, n_var, b, denominator);
-	      }
-	      else if (num_var > last_var_id) {
+	      else if (num_var > last_var_id) 
 		add_octagonal_constraint(n_var+1, h+1, b, denominator);
-	      }
 	    }
 	    else {
 	      // Add the new constraint `v + w <= b/denominator'.
-	      if (num_var < last_var_id) {
+	      if (num_var < last_var_id) 
 		add_octagonal_constraint(h+1, n_var, b, denominator);
-	      }
-	      else if (num_var > last_var_id) {
+	      else if (num_var > last_var_id) 
 		add_octagonal_constraint(n_var+1, h, b, denominator);
-	      }
 	    }
 	  }
 	  break;
@@ -3386,15 +3374,14 @@ if (marked_empty())
 	      mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
 	      add_assign_r(m_nv_nv1, m_nv1_nv, d, ROUND_UP);
 	      m_nv1_nv = PLUS_INFINITY;
-	      forget_binary_octagonal_constraints(num_var);
+	      forget_binary_octagonal_constraints(n_var);
 	    }
 	  }
 	  else {
 	    // Here `w != v', so that `expr' is of the form
 	    // +/-denominator * w + b, with `w != v'.
 	    // Remove all constraints on `v'.
-	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-	    forget_all_octagonal_constraints(i, n_var);
+	    forget_all_octagonal_constraints(n_var);
 	    const dimension_type h = 2*last_var_id;
 	    // We have got an expression of the following form:
 	    // var1 + n, with `var1' != `var'.
@@ -3403,23 +3390,18 @@ if (marked_empty())
 	    if (a == denominator) {
 	      // Add the new constraint `var - w >= b/denominator',
 	      // i.e., `w - var <= -b/denominator'.
-	      if (num_var < last_var_id) {
+	      if (num_var < last_var_id) 
 		add_octagonal_constraint(h+1, n_var+1, b, minus_den);
-	      }
-	      else if (num_var > last_var_id) {
+	      else if (num_var > last_var_id) 
 		add_octagonal_constraint(n_var, h, b, minus_den);
-	      }
 	    }
 	    else {
 	      // Add the new constraint `var + w >= b/denominator',
 	      // i.e., `-w - var <= -b/denominator'.
-	      if (num_var < last_var_id) {
-		typename OR_Matrix<N>::row_iterator j = matrix.row_begin() + h;
+	      if (num_var < last_var_id) 
 		add_octagonal_constraint(h, n_var+1, b, minus_den);
-	      }
-	      else if (num_var > last_var_id) {
+	      else if (num_var > last_var_id) 
 		add_octagonal_constraint(n_var, h+1, b, minus_den);
-	      }
 	    }
 	  }
 	  break;
@@ -3505,8 +3487,7 @@ if (marked_empty())
 	add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
       }
       // Remove all constraints on `v'.
-      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-      forget_all_octagonal_constraints(i, n_var);
+      forget_all_octagonal_constraints(n_var);
       status.reset_strongly_closed();
       // Return immediately if no approximation could be computed.
       if (pinf_count > 1) {
@@ -3613,8 +3594,7 @@ if (marked_empty())
       }
 
       // Remove all constraints on `var'.
-      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-      forget_all_octagonal_constraints(i, n_var);
+      forget_all_octagonal_constraints(n_var);
       status.reset_strongly_closed();
       // Return immediately if no approximation could be computed.
       if (pinf_count > 1) {
@@ -3800,8 +3780,7 @@ Octagon<T>::generalized_affine_image(const Linear_Expression& lhs,
       // Cylindrificate on all variables in the lhs.
       for (dimension_type i = lhs_vars.size(); i-- > 0; ) {
 	dimension_type lhs_vars_i = lhs_vars[i].id();
-	typename OR_Matrix<N>::row_iterator k = matrix.row_begin() + 2*lhs_vars_i;
-	forget_all_octagonal_constraints(k, 2*lhs_vars_i);
+	forget_all_octagonal_constraints(2*lhs_vars_i);
       }
       // Constrain the left hand side expression so that it is related to
       // the right hand side expression as dictated by `relsym'.
@@ -3830,8 +3809,7 @@ Octagon<T>::generalized_affine_image(const Linear_Expression& lhs,
 
       for (dimension_type i = lhs_vars.size(); i-- > 0; ) {
 	dimension_type lhs_vars_i = lhs_vars[i].id();
-	typename OR_Matrix<N>::row_iterator k = matrix.row_begin() + 2*lhs_vars_i;
-	forget_all_octagonal_constraints(k, 2*lhs_vars_i);
+	forget_all_octagonal_constraints(2*lhs_vars_i);
       }
 
 #else // Currently unnecessarily complex computation.
@@ -3853,8 +3831,7 @@ Octagon<T>::generalized_affine_image(const Linear_Expression& lhs,
       assert(!marked_empty());
       for (dimension_type i = lhs_vars.size(); i-- > 0; ) {
 	dimension_type lhs_vars_i = lhs_vars[i].id();
-	typename OR_Matrix<N>::row_iterator k = matrix.row_begin() + 2*lhs_vars_i;
-	forget_all_octagonal_constraints(k, 2*lhs_vars_i);
+	forget_all_octagonal_constraints(2*lhs_vars_i);
       }
       // Constrain the new dimension so that it is related to
       // the left hand side as dictated by `relsym'.
@@ -4007,22 +3984,17 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
       // expr_last_var * w + b, with `last_var_id != v'.
       if (expr_last_var == denominator) {
 	// Add the new constraints `v - w <= b/denominator'.
-	if (num_var < last_var_id) {
+	if (num_var < last_var_id) 
 	  add_octagonal_constraint(lv_index, n_var, d);
-	}
-	if (num_var > last_var_id) {
-	  typename OR_Matrix<N>::row_iterator iter_v = matrix.row_begin() + n_var;
+	if (num_var > last_var_id) 
 	  add_octagonal_constraint(n_var+1, lv_index+1, d);
-	}
       }
       else if (expr_last_var == -denominator) {
 	// Add the new constraints `v + w <= b/denominator'.
-	if (num_var < last_var_id) {
+	if (num_var < last_var_id) 
 	  add_octagonal_constraint(lv_index+1, n_var, d);
-	}
-	if (num_var > last_var_id) {
+	if (num_var > last_var_id) 
 	  add_octagonal_constraint(n_var+1, lv_index, d);
-	}
       }
       else {
      	// Here expr_last_var != denominator, so that we should be adding
@@ -4051,7 +4023,6 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
 	  div_assign_r(coeff_lv, coeff_lv, den, ROUND_UP);
 	  add_mul_assign_r(sum, coeff_lv, approx_lv, ROUND_UP);
 	  mul2exp_assign_r(sum, sum, 1, ROUND_IGNORE);
-	  typename OR_Matrix<N>::row_iterator iter_v = matrix.row_begin() + n_var;
 	  add_octagonal_constraint(n_var+1, n_var, sum);
 	}
       }
@@ -4063,21 +4034,17 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
       // expr_last_var * w + b, with `last_var_id != v'.
       if (expr_last_var == denominator) {
     	// Add the new constraint `v - w >= b/denominator'.
-	if (num_var < last_var_id) {
+	if (num_var < last_var_id) 
 	  add_octagonal_constraint(lv_index+1, n_var+1, d);
-	}
-	if (num_var > last_var_id) {
+	if (num_var > last_var_id) 
 	  add_octagonal_constraint(n_var, lv_index, d);
-	}
       }
       else if (expr_last_var == -denominator) {
 	// Add the new constraints `v + w >= b/denominator'.
-	if (num_var < last_var_id) {
+	if (num_var < last_var_id) 
 	  add_octagonal_constraint(lv_index, n_var+1, d);
-	}
-	if (num_var > last_var_id) {
+	if (num_var > last_var_id) 
 	  add_octagonal_constraint(n_var, lv_index+1, d);
-	}
       }
       else {
      	// Here expr_last_var != denominator, so that we should be adding
@@ -4106,7 +4073,6 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
 	  div_assign_r(coeff_lv, coeff_lv, den, ROUND_UP);
 	  add_mul_assign_r(sum, coeff_lv, approx_lv, ROUND_UP);
 	  mul2exp_assign_r(sum, sum, 1, ROUND_IGNORE);
-	  typename OR_Matrix<N>::row_iterator iter_v = matrix.row_begin() + n_var;
 	  add_octagonal_constraint(n_var, n_var+1, sum);
 	}
       }
@@ -4354,8 +4320,7 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
   // If the shrunk Octagon is empty, its preimage is empty too.
   if (is_empty())
     return;
-  typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-  forget_all_octagonal_constraints(i, n_var);
+  forget_all_octagonal_constraints(n_var);
   assert(OK());
 }
 
