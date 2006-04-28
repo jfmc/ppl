@@ -1,4 +1,4 @@
-/* Octagon class implementation (non-inline functions).
+/* Octagonal_Shape class implementation (non-inline functions).
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,12 +22,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-#include "Octagon.defs.hh"
+#include "Octagonal_Shape.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates Parma_Polyhedra_Library::Octagon */
+/*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 bool
 PPL::extract_octagonal_difference(const Constraint& c,

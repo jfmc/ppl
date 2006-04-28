@@ -1,4 +1,4 @@
-/* Test Octagon::BHMZ05_widening_assign().
+/* Test Octagonal_Shape::BHMZ05_widening_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,27 +29,27 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(x <= 1);
   oc1.add_constraint(x - y <= 2);
   oc1.add_constraint(y - x <= 7);
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(x - y <= 2);
   oc2.add_constraint(-x <= 3);
   oc2.add_constraint(x <= 0);
   oc2.add_constraint(y - x <= 2);
- 
+
   print_constraints(oc2, "*** oc2 ***");
 
   oc1.BHMZ05_widening_assign(oc2);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
 
@@ -58,17 +58,17 @@ test01() {
 
 bool
 test02() {
-  TOctagon oc1;
-  TOctagon oc2(0, EMPTY);
+  TOctagonal_Shape oc1;
+  TOctagonal_Shape oc2(0, EMPTY);
 
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
 
   oc1.BHMZ05_widening_assign(oc2);
 
-  Octagon<mpq_class> known_result;
+  Octagonal_Shape<mpq_class> known_result;
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
 
@@ -80,13 +80,13 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(A >= 1);
   oc1.add_constraint(B >= 0);
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(A >= 0);
   oc2.add_constraint(B >= 0);
   oc2.add_constraint(A - B >= 2);
@@ -95,10 +95,10 @@ test03() {
 
   oc1.BHMZ05_widening_assign(oc2);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B >= 0);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
 
@@ -113,7 +113,7 @@ test04() {
   Variable D(3);
   Variable E(4);
 
-  TOctagon oc1(5);
+  TOctagonal_Shape oc1(5);
   oc1.add_constraint(A >= 0);
   oc1.add_constraint(B >= 0);
   oc1.add_constraint(C >= 1);
@@ -125,7 +125,7 @@ test04() {
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(5);
+  TOctagonal_Shape oc2(5);
   oc2.add_constraint(A >= 0);
   oc2.add_constraint(B >= 0);
   oc2.add_constraint(C >= 1);
@@ -139,14 +139,14 @@ test04() {
 
   oc1.BHMZ05_widening_assign(oc2);
 
-  Octagon<mpq_class> known_result(5);
+  Octagonal_Shape<mpq_class> known_result(5);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C >= 1);
   known_result.add_constraint(D >= 0);
   known_result.add_constraint(E - D == 0);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
 
@@ -160,7 +160,7 @@ test05() {
   Variable C(2);
   Variable D(3);
 
-  TOctagon oc1(4);
+  TOctagonal_Shape oc1(4);
   oc1.add_constraint(A >= 0);
   oc1.add_constraint(B >= 0);
   oc1.add_constraint(B <= 39);
@@ -180,7 +180,7 @@ test05() {
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(4);
+  TOctagonal_Shape oc2(4);
   oc2.add_constraint(A >= 0);
   oc2.add_constraint(B >= 0);
   oc2.add_constraint(B <= 38);
@@ -202,7 +202,7 @@ test05() {
 
   oc1.BHMZ05_widening_assign(oc2);
 
-  Octagon<mpq_class> known_result(4);
+  Octagonal_Shape<mpq_class> known_result(4);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C >= 0);
@@ -212,7 +212,7 @@ test05() {
   known_result.add_constraint(C - D <= 0);
   known_result.add_constraint(D - C <= 1);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
 
@@ -226,7 +226,7 @@ test06() {
   Variable C(2);
   Variable D(3);
 
-  TOctagon oc1(4);
+  TOctagonal_Shape oc1(4);
   oc1.add_constraint(B <= 1);
   oc1.add_constraint(C <= 7);
   oc1.add_constraint(D >= 0);
@@ -239,7 +239,7 @@ test06() {
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(4);
+  TOctagonal_Shape oc2(4);
   oc2.add_constraint(B <= 1);
   oc2.add_constraint(C <= 7);
   oc2.add_constraint(D >= 0);
@@ -254,7 +254,7 @@ test06() {
 
   oc1.BHMZ05_widening_assign(oc2);
 
-  Octagon<mpq_class> known_result(4);
+  Octagonal_Shape<mpq_class> known_result(4);
   known_result.add_constraint(B <= 1);
   known_result.add_constraint(C <= 7);
   known_result.add_constraint(D >= 0);
@@ -263,7 +263,7 @@ test06() {
   known_result.add_constraint(C - B <= 1);
   known_result.add_constraint(B - D <= 0);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
 
@@ -278,7 +278,7 @@ test07() {
   Variable D(3);
   Variable E(4);
 
-  TOctagon oc1(5);
+  TOctagonal_Shape oc1(5);
   oc1.add_constraint(A + B >= 9);
   oc1.add_constraint(B + C >= 11);
   oc1.add_constraint(C + D >= 12);
@@ -286,7 +286,7 @@ test07() {
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(5);
+  TOctagonal_Shape oc2(5);
   oc2.add_constraint(A + B >= 10);
   oc2.add_constraint(B + C >= 11);
   oc2.add_constraint(C + D >= 12);
@@ -296,11 +296,11 @@ test07() {
 
   oc1.BHMZ05_widening_assign(oc2);
 
-  Octagon<mpq_class> known_result(5);
+  Octagonal_Shape<mpq_class> known_result(5);
   known_result.add_constraint(B + C >= 11);
   known_result.add_constraint(C + D >= 12);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
 
@@ -315,7 +315,7 @@ test08() {
   Variable D(3);
   Variable E(4);
 
-  TOctagon oc1(5);
+  TOctagonal_Shape oc1(5);
   oc1.add_constraint(A - B <= 2);
   oc1.add_constraint(B - C <= 0);
   oc1.add_constraint(C - A <= -2);
@@ -324,7 +324,7 @@ test08() {
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(5);
+  TOctagonal_Shape oc2(5);
   oc2.add_constraint(A - B <= 2);
   oc2.add_constraint(B - C <= 0);
   oc2.add_constraint(C - A <= -2);
@@ -336,13 +336,13 @@ test08() {
 
   oc1.BHMZ05_widening_assign(oc2);
 
-  Octagon<mpq_class> known_result(5);
+  Octagonal_Shape<mpq_class> known_result(5);
   known_result.add_constraint(A - B <= 2);
   known_result.add_constraint(B - C <= 0);
   known_result.add_constraint(C - A <= -2);
   known_result.add_constraint(E - D <= 3);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
 
@@ -357,7 +357,7 @@ test09() {
   Variable D(3);
   Variable E(4);
 
-  TOctagon oc1(5);
+  TOctagonal_Shape oc1(5);
   oc1.add_constraint(A - B <= 2);
   oc1.add_constraint(B - C <= 0);
   oc1.add_constraint(C - A <= -2);
@@ -366,7 +366,7 @@ test09() {
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(5);
+  TOctagonal_Shape oc2(5);
   oc2.add_constraint(A - B <= 2);
   oc2.add_constraint(B - A <= -7);
   oc2.add_constraint(C - A == -2);
@@ -375,11 +375,11 @@ test09() {
 
   print_constraints(oc2, "*** oc2 ***");
 
-  Octagon<mpq_class> known_result(oc1);
+  Octagonal_Shape<mpq_class> known_result(oc1);
 
   oc1.BHMZ05_widening_assign(oc2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
 
@@ -394,7 +394,7 @@ test10() {
   Variable D(3);
   Variable E(4);
 
-  TOctagon oc1(5);
+  TOctagonal_Shape oc1(5);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(B <= 0);
   oc1.add_constraint(C <= -2);
@@ -403,7 +403,7 @@ test10() {
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(5);
+  TOctagonal_Shape oc2(5);
   oc2.add_constraint(A <= 2);
   oc2.add_constraint(B <= -7);
   oc2.add_constraint(C <= -2);
@@ -414,13 +414,13 @@ test10() {
 
   oc1.BHMZ05_widening_assign(oc2);
 
-  Octagon<mpq_class> known_result(5);
+  Octagonal_Shape<mpq_class> known_result(5);
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(C <= -2);
   known_result.add_constraint(D <= 2);
   known_result.add_constraint(E <= 3);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
 
@@ -435,7 +435,7 @@ test11() {
   Variable D(3);
   Variable E(4);
 
-  TOctagon oc1(5);
+  TOctagonal_Shape oc1(5);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A + C <= -1);
   oc1.add_constraint(A + D <= 1);
@@ -446,7 +446,7 @@ test11() {
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(5);
+  TOctagonal_Shape oc2(5);
   oc2.add_constraint(A <= 2);
   oc2.add_constraint(A + D <= 1);
   oc2.add_constraint(B <= -1);
@@ -458,13 +458,13 @@ test11() {
 
   oc1.BHMZ05_widening_assign(oc2);
 
-  Octagon<mpq_class> known_result(5);
+  Octagonal_Shape<mpq_class> known_result(5);
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(A + D <= 1);
   known_result.add_constraint(C <= -3);
   known_result.add_constraint(D <= 2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
 
@@ -477,7 +477,7 @@ test12() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(C - A <= -1);
   oc1.add_constraint(B <= 0);
@@ -485,15 +485,15 @@ test12() {
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(3, EMPTY);
+  TOctagonal_Shape oc2(3, EMPTY);
 
   print_constraints(oc2, "*** oc2 ***");
 
   oc1.BHMZ05_widening_assign(oc2);
 
-  Octagon<mpq_class> known_result(3, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
 
@@ -509,7 +509,7 @@ test13() {
   cs1.insert(x >= 0);
   cs1.insert(x <= 1);
   cs1.insert(y == 0);
-  TOctagon oct1(cs1);
+  TOctagonal_Shape oct1(cs1);
 
   print_constraints(oct1, "*** oct1 ***");
 
@@ -517,19 +517,19 @@ test13() {
   cs2.insert(x <= 1);
   cs2.insert(y >= 0);
   cs2.insert(y - x <= 0);
-  TOctagon oct2(cs2);
+  TOctagonal_Shape oct2(cs2);
 
 
   print_constraints(oct2, "*** oct2 ***");
 
   oct2.BHMZ05_widening_assign(oct1);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y >= 0);
   known_result.add_constraint(x >= 0);
 
-  bool ok = (Octagon<mpq_class>(oct2) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(oct2, "*** oct2.BHMZ05_widening_assign(oct1) ***");
 
@@ -538,12 +538,12 @@ test13() {
 
 bool
 test14() {
-  TOctagon oc1(5);
-  TOctagon oc2(10);
+  TOctagonal_Shape oc1(5);
+  TOctagonal_Shape oc2(10);
 
   try {
     // This is an invalid use of the function
-    // Octagon::BHMZ05_widening_assign(oc2): it is illegal to apply
+    // Octagonal_Shape::BHMZ05_widening_assign(oc2): it is illegal to apply
     // this function to two polyhedra that are not dimensional
     // compatible.
     oc2.BHMZ05_widening_assign(oc1);

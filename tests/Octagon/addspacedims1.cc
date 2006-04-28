@@ -1,5 +1,5 @@
-/* Test Octagon::add_space_dimensions_and_embed() and
-   Octagon::add_space_dimensions_and_project().
+/* Test Octagonal_Shape::add_space_dimensions_and_embed() and
+   Octagonal_Shape::add_space_dimensions_and_project().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -32,7 +32,7 @@ test01() {
 //   Variable z(2);
   Variable w(3);
 
-  TOctagon oc(2);
+  TOctagonal_Shape oc(2);
   oc.add_constraint(x <= 2);
 
   print_constraints(oc, "*** oc ***");
@@ -40,13 +40,13 @@ test01() {
   oc.add_space_dimensions_and_embed(2);
   oc.add_constraint(w <= 2);
 
-  Octagon<mpq_class> known_result(4);
+  Octagonal_Shape<mpq_class> known_result(4);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(w <= 2);
 
   bool ok = (oc == known_result);
 
-  print_constraints(Octagon<mpq_class>(oc), 
+  print_constraints(Octagonal_Shape<mpq_class>(oc),
 		    "*** oc.add_space_dimensions_and_embed(2) "
 		    "and oc.add_constraint(w <= 2) ***");
 
@@ -55,8 +55,8 @@ test01() {
 
 bool
 test02() {
-  TOctagon oc1(0, EMPTY);
-  TOctagon oc2(1, EMPTY);
+  TOctagonal_Shape oc1(0, EMPTY);
+  TOctagonal_Shape oc2(1, EMPTY);
 
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
@@ -79,19 +79,19 @@ test03() {
   Variable z(2);
   Variable w(3);
 
-  TOctagon oc(2);
+  TOctagonal_Shape oc(2);
   oc.add_constraint(x <= 2);
 
   print_constraints(oc, "*** oc ***");
 
   oc.add_space_dimensions_and_project(2);
 
-  Octagon<mpq_class> known_result(4);
+  Octagonal_Shape<mpq_class> known_result(4);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(w == 0);
   known_result.add_constraint(z == 0);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.add_space_dimensions_and_project(2) ***");
 
@@ -111,13 +111,13 @@ test04() {
   cs.insert(x <= 6);
   cs.insert(y <= 6);
 
-  TOctagon oc(cs);
+  TOctagonal_Shape oc(cs);
 
   print_constraints(oc, "*** oc ***");
 
   oc.add_space_dimensions_and_project(2);
 
-  Octagon<mpq_class> known_result(4);
+  Octagonal_Shape<mpq_class> known_result(4);
   known_result.add_constraint(z == 0);
   known_result.add_constraint(w == 0);
   known_result.add_constraint(x >= 2);
@@ -125,7 +125,7 @@ test04() {
   known_result.add_constraint(x <= 6);
   known_result.add_constraint(y <= 6);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.add_space_dimensions_and_project(2) ***");
 
@@ -136,11 +136,11 @@ bool
 test05() {
   Variable A(0);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(A >= 0);
   oc1.add_constraint(A <= 2);
 
-  TOctagon oc2(oc1);
+  TOctagonal_Shape oc2(oc1);
 
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
@@ -158,8 +158,8 @@ test05() {
 
 bool
 test06() {
-  TOctagon oc1(0, EMPTY);
-  TOctagon oc2(1, EMPTY);
+  TOctagonal_Shape oc1(0, EMPTY);
+  TOctagonal_Shape oc2(1, EMPTY);
 
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
@@ -179,8 +179,8 @@ bool
 test07() {
   Variable A(0);
 
-  TOctagon oc1(0);
-  TOctagon oc2(1);
+  TOctagonal_Shape oc1(0);
+  TOctagonal_Shape oc2(1);
   oc2.add_constraint(A == 0);
 
   print_constraints(oc1, "*** oc1 ***");
@@ -190,7 +190,7 @@ test07() {
   oc2.add_space_dimensions_and_project(1);
 
   bool ok = (oc1 == oc2);
-  
+
   print_constraints(oc1, "*** oc1.add_space_dimensions_and_project(2) ***");
   print_constraints(oc2, "*** oc2.add_space_dimensions_and_project(1) ***");
 
@@ -202,8 +202,8 @@ test08() {
   //  Variable A(0);
   Variable B(1);
 
-  TOctagon oc1(1);
-  TOctagon oc2(2);
+  TOctagonal_Shape oc1(1);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(B == 0);
 
   print_constraints(oc1, "*** oc1 ***");
@@ -213,7 +213,7 @@ test08() {
   oc2.add_space_dimensions_and_project(1);
 
   bool ok = (oc1 == oc2);
-  
+
   print_constraints(oc1, "*** oc1.add_space_dimensions_and_project(2) ***");
   print_constraints(oc2, "*** oc2.add_space_dimensions_and_project(1) ***");
 

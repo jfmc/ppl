@@ -1,4 +1,4 @@
-/* Test Octagon::contains().
+/* Test Octagonal_Shape::contains().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -26,10 +26,10 @@ namespace {
 
 bool
 test01() {
-  TOctagon oc1;
+  TOctagonal_Shape oc1;
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2;
+  TOctagonal_Shape oc2;
   print_constraints(oc2, "*** oc2 ***");
 
   bool contained = oc1.contains(oc2);
@@ -46,13 +46,13 @@ test02() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(C >= 0);
   oc1.add_constraint(B + C >= 1);
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
   oc2.add_constraint(A == 0);
   oc2.add_constraint(C >= 0);
   oc2.add_constraint(B + C >= 1);
@@ -80,11 +80,11 @@ test03() {
   cs.insert(B >= 0);
   cs.insert(A >= 0);
 
-  TOctagon oc1(cs);
+  TOctagonal_Shape oc1(cs);
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(cs);
+  TOctagonal_Shape oc2(cs);
   oc2.add_constraint(A + B >= 0);
 
   print_constraints(oc2, "*** oc2 ***");
@@ -109,7 +109,7 @@ test04() {
   cs1.insert(C >= 0);
   cs1.insert(B >= 0);
   cs1.insert(A == 0);
-  TOctagon oc1(cs1);
+  TOctagonal_Shape oc1(cs1);
 
   print_constraints(oc1, "*** oc1 ***");
 
@@ -118,7 +118,7 @@ test04() {
   cs2.insert(C == 0);
   cs2.insert(B == 0);
   cs2.insert(A == 0);
-  TOctagon oc2(cs2);
+  TOctagonal_Shape oc2(cs2);
 
   print_constraints(oc2, "*** oc2 ***");
 
@@ -132,13 +132,13 @@ test04() {
 
 bool
 test05() {
-  TOctagon oc1(0);
+  TOctagonal_Shape oc1(0);
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(0, EMPTY);
+  TOctagonal_Shape oc2(0, EMPTY);
   print_constraints(oc2, "*** oc2 ***");
 
-  TOctagon oc3(0);
+  TOctagonal_Shape oc3(0);
   print_constraints(oc3, "*** oc3 ***");
 
   bool contained1 = oc1.contains(oc2);
@@ -163,14 +163,14 @@ test06() {
   cs1.insert(C + D == 0);
   cs1.insert(A - B <= 0);
   cs1.insert(A == 0);
-  TOctagon oc1(4);
+  TOctagonal_Shape oc1(4);
   oc1.add_constraints(cs1);
 
   print_constraints(oc1, "*** oc1 ***");
 
   Constraint_System cs2(cs1);
   cs2.insert(D == 0);
-  TOctagon oc2(4);
+  TOctagonal_Shape oc2(4);
   oc2.add_constraints(cs2);
 
   print_constraints(oc2, "*** oc2 ***");
@@ -178,7 +178,7 @@ test06() {
   Constraint_System cs3(cs2);
   cs3.insert(B == 0);
   cs3.insert(B + C <= 0);
-  TOctagon oc3(4);
+  TOctagonal_Shape oc3(4);
   oc3.add_constraints(cs3);
 
   print_constraints(oc3, "*** oc3 ***");
@@ -203,7 +203,7 @@ test07() {
 
   Constraint_System cs1;
   cs1.insert(A - B <= 0);
-  TOctagon oc1(4);
+  TOctagonal_Shape oc1(4);
   oc1.add_constraints(cs1);
 
   print_constraints(oc1, "*** oc1 ***");
@@ -214,7 +214,7 @@ test07() {
   cs2.insert(B - C <= 3);
   cs2.insert(C - D <= -1);
   cs2.insert(D - A <= -3);
-  TOctagon oc2(4);
+  TOctagonal_Shape oc2(4);
 
   // The octagon oc2 is empty, infact it has a negative cycle.
   oc2.add_constraints(cs2);
@@ -224,7 +224,7 @@ test07() {
   Constraint_System cs3(cs1);
   cs3.insert(B <= 2);
   cs3.insert(B >= 5);
-  TOctagon oc3(4);
+  TOctagonal_Shape oc3(4);
 
   // The octagon oc3 is empty.
   oc3.add_constraints(cs3);
@@ -244,11 +244,11 @@ test07() {
 
 bool
 test08() {
-  TOctagon oc1(0);
+  TOctagonal_Shape oc1(0);
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(0, EMPTY);
+  TOctagonal_Shape oc2(0, EMPTY);
 
   print_constraints(oc2, "*** oc2 ***");
 
@@ -265,10 +265,10 @@ test09() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x - y >= 0);
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(x - y == 0);
 
   try {

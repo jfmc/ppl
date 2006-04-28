@@ -1,4 +1,4 @@
-/* Octagon<T>::Status class implementation: inline functions.
+/* Octagonal_Shape<T>::Status class implementation: inline functions.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -28,49 +28,49 @@ namespace Parma_Polyhedra_Library {
 
 template <typename T>
 inline
-Octagon<T>::Status::Status(flags_t mask)
+Octagonal_Shape<T>::Status::Status(flags_t mask)
   : flags(mask) {
 }
 
 template <typename T>
 inline
-Octagon<T>::Status::Status()
+Octagonal_Shape<T>::Status::Status()
   : flags(ZERO_DIM_UNIV) {
 }
 
 template <typename T>
 inline bool
-Octagon<T>::Status::test_all(flags_t mask) const {
+Octagonal_Shape<T>::Status::test_all(flags_t mask) const {
   return (flags & mask) == mask;
 }
 
 template <typename T>
 inline bool
-Octagon<T>::Status::test_any(flags_t mask) const {
+Octagonal_Shape<T>::Status::test_any(flags_t mask) const {
   return flags & mask;
 }
 
 template <typename T>
 inline void
-Octagon<T>::Status::set(flags_t mask) {
+Octagonal_Shape<T>::Status::set(flags_t mask) {
   flags |= mask;
 }
 
 template <typename T>
 inline void
-Octagon<T>::Status::reset(flags_t mask) {
+Octagonal_Shape<T>::Status::reset(flags_t mask) {
   flags &= ~mask;
 }
 
 template <typename T>
 inline bool
-Octagon<T>::Status::test_zero_dim_univ() const {
+Octagonal_Shape<T>::Status::test_zero_dim_univ() const {
   return flags == ZERO_DIM_UNIV;
 }
 
 template <typename T>
 inline void
-Octagon<T>::Status::reset_zero_dim_univ() {
+Octagonal_Shape<T>::Status::reset_zero_dim_univ() {
   // This is a no-op if the current status is not zero-dim.
   if (flags == ZERO_DIM_UNIV)
     // In the zero-dim space, if it is not the universe it is empty.
@@ -79,50 +79,50 @@ Octagon<T>::Status::reset_zero_dim_univ() {
 
 template <typename T>
 inline void
-Octagon<T>::Status::set_zero_dim_univ() {
+Octagonal_Shape<T>::Status::set_zero_dim_univ() {
   // Zero-dim universe is incompatible with anything else.
   flags = ZERO_DIM_UNIV;
 }
 
 template <typename T>
 inline bool
-Octagon<T>::Status::test_empty() const {
+Octagonal_Shape<T>::Status::test_empty() const {
   return test_any(EMPTY);
 }
 
 template <typename T>
 inline void
-Octagon<T>::Status::reset_empty() {
+Octagonal_Shape<T>::Status::reset_empty() {
   reset(EMPTY);
 }
 
 template <typename T>
 inline void
-Octagon<T>::Status::set_empty() {
+Octagonal_Shape<T>::Status::set_empty() {
   flags = EMPTY;
 }
 
 template <typename T>
 inline bool
-Octagon<T>::Status::test_strongly_closed() const {
+Octagonal_Shape<T>::Status::test_strongly_closed() const {
   return test_any(STRONGLY_CLOSED);
 }
 
 template <typename T>
 inline void
-Octagon<T>::Status::reset_strongly_closed() {
+Octagonal_Shape<T>::Status::reset_strongly_closed() {
   reset(STRONGLY_CLOSED);
 }
 
 template <typename T>
 inline void
-Octagon<T>::Status::set_strongly_closed() {
+Octagonal_Shape<T>::Status::set_strongly_closed() {
   set(STRONGLY_CLOSED);
 }
 
 template <typename T>
 inline bool
-Octagon<T>::Status::OK() const {
+Octagonal_Shape<T>::Status::OK() const {
   if (test_zero_dim_univ())
     // Zero-dim universe is OK.
     return true;
@@ -147,8 +147,8 @@ Octagon<T>::Status::OK() const {
 
 
 namespace Implementation {
- 
-namespace Octagons {
+
+namespace Octagonal_Shapes {
 // These are the keywords that indicate the individual assertions.
 const std::string zero_dim_univ = "ZE";
 const std::string empty = "EM";
@@ -157,7 +157,7 @@ const char yes = '+';
 const char no = '-';
 const char sep = ' ';
 
-/*! \relates Parma_Polyhedra_Library::Octagon<T>::Status
+/*! \relates Parma_Polyhedra_Library::Octagonal_Shape<T>::Status
   Reads a keyword and its associated on/off flag from \p s.
   Returns <CODE>true</CODE> if the operation is successful,
   returns <CODE>false</CODE> otherwise.
@@ -175,44 +175,40 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
   return true;
 }
 
-} // namespace Octagons
+} // namespace Octagonal_Shapes
 
 } // namespace Implementation
 
 template <typename T>
 inline void
-Octagon<T>::Status::ascii_dump(std::ostream& s) const {
-  using namespace Implementation::Octagons;
-  s << (test_zero_dim_univ() ? Implementation::Octagons::yes : 
-	Implementation::Octagons::no) << Implementation::Octagons::zero_dim_univ 
-    << Implementation::Octagons::sep
-    << (test_empty() ? Implementation::Octagons::yes : Implementation::Octagons::no) 
-    << Implementation::Octagons::empty << Implementation::Octagons::sep
-    << Implementation::Octagons::sep
-    << (test_strongly_closed() ? Implementation::Octagons::yes : 
-	Implementation::Octagons::no) 
-    << Implementation::Octagons::strong_closed << Implementation::Octagons::sep;
+Octagonal_Shape<T>::Status::ascii_dump(std::ostream& s) const {
+  using namespace Implementation::Octagonal_Shapes;
+  s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ
+    << sep
+    << (test_empty() ? yes : no) << empty
+    << sep
+    << sep
+    << (test_strongly_closed() ? yes : no) << strong_closed
+    << sep;
 }
 
 template <typename T>
 inline bool
-Octagon<T>::Status::ascii_load(std::istream& s) {
-  using namespace Implementation::Octagons;
-
+Octagonal_Shape<T>::Status::ascii_load(std::istream& s) {
+  using namespace Implementation::Octagonal_Shapes;
   bool positive;
 
-  if (!Implementation::Octagons::get_field(s, Implementation::Octagons::zero_dim_univ, 
-					   positive))
+  if (!get_field(s, zero_dim_univ, positive))
     return false;
   if (positive)
     set_zero_dim_univ();
 
-  if (!Implementation::Octagons::get_field(s, Implementation::Octagons::empty, positive))
+  if (!get_field(s, empty, positive))
     return false;
   if (positive)
     set_empty();
 
-  if (!Implementation::Octagons::get_field(s, strong_closed, positive))
+  if (!get_field(s, strong_closed, positive))
     return false;
   if (positive)
     set_strongly_closed();

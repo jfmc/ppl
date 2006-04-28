@@ -213,8 +213,8 @@ using std::endl;
 #define BD_SHAPE_INSTANCE mpq_class
 #endif
 
-#ifndef OCTAGON_INSTANCE
-#define OCTAGON_INSTANCE mpq_class
+#ifndef OCTAGONAL_SHAPE_INSTANCE
+#define OCTAGONAL_SHAPE_INSTANCE mpq_class
 #endif
 
 namespace Parma_Polyhedra_Library {
@@ -225,8 +225,8 @@ typedef long double long_double;
 //! The incarnation of BD_Shape under test.
 typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
 
-//! The incarnation of Octagon under test.
-typedef Octagon<OCTAGON_INSTANCE> TOctagon;
+//! The incarnation of Octagonal_Shape under test.
+typedef Octagonal_Shape<OCTAGONAL_SHAPE_INSTANCE> TOctagonal_Shape;
 
 bool
 check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,

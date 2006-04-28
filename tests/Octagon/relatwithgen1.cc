@@ -1,4 +1,4 @@
-/* Test Octagon::relation_with(g): we verify that a generator
+/* Test Octagonal_Shape::relation_with(g): we verify that a generator
    is not subsumed by an empty octagon.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -25,11 +25,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-bool 
+bool
 test01() {
   Variable x(0);
 
-  TOctagon oct(2, EMPTY);
+  TOctagonal_Shape oct(2, EMPTY);
 
   print_constraints(oct, "--- oct ---");
 
@@ -49,9 +49,9 @@ test01() {
   return ok;
 }
 
-bool 
+bool
 test02() {
-  TOctagon oct;
+  TOctagonal_Shape oct;
   print_constraints(oct, "--- oct ---");
 
   Generator g = point();
@@ -70,12 +70,12 @@ test02() {
   return ok;
 }
 
-bool 
+bool
 test03() {
   Variable A(0);
 
-  TOctagon oct(2);
-  oct.add_constraint(A == 0); 
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A == 0);
 
   print_constraints(oct, "--- oct ---");
 
@@ -91,12 +91,12 @@ test03() {
   return ok;
 }
 
-bool 
+bool
 test04() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(A + B >= 0);
   oct.add_constraint(B >= 0);
 
@@ -119,12 +119,12 @@ test04() {
   return ok;
 }
 
-bool 
+bool
 test05() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(A >= 0);
   oct.add_constraint(B == 1);
   print_constraints(oct, "*** oct ***");
@@ -141,12 +141,12 @@ test05() {
   return ok;
 }
 
-bool 
+bool
 test06() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(A <= 0);
   oct.add_constraint(B == 1);
   print_constraints(oct, "*** oct ***");
@@ -163,12 +163,12 @@ test06() {
   return ok;
 }
 
-bool 
+bool
 test07() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(A >= 0);
   oct.add_constraint(B >= -1);
 
@@ -186,12 +186,12 @@ test07() {
   return ok;
 }
 
-bool 
+bool
 test08() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(A == 0);
   oct.add_constraint(B >= -1);
   print_constraints(oct, "*** oct ***");
@@ -208,12 +208,12 @@ test08() {
   return ok;
 }
 
-bool 
+bool
 test09() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct	(2);
+  TOctagonal_Shape oct	(2);
   oct.add_constraint(A <= 0);
   oct.add_constraint(B == 2);
 
@@ -231,12 +231,12 @@ test09() {
   return ok;
 }
 
-bool 
+bool
 test10() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(A >= 2);
   oct.add_constraint(A + B <= 3);
 
@@ -254,12 +254,12 @@ test10() {
   return ok;
 }
 
-bool 
+bool
 test11() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(A >= 2);
   oct.add_constraint(A + B <= 3);
   oct.add_constraint(A - B >= 0);

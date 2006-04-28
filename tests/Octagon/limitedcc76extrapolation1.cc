@@ -1,4 +1,4 @@
-/* Test Octagon::limited_CC76_extrapolation_assign().
+/* Test Octagonal_Shape::limited_CC76_extrapolation_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -32,12 +32,12 @@ test01() {
   Constraint_System cs1;
   cs1.insert(x <= 1);
   cs1.insert(y >= 4);
-  TOctagon oct1(cs1);
+  TOctagonal_Shape oct1(cs1);
 
   Constraint_System cs2;
   cs2.insert(x == 0);
   cs2.insert(y >= 5);
-  TOctagon oct2(cs2);
+  TOctagonal_Shape oct2(cs2);
 
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ***");
@@ -50,12 +50,12 @@ test01() {
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y >= 3);
   known_result.add_constraint(y - x >= 2);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -65,21 +65,21 @@ test01() {
 
 bool
 test02() {
-  TOctagon oct1(0);
-  TOctagon oct2(0); 
- 
+  TOctagonal_Shape oct1(0);
+  TOctagonal_Shape oct2(0);
+
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
- 
-  print_constraints(cs, "*** cs ****"); 
+
+  print_constraints(cs, "*** cs ****");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(0);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+  Octagonal_Shape<mpq_class> known_result(0);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -92,12 +92,12 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
   oct1.add_constraint(A == -2);
 
-  TOctagon oct2(2);
+  TOctagonal_Shape oct2(2);
   oct2.add_constraint(A == -2);
-  oct2.add_constraint(B == 3); 
+  oct2.add_constraint(B == 3);
 
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ***");
@@ -105,15 +105,15 @@ test03() {
   Constraint_System cs;
   cs.insert(A <= 0);
   cs.insert(A - B <= 6);
- 
-  print_constraints(cs, "*** cs ****"); 
+
+  print_constraints(cs, "*** cs ****");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A == -2);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -122,14 +122,14 @@ test03() {
 }
 
 bool
-test04() { 
+test04() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
   oct1.add_constraint(A <= 4);
 
-  TOctagon oct2(2);
+  TOctagonal_Shape oct2(2);
   oct2.add_constraint(A == -2);
 
   print_constraints(oct1, "*** oct1 ****");
@@ -138,15 +138,15 @@ test04() {
   Constraint_System cs;
   cs.insert(A <= 0);
   cs.insert(A - B <= 6);
- 
-  print_constraints(cs, "*** cs ****"); 
+
+  print_constraints(cs, "*** cs ****");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
 
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -159,29 +159,29 @@ test05() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(3);
+  TOctagonal_Shape oct1(3);
   oct1.add_constraint(A <= 4);
   oct1.add_constraint(B >= 1);
 
-  TOctagon oct2(3);
+  TOctagonal_Shape oct2(3);
   oct2.add_constraint(A <= -2);
   oct2.add_constraint(B >= 4);
- 
+
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A <= 5);
- 
-  print_constraints(cs, "*** cs ****"); 
+
+  print_constraints(cs, "*** cs ****");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= 5);
   known_result.add_constraint(B >= 1);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -194,13 +194,13 @@ test06() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
   oct1.add_constraint(A <= 4);
   oct1.add_constraint(B >= 1);
 
-  TOctagon oct2(2);
+  TOctagonal_Shape oct2(2);
   oct2.add_constraint(A <= -2);
-  oct2.add_constraint(B >= 4); 
+  oct2.add_constraint(B >= 4);
 
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ***");
@@ -208,15 +208,15 @@ test06() {
   Constraint_System cs;
   cs.insert(A >= 0);
   cs.insert(A + B <= 6);
- 
-  print_constraints(cs, "*** cs ****"); 
+
+  print_constraints(cs, "*** cs ****");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B >= 1);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -229,13 +229,13 @@ test07() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
   oct1.add_constraint(A <= 4);
   oct1.add_constraint(B >= 1);
 
-  TOctagon oct2(2);
+  TOctagonal_Shape oct2(2);
   oct2.add_constraint(A <= -2);
-  oct2.add_constraint(B >= 4); 
+  oct2.add_constraint(B >= 4);
 
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ***");
@@ -243,16 +243,16 @@ test07() {
   Constraint_System cs;
   cs.insert(A >= 0);
   cs.insert(A - B <= 6);
- 
-  print_constraints(cs, "*** cs ****"); 
+
+  print_constraints(cs, "*** cs ****");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B >= 1);
   known_result.add_constraint(A - B <= 6);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -261,16 +261,16 @@ test07() {
 }
 
 bool
-test08() { 
+test08() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
   oct1.add_constraint(A <= 4);
   oct1.add_constraint(A >= 5);
   oct1.add_constraint(B >= 1);
 
-  TOctagon oct2(2);
+  TOctagonal_Shape oct2(2);
   oct2.add_constraint(A <= -2);
   oct2.add_constraint(A >= 3);
   oct2.add_constraint(B >= 4);
@@ -281,14 +281,14 @@ test08() {
   Constraint_System cs;
   cs.insert(A >= 0);
   cs.insert(A - B <= 6);
- 
-  print_constraints(cs, "*** cs ****"); 
+
+  print_constraints(cs, "*** cs ****");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(2, EMPTY);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+  Octagonal_Shape<mpq_class> known_result(2, EMPTY);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -301,14 +301,14 @@ test09() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
   oct1.add_constraint(A <= 4);
   oct1.add_constraint(B >= 1);
 
-  TOctagon oct2(2);
+  TOctagonal_Shape oct2(2);
   oct2.add_constraint(A <= -2);
   oct2.add_constraint(A >= 3);
-  oct2.add_constraint(B >= 4); 
+  oct2.add_constraint(B >= 4);
 
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ***");
@@ -316,16 +316,16 @@ test09() {
   Constraint_System cs;
   cs.insert(A >= 0);
   cs.insert(A - B <= 6);
- 
-  print_constraints(cs, "*** cs ****"); 
+
+  print_constraints(cs, "*** cs ****");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B >= 1);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -340,15 +340,15 @@ test10() {
   Variable C(2);
   Variable D(3);
 
-  TOctagon oct1(4);
+  TOctagonal_Shape oct1(4);
   oct1.add_constraint(A <= 4);
   oct1.add_constraint(B <= 6);
   oct1.add_constraint(C - D == 5);
 
-  TOctagon oct2(4);
+  TOctagonal_Shape oct2(4);
   oct2.add_constraint(A <= 4);
   oct2.add_constraint(C - D == 5);
-  oct2.add_constraint(B <= 5); 
+  oct2.add_constraint(B <= 5);
 
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ***");
@@ -357,16 +357,16 @@ test10() {
   cs.insert(A == 4);
   cs.insert(C - D == 5);
   cs.insert(A - B <= 6);
- 
-  print_constraints(cs, "*** cs ****"); 
+
+  print_constraints(cs, "*** cs ****");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(4);
+  Octagonal_Shape<mpq_class> known_result(4);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(C - D == 5);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -379,31 +379,31 @@ test11() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
   oct1.add_constraint(A <= 4);
   oct1.add_constraint(B >= 1);
 
-  TOctagon oct2(2);
+  TOctagonal_Shape oct2(2);
   oct2.add_constraint(A <= -2);
   oct2.add_constraint(A >= 3);
   oct2.add_constraint(B >= 4);
- 
+
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A >= 0);
   cs.insert(A - 2*B <= 6);
- 
-  print_constraints(cs, "*** cs ****"); 
+
+  print_constraints(cs, "*** cs ****");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B >= 1);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -412,15 +412,15 @@ test11() {
 }
 
 bool
-test12() { 
+test12() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
   oct1.add_constraint(A <= 2);
   oct1.add_constraint(A >= 3);
 
-  TOctagon oct2(2);
+  TOctagonal_Shape oct2(2);
   oct2.add_constraint(A <= 1);
   oct2.add_constraint(B == -1);
   oct2.add_constraint(A >= 4);
@@ -429,14 +429,14 @@ test12() {
 
   Constraint_System cs;
   cs.insert(A <= 2);
- 
-  print_constraints(cs, "*** cs ****"); 
+
+  print_constraints(cs, "*** cs ****");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(2, EMPTY);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+  Octagonal_Shape<mpq_class> known_result(2, EMPTY);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -445,16 +445,16 @@ test12() {
 }
 
 bool
-test13() { 
+test13() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct1(3);
+  TOctagonal_Shape oct1(3);
   oct1.add_constraint(C <= 4);
   oct1.add_constraint(B >= 2);
 
-  TOctagon oct2(3);
+  TOctagonal_Shape oct2(3);
   oct2.add_constraint(C <= 3);
   oct2.add_constraint(B >= 3);
   oct2.add_constraint(A <= 3);
@@ -465,16 +465,16 @@ test13() {
 
   Constraint_System cs;
   cs.insert(C <= 2);
- 
-  print_constraints(cs, "*** cs ****"); 
+
+  print_constraints(cs, "*** cs ****");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(C <= 4);
   known_result.add_constraint(B >= 2);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_CC76_extrapolation_assign(oct2) ***");
@@ -486,15 +486,15 @@ bool
 test14() {
   Variable y(1);
 
-  TOctagon oc1(1);
-  TOctagon oc2(2);
+  TOctagonal_Shape oc1(1);
+  TOctagonal_Shape oc2(2);
 
   Constraint_System cs;
   cs.insert(y <= 9);
 
   try {
     // This is an invalid use of the function
-    // Octagon::limited_CC76_extrapolation_assign(oc2, cs): it is
+    // Octagonal_Shape::limited_CC76_extrapolation_assign(oc2, cs): it is
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
     oc2.limited_CC76_extrapolation_assign(oc1, cs);
@@ -514,12 +514,12 @@ test15() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(x - y >= 0);
   oc1.add_constraint(x >= 0);
   oc1.add_constraint(x <= 2);
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(x - y >= 0);
   oc2.add_constraint(x >= 0);
   oc2.add_constraint(x <= 5);
@@ -529,7 +529,7 @@ test15() {
 
   try {
     // This is an invalid use of the function
-    // Octagon::limited_CC76_extrapolation_assign(oc, cs): it is
+    // Octagonal_Shape::limited_CC76_extrapolation_assign(oc, cs): it is
     // illegal to apply this function to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
     oc2.limited_CC76_extrapolation_assign(oc1, cs);
@@ -548,12 +548,12 @@ test16() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(x - y >= 0);
   oc1.add_constraint(x >= 0);
   oc1.add_constraint(x <= 2);
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(x - y >= 0);
   oc2.add_constraint(x >= 0);
   oc2.add_constraint(x <= 5);
@@ -563,7 +563,7 @@ test16() {
 
   try {
     // This is an invalid use of the function
-    // Octagon::limited_CC76_extrapolation_assign(bd, cs): it is
+    // Octagonal_Shape::limited_CC76_extrapolation_assign(bd, cs): it is
     // illegal to apply this function to a system of constraints that
     // has a strict-inequality.
     oc2.limited_CC76_extrapolation_assign(oc1, cs);

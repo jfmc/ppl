@@ -1,4 +1,4 @@
-/* Test Octagon::affine_preimage().
+/* Test Octagonal_Shape::affine_preimage().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,7 +29,7 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 2);
   oc1.add_constraint(x - y <= 3);
   oc1.add_constraint(y <= 2);
@@ -38,10 +38,10 @@ test01() {
 
   oc1.affine_preimage(x, y);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y <= 2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.affine_preimage(x, y) ***");
 
@@ -53,7 +53,7 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc(2);
+  TOctagonal_Shape oc(2);
   oc.add_constraint(A >= 0);
   oc.add_constraint(B >= 0);
   oc.add_constraint(A - B - 3 >= 0);
@@ -62,10 +62,10 @@ test02() {
 
   oc.affine_preimage(A, B - 1);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B >= 0);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(A, B-1) ***");
 
@@ -77,7 +77,7 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc(2);
+  TOctagonal_Shape oc(2);
   oc.add_constraint(A >= 2);
   oc.add_constraint(B >= 0);
   oc.add_constraint(A + B >= 2);
@@ -86,11 +86,11 @@ test03() {
 
   oc.affine_preimage(A, 2*A + 2, 2);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(B >= 0);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(A, 2*A + 2, 2) ***");
 
@@ -102,7 +102,7 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc(2);
+  TOctagonal_Shape oc(2);
   oc.add_constraint(A >= 2);
   oc.add_constraint(B >= 0);
 
@@ -110,10 +110,10 @@ test04() {
 
   oc.affine_preimage(B, Linear_Expression(3));
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 2);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(B, 3) ***");
 
@@ -126,7 +126,7 @@ test05() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A >= 2);
   oc.add_constraint(B >= 0);
   oc.add_constraint(C >= 0);
@@ -135,12 +135,12 @@ test05() {
 
   oc.affine_preimage(B, B - 2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A >= 2);
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(B >= 2);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(B, B - 2) ***");
 
@@ -153,14 +153,14 @@ test06() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraint(x + y >= 0);
   oct.add_constraint(x >= 0);
   oct.add_constraint(z <= 2);
 
   try {
     // This is an invalid use of the function
-    // Octagon::affine_preimage(v, e, d): it is illegal applying
+    // Octagonal_Shape::affine_preimage(v, e, d): it is illegal applying
     // the function with a linear expression with the denominator equal to
     // zero.
     Coefficient d = 0;
@@ -181,13 +181,13 @@ test07() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(x - y >= 2);
   oct.add_constraint(y <= 7);
 
   try {
     // This is an invalid use of function
-    // Octagon::affine_preimage(v, expr, d): it is illegal to
+    // Octagonal_Shape::affine_preimage(v, expr, d): it is illegal to
     // apply this function to a variable that is not in the space of
     // the polyhedron.
     oct.affine_preimage(x, z - 2);

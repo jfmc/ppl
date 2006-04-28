@@ -1,4 +1,4 @@
-/* Test Octagon::intersection_assign().
+/* Test Octagonal_Shape::intersection_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,7 +29,7 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
 
   oc1.add_constraint(x <= 3);
   oc1.add_constraint(x - y <= 4);
@@ -37,7 +37,7 @@ test01() {
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
   oc2.add_constraint(-y <= -2);
   oc2.add_constraint(x - y <= 5);
   oc2.add_constraint(x + y <= 7);
@@ -46,13 +46,13 @@ test01() {
 
   oc1.intersection_assign(oc2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 3);
   known_result.add_constraint(-y <= -2);
   known_result.add_constraint(x - y <= 4);
   known_result.add_constraint(x + y <= 6);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.intersection_assign(oc2) ***");
 
@@ -65,7 +65,7 @@ test02() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(A - B <= -1);
   oc1.add_constraint(A + B <= 10);
@@ -73,7 +73,7 @@ test02() {
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
   oc2.add_constraint(C <= 2);
   oc2.add_constraint(A - B <= 5);
   oc2.add_constraint(A - C <= 5);
@@ -83,15 +83,15 @@ test02() {
 
   oc1.intersection_assign(oc2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(C <= 2);
   known_result.add_constraint(A - B <= -1);
   known_result.add_constraint(A + B <= 7);
   known_result.add_constraint(A - C <= 5);
   known_result.add_constraint(A + C <= 1);
-  
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.intersection_assign(oc2) ***");
 
@@ -104,14 +104,14 @@ test03() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(A <= 5);
   oc1.add_constraint(A - B <= -1);
   oc1.add_constraint(A + B <= -1);
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
   oc2.add_constraint(C <= 2);
   oc2.add_constraint(A - B <= 4);
   oc2.add_constraint(A + B <= 7);
@@ -120,13 +120,13 @@ test03() {
 
   oc1.intersection_assign(oc2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= -1);
   known_result.add_constraint(C <= 2);
   known_result.add_constraint(A - B <= -1);
   known_result.add_constraint(A + B <= -1);
-  
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.intersection_assign(oc2) ***");
 
@@ -139,14 +139,14 @@ test04() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(A <= 5);
   oc1.add_constraint(A - B <= -1);
   oc1.add_constraint(A - B >= 1);
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
   oc2.add_constraint(A - B <= 4);
   oc2.add_constraint(A + B <= 7);
 
@@ -154,9 +154,9 @@ test04() {
 
   oc1.intersection_assign(oc2);
 
-  Octagon<mpq_class> known_result(3, EMPTY);  
+  Octagonal_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.intersection_assign(oc2) ***");
 
@@ -165,17 +165,17 @@ test04() {
 
 bool
 test05() {
-  TOctagon oc1(0, EMPTY);
-  TOctagon oc2;
+  TOctagonal_Shape oc1(0, EMPTY);
+  TOctagonal_Shape oc2;
 
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
 
   oc1.intersection_assign(oc2);
 
-  Octagon<mpq_class> known_result(0, EMPTY);  
+  Octagonal_Shape<mpq_class> known_result(0, EMPTY);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.intersection_assign(oc2) ***");
 
@@ -184,17 +184,17 @@ test05() {
 
 bool
 test06() {
-  TOctagon oc1;
-  TOctagon oc2;
+  TOctagonal_Shape oc1;
+  TOctagonal_Shape oc2;
 
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
 
   oc1.intersection_assign(oc2);
 
-  Octagon<mpq_class> known_result(0);  
+  Octagonal_Shape<mpq_class> known_result(0);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.intersection_assign(oc2) ***");
 
@@ -206,14 +206,14 @@ test07() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 3);
   oc1.add_constraint(x - y <= 4);
   oc1.add_constraint(x + y <= 6);
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
   oc2.add_constraint(-y <= -2);
   oc2.add_constraint(x - y <= 5);
   oc2.add_constraint(x + y <= 7);
@@ -228,10 +228,10 @@ test07() {
   cs.insert(x - y <= 4);
   cs.insert(x + y <= 6);
 
-  Octagon<mpq_class> known_result(3); 
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraints_and_minimize(cs);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.intersection_assign(oc2) ***");
 
@@ -243,14 +243,14 @@ test08() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(x >= y);
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
 
   try {
     // This is an invalid use of function
-    // Octagon::intersection_assign_and_minimize(oc2): it is illegal
+    // Octagonal_Shape::intersection_assign_and_minimize(oc2): it is illegal
     // to apply this function to two polyhedra of different dimensions.
     oc1.intersection_assign_and_minimize(oc2);
   }
@@ -268,13 +268,13 @@ test09() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(7);
+  TOctagonal_Shape oc1(7);
 
-  TOctagon oc2(15);
+  TOctagonal_Shape oc2(15);
 
   try {
     // This is an invalid use of function
-    // Octagon::intersection_assign(oc2): it is illegal
+    // Octagonal_Shape::intersection_assign(oc2): it is illegal
     // to apply this function to two polyhedra of different dimensions.
     oc1.intersection_assign(oc2);
   }

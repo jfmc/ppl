@@ -1,4 +1,4 @@
-/* Test Octagon::limited_BHMZ05_extrapolation_assign().
+/* Test Octagonal_Shape::limited_BHMZ05_extrapolation_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -34,7 +34,7 @@ test01() {
   cs1.insert(x <= 1);
   cs1.insert(y == 0);
 
-  TOctagon oct1(cs1);
+  TOctagonal_Shape oct1(cs1);
   print_constraints(oct1, "*** oct1 ****");
 
   Constraint_System cs2;
@@ -42,7 +42,7 @@ test01() {
   cs2.insert(y >= 0);
   cs2.insert(y - x <= 0);
 
-  TOctagon oct2(cs2);
+  TOctagonal_Shape oct2(cs2);
   print_constraints(oct2, "*** oct2 ****");
 
   Constraint_System cs;
@@ -53,12 +53,12 @@ test01() {
 
   oct2.limited_BHMZ05_extrapolation_assign(oct1, cs);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(y >= 0);
-  known_result.add_constraint(x <= 1); 
-  
-  bool ok = (Octagon<mpq_class>(oct2) == known_result);
+  known_result.add_constraint(x <= 1);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(oct2,
 		    "*** oct2.limited_BHMZ05_extrapolation_assign(oct1) ***");
@@ -73,11 +73,11 @@ test02() {
   Constraint_System cs1;
   cs1.insert(x >= 0);
   cs1.insert(x <= 1);
-  TOctagon oct1(cs1);
+  TOctagonal_Shape oct1(cs1);
 
   Constraint_System cs2;
   cs2.insert(x == 0);
-  TOctagon oct2(cs2);
+  TOctagonal_Shape oct2(cs2);
 
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ****");
@@ -87,10 +87,10 @@ test02() {
 
   oct1.limited_BHMZ05_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(1);
+  Octagonal_Shape<mpq_class> known_result(1);
   known_result.add_constraint(x >= 0);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
@@ -100,8 +100,8 @@ test02() {
 
 bool
 test03() {
-  TOctagon oct1(0, EMPTY);
-  TOctagon oct2(0, EMPTY);
+  TOctagonal_Shape oct1(0, EMPTY);
+  TOctagonal_Shape oct2(0, EMPTY);
 
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ****");
@@ -110,9 +110,9 @@ test03() {
 
   oct1.limited_BHMZ05_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(0, EMPTY);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+  Octagonal_Shape<mpq_class> known_result(0, EMPTY);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
@@ -125,8 +125,8 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(3, EMPTY);
-  TOctagon oct2(3, EMPTY);
+  TOctagonal_Shape oct1(3, EMPTY);
+  TOctagonal_Shape oct2(3, EMPTY);
 
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ****");
@@ -136,9 +136,9 @@ test04() {
 
   oct1.limited_BHMZ05_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(3, EMPTY);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+  Octagonal_Shape<mpq_class> known_result(3, EMPTY);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
@@ -152,10 +152,10 @@ test05() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct1(3);
+  TOctagonal_Shape oct1(3);
   oct1.add_constraint_and_minimize(A - B <= 1);
 
-  TOctagon oct2(3, EMPTY);
+  TOctagonal_Shape oct2(3, EMPTY);
 
   print_constraints(oct1, "*** oct1 ****");
   print_constraints(oct2, "*** oct2 ****");
@@ -165,10 +165,10 @@ test05() {
 
   oct1.limited_BHMZ05_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A - B <= 1);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
@@ -186,14 +186,14 @@ test06() {
   Variable F(5);
   Variable G(6);
 
-  TOctagon oct1(7);
+  TOctagonal_Shape oct1(7);
   oct1.add_constraint(A - B <= 1);
   oct1.add_constraint(A - C <= 2);
   oct1.add_constraint(C - B <= 2);
   oct1.add_constraint(D - E == 0);
   oct1.add_constraint(G + F == 0);
 
-  TOctagon oct2(7);
+  TOctagonal_Shape oct2(7);
   oct2.add_constraint(A - B <= 0);
   oct2.add_constraint(A - C <= 1);
   oct2.add_constraint(C - B <= 2);
@@ -210,12 +210,12 @@ test06() {
 
   oct1.limited_BHMZ05_extrapolation_assign(oct2, cs);
 
-  Octagon<mpq_class> known_result(7);
+  Octagonal_Shape<mpq_class> known_result(7);
   known_result.add_constraint(C - B <= 2);
   known_result.add_constraint(D - E == 0);
   known_result.add_constraint(F + G == 0);
-  
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1,
 		    "*** oct1.limited_BHMZ05_extrapolation_assign(oct2) ***");
@@ -227,15 +227,15 @@ bool
 test07() {
   Variable y(1);
 
-  TOctagon oc1(1);
-  TOctagon oc2(2);
+  TOctagonal_Shape oc1(1);
+  TOctagonal_Shape oc2(2);
 
   Constraint_System cs;
   cs.insert(y <= 9);
 
   try {
     // This is an invalid use of the function
-    // Octagon::limited_BHMZ05_extrapolation_assign(oc2, cs): it is
+    // Octagonal_Shape::limited_BHMZ05_extrapolation_assign(oc2, cs): it is
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
     oc2.limited_BHMZ05_extrapolation_assign(oc1, cs);
@@ -255,12 +255,12 @@ test08() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(x - y >= 0);
   oc1.add_constraint(x >= 0);
   oc1.add_constraint(x <= 2);
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(x - y >= 0);
   oc2.add_constraint(x >= 0);
   oc2.add_constraint(x <= 5);
@@ -270,7 +270,7 @@ test08() {
 
   try {
     // This is an invalid use of the function
-    // Octagon::limited_BHMZ05_extrapolation_assign(oc, cs): it is
+    // Octagonal_Shape::limited_BHMZ05_extrapolation_assign(oc, cs): it is
     // illegal to apply this function to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
     oc2.limited_BHMZ05_extrapolation_assign(oc1, cs);
@@ -289,12 +289,12 @@ test09() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(x - y >= 0);
   oc1.add_constraint(x >= 0);
   oc1.add_constraint(x <= 2);
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(x - y >= 0);
   oc2.add_constraint(x >= 0);
   oc2.add_constraint(x <= 5);
@@ -304,7 +304,7 @@ test09() {
 
   try {
     // This is an invalid use of the function
-    // Octagon::limited_BHMZ05_extrapolation_assign(oc, cs): it is
+    // Octagonal_Shape::limited_BHMZ05_extrapolation_assign(oc, cs): it is
     // illegal to apply this function to a system of constraints that
     // has a strict-inequality.
     oc2.limited_BHMZ05_extrapolation_assign(oc1, cs);

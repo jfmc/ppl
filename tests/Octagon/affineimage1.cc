@@ -1,4 +1,4 @@
-/* Test Octagon::affine_image().
+/* Test Octagonal_Shape::affine_image().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -28,8 +28,8 @@ bool
 test01() {
   Variable x(0);
   Variable y(1);
-  
-  TOctagon oc1(3);
+
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 2);
   oc1.add_constraint(x - y <= 3);
   oc1.add_constraint(y <= 2);
@@ -37,12 +37,12 @@ test01() {
   print_constraints(oc1, "*** oc1 ***");
 
   oc1.affine_image(x, y);
-  
-  Octagon<mpq_class> known_result(3);
+
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y == 0);
- 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.affine_image(x, y) ***");
 
@@ -54,20 +54,20 @@ test02() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 2);
   oc1.add_constraint(x - y <= 3);
   oc1.add_constraint(y <= 2);
-  
+
   print_constraints(oc1, "*** oc1 ***");
 
   oc1.affine_image(x, -y);
-  
-  Octagon<mpq_class> known_result(3);
+
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x + y == 0);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.affine_image(x, -y) ***");
 
@@ -79,7 +79,7 @@ test03() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 2);
   oc1.add_constraint(x - y <= 3);
   oc1.add_constraint(y <= 2);
@@ -88,12 +88,12 @@ test03() {
 
   oc1.affine_image(x, x + 4);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y <= 7);
   known_result.add_constraint(x <= 6);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.affine_image(x, x + 4) ***");
 
@@ -105,7 +105,7 @@ test04() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 2);
   oc1.add_constraint(x - y <= 3);
   oc1.add_constraint(y <= 2);
@@ -114,12 +114,12 @@ test04() {
 
   oc1.affine_image(x, Linear_Expression(4));
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x == 4);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
-  
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
+
   print_constraints(oc1, "*** oc1.affine_image(x, 4) ***");
 
   return ok;
@@ -129,19 +129,19 @@ bool
 test05() {
   Variable x(0);
   Variable y(1);
-  
-  TOctagon oc1(3);
+
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 2);
   oc1.add_constraint(x - y <= 3);
   oc1.add_constraint(y <= 2);
 
   print_constraints(oc1, "*** oc1 ***");
-  
-  Octagon<mpq_class> known_result(oc1);
+
+  Octagonal_Shape<mpq_class> known_result(oc1);
 
   oc1.affine_image(x, x);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.affine_image(x, x) ***");
 
@@ -152,8 +152,8 @@ bool
 test06() {
   Variable x(0);
   Variable y(1);
-  
-  TOctagon oc1(3);
+
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 2);
   oc1.add_constraint(x - y <= 3);
   oc1.add_constraint(y <= 2);
@@ -162,12 +162,12 @@ test06() {
 
   oc1.affine_image(x, 2*x - 2, 2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.affine_image(x, 2*x -2, 2) ***");
 
@@ -179,7 +179,7 @@ test07() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 2);
   oc1.add_constraint(x - y <= 3);
   oc1.add_constraint(y <= 2);
@@ -188,11 +188,11 @@ test07() {
 
   oc1.affine_image(y, 2*x, 2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y - x == 0);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.affine_image(y, 2*x, 2) ***");
 
@@ -203,8 +203,8 @@ bool
 test08() {
   Variable x(0);
   Variable y(1);
- 
-  TOctagon oc1(3);
+
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 2);
   oc1.add_constraint(x - y <= 3);
   oc1.add_constraint(y <= 2);
@@ -213,11 +213,11 @@ test08() {
 
   oc1.affine_image(y, 3*x + 3, 3);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y - x == 1);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.affine_image(y, 3*x+ 3, 3) ***");
 
@@ -229,7 +229,7 @@ test09() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc(2);
+  TOctagonal_Shape oc(2);
   oc.add_constraint(A >= 2);
   oc.add_constraint(B >= 0);
   oc.add_constraint(A + B >= 2);
@@ -238,11 +238,11 @@ test09() {
 
   oc.affine_image(A, 2*A +2, 2);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 3);
   known_result.add_constraint(B >= 0);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_image(A, 2*A + 2, 2) ***");
 
@@ -254,7 +254,7 @@ test10() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(x - y >= 0);
   oct.add_constraint(x >= 0);
   oct.add_constraint(x <= 2);
@@ -263,7 +263,7 @@ test10() {
 
   try {
     // This is an invalid use of the function
-    // Octagon::affine_image(v, e, d): it is illegal applying
+    // Octagonal_Shape::affine_image(v, e, d): it is illegal applying
     // the function with a linear expression with the denominator equal to
     // zero.
     Coefficient d = 0;
@@ -284,12 +284,12 @@ test11() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(x + y >= 2);
 
   try {
     // This is an invalid use of function
-    // Octagon::affine_image(v, expr, d): it is illegal to
+    // Octagonal_Shape::affine_image(v, expr, d): it is illegal to
     // apply this function to a variable that is not in the space of
     // the polyhedron.
     oct.affine_image(y, z - 2);
@@ -309,14 +309,14 @@ test12() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(x - y >= 0);
   oct.add_constraint(x >= 0);
   oct.add_constraint(x <= 2);
 
   try {
     // This is an invalid use of the function
-    // Octagon::affine_image(v, expr, d): it is illegal to
+    // Octagonal_Shape::affine_image(v, expr, d): it is illegal to
     // use a variable in the expression that does not appear in the
     // space of the polyhedron.
     oct.affine_image(x, y - z + 1);

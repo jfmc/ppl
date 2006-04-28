@@ -1,4 +1,4 @@
-/* Test Octagon::relation_with(c).
+/* Test Octagonal_Shape::relation_with(c).
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,10 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-bool 
+bool
 test01() {
   // The zero-dim universe octagon.
-  TOctagon oct(0);
+  TOctagonal_Shape oct(0);
 
   print_constraints(oct, "--- oct ---");
 
@@ -44,10 +44,10 @@ test01() {
   return ok;
 }
 
-bool 
+bool
 test02() {
   // The zero-dim universe octagon.
-  TOctagon oct(0);
+  TOctagonal_Shape oct(0);
 
   print_constraints(oct, "--- oct ---");
 
@@ -63,10 +63,10 @@ test02() {
   return ok;
 }
 
-bool 
+bool
 test03() {
   // The zero-dim universe octagon.
-  TOctagon oct(0);
+  TOctagonal_Shape oct(0);
 
   print_constraints(oct, "--- oct ---");
 
@@ -82,12 +82,12 @@ test03() {
   return ok;
 }
 
-bool 
+bool
 test04() {
   Variable A(0);
 
   // An empty octagon.
-  TOctagon oct(1, EMPTY);
+  TOctagonal_Shape oct(1, EMPTY);
 
   print_constraints(oct, "--- oct ---");
 
@@ -105,12 +105,12 @@ test04() {
   return ok;
 }
 
-bool 
+bool
 test05() {
   Variable A(0);
   Variable B(1);
   Constraint_System cs(A + B == 3);
-  TOctagon oct(cs);
+  TOctagonal_Shape oct(cs);
 
   print_constraints(oct, "--- oct ---");
 
@@ -127,12 +127,12 @@ test05() {
   return ok;
 }
 
-bool 
+bool
 test06() {
   Variable A(0);
   Variable B(1);
   Constraint_System cs(A + B <= 3);
-  TOctagon oct(cs);
+  TOctagonal_Shape oct(cs);
 
   print_constraints(oct, "--- oct ---");
 
@@ -148,7 +148,7 @@ test06() {
   return ok;
 }
 
-bool 
+bool
 test07() {
   Variable A(0);
   Variable B(1);
@@ -157,7 +157,7 @@ test07() {
   cs.insert(A >= 1);
   cs.insert(B >= 0);
   cs.insert(A + B <= 3);
-  TOctagon oct(cs);
+  TOctagonal_Shape oct(cs);
 
   print_constraints(oct, "--- oct ---");
 
@@ -173,7 +173,7 @@ test07() {
   return ok;
 }
 
-bool 
+bool
 test08() {
   Variable A(0);
   Variable B(1);
@@ -182,7 +182,7 @@ test08() {
   cs.insert(A >= 1);
   cs.insert(B >= 0);
   cs.insert(A + B <= 3);
-  TOctagon oct(cs);
+  TOctagonal_Shape oct(cs);
 
   print_constraints(oct, "--- oct ---");
 
@@ -198,7 +198,7 @@ test08() {
   return ok;
 }
 
-bool 
+bool
 test09() {
   Variable A(0);
   Variable B(1);
@@ -207,7 +207,7 @@ test09() {
   cs.insert(A >= 1);
   cs.insert(B >= 0);
   cs.insert(A + B <= 3);
-  TOctagon oct(cs);
+  TOctagonal_Shape oct(cs);
 
   print_constraints(oct, "--- oct ---");
 
@@ -223,11 +223,11 @@ test09() {
   return ok;
 }
 
-bool 
+bool
 test10() {
   Variable A(0);
 
-  TOctagon oct(1);
+  TOctagonal_Shape oct(1);
   oct.add_constraint(A >= 0);
 
   print_constraints(oct, "--- oct ---");
@@ -245,12 +245,12 @@ test10() {
   return ok;
 }
 
-bool 
+bool
 test11() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(A == 1);
   oct.add_constraint(B >= 2);
 
@@ -269,13 +269,13 @@ test11() {
   return ok;
 }
 
-bool  
+bool
 test12() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraint(A == 1);
   oct.add_constraint(B >= 2);
   oct.add_constraint(C <= 1);
@@ -295,11 +295,11 @@ test12() {
   return ok;
 }
 
-bool 
+bool
 test13() {
   Variable A(0);
 
-  TOctagon oct(1);
+  TOctagonal_Shape oct(1);
   oct.add_constraint(A >= 0);
 
   print_constraints(oct, "--- oct ---");

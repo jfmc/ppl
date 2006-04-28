@@ -1,4 +1,4 @@
-/* Octagon class implementation: non-inline template functions.
+/* Octagonal_Shape class implementation: non-inline template functions.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Octagon_templates_hh
-#define PPL_Octagon_templates_hh 1
+#ifndef PPL_Octagonal_Shape_templates_hh
+#define PPL_Octagonal_Shape_templates_hh 1
 
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
@@ -43,18 +43,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 // template <typename T>
-// Octagon<T>::Octagon(const Polyhedron& ph, const Complexity_Class complexity)
+// Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
+//                                     const Complexity_Class complexity)
 //   : matrix(0), space_dim(0), status() {
 //   using Implementation::BD_Shapes::div_round_up;
 //   const dimension_type num_dimensions = ph.space_dimension();
 
 //   if (ph.marked_empty()) {
-//     *this = Octagon(num_dimensions, EMPTY);
+//     *this = Octagonal_Shape(num_dimensions, EMPTY);
 //     return;
 //   }
 
 //   if (num_dimensions == 0) {
-//     *this = Octagon(num_dimensions, UNIVERSE);
+//     *this = Octagonal_Shape(num_dimensions, UNIVERSE);
 //     return;
 //   }
 
@@ -62,7 +63,7 @@ namespace Parma_Polyhedra_Library {
 //   // or when the process has polynomial complexity.
 //   if (complexity == ANY_COMPLEXITY
 //       || (!ph.has_pending_constraints() && ph.generators_are_up_to_date())) {
-//     *this = Octagon(ph.generators());
+//     *this = Octagonal_Shape(ph.generators());
 //     return;
 //   }
 
@@ -75,7 +76,7 @@ namespace Parma_Polyhedra_Library {
 //     // If the constraint system of the polyhedron is minimized,
 //     // the test `is_universe()' has polynomial complexity.
 //     if (ph.is_universe()) {
-//       *this = Octagon(num_dimensions, UNIVERSE);
+//       *this = Octagonal_Shape(num_dimensions, UNIVERSE);
 //       return;
 //     }
 //   }
@@ -84,7 +85,7 @@ namespace Parma_Polyhedra_Library {
 //   for (Constraint_System::const_iterator i = ph.con_sys.begin(),
 // 	 cs_end = ph.con_sys.end(); i != cs_end; ++i)
 //     if (i->is_inconsistent()) {
-//       *this = Octagon(num_dimensions, EMPTY);
+//       *this = Octagonal_Shape(num_dimensions, EMPTY);
 //       return;
 //     }
 
@@ -109,7 +110,7 @@ namespace Parma_Polyhedra_Library {
 
 //     // Check for unsatisfiability.
 //     if (!lp.is_satisfiable()) {
-//       *this = Octagon(num_dimensions, EMPTY);
+//       *this = Octagonal_Shape(num_dimensions, EMPTY);
 //       return;
 //     }
 
@@ -189,11 +190,11 @@ namespace Parma_Polyhedra_Library {
 //   }
 
 //   // Extract easy-to-find bounds from constraints.
-//   *this = Octagon(ph.con_sys);
+//   *this = Octagonal_Shape(ph.con_sys);
 // }
 
 template <typename T>
-Octagon<T>::Octagon(const Generator_System& gs)
+Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
   : matrix(gs.space_dimension()),
     space_dim(gs.space_dimension()), status(){
   using Implementation::BD_Shapes::max_assign;
@@ -290,7 +291,8 @@ Octagon<T>::Octagon(const Generator_System& gs)
 
   if (!point_seen)
     // The generator system is not empty, but contains no points.
-    throw std::invalid_argument("PPL::Octagon<T>::Octagon(gs):\n"
+    throw std::invalid_argument("PPL::Octagonal_Shape<T>"
+				"::Octagonal_Shape(gs):\n"
 				"the non-empty generator system gs "
 				"contains no points.");
 
@@ -370,7 +372,7 @@ Octagon<T>::Octagon(const Generator_System& gs)
 
 template <typename T>
 void
-Octagon<T>::add_constraint(const Constraint& c) {
+Octagonal_Shape<T>::add_constraint(const Constraint& c) {
   using Implementation::BD_Shapes::div_round_up;
 
   const dimension_type c_space_dim = c.space_dimension();
@@ -387,7 +389,8 @@ Octagon<T>::add_constraint(const Constraint& c) {
   Coefficient coeff;
   Coefficient term = c.inhomogeneous_term();
   // Constraints that are not octagonal differences are ignored.
-  if (!extract_octagonal_difference(c, c_space_dim, num_vars, i, j, coeff, term))
+  if (!extract_octagonal_difference(c, c_space_dim, num_vars,
+				    i, j, coeff, term))
     return;
 
   if (num_vars == 0) {
@@ -442,7 +445,7 @@ Octagon<T>::add_constraint(const Constraint& c) {
 
 template <typename T>
 dimension_type
-Octagon<T>::affine_dimension() const {
+Octagonal_Shape<T>::affine_dimension() const {
   const dimension_type n_rows = matrix.num_rows();
 
   // Strong closure is necessary to detect emptiness
@@ -472,7 +475,7 @@ Octagon<T>::affine_dimension() const {
 
 template <typename T>
 void
-Octagon<T>::concatenate_assign(const Octagon<T>& y) {
+Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape<T>& y) {
   // If `y' is an empty 0-dim space octagon, let `*this' become empty.
   // If `y' is an universal 0-dim space octagon, we simply return.
   if (y.space_dim == 0) {
@@ -518,7 +521,7 @@ Octagon<T>::concatenate_assign(const Octagon<T>& y) {
 
 template <typename T>
 bool
-Octagon<T>::contains(const Octagon& y) const {
+Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
     throw_dimension_incompatible("contains(y)", y);
@@ -542,8 +545,9 @@ Octagon<T>::contains(const Octagon& y) const {
 
   // `*this' contains `y' if and only if every element of `*this'
   // is greater than or equal to the correspondent one of `y'.
-  for (typename OR_Matrix<N>::const_element_iterator i = matrix.element_begin(),
-	 j = y.matrix.element_begin(), iend = matrix.element_end(); i != iend; ++i, ++j)
+  for (typename OR_Matrix<N>::const_element_iterator
+	 i = matrix.element_begin(), j = y.matrix.element_begin(),
+	 iend = matrix.element_end(); i != iend; ++i, ++j)
     if (*i < *j)
       return false;
   return true;
@@ -551,7 +555,7 @@ Octagon<T>::contains(const Octagon& y) const {
 
 template <typename T>
 bool
-Octagon<T>::is_universe() const {
+Octagonal_Shape<T>::is_universe() const {
   // An empty octagon isn't, of course, universe.
   if (marked_empty())
     return false;
@@ -562,7 +566,8 @@ Octagon<T>::is_universe() const {
     return true;
 
   // An universe octagon can only contains trivial  constraints.
-  for (typename OR_Matrix<N>::const_element_iterator i = matrix.element_begin(),
+  for (typename OR_Matrix<N>::const_element_iterator
+	 i = matrix.element_begin(),
 	 iend = matrix.element_end(); i != iend; ++i)
     if (!is_plus_infinity(*i))
       return false;
@@ -572,9 +577,9 @@ Octagon<T>::is_universe() const {
 
 template <typename T>
 bool
-Octagon<T>::is_strong_coherent() const {
-  // It is used only in Octagon<T>::OK() to check if a closed octagon
-  // is also strong-coherent, as it must be.
+Octagonal_Shape<T>::is_strong_coherent() const {
+  // This method is only used by method OK() so as to check if a
+  // strongly closed matrix is also strong-coherent, as it must be.
   dimension_type num_rows = matrix.num_rows();
 
   // The strong-coherence is: for every indexes i and j (and i != j)
@@ -610,12 +615,13 @@ Octagon<T>::is_strong_coherent() const {
 
 template <typename T>
 bool
-Octagon<T>::is_strongly_reduced() const {
+Octagonal_Shape<T>::is_strongly_reduced() const {
   // An empty octagon is already transitively reduced.
   if (marked_empty())
     return true;
 
-  Octagon x = *this;
+  // CHECK ME: is this copy wanted?
+  Octagonal_Shape x = *this;
   // An octagon is reduced if removing any constraint,
   // the obtained octagon is different from previous one.
   for (typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin(),
@@ -625,7 +631,7 @@ Octagon<T>::is_strongly_reduced() const {
     dimension_type i = iter.index();
     for (dimension_type j = 0; j < rs_i; ++j) {
       if (!is_plus_infinity(m_i[j])) {
-	Octagon x_copy = *this;
+	Octagonal_Shape x_copy = *this;
 	x_copy.matrix[i][j] = PLUS_INFINITY;
 	if (x_copy == x)
 	  return false;
@@ -638,7 +644,7 @@ Octagon<T>::is_strongly_reduced() const {
 
 template <typename T>
 Poly_Con_Relation
-Octagon<T>::relation_with(const Constraint& c) const {
+Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   using Implementation::BD_Shapes::div_round_up;
 
   dimension_type c_space_dim = c.space_dimension();
@@ -683,7 +689,8 @@ Octagon<T>::relation_with(const Constraint& c) const {
   Coefficient coeff;
   Coefficient term = c.inhomogeneous_term();
   // Constraints that are not octagonal differences are ignored.
-  if (!extract_octagonal_difference(c, c_space_dim, num_vars, i, j, coeff, term))
+  if (!extract_octagonal_difference(c, c_space_dim, num_vars,
+				    i, j, coeff, term))
     throw_constraint_incompatible("relation_with(c)");
 
   if (num_vars == 0) {
@@ -765,7 +772,7 @@ Octagon<T>::relation_with(const Constraint& c) const {
 #if 0
 template <typename T>
 Poly_Con_Relation
-Octagon<T>::relation_with(const Constraint& c) const {
+Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   using namespace IO_Operators;
   C_Polyhedron ph(constraints());
   Poly_Con_Relation p_ret = ph.relation_with(c);
@@ -777,7 +784,7 @@ Octagon<T>::relation_with(const Constraint& c) const {
 	      << ph << std::endl
 	      << "with" << std::endl
 	      << c << std::endl
-	      << "gives " << o_ret << " with Octagon" << std::endl
+	      << "gives " << o_ret << " with Octagonal_Shape" << std::endl
 	      << "and " << p_ret << " with C_Polyhedron" << std::endl;
   }
   return o_ret;
@@ -786,7 +793,7 @@ Octagon<T>::relation_with(const Constraint& c) const {
 
 template <typename T>
 Poly_Gen_Relation
-Octagon<T>::relation_with(const Generator& g) const {
+Octagonal_Shape<T>::relation_with(const Generator& g) const {
   dimension_type g_space_dim = g.space_dimension();
 
   // Dimension-compatibility check.
@@ -886,7 +893,8 @@ Octagon<T>::relation_with(const Generator& g) const {
       const Variable y(i/2);
       const bool x_dimension_incompatible = x.space_dimension() > g_space_dim;
       const bool y_dimension_incompatible = y.space_dimension() > g_space_dim;
-      const bool is_trivial_zero = (x_dimension_incompatible && g.coefficient(y) == 0)
+      const bool is_trivial_zero = (x_dimension_incompatible
+				    && g.coefficient(y) == 0)
 	|| (y_dimension_incompatible && g.coefficient(x) == 0)
 	|| (x_dimension_incompatible && y_dimension_incompatible);
       // FIXME! Find better names.
@@ -967,7 +975,7 @@ Octagon<T>::relation_with(const Generator& g) const {
 
 template <typename T>
 void
-Octagon<T>::strong_closure_assign() const {
+Octagonal_Shape<T>::strong_closure_assign() const {
   using Implementation::BD_Shapes::min_assign;
 
   // Do something only if necessary (zero-dim implies strong closure).
@@ -976,7 +984,7 @@ Octagon<T>::strong_closure_assign() const {
 
   // Even though the octagon will not change, its internal representation
   // is going to be modified by the closure algorithm.
-  Octagon& x = const_cast<Octagon<T>&>(*this);
+  Octagonal_Shape& x = const_cast<Octagonal_Shape<T>&>(*this);
 
   // Use these type aliases for short.
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
@@ -1173,13 +1181,14 @@ Octagon<T>::strong_closure_assign() const {
 
 template <typename T>
 void
-Octagon<T>::incremental_strong_closure_assign(Variable var) const {
+Octagonal_Shape<T>::incremental_strong_closure_assign(Variable var) const {
   using Implementation::BD_Shapes::min_assign;
 
   // `var' should be one of the dimensions of the octagon.
   dimension_type num_var = var.id() + 1;
   if (num_var > space_dim)
-    throw_dimension_incompatible("incremental_strong_closure_assign(v)", var.id());
+    throw_dimension_incompatible("incremental_strong_closure_assign(v)",
+				 var.id());
 
   // Do something only if necessary.
   if (marked_empty() || marked_strongly_closed())
@@ -1189,7 +1198,7 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
   if (space_dim == 0)
     return;
 
-  Octagon& x = const_cast<Octagon<T>&>(*this);
+  Octagonal_Shape& x = const_cast<Octagonal_Shape<T>&>(*this);
 
   // Fill the main diagonal with zeros.
   for (typename OR_Matrix<N>::row_iterator i = x.matrix.row_begin(),
@@ -1363,7 +1372,8 @@ Octagon<T>::incremental_strong_closure_assign(Variable var) const {
 
 template <typename T>
 void
-Octagon<T>::compute_successors(std::vector<dimension_type>& successor) const {
+Octagonal_Shape<T>
+::compute_successors(std::vector<dimension_type>& successor) const {
   assert(!marked_empty() && marked_strongly_closed());
   assert(successor.size() == 0);
   // Variables are ordered according to their index.
@@ -1395,7 +1405,8 @@ Octagon<T>::compute_successors(std::vector<dimension_type>& successor) const {
 
 template <typename T>
 void
-Octagon<T>::compute_leaders(std::vector<dimension_type>& leaders) const {
+Octagonal_Shape<T>
+::compute_leaders(std::vector<dimension_type>& leaders) const {
   assert(!marked_empty() && marked_strongly_closed());
   assert(leaders.size() == 0);
   // Variables are ordered according to their index.
@@ -1427,10 +1438,11 @@ Octagon<T>::compute_leaders(std::vector<dimension_type>& leaders) const {
 
 template <typename T>
 void
-Octagon<T>::compute_leaders(std::vector<dimension_type>& successor,
-			    std::vector<dimension_type>& no_sing_leaders,
-			    bool& exist_sing_class,
-			    dimension_type& sing_leader) const {
+Octagonal_Shape<T>
+::compute_leaders(std::vector<dimension_type>& successor,
+		  std::vector<dimension_type>& no_sing_leaders,
+		  bool& exist_sing_class,
+		  dimension_type& sing_leader) const {
   assert(!marked_empty() && marked_strongly_closed());
   assert(no_sing_leaders.size() == 0);
   dimension_type successor_size = successor.size();
@@ -1454,7 +1466,7 @@ Octagon<T>::compute_leaders(std::vector<dimension_type>& successor,
 
 template <typename T>
 void
-Octagon<T>::strong_reduction_assign() const {
+Octagonal_Shape<T>::strong_reduction_assign() const {
 
   // First find the tightest constraints for this octagon.
   strong_closure_assign();
@@ -1475,7 +1487,7 @@ Octagon<T>::strong_reduction_assign() const {
   compute_leaders(successor, no_sing_leaders, exist_sing_class, sing_leader);
   const dimension_type num_no_sing_leaders = no_sing_leaders.size();
 
-  Octagon<T> aux(space_dim);
+  Octagonal_Shape<T> aux(space_dim);
   // Step 2: add to auxiliary octagon only no-redundant
   // constraints and construct a 0-cycle using only
   // the leaders of the non-singular classes.
@@ -1584,14 +1596,14 @@ Octagon<T>::strong_reduction_assign() const {
       aux.matrix[sing_leader+1][sing_leader] = matrix[sing_leader+1][sing_leader];
   }
 
-  Octagon<T>& x = const_cast<Octagon<T>&>(*this);
+  Octagonal_Shape<T>& x = const_cast<Octagonal_Shape<T>&>(*this);
   aux.status.reset_strongly_closed();
 
 #ifndef NDEBUG
   {
     // We assume that `aux' is equal to `*this'.
-    const Octagon x_copy = *this;
-    const Octagon y_copy = aux;
+    const Octagonal_Shape x_copy = *this;
+    const Octagonal_Shape y_copy = aux;
     assert(x_copy == y_copy);
   }
 #endif
@@ -1603,7 +1615,7 @@ Octagon<T>::strong_reduction_assign() const {
 
 template <typename T>
 void
-Octagon<T>::oct_hull_assign(const Octagon& y) {
+Octagonal_Shape<T>::oct_hull_assign(const Octagonal_Shape& y) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
     throw_dimension_incompatible("oct_hull_assign(y)", y);
@@ -1634,12 +1646,12 @@ Octagon<T>::oct_hull_assign(const Octagon& y) {
 
 template <typename T>
 void
-Octagon<T>::oct_difference_assign(const Octagon& y) {
+Octagonal_Shape<T>::oct_difference_assign(const Octagonal_Shape& y) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
     throw_dimension_incompatible("oct_difference_assign(y)", y);
 
-  Octagon& x = *this;
+  Octagonal_Shape& x = *this;
 
   // Being lazy here is only harmful.
   // We close.
@@ -1666,7 +1678,7 @@ Octagon<T>::oct_difference_assign(const Octagon& y) {
     return;
   }
 
-  Octagon new_oct(space_dim, EMPTY);
+  Octagonal_Shape new_oct(space_dim, EMPTY);
   // We take a constraint of the octagon y at the time and we
   // consider its complementary. Then we intersect the union
   // of these complementaries with the octagon x.
@@ -1680,13 +1692,13 @@ Octagon<T>::oct_difference_assign(const Octagon& y) {
     // a result that is less precise than the oct_difference.
     if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
       continue;
-    Octagon z = x;
+    Octagonal_Shape z = x;
     const Linear_Expression e = Linear_Expression(c);
     bool change = false;
     if (c.is_nonstrict_inequality())
       change = z.add_constraint_and_minimize(e <= 0);
     if (c.is_equality()) {
-      Octagon w = x;
+      Octagonal_Shape w = x;
       if (w.add_constraint_and_minimize(e <= 0))
 	new_oct.oct_hull_assign(w);
       change = z.add_constraint_and_minimize(e >= 0);
@@ -1703,7 +1715,7 @@ Octagon<T>::oct_difference_assign(const Octagon& y) {
 
 template <typename T>
 void
-Octagon<T>::add_space_dimensions_and_embed(dimension_type m) {
+Octagonal_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
   // Adding no dimensions is a no-op.
   if (m == 0)
     return;
@@ -1725,14 +1737,14 @@ Octagon<T>::add_space_dimensions_and_embed(dimension_type m) {
 
 template <typename T>
 void
-Octagon<T>::add_space_dimensions_and_project(dimension_type m) {
+Octagonal_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
   // Adding no dimensions is a no-op.
   if (m == 0)
     return;
 
   dimension_type n = matrix.num_rows();
 
-  // To project an n-dimension space octagon in a (space_dim+m)-dimension space,
+  // To project an n-dimension space OS in a (space_dim+m)-dimension space,
   // we just add `m' columns and rows in the matrix of constraints.
   add_space_dimensions_and_embed(m);
   // We insert 0 where it needs.
@@ -1753,7 +1765,8 @@ Octagon<T>::add_space_dimensions_and_project(dimension_type m) {
 
 template <typename T>
 void
-Octagon<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
+Octagonal_Shape<T>
+::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // The removal of no dimensions from any octagon is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a octagon in a 0-dim space.
@@ -1827,7 +1840,7 @@ Octagon<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
 template <typename T>
 template <typename PartialFunction>
 void
-Octagon<T>::map_space_dimensions(const PartialFunction& pfunc) {
+Octagonal_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
   if (space_dim == 0)
     return;
 
@@ -1904,7 +1917,7 @@ Octagon<T>::map_space_dimensions(const PartialFunction& pfunc) {
 
 template <typename T>
 void
-Octagon<T>::intersection_assign(const Octagon& y) {
+Octagonal_Shape<T>::intersection_assign(const Octagonal_Shape& y) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
     throw_dimension_incompatible("intersection_assign(y)", y);
@@ -1946,9 +1959,9 @@ Octagon<T>::intersection_assign(const Octagon& y) {
 template <typename T>
 template <typename Iterator>
 void
-Octagon<T>::CC76_extrapolation_assign(const Octagon& y,
-				      Iterator first, Iterator last,
-				      unsigned* tp) {
+Octagonal_Shape<T>::CC76_extrapolation_assign(const Octagonal_Shape& y,
+					      Iterator first, Iterator last,
+					      unsigned* tp) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
     throw_dimension_incompatible("CC76_extrapolation_assign(y)", y);
@@ -1956,8 +1969,8 @@ Octagon<T>::CC76_extrapolation_assign(const Octagon& y,
 #ifndef NDEBUG
   {
     // We assume that `y' is contained in or equal to `*this'.
-    const Octagon x_copy = *this;
-    const Octagon y_copy = y;
+    const Octagonal_Shape x_copy = *this;
+    const Octagonal_Shape y_copy = y;
     assert(x_copy.contains(y_copy));
   }
 #endif
@@ -1978,7 +1991,7 @@ Octagon<T>::CC76_extrapolation_assign(const Octagon& y,
 
   // If there are tokens available, work on a temporary copy.
   if (tp != 0 && *tp > 0) {
-    Octagon<T> x_tmp(*this);
+    Octagonal_Shape<T> x_tmp(*this);
     x_tmp.CC76_extrapolation_assign(y, first, last, 0);
     // If the widening was not precise, use one of the available tokens.
     if (!contains(x_tmp))
@@ -2017,8 +2030,9 @@ Octagon<T>::CC76_extrapolation_assign(const Octagon& y,
 
 template <typename T>
 void
-Octagon<T>::get_limiting_octagon(const Constraint_System& cs,
-				 Octagon& limiting_octagon) const {
+Octagonal_Shape<T>
+::get_limiting_octagon(const Constraint_System& cs,
+		       Octagonal_Shape& limiting_octagon) const {
   using Implementation::BD_Shapes::div_round_up;
 
   const dimension_type cs_space_dim = cs.space_dimension();
@@ -2086,9 +2100,10 @@ Octagon<T>::get_limiting_octagon(const Constraint_System& cs,
 
 template <typename T>
 void
-Octagon<T>::limited_CC76_extrapolation_assign(const Octagon& y,
-					      const Constraint_System& cs,
-					      unsigned* tp) {
+Octagonal_Shape<T>
+::limited_CC76_extrapolation_assign(const Octagonal_Shape& y,
+				    const Constraint_System& cs,
+				    unsigned* tp) {
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
@@ -2112,8 +2127,8 @@ Octagon<T>::limited_CC76_extrapolation_assign(const Octagon& y,
 #ifndef NDEBUG
   {
     // We assume that `y' is contained in or equal to `*this'.
-    const Octagon x_copy = *this;
-    const Octagon y_copy = y;
+    const Octagonal_Shape x_copy = *this;
+    const Octagonal_Shape y_copy = y;
     assert(x_copy.contains(y_copy));
   }
 #endif
@@ -2125,7 +2140,7 @@ Octagon<T>::limited_CC76_extrapolation_assign(const Octagon& y,
   if (y.marked_empty())
     return;
 
-  Octagon<T> limiting_octagon(space_dim, UNIVERSE);
+  Octagonal_Shape<T> limiting_octagon(space_dim, UNIVERSE);
   get_limiting_octagon(cs, limiting_octagon);
   CC76_extrapolation_assign(y, tp);
   intersection_assign(limiting_octagon);
@@ -2134,8 +2149,8 @@ Octagon<T>::limited_CC76_extrapolation_assign(const Octagon& y,
 
 template <typename T>
 void
-Octagon<T>::BHMZ05_widening_assign(const Octagon& y,
-				   unsigned* tp) {
+Octagonal_Shape<T>::BHMZ05_widening_assign(const Octagonal_Shape& y,
+					   unsigned* tp) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
     throw_dimension_incompatible("BHMZ05_widening_assign(y)", y);
@@ -2143,8 +2158,8 @@ Octagon<T>::BHMZ05_widening_assign(const Octagon& y,
 #ifndef NDEBUG
   {
     // We assume that `y' is contained in or equal to `*this'.
-    const Octagon x_copy = *this;
-    const Octagon y_copy = y;
+    const Octagonal_Shape x_copy = *this;
+    const Octagonal_Shape y_copy = y;
     assert(x_copy.contains(y_copy));
   }
 #endif
@@ -2166,7 +2181,7 @@ Octagon<T>::BHMZ05_widening_assign(const Octagon& y,
 
   // If there are tokens available, work on a temporary copy.
   if (tp != 0 && *tp > 0) {
-    Octagon<T> x_tmp(*this);
+    Octagonal_Shape<T> x_tmp(*this);
     x_tmp.BHMZ05_widening_assign(y, 0);
     // If the widening was not precise, use one of the available tokens.
     if (!contains(x_tmp))
@@ -2197,9 +2212,10 @@ Octagon<T>::BHMZ05_widening_assign(const Octagon& y,
 
 template <typename T>
 void
-Octagon<T>::limited_BHMZ05_extrapolation_assign(const Octagon& y,
-					      const Constraint_System& cs,
-					      unsigned* tp) {
+Octagonal_Shape<T>
+::limited_BHMZ05_extrapolation_assign(const Octagonal_Shape& y,
+				      const Constraint_System& cs,
+				      unsigned* tp) {
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
@@ -2223,8 +2239,8 @@ Octagon<T>::limited_BHMZ05_extrapolation_assign(const Octagon& y,
 #ifndef NDEBUG
   {
     // We assume that `y' is contained in or equal to `*this'.
-    const Octagon x_copy = *this;
-    const Octagon y_copy = y;
+    const Octagonal_Shape x_copy = *this;
+    const Octagonal_Shape y_copy = y;
     assert(x_copy.contains(y_copy));
   }
 #endif
@@ -2236,7 +2252,7 @@ Octagon<T>::limited_BHMZ05_extrapolation_assign(const Octagon& y,
   if (y.marked_empty())
     return;
 
-  Octagon<T> limiting_octagon(space_dim, UNIVERSE);
+  Octagonal_Shape<T> limiting_octagon(space_dim, UNIVERSE);
   get_limiting_octagon(cs, limiting_octagon);
   BHMZ05_widening_assign(y, tp);
   intersection_assign(limiting_octagon);
@@ -2245,7 +2261,7 @@ Octagon<T>::limited_BHMZ05_extrapolation_assign(const Octagon& y,
 
 template <typename T>
 void
-Octagon<T>::CC76_narrowing_assign(const Octagon& y) {
+Octagonal_Shape<T>::CC76_narrowing_assign(const Octagonal_Shape& y) {
   // Dimension-compatibility check.
   if (space_dim != y.space_dim)
     throw_dimension_incompatible("CC76_narrowing_assign(y)", y);
@@ -2253,8 +2269,8 @@ Octagon<T>::CC76_narrowing_assign(const Octagon& y) {
 #ifndef NDEBUG
   {
     // We assume that `*this' is contained in or equal to `y'.
-    const Octagon x_copy = *this;
-    const Octagon y_copy = y;
+    const Octagonal_Shape x_copy = *this;
+    const Octagonal_Shape y_copy = y;
     assert(y_copy.contains(x_copy));
   }
 #endif
@@ -2294,7 +2310,7 @@ Octagon<T>::CC76_narrowing_assign(const Octagon& y) {
 
 template <typename T>
 void
-Octagon<T>
+Octagonal_Shape<T>
 ::deduce_v_minus_u_bounds(const dimension_type v,
 			  const dimension_type last_v,
 			  const Linear_Expression& sc_expr,
@@ -2372,7 +2388,7 @@ Octagon<T>
 
 template <typename T>
 void
-Octagon<T>
+Octagonal_Shape<T>
 ::deduce_v_plus_u_bounds(const dimension_type v,
 			 const dimension_type last_v,
 			 const Linear_Expression& sc_expr,
@@ -2455,7 +2471,7 @@ Octagon<T>
 
 template <typename T>
 void
-Octagon<T>
+Octagonal_Shape<T>
 ::deduce_u_minus_v_bounds(const dimension_type v,
 			  const dimension_type last_v,
 			  const Linear_Expression& sc_expr,
@@ -2534,7 +2550,7 @@ Octagon<T>
 
 template <typename T>
 void
-Octagon<T>
+Octagonal_Shape<T>
 ::deduce_minus_v_minus_u_bounds(const dimension_type v,
 				const dimension_type last_v,
 				const Linear_Expression& sc_expr,
@@ -2621,9 +2637,10 @@ Octagon<T>
 
 template <typename T>
 void
-Octagon<T>::affine_image(const Variable var,
-                         const Linear_Expression& expr,
-			 Coefficient_traits::const_reference denominator) {
+Octagonal_Shape<T>::affine_image(const Variable var,
+				 const Linear_Expression& expr,
+				 Coefficient_traits::const_reference
+				 denominator) {
   using Implementation::BD_Shapes::div_round_up;
 
   // The denominator cannot be zero.
@@ -3052,9 +3069,10 @@ Octagon<T>::affine_image(const Variable var,
 
 template <typename T>
 void
-Octagon<T>::affine_preimage(const Variable var,
-			    const Linear_Expression& expr,
-			    Coefficient_traits::const_reference denominator) {
+Octagonal_Shape<T>::affine_preimage(const Variable var,
+				    const Linear_Expression& expr,
+				    Coefficient_traits::const_reference
+				    denominator) {
 
   // The denominator cannot be zero.
   if (denominator == 0)
@@ -3148,20 +3166,20 @@ Octagon<T>::affine_preimage(const Variable var,
       affine_image(var, inverse, -expr_v);
     }
   }
-  else {
+  else
     // The transformation is not invertible: all constraints on `var' are lost.
     forget_all_octagonal_constraints(n_var);
-  }
+
   assert(OK());
 }
 
 template <typename T>
 void
-Octagon<T>::generalized_affine_image(const Variable var,
-				     const Relation_Symbol relsym,
-				     const Linear_Expression&  expr ,
-				     Coefficient_traits::const_reference
-				     denominator) {
+Octagonal_Shape<T>
+::generalized_affine_image(const Variable var,
+			   const Relation_Symbol relsym,
+			   const Linear_Expression&  expr ,
+			   Coefficient_traits::const_reference denominator) {
   using Implementation::BD_Shapes::div_round_up;
 
   // The denominator cannot be zero.
@@ -3186,7 +3204,7 @@ Octagon<T>::generalized_affine_image(const Variable var,
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_image(v, r, e, d)",
   		  "r is a strict relation symbol and "
-  		  "*this is an Octagon");
+  		  "*this is an Octagonal_Shape");
 
   if (relsym == EQUAL) {
     // The relation symbol is "==":
@@ -3318,16 +3336,16 @@ if (marked_empty())
 	    const dimension_type h = 2*last_var_id;
 	    if (a == denominator) {
 	      // Add the new constraint `v - w <= b/denominator'.
-	      if (num_var < last_var_id) 
+	      if (num_var < last_var_id)
 		add_octagonal_constraint(h, n_var, b, denominator);
-	      else if (num_var > last_var_id) 
+	      else if (num_var > last_var_id)
 		add_octagonal_constraint(n_var+1, h+1, b, denominator);
 	    }
 	    else {
 	      // Add the new constraint `v + w <= b/denominator'.
-	      if (num_var < last_var_id) 
+	      if (num_var < last_var_id)
 		add_octagonal_constraint(h+1, n_var, b, denominator);
-	      else if (num_var > last_var_id) 
+	      else if (num_var > last_var_id)
 		add_octagonal_constraint(n_var+1, h, b, denominator);
 	    }
 	  }
@@ -3390,17 +3408,17 @@ if (marked_empty())
 	    if (a == denominator) {
 	      // Add the new constraint `var - w >= b/denominator',
 	      // i.e., `w - var <= -b/denominator'.
-	      if (num_var < last_var_id) 
+	      if (num_var < last_var_id)
 		add_octagonal_constraint(h+1, n_var+1, b, minus_den);
-	      else if (num_var > last_var_id) 
+	      else if (num_var > last_var_id)
 		add_octagonal_constraint(n_var, h, b, minus_den);
 	    }
 	    else {
 	      // Add the new constraint `var + w >= b/denominator',
 	      // i.e., `-w - var <= -b/denominator'.
-	      if (num_var < last_var_id) 
+	      if (num_var < last_var_id)
 		add_octagonal_constraint(h, n_var+1, b, minus_den);
-	      else if (num_var > last_var_id) 
+	      else if (num_var > last_var_id)
 		add_octagonal_constraint(n_var, h+1, b, minus_den);
 	    }
 	  }
@@ -3674,11 +3692,9 @@ if (marked_empty())
 
 template <typename T>
 void
-Octagon<T>::generalized_affine_image(const Linear_Expression& lhs,
-				     const Relation_Symbol relsym,
-				     const Linear_Expression& rhs) {
-
-
+Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
+					     const Relation_Symbol relsym,
+					     const Linear_Expression& rhs) {
   // Dimension-compatibility checks.
   // The dimension of `lhs' should not be greater than the dimension
   // of `*this'.
@@ -3698,7 +3714,7 @@ Octagon<T>::generalized_affine_image(const Linear_Expression& lhs,
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_image(e1, r, e2)",
 		  "r is a strict relation symbol and "
-		  "*this is an Octagon");
+		  "*this is an Octagonal_Shape");
 
   strong_closure_assign();
   // The image of an empty octagon is empty.
@@ -3865,11 +3881,12 @@ Octagon<T>::generalized_affine_image(const Linear_Expression& lhs,
 
 template <typename T>
 void
-Octagon<T>::generalized_affine_preimage(const Variable var,
-					const Relation_Symbol relsym,
-					const Linear_Expression& expr,
-					Coefficient_traits::const_reference
-					denominator) {
+Octagonal_Shape<T>
+::generalized_affine_preimage(const Variable var,
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference
+			      denominator) {
   using Implementation::BD_Shapes::div_round_up;
 
   // The denominator cannot be zero.
@@ -3894,7 +3911,7 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_preimage(v, r, e, d)",
   		  "r is a strict relation symbol and "
-  		  "*this is an Octagon");
+  		  "*this is an Octagonal_Shape");
 
   if (relsym == EQUAL) {
     // The relation symbol is "==":
@@ -3927,7 +3944,7 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
 
   // Here `var_coefficient == 0', so that the preimage cannot
   // be easily computed by inverting the affine relation.
-  // Shrink the Octagon by adding the constraint induced
+  // Shrink the Octagonal_Shape by adding the constraint induced
   // by the affine relation.
   Coefficient b = expr.inhomogeneous_term();
 
@@ -3984,16 +4001,16 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
       // expr_last_var * w + b, with `last_var_id != v'.
       if (expr_last_var == denominator) {
 	// Add the new constraints `v - w <= b/denominator'.
-	if (num_var < last_var_id) 
+	if (num_var < last_var_id)
 	  add_octagonal_constraint(lv_index, n_var, d);
-	if (num_var > last_var_id) 
+	if (num_var > last_var_id)
 	  add_octagonal_constraint(n_var+1, lv_index+1, d);
       }
       else if (expr_last_var == -denominator) {
 	// Add the new constraints `v + w <= b/denominator'.
-	if (num_var < last_var_id) 
+	if (num_var < last_var_id)
 	  add_octagonal_constraint(lv_index+1, n_var, d);
-	if (num_var > last_var_id) 
+	if (num_var > last_var_id)
 	  add_octagonal_constraint(n_var+1, lv_index, d);
       }
       else {
@@ -4021,7 +4038,7 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
 	  N den;
 	  assign_r(den, denominator, ROUND_UP);
 	  div_assign_r(coeff_lv, coeff_lv, den, ROUND_UP);
-	  add_mul_assign_r(sum, coeff_lv, approx_lv, ROUND_UP);
+          add_mul_assign_r(sum, coeff_lv, approx_lv, ROUND_UP);
 	  mul2exp_assign_r(sum, sum, 1, ROUND_IGNORE);
 	  add_octagonal_constraint(n_var+1, n_var, sum);
 	}
@@ -4034,16 +4051,16 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
       // expr_last_var * w + b, with `last_var_id != v'.
       if (expr_last_var == denominator) {
     	// Add the new constraint `v - w >= b/denominator'.
-	if (num_var < last_var_id) 
+	if (num_var < last_var_id)
 	  add_octagonal_constraint(lv_index+1, n_var+1, d);
-	if (num_var > last_var_id) 
+	if (num_var > last_var_id)
 	  add_octagonal_constraint(n_var, lv_index, d);
       }
       else if (expr_last_var == -denominator) {
 	// Add the new constraints `v + w >= b/denominator'.
-	if (num_var < last_var_id) 
+	if (num_var < last_var_id)
 	  add_octagonal_constraint(lv_index, n_var+1, d);
-	if (num_var > last_var_id) 
+	if (num_var > last_var_id)
 	  add_octagonal_constraint(n_var, lv_index+1, d);
       }
       else {
@@ -4056,7 +4073,8 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
 	typename OR_Matrix<N>::row_iterator last_v = matrix.row_begin() + lv_index;
 	typename OR_Matrix<N>::row_reference_type r_v = *last_v;
 	typename OR_Matrix<N>::row_reference_type r_cv = *(++last_v);
-	const N& double_approx_lv = (sign_lv > 0) ? r_v[lv_index+1] : r_cv[lv_index];
+	const N& double_approx_lv = (sign_lv > 0)
+	  ? r_v[lv_index+1] : r_cv[lv_index];
 	if (!is_plus_infinity(double_approx_lv)) {
 	  N coeff_lv;
 	  if (sign_lv > 0)
@@ -4317,7 +4335,7 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
     }
   }
 
-  // If the shrunk Octagon is empty, its preimage is empty too.
+  // If the shrunk OS is empty, its preimage is empty too.
   if (is_empty())
     return;
   forget_all_octagonal_constraints(n_var);
@@ -4326,7 +4344,7 @@ Octagon<T>::generalized_affine_preimage(const Variable var,
 
 template <typename T>
 Constraint_System
-Octagon<T>::constraints() const {
+Octagonal_Shape<T>::constraints() const {
   using Implementation::BD_Shapes::numer_denom;
 
   Constraint_System cs;
@@ -4463,11 +4481,11 @@ Octagon<T>::constraints() const {
   return cs;
 }
 
-/*! \relates Parma_Polyhedra_Library::Octagon */
+/*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 template <typename T>
 std::ostream&
-IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
-  typedef typename Octagon<T>::coefficient_type N;
+IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& c) {
+  typedef typename Octagonal_Shape<T>::coefficient_type N;
   if (c.is_universe())
     s << "true";
   else {
@@ -4631,7 +4649,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagon<T>& c) {
 
 template <typename T>
 void
-Octagon<T>::ascii_dump(std::ostream& s) const {
+Octagonal_Shape<T>::ascii_dump(std::ostream& s) const {
   s << "space_dim "
     << space_dim
     << "\n";
@@ -4642,7 +4660,7 @@ Octagon<T>::ascii_dump(std::ostream& s) const {
 
 template <typename T>
 bool
-Octagon<T>::ascii_load(std::istream& s) {
+Octagonal_Shape<T>::ascii_load(std::istream& s) {
   std::string str;
 
   if (!(s >> str) || str != "space_dim")
@@ -4663,7 +4681,7 @@ Octagon<T>::ascii_load(std::istream& s) {
 
 template <typename T>
 bool
-Octagon<T>::OK() const {
+Octagonal_Shape<T>::OK() const {
   // Check whether the matrix is well-formed.
   if (!matrix.OK())
     return false;
@@ -4688,13 +4706,14 @@ Octagon<T>::OK() const {
     for (dimension_type j = 0; j < rs_i; ++j)
       if (is_minus_infinity(x_i[j])) {
 #ifndef NDEBUG
-      using namespace Parma_Polyhedra_Library::IO_Operators;
-      std::cerr << "Octagon::matrix[" << i.index() << "][" << j << "] = "
-		<< x_i[j] << "!"
-		<< std::endl;
+	using namespace Parma_Polyhedra_Library::IO_Operators;
+	std::cerr << "Octagonal_Shape::"
+		  << "matrix[" << i.index() << "][" << j << "] = "
+		  << x_i[j] << "!"
+		  << std::endl;
 #endif
-      return false;
-    }
+	return false;
+      }
   }
 
   // On the main diagonal only PLUS_INFINITY can occur.
@@ -4706,7 +4725,7 @@ Octagon<T>::OK() const {
 #ifndef NDEBUG
       const dimension_type j = i.index();
       using namespace Parma_Polyhedra_Library::IO_Operators;
-      std::cerr << "Octagon::matrix[" << j << "][" << j << "] = "
+      std::cerr << "Octagonal_Shape::matrix[" << j << "][" << j << "] = "
 		<< m_i_i << "!  (+inf was expected.)\n";
 #endif
       return false;
@@ -4715,12 +4734,13 @@ Octagon<T>::OK() const {
 
   // Check whether the closure information is legal.
   if (marked_strongly_closed()) {
-    Octagon x = *this;
+    Octagonal_Shape x = *this;
     x.status.reset_strongly_closed();
     x.strong_closure_assign();
     if (x.matrix != matrix) {
 #ifndef NDEBUG
-      std::cerr << "Octagon is marked as strongly closed but is it not!\n";
+      std::cerr << "Octagonal_Shape is marked as strongly closed "
+		<< "but is it not!\n";
 #endif
       return false;
     }
@@ -4730,7 +4750,7 @@ Octagon<T>::OK() const {
   if (marked_strongly_closed())
     if (!is_strong_coherent()) {
 #ifndef NDEBUG
-      std::cerr << "Octagon is not strong-coherent!\n";
+      std::cerr << "Octagonal_Shape is not strong-coherent!\n";
 #endif
       return false;
     }
@@ -4742,11 +4762,12 @@ Octagon<T>::OK() const {
 
 template <typename T>
 void
-Octagon<T>::throw_dimension_incompatible(const char* method,
-					 const Octagon& y) const {
+Octagonal_Shape<T>
+::throw_dimension_incompatible(const char* method,
+			       const Octagonal_Shape& y) const {
   std::ostringstream s;
   s << "PPL::";
-  s << "Octagon::" << method << ":\n"
+  s << "Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", y->space_dimension() == " << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -4754,11 +4775,12 @@ Octagon<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-Octagon<T>::throw_dimension_incompatible(const char* method,
-					 dimension_type required_dim) const {
+Octagonal_Shape<T>
+::throw_dimension_incompatible(const char* method,
+			       dimension_type required_dim) const {
   std::ostringstream s;
   s << "PPL::";
-  s << "Octagon::" << method << ":\n"
+  s << "Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", required dimension == " << required_dim << ".";
   throw std::invalid_argument(s.str());
@@ -4766,11 +4788,11 @@ Octagon<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-Octagon<T>::throw_dimension_incompatible(const char* method,
-					 const Constraint& c) const {
+Octagonal_Shape<T>::throw_dimension_incompatible(const char* method,
+						 const Constraint& c) const {
   std::ostringstream s;
   s << "PPL::";
-  s << "Octagon::" << method << ":\n"
+  s << "Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", c->space_dimension == " << c.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -4778,11 +4800,11 @@ Octagon<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-Octagon<T>::throw_dimension_incompatible(const char* method,
-					 const Generator& g) const {
+Octagonal_Shape<T>::throw_dimension_incompatible(const char* method,
+						 const Generator& g) const {
   std::ostringstream s;
   s << "PPL::";
-  s << "Octagon::" << method << ":\n"
+  s << "Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", g->space_dimension == " << g.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -4790,20 +4812,21 @@ Octagon<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-Octagon<T>::throw_constraint_incompatible(const char* method) const {
+Octagonal_Shape<T>::throw_constraint_incompatible(const char* method) const {
   std::ostringstream s;
-  s << "PPL::Octagon::" << method << ":\n"
+  s << "PPL::Octagonal_Shape::" << method << ":\n"
     << "the constraint is incompatible.";
   throw std::invalid_argument(s.str());
 }
 
 template <typename T>
 void
-Octagon<T>::throw_expression_too_complex(const char* method,
-					 const Linear_Expression& e) const {
+Octagonal_Shape<T>
+::throw_expression_too_complex(const char* method,
+			       const Linear_Expression& e) const {
   using namespace IO_Operators;
   std::ostringstream s;
-  s << "PPL::Octagon::" << method << ":\n"
+  s << "PPL::Octagonal_Shape::" << method << ":\n"
     << e << " is too complex.";
   throw std::invalid_argument(s.str());
 }
@@ -4811,12 +4834,13 @@ Octagon<T>::throw_expression_too_complex(const char* method,
 
 template <typename T>
 void
-Octagon<T>::throw_dimension_incompatible(const char* method,
-					 const char* name_row,
-					 const Linear_Expression& y) const {
+Octagonal_Shape<T>
+::throw_dimension_incompatible(const char* method,
+			       const char* name_row,
+			       const Linear_Expression& y) const {
   std::ostringstream s;
   s << "PPL::";
-  s << "Octagon::" << method << ":\n"
+  s << "Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", " << name_row << "->space_dimension() == "
     << y.space_dimension() << ".";
@@ -4826,15 +4850,15 @@ Octagon<T>::throw_dimension_incompatible(const char* method,
 
 template <typename T>
 void
-Octagon<T>::throw_generic(const char* method,
-			  const char* reason) const {
+Octagonal_Shape<T>::throw_generic(const char* method,
+				  const char* reason) const {
   std::ostringstream s;
   s << "PPL::";
-  s << "Octagon::" << method << ":\n"
+  s << "Octagonal_Shape::" << method << ":\n"
     << reason;
   throw std::invalid_argument(s.str());
 }
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Octagon_templates_hh)
+#endif // !defined(PPL_Octagonal_Shape_templates_hh)

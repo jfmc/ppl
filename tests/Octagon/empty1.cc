@@ -1,4 +1,4 @@
-/* Test Octagon::is_empty() .
+/* Test Octagonal_Shape::is_empty() .
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,14 +29,14 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc1(2, EMPTY);
+  TOctagonal_Shape oc1(2, EMPTY);
 
   bool empty1 = oc1.is_empty();
 
   nout << "*** oc1.is_empty() ***" << endl;
   nout << (empty1 ? "true" : "false ") << endl;
 
-  TOctagon oc2(2, UNIVERSE);
+  TOctagonal_Shape oc2(2, UNIVERSE);
 
   bool empty2 = oc2.is_empty();
 
@@ -52,7 +52,7 @@ test02() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
 
   oc.add_constraint(A == 0);
   oc.add_constraint(C >= 0);
@@ -76,7 +76,7 @@ test03() {
   Variable D(3);
   Variable E(4);
 
-  TOctagon oc1(5);
+  TOctagonal_Shape oc1(5);
   oc1.add_constraint(A <= 3);
   oc1.add_constraint(D <= 3);
   oc1.add_constraint(B - A <= 0);
@@ -97,7 +97,7 @@ test03() {
   nout << "*** oc1.is_empty() ***" << endl;
   nout << (empty ? "true" : "false") << endl;
 
-  TOctagon oc2(5);
+  TOctagonal_Shape oc2(5);
   oc2.add_constraint(A <= 3);
   oc2.add_constraint(D <= 3);
   oc2.add_constraint(B - A <= 0);

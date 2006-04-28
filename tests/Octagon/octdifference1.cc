@@ -1,4 +1,4 @@
-/* Test Octagon::oct_difference_assign(): if `oct1' is
+/* Test Octagonal_Shape::oct_difference_assign(): if `oct1' is
    contained in `oct2', the result of `oct1.oct_difference_assign(oct2)'
    is an empty octagon.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -31,26 +31,26 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
   oct1.add_constraint(A >= 0);
   oct1.add_constraint(A <= -2);
   oct1.add_constraint(B == 0);
 
   print_constraints(oct1, "*** oct1 ***");
 
-  TOctagon oct2(2);
+  TOctagonal_Shape oct2(2);
   oct2.add_constraint(A >= 0);
   oct2.add_constraint(A <= 2);
   oct2.add_constraint(B >= 0);
   oct2.add_constraint(B <= 2);
- 
+
   print_constraints(oct2, "*** oct2 ***");
 
   oct1.oct_difference_assign(oct2);
 
-  Octagon<mpq_class> known_result(2, EMPTY);
- 
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+  Octagonal_Shape<mpq_class> known_result(2, EMPTY);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1, "*** oct1.oct_difference_assign(oc2) ***");
 
@@ -59,17 +59,17 @@ test01() {
 
 bool
 test02() {
-  TOctagon oct1(0);
-  TOctagon oct2(0);
+  TOctagonal_Shape oct1(0);
+  TOctagonal_Shape oct2(0);
 
-  print_constraints(oct1, "*** oct1 ***"); 
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   oct1.oct_difference_assign(oct2);
 
-  Octagon<mpq_class> known_result(0, EMPTY);
- 
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+  Octagonal_Shape<mpq_class> known_result(0, EMPTY);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1, "*** oct1.intersection_assign(oc2) ***");
 
@@ -80,24 +80,24 @@ bool
 test03() {
   Variable A(0);
 
-  TOctagon oct1(1);
+  TOctagonal_Shape oct1(1);
   oct1.add_constraint(A >= 0);
   oct1.add_constraint(A <= 7);
 
   print_constraints(oct1, "*** oct1 ***");
 
-  TOctagon oct2(1);
-  oct2.add_constraint(A == 5); 
+  TOctagonal_Shape oct2(1);
+  oct2.add_constraint(A == 5);
 
   print_constraints(oct2, "*** oct2 ***");
 
   oct1.oct_difference_assign(oct2);
 
-  Octagon<mpq_class> known_result(1);
+  Octagonal_Shape<mpq_class> known_result(1);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 7);
- 
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1, "*** oct1.intersection_assign(oc2) ***");
 
@@ -106,12 +106,12 @@ test03() {
 
 bool
 test04() {
-  TOctagon oc1(3);
-  TOctagon oc2(5);
+  TOctagonal_Shape oc1(3);
+  TOctagonal_Shape oc2(5);
 
   try {
     // This is an incorrect use of function
-    // Octagon::oct_difference_assign(oc2): it is impossible to apply
+    // Octagonal_Shape::oct_difference_assign(oc2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
     oc1.oct_difference_assign(oc2);
   }

@@ -1,4 +1,4 @@
-/* Test Octagon::constraints(): we compute the system of
+/* Test Octagonal_Shape::constraints(): we compute the system of
    constraints of an octagon  that is defined by a system of
    constraints that contains only a trivially false constraint.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -30,19 +30,19 @@ bool
 test01() {
   Variable A(0);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
   oct1.add_constraint(0*A == 1);
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagon<mpq_class> known_result = oct1;
+  Octagonal_Shape<mpq_class> known_result = oct1;
 
   Constraint_System cs = oct1.constraints();
-  TOctagon oct2(cs);  
+  TOctagonal_Shape oct2(cs);  
   
   print_constraints(oct2, "*** oct2 ***");
 
-  bool ok = (Octagon<mpq_class>(oct2) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(cs, "*** cs ***");
 
@@ -51,16 +51,16 @@ test01() {
 
 bool
 test02() {
-  TOctagon oct1(3, EMPTY);
+  TOctagonal_Shape oct1(3, EMPTY);
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagon<mpq_class> known_result = oct1;
+  Octagonal_Shape<mpq_class> known_result = oct1;
 
   Constraint_System cs = oct1.constraints();
-  TOctagon oct2(cs);
+  TOctagonal_Shape oct2(cs);
 
-  bool ok = (Octagon<mpq_class>(oct2) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(cs, "*** cs ***");
 
@@ -73,7 +73,7 @@ test03() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oct1(3);
+  TOctagonal_Shape oct1(3);
   oct1.add_constraint(x == 1);
   oct1.add_constraint(y <= 3);
   oct1.add_constraint(y - x >= 5);
@@ -82,12 +82,12 @@ test03() {
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagon<mpq_class> known_result = oct1;
+  Octagonal_Shape<mpq_class> known_result = oct1;
 
   Constraint_System cs = oct1.constraints();
-  TOctagon oct2(cs);
+  TOctagonal_Shape oct2(cs);
 
-  bool ok = (Octagon<mpq_class>(oct2) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(cs, "*** cs ***");
 
@@ -96,17 +96,17 @@ test03() {
 
 bool
 test04() {
-  TOctagon oct1(0, EMPTY);
+  TOctagonal_Shape oct1(0, EMPTY);
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagon<mpq_class> known_result(oct1);
+  Octagonal_Shape<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
-  TOctagon oct2(cs.space_dimension(), EMPTY);
+  TOctagonal_Shape oct2(cs.space_dimension(), EMPTY);
 
 
-  bool ok = (Octagon<mpq_class>(oct2) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(cs, "*** cs ***");
 
@@ -115,16 +115,16 @@ test04() {
 
 bool
 test05() {
-  TOctagon oct1(0);
+  TOctagonal_Shape oct1(0);
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagon<mpq_class> known_result(oct1);
+  Octagonal_Shape<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
-  TOctagon oct2(cs);
+  TOctagonal_Shape oct2(cs);
 
-  bool ok = (Octagon<mpq_class>(oct2) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(cs, "*** cs ***");
 
@@ -136,19 +136,19 @@ test06() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
 
   oct1.add_constraint(A >= 0);
   oct1.add_constraint(B >= 0);
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagon<mpq_class> known_result(oct1);
+  Octagonal_Shape<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
-  TOctagon oct2(cs);
+  TOctagonal_Shape oct2(cs);
 
-  bool ok = (Octagon<mpq_class>(oct2) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(cs, "*** cs ***");
 
@@ -160,19 +160,19 @@ test07() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
 
   oct1.add_constraint(A == 0);
   oct1.add_constraint(B >= 1);
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagon<mpq_class> known_result(oct1);
+  Octagonal_Shape<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
-  TOctagon oct2(cs);
+  TOctagonal_Shape oct2(cs);
 
-  bool ok = (Octagon<mpq_class>(oct2) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(cs, "*** cs ***");
 
@@ -184,19 +184,19 @@ test08() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
 
   oct1.add_constraint(A + B == 0);
   oct1.add_constraint(B <= 1);
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagon<mpq_class> known_result(oct1);
+  Octagonal_Shape<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
-  TOctagon oct2(cs);
+  TOctagonal_Shape oct2(cs);
 
-  bool ok = (Octagon<mpq_class>(oct2) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(cs, "*** cs ***");
 
@@ -209,7 +209,7 @@ test09() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct1(3);
+  TOctagonal_Shape oct1(3);
 
   oct1.add_constraint(A - B == 0);
   oct1.add_constraint(B <= 1);
@@ -217,12 +217,12 @@ test09() {
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagon<mpq_class> known_result(oct1);
+  Octagonal_Shape<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
-  TOctagon oct2(cs);
+  TOctagonal_Shape oct2(cs);
 
-  bool ok = (Octagon<mpq_class>(oct2) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(cs, "*** cs ***");
 
@@ -237,7 +237,7 @@ test10() {
   Variable D(3);
   Variable E(4);
 
-  TOctagon oct1(5);
+  TOctagonal_Shape oct1(5);
   oct1.add_constraint(A == 1);
   oct1.add_constraint(B + C == 1);
   oct1.add_constraint(E - D == 1);
@@ -248,12 +248,12 @@ test10() {
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagon<mpq_class> known_result = oct1;
+  Octagonal_Shape<mpq_class> known_result = oct1;
 
   Constraint_System cs = oct1.constraints();
-  TOctagon oct2(cs);
+  TOctagonal_Shape oct2(cs);
 
-  bool ok = (Octagon<mpq_class>(oct2) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
   print_constraints(cs, "*** cs ***");
 

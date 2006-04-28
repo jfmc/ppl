@@ -652,6 +652,15 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/BD_Shape.inlines.hh \
                          @srcdir@/../src/BD_Shape.templates.hh \
                          @srcdir@/../src/BD_Shape.cc \
+                         @srcdir@/../src/OR_Matrix.types.hh \
+                         @srcdir@/../src/OR_Matrix.defs.hh \
+                         @srcdir@/../src/OR_Matrix.inlines.hh \
+                         @srcdir@/../src/OR_Matrix.templates.hh \
+                         @srcdir@/../src/Octagonal_Shape.types.hh \
+                         @srcdir@/../src/Octagonal_Shape.defs.hh \
+                         @srcdir@/../src/Octagonal_Shape.inlines.hh \
+                         @srcdir@/../src/Octagonal_Shape.templates.hh \
+                         @srcdir@/../src/Octagonal_Shape.cc \
                          ../interfaces/C/ppl_c.h \
                          @srcdir@/../interfaces/C/ppl_c.cc \
                          @srcdir@/../interfaces/Prolog/Prolog_interface.dox \

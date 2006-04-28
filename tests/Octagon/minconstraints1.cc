@@ -1,4 +1,4 @@
-/* Test Octagon<T>::minimized_constraints().
+/* Test Octagonal_Shape<T>::minimized_constraints().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,7 +29,7 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(A >= 1);
   oct.add_constraint(B >= 0);
   oct.add_constraint(A - B >= -2);
@@ -68,7 +68,7 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(A == 2);
   oct.add_constraint(B == 3);
   oct.add_constraint(A - B == -1);

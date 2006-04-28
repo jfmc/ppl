@@ -1,4 +1,4 @@
-/* Test Octagon::is_universe().
+/* Test Octagonal_Shape::is_universe().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -30,7 +30,7 @@ test01() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oc(4);
+  TOctagonal_Shape oc(4);
   oc.add_constraint(-x <= 4);
   oc.add_constraint(y - x <= 0);
   oc.add_constraint(x - y <= -5);
@@ -45,7 +45,7 @@ test01() {
 
 bool
 test02() {
-  TOctagon oc(4);
+  TOctagonal_Shape oc(4);
 
   bool universe = oc.is_universe();
 
@@ -60,7 +60,7 @@ test03() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(x >= 1);
   oc.add_constraint(y >= 1);
   oc.add_constraint(x <= 4);

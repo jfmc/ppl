@@ -1,4 +1,4 @@
-/* Test Octagon::generalized_affine_preimage().
+/* Test Octagonal_Shape::generalized_affine_preimage().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -30,7 +30,7 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(2*A == 1);
   oct.add_constraint(B >= 5);
 
@@ -39,10 +39,10 @@ test01() {
   oct.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL,
 				  Linear_Expression(-1));
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(2*A == 1);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -56,17 +56,18 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(2*A == 1);
   oct.add_constraint(B >= 5);
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, Linear_Expression(-1));
+  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL,
+				  Linear_Expression(-1));
 
-  Octagon<mpq_class> known_result(2, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -80,19 +81,19 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(4*A == 1);
   oct.add_constraint(B >= 5);
 
   print_constraints(oct, "*** oct ***");
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(4*A == 1);
   known_result.add_constraint(-B >= 4);
 
   oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -B+1);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -106,7 +107,7 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(4*A == 1);
   oct.add_constraint(B >= 5);
 
@@ -114,11 +115,11 @@ test04() {
 
   oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, B+1);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(4*A == 1);
   known_result.add_constraint(B >= 4);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -132,7 +133,7 @@ test05() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(7*A == 1);
   oct.add_constraint(B >= 5);
 
@@ -140,11 +141,11 @@ test05() {
 
   oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 2*B+1);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(7*A == 1);
   known_result.add_constraint(B >= 2);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -158,7 +159,7 @@ test06() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(5*A == 1);
   oct.add_constraint(B >= 5);
 
@@ -166,11 +167,11 @@ test06() {
 
   oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -2*B+1);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(5*A == 1);
   known_result.add_constraint(-B >= 2);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -184,7 +185,7 @@ test07() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(3*A == 1);
   oct.add_constraint(B >= 5);
 
@@ -192,11 +193,11 @@ test07() {
 
   oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 3*A-2*B+1);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(-2*B >= 3);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -210,7 +211,7 @@ test08() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(3*A == 1);
   oct.add_constraint(B >= 5);
 
@@ -218,11 +219,11 @@ test08() {
 
   oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+1);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(-2*B >= 5);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -237,7 +238,7 @@ test09() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraint(3*A == 1);
   oct.add_constraint(2*B >= 7);
   oct.add_constraint(3*C <= 7);
@@ -246,14 +247,14 @@ test09() {
 
   oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, 2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(3*B <= 14);
   known_result.add_constraint(3*B - 3*A <= 13);
   known_result.add_constraint(3*B - 3*C <= 7);
   known_result.add_constraint(3*C <= 7);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -274,7 +275,7 @@ test10() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraint(3*A == 1);
   oct.add_constraint(2*B >= 7);
   oct.add_constraint(3*C <= 7);
@@ -282,7 +283,7 @@ test10() {
 
   print_constraints(oct, "*** oct ***");
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(20*B <= -203);
   known_result.add_constraint(60*A - 60*B >= 629);
@@ -294,7 +295,7 @@ test10() {
 
   oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, 3);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -309,7 +310,7 @@ test11() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraint(3*A == 1);
   oct.add_constraint(2*B >= 7);
   oct.add_constraint(3*C <= 7);
@@ -318,11 +319,11 @@ test11() {
 
   oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(3*C <= 7);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -337,7 +338,7 @@ test12() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraint(3*A == 1);
   oct.add_constraint(2*B >= 7);
   oct.add_constraint(3*C <= 7);
@@ -347,7 +348,7 @@ test12() {
 
   oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, -3);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(12*B >= -35);
   known_result.add_constraint(4*A - 4*B <= 13);
@@ -355,7 +356,7 @@ test12() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -370,23 +371,24 @@ test13() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraint(3*A == 1);
   oct.add_constraint(2*B <= 7);
   oct.add_constraint(3*C <= 7);
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2);
+  oct.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL,
+				  -3*A-2*B+7*C+1, -2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(3*B <= 35);
   known_result.add_constraint(3*B - 3*A <= 34);
   known_result.add_constraint(3*B - 3*C <= 28);
   known_result.add_constraint(3*C <= 7);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -401,7 +403,7 @@ test14() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraint(3*A == 1);
   oct.add_constraint(2*B <= 7);
   oct.add_constraint(3*C <= 7);
@@ -409,7 +411,7 @@ test14() {
 
   print_constraints(oct, "*** oct ***");
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(20*B <= 27);
   known_result.add_constraint(60*B - 60*A <= 61);
@@ -421,7 +423,7 @@ test14() {
 
   oct.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -436,7 +438,7 @@ test15() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraint(3*A == 1);
   oct.add_constraint(2*B >= 7);
   oct.add_constraint(3*C <= 7);
@@ -446,12 +448,12 @@ test15() {
 
   oct.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "

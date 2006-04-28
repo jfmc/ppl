@@ -25,6 +25,6 @@ do
   eval xfail_tests='"$'$instance'_XFAIL_TESTS"'
   [ -f dirty_marker ] && $MAKE clean
   touch dirty_marker
-  $MAKE check TESTS="$check_PROGRAMS" TESTS_ENVIRONMENT="$CHECKER" TEST_CPPFLAGS="-DOCTAGON_INSTANCE=$instance" XFAIL_TESTS=$xfail_tests || exit 1
+  $MAKE check TESTS="$check_PROGRAMS" TESTS_ENVIRONMENT="$CHECKER" TEST_CPPFLAGS="-DOCTAGONAL_SHAPE_INSTANCE=$instance" XFAIL_TESTS=$xfail_tests || exit 1
   $MAKE clean && rm dirty_marker
 done

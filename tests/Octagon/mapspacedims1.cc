@@ -1,4 +1,4 @@
-/* Test Octagon::map_space_dimensions().
+/* Test Octagonal_Shape::map_space_dimensions().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -33,7 +33,7 @@ static void
 test1() {
   Partial_Function function;
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -42,7 +42,7 @@ test1() {
 
   oc1.map_space_dimensions(function);
 
-  Octagon<mpq_class> known_result;
+  Octagonal_Shape<mpq_class> known_result;
 
   bool ok = (oc1 == known_result);
 
@@ -58,7 +58,7 @@ static void
 test2() {
   Partial_Function function;
 
-  TOctagon oc1(3, EMPTY);
+  TOctagonal_Shape oc1(3, EMPTY);
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -67,7 +67,7 @@ test2() {
 
   oc1.map_space_dimensions(function);
 
-  Octagon<mpq_class> known_result(0, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(0, EMPTY);
 
   bool ok = (oc1 == known_result);
 
@@ -85,7 +85,7 @@ test3() {
   function.insert(0, 1);
   function.insert(1, 0);
 
-  TOctagon oc1(3, EMPTY);
+  TOctagonal_Shape oc1(3, EMPTY);
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -94,7 +94,7 @@ test3() {
 
   oc1.map_space_dimensions(function);
 
-  Octagon<mpq_class> known_result(2, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(2, EMPTY);
 
   bool ok = (oc1 == known_result);
 
@@ -120,7 +120,7 @@ test4() {
   cs.insert(x == 1);
   cs.insert(z - x <= 3);
 
-  TOctagon oc1(cs);
+  TOctagonal_Shape oc1(cs);
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -129,7 +129,7 @@ test4() {
 
   oc1.map_space_dimensions(function);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x == 1);
   known_result.add_constraint(y - x <= 3);
 
@@ -158,7 +158,7 @@ test5() {
   cs.insert(z - y <= 7);
   cs.insert(y - x <= 2);
 
-  TOctagon oc1(cs);
+  TOctagonal_Shape oc1(cs);
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -167,7 +167,7 @@ test5() {
 
  oc1.map_space_dimensions(function);
 
-  Octagon<mpq_class> known_result(1);
+  Octagonal_Shape<mpq_class> known_result(1);
   known_result.add_constraint(x <= 4);
 
 #if NOISY
@@ -206,7 +206,7 @@ test6() {
   cs.insert(z - y <= 7);
   cs.insert(y - x <= 1);
 
-  TOctagon oc1(cs);
+  TOctagonal_Shape oc1(cs);
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -215,7 +215,7 @@ test6() {
 
   oc1.map_space_dimensions(function);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y - x <= 7);
@@ -237,7 +237,7 @@ static void
 test7() {
   Partial_Function function;
 
-  TOctagon oc1;
+  TOctagonal_Shape oc1;
 
 #if NOISY
   print_function(function, "*** function ***");
@@ -246,7 +246,7 @@ test7() {
 
   oc1.map_space_dimensions(function);
 
-  Octagon<mpq_class> known_result;
+  Octagonal_Shape<mpq_class> known_result;
 
   bool ok = (oc1 == known_result);
 
@@ -276,14 +276,14 @@ test8() {
   cs.insert(y - z <= -3);
   cs.insert(x - y <= 1);
 
-  TOctagon oc1(cs);
+  TOctagonal_Shape oc1(cs);
 
 #if NOISY
   print_function(function, "*** function ***");
   print_constraints(oc1, "*** oc1 ***");
 #endif
 
-  Octagon<mpq_class> known_result(3, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(3, EMPTY);
   if (known_result != oc1)
     cout << "The oc1 is not empty!" << endl;
 

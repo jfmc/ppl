@@ -1,4 +1,4 @@
-/* Octagon class implementation: inline functions.
+/* Octagonal_Shape class implementation: inline functions.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Octagon_inlines_hh
-#define PPL_Octagon_inlines_hh 1
+#ifndef PPL_Octagonal_Shape_inlines_hh
+#define PPL_Octagonal_Shape_inlines_hh 1
 
 #include "C_Polyhedron.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
@@ -41,14 +41,14 @@ namespace Parma_Polyhedra_Library {
 
 template <typename T>
 inline dimension_type
-Octagon<T>::max_space_dimension() {
+Octagonal_Shape<T>::max_space_dimension() {
   return OR_Matrix<N>::max_num_rows()/2;
 }
 
 template <typename T>
 inline
-Octagon<T>::Octagon(const dimension_type num_dimensions,
-		    const Degenerate_Element kind)
+Octagonal_Shape<T>::Octagonal_Shape(const dimension_type num_dimensions,
+				    const Degenerate_Element kind)
   : matrix(num_dimensions), space_dim(num_dimensions), status() {
   if (kind == EMPTY)
     status.set_empty();
@@ -61,13 +61,13 @@ Octagon<T>::Octagon(const dimension_type num_dimensions,
 
 template <typename T>
 inline
-Octagon<T>::Octagon(const Octagon& y)
+Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape& y)
   : matrix(y.matrix), space_dim(y.space_dim), status(y.status) {
 }
 
 template <typename T>
 inline
-Octagon<T>::Octagon(const Constraint_System& cs)
+Octagonal_Shape<T>::Octagonal_Shape(const Constraint_System& cs)
   : matrix(cs.space_dimension()),
     space_dim(cs.space_dimension()) {
   if (cs.space_dimension() > 0)
@@ -78,8 +78,8 @@ Octagon<T>::Octagon(const Constraint_System& cs)
 }
 
 template <typename T>
-inline Octagon<T>&
-Octagon<T>::operator=(const Octagon& y) {
+inline Octagonal_Shape<T>&
+Octagonal_Shape<T>::operator=(const Octagonal_Shape& y) {
   matrix = y.matrix;
   space_dim = y.space_dim;
   status = y.status;
@@ -88,12 +88,12 @@ Octagon<T>::operator=(const Octagon& y) {
 
 template <typename T>
 inline
-Octagon<T>::~Octagon() {
+Octagonal_Shape<T>::~Octagonal_Shape() {
 }
 
 template <typename T>
 inline void
-Octagon<T>::swap(Octagon& y) {
+Octagonal_Shape<T>::swap(Octagonal_Shape& y) {
   std::swap(matrix, y.matrix);
   std::swap(space_dim, y.space_dim);
   std::swap(status, y.status);
@@ -101,25 +101,25 @@ Octagon<T>::swap(Octagon& y) {
 
 template <typename T>
 inline bool
-Octagon<T>::marked_empty() const {
+Octagonal_Shape<T>::marked_empty() const {
   return status.test_empty();
 }
 
 template <typename T>
 inline bool
-Octagon<T>::marked_strongly_closed() const {
+Octagonal_Shape<T>::marked_strongly_closed() const {
   return status.test_strongly_closed();
 }
 
 template <typename T>
 inline dimension_type
-Octagon<T>::space_dimension() const {
+Octagonal_Shape<T>::space_dimension() const {
   return space_dim;
 }
 
 template <typename T>
 inline bool
-operator==(const Octagon<T>& x, const Octagon<T>& y) {
+operator==(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y) {
   if (x.space_dim != y.space_dim)
     // If the two octagons are dimension-incompatible, then they cannot be
     // the same octagon.
@@ -147,13 +147,13 @@ operator==(const Octagon<T>& x, const Octagon<T>& y) {
 
 template <typename T>
 inline bool
-operator!=(const Octagon<T>& x, const Octagon<T>& y) {
+operator!=(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y) {
   return !(x == y);
 }
 
 template <typename T>
 inline void
-Octagon<T>::set_empty() {
+Octagonal_Shape<T>::set_empty() {
   status.set_empty();
   assert(OK());
   assert(is_empty());
@@ -161,7 +161,7 @@ Octagon<T>::set_empty() {
 
 template <typename T>
 inline void
-Octagon<T>::set_zero_dim_univ() {
+Octagonal_Shape<T>::set_zero_dim_univ() {
   status.set_zero_dim_univ();
 }
 
@@ -208,16 +208,17 @@ get_matrix_element(OR_Matrix<T>& mat, const dimension_type i,
 
 template <typename T>
 inline Constraint_System
-Octagon<T>::minimized_constraints() const {
+Octagonal_Shape<T>::minimized_constraints() const {
   strong_reduction_assign();
   return constraints();
 }
 
 template <typename T>
 inline void
-Octagon<T>::add_octagonal_constraint(const dimension_type i,
-				     const dimension_type j,
-				     N k) {
+Octagonal_Shape<T>
+::add_octagonal_constraint(const dimension_type i,
+			   const dimension_type j,
+			   N k) {
   using Implementation::BD_Shapes::div_round_up;
 
   // Private method: the caller has to ensure the following.
@@ -235,10 +236,11 @@ Octagon<T>::add_octagonal_constraint(const dimension_type i,
 
 template <typename T>
 inline void
-Octagon<T>::add_octagonal_constraint(const dimension_type i,
-				     const dimension_type j,
-				     Coefficient_traits::const_reference num,
-				     Coefficient_traits::const_reference den) {
+Octagonal_Shape<T>
+::add_octagonal_constraint(const dimension_type i,
+			   const dimension_type j,
+			   Coefficient_traits::const_reference num,
+			   Coefficient_traits::const_reference den) {
   using Implementation::BD_Shapes::div_round_up;
 
   // Private method: the caller has to ensure the following.
@@ -251,7 +253,8 @@ Octagon<T>::add_octagonal_constraint(const dimension_type i,
 
 template <typename T>
 inline void
-Octagon<T>::forget_all_octagonal_constraints(const dimension_type v) {
+Octagonal_Shape<T>
+::forget_all_octagonal_constraints(const dimension_type v) {
   assert(v < 2*space_dim);
   typename OR_Matrix<N>::row_iterator v_iter = matrix.row_begin() + v;;
   typename OR_Matrix<N>::row_reference_type r_v = *v_iter;
@@ -271,7 +274,8 @@ Octagon<T>::forget_all_octagonal_constraints(const dimension_type v) {
 
 template <typename T>
 inline void
-Octagon<T>::forget_binary_octagonal_constraints(const dimension_type v) {
+Octagonal_Shape<T>
+::forget_binary_octagonal_constraints(const dimension_type v) {
   assert(v < 2*space_dim);
   const dimension_type h = v + 2;
   for (typename OR_Matrix<N>::row_iterator iter_h = matrix.row_begin() + h,
@@ -291,7 +295,7 @@ Octagon<T>::forget_binary_octagonal_constraints(const dimension_type v) {
 
 template <typename T>
 inline void
-Octagon<T>::add_constraints(const Constraint_System& cs) {
+Octagonal_Shape<T>::add_constraints(const Constraint_System& cs) {
   // This method not preserve closure.
   // Seen add_constraint().
   Constraint_System::const_iterator iend = cs.end();
@@ -302,7 +306,7 @@ Octagon<T>::add_constraints(const Constraint_System& cs) {
 
 template <typename T>
 inline bool
-Octagon<T>::add_constraints_and_minimize(const Constraint_System& cs) {
+Octagonal_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
   add_constraints(cs);
   strong_closure_assign();
   return !(marked_empty());
@@ -310,7 +314,7 @@ Octagon<T>::add_constraints_and_minimize(const Constraint_System& cs) {
 
 template <typename T>
 inline void
-Octagon<T>
+Octagonal_Shape<T>
 ::remove_higher_space_dimensions(const dimension_type new_dimension) {
   // Dimension-compatibility check.
   if (new_dimension > space_dim)
@@ -336,7 +340,8 @@ Octagon<T>
 
 template <typename T>
 inline bool
-Octagon<T>::intersection_assign_and_minimize(const Octagon& y) {
+Octagonal_Shape<T>
+::intersection_assign_and_minimize(const Octagonal_Shape& y) {
   intersection_assign(y);
   strong_closure_assign();
   return !(marked_empty());
@@ -344,7 +349,8 @@ Octagon<T>::intersection_assign_and_minimize(const Octagon& y) {
 
 template <typename T>
 inline void
-Octagon<T>::CC76_extrapolation_assign(const Octagon& y, unsigned* tp) {
+Octagonal_Shape<T>::CC76_extrapolation_assign(const Octagonal_Shape& y,
+					      unsigned* tp) {
   static N stop_points[] = {
     N(-2, ROUND_UP),
     N(-1, ROUND_UP),
@@ -361,7 +367,7 @@ Octagon<T>::CC76_extrapolation_assign(const Octagon& y, unsigned* tp) {
 
 template <typename T>
 inline void
-Octagon<T>::time_elapse_assign(const Octagon& y) {
+Octagonal_Shape<T>::time_elapse_assign(const Octagonal_Shape& y) {
   // Dimension-compatibility check.
   if (space_dimension() != y.space_dimension())
     throw_dimension_incompatible("time_elapse_assign(y)", y);
@@ -369,14 +375,14 @@ Octagon<T>::time_elapse_assign(const Octagon& y) {
   C_Polyhedron px(constraints());
   C_Polyhedron py(y.constraints());
   px.time_elapse_assign(py);
-  Octagon x(px.constraints());
+  Octagonal_Shape x(px.constraints());
   swap(x);
   assert(OK());
 }
 
 template <typename T>
 inline bool
-Octagon<T>::add_constraint_and_minimize(const Constraint& c) {
+Octagonal_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
   bool was_closed = marked_strongly_closed();
   add_constraint(c);
   // `*this' was closed and we add an only constraint to `*this',
@@ -401,21 +407,21 @@ Octagon<T>::add_constraint_and_minimize(const Constraint& c) {
 
 template <typename T>
 inline bool
-Octagon<T>::is_empty() const {
+Octagonal_Shape<T>::is_empty() const {
   strong_closure_assign();
   return marked_empty();
 }
 
 template <typename T>
 inline bool
-Octagon<T>::strictly_contains(const Octagon& y) const {
-  const Octagon<T>& x = *this;
+Octagonal_Shape<T>::strictly_contains(const Octagonal_Shape& y) const {
+  const Octagonal_Shape<T>& x = *this;
   return x.contains(y) && !y.contains(x);
 }
 
 template <typename T>
 inline bool
-Octagon<T>::oct_hull_assign_and_minimize(const Octagon& y) {
+Octagonal_Shape<T>::oct_hull_assign_and_minimize(const Octagonal_Shape& y) {
   oct_hull_assign(y);
   return !marked_empty();
 }
@@ -423,26 +429,26 @@ Octagon<T>::oct_hull_assign_and_minimize(const Octagon& y) {
 
 template <typename T>
 inline void
-Octagon<T>::upper_bound_assign(const Octagon& y) {
+Octagonal_Shape<T>::upper_bound_assign(const Octagonal_Shape& y) {
   oct_hull_assign(y);
 }
 
 template <typename T>
 inline bool
-Octagon<T>::oct_hull_assign_if_exact(const Octagon&) {
+Octagonal_Shape<T>::oct_hull_assign_if_exact(const Octagonal_Shape&) {
   // TODO: this must be properly implemented.
   return false;
 }
 
 template <typename T>
 inline bool
-Octagon<T>::upper_bound_assign_if_exact(const Octagon& y) {
+Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
   return oct_hull_assign_if_exact(y);
 }
 
 template <typename T>
 inline void
-Octagon<T>::difference_assign(const Octagon& y) {
+Octagonal_Shape<T>::difference_assign(const Octagonal_Shape& y) {
   oct_difference_assign(y);
 }
 
@@ -450,14 +456,14 @@ Octagon<T>::difference_assign(const Octagon& y) {
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::Octagon */
+/*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 template <typename T>
 inline void
-swap(Parma_Polyhedra_Library::Octagon<T>& x,
-     Parma_Polyhedra_Library::Octagon<T>& y) {
+swap(Parma_Polyhedra_Library::Octagonal_Shape<T>& x,
+     Parma_Polyhedra_Library::Octagonal_Shape<T>& y) {
   x.swap(y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_Octagon_inlines_hh)
+#endif // !defined(PPL_Octagonal_Shape_inlines_hh)

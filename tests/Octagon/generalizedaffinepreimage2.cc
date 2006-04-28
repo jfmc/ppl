@@ -1,4 +1,4 @@
-/* Test Octagon::generalized_affine_preimage().
+/* Test Octagonal_Shape::generalized_affine_preimage().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -30,7 +30,7 @@ test01() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraint(2*A == 1);
   oct.add_constraint(B >= 5);
   oct.add_constraint(3*C <= 7);
@@ -38,14 +38,14 @@ test01() {
 
   print_constraints(oct, "*** oct ***");
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(2*A == 1);
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
   oct.generalized_affine_preimage(B, EQUAL, 3*A+2);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -59,19 +59,19 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(2*A == 1);
   oct.add_constraint(B <= 5);
 
   print_constraints(oct, "*** oct ***");
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(2*A == 1);
 
   oct.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL,
 				  Linear_Expression(-1));
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -86,7 +86,7 @@ test03() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraint(2*A == 1);
   oct.add_constraint(B <= 5);
   oct.add_constraint(3*C <= 8);
@@ -94,11 +94,11 @@ test03() {
 
   print_constraints(oct, "*** oct ***");
 
-  Octagon<mpq_class> known_result(3, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(3, EMPTY);
 
   oct.generalized_affine_preimage(B, EQUAL, 3*A+2);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
@@ -113,7 +113,7 @@ test04() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oct(3);
+  TOctagonal_Shape oct(3);
   oct.add_constraint(x + y >= 0);
   oct.add_constraint(y >= 0);
   oct.add_constraint(z <= 2);
@@ -121,9 +121,8 @@ test04() {
 
   try {
     // This is an invalid use of the function
-    // Octagon::generalized_affine_preimage(v, e, d): it is illegal applying
-    // the function with a linear expression with the denominator equal to
-    // zero.
+    // Octagonal_Shape::generalized_affine_preimage(v, e, d):
+    // it is illegal to call the method with a zero denominator.
     Coefficient d = 0;
     oct.generalized_affine_preimage(y, LESS_THAN_OR_EQUAL, y + 1, d);
   }
@@ -141,13 +140,13 @@ test05() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the function
-    // Octagon::generalized_affine_preimage(v, r, expr, d): it is illegal
-    // to use a strict relation symbol.
+    // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
+    // it is illegal to use a strict relation symbol.
     oct.generalized_affine_preimage(x, LESS_THAN, x + 1);
   }
   catch (invalid_argument& e) {
@@ -164,13 +163,13 @@ test06() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the function
-    // Octagon::generalized_affine_preimage(v, r, expr, d): it is illegal
-    // to use a strict relation symbol.
+    // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
+    // it is illegal to use a strict relation symbol.
     oct.generalized_affine_preimage(x, GREATER_THAN, x + 1);
   }
   catch (invalid_argument& e) {
@@ -188,13 +187,13 @@ test07() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(x >= y);
 
   try {
     // This is an incorrect use of the function
-    // Octagon::generalized_affine_preimage(v, r, expr, d): it is illegal
-    // to apply to a expression which space dimension is
+    // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
+    // it is illegal to pass an expression whose space dimension is
     // greather than the octagon's space dimension.
     oct.generalized_affine_preimage(y, GREATER_THAN_OR_EQUAL, z);
   }
@@ -213,12 +212,12 @@ test08() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oct(2);
+  TOctagonal_Shape oct(2);
   oct.add_constraint(A >= 0);
 
   try {
     // This is an incorrect use of function
-    // Octagon::generalized_affine_preimage(v, r, expr, d):
+    // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
     // it is illegal to use a variable in the 'expr' expression that
     // does not appear in the octagon.
     oct.generalized_affine_preimage(A, GREATER_THAN_OR_EQUAL, B + C);
@@ -237,7 +236,7 @@ test09() {
   Variable A(0);
   Variable B(1);
 
-  Octagon<mpq_class> oct(2);
+  Octagonal_Shape<mpq_class> oct(2);
   oct.add_constraint(B - A <= 2);
   oct.add_constraint(B <= 5);
 
@@ -245,7 +244,7 @@ test09() {
 
   oct.generalized_affine_preimage(A, LESS_THAN_OR_EQUAL, B, 5);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B <= 3);
 
   bool ok = (oct == known_result);
@@ -262,7 +261,7 @@ test10() {
   Variable A(0);
   Variable B(1);
 
-  Octagon<mpq_class> oct(2);
+  Octagonal_Shape<mpq_class> oct(2);
   oct.add_constraint(B - A <= 2);
   oct.add_constraint(B <= 5);
 
@@ -270,7 +269,7 @@ test10() {
 
   oct.generalized_affine_preimage(A, LESS_THAN_OR_EQUAL, B + 3, 5);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(5*B <= 18);
 
   bool ok = (oct == known_result);
@@ -287,7 +286,7 @@ test11() {
   Variable A(0);
   Variable B(1);
 
-  Octagon<mpq_class> oct(2);
+  Octagonal_Shape<mpq_class> oct(2);
   oct.add_constraint(B - A >= 2);
   oct.add_constraint(B >= 1);
 
@@ -295,7 +294,7 @@ test11() {
 
   oct.generalized_affine_preimage(A, GREATER_THAN_OR_EQUAL, B + 3, 5);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(5*B >= 14);
 
   bool ok = (oct == known_result);
@@ -312,7 +311,7 @@ test12() {
   Variable A(0);
   Variable B(1);
 
-  Octagon<mpq_class> oct(2);
+  Octagonal_Shape<mpq_class> oct(2);
   oct.add_constraint(B - A >= 2);
   oct.add_constraint(B <= 4);
 
@@ -320,7 +319,7 @@ test12() {
 
   oct.generalized_affine_preimage(A, GREATER_THAN_OR_EQUAL, -B + 3, 5);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B <= 4);
   known_result.add_constraint(5*B >= 9);
 
@@ -338,7 +337,7 @@ test13() {
   Variable A(0);
   Variable B(1);
 
-  Octagon<mpq_class> oct(2);
+  Octagonal_Shape<mpq_class> oct(2);
   oct.add_constraint(B - A >= 2);
   oct.add_constraint(B <= 1);
 
@@ -346,7 +345,7 @@ test13() {
 
   oct.generalized_affine_preimage(A, GREATER_THAN_OR_EQUAL, -B + 3, 5);
 
-  Octagon<mpq_class> known_result(2, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(2, EMPTY);
 
   bool ok = (oct == known_result);
 

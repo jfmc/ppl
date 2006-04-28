@@ -1,4 +1,4 @@
-/* Octagon class declaration.
+/* Octagonal_Shape class declaration.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,10 +20,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Octagon_defs_hh
-#define PPL_Octagon_defs_hh 1
+#ifndef PPL_Octagonal_Shape_defs_hh
+#define PPL_Octagonal_Shape_defs_hh 1
 
-#include "Octagon.types.hh"
+#include "Octagonal_Shape.types.hh"
 #include "globals.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
@@ -47,7 +47,7 @@ namespace Parma_Polyhedra_Library {
 namespace IO_Operators {
 
 //! Output operator.
-/*! \relates Parma_Polyhedra_Library::Octagon
+/*! \relates Parma_Polyhedra_Library::Octagonal_Shape
   Writes a textual representation of \p oct on \p s:
   <CODE>false</CODE> is written if \p oct is an empty polyhedron;
   <CODE>true</CODE> is written if \p oct is a universe polyhedron;
@@ -56,29 +56,29 @@ namespace IO_Operators {
 */
 template <typename T>
 std::ostream&
-operator<<(std::ostream& s, const Octagon<T>& oct);
+operator<<(std::ostream& s, const Octagonal_Shape<T>& oct);
 
 } // namespace IO_Operators
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if \p x and \p y are the same octagon.
 
-  \relates Octagon
+  \relates Octagonal_Shape
   Note that \p x and \p y may be dimension-incompatible shapes:
   in this case, the value <CODE>false</CODE> is returned.
 */
 template <typename T>
-bool operator==(const Octagon<T>& x, const Octagon<T>& y);
+bool operator==(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y);
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if \p x and \p y are different shapes.
 
-  \relates Octagon
+  \relates Octagonal_Shape
   Note that \p x and \p y may be dimension-incompatible shapes:
   in this case, the value <CODE>true</CODE> is returned.
 */
 template <typename T>
-bool operator!=(const Octagon<T>& x, const Octagon<T>& y);
+bool operator!=(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as an octagonal difference.
@@ -132,11 +132,11 @@ bool extract_octagonal_difference(const Constraint& c,
 
 //! An octagonal shape.
 /*!
-  The class template Octagon<T> allows for the efficient representation
-  of a restricted kind of <EM>topologically closed</EM> convex polyhedra
-  called <EM>octagonal shapes</EM> (OSs, for short).  The name comes
-  from the fact that, in a vector space of dimension 2, bounded OSs
-  are polygons with at most eight sides.
+  The class template Octagonal_Shape<T> allows for the efficient
+  representation of a restricted kind of <EM>topologically closed</EM>
+  convex polyhedra called <EM>octagonal shapes</EM> (OSs, for short).
+  The name comes from the fact that, in a vector space of dimension 2,
+  bounded OSs are polygons with at most eight sides.
   The closed affine half-spaces that characterize the OS can be expressed
   by constraints of the form
   \f[
@@ -207,7 +207,7 @@ bool extract_octagonal_difference(const Constraint& c,
     cs.insert(y <= 3);
     cs.insert(z >= 0);
     cs.insert(z <= 3);
-    Octagon<T> oct(cs);
+    Octagonal_Shape<T> oct(cs);
   \endcode
   Since only those constraints having the syntactic form of an
   <EM>octagonal constraint</EM> are considered, the following code
@@ -224,7 +224,7 @@ bool extract_octagonal_difference(const Constraint& c,
     cs.insert(x - 3*y <= 5);    // (7)
     cs.insert(x - y + z <= 5);  // (8)
     cs.insert(x + y + z <= 5);  // (9)
-    Octagon<T> oct(cs);
+    Octagonal_Shape<T> oct(cs);
   \endcode
 
   // ENEA: checked up to this point.
@@ -233,7 +233,7 @@ bool extract_octagonal_difference(const Constraint& c,
   The following code shows the use of the function
   <CODE>affine_image</CODE>:
   \code
-    Octagon<T> oc(2);
+    Octagonal_Shape<T> oc(2);
     oc.add_constraint(x >= 0);
     oc.add_constraint(y >= 0);
     oc.add_constraint(x + y >= 0);
@@ -257,7 +257,7 @@ bool extract_octagonal_difference(const Constraint& c,
   The following code shows the use of the function
   <CODE>affine_preimage</CODE>:
   \code
-    Octagon<T> oc(2);
+    Octagonal_Shape<T> oc(2);
     oc.add_constraint(x >= 0);
     oc.add_constraint(x - y >= 3);
     oc.add_constraint(y >= 0);
@@ -273,12 +273,12 @@ bool extract_octagonal_difference(const Constraint& c,
   The following code shows the use of the function
   <CODE>BHMZ05_widening_assign</CODE>:
   \code
-    Octagon<T> oc1(2);
+    Octagonal_Shape<T> oc1(2);
     oc1.add_constraint(x >= 0);
     oc1.add_constraint(y >= 0);
     oc1.add_constraint(x + y >= 0);
 
-    Octagon<T> oc2(2);
+    Octagonal_Shape<T> oc2(2);
     oc2.add_constraint(x >= 5);
     oc2.add_constraint(y >= 0);
     oc2.add_constraint(x + y >= 0);
@@ -293,12 +293,12 @@ bool extract_octagonal_difference(const Constraint& c,
   The following code shows the use of the function
   <CODE>CC76_extrapolation_assign</CODE>:
   \code
-    Octagon<T> oc1(2);
+    Octagonal_Shape<T> oc1(2);
     oc1.add_constraint(x >= 0);
     oc1.add_constraint(y >= 0);
     oc1.add_constraint(x + y >= 0);
 
-    Octagon<T> oc2(2);
+    Octagonal_Shape<T> oc2(2);
     oc2.add_constraint(x >= 5);
     oc2.add_constraint(y >= 0);
     oc2.add_constraint(x + y >= 0);
@@ -313,8 +313,8 @@ bool extract_octagonal_difference(const Constraint& c,
   The following code shows the use of the function
   <CODE>CC76_narrowing_assign</CODE>:
   \code
-    Octagon<T> oc1(2);
-    Octagon<T> oc2(2);
+    Octagonal_Shape<T> oc1(2);
+    Octagonal_Shape<T> oc2(2);
 
     Constraint_System cs;
     cs.insert(x <= 0);
@@ -328,7 +328,7 @@ bool extract_octagonal_difference(const Constraint& c,
 
 */
 template <typename T>
-class Parma_Polyhedra_Library::Octagon {
+class Parma_Polyhedra_Library::Octagonal_Shape {
 private:
   /*! \brief
     The (extended) numeric type of the inhomogeneous term of
@@ -360,11 +360,11 @@ public:
     \param kind
     Specifies whether the universe or the empty OS has to be built.
   */
-  explicit Octagon(dimension_type num_dimensions = 0,
-		   Degenerate_Element kind = UNIVERSE);
+  explicit Octagonal_Shape(dimension_type num_dimensions = 0,
+			   Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
-  Octagon(const Octagon& x);
+  Octagonal_Shape(const Octagonal_Shape& x);
 
   //! Builds an OS from the system of constraints \p cs.
   /*!
@@ -379,7 +379,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of constraints \p cs contains strict inequalities.
   */
-  Octagon(const Constraint_System& cs);
+  Octagonal_Shape(const Constraint_System& cs);
 
   //! Builds an OS from the system of generators \p gs.
   /*!
@@ -389,7 +389,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  Octagon(const Generator_System& gs);
+  Octagonal_Shape(const Generator_System& gs);
 
   //! Builds an OS from the polyhedron \p ph.
   /*!
@@ -399,22 +399,23 @@ public:
     smallest one containing \p ph.
   */
   // FIXME: this has to be implemented.
-  Octagon(const Polyhedron& ph, Complexity_Class complexity = ANY_COMPLEXITY);
+  Octagonal_Shape(const Polyhedron& ph,
+		  Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.
     (\p *this and \p y can be dimension-incompatible.)
   */
-  Octagon& operator=(const Octagon& y);
+  Octagonal_Shape& operator=(const Octagonal_Shape& y);
 
   /*! \brief
     Swaps \p *this with octagon \p y.
     (\p *this and \p y can be dimension-incompatible.)
   */
-  void swap(Octagon& y);
+  void swap(Octagonal_Shape& y);
 
   //! Destructor.
-  ~Octagon();
+  ~Octagonal_Shape();
 
   //@} Constructors, Assignment, Swap and Destructor
 
@@ -442,14 +443,14 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool contains(const Octagon& y) const;
+  bool contains(const Octagonal_Shape& y) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this strictly contains \p y.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool strictly_contains(const Octagon& y) const;
+  bool strictly_contains(const Octagonal_Shape& y) const;
 
   /*! \brief
     Returns the relations holding between \p *this and the constraint \p c.
@@ -550,7 +551,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void intersection_assign(const Octagon& y);
+  void intersection_assign(const Octagonal_Shape& y);
 
   //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y.
@@ -561,7 +562,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool intersection_assign_and_minimize(const Octagon& y);
+  bool intersection_assign_and_minimize(const Octagonal_Shape& y);
 
   /*! \brief
     Assigns to \p *this the smallest OS that contains
@@ -570,7 +571,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void oct_hull_assign(const Octagon& y);
+  void oct_hull_assign(const Octagonal_Shape& y);
 
   /*! \brief
     Assigns to \p *this the smallest OS that contains
@@ -582,10 +583,10 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool oct_hull_assign_and_minimize(const Octagon& y);
+  bool oct_hull_assign_and_minimize(const Octagonal_Shape& y);
 
   //! Same as oct_hull_assign.
-  void upper_bound_assign(const Octagon& y);
+  void upper_bound_assign(const Octagonal_Shape& y);
 
   /*! \brief
     If the oct-hull of \p *this and \p y is exact, it is assigned
@@ -595,10 +596,10 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool oct_hull_assign_if_exact(const Octagon& y);
+  bool oct_hull_assign_if_exact(const Octagonal_Shape& y);
 
   //! Same as oct_hull_assign_if_exact.
-  bool upper_bound_assign_if_exact(const Octagon& y);
+  bool upper_bound_assign_if_exact(const Octagonal_Shape& y);
 
   /*! \brief
     Assigns to \p *this the \ref oct_difference "oct-difference" of
@@ -607,10 +608,10 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void oct_difference_assign(const Octagon& y);
+  void oct_difference_assign(const Octagonal_Shape& y);
 
   //! Same as oct_difference_assign.
-  void difference_assign(const Octagon& y);
+  void difference_assign(const Octagonal_Shape& y);
 
   /*! \brief
     Assigns to \p *this the \ref affine_transformation "affine image"
@@ -747,7 +748,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void time_elapse_assign(const Octagon& y);
+  void time_elapse_assign(const Octagonal_Shape& y);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -764,7 +765,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void CC76_extrapolation_assign(const Octagon& y, unsigned* tp = 0);
+  void CC76_extrapolation_assign(const Octagonal_Shape& y, unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -788,7 +789,7 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   template <typename Iterator>
-  void CC76_extrapolation_assign(const Octagon& y,
+  void CC76_extrapolation_assign(const Octagonal_Shape& y,
 				 Iterator first, Iterator last,
 				 unsigned* tp = 0);
 
@@ -807,7 +808,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void BHMZ05_widening_assign(const Octagon& y, unsigned* tp = 0);
+  void BHMZ05_widening_assign(const Octagonal_Shape& y, unsigned* tp = 0);
 
   /*! \brief
     Improves the result of the \ref BHMZ05_widening "BHMZ05-widening"
@@ -829,7 +830,7 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible or
     if there is in \p cs a strict inequality.
   */
-  void limited_BHMZ05_extrapolation_assign(const Octagon& y,
+  void limited_BHMZ05_extrapolation_assign(const Octagonal_Shape& y,
 					   const Constraint_System& cs,
 					   unsigned* tp = 0);
 
@@ -843,7 +844,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void CC76_narrowing_assign(const Octagon& y);
+  void CC76_narrowing_assign(const Octagonal_Shape& y);
 
   /*! \brief
     Improves the result of the \ref CC76_extrapolation "CC76-extrapolation"
@@ -865,7 +866,7 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible or
     if \p cs contains a strict inequality.
   */
-  void limited_CC76_extrapolation_assign(const Octagon& y,
+  void limited_CC76_extrapolation_assign(const Octagonal_Shape& y,
 					 const Constraint_System& cs,
 					 unsigned* tp = 0);
 
@@ -941,7 +942,7 @@ public:
     dimensions; then adds to the system of constraints of \p *this a
     renamed-apart version of the constraints of \p y.
   */
-  void concatenate_assign(const Octagon& y);
+  void concatenate_assign(const Octagonal_Shape& y);
 
   //! Removes all the specified dimensions.
   /*!
@@ -1016,8 +1017,9 @@ public:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
-  friend bool Parma_Polyhedra_Library::operator==<T>(const Octagon<T>& x,
-						     const Octagon<T>& y);
+  friend bool
+  Parma_Polyhedra_Library::operator==<T>(const Octagonal_Shape<T>& x,
+					 const Octagonal_Shape<T>& y);
 
 private:
   //! The matrix that represents the octagonal shape.
@@ -1032,9 +1034,9 @@ private:
   // this ensures that the directive will not be moved during the
   // procedure that automatically creates the library's include file
   // (see `Makefile.am' in the `src' directory).
-#define PPL_IN_Octagon_CLASS
+#define PPL_IN_Octagonal_Shape_CLASS
 #include "Og_Status.idefs.hh"
-#undef PPL_IN_Octagon_CLASS
+#undef PPL_IN_Octagonal_Shape_CLASS
 
   //! The status flags to keep track of the internal state.
   Status status;
@@ -1169,7 +1171,7 @@ private:
     that are satisfied by \p *this.
   */
   void get_limiting_octagon(const Constraint_System& cs,
-			    Octagon& limiting_octagon) const;
+			    Octagonal_Shape& limiting_octagon) const;
   //! Compute the (zero-equivalence classes) successor relation.
   /*!
     It is assumed that the octagon is not empty and strongly closed.
@@ -1178,7 +1180,7 @@ private:
 
   //! Compute the leaders of zero-equivalence classes.
   /*!
-    It is assumed that the Octagon is not empty and strongly closed.
+    It is assumed that the OS is not empty and strongly closed.
   */
   void compute_leaders(std::vector<dimension_type>& successor,
 		       std::vector<dimension_type>& no_sing_leaders,
@@ -1187,7 +1189,7 @@ private:
 
   //! Compute the leaders of zero-equivalence classes.
   /*!
-    It is assumed that the Octagon is not empty and strongly closed.
+    It is assumed that the OS is not empty and strongly closed.
   */
   void compute_leaders(std::vector<dimension_type>& leaders) const;
 
@@ -1240,20 +1242,20 @@ private:
 
 #if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators::operator<<<>(std::ostream& s,
-						      const Octagon<T>& c);
+  Parma_Polyhedra_Library::IO_Operators
+  ::operator<<<>(std::ostream& s, const Octagonal_Shape<T>& c);
 #else
   // This is too lax than wanted.
   template <typename S>
   friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const Octagon<S>& c);
+  Parma_Polyhedra_Library::IO_Operators
+  ::operator<<(std::ostream& s, const Octagonal_Shape<S>& c);
 #endif
 
   //! \name Exception Throwers
   //@{
   void throw_dimension_incompatible(const char* method,
-				    const Octagon& x) const;
+				    const Octagonal_Shape& x) const;
 
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_dim) const;
@@ -1282,15 +1284,15 @@ private:
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Octagon */
+/*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 template <typename T>
-void swap(Parma_Polyhedra_Library::Octagon<T>& x,
-	  Parma_Polyhedra_Library::Octagon<T>& y);
+void swap(Parma_Polyhedra_Library::Octagonal_Shape<T>& x,
+	  Parma_Polyhedra_Library::Octagonal_Shape<T>& y);
 
 } // namespace std
 
 #include "Og_Status.inlines.hh"
-#include "Octagon.inlines.hh"
-#include "Octagon.templates.hh"
+#include "Octagonal_Shape.inlines.hh"
+#include "Octagonal_Shape.templates.hh"
 
-#endif // !defined(PPL_Octagon_defs_hh)
+#endif // !defined(PPL_Octagonal_Shape_defs_hh)

@@ -1,4 +1,4 @@
-/* Test Octagon::ascii_dump() and Octagon::ascii_load().
+/* Test Octagonal_Shape::ascii_dump() and Octagonal_Shape::ascii_load().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -28,17 +28,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-const char* my_file = "ascii_dump_load1.dat";
-
 bool
 test01() {
+  const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(A - B >= 2);
   oc1.add_constraint(B >= 0);
-
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -46,7 +44,7 @@ test01() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  TOctagon oc2;
+  TOctagonal_Shape oc2;
   oc2.ascii_load(f);
   close(f);
 
@@ -60,12 +58,12 @@ test01() {
 
 bool
 test02() {
+  const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
   Variable B(1);
-  
-  TOctagon oc1(3);
-  oc1.add_constraint(A - B >= 0);
 
+  TOctagonal_Shape oc1(3);
+  oc1.add_constraint(A - B >= 0);
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -75,7 +73,7 @@ test02() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  TOctagon oc2;
+  TOctagonal_Shape oc2;
   bool ok = !oc2.ascii_load(f);
   close(f);
 
@@ -84,13 +82,11 @@ test02() {
 
 bool
 test03() {
-
-  nout << "test03()" << endl;
-
+  const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc(2);
+  TOctagonal_Shape oc(2);
   oc.add_constraint(A >= 0);
   oc.add_constraint(B >= 0);
 
@@ -109,7 +105,7 @@ test03() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  TOctagon oc2;
+  TOctagonal_Shape oc2;
   bool ok = !oc2.ascii_load(f);
   close(f);
 
@@ -118,13 +114,11 @@ test03() {
 
 bool
 test04() {
-
-  cout << "test04()" << endl;
-
+  const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc(2);
+  TOctagonal_Shape oc(2);
   oc.add_constraint(A >= 0);
   oc.add_constraint(B >= 1);
 
@@ -143,7 +137,7 @@ test04() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  TOctagon oc2;
+  TOctagonal_Shape oc2;
   bool ok = !oc2.ascii_load(f);
   close(f);
 
@@ -152,13 +146,11 @@ test04() {
 
 bool
 test05() {
-
-  nout << "test05()" << endl;
-
+  const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc(2);
+  TOctagonal_Shape oc(2);
   oc.add_constraint(A >= 0);
   oc.add_constraint(B >= 2);
 
@@ -177,7 +169,7 @@ test05() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  TOctagon oc2;
+  TOctagonal_Shape oc2;
   bool ok = !oc2.ascii_load(f);
   close(f);
 
@@ -186,13 +178,11 @@ test05() {
 
 bool
 test06() {
-
-  nout << "test06()" << endl;
-
+  const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc(2);
+  TOctagonal_Shape oc(2);
   oc.add_constraint(A >= 0);
   oc.add_constraint(B >= 3);
 
@@ -211,7 +201,7 @@ test06() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  TOctagon oc2;
+  TOctagonal_Shape oc2;
   bool ok = !oc2.ascii_load(f);
   close(f);
 
@@ -220,13 +210,11 @@ test06() {
 
 bool
 test07() {
-
-  cout << "test07()" << endl;
-
+  const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc(2);
+  TOctagonal_Shape oc(2);
   oc.add_constraint(A >= 0);
   oc.add_constraint(B >= 3);
 
@@ -248,7 +236,7 @@ test07() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  TOctagon oc2;
+  TOctagonal_Shape oc2;
   bool ok = !oc2.ascii_load(f);
   close(f);
 
@@ -257,7 +245,8 @@ test07() {
 
 bool
 test08() {
-  TOctagon oc1(0, EMPTY);
+  const char* my_file = "ascii_dump_load1.dat";
+  TOctagonal_Shape oc1(0, EMPTY);
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -265,7 +254,7 @@ test08() {
   close(f);
 
   open(f, my_file, ios_base::in);
-  TOctagon oc2;
+  TOctagonal_Shape oc2;
   oc2.ascii_load(f);
   close(f);
 

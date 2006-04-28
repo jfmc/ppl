@@ -70,7 +70,7 @@ ORIGINAL_TESTS = \
 	removespacedims1 \
 	timeelapse1 \
 	universe1 \
-	writeoctagon1 
+	writeoctagon1
 
 #
 # Sources for the tests

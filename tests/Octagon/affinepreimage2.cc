@@ -1,4 +1,4 @@
-/* Test Octagon::affine_preimage().
+/* Test Octagonal_Shape::affine_preimage().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -30,7 +30,7 @@ test01() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A >= 2);
   oc.add_constraint(B >= 0);
   oc.add_constraint(C >= 0);
@@ -39,12 +39,12 @@ test01() {
 
   oc.affine_preimage(B, B + C - 2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A >= 2);
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(B + C >= 2);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(B, B + C - 2) ***");
 
@@ -57,7 +57,7 @@ test02() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A >= 2);
   oc.add_constraint(B >= 0);
   oc.add_constraint(C >= 0);
@@ -66,12 +66,12 @@ test02() {
 
   oc.affine_preimage(B, -B + C - 2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A >= 2);
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(B - C <= -2);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(B, -B + C - 2) ***");
 
@@ -84,7 +84,7 @@ test03() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A >= 2);
   oc.add_constraint(B >= 0);
   oc.add_constraint(C >= 0);
@@ -93,13 +93,13 @@ test03() {
 
   oc.affine_preimage(A, A - C + 3);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A >= -1);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(C - A <= 1);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(A, A - C + 3) ***");
 
@@ -112,7 +112,7 @@ test04() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A >= 2);
   oc.add_constraint(B >= 0);
   oc.add_constraint(C >= 0);
@@ -121,13 +121,13 @@ test04() {
 
   oc.affine_preimage(A, -A - C + 3);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(A + C <= 1);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(A, -A - C + 3) ***");
 
@@ -140,7 +140,7 @@ test05() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A <= -1);
   oc.add_constraint(B >= 0);
   oc.add_constraint(C >= 0);
@@ -149,11 +149,11 @@ test05() {
 
   oc.affine_preimage(A, B - C + 3);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C >= 0);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(A, B - C + 3) ***");
 
@@ -166,7 +166,7 @@ test06() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A <= -1);
   oc.add_constraint(B >= 0);
   oc.add_constraint(C >= 0);
@@ -175,12 +175,12 @@ test06() {
 
   oc.affine_preimage(B, 2*B - C - 1);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= -1);
   known_result.add_constraint(2*B >= 1);
   known_result.add_constraint(C >= 0);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(B, 2*B - C - 1) ***");
 
@@ -193,7 +193,7 @@ test07() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A <= -1);
   oc.add_constraint(B >= 0);
   oc.add_constraint(C >= 0);
@@ -202,13 +202,13 @@ test07() {
 
   oc.affine_preimage(B, 2*B - 2*C - 2, 2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= -1);
   known_result.add_constraint(B >= 1);
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(C - B <= -1);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(B, 2*B - 2*C - 2, 2) ***");
 
@@ -221,7 +221,7 @@ test08() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A <= -1);
   oc.add_constraint(B >= 0);
   oc.add_constraint(C >= 0);
@@ -230,12 +230,12 @@ test08() {
 
   oc.affine_preimage(B, 2*B - 2*C - 2, -2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= -1);
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(C - B >= -1);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(B, 2*B - 2*C - 2, -2) ***");
 
@@ -248,7 +248,7 @@ test09() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A <= -1);
   oc.add_constraint(B <= 0);
   oc.add_constraint(C >= 0);
@@ -257,12 +257,12 @@ test09() {
 
   oc.affine_preimage(C, 4*B + 6*C + 2, 2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= -1);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(6*C >= -2);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(C, 4*B + 6*C + 2, 2) ***");
 
@@ -275,7 +275,7 @@ test10() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A <= -1);
   oc.add_constraint(B <= 0);
   oc.add_constraint(C >= 0);
@@ -284,11 +284,11 @@ test10() {
 
   oc.affine_preimage(C, 4*B + 6*C + 2, -2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= -1);
   known_result.add_constraint(B <= 0);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(C, 4*B + 6*C + 2, -2) ***");
 
@@ -301,7 +301,7 @@ test11() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A <= -1);
   oc.add_constraint(B <= 0);
   oc.add_constraint(C >= 0);
@@ -310,11 +310,11 @@ test11() {
 
   oc.affine_preimage(A, 4*B + 6*C + 2, -2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(C >= 0);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(A, 4*B + 6*C + 2, -2) ***");
 
@@ -327,7 +327,7 @@ test12() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A <= -1);
   oc.add_constraint(B <= 0);
   oc.add_constraint(C >= 0);
@@ -336,13 +336,13 @@ test12() {
 
   oc.affine_preimage(A, -2*A + 3*C + 2, 2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A >= 2);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(C - A <= -2);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(A, -2*A + 3*C + 2, 2) ***");
 
@@ -355,7 +355,7 @@ test13() {
   Variable B(1);
   Variable C(2);
 
-  TOctagon oc(3);
+  TOctagonal_Shape oc(3);
   oc.add_constraint(A <= -1);
   oc.add_constraint(B <= 0);
   oc.add_constraint(C >= 0);
@@ -364,12 +364,12 @@ test13() {
 
   oc.affine_preimage(A, 3*A + C - 1, 2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A <= -1);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(C >= 0);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(A, 3*A + C - 1, 2) ***");
 
@@ -383,7 +383,7 @@ test14() {
   Variable C(2);
   Variable D(3);
 
-  TOctagon oc(4);
+  TOctagonal_Shape oc(4);
   oc.add_constraint(A == 2);
   oc.add_constraint(B == 0);
   oc.add_constraint(C >= -3);
@@ -393,15 +393,15 @@ test14() {
 
   oc.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3);
 
-  Octagon<mpq_class> known_result(4);
+  Octagonal_Shape<mpq_class> known_result(4);
   known_result.add_constraint(A == 2);
   known_result.add_constraint(B == 0);
   known_result.add_constraint(C >= -3);
   known_result.add_constraint(5*D <= 14);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
-  print_constraints(oc, 
+  print_constraints(oc,
 		    "*** oc.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
 
  return ok;

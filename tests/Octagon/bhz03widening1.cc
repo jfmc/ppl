@@ -29,12 +29,12 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  typedef Polyhedra_Powerset<TOctagon> PSet;
+  typedef Polyhedra_Powerset<TOctagonal_Shape> PSet;
 
-  TOctagon p(2);
-  TOctagon q(2);
-  TOctagon r(2);
-  TOctagon s(2);
+  TOctagonal_Shape p(2);
+  TOctagonal_Shape q(2);
+  TOctagonal_Shape r(2);
+  TOctagonal_Shape s(2);
   p.add_constraint(A >= 1);
   p.add_constraint(B == 0);
   q.add_constraint(A >= 2);
@@ -62,7 +62,7 @@ test01() {
 
   PSet old_P = P;
   P.BHZ03_widening_assign<H79_Certificate>
-    (Q, widen_fun_ref(&TOctagon::BHMZ05_widening_assign));
+    (Q, widen_fun_ref(&TOctagonal_Shape::BHMZ05_widening_assign));
 
   nout << "P.BHZ03(Q, H79)" << " = " << P << endl;
 

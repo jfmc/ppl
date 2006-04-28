@@ -38,7 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 static bool
 check_noisy(const char* environment_variable) {
-#if HAVE_DECL_GETENV 
+#if HAVE_DECL_GETENV
   return getenv(environment_variable) != 0;
 #else
 #if NOISY
@@ -113,7 +113,7 @@ print_constraints(const Parma_Polyhedra_Library::BD_Shape<T>& bd,
 
 template <typename T>
 void
-print_constraints(const Parma_Polyhedra_Library::Octagon<T>& oc,
+print_constraints(const Parma_Polyhedra_Library::Octagonal_Shape<T>& oc,
 		  const std::string& intro = "",
 		  std::ostream& s = nout) {
   using namespace Parma_Polyhedra_Library::IO_Operators;

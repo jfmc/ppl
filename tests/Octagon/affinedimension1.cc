@@ -1,4 +1,4 @@
-/* Test Octagon::affine_dimension().
+/* Test Octagonal_Shape::affine_dimension().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,13 +29,13 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oct1(3);
+  TOctagonal_Shape oct1(3);
 
   oct1.add_constraint(x <= 2);
   oct1.add_constraint(x - y == 3);
   oct1.add_constraint(y <= 2);
 
-  TOctagon oct2(2);
+  TOctagonal_Shape oct2(2);
 
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
@@ -68,14 +68,14 @@ test02() {
   Variable D(3);
   Variable E(4);
 
-  TOctagon oct1(5);
+  TOctagonal_Shape oct1(5);
 
   oct1.add_constraint(A <= 5);
   oct1.add_constraint(A - B == 3);
   oct1.add_constraint(C <= 2);
   oct1.add_constraint(E - D == 2);
 
-  TOctagon oct2(4);
+  TOctagonal_Shape oct2(4);
 
   oct2.add_constraint(A <= 1);
   oct2.add_constraint(A - D == 8);
@@ -112,14 +112,14 @@ test03() {
   Variable D(3);
   Variable E(4);
 
-  TOctagon oct1(5);
+  TOctagonal_Shape oct1(5);
 
   oct1.add_constraint(A == 5);
   oct1.add_constraint(A - B == 3);
   oct1.add_constraint(C <= 2);
   oct1.add_constraint(E - D == 2);
 
-  TOctagon oct2(5);
+  TOctagonal_Shape oct2(5);
 
   oct2.add_constraint(A == 1);
   oct2.add_constraint(E == 1);
@@ -154,13 +154,13 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2);
+  TOctagonal_Shape oct1(2);
 
   oct1.add_constraint(A <= 3);
   oct1.add_constraint(B - A <= -5);
   oct1.add_constraint(-B <= 2);
 
-  TOctagon oct2(2);
+  TOctagonal_Shape oct2(2);
 
   oct2.add_constraint(A == 0);
   oct2.add_constraint(B == 2);
@@ -193,9 +193,9 @@ test05() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oct1(2, EMPTY);
+  TOctagonal_Shape oct1(2, EMPTY);
 
-  TOctagon oct2(7);
+  TOctagonal_Shape oct2(7);
 
   oct2.add_constraint(A <= 1);
   oct2.add_constraint(B == 2);

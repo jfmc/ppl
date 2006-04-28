@@ -1,4 +1,4 @@
-/* Octagon<T>::Status class declaration.
+/* Octagonal_Shape<T>::Status class declaration.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,17 +24,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Og_Status_defs_hh
 #define PPL_Og_Status_defs_hh 1
 
-#ifndef PPL_IN_Octagon_CLASS
-#error "Do not include Og_Status.idefs.hh directly; use Octagon.defs.hh instead."
+#ifndef PPL_IN_Octagonal_Shape_CLASS
+#error "Do not include Og_Status.idefs.hh directly; use Octagonal_Shape.defs.hh instead."
 #endif
 
-//! A conjunctive assertion about a Octagon<T> object.
+//! A conjunctive assertion about a Octagonal_Shape<T> object.
 /*!
   The assertions supported are:
   - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimension
     vector space \f$\Rset^0 = \{\cdot\}\f$;
   - <EM>empty</EM>: the polyhedron is the empty set;
-  - <EM>strongly closed</EM>: the Octagon object is strongly
+  - <EM>strongly closed</EM>: the Octagonal_Shape object is strongly
     closed, so that all the constraints are as tigher as possible.
 
   Not all the conjunctions of these elementary assertions constitute

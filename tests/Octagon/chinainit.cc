@@ -24,14 +24,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-TOctagon
+TOctagonal_Shape
 init(dimension_type num_vars) {
-  TOctagon oc(num_vars);
+  TOctagonal_Shape oc(num_vars);
   if (num_vars > 0) {
     Constraint_System cs;
     for (dimension_type i = num_vars; i-- > 0; )
       cs.insert(Variable(i) >= 0);
-    oc = TOctagon(cs);
+    oc = TOctagonal_Shape(cs);
 #if NOISY
     print_constraints(oc, "*** oc ***");
 #endif
@@ -52,10 +52,10 @@ test01(){
   print_function(function, "*** function ***");
 
 
-  Octagon<mpq_class> known_result = init(6);
+  Octagonal_Shape<mpq_class> known_result = init(6);
 
   for (dimension_type i = 10; i < 50; ++i) {
-    TOctagon oc = init(i);
+    TOctagonal_Shape oc = init(i);
     oc.map_space_dimensions(function);
     if (oc != known_result) {
       print_constraints(oc, "*** oc ***");

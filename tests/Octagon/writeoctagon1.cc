@@ -1,4 +1,4 @@
-/* Test operator<<(ostream&, const Octagon&).
+/* Test operator<<(ostream&, const Octagonal_Shape&).
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,13 +29,13 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x + y == 3);
   oc1.add_constraint(x - y == 4);
 
    print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
   oc2.add_constraint(x - y == 5);
   oc2.add_constraint(x + y == -1);
 
@@ -50,13 +50,13 @@ test02() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(-x - y <= 3);
-  oc1.add_constraint(-x + y <= 4); 
+  oc1.add_constraint(-x + y <= 4);
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
   oc2.add_constraint(x - y <= 3);
   oc2.add_constraint(x + y <= 4);
 
@@ -71,14 +71,14 @@ test03() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
 
   oc1.add_constraint(x - y >= 4);
   oc1.add_constraint(x - y <= 4);
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
 
   oc2.add_constraint(x + y <= 3);
   oc2.add_constraint(x + y >= 3);

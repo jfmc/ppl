@@ -26,11 +26,11 @@ namespace {
 
 bool
 test01() {
-  TOctagon oc1(2, EMPTY);
+  TOctagonal_Shape oc1(2, EMPTY);
 
   print_constraints(oc1, "**** oc1 ****");
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
 
   print_constraints(oc2, "**** oc2 ****");
 
@@ -39,11 +39,11 @@ test01() {
   print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
 
 
-  TOctagon oc3(2);
+  TOctagonal_Shape oc3(2);
 
   print_constraints(oc3, "**** oc3 ****");
 
-  TOctagon oc4(2, EMPTY);
+  TOctagonal_Shape oc4(2, EMPTY);
 
   print_constraints(oc4, "**** oc4 ****");
 
@@ -51,10 +51,10 @@ test01() {
 
   print_constraints(oc3, "**** oc3.time_elapse_assign(oc4) ****");
 
-  Octagon<mpq_class> known_result(2, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result) &&
-    (Octagon<mpq_class>(oc3) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result) &&
+    (Octagonal_Shape<mpq_class>(oc3) == known_result);
 
   return ok;
 }
@@ -64,14 +64,14 @@ test02() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(x >= 0);
   oc1.add_constraint(y >= 0);
   oc1.add_constraint(x + y - 2 <= 0);
 
   print_constraints(oc1, "**** oc1 ****");
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(x >= 2);
   oc2.add_constraint(x <= 4);
   oc2.add_constraint(y == 3);
@@ -80,11 +80,11 @@ test02() {
 
   oc1.time_elapse_assign(oc2);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(y >= 0);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
 
@@ -96,25 +96,25 @@ test03() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(x >= 1);
   oc1.add_constraint(x <= 3);
   oc1.add_constraint(y >= 1);
   oc1.add_constraint(y <= 3);
- 
+
   print_constraints(oc1, "**** oc1 ****");
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(y == 5);
 
   oc1.time_elapse_assign(oc2);
 
   print_constraints(oc2, "**** oc2 ****");
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(y >= 1);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
 
@@ -126,13 +126,13 @@ test04() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(x == 3);
   oc1.add_constraint(y >= 2);
- 
+
   print_constraints(oc1, "**** oc1 ****");
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(x >= 3);
   oc2.add_constraint(y >= 2);
 
@@ -140,9 +140,9 @@ test04() {
 
   oc1.time_elapse_assign(oc2);
 
-  Octagon<mpq_class> known_result(oc2);
+  Octagonal_Shape<mpq_class> known_result(oc2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
 
@@ -154,13 +154,13 @@ test05() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 3);
   oc1.add_constraint(y <= 5);
- 
+
   print_constraints(oc1, "**** oc1 ****");
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
   oc2.add_constraint(x <= 2);
   oc2.add_constraint(y <= 3);
 
@@ -168,9 +168,9 @@ test05() {
 
   oc1.time_elapse_assign(oc2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
 
@@ -183,16 +183,16 @@ test06() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 3);
   oc1.add_constraint(x >= 1);
   oc1.add_constraint(y <= 5);
   oc1.add_constraint(y >= 6);
   oc1.add_constraint(z >= 1);
- 
+
   print_constraints(oc1, "**** oc1 ****");
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
   oc2.add_constraint(x <= 2);
   oc2.add_constraint(x >= 0);
   oc2.add_constraint(y <= 3);
@@ -203,9 +203,9 @@ test06() {
 
   oc1.time_elapse_assign(oc2);
 
-  Octagon<mpq_class> known_result(3, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
 
@@ -218,16 +218,16 @@ test07() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 3);
   oc1.add_constraint(x >= 1);
   oc1.add_constraint(y <= 5);
   oc1.add_constraint(y >= 1);
   oc1.add_constraint(z >= 1);
- 
+
   print_constraints(oc1, "**** oc1 ****");
 
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
   oc2.add_constraint(x <= 2);
   oc2.add_constraint(x >= 0);
   oc2.add_constraint(y <= 3);
@@ -238,14 +238,14 @@ test07() {
 
   oc1.time_elapse_assign(oc2);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x >= 1);
   known_result.add_constraint(y >= 1);
   known_result.add_constraint(z >= 1);
   known_result.add_constraint(x - y <= 2);
   known_result.add_constraint(x - z <= 2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
 
@@ -258,17 +258,17 @@ test08() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oc1(3);
+  TOctagonal_Shape oc1(3);
   oc1.add_constraint(x <= 3);
   oc1.add_constraint(x >= 1);
   oc1.add_constraint(y <= 7);
   oc1.add_constraint(y >= 6);
   oc1.add_constraint(z >= 1);
- 
+
   print_constraints(oc1, "**** oc1 ****");
 
   // The octagon oc2 is empty.
-  TOctagon oc2(3);
+  TOctagonal_Shape oc2(3);
   oc2.add_constraint(x <= 2);
   oc2.add_constraint(x >= 0);
   oc2.add_constraint(y <= 3);
@@ -279,9 +279,9 @@ test08() {
 
   oc1.time_elapse_assign(oc2);
 
-  Octagon<mpq_class> known_result(3, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
 
@@ -297,16 +297,16 @@ test09() {
   Variable E(4);
   Variable F(5);
 
-  TOctagon oc1(6);
+  TOctagonal_Shape oc1(6);
   oc1.add_constraint(A - B <= 1);
   oc1.add_constraint(C + D <= 3);
   oc1.add_constraint(A + E <= 5);
   oc1.add_constraint(E - F <= 7);
   oc1.add_constraint(F + E <= 3);
- 
+
   print_constraints(oc1, "**** oc1 ****");
 
-  TOctagon oc2(6);
+  TOctagonal_Shape oc2(6);
   oc2.add_constraint(A + B <= 0);
   oc2.add_constraint(C + B <= 9);
   oc2.add_constraint(A + E <= 5);
@@ -317,9 +317,9 @@ test09() {
 
   oc1.time_elapse_assign(oc2);
 
-  Octagon<mpq_class> known_result(6);
+  Octagonal_Shape<mpq_class> known_result(6);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
 
@@ -332,15 +332,15 @@ test10() {
   Variable y(1);
   Variable z(2);
 
-  TOctagon oct1(1);
+  TOctagonal_Shape oct1(1);
   oct1.add_constraint(x == 1);
 
-  TOctagon oct2(3);
+  TOctagonal_Shape oct2(3);
   oct2.add_constraint(y + z <= 6);
 
   try {
     // This is an invalid use of the function
-    // Octagon::time_elapse_assign(oct1): it is
+    // Octagonal_Shape::time_elapse_assign(oct1): it is
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
     oct2.time_elapse_assign(oct1);

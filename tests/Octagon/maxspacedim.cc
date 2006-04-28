@@ -1,4 +1,4 @@
-/* Test Octagon::max_space_dimension().
+/* Test Octagonal_Shape::max_space_dimension().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -31,10 +31,10 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  Octagon<mpq_class> oc1(1);
-  Octagon<long> oc2(1);
-  Octagon<int> oc3(1);
-  Octagon<signed char> oc4(1);
+  Octagonal_Shape<mpq_class> oc1(1);
+  Octagonal_Shape<long> oc2(1);
+  Octagonal_Shape<int> oc3(1);
+  Octagonal_Shape<signed char> oc4(1);
 
   dimension_type max_spacedim1 = oc1.max_space_dimension();
   dimension_type max_spacedim2 = oc2.max_space_dimension();

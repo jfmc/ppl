@@ -28,17 +28,17 @@ bool
 test01() {
   Variable x2(1);
 
-  TOctagon oct1(3);
+  TOctagonal_Shape oct1(3);
   oct1.add_constraint(x2 <= 3);
 
   print_constraints(oct1, "*** oct1 ***");
 
   oct1.remove_higher_space_dimensions(2);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x2 <= 3);
 
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1, "*** oct1.remove_higher_space_dimensions(2) ***");
 
@@ -51,7 +51,7 @@ test02() {
   Variable x3(2);
   Variable x5(4);
 
-  TOctagon oc1(6);
+  TOctagonal_Shape oc1(6);
   oc1.add_constraint(x2 - x3 <= 0);
   oc1.add_constraint(x3 <= 2);
   oc1.add_constraint(x5 <= 3);
@@ -64,10 +64,10 @@ test02() {
   to_be_removed.insert(x5);
   oc1.remove_space_dimensions(to_be_removed);
 
-  Octagon<mpq_class> known_result(4);
+  Octagonal_Shape<mpq_class> known_result(4);
   known_result.add_constraint(x2 <= 2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oct1.remove_space_dimensions({x3, x5}) ***");
 
@@ -83,7 +83,7 @@ test03() {
   Variable x5(4);
   Variable x6(5);
 
-  TOctagon oct1(6);
+  TOctagonal_Shape oct1(6);
   oct1.add_constraint(x1 >= 1);
   oct1.add_constraint(x1 + x3 >= 2);
   oct1.add_constraint(x2 - x3 <= 4);
@@ -95,12 +95,12 @@ test03() {
 
   oct1.remove_higher_space_dimensions(3);
 
-  Octagon<mpq_class> known_result(3);
+  Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x1 >= 1);
   known_result.add_constraint(x1 + x3 >= 2);
   known_result.add_constraint(x2 - x3 <= 4);
 
-  bool ok = (Octagon<mpq_class>(oct1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
   print_constraints(oct1, "*** oct1.remove_higher_space_dimensions(3) ***");
 
@@ -115,7 +115,7 @@ test04() {
   Variable w(6);
 
   // A 10-dim space, empty polyhedron.
-  TOctagon oc(10, EMPTY);
+  TOctagonal_Shape oc(10, EMPTY);
 
   print_constraints(oc, "*** oc ***");
 
@@ -128,9 +128,9 @@ test04() {
   oc.remove_space_dimensions(to_be_removed);
 
   // A 7-dim space, empty polyhedron.
-  Octagon<mpq_class> known_result(7, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(7, EMPTY);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.remove_space_dimensions({y, z, w}) ***");
 
@@ -145,7 +145,7 @@ test05() {
   Variable w(3);
 
   // A 10-dim space, empty polyhedron.
-  TOctagon oc(4, EMPTY);
+  TOctagonal_Shape oc(4, EMPTY);
 
   print_constraints(oc, "*** oc ***");
 
@@ -158,9 +158,9 @@ test05() {
 
   oc.remove_space_dimensions(to_be_removed);
 
-  Octagon<mpq_class> known_result(0, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(0, EMPTY);
 
-  bool ok = (Octagon<mpq_class>(oc) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
   print_constraints(oc, "*** oc.remove_space_dimensions() ***");
 
@@ -169,11 +169,11 @@ test05() {
 
 bool
 test06() {
-  TOctagon oc(5);
+  TOctagonal_Shape oc(5);
 
   try {
     // This is an invalid use of the function
-    // Octagon::remove_higher_dimensions(n): it is illegal to erase
+    // Octagonal_Shape::remove_higher_dimensions(n): it is illegal to erase
     // a variable that is not in the space of the polyhedron.
     oc.remove_higher_space_dimensions(7);
   }
@@ -195,7 +195,7 @@ test07() {
   Constraint_System cs;
   cs.insert(x <= 3);
   cs.insert(y - z <= 2);
-  TOctagon oc(cs);
+  TOctagonal_Shape oc(cs);
 
   Variables_Set to_be_removed;
   to_be_removed.insert(z);
@@ -205,7 +205,7 @@ test07() {
   try {
     to_be_removed.insert(x);
     // This is an incorrect use use of function
-    // Octagon::remove_space_dimensions(to_be_remove).
+    // Octagonal_Shape::remove_space_dimensions(to_be_remove).
     // Here the set `to_be_removed' still contains variable `z'.
     // This variable is now beyond the space dimension,
     // so that a dimension-incompatibility exception is obtained.

@@ -1,4 +1,4 @@
-/* Test Octagon::CC76_narrowing_assign().
+/* Test Octagonal_Shape::CC76_narrowing_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -26,17 +26,17 @@ namespace {
 
 bool
 test01() {
-  TOctagon oc1(3, EMPTY);
-  TOctagon oc2(3, EMPTY);
+  TOctagonal_Shape oc1(3, EMPTY);
+  TOctagonal_Shape oc2(3, EMPTY);
 
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
 
   oc1.CC76_narrowing_assign(oc2);
 
-  Octagon<mpq_class> known_result(3, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.CC76_narrowing_assign(oc2) ***");
 
@@ -45,19 +45,19 @@ test01() {
 
 bool
 test02() {
-  TOctagon oc1(0, EMPTY);
-  TOctagon oc2(0);
+  TOctagonal_Shape oc1(0, EMPTY);
+  TOctagonal_Shape oc2(0);
 
 #if NOISY
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
 #endif
 
-  Octagon<mpq_class> known_result(0, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(0, EMPTY);
 
   oc1.CC76_narrowing_assign(oc2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.CC76_narrowing_assign(oc2) ***");
 
@@ -66,17 +66,17 @@ test02() {
 
 bool
 test03() {
-  TOctagon oc1(2);
-  TOctagon oc2(2);
+  TOctagonal_Shape oc1(2);
+  TOctagonal_Shape oc2(2);
 
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
 
   oc1.CC76_narrowing_assign(oc2);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.CC76_narrowing_assign(oc2) ***");
 
@@ -85,17 +85,17 @@ test03() {
 
 bool
 test04() {
-  TOctagon oc1(0, EMPTY);
-  TOctagon oc2(0, EMPTY);
+  TOctagonal_Shape oc1(0, EMPTY);
+  TOctagonal_Shape oc2(0, EMPTY);
 
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
 
-  Octagon<mpq_class> known_result(0, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(0, EMPTY);
 
   oc1.CC76_narrowing_assign(oc2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.CC76_narrowing_assign(oc2) ***");
 
@@ -104,17 +104,17 @@ test04() {
 
 bool
 test05() {
-  TOctagon oc1(0);
-  TOctagon oc2(0);
+  TOctagonal_Shape oc1(0);
+  TOctagonal_Shape oc2(0);
 
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
 
-  Octagon<mpq_class> known_result(0);
+  Octagonal_Shape<mpq_class> known_result(0);
 
   oc1.CC76_narrowing_assign(oc2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.CC76_narrowing_assign(oc2) ***");
 
@@ -126,13 +126,13 @@ test06() {
   Variable A(0);
   Variable B(1);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(A <= 2);
   oc1.add_constraint(B == 2);
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(A <= 3);
   oc2.add_constraint(A + B <= 5);
 
@@ -140,13 +140,13 @@ test06() {
 
   oc1.CC76_narrowing_assign(oc2);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A <= 3);
   known_result.add_constraint(A + B <= 5);
   known_result.add_constraint(A - B <= 0);
   known_result.add_constraint(B == 2);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.CC76_narrowing_assign(oc2) ***");
 
@@ -158,7 +158,7 @@ test07() {
   Variable x(0);
   Variable y(1);
 
-  TOctagon oc1(2);
+  TOctagonal_Shape oc1(2);
   oc1.add_constraint(-x <= 3);
   oc1.add_constraint(y - x <= 2);
   oc1.add_constraint(x - y <= 5);
@@ -166,7 +166,7 @@ test07() {
 
   print_constraints(oc1, "*** oc1 ***");
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(x <= 1);
   oc2.add_constraint(y - x <= 7);
   oc2.add_constraint(x - y <= 6);
@@ -175,7 +175,7 @@ test07() {
 
   oc1.CC76_narrowing_assign(oc2);
 
-  Octagon<mpq_class> known_result(2);
+  Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y - x <= 7);
   known_result.add_constraint(-x <= 3);
@@ -183,7 +183,7 @@ test07() {
   known_result.add_constraint(-y <= 8);
   known_result.add_constraint(y <= 8);
 
-  bool ok = (Octagon<mpq_class>(oc1) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.CC76_narrowing_assign(oc2) ***");
 
@@ -194,14 +194,14 @@ bool
 test08() {
   Variable y(1);
 
-  TOctagon oc1(1);
+  TOctagonal_Shape oc1(1);
 
-  TOctagon oc2(2);
+  TOctagonal_Shape oc2(2);
   oc2.add_constraint(y >= 6);
 
   try {
     // This is an invalid use of the function
-    // Octagon::CC76_narrowing_assign(oc2): it is
+    // Octagonal_Shape::CC76_narrowing_assign(oc2): it is
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
     oc2.CC76_narrowing_assign(oc1);

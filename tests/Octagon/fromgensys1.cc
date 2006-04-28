@@ -1,4 +1,4 @@
-/* Test Octagon::Octagon(const Generator_System&).
+/* Test Octagonal_Shape::Octagonal_Shape(const Generator_System&).
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -27,11 +27,11 @@ namespace {
 bool
 test01() {
   Generator_System gs;
-  TOctagon oct(gs);
+  TOctagonal_Shape oct(gs);
 
-  Octagon<mpq_class> known_result(0, EMPTY);
+  Octagonal_Shape<mpq_class> known_result(0, EMPTY);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct, "*** oct ***");
 
@@ -46,9 +46,9 @@ test02() {
   gs.insert(closure_point(V));
 
   try {
-    // It is illegal to build a Octagon starting from a non-empty
+    // It is illegal to build a Octagonal_Shape starting from a non-empty
     // generator system having no points.
-    TOctagon oct(gs);
+    TOctagonal_Shape oct(gs);
 
     // It is an error if the exception is not thrown.
     return false;
@@ -71,9 +71,9 @@ test03() {
   gs.insert(ray(V));
 
   try {
-    // It is illegal to build a Octagon starting from a non-empty
+    // It is illegal to build a Octagonal_Shape starting from a non-empty
     // generator system having no points.
-    TOctagon oct(gs);
+    TOctagonal_Shape oct(gs);
 
     // It is an error if the exception is not thrown.
     return false;
@@ -99,9 +99,9 @@ test04() {
   gs.insert(ray(A + B));
   gs.insert(point(1*A + 2*B + 3*C + 4*D));
   gs.insert(point(2*A + 3*B + 4*C + 5*D));
-  TOctagon oct(gs);
+  TOctagonal_Shape oct(gs);
 
-  Octagon<mpq_class> known_result(4);
+  Octagonal_Shape<mpq_class> known_result(4);
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(B >= 2);
   known_result.add_constraint(C >= 3);
@@ -112,7 +112,7 @@ test04() {
   known_result.add_constraint(C == D-1);
   known_result.add_constraint(C <= A+2);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct, "*** oct ***");
 
@@ -133,9 +133,9 @@ test05() {
   ph.add_constraint(D >= 4);
   ph.add_constraint(A-D <= 50);
 
-  TOctagon oct(ph.generators());
+  TOctagonal_Shape oct(ph.generators());
 
-  Octagon<mpq_class> known_result(4);
+  Octagonal_Shape<mpq_class> known_result(4);
   known_result.add_constraint(C <= 30);
   known_result.add_constraint(D >= 4);
   known_result.add_constraint(D <= 10);
@@ -145,7 +145,7 @@ test05() {
   known_result.add_constraint(C - D <= 23);
   known_result.add_constraint(C - D >= 8);
 
-  bool ok = (Octagon<mpq_class>(oct) == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct, "*** oct ***");
 
