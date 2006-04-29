@@ -2977,7 +2977,7 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
     return;
   }
 
-  // The image of an empty BDS is empty too.
+  // The preimage of an empty BDS is empty too.
   shortest_path_closure_assign();
   if (marked_empty())
     return;
@@ -3016,9 +3016,17 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
       else
 	j = i+1;
 
+  // Since we are only able to record bounded differences, we can
+  // precisely deal with the case of a single variable only if its
+  // coefficient (taking into account the denominator) is 1.
+  // If this is not the case, we fall back to the general case
+  // so as to over-approximate the constraint.
+  if (t == 1 && expr.coefficient(Variable(j-1)) != denominator)
+    t = 2;
+
   // Now we know the form of `expr':
   // - If t == 0, then expr == b, with `b' a constant;
-  // - If t == 1, then expr == a*j + b, where `j != v';
+  // - If t == 1, then expr == a*j + b, where `j != v' and `a == denominator';
   // - If t == 2, the `expr' is of the general form.
   DB_Row<N>& dbm_0 = dbm[0];
 
@@ -3041,68 +3049,21 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
     }
   }
   else if (t == 1) {
-    // Value of the one and only non-zero coefficient in `expr'.
-    const Coefficient& expr_j = expr.coefficient(Variable(j-1));
+    // Case 2: expr == a*j + b, j != v, a == denominator.
+    assert(expr.coefficient(Variable(j-1)) == denominator);
     N d;
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
+      // Add the new constraint `v - j <= b/denominator'.
       div_round_up(d, b, denominator);
-      // Note that: `j != v', so that `expr' is of the form
-      // expr_j * j + b, with `j != v'.
-      if (expr_j == denominator)
-	// Add the new constraint `v - j <= b/denominator'.
-	add_dbm_constraint(j, v, d);
-      else {
-	// Here expr_j != denominator, so that we should be adding
-	// the constraint `v <= b/denominator - j'.
-	N sum;
-	// Approximate the homogeneous part of `expr'.
-	const int sign_j = sgn(expr_j);
-	const N& approx_j = (sign_j > 0) ? dbm_0[j] : dbm[j][0];
-	if (!is_plus_infinity(approx_j)) {
-	  N coeff_j;
-	  if (sign_j > 0)
-	    assign_r(coeff_j, expr_j, ROUND_UP);
-	  else {
-	    TEMP_INTEGER(minus_expr_j);
-	    neg_assign(minus_expr_j, expr_j);
-	    assign_r(coeff_j, minus_expr_j, ROUND_UP);
-	  }
-	  add_mul_assign_r(sum, coeff_j, approx_j, ROUND_UP);
-	  add_dbm_constraint(0, v, sum);
-	}
-      }
+      add_dbm_constraint(j, v, d);
       break;
-
     case GREATER_THAN_OR_EQUAL:
+      // Add the new constraint `v - j >= b/denominator',
+      // i.e., `j - v <= -b/denominator'.
       div_round_up(d, -b, denominator);
-      // Note that: `j != v', so that `expr' is of the form
-      // expr_j * j + b, with `j != v'.
-      if (expr_j == denominator)
-	// Add the new constraint `v - j >= b/denominator'.
-	add_dbm_constraint(j, v, d);
-      else {
-	// Here expr_j != denominator, so that we should be adding
-	// the constraint `v <= b/denominator - j'.
-	N sum;
-	// Approximate the homogeneous part of `expr_j'.
-	const int sign_j = sgn(expr_j);
-	const N& approx_j = (sign_j > 0) ? dbm_0[j] : dbm[j][0];
-	if (!is_plus_infinity(approx_j)) {
-	  N coeff_j;
-	  if (sign_j > 0)
-	    assign_r(coeff_j, expr_j, ROUND_UP);
-	  else {
-	    TEMP_INTEGER(minus_expr_j);
-	    neg_assign(minus_expr_j, expr_j);
-	    assign_r(coeff_j, minus_expr_j, ROUND_UP);
-	  }
-	  add_mul_assign_r(sum, coeff_j, approx_j, ROUND_UP);
-	  add_dbm_constraint(0, v, sum);
-	}
-      }
+      add_dbm_constraint(v, j, d);
       break;
-
     default:
       // We already dealt with the other cases.
       throw std::runtime_error("PPL internal error");
@@ -3110,8 +3071,9 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
     }
   }
   else {
-    // Here t == 2, so that
-    // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2.
+    // Here t == 2, so that either
+    // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2, or
+    // expr == a*j + b, j != v and a != denominator.
     const bool is_sc = (denominator > 0);
     TEMP_INTEGER(minus_b);
     neg_assign(minus_b, b);
@@ -3261,9 +3223,11 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
     }
   }
 
-  // If the shrunk BD_Shape is empty, its preimage is empty too.
+  // If the shrunk BD_Shape is empty, its preimage is empty too; ...
   if (is_empty())
     return;
+  // ...  otherwise, since the relation was not invertible,
+  // we just forget all constraints on `v'.
   forget_all_dbm_constraints(v);
   // Shortest-path closure is preserved, but not reduction.
   if (marked_shortest_path_reduced())
