@@ -2321,7 +2321,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
       // Case 2: expr = a*w + b, with a = +/- denominator.
       if (j == var.id())
 	// Apply affine_image() on the inverse of this transformation.
-	affine_image(var, a*var - b, denominator);
+	affine_image(var, denominator*var - b, a);
       else {
 	// `expr == a*w + b', where `w != v'.
 	// Remove all constraints on `var'.
