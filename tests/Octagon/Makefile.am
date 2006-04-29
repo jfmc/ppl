@@ -54,6 +54,7 @@ ORIGINAL_TESTS = \
 	contains1 \
 	empty1 \
 	fromgensys1 \
+	frompolyhedron1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
 	generalizedaffinepreimage1 generalizedaffinepreimage2 \
@@ -107,6 +108,8 @@ contains1_SOURCES = contains1.cc
 empty1_SOURCES = empty1.cc
 
 fromgensys1_SOURCES = fromgensys1.cc
+
+frompolyhedron1_SOURCES = frompolyhedron1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
