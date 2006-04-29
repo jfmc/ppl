@@ -398,7 +398,6 @@ public:
     \p complexity is \p ANY_COMPLEXITY, then the OS built is the
     smallest one containing \p ph.
   */
-  // FIXME: this has to be implemented.
   Octagonal_Shape(const Polyhedron& ph,
 		  Complexity_Class complexity = ANY_COMPLEXITY);
 
@@ -553,7 +552,6 @@ public:
   */
   void intersection_assign(const Octagonal_Shape& y);
 
-  //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
     \return
@@ -602,8 +600,8 @@ public:
   bool upper_bound_assign_if_exact(const Octagonal_Shape& y);
 
   /*! \brief
-    Assigns to \p *this the \ref oct_difference "oct-difference" of
-    \p *this and \p y.
+    Assigns to \p *this the smallest octagon containing the set difference
+    of \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -614,7 +612,7 @@ public:
   void difference_assign(const Octagonal_Shape& y);
 
   /*! \brief
-    Assigns to \p *this the \ref affine_transformation "affine image"
+    Assigns to \p *this the \ref affine_relation "affine image"
     of \p *this under the function mapping variable \p var into the
     affine expression specified by \p expr and \p denominator.
 
@@ -637,7 +635,7 @@ public:
 		    = Coefficient_one());
 
   /*! \brief
-    Assigns to \p *this the \ref affine_transformation "affine preimage"
+    Assigns to \p *this the \ref affine_relation "affine preimage"
     of \p *this under the function mapping variable \p var into the
     affine expression specified by \p expr and \p denominator.
 
@@ -661,7 +659,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
-    \ref generalized_image "generalized affine transfer function"
+    \ref Generalized_Affine_Relations "generalized affine transfer function"
     \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
     where \f$\mathord{\relsym}\f$ is the relation symbol encoded
     by \p relsym.
@@ -691,7 +689,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
-    \ref generalized_image "generalized affine transfer function"
+    \ref Generalized_Affine_Relations "generalized affine transfer function"
     \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
     \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
 
@@ -743,7 +741,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the result of computing the
-    \ref time_elapse "time-elapse" between \p *this and \p y.
+    \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -803,7 +801,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -824,7 +822,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are dimension-incompatible or
@@ -860,7 +858,7 @@ public:
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref widening_with_tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are dimension-incompatible or
@@ -1202,9 +1200,10 @@ private:
   */
   bool is_strongly_reduced() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if in the octagon taken two at a time
-  //! unary constraints, there is also the constraint that represent their sum.
+  /*! \brief
+    Returns <CODE>true</CODE> if in the octagon taken two at a time
+    unary constraints, there is also the constraint that represent their sum.
+  */
   bool is_strong_coherent() const;
 
   //! Assigns to \c this->matrix its strong closure.
