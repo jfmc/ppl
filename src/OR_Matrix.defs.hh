@@ -61,7 +61,7 @@ operator<<(std::ostream& s, const OR_Matrix<T>& m);
 //! A matrix representing octagonal constraints.
 /*!
   An OR_Matrix object is a DB_Row object that allows
-  the representation of a \em pseudo-triangular matrix, 
+  the representation of a \em pseudo-triangular matrix,
   like the following:
 
 <PRE>
@@ -72,7 +72,7 @@ operator<<(std::ostream& s, const OR_Matrix<T>& m);
    3    |_|_|_|_|_ _
    4    |_|_|_|_|_|_|
    5    |_|_|_|_|_|_|
-         . . . 
+         . . .
          _ _ _ _ _ _       _
  2n-2   |_|_|_|_|_|_| ... |_|
  2n-1   |_|_|_|_|_|_| ... |_|
@@ -313,7 +313,7 @@ public:
 private:
   //! Contains the rows of the matrix.
   /*!
-    Creates a DB_Row which contains the rows of the OR_Matrix 
+    Creates a DB_Row which contains the rows of the OR_Matrix
     inserting each successive row to the end of the vec.
     To contain all the elements of OR_Matrix the size of the DB_Row
     is 2*n*(n+1), where the n is the caracteristic parameter of
@@ -350,9 +350,9 @@ public:
     The new dimension of the resized matrix.
 
     Adds new rows of right dimension to the end if
-    there is enough capacity; otherwise, creates a new matrix, 
-    with the specified dimension, copying the old elements 
-    in the upper part of the new matrix, which is 
+    there is enough capacity; otherwise, creates a new matrix,
+    with the specified dimension, copying the old elements
+    in the upper part of the new matrix, which is
     then assigned to \p *this.
     Each new element is inizialized to plus infinity.
   */
@@ -375,10 +375,10 @@ public:
 
     If the new dimension is greater than the old one, it
     adds new rows of right dimension to the end if
-    there is enough capacity; otherwise, it creates a new matrix, 
-    with the specified dimension, copying the old elements 
-    in the upper part of the new matrix, which is 
-    then assigned to \p *this. In this case each element is 
+    there is enough capacity; otherwise, it creates a new matrix,
+    with the specified dimension, copying the old elements
+    in the upper part of the new matrix, which is
+    then assigned to \p *this. In this case each element is
     inizialized to plus infinity.
     If the new dimension is less than the old one, it erase
     from matrix to the end the rows with index greater than 2*new_dim-1
