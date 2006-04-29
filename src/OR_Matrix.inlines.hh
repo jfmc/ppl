@@ -254,8 +254,7 @@ OR_Matrix<T>::any_row_iterator<U>::operator-=(difference_type m) {
 template <typename T>
 template <typename U>
 inline typename OR_Matrix<T>::template any_row_iterator<U>::difference_type
-OR_Matrix<T>::any_row_iterator<U>::operator-(const any_row_iterator<U>& y)
-  const {
+OR_Matrix<T>::any_row_iterator<U>::operator-(const any_row_iterator& y) const {
   return e - y.e;
 }
 
