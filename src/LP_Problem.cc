@@ -822,7 +822,6 @@ PPL::LP_Problem::compute_simplex() {
       current_num = working_cost[0]*sgn(working_cost[working_cost.size()-1]);
       current_den = abs(working_cost[working_cost.size()-1]);
     }
-    computed_challenger_value = true;
   }
 }
 
