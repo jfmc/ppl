@@ -42,156 +42,158 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-// template <typename T>
-// Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
-//                                     const Complexity_Class complexity)
-//   : matrix(0), space_dim(0), status() {
-//   using Implementation::BD_Shapes::div_round_up;
-//   const dimension_type num_dimensions = ph.space_dimension();
+template <typename T>
+Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
+                                    const Complexity_Class complexity)
+  : matrix(0), space_dim(0), status() {
+  using Implementation::BD_Shapes::div_round_up;
+  const dimension_type num_dimensions = ph.space_dimension();
 
-//   if (ph.marked_empty()) {
-//     *this = Octagonal_Shape(num_dimensions, EMPTY);
-//     return;
-//   }
+  if (ph.marked_empty()) {
+    *this = Octagonal_Shape(num_dimensions, EMPTY);
+    return;
+  }
 
-//   if (num_dimensions == 0) {
-//     *this = Octagonal_Shape(num_dimensions, UNIVERSE);
-//     return;
-//   }
+  if (num_dimensions == 0) {
+    *this = Octagonal_Shape(num_dimensions, UNIVERSE);
+    return;
+  }
 
-//   // Build from generators when we do not care about complexity
-//   // or when the process has polynomial complexity.
-//   if (complexity == ANY_COMPLEXITY
-//       || (!ph.has_pending_constraints() && ph.generators_are_up_to_date())) {
-//     *this = Octagonal_Shape(ph.generators());
-//     return;
-//   }
+  // Build from generators when we do not care about complexity
+  // or when the process has polynomial complexity.
+  if (complexity == ANY_COMPLEXITY
+      || (!ph.has_pending_constraints() && ph.generators_are_up_to_date())) {
+    *this = Octagonal_Shape(ph.generators());
+    return;
+  }
 
-//   // We cannot afford exponential complexity, we do not have a complete set
-//   // of generators for the polyhedron, and the polyhedron is not trivially
-//   // empty or zero-dimensional.  Constraints, however, are up to date.
-//   assert(ph.constraints_are_up_to_date());
+  // We cannot afford exponential complexity, we do not have a complete set
+  // of generators for the polyhedron, and the polyhedron is not trivially
+  // empty or zero-dimensional.  Constraints, however, are up to date.
+  assert(ph.constraints_are_up_to_date());
 
-//   if (!ph.has_something_pending() && ph.constraints_are_minimized()) {
-//     // If the constraint system of the polyhedron is minimized,
-//     // the test `is_universe()' has polynomial complexity.
-//     if (ph.is_universe()) {
-//       *this = Octagonal_Shape(num_dimensions, UNIVERSE);
-//       return;
-//     }
-//   }
+  if (!ph.has_something_pending() && ph.constraints_are_minimized()) {
+    // If the constraint system of the polyhedron is minimized,
+    // the test `is_universe()' has polynomial complexity.
+    if (ph.is_universe()) {
+      *this = Octagonal_Shape(num_dimensions, UNIVERSE);
+      return;
+    }
+  }
 
-//   // See if there is at least one inconsistent constraint in `ph.con_sys'.
-//   for (Constraint_System::const_iterator i = ph.con_sys.begin(),
-// 	 cs_end = ph.con_sys.end(); i != cs_end; ++i)
-//     if (i->is_inconsistent()) {
-//       *this = Octagonal_Shape(num_dimensions, EMPTY);
-//       return;
-//     }
+  // See if there is at least one inconsistent constraint in `ph.con_sys'.
+  for (Constraint_System::const_iterator i = ph.con_sys.begin(),
+	 cs_end = ph.con_sys.end(); i != cs_end; ++i)
+    if (i->is_inconsistent()) {
+      *this = Octagonal_Shape(num_dimensions, EMPTY);
+      return;
+    }
 
-//   // If `complexity' allows it, use simplex to derive the exact (modulo
-//   // the fact that our OSs are topologically closed) variable bounds.
-//   if (complexity == SIMPLEX_COMPLEXITY) {
-//     LP_Problem lp;
-//     lp.set_optimization_mode(MAXIMIZATION);
+  // If `complexity' allows it, use simplex to derive the exact (modulo
+  // the fact that our OSs are topologically closed) variable bounds.
+  if (complexity == SIMPLEX_COMPLEXITY) {
+    LP_Problem lp;
+    lp.set_optimization_mode(MAXIMIZATION);
 
-//     const Constraint_System& ph_cs = ph.constraints();
-//     if (!ph_cs.has_strict_inequalities())
-//       lp.add_constraints(ph_cs);
-//     else
-//       // Adding to `lp' a topologically closed version of `ph_cs'.
-//       for (Constraint_System::const_iterator i = ph_cs.begin(),
-// 	     iend = ph_cs.end(); i != iend; ++i) {
-// 	const Constraint& c = *i;
-// 	lp.add_constraint(c.is_equality()
-// 			  ? (Linear_Expression(c) == 0)
-// 			  : (Linear_Expression(c) >= 0));
-//       }
+    const Constraint_System& ph_cs = ph.constraints();
+    if (!ph_cs.has_strict_inequalities())
+      lp.add_constraints(ph_cs);
+    else
+      // Adding to `lp' a topologically closed version of `ph_cs'.
+      for (Constraint_System::const_iterator i = ph_cs.begin(),
+	     iend = ph_cs.end(); i != iend; ++i) {
+	const Constraint& c = *i;
+	if (c.is_strict_inequality())
+	  lp.add_constraint(Linear_Expression(c) >= 0);
+	else
+	  lp.add_constraint(c);
+      }
 
-//     // Check for unsatisfiability.
-//     if (!lp.is_satisfiable()) {
-//       *this = Octagonal_Shape(num_dimensions, EMPTY);
-//       return;
-//     }
+    // Check for unsatisfiability.
+    if (!lp.is_satisfiable()) {
+      *this = Octagonal_Shape<T>(num_dimensions, EMPTY);
+      return;
+    }
 
-//     // Get all the upper bounds.
-//     LP_Problem_Status lp_status;
-//     Generator g(point());
-//     TEMP_INTEGER(num);
-//     TEMP_INTEGER(den);
-//     for (dimension_type i = 0; i < num_dimensions; ++i) {
-//       Variable x(i);
-//       // Evaluate optimal upper bound for `x <= ub'.
-//       lp.set_objective_function(x);
-//       lp_status = lp.solve();
-//       if (lp_status == UNBOUNDED_LP_PROBLEM)
-// 	// CHECK ME.
-// 	matrix[i][i+1] = PLUS_INFINITY;
-//       else {
-// 	assert(lp_status == OPTIMIZED_LP_PROBLEM);
-// 	g = lp.optimizing_point();
-// 	lp.evaluate_objective_function(g, num, den);
-// 	num *= 2;
-// 	div_round_up(matrix[i][i+1], num, den);
-//       }
-//       // Evaluate optimal upper bound for `x - y <= ub'.
-//       for (dimension_type j = 0; j < num_dimensions; ++j) {
-// 	if (i == j)
-// 	  continue;
-// 	Variable y(j);
-// 	lp.set_objective_function(x - y);
-// 	lp_status = lp.solve();
-// 	if (lp_status == UNBOUNDED_LP_PROBLEM)
-// 	  // FIXME.
-// 	  matrix[j][i] = PLUS_INFINITY;
-// 	else {
-// 	  assert(lp_status == OPTIMIZED_LP_PROBLEM);
-// 	  g = lp.optimizing_point();
-// 	  lp.evaluate_objective_function(g, num, den);
-// 	  // FIXME.
-// 	  div_round_up(matrix[j][i], num, den);
-// 	}
-//       }
-//       // Evaluate optimal upper bound for `x + y <= ub'.
-//       for (dimension_type j = 0; j < num_dimensions; ++j) {
-// 	if (i == j)
-// 	  continue;
-// 	Variable y(j);
-// 	lp.set_objective_function(x + y);
-// 	lp_status = lp.solve();
-// 	if (lp_status == UNBOUNDED_LP_PROBLEM)
-// 	  // FIXME.
-// 	  matrix[j][i] = PLUS_INFINITY;
-// 	else {
-// 	  assert(lp_status == OPTIMIZED_LP_PROBLEM);
-// 	  g = lp.optimizing_point();
-// 	  lp.evaluate_objective_function(g, num, den);
-// 	  // FIXME.
-// 	  div_round_up(matrix[j][i], num, den);
-// 	}
-//       }
-//       // Evaluate optimal upper bound for `-x <= ub'.
-//       lp.set_objective_function(-x);
-//       lp_status = lp.solve();
-//       if (lp_status == UNBOUNDED_LP_PROBLEM)
-// 	// CHECK ME.
-// 	matrix[i+1][i] = PLUS_INFINITY;
-//       else {
-// 	assert(lp_status == OPTIMIZED_LP_PROBLEM);
-// 	g = lp.optimizing_point();
-// 	lp.evaluate_objective_function(g, num, den);
-// 	// CHECK ME.
-// 	num *= 2;
-// 	div_round_up(matrix[i+1][i], num, den);
-//       }
-//     }
-//     status.set_strongly_closed();
-//     return;
-//   }
+    // Start with a universe OS that will be refined by the simplex.
+    *this = Octagonal_Shape<T>(num_dimensions, UNIVERSE);
+    // Get all the upper bounds.
+    Generator g(point());
+    TEMP_INTEGER(num);
+    TEMP_INTEGER(den);
+    for (dimension_type i = 0; i < num_dimensions; ++i) {
+      Variable x(i);
+      // Evaluate optimal upper bound for `x <= ub'.
+      lp.set_objective_function(x);
+      if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+	g = lp.optimizing_point();
+	lp.evaluate_objective_function(g, num, den);
+	num *= 2;
+	div_round_up(matrix[2*i+1][2*i], num, den);
+      }
+      // Evaluate optimal upper bounds for `x + y <= ub'.
+      for (dimension_type j = 0; j < i; ++j) {
+	Variable y(j);
+	lp.set_objective_function(x + y);
+	if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+	  g = lp.optimizing_point();
+	  lp.evaluate_objective_function(g, num, den);
+	  div_round_up(matrix[2*i+1][2*j], num, den);
+	}
+      }
+      // Evaluate optimal upper bound for `x - y <= ub'.
+      for (dimension_type j = 0; j < num_dimensions; ++j) {
+	if (i == j)
+	  continue;
+	Variable y(j);
+	lp.set_objective_function(x - y);
+	if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+	  g = lp.optimizing_point();
+	  lp.evaluate_objective_function(g, num, den);
+	  div_round_up((i < j ? matrix[2*j][2*i] : matrix[2*i+1][2*j+1]),
+		       num, den);
+	}
+      }
+      // Evaluate optimal upper bound for `y - x <= ub'.
+      for (dimension_type j = 0; j < num_dimensions; ++j) {
+	if (i == j)
+	  continue;
+	Variable y(j);
+	lp.set_objective_function(x - y);
+	if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+	  g = lp.optimizing_point();
+	  lp.evaluate_objective_function(g, num, den);
+	  div_round_up((i < j ? matrix[2*j][2*i] : matrix[2*i+1][2*j+1]),
+		       num, den);
+	}
+      }
+      // Evaluate optimal upper bound for `-x - y <= ub'.
+      for (dimension_type j = 0; j < i; ++j) {
+	Variable y(j);
+	lp.set_objective_function(-x - y);
+	if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+	  g = lp.optimizing_point();
+	  lp.evaluate_objective_function(g, num, den);
+ 	  div_round_up(matrix[2*i][2*j+1], num, den);
+	}
+      }
+      // Evaluate optimal upper bound for `-x <= ub'.
+      lp.set_objective_function(-x);
+      if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+	g = lp.optimizing_point();
+	lp.evaluate_objective_function(g, num, den);
+	num *= 2;
+	div_round_up(matrix[2*i][2*i+1], num, den);
+      }
+    }
+    status.set_strongly_closed();
+    assert(OK());
+    return;
+  }
 
-//   // Extract easy-to-find bounds from constraints.
-//   *this = Octagonal_Shape(ph.con_sys);
-// }
+  // Extract easy-to-find bounds from constraints.
+  *this = Octagonal_Shape(ph.constraints());
+}
 
 template <typename T>
 Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
@@ -475,7 +477,7 @@ Octagonal_Shape<T>::affine_dimension() const {
 
 template <typename T>
 void
-Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape<T>& y) {
+Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape& y) {
   // If `y' is an empty 0-dim space octagon, let `*this' become empty.
   // If `y' is an universal 0-dim space octagon, we simply return.
   if (y.space_dim == 0) {
@@ -4740,7 +4742,7 @@ Octagonal_Shape<T>::OK() const {
     if (x.matrix != matrix) {
 #ifndef NDEBUG
       std::cerr << "Octagonal_Shape is marked as strongly closed "
-		<< "but is it not!\n";
+		<< "but it is not!\n";
 #endif
       return false;
     }
