@@ -166,12 +166,12 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   const dimension_type num_dimensions = ph.space_dimension();
 
   if (ph.marked_empty()) {
-    *this = BD_Shape(num_dimensions, EMPTY);
+    *this = BD_Shape<T>(num_dimensions, EMPTY);
     return;
   }
 
   if (num_dimensions == 0) {
-    *this = BD_Shape(num_dimensions, UNIVERSE);
+    *this = BD_Shape<T>(num_dimensions, UNIVERSE);
     return;
   }
 
@@ -179,7 +179,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   // or when the process has polynomial complexity.
   if (complexity == ANY_COMPLEXITY
       || (!ph.has_pending_constraints() && ph.generators_are_up_to_date())) {
-    *this = BD_Shape(ph.generators());
+    *this = BD_Shape<T>(ph.generators());
     return;
   }
 
@@ -192,7 +192,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
     // If the constraint system of the polyhedron is minimized,
     // the test `is_universe()' has polynomial complexity.
     if (ph.is_universe()) {
-      *this = BD_Shape(num_dimensions, UNIVERSE);
+      *this = BD_Shape<T>(num_dimensions, UNIVERSE);
       return;
     }
   }
@@ -201,7 +201,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   for (Constraint_System::const_iterator i = ph.con_sys.begin(),
 	 cs_end = ph.con_sys.end(); i != cs_end; ++i)
     if (i->is_inconsistent()) {
-      *this = BD_Shape(num_dimensions, EMPTY);
+      *this = BD_Shape<T>(num_dimensions, EMPTY);
       return;
     }
 
@@ -219,19 +219,21 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       for (Constraint_System::const_iterator i = ph_cs.begin(),
 	     iend = ph_cs.end(); i != iend; ++i) {
 	const Constraint& c = *i;
-	lp.add_constraint(c.is_equality()
-			  ? (Linear_Expression(c) == 0)
-			  : (Linear_Expression(c) >= 0));
+	if (c.is_strict_inequality())
+	  lp.add_constraint(Linear_Expression(c) >= 0);
+	else
+	  lp.add_constraint(c);
       }
 
     // Check for unsatisfiability.
     if (!lp.is_satisfiable()) {
-      *this = BD_Shape(num_dimensions, EMPTY);
+      *this = BD_Shape<T>(num_dimensions, EMPTY);
       return;
     }
 
+    // Start with a universe BDS that will be refined by the simplex.
+    *this = BD_Shape<T>(num_dimensions, UNIVERSE);
     // Get all the upper bounds.
-    LP_Problem_Status lp_status;
     Generator g(point());
     TEMP_INTEGER(num);
     TEMP_INTEGER(den);
@@ -239,11 +241,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       Variable x(i-1);
       // Evaluate optimal upper bound for `x <= ub'.
       lp.set_objective_function(x);
-      lp_status = lp.solve();
-      if (lp_status == UNBOUNDED_LP_PROBLEM)
-	dbm[0][i] = PLUS_INFINITY;
-      else {
-	assert(lp_status == OPTIMIZED_LP_PROBLEM);
+      if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, num, den);
 	div_round_up(dbm[0][i], num, den);
@@ -254,11 +252,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
 	  continue;
 	Variable y(j-1);
 	lp.set_objective_function(x - y);
-	lp_status = lp.solve();
-	if (lp_status == UNBOUNDED_LP_PROBLEM)
-	  dbm[j][i] = PLUS_INFINITY;
-	else {
-	  assert(lp_status == OPTIMIZED_LP_PROBLEM);
+	if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
 	  g = lp.optimizing_point();
 	  lp.evaluate_objective_function(g, num, den);
 	  div_round_up(dbm[j][i], num, den);
@@ -266,22 +260,19 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       }
       // Evaluate optimal upper bound for `-x <= ub'.
       lp.set_objective_function(-x);
-      lp_status = lp.solve();
-      if (lp_status == UNBOUNDED_LP_PROBLEM)
-	dbm[i][0] = PLUS_INFINITY;
-      else {
-	assert(lp_status == OPTIMIZED_LP_PROBLEM);
+      if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, num, den);
 	div_round_up(dbm[i][0], num, den);
       }
     }
     status.set_shortest_path_closed();
+    assert(OK());
     return;
   }
 
   // Extract easy-to-find bounds from constraints.
-  *this = BD_Shape(ph.con_sys);
+  *this = BD_Shape<T>(ph.constraints());
 }
 
 template <typename T>
