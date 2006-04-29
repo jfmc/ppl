@@ -140,11 +140,7 @@ main() TRY {
   Generator pg = lp.optimizing_point();
   nout << "Optimizing point = ";
   print_generator(pg);
-  Generator pg_kr = point(300*X06 + 300*X15
-			  + Coefficient("716072340751908900")*X16
-			  + Coefficient("4773815605012726")*X21
-			  + Coefficient("105023943310279972")*X39,
-			  Coefficient("2386907802506363"));
+  Generator pg_kr = point(2*X21 + 44*X39);
   if (pg != pg_kr)
     return -1;
 
