@@ -49,7 +49,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 #ifndef PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
-#define PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT 0
+#define PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT 1
 #endif
 
 namespace PPL = Parma_Polyhedra_Library;
