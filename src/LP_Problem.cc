@@ -759,6 +759,7 @@ bool
 PPL::LP_Problem::compute_simplex() {
   const dimension_type allowed_non_increasing_loops = 200;
   dimension_type non_increased_times = 0;
+  bool computed_challenger_value = false;
   bool call_textbook = false;
   Coefficient cost_sgn_coeff = working_cost[working_cost.size()-1];
   Coefficient current_num = working_cost[0]*sgn(cost_sgn_coeff);
@@ -791,8 +792,19 @@ PPL::LP_Problem::compute_simplex() {
     cost_sgn_coeff = working_cost[working_cost.size()-1];
     Coefficient challenger = working_cost[0] * sgn(cost_sgn_coeff);
     Coefficient current = current_num * abs(cost_sgn_coeff);
-    //  If the following condition fails, probably there's a bug.
-    assert(challenger >= current);
+#if PPL_NOISY_SIMPLEX
+    ++num_iterations;
+    if (num_iterations % 200 == 0)
+      std::cout << "Primal Simplex: iteration "
+		<< num_iterations << "." << std::endl;
+#endif
+    // Initialization during first loop.
+    if (!computed_challenger_value){
+      computed_challenger_value = true;
+      continue;
+    }
+     //  If the following condition fails, probably there's a bug.
+    assert(challenger >= current );
       // If the value of the objective function doesn't improve,
       // keep track of that.
     if (challenger == current) {
@@ -810,12 +822,7 @@ PPL::LP_Problem::compute_simplex() {
       current_num = working_cost[0]*sgn(working_cost[working_cost.size()-1]);
       current_den = abs(working_cost[working_cost.size()-1]);
     }
-#if PPL_NOISY_SIMPLEX
-    ++num_iterations;
-    if (num_iterations % 200 == 0)
-      std::cout << "Primal Simplex: iteration "
-		<< num_iterations << "." << std::endl;
-#endif
+    computed_challenger_value = true;
   }
 }
 
@@ -1315,7 +1322,7 @@ PPL::LP_Problem::is_satisfiable() const {
   x.prepare_first_phase(worked_out_rows);
   // Solve the first phase of the primal simplex algorithm.
   bool first_phase_successful = x.compute_simplex();
- 
+
 #if PPL_NOISY_SIMPLEX
   std::cout << "LP_Problem::solve: 1st phase ended at iteration "
 	    << num_iterations << "." << std::endl;
