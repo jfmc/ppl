@@ -26,89 +26,6 @@ namespace {
 
 bool
 test01() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  TOctagonal_Shape oct(3);
-  oct.add_constraint(2*A == 1);
-  oct.add_constraint(B >= 5);
-  oct.add_constraint(3*C <= 7);
-  oct.add_constraint(5*C >= 7);
-
-  print_constraints(oct, "*** oct ***");
-
-  Octagonal_Shape<mpq_class> known_result(3);
-  known_result.add_constraint(2*A == 1);
-  known_result.add_constraint(3*C <= 7);
-  known_result.add_constraint(5*C >= 7);
-
-  oct.generalized_affine_preimage(B, EQUAL, 3*A+2);
-
-  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
-
-  print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "EQUAL, -1) ***");
-
-  return ok;
-}
-
-bool
-test02() {
-  Variable A(0);
-  Variable B(1);
-
-  TOctagonal_Shape oct(2);
-  oct.add_constraint(2*A == 1);
-  oct.add_constraint(B <= 5);
-
-  print_constraints(oct, "*** oct ***");
-
-  Octagonal_Shape<mpq_class> known_result(2);
-  known_result.add_constraint(2*A == 1);
-
-  oct.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL,
-				  Linear_Expression(-1));
-
-  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
-
-  print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, -1) ***");
-
-  return ok;
-}
-
-bool
-test03() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  TOctagonal_Shape oct(3);
-  oct.add_constraint(2*A == 1);
-  oct.add_constraint(B <= 5);
-  oct.add_constraint(3*C <= 8);
-  oct.add_constraint(2*C >= 7);
-
-  print_constraints(oct, "*** oct ***");
-
-  Octagonal_Shape<mpq_class> known_result(3, EMPTY);
-
-  oct.generalized_affine_preimage(B, EQUAL, 3*A+2);
-
-  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
-
-  print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(B, "
-		    "EQUAL, 3*A+2) ***");
-
-  return ok;
-}
-
-bool
-test04() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -136,7 +53,7 @@ test04() {
 }
 
 bool
-test05() {
+test02() {
   Variable x(0);
   Variable y(1);
 
@@ -159,7 +76,7 @@ test05() {
 }
 
 bool
-test06() {
+test03() {
   Variable x(0);
   Variable y(1);
 
@@ -182,7 +99,7 @@ test06() {
 }
 
 bool
-test07() {
+test04() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -207,7 +124,7 @@ test07() {
 }
 
 bool
-test08() {
+test05() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -232,57 +149,7 @@ test08() {
 }
 
 bool
-test09() {
-  Variable A(0);
-  Variable B(1);
-
-  Octagonal_Shape<mpq_class> oct(2);
-  oct.add_constraint(B - A <= 2);
-  oct.add_constraint(B <= 5);
-
-  print_constraints(oct, "*** oct ***");
-
-  oct.generalized_affine_preimage(A, LESS_THAN_OR_EQUAL, B, 5);
-
-  Octagonal_Shape<mpq_class> known_result(2);
-  known_result.add_constraint(B <= 3);
-
-  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
-
-  print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(A, "
-		    "LESS_THAN_OR_EQUAL, B, 5) ***");
-
-  return ok;
-}
-
-bool
-test10() {
-  Variable A(0);
-  Variable B(1);
-
-  Octagonal_Shape<mpq_class> oct(2);
-  oct.add_constraint(B - A <= 2);
-  oct.add_constraint(B <= 5);
-
-  print_constraints(oct, "*** oct ***");
-
-  oct.generalized_affine_preimage(A, LESS_THAN_OR_EQUAL, B + 3, 5);
-
-  Octagonal_Shape<mpq_class> known_result(2);
-  known_result.add_constraint(5*B <= 18);
-
-  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
-
-  print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(A, "
-		    "LESS_THAN_OR_EQUAL, B + 3, 5) ***");
-
-  return ok;
-}
-
-bool
-test11() {
+test06() {
   Variable A(0);
   Variable B(1);
 
@@ -307,7 +174,7 @@ test11() {
 }
 
 bool
-test12() {
+test07() {
   Variable A(0);
   Variable B(1);
 
@@ -333,7 +200,7 @@ test12() {
 }
 
 bool
-test13() {
+test08() {
   Variable A(0);
   Variable B(1);
 
@@ -367,9 +234,4 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
-  DO_TEST(test09);
-  DO_TEST(test10);
-  DO_TEST(test11);
-  DO_TEST(test12);
-  DO_TEST(test13);
 END_MAIN
