@@ -61,6 +61,7 @@ check_PROGRAMS = \
 	empty1 \
 	equality1 \
 	fromgensys1 \
+	frompolyhedron1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffinepreimage1 generalizedaffinepreimage2 \
 	geomcovers1 \
@@ -160,6 +161,8 @@ empty1_SOURCES = empty1.cc
 equality1_SOURCES = equality1.cc
 
 fromgensys1_SOURCES = fromgensys1.cc
+
+frompolyhedron1_SOURCES = frompolyhedron1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
