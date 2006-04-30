@@ -198,7 +198,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
 template <typename T>
 Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
   : matrix(gs.space_dimension()),
-    space_dim(gs.space_dimension()), status(){
+    space_dim(gs.space_dimension()),
+    status() {
   using Implementation::BD_Shapes::max_assign;
   using Implementation::BD_Shapes::div_round_up;
 
@@ -439,7 +440,7 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
     }
   }
 
-  // This method not preserve closure.
+  // This method does not preserve closure.
   if (is_oct_changed && marked_strongly_closed())
     status.reset_strongly_closed();
   assert(OK());
@@ -456,7 +457,7 @@ Octagonal_Shape<T>::affine_dimension() const {
   if (marked_empty())
     return 0;
 
-  // The vector `leaders' is used to represent no-singular
+  // The vector `leaders' is used to represent non-singular
   // equivalence classes:
   // `leaders[i] == i' if and only if `i' is the leader of its
   // equivalence class (i.e., the minimum index in the class);
@@ -466,12 +467,11 @@ Octagonal_Shape<T>::affine_dimension() const {
   // Due to the splitting of variables, the affine dimension is the
   // number of non-singular positive zero-equivalence classes.
   dimension_type affine_dim = 0;
-  for (dimension_type i = 0; i < n_rows; i += 2) {
-    const dimension_type ci = coherent_index(i);
+  for (dimension_type i = 0; i < n_rows; i += 2)
     // Note: disregard the singular equivalence class.
-    if (leaders[i] == i && i != ci)
+    if (leaders[i] == i && leaders[i+1] == i+1)
       ++affine_dim;
-  }
+
   return affine_dim;
 }
 
@@ -1469,7 +1469,6 @@ Octagonal_Shape<T>
 template <typename T>
 void
 Octagonal_Shape<T>::strong_reduction_assign() const {
-
   // First find the tightest constraints for this octagon.
   strong_closure_assign();
 
