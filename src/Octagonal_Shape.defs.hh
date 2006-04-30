@@ -162,11 +162,11 @@ bool extract_octagonal_difference(const Constraint& c,
   type Constraint: such a constraint is an octagonal constraint if it is
   of the form
     \f[
-      a_i x_i + a_j x_j \relsym b
+      \pm a_i x_i \pm a_j x_j \relsym b
     \f]
   where \f$\mathord{\relsym} \in \{ \leq, =, \geq \}\f$ and
   \f$a_i\f$, \f$a_j\f$, \f$b\f$ are integer coefficients such that
-  \f$a_i = 0\f$, or \f$a_j = 0\f$, or \f$\abs{a_i} = \abs{a_j}\f$.
+  \f$a_i = 0\f$, or \f$a_j = 0\f$, or \f$a_i = a_j\f$.
   The user is warned that the above Constraint object will be mapped
   into a <EM>correct</EM> approximation that, depending on the expressive
   power of the chosen template argument \p T, may loose some precision.
@@ -226,106 +226,6 @@ bool extract_octagonal_difference(const Constraint& c,
     cs.insert(x + y + z <= 5);  // (9)
     Octagonal_Shape<T> oct(cs);
   \endcode
-
-  // ENEA: checked up to this point.
-
-  \par Example 2
-  The following code shows the use of the function
-  <CODE>affine_image</CODE>:
-  \code
-    Octagonal_Shape<T> oc(2);
-    oc.add_constraint(x >= 0);
-    oc.add_constraint(y >= 0);
-    oc.add_constraint(x + y >= 0);
-    Linear_Expression expr(2*x + 2);
-    oc.affine_image(x, expr, 2);
-  \endcode
-  The linear epressions must be at most in one variable and
-  the absolute value of coefficient of the single variable must be
-  equal to absolute value of denominator (like in the example above).
-  In this example the starting octagon is the first quadrant in
-  \f$\Rset^2\f$, the considered variable is \f$x\f$ and the affine
-  expression is \f$2*x+2\f$. The resulting octagon is the same octagon
-  traslated to right.  Moreover, if the affine transformation for
-  the same variable \p x is \f$2*y\f$:
-  \code
-    Linear_Expression expr = 2*y;
-  \endcode
-  the resulting octagon is the part non-negative of the first bisector.
-
-  \par Example 3
-  The following code shows the use of the function
-  <CODE>affine_preimage</CODE>:
-  \code
-    Octagonal_Shape<T> oc(2);
-    oc.add_constraint(x >= 0);
-    oc.add_constraint(x - y >= 3);
-    oc.add_constraint(y >= 0);
-    Linear_Expression expr(y - 1);
-
-    oc.affine_preimage(x, expr);
-  \endcode
-  In this example the starting octagon is an half-plane in
-  \f$\Rset^2\f$, the considered variable is \f$x\f$ and the affine
-  expression is \f$y\f$. The resulting octagon is half-plane \f$y >= 0\f$.
-
-  \par Example 4
-  The following code shows the use of the function
-  <CODE>BHMZ05_widening_assign</CODE>:
-  \code
-    Octagonal_Shape<T> oc1(2);
-    oc1.add_constraint(x >= 0);
-    oc1.add_constraint(y >= 0);
-    oc1.add_constraint(x + y >= 0);
-
-    Octagonal_Shape<T> oc2(2);
-    oc2.add_constraint(x >= 5);
-    oc2.add_constraint(y >= 0);
-    oc2.add_constraint(x + y >= 0);
-
-    oc1.BHMZ05_widening_assign(oc2);
-  \endcode
-  In this example the starting octagon oc1 is the first quadrant
-  and oc2 is an half-plane in \f$\Rset^2\f$. The resulting octagon
-  is the half-plane \f$y >= 0\f$.
-
-  \par Example 5
-  The following code shows the use of the function
-  <CODE>CC76_extrapolation_assign</CODE>:
-  \code
-    Octagonal_Shape<T> oc1(2);
-    oc1.add_constraint(x >= 0);
-    oc1.add_constraint(y >= 0);
-    oc1.add_constraint(x + y >= 0);
-
-    Octagonal_Shape<T> oc2(2);
-    oc2.add_constraint(x >= 5);
-    oc2.add_constraint(y >= 0);
-    oc2.add_constraint(x + y >= 0);
-
-    oc1.CC76_extrapolation_assign(oc2);
-  \endcode
-  In this example the starting octagon oc1 is the first quadrant
-  and oc2 is an half-plane in \f$\Rset^2\f$. The resulting octagon
-  is still oc1.
-
-  \par Example 6
-  The following code shows the use of the function
-  <CODE>CC76_narrowing_assign</CODE>:
-  \code
-    Octagonal_Shape<T> oc1(2);
-    Octagonal_Shape<T> oc2(2);
-
-    Constraint_System cs;
-    cs.insert(x <= 0);
-    oc2.add_constraints(cs);
-
-    oc1.CC76_narrowing_assign(oc2);
-  \endcode
-  In this example the starting octagon oc1 is the universe one
-  and oc2 is an half-plane in \f$\Rset^2\f$. The resulting octagon
-  is the same oc2.
-
 */
 template <typename T>
 class Parma_Polyhedra_Library::Octagonal_Shape {
