@@ -41,6 +41,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BHRZ03_Certificate.types.hh"
 #include "H79_Certificate.types.hh"
 #include "BD_Shape.types.hh"
+#include "Octagonal_Shape.types.hh"
 #include <vector>
 #include <iosfwd>
 
