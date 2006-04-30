@@ -14,31 +14,33 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
+#CHECKER =
+CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
 
-@SET_MAKE@
-
-SUBDIRS =
+TESTS_ENVIRONMENT = CHEKER="$(CHECKER)"
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src -I$(top_srcdir)/tests \
+$(TEST_CPPFLAGS) \
 -I$(top_builddir)/src \
-@extra_includes@
+-I$(top_srcdir)/src \
+-I$(top_srcdir)/tests \
+-I$(top_srcdir)/utils \
+@extra_includes@ \
+@debug_flag@
 
 LDADD = \
-$(top_builddir)/src/libppl.la \
+$(top_builddir)/utils/libppl_utils.a \
 $(top_builddir)/tests/libppl_tests.a \
+$(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-ORIGINAL_TESTS = \
+check_PROGRAMS = \
 	addspacedims1 \
 	affinedimension1 \
 	affineimage1 affineimage2 \
@@ -72,6 +74,44 @@ ORIGINAL_TESTS = \
 	timeelapse1 \
 	universe1 \
 	writeoctagon1
+
+
+# This will be overriden by the `run_tests' script.
+TEST_CPPFLAGS=-DOCTAGONAL_SHAPE_INSTANCE=mpq_class
+
+dist_check_SCRIPTS = run_tests
+
+TESTS = $(dist_check_SCRIPTS)
+
+XFAIL_TESTS =
+
+if SUPPORTED_FLOAT
+FLOAT_INSTANCE=float
+endif
+if SUPPORTED_DOUBLE
+DOUBLE_INSTANCE=double
+endif
+if SUPPORTED_LONG_DOUBLE
+LONG_DOUBLE_INSTANCE=long_double
+endif
+
+# NOTE: mpq_class must be the first in the list.
+INSTANCES = \
+mpq_class \
+$(FLOAT_INSTANCE) \
+$(DOUBLE_INSTANCE) \
+$(LONG_DOUBLE_INSTANCE) \
+mpz_class \
+int8_t \
+int16_t \
+int32_t \
+int64_t
+
+print_check_PROGRAMS:
+	echo $(check_PROGRAMS)
+
+print_INSTANCES:
+	echo $(INSTANCES)
 
 #
 # Sources for the tests
@@ -148,12 +188,6 @@ universe1_SOURCES = universe1.cc
 
 writeoctagon1_SOURCES = writeoctagon1.cc
 
-TESTS = $(ORIGINAL_TESTS)
 
-XFAIL_TESTS =
-
-check_PROGRAMS = $(TESTS) $(BUGS)
-
-BUGS =
-
-MOSTLYCLEANFILES =
+MOSTLYCLEANFILES = \
+ascii_dump_load1.dat
