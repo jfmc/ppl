@@ -44,9 +44,9 @@ test01() {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(w <= 2);
 
-  bool ok = (oc == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
-  print_constraints(Octagonal_Shape<mpq_class>(oc),
+  print_constraints(oc,
 		    "*** oc.add_space_dimensions_and_embed(2) "
 		    "and oc.add_constraint(w <= 2) ***");
 
@@ -64,7 +64,7 @@ test02() {
   oc1.add_space_dimensions_and_embed(2);
   oc2.add_space_dimensions_and_embed(1);
 
-  bool ok = (oc1 == oc2);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == oc2);
 
   print_constraints(oc1, "*** oc1.add_space_dimensions_and_embed(2) ***");
   print_constraints(oc2, "*** oc2.add_space_dimensions_and_embed(1) ***");
@@ -148,7 +148,7 @@ test05() {
   oc1.add_space_dimensions_and_embed(0);
   oc2.add_space_dimensions_and_project(0);
 
-  bool ok = (oc1 == oc2);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == oc2);
 
   print_constraints(oc1, "*** oc1.add_space_dimensions_and_embed(0) ***");
   print_constraints(oc2, "*** oc2.add_space_dimensions_and_project(0) ***");
@@ -167,7 +167,7 @@ test06() {
   oc1.add_space_dimensions_and_project(2);
   oc2.add_space_dimensions_and_project(1);
 
-  bool ok = (oc1 == oc2);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == oc2);
 
   print_constraints(oc1, "*** oc1.add_space_dimensions_and_project(2) ***");
   print_constraints(oc2, "*** oc2.add_space_dimensions_and_project(1) ***");
@@ -189,7 +189,7 @@ test07() {
   oc1.add_space_dimensions_and_project(2);
   oc2.add_space_dimensions_and_project(1);
 
-  bool ok = (oc1 == oc2);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == oc2);
 
   print_constraints(oc1, "*** oc1.add_space_dimensions_and_project(2) ***");
   print_constraints(oc2, "*** oc2.add_space_dimensions_and_project(1) ***");
@@ -212,7 +212,7 @@ test08() {
   oc1.add_space_dimensions_and_project(2);
   oc2.add_space_dimensions_and_project(1);
 
-  bool ok = (oc1 == oc2);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == oc2);
 
   print_constraints(oc1, "*** oc1.add_space_dimensions_and_project(2) ***");
   print_constraints(oc2, "*** oc2.add_space_dimensions_and_project(1) ***");

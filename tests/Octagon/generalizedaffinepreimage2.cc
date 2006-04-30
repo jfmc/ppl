@@ -247,7 +247,7 @@ test09() {
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B <= 3);
 
-  bool ok = (oct == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(A, "
@@ -272,7 +272,7 @@ test10() {
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(5*B <= 18);
 
-  bool ok = (oct == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(A, "
@@ -297,7 +297,7 @@ test11() {
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(5*B >= 14);
 
-  bool ok = (oct == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(A, "
@@ -323,7 +323,7 @@ test12() {
   known_result.add_constraint(B <= 4);
   known_result.add_constraint(5*B >= 9);
 
-  bool ok = (oct == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(A, "
@@ -347,7 +347,7 @@ test13() {
 
   Octagonal_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (oct == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(A, "

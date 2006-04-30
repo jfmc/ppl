@@ -168,7 +168,7 @@ test06() {
 
   oct.generalized_affine_image(y, LESS_THAN_OR_EQUAL, Linear_Expression(2));
 
-  bool ok = (oct == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct, "*** oct.generalized_affine_image(y, "
                          "LESS_THAN_OR_EQUAL, 2) ***");

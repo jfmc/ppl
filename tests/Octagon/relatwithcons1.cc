@@ -42,9 +42,7 @@ test01() {
     && Poly_Con_Relation::is_included()
     && Poly_Con_Relation::is_disjoint();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+ return rel == known_result;
 }
 
 bool
@@ -68,9 +66,7 @@ test02() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -95,9 +91,7 @@ test03() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -121,9 +115,7 @@ test04() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -152,9 +144,7 @@ test05() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -181,9 +171,7 @@ test06() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -207,9 +195,7 @@ test07() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -237,9 +223,7 @@ test08() {
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_disjoint();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -355,9 +339,7 @@ test09() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -380,12 +362,7 @@ test10() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
-  if (rel != known_result)
-    exit(1);
-
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -403,9 +380,7 @@ test11() {
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included()
     && Poly_Con_Relation::saturates();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -422,9 +397,7 @@ test12() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -441,9 +414,7 @@ test13() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -464,9 +435,7 @@ test14() {
     && Poly_Con_Relation::is_included()
     && Poly_Con_Relation::is_disjoint();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -486,9 +455,7 @@ test15() {
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_included();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -507,9 +474,7 @@ test16() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -532,9 +497,7 @@ test17() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -557,9 +520,7 @@ test18() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -582,9 +543,7 @@ test19() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -607,9 +566,7 @@ test20() {
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 } // namespace

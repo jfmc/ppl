@@ -22,92 +22,72 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-static void
-test1() {
+bool
+test01() {
   Partial_Function function;
 
   TOctagonal_Shape oc1(3);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(oc1, "*** oc1 ***");
-#endif
 
   oc1.map_space_dimensions(function);
 
   Octagonal_Shape<mpq_class> known_result;
 
-  bool ok = (oc1 == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
-#if NOISY
   print_constraints(oc1, "*** oc1.map_space_dimensions(function) ***");
-#endif
 
-  if (!ok)
-    exit(1);
+return ok;
 }
 
-static void
-test2() {
+bool
+test02() {
   Partial_Function function;
 
   TOctagonal_Shape oc1(3, EMPTY);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(oc1, "*** oc1 ***");
-#endif
 
   oc1.map_space_dimensions(function);
 
   Octagonal_Shape<mpq_class> known_result(0, EMPTY);
 
-  bool ok = (oc1 == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
-#if NOISY
   print_constraints(oc1, "*** oc1.map_space_dimensions(function) ***");
-#endif
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-static void
-test3() {
+bool
+test03() {
   Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
 
   TOctagonal_Shape oc1(3, EMPTY);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(oc1, "*** oc1 ***");
-#endif
 
   oc1.map_space_dimensions(function);
 
   Octagonal_Shape<mpq_class> known_result(2, EMPTY);
 
-  bool ok = (oc1 == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
-#if NOISY
   print_constraints(oc1, "*** oc1.map_space_dimensions(function) ***");
-#endif
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-static void
-test4() {
+bool
+test04() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -122,10 +102,8 @@ test4() {
 
   TOctagonal_Shape oc1(cs);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(oc1, "*** oc1 ***");
-#endif
 
   oc1.map_space_dimensions(function);
 
@@ -133,18 +111,15 @@ test4() {
   known_result.add_constraint(x == 1);
   known_result.add_constraint(y - x <= 3);
 
-  bool ok = (oc1 == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
-#if NOISY
   print_constraints(oc1, "*** oc1.map_space_dimensions(function) ***");
-#endif
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-static void
-test5() {
+bool
+test05() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -160,20 +135,13 @@ test5() {
 
   TOctagonal_Shape oc1(cs);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(oc1, "*** oc1 ***");
-#endif
 
- oc1.map_space_dimensions(function);
+  oc1.map_space_dimensions(function);
 
   Octagonal_Shape<mpq_class> known_result(1);
   known_result.add_constraint(x <= 4);
-
-#if NOISY
-  print_constraints(oc1, "*** oc1.map_space_dimensions(function) ***");
-  print_constraints(known_result, "*** known_result ***");
-#endif
 
 #if 0
   cout << "oc1" << endl;
@@ -183,14 +151,15 @@ test5() {
   known_result.ascii_dump(cout);
 #endif
 
-  bool ok = (oc1 == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
-  if (!ok)
-    exit(1);
+  print_constraints(oc1, "*** oc1.map_space_dimensions(function) ***");
+
+  return ok;
 }
 
-static void
-test6() {
+bool
+test06() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -208,10 +177,8 @@ test6() {
 
   TOctagonal_Shape oc1(cs);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(oc1, "*** oc1 ***");
-#endif
 
   oc1.map_space_dimensions(function);
 
@@ -221,45 +188,35 @@ test6() {
   known_result.add_constraint(y - x <= 7);
   known_result.add_constraint(x + y <= 4);
 
-#if NOISY
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
+
   print_constraints(oc1, "*** oc1.map_space_dimensions(function) ***");
-  print_constraints(known_result, "*** known_result ***");
-
-#endif
-
-  bool ok = (oc1 == known_result);
-
-  if (!ok)
-    exit(1);
+  
+  return ok;
 }
 
-static void
-test7() {
+bool
+test07() {
   Partial_Function function;
 
   TOctagonal_Shape oc1;
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(oc1, "*** oc1 ***");
-#endif
 
   oc1.map_space_dimensions(function);
 
   Octagonal_Shape<mpq_class> known_result;
 
-  bool ok = (oc1 == known_result);
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
-#if NOISY
   print_constraints(oc1, "*** oc1.map_space_dimensions(function) ***");
-#endif
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-static void
-test8() {
+bool
+test08() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -269,7 +226,6 @@ test8() {
   function.insert(1, 0);
   function.insert(0, 2);
 
-
   Constraint_System cs;
   cs.insert(x == 1);
   cs.insert(z - x <= 1);
@@ -278,41 +234,29 @@ test8() {
 
   TOctagonal_Shape oc1(cs);
 
-#if NOISY
   print_function(function, "*** function ***");
   print_constraints(oc1, "*** oc1 ***");
-#endif
 
   Octagonal_Shape<mpq_class> known_result(3, EMPTY);
-  if (known_result != oc1)
-    cout << "The oc1 is not empty!" << endl;
-
+ 
   oc1.map_space_dimensions(function);
 
-#if NOISY
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
+
   print_constraints(oc1, "*** oc1.map_space_dimensions(function) ***");
-  print_constraints(known_result, "*** known_result ***");
 
-#endif
-
-  bool ok = (oc1 == known_result);
-
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
+} // namespace
 
-int
-main() TRY {
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+END_MAIN

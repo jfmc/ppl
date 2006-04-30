@@ -44,9 +44,7 @@ test01() {
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -65,9 +63,7 @@ test02() {
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::subsumes();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -86,9 +82,7 @@ test03() {
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -114,9 +108,7 @@ test04() {
   Poly_Gen_Relation known_result1 = Poly_Gen_Relation::subsumes();
   Poly_Gen_Relation known_result2 = Poly_Gen_Relation::nothing();
 
-  bool ok = (rel1 == known_result1 && rel2 == known_result2);
-
-  return ok;
+  return rel1 == known_result1 && rel2 == known_result2;
 }
 
 bool
@@ -136,9 +128,7 @@ test05() {
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -158,9 +148,7 @@ test06() {
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::subsumes();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -181,9 +169,7 @@ test07() {
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -203,9 +189,7 @@ test08() {
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -226,9 +210,7 @@ test09() {
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -249,9 +231,7 @@ test10() {
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 bool
@@ -273,9 +253,7 @@ test11() {
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::subsumes();
 
-  bool ok = (rel == known_result);
-
-  return ok;
+  return rel == known_result;
 }
 
 } // namespace
