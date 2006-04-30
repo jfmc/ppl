@@ -1115,14 +1115,8 @@ private:
   */
   void strong_closure_assign() const;
 
-  //! Puts in \p *this all implicit constraints and computes the tighter ones.
-  void strong_closure_assign1() const;
-
-  //! Puts in \p *this all implicit constraints and computes the tighter ones.
-  void strong_closure_assign3() const;
-
-  //! Puts in \p *this all implicit constraints and computes the tighter ones.
-  void strong_closure_assign5() const;
+  //! Applies the strong-coherence step to \c this->matrix.
+  void strong_coherence_assign();
 
   //! Puts in \p *this all implicit constraints and computes the tighter ones.
   /*!
@@ -1134,10 +1128,6 @@ private:
 
   */
   void incremental_strong_closure_assign(Variable var) const;
-
-  void incremental_strong_closure_assign1(Variable var) const;
-
-  void incremental_strong_closure_assign_of_mine(Variable var) const;
 
 #if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&
