@@ -3137,7 +3137,7 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
     // Case 2: expr = a*w + b, with a = +/- denominator.
     if (last_var_id == num_var) {
       // Apply affine_image() on the inverse of this transformation.
-      affine_image(var, a*var - b, denominator);
+      affine_image(var, denominator*var - b, a);
     }
     else {
       // `expr == a*w + b', where `w != var'.
@@ -3964,6 +3964,15 @@ Octagonal_Shape<T>
       else
 	last_var_id = i;
 
+  // Since we are only able to record octagonal differences, we can
+  // precisely deal with the case of a single variable only if its
+  // coefficient (taking into account the denominator) is 1.
+  // If this is not the case, we fall back to the general case
+  // so as to over-approximate the constraint.
+  if (t == 1 && expr.coefficient(Variable(last_var_id)) != denominator
+      && expr.coefficient(Variable(last_var_id)) != -denominator)
+    t = 2;
+
   // Now we know the form of `expr':
   // - If t == 0, then expr == b, with `b' a constant;
   // - If t == 1, then expr == a*j + b, where `j != v';
@@ -4014,36 +4023,6 @@ Octagonal_Shape<T>
 	if (num_var > last_var_id)
 	  add_octagonal_constraint(n_var+1, lv_index, d);
       }
-      else {
-     	// Here expr_last_var != denominator, so that we should be adding
-	// the constraint `v <= b/denominator - w'.
-      	N sum;
-	assign_r(sum, d, ROUND_UP);
-	// Approximate the homogeneous part of `expr'.
-	const int sign_last_v = sgn(expr_last_var);
-	typename OR_Matrix<N>::row_iterator last_v = matrix.row_begin() + lv_index;
-	typename OR_Matrix<N>::row_reference_type r_v = *last_v;
-	typename OR_Matrix<N>::row_reference_type r_cv = *(++last_v);
-	const N& double_approx_lv = (sign_last_v > 0) ? r_cv[lv_index] : r_v[lv_index+1];
-	if (!is_plus_infinity(double_approx_lv)) {
-	  N coeff_lv;
-	  if (sign_last_v > 0)
-	    assign_r(coeff_lv, expr_last_var, ROUND_UP);
-	  else {
-	    TEMP_INTEGER(minus_expr_last_v);
-	    neg_assign(minus_expr_last_v, expr_last_var);
-	    assign_r(coeff_lv, minus_expr_last_v, ROUND_UP);
-	  }
-	  N approx_lv;
-	  div2exp_assign_r(approx_lv, double_approx_lv, 1, ROUND_UP);
-	  N den;
-	  assign_r(den, denominator, ROUND_UP);
-	  div_assign_r(coeff_lv, coeff_lv, den, ROUND_UP);
-          add_mul_assign_r(sum, coeff_lv, approx_lv, ROUND_UP);
-	  mul2exp_assign_r(sum, sum, 1, ROUND_IGNORE);
-	  add_octagonal_constraint(n_var+1, n_var, sum);
-	}
-      }
       break;
 
     case GREATER_THAN_OR_EQUAL:
@@ -4051,49 +4030,20 @@ Octagonal_Shape<T>
       // Note that: `last_var_id != v', so that `expr' is of the form
       // expr_last_var * w + b, with `last_var_id != v'.
       if (expr_last_var == denominator) {
-    	// Add the new constraint `v - w >= b/denominator'.
+    	// Add the new constraint `v - w >= b/denominator',
+    	// i.e.,  `-v + w <= -b/denominator'.
 	if (num_var < last_var_id)
 	  add_octagonal_constraint(lv_index+1, n_var+1, d);
 	if (num_var > last_var_id)
 	  add_octagonal_constraint(n_var, lv_index, d);
       }
       else if (expr_last_var == -denominator) {
-	// Add the new constraints `v + w >= b/denominator'.
+	// Add the new constraints `v + w >= b/denominator',
+	// i.e.,  `-v - w <= -b/denominator'.
 	if (num_var < last_var_id)
 	  add_octagonal_constraint(lv_index, n_var+1, d);
 	if (num_var > last_var_id)
 	  add_octagonal_constraint(n_var, lv_index+1, d);
-      }
-      else {
-     	// Here expr_last_var != denominator, so that we should be adding
-	// the constraint `v <= b/denominator - w'.
-	N sum;
-	assign_r(sum, d, ROUND_UP);
-	// Approximate the homogeneous part of `expr_last_var'.
-	const int sign_lv = sgn(expr_last_var);
-	typename OR_Matrix<N>::row_iterator last_v = matrix.row_begin() + lv_index;
-	typename OR_Matrix<N>::row_reference_type r_v = *last_v;
-	typename OR_Matrix<N>::row_reference_type r_cv = *(++last_v);
-	const N& double_approx_lv = (sign_lv > 0)
-	  ? r_v[lv_index+1] : r_cv[lv_index];
-	if (!is_plus_infinity(double_approx_lv)) {
-	  N coeff_lv;
-	  if (sign_lv > 0)
-	    assign_r(coeff_lv, expr_last_var, ROUND_UP);
-	  else {
-	    TEMP_INTEGER(minus_expr_lv);
-	    neg_assign(minus_expr_lv, expr_last_var);
-	    assign_r(coeff_lv, minus_expr_lv, ROUND_UP);
-	  }
-	  N approx_lv;
-	  div2exp_assign_r(approx_lv, double_approx_lv, 1, ROUND_UP);
-	  N den;
-	  assign_r(den, denominator, ROUND_UP);
-	  div_assign_r(coeff_lv, coeff_lv, den, ROUND_UP);
-	  add_mul_assign_r(sum, coeff_lv, approx_lv, ROUND_UP);
-	  mul2exp_assign_r(sum, sum, 1, ROUND_IGNORE);
-	  add_octagonal_constraint(n_var, n_var+1, sum);
-	}
       }
       break;
 
@@ -4142,7 +4092,6 @@ Octagonal_Shape<T>
 	// Approximate the homogeneous part of `sc_expr'.
 	// Note: indices above `last_var_id' can be disregarded, as they all have
 	// a zero coefficient in `expr'.
-
 	for (dimension_type i = last_var_id + 1; i-- > 0; ) {
 	  const Coefficient& sc_i = sc_expr.coefficient(Variable(i));
 	  const dimension_type j_0 = 2*i;
@@ -4189,144 +4138,120 @@ Octagonal_Shape<T>
 	  // Add the constraint `v <= sum'.
 	  N double_sum = sum;
 	  mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
-	  typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var+1;
-	  typename OR_Matrix<N>::row_reference_type r = *i;
-	  assign_r(r[n_var], double_sum, ROUND_UP);
+	  add_octagonal_constraint(n_var+1, n_var, double_sum);
 	  // Deduce constraints of the form `v - u', where `u != v'.
 	  deduce_v_minus_u_bounds(num_var, last_var_id, sc_expr, sc_den, sum);
 	  // Deduce constraints of the form `v + u', where `u != v'.
 	  deduce_v_plus_u_bounds(num_var, last_var_id, sc_expr, sc_den, sum);
 	}
-	else if (pinf_count == 1)
+	else if (pinf_count == 1) {
+	  dimension_type pinf_ind = 2*pinf_index;
 	  if (expr.coefficient(Variable(pinf_index)) == denominator ) {
 	    // Add the constraint `v - pinf_index <= sum'.
-	    if (num_var < pinf_index) {
-	      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*pinf_index;
-	      typename OR_Matrix<N>::row_reference_type r_i = *i;
-	      assign_r(r_i[n_var], sum, ROUND_UP);
-	    }
-	    if (num_var > pinf_index) {
-	      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-	      typename OR_Matrix<N>::row_reference_type r_ci = *(i+1);
-	      assign_r(r_ci[2*pinf_index+1], sum, ROUND_UP);
-	    }
+	    if (num_var < pinf_index) 
+	      add_octagonal_constraint(pinf_ind, n_var, sum);
+	    if (num_var > pinf_index) 
+	      add_octagonal_constraint(n_var+1, pinf_ind+1, sum);
 	  }
 	  else {
 	    if (expr.coefficient(Variable(pinf_index)) == minus_den) {
 	      // Add the constraint `v + pinf_index <= sum'.
-	      if (num_var < pinf_index) {
-		typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*pinf_index;
-		typename OR_Matrix<N>::row_reference_type r_ci = *(i+1);
-		assign_r(r_ci[n_var], sum, ROUND_UP);
-	      }
-	      if (num_var > pinf_index) {
-		typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-		typename OR_Matrix<N>::row_reference_type r_ci = *(i+1);
-		assign_r(r_ci[2*pinf_index], sum, ROUND_UP);
-	      }
+	      if (num_var < pinf_index) 
+		add_octagonal_constraint(pinf_ind+1, n_var, sum);
+	      if (num_var > pinf_index) 
+		add_octagonal_constraint(n_var+1, pinf_ind, sum);
 	    }
 	  }
+	}
 	break;
       }
 
     case GREATER_THAN_OR_EQUAL:
       {
-      // Compute an upper approximation for `-sc_expr' into `sum'.
-      // Note: approximating `-sc_expr' from above and then negating the
-      // result is the same as approximating `sc_expr' from below.
+	// Compute an upper approximation for `-sc_expr' into `sum'.
+	// Note: approximating `-sc_expr' from above and then negating the
+	// result is the same as approximating `sc_expr' from below.
 
-      // Approximate the inhomogeneous term.
-      assign_r(sum, minus_sc_b, ROUND_UP);
+	// Approximate the inhomogeneous term.
+	assign_r(sum, minus_sc_b, ROUND_UP);
 
-      // Approximate the homogeneous part of `-sc_expr'.
-      for (dimension_type i = last_var_id + 1; i-- > 0; ) {
-	const Coefficient& sc_i = sc_expr.coefficient(Variable(i));
-	const dimension_type j_0 = 2*i;
-	const dimension_type j_1 = j_0 + 1;
-	typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin() + j_0;
-	typename OR_Matrix<N>::const_row_reference_type m_j0 = *iter;
-	typename OR_Matrix<N>::const_row_reference_type m_j1 = *(iter+1);
-	const int sign_i = sgn(sc_i);
-	if (sign_i == 0)
-	  continue;
-	// Choose carefully: we are approximating `-sc_expr'.
-	const N& double_approx_i = (sign_i > 0) ? m_j0[j_1] : m_j1[j_0];
-	if (is_plus_infinity(double_approx_i)) {
-	  if (++pinf_count > 1)
-	    break;
-	  pinf_index = i;
-	  continue;
-	}
-	N coeff_i;
-	if (sign_i > 0)
-	  assign_r(coeff_i, sc_i, ROUND_UP);
-	else {
-	  TEMP_INTEGER(minus_sc_i);
-	  neg_assign(minus_sc_i, sc_i);
-	  assign_r(coeff_i, minus_sc_i, ROUND_UP);
-	}
-	N approx_i;
-	div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
-	add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
-      }
-
-      // Divide by the (sign corrected) denominator (if needed).
-      if (sc_den != 1) {
-	// Before computing the quotient, the denominator should be
-	// approximated towards zero. Since `sc_den' is known to be positive,
-	// this amounts to rounding downwards, which is achieved by rounding
-	// upwards `minus_sc_den' and negating again the result.
-	N down_sc_den;
-	assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-	neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-	div_assign_r(sum, sum, down_sc_den, ROUND_UP);
-      }
-
-      if (pinf_count == 0) {
-	// Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
-	N double_sum = sum;
-	mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
-	typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-	typename OR_Matrix<N>::row_reference_type r_i = *i;
-	assign_r(r_i[n_var+1], double_sum, ROUND_UP);
-	// Deduce constraints of the form `u - v', where `u != v'.
-	deduce_u_minus_v_bounds(num_var, pinf_index, sc_expr, sc_den, sum);
-	// Deduce constraints of the form `-v - u', where `u != v'.
-	deduce_minus_v_minus_u_bounds(num_var, pinf_index,
-				      sc_expr, sc_den, sum);
-      }
-      else if (pinf_count == 1)
-	if (expr.coefficient(Variable(pinf_index)) == denominator) {
-	  // Add the constraint `v - pinf_index >= -sum',
-	  // i.e., `pinf_index - v <= sum'.
-	  if (pinf_index < num_var) {
-	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-	    typename OR_Matrix<N>::row_reference_type r_i = *i;
-	    assign_r(r_i[2*pinf_index], sum, ROUND_UP);
+	// Approximate the homogeneous part of `-sc_expr'.
+	for (dimension_type i = last_var_id + 1; i-- > 0; ) {
+	  const Coefficient& sc_i = sc_expr.coefficient(Variable(i));
+	  const dimension_type j_0 = 2*i;
+	  const dimension_type j_1 = j_0 + 1;
+	  typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin() + j_0;
+	  typename OR_Matrix<N>::const_row_reference_type m_j0 = *iter;
+	  typename OR_Matrix<N>::const_row_reference_type m_j1 = *(iter+1);
+	  const int sign_i = sgn(sc_i);
+	  if (sign_i == 0)
+	    continue;
+	  // Choose carefully: we are approximating `-sc_expr'.
+	  const N& double_approx_i = (sign_i > 0) ? m_j0[j_1] : m_j1[j_0];
+	  if (is_plus_infinity(double_approx_i)) {
+	    if (++pinf_count > 1)
+	      break;
+	    pinf_index = i;
+	    continue;
 	  }
-	  if (pinf_index > num_var) {
-	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*pinf_index;
-	    typename OR_Matrix<N>::row_reference_type r_ci = *(i+1);
-	    assign_r(r_ci[n_var], sum, ROUND_UP);
+	  N coeff_i;
+	  if (sign_i > 0)
+	    assign_r(coeff_i, sc_i, ROUND_UP);
+	  else {
+	    TEMP_INTEGER(minus_sc_i);
+	    neg_assign(minus_sc_i, sc_i);
+	    assign_r(coeff_i, minus_sc_i, ROUND_UP);
 	  }
+	  N approx_i;
+	  div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
+	  add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
 	}
-	else {
-	  if (expr.coefficient(Variable(pinf_index)) == minus_den) {
-	    // Add the constraint `v + pinf_index >= -sum',
-	    // i.e., `-pinf_index - v <= sum'.
-	    if (pinf_index < num_var) {
-	      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-	      typename OR_Matrix<N>::row_reference_type r_i = *i;
-	      assign_r(r_i[2*pinf_index+1], sum, ROUND_UP);
-	    }
-	    if (pinf_index > num_var) {
-	      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*pinf_index;
-	      typename OR_Matrix<N>::row_reference_type r_i = *i;
-	      assign_r(r_i[n_var+1], sum, ROUND_UP);
+
+	// Divide by the (sign corrected) denominator (if needed).
+	if (sc_den != 1) {
+	  // Before computing the quotient, the denominator should be
+	  // approximated towards zero. Since `sc_den' is known to be positive,
+	  // this amounts to rounding downwards, which is achieved by rounding
+	  // upwards `minus_sc_den' and negating again the result.
+	  N down_sc_den;
+	  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+	  neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
+	  div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+	}
+
+	if (pinf_count == 0) {
+	  // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
+	  N double_sum = sum;
+	  mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+	  add_octagonal_constraint(n_var, n_var+1, double_sum);
+	  // Deduce constraints of the form `u - v', where `u != v'.
+	  deduce_u_minus_v_bounds(num_var, pinf_index, sc_expr, sc_den, sum);
+	  // Deduce constraints of the form `-v - u', where `u != v'.
+	  deduce_minus_v_minus_u_bounds(num_var, pinf_index,
+					sc_expr, sc_den, sum);
+	}
+	else if (pinf_count == 1) {
+	  dimension_type pinf_ind = 2*pinf_index;
+	  if (expr.coefficient(Variable(pinf_index)) == denominator) {
+	    // Add the constraint `v - pinf_index >= -sum',
+	    // i.e., `pinf_index - v <= sum'.
+	    if (pinf_index < num_var) 
+	      add_octagonal_constraint(n_var, pinf_ind, sum);
+	    if (pinf_index > num_var) 
+	      add_octagonal_constraint(pinf_ind+1, n_var, sum);
+	  }
+	  else {
+	    if (expr.coefficient(Variable(pinf_index)) == minus_den) {
+	      // Add the constraint `v + pinf_index >= -sum',
+	      // i.e., `-pinf_index - v <= sum'.
+	      if (pinf_index < num_var) 
+		add_octagonal_constraint(n_var, pinf_ind+1, sum);
+	      if (pinf_index > num_var)
+		add_octagonal_constraint(pinf_ind, n_var+1, sum);
 	    }
 	  }
 	}
-      break;
+	break;
       }
 
     default:
@@ -4336,9 +4261,11 @@ Octagonal_Shape<T>
     }
   }
 
-  // If the shrunk OS is empty, its preimage is empty too.
+  // If the shrunk OS is empty, its preimage is empty too; ...
   if (is_empty())
     return;
+  // ...  otherwise, since the relation was not invertible,
+  // we just forget all constraints on `var'.
   forget_all_octagonal_constraints(n_var);
   assert(OK());
 }
