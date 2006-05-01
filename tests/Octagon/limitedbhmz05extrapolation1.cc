@@ -55,8 +55,9 @@ test01() {
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x >= 0);
-  known_result.add_constraint(y >= 0);
   known_result.add_constraint(x <= 1);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(y - x <= 0);
 
   bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);
 
@@ -89,6 +90,7 @@ test02() {
 
   Octagonal_Shape<mpq_class> known_result(1);
   known_result.add_constraint(x >= 0);
+  known_result.add_constraint(x <= 1);
 
   bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
 
