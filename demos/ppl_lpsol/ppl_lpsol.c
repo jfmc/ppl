@@ -255,7 +255,7 @@ process_options(int argc, char* argv[]) {
 
   if (enumerate_required && (simplex_required || incremental_required ||
 			     no_optimization_required))
-      fatal("Some incompatible options were given to lp_problem");
+      fatal("Some incompatible options were given to ppl_lpsol");
 
   if (enumerate_required)
     use_simplex = 0;
