@@ -108,6 +108,7 @@ Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
 globals.types.hh \
+distances.types.hh \
 Interval.types.hh \
 Bounding_Box.types.hh \
 Constraint.types.hh \
@@ -174,6 +175,8 @@ Coefficient.defs.hh \
 Coefficient.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
+distances.defs.hh \
+distances.inlines.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 Bounding_Box.defs.hh \
