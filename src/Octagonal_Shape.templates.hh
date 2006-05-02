@@ -622,7 +622,7 @@ Octagonal_Shape<T>::is_strongly_reduced() const {
   if (marked_empty())
     return true;
 
-  const Octagonal_Shape& x = *this;
+  Octagonal_Shape x = *this;
   // The matrix representing an OS is strongly reduced if, by removing
   // any constraint, the resulting matrix describes a different OS.
   for (typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin(),
@@ -631,10 +631,8 @@ Octagonal_Shape<T>::is_strongly_reduced() const {
     const dimension_type i = iter.index();
     for (dimension_type j = iter.row_size(); j-- > 0; ) {
       if (!is_plus_infinity(m_i[j])) {
-	Octagonal_Shape<T> x_copy = *this;
+	Octagonal_Shape x_copy = *this;
 	x_copy.matrix[i][j] = PLUS_INFINITY;
-	x_copy.status.reset_strongly_closed();
-	// TODO: use incremental closure to speed up the check.
 	if (x == x_copy)
 	  return false;
       }
@@ -1451,7 +1449,7 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
   compute_leaders(successor, no_sing_leaders, exist_sing_class, sing_leader);
   const dimension_type num_no_sing_leaders = no_sing_leaders.size();
 
-  Octagonal_Shape<T> aux(space_dim);
+  Octagonal_Shape aux(space_dim);
   // Step 2: add to auxiliary octagon only no-redundant
   // constraints and construct a 0-cycle using only
   // the leaders of the non-singular classes.
@@ -1954,7 +1952,7 @@ Octagonal_Shape<T>::CC76_extrapolation_assign(const Octagonal_Shape& y,
 
   // If there are tokens available, work on a temporary copy.
   if (tp != 0 && *tp > 0) {
-    Octagonal_Shape<T> x_tmp(*this);
+    Octagonal_Shape x_tmp(*this);
     x_tmp.CC76_extrapolation_assign(y, first, last, 0);
     // If the widening was not precise, use one of the available tokens.
     if (!contains(x_tmp))
@@ -2102,7 +2100,7 @@ Octagonal_Shape<T>
   if (y.marked_empty())
     return;
 
-  Octagonal_Shape<T> limiting_octagon(space_dim, UNIVERSE);
+  Octagonal_Shape limiting_octagon(space_dim, UNIVERSE);
   get_limiting_octagon(cs, limiting_octagon);
   CC76_extrapolation_assign(y, tp);
   intersection_assign(limiting_octagon);
@@ -2143,7 +2141,7 @@ Octagonal_Shape<T>::BHMZ05_widening_assign(const Octagonal_Shape& y,
 
   // If there are tokens available, work on a temporary copy.
   if (tp != 0 && *tp > 0) {
-    Octagonal_Shape<T> x_tmp(*this);
+    Octagonal_Shape x_tmp(*this);
     x_tmp.BHMZ05_widening_assign(y, 0);
     // If the widening was not precise, use one of the available tokens.
     if (!contains(x_tmp))
@@ -2213,7 +2211,7 @@ Octagonal_Shape<T>
   if (y.marked_empty())
     return;
 
-  Octagonal_Shape<T> limiting_octagon(space_dim, UNIVERSE);
+  Octagonal_Shape limiting_octagon(space_dim, UNIVERSE);
   get_limiting_octagon(cs, limiting_octagon);
   BHMZ05_widening_assign(y, tp);
   intersection_assign(limiting_octagon);
