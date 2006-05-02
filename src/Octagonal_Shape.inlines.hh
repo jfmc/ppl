@@ -68,6 +68,18 @@ Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape& y)
 }
 
 template <typename T>
+template <typename U>
+inline
+Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape<U>& y)
+  : matrix(y.matrix), space_dim(y.space_dim), status() {
+  // TODO: handle flags properly, possibly taking special cases into account.
+  if (y.marked_empty())
+    set_empty();
+  else if (y.status.test_zero_dim_univ())
+    set_zero_dim_univ();
+}
+
+template <typename T>
 inline
 Octagonal_Shape<T>::Octagonal_Shape(const Constraint_System& cs)
   : matrix(cs.space_dimension()),
@@ -427,6 +439,198 @@ template <typename T>
 inline void
 Octagonal_Shape<T>::difference_assign(const Octagonal_Shape& y) {
   oct_difference_assign(y);
+}
+
+/*! \relates Octagonal_Shape */
+template <typename Temp, typename To, typename T>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const Octagonal_Shape<T>& x,
+			    const Octagonal_Shape<T>& y,
+			    const Rounding_Dir dir,
+			    Temp& tmp0,
+			    Temp& tmp1,
+			    Temp& tmp2) {
+  // Dimension-compatibility check.
+  if (x.space_dim != y.space_dim)
+    return false;
+
+  // Zero-dim BDSs are equal if and only if they are both empty or universe.
+  if (x.space_dim == 0) {
+    if (x.marked_empty() == y.marked_empty())
+      assign_r(r, 0, ROUND_NOT_NEEDED);
+    else
+      r = PLUS_INFINITY;
+    return true;
+  }
+
+  // The distance computation requires strong closure.
+  x.strong_closure_assign();
+  y.strong_closure_assign();
+
+  // If one of two BDSs is empty, then they are equal if and only if
+  // the other BDS is empty too.
+  if (x.marked_empty() ||  y.marked_empty()) {
+   if (x.marked_empty() == y.marked_empty())
+      assign_r(r, 0, ROUND_NOT_NEEDED);
+    else
+      r = PLUS_INFINITY;
+   return true;
+  }
+
+  return rectilinear_distance_assign(r, x.matrix, y.matrix, dir,
+				     tmp0, tmp1, tmp2);
+}
+
+/*! \relates Octagonal_Shape */
+template <typename Temp, typename To, typename T>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const Octagonal_Shape<T>& x,
+			    const Octagonal_Shape<T>& y,
+			    const Rounding_Dir dir) {
+  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Octagonal_Shape */
+template <typename To, typename T>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const Octagonal_Shape<T>& x,
+			    const Octagonal_Shape<T>& y,
+			    const Rounding_Dir dir) {
+  return rectilinear_distance_assign<To, To, T>(r, x, y, dir);
+}
+
+/*! \relates Octagonal_Shape */
+template <typename Temp, typename To, typename T>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const Octagonal_Shape<T>& x,
+			  const Octagonal_Shape<T>& y,
+			  const Rounding_Dir dir,
+			  Temp& tmp0,
+			  Temp& tmp1,
+			  Temp& tmp2) {
+  // Dimension-compatibility check.
+  if (x.space_dim != y.space_dim)
+    return false;
+
+  // Zero-dim BDSs are equal if and only if they are both empty or universe.
+  if (x.space_dim == 0) {
+    if (x.marked_empty() == y.marked_empty())
+      assign_r(r, 0, ROUND_NOT_NEEDED);
+    else
+      r = PLUS_INFINITY;
+    return true;
+  }
+
+  // The distance computation requires strong closure.
+  x.strong_closure_assign();
+  y.strong_closure_assign();
+
+  // If one of two BDSs is empty, then they are equal if and only if
+  // the other BDS is empty too.
+  if (x.marked_empty() ||  y.marked_empty()) {
+   if (x.marked_empty() == y.marked_empty())
+      assign_r(r, 0, ROUND_NOT_NEEDED);
+    else
+      r = PLUS_INFINITY;
+   return true;
+  }
+
+  return euclidean_distance_assign(r, x.matrix, y.matrix, dir,
+				   tmp0, tmp1, tmp2);
+}
+
+/*! \relates Octagonal_Shape */
+template <typename Temp, typename To, typename T>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const Octagonal_Shape<T>& x,
+			  const Octagonal_Shape<T>& y,
+			  const Rounding_Dir dir) {
+  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Octagonal_Shape */
+template <typename To, typename T>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const Octagonal_Shape<T>& x,
+			  const Octagonal_Shape<T>& y,
+			  const Rounding_Dir dir) {
+  return euclidean_distance_assign<To, To, T>(r, x, y, dir);
+}
+
+/*! \relates Octagonal_Shape */
+template <typename Temp, typename To, typename T>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const Octagonal_Shape<T>& x,
+			   const Octagonal_Shape<T>& y,
+			   const Rounding_Dir dir,
+			   Temp& tmp0,
+			   Temp& tmp1,
+			   Temp& tmp2) {
+  // Dimension-compatibility check.
+  if (x.space_dim != y.space_dim)
+    return false;
+
+  // Zero-dim BDSs are equal if and only if they are both empty or universe.
+  if (x.space_dim == 0) {
+    if (x.marked_empty() == y.marked_empty())
+      assign_r(r, 0, ROUND_NOT_NEEDED);
+    else
+      r = PLUS_INFINITY;
+    return true;
+  }
+
+  // The distance computation requires strong closure.
+  x.strong_closure_assign();
+  y.strong_closure_assign();
+
+  // If one of two BDSs is empty, then they are equal if and only if
+  // the other BDS is empty too.
+  if (x.marked_empty() ||  y.marked_empty()) {
+   if (x.marked_empty() == y.marked_empty())
+      assign_r(r, 0, ROUND_NOT_NEEDED);
+    else
+      r = PLUS_INFINITY;
+   return true;
+  }
+
+  return l_infinity_distance_assign(r, x.matrix, y.matrix, dir,
+				    tmp0, tmp1, tmp2);
+}
+
+/*! \relates Octagonal_Shape */
+template <typename Temp, typename To, typename T>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const Octagonal_Shape<T>& x,
+			   const Octagonal_Shape<T>& y,
+			   const Rounding_Dir dir) {
+  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Octagonal_Shape */
+template <typename To, typename T>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const Octagonal_Shape<T>& x,
+			   const Octagonal_Shape<T>& y,
+			   const Rounding_Dir dir) {
+  return l_infinity_distance_assign<To, To, T>(r, x, y, dir);
 }
 
 } // namespace Parma_Polyhedra_Library

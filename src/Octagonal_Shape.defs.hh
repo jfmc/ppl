@@ -80,6 +80,168 @@ bool operator==(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y);
 template <typename T>
 bool operator!=(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y);
 
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates Octagonal_Shape
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+*/
+template <typename To, typename T>
+bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				 const Octagonal_Shape<T>& x,
+				 const Octagonal_Shape<T>& y,
+				 const Rounding_Dir dir);
+
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates Octagonal_Shape
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+*/
+template <typename Temp, typename To, typename T>
+bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				 const Octagonal_Shape<T>& x,
+				 const Octagonal_Shape<T>& y,
+				 const Rounding_Dir dir);
+
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates Octagonal_Shape
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename T>
+bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				 const Octagonal_Shape<T>& x,
+				 const Octagonal_Shape<T>& y,
+				 const Rounding_Dir dir,
+				 Temp& tmp0,
+				 Temp& tmp1,
+				 Temp& tmp2);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates Octagonal_Shape
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+*/
+template <typename To, typename T>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			       const Octagonal_Shape<T>& x,
+			       const Octagonal_Shape<T>& y,
+			       const Rounding_Dir dir);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates Octagonal_Shape
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+*/
+template <typename Temp, typename To, typename T>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			       const Octagonal_Shape<T>& x,
+			       const Octagonal_Shape<T>& y,
+			       const Rounding_Dir dir);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates Octagonal_Shape
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename T>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			       const Octagonal_Shape<T>& x,
+			       const Octagonal_Shape<T>& y,
+			       const Rounding_Dir dir,
+			       Temp& tmp0,
+			       Temp& tmp1,
+			       Temp& tmp2);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates Octagonal_Shape
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+*/
+template <typename To, typename T>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				const Octagonal_Shape<T>& x,
+				const Octagonal_Shape<T>& y,
+				const Rounding_Dir dir);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates Octagonal_Shape
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+*/
+template <typename Temp, typename To, typename T>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				const Octagonal_Shape<T>& x,
+				const Octagonal_Shape<T>& y,
+				const Rounding_Dir dir);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates Octagonal_Shape
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename T>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				const Octagonal_Shape<T>& x,
+				const Octagonal_Shape<T>& y,
+				const Rounding_Dir dir,
+				Temp& tmp0,
+				Temp& tmp1,
+				Temp& tmp2);
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as an octagonal difference.
 /*!
@@ -265,6 +427,10 @@ public:
 
   //! Ordinary copy-constructor.
   Octagonal_Shape(const Octagonal_Shape& x);
+
+  //! Builds a conservative, upward approximation of \p y.
+  template <typename U>
+  explicit Octagonal_Shape(const Octagonal_Shape<U>& y);
 
   //! Builds an OS from the system of constraints \p cs.
   /*!
@@ -919,7 +1085,25 @@ public:
   Parma_Polyhedra_Library::operator==<T>(const Octagonal_Shape<T>& x,
 					 const Octagonal_Shape<T>& y);
 
+  template <typename Temp, typename To, typename U>
+  friend bool Parma_Polyhedra_Library::rectilinear_distance_assign
+  (Checked_Number<To, Extended_Number_Policy>& r,
+   const Octagonal_Shape<U>& x, const Octagonal_Shape<U>& y,
+   const Rounding_Dir dir, Temp& tmp0, Temp& tmp1, Temp& tmp2);
+  template <typename Temp, typename To, typename U>
+  friend bool Parma_Polyhedra_Library::euclidean_distance_assign
+  (Checked_Number<To, Extended_Number_Policy>& r,
+   const Octagonal_Shape<U>& x, const Octagonal_Shape<U>& y,
+   const Rounding_Dir dir, Temp& tmp0, Temp& tmp1, Temp& tmp2);
+  template <typename Temp, typename To, typename U>
+  friend bool Parma_Polyhedra_Library::l_infinity_distance_assign
+  (Checked_Number<To, Extended_Number_Policy>& r,
+   const Octagonal_Shape<U>& x, const Octagonal_Shape<U>& y,
+   const Rounding_Dir dir, Temp& tmp0, Temp& tmp1, Temp& tmp2);
+
 private:
+  template <typename U> friend class Parma_Polyhedra_Library::Octagonal_Shape;
+
   //! The matrix that represents the octagonal shape.
   OR_Matrix<N> matrix;
 
