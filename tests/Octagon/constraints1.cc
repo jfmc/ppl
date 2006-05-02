@@ -35,7 +35,7 @@ test01() {
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagonal_Shape<mpq_class> known_result = oct1;
+  Octagonal_Shape<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
   TOctagonal_Shape oct2(cs);  
@@ -55,7 +55,7 @@ test02() {
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagonal_Shape<mpq_class> known_result = oct1;
+  Octagonal_Shape<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
   TOctagonal_Shape oct2(cs);
@@ -82,7 +82,7 @@ test03() {
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagonal_Shape<mpq_class> known_result = oct1;
+  Octagonal_Shape<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
   TOctagonal_Shape oct2(cs);
@@ -248,7 +248,7 @@ test10() {
 
   print_constraints(oct1, "*** oct1 ***");
 
-  Octagonal_Shape<mpq_class> known_result = oct1;
+  Octagonal_Shape<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
   TOctagonal_Shape oct2(cs);

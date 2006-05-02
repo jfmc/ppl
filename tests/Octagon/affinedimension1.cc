@@ -29,33 +29,23 @@ test01() {
   Variable x(0);
   Variable y(1);
 
-  TOctagonal_Shape oct1(3);
+  TOctagonal_Shape oct(3);
 
-  oct1.add_constraint(x <= 2);
-  oct1.add_constraint(x - y == 3);
-  oct1.add_constraint(y <= 2);
+  oct.add_constraint(x <= 2);
+  oct.add_constraint(x - y == 3);
+  oct.add_constraint(y <= 2);
 
-  TOctagonal_Shape oct2(2);
+  print_constraints(oct, "*** oct ***");
 
-  print_constraints(oct1, "*** oct1 ***");
-  print_constraints(oct2, "*** oct2 ***");
-
-  dimension_type affine_dim1 = oct1.affine_dimension();
-  dimension_type affine_dim2 = oct2.affine_dimension();
+  dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct1' "
+       << "The affine dimension of a system of `oct' "
        << endl
-       << affine_dim1
+       << affine_dim
        << endl;
 
-  nout << endl
-       << "The affine dimension of a system of `oct2' "
-       << endl
-       << affine_dim2
-       << endl;
-
-  bool ok = (affine_dim1 == affine_dim2);
+  bool ok = (affine_dim == 2);
 
   return ok;
 }
@@ -68,38 +58,24 @@ test02() {
   Variable D(3);
   Variable E(4);
 
-  TOctagonal_Shape oct1(5);
+  TOctagonal_Shape oct(5);
 
-  oct1.add_constraint(A <= 5);
-  oct1.add_constraint(A - B == 3);
-  oct1.add_constraint(C <= 2);
-  oct1.add_constraint(E - D == 2);
+  oct.add_constraint(A <= 5);
+  oct.add_constraint(A - B == 3);
+  oct.add_constraint(C <= 2);
+  oct.add_constraint(E - D == 2);
 
-  TOctagonal_Shape oct2(4);
+  print_constraints(oct, "*** oct ***");
 
-  oct2.add_constraint(A <= 1);
-  oct2.add_constraint(A - D == 8);
-  oct2.add_constraint(B <= 7);
-
-  print_constraints(oct1, "*** oct1 ***");
-  print_constraints(oct2, "*** oct2 ***");
-
-  dimension_type affine_dim1 = oct1.affine_dimension();
-  dimension_type affine_dim2 = oct2.affine_dimension();
+  dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct1' "
+       << "The affine dimension of a system of `oct' "
        << endl
-       << affine_dim1
+       << affine_dim
        << endl;
 
-  nout << endl
-       << "The affine dimension of a system of `oct2' "
-       << endl
-       << affine_dim2
-       << endl;
-
-  bool ok = (affine_dim1 == affine_dim2);
+  bool ok = (affine_dim == 3);
 
   return ok;
 }
@@ -112,39 +88,24 @@ test03() {
   Variable D(3);
   Variable E(4);
 
-  TOctagonal_Shape oct1(5);
+  TOctagonal_Shape oct(5);
 
-  oct1.add_constraint(A == 5);
-  oct1.add_constraint(A - B == 3);
-  oct1.add_constraint(C <= 2);
-  oct1.add_constraint(E - D == 2);
+  oct.add_constraint(A == 5);
+  oct.add_constraint(A - B == 3);
+  oct.add_constraint(C <= 2);
+  oct.add_constraint(E - D == 2);
 
-  TOctagonal_Shape oct2(5);
+  print_constraints(oct, "*** oct ***");
 
-  oct2.add_constraint(A == 1);
-  oct2.add_constraint(E == 1);
-  oct2.add_constraint(A - D == 8);
-  oct2.add_constraint(B <= 7);
-
-  print_constraints(oct1, "*** oct1 ***");
-  print_constraints(oct2, "*** oct2 ***");
-
-  dimension_type affine_dim1 = oct1.affine_dimension();
-  dimension_type affine_dim2 = oct2.affine_dimension();
+  dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct1' "
+       << "The affine dimension of a system of `oct' "
        << endl
-       << affine_dim1
+       << affine_dim
        << endl;
 
-  nout << endl
-       << "The affine dimension of a system of `oct2' "
-       << endl
-       << affine_dim2
-       << endl;
-
-  bool ok = (affine_dim1 == affine_dim2);
+  bool ok = (affine_dim == 2);
 
   return ok;
 }
@@ -154,72 +115,163 @@ test04() {
   Variable A(0);
   Variable B(1);
 
-  TOctagonal_Shape oct1(2);
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A <= 3);
+  oct.add_constraint(B - A <= -5);
+  oct.add_constraint(-B <= 2);
 
-  oct1.add_constraint(A <= 3);
-  oct1.add_constraint(B - A <= -5);
-  oct1.add_constraint(-B <= 2);
+  print_constraints(oct, "*** oct ***");
 
-  TOctagonal_Shape oct2(2);
-
-  oct2.add_constraint(A == 0);
-  oct2.add_constraint(B == 2);
-
-  print_constraints(oct1, "*** oct1 ***");
-  print_constraints(oct2, "*** oct2 ***");
-
-  dimension_type affine_dim1 = oct1.affine_dimension();
-  dimension_type affine_dim2 = oct2.affine_dimension();
+  dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct1' "
+       << "The affine dimension of a system of `oct' "
        << endl
-       << affine_dim1
+       << affine_dim
        << endl;
 
-  nout << endl
-       << "The affine dimension of a system of `oct2' "
-       << endl
-       << affine_dim2
-       << endl;
-
-  bool ok = (affine_dim1 == affine_dim2);
+  bool ok = (affine_dim == 0);
 
   return ok;
 }
 
 bool
 test05() {
+  TOctagonal_Shape oct(2, EMPTY);
+
+  print_constraints(oct, "*** oct ***");
+
+  dimension_type affine_dim = oct.affine_dimension();
+
+  nout << endl
+       << "The affine dimension of a system of `oct' "
+       << endl
+       << affine_dim
+       << endl;
+
+  bool ok = (affine_dim == 0);
+
+  return ok;
+}
+
+bool
+test06() {
+  TOctagonal_Shape oct(2);
+
+  print_constraints(oct, "*** oct ***");
+
+  dimension_type affine_dim = oct.affine_dimension();
+
+  nout << endl
+       << "The affine dimension of a system of `oct' "
+       << endl
+       << affine_dim
+       << endl;
+
+  bool ok = (affine_dim == 2);
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable D(3);
+
+  TOctagonal_Shape oct(4);
+  oct.add_constraint(A <= 1);
+  oct.add_constraint(A - D == 8);
+  oct.add_constraint(B <= 7);
+
+  print_constraints(oct, "*** oct ***");
+ 
+  dimension_type affine_dim = oct.affine_dimension();
+ 
+  nout << endl
+       << "The affine dimension of a system of `oct' "
+       << endl
+       << affine_dim
+       << endl;
+
+  bool ok = (affine_dim == 3);
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable D(3);
+  Variable E(4);
+
+  TOctagonal_Shape oct(5);
+  oct.add_constraint(A == 1);
+  oct.add_constraint(E == 1);
+  oct.add_constraint(A - D == 8);
+  oct.add_constraint(B <= 7);
+
+  print_constraints(oct, "*** oct ***");
+
+  dimension_type affine_dim = oct.affine_dimension();
+
+  nout << endl
+       << "The affine dimension of a system of `oct' "
+       << endl
+       << affine_dim
+       << endl;
+
+  bool ok = (affine_dim == 2);
+
+  return ok;
+}
+
+bool
+test09() {
   Variable A(0);
   Variable B(1);
 
-  TOctagonal_Shape oct1(2, EMPTY);
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A == 0);
+  oct.add_constraint(B == 2);
 
-  TOctagonal_Shape oct2(7);
+  print_constraints(oct, "*** oct ***");
 
-  oct2.add_constraint(A <= 1);
-  oct2.add_constraint(B == 2);
-  oct2.add_constraint(B - A <= -6);
-
-  print_constraints(oct1, "*** oct1 ***");
-  print_constraints(oct2, "*** oct2 ***");
-
-  dimension_type affine_dim1 = oct1.affine_dimension();
-  dimension_type affine_dim2 = oct2.affine_dimension();
+  dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct1' "
+       << "The affine dimension of a system of `oct' "
        << endl
-       << affine_dim1
+       << affine_dim
        << endl;
+
+  bool ok = (affine_dim == 0);
+
+  return ok;
+}
+
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(7);
+  oct.add_constraint(A <= 1);
+  oct.add_constraint(B == 2);
+  oct.add_constraint(B - A <= -6);
+
+  print_constraints(oct, "*** oct ***");
+
+  dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct2' "
+       << "The affine dimension of a system of `oct' "
        << endl
-       << affine_dim2
+       << affine_dim
        << endl;
 
-  bool ok = (affine_dim1 == affine_dim2);
+   bool ok = (affine_dim == 0);
 
   return ok;
 }
@@ -232,5 +284,10 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN
 

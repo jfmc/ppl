@@ -52,7 +52,7 @@ test01(){
   print_function(function, "*** function ***");
 
 
-  Octagonal_Shape<mpq_class> known_result = init(6);
+  TOctagonal_Shape known_result = init(6);
 
   for (dimension_type i = 10; i < 50; ++i) {
     TOctagonal_Shape oc = init(i);
