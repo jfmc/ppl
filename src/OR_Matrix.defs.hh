@@ -304,6 +304,10 @@ public:
   //! Copy-constructor.
   OR_Matrix(const OR_Matrix& y);
 
+  //! Constructs a conservative approximation of \p y.
+  template <typename U>
+  explicit OR_Matrix(const OR_Matrix<U>& y);
+
   //! Destructor.
   ~OR_Matrix();
 
@@ -311,6 +315,8 @@ public:
   OR_Matrix& operator=(const OR_Matrix& y);
 
 private:
+  template <typename U> friend class OR_Matrix;
+
   //! Contains the rows of the matrix.
   /*!
     Creates a DB_Row which contains the rows of the OR_Matrix

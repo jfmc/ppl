@@ -486,6 +486,17 @@ OR_Matrix<T>::OR_Matrix(const OR_Matrix& y)
 }
 
 template <typename T>
+template <typename U>
+inline
+OR_Matrix<T>::OR_Matrix(const OR_Matrix<U>& y)
+  : vec(),
+    space_dim(y.space_dim),
+    vec_capacity(compute_capacity(y.vec.size())) {
+  vec.construct_upward_approximation(y.vec, vec_capacity);
+  assert(OK());
+}
+
+template <typename T>
 inline OR_Matrix<T>&
 OR_Matrix<T>::operator=(const OR_Matrix& y) {
   vec = y.vec;
