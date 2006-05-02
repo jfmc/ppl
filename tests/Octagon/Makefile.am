@@ -77,7 +77,7 @@ check_PROGRAMS = \
 
 
 # This will be overriden by the `run_tests' script.
-TEST_CPPFLAGS=-DOCTAGONAL_SHAPE_INSTANCE=mpq_class
+TEST_CPPFLAGS=-DOCTAGONAL_SHAPE_INSTANCE=float
 
 dist_check_SCRIPTS = run_tests
 

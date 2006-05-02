@@ -262,7 +262,7 @@ test09() {
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(6*C >= -2);
 
-  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
+  bool ok = check_result(oc, known_result, "9.54e-8", "9.54e-8", "9.54e-8");
 
   print_constraints(oc, "*** oc.affine_preimage(C, 4*B + 6*C + 2, 2) ***");
 
@@ -368,8 +368,7 @@ test13() {
   known_result.add_constraint(3*A <= -1);
   known_result.add_constraint(B <= 0);
   known_result.add_constraint(C >= 0);
-
-  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
+  bool ok = check_result(oc, known_result, "9.54e-8", "9.54e-8", "9.54e-8");
 
   print_constraints(oc, "*** oc.affine_preimage(A, 3*A + C - 1, 2) ***");
 
@@ -398,8 +397,7 @@ test14() {
   known_result.add_constraint(B == 0);
   known_result.add_constraint(C >= -3);
   known_result.add_constraint(5*D <= 14);
-
-  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
+  bool ok = check_result(oc, known_result, "1.98e-6", "9.26e-7", "5.25e-7");
 
   print_constraints(oc,
 		    "*** oc.affine_preimage(D, 4*A - B + 2*C + 5*D - 1, 3) ***");
