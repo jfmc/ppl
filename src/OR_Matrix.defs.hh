@@ -441,9 +441,6 @@ public:
   //! Returns the past-the-end const element iterator.
   const_element_iterator element_end() const;
 
-  const T& at(dimension_type i, dimension_type j) const;
-  T& at(dimension_type i, dimension_type j);
-
   //! Clears the matrix deallocating all its rows.
   void clear();
 

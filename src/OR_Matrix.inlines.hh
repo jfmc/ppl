@@ -463,28 +463,6 @@ OR_Matrix<T>::num_rows() const {
   return 2*space_dimension();
 }
 
-// FIXME: find the appropriate place for this.
-inline dimension_type
-coherent_index(const dimension_type i) {
-  return (i%2) ? i-1 : i+1;
-}
-
-template <typename T>
-inline const T&
-OR_Matrix<T>::at(const dimension_type i, const dimension_type j) const {
-  assert(i < num_rows() && j < num_rows());
-  const OR_Matrix<T>& x = *this;
-  return (j < row_size(i)) ? x[i][j] : x[coherent_index(j)][coherent_index(i)];
-}
-
-template <typename T>
-inline T&
-OR_Matrix<T>::at(const dimension_type i, const dimension_type j) {
-  assert(i < num_rows() && j < num_rows());
-  OR_Matrix<T>& x = *this;
-  return (j < row_size(i)) ? x[i][j] : x[coherent_index(j)][coherent_index(i)];
-}
-
 template <typename T>
 inline void
 OR_Matrix<T>::clear() {

@@ -961,6 +961,9 @@ private:
   //! Turns \p *this into an empty OS.
   void set_empty();
 
+  N& matrix_at(dimension_type i, dimension_type j);
+  const N& matrix_at(dimension_type i, dimension_type j) const;
+
   //! Adds the constraint <CODE>matrix[i][j] <= k</CODE>.
   void add_octagonal_constraint(const dimension_type i,
 				const dimension_type j,

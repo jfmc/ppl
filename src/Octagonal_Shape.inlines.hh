@@ -36,6 +36,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+// FIXME: find the appropriate place for this.
+inline dimension_type
+coherent_index(const dimension_type i) {
+  return (i%2) ? i-1 : i+1;
+}
+
 template <typename T>
 inline dimension_type
 Octagonal_Shape<T>::max_space_dimension() {
@@ -158,6 +164,26 @@ template <typename T>
 inline void
 Octagonal_Shape<T>::set_zero_dim_univ() {
   status.set_zero_dim_univ();
+}
+
+template <typename T>
+inline const typename Octagonal_Shape<T>::coefficient_type&
+Octagonal_Shape<T>::matrix_at(const dimension_type i,
+			      const dimension_type j) const {
+  assert(i < matrix.num_rows() && j < matrix.num_rows());
+  return (j < matrix.row_size(i))
+    ? matrix[i][j]
+    : matrix[coherent_index(j)][coherent_index(i)];
+}
+
+template <typename T>
+inline typename Octagonal_Shape<T>::coefficient_type&
+Octagonal_Shape<T>::matrix_at(const dimension_type i,
+			      const dimension_type j) {
+  assert(i < matrix.num_rows() && j < matrix.num_rows());
+  return (j < matrix.row_size(i))
+    ? matrix[i][j]
+    : matrix[coherent_index(j)][coherent_index(i)];
 }
 
 template <typename T>
