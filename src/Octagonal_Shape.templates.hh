@@ -504,18 +504,17 @@ Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape& y) {
   // (where they are at the present) and placing the constraints of `y' in the
   // lower right-hand side.
   add_space_dimensions_and_embed(y.space_dim);
-  typename OR_Matrix<N>::const_element_iterator y_it = y.matrix.element_begin();
+  typename OR_Matrix<N>::const_element_iterator
+    y_it = y.matrix.element_begin();
   for(typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + onr,
 	iend = matrix.row_end(); i != iend; ++i) {
     typename OR_Matrix<N>::row_reference_type r = *i;
     dimension_type rs_i = i.row_size();
-    for (dimension_type j = onr; j < rs_i; ++j) {
+    for (dimension_type j = onr; j < rs_i; ++j, ++y_it)
       r[j] = *y_it;
-      ++y_it;
-    }
   }
 
-  // The concatenation don't preserve the closure.
+  // The concatenation doesn't preserve the closure.
   if (marked_strongly_closed())
     status.reset_strongly_closed();
   assert(OK());
@@ -532,12 +531,11 @@ Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const {
   // dimension-compatible octagon.
   // The zero-dimensional empty octagon only contains another
   // zero-dimensional empty octagon.
-  if (space_dim == 0) {
+  if (space_dim == 0)
     if (!marked_empty())
       return true;
     else
       return y.marked_empty();
-  }
 
   // `y' needs to be transitively closed.
   y.strong_closure_assign();
@@ -582,7 +580,7 @@ bool
 Octagonal_Shape<T>::is_strong_coherent() const {
   // This method is only used by method OK() so as to check if a
   // strongly closed matrix is also strong-coherent, as it must be.
-  dimension_type num_rows = matrix.num_rows();
+  const dimension_type num_rows = matrix.num_rows();
 
   // The strong-coherence is: for every indexes i and j (and i != j)
   // matrix[i][j] <= (matrix[i][ci] + matrix[cj][j])/2
@@ -590,7 +588,7 @@ Octagonal_Shape<T>::is_strong_coherent() const {
   //       ci = i - 1, if i is odd.
   // Ditto for cj.
   for (dimension_type i = 0; i < num_rows; ++i) {
-    dimension_type ci = coherent_index(i);
+    const dimension_type ci = coherent_index(i);
     typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin() + i;
     typename OR_Matrix<N>::const_row_reference_type m_i = *iter;
     const N& m_i_ci = m_i[ci];
@@ -598,7 +596,7 @@ Octagonal_Shape<T>::is_strong_coherent() const {
     for (dimension_type j = 0; j < rs_i; ++j)
       // Note: on the main diagonal only PLUS_INFINITY can occur.
       if (i != j){
-	dimension_type cj = coherent_index(j);
+	const dimension_type cj = coherent_index(j);
 	const N& m_cj_j = matrix[cj][j];
 	if (!is_plus_infinity(m_i_ci) &&
 	    !is_plus_infinity(m_cj_j)) {
@@ -618,24 +616,26 @@ Octagonal_Shape<T>::is_strong_coherent() const {
 template <typename T>
 bool
 Octagonal_Shape<T>::is_strongly_reduced() const {
+  // This method is only used in assertions: efficiency is not a must.
+
   // An empty octagon is already transitively reduced.
   if (marked_empty())
     return true;
 
-  // CHECK ME: is this copy wanted?
-  Octagonal_Shape x = *this;
-  // An octagon is reduced if removing any constraint,
-  // the obtained octagon is different from previous one.
+  const Octagonal_Shape& x = *this;
+  // The matrix representing an OS is strongly reduced if, by removing
+  // any constraint, the resulting matrix describes a different OS.
   for (typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin(),
 	 iend = matrix.row_end(); iter != iend; ++iter) {
     typename OR_Matrix<N>::const_row_reference_type m_i = *iter;
-    dimension_type rs_i = iter.row_size();
-    dimension_type i = iter.index();
-    for (dimension_type j = 0; j < rs_i; ++j) {
+    const dimension_type i = iter.index();
+    for (dimension_type j = iter.row_size(); j-- > 0; ) {
       if (!is_plus_infinity(m_i[j])) {
-	Octagonal_Shape x_copy = *this;
+	Octagonal_Shape<T> x_copy = *this;
 	x_copy.matrix[i][j] = PLUS_INFINITY;
-	if (x_copy == x)
+	x_copy.reset_strongly_closed();
+	// TODO: use incremental closure to speed up the check.
+	if (x == x_copy)
 	  return false;
       }
     }
@@ -1019,8 +1019,7 @@ Octagonal_Shape<T>::strong_closure_assign() const {
     const dimension_type ck = coherent_index(k);
     const dimension_type rs_k = k_iter.row_size();
     Row_Reference x_k = *k_iter;
-    Row_Iterator ck_iter = (k%2) ? k_iter-1 : k_iter+1;
-    Row_Reference x_ck = *ck_iter;
+    Row_Reference x_ck = (k%2) ? *(k_iter-1) : *(k_iter+1);
 
     for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
       const dimension_type i = i_iter.index();
@@ -1154,20 +1153,30 @@ Octagonal_Shape<T>::strong_closure_assign() const {
   }
 
   // Step 2: we enforce the strong coherence.
+  x.strong_coherence_assign();
+  // The octagon is not empty and it is now strongly closed.
+  x.status.set_strongly_closed();
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>::strong_coherence_assign() {
   // The strong-coherence is: for every indexes i and j
   // m_i_j <= (m_i_ci + m_cj_j)/2
   // where ci = i + 1, if i is even number or
   //       ci = i - 1, if i is odd.
   // Ditto for cj.
-  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
-    Row_Reference x_i = *i_iter;
+  using Implementation::BD_Shapes::min_assign;
+  for (typename OR_Matrix<N>::row_iterator i_iter = matrix.row_begin(),
+	 i_end = matrix.row_end(); i_iter != i_end; ++i_iter) {
+    typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
     const dimension_type i = i_iter.index();
     const N& x_i_ci = x_i[coherent_index(i)];
     // Avoid to do unnecessary sums.
     if (!is_plus_infinity(x_i_ci))
       for (dimension_type j = 0, rs_i = i_iter.row_size(); j < rs_i; ++j)
 	if (i != j) {
-	  const N& x_cj_j = x.matrix[coherent_index(j)][j];
+	  const N& x_cj_j = matrix[coherent_index(j)][j];
 	  if (!is_plus_infinity(x_cj_j)) {
 	    N semi_sum;
 	    add_assign_r(semi_sum, x_i_ci, x_cj_j, ROUND_UP);
@@ -1176,19 +1185,16 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 	  }
 	}
   }
-
-  // The octagon is not empty and it is now strongly closed.
-  x.status.set_strongly_closed();
 }
 
 template <typename T>
 void
-Octagonal_Shape<T>::incremental_strong_closure_assign(Variable var) const {
+Octagonal_Shape<T>
+::incremental_strong_closure_assign(const Variable var) const {
   using Implementation::BD_Shapes::min_assign;
 
   // `var' should be one of the dimensions of the octagon.
-  dimension_type num_var = var.id() + 1;
-  if (num_var > space_dim)
+  if (var.id() >= space_dim)
     throw_dimension_incompatible("incremental_strong_closure_assign(v)",
 				 var.id());
 
@@ -1202,128 +1208,116 @@ Octagonal_Shape<T>::incremental_strong_closure_assign(Variable var) const {
 
   Octagonal_Shape& x = const_cast<Octagonal_Shape<T>&>(*this);
 
+  // Use these type aliases for short.
+  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  // Avoid recomputations.
+  const Row_Iterator m_begin = x.matrix.row_begin();
+  const Row_Iterator m_end = x.matrix.row_end();
+
   // Fill the main diagonal with zeros.
-  for (typename OR_Matrix<N>::row_iterator i = x.matrix.row_begin(),
-	 m_end = x.matrix.row_end(); i != m_end; ++i) {
-    typename OR_Matrix<N>::row_reference_type r = *i;
-    assert(is_plus_infinity(r[i.index()]));
-    assign_r(r[i.index()], 0, ROUND_NOT_NEEDED);
-    //    r[i.index()] = 0;
+  for (Row_Iterator i = m_begin; i != m_end; ++i) {
+    assert(is_plus_infinity((*i)[i.index()]));
+    assign_r((*i)[i.index()], 0, ROUND_NOT_NEEDED);
   }
 
-  // This algorithm uses the incremental Floyd-Warshall algorithm.
-  // It is constituted by two steps: first we modify all
-  // constraints on variable `var'. Infact,
-  // the constraints on variable v are changed, and it is possible
-  // that these constraints aren't tightest anymore; then
-  // second we change also the other constraints.
-
-  // Step 1: Modify all constraints on variable `var'.
-  // Rule: TRANSITIVITY. Here we use `v' to indicate one of
-  // the indeces of variable `var', the other index is indicated with `cv'
+  // Using the incremental Floyd-Warshall algorithm.
+  // Step 1: Improve all constraints on variable `var'.
   const dimension_type v = 2*var.id();
   const dimension_type cv = v+1;
-
-  typename OR_Matrix<N>::row_iterator v_iter = x.matrix.row_begin() + v;
-  typename OR_Matrix<N>::row_iterator cv_iter = v_iter+1;
-  typename OR_Matrix<N>::row_reference_type m_v = *v_iter;
-  typename OR_Matrix<N>::row_reference_type m_cv = *cv_iter;
-
-  dimension_type rs_v = v_iter.row_size();
-  const dimension_type n_rows = 2*space_dim;
-
-  for (typename OR_Matrix<N>::row_iterator k_iter = x.matrix.row_begin(),
-	 k_end = x.matrix.row_end(); k_iter != k_end; ++k_iter) {
-    dimension_type k = k_iter.index();
+  Row_Iterator v_iter = m_begin + v;
+  Row_Iterator cv_iter = v_iter + 1;
+  Row_Reference x_v = *v_iter;
+  Row_Reference x_cv = *cv_iter;
+  const dimension_type rs_v = v_iter.row_size();
+  const dimension_type n_rows = x.matrix.num_rows();
+  N sum;
+  for (Row_Iterator k_iter = m_begin; k_iter != m_end; ++k_iter) {
+    const dimension_type k = k_iter.index();
+    const dimension_type ck = coherent_index(k);
     const dimension_type rs_k = k_iter.row_size();
-    typename OR_Matrix<N>::row_reference_type m_k = *k_iter;
-    typename OR_Matrix<N>::row_reference_type m_ck = (k%2) ? *(k_iter-1) : *(k_iter+1);
+    Row_Reference x_k = *k_iter;
+    Row_Reference x_ck = (k%2) ? *(k_iter-1) : *(k_iter+1);
 
-    for (typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin(),
-	   i_end = x.matrix.row_end(); i_iter != i_end; ++i_iter) {
-      dimension_type i = i_iter.index();
-      dimension_type rs_i = i_iter.row_size();
-      typename OR_Matrix<N>::row_reference_type m_i = *i_iter;
-      typename OR_Matrix<N>::row_reference_type m_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
-      const N& m_i_k = (k < rs_i) ? m_i[k] : m_ck[coherent_index(i)];
-      // We adjust the columns on variable 'var'.
-      if (!is_plus_infinity(m_i_k)) {
-	const N& m_k_v = (v < rs_k) ? m_k[v] : m_cv[coherent_index(k)];
-	if (!is_plus_infinity(m_k_v)) {
-	  N& m_i_v = (v < rs_i) ? m_i[v] : m_cv[coherent_index(i)];
-	  N sum1;
-	  add_assign_r(sum1, m_i_k, m_k_v, ROUND_UP);
-	  min_assign(m_i_v, sum1);
+    for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
+      const dimension_type i = i_iter.index();
+      const dimension_type ci = coherent_index(i);
+      const dimension_type rs_i = i_iter.row_size();
+      Row_Reference x_i = *i_iter;
+      Row_Reference x_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
+
+      const N& x_i_k = (k < rs_i) ? x_i[k] : x_ck[ci];
+      if (!is_plus_infinity(x_i_k)) {
+	const N& x_k_v = (v < rs_k) ? x_k[v] : x_cv[ck];
+	if (!is_plus_infinity(x_k_v)) {
+	  add_assign_r(sum, x_i_k, x_k_v, ROUND_UP);
+	  N& x_i_v = (v < rs_i) ? x_i[v] : x_cv[ci];
+	  min_assign(x_i_v, sum);
 	}
-
-	const N& m_k_cv = (cv < rs_k) ? m_k[cv] : m_v[coherent_index(k)];
-	if (!is_plus_infinity(m_k_cv)) {
-	  N& m_i_cv = (cv < rs_i) ? m_i[cv] : m_v[coherent_index(i)];
-	  N sum2;
-	  add_assign_r(sum2, m_i_k, m_k_cv, ROUND_UP);
-	  min_assign(m_i_cv, sum2);
+	const N& x_k_cv = (cv < rs_k) ? x_k[cv] : x_v[ck];
+	if (!is_plus_infinity(x_k_cv)) {
+	  add_assign_r(sum, x_i_k, x_k_cv, ROUND_UP);
+	  N& x_i_cv = (cv < rs_i) ? x_i[cv] : x_v[ci];
+	  min_assign(x_i_cv, sum);
+	}
+      }
+      const N& x_k_i = (i < rs_k) ? x_k[i] : x_ci[ck];
+      if (!is_plus_infinity(x_k_i)) {
+	const N& x_v_k = (k < rs_v) ? x_v[k] : x_ck[cv];
+	if (!is_plus_infinity(x_v_k)) {
+	  N& x_v_i = (i < rs_v) ? x_v[i] : x_ci[cv];
+	  add_assign_r(sum, x_v_k, x_k_i, ROUND_UP);
+	  min_assign(x_v_i, sum);
+	}
+	const N& x_cv_k = (k < rs_v) ? x_cv[k] : x_ck[v];
+	if (!is_plus_infinity(x_cv_k)) {
+	  N& x_cv_i = (i < rs_v) ? x_cv[i] : x_ci[v];
+	  add_assign_r(sum, x_cv_k, x_k_i, ROUND_UP);
+	  min_assign(x_cv_i, sum);
 	}
       }
 
-      // Then we adjust the rights on variable 'var'.
-      const N& m_k_i = (i < rs_k) ? m_k[i] : m_ci[coherent_index(k)];
-      if (!is_plus_infinity(m_k_i)) {
-	const N& m_v_k = (k < rs_v) ? m_v[k] : m_ck[cv];
-	if (!is_plus_infinity(m_v_k)) {
-	  N& m_v_i = (i < rs_v) ? m_v[i] : m_ci[cv];
-	  N sum3;
-	  add_assign_r(sum3, m_v_k, m_k_i, ROUND_UP);
-	  min_assign(m_v_i, sum3);
-	}
-
-	const N& m_cv_k = (k < rs_v) ? m_cv[k] : m_ck[v];
-	if (!is_plus_infinity(m_cv_k)) {
-	  N& m_cv_i = (i < rs_v) ? m_cv[i] : m_ci[v];
-	  N sum4;
-	  add_assign_r(sum4, m_cv_k, m_k_i, ROUND_UP);
-	  min_assign(m_cv_i, sum4);
-	}
-      }
     }
   }
 
-  // Step 2: finally we find the tighter constraints also
-  // for the other variable using the right value of `var'.
-  for (typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin(),
-	 i_end = x.matrix.row_end(); i_iter != i_end; ++i_iter) {
-    dimension_type i = i_iter.index();
-    dimension_type rs_i = i_iter.row_size();
-    typename OR_Matrix<N>::row_reference_type m_i = *i_iter;
-    typename OR_Matrix<N>::row_reference_type m_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
-    const N& m_i_v = (v < rs_i) ? m_i[v] : m_cv[coherent_index(i)];
+  // Step 2: improve the other bounds by using the precise bounds
+  // for the constraints on `var'.
+  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
+    const dimension_type i = i_iter.index();
+    const dimension_type ci = coherent_index(i);
+    const dimension_type rs_i = i_iter.row_size();
+    Row_Reference x_i = *i_iter;
+    Row_Reference x_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
+    const N& x_i_v = (v < rs_i) ? x_i[v] : x_cv[ci];
+    // TODO: see if it is possible to optimize this inner loop
+    // by splitting it into several parts, so as to avoid
+    // conditional expressions.
     for (dimension_type j = 0; j < n_rows; ++j) {
-      dimension_type cj = coherent_index(j);
-      typename OR_Matrix<N>::row_reference_type m_cj = *(x.matrix.row_begin()+cj);
-      N& m_i_j = (j < rs_i) ? m_i[j] : m_cj[coherent_index(i)];
-      if (!is_plus_infinity(m_i_v)) {
-	const N& m_v_j = (j < rs_v) ? m_v[j] : m_cj[cv];
-	if (!is_plus_infinity(m_v_j)) {
-	  N sum1;
-	  add_assign_r(sum1, m_i_v, m_v_j, ROUND_UP);
-	  min_assign(m_i_j, sum1);
+      const dimension_type cj = coherent_index(j);
+      Row_Reference x_cj = *(m_begin+cj);
+      N& x_i_j = (j < rs_i) ? x_i[j] : x_cj[ci];
+      if (!is_plus_infinity(x_i_v)) {
+	const N& x_v_j = (j < rs_v) ? x_v[j] : x_cj[cv];
+	if (!is_plus_infinity(x_v_j)) {
+	  add_assign_r(sum, x_i_v, x_v_j, ROUND_UP);
+	  min_assign(x_i_j, sum);
 	}
       }
-      const N& m_i_cv = (cv < rs_i) ? m_i[cv] : m_v[coherent_index(i)];
-      if (!is_plus_infinity(m_i_cv)) {
-	const N& m_cv_j = (j < rs_v) ? m_cv[j] : m_cj[v];
-	if (!is_plus_infinity(m_cv_j)) {
-	  N sum2;
-	  add_assign_r(sum2, m_i_cv, m_cv_j, ROUND_UP);
-	  min_assign(m_i_j, sum2);
+      const N& x_i_cv = (cv < rs_i) ? x_i[cv] : x_v[ci];
+      if (!is_plus_infinity(x_i_cv)) {
+	const N& x_cv_j = (j < rs_v) ? x_cv[j] : x_cj[v];
+	if (!is_plus_infinity(x_cv_j)) {
+	  add_assign_r(sum, x_i_cv, x_cv_j, ROUND_UP);
+	  min_assign(x_i_j, sum);
 	}
       }
     }
   }
 
-  // Check for emptyness:the octagon is empty if and only if there is a
-  // negative value in the main diagonal.
-  for (dimension_type i = n_rows; i-- > 0; ) {
-    N& x_i_i = x.matrix[i][i];
+  // Check for emptyness: the octagon is empty if and only if there is a
+  // negative value on the main diagonal.
+  for (Row_Iterator i = m_begin; i != m_end; ++i) {
+    N& x_i_i = (*i)[i.index()];
     if (x_i_i < 0) {
       x.status.set_empty();
       return;
@@ -1335,41 +1329,10 @@ Octagonal_Shape<T>::incremental_strong_closure_assign(Variable var) const {
     }
   }
 
+  // Step 3: we enforce the strong coherence.
+  x.strong_coherence_assign();
   // The octagon is not empty and it is now strongly closed.
   x.status.set_strongly_closed();
-
-  // Step 2: we enforce the strong coherence.
-  // The strong-coherence is: for every indexes i and j
-  // m_i_j <= (m_i_ci + m_cj_j)/2
-  // where ci = i + 1, if i is even number or
-  //       ci = i - 1, if i is odd.
-  // Ditto for cj.
-  for (typename OR_Matrix<N>::row_iterator i_iter = x.matrix.row_begin(),
-	 i_end = x.matrix.row_end(); i_iter != i_end; ++i_iter) {
-    typename OR_Matrix<N>::row_reference_type x_i = *i_iter;
-    dimension_type rs_i = i_iter.row_size();
-    dimension_type i = i_iter.index();
-    dimension_type ci = coherent_index(i);
-    N& x_i_ci = x_i[ci];
-    // Avoid to do unnecessary sums.
-    if (!is_plus_infinity(x_i_ci))
-      for (dimension_type j = 0; j < rs_i; ++j) {
-	if (i != j) {
-	  dimension_type cj = coherent_index(j);
-	  N& x_cj_j = x.matrix[cj][j];
-	  if (!is_plus_infinity(x_cj_j)) {
-	    N& x_i_j = x_i[j];
-	    N sum;
-	    add_assign_r(sum, x_i_ci, x_cj_j, ROUND_UP);
-	    N d;
-	    div2exp_assign_r(d, sum, 1, ROUND_UP);
-	    min_assign(x_i_j, d);
-	  }
-	}
-      }
-  }
-
-  assert(OK());
 }
 
 template <typename T>
@@ -1631,16 +1594,13 @@ Octagonal_Shape<T>::oct_hull_assign(const Octagonal_Shape& y) {
     return;
   }
 
-  // The oct-hull consist to costruct '*this' with the maximum
-  // elements selected from '*this' or 'y'.
+  // The oct-hull is obtained by computing maxima.
+  using Implementation::BD_Shapes::max_assign;
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
-	 iend = matrix.element_end(); i != iend; ++i, ++j) {
-    N& elem = *i;
-    const N& y_elem = *j;
-    if (elem < y_elem)
-      elem = y_elem;
-  }
+	 iend = matrix.element_end(); i != iend; ++i, ++j)
+    max_assign(*i, *j);
+
   // The result is still closed.
   assert(OK());
 }
@@ -1721,8 +1681,8 @@ Octagonal_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
   if (m == 0)
     return;
 
-  dimension_type new_dim = space_dim + m;
-  bool was_zero_dim_univ = (!marked_empty() && space_dim == 0);
+  const dimension_type new_dim = space_dim + m;
+  const bool was_zero_dim_univ = !marked_empty() && space_dim == 0;
 
   // To embed an n-dimension space octagon in a (n+m)-dimension space,
   // we just add `m' variables in the matrix of constraints.
@@ -1743,7 +1703,7 @@ Octagonal_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
   if (m == 0)
     return;
 
-  dimension_type n = matrix.num_rows();
+  const dimension_type n = matrix.num_rows();
 
   // To project an n-dimension space OS in a (space_dim+m)-dimension space,
   // we just add `m' columns and rows in the matrix of constraints.
@@ -1754,7 +1714,7 @@ Octagonal_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
 	 iend =  matrix.row_end(); i != iend; i += 2) {
     typename OR_Matrix<N>::row_reference_type x_i = *i;
     typename OR_Matrix<N>::row_reference_type x_ci = *(i+1);
-    dimension_type ind = i.index();
+    const dimension_type ind = i.index();
     assign_r(x_i[ind+1], 0, ROUND_NOT_NEEDED);
     assign_r(x_ci[ind], 0, ROUND_NOT_NEEDED);
   }
@@ -1778,12 +1738,12 @@ Octagonal_Shape<T>
 
   // Dimension-compatibility check: the variable having
   // maximum cardinality is the one occurring last in the set.
-  dimension_type max_dim_to_be_removed = to_be_removed.rbegin()->id();
+  const dimension_type max_dim_to_be_removed = to_be_removed.rbegin()->id();
   if (max_dim_to_be_removed >= space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)",
 				 max_dim_to_be_removed);
 
-  dimension_type new_space_dim = space_dim - to_be_removed.size();
+  const dimension_type new_space_dim = space_dim - to_be_removed.size();
 
   strong_closure_assign();
   // When removing _all_ dimensions from an octagon,
@@ -1803,9 +1763,11 @@ Octagonal_Shape<T>
   // we move its elements in the right position.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   dimension_type ftr = tbr->id();
-  dimension_type i = ftr + 1;
   dimension_type ftr_size = 2*ftr*(ftr+1);
-  typename OR_Matrix<N>::element_iterator iter = matrix.element_begin()+ftr_size;
+  typename OR_Matrix<N>::element_iterator
+    iter = matrix.element_begin()+ftr_size;
+
+  dimension_type i = ftr + 1;
   while (i < space_dim) {
     if (to_be_removed.count(Variable(i)))
       ++i;
@@ -2017,7 +1979,6 @@ Octagonal_Shape<T>::CC76_extrapolation_assign(const Octagonal_Shape& y,
       Iterator k = std::lower_bound(first, last, elem);
       if (k != last) {
 	if (elem < *k)
-	  //	  elem = *k;
 	  assign_r(elem, *k, ROUND_UP);
       }
       else
