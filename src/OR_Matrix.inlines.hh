@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "Checked_Number.defs.hh"
 #include "C_Polyhedron.defs.hh"
+#include "distances.defs.hh"
 #include <cassert>
 #include <algorithm>
 #include "checked.defs.hh"
@@ -539,11 +540,126 @@ OR_Matrix<T>::resize_no_copy(const dimension_type new_dim) {
     shrink(new_dim);
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 inline bool
 operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y) {
   return x.space_dim == y.space_dim && x.vec == y.vec;
+}
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates OR_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename Specialization, typename Temp, typename To, typename T>
+inline bool
+l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+		    const OR_Matrix<T>& x,
+		    const OR_Matrix<T>& y,
+		    const Rounding_Dir dir,
+		    Temp& tmp0,
+		    Temp& tmp1,
+		    Temp& tmp2) {
+  if (x.num_rows() != y.num_rows())
+    return false;
+  assign_r(tmp0, 0, ROUND_NOT_NEEDED);
+  for (typename OR_Matrix<T>::const_element_iterator
+	 i = x.element_begin(), j = y.element_begin(),
+	 mat_end = x.element_end(); i != mat_end; ++i, ++j) {
+    const T& x_i = *i;
+    const T& y_i = *j;
+    if (is_plus_infinity(x_i)) {
+      if (is_plus_infinity(y_i))
+	continue;
+      else {
+      pinf:
+	r = PLUS_INFINITY;
+	return true;
+      }
+    }
+    else if (is_plus_infinity(y_i))
+      goto pinf;
+
+    const Temp* tmp1p;
+    const Temp* tmp2p;
+    if (x_i > y_i) {
+      maybe_assign(tmp1p, tmp1, x_i, dir);
+      maybe_assign(tmp2p, tmp2, y_i, inverse(dir));
+    }
+    else {
+      maybe_assign(tmp1p, tmp1, y_i, dir);
+      maybe_assign(tmp2p, tmp2, x_i, inverse(dir));
+    }
+    sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
+    assert(tmp1 >= 0);
+    Specialization::combine(tmp0, tmp1, dir);
+  }
+
+  Specialization::finalize(tmp0, dir);
+  assign_r(r, tmp0, dir);
+  return true;
+}
+
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates OR_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename Temp, typename To, typename T>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const OR_Matrix<T>& x,
+			    const OR_Matrix<T>& y,
+			    const Rounding_Dir dir,
+			    Temp& tmp0,
+			    Temp& tmp1,
+			    Temp& tmp2) {
+  return
+    l_m_distance_assign<Rectilinear_Distance_Specialization<Temp> >(r, x, y,
+								    dir,
+								    tmp0,
+								    tmp1,
+								    tmp2);
+}
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates OR_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename Temp, typename To, typename T>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const OR_Matrix<T>& x,
+			  const OR_Matrix<T>& y,
+			  const Rounding_Dir dir,
+			  Temp& tmp0,
+			  Temp& tmp1,
+			  Temp& tmp2) {
+  return
+    l_m_distance_assign<Euclidean_Distance_Specialization<Temp> >(r, x, y,
+								  dir,
+								  tmp0,
+								  tmp1,
+								  tmp2);
+}
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates OR_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename Temp, typename To, typename T>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const OR_Matrix<T>& x,
+			   const OR_Matrix<T>& y,
+			   const Rounding_Dir dir,
+			   Temp& tmp0,
+			   Temp& tmp1,
+			   Temp& tmp2) {
+  return
+    l_m_distance_assign<L_Infinity_Distance_Specialization<Temp> >(r, x, y,
+								   dir,
+								   tmp0,
+								   tmp1,
+								   tmp2);
 }
 
 } // namespace Parma_Polyhedra_Library

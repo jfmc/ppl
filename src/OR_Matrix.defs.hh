@@ -489,6 +489,71 @@ bool operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
 template <typename T>
 bool operator!=(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates OR_Matrix
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename Temp, typename To, typename T>
+bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				 const OR_Matrix<T>& x,
+				 const OR_Matrix<T>& y,
+				 const Rounding_Dir dir,
+				 Temp& tmp0,
+				 Temp& tmp1,
+				 Temp& tmp2);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates OR_Matrix
+  If the Euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename Temp, typename To, typename T>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			       const OR_Matrix<T>& x,
+			       const OR_Matrix<T>& y,
+			       const Rounding_Dir dir,
+			       Temp& tmp0,
+			       Temp& tmp1,
+			       Temp& tmp2);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates OR_Matrix
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into to \p r
+  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename Temp, typename To, typename T>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				 const OR_Matrix<T>& x,
+				 const OR_Matrix<T>& y,
+				 const Rounding_Dir dir,
+				 Temp& tmp0,
+				 Temp& tmp1,
+				 Temp& tmp2);
 
 } // namespace Parma_Polyhedra_Library
 
