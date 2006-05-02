@@ -633,7 +633,7 @@ Octagonal_Shape<T>::is_strongly_reduced() const {
       if (!is_plus_infinity(m_i[j])) {
 	Octagonal_Shape<T> x_copy = *this;
 	x_copy.matrix[i][j] = PLUS_INFINITY;
-	x_copy.reset_strongly_closed();
+	x_copy.status.reset_strongly_closed();
 	// TODO: use incremental closure to speed up the check.
 	if (x == x_copy)
 	  return false;
@@ -2164,9 +2164,8 @@ Octagonal_Shape<T>::BHMZ05_widening_assign(const Octagonal_Shape& y,
       // Note: in the following line the use of `!=' (as opposed to
       // the use of `<' that would seem -but is not- equivalent) is
       // intentional.
-    if (*j != elem) {
+    if (*j != elem)
       elem = PLUS_INFINITY;
-    }
   }
   status.reset_strongly_closed();
   assert(OK());
