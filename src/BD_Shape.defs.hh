@@ -534,6 +534,12 @@ public:
   bool is_universe() const;
 
   /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    is a bounded BDS.
+  */
+  bool is_bounded() const;
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this satisfies
     all its invariants.
   */

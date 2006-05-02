@@ -463,6 +463,28 @@ BD_Shape<T>::is_universe() const {
 }
 
 template <typename T>
+inline bool
+BD_Shape<T>::is_bounded() const {
+  shortest_path_closure_assign(); 
+  const dimension_type space_dim = space_dimension();
+  // A zero-dimensional or empty BDS is bounded.
+  if (marked_empty() || space_dim == 0)
+    return true;
+
+  // A system of bounded differences defining the bounded BDS never can 
+  // contain trivial constraints.
+  for (dimension_type i = space_dim + 1; i-- > 0; ) {
+    const DB_Row<N>& dbm_i = dbm[i];
+    for (dimension_type j = space_dim + 1; j-- > 0; )
+      if (i != j)
+	if (is_plus_infinity(dbm_i[j]))
+	  return false;
+  }
+
+  return true;
+}
+
+template <typename T>
 void
 BD_Shape<T>
 ::compute_predecessors(std::vector<dimension_type>& predecessor) const {
