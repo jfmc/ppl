@@ -48,6 +48,7 @@ check_PROGRAMS = \
 	ascii_dump_load1 \
 	bhz03widening1 \
 	bhmz05widening1 \
+	bounded1 \
 	cc76extrapolation1 \
 	cc76narrowing1 \
 	chinainit \
@@ -132,6 +133,8 @@ ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 bhz03widening1_SOURCES = bhz03widening1.cc
 
 bhmz05widening1_SOURCES = bhmz05widening1.cc
+
+bounded1_SOURCES = bounded1.cc
 
 cc76extrapolation1_SOURCES = cc76extrapolation1.cc
 
