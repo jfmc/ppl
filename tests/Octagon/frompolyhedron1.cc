@@ -48,12 +48,9 @@ test01() {
   known_result.add_constraint(11*A - 11*B <= 64);
   known_result.add_constraint(11*A + 11*B <= 58);
 
-#if 1
-  bool ok = (oct1 == oct2 && oct1 == TOctagonal_Shape(known_result));
-#else // TO BE ACTIVATED WHEN ABLE TO COMPUTE DISTANCES.
   bool ok = (oct1 == oct2
-	     && check_distance(oct1, known_result, "1e-14", "1e-14", "1e-14"));
-#endif
+	     && check_result(oct1, known_result,
+			     "1.21e-6", "5.76e-7", "3.91e-7"));
 
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
