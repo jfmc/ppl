@@ -4544,6 +4544,8 @@ Octagonal_Shape<T>::ascii_dump(std::ostream& s) const {
   matrix.ascii_dump(s);
 }
 
+PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, Octagonal_Shape<T>)
+
 template <typename T>
 bool
 Octagonal_Shape<T>::ascii_load(std::istream& s) {
