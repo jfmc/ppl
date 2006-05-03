@@ -4245,22 +4245,29 @@ Octagonal_Shape<T>::constraints() const {
     // For the time being, we force the dimension with the following line.
     cs.insert(0*Variable(space_dim-1) <= 0);
 
+    // Use these type aliases for short.
+    typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
+    typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+    // Avoid repeated computations.
+    Row_Iterator m_begin = matrix.row_begin();
+    Row_Iterator m_end = matrix.row_end();
+    // Avoid multiple (de-)allocations.
+    TEMP_INTEGER(a);
+    TEMP_INTEGER(b);
+
     // Go through all the unary constraints in `matrix'.
-    for (typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin(),
-    	   i_end = matrix.row_end(); i_iter != i_end; i_iter += 2) {
-      dimension_type i = i_iter.index();
-      typename OR_Matrix<N>::const_row_reference_type r_i = *i_iter;
-      typename OR_Matrix<N>::const_row_reference_type r_ii = *(i_iter+1);
-      const N& c_i_ii = r_i[i+1];
-      const N& c_ii_i = r_ii[i];
-      // We have the unary constraints.
+    for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
+      const dimension_type i = i_iter.index();
+      const Variable x(i/2);
+      const N& c_i_ii = (*i_iter)[i+1];
+      ++i_iter;
+      const N& c_ii_i = (*i_iter)[i];
+      ++i_iter;
+      // Go through unary constraints.
       N negated_c_i_ii;
       if (neg_assign_r(negated_c_i_ii, c_i_ii, ROUND_NOT_NEEDED) == V_EQ
 	  && negated_c_i_ii == c_ii_i) {
 	// We have a unary equality constraint.
-	Variable x(i/2);
-	Coefficient a;
-	Coefficient b;
 	numer_denom(c_ii_i, b, a);
 	a *= 2;
 	cs.insert(a*x == b);
@@ -4268,17 +4275,11 @@ Octagonal_Shape<T>::constraints() const {
       else {
 	// We have 0, 1 or 2 inequality constraints.
 	if (!is_plus_infinity(c_i_ii)) {
-	  Variable x(i/2);
-	  Coefficient a;
-	  Coefficient b;
 	  numer_denom(c_i_ii, b, a);
 	  a *= 2;
 	  cs.insert(-a*x <= b);
 	}
 	if (!is_plus_infinity(c_ii_i)) {
-	  Variable x(i/2);
-	  Coefficient a;
-	  Coefficient b;
 	  numer_denom(c_ii_i, b, a);
 	  a *= 2;
 	  cs.insert(a*x <= b);
@@ -4286,41 +4287,31 @@ Octagonal_Shape<T>::constraints() const {
       }
     }
     //  Go through all the binary constraints in `matrix'.
-    for (typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin(),
-    	   i_end = matrix.row_end(); i_iter != i_end; i_iter += 2) {
-      dimension_type i = i_iter.index();
-      typename OR_Matrix<N>::const_row_reference_type r_i = *i_iter;
-      typename OR_Matrix<N>::const_row_reference_type r_ii = *(i_iter+1);
+    for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
+      const dimension_type i = i_iter.index();
+      Row_Reference r_i = *i_iter;
+      ++i_iter;
+      Row_Reference r_ii = *i_iter;
+      ++i_iter;
+      const Variable y(i/2);
       for (dimension_type j = 0; j < i; j += 2) {
 	const N& c_i_j = r_i[j];
 	const N& c_ii_jj = r_ii[j+1];
+	const Variable x(j/2);
 	N negated_c_ii_jj;
 	if (neg_assign_r(negated_c_ii_jj, c_ii_jj, ROUND_NOT_NEEDED) == V_EQ
 	    && negated_c_ii_jj == c_i_j) {
-	  // We have one equality constraint of the following form:
-	  // ax - ay = b.
-	  Variable x(j/2);
-	  Variable y(i/2);
-	  Coefficient a;
-	  Coefficient b;
+	  // We have an equality constraint of the form ax - ay = b.
 	  numer_denom(c_i_j, b, a);
 	  cs.insert(a*x - a*y == b);
 	}
 	else {
 	  // We have 0, 1 or 2 inequality constraints.
 	  if (!is_plus_infinity(c_i_j)) {
-	    Variable x(j/2);
-	    Variable y(i/2);
-	    Coefficient a;
-	    Coefficient b;
 	    numer_denom(c_i_j, b, a);
 	    cs.insert(a*x - a*y <= b);
 	  }
 	  if (!is_plus_infinity(c_ii_jj)) {
-	    Variable x(j/2);
-	    Variable y(i/2);
-	    Coefficient a;
-	    Coefficient b;
 	    numer_denom(c_ii_jj, b, a);
 	    cs.insert(a*y - a*x <= b);
 	  }
@@ -4328,35 +4319,20 @@ Octagonal_Shape<T>::constraints() const {
 
 	const N& c_ii_j = r_ii[j];
 	const N& c_i_jj = r_i[j+1];
-	// We have one equality constraint of the following form:
-	// ax + ay = b.
 	N negated_c_i_jj;
 	if (neg_assign_r(negated_c_i_jj, c_i_jj, ROUND_NOT_NEEDED) == V_EQ
 	    && negated_c_i_jj == c_ii_j) {
-	  // We have one equality constraint of the following form:
-	  // ax + ay = b.
-	  Variable x(j/2);
-	  Variable y(i/2);
-	  Coefficient a;
-	  Coefficient b;
+	  // We have an equality constraint of the form ax + ay = b.
 	  numer_denom(c_ii_j, b, a);
 	  cs.insert(a*x + a*y == b);
 	}
 	else {
 	  // We have 0, 1 or 2 inequality constraints.
 	  if (!is_plus_infinity(c_i_jj)) {
-	    Variable x(j/2);
-	    Variable y(i/2);
-	    Coefficient a;
-	    Coefficient b;
 	    numer_denom(c_i_jj, b, a);
 	    cs.insert(-a*x - a*y <= b);
 	  }
 	  if (!is_plus_infinity(c_ii_j)) {
-	    Variable x(j/2);
-	    Variable y(i/2);
-	    Coefficient a;
-	    Coefficient b;
 	    numer_denom(c_ii_j, b, a);
 	    cs.insert(a*x + a*y <= b);
 	  }
@@ -4370,162 +4346,176 @@ Octagonal_Shape<T>::constraints() const {
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 template <typename T>
 std::ostream&
-IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& c) {
-  typedef typename Octagonal_Shape<T>::coefficient_type N;
-  if (c.is_universe())
+IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
+  // Handle special cases first.
+  if (x.marked_empty()) {
+    s << "false";
+    return s;
+  }
+  if (x.is_universe()) {
     s << "true";
-  else {
-    // We control empty octagon.
-    if (c.marked_empty())
-      s << "false";
+    return s;
+  }
+
+  // Use these type aliases for short.
+  typedef typename Octagonal_Shape<T>::coefficient_type N;
+  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+
+  // Records whether or not we still have to print the first constraint.
+  bool first = true;
+
+  // Avoid repeated computations.
+  Row_Iterator m_begin = x.matrix.row_begin();
+  Row_Iterator m_end = x.matrix.row_end();
+
+  // Go through all the unary constraints.
+  // (Note: loop iterator is incremented in the loop body.)
+  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
+    const dimension_type i = i_iter.index();
+    const Variable v_i = Variable(i/2);
+    const N& x_i_ii = (*i_iter)[i+1];
+    ++i_iter;
+    const N& x_ii_i = (*i_iter)[i];
+    ++i_iter;
+    // Check whether or not it is an equality constraint.
+    N negated_x_i_ii;
+    if (neg_assign_r(negated_x_i_ii, x_i_ii, ROUND_NOT_NEEDED) == V_EQ
+	&& negated_x_i_ii == x_ii_i) {
+      // It is an equality.
+      assert(!is_plus_infinity(x_i_ii) && !is_plus_infinity(x_ii_i));
+      if (first)
+	first = false;
+      else
+	s << ", ";
+      // CHECK ME:
+      // If the value bound can NOT be divided by 2 exactly,
+      // then we output the constraint `2*v_i == bound'.
+      N half_x_ii_i;
+      if (div2exp_assign_r(half_x_ii_i, x_ii_i, 1, ROUND_NOT_NEEDED) == V_EQ)
+	s << v_i << " == " << half_x_ii_i;
+      else
+	s << " 2*" << v_i << " == " << x_ii_i;
+    }
     else {
-      bool first = true;
-      for (typename OR_Matrix<N>::const_row_iterator i_iter = c.matrix.row_begin(),
-	     i_end = c.matrix.row_end(); i_iter != i_end; i_iter += 2) {
-	dimension_type i = i_iter.index();
-	Variable v_i = Variable(i/2);
-	typename OR_Matrix<N>::const_row_reference_type r_i = *i_iter;
-	typename OR_Matrix<N>::const_row_reference_type r_ii = *(i_iter + 1);
-	const N& c_i_ii = r_i[i+1];
-	const N& c_ii_i = r_ii[i];
-	N negated_c_i_ii;
-	if (neg_assign_r(negated_c_i_ii, c_i_ii, ROUND_NOT_NEEDED) == V_EQ
-	    && negated_c_i_ii == c_ii_i) {
-	  // We will print an equality.
+      // We will print non-strict inequalities, if any.
+      if (!is_plus_infinity(x_i_ii)) {
+	if (first)
+	  first = false;
+	// We have got a constraint with an only Variable.
+	else
+	  s << ", ";
+	s << v_i;
+	N minus_half_x_i_ii;
+	neg_assign_r(minus_half_x_i_ii, x_i_ii, ROUND_DOWN);
+	div2exp_assign_r(minus_half_x_i_ii, minus_half_x_i_ii, 1,
+			 ROUND_NOT_NEEDED);
+	s << " >= " << minus_half_x_i_ii;
+      }
+      if (!is_plus_infinity(x_ii_i)) {
+	if (first)
+	  first = false;
+	else
+	  s << ", ";
+	s << v_i;
+	N half_x_ii_i;
+	div2exp_assign_r(half_x_ii_i, x_ii_i, 1, ROUND_UP);
+	s << " <= " << half_x_ii_i;
+      }
+    }
+  }
+
+  // Go through all the binary constraints.
+  // (Note: loop iterator is incremented in the loop body.)
+  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
+    const dimension_type i = i_iter.index();
+    const Variable v_i = Variable(i/2);
+    Row_Reference r_i = *i_iter;
+    ++i_iter;
+    Row_Reference r_ii = *i_iter;
+    ++i_iter;
+
+    for (dimension_type j = 0; j < i; j += 2) {
+      const Variable v_j = Variable(j/2);
+      // Print binary differences.
+      const N& x_ii_jj = r_ii[j+1];
+      const N& x_i_j = r_i[j];
+      // Check whether or not it is an equality constraint.
+      N negated_x_ii_jj;
+      if (neg_assign_r(negated_x_ii_jj, x_ii_jj, ROUND_NOT_NEEDED) == V_EQ
+	  && negated_x_ii_jj == x_i_j) {
+	// It is an equality.
+	assert(!is_plus_infinity(x_i_j) && !is_plus_infinity(x_ii_jj));
+	if (first)
+	  first = false;
+	else
+	  s << ", ";
+	if (x_i_j >= 0)
+	  s << v_j << " - " << v_i << " == " << x_i_j;
+	else
+	  s << v_i << " - " << v_j << " == " << x_ii_jj;
+      }
+      else {
+	// We will print non-strict inequalities, if any.
+	if (!is_plus_infinity(x_i_j)) {
 	  if (first)
 	    first = false;
 	  else
 	    s << ", ";
-	  // We have got an equality constraint with one Variable.
-	  N half_c_ii_i;
-	  // FIXME!
-	  // If the bound is an even number we simply divide, otherwise
-	  // we write the constraint in the form:
-	  // `2*variable_i == bound'.
-	  if (div2exp_assign_r(half_c_ii_i, c_ii_i, 1, ROUND_NOT_NEEDED)
-	      == V_EQ)
-	    s << v_i << " == " << half_c_ii_i;
-	  else
-	    s << " 2*" << v_i << " == " << c_ii_i;
-	}
-	else {
-	  // We will print a non-strict inequality.
-	  if (!is_plus_infinity(c_i_ii)) {
-	    if (first)
-	      first = false;
-	    // We have got a constraint with an only Variable.
-	    else
-	      s << ", " ;
-	    s << v_i;
-	    N minus_c_i_ii;
-	    neg_assign_r(minus_c_i_ii, c_i_ii, ROUND_DOWN);
-	    N minus_half_c_i_ii;
-	    div2exp_assign_r(minus_half_c_i_ii, minus_c_i_ii, 1, ROUND_NOT_NEEDED);
-	    s << " >= " << minus_half_c_i_ii;
+	  if (x_i_j >= 0)
+	    s << v_j << " - " << v_i << " <= " << x_i_j;
+	  else {
+	    N negated_x_i_j;
+	    neg_assign_r(negated_x_i_j, x_i_j, ROUND_DOWN);
+	    s << v_i << " - " << v_j << " >= " << negated_x_i_j;
 	  }
-	  if(!is_plus_infinity(c_ii_i)) {
-	    if (first)
-	      first = false;
-	    else
-	      s << ", ";
-	    s << v_i;
-	    N half_c_ii_i;
-	    div2exp_assign_r(half_c_ii_i, c_ii_i, 1, ROUND_UP);
-	    s << " <= " << half_c_ii_i;
+	}
+	if (!is_plus_infinity(x_ii_jj)) {
+	  if (first)
+	    first = false;
+	  else
+	    s << ", ";
+	  if (x_ii_jj >= 0)
+	    s << v_i << " - " << v_j << " <= " << x_ii_jj;
+	  else {
+	    N negated_x_ii_jj;
+	    neg_assign_r(negated_x_ii_jj, x_ii_jj, ROUND_DOWN);
+	    s << v_j << " - " << v_i << " >= " << negated_x_ii_jj;
 	  }
 	}
       }
-
-      for (typename OR_Matrix<N>::const_row_iterator i_iter = c.matrix.row_begin(),
-	     i_end = c.matrix.row_end(); i_iter != i_end; i_iter += 2) {
-	dimension_type i = i_iter.index();
-	Variable v_i = Variable(i/2);
-	typename OR_Matrix<N>::const_row_reference_type r_i = *i_iter;
-	typename OR_Matrix<N>::const_row_reference_type r_ii = *(i_iter + 1);
-	for (dimension_type j = 0; j < i; j += 2) {
-	  Variable v_j = Variable(j/2);
-	  const N& c_ii_jj = r_ii[j+1];
-	  const N& c_i_j = r_i[j];
-	  N negated_c_ii_jj;
-	  if (neg_assign_r(negated_c_ii_jj, c_ii_jj, ROUND_NOT_NEEDED) == V_EQ
-	      && negated_c_ii_jj == c_i_j) {
-	    // We will print an equality.
-	    if (first)
-	      first = false;
-	    else
-	      s << ", ";
-	    if (c_i_j >= 0) {
-	      s << v_j << " - " << v_i << " == " << c_i_j;
-	    }
-	    else {
-	      s << v_i << " - " << v_j << " == " << c_ii_jj;
-	    }
-	  }
-	  else {
-	    // We will print a non-strict inequality.
-	    if (!is_plus_infinity(c_i_j)) {
-	      if (first)
-		first = false;
-	      else
-		s << ", ";
-	      // We have got a constraint with two Variables.
-	      if (c_i_j >= 0) {
-		s << v_j << " - " << v_i << " <= " << c_i_j;
-	      }
-	      else {
-		N negated_c_i_j;
-		neg_assign_r(negated_c_i_j, c_i_j, ROUND_DOWN);
-		s << v_i << " - " << v_j << " >= " << negated_c_i_j;
-	      }
-	    }
-	    if (!is_plus_infinity(c_ii_jj)) {
-	      if (first)
-		first = false;
-	      else
-		s << ", ";
-	      if (c_ii_jj >= 0) {
-		s << v_i << " - " << v_j << " <= " << c_ii_jj;
-	      }
-	      else {
-		N negated_c_ii_jj;
-		neg_assign_r(negated_c_ii_jj, c_ii_jj, ROUND_DOWN);
-		s << v_j << " - " << v_i << " >= " << negated_c_ii_jj;
-	      }
-	    }
-	  }
-
-	  const N& c_i_jj = r_i[j+1];
-	  const N& c_ii_j = r_ii[j];
-	  N negated_c_i_jj;
-	  if (neg_assign_r(negated_c_i_jj, c_i_jj, ROUND_NOT_NEEDED) == V_EQ
-	      && negated_c_i_jj == c_ii_j) {
-	    // We will print an equality.
-	    if (first)
-	      first = false;
-	    else
-	      s << ", ";
-	    s << v_j << " + " << v_i << " == " << c_ii_j;
-	  }
-	  else {
-	    // We will print a non_strict inequality.
-	    if (!is_plus_infinity(c_i_jj)) {
-	      if (first)
-		first = false;
-	      else
-		s << ", ";
-	      // We have got a constraint with two Variables.
-	      N negated_c_i_jj;
-	      neg_assign_r(negated_c_i_jj, c_i_jj, ROUND_DOWN);
-	      s << v_j << " + " << v_i << " >= " << negated_c_i_jj;
-	    }
-	    if (!is_plus_infinity(c_ii_j)) {
-	      if (first)
-		first = false;
-	      else
-		s << ", ";
-	      s << v_j << " + " << v_i << " <= " << c_ii_j;
-	    }
-	  }
+      // Print binary sums.
+      const N& x_i_jj = r_i[j+1];
+      const N& x_ii_j = r_ii[j];
+      // Check whether or not it is an equality constraint.
+      N negated_x_i_jj;
+      if (neg_assign_r(negated_x_i_jj, x_i_jj, ROUND_NOT_NEEDED) == V_EQ
+	  && negated_x_i_jj == x_ii_j) {
+	// It is an equality.
+	assert(!is_plus_infinity(x_i_jj) && !is_plus_infinity(x_ii_j));
+	if (first)
+	  first = false;
+	else
+	  s << ", ";
+	s << v_j << " + " << v_i << " == " << x_ii_j;
+      }
+      else {
+	// We will print non-strict inequalities, if any.
+	if (!is_plus_infinity(x_i_jj)) {
+	  if (first)
+	    first = false;
+	  else
+	    s << ", ";
+	  N negated_x_i_jj;
+	  neg_assign_r(negated_x_i_jj, x_i_jj, ROUND_DOWN);
+	  s << v_j << " + " << v_i << " >= " << negated_x_i_jj;
+	}
+	if (!is_plus_infinity(x_ii_j)) {
+	  if (first)
+	    first = false;
+	  else
+	    s << ", ";
+	  s << v_j << " + " << v_i << " <= " << x_ii_j;
 	}
       }
     }
