@@ -576,6 +576,29 @@ Octagonal_Shape<T>::is_universe() const {
 }
 
 template <typename T>
+inline bool
+Octagonal_Shape<T>::is_bounded() const {
+  strong_closure_assign();  
+  // A zero-dimensional or empty octagon is bounded.
+  if (marked_empty() || space_dim == 0)
+    return true;
+
+  // A bounded octagon never can contains trivial constraints.
+  for (typename OR_Matrix<N>::const_row_iterator i = matrix.row_begin(),
+	 iend = matrix.row_end(); i != iend; ++i) {
+    typename OR_Matrix<N>::const_row_reference_type x_i = *i;
+    const dimension_type rs_i = i.row_size();
+    const dimension_type i_index = i.index();
+    for (dimension_type j = 0; j < rs_i; ++j)
+      if (i_index != j)
+	if (is_plus_infinity(x_i[j]))
+	  return false; 
+  }
+
+  return true;
+}
+
+template <typename T>
 bool
 Octagonal_Shape<T>::is_strong_coherent() const {
   // This method is only used by method OK() so as to check if a

@@ -541,6 +541,13 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is a universe OS.
   bool is_universe() const;
 
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    is a bounded OS.
+  */
+  bool is_bounded() const;
+
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
