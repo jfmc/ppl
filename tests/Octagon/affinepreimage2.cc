@@ -180,7 +180,7 @@ test06() {
   known_result.add_constraint(2*B >= 1);
   known_result.add_constraint(C >= 0);
 
-  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
+  bool ok = check_result(oc, known_result);
 
   print_constraints(oc, "*** oc.affine_preimage(B, 2*B - C - 1) ***");
 

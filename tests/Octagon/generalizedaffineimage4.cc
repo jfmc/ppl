@@ -124,7 +124,7 @@ test04() {
 
   oct.generalized_affine_image(e1, EQUAL, e2);
 
-  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
+  bool ok = check_result(oct, known_result);
 
   print_constraints(oct, "*** oct.generalized_affine_image(-2*A + 5, "
 		    "EQUAL, -4*B) ***");

@@ -328,7 +328,7 @@ test09() {
   oct.add_constraint(C1 + H1 >= 1);
   print_constraints(oct, "--- oct ---");
 
-  Constraint c(-C1 >= -511);
+  Constraint c(C1 >= 511);
 
   print_constraint(c, "--- c ---");
 
