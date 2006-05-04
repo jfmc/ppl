@@ -206,7 +206,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
     s << "l(";
     break;
   case Grid_Generator::PARAMETER:
-    s << "r(";
+    s << "q(";
     if (g[num_variables + 1] == 1)
       break;
     goto any_point;
