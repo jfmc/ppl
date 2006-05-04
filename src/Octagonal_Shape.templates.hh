@@ -3074,8 +3074,8 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
     throw_dimension_incompatible("affine_preimage(v, e, d)", "e", expr);
 
   // `var' should be one of the dimensions of the octagon.
-  dimension_type num_var = var.id();
-  if (space_dim < num_var + 1)
+  dimension_type var_id = var.id();
+  if (space_dim < var_id + 1)
     throw_dimension_incompatible("affine_preimage(v, e, d)", var.id());
 
   strong_closure_assign();
@@ -3083,7 +3083,7 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
   if (marked_empty())
     return;
 
-  const Coefficient b = expr.inhomogeneous_term();
+  const Coefficient& b = expr.inhomogeneous_term();
 
   // Number of non-zero coefficients in `expr': will be set to
   // 0, 1, or 2, the latter value meaning any value greater than 1.
@@ -3108,7 +3108,7 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
   //   equal to `denominator' or `-denominator', since otherwise we have
   //   to fall back on the general form;
   // - If t == 2, the `expr' is of the general form.
-  const dimension_type n_var = 2*num_var;
+  const dimension_type n_var = 2*var_id;
 
   if (t == 0) {
     // Case 1: expr = n; remove all costraints on `var'.
@@ -3121,37 +3121,37 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
     // Value of the one and only non-zero coefficient in `expr'.
     const Coefficient& a = expr.coefficient(Variable(last_var_id));
     if (a == denominator || a == -denominator) {
-    // Case 2: expr = a*w + b, with a = +/- denominator.
-    if (last_var_id == num_var) {
-      // Apply affine_image() on the inverse of this transformation.
-      affine_image(var, denominator*var - b, a);
-    }
-    else {
-      // `expr == a*w + b', where `w != var'.
-      // Remove all constraints on `var'.
-      forget_all_octagonal_constraints(n_var);
-    }
-    assert(OK());
-    return;
+      // Case 2: expr = a*w + b, with a = +/- denominator.
+      if (last_var_id == var_id) {
+	// Apply affine_image() on the inverse of this transformation.
+	affine_image(var, denominator*var - b, a);
+      }
+      else {
+	// `expr == a*w + b', where `w != var'.
+	// Remove all constraints on `var'.
+	forget_all_octagonal_constraints(n_var);
+      }
+      assert(OK());
+      return;
     }
   }
   // General case.
   // Either t == 2, so that
   // expr = a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2,
   // or t = 1, expr = a*w + b, but a <> +/- denominator.
-  const Coefficient& expr_v = expr.coefficient(var);
-  if (expr_v != 0) {
-    if (expr_v > 0) {
+  const Coefficient& coeff_v = expr.coefficient(var);
+  if (coeff_v != 0) {
+    if (coeff_v > 0) {
       // The transformation is invertible.
-      Linear_Expression inverse = ((expr_v + denominator)*var);
+      Linear_Expression inverse = ((coeff_v + denominator)*var);
       inverse -= expr;
-      affine_image(var, inverse, expr_v);
+      affine_image(var, inverse, coeff_v);
     }
     else {
       // The transformation is invertible.
-      Linear_Expression inverse = ((-expr_v - denominator)*var);
+      Linear_Expression inverse = ((-coeff_v - denominator)*var);
       inverse += expr;
-      affine_image(var, inverse, -expr_v);
+      affine_image(var, inverse, -coeff_v);
     }
   }
   else
@@ -3204,10 +3204,10 @@ Octagonal_Shape<T>
 
   // The image of an empty octagon is empty too.
   strong_closure_assign();
-if (marked_empty())
+  if (marked_empty())
     return;
 
- const Coefficient& b = expr.inhomogeneous_term();
+  const Coefficient& b = expr.inhomogeneous_term();
 
   // Number of non-zero coefficients in `expr': will be set to
   // 0, 1, or 2, the latter value meaning any value greater than 1.
@@ -3290,9 +3290,9 @@ if (marked_empty())
 	      const dimension_type h = n_var + 2;
 	      for (typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + h,
 		     i_end = matrix.row_end(); i != i_end; ++i) {
-	      typename OR_Matrix<N>::row_reference_type x_i = *i;
-	      add_assign_r(x_i[n_var], x_i[n_var], d, ROUND_UP);
-	      x_i[n_var+1] = PLUS_INFINITY;
+		typename OR_Matrix<N>::row_reference_type x_i = *i;
+		add_assign_r(x_i[n_var], x_i[n_var], d, ROUND_UP);
+		x_i[n_var+1] = PLUS_INFINITY;
 	      }
 	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + n_var;
 	      typename OR_Matrix<N>::row_reference_type r_v = *i_v;
@@ -3357,9 +3357,9 @@ if (marked_empty())
 	      const dimension_type h = n_var + 2;
 	      for (typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + h,
 		     i_end = matrix.row_end(); i != i_end; ++i) {
-	      typename OR_Matrix<N>::row_reference_type x_i = *i;
-	      x_i[n_var] = PLUS_INFINITY;
-	      add_assign_r(x_i[n_var+1], x_i[n_var+1], d, ROUND_UP);
+		typename OR_Matrix<N>::row_reference_type x_i = *i;
+		x_i[n_var] = PLUS_INFINITY;
+		add_assign_r(x_i[n_var+1], x_i[n_var+1], d, ROUND_UP);
 	      }
 	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + n_var;
 	      typename OR_Matrix<N>::row_reference_type r_v = *i_v;
@@ -3734,7 +3734,7 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // more general form, it will be simply ignored.
     // TODO: if it is not a bounded difference, should we compute
     // approximations for this constraint?
-      switch (relsym) {
+    switch (relsym) {
     case LESS_THAN_OR_EQUAL:
       add_constraint(lhs <= rhs);
       break;
