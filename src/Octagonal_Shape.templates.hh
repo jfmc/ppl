@@ -576,7 +576,7 @@ Octagonal_Shape<T>::is_universe() const {
 }
 
 template <typename T>
-inline bool
+bool
 Octagonal_Shape<T>::is_bounded() const {
   strong_closure_assign();
   // A zero-dimensional or empty octagon is bounded.
@@ -2289,328 +2289,221 @@ Octagonal_Shape<T>::CC76_narrowing_assign(const Octagonal_Shape& y) {
 template <typename T>
 void
 Octagonal_Shape<T>
-::deduce_v_minus_u_bounds(const dimension_type v,
-			  const dimension_type last_v,
-			  const Linear_Expression& sc_expr,
-			  Coefficient_traits::const_reference sc_den,
-			  const N& pos_sum) {
-  // Deduce constraints of the form `v - u', where `u != v'.
-  // Note: the strongly closure is able to deduce the constraint
-  // `v - u <= ub_v - lb_u'. We can be more precise if variable `u'
-  // played an active role in the computation of the upper bound for `v',
-  // i.e., if the corresponding coefficient `q == expr_u/den' is
-  // greater than zero. In particular:
-  // if `q >= 1',    then `v - u <= ub_v - ub_u';
-  // if `0 < q < 1', then `v - u <= ub_v - (q*ub_u + (1-q)*lb_u)'.
+::deduce_v_pm_u_bounds(const dimension_type v_id,
+		       const dimension_type last_id,
+		       const Linear_Expression& sc_expr,
+		       Coefficient_traits::const_reference sc_den,
+		       const N& ub_v) {
   mpq_class mpq_sc_den;
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
-  // No need to consider indices greater than `last_v'.
-  for (dimension_type u = last_v; u > 0; --u)
-    if (u != v) {
-      typename OR_Matrix<N>::row_iterator i_u = matrix.row_begin() + 2*u;
-      const Coefficient& expr_u = sc_expr.coefficient(Variable(u));
-      if (expr_u > 0)
-	if (expr_u >= sc_den) {
-	  // Deducing `v - u <= ub_v - ub_u'.
-	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
-	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-	  N r_cu_u;
-	  div2exp_assign_r(r_cu_u, r_cu[2*u], 1, ROUND_UP);
-	  if (v < u)
-	    sub_assign_r(r_u[2*v], pos_sum, r_cu_u, ROUND_UP);
-	  else if (v > u) {
-	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
-	    typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
-	    sub_assign_r(r_cv[2*u+1], pos_sum, r_cu_u, ROUND_UP);
-	  }
-	}
-	else {
-	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
-	  if (!is_plus_infinity(r_u[2*u+1])) {
-	    // Let `ub_u' and `lb_u' be the known upper and lower bound
-	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
-	    // rational coefficient of `u' in `sc_expr/sc_den',
-	    // the upper bound for `v - u' is computed as
-	    // `ub_v - (q * ub_u + (1-q) * lb_u)', i.e.,
-	    // `pos_sum + (-lb_u) - q * (ub_u + (-lb_u))'.
-	    mpq_class double_minus_lb_u;
-	    assign_r(double_minus_lb_u, r_u[2*u+1], ROUND_NOT_NEEDED);
-	    mpq_class minus_lb_u;
-	    div2exp_assign_r(minus_lb_u, double_minus_lb_u, 1, ROUND_UP);
-	    mpq_class q;
-	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
-	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-	    mpq_class double_ub_u;
-	    typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-	    assign_r(double_ub_u, r_cu[2*u], ROUND_NOT_NEEDED);
-	    mpq_class ub_u;
-	    div2exp_assign_r(ub_u, double_ub_u, 1, ROUND_UP);
-	    // Compute `ub_u - lb_u'.
-	    add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
-	    // Compute `(-lb_u) - q * (ub_u - lb_u)'.
-	    sub_mul_assign_r(minus_lb_u, q, ub_u, ROUND_NOT_NEEDED);
-	    N up_approx;
-	    assign_r(up_approx, minus_lb_u, ROUND_UP);
-	    // Deducing `v - u <= ub_v - (q * ub_u + (1-q) * lb_u)'.
-	    if (v < u)
-	      add_assign_r(r_u[2*v], pos_sum, up_approx, ROUND_UP);
-	    else if (v > u) {
-	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
-	      typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
-	      add_assign_r(r_cv[2*u+1], pos_sum, up_approx, ROUND_UP);
-	    }
-	  }
-	}
-    }
-}
 
-template <typename T>
-void
-Octagonal_Shape<T>
-::deduce_v_plus_u_bounds(const dimension_type v,
-			 const dimension_type last_v,
-			 const Linear_Expression& sc_expr,
-			 Coefficient_traits::const_reference sc_den,
-			 const N& pos_sum) {
-  // Deduce constraints of the form `v + u', where `u != v'.
-  // Note: the strongly closure is able to deduce the constraint
-  // `v + u <= ub_v + ub_u'. We can be more precise if variable `u'
-  // played an active role in the computation of the upper bound for `v',
-  // i.e., if the corresponding coefficient `q == expr_u/den' is
-  // less than zero. In particular:
-  // if `q <= -1',    then `v + u <= ub_v + lb_u';
-  // if `-1 < q < 0', then `v + u <= ub_v + (q*lb_u + (1-q)*ub_u)'.
-  mpq_class mpq_sc_den;
-  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
-  // No need to consider indices greater than `last_v'.
-  for (dimension_type u = last_v; u > 0; --u)
-    if (u != v) {
-      typename OR_Matrix<N>::row_iterator i_u = matrix.row_begin() + 2*u;
-      const Coefficient& expr_u = sc_expr.coefficient(Variable(u));
-      if (expr_u < 0) {
-	TEMP_INTEGER(minus_expr_u);
-	neg_assign_r(minus_expr_u, expr_u, ROUND_NOT_NEEDED);
-	if (minus_expr_u >= sc_den) {
-	  // Deducing `v + u <= ub_v + lb_u'.
-	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
-	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-	  N r_u_cu;
-	  div2exp_assign_r(r_u_cu, r_u[2*u+1], 1, ROUND_UP);
-	  if (v < u)
-	    sub_assign_r(r_cu[2*v], pos_sum, r_u_cu, ROUND_UP);
-	  else if (v > u) {
-	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
-	    typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
-	    sub_assign_r(r_cv[2*u], pos_sum, r_u_cu, ROUND_UP);
-	  }
-	}
-	else {
-	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-	  if (!is_plus_infinity(r_cu[2*u])) {
-	    // Let `ub_u' and `lb_u' be the known upper and lower bound
-	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
-	    // rational coefficient of `u' in `sc_expr/sc_den',
-	    // the upper bound for `v + u' is computed as
-	    // `ub_v + (q * lb_u + (1-q) * ub_u)', i.e.,
-	    // `pos_sum + ub_u + q * (lb_u - ub_u)'.
-	    mpq_class double_ub_u;
-	    assign_r(double_ub_u, r_cu[2*u], ROUND_NOT_NEEDED);
-	    mpq_class ub_u;
-	    div2exp_assign_r(ub_u, double_ub_u, 1, ROUND_UP);
-	    mpq_class q;
-	    assign_r(q, minus_expr_u, ROUND_NOT_NEEDED);
-	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-	    mpq_class double_minus_lb_u;
-	    typename OR_Matrix<N>::row_reference_type r_u = *i_u;
-	    assign_r(double_minus_lb_u, r_u[2*u+1], ROUND_NOT_NEEDED);
-	    mpq_class minus_lb_u;
-	    div2exp_assign_r(minus_lb_u, double_minus_lb_u, 1, ROUND_UP);
-	    mpq_class lb_u;
-	    neg_assign_r(lb_u, minus_lb_u, ROUND_NOT_NEEDED);
-	    // Compute `lb_u - ub_u'.
-	    sub_assign_r(lb_u, lb_u, ub_u, ROUND_NOT_NEEDED);
-	    // Compute `ub_u + q * (lb_u - ub_u)'.
-	    add_mul_assign_r(ub_u, q, lb_u, ROUND_NOT_NEEDED);
-	    N up_approx;
-	    assign_r(up_approx, ub_u, ROUND_UP);
-	    // Deducing `v + u <= ub_v + (q * lb_u + (1-q) * ub_u)'.
-	    if (v < u)
-	      add_assign_r(r_cu[2*v], pos_sum, up_approx, ROUND_UP);
-	    else if (v > u) {
-	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
-	      typename OR_Matrix<N>::row_reference_type r_cv = *(i_v+1);
-	      add_assign_r(r_cv[2*u], pos_sum, up_approx, ROUND_UP);
-	    }
-	  }
+  // No need to consider indices greater than `last_id'.
+  const dimension_type n_v = 2*v_id;
+  typename OR_Matrix<N>::row_reference_type m_cv = matrix[n_v+1];
+
+  for (dimension_type u_id = last_id+1; u_id-- > 0; ) {
+    // Skip the case when `u_id == v_id'.
+    if (u_id == v_id)
+      continue;
+    const Coefficient& expr_u = sc_expr.coefficient(Variable(u_id));
+    // Skip the case when `expr_u == 0'.
+    if (expr_u == 0)
+      continue;
+
+    const dimension_type n_u = u_id*2;
+    // If `expr_u' is positive, we can improve `v - u'.
+    if (expr_u > 0) {
+      if (expr_u >= sc_den) {
+	// Here q >= 1: deducing `v - u <= ub_v - ub_u'.
+	N half_m_cu_u;
+	div2exp_assign_r(half_m_cu_u, matrix[n_u+1][n_u], 1, ROUND_UP);
+	N& m_v_minus_u = (n_v < n_u) ? matrix[n_u][n_v] : m_cv[n_u+1];
+	sub_assign_r(m_v_minus_u, ub_v, half_m_cu_u, ROUND_UP);
+      }
+      else {
+	// Here 0 < q < 1.
+	typename OR_Matrix<N>::row_reference_type m_u = matrix[n_u];
+	const N& m_u_cu = m_u[n_u+1];
+	if (!is_plus_infinity(m_u_cu)) {
+	  // Let `ub_u' and `lb_u' be the known upper and lower bound
+	  // for `u', respectively. The upper bound for `v - u' is
+	  // computed as `ub_v - (q * ub_u + (1-q) * lb_u)',
+          // i.e., `ub_v + (-lb_u) - q * (ub_u + (-lb_u))'.
+	  mpq_class minus_lb_u;
+	  assign_r(minus_lb_u, m_u_cu, ROUND_NOT_NEEDED);
+	  div2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
+	  mpq_class q;
+	  assign_r(q, expr_u, ROUND_NOT_NEEDED);
+	  div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+	  mpq_class ub_u;
+	  assign_r(ub_u, matrix[n_u+1][n_u], ROUND_NOT_NEEDED);
+	  div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
+	  // Compute `ub_u - lb_u'.
+	  add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
+	  // Compute `(-lb_u) - q * (ub_u - lb_u)'.
+	  sub_mul_assign_r(minus_lb_u, q, ub_u, ROUND_NOT_NEEDED);
+	  N up_approx;
+	  assign_r(up_approx, minus_lb_u, ROUND_UP);
+	  // Deducing `v - u <= ub_v - (q * ub_u + (1-q) * lb_u)'.
+	  N& m_v_minus_u = (n_v < n_u) ? m_u[n_v] : m_cv[n_u+1];
+	  add_assign_r(m_v_minus_u, ub_v, up_approx, ROUND_UP);
 	}
       }
     }
-}
-
-template <typename T>
-void
-Octagonal_Shape<T>
-::deduce_u_minus_v_bounds(const dimension_type v,
-			  const dimension_type last_v,
-			  const Linear_Expression& sc_expr,
-			  Coefficient_traits::const_reference sc_den,
-			  const N& neg_sum) {
-  // Deduce constraints of the form `u - v', where `u != v'.
-  // Note: the strongly closure is able to deduce the constraint
-  // `u - v <= ub_u - lb_v'. We can be more precise if variable `u'
-  // played an active role in the computation of the lower bound for `v',
-  // i.e., if the corresponding coefficient `q == expr_u/den' is
-  // greater than zero. In particular:
-  // if `q >= 1',    then `u - v <= lb_u - lb_v';
-  // if `0 < q < 1', then `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
-  mpq_class mpq_sc_den;
-  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
-  // No need to consider indices greater than `last_v'.
-  for (dimension_type u = last_v; u > 0; --u)
-    if (u != v) {
-      typename OR_Matrix<N>::row_iterator i_u = matrix.row_begin() + 2*u;
-      const Coefficient& expr_u = sc_expr.coefficient(Variable(u));
-      if (expr_u > 0)
-	if (expr_u >= sc_den) {
-	  // Deducing `u - v <= lb_u - lb_v',
-	  // i.e., `u - v <= (-lb_v) - (-lb_u)'.
-	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
-	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-	  N r_u_cu;
-	  div2exp_assign_r(r_u_cu, r_u[2*u+1], 1, ROUND_UP);
-	  if (v < u)
-	    sub_assign_r(r_cu[2*v+1], neg_sum, r_u_cu, ROUND_UP);
-	  else if (v > u) {
-	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
-	    typename OR_Matrix<N>::row_reference_type r_v = *i_v;
-	    sub_assign_r(r_v[2*u], neg_sum, r_u_cu, ROUND_UP);
-	  }
-	}
-	else {
-	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-	  if (!is_plus_infinity(r_cu[2*u])) {
-	    // Let `ub_u' and `lb_u' be the known upper and lower bound
-	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
-	    // rational coefficient of `u' in `sc_expr/sc_den',
-	    // the upper bound for `u - v' is computed as
-	    // `(q * lb_u + (1-q) * ub_u) - lb_v', i.e.,
-	    // `ub_u - q * (ub_u + (-lb_u)) + neg_sum'.
-	    mpq_class double_ub_u;
-	    assign_r(double_ub_u, r_cu[2*u], ROUND_NOT_NEEDED);
-	    mpq_class ub_u;
-	    div2exp_assign_r(ub_u, double_ub_u, 1, ROUND_UP);
-	    mpq_class q;
-	    assign_r(q, expr_u, ROUND_NOT_NEEDED);
-	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-	    mpq_class double_minus_lb_u;
-	    typename OR_Matrix<N>::row_reference_type r_u = *i_u;
-	    assign_r(double_minus_lb_u, r_u[2*u+1], ROUND_NOT_NEEDED);
-	    mpq_class minus_lb_u;
-	    div2exp_assign_r(minus_lb_u, double_minus_lb_u, 1, ROUND_UP);
-	    // Compute `ub_u - lb_u'.
-	    add_assign_r(minus_lb_u, minus_lb_u, ub_u, ROUND_NOT_NEEDED);
-	    // Compute `ub_u - q * (ub_u - lb_u)'.
-	    sub_mul_assign_r(ub_u, q, minus_lb_u, ROUND_NOT_NEEDED);
-	    N up_approx;
-	    assign_r(up_approx, ub_u, ROUND_UP);
-	    // Deducing `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
-	    if (v < u)
-	      add_assign_r(r_cu[2*v+1], up_approx, neg_sum, ROUND_UP);
-	    else if (v > u) {
-	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
-	      typename OR_Matrix<N>::row_reference_type r_v = *i_v;
-	      add_assign_r(r_v[2*u], up_approx, neg_sum, ROUND_UP);
-	    }
-	  }
-	}
-    }
-}
-
-template <typename T>
-void
-Octagonal_Shape<T>
-::deduce_minus_v_minus_u_bounds(const dimension_type v,
-				const dimension_type last_v,
-				const Linear_Expression& sc_expr,
-				Coefficient_traits::const_reference sc_den,
-				const N& neg_sum) {
-  // Deduce constraints of the form `- v - u', where `u != v'.
-  // Note: the strongly closure is able to deduce the constraint
-  // `- v - u <= - lb_v - lb_u'. We can be more precise if variable `u'
-  // played an active role in the computation of the lower bound for `v',
-  // i.e., if the corresponding coefficient `q == expr_u/den' is
-  // less than zero. In particular:
-  // if `q <= -1',    then `-v - u <= -lb_v - ub_u';
-  // if `-1 < q < 0', then `-v - u <= -lb_v - (q*ub_u + (1-q)*lb_u)'.
-  mpq_class mpq_sc_den;
-  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
-  // No need to consider indices greater than `last_v'.
-  for (dimension_type u = last_v; u > 0; --u)
-    if (u != v) {
-      typename OR_Matrix<N>::row_iterator i_u = matrix.row_begin() + 2*u;
-      const Coefficient& expr_u = sc_expr.coefficient(Variable(u));
-      if (expr_u < 0) {
-	TEMP_INTEGER(minus_expr_u);
-	neg_assign_r(minus_expr_u, expr_u, ROUND_NOT_NEEDED);
-	if (minus_expr_u >= sc_den) {
-	  // Deducing `-v - u <= -lb_v - ub_u'.
-	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
-	  typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-	  N r_cu_u;
-	  div2exp_assign_r(r_cu_u, r_cu[2*u], 1, ROUND_UP);
-	  N negated_r_cu_u;
-	  neg_assign_r(negated_r_cu_u, r_cu_u, ROUND_NOT_NEEDED);
-	  if (v < u)
-	    sub_assign_r(r_cu[2*v+1], negated_r_cu_u, neg_sum, ROUND_UP);
-	  else if (v > u) {
-	    typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
-	    typename OR_Matrix<N>::row_reference_type r_v = *i_v;
-	    sub_assign_r(r_v[2*u+1], negated_r_cu_u, neg_sum, ROUND_UP);
-	  }
-	}
-	else {
-	  typename OR_Matrix<N>::row_reference_type r_u = *i_u;
-	  if (!is_plus_infinity(r_u[2*u+1])) {
-	    // Let `ub_u' and `lb_u' be the known upper and lower bound
-	    // for `u', respectively. Letting `q = expr_u/sc_den' be the
-	    // rational coefficient of `u' in `sc_expr/sc_den',
-	    // the upper bound for `-v - u' is computed as
-	    //`-lb_v - (q*ub_u + (1-q)*lb_u)', i.e.,
-	    // `-neg_sum - lb_u + q * (lb_u - ub_u)'.
-	    mpq_class double_lb_u;
-	    assign_r(double_lb_u, r_u[2*u+1], ROUND_NOT_NEEDED);
-	    mpq_class lb_u;
-	    div2exp_assign_r(lb_u, double_lb_u, 1, ROUND_UP);
-	    mpq_class q;
-	    assign_r(q, minus_expr_u, ROUND_NOT_NEEDED);
-	    div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
-	    mpq_class double_ub_u;
-	    typename OR_Matrix<N>::row_reference_type r_cu = *(i_u+1);
-	    assign_r(double_ub_u, r_cu[2*u], ROUND_NOT_NEEDED);
-	    mpq_class ub_u;
-	    div2exp_assign_r(ub_u, double_ub_u, 1, ROUND_UP);
-	    mpq_class minus_ub_u;
-	    neg_assign_r(minus_ub_u, ub_u, ROUND_NOT_NEEDED);
-	    // Compute `lb_u - ub_u'.
-	    add_assign_r(minus_ub_u, lb_u, minus_ub_u, ROUND_NOT_NEEDED);
-	    mpq_class minus_lb_u;
-	    neg_assign_r(minus_lb_u, lb_u, ROUND_NOT_NEEDED);
-	    // Compute `-lb_u + q * (lb_u - ub_u)'.
-	    add_mul_assign_r(minus_lb_u, q, minus_ub_u, ROUND_NOT_NEEDED);
-	    N up_approx;
-	    assign_r(up_approx, minus_lb_u, ROUND_UP);
-	    // Deducing `-v - u <= -lb_v - (q * ub_u + (1-q) * lb_u)'.
-	    if (v < u)
-	      add_assign_r(r_u[2*v+1], up_approx,neg_sum, ROUND_UP);
-	    else if (v > u) {
-	      typename OR_Matrix<N>::row_iterator i_v = matrix.row_begin() + 2*v;
-	      typename OR_Matrix<N>::row_reference_type r_v = *i_v;
-	      add_assign_r(r_v[2*u+1], up_approx, neg_sum, ROUND_UP);
-	    }
-	  }
+    else {
+      assert(expr_u < 0);
+      // If `expr_u' is negative, we can improve `v + u'.
+      TEMP_INTEGER(minus_expr_u);
+      neg_assign_r(minus_expr_u, expr_u, ROUND_NOT_NEEDED);
+      if (minus_expr_u >= sc_den) {
+	// Here q <= -1: Deducing `v + u <= ub_v + lb_u'.
+	N half_m_u_cu;
+	div2exp_assign_r(half_m_u_cu, matrix[n_u][n_u+1], 1, ROUND_UP);
+	N& m_v_plus_u = (n_v < n_u) ? matrix[n_u+1][n_v] : m_cv[n_u];
+	sub_assign_r(m_v_plus_u, ub_v, half_m_u_cu, ROUND_UP);
+      }
+      else {
+	// Here -1 < q < 0.
+	typename OR_Matrix<N>::row_reference_type m_cu = matrix[n_u+1];
+	const N& m_cu_u = m_cu[n_u];
+	if (!is_plus_infinity(m_cu_u)) {
+	  // Let `ub_u' and `lb_u' be the known upper and lower bound
+	  // for `u', respectively. The upper bound for `v + u' is
+	  // computed as `ub_v + (q * lb_u + (1-q) * ub_u)',
+	  // i.e., `ub_v + ub_u + q * (lb_u - ub_u)'.
+	  mpq_class ub_u;
+	  assign_r(ub_u, m_cu[n_u], ROUND_NOT_NEEDED);
+	  div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
+	  mpq_class q;
+	  assign_r(q, minus_expr_u, ROUND_NOT_NEEDED);
+	  div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+	  mpq_class lb_u;
+	  assign_r(lb_u, matrix[n_u][n_u+1], ROUND_NOT_NEEDED);
+	  div2exp_assign_r(lb_u, lb_u, 1, ROUND_NOT_NEEDED);
+	  neg_assign_r(lb_u, lb_u, ROUND_NOT_NEEDED);
+	  // Compute `lb_u - ub_u'.
+	  sub_assign_r(lb_u, lb_u, ub_u, ROUND_NOT_NEEDED);
+	  // Compute `ub_u + q * (lb_u - ub_u)'.
+	  add_mul_assign_r(ub_u, q, lb_u, ROUND_NOT_NEEDED);
+	  N up_approx;
+	  assign_r(up_approx, ub_u, ROUND_UP);
+	  // Deducing `v + u <= ub_v + (q * lb_u + (1-q) * ub_u)'.
+	  N& m_v_plus_u = (n_v < n_u) ? m_cu[n_v] : m_cv[n_u];
+	  add_assign_r(m_v_plus_u, ub_v, up_approx, ROUND_UP);
 	}
       }
     }
+  }
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>
+::deduce_minus_v_pm_u_bounds(const dimension_type v_id,
+			     const dimension_type last_id,
+			     const Linear_Expression& sc_expr,
+			     Coefficient_traits::const_reference sc_den,
+			     const N& minus_lb_v) {
+  mpq_class mpq_sc_den;
+  assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
+
+  // No need to consider indices greater than `last_id'.
+  const dimension_type n_v = 2*v_id;
+  typename OR_Matrix<N>::row_reference_type m_v = matrix[n_v];
+
+  for (dimension_type u_id = last_id+1; u_id-- > 0; ) {
+    // Skip the case when `u_id == v_id'.
+    if (u_id == v_id)
+      continue;
+    const Coefficient& expr_u = sc_expr.coefficient(Variable(u_id));
+    // Skip the case when `expr_u == 0'.
+    if (expr_u == 0)
+      continue;
+
+    const dimension_type n_u = u_id*2;
+    // If `expr_u' is positive, we can improve `-v + u'.
+    if (expr_u > 0) {
+      if (expr_u >= sc_den) {
+	// Here q >= 1: deducing `-v + u <= lb_u - lb_v',
+	// i.e., `u - v <= (-lb_v) - (-lb_u)'.
+	N half_m_u_cu;
+	div2exp_assign_r(half_m_u_cu, matrix[n_u][n_u+1], 1, ROUND_UP);
+	N& m_u_minus_v = (n_v < n_u) ? matrix[n_u+1][n_v+1] : m_v[n_u];
+	sub_assign_r(m_u_minus_v, minus_lb_v, half_m_u_cu, ROUND_UP);
+      }
+      else {
+	// Here 0 < q < 1.
+	typename OR_Matrix<N>::row_reference_type m_cu = matrix[n_u+1];
+	const N& m_cu_u = m_cu[n_u];
+	if (!is_plus_infinity(m_cu_u)) {
+	  // Let `ub_u' and `lb_u' be the known upper and lower bound
+	  // for `u', respectively. The upper bound for `u - v' is
+	  // computed as `(q * lb_u + (1-q) * ub_u) - lb_v',
+	  // i.e., `ub_u - q * (ub_u + (-lb_u)) + minus_lb_v'.
+	  mpq_class ub_u;
+	  assign_r(ub_u, m_cu[n_u], ROUND_NOT_NEEDED);
+	  div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
+	  mpq_class q;
+	  assign_r(q, expr_u, ROUND_NOT_NEEDED);
+	  div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+	  mpq_class minus_lb_u;
+	  assign_r(minus_lb_u, matrix[n_u][n_u+1], ROUND_NOT_NEEDED);
+	  div2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
+	  // Compute `ub_u - lb_u'.
+	  add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
+	  // Compute `ub_u - q * (ub_u - lb_u)'.
+	  sub_mul_assign_r(ub_u, q, minus_lb_u, ROUND_NOT_NEEDED);
+	  N up_approx;
+	  assign_r(up_approx, ub_u, ROUND_UP);
+	  // Deducing `u - v <= -lb_v - (q * lb_u + (1-q) * ub_u)'.
+	  N& m_u_minus_v = (n_v < n_u) ? m_cu[n_v+1] : m_v[n_u];
+	  add_assign_r(m_u_minus_v, minus_lb_v, up_approx, ROUND_UP);
+	}
+      }
+    }
+    else {
+      assert(expr_u < 0);
+      // If `expr_u' is negative, we can improve `-v - u'.
+      TEMP_INTEGER(minus_expr_u);
+      neg_assign_r(minus_expr_u, expr_u, ROUND_NOT_NEEDED);
+      if (minus_expr_u >= sc_den) {
+	// Here q <= -1: Deducing `-v - u <= -lb_v - ub_u'.
+	N half_m_cu_u;
+	div2exp_assign_r(half_m_cu_u, matrix[n_u+1][n_u], 1, ROUND_UP);
+	N& m_minus_v_minus_u = (n_v < n_u) ? matrix[n_u][n_v+1] : m_v[n_u+1];
+	sub_assign_r(m_minus_v_minus_u, minus_lb_v, half_m_cu_u, ROUND_UP);
+      }
+      else {
+	// Here -1 < q < 0.
+	typename OR_Matrix<N>::row_reference_type m_u = matrix[n_u];
+	const N& m_u_cu = m_u[n_u+1];
+	if (!is_plus_infinity(m_u_cu)) {
+	  // Let `ub_u' and `lb_u' be the known upper and lower bound
+	  // for `u', respectively. The upper bound for `-v - u' is
+	  // computed as `-lb_v - (q*ub_u + (1-q)*lb_u)',
+	  // i.e., `minus_lb_v - lb_u + (-q)*(ub_u - lb_u)'.
+	  mpq_class ub_u;
+	  assign_r(ub_u, matrix[n_u+1][n_u], ROUND_NOT_NEEDED);
+	  div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
+	  mpq_class minus_q;
+	  assign_r(minus_q, minus_expr_u, ROUND_NOT_NEEDED);
+	  div_assign_r(minus_q, minus_q, mpq_sc_den, ROUND_NOT_NEEDED);
+	  mpq_class minus_lb_u;
+	  assign_r(minus_lb_u, m_u[n_u+1], ROUND_NOT_NEEDED);
+	  div2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
+	  // Compute `ub_u - lb_u'.
+	  add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
+	  // Compute `-lb_u + (-q)*(ub_u - lb_u)'.
+	  add_mul_assign_r(minus_lb_u, minus_q, ub_u, ROUND_NOT_NEEDED);
+	  N up_approx;
+	  assign_r(up_approx, minus_lb_u, ROUND_UP);
+	  // Deducing `-v - u <= -lb_v - (q * ub_u + (1-q) * lb_u)'.
+	  N& m_minus_v_minus_u = (n_v < n_u) ? m_u[n_v+1] : m_v[n_u+1];
+	  add_assign_r(m_minus_v_minus_u, minus_lb_v, up_approx, ROUND_UP);
+	}
+      }
+    }
+  }
 }
 
 template <typename T>
@@ -2948,13 +2841,11 @@ Octagonal_Shape<T>::affine_image(const Variable var,
     // Add the upper bound constraint, if meaningful.
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
-      N double_pos_sum = pos_sum;
+      N double_pos_sum;
       mul2exp_assign_r(double_pos_sum, pos_sum, 1, ROUND_IGNORE);
       assign_r(matrix[n_var+1][n_var], double_pos_sum, ROUND_UP);
-      // Deduce constraints of the form `v - u', where `u != v'.
-      deduce_v_minus_u_bounds(var_id, w_id, sc_expr, sc_den, pos_sum);
-      // Deduce constraints of the form `v + u', where `u != v'.
-      deduce_v_plus_u_bounds(var_id, w_id, sc_expr, sc_den, pos_sum);
+      // Deduce constraints of the form `v +/- u', where `u != v'.
+      deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, pos_sum);
     }
     else
       // Here `pos_pinf_count == 1'.
@@ -2987,11 +2878,8 @@ Octagonal_Shape<T>::affine_image(const Variable var,
       N double_neg_sum = neg_sum;
       mul2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
       assign_r(matrix[n_var][n_var+1], double_neg_sum, ROUND_UP);
-      // Deduce constraints of the form `u - v', where `u != v'.
-      deduce_u_minus_v_bounds(var_id, w_id, sc_expr, sc_den, neg_sum);
-      // Deduce constraints of the form `-v - u', where `u != v'.
-      deduce_minus_v_minus_u_bounds(var_id, w_id,
-				    sc_expr, sc_den, neg_sum);
+      // Deduce constraints of the form `-v +/- u', where `u != v'.
+      deduce_minus_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, neg_sum);
     }
     else
       // Here `neg_pinf_count == 1'.
@@ -3167,7 +3055,7 @@ Octagonal_Shape<T>
   }
 
   strong_closure_assign();
-  // The image of an empty octagon is empty too. 
+  // The image of an empty octagon is empty too.
   if (marked_empty())
     return;
 
@@ -3297,7 +3185,7 @@ Octagonal_Shape<T>
 	      // Add the new constraint `v + w <= b/denominator'.
 	      if (var_id < w_id)
 		add_octagonal_constraint(n_w+1, n_var, b, denominator);
-	      else 
+	      else
 		add_octagonal_constraint(n_var+1, n_w, b, denominator);
 	    }
 	  }
@@ -3363,7 +3251,7 @@ Octagonal_Shape<T>
 	      // i.e., `w - var <= -b/denominator'.
 	      if (var_id < w_id)
 		add_octagonal_constraint(n_w+1, n_var+1, b, minus_den);
-	      else 
+	      else
 		add_octagonal_constraint(n_var, n_w, b, minus_den);
 	    }
 	    else {
@@ -3421,7 +3309,7 @@ Octagonal_Shape<T>
   case LESS_THAN_OR_EQUAL:
     {
       // Compute an upper approximation for `sc_expr' into `sum'.
-      
+
       // Approximate the inhomogeneous term.
       assign_r(sum, sc_b, ROUND_UP);
       // Approximate the homogeneous part of `sc_expr'.
@@ -3470,9 +3358,9 @@ Octagonal_Shape<T>
 
       // Divide by the (sign corrected) denominator (if needed).
       if (sc_den != 1) {
-	// Before computing the quotient, the denominator should be 
-	// approximated towards zero. Since `sc_den' is known to be 
-	// positive, this amounts to rounding downwards, which is 
+	// Before computing the quotient, the denominator should be
+	// approximated towards zero. Since `sc_den' is known to be
+	// positive, this amounts to rounding downwards, which is
 	// achieved as usual by rounding upwards
 	// `minus_sc_den' and negating again the result.
 	N down_sc_den;
@@ -3486,17 +3374,15 @@ Octagonal_Shape<T>
 	N double_sum = sum;
 	mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
 	assign_r(matrix[n_var+1][n_var], double_sum, ROUND_UP);
-	// Deduce constraints of the form `v - u', where `u != v'.
-	deduce_v_minus_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
-	// Deduce constraints of the form `v + u', where `u != v'.
-	deduce_v_plus_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
+	// Deduce constraints of the form `v +/- u', where `u != v'.
+	deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
       }
       else if (pinf_count == 1)
 	if (pinf_index != var_id) {
 	  const Coefficient& pi = expr.coefficient(Variable(pinf_index));
 	  if (pi == denominator ) {
 	    // Add the constraint `v - pinf_index <= sum'.
-	    if (var_id < pinf_index) 
+	    if (var_id < pinf_index)
 	      assign_r(matrix[2*pinf_index][n_var], sum, ROUND_UP);
 	    else
 	      assign_r(matrix[n_var+1][2*pinf_index+1], sum, ROUND_UP);
@@ -3504,7 +3390,7 @@ Octagonal_Shape<T>
 	  else {
 	    if (pi == minus_den) {
 	      // Add the constraint `v + pinf_index <= sum'.
-	      if (var_id < pinf_index) 
+	      if (var_id < pinf_index)
 		assign_r(matrix[2*pinf_index+1][n_var], sum, ROUND_UP);
 	      else
 		assign_r(matrix[n_var+1][2*pinf_index], sum, ROUND_UP);
@@ -3567,9 +3453,9 @@ Octagonal_Shape<T>
 
       // Divide by the (sign corrected) denominator (if needed).
       if (sc_den != 1) {
-	// Before computing the quotient, the denominator should be 
-	// approximated towards zero. Since `sc_den' is known to be 
-	// positive, this amounts to rounding downwards, which is 
+	// Before computing the quotient, the denominator should be
+	// approximated towards zero. Since `sc_den' is known to be
+	// positive, this amounts to rounding downwards, which is
 	// achieved as usual by rounding upwards
 	// `minus_sc_den' and negating again the result.
 	N down_sc_den;
@@ -3583,11 +3469,8 @@ Octagonal_Shape<T>
 	N double_sum = sum;
 	mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
 	assign_r(matrix[n_var][n_var+1], double_sum, ROUND_UP);
-	// Deduce constraints of the form `u - v', where `u != v'.
-	deduce_u_minus_v_bounds(var_id, pinf_index, sc_expr, sc_den, sum);
-	// Deduce constraints of the form `-v - u', where `u != v'.
-	deduce_minus_v_minus_u_bounds(var_id, pinf_index,
-				      sc_expr, sc_den, sum);
+	// Deduce constraints of the form `-v +/- u', where `u != v'.
+	deduce_minus_v_pm_u_bounds(var_id, pinf_index, sc_expr, sc_den, sum);
       }
       else if (pinf_count == 1)
 	if (pinf_index != var_id) {
@@ -3595,7 +3478,7 @@ Octagonal_Shape<T>
 	  if (pi == denominator) {
 	    // Add the constraint `v - pinf_index >= -sum',
 	    // i.e., `pinf_index - v <= sum'.
-	    if (pinf_index < var_id) 
+	    if (pinf_index < var_id)
 	      assign_r(matrix[n_var][2*pinf_index], sum, ROUND_UP);
 	    else
 	      assign_r(matrix[2*pinf_index+1][n_var+1], sum, ROUND_UP);
@@ -3604,7 +3487,7 @@ Octagonal_Shape<T>
 	    if (pi == minus_den) {
 	      // Add the constraint `v + pinf_index >= -sum',
 	      // i.e., `-pinf_index - v <= sum'.
-	      if (pinf_index < var_id) 
+	      if (pinf_index < var_id)
 		assign_r(matrix[n_var][2*pinf_index+1], sum, ROUND_UP);
 	      else
 		assign_r(matrix[2*pinf_index][n_var+1], sum, ROUND_UP);
@@ -4074,10 +3957,8 @@ Octagonal_Shape<T>
 	  N double_sum = sum;
 	  mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
 	  add_octagonal_constraint(n_var+1, n_var, double_sum);
-	  // Deduce constraints of the form `v - u', where `u != v'.
-	  deduce_v_minus_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
-	  // Deduce constraints of the form `v + u', where `u != v'.
-	  deduce_v_plus_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
+	  // Deduce constraints of the form `v +/- u', where `u != v'.
+	  deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
 	}
 	else if (pinf_count == 1) {
 	  dimension_type pinf_ind = 2*pinf_index;
@@ -4161,11 +4042,8 @@ Octagonal_Shape<T>
 	  N double_sum = sum;
 	  mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
 	  add_octagonal_constraint(n_var, n_var+1, double_sum);
-	  // Deduce constraints of the form `u - v', where `u != v'.
-	  deduce_u_minus_v_bounds(var_id, pinf_index, sc_expr, sc_den, sum);
-	  // Deduce constraints of the form `-v - u', where `u != v'.
-	  deduce_minus_v_minus_u_bounds(var_id, pinf_index,
-					sc_expr, sc_den, sum);
+	  // Deduce constraints of the form `-v +/- u', where `u != v'.
+	  deduce_minus_v_pm_u_bounds(var_id, pinf_index, sc_expr, sc_den, sum);
 	}
 	else if (pinf_count == 1) {
 	  dimension_type pinf_ind = 2*pinf_index;
