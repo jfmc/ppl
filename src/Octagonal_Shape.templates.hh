@@ -2849,7 +2849,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // Note: indices above `w' can be disregarded, as they all have
   // a zero coefficient in `sc_expr'.
   for (typename OR_Matrix<N>::const_row_iterator m_iter = matrix.row_begin(),
-	 m_end = m_iter + (2*w_id); m_iter != m_end; ) {
+	 m_end = m_iter + (2*w_id) + 2; m_iter != m_end; ) {
     const dimension_type n_i = m_iter.index();
     const dimension_type id = n_i/2;
     typename OR_Matrix<N>::const_row_reference_type m_i = *m_iter;
@@ -3089,13 +3089,13 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
     // Value of the one and only non-zero coefficient in `expr'.
     const Coefficient& w_coeff = expr.coefficient(Variable(w_id));
     if (w_coeff == denominator || w_coeff == -denominator) {
-      // Case 2: expr = a*w + b, with a = +/- denominator.
+      // Case 2: expr = w_coeff*w + b, with w_coeff = +/- denominator.
       if (w_id == var_id) {
 	// Apply affine_image() on the inverse of this transformation.
 	affine_image(var, denominator*var - b, w_coeff);
       }
       else {
-	// `expr == a*w + b', where `w != var'.
+	// `expr == xw_coeff*w + b', where `w != var'.
 	// Remove all constraints on `var'.
 	forget_all_octagonal_constraints(n_var);
       }
@@ -3233,19 +3233,19 @@ Octagonal_Shape<T>
 
   if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
-    const Coefficient& a = expr.coefficient(Variable(w_id));
-    if (a == denominator || a == minus_den) {
-      // Case 2: expr == a*w + b, with a == +/- denominator.
+    const Coefficient& w_coeff = expr.coefficient(Variable(w_id));
+    if (w_coeff == denominator || w_coeff == minus_den) {
+      // Case 2: expr == w_coeff*w + b, with w_coeff == +/- denominator.
       switch (relsym) {
       case LESS_THAN_OR_EQUAL:
 	{
 	  N d;
 	  div_round_up(d, b, denominator);
 	  if (w_id == var_id) {
-	    // `expr' is of the form: a*v + b.
+	    // `expr' is of the form: w_coeff*v + b.
 	    // Strong closure is not preserved.
 	    status.reset_strongly_closed();
-	    if (a == denominator) {
+	    if (w_coeff == denominator) {
 	      // Translate all the constraints of the form `v - w <= cost'
 	      // into the constraint `v - w <= cost + b/denominator';
 	      // forget each constraint `w - v <= cost1'.
@@ -3270,7 +3270,7 @@ Octagonal_Shape<T>
 	      m_nv_nv1 = PLUS_INFINITY;
 	    }
 	    else {
-	      // Here `a == -denominator'.
+	      // Here `w_coeff == -denominator'.
 	      // `expr' is of the form: -a*var + b.
 	      N& m_nv_nv1 = matrix[n_var][n_var+1];
 	      N& m_nv1_nv = matrix[n_var+1][n_var];
@@ -3286,7 +3286,7 @@ Octagonal_Shape<T>
 	    // Remove all constraints on `v'.
 	    forget_all_octagonal_constraints(n_var);
 	    const dimension_type h = 2*w_id;
-	    if (a == denominator) {
+	    if (w_coeff == denominator) {
 	      // Add the new constraint `v - w <= b/denominator'.
 	      if (var_id < w_id)
 		add_octagonal_constraint(h, n_var, b, denominator);
@@ -3312,7 +3312,7 @@ Octagonal_Shape<T>
 	    // `expr' is of the form: a*w + b.
 	    // Strong closure is not preserved.
 	    status.reset_strongly_closed();
-	    if (a == denominator) {
+	    if (w_coeff == denominator) {
 	      // Translate each constraint `w - v <= cost'
 	      // into the constraint `w - v <= cost - b/denominator';
 	      // forget each constraint `v - w <= cost1'..
@@ -3337,7 +3337,7 @@ Octagonal_Shape<T>
 	      m_nv1_nv = PLUS_INFINITY;
 	    }
 	    else {
-	      // Here `a == -denominator'.
+	      // Here `w_coeff == -denominator'.
 	      // `expr' is of the form: -a*var + b.
 	      N& m_nv_nv1 = matrix[n_var][n_var+1];
 	      N& m_nv1_nv = matrix[n_var+1][n_var];
@@ -3357,7 +3357,7 @@ Octagonal_Shape<T>
 	    // var1 + n, with `var1' != `var'.
 	    // We remove all constraints of the form `var (+/- var1) >= const'
 	    // and we add the new constraint `var +/- var1 >= n/denominator'.
-	    if (a == denominator) {
+	    if (w_coeff == denominator) {
 	      // Add the new constraint `var - w >= b/denominator',
 	      // i.e., `w - var <= -b/denominator'.
 	      if (var_id < w_id)
