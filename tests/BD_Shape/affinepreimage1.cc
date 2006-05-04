@@ -135,8 +135,8 @@ test05() {
     Coefficient d = 0;
     bd.affine_preimage(x, x + 1, d);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -160,8 +160,8 @@ test06() {
     // greather than the space dimension of the BDS.
     bd.affine_preimage(y, z);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

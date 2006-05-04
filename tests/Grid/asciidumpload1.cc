@@ -25,10 +25,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "files.hh"
 #include <string>
 #include <fstream>
+#include <sstream>
 
 using std::string;
 using std::fstream;
 using std::ios_base;
+using std::stringstream;
 
 namespace {
 

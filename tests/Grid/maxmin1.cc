@@ -22,13 +22,14 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <string>
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
 bool
-check_both(Grid& gr, Linear_Expression& le, string grid_name) {
+check_both(Grid& gr, Linear_Expression& le, std::string grid_name) {
   Grid_Generator ext_pnt(grid_point());
   bool dummy;
   Coefficient ext_n, ext_d;
@@ -45,7 +46,7 @@ check_both(Grid& gr, Linear_Expression& le, string grid_name) {
 bool
 check_minimize(Grid& gr, Linear_Expression& le,
 	       Coefficient expected_n, Coefficient expected_d,
-	       Grid_Generator& expected_pnt, string grid_name) {
+	       Grid_Generator& expected_pnt, std::string grid_name) {
   Grid_Generator inf_pnt(grid_point());
 
   bool dummy;
@@ -66,7 +67,7 @@ check_minimize(Grid& gr, Linear_Expression& le,
 bool
 check_maximize(Grid& gr, Linear_Expression& le,
 	       Coefficient expected_n, Coefficient expected_d,
-	       Grid_Generator& expected_pnt, string grid_name) {
+	       Grid_Generator& expected_pnt, std::string grid_name) {
   Grid_Generator sup_pnt(grid_point());
 
   bool dummy;

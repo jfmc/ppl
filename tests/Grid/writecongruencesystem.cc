@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <sstream>
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
@@ -35,7 +36,7 @@ test01() {
 
   bool ok = (cgs.OK());
 
-  stringstream ss;
+  std::stringstream ss;
   ss << cgs;
   ok &= (!ss.str().compare("true"));
 

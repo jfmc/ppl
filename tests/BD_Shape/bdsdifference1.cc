@@ -255,8 +255,8 @@ test08() {
     // this function to two polyhedra of different dimensions.
     bd1.bds_difference_assign(bd2);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

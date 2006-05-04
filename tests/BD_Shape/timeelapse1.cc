@@ -188,8 +188,8 @@ test06() {
     // dimension-compatible.
     bd1.time_elapse_assign(bd2);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

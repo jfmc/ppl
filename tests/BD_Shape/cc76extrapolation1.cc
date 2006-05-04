@@ -440,8 +440,8 @@ test11() {
     // dimension-compatible.
     bd2.CC76_extrapolation_assign(bd1);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -461,8 +461,8 @@ test12() {
     // compatible.
     bd2.CC76_extrapolation_assign(bd1);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

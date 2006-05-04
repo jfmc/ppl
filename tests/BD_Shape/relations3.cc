@@ -40,8 +40,8 @@ test01() {
     // dimensional incompatible with the BDS.
     Poly_Con_Relation rel = bd.relation_with(C - B <= 2);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -65,8 +65,8 @@ test02() {
     // not a bounded difference.
     Poly_Con_Relation rel = bd.relation_with(A - 2*B <= 2);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -90,8 +90,8 @@ test03() {
     // dimensional incompatible with the BDS.
     Poly_Gen_Relation rel = bd.relation_with(ray(C));
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

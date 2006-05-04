@@ -439,8 +439,8 @@ test13() {
     // dimension-compatible.
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -474,8 +474,8 @@ test14() {
     // is not dimension-compatible with the two polyhedra.
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -508,8 +508,8 @@ test15() {
     // in which there is a strict inequality.
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
