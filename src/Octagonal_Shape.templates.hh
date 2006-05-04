@@ -2650,7 +2650,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // 0, 1, or 2, the latter value meaning any value greater than 1.
   dimension_type t = 0;
   // Variable-index of the last non-zero coefficient in `expr', if any.
-  dimension_type last_var_id = 0;
+  dimension_type w_id = 0;
 
   // Get information about the number of non-zero coefficients in `expr'.
   // The `expr' must not be in two or plus variables.
@@ -2659,9 +2659,9 @@ Octagonal_Shape<T>::affine_image(const Variable var,
       if (t++ == 1)
 	break;
       else
-        last_var_id = i;
+        w_id = i;
 
-  // Type alias for short.
+  // Use these type aliases for short.
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
   // Avoid repeated computations.
@@ -2670,7 +2670,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   TEMP_INTEGER(minus_den);
   neg_assign_r(minus_den, denominator, ROUND_NOT_NEEDED);
 
-  // `w' is the variable with index `last_var_id'.
+  // `w' is the variable with index `w_id'.
   // Now we know the form of `expr':
   // - If t == 0, then expr == b, with `b' a constant;
   // - If t == 1, then expr == a*w + b, where `w' can be `v' or another
@@ -2694,12 +2694,12 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 
   if (t == 1) {
     // The one and only non-zero homogeneous coefficient in `expr'.
-    const Coefficient& coeff = expr.coefficient(Variable(last_var_id));
-    if (coeff == denominator || coeff == minus_den) {
-      // Case 2: expr = coeff*w + b, with coeff = +/- denominator.
-      if (last_var_id == var_id) {
+    const Coefficient& w_coeff = expr.coefficient(Variable(w_id));
+    if (w_coeff == denominator || w_coeff == minus_den) {
+      // Case 2: expr = w_coeff*w + b, with w_coeff = +/- denominator.
+      if (w_id == var_id) {
 	// Here `expr' is of the form: +/- denominator * v + b.
-	if (coeff == denominator) {
+	if (w_coeff == denominator) {
 	  if (b == 0)
 	    // The transformation is the identity function.
 	    return;
@@ -2734,7 +2734,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	}
 
 	else {
-	  // Here `coeff == -denominator'.
+	  // Here `w_coeff == -denominator'.
 	  // Remove the binary constraints on `var'.
 	  forget_binary_octagonal_constraints(n_var);
  	  Row_Iterator m_iter = matrix.row_begin() + n_var;
@@ -2775,29 +2775,27 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	// +/-denominator * w + b.
 	// Remove all constraints on `var'.
 	forget_all_octagonal_constraints(n_var);
-	dimension_type h = 2*last_var_id;
+	const dimension_type n_w = 2*w_id;
 	// Add the new constraint `var - w = b/denominator'.
-	if (coeff == denominator) {
-	  if (var_id < last_var_id) {
-	    add_octagonal_constraint(h, n_var, b, denominator);
-	    add_octagonal_constraint(h+1, n_var+1, b, minus_den);
+	if (w_coeff == denominator)
+	  if (var_id < w_id) {
+	    add_octagonal_constraint(n_w, n_var, b, denominator);
+	    add_octagonal_constraint(n_w+1, n_var+1, b, minus_den);
 	  }
-	  else if (var_id > last_var_id) {
-	    add_octagonal_constraint(n_var+1, h+1, b, denominator);
-	    add_octagonal_constraint(n_var, h, b, minus_den);
+	  else {
+	    add_octagonal_constraint(n_var+1, n_w+1, b, denominator);
+	    add_octagonal_constraint(n_var, n_w, b, minus_den);
 	  }
-	}
-	else {
-	// Add the new constraint `var + w = b/denominator'.
-	  if (var_id < last_var_id) {
-	    add_octagonal_constraint(h+1, n_var, b, denominator);
-	    add_octagonal_constraint(h, n_var+1, b, minus_den);
+	else
+	  // Add the new constraint `var + w = b/denominator'.
+	  if (var_id < w_id) {
+	    add_octagonal_constraint(n_w+1, n_var, b, denominator);
+	    add_octagonal_constraint(n_w, n_var+1, b, minus_den);
 	  }
-	  else if (var_id > last_var_id) {
-	    add_octagonal_constraint(n_var+1, h, b, denominator);
-	    add_octagonal_constraint(n_var, h+1, b, minus_den);
+	  else {
+	    add_octagonal_constraint(n_var+1, n_w, b, denominator);
+	    add_octagonal_constraint(n_var, n_w+1, b, minus_den);
 	  }
-	}
 	incremental_strong_closure_assign(var);
       }
       assert(OK());
@@ -2850,20 +2848,22 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // Approximate the homogeneous part of `sc_expr'.
   // Note: indices above `w' can be disregarded, as they all have
   // a zero coefficient in `sc_expr'.
-  for (dimension_type i = last_var_id + 1; i-- > 0; ) {
-    const Coefficient& sc_i = sc_expr.coefficient(Variable(i));
-    const dimension_type j_0 = 2*i;
-    const dimension_type j_1 = j_0 + 1;
-    typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin() + j_0;
-    typename OR_Matrix<N>::const_row_reference_type m_j0 = *iter;
-    typename OR_Matrix<N>::const_row_reference_type m_j1 = *(iter+1);
+  for (typename OR_Matrix<N>::const_row_iterator m_iter = matrix.row_begin(),
+	 m_end = m_iter + (2*w_id); m_iter != m_end; ) {
+    const dimension_type n_i = m_iter.index();
+    const dimension_type id = n_i/2;
+    typename OR_Matrix<N>::const_row_reference_type m_i = *m_iter;
+    ++m_iter;
+    typename OR_Matrix<N>::const_row_reference_type m_ci = *m_iter;
+    ++m_iter;
+    const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
     const int sign_i = sgn(sc_i);
     if (sign_i > 0) {
       N coeff_i;
       assign_r(coeff_i, sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
-	const N& double_up_approx_i = m_j1[j_0];
+	const N& double_up_approx_i = m_ci[n_i];
 	if (!is_plus_infinity(double_up_approx_i)) {
 	  N up_approx_i;
 	  div2exp_assign_r(up_approx_i, double_up_approx_i, 1, ROUND_UP);
@@ -2871,12 +2871,12 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	}
 	else {
 	  ++pos_pinf_count;
-	  pos_pinf_index = i;
+	  pos_pinf_index = id;
 	}
       }
       // Approximating `-sc_expr'.
       if (neg_pinf_count <= 1) {
-	const N& double_up_approx_minus_i = m_j0[j_1];
+	const N& double_up_approx_minus_i = m_i[n_i+1];
 	if (!is_plus_infinity(double_up_approx_minus_i)) {
 	  N up_approx_minus_i;
 	  div2exp_assign_r(up_approx_minus_i,
@@ -2885,7 +2885,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	}
 	else {
 	  ++neg_pinf_count;
-	  neg_pinf_index = i;
+	  neg_pinf_index = id;
 	}
       }
     }
@@ -2896,7 +2896,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
       assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
-	const N& double_up_approx_minus_i = m_j0[j_1];
+	const N& double_up_approx_minus_i = m_i[n_i+1];
 	if (!is_plus_infinity(double_up_approx_minus_i)) {
 	  N up_approx_minus_i;
 	  div2exp_assign_r(up_approx_minus_i,
@@ -2906,12 +2906,12 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	}
 	else {
 	  ++pos_pinf_count;
-	  pos_pinf_index = i;
+	  pos_pinf_index = id;
 	}
       }
       // Approximating `-sc_expr'.
       if (neg_pinf_count <= 1) {
-	const N& double_up_approx_i = m_j1[j_0];
+	const N& double_up_approx_i = m_ci[n_i];
 	if (!is_plus_infinity(double_up_approx_i)) {
 	  N up_approx_i;
 	  div2exp_assign_r(up_approx_i, double_up_approx_i, 1, ROUND_UP);
@@ -2919,13 +2919,13 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	}
 	else {
 	  ++neg_pinf_count;
-	  neg_pinf_index = i;
+	  neg_pinf_index = id;
 	}
       }
     }
   }
 
-  // Remove all constraints with var in the rows.
+  // Remove all constraints on `var'.
   forget_all_octagonal_constraints(n_var);
   // Return immediately if no approximation could be computed.
   if (pos_pinf_count > 1 && neg_pinf_count > 1) {
@@ -2933,7 +2933,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
     return;
   }
 
-  // In the following, strongly closure will be definitely lost.
+  // In the following, strong closure will be definitely lost.
   status.reset_strongly_closed();
 
   // Before computing quotients, the denominator should be approximated
@@ -2954,45 +2954,29 @@ Octagonal_Shape<T>::affine_image(const Variable var,
       // Add the constraint `v <= pos_sum'.
       N double_pos_sum = pos_sum;
       mul2exp_assign_r(double_pos_sum, pos_sum, 1, ROUND_IGNORE);
-      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var+1;
-      typename OR_Matrix<N>::row_reference_type r = *i;
-      assign_r(r[n_var], double_pos_sum, ROUND_UP);
+      assign_r(matrix[n_var+1][n_var], double_pos_sum, ROUND_UP);
       // Deduce constraints of the form `v - u', where `u != v'.
-      deduce_v_minus_u_bounds(var_id, last_var_id, sc_expr, sc_den, pos_sum);
+      deduce_v_minus_u_bounds(var_id, w_id, sc_expr, sc_den, pos_sum);
       // Deduce constraints of the form `v + u', where `u != v'.
-      deduce_v_plus_u_bounds(var_id, last_var_id, sc_expr, sc_den, pos_sum);
+      deduce_v_plus_u_bounds(var_id, w_id, sc_expr, sc_den, pos_sum);
     }
     else
       // Here `pos_pinf_count == 1'.
       if (pos_pinf_index != var_id) {
-	if (sc_expr.coefficient(Variable(pos_pinf_index)) == sc_den) {
+	const Coefficient& ppi = sc_expr.coefficient(Variable(pos_pinf_index));
+	if (ppi == sc_den)
 	  // Add the constraint `v - pos_pinf_index <= pos_sum'.
-	  if (var_id < pos_pinf_index) {
-	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*pos_pinf_index;
-	    typename OR_Matrix<N>::row_reference_type r_i = *i;
-	    assign_r(r_i[n_var], pos_sum, ROUND_UP);
-	  }
-	  if (var_id > pos_pinf_index) {
-	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-	    typename OR_Matrix<N>::row_reference_type r_ci = *(i+1);
-	    assign_r(r_ci[2*pos_pinf_index+1], pos_sum, ROUND_UP);
-	  }
-	}
-	else {
-	  if (sc_expr.coefficient(Variable(pos_pinf_index)) == minus_sc_den) {
+	  if (var_id < pos_pinf_index)
+	    assign_r(matrix[2*pos_pinf_index][n_var], pos_sum, ROUND_UP);
+	  else
+	    assign_r(matrix[n_var+1][2*pos_pinf_index+1], pos_sum, ROUND_UP);
+	else
+	  if (ppi == minus_sc_den)
 	    // Add the constraint `v + pos_pinf_index <= pos_sum'.
-	    if (var_id < pos_pinf_index) {
-	      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*pos_pinf_index;
-	      typename OR_Matrix<N>::row_reference_type r_ci = *(i+1);
-	      assign_r(r_ci[n_var], pos_sum, ROUND_UP);
-	    }
-	    if (var_id > pos_pinf_index) {
-	      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-	      typename OR_Matrix<N>::row_reference_type r_ci = *(i+1);
-	      assign_r(r_ci[2*pos_pinf_index], pos_sum, ROUND_UP);
-	    }
-	  }
-	}
+	    if (var_id < pos_pinf_index)
+	      assign_r(matrix[2*pos_pinf_index+1][n_var], pos_sum, ROUND_UP);
+	    else
+	      assign_r(matrix[n_var+1][2*pos_pinf_index], pos_sum, ROUND_UP);
       }
   }
 
@@ -3006,48 +2990,32 @@ Octagonal_Shape<T>::affine_image(const Variable var,
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
       N double_neg_sum = neg_sum;
       mul2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
-      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-      typename OR_Matrix<N>::row_reference_type r_i = *i;
-      assign_r(r_i[n_var+1], double_neg_sum, ROUND_UP);
+      assign_r(matrix[n_var][n_var+1], double_neg_sum, ROUND_UP);
       // Deduce constraints of the form `u - v', where `u != v'.
-      deduce_u_minus_v_bounds(var_id, last_var_id, sc_expr, sc_den, neg_sum);
+      deduce_u_minus_v_bounds(var_id, w_id, sc_expr, sc_den, neg_sum);
       // Deduce constraints of the form `-v - u', where `u != v'.
-      deduce_minus_v_minus_u_bounds(var_id, last_var_id,
+      deduce_minus_v_minus_u_bounds(var_id, w_id,
 				    sc_expr, sc_den, neg_sum);
     }
     else
       // Here `neg_pinf_count == 1'.
       if (neg_pinf_index != var_id) {
-	if (sc_expr.coefficient(Variable(neg_pinf_index)) == sc_den) {
-	// Add the constraint `v - neg_pinf_index >= -neg_sum',
-	// i.e., `neg_pinf_index - v <= neg_sum'.
-	  if (neg_pinf_index < var_id) {
-	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-	    typename OR_Matrix<N>::row_reference_type r_i = *i;
-	    assign_r(r_i[2*neg_pinf_index], neg_sum, ROUND_UP);
-	  }
-	  if (neg_pinf_index > var_id) {
-	    typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*neg_pinf_index;
-	    typename OR_Matrix<N>::row_reference_type r_ci = *(i+1);
-	    assign_r(r_ci[n_var+1], neg_sum, ROUND_UP);
-	  }
-	}
-	else {
-	  if (sc_expr.coefficient(Variable(neg_pinf_index)) == minus_sc_den) {
+	const Coefficient& npi = sc_expr.coefficient(Variable(neg_pinf_index));
+	if (npi == sc_den)
+	  // Add the constraint `v - neg_pinf_index >= -neg_sum',
+	  // i.e., `neg_pinf_index - v <= neg_sum'.
+	  if (neg_pinf_index < var_id)
+	    assign_r(matrix[n_var][2*neg_pinf_index], neg_sum, ROUND_UP);
+	  else
+	    assign_r(matrix[2*neg_pinf_index+1][n_var+1], neg_sum, ROUND_UP);
+	else
+	  if (npi == minus_sc_den)
 	    // Add the constraint `v + neg_pinf_index >= -neg_sum',
 	    // i.e., `-neg_pinf_index - v <= neg_sum'.
-	    if (neg_pinf_index < var_id) {
-	      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n_var;
-	      typename OR_Matrix<N>::row_reference_type r_i = *i;
-	      assign_r(r_i[2*neg_pinf_index+1], neg_sum, ROUND_UP);
-	    }
-	    if (neg_pinf_index > var_id) {
-	      typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + 2*neg_pinf_index;
-	      typename OR_Matrix<N>::row_reference_type r_i = *i;
-	      assign_r(r_i[n_var+1], neg_sum, ROUND_UP);
-	    }
-	  }
-	}
+	    if (neg_pinf_index < var_id)
+	      assign_r(matrix[n_var][2*neg_pinf_index+1], neg_sum, ROUND_UP);
+	    else
+	      assign_r(matrix[2*neg_pinf_index][n_var+1], neg_sum, ROUND_UP);
       }
   }
 
