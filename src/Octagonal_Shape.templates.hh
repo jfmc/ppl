@@ -587,9 +587,8 @@ Octagonal_Shape<T>::is_bounded() const {
   for (typename OR_Matrix<N>::const_row_iterator i = matrix.row_begin(),
 	 iend = matrix.row_end(); i != iend; ++i) {
     typename OR_Matrix<N>::const_row_reference_type x_i = *i;
-    const dimension_type rs_i = i.row_size();
     const dimension_type i_index = i.index();
-    for (dimension_type j = 0; j < rs_i; ++j)
+    for (dimension_type j = i.row_size(); j-- > 0; )
       if (i_index != j)
 	if (is_plus_infinity(x_i[j]))
 	  return false;
@@ -610,17 +609,14 @@ Octagonal_Shape<T>::is_strong_coherent() const {
   // where ci = i + 1, if i is even number or
   //       ci = i - 1, if i is odd.
   // Ditto for cj.
-  for (dimension_type i = 0; i < num_rows; ++i) {
-    const dimension_type ci = coherent_index(i);
+  for (dimension_type i = num_rows; i-- > 0; ) {
     typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin() + i;
     typename OR_Matrix<N>::const_row_reference_type m_i = *iter;
-    const N& m_i_ci = m_i[ci];
-    const dimension_type rs_i = matrix.row_size(i);
-    for (dimension_type j = 0; j < rs_i; ++j)
+    const N& m_i_ci = m_i[coherent_index(i)];
+    for (dimension_type j = matrix.row_size(i); j-- > 0; )
       // Note: on the main diagonal only PLUS_INFINITY can occur.
       if (i != j){
-	const dimension_type cj = coherent_index(j);
-	const N& m_cj_j = matrix[cj][j];
+	const N& m_cj_j = matrix[coherent_index(j)][j];
 	if (!is_plus_infinity(m_i_ci) &&
 	    !is_plus_infinity(m_cj_j)) {
 	  N d;
@@ -4563,8 +4559,7 @@ Octagonal_Shape<T>::OK() const {
   for (typename OR_Matrix<N>::const_row_iterator i = matrix.row_begin(),
 	 iend = matrix.row_end(); i != iend; ++i) {
     typename OR_Matrix<N>::const_row_reference_type x_i = *i;
-    dimension_type rs_i = i.row_size();
-    for (dimension_type j = 0; j < rs_i; ++j)
+    for (dimension_type j = i.row_size(); j-- > 0; )
       if (is_minus_infinity(x_i[j])) {
 #ifndef NDEBUG
 	using namespace Parma_Polyhedra_Library::IO_Operators;
