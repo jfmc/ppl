@@ -38,7 +38,10 @@ site: http://www.cs.unipr.it/ppl/ .  */
 
 namespace Parma_Polyhedra_Library {
 
-// Put it in the namespace here to declare it friend later.
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
+/*! \relates OR_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 bool operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
 
@@ -333,7 +336,7 @@ private:
   //! Contains the capacity of \p vec.
   dimension_type vec_capacity;
 
-  // Private and not implemented: default construction is not allowed.
+  //! Private and not implemented: default construction is not allowed.
   OR_Matrix();
 
   /*! \brief
@@ -468,10 +471,10 @@ public:
 
 namespace std {
 
-#ifdef Parma_Polyhedra_Library_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::OR_Matrix */
-#endif // Parma_Polyhedra_Library_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 void swap(Parma_Polyhedra_Library::OR_Matrix<T>& x,
 	  Parma_Polyhedra_Library::OR_Matrix<T>& y);
@@ -481,17 +484,10 @@ void swap(Parma_Polyhedra_Library::OR_Matrix<T>& x,
 
 namespace Parma_Polyhedra_Library {
 
-#ifdef Parma_Polyhedra_Library_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
-/*! \relates OR_Matrix */
-#endif // Parma_Polyhedra_Library_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename T>
-bool operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
-
-#ifdef Parma_Polyhedra_Library_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates OR_Matrix */
-#endif // Parma_Polyhedra_Library_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 bool operator!=(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
 

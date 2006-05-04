@@ -470,7 +470,18 @@ OR_Matrix<T>::clear() {
   OR_Matrix<T>(0).swap(*this);
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T>
+inline bool
+operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y) {
+  return x.space_dim == y.space_dim && x.vec == y.vec;
+}
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates OR_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 inline bool
 operator!=(const OR_Matrix<T>& x, const OR_Matrix<T>& y) {
@@ -549,15 +560,6 @@ OR_Matrix<T>::resize_no_copy(const dimension_type new_dim) {
     grow(new_dim);
   else if (new_dim < space_dim)
     shrink(new_dim);
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename T>
-inline bool
-operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y) {
-  return x.space_dim == y.space_dim && x.vec == y.vec;
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
