@@ -274,6 +274,7 @@ BD_Shape<T>::is_empty() const {
   return marked_empty();
 }
 
+/*! \relates BD_Shape */
 template <typename T>
 inline bool
 operator==(const BD_Shape<T>& x, const BD_Shape<T>& y) {
@@ -304,6 +305,7 @@ operator==(const BD_Shape<T>& x, const BD_Shape<T>& y) {
   return x.dbm == y.dbm;
 }
 
+/*! \relates BD_Shape */
 template <typename T>
 inline bool
 operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y) {

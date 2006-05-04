@@ -62,8 +62,7 @@ operator<<(std::ostream& s, const BD_Shape<T>& bds);
 } // namespace IO_Operators
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are the same BDS.
-/*!
-  \relates BD_Shape
+/*! \relates BD_Shape
   Note that \p x and \p y may be dimension-incompatible shapes:
   in this case, the value <CODE>false</CODE> is returned.
 */
@@ -71,8 +70,7 @@ template <typename T>
 bool operator==(const BD_Shape<T>& x, const BD_Shape<T>& y);
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same BDS.
-/*!
- \relates BD_Shape
+/*! \relates BD_Shape
   Note that \p x and \p y may be dimension-incompatible shapes:
   in this case, the value <CODE>true</CODE> is returned.
 */
@@ -243,7 +241,7 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as a bounded difference.
-/*!
+/*! \relates BD_Shape
   \return
   <CODE>true</CODE> if the constraint \p c is a
   \ref Bounded_Difference_Shapes "bounded difference";
@@ -286,6 +284,7 @@ bool extract_bounded_difference(const Constraint& c,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Extracts leader indices from the predecessor relation.
+/*! \relates BD_Shape */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void compute_leader_indices(const std::vector<dimension_type>& predecessor,
 			    std::vector<dimension_type>& indices);
