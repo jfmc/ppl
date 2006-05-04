@@ -4044,22 +4044,24 @@ Octagonal_Shape<T>
 	// Approximate the homogeneous part of `sc_expr'.
 	// Note: indices above `w_id' can be disregarded, as they all have
 	// a zero coefficient in `expr'.
-	for (dimension_type i = w_id + 1; i-- > 0; ) {
-	  const Coefficient& sc_i = sc_expr.coefficient(Variable(i));
-	  const dimension_type j_0 = 2*i;
-	  const dimension_type j_1 = j_0 + 1;
-	  typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin() + j_0;
-	  typename OR_Matrix<N>::const_row_reference_type m_j0 = *iter;
-	  typename OR_Matrix<N>::const_row_reference_type m_j1 = *(iter+1);
+	for (typename OR_Matrix<N>::const_row_iterator m_iter = matrix.row_begin(),
+	       m_end = m_iter + (2*w_id) + 2; m_iter != m_end; ) {
+	  const dimension_type n_i = m_iter.index();
+	  const dimension_type id = n_i/2;
+	  typename OR_Matrix<N>::const_row_reference_type m_i = *m_iter;
+	  ++m_iter;
+	  typename OR_Matrix<N>::const_row_reference_type m_ci = *m_iter;
+	  ++m_iter;
+	  const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
 	  const int sign_i = sgn(sc_i);
 	  if (sign_i == 0)
 	    continue;
 	  // Choose carefully: we are approximating `sc_expr'.
-	  const N& double_approx_i = (sign_i > 0) ? m_j1[j_0] : m_j0[j_1];
+	  const N& double_approx_i = (sign_i > 0) ? m_ci[n_i] : m_i[n_i+1];
 	  if (is_plus_infinity(double_approx_i)) {
 	    if (++pinf_count > 1)
 	      break;
-	    pinf_index = i;
+	    pinf_index = id;
 	    continue;
 	  }
 	  N coeff_i;
@@ -4128,22 +4130,24 @@ Octagonal_Shape<T>
 	assign_r(sum, minus_sc_b, ROUND_UP);
 
 	// Approximate the homogeneous part of `-sc_expr'.
-	for (dimension_type i = w_id + 1; i-- > 0; ) {
-	  const Coefficient& sc_i = sc_expr.coefficient(Variable(i));
-	  const dimension_type j_0 = 2*i;
-	  const dimension_type j_1 = j_0 + 1;
-	  typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin() + j_0;
-	  typename OR_Matrix<N>::const_row_reference_type m_j0 = *iter;
-	  typename OR_Matrix<N>::const_row_reference_type m_j1 = *(iter+1);
+	for (typename OR_Matrix<N>::const_row_iterator m_iter = matrix.row_begin(),
+	       m_end = m_iter + (2*w_id) + 2; m_iter != m_end; ) {
+	  const dimension_type n_i = m_iter.index();
+	  const dimension_type id = n_i/2;
+	  typename OR_Matrix<N>::const_row_reference_type m_i = *m_iter;
+	  ++m_iter;
+	  typename OR_Matrix<N>::const_row_reference_type m_ci = *m_iter;
+	  ++m_iter;
+	  const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
 	  const int sign_i = sgn(sc_i);
 	  if (sign_i == 0)
 	    continue;
 	  // Choose carefully: we are approximating `-sc_expr'.
-	  const N& double_approx_i = (sign_i > 0) ? m_j0[j_1] : m_j1[j_0];
+	  const N& double_approx_i = (sign_i > 0) ? m_i[n_i+1] : m_ci[n_i];
 	  if (is_plus_infinity(double_approx_i)) {
 	    if (++pinf_count > 1)
 	      break;
-	    pinf_index = i;
+	    pinf_index = id;
 	    continue;
 	  }
 	  N coeff_i;
