@@ -244,7 +244,7 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as an octagonal difference.
-/*!
+/*! \relates Octagonal_Shape
   \return
   <CODE>true</CODE> if the constraint \p c is an octagonal difference;
   <CODE>false</CODE> otherwise.
@@ -289,6 +289,12 @@ bool extract_octagonal_difference(const Constraint& c,
 				  dimension_type& c_second_var,
 				  Coefficient& c_coeff,
 				  Coefficient& c_term);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns the index coherent to \p i.
+/*! \relates Octagonal_Shape */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+dimension_type coherent_index(dimension_type i);
 
 } // namespace Parma_Polyhedra_Library
 

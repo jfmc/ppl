@@ -37,6 +37,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 // FIXME: find the appropriate place for this.
+/*! \relates Octagonal_Shape */
 inline dimension_type
 coherent_index(const dimension_type i) {
   return (i%2) ? i-1 : i+1;
@@ -132,6 +133,7 @@ Octagonal_Shape<T>::space_dimension() const {
   return space_dim;
 }
 
+/*! \relates Octagonal_Shape */
 template <typename T>
 inline bool
 operator==(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y) {
@@ -158,6 +160,7 @@ operator==(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y) {
   return x.matrix == y.matrix;
 }
 
+/*! \relates Octagonal_Shape */
 template <typename T>
 inline bool
 operator!=(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y) {
