@@ -242,10 +242,10 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   }
 #endif
   for (dimension_type index = 0; index < sys.num_generators(); ++index) {
-    Grid_Generator& row = sys[index];
-    if (row.is_parameter_or_point())
+    Grid_Generator& gen = sys[index];
+    if (gen.is_parameter_or_point())
       for (dimension_type col = 0; col < num_cols; ++col)
-        row[col] *= red_pivot_col;
+        gen[col] *= red_pivot_col;
   }
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
@@ -291,10 +291,10 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   // all the moduli the same this requires multiplying all the other
   // proper congruences in the same way.
   for (dimension_type index = 0; index < sys.num_rows(); ++index) {
-    Congruence& row = sys[index];
-    if (row.is_proper_congruence())
+    Congruence& cg = sys[index];
+    if (cg.is_proper_congruence())
       for (dimension_type col = 0; col < num_cols; ++col)
-        row[col] *= red_pivot_col;
+        cg[col] *= red_pivot_col;
   }
   // column num_cols contains the modulus, so start at the next column.
   --num_cols;
