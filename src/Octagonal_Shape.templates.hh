@@ -3952,14 +3952,14 @@ Octagonal_Shape<T>
 	// Add the new constraints `v - w <= b/denominator'.
 	if (var_id < w_id)
 	  add_octagonal_constraint(n_w, n_var, d);
-	if (var_id > w_id)
+	else
 	  add_octagonal_constraint(n_var+1, n_w+1, d);
       }
       else if (w_coeff == minus_den) {
 	// Add the new constraints `v + w <= b/denominator'.
 	if (var_id < w_id)
 	  add_octagonal_constraint(n_w+1, n_var, d);
-	if (var_id > w_id)
+	else
 	  add_octagonal_constraint(n_var+1, n_w, d);
       }
       break;
@@ -3981,7 +3981,7 @@ Octagonal_Shape<T>
 	// i.e.,  `-v - w <= -b/denominator'.
 	if (var_id < w_id)
 	  add_octagonal_constraint(n_w, n_var+1, d);
-	if (var_id > w_id)
+	else
 	  add_octagonal_constraint(n_var, n_w+1, d);
       }
       break;
@@ -4089,7 +4089,7 @@ Octagonal_Shape<T>
 	    // Add the constraint `v - pinf_index <= sum'.
 	    if (var_id < pinf_index)
 	      add_octagonal_constraint(pinf_ind, n_var, sum);
-	    if (var_id > pinf_index)
+	    else
 	      add_octagonal_constraint(n_var+1, pinf_ind+1, sum);
 	  }
 	  else {
@@ -4097,7 +4097,7 @@ Octagonal_Shape<T>
 	      // Add the constraint `v + pinf_index <= sum'.
 	      if (var_id < pinf_index)
 		add_octagonal_constraint(pinf_ind+1, n_var, sum);
-	      if (var_id > pinf_index)
+	      else
 		add_octagonal_constraint(n_var+1, pinf_ind, sum);
 	    }
 	  }
@@ -4178,7 +4178,7 @@ Octagonal_Shape<T>
 	    // i.e., `pinf_index - v <= sum'.
 	    if (pinf_index < var_id)
 	      add_octagonal_constraint(n_var, pinf_ind, sum);
-	    if (pinf_index > var_id)
+	    else
 	      add_octagonal_constraint(pinf_ind+1, n_var, sum);
 	  }
 	  else {
@@ -4187,7 +4187,7 @@ Octagonal_Shape<T>
 	      // i.e., `-pinf_index - v <= sum'.
 	      if (pinf_index < var_id)
 		add_octagonal_constraint(n_var, pinf_ind+1, sum);
-	      if (pinf_index > var_id)
+	      else
 		add_octagonal_constraint(pinf_ind, n_var+1, sum);
 	    }
 	  }
