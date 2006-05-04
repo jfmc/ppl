@@ -578,7 +578,7 @@ Octagonal_Shape<T>::is_universe() const {
 template <typename T>
 inline bool
 Octagonal_Shape<T>::is_bounded() const {
-  strong_closure_assign();  
+  strong_closure_assign();
   // A zero-dimensional or empty octagon is bounded.
   if (marked_empty() || space_dim == 0)
     return true;
@@ -592,7 +592,7 @@ Octagonal_Shape<T>::is_bounded() const {
     for (dimension_type j = 0; j < rs_i; ++j)
       if (i_index != j)
 	if (is_plus_infinity(x_i[j]))
-	  return false; 
+	  return false;
   }
 
   return true;
@@ -3915,34 +3915,37 @@ Octagonal_Shape<T>
       else
 	w_id = i;
 
+  // Now we know the form of `expr':
+  // - If t == 0, then expr == b, with `b' a constant;
+  // - If t == 1, then expr == a*j + b, where `j != v';
+  // - If t == 2, the `expr' is of the general form.
+  // Avoid repeated computations.
+  const dimension_type n_var = 2*var_id;
+  TEMP_INTEGER(minus_den);
+  neg_assign(minus_den, denominator);
+
   // Since we are only able to record octagonal differences, we can
   // precisely deal with the case of a single variable only if its
   // coefficient (taking into account the denominator) is 1.
   // If this is not the case, we fall back to the general case
   // so as to over-approximate the constraint.
   if (t == 1 && expr.coefficient(Variable(w_id)) != denominator
-      && expr.coefficient(Variable(w_id)) != -denominator)
+      && expr.coefficient(Variable(w_id)) != minus_den)
     t = 2;
-
-  // Now we know the form of `expr':
-  // - If t == 0, then expr == b, with `b' a constant;
-  // - If t == 1, then expr == a*j + b, where `j != v';
-  // - If t == 2, the `expr' is of the general form.
-  const dimension_type n_var = 2*var_id;
 
   if (t == 0) {
     // Case 1: expr == b.
-    b *= 2;
-    typename OR_Matrix<N>::row_iterator iter_v = matrix.row_begin() + n_var;
+    TEMP_INTEGER(two_b);
+    two_b = 2*b;
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
       // Add the constraint `var <= b/denominator'.
-      add_octagonal_constraint(n_var+1, n_var, b, denominator);
+      add_octagonal_constraint(n_var+1, n_var, two_b, denominator);
       break;
     case GREATER_THAN_OR_EQUAL:
       // Add the constraint `var >= b/denominator',
       // i.e., `-var <= -b/denominator',
-      add_octagonal_constraint(n_var, n_var+1, -b, denominator);
+      add_octagonal_constraint(n_var, n_var+1, two_b, minus_den);
       break;
     default:
       // We already dealt with the other cases.
@@ -3952,49 +3955,49 @@ Octagonal_Shape<T>
   }
   else if (t == 1) {
     // Value of the one and only non-zero coefficient in `expr'.
-    const Coefficient& expr_last_var = expr.coefficient(Variable(w_id));
+    const Coefficient& w_coeff = expr.coefficient(Variable(w_id));
     N d;
-    dimension_type lv_index = 2*w_id;
+    const dimension_type n_w = 2*w_id;
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
       div_round_up(d, b, denominator);
       // Note that: `w_id != v', so that `expr' is of the form
-      // expr_last_var * w + b, with `w_id != v'.
-      if (expr_last_var == denominator) {
+      // w_coeff * w + b, with `w_id != v'.
+      if (w_coeff == denominator) {
 	// Add the new constraints `v - w <= b/denominator'.
 	if (var_id < w_id)
-	  add_octagonal_constraint(lv_index, n_var, d);
+	  add_octagonal_constraint(n_w, n_var, d);
 	if (var_id > w_id)
-	  add_octagonal_constraint(n_var+1, lv_index+1, d);
+	  add_octagonal_constraint(n_var+1, n_w+1, d);
       }
-      else if (expr_last_var == -denominator) {
+      else if (w_coeff == minus_den) {
 	// Add the new constraints `v + w <= b/denominator'.
 	if (var_id < w_id)
-	  add_octagonal_constraint(lv_index+1, n_var, d);
+	  add_octagonal_constraint(n_w+1, n_var, d);
 	if (var_id > w_id)
-	  add_octagonal_constraint(n_var+1, lv_index, d);
+	  add_octagonal_constraint(n_var+1, n_w, d);
       }
       break;
 
     case GREATER_THAN_OR_EQUAL:
-      div_round_up(d, -b, denominator);
+      div_round_up(d, b, minus_den);
       // Note that: `w_id != v', so that `expr' is of the form
-      // expr_last_var * w + b, with `w_id != v'.
-      if (expr_last_var == denominator) {
+      // w_coeff * w + b, with `w_id != v'.
+      if (w_coeff == denominator) {
     	// Add the new constraint `v - w >= b/denominator',
     	// i.e.,  `-v + w <= -b/denominator'.
 	if (var_id < w_id)
-	  add_octagonal_constraint(lv_index+1, n_var+1, d);
+	  add_octagonal_constraint(n_w+1, n_var+1, d);
 	if (var_id > w_id)
-	  add_octagonal_constraint(n_var, lv_index, d);
+	  add_octagonal_constraint(n_var, n_w, d);
       }
-      else if (expr_last_var == -denominator) {
+      else if (w_coeff == minus_den) {
 	// Add the new constraints `v + w >= b/denominator',
 	// i.e.,  `-v - w <= -b/denominator'.
 	if (var_id < w_id)
-	  add_octagonal_constraint(lv_index, n_var+1, d);
+	  add_octagonal_constraint(n_w, n_var+1, d);
 	if (var_id > w_id)
-	  add_octagonal_constraint(n_var, lv_index+1, d);
+	  add_octagonal_constraint(n_var, n_w+1, d);
       }
       break;
 
@@ -4012,8 +4015,6 @@ Octagonal_Shape<T>
     neg_assign(minus_b, b);
     const Coefficient& sc_b = is_sc ? b : minus_b;
     const Coefficient& minus_sc_b = is_sc ? minus_b : b;
-    TEMP_INTEGER(minus_den);
-    neg_assign(minus_den, denominator);
     const Coefficient& sc_den = is_sc ? denominator : minus_den;
     const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
     // NOTE: here, for optimization purposes, `minus_expr' is only assigned
@@ -4099,17 +4100,17 @@ Octagonal_Shape<T>
 	  dimension_type pinf_ind = 2*pinf_index;
 	  if (expr.coefficient(Variable(pinf_index)) == denominator ) {
 	    // Add the constraint `v - pinf_index <= sum'.
-	    if (var_id < pinf_index) 
+	    if (var_id < pinf_index)
 	      add_octagonal_constraint(pinf_ind, n_var, sum);
-	    if (var_id > pinf_index) 
+	    if (var_id > pinf_index)
 	      add_octagonal_constraint(n_var+1, pinf_ind+1, sum);
 	  }
 	  else {
 	    if (expr.coefficient(Variable(pinf_index)) == minus_den) {
 	      // Add the constraint `v + pinf_index <= sum'.
-	      if (var_id < pinf_index) 
+	      if (var_id < pinf_index)
 		add_octagonal_constraint(pinf_ind+1, n_var, sum);
-	      if (var_id > pinf_index) 
+	      if (var_id > pinf_index)
 		add_octagonal_constraint(n_var+1, pinf_ind, sum);
 	    }
 	  }
@@ -4186,16 +4187,16 @@ Octagonal_Shape<T>
 	  if (expr.coefficient(Variable(pinf_index)) == denominator) {
 	    // Add the constraint `v - pinf_index >= -sum',
 	    // i.e., `pinf_index - v <= sum'.
-	    if (pinf_index < var_id) 
+	    if (pinf_index < var_id)
 	      add_octagonal_constraint(n_var, pinf_ind, sum);
-	    if (pinf_index > var_id) 
+	    if (pinf_index > var_id)
 	      add_octagonal_constraint(pinf_ind+1, n_var, sum);
 	  }
 	  else {
 	    if (expr.coefficient(Variable(pinf_index)) == minus_den) {
 	      // Add the constraint `v + pinf_index >= -sum',
 	      // i.e., `-pinf_index - v <= sum'.
-	      if (pinf_index < var_id) 
+	      if (pinf_index < var_id)
 		add_octagonal_constraint(n_var, pinf_ind+1, sum);
 	      if (pinf_index > var_id)
 		add_octagonal_constraint(pinf_ind, n_var+1, sum);
