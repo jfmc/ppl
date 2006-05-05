@@ -2450,7 +2450,7 @@ Octagonal_Shape<T>
 	  assign_r(minus_lb_u, matrix[n_u][n_u+1], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
 	  // Compute `ub_u - lb_u'.
-	  add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
+	  add_assign_r(minus_lb_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
 	  // Compute `ub_u - q * (ub_u - lb_u)'.
 	  sub_mul_assign_r(ub_u, q, minus_lb_u, ROUND_NOT_NEEDED);
 	  N up_approx;
@@ -2486,7 +2486,7 @@ Octagonal_Shape<T>
 	  assign_r(ub_u, matrix[n_u+1][n_u], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
 	  mpq_class minus_q;
-	  assign_r(minus_q, minus_expr_u, ROUND_NOT_NEEDED);
+	  assign_r(minus_q, expr_u, ROUND_NOT_NEEDED);
 	  div_assign_r(minus_q, minus_q, mpq_sc_den, ROUND_NOT_NEEDED);
 	  mpq_class minus_lb_u;
 	  assign_r(minus_lb_u, m_u[n_u+1], ROUND_NOT_NEEDED);
