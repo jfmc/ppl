@@ -2369,7 +2369,7 @@ Octagonal_Shape<T>
 	if (!is_plus_infinity(m_cu_u)) {
 	  // Let `ub_u' and `lb_u' be the known upper and lower bound
 	  // for `u', respectively. The upper bound for `v + u' is
-	  // computed as `ub_v + ((-q) * lb_u + (1 + q) * ub_u)',
+	  // computed as `ub_v + ((-q) * lb_u + (1+q) * ub_u)',
 	  // i.e., `ub_v + ub_u + (-q) * (lb_u - ub_u)'.
 	  mpq_class ub_u;
 	  assign_r(ub_u, m_cu[n_u], ROUND_NOT_NEEDED);
@@ -2387,7 +2387,7 @@ Octagonal_Shape<T>
 	  add_mul_assign_r(ub_u, minus_q, lb_u, ROUND_NOT_NEEDED);
 	  N up_approx;
 	  assign_r(up_approx, ub_u, ROUND_UP);
-	  // Deducing `v + u <= ub_v + ((-q) * lb_u + (1 + q) * ub_u)'.
+	  // Deducing `v + u <= ub_v + ((-q) * lb_u + (1+q) * ub_u)'.
 	  N& m_v_plus_u = (n_v < n_u) ? m_cu[n_v] : m_cv[n_u];
 	  add_assign_r(m_v_plus_u, ub_v, up_approx, ROUND_UP);
 	}
@@ -2480,24 +2480,24 @@ Octagonal_Shape<T>
 	if (!is_plus_infinity(m_u_cu)) {
 	  // Let `ub_u' and `lb_u' be the known upper and lower bound
 	  // for `u', respectively. The upper bound for `-v - u' is
-	  // computed as `-lb_v - (q*ub_u + (1-q)*lb_u)',
-	  // i.e., `minus_lb_v - lb_u + (-q)*(ub_u - lb_u)'.
+	  // computed as `-lb_v - ((-q)*ub_u + (1+q)*lb_u)',
+	  // i.e., `minus_lb_v - lb_u + q*(ub_u - lb_u)'.
 	  mpq_class ub_u;
 	  assign_r(ub_u, matrix[n_u+1][n_u], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
-	  mpq_class minus_q;
-	  assign_r(minus_q, expr_u, ROUND_NOT_NEEDED);
-	  div_assign_r(minus_q, minus_q, mpq_sc_den, ROUND_NOT_NEEDED);
+	  mpq_class q;
+	  assign_r(q, expr_u, ROUND_NOT_NEEDED);
+	  div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
 	  mpq_class minus_lb_u;
 	  assign_r(minus_lb_u, m_u[n_u+1], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(minus_lb_u, minus_lb_u, 1, ROUND_NOT_NEEDED);
 	  // Compute `ub_u - lb_u'.
 	  add_assign_r(ub_u, ub_u, minus_lb_u, ROUND_NOT_NEEDED);
-	  // Compute `-lb_u + (-q)*(ub_u - lb_u)'.
-	  add_mul_assign_r(minus_lb_u, minus_q, ub_u, ROUND_NOT_NEEDED);
+	  // Compute `-lb_u + q*(ub_u - lb_u)'.
+	  add_mul_assign_r(minus_lb_u, q, ub_u, ROUND_NOT_NEEDED);
 	  N up_approx;
 	  assign_r(up_approx, minus_lb_u, ROUND_UP);
-	  // Deducing `-v - u <= -lb_v - (q * ub_u + (1-q) * lb_u)'.
+	  // Deducing `-v - u <= -lb_v - ((-q) * ub_u + (1+q) * lb_u)'.
 	  N& m_minus_v_minus_u = (n_v < n_u) ? m_u[n_v+1] : m_v[n_u+1];
 	  add_assign_r(m_minus_v_minus_u, minus_lb_v, up_approx, ROUND_UP);
 	}
