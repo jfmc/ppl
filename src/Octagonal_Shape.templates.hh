@@ -2438,6 +2438,8 @@ Octagonal_Shape<T>
       if (expr_u >= sc_den) {
 	// Here q >= 1: deducing `-v + u <= lb_u - lb_v',
 	// i.e., `u - v <= (-lb_v) - (-lb_u)'.
+	// We avoid to check if `lb_u' is plus infinity, because
+	// it is used for the computation of `lb_v'.
 	N half_m_u_cu;
 	div2exp_assign_r(half_m_u_cu, matrix[n_u][n_u+1], 1, ROUND_UP);
 	N& m_u_minus_v = (n_v < n_u) ? matrix[n_u+1][n_v+1] : m_v[n_u];
@@ -2480,6 +2482,8 @@ Octagonal_Shape<T>
       neg_assign_r(minus_expr_u, expr_u, ROUND_NOT_NEEDED);
       if (minus_expr_u >= sc_den) {
 	// Here q <= -1: Deducing `-v - u <= -lb_v - ub_u'.
+	// We avoid to check if `ub_u' is plus infinity, because
+	// it is used for the computation of `lb_v'.
 	N half_m_cu_u;
 	div2exp_assign_r(half_m_cu_u, matrix[n_u+1][n_u], 1, ROUND_UP);
 	N& m_minus_v_minus_u = (n_v < n_u) ? matrix[n_u][n_v+1] : m_v[n_u+1];
