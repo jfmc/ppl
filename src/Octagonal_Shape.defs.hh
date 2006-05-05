@@ -1175,8 +1175,8 @@ private:
   //! Removes all the constraints on variable \p v_id.
   void forget_all_octagonal_constraints(dimension_type v_id);
 
-  //! Removes all binary constraints on row/column \p v.
-  void forget_binary_octagonal_constraints(dimension_type v);
+  //! Removes all binary constraints on variable \p v_id.
+  void forget_binary_octagonal_constraints(dimension_type v_id);
 
   //! An helper function for the computation of affine relations.
   /*!

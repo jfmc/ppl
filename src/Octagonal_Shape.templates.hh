@@ -2641,7 +2641,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	else {
 	  // Here `w_coeff == -denominator'.
 	  // Remove the binary constraints on `var'.
-	  forget_binary_octagonal_constraints(n_var);
+	  forget_binary_octagonal_constraints(var_id);
  	  Row_Iterator m_iter = matrix.row_begin() + n_var;
 	  N& m_v_cv = (*m_iter)[n_var+1];
 	  ++m_iter;
@@ -2976,7 +2976,7 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
   //   equal to `denominator' or `-denominator', since otherwise we have
   //   to fall back on the general form;
   // - If t == 2, the `expr' is of the general form.
- 
+
   if (t == 0) {
     // Case 1: expr = n; remove all costraints on `var'.
     forget_all_octagonal_constraints(var_id);
@@ -3180,7 +3180,7 @@ Octagonal_Shape<T>
 	      mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
 	      add_assign_r(matrix[n_var+1][n_var], m_v_cv, d, ROUND_UP);
 	      m_v_cv = PLUS_INFINITY;
-	      forget_binary_octagonal_constraints(n_var);
+	      forget_binary_octagonal_constraints(var_id);
 	    }
 	  }
 	  else {
@@ -3248,7 +3248,7 @@ Octagonal_Shape<T>
 	      mul2exp_assign_r(d, d, 1, ROUND_IGNORE);
 	      add_assign_r(matrix[n_var][n_var+1], m_cv_v, d, ROUND_UP);
 	      m_cv_v = PLUS_INFINITY;
-	      forget_binary_octagonal_constraints(n_var);
+	      forget_binary_octagonal_constraints(var_id);
 	    }
 	  }
 	  else {
