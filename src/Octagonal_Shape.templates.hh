@@ -2294,6 +2294,9 @@ Octagonal_Shape<T>
 		       const Linear_Expression& sc_expr,
 		       Coefficient_traits::const_reference sc_den,
 		       const N& ub_v) {
+  // Private method: the caller has to ensure the following.
+  assert(sc_den > 0);
+
   mpq_class mpq_sc_den;
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
 
@@ -2404,6 +2407,9 @@ Octagonal_Shape<T>
 			     const Linear_Expression& sc_expr,
 			     Coefficient_traits::const_reference sc_den,
 			     const N& minus_lb_v) {
+  // Private method: the caller has to ensure the following.
+  assert(sc_den > 0);
+
   mpq_class mpq_sc_den;
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
 
