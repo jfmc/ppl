@@ -2369,25 +2369,25 @@ Octagonal_Shape<T>
 	if (!is_plus_infinity(m_cu_u)) {
 	  // Let `ub_u' and `lb_u' be the known upper and lower bound
 	  // for `u', respectively. The upper bound for `v + u' is
-	  // computed as `ub_v + (q * lb_u + (1-q) * ub_u)',
-	  // i.e., `ub_v + ub_u + q * (lb_u - ub_u)'.
+	  // computed as `ub_v + ((-q) * lb_u + (1 + q) * ub_u)',
+	  // i.e., `ub_v + ub_u + (-q) * (lb_u - ub_u)'.
 	  mpq_class ub_u;
 	  assign_r(ub_u, m_cu[n_u], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(ub_u, ub_u, 1, ROUND_NOT_NEEDED);
-	  mpq_class q;
-	  assign_r(q, minus_expr_u, ROUND_NOT_NEEDED);
-	  div_assign_r(q, q, mpq_sc_den, ROUND_NOT_NEEDED);
+	  mpq_class minus_q;
+	  assign_r(minus_q, minus_expr_u, ROUND_NOT_NEEDED);
+	  div_assign_r(minus_q, minus_q, mpq_sc_den, ROUND_NOT_NEEDED);
 	  mpq_class lb_u;
 	  assign_r(lb_u, matrix[n_u][n_u+1], ROUND_NOT_NEEDED);
 	  div2exp_assign_r(lb_u, lb_u, 1, ROUND_NOT_NEEDED);
 	  neg_assign_r(lb_u, lb_u, ROUND_NOT_NEEDED);
 	  // Compute `lb_u - ub_u'.
 	  sub_assign_r(lb_u, lb_u, ub_u, ROUND_NOT_NEEDED);
-	  // Compute `ub_u + q * (lb_u - ub_u)'.
-	  add_mul_assign_r(ub_u, q, lb_u, ROUND_NOT_NEEDED);
+	  // Compute `ub_u + (-q) * (lb_u - ub_u)'.
+	  add_mul_assign_r(ub_u, minus_q, lb_u, ROUND_NOT_NEEDED);
 	  N up_approx;
 	  assign_r(up_approx, ub_u, ROUND_UP);
-	  // Deducing `v + u <= ub_v + (q * lb_u + (1-q) * ub_u)'.
+	  // Deducing `v + u <= ub_v + ((-q) * lb_u + (1 + q) * ub_u)'.
 	  N& m_v_plus_u = (n_v < n_u) ? m_cu[n_v] : m_cv[n_u];
 	  add_assign_r(m_v_plus_u, ub_v, up_approx, ROUND_UP);
 	}
