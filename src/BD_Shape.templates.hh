@@ -1834,7 +1834,9 @@ BD_Shape<T>
 			  const dimension_type last_v,
 			  const Linear_Expression& sc_expr,
 			  Coefficient_traits::const_reference sc_den,
-			  const N& pos_sum) {
+			  const N& ub_v) {
+  assert(sc_den > 0);
+  assert(!is_plus_infinity(ub_v));
   // Deduce constraints of the form `v - u', where `u != v'.
   // Note: the shortest-path closure is able to deduce the constraint
   // `v - u <= ub_v - lb_u'. We can be more precise if variable `u'
@@ -1853,7 +1855,7 @@ BD_Shape<T>
       if (expr_u > 0)
 	if (expr_u >= sc_den)
 	  // Deducing `v - u <= ub_v - ub_u'.
-	  sub_assign_r(dbm[u][v], pos_sum, dbm_0[u], ROUND_UP);
+	  sub_assign_r(dbm[u][v], ub_v, dbm_0[u], ROUND_UP);
 	else {
 	  DB_Row<N>& dbm_u = dbm[u];
 	  const N& dbm_u0 = dbm_u[0];
@@ -1863,7 +1865,7 @@ BD_Shape<T>
 	    // rational coefficient of `u' in `sc_expr/sc_den',
 	    // the upper bound for `v - u' is computed as
 	    // `ub_v - (q * ub_u + (1-q) * lb_u)', i.e.,
-	    // `pos_sum + (-lb_u) - q * (ub_u + (-lb_u))'.
+	    // `ub_v + (-lb_u) - q * (ub_u + (-lb_u))'.
 	    mpq_class minus_lb_u;
 	    assign_r(minus_lb_u, dbm_u0, ROUND_NOT_NEEDED);
 	    mpq_class q;
@@ -1878,7 +1880,7 @@ BD_Shape<T>
 	    N up_approx;
 	    assign_r(up_approx, minus_lb_u, ROUND_UP);
 	    // Deducing `v - u <= ub_v - (q * ub_u + (1-q) * lb_u)'.
-	    add_assign_r(dbm_u[v], pos_sum, up_approx, ROUND_UP);
+	    add_assign_r(dbm_u[v], ub_v, up_approx, ROUND_UP);
 	  }
 	}
     }
@@ -1891,7 +1893,9 @@ BD_Shape<T>
 			  const dimension_type last_v,
 			  const Linear_Expression& sc_expr,
 			  Coefficient_traits::const_reference sc_den,
-			  const N& neg_sum) {
+			  const N& minus_lb_v) {
+  assert(sc_den > 0);
+  assert(!is_plus_infinity(minus_lb_v));
   // Deduce constraints of the form `u - v', where `u != v'.
   // Note: the shortest-path closure is able to deduce the constraint
   // `u - v <= ub_u - lb_v'. We can be more precise if variable `u'
@@ -1912,7 +1916,7 @@ BD_Shape<T>
 	if (expr_u >= sc_den)
 	  // Deducing `u - v <= lb_u - lb_v',
 	  // i.e., `u - v <= (-lb_v) - (-lb_u)'.
-	  sub_assign_r(dbm_v[u], neg_sum, dbm[u][0], ROUND_UP);
+	  sub_assign_r(dbm_v[u], minus_lb_v, dbm[u][0], ROUND_UP);
 	else {
 	  const N& dbm_0u = dbm_0[u];
 	  if (!is_plus_infinity(dbm_0u)) {
@@ -1921,7 +1925,7 @@ BD_Shape<T>
 	    // rational coefficient of `u' in `sc_expr/sc_den',
 	    // the upper bound for `u - v' is computed as
 	    // `(q * lb_u + (1-q) * ub_u) - lb_v', i.e.,
-	    // `ub_u - q * (ub_u + (-lb_u)) + neg_sum'.
+	    // `ub_u - q * (ub_u + (-lb_u)) + minus_lb_v'.
 	    mpq_class ub_u;
 	    assign_r(ub_u, dbm_0u, ROUND_NOT_NEEDED);
 	    mpq_class q;
@@ -1936,7 +1940,7 @@ BD_Shape<T>
 	    N up_approx;
 	    assign_r(up_approx, ub_u, ROUND_UP);
 	    // Deducing `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
-	    add_assign_r(dbm_v[u], up_approx, neg_sum, ROUND_UP);
+	    add_assign_r(dbm_v[u], up_approx, minus_lb_v, ROUND_UP);
 	  }
 	}
     }

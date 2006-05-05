@@ -1232,7 +1232,7 @@ private:
   /*!
     For each dbm index \p u (less than or equal to \p last_v and different
     from \p v), deduce constraints of the form <CODE>v - u \<= c</CODE>,
-    starting from \p pos_sum which is an upper bound for \p v.
+    starting from \p ub_v which is an upper bound for \p v.
 
     The shortest-path closure is able to deduce the constraint
     <CODE>v - u \<= ub_v - lb_u</CODE>. We can be more precise if variable
@@ -1247,13 +1247,13 @@ private:
 			       dimension_type last_v,
 			       const Linear_Expression& sc_expr,
 			       Coefficient_traits::const_reference sc_den,
-			       const N& pos_sum);
+			       const N& ub_v);
 
   //! An helper function for the computation of affine relations.
   /*!
     For each dbm index \p u (less than or equal to \p last_v and different
     from \p v), deduce constraints of the form <CODE>u - v \<= c</CODE>,
-    starting from \p neg_sum which is a lower bound for \p v.
+    starting from \p minus_lb_v which is a lower bound for \p v.
 
     The shortest-path closure is able to deduce the constraint
     <CODE>u - v \<= ub_u - lb_v</CODE>. We can be more precise if variable
@@ -1269,7 +1269,7 @@ private:
 			       dimension_type last_v,
 			       const Linear_Expression& sc_expr,
 			       Coefficient_traits::const_reference sc_den,
-			       const N& neg_sum);
+			       const N& minus_lb_v);
 
   /*! \brief
     Adds to \p limiting_shape the bounded differences in \p cs
