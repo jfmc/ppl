@@ -2410,6 +2410,7 @@ Octagonal_Shape<T>
 			     const N& minus_lb_v) {
   // Private method: the caller has to ensure the following.
   assert(sc_den > 0);
+  assert(!is_plus_infinity(minus_lb_v));
 
   mpq_class mpq_sc_den;
   assign_r(mpq_sc_den, sc_den, ROUND_NOT_NEEDED);
