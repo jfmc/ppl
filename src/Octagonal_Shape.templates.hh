@@ -2587,7 +2587,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   if (t == 0) {
     // Case 1: expr == b.
     // Remove all constraints on `var'.
-    forget_all_octagonal_constraints(n_var);
+    forget_all_octagonal_constraints(var_id);
     TEMP_INTEGER(two_b);
     two_b = 2*b;
     // Add the constraint `var == b/denominator'.
@@ -2679,7 +2679,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	// Here `w != var', so that `expr' is of the form
 	// +/-denominator * w + b.
 	// Remove all constraints on `var'.
-	forget_all_octagonal_constraints(n_var);
+	forget_all_octagonal_constraints(var_id);
 	const dimension_type n_w = 2*w_id;
 	// Add the new constraint `var - w = b/denominator'.
 	if (w_coeff == denominator)
@@ -2831,7 +2831,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   }
 
   // Remove all constraints on `var'.
-  forget_all_octagonal_constraints(n_var);
+  forget_all_octagonal_constraints(var_id);
   // Return immediately if no approximation could be computed.
   if (pos_pinf_count > 1 && neg_pinf_count > 1) {
     assert(OK());
@@ -2976,11 +2976,10 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
   //   equal to `denominator' or `-denominator', since otherwise we have
   //   to fall back on the general form;
   // - If t == 2, the `expr' is of the general form.
-  const dimension_type n_var = 2*var_id;
-
+ 
   if (t == 0) {
     // Case 1: expr = n; remove all costraints on `var'.
-    forget_all_octagonal_constraints(n_var);
+    forget_all_octagonal_constraints(var_id);
     assert(OK());
     return;
   }
@@ -2997,7 +2996,7 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
       else {
 	// `expr == xw_coeff*w + b', where `w != var'.
 	// Remove all constraints on `var'.
-	forget_all_octagonal_constraints(n_var);
+	forget_all_octagonal_constraints(var_id);
       }
       assert(OK());
       return;
@@ -3024,7 +3023,7 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
   }
   else
     // The transformation is not invertible: all constraints on `var' are lost.
-    forget_all_octagonal_constraints(n_var);
+    forget_all_octagonal_constraints(var_id);
 
   assert(OK());
 }
@@ -3111,7 +3110,7 @@ Octagonal_Shape<T>
   if (t == 0) {
     // Case 1: expr = b.
     // Remove all constraints on `var'.
-    forget_all_octagonal_constraints(n_var);
+    forget_all_octagonal_constraints(var_id);
     // Strong closure is lost.
     status.reset_strongly_closed();
     switch (relsym) {
@@ -3188,7 +3187,7 @@ Octagonal_Shape<T>
 	    // Here `w != v', so that `expr' is the form
 	    // +/- denominator*w + b.
 	    // Remove all constraints on `v'.
-	    forget_all_octagonal_constraints(n_var);
+	    forget_all_octagonal_constraints(var_id);
 	    const dimension_type n_w = 2*w_id;
 	    if (w_coeff == denominator) {
 	      // Add the new constraint `v - w <= b/denominator'.
@@ -3256,7 +3255,7 @@ Octagonal_Shape<T>
 	    // Here `w != v', so that `expr' is of the form
 	    // +/-denominator * w + b, with `w != v'.
 	    // Remove all constraints on `v'.
-	    forget_all_octagonal_constraints(n_var);
+	    forget_all_octagonal_constraints(var_id);
 	    const dimension_type n_w = 2*w_id;
 	    // We have got an expression of the following form:
 	    // var1 + n, with `var1' != `var'.
@@ -3364,7 +3363,7 @@ Octagonal_Shape<T>
 	add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
       }
       // Remove all constraints on `v'.
-      forget_all_octagonal_constraints(n_var);
+      forget_all_octagonal_constraints(var_id);
       status.reset_strongly_closed();
       // Return immediately if no approximation could be computed.
       if (pinf_count > 1) {
@@ -3459,7 +3458,7 @@ Octagonal_Shape<T>
       }
 
       // Remove all constraints on `var'.
-      forget_all_octagonal_constraints(n_var);
+      forget_all_octagonal_constraints(var_id);
       status.reset_strongly_closed();
       // Return immediately if no approximation could be computed.
       if (pinf_count > 1) {
@@ -3628,7 +3627,7 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // Cylindrificate on all variables in the lhs.
       for (dimension_type i = lhs_vars.size(); i-- > 0; ) {
 	dimension_type lhs_vars_i = lhs_vars[i].id();
-	forget_all_octagonal_constraints(2*lhs_vars_i);
+	forget_all_octagonal_constraints(lhs_vars_i);
       }
       // Constrain the left hand side expression so that it is related to
       // the right hand side expression as dictated by `relsym'.
@@ -3657,7 +3656,7 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 
       for (dimension_type i = lhs_vars.size(); i-- > 0; ) {
 	dimension_type lhs_vars_i = lhs_vars[i].id();
-	forget_all_octagonal_constraints(2*lhs_vars_i);
+	forget_all_octagonal_constraints(lhs_vars_i);
       }
 
 #else // Currently unnecessarily complex computation.
@@ -3679,7 +3678,7 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       assert(!marked_empty());
       for (dimension_type i = lhs_vars.size(); i-- > 0; ) {
 	dimension_type lhs_vars_i = lhs_vars[i].id();
-	forget_all_octagonal_constraints(2*lhs_vars_i);
+	forget_all_octagonal_constraints(lhs_vars_i);
       }
       // Constrain the new dimension so that it is related to
       // the left hand side as dictated by `relsym'.
@@ -4097,7 +4096,7 @@ Octagonal_Shape<T>
     return;
   // ...  otherwise, since the relation was not invertible,
   // we just forget all constraints on `var'.
-  forget_all_octagonal_constraints(n_var);
+  forget_all_octagonal_constraints(var_id);
   assert(OK());
 }
 

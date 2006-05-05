@@ -1172,8 +1172,8 @@ private:
 				Coefficient_traits::const_reference num,
 				Coefficient_traits::const_reference den);
 
-  //! Removes all the constraints on row/column \p v.
-  void forget_all_octagonal_constraints(dimension_type v);
+  //! Removes all the constraints on variable \p v_id.
+  void forget_all_octagonal_constraints(dimension_type v_id);
 
   //! Removes all binary constraints on row/column \p v.
   void forget_binary_octagonal_constraints(dimension_type v);

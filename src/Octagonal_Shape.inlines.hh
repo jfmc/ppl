@@ -252,10 +252,10 @@ Octagonal_Shape<T>
 template <typename T>
 inline void
 Octagonal_Shape<T>
-::forget_all_octagonal_constraints(const dimension_type v) {
-  assert(v % 2 == 0 && v < 2*space_dim);
-  const dimension_type cv = v + 1;
-  typename OR_Matrix<N>::row_iterator m_iter = matrix.row_begin() + v;
+::forget_all_octagonal_constraints(const dimension_type v_id) {
+  assert(v_id < space_dim);
+  const dimension_type n_v = 2*v_id;
+  typename OR_Matrix<N>::row_iterator m_iter = matrix.row_begin() + n_v;
   typename OR_Matrix<N>::row_reference_type r_v = *m_iter;
   typename OR_Matrix<N>::row_reference_type r_cv = *(++m_iter);
   for (dimension_type h = m_iter.row_size(); h-- > 0; ) {
@@ -266,8 +266,8 @@ Octagonal_Shape<T>
   for (typename OR_Matrix<N>::row_iterator m_end = matrix.row_end();
        m_iter != m_end; ++m_iter) {
     typename OR_Matrix<N>::row_reference_type r = *m_iter;
-    r[v] = PLUS_INFINITY;
-    r[cv] = PLUS_INFINITY;
+    r[n_v] = PLUS_INFINITY;
+    r[n_v+1] = PLUS_INFINITY;
   }
 }
 
