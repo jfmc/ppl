@@ -1203,7 +1203,7 @@ private:
     <CODE>v + u</CODE>. In particular:
       - if <CODE>q \<= -1</CODE>, then <CODE>v + u \<= ub_v + lb_u</CODE>;
       - if <CODE>-1 \< q \< 0</CODE>, then
-        <CODE>v + u \<= ub_v + (q*lb_u + (1-q)*ub_u)</CODE>.
+        <CODE>v + u \<= ub_v + ((-q)*lb_u + (1+q)*ub_u)</CODE>.
   */
   void deduce_v_pm_u_bounds(dimension_type v_id,
 			    dimension_type last_id,
@@ -1237,7 +1237,7 @@ private:
     <CODE>-v - u</CODE>. In particular:
       - if <CODE>q \<= -1</CODE>, then <CODE>-v - u \<= -lb_v - ub_u</CODE>;
       - if <CODE>-1 \< q \< 0</CODE>, then
-        <CODE>-v - u \<= -lb_v - (q*ub_u + (1-q)*lb_u)</CODE>.
+        <CODE>-v - u \<= -lb_v - ((-q)*ub_u + (1+q)*lb_u)</CODE>.
   */
   void deduce_minus_v_pm_u_bounds(dimension_type v,
 				  dimension_type last_v,
