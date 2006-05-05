@@ -182,8 +182,8 @@ PPL::Congruence::is_trivial_true() const {
   if ((is_equality() && inhomogeneous_term() == 0)
       || (is_proper_congruence()
 	  && (inhomogeneous_term() % modulus() == 0))) {
-    for (unsigned i = 1; i <= space_dimension(); i++)
-      if ((*this)[i] != 0)
+    for (unsigned i = space_dimension(); i > 0; --i)
+      if (operator[](i) != 0)
 	return false;
     return true;
   }
@@ -196,8 +196,8 @@ PPL::Congruence::is_trivial_false() const {
       || (is_proper_congruence()
 	  && ((inhomogeneous_term() % modulus()) == 0)))
     return false;
-  for (unsigned i = 1; i <= space_dimension(); i++)
-    if ((*this)[i] != 0)
+  for (unsigned i = space_dimension(); i > 0; --i)
+    if (operator[](i) != 0)
       return false;
   return true;
 }

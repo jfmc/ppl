@@ -225,8 +225,8 @@ PPL::Congruence_System::is_equal_to(const Congruence_System& cgs) const {
   if (num_rows() != cgs.num_rows())
     return false;
 
-  for (dimension_type row = 0; row < cgs.num_rows(); ++row)
-    for (dimension_type col = 0; col < cgs.num_columns(); ++col) {
+  for (dimension_type row = cgs.num_rows(); row-- > 0; )
+    for (dimension_type col = cgs.num_columns(); col-- > 0; ) {
       if (operator[](row)[col] == cgs[row][col])
 	continue;
       return false;
@@ -312,7 +312,7 @@ PPL::Congruence_System::has_a_free_dimension() const {
   dimension_type free_dims = space_dim;
   for (dimension_type row = num_rows(); row-- > 0; ) {
     const Congruence& cg = operator[](row);
-    for (dimension_type dim = 0; dim < space_dim; ++dim)
+    for (dimension_type dim = space_dim; dim-- > 0; )
       if (free_dim[dim] && cg[dim+1] != 0) {
 	if (--free_dims == 0) {
 	  // All dimensions are constrained.
@@ -321,7 +321,7 @@ PPL::Congruence_System::has_a_free_dimension() const {
 	  // Check that there are free_dims dimensions marked free
 	  // in free_dim.
 	  dimension_type count = 0;
-	  for (dimension_type dim = 0; dim < space_dim; ++dim)
+	  for (dimension_type dim = space_dim; dim-- > 0; )
 	    count += free_dim[dim];
 	  assert(count == free_dims);
 #endif
@@ -503,7 +503,7 @@ PPL::Congruence_System::add_unit_rows_and_columns(dimension_type dims) {
 
   col += dims - 1;
   // Set the diagonal element of each added row.
-  for (dimension_type row = 0; row < dims; ++row)
+  for (dimension_type row = dims; row-- > 0; )
     const_cast<Coefficient&>(operator[](row)[col - row]) = 1;
 }
 
@@ -531,7 +531,7 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
   dimension_type modi = num_columns() - 1;
 
   // Swap the modulus and the new last column, in the old rows.
-  for (dimension_type i = 0; i < old_num_rows; ++i) {
+  for (dimension_type i = old_num_rows; i-- > 0; ) {
     Congruence& cg = operator[](i);
     std::swap(cg[old_modi], cg[modi]);
   }
@@ -544,7 +544,7 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
     // The inhomogeneous term is moved to the same column.
     std::swap(cg_new[0], cg_old[0]);
     // All homogeneous terms are shifted by `space_dim' columns.
-    for (dimension_type j = 1; j < cgs_num_columns; ++j)
+    for (dimension_type j = cgs_num_columns; j-- > 1; )
       std::swap(cg_old[j], cg_new[old_space_dim + j]);
   }
 }
