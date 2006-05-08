@@ -207,11 +207,6 @@ Grid_Generator_System::operator[](const dimension_type k) const {
 }
 
 inline void
-Grid_Generator_System::ascii_dump(std::ostream& s) const {
-  return Generator_System::ascii_dump(s);
-}
-
-inline void
 Grid_Generator_System::set_index_first_pending_row(const dimension_type i) {
   Generator_System::set_index_first_pending_row(i);
 }

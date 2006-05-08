@@ -204,26 +204,36 @@ PPL::Grid_Generator_System
 
 PPL_OUTPUT_DEFINITIONS(Grid_Generator_System)
 
+void
+PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
+  const dimension_type rows = num_rows();
+  const dimension_type columns = num_columns();
+  s << rows << " x " << columns << '\n';
+  for (dimension_type i = 0; i < rows; ++i) {
+    const Generator& g = operator[](i);
+    for (dimension_type j = 0; j < columns; ++j)
+      s << g[j] << ' ';
+    switch (g.type()) {
+    case Generator::LINE:
+      s << "L";
+      break;
+    case Generator::RAY:
+      s << "Q";
+      break;
+    case Generator::POINT:
+      s << "P";
+      break;
+    case Generator::CLOSURE_POINT:
+      assert(false);
+      break;
+    }
+    s << "\n";
+  }
+}
+
 bool
 PPL::Grid_Generator_System::ascii_load(std::istream& s) {
-  // This is a copy of Generator_System::ascii_load, to force
-  // Grid_Generator_System::OK to be called, in order to work around
-  // the assertions in Linear_System::OK.
-
-  // FIXME: Gridify this.  Add an ascii_dump to match.
-
   std::string str;
-  if (!(s >> str) || str != "topology")
-    return false;
-  if (!(s >> str))
-    return false;
-  if (str == "NECESSARILY_CLOSED")
-    set_necessarily_closed();
-  else {
-    if (str != "NOT_NECESSARILY_CLOSED")
-      return false;
-    set_not_necessarily_closed();
-  }
 
   dimension_type nrows;
   dimension_type ncols;
@@ -235,15 +245,7 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
       return false;
   resize_no_copy(nrows, ncols);
 
-  if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
-    return false;
-  set_sorted(str == "(sorted)");
-  dimension_type index;
-  if (!(s >> str) || str != "index_first_pending")
-    return false;
-  if (!(s >> index))
-    return false;
-  set_index_first_pending_row(index);
+  set_index_first_pending_row(nrows);
 
   Grid_Generator_System& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
@@ -265,7 +267,7 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
 	continue;
       break;
     case Grid_Generator::PARAMETER:
-      if (str == "R")
+      if (str == "Q")
 	continue;
       break;
     case Grid_Generator::POINT:
