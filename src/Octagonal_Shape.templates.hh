@@ -2994,7 +2994,7 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
 	affine_image(var, denominator*var - b, w_coeff);
       }
       else {
-	// `expr == xw_coeff*w + b', where `w != var'.
+	// `expr == w_coeff*w + b', where `w != var'.
 	// Remove all constraints on `var'.
 	forget_all_octagonal_constraints(var_id);
       }
@@ -3779,7 +3779,7 @@ Octagonal_Shape<T>
   // be easily computed by inverting the affine relation.
   // Shrink the Octagonal_Shape by adding the constraint induced
   // by the affine relation.
-  Coefficient b = expr.inhomogeneous_term();
+  const Coefficient& b = expr.inhomogeneous_term();
 
   // Number of non-zero coefficients in `expr': will be set to
   // 0, 1, or 2, the latter value meaning any value greater than 1.
