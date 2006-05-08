@@ -107,9 +107,8 @@ PPL::Congruence::strong_normalize() {
   Row::normalize();
 }
 
-/*! \relates Parma_Polyhedra_Library::Congruence */
 PPL::Congruence
-PPL::operator%=(const Linear_Expression& e1, const Linear_Expression& e2) {
+PPL::Congruence::create(const Linear_Expression& e1, const Linear_Expression& e2) {
   // Ensure that diff is created with capacity for the modulus.
   dimension_type dim, e1_dim, e2_dim;
   e1_dim = e1.space_dimension();
