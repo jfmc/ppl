@@ -418,6 +418,9 @@ private:
   //! Sets the Linear_Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_parameter_or_point();
 
+  //! Converts the Grid_Generator into a parameter.
+  void set_is_parameter();
+
   /*! \brief
     Strong normalization: ensures that different Grid_Generator
     objects represent different hyperplanes or hyperspaces.
