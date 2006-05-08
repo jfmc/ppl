@@ -78,7 +78,7 @@ PPL::Grid::Status::ascii_dump(std::ostream& s) const {
     << (test_g_pending() ? '+' : '-') << gensys_pending << ' '
     << ' '
     << (test_sat_c_up_to_date() ? '+' : '-') << satc_upd << ' '
-    << (test_sat_g_up_to_date() ? '+' : '-') << satg_upd << ' '
+    << (test_sat_g_up_to_date() ? '+' : '-') << satg_upd
     << std::endl;
 }
 
