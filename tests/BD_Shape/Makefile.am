@@ -41,42 +41,44 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 check_PROGRAMS = \
-	addconstraints1 \
-	addspacedims1 \
-	affinedimension1 \
-	affineimage1 affineimage2 \
-	affinepreimage1 affinepreimage2 \
-	ascii_dump_load1 \
-	bdsdifference1 \
-	bdshull1 \
-	bgp99extrapolation1 \
-	bhmz05widening1 \
-	bhz03widening1 \
-	cc76narrowing1 \
-	cc76extrapolation1 \
-	closure1 \
-	concatenate1 \
-	constraints1 \
-	contains1 \
-	empty1 \
-	equality1 \
-	fromgensys1 \
-	generalizedaffineimage1 generalizedaffineimage2 \
-	generalizedaffinepreimage1 generalizedaffinepreimage2 \
-	geomcovers1 \
-	h79widening1 \
-	intersection1 \
-	limitedbhmz05extrapolation1 \
-	limitedcc76extrapolation1 \
-	limitedh79extrapolation1 \
-	mapspacedims1 \
-	maxspacedim \
-	minconstraints1 \
-	relations1 relations2 relations3 \
-	removespacedims1 \
-	timeelapse1 \
-	universe1 \
-	writebdshape1
+addconstraints1 \
+addspacedims1 \
+affinedimension1 \
+affineimage1 affineimage2 \
+affinepreimage1 affinepreimage2 \
+ascii_dump_load1 \
+bdsdifference1 \
+bdshull1 \
+bgp99extrapolation1 \
+bhmz05widening1 \
+bhz03widening1 \
+bounded1 \
+cc76narrowing1 \
+cc76extrapolation1 \
+closure1 \
+concatenate1 \
+constraints1 \
+contains1 \
+empty1 \
+equality1 \
+fromgensys1 \
+frompolyhedron1 \
+generalizedaffineimage1 generalizedaffineimage2 \
+generalizedaffinepreimage1 generalizedaffinepreimage2 \
+geomcovers1 \
+h79widening1 \
+intersection1 \
+limitedbhmz05extrapolation1 \
+limitedcc76extrapolation1 \
+limitedh79extrapolation1 \
+mapspacedims1 \
+maxspacedim \
+minconstraints1 \
+relations1 relations2 relations3 \
+removespacedims1 \
+timeelapse1 \
+universe1 \
+writebdshape1
 
 # This will be overriden by the `run_tests' script.
 TEST_CPPFLAGS=-DBD_SHAPE_INSTANCE=mpq_class
@@ -143,6 +145,8 @@ bhmz05widening1_SOURCES = bhmz05widening1.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
 
+bounded1_SOURCES = bounded1.cc
+
 cc76narrowing1_SOURCES = cc76narrowing1.cc
 
 cc76extrapolation1_SOURCES = cc76extrapolation1.cc
@@ -160,6 +164,8 @@ empty1_SOURCES = empty1.cc
 equality1_SOURCES = equality1.cc
 
 fromgensys1_SOURCES = fromgensys1.cc
+
+frompolyhedron1_SOURCES = frompolyhedron1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc

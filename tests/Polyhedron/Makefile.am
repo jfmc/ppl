@@ -41,141 +41,141 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
-	addcongruence1 \
-	addcongruences1 \
-	addconstraint1 \
-	addconstraints1 addconstraints2 \
-	addgenerator1 addgenerator2 \
-	addgenerators1 addgenerators2 \
-	addspacedims1 addspacedims2 \
-	affineimage1 affineimage2 \
-	affinepreimage1 \
-	affinetrans \
-	append1 append2 \
-	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 \
-	bgp99extrapolation1 \
-	bhrz03widening1 bhrz03widening2 bhrz03widening3 \
-	bhz03widening1 \
-	bounded1 \
-	boundedaffineimage1 \
-	boundedaffinepreimage1 \
-	boundedbhrz03extrapolation1 \
-	boundedh79extrapolation1 \
-	boundingbox1 boundingbox2 boundingbox3 \
-	bounds1 \
-	cnncconversion1 \
-	concatenate1 \
-	congruences1 \
-	constraints1 \
-	contains1 contains2 \
-	disjoint1 disjoint2 \
-	dualhypercubes \
-	empty1 \
-	equals1 \
-	exceptions1 exceptions2  exceptions3 \
-	expandspacedim1 expandspacedim2 \
-	foldspacedims1 foldspacedims2 \
-	generalizedaffineimage1 generalizedaffineimage2 \
-	generalizedaffinepreimage1 generalizedaffinepreimage2 \
-	generators1 \
-	geomcovers1 \
-	h79widening1 h79widening2 \
-	intersection1 \
-	limitedbhrz03extrapolation1 \
-	limitedh79extrapolation1 \
-	linearpartition1 \
-	linexpression1 \
-	linearsystem1 \
-	lpproblem1 \
-	mapspacedims1 \
-	matrix1 \
-	max_min1 \
-	maxspacedim1 \
-	mc91 \
-	membytes1 membytes2 \
-	memory1 memory2 \
-	minconstraints1 minconstraints2 \
-	mingenerators1 mingenerators2 \
-	nncminimize1 nncminimize2 \
-	numberinput1 \
-	onepoint \
-	permute \
-	polydifference1 polydifference2 \
-	polyhull1 polyhull2 \
-	polypowerset1 \
-	powerset1 \
-	randphull1 randphull2 \
-	relations1 relations2 relations3 \
-	removespacedims1 removespacedims2 \
-	smm1 \
-	timeelapse1 timeelapse2 \
-	topclosed1 \
-	topclosure1 \
-	universe1 universe2 \
-	writeconsys1 \
-	writegensys1 \
-	writepolyhedron1 writepolyhedron2 \
-	writerelation1 \
-	writevariable1
+addcongruence1 \
+addcongruences1 \
+addconstraint1 \
+addconstraints1 addconstraints2 \
+addgenerator1 addgenerator2 \
+addgenerators1 addgenerators2 \
+addspacedims1 addspacedims2 \
+affineimage1 affineimage2 \
+affinepreimage1 \
+affinetrans \
+append1 append2 \
+ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 \
+bgp99extrapolation1 \
+bhrz03widening1 bhrz03widening2 bhrz03widening3 \
+bhz03widening1 \
+bounded1 \
+boundedaffineimage1 \
+boundedaffinepreimage1 \
+boundedbhrz03extrapolation1 \
+boundedh79extrapolation1 \
+boundingbox1 boundingbox2 boundingbox3 \
+bounds1 \
+cnncconversion1 \
+concatenate1 \
+congruences1 \
+constraints1 \
+contains1 contains2 \
+disjoint1 disjoint2 \
+dualhypercubes \
+empty1 \
+equals1 \
+exceptions1 exceptions2  exceptions3 \
+expandspacedim1 expandspacedim2 \
+foldspacedims1 foldspacedims2 \
+generalizedaffineimage1 generalizedaffineimage2 \
+generalizedaffinepreimage1 generalizedaffinepreimage2 \
+generators1 \
+geomcovers1 \
+h79widening1 h79widening2 \
+intersection1 \
+limitedbhrz03extrapolation1 \
+limitedh79extrapolation1 \
+linearpartition1 \
+linexpression1 \
+linearsystem1 \
+lpproblem1 \
+mapspacedims1 \
+matrix1 \
+max_min1 \
+maxspacedim1 \
+mc91 \
+membytes1 membytes2 \
+memory1 memory2 \
+minconstraints1 minconstraints2 \
+mingenerators1 mingenerators2 \
+nncminimize1 nncminimize2 \
+numberinput1 \
+onepoint \
+permute \
+polydifference1 polydifference2 \
+polyhull1 polyhull2 \
+polypowerset1 \
+powerset1 \
+randphull1 randphull2 \
+relations1 relations2 relations3 \
+removespacedims1 removespacedims2 \
+smm1 \
+timeelapse1 timeelapse2 \
+topclosed1 \
+topclosure1 \
+universe1 universe2 \
+writeconsys1 \
+writegensys1 \
+writepolyhedron1 writepolyhedron2 \
+writerelation1 \
+writevariable1
 
 DERIVED_TESTS = \
-	nnc_addcongruence1 \
-	nnc_addcongruences1 \
-	nnc_addconstraint1 \
-	nnc_addconstraints1 \
-	nnc_addgenerator1 \
-	nnc_addgenerators1 \
-	nnc_addspacedims1 \
-	nnc_affineimage1 \
-	nnc_affinepreimage1 \
-	nnc_affinetrans \
-	nnc_append1 nnc_append2 \
-	nnc_ascii_dump_load1 nnc_ascii_dump_load2 \
-	nnc_bgp99extrapolation1 \
-	nnc_bhrz03widening1 nnc_bhrz03widening2 \
-	nnc_bounded1 \
-	nnc_boundedaffineimage1 \
-	nnc_boundedaffinepreimage1 \
-	nnc_boundedbhrz03extrapolation1 \
-	nnc_boundedh79extrapolation1 \
-	nnc_boundingbox1 nnc_boundingbox2 \
-	nnc_bounds1 \
-	nnc_concatenate1 \
-	nnc_congruences1 \
-	nnc_constraints1 \
-	nnc_contains1 \
-	nnc_disjoint1 \
-	nnc_empty1 \
-	nnc_equals1 \
-	nnc_exceptions1 nnc_exceptions3 \
-	nnc_expandspacedim1 \
-	nnc_foldspacedims1 \
-	nnc_generalizedaffineimage1 \
-	nnc_generalizedaffinepreimage1 \
-	nnc_generators1 \
-	nnc_geomcovers1 \
-	nnc_h79widening1 \
-	nnc_intersection1 \
-	nnc_limitedbhrz03extrapolation1 \
-	nnc_limitedh79extrapolation1 \
-	nnc_linearpartition1 \
-	nnc_mapspacedims1 \
-	nnc_max_min1 \
-	nnc_mc91 \
-	nnc_membytes1 nnc_membytes2 \
-	nnc_minconstraints1 \
-	nnc_mingenerators1 \
-	nnc_onepoint \
-	nnc_permute \
-	nnc_polydifference1 \
-	nnc_polyhull1 \
-	nnc_randphull1 nnc_randphull2 \
-	nnc_relations1 nnc_relations2 \
-	nnc_removespacedims1 \
-	nnc_smm1 \
-	nnc_timeelapse1 \
-	nnc_universe1 \
-	nnc_writepolyhedron1
+nnc_addcongruence1 \
+nnc_addcongruences1 \
+nnc_addconstraint1 \
+nnc_addconstraints1 \
+nnc_addgenerator1 \
+nnc_addgenerators1 \
+nnc_addspacedims1 \
+nnc_affineimage1 \
+nnc_affinepreimage1 \
+nnc_affinetrans \
+nnc_append1 nnc_append2 \
+nnc_ascii_dump_load1 nnc_ascii_dump_load2 \
+nnc_bgp99extrapolation1 \
+nnc_bhrz03widening1 nnc_bhrz03widening2 \
+nnc_bounded1 \
+nnc_boundedaffineimage1 \
+nnc_boundedaffinepreimage1 \
+nnc_boundedbhrz03extrapolation1 \
+nnc_boundedh79extrapolation1 \
+nnc_boundingbox1 nnc_boundingbox2 \
+nnc_bounds1 \
+nnc_concatenate1 \
+nnc_congruences1 \
+nnc_constraints1 \
+nnc_contains1 \
+nnc_disjoint1 \
+nnc_empty1 \
+nnc_equals1 \
+nnc_exceptions1 nnc_exceptions3 \
+nnc_expandspacedim1 \
+nnc_foldspacedims1 \
+nnc_generalizedaffineimage1 \
+nnc_generalizedaffinepreimage1 \
+nnc_generators1 \
+nnc_geomcovers1 \
+nnc_h79widening1 \
+nnc_intersection1 \
+nnc_limitedbhrz03extrapolation1 \
+nnc_limitedh79extrapolation1 \
+nnc_linearpartition1 \
+nnc_mapspacedims1 \
+nnc_max_min1 \
+nnc_mc91 \
+nnc_membytes1 nnc_membytes2 \
+nnc_minconstraints1 \
+nnc_mingenerators1 \
+nnc_onepoint \
+nnc_permute \
+nnc_polydifference1 \
+nnc_polyhull1 \
+nnc_randphull1 nnc_randphull2 \
+nnc_relations1 nnc_relations2 \
+nnc_removespacedims1 \
+nnc_smm1 \
+nnc_timeelapse1 \
+nnc_universe1 \
+nnc_writepolyhedron1
 
 #
 # Sources for the tests

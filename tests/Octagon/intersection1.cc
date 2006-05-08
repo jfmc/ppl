@@ -254,7 +254,7 @@ test08() {
     // to apply this function to two polyhedra of different dimensions.
     oc1.intersection_assign_and_minimize(oc2);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -278,7 +278,7 @@ test09() {
     // to apply this function to two polyhedra of different dimensions.
     oc1.intersection_assign(oc2);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {

@@ -439,8 +439,8 @@ test10() {
     // is not dimension-compatible with the two polyhedra.
     bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -465,8 +465,8 @@ test11() {
     // dimension-compatible.
     bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -499,8 +499,8 @@ test12() {
     // has a strict-inequality.
     bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

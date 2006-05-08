@@ -277,7 +277,7 @@ test09() {
     // dimension-compatible.
     oc1.contains(oc2);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {

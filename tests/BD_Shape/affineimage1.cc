@@ -333,8 +333,8 @@ test12() {
     Coefficient d = 0;
     bd.affine_image(x, coeff1, d);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -357,8 +357,8 @@ test13() {
     // the polyhedron.
     bd.affine_image(y, x + 1);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -383,8 +383,8 @@ test14() {
     // space of the polyhedron.
     bd.affine_image(y, x + z + 1);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -412,8 +412,8 @@ test15() {
     Coefficient d = 3;
     bd.affine_image(x, coeff1, d);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -436,8 +436,8 @@ test16() {
     // use two variables in the expression.
     bd.affine_image(y, y - x);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

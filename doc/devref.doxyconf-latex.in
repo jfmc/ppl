@@ -647,9 +647,11 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/DB_Row.types.hh \
                          @srcdir@/../src/DB_Row.defs.hh \
                          @srcdir@/../src/DB_Row.inlines.hh \
+                         @srcdir@/../src/DB_Row.templates.hh \
                          @srcdir@/../src/DB_Matrix.types.hh \
                          @srcdir@/../src/DB_Matrix.defs.hh \
                          @srcdir@/../src/DB_Matrix.inlines.hh \
+                         @srcdir@/../src/DB_Matrix.templates.hh \
                          @srcdir@/../src/BD_Shape.types.hh \
                          @srcdir@/../src/BD_Shape.defs.hh \
                          @srcdir@/../src/BD_Shape.inlines.hh \

@@ -359,8 +359,8 @@ test13() {
     // to use a strict relation symbol.
     bd.generalized_affine_image(x, LESS_THAN, x + 1);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -382,8 +382,8 @@ test14() {
     // to use a strict relation symbol.
     bd.generalized_affine_image(x, GREATER_THAN, x + 1);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -407,8 +407,8 @@ test15() {
     Coefficient d = 0;
     bd.generalized_affine_image(x, LESS_THAN_OR_EQUAL, x + 1, d);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -432,8 +432,8 @@ test16() {
     // greather than the BDS's space dimension.
     bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, z);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -458,8 +458,8 @@ test17() {
 
     bd.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -483,8 +483,8 @@ test18() {
     // does not appear in the BDS.
     bd.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

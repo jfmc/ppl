@@ -206,7 +206,7 @@ test08() {
     // dimension-compatible.
     oc2.CC76_narrowing_assign(oc1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {

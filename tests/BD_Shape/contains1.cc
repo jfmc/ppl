@@ -105,8 +105,8 @@ test04() {
     // dimension-compatible.
     bd1.contains(bd2);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

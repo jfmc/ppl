@@ -203,6 +203,7 @@ test06() {
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B >= 1);
+  known_result.add_constraint(A - B <= 6);
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
@@ -438,8 +439,8 @@ test13() {
     // dimension-compatible.
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -473,8 +474,8 @@ test14() {
     // is not dimension-compatible with the two polyhedra.
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -507,8 +508,8 @@ test15() {
     // in which there is a strict inequality.
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

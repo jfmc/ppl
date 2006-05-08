@@ -311,7 +311,7 @@ test11() {
     Coefficient d = 0;
     oct.generalized_affine_image(y, LESS_THAN_OR_EQUAL, y + 1, d);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -334,7 +334,7 @@ test12() {
     // to use a strict relation symbol.
     oct.generalized_affine_image(x, LESS_THAN, x + 1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -357,7 +357,7 @@ test13() {
     // to use a strict relation symbol.
     oct.generalized_affine_image(x, GREATER_THAN, x + 1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -382,7 +382,7 @@ test14() {
     // greather than the octagon's space dimension.
     oct.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, z);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -407,7 +407,7 @@ test15() {
     // does not appear in the octagon.
     oct.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -432,7 +432,7 @@ test16() {
     // does not appear in the octagon.
     oct.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {

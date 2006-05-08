@@ -43,7 +43,7 @@ test01() {
     Coefficient d = 0;
     oct.generalized_affine_preimage(y, LESS_THAN_OR_EQUAL, y + 1, d);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -66,7 +66,7 @@ test02() {
     // it is illegal to use a strict relation symbol.
     oct.generalized_affine_preimage(x, LESS_THAN, x + 1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -89,7 +89,7 @@ test03() {
     // it is illegal to use a strict relation symbol.
     oct.generalized_affine_preimage(x, GREATER_THAN, x + 1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -114,7 +114,7 @@ test04() {
     // greather than the octagon's space dimension.
     oct.generalized_affine_preimage(y, GREATER_THAN_OR_EQUAL, z);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -139,7 +139,7 @@ test05() {
     // does not appear in the octagon.
     oct.generalized_affine_preimage(A, GREATER_THAN_OR_EQUAL, B + C);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {

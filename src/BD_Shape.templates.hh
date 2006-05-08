@@ -58,8 +58,9 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
   bool dbm_initialized = false;
   bool point_seen = false;
   // Going through all the points and closure points.
-  for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
-    const Generator& g = *i;
+  for (Generator_System::const_iterator gs_i = gs_begin;
+       gs_i != gs_end; ++gs_i) {
+    const Generator& g = *gs_i;
     switch (g.type()) {
     case Generator::POINT:
       point_seen = true;
@@ -115,8 +116,9 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 				"contains no points.");
 
   // Going through all the lines and rays.
-  for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
-    const Generator& g = *i;
+  for (Generator_System::const_iterator gs_i = gs_begin;
+       gs_i != gs_end; ++gs_i) {
+    const Generator& g = *gs_i;
     switch (g.type()) {
     case Generator::LINE:
       for (dimension_type i = space_dim; i > 0; --i) {
@@ -164,12 +166,12 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   const dimension_type num_dimensions = ph.space_dimension();
 
   if (ph.marked_empty()) {
-    *this = BD_Shape(num_dimensions, EMPTY);
+    *this = BD_Shape<T>(num_dimensions, EMPTY);
     return;
   }
 
   if (num_dimensions == 0) {
-    *this = BD_Shape(num_dimensions, UNIVERSE);
+    *this = BD_Shape<T>(num_dimensions, UNIVERSE);
     return;
   }
 
@@ -177,7 +179,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   // or when the process has polynomial complexity.
   if (complexity == ANY_COMPLEXITY
       || (!ph.has_pending_constraints() && ph.generators_are_up_to_date())) {
-    *this = BD_Shape(ph.generators());
+    *this = BD_Shape<T>(ph.generators());
     return;
   }
 
@@ -190,7 +192,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
     // If the constraint system of the polyhedron is minimized,
     // the test `is_universe()' has polynomial complexity.
     if (ph.is_universe()) {
-      *this = BD_Shape(num_dimensions, UNIVERSE);
+      *this = BD_Shape<T>(num_dimensions, UNIVERSE);
       return;
     }
   }
@@ -199,7 +201,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   for (Constraint_System::const_iterator i = ph.con_sys.begin(),
 	 cs_end = ph.con_sys.end(); i != cs_end; ++i)
     if (i->is_inconsistent()) {
-      *this = BD_Shape(num_dimensions, EMPTY);
+      *this = BD_Shape<T>(num_dimensions, EMPTY);
       return;
     }
 
@@ -217,19 +219,21 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       for (Constraint_System::const_iterator i = ph_cs.begin(),
 	     iend = ph_cs.end(); i != iend; ++i) {
 	const Constraint& c = *i;
-	lp.add_constraint(c.is_equality()
-			  ? (Linear_Expression(c) == 0)
-			  : (Linear_Expression(c) >= 0));
+	if (c.is_strict_inequality())
+	  lp.add_constraint(Linear_Expression(c) >= 0);
+	else
+	  lp.add_constraint(c);
       }
 
     // Check for unsatisfiability.
     if (!lp.is_satisfiable()) {
-      *this = BD_Shape(num_dimensions, EMPTY);
+      *this = BD_Shape<T>(num_dimensions, EMPTY);
       return;
     }
 
+    // Start with a universe BDS that will be refined by the simplex.
+    *this = BD_Shape<T>(num_dimensions, UNIVERSE);
     // Get all the upper bounds.
-    LP_Problem_Status lp_status;
     Generator g(point());
     TEMP_INTEGER(num);
     TEMP_INTEGER(den);
@@ -237,11 +241,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       Variable x(i-1);
       // Evaluate optimal upper bound for `x <= ub'.
       lp.set_objective_function(x);
-      lp_status = lp.solve();
-      if (lp_status == UNBOUNDED_LP_PROBLEM)
-	dbm[0][i] = PLUS_INFINITY;
-      else {
-	assert(lp_status == OPTIMIZED_LP_PROBLEM);
+      if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, num, den);
 	div_round_up(dbm[0][i], num, den);
@@ -252,11 +252,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
 	  continue;
 	Variable y(j-1);
 	lp.set_objective_function(x - y);
-	lp_status = lp.solve();
-	if (lp_status == UNBOUNDED_LP_PROBLEM)
-	  dbm[j][i] = PLUS_INFINITY;
-	else {
-	  assert(lp_status == OPTIMIZED_LP_PROBLEM);
+	if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
 	  g = lp.optimizing_point();
 	  lp.evaluate_objective_function(g, num, den);
 	  div_round_up(dbm[j][i], num, den);
@@ -264,22 +260,19 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       }
       // Evaluate optimal upper bound for `-x <= ub'.
       lp.set_objective_function(-x);
-      lp_status = lp.solve();
-      if (lp_status == UNBOUNDED_LP_PROBLEM)
-	dbm[i][0] = PLUS_INFINITY;
-      else {
-	assert(lp_status == OPTIMIZED_LP_PROBLEM);
+      if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, num, den);
 	div_round_up(dbm[i][0], num, den);
       }
     }
     status.set_shortest_path_closed();
+    assert(OK());
     return;
   }
 
   // Extract easy-to-find bounds from constraints.
-  *this = BD_Shape(ph.con_sys);
+  *this = BD_Shape<T>(ph.constraints());
 }
 
 template <typename T>
@@ -466,6 +459,28 @@ BD_Shape<T>::is_universe() const {
       if (!is_plus_infinity(dbm_i[j]))
 	return false;
   }
+  return true;
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::is_bounded() const {
+  shortest_path_closure_assign(); 
+  const dimension_type space_dim = space_dimension();
+  // A zero-dimensional or empty BDS is bounded.
+  if (marked_empty() || space_dim == 0)
+    return true;
+
+  // A system of bounded differences defining the bounded BDS never can 
+  // contain trivial constraints.
+  for (dimension_type i = space_dim + 1; i-- > 0; ) {
+    const DB_Row<N>& dbm_i = dbm[i];
+    for (dimension_type j = space_dim + 1; j-- > 0; )
+      if (i != j)
+	if (is_plus_infinity(dbm_i[j]))
+	  return false;
+  }
+
   return true;
 }
 
@@ -1539,6 +1554,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
   // Private method: the caller has to ensure the following.
   assert(cs_space_dim <= space_dimension());
 
+  shortest_path_closure_assign();
   bool changed = false;
   for (Constraint_System::const_iterator i = cs.begin(),
 	 iend = cs.end(); i != iend; ++i) {
@@ -1818,7 +1834,9 @@ BD_Shape<T>
 			  const dimension_type last_v,
 			  const Linear_Expression& sc_expr,
 			  Coefficient_traits::const_reference sc_den,
-			  const N& pos_sum) {
+			  const N& ub_v) {
+  assert(sc_den > 0);
+  assert(!is_plus_infinity(ub_v));
   // Deduce constraints of the form `v - u', where `u != v'.
   // Note: the shortest-path closure is able to deduce the constraint
   // `v - u <= ub_v - lb_u'. We can be more precise if variable `u'
@@ -1837,7 +1855,7 @@ BD_Shape<T>
       if (expr_u > 0)
 	if (expr_u >= sc_den)
 	  // Deducing `v - u <= ub_v - ub_u'.
-	  sub_assign_r(dbm[u][v], pos_sum, dbm_0[u], ROUND_UP);
+	  sub_assign_r(dbm[u][v], ub_v, dbm_0[u], ROUND_UP);
 	else {
 	  DB_Row<N>& dbm_u = dbm[u];
 	  const N& dbm_u0 = dbm_u[0];
@@ -1847,7 +1865,7 @@ BD_Shape<T>
 	    // rational coefficient of `u' in `sc_expr/sc_den',
 	    // the upper bound for `v - u' is computed as
 	    // `ub_v - (q * ub_u + (1-q) * lb_u)', i.e.,
-	    // `pos_sum + (-lb_u) - q * (ub_u + (-lb_u))'.
+	    // `ub_v + (-lb_u) - q * (ub_u + (-lb_u))'.
 	    mpq_class minus_lb_u;
 	    assign_r(minus_lb_u, dbm_u0, ROUND_NOT_NEEDED);
 	    mpq_class q;
@@ -1862,7 +1880,7 @@ BD_Shape<T>
 	    N up_approx;
 	    assign_r(up_approx, minus_lb_u, ROUND_UP);
 	    // Deducing `v - u <= ub_v - (q * ub_u + (1-q) * lb_u)'.
-	    add_assign_r(dbm_u[v], pos_sum, up_approx, ROUND_UP);
+	    add_assign_r(dbm_u[v], ub_v, up_approx, ROUND_UP);
 	  }
 	}
     }
@@ -1875,7 +1893,9 @@ BD_Shape<T>
 			  const dimension_type last_v,
 			  const Linear_Expression& sc_expr,
 			  Coefficient_traits::const_reference sc_den,
-			  const N& neg_sum) {
+			  const N& minus_lb_v) {
+  assert(sc_den > 0);
+  assert(!is_plus_infinity(minus_lb_v));
   // Deduce constraints of the form `u - v', where `u != v'.
   // Note: the shortest-path closure is able to deduce the constraint
   // `u - v <= ub_u - lb_v'. We can be more precise if variable `u'
@@ -1896,7 +1916,7 @@ BD_Shape<T>
 	if (expr_u >= sc_den)
 	  // Deducing `u - v <= lb_u - lb_v',
 	  // i.e., `u - v <= (-lb_v) - (-lb_u)'.
-	  sub_assign_r(dbm_v[u], neg_sum, dbm[u][0], ROUND_UP);
+	  sub_assign_r(dbm_v[u], minus_lb_v, dbm[u][0], ROUND_UP);
 	else {
 	  const N& dbm_0u = dbm_0[u];
 	  if (!is_plus_infinity(dbm_0u)) {
@@ -1905,7 +1925,7 @@ BD_Shape<T>
 	    // rational coefficient of `u' in `sc_expr/sc_den',
 	    // the upper bound for `u - v' is computed as
 	    // `(q * lb_u + (1-q) * ub_u) - lb_v', i.e.,
-	    // `ub_u - q * (ub_u + (-lb_u)) + neg_sum'.
+	    // `ub_u - q * (ub_u + (-lb_u)) + minus_lb_v'.
 	    mpq_class ub_u;
 	    assign_r(ub_u, dbm_0u, ROUND_NOT_NEEDED);
 	    mpq_class q;
@@ -1920,7 +1940,7 @@ BD_Shape<T>
 	    N up_approx;
 	    assign_r(up_approx, ub_u, ROUND_UP);
 	    // Deducing `u - v <= (q*lb_u + (1-q)*ub_u) - lb_v'.
-	    add_assign_r(dbm_v[u], up_approx, neg_sum, ROUND_UP);
+	    add_assign_r(dbm_v[u], up_approx, minus_lb_v, ROUND_UP);
 	  }
 	}
     }
@@ -2318,7 +2338,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
       // Case 2: expr = a*w + b, with a = +/- denominator.
       if (j == var.id())
 	// Apply affine_image() on the inverse of this transformation.
-	affine_image(var, a*var - b, denominator);
+	affine_image(var, denominator*var - b, a);
       else {
 	// `expr == a*w + b', where `w != v'.
 	// Remove all constraints on `var'.
@@ -2974,7 +2994,7 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
     return;
   }
 
-  // The image of an empty BDS is empty too.
+  // The preimage of an empty BDS is empty too.
   shortest_path_closure_assign();
   if (marked_empty())
     return;
@@ -3013,9 +3033,17 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
       else
 	j = i+1;
 
+  // Since we are only able to record bounded differences, we can
+  // precisely deal with the case of a single variable only if its
+  // coefficient (taking into account the denominator) is 1.
+  // If this is not the case, we fall back to the general case
+  // so as to over-approximate the constraint.
+  if (t == 1 && expr.coefficient(Variable(j-1)) != denominator)
+    t = 2;
+
   // Now we know the form of `expr':
   // - If t == 0, then expr == b, with `b' a constant;
-  // - If t == 1, then expr == a*j + b, where `j != v';
+  // - If t == 1, then expr == a*j + b, where `j != v' and `a == denominator';
   // - If t == 2, the `expr' is of the general form.
   DB_Row<N>& dbm_0 = dbm[0];
 
@@ -3038,68 +3066,21 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
     }
   }
   else if (t == 1) {
-    // Value of the one and only non-zero coefficient in `expr'.
-    const Coefficient& expr_j = expr.coefficient(Variable(j-1));
+    // Case 2: expr == a*j + b, j != v, a == denominator.
+    assert(expr.coefficient(Variable(j-1)) == denominator);
     N d;
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
+      // Add the new constraint `v - j <= b/denominator'.
       div_round_up(d, b, denominator);
-      // Note that: `j != v', so that `expr' is of the form
-      // expr_j * j + b, with `j != v'.
-      if (expr_j == denominator)
-	// Add the new constraint `v - j <= b/denominator'.
-	add_dbm_constraint(j, v, d);
-      else {
-	// Here expr_j != denominator, so that we should be adding
-	// the constraint `v <= b/denominator - j'.
-	N sum;
-	// Approximate the homogeneous part of `expr'.
-	const int sign_j = sgn(expr_j);
-	const N& approx_j = (sign_j > 0) ? dbm_0[j] : dbm[j][0];
-	if (!is_plus_infinity(approx_j)) {
-	  N coeff_j;
-	  if (sign_j > 0)
-	    assign_r(coeff_j, expr_j, ROUND_UP);
-	  else {
-	    TEMP_INTEGER(minus_expr_j);
-	    neg_assign(minus_expr_j, expr_j);
-	    assign_r(coeff_j, minus_expr_j, ROUND_UP);
-	  }
-	  add_mul_assign_r(sum, coeff_j, approx_j, ROUND_UP);
-	  add_dbm_constraint(0, v, sum);
-	}
-      }
+      add_dbm_constraint(j, v, d);
       break;
-
     case GREATER_THAN_OR_EQUAL:
+      // Add the new constraint `v - j >= b/denominator',
+      // i.e., `j - v <= -b/denominator'.
       div_round_up(d, -b, denominator);
-      // Note that: `j != v', so that `expr' is of the form
-      // expr_j * j + b, with `j != v'.
-      if (expr_j == denominator)
-	// Add the new constraint `v - j >= b/denominator'.
-	add_dbm_constraint(j, v, d);
-      else {
-	// Here expr_j != denominator, so that we should be adding
-	// the constraint `v <= b/denominator - j'.
-	N sum;
-	// Approximate the homogeneous part of `expr_j'.
-	const int sign_j = sgn(expr_j);
-	const N& approx_j = (sign_j > 0) ? dbm_0[j] : dbm[j][0];
-	if (!is_plus_infinity(approx_j)) {
-	  N coeff_j;
-	  if (sign_j > 0)
-	    assign_r(coeff_j, expr_j, ROUND_UP);
-	  else {
-	    TEMP_INTEGER(minus_expr_j);
-	    neg_assign(minus_expr_j, expr_j);
-	    assign_r(coeff_j, minus_expr_j, ROUND_UP);
-	  }
-	  add_mul_assign_r(sum, coeff_j, approx_j, ROUND_UP);
-	  add_dbm_constraint(0, v, sum);
-	}
-      }
+      add_dbm_constraint(v, j, d);
       break;
-
     default:
       // We already dealt with the other cases.
       throw std::runtime_error("PPL internal error");
@@ -3107,8 +3088,9 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
     }
   }
   else {
-    // Here t == 2, so that
-    // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2.
+    // Here t == 2, so that either
+    // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2, or
+    // expr == a*j + b, j != v and a != denominator.
     const bool is_sc = (denominator > 0);
     TEMP_INTEGER(minus_b);
     neg_assign(minus_b, b);
@@ -3258,9 +3240,11 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
     }
   }
 
-  // If the shrunk BD_Shape is empty, its preimage is empty too.
+  // If the shrunk BD_Shape is empty, its preimage is empty too; ...
   if (is_empty())
     return;
+  // ...  otherwise, since the relation was not invertible,
+  // we just forget all constraints on `v'.
   forget_all_dbm_constraints(v);
   // Shortest-path closure is preserved, but not reduction.
   if (marked_shortest_path_reduced())
@@ -3611,7 +3595,7 @@ BD_Shape<T>::OK() const {
     if (is_minus_infinity(dbm[i][j])) {
 #ifndef NDEBUG
       using namespace Parma_Polyhedra_Library::IO_Operators;
-      std::cerr << "BD_Shape::dbm[" << i << "][" << i << "] = "
+      std::cerr << "BD_Shape::dbm[" << i << "][" << j << "] = "
 		<< dbm[i][i] << "!"
 		<< std::endl;
 #endif
@@ -3652,7 +3636,7 @@ BD_Shape<T>::OK() const {
 	if (!redundancy_dbm[i][j] && is_plus_infinity(dbm[i][j])) {
 #ifndef NDEBUG
 	  using namespace Parma_Polyhedra_Library::IO_Operators;
-	  std::cerr << "BD_Shape::dbm[" << i << "][" << i << "] = "
+	  std::cerr << "BD_Shape::dbm[" << i << "][" << j << "] = "
 		    << dbm[i][i] << " is marked as non-redundant!"
 		    << std::endl;
 #endif

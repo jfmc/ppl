@@ -311,7 +311,7 @@ test10() {
     // compatible.
     oc2.CC76_extrapolation_assign(oc1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {

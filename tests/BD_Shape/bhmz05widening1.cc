@@ -319,8 +319,8 @@ test09() {
     // compatible.
     bd2.BHMZ05_widening_assign(bd1);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

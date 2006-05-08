@@ -128,6 +128,16 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
     std::swap(operator[](j), y[j]);
 }
 
+void
+PPL::Grid_Generator::set_is_parameter() {
+  if (is_line())
+    set_is_parameter_or_point();
+  else {
+    Generator::operator[](size() - 1) = Generator::operator[](0);
+    Generator::operator[](0) = 0;
+  }
+}
+
 bool
 PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
   const Grid_Generator& x = *this;
@@ -206,7 +216,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
     s << "l(";
     break;
   case Grid_Generator::PARAMETER:
-    s << "r(";
+    s << "q(";
     if (g[num_variables + 1] == 1)
       break;
     goto any_point;

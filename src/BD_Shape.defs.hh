@@ -62,8 +62,7 @@ operator<<(std::ostream& s, const BD_Shape<T>& bds);
 } // namespace IO_Operators
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are the same BDS.
-/*!
-  \relates BD_Shape
+/*! \relates BD_Shape
   Note that \p x and \p y may be dimension-incompatible shapes:
   in this case, the value <CODE>false</CODE> is returned.
 */
@@ -71,8 +70,7 @@ template <typename T>
 bool operator==(const BD_Shape<T>& x, const BD_Shape<T>& y);
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same BDS.
-/*!
- \relates BD_Shape
+/*! \relates BD_Shape
   Note that \p x and \p y may be dimension-incompatible shapes:
   in this case, the value <CODE>true</CODE> is returned.
 */
@@ -243,7 +241,7 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as a bounded difference.
-/*!
+/*! \relates BD_Shape
   \return
   <CODE>true</CODE> if the constraint \p c is a
   \ref Bounded_Difference_Shapes "bounded difference";
@@ -286,6 +284,7 @@ bool extract_bounded_difference(const Constraint& c,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Extracts leader indices from the predecessor relation.
+/*! \relates BD_Shape */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void compute_leader_indices(const std::vector<dimension_type>& predecessor,
 			    std::vector<dimension_type>& indices);
@@ -532,6 +531,12 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p *this is a universe BDS.
   bool is_universe() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    is a bounded BDS.
+  */
+  bool is_bounded() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this satisfies
@@ -1227,7 +1232,7 @@ private:
   /*!
     For each dbm index \p u (less than or equal to \p last_v and different
     from \p v), deduce constraints of the form <CODE>v - u \<= c</CODE>,
-    starting from \p pos_sum which is an upper bound for \p v.
+    starting from \p ub_v which is an upper bound for \p v.
 
     The shortest-path closure is able to deduce the constraint
     <CODE>v - u \<= ub_v - lb_u</CODE>. We can be more precise if variable
@@ -1242,13 +1247,13 @@ private:
 			       dimension_type last_v,
 			       const Linear_Expression& sc_expr,
 			       Coefficient_traits::const_reference sc_den,
-			       const N& pos_sum);
+			       const N& ub_v);
 
   //! An helper function for the computation of affine relations.
   /*!
     For each dbm index \p u (less than or equal to \p last_v and different
     from \p v), deduce constraints of the form <CODE>u - v \<= c</CODE>,
-    starting from \p neg_sum which is a lower bound for \p v.
+    starting from \p minus_lb_v which is a lower bound for \p v.
 
     The shortest-path closure is able to deduce the constraint
     <CODE>u - v \<= ub_u - lb_v</CODE>. We can be more precise if variable
@@ -1264,7 +1269,7 @@ private:
 			       dimension_type last_v,
 			       const Linear_Expression& sc_expr,
 			       Coefficient_traits::const_reference sc_den,
-			       const N& neg_sum);
+			       const N& minus_lb_v);
 
   /*! \brief
     Adds to \p limiting_shape the bounded differences in \p cs

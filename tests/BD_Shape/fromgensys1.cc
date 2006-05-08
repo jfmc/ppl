@@ -54,7 +54,7 @@ test02() {
     return false;
   }
   catch (std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
@@ -79,7 +79,7 @@ test03() {
     return false;
   }
   catch (std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << e.what() << endl;
     return true;
   }
   catch (...) {

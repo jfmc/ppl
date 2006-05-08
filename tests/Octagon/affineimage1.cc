@@ -269,7 +269,7 @@ test10() {
     Coefficient d = 0;
     oct.affine_image(y, coeff1, d);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
@@ -294,7 +294,7 @@ test11() {
     // the polyhedron.
     oct.affine_image(y, z - 2);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
@@ -321,7 +321,7 @@ test12() {
     // space of the polyhedron.
     oct.affine_image(x, y - z + 1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {

@@ -469,7 +469,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 
     // Represent every point and every parameter using the LCM as the
     // divisor.
-    for (row = 0; row < num_rows; ++row)
+    for (row = num_rows; row-- > 0; )
       sys[row].scale_to_divisor(lcm);
 
     return lcm;

@@ -345,7 +345,7 @@ test10() {
     // dimension-compatible.
     oct2.time_elapse_assign(oct1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {

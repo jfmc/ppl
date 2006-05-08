@@ -315,6 +315,18 @@ public:
   */
   static const Congruence& zero_dim_false();
 
+  //! Returns the congruence \f$e1 = e2 \pmod{1}\f$.
+  static Congruence
+  create(const Linear_Expression& e1, const Linear_Expression& e2);
+
+  //! Returns the congruence \f$e = n \pmod{1}\f$.
+  static Congruence
+  create(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
+  //! Returns the congruence \f$n = e \pmod{1}\f$.
+  static Congruence
+  create(Coefficient_traits::const_reference n, const Linear_Expression& e);
+
   /*! \brief
     Returns a lower bound to the total size in bytes of the memory
     occupied by \p *this.
@@ -433,20 +445,6 @@ private:
   throw_dimension_incompatible(const char* method,
 			       const char* v_name,
 			       Variable v) const;
-
-  // FIXME: this friend declaration must be avoided.
-  friend Congruence
-  PPL::operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
-
-  // FIXME: this friend declaration must be avoided.
-  friend Congruence
-  PPL::operator%=(const Linear_Expression& e,
-		  Coefficient_traits::const_reference n);
-
-  // FIXME: this friend declaration must be avoided.
-  friend Congruence
-  PPL::operator%=(Coefficient_traits::const_reference n,
-		  const Linear_Expression& e);
 
   friend Congruence
   PPL::operator/(const Congruence& cg,

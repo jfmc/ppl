@@ -64,8 +64,8 @@ test02() {
     bd1.add_constraint(x <= 0);
     bd1.add_constraint(y < 0);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -88,8 +88,8 @@ test03() {
     bd1.add_constraint(x <= 0);
     bd1.add_constraint(y - x + z >= 0);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -112,8 +112,8 @@ test04() {
     bd1.add_constraint(x <= 0);
     bd1.add_constraint(y - x + z >= 0);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -136,8 +136,8 @@ test05() {
     bd1.add_constraint(x <= 0);
     bd1.add_constraint(2*y - 3*x <= 0);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -161,8 +161,8 @@ test06() {
     cs.insert(x - y >= 0);
     bd.add_constraints_and_minimize(cs);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -183,8 +183,8 @@ test07() {
     // of the polyhedron.
     bd.add_constraint(y >= 0);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -208,8 +208,8 @@ test08() {
     cs.insert(x - y == 0);
     bd.add_constraints(cs);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

@@ -244,7 +244,7 @@ Grid::shrink_bounding_box(Box& box) const {
       }
       const Grid_Generator& point = *first_point;
       // Convert the point `gen' to a parameter.
-      for (dimension_type dim = 0; dim < num_dims; ++dim)
+      for (dimension_type dim = num_dims; dim-- > 0; )
 	gen[dim] -= point[dim];
       gen.set_divisor(point.divisor());
     }
@@ -261,7 +261,7 @@ Grid::shrink_bounding_box(Box& box) const {
   TEMP_INTEGER(bound);
   TEMP_INTEGER(reduced_divisor);
   divisor = point.divisor();
-  for (dimension_type dim = 0; dim < num_dims; ++dim)
+  for (dimension_type dim = num_dims; dim-- > 0; )
     if (bounded_interval[dim]) {
       // Reduce the bound fraction first.
       gcd_assign(gcd, point[dim+1], divisor);
@@ -338,11 +338,14 @@ Grid::get_covering_box(Box& box) const {
 	}
 	const Grid_Generator& point = *first_point;
 	// Convert the point `gen' to a parameter.
-	for (dimension_type dim = 0; dim <= num_dims; ++dim)
+	dimension_type dim = num_dims;
+	do {
 	  gen[dim] -= point[dim];
+	}
+	while (dim-- > 0);
 	gen.set_divisor(point.divisor());
       }
-      for (dimension_type dim = 0; dim < num_dims; ++dim)
+      for (dimension_type dim = num_dims; dim-- > 0; )
 	if (!interval_emptiness[dim])
 	  gcd_assign(interval_sizes[dim], interval_sizes[dim], gen[dim+1]);
     }
@@ -354,7 +357,7 @@ Grid::get_covering_box(Box& box) const {
     const Grid_Generator& point = *first_point;
     divisor = point.divisor();
     TEMP_INTEGER(lower_bound);
-    for (dimension_type dim = 0; dim < num_dims; ++dim) {
+    for (dimension_type dim = num_dims; dim-- > 0; ) {
       if (interval_emptiness[dim])
 	continue;
 
@@ -396,7 +399,7 @@ Grid::get_covering_box(Box& box) const {
     const Grid_Generator& point = gen_sys[0];
     divisor = point.divisor();
     // The covering box of a single point has only lower bounds.
-    for (dimension_type dim = 0; dim < num_dims; ++dim) {
+    for (dimension_type dim = num_dims; dim-- > 0; ) {
       // Reduce the bound fraction first.
       gcd_assign(gcd, point[dim+1], divisor);
       exact_div_assign(bound, point[dim+1], gcd);

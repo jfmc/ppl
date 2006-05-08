@@ -429,5 +429,6 @@ void iter_swap(typename std::vector<Parma_Polyhedra_Library::DB_Row<T> >
 } // namespace std
 
 #include "DB_Row.inlines.hh"
+#include "DB_Row.templates.hh"
 
 #endif // !defined(PPL_DB_Row_defs_hh)

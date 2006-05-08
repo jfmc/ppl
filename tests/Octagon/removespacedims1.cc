@@ -177,7 +177,7 @@ test06() {
     // a variable that is not in the space of the polyhedron.
     oc.remove_higher_space_dimensions(7);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -211,7 +211,7 @@ test07() {
     // so that a dimension-incompatibility exception is obtained.
     oc.remove_space_dimensions(to_be_removed);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {

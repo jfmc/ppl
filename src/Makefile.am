@@ -249,8 +249,10 @@ Ptr_Iterator.defs.hh \
 Ptr_Iterator.inlines.hh \
 DB_Row.defs.hh \
 DB_Row.inlines.hh \
+DB_Row.templates.hh \
 DB_Matrix.defs.hh \
 DB_Matrix.inlines.hh \
+DB_Matrix.templates.hh \
 BD_Shape.defs.hh \
 BDS_Status.inlines.hh \
 BD_Shape.inlines.hh \

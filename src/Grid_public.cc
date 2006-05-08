@@ -774,13 +774,13 @@ PPL::Grid::OK(bool check_not_empty) const {
 	}
 
 	// Check that dim_kinds corresponds to the row kinds in gen_sys.
-	for (dimension_type dim = 0, row = 0;
-	     dim < space_dim + 1;
-	     ++dim, assert(row <= dim)) {
+	for (dimension_type dim = space_dim, row = gen_sys.num_generators();
+	     dim > 0;
+	     assert(row <= dim), --dim) {
 	  if (dim_kinds[dim] == GEN_VIRTUAL
-	      || (gen_sys[row++].is_parameter_or_point()
+	      || (gen_sys[--row].is_parameter_or_point()
 		  && dim_kinds[dim] == PARAMETER)
-	      || (assert(gen_sys[row-1].is_line()), dim_kinds[dim] == LINE))
+	      || (assert(gen_sys[row].is_line()), dim_kinds[dim] == LINE))
 	    continue;
 #ifndef NDEBUG
 	  cerr << "Kinds in dim_kinds should match those in gen_sys."
@@ -799,7 +799,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 	// gs contained rows before being reduced, so it should
 	// contain at least a single point afterwards.
 	assert(gs.num_generators() > 0);
-	for (dimension_type row = 0; row < gen_sys.num_generators(); ++row) {
+	for (dimension_type row = gen_sys.num_generators(); row-- > 0; ) {
 	  Grid_Generator& g = gs[row];
 	  const Grid_Generator& g_copy = gen_sys[row];
 	  if (g.is_equal_to(g_copy))
@@ -882,13 +882,11 @@ PPL::Grid::OK(bool check_not_empty) const {
       }
 
       // Check that dim_kinds corresponds to the row kinds in con_sys.
-      for (dimension_type dim = 0, row = con_sys.num_rows() - 1;
-	   dim < space_dim + 1;
-	   ++dim) {
+      for (dimension_type dim = space_dim, row = 0; dim > 0; --dim) {
 	if (dim_kinds[dim] == CON_VIRTUAL
-	    || (con_sys[row--].is_proper_congruence()
+	    || (con_sys[row++].is_proper_congruence()
 		&& dim_kinds[dim] == PROPER_CONGRUENCE)
-	    || (assert(con_sys[row+1].is_equality()),
+	    || (assert(con_sys[row-1].is_equality()),
 		dim_kinds[dim] == EQUALITY))
 	  continue;
 #ifndef NDEBUG
@@ -2052,14 +2050,9 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
 
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
     Grid_Generator& g = gs[i];
-    if (g.is_point()) {
-      // FIXME: the following code is criminal.
+    if (g.is_point())
       // Transform the point into a parameter.
-      TEMP_INTEGER(div);
-      div = g.divisor();
-      g.set_divisor(0);
-      g.set_divisor(div);
-    }
+      g.set_is_parameter();
   }
 
   if (gs_num_rows == 0)

@@ -1,4 +1,4 @@
-/* Implementation of simple print functions used in test programs.
+/* Implementation of utility functions used in test programs.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -35,20 +35,21 @@ namespace {
 
 void
 unexpected_exception_handler() {
-  cerr << "unexpected exception thrown" << endl;
+  std::cerr << "unexpected exception thrown" << std::endl;
   exit(1);
 }
 
 void
 uncaught_exception_handler() {
-  cerr << "uncaught exception" << endl;
+  std::cerr << "uncaught exception" << std::endl;
   exit(1);
 }
 
 void
 fpe_handler(int sig, siginfo_t* sip, void*) {
   if (sig != SIGFPE) {
-    cerr << "fpe_handler called on signal different from SIGFPE" << endl;
+    std::cerr << "fpe_handler called on signal different from SIGFPE"
+	      << std::endl;
     exit(1);
   }
   const char* s = 0;
@@ -81,22 +82,24 @@ fpe_handler(int sig, siginfo_t* sip, void*) {
     break;
   }
   if (s != 0)
-    cerr << "SIGFPE caught (cause: " << s << ")" << endl;
+    std::cerr << "SIGFPE caught (cause: " << s << ")"
+	      << std::endl;
   else {
-    cerr << "SIGFPE caught (unknown si_code " << sip->si_code << ")" << endl;
+    std::cerr << "SIGFPE caught (unknown si_code " << sip->si_code << ")"
+	      << std::endl;
 #ifdef HAVE_FENV_H
-    cerr << "Inquire with fetestexcept(): ";
+    std::cerr << "Inquire with fetestexcept(): ";
     if (fetestexcept(FE_INEXACT))
-      cerr << "FE_INEXACT ";
+      std::cerr << "FE_INEXACT ";
     if (fetestexcept(FE_DIVBYZERO))
-      cerr << "FE_DIVBYZERO ";
+      std::cerr << "FE_DIVBYZERO ";
     if (fetestexcept(FE_UNDERFLOW))
-      cerr << "FE_UNDERFLOW ";
+      std::cerr << "FE_UNDERFLOW ";
     if (fetestexcept(FE_OVERFLOW))
-      cerr << "FE_OVERFLOW ";
+      std::cerr << "FE_OVERFLOW ";
     if (fetestexcept(FE_INVALID))
-      cerr << "FE_INVALID ";
-    cerr << endl;
+      std::cerr << "FE_INVALID ";
+    std::cerr << std::endl;
 #endif
   }
   exit(1);
@@ -111,12 +114,13 @@ set_handlers() {
   sigemptyset(&action.sa_mask);
   action.sa_flags = SA_SIGINFO;
   if (sigaction(SIGFPE, &action, NULL) != 0) {
-    cerr << "sigaction() failed" << endl;
+    std::cerr << "sigaction() failed"
+	      << std::endl;
     abort();
   }
 
-  set_unexpected(unexpected_exception_handler);
-  set_terminate(uncaught_exception_handler);
+  std::set_unexpected(unexpected_exception_handler);
+  std::set_terminate(uncaught_exception_handler);
 }
 
 bool
@@ -129,7 +133,7 @@ PPL::check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
     Checked_Number<float, Extended_Number_Policy> dd(d, ROUND_UP);
     nout << "Excessive " << d_name << " distance " << dd
 	 << ": should be at most " << max_d << "."
-	 << endl;
+	 << std::endl;
     return false;
   }
   else

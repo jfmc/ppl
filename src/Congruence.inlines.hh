@@ -55,12 +55,17 @@ inline
 Congruence::~Congruence() {
 }
 
-/*! \relates Parma_Polyhedra_Library::Congruence */
-// FIXME: this implementation is just an executable specification;
-//        a proper implementation will not require friendship of
-//        class Linear_Expression.
 inline Congruence
-operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
+Congruence::create(const Linear_Expression& e, Coefficient_traits::const_reference n) {
+  // Ensure that diff has capacity for the modulus.
+  Linear_Expression diff(e, e.space_dimension() + 2);
+  diff -= n;
+  Congruence cg(diff, 1, false);
+  return cg;
+}
+
+inline Congruence
+Congruence::create(Coefficient_traits::const_reference n, const Linear_Expression& e) {
   // Ensure that diff has capacity for the modulus.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
@@ -69,16 +74,21 @@ operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence */
-// FIXME: this implementation is just an executable specification;
-//        a proper implementation will not require friendship of
-//        class Linear_Expression.
+inline Congruence
+operator%=(const Linear_Expression& e1, const Linear_Expression& e2) {
+  return Congruence::create(e1, e2);
+}
+
+/*! \relates Parma_Polyhedra_Library::Congruence */
+inline Congruence
+operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
+  return Congruence::create(e, n);
+}
+
+/*! \relates Parma_Polyhedra_Library::Congruence */
 inline Congruence
 operator%=(Coefficient_traits::const_reference n, const Linear_Expression& e) {
-  // Ensure that diff has capacity for the modulus.
-  Linear_Expression diff(e, e.space_dimension() + 2);
-  diff -= n;
-  Congruence cg(diff, 1, false);
-  return cg;
+  return Congruence::create(n, e);
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence */

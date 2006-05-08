@@ -107,6 +107,56 @@ test03() {
   return ok;
 }
 
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
+  BD_Shape<mpq_class> bd(2);
+  bd.add_constraint(B - A <= 2);
+  bd.add_constraint(B <= 5);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(A, LESS_THAN_OR_EQUAL, B, 5);
+
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(B <= 3);
+
+  bool ok = (bd == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(A, "
+		    "LESS_THAN_OR_EQUAL, B, 5) ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  BD_Shape<mpq_class> bd(2);
+  bd.add_constraint(B - A <= 2);
+  bd.add_constraint(B <= 5);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(A, GREATER_THAN_OR_EQUAL, B + 3);
+
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(B <= 5);
+
+  bool ok = (bd == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(A, "
+		    "GREATER_THAN_OR_EQUAL, B + 3) ***");
+
+  return ok;
+}
+
 } // namespace
 
 
@@ -115,4 +165,6 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN

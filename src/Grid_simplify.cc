@@ -155,7 +155,7 @@ Grid::reduce_equality_with_equality(Congruence& row,
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
   row[column] = 0;
-  for (dimension_type col = 0; col < column; ++col) {
+  for (dimension_type col = column; col-- > 0; ) {
     Coefficient& row_col = row[col];
     row_col *= red_pivot_col;
     sub_mul_assign(row_col, red_row_col, pivot[col]);
@@ -192,13 +192,13 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   assert(row.size() > 0);
   pivot[column] = gcd;
   row[column] = 0;
+  TEMP_INTEGER(pivot_col);
   for (dimension_type col = start; col < end; ++col) {
-    TEMP_INTEGER(pivot_col);
-    TEMP_INTEGER(row_col);
     pivot_col = pivot[col];
-    row_col = row[col];
-    pivot[col] = (s * pivot_col) + (t * row_col);
-    row[col] = (red_pivot_col * row_col) - (red_row_col * pivot_col);
+    pivot[col] *= s;
+    pivot[col] += t * row[col];
+    row[col] *= red_pivot_col;
+    row[col] -= red_row_col * pivot_col;
   }
 }
 
@@ -216,7 +216,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // If the elements at column in row and pivot are the same, then
   // just subtract pivot from row.
   if (row[column] == pivot[column]) {
-    for (dimension_type col = 0; col < num_cols; ++col)
+    for (dimension_type col = num_cols; col-- > 0; )
       row[col] -= pivot[col];
     return;
   }
@@ -241,11 +241,11 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
     neg_assign(red_row_col);
   }
 #endif
-  for (dimension_type index = 0; index < sys.num_generators(); ++index) {
-    Grid_Generator& row = sys[index];
-    if (row.is_parameter_or_point())
-      for (dimension_type col = 0; col < num_cols; ++col)
-        row[col] *= red_pivot_col;
+  for (dimension_type index = sys.num_generators(); index-- > 0; ) {
+    Grid_Generator& gen = sys[index];
+    if (gen.is_parameter_or_point())
+      for (dimension_type col = num_cols; col-- > 0; )
+        gen[col] *= red_pivot_col;
   }
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
@@ -269,7 +269,7 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   // If the elements at `column' in row and pivot are the same, then
   // just subtract `pivot' from `row'.
   if (row[column] == pivot[column]) {
-    for (dimension_type col = 0; col < num_cols; ++col)
+    for (dimension_type col = num_cols; col-- > 0; )
       row[col] -= pivot[col];
     return;
   }
@@ -290,18 +290,18 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   // Multiply `row', including the modulus, by red_pivot_col.  To keep
   // all the moduli the same this requires multiplying all the other
   // proper congruences in the same way.
-  for (dimension_type index = 0; index < sys.num_rows(); ++index) {
-    Congruence& row = sys[index];
-    if (row.is_proper_congruence())
-      for (dimension_type col = 0; col < num_cols; ++col)
-        row[col] *= red_pivot_col;
+  for (dimension_type index = sys.num_rows(); index-- > 0; ) {
+    Congruence& cg = sys[index];
+    if (cg.is_proper_congruence())
+      for (dimension_type col = num_cols; col-- > 0; )
+        cg[col] *= red_pivot_col;
   }
   // column num_cols contains the modulus, so start at the next column.
   --num_cols;
   row[column] = 0;
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
-  for (dimension_type col = 0; col < column; ++col)
+  for (dimension_type col = column; col-- > 0; )
     sub_mul_assign(row[col], red_row_a, pivot[col]);
 }
 
@@ -451,13 +451,14 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // divisor.
   TRACE(cerr << "updating param divisors" << endl);
   Coefficient_traits::const_reference system_divisor = sys[0][0];
-  for (dimension_type row = 1, dim = 1,
-	 num_cols = sys.num_columns() - 1; dim < num_cols; ++dim)
+  for (dimension_type row = sys.num_generators() - 1,
+	 dim = sys.num_columns() - 2;
+       dim > 0; --dim)
     switch (dim_kinds[dim]) {
     case PARAMETER:
       sys[row].set_divisor(system_divisor);
     case LINE:
-      ++row;
+      --row;
     case GEN_VIRTUAL:
       break;
     }

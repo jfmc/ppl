@@ -30,10 +30,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <sstream>
 #include <list>
+#include <iterator>
 #include <string>
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+#include <algorithm>
 
 void
 set_handlers();
@@ -58,15 +57,15 @@ int						\
 main() try {					\
   set_handlers();				\
   bool succeeded = false;			\
-  list<string> failed_tests;
+  std::list<std::string> failed_tests;
 
 #define END_MAIN							\
   if (failed_tests.empty())						\
     return 0;								\
   else {								\
     std::cerr << "failed tests: ";					\
-    copy(failed_tests.begin(), failed_tests.end(),			\
-	 ostream_iterator<string>(cerr, " "));				\
+    std::copy(failed_tests.begin(), failed_tests.end(),			\
+	      std::ostream_iterator<std::string>(std::cerr, " "));	\
     std::cerr << std::endl;						\
     return 1;								\
   }									\

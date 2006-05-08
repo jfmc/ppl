@@ -1,4 +1,4 @@
-/* Test operator<<(std::ostream&, const Congruence_System&).
+/* Test BD_Shape::BD_Shape(const C_Polyhedron&).
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,9 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include <sstream>
-
-using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
@@ -32,24 +29,30 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  Congruence_System cgs;
+  Constraint_System cs;
+  cs.insert(A + 2*B <= 5);
+  cs.insert(A + 2*B >= -10);
+  cs.insert(A >= 0);
+  cs.insert(B <= 7);
+  cs.insert(3*A - 5*B <= 18);
+  C_Polyhedron ph(cs);
 
-  bool ok = (cgs.OK());
+  TBD_Shape bd1(ph, SIMPLEX_COMPLEXITY);
+  TBD_Shape bd2(ph, ANY_COMPLEXITY);
 
-  std::stringstream ss;
-  ss << cgs;
-  ok &= (!ss.str().compare("true"));
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(11*A <= 61);
+  known_result.add_constraint(2*B <= 5);
+  known_result.add_constraint(5*B >= -18);
+  known_result.add_constraint(11*A - 11*B <= 64);
 
-  cgs.insert(A - 2*B %= 2);
-  cgs.insert(2*A %= 4);
+  bool ok = (bd1 == bd2
+	     && check_result(bd1, known_result,
+			     "7.50e-7", "4.89e-7", "4.34e-7"));
 
-#define OUTPUT "A - 2*B = 0 (mod 1), 2*A = 0 (mod 1)"
-
-  ss.str("");
-  ss << cgs;
-  ok &= (!ss.str().compare(OUTPUT));
-
-  print_congruences(cgs, "*** cgs ***");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
   return ok;
 }
@@ -57,6 +60,5 @@ test01() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
+  DO_TEST_F16(test01);
 END_MAIN
-

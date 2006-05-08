@@ -166,7 +166,7 @@ test06() {
     Coefficient d = 0;
     oct.affine_preimage(y, y + 1, d);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {
@@ -192,7 +192,7 @@ test07() {
     // the polyhedron.
     oct.affine_preimage(x, z - 2);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
   }
   catch (...) {

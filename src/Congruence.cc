@@ -107,9 +107,8 @@ PPL::Congruence::strong_normalize() {
   Row::normalize();
 }
 
-/*! \relates Parma_Polyhedra_Library::Congruence */
 PPL::Congruence
-PPL::operator%=(const Linear_Expression& e1, const Linear_Expression& e2) {
+PPL::Congruence::create(const Linear_Expression& e1, const Linear_Expression& e2) {
   // Ensure that diff is created with capacity for the modulus.
   dimension_type dim, e1_dim, e2_dim;
   e1_dim = e1.space_dimension();
@@ -182,8 +181,8 @@ PPL::Congruence::is_trivial_true() const {
   if ((is_equality() && inhomogeneous_term() == 0)
       || (is_proper_congruence()
 	  && (inhomogeneous_term() % modulus() == 0))) {
-    for (unsigned i = 1; i <= space_dimension(); i++)
-      if ((*this)[i] != 0)
+    for (unsigned i = space_dimension(); i > 0; --i)
+      if (operator[](i) != 0)
 	return false;
     return true;
   }
@@ -196,8 +195,8 @@ PPL::Congruence::is_trivial_false() const {
       || (is_proper_congruence()
 	  && ((inhomogeneous_term() % modulus()) == 0)))
     return false;
-  for (unsigned i = 1; i <= space_dimension(); i++)
-    if ((*this)[i] != 0)
+  for (unsigned i = space_dimension(); i > 0; --i)
+    if (operator[](i) != 0)
       return false;
   return true;
 }

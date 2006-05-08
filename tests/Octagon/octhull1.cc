@@ -302,7 +302,7 @@ test10() {
     // this function to two polyhedra of different dimensions.
     oc1.oct_hull_assign(oc2);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -327,7 +327,7 @@ test11() {
     // to apply this function to two polyhedra of different dimensions.
     oc1.oct_hull_assign_and_minimize(oc2);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {

@@ -174,8 +174,8 @@ test05() {
     // this function to two polyhedra of different dimensions.
     bd1.bds_hull_assign(bd2);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -199,8 +199,8 @@ test06() {
     // to apply this function to two polyhedra of different dimensions.
     bd1.bds_hull_assign_and_minimize(bd2);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

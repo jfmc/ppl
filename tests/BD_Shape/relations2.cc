@@ -414,8 +414,8 @@ test20() {
     // dimensions.
     Poly_Con_Relation rel = bd.relation_with(A - C - B <= 2);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

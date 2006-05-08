@@ -22,19 +22,21 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <string>
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
 bool
-check_both(Grid& gr, Linear_Expression& le, string grid_name) {
+check_both(Grid& gr, const Linear_Expression& le,
+	   const std::string grid_name) {
   Grid_Generator ext_pnt(grid_point());
   bool dummy;
   Coefficient ext_n, ext_d;
 
   bool ok = (!gr.minimize(le, ext_n, ext_d, dummy, ext_pnt)
-      && !gr.maximize(le, ext_n, ext_d, dummy, ext_pnt));
+	     && !gr.maximize(le, ext_n, ext_d, dummy, ext_pnt));
 
   if (!ok)
     nout << grid_name << " bounded expr" << endl;
@@ -43,43 +45,47 @@ check_both(Grid& gr, Linear_Expression& le, string grid_name) {
 }
 
 bool
-check_minimize(Grid& gr, Linear_Expression& le,
-	       Coefficient expected_n, Coefficient expected_d,
-	       Grid_Generator& expected_pnt, string grid_name) {
+check_minimize(Grid& gr, const Linear_Expression& le,
+	       Coefficient_traits::const_reference expected_n,
+	       Coefficient_traits::const_reference expected_d,
+	       const Grid_Generator& expected_pnt,
+	       const std::string grid_name) {
   Grid_Generator inf_pnt(grid_point());
 
   bool dummy;
   Coefficient inf_n, inf_d;
 
   bool ok = (gr.minimize(le, inf_n, inf_d, dummy, inf_pnt)
-    && inf_n == expected_n
-    && inf_d == expected_d
-    && inf_pnt == expected_pnt);
+	     && inf_n == expected_n
+	     && inf_d == expected_d
+	     && inf_pnt == expected_pnt);
 
   if (!ok)
     nout << "grid name " << grid_name << " min point " << inf_pnt
-	        << " (expected " << expected_pnt << ")" << endl;
+	 << " (expected " << expected_pnt << ")" << endl;
 
   return ok;
 }
 
 bool
-check_maximize(Grid& gr, Linear_Expression& le,
-	       Coefficient expected_n, Coefficient expected_d,
-	       Grid_Generator& expected_pnt, string grid_name) {
+check_maximize(Grid& gr, const Linear_Expression& le,
+	       Coefficient_traits::const_reference expected_n,
+	       Coefficient_traits::const_reference expected_d,
+	       const Grid_Generator& expected_pnt,
+	       const std::string grid_name) {
   Grid_Generator sup_pnt(grid_point());
 
   bool dummy;
   Coefficient sup_n, sup_d;
 
   bool ok = (gr.maximize(le, sup_n, sup_d, dummy, sup_pnt)
-    && sup_n == expected_n
-    && sup_d == expected_d
+	     && sup_n == expected_n
+	     && sup_d == expected_d
 	     && sup_pnt == expected_pnt);
 
   if (!ok)
     nout << "grid name " << grid_name << " max point " << sup_pnt
-	        << " (expected " << expected_pnt << ")" << endl;
+	 << " (expected " << expected_pnt << ")" << endl;
 
   return ok;
 }

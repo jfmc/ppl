@@ -38,12 +38,12 @@ test01() {
   oc1.add_constraint(A - B >= 2);
   oc1.add_constraint(B >= 0);
 
-  fstream f;
-  open(f, my_file, ios_base::out);
+  std::fstream f;
+  open(f, my_file, std::ios_base::out);
   oc1.ascii_dump(f);
   close(f);
 
-  open(f, my_file, ios_base::in);
+  open(f, my_file, std::ios_base::in);
   TOctagonal_Shape oc2;
   oc2.ascii_load(f);
   close(f);
@@ -65,14 +65,14 @@ test02() {
   TOctagonal_Shape oc1(3);
   oc1.add_constraint(A - B >= 0);
 
-  fstream f;
-  open(f, my_file, ios_base::out);
+  std::fstream f;
+  open(f, my_file, std::ios_base::out);
   oc1.ascii_dump(f);
   f.seekp(0);
   f << "A";
   close(f);
 
-  open(f, my_file, ios_base::in);
+  open(f, my_file, std::ios_base::in);
   TOctagonal_Shape oc2;
   bool ok = !oc2.ascii_load(f);
   close(f);
@@ -90,21 +90,21 @@ test03() {
   oc.add_constraint(A >= 0);
   oc.add_constraint(B >= 0);
 
-  fstream f;
-  open(f, my_file, ios_base::out);
+  std::fstream f;
+  open(f, my_file, std::ios_base::out);
   oc.ascii_dump(f);
   close(f);
 
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
+  open(f, my_file, std::ios_base::in | std::ios_base::out);
+  std::string str;
   do
     f >> str;
   while (str != "-EM");
-  f.seekp(0, ios_base::cur);
+  f.seekp(0, std::ios_base::cur);
   f << " A";
   close(f);
 
-  open(f, my_file, ios_base::in);
+  open(f, my_file, std::ios_base::in);
   TOctagonal_Shape oc2;
   bool ok = !oc2.ascii_load(f);
   close(f);
@@ -122,21 +122,21 @@ test04() {
   oc.add_constraint(A >= 0);
   oc.add_constraint(B >= 1);
 
-  fstream f;
-  open(f, my_file, ios_base::out);
+  std::fstream f;
+  open(f, my_file, std::ios_base::out);
   oc.ascii_dump(f);
   close(f);
 
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
+  open(f, my_file, std::ios_base::in | std::ios_base::out);
+  std::string str;
   do
     f >> str;
   while(str != "+ZE");
-  f.seekp(0, ios_base::cur);
+  f.seekp(0, std::ios_base::cur);
   f << "A";
   close(f);
 
-  open(f, my_file, ios_base::in);
+  open(f, my_file, std::ios_base::in);
   TOctagonal_Shape oc2;
   bool ok = !oc2.ascii_load(f);
   close(f);
@@ -154,21 +154,21 @@ test05() {
   oc.add_constraint(A >= 0);
   oc.add_constraint(B >= 2);
 
-  fstream f;
-  open(f, my_file, ios_base::out);
+  std::fstream f;
+  open(f, my_file, std::ios_base::out);
   oc.ascii_dump(f);
   close(f);
 
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
+  open(f, my_file, std::ios_base::in | std::ios_base::out);
+  std::string str;
   do
     f >> str;
   while(str != "-SC");
-  f.seekp(0, ios_base::cur);
+  f.seekp(0, std::ios_base::cur);
   f << "A";
   close(f);
 
-  open(f, my_file, ios_base::in);
+  open(f, my_file, std::ios_base::in);
   TOctagonal_Shape oc2;
   bool ok = !oc2.ascii_load(f);
   close(f);
@@ -186,21 +186,21 @@ test06() {
   oc.add_constraint(A >= 0);
   oc.add_constraint(B >= 3);
 
-  fstream f;
-  open(f, my_file, ios_base::out);
+  std::fstream f;
+  open(f, my_file, std::ios_base::out);
   oc.ascii_dump(f);
   close(f);
 
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
+  open(f, my_file, std::ios_base::in | std::ios_base::out);
+  std::string str;
   do
     f >> str;
   while(str != "+inf");
-  f.seekp(0, ios_base::cur);
+  f.seekp(0, std::ios_base::cur);
   f << "A";
   close(f);
 
-  open(f, my_file, ios_base::in);
+  open(f, my_file, std::ios_base::in);
   TOctagonal_Shape oc2;
   bool ok = !oc2.ascii_load(f);
   close(f);
@@ -218,24 +218,24 @@ test07() {
   oc.add_constraint(A >= 0);
   oc.add_constraint(B >= 3);
 
-  fstream f;
-  open(f, my_file, ios_base::out);
+  std::fstream f;
+  open(f, my_file, std::ios_base::out);
   oc.ascii_dump(f);
   close(f);
 
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
+  open(f, my_file, std::ios_base::in | std::ios_base::out);
+  std::string str;
   do
     f >> str;
   while(str != "+inf");
   do
     f >> str;
   while(str != "+inf");
-  f.seekp(0, ios_base::cur);
+  f.seekp(0, std::ios_base::cur);
   f << " 3 ";
   close(f);
 
-  open(f, my_file, ios_base::in);
+  open(f, my_file, std::ios_base::in);
   TOctagonal_Shape oc2;
   bool ok = !oc2.ascii_load(f);
   close(f);
@@ -248,12 +248,12 @@ test08() {
   const char* my_file = "ascii_dump_load1.dat";
   TOctagonal_Shape oc1(0, EMPTY);
 
-  fstream f;
-  open(f, my_file, ios_base::out);
+  std::fstream f;
+  open(f, my_file, std::ios_base::out);
   oc1.ascii_dump(f);
   close(f);
 
-  open(f, my_file, ios_base::in);
+  open(f, my_file, std::ios_base::in);
   TOctagonal_Shape oc2;
   oc2.ascii_load(f);
   close(f);

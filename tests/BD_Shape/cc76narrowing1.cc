@@ -195,8 +195,8 @@ test06() {
     // dimension-compatible.
     bd2.CC76_narrowing_assign(bd1);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

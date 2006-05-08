@@ -253,8 +253,8 @@ test08() {
     // a variable that is not in the space of the polyhedron.
     bd.remove_higher_space_dimensions(7);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;
@@ -287,8 +287,8 @@ test09() {
     // so that a dimension-incompatibility exception is obtained.
     bd.remove_space_dimensions(to_be_removed);
   }
-  catch (invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
   }
   catch (...) {
     return false;

@@ -238,6 +238,33 @@ test08() {
   return ok;
 }
 
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(A <= -1);
+  bd.add_constraint(B <= 0);
+  bd.add_constraint(C >= 0);
+
+  print_constraints(bd, "*** bd ***");
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(A <= -1);
+  known_result.add_constraint(B >= 2);
+  known_result.add_constraint(C >= 0);
+
+  bd.affine_preimage(B, -3*B + 6, 3);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd, "*** bd.affine_preimage(B, -3*B + 6, 3) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -249,5 +276,6 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
 

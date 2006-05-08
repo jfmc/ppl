@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <sstream>
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
@@ -31,12 +32,12 @@ bool
 test01() {
   Grid gr1(1, EMPTY);
 
-  stringstream ss1;
+  std::stringstream ss1;
   ss1 << gr1;
 
   Grid gr2(1);
 
-  stringstream ss2;
+  std::stringstream ss2;
   ss2 << gr2;
 
   bool ok = (ss2.str().compare(ss1.str()));
@@ -49,12 +50,12 @@ bool
 test02() {
   Grid gr1(3, EMPTY);
 
-  stringstream ss1;
+  std::stringstream ss1;
   ss1 << gr1;
 
   Grid gr2(3);
 
-  stringstream ss2;
+  std::stringstream ss2;
   ss2 << gr2;
 
   bool ok = (ss2.str().compare(ss1.str()));
@@ -67,12 +68,12 @@ bool
 test03() {
   Grid gr1(4, EMPTY);
 
-  stringstream ss1;
+  std::stringstream ss1;
   ss1 << gr1;
 
   Grid gr2(3);
 
-  stringstream ss2;
+  std::stringstream ss2;
   ss2 << gr2;
 
   bool ok = (ss2.str().compare(ss1.str()));
@@ -90,13 +91,13 @@ test04() {
   gr1.add_generator(grid_point(3*A + C));
   gr1.add_generator(parameter(3*A));
 
-  stringstream ss1;
+  std::stringstream ss1;
   ss1 << gr1;
 
   Grid gr2(4);
   gr2.add_congruence(3*A == 0);
 
-  stringstream ss2;
+  std::stringstream ss2;
   ss2 << gr2;
 
   bool ok = (ss2.str().compare(ss1.str()));
@@ -114,13 +115,13 @@ test05() {
   gr1.add_generator(grid_point(3*A + C));
   gr1.add_generator(parameter(3*A));
 
-  stringstream ss1;
+  std::stringstream ss1;
   ss1 << gr1;
 
   Grid gr2(4);
   gr2.add_congruence(3*A == 0);
 
-  stringstream ss2;
+  std::stringstream ss2;
   ss2 << gr2;
 
   bool ok = (ss2.str().compare(ss1.str()));

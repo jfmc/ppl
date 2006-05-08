@@ -499,7 +499,7 @@ test14() {
     // dimension-compatible.
     oc2.limited_CC76_extrapolation_assign(oc1, cs);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -534,7 +534,7 @@ test15() {
     // is not dimension-compatible with the two polyhedra.
     oc2.limited_CC76_extrapolation_assign(oc1, cs);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
@@ -568,7 +568,7 @@ test16() {
     // has a strict-inequality.
     oc2.limited_CC76_extrapolation_assign(oc1, cs);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
   }
   catch (...) {
