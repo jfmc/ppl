@@ -2050,14 +2050,9 @@ PPL::Grid::time_elapse_assign(const Grid& y) {
 
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
     Grid_Generator& g = gs[i];
-    if (g.is_point()) {
-      // FIXME: the following code is criminal.
+    if (g.is_point())
       // Transform the point into a parameter.
-      TEMP_INTEGER(div);
-      div = g.divisor();
-      g.set_divisor(0);
-      g.set_divisor(div);
-    }
+      g.set_is_parameter();
   }
 
   if (gs_num_rows == 0)
