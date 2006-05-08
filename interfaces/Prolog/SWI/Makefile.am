@@ -20,13 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
-SUBDIRS =
-
 EXTRA_DIST = \
 ppl_swiprolog.cc \
 ppl_swiprolog.pl \
@@ -37,9 +30,8 @@ swi_pl_check.pl
 if BUILD_SWI_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src \
--I$(top_srcdir)/Watchdog/src \
 -I$(top_builddir)/src \
+-I$(top_builddir)/Watchdog/src \
 $(SWI_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
@@ -76,20 +68,26 @@ pl_clpq2_SOURCES = pl_clpq.cc
 
 # Notice: we are linking statically until we understand whether
 # and if libtool and plld can interoperate.
-ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o
-	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -o $@ $+ \
+ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o | libppl_swiprolog.la
+	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) \
+		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " ","` \
+		-o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
 		@extra_libraries@
 
-pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl
-	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -o $@ $+ \
+pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl | libppl_swiprolog.la 
+	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) \
+		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " ","` \
+		-o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
 		@extra_libraries@
 
-pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
-	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) -o $@ $+ \
+pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq2.pl | libppl_swiprolog.la 
+	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) \
+		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " ","` \
+		-o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
 		@extra_libraries@
@@ -126,7 +124,7 @@ pl_check_test: swi_pl_check.pl ../tests/pl_check.pl $(EXPECTED_PCHK)
 	fi
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-clpq_test: pl_clpq ../tests/script_clpq $(EXPECTED_CLPQ) 
+clpq_test: pl_clpq ../tests/script_clpq $(EXPECTED_CLPQ)
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \

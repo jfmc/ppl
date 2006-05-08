@@ -21,49 +21,57 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+
 #include "files.hh"
 #include <fstream>
 
 using std::fstream;
 using std::ios_base;
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+using namespace IO_Operators;
 
 namespace {
 
-const char* my_file = "writepolyhedron1.dat";
+bool
+test01() {
+  const char* my_file = "writepolyhedron1.dat";
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-} // namespace
-
-int
-main() TRY {
-  set_handlers();
-  Variable x1(0);
-  Variable x2(1);
-  Variable x3(2);
-  Variable x4(3);
-
-  NNC_Polyhedron ph(4);
-
-  ph.add_constraint(     +x2-x3-x4 <= 0);
-  ph.add_constraint(-  x1   +x3-x4 <  0);
-  ph.add_constraint(+  x1   -x3-x4 <= 0);
-  ph.add_constraint(-2*x1+x2+x3-x4 <  0);
-  ph.add_constraint(           +x4 <= 1);
-  ph.add_constraint(        +x3    <  1);
-  ph.add_constraint(-  x1+x2+x3    <= 1);
-  ph.add_constraint(        -x3    <  0);
-  ph.add_constraint(-  x1          <= 0);
-  ph.add_constraint(     -x2       <  0);
-  ph.add_constraint(     +x2       <= 1);
-  ph.add_constraint(+  x1          <  1);
-  ph.add_constraint(+  x1-x2+x3+x4 <= 2);
+  C_Polyhedron ph(3);
+  ph.add_constraint(  A - B       >= 3);
+  ph.add_constraint(    - B +   C >= 3);
+  ph.add_constraint(  A - B       <= 1);
+  ph.add_constraint(  A - B + 3*C >= 3);
+  ph.add_constraint(3*A     + 2*C >= 3);
 
   fstream f;
   open(f, my_file, ios_base::out);
   f << ph << endl;
   close(f);
-
-  return 0;
+  // FIXME.
+  return true;
 }
-CATCH
+
+bool
+test02() {
+  const char* my_file = "writepolyhedron1.dat";
+  NNC_Polyhedron ph1;
+
+  C_Polyhedron ph(ph1.constraints());
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << ph << endl;
+  close(f);
+  // FIXME.
+  return true;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+END_MAIN

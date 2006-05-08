@@ -1,4 +1,5 @@
-/* Test Polyhedron::add_space_dimensions_and_project().
+/* Test Polyhedron::add_space_dimensions_and_project()
+   and  Polyhedron::add_space_dimensions_and_embed().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,10 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -47,10 +48,154 @@ main() TRY {
   known_result.add_generator(point(y));
   known_result.add_generator(point(x + y));
 
-  int retval = (ph == known_result) ? 0 : 1;
+  bool ok = (ph == known_result);
 
   print_generators(ph, "*** After add_space_dimensions_and_project ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  C_Polyhedron ph(3, EMPTY);
+
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron computed_result1(ph);
+  C_Polyhedron computed_result2(ph);
+
+  computed_result1.add_space_dimensions_and_project(4);
+  computed_result2.add_space_dimensions_and_embed(4);
+
+  C_Polyhedron known_result(7, EMPTY);
+
+  bool ok = (computed_result1 == known_result
+	     && computed_result2 == known_result);
+
+  print_constraints(computed_result1, "*** computed_result1 ***");
+  print_constraints(computed_result2, "*** computed_result2 ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable u(3);
+  Variable v(4);
+  Variable w(5);
+
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(ray(x + y));
+
+  C_Polyhedron ph(gs);
+
+  print_generators(ph, "*** ph ***");
+
+  Constraint_System cs = ph.constraints();
+
+  ph.add_space_dimensions_and_embed(2);
+
+  print_generators(ph, "*** After add_space_dimensions_and_embed(2) ***");
+
+  ph.add_space_dimensions_and_embed(2);
+
+  C_Polyhedron known_result(6, EMPTY);
+  known_result.add_generator(point());
+  known_result.add_generator(ray(x + y));
+  known_result.add_generator(line(z));
+  known_result.add_generator(line(u));
+  known_result.add_generator(line(v));
+  known_result.add_generator(line(w));
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "*** ph ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  C_Polyhedron ph1;
+
+  print_generators(ph1, "*** ph1 ***");
+
+  ph1.add_space_dimensions_and_project(3);
+
+  print_generators(ph1, "*** After add_space_dimensions_and_project(3) ***");
+
+  C_Polyhedron ph2;
+  Constraint_System cs = ph2.constraints();
+
+  print_generators(ph2, "*** ph2 ***");
+
+  ph2.add_space_dimensions_and_project(3);
+
+  bool ok = (ph1 == ph2);
+
+  print_generators(ph2, "*** After add_space_dimensions_and_project(3) ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable C(2);
+
+  C_Polyhedron ph(2);
+
+  print_constraints(ph, "*** ph ***");
+
+  ph.add_space_dimensions_and_project(1);
+
+  C_Polyhedron known_result(3);
+  known_result.add_constraint(C == 0);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph,
+		    "*** After ph.add_space_dimensions_and_project(1) ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A <= 2);
+
+  C_Polyhedron ph2(ph1);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  ph1.add_space_dimensions_and_embed(0);
+  ph2.add_space_dimensions_and_project(0);
+
+  bool ok = (ph1 == ph2);
+
+  print_constraints(ph1,
+		    "*** After ph1.add_space_dimensions_and_embed(0) ***");
+  print_constraints(ph2,
+		    "*** After ph2.add_space_dimensions_and_project(0) ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+END_MAIN

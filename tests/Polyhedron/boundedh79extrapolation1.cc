@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -62,6 +64,11 @@ main() TRY {
 		    "*** After ph2.bounded_H79_extrapolation_assign(ph1, cs) "
 		    "***");
 
-  return ok ? 0 : 1;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST_F8A(test01);
+END_MAIN

@@ -1,6 +1,6 @@
 Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 See below for the copying conditions.
-                           
+
 
 Configuration of the Parma Polyhedra Library
 ============================================
@@ -105,7 +105,7 @@ library.  These switches are
   --with-cxx=XXX          use XXX as the C++ compiler
   --with-cflags=XXX       add XXX to the options for the C compiler
   --with-cxxflags=XXX     add XXX to the options for the C++ compiler
- 
+
 Let us take the occasion to stress, once again, the fact that you
 _must_ use the same C++ compiler to compile the C++ interface of GMP,
 the PPL and your application, if you use the C++ interface of the PPL.

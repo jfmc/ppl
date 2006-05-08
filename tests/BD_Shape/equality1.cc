@@ -24,8 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-void
-test1() {
+bool
+test01() {
   Variable x(0);
   Variable y(1);
   // Variable z(2);
@@ -39,50 +39,45 @@ test1() {
   bd2.add_constraint(x - y <= 5);
   bd2.add_constraint(-y <= -2);
 
-   print_constraints(bd1, "*** bd1 ***");
-   print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
-   bool known_result = false;
-   bool ok = ((bd1 == bd2) == known_result);
+  bool known_result = false;
+  bool ok = ((bd1 == bd2) == known_result);
 
-   if (!ok)
-     exit(1);
+  return ok;
 }
 
-void
-test2() {
+bool
+test02() {
   TBD_Shape bd1(0, EMPTY);
   TBD_Shape bd2(0);
 
-   print_constraints(bd1, "*** bd1 ***");
-   print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
-   bool known_result = false;
-   bool ok = ((bd1 == bd2) == known_result);
+  bool known_result = false;
+  bool ok = ((bd1 == bd2) == known_result);
 
-   if (!ok)
-     exit(1);
-
+  return ok;
 }
 
-void
-test3() {
+bool
+test03() {
   TBD_Shape bd1(0);
   TBD_Shape bd2(0, EMPTY);
 
-   print_constraints(bd1, "*** bd1 ***");
-   print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
-   bool known_result = false;
-   bool ok = ((bd1 == bd2) == known_result);
+  bool known_result = false;
+  bool ok = ((bd1 == bd2) == known_result);
 
-   if (!ok)
-     exit(1);
-
+  return ok;
 }
 
-void
-test4() {
+bool
+test04() {
   Variable A(0);
   Variable B(1);
 
@@ -94,19 +89,17 @@ test4() {
   bd2.add_constraint(A - B <= 1);
   bd2.add_constraint(B - A <= 2);
 
-   print_constraints(bd1, "*** bd1 ***");
-   print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
-   bool known_result = false;
-   bool ok = ((bd1 == bd2) == known_result);
+  bool known_result = false;
+  bool ok = ((bd1 == bd2) == known_result);
 
-   if (!ok)
-     exit(1);
-
+  return ok;
 }
 
-void
-test5() {
+bool
+test05() {
   Variable A(0);
   Variable B(1);
 
@@ -118,27 +111,21 @@ test5() {
   bd2.add_constraint(A - B <= 1);
   bd2.add_constraint(B - A <= -2);
 
-   print_constraints(bd1, "*** bd1 ***");
-   print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
-   bool known_result = false;
-   bool ok = ((bd1 == bd2) == known_result);
+  bool known_result = false;
+  bool ok = ((bd1 == bd2) == known_result);
 
-   if (!ok)
-     exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-
-  return 0;
-
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+END_MAIN

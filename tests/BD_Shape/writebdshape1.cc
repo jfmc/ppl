@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -39,6 +41,38 @@ main() TRY {
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  return 0;
+  // FIXME!!!
+  return true;
 }
-CATCH
+
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd1(0, EMPTY);
+  TBD_Shape bd2(3);
+  TBD_Shape bd3(3);
+
+  bd2.add_constraint(x - y <= 5);
+  bd2.add_constraint(-y <= -2);
+
+  bd3.add_constraint(x <= 0);
+  bd3.add_constraint(-x <= -1);
+  bd3.add_constraint(y <= 3);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(bd3, "*** bd3 ***");
+
+  // FIXME!!!
+  return true;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+END_MAIN
+

@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 //! A conjunctive assertion about a polyhedron.
-/*!
+/*! \ingroup PPL_CXX_interface
   The assertions supported are:
   - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimension
     vector space \f$\Rset^0 = \{\cdot\}\f$;
@@ -133,11 +133,7 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by \ref ascii_dump)

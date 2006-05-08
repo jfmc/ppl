@@ -20,18 +20,21 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
+#include "ppl.hh"
+#include "pwl.hh"
 
 // Include gmp.h before SWI-Prolog.h.  This is required in order
 // to get access to interface functions dealing with GMP numbers
 // and SWI-Prolog terms.
 #include <gmp.h>
 #include <SWI-Prolog.h>
-
-#include "Coefficient.defs.hh"
-#include "Checked_Number.defs.hh"
 #include <cassert>
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
 
 typedef term_t Prolog_term_ref;
 typedef atom_t Prolog_atom;
@@ -80,6 +83,8 @@ mpz_class tmp_mpz_class;
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
+  Prolog_min_integer = 0;
+  Prolog_max_integer = 0;
 }
 
 /*!
@@ -123,7 +128,7 @@ inline int
 Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
   if (ul <= LONG_MAX)
     PL_put_integer(t, ul);
-  else if (ul <= std::numeric_limits<int64_t>::max())
+  else if (ul <= static_cast<uint64_t>(std::numeric_limits<int64_t>::max()))
     PL_put_int64(t, static_cast<int64_t>(ul));
   else {
     PPL::assign_r(tmp_mpz_class, ul, PPL::ROUND_NOT_NEEDED);
@@ -387,17 +392,27 @@ PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_version, 1)
   PL_EXTENSION_ENTRY(ppl_banner, 1)
   PL_EXTENSION_ENTRY(ppl_max_space_dimension, 1)
+  PL_EXTENSION_ENTRY(ppl_Coefficient_is_bounded, 0)
+  PL_EXTENSION_ENTRY(ppl_Coefficient_max, 1)
+  PL_EXTENSION_ENTRY(ppl_Coefficient_min, 1)
   PL_EXTENSION_ENTRY(ppl_initialize, 0)
   PL_EXTENSION_ENTRY(ppl_finalize, 0)
   PL_EXTENSION_ENTRY(ppl_set_timeout_exception_atom, 1)
   PL_EXTENSION_ENTRY(ppl_timeout_exception_atom, 1)
   PL_EXTENSION_ENTRY(ppl_set_timeout, 1)
   PL_EXTENSION_ENTRY(ppl_reset_timeout, 0)
-  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_space_dimension, 4)
-  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_Polyhedron, 4)
-  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_constraints, 3)
-  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_generators, 3)
-  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_bounding_box, 3)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_space_dimension, 3)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_space_dimension, 3)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_C_Polyhedron, 2)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_constraints, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_constraints, 2)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_generators, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_generators, 2)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_bounding_box, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_bounding_box, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_swap, 2)
   PL_EXTENSION_ENTRY(ppl_delete_Polyhedron, 1)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_space_dimension, 2)

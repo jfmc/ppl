@@ -41,12 +41,6 @@ count_points(const C_Polyhedron& ph) {
 
 } // namespace
 
-#if NOISY
-#define COUNT(ph) nout << count_points(ph) << endl
-#else
-#define COUNT(ph) (void) count_points(ph)
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -60,13 +54,13 @@ main() TRY {
 
   const int maxc = 10000;
   C_Polyhedron ph(3, EMPTY);
-  COUNT(ph);
+  nout << count_points(ph) << endl;
   for (int n = 1; n <= 200; ++n) {
     const Coefficient cx = mpz_class(rg.get_z_range(maxc));
     const Coefficient cy = mpz_class(rg.get_z_range(maxc));
     const Coefficient cz = mpz_class(rg.get_z_range(maxc));
     ph.add_generator(point(cx*x + cy*y + cz*z));
-    COUNT(ph);
+    nout << count_points(ph) << endl;
   }
 
   return 0;

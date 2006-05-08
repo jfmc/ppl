@@ -29,8 +29,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.defs.hh"
+#include "Congruence_System.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Polyhedron.types.hh"
+#include "Grid_Generator.types.hh"
+#include "Grid_Generator_System.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -58,7 +61,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
 
 
 //! A line, ray, point or closure point.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of the class Generator is one of the following:
 
   - a line \f$\vect{l} = (a_0, \ldots, a_{n-1})^\transpose\f$;
@@ -366,6 +369,17 @@ public:
   */
   bool is_equivalent_to(const Generator& y) const;
 
+  PPL_OUTPUT_DECLARATIONS
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    \ref ascii_dump) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+#endif
+  bool ascii_load(std::istream& s);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -397,11 +411,15 @@ private:
 
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
+  friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Assign;
   friend class Parma_Polyhedra_Library::Generator_System;
   friend class Parma_Polyhedra_Library::Generator_System::const_iterator;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::LP_Problem;
+  friend class Parma_Polyhedra_Library::Grid_Generator;
+  // This is for access to Row and Linear_Row in `insert'.
+  friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
   friend
   Parma_Polyhedra_Library

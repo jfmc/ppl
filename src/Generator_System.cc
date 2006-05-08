@@ -251,7 +251,7 @@ PPL::Generator_System::has_points() const {
 	return true;
     }
   else {
-    // is_necessarily_closed() == false.
+    // !is_necessarily_closed()
     const dimension_type eps_index = gs.num_columns() - 1;
     for (dimension_type i = num_rows(); i-- > 0; )
     if (gs[i][eps_index] != 0)
@@ -780,7 +780,7 @@ PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
 
 void
 PPL::Generator_System
-::affine_image(const dimension_type v,
+::affine_image(dimension_type v,
 	       const Linear_Expression& expr,
 	       Coefficient_traits::const_reference denominator) {
   Generator_System& x = *this;
@@ -820,6 +820,7 @@ PPL::Generator_System
   const bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
   if (not_invertible)
     x.remove_invalid_lines_and_rays();
+
   // Strong normalization also resets the sortedness flag.
   x.strong_normalize();
 }
@@ -859,6 +860,8 @@ PPL::Generator_System::ascii_dump(std::ostream& s) const {
     s << "\n";
   }
 }
+
+PPL_OUTPUT_DEFINITIONS(Generator_System)
 
 bool
 PPL::Generator_System::ascii_load(std::istream& s) {
@@ -930,7 +933,9 @@ PPL::Generator_System::ascii_load(std::istream& s) {
     // Reaching this point means that the input was illegal.
     return false;
   }
+
   // Checking for well-formedness.
+
   assert(OK());
   return true;
 }
@@ -1017,13 +1022,11 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator_System& gs) {
   Generator_System::const_iterator i = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
   if (i == gs_end)
-    s << "false";
-  else {
-    while (i != gs_end) {
-      s << *i++;
-      if (i != gs_end)
-	s << ", ";
-    }
+    return s << "false";
+  while (true) {
+    s << *i++;
+    if (i == gs_end)
+      return s;
+    s << ", ";
   }
-  return s;
 }

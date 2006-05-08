@@ -86,9 +86,7 @@ main() TRY {
     dimensions_to_remove.insert(D);
     dimensions_to_remove.insert(F);
     dimensions_to_remove.insert(E);
-    assert(current.OK());
     current.remove_space_dimensions(dimensions_to_remove);
-    assert(current.OK());
 
     print_constraints(current, "*** after remove_space_dimensions ***");
 
@@ -103,7 +101,7 @@ main() TRY {
   expected.add_constraint(B >= 0);
   expected.add_constraint(C >= B);
 
-    print_constraints(expected, "*** expected ***");
+  print_constraints(expected, "*** expected ***");
 
   return current == expected ? 0 : 1;
 }

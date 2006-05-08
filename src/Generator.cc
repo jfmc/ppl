@@ -286,6 +286,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
   }
 }
 
+PPL_OUTPUT_DEFINITIONS(Generator)
 
 bool
 PPL::Generator::OK() const {

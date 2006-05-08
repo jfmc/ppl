@@ -20,11 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
 SUBDIRS = examples
 
 AM_CPPFLAGS = \
@@ -69,8 +64,6 @@ if HAVE_MD5SUM
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
-TEXT_MD5SUM = @text_md5sum@
-
 if ASSERTIONS_ENABLED
 
 TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED = \
@@ -110,13 +103,13 @@ $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 
 check-local: ppl_lcdd
 	echo $(TOUGH_EXAMPLES) >tough_examples
-	echo -n >obtained
+	echo $(ECHO_N) "$(ECHO_C)" >obtained
 	LANG=C; \
 	for path in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; \
 	do \
 	  file=`basename $$path`; \
-	  grep -q $$file tough_examples && continue; \
-	  echo -n $$file " " >>obtained; \
+	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
+	  echo $(ECHO_N) $$file " $(ECHO_C)" >>obtained; \
 	  echo ppl_lcdd $$path; \
 	  ./ppl_lcdd $$path | $(TEXT_MD5SUM) >>obtained; \
 	done

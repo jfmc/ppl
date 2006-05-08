@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test01() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -40,15 +42,83 @@ main() TRY {
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  bool result = bd1.contains(bd2);
+  bool ok = bd1.contains(bd2);
 
   nout << "*** bd1.contains(bd2) ***"
        << endl
-       << (result ? "true" : "false")
+       << (ok ? "true" : "false")
        << endl;
 
-  int retval = result ? 0 : 1;
-
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  TBD_Shape bd1;
+  TBD_Shape bd2(0, EMPTY);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool ok = bd1.contains(bd2);
+
+  nout << "*** bd1.contains(bd2) ***"
+       << endl
+       << (ok ? "true" : "false")
+       << endl;
+
+  return ok;
+}
+
+bool
+test03() {
+  TBD_Shape bd1(0, EMPTY);
+  TBD_Shape bd2(0, EMPTY);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool ok = bd1.contains(bd2);
+
+  nout << "*** bd1.contains(bd2) ***"
+       << endl
+       << (ok ? "true" : "false")
+       << endl;
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd1(3);
+  bd1.add_constraint(x - y >= 0);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraint(x - y == 0);
+
+  try {
+    // This is an invalid use of Polyhedron::contains(): it is
+    // illegal to apply this method to two polyhedra that are not
+    // dimension-compatible.
+    bd1.contains(bd2);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+END_MAIN

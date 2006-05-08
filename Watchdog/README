@@ -1,5 +1,5 @@
 
-This is the release 0.4 of the Parma Watchdog Library:
+This is the release 0.5 of the Parma Watchdog Library:
 a C++ library for software timeouts.
 
 To be continued...
@@ -12,47 +12,19 @@ See the file BUGS for known bugs and how to report new ones.
 See the file CREDITS for a list of people and organizations that
 contributed to the PWL.
 
-Here is the contents of the PWL 0.3 source distributions
-(0 directories, 52 files):
+Here is the contents of the PWL 0.5 source distribution
+(2 directories, 56 files):
 
 Watchdog
 |-- BUGS
 |-- COPYING
 |-- CREDITS
 |-- ChangeLog
-|-- Doubly_Linked_Object.defs.hh
-|-- Doubly_Linked_Object.inlines.hh
-|-- Doubly_Linked_Object.types.hh
-|-- EList.defs.hh
-|-- EList.inlines.hh
-|-- EList.types.hh
-|-- EList_Iterator.defs.hh
-|-- EList_Iterator.inlines.hh
-|-- EList_Iterator.types.hh
-|-- Handler.defs.hh
-|-- Handler.inlines.hh
-|-- Handler.types.hh
 |-- INSTALL
 |-- Makefile.am
 |-- Makefile.in
 |-- NEWS
-|-- Pending_Element.cc
-|-- Pending_Element.defs.hh
-|-- Pending_Element.inlines.hh
-|-- Pending_Element.types.hh
-|-- Pending_List.cc
-|-- Pending_List.defs.hh
-|-- Pending_List.inlines.hh
-|-- Pending_List.types.hh
 |-- README
-|-- Time.cc
-|-- Time.defs.hh
-|-- Time.inlines.hh
-|-- Time.types.hh
-|-- Watchdog.cc
-|-- Watchdog.defs.hh
-|-- Watchdog.inlines.hh
-|-- Watchdog.types.hh
 |-- aclocal.m4
 |-- compile
 |-- config.guess
@@ -65,13 +37,47 @@ Watchdog
 |-- ltmain.sh
 |-- missing
 |-- mkinstalldirs
-|-- pwl_header.bottom
-|-- pwl_header.middle
-`-- pwl_header.top
+|-- src
+|   |-- Doubly_Linked_Object.defs.hh
+|   |-- Doubly_Linked_Object.inlines.hh
+|   |-- Doubly_Linked_Object.types.hh
+|   |-- EList.defs.hh
+|   |-- EList.inlines.hh
+|   |-- EList.types.hh
+|   |-- EList_Iterator.defs.hh
+|   |-- EList_Iterator.inlines.hh
+|   |-- EList_Iterator.types.hh
+|   |-- Handler.defs.hh
+|   |-- Handler.inlines.hh
+|   |-- Handler.types.hh
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- Pending_Element.cc
+|   |-- Pending_Element.defs.hh
+|   |-- Pending_Element.inlines.hh
+|   |-- Pending_Element.types.hh
+|   |-- Pending_List.cc
+|   |-- Pending_List.defs.hh
+|   |-- Pending_List.inlines.hh
+|   |-- Pending_List.types.hh
+|   |-- Time.cc
+|   |-- Time.defs.hh
+|   |-- Time.inlines.hh
+|   |-- Time.types.hh
+|   |-- Watchdog.cc
+|   |-- Watchdog.defs.hh
+|   |-- Watchdog.inlines.hh
+|   |-- Watchdog.types.hh
+|   |-- pwl.hh.dist
+|   `-- pwl_header.hh
+`-- utils
+    |-- Makefile.am
+    |-- Makefile.in
+    `-- build_header.in
 
 --------
 
-Copyright (C) 2002-2006 Roberto Bagnara
+Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 The Parma Watchdog Library is free software; you can redistribute it
 and/or modify it under the terms of the GNU General Public License as

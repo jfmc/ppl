@@ -23,8 +23,8 @@ site: http://www.cs.unipr.it/ppl/ .  */
 #ifndef PPL_DB_Matrix_defs_hh
 #define PPL_DB_Matrix_defs_hh 1
 
-#include "globals.types.hh"
 #include "DB_Matrix.types.hh"
+#include "globals.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.types.hh"
 #include "Rounding_Dir.defs.hh"
@@ -36,8 +36,10 @@ namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 std::ostream&
 operator<<(std::ostream& s, const DB_Matrix<T>& c);
@@ -49,7 +51,7 @@ operator<<(std::ostream& s, const DB_Matrix<T>& c);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for the square matrices.
-/*!
+/*! \ingroup PPL_CXX_interface
   The templatic class DB_Matrix<T> allows for the representation of
   a square matrix of T objects.
   Each DB_Matrix<T> object can be viewed as a multiset of DB_Row<T>.
@@ -88,6 +90,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A read-only iterator over the rows of the matrix.
+  /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   class const_iterator {
   private:
@@ -206,11 +209,7 @@ public:
   const DB_Row<T>& operator[](dimension_type k) const;
   //@}
 
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
@@ -321,5 +320,6 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 } // namespace Parma_Polyhedra_Library
 
 #include "DB_Matrix.inlines.hh"
+#include "DB_Matrix.templates.hh"
 
 #endif // !defined(PPL_DB_Matrix_defs_hh)

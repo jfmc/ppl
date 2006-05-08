@@ -10,11 +10,11 @@ Vendor:		ppl-devel@cs.unipr.it
 Packager:	%{packager}
 URL:		http://www.cs.unipr.it/ppl/
 Source:         ftp://ftp.cs.unipr.it/pub/ppl/releases/%{version}/%{name}-%{version}.tar.gz
-#Patch:		
+#Patch:
 Group:		Development/Libraries
-Copyright:	GPL
-#Icon:		
-Requires:	gmp >= 4.1.3, gcc-c++ == 3.4.2
+License:	GPL v2
+#Icon:
+Requires:	gmp >= 4.1.3, gcc-c++ >= 4.0.2
 BuildRoot:	%{_tmppath}/%{name}-%{version}
 Prefix:		/usr
 Summary:	The Parma Polyhedra Library: a C++ library for numerical abstractions.
@@ -72,7 +72,7 @@ Install this package if you want to use the library in YAP Prolog programs.
 %package pwl
 Summary:	The Parma Watchdog Library: a C++ library for watchdog timers.
 Group:		Development/Libraries
-Requires:	gcc-c++ == 3.4.2
+Requires:	gcc-c++ >= 4.0.2
 %description pwl
 This package contains the Parma Watchdog Library (PWL).
 The library provides support for multiple, concurrent watchdog timers
@@ -110,11 +110,17 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 %defattr(-,root,root)
 %doc BUGS COPYING CREDITS ChangeLog NEWS README README.configure doc/README.doc doc/*.pdf* doc/*.ps.gz doc/*.txt
 %{_includedir}/ppl.hh
+%{_bindir}/ppl-config
 %{_bindir}/ppl_lcdd
+%{_bindir}/ppl_lpsol
 %{_libdir}/libppl.so.*
 %{_libdir}/libppl.so
 %{_libdir}/libppl.a
 %{_libdir}/libppl.la
+%{_mandir}/man1/ppl-config.1.gz
+%{_mandir}/man1/ppl_lcdd.1.gz
+%{_mandir}/man1/ppl_lpsol.1.gz
+
 
 %files c
 %defattr(-,root,root)
@@ -177,4 +183,3 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-

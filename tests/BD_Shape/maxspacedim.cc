@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test01() {
   BD_Shape<mpq_class> bd1(1);
   BD_Shape<long> bd2(1);
   BD_Shape<int> bd3(1);
@@ -40,7 +42,7 @@ main() TRY {
        << "of Rational is: "
        << endl
        << max_spacedim1
-       << endl; 
+       << endl;
 
   nout << endl
        << "The maximum space-dimension of a system of bounded differences "
@@ -48,7 +50,7 @@ main() TRY {
        << "of long: "
        << endl
        << max_spacedim2
-       << endl; 
+       << endl;
 
   nout << endl
        << "The maximum space-dimension of a system of bounded differences "
@@ -56,7 +58,7 @@ main() TRY {
        << "of int: "
        << endl
        << max_spacedim3
-       << endl; 
+       << endl;
 
   nout << endl
        << "The maximum space-dimension of a system of bounded differences "
@@ -79,8 +81,12 @@ main() TRY {
     print_constraints(bd4, "*** bd4 ***");
 
   }
-
-  return 0;
-
+  // FIXME!!!
+  return true;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

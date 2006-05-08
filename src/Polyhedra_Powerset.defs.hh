@@ -24,10 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedra_Powerset_defs_hh
 
 #include "Polyhedra_Powerset.types.hh"
-#include "globals.types.hh"
+#include "globals.defs.hh"
 #include "BHRZ03_Certificate.types.hh"
-#include "Constraint_System.types.hh"
 #include "Constraint.types.hh"
+#include "Constraint_System.types.hh"
+#include "Congruence.types.hh"
+#include "Congruence_System.types.hh"
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
 #include "Polyhedron.defs.hh"
@@ -39,6 +41,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <map>
 
 //! The powerset construction instantiated on PPL polyhedra.
+/*! \ingroup PPL_CXX_interface */
 template <typename PH>
 class Parma_Polyhedra_Library::Polyhedra_Powerset
   : public Parma_Polyhedra_Library::Powerset
@@ -90,6 +93,10 @@ public:
     with the same information contents as \p cs.
   */
   explicit Polyhedra_Powerset(const Constraint_System& cs);
+
+  //! Creates a Polyhedra_Powerset with a single polyhedron
+  //! with the same information contents as \p cgs.
+  explicit Polyhedra_Powerset(const Congruence_System& cgs);
 
   //@} // Constructors and Destructor
 
@@ -385,13 +392,7 @@ public:
   typedef typename Base::reverse_iterator reverse_iterator;
   typedef typename Base::const_reverse_iterator const_reverse_iterator;
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -547,5 +548,6 @@ void swap(Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& x,
 } // namespace std
 
 #include "Polyhedra_Powerset.inlines.hh"
+#include "Polyhedra_Powerset.templates.hh"
 
 #endif // !defined(PPL_Polyhedra_Powerset_defs_hh)

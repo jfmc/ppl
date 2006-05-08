@@ -20,9 +20,4 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
 SUBDIRS = ppl_lcdd ppl_lpsol

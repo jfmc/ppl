@@ -64,7 +64,7 @@ void swap(Parma_Polyhedra_Library::Constraint_System& x,
 } // namespace std
 
 //! A system of constraints.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class Constraint_System is a system of constraints,
     i.e., a multiset of objects of the class Constraint.
     When inserting constraints in a system, space dimensions are
@@ -172,7 +172,7 @@ public:
   static const Constraint_System& zero_dim_empty();
 
   //! An iterator over a system of constraints.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     A const_iterator is used to provide read-only access
     to each constraint contained in a Constraint_System object.
 
@@ -189,7 +189,7 @@ public:
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
 			   Constraint,
-			   void,
+			   ptrdiff_t,
 			   const Constraint*,
 			   const Constraint&> {
   public:
@@ -265,13 +265,7 @@ public:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool OK() const;
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief

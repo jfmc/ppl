@@ -47,7 +47,8 @@ inline
 Linear_Row::Flags::Flags(const Topology t, const Kind k)
   : Row::Flags((k << rpi_bit) | (t << nnc_bit)) {
 #ifndef NDEBUG
-  set_bits((1 << rpi_validity_bit) | (1 << nnc_validity_bit));
+  set_bits((1 << rpi_validity_bit)
+	   | (1 << nnc_validity_bit));
 #endif
 }
 

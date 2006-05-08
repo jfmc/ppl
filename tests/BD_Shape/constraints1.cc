@@ -24,85 +24,101 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-void
-test1() {
-
+bool
+test01() {
   TBD_Shape bd1(0, EMPTY);
 
-  TBD_Shape known_result(bd1);
+  BD_Shape<mpq_class> known_result(bd1);
 
   Constraint_System cs = bd1.constraints();
   TBD_Shape bd2(cs);
 
-  bool ok = (bd2 == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test2() {
-
+bool
+test02() {
   TBD_Shape bd1(0, UNIVERSE);
 
-  TBD_Shape known_result(bd1);
+  BD_Shape<mpq_class> known_result(bd1);
 
   Constraint_System cs = bd1.constraints();
   TBD_Shape bd2(cs);
 
-  bool ok = (bd2 == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test3() {
+bool
+test03() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
   TBD_Shape bd1(3);
-
   bd1.add_constraint(A >= 0);
   bd1.add_constraint(B >= 0);
   bd1.add_constraint(B - C >= 1);
   bd1.add_constraint(C - A <= 9);
 
-  TBD_Shape known_result(bd1);
+  BD_Shape<mpq_class> known_result(bd1);
 
   bd1.contains(bd1);
 
- Constraint_System cs = bd1.constraints();
- TBD_Shape bd2(cs);
+  Constraint_System cs = bd1.constraints();
+  TBD_Shape bd2(cs);
 
-  bool ok = (bd2 == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
+}
+
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd1(3);
+  bd1.add_constraint(A >= 0);
+  bd1.add_constraint(B >= 0);
+  bd1.add_constraint(B - C == 1);
+  bd1.add_constraint(C - A <= 9);
+
+  Constraint_System cs = bd1.constraints();
+  TBD_Shape bd2(cs);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(cs, "*** cs ***");
+
+  BD_Shape<mpq_class> known_result(bd1);
+
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-
-  test1();
-  test2();
-  test3();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+END_MAIN

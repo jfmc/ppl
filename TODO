@@ -1,19 +1,13 @@
-Enhancements for PPL 0.8
-========================
 
-- Solve failures of parallel builds (e.g., make -j 4) in the
-  Prolog interface directories.
-- Reduce the number of FIXMEs to no more than 40.
-- Improve the documentation about shared libraries.
-  See http://www.cs.unipr.it/pipermail/ppl-devel/2005-July/006178.html.
-- The Powerset class implementation is still poorly documented.
-- Consider renaming Powerset::meet_assign().
+Enhancements for PPL 0.10
+=========================
 
-Enhancements for PPL 0.9
-========================
-
-- Incorporate the domain of rational grids.
+- Develop a C and Prolog interfaces for all the supported domains.
 - Incorporate the domain of intervals.
+- Reduce the number of FIXMEs to no more than 20.
+- Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
+- Write a manual page for ppl (3).
+- Ensure that the Grid tests cover all the code.
 - Provide a single, generic implementation to replace all our status
   classes.
 - Clearly explain, in the documentation, how (not) to use
@@ -21,8 +15,12 @@ Enhancements for PPL 0.9
   to have memory-guarded computations.
 - Reconsider the handling of temporary coefficients.
 - Provide a generic implementation for the `widening with tokens'.
+- Transform LP_Problem into an incremental solver and add to it support
+  for abandoning costly computations.
+- Add a widening for grids using only generator representations.
 
-Enhancements for PPL 0.9 or later versions
+
+Enhancements for PPL 0.10 or later versions
 ==========================================
 
 - Implement void Polyhedron::envelope_assign(const Polyhedron& y).
@@ -36,24 +34,12 @@ Enhancements for PPL 0.9 or later versions
   Polyhedron::fold_dimensions().
 - Experiment with different compilation flags, such as GCC's
   `-fno-threadsafe-statics'.
-
-Constructions on Polyhedra
-==========================
-
-Since version 0.6, the PPL supports the determinate and powerset
-constructions of the constraint system hierarchy described in
-
-  R. Bagnara.
-  A hierarchy of constraint systems for data-flow analysis
-  of constraint logic-based languages.
-  Science of Computer Programming 30, 1-2 (January 1998), pp. 119-155.
-  Available at http://www.cs.unipr.it/~bagnara/Papers/Abstracts/SCP98
-
-The implementation consists in a generic implementation (in the form
-of C++ templates) of the hierarchy, plus a specialization of the
-powerset construction on polyhedra.  What is missing now is the
-ask-and-tell construction.  We have some old code implementing it
-but it requires extensive work.
+- Reimplement the ask-and-tell generic construction.
+- Suppose we are only interested in integral solutions (as is the
+  case, e.g., in most termination analyses).  Then cutting-plane methods
+  (Gomory, Chvátal, ...) allow to shrink polyhedra still not losing any
+  integral solution.
+  See http://www.cs.unipr.it/ppl/Documentation/bibliography#NemhauserW88
 
 
 Efficiency Issues
@@ -61,10 +47,8 @@ Efficiency Issues
 
 - There must be a more efficient way to implement
   bool Polyhedron::is_disjoint_from(const Polyhedron&).
-
 - There must be a more efficient way to compute convex
   differences.
-
 - We are being rather careless about the creation of temporaries
   as far as the classes Linear_Expression, Constraint and Generator
   are concerned.
@@ -72,23 +56,15 @@ Efficiency Issues
 - Provide a better implementation of computing squares in LP_Problem's
   steepest-edge to avoid big numbers.
 
-Cutting-Plane Methods
-=====================
+Debian packaging
+================
 
-Suppose we are only interested in integral solutions (as is the
-case, e.g., in most termination analyses).  Then cutting-plane methods
-(Gomory, Chvátal, ...) allow to shrink polyhedra still not losing any
-integral solution.
-See http://www.cs.unipr.it/ppl/Documentation/bibliography#NemhauserW88
-
-
-Z-Polyhedra
-===========
-
-We plan to extend the PPL to deal with Z-polyhedra [Ancourt91th].
-Z-polyhedra are intersections and other representations for discrete sets.
-
-  C. Ancourt.
-  Génération automatique de codes de transfert pour
-  multiprocesseurs à mémoires locales.
-  PhD thesis, Université de Paris VI, March 1991.
+- Add an interface package for each Prolog as a suitable version of
+  that Prolog appears in Debian.  Control entries for these are in
+  control.prologs.
+- Find out if /usr/lib/pkgconfig entries are required in any packages.
+- libppl-dev is very large.  Consider moving the docs to libppl-doc
+  and the other files into libppl.
+- Verify the Build-Depends and Build-Depends-Indep settings, as per
+  the Debian Developers Reference section 5.10.1 point 1.
+- Consider renaming libppl-pwl to libpwl.

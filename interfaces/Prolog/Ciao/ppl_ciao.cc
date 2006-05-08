@@ -20,10 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
-
-#include "Coefficient.defs.hh"
-#include "Checked_Number.defs.hh"
+#include "ppl.hh"
+#include "pwl.hh"
 #include <ciao_prolog.h>
 #include <cassert>
 #include <sstream>
@@ -51,6 +49,13 @@ namespace {
 bool Prolog_has_unbounded_integers;
 
 /*!
+  If \p Prolog_has_unbounded_integers is false, holds the minimum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+long Prolog_min_integer;
+
+/*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
@@ -63,6 +68,7 @@ long Prolog_max_integer;
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
+  Prolog_min_integer = 0;
   Prolog_max_integer = 0;
 }
 
@@ -105,8 +111,14 @@ Prolog_put_long(Prolog_term_ref& t, long l) {
 */
 inline int
 Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
-  // FIXME!
-  t = ciao_integer(ul);
+  if (ul < INT_MAX)
+    t = ciao_integer(ul);
+  else {
+    std::ostringstream s;
+    s << ul;
+    // TODO: remove the const_cast when the Ciao people fix ciao_prolog.h.
+    t = ciao_put_number_chars(const_cast<char*>(s.str().c_str()));
+  }
   return 1;
 }
 
@@ -278,14 +290,18 @@ Prolog_is_cons(Prolog_term_ref t) {
 */
 inline int
 Prolog_get_long(Prolog_term_ref t, long* lp) {
-  assert(Prolog_is_integer(t));
+  assert(ciao_is_integer(t));
   if (ciao_fits_in_int(t)) {
     *lp = ciao_to_integer(t);
     return 1;
   }
-  else
-    // FIXME: what if the value does not fit in an int but fits in a long?
-    return 0;
+  else {
+    char* s = ciao_get_number_chars(t);
+    mpz_class n(s);
+    ciao_free(s);
+    PPL::Result r = PPL::assign_r(*lp, n, PPL::ROUND_NOT_NEEDED);
+    return r == PPL::V_EQ ? 1 : 0;
+  }
 }
 
 /*!
@@ -362,9 +378,8 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 PPL::Coefficient
 integer_term_to_Coefficient(Prolog_term_ref t) {
   assert(ciao_is_integer(t));
-  long v;
-  if (Prolog_get_long(t, &v))
-    return PPL::Coefficient(v);
+  if (ciao_fits_in_int(t))
+    return PPL::Coefficient(ciao_to_integer(t));
   else {
     char* s;
     s = ciao_get_number_chars(t);
@@ -376,13 +391,13 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
-  long v;
-  if (PPL::assign_r(v, n, PPL::ROUND_NOT_NEEDED) == PPL::V_EQ)
-    return ciao_integer(v);
+  int i = 0;
+  if (PPL::assign_r(i, n, PPL::ROUND_NOT_NEEDED) == PPL::V_EQ)
+    return ciao_integer(i);
   else {
     std::ostringstream s;
     s << n;
-    // FIXME: the following cast is really a bug in Ciao Prolog.
+    // TODO: remove the const_cast when the Ciao people fix ciao_prolog.h.
     return ciao_put_number_chars(const_cast<char*>(s.str().c_str()));
   }
 }

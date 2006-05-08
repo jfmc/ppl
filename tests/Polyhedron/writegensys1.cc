@@ -27,17 +27,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 using std::fstream;
 using std::ios_base;
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+using namespace IO_Operators;
 
 namespace {
 
-const char* my_file = "writegensys1.dat";
-
-} // namespace
-
-int
-main() TRY {
-  set_handlers();
+bool
+test01() {
+  const char* my_file = "writegensys1.dat";
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -53,7 +49,49 @@ main() TRY {
   open(f, my_file, ios_base::out);
   f << gs << endl;
   close(f);
-
-  return 0;
+  // FIXME.
+  return true;
 }
-CATCH
+
+bool
+test02() {
+  const char* my_file = "writegensys1.dat";
+  C_Polyhedron ph(3, EMPTY);
+
+  Generator_System gs = ph.generators();
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << gs << endl;
+  close(f);
+  // FIXME.
+  return true;
+}
+
+bool
+test03() {
+  const char* my_file = "writegensys1.dat";
+  Variable A(0);
+  Variable B(1);
+
+  Linear_Expression e1 = 2*A + 4;
+  e1 += B;
+  Generator_System gs;
+  gs.insert(ray(e1));
+  gs.insert(point(3*A + B, 2));
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << gs << endl;
+  close(f);
+  // FIXME.
+  return true;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+END_MAIN

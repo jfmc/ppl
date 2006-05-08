@@ -20,9 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifdef HAVE_FENV_H
 #include <fenv.h>
-
-#if 0
 
 #ifdef FE_TONEAREST
 #define FPU_TONEAREST FE_TONEAREST
@@ -37,34 +36,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define FPU_TOWARDZERO FE_TOWARDZERO
 #endif
 
-#else
-
-// FIXME
-// On Darwin the FE_* constants are not defined by means of macros.
-// Since we have no backup solution in case, e.g., FE_UPWARD is not
-// defined, it seems sensible to define our macros unconditionally.
-#define FPU_TONEAREST FE_TONEAREST
-#define FPU_UPWARD FE_UPWARD
-#define FPU_DOWNWARD FE_DOWNWARD
-#define FPU_TOWARDZERO FE_TOWARDZERO
-
-#endif
-
 namespace Parma_Polyhedra_Library {
 
-inline int
+inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
   return fegetround();
 }
 
 inline void
-fpu_set_rounding_direction(int dir) {
+fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
   fesetround(dir);
 }
 
-inline int
-fpu_save_rounding_direction(int dir) {
-  int old = fegetround();
+inline fpu_rounding_control_word_type
+fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
+  fpu_rounding_direction_type old = fegetround();
   fesetround(dir);
   return old;
 }
@@ -74,15 +60,15 @@ fpu_reset_inexact() {
   feclearexcept(FE_INEXACT);
 }
 
-inline int
-fpu_save_rounding_direction_reset_inexact(int dir) {
+inline fpu_rounding_control_word_type
+fpu_save_rounding_direction_reset_inexact(fpu_rounding_direction_type dir) {
   fpu_reset_inexact();
   return fpu_save_rounding_direction(dir);
 }
 
 inline void
-fpu_restore_rounding_direction(int dir) {
-  fesetround(dir);
+fpu_restore_rounding_direction(fpu_rounding_control_word_type w) {
+  fesetround(w);
 }
 
 inline int
@@ -91,3 +77,5 @@ fpu_check_inexact() {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+#endif // !defined(HAVE_FENV_H)

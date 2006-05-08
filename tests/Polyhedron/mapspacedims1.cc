@@ -21,21 +21,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include "PFunction.hh"
 
 namespace {
 
-void
-print_function(const PFunction& function, const std::string& intro = "",
-	       std::ostream& s = nout) {
-  if (!intro.empty())
-    s << intro << endl;
-  function.print(s);
-}
-
-void
-test1() {
-  PFunction function;
+bool
+test01() {
+  Partial_Function function;
 
   C_Polyhedron ph1(3);
 
@@ -50,13 +41,12 @@ test1() {
 
   print_constraints(ph1, "*** After ph1.map_space_dimensions(function) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test2() {
-  PFunction function;
+bool
+test02() {
+  Partial_Function function;
 
   C_Polyhedron ph1(3, EMPTY);
 
@@ -71,17 +61,16 @@ test2() {
 
   print_constraints(ph1, "*** After ph1.map_space_dimensions(function) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test3() {
+bool
+test03() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 2);
   function.insert(2, 0);
   function.insert(1, 1);
@@ -108,17 +97,16 @@ test3() {
 
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test4() {
+bool
+test04() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 1);
   function.insert(2, 0);
 
@@ -144,16 +132,15 @@ test4() {
 
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test5() {
+bool
+test05() {
   Variable A(0);
   Variable B(1);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(2, 0);
   function.insert(3, 2);
   function.insert(4, 1);
@@ -177,16 +164,15 @@ test5() {
 
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test6() {
+bool
+test06() {
   Variable A(0);
   Variable B(1);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 0);
   function.insert(1, 1);
 
@@ -208,16 +194,15 @@ test6() {
 
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test7() {
+bool
+test07() {
   Variable A(0);
   Variable B(1);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
   function.insert(2, 2);
@@ -246,16 +231,15 @@ test7() {
 
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test8() {
+bool
+test08() {
   Variable A(0);
   Variable B(1);
 
-  PFunction function;
+  Partial_Function function;
   function.insert(0, 0);
   function.insert(2, 1);
   function.insert(3, 2);
@@ -281,13 +265,12 @@ test8() {
 
   print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test9() {
-  PFunction function;
+bool
+test09() {
+  Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
 
@@ -304,25 +287,157 @@ test9() {
 
   print_constraints(ph1, "*** After ph1.map_space_dimensions(function) ***");
 
-  if (!ok)
-    exit(1);
+  return ok;
+}
+
+bool
+test10() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  Partial_Function rotate_right;
+  rotate_right.insert(0, 1);
+  rotate_right.insert(1, 2);
+  rotate_right.insert(2, 0);
+
+  Partial_Function rotate_left;
+  rotate_left.insert(0, 2);
+  rotate_left.insert(1, 0);
+  rotate_left.insert(2, 1);
+
+  C_Polyhedron ph(3);
+  ph.add_constraint(-4*x - 2*y + z >= -8);
+  ph.add_constraint(-4*x + 2*y + z >= 4);
+  ph.add_constraint(-2*x - y + 2*z >= -1);
+  ph.add_constraint(-2*x + y + 2*z >= 5);
+  ph.add_constraint(-x - y - 2*z >= -13);
+  ph.add_constraint(-x - z >= -5);
+  ph.add_constraint(-x >= -1);
+  ph.add_constraint(-x + y - 2*z >= -7);
+  ph.add_constraint(-y >= -4);
+  ph.add_constraint(y >= 2);
+  ph.add_constraint(x >= 0);
+
+  print_constraints(ph, "*** ph ***");
+  print_function(rotate_right, "*** rotate_right ***");
+  print_function(rotate_left, "*** rotate_left ***");
+
+  C_Polyhedron rs[4];
+  rs[0] = ph;
+
+  print_constraints(rs[0], "*** rs[0] ***");
+
+  for (int i = 1; i <= 3; ++i) {
+    rs[i] = rs[i-1];
+    rs[i].map_space_dimensions(rotate_right);
+
+    print_constraints(rs[i], "*** rs[i] ***");
+
+  }
+
+  C_Polyhedron ls[4];
+  ls[3] = ph;
+
+  print_constraints(ls[3], "*** ls[3] ***");
+
+  for (int i = 2; i >= 0; --i) {
+    ls[i] = ls[i+1];
+    // Force generators to be up-to-date, for a change.
+    (void) ls[i].generators();
+    ls[i].map_space_dimensions(rotate_left);
+
+    print_constraints(ls[i], "*** ls[i] ***");
+
+  }
+
+  for (int i = 0; i <= 3; ++i)
+    if (rs[i] != ls[i]) {
+      nout << "rs[" << i << "] != ls[" << i << "]" << endl;
+      return false;
+    }
+
+  return true;
+}
+
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  C_Polyhedron ph(3);
+  ph.add_constraint(A >= 2);
+  ph.add_constraint(B >= 1);
+  ph.add_constraint(C >= 0);
+
+  Partial_Function rotate_right;
+  rotate_right.insert(0, 1);
+  rotate_right.insert(1, 2);
+  rotate_right.insert(2, 0);
+
+  print_constraints(ph, "*** ph ***");
+  print_function(rotate_right, "*** rotate_right ***");
+
+  ph.map_space_dimensions(rotate_right);
+
+  C_Polyhedron known_result(3);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B >= 2);
+  known_result.add_constraint(C >= 1);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** After ph.map_space_dimensions(rotate_right) ***");
+
+  return ok;
+}
+
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(-A + B == 0);
+
+  Partial_Function rotate_right;
+  rotate_right.insert(0, 1);
+  rotate_right.insert(1, 0);
+
+  print_constraints(ph, "*** ph ***");
+  print_function(rotate_right, "*** rotate_right ***");
+
+  ph.map_space_dimensions(rotate_right);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A == B);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "*** After ph.map_space_dimensions(rotate_right) ***");
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  // test10() only fails when using C_Polyhedron and 8 bit coefficients.
+#ifdef DERIVED_TEST
+  DO_TEST(test10);
+#else
+  DO_TEST_F8(test10);
+#endif // !defined(DERIVED_TEST)
+  DO_TEST(test11);
+  DO_TEST(test12);
+END_MAIN

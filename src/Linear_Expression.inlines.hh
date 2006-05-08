@@ -125,8 +125,49 @@ operator+(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 /*! \relates Linear_Expression */
 inline Linear_Expression
+operator+(const Variable v, const Variable w) {
+  // FIXME: provide a better implementation.
+  return Linear_Expression(v) + Linear_Expression(w);
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator+(const Variable v, const Linear_Expression& e) {
+  // FIXME: provide a better implementation.
+  return e + Linear_Expression(v);
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator+(const Linear_Expression& e, const Variable v) {
+  return v + e;
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
 operator-(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   return -n + e;
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator-(const Variable v, const Variable w) {
+  // FIXME: provide a better implementation.
+  return Linear_Expression(v) - Linear_Expression(w);
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator-(const Variable v, const Linear_Expression& e) {
+  // FIXME: provide a better implementation.
+  return Linear_Expression(v) - e;
+}
+
+/*! \relates Linear_Expression */
+inline Linear_Expression
+operator-(const Linear_Expression& e, const Variable v) {
+  // FIXME: provide a better implementation.
+  return e - Linear_Expression(v);
 }
 
 /*! \relates Linear_Expression */

@@ -27,6 +27,9 @@ namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
+//! Holds the precision parameter used for rational sqrt calculations.
+unsigned long rational_sqrt_precision_parameter;
+
 struct number_struct {
   unsigned int base;
   bool neg_mantissa;
@@ -198,8 +201,6 @@ parse_number_part(std::istream& is, number_struct& num) {
 	empty_mantissa = false;
 	break;
       }
-      if (!exponent_offset)
-	goto error;
     fractional:
       if (empty_mantissa)
 	goto error;

@@ -23,6 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_mpq_inlines_hh
 #define PPL_checked_mpq_inlines_hh 1
 
+#include <sstream>
+#include <climits>
+#include <stdexcept>
+
 namespace Parma_Polyhedra_Library {
 
 namespace Checked {
@@ -30,14 +34,14 @@ namespace Checked {
 template <typename Policy>
 inline Result
 classify_mpq(const mpq_class& v, bool nan, bool inf, bool sign) {
-  if ((Policy::store_nan || Policy::store_infinity)
+  if ((Policy::handle_nan || Policy::handle_infinity)
       && ::sgn(v.get_den()) == 0) {
     int s = ::sgn(v.get_num());
-    if (Policy::store_nan && (nan || sign) && s == 0)
+    if (Policy::handle_nan && (nan || sign) && s == 0)
       return VC_NAN;
     if (!inf && !sign)
       return VC_NORMAL;
-    if (Policy::store_infinity) {
+    if (Policy::handle_infinity) {
       if (s < 0)
 	return inf ? VC_MINUS_INFINITY : V_LT;
       if (s > 0)
@@ -54,7 +58,7 @@ SPECIALIZE_CLASSIFY(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_nan_mpq(const mpq_class& v) {
-  return Policy::store_nan
+  return Policy::handle_nan
     && ::sgn(v.get_den()) == 0
     && ::sgn(v.get_num()) == 0;
 }
@@ -64,7 +68,7 @@ SPECIALIZE_IS_NAN(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_minf_mpq(const mpq_class& v) {
-  return Policy::store_infinity
+  return Policy::handle_infinity
     && ::sgn(v.get_den()) == 0
     && ::sgn(v.get_num()) < 0;
 }
@@ -74,7 +78,7 @@ SPECIALIZE_IS_MINF(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_pinf_mpq(const mpq_class& v) {
-  return Policy::store_infinity
+  return Policy::handle_infinity
     && ::sgn(v.get_den()) == 0
     && ::sgn(v.get_num()) > 0;
 }
@@ -93,11 +97,11 @@ template <typename Policy>
 inline Result
 set_special_mpq(mpq_class& v, Result r) {
   Result c = classify(r);
-  if (Policy::store_nan && c == VC_NAN) {
+  if (Policy::handle_nan && c == VC_NAN) {
     v.get_num() = 0;
     v.get_den() = 0;
   }
-  else if (Policy::store_infinity) {
+  else if (Policy::handle_infinity) {
     switch (c) {
     case VC_MINUS_INFINITY:
       v.get_num() = -1;
@@ -136,6 +140,18 @@ SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned int)
 SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned long)
 SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, float)
 SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, double)
+
+template <typename Policy, typename From>
+inline Result
+construct_mpq_long_double(mpq_class& to, const From& from, Rounding_Dir dir) {
+  // FIXME: this is an incredibly inefficient implementation!
+  new (&to) mpq_class;
+  std::stringstream ss;
+  output_float<Policy, long double>(ss, from, Numeric_Format(), dir);
+  return input_mpq(to, ss);
+}
+
+SPECIALIZE_CONSTRUCT(mpq_long_double, mpq_class, long double)
 
 template <typename Policy, typename From>
 inline Result
@@ -190,6 +206,17 @@ assign_mpq_unsigned_int(mpq_class& to, const From from, Rounding_Dir) {
 }
 
 SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long long)
+
+template <typename Policy, typename From>
+inline Result
+assign_mpq_long_double(mpq_class& to, const From& from, Rounding_Dir dir) {
+  // FIXME: this is an incredibly inefficient implementation!
+  std::stringstream ss;
+  output_float<Policy, long double>(ss, from, Numeric_Format(), dir);
+  return input_mpq(to, ss);
+}
+
+SPECIALIZE_ASSIGN(mpq_long_double, mpq_class, long double)
 
 template <typename Policy>
 inline Result
@@ -287,7 +314,8 @@ SPECIALIZE_ABS(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-add_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
+add_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y,
+	    Rounding_Dir) {
   to += x * y;
   return V_EQ;
 }
@@ -296,19 +324,22 @@ SPECIALIZE_ADD_MUL(mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-sub_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
+sub_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y,
+	    Rounding_Dir) {
   to -= x * y;
   return V_EQ;
 }
 
 SPECIALIZE_SUB_MUL(mpq, mpq_class, mpq_class, mpq_class)
 
+extern unsigned long rational_sqrt_precision_parameter;
+
 template <typename Policy>
 inline Result
 sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_sqrt_neg, from < 0))
     return set_special<Policy>(to, V_SQRT_NEG);
-  const unsigned long k = 3200;
+  const unsigned long k = rational_sqrt_precision_parameter;
   mpz_class& to_num = to.get_num();
   mul2exp<Policy>(to_num, from.get_num(), 2*k, dir);
   Result rdiv = div<Policy>(to_num, to_num, from.get_den(), dir);
@@ -353,6 +384,29 @@ external_memory_in_bytes(const mpq_class& x) {
 }
 
 } // namespace Checked
+
+//! Returns the precision parameter used for rational square root calculations.
+inline unsigned
+rational_sqrt_precision_parameter() {
+  return Checked::rational_sqrt_precision_parameter;
+}
+
+//! Sets the precision parameter used for rational square root calculations.
+/*!
+  If \p p is less than or equal to <CODE>INT_MAX</CODE>, sets the
+  precision parameter used for rational square root calculations to \p p.
+
+  \exception std::invalid_argument
+  Thrown if \p p is greater than <CODE>INT_MAX</CODE>.
+*/
+inline void
+set_rational_sqrt_precision_parameter(const unsigned p) {
+  if (p <= INT_MAX)
+    Checked::rational_sqrt_precision_parameter = p;
+  else
+    throw std::invalid_argument("PPL::set_rational_sqrt_precision_parameter(p)"
+				" with p > INT_MAX");
+}
 
 } // namespace Parma_Polyhedra_Library
 

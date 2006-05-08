@@ -20,11 +20,6 @@
 # For the most up-to-date information see the CS@Parma software
 # site: http://www.cs.unipr.it/Software/ . */
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
 dist_noinst_SCRIPTS = \
 build_header.in
 

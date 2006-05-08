@@ -24,19 +24,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "files.hh"
 #include <fstream>
 
-using std::fstream;
-using std::ios_base;
-
 namespace {
 
-const char* data_file = "linearsystem1.dat";
+bool
+test01() {
+  const char* data_file = "linearsystem1.dat";
 
-void
-ascii_dump_load() {
   Variable A(0);
   Variable B(1);
 
+#if 0
+  // Using this seed and the checked 8-bit integer coefficients,
+  // the random number generator produces the minimum value during
+  // the following computations.
+  unsigned long problematic_seed = 1141853716;
+  Random_Number_Generator rng(problematic_seed);
+#else
   Random_Number_Generator rng;
+#endif
 
 #define ROWS 7
 #define COLS 3
@@ -47,11 +52,28 @@ ascii_dump_load() {
     Linear_Row row(COLS,
 		   Linear_Row::Flags(NOT_NECESSARILY_CLOSED,
 				     Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
-    for (dimension_type col = 0; col < COLS; ++col)
+    for (dimension_type col = 0; col < COLS; ++col) {
       rng.get(row[col], 0);
+      // The following workaround is to avoid trivial positive overflows
+      // when using bounded coefficients.
+      if (std::numeric_limits<Coefficient>::is_bounded
+	  && row[col] == std::numeric_limits<Coefficient>::min())
+	// Here the randomly generated coefficients is equal to the
+	// allowed minimum value for a signed integer datatype that
+	// might adopt the 2's complement representation
+	// (e.g., -128 for 8 bit signed integers).
+	// Thus, it would cause a positive overflow during the normalization
+	// of the Linear_Row, because the GCD computation will try to negate
+	// such a coefficient.
+	// To avoid the problem, we simply increment the coefficient.
+	++row[col];
+    }
+
     row.strong_normalize();
     ls1.insert(row);
 
+    using std::fstream;
+    using std::ios_base;
     fstream f;
     open(f, data_file, ios_base::out);
     ls1.ascii_dump(f);
@@ -71,18 +93,13 @@ ascii_dump_load() {
     nout << "m2.ascii_dump() gives" << endl;
     ls2.ascii_dump(nout);
 
-    exit(1);
+    return false;
   }
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  ascii_dump_load();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

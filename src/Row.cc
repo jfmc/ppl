@@ -125,8 +125,10 @@ PPL::Row::normalize() {
     }
   }
   // Divide the coefficients by the GCD.
-  for (dimension_type j = sz; j-- > 0; )
-    exact_div_assign(x[j], gcd);
+  for (dimension_type j = sz; j-- > 0; ) {
+    Coefficient& x_j = x[j];
+    exact_div_assign(x_j, x_j, gcd);
+  }
 }
 
 void
@@ -140,6 +142,8 @@ PPL::Row::Flags::ascii_dump(std::ostream& s) const {
   s.width(sz);
   s.flags(f);
 }
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row::Flags)
 
 bool
 PPL::Row::Flags::ascii_load(std::istream& s) {
@@ -164,6 +168,8 @@ PPL::Row::ascii_dump(std::ostream& s) const {
   flags().ascii_dump(s);
   s << "\n";
 }
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row)
 
 bool
 PPL::Row::ascii_load(std::istream& s) {

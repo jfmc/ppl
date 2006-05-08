@@ -23,10 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable x1(0);
   Variable x2(1);
 
@@ -56,7 +56,7 @@ main() TRY {
   nout << endl;
 
   if (!ok)
-    return 1;
+    return false;
 
   ok = ph.minimize(x1-2*x2, num, den, included, g)
     && num == -15 && den == 4 && included
@@ -71,6 +71,68 @@ main() TRY {
   print_generator(g);
   nout << endl;
 
-  return ok ? 0 : 1;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable x1(0);
+  Variable x2(1);
+  Variable x3(2);
+
+  C_Polyhedron ph(3);
+  ph.add_constraint(-x1-x2-x3 >= -100);
+  ph.add_constraint(-10*x1-4*x2-5*x3 >= -600);
+  ph.add_constraint(-x1-x2-3*x3 >= -150);
+  ph.add_constraint(x1 >= 0);
+  ph.add_constraint(x2 >= 0);
+  ph.add_constraint(x3 >= 0);
+
+  print_constraints(ph, "*** ph ***");
+
+  Coefficient num;
+  Coefficient den;
+  bool included;
+  Generator g(point());
+  bool ok = ph.maximize(-10*x1-6*x2-4*x3+4, num, den, included, g)
+    && num == 4 && den == 1 && included
+    && g.is_point()
+    && g.coefficient(x1) == 0
+    && g.coefficient(x2) == 0
+    && g.coefficient(x3) == 0
+    && g.divisor() == 1;
+
+  nout << (included ? "maximum" : "supremum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << " @ ";
+  print_generator(g);
+  nout << endl;
+
+  if (!ok)
+    return false;
+
+  ok = ph.minimize(-10*x1-6*x2-4*x3+4, num, den, included, g)
+    && num == -2188 && den == 3 && included
+    && g.is_point()
+    && g.coefficient(x1) == 100
+    && g.coefficient(x2) == 200
+    && g.coefficient(x3) == 0
+    && g.divisor() == 3;
+
+  nout << (included ? "minimum" : "infimum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << " @ ";
+  print_generator(g);
+  nout << endl;
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST_F8(test02);
+END_MAIN

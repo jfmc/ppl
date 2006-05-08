@@ -24,223 +24,271 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-void
-test1() {
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape bd1(3);
+  TBD_Shape bd(3);
 
-  bd1.add_constraint(x <= 2);
-  bd1.add_constraint(x - y == 3);
-  bd1.add_constraint(y <= 2);
+  bd.add_constraint(x <= 2);
+  bd.add_constraint(x - y == 3);
+  bd.add_constraint(y <= 2);
 
-  TBD_Shape bd2(2);
+  print_constraints(bd, "*** bd ***");
 
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
-
-  dimension_type affine_dim1 = bd1.affine_dimension();
-  dimension_type affine_dim2 = bd2.affine_dimension();
+  dimension_type affine_dim = bd.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `bd1' "
+       << "The affine dimension of a system of `bd' "
        << endl
-       << affine_dim1
+       << affine_dim
        << endl;
 
-  nout << endl
-       << "The affine dimension of a system of `bd2' "
-       << endl
-       << affine_dim2
-       << endl;  
+  bool ok = (affine_dim == 2);
 
-  bool ok = (affine_dim1 == affine_dim2);
-
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test2() {
+bool
+test02() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd1(5);
+  TBD_Shape bd(5);
 
-  bd1.add_constraint(A <= 5);
-  bd1.add_constraint(A - B == 3);
-  bd1.add_constraint(C <= 2);
-  bd1.add_constraint(E - D == 2);
+  bd.add_constraint(A <= 5);
+  bd.add_constraint(A - B == 3);
+  bd.add_constraint(C <= 2);
+  bd.add_constraint(E - D == 2);
 
-  TBD_Shape bd2(4);
+  print_constraints(bd, "*** bd ***");
 
-  bd2.add_constraint(A <= 1);
-  bd2.add_constraint(A - D == 8);
-  bd2.add_constraint(B <= 7);
-
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
-
-  dimension_type affine_dim1 = bd1.affine_dimension();
-  dimension_type affine_dim2 = bd2.affine_dimension();
+  dimension_type affine_dim = bd.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `bd1' "
+       << "The affine dimension of a system of `bd' "
        << endl
-       << affine_dim1
-       << endl; 
-
-  nout << endl
-       << "The affine dimension of a system of `bd2' "
-       << endl
-       << affine_dim2
+       << affine_dim
        << endl;
 
-  bool ok = (affine_dim1 == affine_dim2);
+  bool ok = (affine_dim == 3);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test3() {
+bool
+test03() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
   Variable D(3);
   Variable E(4);
 
-  TBD_Shape bd1(5);
+  TBD_Shape bd(5);
 
-  bd1.add_constraint(A == 5);
-  bd1.add_constraint(A - B == 3);
-  bd1.add_constraint(C <= 2);
-  bd1.add_constraint(E - D == 2);
+  bd.add_constraint(A == 5);
+  bd.add_constraint(A - B == 3);
+  bd.add_constraint(C <= 2);
+  bd.add_constraint(E - D == 2);
 
-  TBD_Shape bd2(5);
+  print_constraints(bd, "*** bd ***");
 
-  bd2.add_constraint(A == 1);
-  bd2.add_constraint(E == 1);
-  bd2.add_constraint(A - D == 8);
-  bd2.add_constraint(B <= 7);
-
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
-
-  dimension_type affine_dim1 = bd1.affine_dimension();
-  dimension_type affine_dim2 = bd2.affine_dimension();
+  dimension_type affine_dim = bd.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `bd1' "
+       << "The affine dimension of a system of `bd' "
        << endl
-       << affine_dim1
-       << endl; 
-
-  nout << endl
-       << "The affine dimension of a system of `bd2' "
-       << endl
-       << affine_dim2
+       << affine_dim
        << endl;
 
-  bool ok = (affine_dim1 == affine_dim2);
+  bool ok = (affine_dim == 2);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test4() {
+bool
+test04() {
   Variable A(0);
   Variable B(1);
- 
-  TBD_Shape bd1(2);
 
-  bd1.add_constraint(A <= 3);
-  bd1.add_constraint(B - A <= -5);
-  bd1.add_constraint(-B <= 2);
+  TBD_Shape bd(2);
+  bd.add_constraint(A <= 3);
+  bd.add_constraint(B - A <= -5);
+  bd.add_constraint(-B <= 2);
 
-  TBD_Shape bd2(2);
+  print_constraints(bd, "*** bd ***");
 
-  bd2.add_constraint(A == 0);
-  bd2.add_constraint(B == 2);
-
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
-
-  dimension_type affine_dim1 = bd1.affine_dimension();
-  dimension_type affine_dim2 = bd2.affine_dimension();
+  dimension_type affine_dim = bd.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `bd1' "
+       << "The affine dimension of a system of `bd' "
        << endl
-       << affine_dim1
-       << endl; 
-
-  nout << endl
-       << "The affine dimension of a system of `bd2' "
-       << endl
-       << affine_dim2
+       << affine_dim
        << endl;
 
-  bool ok = (affine_dim1 == affine_dim2);
+  bool ok = (affine_dim == 0);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test5() {
-  Variable A(0);
-  Variable B(1);
- 
-  TBD_Shape bd1(2, EMPTY);
+bool
+test05() {
+  TBD_Shape bd(2, EMPTY);
 
-  TBD_Shape bd2(7);
+  print_constraints(bd, "*** bd ***");
 
-  bd2.add_constraint(A <= 1);
-  bd2.add_constraint(B == 2);
-  bd2.add_constraint(B - A <= -6);
-
-  print_constraints(bd1, "*** bd1 ***");
-  print_constraints(bd2, "*** bd2 ***");
-
-  dimension_type affine_dim1 = bd1.affine_dimension();
-  dimension_type affine_dim2 = bd2.affine_dimension();
+  dimension_type affine_dim = bd.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `bd1' "
+       << "The affine dimension of a system of `bd' "
        << endl
-       << affine_dim1
-       << endl; 
-
-  nout << endl
-       << "The affine dimension of a system of `bd2' "
-       << endl
-       << affine_dim2
+       << affine_dim
        << endl;
 
-  bool ok = (affine_dim1 == affine_dim2);
+  bool ok = (affine_dim == 0);
 
-  if (!ok)
-    exit(1);
+  return ok;
+}
+
+bool
+test06() {
+  TBD_Shape bd(2);
+
+  print_constraints(bd, "*** bd ***");
+
+  dimension_type affine_dim = bd.affine_dimension();
+
+  nout << endl
+       << "The affine dimension of a system of `bd' "
+       << endl
+       << affine_dim
+       << endl;
+
+  bool ok = (affine_dim == 2);
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable D(3);
+
+  TBD_Shape bd(4);
+  bd.add_constraint(A <= 1);
+  bd.add_constraint(A - D == 8);
+  bd.add_constraint(B <= 7);
+
+  print_constraints(bd, "*** bd ***");
+ 
+  dimension_type affine_dim = bd.affine_dimension();
+ 
+  nout << endl
+       << "The affine dimension of a system of `bd' "
+       << endl
+       << affine_dim
+       << endl;
+
+  bool ok = (affine_dim == 3);
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable D(3);
+  Variable E(4);
+
+  TBD_Shape bd(5);
+  bd.add_constraint(A == 1);
+  bd.add_constraint(E == 1);
+  bd.add_constraint(A - D == 8);
+  bd.add_constraint(B <= 7);
+
+  print_constraints(bd, "*** bd ***");
+
+  dimension_type affine_dim = bd.affine_dimension();
+
+  nout << endl
+       << "The affine dimension of a system of `bd' "
+       << endl
+       << affine_dim
+       << endl;
+
+  bool ok = (affine_dim == 2);
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A == 0);
+  bd.add_constraint(B == 2);
+
+  print_constraints(bd, "*** bd ***");
+
+  dimension_type affine_dim = bd.affine_dimension();
+
+  nout << endl
+       << "The affine dimension of a system of `bd' "
+       << endl
+       << affine_dim
+       << endl;
+
+  bool ok = (affine_dim == 0);
+
+  return ok;
+}
+
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(7);
+  bd.add_constraint(A <= 1);
+  bd.add_constraint(B == 2);
+  bd.add_constraint(B - A <= -6);
+
+  print_constraints(bd, "*** bd ***");
+
+  dimension_type affine_dim = bd.affine_dimension();
+
+  nout << endl
+       << "The affine dimension of a system of `bd' "
+       << endl
+       << affine_dim
+       << endl;
+
+   bool ok = (affine_dim == 0);
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+END_MAIN
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-
-  return 0;
-}
-CATCH
 

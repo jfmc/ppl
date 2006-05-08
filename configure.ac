@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.8pre8],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre1],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -89,6 +89,9 @@ AH_BOTTOM([
 */
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
 #endif
 
 #endif /* !defined(PPL_ppl_config_h) */
@@ -209,7 +212,6 @@ if test x"$enable_more_assertions" = xyes
 then
   enable_assertions=yes
   AC_DEFINE(EXTRA_ROW_DEBUG, 1, [Enable more assertions when defined.])
-  debug_flag="-DEXTRA_ROW_DEBUG=1"
 fi
 
 if test x"$enable_assertions" = xno
@@ -290,6 +292,25 @@ no)
   ;;
 esac
 
+enableval=no
+AC_MSG_CHECKING([whether to use precompiled headers])
+AC_ARG_ENABLE(pch,
+  AC_HELP_STRING([--enable-pch],
+    [use precompiled headers, if available]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  COMP_FLAGS="$COMP_FLAGS -Winvalid-pch"
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-pch, needs yes or no])
+  ;;
+esac
+AM_CONDITIONAL(USE_PRECOMPILED_HEADERS, test x"$enableval" = xyes)
+
 CFLAGS="$COMP_FLAGS $OPT_FLAGS"
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 
@@ -302,55 +323,55 @@ case "${enableval}" in
 native-int8)
   AC_MSG_RESULT([native 8 bits integers])
   coefficient_kind=native
-  coefficient_type=int8_t
+  coefficient_bits=8
   coefficient_mnemonic=nint8
   ;;
 native-int16)
   AC_MSG_RESULT([native 16 bits integers])
   coefficient_kind=native
-  coefficient_type=int16_t
+  coefficient_bits=16
   coefficient_mnemonic=nint16
   ;;
 native-int32)
   AC_MSG_RESULT([native 32 bits integers])
   coefficient_kind=native
-  coefficient_type=int32_t
+  coefficient_bits=32
   coefficient_mnemonic=nint32
   ;;
 native-int64)
   AC_MSG_RESULT([native 64 bits integers])
   coefficient_kind=native
-  coefficient_type="int64_t"
+  coefficient_bits=64
   coefficient_mnemonic=nint64
   ;;
 checked-int8)
   AC_MSG_RESULT([checked 8 bits integers])
   coefficient_kind=checked
-  coefficient_type=int8_t
+  coefficient_bits=8
   coefficient_mnemonic=int8
   ;;
 checked-int16)
   AC_MSG_RESULT([checked 16 bits integers])
   coefficient_kind=checked
-  coefficient_type=int16_t
+  coefficient_bits=16
   coefficient_mnemonic=int16
   ;;
 checked-int32)
   AC_MSG_RESULT([checked 32 bits integers])
   coefficient_kind=checked
-  coefficient_type=int32_t
+  coefficient_bits=32
   coefficient_mnemonic=int32
   ;;
 checked-int64)
   AC_MSG_RESULT([checked 64 bits integers])
   coefficient_kind=checked
-  coefficient_type="int64_t"
+  coefficient_bits=64
   coefficient_mnemonic=int64
   ;;
 mpz)
   AC_MSG_RESULT([GMP mpz])
   coefficient_kind=unbounded
-  coefficient_type=mpz_class
+  coefficient_bits=0
   coefficient_mnemonic=mpz
   ;;
 *)
@@ -360,26 +381,29 @@ esac
 
 AM_CONDITIONAL(USE_NATIVE_INTEGERS, test x"$coefficient_kind" = xnative)
 AM_CONDITIONAL(USE_CHECKED_INTEGERS, test x"$coefficient_kind" = xchecked)
-AM_CONDITIONAL(USE_INT8, test x"$coefficient_type" = xint8_t)
-AM_CONDITIONAL(USE_INT16, test x"$coefficient_type" = xint16_t)
-AM_CONDITIONAL(USE_INT32, test x"$coefficient_type" = xint32_t)
-AM_CONDITIONAL(USE_INT64, test x"$coefficient_type" = xint64_t)
-AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_type" = xmpz_class)
+AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_kind" = xunbounded)
+AM_CONDITIONAL(USE_INT8, test x"$coefficient_bits" = x8)
+AM_CONDITIONAL(USE_INT16, test x"$coefficient_bits" = x16)
+AM_CONDITIONAL(USE_INT32, test x"$coefficient_bits" = x32)
+AM_CONDITIONAL(USE_INT64, test x"$coefficient_bits" = x64)
 
 
 if test x"$coefficient_kind" = xnative
 then
-  ctype="Parma_Polyhedra_Library::Checked_Number<$coefficient_type, Checked_Number_Transparent_Policy>"
-  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $ctype, [The integral type used to represent coefficients.])
+  coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t, Checked_Number_Transparent_Policy>"
+  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $coefficient_type, [The integral type used to represent coefficients.])
+  AC_DEFINE_UNQUOTED(COEFFICIENT_BITS, $coefficient_bits, [The number of bits of coefficients; 0 if unbounded.])
   AC_DEFINE(NATIVE_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a native one.])
 elif test x"$coefficient_kind" = xchecked
 then
-  ctype="Parma_Polyhedra_Library::Checked_Number<$coefficient_type>"
-  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $ctype, [The integral type used to represent coefficients.])
+  coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t>"
+  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $coefficient_type)
+  AC_DEFINE_UNQUOTED(COEFFICIENT_BITS, $coefficient_bits)
   AC_DEFINE(CHECKED_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a checked one.])
-elif test x"$coefficient_type" = xmpz_class
+elif test x"$coefficient_kind" = xunbounded
 then
-  AC_DEFINE(COEFFICIENT_TYPE, mpz_class, [The integral type used to represent coefficients.])
+  AC_DEFINE(COEFFICIENT_TYPE, mpz_class)
+  AC_DEFINE(COEFFICIENT_BITS, 0)
   AC_DEFINE(GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
 fi
 
@@ -429,32 +453,31 @@ AC_CHECK_SIZEOF(long double)
 # Use C++ for the remaining checks.
 AC_LANG(C++)
 
+dnl Check for the possibility to control the FPU.
+AC_CHECK_FPU_CONTROL
+
+# Detect the binary format used by C++ floats.
+AC_CXX_FLOAT_BINARY_FORMAT
+
+# Detect the binary format used by C++ doubles.
+AC_CXX_DOUBLE_BINARY_FORMAT
+
+# Detect the binary format used by C++ long doubles.
+AC_CXX_LONG_DOUBLE_BINARY_FORMAT
+
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
 
-# Check whether the C++ compiler provides long double numbers that
-# have bigger range or precision than double.
-AC_CXX_SUPPORTS_LONG_DOUBLE
-
-# Check whether C++ floats comply with IEC 559.
-AC_CXX_FLOAT_IS_IEC_559
-
-# Check whether C++ doubles comply with IEC 559.
-AC_CXX_DOUBLE_IS_IEC_559
-
-# Check whether C++ long doubles comply with IEC 559.
-AC_CXX_LONG_DOUBLE_IS_IEC_559
-
-# Check whether the C++ compiler supports long long integers.
-AC_CXX_SUPPORTS_LONG_LONG
-
 # Checks for the availability of C library functions in C++.
 AC_CHECK_DECLS([ffs], , , [#include <strings.h>])
-AC_CHECK_DECLS([strtof,strtod,strtold,strtoll,strtoull], , , [#include <cstdlib>])
-AC_CHECK_DECLS([fma,fmaf,fmal,rintl], , , [#include <cmath>])
+AC_CHECK_DECLS([getenv,strtof,strtod,strtold,strtoll,strtoull], , , [#include <cstdlib>])
+AC_CHECK_DECLS([fma,fmaf,fmal,rintf,rintl], , , [#include <cmath>])
+
+# Checks for the availability of "fast" integral types.
+AC_CHECK_TYPES([int_fast16_t,int_fast32_t,int_fast64_t,uint_fast16_t,uint_fast32_t,uint_fast64_t])
 
 # Must link everything with libm.
 extra_libraries="${extra_libraries} -lm"
@@ -587,6 +610,9 @@ xall)
   ;;
 esac
 
+# Set an Automake conditional to build or not to build the C interface.
+AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes)
+
 # Checks for Prolog systems for which the interface is enabled.
 
 # Ciao Prolog
@@ -649,53 +675,53 @@ then
 fi
 AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE, test x$YAP_PROLOG = xyap)
 
-# This is the list of interfaces that are enabled by default.
-# Different instantiations are separated by a '@' character.
-default_instantiations="Polyhedron @ BD_Shape<int8_t>"
-
-enableval=not_specified
-AC_MSG_CHECKING([which instantiations are enabled])
-AC_ARG_ENABLE(instantiations,
-  AC_HELP_STRING([--enable-instantiations],
-    [enable instantiations for the non-C++ interfaces]))
-case x"${enableval}" in
-xyes | x)
-  AC_MSG_ERROR([--enable-instantiations needs at least one argument])
-  ;;
-xno | xnone)
-  enabled_instantiations=
-  AC_MSG_RESULT(none)
-  ;;
-*)
-  if test x"${enableval}" = xnot_specified
-  then
-    enableval=${default_instantiations}
-  fi
-  # Make the list blank-separated.
-  required_instantiations=`echo "${enableval}" | sed -e 's/[[ 	]][[ 	]]*//g' -e 's/@/ /g' -e 's/[[ 	]][[ 	]]*/ /g'`
-  # Check the specified instantiations for validity.
-  ac_save_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$CPPFLAGS -I${srcdir}"
-  for instantiation in ${required_instantiations}
-  do
-    AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-#include "instchk.hh"
-
-using namespace Parma_Polyhedra_Library;
-
-bool valid = ${instantiation}::valid_instantiation();
-]])],
-      valid_instantiation=yes,
-      valid_instantiation=no)
-    if test x${valid_instantiation} != xyes
-    then
-      AC_MSG_ERROR([invalid instantiation ${instantiation}])
-    fi
-  done
-  CPPFLAGS="$ac_save_CPPFLAGS"
-  AC_MSG_RESULT([${required_instantiations}])
-  ;;
-esac
+# # This is the list of interfaces that are enabled by default.
+# # Different instantiations are separated by a '@' character.
+# default_instantiations="Polyhedron @ BD_Shape<int8_t>"
+# 
+# enableval=not_specified
+# AC_MSG_CHECKING([which instantiations are enabled])
+# AC_ARG_ENABLE(instantiations,
+#   AC_HELP_STRING([--enable-instantiations],
+#     [enable instantiations for the non-C++ interfaces]))
+# case x"${enableval}" in
+# xyes | x)
+#   AC_MSG_ERROR([--enable-instantiations needs at least one argument])
+#   ;;
+# xno | xnone)
+#   enabled_instantiations=
+#   AC_MSG_RESULT(none)
+#   ;;
+# *)
+#   if test x"${enableval}" = xnot_specified
+#   then
+#     enableval=${default_instantiations}
+#   fi
+#   # Make the list blank-separated.
+#   required_instantiations=`echo "${enableval}" | sed -e 's/[[ 	]][[ 	]]*//g' -e 's/@/ /g' -e 's/[[ 	]][[ 	]]*/ /g'`
+#   # Check the specified instantiations for validity.
+#   ac_save_CPPFLAGS="$CPPFLAGS"
+#   CPPFLAGS="$CPPFLAGS -I${srcdir}"
+#   for instantiation in ${required_instantiations}
+#   do
+#     AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+# #include "instchk.hh"
+# 
+# using namespace Parma_Polyhedra_Library;
+# 
+# bool valid = ${instantiation}::valid_instantiation();
+# ]])],
+#       valid_instantiation=yes,
+#       valid_instantiation=no)
+#     if test x${valid_instantiation} != xyes
+#     then
+#       AC_MSG_ERROR([invalid instantiation ${instantiation}])
+#     fi
+#   done
+#   CPPFLAGS="$ac_save_CPPFLAGS"
+#   AC_MSG_RESULT([${required_instantiations}])
+#   ;;
+# esac
 
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
@@ -704,10 +730,16 @@ esac
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
+AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
+AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
 
-# Checks for programs.
+# Checks for md5sum.
 AC_CHECK_PROG(MD5SUM, md5sum, md5sum)
 AM_CONDITIONAL(HAVE_MD5SUM, test x$MD5SUM = xmd5sum)
+if test x$MD5SUM = xmd5sum
+then
+  AC_TEXT_MD5SUM
+fi
 
 # Check for the GLPK library.
 AC_LANG_PUSH(C)
@@ -716,7 +748,7 @@ AM_CONDITIONAL(HAVE_GLPK, test x$HAVE_GLPK_H = xyes)
 AC_LANG_POP(C)
 
 # Checks for header files.
-AC_CHECK_HEADERS([getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
+AC_CHECK_HEADERS([fenv.h ieeefp.h getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
 
 # Checks for header declarations.
 AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
@@ -745,34 +777,59 @@ then
 fi
 
 # System-dependent adjustments.
-text_md5sum="$MD5SUM -t"
+cygwin=no
+darwin=no
+solaris=no
 no_undefined=no
 
+case "${host_cpu}" in
+alpha*)
+  if test x"$GCC" = xyes
+  then
+    CFLAGS="$CFLAGS -mfp-rounding-mode=d -mieee"
+    CXXFLAGS="$CXXFLAGS -mfp-rounding-mode=d -mieee"
+  else
+    CFLAGS="$CFLAGS -fprm d -ieee -underflow_to_zero"
+    CXXFLAGS="$CXXFLAGS -fprm d -ieee -underflow_to_zero"
+  fi
+  ;;
+*)
+  ;;
+esac
+
 case "${host_os}" in
+cygwin)
+  cygwin=yes
+  no_undefined=yes
+  ;;
 darwin*)
+  darwin=yes
   if test x"$GCC" = xyes
   then
     CFLAGS="$CFLAGS -Wno-long-double"
     CXXFLAGS="$CXXFLAGS -Wno-long-double"
   fi
-  text_md5sum="$MD5SUM"
   ;;
-cygwin)
-  no_undefined=yes
+solaris*)
+  solaris=yes
   ;;
 *)
   ;;
 esac
+
+AM_CONDITIONAL(HOST_OS_CYGWIN, test x$cygwin = xyes)
+AM_CONDITIONAL(HOST_OS_DARWIN, test x$darwin = xyes)
+AM_CONDITIONAL(HOST_OS_SOLARIS, test x$solaris = xyes)
 AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
 AC_SUBST(coefficient_mnemonic)
-AC_SUBST(text_md5sum)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
+                debian/Makefile
                 debian/libppl.copyright
                 debian/libppl-pwl.copyright
                 src/Makefile
@@ -781,6 +838,7 @@ AC_CONFIG_FILES(Makefile
                 tests/Makefile
                 tests/BD_Shape/Makefile
                 tests/Polyhedron/Makefile
+                tests/Grid/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile

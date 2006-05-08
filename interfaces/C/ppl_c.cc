@@ -20,24 +20,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-
-#include <config.h>
-
-#include "Coefficient.defs.hh"
-#include "Linear_Expression.defs.hh"
-#include "Constraint.defs.hh"
-#include "Constraint_System.defs.hh"
-#include "Generator.defs.hh"
-#include "Generator_System.defs.hh"
-#include "Polyhedron.defs.hh"
-#include "C_Polyhedron.defs.hh"
-#include "NNC_Polyhedron.defs.hh"
-#include "LP_Problem.defs.hh"
-#include "Init.defs.hh"
-#include "max_space_dimension.hh"
-#include "version.hh"
+#include "ppl.hh"
 #include "ppl_c.h"
 #include <stdexcept>
+#include <limits>
 #include <sstream>
 #include <cstdio>
 #include <cerrno>
@@ -185,7 +171,8 @@ void
 cxx_Variable_output_function(std::ostream& s, const Variable& v) {
   const char* b = c_variable_output_function(v.id());
   if (b == 0)
-    // FIXME: silently doing nothing is not the right thing to do!
+    // Something went wrong in the client's output function.
+    // Client code will know what to do: we do nothing.
     return;
   s << b;
 }
@@ -279,7 +266,10 @@ CATCH_ALL
 
 int
 ppl_version(const char** p) try {
-  *p = version();
+  // Note: use explicit qualification to avoid clashes on, e.g.,
+  // Solaris 2.9, where `version' is the name of an enum defined in
+  // math.h.
+  *p = Parma_Polyhedra_Library::version();
   return 0;
 }
 CATCH_ALL
@@ -337,8 +327,7 @@ CATCH_ALL
 
 int
 ppl_new_Coefficient_from_mpz_t(ppl_Coefficient_t* pc, mpz_t z) try {
-  // FIXME: this is a kludge.
-  *pc = to_nonconst(new Coefficient(mpz_class(z)));
+  *pc = to_nonconst(new Coefficient(reinterpret_mpz_class(z)));
   return 0;
 }
 CATCH_ALL
@@ -354,11 +343,7 @@ CATCH_ALL
 
 int
 ppl_Coefficient_to_mpz_t(ppl_const_Coefficient_t c, mpz_t z) try {
-  Result r = assign_r(reinterpret_mpz_class(z),
-		    *to_const(c),
-		    ROUND_DIRECT);
-  used(r);
-  assert(r == V_EQ);
+  assign_r(reinterpret_mpz_class(z), *to_const(c), ROUND_NOT_NEEDED);
   return 0;
 }
 CATCH_ALL
@@ -373,8 +358,7 @@ CATCH_ALL
 int
 ppl_assign_Coefficient_from_mpz_t(ppl_Coefficient_t dst, mpz_t z) try {
   Coefficient& ddst = *to_nonconst(dst);
-  // FIXME: this is a kludge.
-  ddst = mpz_class(z);
+  ddst = reinterpret_mpz_class(z);
   return 0;
 }
 CATCH_ALL
@@ -386,7 +370,7 @@ ppl_assign_Coefficient_from_Coefficient(ppl_Coefficient_t dst,
   Coefficient& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
-  }
+}
 CATCH_ALL
 
 int
@@ -395,6 +379,37 @@ ppl_Coefficient_OK(ppl_const_Coefficient_t /* c */) try {
 }
 CATCH_ALL
 
+int
+ppl_Coefficient_is_bounded(void) try {
+  return std::numeric_limits<Coefficient>::is_bounded ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Coefficient_min(mpz_t min) try {
+  if (std::numeric_limits<Coefficient>::is_bounded) {
+    assign_r(reinterpret_mpz_class(min),
+	     std::numeric_limits<Coefficient>::min(),
+	     ROUND_NOT_NEEDED);
+    return 1;
+  }
+  else
+    return 0;
+}
+CATCH_ALL
+
+int
+ppl_Coefficient_max(mpz_t max) try {
+  if (std::numeric_limits<Coefficient>::is_bounded) {
+    assign_r(reinterpret_mpz_class(max),
+	     std::numeric_limits<Coefficient>::max(),
+	     ROUND_NOT_NEEDED);
+    return 1;
+  }
+  else
+    return 0;
+}
+CATCH_ALL
 
 int
 ppl_new_Linear_Expression(ppl_Linear_Expression_t* ple) try {

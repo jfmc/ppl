@@ -1,5 +1,4 @@
-/* Test Polyhedron::minimized_constraints(): we apply this function
-   to an empty polyhedron.
+/* Test Polyhedron::minimized_constraints().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,26 +21,50 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <algorithm>
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
-  C_Polyhedron ph1(2, EMPTY);
-
-  print_constraints(ph1, "*** ph1 ***");
-
-  C_Polyhedron known_result;
-  known_result = ph1;
+bool
+test01() {
+  NNC_Polyhedron ph1;
 
   Constraint_System cs = ph1.minimized_constraints();
 
-  C_Polyhedron ph2(cs);
+  NNC_Polyhedron ph2(cs);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
+  const Constraint_System& min_cs = ph2.minimized_constraints();
 
+  bool ok = (ph1 == ph2
+	     && min_cs.begin() == min_cs.end());
+
+  print_constraints(ph1, "*** ph1 ***");
   print_constraints(cs, "*** cs ***");
+  print_constraints(ph2, "*** ph2 ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
+
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(x < 1);
+  cs.insert(y > 0);
+
+  NNC_Polyhedron ph(cs);
+  const Constraint_System& min_cs = ph.minimized_constraints();
+  return std::distance(min_cs.begin(), min_cs.end()) == 3;
+}
+
+} // namespace
+
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+END_MAIN
+

@@ -20,10 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
-
-#include "Coefficient.defs.hh"
-#include "Checked_Number.defs.hh"
+#include "ppl.hh"
+#include "pwl.hh"
 #include <Yap/YapInterface.h>
 #include <cassert>
 #include <cassert>
@@ -54,6 +52,13 @@ Prolog_atom a_throw;
 bool Prolog_has_unbounded_integers;
 
 /*!
+  If \p Prolog_has_unbounded_integers is false, holds the minimum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+long Prolog_min_integer;
+
+/*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
@@ -71,6 +76,7 @@ mpz_class tmp_mpz_class;
 void
 ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
+  Prolog_min_integer = 0;
   Prolog_max_integer = 0;
 
   a_throw = YAP_LookupAtom("throw");
@@ -130,8 +136,7 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
 */
 inline int
 Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
-  // FIXME: the following cast is really a bug in YAP.
-  t = YAP_MkAtomTerm(YAP_FullLookupAtom(const_cast<char*>(s)));
+  t = YAP_MkAtomTerm(YAP_FullLookupAtom(s));
   return 1;
 }
 
@@ -158,8 +163,7 @@ Prolog_put_address(Prolog_term_ref& t, void* p) {
 */
 Prolog_atom
 Prolog_atom_from_string(const char* s) {
-  // FIXME: the following cast is really a bug in YAP.
-  return YAP_FullLookupAtom(const_cast<char*>(s));
+  return YAP_FullLookupAtom(s);
 }
 
 Prolog_term_ref args[4];
@@ -295,7 +299,15 @@ Prolog_is_cons(Prolog_term_ref t) {
 inline int
 Prolog_get_long(Prolog_term_ref t, long* lp) {
   assert(Prolog_is_integer(t));
-  *lp = YAP_IntOfTerm(t);
+  if (YAP_IsBigNumTerm(t) != FALSE) {
+    YAP_BigNumOfTerm(t, tmp_mpz_class.get_mpz_t());
+    if (tmp_mpz_class >= LONG_MIN && tmp_mpz_class <= LONG_MAX)
+      PPL::assign_r(*lp, tmp_mpz_class, PPL::ROUND_NOT_NEEDED);
+    else
+      return 0;
+  }
+  else
+    *lp = YAP_IntOfTerm(t);
   return 1;
 }
 
@@ -378,18 +390,15 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
     YAP_BigNumOfTerm(t, tmp_mpz_class.get_mpz_t());
     n = tmp_mpz_class;
   }
-  else {
-    long l;
-    Prolog_get_long(t, &l);
-    n = l;
-  }
+  else
+    n = YAP_IntOfTerm(t);
   return n;
 }
 
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   if (n >= LONG_MIN && n <= LONG_MAX) {
-    long l;
+    long l = 0;
     PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED);
     return YAP_MkIntTerm(l);
   }
@@ -473,17 +482,27 @@ YAP_STUB_1(ppl_version_beta)
 YAP_STUB_1(ppl_version)
 YAP_STUB_1(ppl_banner)
 YAP_STUB_1(ppl_max_space_dimension)
+YAP_STUB_0(ppl_Coefficient_is_bounded)
+YAP_STUB_1(ppl_Coefficient_max)
+YAP_STUB_1(ppl_Coefficient_min)
 YAP_STUB_0(ppl_initialize)
 YAP_STUB_0(ppl_finalize)
 YAP_STUB_1(ppl_set_timeout_exception_atom)
 YAP_STUB_1(ppl_timeout_exception_atom)
 YAP_STUB_1(ppl_set_timeout)
 YAP_STUB_0(ppl_reset_timeout)
-YAP_STUB_4(ppl_new_Polyhedron_from_space_dimension)
-YAP_STUB_4(ppl_new_Polyhedron_from_Polyhedron)
-YAP_STUB_3(ppl_new_Polyhedron_from_constraints)
-YAP_STUB_3(ppl_new_Polyhedron_from_generators)
-YAP_STUB_3(ppl_new_Polyhedron_from_bounding_box)
+YAP_STUB_3(ppl_new_C_Polyhedron_from_space_dimension)
+YAP_STUB_3(ppl_new_NNC_Polyhedron_from_space_dimension)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_C_Polyhedron)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_NNC_Polyhedron)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_C_Polyhedron)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_constraints)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_constraints)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_generators)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_generators)
+YAP_STUB_2(ppl_new_C_Polyhedron_from_bounding_box)
+YAP_STUB_2(ppl_new_NNC_Polyhedron_from_bounding_box)
 YAP_STUB_2(ppl_Polyhedron_swap)
 YAP_STUB_1(ppl_delete_Polyhedron)
 YAP_STUB_2(ppl_Polyhedron_space_dimension)
@@ -588,17 +607,27 @@ init() {
   YAP_USER_C_PREDICATE(ppl_version, 1);
   YAP_USER_C_PREDICATE(ppl_banner, 1);
   YAP_USER_C_PREDICATE(ppl_max_space_dimension, 1);
+  YAP_USER_C_PREDICATE(ppl_Coefficient_is_bounded, 0);
+  YAP_USER_C_PREDICATE(ppl_Coefficient_max, 1);
+  YAP_USER_C_PREDICATE(ppl_Coefficient_min, 1);
   YAP_USER_C_PREDICATE(ppl_initialize, 0);
   YAP_USER_C_PREDICATE(ppl_finalize, 0);
   YAP_USER_C_PREDICATE(ppl_set_timeout_exception_atom, 1);
   YAP_USER_C_PREDICATE(ppl_timeout_exception_atom, 1);
   YAP_USER_C_PREDICATE(ppl_set_timeout, 1);
   YAP_USER_C_PREDICATE(ppl_reset_timeout, 0);
-  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_space_dimension, 4);
-  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_Polyhedron, 4);
-  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_constraints, 3);
-  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_generators, 3);
-  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_bounding_box, 3);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_space_dimension, 3);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_space_dimension, 3);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_C_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_generators, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_generators, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_bounding_box, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_bounding_box, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_swap, 2);
   YAP_USER_C_PREDICATE(ppl_delete_Polyhedron, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);

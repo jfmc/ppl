@@ -15,13 +15,14 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Kinds of polyhedra domains.
+//! Kinds of polyhedra domains.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  enum Topology {
-    NECESSARILY_CLOSED = 0,
-    NOT_NECESSARILY_CLOSED = 1
-  };
+enum Topology {
+  NECESSARILY_CLOSED = 0,
+  NOT_NECESSARILY_CLOSED = 1
+};
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Topology_hh)

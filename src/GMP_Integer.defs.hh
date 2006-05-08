@@ -66,18 +66,19 @@ void neg_assign(GMP_Integer& x);
 /*! \relates GMP_Integer */
 void neg_assign(GMP_Integer& x, const GMP_Integer& y);
 
-//! Assigns to \p x the greatest common divisor of \p x and \p y.
-/*! \relates GMP_Integer */
-void gcd_assign(GMP_Integer& x, const GMP_Integer& y);
-
 //! Assigns to \p x the greatest common divisor of \p y and \p z.
 /*! \relates GMP_Integer */
 void gcd_assign(GMP_Integer& x,
 		const GMP_Integer& y, const GMP_Integer& z);
 
-//! Assigns to \p x the least common multiple of \p x and \p y.
-/*! \relates GMP_Integer */
-void lcm_assign(GMP_Integer& x, const GMP_Integer& y);
+//! Extended GCD.
+/*! \relates GMP_Integer
+  Assigns to \p x the greatest common divisor of \p y and \p z, and to
+  \p s and \p t the values such that \p y * \p s + \p z * \p t = \p x.
+*/
+void gcdext_assign(GMP_Integer& x,
+		   const GMP_Integer& y, const GMP_Integer& z,
+		   GMP_Integer& s, GMP_Integer& t);
 
 //! Assigns to \p x the least common multiple of \p y and \p z.
 /*! \relates GMP_Integer */
@@ -94,18 +95,15 @@ void add_mul_assign(GMP_Integer& x,
 void sub_mul_assign(GMP_Integer& x,
 		    const GMP_Integer& y, const GMP_Integer& z);
 
-//! Assigns to \p x the quotient of the integer division of \p x by \p y.
-/*! \relates GMP_Integer */
-void exact_div_assign(GMP_Integer& x, const GMP_Integer& y);
+/*! \brief
+  If \p z divides \p y, assigns to \p x the quotient of the integer
+  division of \p y and \p z.
 
-//! Assigns to \p x the quotient of the integer division of \p y by \p z.
-/*! \relates GMP_Integer */
+  \relates GMP_Integer
+  The behavior is undefined if \p z does not divide \p y.
+*/
 void exact_div_assign(GMP_Integer& x,
 		      const GMP_Integer& y, const GMP_Integer& z);
-
-//! Assigns to \p x its integer square root.
-/*! \relates GMP_Integer */
-void sqrt_assign(GMP_Integer& x);
 
 //! Assigns to \p x the integer square root of \p y.
 /*! \relates GMP_Integer */

@@ -56,6 +56,7 @@ main() TRY {
   PRINT(Polyhedra_Powerset<C_Polyhedron>);
   PRINT(Polyhedra_Powerset<NNC_Polyhedron>);
 
+  // FIXME.
   return 0;
 }
 CATCH

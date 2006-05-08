@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 
 //! The convergence certificate for the BHRZ03 widening operator.
-/*!
+/*! \ingroup PPL_CXX_interface
   Convergence certificates are used to instantiate the BHZ03 framework
   so as to define widening operators for the finite powerset domain.
 
@@ -77,7 +77,7 @@ public:
   bool is_stabilizing(const Polyhedron& ph) const;
 
   //! A total ordering on BHRZ03 certificates.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     This binary predicate defines a total ordering on BHRZ03 certificates
     which is used when storing information about sets of polyhedra.
   */

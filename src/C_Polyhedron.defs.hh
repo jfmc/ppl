@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 
 //! A closed convex polyhedron.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class C_Polyhedron represents a
     <EM>topologically closed</EM> convex polyhedron
     in the vector space \f$\Rset^n\f$.
@@ -124,6 +124,29 @@ public:
     or if it contains closure points.
   */
   explicit C_Polyhedron(Generator_System& gs);
+
+  //! Builds a C polyhedron from a system of congruences.
+  /*!
+    The polyhedron inherits the space dimension of the congruence system.
+
+    \param cgs
+    The system of congruences defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
+  */
+  explicit C_Polyhedron(const Congruence_System& cgs);
+
+  //! Builds an C polyhedron recycling a system of congruences.
+  /*!
+    The polyhedron inherits the space dimension of the congruence
+    system.
+
+    \param cgs
+    The system of congruences defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
+  */
+  explicit C_Polyhedron(Congruence_System& cgs);
 
   /*! \brief
     Builds a C polyhedron representing the topological closure

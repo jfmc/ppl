@@ -178,7 +178,7 @@ PPL::Saturation_Row::prev(unsigned long position) const {
   else {
     const mp_limb_t mask
       = (~(mp_limb_t) 0)
-	>> (BITS_PER_GMP_LIMB - ((position + 1) % BITS_PER_GMP_LIMB));
+      >> (BITS_PER_GMP_LIMB - 1 - position % BITS_PER_GMP_LIMB);
     p += li;
     limb = *p & mask;
   }

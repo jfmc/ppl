@@ -1,6 +1,4 @@
-/* Test Polyhedron::ascii_dump() and Polyhedron::ascii_load():
-   we test these functions in the case that the file does not contain
-   the right thing.
+/* Test Polyhedron::ascii_dump() and Polyhedron::ascii_load().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+
 #include "files.hh"
 #include <string>
 #include <fstream>
@@ -33,13 +32,101 @@ using std::ios_base;
 
 namespace {
 
-const char* my_file = "ascii_dump_load3.dat";
+bool
+test01() {
+  const char* my_file = "ascii_dump_load3.dat";
+  Variable A(0);
+  Variable B(1);
 
-void
-test1() {
+  C_Polyhedron ph(2);
+  ph.add_constraint(A == 2);
+  ph.add_constraint(B >= 0);
 
-  nout << "test1()" << endl;
+  fstream f;
+  open(f, my_file, ios_base::out);
+  ph.ascii_dump(f);
+  close(f);
 
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok = ph2.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test02() {
+  const char* my_file = "ascii_dump_load3.dat";
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A == 2);
+  ph.add_constraint(B >= 0);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  ph.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  string str;
+  do
+    f >> str;
+  while (str != "=");
+  f.seekp(0, ios_base::cur);
+  f << "A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test03() {
+  const char* my_file = "ascii_dump_load3.dat";
+  Variable A(0);
+  Variable B(1);
+
+  NNC_Polyhedron ph1(2);
+  ph1.add_constraint(A == 2);
+  ph1.add_constraint(B >= 0);
+
+  Constraint_System cs = ph1.constraints();
+
+  C_Polyhedron ph(6);
+  ph.add_constraints(cs);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  ph.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  string str;
+  do
+    f >> str;
+  while (str != "=");
+  f.seekp(-6, ios_base::cur);
+  f << "A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test04() {
+  const char* my_file = "ascii_dump_load3.dat";
   Variable A(0);
   Variable B(1);
 
@@ -56,7 +143,108 @@ test1() {
   string str;
   do
     f >> str;
-  while (str != "space_dim");
+  while (str != "NECESSARILY_CLOSED");
+  f.seekp(-2, ios_base::cur);
+  f << "A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test05() {
+  const char* my_file = "ascii_dump_load3.dat";
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  ph.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  string str;
+  do
+    f >> str;
+  while (str != "x");
+  f.seekp(1, ios_base::cur);
+  f << "A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test06() {
+  const char* my_file = "ascii_dump_load3.dat";
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  ph.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  string str;
+  do
+    f >> str;
+  while (str != "(not_sorted)");
+  f.seekp(-2, ios_base::cur);
+  f << "A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test07() {
+  const char* my_file = "ascii_dump_load3.dat";
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+
+  ph.generators();
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  ph.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  string str;
+  do
+    f >> str;
+  while (str != "sat_c");
+  do
+    f >> str;
+  while (str != "x");
   f.seekp(0, ios_base::cur);
   f << " A";
   close(f);
@@ -66,15 +254,12 @@ test1() {
   bool ok = !ph2.ascii_load(f);
   close(f);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test2() {
-
-  nout << "test2()" << endl;
-
+bool
+test08() {
+  const char* my_file = "ascii_dump_load3.dat";
   Variable A(0);
   Variable B(1);
 
@@ -82,180 +267,7 @@ test2() {
   ph.add_constraint(A >= 0);
   ph.add_constraint(B >= 0);
 
-  fstream f;
-  open(f, my_file, ios_base::out);
-  ph.ascii_dump(f);
-  close(f);
-
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
-  do
-    f >> str;
-  while (str != "-ZE");
-  f.seekp(0, ios_base::cur);
-  f << "A";
-  close(f);
-
-  open(f, my_file, ios_base::in);
-  C_Polyhedron ph2;
-  bool ok = !ph2.ascii_load(f);
-  close(f);
-
-  if (!ok)
-    exit(1);
-}
-
-void
-test3() {
-
-  nout << "test3()" << endl;
-
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
-
-  fstream f;
-  open(f, my_file, ios_base::out);
-  ph.ascii_dump(f);
-  close(f);
-
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
-  do
-    f >> str;
-  while (str != "con_sys");
-  f.seekp(0, ios_base::cur);
-  f << "A";
-  close(f);
-
-  open(f, my_file, ios_base::in);
-  C_Polyhedron ph2;
-  bool ok = !ph2.ascii_load(f);
-  close(f);
-
-  if (!ok)
-    exit(1);
-}
-
-void
-test4() {
-
-  nout << "test4()" << endl;
-
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
-
-  fstream f;
-  open(f, my_file, ios_base::out);
-  ph.ascii_dump(f);
-  close(f);
-
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
-  do
-    f >> str;
-  while (str != "(up-to-date)");
-  f.seekp(0, ios_base::cur);
-  f << "A\n";
-  close(f);
-
-  open(f, my_file, ios_base::in);
-  C_Polyhedron ph2;
-  bool ok = !ph2.ascii_load(f);
-  close(f);
-
-  if (!ok)
-    exit(1);
-}
-
-void
-test5() {
-
-  nout << "test5()" << endl;
-
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
-
-  fstream f;
-  open(f, my_file, ios_base::out);
-  ph.ascii_dump(f);
-  close(f);
-
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
-  do
-    f >> str;
-  while (str != "gen_sys");
-  f.seekp(0, ios_base::cur);
-  f << "A";
-  close(f);
-
-  open(f, my_file, ios_base::in);
-  C_Polyhedron ph2;
-  bool ok = !ph2.ascii_load(f);
-  close(f);
-
-  if (!ok)
-    exit(1);
-}
-
-void
-test6() {
-
-  nout << "test6()" << endl;
-
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
-
-  fstream f;
-  open(f, my_file, ios_base::out);
-  ph.ascii_dump(f);
-  close(f);
-
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
-  do
-    f >> str;
-  while (str != "(not_up-to-date)" );
-  f.seekp(0, ios_base::cur);
-  f << "A\n";
-  close(f);
-
-  open(f, my_file, ios_base::in);
-  C_Polyhedron ph2;
-  bool ok = !ph2.ascii_load(f);
-  close(f);
-
-  if (!ok)
-    exit(1);
-}
-
-void
-test7() {
-
-  nout << "test7()" << endl;
-
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
+  ph.generators();
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -267,8 +279,8 @@ test7() {
   do
     f >> str;
   while (str != "sat_c");
-  f.seekp(0, ios_base::cur);
-  f << "A";
+  f.seekp(8, ios_base::cur);
+  f << " A";
   close(f);
 
   open(f, my_file, ios_base::in);
@@ -276,204 +288,146 @@ test7() {
   bool ok = !ph2.ascii_load(f);
   close(f);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test8() {
-
-  nout << "test8()" << endl;
-
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
-
+bool
+test09() {
+  const char* my_file = "ascii_dump_load3.dat";
   fstream f;
   open(f, my_file, ios_base::out);
-  ph.ascii_dump(f);
-  close(f);
-
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
-  do
-    f >> str;
-  while (str != "sat_g");
-  f.seekp(0, ios_base::cur);
-  f << "A";
+  f << "space_dim 2\n"
+    << "-ZE -EM  -CM -GM  +CS -GS  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "topology NECESSARILY_CLOSED\n"
+    << "3 x 3 (not_sorted)\n"
+    << "1 0 0";
   close(f);
 
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
-  bool ok = !ph2.ascii_load(f);
+  bool ok =! ph2.ascii_load(f);
   close(f);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
-test9() {
-
-  nout << "test9()" << endl;
-
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
-
-  fstream f;
-  open(f, my_file, ios_base::out);
-  ph.ascii_dump(f);
-  close(f);
-
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
-  do
-    f >> str;
-  while (str != "(up-to-date)");
-  f.seekp(0, ios_base::cur);
-  f << "\nA";
-  close(f);
-
-  open(f, my_file, ios_base::in);
-  C_Polyhedron ph2;
-  bool ok = !ph2.ascii_load(f);
-  close(f);
-
-  if (!ok)
-    exit(1);
-}
-
-void
+bool
 test10() {
-
-  nout << "test10()" << endl;
-
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
-
+  const char* my_file = "ascii_dump_load3.dat";
   fstream f;
   open(f, my_file, ios_base::out);
-  ph.ascii_dump(f);
-  close(f);
-
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
-  do
-    f >> str;
-  while (str != "(not_up-to-date)" );
-  f.seekp(0, ios_base::cur);
-  f << "\nA";
+  f << "space_dim 2\n"
+    << "-ZE -EM  -CM -GM  +CS -GS  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "topology NECESSARILY_CLOSED\n"
+    << "3 x 3 (not_sorted)\n"
+    << "1 0 0   >=\n"
+    << "0 1 0   >=\n"
+    << "0 0 1   >=\n\n"
+    << "gen_sys (not_up-to-date)\n"
+    << "topology NECESSARILY_CLOSED\n"
+    <<" 3 x 3 (not_sorted)\n"
+    << "1 0 0";
   close(f);
 
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
-  bool ok = !ph2.ascii_load(f);
+  bool ok =! ph2.ascii_load(f);
   close(f);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test11() {
-
-  nout << "test11()" << endl;
-
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
-
+  const char* my_file = "ascii_dump_load3.dat";
   fstream f;
   open(f, my_file, ios_base::out);
-  ph.ascii_dump(f);
-  close(f);
-
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
-  do
-    f >> str;
-  while (str != "sat_c");
-  f.seekp(0, ios_base::cur);
-  f << "\nA";
+  f << "space_dim 2\n"
+    << "-ZE -EM  -CM -GM  +CS -GS  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "topology NECESSARILY_CLOSED\n"
+    << "3";
   close(f);
 
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
-  bool ok = !ph2.ascii_load(f);
+  bool ok =! ph2.ascii_load(f);
   close(f);
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-void
+bool
 test12() {
-
-  nout << "test12()" << endl;
-
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
-
+  const char* my_file = "ascii_dump_load3.dat";
   fstream f;
   open(f, my_file, ios_base::out);
-  ph.ascii_dump(f);
-  close(f);
-
-  open(f, my_file, ios_base::in | ios_base::out);
-  string str;
-  do
-    f >> str;
-  while (str != "sat_g");
-  f.seekp(0, ios_base::cur);
-  f << "\nA";
+  f << "space_dim 2\n"
+    << "-ZE -EM  -CM -GM  +CS -GS  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "topology";
   close(f);
 
   open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
-  bool ok = !ph2.ascii_load(f);
+  bool ok =! ph2.ascii_load(f);
   close(f);
 
-  if (!ok)
-    exit(1);
+  return ok;
+}
+
+bool
+test13() {
+  const char* my_file = "ascii_dump_load3.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 3\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  +SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "topology NOT_NECESSARILY_CLOSED\n"
+    << "4 x 5 (sorted)\n"
+    << "1 0 0 0 -1   >\n"
+    << "0 0 0 0 1   >=\n"
+    << "0 0 1 0 0   >=\n"
+    << "-2 1 -1 0 0   >=\n"
+    << "\n"
+    << "gen_sys (up-to-date)\n"
+    << "topology NOT_NECESSARILY_CLOSED\n"
+    << "5 x 5 (sorted)\n"
+    << "0 0 0 1 0   L\n"
+    << "0 1 0 0 0   R\n"
+    << "0 1 1 0 0   R\n"
+    << "1 2 0 0 0   C\n"
+    << "1 2 0 0 1   P\n"
+    << "\n"
+    << "sat_c\n"
+    << "5";
+    close(f);
+
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok =! ph2.ascii_load(f);
+  close(f);
+
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+END_MAIN

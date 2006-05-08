@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() try {
+namespace {
+
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -49,6 +51,11 @@ main() try {
 
   bool ok = (ph1 == ph2);
 
-  return ok ? 0 : 1;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST_F32(test01);
+END_MAIN

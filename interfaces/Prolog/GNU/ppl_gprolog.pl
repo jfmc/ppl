@@ -27,18 +27,29 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_version(+term)).
 :- foreign(ppl_banner(+term)).
 :- foreign(ppl_max_space_dimension(+term)).
+:- foreign(ppl_Coefficient_is_bounded).
+:- foreign(ppl_Coefficient_max(+term)).
+:- foreign(ppl_Coefficient_min(+term)).
 :- foreign(ppl_initialize).
 :- foreign(ppl_finalize).
 :- foreign(ppl_set_timeout_exception_atom(+term)).
 :- foreign(ppl_timeout_exception_atom(+term)).
 :- foreign(ppl_set_timeout(+term)).
 :- foreign(ppl_reset_timeout).
-:- foreign(ppl_new_Polyhedron_from_space_dimension(+term, +term, +term,
+:- foreign(ppl_new_C_Polyhedron_from_space_dimension(+term, +term,
                                                             +term)).
-:- foreign(ppl_new_Polyhedron_from_Polyhedron(+term, +term, +term, +term)).
-:- foreign(ppl_new_Polyhedron_from_constraints(+term, +term, +term)).
-:- foreign(ppl_new_Polyhedron_from_generators(+term, +term, +term)).
-:- foreign(ppl_new_Polyhedron_from_bounding_box(+term, +term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_space_dimension(+term, +term,
+                                                            +term)).
+:- foreign(ppl_new_C_Polyhedron_from_C_Polyhedron(+term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_NNC_Polyhedron(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_C_Polyhedron(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(+term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_constraints(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_constraints(+term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_generators(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_generators(+term, +term)).
+:- foreign(ppl_new_C_Polyhedron_from_bounding_box(+term, +term)).
+:- foreign(ppl_new_NNC_Polyhedron_from_bounding_box(+term, +term)).
 :- foreign(ppl_Polyhedron_swap(+term, +term)).
 :- foreign(ppl_delete_Polyhedron(+term)).
 :- foreign(ppl_Polyhedron_space_dimension(+term, +term)).

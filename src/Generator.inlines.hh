@@ -195,6 +195,16 @@ operator!=(const Generator& x, const Generator& y) {
 }
 
 inline void
+Generator::ascii_dump(std::ostream& s) const {
+  Linear_Row::ascii_dump(s);
+}
+
+inline bool
+Generator::ascii_load(std::istream& s) {
+  return Linear_Row::ascii_load(s);
+}
+
+inline void
 Generator::swap(Generator& y) {
   Linear_Row::swap(y);
 }

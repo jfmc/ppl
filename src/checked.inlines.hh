@@ -122,6 +122,86 @@ gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   return abs<Policy>(to, to, dir);
 }
 
+template <typename Policy, typename To1,
+	  typename From1, typename From2, typename To2, typename To3>
+inline Result
+gcdext_exact(To1& to, const From1& x, const From2& y, To2& s, To3& t,
+	     Rounding_Dir dir) {
+  if (y == 0) {
+    if (x == 0) {
+      s = 0;
+      t = 1;
+      return V_EQ;
+    }
+    else {
+      if (x < 0)
+	s = -1;
+      else
+	s = 1;
+      t = 0;
+      return abs<Policy>(to, x, dir);
+    }
+  }
+
+  s = 1;
+  t = 0;
+  bool negative_x = x < 0;
+  bool negative_y = y < 0;
+
+  Result r;
+  r = abs<Policy>(to, x, dir);
+  if (r != V_EQ)
+    return r;
+
+  From2 ay;
+  r = abs<Policy>(ay, y, dir);
+  if (r != V_EQ)
+    return r;
+
+  // If COPY_GMP is defined then s is favoured when the absolute
+  // values of the given numbers are equal.  For instance if x and y
+  // are both 5 then s will be 1 and t will be 0, instead of the other
+  // way round.  This is to match the behaviour of GMP.
+#define COPY_GMP
+#ifdef COPY_GMP
+  if (to == ay)
+    goto sign_check;
+#endif
+
+  {
+    To2 v1 = 0;
+    To3 v2 = 1;
+    To1 v3 = static_cast<To1>(ay);
+    while (true) {
+      To1 q = to / v3;
+      // Remainder, next candidate GCD.
+      To1 t3 = to - q*v3;
+      To2 t1 = s - static_cast<To2>(q)*v1;
+      To3 t2 = t - static_cast<To3>(q)*v2;
+      s = v1;
+      t = v2;
+      to = v3;
+      if (t3 == 0)
+	break;
+      v1 = t1;
+      v2 = t2;
+      v3 = t3;
+    }
+  }
+
+#ifdef COPY_GMP
+ sign_check:
+#endif
+  if (negative_x) {
+    r = neg<Policy>(s, s, dir);
+    if (r != V_EQ)
+      return r;
+  }
+  if (negative_y)
+    return neg<Policy>(t, t, dir);
+  return V_EQ;
+}
+
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
 lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
@@ -149,11 +229,11 @@ lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 template <typename Policy, typename Type>
 inline Result
 sgn_generic(const Type& x) {
-  if (x < 0)
-    return V_LT;
   if (x > 0)
     return V_GT;
-  return V_EQ;
+  if (x == 0)
+    return V_EQ;
+  return V_LT;
 }
 
 template <typename Policy, typename Type>

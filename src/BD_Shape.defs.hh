@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_BD_Shape_defs_hh 1
 
 #include "BD_Shape.types.hh"
-#include "globals.types.hh"
+#include "globals.defs.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Linear_Expression.types.hh"
@@ -62,8 +62,7 @@ operator<<(std::ostream& s, const BD_Shape<T>& bds);
 } // namespace IO_Operators
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are the same BDS.
-/*!
-  \relates BD_Shape
+/*! \relates BD_Shape
   Note that \p x and \p y may be dimension-incompatible shapes:
   in this case, the value <CODE>false</CODE> is returned.
 */
@@ -71,8 +70,7 @@ template <typename T>
 bool operator==(const BD_Shape<T>& x, const BD_Shape<T>& y);
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same BDS.
-/*!
- \relates BD_Shape
+/*! \relates BD_Shape
   Note that \p x and \p y may be dimension-incompatible shapes:
   in this case, the value <CODE>true</CODE> is returned.
 */
@@ -82,8 +80,8 @@ bool operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y);
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
   If the rectilinear distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -99,8 +97,8 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
   If the rectilinear distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -116,8 +114,8 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
 /*! \relates BD_Shape
   If the rectilinear distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -136,8 +134,8 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
   If the euclidean distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -153,8 +151,8 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
   If the euclidean distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -170,8 +168,8 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the euclidean distance between \p x and \p y.
 /*! \relates BD_Shape
   If the euclidean distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -190,8 +188,8 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
   If the \f$L_\infty\f$ distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -207,8 +205,8 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
   If the \f$L_\infty\f$ distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -224,8 +222,8 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 //! Computes the \f$L_\infty\f$ distance between \p x and \p y.
 /*! \relates BD_Shape
   If the \f$L_\infty\f$ distance between \p x and \p y is defined,
-  stores an approximation of it into to \p r
-  and returns <CODE>true</CODE>;  returns <CODE>false</CODE> otherwise.
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
 
   The direction of the approximation is specified by \p dir.
 
@@ -243,7 +241,7 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as a bounded difference.
-/*!
+/*! \relates BD_Shape
   \return
   <CODE>true</CODE> if the constraint \p c is a
   \ref Bounded_Difference_Shapes "bounded difference";
@@ -286,6 +284,7 @@ bool extract_bounded_difference(const Constraint& c,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Extracts leader indices from the predecessor relation.
+/*! \relates BD_Shape */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void compute_leader_indices(const std::vector<dimension_type>& predecessor,
 			    std::vector<dimension_type>& indices);
@@ -293,7 +292,7 @@ void compute_leader_indices(const std::vector<dimension_type>& predecessor,
 } // namespace Parma_Polyhedra_Library
 
 //! A bounded difference shape.
-/*!
+/*! \ingroup PPL_CXX_interface
   The class template BD_Shape<T> allows for the efficient representation
   of a restricted kind of <EM>topologically closed</EM> convex polyhedra
   called <EM>bounded difference shapes</EM> (BDSs, for short).
@@ -446,6 +445,9 @@ public:
   /*!
     Builds the smallest BDS containing the polyhedron defined by \p gs.
     The BDS inherits the space dimension of \p gs.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
   */
   BD_Shape(const Generator_System& gs);
 
@@ -481,7 +483,6 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  // FIXME: the following is a workaround for a bug in doxygen 1.4.6.
   /*! \brief
     Returns \f$0\f$, if \p *this is empty; otherwise, returns the
     \ref Affine_Independence_and_Affine_Dimension "affine dimension"
@@ -530,6 +531,12 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p *this is a universe BDS.
   bool is_universe() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    is a bounded BDS.
+  */
+  bool is_bounded() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this satisfies
@@ -818,10 +825,15 @@ public:
     \param y
     A BDS that <EM>must</EM> be contained in \p *this.
 
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void CC76_extrapolation_assign(const BD_Shape& y);
+  void CC76_extrapolation_assign(const BD_Shape& y, unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -836,12 +848,18 @@ public:
     \param last
     An iterator referencing one past the last stop-point.
 
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   template <typename Iterator>
   void CC76_extrapolation_assign(const BD_Shape& y,
-				 Iterator first, Iterator last);
+				 Iterator first, Iterator last,
+				 unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -885,14 +903,23 @@ public:
 					   unsigned* tp = 0);
 
   /*! \brief
-    Restores from \p y the constraints of \p *this, lost by
+    Assigns to \p *this the result of restoring in \p y the constraints
+    of \p *this that were lost by
     \ref CC76_extrapolation "CC76-extrapolation" applications.
 
     \param y
-    A BDS that <EM>must</EM> be contained in \p *this.
+    A BDS that <EM>must</EM> contain \p *this.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
+
+    \note
+    As was the case for widening operators, the argument \p y is meant to
+    denote the value computed in the previous iteration step, whereas
+    \p *this denotes the value computed in the current iteration step
+    (in the <EM>descreasing</EM> iteration sequence). Hence, the call
+    <CODE>x.CC76_narrowing_assign(y)</CODE> will assign to \p x
+    the result of the computation \f$\mathtt{y} \Delta \mathtt{x}\f$.
   */
   void CC76_narrowing_assign(const BD_Shape& y);
 
@@ -1049,7 +1076,7 @@ public:
     will have dimension \p new_dimension.
 
     \exception std::invalid_argument
-    Thrown if \p new_dimensions is greater than the space dimension
+    Thrown if \p new_dimension is greater than the space dimension
     of \p *this.
   */
   void remove_higher_space_dimensions(dimension_type new_dimension);
@@ -1096,17 +1123,11 @@ public:
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    encoding of \p *this.
-  */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by ascii_dump)
+    Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
     and sets \p *this accordingly.  Returns <CODE>true</CODE> if successful,
     <CODE>false</CODE> otherwise.
   */
@@ -1211,7 +1232,7 @@ private:
   /*!
     For each dbm index \p u (less than or equal to \p last_v and different
     from \p v), deduce constraints of the form <CODE>v - u \<= c</CODE>,
-    starting from \p pos_sum which is an upper bound for \p v.
+    starting from \p ub_v which is an upper bound for \p v.
 
     The shortest-path closure is able to deduce the constraint
     <CODE>v - u \<= ub_v - lb_u</CODE>. We can be more precise if variable
@@ -1226,13 +1247,13 @@ private:
 			       dimension_type last_v,
 			       const Linear_Expression& sc_expr,
 			       Coefficient_traits::const_reference sc_den,
-			       const N& pos_sum);
+			       const N& ub_v);
 
   //! An helper function for the computation of affine relations.
   /*!
     For each dbm index \p u (less than or equal to \p last_v and different
     from \p v), deduce constraints of the form <CODE>u - v \<= c</CODE>,
-    starting from \p neg_sum which is a lower bound for \p v.
+    starting from \p minus_lb_v which is a lower bound for \p v.
 
     The shortest-path closure is able to deduce the constraint
     <CODE>u - v \<= ub_u - lb_v</CODE>. We can be more precise if variable
@@ -1248,7 +1269,7 @@ private:
 			       dimension_type last_v,
 			       const Linear_Expression& sc_expr,
 			       Coefficient_traits::const_reference sc_den,
-			       const N& neg_sum);
+			       const N& minus_lb_v);
 
   /*! \brief
     Adds to \p limiting_shape the bounded differences in \p cs
@@ -1321,5 +1342,6 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
 
 #include "BDS_Status.inlines.hh"
 #include "BD_Shape.inlines.hh"
+#include "BD_Shape.templates.hh"
 
 #endif // !defined(PPL_BD_Shape_defs_hh)

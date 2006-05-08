@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A 2-dimensional matrix of coefficients.
-/*!
+/*! \ingroup PPL_CXX_interface
   A Matrix object is a sequence of Row objects and is characterized
   by the matrix dimensions (the number of rows and columns).
   All the rows in a matrix, besides having the same size (corresponding
@@ -80,11 +80,13 @@ public:
   //! Assignment operator.
   Matrix& operator=(const Matrix& y);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! An iterator over a matrix.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     A const_iterator is used to provide read-only access
     to each row contained in a Matrix object.
   */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   class const_iterator {
   private:
     typedef std::vector<Row>::const_iterator Iter;
@@ -206,6 +208,32 @@ public:
   void add_zero_rows_and_columns(dimension_type n, dimension_type m,
 				 Row::Flags row_flags);
 
+  //! Adds a copy of the row \p y to the matrix.
+  /*!
+    \param y
+    The row to be copied: it must have the same number of columns as
+    the matrix.
+
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$(r+1) \times c\f$ matrix
+    \f$\bigl({M \atop 0}\bigr)\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
+  */
+  void add_row(const Row& y);
+
+  //! Adds the row \p y to the matrix.
+  /*!
+    \param y
+    The row to be added: it must have the same size and capacity as \p
+    *this.
+
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$(r+1) \times c\f$ matrix
+    \f$\bigl({M \atop 0}\bigr)\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
+  */
+  void add_recycled_row(Row& y);
+
   //! Makes the matrix shrink by removing its \p n trailing columns.
   void remove_trailing_columns(dimension_type n);
 
@@ -270,11 +298,7 @@ public:
   //! Clears the matrix deallocating all its rows.
   void clear();
 
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by \ref ascii_dump)

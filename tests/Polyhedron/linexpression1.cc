@@ -1,6 +1,4 @@
-/* Test operator-=(Linear_Expression& e1, const Linear_Expression& e2):
-   in this case the dimension of e2 is strictly greater than
-   the dimension of e1.
+/* Testing Linear_Expression.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,10 +22,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+// Test operator-=(Linear_Expression& e1, const Linear_Expression& e2):
+// in this case the dimension of e2 is strictly greater than
+// the dimension of e1.
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -41,10 +42,15 @@ main() TRY {
   C_Polyhedron known_result(2);
   known_result.add_constraint(A - B >= 0);
 
-  int retval = (ph == known_result) ? 0 : 1;
+  bool ok = (ph == known_result);
 
   print_constraints(ph, "*** ph ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

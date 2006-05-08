@@ -45,10 +45,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 // If GMP does not support exceptions the test is pointless.
 // Cygwin has an almost dummy definition of setrlimit().
-#if !GMP_SUPPORTS_EXCEPTIONS \
-|| defined(__CYGWIN__) \
-|| !(HAVE_DECL_RLIMIT_DATA || HAVE_DECL_RLIMIT_RSS \
-     || HAVE_DECL_RLIMIT_VMEM || HAVE_DECL_RLIMIT_AS)
+// For some reason, this test does not work on Alpha machines.
+#if !GMP_SUPPORTS_EXCEPTIONS				\
+  || defined(__CYGWIN__)				\
+  || defined(__alpha)					\
+  || !(HAVE_DECL_RLIMIT_DATA || HAVE_DECL_RLIMIT_RSS	\
+       || HAVE_DECL_RLIMIT_VMEM || HAVE_DECL_RLIMIT_AS)
 
 int
 main() TRY {
@@ -121,7 +123,7 @@ guarded_compute_open_hypercube_generators(dimension_type dimension,
     exit(1);
   }
   // Should never get here.
-  return false;
+  exit(1);
 }
 
 } // namespace

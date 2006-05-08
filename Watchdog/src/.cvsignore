@@ -6,4 +6,3 @@ Makefile
 Makefile.in
 pwl.hh
 pwl_include_files.hh
-pwl_install.hh

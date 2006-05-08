@@ -1,4 +1,4 @@
-/* Different ways of creating an universe BD_Shape.
+/* Test BD_Shape::is_universe().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,8 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
+namespace {
+
+bool
+test01() {
   Variable x(0);
   Variable y(1);
   // Variable z(2);
@@ -45,6 +47,11 @@ main() TRY {
   nout << "*** bd2.is_universe() ***" << endl;
   nout << (universe2 ? "true" : "false") << endl;
 
-  return (universe1 != universe2) ? 0 : 1;
+  return universe1 != universe2;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

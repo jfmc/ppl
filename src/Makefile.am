@@ -20,14 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
-SUBDIRS =
-
-
 # Libtool -version-info for libppl.la.
 #
 #  1. Start with version information of `0:0:0' for each Libtool library.
@@ -58,8 +50,10 @@ SUBDIRS =
 #	    0.6			    3:0:0
 #	    0.7			    4:0:0
 #	    0.8			    5:0:0
+#	    0.9			    6:0:0
+#	    0.10		    7:0:0
 
-LIBPPL_LT_CURRENT =  5
+LIBPPL_LT_CURRENT =  7
 LIBPPL_LT_REVISION = 0
 LIBPPL_LT_AGE =      0
 
@@ -118,6 +112,8 @@ Interval.types.hh \
 Bounding_Box.types.hh \
 Constraint.types.hh \
 Generator.types.hh \
+Grid_Generator.types.hh \
+Congruence.types.hh \
 Init.types.hh \
 Row.types.hh \
 Linear_Row.types.hh \
@@ -129,26 +125,32 @@ Saturation_Row.types.hh \
 Saturation_Matrix.types.hh \
 Constraint_System.types.hh \
 Generator_System.types.hh \
+Grid_Generator_System.types.hh \
+Congruence_System.types.hh \
 Scalar_Products.types.hh \
 LP_Problem.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
 H79_Certificate.types.hh \
+Grid_Certificate.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
+Grid.types.hh \
 Ptr_Iterator.types.hh \
 DB_Row.types.hh \
 DB_Matrix.types.hh \
 BD_Shape.types.hh \
-float.types.hh \
+fpu.types.hh \
 Float.defs.hh \
 Float.inlines.hh \
 Limits.hh \
 fpu.defs.hh \
 fpu-c99.inlines.hh \
 fpu-ia32.inlines.hh \
+fpu-none.inlines.hh \
+fpu-sparc.inlines.hh \
 Rounding_Dir.defs.hh \
 Rounding_Dir.inlines.hh \
 Result.defs.hh \
@@ -193,6 +195,8 @@ Saturation_Matrix.defs.hh \
 Saturation_Matrix.inlines.hh \
 Constraint_System.defs.hh \
 Generator_System.defs.hh \
+Grid_Generator_System.defs.hh \
+Congruence_System.defs.hh \
 Linear_Expression.defs.hh \
 Linear_Expression.inlines.hh \
 Constraint.defs.hh \
@@ -200,7 +204,13 @@ Constraint.inlines.hh \
 Constraint_System.inlines.hh \
 Generator.defs.hh \
 Generator.inlines.hh \
+Grid_Generator.inlines.hh \
+Grid_Generator.defs.hh \
+Congruence.defs.hh \
+Congruence.inlines.hh \
 Generator_System.inlines.hh \
+Grid_Generator_System.inlines.hh \
+Congruence_System.inlines.hh \
 Scalar_Products.defs.hh \
 Scalar_Products.inlines.hh \
 LP_Problem.defs.hh \
@@ -213,9 +223,16 @@ BHRZ03_Certificate.defs.hh \
 BHRZ03_Certificate.inlines.hh \
 H79_Certificate.defs.hh \
 H79_Certificate.inlines.hh \
+Grid_Certificate.defs.hh \
+Grid_Certificate.inlines.hh \
 Polyhedron.defs.hh \
 Ph_Status.inlines.hh \
 Polyhedron.inlines.hh \
+Polyhedron.templates.hh \
+Grid.defs.hh \
+Grid_Status.inlines.hh \
+Grid.inlines.hh \
+Grid.templates.hh \
 C_Polyhedron.defs.hh \
 C_Polyhedron.inlines.hh \
 NNC_Polyhedron.defs.hh \
@@ -227,25 +244,31 @@ Ptr_Iterator.defs.hh \
 Ptr_Iterator.inlines.hh \
 DB_Row.defs.hh \
 DB_Row.inlines.hh \
+DB_Row.templates.hh \
 DB_Matrix.defs.hh \
 DB_Matrix.inlines.hh \
+DB_Matrix.templates.hh \
 BD_Shape.defs.hh \
 BDS_Status.inlines.hh \
 BD_Shape.inlines.hh \
+BD_Shape.templates.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
 Powerset.types.hh \
 Powerset.defs.hh \
 Powerset.inlines.hh \
+Powerset.templates.hh \
 Polyhedra_Powerset.types.hh \
 Polyhedra_Powerset.defs.hh \
 Polyhedra_Powerset.inlines.hh \
+Polyhedra_Powerset.templates.hh \
 max_space_dimension.hh \
 algorithms.hh
 
 NESTED_INCLUDE_FILES = \
 Ph_Status.idefs.hh \
+Grid_Status.idefs.hh \
 BDS_Status.idefs.hh
 
 libppl_la_SOURCES = \
@@ -255,8 +278,12 @@ Checked_Number.cc \
 Float.cc \
 Constraint.cc \
 Constraint_System.cc \
+Congruence.cc \
+Congruence_System.cc \
 Generator_System.cc \
+Grid_Generator_System.cc \
 Generator.cc \
+Grid_Generator.cc \
 Init.cc \
 Coefficient.cc \
 Interval.cc \
@@ -269,12 +296,17 @@ Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
 H79_Certificate.cc \
+Grid_Certificate.cc \
 Polyhedron_nonpublic.cc \
 Polyhedron_public.cc \
 Polyhedron_chdims.cc \
 Polyhedron_widenings.cc \
 C_Polyhedron.cc \
 NNC_Polyhedron.cc \
+Grid_nonpublic.cc \
+Grid_public.cc \
+Grid_chdims.cc \
+Grid_widenings.cc \
 BD_Shape.cc \
 Polyhedra_Powerset.cc \
 Row.cc \
@@ -282,72 +314,18 @@ Linear_Row.cc \
 Saturation_Matrix.cc \
 Saturation_Row.cc \
 Ph_Status.cc \
+Grid_Status.cc \
 Variable.cc \
 conversion.cc \
 minimize.cc \
 simplify.cc \
+Grid_conversion.cc \
+Grid_simplify.cc \
 globals.cc \
 version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
 swapping_sort.icc
-
-# The ordering of the following list *matters*!
-DOC_FILES = \
-namespaces.hh \
-GMP_Integer.types.hh \
-Checked_Number.types.hh \
-Coefficient.types.hh \
-globals.types.hh \
-globals.defs.hh \
-Variable.types.hh \
-Linear_Expression.types.hh \
-Constraint.types.hh \
-Constraint_System.types.hh \
-Generator.types.hh \
-Generator_System.types.hh \
-LP_Problem.types.hh \
-Poly_Con_Relation.types.hh \
-Poly_Gen_Relation.types.hh \
-BHRZ03_Certificate.types.hh \
-H79_Certificate.types.hh \
-Polyhedron.types.hh \
-C_Polyhedron.types.hh \
-NNC_Polyhedron.types.hh \
-BD_Shape.types.hh \
-GMP_Integer.defs.hh \
-Checked_Number.defs.hh \
-Coefficient.defs.hh \
-Variable.defs.hh \
-Linear_Expression.defs.hh \
-Constraint.defs.hh \
-Constraint_System.defs.hh \
-Generator.defs.hh \
-Generator_System.defs.hh \
-LP_Problem.defs.hh \
-Poly_Con_Relation.defs.hh \
-Poly_Gen_Relation.defs.hh \
-BHRZ03_Certificate.defs.hh \
-H79_Certificate.defs.hh \
-Polyhedron.defs.hh \
-C_Polyhedron.defs.hh \
-NNC_Polyhedron.defs.hh \
-globals.defs.hh \
-Widening_Function.types.hh \
-Widening_Function.defs.hh \
-Widening_Function.inlines.hh \
-BD_Shape.defs.hh \
-BD_Shape.inlines.hh \
-Determinate.types.hh \
-Determinate.defs.hh \
-Determinate.inlines.hh \
-Powerset.types.hh \
-Powerset.defs.hh \
-Powerset.inlines.hh \
-Polyhedra_Powerset.types.hh \
-Polyhedra_Powerset.defs.hh \
-Polyhedra_Powerset.inlines.hh \
-algorithms.hh
 
 if NO_UNDEFINED
 
@@ -361,14 +339,9 @@ libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
-noinst_HEADERS = \
-ppl.hh \
-ppl_include_files.hh \
-ppl_install.hh
+include_HEADERS = ppl.hh
 
-ppl.hh:	$(DOC_FILES) $(top_builddir)/src/version.hh Makefile
-	cat $(top_builddir)/src/version.hh >$@
-	(cd $(srcdir) ; cat $(DOC_FILES)) >>$@
+nodist_noinst_HEADERS = ppl_include_files.hh
 
 ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	rm -f $@
@@ -377,9 +350,11 @@ ppl_include_files.hh: $(INCLUDE_FILES) Makefile
 	  printf "#include \"%s\"\n" $$file >>$@; \
 	done
 
+EXTRA_DIST = ppl_header.hh ppl-config.cc.in version.hh.in
+
 if HAVE_PERL
 
-ppl_install.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(INCLUDE_FILES) $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
+ppl.hh:	$(top_builddir)/config.h $(top_builddir)/src/version.hh ppl_header.hh ppl_include_files.hh $(INCLUDE_FILES) $(NESTED_INCLUDE_FILES) Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/ppl_header.hh >$@
@@ -396,7 +371,7 @@ CREDITS.cc: $(top_builddir)/utils/text2cxxarray $(top_srcdir)/CREDITS
 
 else !HAVE_PERL
 
-ppl_install.hh:	ppl_install.hh.dist
+ppl.hh:	ppl.hh.dist
 	cp -f $< $@
 
 BUGS.cc:	BUGS.cc.dist
@@ -408,29 +383,34 @@ CREDITS.cc:	CREDITS.cc.dist
 
 endif !HAVE_PERL
 
+if USE_PRECOMPILED_HEADERS
+
+ppl.hh.gch: ppl.hh
+	$(CXXCOMPILE) -xc++-header -o $@ $<
+
+PRECOMPILED = ppl.hh.gch
+
+else
+
+PRECOMPILED =
+
+endif
+
 BUILT_SOURCES = \
-$(noinst_HEADERS) \
+$(include_HEADERS) \
+$(nodist_noinst_HEADERS) \
+$(PRECOMPILED) \
 BUGS.cc \
 COPYING.cc \
 CREDITS.cc
 
-# ppl.hh and ppl_install.hh are not distributed.
-# ppl_install.hh.dist, which is distributed, is a copy of ppl_install.hh;
+# ppl.hh is not distributed.
+# ppl.hh.dist, which is distributed, is a copy of ppl.hh;
 # likewise for BUGS.cc.dist, COPYING.cc.dist and CREDITS.cc.dist.
 dist-hook:
-	mv -f $(distdir)/ppl_install.hh $(distdir)/ppl_install.hh.dist
+	mv -f $(distdir)/ppl.hh $(distdir)/ppl.hh.dist
 	mv -f $(distdir)/BUGS.cc $(distdir)/BUGS.cc.dist
 	mv -f $(distdir)/COPYING.cc $(distdir)/COPYING.cc.dist
 	mv -f $(distdir)/CREDITS.cc $(distdir)/CREDITS.cc.dist
-	rm -f $(distdir)/ppl.hh
-
-install-data-local: ppl_install.hh
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	$(INSTALL_DATA) ppl_install.hh $(DESTDIR)$(includedir)/ppl.hh
-
-uninstall-local:
-	rm -f $(DESTDIR)$(includedir)/ppl.hh
-
-EXTRA_DIST = ppl_header.hh ppl-config.cc.in version.hh.in
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)

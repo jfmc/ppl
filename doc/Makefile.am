@@ -20,11 +20,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
 abs_srcdir = @abs_srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
 
 # All the documentation in docdir.
 docdir = @docdir@
@@ -73,6 +69,10 @@ HTML_DIRS = \
 ppl-user-@VERSION@-html \
 ppl-devref-@VERSION@-html
 
+TEMP_HTML_DIRS = \
+user.html-dir \
+devref.html-dir
+
 DIST_HTML_DOCS = \
 ppl-user-@VERSION@-html.tar.gz
 
@@ -100,6 +100,10 @@ $(PDF_LICENSES) \
 $(PS_LICENSES) \
 $(MANUALS)
 
+dist_man_MANS = \
+ppl-config.1 \
+ppl_lcdd.1 \
+ppl_lpsol.1
 
 # Do nothing by default.
 all:
@@ -132,7 +136,7 @@ install-html:
 	  test -f $$ball || test -f $(srcdir)/$$ball || $(MAKE) $$ball; \
 	  dir=`basename $$ball .tar.gz`; \
 	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir; \
-	  tar zxf `if test -f $$ball; then echo .; else echo $(srcdir); fi`/$$ball; \
+	  gunzip -c `if test -f $$ball; then echo .; else echo $(srcdir); fi`/$$ball | tar xf - ; \
 	  for file in $$dir/*; do \
 	    $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir/`basename $$file`; \
 	  done; \
@@ -240,9 +244,13 @@ ppl-user-@VERSION@.pdf: user.latex-dir
 ppl-devref-@VERSION@.pdf: devref.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
-ppl-%-@VERSION@-html: %.doxyconf-html $(DEVREF_STUFF)
-	rm -rf html
-	$(TEX_ENV) $(DOXYGEN) $< && rm -rf $@ && mv -f html $@
+ppl-user-@VERSION@-html: user.doxyconf-html $(DEVREF_STUFF)
+	rm -rf user.html-dir
+	$(TEX_ENV) $(DOXYGEN) $< && rm -rf $@ && mv -f user.html-dir $@
+
+ppl-devref-@VERSION@-html: devref.doxyconf-html $(DEVREF_STUFF)
+	rm -rf devref.html-dir
+	$(TEX_ENV) $(DOXYGEN) $< && rm -rf $@ && mv -f devref.html-dir $@
 
 %.tar: %
 	tar cf $@ $<
@@ -271,6 +279,6 @@ ppl.sty \
 README.doc
 
 mostlyclean-local:
-	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) *.aux *.log
+	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) $(TEMP_HTML_DIRS) *.aux *.log
 
 CLEANFILES = $(DIST_HTML_DOCS) $(DIST_PDF_DOCS) $(DIST_PS_DOCS)

@@ -57,8 +57,15 @@ public:
 inline
 Random_Number_Generator::Random_Number_Generator()
   : rand(gmp_randinit_default), max_bits(512) {
-  // Seed the random number generator.
+  // Seed the random number generator with the current time.
   rand.seed((unsigned long) time(0));
+}
+
+inline
+Random_Number_Generator::Random_Number_Generator(const unsigned long seed)
+  : rand(gmp_randinit_default), max_bits(512) {
+  // Seed the random number generator with the given value.
+  rand.seed(seed);
 }
 
 template <typename T>

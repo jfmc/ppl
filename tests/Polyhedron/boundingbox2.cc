@@ -1,4 +1,4 @@
-/* Test NNC_Polyhedron::shrink_bounding_box().
+/* Test Polyhedron::shrink_bounding_box().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -25,127 +25,26 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// This is unbounded NNC polyhedron in 4D but bounded in 2D
-// with strict inequality and closure points at the lower bound.
-void
-test1() {
-  Variable x(1);
-  Variable y(2);
-  Variable z(3);
-
-  NNC_Polyhedron ph(4);
-  ph.add_constraint(3 * x + y > 2);
-  ph.add_constraint(x <= 4);
-  ph.add_constraint(y <= 4);
-  ph.add_constraint(z >= 5);
-
-  BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
+bool
+test01() {
+  C_Polyhedron ph(1, EMPTY);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
 
-  print_constraints(ph, "*** test1 ph ***");
-  nbox.print(nout, "*** test1 nbox ***");
-  pbox.print(nout, "*** test1 pbox ***");
+  print_constraints(ph, "*** ph ***");
+  nbox.print(nout, "*** nbox ***");
 
-  BBox known_nbox(4);
-  known_nbox.raise_lower_bound(1, false, -2, 3);
-  known_nbox.lower_upper_bound(1, true, 4, 1);
-  known_nbox.raise_lower_bound(2, false, -10, 1);
-  known_nbox.lower_upper_bound(2, true, 4, 1);
-  known_nbox.raise_lower_bound(3, true, 5, 1);
+  BBox known_box(ph.space_dimension());
+  known_box.set_empty();
 
-  BBox known_pbox(4);
-  known_pbox.lower_upper_bound(1, true, 4, 1);
-  known_pbox.lower_upper_bound(2, true, 4, 1);
-  known_pbox.raise_lower_bound(3, true, 5, 1);
+  known_box.print(nout, "*** known_box ***");
 
-  known_nbox.print(nout, "*** test9 known_nbox ***");
-  known_pbox.print(nout, "*** test9 known_pbox ***");
-
-  if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
-    exit(1);
-}
-
-// This is a bounded NNC polyhedron with strict inequalities
-// causing upper and lower bounds of the box to be open.
-void
-test2() {
-  Variable x(0);
-  Variable y(1);
-
-  NNC_Polyhedron ph(2);
-  ph.add_constraint(3 * x + y >= 2);
-  ph.add_constraint(x < 4);
-  ph.add_constraint(y <= 4);
-
-  BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
-
-  BBox nbox(ph.space_dimension());
-  ph.shrink_bounding_box(nbox);
-
-  print_constraints(ph, "*** test2 ph ***");
-  nbox.print(nout, "*** test2 nbox ***");
-  pbox.print(nout, "*** test2 pbox ***");
-
-  BBox known_nbox(2);
-  known_nbox.raise_lower_bound(0, true, -2, 3);
-  known_nbox.lower_upper_bound(0, false, 4, 1);
-  known_nbox.raise_lower_bound(1, false, -10, 1);
-  known_nbox.lower_upper_bound(1, true, 4, 1);
-
-  BBox known_pbox(2);
-  known_pbox.lower_upper_bound(0, false, 4, 1);
-  known_pbox.lower_upper_bound(1, true, 4, 1);
-
-  known_nbox.print(nout, "*** test2 known_nbox ***");
-  known_pbox.print(nout, "*** test2 known_pbox ***");
-
-  if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
-    exit(1);
-}
-
-// This is an empty polyhedron in 2D defined using strict constraints.
-void
-test3() {
-  Variable x(0);
-  Variable y(1);
-  NNC_Polyhedron ph(2);
-  ph.add_constraint(x > 0);
-  ph.add_constraint(x < 0);
-  ph.add_constraint(y > 0);
-  ph.add_constraint(y < 0);
-
-  Bounding_Box pbox(2);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
-
-  Bounding_Box nbox(2);
-  ph.shrink_bounding_box(nbox);
-
-  NNC_Polyhedron known_ph(2, EMPTY);
-  NNC_Polyhedron known_pph(pbox, From_Bounding_Box());
-  NNC_Polyhedron known_nph(nbox, From_Bounding_Box());
-
-  print_generators(ph, "*** test3 ph ***");
-  print_generators(known_pph, "*** test3 known_pph ***");
-  print_generators(known_nph, "*** test3 known_nph ***");
-
-  if (ph != known_ph || ph != known_nph || ph != known_ph)
-    exit(1);
+  return nbox == known_box;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  test1();
-  test2();
-  test3();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

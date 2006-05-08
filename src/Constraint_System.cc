@@ -485,6 +485,8 @@ PPL::Constraint_System::ascii_dump(std::ostream& s) const {
   }
 }
 
+PPL_OUTPUT_DEFINITIONS(Constraint_System)
+
 bool
 PPL::Constraint_System::ascii_load(std::istream& s) {
   std::string str;

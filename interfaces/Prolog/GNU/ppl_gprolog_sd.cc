@@ -20,10 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
-
-#include "Coefficient.defs.hh"
-#include "Checked_Number.defs.hh"
+#include "ppl.hh"
+#include "pwl.hh"
 #include <gprolog.h>
 #include <cassert>
 
@@ -135,7 +133,9 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
 */
 inline int
 Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
-  // FIXME: the following cast is really a bug in GNU Prolog.
+  // TODO: remove the const_cast when the GNU Prolog people fix gprolog.h.
+  // NOTE: at the time of writing this comment (January 14, 2006), and since
+  // a long time before, "GNU Prolog people" stands for the empty set.
   t = Mk_Atom(Create_Allocate_Atom(const_cast<char*>(s)));
   return 1;
 }
@@ -154,7 +154,7 @@ Prolog_put_atom(Prolog_term_ref& t, Prolog_atom a) {
 */
 Prolog_atom
 Prolog_atom_from_string(const char* s) {
-  // FIXME: the following cast is really a bug in GNU Prolog.
+  // TODO: remove the const_cast when the GNU Prolog people fix gprolog.h.
   return Create_Allocate_Atom(const_cast<char*>(s));
 }
 
@@ -423,11 +423,11 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 
 Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
-  long v;
-  if (PPL::assign_r(v, n, PPL::ROUND_NOT_NEEDED) != PPL::V_EQ)
+  long l = 0;
+  if (PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED) != PPL::V_EQ)
     throw PPL_integer_out_of_range(n);
   Prolog_term_ref t = Prolog_new_term_ref();
-  Prolog_put_long(t, v);
+  Prolog_put_long(t, l);
   return t;
 }
 

@@ -20,21 +20,25 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
 # M4 macro files to be used by the client applications with Autoconf.
 m4datadir = $(datadir)/aclocal
 m4data_DATA = ppl.m4
 
 # M4 macro files for internal use.
 m4macros = \
+ac_check_fpu_control.m4 \
 ac_check_gmp.m4 \
+ac_check_sicstus_prolog.m4 \
+ac_check_swi_prolog.m4 \
+ac_check_xsb_prolog.m4 \
+ac_cxx_attribute_weak.m4 \
+ac_cxx_double_binary_format.m4 \
 ac_cxx_flexible_arrays.m4 \
-ac_cxx_long_double.m4 \
-ac_cxx_long_long.m4
+ac_cxx_float_binary_format.m4 \
+ac_cxx_long_double_binary_format.m4 \
+lib-ld.m4 \
+lib-link.m4 \
+lib-prefix.m4
 
 EXTRA_DIST = $(m4macros) $(m4data_DATA)
 

@@ -111,6 +111,10 @@ PPL::Linear_System::set_rows_topology() {
 
 void
 PPL::Linear_System::ascii_dump(std::ostream& s) const {
+  // Prints the topology, the number of rows, the number of columns
+  // and the sorted flag.  The specialized methods provided by
+  // Constraint_System and Generator_System take care of properly
+  // printing the contents of the system.
   const Linear_System& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
@@ -126,6 +130,8 @@ PPL::Linear_System::ascii_dump(std::ostream& s) const {
   for (dimension_type i = 0; i < x_num_rows; ++i)
     x[i].ascii_dump(s);
 }
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_System)
 
 bool
 PPL::Linear_System::ascii_load(std::istream& s) {
@@ -349,29 +355,7 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
 
   const bool was_sorted = is_sorted();
 
-  const dimension_type new_rows_size = rows.size() + 1;
-  if (rows.capacity() < new_rows_size) {
-    // Reallocation will take place.
-    std::vector<Row> new_rows;
-    new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
-    new_rows.insert(new_rows.end(), new_rows_size, Row());
-    // Put the new row in place.
-    Row new_row(r, row_capacity);
-    dimension_type i = new_rows_size-1;
-    std::swap(new_rows[i], new_row);
-    // Steal the old rows.
-    while (i-- > 0)
-      new_rows[i].swap(rows[i]);
-    // Put the new rows into place.
-    std::swap(rows, new_rows);
-  }
-  else {
-    // Reallocation will NOT take place.
-    // Inserts a new empty row at the end, then substitutes it with a
-    // copy of the given row.
-    Row tmp(r, row_capacity);
-    std::swap(*rows.insert(rows.end(), Row()), tmp);
-  }
+  Matrix::add_row(r);
 
   //  We update `index_first_pending', because it must be equal to
   // `num_rows()'.
@@ -548,183 +532,6 @@ PPL::Linear_System::sort_and_remove_with_sat(Saturation_Matrix& sat) {
   assert(sys.check_sorted());
   // Now the system is sorted.
   sys.set_sorted(true);
-}
-
-void
-PPL::Linear_System::gram_schmidt() {
-  assert(num_pending_rows() == 0);
-
-  // The first part of this algorithm is an adaptation of the one
-  // proposed in a 1996 TR by Erlingsson, Kaltofen, and Musser
-  // "Generic Gram-Schmidt Orthogonalization by Exact Division".
-
-  // It is assumed that the lines/equalities come first in the system,
-  // which contains no redundant row.
-
-  const dimension_type rank = num_lines_or_equalities();
-  if (rank == 0)
-    return;
-
-#if 0
-  std::cout << "+++ Before Gram-Schmidt +++" << std::endl;
-  ascii_dump(std::cout);
-#endif
-
-  static std::vector<std::vector<Coefficient> > mu;
-  mu.reserve(compute_capacity(rank, mu.max_size()));
-  for (dimension_type i = mu.size(); i < rank; ++i)
-    mu.push_back(std::vector<Coefficient>(i+1));
-
-  Linear_System& x = *this;
-
-  // Compute the scalar products `x[i]*x[j]',
-  // for all 0 <= j <= i < rank, storing them into `mu[i][j]'.
-  for (dimension_type i = rank; i-- > 0; ) {
-    const Linear_Row& x_i = x[i];
-    std::vector<Coefficient>& mu_i = mu[i];
-    for (dimension_type j = i+1; j-- > 0; )
-      Scalar_Products::assign(mu_i[j], x_i, x[j]);
-  }
-
-  const dimension_type n_columns = num_columns();
-
-  TEMP_INTEGER(accum);
-  // Start from the second line/equality of the system.
-  for (dimension_type i = 1; i < rank; ++i) {
-    Linear_Row& x_i = x[i];
-    std::vector<Coefficient>& mu_i = mu[i];
-
-    // Finish computing `mu[i][j]', for all j <= i.
-    for (dimension_type j = 0; j <= i; ++j) {
-      const std::vector<Coefficient>& mu_j = mu[j];
-      if (j > 0)
-	mu_i[j] *= mu[j-1][j-1];
-      accum = 0;
-      for (dimension_type h = 0; h < j; ++h) {
-        accum *= mu[h][h];
-	// The following line optimizes the computation of
-	// accum += mu_i[h] * mu_j[h].
-	add_mul_assign(accum, mu_i[h], mu_j[h]);
-	if (h > 0)
-	  exact_div_assign(accum, mu[h-1][h-1]);
-      }
-      mu_i[j] -= accum;
-    }
-
-    // Let the `i'-th line become orthogonal with respect to the `j'-th line,
-    // for all 0 <= j < i.
-    for (dimension_type j = 0; j < i; ++j) {
-      const Linear_Row& x_j = x[j];
-      Coefficient_traits::const_reference mu_ij = mu_i[j];
-      Coefficient_traits::const_reference mu_jj = mu[j][j];
-      for (dimension_type k = n_columns; k-- > 0; ) {
-        x_i[k] *= mu_jj;
-	// The following line optimizes the computation of
-        // x_i[k] -= mu_ij * x_j[k].
-        sub_mul_assign(x_i[k], mu_ij, x_j[k]);
-	if (j > 0)
-	  exact_div_assign(x_i[k], mu[j-1][j-1]);
-      }
-    }
-  }
-
-  // Normalize the coefficients of the orthogonal base found.
-  for (dimension_type i = rank; i-- > 0; )
-    x[i].strong_normalize();
-
-#if 0
-  std::cout << "+++ After Gram-Schmidt on the base +++" << std::endl;
-  ascii_dump(std::cout);
-#endif
-
-#ifndef NDEBUG
-  // Check that the new base is indeed orthogonal.
-  for (dimension_type i = rank; i-- > 0; ) {
-    const Linear_Row& x_i = x[i];
-    for (dimension_type j = i; j-- > 0; )
-      if (Scalar_Products::sign(x_i, x[j]) != 0) {
-	std::cout << "Not an orthogonal base" << std::endl;
-	std::cout << "i = " << i << ", j = " << j << std::endl;
-	std::cout << "After Gram-Schmidt on the base" << std::endl;
-	ascii_dump(std::cout);
-	assert(false);
-      }
-  }
-#endif
-
-  // Let denominator = <v_0, v_0> * ... * <v_{rank-1}, v_{rank-1}>
-  // be the product of the squared norms of the orthogonal base.
-  // Define d[j] = denominator / <v_j, v_j>.
-  // Then, the formula to be computed, for each vector w which is not
-  // in the orthogonal base, is the following:
-  //
-  // w' = denominator * w - \sum_{j=0}^{rank-1} (d[j] * <w, v_j> * v_j)
-  //
-  // factors[j] will contain d[j] * <w, v_j>.
-
-  static std::vector<Coefficient> d;
-  static std::vector<Coefficient> factors;
-  d.reserve(compute_capacity(rank, d.max_size()));
-  factors.reserve(compute_capacity(rank, factors.max_size()));
-  if (d.size() < rank) {
-    const dimension_type growth = rank - d.size();
-    d.insert(d.end(), growth, 0);
-    factors.insert(factors.end(), growth, 0);
-  }
-
-  // Computing all the factors d[0], ..., d[rank-1], and the denominator.
-  Coefficient denominator = 1;
-  for (dimension_type i = rank; i-- > 0; ) {
-    const Linear_Row& x_i = x[i];
-    Scalar_Products::assign(d[i], x_i, x_i);
-    denominator *= d[i];
-  }
-  for (dimension_type i = rank; i-- > 0; )
-    exact_div_assign(d[i], denominator, d[i]);
-
-  // Orthogonalize the rows that are not lines/equalities.
-  const dimension_type n_rows = num_rows();
-  for (dimension_type i = rank; i < n_rows; ++i) {
-    Linear_Row& w = x[i];
-    // Compute `factors' according to `w'.
-    for (dimension_type j = rank; j-- > 0; ) {
-      Scalar_Products::assign(factors[j], w, x[j]);
-      factors[j] *= d[j];
-    }
-    for (dimension_type k = n_columns; k-- > 0; )
-      w[k] *= denominator;
-    for (dimension_type j = rank; j-- > 0; ) {
-      const Linear_Row& v_j = x[j];
-      for (dimension_type k = n_columns; k-- > 0; )
-        sub_mul_assign(w[k], factors[j], v_j[k]);
-    }
-    assert(w.is_ray_or_point_or_inequality());
-    w.normalize();
-
-#if 0
-  std::cout << "+++ After Gram-Schmidt on the whole system +++" << std::endl;
-  ascii_dump(std::cout);
-#endif
-
-#ifndef NDEBUG
-    // Check that w is indeed orthogonal with respect to all the
-    // vectors in the base.
-    for (dimension_type h = rank; h-- > 0; )
-      if (Scalar_Products::sign(w, x[h]) != 0) {
-	std::cout << "Not orthogonal" << std::endl;
-	std::cout << "i = " << i << ", h = " << h << std::endl;
-	std::cout << "After Gram-Schmidt on the whole system" << std::endl;
-	ascii_dump(std::cout);
-	assert(false);
-      }
-#endif
-  }
-  // Linear_System may be no longer sorted (unless it has one line/equality
-  // and at most one ray/point/inequality).
-  if (rank > 1 || n_rows > rank + 1)
-    set_sorted(false);
-  // A well-formed system has to be returned.
-  assert(OK(true));
 }
 
 PPL::dimension_type

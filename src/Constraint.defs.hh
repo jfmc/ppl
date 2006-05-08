@@ -50,10 +50,17 @@ operator!=(const Constraint& x, const Constraint& y);
 /*! \relates Constraint */
 Constraint
 operator==(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 = \p v2.
+/*! \relates Constraint */
+Constraint
+operator==(Variable v1, Variable v2);
+
 //! Returns the constraint \p e = \p n.
 /*! \relates Constraint */
 Constraint
 operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n = \p e.
 /*! \relates Constraint */
 Constraint
@@ -63,10 +70,17 @@ operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \<= \p v2.
+/*! \relates Constraint */
+Constraint
+operator<=(Variable v1, Variable v2);
+
 //! Returns the constraint \p e \<= \p n.
 /*! \relates Constraint */
 Constraint
 operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n \<= \p e.
 /*! \relates Constraint */
 Constraint
@@ -76,10 +90,17 @@ operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \>= \p v2.
+/*! \relates Constraint */
+Constraint
+operator>=(Variable v1, Variable v2);
+
 //! Returns the constraint \p e \>= \p n.
 /*! \relates Constraint */
 Constraint
 operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n \>= \p e.
 /*! \relates Constraint */
 Constraint
@@ -89,10 +110,17 @@ operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator<(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \< \p v2.
+/*! \relates Constraint */
+Constraint
+operator<(Variable v1, Variable v2);
+
 //! Returns the constraint \p e \< \p n.
 /*! \relates Constraint */
 Constraint
 operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n \< \p e.
 /*! \relates Constraint */
 Constraint
@@ -102,10 +130,17 @@ operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator>(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \> \p v2.
+/*! \relates Constraint */
+Constraint
+operator>(Variable v1, Variable v2);
+
 //! Returns the constraint \p e \> \p n.
 /*! \relates Constraint */
 Constraint
 operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n \> \p e.
 /*! \relates Constraint */
 Constraint
@@ -124,7 +159,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
 } // namespace std
 
 //! A linear equality or inequality.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of the class Constraint is either:
   - an equality: \f$\sum_{i=0}^{n-1} a_i x_i + b = 0\f$;
   - a non-strict inequality: \f$\sum_{i=0}^{n-1} a_i x_i + b \geq 0\f$; or
@@ -340,6 +375,17 @@ public:
   */
   bool is_equivalent_to(const Constraint& y) const;
 
+  PPL_OUTPUT_DECLARATIONS
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    \ref ascii_dump) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+#endif
+  bool ascii_load(std::istream& s);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -348,6 +394,7 @@ public:
 
 private:
   friend class Parma_Polyhedra_Library::LP_Problem;
+  friend class Parma_Polyhedra_Library::Congruence;
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
   friend class Parma_Polyhedra_Library::Constraint_System;

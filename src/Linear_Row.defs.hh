@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_Row_defs_hh 1
 
 #include "Linear_Row.types.hh"
+#include "globals.defs.hh"
 #include "Row.defs.hh"
 #include "Topology.hh"
 #include "Linear_Expression.types.hh"
@@ -32,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for linear expressions, constraints and generators.
-/*!
+/*! \ingroup PPL_CXX_interface
   The class Linear_Row allows us to build objects of the form
   \f$[b, a_0, \ldots, a_{d-1}]_{(t, k)}\f$,
   i.e., a finite sequence of coefficients subscripted by a pair of flags,
@@ -128,14 +129,17 @@ public:
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     The type of the object to which the coefficients refer to,
     encoding both topology and kind.
 
+    \ingroup PPL_CXX_interface
     This combines the information about the topology (necessarily closed
     or not) and the kind (line/equality or ray/point/inequality)
     of a Linear_Row object.
   */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   class Flags : public Row::Flags {
   public:
     //! Default constructor: builds an object where all flags are invalid.
@@ -170,16 +174,12 @@ public:
     */
     bool operator!=(const Flags& y) const;
 
-    /*! \brief
-      Writes to \p s an ASCII representation of the internal
-      representation of \p *this.
-    */
-    void ascii_dump(std::ostream& s) const;
+    PPL_OUTPUT_DECLARATIONS
 
     //! Uses the ASCII Flags representation from \p s to recreate *this.
     /*!
       Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-      otherwise.  The ASCII representation is as output by ascii_dump.
+      otherwise.  The ASCII representation is as output by \ref ascii_dump.
     */
     bool ascii_load(std::istream& s);
 
@@ -365,16 +365,12 @@ public:
   */
   bool all_homogeneous_terms_are_zero() const;
 
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
   //! Uses the ASCII Linear_Row representation from \p s to recreate *this.
   /*!
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-    otherwise.  The ASCII representation is as output by ascii_dump.
+    otherwise.  The ASCII representation is as output by \ref ascii_dump.
   */
   bool ascii_load(std::istream& s);
 

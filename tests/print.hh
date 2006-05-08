@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_print_hh
 #define PPL_print_hh 1
 
+#include "ppl.hh"
+#include "Partial_Function.types.hh"
 #include <string>
 #include <iostream>
 
@@ -30,23 +32,58 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define NOISY 0
 #endif
 
-#if NOISY
-static std::ostream& nout = std::cout;
-#else
-#include <fstream>
-static std::ofstream nout;
-#endif
-
 #ifndef VERY_NOISY
 #define VERY_NOISY 0
 #endif
 
-#if VERY_NOISY
-static std::ostream& vnout = std::cout;
+static bool
+check_noisy(const char* environment_variable) {
+#if HAVE_DECL_GETENV 
+  return getenv(environment_variable) != 0;
 #else
-#include <fstream>
-static std::ofstream vnout;
+#if NOISY
+  if (strcmp(environment_variable, "PPL_NOISY_TESTS") == 0)
+    return true;
 #endif
+#if VERY_NOISY
+  if (strcmp(environment_variable, "PPL_VERY_NOISY_TESTS") == 0)
+    return true;
+#endif
+  return false;
+#endif
+}
+
+template<typename CharT, typename Traits = std::char_traits<CharT> >
+class nullbuf : public std::basic_streambuf<CharT, Traits> {
+protected:
+  virtual typename Traits::int_type overflow(typename Traits::int_type c) {
+    return Traits::not_eof(c);
+  }
+};
+
+template <class CharT, class Traits = std::char_traits<CharT> >
+class noisy_ostream : public std::basic_ostream<CharT, Traits> {
+private:
+  nullbuf<CharT, Traits> black_hole;
+
+public:
+  noisy_ostream(const std::basic_ostream<CharT, Traits>& os,
+		const char* environment_variable)
+    : std::basic_ostream<CharT, Traits>(check_noisy(environment_variable)
+					? os.rdbuf()
+					: &black_hole) {
+  }
+};
+
+static noisy_ostream<char> nout(std::cout, "PPL_NOISY_TESTS");
+static noisy_ostream<char> vnout(std::cout, "PPL_VERY_NOISY_TESTS");
+
+// FIX use inline function?
+#define dump_grids(grid,known_grid)			\
+  nout << endl << "ASCII dump of grid:" << endl;	\
+  grid.ascii_dump(nout);				\
+  nout << endl << "ASCII dump of known grid:" << endl;	\
+  known_grid.ascii_dump(nout);
 
 void
 print_constraint(const Parma_Polyhedra_Library::Constraint& c,
@@ -74,8 +111,50 @@ print_constraints(const Parma_Polyhedra_Library::BD_Shape<T>& bd,
   s << bd << std::endl;
 }
 
+template <typename PH>
+void
+print_constraints(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (!intro.empty())
+    s << intro << std::endl;
+  s << pps << std::endl;
+}
+
+template <typename PH>
+void
+print_congruences(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (!intro.empty())
+    s << intro << std::endl;
+  s << pps << std::endl;
+}
+
+void
+print_congruence(const Parma_Polyhedra_Library::Congruence& c,
+		 const std::string& intro = "",
+		 std::ostream& s = nout);
+
+void
+print_congruences(const Parma_Polyhedra_Library::Congruence_System& cgs,
+		  const std::string& intro = "",
+		  std::ostream& s = nout);
+
+void
+print_congruences(const Parma_Polyhedra_Library::Grid& gr,
+		  const std::string& intro = "",
+		  std::ostream& s = nout);
+
 void
 print_generator(const Parma_Polyhedra_Library::Generator& g,
+		const std::string& intro = "",
+		std::ostream& s = nout);
+
+void
+print_generator(const Parma_Polyhedra_Library::Grid_Generator& g,
 		const std::string& intro = "",
 		std::ostream& s = nout);
 
@@ -85,8 +164,23 @@ print_generators(const Parma_Polyhedra_Library::Generator_System& gs,
 		 std::ostream& s = nout);
 
 void
+print_generators(const Parma_Polyhedra_Library::Grid_Generator_System& gs,
+		 const std::string& intro = "",
+		 std::ostream& s = nout);
+
+void
 print_generators(const Parma_Polyhedra_Library::Polyhedron& ph,
 		 const std::string& intro = "",
 		 std::ostream& s = nout);
+
+void
+print_generators(const Parma_Polyhedra_Library::Grid& gr,
+		 const std::string& intro = "",
+		 std::ostream& s = nout);
+
+void
+print_function(const Parma_Polyhedra_Library::Partial_Function& function,
+	       const std::string& intro = "",
+	       std::ostream& s = nout);
 
 #endif // !defined(PPL_print_hh)

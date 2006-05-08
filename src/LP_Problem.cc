@@ -1155,7 +1155,7 @@ PPL::LP_Problem::compute_generator() const {
   TEMP_INTEGER(lcm);
   lcm = den[0];
   for (dimension_type i = 1; i < original_space_dim; ++i)
-    lcm_assign(lcm, den[i]);
+    lcm_assign(lcm, lcm, den[i]);
   // Use the denominators to store the numerators' multipliers
   // and then compute the normalized numerators.
   for (dimension_type i = original_space_dim; i-- > 0; ) {

@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for systems of constraints and generators.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of this class represents either a constraint system
   or a generator system. Each Linear_System object can be viewed
   as a finite sequence of strong-normalized Linear_Row objects,
@@ -77,12 +77,14 @@ public:
   Linear_System(Topology topol,
 		dimension_type n_rows, dimension_type n_columns);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A tag class.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     Tag class to differentiate the Linear_System copy-constructor that
     copies pending rows as pending from the one that transforms
     pending rows into non-pending ones.
   */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   struct With_Pending {
   };
 
@@ -331,13 +333,6 @@ public:
   */
   void simplify();
 
-  //! Applies the Gram-Schmidt orthogonalization method to the system.
-  /*!
-    It is assumed that the system corresponds to a minimized representation,
-    with all lines/equalities coming first.
-  */
-  void gram_schmidt();
-
   /*! \brief
     Normalizes the system by dividing each row for the GCD of the
     row's elements.
@@ -347,16 +342,7 @@ public:
   //! Clears the system deallocating all its rows.
   void clear();
 
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-
-    Prints the topology, the number of rows, the number of columns and
-    the \p sorted flag.  The specialized methods provided by Constraint_System
-    and Generator_System take care of properly printing the contents of the
-    system.
-  */
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by \ref
@@ -438,7 +424,7 @@ bool operator!=(const Linear_System& x, const Linear_System& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An iterator keeping a Linear_System consistent with a Saturation_Matrix.
-/*!
+/*! \ingroup PPL_CXX_interface
   An iterator on the vector of Row objects encoded in a Linear_System
   extended to maintain a corresponding iterator on a vector of
   Saturation_Row objects.  Access to values is always done on the Row

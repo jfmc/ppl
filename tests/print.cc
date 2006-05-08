@@ -20,17 +20,11 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <config.h>
-
-#include "Constraint.defs.hh"
-#include "Generator.defs.hh"
-#include "Constraint_System.defs.hh"
-#include "Generator_System.defs.hh"
-#include "Polyhedron.defs.hh"
-#include "BD_Shape.defs.hh"
+#include "print.hh"
+#include "ppl.hh"
+#include "Partial_Function.defs.hh"
 #include <iostream>
 #include <string>
-#include "print.hh"
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -66,7 +60,45 @@ print_constraints(const Constraint_System& cs,
 }
 
 void
+print_congruence(const Congruence& c,
+		 const std::string& intro, std::ostream& s) {
+  if (!intro.empty())
+    s << intro << "\n";
+  s << c << std::endl;
+}
+
+void
+print_congruences(const Congruence_System& cs,
+		  const std::string& intro, std::ostream& s) {
+  if (!intro.empty())
+    s << intro << std::endl;
+  Congruence_System::const_iterator i = cs.begin();
+  Congruence_System::const_iterator cs_end = cs.end();
+  bool printed_something = i != cs_end;
+  while (i != cs_end) {
+    s << *i++;
+    if (i != cs_end)
+      s << "," << std::endl;
+  }
+  s << (printed_something ? "." : "true.") << std::endl;
+}
+
+void
+print_congruences(const Grid& gr,
+		  const std::string& intro, std::ostream& s) {
+  print_congruences(gr.congruences(), intro, s);
+}
+
+void
 print_generator(const Generator& g,
+		const std::string& intro, std::ostream& s) {
+  if (!intro.empty())
+    s << intro << "\n";
+  s << g << std::endl;
+}
+
+void
+print_generator(const Grid_Generator& g,
 		const std::string& intro, std::ostream& s) {
   if (!intro.empty())
     s << intro << "\n";
@@ -77,6 +109,12 @@ void
 print_generators(const Polyhedron& ph,
 		 const std::string& intro, std::ostream& s) {
   print_generators(ph.generators(), intro, s);
+}
+
+void
+print_generators(const Grid& gr,
+		 const std::string& intro, std::ostream& s) {
+  print_generators(gr.generators(), intro, s);
 }
 
 void
@@ -93,4 +131,28 @@ print_generators(const Generator_System& gs,
       s << ",\n";
   }
   s << (printed_something ? "." : "false.") << std::endl;
+}
+
+void
+print_generators(const Grid_Generator_System& gs,
+		 const std::string& intro, std::ostream& s) {
+  if (!intro.empty())
+    s << intro << "\n";
+  Grid_Generator_System::const_iterator i = gs.begin();
+  Grid_Generator_System::const_iterator gs_end = gs.end();
+  bool printed_something = i != gs_end;
+  while (i != gs_end) {
+    s << *i++;
+    if (i != gs_end)
+      s << ",\n";
+  }
+  s << (printed_something ? "." : "false.") << std::endl;
+}
+
+void
+print_function(const Partial_Function& function,
+	       const std::string& intro, std::ostream& s) {
+  if (!intro.empty())
+    s << intro << std::endl;
+  function.print(s);
 }

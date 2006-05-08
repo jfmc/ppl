@@ -22,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+namespace {
 
-int
-main(void) {
+bool
+test01() {
   Variable x(0);
 
   Constraint_System cs1, cs2, cs3, cs4;
@@ -44,19 +44,17 @@ main(void) {
   Polyhedra_Powerset<C_Polyhedron> ps3(1, EMPTY);
   ps3.add_disjunct(ph3);
 
+  bool ok = ps12.geometrically_covers(ps3);
+
+  using namespace IO_Operators;
   nout << "ps12 = " << ps12 << endl
        << " ps3 = " << ps3 << endl;
 
-  if (ps12.geometrically_covers(ps3)) {
-
-    nout << "ps12 covers ps3." << endl;
-
-    return 0;
-  }
-  else {
-
-    nout << "ps12 does not cover ps3." << endl;
-
-    return 0;
-  }
+  return ok;
 }
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

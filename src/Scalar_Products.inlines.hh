@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
+#include "Congruence.defs.hh"
+#include "Grid_Generator.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -84,9 +86,25 @@ Scalar_Products::homogeneous_assign(Coefficient& z,
 		     static_cast<const Linear_Row&>(g));
 }
 
+inline void
+Scalar_Products::homogeneous_assign(Coefficient& z,
+				    const Linear_Expression& e,
+				    const Grid_Generator& g) {
+  homogeneous_assign(z,
+		     static_cast<const Linear_Row&>(e),
+		     static_cast<const Linear_Row&>(g));
+}
+
 inline int
 Scalar_Products::homogeneous_sign(const Linear_Expression& e,
 				  const Generator& g) {
+  return homogeneous_sign(static_cast<const Linear_Row&>(e),
+			  static_cast<const Linear_Row&>(g));
+}
+
+inline int
+Scalar_Products::homogeneous_sign(const Linear_Expression& e,
+				  const Grid_Generator& g) {
   return homogeneous_sign(static_cast<const Linear_Row&>(e),
 			  static_cast<const Linear_Row&>(g));
 }

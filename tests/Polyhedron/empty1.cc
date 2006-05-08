@@ -22,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   // This is the easy way to create
   // the empty polyhedron in the zero-dimension space.
   C_Polyhedron ph1(0, EMPTY);
@@ -35,11 +35,16 @@ main() TRY {
   Generator_System gs;
   C_Polyhedron ph2(gs);
 
-  int retval = (ph1 == ph2 && ph1.is_empty() && ph2.is_empty()) ? 0 : 1;
+  bool ok = (ph1 == ph2 && ph1.is_empty() && ph2.is_empty());
 
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

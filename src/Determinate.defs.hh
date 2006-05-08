@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Determinate.types.hh"
 #include "Constraint_System.types.hh"
+#include "Congruence_System.types.hh"
 #include "Variable.defs.hh"
 #include "globals.types.hh"
 #include <iosfwd>
@@ -63,6 +64,7 @@ operator<<(std::ostream&, const Determinate<PH>&);
 } // namespace Parma_Polyhedra_Library
 
 //! Wraps a PPL class into a determinate constraint system interface.
+/*! \ingroup PPL_CXX_interface */
 template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
@@ -80,6 +82,11 @@ public:
     corresponding to the base-level element represented by \p cs.
   */
   Determinate(const Constraint_System& cs);
+
+  //! \brief
+  //! Injection operator: builds the determinate constraint system element
+  //! corresponding to the base-level element represented by \p cgs.
+  Determinate(const Congruence_System& cgs);
 
   //! Copy constructor.
   Determinate(const Determinate& y);
@@ -170,7 +177,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A function adapter for the Determinate class.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     It lifts a Binary_Operator_Assign function object, taking arguments
     of type PH, producing the corresponding function object taking
     arguments of type Determinate<PH>.
@@ -210,7 +217,7 @@ public:
 
 private:
   //! The possibly shared representation of a Determinate object.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     By adopting the <EM>copy-on-write</EM> technique, a single
     representation of the base-level object may be shared by more than
     one object of the class Determinate.
@@ -249,6 +256,9 @@ private:
 
     //! Builds a new representation by copying the constraints in \p cs.
     Rep(const Constraint_System& cs);
+
+    //! Builds a new representation by copying the constraints in \p cgs.
+    Rep(const Congruence_System& cgs);
 
     //! Destructor.
     ~Rep();

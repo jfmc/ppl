@@ -14,7 +14,10 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Coefficient traits.
+/*! \ingroup PPL_CXX_interface */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Coefficient>
 struct Coefficient_traits_template {
 };

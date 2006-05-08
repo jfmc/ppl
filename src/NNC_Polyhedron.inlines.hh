@@ -90,6 +90,7 @@ NNC_Polyhedron::NNC_Polyhedron(Generator_System& gs)
 }
 
 template <typename Box>
+inline
 NNC_Polyhedron::NNC_Polyhedron(const Box& box, From_Bounding_Box)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
 	       box.space_dimension() <= max_space_dimension()

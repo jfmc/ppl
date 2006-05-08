@@ -20,11 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
 SUBDIRS = Ciao GNU SICStus SWI XSB YAP tests
 
 noinst_HEADERS = ppl_prolog.icc exceptions.hh track_allocation.hh

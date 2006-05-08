@@ -22,26 +22,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
-
 #define PROPAGATION_STEPS 1
 #define NUMBER_OF_TOKENS 1
 
 namespace {
 
 void
-my_output_function(std::ostream& s, const Variable& v) {
+aux_test01(std::ostream& s, const Variable& v) {
   s << char('i' + v.id());
 }
 
-} // namespace
-
-int
-main() TRY {
+bool
+test01() {
   Variable i(0);
   Variable j(1);
   Variable k(2);
-  Variable::set_output_function(my_output_function);
+  Variable::set_output_function(aux_test01);
 
   C_Polyhedron ph(3);
   ph.add_constraint(i == 1);
@@ -105,6 +101,11 @@ main() TRY {
 
   print_constraints(ph, "\nPostfixpoint");
 
-  return ok ? 0 : 1;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST_F8(test01);
+END_MAIN

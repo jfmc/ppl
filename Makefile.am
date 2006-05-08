@@ -26,9 +26,6 @@ ACLOCAL_AMFLAGS = -I m4
 DISTCHECK_CONFIGURE_FLAGS = \
 --enable-shared --enable-watchdog
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
 dist_noinst_SCRIPTS = \
 configure
 
@@ -42,4 +39,4 @@ BUGS CREDITS README.configure STANDARDS
 
 @SET_MAKE@
 
-SUBDIRS = utils src Watchdog tests interfaces demos doc m4
+SUBDIRS = utils src Watchdog tests interfaces demos doc m4 debian

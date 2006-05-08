@@ -44,38 +44,55 @@ Result neg_ext(To& to, const From& x, Rounding_Dir dir);
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 Result abs_ext(To& to, const From& x, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
 Result add_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
 Result sub_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
 Result mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
 Result div_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
 Result rem_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
 Result add_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
 Result sub_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 Result sqrt_ext(To& to, const From& x, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
 Result gcd_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
+template <typename To1_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To2_Policy, typename To3_Policy,
+	  typename To1, typename From1, typename From2,
+	  typename To3, typename To4>
+Result gcdext_ext(To1& to, const From1& x, const From2& y,
+		  const To2& s, const To3& t, Rounding_Dir dir);
+
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
 Result lcm_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename Policy, typename Type>
-Result output_ext(std::ostream& os, const Type& x, const Numeric_Format& format, Rounding_Dir dir);
+Result output_ext(std::ostream& os, const Type& x,
+		  const Numeric_Format& format, Rounding_Dir dir);
 
 template <typename Policy, typename Type>
 Result input_ext(Type& x, std::istream& is, Rounding_Dir dir);

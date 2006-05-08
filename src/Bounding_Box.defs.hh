@@ -35,7 +35,7 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A not necessarily closed bounding-box.
-/*!
+/*! \ingroup PPL_CXX_interface
   A Bounding_Box object represents the Cartesian product of \f$n\f$
   not necessarily closed and possibly unbounded intervals,
   where \f$n\f$ is the space dimension of the box.

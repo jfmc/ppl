@@ -20,11 +20,6 @@
 # For the most up-to-date information see the CS@Parma software
 # site: http://www.cs.unipr.it/Software/ . */
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
 Doubly_Linked_Object.types.hh \
@@ -58,11 +53,6 @@ Pending_Element.cc \
 Pending_List.cc \
 Time.cc \
 Watchdog.cc
-
-# The ordering of the following list *matters*!
-DOC_FILES = \
-Watchdog.types.hh \
-Watchdog.defs.hh
 
 EXTRA_DIST = \
 $(SOURCE_FILES) \
@@ -114,13 +104,9 @@ libpwl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPWL_LT_CURRENT):$(LIBPWL_LT_REVISION):$(LIBPWL_LT_AGE)
 
-noinst_HEADERS = \
-pwl.hh \
-pwl_include_files.hh \
-pwl_install.hh
+include_HEADERS = pwl.hh
 
-pwl.hh:	$(DOC_FILES)
-	(cd $(srcdir) ; cat $(DOC_FILES)) >pwl.hh
+nodist_noinst_HEADERS = pwl_include_files.hh
 
 pwl_include_files.hh: $(INCLUDE_FILES) Makefile
 	rm -f $@
@@ -131,33 +117,26 @@ pwl_include_files.hh: $(INCLUDE_FILES) Makefile
 
 if HAVE_PERL
 
-pwl_install.hh:	$(top_builddir)/config.h pwl_header.hh pwl_include_files.hh Makefile $(top_builddir)/utils/build_header
+pwl.hh:	$(top_builddir)/config.h pwl_header.hh pwl_include_files.hh Makefile $(top_builddir)/utils/build_header
 	$(top_builddir)/utils/build_header \
 		-I $(top_builddir) -I $(top_builddir)/src \
 		$(top_srcdir)/src/pwl_header.hh >$@
 
 else !HAVE_PERL
 
-pwl_install.hh:	pwl_install.hh.dist
+pwl.hh:	pwl.hh.dist
 	cp -f $< $@
 
 endif !HAVE_PERL
 
 BUILT_SOURCES = \
-$(noinst_HEADERS)
+$(include_HEADERS) \
+$(nodist_noinst_HEADERS)
 
-# pwl.hh and pwl_install.hh are not distributed.
-# pwl_install.hh.dist, which is distributed, is a copy of pwl_install.hh.
+# pwl.hh is not distributed.
+# pwl.hh.dist, which is distributed, is a copy of pwl.hh.
 dist-hook:
-	mv -f $(distdir)/pwl_install.hh $(distdir)/pwl_install.hh.dist
-	rm -f $(distdir)/pwl.hh
-
-install-data-local: pwl_install.hh
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	$(INSTALL_DATA) pwl_install.hh $(DESTDIR)$(includedir)/pwl.hh
-
-uninstall-local:
-	rm -f $(DESTDIR)$(includedir)/pwl.hh
+	mv -f $(distdir)/pwl.hh $(distdir)/pwl.hh.dist
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)
 

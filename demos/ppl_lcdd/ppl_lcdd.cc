@@ -34,7 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #if defined(USE_PPL)
 
-#include "ppl_install.hh"
+#include "ppl.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -127,12 +127,13 @@ namespace {
 #ifdef HAVE_GETOPT_H
 struct option long_options[] = {
   {"max-cpu",        required_argument, 0, 'C'},
-  {"max-memory",     required_argument, 0, 'V'},
+  {"max-memory",     required_argument, 0, 'R'},
   {"help",           no_argument,       0, 'h'},
   {"output",         required_argument, 0, 'o'},
   {"timings",        no_argument,       0, 't'},
   {"verbose",        no_argument,       0, 'v'},
 #if defined(USE_PPL)
+  {"version",        no_argument,       0, 'V'},
   {"check",          required_argument, 0, 'c'},
 #endif
   {0, 0, 0, 0}
@@ -142,24 +143,26 @@ struct option long_options[] = {
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
-"  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
-"  -h, --help              prints this help text to stderr\n"
+"  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
+"  -h, --help              prints this help text to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           produces lots of output\n"
 #if defined(USE_PPL)
+"  -V, --version           prints version information to stdout\n"
 "  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
 #endif
 #ifndef HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
 #endif
-;
+"\n"
+"Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
 #if defined(USE_PPL)
-#define OPTION_LETTERS "C:V:ho:tvc:"
+#define OPTION_LETTERS "C:R:ho:tvVc:"
 #else
-#define OPTION_LETTERS "C:V:ho:tvc:"
+#define OPTION_LETTERS "C:R:ho:tv"
 #endif
 
 const char* program_name = 0;
@@ -354,7 +357,7 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stderr, usage_string, argv[0]);
+      fprintf(stdout, usage_string, argv[0]);
       exit(0);
       break;
 
@@ -366,10 +369,10 @@ process_options(int argc, char* argv[]) {
 	max_seconds_of_cpu_time = l;
       break;
 
-    case 'V':
+    case 'R':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-V'");
+	fatal("a non-negative integer must follow `-R'");
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;
@@ -386,9 +389,18 @@ process_options(int argc, char* argv[]) {
       verbose = true;
       break;
 
+#if defined(USE_PPL)
+
+    case 'V':
+      fprintf(stdout, "%s\n", PPL_VERSION);
+      exit(0);
+      break;
+
     case 'c':
       check_file_name = optarg;
       break;
+
+#endif
 
     default:
       abort();

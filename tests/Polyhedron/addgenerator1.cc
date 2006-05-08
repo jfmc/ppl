@@ -1,5 +1,4 @@
-/* Test Polyhedron::add_generator(): we add points, lines and rays of
-   an NNC polyhedron to a closed polyhedron.
+/* Test Polyhedron::add_generator().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,38 +22,80 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
   Generator_System gs;
   gs.insert(point());
-  gs.insert(ray(A));
-  gs.insert(line(B));
-  NNC_Polyhedron ph1(gs);
+  gs.insert(point(A + 2*B));
+  gs.insert(point(A + B));
+  gs.insert(point(2*A + 2*B));
+  C_Polyhedron ph(gs);
+
+  print_generators(ph, "*** ph ***");
+
+  ph.add_generator_and_minimize(ray(A));
+
+  Generator_System known_gs;
+  known_gs.insert(point());
+  known_gs.insert(point(A + 2*B));
+  known_gs.insert(ray(A));
+  C_Polyhedron known_result(known_gs);
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph,
+		    "*** After ph.add_generator_and_minimize(ray(A)) ***");
+
+  return ok;
+}
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  C_Polyhedron ph_empty(2, EMPTY);
+  Generator_System gs1 = ph_empty.generators();
+  assert(gs1.space_dimension() == ph_empty.space_dimension());
+
+  gs1.insert(point());
+  gs1.insert(ray(A));
+  C_Polyhedron ph1(gs1);
 
   print_generators(ph1, "*** ph1 ***");
 
-  C_Polyhedron ph2(2, EMPTY);
-  ph2.add_generator(point(-A));
+  C_Polyhedron known_result1(2);
+  known_result1.add_constraint(A >= 0);
+  known_result1.add_constraint(B == 0);
+
+  Generator_System gs2 = ph_empty.generators();
+  assert(gs2.space_dimension() == ph_empty.space_dimension());
+
+  gs2.insert(point(C));
+  gs2.insert(line(C));
+  gs2.insert(ray(A));
+  C_Polyhedron ph2(gs2);
 
   print_generators(ph2, "*** ph2 ***");
 
-  const Generator_System& gs1 = ph1.minimized_generators();
-  for (Generator_System::const_iterator i = gs1.begin(),
-	 gs1_end = gs1.end(); i != gs1_end; ++i)
-    ph2.add_generator(*i);
+  C_Polyhedron known_result2(3);
+  known_result2.add_constraint(A >= 0);
+  known_result2.add_constraint(B == 0);
 
-  C_Polyhedron known_result(2);
-  known_result.add_constraint(A >= -1);
+  bool ok = (ph1 == known_result1 && ph2 == known_result2);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
-
-  print_generators(ph2, "*** After ph2add_generator(*i) ***");
-
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+END_MAIN

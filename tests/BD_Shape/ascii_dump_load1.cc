@@ -23,8 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 
 #include "files.hh"
+#include <string>
 #include <fstream>
 
+using std::string;
 using std::fstream;
 using std::ios_base;
 
@@ -32,10 +34,181 @@ namespace {
 
 const char* my_file = "ascii_dump_load1.dat";
 
-} // namespace
+bool
+test01() {
 
-int
-main() TRY {
+  nout << "test01()" << endl;
+
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(B >= 0);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  bd.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  string str;
+  do
+    f >> str;
+  while (str != "-EM");
+  f.seekp(0, ios_base::cur);
+  f << " A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  TBD_Shape bd2;
+  bool ok = !bd2.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test02() {
+
+  nout << "test02()" << endl;
+
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(B >= 1);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  bd.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  string str;
+  do
+    f >> str;
+  while (str != "+ZE");
+  f.seekp(0, ios_base::cur);
+  f << "A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  TBD_Shape bd2;
+  bool ok = !bd2.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test03() {
+
+  nout << "test03()" << endl;
+
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(B >= 2);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  bd.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  string str;
+  do
+    f >> str;
+  while (str != "-SPC");
+  f.seekp(0, ios_base::cur);
+  f << "A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  TBD_Shape bd2;
+  bool ok = !bd2.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test04() {
+
+  nout << "test04()" << endl;
+
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(B >= 3);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  bd.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  string str;
+  do
+    f >> str;
+  while (str != "+inf");
+  f.seekp(0, ios_base::cur);
+  f << "A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  TBD_Shape bd2;
+  bool ok = !bd2.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test05() {
+
+  nout << "test05()" << endl;
+
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(B >= 3);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  bd.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  string str;
+  do
+    f >> str;
+  while (str != "+inf");
+  do
+    f >> str;
+  while (str != "+inf");
+  f.seekp(0, ios_base::cur);
+  f << " 3 ";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  TBD_Shape bd2;
+  bool ok = !bd2.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test06() {
   Variable A(0);
   Variable B(1);
 
@@ -56,8 +229,18 @@ main() TRY {
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  int retval = (bd1 == bd2) ? 0 : 1;
+  bool ok = (bd1 == bd2) ;
 
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+END_MAIN

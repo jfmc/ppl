@@ -35,8 +35,9 @@ not_a_dimension();
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A node of the list of available coefficients.
+/*! \ingroup PPL_CXX_interface */
 // FIXME: rewrite the comment.
-#endif
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Coefficient_free_list_element {
 private:
   Coefficient i;
@@ -123,8 +124,8 @@ dimension_type
 compute_capacity(dimension_type requested_size,
 		 dimension_type maximum_size);
 
-//! User objects' the PPL can throw.
-/*!
+//! User objects the PPL can throw.
+/*! \ingroup PPL_CXX_interface
   This abstract base class should be instantiated by those users
   willing to provide a polynomial upper bound to the time spent
   by any invocation of a library operator.
@@ -138,23 +139,29 @@ public:
   virtual ~Throwable();
 };
 
-//! This pointer, which is initialized to zero, is repeatedly checked
-//! along any super-linear (i.e., computationally expensive) computation
-//! path in the library.
-//! When it is found nonzero the exception it points to is thrown.
-//! In other words, making this pointer point to an exception (and
-//! leaving it in this state) ensures that the library will return
-//! control to the client application, possibly by throwing the given
-//! exception, within a time that is a linear function of the size
-//! of the representation of the biggest object (powerset of polyhedra,
-//! polyhedron, system of constraints or generators) on which the library
-//! is operating upon.
-//! \note The only sensible way to assign to this pointer is from within
-//!       a signal handler or from a parallel thread.  For this reason,
-//!       the library, apart from ensuring that the pointer is initially
-//!       set to zero, never assigns to it.  In particular, it does not
-//!       zero it again when the exception is thrown: it is the client's
-//!       responsibility to do so.
+/*! \brief
+  A pointer to an exception object.
+
+  \ingroup PPL_CXX_interface
+  This pointer, which is initialized to zero, is repeatedly checked
+  along any super-linear (i.e., computationally expensive) computation
+  path in the library.
+  When it is found nonzero the exception it points to is thrown.
+  In other words, making this pointer point to an exception (and
+  leaving it in this state) ensures that the library will return
+  control to the client application, possibly by throwing the given
+  exception, within a time that is a linear function of the size
+  of the representation of the biggest object (powerset of polyhedra,
+  polyhedron, system of constraints or generators) on which the library
+  is operating upon.
+
+  \note
+  The only sensible way to assign to this pointer is from within a
+  signal handler or from a parallel thread.  For this reason, the
+  library, apart from ensuring that the pointer is initially set to zero,
+  never assigns to it.  In particular, it does not zero it again when
+  the exception is thrown: it is the client's responsibility to do so.
+*/
 extern const Throwable* volatile abandon_expensive_computations;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -169,11 +176,18 @@ void
 maybe_abandon();
 
 //! A tag class.
-/*!
+/*! \ingroup PPL_CXX_interface
   Tag class to differentiate the C_Polyhedron and NNC_Polyhedron
   constructors that build a polyhedron out of a bounding box.
 */
 struct From_Bounding_Box {
+};
+
+//! A tag class.
+/*! \ingroup PPL_CXX_interface
+  Tag class to make the Grid covering box constructor unique.
+*/
+struct From_Covering_Box {
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -181,9 +195,9 @@ struct From_Bounding_Box {
   If \f$g\f$ is the GCD of \p x and \p y, the values of \p x and \p y
   divided by \f$g\f$ are assigned to \p nx and \p ny, respectively.
 
-  \note \p x and \p nx may be the same object and likewise for
-        \p y and \p ny.  Any other aliasing results in undefined
-	behavior.
+  \note
+  \p x and \p nx may be the same object and likewise for
+  \p y and \p ny.  Any other aliasing results in undefined behavior.
 */
 #endif
 void
@@ -196,6 +210,78 @@ normalize2(Coefficient_traits::const_reference x,
 #endif
 template <typename T>
 T low_bits_mask(unsigned n);
+
+// Turn s into a string: PPL_STR(x + y) => "x + y".
+#define PPL_STR(s) #s
+// Turn the expansion of s into a string: PPL_XSTR(x) => "x expanded".
+#define PPL_XSTR(s) PPL_STR(s)
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#define PPL_OUTPUT_DECLARATIONS						\
+  /*! \brief Writes to \c std::cerr an ASCII representation of \p *this. */ \
+  void ascii_dump() const;						\
+  /*! \brief Writes to \p s an ASCII representation of \p *this. */	\
+  void ascii_dump(std::ostream& s) const;				\
+  /*! \brief Prints \p *this to \c std::cerr using \c operator<<. */	\
+  void print() const;
+#else
+#define PPL_OUTPUT_DECLARATIONS					\
+  void ascii_dump() const;					\
+  void ascii_dump(std::ostream& s) const;			\
+  void print() const;
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+
+#define PPL_OUTPUT_DEFINITIONS(class_name)			\
+  void								\
+  Parma_Polyhedra_Library::class_name::ascii_dump() const {	\
+    ascii_dump(std::cerr);					\
+  }								\
+								\
+  void								\
+  Parma_Polyhedra_Library::class_name::print() const {		\
+    using namespace IO_Operators;				\
+    std::cerr << *this;						\
+  }
+
+#define PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(class_name)			\
+  void									\
+  Parma_Polyhedra_Library::class_name::ascii_dump() const {		\
+    ascii_dump(std::cerr);						\
+  }									\
+									\
+  void									\
+  Parma_Polyhedra_Library::class_name::print() const {			\
+    std::cerr << "No user level output operator defined "		\
+	      << "for class " PPL_XSTR(class_name) << "." << std::endl; \
+  }
+
+#define PPL_OUTPUT_TEMPLATE_DEFINITIONS(type_symbol, class_prefix)	\
+  template <typename type_symbol>					\
+  void									\
+  class_prefix::ascii_dump() const {					\
+    ascii_dump(std::cerr);						\
+  }									\
+									\
+  template <typename type_symbol>					\
+  void									\
+  class_prefix::print() const {						\
+    using namespace IO_Operators;					\
+    std::cerr << *this;							\
+  }
+
+#define PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(type_symbol, class_prefix) \
+  template <typename type_symbol>					\
+  void									\
+  class_prefix::ascii_dump() const {					\
+    ascii_dump(std::cerr);						\
+  }									\
+									\
+  template <typename type_symbol>					\
+  void									\
+  class_prefix::print() const {						\
+    std::cerr << "No user level output operator defined "		\
+	      << "for " PPL_XSTR(class_prefix) << "." << std::endl;	\
+  }
 
 } // namespace Parma_Polyhedra_Library
 

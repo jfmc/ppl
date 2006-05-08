@@ -29,6 +29,8 @@ class Random_Number_Generator {
 public:
   Random_Number_Generator();
 
+  explicit Random_Number_Generator(unsigned long seed);
+
   template <typename T>
   void get(T& x, unsigned int info);
 

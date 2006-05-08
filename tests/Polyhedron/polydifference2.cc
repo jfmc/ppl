@@ -22,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -58,11 +58,93 @@ main() TRY {
 
   NNC_Polyhedron known_result(gs_known_result);
 
-  int retval = (computed_result == known_result) ? 0 : 1;
+  bool ok = (computed_result == known_result);
 
   print_generators(computed_result, "*** After poly_difference_assign ***");
   print_generators(known_result, "*** known_result ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  NNC_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(B >= 0);
+
+  NNC_Polyhedron ph2(2);
+  ph2.add_constraint(A > 2);
+  ph2.add_constraint(B >= 0);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  ph1.poly_difference_assign(ph2);
+
+  NNC_Polyhedron known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(B >= 0);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable x(0);
+  Variable y(1);
+
+  Constraint_System cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(y >= 0);
+  cs1.insert(x <= 4);
+  cs1.insert(x - 2*y <= 2);
+
+  C_Polyhedron ph1(cs1);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  Constraint_System cs2;
+  cs2.insert(x >= 0);
+  cs2.insert(y >= 0);
+  cs2.insert(x <= 4);
+  cs2.insert(y <= 5);
+  cs2.insert(x - 2*y <= 2);
+  cs2.insert(x + y <= 7);
+
+  C_Polyhedron ph2(cs2);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron computed_result = ph1;
+  computed_result.poly_difference_assign(ph2);
+
+  Generator_System gs_known_result;
+  gs_known_result.insert(point(0*x + 5*y));
+  gs_known_result.insert(point(4*x + 3*y));
+  gs_known_result.insert(ray(0*x + 1*y));
+
+  C_Polyhedron known_result(gs_known_result);
+
+  bool ok = (computed_result == known_result);
+
+  print_constraints(computed_result, "*** After poly_difference_assign ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+END_MAIN

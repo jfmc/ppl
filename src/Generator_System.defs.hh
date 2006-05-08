@@ -24,12 +24,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Generator_System_defs_hh 1
 
 #include "Generator_System.types.hh"
+#include "Grid_Generator_System.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Linear_System.defs.hh"
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
 #include "Polyhedron.types.hh"
 #include "Poly_Con_Relation.defs.hh"
+#include "Grid.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -63,7 +65,7 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
 } // namespace std
 
 //! A system of generators.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class Generator_System is a system of generators,
     i.e., a multiset of objects of the class Generator
     (lines, rays, points and closure points).
@@ -220,7 +222,7 @@ public:
   static const Generator_System& zero_dim_univ();
 
   //! An iterator over a system of generators
-  /*!
+  /*! \ingroup PPL_CXX_interface
       A const_iterator is used to provide read-only access
       to each generator contained in an object of Generator_System.
 
@@ -242,10 +244,10 @@ public:
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
-				Generator,
-				void,
-				const Generator*,
-                                const Generator&> {
+			   Generator,
+			   ptrdiff_t,
+			   const Generator*,
+			   const Generator&> {
   public:
     //! Default constructor.
     const_iterator();
@@ -320,14 +322,7 @@ public:
   */
   bool OK() const;
 
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
@@ -354,6 +349,7 @@ public:
 private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,

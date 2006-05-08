@@ -1,4 +1,4 @@
-/* Remove some variables from the space.
+/* Removing space dimensions form an NNC polyhedron.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,58 +22,45 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
-  Generator_System gs;
+bool
+test01() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
 
-  // Creating 10 points.
-  for (int i = 0; i < 10; i++) {
-    Linear_Expression e;
-    for (int j = 0; j < 10; j++)
-      e += (10*i + j) * Variable(j);
-    gs.insert(point(e));
-  }
+  NNC_Polyhedron ph1(4);
 
-  C_Polyhedron ph(gs);
+  ph1.add_constraint(x - y == 3);
+  ph1.add_constraint(z > x + 4);
+  ph1.add_constraint(y < 6);
 
-  print_generators(ph, "*** before ***");
+  print_constraints(ph1, "*** ph1 ***");
+
+  NNC_Polyhedron ph2(ph1);
+
+  ph1.remove_higher_space_dimensions(1);
 
   // This is the set of the variables that we want to remove.
   Variables_Set to_be_removed;
-  to_be_removed.insert(Variable(0));
-  to_be_removed.insert(Variable(5));
+  to_be_removed.insert(y);
+  to_be_removed.insert(z);
   to_be_removed.insert(Variable(3));
-  to_be_removed.insert(Variable(4));
-  to_be_removed.insert(Variable(8));
 
-  ph.remove_space_dimensions(to_be_removed);
+  ph2.remove_space_dimensions(to_be_removed);
 
-  // Useless, but much clearer.
-  gs.clear();
+  bool ok = (ph1 == ph2);
 
-  Variable a(0);
-  Variable b(1);
-  Variable c(2);
-  Variable d(3);
-  Variable e(4);
+  print_constraints(ph1, "*** After remove_higher_space_dimensions(1) ***");
+  print_constraints(ph2,
+		    "*** After remove_space_dimensions(to_be_removed) ***");
 
-  Linear_Expression expr01 = (1*a + 2*b + 6*c + 7*d + 9*e);
-  Linear_Expression expr10 = 10 * (a + b + c + d + e);
-
-  for (int i = 0; i < 10; i++) {
-    Linear_Expression expr = i * expr10 + expr01;
-    gs.insert(point(expr));
-  }
-
-  C_Polyhedron known_result(gs);
-
-  int retval = (ph == known_result ? 0 : 1);
-
-  print_generators(ph, "*** after ***");
-  print_generators(known_result, "*** known_result ***");
-
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

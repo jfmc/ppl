@@ -29,67 +29,67 @@ site: http://www.cs.unipr.it/ppl/ . */
 using std::fstream;
 using std::ios_base;
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+using namespace IO_Operators;
 
 namespace {
 
-const char* my_file = "writerelation1.dat";
-
-void
-test1() {
+bool
+test01() {
+  const char* my_file = "writerelation1.dat";
   Poly_Con_Relation rel(Poly_Con_Relation::nothing());
-  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
   f << rel << endl;
   close(f);
+  // FIXME.
+  return true;
 }
 
-void
-test2() {
+bool
+test02() {
+  const char* my_file = "writerelation1.dat";
   Poly_Gen_Relation rel(Poly_Gen_Relation::nothing());
-  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
   f << rel << endl;
   close(f);
+  // FIXME.
+  return true;
 }
 
-void
-test3() {
+bool
+test03() {
+  const char* my_file = "writerelation1.dat";
   Poly_Con_Relation rel(Poly_Con_Relation::is_disjoint());
-  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
   f << rel << endl;
   close(f);
+  // FIXME.
+  return true;
 }
 
-void
-test4() {
+bool
+test04() {
+  const char* my_file = "writerelation1.dat";
   Poly_Gen_Relation rel(Poly_Gen_Relation::subsumes());
-  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
   f << rel << endl;
   close(f);
+  // FIXME.
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  test1();
-  test2();
-  test3();
-  test4();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+END_MAIN

@@ -31,7 +31,7 @@ namespace Parma_Polyhedra_Library {
 namespace Implementation {
 
 template <typename P>
-const P&
+inline const P&
 Ptr_Iterator<P>::base() const {
   return p;
 }
@@ -56,78 +56,78 @@ Ptr_Iterator<P>::Ptr_Iterator(const Ptr_Iterator<Q>& y)
 }
 
 template <typename P>
-typename Ptr_Iterator<P>::reference
+inline typename Ptr_Iterator<P>::reference
 Ptr_Iterator<P>::operator*() const {
   return *p;
 }
 
 template <typename P>
-typename Ptr_Iterator<P>::pointer
+inline typename Ptr_Iterator<P>::pointer
 Ptr_Iterator<P>::operator->() const {
   return p;
 }
 
 template <typename P>
-typename Ptr_Iterator<P>::reference
+inline typename Ptr_Iterator<P>::reference
 Ptr_Iterator<P>::operator[](const difference_type m) const {
   return p[m];
 }
 
 template <typename P>
-Ptr_Iterator<P>&
+inline Ptr_Iterator<P>&
 Ptr_Iterator<P>::operator++() {
   ++p;
   return *this;
 }
 
 template <typename P>
-Ptr_Iterator<P>
+inline Ptr_Iterator<P>
 Ptr_Iterator<P>::operator++(int) {
   return Ptr_Iterator(p++);
 }
 
 template <typename P>
-Ptr_Iterator<P>&
+inline Ptr_Iterator<P>&
 Ptr_Iterator<P>::operator--() {
   --p;
   return *this;
 }
 
 template <typename P>
-Ptr_Iterator<P>
+inline Ptr_Iterator<P>
 Ptr_Iterator<P>::operator--(int) {
   return Ptr_Iterator(p--);
 }
 
 
 template <typename P>
-Ptr_Iterator<P>&
+inline Ptr_Iterator<P>&
 Ptr_Iterator<P>::operator+=(const difference_type m) {
   p += m;
   return *this;
 }
 
 template <typename P>
-Ptr_Iterator<P>&
+inline Ptr_Iterator<P>&
 Ptr_Iterator<P>::operator-=(const difference_type m) {
   p -= m;
   return *this;
 }
 
 template <typename P>
-typename Ptr_Iterator<P>::difference_type
+inline typename Ptr_Iterator<P>::difference_type
 Ptr_Iterator<P>::operator-(const Ptr_Iterator& y) const {
   return p - y.p;
 }
 
 template <typename P>
-Ptr_Iterator<P>
+inline Ptr_Iterator<P>
 Ptr_Iterator<P>::operator+(const difference_type m) const {
   return Ptr_Iterator(p + m);
 }
 
 template <typename P>
-Ptr_Iterator<P>
+inline Ptr_Iterator<P>
 Ptr_Iterator<P>::operator-(const difference_type m) const {
   return Ptr_Iterator(p - m);
 }

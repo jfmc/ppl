@@ -3,27 +3,23 @@ Unfeasible problem.
 *** ppl_lpsol -e -M -oobtained bgprtr.mps
 Unfeasible problem.
 *** ppl_lpsol -e -m -oobtained ex1.mps
-Optimum value:
--3.75
+Optimum value: -3.75
 Optimum location:
 x1 = 1.25
 x2 = 2.5
 *** ppl_lpsol -e -M -oobtained ex1.mps
-Optimum value:
-2.5
+Optimum value: 2.5
 Optimum location:
 x1 = 2.5
 x2 = 0
 *** ppl_lpsol -e -m -oobtained sample.mps
-Optimum value:
--733.3333333
+Optimum value: -733.3333333
 Optimum location:
 x1 = 33.33333333
 x2 = 66.66666667
 x3 = 0
 *** ppl_lpsol -e -M -oobtained sample.mps
-Optimum value:
-0
+Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
@@ -31,8 +27,7 @@ x3 = 0
 *** ppl_lpsol -e -m -oobtained unboundedmin.mps
 Unbounded problem.
 *** ppl_lpsol -e -M -oobtained unboundedmin.mps
-Optimum value:
-0
+Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
@@ -49,45 +44,39 @@ x2 = 0
 *** ppl_lpsol -s -m -oobtained boeing2.mps
 *** ppl_lpsol -s -M -oobtained boeing2.mps
 *** ppl_lpsol -s -m -oobtained ex1.mps
-Optimum value:
--3.75
+Optimum value: -3.75
 Optimum location:
 x1 = 1.25
 x2 = 2.5
 *** ppl_lpsol -s -M -oobtained ex1.mps
-Optimum value:
-2.5
+Optimum value: 2.5
 Optimum location:
 x1 = 2.5
 x2 = 0
 *** ppl_lpsol -s -m -oobtained kb2.mps
 *** ppl_lpsol -s -M -oobtained kb2.mps
 *** ppl_lpsol -s -m -oobtained mip.mps
-Optimum value:
-24.07692308
+Optimum value: 24.07692308
 Optimum location:
 X1 = 2.615384615
 X2 = 2
 X3 = 0.7692307692
 X4 = 3
 *** ppl_lpsol -s -M -oobtained mip.mps
-Optimum value:
-46.42857143
+Optimum value: 46.42857143
 Optimum location:
 X1 = 4
 X2 = 4.571428571
 X3 = 0.5714285714
 X4 = 3
 *** ppl_lpsol -s -m -oobtained sample.mps
-Optimum value:
--733.3333333
+Optimum value: -733.3333333
 Optimum location:
 x1 = 33.33333333
 x2 = 66.66666667
 x3 = 0
 *** ppl_lpsol -s -M -oobtained sample.mps
-Optimum value:
-0
+Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
@@ -101,8 +90,7 @@ x3 = 0
 *** ppl_lpsol -s -m -oobtained unboundedmin.mps
 Unbounded problem.
 *** ppl_lpsol -s -M -oobtained unboundedmin.mps
-Optimum value:
-0
+Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0

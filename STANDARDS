@@ -35,8 +35,8 @@ Whenever appropriate for ensuring efficiency, the generic std::swap
 algorithm should be specialized to use the swap method.
 
 
-Limiting the visibility of variables and functions
---------------------------------------------------
+Limiting the visibility of variables, functions, macros and so forth
+--------------------------------------------------------------------
 
 Avoid using the keyword "static" to specify that global variables or
 functions should be visible only inside the current translation unit;
@@ -67,6 +67,27 @@ Instead, define and use a new non-anonymous namespace that should
 be placed inside the namespace
 
     Parma_Polyhedra_Library::Implementation
+
+Concerning macros and the implementation languages (such as C and Prolog)
+that have a flat identifiers namespace, make sure the library limits
+its impact as much as possible by naming objects in a conspicuous way
+and by limiting as much as possible the scope of declarations.
+This means
+
+- all C and C++ macros should have names prefixed by "PPL_";
+  those that are not meant to be directly accessible by the user should
+  be #undef'ed as soon as possible in the source file they are defined in;
+- all functions and types declared by the C interface should have
+  names prefixed by "ppl_";
+- all Prolog predicates declared by the Prolog interfaces should have
+  names prefixed by "ppl_".
+
+
+Macros
+------
+
+Macros should be used only if really needed (in many cases, macros can
+be replaced by inline functions).
 
 
 Length of source lines
@@ -173,20 +194,6 @@ instead of
 	assert(sys.num_rows());
 
 
-Macros
-------
-
-Macros should be used only if really needed (in many cases, macros can
-be replaced by inline functions).
-
-If macros are used, their scope should be minimized as much as possible.
-In particular, all macros that are not meant to be directly accessible
-by the user should be #undef'ed as soon as possible in the source file
-they are defined in.
-
-Macros should be given conspicuous names starting with "PPL_".
-
-
 Standards for Structuring the Source Code in Files
 ==================================================
 
@@ -205,23 +212,24 @@ Contains the forward declarations of type names (in particular, the
 one for "Xtype") and other useful typedef's.
 
 b) Xtype.defs.hh
-Contains the definition of the type, togheter with the declaration of
+Contains the definition of the type, together with the declaration of
 any function that, even though not being formally part of the type, is
 nonetheless related to it and should therefore be considered part of
 its interface.
 
 c) Xtype.inlines.hh
 Contains the definitions of inline functions.
-Temporarily, also contains the non-inline definitions of all class
-template members and all (member or non-member) function templates
-that are not fully specialized. Eventually, these will be systematically
-moved in other files called Xtype.templates.hh.
 
-d) Xtype.cc
+d) Xtype.templates.hh
+Contains the non-inline definitions of all class template members and
+all (member or non-member) function templates that are not fully
+specialized.
+
+e) Xtype.cc
 Contains the definitions of non-inline functions, including non-inline
-full specializations of templates;
+full specializations of templates.
 
-e) When appropriate, further *.cc files can be used to split huge
+f) When appropriate, further *.cc files can be used to split huge
 source files into more manageable components (e.g., see the files
 Polyhedron_public.cc, Polyhedron_nonpublic.cc, Polyhedron_chdims.cc
 and Polyhedron_widenings.cc, or even conversion.cc, minimize.cc, etc.).
@@ -332,11 +340,11 @@ Standards for Documenting the Project with Doxygen
    In such a case, a single comment block should be used as follows:
 
      /*!
-       ... doxygen comments for both user and developer ...
+       ... Doxygen comments for both user and developer ...
        \if Include_Implementation_Details
-       ... doxygen comments for developer only ...
+       ... Doxygen comments for developer only ...
        \endif
-       ... doxygen comments for both user and developer ...
+       ... Doxygen comments for both user and developer ...
      */
 
 9) The documentation of those functions that are neither methods
@@ -359,7 +367,7 @@ Standards for Documenting the Project with Doxygen
 
 10)
   If the \return or \param special commands are used, then these have to
-  be placed after the brief doxygen comment.  The \return special
+  be placed after the brief Doxygen comment.  The \return special
   command, if present, should come before any \param command.  The
   \exception special command, if present, should come after any \param
   command. All the parameters of the function should be provided by the
@@ -404,24 +412,34 @@ Standards for the Test Programs
 o  Include the header file `ppl_test.hh' to include common declarations
    for test code (see below).
 
-o  Place the test code either in the main function or in test functions
-   which are called from main. Name the test functions test1, test2, etc.
+o  Place the test code in test functions that return a Boolean value.
+   Name the test functions test01, test02, etc.
 
-o  On failure immediately exit the test program with a return value
-   other than zero. Do this by calling `exit' in a test function, or
-   `return' in the main function. Return zero on success.
+o  Each test program should contain no more than 20 test functions.
 
-o  Wrap function main with TRY and CATCH, as follows.  This adds code
-   to print an error message if an exception reaches the top level.
+o  The test functions should be written
 
-	int
-	main() TRY {
+        // Comment describing the test...
+        bool
+          test10() {
+            // ... test code ...
+        }
 
-	 // body of main
+   where the 10 in "test10" indicates that it is the 10th test function
+   in the program.
 
-	 return 0;
-	}
-	CATCH
+o  The test functions should return true if the test succeeds and false
+   if it fails.
+
+o  Following all the test functions, include:
+
+        BEGIN_MAIN
+          DO_TEST(test01);
+          DO_TEST(test02);
+          ...
+        END_MAIN
+
+   where every test function in the program is included in the list.
 
 o  Normally, test code should produce no output at all (independently from
    whether the test succeeded or failed). Output is only meant to help
@@ -437,15 +455,21 @@ o  Normally, test code should produce no output at all (independently from
    (e.g., print_constraints, print_generators, etc.) are directed to
    stream `nout', so that they will normally discard the output too.
 
-o  By defining the preprocessor variables NOISY and VERY_NOISY to a value
-   other than zero, the streams `nout' and `vnout' will be redirected to
-   standard output and become noisy. Thus, if some output is (locally and
-   temporarily) needed for debugging purposes, one option is to add
+o  By defining the environment variables `PPL_NOISY_TESTS' and/or
+   `PPL_VERY_NOISY_TESTS' to any value, the streams `nout' and `vnout'
+   will be redirected to standard output and become noisy.
+
+o  On very weird platforms the above mechanism may not be supported.
+   In these rare cases, the same effect can be obtained by defining
+   the preprocessor variables NOISY and/or VERY_NOISY to any value other
+   than zero and recompiling the test program.  Thus, if some output is
+   (locally and temporarily) needed for debugging purposes, one option
+   is to add
 
       #define NOISY 1
       #define VERY_NOISY 1
 
-   as the very first line of the test source file.
+   as the very first line of the test source file and recompile it.
 
 o  To avoid repeated namespace qualifications, the header file `ppl_test.hh'
    adds a using directive for the whole PPL namespace. It also adds a

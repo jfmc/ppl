@@ -91,6 +91,7 @@ C_Polyhedron::C_Polyhedron(Generator_System& gs)
 }
 
 template <typename Box>
+inline
 C_Polyhedron::C_Polyhedron(const Box& box, From_Bounding_Box)
   : Polyhedron(NECESSARILY_CLOSED,
 	       box.space_dimension() <= max_space_dimension()

@@ -1,6 +1,4 @@
-/* Test Polyhedron::bounds_from_below() and
-   Polyhedron::bounds_from_above(): a zero-dimensional or an empty
-   polyhedron bounds everything.
+/* Test Polyhedron::bounds_from_below() and Polyhedron::bounds_from_above().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,10 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable A(0);
 
   C_Polyhedron ph1;
@@ -39,6 +37,28 @@ main() TRY {
   bool ok = ph1.bounds_from_above(Linear_Expression(3))
     && ph2.bounds_from_below(A);
 
-  return ok ? 0 : 1;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 1);
+  ph.add_constraint(B >= 1);
+
+  print_constraints(ph, "*** ph ***");
+
+  bool ok = !ph.bounds_from_above(A + B) && ph.bounds_from_below(A + B);
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+END_MAIN

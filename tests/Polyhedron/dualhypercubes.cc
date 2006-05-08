@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "timings.hh"
 #include <vector>
 
-using std::vector;
-
 #ifndef EXP_EVAL
 #define EXP_EVAL 0
 #endif
@@ -110,7 +108,7 @@ NNC_dual_hypercube(const dimension_type dims,
 void
 build_polyhedra(const dimension_type dims,
 		const int perc,
-		vector<NNC_Polyhedron>& ph) {
+		std::vector<NNC_Polyhedron>& ph) {
 
   Linear_Expression weight_center;
 
@@ -146,9 +144,7 @@ build_polyhedra(const dimension_type dims,
 }
 
 void
-computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
-
-#if NOISY
+computation(std::vector<NNC_Polyhedron>& ph, bool enhanced) {
   nout << endl;
   if (enhanced)
     nout << "Enhanced computation: ";
@@ -157,10 +153,9 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
   nout << "working with 4 NNC dual hypercubes of dimension "
        << ph[0].space_dimension() << endl;
   start_clock();
-#endif
 
   // Compute the intersection of ph[0] and ph[1].
-#if VERY_NOISY
+
   // Print dimensions of arguments
   // (being careful to override library laziness).
   vnout << "Computing intersection of ph[0] and ph[1]:" << endl;
@@ -168,26 +163,25 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
   ph[0].generators().ascii_dump(vnout);
   vnout << "===  ph[1] generators ===" << endl;
   ph[1].generators().ascii_dump(vnout);
-#endif
+
   if (enhanced) {
     ph[0].minimized_constraints();
     ph[1].minimized_constraints();
-#if VERY_NOISY
+
     // Print dimensions of arguments.
     vnout << "After the computation of smf for constraints" << endl;
-#endif
   }
-#if VERY_NOISY
+
   vnout << "===  ph[0] constraints ===" << endl;
   ph[0].constraints().ascii_dump(vnout);
   vnout << "===  ph[1] constraints ===" << endl;
   ph[1].constraints().ascii_dump(vnout);
   vnout << endl;
-#endif
+
   ph[0].intersection_assign(ph[1]);
 
   // Compute the intersection of ph[2] and ph[3].
-#if VERY_NOISY
+
   // Print dimensions of arguments
   // (being careful to override library laziness).
   vnout << "Computing intersection of ph[2] and ph[3]:" << endl;
@@ -195,37 +189,32 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
   ph[2].generators().ascii_dump(vnout);
   vnout << "===  ph[3] generators ===" << endl;
   ph[3].generators().ascii_dump(vnout);
-#endif
+
   if (enhanced) {
     ph[2].minimized_constraints();
     ph[3].minimized_constraints();
-#if VERY_NOISY
+
     // Print dimensions of arguments.
     vnout << "After the computation of smf for constraints" << endl;
-#endif
   }
-#if VERY_NOISY
   vnout << "===  ph[2] constraints ===" << endl;
   ph[2].constraints().ascii_dump(vnout);
   vnout << "===  ph[3] constraints ===" << endl;
   ph[3].constraints().ascii_dump(vnout);
   vnout << endl;
-#endif
+
   ph[2].intersection_assign(ph[3]);
 
   // Compute the poly-hull of ph[0] and ph[2].
-#if VERY_NOISY
   vnout << "Computing poly-hull of ph[0] and ph[2]:" << endl;
-#endif
   if (enhanced) {
     ph[0].minimized_generators();
     ph[2].minimized_generators();
-#if VERY_NOISY
+
     // Print dimensions of arguments.
     vnout << "After the computation of smf for generators" << endl;
-#endif
   }
-#if VERY_NOISY
+
   // Print dimensions of arguments
   // (being careful to override library laziness).
   vnout << "===  ph[0] generators ===" << endl;
@@ -233,43 +222,35 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
   vnout << "===  ph[2] generators ===" << endl;
   ph[2].generators().ascii_dump(vnout);
   vnout << endl;
-#endif
+
   ph[0].poly_hull_assign(ph[2]);
   ph[0].constraints();
-#if NOISY
+
   nout << "Wmf final result timing: ";
   print_clock(nout);
   nout << endl;
-#endif
 
-#if VERY_NOISY
   // How many constraints and generators obtained?
   vnout << "Final result (wmf)" << endl;
   vnout << "===  ph[0] constraints ===" << endl;
   ph[0].constraints().ascii_dump(vnout);
   vnout << endl;
-#endif
 
-#if NOISY
   nout << "Smf (cons) final result timing: ";
   start_clock();
   ph[0].minimized_constraints();
   print_clock(nout);
   nout << endl;
-#endif
-#if VERY_NOISY
+
   // How many constraints and generators obtained?
   vnout << "Final result (smf cons)" << endl;
   vnout << "===  ph[0] constraints ===" << endl;
   ph[0].constraints().ascii_dump(vnout);
-#endif
 }
 
-} // namespace
-
-int
-main() TRY {
-  vector<NNC_Polyhedron> ph;
+bool
+test01() {
+  std::vector<NNC_Polyhedron> ph;
 
 #if EXP_EVAL
   dimension_type first_dim = 4;
@@ -281,13 +262,13 @@ main() TRY {
 
   for (dimension_type dims = first_dim; dims <= last_dim; dims++)
     for (int perc = 25; perc <= 50; perc += 25) {
-#if NOISY
+
       nout << endl
 	   << "++++++++ DIM = " << dims << "  ++++++++"
 	   << endl
 	   << "++++++++ PERC = " << perc << " ++++++++"
 	   << endl;
-#endif
+
       // Standard evaluation strategy.
       ph.clear();
       build_polyhedra(dims, perc, ph);
@@ -298,7 +279,12 @@ main() TRY {
       build_polyhedra(dims, perc, ph);
       computation(ph, true);
     }
-
-  return 0;
+  // FIXME: check the cardinalities of the results obtained.
+  return true;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST_F64(test01);
+END_MAIN

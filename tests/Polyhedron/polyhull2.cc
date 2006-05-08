@@ -1,6 +1,4 @@
-/* Test Polyhedron::poly_hull_assign() and
-   C_Polyhedron::poly_hull_assign_and_minimize(): we apply these
-   functions to an empty polyhedron.
+/* Test Polyhedron::poly_hull_assign_and_minimize().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,39 +22,37 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
-  Variable x(0);
-  Variable y(1);
+bool
+test01() {
+  Variable i(0);
+  Variable j(1);
 
-  C_Polyhedron ph1(2, EMPTY);
+  NNC_Polyhedron p1(2);
+  p1.add_constraint(j == 0);
+  p1.add_constraint(i >= 0);
+  p1.add_constraint(j-i == 2);
 
-  Generator_System gs;
-  gs.insert(point());
-  gs.insert(ray(x + y));
-  C_Polyhedron ph2(gs);
+  NNC_Polyhedron p2(2);
+  p2.add_constraint(j == 0);
+  p2.add_constraint(-i > 0);
+  p2.add_constraint(j-i == 0);
 
-  print_generators(ph1, "*** ph1 ***");
-  print_generators(ph2, "*** ph2 ***");
+  print_constraints(p1, "*** p1 ***");
+  print_constraints(p2, "*** p2 ***");
 
-  C_Polyhedron computed_result1(ph1);
+  p1.poly_hull_assign_and_minimize(p2);
 
-  computed_result1.poly_hull_assign_and_minimize(ph2);
+  bool ok = p1.is_empty();
 
-  C_Polyhedron computed_result2(ph1);
-  computed_result2.poly_hull_assign(ph2);
+  print_constraints(p1, "*** p1.poly_hull_assign_and_minimize(p2) ***");
 
-  C_Polyhedron known_result(ph2);
-
-  int retval = (computed_result1 == known_result
-		&& computed_result2 == known_result) ? 0 : 1;
-
-  print_generators(computed_result1,
-		   "*** After poly_hull_assign_and_minimize ***");
-  print_generators(computed_result2, "*** After poly_hull_assign ***");
-
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

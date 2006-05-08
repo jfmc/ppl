@@ -23,24 +23,63 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_fpu_defs_hh
 #define PPL_fpu_defs_hh 1
 
+#include "fpu.types.hh"
+
 namespace Parma_Polyhedra_Library {
 
-/* -1 unknown */
-int fpu_get_rounding_direction();
-void fpu_set_rounding_direction(int dir);
-int fpu_save_rounding_direction(int dir);
-int fpu_save_rounding_direction_reset_inexact(int dir);
-void fpu_restore_rounding_direction(int dir);
-void fpu_reset_inexact();
-/* 0 no, 1 yes, -1 maybe */
-int fpu_check_inexact();
+//! Returns the current FPU rounding direction.
+fpu_rounding_direction_type
+fpu_get_rounding_direction();
+
+//! Sets the FPU rounding direction to \p dir.
+void
+fpu_set_rounding_direction(fpu_rounding_direction_type dir);
+
+/*! \brief
+  Sets the FPU rounding direction to \p dir and returns the rounding
+  control word previously in use.
+*/
+fpu_rounding_control_word_type
+fpu_save_rounding_direction(fpu_rounding_direction_type dir);
+
+/*! \brief
+  Sets the FPU rounding direction to \p dir, clears the <EM>inexact
+  computation</EM> status, and returns the rounding control word
+  previously in use.
+*/
+fpu_rounding_control_word_type
+fpu_save_rounding_direction_reset_inexact(fpu_rounding_direction_type dir);
+
+//! Restores the FPU rounding rounding control word to \p cw.
+void
+fpu_restore_rounding_direction(fpu_rounding_control_word_type w);
+
+//! Clears the <EM>inexact computation</EM> status.
+void
+fpu_reset_inexact();
+
+/*! \brief
+  Queries the <EM>inexact computation</EM> status.
+
+  Returns 0 if the computation was definitely exact, 1 if it was
+  definitely inexact, -1 if definite exactness information is unavailable.
+*/
+int
+fpu_check_inexact();
 
 } // namespace Parma_Polyhedra_Library
 
-#if i386
+#if defined(__i386__)
 #include "fpu-ia32.inlines.hh"
-#else
+#elif defined(HAVE_FENV_H)
 #include "fpu-c99.inlines.hh"
+#elif defined(HAVE_IEEEFP_H)						\
+  && (defined(__sparc)							\
+      || defined(sparc)							\
+      || defined(__sparc__))
+#include "fpu-sparc.inlines.hh"
+#else
+#include "fpu-none.inlines.hh"
 #endif
 
 #endif // !defined(PPL_fpu_defs_hh)

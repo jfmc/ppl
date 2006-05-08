@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- ensure_loaded('ppl_yap.pl').
 :- ensure_loaded('../tests/pl_check.pl').
 
-prolog_system(yap).
+prolog_system('YAP').
 
 main :-
     (check_all ->

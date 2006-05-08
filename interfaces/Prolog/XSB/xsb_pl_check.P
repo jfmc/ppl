@@ -33,17 +33,27 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_version/1,
 	ppl_banner/1,
 	ppl_max_space_dimension/1,
+	ppl_Coefficient_is_bounded/0,
+	ppl_Coefficient_max/1,
+	ppl_Coefficient_min/1,
 	ppl_initialize/0,
 	ppl_finalize/0,
 	ppl_set_timeout_exception_atom/1,
 	ppl_timeout_exception_atom/1,
 	ppl_set_timeout/1,
 	ppl_reset_timeout/0,
-	ppl_new_Polyhedron_from_space_dimension/4,
-	ppl_new_Polyhedron_from_Polyhedron/4,
-	ppl_new_Polyhedron_from_constraints/3,
-	ppl_new_Polyhedron_from_generators/3,
-	ppl_new_Polyhedron_from_bounding_box/3,
+	ppl_new_C_Polyhedron_from_space_dimension/3,
+	ppl_new_NNC_Polyhedron_from_space_dimension/3,
+	ppl_new_C_Polyhedron_from_C_Polyhedron/2,
+	ppl_new_C_Polyhedron_from_NNC_Polyhedron/2,
+	ppl_new_NNC_Polyhedron_from_C_Polyhedron/2,
+	ppl_new_NNC_Polyhedron_from_NNC_Polyhedron/2,
+	ppl_new_C_Polyhedron_from_constraints/2,
+	ppl_new_NNC_Polyhedron_from_constraints/2,
+	ppl_new_C_Polyhedron_from_generators/2,
+	ppl_new_NNC_Polyhedron_from_generators/2,
+	ppl_new_C_Polyhedron_from_bounding_box/2,
+	ppl_new_NNC_Polyhedron_from_bounding_box/2,
 	ppl_Polyhedron_swap/2,
 	ppl_delete_Polyhedron/1,
 	ppl_Polyhedron_space_dimension/2,
@@ -140,7 +150,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "pl_check.pl"
 
-prolog_system(xsb).
+prolog_system('XSB').
 
 main :-
     (check_all ->

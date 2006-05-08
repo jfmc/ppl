@@ -31,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A saturation matrix.
-/*!
+/*! \ingroup PPL_CXX_interface
   A saturation matrix is used to encode the relation between the
   generators and the constraints of a polyhedron: if a generator
   saturates a constraint the corresponding element of the saturation
@@ -122,11 +122,7 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  /*! \brief
-    Writes to \p s an ASCII representation of the internal
-    representation of \p *this.
-  */
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
@@ -154,6 +150,7 @@ private:
   dimension_type row_size;
 
   //! Ordering predicate (used when implementing the sort algorithm).
+  /*! \ingroup PPL_CXX_interface */
   struct Saturation_Row_Less_Than {
     bool operator()(const Saturation_Row& x, const Saturation_Row& y) const;
   };

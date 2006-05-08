@@ -140,7 +140,7 @@ BD_Shape<T>::Status::set_shortest_path_reduced() {
 }
 
 template <typename T>
-inline bool
+bool
 BD_Shape<T>::Status::OK() const {
   if (test_zero_dim_univ())
     // Zero-dim universe is OK.
@@ -191,7 +191,7 @@ const char yes = '+';
 const char no = '-';
 const char sep = ' ';
 
-/*! \relates Parma_Polyhedra_Library::BD_Shape<T>::Status
+/*! \relates Parma_Polyhedra_Library::BD_Shape::Status
   Reads a keyword and its associated on/off flag from \p s.
   Returns <CODE>true</CODE> if the operation is successful,
   returns <CODE>false</CODE> otherwise.
@@ -214,7 +214,7 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
 } // namespace Implementation
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
   using namespace Implementation::BD_Shapes;
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
@@ -224,8 +224,10 @@ BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
     << (test_shortest_path_reduced() ? yes : no) << sp_reduced << sep;
 }
 
+PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(T, BD_Shape<T>::Status)
+
 template <typename T>
-inline bool
+bool
 BD_Shape<T>::Status::ascii_load(std::istream& s) {
   using namespace Implementation::BD_Shapes;
   bool positive;

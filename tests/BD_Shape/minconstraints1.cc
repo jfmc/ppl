@@ -22,12 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+namespace {
 
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -42,6 +40,7 @@ main() TRY {
 
   const Constraint_System cs = bd.minimized_constraints();
 
+  using namespace IO_Operators;
   nout << "*** bd.minimized_constraints() ***" << endl;
 
   dimension_type num_constraints = 0;
@@ -59,8 +58,13 @@ main() TRY {
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 3);
 
-  int retval = (num_constraints == 3 && known_result == ph_bd) ? 0: 1;
+  bool ok = (num_constraints == 3 && known_result == ph_bd) ;
 
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

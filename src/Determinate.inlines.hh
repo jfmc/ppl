@@ -28,22 +28,32 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename PH>
+inline
 Determinate<PH>::Rep::Rep(dimension_type num_dimensions,
 			  Degenerate_Element kind)
   : references(0), ph(num_dimensions, kind) {
 }
 
 template <typename PH>
+inline
 Determinate<PH>::Rep::Rep(const PH& p)
   : references(0), ph(p) {
 }
 
 template <typename PH>
+inline
 Determinate<PH>::Rep::Rep(const Constraint_System& cs)
   : references(0), ph(cs) {
 }
 
 template <typename PH>
+inline
+Determinate<PH>::Rep::Rep(const Congruence_System& cgs)
+  : references(0), ph(cgs) {
+}
+
+template <typename PH>
+inline
 Determinate<PH>::Rep::~Rep() {
   assert(references == 0);
 }
@@ -79,31 +89,42 @@ Determinate<PH>::Rep::total_memory_in_bytes() const {
 }
 
 template <typename PH>
+inline
 Determinate<PH>::Determinate(const PH& ph)
   : prep(new Rep(ph)) {
   prep->new_reference();
 }
 
 template <typename PH>
+inline
 Determinate<PH>::Determinate(const Constraint_System& cs)
   : prep(new Rep(cs)) {
   prep->new_reference();
 }
 
 template <typename PH>
+inline
+Determinate<PH>::Determinate(const Congruence_System& cgs)
+  : prep(new Rep(cgs)) {
+  prep->new_reference();
+}
+
+template <typename PH>
+inline
 Determinate<PH>::Determinate(const Determinate& y)
   : prep(y.prep) {
   prep->new_reference();
 }
 
 template <typename PH>
+inline
 Determinate<PH>::~Determinate() {
   if (prep->del_reference())
     delete prep;
 }
 
 template <typename PH>
-Determinate<PH>&
+inline Determinate<PH>&
 Determinate<PH>::operator=(const Determinate& y) {
   y.prep->new_reference();
   if (prep->del_reference())
@@ -119,7 +140,7 @@ Determinate<PH>::swap(Determinate& y) {
 }
 
 template <typename PH>
-void
+inline void
 Determinate<PH>::mutate() {
   if (prep->is_shared()) {
     Rep* new_prep = new Rep(prep->ph);
@@ -161,13 +182,13 @@ Determinate<PH>::concatenate_assign(const Determinate& y) {
 }
 
 template <typename PH>
-bool
+inline bool
 Determinate<PH>::definitely_entails(const Determinate& y) const {
   return prep == y.prep || y.prep->ph.contains(prep->ph);
 }
 
 template <typename PH>
-bool
+inline bool
 Determinate<PH>::is_definitely_equivalent_to(const Determinate& y) const {
   return prep == y.prep || prep->ph == y.prep->ph;
 }
@@ -197,7 +218,7 @@ Determinate<PH>::total_memory_in_bytes() const {
 }
 
 template <typename PH>
-bool
+inline bool
 Determinate<PH>::OK() const {
   return prep->ph.OK();
 }
@@ -206,7 +227,7 @@ namespace IO_Operators {
 
 /*! \relates Parma_Polyhedra_Library::Determinate */
 template <typename PH>
-std::ostream&
+inline std::ostream&
 operator<<(std::ostream& s, const Determinate<PH>& x) {
   s << x.element();
   return s;
@@ -216,14 +237,14 @@ operator<<(std::ostream& s, const Determinate<PH>& x) {
 
 /*! \relates Determinate */
 template <typename PH>
-bool
+inline bool
 operator==(const Determinate<PH>& x, const Determinate<PH>& y) {
   return x.prep == y.prep || x.prep->ph == y.prep->ph;
 }
 
 /*! \relates Determinate */
 template <typename PH>
-bool
+inline bool
 operator!=(const Determinate<PH>& x, const Determinate<PH>& y) {
   return x.prep != y.prep && x.prep->ph != y.prep->ph;
 }

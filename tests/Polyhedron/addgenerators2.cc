@@ -1,4 +1,4 @@
-/* Adds a system of generators to an empty polyhedron.
+/* Test Polyhedron::add_generators().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,31 +22,116 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-int
-main() TRY {
-  set_handlers();
+namespace {
 
+bool
+test01() {
   Variable x(0);
+  Variable y(1);
 
-  C_Polyhedron ph1(2, EMPTY);
+  Generator_System gs1;
+  gs1.insert(closure_point());
+  gs1.insert(closure_point(4*x));
+  gs1.insert(closure_point(4*y));
+  gs1.insert(closure_point(4*x + 4*y));
+  gs1.insert(point(2*x));
+  gs1.insert(point(4*x + y));
+  gs1.insert(point(x + 4*y));
+  gs1.insert(point(3*y));
 
-  print_generators(ph1, "*** before ***");
+  NNC_Polyhedron ph(gs1);
+
+  print_generators(ph, "*** ph ***");
+
+  Generator_System gs2;
+  gs2.insert(point());
+  gs2.insert(point(4*x));
+  gs2.insert(point(4*y));
+  gs2.insert(point(4*x + 4*y));
+
+  ph.add_generators_and_minimize(gs2);
+
+  Generator_System gs3;
+  gs3.insert(point());
+  gs3.insert(point(4*x));
+  gs3.insert(point(4*y));
+  gs3.insert(point(4*x + 4*y));
+
+  NNC_Polyhedron known_result(gs3);
+
+  C_Polyhedron closed_ph(ph);
+  C_Polyhedron closed_known_result(known_result);
+
+  bool ok = (ph == known_result
+	     && closed_ph == closed_known_result);
+
+  print_generators(ph, "*** After add_generators_and_minimize(gs) ***");
+  print_generators(closed_ph, "*** closed_ph ***");
+
+  return ok;
+}
+
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  NNC_Polyhedron ph1(3, EMPTY);
+
+  ph1.add_generator(point(x));
 
   Generator_System gs;
-  gs.insert(point());
-  gs.insert(line(x));
+  gs.insert(point(1*x + 0*y + 0*z));
+  NNC_Polyhedron known_result(gs);
 
-  ph1.add_generators(gs);
+  bool ok = (ph1 == known_result);
 
-  C_Polyhedron known_result(2, EMPTY);
-  known_result.add_generator(point());
-  known_result.add_generator(line(x));
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(known_result, "*** known_result ***");
 
-  int retval = (ph1 == known_result) ? 0 : 1;
-
-  print_generators(ph1, "*** add_generators ***");
-
-  return retval;
+  return ok;
 }
-CATCH
 
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs1;
+  gs1.insert(point(A + B));
+  gs1.insert(closure_point());
+  gs1.insert(ray(A));
+  gs1.insert(ray(B));
+  NNC_Polyhedron ph1(gs1);
+
+  print_generators(ph1, "*** ph1 ***");
+
+  ph1.topological_closure_assign();
+  Generator_System gs2 = ph1.minimized_generators();
+
+  print_generators(gs2, "*** gs2 ***");
+
+  C_Polyhedron ph2(2, EMPTY);
+  ph2.add_generators_and_minimize(gs2);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B >= 0);
+
+  bool ok = (ph2 == known_result);
+
+  print_generators(known_result, "*** known_result ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+END_MAIN

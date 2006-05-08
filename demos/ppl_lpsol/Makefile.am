@@ -20,11 +20,6 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
 SUBDIRS = examples
 
 EXTRA_DIST = \
@@ -40,6 +35,7 @@ expected_int32_a \
 expected_int64 \
 expected_int64_a
 
+if BUILD_C_INTERFACE
 if HAVE_GLPK
 
 AM_CPPFLAGS = -I$(top_builddir)/interfaces/C @extra_includes@
@@ -64,9 +60,13 @@ afiro.mps
 
 EXPECTED = expected_$(COEFFICIENT_MNEMONIC)_a
 
+CHECK_OPTION =
+
 else !ASSERTIONS_ENABLED
 
 EXPECTED = expected_$(COEFFICIENT_MNEMONIC)
+
+CHECK_OPTION = -c
 
 endif !ASSERTIONS_ENABLED
 
@@ -86,35 +86,75 @@ $(TOUGH_EXAMPLES_FOR_ENUM_IF_ASSERTIONS_ENABLED)
 TOUGH_EXAMPLES_FOR_SIMPLEX = \
 ship08l.mps
 
+if HOST_OS_CYGWIN
+
+DIFF_COMMAND = \
+grep "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
+&& grep "^Optimum value: " obtained >obtained_optima \
+&& diff -u expected_optima obtained_optima
+
+else !HOST_OS_CYGWIN
+
+if HOST_OS_DARWIN
+
+DIFF_COMMAND = \
+grep "^Optimum value: " $(srcdir)/$(EXPECTED) >expected_optima \
+&& grep "^Optimum value: " obtained >obtained_optima \
+&& diff -u expected_optima obtained_optima
+
+else !HOST_OS_DARWIN
+
+if HOST_OS_SOLARIS
+
+DIFF_COMMAND = \
+grep "^Optimum value: " $(srcdir)/$(EXPECTED) \
+| sed -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >expected_optima \
+&& grep "^Optimum value: " obtained \
+| sed -e "s/^Optimum value: \(-*[0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\.][0-9\\.][0-9\.][0-9\.]\)[0-9]*$/Optimum value: \1/g" >obtained_optima \
+&& diff -u expected_optima obtained_optima
+
+else !HOST_OS_SOLARIS
+
+DIFF_COMMAND = diff -u $(srcdir)/$(EXPECTED) obtained
+
+endif !HOST_OS_SOLARIS
+
+endif !HOST_OS_DARWIN
+
+endif !HOST_OS_CYGWIN
+
 check-local: ppl_lpsol
-	echo -n >obtained
+	echo $(ECHO_N) "$(ECHO_C)" >obtained
 	echo $(TOUGH_EXAMPLES_FOR_ENUM) >tough_examples
 	LANG=C; \
 	for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
-	  grep -q $$file tough_examples && continue; \
+	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
 	  for m in -m -M; \
 	  do \
 	    echo "*** ppl_lpsol -e $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -e $$m -oobtained $$path >/dev/null; \
+	    ./ppl_lpsol -e $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
 	echo $(TOUGH_EXAMPLES_FOR_SIMPLEX) >tough_examples
 	for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
-	  grep -q $$file tough_examples && continue; \
+	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
 	  for m in -m -M; \
 	  do \
 	    echo "*** ppl_lpsol -s $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -s $$m -oobtained $$path >/dev/null; \
+	    ./ppl_lpsol -s $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
-	diff -u --ignore-all-space $(srcdir)/$(EXPECTED) obtained
+	$(DIFF_COMMAND)
 
 MOSTLYCLEANFILES = \
 tough_examples \
-obtained
+obtained \
+expected_optima \
+obtained_optima
 
 endif HAVE_GLPK
+endif BUILD_C_INTERFACE
