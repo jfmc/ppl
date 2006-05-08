@@ -192,13 +192,13 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   assert(row.size() > 0);
   pivot[column] = gcd;
   row[column] = 0;
+  TEMP_INTEGER(pivot_col);
   for (dimension_type col = start; col < end; ++col) {
-    TEMP_INTEGER(pivot_col);
-    TEMP_INTEGER(row_col);
     pivot_col = pivot[col];
-    row_col = row[col];
-    pivot[col] = (s * pivot_col) + (t * row_col);
-    row[col] = (red_pivot_col * row_col) - (red_row_col * pivot_col);
+    pivot[col] *= s;
+    pivot[col] += t * row[col];
+    row[col] *= red_pivot_col;
+    row[col] -= red_row_col * pivot_col;
   }
 }
 
