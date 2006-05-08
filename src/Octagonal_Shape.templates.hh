@@ -3109,6 +3109,8 @@ Octagonal_Shape<T>
 
   if (t == 0) {
     // Case 1: expr = b.
+    TEMP_INTEGER(two_b);
+    two_b = 2*b;
     // Remove all constraints on `var'.
     forget_all_octagonal_constraints(var_id);
     // Strong closure is lost.
@@ -3116,12 +3118,12 @@ Octagonal_Shape<T>
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
       // Add the constraint `var <= b/denominator'.
-      add_octagonal_constraint(n_var+1, n_var, 2*b, denominator);
+      add_octagonal_constraint(n_var+1, n_var, two_b, denominator);
       break;
     case GREATER_THAN_OR_EQUAL:
       // Add the constraint `var >= n/denominator',
       // i.e., `-var <= -b/denominator'.
-      add_octagonal_constraint(n_var, n_var+1, 2*b, minus_den);
+      add_octagonal_constraint(n_var, n_var+1, two_b, minus_den);
       break;
     default:
       // We already dealt with the other cases.
