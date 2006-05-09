@@ -38,13 +38,13 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
   assert(cgs.num_columns() - 1 == gs.space_dimension() + 1);
   assert(dims > 0);
 
-  dimension_type tem = cgs.num_columns() - 1;
+  const dimension_type old_modulus_index = cgs.num_columns() - 1;
   cgs.add_zero_columns(dims);
   // Move the moduli.
-  cgs.swap_columns(tem, tem + dims);
+  cgs.swap_columns(old_modulus_index, old_modulus_index + dims);
 
   if (congruences_are_minimized() || generators_are_minimized())
-    dim_kinds.resize(tem + dims, CON_VIRTUAL /* a.k.a. LINE */);
+    dim_kinds.resize(old_modulus_index + dims, CON_VIRTUAL /* a.k.a. LINE */);
 
   gs.add_universe_rows_and_columns(dims);
 }
