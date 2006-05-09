@@ -256,19 +256,19 @@ Grid::shrink_bounding_box(Box& box) const {
   // Attempt to set both bounds of each boundable interval to the
   // value of the associated coefficient in the point.
   const Grid_Generator& point = *first_point;
-  TEMP_INTEGER(divisor);
-  TEMP_INTEGER(gcd);
   TEMP_INTEGER(bound);
-  TEMP_INTEGER(reduced_divisor);
-  divisor = point.divisor();
+  TEMP_INTEGER(temp);
+  Coefficient_traits::const_reference divisor = point.divisor();
   for (dimension_type dim = num_dims; dim-- > 0; )
     if (bounded_interval[dim]) {
       // Reduce the bound fraction first.
-      gcd_assign(gcd, point[dim+1], divisor);
-      exact_div_assign(bound, point[dim+1], gcd);
-      exact_div_assign(reduced_divisor, divisor, gcd);
-      box.raise_lower_bound(dim, true, bound, reduced_divisor);
-      box.lower_upper_bound(dim, true, bound, reduced_divisor);
+      gcd_assign(temp, point[dim+1], divisor);
+      // `temp' is the GCD.
+      exact_div_assign(bound, point[dim+1], temp);
+      exact_div_assign(temp, divisor, temp);
+      // `temp' is now the reduced divisor.
+      box.raise_lower_bound(dim, true, bound, temp);
+      box.lower_upper_bound(dim, true, bound, temp);
     }
 }
 
