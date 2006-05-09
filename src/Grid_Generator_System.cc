@@ -172,13 +172,13 @@ PPL::Grid_Generator_System
   assert(expr.space_dimension() <= x.space_dimension());
   assert(denominator > 0);
 
-  const dimension_type n_columns = x.num_columns();
-  const dimension_type n_rows = x.num_rows();
+  const dimension_type num_cols = x.num_columns();
+  const dimension_type num_rows = x.num_rows();
 
   // Compute the numerator of the affine transformation and assign it
   // to the column of `*this' indexed by `v'.
   TEMP_INTEGER(numerator);
-  for (dimension_type i = n_rows; i-- > 0; ) {
+  for (dimension_type i = num_rows; i-- > 0; ) {
     Grid_Generator& row = x[i];
     Scalar_Products::assign(numerator, expr, row);
     std::swap(numerator, row[v]);
@@ -188,9 +188,9 @@ PPL::Grid_Generator_System
     // Since we want integer elements in the matrix,
     // we multiply by `denominator' all the columns of `*this'
     // having an index different from `v'.
-    for (dimension_type i = n_rows; i-- > 0; ) {
+    for (dimension_type i = num_rows; i-- > 0; ) {
       Grid_Generator& row = x[i];
-      for (dimension_type j = n_columns; j-- > 0; )
+      for (dimension_type j = num_cols; j-- > 0; )
 	if (j != v)
 	  row[j] *= denominator;
     }
@@ -206,30 +206,30 @@ PPL_OUTPUT_DEFINITIONS(Grid_Generator_System)
 
 void
 PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
-  const dimension_type rows = num_rows();
-  s << rows << " x " << num_columns() << '\n';
-  for (dimension_type i = 0; i < rows; ++i)
+  const dimension_type num_rows = this->num_rows();
+  s << num_rows << " x " << num_columns() << '\n';
+  for (dimension_type i = 0; i < num_rows; ++i)
     operator[](i).ascii_dump(s);
 }
 
 bool
 PPL::Grid_Generator_System::ascii_load(std::istream& s) {
-  dimension_type nrows;
-  dimension_type ncols;
-  if (!(s >> nrows))
+  dimension_type num_rows;
+  dimension_type num_cols;
+  if (!(s >> num_rows))
     return false;
   std::string str;
   if (!(s >> str))
     return false;
-  if (!(s >> ncols))
+  if (!(s >> num_cols))
       return false;
-  resize_no_copy(nrows, ncols);
+  resize_no_copy(num_rows, num_cols);
 
   set_sorted(false);
-  set_index_first_pending_row(nrows);
+  set_index_first_pending_row(num_rows);
 
   Grid_Generator_System& x = *this;
-  for (dimension_type i = 0; i < nrows; ++i)
+  for (dimension_type i = 0; i < num_rows; ++i)
     if (!x[i].ascii_load(s))
       return false;
 
@@ -301,8 +301,8 @@ PPL::Grid_Generator_System
   // Swap the parameter divisor column into the new last column.
   swap_columns(col, col + dims);
   // Set the diagonal element of each added rows.
-  dimension_type rows = num_rows();
-  for (dimension_type row = rows - dims; row < rows; ++row, ++col)
+  dimension_type num_rows = this->num_rows();
+  for (dimension_type row = num_rows - dims; row < num_rows; ++row, ++col)
     const_cast<Coefficient&>(operator[](row)[col]) = 1;
 }
 
