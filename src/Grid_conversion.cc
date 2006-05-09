@@ -477,10 +477,10 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	// Multiply the representation of `dest' such that entry `dim'
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
-	TEMP_INTEGER(red_source_dim);
-	gcd_assign(red_source_dim, g[dim], source_dim);
-	red_source_dim = source_dim / red_source_dim;
-	multiply_grid(red_source_dim, g, dest, dest_num_rows,
+	TEMP_INTEGER(reduced_source_dim);
+	gcd_assign(reduced_source_dim, g[dim], source_dim);
+	reduced_source_dim = source_dim / reduced_source_dim;
+	multiply_grid(reduced_source_dim, g, dest, dest_num_rows,
 		      dims + 1 /* parameter divisor */);
 
 	g[dim] /= source_dim;
