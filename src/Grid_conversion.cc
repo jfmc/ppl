@@ -320,7 +320,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	  assert(row < dest_num_rows);
 	  TRACE(cerr << "       " << row << endl);
 	  Congruence& cg = dest[row];
-	  cg[dim_prec] -= source_dim * cg[dim];
+	  sub_mul_assign(cg[dim_prec], source_dim, cg[dim]);
 	}
       }
     }
@@ -519,7 +519,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	  assert(row < dest_num_rows);
 	  TRACE(cerr << "       " << row << endl);
 	  Grid_Generator& g = dest[row];
-	  g[dim_fol] -= source_dim * g[dim];
+	  sub_mul_assign(g[dim_fol], source_dim, g[dim]);
 	}
       }
     }

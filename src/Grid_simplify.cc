@@ -196,9 +196,9 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   for (dimension_type col = start; col < end; ++col) {
     pivot_col = pivot[col];
     pivot[col] *= s;
-    pivot[col] += t * row[col];
+    add_mul_assign(pivot[col], t, row[col]);
     row[col] *= red_pivot_col;
-    row[col] -= red_row_col * pivot_col;
+    sub_mul_assign(row[col], red_row_col, pivot_col);
   }
 }
 
