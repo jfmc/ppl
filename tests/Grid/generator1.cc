@@ -371,6 +371,44 @@ test17() {
   return ok;
 }
 
+// Copy construction of a grid generator.
+static bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator a(parameter(A - 2*B + 3*C, -2));
+
+  Grid_Generator b(a);
+
+  bool ok = (a == b);
+
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
+}
+
+// Method zero_dim_point.
+static bool
+test19() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator a(Grid_Generator::zero_dim_point());
+
+  Grid_Generator b(grid_point());
+
+  bool ok = (a == b);
+
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
+}
+
 
 } // namespace
 BEGIN_MAIN
@@ -391,4 +429,6 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN
