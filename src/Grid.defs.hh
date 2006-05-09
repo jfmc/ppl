@@ -2325,32 +2325,52 @@ private:
     Converts \p sys to an equivalent system in which the divisors are
     of equal value.
 
-    \return
-    The new system divisor, or zero if \p divisor was zero.
-
     \param sys
-    The generator system to be normalized.
+    The generator system to be normalized.  It must have at least one
+    row.
 
     \param divisor
-    An extra divisor to include in the calculation of the common
-    divisor of \p sys.
+    A reference to the initial value of the divisor.  The resulting
+    value of this object is the new system divisor.
 
     \param first_point
     If \p first_point has a value other than NULL then it is taken as
     the first point in \p sys, and it is assumed that any following
     points have the same divisor as \p first_point.
   */
-  static Coefficient
+  static void
   normalize_divisors(Grid_Generator_System& sys,
-		     Coefficient_traits::const_reference divisor
-		     = Coefficient_one(),
+		     Coefficient& divisor,
 		     Grid_Generator* first_point = NULL);
+
+  //! Normalizes the divisors in \p sys.
+  /*!
+    Converts \p sys to an equivalent system in which the divisors are
+    of equal value.
+
+    \param sys
+    The generator system to be normalized.  It must have at least one
+    row.
+  */
+  static void
+  normalize_divisors(Grid_Generator_System& sys);
 
   //! Normalize all the divisors in \p sys and \p gen_sys.
   /*!
     Modify \p sys and \p gen_sys to use the same single divisor value
     for all generators, leaving each system representing the grid it
     represented originally.
+
+    \param sys
+    The first of the generator systems to be normalized.
+
+    \param gen_sys
+    The second of the generator systems to be normalized.  This system
+    must have at least one row and the divisors of the generators in
+    this system must be equal.
+
+    \exception std::runtime_error
+    Thrown if all rows in \p gen_sys are lines and/or parameters.
   */
   static void normalize_divisors(Grid_Generator_System& sys,
 				 Grid_Generator_System& gen_sys);

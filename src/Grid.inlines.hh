@@ -242,6 +242,13 @@ Grid::minimize(const Linear_Expression& expr,
   return max_min(expr, "minimize(e, ...)", inf_n, inf_d, minimum, &point);
 }
 
+inline void
+Grid::normalize_divisors(Grid_Generator_System& sys) {
+  TEMP_INTEGER(divisor);
+  divisor = 1;
+  normalize_divisors(sys, divisor);
+}
+
 /*! \relates Grid */
 inline bool
 operator!=(const Grid& x, const Grid& y) {
