@@ -129,6 +129,47 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
 }
 
 void
+PPL::Grid_Generator::ascii_dump(std::ostream& s) const {
+  const Grid_Generator& x = *this;
+  dimension_type x_size = x.size();
+  for (dimension_type i = 0; i < x_size; ++i)
+    s << x[i] << ' ';
+  switch (x.type()) {
+  case Generator::LINE:
+    s << "L";
+    break;
+  case Generator::RAY:
+    s << "Q";
+    break;
+  case Generator::POINT:
+    s << "P";
+    break;
+  }
+  s << "\n";
+}
+
+bool
+PPL::Grid_Generator::ascii_load(std::istream& s) {
+  Grid_Generator& x = *this;
+  const dimension_type x_size = x.size();
+  for (dimension_type col = 0; col < x_size; ++col)
+    if (!(s >> x[col]))
+      return false;
+
+  std::string str;
+  if (!(s >> str))
+    return false;
+  if (str == "L")
+    x.set_is_line();
+  else if (str == "P" || str == "Q")
+    x.set_is_ray_or_point();
+  else
+    return false;
+
+  return true;
+}
+
+void
 PPL::Grid_Generator::set_is_parameter() {
   if (is_line())
     set_is_parameter_or_point();

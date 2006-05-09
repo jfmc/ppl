@@ -207,81 +207,35 @@ PPL_OUTPUT_DEFINITIONS(Grid_Generator_System)
 void
 PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
   const dimension_type rows = num_rows();
-  const dimension_type columns = num_columns();
-  s << rows << " x " << columns << '\n';
-  for (dimension_type i = 0; i < rows; ++i) {
-    const Generator& g = operator[](i);
-    for (dimension_type j = 0; j < columns; ++j)
-      s << g[j] << ' ';
-    switch (g.type()) {
-    case Generator::LINE:
-      s << "L";
-      break;
-    case Generator::RAY:
-      s << "Q";
-      break;
-    case Generator::POINT:
-      s << "P";
-      break;
-    case Generator::CLOSURE_POINT:
-      assert(false);
-      break;
-    }
-    s << "\n";
-  }
+  s << rows << " x " << num_columns() << '\n';
+  for (dimension_type i = 0; i < rows; ++i)
+    operator[](i).ascii_dump(s);
 }
 
 bool
 PPL::Grid_Generator_System::ascii_load(std::istream& s) {
-  std::string str;
-
   dimension_type nrows;
   dimension_type ncols;
   if (!(s >> nrows))
     return false;
+  std::string str;
   if (!(s >> str))
     return false;
   if (!(s >> ncols))
       return false;
   resize_no_copy(nrows, ncols);
 
+  set_sorted(false);
   set_index_first_pending_row(nrows);
 
   Grid_Generator_System& x = *this;
-  for (dimension_type i = 0; i < x.num_rows(); ++i) {
-    for (dimension_type j = 0; j < x.num_columns(); ++j)
-      if (!(s >> const_cast<Coefficient&>(x[i][j])))
-	return false;
-
-    if (!(s >> str))
+  for (dimension_type i = 0; i < nrows; ++i)
+    if (!x[i].ascii_load(s))
       return false;
-    if (str == "L")
-      x[i].set_is_line();
-    else
-      x[i].set_is_ray_or_point();
-
-    // Checking for equality of actual and declared types.
-    switch (x[i].type()) {
-    case Grid_Generator::LINE:
-      if (str == "L")
-	continue;
-      break;
-    case Grid_Generator::PARAMETER:
-      if (str == "Q")
-	continue;
-      break;
-    case Grid_Generator::POINT:
-      if (str == "P")
-	continue;
-      break;
-    }
-    // Reaching this point means that the input was illegal.
-    return false;
-  }
 
   // Checking for well-formedness.
-
   assert(OK());
+
   return true;
 }
 
