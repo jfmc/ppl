@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Coefficient.defs.hh"
 #include "Interval.defs.hh"
 #include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 #include <vector>
 #include <iosfwd>
 
