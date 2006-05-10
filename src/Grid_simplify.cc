@@ -96,7 +96,7 @@ Grid::reduce_reduced(M& sys,
 	  --num_rows_to_subtract;
       }
       else if (row_dim_rem > 0 && row_dim_rem > pivot_dim_half)
-	num_rows_to_subtract++;
+	++num_rows_to_subtract;
 
       // Subtract num_rows_to_subtract copies of pivot from row i.  Only the
       // entries from dim need to be subtracted, as the preceding

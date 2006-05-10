@@ -223,7 +223,7 @@ PPL::Congruence::ascii_load(std::istream& s) {
     if (!(s >> x[col]))
       return false;
     else
-      col++;
+      ++col;
 
   if (!(s >> str) || str.compare("m"))
     return false;
