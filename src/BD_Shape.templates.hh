@@ -465,13 +465,13 @@ BD_Shape<T>::is_universe() const {
 template <typename T>
 inline bool
 BD_Shape<T>::is_bounded() const {
-  shortest_path_closure_assign(); 
+  shortest_path_closure_assign();
   const dimension_type space_dim = space_dimension();
   // A zero-dimensional or empty BDS is bounded.
   if (marked_empty() || space_dim == 0)
     return true;
 
-  // A system of bounded differences defining the bounded BDS never can 
+  // A system of bounded differences defining the bounded BDS never can
   // contain trivial constraints.
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
     const DB_Row<N>& dbm_i = dbm[i];
@@ -3249,6 +3249,164 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
   // Shortest-path closure is preserved, but not reduction.
   if (marked_shortest_path_reduced())
     status.reset_shortest_path_reduced();
+  assert(OK());
+}
+
+template <typename T>
+void
+BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
+					 const Relation_Symbol relsym,
+					 const Linear_Expression& rhs) {
+  // Dimension-compatibility checks.
+  // The dimension of `lhs' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type bds_space_dim = space_dimension();
+  const dimension_type lhs_space_dim = lhs.space_dimension();
+  if (bds_space_dim < lhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(e1, r, e2)",
+				 "e1", lhs);
+
+  // The dimension of `rhs' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type rhs_space_dim = rhs.space_dimension();
+  if (bds_space_dim < rhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(e1, r, e2)",
+				 "e2", rhs);
+
+  // Strict relation symbols are not admitted for BDSs.
+  if (relsym == LESS_THAN || relsym == GREATER_THAN)
+    throw_generic("generalized_affine_preimage(e1, r, e2)",
+		  "r is a strict relation symbol and "
+		  "*this is a BD_Shape");
+
+  // The preimage of an empty BDS is empty.
+  shortest_path_closure_assign();
+  if (marked_empty())
+    return;
+
+  // Number of non-zero coefficients in `lhs': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type t_lhs = 0;
+  // Index of the last non-zero coefficient in `lhs', if any.
+  dimension_type j_lhs = 0;
+  // Compute the number of the non-zero components of `lhs'.
+  for (dimension_type i = lhs_space_dim; i-- > 0; )
+    if (lhs.coefficient(Variable(i)) != 0)
+      if (t_lhs++ == 1)
+	break;
+      else
+	j_lhs = i;
+
+  const Coefficient& b_lhs = lhs.inhomogeneous_term();
+
+  if (t_lhs == 0) {
+    // `lhs' is a constant.
+    // In this case, preimage and image happen to be the same.
+    generalized_affine_image(lhs, relsym, rhs);
+    return;
+  }
+  else if (t_lhs == 1) {
+    // Here `lhs == a_lhs * v + b_lhs'.
+    // Independently from the form of `rhs', we can exploit the
+    // method computing generalized affine preimages for a single variable.
+    Variable v(j_lhs);
+    // Compute a sign-corrected relation symbol.
+    const Coefficient& den = lhs.coefficient(v);
+    Relation_Symbol new_relsym = relsym;
+    if (den < 0)
+      if (relsym == LESS_THAN_OR_EQUAL)
+	new_relsym = GREATER_THAN_OR_EQUAL;
+      else if (relsym == GREATER_THAN_OR_EQUAL)
+	new_relsym = LESS_THAN_OR_EQUAL;
+    Linear_Expression expr = rhs - b_lhs;
+    generalized_affine_preimage(v, new_relsym, expr, den);
+  }
+  else {
+    // Here `lhs' is of the general form, having at least two variables.
+    // Compute the set of variables occurring in `lhs'.
+    bool lhs_vars_intersects_rhs_vars = false;
+    std::vector<Variable> lhs_vars;
+    for (dimension_type i = lhs_space_dim; i-- > 0; )
+      if (lhs.coefficient(Variable(i)) != 0) {
+	lhs_vars.push_back(Variable(i));
+	if (rhs.coefficient(Variable(i)) != 0)
+	  lhs_vars_intersects_rhs_vars = true;
+      }
+
+    if (!lhs_vars_intersects_rhs_vars) {
+      // `lhs' and `rhs' variables are disjoint.
+
+      // Constrain the left hand side expression so that it is related to
+      // the right hand side expression as dictated by `relsym'.
+      // TODO: if the following constraint is NOT a bounded difference,
+      // it will be simply ignored. Should we compute approximations for it?
+      switch (relsym) {
+      case LESS_THAN_OR_EQUAL:
+	add_constraint(lhs <= rhs);
+	break;
+      case EQUAL:
+	add_constraint(lhs == rhs);
+	break;
+      case GREATER_THAN_OR_EQUAL:
+	add_constraint(lhs >= rhs);
+	break;
+      default:
+	// We already dealt with the other cases.
+	throw std::runtime_error("PPL internal error");
+	break;
+      }
+
+      // If the shrunk BD_Shape is empty, its preimage is empty too; ...
+      if (is_empty())
+	return;
+      // Cylindrificate on all variables in the lhs.
+      for (dimension_type i = lhs_vars.size(); i-- > 0; )
+	forget_all_dbm_constraints(lhs_vars[i].id() + 1);
+    }
+    else {
+
+      // Some variables in `lhs' also occur in `rhs'.
+      // To ease the computation, we add an additional dimension.
+      const Variable new_var = Variable(bds_space_dim);
+      add_space_dimensions_and_embed(1);
+      // Constrain the new dimension to be equal to `lhs'.
+      // NOTE: calling affine_image() instead of add_constraint()
+      // ensures some approximation is tried even when the constraint
+      // is not a bounded difference.
+      affine_image(new_var, lhs);
+      // Cylindrificate on all variables in the lhs.
+      // NOTE: enforce shortest-path closure for precision.
+      shortest_path_closure_assign();
+      assert(!marked_empty());
+      for (dimension_type i = lhs_vars.size(); i-- > 0; )
+	forget_all_dbm_constraints(lhs_vars[i].id() + 1);
+      // Constrain the new dimension so that it is related to
+      // the left hand side as dictated by `relsym'.
+      // Note: if `rhs == a_rhs*v + b_rhs' where `a_rhs' is in {0, 1},
+      // then one of the following constraints will be added,
+      // since it is a bounded difference. Else the method add_constraint()
+      // will ignore it, 'cause the constraint is NOT a bounded
+      // difference.
+      switch (relsym) {
+      case LESS_THAN_OR_EQUAL:
+	add_constraint(new_var <= rhs);
+	break;
+      case EQUAL:
+	add_constraint(new_var == rhs);
+	break;
+      case GREATER_THAN_OR_EQUAL:
+	add_constraint(new_var >= rhs);
+	break;
+      default:
+	// We already dealt with the other cases.
+	throw std::runtime_error("PPL internal error");
+	break;
+      }
+      // Remove the temporarily added dimension.
+      remove_higher_space_dimensions(bds_space_dim);
+    }
+  }
+
   assert(OK());
 }
 
