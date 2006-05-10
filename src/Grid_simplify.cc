@@ -66,6 +66,8 @@ Grid::reduce_reduced(M& sys,
     jump = 1;
   }
 
+  TEMP_INTEGER(num_rows_to_subtract);
+  TEMP_INTEGER(row_dim_remainder);
   for (dimension_type row_index = pivot_index, kinds_index = dim + jump;
        row_index-- > 0;
        kinds_index += jump) {
@@ -79,23 +81,20 @@ Grid::reduce_reduced(M& sys,
 	    && dim_kinds[kinds_index] == PARAMETER)) {
       R& row = sys[row_index];
 
-      TEMP_INTEGER(row_dim);
-      row_dim = row[dim];
+      Coefficient_traits::const_reference row_dim = row[dim];
       // num_rows_to_subtract may be positive or negative.
-      TEMP_INTEGER(num_rows_to_subtract);
       num_rows_to_subtract = row_dim / pivot_dim;
 
       // Ensure that after subtracting num_rows_to_subtract * r_dim
       // from row_dim, -pivot_dim_half < row_dim <= pivot_dim_half.
       // E.g., if pivot[dim] = 9, then after strong reduction
       // -5 < row_dim <= 5.
-      Coefficient& row_dim_rem = row_dim;
-      row_dim_rem %= pivot_dim;
-      if (row_dim_rem < 0) {
-	if (row_dim_rem <= -pivot_dim_half)
+      row_dim_remainder = row_dim % pivot_dim;
+      if (row_dim_remainder < 0) {
+	if (row_dim_remainder <= -pivot_dim_half)
 	  --num_rows_to_subtract;
       }
-      else if (row_dim_rem > 0 && row_dim_rem > pivot_dim_half)
+      else if (row_dim_remainder > 0 && row_dim_remainder > pivot_dim_half)
 	++num_rows_to_subtract;
 
       // Subtract num_rows_to_subtract copies of pivot from row i.  Only the
