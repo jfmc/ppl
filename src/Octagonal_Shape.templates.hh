@@ -1796,8 +1796,8 @@ Octagonal_Shape<T>
       // else we shift its cells to up right.
       // Attention: first we shift the cells corrispondent to the first
       // row of variable(j), then we shift the cells corrispondent to the
-      // second row. We recall that every variable is represented in the `matrix'
-      // by two rows and two rows.
+      // second row. We recall that every variable is represented
+      //in the `matrix' by two rows and two rows.
       for (dimension_type j = 0; j <= i; ++j)
 	if (!to_be_removed.count(Variable(j))) {
 	  *(iter++) = row_ref[2*j];
