@@ -354,11 +354,12 @@ PPL::Grid::relation_with(const Congruence& cg) const {
   TEMP_INTEGER(div);
   div = 0;
 
+  TEMP_INTEGER(sp);
+
   bool known_to_intersect = false;
 
   for (Grid_Generator_System::const_iterator g = gen_sys.begin(),
          gen_sys_end = gen_sys.end(); g != gen_sys_end; ++g) {
-    TEMP_INTEGER(sp);
     Scalar_Products::assign(sp, cg, *g);
 
     switch (g->type()) {
@@ -1828,18 +1829,12 @@ generalized_affine_image(const Linear_Expression& lhs,
   if (marked_empty())
     return;
 
-  TEMP_INTEGER(mod);
-  if (modulus < 0)
-    mod = -modulus;
-  else
-    mod = modulus;
-
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
   do {
     if (lhs_space_dim == 0) {
       // All variables have zero coefficients, so `lhs' is a constant.
-      add_congruence((lhs %= rhs) / mod);
+      add_congruence((lhs %= rhs) / (modulus < 0 ? 0 - modulus : modulus));
       return;
     }
   }
@@ -1883,9 +1878,10 @@ generalized_affine_image(const Linear_Expression& lhs,
       clear_generators_minimized();
 
       // Constrain the new dimension so that it is congruent to the left
-      // hand side expression modulo `mod'.
+      // hand side expression modulo `modulus'.
       // TODO: Use add_congruence() when it has been updated.
-      Congruence_System new_cgs2((lhs %= new_var) / mod);
+      Congruence_System new_cgs2((lhs %= new_var)
+				 / (modulus < 0 ? 0 - modulus : modulus));
       add_recycled_congruences(new_cgs2);
     }
 
@@ -1905,8 +1901,8 @@ generalized_affine_image(const Linear_Expression& lhs,
     add_recycled_generators(new_lines);
 
     // Constrain the left hand side expression so that it is congruent to
-    // the right hand side expression modulo `mod'.
-    add_congruence((lhs %= rhs) / mod);
+    // the right hand side expression modulo `modulus'.
+    add_congruence((lhs %= rhs) / (modulus < 0 ? 0 - modulus : modulus));
   }
 
   assert(OK());
@@ -1931,19 +1927,13 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   if (marked_empty())
     return;
 
-  TEMP_INTEGER(mod);
-  if (modulus < 0)
-    mod = -modulus;
-  else
-    mod = modulus;
-
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
   do {
     if (lhs_space_dim == 0) {
       // All variables have zero coefficients, so `lhs' is a constant.
       // In this case, preimage and image happen to be the same.
-      add_congruence((lhs %= rhs) / mod);
+      add_congruence((lhs %= rhs) / (modulus < 0 ? 0 - modulus : modulus));
       return;
     }
   }
@@ -1987,9 +1977,10 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       clear_generators_minimized();
 
       // Constrain the new dimension so that it is related to
-      // the right hand side modulo `mod'.
+      // the right hand side modulo `modulus'.
       // TODO: Use add_congruence() when it has been updated.
-      Congruence_System new_cgs2((rhs %= new_var) / mod);
+      Congruence_System new_cgs2((rhs %= new_var)
+				 / (modulus < 0 ? 0 - modulus : modulus));
       add_recycled_congruences(new_cgs2);
     }
 
@@ -2002,7 +1993,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
 
     // Constrain the left hand side expression so that it is congruent to
     // the right hand side expression modulo `mod'.
-    add_congruence((lhs %= rhs) / mod);
+    add_congruence((lhs %= rhs) / (modulus < 0 ? 0 - modulus : modulus));
 
     // Any image of an empty grid is empty.
     if (is_empty())
