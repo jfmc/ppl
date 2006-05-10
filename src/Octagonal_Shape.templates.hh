@@ -1797,7 +1797,7 @@ Octagonal_Shape<T>
       // Attention: first we shift the cells corrispondent to the first
       // row of variable(j), then we shift the cells corrispondent to the
       // second row. We recall that every variable is represented
-      //in the `matrix' by two rows and two rows.
+      // in the `matrix' by two rows and two rows.
       for (dimension_type j = 0; j <= i; ++j)
 	if (!to_be_removed.count(Variable(j))) {
 	  *(iter++) = row_ref[2*j];
@@ -1846,19 +1846,28 @@ Octagonal_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
 
   // We create a new matrix with the new space dimension.
   OR_Matrix<N> x(new_space_dim);
-  for (typename OR_Matrix<N>::row_iterator i_iter = matrix.row_begin(),
-	 i_end = matrix.row_end(); i_iter != i_end; i_iter += 2) {
+
+  // Use these type aliases for short.
+  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  // Avoid repeated computations.
+  Row_Iterator m_begin = x.row_begin();
+  Row_Iterator m_end = x.row_end();
+
+  for (Row_Iterator i_iter = matrix.row_begin(), i_end = matrix.row_end();
+       i_iter != i_end; i_iter += 2) {
     dimension_type new_i;
     dimension_type i = i_iter.index()/2;
-    // We copy and place in the position into `x' the only cells of the `matrix'
-    // that refer to both mapped variables, the variable `i' and `j'.
+    // We copy and place in the position into `x' the only cells of
+    // the `matrix' that refer to both mapped variables,
+    // the variable `i' and `j'.
     if (pfunc.maps(i, new_i)) {
-      typename OR_Matrix<N>::row_reference_type r_i = *i_iter;
-      typename OR_Matrix<N>::row_reference_type r_ii = *(i_iter + 1);
+      Row_Reference r_i = *i_iter;
+      Row_Reference r_ii = *(i_iter + 1);
       dimension_type double_new_i = 2*new_i;
-      typename OR_Matrix<N>::row_iterator x_iter = x.row_begin() + double_new_i;
-      typename OR_Matrix<N>::row_reference_type x_i = *x_iter;
-      typename OR_Matrix<N>::row_reference_type x_ii = *(x_iter + 1);
+      Row_Iterator x_iter = m_begin + double_new_i;
+      Row_Reference x_i = *x_iter;
+      Row_Reference x_ii = *(x_iter + 1);
       for(dimension_type j = 0; j <= i; ++j) {
 	dimension_type new_j;
 	// If also the second variable is mapped, we work.
@@ -1867,8 +1876,8 @@ Octagonal_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
 	  dimension_type double_new_j = 2*new_j;
 	  // Mapped the constraints, exchanging the indexes.
 	  // Attention: our matrix is pseudo-triangular.
-	  // If new_j > new_i, we must consider, as rows, the rows of the variable
-	  // new_j, and not of new_i ones.
+	  // If new_j > new_i, we must consider, as rows, the rows of
+	  // the variable new_j, and not of new_i ones.
 	  if (new_i >= new_j) {
 	    x_i[double_new_j] = r_i[dj];
 	    x_ii[double_new_j] = r_ii[dj];
@@ -1876,9 +1885,9 @@ Octagonal_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
 	    x_i[double_new_j+1] = r_i[dj + 1];
 	  }
 	  else {
-	    typename OR_Matrix<N>::row_iterator xj_iter = x.row_begin() + double_new_j;
-	    typename OR_Matrix<N>::row_reference_type x_j = *xj_iter;
-	    typename OR_Matrix<N>::row_reference_type x_jj = *(xj_iter + 1);
+	    Row_Iterator xj_iter = m_begin + double_new_j;
+	    Row_Reference x_j = *xj_iter;
+	    Row_Reference x_jj = *(xj_iter + 1);
 	    x_jj[double_new_i+1] = r_i[dj];
 	    x_jj[double_new_i] = r_ii[dj];
 	    x_j[double_new_i+1] = r_i[dj+1];
