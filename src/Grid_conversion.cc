@@ -259,14 +259,15 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // `dest'.
   source_index = source.num_generators();
   dest_index = 0;
+  TEMP_INTEGER(multiplier);
 
   for (dimension_type dim = dims; dim-- > 0; ) {
     TRACE(cerr << "dim: " << dim << endl);
 
     if (dim_kinds[dim] != GEN_VIRTUAL) {
       --source_index;
-      TEMP_INTEGER(source_dim);
-      source_dim = source[source_index][dim];
+      Coefficient_traits::const_reference source_dim
+	= source[source_index][dim];
 
       // In the rows in `dest' above `dest_index' divide each element
       // at column `dim' by `source_dim'.
@@ -279,7 +280,6 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	// Multiply the representation of `dest' such that entry `dim'
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
-	TEMP_INTEGER(multiplier);
 	gcd_assign(multiplier, cg[dim], source_dim);
 	multiplier = source_dim / multiplier;
 	multiply_grid(multiplier, cg, dest, dest_num_rows, dims);
@@ -305,8 +305,8 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       TRACE(cerr << "  tem_source_index: " << tem_source_index << endl);
       if (dim_kinds[dim_prec] != GEN_VIRTUAL) {
 	--tem_source_index;
-	TEMP_INTEGER(source_dim);
-	source_dim = source[tem_source_index][dim];
+	Coefficient_traits::const_reference source_dim
+	  = source[tem_source_index][dim];
 	TRACE(cerr << "  rows:" << endl);
 	// In order to compute the transpose of the inverse of
 	// `source', subtract source[tem_source_index][dim] times the
@@ -457,14 +457,15 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // `dest'.
   source_index = source_num_rows;
   dest_index = 0;
+  TEMP_INTEGER(reduced_source_dim);
 
   for (dimension_type dim = 0; dim < dims; ++dim) {
     TRACE(cerr << "dim: " << dim << endl);
 
     if (dim_kinds[dim] != CON_VIRTUAL) {
       --source_index;
-      TEMP_INTEGER(source_dim);
-      source_dim = source[source_index][dim];
+      Coefficient_traits::const_reference source_dim
+	= source[source_index][dim];
 
       // In the rows in `dest' above `dest_index' divide each element
       // at column `dim' by `source_dim'.
@@ -477,7 +478,6 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	// Multiply the representation of `dest' such that entry `dim'
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
-	TEMP_INTEGER(reduced_source_dim);
 	gcd_assign(reduced_source_dim, g[dim], source_dim);
 	reduced_source_dim = source_dim / reduced_source_dim;
 	multiply_grid(reduced_source_dim, g, dest, dest_num_rows,
@@ -504,8 +504,8 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       TRACE(cerr << "  tem_source_index: " << tem_source_index << endl);
       if (dim_kinds[dim_fol] != CON_VIRTUAL) {
 	--tem_source_index;
-	TEMP_INTEGER(source_dim);
-	source_dim = source[tem_source_index][dim];
+	Coefficient_traits::const_reference source_dim
+	  = source[tem_source_index][dim];
 	TRACE(cerr << "  rows:" << endl);
 	// In order to compute the transpose of the inverse of
 	// `source', subtract source[tem_source_index][dim] times the
