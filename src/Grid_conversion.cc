@@ -42,16 +42,16 @@ TRACE(using std::cerr;)
 bool
 Grid::lower_triangular(const Congruence_System& sys,
 		       const Dimension_Kinds& dim_kinds) {
-  dimension_type num_cols = sys.num_columns() - 1;
+  const dimension_type num_columns = sys.num_columns() - 1;
 
   // Check for easy square failure case.
-  if (sys.num_rows() > num_cols)
+  if (sys.num_rows() > num_columns)
     return false;
 
   // Check triangularity.
 
   dimension_type row = 0;
-  for (dimension_type dim = num_cols; dim-- > 0; ) {
+  for (dimension_type dim = num_columns; dim-- > 0; ) {
     if (dim_kinds[dim] == CON_VIRTUAL)
       continue;
     const Congruence& cg = sys[row];
@@ -61,7 +61,7 @@ Grid::lower_triangular(const Congruence_System& sys,
       return false;
     // Check elements following diagonal.
     dimension_type col = dim;
-    while (++col < num_cols)
+    while (++col < num_columns)
       if (cg[col] != 0)
 	return false;
   }
@@ -79,31 +79,31 @@ Grid::lower_triangular(const Congruence_System& sys,
 bool
 Grid::upper_triangular(const Grid_Generator_System& sys,
 		       const Dimension_Kinds& dim_kinds) {
-  dimension_type num_cols = sys.space_dimension() + 1;
+  dimension_type num_columns = sys.space_dimension() + 1;
   dimension_type row = sys.num_generators();
 
   // Check for easy square fail case.
-  if (row > num_cols)
+  if (row > num_columns)
     return false;
 
   // Check triangularity.
-  while (num_cols > 0) {
-    --num_cols;
-    if (dim_kinds[num_cols] == GEN_VIRTUAL)
+  while (num_columns > 0) {
+    --num_columns;
+    if (dim_kinds[num_columns] == GEN_VIRTUAL)
       continue;
     const Grid_Generator& gen = sys[--row];
     // Check diagonal.
-    if (gen[num_cols] <= 0)
+    if (gen[num_columns] <= 0)
       return false;
     // Check elements preceding diagonal.
-    dimension_type col = num_cols;
+    dimension_type col = num_columns;
     while (col-- > 0)
       if (gen[col] != 0)
 	return false;
   }
 
   // Check for squareness.
-  return num_cols == row;
+  return num_columns == row;
 }
 
 inline void

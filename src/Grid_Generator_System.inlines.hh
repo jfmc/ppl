@@ -212,9 +212,9 @@ Grid_Generator_System::set_index_first_pending_row(const dimension_type i) {
 }
 
 inline void
-Grid_Generator_System::resize_no_copy(const dimension_type new_n_rows,
-				      const dimension_type new_n_columns) {
-  Generator_System::resize_no_copy(new_n_rows, new_n_columns);
+Grid_Generator_System::resize_no_copy(const dimension_type new_num_rows,
+				      const dimension_type new_num_columns) {
+  Generator_System::resize_no_copy(new_num_rows, new_num_columns);
 }
 
 inline dimension_type

@@ -448,18 +448,18 @@ private:
 
   //! Resizes the system without worrying about the old contents.
   /*!
-    \param new_n_rows
+    \param new_num_rows
     The number of rows of the resized system;
 
-    \param new_n_columns
+    \param new_num_columns
     The number of columns of the resized system.
 
     The system is expanded to the specified dimensions avoiding
     reallocation whenever possible.
     The contents of the original system is lost.
   */
-  void resize_no_copy(dimension_type new_n_rows,
-		      dimension_type new_n_columns);
+  void resize_no_copy(dimension_type new_num_rows,
+		      dimension_type new_num_columns);
 
   /*! \brief
     Returns the number of columns of the matrix (i.e., the size of the

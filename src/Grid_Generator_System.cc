@@ -35,19 +35,19 @@ void
 PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
   const dimension_type old_num_rows = num_rows();
   const dimension_type gs_num_rows = gs.num_rows();
-  const dimension_type old_num_cols = num_columns();
-  const dimension_type gs_num_cols = gs.num_columns();
-  if (old_num_cols >= gs_num_cols)
+  const dimension_type old_num_columns = num_columns();
+  const dimension_type gs_num_columns = gs.num_columns();
+  if (old_num_columns >= gs_num_columns)
     add_zero_rows(gs_num_rows,
 		  Linear_Row::Flags(NECESSARILY_CLOSED,
 				    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   else {
     add_zero_rows_and_columns(gs_num_rows,
-			      gs_num_cols - old_num_cols,
+			      gs_num_columns - old_num_columns,
 			      Linear_Row::Flags(NECESSARILY_CLOSED,
 						Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
     // Swap the parameter divisor column into the new last column.
-    swap_columns(old_num_cols - 1, num_columns() - 1);
+    swap_columns(old_num_columns - 1, num_columns() - 1);
   }
   set_index_first_pending_row(old_num_rows + gs_num_rows);
   // Swap one coefficient at a time into the newly added rows, instead
@@ -60,19 +60,19 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
 void
 PPL::Grid_Generator_System::recycling_insert(Grid_Generator& g) {
   dimension_type old_num_rows = num_rows();
-  const dimension_type old_num_cols = num_columns();
-  const dimension_type g_num_cols = g.size();
-  if (old_num_cols >= g_num_cols)
+  const dimension_type old_num_columns = num_columns();
+  const dimension_type g_num_columns = g.size();
+  if (old_num_columns >= g_num_columns)
     add_zero_rows(1,
 		  Linear_Row::Flags(NECESSARILY_CLOSED,
 				    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   else {
     add_zero_rows_and_columns(1,
-			      g_num_cols - old_num_cols,
+			      g_num_columns - old_num_columns,
 			      Linear_Row::Flags(NECESSARILY_CLOSED,
 						Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
     // Swap the parameter divisor column into the new last column.
-    swap_columns(old_num_cols - 1, num_columns() - 1);
+    swap_columns(old_num_columns - 1, num_columns() - 1);
   }
   set_index_first_pending_row(old_num_rows + 1);
   // Swap one coefficient at a time into the newly added rows, instead
@@ -172,7 +172,7 @@ PPL::Grid_Generator_System
   assert(expr.space_dimension() <= x.space_dimension());
   assert(denominator > 0);
 
-  const dimension_type num_cols = x.num_columns();
+  const dimension_type num_columns = x.num_columns();
   const dimension_type num_rows = x.num_rows();
 
   // Compute the numerator of the affine transformation and assign it
@@ -190,7 +190,7 @@ PPL::Grid_Generator_System
     // having an index different from `v'.
     for (dimension_type i = num_rows; i-- > 0; ) {
       Grid_Generator& row = x[i];
-      for (dimension_type j = num_cols; j-- > 0; )
+      for (dimension_type j = num_columns; j-- > 0; )
 	if (j != v)
 	  row[j] *= denominator;
     }
@@ -215,15 +215,15 @@ PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
 bool
 PPL::Grid_Generator_System::ascii_load(std::istream& s) {
   dimension_type num_rows;
-  dimension_type num_cols;
+  dimension_type num_columns;
   if (!(s >> num_rows))
     return false;
   std::string str;
   if (!(s >> str))
     return false;
-  if (!(s >> num_cols))
+  if (!(s >> num_columns))
       return false;
-  resize_no_copy(num_rows, num_cols);
+  resize_no_copy(num_rows, num_columns);
 
   set_sorted(false);
   set_index_first_pending_row(num_rows);
@@ -343,14 +343,14 @@ PPL::Grid_Generator_System
     ++src_col;
   }
   // Move any remaining columns.
-  const dimension_type num_cols = num_columns();
-  while (src_col < num_cols)
+  const dimension_type num_columns = this->num_columns();
+  while (src_col < num_columns)
     // FIXME: consider whether Linear_System must have a swap_columns()
     // method.  If the answer is "no", remove this Matrix:: qualification.
     Matrix::swap_columns(dst_col++, src_col++);
 
   // The number of remaining columns is `dst_col'.
-  Matrix::remove_trailing_columns(num_cols - dst_col);
+  Matrix::remove_trailing_columns(num_columns - dst_col);
 
 
 
