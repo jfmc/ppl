@@ -349,8 +349,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
   TEMP_INTEGER(point_sp);
   point_sp = 0;
 
-  TEMP_INTEGER(modulus);
-  modulus = cg.modulus();
+  Coefficient_traits::const_reference modulus = cg.modulus();
 
   TEMP_INTEGER(div);
   div = 0;
