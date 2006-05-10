@@ -3574,10 +3574,11 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
   if (t_lhs == 0) {
     // `lhs' is a constant.
     // In principle, it is sufficient to add the constraint `lhs relsym rhs'.
-    // Note that this constraint is a bounded difference if `t_rhs <= 1'
-    // or `t_rhs > 1' and `rhs == a*v - a*w + b_rhs'. If `rhs' is of a
+    // Note that this constraint is an octagonal difference if `t_rhs <= 1'
+    // or `t_rhs > 1' and `rhs == a*v - a*w + b_rhs' or
+    // `rhs == a*v + a*w + b_rhs'. If `rhs' is of a
     // more general form, it will be simply ignored.
-    // TODO: if it is not a bounded difference, should we compute
+    // TODO: if it is not an octagonal difference, should we compute
     // approximations for this constraint?
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
@@ -3633,7 +3634,7 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       }
       // Constrain the left hand side expression so that it is related to
       // the right hand side expression as dictated by `relsym'.
-      // TODO: if the following constraint is NOT a bounded difference,
+      // TODO: if the following constraint is NOT an octagonal difference,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
       case LESS_THAN_OR_EQUAL:
@@ -3675,7 +3676,7 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // is not a bounded difference.
       affine_image(new_var, rhs);
       // Cylindrificate on all variables in the lhs.
-      // NOTE: enforce shortest-path closure for precision.
+      // NOTE: enforce strong closure for precision.
       strong_closure_assign();
       assert(!marked_empty());
       for (dimension_type i = lhs_vars.size(); i-- > 0; ) {
@@ -3685,7 +3686,7 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // Constrain the new dimension so that it is related to
       // the left hand side as dictated by `relsym'.
       // TODO: each one of the following constraints is definitely NOT
-      // a bounded differences (since it has 3 variables at least).
+      // an octagonal difference (since it has 3 variables at least).
       // Thus, the method add_constraint() will simply ignore it.
       // Should we compute approximations for this constraint?
       switch (relsym) {
@@ -4099,6 +4100,173 @@ Octagonal_Shape<T>
   // ...  otherwise, since the relation was not invertible,
   // we just forget all constraints on `var'.
   forget_all_octagonal_constraints(var_id);
+  assert(OK());
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>
+::generalized_affine_preimage(const Linear_Expression& lhs,
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& rhs) {
+  // Dimension-compatibility checks.
+  // The dimension of `lhs' should not be greater than the dimension
+  // of `*this'.
+  dimension_type lhs_space_dim = lhs.space_dimension();
+  if (space_dim < lhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(e1, r, e2)",
+				 "e1", lhs);
+
+  // The dimension of `rhs' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type rhs_space_dim = rhs.space_dimension();
+  if (space_dim < rhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_preimage(e1, r, e2)",
+				 "e2", rhs);
+
+  // Strict relation symbols are not admitted for octagons.
+  if (relsym == LESS_THAN || relsym == GREATER_THAN)
+    throw_generic("generalized_affine_preimage(e1, r, e2)",
+		  "r is a strict relation symbol and "
+		  "*this is an Octagonal_Shape");
+
+  strong_closure_assign();
+  // The image of an empty octagon is empty.
+  if (marked_empty())
+    return;
+
+  // Number of non-zero coefficients in `lhs': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type t_lhs = 0;
+  // Index of the last non-zero coefficient in `lhs', if any.
+  dimension_type j_lhs = 0;
+
+  // Compute the number of the non-zero components of `lhs'.
+  for (dimension_type i = lhs_space_dim; i-- > 0; )
+    if (lhs.coefficient(Variable(i)) != 0) {
+      if (t_lhs++ == 1)
+	break;
+      else
+	j_lhs = i;
+    }
+
+  const Coefficient& b_lhs = lhs.inhomogeneous_term();
+
+  // If all variables have a zero coefficient, then `lhs' is a constant:
+  // in this case, preimage and image happen to be the same.
+  if (t_lhs == 0) {
+    generalized_affine_image(lhs, relsym, rhs);
+    return;
+  }
+
+  else if (t_lhs == 1) {
+    // Here `lhs == a_lhs * v + b_lhs'.
+    // Independently from the form of `rhs', we can exploit the
+    // method computing generalized affine preimages for a single variable.
+    Variable v(j_lhs);
+    // Compute a sign-corrected relation symbol.
+    const Coefficient& den = lhs.coefficient(v);
+    Relation_Symbol new_relsym = relsym;
+    if (den < 0)
+      if (relsym == LESS_THAN_OR_EQUAL)
+	new_relsym = GREATER_THAN_OR_EQUAL;
+      else if (relsym == GREATER_THAN_OR_EQUAL)
+	new_relsym = LESS_THAN_OR_EQUAL;
+    Linear_Expression expr = rhs - b_lhs;
+    generalized_affine_preimage(v, new_relsym, expr, den);
+  }
+
+  else {
+    // Here `lhs' is of the general form, having at least two variables.
+    // Compute the set of variables occurring in `lhs'.
+    bool lhs_vars_intersects_rhs_vars = false;
+    std::vector<Variable> lhs_vars;
+    for (dimension_type i = lhs_space_dim; i-- > 0; )
+      if (lhs.coefficient(Variable(i)) != 0) {
+	lhs_vars.push_back(Variable(i));
+	if (rhs.coefficient(Variable(i)) != 0)
+	  lhs_vars_intersects_rhs_vars = true;
+      }
+
+    if (!lhs_vars_intersects_rhs_vars) {
+      // `lhs' and `rhs' variables are disjoint.
+      // Constrain the left hand side expression so that it is related to
+      // the right hand side expression as dictated by `relsym'.
+      // TODO: if the following constraint is NOT an octagonal difference,
+      // it will be simply ignored. Should we compute approximations for it?
+      switch (relsym) {
+      case LESS_THAN_OR_EQUAL:
+	add_constraint(lhs <= rhs);
+	break;
+      case EQUAL:
+	add_constraint(lhs == rhs);
+	break;
+      case GREATER_THAN_OR_EQUAL:
+	add_constraint(lhs >= rhs);
+	break;
+      default:
+	// We already dealt with the other cases.
+	throw std::runtime_error("PPL internal error");
+	break;
+      }
+
+      // Any image of an empty octagon is empty.
+      if (is_empty())
+	return;
+      // Cylindrificate on all variables in the lhs.
+      for (dimension_type i = lhs_vars.size(); i-- > 0; ) {
+	dimension_type lhs_vars_i = lhs_vars[i].id();
+	forget_all_octagonal_constraints(lhs_vars_i);
+      }
+    }
+    else {
+      // Some variables in `lhs' also occur in `rhs'.
+
+      // More accurate computation that is worth doing only if
+      // the following TODO note is accurately dealt with.
+
+      // To ease the computation, we add an additional dimension.
+      const Variable new_var = Variable(space_dim);
+      add_space_dimensions_and_embed(1);
+      // Constrain the new dimension to be equal to `rhs'.
+      // NOTE: calling affine_image() instead of add_constraint()
+      // ensures some approximation is tried even when the constraint
+      // is not an octagonal difference.
+      affine_image(new_var, lhs);
+      // Cylindrificate on all variables in the lhs.
+      // NOTE: enforce strong closure for precision.
+      strong_closure_assign();
+      assert(!marked_empty());
+      for (dimension_type i = lhs_vars.size(); i-- > 0; ) {
+	dimension_type lhs_vars_i = lhs_vars[i].id();
+	forget_all_octagonal_constraints(lhs_vars_i);
+      }
+      // Constrain the new dimension so that it is related to
+      // the left hand side as dictated by `relsym'.
+      // Note: if `rhs == v + b_rhs' or `rhs == -v + b_rhs' or `rhs == b_rhs',
+      // one of the following constraints will be added, because they
+      // are octagonal differences.
+      // Else the following constraints are NOT octagonal differences,
+      // so the method add_constraint() will ignore them.
+      switch (relsym) {
+      case LESS_THAN_OR_EQUAL:
+	add_constraint(new_var <= rhs);
+	break;
+      case EQUAL:
+	add_constraint(new_var == rhs);
+	break;
+      case GREATER_THAN_OR_EQUAL:
+	add_constraint(new_var >= rhs);
+	break;
+      default:
+	// We already dealt with the other cases.
+	throw std::runtime_error("PPL internal error");
+	break;
+      }
+      // Remove the temporarily added dimension.
+      remove_higher_space_dimensions(space_dim-1);
+    }
+  }
   assert(OK());
 }
 
