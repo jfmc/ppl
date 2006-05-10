@@ -65,6 +65,7 @@ fromgensys1 \
 frompolyhedron1 \
 generalizedaffineimage1 generalizedaffineimage2 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
+generalizedaffinepreimage3 \
 geomcovers1 \
 h79widening1 \
 intersection1 \
@@ -172,6 +173,7 @@ generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 
 generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
+generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
 
 geomcovers1_SOURCES = geomcovers1.cc
 
