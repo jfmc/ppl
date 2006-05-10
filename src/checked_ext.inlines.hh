@@ -240,7 +240,6 @@ mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
       case V_GT:
       pinf:
 	return assign<To_Policy>(to, PLUS_INFINITY, dir);
-	goto pinf;
       default:
       inf_mul_zero:
 	assert(To_Policy::check_inf_mul_zero);
