@@ -1556,9 +1556,9 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
 
   shortest_path_closure_assign();
   bool changed = false;
-  for (Constraint_System::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i) {
-    const Constraint& c = *i;
+  for (Constraint_System::const_iterator cs_i = cs.begin(),
+	 cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
+    const Constraint& c = *cs_i;
     dimension_type num_vars = 0;
     dimension_type i = 0;
     dimension_type j = 0;
@@ -3753,7 +3753,7 @@ BD_Shape<T>::OK() const {
 #ifndef NDEBUG
       using namespace Parma_Polyhedra_Library::IO_Operators;
       std::cerr << "BD_Shape::dbm[" << i << "][" << j << "] = "
-		<< dbm[i][i] << "!"
+		<< dbm[i][j] << "!"
 		<< std::endl;
 #endif
       return false;
@@ -3794,7 +3794,7 @@ BD_Shape<T>::OK() const {
 #ifndef NDEBUG
 	  using namespace Parma_Polyhedra_Library::IO_Operators;
 	  std::cerr << "BD_Shape::dbm[" << i << "][" << j << "] = "
-		    << dbm[i][i] << " is marked as non-redundant!"
+		    << dbm[i][j] << " is marked as non-redundant!"
 		    << std::endl;
 #endif
 	  return false;
