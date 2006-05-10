@@ -61,6 +61,7 @@ check_PROGRAMS = \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
 	generalizedaffinepreimage1 generalizedaffinepreimage2 \
+	generalizedaffinepreimage3 \
 	intersection1 \
 	limitedbhmz05extrapolation1 \
 	limitedcc76extrapolation1 \
@@ -161,6 +162,7 @@ generalizedaffineimage4_SOURCES = generalizedaffineimage4.cc
 
 generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
+generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
 
 intersection1_SOURCES = intersection1.cc
 
