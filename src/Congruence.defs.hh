@@ -35,8 +35,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.defs.hh"
 #include <iosfwd>
 
-namespace PPL = Parma_Polyhedra_Library;
-
 namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
@@ -447,33 +445,37 @@ private:
 			       Variable v) const;
 
   friend Congruence
-  PPL::operator/(const Congruence& cg,
+  Parma_Polyhedra_Library::operator/(const Congruence& cg,
 		 Coefficient_traits::const_reference k);
 
   friend Congruence
-  PPL::operator/(const Constraint& c,
+  Parma_Polyhedra_Library::operator/(const Constraint& c,
 		 Coefficient_traits::const_reference m);
 
   friend bool
-  PPL::operator==(const Congruence& x, const Congruence& y);
+  Parma_Polyhedra_Library::operator==(const Congruence& x,
+				      const Congruence& y);
 
   friend bool
-  PPL::operator!=(const Congruence& x, const Congruence& y);
+  Parma_Polyhedra_Library::operator!=(const Congruence& x,
+				      const Congruence& y);
 
   friend std::ostream&
-  PPL::IO_Operators::operator<<(std::ostream& s,
-				const Congruence_System& cgs);
+  Parma_Polyhedra_Library::IO_Operators
+  ::operator<<(std::ostream& s,
+	       const Congruence_System& cgs);
 
-  friend class PPL::Scalar_Products;
-  friend class PPL::Congruence_System;
-  friend class PPL::Congruence_System::const_iterator;
+  friend class Parma_Polyhedra_Library::Scalar_Products;
+  friend class Parma_Polyhedra_Library::Congruence_System;
+  friend class Parma_Polyhedra_Library::Congruence_System::const_iterator;
   // FIXME: The following friend declaration is at least for
   //        operator[] access in Grid::conversion.
-  friend class PPL::Grid;
-  friend class PPL::Linear_Expression;
+  friend class Parma_Polyhedra_Library::Grid;
+  friend class Parma_Polyhedra_Library::Linear_Expression;
 
   friend void
-  std::swap(PPL::Congruence& x, PPL::Congruence& y);
+  std::swap(Parma_Polyhedra_Library::Congruence& x,
+	    Parma_Polyhedra_Library::Congruence& y);
 };
 
 #include "Congruence.inlines.hh"
