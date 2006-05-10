@@ -50,11 +50,11 @@ PPL::Congruence_System::
 increase_space_dimension(const dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
-  dimension_type cols_to_add = new_space_dim - space_dimension();
+  const dimension_type cols_to_add = new_space_dim - space_dimension();
 
   if (cols_to_add)
     if (num_rows()) {
-      dimension_type old_num_cols = num_columns();
+      const dimension_type old_num_cols = num_columns();
       add_zero_columns(cols_to_add);
       // Move the moduli.
       swap_columns(num_columns() - 1, old_num_cols - 1);
@@ -96,7 +96,7 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
 
 void
 PPL::Congruence_System::insert(const Constraint& c) {
-  dimension_type cg_size = c.space_dimension() + 2;
+  const dimension_type cg_size = c.space_dimension() + 2;
   const dimension_type old_num_columns = num_columns();
   if (cg_size < old_num_columns) {
     // Create a congruence of the required size from `c'.
@@ -197,20 +197,19 @@ PPL::Congruence_System::normalize_moduli() {
 	return;
     }
     while (row > 0) {
-      TEMP_INTEGER(modulus);
-      modulus = operator[](--row).modulus();
+      Coefficient_traits::const_reference
+	modulus = operator[](--row).modulus();
       if (modulus > 0)
 	lcm_assign(lcm, lcm, modulus);
     }
 
     // Represent every row using the LCM as the modulus.
+    TEMP_INTEGER(factor);
     dimension_type row_size = operator[](0).size();
     for (row = num_rows(); row-- > 0; ) {
-      TEMP_INTEGER(modulus);
-      modulus = operator[](row).modulus();
+      Coefficient_traits::const_reference modulus = operator[](row).modulus();
       if (modulus <= 0 || modulus == lcm)
 	continue;
-      TEMP_INTEGER(factor);
       factor = lcm / modulus;
       for (dimension_type col = row_size; col-- > 0; )
 	operator[](row)[col] *= factor;
@@ -237,7 +236,7 @@ PPL::Congruence_System::is_equal_to(const Congruence_System& cgs) const {
 bool
 PPL::Congruence_System::has_linear_equalities() const {
   const Congruence_System& cgs = *this;
-  dimension_type modulus_index = cgs.num_columns() - 1;
+  const dimension_type modulus_index = cgs.num_columns() - 1;
   for (dimension_type i = cgs.num_rows(); i-- > 0; )
     if (cgs[i][modulus_index] == 0)
       return true;
