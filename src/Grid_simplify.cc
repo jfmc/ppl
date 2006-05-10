@@ -30,8 +30,8 @@ namespace Parma_Polyhedra_Library {
 #define TRACE(x)
 //#define TRACE(x) x
 
-TRACE(using std::endl)
-TRACE(using std::cerr)
+TRACE(using std::endl;)
+TRACE(using std::cerr;)
 
 #ifdef STRONG_REDUCTION
 template <typename M, typename R>
