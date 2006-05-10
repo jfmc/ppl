@@ -198,16 +198,15 @@ Grid::shrink_bounding_box(Box& box) const {
     throw_dimension_incompatible("shrink_bounding_box(box)", "box",
 				 box.space_dimension());
 
-  TEMP_INTEGER(l_n);
-  TEMP_INTEGER(l_d);
+  TEMP_INTEGER(temp);
 
   // Check that all bounds are closed.
   for (dimension_type k = space_dim; k-- > 0; ) {
     bool closed;
     // FIXME: Perhaps introduce box::is_bounded_and_closed.
-    if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
+    if (box.get_lower_bound(k, closed, temp, temp) && !closed)
       throw_invalid_argument("shrink_bounding_box(box)", "box");
-    if (box.get_upper_bound(k, closed, l_n, l_d) && !closed)
+    if (box.get_upper_bound(k, closed, temp, temp) && !closed)
       throw_invalid_argument("shrink_bounding_box(box)", "box");
   }
 
@@ -257,7 +256,6 @@ Grid::shrink_bounding_box(Box& box) const {
   // value of the associated coefficient in the point.
   const Grid_Generator& point = *first_point;
   TEMP_INTEGER(bound);
-  TEMP_INTEGER(temp);
   Coefficient_traits::const_reference divisor = point.divisor();
   for (dimension_type dim = num_dims; dim-- > 0; )
     if (bounded_interval[dim]) {
@@ -302,10 +300,8 @@ Grid::get_covering_box(Box& box) const {
   dimension_type num_dims = gen_sys.num_columns() - 2 /* parameter divisor */;
   dimension_type num_rows = gen_sys.num_generators();
 
-  TEMP_INTEGER(divisor);
   TEMP_INTEGER(gcd);
   TEMP_INTEGER(bound);
-  TEMP_INTEGER(reduced_divisor);
 
   if (num_rows > 1) {
     Row interval_sizes(num_dims, Row::Flags());
@@ -355,7 +351,7 @@ Grid::get_covering_box(Box& box) const {
     // addition of the lower bound and the shortest distance in the
     // given dimension between any two grid points.
     const Grid_Generator& point = *first_point;
-    divisor = point.divisor();
+    Coefficient_traits::const_reference divisor = point.divisor();
     TEMP_INTEGER(lower_bound);
     for (dimension_type dim = num_dims; dim-- > 0; ) {
       if (interval_emptiness[dim])
@@ -384,27 +380,30 @@ Grid::get_covering_box(Box& box) const {
 	bound = interval_sizes[dim] + lower_bound;
 	gcd_assign(gcd, bound, divisor);
 	exact_div_assign(bound, bound, gcd);
-	exact_div_assign(reduced_divisor, divisor, gcd);
-	new_box.lower_upper_bound(dim, true, bound, reduced_divisor);
+	exact_div_assign(gcd, divisor, gcd);
+	// `gcd' now holds the reduced divisor.
+	new_box.lower_upper_bound(dim, true, bound, gcd);
       }
 
       // Reduce the bound fraction first.
       gcd_assign(gcd, lower_bound, divisor);
       exact_div_assign(lower_bound, lower_bound, gcd);
-      exact_div_assign(reduced_divisor, divisor, gcd);
-      new_box.raise_lower_bound(dim, true, lower_bound, reduced_divisor);
+      exact_div_assign(gcd, divisor, gcd);
+      // `gcd' now holds the reduced divisor.
+      new_box.raise_lower_bound(dim, true, lower_bound, gcd);
     }
   }
   else {
     const Grid_Generator& point = gen_sys[0];
-    divisor = point.divisor();
+    Coefficient_traits::const_reference divisor = point.divisor();
     // The covering box of a single point has only lower bounds.
     for (dimension_type dim = num_dims; dim-- > 0; ) {
       // Reduce the bound fraction first.
       gcd_assign(gcd, point[dim+1], divisor);
       exact_div_assign(bound, point[dim+1], gcd);
-      exact_div_assign(reduced_divisor, divisor, gcd);
-      new_box.raise_lower_bound(dim, true, bound, reduced_divisor);
+      exact_div_assign(gcd, divisor, gcd);
+      // `gcd' now holds the reduced divisor.
+      new_box.raise_lower_bound(dim, true, bound, gcd);
     }
   }
 
