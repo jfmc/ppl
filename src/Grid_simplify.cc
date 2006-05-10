@@ -45,8 +45,7 @@ Grid::reduce_reduced(M& sys,
 		     const bool generators) {
   R& pivot = sys[pivot_index];
 
-  TEMP_INTEGER(pivot_dim);
-  pivot_dim = pivot[dim];
+  Coefficient_traits::const_reference pivot_dim = pivot[dim];
 
   if (pivot_dim == 0)
     return;
