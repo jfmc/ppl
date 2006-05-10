@@ -2234,8 +2234,7 @@ BD_Shape<T>::affine_image(const Variable var,
     // Add the upper bound constraint, if meaningful.
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
-      DB_Row<N>& dbm_0 = dbm[0];
-      assign_r(dbm_0[v], pos_sum, ROUND_UP);
+      assign_r(dbm[0][v], pos_sum, ROUND_UP);
       // Deduce constraints of the form `v - u', where `u != v'.
       deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
     }
