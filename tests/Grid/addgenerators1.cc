@@ -89,7 +89,7 @@ test03() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_recycled_generators(gs) ***");
+		    "*** gr.add_recycled_generators(gs) ***");
 
   return ok;
 }
@@ -111,10 +111,13 @@ test04() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_recycled_generators(gs) ***");
+		    "*** gr.add_recycled_generators(gs) ***");
 
   return ok;
 }
+
+#if 0
+// Grid_Generator_System::remove_space_dimensions is now private.
 
 // add_recycled_generators -- add system with a single parameter
 // generator to the zero dimension empty grid.
@@ -175,6 +178,7 @@ test06() {
   }
   return true;
 }
+#endif
 
 // add_recycled_generators -- add system with a single parameter
 // generator to the empty grid.
@@ -215,7 +219,7 @@ test08() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_recycled_generators_and_minimize(gs) ***");
+		    "*** gr.add_recycled_generators_and_minimize(gs) ***");
 
   return ok;
 }
@@ -260,7 +264,26 @@ test10() {
   bool ok = (gr == known_gr);
 
   print_generators(gr,
-      "*** gr.add_recycled_generators_and_minimize(gs) ***");
+		   "*** gr.add_recycled_generators_and_minimize(gs) ***");
+
+  return ok;
+}
+
+// add_generators -- add a zero dimension universe system.
+bool
+test11() {
+  Grid gr(0);
+
+  print_generators(gr, "*** gr ***");
+
+  Grid known_gr = gr;
+
+  gr.add_generators(Grid_Generator_System::zero_dim_univ());
+
+  bool ok = (gr == known_gr);
+
+  print_generators(gr,
+		   "*** gr.add_recycled_generators_and_minimize(gs) ***");
 
   return ok;
 }
@@ -272,10 +295,9 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST(test05);
-  DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN
