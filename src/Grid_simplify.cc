@@ -579,32 +579,6 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   // For clearer naming.
   dimension_type& reduced_num_rows = pivot_index;
 
-  // Clip any zero rows from the end of the matrix.
-  if (num_rows > 1 && num_rows > reduced_num_rows) {
-    TRACE(cerr << "clipping trailing" << endl);
-#ifndef NDEBUG
-    const bool ret = rows_are_zero<Congruence_System,Congruence>
-      (sys,
-       // index of first
-       reduced_num_rows,
-       // index of last
-       num_rows - 1,
-       // row size
-       num_columns);
-    assert(ret == true);
-#endif
-    // Don't erase the last row as this will be changed to the
-    // integrality row.
-    // FIXME Simplify and improve code if possible.
-    if (reduced_num_rows > 0)
-      sys.erase_to_end(reduced_num_rows);
-    else
-      sys.erase_to_end(1);
-  }
-
-  assert(sys.num_rows() == reduced_num_rows
-	 || (sys.num_rows() == 1 && reduced_num_rows == 0));
-
   if (reduced_num_rows > 0) {
     // If the last row is false then make it the equality 1 = 0, and
     // make it the only row.
@@ -633,17 +607,52 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
       return true;
     }
   }
-  else if (num_rows > 0) {
-    assert(sys.num_rows() == 1);
-    // All columns up to the modulus column must have been zero, set
-    // up the integrality congruence.
+  else {
+    // Either sys is empty (it defines the universe) or every column
+    // before the modulus column contains only zeroes.
+
+    // Set up the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
+    if (num_rows == 0) {
+      sys.add_zero_rows(1,
+			Linear_Row::Flags(NECESSARILY_CLOSED,
+					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
+      Congruence& cg = sys[0];
+      cg[num_columns] = 1;
+      cg[0] = 1;
+
+      trace_dim_kinds("cgs simpl end ", dim_kinds);
+      assert(sys.OK());
+      TRACE(cerr << "---- simplify (reduce) cgs done (universe)." << endl);
+      return false;
+    }
     sys[0][num_columns] = 1;
+    // Ensure that, after any zero row clipping below, a single row
+    // will remain for the integrality congruence.
     reduced_num_rows = 1;
   }
 
+  // Clip any zero rows from the end of the matrix.
+  if (num_rows > 1 && num_rows > reduced_num_rows) {
+    TRACE(cerr << "clipping trailing" << endl);
+#ifndef NDEBUG
+    const bool ret = rows_are_zero<Congruence_System,Congruence>
+      (sys,
+       // index of first
+       reduced_num_rows,
+       // index of last
+       num_rows - 1,
+       // row size
+       num_columns);
+    assert(ret == true);
+#endif
+    sys.erase_to_end(reduced_num_rows);
+  }
+
+  assert(sys.num_rows() == reduced_num_rows);
+
   // Ensure that the last row is the integrality congruence.
-  dimension_type mod_index = num_columns;
+  const dimension_type mod_index = num_columns;
   if (dim_kinds[0] == CON_VIRTUAL) {
     // The last row is virtual, append the integrality congruence.
     dim_kinds[0] = PROPER_CONGRUENCE;
