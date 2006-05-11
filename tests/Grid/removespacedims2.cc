@@ -166,6 +166,9 @@ test06() {
   return ok;
 }
 
+#if 0
+// Grid_Generator_System::remove_higher_space_dimensions is now private.
+
 // Remove all space dimensions from a nonempty generator system.
 bool
 test07() {
@@ -214,6 +217,7 @@ test08() {
 
   return ok;
 }
+#endif
 
 // Space dimension exception.
 bool
@@ -242,7 +246,5 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST(test07);
-  DO_TEST(test08);
   DO_TEST(test09);
 END_MAIN
