@@ -203,7 +203,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   if (g1.is_point()) {
     cout << "Grid point g1: " << g1 << endl;
     Linear_Expression e;
-    for (int i = g1.space_dimension() - 1; i >= 0; i--)
+    for (dimension_type i = g1.space_dimension(); i-- > 0; )
       e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
     Grid_Generator g2 = parameter(e, g1.divisor());
     cout << "Parameter g2: " << g2 << endl;

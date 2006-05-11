@@ -196,7 +196,7 @@ swap(Parma_Polyhedra_Library::Congruence& x,
     cout << "Congruence cg1 is an equality." << endl;
   else {
     Linear_Expression e;
-    for (int i = cg1.space_dimension() - 1; i >= 0; --i)
+    for (dimension_type i = cg1.space_dimension(); i-- > 0; )
       e += 2 * cg1.coefficient(Variable(i)) * Variable(i);
       e += 2 * cg1.inhomogeneous_term();
     Congruence cg2((e %= 0) / m);

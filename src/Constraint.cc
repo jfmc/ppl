@@ -175,9 +175,9 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
 /*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
-  const int num_variables = c.space_dimension();
+  const dimension_type num_variables = c.space_dimension();
   bool first = true;
-  for (int v = 0; v < num_variables; ++v) {
+  for (dimension_type v = 0; v < num_variables; ++v) {
     Coefficient cv = c.coefficient(Variable(v));
     if (cv != 0) {
       if (!first) {

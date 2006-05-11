@@ -240,7 +240,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
     cout << "Constraint c1 is not an inequality." << endl;
   else {
     Linear_Expression e;
-    for (int i = c1.space_dimension() - 1; i >= 0; i--)
+    for (dimension_type i = c1.space_dimension(); i-- > 0; )
       e += c1.coefficient(Variable(i)) * Variable(i);
     e += c1.inhomogeneous_term();
     Constraint c2 = c1.is_strict_inequality() ? (e <= 0) : (e < 0);

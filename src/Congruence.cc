@@ -146,9 +146,9 @@ PPL::Congruence::throw_dimension_incompatible(const char* method,
 /*! \relates Parma_Polyhedra_Library::Congruence */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
-  const int num_variables = c.space_dimension();
+  const dimension_type num_variables = c.space_dimension();
   bool first = true;
-  for (int v = 0; v < num_variables; ++v) {
+  for (dimension_type v = 0; v < num_variables; ++v) {
     Coefficient cv = c.coefficient(Variable(v));
     if (cv != 0) {
       if (!first) {

@@ -253,7 +253,7 @@ PPL::Grid::select_wider_generators(const Grid& y,
 	  ggs_selected.insert(gg);
         else {
           Linear_Expression e;
-          for (int i = gg.space_dimension() - 1; i >= 0; i--)
+          for (dimension_type i = gg.space_dimension(); i-- > 0; )
             e += gg.coefficient(Variable(i)) * Variable(i);
           ggs_selected.insert(grid_line(e));
 	}

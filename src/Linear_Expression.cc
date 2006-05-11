@@ -244,9 +244,9 @@ PPL::Linear_Expression::OK() const {
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
-  const int num_variables = e.space_dimension();
+  const dimension_type num_variables = e.space_dimension();
   bool first = true;
-  for (int v = 0; v < num_variables; ++v) {
+  for (dimension_type v = 0; v < num_variables; ++v) {
     Coefficient ev = e[v+1];
     if (ev != 0) {
       if (!first) {
