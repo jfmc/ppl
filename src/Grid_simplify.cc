@@ -211,7 +211,8 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // change here may be needed there too.
   TRACE(cerr << "reduce_parameter_with_line" << endl);
 
-  dimension_type num_columns = sys.num_columns() - 1 /* parameter divisor */;
+  // Subtract one to allow for the parameter divisor column
+  const dimension_type num_columns = sys.num_columns() - 1;
 
   // If the elements at column in row and pivot are the same, then
   // just subtract pivot from row.
@@ -312,7 +313,7 @@ bool
 Grid::rows_are_zero(M& system, dimension_type first,
 		    dimension_type last, dimension_type row_size) {
   while (first <= last) {
-    R& row = system[first++];
+    const R& row = system[first++];
     for (dimension_type col = 0; col < row_size; ++col)
       if (row[col] != 0)
 	return false;
@@ -334,12 +335,12 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // below.
 
   // Subtract one to allow for the parameter divisor column
-  dimension_type num_columns = sys.num_columns() - 1;
+  const dimension_type num_columns = sys.num_columns() - 1;
 
   if (dim_kinds.size() != num_columns)
     dim_kinds.resize(num_columns);
 
-  dimension_type num_rows = sys.num_generators();
+  const dimension_type num_rows = sys.num_generators();
   TRACE(cerr << "  num_rows " << num_rows << endl);
 
   // For each dimension `dim' move or construct a row into position
@@ -433,7 +434,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   if (num_rows > pivot_index) {
     TRACE(cerr << "clipping trailing" << endl);
 #ifndef NDEBUG
-    bool ret = rows_are_zero<Grid_Generator_System,Grid_Generator>
+    const bool ret = rows_are_zero<Grid_Generator_System,Grid_Generator>
       (sys,
        // index of first
        pivot_index,
@@ -482,12 +483,12 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   //       added to con_sys.
   sys.normalize_moduli();
 
-  dimension_type num_columns = sys.num_columns() - 1 /* modulus */;
+  const dimension_type num_columns = sys.num_columns() - 1 /* modulus */;
 
   if (dim_kinds.size() != num_columns)
     dim_kinds.resize(num_columns);
 
-  dimension_type num_rows = sys.num_rows();
+  const dimension_type num_rows = sys.num_rows();
   TRACE(cerr << "  num_rows " << num_rows << endl);
 
   // For each dimension `dim' move or construct a row into position
@@ -582,7 +583,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   if (num_rows > 1 && num_rows > reduced_num_rows) {
     TRACE(cerr << "clipping trailing" << endl);
 #ifndef NDEBUG
-    bool ret = rows_are_zero<Congruence_System,Congruence>
+    const bool ret = rows_are_zero<Congruence_System,Congruence>
       (sys,
        // index of first
        reduced_num_rows,
