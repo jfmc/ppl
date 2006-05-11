@@ -28,16 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline void
-Grid_Generator_System::set_sorted(bool b) {
-  Generator_System::set_sorted(b);
-}
-
-inline void
-Grid_Generator_System::unset_pending_rows() {
-  Generator_System::unset_pending_rows();
-}
-
 inline
 Grid_Generator_System::Grid_Generator_System()
   : Generator_System(NECESSARILY_CLOSED) {
@@ -63,6 +53,16 @@ Grid_Generator_System::Grid_Generator_System(const Grid_Generator& g)
   set_sorted(false);
 }
 
+inline
+Grid_Generator_System::~Grid_Generator_System() {
+}
+
+inline Grid_Generator_System&
+Grid_Generator_System::operator=(const Grid_Generator_System& y) {
+  Generator_System::operator=(y);
+  return *this;
+}
+
 inline dimension_type
 Grid_Generator_System::max_space_dimension() {
   // Grid generators use an extra column for the parameter divisor.
@@ -74,6 +74,12 @@ Grid_Generator_System::space_dimension() const {
   assert(Generator_System::space_dimension() > 0);
   // Grid generators use an extra column for the parameter divisor.
   return Generator_System::space_dimension() - 1;
+}
+
+inline const Grid_Generator_System&
+Grid_Generator_System::zero_dim_univ() {
+  static const Grid_Generator_System zdu(Grid_Generator::zero_dim_point());
+  return zdu;
 }
 
 inline void
@@ -204,6 +210,16 @@ Grid_Generator_System::operator[](const dimension_type k) {
 inline const Grid_Generator&
 Grid_Generator_System::operator[](const dimension_type k) const {
   return static_cast<const Grid_Generator&>(Generator_System::operator[](k));
+}
+
+inline void
+Grid_Generator_System::set_sorted(bool b) {
+  Generator_System::set_sorted(b);
+}
+
+inline void
+Grid_Generator_System::unset_pending_rows() {
+  Generator_System::unset_pending_rows();
 }
 
 inline void
