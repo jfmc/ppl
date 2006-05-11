@@ -359,7 +359,7 @@ test17() {
 
   Linear_Expression e;
 
-  for (int i = a.space_dimension() - 1; i >= 0; i--)
+  for (dimension_type i = a.space_dimension(); i-- > 0; )
     e += (i + 1) * a.coefficient(Variable(i)) * Variable(i);
   Grid_Generator b = parameter(e, 2);
 
