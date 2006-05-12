@@ -116,15 +116,16 @@ PPL::Grid::Grid(const Grid& y)
 }
 
 PPL::Grid::Grid(const Constraint_System& ccs) {
-  dimension_type space_dim = ccs.space_dimension();
+  space_dim = ccs.space_dimension();
 
   if (space_dim > max_space_dimension())
     throw_space_dimension_overflow("Grid(ccs)",
 				   "the space dimension of ccs "
 				   "exceeds the maximum allowed "
 				   "space dimension");
+
   if (space_dim == 0) {
-    // See if an inconsistent congruence has been passed.
+    // See if an inconsistent constraint has been passed.
     for (Constraint_System::const_iterator i = ccs.begin(),
          ccs_end = ccs.end(); i != ccs_end; ++i)
       if (i->is_inconsistent()) {
@@ -141,25 +142,25 @@ PPL::Grid::Grid(const Constraint_System& ccs) {
   Congruence_System cgs;
   cgs.insert(0*Variable(space_dim - 1) %= 1);
   for (Constraint_System::const_iterator i = ccs.begin(),
-         ccs_end = ccs.end(); i != ccs_end; ++i)
+	 ccs_end = ccs.end(); i != ccs_end; ++i)
     if (i->is_equality())
       cgs.insert(*i);
   construct(cgs);
 }
 
-PPL::Grid::Grid(Constraint_System& ccs) {
-  dimension_type space_dim = ccs.space_dimension();
+PPL::Grid::Grid(Constraint_System& cs) {
+  space_dim = cs.space_dimension();
 
   if (space_dim > max_space_dimension())
-    throw_space_dimension_overflow("Grid(ccs)",
-				   "the space dimension of ccs "
+    throw_space_dimension_overflow("Grid(cs)",
+				   "the space dimension of cs "
 				   "exceeds the maximum allowed "
 				   "space dimension");
 
   if (space_dim == 0) {
-    // See if an inconsistent congruence has been passed.
-    for (Constraint_System::const_iterator i = ccs.begin(),
-         ccs_end = ccs.end(); i != ccs_end; ++i)
+    // See if an inconsistent constraint has been passed.
+    for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i)
       if (i->is_inconsistent()) {
 	// Inconsistent constraint found: the grid is empty.
 	set_empty();
@@ -171,11 +172,11 @@ PPL::Grid::Grid(Constraint_System& ccs) {
     return;
   }
 
-  // FIXME: Adapt and use ccs instead of using a copy.
+  // FIXME: Adapt and use cs instead of using a copy.
   Congruence_System cgs;
   cgs.insert(0*Variable(space_dim - 1) %= 1);
-  for (Constraint_System::const_iterator i = ccs.begin(),
-         ccs_end = ccs.end(); i != ccs_end; ++i)
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
       cgs.insert(*i);
   construct(cgs);
