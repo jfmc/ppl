@@ -48,8 +48,8 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
   TEMP_INTEGER(l_n);
   TEMP_INTEGER(l_d);
 
-  // Check that all bounds are closed.  This must be done before the
-  // empty check below, in case an open bound makes the grid empty.
+  // Check that all bounds are closed.  This check must be done before
+  // the empty test below, as an open bound might mean an empty box.
   for (dimension_type k = space_dim; k-- > 0; ) {
     bool closed;
     // FIXME: Perhaps introduce box::is_bounded_and_closed.
@@ -120,8 +120,8 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
   TEMP_INTEGER(l_n);
   TEMP_INTEGER(l_d);
 
-  // Check that all bounds are closed.  This must be done before the
-  // empty check below, in case an open bound makes the grid empty.
+  // Check that all bounds are closed.  This check must be done before
+  // the empty test below, as an open bound might mean an empty box.
   for (dimension_type k = space_dim; k-- > 0; ) {
     bool closed;
     // FIXME: Perhaps introduce box::is_bounded_and_closed.
@@ -200,7 +200,8 @@ Grid::shrink_bounding_box(Box& box) const {
 
   TEMP_INTEGER(temp);
 
-  // Check that all bounds are closed.
+  // Check that all bounds are closed.  This check must be done before
+  // the empty test below, as an open bound might mean an empty box.
   for (dimension_type k = space_dim; k-- > 0; ) {
     bool closed;
     // FIXME: Perhaps introduce box::is_bounded_and_closed.
