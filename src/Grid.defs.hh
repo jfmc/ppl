@@ -1752,8 +1752,8 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
   */
   void limited_congruence_extrapolation_assign(const Grid& y,
-				    const Congruence_System& cgs,
-				    unsigned* tp = NULL);
+					       const Congruence_System& cgs,
+					       unsigned* tp = NULL);
 
   /*! \brief
     Improves the result of the generator variant of the
@@ -1776,8 +1776,8 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
   */
   void limited_generator_extrapolation_assign(const Grid& y,
-				    const Congruence_System& cgs,
-				    unsigned* tp = NULL);
+					      const Congruence_System& cgs,
+					      unsigned* tp = NULL);
 
   /*! \brief
     Improves the result of the \ref Grid_Widening "Grid widening"
