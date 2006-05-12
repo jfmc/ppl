@@ -31,14 +31,13 @@ namespace Parma_Polyhedra_Library {
 
 inline dimension_type
 Grid::max_space_dimension() {
-  using std::min;
   // One dimension is reserved to have a value of type dimension_type
   // that does not represent a legal dimension.
-  return min(std::numeric_limits<dimension_type>::max() - 1,
-	     min(Congruence_System::max_space_dimension(),
-		 Grid_Generator_System::max_space_dimension()
-		 )
-	     );
+  return std::min(std::numeric_limits<dimension_type>::max() - 1,
+		  std::min(Congruence_System::max_space_dimension(),
+			   Grid_Generator_System::max_space_dimension()
+			   )
+		  );
 }
 
 inline void
