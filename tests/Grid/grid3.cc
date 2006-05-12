@@ -538,6 +538,42 @@ test19() {
   return ok;
 }
 
+// Create grid from empty zero dimension constraint system.
+bool
+test20() {
+  Constraint_System cs(Constraint::zero_dim_false());
+
+  Grid gr(cs);
+
+  print_congruences(gr, "*** gr(cs) ***");
+
+  Grid known_gr(0, EMPTY);
+
+  print_congruences(known_gr, "*** known_gr ***");
+
+  bool ok = (gr == known_gr);
+
+  return ok;
+}
+
+// Create grid from universe zero dimension constraint system.
+bool
+test21() {
+  Constraint_System cs(Constraint::zero_dim_positivity());
+
+  Grid gr(cs);
+
+  print_congruences(gr, "*** gr(cs) ***");
+
+  Grid known_gr(0);
+
+  print_congruences(known_gr, "*** known_gr ***");
+
+  bool ok = (gr == known_gr);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -560,4 +596,6 @@ BEGIN_MAIN
   DO_TEST_F8(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+  DO_TEST(test20);
+  DO_TEST(test21);
 END_MAIN
