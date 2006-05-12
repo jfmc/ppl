@@ -283,7 +283,43 @@ test11() {
   bool ok = (gr == known_gr);
 
   print_generators(gr,
-		   "*** gr.add_recycled_generators_and_minimize(gs) ***");
+		   "*** gr.add_generators(Grid_Generator_System::zero_dim_univ()) ***");
+
+  return ok;
+}
+
+// add_generators -- add to a grid where the generator system of the
+// grid starts with a parameter (test point finding loop in
+// Grid::normalize_divisors(gs,gs)).
+bool
+test12() {
+  Variable A(0);
+
+  Grid_Generator_System gs1;
+  gs1.insert(parameter(2*A));
+  gs1.insert(grid_point());
+
+  Grid gr(gs1);
+
+  Grid_Generator_System gs2;
+  gs2.insert(grid_point());
+  gs2.insert(parameter(A));
+
+  gr.add_generators(gs2);
+
+  print_generators(gr, "*** gr ***");
+
+  Grid known_gr(1, EMPTY);
+  known_gr.add_generator(grid_point());
+  known_gr.add_generator(parameter(A));
+
+  bool ok = (gr == known_gr);
+
+  print_generators(gr,
+		   "*** gr.add_generators(gs) ***");
+
+  gr.ascii_dump();
+  known_gr.ascii_dump();
 
   return ok;
 }
@@ -300,4 +336,5 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN
