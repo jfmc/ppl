@@ -423,11 +423,11 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
   assert(num_rows > 0);
 
   // Find the first point in gen_sys.
-  while (gen_sys[row].is_line_or_parameter())
-    if (++row == num_rows)
-      // All rows are lines or parameters; generators should always
-      // contain a point.
-      throw std::runtime_error("PPL::Grid::normalize_divisors(sys, gen_sys).");
+  while (gen_sys[row].is_line_or_parameter()) {
+    ++row;
+    // gen_sys should have at least one point.
+    assert(row < num_rows);
+  }
   Grid_Generator& first_point = gen_sys[row];
   Coefficient_traits::const_reference gen_sys_divisor = first_point.divisor();
 
