@@ -52,13 +52,13 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
   // Protecting against space dimension overflow is up to the caller.
   assert(ccgs.space_dimension() <= max_space_dimension());
 
-  // TODO: this implementation is just an executable specification.
-  Congruence_System cgs = ccgs;
-
   // Set the space dimension.
-  space_dim = cgs.space_dimension();
+  space_dim = ccgs.space_dimension();
 
   if (space_dim > 0) {
+    // TODO: this implementation is just an executable specification.
+    Congruence_System cgs = ccgs;
+
     // Stealing the rows from `cgs'.
     std::swap(con_sys, cgs);
     con_sys.normalize_moduli();
@@ -66,10 +66,10 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
   }
   else {
     // Here `space_dim == 0'.
-    if (cgs.num_columns() > 1)
+    if (ccgs.num_columns() > 1)
       // See if an inconsistent congruence has been passed.
-      for (dimension_type i = cgs.num_rows(); i-- > 0; )
-	if (cgs[i].is_trivial_false()) {
+      for (dimension_type i = ccgs.num_rows(); i-- > 0; )
+	if (ccgs[i].is_trivial_false()) {
 	  // Inconsistent congruence found: the grid is empty.
 	  // FIXME: Initialize con_sys to the correct dimension in the
 	  //        caller constructors, and copy the necessary parts
