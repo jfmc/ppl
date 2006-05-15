@@ -60,7 +60,7 @@ Congruence::create(const Linear_Expression& e, Coefficient_traits::const_referen
   // Ensure that diff has capacity for the modulus.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
-  Congruence cg(diff, 1, false);
+  Congruence cg(diff, 1);
   return cg;
 }
 
@@ -69,7 +69,7 @@ Congruence::create(Coefficient_traits::const_reference n, const Linear_Expressio
   // Ensure that diff has capacity for the modulus.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
-  Congruence cg(diff, 1, false);
+  Congruence cg(diff, 1);
   return cg;
 }
 
@@ -224,15 +224,10 @@ Congruence::total_memory_in_bytes() const {
 
 inline
 Congruence::Congruence(Linear_Expression& le,
-		       Coefficient_traits::const_reference m,
-		       bool capacity) {
+		       Coefficient_traits::const_reference m) {
   Row::swap(static_cast<Row&>(le));
-  if (capacity)
-    Row::expand_within_capacity(size()+1);
-  if (m >= 0)
-    (*this)[size()-1] = m;
-  else
-    (*this)[size()-1] = -m;
+  assert(m >= 0);
+  (*this)[size()-1] = m;
 }
 
 inline void

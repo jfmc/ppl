@@ -120,7 +120,7 @@ PPL::Congruence::create(const Linear_Expression& e1, const Linear_Expression& e2
   Linear_Expression diff(e1_dim > e2_dim ? e1 : e2,
 			 dim + 2);
   diff -= (e1_dim > e2_dim ? e2 : e1);
-  Congruence cg(diff, 1, false);
+  Congruence cg(diff, 1);
   return cg;
 }
 

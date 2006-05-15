@@ -412,18 +412,10 @@ private:
     The Linear_Expression holding the coefficients.
 
     \param m
-    The modulus for the congruence.
-
-    \param capacity
-    If <CODE>true</CODE> then the size of the \p le row is expanded
-    and the modulus is stored in the extra space.  In this case it is
-    assumed that \p le has spare capacity of at least one element.
-    If <CODE>false</CODE> then the modulus is stored in the last
-    element of the \p le row.
+    The modulus for the congruence, which must be zero or greater.
   */
   Congruence(Linear_Expression& le,
-	     Coefficient_traits::const_reference m,
-	     bool capacity = true);
+	     Coefficient_traits::const_reference m);
 
   //! Swaps \p *this with \p y.
   void swap(Congruence& y);
