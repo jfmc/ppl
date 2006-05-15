@@ -38,7 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 static bool
 check_noisy(const char* environment_variable) {
-#if HAVE_DECL_GETENV 
+#if HAVE_DECL_GETENV
   return getenv(environment_variable) != 0;
 #else
 #if NOISY
@@ -77,13 +77,6 @@ public:
 
 static noisy_ostream<char> nout(std::cout, "PPL_NOISY_TESTS");
 static noisy_ostream<char> vnout(std::cout, "PPL_VERY_NOISY_TESTS");
-
-// FIX use inline function?
-#define dump_grids(grid,known_grid)			\
-  nout << endl << "ASCII dump of grid:" << endl;	\
-  grid.ascii_dump(nout);				\
-  nout << endl << "ASCII dump of known grid:" << endl;	\
-  known_grid.ascii_dump(nout);
 
 void
 print_constraint(const Parma_Polyhedra_Library::Constraint& c,
