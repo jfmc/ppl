@@ -389,6 +389,39 @@ test13() {
   return ok;
 }
 
+// A grid with a virtual generator.
+bool
+test14() {
+  const char* my_file = "ascii_dump_load1.dat";
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr1(3);
+  gr1.add_congruence((A - B %= 2) / 5);
+  gr1.add_congruence(B %= 0);
+  gr1.add_congruence(C == 4);
+
+  gr1.minimized_generators();
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  gr1.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr2;
+  gr2.ascii_load(f);
+  close(f);
+
+  bool ok = (gr1 == gr2);
+
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -405,4 +438,5 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
 END_MAIN
