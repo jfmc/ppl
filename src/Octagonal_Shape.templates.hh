@@ -2029,9 +2029,9 @@ Octagonal_Shape<T>
 
   bool is_oct_changed = false;
   strong_closure_assign();
-  for (Constraint_System::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i) {
-    const Constraint& c = *i;
+  for (Constraint_System::const_iterator cs_i = cs.begin(),
+	 cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
+    const Constraint& c = *cs_i;
     dimension_type num_vars = 0;
     dimension_type i = 0;
     dimension_type j = 0;
