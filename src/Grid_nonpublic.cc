@@ -256,6 +256,7 @@ PPL::Grid::max_min(const Linear_Expression& expr,
 	*point = grid_point();
       return true;
     }
+    // Grid::bounds above ensures the generators are up to date.
     if (!generators_are_minimized()) {
       // Minimize the generator system.
       Grid& gr = const_cast<Grid&>(*this);
