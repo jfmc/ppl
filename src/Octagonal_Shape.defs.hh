@@ -939,7 +939,7 @@ public:
     \ref CC76_extrapolation "CC76-extrapolation" applications.
 
     \param y
-    An OS that <EM>must</EM> be contained in \p *this.
+    An OS that <EM>must</EM> contain \p *this.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
