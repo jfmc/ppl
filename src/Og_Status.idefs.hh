@@ -84,7 +84,7 @@ private:
   //@{
   static const flags_t ZERO_DIM_UNIV       = 0U;
   static const flags_t EMPTY               = 1U << 0;
-  static const flags_t STRONGLY_CLOSED = 1U << 1;
+  static const flags_t STRONGLY_CLOSED     = 1U << 1;
   //@}
 
   //! This holds the current bitset.
