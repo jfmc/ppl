@@ -50,6 +50,32 @@ Octagonal_Shape<T>::max_space_dimension() {
 }
 
 template <typename T>
+inline bool
+Octagonal_Shape<T>::marked_empty() const {
+  return status.test_empty();
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::set_empty() {
+  status.set_empty();
+  assert(OK());
+  assert(is_empty());
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::set_zero_dim_univ() {
+  status.set_zero_dim_univ();
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>::marked_strongly_closed() const {
+  return status.test_strongly_closed();
+}
+
+template <typename T>
 inline
 Octagonal_Shape<T>::Octagonal_Shape(const dimension_type num_dimensions,
 				    const Degenerate_Element kind)
@@ -116,18 +142,6 @@ Octagonal_Shape<T>::swap(Octagonal_Shape& y) {
 }
 
 template <typename T>
-inline bool
-Octagonal_Shape<T>::marked_empty() const {
-  return status.test_empty();
-}
-
-template <typename T>
-inline bool
-Octagonal_Shape<T>::marked_strongly_closed() const {
-  return status.test_strongly_closed();
-}
-
-template <typename T>
 inline dimension_type
 Octagonal_Shape<T>::space_dimension() const {
   return space_dim;
@@ -165,20 +179,6 @@ template <typename T>
 inline bool
 operator!=(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y) {
   return !(x == y);
-}
-
-template <typename T>
-inline void
-Octagonal_Shape<T>::set_empty() {
-  status.set_empty();
-  assert(OK());
-  assert(is_empty());
-}
-
-template <typename T>
-inline void
-Octagonal_Shape<T>::set_zero_dim_univ() {
-  status.set_zero_dim_univ();
 }
 
 template <typename T>
