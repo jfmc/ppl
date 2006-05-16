@@ -402,7 +402,7 @@ test15() {
   gr.add_generator(grid_point());
   gr.add_generator_and_minimize(parameter(3*A));
 
-  // Ensure both systems are up to date with only generators minimal.
+  // Ensure both systems are up to date with only congruences minimal.
   gr.affine_image(A, 1*A);
   gr.minimized_congruences();
 
