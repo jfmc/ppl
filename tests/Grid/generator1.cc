@@ -393,10 +393,6 @@ test18() {
 // Method zero_dim_point.
 static bool
 test19() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
   Grid_Generator a(Grid_Generator::zero_dim_point());
 
   Grid_Generator b(grid_point());
@@ -409,8 +405,46 @@ test19() {
   return ok;
 }
 
+// Method `type'.
+static bool
+test20() {
+  Variable C(2);
+
+  Grid_Generator::Type a = grid_point(2*C).type();
+
+  Grid_Generator::Type b = grid_point(3*C).type();
+
+  bool ok = (a == b);
+
+  nout << "*** a ***" << a << std::endl;
+  nout << "*** b ***" << b << std::endl;
+
+  return ok;
+}
+
+// Exception in method scale_to_divisor.
+static bool
+test21() {
+  Variable C(2);
+
+  Grid_Generator a = grid_point(2*C, 3);
+
+  print_generator(a, "*** a ***");
+
+  try {
+    a.scale_to_divisor(0);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+  }
+  catch (...) {
+    return false;
+  }
+  return true;
+}
 
 } // namespace
+
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
@@ -431,4 +465,6 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+  DO_TEST(test20);
+  DO_TEST(test21);
 END_MAIN
