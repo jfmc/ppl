@@ -514,11 +514,6 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
   dimension_type added_rows = cgs.num_rows();
   dimension_type added_columns = cgs.space_dimension();
 
-  if (added_rows == 0) {
-    increase_space_dimension(space_dimension() + added_columns);
-    return;
-  }
-
   dimension_type old_num_rows = num_rows();
   dimension_type old_modi = num_columns() - 1;
   dimension_type old_space_dim = space_dimension();

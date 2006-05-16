@@ -353,8 +353,19 @@ public:
   */
   void add_unit_rows_and_columns(dimension_type dims);
 
+protected:
+
+  //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
+  bool satisfies_all_congruences(const Grid_Generator& g) const;
+
+private:
+
   /*! \brief
     Concatenates copies of the congruences from \p cgs onto \p *this.
+
+    \param cgs
+    The congruence system to append to \p this.  The number of rows in
+    \p cgs must be strictly positive.
 
     The matrix for the new system of congruences is obtained by
     leaving the old system in the upper left-hand side and placing the
@@ -362,13 +373,6 @@ public:
     with zeroes.
   */
   void concatenate(const Congruence_System& cgs);
-
-protected:
-
-  //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
-  bool satisfies_all_congruences(const Grid_Generator& g) const;
-
-private:
 
   //! Adjusts all expressions to have the same moduli.
   void normalize_moduli();
@@ -390,7 +394,6 @@ private:
   void insert_verbatim(const Congruence& cg);
 
   friend class const_iterator;
-  // FIXME: Reduce the dependence on this declaration.
   friend class Grid;
   friend class Grid_Certificate;
 
