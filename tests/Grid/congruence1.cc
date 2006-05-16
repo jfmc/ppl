@@ -368,25 +368,45 @@ test14() {
   return ok;
 }
 
-// Space dimension exception.
+// Try construct congruence from inequality constraint.
 static bool
 test15() {
   Variable A(0);
-  Variable B(1);
   Variable C(2);
 
-  Grid gr(2);
-
   try {
-    gr.add_congruence(A + C %= 0);
+    Congruence cg(A + C > 0);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
+}
+
+// Try access the coefficient of a space dimension higher than that of
+// a congruence.
+static bool
+test16() {
+  Variable A(0);
+  Variable C(2);
+
+  Congruence cg(A + C %= 0);
+
+  try {
+    cg.coefficient(Variable(3));
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+    return false;
+  }
+  return false;
 }
 
 } // namespace
@@ -407,4 +427,5 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
