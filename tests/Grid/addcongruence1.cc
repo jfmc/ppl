@@ -125,6 +125,27 @@ test04() {
   return ok;
 }
 
+// Space dimension exception.
+static bool
+test05() {
+  Variable A(0);
+  Variable C(2);
+
+  Grid gr(2);
+
+  try {
+    gr.add_congruence(A + C %= 0);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+    return false;
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -132,4 +153,5 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN
