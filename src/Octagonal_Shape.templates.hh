@@ -428,8 +428,8 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
       --i_iter;
 
     typename OR_Matrix<N>::row_reference_type m_ci = *i_iter;
-    dimension_type h = coherent_index(j);
-    N& m_ci_cj = m_ci[h];
+    dimension_type cj = coherent_index(j);
+    N& m_ci_cj = m_ci[cj];
     N d;
     // Also compute the bound for `m_ci_cj', rounding towards plus infinity.
     div_round_up(d, -term, coeff);
@@ -729,9 +729,9 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   }
 
   // Select the cell to be checked for the "<=" part of constraint.
-  typename OR_Matrix<N>::const_row_iterator k = matrix.row_begin() + i;
-  typename OR_Matrix<N>::const_row_reference_type r = *k;
-  const N& r_j = r[j];
+  typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin() + i;
+  typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
+  const N& m_i_j = m_i[j];
   // Set `coeff' to the absolute value of itself.
   if (coeff < 0)
     coeff = -coeff;
@@ -745,40 +745,40 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   // Select the cell to be checked for the ">=" part of constraint.
   // Select the right row of the cell.
   if (i%2 == 0)
-    ++k;
+    ++i_iter;
   else
-    --k;
-    typename OR_Matrix<N>::const_row_reference_type r1 = *k;
+    --i_iter;
+    typename OR_Matrix<N>::const_row_reference_type m_ci = *i_iter;
   // Select the right column of the cell.
-  dimension_type h = coherent_index(j);
-  const N& r1_h = r1[h];
+  dimension_type cj = coherent_index(j);
+  const N& m_ci_cj = m_ci[cj];
 
   switch (c.type()) {
   case Constraint::EQUALITY:
-    if (d == r_j && d1 == r1_h)
+    if (d == m_i_j && d1 == m_ci_cj)
       return Poly_Con_Relation::saturates()
 	&& Poly_Con_Relation::is_included();
-    else if (d > r_j && d1 < r1_h)
+    else if (d > m_i_j && d1 < m_ci_cj)
       return Poly_Con_Relation::is_disjoint();
     else
       return Poly_Con_Relation::strictly_intersects();
   case Constraint::NONSTRICT_INEQUALITY:
-    if (d >= r_j && d1 >= r1_h)
+    if (d >= m_i_j && d1 >= m_ci_cj)
       return Poly_Con_Relation::saturates()
 	&& Poly_Con_Relation::is_included();
-    else if (d >= r_j)
+    else if (d >= m_i_j)
       return Poly_Con_Relation::is_included();
-    else if (d < r_j && d1 > r1_h)
+    else if (d < m_i_j && d1 > m_ci_cj)
       return Poly_Con_Relation::is_disjoint();
     else
       return Poly_Con_Relation::strictly_intersects();
   case Constraint::STRICT_INEQUALITY:
-    if (d >= r_j && d1 >= r1_h)
+    if (d >= m_i_j && d1 >= m_ci_cj)
       return Poly_Con_Relation::saturates()
 	&& Poly_Con_Relation::is_disjoint();
-    else if (d > r_j)
+    else if (d > m_i_j)
       return Poly_Con_Relation::is_included();
-    else if (d <= r_j && d1 >= r1_h)
+    else if (d <= m_i_j && d1 >= m_ci_cj)
       return Poly_Con_Relation::is_disjoint();
     else
       return Poly_Con_Relation::strictly_intersects();
