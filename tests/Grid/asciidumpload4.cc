@@ -60,8 +60,85 @@ test01() {
   return ok;
 }
 
+bool
+test02() {
+  const char* my_file = "ascii_dump_load4.dat";
+  Variable A(0);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "err x 3\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Congruence_System cgs(0*A %= 0);
+  bool ok =! cgs.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test03() {
+  const char* my_file = "ascii_dump_load4.dat";
+  Variable A(0);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "2\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Congruence_System cgs(0*A %= 0);
+  bool ok =! cgs.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test04() {
+  const char* my_file = "ascii_dump_load4.dat";
+  Variable A(0);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "2 x err\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Congruence_System cgs(0*A %= 0);
+  bool ok =! cgs.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test05() {
+  const char* my_file = "ascii_dump_load4.dat";
+  Variable A(0);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "2 x 3\n"
+    << "0 1 err 1\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Congruence_System cgs(0*A %= 0);
+  bool ok =! cgs.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN

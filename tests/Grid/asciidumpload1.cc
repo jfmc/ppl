@@ -177,6 +177,320 @@ test05() {
   return ok;
 }
 
+bool
+test06() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_err 2\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test07() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test08() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM +err +CM +GM  +CS +GS  -CP -GP  -SC -SG\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test09() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
+    << "err_sys (up-to-date)";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test10() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
+    << "con_sys (up-to-err)";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test11() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
+    << "con_sys\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test12() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "err\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test13() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "2 x 3\n"
+    << "0 1 m 1\n"
+    << "1 0 m 1\n"
+    << "err_sys (up-to-date)\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test14() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "2 x 3\n"
+    << "0 1 m 1\n"
+    << "1 0 m 1\n"
+    << "gen_sys (up-to-err)\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test15() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "2 x 3\n"
+    << "0 1 m 1\n"
+    << "1 0 m 1\n"
+    << "gen_sys\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test16() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "2 x 3\n"
+    << "0 1 m 1\n"
+    << "1 0 m 1\n"
+    << "gen_sys (up-to-date)\n"
+    << "err\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test17() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "2 x 3\n"
+    << "0 1 m 1\n"
+    << "1 0 m 1\n"
+    << "gen_sys (up-to-date)\n"
+    << "2 x err\n"
+    << "1 0 0 P\n"
+    << "0 1 1 Q\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test18() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "2 x 3\n"
+    << "0 1 m 1\n"
+    << "1 0 m 1\n"
+    << "gen_sys (up-to-date)\n"
+    << "2 x 3\n"
+    << "1 0 0 P\n"
+    << "0 1 1 Q\n"
+    << "dimerrnsion_kinds 0 0\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test19() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "2 x 3\n"
+    << "0 1 m 1\n"
+    << "1 0 m 1\n"
+    << "gen_sys (up-to-date)\n"
+    << "2 x 3\n"
+    << "1 0 0 P\n"
+    << "0 1 1 Q\n"
+    << "dimension_kinds 0\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+bool
+test20() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC -SG\n"
+    << "con_sys (up-to-date)\n"
+    << "2 x 3\n"
+    << "0 1 m 1\n"
+    << "1 0 m 1\n"
+    << "gen_sys (up-to-date)\n"
+    << "2 x 3\n"
+    << "1 0 0 P\n"
+    << "0 1 1 Q\n"
+    << "dimension_kinds 0 700\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -185,4 +499,19 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN
