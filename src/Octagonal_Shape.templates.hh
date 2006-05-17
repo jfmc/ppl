@@ -836,21 +836,27 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
   // studying the sign of the scalar product between the generator and
   // all the contraints in the octagon.
 
+  // Use these type aliases for short.
+  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+  // Avoid recomputations.
+  const Row_Iterator m_begin = matrix.row_begin();
+  const Row_Iterator m_end = matrix.row_end();
+
   // We find in `*this' all the constraints.
-  for (typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin(),
-	 i_end = matrix.row_end(); i_iter != i_end; i_iter += 2) {
+  for (Row_Iterator i_iter = m_begin; i_iter != m_end; i_iter += 2) {
     dimension_type i = i_iter.index();
-    typename OR_Matrix<N>::const_row_reference_type r_i = *i_iter;
-    typename OR_Matrix<N>::const_row_reference_type r_ii = *(i_iter+1);
-    const N& c_i_ii = r_i[i+1];
-    const N& c_ii_i = r_ii[i];
+    Row_Reference m_i = *i_iter;
+    Row_Reference m_ii = *(i_iter+1);
+    const N& m_i_ii = m_i[i+1];
+    const N& m_ii_i = m_ii[i];
     // We have the unary constraints.
     const Variable x(i/2);
     const bool dimension_incompatible = x.space_dimension() > g_space_dim;
-    N negated_c_i_ii;
+    N negated_m_i_ii;
     const bool is_unary_equality
-      = neg_assign_r(negated_c_i_ii, c_i_ii, ROUND_NOT_NEEDED) == V_EQ
-      && negated_c_i_ii == c_ii_i;
+      = neg_assign_r(negated_m_i_ii, m_i_ii, ROUND_NOT_NEEDED) == V_EQ
+      && negated_m_i_ii == m_ii_i;
     if (is_unary_equality) {
       // The constraint has form ax = b.
       // To satisfy the constraint it's necessary that the scalar product
@@ -863,7 +869,7 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
     }
     // We have 0, 1 or 2 inequality constraints.
     else {
-      if (!is_plus_infinity(c_i_ii)) {
+      if (!is_plus_infinity(m_i_ii)) {
 	// The constraint has form -ax <= b.
 	// If the generator is a line it's necessary to check if
 	// the scalar product is not zero.
@@ -879,7 +885,7 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
 	  if (g.coefficient(x) < 0)
 	    return Poly_Gen_Relation::nothing();
       }
-      if (!is_plus_infinity(c_ii_i)) {
+      if (!is_plus_infinity(m_ii_i)) {
 	// The constraint has form ax <= b.
 	if (is_line && (!dimension_incompatible && g.coefficient(x) != 0))
 	  return Poly_Gen_Relation::nothing();
@@ -897,16 +903,15 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
   }
 
   // We have the binary constraints.
-  for (typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin(),
-	 i_end = matrix.row_end(); i_iter != i_end; i_iter += 2) {
+  for (Row_Iterator i_iter = m_begin ; i_iter != m_end; i_iter += 2) {
     dimension_type i = i_iter.index();
-    typename OR_Matrix<N>::const_row_reference_type r_i = *i_iter;
-    typename OR_Matrix<N>::const_row_reference_type r_ii = *(i_iter+1);
+    Row_Reference m_i = *i_iter;
+    Row_Reference m_ii = *(i_iter+1);
     for (dimension_type j = 0; j < i; j += 2) {
-      const N& c_i_j = r_i[j];
-      const N& c_ii_jj = r_ii[j+1];
-      const N& c_ii_j = r_ii[j];
-      const N& c_i_jj = r_i[j+1];
+      const N& m_i_j = m_i[j];
+      const N& m_ii_jj = m_ii[j+1];
+      const N& m_ii_j = m_ii[j];
+      const N& m_i_jj = m_i[j+1];
       const Variable x(j/2);
       const Variable y(i/2);
       const bool x_dimension_incompatible = x.space_dimension() > g_space_dim;
@@ -916,14 +921,14 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
 	|| (y_dimension_incompatible && g.coefficient(x) == 0)
 	|| (x_dimension_incompatible && y_dimension_incompatible);
       // FIXME! Find better names.
-      N negated_c_ii_jj;
+      N negated_m_ii_jj;
       const bool is_binary_equality
-	= neg_assign_r(negated_c_ii_jj, c_ii_jj, ROUND_NOT_NEEDED) == V_EQ
-	&& negated_c_ii_jj == c_i_j;
-      N negated_c_i_jj;
+	= neg_assign_r(negated_m_ii_jj, m_ii_jj, ROUND_NOT_NEEDED) == V_EQ
+	&& negated_m_ii_jj == m_i_j;
+      N negated_m_i_jj;
       const bool is_a_binary_equality
-	= neg_assign_r(negated_c_i_jj, c_i_jj, ROUND_NOT_NEEDED) == V_EQ
-	&& negated_c_i_jj == c_ii_j;
+	= neg_assign_r(negated_m_i_jj, m_i_jj, ROUND_NOT_NEEDED) == V_EQ
+	&& negated_m_i_jj == m_ii_j;
 
       Coefficient g_coefficient_y;
 
@@ -945,8 +950,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
  	  return Poly_Gen_Relation::nothing();
       }
       else
-	if (!is_plus_infinity(c_i_j) || !is_plus_infinity(c_ii_j)) {
-	  if (!is_plus_infinity(c_ii_j))
+	if (!is_plus_infinity(m_i_j) || !is_plus_infinity(m_ii_j)) {
+	  if (!is_plus_infinity(m_ii_j))
 	    // The constraint has form ax + ay <= b.
 	    g_coefficient_y = -g.coefficient(y);
 	  else
@@ -965,8 +970,8 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
 	    return Poly_Gen_Relation::nothing();
 	}
 	else
-	  if (!is_plus_infinity(c_ii_jj) || !is_plus_infinity(c_i_jj)) {
-	    if (!is_plus_infinity(c_i_jj))
+	  if (!is_plus_infinity(m_ii_jj) || !is_plus_infinity(m_i_jj)) {
+	    if (!is_plus_infinity(m_i_jj))
 	      // The constraint has form -ax - ay <= b.
 	      g_coefficient_y = -g.coefficient(y);
 	    else
