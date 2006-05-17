@@ -416,7 +416,8 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
 
   Congruence_System& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i)
-    x[i].ascii_load(s);
+    if (!x[i].ascii_load(s))
+      return false;
 
   // Check for well-formedness.
   assert(OK());
