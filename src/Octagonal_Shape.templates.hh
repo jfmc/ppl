@@ -404,38 +404,37 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
   }
 
   // Select the cell to be modified for the "<=" part of constraint.
-  typename OR_Matrix<N>::row_iterator k = matrix.row_begin() + i;
-  typename OR_Matrix<N>::row_reference_type r = *k;
-  N& r_j = r[j];
+  typename OR_Matrix<N>::row_iterator i_iter = matrix.row_begin() + i;
+  typename OR_Matrix<N>::row_reference_type m_i = *i_iter;
+  N& m_i_j = m_i[j];
   // Set `coeff' to the absolute value of itself.
   if (coeff < 0)
     coeff = -coeff;
 
   bool is_oct_changed = false;
-  // Compute the bound for `r_j', rounding towards plus infinity.
+  // Compute the bound for `m_i_j', rounding towards plus infinity.
   N d;
   div_round_up(d, term, coeff);
-  if (r_j > d) {
-    r_j = d;
+  if (m_i_j > d) {
+    m_i_j = d;
     is_oct_changed = true;
   }
 
   if (c.is_equality()) {
-    // Select the right row of the cell.
+    // Select the cell to be modified for the ">=" part of constraint.
     if (i%2 == 0)
-      ++k;
+      ++i_iter;
     else
-      --k;
+      --i_iter;
 
-    typename OR_Matrix<N>::row_reference_type r1 = *k;
-    // Select the right column of the cell.
+    typename OR_Matrix<N>::row_reference_type m_ci = *i_iter;
     dimension_type h = coherent_index(j);
-
-    N& r1_h = r1[h];
+    N& m_ci_cj = m_ci[h];
     N d;
+    // Also compute the bound for `m_ci_cj', rounding towards plus infinity.
     div_round_up(d, -term, coeff);
-    if (r1_h > d) {
-      r1_h = d;
+    if (m_ci_cj > d) {
+      m_ci_cj = d;
       is_oct_changed = true;
     }
   }
