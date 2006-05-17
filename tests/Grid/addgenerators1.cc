@@ -240,11 +240,11 @@ test09() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // add_recycled_generators_and_minimize -- add an empty system.
@@ -324,6 +324,31 @@ test12() {
   return ok;
 }
 
+// add_recycled_generators_and_minimize -- add to a zero dimension
+// universe grid.
+bool
+test13() {
+  Grid gr(0);
+
+  Grid_Generator_System gs2(grid_point());
+
+  gr.add_recycled_generators_and_minimize(gs2);
+
+  print_generators(gr, "*** gr ***");
+
+  Grid known_gr(0);
+
+  bool ok = (gr == known_gr);
+
+  print_generators(gr,
+		   "*** gr.add_generators(gs) ***");
+
+  gr.ascii_dump();
+  known_gr.ascii_dump();
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -337,4 +362,5 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN
