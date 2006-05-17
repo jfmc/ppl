@@ -2043,41 +2043,50 @@ Octagonal_Shape<T>
     Coefficient term = c.inhomogeneous_term();
 
     // Constraints that are not octagonal differences are ignored.
-    if (extract_octagonal_difference(c, cs_space_dim, num_vars, i, j, coeff, term)) {
+    if (extract_octagonal_difference(c, cs_space_dim, num_vars, i, j,
+				     coeff, term)) {
+      // Use these type aliases for short.
+      typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
+      typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
+      typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
+      typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+      // Avoid recomputations.
+      Row_iterator m_begin = matrix.row_begin();
+
       // Select the cell to be modified for the "<=" part of the constraint.
-      typename OR_Matrix<N>::const_row_iterator k = matrix.row_begin() + i;
-      typename OR_Matrix<N>::const_row_reference_type r = *k;
+      Row_iterator i_iter = m_begin + i;
+      Row_reference m_i = *i_iter;
       OR_Matrix<N>& lo_mat = limiting_octagon.matrix;
-      typename OR_Matrix<N>::row_iterator h = lo_mat.row_begin() + i;
-      typename OR_Matrix<N>::row_reference_type s = *h;
-      N& s_j = s[j];
+      Row_Iterator lo_iter = lo_mat.row_begin() + i;
+      Row_Reference lo_m_i = *lo_iter;
+      N& lo_m_i_j = lo_m_i[j];
       if (coeff < 0)
 	coeff = -coeff;
-      // Compute the bound for `r_j', rounding towards plus infinity.
+      // Compute the bound for `m_i_j', rounding towards plus infinity.
       N d;
       div_round_up(d, term, coeff);
-      if (r[j] <= d)
+      if (m_i[j] <= d)
 	if (c.is_inequality())
-	  if (s_j > d) {
-	    s_j = d;
+	  if (lo_m_i_j > d) {
+	    lo_m_i_j = d;
 	    is_oct_changed = true;
 	  }
 	else {
 	  // Select the right row of the cell.
-	  typename OR_Matrix<N>::const_row_iterator ck = (i%2 == 0) ? ++k : --k;
+	  Row_iterator ci_iter = (i%2 == 0) ? ++i_iter : --i_iter;
 	  if (i%2 == 0)
-	    ++h;
+	    ++lo_iter;
 	  else
-	    --h;
-	  typename OR_Matrix<N>::const_row_reference_type r1 = *ck;
-	  typename OR_Matrix<N>::row_reference_type s1 = *h;
+	    --lo_iter;
+	  Row_reference m_ci = *ci_iter;
+	  Row_Reference lo_m_ci = *lo_iter;
 	  // Select the right column of the cell.
 	  dimension_type cj = coherent_index(j);
-	  N& s1_cj = s1[cj];
+	  N& lo_m_ci_cj = lo_m_ci[cj];
 	  div_round_up(d, -term, coeff);
-	  if (r1[cj] <= d)
-	    if (s1_cj > d) {
-	      s1_cj = d;
+	  if (m_ci[cj] <= d)
+	    if (lo_m_ci_cj > d) {
+	      lo_m_ci_cj = d;
 	      is_oct_changed = true;
 	    }
 	}
