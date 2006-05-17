@@ -422,6 +422,56 @@ test14() {
   return ok;
 }
 
+// Zero dimension universe.
+bool
+test15() {
+  const char* my_file = "ascii_dump_load2.dat";
+
+  Grid gr1(0);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  gr1.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr2;
+  gr2.ascii_load(f);
+  close(f);
+
+  bool ok = (gr1 == gr2);
+
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
+
+  return ok;
+}
+
+// Zero dimension empty.
+bool
+test16() {
+  const char* my_file = "ascii_dump_load2.dat";
+
+  Grid gr1(0, EMPTY);
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  gr1.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr2;
+  gr2.ascii_load(f);
+  close(f);
+
+  bool ok = (gr1 == gr2);
+
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -439,4 +489,6 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
