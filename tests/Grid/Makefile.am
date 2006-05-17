@@ -71,7 +71,7 @@ foldspacedims1 \
 generalizedaffineimage1 generalizedaffineimage2 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generator1 \
-generators1 \
+generators1 generators2 \
 grid1 grid2 grid3 \
 griddifference1 \
 intersection1 \
@@ -84,7 +84,7 @@ maxmin1 \
 membytes1 \
 mingenerators1 \
 mincongruences1 \
-outputoperator1 outputoperator2 \
+outputoperator1 outputoperator2 outputoperator3 \
 relations1 relations2 \
 removespacedims1 removespacedims2 \
 timeelapse1 \
@@ -165,6 +165,7 @@ generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
 generator1_SOURCES = generator1.cc
 
 generators1_SOURCES = generators1.cc
+generators2_SOURCES = generators2.cc
 
 coveringbox1_SOURCES = coveringbox1.cc
 coveringbox2_SOURCES = coveringbox2.cc
@@ -200,6 +201,7 @@ mingenerators1_SOURCES = mingenerators1.cc
 
 outputoperator1_SOURCES = outputoperator1.cc
 outputoperator2_SOURCES = outputoperator2.cc
+outputoperator3_SOURCES = outputoperator3.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
