@@ -147,6 +147,13 @@ Octagonal_Shape<T>::space_dimension() const {
   return space_dim;
 }
 
+template <typename T>
+inline bool
+Octagonal_Shape<T>::is_empty() const {
+  strong_closure_assign();
+  return marked_empty();
+}
+
 /*! \relates Octagonal_Shape */
 template <typename T>
 inline bool
@@ -400,13 +407,6 @@ Octagonal_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
 
 template <typename T>
 inline bool
-Octagonal_Shape<T>::is_empty() const {
-  strong_closure_assign();
-  return marked_empty();
-}
-
-template <typename T>
-inline bool
 Octagonal_Shape<T>::strictly_contains(const Octagonal_Shape& y) const {
   const Octagonal_Shape<T>& x = *this;
   return x.contains(y) && !y.contains(x);
@@ -459,7 +459,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   if (x.space_dim != y.space_dim)
     return false;
 
-  // Zero-dim BDSs are equal if and only if they are both empty or universe.
+  // Zero-dim OSs are equal if and only if they are both empty or universe.
   if (x.space_dim == 0) {
     if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
@@ -472,8 +472,8 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   x.strong_closure_assign();
   y.strong_closure_assign();
 
-  // If one of two BDSs is empty, then they are equal if and only if
-  // the other BDS is empty too.
+  // If one of two OSs is empty, then they are equal if and only if
+  // the other OS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
    if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
@@ -523,7 +523,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   if (x.space_dim != y.space_dim)
     return false;
 
-  // Zero-dim BDSs are equal if and only if they are both empty or universe.
+  // Zero-dim OSs are equal if and only if they are both empty or universe.
   if (x.space_dim == 0) {
     if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
@@ -536,8 +536,8 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   x.strong_closure_assign();
   y.strong_closure_assign();
 
-  // If one of two BDSs is empty, then they are equal if and only if
-  // the other BDS is empty too.
+  // If one of two OSs is empty, then they are equal if and only if
+  // the other OS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
    if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
@@ -587,7 +587,7 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   if (x.space_dim != y.space_dim)
     return false;
 
-  // Zero-dim BDSs are equal if and only if they are both empty or universe.
+  // Zero-dim OSs are equal if and only if they are both empty or universe.
   if (x.space_dim == 0) {
     if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
@@ -600,8 +600,8 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   x.strong_closure_assign();
   y.strong_closure_assign();
 
-  // If one of two BDSs is empty, then they are equal if and only if
-  // the other BDS is empty too.
+  // If one of two OSs is empty, then they are equal if and only if
+  // the other OS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
    if (x.marked_empty() == y.marked_empty())
       assign_r(r, 0, ROUND_NOT_NEEDED);
