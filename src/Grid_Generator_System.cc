@@ -309,23 +309,15 @@ PPL::Grid_Generator_System
 void
 PPL::Grid_Generator_System
 ::remove_space_dimensions(const Variables_Set& to_be_removed) {
+  // Dimension-compatibility assertion: the variable having maximum
+  // space dimension is the one occurring last in the set.
+  assert(space_dimension() >= to_be_removed.rbegin()->space_dimension());
+
   // The removal of no dimensions from any system is a no-op.  This
   // case also captures the only legal removal of dimensions from a
   // 0-dim system.
   if (to_be_removed.empty())
     return;
-
-  // Dimension-compatibility check: the variable having maximum space
-  // dimension is the one occurring last in the set.
-  const dimension_type
-    min_space_dim = to_be_removed.rbegin()->space_dimension();
-  if (space_dimension() < min_space_dim) {
-    std::ostringstream s;
-    s << "PPL::Grid_Generator_System::remove_space_dimensions(vs):\n"
-      << "this->space_dimension() == " << space_dimension()
-      << ", required space dimension == " << min_space_dim << ".";
-    throw std::invalid_argument(s.str());
-  }
 
   // For each variable to be removed, replace the corresponding column
   // by shifting left the columns to the right that will be kept.
@@ -352,8 +344,6 @@ PPL::Grid_Generator_System
   // The number of remaining columns is `dst_col'.
   Matrix::remove_trailing_columns(num_columns - dst_col);
 
-
-
   remove_invalid_lines_and_rays();
 }
 
@@ -361,14 +351,8 @@ void
 PPL::Grid_Generator_System
 ::remove_higher_space_dimensions(dimension_type new_dimension) {
   dimension_type space_dim = space_dimension();
-  // Dimension-compatibility check.
-  if (new_dimension > space_dim) {
-    std::ostringstream s;
-    s << "PPL::Grid_Generator_System::remove_higher_space_dimensions(n):\n"
-      << "this->space_dimension() == " << space_dim
-      << ", required space dimension == " << new_dimension << ".";
-    throw std::invalid_argument(s.str());
-  }
+
+  assert(new_dimension <= space_dim);
 
   // The removal of no dimensions from any system is a no-op.  Note
   // that this case also captures the only legal removal of dimensions

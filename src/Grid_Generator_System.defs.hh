@@ -438,9 +438,9 @@ private:
 
   //! Removes all the specified dimensions from the generator system.
   /*!
-    \exception std::invalid_argument
-    Thrown if the highest space dimension of the variables in \p
-    to_be_removed is higher than the space dimension of \p *this.
+    The space dimension of the variable with the highest space
+    dimension in \p to_be_removed must be at most the space dimension
+    of \p this.
   */
   void remove_space_dimensions(const Variables_Set& to_be_removed);
 
@@ -448,8 +448,7 @@ private:
     Removes the higher dimensions of the system so that the resulting
     system will have dimension \p new_dimension.
 
-    \exception std::invalid_argument
-    Thrown if the \p new_dimension is higher than the space dimension
+    The value of \p new_dimension must be at most the space dimension
     of \p *this.
   */
   void remove_higher_space_dimensions(dimension_type new_dimension);
