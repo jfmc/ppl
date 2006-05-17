@@ -1242,6 +1242,8 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
   if (space_dim == 0) {
     if (marked_empty())
       set_zero_dim_univ();
+    else
+      assert(gs.has_points());
     assert(OK(true));
     return;
   }
@@ -1306,11 +1308,9 @@ PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
   // zero-dimensional universe grid.
   if (space_dim == 0) {
     if (marked_empty())
-      if (gs.has_points())
-	set_zero_dim_univ();
-      else
-	throw_invalid_generators("add_recycled_generators_and_minimize(gs)",
-				 "gs");
+      set_zero_dim_univ();
+    else
+      assert(gs.has_points());
     assert(OK(true));
     return true;
   }

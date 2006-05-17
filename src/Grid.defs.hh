@@ -1296,9 +1296,7 @@ public:
     to the system of generators of \p *this.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if
-    \p *this is empty and the system of generators \p gs is not empty,
-    but has no points.
+    Thrown if \p *this and \p gs are dimension-incompatible.
 
     \warning
     The only assumption that can be made about \p gs upon successful
@@ -1336,9 +1334,7 @@ public:
     to the system of generators of \p *this.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if \p
-    *this is empty and the system of generators \p gs is not empty,
-    but has no points.
+    Thrown if \p *this and \p gs are dimension-incompatible.
 
     \warning
     The only assumption that can be made about \p gs upon successful
