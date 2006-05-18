@@ -148,11 +148,11 @@ test06() {
   }
   catch (const std::length_error& e) {
     nout << "length_error: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Assignment of universe grid, zero dimensions.
@@ -179,11 +179,11 @@ test08() {
   }
   catch (const std::length_error& e) {
     nout << "length_error: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Create grid from empty zero dimension constraint system.

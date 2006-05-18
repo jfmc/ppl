@@ -155,7 +155,6 @@ test05() {
     return true;
   }
   catch (...) {
-    return false;
   }
   return false;
 }
@@ -179,7 +178,6 @@ test06() {
     return true;
   }
   catch (...) {
-    return false;
   }
   return false;
 }
@@ -203,7 +201,6 @@ test07() {
     return true;
   }
   catch (...) {
-    return false;
   }
   return false;
 }

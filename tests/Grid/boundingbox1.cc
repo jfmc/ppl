@@ -190,11 +190,11 @@ test08() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Simple box with divisor and an interval bounded only from below.
@@ -210,11 +210,11 @@ test09() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Box with a dimension bounded only from above.
@@ -230,11 +230,11 @@ test10() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // An otherwise valid box having a dimension with an open bound, where
@@ -249,14 +249,14 @@ test11() {
 
   try {
     Grid gr(box, From_Bounding_Box());
-   }
+  }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Zero-dimensional empty box.

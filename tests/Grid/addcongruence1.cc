@@ -141,7 +141,6 @@ test05() {
     return true;
   }
   catch (...) {
-    return false;
   }
   return false;
 }

@@ -346,14 +346,14 @@ test10() {
 
   try {
     gr.shrink_bounding_box(box);
-    }
+  }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // An empty grid defined by congruences.

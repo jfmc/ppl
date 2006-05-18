@@ -271,11 +271,11 @@ test09() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // intersection_assign_and_minimize: Simple grids, one dimension.

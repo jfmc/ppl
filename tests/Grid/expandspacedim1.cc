@@ -197,11 +197,11 @@ test08() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Add more dimensions than are available.
@@ -216,11 +216,11 @@ test09() {
   }
   catch (const std::length_error& e) {
     nout << "length_error: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

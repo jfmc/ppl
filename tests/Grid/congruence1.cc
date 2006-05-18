@@ -382,7 +382,6 @@ test15() {
     return true;
   }
   catch (...) {
-    return false;
   }
   return false;
 }
@@ -404,7 +403,6 @@ test16() {
     return true;
   }
   catch (...) {
-    return false;
   }
   return false;
 }
