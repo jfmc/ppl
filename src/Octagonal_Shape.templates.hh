@@ -212,6 +212,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
     return;
   }
 
+  // Use these type aliases for short
+  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
   typename OR_Matrix<N>::row_iterator mat_begin = matrix.row_begin();
   N tmp;
 
@@ -226,14 +228,14 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
       // Intentionally fall through.
     case Generator::CLOSURE_POINT:
       if (!mat_initialized) {
-	// When handling the first (closure) point, we initialize the DBM.
+	// When handling the first (closure) point, we initialize the matrix.
 	mat_initialized = true;
 	const Coefficient& d = g.divisor();
 	for (dimension_type i = 0; i < space_dim; ++i) {
 	  const Coefficient& g_i = g.coefficient(Variable(i));
 	  const dimension_type di = 2*i;
-	  typename OR_Matrix<N>::row_reference_type x_i = *(mat_begin+di);
-	  typename OR_Matrix<N>::row_reference_type x_ii = *(mat_begin+di+1);
+	  Row_Reference x_i = *(mat_begin+di);
+	  Row_Reference x_ii = *(mat_begin+di+1);
 	  for (dimension_type j = 0; j < i; ++j) {
 	    const Coefficient& g_j = g.coefficient(Variable(j));
 	    const dimension_type dj = 2*j;
@@ -259,8 +261,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
 	for (dimension_type i = 0; i < space_dim; ++i) {
 	  const Coefficient& g_i = g.coefficient(Variable(i));
 	  const dimension_type di = 2*i;
-	  typename OR_Matrix<N>::row_reference_type x_i = *(mat_begin+di);
-	  typename OR_Matrix<N>::row_reference_type x_ii = *(mat_begin+di+1);
+	  Row_Reference x_i = *(mat_begin+di);
+	  Row_Reference x_ii = *(mat_begin+di+1);
 	  for (dimension_type j = 0; j < i; ++j) {
 	    const Coefficient& g_j = g.coefficient(Variable(j));
 	    const dimension_type dj = 2*j;
@@ -307,8 +309,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
 	for (dimension_type i = 0; i < space_dim; ++i) {
 	  const Coefficient& g_i = g.coefficient(Variable(i));
 	  const dimension_type di = 2*i;
-	  typename OR_Matrix<N>::row_reference_type x_i = *(mat_begin+di);
-	  typename OR_Matrix<N>::row_reference_type x_ii = *(mat_begin+di+1);
+	  Row_Reference x_i = *(mat_begin+di);
+	  Row_Reference x_ii = *(mat_begin+di+1);
 	  for (dimension_type j = 0; j < i; ++j) {
 	    const Coefficient& g_j = g.coefficient(Variable(j));
 	    const dimension_type dj = 2*j;
@@ -335,8 +337,8 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
 	for (dimension_type i = 0; i < space_dim; ++i) {
 	  const Coefficient& g_i = g.coefficient(Variable(i));
 	  const dimension_type di = 2*i;
-	  typename OR_Matrix<N>::row_reference_type x_i = *(mat_begin+di);
-	  typename OR_Matrix<N>::row_reference_type x_ii = *(mat_begin+di+1);
+	  Row_Reference x_i = *(mat_begin+di);
+	  Row_Reference x_ii = *(mat_begin+di+1);
 	  for (dimension_type j = 0; j < i; ++j) {
 	    const Coefficient& g_j = g.coefficient(Variable(j));
 	    const dimension_type dj = 2*j;
