@@ -443,6 +443,27 @@ test21() {
   return true;
 }
 
+// Exception when trying to get the divisor of a line.
+static bool
+test22() {
+  Variable C(2);
+
+  Grid_Generator a = grid_line(2*C);
+
+  print_generator(a, "*** a ***");
+
+  try {
+    a.divisor();
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -467,4 +488,5 @@ BEGIN_MAIN
   DO_TEST(test19);
   DO_TEST(test20);
   DO_TEST(test21);
+  DO_TEST(test22);
 END_MAIN
