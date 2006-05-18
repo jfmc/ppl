@@ -272,4 +272,9 @@ check_PROGRAMS = $(TESTS)
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat \
+ascii_dump_load2.dat \
+ascii_dump_load3.dat \
+ascii_dump_load4.dat \
+ascii_dump_load5.dat \
+ascii_dump_load6.dat \
 writecongruencesystem.dat
