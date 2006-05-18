@@ -177,6 +177,7 @@ test05() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test06() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -193,6 +194,7 @@ test06() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test07() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -209,6 +211,7 @@ test07() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test08() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -226,6 +229,7 @@ test08() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test09() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -244,6 +248,7 @@ test09() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test10() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -262,6 +267,7 @@ test10() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test11() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -280,6 +286,7 @@ test11() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test12() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -299,6 +306,7 @@ test12() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test13() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -321,6 +329,7 @@ test13() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test14() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -343,6 +352,7 @@ test14() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test15() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -365,6 +375,7 @@ test15() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test16() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -388,6 +399,7 @@ test16() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test17() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -413,6 +425,7 @@ test17() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test18() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -439,6 +452,7 @@ test18() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test19() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -465,6 +479,7 @@ test19() {
   return ok;
 }
 
+// ascii_load failure.
 bool
 test20() {
   const char* my_file = "ascii_dump_load1.dat";
@@ -481,6 +496,101 @@ test20() {
     << "1 0 0 P\n"
     << "0 1 1 Q\n"
     << "dimension_kinds 0 700\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+// Grid_Status::ascii_load failure.
+bool
+test21() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS err  -CP -GP  -SC -SG\n"
+    << "con_sys (up-to-date)\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+// Grid_Status::ascii_load failure.
+bool
+test22() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  err -GP  -SC -SG\n"
+    << "con_sys (up-to-date)\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+// Grid_Status::ascii_load failure.
+bool
+test23() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP err  -SC -SG\n"
+    << "con_sys (up-to-date)\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+// Grid_Status::ascii_load failure.
+bool
+test24() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  err -SG\n"
+    << "con_sys (up-to-date)\n";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  Grid gr;
+  bool ok =! gr.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
+// Grid_Status::ascii_load failure.
+bool
+test25() {
+  const char* my_file = "ascii_dump_load1.dat";
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 1\n"
+    << "-ZE -EM  +CM +GM  +CS +GS  -CP -GP  -SC err\n"
+    << "con_sys (up-to-date)\n";
   close(f);
 
   open(f, my_file, ios_base::in);
@@ -514,4 +624,9 @@ BEGIN_MAIN
   DO_TEST(test18);
   DO_TEST(test19);
   DO_TEST(test20);
+  DO_TEST(test21);
+  DO_TEST(test22);
+  DO_TEST(test23);
+  DO_TEST(test24);
+  DO_TEST(test25);
 END_MAIN
