@@ -396,7 +396,7 @@ protected:
 
     \param cs
     The system of constraints defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
     \exception std::invalid_argument
@@ -429,7 +429,7 @@ protected:
 
     \param gs
     The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
     \exception std::invalid_argument
@@ -900,8 +900,8 @@ public:
     of \p *this (without minimizing the result).
 
     \param cs
-    The constraint system that will be recycled, adding its
-    constraints to the system of constraints of \p *this.
+    The constraint system to be added to \p *this.  The constraints in
+    \p cs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are topology-incompatible or
@@ -938,8 +938,8 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param cs
-    The constraint system that will be recycled, adding its
-    constraints to the system of constraints of \p *this.
+    The constraint system to be added to \p *this.  The constraints in
+    \p cs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are topology-incompatible or
@@ -971,8 +971,8 @@ public:
     of \p *this (without minimizing the result).
 
     \param gs
-    The generator system that will be recycled, adding its generators
-    to the system of generators of \p *this.
+    The generator system to be added to \p *this.  The generators in
+    \p gs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are topology-incompatible or
@@ -1011,8 +1011,8 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param gs
-    The generator system that will be recycled, adding its generators
-    to the system of generators of \p *this.
+    The generator system to be added to \p *this.  The generators in
+    \p gs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are topology-incompatible or

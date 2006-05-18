@@ -398,7 +398,7 @@ public:
 
     \param cgs
     The system of congruences defining the grid.  Its data-structures
-    will be recycled to build the grid.
+    may be recycled to build the grid.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
@@ -424,7 +424,8 @@ public:
     The grid inherits the space dimension of the constraint system.
 
     \param cs
-    The system of constraints defining the grid.
+    The system of constraints defining the grid.  Its data-structures
+    may be recycled to build the grid.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
@@ -454,7 +455,7 @@ public:
 
     \param gs
     The system of generators defining the grid.  Its data-structures
-    will be recycled to build the grid.
+    may be recycled to build the grid.
 
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
@@ -1109,8 +1110,8 @@ public:
   //! Adds the congruences in \p cgs to *this.
   /*!
     \param cgs
-    The congruence system that will be recycled, adding its
-    congruences to the system of congruences of \p *this.
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
@@ -1124,14 +1125,13 @@ public:
   //! Adds the equality constraints in \p cs to \p *this.
   /*!
     \param cs
-    The constraint system from which constraints will be considered
-    for addition to the system of congruences of \p *this.
+    The constraint system to be added to \p *this.  The equalities in
+    \p cs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
 
     \warning
-
     The only assumption that can be made about \p cs upon successful
     or exceptional return is that it can be safely destroyed.
   */
@@ -1177,8 +1177,8 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param cgs
-    The congruence system that will be recycled, adding its
-    congruences to the system of congruences of \p *this.
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible.
@@ -1195,8 +1195,8 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param cs
-    The constraint system that will be recycled, adding its
-    equalities to the system of congruences of \p *this.
+    The constraint system to be added to \p *this.  The equalities in
+    \p cs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
@@ -1249,6 +1249,10 @@ public:
 
   //! Adds the equality constraints in \p cs to \p *this.
   /*!
+    \param cs
+    The constraint system to be added to \p *this.  The equalities in
+    \p cs may be recycled.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
 
@@ -1259,6 +1263,12 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
+    Adds the equality constraints in \p cs to \p *this, reducing the
+    result.
+
+    \param cs
+    The constraint system to be added to \p *this.  The equalities in
+    \p cs may be recycled.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -1292,8 +1302,8 @@ public:
     *this.
 
     \param gs
-    The generator system that will be recycled, adding its generators
-    to the system of generators of \p *this.
+    The generator system to be added to \p *this.  The generators in
+    \p gs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are dimension-incompatible.
@@ -1330,8 +1340,8 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param gs
-    The generator system that will be recycled, adding its generators
-    to the system of generators of \p *this.
+    The generator system to be added to \p *this.  The generators in
+    \p gs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are dimension-incompatible.

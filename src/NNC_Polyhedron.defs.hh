@@ -75,7 +75,7 @@ public:
 
     \param cs
     The system of constraints defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
   */
   explicit NNC_Polyhedron(Constraint_System& cs);
@@ -98,7 +98,7 @@ public:
 
     \param gs
     The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
     \exception std::invalid_argument
@@ -112,7 +112,7 @@ public:
 
     \param cgs
     The system of congruences defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
   */
   explicit NNC_Polyhedron(const Congruence_System& cgs);
@@ -124,7 +124,7 @@ public:
 
     \param cgs
     The system of congruences defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
   */
   explicit NNC_Polyhedron(Congruence_System& cgs);
