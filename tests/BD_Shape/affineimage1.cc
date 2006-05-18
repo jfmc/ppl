@@ -334,12 +334,12 @@ test12() {
     bd.affine_image(x, coeff1, d);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -358,12 +358,12 @@ test13() {
     bd.affine_image(y, x + 1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -384,12 +384,12 @@ test14() {
     bd.affine_image(y, x + z + 1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -409,40 +409,16 @@ test15() {
     // BD_Shape::affine_image(v, expr,d): it is illegal applying
     // the function with a linear expression with the denominator equal to
     // zero.
-    Coefficient d = 3;
+    Coefficient d = 0;
     bd.affine_image(x, coeff1, d);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
-}
-
-bool
-test16() {
-  Variable x(0);
-  Variable y(1);
-
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= 1);
-  bd.add_constraint(y >= 1);
-
-  try {
-    // This is an invalid used of the function
-    // BD_Shape::affine_image(v, expr, d): it is illegal to
-    // use two variables in the expression.
-    bd.affine_image(y, y - x);
-  }
-  catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
-  }
-  catch (...) {
-    return false;
-  }
-  return true;
+  return false;
 }
 
 } // namespace
@@ -463,5 +439,4 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
-  DO_TEST(test16);
 END_MAIN

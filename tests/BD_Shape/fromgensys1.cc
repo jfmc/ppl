@@ -49,18 +49,14 @@ test02() {
     // It is illegal to build a BD_Shape starting from a non-empty
     // generator system having no points.
     TBD_Shape bd(gs);
-
-    // It is an error if the exception is not thrown.
-    return false;
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    // It is an error if the wrong exception is thrown.
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -74,18 +70,14 @@ test03() {
     // It is illegal to build a BD_Shape starting from a non-empty
     // generator system having no points.
     TBD_Shape bd(gs);
-
-    // It is an error if the exception is not thrown.
-    return false;
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << e.what() << endl;
     return true;
   }
   catch (...) {
-    // It is an error if the wrong exception is thrown.
-    return false;
   }
+  return false;
 }
 
 bool

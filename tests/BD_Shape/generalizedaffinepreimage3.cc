@@ -80,12 +80,12 @@ test02() {
     bd.generalized_affine_preimage(A + B, GREATER_THAN_OR_EQUAL, B + C);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -105,12 +105,12 @@ test03() {
     bd.generalized_affine_preimage(B + C, LESS_THAN_OR_EQUAL, A + 1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -130,12 +130,12 @@ test04() {
     bd.generalized_affine_preimage(A + B, GREATER_THAN, B + C);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -154,12 +154,12 @@ test05() {
     bd.generalized_affine_preimage(B + C, LESS_THAN, A + 1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

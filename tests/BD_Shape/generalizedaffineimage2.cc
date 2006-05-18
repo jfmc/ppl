@@ -360,12 +360,12 @@ test13() {
     bd.generalized_affine_image(x, LESS_THAN, x + 1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -383,12 +383,12 @@ test14() {
     bd.generalized_affine_image(x, GREATER_THAN, x + 1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -408,12 +408,12 @@ test15() {
     bd.generalized_affine_image(x, LESS_THAN_OR_EQUAL, x + 1, d);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -433,12 +433,12 @@ test16() {
     bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, z);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -459,12 +459,12 @@ test17() {
     bd.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -484,12 +484,12 @@ test18() {
     bd.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

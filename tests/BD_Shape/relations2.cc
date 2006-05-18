@@ -415,12 +415,12 @@ test20() {
     Poly_Con_Relation rel = bd.relation_with(A - C - B <= 2);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace
