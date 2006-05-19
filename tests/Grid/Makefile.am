@@ -86,7 +86,7 @@ membytes1 \
 mingenerators1 \
 mincongruences1 \
 outputoperator1 outputoperator2 outputoperator3 \
-relations1 relations2 \
+relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
 timeelapse1 \
 topclosed1 \
@@ -208,6 +208,7 @@ outputoperator3_SOURCES = outputoperator3.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
+relations3_SOURCES = relations3.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 removespacedims2_SOURCES = removespacedims2.cc
