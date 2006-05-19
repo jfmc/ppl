@@ -479,6 +479,15 @@ PPL::Grid::relation_with(const Grid_Generator& g) const {
     : Poly_Gen_Relation::nothing();
 }
 
+PPL::Poly_Con_Relation
+PPL::Grid::relation_with(const Constraint& c) const {
+  if (c.is_inequality())
+    return Poly_Con_Relation::nothing();
+
+  Congruence cg(c);
+  return relation_with(cg);
+}
+
 bool
 PPL::Grid::is_empty() const {
   if (marked_empty())

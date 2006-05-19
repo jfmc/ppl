@@ -650,6 +650,16 @@ public:
   Poly_Gen_Relation
   relation_with(const Grid_Generator& g) const;
 
+  //! Returns the relations holding between \p *this and \p c.
+  /*
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
+  */
+  // FIXME: Poly_Con_Relation seems to encode exactly what we want
+  // here.  We must find a new name for that class.  Temporarily,
+  // we keep using it without changing the name.
+  Poly_Con_Relation relation_with(const Constraint& c) const;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is an empty
     grid.
