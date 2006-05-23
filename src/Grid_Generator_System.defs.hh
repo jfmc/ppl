@@ -451,7 +451,7 @@ private:
     The value of \p new_dimension must be at most the space dimension
     of \p *this.
   */
-  void remove_higher_space_dimensions(dimension_type new_dimension);
+  void remove_higher_space_dimensions(const dimension_type new_dimension);
 
   //! Resizes the system without worrying about the old contents.
   /*!

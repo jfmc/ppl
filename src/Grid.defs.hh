@@ -1907,7 +1907,7 @@ public:
     Thrown if \p new_dimensions is greater than the space dimension of
     \p *this.
   */
-  void remove_higher_space_dimensions(dimension_type new_dimension);
+  void remove_higher_space_dimensions(const dimension_type new_dimension);
 
   /*! \brief
     Remaps the dimensions of the vector space according to

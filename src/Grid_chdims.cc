@@ -292,9 +292,6 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // FIXME: Can this operate on the congruence system if only the
-  //        congruence system is up to date?
-
   gen_sys.remove_space_dimensions(to_be_removed);
 
   clear_congruences_up_to_date();
@@ -307,7 +304,7 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
 }
 
 void
-PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
+PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
   // Dimension-compatibility check.
   if (new_dimension > space_dim)
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
@@ -321,8 +318,7 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
     return;
   }
 
-  if (marked_empty()
-      || (!generators_are_up_to_date() && !update_generators())) {
+  if (is_empty()) {
     // Removing dimensions from the empty grid just updates the space
     // dimension.
     space_dim = new_dimension;
@@ -338,20 +334,45 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
     return;
   }
 
-  gen_sys.remove_higher_space_dimensions(new_dimension);
-
-#if 0
-  // FIXME: Perhaps add something like remove_rows_and_columns(dims)
-  //        to Grid_Generator_System for this.
-  if (generators_are_minimized()) {
-    gen_sys.erase_to_end(new_dimension + 1);
+  // Favour the generators, as is done by is_empty().
+  if (generators_are_up_to_date()) {
+    gen_sys.remove_higher_space_dimensions(new_dimension);
+    if (generators_are_minimized()) {
+      // Count the actual number of rows that are now redundant.
+      dimension_type num_redundant = 0;
+      dimension_type num_old_gs = space_dim - new_dimension;
+      for (dimension_type row = 0; row < num_old_gs; ++row)
+	dim_kinds[row] == GEN_VIRTUAL || ++num_redundant;
+      if (num_redundant > 0) {
+	// Chop zero rows from end of system, to keep minimal form.
+	gen_sys.erase_to_end(gen_sys.num_generators() - num_redundant);
+	gen_sys.unset_pending_rows();
+      }
+      dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
+    }
+    clear_congruences_up_to_date();
+  } else {
+    assert(congruences_are_minimized());
+    con_sys.remove_higher_space_dimensions(new_dimension);
+    // Count the actual number of rows that are now redundant.
+    dimension_type num_redundant = 0;
+    dimension_type num_old_cgs = space_dim - new_dimension;
+    for (dimension_type row = 0; row < num_old_cgs; ++row)
+      dim_kinds[row] == CON_VIRTUAL || ++num_redundant;
+    if (num_redundant > 0) {
+      dimension_type rows = con_sys.num_rows();
+      // Shuffle the remaining rows upwards.
+      for (dimension_type low = 0, high = num_redundant;
+	   high < rows;
+	   ++high, ++low)
+	std::swap(con_sys[low], con_sys[high]);
+      // Chop newly redundant rows from end of system, to keep minimal
+      // form.
+      con_sys.erase_to_end(rows - num_redundant);
+    }
     dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
+    clear_generators_up_to_date();
   }
-#else
-  clear_generators_minimized();
-#endif
-
-  clear_congruences_up_to_date();
 
   // Update the space dimension.
   space_dim = new_dimension;

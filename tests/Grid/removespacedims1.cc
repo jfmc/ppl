@@ -35,7 +35,7 @@ test01() {
   Grid gr(2);
   gr.add_congruence(A - B == 0);
   gr.add_congruence(A %= 0);
-  print_congruences(gr, "*** gr.remove_space_dimensions(vars) ***");
+  print_congruences(gr, "*** gr ***");
 
   Variables_Set vars;
   vars.insert(B);
@@ -58,7 +58,7 @@ test02() {
   Variable B(1);
 
   Grid gr(4, EMPTY);
-  print_congruences(gr, "*** gr.remove_space_dimensions(vars) ***");
+  print_congruences(gr, "*** gr ***");
 
   Variables_Set vars;
   vars.insert(B);
@@ -75,7 +75,6 @@ test02() {
 }
 
 // Universe grid.
-
 bool
 test03() {
   Variable C(2);
@@ -110,7 +109,7 @@ test04() {
   ggs.insert(grid_point(3*B));
 
   Grid gr(ggs);
-  print_congruences(gr, "*** gr.remove_space_dimensions(vars) ***");
+  print_generators(gr, "*** gr ***");
 
   Variables_Set vars;
   vars.insert(B);
@@ -147,7 +146,7 @@ test05() {
   cgs.insert((B - E %= 0) / 2);
 
   Grid gr(cgs);
-  print_congruences(gr, "*** gr.remove_space_dimensions(vars) ***");
+  print_congruences(gr, "*** gr ***");
 
   gr.remove_space_dimensions(vars);
 
@@ -176,6 +175,7 @@ test06() {
   Grid gr(3);
   gr.add_congruence(A - B == 0);
   gr.add_congruence(A %= 0);
+  print_congruences(gr, "*** gr ***");
 
   Variables_Set vars;
   vars.insert(A);
@@ -188,7 +188,7 @@ test06() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr ***");
+  print_congruences(gr, "*** gr.remove_space_dimensions(vars) ***");
 
   return ok;
 }
@@ -205,7 +205,7 @@ test07() {
   gr.add_generator(grid_point(A));
   gr.add_generator_and_minimize(grid_point(B));
   gr.add_generator(grid_line(C));
-  print_congruences(gr, "*** gr.remove_space_dimensions(vars) ***");
+  print_generators(gr, "*** gr ***");
 
   Variables_Set vars;
   vars.insert(B);
@@ -217,7 +217,7 @@ test07() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr ***");
+  print_congruences(gr, "*** gr.remove_space_dimensions(vars) ***");
 
   return ok;
 }
@@ -234,13 +234,12 @@ test08() {
   gr.add_generator(grid_point(A));
   gr.add_generator(parameter(B));
   gr.add_generator(grid_line(C));
-  print_congruences(gr, "*** gr.remove_space_dimensions(vars) ***");
+  print_generators(gr, "*** gr ***");
 
   Variables_Set vars;
   vars.insert(C);
 
   gr.remove_space_dimensions(vars);
-
 
   Grid known_gr(2);
   known_gr.add_congruence(A %= 0);
@@ -248,7 +247,7 @@ test08() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr ***");
+  print_congruences(gr, "*** gr.remove_space_dimensions(vars) ***");
 
   return ok;
 }

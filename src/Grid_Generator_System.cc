@@ -343,13 +343,11 @@ PPL::Grid_Generator_System
 
   // The number of remaining columns is `dst_col'.
   Matrix::remove_trailing_columns(num_columns - dst_col);
-
-  remove_invalid_lines_and_rays();
 }
 
 void
 PPL::Grid_Generator_System
-::remove_higher_space_dimensions(dimension_type new_dimension) {
+::remove_higher_space_dimensions(const dimension_type new_dimension) {
   dimension_type space_dim = space_dimension();
 
   assert(new_dimension <= space_dim);
@@ -364,6 +362,5 @@ PPL::Grid_Generator_System
   // become the last column.
   swap_columns(new_dimension + 1, space_dim + 1);
   Matrix::remove_trailing_columns(space_dim - new_dimension);
-  remove_invalid_lines_and_rays();
   assert(OK());
 }
