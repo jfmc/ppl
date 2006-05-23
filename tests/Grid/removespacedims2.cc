@@ -37,7 +37,7 @@ test01() {
   cgs.insert((A + 2*C %= 0) / 3);
 
   Grid gr(cgs);
-  print_generators(gr, "*** gr ***");
+  print_congruences(gr, "*** gr ***");
 
   gr.remove_higher_space_dimensions(2);
 
@@ -76,6 +76,7 @@ test02() {
 bool
 test03() {
   Grid gr(7);
+  print_generators(gr, "*** gr ***");
 
   gr.remove_higher_space_dimensions(3);
 
@@ -237,6 +238,61 @@ test09() {
   return false;
 }
 
+// From congruences.
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr(3);
+  gr.add_congruence(B - C == 0);
+  gr.add_congruence(B %= 0);
+  gr.add_congruence(A == 4);
+  print_congruences(gr, "*** gr ***");
+
+  gr.remove_higher_space_dimensions(2);
+
+  Grid_Generator_System known_ggs;
+  known_ggs.insert(grid_point(4*A));
+  known_ggs.insert(parameter(B));
+
+  Grid known_gr(known_ggs);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.remove_higher_space_dimensions(2) ***");
+
+  return ok;
+}
+
+// From congruences.
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr(3);
+  gr.add_congruence(B - C == 0);
+  gr.add_congruence(B %= 0);
+  gr.add_congruence(A == 4);
+  print_congruences(gr, "*** gr ***");
+
+  gr.remove_higher_space_dimensions(1);
+
+  Grid_Generator_System known_ggs;
+  known_ggs.insert(grid_point(4*A));
+
+  Grid known_gr(known_ggs);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.remove_higher_space_dimensions(2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -246,5 +302,9 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+  //DO_TEST(test07);
+  //DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN
