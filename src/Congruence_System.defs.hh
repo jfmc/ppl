@@ -463,6 +463,15 @@ private:
 		       const Linear_Expression& expr,
 		       Coefficient_traits::const_reference denominator);
 
+  /*! \brief
+    Removes the higher dimensions of the system so that the resulting
+    system will have dimension \p new_dimension.
+
+    The value of \p new_dimension must be at most the space dimension
+    of \p *this.
+  */
+  void remove_higher_space_dimensions(const dimension_type new_dimension);
+
   //! Resizes the system without worrying about the old contents.
   /*!
     \param new_num_rows
