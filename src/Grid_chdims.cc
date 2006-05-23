@@ -349,8 +349,16 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
 	gen_sys.unset_pending_rows();
       }
       dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
+      // TODO: Consider if it is worth also preserving the congruences
+      //       if they are also in minimal form.
     }
     clear_congruences_up_to_date();
+    // Extend the zero dim false congruence system to the appropriate
+    // dimension and then swap it with `con_sys'.
+    Congruence_System cgs(Congruence::zero_dim_false());
+    // Extra 2 columns for inhomogeneous term and modulus.
+    cgs.increase_space_dimension(new_dimension + 2);
+    con_sys.swap(cgs);
   } else {
     assert(congruences_are_minimized());
     con_sys.remove_higher_space_dimensions(new_dimension);
@@ -372,6 +380,10 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     }
     dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
     clear_generators_up_to_date();
+    // Replace gen_sys with an empty system of the right dimension.
+    // Extra 2 columns for inhomogeneous term and modulus.
+    Grid_Generator_System gs(new_dimension + 2);
+    gen_sys.swap(gs);
   }
 
   // Update the space dimension.
