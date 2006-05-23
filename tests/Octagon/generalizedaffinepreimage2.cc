@@ -45,11 +45,12 @@ test01() {
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -68,11 +69,12 @@ test02() {
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -91,11 +93,12 @@ test03() {
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -116,11 +119,12 @@ test04() {
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -152,6 +156,32 @@ bool
 test06() {
   Variable A(0);
   Variable B(1);
+  Variable C(2);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A >= 0);
+
+  try {
+    // This is an incorrect use of function
+    // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
+    // it is illegal to apply to a variable that space dimension is
+    // greather than the octagon's space dimension.
+    oct.generalized_affine_preimage(C, GREATER_THAN_OR_EQUAL, B - A);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+    return false;
+  }
+  return false;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
 
   Octagonal_Shape<mpq_class> oct(2);
   oct.add_constraint(B - A >= 2);
@@ -174,7 +204,7 @@ test06() {
 }
 
 bool
-test07() {
+test08() {
   Variable A(0);
   Variable B(1);
 
@@ -200,7 +230,7 @@ test07() {
 }
 
 bool
-test08() {
+test09() {
   Variable A(0);
   Variable B(1);
 
@@ -224,7 +254,7 @@ test08() {
 }
 
 bool
-test09() {
+test10() {
   Variable A(0);
   Variable B(1);
 
@@ -253,7 +283,7 @@ test09() {
 }
 
 bool
-test10() {
+test11() {
   Variable A(0);
   Variable B(1);
 
@@ -284,7 +314,7 @@ test10() {
 }
 
 bool
-test11() {
+test12() {
   Variable A(0);
   Variable B(1);
 
@@ -315,7 +345,7 @@ test11() {
 }
 
 bool
-test12() {
+test13() {
   Variable A(0);
   Variable B(1);
 
@@ -343,7 +373,7 @@ test12() {
 }
 
 bool
-test13() {
+test14() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -374,7 +404,7 @@ test13() {
 }
 
 bool
-test14() {
+test15() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -407,7 +437,7 @@ test14() {
 }
 
 bool
-test15() {
+test16() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -439,7 +469,7 @@ test15() {
 }
 
 bool
-test16() {
+test17() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -472,7 +502,7 @@ test16() {
 }
 
 bool
-test17() {
+test18() {
   Variable A(0);
   Variable B(1);
 
@@ -500,7 +530,7 @@ test17() {
 }
 
 bool
-test18() {
+test19() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -532,7 +562,7 @@ test18() {
 }
 
 bool
-test19() {
+test20() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -559,36 +589,6 @@ test19() {
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(-C + B - 2, "
 		    "LESS_THAN_OR_EQUAL, B + 1) ***");
-
-  return ok;
-}
-
-bool
-test20() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Linear_Expression e1(A - C + B - 2);
-  Linear_Expression e2(A + B + 1);
-
-  Octagonal_Shape<mpq_class> oct(3);
-  oct.add_constraint(A >= 1);
-  oct.add_constraint(A <= 2);
-  oct.add_constraint(B <= 3);
-  oct.add_constraint(C >= -1);
-
-  print_constraints(oct, "*** oct ***");
-
-  Octagonal_Shape<mpq_class> known_result(3);
-
-  oct.generalized_affine_preimage(e1, LESS_THAN_OR_EQUAL, e2);
-
-  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
-
-  print_constraints(oct,
-		    "*** oct.generalized_affine_preimage(A - C + B - 2, "
-		    "LESS_THAN_OR_EQUAL, A + B + 1) ***");
 
   return ok;
 }

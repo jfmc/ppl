@@ -22,15 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
+bool
+test01() {
   Octagonal_Shape<mpq_class> oc1(1);
   Octagonal_Shape<long> oc2(1);
   Octagonal_Shape<int> oc3(1);
@@ -41,42 +36,50 @@ main() TRY {
   dimension_type max_spacedim3 = oc3.max_space_dimension();
   dimension_type max_spacedim4 = oc4.max_space_dimension();
 
-#if NOISY
-  cout << endl
+  nout << endl
        << "The maximum space-dimension of an octagon of Rational is: "
-       << endl << max_spacedim1 << endl;
+       << endl
+       << max_spacedim1
+       << endl;
 
-  cout << endl
-       << "The maximum space-dimension of an octagon of long: "
-       << endl << max_spacedim2 << endl;
+  nout << endl
+       << "The maximum space-dimension of an octagon of long is: "
+       << endl
+       << max_spacedim2
+       << endl;
 
-  cout << endl
-       << "The maximum space-dimension of an octagon of int: "
-       << endl << max_spacedim3 << endl;
+  nout << endl
+       << "The maximum space-dimension of an octagon of int is: "
+       << endl
+       << max_spacedim3
+       << endl;
 
-  cout << endl
-       << "The maximum space-dimension of an octagon of signed char"
-       << endl << max_spacedim4 << endl;
-#endif
-
-
+  nout << endl
+       << "The maximum space-dimension of an octagon of signed char is:"
+       << endl
+       << max_spacedim4
+       << endl;
 
   if (max_spacedim1 < max_spacedim2) {
-#if NOISY
+
     print_constraints(oc1, "*** oc1 ***");
     print_constraints(oc2, "*** oc2 ***");
-#endif
+
   }
 
   if (max_spacedim3 < max_spacedim4) {
-#if NOISY
+
     print_constraints(oc3, "*** oc3 ***");
     print_constraints(oc4, "*** oc4 ***");
-#endif
+
   }
 
-
-  return 0;
-
+  return true;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN
+

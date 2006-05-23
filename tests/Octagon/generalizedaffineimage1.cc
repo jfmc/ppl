@@ -46,7 +46,8 @@ test01() {
 
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
-  print_constraints(oct, "*** oct.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A+2) ***");
+  print_constraints(oct, "*** oct.generalized_affine_image(B, "
+		    "GREATER_THAN_OR_EQUAL, A+2) ***");
 
   return ok;
 }
@@ -318,7 +319,8 @@ test12() {
 
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
-  print_constraints(oct, "*** oct.generalized_affine_image(C, EQUAL, C+1) ***");
+  print_constraints(oct, "*** oct.generalized_affine_image(C, "
+		    "EQUAL, C+1) ***");
 
   return ok;
 }

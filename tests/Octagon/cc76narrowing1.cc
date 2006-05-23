@@ -208,11 +208,12 @@ test08() {
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

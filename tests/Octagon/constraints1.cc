@@ -38,8 +38,8 @@ test01() {
   Octagonal_Shape<mpq_class> known_result(oct1);
 
   Constraint_System cs = oct1.constraints();
-  TOctagonal_Shape oct2(cs);  
-  
+  TOctagonal_Shape oct2(cs);
+
   print_constraints(oct2, "*** oct2 ***");
 
   bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result);

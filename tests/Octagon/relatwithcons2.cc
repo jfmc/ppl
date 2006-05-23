@@ -290,6 +290,31 @@ test13() {
   return rel == known_result;
 }
 
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagonal_Shape oc(2);
+  oc.add_constraint(A >= 1);
+
+  try {
+    // This is an incorrect use of function
+    // Octagon::relation_with(c):
+    // it is illegal to use a constraint that is not dimension-compatible
+    // with the octagon.
+    Poly_Con_Relation rel = oc.relation_with(-C - B <= 2);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+    return false;
+  }
+  return false;
+}
 
 } // namespace
 
@@ -307,5 +332,6 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
+  DO_TEST(test14);
 END_MAIN
 

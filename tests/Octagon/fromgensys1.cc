@@ -55,12 +55,13 @@ test02() {
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
     return false;
   }
-  return true;
+  return false;
 }
 
 bool

@@ -167,12 +167,13 @@ test06() {
     oct.affine_preimage(y, y + 1, d);
   }
   catch (std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl << endl;
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -193,12 +194,40 @@ test07() {
     oct.affine_preimage(x, z - 2);
   }
   catch (std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl << endl;
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
+}
+
+bool
+test08() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(x - y >= 2);
+  oct.add_constraint(y <= 7);
+
+  try {
+    // This is an invalid use of function
+    // Octagonal_Shape::affine_preimage(v, expr, d): it is illegal to
+    // apply this function to a variable that is not in the space of
+    // the polyhedron.
+    oct.affine_preimage(z, x - 2);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+    return false;
+  }
+  return false;
 }
 
 } // namespace
@@ -211,4 +240,5 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN

@@ -305,19 +305,20 @@ test11() {
 
   try {
     // This is an invalid use of the function
-    // Octagonal_Shape::generalized_affine_image(v, e, d): it is illegal applying
-    // the function with a linear expression with the denominator equal to
-    // zero.
+    // Octagonal_Shape::generalized_affine_image(v, e, d): it is illegal
+    // applying the function with a linear expression
+    // with the denominator equal to zero.
     Coefficient d = 0;
     oct.generalized_affine_image(y, LESS_THAN_OR_EQUAL, y + 1, d);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -336,11 +337,12 @@ test12() {
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -359,11 +361,12 @@ test13() {
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -378,21 +381,48 @@ test14() {
   try {
     // This is an incorrect use of the function
     // Octagonal_Shape::generalized_affine_image(v, r, expr, d): it is illegal
-    // to apply to a expression which space dimension is
+    // to apply to an expression which space dimension is
     // greather than the octagon's space dimension.
     oct.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, z);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
 }
 
 bool
 test15() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(x >= y);
+
+  try {
+    // This is an incorrect use of the function
+    // Octagonal_Shape::generalized_affine_image(v, r, expr, d): it is illegal
+    // to apply to a variable which space dimension is
+    // greather than the octagon's space dimension.
+    oct.generalized_affine_image(z, GREATER_THAN_OR_EQUAL, y);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+    return false;
+  }
+  return false;
+}
+
+bool
+test16() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -409,15 +439,16 @@ test15() {
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
 }
 
 bool
-test16() {
+test17() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -434,11 +465,37 @@ test16() {
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
     return false;
   }
-  return true;
+  return false;
+}
+
+bool
+test18() {
+  Variable x(0);
+  Variable y(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(x >= y);
+  oct.add_constraint(1 >= y);
+
+  try {
+    // This is an incorrect use of the function
+    // Octagonal_Shape::generalized_affine_image(lhs, r, rhs): it is illegal
+    // to use a strict relation symbol.
+    oct.generalized_affine_image(y - 3, GREATER_THAN, x + 1);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+    return false;
+  }
+  return false;
 }
 
 } // namespace
@@ -460,4 +517,6 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
 END_MAIN

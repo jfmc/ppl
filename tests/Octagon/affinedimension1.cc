@@ -40,7 +40,7 @@ test01() {
   dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct' "
+       << "The affine dimension of a system of `oct' is:"
        << endl
        << affine_dim
        << endl;
@@ -70,7 +70,7 @@ test02() {
   dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct' "
+       << "The affine dimension of a system of `oct' is:"
        << endl
        << affine_dim
        << endl;
@@ -100,7 +100,7 @@ test03() {
   dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct' "
+       << "The affine dimension of a system of `oct' is:"
        << endl
        << affine_dim
        << endl;
@@ -125,7 +125,7 @@ test04() {
   dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct' "
+       << "The affine dimension of a system of `oct' is:"
        << endl
        << affine_dim
        << endl;
@@ -144,7 +144,7 @@ test05() {
   dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct' "
+       << "The affine dimension of a system of `oct' is:"
        << endl
        << affine_dim
        << endl;
@@ -163,7 +163,7 @@ test06() {
   dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct' "
+       << "The affine dimension of a system of `oct' is:"
        << endl
        << affine_dim
        << endl;
@@ -189,7 +189,7 @@ test07() {
   dimension_type affine_dim = oct.affine_dimension();
  
   nout << endl
-       << "The affine dimension of a system of `oct' "
+       << "The affine dimension of a system of `oct' is:"
        << endl
        << affine_dim
        << endl;
@@ -217,7 +217,7 @@ test08() {
   dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct' "
+       << "The affine dimension of a system of `oct' is:"
        << endl
        << affine_dim
        << endl;
@@ -241,7 +241,7 @@ test09() {
   dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct' "
+       << "The affine dimension of a system of `oct' is:"
        << endl
        << affine_dim
        << endl;
@@ -266,7 +266,7 @@ test10() {
   dimension_type affine_dim = oct.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `oct' "
+       << "The affine dimension of a system of `oct' is:"
        << endl
        << affine_dim
        << endl;

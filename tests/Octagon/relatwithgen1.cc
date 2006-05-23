@@ -256,6 +256,32 @@ test11() {
   return rel == known_result;
 }
 
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagonal_Shape oc(2);
+  oc.add_constraint(A >= 1);
+
+  try {
+    // This is an incorrect use of function
+    // Octagon::relation_with(g):
+    // it is illegal to use a generator that is
+    // dimensional incompatible with the OS.
+    Poly_Gen_Relation rel = oc.relation_with(ray(C));
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+    return false;
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -270,4 +296,5 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN
