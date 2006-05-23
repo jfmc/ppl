@@ -1764,7 +1764,7 @@ Octagonal_Shape<T>
   const dimension_type max_dim_to_be_removed = to_be_removed.rbegin()->id();
   if (max_dim_to_be_removed >= space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)",
-				 max_dim_to_be_removed);
+				 max_dim_to_be_removed + 1);
 
   const dimension_type new_space_dim = space_dim - to_be_removed.size();
 
@@ -2568,7 +2568,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // `var' should be one of the dimensions of the octagon.
   const dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
-    throw_dimension_incompatible("affine_image(v, e, d)", var.id());
+    throw_dimension_incompatible("affine_image(v, e, d)", var.id()+1);
 
   strong_closure_assign();
   // The image of an empty octagon is empty too.
@@ -2968,7 +2968,7 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
   // `var' should be one of the dimensions of the octagon.
   dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
-    throw_dimension_incompatible("affine_preimage(v, e, d)", var.id());
+    throw_dimension_incompatible("affine_preimage(v, e, d)", var.id()+1);
 
   strong_closure_assign();
   // The image of an empty octagon is empty too.
@@ -3077,7 +3077,7 @@ Octagonal_Shape<T>
   dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
-				 var.id());
+				 var.id()+1);
 
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
@@ -3763,7 +3763,7 @@ Octagonal_Shape<T>
   const dimension_type var_id = var.id();
   if (space_dim < var_id + 1)
     throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
-				 var.id());
+				 var.id()+1);
 
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
