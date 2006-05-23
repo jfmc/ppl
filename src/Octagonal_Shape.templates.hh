@@ -2593,7 +2593,11 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // Use these type aliases for short.
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
   // Avoid repeated computations.
+  const Row_Iterator m_begin = matrix.row_begin();
+  const Row_Iterator m_end = matrix.row_end();
   const dimension_type n_var = 2*var_id;
   const Coefficient& b = expr.inhomogeneous_term();
   TEMP_INTEGER(minus_den);
@@ -2639,14 +2643,13 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	    div_round_up(d, b, denominator);
 	    N minus_d;
 	    div_round_up(minus_d, b, minus_den);
-	    Row_Iterator m_iter = matrix.row_begin() + n_var;
+	    Row_Iterator m_iter = m_begin + n_var;
 	    N& m_v_cv = (*m_iter)[n_var+1];
 	    ++m_iter;
 	    N& m_cv_v = (*m_iter)[n_var];
 	    ++m_iter;
 	    // NOTE: delay update of m_v_cv and m_cv_v.
-	    for (Row_Iterator m_end = matrix.row_end();
-		 m_iter != m_end; ++m_iter) {
+	    for ( ;m_iter != m_end; ++m_iter) {
 	      Row_Reference m_i = *m_iter;
 	      N& m_i_v = m_i[n_var];
 	      add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
@@ -2666,7 +2669,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	  // Here `w_coeff == -denominator'.
 	  // Remove the binary constraints on `var'.
 	  forget_binary_octagonal_constraints(var_id);
- 	  Row_Iterator m_iter = matrix.row_begin() + n_var;
+ 	  Row_Iterator m_iter = m_begin + n_var;
 	  N& m_v_cv = (*m_iter)[n_var+1];
 	  ++m_iter;
 	  N& m_cv_v = (*m_iter)[n_var];
@@ -2682,8 +2685,7 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 	    N minus_d;
 	    div_round_up(minus_d, b, minus_den);
 	    ++m_iter;
-	    for (Row_Iterator m_end = matrix.row_end();
-		 m_iter != m_end; ++m_iter) {
+	    for ( ;m_iter != m_end; ++m_iter) {
 	      Row_Reference m_i = *m_iter;
 	      N& m_i_v = m_i[n_var];
 	      add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
@@ -2777,13 +2779,13 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // Approximate the homogeneous part of `sc_expr'.
   // Note: indices above `w' can be disregarded, as they all have
   // a zero coefficient in `sc_expr'.
-  for (typename OR_Matrix<N>::const_row_iterator m_iter = matrix.row_begin(),
-	 m_end = m_iter + (2*w_id) + 2; m_iter != m_end; ) {
+  for (Row_iterator m_iter = m_begin, m_iter_end = m_iter + (2*w_id) + 2;
+       m_iter != m_iter_end; ) {
     const dimension_type n_i = m_iter.index();
     const dimension_type id = n_i/2;
-    typename OR_Matrix<N>::const_row_reference_type m_i = *m_iter;
+    Row_reference m_i = *m_iter;
     ++m_iter;
-    typename OR_Matrix<N>::const_row_reference_type m_ci = *m_iter;
+    Row_reference m_ci = *m_iter;
     ++m_iter;
     const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
     const int sign_i = sgn(sc_i);
