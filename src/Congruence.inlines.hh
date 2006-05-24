@@ -107,7 +107,7 @@ Congruence::zero_dim_integrality() {
 inline const Congruence&
 Congruence::zero_dim_false() {
   static const Congruence
-    zdf((Linear_Expression::zero() %= Coefficient_one()) / 0);
+    zdf((Linear_Expression::zero() %= Coefficient(-1)) / 0);
   return zdf;
 }
 
