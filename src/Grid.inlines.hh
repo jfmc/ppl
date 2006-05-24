@@ -46,42 +46,50 @@ Grid::set_congruences_up_to_date() {
 }
 
 inline
-Grid::Grid(const Congruence_System& ccgs) {
-  if (ccgs.space_dimension() > max_space_dimension())
-    throw_space_dimension_overflow("Grid(ccgs)",
-				   "the space dimension of ccgs "
-				   "exceeds the maximum allowed "
-				   "space dimension");
+Grid::Grid(const Congruence_System& ccgs)
+  : con_sys(ccgs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(ccgs)",
+					     "the space dimension of ccgs "
+					     "exceeds the maximum allowed "
+					     "space dimension"), 0
+	    : ccgs.space_dimension()),
+    gen_sys(ccgs.space_dimension()) {
   construct(ccgs);
 }
 
 inline
-Grid::Grid(Congruence_System& cgs) {
-  if (cgs.space_dimension() > max_space_dimension())
-    throw_space_dimension_overflow("Grid(cgs)",
-				   "the space dimension of cgs "
-				   "exceeds the maximum allowed "
-				   "space dimension");
+Grid::Grid(Congruence_System& cgs)
+  : con_sys(cgs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(cgs)",
+					     "the space dimension of cgs "
+					     "exceeds the maximum allowed "
+					     "space dimension"), 0
+	    : cgs.space_dimension()),
+    gen_sys(cgs.space_dimension()) {
   construct(cgs);
 }
 
 inline
-Grid::Grid(const Grid_Generator_System& gs) {
-  if (gs.space_dimension() > max_space_dimension())
-    throw_space_dimension_overflow("Grid(gs)",
-				   "the space dimension of gs "
-				   "exceeds the maximum allowed "
-				   "space dimension");
+Grid::Grid(const Grid_Generator_System& gs)
+  : con_sys(gs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(gs)",
+					     "the space dimension of gs "
+					     "exceeds the maximum allowed "
+					     "space dimension"), 0
+	    : gs.space_dimension()),
+    gen_sys(gs.space_dimension()) {
   construct(gs);
 }
 
 inline
-Grid::Grid(Grid_Generator_System& gs) {
-  if (gs.space_dimension() > max_space_dimension())
-    throw_space_dimension_overflow("Grid(gs)",
-				   "the space dimension of gs "
-				   "exceeds the maximum allowed "
-				   "space dimension");
+Grid::Grid(Grid_Generator_System& gs)
+  : con_sys(gs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(gs)",
+					     "the space dimension of gs "
+					     "exceeds the maximum allowed "
+					     "space dimension"), 0
+	    : gs.space_dimension()),
+    gen_sys(gs.space_dimension()) {
   construct(gs);
 }
 

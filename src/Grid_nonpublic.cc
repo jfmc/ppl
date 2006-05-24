@@ -51,6 +51,11 @@ void
 PPL::Grid::construct(const Congruence_System& ccgs) {
   // Protecting against space dimension overflow is up to the caller.
   assert(ccgs.space_dimension() <= max_space_dimension());
+  // Preparing con_sys and gen_sys is up to the caller.
+  assert(ccgs.space_dimension() == con_sys.space_dimension());
+  assert(ccgs.space_dimension() == gen_sys.space_dimension());
+  assert(gen_sys.num_generators() == 0);
+  assert(con_sys.num_rows() == 0);
 
   // Set the space dimension.
   space_dim = ccgs.space_dimension();
@@ -71,10 +76,10 @@ PPL::Grid::construct(const Congruence_System& ccgs) {
       for (dimension_type i = ccgs.num_rows(); i-- > 0; )
 	if (ccgs[i].is_trivial_false()) {
 	  // Inconsistent congruence found: the grid is empty.
-	  // FIXME: Initialize con_sys to the correct dimension in the
-	  //        caller constructors, and copy the necessary parts
-	  //        of set_empty into here.
-	  set_empty();
+	  status.set_empty();
+	  // Insert the zero dim false congruence system into `con_sys'.
+	  // `gen_sys' is already in empty form.
+	  con_sys.insert(Congruence::zero_dim_false());
 	  assert(OK());
 	  return;
 	}
@@ -88,27 +93,32 @@ void
 PPL::Grid::construct(const Grid_Generator_System& const_gs) {
   // Protecting against space dimension overflow is up to the caller.
   assert(const_gs.space_dimension() <= max_space_dimension());
-
-  // TODO: this implementation is just an executable specification.
-  Grid_Generator_System gs = const_gs;
+  // Preparing con_sys and gen_sys is up to the caller.
+  assert(const_gs.space_dimension() == con_sys.space_dimension());
+  assert(const_gs.space_dimension() == gen_sys.space_dimension());
+  assert(gen_sys.num_generators() == 0);
+  assert(con_sys.num_rows() == 0);
 
   // Set the space dimension.
-  space_dim = gs.space_dimension();
+  space_dim = const_gs.space_dimension();
 
   // An empty set of generators defines the empty grid.
-  if (gs.num_generators() == 0) {
-    // FIXME: Initialize gen_sys to the correct dimension in the
-    //        caller constructors, and copy the necessary parts of
-    //        set_empty into here.
-    set_empty();
+  if (const_gs.num_generators() == 0) {
+    status.set_empty();
+    // Insert the zero dim false congruence system into `con_sys'.
+    // `gen_sys' is already in empty form.
+    con_sys.insert(Congruence::zero_dim_false());
     return;
   }
 
   // Non-empty valid generator systems have a supporting point, at least.
-  if (!gs.has_points())
+  if (!const_gs.has_points())
     throw_invalid_generators("Grid(const_gs)", "gs");
 
   if (space_dim > 0) {
+    // TODO: this implementation is just an executable specification.
+    Grid_Generator_System gs = const_gs;
+
     // Steal the rows from `gs'.
     std::swap(gen_sys, gs);
     normalize_divisors(gen_sys);

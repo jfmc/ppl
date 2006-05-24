@@ -31,6 +31,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+// TODO: In the Grid constructors adapt and use the given system if it
+//       is modifiable, instead of using a copy.
+
 PPL::Grid::Grid(dimension_type num_dimensions,
 		const Degenerate_Element kind)
   : con_sys(),
@@ -115,14 +118,15 @@ PPL::Grid::Grid(const Grid& y)
   }
 }
 
-PPL::Grid::Grid(const Constraint_System& ccs) {
+PPL::Grid::Grid(const Constraint_System& ccs)
+  : con_sys(ccs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(ccs)",
+					     "the space dimension of ccs "
+					     "exceeds the maximum allowed "
+					     "space dimension"), 0
+	    : ccs.space_dimension()),
+    gen_sys(ccs.space_dimension()) {
   space_dim = ccs.space_dimension();
-
-  if (space_dim > max_space_dimension())
-    throw_space_dimension_overflow("Grid(ccs)",
-				   "the space dimension of ccs "
-				   "exceeds the maximum allowed "
-				   "space dimension");
 
   if (space_dim == 0) {
     // See if an inconsistent constraint has been passed.
@@ -130,7 +134,10 @@ PPL::Grid::Grid(const Constraint_System& ccs) {
          ccs_end = ccs.end(); i != ccs_end; ++i)
       if (i->is_inconsistent()) {
 	// Inconsistent constraint found: the grid is empty.
-	set_empty();
+	status.set_empty();
+	// Insert the zero dim false congruence system into `con_sys'.
+	// `gen_sys' is already in empty form.
+	con_sys.insert(Congruence::zero_dim_false());
 	assert(OK());
 	return;
       }
@@ -148,14 +155,15 @@ PPL::Grid::Grid(const Constraint_System& ccs) {
   construct(cgs);
 }
 
-PPL::Grid::Grid(Constraint_System& cs) {
+PPL::Grid::Grid(Constraint_System& cs)
+ : con_sys(cs.space_dimension() > max_space_dimension()
+	   ? throw_space_dimension_overflow("Grid(cs)",
+					    "the space dimension of cs "
+					    "exceeds the maximum allowed "
+					    "space dimension"), 0
+	   : cs.space_dimension()),
+   gen_sys(cs.space_dimension()) {
   space_dim = cs.space_dimension();
-
-  if (space_dim > max_space_dimension())
-    throw_space_dimension_overflow("Grid(cs)",
-				   "the space dimension of cs "
-				   "exceeds the maximum allowed "
-				   "space dimension");
 
   if (space_dim == 0) {
     // See if an inconsistent constraint has been passed.
@@ -163,7 +171,10 @@ PPL::Grid::Grid(Constraint_System& cs) {
          cs_end = cs.end(); i != cs_end; ++i)
       if (i->is_inconsistent()) {
 	// Inconsistent constraint found: the grid is empty.
-	set_empty();
+	status.set_empty();
+	// Insert the zero dim false congruence system into `con_sys'.
+	// `gen_sys' is already in empty form.
+	con_sys.insert(Congruence::zero_dim_false());
 	assert(OK());
 	return;
       }
@@ -172,7 +183,6 @@ PPL::Grid::Grid(Constraint_System& cs) {
     return;
   }
 
-  // FIXME: Adapt and use cs instead of using a copy.
   Congruence_System cgs;
   cgs.insert(0*Variable(space_dim - 1) %= 1);
   for (Constraint_System::const_iterator i = cs.begin(),

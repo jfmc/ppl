@@ -67,6 +67,11 @@ Congruence_System::Congruence_System(const Congruence_System& cs)
 }
 
 inline
+Congruence_System::Congruence_System(const dimension_type d)
+  : Matrix(0, d + 2) {
+}
+
+inline
 Congruence_System::~Congruence_System() {
 }
 

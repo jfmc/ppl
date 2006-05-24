@@ -360,6 +360,9 @@ protected:
 
 private:
 
+  //! Builds an empty (i.e. zero rows) system of dimension \p d.
+  explicit Congruence_System(const dimension_type d);
+
   /*! \brief
     Concatenates copies of the congruences from \p cgs onto \p *this.
 
