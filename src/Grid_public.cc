@@ -320,9 +320,6 @@ PPL::Grid::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0)
-    // FIXME: Confirm that the relation with the false cg is correct.
-    //        Does the false congruence define the empty grid?  If so,
-    //        is the empty grid disjoint from the universe grid?
     if (cg.inhomogeneous_term() == 0)
       return Poly_Con_Relation::is_included();
     else if (cg.is_equality())
@@ -481,11 +478,80 @@ PPL::Grid::relation_with(const Grid_Generator& g) const {
 
 PPL::Poly_Con_Relation
 PPL::Grid::relation_with(const Constraint& c) const {
-  if (c.is_inequality())
-    return Poly_Con_Relation::nothing();
+  // Dimension-compatibility check.
+  if (space_dim < c.space_dimension())
+    throw_dimension_incompatible("relation_with(c)", "c", c);
 
-  Congruence cg(c);
-  return relation_with(cg);
+  if (c.is_equality()) {
+    Congruence cg(c);
+    return relation_with(cg);
+  }
+
+  if (marked_empty())
+    return Poly_Con_Relation::is_included()
+      && Poly_Con_Relation::is_disjoint();
+
+  if (space_dim == 0)
+    if (c.is_inconsistent())
+      return Poly_Con_Relation::is_disjoint();
+    else
+      return Poly_Con_Relation::is_included();
+
+  if (!generators_are_up_to_date() && !update_generators())
+    // Updating found the grid empty.
+    return Poly_Con_Relation::is_included()
+      && Poly_Con_Relation::is_disjoint();
+
+  // Return one of the relations
+  // 'strictly_intersects'   a strict subset of the grid points satisfy c
+  // 'is_included'	     every grid point satisfies c
+  // 'is_disjoint'	     c and the grid occupy seperate spaces.
+
+  // There is always a point.
+
+  bool point_is_included = false;
+  const Grid_Generator* first_point = NULL;
+
+  for (Grid_Generator_System::const_iterator g = gen_sys.begin(),
+         gen_sys_end = gen_sys.end(); g != gen_sys_end; ++g)
+    switch (g->type()) {
+
+    case Grid_Generator::POINT:
+      {
+	Grid_Generator& gen = const_cast<Grid_Generator&>(*g);
+	if (first_point == NULL) {
+	  first_point = &gen;
+	  const int sign = Scalar_Products::sign(c, gen);
+	  Constraint::Type type = c.type();
+	  if ((type == Constraint::NONSTRICT_INEQUALITY && sign >= 0)
+	      || (type == Constraint::STRICT_INEQUALITY && sign > 0))
+	    point_is_included = true;
+	  break;
+	}
+	// Else convert g to a parameter, and continue into the
+	// parameter case.
+	gen.set_is_parameter();
+	const Grid_Generator& first = *first_point;
+	for (dimension_type i = gen.size() - 1; i-- > 0; )
+	  gen[i] -= first[i];
+      }
+
+    case Grid_Generator::PARAMETER:
+    case Grid_Generator::LINE:
+      Grid_Generator& gen = const_cast<Grid_Generator&>(*g);
+      if (gen.is_line_or_parameter())
+	for (dimension_type i = c.space_dimension(); i-- > 0; ) {
+	  Variable v(i);
+	  if (c.coefficient(v) != 0 && gen.coefficient(v) != 0)
+	    return Poly_Con_Relation::strictly_intersects();
+	}
+      break;
+    }
+
+  if (point_is_included)
+    // Any parameters and lines are also include.
+    return Poly_Con_Relation::is_included();
+  return Poly_Con_Relation::is_disjoint();
 }
 
 bool
