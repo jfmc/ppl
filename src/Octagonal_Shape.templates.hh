@@ -3829,7 +3829,11 @@ Octagonal_Shape<T>
   // - If t == 0, then expr == b, with `b' a constant;
   // - If t == 1, then expr == a*j + b, where `j != v';
   // - If t == 2, the `expr' is of the general form.
+  // Use these type aliases for short.
+  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
   // Avoid repeated computations.
+  const Row_Iterator m_begin = matrix.row_begin();
   const dimension_type n_var = 2*var_id;
   TEMP_INTEGER(minus_den);
   neg_assign(minus_den, denominator);
@@ -3954,13 +3958,13 @@ Octagonal_Shape<T>
 	// Approximate the homogeneous part of `sc_expr'.
 	// Note: indices above `w_id' can be disregarded, as they all have
 	// a zero coefficient in `expr'.
-	for (typename OR_Matrix<N>::const_row_iterator m_iter = matrix.row_begin(),
-	       m_end = m_iter + (2*w_id) + 2; m_iter != m_end; ) {
+	for (Row_Iterator m_iter = m_begin, m_end = m_iter + (2*w_id) + 2;
+	     m_iter != m_end; ) {
 	  const dimension_type n_i = m_iter.index();
 	  const dimension_type id = n_i/2;
-	  typename OR_Matrix<N>::const_row_reference_type m_i = *m_iter;
+	  Row_Reference m_i = *m_iter;
 	  ++m_iter;
-	  typename OR_Matrix<N>::const_row_reference_type m_ci = *m_iter;
+	  Row_Reference m_ci = *m_iter;
 	  ++m_iter;
 	  const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
 	  const int sign_i = sgn(sc_i);
@@ -4038,13 +4042,13 @@ Octagonal_Shape<T>
 	assign_r(sum, minus_sc_b, ROUND_UP);
 
 	// Approximate the homogeneous part of `-sc_expr'.
-	for (typename OR_Matrix<N>::const_row_iterator m_iter = matrix.row_begin(),
-	       m_end = m_iter + (2*w_id) + 2; m_iter != m_end; ) {
+	for (Row_Iterator m_iter = m_begin, m_end = m_iter + (2*w_id) + 2;
+	     m_iter != m_end; ) {
 	  const dimension_type n_i = m_iter.index();
 	  const dimension_type id = n_i/2;
-	  typename OR_Matrix<N>::const_row_reference_type m_i = *m_iter;
+	  Row_Reference m_i = *m_iter;
 	  ++m_iter;
-	  typename OR_Matrix<N>::const_row_reference_type m_ci = *m_iter;
+	  Row_Reference m_ci = *m_iter;
 	  ++m_iter;
 	  const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
 	  const int sign_i = sgn(sc_i);
