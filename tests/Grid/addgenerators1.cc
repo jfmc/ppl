@@ -318,9 +318,6 @@ test12() {
   print_generators(gr,
 		   "*** gr.add_generators(gs) ***");
 
-  gr.ascii_dump();
-  known_gr.ascii_dump();
-
   return ok;
 }
 
@@ -342,9 +339,6 @@ test13() {
 
   print_generators(gr,
 		   "*** gr.add_generators(gs) ***");
-
-  gr.ascii_dump();
-  known_gr.ascii_dump();
 
   return ok;
 }
