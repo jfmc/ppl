@@ -849,12 +849,12 @@ BEGIN_MAIN
   DO_TEST(test18);
   DO_TEST(test19);
   DO_TEST(test20);
-  DO_TEST(test21);
-  DO_TEST(test22);
-  DO_TEST(test23);
-  DO_TEST(test24);
-  DO_TEST(test25);
-  DO_TEST(test26);
+  DO_TEST_F64(test21);
+  DO_TEST_F32(test22);
+  DO_TEST_F8(test23);
+  DO_TEST_F8(test24);
+  DO_TEST_F8(test25);
+  DO_TEST_F8(test26);
   DO_TEST(test27);
   DO_TEST(test28);
 END_MAIN
