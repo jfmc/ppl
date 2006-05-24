@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// Any grid and an inequality.
+// A point and an inequality.
 bool
 test01() {
   Variable A(0);
@@ -34,7 +34,7 @@ test01() {
   gr.add_generator(grid_point(A - B));
   print_generators(gr, "*** gr ***");
 
-  bool ok = gr.relation_with(A - B >= 1) == Poly_Con_Relation::nothing();
+  bool ok = gr.relation_with(A - B >= 1) == Poly_Con_Relation::is_included();
 
   return ok;
 }
@@ -50,9 +50,21 @@ test02() {
   gr.add_generator(grid_line(A));
   print_generators(gr, "*** gr ***");
 
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+
   bool ok = (gr.relation_with(A + 0*B == 0)
 	     == Poly_Con_Relation::strictly_intersects()
-	     && gr.relation_with(B + 0*B == -2)
+	     && gr.relation_with(B > -2)
+	     == Poly_Con_Relation::is_included()
+ 	     && gr.relation_with(B > 2)
+ 	     == Poly_Con_Relation::is_disjoint()
+ 	     && gr.relation_with(B >= 2)
+ 	     == Poly_Con_Relation::is_disjoint()
+ 	     && gr.relation_with(B < -2)
+ 	     == Poly_Con_Relation::is_disjoint()
+ 	     && gr.relation_with(B <= -2)
+ 	     == Poly_Con_Relation::is_disjoint()
+	     && gr.relation_with(B == -2)
 	     == Poly_Con_Relation::is_disjoint());
 
   return ok;
@@ -85,6 +97,9 @@ test04() {
 
   bool ok = (gr.relation_with(B == 0)
 	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::is_disjoint())
+	     && gr.relation_with(B > 0)
+	     == (Poly_Con_Relation::is_included()
 		 && Poly_Con_Relation::is_disjoint()));
 
   return ok;
@@ -101,6 +116,12 @@ test05() {
 	     == Poly_Con_Relation::is_disjoint()
 	     // True.
 	     && gr.relation_with(Linear_Expression(1) == 1)
+	     == Poly_Con_Relation::is_included()
+	     // False.
+	     && gr.relation_with(Linear_Expression(1) < 0)
+	     == Poly_Con_Relation::is_disjoint()
+	     // True.
+	     && gr.relation_with(Linear_Expression(1) >= 0)
 	     == Poly_Con_Relation::is_included());
 
   return ok;
@@ -118,6 +139,10 @@ test06() {
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(5*A - 2*B == 1)
+	     == Poly_Con_Relation::is_disjoint()
+	     && gr.relation_with(5*A - 2*B > 1)
+	     == Poly_Con_Relation::is_disjoint()
+	     && gr.relation_with(5*A - 2*B >= 1)
 	     == Poly_Con_Relation::is_disjoint());
 
   return ok;
@@ -135,6 +160,10 @@ test07() {
   bool ok = (gr.relation_with(A == 3)
 	     == Poly_Con_Relation::is_disjoint()
 	     && gr.relation_with(2*A == 1)
+	     == Poly_Con_Relation::is_included()
+	     && gr.relation_with(2*A < 1)
+	     == Poly_Con_Relation::is_disjoint()
+	     && gr.relation_with(2*A >= 1)
 	     == Poly_Con_Relation::is_included());
 
   return ok;
@@ -151,6 +180,8 @@ test08() {
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(10*A == 1)
+	     == Poly_Con_Relation::is_disjoint()
+	     && gr.relation_with(Linear_Expression(10) > 10)
 	     == Poly_Con_Relation::is_disjoint());
 
   return ok;
@@ -167,6 +198,8 @@ test09() {
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(Linear_Expression(10) == 10)
+	     == Poly_Con_Relation::is_included()
+	     && gr.relation_with(Linear_Expression(10) >= 10)
 	     == Poly_Con_Relation::is_included());
 
   return ok;
@@ -184,6 +217,8 @@ test10() {
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(A + B == 0)
+	     == Poly_Con_Relation::strictly_intersects()
+	     && gr.relation_with(A + B >= 0)
 	     == Poly_Con_Relation::strictly_intersects());
 
   return ok;
@@ -199,7 +234,7 @@ test11() {
   print_generators(gr, "*** gr ***");
 
   try {
-    gr.relation_with(A + B == 0);
+    gr.relation_with(A + B >= 0);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -222,6 +257,9 @@ test12() {
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(B == 0)
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::is_disjoint())
+	     && gr.relation_with(B >= 0)
 	     == (Poly_Con_Relation::is_included()
 		 && Poly_Con_Relation::is_disjoint()));
 
@@ -293,7 +331,85 @@ test16() {
 
   bool ok = (gr.relation_with(A + B == 8)
 	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::is_disjoint())
+	     && gr.relation_with(A + B > 8)
+	     == (Poly_Con_Relation::is_included()
 		 && Poly_Con_Relation::is_disjoint()));
+
+  return ok;
+}
+
+// A simple example.
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+
+  Grid gr(2, EMPTY);
+  gr.add_generator(grid_point(B));
+  gr.add_generator(parameter(A));
+  print_generators(gr, "*** gr ***");
+
+  bool ok = (gr.relation_with(A > 1)
+	     == Poly_Con_Relation::strictly_intersects()
+	     && gr.relation_with(A >= 1)
+	     == Poly_Con_Relation::strictly_intersects()
+	     && gr.relation_with(A < 1)
+	     == Poly_Con_Relation::strictly_intersects()
+	     && gr.relation_with(A <= 1)
+	     == Poly_Con_Relation::strictly_intersects());
+
+  return ok;
+}
+
+// A grid in 3D.
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  // Regularly spaced parallel lines along a slanted plane in 3D.
+  Grid gr(3, EMPTY);
+  gr.add_generator(grid_point(A + B + C));
+  gr.add_generator(grid_line(A - 2*B + 3*C));
+  gr.add_generator(parameter(A - B, 3));
+  print_generators(gr, "*** gr ***");
+
+  bool ok = (gr.relation_with(A + B + C == 0)
+	     == Poly_Con_Relation::strictly_intersects()
+	     && gr.relation_with(A + B == 0)
+	     == Poly_Con_Relation::strictly_intersects()
+	     && gr.relation_with(A == 0)
+	     == Poly_Con_Relation::strictly_intersects()
+	     && gr.relation_with(Linear_Expression(0) == 0)
+	     == Poly_Con_Relation::is_included());
+
+  return ok;
+}
+
+// Zero dimension empty grid.
+bool
+test19() {
+  Grid gr(0, EMPTY);
+  print_generators(gr, "*** gr ***");
+
+  bool ok = (// False.
+	     gr.relation_with(Linear_Expression(1) == 0)
+	     == (Poly_Con_Relation::is_disjoint()
+		 && Poly_Con_Relation::is_included())
+	     // True.
+	     && gr.relation_with(Linear_Expression(1) == 1)
+	     == (Poly_Con_Relation::is_disjoint()
+		 && Poly_Con_Relation::is_included())
+	     // False.
+	     && gr.relation_with(Linear_Expression(1) < 0)
+	     == (Poly_Con_Relation::is_disjoint()
+		 && Poly_Con_Relation::is_included())
+	     // True.
+	     && gr.relation_with(Linear_Expression(1) >= 0)
+	     == (Poly_Con_Relation::is_disjoint()
+		 && Poly_Con_Relation::is_included()));
 
   return ok;
 }
@@ -317,4 +433,7 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN
