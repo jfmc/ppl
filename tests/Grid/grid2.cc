@@ -272,7 +272,7 @@ test09() {
   return ok;
 }
 
-// cong_test4 from Chiara Convert_Test.cc -- in grid3.cc.
+// cong_test4 from Chiara Convert_Test.cc -- test20.
 
 // cong_test5 from Chiara Convert_Test.cc.
 bool
