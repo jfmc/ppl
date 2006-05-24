@@ -3118,7 +3118,11 @@ Octagonal_Shape<T>
   // Use these type aliases for short.
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
   // Avoid repeated computations.
+  const Row_Iterator m_begin = matrix.row_begin();
+  const Row_Iterator m_end = matrix.row_end();
   const dimension_type n_var = 2*var_id;
   const Coefficient& b = expr.inhomogeneous_term();
   TEMP_INTEGER(minus_den);
@@ -3178,7 +3182,7 @@ Octagonal_Shape<T>
 	      // Translate all the constraints of the form `v - w <= cost'
 	      // into the constraint `v - w <= cost + b/denominator';
 	      // forget each constraint `w - v <= cost1'.
-	      Row_Iterator m_iter = matrix.row_begin() + n_var;
+	      Row_Iterator m_iter = m_begin + n_var;
 	      Row_Reference m_v = *m_iter;
 	      N& m_v_cv = m_v[n_var+1];
 	      ++m_iter;
@@ -3186,8 +3190,7 @@ Octagonal_Shape<T>
 	      N& m_cv_v = m_cv[n_var];
 	      ++m_iter;
 	      // NOTE: delay update of m_v_cv and m_cv_v.
-	      for (Row_Iterator m_end = matrix.row_end();
-		   m_iter != m_end; ++m_iter) {
+	      for ( ;m_iter != m_end; ++m_iter) {
 		Row_Reference m_i = *m_iter;
 		N& m_i_v = m_i[n_var];
 		add_assign_r(m_i_v, m_i_v, d, ROUND_UP);
@@ -3247,7 +3250,7 @@ Octagonal_Shape<T>
 	      // Translate each constraint `w - v <= cost'
 	      // into the constraint `w - v <= cost - b/denominator';
 	      // forget each constraint `v - w <= cost1'.
-	      Row_Iterator m_iter = matrix.row_begin() + n_var;
+	      Row_Iterator m_iter = m_begin + n_var;
 	      Row_Reference m_v = *m_iter;
 	      N& m_v_cv = m_v[n_var+1];
 	      ++m_iter;
@@ -3255,8 +3258,7 @@ Octagonal_Shape<T>
 	      N& m_cv_v = m_cv[n_var];
 	      ++m_iter;
 	      // NOTE: delay update of m_v_cv and m_cv_v.
-	      for (Row_Iterator m_end = matrix.row_end();
-		   m_iter != m_end; ++m_iter) {
+	      for ( ;m_iter != m_end; ++m_iter) {
 		Row_Reference m_i = *m_iter;
 		m_i[n_var] = PLUS_INFINITY;
 		add_assign_r(m_i[n_var+1], m_i[n_var+1], d, ROUND_UP);
@@ -3358,13 +3360,13 @@ Octagonal_Shape<T>
       // Approximate the homogeneous part of `sc_expr'.
       // Note: indices above `w' can be disregarded, as they all have
       // a zero coefficient in `sc_expr'.
-      for (typename OR_Matrix<N>::const_row_iterator m_iter = matrix.row_begin(),
-	     m_end = m_iter + (2*w_id) + 2; m_iter != m_end; ) {
+      for (Row_iterator m_iter = m_begin, m_iter_end = m_iter + (2*w_id) + 2;
+	   m_iter != m_iter_end; ) {
 	const dimension_type n_i = m_iter.index();
 	const dimension_type id = n_i/2;
-	typename OR_Matrix<N>::const_row_reference_type m_i = *m_iter;
+	Row_reference m_i = *m_iter;
 	++m_iter;
-	typename OR_Matrix<N>::const_row_reference_type m_ci = *m_iter;
+	Row_reference m_ci = *m_iter;
 	++m_iter;
 	const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
 	const int sign_i = sgn(sc_i);
@@ -3452,13 +3454,13 @@ Octagonal_Shape<T>
       // Approximate the inhomogeneous term.
       assign_r(sum, minus_sc_b, ROUND_UP);
       // Approximate the homogeneous part of `-sc_expr'.
-      for (typename OR_Matrix<N>::const_row_iterator m_iter = matrix.row_begin(),
-	     m_end = m_iter + (2*w_id) + 2; m_iter != m_end; ) {
+      for (Row_iterator m_iter = m_begin, m_iter_end = m_iter + (2*w_id) + 2;
+	   m_iter != m_iter_end; ) {
 	const dimension_type n_i = m_iter.index();
 	const dimension_type id = n_i/2;
-	typename OR_Matrix<N>::const_row_reference_type m_i = *m_iter;
+	Row_reference m_i = *m_iter;
 	++m_iter;
-	typename OR_Matrix<N>::const_row_reference_type m_ci = *m_iter;
+	Row_reference m_ci = *m_iter;
 	++m_iter;
 	const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
 	const int sign_i = sgn(sc_i);
