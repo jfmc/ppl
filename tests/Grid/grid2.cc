@@ -638,6 +638,6 @@ BEGIN_MAIN
   DO_TEST(test18);
   DO_TEST(test19);
   DO_TEST_F8(test20);
-  DO_TEST_F8(test21);
-  DO_TEST_F8(test22);
+  DO_TEST(test21);
+  DO_TEST(test22);
 END_MAIN
