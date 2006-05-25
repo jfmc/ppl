@@ -215,13 +215,18 @@ PPL::Grid::affine_dimension() const {
   if (space_dim == 0 || is_empty())
     return 0;
 
-  // FIXME: Use the minimized congruence system, or the generator
-  //        system in any form.
-
-  const Congruence_System& cgs = minimized_congruences();
+  if (generators_are_up_to_date()) {
+    if (generators_are_minimized())
+      return gen_sys.num_generators() - 1;
+    if (!(congruences_are_up_to_date() && congruences_are_minimized()))
+      return minimized_generators().num_generators() - 1;
+  }
+  else
+    minimized_congruences();
+  assert(congruences_are_minimized());
   dimension_type d = space_dim;
-  for (dimension_type i = cgs.num_rows(); i-- > 0; )
-    if (cgs[i].is_equality())
+  for (dimension_type i = con_sys.num_rows(); i-- > 0; )
+    if (con_sys[i].is_equality())
       --d;
   return d;
 }
