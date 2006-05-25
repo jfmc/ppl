@@ -254,7 +254,7 @@ test12() {
   Grid gr(2);
   gr.add_congruence(A == 1);
   gr.add_congruence(A == 2);
-  print_generators(gr, "*** gr ***");
+  print_congruences(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(B == 0)
 	     == (Poly_Con_Relation::is_included()
