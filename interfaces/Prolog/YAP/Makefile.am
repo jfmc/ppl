@@ -23,9 +23,23 @@
 EXTRA_DIST = ppl_yap.pl yap_clpq.pl yap_clpq2.pl yap_pl_check.pl
 
 if BUILD_YAP_PROLOG_INTERFACE
+
+BUILT_SOURCES = ppl_yap.cc
+
+noinst_HEADERS = ppl_interface_generator_yap_cc.m4
+
+nodist_noinst_HEADERS = ppl_yap.cc
+
+ppl_yap.cc: ppl_interface_generator_yap_cc.m4 Makefile
+	rm -f $@
+	m4 -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_yap_cc.m4 > $@
+
 if ENABLE_SHARED
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces/Prolog \
+-I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 -I$(top_builddir)/Watchdog/src \
 @extra_includes@

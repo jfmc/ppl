@@ -40,6 +40,11 @@ $(top_builddir)/Watchdog/src/libpwl.la \
 @extra_libraries@
 libppl_gprolog_la_LDFLAGS = -module -avoid-version
 
+ppl_gprolog.pl: ppl_interface_generator_gprolog_pl.m4 Makefile
+	rm -f $@
+	m4 -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_gprolog_pl.m4 > $@
+
 pkglib_DATA = ppl_gprolog.pl
 
 if ENABLE_SHARED
@@ -54,18 +59,18 @@ endif !ENABLE_SHARED
 
 ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 	gplc --c-compiler $(CXX) -o $@ \
-		$(srcdir)/ppl_gprolog.pl $(LIBPPL_GPROLOG) \
+		ppl_gprolog.pl $(LIBPPL_GPROLOG) \
 		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
 
 gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq.pl
 	gplc --c-compiler $(CXX) -o $@ \
-		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
+		ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../tests/clpq.pl $(LIBPPL_GPROLOG) \
 		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
 
 gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq2.pl
 	gplc --c-compiler $(CXX) -o $@ \
-		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
+		ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../tests/clpq2.pl $(LIBPPL_GPROLOG) \
 		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
 

@@ -32,10 +32,18 @@ sp_pl_check.pl
 if BUILD_SICSTUS_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 -I$(top_builddir)/Watchdog/src \
 $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
+
+BUILT_SOURCES = ppl_sicstus_sd.cc
+
+ppl_sicstus_sd.cc: ppl_interface_generator_sicstus_sd_cc.m4 Makefile
+	rm -f $@
+	m4 -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_sicstus_sd_cc.m4 > $@
 
 bin_PROGRAMS = ppl_sicstus
 ppl_sicstus_SOURCES =

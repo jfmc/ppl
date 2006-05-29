@@ -20,6 +20,22 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = Ciao GNU SICStus SWI XSB YAP tests
+SUBDIRS = . Ciao GNU SICStus SWI XSB YAP tests
 
-noinst_HEADERS = ppl_prolog.icc exceptions.hh track_allocation.hh
+# Interface generator files.
+interface_generator_files = \
+ppl_interface_generator_prolog_dat.m4 \
+ppl_interface_generator_prolog_icc.m4 \
+ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_prolog_icc_code.m4 \
+ppl_interface_generator_prolog_icc_preamble
+
+noinst_HEADERS = exceptions.hh track_allocation.hh \
+                 $(interface_generator_files)
+
+nodist_noinst_HEADERS = ppl_prolog.icc
+
+ppl_prolog.icc: $(interface_generator_files) Makefile
+	rm -f $@
+	m4 -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_prolog_icc.m4 > $@

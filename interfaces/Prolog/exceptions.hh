@@ -116,6 +116,13 @@ public:
   }
 };
 
+class not_a_grid_handle : public internal_exception {
+public:
+  explicit not_a_grid_handle(Prolog_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
 class not_a_complexity_class : public internal_exception {
 public:
   explicit not_a_complexity_class(Prolog_term_ref t)
