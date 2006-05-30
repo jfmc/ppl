@@ -363,15 +363,6 @@ public:
   */
   bool all_homogeneous_terms_are_zero() const;
 
-  /*! \brief
-    Scales \p *this to be represented with a divisor of \p d (if
-    \*this is a parameter or point).
-
-    \exception std::invalid_argument
-    Thrown if \p d is zero.
-  */
-  void scale_to_divisor(Coefficient_traits::const_reference d);
-
   PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -400,6 +391,17 @@ public:
   void coefficient_swap(Grid_Generator& y);
 
 private:
+  /*! \brief
+    Scales \p *this to be represented with a divisor of \p d (if
+    \*this is a parameter or point).
+
+    It is assumed that \p d is a multiple of the current divisor.
+
+    \exception std::invalid_argument
+    Thrown if \p d is zero.
+  */
+  void scale_to_divisor(Coefficient_traits::const_reference d);
+
   /*! \brief
     Constructs from polyhedron generator \p g, stealing the underlying
     data structures from \p g.

@@ -210,7 +210,7 @@ PPL::Congruence_System::normalize_moduli() {
       Coefficient_traits::const_reference modulus = operator[](row).modulus();
       if (modulus <= 0 || modulus == lcm)
 	continue;
-      factor = lcm / modulus;
+      exact_div_assign(factor, lcm, modulus);
       for (dimension_type col = row_size; col-- > 0; )
 	operator[](row)[col] *= factor;
       operator[](row)[row_size-1] = lcm;

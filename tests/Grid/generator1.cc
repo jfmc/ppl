@@ -422,6 +422,7 @@ test20() {
   return ok;
 }
 
+#if 0 // scale_to_divisor is now private.
 // Exception in method scale_to_divisor.
 static bool
 test21() {
@@ -442,6 +443,7 @@ test21() {
   }
   return false;
 }
+#endif
 
 // Exception when trying to get the divisor of a line.
 static bool
@@ -487,6 +489,6 @@ BEGIN_MAIN
   DO_TEST(test18);
   DO_TEST(test19);
   DO_TEST(test20);
-  DO_TEST(test21);
+  //DO_TEST(test21);
   DO_TEST(test22);
 END_MAIN

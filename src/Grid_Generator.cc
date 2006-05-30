@@ -237,7 +237,7 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
 				  "d == 0.");
 
     TEMP_INTEGER(factor);
-    factor = d / divisor();
+    exact_div_assign(factor, d, divisor());
     set_divisor(d);
     assert(factor > 0);
     if (factor > 1)
