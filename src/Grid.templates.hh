@@ -76,7 +76,7 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
     TEMP_INTEGER(u_d);
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
     Grid_Generator& point = gen_sys[0];
-    Coefficient& point_divisor = const_cast<Coefficient&>(point.divisor());
+    Coefficient_traits::const_reference point_divisor = point.divisor();
     for (dimension_type k = space_dim; k-- > 0; ) {
       bool closed;
       // TODO: Consider producing the system(s) in minimized form.
@@ -169,7 +169,7 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
     TEMP_INTEGER(d);
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
     Grid_Generator& point = gen_sys[0];
-    Coefficient& point_divisor = const_cast<Coefficient&>(point.divisor());
+    Coefficient_traits::const_reference point_divisor = point.divisor();
     for (dimension_type k = space_dim; k-- > 0; ) {
       bool closed;
       // TODO: Consider producing the system(s) in minimized form.
