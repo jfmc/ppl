@@ -114,18 +114,20 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
 			    dimension_type column) {
   TRACE(cerr << "reduce_line_with_line" << endl);
 
-  TEMP_INTEGER(gcd);
-  gcd_assign(gcd, pivot[column], row[column]);
+  Coefficient_traits::const_reference pivot_column = pivot[column];
+  Coefficient& row_column = row[column];
+  TEMP_INTEGER(reduced_row_col);
+  // Use reduced_row_col temporarily to hold the gcd.
+  gcd_assign(reduced_row_col, pivot_column, row_column);
   // Store the reduced ratio between pivot[column] and row[column].
   TEMP_INTEGER(reduced_pivot_col);
-  TEMP_INTEGER(reduced_row_col);
-  reduced_pivot_col = pivot[column] / gcd;
-  reduced_row_col = row[column] / gcd;
+  exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
+  exact_div_assign(reduced_row_col, row_column, reduced_row_col);
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
-  row[column] = 0;
-  // pivot.size() - 1 is the index for the parameter divisor
-  // so we start reducing the line at index pivot.size() - 2.
+  row_column = 0;
+  // pivot.size() - 1 is the index for the parameter divisor so we
+  // start reducing the line at index pivot.size() - 2.
   for (dimension_type col = pivot.size() - 2;
        col > column;
        --col) {
@@ -143,16 +145,18 @@ Grid::reduce_equality_with_equality(Congruence& row,
   // Assume two equalities.
   assert(row.modulus() == 0 && pivot.modulus() == 0);
 
-  TEMP_INTEGER(gcd);
-  gcd_assign(gcd, pivot[column], row[column]);
+  Coefficient_traits::const_reference pivot_column = pivot[column];
+  Coefficient& row_column = row[column];
+  TEMP_INTEGER(reduced_row_col);
+  // Use reduced_row_col temporarily to hold the gcd.
+  gcd_assign(reduced_row_col, pivot_column, row_column);
   // Store the reduced ratio between pivot[column] and row[column].
   TEMP_INTEGER(reduced_pivot_col);
-  TEMP_INTEGER(reduced_row_col);
-  reduced_pivot_col = pivot[column] / gcd;
-  reduced_row_col = row[column] / gcd;
+  exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
+  exact_div_assign(reduced_row_col, row_column, reduced_row_col);
   // Multiply row, then subtract from it a multiple of pivot such that
   // the result in row[column] is zero.
-  row[column] = 0;
+  row_column = 0;
   for (dimension_type col = column; col-- > 0; ) {
     Coefficient& row_col = row[col];
     row_col *= reduced_pivot_col;
@@ -166,18 +170,23 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
 			const dimension_type column,
 			const dimension_type start,
 			const dimension_type end) {
-  TEMP_INTEGER(gcd);
+  Coefficient& pivot_column = pivot[column];
+  Coefficient& row_column = row[column];
+
   TEMP_INTEGER(s);
   TEMP_INTEGER(t);
-  gcdext_assign(gcd, pivot[column], row[column], s, t);
+  TEMP_INTEGER(reduced_row_col);
+  // Use reduced_row_col temporarily to hold the gcd.
+  gcdext_assign(reduced_row_col, pivot_column, row_column, s, t);
   // Now pivot[column] * s + row[column] * t == gcd.
-  TRACE(cerr << "  gcd " << gcd << ", s " << s << ", t " << t << endl);
+  TRACE(cerr << "  gcd " << reduced_row_col
+	     << ", s " << s << ", t " << t << endl);
 
   // Store the reduced ratio between pivot[column] and row[column].
   TEMP_INTEGER(reduced_pivot_col);
-  TEMP_INTEGER(reduced_row_col);
-  reduced_pivot_col = pivot[column] / gcd;
-  reduced_row_col = row[column] / gcd;
+  exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
+  pivot_column = reduced_row_col /* gcd */;
+  exact_div_assign(reduced_row_col, row_column, reduced_row_col);
   TRACE(cerr << "  reduced_pivot_col " << reduced_pivot_col
 	     << ", reduced_row_col " << reduced_row_col << endl);
 
@@ -188,8 +197,7 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
   // integer.
   assert(pivot.size() > 0);
   assert(row.size() > 0);
-  pivot[column] = gcd;
-  row[column] = 0;
+  row_column = 0;
   TEMP_INTEGER(old_pivot_col);
   for (dimension_type col = start; col < end; ++col) {
     Coefficient& pivot_col = pivot[col];
@@ -211,24 +219,27 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // change here may be needed there too.
   TRACE(cerr << "reduce_parameter_with_line" << endl);
 
+  Coefficient_traits::const_reference pivot_column = pivot[column];
+  Coefficient& row_column = row[column];
+
   // Subtract one to allow for the parameter divisor column
   const dimension_type num_columns = sys.num_columns() - 1;
 
   // If the elements at column in row and pivot are the same, then
   // just subtract pivot from row.
-  if (row[column] == pivot[column]) {
+  if (row_column == pivot_column) {
     for (dimension_type col = num_columns; col-- > 0; )
       row[col] -= pivot[col];
     return;
   }
 
-  TEMP_INTEGER(gcd);
-  gcd_assign(gcd, pivot[column], row[column]);
+  TEMP_INTEGER(reduced_row_col);
+  // Use reduced_row_col temporarily to hold the gcd.
+  gcd_assign(reduced_row_col, pivot_column, row_column);
   // Store the reduced ratio between pivot[column] and row[column].
   TEMP_INTEGER(reduced_pivot_col);
-  TEMP_INTEGER(reduced_row_col);
-  reduced_pivot_col = pivot[column] / gcd;
-  reduced_row_col = row[column] / gcd;
+  exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
+  exact_div_assign(reduced_row_col, row_column, reduced_row_col);
 
   // Multiply row such that a multiple of pivot can be subtracted from
   // it below to render row[column] zero.  This requires multiplying
@@ -250,7 +261,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   }
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
-  row[column] = 0;
+  row_column = 0;
   for (dimension_type col = num_columns - 1; col > column; --col)
     sub_mul_assign(row[col], reduced_row_col, pivot[col]);
 }
@@ -265,28 +276,31 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   TRACE(cerr << "reduce_congruence_with_equality" << endl);
   assert(row.modulus() > 0 && pivot.modulus() == 0);
 
+  Coefficient_traits::const_reference pivot_column = pivot[column];
+  Coefficient& row_column = row[column];
+
   dimension_type num_columns = sys.num_columns();
 
   // If the elements at `column' in row and pivot are the same, then
   // just subtract `pivot' from `row'.
-  if (row[column] == pivot[column]) {
+  if (row_column == pivot_column) {
     for (dimension_type col = num_columns; col-- > 0; )
       row[col] -= pivot[col];
     return;
   }
 
-  TEMP_INTEGER(gcd);
-  gcd_assign(gcd, pivot[column], row[column]);
+  TEMP_INTEGER(reduced_row_col);
+  // Use reduced_row_col temporarily to hold the gcd.
+  gcd_assign(reduced_row_col, pivot_column, row_column);
   TEMP_INTEGER(reduced_pivot_col);
-  TEMP_INTEGER(reduced_row_a);
-  reduced_pivot_col = pivot[column] / gcd;
-  reduced_row_a = row[column] / gcd;
+  exact_div_assign(reduced_pivot_col, pivot_column, reduced_row_col);
+  exact_div_assign(reduced_row_col, row_column, reduced_row_col);
   // Ensure that `reduced_pivot_col' is positive, so that the modulus
   // remains positive when multiplying the proper congruences below.
   // It's safe to swap the signs as row[column] will still come out 0.
   if (reduced_pivot_col < 0) {
     neg_assign(reduced_pivot_col);
-    neg_assign(reduced_row_a);
+    neg_assign(reduced_row_col);
   }
   // Multiply `row', including the modulus, by reduced_pivot_col.  To
   // keep all the moduli the same this requires multiplying all the
@@ -300,11 +314,11 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   // Column num_columns contains the modulus, so start at the next
   // column.
   --num_columns;
-  row[column] = 0;
+  row_column = 0;
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
   for (dimension_type col = column; col-- > 0; )
-    sub_mul_assign(row[col], reduced_row_a, pivot[col]);
+    sub_mul_assign(row[col], reduced_row_col, pivot[col]);
 }
 
 #ifndef NDEBUG
