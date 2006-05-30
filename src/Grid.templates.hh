@@ -525,7 +525,9 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 	do {
 	  visited[j] = true;
 	  dimension_type k;
-	  (void) pfunc.maps(j, k);
+	  if (!pfunc.maps(j, k))
+	    throw_invalid_argument("map_space_dimensions(pfunc)",
+				   " pfunc is inconsistent");
 	  if (k == j)
 	    // Cycle of length 1: skip it.
 	    goto skip;
