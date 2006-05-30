@@ -41,15 +41,15 @@ define(`term', `Term$1')dnl
 define(`anyterm', `any_term')dnl
 define(`interm', `in(Term$1)')dnl
 define(`extension', `ifelse(check_fail(`$3'), nofail,
-  `:- true pred $1`'ifelse(`$2', 0, ,(`'term_sequence($2, `interm'))
-          :: `'term_sequence($2, `anyterm', ` *')) +  foreign.
+  `:- true pred $1`'ifelse(`$2', 0, ,(`'m4_term_sequence($2, `interm'))
+          :: `'m4_term_sequence($2, `anyterm', ` *')) +  foreign.
 ',
-  `:- true pred $1_2(`'term_sequence($2, `interm')`'ifelse(`$2', 0, `go(Success)', `, go(Success)'))
-          :: `'term_sequence($2, `anyterm', ` *')`'ifelse(`$2', 0, ` int', ` * int')
+  `:- true pred $1_2(`'m4_term_sequence($2, `interm')`'ifelse(`$2', 0, `go(Success)', `, go(Success)'))
+          :: `'m4_term_sequence($2, `anyterm', ` *')`'ifelse(`$2', 0, ` int', ` * int')
   + (returns(Success), foreign($1)).
 
-$1`'ifelse(`$2', 0, ,`(term_sequence($2, `term'))') :-
-   $1_2(`'term_sequence($2, `term')`'ifelse(`$2', 0, `1', `, 1')).
+$1`'ifelse(`$2', 0, ,`(m4_term_sequence($2, `term'))') :-
+   $1_2(`'m4_term_sequence($2, `term')`'ifelse(`$2', 0, `1', `, 1')).
 
 ')')dnl
 ppl_prolog_sys_code`'dnl

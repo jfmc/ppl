@@ -2,12 +2,12 @@ divert(-1)
 
 # Classes to be implemented. This is the only line the user needs to edit.
 #
-define(`classes', ``Polyhedron'')
+define(`m4_classes', ``Polyhedron'')
 
 # Number of possible classes. This needs to be updated as more
 # classes are supported in the PPL.
 #
-define(`num_possible_classes', 5)
+define(`m4_num_possible_classes', 5)
 
 # All possible classes. This needs to be updated as more
 # classes are supported in the PPL.
@@ -24,7 +24,7 @@ define(`Class5', `Octagon')
 # LPM for LP_Problem class,
 # GRD for all the grid-like classes,
 # SHP for classes denoting subsets of a vector space that have some shape.
-define(`class_group', `ifelse(class, LP_Problem, LPM, class, Grid, GRD, SHP)')
+define(`m4_class_group', `ifelse(class, LP_Problem, LPM, class, Grid, GRD, SHP)')
 
 # class_super_group
 #
@@ -32,9 +32,9 @@ define(`class_group', `ifelse(class, LP_Problem, LPM, class, Grid, GRD, SHP)')
 # PM for LP_Problem class,
 # PD for classes defining some Domain based on sets of Points
 # (ie grid and shape classes)
-define(`class_super_group', `ifelse(class_group, LPM, LPM, PTD)')
+define(`m4_class_super_group', `ifelse(m4_class_group, LPM, LPM, PTD)')
 
-define(`string_substitution_list',
+define(`m4_string_substitution_list',
 `intopology_,
 topology_,
 represent,

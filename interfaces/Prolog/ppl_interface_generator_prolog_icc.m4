@@ -14,9 +14,9 @@ divert(-1)dnl
 # dependent schemas in this code.
 define(`add_widening_extrapolation_code',
   `define(`num_widenexps',
-     ifndef(num_`'class`'_widenexps, 0))dnl
+     m4_ifndef(num_`'class`'_widenexps, 0))dnl
 ifelse(num_widenexps, 0, ,
-  set_class(set_string(rstrct, widening_extrapolation_code)))')
+  m4_set_class(m4_set_string(rstrct, widening_extrapolation_code)))')
 
 # add_bop_assign_code
 #
@@ -24,8 +24,8 @@ ifelse(num_widenexps, 0, ,
 # only if needed for that class.
 define(`add_bop_assign_code',
   `define(`num_binops',
-        ifndef(num_`'class`'_binops, ifndef(num_`'binops, 0)))dnl
-ifelse(num_binops, 0, , set_class(bop_assign_code))')
+        m4_ifndef(num_`'class`'_binops, m4_ifndef(num_`'binops, 0)))dnl
+ifelse(num_binops, 0, , m4_set_class(bop_assign_code))')
 
 # ppl_prolog_icc_code
 #
@@ -34,13 +34,13 @@ ifelse(num_binops, 0, , set_class(bop_assign_code))')
 # to see if there is a macro with "_code" extension that defines the code.
 # Then a macro sets the class and other schematic components.
 define(`ppl_prolog_icc_code',
-  `forloop(`ind', 1, num_possible_classes,
+  `m4_forloop(`ind', 1, m4_num_possible_classes,
     `dnl
 define(`class', Class`'ind)dnl
-ifelse(index(classes, class), -1, ,
+ifelse(index(m4_classes, class), -1, ,
 `add_bop_assign_code`'dnl
 add_widening_extrapolation_code`'dnl
-set_class(predicates_to_code(filter(class_predicate_list)))')')')
+m4_set_class(m4_procedure_names_to_code(m4_filter(class_predicate_list)))')')')
 
 divert`'dnl
 include(`ppl_interface_generator_prolog_icc_preamble')dnl
