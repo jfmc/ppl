@@ -1917,12 +1917,17 @@ generalized_affine_image(const Linear_Expression& lhs,
   if (marked_empty())
     return;
 
+  TEMP_INTEGER(temp_modulus);
+  temp_modulus = modulus;
+  if (temp_modulus < 0)
+    neg_assign(temp_modulus);
+
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
   do {
     if (lhs_space_dim == 0) {
       // All variables have zero coefficients, so `lhs' is a constant.
-      add_congruence((lhs %= rhs) / (modulus < 0 ? 0 - modulus : modulus));
+      add_congruence((lhs %= rhs) / temp_modulus);
       return;
     }
   }
@@ -1968,8 +1973,7 @@ generalized_affine_image(const Linear_Expression& lhs,
       // Constrain the new dimension so that it is congruent to the left
       // hand side expression modulo `modulus'.
       // TODO: Use add_congruence() when it has been updated.
-      Congruence_System new_cgs2((lhs %= new_var)
-				 / (modulus < 0 ? 0 - modulus : modulus));
+      Congruence_System new_cgs2((lhs %= new_var) / temp_modulus);
       add_recycled_congruences(new_cgs2);
     }
 
@@ -1990,7 +1994,7 @@ generalized_affine_image(const Linear_Expression& lhs,
 
     // Constrain the left hand side expression so that it is congruent to
     // the right hand side expression modulo `modulus'.
-    add_congruence((lhs %= rhs) / (modulus < 0 ? 0 - modulus : modulus));
+    add_congruence((lhs %= rhs) / temp_modulus);
   }
 
   assert(OK());
@@ -2015,13 +2019,18 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   if (marked_empty())
     return;
 
+  TEMP_INTEGER(temp_modulus);
+  temp_modulus = modulus;
+  if (temp_modulus < 0)
+    neg_assign(temp_modulus);
+
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
   do {
     if (lhs_space_dim == 0) {
       // All variables have zero coefficients, so `lhs' is a constant.
       // In this case, preimage and image happen to be the same.
-      add_congruence((lhs %= rhs) / (modulus < 0 ? 0 - modulus : modulus));
+      add_congruence((lhs %= rhs) / temp_modulus);
       return;
     }
   }
@@ -2067,8 +2076,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       // Constrain the new dimension so that it is related to
       // the right hand side modulo `modulus'.
       // TODO: Use add_congruence() when it has been updated.
-      Congruence_System new_cgs2((rhs %= new_var)
-				 / (modulus < 0 ? 0 - modulus : modulus));
+      Congruence_System new_cgs2((rhs %= new_var) / temp_modulus);
       add_recycled_congruences(new_cgs2);
     }
 
@@ -2081,7 +2089,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
 
     // Constrain the left hand side expression so that it is congruent to
     // the right hand side expression modulo `mod'.
-    add_congruence((lhs %= rhs) / (modulus < 0 ? 0 - modulus : modulus));
+    add_congruence((lhs %= rhs) / temp_modulus);
 
     // Any image of an empty grid is empty.
     if (is_empty())
