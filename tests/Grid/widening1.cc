@@ -45,7 +45,7 @@ test01() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -73,7 +73,7 @@ test02() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -100,7 +100,7 @@ test03() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -130,7 +130,7 @@ test04() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -162,7 +162,7 @@ test05() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -197,7 +197,7 @@ test06() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -231,7 +231,7 @@ test07() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -253,7 +253,7 @@ test08() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -279,7 +279,7 @@ test09() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -312,7 +312,7 @@ test10() {
   nout << "*** `tokens' should be 3 ***" << tokens << endl;
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1, &tokens) ***");
+		    "*** gr2.congruence_widening_assign(gr1, &tokens) ***");
 
   return ok;
 }
@@ -335,7 +335,7 @@ test11() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -366,7 +366,7 @@ test12() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -397,7 +397,7 @@ test13() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -428,7 +428,7 @@ test14() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -459,7 +459,7 @@ test15() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -490,7 +490,7 @@ test16() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -523,7 +523,7 @@ test17() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -584,7 +584,7 @@ test19() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.congruence_widening_assign(gr1) ***");
+		    "*** gr2.congruence_widening_assign(gr1) ***");
 
   return ok;
 }
