@@ -287,6 +287,42 @@ test12() {
   return ok;
 }
 
+// A box from a higher dimension.
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+  Variable F(5);
+
+  Bounding_Box box(6);
+  box.raise_lower_bound(0, true, -2, 3);
+  box.lower_upper_bound(0, true, 5, 1);
+  box.raise_lower_bound(1, true, -11, 4);
+  box.lower_upper_bound(1, true, 12, 3);
+  box.raise_lower_bound(2, true, 15, 3);
+  box.lower_upper_bound(3, true, 18, 3);
+  box.raise_lower_bound(4, true, 15, 7);
+  box.raise_lower_bound(5, true, -15, 7);
+  box.lower_upper_bound(5, true, 15, 7);
+
+  Grid gr(box, From_Covering_Box());
+
+  Grid known_gr(6, EMPTY);
+  known_gr.add_generator(grid_point(-56*A - 231*B + 420*C + 504*D + 180*E - 180*F, 84));
+  known_gr.add_generator(parameter(17*A, 3));
+  known_gr.add_generator(parameter(81*B, 12));
+  known_gr.add_generator(parameter(30*F, 7));
+
+  bool ok = (gr == known_gr);
+
+  print_generators(gr, "*** gr(box, From_Covering_Box()) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -302,4 +338,5 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN
