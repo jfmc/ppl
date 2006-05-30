@@ -458,8 +458,8 @@ private:
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
   // FIXME: The following friend declaration is for operator[] and
-  //        divisor() access in Grid::conversion, Grid::simplify and
-  //        Grid::relation_with(c).
+  //        divisor() access in Grid::conversion, Grid::simplify,
+  //        Grid::relation_with(c) and Grid::Grid(box, *).
   friend class Grid;
 
   friend class Grid_Generator_System;

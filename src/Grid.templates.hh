@@ -71,19 +71,37 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
   else {
     // Initialize the space dimension as indicated by the box.
     con_sys.increase_space_dimension(space_dim);
-    // Add congruences according to `box'.
+    // Add congruences and generators according to `box'.
     TEMP_INTEGER(u_n);
     TEMP_INTEGER(u_d);
+    gen_sys.insert(grid_point(0*Variable(space_dim-1)));
+    Grid_Generator& point = gen_sys[0];
+    Coefficient& point_divisor = const_cast<Coefficient&>(point.divisor());
     for (dimension_type k = space_dim; k-- > 0; ) {
       bool closed;
       // TODO: Consider producing the system(s) in minimized form.
-      // FIXME: Also create the generator system.
       if (box.get_lower_bound(k, closed, l_n, l_d)) {
 	if (box.get_upper_bound(k, closed, u_n, u_d))
 	  if (l_n * u_d == u_n * l_d) {
 	    // A point interval sets dimension k of every point to a
 	    // single value.
 	    con_sys.insert(l_d * Variable(k) == l_n);
+
+	    // Scale the point to use as divisor the lcm of the
+	    // divisors of the existing point and the lower bound.
+	    gcd_assign(u_n, l_d, point_divisor);
+	    // `u_n' now holds the gcd.
+	    exact_div_assign(u_n, point_divisor, u_n);
+	    if (l_d < 0)
+	      neg_assign(u_n);
+	    // l_d * u_n == abs(l_d * (point_divisor / gcd(l_d, point_divisor)))
+	    point.scale_to_divisor(l_d * u_n);
+	    // Set dimension k of the point to the lower bound.
+	    if (l_d < 0)
+	      neg_assign(u_n);
+	    // point[k + 1] = l_n * point_divisor / gcd(l_d, point_divisor)
+	    point[k + 1] = l_n * u_n;
+
 	    continue;
 	  }
 	// The only valid bounded interval is a point interval.
@@ -94,8 +112,10 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
 	throw_invalid_argument("Grid(box, from_bounding_box)",
 			       "box");
       // A universe interval allows any value in dimension k.
+      gen_sys.insert(grid_line(Variable(k)));
     }
     set_congruences_up_to_date();
+    set_generators_up_to_date();
     gen_sys.unset_pending_rows();
     gen_sys.set_sorted(false);
   }
@@ -147,24 +167,50 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
     TEMP_INTEGER(u_n);
     TEMP_INTEGER(u_d);
     TEMP_INTEGER(d);
+    gen_sys.insert(grid_point(0*Variable(space_dim-1)));
+    Grid_Generator& point = gen_sys[0];
+    Coefficient& point_divisor = const_cast<Coefficient&>(point.divisor());
     for (dimension_type k = space_dim; k-- > 0; ) {
       bool closed;
       // TODO: Consider producing the system(s) in minimized form.
-      // FIXME: Also create the generator system.
       if (box.get_lower_bound(k, closed, l_n, l_d)) {
+
+	assert(l_d > 0);
+	assert(point_divisor > 0);
+	// Use `d' to hold the gcd.
+	gcd_assign(d, l_d, point_divisor);
+	// Scale the point to use as divisor the lcm of the existing
+	// point divisor and the divisor of the lower bound.
+	exact_div_assign(d, point_divisor, d);
+	// l_d * d == abs(l_d) * (point_divisor / gcd(l_d, point_divisor))
+	point.scale_to_divisor(l_d * d);
+	// Set dimension k of the point to the lower bound.
+	// point[k + 1] = l_n * (point_divisor / gcd(l_d, point_divisor))
+	point[k + 1] = l_n * d;
+
 	if (box.get_upper_bound(k, closed, u_n, u_d)) {
-	  if (l_n * u_d == u_n * l_d)
+	  if (l_n * u_d == u_n * l_d) {
 	    // A point interval allows any point along the dimension
 	    // k axis.
+	    gen_sys.insert(grid_line(Variable(k)));
 	    continue;
+	  }
+	  assert(l_d > 0);
+	  assert(u_d > 0);
 	  gcd_assign(d, l_d, u_d);
 	  // `d' is the gcd of the divisors.
-	  l_n *= (u_d / d);
-	  d = l_d / d;
-	  // `d' is now the smallest integer expression of the size
-	  // of l_d relative to u_d.  `d * u_d' is the lcm of the
-	  // divisors.
-	  con_sys.insert((d * u_d * Variable(k) %= l_n) / ((u_n * d) - l_n));
+	  exact_div_assign(l_d, l_d, d);
+	  exact_div_assign(d, u_d, d);
+	  l_n *= d;
+	  // `l_d' is now the smallest integer expression of the size of
+	  // the original l_d relative to u_d.
+	  u_n = (u_n * l_d) - l_n;
+	  // `u_n' is now the distance between u_n and l_n (given a
+	  // divisor of lcm of l_d and u_d.
+	  l_d *= u_d;
+	  // `l_d' is now the lcm of the divisors.
+	  con_sys.insert((l_d * Variable(k) %= l_n) / u_n);
+	  gen_sys.insert(parameter(u_n * Variable(k), l_d));
 	}
 	else
 	  // An interval bounded only from below produces an
@@ -172,9 +218,23 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
 	  con_sys.insert(l_d * Variable(k) == l_n);
       }
       else
-	if (box.get_upper_bound(k, closed, u_n, u_d))
+	if (box.get_upper_bound(k, closed, u_n, u_d)) {
+	  assert(u_d > 0);
+	  assert(point_divisor > 0);
+	  // Use `d' to hold the gcd.
+	  gcd_assign(d, u_d, point_divisor);
+	  // Scale the point to use as divisor the lcm of the existing
+	  // point divisor and the divisor of the lower bound.
+	  exact_div_assign(d, point_divisor, d);
+	  // u_d * d == abs(u_d) * (point_divisor / gcd(u_d, point_divisor))
+	  point.scale_to_divisor(u_d * d);
+	  // Set dimension k of the point to the lower bound.
+	  // point[k + 1] = u_n * (point_divisor / gcd(u_d, point_divisor))
+	  point[k + 1] = u_n * d;
+
 	  // An interval bounded only from above produces an equality.
 	  con_sys.insert(u_d * Variable(k) == u_n);
+	}
 	else {
 	  // Any universe interval produces an empty grid.
 	  set_empty();
@@ -182,7 +242,9 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
 	  return;
 	}
     }
+    normalize_divisors(gen_sys);
     set_congruences_up_to_date();
+    set_generators_up_to_date();
     gen_sys.set_sorted(false);
     gen_sys.unset_pending_rows();
   }
