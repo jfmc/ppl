@@ -29,6 +29,7 @@ gnu_pl_check.pl
 if BUILD_GNU_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 -I$(top_builddir)/Watchdog/src \
 @extra_includes@
