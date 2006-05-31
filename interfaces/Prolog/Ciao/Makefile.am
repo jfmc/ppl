@@ -28,6 +28,7 @@ if BUILD_CIAO_PROLOG_INTERFACE
 if ENABLE_SHARED
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 -I$(top_builddir)/Watchdog/src \
 @extra_includes@

@@ -1,7 +1,4 @@
-ifelse(
-        This file is to generate ppl_ciao.pl in the
-        interfaces/Prolog/Ciao directory.
-      )
+dnl This file generates ppl_ciao.pl.
 /* Ciao Prolog interface: Ciao Prolog part.
 include(`ppl_interface_generator_copyright')
 */
