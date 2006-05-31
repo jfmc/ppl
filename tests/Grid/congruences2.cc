@@ -179,40 +179,36 @@ test07() {
   return ok;
 }
 
-/* If PASS_EXPECTED is true:
+/* If EXPECTED is true:
      If G satifies CGS, then return true, else print an error message
      and return false.
 
-   And, symmetrically, if PASS_EXPECTED is false:
-     If G fails to satify CGS, then return false, else print an error
-     message and return true.
+   And if EXPECTED is false:
+     If G satifies CGS, then print an error message and return false,
+     else return true.
 */
 bool
-fulfils(const Grid_Generator& g,
-	const Test_Congruence_System& cgs,
-	bool pass_expected = false) {
-  if (cgs.satisfies_all_congruences(g) == pass_expected)
-    return pass_expected;
+satisfies(const Grid_Generator& g,
+	  const Test_Congruence_System& cgs,
+	  bool expected = true) {
+  if (cgs.satisfies_all_congruences(g) == expected)
+    return true;
 
   nout << g << " should";
-  pass_expected || nout << "fail to";
+  expected || nout << "fail to";
   nout << " satisfy " << cgs << "." << endl
        << "ASCII dump of " << g << ":" << endl;
   g.ascii_dump(nout);
   nout << "ASCII dump of " << cgs << ":" << endl;
   cgs.ascii_dump(nout);
 
-  return !pass_expected;
+  return false;
 }
-
-#define satisfies fulfils
 
 inline bool
 fails_to_satisfy(const Grid_Generator& g,
 		 const Congruence_System& cgs) {
-  if (fulfils(g, cgs, true))
-    return false;
-  return true;
+  return satisfies(g, cgs, false);
 }
 
 // Divisor of 1.
@@ -240,20 +236,20 @@ test08() {
 
   ok &= (satisfies(parameter(3*A + 3*B), cgs0));
 
-  ok &= (satisfies(parameter(A + 14*B), cgs0));
+  ok &= (satisfies(parameter(0*A + 14*B), cgs0));
 
-  ok = (satisfies(parameter(-A + 13*B), cgs0));
+  ok &= (satisfies(parameter(-A + 13*B), cgs0));
 
   // Lines.
 
-  ok = (satisfies(grid_line(13*A + 13*B), cgs0));
+  ok &= (satisfies(grid_line(13*A + 13*B), cgs0));
 
-  ok = (fails_to_satisfy(grid_line(18*A + 14*B), cgs0));
+  ok &= (fails_to_satisfy(grid_line(18*A + 14*B), cgs0));
 
-  ok = (fails_to_satisfy(grid_line(14*A - 21*B), cgs0));
+  ok &= (fails_to_satisfy(grid_line(14*A - 21*B), cgs0));
 
   cgs0.insert((A %= 0) / 2);
-  ok = (fails_to_satisfy(grid_line(3*A), cgs0));
+  ok &= (fails_to_satisfy(grid_line(3*A), cgs0));
   print_congruences(cgs0,
 		    "*** cgs0.clear(); cgs0.insert((A %= 0) / 2) ***");
 
