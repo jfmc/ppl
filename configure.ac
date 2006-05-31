@@ -858,7 +858,7 @@ AC_CONFIG_FILES(Makefile
                 doc/devref.doxyconf-html
                 interfaces/Makefile
                 interfaces/C/Makefile
-                interfaces/C/ppl_c.h
+                interfaces/C/ppl_c_version.h
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile
