@@ -369,8 +369,9 @@ public:
 private:
   friend class Grid;
 
-  friend bool operator==(const Grid_Generator_System& x,
-			 const Grid_Generator_System& y);
+  friend bool
+  Parma_Polyhedra_Library::operator==(const Grid_Generator_System& x,
+				      const Grid_Generator_System& y);
 
   //! Sets the sortedness flag of the system to \p b.
   void set_sorted(bool b);
