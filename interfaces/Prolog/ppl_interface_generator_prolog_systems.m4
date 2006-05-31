@@ -17,16 +17,14 @@ define(`m4_term_sequence',
      `$2(1)`'ifelse(`$1', 1, ,
        `m4_forloop(`i', 2, `$1', `m4_separator(`$3') $2(i)')')')')
 
-# m4_extend_procedure_names(String)
+# m4_extension(String)
 #
-# adds the system specific extensions to the predicates that
-# are dependent on the class.
-define(`m4_extend_procedure_names',
-       `patsubst(`$1', `\(.*\)
-',
-  `ifelse((index(\1, CLASS) + index(\1, class)) == -2, 1, ,
-     `m4_set_schema_strings(m4_add_extension(\1!),
-        m4_string_substitution_list)')')')
+# the extensions (optionally prefix, postfix and infix text) are added.
+# the extension can be controlled by the extra tokens at the end of the main
+# text.
+# The arity can be reset to n for a specific class by the flag class/n
+# the `nofail/' flag indicates that the predicate(s) will always succeed.
+define(`m4_extension', `extension($1, $2, $3)')
 
 # ppl_prolog_sys_code
 #
@@ -34,11 +32,6 @@ define(`m4_extend_procedure_names',
 # takes main predicate input list and sends one line at a time to
 # a macro that adds extensions for the result of                                # a macro that sets the class and the schema(s).
 define(`ppl_prolog_sys_code',
-  `dnl
-m4_extend_procedure_names(library_predicate_list)dnl
-m4_forloop(`ind', 1, m4_num_possible_classes,
-    `dnl
-define(`class', Class`'ind)dnl
-ifelse(index(m4_classes, class), -1, ,
-`m4_extend_procedure_names(m4_set_class(m4_filter(class_predicate_list)))')')')dnl
+  `m4_procedure_names_to_code(m4_library_predicate_list)dnl
+m4_all_classes_code')
 divert`'dnl

@@ -12,7 +12,7 @@ divert(-1)dnl
 # adds the extra code used by the widening and extrapolation predicate code
 # only if needed for that class. Takes care to set class name and
 # dependent schemas in this code.
-define(`add_widening_extrapolation_code',
+define(`m4_add_widening_extrapolation_code',
   `define(`num_widenexps',
      m4_ifndef(num_`'class`'_widenexps, 0))dnl
 ifelse(num_widenexps, 0, ,
@@ -22,26 +22,20 @@ ifelse(num_widenexps, 0, ,
 #
 # adds the extra code used by the binary operator predicate code
 # only if needed for that class.
-define(`add_bop_assign_code',
+define(`m4_add_bop_assign_code',
   `define(`num_binops',
         m4_ifndef(num_`'class`'_binops, m4_ifndef(num_`'binops, 0)))dnl
 ifelse(num_binops, 0, , m4_set_class(bop_assign_code))')
 
-# ppl_prolog_icc_code
+# m4_extra_class_code
 #
-# For each recognised class in the "classes" list,
-# takes main predicate input list and each predicate is checked
-# to see if there is a macro with "_code" extension that defines the code.
-# Then a macro sets the class and other schematic components.
-define(`ppl_prolog_icc_code',
-  `m4_forloop(`ind', 1, m4_num_possible_classes,
-    `dnl
-define(`class', Class`'ind)dnl
-ifelse(index(m4_classes, class), -1, ,
-`add_bop_assign_code`'dnl
-add_widening_extrapolation_code`'dnl
-m4_set_class(m4_procedure_names_to_code(m4_filter(class_predicate_list)))')')')
+# Extra code needed for the class in addition to the user-interface
+# procedures.
+define(`m4_extra_class_code',
+`m4_add_bop_assign_code`'dnl
+m4_add_widening_extrapolation_code')
 
 divert`'dnl
 include(`ppl_interface_generator_prolog_icc_preamble')dnl
-ppl_prolog_icc_code()dnl
+m4_all_classes_code`'dnl
+

@@ -78,25 +78,16 @@ define(`m4_set_schema_strings', `ifelse($2, `', ``$1'',
 define(`m4_set_class',
 `patsubst(`patsubst(`$1',  `CLASS', class)', cLASS, m4_downcase(class))')
 
-# m4_add_extension(String)
-#
-# the extensions (optionally prefix, postfix and infix text) are added.
-# the extension can be controlled by the extra tokens at the end of the main
-# text.
-# The arity can be reset to n for a specific class by the flag class/n
-# the `nofail/' flag indicates that the predicate(s) will always succeed.
-define(`m4_add_extension',
-  `patsubst(`$1',
-     `[ ]*\(ppl_[^ /]+\)/\([0-9]+\)[ ]*\([a-z]*\)[^\n]*!',
-          `extension(\1, \2, \3)')')
-
 # m4_replace_with_code(String)
 #
 # procedure name schemas are replaced by the code schema
 define(`m4_replace_with_code',
   `patsubst(`$1',
      `[ ]*\(ppl_[^ /]+\)/\([0-9]+\)[ ]*\([a-z]*\)[^\n]*!',
-          `m4_ifndef(\1`'_code, `')')')
+          `m4_extension(\1, \2, \3)')')
+
+# This has to be redefined for the system predicate code.
+define(`m4_extension', `m4_ifndef($1`'_code, `')')
 
 # m4_procedure_names_to_code(String)
 #
@@ -105,9 +96,17 @@ define(`m4_replace_with_code',
 define(`m4_procedure_names_to_code',
   `patsubst(`$1', `\(.*\)
 ',
-    `ifelse((index(\1, CLASS) + index(\1, class)) == -2, 1, ,
        `m4_set_schema_strings(m4_replace_with_code(\1!),
-         m4_string_substitution_list)')')')
+         m4_string_substitution_list)')')
+
+# m4_one_class_code
+#
+# takes main procedure input list and each procedure is checked
+# to see if there is a macro with "_code" extension that defines the code.
+# Then a macro sets the class and other schematic components.
+define(`m4_one_class_code',
+  `m4_ifndef(`m4_extra_class_code', `')dnl
+m4_set_class(m4_procedure_names_to_code(m4_filter(m4_procedure_list)))')
 
 # m4_short_class_name(String)
 #
@@ -125,5 +124,16 @@ define(`m4_filter',
          ifelse(index(\1, All), -1,
            ifelse(index(\1, m4_class_group), -1,
              ifelse(index(\1, m4_class_super_group), -1, , \1), \1), \1), \1))')')
+
+# m4_all_classes_code
+#
+# This iterates through the classes to generate the code.
+# The actual code generated must be defined by the file
+# for that code.
+define(`m4_all_classes_code',
+  `m4_forloop(`ind', 1, m4_num_possible_classes,
+    `dnl
+define(`class', Class`'ind)dnl
+ifelse(index(m4_classes, class), -1, , `m4_one_class_code')')')
 
 divert`'dnl

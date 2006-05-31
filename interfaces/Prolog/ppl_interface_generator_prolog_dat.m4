@@ -241,7 +241,7 @@ define(`bpmin2',  `binop2`'_and_minimize')
 #           capfirstletter(`$1'))')
 
 # Library predicate list.
-define(`library_predicate_list',
+define(`m4_library_predicate_list',
 `ppl_version_major/1
 ppl_version_minor/1
 ppl_version_revision/1
@@ -260,9 +260,6 @@ ppl_set_timeout/1 nofail
 ppl_reset_timeout/0 nofail
 ')
 
-define(`all_classes_predicate_list',
-`')
-
 # Class predicate list using patterns wherever possible.
 # Which classes the schema applies to is determined by the following codes:
 # If code is POINT_DOMAIN = the point-domain classes ie grid and polyhedra classes;
@@ -280,7 +277,7 @@ define(`all_classes_predicate_list',
 # Note that the code for the schema "<name>_code" must be defined
 # in the ppl_prolog_icc.m4 file. The <name> must be exactly as written here.
 #
-define(`class_predicate_list',
+define(`m4_procedure_list',
 `ppl_new_TOPOLOGY_CLASS_from_space_dimension/3 POINTS
 ppl_new_TOPOLOGY_CLASS_from_INTOPOLOGY_CLASS/2 All
 ppl_new_TOPOLOGY_CLASS_from_REPRESENTs/2 POINTS
