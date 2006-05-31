@@ -20,7 +20,17 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-EXTRA_DIST = ppl_c.h.in ppl_c.cc
+# Interface generator files.
+interface_generator_files = \
+ppl_interface_generator_c_dat.m4 \
+ppl_interface_generator_c_h.m4 \
+ppl_interface_generator_c_h_code.m4 \
+ppl_interface_generator_c_h_preamble \
+ppl_interface_generator_c_cc.m4 \
+ppl_interface_generator_c_cc_code.m4 \
+ppl_interface_generator_c_cc_preamble
+
+EXTRA_DIST = $(interface_generator_files)
 
 if BUILD_C_INTERFACE
 
@@ -56,7 +66,22 @@ LIBPPL_C_LT_CURRENT =  1
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      1
 
+noinst_HEADERS = $(interface_generator_files)
+
+nodist_noinst_HEADERS = ppl_c.cc
+
+BUILT_SOURCES = ppl_c.h ppl_c.cc
+
+ppl_c.h: $(interface_generator_files) Makefile
+	m4 -I. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_c_h.m4 > $@
+
+ppl_c.cc: $(interface_generator_files) Makefile
+	m4 -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_c_cc.m4 > $@
+
 AM_CPPFLAGS = \
+-I$(top_builddir)/interfaces/C \
 -I$(top_builddir)/src \
 @extra_includes@
 
@@ -65,6 +90,6 @@ libppl_c_la_SOURCES = ppl_c.cc
 libppl_c_la_LDFLAGS = \
 -version-info $(LIBPPL_C_LT_CURRENT):$(LIBPPL_C_LT_REVISION):$(LIBPPL_C_LT_AGE)
 
-include_HEADERS = ppl_c.h
+include_HEADERS = ppl_c_version.h
 
 endif BUILD_C_INTERFACE
