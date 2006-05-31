@@ -76,7 +76,6 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
     TEMP_INTEGER(u_d);
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
     Grid_Generator& point = gen_sys[0];
-    Coefficient_traits::const_reference point_divisor = point.divisor();
     for (dimension_type k = space_dim; k-- > 0; ) {
       bool closed;
       // TODO: Consider producing the system(s) in minimized form.
@@ -89,6 +88,7 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
 
 	    // Scale the point to use as divisor the lcm of the
 	    // divisors of the existing point and the lower bound.
+	    Coefficient_traits::const_reference point_divisor = point.divisor();
 	    gcd_assign(u_n, l_d, point_divisor);
 	    // `u_n' now holds the gcd.
 	    exact_div_assign(u_n, point_divisor, u_n);
@@ -169,12 +169,12 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
     TEMP_INTEGER(d);
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
     Grid_Generator& point = gen_sys[0];
-    Coefficient_traits::const_reference point_divisor = point.divisor();
     for (dimension_type k = space_dim; k-- > 0; ) {
       bool closed;
       // TODO: Consider producing the system(s) in minimized form.
       if (box.get_lower_bound(k, closed, l_n, l_d)) {
 
+	Coefficient_traits::const_reference point_divisor = point.divisor();
 	assert(l_d > 0);
 	assert(point_divisor > 0);
 	// Use `d' to hold the gcd.
@@ -219,6 +219,7 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
       }
       else
 	if (box.get_upper_bound(k, closed, u_n, u_d)) {
+	  Coefficient_traits::const_reference point_divisor = point.divisor();
 	  assert(u_d > 0);
 	  assert(point_divisor > 0);
 	  // Use `d' to hold the gcd.
