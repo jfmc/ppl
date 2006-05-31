@@ -1,7 +1,4 @@
-ifelse(
-        This file is to generate ppl_gprolog.pl in the
-        interfaces/Prolog/GNU directory.
-      )
+dnl This file generates ppl_gprolog.pl.
 /* GNU Prolog interface: GNU Prolog part.
 include(`ppl_interface_generator_copyright')
 */

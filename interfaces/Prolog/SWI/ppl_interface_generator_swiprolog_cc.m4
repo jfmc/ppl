@@ -1,7 +1,4 @@
-ifelse(
-        This file is to generate ppl_xsb.H in the
-        interfaces/Prolog/XSB directory.
-      )
+dnl This file generates ppl_xsb.H.
 /* SWI Prolog interface.
 include(`ppl_interface_generator_copyright')
 

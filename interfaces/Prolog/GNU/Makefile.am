@@ -20,7 +20,11 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog.pl gp_clpq.pl gnu_pl_check.pl
+EXTRA_DIST = \
+ppl_gprolog_sd.cc \
+ppl_interface_generator_gprolog_pl.m4 \
+gp_clpq.pl \
+gnu_pl_check.pl
 
 if BUILD_GNU_PROLOG_INTERFACE
 
@@ -41,7 +45,6 @@ $(top_builddir)/Watchdog/src/libpwl.la \
 libppl_gprolog_la_LDFLAGS = -module -avoid-version
 
 ppl_gprolog.pl: ppl_interface_generator_gprolog_pl.m4 Makefile
-	rm -f $@
 	m4 -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_gprolog_pl.m4 > $@
 
