@@ -2095,9 +2095,6 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     if (is_empty())
       return;
 
-    // FIXME: Confirm that it is OK for this to follow the
-    //        add_congruence, whereas in the branch above (and in
-    //        affine_image, and in Polyhedron) it comes first.
     // Cylindrificate on all the variables occurring in `lhs'.
     add_recycled_generators(new_lines);
   }
