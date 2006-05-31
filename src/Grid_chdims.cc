@@ -394,7 +394,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
 
 void
 PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
-  // FIXME: this implementation is _really_ an executable specification.
+  // TODO: this implementation is _really_ an executable specification.
 
   // `var' must be one of the dimensions of the vector space.
   if (var.space_dimension() > space_dim)
@@ -445,7 +445,7 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
 void
 PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
 				 Variable var) {
-  // FIXME: this implementation is _really_ an executable specification.
+  // TODO: this implementation is _really_ an executable specification.
 
   // `var' should be one of the dimensions of the grid.
   if (var.space_dimension() > space_dim)
