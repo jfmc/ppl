@@ -40,6 +40,16 @@ public:
   }
 };
 
+class Grid {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Polyhedra_Powerset_argument() {
+    return true;
+  }
+};
+
 template <typename T>
 bool
 valid_BD_Shape_argument(void);
