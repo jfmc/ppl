@@ -41,7 +41,7 @@ test01() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_generator(grid_point(-A)) ***");
+		    "*** gr.add_generator(grid_point(-A)) ***");
 
   return ok;
 }
@@ -64,7 +64,7 @@ test02() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_generator(grid_point(A + B)) ***");
+		    "*** gr.add_generator(grid_point(A + B)) ***");
 
   return ok;
 }
@@ -92,19 +92,18 @@ test03() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_generator(...) ***");
+		    "*** gr.add_generator(...) ***");
 
   return ok;
 }
 
-// Add NNC generators.
+// Add generators where one has a divisor.
 bool
 test04() {
   Variable A(0);
   Variable B(1);
 
   Grid_Generator_System gs;
-  //gs.insert(closure_point(3*A, 4)); // FIX
   gs.insert(grid_point(7*A, 4));
   gs.insert(grid_line(A - B));
 
@@ -122,7 +121,7 @@ test04() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_generator(*i) ***");
+		    "*** gr.add_generator(*i) ***");
 
   return ok;
 }
@@ -151,7 +150,7 @@ test05() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_generator(grid_line(A - B)) ***");
+		    "*** gr.add_generator(grid_line(A - B)) ***");
 
   return ok;
 }
@@ -178,7 +177,7 @@ test06() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_generator_and_minimize(grid_line(A)) ***");
+		    "*** gr.add_generator_and_minimize(grid_line(A)) ***");
 
   return ok;
 }
@@ -202,7 +201,7 @@ test07() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "***  ***");
+		    "*** gr.add_generator(grid_point(12*A + 7*D)) ***");
 
   return ok;
 }
@@ -232,7 +231,7 @@ test08() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_generator_and_minimize(grid_point(B, 3)) ***");
+		    "*** gr.add_generator_and_minimize(grid_point(B, 3)) ***");
 
   return ok;
 }
@@ -271,7 +270,7 @@ test10() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_generator(grid_point()) ***");
+		    "*** gr.add_generator(grid_point()) ***");
 
   return ok;
 }
@@ -290,7 +289,7 @@ test11() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_generator(grid_point()) ***");
+		    "*** gr.add_generator(grid_point()) ***");
 
   return ok;
 }
