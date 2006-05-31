@@ -1,7 +1,4 @@
-ifelse(
-        This file is to generate ppl_sicstus_sd.cc in the
-        interfaces/Prolog/SICStus directory.
-      )dnl
+dnl This file generates ppl_sicstus_sd.cc.
 /* SICStus Prolog interface: system-dependent part.
 include(`ppl_interface_generator_copyright')
 */
