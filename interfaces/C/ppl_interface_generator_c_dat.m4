@@ -261,8 +261,8 @@ define(`class_predicate_list',
 `ppl_new_TOPOLOGY_CLASS_from_space_dimension/3 PTD
 ppl_new_TOPOLOGY_CLASS_from_INTOPOLOGY_CLASS/2 All
 ppl_new_TOPOLOGY_CLASS_from_UALT_REPRESENT_System/2 PTD
+ppl_new_TOPOLOGY_CLASS_recycle_UALT_REPRESENT_System/2 PTD
 ppl_new_TOPOLOGY_CLASS_from_BOX/2 PTD
-ppl_CLASS_swap/2 nofail All
 ppl_delete_CLASS/1 All
 ppl_assign_TOPOLOGY_CLASS_from_TOPOLOGY_CLASS/1 PTD
 ppl_CLASS_DIM/2 All
@@ -272,42 +272,42 @@ ppl_CLASS_relation_with_UALT_DESCRIBE/3 PTD
 ppl_CLASS_shrink_BOX/3 SHP
 ppl_Grid_get_BOX/2
 ppl_CLASS_is_STATE/1 PTD
-ppl_CLASS_topological_closure_assign/1 nofail PTD
+ppl_CLASS_topological_closure_assign/1 PTD
 ppl_CLASS_bounds_from_ABOVEBELOW/2 PTD
 ppl_CLASS_MAXMIN/5 PTD
 ppl_CLASS_MAXMIN_with_point/6 PTD
 ppl_CLASS_COMPARISON_CLASS/2 PTD
 ppl_CLASS_equals_CLASS/2 PTD
 ppl_CLASS_OK/1 All
-ppl_CLASS_add_REPRESENT/2 nofail PTD
+ppl_CLASS_add_REPRESENT/2 PTD
 ppl_CLASS_add_REPRESENT_and_minimize/2 PTD
-ppl_CLASS_add_REPRESENTs/2 nofail PTD
+ppl_CLASS_add_REPRESENTs/2 PTD
 ppl_CLASS_add_REPRESENTs_and_minimize/2 PTD
-ppl_CLASS_add_recycled_REPRESENT/2 nofail PTD
+ppl_CLASS_add_recycled_REPRESENT/2 PTD
 ppl_CLASS_add_recycled_REPRESENT_and_minimize/2 PTD
-ppl_CLASS_add_recycled_REPRESENTs/2 nofail PTD
+ppl_CLASS_add_recycled_REPRESENTs/2 PTD
 ppl_CLASS_add_recycled_REPRESENTs_and_minimize/2 PTD
-ppl_CLASS_BINOP/2 nofail PTD
+ppl_CLASS_BINOP/2 PTD
 ppl_CLASS_BPMIN/2 PTD
-ppl_CLASS_AFFIM/4 nofail PTD
-ppl_CLASS_bounded_AFFIM/5 nofail Po
+ppl_CLASS_AFFIM/4 PTD
+ppl_CLASS_bounded_AFFIM/5 Po
 ppl_CLASS_generalized_AFFIM/5 SHP
 ppl_CLASS_generalized_AFFIM_lhs_rhs/4 SHP
 ppl_Grid_generalized_AFFIM/5
 ppl_Grid_generalized_AFFIM_lhs_rhs/4
 ppl_CLASS_WIDENEXP_widening_assign_with_tokens/4 PTD
-ppl_CLASS_WIDENEXP_widening_assign/2 nofail PTD
+ppl_CLASS_WIDENEXP_widening_assign/2 PTD
 ppl_CLASS_limited_WIDENEXP_extrapolation_assign_with_tokens/5 PTD
-ppl_CLASS_limited_WIDENEXP_extrapolation_assign/3 nofail PTD
+ppl_CLASS_limited_WIDENEXP_extrapolation_assign/3 PTD
 ppl_CLASS_bounded_WIDENEXP_extrapolation_assign_with_tokens/5 Po
-ppl_CLASS_bounded_WIDENEXP_extrapolation_assign/3 nofail Po
+ppl_CLASS_bounded_WIDENEXP_extrapolation_assign/3 Po
 ppl_BD_Shape_CC76_narrowing_assign/2
-ppl_CLASS_add_space_dimensions_and_EMBEDPROJECT/2 nofail PTD
-ppl_CLASS_concatenate_assign/2 nofail PTD
+ppl_CLASS_add_space_dimensions_and_EMBEDPROJECT/2 PTD
+ppl_CLASS_concatenate_assign/2 PTD
 ppl_CLASS_remove_space_dimensions/2 PTD
-ppl_CLASS_remove_higher_space_dimensions/2 nofail PTD
-ppl_CLASS_expand_space_dimension/3 nofail PTD
-ppl_CLASS_fold_space_dimensions/3  PTD
+ppl_CLASS_remove_higher_space_dimensions/2 PTD
+ppl_CLASS_expand_space_dimension/3 PTD
+ppl_CLASS_fold_space_dimensions/3 PTD
 ppl_CLASS_map_space_dimensions/2 PTD
 ppl_new_LP_Problem_trivial/1
 ppl_new_LP_Problem/4
