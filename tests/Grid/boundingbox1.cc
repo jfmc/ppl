@@ -327,5 +327,5 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
-  DO_TEST(test13);
+  DO_TEST_F8(test13);
 END_MAIN
