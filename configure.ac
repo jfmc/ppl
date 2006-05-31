@@ -697,12 +697,16 @@ xno | xnone)
   then
     enableval=${default_instantiations}
   fi
-  # Make the list blank-separated.
-  required_instantiations=`echo "${enableval}" | sed -e 's/[[ 	]][[ 	]]*//g' -e 's/@/ /g' -e 's/[[ 	]][[ 	]]*/ /g'`
+  # Avoid extra blanks.
+  required_instantiations=`echo "${enableval}" | sed -e 's/[[ 	]][[ 	]]*//g' -e 's/long\([[a-z]]\)/long \1/g' -e 's/signed\([[a-z]]\)/signed \1/g' -e 's/\([[a-z]]\)int/\1 int/g' -e 's/>>/> >/g'`
   # Check the specified instantiations for validity.
   ac_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS -I${srcdir}"
-  for instantiation in ${required_instantiations}
+  original_IFS="${IFS}"
+  IFS=@
+  set -- ${required_instantiations}
+  IFS="${original_IFS}"
+  for instantiation
   do
     AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
 #include "instchk.hh"
@@ -719,6 +723,7 @@ bool valid = ${instantiation}::valid_instantiation();
     fi
   done
   CPPFLAGS="$ac_save_CPPFLAGS"
+  required_instantiations_canonical_name=`echo "${required_instantiations}" | sed -e 's/[[ 	]][[ 	]]*//g' -e 's/@/ /g' -e 's/[[ 	]][[ 	]]*/ /g'`
   AC_MSG_RESULT([${required_instantiations}])
   ;;
 esac
