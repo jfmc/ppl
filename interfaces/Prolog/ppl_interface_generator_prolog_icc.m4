@@ -14,7 +14,7 @@ divert(-1)dnl
 # dependent schemas in this code.
 define(`m4_add_widening_extrapolation_code',
   `define(`num_widenexps',
-     m4_ifndef(num_`'class`'_widenexps, 0))dnl
+     m4_ifndef(num_`'m4_class`'_widenexps, 0))dnl
 ifelse(num_widenexps, 0, ,
   m4_set_class(m4_set_string(rstrct, widening_extrapolation_code)))')
 
@@ -24,14 +24,14 @@ ifelse(num_widenexps, 0, ,
 # only if needed for that class.
 define(`m4_add_bop_assign_code',
   `define(`num_binops',
-        m4_ifndef(num_`'class`'_binops, m4_ifndef(num_`'binops, 0)))dnl
+        m4_ifndef(num_`'m4_class`'_binops, m4_ifndef(num_`'binops, 0)))dnl
 ifelse(num_binops, 0, , m4_set_class(bop_assign_code))')
 
 # m4_extra_class_code
 #
 # Extra code needed for the class in addition to the user-interface
 # procedures.
-define(`m4_extra_class_code',
+define(`m4_pre_extra_class_code',
 `m4_add_bop_assign_code`'dnl
 m4_add_widening_extrapolation_code')
 

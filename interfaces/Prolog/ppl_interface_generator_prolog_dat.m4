@@ -12,11 +12,11 @@ define(`m4_num_possible_classes', 5)
 # All possible classes. This needs to be updated as more
 # classes are supported in the PPL.
 #
-define(`Class1', `Polyhedron')
-define(`Class2', `LP_Problem')
-define(`Class3', `Grid')
-define(`Class4', `BD_Shape')
-define(`Class5', `Octagon')
+define(`m4_Class1', `Polyhedron')
+define(`m4_Class2', `LP_Problem')
+define(`m4_Class3', `Grid')
+define(`m4_Class4', `BD_Shape')
+define(`m4_Class5', `Octagon')
 
 # class_group
 #
@@ -25,7 +25,7 @@ define(`Class5', `Octagon')
 # GRID for all the grid-like classes,
 # SHAPE for classes denoting subsets of a vector space that have some shape.
 define(`m4_class_group',
-  `ifelse(class, LP_Problem, LP_Problem, class, Grid, GRID, SHAPE)')
+  `ifelse(m4_class, LP_Problem, LP_Problem, m4_class, Grid, GRID, SHAPE)')
 
 # class_super_group
 #
@@ -272,60 +272,60 @@ ppl_reset_timeout/0 nofail
 # There is no limit on the number of codes.
 # An "X" in front of the two letter short class name,
 # means it is not included.
-# Where "CLASS" is replaced by the class name, then that class only
+# Where "M4_CLASS" is replaced by the class name, then that class only
 # is applicable for that schema.
 #
 # Note that the code for the schema "<name>_code" must be defined
 # in the ppl_prolog_icc.m4 file. The <name> must be exactly as written here.
 #
 define(`m4_procedure_list',
-`ppl_new_TOPOLOGY_CLASS_from_space_dimension/3 POINTS
-ppl_new_TOPOLOGY_CLASS_from_INTOPOLOGY_CLASS/2 All
-ppl_new_TOPOLOGY_CLASS_from_REPRESENTs/2 POINTS
-ppl_new_TOPOLOGY_CLASS_from_BOX/2 POINTS
-ppl_CLASS_swap/2 nofail All
-ppl_delete_CLASS/1 nofail All
-ppl_CLASS_DIM/2 All
-ppl_CLASS_get_DESCRIBEs/2 POINTS
-ppl_CLASS_get_minimized_DESCRIBEs/2 POINTS
-ppl_CLASS_relation_with_DESCRIBE/3 POINTS
-ppl_CLASS_get_BOX/3 SHAPE
+`ppl_new_TOPOLOGY_M4_CLASS_from_space_dimension/3 POINTS
+ppl_new_TOPOLOGY_M4_CLASS_from_INTOPOLOGY_M4_CLASS/2 All
+ppl_new_TOPOLOGY_M4_CLASS_from_REPRESENTs/2 POINTS
+ppl_new_TOPOLOGY_M4_CLASS_from_BOX/2 POINTS
+ppl_M4_CLASS_swap/2 nofail All
+ppl_delete_M4_CLASS/1 nofail All
+ppl_M4_CLASS_DIM/2 All
+ppl_M4_CLASS_get_DESCRIBEs/2 POINTS
+ppl_M4_CLASS_get_minimized_DESCRIBEs/2 POINTS
+ppl_M4_CLASS_relation_with_DESCRIBE/3 POINTS
+ppl_M4_CLASS_get_BOX/3 SHAPE
 ppl_Grid_get_BOX/2
-ppl_CLASS_is_STATE/1 POINTS
-ppl_CLASS_topological_closure_assign/1 nofail POINTS
-ppl_CLASS_bounds_from_ABOVEBELOW/2 POINTS
-ppl_CLASS_MAXMIN/5 POINTS
-ppl_CLASS_MAXMIN_with_point/6 POINTS
-ppl_CLASS_COMPARISON_CLASS/2 POINTS
-ppl_CLASS_equals_CLASS/2 POINTS
-ppl_CLASS_OK/1 All
-ppl_CLASS_add_REPRESENT/2 nofail POINTS
-ppl_CLASS_add_REPRESENT_and_minimize/2 POINTS
-ppl_CLASS_add_REPRESENTs/2 nofail POINTS
-ppl_CLASS_add_REPRESENTs_and_minimize/2 POINTS
-ppl_CLASS_BINOP/2 nofail POINTS
-ppl_CLASS_BPMIN/2 POINTS
-ppl_CLASS_AFFIM/4 nofail POINTS
-ppl_CLASS_bounded_AFFIM/5 nofail Poly
-ppl_CLASS_generalized_AFFIM/5 SHAPE
-ppl_CLASS_generalized_AFFIM_lhs_rhs/4 SHAPE
+ppl_M4_CLASS_is_STATE/1 POINTS
+ppl_M4_CLASS_topological_closure_assign/1 nofail POINTS
+ppl_M4_CLASS_bounds_from_ABOVEBELOW/2 POINTS
+ppl_M4_CLASS_MAXMIN/5 POINTS
+ppl_M4_CLASS_MAXMIN_with_point/6 POINTS
+ppl_M4_CLASS_COMPARISON_M4_CLASS/2 POINTS
+ppl_M4_CLASS_equals_M4_CLASS/2 POINTS
+ppl_M4_CLASS_OK/1 All
+ppl_M4_CLASS_add_REPRESENT/2 nofail POINTS
+ppl_M4_CLASS_add_REPRESENT_and_minimize/2 POINTS
+ppl_M4_CLASS_add_REPRESENTs/2 nofail POINTS
+ppl_M4_CLASS_add_REPRESENTs_and_minimize/2 POINTS
+ppl_M4_CLASS_BINOP/2 nofail POINTS
+ppl_M4_CLASS_BPMIN/2 POINTS
+ppl_M4_CLASS_AFFIM/4 nofail POINTS
+ppl_M4_CLASS_bounded_AFFIM/5 nofail Poly
+ppl_M4_CLASS_generalized_AFFIM/5 SHAPE
+ppl_M4_CLASS_generalized_AFFIM_lhs_rhs/4 SHAPE
 ppl_Grid_generalized_AFFIM/5
 ppl_Grid_generalized_AFFIM_lhs_rhs/4
-ppl_CLASS_WIDENEXP_widening_assign_with_tokens/4 POINTS
-ppl_CLASS_WIDENEXP_widening_assign/2 nofail POINTS
-ppl_CLASS_limited_WIDENEXP_extrapolation_assign_with_tokens/5 POINTS
-ppl_CLASS_limited_WIDENEXP_extrapolation_assign/3 nofail POINTS
-ppl_CLASS_bounded_WIDENEXP_extrapolation_assign_with_tokens/5 Poly
-ppl_CLASS_bounded_WIDENEXP_extrapolation_assign/3 nofail Poly
+ppl_M4_CLASS_WIDENEXP_widening_assign_with_tokens/4 POINTS
+ppl_M4_CLASS_WIDENEXP_widening_assign/2 nofail POINTS
+ppl_M4_CLASS_limited_WIDENEXP_extrapolation_assign_with_tokens/5 POINTS
+ppl_M4_CLASS_limited_WIDENEXP_extrapolation_assign/3 nofail POINTS
+ppl_M4_CLASS_bounded_WIDENEXP_extrapolation_assign_with_tokens/5 Poly
+ppl_M4_CLASS_bounded_WIDENEXP_extrapolation_assign/3 nofail Poly
 ppl_BD_Shape_CC76_narrowing_assign/2
-ppl_CLASS_add_space_dimensions_and_project/2 nofail POINTS
-ppl_CLASS_add_space_dimensions_and_embed/2 nofail POINTS
-ppl_CLASS_concatenate_assign/2 nofail POINTS
-ppl_CLASS_remove_space_dimensions/2 POINTS
-ppl_CLASS_remove_higher_space_dimensions/2 nofail POINTS
-ppl_CLASS_expand_space_dimension/3 nofail POINTS
-ppl_CLASS_fold_space_dimensions/3  POINTS
-ppl_CLASS_map_space_dimensions/2 POINTS
+ppl_M4_CLASS_add_space_dimensions_and_project/2 nofail POINTS
+ppl_M4_CLASS_add_space_dimensions_and_embed/2 nofail POINTS
+ppl_M4_CLASS_concatenate_assign/2 nofail POINTS
+ppl_M4_CLASS_remove_space_dimensions/2 POINTS
+ppl_M4_CLASS_remove_higher_space_dimensions/2 nofail POINTS
+ppl_M4_CLASS_expand_space_dimension/3 nofail POINTS
+ppl_M4_CLASS_fold_space_dimensions/3  POINTS
+ppl_M4_CLASS_map_space_dimensions/2 POINTS
 ppl_new_LP_Problem_trivial/1
 ppl_new_LP_Problem/4
 ppl_LP_Problem_constraints/2

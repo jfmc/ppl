@@ -52,13 +52,13 @@ define(`m4_set_string',
   `define(`ustring', `m4_upcase($1)')dnl
 ifelse(index(`$2', ustring), `-1', `$2',
   `define(`num_strings',
-     m4_ifndef(num_`'class`'_`'$1`'s, m4_ifndef(num_`'$1`'s, 0)))dnl
+     m4_ifndef(num_`'m4_class`'_`'$1`'s, m4_ifndef(num_`'$1`'s, 0)))dnl
 ifelse(num_strings, 0, ,
   `m4_forloop(`js', 1, num_strings, `dnl
 define(`actual_string',
-  m4_ifndef(class`'_`'$1`'js, m4_ifndef($1`'js, `')))dnl
+  m4_ifndef(m4_class`'_`'$1`'js, m4_ifndef($1`'js, `')))dnl
 define(`alt_actual_string',
-  m4_ifndef(alt_`'class`'_`'$1`'js, actual_string))dnl
+  m4_ifndef(alt_`'m4_class`'_`'$1`'js, actual_string))dnl
 define(`Uactual_string',
   m4_capfirstletters(actual_string))dnl
 define(`Ualt_actual_string',
@@ -78,9 +78,10 @@ define(`m4_set_schema_strings', `ifelse($2, `', ``$1'',
 
 # m4_set_class(String)
 #
-# replaces dummy string `CLASS' by the actual class.
+# replaces dummy string `CLASSX' by the actual class.
 define(`m4_set_class',
-  `patsubst(`patsubst(`$1',  `CLASS', class)', cLASS, m4_downcase(class))')
+  `patsubst(`patsubst(`$1',  `M4_CLASS', m4_class)',
+     M4_lCLASS, m4_downcase(m4_class))')
 
 # m4_replace_with_code(String)
 #
@@ -109,13 +110,14 @@ define(`m4_procedure_names_to_code',
 # to see if there is a macro with "_code" extension that defines the code.
 # Then a macro sets the class and other schematic components.
 define(`m4_one_class_code',
-  `m4_ifndef(`m4_extra_class_code', `')dnl
-m4_set_class(m4_procedure_names_to_code(m4_filter(m4_procedure_list)))')
+  `m4_ifndef(`m4_pre_extra_class_code', `')dnl
+m4_set_class(m4_procedure_names_to_code(m4_filter(m4_procedure_list)))dnl
+m4_ifndef(`m4_post_extra_class_code', `')')
 
 # m4_short_class_name(String)
 #
 # The initial two letters of the class name - use to identify a class.
-define(`m4_short_class_name', `substr(class, 0, 4)')
+define(`m4_short_class_name', `substr(m4_class, 0, 4)')
 
 # m4_filter(String)
 #
@@ -135,7 +137,7 @@ define(`m4_filter',
 define(`m4_all_classes_code',
   `m4_forloop(`ind', 1, m4_num_possible_classes,
     `dnl
-define(`class', Class`'ind)dnl
-ifelse(index(m4_classes, class), -1, , `m4_one_class_code')')')
+define(`m4_class', m4_Class`'ind)dnl
+ifelse(index(m4_classes, m4_class), -1, , `m4_one_class_code')')')
 
 divert`'dnl
