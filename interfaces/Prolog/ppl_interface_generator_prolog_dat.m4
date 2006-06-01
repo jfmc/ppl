@@ -260,13 +260,14 @@ ppl_set_timeout/1 nofail
 ppl_reset_timeout/0 nofail
 ')
 
-# Class predicate list using patterns wherever possible.
+# m4_procedure_list 
+# This class using patterns wherever possible.
 # Which classes the schema applies to is determined by the following codes:
-# If code is POINT_DOMAIN = the point-domain classes ie grid and polyhedra classes;
+# If code is POINTS = the point-domain classes ie grid and polyhedra classes;
 #            All = all classes
 #            SHAPE = the polyhedra-shape classes;
-#            Po = the polyhedron class;
-#            Gr = the Grid class;
+#            Poly = the polyhedron class;
+#            Grid = the Grid class;
 #            etc.
 # There is no limit on the number of codes.
 # An "X" in front of the two letter short class name,

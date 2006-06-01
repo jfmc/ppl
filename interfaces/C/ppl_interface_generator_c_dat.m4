@@ -21,10 +21,11 @@ define(`Class5', `Octagon')
 # class_group
 #
 # There are three class groups:
-# LPM for LP_Problem class,
-# GRD for all the grid-like classes,
-# SHP for classes denoting subsets of a vector space that have some shape.
-define(`m4_class_group', `ifelse(class, LP_Problem, LPM, class, Grid, GRD, SHP)')
+# LP_Problem for LP_Problem class,
+# GRID for all the grid-like classes,
+# SHAPE for classes denoting subsets of a vector space that have some shape.
+define(`m4_class_group',
+  `ifelse(class, LP_Problem, LP_Problem, class, Grid, GRID, SHAPE)')
 
 # class_super_group
 #
@@ -32,7 +33,8 @@ define(`m4_class_group', `ifelse(class, LP_Problem, LPM, class, Grid, GRD, SHP)'
 # PM for LP_Problem class,
 # PD for classes defining some Domain based on sets of Points
 # (ie grid and shape classes)
-define(`m4_class_super_group', `ifelse(m4_class_group, LPM, LPM, PTD)')
+define(`m4_class_super_group',
+  `ifelse(m4_class_group, LP_Problem, LP_Problem, POINTS)')
 
 define(`m4_string_substitution_list',
 `intopology_,
@@ -239,76 +241,76 @@ define(`bpmin1', `binop1`'_and_minimize')
 define(`Polyhedron_bpmin2',  `Polyhedron_binop2`'_and_minimize')
 define(`bpmin2',  `binop2`'_and_minimize')
 
-# Class predicate list using patterns wherever possible.
+# m4_procedure_list 
+# This class using patterns wherever possible.
 # Which classes the schema applies to is determined by the following codes:
-# If code is PTD = the point-domain classes ie grid and polyhedra classes;
+# If code is POINTS = the point-domain classes ie grid and polyhedra classes;
 #            All = all classes
-#            PS = the polyhedra-shape classes;
-#            Po = the polyhedron class;
-#            Gr = the Grid class;
-#            Cc, where Cc is 1st two letters of class name Cccc
-#               = the Cccc class.
+#            SHAPE = the polyhedra-shape classes;
+#            Poly = the polyhedron class;
+#            Grid = the Grid class;
+#            etc.
 # There is no limit on the number of codes.
 # An "X" in front of the two letter short class name,
 # means it is not included.
 # Where "CLASS" is replaced by the class name, then that class only
 # is applicable for that schema.
 #
-# Note that the code for the schema "<name>_code" must be defined
-# in the ppl_prolog_icc.m4 file. The <name> must be exactly as written here.
+# Note that the code for the schema "<name>_code" must be defined.
+# The <name> must be exactly as written here.
 #
-define(`class_predicate_list',
-`ppl_new_TOPOLOGY_CLASS_from_space_dimension/3 PTD
+define(`m4_procedure_list',
+`ppl_new_TOPOLOGY_CLASS_from_space_dimension/3 POINTS
 ppl_new_TOPOLOGY_CLASS_from_INTOPOLOGY_CLASS/2 All
-ppl_new_TOPOLOGY_CLASS_from_UALT_REPRESENT_System/2 PTD
-ppl_new_TOPOLOGY_CLASS_recycle_UALT_REPRESENT_System/2 PTD
-ppl_new_TOPOLOGY_CLASS_from_BOX/2 PTD
+ppl_new_TOPOLOGY_CLASS_from_UALT_REPRESENT_System/2 POINTS
+ppl_new_TOPOLOGY_CLASS_recycle_UALT_REPRESENT_System/2 POINTS
+ppl_new_TOPOLOGY_CLASS_from_BOX/2 POINTS
 ppl_delete_CLASS/1 All
-ppl_assign_TOPOLOGY_CLASS_from_TOPOLOGY_CLASS/1 PTD
+ppl_assign_TOPOLOGY_CLASS_from_TOPOLOGY_CLASS/1 POINTS
 ppl_CLASS_DIM/2 All
-ppl_CLASS_DESCRIBEs/2 PTD
-ppl_CLASS_minimized_DESCRIBEs/2 PTD
-ppl_CLASS_relation_with_UALT_DESCRIBE/3 PTD
-ppl_CLASS_shrink_BOX/3 SHP
+ppl_CLASS_DESCRIBEs/2 POINTS
+ppl_CLASS_minimized_DESCRIBEs/2 POINTS
+ppl_CLASS_relation_with_UALT_DESCRIBE/3 POINTS
+ppl_CLASS_shrink_BOX/3 SHAPE
 ppl_Grid_get_BOX/2
-ppl_CLASS_is_STATE/1 PTD
-ppl_CLASS_topological_closure_assign/1 PTD
-ppl_CLASS_bounds_from_ABOVEBELOW/2 PTD
-ppl_CLASS_MAXMIN/5 PTD
-ppl_CLASS_MAXMIN_with_point/6 PTD
-ppl_CLASS_COMPARISON_CLASS/2 PTD
-ppl_CLASS_equals_CLASS/2 PTD
+ppl_CLASS_is_STATE/1 POINTS
+ppl_CLASS_topological_closure_assign/1 POINTS
+ppl_CLASS_bounds_from_ABOVEBELOW/2 POINTS
+ppl_CLASS_MAXMIN/5 POINTS
+ppl_CLASS_MAXMIN_with_point/6 POINTS
+ppl_CLASS_COMPARISON_CLASS/2 POINTS
+ppl_CLASS_equals_CLASS/2 POINTS
 ppl_CLASS_OK/1 All
-ppl_CLASS_add_REPRESENT/2 PTD
-ppl_CLASS_add_REPRESENT_and_minimize/2 PTD
-ppl_CLASS_add_REPRESENTs/2 PTD
-ppl_CLASS_add_REPRESENTs_and_minimize/2 PTD
-ppl_CLASS_add_recycled_REPRESENT/2 PTD
-ppl_CLASS_add_recycled_REPRESENT_and_minimize/2 PTD
-ppl_CLASS_add_recycled_REPRESENTs/2 PTD
-ppl_CLASS_add_recycled_REPRESENTs_and_minimize/2 PTD
-ppl_CLASS_BINOP/2 PTD
-ppl_CLASS_BPMIN/2 PTD
-ppl_CLASS_AFFIM/4 PTD
-ppl_CLASS_bounded_AFFIM/5 Po
-ppl_CLASS_generalized_AFFIM/5 SHP
-ppl_CLASS_generalized_AFFIM_lhs_rhs/4 SHP
+ppl_CLASS_add_REPRESENT/2 POINTS
+ppl_CLASS_add_REPRESENT_and_minimize/2 POINTS
+ppl_CLASS_add_REPRESENTs/2 POINTS
+ppl_CLASS_add_REPRESENTs_and_minimize/2 POINTS
+ppl_CLASS_add_recycled_REPRESENT/2 POINTS
+ppl_CLASS_add_recycled_REPRESENT_and_minimize/2 POINTS
+ppl_CLASS_add_recycled_REPRESENTs/2 POINTS
+ppl_CLASS_add_recycled_REPRESENTs_and_minimize/2 POINTS
+ppl_CLASS_BINOP/2 POINTS
+ppl_CLASS_BPMIN/2 POINTS
+ppl_CLASS_AFFIM/4 POINTS
+ppl_CLASS_bounded_AFFIM/5 Poly
+ppl_CLASS_generalized_AFFIM/5 SHAPE
+ppl_CLASS_generalized_AFFIM_lhs_rhs/4 SHAPE
 ppl_Grid_generalized_AFFIM/5
 ppl_Grid_generalized_AFFIM_lhs_rhs/4
-ppl_CLASS_WIDENEXP_widening_assign_with_tokens/4 PTD
-ppl_CLASS_WIDENEXP_widening_assign/2 PTD
-ppl_CLASS_limited_WIDENEXP_extrapolation_assign_with_tokens/5 PTD
-ppl_CLASS_limited_WIDENEXP_extrapolation_assign/3 PTD
-ppl_CLASS_bounded_WIDENEXP_extrapolation_assign_with_tokens/5 Po
-ppl_CLASS_bounded_WIDENEXP_extrapolation_assign/3 Po
+ppl_CLASS_WIDENEXP_widening_assign_with_tokens/4 POINTS
+ppl_CLASS_WIDENEXP_widening_assign/2 POINTS
+ppl_CLASS_limited_WIDENEXP_extrapolation_assign_with_tokens/5 POINTS
+ppl_CLASS_limited_WIDENEXP_extrapolation_assign/3 POINTS
+ppl_CLASS_bounded_WIDENEXP_extrapolation_assign_with_tokens/5 Poly
+ppl_CLASS_bounded_WIDENEXP_extrapolation_assign/3 Poly
 ppl_BD_Shape_CC76_narrowing_assign/2
-ppl_CLASS_add_space_dimensions_and_EMBEDPROJECT/2 PTD
-ppl_CLASS_concatenate_assign/2 PTD
-ppl_CLASS_remove_space_dimensions/2 PTD
-ppl_CLASS_remove_higher_space_dimensions/2 PTD
-ppl_CLASS_expand_space_dimension/3 PTD
-ppl_CLASS_fold_space_dimensions/3 PTD
-ppl_CLASS_map_space_dimensions/2 PTD
+ppl_CLASS_add_space_dimensions_and_EMBEDPROJECT/2 POINTS
+ppl_CLASS_concatenate_assign/2 POINTS
+ppl_CLASS_remove_space_dimensions/2 POINTS
+ppl_CLASS_remove_higher_space_dimensions/2 POINTS
+ppl_CLASS_expand_space_dimension/3 POINTS
+ppl_CLASS_fold_space_dimensions/3 POINTS
+ppl_CLASS_map_space_dimensions/2 POINTS
 ppl_new_LP_Problem_trivial/1
 ppl_new_LP_Problem/4
 ppl_LP_Problem_constraints/2

@@ -51,14 +51,18 @@ define(`m4_ifndef', `ifdef(`$1', $1, $2)')
 define(`m4_set_string',
   `define(`ustring', `m4_upcase($1)')dnl
 ifelse(index(`$2', ustring), `-1', `$2',
-     `define(`num_strings',
-        m4_ifndef(num_`'class`'_`'$1`'s, m4_ifndef(num_`'$1`'s, 0)))dnl
+  `define(`num_strings',
+     m4_ifndef(num_`'class`'_`'$1`'s, m4_ifndef(num_`'$1`'s, 0)))dnl
 ifelse(num_strings, 0, ,
-         `m4_forloop(`js', 1, num_strings, `dnl
-define(`actual_string', m4_ifndef(class`'_`'$1`'js, m4_ifndef($1`'js, `')))dnl
-define(`alt_actual_string', m4_ifndef(alt_`'class`'_`'$1`'js, actual_string))dnl
-define(`Uactual_string', m4_capfirstletters(actual_string))dnl
-define(`Ualt_actual_string', m4_capfirstletters(alt_actual_string))dnl
+  `m4_forloop(`js', 1, num_strings, `dnl
+define(`actual_string',
+  m4_ifndef(class`'_`'$1`'js, m4_ifndef($1`'js, `')))dnl
+define(`alt_actual_string',
+  m4_ifndef(alt_`'class`'_`'$1`'js, actual_string))dnl
+define(`Uactual_string',
+  m4_capfirstletters(actual_string))dnl
+define(`Ualt_actual_string',
+  m4_capfirstletters(alt_actual_string))dnl
 patsubst(patsubst(patsubst(patsubst(`$2',
            U`'ustring, Uactual_string),
            UALT_`'ustring, Ualt_actual_string),
@@ -76,14 +80,14 @@ define(`m4_set_schema_strings', `ifelse($2, `', ``$1'',
 #
 # replaces dummy string `CLASS' by the actual class.
 define(`m4_set_class',
-`patsubst(`patsubst(`$1',  `CLASS', class)', cLASS, m4_downcase(class))')
+  `patsubst(`patsubst(`$1',  `CLASS', class)', cLASS, m4_downcase(class))')
 
 # m4_replace_with_code(String)
 #
 # procedure name schemas are replaced by the code schema
 define(`m4_replace_with_code',
   `patsubst(`$1',
-     `[ ]*\(ppl_[^ /]+\)/\([0-9]+\)[ ]*\([a-z]*\)[^\n]*!',
+     `[ ]*\(ppl_[^ /]+\)/*\([0-9]*\)[ ]*\([a-z]*\)[^\n]*!',
           `m4_extension(\1, \2, \3)')')
 
 # This has to be redefined for the system predicate code.
@@ -128,8 +132,6 @@ define(`m4_filter',
 # m4_all_classes_code
 #
 # This iterates through the classes to generate the code.
-# The actual code generated must be defined by the file
-# for that code.
 define(`m4_all_classes_code',
   `m4_forloop(`ind', 1, m4_num_possible_classes,
     `dnl
