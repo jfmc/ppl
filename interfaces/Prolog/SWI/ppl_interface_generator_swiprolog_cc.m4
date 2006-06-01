@@ -387,6 +387,6 @@ uninstall() {
 }
 divert`'dnl
 include(`ppl_interface_generator_prolog_systems.m4')dnl
-define(`extension', `SPACES  PL_EXTENSION_ENTRY($1, $2)
+define(`m4_extension', `SPACES  PL_EXTENSION_ENTRY($1, $2)
 ')dnl
 patsubst(ppl_prolog_sys_code, SPACES, `')dnl

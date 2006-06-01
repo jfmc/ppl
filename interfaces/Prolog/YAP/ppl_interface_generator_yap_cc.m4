@@ -473,11 +473,11 @@ divert(2)dnl
 }
 divert`'dnl
 include(`ppl_interface_generator_prolog_systems.m4')dnl
-define(`extension', `YAP_STUB_$2($1)
+define(`m4_extension', `YAP_STUB_$2($1)
 ')dnl
 ppl_prolog_sys_code`'dnl
 undivert(1)`'dnl
 divert`'dnl
-define(`extension', `  YAP_USER_C_PREDICATE($1, $2);
+define(`m4_extension', `  YAP_USER_C_PREDICATE($1, $2);
 ')dnl
 ppl_prolog_sys_code`'dnl

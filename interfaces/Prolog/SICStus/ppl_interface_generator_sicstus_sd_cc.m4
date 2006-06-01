@@ -218,12 +218,12 @@ ppl_sicstus_deinit(int /* when */) {
 }
 divert`'dnl
 include(`ppl_interface_generator_prolog_systems.m4')dnl
-define(`extension', `SP_STUB_$2($1)
+define(`m4_extension', `SP_STUB_$2($1)
 ')dnl
 ppl_prolog_sys_code
 undivert(1)`'dnl
 divert`'dnl
-define(`extension', `  SP_DEFINE_C_PREDICATE($1, $2);
+define(`m4_extension', `  SP_DEFINE_C_PREDICATE($1, $2);
 ')dnl
 ppl_prolog_sys_code`'dnl
 

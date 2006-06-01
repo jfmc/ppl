@@ -17,15 +17,6 @@ define(`m4_term_sequence',
      `$2(1)`'ifelse(`$1', 1, ,
        `m4_forloop(`i', 2, `$1', `m4_separator(`$3') $2(i)')')')')
 
-# m4_extension(String)
-#
-# the extensions (optionally prefix, postfix and infix text) are added.
-# the extension can be controlled by the extra tokens at the end of the main
-# text.
-# The arity can be reset to n for a specific class by the flag class/n
-# the `nofail/' flag indicates that the predicate(s) will always succeed.
-define(`m4_extension', `extension($1, $2, $3)')
-
 # ppl_prolog_sys_code
 #
 # For each recognised class in the "classes" list,

@@ -54,11 +54,11 @@ ifelse(index(`$2', ustring), `-1', `$2',
   `define(`num_strings',
      m4_ifndef(num_`'m4_class`'_`'$1`'s, m4_ifndef(num_`'$1`'s, 0)))dnl
 ifelse(num_strings, 0, ,
-  `m4_forloop(`js', 1, num_strings, `dnl
+  `m4_forloop(`m4_i', 1, num_strings, `dnl
 define(`actual_string',
-  m4_ifndef(m4_class`'_`'$1`'js, m4_ifndef($1`'js, `')))dnl
+  m4_ifndef(m4_class`'_`'$1`'m4_i, m4_ifndef($1`'m4_i, `')))dnl
 define(`alt_actual_string',
-  m4_ifndef(alt_`'m4_class`'_`'$1`'js, actual_string))dnl
+  m4_ifndef(alt_`'m4_class`'_`'$1`'m4_i, actual_string))dnl
 define(`Uactual_string',
   m4_capfirstletters(actual_string))dnl
 define(`Ualt_actual_string',
@@ -135,9 +135,9 @@ define(`m4_filter',
 #
 # This iterates through the classes to generate the code.
 define(`m4_all_classes_code',
-  `m4_forloop(`ind', 1, m4_num_possible_classes,
+  `m4_forloop(`m4_i', 1, m4_num_possible_classes,
     `dnl
-define(`m4_class', m4_Class`'ind)dnl
+define(`m4_class', m4_Class`'m4_i)dnl
 ifelse(index(m4_classes, m4_class), -1, , `m4_one_class_code')')')
 
 divert`'dnl

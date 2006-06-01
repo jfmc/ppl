@@ -12,6 +12,6 @@ divert(1)
 divert`'dnl
 include(`ppl_interface_generator_prolog_systems.m4')dnl
 define(`start', 0)
-define(`extension', `ifelse(start, 0, define(`start', 1)`'$1/$2, `COMMA
+define(`m4_extension', `ifelse(start, 0, define(`start', 1)`'$1/$2, `COMMA
 $1/$2')')dnl
 patsubst(ppl_prolog_sys_code, COMMA, `,')`.'dnl
