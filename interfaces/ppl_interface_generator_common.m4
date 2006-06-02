@@ -156,16 +156,24 @@ define(`m4_all_classes_loop',
 m4_one_class_code`'dnl
 m4_all_classes_loop(incr($1))')')
 
+define(`m4_get_name_components',
+  `ifelse($3, `', ,
+    `ifelse(index($3, <), -1,
+      define(m4_class`'$1_component`'$2, $3)dnl
+define(m4_num_class`'$1_components, $2),
+        `regexp($3, `\([^ <]+\)[<]\(.*\)[ ]*[>]',
+`define(m4_class`'$1_component`'$2, \1)dnl
+m4_get_name_components($1, incr($2), \2)')')')')
+
 # m4_init_interface_classes(Class_List, Count)
 #
 # parses the space-separated list of class names Class_List
 # for the names of the classes used to form the names of procedures
 # in the user interface.
 define(`m4_init_interface_classes',
-  `ifelse($1, `', ,
-    `regexp($1, `\([^ ]+\) ?\(.*\)',
-       `define(m4_interface_class`'$2, \1)dnl
-m4_init_interface_classes(\2, incr($2))')')')
+  `ifelse($2, `', ,
+    `define(m4_interface_class`'$1, $2)dnl
+m4_init_interface_classes(incr($1), shift(shift($@)))')')
 
 # m4_init_cplusplus_classes(Class_List, count)
 #
@@ -175,12 +183,10 @@ m4_init_interface_classes(\2, incr($2))')')')
 # and the class numeric type are also defined by macros
 # m4_class_type`'count and m4_numeric_type`'count, respectively.
 define(`m4_init_cplusplus_classes',
-  `ifelse($1, `', ,
-    `regexp($1, `\([^ <]+\)\([<]*\)\([^ >]*\)\([>]*\) ?\(.*\)',
-       `define(m4_cplusplus_class`'$2, \1\2\3\4)dnl
-define(m4_numeric_type`'$2, \3)dnl
-define(m4_class_type`'$2, \1)dnl
-m4_init_cplusplus_classes(\5, incr($2))')')')
+  `ifelse($2, `', ,
+     `define(m4_cplusplus_class`'$1, $2)dnl
+m4_get_name_components($1, 1, $2)dnl
+m4_init_cplusplus_classes(incr($1), shift(shift($@)))')')
 
 # m4_initialize_classes
 #
@@ -188,9 +194,10 @@ m4_init_cplusplus_classes(\5, incr($2))')')')
 # it calls the macros m4_init_interface_classes/2 and
 # m4_init_cplusplus_classes/2 with the given class_lists
 # and an initial counter = 1.
+
 define(`m4_initialize_classes',
-  `m4_init_interface_classes(m4_interface_class_names, 1)`'dnl
-m4_init_cplusplus_classes(m4_cplusplus_class_names, 1)')
+  `m4_init_interface_classes(1, m4_interface_class_names)`'dnl
+m4_init_cplusplus_classes(1, m4_cplusplus_class_names)')
 
 # m4_all_classes_code
 #

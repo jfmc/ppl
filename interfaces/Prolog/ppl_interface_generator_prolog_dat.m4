@@ -7,8 +7,8 @@ divert(-1)
 #   `Polyhedron LP_Problem Grid BD_Shape_int8_t BD_Shape_int32_t')
 # define(`m4_cplusplus_class_names',
 #   `Polyhedron LP_Problem Grid BD_Shape<int8_t> BD_Shape<int32_t>')
-define(`m4_interface_class_names', `Polyhedron LP_Problem Grid')
-define(`m4_cplusplus_class_names', `Polyhedron LP_Problem Grid')
+define(`m4_interface_class_names', `Polyhedron, LP_Problem, Grid')
+define(`m4_cplusplus_class_names', `Polyhedron, LP_Problem, Grid')
 
 # class_group
 #
