@@ -122,8 +122,8 @@ define(`m4_procedure_names_to_code',
 define(`m4_filter',
   `patsubst(`$1', `\(.*
 \)',
-    `ifelse(index(\1, X`'m4_short_class_name), -1,
-       ifelse(index(\1, m4_short_class_name), -1,
+    `ifelse(index(\1, X`'m4_class), -1,
+       ifelse(index(\1, m4_class), -1,
          ifelse(index(\1, All), -1,
            ifelse(index(\1, m4_class_group), -1,
              ifelse(index(\1, m4_class_super_group), -1, ,
@@ -139,11 +139,6 @@ define(`m4_one_class_code',
 m4_set_class(m4_procedure_names_to_code(m4_filter(m4_procedure_list)))dnl
 m4_ifndef(`m4_post_extra_class_code', `')')
 
-# m4_short_class_name(String)
-#
-# The initial two letters of the class name - use to identify a class.
-define(`m4_short_class_name', `substr(m4_class, 0, 4)')
-
 # m4_all_classes_loop(Count)
 #
 # This iterates through the classes to generate the code.
@@ -156,6 +151,16 @@ define(`m4_all_classes_loop',
 m4_one_class_code`'dnl
 m4_all_classes_loop(incr($1))')')
 
+# m4_get_name_components(Class Num, Component_Num, String)
+#
+# The components of the class name in String are separated out
+# by recursively getting the first part before the "<"
+# removing the outer angle brackets and calling this macro again
+# with the remaining string.
+# Each component is defined as
+# m4_class<Class Num>_component<Component Num>
+# The total number of components is defined by the macro
+# m4_num_class<Class Num>_components
 define(`m4_get_name_components',
   `ifelse($3, `', ,
     `ifelse(index($3, <), -1,
@@ -167,7 +172,7 @@ m4_get_name_components($1, incr($2), \2)')')')')
 
 # m4_init_interface_classes(Class_List, Count)
 #
-# parses the space-separated list of class names Class_List
+# parses the comma-separated list of class names Class_List
 # for the names of the classes used to form the names of procedures
 # in the user interface.
 define(`m4_init_interface_classes',
@@ -177,11 +182,11 @@ m4_init_interface_classes(incr($1), shift(shift($@)))')')
 
 # m4_init_cplusplus_classes(Class_List, count)
 #
-# parses the space separated list of class names Class_List
+# parses the comma-separated list of class names Class_List
 # to be used in the C++ code implementing the interface procedures.
-# The class type name (ie the class name without the numeric type)
-# and the class numeric type are also defined by macros
-# m4_class_type`'count and m4_numeric_type`'count, respectively.
+# The components of the class name are also separated out
+# and defined as m4_class<class_num>_component<component_num>
+# using m4_get_name_components/3.
 define(`m4_init_cplusplus_classes',
   `ifelse($2, `', ,
      `define(m4_cplusplus_class`'$1, $2)dnl
@@ -194,7 +199,6 @@ m4_init_cplusplus_classes(incr($1), shift(shift($@)))')')
 # it calls the macros m4_init_interface_classes/2 and
 # m4_init_cplusplus_classes/2 with the given class_lists
 # and an initial counter = 1.
-
 define(`m4_initialize_classes',
   `m4_init_interface_classes(1, m4_interface_class_names)`'dnl
 m4_init_cplusplus_classes(1, m4_cplusplus_class_names)')
