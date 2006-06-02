@@ -35,19 +35,21 @@ define(`m4_capfirstletters',
          regexp(`$1', `^\(\w\)\(\w*_\)\(\w\)\(\w*\)',
            `m4_upcase(`\1')`\2'm4_upcase(`\3')`\4''))')
 
-# m4_ifndef(String, String)
+# m4_ifndef(Macro, Default Definition)
 #
-# If the macro is defined, use that definition, otherwise use $2
-# as the definition.
+# If Macro is defined, use that definition, otherwise use the
+# Default Definition.
 define(`m4_ifndef', `ifdef(`$1', $1, $2)')
 
-# m4_set_string(String, String)
+# m4_set_string(Pattern, String)
 #
-# replaces capitalised form of dummy string `$1' in `$2'
-# by the required actual string.
-# alt_ means that the alternative string must be used if one exists.
-# U means that the alt_actual string must be capitalised at start
-# of word and after "_".
+# replaces in String occurrences of the capitalised form of Pattern
+# by the required actual string (determined both by the class
+# and Pattern). There are additional codes to help provide the
+# appropriate pattern for the replacmement.
+# - alt_ means that the alternative string must be used if one exists.
+# - U means that the alt_actual string must be capitalised at start
+#   of word and after "_".
 define(`m4_set_string',
   `define(`ustring', `m4_upcase($1)')dnl
 ifelse(index(`$2', ustring), `-1', `$2',
@@ -69,16 +71,17 @@ patsubst(patsubst(patsubst(patsubst(`$2',
            ALT_`'ustring, alt_actual_string),
            ustring, actual_string)')')')')
 
-# m4_set_schema_strings(String, sequence_of strings)
+# m4_set_schema_strings(String, Sequence of Strings)
 #
 # A (recursive) macro to set the schemas in the string in the first
-# argument. The schemas are listed in arguments 2 to end.
+# argument. The sequence of schemas are in arguments 2 to end.
 define(`m4_set_schema_strings', `ifelse($2, `', ``$1'',
   `m4_set_schema_strings(m4_set_string($2, $1), shift(shift($@)))')'))
 
 # m4_set_class(String)
 #
-# replaces dummy string `CLASSX' by the actual class.
+# replaces dummy string `M4_CLASS' by the actual class defined
+# in m4_class.
 define(`m4_set_class',
   `patsubst(`patsubst(`$1',  `M4_CLASS', m4_class)',
      M4_lCLASS, m4_downcase(m4_class))')
@@ -91,18 +94,40 @@ define(`m4_replace_with_code',
      `[ ]*\(ppl_[^ /]+\)/*\([0-9]*\)[ ]*\([a-z]*\)[^\n]*!',
           `m4_extension(\1, \2, \3)')')
 
-# This has to be redefined for the system predicate code.
+# m4_extension(Procedure Name)
+#
+# Adds "_code" to Procedure Name so that it
+# matches the code macro definition name.
+#
+# This has to be redefined in the Prolog system files
+# for the specific extensions needed for the code there.
 define(`m4_extension', `m4_ifndef($1`'_code, `')')
 
-# m4_procedure_names_to_code(String)
+# m4_procedure_names_to_code(Procedure_Schema_List)
 #
-# replaces with the code for the procedures that
-# are dependent on the class.
+# Each name_schema in Procedure_Schema_List, is replaced
+# with the code and then the schema patterns in the code
+# are replaced by the various instances.
 define(`m4_procedure_names_to_code',
   `patsubst(`$1', `\(.*\)
 ',
        `m4_set_schema_strings(m4_replace_with_code(\1!),
          m4_string_substitution_list)')')
+
+# m4_filter(Procedure_Schema_List)
+#
+# keeps just those procedures that are needed for the given class.
+# There are several codes for keeping or eliminating a schema name
+# and the tests here correspond to these.
+define(`m4_filter',
+  `patsubst(`$1', `\(.*
+\)',
+    `ifelse(index(\1, X`'m4_short_class_name), -1,
+       ifelse(index(\1, m4_short_class_name), -1,
+         ifelse(index(\1, All), -1,
+           ifelse(index(\1, m4_class_group), -1,
+             ifelse(index(\1, m4_class_super_group), -1, ,
+               \1), \1), \1), \1))')')
 
 # m4_one_class_code
 #
@@ -119,25 +144,62 @@ m4_ifndef(`m4_post_extra_class_code', `')')
 # The initial two letters of the class name - use to identify a class.
 define(`m4_short_class_name', `substr(m4_class, 0, 4)')
 
-# m4_filter(String)
+# m4_all_classes_loop(Count)
 #
-# keeps just those predicates that are needed for the given class..
-define(`m4_filter',
-  `patsubst(`$1', `\(.*
-\)',
-    `ifelse(index(\1, X`'m4_short_class_name), -1,
-       ifelse(index(\1, m4_short_class_name), -1,
-         ifelse(index(\1, All), -1,
-           ifelse(index(\1, m4_class_group), -1,
-             ifelse(index(\1, m4_class_super_group), -1, , \1), \1), \1), \1))')')
+# This iterates through the classes to generate the code.
+# All the required classes are defined by m4_interface_class`'count
+# and this is defined to be m4_class before proceding with
+# generating the code.
+define(`m4_all_classes_loop',
+  `ifdef(m4_interface_class`'$1,
+    `define(`m4_class', m4_interface_class`'$1)dnl
+m4_one_class_code`'dnl
+m4_all_classes_loop(incr($1))')')
+
+# m4_init_interface_classes(Class_List, Count)
+#
+# parses the space-separated list of class names Class_List
+# for the names of the classes used to form the names of procedures
+# in the user interface.
+define(`m4_init_interface_classes',
+  `ifelse($1, `', ,
+    `regexp($1, `\([^ ]+\) ?\(.*\)',
+       `define(m4_interface_class`'$2, \1)dnl
+m4_init_interface_classes(\2, incr($2))')')')
+
+# m4_init_cplusplus_classes(Class_List, count)
+#
+# parses the space separated list of class names Class_List
+# to be used in the C++ code implementing the interface procedures.
+# The class type name (ie the class name without the numeric type)
+# and the class numeric type are also defined by macros
+# m4_class_type`'count and m4_numeric_type`'count, respectively.
+define(`m4_init_cplusplus_classes',
+  `ifelse($1, `', ,
+    `regexp($1, `\([^ <]+\)\([<]*\)\([^ >]*\)\([>]*\) ?\(.*\)',
+       `define(m4_cplusplus_class`'$2, \1\2\3\4)dnl
+define(m4_numeric_type`'$2, \3)dnl
+define(m4_class_type`'$2, \1)dnl
+m4_init_cplusplus_classes(\5, incr($2))')')')
+
+# m4_initialize_classes
+#
+# provides the class name macro definitions.
+# it calls the macros m4_init_interface_classes/2 and
+# m4_init_cplusplus_classes/2 with the given class_lists
+# and an initial counter = 1.
+define(`m4_initialize_classes',
+  `m4_init_interface_classes(m4_interface_class_names, 1)`'dnl
+m4_init_cplusplus_classes(m4_cplusplus_class_names, 1)')
 
 # m4_all_classes_code
 #
-# This iterates through the classes to generate the code.
+# This initializes the macros for the classes requested by the user
+# (which is determined by the configuration)
+# and then calls the main loop m4_all_classes_loop for generating
+# all the required classes.
 define(`m4_all_classes_code',
-  `m4_forloop(`m4_i', 1, m4_num_possible_classes,
-    `dnl
-define(`m4_class', m4_Class`'m4_i)dnl
-ifelse(index(m4_classes, m4_class), -1, , `m4_one_class_code')')')
+  `m4_initialize_classes`'dnl
+m4_all_classes_loop(1)')
 
 divert`'dnl
