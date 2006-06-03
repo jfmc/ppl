@@ -313,7 +313,20 @@ DECLARE_CONVERSIONS(Generator_System)
 typedef Generator_System::const_iterator Generator_System_const_iterator;
 DECLARE_CONVERSIONS(Generator_System_const_iterator)
 
-DECLARE_CONVERSIONS(Polyhedron)
+DECLARE_CONVERSIONS(Congruence)
+
+DECLARE_CONVERSIONS(Congruence_System)
+
+typedef Congruence_System::const_iterator Congruence_System_const_iterator;
+DECLARE_CONVERSIONS(Congruence_System_const_iterator)
+
+DECLARE_CONVERSIONS(Grid_Generator)
+
+DECLARE_CONVERSIONS(Grid_Generator_System)
+
+typedef Grid_Generator_System::const_iterator
+  Grid_Generator_System_const_iterator;
+DECLARE_CONVERSIONS(Grid_Generator_System_const_iterator)
 
 DECLARE_CONVERSIONS(LP_Problem)
 
@@ -1559,7 +1572,13 @@ DEFINE_PRINT_FUNCTIONS(Generator)
 
 DEFINE_PRINT_FUNCTIONS(Generator_System)
 
-DEFINE_PRINT_FUNCTIONS(Polyhedron)
+DEFINE_PRINT_FUNCTIONS(Congruence)
+
+DEFINE_PRINT_FUNCTIONS(Congruence_System)
+
+DEFINE_PRINT_FUNCTIONS(Grid_Generator)
+
+DEFINE_PRINT_FUNCTIONS(Grid_Generator_System)
 
 int
 ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p)

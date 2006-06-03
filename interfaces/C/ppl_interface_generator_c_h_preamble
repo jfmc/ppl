@@ -319,11 +319,19 @@ PPL_TYPE_DECLARATION(Generator_System);
 
 PPL_TYPE_DECLARATION(Generator_System_const_iterator);
 
-PPL_TYPE_DECLARATION(Polyhedron);
+PPL_TYPE_DECLARATION(Congruence);
+
+PPL_TYPE_DECLARATION(Congruence_System);
+
+PPL_TYPE_DECLARATION(Congruence_System_const_iterator);
+
+PPL_TYPE_DECLARATION(Grid_Generator);
+
+PPL_TYPE_DECLARATION(Grid_Generator_System);
+
+PPL_TYPE_DECLARATION(Grid_Generator_System_const_iterator);
 
 PPL_TYPE_DECLARATION(LP_Problem);
-
-#undef PPL_TYPE_DECLARATION
 
 /*! \name Functions Related to Coefficients */
 /*@{*/
@@ -1150,12 +1158,6 @@ extern unsigned int PPL_POLY_CON_RELATION_SATURATES;
 */
 extern unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
 
-/*! \name Functions Related to Polyhedra */
-/*@{*/
-
-/*@}*/ /* Functions Related to Polyhedra */
-
-
 /*! \name Functions Related to LP Problems */
 /*@{*/
 
@@ -1380,10 +1382,6 @@ PPL_DECLARE_PRINT_FUNCTIONS(Constraint_System)
 PPL_DECLARE_PRINT_FUNCTIONS(Generator)
 
 PPL_DECLARE_PRINT_FUNCTIONS(Generator_System)
-
-PPL_DECLARE_PRINT_FUNCTIONS(Polyhedron)
-
-#undef PPL_DECLARE_PRINT_FUNCTIONS
 
 /*! \brief
   The type of output functions used for printing variables.
