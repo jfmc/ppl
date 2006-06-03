@@ -9,10 +9,10 @@ divert(-1)dnl
 # m4_extra_class_code
 define(`m4_pre_extra_class_code', `dnl
 
+PPL_TYPE_DECLARATION(m4_class);
+
 /*! \name Functions Related to m4_class */
 /*@{*/
-
-PPL_TYPE_DECLARATION(m4_class);
 
 ')dnl
 
