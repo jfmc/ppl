@@ -16,7 +16,7 @@ define(`m4_add_widening_extrapolation_code',
   `define(`num_widenexps',
      m4_ifndef(num_`'m4_class`'_widenexps, 0))dnl
 ifelse(num_widenexps, 0, ,
-  m4_set_class(m4_set_string(rstrct, widening_extrapolation_code)))')
+  m4_set_class(m4_replace_pattern(rstrct, widening_extrapolation_code)))')
 
 # add_bop_assign_code
 #

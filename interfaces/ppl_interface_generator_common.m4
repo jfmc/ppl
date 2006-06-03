@@ -41,7 +41,7 @@ dnl If Macro is defined, use that definition, otherwise use the
 dnl Default Definition.
 define(`m4_ifndef', `ifdef(`$1', $1, $2)')
 
-dnl m4_set_string(Pattern, String)
+dnl m4_replace_pattern(Pattern, String)
 dnl
 dnl Replaces in String occurrences of the capitalised form of Pattern
 dnl by the required actual string (determined both by the class
@@ -50,7 +50,7 @@ dnl appropriate pattern for the replacmement.
 dnl - alt_ means that the alternative string must be used if one exists.
 dnl - U means that the alt_actual string must be capitalised at start
 dnl   of word and after "_".
-define(`m4_set_string',
+define(`m4_replace_pattern',
   `define(`PATTERN', `m4_upcase($1)')dnl
 ifelse(index(`$2', PATTERN), `-1', `$2',
   `define(`num_strings',
@@ -77,7 +77,7 @@ dnl A (recursive) macro to set the schemas in the string in the first
 dnl argument. The sequence of schemas are in arguments 2 to end.
 define(`m4_set_schema_strings', `dnl
 ifelse($2, `', ``$1'',
-       `m4_set_schema_strings(m4_set_string($2, $1),
+       `m4_set_schema_strings(m4_replace_pattern($2, $1),
                               shift(shift($@)))')dnl
 ')
 
