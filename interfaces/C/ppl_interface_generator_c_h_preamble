@@ -502,8 +502,7 @@ PPL_PROTO((ppl_Linear_Expression_t le,
 	   ppl_const_Coefficient_t n));
 
 /*! \brief
-  Adds \p n to the inhomogeneous term of the linear expression
-  \p le.
+  Adds \p n to the inhomogeneous term of the linear expression \p le.
 */
 int
 ppl_Linear_Expression_add_to_inhomogeneous
@@ -919,8 +918,7 @@ int
 ppl_Generator_type PPL_PROTO((ppl_const_Generator_t g));
 
 /*! \brief
-  Copies into \p n the coefficient of variable \p var in
-  generator \p g.
+  Copies into \p n the coefficient of variable \p var in generator \p g.
 */
 int
 ppl_Generator_coefficient PPL_PROTO((ppl_const_Generator_t g,
@@ -1394,8 +1392,7 @@ ppl_new_Grid_Generator_zero_dim_point PPL_PROTO((ppl_Grid_Generator_t* pg));
 */
 int
 ppl_new_Grid_Generator_from_Grid_Generator
-PPL_PROTO((ppl_Grid_Generator_t* pg,
-	   ppl_const_Grid_Generator_t g));
+PPL_PROTO((ppl_Grid_Generator_t* pg, ppl_const_Grid_Generator_t g));
 
 /*! \brief
   Invalidates the handle \p g: this makes sure the corresponding
@@ -1572,7 +1569,7 @@ PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t dst,
 
 /*! \brief
   Assigns to \p git a const iterator "pointing" to the beginning of
-  the generator system \p gs.
+  the grid generator system \p gs.
 */
 int
 ppl_Grid_Generator_System_begin
@@ -1581,7 +1578,7 @@ PPL_PROTO((ppl_const_Grid_Generator_System_t gs,
 
 /*! \brief
   Assigns to \p git a const iterator "pointing" past the end of the
-  generator system \p gs.
+  grid generator system \p gs.
 */
 int
 ppl_Grid_Generator_System_end
@@ -1590,7 +1587,7 @@ PPL_PROTO((ppl_const_Grid_Generator_System_t gs,
 
 /*! \brief
   Dereference \p git writing a const handle to the resulting
-  generator at address \p pg.
+  grid generator at address \p pg.
 */
 int
 ppl_Grid_Generator_System_const_iterator_dereference
@@ -1910,6 +1907,14 @@ PPL_DECLARE_PRINT_FUNCTIONS(Constraint_System)
 PPL_DECLARE_PRINT_FUNCTIONS(Generator)
 
 PPL_DECLARE_PRINT_FUNCTIONS(Generator_System)
+
+PPL_DECLARE_PRINT_FUNCTIONS(Congruence)
+
+PPL_DECLARE_PRINT_FUNCTIONS(Congruence_System)
+
+PPL_DECLARE_PRINT_FUNCTIONS(Grid_Generator)
+
+PPL_DECLARE_PRINT_FUNCTIONS(Grid_Generator_System)
 
 /*! \brief
   The type of output functions used for printing variables.
