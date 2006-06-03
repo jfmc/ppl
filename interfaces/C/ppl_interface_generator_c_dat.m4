@@ -255,8 +255,8 @@ define(`bpmin2',  `binop2`'_and_minimize')
 # Note that the code for the schema "<name>_code" must be defined.
 # The <name> must be exactly as written here.
 #
-define(`m4_procedure_list',
-`ppl_new_TOPOLOGY_M4_CLASS_from_space_dimension/3 POINTS
+define(`m4_procedure_list', `dnl
+ppl_new_TOPOLOGY_M4_CLASS_from_space_dimension/3 POINTS
 ppl_new_TOPOLOGY_M4_CLASS_from_INTOPOLOGY_M4_CLASS/2 All
 ppl_new_TOPOLOGY_M4_CLASS_from_UALT_REPRESENT_System/2 POINTS
 ppl_new_TOPOLOGY_M4_CLASS_recycle_UALT_REPRESENT_System/2 POINTS
