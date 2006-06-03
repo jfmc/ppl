@@ -331,6 +331,8 @@ DECLARE_CONVERSIONS(Grid_Generator_System_const_iterator)
 DECLARE_CONVERSIONS(LP_Problem)
 
 
+/* Interfacing Coefficient */
+
 int
 ppl_new_Coefficient(ppl_Coefficient_t* pc) try {
   *pc = to_nonconst(new Coefficient(0));
@@ -423,6 +425,8 @@ ppl_Coefficient_max(mpz_t max) try {
     return 0;
 }
 CATCH_ALL
+
+/* Interfacing Linear_Expression */
 
 int
 ppl_new_Linear_Expression(ppl_Linear_Expression_t* ple) try {
@@ -548,11 +552,12 @@ ppl_Linear_Expression_inhomogeneous_term(ppl_const_Linear_Expression_t le,
 CATCH_ALL
 
 int
-ppl_Linear_Expression_OK(ppl_const_Linear_Expression_t /* le */) try {
-  return 1;
+ppl_Linear_Expression_OK(ppl_const_Linear_Expression_t le) try {
+  return to_const(le)->OK() ? 1 : 0;
 }
 CATCH_ALL
 
+/* Interfacing Constraint */
 
 int
 ppl_new_Constraint(ppl_Constraint_t* pc,
@@ -670,8 +675,8 @@ ppl_Constraint_inhomogeneous_term(ppl_const_Constraint_t c,
 CATCH_ALL
 
 int
-ppl_Constraint_OK(ppl_const_Constraint_t /* c */) try {
-  return 1;
+ppl_Constraint_OK(ppl_const_Constraint_t c) try {
+  return to_const(c)->OK() ? 1 : 0;
 }
 CATCH_ALL
 
@@ -684,6 +689,7 @@ ppl_new_Linear_Expression_from_Constraint(ppl_Linear_Expression_t* ple,
 }
 CATCH_ALL
 
+/* Interfacing Constraint_System */
 
 int
 ppl_new_Constraint_System(ppl_Constraint_System_t* pcs) try {
@@ -775,6 +781,7 @@ ppl_Constraint_System_OK(ppl_const_Constraint_System_t cs) try {
 }
 CATCH_ALL
 
+/* Interfacing Constraint_System::const_iterator */
 
 int
 ppl_new_Constraint_System_const_iterator
@@ -863,6 +870,7 @@ ppl_Constraint_System_const_iterator_equal_test
 }
 CATCH_ALL
 
+/* Interfacing Generator */
 
 int
 ppl_new_Generator(ppl_Generator_t* pg,
@@ -981,8 +989,8 @@ ppl_Generator_divisor(ppl_const_Generator_t g,
 CATCH_ALL
 
 int
-ppl_Generator_OK(ppl_const_Generator_t /* g */) try {
-  return 1;
+ppl_Generator_OK(ppl_const_Generator_t g) try {
+  return to_const(g)->OK() ? 1 : 0;
 }
 CATCH_ALL
 
@@ -995,6 +1003,7 @@ ppl_new_Linear_Expression_from_Generator(ppl_Linear_Expression_t* ple,
 }
 CATCH_ALL
 
+/* Interfacing Generator_System */
 
 int
 ppl_new_Generator_System(ppl_Generator_System_t* pgs) try {
@@ -1076,6 +1085,7 @@ ppl_Generator_System_OK(ppl_const_Generator_System_t gs) try {
 }
 CATCH_ALL
 
+/* Interfacing Generator_System::const_iterator */
 
 int
 ppl_new_Generator_System_const_iterator
@@ -1159,6 +1169,588 @@ ppl_Generator_System_const_iterator_equal_test
  ppl_const_Generator_System_const_iterator_t y) try {
   const Generator_System::const_iterator& xx = *to_const(x);
   const Generator_System::const_iterator& yy = *to_const(y);
+  return (xx == yy) ? 1 : 0;
+}
+CATCH_ALL
+
+/* Interfacing Congruence */
+
+int
+ppl_new_Congruence(ppl_Congruence_t* pc,
+		   ppl_const_Linear_Expression_t le,
+		   ppl_const_Coefficient_t m) try {
+  Congruence* ppc;
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& mm = *to_const(m);
+  ppc = new Congruence((lle %= 0) / mm);
+  *pc = to_nonconst(ppc);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Congruence_zero_dim_false(ppl_Congruence_t* pc) try {
+  *pc = to_nonconst(new Congruence(Congruence::zero_dim_false()));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Congruence_zero_dim_integrality(ppl_Congruence_t* pc) try {
+  *pc = to_nonconst(new Congruence(Congruence::zero_dim_integrality()));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Congruence_from_Congruence(ppl_Congruence_t* pc,
+				   ppl_const_Congruence_t c) try {
+  const Congruence& cc = *to_const(c);
+  *pc = to_nonconst(new Congruence(cc));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Congruence(ppl_const_Congruence_t le) try {
+  delete to_const(le);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Congruence_from_Congruence(ppl_Congruence_t dst,
+				      ppl_const_Congruence_t src) try {
+  const Congruence& ssrc = *to_const(src);
+  Congruence& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_space_dimension(ppl_const_Congruence_t c,
+			       ppl_dimension_type* m) try {
+  *m = to_const(c)->space_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_coefficient(ppl_const_Congruence_t c,
+			   ppl_dimension_type var,
+			   ppl_Coefficient_t n) try {
+  const Congruence& cc = *to_const(c);
+  Coefficient& nn = *to_nonconst(n);
+  nn = cc.coefficient(Variable(var));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_inhomogeneous_term(ppl_const_Congruence_t c,
+				  ppl_Coefficient_t n) try {
+  const Congruence& cc = *to_const(c);
+  Coefficient& nn = *to_nonconst(n);
+  nn = cc.inhomogeneous_term();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_modulus(ppl_const_Congruence_t c,
+		       ppl_Coefficient_t m) try {
+  const Congruence& cc = *to_const(c);
+  Coefficient& mm = *to_nonconst(m);
+  mm = cc.modulus();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_OK(ppl_const_Congruence_t c) try {
+  return to_const(c)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Linear_Expression_from_Congruence(ppl_Linear_Expression_t* ple,
+					  ppl_const_Congruence_t c) try {
+  const Congruence& cc = *to_const(c);
+  *ple = to_nonconst(new Linear_Expression(cc));
+  return 0;
+}
+CATCH_ALL
+
+/* Interfacing Congruence_System */
+
+int
+ppl_new_Congruence_System(ppl_Congruence_System_t* pcs) try {
+  *pcs = to_nonconst(new Congruence_System());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Congruence_System_zero_dim_empty(ppl_Congruence_System_t* pcs) try {
+  *pcs = to_nonconst(new
+		     Congruence_System(Congruence_System::zero_dim_empty()));
+  return 0;
+}
+CATCH_ALL
+
+
+int
+ppl_new_Congruence_System_from_Congruence(ppl_Congruence_System_t* pcs,
+					  ppl_const_Congruence_t c) try {
+  const Congruence& cc = *to_const(c);
+  *pcs = to_nonconst(new Congruence_System(cc));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Congruence_System_from_Congruence_System
+(ppl_Congruence_System_t* pcs, ppl_const_Congruence_System_t cs) try {
+  const Congruence_System& ccs = *to_const(cs);
+  *pcs = to_nonconst(new Congruence_System(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Congruence_System(ppl_const_Congruence_System_t cs) try {
+  delete to_const(cs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Congruence_System_from_Congruence_System
+(ppl_Congruence_System_t dst, ppl_const_Congruence_System_t src) try {
+  const Congruence_System& ssrc = *to_const(src);
+  Congruence_System& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_space_dimension(ppl_const_Congruence_System_t cs,
+				      ppl_dimension_type* m) try {
+  *m = to_const(cs)->space_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_clear(ppl_Congruence_System_t cs) try {
+  to_nonconst(cs)->clear();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_insert_Congruence(ppl_Congruence_System_t cs,
+					ppl_const_Congruence_t c) try {
+  const Congruence& cc = *to_const(c);
+  Congruence_System& ccs = *to_nonconst(cs);
+  ccs.insert(cc);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_OK(ppl_const_Congruence_System_t cs) try {
+  return to_const(cs)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+/* Interfacing Congruence_System::const_iterator */
+
+int
+ppl_new_Congruence_System_const_iterator
+(ppl_Congruence_System_const_iterator_t* pcit) try {
+  *pcit = to_nonconst(new Congruence_System::const_iterator());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Congruence_System_const_iterator_from_Congruence_System_const_iterator
+(ppl_Congruence_System_const_iterator_t* pcit,
+ ppl_const_Congruence_System_const_iterator_t cit)  try {
+  *pcit = to_nonconst(new Congruence_System::const_iterator(*to_const(cit)));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Congruence_System_const_iterator
+(ppl_const_Congruence_System_const_iterator_t cit)
+  try {
+  delete to_const(cit);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Congruence_System_const_iterator_from_Congruence_System_const_iterator
+(ppl_Congruence_System_const_iterator_t dst,
+ ppl_const_Congruence_System_const_iterator_t src) try {
+  const Congruence_System::const_iterator& ssrc = *to_const(src);
+  Congruence_System::const_iterator& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_begin(ppl_const_Congruence_System_t cs,
+			    ppl_Congruence_System_const_iterator_t cit) try {
+  const Congruence_System& ccs = *to_const(cs);
+  Congruence_System::const_iterator& ccit = *to_nonconst(cit);
+  ccit = ccs.begin();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_end(ppl_const_Congruence_System_t cs,
+			  ppl_Congruence_System_const_iterator_t cit) try {
+  const Congruence_System& ccs = *to_const(cs);
+  Congruence_System::const_iterator& ccit = *to_nonconst(cit);
+  ccit = ccs.end();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_const_iterator_dereference
+(ppl_const_Congruence_System_const_iterator_t cit,
+ ppl_const_Congruence_t* pc) try {
+  const Congruence_System::const_iterator& ccit = *to_const(cit);
+  const Congruence& c = *ccit;
+  *pc = to_const(&c);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_const_iterator_increment
+(ppl_Congruence_System_const_iterator_t cit) try {
+  Congruence_System::const_iterator& ccit = *to_nonconst(cit);
+  ++ccit;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_const_iterator_equal_test
+(ppl_const_Congruence_System_const_iterator_t x,
+ ppl_const_Congruence_System_const_iterator_t y) try {
+  const Congruence_System::const_iterator& xx = *to_const(x);
+  const Congruence_System::const_iterator& yy = *to_const(y);
+  return (xx == yy) ? 1 : 0;
+}
+CATCH_ALL
+
+/* Interfacing Grid_Generator */
+
+int
+ppl_new_Grid_Generator(ppl_Grid_Generator_t* pg,
+		       ppl_const_Linear_Expression_t le,
+		       enum ppl_enum_Grid_Generator_Type t,
+		       ppl_const_Coefficient_t d) try {
+  Grid_Generator* ppg;
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
+  switch (t) {
+  case PPL_GRID_GENERATOR_TYPE_LINE:
+    ppg = new Grid_Generator(Grid_Generator::grid_line(lle));
+    break;
+  case PPL_GRID_GENERATOR_TYPE_PARAMETER:
+    ppg = new Grid_Generator(Grid_Generator::parameter(lle));
+    break;
+  case PPL_GRID_GENERATOR_TYPE_POINT:
+    ppg = new Grid_Generator(Grid_Generator::grid_point(lle, dd));
+    break;
+  default:
+    throw std::invalid_argument("ppl_new_Grid_Generator(pg, le, t, d): "
+				"t invalid");
+  }
+  *pg = to_nonconst(ppg);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Grid_Generator_zero_dim_point(ppl_Grid_Generator_t* pg) try {
+  *pg = to_nonconst(new Grid_Generator(Grid_Generator::zero_dim_point()));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Grid_Generator_from_Grid_Generator(ppl_Grid_Generator_t* pg,
+					   ppl_const_Grid_Generator_t g) try {
+  const Grid_Generator& gg = *to_const(g);
+  *pg = to_nonconst(new Grid_Generator(gg));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Grid_Generator(ppl_const_Grid_Generator_t le) try {
+  delete to_const(le);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Grid_Generator_from_Grid_Generator
+(ppl_Grid_Generator_t dst,
+ ppl_const_Grid_Generator_t src) try {
+  const Grid_Generator& ssrc = *to_const(src);
+  Grid_Generator& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_space_dimension(ppl_const_Grid_Generator_t g,
+				   ppl_dimension_type* m) try {
+  *m = to_const(g)->space_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_type(ppl_const_Grid_Generator_t g) try {
+  switch (to_const(g)->type()) {
+  case Grid_Generator::LINE:
+    return PPL_GRID_GENERATOR_TYPE_LINE;
+  case Grid_Generator::PARAMETER:
+    return PPL_GRID_GENERATOR_TYPE_PARAMETER;
+  case Grid_Generator::POINT:
+    return PPL_GRID_GENERATOR_TYPE_POINT;
+  default:
+    throw std::runtime_error("ppl_Grid_Generator_type()");
+  }
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_coefficient(ppl_const_Grid_Generator_t g,
+			       ppl_dimension_type var,
+			       ppl_Coefficient_t n) try {
+  const Grid_Generator& gg = *to_const(g);
+  Coefficient& nn = *to_nonconst(n);
+  nn = gg.coefficient(Variable(var));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_divisor(ppl_const_Grid_Generator_t g,
+			   ppl_Coefficient_t n) try {
+  const Grid_Generator& gg = *to_const(g);
+  Coefficient& nn = *to_nonconst(n);
+  nn = gg.divisor();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_OK(ppl_const_Grid_Generator_t g) try {
+  return to_const(g)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+// FIXME: to be restored soon.
+// int
+// ppl_new_Linear_Expression_from_Grid_Generator
+// (ppl_Linear_Expression_t* ple,
+//  ppl_const_Grid_Generator_t g) try {
+//   const Grid_Generator& gg = *to_const(g);
+//   *ple = to_nonconst(new Linear_Expression(gg));
+//   return 0;
+// }
+// CATCH_ALL
+
+/* Interfacing Grid_Generator_System */
+
+int
+ppl_new_Grid_Generator_System(ppl_Grid_Generator_System_t* pgs) try {
+  *pgs = to_nonconst(new Grid_Generator_System());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Grid_Generator_System_zero_dim_univ
+(ppl_Grid_Generator_System_t* pgs) try {
+  *pgs = to_nonconst
+    (new Grid_Generator_System(Grid_Generator_System::zero_dim_univ()));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Grid_Generator_System_from_Generator
+(ppl_Grid_Generator_System_t* pgs, ppl_const_Grid_Generator_t g) try {
+  const Grid_Generator& gg = *to_const(g);
+  *pgs = to_nonconst(new Grid_Generator_System(gg));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Grid_Generator_System_from_Grid_Generator_System
+(ppl_Grid_Generator_System_t* pgs, ppl_const_Grid_Generator_System_t gs) try {
+  const Grid_Generator_System& ggs = *to_const(gs);
+  *pgs = to_nonconst(new Grid_Generator_System(ggs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Grid_Generator_System(ppl_const_Grid_Generator_System_t gs) try {
+  delete to_const(gs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Grid_Generator_System_from_Grid_Generator_System
+(ppl_Grid_Generator_System_t dst, ppl_const_Grid_Generator_System_t src) try {
+  const Grid_Generator_System& ssrc = *to_const(src);
+  Grid_Generator_System& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_space_dimension(ppl_const_Grid_Generator_System_t gs,
+					  ppl_dimension_type* m) try {
+  *m = to_const(gs)->space_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_clear(ppl_Grid_Generator_System_t gs) try {
+  to_nonconst(gs)->clear();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_insert_Grid_Generator
+(ppl_Grid_Generator_System_t gs,
+ ppl_const_Grid_Generator_t g) try {
+  const Grid_Generator& gg = *to_const(g);
+  Grid_Generator_System& ggs = *to_nonconst(gs);
+  ggs.insert(gg);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_OK(ppl_const_Grid_Generator_System_t gs) try {
+  return to_const(gs)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+/* Interfacing Grid_Generator_System::const_iterator */
+
+int
+ppl_new_Grid_Generator_System_const_iterator
+(ppl_Grid_Generator_System_const_iterator_t* pgit) try {
+  *pgit = to_nonconst(new Grid_Generator_System::const_iterator());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Grid_Generator_System_const_iterator_from_Grid_Generator_System_const_iterator
+(ppl_Grid_Generator_System_const_iterator_t* pgit,
+ ppl_const_Grid_Generator_System_const_iterator_t git)  try {
+  *pgit = to_nonconst
+    (new Grid_Generator_System::const_iterator(*to_const(git)));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Grid_Generator_System_const_iterator
+(ppl_const_Grid_Generator_System_const_iterator_t git) try {
+  delete to_const(git);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Grid_Generator_System_const_iterator_from_Grid_Generator_System_const_iterator
+(ppl_Grid_Generator_System_const_iterator_t dst,
+ ppl_const_Grid_Generator_System_const_iterator_t src) try {
+  const Grid_Generator_System::const_iterator& ssrc = *to_const(src);
+  Grid_Generator_System::const_iterator& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_begin
+(ppl_const_Grid_Generator_System_t gs,
+ ppl_Grid_Generator_System_const_iterator_t git) try {
+  const Grid_Generator_System& ggs = *to_const(gs);
+  Grid_Generator_System::const_iterator& ggit = *to_nonconst(git);
+  ggit = ggs.begin();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_end
+(ppl_const_Grid_Generator_System_t gs,
+ ppl_Grid_Generator_System_const_iterator_t git) try {
+  const Grid_Generator_System& ggs = *to_const(gs);
+  Grid_Generator_System::const_iterator& ggit = *to_nonconst(git);
+  ggit = ggs.end();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_const_iterator_dereference
+(ppl_const_Grid_Generator_System_const_iterator_t git,
+ ppl_const_Grid_Generator_t* pg) try {
+  const Grid_Generator_System::const_iterator& ggit = *to_const(git);
+  const Grid_Generator& g = *ggit;
+  *pg = to_const(&g);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_const_iterator_increment
+(ppl_Grid_Generator_System_const_iterator_t git) try {
+  Grid_Generator_System::const_iterator& ggit = *to_nonconst(git);
+  ++ggit;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_const_iterator_equal_test
+(ppl_const_Grid_Generator_System_const_iterator_t x,
+ ppl_const_Grid_Generator_System_const_iterator_t y) try {
+  const Grid_Generator_System::const_iterator& xx = *to_const(x);
+  const Grid_Generator_System::const_iterator& yy = *to_const(y);
   return (xx == yy) ? 1 : 0;
 }
 CATCH_ALL

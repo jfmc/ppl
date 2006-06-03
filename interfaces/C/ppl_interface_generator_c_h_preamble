@@ -461,6 +461,22 @@ ppl_new_Linear_Expression_from_Generator
 PPL_PROTO((ppl_Linear_Expression_t* ple, ppl_const_Generator_t g));
 
 /*! \brief
+  Builds a linear expression corresponding to congruence \p c;
+  writes a handle for the newly created linear expression at address \p ple.
+*/
+int
+ppl_new_Linear_Expression_from_Congruence
+PPL_PROTO((ppl_Linear_Expression_t* ple, ppl_const_Congruence_t c));
+
+/*! \brief
+  Builds a linear expression corresponding to grid generator \p g;
+  writes a handle for the newly created linear expression at address \p ple.
+*/
+int
+ppl_new_Linear_Expression_from_Grid_Generator
+PPL_PROTO((ppl_Linear_Expression_t* ple, ppl_const_Grid_Generator_t g));
+
+/*! \brief
   Invalidates the handle \p le: this makes sure the corresponding
   resources will eventually be released.
 */
@@ -738,7 +754,7 @@ ppl_Constraint_System_insert_Constraint PPL_PROTO((ppl_Constraint_System_t cs,
   makes some noise if \p cs is broken.  Useful for debugging purposes.
 */
 int
-ppl_Constraint_System_OK PPL_PROTO((ppl_const_Constraint_System_t c));
+ppl_Constraint_System_OK PPL_PROTO((ppl_const_Constraint_System_t cs));
 
 
 /*! \brief
@@ -819,6 +835,7 @@ PPL_PROTO((ppl_const_Constraint_System_const_iterator_t x,
 
 /*@}*/ /* Functions Related to Constraint Systems */
 
+
 /*! \brief
   Describes the different kinds of generators.
 */
@@ -832,7 +849,6 @@ enum ppl_enum_Generator_Type {
   /*! The generator is a closure point. */
   PPL_GENERATOR_TYPE_CLOSURE_POINT
 };
-
 
 /*! \name Functions Related to Generators */
 /*@{*/
@@ -1006,7 +1022,7 @@ ppl_Generator_System_insert_Generator PPL_PROTO((ppl_Generator_System_t gs,
   makes some noise if \p gs is broken.  Useful for debugging purposes.
 */
 int
-ppl_Generator_System_OK PPL_PROTO((ppl_const_Generator_System_t c));
+ppl_Generator_System_OK PPL_PROTO((ppl_const_Generator_System_t gs));
 
 
 /*! \brief
@@ -1086,6 +1102,518 @@ PPL_PROTO((ppl_const_Generator_System_const_iterator_t x,
 	   ppl_const_Generator_System_const_iterator_t y));
 
 /*@}*/ /* Functions Related to Generator Systems */
+
+/*! \name Functions Related to Congruences */
+/*@{*/
+
+/*! \brief
+  Creates the new congruence \f$le = 0 \pmod{m}\f$ and writes a handle for
+  it at address \p pc.  The space dimension of the new congruence is
+  equal to the space dimension of \p le.
+*/
+int
+ppl_new_Congruence PPL_PROTO((ppl_Congruence_t* pc,
+			      ppl_const_Linear_Expression_t le,
+			      ppl_const_Coefficient_t m));
+
+/*! \brief
+  Creates the unsatisfiable (zero-dimension space) congruence
+  \f$0 = 1 \pmod{0}\f$ and writes a handle for it at address \p pc.
+*/
+int
+ppl_new_Congruence_zero_dim_false PPL_PROTO((ppl_Congruence_t* pc));
+
+/*! \brief
+  Creates the true (zero-dimension space) congruence \f$0 = 1 \pmod{1}\f$,
+  also known as <EM>integrality congruence</EM>.
+  A handle for the newly created congruence is written at address \p pc.
+*/
+int
+ppl_new_Congruence_zero_dim_integrality PPL_PROTO((ppl_Congruence_t* pc));
+
+/*! \brief
+  Builds a congruence that is a copy of \p c; writes a handle
+  for the newly created congruence at address \p pc.
+*/
+int
+ppl_new_Congruence_from_Congruence PPL_PROTO((ppl_Congruence_t* pc,
+					      ppl_const_Congruence_t c));
+
+/*! \brief
+  Invalidates the handle \p c: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Congruence PPL_PROTO((ppl_const_Congruence_t c));
+
+/*! \brief
+  Assigns a copy of the congruence \p src to \p dst.
+*/
+int
+ppl_assign_Congruence_from_Congruence PPL_PROTO((ppl_Congruence_t dst,
+						 ppl_const_Congruence_t src));
+
+/*! \brief
+  Writes to \p m the space dimension of \p c.
+*/
+int
+ppl_Congruence_space_dimension PPL_PROTO((ppl_const_Congruence_t c,
+					  ppl_dimension_type* m));
+
+/*! \brief
+  Copies into \p n the coefficient of variable \p var in
+  congruence \p c.
+*/
+int
+ppl_Congruence_coefficient PPL_PROTO((ppl_const_Congruence_t c,
+				      ppl_dimension_type var,
+				      ppl_Coefficient_t n));
+
+/*! \brief
+  Copies into \p n the inhomogeneous term of congruence \p c.
+*/
+int
+ppl_Congruence_inhomogeneous_term PPL_PROTO((ppl_const_Congruence_t c,
+					     ppl_Coefficient_t n));
+
+/*! \brief
+  Copies into \p m the modulus of congruence \p c.
+*/
+int
+ppl_Congruence_modulus PPL_PROTO((ppl_const_Congruence_t c,
+				  ppl_Coefficient_t m));
+
+/*! \brief
+  Returns a positive integer if \p c is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p c is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Congruence_OK PPL_PROTO((ppl_const_Congruence_t c));
+
+/*@}*/ /* Functions Related to Congruences */
+
+/*! \name Functions Related to Congruence Systems */
+/*@{*/
+
+/*! \brief
+  Builds an empty system of congruences and writes a handle to it at
+  address \p pcs.
+*/
+int
+ppl_new_Congruence_System PPL_PROTO((ppl_Congruence_System_t* pcs));
+
+/*! \brief
+  Builds a zero-dimensional, unsatisfiable congruence system and
+  writes a handle to it at address \p pcs.
+*/
+int
+ppl_new_Congruence_System_zero_dim_empty
+PPL_PROTO((ppl_Congruence_System_t* pcs));
+
+/*! \brief
+  Builds the singleton congruence system containing only a copy of
+  congruence \p c; writes a handle for the newly created system at
+  address \p pcs.
+*/
+int
+ppl_new_Congruence_System_from_Congruence
+PPL_PROTO((ppl_Congruence_System_t* pcs, ppl_const_Congruence_t c));
+
+/*! \brief
+  Builds a congruence system that is a copy of \p cs; writes a handle
+  for the newly created system at address \p pcs.
+*/
+int
+ppl_new_Congruence_System_from_Congruence_System
+PPL_PROTO((ppl_Congruence_System_t* pcs, ppl_const_Congruence_System_t cs));
+
+/*! \brief
+  Invalidates the handle \p cs: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Congruence_System PPL_PROTO((ppl_const_Congruence_System_t cs));
+
+/*! \brief
+  Assigns a copy of the congruence system \p src to \p dst.
+*/
+int
+ppl_assign_Congruence_System_from_Congruence_System
+PPL_PROTO((ppl_Congruence_System_t dst, ppl_const_Congruence_System_t src));
+
+/*! \brief
+  Writes to \p m the dimension of the vector space enclosing \p cs.
+*/
+int
+ppl_Congruence_System_space_dimension
+PPL_PROTO((ppl_const_Congruence_System_t cs, ppl_dimension_type* m));
+
+/*! \brief
+  Removes all the congruences from the congruence system \p cs
+  and sets its space dimension to 0.
+*/
+int
+ppl_Congruence_System_clear PPL_PROTO((ppl_Congruence_System_t cs));
+
+/*! \brief
+  Inserts a copy of the congruence \p c into \p cs; the space
+  dimension is increased, if necessary.
+*/
+int
+ppl_Congruence_System_insert_Congruence PPL_PROTO((ppl_Congruence_System_t cs,
+						   ppl_const_Congruence_t c));
+
+/*! \brief
+  Returns a positive integer if \p cs is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p cs is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Congruence_System_OK PPL_PROTO((ppl_const_Congruence_System_t cs));
+
+
+/*! \brief
+  Builds a new `const iterator' and writes a handle to it at address
+  \p pcit.
+*/
+int
+ppl_new_Congruence_System_const_iterator
+PPL_PROTO((ppl_Congruence_System_const_iterator_t* pcit));
+
+/*! \brief
+  Builds a const iterator that is a copy of \p cit; writes an
+  handle for the newly created const iterator at address \p pcit.
+*/
+int
+ppl_new_Congruence_System_const_iterator_from_Congruence_System_const_iterator
+PPL_PROTO((ppl_Congruence_System_const_iterator_t* pcit,
+	   ppl_const_Congruence_System_const_iterator_t cit));
+
+/*! \brief
+  Invalidates the handle \p cit: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Congruence_System_const_iterator
+PPL_PROTO((ppl_const_Congruence_System_const_iterator_t cit));
+
+/*! \brief
+  Assigns a copy of the const iterator \p src to \p dst.
+*/
+int
+ppl_assign_Congruence_System_const_iterator_from_Congruence_System_const_iterator
+PPL_PROTO((ppl_Congruence_System_const_iterator_t dst,
+	   ppl_const_Congruence_System_const_iterator_t src));
+
+/*! \brief
+  Assigns to \p cit a const iterator "pointing" to the beginning of
+  the congruence system \p cs.
+*/
+int
+ppl_Congruence_System_begin
+PPL_PROTO((ppl_const_Congruence_System_t cs,
+	   ppl_Congruence_System_const_iterator_t cit));
+
+/*! \brief
+  Assigns to \p cit a const iterator "pointing" past the end of the
+  congruence system \p cs.
+*/
+int
+ppl_Congruence_System_end
+PPL_PROTO((ppl_const_Congruence_System_t cs,
+	   ppl_Congruence_System_const_iterator_t cit));
+
+/*! \brief
+  Dereference \p cit writing a const handle to the resulting
+  congruence at address \p pc.
+*/
+int
+ppl_Congruence_System_const_iterator_dereference
+PPL_PROTO((ppl_const_Congruence_System_const_iterator_t cit,
+	   ppl_const_Congruence_t* pc));
+
+/*! \brief
+  Increment \p cit so that it "points" to the next congruence.
+*/
+int
+ppl_Congruence_System_const_iterator_increment
+PPL_PROTO((ppl_Congruence_System_const_iterator_t cit));
+
+/*! \brief
+  Returns a positive integer if the iterators corresponding to \p x and
+  \p y are equal; returns 0 if they are different.
+*/
+int
+ppl_Congruence_System_const_iterator_equal_test
+PPL_PROTO((ppl_const_Congruence_System_const_iterator_t x,
+	   ppl_const_Congruence_System_const_iterator_t y));
+
+/*@}*/ /* Functions Related to Congruence Systems */
+
+/*! \brief
+  Describes the different kinds of grid generators.
+*/
+enum ppl_enum_Grid_Generator_Type {
+  /*! The grid generator is a line. */
+  PPL_GRID_GENERATOR_TYPE_LINE,
+  /*! The grid generator is a parameter. */
+  PPL_GRID_GENERATOR_TYPE_PARAMETER,
+  /*! The grid generator is a point. */
+  PPL_GRID_GENERATOR_TYPE_POINT
+};
+
+/*! \name Functions Related to Grid_Generators */
+/*@{*/
+
+/*! \brief
+  Creates a new grid generator of direction \p le and type \p t.  If the
+  grid generator to be created is a point or a parameter, the divisor
+  \p d is applied to \p le.  If it is a line, \p d is simply disregarded.
+  A handle for the new grid generator is written at address \p pg.
+  The space dimension of the new grid generator is equal to the space
+  dimension of \p le.
+*/
+int
+ppl_new_Grid_Generator PPL_PROTO((ppl_Grid_Generator_t* pg,
+				  ppl_const_Linear_Expression_t le,
+				  enum ppl_enum_Grid_Generator_Type t,
+				  ppl_const_Coefficient_t d));
+
+/*! \brief
+  Creates the point that is the origin of the zero-dimensional space
+  \f$\Rset^0\f$.  Writes a handle for the new grid generator at address
+  \p pg.
+*/
+int
+ppl_new_Grid_Generator_zero_dim_point PPL_PROTO((ppl_Grid_Generator_t* pg));
+
+/*! \brief
+  Builds a grid generator that is a copy of \p g; writes a handle
+  for the newly created grid generator at address \p pg.
+*/
+int
+ppl_new_Grid_Generator_from_Grid_Generator
+PPL_PROTO((ppl_Grid_Generator_t* pg,
+	   ppl_const_Grid_Generator_t g));
+
+/*! \brief
+  Invalidates the handle \p g: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Grid_Generator PPL_PROTO((ppl_const_Grid_Generator_t g));
+
+/*! \brief
+  Assigns a copy of the grid generator \p src to \p dst.
+*/
+int
+ppl_assign_Grid_Generator_from_Grid_Generator
+PPL_PROTO((ppl_Grid_Generator_t dst,
+	   ppl_const_Grid_Generator_t src));
+
+/*! \brief
+  Writes to \p m the space dimension of \p g.
+*/
+int
+ppl_Grid_Generator_space_dimension PPL_PROTO((ppl_const_Grid_Generator_t g,
+					      ppl_dimension_type* m));
+
+/*! \brief
+  Returns the type of grid generator \p g.
+*/
+int
+ppl_Grid_Generator_type PPL_PROTO((ppl_const_Grid_Generator_t g));
+
+/*! \brief
+  Copies into \p n the coefficient of variable \p var in
+  grid generator \p g.
+*/
+int
+ppl_Grid_Generator_coefficient PPL_PROTO((ppl_const_Grid_Generator_t g,
+					  ppl_dimension_type var,
+					  ppl_Coefficient_t n));
+
+/*! \brief
+  If \p g is a point or a parameter assigns its divisor to \p n.
+*/
+int
+ppl_Grid_Generator_divisor PPL_PROTO((ppl_const_Grid_Generator_t g,
+				      ppl_Coefficient_t n));
+
+/*! \brief
+  Returns a positive integer if \p g is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p g is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Grid_Generator_OK PPL_PROTO((ppl_const_Grid_Generator_t g));
+
+/*@}*/ /* Functions Related to Grid_Generators */
+
+/*! \name Functions Related to Grid_Generator Systems */
+/*@{*/
+
+/*! \brief
+  Builds an empty system of grid generators and writes a handle to it at
+  address \p pgs.
+*/
+int
+ppl_new_Grid_Generator_System PPL_PROTO((ppl_Grid_Generator_System_t* pgs));
+
+/*
+  Creates the universe zero-dimensional system of grid generators (i.e.,
+  containing the origin only).  Writes a handle to the new system at
+  address \p pgs.
+*/
+int
+ppl_new_Grid_Generator_System_zero_dim_univ
+PPL_PROTO((ppl_Grid_Generator_System_t* pgs));
+
+/*! \brief
+  Builds the singleton grid generator system containing only a copy of
+  generator \p g; writes a handle for the newly created system at
+  address \p pgs.
+*/
+int
+ppl_new_Grid_Generator_System_from_Grid_Generator
+PPL_PROTO((ppl_Grid_Generator_System_t* pgs,
+	   ppl_const_Grid_Generator_t g));
+
+/*! \brief
+  Builds a grid generator system that is a copy of \p gs; writes a handle
+  for the newly created system at address \p pgs.
+*/
+int
+ppl_new_Grid_Generator_System_from_Grid_Generator_System
+PPL_PROTO((ppl_Grid_Generator_System_t* pgs,
+	   ppl_const_Grid_Generator_System_t gs));
+
+/*! \brief
+  Invalidates the handle \p gs: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Grid_Generator_System
+PPL_PROTO((ppl_const_Grid_Generator_System_t gs));
+
+/*! \brief
+  Assigns a copy of the grid generator system \p src to \p dst.
+*/
+int
+ppl_assign_Grid_Generator_System_from_Grid_Generator_System
+PPL_PROTO((ppl_Grid_Generator_System_t dst,
+	   ppl_const_Grid_Generator_System_t src));
+
+/*! \brief
+  Writes to \p m the dimension of the vector space enclosing \p gs.
+*/
+int
+ppl_Grid_Generator_System_space_dimension
+PPL_PROTO((ppl_const_Grid_Generator_System_t gs, ppl_dimension_type* m));
+
+/*! \brief
+  Removes all the generators from the grid generator system \p gs
+  and sets its space dimension to 0.
+*/
+int
+ppl_Grid_Generator_System_clear PPL_PROTO((ppl_Grid_Generator_System_t gs));
+
+/*! \brief
+  Inserts a copy of the grid generator \p g into \p gs; the space
+  dimension is increased, if necessary.
+*/
+int
+ppl_Grid_Generator_System_insert_Grid_Generator
+PPL_PROTO((ppl_Grid_Generator_System_t gs,
+	   ppl_const_Grid_Generator_t g));
+
+/*! \brief
+  Returns a positive integer if \p gs is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p gs is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Grid_Generator_System_OK PPL_PROTO((ppl_const_Grid_Generator_System_t gs));
+
+
+/*! \brief
+  Builds a new `const iterator' and writes a handle to it at address
+  \p pgit.
+*/
+int
+ppl_new_Grid_Generator_System_const_iterator
+PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t* pgit));
+
+/*! \brief
+  Builds a const iterator that is a copy of \p git; writes an
+  handle for the newly created const iterator at address \p pgit.
+*/
+int
+ppl_new_Grid_Generator_System_const_iterator_from_Grid_Generator_System_const_iterator
+PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t* pgit,
+	   ppl_const_Grid_Generator_System_const_iterator_t git));
+
+/*! \brief
+  Invalidates the handle \p git: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Grid_Generator_System_const_iterator
+PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t git));
+
+/*! \brief
+  Assigns a copy of the const iterator \p src to \p dst.
+*/
+int
+ppl_assign_Grid_Generator_System_const_iterator_from_Grid_Generator_System_const_iterator
+PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t dst,
+	   ppl_const_Grid_Generator_System_const_iterator_t src));
+
+/*! \brief
+  Assigns to \p git a const iterator "pointing" to the beginning of
+  the generator system \p gs.
+*/
+int
+ppl_Grid_Generator_System_begin
+PPL_PROTO((ppl_const_Grid_Generator_System_t gs,
+	   ppl_Grid_Generator_System_const_iterator_t git));
+
+/*! \brief
+  Assigns to \p git a const iterator "pointing" past the end of the
+  generator system \p gs.
+*/
+int
+ppl_Grid_Generator_System_end
+PPL_PROTO((ppl_const_Grid_Generator_System_t gs,
+	   ppl_Grid_Generator_System_const_iterator_t git));
+
+/*! \brief
+  Dereference \p git writing a const handle to the resulting
+  generator at address \p pg.
+*/
+int
+ppl_Grid_Generator_System_const_iterator_dereference
+PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t git,
+	   ppl_const_Grid_Generator_t* pg));
+
+/*! \brief
+  Increment \p git so that it "points" to the next grid generator.
+*/
+int
+ppl_Grid_Generator_System_const_iterator_increment
+PPL_PROTO((ppl_Grid_Generator_System_const_iterator_t git));
+
+/*! \brief
+  Returns a positive integer if the iterators corresponding to \p x and
+  \p y are equal; returns 0 if they are different.
+*/
+int
+ppl_Grid_Generator_System_const_iterator_equal_test
+PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t x,
+	   ppl_const_Grid_Generator_System_const_iterator_t y));
+
+/*@}*/ /* Functions Related to Grid_Generator Systems */
 
 /*! \brief
   Code of the worst-case polynomial complexity class.
