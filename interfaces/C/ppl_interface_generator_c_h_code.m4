@@ -3,14 +3,7 @@ divert(-1)dnl
 define(`ppl_new_TOPOLOGY_M4_CLASS_from_space_dimension_code',
 `int
 ppl_new_TOPOLOGY_M4_CLASS_from_space_dimension
-PPL_PROTO((ppl_M4_CLASS_t* pph, ppl_dimension_type d));
-
-')
-
-define(`ppl_new_TOPOLOGY_M4_CLASS_empty_from_space_dimension_code',
-`int
-ppl_new_TOPOLOGY_M4_CLASS_empty_from_space_dimension
-PPL_PROTO((ppl_M4_CLASS_t* pph, ppl_dimension_type d));
+PPL_PROTO((ppl_M4_CLASS_t* pph, ppl_dimension_type d, int empty));
 
 ')
 

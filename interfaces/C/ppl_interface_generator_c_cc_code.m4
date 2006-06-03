@@ -4,20 +4,9 @@ define(`ppl_new_TOPOLOGY_M4_CLASS_from_space_dimension_code',
 `int
 ppl_new_TOPOLOGY_M4_CLASS_from_space_dimension
 (ppl_M4_CLASS_t* pph,
- ppl_dimension_type d) try {
-  *pph = to_nonconst(new TOPOLOGY_M4_CLASS(d, UNIVERSE));
-  return 0;
-}
-CATCH_ALL
-
-')
-
-define(`ppl_new_TOPOLOGY_M4_CLASS_empty_from_space_dimension_code',
-`int
-ppl_new_TOPOLOGY_M4_CLASS_empty_from_space_dimension
-(ppl_M4_CLASS_t* pph,
- ppl_dimension_type d) try {
-  *pph = to_nonconst(new TOPOLOGY_M4_CLASS(d, EMPTY));
+ ppl_dimension_type d,
+ int empty) try {
+  *pph = to_nonconst(new TOPOLOGY_M4_CLASS(d, empty ? EMPTY : UNIVERSE));
   return 0;
 }
 CATCH_ALL
