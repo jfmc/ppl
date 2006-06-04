@@ -986,46 +986,15 @@ ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign(Prolog_term_ref t_lhs,
 }
 ')
 
-define(`ppl_4CLASS4_add_space_dimensions_and_project_code',
+define(`ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_add_space_dimensions_and_project(Prolog_term_ref t_ph,
+ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4(Prolog_term_ref t_ph,
 						Prolog_term_ref t_nnd) {
   try {
     4CLASS4* ph = term_to_4lCLASS4_handle(t_ph);
     CHECK(ph);
     dimension_type d = term_to_unsigned<dimension_type>(t_nnd);
-      ph->add_space_dimensions_and_project(d);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-')
-
-define(`ppl_4CLASS4_add_space_dimensions_and_embed_code',
-`extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_add_space_dimensions_and_embed(Prolog_term_ref t_ph,
-					      Prolog_term_ref t_nnd) {
-  try {
-    4CLASS4* ph = term_to_4lCLASS4_handle(t_ph);
-    CHECK(ph);
-    dimension_type d = term_to_unsigned<dimension_type>(t_nnd);
-    ph->add_space_dimensions_and_embed(d);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-')
-
-define(`ppl_4CLASS4_concatenate_assign_code',
-`extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_concatenate_assign(Prolog_term_ref t_lhs,
-				  Prolog_term_ref t_rhs) {
-  try {
-    4CLASS4* lhs = term_to_4lCLASS4_handle(t_lhs);
-    const 4CLASS4* rhs = term_to_4lCLASS4_handle(t_rhs);
-    CHECK(lhs);
-    CHECK(rhs);
-    lhs->concatenate_assign(*rhs);
+      ph->add_space_dimensions_4EMBEDPROJECT4(d);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;

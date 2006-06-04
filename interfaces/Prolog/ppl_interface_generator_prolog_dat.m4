@@ -28,11 +28,11 @@ define(`m4_class_group',
 define(`m4_class_super_group',
   `ifelse(m4_class_group, LP_Problem, LP_Problem, POINTS)')
 
-# m4_string_substitution_list
+# m4_pattern_substitution_list
 #
 # returns a list of patterns (in lowercase) used as a basis
 # of the procedure name and code schemas.
-define(`m4_string_substitution_list',
+define(`m4_pattern_substitution_list',
 `intopology_,
 topology_,
 represent,
@@ -218,11 +218,12 @@ define(`comparison3', `is_disjoint_from')
 # class_binop
 #
 #  The different kinds of binary operators.
-define(`num_binops', 4)
+define(`num_binops', 5)
 define(`binop1', `intersection_assign')
 define(`binop2', `join_assign')
 define(`binop3', `difference_assign')
 define(`binop4', `time_elapse_assign')
+define(`binop5', `concatenate_assign')
 define(`Polyhedron_binop2', `poly_hull_assign')
 define(`Polyhedron_binop3', `poly_difference_assign')
 define(`num_BD_Shape_binops', 3)
@@ -318,9 +319,7 @@ ppl_4CLASS4_limited_4WIDENEXP4_extrapolation_assign/3 nofail POINTS
 ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign_with_tokens/5 SHAPE
 ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign/3 nofail SHAPE
 ppl_BD_Shape_CC76_narrowing_assign/2
-ppl_4CLASS4_add_space_dimensions_and_project/2 nofail POINTS
-ppl_4CLASS4_add_space_dimensions_and_embed/2 nofail POINTS
-ppl_4CLASS4_concatenate_assign/2 nofail POINTS
+ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4/2 nofail POINTS
 ppl_4CLASS4_remove_space_dimensions/2 POINTS
 ppl_4CLASS4_remove_higher_space_dimensions/2 nofail POINTS
 ppl_4CLASS4_expand_space_dimension/3 nofail POINTS

@@ -71,19 +71,19 @@ patsubst(patsubst(patsubst(patsubst(`$2',
            4ALT_`'PATTERN`'4, alt_replacement),
            4`'PATTERN`'4, replacement)')')')')
 
-dnl m4_set_schema_strings(String, Sequence of Strings)
+dnl m4_replace_all_patterns(String, Sequence of Strings)
 dnl
 dnl A (recursive) macro to set the schemas in the string in the first
 dnl argument. The sequence of schemas are in arguments 2 to end.
-define(`m4_set_schema_strings', `dnl
+define(`m4_replace_all_patterns', `dnl
 ifelse($2, `', ``$1'',
-       `m4_set_schema_strings(m4_replace_pattern($2, $1),
+       `m4_replace_all_patterns(m4_replace_pattern($2, $1),
                               shift(shift($@)))')dnl
 ')
 
 dnl m4_set_class(String)
 dnl
-dnl replaces dummy string `M4_CLASS' by the actual class defined
+dnl replaces dummy string `4CLASS4' by the actual class defined
 dnl in m4_class.
 define(`m4_set_class',
   `patsubst(`patsubst(`$1',  `4CLASS4', m4_class)',
@@ -114,8 +114,8 @@ dnl are replaced by the various instances.
 define(`m4_procedure_names_to_code', `dnl
 patsubst(`$1', `\(.*\)
 ',
-         `m4_set_schema_strings(m4_replace_with_code(\1!),
-                                m4_string_substitution_list)')dnl
+         `m4_replace_all_patterns(m4_replace_with_code(\1!),
+                                m4_pattern_substitution_list)')dnl
 ')
 
 dnl m4_filter(Procedure_Schema_List)
@@ -238,7 +238,7 @@ dnl Parses the comma-separated list of class names Class_List
 dnl to be used in the C++ code implementing the interface procedures.
 dnl The components of the class name are also separated out
 dnl and defined as m4_class<class_num>_component<component_num>
-dnl using m4_get_name_components/3.
+dnl (see comment and example for m4_get_name_components/3).
 define(`m4_init_cplusplus_classes', `m4_init_cplusplus_classes_aux(1, $@)')
 
 dnl m4_init_cplusplus_classes_aux(counter, Class_List)

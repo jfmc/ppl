@@ -28,11 +28,11 @@ define(`m4_class_group',
 define(`m4_class_super_group',
   `ifelse(m4_class_group, LP_Problem, LP_Problem, POINTS)')
 
-# m4_string_substitution_list
+# m4_pattern_substitution_list
 #
 # returns a list of patterns (in lowercase) used as a basis
 # of the procedure name and code schemas.
-define(`m4_string_substitution_list',
+define(`m4_pattern_substitution_list',
 `intopology_,
 topology_,
 represent,
