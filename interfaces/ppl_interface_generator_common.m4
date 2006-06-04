@@ -66,10 +66,10 @@ define(`Replacement',
 define(`Alt_Replacement',
   m4_capfirstletters(alt_replacement))dnl
 patsubst(patsubst(patsubst(patsubst(`$2',
-           U`'PATTERN, Replacement),
-           UALT_`'PATTERN, Alt_Replacement),
-           ALT_`'PATTERN, alt_replacement),
-           PATTERN, replacement)')')')')
+           4U`'PATTERN`'4, Replacement),
+           4UALT_`'PATTERN`'4, Alt_Replacement),
+           4ALT_`'PATTERN`'4, alt_replacement),
+           4`'PATTERN`'4, replacement)')')')')
 
 dnl m4_set_schema_strings(String, Sequence of Strings)
 dnl
@@ -86,8 +86,8 @@ dnl
 dnl replaces dummy string `M4_CLASS' by the actual class defined
 dnl in m4_class.
 define(`m4_set_class',
-  `patsubst(`patsubst(`$1',  `M4_CLASS', m4_class)',
-     M4_lCLASS, m4_downcase(m4_class))')
+  `patsubst(`patsubst(`$1',  `4CLASS4', m4_class)',
+     4lCLASS4, m4_downcase(m4_class))')
 
 dnl m4_replace_with_code(String)
 dnl

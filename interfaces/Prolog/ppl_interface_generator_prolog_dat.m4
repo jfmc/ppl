@@ -36,17 +36,18 @@ define(`m4_string_substitution_list',
 `intopology_,
 topology_,
 represent,
-dim,
-gnrt,
+dimension,
+generator,
 point,
-rstrct,
+constrainer,
 state,
 abovebelow,
 maxmin,
-affim,
+embedproject,
+affimage,
 comparison,
 binop,
-bpmin,
+binminop,
 widenexp,
 box,
 describe'))
@@ -97,22 +98,22 @@ define(`Grid_box2', `covering_box')
 define(`alt_Grid_box1', `shrink_bounding_box')
 define(`alt_Grid_box2', `get_covering_box')
 
-# num_class_dims
-# class_dim
+# num_class_dimensions
+# class_dimension
 #
 #  space or affine dimensions
-define(`num_dims', 2)
-define(`dim1', `space_dimension')
-define(`dim2', `affine_dimension')
-define(`num_LP_Problem_dims', 1)
+define(`num_dimensions', 2)
+define(`dimension1', `space_dimension')
+define(`dimension2', `affine_dimension')
+define(`num_LP_Problem_dimensions', 1)
 
-# num_class_gnrts
-# class_gnrt
+# num_class_generates
+# class_generate
 #
 #  The different kinds of objects use to generate a class.
-define(`num_gnrts', 1)
-define(`gnrt1', `generator')
-define(`alt_Grid_gnrt1', `grid_generator')
+define(`num_generators', 1)
+define(`generator1', `generator')
+define(`Grid_generator1', `grid_generator')
 
 # num_class_points
 # class_point
@@ -120,15 +121,15 @@ define(`alt_Grid_gnrt1', `grid_generator')
 #  The different kinds of objects use to generate a class.
 define(`num_points', 1)
 define(`point1', `point')
-define(`alt_Grid_point1', `grid_point')
+define(`Grid_point1', `grid_point')
 
-# num_class_rstrcts
-# class_rstrct
+# num_class_constrainers
+# class_constrainer
 #
-#  The constraint objects used to define a class.
-define(`num_rstrcts', 1)
-define(`rstrct1', `constraint')
-define(`Grid_rstrct1', `congruence')
+#  The constrainer objects used to define a class.
+define(`num_constrainers', 1)
+define(`constrainer1', `constraint')
+define(`Grid_constrainer1', `congruence')
 
 # num_class_represents
 # class_represent?
@@ -188,13 +189,21 @@ define(`num_maxmins', 2)
 define(`maxmin1', `maximize')
 define(`maxmin2', `minimize')
 
-# num_class_affIms
-# class_affIm
+# num_class_embedprojects
+# class_embedproject
+#
+#  Embed or project
+define(`num_embedprojects', 2)
+define(`embedproject1', `and_embed')
+define(`embedproject2', `and_project')
+
+# num_class_affimages
+# class_affimage
 #
 #  affine_image or affine_preimage
-define(`num_affims', 2)
-define(`affim1', `affine_image')
-define(`affim2', `affine_preimage')
+define(`num_affimages', 2)
+define(`affimage1', `affine_image')
+define(`affimage2', `affine_preimage')
 
 # num_class_comparisons
 # class_comparison
@@ -219,14 +228,14 @@ define(`Polyhedron_binop3', `poly_difference_assign')
 define(`num_BD_Shape_binops', 3)
 define(`num_Octagon_binops', 3)
 
-# num_class_bpmins
-# class_bpmin
+# num_class_binminops
+# class_binminop
 #
 #  The different kinds of "and_minimize" binary operators.
-define(`num_bpmins', 2)
-define(`bpmin1', `binop1`'_and_minimize')
-define(`Polyhedron_bpmin2',  `Polyhedron_binop2`'_and_minimize')
-define(`bpmin2',  `binop2`'_and_minimize')
+define(`num_binminops', 2)
+define(`binminop1', `binop1`'_and_minimize')
+define(`Polyhedron_binminop2',  `Polyhedron_binop2`'_and_minimize')
+define(`binminop2',  `binop2`'_and_minimize')
 
 # Grid Generator and Generator_System classes  are called Grid_Generator
 # and Grid_Generator_System while, for the rest of the domains, they are just
@@ -263,60 +272,60 @@ ppl_reset_timeout/0 nofail
 #            All = all classes
 #            SHAPE = the polyhedra-shape classes;
 # A class name with an "X" in front means it is not included.
-# Where "M4_CLASS" is replaced by the class name, then that class only
+# Where "4CLASS4" is replaced by the class name, then that class only
 # is applicable for that schema.
 #
 # Note that the code for the schema "<name>_code" must be defined
 # in the ppl_prolog_icc.m4 file. The <name> must be exactly as written here.
 #
 define(`m4_procedure_list',
-`ppl_new_TOPOLOGY_M4_CLASS_from_space_dimension/3 POINTS
-ppl_new_TOPOLOGY_M4_CLASS_from_INTOPOLOGY_M4_CLASS/2 All
-ppl_new_TOPOLOGY_M4_CLASS_from_REPRESENTs/2 POINTS
-ppl_new_TOPOLOGY_M4_CLASS_from_BOX/2 POINTS
-ppl_M4_CLASS_swap/2 nofail All
-ppl_delete_M4_CLASS/1 nofail All
-ppl_M4_CLASS_DIM/2 All
-ppl_M4_CLASS_get_DESCRIBEs/2 POINTS
-ppl_M4_CLASS_get_minimized_DESCRIBEs/2 POINTS
-ppl_M4_CLASS_relation_with_DESCRIBE/3 POINTS
-ppl_M4_CLASS_get_BOX/3 SHAPE
-ppl_Grid_get_BOX/2
-ppl_M4_CLASS_is_STATE/1 POINTS
-ppl_M4_CLASS_topological_closure_assign/1 nofail POINTS
-ppl_M4_CLASS_bounds_from_ABOVEBELOW/2 POINTS
-ppl_M4_CLASS_MAXMIN/5 POINTS
-ppl_M4_CLASS_MAXMIN_with_point/6 POINTS
-ppl_M4_CLASS_COMPARISON_M4_CLASS/2 POINTS
-ppl_M4_CLASS_equals_M4_CLASS/2 POINTS
-ppl_M4_CLASS_OK/1 All
-ppl_M4_CLASS_add_REPRESENT/2 nofail POINTS
-ppl_M4_CLASS_add_REPRESENT_and_minimize/2 POINTS
-ppl_M4_CLASS_add_REPRESENTs/2 nofail POINTS
-ppl_M4_CLASS_add_REPRESENTs_and_minimize/2 POINTS
-ppl_M4_CLASS_BINOP/2 nofail POINTS
-ppl_M4_CLASS_BPMIN/2 POINTS
-ppl_M4_CLASS_AFFIM/4 nofail POINTS
-ppl_M4_CLASS_bounded_AFFIM/5 nofail SHAPE
-ppl_M4_CLASS_generalized_AFFIM/5 SHAPE
-ppl_M4_CLASS_generalized_AFFIM_lhs_rhs/4 SHAPE
-ppl_Grid_generalized_AFFIM/5
-ppl_Grid_generalized_AFFIM_lhs_rhs/4
-ppl_M4_CLASS_WIDENEXP_widening_assign_with_tokens/4 POINTS
-ppl_M4_CLASS_WIDENEXP_widening_assign/2 nofail POINTS
-ppl_M4_CLASS_limited_WIDENEXP_extrapolation_assign_with_tokens/5 POINTS
-ppl_M4_CLASS_limited_WIDENEXP_extrapolation_assign/3 nofail POINTS
-ppl_M4_CLASS_bounded_WIDENEXP_extrapolation_assign_with_tokens/5 SHAPE
-ppl_M4_CLASS_bounded_WIDENEXP_extrapolation_assign/3 nofail SHAPE
+`ppl_new_4TOPOLOGY_44CLASS4_from_space_dimension/3 POINTS
+ppl_new_4TOPOLOGY_44CLASS4_from_4INTOPOLOGY_44CLASS4/2 All
+ppl_new_4TOPOLOGY_44CLASS4_from_4REPRESENT4s/2 POINTS
+ppl_new_4TOPOLOGY_44CLASS4_from_4BOX4/2 POINTS
+ppl_4CLASS4_swap/2 nofail All
+ppl_delete_4CLASS4/1 nofail All
+ppl_4CLASS4_4DIMENSION4/2 All
+ppl_4CLASS4_get_4DESCRIBE4s/2 POINTS
+ppl_4CLASS4_get_minimized_4DESCRIBE4s/2 POINTS
+ppl_4CLASS4_relation_with_4DESCRIBE4/3 POINTS
+ppl_4CLASS4_get_4BOX4/3 SHAPE
+ppl_Grid_get_4BOX4/2
+ppl_4CLASS4_is_4STATE4/1 POINTS
+ppl_4CLASS4_topological_closure_assign/1 nofail POINTS
+ppl_4CLASS4_bounds_from_4ABOVEBELOW4/2 POINTS
+ppl_4CLASS4_4MAXMIN4/5 POINTS
+ppl_4CLASS4_4MAXMIN4_with_point/6 POINTS
+ppl_4CLASS4_4COMPARISON4_4CLASS4/2 POINTS
+ppl_4CLASS4_equals_4CLASS4/2 POINTS
+ppl_4CLASS4_OK/1 All
+ppl_4CLASS4_add_4REPRESENT4/2 nofail POINTS
+ppl_4CLASS4_add_4REPRESENT4_and_minimize/2 POINTS
+ppl_4CLASS4_add_4REPRESENT4s/2 nofail POINTS
+ppl_4CLASS4_add_4REPRESENT4s_and_minimize/2 POINTS
+ppl_4CLASS4_4BINOP4/2 nofail POINTS
+ppl_4CLASS4_4BINMINOP4/2 POINTS
+ppl_4CLASS4_4AFFIMAGE4/4 nofail POINTS
+ppl_4CLASS4_bounded_4AFFIMAGE4/5 nofail SHAPE
+ppl_4CLASS4_generalized_4AFFIMAGE4/5 SHAPE
+ppl_4CLASS4_generalized_4AFFIMAGE4_lhs_rhs/4 SHAPE
+ppl_Grid_generalized_4AFFIMAGE4/5
+ppl_Grid_generalized_4AFFIMAGE4_lhs_rhs/4
+ppl_4CLASS4_4WIDENEXP4_widening_assign_with_tokens/4 POINTS
+ppl_4CLASS4_4WIDENEXP4_widening_assign/2 nofail POINTS
+ppl_4CLASS4_limited_4WIDENEXP4_extrapolation_assign_with_tokens/5 POINTS
+ppl_4CLASS4_limited_4WIDENEXP4_extrapolation_assign/3 nofail POINTS
+ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign_with_tokens/5 SHAPE
+ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign/3 nofail SHAPE
 ppl_BD_Shape_CC76_narrowing_assign/2
-ppl_M4_CLASS_add_space_dimensions_and_project/2 nofail POINTS
-ppl_M4_CLASS_add_space_dimensions_and_embed/2 nofail POINTS
-ppl_M4_CLASS_concatenate_assign/2 nofail POINTS
-ppl_M4_CLASS_remove_space_dimensions/2 POINTS
-ppl_M4_CLASS_remove_higher_space_dimensions/2 nofail POINTS
-ppl_M4_CLASS_expand_space_dimension/3 nofail POINTS
-ppl_M4_CLASS_fold_space_dimensions/3  POINTS
-ppl_M4_CLASS_map_space_dimensions/2 POINTS
+ppl_4CLASS4_add_space_dimensions_and_project/2 nofail POINTS
+ppl_4CLASS4_add_space_dimensions_and_embed/2 nofail POINTS
+ppl_4CLASS4_concatenate_assign/2 nofail POINTS
+ppl_4CLASS4_remove_space_dimensions/2 POINTS
+ppl_4CLASS4_remove_higher_space_dimensions/2 nofail POINTS
+ppl_4CLASS4_expand_space_dimension/3 nofail POINTS
+ppl_4CLASS4_fold_space_dimensions/3  POINTS
+ppl_4CLASS4_map_space_dimensions/2 POINTS
 ppl_new_LP_Problem_trivial/1
 ppl_new_LP_Problem/4
 ppl_LP_Problem_constraints/2
