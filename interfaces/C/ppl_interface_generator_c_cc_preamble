@@ -37,24 +37,24 @@ reinterpret_mpz_class(mpz_t n) {
   return reinterpret_cast<mpz_class&>(*n);
 }
 
-#define DECLARE_CONVERSIONS(Type) \
-inline const Type* \
+#define DECLARE_CONVERSIONS(Type, CPP_Type) \
+inline const CPP_Type* \
 to_const(ppl_const_ ## Type ## _t x) { \
-  return reinterpret_cast<const Type*>(x); \
+  return reinterpret_cast<const CPP_Type*>(x); \
 } \
  \
-inline Type* \
+inline CPP_Type* \
 to_nonconst(ppl_ ## Type ## _t x) { \
-  return reinterpret_cast<Type*>(x); \
+  return reinterpret_cast<CPP_Type*>(x); \
 } \
  \
 inline ppl_const_ ## Type ## _t \
-to_const(const Type* x) { \
+to_const(const CPP_Type* x) { \
   return reinterpret_cast<ppl_const_ ## Type ## _t>(x); \
 } \
  \
 inline ppl_ ## Type ## _t \
-to_nonconst(Type* x) { \
+to_nonconst(CPP_Type* x) { \
   return reinterpret_cast<ppl_ ## Type ## _t>(x); \
 }
 
@@ -295,40 +295,44 @@ ppl_not_a_dimension(ppl_dimension_type* m) try {
 }
 CATCH_ALL
 
-DECLARE_CONVERSIONS(Coefficient)
+DECLARE_CONVERSIONS(Coefficient, Coefficient)
 
-DECLARE_CONVERSIONS(Linear_Expression)
+DECLARE_CONVERSIONS(Linear_Expression, Linear_Expression)
 
-DECLARE_CONVERSIONS(Constraint)
+DECLARE_CONVERSIONS(Constraint, Constraint)
 
-DECLARE_CONVERSIONS(Constraint_System)
+DECLARE_CONVERSIONS(Constraint_System, Constraint_System)
 
 typedef Constraint_System::const_iterator Constraint_System_const_iterator;
-DECLARE_CONVERSIONS(Constraint_System_const_iterator)
+DECLARE_CONVERSIONS(Constraint_System_const_iterator,
+                    Constraint_System_const_iterator)
 
-DECLARE_CONVERSIONS(Generator)
+DECLARE_CONVERSIONS(Generator, Generator)
 
-DECLARE_CONVERSIONS(Generator_System)
+DECLARE_CONVERSIONS(Generator_System, Generator_System)
 
 typedef Generator_System::const_iterator Generator_System_const_iterator;
-DECLARE_CONVERSIONS(Generator_System_const_iterator)
+DECLARE_CONVERSIONS(Generator_System_const_iterator,
+                    Generator_System_const_iterator)
 
-DECLARE_CONVERSIONS(Congruence)
+DECLARE_CONVERSIONS(Congruence, Congruence)
 
-DECLARE_CONVERSIONS(Congruence_System)
+DECLARE_CONVERSIONS(Congruence_System, Congruence_System)
 
 typedef Congruence_System::const_iterator Congruence_System_const_iterator;
-DECLARE_CONVERSIONS(Congruence_System_const_iterator)
+DECLARE_CONVERSIONS(Congruence_System_const_iterator,
+                    Congruence_System_const_iterator)
 
-DECLARE_CONVERSIONS(Grid_Generator)
+DECLARE_CONVERSIONS(Grid_Generator, Grid_Generator)
 
-DECLARE_CONVERSIONS(Grid_Generator_System)
+DECLARE_CONVERSIONS(Grid_Generator_System, Grid_Generator_System)
 
 typedef Grid_Generator_System::const_iterator
   Grid_Generator_System_const_iterator;
-DECLARE_CONVERSIONS(Grid_Generator_System_const_iterator)
+DECLARE_CONVERSIONS(Grid_Generator_System_const_iterator,
+                    Grid_Generator_System_const_iterator)
 
-DECLARE_CONVERSIONS(LP_Problem)
+DECLARE_CONVERSIONS(LP_Problem, LP_Problem)
 
 
 /* Interfacing Coefficient */
