@@ -6,7 +6,7 @@ include(`ppl_interface_generator_common.m4')dnl
 include(`ppl_interface_generator_c_dat.m4')dnl
 divert(-1)dnl
 
-# m4_extra_class_code
+dnl Prefix extra code for each class.
 define(`m4_pre_extra_class_code', `dnl
 
 PPL_TYPE_DECLARATION(m4_class);
@@ -16,6 +16,7 @@ PPL_TYPE_DECLARATION(m4_class);
 
 ')dnl
 
+dnl Postfix extra code for each class.
 define(`m4_post_extra_class_code', `dnl
 PPL_DECLARE_PRINT_FUNCTIONS(m4_class)
 
@@ -23,10 +24,14 @@ PPL_DECLARE_PRINT_FUNCTIONS(m4_class)
 ')
 
 divert`'dnl
+dnl
 dnl Output the fixed preamble.
 include(`ppl_interface_generator_c_h_preamble')
-dnl Generate the non-fixed postamble.
+dnl
+dnl Generate the non-fixed part of the file.
 m4_all_classes_code`'dnl
+dnl
+dnl Generate the fixed postamble.
 
 #ifdef __cplusplus
 } /* extern "C" */
@@ -39,3 +44,4 @@ m4_all_classes_code`'dnl
 /*@}*/ /* \defgroup PPL_C_interface */
 
 #endif /* !defined(PPL_ppl_c_h) */
+dnl End of file generation.
