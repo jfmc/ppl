@@ -66,10 +66,10 @@ define(`Grid_widenexp1', `congruence')
 define(`Grid_widenexp2', `generator')
 dnl define(`Grid_widenexp3', `BDHMZ06')
 define(`Grid_widenexp3', `')
-define(`num_BD_Shape_widenexps',3)
-define(`BD_Shape_widenexp1',`CC76')
-define(`BD_Shape_widenexp2',`BHMZ05')
-define(`BD_Shape_widenexp3',`H79')
+define(`num_BD_Shape_widenexps',2)
+define(`BD_Shape_widenexp1',`BHMZ05')
+define(`BD_Shape_widenexp2',`H79')
+define(`BD_Shape_widenexp3',`CC76')
 define(`num_Octagonal_Shape_widenexps',1)
 define(`Octagonal_Shape_widenexp1',CH78)
 
@@ -267,9 +267,9 @@ ppl_4CLASS4_shrink_4BOX4/3 SHAPE
 ppl_Grid_get_4BOX4/2
 ppl_4CLASS4_is_4STATE4/1 POINTS
 ppl_4CLASS4_topological_closure_assign/1 POINTS
-ppl_4CLASS4_bounds_from_4ABOVEBELOW4/2 POINTS
-ppl_4CLASS4_4MAXMIN4/5 POINTS
-ppl_4CLASS4_4MAXMIN4_with_point/6 POINTS
+ppl_4CLASS4_bounds_from_4ABOVEBELOW4/2 POINTS XBD_Shape
+ppl_4CLASS4_4MAXMIN4/5 POINTS XBD_Shape
+ppl_4CLASS4_4MAXMIN4_with_point/6 POINTS XBD_Shape
 ppl_4CLASS4_4COMPARISON4_4CLASS4/2 POINTS
 ppl_4CLASS4_equals_4CLASS4/2 POINTS
 ppl_4CLASS4_OK/1 All
@@ -284,7 +284,7 @@ ppl_4CLASS4_add_recycled_4REPRESENT4s_and_minimize/2 POINTS
 ppl_4CLASS4_4BINOP4/2 POINTS
 ppl_4CLASS4_4BINOPPMIN4/2 POINTS
 ppl_4CLASS4_4AFFIMAGE4/4 POINTS
-ppl_4CLASS4_bounded_4AFFIMAGE4/5 SHAPE
+ppl_4CLASS4_bounded_4AFFIMAGE4/5 SHAPE XBD_Shape
 ppl_4CLASS4_generalized_4AFFIMAGE4/5 SHAPE
 ppl_4CLASS4_generalized_4AFFIMAGE4_lhs_rhs/4 SHAPE
 ppl_Grid_generalized_4AFFIMAGE4/5
@@ -293,8 +293,8 @@ ppl_4CLASS4_4WIDENEXP4_widening_assign_with_tokens/4 POINTS
 ppl_4CLASS4_4WIDENEXP4_widening_assign/2 POINTS
 ppl_4CLASS4_limited_4WIDENEXP4_extrapolation_assign_with_tokens/5 POINTS
 ppl_4CLASS4_limited_4WIDENEXP4_extrapolation_assign/3 POINTS
-ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign_with_tokens/5 SHAPE
-ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign/3 SHAPE
+ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign_with_tokens/5 POINTS XGrid XBD_Shape
+ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign/3 POINTS XGrid XBD_Shape
 ppl_BD_Shape_CC76_narrowing_assign/2
 ppl_4CLASS4_add_space_dimensions_and_4EMBEDPROJECT4/2 POINTS
 ppl_4CLASS4_concatenate_assign/2 POINTS
