@@ -688,44 +688,7 @@ PPL::Grid::is_discrete() const {
 
 bool
 PPL::Grid::is_topologically_closed() const {
-  // Any empty or zero-dimensional grid is closed.
-  if (marked_empty() || space_dim == 0)
-    return true;
-
-  if (generators_are_minimized()) {
-  param_search:
-    // Search for a parameter in the minimized generator system.
-    for (dimension_type row = gen_sys.num_generators(); row-- > 1; )
-      if (gen_sys[row].is_parameter())
-	return false;
-    return true;
-  }
-
-  if (congruences_are_minimized()) {
-  proper_cg_search:
-    // Search for a proper congruence following the integrality
-    // congruence, in the minimized congruence system.
-    for (dimension_type row = con_sys.num_rows() - 1; row-- > 0; )
-      if (con_sys[row].is_proper_congruence())
-	return false;
-    return true;
-  }
-
-  Grid& gr = const_cast<Grid&>(*this);
-  if (generators_are_up_to_date()) {
-    gr.simplify(gr.gen_sys, gr.dim_kinds);
-    gr.set_generators_minimized();
-    goto param_search;
-  }
-
-  // Minimize the congruence system.
-  if (gr.simplify(gr.con_sys, gr.dim_kinds)) {
-    // The congruence system reduced to the empty grid.
-    gr.set_empty();
-    return true;
-  }
-  gr.set_congruences_minimized();
-  goto proper_cg_search;
+  return true;
 }
 
 bool

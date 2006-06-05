@@ -675,6 +675,8 @@ public:
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is a
     topologically closed subset of the vector space.
+
+    A grid is always topologically closed.
   */
   bool is_topologically_closed() const;
 

@@ -150,9 +150,9 @@ test06() {
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
 
-  bool ok = (!gr_gs_min.is_topologically_closed())
-    && (!gr_gs_needs_min.is_topologically_closed())
-    && (!gr_cgs_needs_min.is_topologically_closed());
+  bool ok = (gr_gs_min.is_topologically_closed())
+    && (gr_gs_needs_min.is_topologically_closed())
+    && (gr_cgs_needs_min.is_topologically_closed());
 
   print_generators(gr_gs_min, "*** gr_gs_min ***");
   print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
@@ -185,9 +185,9 @@ test07() {
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
 
-  bool ok = (!gr_gs_min.is_topologically_closed())
-    && (!gr_gs_needs_min.is_topologically_closed())
-    && (!gr_cgs_needs_min.is_topologically_closed());
+  bool ok = (gr_gs_min.is_topologically_closed())
+    && (gr_gs_needs_min.is_topologically_closed())
+    && (gr_cgs_needs_min.is_topologically_closed());
 
   print_generators(gr_gs_min, "*** gr_gs_min ***");
   print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
@@ -219,9 +219,9 @@ test08() {
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
 
-  bool ok = (!gr_gs_min.is_topologically_closed())
-    && (!gr_gs_needs_min.is_topologically_closed())
-    && (!gr_cgs_needs_min.is_topologically_closed());
+  bool ok = (gr_gs_min.is_topologically_closed())
+    && (gr_gs_needs_min.is_topologically_closed())
+    && (gr_cgs_needs_min.is_topologically_closed());
 
   print_generators(gr_gs_min, "*** gr_gs_min ***");
   print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
@@ -256,9 +256,9 @@ test09() {
   // Grids gr_gs_min, gr_gs_needs_min and gr_cgs_needs_min are the
   // same grids.
 
-  bool ok = (!gr_gs_min.is_topologically_closed())
-    && (!gr_gs_needs_min.is_topologically_closed())
-    && (!gr_cgs_needs_min.is_topologically_closed());
+  bool ok = (gr_gs_min.is_topologically_closed())
+    && (gr_gs_needs_min.is_topologically_closed())
+    && (gr_cgs_needs_min.is_topologically_closed());
 
   print_generators(gr_gs_min, "*** gr_gs_min ***");
   print_generators(gr_gs_needs_min, "*** gr_gs_needs_min ***");
