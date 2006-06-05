@@ -1,7 +1,5 @@
-ifelse(
-        This file is to generate ppl_prolog.icc in the
-        interfaces/Prolog directory.
-      )dnl
+dnl This file generates ppl_prolog.icc.
+dnl
 include(`ppl_interface_generator_prolog_icc_code.m4')dnl
 include(`ppl_interface_generator_common.m4')dnl
 include(`ppl_interface_generator_prolog_dat.m4')dnl
