@@ -1,4 +1,4 @@
-dnl This file generates ppl_xsb.H.
+dnl This file generates ppl_swiprolog.cc.
 /* SWI Prolog interface.
 include(`ppl_interface_generator_copyright')
 
