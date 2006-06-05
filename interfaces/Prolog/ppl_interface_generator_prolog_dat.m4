@@ -7,32 +7,34 @@ divert(-1)
 #   `Polyhedron, LP_Problem, Grid, BD_Shape_int8_t, BD_Shape_int32_t')
 # define(`m4_cplusplus_class_names',
 #   `Polyhedron, LP_Problem, Grid, BD_Shape<int8_t>, BD_Shape<int32_t>')
-define(`m4_interface_class_names', `Polyhedron, LP_Problem, Grid')
-define(`m4_cplusplus_class_names', `Polyhedron, LP_Problem, Grid')
+define(`m4_interface_class_names', `Polyhedron@LP_Problem@Grid')
+define(`m4_cplusplus_class_names', `Polyhedron@LP_Problem@Grid')
 
-# class_group
+# m4_class_group
 #
 # There are three class groups:
 # LP_Problem for LP_Problem class,
 # GRID for all the grid-like classes,
 # SHAPE for classes denoting subsets of a vector space that have some shape.
 define(`m4_class_group',
-  `ifelse(m4_class, LP_Problem, LP_Problem, m4_class, Grid, GRID, SHAPE)')
+  `ifelse($1, LP_Problem, LP_Problem,
+          $1, Grid, GRID,
+          SHAPE)')
 
-# class_super_group
-#
-# There are two class super_groups:
-# PM for LP_Problem class,
-# PD for classes defining some Domain based on sets of Points
-# (ie grid and shape classes)
+dnl class_super_group
+dnl
+dnl There are two class super_groups:
+dnl LP_Problem for LP_Problem class,
+dnl POINTS for classes defining some Domain based on sets of Points
+dnl (ie grid and shape classes)
 define(`m4_class_super_group',
-  `ifelse(m4_class_group, LP_Problem, LP_Problem, POINTS)')
+  `ifelse(m4_class_group($1), LP_Problem, LP_Problem, POINTS)')
 
-# m4_pattern_substitution_list
+# m4_pattern_list
 #
 # returns a list of patterns (in lowercase) used as a basis
 # of the procedure name and code schemas.
-define(`m4_pattern_substitution_list',
+define(`m4_pattern_list',
 `intopology_,
 topology_,
 represent,

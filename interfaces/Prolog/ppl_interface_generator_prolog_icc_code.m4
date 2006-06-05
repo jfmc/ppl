@@ -357,7 +357,7 @@ define(`ppl_Grid_get_4BOX4_code',
 ppl_Grid_get_4BOX4(Prolog_term_ref t_ph,
 				Prolog_term_ref t_bb) {
   try {
-    4CLASS4* ph = term_to_4lCLASS4_handle(t_ph);
+    Grid* ph = term_to_grid_handle(t_ph);
     CHECK(ph);
 
     dimension_type dimension = ph->space_dimension();

@@ -250,7 +250,7 @@ dnl
 dnl Parses the comma-separated list of class names Class_List
 dnl for the names of the classes used to form the names of procedures
 dnl in the user interface.
-define(`m4_init_interface_classes', `m4_init_interface_classes_aux(1, $@)')
+define(`m4_init_interface_classes', `m4_init_interface_classes_aux(1, $1)')
 
 dnl m4_init_interface_classes_aux(counter, Class_List)
 dnl
@@ -261,11 +261,10 @@ dnl The macro also defines m4_num_classes to be the number of classes
 dnl in the full list (ie counter + number in the current list - 1).
 dnl The macro calls itself recursively to process the complete list.
 define(`m4_init_interface_classes_aux',
-  `ifelse($2, `', , `dnl
-define(m4_num_classes, $1)dnl
-define(m4_interface_class`'$1, $2)dnl
-m4_init_interface_classes_aux(incr($1), shift(shift($@)))dnl
-')')
+  `ifelse($2, `',  `define(m4_num_classes, decr($1))',
+    `regexp($2, `\([^@]+\)@?\(.*\)',
+      `define(m4_interface_class`'$1, \1)dnl
+m4_init_interface_classes_aux(incr($1), \2)')')')
 
 dnl m4_init_cplusplus_classes(Class_List)
 dnl
@@ -274,7 +273,7 @@ dnl to be used in the C++ code implementing the interface procedures.
 dnl The components of the class name are also separated out
 dnl and defined as m4_class<class_num>_component<component_num>
 dnl (see comment and example for m4_get_name_components/3).
-define(`m4_init_cplusplus_classes', `m4_init_cplusplus_classes_aux(1, $@)')
+define(`m4_init_cplusplus_classes', `m4_init_cplusplus_classes_aux(1, $1)')
 
 dnl m4_init_cplusplus_classes_aux(counter, Class_List)
 dnl
@@ -288,9 +287,10 @@ dnl cplusplus name in the list.
 dnl The macro calls itself recursively to process the complete list.
 define(`m4_init_cplusplus_classes_aux',
   `ifelse($2, `', ,
-     `define(m4_cplusplus_class`'$1, $2)dnl
-m4_get_name_components($1, 1, $2)dnl
-m4_init_cplusplus_classes_aux(incr($1), shift(shift($@)))')')
+    `regexp($2, `\([^@]+\)@?\(.*\)',
+       `define(m4_cplusplus_class`'$1, \1)dnl
+m4_get_name_components($1, 1, \1)dnl
+m4_init_cplusplus_classes_aux(incr($1), \2)')')')
 
 dnl m4_initialize_classes
 dnl

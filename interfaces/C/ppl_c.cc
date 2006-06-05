@@ -1,3 +1,4 @@
+
 /* Implementation of the C interface.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -37,24 +38,24 @@ reinterpret_mpz_class(mpz_t n) {
   return reinterpret_cast<mpz_class&>(*n);
 }
 
-#define DECLARE_CONVERSIONS(Type) \
-inline const Type* \
+#define DECLARE_CONVERSIONS(Type, CPP_Type) \
+inline const CPP_Type* \
 to_const(ppl_const_ ## Type ## _t x) { \
-  return reinterpret_cast<const Type*>(x); \
+  return reinterpret_cast<const CPP_Type*>(x); \
 } \
  \
-inline Type* \
+inline CPP_Type* \
 to_nonconst(ppl_ ## Type ## _t x) { \
-  return reinterpret_cast<Type*>(x); \
+  return reinterpret_cast<CPP_Type*>(x); \
 } \
  \
 inline ppl_const_ ## Type ## _t \
-to_const(const Type* x) { \
+to_const(const CPP_Type* x) { \
   return reinterpret_cast<ppl_const_ ## Type ## _t>(x); \
 } \
  \
 inline ppl_ ## Type ## _t \
-to_nonconst(Type* x) { \
+to_nonconst(CPP_Type* x) { \
   return reinterpret_cast<ppl_ ## Type ## _t>(x); \
 }
 
@@ -142,7 +143,7 @@ c_variable_default_output_function(ppl_dimension_type var) {
 #else
 # error "Unsupported definition for `size_t'."
 #endif
-  // On a 64-bits architecture, `var' will not be more than 2^64-1,
+  // On a 64-bits architecture, var will not be more than 2^64-1,
   // (2^64-1)/26 is written with 18 decimal digits, plus one letter,
   // plus one terminator makes 20.
 #if defined(ULLONG_MAX) && ULLONG_MAX > 18446744073709551615ULL
@@ -267,7 +268,7 @@ CATCH_ALL
 int
 ppl_version(const char** p) try {
   // Note: use explicit qualification to avoid clashes on, e.g.,
-  // Solaris 2.9, where `version' is the name of an enum defined in
+  // Solaris 2.9, where version is the name of an enum defined in
   // math.h.
   *p = Parma_Polyhedra_Library::version();
   return 0;
@@ -295,28 +296,47 @@ ppl_not_a_dimension(ppl_dimension_type* m) try {
 }
 CATCH_ALL
 
-DECLARE_CONVERSIONS(Coefficient)
+DECLARE_CONVERSIONS(Coefficient, Coefficient)
 
-DECLARE_CONVERSIONS(Linear_Expression)
+DECLARE_CONVERSIONS(Linear_Expression, Linear_Expression)
 
-DECLARE_CONVERSIONS(Constraint)
+DECLARE_CONVERSIONS(Constraint, Constraint)
 
-DECLARE_CONVERSIONS(Constraint_System)
+DECLARE_CONVERSIONS(Constraint_System, Constraint_System)
 
 typedef Constraint_System::const_iterator Constraint_System_const_iterator;
-DECLARE_CONVERSIONS(Constraint_System_const_iterator)
+DECLARE_CONVERSIONS(Constraint_System_const_iterator,
+                    Constraint_System_const_iterator)
 
-DECLARE_CONVERSIONS(Generator)
+DECLARE_CONVERSIONS(Generator, Generator)
 
-DECLARE_CONVERSIONS(Generator_System)
+DECLARE_CONVERSIONS(Generator_System, Generator_System)
 
 typedef Generator_System::const_iterator Generator_System_const_iterator;
-DECLARE_CONVERSIONS(Generator_System_const_iterator)
+DECLARE_CONVERSIONS(Generator_System_const_iterator,
+                    Generator_System_const_iterator)
 
-DECLARE_CONVERSIONS(Polyhedron)
+DECLARE_CONVERSIONS(Congruence, Congruence)
 
-DECLARE_CONVERSIONS(LP_Problem)
+DECLARE_CONVERSIONS(Congruence_System, Congruence_System)
 
+typedef Congruence_System::const_iterator Congruence_System_const_iterator;
+DECLARE_CONVERSIONS(Congruence_System_const_iterator,
+                    Congruence_System_const_iterator)
+
+DECLARE_CONVERSIONS(Grid_Generator, Grid_Generator)
+
+DECLARE_CONVERSIONS(Grid_Generator_System, Grid_Generator_System)
+
+typedef Grid_Generator_System::const_iterator
+  Grid_Generator_System_const_iterator;
+DECLARE_CONVERSIONS(Grid_Generator_System_const_iterator,
+                    Grid_Generator_System_const_iterator)
+
+DECLARE_CONVERSIONS(LP_Problem, LP_Problem)
+
+
+/* Interfacing Coefficient */
 
 int
 ppl_new_Coefficient(ppl_Coefficient_t* pc) try {
@@ -410,6 +430,8 @@ ppl_Coefficient_max(mpz_t max) try {
     return 0;
 }
 CATCH_ALL
+
+/* Interfacing Linear_Expression */
 
 int
 ppl_new_Linear_Expression(ppl_Linear_Expression_t* ple) try {
@@ -535,11 +557,12 @@ ppl_Linear_Expression_inhomogeneous_term(ppl_const_Linear_Expression_t le,
 CATCH_ALL
 
 int
-ppl_Linear_Expression_OK(ppl_const_Linear_Expression_t /* le */) try {
-  return 1;
+ppl_Linear_Expression_OK(ppl_const_Linear_Expression_t le) try {
+  return to_const(le)->OK() ? 1 : 0;
 }
 CATCH_ALL
 
+/* Interfacing Constraint */
 
 int
 ppl_new_Constraint(ppl_Constraint_t* pc,
@@ -657,8 +680,8 @@ ppl_Constraint_inhomogeneous_term(ppl_const_Constraint_t c,
 CATCH_ALL
 
 int
-ppl_Constraint_OK(ppl_const_Constraint_t /* c */) try {
-  return 1;
+ppl_Constraint_OK(ppl_const_Constraint_t c) try {
+  return to_const(c)->OK() ? 1 : 0;
 }
 CATCH_ALL
 
@@ -671,6 +694,7 @@ ppl_new_Linear_Expression_from_Constraint(ppl_Linear_Expression_t* ple,
 }
 CATCH_ALL
 
+/* Interfacing Constraint_System */
 
 int
 ppl_new_Constraint_System(ppl_Constraint_System_t* pcs) try {
@@ -762,6 +786,7 @@ ppl_Constraint_System_OK(ppl_const_Constraint_System_t cs) try {
 }
 CATCH_ALL
 
+/* Interfacing Constraint_System::const_iterator */
 
 int
 ppl_new_Constraint_System_const_iterator
@@ -850,6 +875,7 @@ ppl_Constraint_System_const_iterator_equal_test
 }
 CATCH_ALL
 
+/* Interfacing Generator */
 
 int
 ppl_new_Generator(ppl_Generator_t* pg,
@@ -968,8 +994,8 @@ ppl_Generator_divisor(ppl_const_Generator_t g,
 CATCH_ALL
 
 int
-ppl_Generator_OK(ppl_const_Generator_t /* g */) try {
-  return 1;
+ppl_Generator_OK(ppl_const_Generator_t g) try {
+  return to_const(g)->OK() ? 1 : 0;
 }
 CATCH_ALL
 
@@ -982,6 +1008,7 @@ ppl_new_Linear_Expression_from_Generator(ppl_Linear_Expression_t* ple,
 }
 CATCH_ALL
 
+/* Interfacing Generator_System */
 
 int
 ppl_new_Generator_System(ppl_Generator_System_t* pgs) try {
@@ -1063,6 +1090,7 @@ ppl_Generator_System_OK(ppl_const_Generator_System_t gs) try {
 }
 CATCH_ALL
 
+/* Interfacing Generator_System::const_iterator */
 
 int
 ppl_new_Generator_System_const_iterator
@@ -1150,148 +1178,588 @@ ppl_Generator_System_const_iterator_equal_test
 }
 CATCH_ALL
 
+/* Interfacing Congruence */
 
 int
-ppl_new_C_Polyhedron_from_dimension(ppl_Polyhedron_t* pph,
-				    ppl_dimension_type d) try {
-  *pph = to_nonconst(new C_Polyhedron(d, UNIVERSE));
+ppl_new_Congruence(ppl_Congruence_t* pc,
+		   ppl_const_Linear_Expression_t le,
+		   ppl_const_Coefficient_t m) try {
+  Congruence* ppc;
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& mm = *to_const(m);
+  ppc = new Congruence((lle %= 0) / mm);
+  *pc = to_nonconst(ppc);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_from_dimension(ppl_Polyhedron_t* pph,
-				      ppl_dimension_type d) try {
-  *pph = to_nonconst(new NNC_Polyhedron(d, UNIVERSE));
+ppl_new_Congruence_zero_dim_false(ppl_Congruence_t* pc) try {
+  *pc = to_nonconst(new Congruence(Congruence::zero_dim_false()));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_empty_from_dimension(ppl_Polyhedron_t* pph,
-					  ppl_dimension_type d) try {
-  *pph = to_nonconst(new C_Polyhedron(d, EMPTY));
+ppl_new_Congruence_zero_dim_integrality(ppl_Congruence_t* pc) try {
+  *pc = to_nonconst(new Congruence(Congruence::zero_dim_integrality()));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_empty_from_dimension(ppl_Polyhedron_t* pph,
-					    ppl_dimension_type d) try {
-  *pph = to_nonconst(new NNC_Polyhedron(d, EMPTY));
+ppl_new_Congruence_from_Congruence(ppl_Congruence_t* pc,
+				   ppl_const_Congruence_t c) try {
+  const Congruence& cc = *to_const(c);
+  *pc = to_nonconst(new Congruence(cc));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t* pph,
-				       ppl_const_Polyhedron_t ph) try {
-  const C_Polyhedron& phh = *static_cast<const C_Polyhedron*>(to_const(ph));
-  *pph = to_nonconst(new C_Polyhedron(phh));
+ppl_delete_Congruence(ppl_const_Congruence_t le) try {
+  delete to_const(le);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
-					 ppl_const_Polyhedron_t ph) try {
-  const NNC_Polyhedron& phh
-    = *static_cast<const NNC_Polyhedron*>(to_const(ph));
-  *pph = to_nonconst(new C_Polyhedron(phh));
+ppl_assign_Congruence_from_Congruence(ppl_Congruence_t dst,
+				      ppl_const_Congruence_t src) try {
+  const Congruence& ssrc = *to_const(src);
+  Congruence& ddst = *to_nonconst(dst);
+  ddst = ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t* pph,
-					 ppl_const_Polyhedron_t ph) try {
-  const C_Polyhedron& phh = *static_cast<const C_Polyhedron*>(to_const(ph));
-  *pph = to_nonconst(new NNC_Polyhedron(phh));
+ppl_Congruence_space_dimension(ppl_const_Congruence_t c,
+			       ppl_dimension_type* m) try {
+  *m = to_const(c)->space_dimension();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
-					   ppl_const_Polyhedron_t ph) try {
-  const NNC_Polyhedron& phh
-    = *static_cast<const NNC_Polyhedron*>(to_const(ph));
-  *pph = to_nonconst(new NNC_Polyhedron(phh));
+ppl_Congruence_coefficient(ppl_const_Congruence_t c,
+			   ppl_dimension_type var,
+			   ppl_Coefficient_t n) try {
+  const Congruence& cc = *to_const(c);
+  Coefficient& nn = *to_nonconst(n);
+  nn = cc.coefficient(Variable(var));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_from_Constraint_System
-(ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs) try {
-  const Constraint_System& ccs = *to_const(cs);
-  *pph = to_nonconst(new C_Polyhedron(ccs));
+ppl_Congruence_inhomogeneous_term(ppl_const_Congruence_t c,
+				  ppl_Coefficient_t n) try {
+  const Congruence& cc = *to_const(c);
+  Coefficient& nn = *to_nonconst(n);
+  nn = cc.inhomogeneous_term();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_recycle_Constraint_System
-(ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs) try {
-  Constraint_System& ccs = *to_nonconst(cs);
-  *pph = to_nonconst(new C_Polyhedron(ccs));
+ppl_Congruence_modulus(ppl_const_Congruence_t c,
+		       ppl_Coefficient_t m) try {
+  const Congruence& cc = *to_const(c);
+  Coefficient& mm = *to_nonconst(m);
+  mm = cc.modulus();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_from_Constraint_System
-(ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs) try {
-  const Constraint_System& ccs = *to_const(cs);
-  *pph = to_nonconst(new NNC_Polyhedron(ccs));
+ppl_Congruence_OK(ppl_const_Congruence_t c) try {
+  return to_const(c)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Linear_Expression_from_Congruence(ppl_Linear_Expression_t* ple,
+					  ppl_const_Congruence_t c) try {
+  const Congruence& cc = *to_const(c);
+  *ple = to_nonconst(new Linear_Expression(cc));
+  return 0;
+}
+CATCH_ALL
+
+/* Interfacing Congruence_System */
+
+int
+ppl_new_Congruence_System(ppl_Congruence_System_t* pcs) try {
+  *pcs = to_nonconst(new Congruence_System());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_recycle_Constraint_System
-(ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs) try {
-  Constraint_System& ccs = *to_nonconst(cs);
-  *pph = to_nonconst(new NNC_Polyhedron(ccs));
+ppl_new_Congruence_System_zero_dim_empty(ppl_Congruence_System_t* pcs) try {
+  *pcs = to_nonconst(new
+		     Congruence_System(Congruence_System::zero_dim_empty()));
+  return 0;
+}
+CATCH_ALL
+
+
+int
+ppl_new_Congruence_System_from_Congruence(ppl_Congruence_System_t* pcs,
+					  ppl_const_Congruence_t c) try {
+  const Congruence& cc = *to_const(c);
+  *pcs = to_nonconst(new Congruence_System(cc));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_from_Generator_System
-(ppl_Polyhedron_t* pph, ppl_const_Generator_System_t gs) try {
-  const Generator_System& ggs = *to_const(gs);
-  *pph = to_nonconst(new C_Polyhedron(ggs));
+ppl_new_Congruence_System_from_Congruence_System
+(ppl_Congruence_System_t* pcs, ppl_const_Congruence_System_t cs) try {
+  const Congruence_System& ccs = *to_const(cs);
+  *pcs = to_nonconst(new Congruence_System(ccs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_recycle_Generator_System(ppl_Polyhedron_t* pph,
-					      ppl_Generator_System_t gs) try {
-  Generator_System& ggs = *to_nonconst(gs);
-  *pph = to_nonconst(new C_Polyhedron(ggs));
+ppl_delete_Congruence_System(ppl_const_Congruence_System_t cs) try {
+  delete to_const(cs);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_from_Generator_System
-(ppl_Polyhedron_t* pph, ppl_const_Generator_System_t gs) try {
-  const Generator_System& ggs = *to_const(gs);
-  *pph = to_nonconst(new C_Polyhedron(ggs));
+ppl_assign_Congruence_System_from_Congruence_System
+(ppl_Congruence_System_t dst, ppl_const_Congruence_System_t src) try {
+  const Congruence_System& ssrc = *to_const(src);
+  Congruence_System& ddst = *to_nonconst(dst);
+  ddst = ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_recycle_Generator_System
-(ppl_Polyhedron_t* pph, ppl_Generator_System_t gs) try {
-  Generator_System& ggs = *to_nonconst(gs);
-  *pph = to_nonconst(new C_Polyhedron(ggs));
+ppl_Congruence_System_space_dimension(ppl_const_Congruence_System_t cs,
+				      ppl_dimension_type* m) try {
+  *m = to_const(cs)->space_dimension();
   return 0;
 }
 CATCH_ALL
+
+int
+ppl_Congruence_System_clear(ppl_Congruence_System_t cs) try {
+  to_nonconst(cs)->clear();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_insert_Congruence(ppl_Congruence_System_t cs,
+					ppl_const_Congruence_t c) try {
+  const Congruence& cc = *to_const(c);
+  Congruence_System& ccs = *to_nonconst(cs);
+  ccs.insert(cc);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_OK(ppl_const_Congruence_System_t cs) try {
+  return to_const(cs)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+/* Interfacing Congruence_System::const_iterator */
+
+int
+ppl_new_Congruence_System_const_iterator
+(ppl_Congruence_System_const_iterator_t* pcit) try {
+  *pcit = to_nonconst(new Congruence_System::const_iterator());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Congruence_System_const_iterator_from_Congruence_System_const_iterator
+(ppl_Congruence_System_const_iterator_t* pcit,
+ ppl_const_Congruence_System_const_iterator_t cit)  try {
+  *pcit = to_nonconst(new Congruence_System::const_iterator(*to_const(cit)));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Congruence_System_const_iterator
+(ppl_const_Congruence_System_const_iterator_t cit)
+  try {
+  delete to_const(cit);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Congruence_System_const_iterator_from_Congruence_System_const_iterator
+(ppl_Congruence_System_const_iterator_t dst,
+ ppl_const_Congruence_System_const_iterator_t src) try {
+  const Congruence_System::const_iterator& ssrc = *to_const(src);
+  Congruence_System::const_iterator& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_begin(ppl_const_Congruence_System_t cs,
+			    ppl_Congruence_System_const_iterator_t cit) try {
+  const Congruence_System& ccs = *to_const(cs);
+  Congruence_System::const_iterator& ccit = *to_nonconst(cit);
+  ccit = ccs.begin();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_end(ppl_const_Congruence_System_t cs,
+			  ppl_Congruence_System_const_iterator_t cit) try {
+  const Congruence_System& ccs = *to_const(cs);
+  Congruence_System::const_iterator& ccit = *to_nonconst(cit);
+  ccit = ccs.end();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_const_iterator_dereference
+(ppl_const_Congruence_System_const_iterator_t cit,
+ ppl_const_Congruence_t* pc) try {
+  const Congruence_System::const_iterator& ccit = *to_const(cit);
+  const Congruence& c = *ccit;
+  *pc = to_const(&c);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_const_iterator_increment
+(ppl_Congruence_System_const_iterator_t cit) try {
+  Congruence_System::const_iterator& ccit = *to_nonconst(cit);
+  ++ccit;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Congruence_System_const_iterator_equal_test
+(ppl_const_Congruence_System_const_iterator_t x,
+ ppl_const_Congruence_System_const_iterator_t y) try {
+  const Congruence_System::const_iterator& xx = *to_const(x);
+  const Congruence_System::const_iterator& yy = *to_const(y);
+  return (xx == yy) ? 1 : 0;
+}
+CATCH_ALL
+
+/* Interfacing Grid_Generator */
+
+int
+ppl_new_Grid_Generator(ppl_Grid_Generator_t* pg,
+		       ppl_const_Linear_Expression_t le,
+		       enum ppl_enum_Grid_Generator_Type t,
+		       ppl_const_Coefficient_t d) try {
+  Grid_Generator* ppg;
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
+  switch (t) {
+  case PPL_GRID_GENERATOR_TYPE_LINE:
+    ppg = new Grid_Generator(Grid_Generator::grid_line(lle));
+    break;
+  case PPL_GRID_GENERATOR_TYPE_PARAMETER:
+    ppg = new Grid_Generator(Grid_Generator::parameter(lle));
+    break;
+  case PPL_GRID_GENERATOR_TYPE_POINT:
+    ppg = new Grid_Generator(Grid_Generator::grid_point(lle, dd));
+    break;
+  default:
+    throw std::invalid_argument("ppl_new_Grid_Generator(pg, le, t, d): "
+				"t invalid");
+  }
+  *pg = to_nonconst(ppg);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Grid_Generator_zero_dim_point(ppl_Grid_Generator_t* pg) try {
+  *pg = to_nonconst(new Grid_Generator(Grid_Generator::zero_dim_point()));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Grid_Generator_from_Grid_Generator(ppl_Grid_Generator_t* pg,
+					   ppl_const_Grid_Generator_t g) try {
+  const Grid_Generator& gg = *to_const(g);
+  *pg = to_nonconst(new Grid_Generator(gg));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Grid_Generator(ppl_const_Grid_Generator_t le) try {
+  delete to_const(le);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Grid_Generator_from_Grid_Generator
+(ppl_Grid_Generator_t dst,
+ ppl_const_Grid_Generator_t src) try {
+  const Grid_Generator& ssrc = *to_const(src);
+  Grid_Generator& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_space_dimension(ppl_const_Grid_Generator_t g,
+				   ppl_dimension_type* m) try {
+  *m = to_const(g)->space_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_type(ppl_const_Grid_Generator_t g) try {
+  switch (to_const(g)->type()) {
+  case Grid_Generator::LINE:
+    return PPL_GRID_GENERATOR_TYPE_LINE;
+  case Grid_Generator::PARAMETER:
+    return PPL_GRID_GENERATOR_TYPE_PARAMETER;
+  case Grid_Generator::POINT:
+    return PPL_GRID_GENERATOR_TYPE_POINT;
+  default:
+    throw std::runtime_error("ppl_Grid_Generator_type()");
+  }
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_coefficient(ppl_const_Grid_Generator_t g,
+			       ppl_dimension_type var,
+			       ppl_Coefficient_t n) try {
+  const Grid_Generator& gg = *to_const(g);
+  Coefficient& nn = *to_nonconst(n);
+  nn = gg.coefficient(Variable(var));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_divisor(ppl_const_Grid_Generator_t g,
+			   ppl_Coefficient_t n) try {
+  const Grid_Generator& gg = *to_const(g);
+  Coefficient& nn = *to_nonconst(n);
+  nn = gg.divisor();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_OK(ppl_const_Grid_Generator_t g) try {
+  return to_const(g)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+// FIXME: to be restored soon.
+// int
+// ppl_new_Linear_Expression_from_Grid_Generator
+// (ppl_Linear_Expression_t* ple,
+//  ppl_const_Grid_Generator_t g) try {
+//   const Grid_Generator& gg = *to_const(g);
+//   *ple = to_nonconst(new Linear_Expression(gg));
+//   return 0;
+// }
+// CATCH_ALL
+
+/* Interfacing Grid_Generator_System */
+
+int
+ppl_new_Grid_Generator_System(ppl_Grid_Generator_System_t* pgs) try {
+  *pgs = to_nonconst(new Grid_Generator_System());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Grid_Generator_System_zero_dim_univ
+(ppl_Grid_Generator_System_t* pgs) try {
+  *pgs = to_nonconst
+    (new Grid_Generator_System(Grid_Generator_System::zero_dim_univ()));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Grid_Generator_System_from_Generator
+(ppl_Grid_Generator_System_t* pgs, ppl_const_Grid_Generator_t g) try {
+  const Grid_Generator& gg = *to_const(g);
+  *pgs = to_nonconst(new Grid_Generator_System(gg));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Grid_Generator_System_from_Grid_Generator_System
+(ppl_Grid_Generator_System_t* pgs, ppl_const_Grid_Generator_System_t gs) try {
+  const Grid_Generator_System& ggs = *to_const(gs);
+  *pgs = to_nonconst(new Grid_Generator_System(ggs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Grid_Generator_System(ppl_const_Grid_Generator_System_t gs) try {
+  delete to_const(gs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Grid_Generator_System_from_Grid_Generator_System
+(ppl_Grid_Generator_System_t dst, ppl_const_Grid_Generator_System_t src) try {
+  const Grid_Generator_System& ssrc = *to_const(src);
+  Grid_Generator_System& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_space_dimension(ppl_const_Grid_Generator_System_t gs,
+					  ppl_dimension_type* m) try {
+  *m = to_const(gs)->space_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_clear(ppl_Grid_Generator_System_t gs) try {
+  to_nonconst(gs)->clear();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_insert_Grid_Generator
+(ppl_Grid_Generator_System_t gs,
+ ppl_const_Grid_Generator_t g) try {
+  const Grid_Generator& gg = *to_const(g);
+  Grid_Generator_System& ggs = *to_nonconst(gs);
+  ggs.insert(gg);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_OK(ppl_const_Grid_Generator_System_t gs) try {
+  return to_const(gs)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+/* Interfacing Grid_Generator_System::const_iterator */
+
+int
+ppl_new_Grid_Generator_System_const_iterator
+(ppl_Grid_Generator_System_const_iterator_t* pgit) try {
+  *pgit = to_nonconst(new Grid_Generator_System::const_iterator());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Grid_Generator_System_const_iterator_from_Grid_Generator_System_const_iterator
+(ppl_Grid_Generator_System_const_iterator_t* pgit,
+ ppl_const_Grid_Generator_System_const_iterator_t git)  try {
+  *pgit = to_nonconst
+    (new Grid_Generator_System::const_iterator(*to_const(git)));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Grid_Generator_System_const_iterator
+(ppl_const_Grid_Generator_System_const_iterator_t git) try {
+  delete to_const(git);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Grid_Generator_System_const_iterator_from_Grid_Generator_System_const_iterator
+(ppl_Grid_Generator_System_const_iterator_t dst,
+ ppl_const_Grid_Generator_System_const_iterator_t src) try {
+  const Grid_Generator_System::const_iterator& ssrc = *to_const(src);
+  Grid_Generator_System::const_iterator& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_begin
+(ppl_const_Grid_Generator_System_t gs,
+ ppl_Grid_Generator_System_const_iterator_t git) try {
+  const Grid_Generator_System& ggs = *to_const(gs);
+  Grid_Generator_System::const_iterator& ggit = *to_nonconst(git);
+  ggit = ggs.begin();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_end
+(ppl_const_Grid_Generator_System_t gs,
+ ppl_Grid_Generator_System_const_iterator_t git) try {
+  const Grid_Generator_System& ggs = *to_const(gs);
+  Grid_Generator_System::const_iterator& ggit = *to_nonconst(git);
+  ggit = ggs.end();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_const_iterator_dereference
+(ppl_const_Grid_Generator_System_const_iterator_t git,
+ ppl_const_Grid_Generator_t* pg) try {
+  const Grid_Generator_System::const_iterator& ggit = *to_const(git);
+  const Grid_Generator& g = *ggit;
+  *pg = to_const(&g);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_const_iterator_increment
+(ppl_Grid_Generator_System_const_iterator_t git) try {
+  Grid_Generator_System::const_iterator& ggit = *to_nonconst(git);
+  ++ggit;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Grid_Generator_System_const_iterator_equal_test
+(ppl_const_Grid_Generator_System_const_iterator_t x,
+ ppl_const_Grid_Generator_System_const_iterator_t y) try {
+  const Grid_Generator_System::const_iterator& xx = *to_const(x);
+  const Grid_Generator_System::const_iterator& yy = *to_const(y);
+  return (xx == yy) ? 1 : 0;
+}
+CATCH_ALL
+
 
 namespace {
 
@@ -1339,483 +1807,6 @@ public:
 
 } // namespace
 
-int
-ppl_new_C_Polyhedron_from_bounding_box
-(ppl_Polyhedron_t* pph,
- ppl_dimension_type (*space_dimension)(void),
- int (*is_empty)(void),
- int (*get_lower_bound)(ppl_dimension_type k, int closed,
-			ppl_Coefficient_t n,
-			ppl_Coefficient_t d),
- int (*get_upper_bound)(ppl_dimension_type k, int closed,
-			ppl_Coefficient_t n,
-			ppl_Coefficient_t d)) try {
-  C_Build_Box cbbox(space_dimension, is_empty,
-		    get_lower_bound, get_upper_bound);
-  *pph = to_nonconst(new C_Polyhedron(cbbox, From_Bounding_Box()));
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_new_NNC_Polyhedron_from_bounding_box
-(ppl_Polyhedron_t* pph,
- ppl_dimension_type (*space_dimension)(void),
- int (*is_empty)(void),
- int (*get_lower_bound)(ppl_dimension_type k, int closed,
-			ppl_Coefficient_t n,
-			ppl_Coefficient_t d),
- int (*get_upper_bound)(ppl_dimension_type k, int closed,
-			ppl_Coefficient_t n,
-			ppl_Coefficient_t d)) try {
-  C_Build_Box cbbox(space_dimension, is_empty,
-		    get_lower_bound, get_upper_bound);
-  *pph = to_nonconst(new NNC_Polyhedron(cbbox, From_Bounding_Box()));
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_delete_Polyhedron(ppl_const_Polyhedron_t ph) try {
-  delete to_const(ph);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_assign_C_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t dst,
-					  ppl_const_Polyhedron_t src) try {
-  const C_Polyhedron& ssrc
-    = *static_cast<const C_Polyhedron*>(to_const(src));
-  C_Polyhedron& ddst = *static_cast<C_Polyhedron*>(to_nonconst(dst));
-  ddst = ssrc;
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t dst,
-					      ppl_const_Polyhedron_t src) try {
-  const NNC_Polyhedron& ssrc
-    = *static_cast<const NNC_Polyhedron*>(to_const(src));
-  NNC_Polyhedron& ddst = *static_cast<NNC_Polyhedron*>(to_nonconst(dst));
-  ddst = ssrc;
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_space_dimension(ppl_const_Polyhedron_t ph,
-			       ppl_dimension_type* m) try {
-  *m = to_const(ph)->space_dimension();
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_affine_dimension(ppl_const_Polyhedron_t ph,
-				ppl_dimension_type* m) try {
-  *m = to_const(ph)->affine_dimension();
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_intersection_assign(ppl_Polyhedron_t x,
-				   ppl_const_Polyhedron_t y) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  xx.intersection_assign(yy);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_intersection_assign_and_minimize(ppl_Polyhedron_t x,
-						ppl_const_Polyhedron_t y) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  return xx.intersection_assign_and_minimize(yy) ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_concatenate_assign(ppl_Polyhedron_t x,
-				  ppl_const_Polyhedron_t y) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  xx.concatenate_assign(yy);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_poly_hull_assign(ppl_Polyhedron_t x,
-				ppl_const_Polyhedron_t y) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  xx.poly_hull_assign(yy);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_poly_hull_assign_and_minimize(ppl_Polyhedron_t x,
-					     ppl_const_Polyhedron_t y) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  return xx.poly_hull_assign_and_minimize(yy) ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_poly_difference_assign(ppl_Polyhedron_t x,
-				      ppl_const_Polyhedron_t y) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  xx.poly_difference_assign(yy);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(ppl_Polyhedron_t x,
-						  ppl_const_Polyhedron_t y,
-						  unsigned* tp) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  xx.BHRZ03_widening_assign(yy, tp);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_BHRZ03_widening_assign(ppl_Polyhedron_t x,
-				      ppl_const_Polyhedron_t y) try {
-  return ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(x, y, 0);
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs,
- unsigned* tp) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  const Constraint_System& ccs = *to_const(cs);
-  xx.limited_BHRZ03_extrapolation_assign(yy, ccs, tp);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs) try {
-  return ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(x, y,
-									cs, 0);
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs,
- unsigned* tp) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  const Constraint_System& ccs = *to_const(cs);
-  xx.bounded_BHRZ03_extrapolation_assign(yy, ccs, tp);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs) try {
-  return ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(x, y,
-									cs, 0);
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_H79_widening_assign_with_tokens(ppl_Polyhedron_t x,
-					       ppl_const_Polyhedron_t y,
-					       unsigned* tp) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  xx.H79_widening_assign(yy, tp);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_H79_widening_assign(ppl_Polyhedron_t x,
-				   ppl_const_Polyhedron_t y) try {
-  return ppl_Polyhedron_H79_widening_assign_with_tokens(x, y, 0);
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs,
- unsigned* tp) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  const Constraint_System& ccs = *to_const(cs);
-  xx.limited_H79_extrapolation_assign(yy, ccs, tp);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_limited_H79_extrapolation_assign
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs) try {
-  return ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(x, y,
-								     cs, 0);
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs,
- unsigned* tp) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  const Constraint_System& ccs = *to_const(cs);
-  xx.bounded_H79_extrapolation_assign(yy, ccs, tp);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_bounded_H79_extrapolation_assign
-(ppl_Polyhedron_t x,
- ppl_const_Polyhedron_t y,
- ppl_const_Constraint_System_t cs) try {
-  return ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(x, y,
-								     cs, 0);
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_time_elapse_assign(ppl_Polyhedron_t x,
-				  ppl_const_Polyhedron_t y) try {
-  Polyhedron& xx = *to_nonconst(x);
-  const Polyhedron& yy = *to_const(y);
-  xx.time_elapse_assign(yy);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_constraints(ppl_const_Polyhedron_t ph,
-			   ppl_const_Constraint_System_t* pcs) try {
-  const Polyhedron& pph = *to_const(ph);
-  const Constraint_System& cs = pph.constraints();
-  *pcs = to_const(&cs);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_minimized_constraints(ppl_const_Polyhedron_t ph,
-				     ppl_const_Constraint_System_t* pcs) try {
-  const Polyhedron& pph = *to_const(ph);
-  const Constraint_System& cs = pph.minimized_constraints();
-  *pcs = to_const(&cs);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_generators(ppl_const_Polyhedron_t ph,
-			  ppl_const_Generator_System_t* pgs) try {
-  const Polyhedron& pph = *to_const(ph);
-  const Generator_System& gs = pph.generators();
-  *pgs = to_const(&gs);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_minimized_generators(ppl_const_Polyhedron_t ph,
-				    ppl_const_Generator_System_t* pgs) try {
-  const Polyhedron& pph = *to_const(ph);
-  const Generator_System& gs = pph.minimized_generators();
-  *pgs = to_const(&gs);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_constraint(ppl_Polyhedron_t ph,
-			      ppl_const_Constraint_t c) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Constraint& cc = *to_const(c);
-  pph.add_constraint(cc);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_constraint_and_minimize(ppl_Polyhedron_t ph,
-					   ppl_const_Constraint_t c) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Constraint& cc = *to_const(c);
-  pph.add_constraint_and_minimize(cc);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_generator(ppl_Polyhedron_t ph,
-			     ppl_const_Generator_t g) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Generator& gg = *to_const(g);
-  pph.add_generator(gg);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_generator_and_minimize(ppl_Polyhedron_t ph,
-					  ppl_const_Generator_t g) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Generator& gg = *to_const(g);
-  pph.add_generator_and_minimize(gg);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_constraints(ppl_Polyhedron_t ph,
-			       ppl_const_Constraint_System_t cs) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Constraint_System& ccs = *to_const(cs);
-  pph.add_constraints(ccs);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_constraints_and_minimize
-(ppl_Polyhedron_t ph, ppl_const_Constraint_System_t cs) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Constraint_System& ccs = *to_const(cs);
-  return pph.add_constraints_and_minimize(ccs) ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_generators(ppl_Polyhedron_t ph,
-			      ppl_const_Generator_System_t gs) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Generator_System& ggs = *to_const(gs);
-  pph.add_generators(ggs);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_generators_and_minimize
-(ppl_Polyhedron_t ph, ppl_const_Generator_System_t gs) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Generator_System& ggs = *to_const(gs);
-  return pph.add_generators_and_minimize(ggs) ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_recycled_constraints(ppl_Polyhedron_t ph,
-					ppl_Constraint_System_t cs) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  Constraint_System& ccs = *to_nonconst(cs);
-  pph.add_recycled_constraints(ccs);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_recycled_constraints_and_minimize
-(ppl_Polyhedron_t ph, ppl_Constraint_System_t cs) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  Constraint_System& ccs = *to_nonconst(cs);
-  return pph.add_recycled_constraints_and_minimize(ccs) ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_recycled_generators(ppl_Polyhedron_t ph,
-				       ppl_Generator_System_t gs) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  Generator_System& ggs = *to_nonconst(gs);
-  pph.add_recycled_generators(ggs);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_recycled_generators_and_minimize(ppl_Polyhedron_t ph,
-						    ppl_Generator_System_t gs)
-try {
-  Polyhedron& pph = *to_nonconst(ph);
-  Generator_System& ggs = *to_nonconst(gs);
-  return pph.add_recycled_generators_and_minimize(ggs) ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_space_dimensions_and_embed(ppl_Polyhedron_t ph,
-					      ppl_dimension_type d) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  pph.add_space_dimensions_and_embed(d);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_add_space_dimensions_and_project(ppl_Polyhedron_t ph,
-						ppl_dimension_type d) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  pph.add_space_dimensions_and_project(d);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_remove_space_dimensions(ppl_Polyhedron_t ph,
-				       ppl_dimension_type ds[],
-				       size_t n) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  Variables_Set to_be_removed;
-  for (ppl_dimension_type i = n; i-- > 0; )
-    to_be_removed.insert(Variable(ds[i]));
-  pph.remove_space_dimensions(to_be_removed);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_remove_higher_space_dimensions(ppl_Polyhedron_t ph,
-					      ppl_dimension_type d) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  pph.remove_higher_space_dimensions(d);
-  return 0;
-}
-CATCH_ALL
 
 namespace {
 
@@ -1877,96 +1868,6 @@ public:
 
 } // namespace
 
-int
-ppl_Polyhedron_map_space_dimensions(ppl_Polyhedron_t ph,
-				    ppl_dimension_type maps[],
-				    size_t n) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  PIFunc pifunc(maps, n);
-  pph.map_space_dimensions(pifunc);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_expand_space_dimension(ppl_Polyhedron_t ph,
-				      ppl_dimension_type d,
-				      ppl_dimension_type m) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  pph.expand_space_dimension(Variable(d), m);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_fold_space_dimensions(ppl_Polyhedron_t ph,
-				     ppl_dimension_type ds[],
-				     size_t n,
-				     ppl_dimension_type d) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  Variables_Set to_be_folded;
-  for (ppl_dimension_type i = n; i-- > 0; )
-    to_be_folded.insert(Variable(ds[i]));
-  pph.fold_space_dimensions(to_be_folded, Variable(d));
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_affine_image(ppl_Polyhedron_t ph,
-			    ppl_dimension_type var,
-			    ppl_const_Linear_Expression_t le,
-			    ppl_const_Coefficient_t d) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Linear_Expression& lle = *to_const(le);
-  const Coefficient& dd = *to_const(d);
-  pph.affine_image(Variable(var), lle, dd);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_affine_preimage(ppl_Polyhedron_t ph,
-			       ppl_dimension_type var,
-			       ppl_const_Linear_Expression_t le,
-			       ppl_const_Coefficient_t d) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Linear_Expression& lle = *to_const(le);
-  const Coefficient& dd = *to_const(d);
-  pph.affine_preimage(Variable(var), lle, dd);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_bounded_affine_image(ppl_Polyhedron_t ph,
-				    ppl_dimension_type var,
-				    ppl_const_Linear_Expression_t lb,
-				    ppl_const_Linear_Expression_t ub,
-				    ppl_const_Coefficient_t d) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Linear_Expression& llb = *to_const(lb);
-  const Linear_Expression& uub = *to_const(ub);
-  const Coefficient& dd = *to_const(d);
-  pph.bounded_affine_image(Variable(var), llb, uub, dd);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_bounded_affine_preimage(ppl_Polyhedron_t ph,
-				       ppl_dimension_type var,
-				       ppl_const_Linear_Expression_t lb,
-				       ppl_const_Linear_Expression_t ub,
-				       ppl_const_Coefficient_t d) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Linear_Expression& llb = *to_const(lb);
-  const Linear_Expression& uub = *to_const(ub);
-  const Coefficient& dd = *to_const(d);
-  pph.bounded_affine_preimage(Variable(var), llb, uub, dd);
-  return 0;
-}
-CATCH_ALL
 
 namespace {
 
@@ -1989,66 +1890,6 @@ relation_symbol(enum ppl_enum_Constraint_Type t) {
 }
 
 } // namespace
-
-int
-ppl_Polyhedron_generalized_affine_image(ppl_Polyhedron_t ph,
-					ppl_dimension_type var,
-					enum ppl_enum_Constraint_Type relsym,
-					ppl_const_Linear_Expression_t le,
-					ppl_const_Coefficient_t d) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Linear_Expression& lle = *to_const(le);
-  const Coefficient& dd = *to_const(d);
-  pph.generalized_affine_image(Variable(var), relation_symbol(relsym), lle,
-			       dd);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_generalized_affine_preimage
-(ppl_Polyhedron_t ph,
- ppl_dimension_type var,
- enum ppl_enum_Constraint_Type relsym,
- ppl_const_Linear_Expression_t le,
- ppl_const_Coefficient_t d) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Linear_Expression& lle = *to_const(le);
-  const Coefficient& dd = *to_const(d);
-  pph.generalized_affine_preimage(Variable(var), relation_symbol(relsym), lle,
-				  dd);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_generalized_affine_image_lhs_rhs
-(ppl_Polyhedron_t ph,
- ppl_const_Linear_Expression_t lhs,
- enum ppl_enum_Constraint_Type relsym,
- ppl_const_Linear_Expression_t rhs) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Linear_Expression& llhs = *to_const(lhs);
-  const Linear_Expression& rrhs = *to_const(rhs);
-  pph.generalized_affine_image(llhs, relation_symbol(relsym), rrhs);
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_generalized_affine_preimage_lhs_rhs
-(ppl_Polyhedron_t ph,
- ppl_const_Linear_Expression_t lhs,
- enum ppl_enum_Constraint_Type relsym,
- ppl_const_Linear_Expression_t rhs) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  const Linear_Expression& llhs = *to_const(lhs);
-  const Linear_Expression& rrhs = *to_const(rhs);
-  pph.generalized_affine_preimage(llhs, relation_symbol(relsym), rrhs);
-  return 0;
-}
-CATCH_ALL
-
 
 namespace {
 
@@ -2089,183 +1930,6 @@ public:
 };
 
 } // namespace
-
-int
-ppl_Polyhedron_shrink_bounding_box
-(ppl_const_Polyhedron_t ph,
- unsigned int complexity,
- void (*set_empty)(void),
- void (*raise_lower_bound)(ppl_dimension_type k, int closed,
-			   ppl_const_Coefficient_t n,
-			   ppl_const_Coefficient_t d),
- void (*lower_upper_bound)(ppl_dimension_type k, int closed,
-			   ppl_const_Coefficient_t n,
-			   ppl_const_Coefficient_t d)) try {
-  if (complexity != POLYNOMIAL_COMPLEXITY
-      && complexity != SIMPLEX_COMPLEXITY
-      && complexity != ANY_COMPLEXITY)
-    return PPL_ERROR_INVALID_ARGUMENT;
-
-  const Polyhedron& pph = *to_const(ph);
-  C_Shrink_Box csbox(set_empty, raise_lower_bound, lower_upper_bound);
-  pph.shrink_bounding_box(csbox, Complexity_Class(complexity));
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_relation_with_Constraint(ppl_const_Polyhedron_t ph,
-					ppl_const_Constraint_t c) try {
-  const Polyhedron& pph = *to_const(ph);
-  const Constraint& cc = *to_const(c);
-  return pph.relation_with(cc).get_flags();
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_relation_with_Generator(ppl_const_Polyhedron_t ph,
-				       ppl_const_Generator_t g) try {
-  const Polyhedron& pph = *to_const(ph);
-  const Generator& gg = *to_const(g);
-  return pph.relation_with(gg).get_flags();
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_is_empty(ppl_const_Polyhedron_t ph) try {
-  const Polyhedron& pph = *to_const(ph);
-  return pph.is_empty() ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_is_universe(ppl_const_Polyhedron_t ph) try {
-  const Polyhedron& pph = *to_const(ph);
-  return pph.is_universe() ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_is_bounded(ppl_const_Polyhedron_t ph) try {
-  const Polyhedron& pph = *to_const(ph);
-  return pph.is_bounded() ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_bounds_from_above(ppl_const_Polyhedron_t ph,
-				 ppl_const_Linear_Expression_t le) try {
-  const Polyhedron& pph = *to_const(ph);
-  const Linear_Expression& lle = *to_const(le);
-  return pph.bounds_from_above(lle) ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_bounds_from_below(ppl_const_Polyhedron_t ph,
-				 ppl_const_Linear_Expression_t le) try {
-  const Polyhedron& pph = *to_const(ph);
-  const Linear_Expression& lle = *to_const(le);
-  return pph.bounds_from_below(lle) ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_maximize(ppl_const_Polyhedron_t ph,
-			ppl_const_Linear_Expression_t le,
-			ppl_Coefficient_t sup_n,
-			ppl_Coefficient_t sup_d,
-			int* pmaximum,
-			ppl_Generator_t point) try {
-  const Polyhedron& pph = *to_const(ph);
-  const Linear_Expression& lle = *to_const(le);
-  Coefficient& ssup_n = *to_nonconst(sup_n);
-  Coefficient& ssup_d = *to_nonconst(sup_d);
-  Generator& ppoint = *to_nonconst(point);
-  bool maximum;
-  bool ok = pph.maximize(lle, ssup_n, ssup_d, maximum, ppoint);
-  if (ok)
-    *pmaximum = maximum ? 1 : 0;
-  return ok ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_minimize(ppl_const_Polyhedron_t ph,
-			ppl_const_Linear_Expression_t le,
-			ppl_Coefficient_t inf_n,
-			ppl_Coefficient_t inf_d,
-			int* pminimum,
-			ppl_Generator_t point) try {
-  const Polyhedron& pph = *to_const(ph);
-  const Linear_Expression& lle = *to_const(le);
-  Coefficient& iinf_n = *to_nonconst(inf_n);
-  Coefficient& iinf_d = *to_nonconst(inf_d);
-  Generator& ppoint = *to_nonconst(point);
-  bool minimum;
-  bool ok = pph.minimize(lle, iinf_n, iinf_d, minimum, ppoint);
-  if (ok)
-    *pminimum = minimum ? 1 : 0;
-  return ok ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_is_topologically_closed(ppl_const_Polyhedron_t ph) try {
-  const Polyhedron& pph = *to_const(ph);
-  return pph.is_topologically_closed() ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_topological_closure_assign(ppl_Polyhedron_t ph) try {
-  Polyhedron& pph = *to_nonconst(ph);
-  pph.topological_closure_assign();
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_contains_Polyhedron(ppl_const_Polyhedron_t x,
-				   ppl_const_Polyhedron_t y) try {
-  const Polyhedron& xx = *to_const(x);
-  const Polyhedron& yy = *to_const(y);
-  return xx.contains(yy) ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_strictly_contains_Polyhedron(ppl_const_Polyhedron_t x,
-					    ppl_const_Polyhedron_t y) try {
-  const Polyhedron& xx = *to_const(x);
-  const Polyhedron& yy = *to_const(y);
-  return xx.strictly_contains(yy) ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_is_disjoint_from_Polyhedron(ppl_const_Polyhedron_t x,
-					   ppl_const_Polyhedron_t y) try {
-  const Polyhedron& xx = *to_const(x);
-  const Polyhedron& yy = *to_const(y);
-  return xx.is_disjoint_from(yy) ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_equals_Polyhedron(ppl_const_Polyhedron_t x,
-				 ppl_const_Polyhedron_t y) try {
-  const Polyhedron& xx = *to_const(x);
-  const Polyhedron& yy = *to_const(y);
-  return (xx == yy) ? 1 : 0;
-}
-CATCH_ALL
-
-int
-ppl_Polyhedron_OK(ppl_const_Polyhedron_t ph) try {
-  return to_const(ph)->OK() ? 1 : 0;
-}
-CATCH_ALL
 
 int
 ppl_new_LP_Problem_trivial(ppl_LP_Problem_t* plp) try {
@@ -2505,7 +2169,13 @@ DEFINE_PRINT_FUNCTIONS(Generator)
 
 DEFINE_PRINT_FUNCTIONS(Generator_System)
 
-DEFINE_PRINT_FUNCTIONS(Polyhedron)
+DEFINE_PRINT_FUNCTIONS(Congruence)
+
+DEFINE_PRINT_FUNCTIONS(Congruence_System)
+
+DEFINE_PRINT_FUNCTIONS(Grid_Generator)
+
+DEFINE_PRINT_FUNCTIONS(Grid_Generator_System)
 
 int
 ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p)
@@ -2522,3 +2192,791 @@ try {
   return 0;
 }
 CATCH_ALL
+
+DECLARE_CONVERSIONS(Polyhedron, Polyhedron)
+
+int
+ppl_new_C_Polyhedron_from_space_dimension
+(ppl_Polyhedron_t* pph,
+ ppl_dimension_type d,
+ int empty) try {
+  *pph = to_nonconst(new C_Polyhedron(d, empty ? EMPTY : UNIVERSE));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_NNC_Polyhedron_from_space_dimension
+(ppl_Polyhedron_t* pph,
+ ppl_dimension_type d,
+ int empty) try {
+  *pph = to_nonconst(new NNC_Polyhedron(d, empty ? EMPTY : UNIVERSE));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_C_Polyhedron_from_C_Polyhedron
+(ppl_Polyhedron_t* pph,
+ ppl_const_Polyhedron_t ph) try {
+  const C_Polyhedron& phh
+    = *static_cast<const C_Polyhedron*>(to_const(ph));
+  *pph = to_nonconst(new C_Polyhedron(phh));
+  return 0;
+}
+CATCH_ALL;
+
+int
+ppl_new_C_Polyhedron_from_NNC_Polyhedron
+(ppl_Polyhedron_t* pph,
+ ppl_const_Polyhedron_t ph) try {
+  const NNC_Polyhedron& phh
+    = *static_cast<const NNC_Polyhedron*>(to_const(ph));
+  *pph = to_nonconst(new C_Polyhedron(phh));
+  return 0;
+}
+CATCH_ALL;
+
+int
+ppl_new_NNC_Polyhedron_from_C_Polyhedron
+(ppl_Polyhedron_t* pph,
+ ppl_const_Polyhedron_t ph) try {
+  const C_Polyhedron& phh
+    = *static_cast<const C_Polyhedron*>(to_const(ph));
+  *pph = to_nonconst(new NNC_Polyhedron(phh));
+  return 0;
+}
+CATCH_ALL;
+
+int
+ppl_new_NNC_Polyhedron_from_NNC_Polyhedron
+(ppl_Polyhedron_t* pph,
+ ppl_const_Polyhedron_t ph) try {
+  const NNC_Polyhedron& phh
+    = *static_cast<const NNC_Polyhedron*>(to_const(ph));
+  *pph = to_nonconst(new NNC_Polyhedron(phh));
+  return 0;
+}
+CATCH_ALL;
+
+int
+ppl_new_C_Polyhedron_from_Constraint_System
+(ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs) try {
+  const Constraint_System& ccs = *to_const(cs);
+  *pph = to_nonconst(new C_Polyhedron(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_NNC_Polyhedron_from_Constraint_System
+(ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs) try {
+  const Constraint_System& ccs = *to_const(cs);
+  *pph = to_nonconst(new NNC_Polyhedron(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_C_Polyhedron_from_Generator_System
+(ppl_Polyhedron_t* pph, ppl_const_Generator_System_t cs) try {
+  const Generator_System& ccs = *to_const(cs);
+  *pph = to_nonconst(new C_Polyhedron(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_NNC_Polyhedron_from_Generator_System
+(ppl_Polyhedron_t* pph, ppl_const_Generator_System_t cs) try {
+  const Generator_System& ccs = *to_const(cs);
+  *pph = to_nonconst(new NNC_Polyhedron(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_C_Polyhedron_recycle_Constraint_System
+(ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs) try {
+  Constraint_System& ccs = *to_nonconst(cs);
+  *pph = to_nonconst(new C_Polyhedron(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_NNC_Polyhedron_recycle_Constraint_System
+(ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs) try {
+  Constraint_System& ccs = *to_nonconst(cs);
+  *pph = to_nonconst(new NNC_Polyhedron(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_C_Polyhedron_recycle_Generator_System
+(ppl_Polyhedron_t* pph, ppl_Generator_System_t cs) try {
+  Generator_System& ccs = *to_nonconst(cs);
+  *pph = to_nonconst(new C_Polyhedron(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_NNC_Polyhedron_recycle_Generator_System
+(ppl_Polyhedron_t* pph, ppl_Generator_System_t cs) try {
+  Generator_System& ccs = *to_nonconst(cs);
+  *pph = to_nonconst(new NNC_Polyhedron(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Polyhedron(ppl_const_Polyhedron_t ph) try {
+  delete to_const(ph);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_C_Polyhedron_from_C_Polyhedron
+(ppl_Polyhedron_t dst,
+ ppl_const_Polyhedron_t src) try {
+  const C_Polyhedron& ssrc
+    = *static_cast<const C_Polyhedron*>(to_const(src));
+  C_Polyhedron& ddst
+    = *static_cast<C_Polyhedron*>(to_nonconst(dst));
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron
+(ppl_Polyhedron_t dst,
+ ppl_const_Polyhedron_t src) try {
+  const NNC_Polyhedron& ssrc
+    = *static_cast<const NNC_Polyhedron*>(to_const(src));
+  NNC_Polyhedron& ddst
+    = *static_cast<NNC_Polyhedron*>(to_nonconst(dst));
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_space_dimension
+(ppl_const_Polyhedron_t ph,
+ ppl_dimension_type* m) try {
+  *m = to_const(ph)->space_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_affine_dimension
+(ppl_const_Polyhedron_t ph,
+ ppl_dimension_type* m) try {
+  *m = to_const(ph)->affine_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_shrink_bounding_box
+(ppl_const_Polyhedron_t ph,
+ unsigned int complexity,
+ void (*set_empty)(void),
+ void (*raise_lower_bound)(ppl_dimension_type k, int closed,
+			   ppl_const_Coefficient_t n,
+			   ppl_const_Coefficient_t d),
+ void (*lower_upper_bound)(ppl_dimension_type k, int closed,
+			   ppl_const_Coefficient_t n,
+			   ppl_const_Coefficient_t d)) try {
+  if (complexity != POLYNOMIAL_COMPLEXITY
+      && complexity != SIMPLEX_COMPLEXITY
+      && complexity != ANY_COMPLEXITY)
+    return PPL_ERROR_INVALID_ARGUMENT;
+
+  const Polyhedron& pph = *to_const(ph);
+  C_Shrink_Box csbox(set_empty, raise_lower_bound, lower_upper_bound);
+  pph.shrink_bounding_box(csbox, Complexity_Class(complexity));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_is_empty(ppl_const_Polyhedron_t ph) try {
+  const Polyhedron& pph = *to_const(ph);
+  return pph.is_empty() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_is_universe(ppl_const_Polyhedron_t ph) try {
+  const Polyhedron& pph = *to_const(ph);
+  return pph.is_universe() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_is_bounded(ppl_const_Polyhedron_t ph) try {
+  const Polyhedron& pph = *to_const(ph);
+  return pph.is_bounded() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_is_topologically_closed(ppl_const_Polyhedron_t ph) try {
+  const Polyhedron& pph = *to_const(ph);
+  return pph.is_topologically_closed() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_topological_closure_assign(ppl_Polyhedron_t ph) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  pph.topological_closure_assign();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_bounds_from_above
+(ppl_const_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t le) try {
+  const Polyhedron& pph = *to_const(ph);
+  const Linear_Expression& lle = *to_const(le);
+  return pph.bounds_from_above(lle) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_bounds_from_below
+(ppl_const_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t le) try {
+  const Polyhedron& pph = *to_const(ph);
+  const Linear_Expression& lle = *to_const(le);
+  return pph.bounds_from_below(lle) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_maximize
+(ppl_const_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t le,
+ ppl_Coefficient_t sup_n,
+ ppl_Coefficient_t sup_d,
+ int* poptimum,
+ ppl_Generator_t point) try {
+  const Polyhedron& pph = *to_const(ph);
+  const Linear_Expression& lle = *to_const(le);
+  Coefficient& ssup_n = *to_nonconst(sup_n);
+  Coefficient& ssup_d = *to_nonconst(sup_d);
+  Generator& ppoint = *to_nonconst(point);
+  bool optimum;
+  bool ok = pph.maximize(lle, ssup_n, ssup_d, optimum, ppoint);
+  if (ok)
+    *poptimum = optimum ? 1 : 0;
+  return ok ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_minimize
+(ppl_const_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t le,
+ ppl_Coefficient_t sup_n,
+ ppl_Coefficient_t sup_d,
+ int* poptimum,
+ ppl_Generator_t point) try {
+  const Polyhedron& pph = *to_const(ph);
+  const Linear_Expression& lle = *to_const(le);
+  Coefficient& ssup_n = *to_nonconst(sup_n);
+  Coefficient& ssup_d = *to_nonconst(sup_d);
+  Generator& ppoint = *to_nonconst(point);
+  bool optimum;
+  bool ok = pph.minimize(lle, ssup_n, ssup_d, optimum, ppoint);
+  if (ok)
+    *poptimum = optimum ? 1 : 0;
+  return ok ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_contains_Polyhedron
+(ppl_const_Polyhedron_t x,
+ ppl_const_Polyhedron_t y) try {
+  const Polyhedron& xx = *to_const(x);
+  const Polyhedron& yy = *to_const(y);
+  return xx.contains(yy) ? 1 : 0;
+  return xx.contains(yy) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_strictly_contains_Polyhedron
+(ppl_const_Polyhedron_t x,
+ ppl_const_Polyhedron_t y) try {
+  const Polyhedron& xx = *to_const(x);
+  const Polyhedron& yy = *to_const(y);
+  return xx.strictly_contains(yy) ? 1 : 0;
+  return xx.strictly_contains(yy) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_is_disjoint_from_Polyhedron
+(ppl_const_Polyhedron_t x,
+ ppl_const_Polyhedron_t y) try {
+  const Polyhedron& xx = *to_const(x);
+  const Polyhedron& yy = *to_const(y);
+  return xx.is_disjoint_from(yy) ? 1 : 0;
+  return xx.is_disjoint_from(yy) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_equals_Polyhedron
+(ppl_const_Polyhedron_t x,
+ ppl_const_Polyhedron_t y) try {
+  const Polyhedron& xx = *to_const(x);
+  const Polyhedron& yy = *to_const(y);
+  return (xx == yy) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_OK(ppl_const_Polyhedron_t ph) try {
+  return to_const(ph)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_constraint
+(ppl_Polyhedron_t ph,
+ ppl_const_Constraint_t c) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Constraint& cc = *to_const(c);
+  pph.add_constraint(cc);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_generator
+(ppl_Polyhedron_t ph,
+ ppl_const_Generator_t c) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Generator& cc = *to_const(c);
+  pph.add_generator(cc);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_constraint_and_minimize
+(ppl_Polyhedron_t ph,
+ ppl_const_Constraint_t c) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Constraint& cc = *to_const(c);
+  return pph.add_constraint_and_minimize(cc) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_generator_and_minimize
+(ppl_Polyhedron_t ph,
+ ppl_const_Generator_t c) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Generator& cc = *to_const(c);
+  return pph.add_generator_and_minimize(cc) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_constraints
+(ppl_Polyhedron_t ph,
+ ppl_const_Constraint_System_t cs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Constraint_System& ccs = *to_const(cs);
+  pph.add_constraints(ccs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_generators
+(ppl_Polyhedron_t ph,
+ ppl_const_Generator_System_t cs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Generator_System& ccs = *to_const(cs);
+  pph.add_generators(ccs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_constraints_and_minimize
+(ppl_Polyhedron_t ph,
+ ppl_const_Constraint_System_t cs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Constraint_System& ccs = *to_const(cs);
+  return pph.add_constraints_and_minimize(ccs) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_generators_and_minimize
+(ppl_Polyhedron_t ph,
+ ppl_const_Generator_System_t cs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Generator_System& ccs = *to_const(cs);
+  return pph.add_generators_and_minimize(ccs) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_recycled_constraints
+(ppl_Polyhedron_t ph,
+ ppl_Constraint_System_t cs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  Constraint_System& ccs = *to_nonconst(cs);
+  pph.add_recycled_constraints(ccs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_recycled_generators
+(ppl_Polyhedron_t ph,
+ ppl_Generator_System_t cs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  Generator_System& ccs = *to_nonconst(cs);
+  pph.add_recycled_generators(ccs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_recycled_constraints_and_minimize
+(ppl_Polyhedron_t ph,
+ ppl_Constraint_System_t cs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  Constraint_System& ccs = *to_nonconst(cs);
+  return pph.add_recycled_constraints_and_minimize(ccs) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_recycled_generators_and_minimize
+(ppl_Polyhedron_t ph,
+ ppl_Generator_System_t cs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  Generator_System& ccs = *to_nonconst(cs);
+  return pph.add_recycled_generators_and_minimize(ccs) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_intersection_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.intersection_assign(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_poly_hull_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.poly_hull_assign(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_poly_difference_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.poly_difference_assign(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_time_elapse_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.time_elapse_assign(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_affine_image
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ ppl_const_Linear_Expression_t le,
+ ppl_const_Coefficient_t d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
+  pph.affine_image(Variable(var), lle, dd);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_affine_preimage
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ ppl_const_Linear_Expression_t le,
+ ppl_const_Coefficient_t d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
+  pph.affine_preimage(Variable(var), lle, dd);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_bounded_affine_image
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ ppl_const_Linear_Expression_t lb,
+ ppl_const_Linear_Expression_t ub,
+ ppl_const_Coefficient_t d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Linear_Expression& llb = *to_const(lb);
+  const Linear_Expression& uub = *to_const(ub);
+  const Coefficient& dd = *to_const(d);
+  pph.bounded_affine_image(Variable(var), llb, uub, dd);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_bounded_affine_preimage
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ ppl_const_Linear_Expression_t lb,
+ ppl_const_Linear_Expression_t ub,
+ ppl_const_Coefficient_t d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Linear_Expression& llb = *to_const(lb);
+  const Linear_Expression& uub = *to_const(ub);
+  const Coefficient& dd = *to_const(d);
+  pph.bounded_affine_preimage(Variable(var), llb, uub, dd);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_generalized_affine_image
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t le,
+ ppl_const_Coefficient_t d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
+  pph.generalized_affine_image(Variable(var), relation_symbol(relsym), lle,
+			       dd);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_generalized_affine_preimage
+(ppl_Polyhedron_t ph,
+ ppl_dimension_type var,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t le,
+ ppl_const_Coefficient_t d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
+  pph.generalized_affine_preimage(Variable(var), relation_symbol(relsym), lle,
+			       dd);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_generalized_affine_image_lhs_rhs
+(ppl_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t lhs,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t rhs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Linear_Expression& llhs = *to_const(lhs);
+  const Linear_Expression& rrhs = *to_const(rhs);
+  pph.generalized_affine_image(llhs, relation_symbol(relsym), rrhs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_generalized_affine_preimage_lhs_rhs
+(ppl_Polyhedron_t ph,
+ ppl_const_Linear_Expression_t lhs,
+ enum ppl_enum_Constraint_Type relsym,
+ ppl_const_Linear_Expression_t rhs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Linear_Expression& llhs = *to_const(lhs);
+  const Linear_Expression& rrhs = *to_const(rhs);
+  pph.generalized_affine_preimage(llhs, relation_symbol(relsym), rrhs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_BHRZ03_widening_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ unsigned* tp) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.BHRZ03_widening_assign(yy, tp);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_H79_widening_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ unsigned* tp) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.H79_widening_assign(yy, tp);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_BHRZ03_widening_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y) try {
+  return ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(x, y, 0);
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_H79_widening_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y) try {
+  return ppl_Polyhedron_H79_widening_assign_with_tokens(x, y, 0);
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs,
+ unsigned* tp) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  const Constraint_System& ccs = *to_const(cs);
+  xx.limited_BHRZ03_extrapolation_assign(yy, ccs, tp);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs,
+ unsigned* tp) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  const Constraint_System& ccs = *to_const(cs);
+  xx.limited_H79_extrapolation_assign(yy, ccs, tp);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs) try {
+  return ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(x, y,
+									cs, 0);
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_limited_H79_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs) try {
+  return ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(x, y,
+									cs, 0);
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs,
+ unsigned* tp) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  const Constraint_System& ccs = *to_const(cs);
+  xx.bounded_BHRZ03_extrapolation_assign(yy, ccs, tp);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs,
+ unsigned* tp) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  const Constraint_System& ccs = *to_const(cs);
+  xx.bounded_H79_extrapolation_assign(yy, ccs, tp);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs) try {
+  return ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(x, y,
+									cs, 0);
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_bounded_H79_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs) try {
+  return ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(x, y,
+									cs, 0);
+}
+CATCH_ALL
+
+DEFINE_PRINT_FUNCTIONS(Polyhedron)
+
