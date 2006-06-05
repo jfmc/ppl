@@ -81,13 +81,23 @@ ifelse($2, `', ``$1'',
                               shift(shift($@)))')dnl
 ')
 
-dnl m4_set_class(String)
+dnl m4_replace_class_patterns(String)
 dnl
-dnl replaces dummy string `4CLASS4' by the actual class defined
-dnl in m4_class.
-define(`m4_set_class',
-  `patsubst(`patsubst(`$1',  `4CLASS4', m4_class)',
-     4lCLASS4, m4_downcase(m4_class))')
+dnl String - the code for all the methods for the current class.
+dnl
+dnl The macro replaces in String the different patterns for
+dnl the class kind, class interface name and class C++ name.
+dnl FIXME: This also continues to replace `4CLASS4' by the user class
+dnl        but eventually, this optional pattern should be removed.
+dnl FIXME: 4lCLASS4 is replaced by the lower case version of the interface
+dnl        class name. This will not be correct for compound class names.
+define(`m4_replace_class_patterns',
+  `patsubst(`patsubst(`patsubst(`patsubst(`patsubst(`$1',
+    `4KEYCLASS4', m4_class_kind)',
+      `4USERCLASS4', m4_interface_class)',
+        `4SYSCLASS4', m4_cpp_class)',
+          `4CLASS4', m4_class)',
+            4lCLASS4, m4_downcase(m4_class))')
 
 dnl m4_replace_with_code(String)
 dnl
@@ -140,7 +150,9 @@ dnl to see if there is a macro with "_code" extension that defines the code.
 dnl Then a macro sets the class and other schematic components.
 define(`m4_one_class_code', `dnl
 m4_ifndef(`m4_pre_extra_class_code', `')dnl
-m4_set_class(m4_procedure_names_to_code(m4_filter(m4_procedure_list)))dnl
+m4_replace_class_patterns(
+  m4_procedure_names_to_code(
+    m4_filter(m4_procedure_list)))dnl
 m4_ifndef(`m4_post_extra_class_code', `')dnl
 ')
 
@@ -216,7 +228,7 @@ define(`m4_get_name_components',
       define(m4_class`'$1_component`'$2, $3)dnl
 define(m4_class`'$1_num_components, $2),
         `regexp($3, `\([^ <]+\)[<]\(.*\)[ ]*[>]',
-`define(m4_class`'$1_component`'$2, \1)dnl
+          `define(m4_class`'$1_component`'$2, \1)dnl
 m4_get_name_components($1, incr($2), \2)')')')')
 
 dnl m4_init_interface_classes(Class_List)
@@ -227,8 +239,15 @@ dnl in the user interface.
 define(`m4_init_interface_classes', `m4_init_interface_classes_aux(1, $@)')
 
 dnl m4_init_interface_classes_aux(counter, Class_List)
+dnl
+dnl counter    - is the index to the first class in Class_List
+dnl Class_List - is the tail part of the input list of interface
+dnl              class names.
+dnl The macro also defines m4_num_classes to be the number of classes
+dnl in the full list (ie counter + number in the current list - 1).
+dnl The macro calls itself recursively to process the complete list.
 define(`m4_init_interface_classes_aux',
-  `ifelse($2, `', ,
+  `ifelse($2, `', define(m4_num_classes, $1),
     `define(m4_interface_class`'$1, $2)dnl
 m4_init_interface_classes_aux(incr($1), shift(shift($@)))')')
 
@@ -242,6 +261,15 @@ dnl (see comment and example for m4_get_name_components/3).
 define(`m4_init_cplusplus_classes', `m4_init_cplusplus_classes_aux(1, $@)')
 
 dnl m4_init_cplusplus_classes_aux(counter, Class_List)
+dnl
+dnl counter    - is the index to the first class in Class_List
+dnl Class_List - is the tail part of the input list of cplusplus
+dnl              class names.
+dnl
+dnl The macro also calls the macro m4_get_name_components/3
+dnl to extract the details of the components from the top
+dnl cplusplus name in the list.
+dnl The macro calls itself recursively to process the complete list.
 define(`m4_init_cplusplus_classes_aux',
   `ifelse($2, `', ,
      `define(m4_cplusplus_class`'$1, $2)dnl
