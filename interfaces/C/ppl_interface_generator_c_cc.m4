@@ -8,7 +8,7 @@ divert(-1)dnl
 
 # m4_extra_class_code
 define(`m4_pre_extra_class_code', `dnl
-DECLARE_CONVERSIONS(m4_class)
+DECLARE_CONVERSIONS(m4_class, m4_cpp_class)
 
 ')dnl
 
