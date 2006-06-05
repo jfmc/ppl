@@ -123,6 +123,13 @@ Direct_Product<D1, D2>::swap(Direct_Product& y) {
 // FIX .templates.hh (some should be inlined)
 
 template <typename D1, typename D2>
+template <typename Box>
+Direct_Product<D1, D2>::Direct_Product(const Box& box,
+				       From_Bounding_Box dummy)
+  : d1(box, dummy), d2(box, dummy) {
+}
+
+template <typename D1, typename D2>
 void
 Direct_Product<D1, D2>::add_constraint(const Constraint& c) {
   d1.add_constraint(c);

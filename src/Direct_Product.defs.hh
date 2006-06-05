@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Direct_Product_defs_hh 1
 
 #include "Direct_Product.types.hh"
+#include "globals.defs.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Congruence.types.hh"
