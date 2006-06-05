@@ -51,7 +51,7 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
   // Check that all bounds are closed.  This check must be done before
   // the empty test below, as an open bound might mean an empty box.
   for (dimension_type k = space_dim; k-- > 0; ) {
-    bool closed;
+    bool closed = false;
     // FIXME: Perhaps introduce box::is_bounded_and_closed.
     if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
       throw_invalid_argument("Grid(box, from_bounding_box)", "box");
@@ -77,7 +77,7 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
     Grid_Generator& point = gen_sys[0];
     for (dimension_type k = space_dim; k-- > 0; ) {
-      bool closed;
+      bool closed = false;
       // TODO: Consider producing the system(s) in minimized form.
       if (box.get_lower_bound(k, closed, l_n, l_d)) {
 	if (box.get_upper_bound(k, closed, u_n, u_d))
@@ -143,7 +143,7 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
   // Check that all bounds are closed.  This check must be done before
   // the empty test below, as an open bound might mean an empty box.
   for (dimension_type k = space_dim; k-- > 0; ) {
-    bool closed;
+    bool closed = false;
     // FIXME: Perhaps introduce box::is_bounded_and_closed.
     if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
       throw_invalid_argument("Grid(box, from_covering_box)", "box");
@@ -170,7 +170,7 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
     Grid_Generator& point = gen_sys[0];
     for (dimension_type k = space_dim; k-- > 0; ) {
-      bool closed;
+      bool closed = false;
       // TODO: Consider producing the system(s) in minimized form.
       if (box.get_lower_bound(k, closed, l_n, l_d)) {
 
@@ -266,7 +266,7 @@ Grid::shrink_bounding_box(Box& box) const {
   // Check that all bounds are closed.  This check must be done before
   // the empty test below, as an open bound might mean an empty box.
   for (dimension_type k = space_dim; k-- > 0; ) {
-    bool closed;
+    bool closed = false;
     // FIXME: Perhaps introduce box::is_bounded_and_closed.
     if (box.get_lower_bound(k, closed, temp, temp) && !closed)
       throw_invalid_argument("shrink_bounding_box(box)", "box");
