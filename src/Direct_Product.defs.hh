@@ -344,6 +344,12 @@ public:
   */
   dimension_type affine_dimension() const;
 
+  //! Returns a constant reference to the first of the pair.
+  const D1& domain1() const;
+
+  //! Returns a constant reference to the second of the pair.
+  const D2& domain2() const;
+
   //! Returns the system of congruences.
   const Congruence_System& congruences() const;
 
@@ -430,6 +436,30 @@ public:
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
   bool bounds_from_below(const Linear_Expression& expr) const;
+
+  //! Reduce the instance of the second domain with the first.
+  /*
+    \return
+    <CODE>true</CODE> if and only if resulting domain instance is
+    strictly contained in the original.
+  */
+  bool reduce_domain1_with_domain2();
+
+  //! Reduce the instance of the first domain with the second.
+  /*
+    \return
+    <CODE>true</CODE> if and only if resulting domain instance is
+    strictly contained in the original.
+  */
+  bool reduce_domain2_with_domain1();
+
+  //! Reduce.
+  /*
+    \return
+    <CODE>true</CODE> if and only if either of the resulting domain
+    instances is strictly contained in the respective original.
+  */
+  bool reduce();
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -739,7 +769,7 @@ public:
     invariants are violated. This is useful for the purpose of
     debugging the library.
   */
-  bool OK(bool check_not_empty = false) const;
+  bool OK(/*bool check_not_empty = false*/) const;
 
   //@} // Member Functions that Do Not Modify the Direct_Product
 
@@ -1697,6 +1727,10 @@ public:
   friend bool
   Parma_Polyhedra_Library::operator==<>(const Direct_Product<D1, D2>& x,
 					const Direct_Product<D1, D2>& y);
+
+  friend std::ostream&
+  Parma_Polyhedra_Library::IO_Operators::
+  operator<<<>(std::ostream& s, const Direct_Product<D1, D2>& dp);
 
 
   //! \name Miscellaneous Member Functions
