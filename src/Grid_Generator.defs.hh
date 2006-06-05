@@ -469,6 +469,7 @@ private:
   friend class Congruence_System;
   friend class Scalar_Products;
   friend class Topology_Adjusted_Scalar_Product_Sign;
+  friend class Linear_Expression;
 };
 
 

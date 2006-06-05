@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
+#include "Grid_Generator.defs.hh"
 #include "Congruence.defs.hh"
 #include <stdexcept>
 
@@ -39,6 +40,14 @@ PPL::Linear_Expression::Linear_Expression(const Constraint& c)
 }
 
 PPL::Linear_Expression::Linear_Expression(const Generator& g)
+  : Linear_Row(g.space_dimension() + 1, Linear_Row::Flags()) {
+  Linear_Expression& e = *this;
+  // Do not copy the divisor of `g'.
+  for (dimension_type i = size(); --i > 0; )
+    e[i] = g[i];
+}
+
+PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
   : Linear_Row(g.space_dimension() + 1, Linear_Row::Flags()) {
   Linear_Expression& e = *this;
   // Do not copy the divisor of `g'.
