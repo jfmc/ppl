@@ -466,6 +466,20 @@ test22() {
   return false;
 }
 
+// Method zero_dim_point.
+static bool
+test23() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Linear_Expression le(grid_point(A - B - 2*C));
+
+  bool ok = (grid_point(A - B - 2*C) == grid_point(A - B - 2*C));
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -491,4 +505,5 @@ BEGIN_MAIN
   DO_TEST(test20);
   //DO_TEST(test21);
   DO_TEST(test22);
+  DO_TEST(test23);
 END_MAIN
