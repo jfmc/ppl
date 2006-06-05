@@ -114,7 +114,7 @@ dnl
 dnl Procedure name schemas are replaced by the code schema.
 define(`m4_get_code_schema',
   `patsubst(`$1',
-     `[ ]*\(ppl_[^ /]+\)/*\([0-9]*\)[ ]*\([a-z]*\)[^\n]*!',
+     `[ ]*\(ppl_[^ /]+\)/*\([0-9]*\)[ ]*\([a-z]*\)[^\n]*n?!',
           `m4_extension(\1, \2, \3)')')
 
 dnl m4_extension(Procedure Name)
