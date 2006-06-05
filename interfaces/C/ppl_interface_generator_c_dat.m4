@@ -70,8 +70,8 @@ define(`num_BD_Shape_widenexps',3)
 define(`BD_Shape_widenexp1',`CC76')
 define(`BD_Shape_widenexp2',`BHMZ05')
 define(`BD_Shape_widenexp3',`H79')
-define(`num_Octagon_widenexps',1)
-define(`Octagon_widenexp1',CH78)
+define(`num_Octagonal_Shape_widenexps',1)
+define(`Octagonal_Shape_widenexp1',CH78)
 
 dnl num_class_topology_s
 dnl class_topology_
@@ -145,7 +145,7 @@ define(`Grid_represent2', `generator')
 define(`alt_Grid_represent2', `grid_generator')
 define(`Grid_represent3', `congruence')
 define(`num_BD_Shape_represents', 1)
-define(`num_Octagon_represents', 1)
+define(`num_Octagonal_Shape_represents', 1)
 
 
 dnl num_class_describes
@@ -160,7 +160,7 @@ define(`Grid_describe1', `congruence')
 define(`Grid_describe2', `generator')
 define(`alt_Grid_describe2', `grid_generator')
 define(`num_BD_Shape_describes', 1)
-define(`num_Octagon_describes', 1)
+define(`num_Octagonal_Shape_describes', 1)
 
 dnl num_class_states
 dnl class_State
@@ -172,7 +172,6 @@ define(`state2', `universe')
 define(`state3', `bounded')
 define(`state4', `topologically_closed')
 define(`num_Grid_states', 5)
-define(`Grid_state4', `topologically_closed')
 define(`Grid_state5', `discrete')
 
 dnl num_class_bounds
@@ -222,13 +221,13 @@ dnl
 dnl  The different kinds of binary operators.
 define(`num_binops', 4)
 define(`binop1', `intersection_assign')
-define(`binop2', `join_assign')
+define(`binop2', `upper_bound_assign')
 define(`binop3', `difference_assign')
 define(`binop4', `time_elapse_assign')
 define(`Polyhedron_binop2', `poly_hull_assign')
 define(`Polyhedron_binop3', `poly_difference_assign')
 define(`num_BD_Shape_binops', 3)
-define(`num_Octagon_binops', 3)
+define(`num_Octagonal_Shape_binops', 3)
 
 dnl num_class_binminops
 dnl class_binminop
