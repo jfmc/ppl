@@ -495,7 +495,7 @@ public:
     returns <CODE>true</CODE> if and only if the bounding box
     describes the empty set.
     \code
-      bool get_lower_bound(dimension_type k, bool closed,
+      bool get_lower_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -511,7 +511,7 @@ public:
     have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
     the unique representation for zero.
     \code
-      bool get_upper_bound(dimension_type k, bool closed,
+      bool get_upper_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -566,7 +566,7 @@ public:
     returns <CODE>true</CODE> if and only if the covering box
     describes the empty set.
     \code
-      bool get_lower_bound(dimension_type k, bool closed,
+      bool get_lower_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -582,7 +582,7 @@ public:
     have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
     the unique representation for zero.
     \code
-      bool get_upper_bound(dimension_type k, bool closed,
+      bool get_upper_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -878,7 +878,7 @@ public:
     returns the dimension of the vector space enclosing the grid
     represented by the bounding box.
     \code
-      bool get_lower_bound(dimension_type k, bool closed,
+      bool get_lower_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -894,7 +894,7 @@ public:
     have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
     the unique representation for zero.
     \code
-      bool get_upper_bound(dimension_type k, bool closed,
+      bool get_upper_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
