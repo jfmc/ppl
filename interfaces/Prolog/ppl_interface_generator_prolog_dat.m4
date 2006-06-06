@@ -165,6 +165,7 @@ define(`state1', `empty')
 define(`state2', `universe')
 define(`state3', `bounded')
 define(`state4', `topologically_closed')
+define(`num_BD_Shape_states', 3)
 define(`num_Grid_states', 5)
 define(`Grid_state4', `topologically_closed')
 define(`Grid_state5', `discrete')
@@ -209,6 +210,7 @@ define(`num_comparisons', 3)
 define(`comparison1', `contains')
 define(`comparison2', `strictly_contains')
 define(`comparison3', `is_disjoint_from')
+define(`num_BD_Shape_comparisons', 2)
 
 # num_class_binops
 # class_binop
@@ -223,6 +225,7 @@ define(`binop5', `concatenate_assign')
 define(`Polyhedron_binop2', `poly_hull_assign')
 define(`Polyhedron_binop3', `poly_difference_assign')
 define(`num_BD_Shape_binops', 3)
+define(`BD_Shape_binop2', bds_hull_assign)
 define(`num_Octagon_binops', 3)
 
 # num_class_binminops
@@ -297,33 +300,33 @@ ppl_LP_Problem_evaluate_objective_function/4
 # in the ppl_prolog_icc.m4 file. The <name> must be exactly as written here.
 #
 define(`m4_procedure_list',
-`ppl_new_4TOPOLOGY_44CLASS4_from_space_dimension/3 POINTS XBD_Shape
-ppl_new_4TOPOLOGY_44CLASS4_from_4INTOPOLOGY_44CLASS4/2 All XBD_Shape
-ppl_new_4TOPOLOGY_44CLASS4_from_4REPRESENT4s/2 POINTS XBD_Shape
+`ppl_new_4TOPOLOGY_44CLASS4_from_space_dimension/3 POINTS
+ppl_new_4TOPOLOGY_44CLASS4_from_4INTOPOLOGY_44CLASS4/2 All
+ppl_new_4TOPOLOGY_44CLASS4_from_4REPRESENT4s/2 POINTS
 ppl_new_4TOPOLOGY_44CLASS4_from_4BOX4/2 POINTS XBD_Shape
-ppl_4CLASS4_swap/2 nofail All XBD_Shape
-ppl_delete_4CLASS4/1 nofail All XBD_Shape
-ppl_4CLASS4_4DIMENSION4/2 All XBD_Shape
-ppl_4CLASS4_get_4DESCRIBE4s/2 POINTS XBD_Shape
+ppl_4CLASS4_swap/2 nofail All
+ppl_delete_4CLASS4/1 nofail
+ppl_4CLASS4_4DIMENSION4/2 All
+ppl_4CLASS4_get_4DESCRIBE4s/2 POINTS
 ppl_4CLASS4_get_minimized_4DESCRIBE4s/2 POINTS XBD_Shape
-ppl_4CLASS4_relation_with_4DESCRIBE4/3 POINTS XBD_Shape
+ppl_4CLASS4_relation_with_4DESCRIBE4/3 POINTS
 ppl_4CLASS4_get_4BOX4/3 SHAPE XBD_Shape
 ppl_Grid_get_4BOX4/2
-ppl_4CLASS4_is_4STATE4/1 POINTS XBD_Shape
+ppl_4CLASS4_is_4STATE4/1 POINTS
 ppl_4CLASS4_topological_closure_assign/1 nofail POINTS XBD_Shape
 ppl_4CLASS4_bounds_from_4ABOVEBELOW4/2 POINTS XBD_Shape
 ppl_4CLASS4_4MAXMIN4/5 POINTS XBD_Shape
 ppl_4CLASS4_4MAXMIN4_with_point/6 POINTS XBD_Shape
-ppl_4CLASS4_4COMPARISON4_4CLASS4/2 POINTS XBD_Shape
-ppl_4CLASS4_equals_4CLASS4/2 POINTS XBD_Shape
-ppl_4CLASS4_OK/1 All XBD_Shape
-ppl_4CLASS4_add_4REPRESENT4/2 nofail POINTS XBD_Shape
+ppl_4CLASS4_4COMPARISON4_4CLASS4/2 POINTS
+ppl_4CLASS4_equals_4CLASS4/2 POINTS
+ppl_4CLASS4_OK/1 All
+ppl_4CLASS4_add_4REPRESENT4/2 nofail POINTS
 ppl_4CLASS4_add_4REPRESENT4_and_minimize/2 POINTS XBD_Shape
-ppl_4CLASS4_add_4REPRESENT4s/2 nofail POINTS XBD_Shape
+ppl_4CLASS4_add_4REPRESENT4s/2 nofail POINTS
 ppl_4CLASS4_add_4REPRESENT4s_and_minimize/2 POINTS XBD_Shape
-ppl_4CLASS4_4BINOP4/2 nofail POINTS XBD_Shape
+ppl_4CLASS4_4BINOP4/2 nofail POINTS
 ppl_4CLASS4_4BINMINOP4/2 POINTS XBD_Shape
-ppl_4CLASS4_4AFFIMAGE4/4 nofail POINTS XBD_Shape
+ppl_4CLASS4_4AFFIMAGE4/4 nofail POINTS
 ppl_4CLASS4_bounded_4AFFIMAGE4/5 nofail SHAPE XBD_Shape
 ppl_4CLASS4_generalized_4AFFIMAGE4/5 SHAPE XBD_Shape
 ppl_4CLASS4_generalized_4AFFIMAGE4_lhs_rhs/4 SHAPE XBD_Shape
@@ -338,12 +341,12 @@ ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign/3 nofail SHAPE XBD_Shape
 ppl_BD_Shape_CC76_extrapolation_assign_with_tokens/4 XBD_Shape
 ppl_BD_Shape_CC76_extrapolation_assign/2 nofail XBD_Shape
 ppl_BD_Shape_CC76_narrowing_assign/2 XBD_Shape
-ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4/2 nofail POINTS XBD_Shape
-ppl_4CLASS4_remove_space_dimensions/2 POINTS XBD_Shape
-ppl_4CLASS4_remove_higher_space_dimensions/2 nofail POINTS XBD_Shape
+ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4/2 nofail POINTS
+ppl_4CLASS4_remove_space_dimensions/2 POINTS
+ppl_4CLASS4_remove_higher_space_dimensions/2 nofail POINTS
 ppl_4CLASS4_expand_space_dimension/3 nofail POINTS XBD_Shape
 ppl_4CLASS4_fold_space_dimensions/3  POINTS XBD_Shape
-ppl_4CLASS4_map_space_dimensions/2 POINTS XBD_Shape
+ppl_4CLASS4_map_space_dimensions/2 POINTS
 ')
 divert`'dnl
 
