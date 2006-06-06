@@ -7,8 +7,8 @@ dnl define(`m4_interface_class_names',
 dnl   `Polyhedron, LP_Problem, Grid, BD_Shape_int8_t, BD_Shape_int32_t')
 dnl define(`m4_cplusplus_class_names',
 dnl   `Polyhedron, LP_Problem, Grid, BD_Shape<int8_t>, BD_Shape<int32_t>')
-define(`m4_interface_class_names', `Polyhedron, Grid, BD_Shape_int8_t')
-define(`m4_cplusplus_class_names', `Polyhedron, Grid, BD_Shape<int8_t>')
+define(`m4_interface_class_names', `Polyhedron@Grid@BD_Shape_int8_t')
+define(`m4_cplusplus_class_names', `Polyhedron@Grid@BD_Shape<int8_t>')
 
 dnl m4_class_group
 dnl
