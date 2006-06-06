@@ -33,17 +33,6 @@ namespace Parma_Polyhedra_Library {
 
 template <typename D1, typename D2>
 bool
-Direct_Product<D1, D2>::reduce() {
-  bool modified = reduce_domain1_with_domain2();
-  if (reduce_domain2_with_domain1()) {
-    modified = true;
-    while (reduce_domain1_with_domain2() && reduce_domain1_with_domain2());
-  }
-  return modified;
-}
-
-template <typename D1, typename D2>
-bool
 Direct_Product<D1, D2>::ascii_load(std::istream& s) {
   std::string str;
   return ((s >> str) && str == "Domain"
@@ -54,6 +43,146 @@ Direct_Product<D1, D2>::ascii_load(std::istream& s) {
 	  && d2.ascii_load(s));
 }
 
+// FIX Direct_Product.cc
+
+template <>
+inline bool
+Direct_Product<NNC_Polyhedron, Grid>::reduce_domain1_with_domain2() {
+  d2.minimized_congruences();
+  if (d2.is_empty()) {
+    if (d1.is_empty())
+      return false;
+    d1.add_constraint(Constraint::zero_dim_false());
+    return true;
+  }
+  return false;
+}
+
+template <>
+inline bool
+Direct_Product<NNC_Polyhedron, Grid>::reduce_domain2_with_domain1() {
+  d1.minimized_constraints();
+  if (d1.is_empty()) {
+    if (d2.is_empty())
+      return false;
+    d2.add_congruence(Congruence::zero_dim_false());
+    return true;
+  }
+  return true;
+}
+
+#if 0
+template <>
+inline bool
+Direct_Product<NNC_Polyhedron, Grid>::reduce_ph_with_gr() {
+  // Skeleton attempt at simple reduction.
+
+  // Reduce ph d1 with gr d2 by moving ph c's to nearest grid point
+  // (any grid point, inside or outside the ph).
+
+  // Always either ==, >= or >.
+  // FIX include >
+  // for each axis
+
+  // FIX using dim 1 (A)
+
+  //    flatten points to axis
+
+  D2 d2_copy = d2;
+  //d2_copy.remove_higher_space_dimensions(1);
+  // FIX need to leave single space dim
+
+  //    for each relational c in ph
+
+  if (d1.has_pending_constraints() && !d1.process_pending_constraints())
+    // d1 found empty.
+    return false;
+
+  TEMP_INTEGER(temp);
+  bool modified = false;
+  Constraint_System& cs = const_cast<Constraint_System&>(d1.constraints());
+  for (Constraint_System::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i) {
+    const Constraint& c = *i;
+
+    c.ascii_dump();
+
+  //       if the constraint affects the axis
+
+    if (c.is_equality() || c.coefficient(Variable(0)) == 0)
+      continue;
+
+  //          incr/decr const term to nearest grid point (depending on direction of relation)
+
+    // FIX assume >=
+
+    std::cout << "adjust c" << std::endl;
+
+    // FIX include c divisors
+
+    // FIX will signs of cterms be the same?
+
+    Constraint& writable_c = const_cast<Constraint&>(c);
+    Congruence_System& cgs = const_cast<Congruence_System&>(d2_copy.minimized_congruences());
+    std::cout << "   using cg:" << std::endl;
+    cgs.begin()->ascii_dump();
+    // FIX include cg cterm <> 0
+
+    // Substitute into cg the FIX extreme value of the single
+    // dimension of c.
+    temp = (- writable_c[0] *
+	    (cgs.begin()->coefficient(Variable(0))))
+      + (cgs.begin()->inhomogeneous_term());
+    // Find the distance to the next module closest to the origin.
+    temp %= (cgs.begin()->modulus() * writable_c[1]);
+    writable_c[0] -= temp;
+    if (temp < 0)
+      // Raise to next module.
+      writable_c[0] -= cgs.begin()->modulus();
+
+    writable_c.strong_normalize();
+
+    std::cout << "c after" << std::endl;
+    c.ascii_dump();
+
+    // FIX now need to adjust the entire cs? clear minimal form?
+    d1.clear_constraints_minimized();
+    d1.clear_generators_up_to_date();
+    modified = true;
+  }
+
+  return modified;
+}
+#endif
+
+template <>
+inline bool
+Direct_Product<Parma_Polyhedra_Library::NNC_Polyhedron,
+	       Parma_Polyhedra_Library::Grid>::reduce() {
+  bool modified = reduce_domain1_with_domain2();
+  if (reduce_domain2_with_domain1()) {
+    modified = true;
+    while (reduce_domain1_with_domain2() && reduce_domain1_with_domain2());
+  }
+#if 0
+  if (reduce_ph_with_gr()) {
+    modified = true;
+    while (reduce_ph_with_gr() && reduce_ph_with_gr());
+  }
+#endif
+  return modified;
+}
+
+template <typename D1, typename D2>
+bool
+Direct_Product<D1, D2>::reduce() {
+  bool modified = reduce_domain1_with_domain2();
+  if (reduce_domain2_with_domain1()) {
+    modified = true;
+    while (reduce_domain1_with_domain2() && reduce_domain1_with_domain2());
+  }
+  return modified;
+}
 
 } // namespace Parma_Polyhedra_Library
 

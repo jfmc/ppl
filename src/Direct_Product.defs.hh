@@ -253,6 +253,7 @@ public:
   template <typename Box>
   Direct_Product(const Box& box, From_Bounding_Box dummy);
 
+  // FIXME: should this only be for grid instantiations?
   //! Builds a grid out of a generic, interval-based covering box.
   /*!
     The covering box is a set of upper and lower values for each
@@ -351,17 +352,29 @@ public:
   //! Returns a constant reference to the second of the pair.
   const D2& domain2() const;
 
+
+  //! FIXME maybe these should be something like
+  //const pair<D1::con_type&, D2::con_type&> constraining_systems() const;
+  //const pair<D1::gen_type&, D2::gen_type&> generating_systems() const;
+
   //! Returns the system of congruences.
   const Congruence_System& congruences() const;
 
   //! Returns the system of congruences in reduced form.
   const Congruence_System& minimized_congruences() const;
 
+  //! Returns the system of constraints.
+  const Constraint_System& constraints() const;
+
+  //! Returns the system of constraints in reduced form.
+  const Constraint_System& minimized_constraints() const;
+
   //! Returns the system of generators.
   const Grid_Generator_System& generators() const;
 
   //! Returns the minimized system of generators.
   const Grid_Generator_System& minimized_generators() const;
+
 
   //! Returns the relations holding between \p *this and \p cg.
   /*
@@ -384,13 +397,13 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is an empty
-    grid.
+    product.
   */
   bool is_empty() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is a universe
-    grid.
+    product.
   */
   bool is_universe() const;
 
@@ -1780,7 +1793,6 @@ protected:
   //! The second component.
   D2 d2;
 };
-
 
 namespace std {
 

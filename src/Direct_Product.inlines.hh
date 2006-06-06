@@ -170,6 +170,26 @@ Direct_Product<D1, D2>::domain2() const {
   return d2;
 }
 
+#if 0
+template <typename D1, typename D2>
+inline const D1&
+Direct_Product<D1, D2>::congruences() const {
+  return d1.congruences();
+}
+#endif
+
+template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::is_empty() const {
+  return d1.is_empty() || d2.is_empty();
+}
+
+template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::is_universe() const {
+  return d1.is_universe() && d2.is_universe();
+}
+
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::reduce_domain1_with_domain2() {
