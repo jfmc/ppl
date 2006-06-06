@@ -271,21 +271,114 @@ test13() {
   return ok;
 }
 
-#if 0
 // affine_dimension
 bool
 test14() {
   Variable A(0);
+  Variable B(1);
   Variable C(2);
 
-  Direct_Product<NNC_Polyhedron, Grid> dp(6);
-  dp.add_constraint(A - C < 9);
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_constraint(A - C <= 9);
+  dp.add_constraint(A - C >= 9);
+  dp.add_constraint(B == 2);
 
-  bool ok = (dp.affine_dimension() == 2);
+  bool ok = (dp.affine_dimension() == 1
+	     && dp.domain1().affine_dimension() == 1
+	     && dp.domain2().affine_dimension() == 2);
 
   return ok;
 }
 
+#if 0
+// congruences()
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence(A %= 9);
+  dp.add_congruence(B + C %= 3);
+
+  Congruence_System cgs;
+  cgs.insert(A %= 9);
+  cgs.insert(B + C %= 3);
+
+  bool ok = (dp.congruences() == cgs);
+
+  return ok;
+}
+#endif
+
+// is_empty() where both domain objects have points.
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence(A %= 9);
+  dp.add_congruence(B + C %= 3);
+
+  bool ok = (!dp.is_empty());
+
+  return ok;
+}
+
+// is_empty() where one domain object is empty.
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence((A %= 0) / 2);
+  dp.add_congruence((A %= 1) / 2);
+
+  bool ok = (dp.is_empty());
+
+  return ok;
+}
+
+// is_empty() where both domain objects is empty.
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_constraint(A == 1);
+  dp.add_constraint(A == 3);
+
+  bool ok = (dp.is_empty());
+
+  return ok;
+}
+
+// reduce()
+bool
+test19() {
+  Variable A(0);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(1);
+  dp.add_constraint(A > 7);
+  dp.add_constraint(A < 7);
+
+  bool ok = dp.domain2().is_universe();
+
+  dp.reduce();
+
+  ok &= dp.domain2().is_empty();
+
+  return ok;
+}
+
+#if 0
 // reduce()
 bool
 testr0() {
@@ -375,5 +468,12 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
-  //DO_TEST(test13);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  //DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+
+  DO_TEST(test19);
 END_MAIN
