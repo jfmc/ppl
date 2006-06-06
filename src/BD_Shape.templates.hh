@@ -1356,6 +1356,36 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
 }
 
 template <typename T>
+template <typename Box>
+void
+BD_Shape<T>::shrink_bounding_box(Box& box, Complexity_Class ) const {
+  shortest_path_closure_assign();
+  if (marked_empty()) {
+    box.set_empty();
+    return;
+  }
+  const dimension_type space_dim = space_dimension();
+  if (space_dim == 0)
+    return;
+  // CHECK ME: is the following correct?
+  mpq_class q;
+  const DB_Row<N>& dbm_0 = dbm[0];
+  for (dimension_type j = space_dim; j-- > 0; ) {
+    // Checking the lower bound.
+    if (!is_plus_infinity(dbm[j+1][0])) {
+      assign_r(q, dbm[j+1][0], ROUND_NOT_NEEDED);
+      neg_assign_r(q, q, ROUND_NOT_NEEDED);
+      box.raise_lower_bound(j, true, q.get_num(), q.get_den());
+    }
+    // Checking the upper bound.
+    if (!is_plus_infinity(dbm_0[j+1])) {
+      assign_r(q, dbm[j+1][0], ROUND_NOT_NEEDED);
+      box.lower_upper_bound(j, true, q.get_num(), q.get_den());
+    }
+  }
+}
+
+template <typename T>
 template <typename PartialFunction>
 void
 BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
