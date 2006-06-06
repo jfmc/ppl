@@ -105,6 +105,7 @@ test02() {
 }
 
 } // namespace
+
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
