@@ -266,6 +266,7 @@ Polyhedra_Powerset.templates.hh \
 Direct_Product.types.hh \
 Direct_Product.defs.hh \
 Direct_Product.inlines.hh \
+Direct_Product.templates.hh \
 max_space_dimension.hh \
 algorithms.hh
 
