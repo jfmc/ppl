@@ -373,9 +373,6 @@ protected:
 
 private:
 
-  //! Returns a reference to the modulus of \p *this.
-  Coefficient& modulus();
-
   //! Marks this congruence as a linear equality.
   void set_is_equality();
 
