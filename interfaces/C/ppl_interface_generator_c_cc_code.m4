@@ -110,13 +110,13 @@ CATCH_ALL
 
 ')
 
-define(`ppl_4CLASS4_DESCRIBEs_code',
+define(`ppl_4CLASS4_4DESCRIBE4s_code',
 `int
-ppl_4CLASS4_DESCRIBEs
+ppl_4CLASS4_4DESCRIBE4s
 (ppl_const_4CLASS4_t ph,
- ppl_const_UALT_DESCRIBE_System_t* pcs) try {
+ ppl_const_4UALT_DESCRIBE4_System_t* pcs) try {
   const 4CPP_CLASS4& pph = *to_const(ph);
-  const UALT_DESCRIBE_System& cs = pph.DESCRIBEs();
+  const 4UALT_DESCRIBE4_System& cs = pph.4DESCRIBE4s();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -124,13 +124,13 @@ CATCH_ALL
 
 ')
 
-define(`ppl_4CLASS4_minimized_DESCRIBEs_code',
+define(`ppl_4CLASS4_minimized_4DESCRIBE4s_code',
 `int
-ppl_4CLASS4_minimized_DESCRIBEs
+ppl_4CLASS4_minimized_4DESCRIBE4s
 (ppl_const_4CLASS4_t ph,
- ppl_const_UALT_DESCRIBE_System_t* pcs) try {
+ ppl_const_4UALT_DESCRIBE4_System_t* pcs) try {
   const 4CPP_CLASS4& pph = *to_const(ph);
-  const UALT_DESCRIBE_System& cs = pph.minimized_DESCRIBEs();
+  const 4UALT_DESCRIBE4_System& cs = pph.minimized_4DESCRIBE4s();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -138,13 +138,13 @@ CATCH_ALL
 
 ')
 
-define(`ppl_4CLASS4_relation_with_4UALT_DESCRIBE_code',
+define(`ppl_4CLASS4_relation_with_4UALT_DESCRIBE4_code',
 `int
-ppl_4CLASS4_relation_with_UALT_DESCRIBE
+ppl_4CLASS4_relation_with_4UALT_DESCRIBE4
 (ppl_const_4CLASS4_t ph,
- ppl_const_UALT_DESCRIBE_t c) try {
+ ppl_const_4UALT_DESCRIBE4_t c) try {
   const 4CPP_CLASS4& pph = *to_const(ph);
-  const UALT_DESCRIBE& cc = *to_const(c);
+  const 4UALT_DESCRIBE4& cc = *to_const(c);
   return pph.relation_with(cc).get_flags();
 }
 CATCH_ALL
