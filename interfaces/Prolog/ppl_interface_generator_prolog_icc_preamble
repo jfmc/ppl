@@ -325,18 +325,18 @@ handle_exception(const not_an_integer& e) {
 }
 
 void
-handle_exception(const not_a_polyhedron_handle& e) {
+handle_exception(const ppl_handle_mismatch& e) {
   Prolog_term_ref found = Prolog_new_term_ref();
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_construct_compound(expected, a_expected,
-			    Prolog_atom_term_from_string("polyhedron_handle"));
+			    Prolog_atom_term_from_string("handle"));
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
 			    Prolog_atom_term_from_string
-			    ("term_to_polyhedron_handle"));
+			    ("term_to_class_handle"));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
@@ -361,46 +361,6 @@ handle_exception(const not_an_optimization_mode& e) {
   Prolog_construct_compound(where, a_where,
 			    Prolog_atom_term_from_string
 			    ("term_to_optimization_mode"));
-  Prolog_term_ref exception_term = Prolog_new_term_ref();
-  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
-  Prolog_raise_exception(exception_term);
-}
-
-void
-handle_exception(const not_an_lp_problem_handle& e) {
-  Prolog_term_ref found = Prolog_new_term_ref();
-  Prolog_construct_compound(found, a_found, e.term());
-
-  Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_construct_compound(expected, a_expected,
-			    Prolog_atom_term_from_string("lp_problem_handle"));
-
-  Prolog_term_ref where = Prolog_new_term_ref();
-  Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string
-			    ("term_to_lp_problem_handle"));
-
-  Prolog_term_ref exception_term = Prolog_new_term_ref();
-  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
-  Prolog_raise_exception(exception_term);
-}
-
-void
-handle_exception(const not_a_grid_handle& e) {
-  Prolog_term_ref found = Prolog_new_term_ref();
-  Prolog_construct_compound(found, a_found, e.term());
-
-  Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_construct_compound(expected, a_expected,
-			    Prolog_atom_term_from_string("grid_handle"));
-
-  Prolog_term_ref where = Prolog_new_term_ref();
-  Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string
-			    ("term_to_grid_handle"));
-
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
 			    found, expected, where);
@@ -616,16 +576,10 @@ handle_exception(const timeout_exception&) {
   catch (const not_an_integer& e) { \
     handle_exception(e); \
   } \
-  catch (const not_a_polyhedron_handle& e) { \
+  catch (const ppl_handle_mismatch& e) { \
     handle_exception(e); \
   } \
   catch (const not_an_optimization_mode& e) {	\
-    handle_exception(e); \
-  } \
-  catch (const not_an_lp_problem_handle& e) {	\
-    handle_exception(e); \
-  } \
-  catch (const not_a_grid_handle& e) { \
     handle_exception(e); \
   } \
   catch (const not_a_complexity_class& e) { \
@@ -1187,36 +1141,6 @@ term_to_Coefficient(Prolog_term_ref t) {
     throw not_an_integer(t);
 }
 
-Polyhedron*
-term_to_polyhedron_handle(Prolog_term_ref t_ph) {
-  if (Prolog_is_address(t_ph)) {
-    void* p;
-    if (Prolog_get_address(t_ph, &p))
-      return static_cast<Polyhedron*>(p);
-  }
-  throw not_a_polyhedron_handle(t_ph);
-}
-
-LP_Problem*
-term_to_lp_problem_handle(Prolog_term_ref t_lp) {
-  if (Prolog_is_address(t_lp)) {
-    void* p;
-    if (Prolog_get_address(t_lp, &p))
-      return static_cast<LP_Problem*>(p);
-  }
-  throw not_an_lp_problem_handle(t_lp);
-}
-
-Grid*
-term_to_grid_handle(Prolog_term_ref t_gr) {
-  if (Prolog_is_address(t_gr)) {
-    void* p;
-    if (Prolog_get_address(t_gr, &p))
-      return static_cast<Grid*>(p);
-  }
-  throw not_a_grid_handle(t_gr);
-}
-
 Prolog_atom
 term_to_optimization_mode(Prolog_term_ref t) {
   if (Prolog_is_atom(t)) {
@@ -1686,8 +1610,4 @@ term_to_complexity_class(Prolog_term_ref t) {
       return name;
   }
   throw not_a_complexity_class(t);
-}
-
-} // namespace
-
-
+}} // namespace

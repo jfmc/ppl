@@ -26,12 +26,16 @@ define(`m4_add_bop_assign_code',
         m4_ifndef(num_`'m4_class`'_binops, m4_ifndef(num_`'binops, 0)))dnl
 ifelse(num_binops, 0, , m4_replace_class_patterns(bop_assign_code))')
 
+define(`m4_add_term_to_class_handle_code',
+  `m4_replace_class_patterns(m4_term_to_class_handle_code)')
+
 # m4_extra_class_code
 #
 # Extra code needed for the class in addition to the user-interface
 # procedures.
 define(`m4_pre_extra_class_code',
-`m4_add_bop_assign_code`'dnl
+`m4_add_term_to_class_handle_code`'dnl
+m4_add_bop_assign_code`'dnl
 m4_add_widening_extrapolation_code')
 
 divert`'dnl
