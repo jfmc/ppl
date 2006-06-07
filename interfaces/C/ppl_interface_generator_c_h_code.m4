@@ -1,36 +1,36 @@
 divert(-1)dnl
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_from_space_dimension_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_space_dimension_code',
 `int
-ppl_new_4TOPOLOGY_44CLASS4_from_space_dimension
+ppl_new_4TOPOLOGY44CLASS4_from_space_dimension
 PPL_PROTO((ppl_4CLASS4_t* pph, ppl_dimension_type d, int empty));
 
 ')
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_from_4INTOPOLOGY_44CLASS4_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_4INTOPOLOGY44CLASS4_code',
 `int
-ppl_new_4TOPOLOGY_44CLASS4_from_4INTOPOLOGY_44CLASS4
+ppl_new_4TOPOLOGY44CLASS4_from_4INTOPOLOGY44CLASS4
 PPL_PROTO((ppl_4CLASS4_t* pph, ppl_const_4CLASS4_t ph));
 
 ')
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_from_4UALT_REPRESENT4_System_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_4UALT_REPRESENT4_System_code',
 `int
-ppl_new_4TOPOLOGY_44CLASS4_from_4UALT_REPRESENT4_System
+ppl_new_4TOPOLOGY44CLASS4_from_4UALT_REPRESENT4_System
 PPL_PROTO((ppl_4CLASS4_t* pph, ppl_const_4UALT_REPRESENT4_System_t cs));
 
 ')
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_recycle_4UALT_REPRESENT4_System_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_recycle_4UALT_REPRESENT4_System_code',
 `int
-ppl_new_4TOPOLOGY_44CLASS4_recycle_4UALT_REPRESENT4_System
+ppl_new_4TOPOLOGY44CLASS4_recycle_4UALT_REPRESENT4_System
 PPL_PROTO((ppl_4CLASS4_t* pph, ppl_4UALT_REPRESENT4_System_t cs));
 
 ')
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_from_4BOX4_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_4BOX4_code',
 `int
-ppl_new_4TOPOLOGY_44CLASS4_from_bounding_box
+ppl_new_4TOPOLOGY44CLASS4_from_bounding_box
 PPL_PROTO((ppl_4CLASS4_t* pph,
 	   ppl_dimension_type (*space_dimension)(void),
 	   int (*is_empty)(void),
@@ -49,9 +49,9 @@ ppl_delete_4CLASS4 PPL_PROTO((ppl_const_4CLASS4_t ph));
 
 ')
 
-define(`ppl_assign_4TOPOLOGY_44CLASS4_from_4TOPOLOGY_44CLASS4_code',
+define(`ppl_assign_4TOPOLOGY44CLASS4_from_4TOPOLOGY44CLASS4_code',
 `int
-ppl_assign_4TOPOLOGY_44CLASS4_from_4TOPOLOGY_44CLASS4
+ppl_assign_4TOPOLOGY44CLASS4_from_4TOPOLOGY44CLASS4
 PPL_PROTO((ppl_4CLASS4_t dst, ppl_const_4CLASS4_t src));
 
 ')

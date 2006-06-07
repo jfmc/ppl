@@ -1,59 +1,59 @@
 divert(-1)dnl
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_from_space_dimension_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_space_dimension_code',
 `int
-ppl_new_4TOPOLOGY_44CLASS4_from_space_dimension
+ppl_new_4TOPOLOGY44CLASS4_from_space_dimension
 (ppl_4CLASS4_t* pph,
  ppl_dimension_type d,
  int empty) try {
-  *pph = to_nonconst(new 4TOPOLOGY_44CPP_CLASS4(d, empty ? EMPTY : UNIVERSE));
+  *pph = to_nonconst(new 4TOPOLOGY44CPP_CLASS4(d, empty ? EMPTY : UNIVERSE));
   return 0;
 }
 CATCH_ALL
 
 ')
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_from_4INTOPOLOGY_44CLASS4_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_4INTOPOLOGY44CLASS4_code',
 `int
-ppl_new_4TOPOLOGY_44CLASS4_from_4INTOPOLOGY_44CLASS4
+ppl_new_4TOPOLOGY44CLASS4_from_4INTOPOLOGY44CLASS4
 (ppl_4CLASS4_t* pph,
  ppl_const_4CLASS4_t ph) try {
-  const 4INTOPOLOGY_44CPP_CLASS4& phh
-    = *static_cast<const 4INTOPOLOGY_44CPP_CLASS4*>(to_const(ph));
-  *pph = to_nonconst(new 4TOPOLOGY_44CPP_CLASS4(phh));
+  const 4INTOPOLOGY44CPP_CLASS4& phh
+    = *static_cast<const 4INTOPOLOGY44CPP_CLASS4*>(to_const(ph));
+  *pph = to_nonconst(new 4TOPOLOGY44CPP_CLASS4(phh));
   return 0;
 }
 CATCH_ALL;
 
 ')
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_from_4UALT_REPRESENT4_System_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_4UALT_REPRESENT4_System_code',
 `int
-ppl_new_4TOPOLOGY_44CLASS4_from_4UALT_REPRESENT4_System
+ppl_new_4TOPOLOGY44CLASS4_from_4UALT_REPRESENT4_System
 (ppl_4CLASS4_t* pph, ppl_const_4UALT_REPRESENT4_System_t cs) try {
   const 4UALT_REPRESENT4_System& ccs = *to_const(cs);
-  *pph = to_nonconst(new 4TOPOLOGY_44CPP_CLASS4(ccs));
+  *pph = to_nonconst(new 4TOPOLOGY44CPP_CLASS4(ccs));
   return 0;
 }
 CATCH_ALL
 
 ')
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_recycle_4UALT_REPRESENT4_System_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_recycle_4UALT_REPRESENT4_System_code',
 `int
-ppl_new_4TOPOLOGY_44CLASS4_recycle_4UALT_REPRESENT4_System
+ppl_new_4TOPOLOGY44CLASS4_recycle_4UALT_REPRESENT4_System
 (ppl_4CLASS4_t* pph, ppl_4UALT_REPRESENT4_System_t cs) try {
   4UALT_REPRESENT4_System& ccs = *to_nonconst(cs);
-  *pph = to_nonconst(new 4TOPOLOGY_44CPP_CLASS4(ccs));
+  *pph = to_nonconst(new 4TOPOLOGY44CPP_CLASS4(ccs));
   return 0;
 }
 CATCH_ALL
 
 ')
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_from_4BOX4_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_4BOX4_code',
 `int
-ppl_new_4TOPOLOGY_44CLASS4_from_4BOX4
+ppl_new_4TOPOLOGY44CLASS4_from_4BOX4
 (ppl_4CLASS4_t* pph,
  ppl_dimension_type (*space_dimension)(void),
  int (*is_empty)(void),
@@ -65,7 +65,7 @@ ppl_new_4TOPOLOGY_44CLASS4_from_4BOX4
 			ppl_Coefficient_t d)) try {
   C_Build_Box cbbox(space_dimension, is_empty,
 		    get_lower_bound, get_upper_bound);
-  *pph = to_nonconst(new 4TOPOLOGY_44CPP_CLASS4(cbbox, From_Bounding_Box()));
+  *pph = to_nonconst(new 4TOPOLOGY44CPP_CLASS4(cbbox, From_Bounding_Box()));
   return 0;
 }
 CATCH_ALL
@@ -82,15 +82,15 @@ CATCH_ALL
 
 ')
 
-define(`ppl_assign_4TOPOLOGY_44CLASS4_from_4TOPOLOGY_44CLASS4_code',
+define(`ppl_assign_4TOPOLOGY44CLASS4_from_4TOPOLOGY44CLASS4_code',
 `int
-ppl_assign_4TOPOLOGY_44CLASS4_from_4TOPOLOGY_44CLASS4
+ppl_assign_4TOPOLOGY44CLASS4_from_4TOPOLOGY44CLASS4
 (ppl_4CLASS4_t dst,
  ppl_const_4CLASS4_t src) try {
-  const 4TOPOLOGY_44CPP_CLASS4& ssrc
-    = *static_cast<const 4TOPOLOGY_44CPP_CLASS4*>(to_const(src));
-  4TOPOLOGY_44CPP_CLASS4& ddst
-    = *static_cast<4TOPOLOGY_44CPP_CLASS4*>(to_nonconst(dst));
+  const 4TOPOLOGY44CPP_CLASS4& ssrc
+    = *static_cast<const 4TOPOLOGY44CPP_CLASS4*>(to_const(src));
+  4TOPOLOGY44CPP_CLASS4& ddst
+    = *static_cast<4TOPOLOGY44CPP_CLASS4*>(to_nonconst(dst));
   ddst = ssrc;
   return 0;
 }
