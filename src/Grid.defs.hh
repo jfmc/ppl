@@ -1408,6 +1408,9 @@ public:
   //! Same as join_assign(y).
   void upper_bound_assign(const Grid& y);
 
+  //! Same as join_assign_and_minimize(y).
+  void upper_bound_assign_and_minimize(const Grid& y);
+
   /*! \brief
     If the join of \p *this and \p y is exact it is assigned to \p
     *this and <CODE>true</CODE> is returned, otherwise
