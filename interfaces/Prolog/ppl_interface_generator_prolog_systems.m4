@@ -7,6 +7,15 @@ divert(-1)
 # String is returned unless if it is empty, then use `,'
 define(`m4_separator', `ifelse($1, `', `,', `$1')')
 
+# m4_pattern_delimiter(String)
+#
+# For the system files we use the macro names
+# where the patterns have no delimiters
+# FIXME The `4' is temporary.
+# This needs to be replaced by the empty string `'
+# when the dat.m4 and code.m4 files are changed.
+define(`m4_pattern_delimiter', `4')
+
 # m4_term_sequence(Number of Iterations, String to be Repeated)
 #
 # generates a sequence of strings with the option of
