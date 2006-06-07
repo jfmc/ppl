@@ -140,45 +140,9 @@ test04() {
   return ok;
 }
 
-// join_assign_and_minimize - Divisor normalization.
-bool
-test05() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid_Generator_System gs1;
-  gs1.insert(grid_point(0*C));
-  gs1.insert(grid_line(A));
-  gs1.insert(grid_line(B));
-
-  Grid gr1(gs1);
-  print_generators(gr1, "*** gr1 ***");
-
-  Grid_Generator_System gs2;
-  gs2.insert(grid_point());
-  gs2.insert(grid_point(C, 3));
-
-  Grid gr2(gs2);
-  print_generators(gr2, "*** gr2 ***");
-
-  gr1.join_assign_and_minimize(gr2);
-
-  Congruence_System known_cgs;
-  known_cgs.insert((3*C %= 0) / 1);
-
-  Grid known_gr(known_cgs);
-
-  bool ok = (gr1 == known_gr);
-
-  print_congruences(gr1, "*** gr1.join_assign_and_minimize(gr2) ***");
-
-  return ok;
-}
-
 // Out-of-date generators in the first grid.
 bool
-test06() {
+test05() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -212,7 +176,7 @@ test06() {
 
 // Out-of-date generators in the second grid.
 bool
-test07() {
+test06() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -246,7 +210,7 @@ test07() {
 
 // Space dimension exception.
 bool
-test08() {
+test07() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -275,7 +239,7 @@ test08() {
 
 // Out-of-date generators in the first grid, which is empty.
 bool
-test09() {
+test08() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -306,7 +270,7 @@ test09() {
 // Here there is an input and output version of each variable
 // A, B being input and A1, B1 the output.
 bool
-test10() {
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -366,6 +330,5 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
-  DO_TEST(test09);
-  DO_TEST_F8(test10);
+  DO_TEST_F8(test09);
 END_MAIN
