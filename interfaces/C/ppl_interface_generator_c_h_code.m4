@@ -317,15 +317,6 @@ PPL_PROTO((ppl_4CLASS4_t x,
 
 ')
 
-dnl FIXME: why is this different from other BINOP's?
-define(`ppl_4CLASS4_concatenate_assign_code'
-`int
-ppl_4CLASS4_concatenate_assign
-PPL_PROTO((ppl_4CLASS4_t x,
-           ppl_const_4CLASS4_t y));
-
-')
-
 define(`ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4_code'
 `int
 ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4

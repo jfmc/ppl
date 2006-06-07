@@ -537,21 +537,6 @@ CATCH_ALL
 
 ')
 
-dnl FIXME: why is this different from other BINOP's?
-define(`ppl_4CLASS4_concatenate_assign_code'
-`int
-ppl_4CLASS4_concatenate_assign
-(ppl_4CLASS4_t x,
- ppl_const_4CLASS4_t y) try {
-  4CPP_CLASS4& xx = *to_nonconst(x);
-  const 4CPP_CLASS4& yy = *to_const(y);
-  xx.concatenate_assign(yy);
-  return 0;
-}
-CATCH_ALL
-
-')
-
 define(`ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4_code'
 `int
 ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4
