@@ -66,14 +66,12 @@ Direct_Product<D1, D2>::Direct_Product(Constraint_System& cs)
 
 template <typename D1, typename D2>
 inline
-Direct_Product<D1, D2>::Direct_Product(const Grid_Generator_System& gs)
-  : d1(gs), d2(gs) {
+Direct_Product<D1, D2>::Direct_Product(const Grid_Generator_System& gs) {
 }
 
 template <typename D1, typename D2>
 inline
-Direct_Product<D1, D2>::Direct_Product(Grid_Generator_System& gs)
-  : d1(const_cast<const Grid_Generator_System&>(gs)), d2(gs) {
+Direct_Product<D1, D2>::Direct_Product(Grid_Generator_System& gs) {
 }
 
 template <typename D1, typename D2>
@@ -122,6 +120,20 @@ Direct_Product<D1, D2>::upper_bound_assign(const Direct_Product& y) {
 }
 
 template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::upper_bound_assign_if_exact(const Direct_Product& y) {
+  return d1.upper_bound_assign_if_exact(y.d1)
+    || d2.upper_bound_assign_if_exact(y.d2);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::intersection_assign(const Direct_Product& y) {
+  d1.intersection_assign(y.d1);
+  d2.intersection_assign(y.d2);
+}
+
+template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>::swap(Direct_Product& y) {
   std::swap(d1, y.d1);
@@ -148,6 +160,11 @@ inline void
 Direct_Product<D1, D2>::add_congruence(const Congruence& cg) {
   d1.add_congruence(cg);
   d2.add_congruence(cg);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::add_generator(const Grid_Generator& g) {
 }
 
 template <typename D1, typename D2>

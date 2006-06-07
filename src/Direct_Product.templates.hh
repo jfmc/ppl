@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename D1, typename D2>
-bool
+inline bool
 Direct_Product<D1, D2>::ascii_load(std::istream& s) {
   std::string str;
   return ((s >> str) && str == "Domain"
@@ -43,11 +43,35 @@ Direct_Product<D1, D2>::ascii_load(std::istream& s) {
 	  && d2.ascii_load(s));
 }
 
-// FIX Direct_Product.cc
+template <>
+inline
+Direct_Product<NNC_Polyhedron, Grid>::Direct_Product(const Grid_Generator_System& gs)
+  : d2(gs) {
+}
 
 template <>
-inline bool
-Direct_Product<NNC_Polyhedron, Grid>::reduce_domain1_with_domain2() {
+inline
+Direct_Product<NNC_Polyhedron, Grid>::Direct_Product(Grid_Generator_System& gs)
+  : d2(gs) {
+}
+
+template <>
+inline void
+Direct_Product<NNC_Polyhedron, Grid>::add_generator(const Grid_Generator& g) {
+  d2.add_generator(g);
+}
+
+template <>
+inline void
+Direct_Product<C_Polyhedron, Grid>::add_generator(const Grid_Generator& g) {
+  d2.add_generator(g);
+}
+
+// FIX Direct_Product.cc
+
+template <typename D1, typename D2>
+bool
+Direct_Product<D1, D2>::empty_reduce_d1_with_d2() {
   d2.minimized_congruences();
   if (d2.is_empty()) {
     if (d1.is_empty())
@@ -58,9 +82,9 @@ Direct_Product<NNC_Polyhedron, Grid>::reduce_domain1_with_domain2() {
   return false;
 }
 
-template <>
-inline bool
-Direct_Product<NNC_Polyhedron, Grid>::reduce_domain2_with_domain1() {
+template <typename D1, typename D2>
+bool
+Direct_Product<D1, D2>::empty_reduce_d2_with_d1() {
   d1.minimized_constraints();
   if (d1.is_empty()) {
     if (d2.is_empty())
@@ -71,10 +95,50 @@ Direct_Product<NNC_Polyhedron, Grid>::reduce_domain2_with_domain1() {
   return true;
 }
 
+template <>
+inline bool
+Direct_Product<NNC_Polyhedron, Grid>::reduce_domain1_with_domain2() {
+  return empty_reduce_d1_with_d2();
+}
+
+template <>
+inline bool
+Direct_Product<C_Polyhedron, Grid>::reduce_domain1_with_domain2() {
+  return empty_reduce_d1_with_d2();
+}
+
 #if 0
 template <>
 inline bool
-Direct_Product<NNC_Polyhedron, Grid>::reduce_ph_with_gr() {
+Direct_Product<BD_Shape<T>, Grid>::reduce_domain1_with_domain2() {
+  return empty_reduce_d1_with_d2();
+}
+#endif
+
+template <>
+inline bool
+Direct_Product<NNC_Polyhedron, Grid>::reduce_domain2_with_domain1() {
+  return empty_reduce_d2_with_d1();
+}
+
+template <>
+inline bool
+Direct_Product<C_Polyhedron, Grid>::reduce_domain2_with_domain1() {
+  return empty_reduce_d2_with_d1();
+}
+
+#if 0
+template <typename T>
+inline bool
+Direct_Product<BD_Shape<T>, Grid>::reduce_domain2_with_domain1() {
+  return empty_reduce_d2_with_d1();
+}
+#endif
+
+#if 0
+template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::reduce_ph_with_gr() {
   // Skeleton attempt at simple reduction.
 
   // Reduce ph d1 with gr d2 by moving ph c's to nearest grid point

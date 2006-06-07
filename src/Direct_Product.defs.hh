@@ -253,7 +253,7 @@ public:
   template <typename Box>
   Direct_Product(const Box& box, From_Bounding_Box dummy);
 
-  // FIXME: should this only be for grid instantiations?
+  // FIXME: should this be only for grid instantiations?
   //! Builds a grid out of a generic, interval-based covering box.
   /*!
     The covering box is a set of upper and lower values for each
@@ -369,11 +369,13 @@ public:
   //! Returns the system of constraints in reduced form.
   const Constraint_System& minimized_constraints() const;
 
+#if 0
   //! Returns the system of generators.
   const Grid_Generator_System& generators() const;
 
   //! Returns the minimized system of generators.
   const Grid_Generator_System& minimized_generators() const;
+#endif
 
 
   //! Returns the relations holding between \p *this and \p cg.
@@ -454,24 +456,24 @@ public:
   //! Reduce the instance of the second domain with the first.
   /*
     \return
-    <CODE>true</CODE> if and only if resulting domain instance is
-    strictly contained in the original.
+    <CODE>true</CODE> if and only if resulting components are strictly
+    contained in the originals.
   */
   bool reduce_domain1_with_domain2();
 
   //! Reduce the instance of the first domain with the second.
   /*
     \return
-    <CODE>true</CODE> if and only if resulting domain instance is
-    strictly contained in the original.
+    <CODE>true</CODE> if and only if resulting components are strictly
+    contained in the originals.
   */
   bool reduce_domain2_with_domain1();
 
   //! Reduce.
   /*
     \return
-    <CODE>true</CODE> if and only if either of the resulting domain
-    instances is strictly contained in the respective original.
+    <CODE>true</CODE> if and only if either of the resulting component
+    is strictly contained in the respective original.
   */
   bool reduce();
 
@@ -1126,30 +1128,6 @@ public:
   void intersection_assign(const Direct_Product& y);
 
   /*! \brief
-    Assigns to \p *this the intersection of \p *this and \p y,
-    reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool intersection_assign_and_minimize(const Direct_Product& y);
-
-  /*! \brief
-    Assigns to \p *this the join of \p *this and \p y, reducing the
-    result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool join_assign_and_minimize(const Direct_Product& y);
-
-  /*! \brief
     Assigns to \p *this an upper bound of \p *this and \p y.
 
     \exception std::invalid_argument
@@ -1158,16 +1136,13 @@ public:
   void upper_bound_assign(const Direct_Product& y);
 
   /*! \brief
-    If the join of \p *this and \p y is exact it is assigned to \p
+    If the this of \p *this and \p y is exact it is assigned to \p
     *this and <CODE>true</CODE> is returned, otherwise
     <CODE>false</CODE> is returned.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool join_assign_if_exact(const Direct_Product& y);
-
-  //! Same as join_assign_if_exact(y).
   bool upper_bound_assign_if_exact(const Direct_Product& y);
 
   /*! \brief
@@ -1779,6 +1754,27 @@ public:
   memory_size_type external_memory_in_bytes() const;
 
   //@} // Miscellaneous Member Functions
+
+private:
+  /*! \brief
+    Reduces first component with first, by checking if second is
+    empty.
+
+    \return
+    <CODE>true</CODE> if and only if resulting components are strictly
+    contained in the originals.
+  */
+  bool empty_reduce_d1_with_d2();
+
+  /*! \brief
+    Reduces second component with first, by checking if first is
+    empty.
+
+    \return
+    <CODE>true</CODE> if and only if resulting components are strictly
+    contained in the originals.
+  */
+  bool empty_reduce_d2_with_d1();
 
 protected:
   //! The type of the first component.
