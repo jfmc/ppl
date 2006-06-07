@@ -204,7 +204,6 @@ define(`num_comparisons', 3)
 define(`comparison1', `contains')
 define(`comparison2', `strictly_contains')
 define(`comparison3', `is_disjoint_from')
-define(`num_BD_Shape_comparisons', 2)
 
 dnl num_class_binops
 dnl class_binop
