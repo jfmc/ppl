@@ -702,10 +702,10 @@ xno | xnone)
   # Check the specified instantiations for validity.
   ac_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS -I${srcdir}"
-  original_IFS="${IFS}"
+  old_IFS="${IFS}"
   IFS=@
   set -- ${required_instantiations}
-  IFS="${original_IFS}"
+  IFS="${old_IFS}"
   for instantiation
   do
     AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
@@ -723,7 +723,7 @@ bool valid = ${instantiation}::valid_instantiation();
     fi
   done
   CPPFLAGS="$ac_save_CPPFLAGS"
-  required_instantiations_canonical_name=`echo "${required_instantiations}" | sed -e 's/[[ 	]][[ 	]]*//g' -e 's/@/ /g' -e 's/[[ 	]][[ 	]]*/ /g'`
+  required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ]]/_/g'`
   AC_MSG_RESULT([${required_instantiations}])
   ;;
 esac
@@ -831,6 +831,8 @@ AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
 AC_SUBST(coefficient_mnemonic)
+AC_SUBST(required_instantiations)
+AC_SUBST(required_instantiations_canonical_names)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
