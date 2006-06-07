@@ -323,7 +323,7 @@ test16() {
   dp.add_congruence(A %= 9);
   dp.add_congruence(B + C %= 3);
 
-  bool ok = (!dp.is_empty());
+  bool ok = !dp.is_empty();
 
   return ok;
 }
@@ -339,12 +339,12 @@ test17() {
   dp.add_congruence((A %= 0) / 2);
   dp.add_congruence((A %= 1) / 2);
 
-  bool ok = (dp.is_empty());
+  bool ok = dp.is_empty();
 
   return ok;
 }
 
-// is_empty() where both domain objects is empty.
+// is_empty() where both domain objects are empty.
 bool
 test18() {
   Variable A(0);
@@ -355,7 +355,7 @@ test18() {
   dp.add_constraint(A == 1);
   dp.add_constraint(A == 3);
 
-  bool ok = (dp.is_empty());
+  bool ok = dp.is_empty();
 
   return ok;
 }
@@ -374,6 +374,50 @@ test19() {
   dp.reduce();
 
   ok &= dp.domain2().is_empty();
+
+  return ok;
+}
+
+// is_universe() where both domain objects are empty.
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3, EMPTY);
+
+  bool ok = !dp.is_universe();
+
+  return ok;
+}
+
+// is_universe() where one domain object is universe.
+bool
+test21() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence((A %= 0) / 2);
+  dp.add_congruence((A %= 1) / 2);
+
+  bool ok = !dp.is_universe();
+
+  return ok;
+}
+
+// is_universe() where both domain objects are universe.
+bool
+test22() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+
+  bool ok = dp.is_universe();
 
   return ok;
 }
