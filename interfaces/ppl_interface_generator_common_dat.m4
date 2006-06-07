@@ -97,7 +97,6 @@ dnl  space or affine dimensions
 define(`num_dimensions', 2)
 define(`dimension1', `space_dimension')
 define(`dimension2', `affine_dimension')
-define(`num_LP_Problem_dimensions', 1)
 
 dnl num_class_generators
 dnl class_generator
@@ -110,7 +109,7 @@ define(`Grid_generator1', `grid_generator')
 dnl num_class_points
 dnl class_point
 dnl
-dnl  The different kinds of objects use to generate a class.
+dnl  The different kinds of points.
 define(`num_points', 1)
 define(`point1', `point')
 define(`Grid_point1', `grid_point')
@@ -224,6 +223,8 @@ define(`num_BD_Shape_binops', 6)
 define(`BD_Shape_binop6', `bds_hull_assign')
 define(`num_Octagonal_Shape_binops', 6)
 define(`Octagonal_Shape_binop6', `oct_hull_assign')
+define(`num_Grid_binops', 6)
+define(`Grid_binop6', `join_assign')
 
 dnl num_class_binminops
 dnl class_binminop
@@ -233,3 +234,5 @@ define(`num_binminops', 1)
 define(`binminop1', `intersection_assign_and_minimize')
 define(`num_Polyhedron_binminops', 2)
 define(`Polyhedron_binminop2', `poly_hull_assign_and_minimize')
+define(`num_Grid_binminops', 2)
+define(`Grid_binminop2', `join_assign_and_minimize')
