@@ -38,9 +38,9 @@ term_to_4CLASS4_handle(Prolog_term_ref t_ph) {
 
 ')
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_from_space_dimension_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
-ppl_new_4TOPOLOGY_44CLASS4_from_space_dimension(Prolog_term_ref t_nd,
+ppl_new_4TOPOLOGY44CLASS4_from_space_dimension(Prolog_term_ref t_nd,
 					    Prolog_term_ref t_uoe,
 					    Prolog_term_ref t_ph) {
   try {
@@ -48,10 +48,10 @@ ppl_new_4TOPOLOGY_44CLASS4_from_space_dimension(Prolog_term_ref t_nd,
     Prolog_atom uoe = term_to_universe_or_empty(t_uoe);
 
     if (uoe == a_empty)
-        ph = new 4TOPOLOGY_44CPP_CLASS4(term_to_unsigned<dimension_type>(t_nd),
+        ph = new 4TOPOLOGY44CPP_CLASS4(term_to_unsigned<dimension_type>(t_nd),
 			      EMPTY);
       else
-        ph = new 4TOPOLOGY_44CPP_CLASS4(term_to_unsigned<dimension_type>(t_nd));
+        ph = new 4TOPOLOGY44CPP_CLASS4(term_to_unsigned<dimension_type>(t_nd));
 
 
     Prolog_term_ref tmp = Prolog_new_term_ref();
@@ -67,17 +67,17 @@ ppl_new_4TOPOLOGY_44CLASS4_from_space_dimension(Prolog_term_ref t_nd,
 }
 ')
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_from_4INTOPOLOGY_44CLASS4_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_4INTOPOLOGY44CLASS4_code',
 `extern "C" Prolog_foreign_return_type
-ppl_new_4TOPOLOGY_44CLASS4_from_4INTOPOLOGY_44CLASS4(Prolog_term_ref t_ph_source,
+ppl_new_4TOPOLOGY44CLASS4_from_4INTOPOLOGY44CLASS4(Prolog_term_ref t_ph_source,
 				       Prolog_term_ref t_ph) {
   try {
     4CPP_CLASS4* ph;
-    const 4INTOPOLOGY_44CPP_CLASS4* ph_source
-	= static_cast<const 4INTOPOLOGY_44CPP_CLASS4*>
+    const 4INTOPOLOGY44CPP_CLASS4* ph_source
+	= static_cast<const 4INTOPOLOGY44CPP_CLASS4*>
 	(term_to_4CLASS4_handle(t_ph_source));
     CHECK(ph_source);
-        ph = new 4TOPOLOGY_44CPP_CLASS4(*ph_source);
+        ph = new 4TOPOLOGY44CPP_CLASS4(*ph_source);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -91,24 +91,24 @@ ppl_new_4TOPOLOGY_44CLASS4_from_4INTOPOLOGY_44CLASS4(Prolog_term_ref t_ph_source
 }
 ')
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_from_4REPRESENT4s_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_4REPRESENT4s_code',
 `extern "C" Prolog_foreign_return_type
-ppl_new_4TOPOLOGY_44CLASS4_from_4REPRESENT4s(Prolog_term_ref t_clist,
+ppl_new_4TOPOLOGY44CLASS4_from_4REPRESENT4s(Prolog_term_ref t_clist,
 				      Prolog_term_ref t_ph) {
   try {
-    4UALT_REPRESENT4_System cs;
+    4UREPRESENT4_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_4ALT_REPRESENT4(c));
+      cs.insert(build_4REPRESENT4(c));
     }
 
     // Check the list is properly terminated.
     check_nil_terminating(t_clist);
 
     4CPP_CLASS4* ph;
-    ph = new 4TOPOLOGY_44CPP_CLASS4(cs);
+    ph = new 4TOPOLOGY44CPP_CLASS4(cs);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -122,9 +122,9 @@ ppl_new_4TOPOLOGY_44CLASS4_from_4REPRESENT4s(Prolog_term_ref t_clist,
 }
 ')
 
-define(`ppl_new_4TOPOLOGY_44CLASS4_from_4BOX4_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_4BOX4_code',
 `extern "C" Prolog_foreign_return_type
-ppl_new_4TOPOLOGY_44CLASS4_from_4BOX4(Prolog_term_ref t_bb,
+ppl_new_4TOPOLOGY44CLASS4_from_4BOX4(Prolog_term_ref t_bb,
 				       Prolog_term_ref t_ph) {
   try {
     // Compute the space dimension.
@@ -185,7 +185,7 @@ ppl_new_4TOPOLOGY_44CLASS4_from_4BOX4(Prolog_term_ref t_bb,
     }
 
     4CPP_CLASS4* ph;
-    ph = new 4TOPOLOGY_44CPP_CLASS4(bbox, From_`'4UBOX4());
+    ph = new 4TOPOLOGY44CPP_CLASS4(bbox, From_`'4UBOX4());
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -250,10 +250,10 @@ ppl_4CLASS4_get_4DESCRIBE4s(Prolog_term_ref t_ph,
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    const 4UALT_DESCRIBE4_System& gs = ph->4DESCRIBE4s();
-    for (4UALT_DESCRIBE4_System::const_iterator i = gs.begin(),
+    const 4UDESCRIBE4_System& gs = ph->4ALT_DESCRIBE4s();
+    for (4UDESCRIBE4_System::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i)
-      Prolog_construct_cons(tail, 4ALT_DESCRIBE4_term(*i), tail);
+      Prolog_construct_cons(tail, 4DESCRIBE4_term(*i), tail);
 
     if (Prolog_unify(t_glist, tail))
       return PROLOG_SUCCESS;
@@ -272,10 +272,10 @@ ppl_4CLASS4_get_minimized_4DESCRIBE4s(Prolog_term_ref t_ph,
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    const 4UALT_DESCRIBE4_System& gs = ph->minimized_4DESCRIBE4s();
-    for (4UALT_DESCRIBE4_System::const_iterator i = gs.begin(),
+    const 4UDESCRIBE4_System& gs = ph->minimized_4ALT_DESCRIBE4s();
+    for (4UDESCRIBE4_System::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i)
-      Prolog_construct_cons(tail, 4ALT_DESCRIBE4_term(*i), tail);
+      Prolog_construct_cons(tail, 4DESCRIBE4_term(*i), tail);
 
     if (Prolog_unify(t_glist, tail))
       return PROLOG_SUCCESS;
@@ -292,7 +292,7 @@ ppl_4CLASS4_relation_with_4DESCRIBE4(Prolog_term_ref t_ph,
   try {
     4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
     CHECK(ph);
-relation_with_4ALT_DESCRIBE4_code`'
+relation_with_4DESCRIBE4_code`'
     if (Prolog_unify(t_r, tail))
       return PROLOG_SUCCESS;
   }
@@ -595,7 +595,7 @@ ppl_4CLASS4_add_4REPRESENT4(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
   try {
     4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
     CHECK(ph);
-    ph->add_4REPRESENT4(build_4ALT_REPRESENT4(t_c));
+    ph->add_4ALT_REPRESENT4(build_4REPRESENT4(t_c));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -609,7 +609,7 @@ ppl_4CLASS4_add_4REPRESENT4_and_minimize(Prolog_term_ref t_ph,
   try {
     4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
     CHECK(ph);
-    if (ph->add_4REPRESENT4_and_minimize(build_4ALT_REPRESENT4(t_c)))
+    if (ph->add_4ALT_REPRESENT4_and_minimize(build_4REPRESENT4(t_c)))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -623,18 +623,18 @@ ppl_4CLASS4_add_4REPRESENT4s(Prolog_term_ref t_ph,
   try {
     4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
     CHECK(ph);
-    4UALT_REPRESENT4_System cs;
+    4UREPRESENT4_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_4ALT_REPRESENT4(c));
+      cs.insert(build_4REPRESENT4(c));
     }
 
     // Check the list is properly terminated.
     check_nil_terminating(t_clist);
 
-    ph->add_4REPRESENT4s(cs);
+    ph->add_4ALT_REPRESENT4s(cs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -648,18 +648,18 @@ ppl_4CLASS4_add_4REPRESENT4s_and_minimize(Prolog_term_ref t_ph,
   try {
     4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
     CHECK(ph);
-    4UALT_REPRESENT4_System cs;
+    4UREPRESENT4_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_4ALT_REPRESENT4(c));
+      cs.insert(build_4REPRESENT4(c));
     }
 
     // Check the list is properly terminated.
     check_nil_terminating(t_clist);
 
-    if (ph->add_4REPRESENT4s_and_minimize(cs))
+    if (ph->add_4ALT_REPRESENT4s_and_minimize(cs))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;

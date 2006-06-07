@@ -27,11 +27,11 @@ CATCH_ALL;
 
 ')
 
-define(`ppl_new_4TOPOLOGY44CLASS4_from_4UALT_REPRESENT4_System_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_4UREPRESENT4_System_code',
 `int
-ppl_new_4TOPOLOGY44CLASS4_from_4UALT_REPRESENT4_System
-(ppl_4CLASS4_t* pph, ppl_const_4UALT_REPRESENT4_System_t cs) try {
-  const 4UALT_REPRESENT4_System& ccs = *to_const(cs);
+ppl_new_4TOPOLOGY44CLASS4_from_4UREPRESENT4_System
+(ppl_4CLASS4_t* pph, ppl_const_4UREPRESENT4_System_t cs) try {
+  const 4UREPRESENT4_System& ccs = *to_const(cs);
   *pph = to_nonconst(new 4TOPOLOGY44CPP_CLASS4(ccs));
   return 0;
 }
@@ -39,11 +39,11 @@ CATCH_ALL
 
 ')
 
-define(`ppl_new_4TOPOLOGY44CLASS4_recycle_4UALT_REPRESENT4_System_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_recycle_4UREPRESENT4_System_code',
 `int
-ppl_new_4TOPOLOGY44CLASS4_recycle_4UALT_REPRESENT4_System
-(ppl_4CLASS4_t* pph, ppl_4UALT_REPRESENT4_System_t cs) try {
-  4UALT_REPRESENT4_System& ccs = *to_nonconst(cs);
+ppl_new_4TOPOLOGY44CLASS4_recycle_4UREPRESENT4_System
+(ppl_4CLASS4_t* pph, ppl_4UREPRESENT4_System_t cs) try {
+  4UREPRESENT4_System& ccs = *to_nonconst(cs);
   *pph = to_nonconst(new 4TOPOLOGY44CPP_CLASS4(ccs));
   return 0;
 }
@@ -114,9 +114,9 @@ define(`ppl_4CLASS4_4DESCRIBE4s_code',
 `int
 ppl_4CLASS4_4DESCRIBE4s
 (ppl_const_4CLASS4_t ph,
- ppl_const_4UALT_DESCRIBE4_System_t* pcs) try {
+ ppl_const_4UDESCRIBE4_System_t* pcs) try {
   const 4CPP_CLASS4& pph = *to_const(ph);
-  const 4UALT_DESCRIBE4_System& cs = pph.4DESCRIBE4s();
+  const 4UDESCRIBE4_System& cs = pph.4ALT_DESCRIBE4s();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -128,9 +128,9 @@ define(`ppl_4CLASS4_minimized_4DESCRIBE4s_code',
 `int
 ppl_4CLASS4_minimized_4DESCRIBE4s
 (ppl_const_4CLASS4_t ph,
- ppl_const_4UALT_DESCRIBE4_System_t* pcs) try {
+ ppl_const_4UDESCRIBE4_System_t* pcs) try {
   const 4CPP_CLASS4& pph = *to_const(ph);
-  const 4UALT_DESCRIBE4_System& cs = pph.minimized_4DESCRIBE4s();
+  const 4UDESCRIBE4_System& cs = pph.minimized_4ALT_DESCRIBE4s();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -138,13 +138,13 @@ CATCH_ALL
 
 ')
 
-define(`ppl_4CLASS4_relation_with_4UALT_DESCRIBE4_code',
+define(`ppl_4CLASS4_relation_with_4UDESCRIBE4_code',
 `int
-ppl_4CLASS4_relation_with_4UALT_DESCRIBE4
+ppl_4CLASS4_relation_with_4UDESCRIBE4
 (ppl_const_4CLASS4_t ph,
- ppl_const_4UALT_DESCRIBE4_t c) try {
+ ppl_const_4UDESCRIBE4_t c) try {
   const 4CPP_CLASS4& pph = *to_const(ph);
-  const 4UALT_DESCRIBE4& cc = *to_const(c);
+  const 4UDESCRIBE4& cc = *to_const(c);
   return pph.relation_with(cc).get_flags();
 }
 CATCH_ALL
@@ -302,10 +302,10 @@ define(`ppl_4CLASS4_add_4REPRESENT4_code',
 `int
 ppl_4CLASS4_add_4REPRESENT4
 (ppl_4CLASS4_t ph,
- ppl_const_4UALT_REPRESENT4_t c) try {
+ ppl_const_4UREPRESENT4_t c) try {
   4CPP_CLASS4& pph = *to_nonconst(ph);
-  const 4UALT_REPRESENT4& cc = *to_const(c);
-  pph.add_4REPRESENT4(cc);
+  const 4UREPRESENT4& cc = *to_const(c);
+  pph.add_4ALT_REPRESENT4(cc);
   return 0;
 }
 CATCH_ALL
@@ -316,10 +316,10 @@ define(`ppl_4CLASS4_add_4REPRESENT4_and_minimize_code',
 `int
 ppl_4CLASS4_add_4REPRESENT4_and_minimize
 (ppl_4CLASS4_t ph,
- ppl_const_4UALT_REPRESENT4_t c) try {
+ ppl_const_4UREPRESENT4_t c) try {
   4CPP_CLASS4& pph = *to_nonconst(ph);
-  const 4UALT_REPRESENT4& cc = *to_const(c);
-  return pph.add_4REPRESENT4_and_minimize(cc) ? 1 : 0;
+  const 4UREPRESENT4& cc = *to_const(c);
+  return pph.add_4ALT_REPRESENT4_and_minimize(cc) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -329,10 +329,10 @@ define(`ppl_4CLASS4_add_4REPRESENT4s_code',
 `int
 ppl_4CLASS4_add_4REPRESENT4s
 (ppl_4CLASS4_t ph,
- ppl_const_4UALT_REPRESENT4_System_t cs) try {
+ ppl_const_4UREPRESENT4_System_t cs) try {
   4CPP_CLASS4& pph = *to_nonconst(ph);
-  const 4UALT_REPRESENT4_System& ccs = *to_const(cs);
-  pph.add_4REPRESENT4s(ccs);
+  const 4UREPRESENT4_System& ccs = *to_const(cs);
+  pph.add_4ALT_REPRESENT4s(ccs);
   return 0;
 }
 CATCH_ALL
@@ -343,10 +343,10 @@ define(`ppl_4CLASS4_add_4REPRESENT4s_and_minimize_code',
 `int
 ppl_4CLASS4_add_4REPRESENT4s_and_minimize
 (ppl_4CLASS4_t ph,
- ppl_const_4UALT_REPRESENT4_System_t cs) try {
+ ppl_const_4UREPRESENT4_System_t cs) try {
   4CPP_CLASS4& pph = *to_nonconst(ph);
-  const 4UALT_REPRESENT4_System& ccs = *to_const(cs);
-  return pph.add_4REPRESENT4s_and_minimize(ccs) ? 1 : 0;
+  const 4UREPRESENT4_System& ccs = *to_const(cs);
+  return pph.add_4ALT_REPRESENT4s_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -356,10 +356,10 @@ define(`ppl_4CLASS4_add_recycled_4REPRESENT4s_code',
 `int
 ppl_4CLASS4_add_recycled_4REPRESENT4s
 (ppl_4CLASS4_t ph,
- ppl_4UALT_REPRESENT4_System_t cs) try {
+ ppl_4UREPRESENT4_System_t cs) try {
   4CPP_CLASS4& pph = *to_nonconst(ph);
-  4UALT_REPRESENT4_System& ccs = *to_nonconst(cs);
-  pph.add_recycled_4REPRESENT4s(ccs);
+  4UREPRESENT4_System& ccs = *to_nonconst(cs);
+  pph.add_recycled_4ALT_REPRESENT4s(ccs);
   return 0;
 }
 CATCH_ALL
@@ -370,10 +370,10 @@ define(`ppl_4CLASS4_add_recycled_4REPRESENT4s_and_minimize_code',
 `int
 ppl_4CLASS4_add_recycled_4REPRESENT4s_and_minimize
 (ppl_4CLASS4_t ph,
- ppl_4UALT_REPRESENT4_System_t cs) try {
+ ppl_4UREPRESENT4_System_t cs) try {
   4CPP_CLASS4& pph = *to_nonconst(ph);
-  4UALT_REPRESENT4_System& ccs = *to_nonconst(cs);
-  return pph.add_recycled_4REPRESENT4s_and_minimize(ccs) ? 1 : 0;
+  4UREPRESENT4_System& ccs = *to_nonconst(cs);
+  return pph.add_recycled_4ALT_REPRESENT4s_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
 

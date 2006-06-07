@@ -14,17 +14,17 @@ PPL_PROTO((ppl_4CLASS4_t* pph, ppl_const_4CLASS4_t ph));
 
 ')
 
-define(`ppl_new_4TOPOLOGY44CLASS4_from_4UALT_REPRESENT4_System_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_from_4UREPRESENT4_System_code',
 `int
-ppl_new_4TOPOLOGY44CLASS4_from_4UALT_REPRESENT4_System
-PPL_PROTO((ppl_4CLASS4_t* pph, ppl_const_4UALT_REPRESENT4_System_t cs));
+ppl_new_4TOPOLOGY44CLASS4_from_4UREPRESENT4_System
+PPL_PROTO((ppl_4CLASS4_t* pph, ppl_const_4UREPRESENT4_System_t cs));
 
 ')
 
-define(`ppl_new_4TOPOLOGY44CLASS4_recycle_4UALT_REPRESENT4_System_code',
+define(`ppl_new_4TOPOLOGY44CLASS4_recycle_4UREPRESENT4_System_code',
 `int
-ppl_new_4TOPOLOGY44CLASS4_recycle_4UALT_REPRESENT4_System
-PPL_PROTO((ppl_4CLASS4_t* pph, ppl_4UALT_REPRESENT4_System_t cs));
+ppl_new_4TOPOLOGY44CLASS4_recycle_4UREPRESENT4_System
+PPL_PROTO((ppl_4CLASS4_t* pph, ppl_4UREPRESENT4_System_t cs));
 
 ')
 
@@ -67,7 +67,7 @@ define(`ppl_4CLASS4_4DESCRIBE4s_code',
 `int
 ppl_4CLASS4_4DESCRIBE4s
 PPL_PROTO((ppl_const_4CLASS4_t ph,
-           ppl_const_4UALT_DESCRIBE4_System_t* pcs));
+           ppl_const_4UDESCRIBE4_System_t* pcs));
 
 ')
 
@@ -75,15 +75,15 @@ define(`ppl_4CLASS4_minimized_4DESCRIBE4s_code',
 `int
 ppl_4CLASS4_minimized_4DESCRIBE4s
 PPL_PROTO((ppl_const_4CLASS4_t ph,
-           ppl_const_4UALT_DESCRIBE4_System_t* pcs));
+           ppl_const_4UDESCRIBE4_System_t* pcs));
 
 ')
 
-define(`ppl_4CLASS4_relation_with_4UALT_DESCRIBE4_code',
+define(`ppl_4CLASS4_relation_with_4UDESCRIBE4_code',
 `int
-ppl_4CLASS4_relation_with_4UALT_DESCRIBE4
+ppl_4CLASS4_relation_with_4UDESCRIBE4
 PPL_PROTO((ppl_const_4CLASS4_t ph,
-           ppl_const_4UALT_DESCRIBE4_t c));
+           ppl_const_4UDESCRIBE4_t c));
 
 ')
 
@@ -176,7 +176,7 @@ define(`ppl_4CLASS4_add_4REPRESENT4_code',
 `int
 ppl_4CLASS4_add_4REPRESENT4
 PPL_PROTO((ppl_4CLASS4_t ph,
-           ppl_const_4UALT_REPRESENT4_t c));
+           ppl_const_4UREPRESENT4_t c));
 
 ')
 
@@ -184,7 +184,7 @@ define(`ppl_4CLASS4_add_4REPRESENT4_and_minimize_code',
 `int
 ppl_4CLASS4_add_4REPRESENT4_and_minimize
 PPL_PROTO((ppl_4CLASS4_t ph,
-           ppl_const_4UALT_REPRESENT4_t c));
+           ppl_const_4UREPRESENT4_t c));
 
 ')
 
@@ -192,7 +192,7 @@ define(`ppl_4CLASS4_add_4REPRESENT4s_code',
 `int
 ppl_4CLASS4_add_4REPRESENT4s
 PPL_PROTO((ppl_4CLASS4_t ph,
-           ppl_const_4UALT_REPRESENT4_System_t cs));
+           ppl_const_4UREPRESENT4_System_t cs));
 
 ')
 
@@ -200,7 +200,7 @@ define(`ppl_4CLASS4_add_4REPRESENT4s_and_minimize_code',
 `int
 ppl_4CLASS4_add_4REPRESENT4s_and_minimize
 PPL_PROTO((ppl_4CLASS4_t ph,
-           ppl_const_4UALT_REPRESENT4_System_t cs));
+           ppl_const_4UREPRESENT4_System_t cs));
 
 ')
 
@@ -208,7 +208,7 @@ define(`ppl_4CLASS4_add_recycled_4REPRESENT4s_code',
 `int
 ppl_4CLASS4_add_recycled_4REPRESENT4s
 PPL_PROTO((ppl_4CLASS4_t ph,
-           ppl_4UALT_REPRESENT4_System_t cs));
+           ppl_4UREPRESENT4_System_t cs));
 
 ')
 
@@ -216,7 +216,7 @@ define(`ppl_4CLASS4_add_recycled_4REPRESENT4s_and_minimize_code',
 `int
 ppl_4CLASS4_add_recycled_4REPRESENT4s_and_minimize
 PPL_PROTO((ppl_4CLASS4_t ph,
-           ppl_4UALT_REPRESENT4_System_t cs));
+           ppl_4UREPRESENT4_System_t cs));
 
 ')
 
