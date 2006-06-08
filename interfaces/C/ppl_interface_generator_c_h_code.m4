@@ -317,7 +317,7 @@ PPL_PROTO((ppl_4CLASS4_t x,
 
 ')
 
-define(`ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4_code'
+define(`ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4_code',
 `int
 ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4
 PPL_PROTO((ppl_4CLASS4_t ph,
@@ -325,7 +325,7 @@ PPL_PROTO((ppl_4CLASS4_t ph,
 
 ')
 
-define(`ppl_4CLASS4_remove_space_dimensions_code'
+define(`ppl_4CLASS4_remove_space_dimensions_code',
 `int
 ppl_4CLASS4_remove_space_dimensions
 PPL_PROTO((ppl_4CLASS4_t ph,
@@ -334,7 +334,7 @@ PPL_PROTO((ppl_4CLASS4_t ph,
 
 ')
 
-define(`ppl_4CLASS4_remove_higher_space_dimensions_code'
+define(`ppl_4CLASS4_remove_higher_space_dimensions_code',
 `int
 ppl_4CLASS4_remove_higher_space_dimensions
 PPL_PROTO((ppl_4CLASS4_t ph,
@@ -342,7 +342,7 @@ PPL_PROTO((ppl_4CLASS4_t ph,
 
 ')
 
-define(`ppl_4CLASS4_map_space_dimensions_code'
+define(`ppl_4CLASS4_map_space_dimensions_code',
 `int
 ppl_4CLASS4_map_space_dimensions
 PPL_PROTO((ppl_4CLASS4_t ph,
@@ -351,7 +351,7 @@ PPL_PROTO((ppl_4CLASS4_t ph,
 
 ')
 
-define(`ppl_4CLASS4_expand_space_dimension_code'
+define(`ppl_4CLASS4_expand_space_dimension_code',
 `int
 ppl_4CLASS4_expand_space_dimension
 PPL_PROTO((ppl_4CLASS4_t ph,
@@ -360,7 +360,7 @@ PPL_PROTO((ppl_4CLASS4_t ph,
 
 ')
 
-define(`ppl_4CLASS4_fold_space_dimensions_code'
+define(`ppl_4CLASS4_fold_space_dimensions_code',
 `int
 ppl_4CLASS4_fold_space_dimensions
 PPL_PROTO((ppl_4CLASS4_t ph,
