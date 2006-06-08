@@ -36,6 +36,5 @@ noinst_HEADERS = exceptions.hh track_allocation.hh \
 nodist_noinst_HEADERS = ppl_prolog.icc
 
 ppl_prolog.icc: $(interface_generator_files) Makefile
-	rm -f $@
-	m4 -I$(srcdir) -I$(srcdir)/.. \
+	m4 -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_prolog_icc.m4 > $@

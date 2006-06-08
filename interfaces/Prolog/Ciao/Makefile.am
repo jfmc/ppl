@@ -44,8 +44,7 @@ libppl_ciao_la_LDFLAGS = -module -avoid-version
 pkglib_DATA = ppl_ciao.po
 
 ppl_ciao.pl: ppl_interface_generator_ciao_pl.m4 Makefile
-	rm -f $@
-	m4 -I$(srcdir)/.. -I$(srcdir)/../.. \
+	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_ciao_pl.m4 > $@
 
 ppl_ciao.po: ppl_ciao.pl

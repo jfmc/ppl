@@ -73,11 +73,11 @@ nodist_noinst_HEADERS = ppl_c.cc
 BUILT_SOURCES = ppl_c.h ppl_c.cc
 
 ppl_c.h: $(interface_generator_files) Makefile
-	m4 -I. -I$(srcdir) -I$(srcdir)/.. \
+	m4 -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_h.m4 > $@
 
 ppl_c.cc: $(interface_generator_files) Makefile
-	m4 -I$(srcdir) -I$(srcdir)/.. \
+	m4 -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_cc.m4 > $@
 
 AM_CPPFLAGS = \

@@ -42,15 +42,13 @@ expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a
 if BUILD_XSB_PROLOG_INTERFACE
 
 ppl_xsb.H: ppl_interface_generator_xsb_H.m4 Makefile
-	rm -f $@
-	m4 -I$(srcdir)/.. -I$(srcdir)/../.. \
+	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_H.m4 > $@
 
 BUILT_SOURCES = ppl_xsb.cc
 
 ppl_xsb.cc: ppl_interface_generator_xsb_cc.m4 Makefile
-	rm -f $@
-	m4 -I$(srcdir)/.. -I$(srcdir)/../.. \
+	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_cc.m4 > $@
 
 

@@ -41,8 +41,7 @@ BUILT_SOURCES = ppl_swiprolog.cc
 nodist_noinst_HEADERS = ppl_swiprolog.cc
 
 ppl_swiprolog.cc: ppl_interface_generator_swiprolog_cc.m4 Makefile
-	rm -f $@
-	m4 -I$(srcdir)/.. -I$(srcdir)/../.. \
+	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_swiprolog_cc.m4 > $@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la

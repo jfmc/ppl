@@ -46,7 +46,7 @@ $(top_builddir)/Watchdog/src/libpwl.la \
 libppl_gprolog_la_LDFLAGS = -module -avoid-version
 
 ppl_gprolog.pl: ppl_interface_generator_gprolog_pl.m4 Makefile
-	m4 -I$(srcdir)/.. -I$(srcdir)/../.. \
+	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_gprolog_pl.m4 > $@
 
 pkglib_DATA = ppl_gprolog.pl

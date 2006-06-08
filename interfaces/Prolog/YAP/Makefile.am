@@ -31,8 +31,7 @@ noinst_HEADERS = ppl_interface_generator_yap_cc.m4
 nodist_noinst_HEADERS = ppl_yap.cc
 
 ppl_yap.cc: ppl_interface_generator_yap_cc.m4 Makefile
-	rm -f $@
-	m4 -I$(srcdir)/.. -I$(srcdir)/../.. \
+	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_yap_cc.m4 > $@
 
 if ENABLE_SHARED

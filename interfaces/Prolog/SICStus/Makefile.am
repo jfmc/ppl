@@ -41,8 +41,7 @@ $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 BUILT_SOURCES = ppl_sicstus_sd.cc
 
 ppl_sicstus_sd.cc: ppl_interface_generator_sicstus_sd_cc.m4 Makefile
-	rm -f $@
-	m4 -I$(srcdir)/.. -I$(srcdir)/../.. \
+	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_sicstus_sd_cc.m4 > $@
 
 bin_PROGRAMS = ppl_sicstus
