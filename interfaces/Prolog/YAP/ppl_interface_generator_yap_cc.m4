@@ -1,9 +1,6 @@
-ifelse(
-        This file is to generate ppl_yap.cc in the
-        interfaces/Prolog/YAP directory.
-      )
+dnl This file generates ppl_yap.cc.
 /* YAP Prolog interface: system-dependent part.
-include(`ppl_interface_generator_copyright')
+include(`ppl_interface_generator_copyright')`'dnl
 */
 
 #include "ppl.hh"
@@ -461,6 +458,9 @@ yap_stub_##name() { \
   return name(arg1, arg2, arg3, arg4, arg5, arg6); \
 }
 
+dnl
+dnl Place here YAP_STUB macros.
+dnl
 divert(1)dnl
 
 #define YAP_USER_C_PREDICATE(name, arity) \
@@ -469,15 +469,35 @@ divert(1)dnl
 extern "C" void
 init() {
   ppl_initialize();
+
+dnl
+dnl Place here YAP_USER_C_PREDICATE macros.
+dnl
 divert(2)dnl
 }
+dnl
 divert`'dnl
+dnl
+dnl Include common macros for generating system dependent code.
 include(`ppl_interface_generator_prolog_systems.m4')dnl
-define(`m4_extension', `YAP_STUB_$2($1)
+dnl
+dnl Redefine m4_extension to generate YAP stubs.
+dnl m4_extension(Predicate_Name, Arity)
+define(`m4_extension', `dnl
+YAP_STUB_$2($1)
 ')dnl
+dnl Generate stubs.
 ppl_prolog_sys_code`'dnl
 undivert(1)`'dnl
+dnl
 divert`'dnl
-define(`m4_extension', `  YAP_USER_C_PREDICATE($1, $2);
+dnl
+dnl Redefine m4_extension to generate YAP user predicates.
+dnl m4_extension(Predicate_Name, Arity)
+define(`m4_extension', `dnl
+  YAP_USER_C_PREDICATE($1, $2);
 ')dnl
+dnl Generate user predicates.
 ppl_prolog_sys_code`'dnl
+dnl
+dnl End of file generation.
