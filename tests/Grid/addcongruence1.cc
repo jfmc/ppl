@@ -89,10 +89,10 @@ test03() {
   gr.add_congruence((A %= 0) / 7);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(parameter(7*A));
-  known_gr.add_generator(parameter(7*B));
-  known_gr.add_generator(grid_line(C));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(parameter(7*A));
+  known_gr.add_grid_generator(parameter(7*B));
+  known_gr.add_grid_generator(grid_line(C));
 
   bool ok = (gr == known_gr);
 
@@ -113,10 +113,10 @@ test04() {
   gr.add_congruence_and_minimize((A %= 0) / 7);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(parameter(7*A));
-  known_gr.add_generator(parameter(7*B));
-  known_gr.add_generator(grid_line(C));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(parameter(7*A));
+  known_gr.add_grid_generator(parameter(7*B));
+  known_gr.add_grid_generator(grid_line(C));
 
   bool ok = (gr == known_gr);
 

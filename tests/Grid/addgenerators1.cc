@@ -24,9 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// grid1*.cc use add_generators_and_minimize often.
+// grid1*.cc use add_grid_generators_and_minimize often.
 
-// add_recycled_generators -- space dimension exception.
+// add_recycled_grid_generators -- space dimension exception.
 bool
 test01() {
   Variable A(0);
@@ -38,7 +38,7 @@ test01() {
   Grid gr(1);
 
   try {
-    gr.add_recycled_generators(gs);
+    gr.add_recycled_grid_generators(gs);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -49,7 +49,7 @@ test01() {
   return false;
 }
 
-// add_recycled_generators_and_minimize -- space dimension exception.
+// add_recycled_grid_generators_and_minimize -- space dimension exception.
 bool
 test02() {
   Variable A(0);
@@ -61,7 +61,7 @@ test02() {
   Grid gr(1);
 
   try {
-    gr.add_recycled_generators_and_minimize(gs);
+    gr.add_recycled_grid_generators_and_minimize(gs);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -72,7 +72,7 @@ test02() {
   return false;
 }
 
-// add_recycled_generators -- zero dimension universe.
+// add_recycled_grid_generators -- zero dimension universe.
 bool
 test03() {
   Grid_Generator_System gs;
@@ -82,19 +82,19 @@ test03() {
 
   print_generators(gr, "*** gr ***");
 
-  gr.add_recycled_generators(gs);
+  gr.add_recycled_grid_generators(gs);
 
   Grid known_gr(0);
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_recycled_generators(gs) ***");
+		    "*** gr.add_recycled_grid_generators(gs) ***");
 
   return ok;
 }
 
-// add_recycled_generators -- zero dimension empty.
+// add_recycled_grid_generators -- zero dimension empty.
 bool
 test04() {
   Grid_Generator_System gs;
@@ -104,14 +104,14 @@ test04() {
 
   print_generators(gr, "*** gr ***");
 
-  gr.add_recycled_generators(gs);
+  gr.add_recycled_grid_generators(gs);
 
   Grid known_gr(0);
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_recycled_generators(gs) ***");
+		    "*** gr.add_recycled_grid_generators(gs) ***");
 
   return ok;
 }
@@ -119,7 +119,7 @@ test04() {
 #if 0
 // Grid_Generator_System::remove_space_dimensions is now private.
 
-// add_recycled_generators -- add system with a single parameter
+// add_recycled_grid_generators -- add system with a single parameter
 // generator to the zero dimension empty grid.
 bool
 test05() {
@@ -138,7 +138,7 @@ test05() {
   Grid gr(0, EMPTY);
 
   try {
-    gr.add_recycled_generators(gs);
+    gr.add_recycled_grid_generators(gs);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -149,8 +149,8 @@ test05() {
   return false;
 }
 
-// add_recycled_generators_and_minimize -- add system with a single
-// parameter generator to the zero dimension empty grid.
+// add_recycled_grid_generators_and_minimize -- add system with a
+// single parameter generator to the zero dimension empty grid.
 bool
 test06() {
   Variable A(0);
@@ -168,7 +168,7 @@ test06() {
   Grid gr(0, EMPTY);
 
   try {
-    gr.add_recycled_generators_and_minimize(gs);
+    gr.add_recycled_grid_generators_and_minimize(gs);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -180,7 +180,7 @@ test06() {
 }
 #endif
 
-// add_recycled_generators -- add system with a single parameter
+// add_recycled_grid_generators -- add system with a single parameter
 // generator to the empty grid.
 bool
 test07() {
@@ -192,7 +192,7 @@ test07() {
   Grid gr(2, EMPTY);
 
   try {
-    gr.add_recycled_generators(gs);
+    gr.add_recycled_grid_generators(gs);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -203,14 +203,14 @@ test07() {
   return false;
 }
 
-// add_recycled_generators_and_minimize -- add to the zero dim grid.
+// add_recycled_grid_generators_and_minimize -- add to the zero dim grid.
 bool
 test08() {
   Grid_Generator_System gs;
   gs.insert(grid_point());
 
   Grid gr(0, EMPTY);
-  gr.add_recycled_generators_and_minimize(gs);
+  gr.add_recycled_grid_generators_and_minimize(gs);
 
   print_generators(gr, "*** gr ***");
 
@@ -219,12 +219,12 @@ test08() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_recycled_generators_and_minimize(gs) ***");
+		    "*** gr.add_recycled_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// add_recycled_generators_and_minimize -- try add system with a
+// add_recycled_grid_generators_and_minimize -- try add system with a
 // single parameter generator to the empty grid.
 bool
 test09() {
@@ -236,7 +236,7 @@ test09() {
   Grid gr(2, EMPTY);
 
   try {
-    gr.add_recycled_generators_and_minimize(gs);
+    gr.add_recycled_grid_generators_and_minimize(gs);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -247,29 +247,29 @@ test09() {
   return false;
 }
 
-// add_recycled_generators_and_minimize -- add an empty system.
+// add_recycled_grid_generators_and_minimize -- add an empty system.
 bool
 test10() {
   Grid_Generator_System gs;
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
+  gr.add_grid_generator(grid_point());
 
   print_generators(gr, "*** gr ***");
 
   Grid known_gr = gr;
 
-  gr.add_recycled_generators_and_minimize(gs);
+  gr.add_recycled_grid_generators_and_minimize(gs);
 
   bool ok = (gr == known_gr);
 
   print_generators(gr,
-		   "*** gr.add_recycled_generators_and_minimize(gs) ***");
+		   "*** gr.add_recycled_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// add_generators -- add a zero dimension universe system.
+// add_grid_generators -- add a zero dimension universe system.
 bool
 test11() {
   Grid gr(0);
@@ -278,17 +278,17 @@ test11() {
 
   Grid known_gr = gr;
 
-  gr.add_generators(Grid_Generator_System::zero_dim_univ());
+  gr.add_grid_generators(Grid_Generator_System::zero_dim_univ());
 
   bool ok = (gr == known_gr);
 
   print_generators(gr,
-		   "*** gr.add_generators(Grid_Generator_System::zero_dim_univ()) ***");
+		   "*** gr.add_grid_generators(Grid_Generator_System::zero_dim_univ()) ***");
 
   return ok;
 }
 
-// add_generators -- add to a grid where the generator system of the
+// add_grid_generators -- add to a grid where the generator system of the
 // grid starts with a parameter (test point finding loop in
 // Grid::normalize_divisors(gs,gs)).
 bool
@@ -305,31 +305,31 @@ test12() {
   gs2.insert(grid_point());
   gs2.insert(parameter(A));
 
-  gr.add_generators(gs2);
+  gr.add_grid_generators(gs2);
 
   print_generators(gr, "*** gr ***");
 
   Grid known_gr(1, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(parameter(A));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(parameter(A));
 
   bool ok = (gr == known_gr);
 
   print_generators(gr,
-		   "*** gr.add_generators(gs) ***");
+		   "*** gr.add_grid_generators(gs) ***");
 
   return ok;
 }
 
-// add_recycled_generators_and_minimize -- add to a zero dimension
-// universe grid.
+// add_recycled_grid_generators_and_minimize -- add to a zero
+// dimension universe grid.
 bool
 test13() {
   Grid gr(0);
 
   Grid_Generator_System gs2(grid_point());
 
-  gr.add_recycled_generators_and_minimize(gs2);
+  gr.add_recycled_grid_generators_and_minimize(gs2);
 
   print_generators(gr, "*** gr ***");
 
@@ -338,7 +338,7 @@ test13() {
   bool ok = (gr == known_gr);
 
   print_generators(gr,
-		   "*** gr.add_generators(gs) ***");
+		   "*** gr.add_grid_generators(gs) ***");
 
   return ok;
 }

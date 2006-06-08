@@ -1,4 +1,4 @@
-/* Test Grid::add_generator*().
+/* Test Grid::add_grid_generator*().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-// grid1.cc also tests add_generator_and_minimize.
+// grid1.cc also tests add_grid_generator_and_minimize.
 
 // One dimension.
 bool
@@ -33,7 +33,7 @@ test01() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_generator(grid_point(-A));
+  gr.add_grid_generator(grid_point(-A));
 
   Grid known_gr(1);
   known_gr.add_congruence((A == -1) / 0);
@@ -41,7 +41,7 @@ test01() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_generator(grid_point(-A)) ***");
+		    "*** gr.add_grid_generator(grid_point(-A)) ***");
 
   return ok;
 }
@@ -55,7 +55,7 @@ test02() {
   Grid gr(2, EMPTY);
 
   print_congruences(gr, "*** gr ***");
-  gr.add_generator(grid_point(A + B));
+  gr.add_grid_generator(grid_point(A + B));
 
   Grid known_gr(2);
   known_gr.add_congruence((A == 1) / 0);
@@ -64,7 +64,7 @@ test02() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_generator(grid_point(A + B)) ***");
+		    "*** gr.add_grid_generator(grid_point(A + B)) ***");
 
   return ok;
 }
@@ -80,11 +80,11 @@ test03() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A + 2*B));
-  gr.add_generator(grid_point(A + B));
-  gr.add_generator(grid_point(2*A + 2*B));
-  gr.add_generator(grid_line(A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A + 2*B));
+  gr.add_grid_generator(grid_point(A + B));
+  gr.add_grid_generator(grid_point(2*A + 2*B));
+  gr.add_grid_generator(grid_line(A));
 
   Grid known_gr(2);
   known_gr.add_congruence(B %= 0);
@@ -92,7 +92,7 @@ test03() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_generator(...) ***");
+		    "*** gr.add_grid_generator(...) ***");
 
   return ok;
 }
@@ -113,7 +113,7 @@ test04() {
 
   for (Grid_Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
-    gr.add_generator(*i);
+    gr.add_grid_generator(*i);
 
   Grid known_gr(2);
   known_gr.add_congruence((4*A + 4*B == 7) / 0);
@@ -121,7 +121,7 @@ test04() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_generator(*i) ***");
+		    "*** gr.add_grid_generator(*i) ***");
 
   return ok;
 }
@@ -137,9 +137,10 @@ test05() {
   Grid gr(4, EMPTY);
   print_congruences(gr, "*** gr ***");
 
-  gr.add_generator(grid_point(7*A, 3));
-  print_congruences(gr, "*** gr.add_generator(grid_point(7*A, 3)) ***");
-  gr.add_generator(grid_line(A - B));
+  gr.add_grid_generator(grid_point(7*A, 3));
+  print_congruences(gr,
+		    "*** gr.add_grid_generator(grid_point(7*A, 3)) ***");
+  gr.add_grid_generator(grid_line(A - B));
 
   Grid known_gr(4);
 
@@ -150,26 +151,26 @@ test05() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_generator(grid_line(A - B)) ***");
+		    "*** gr.add_grid_generator(grid_line(A - B)) ***");
 
   return ok;
 }
 
-// add_generator_and_minimize
+// add_grid_generator_and_minimize
 bool
 test06() {
   Variable A(0);
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(2*A + 2*B));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(2*A + 2*B));
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_generator(grid_point(8*A + 8*B));
+  gr.add_grid_generator(grid_point(8*A + 8*B));
 
-  gr.add_generator_and_minimize(grid_line(A));
+  gr.add_grid_generator_and_minimize(grid_line(A));
 
   Grid known_gr(2);
   known_gr.add_congruence((B %= 0) / 2);
@@ -177,7 +178,7 @@ test06() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_generator_and_minimize(grid_line(A)) ***");
+		    "*** gr.add_grid_generator_and_minimize(grid_line(A)) ***");
 
   return ok;
 }
@@ -194,20 +195,20 @@ test07() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_generator(grid_point(12*A + 7*D));
+  gr.add_grid_generator(grid_point(12*A + 7*D));
 
   Grid known_gr(4);
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_generator(grid_point(12*A + 7*D)) ***");
+		    "*** gr.add_grid_generator(grid_point(12*A + 7*D)) ***");
 
   return ok;
 }
 
-// add_generator_and_minimize, adding a generator with a divisor to a
-// grid of many generators.
+// add_grid_generator_and_minimize, adding a generator with a divisor
+// to a grid of many generators.
 bool
 test08() {
   Variable A(0);
@@ -215,14 +216,14 @@ test08() {
 
   Grid gr(2, EMPTY);
 
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A));
 
   print_congruences(gr, "*** gr ***");
 
   // Minimize the grid.
 
-  gr.add_generator_and_minimize(grid_point(B, 3));
+  gr.add_grid_generator_and_minimize(grid_point(B, 3));
 
   Grid known_gr(2);
   known_gr.add_congruence(A %= 0);
@@ -231,7 +232,7 @@ test08() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_generator_and_minimize(grid_point(B, 3)) ***");
+		    "*** gr.add_grid_generator_and_minimize(grid_point(B, 3)) ***");
 
   return ok;
 }
@@ -245,7 +246,7 @@ test09() {
   Grid gr(2);
 
   try {
-    gr.add_generator(grid_point(A + C));
+    gr.add_grid_generator(grid_point(A + C));
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -263,14 +264,14 @@ test10() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_generator(grid_point());
+  gr.add_grid_generator(grid_point());
 
   Grid known_gr(0);
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_generator(grid_point()) ***");
+		    "*** gr.add_grid_generator(grid_point()) ***");
 
   return ok;
 }
@@ -282,14 +283,14 @@ test11() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_generator(grid_point());
+  gr.add_grid_generator(grid_point());
 
   Grid known_gr(0);
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-		    "*** gr.add_generator(grid_point()) ***");
+		    "*** gr.add_grid_generator(grid_point()) ***");
 
   return ok;
 }
@@ -302,7 +303,7 @@ test12() {
   Grid gr(2, EMPTY);
 
   try {
-    gr.add_generator(grid_line(A));
+    gr.add_grid_generator(grid_line(A));
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -319,7 +320,7 @@ test13() {
   Grid gr(2, EMPTY);
 
   try {
-    gr.add_generator(parameter());
+    gr.add_grid_generator(parameter());
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -336,7 +337,7 @@ test14() {
   Grid gr(0, EMPTY);
 
   try {
-    gr.add_generator(parameter());
+    gr.add_grid_generator(parameter());
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;

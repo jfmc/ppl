@@ -109,9 +109,9 @@ test04() {
   Grid gr(box, From_Covering_Box());
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point(-2*A - 30*B + 15*C, 3));
-  known_gr.add_generator(grid_point(4*A - 10*B + 5*C));
-  known_gr.add_generator(grid_point(-2*A + 12*B + 15*C, 3));
+  known_gr.add_grid_generator(grid_point(-2*A - 30*B + 15*C, 3));
+  known_gr.add_grid_generator(grid_point(4*A - 10*B + 5*C));
+  known_gr.add_grid_generator(grid_point(-2*A + 12*B + 15*C, 3));
 
   bool ok = (gr == known_gr);
 
@@ -311,10 +311,10 @@ test13() {
   Grid gr(box, From_Covering_Box());
 
   Grid known_gr(6, EMPTY);
-  known_gr.add_generator(grid_point(-56*A - 231*B + 420*C + 504*D + 180*E - 180*F, 84));
-  known_gr.add_generator(parameter(17*A, 3));
-  known_gr.add_generator(parameter(81*B, 12));
-  known_gr.add_generator(parameter(30*F, 7));
+  known_gr.add_grid_generator(grid_point(-56*A - 231*B + 420*C + 504*D + 180*E - 180*F, 84));
+  known_gr.add_grid_generator(parameter(17*A, 3));
+  known_gr.add_grid_generator(parameter(81*B, 12));
+  known_gr.add_grid_generator(parameter(30*F, 7));
 
   bool ok = (gr == known_gr);
 

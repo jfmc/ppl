@@ -57,14 +57,14 @@ Direct_Product<NNC_Polyhedron, Grid>::Direct_Product(Grid_Generator_System& gs)
 
 template <>
 inline void
-Direct_Product<NNC_Polyhedron, Grid>::add_generator(const Grid_Generator& g) {
-  d2.add_generator(g);
+Direct_Product<NNC_Polyhedron, Grid>::add_grid_generator(const Grid_Generator& g) {
+  d2.add_grid_generator(g);
 }
 
 template <>
 inline void
-Direct_Product<C_Polyhedron, Grid>::add_generator(const Grid_Generator& g) {
-  d2.add_generator(g);
+Direct_Product<C_Polyhedron, Grid>::add_grid_generator(const Grid_Generator& g) {
+  d2.add_grid_generator(g);
 }
 
 // FIX Direct_Product.cc

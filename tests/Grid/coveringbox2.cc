@@ -78,9 +78,9 @@ test01() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point(B));
-  gr.add_generator(grid_point(3*A + B));
-  gr.add_generator(grid_point(3*A + 3*B));
+  gr.add_grid_generator(grid_point(B));
+  gr.add_grid_generator(grid_point(3*A + B));
+  gr.add_grid_generator(grid_point(3*A + 3*B));
 
   gr.get_covering_box(box1);
 
@@ -117,9 +117,9 @@ test02() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point(  A +   B));
-  gr.add_generator(grid_point(2*A + 3*B));
-  gr.add_generator(grid_point(  A + 4*B));
+  gr.add_grid_generator(grid_point(  A +   B));
+  gr.add_grid_generator(grid_point(2*A + 3*B));
+  gr.add_grid_generator(grid_point(  A + 4*B));
 
   gr.get_covering_box(box1);
 
@@ -156,9 +156,9 @@ test03() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(2*A));
-  gr.add_generator(grid_point(  A + 2*B, 2));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(2*A));
+  gr.add_grid_generator(grid_point(  A + 2*B, 2));
 
   gr.get_covering_box(box1);
 
@@ -199,9 +199,9 @@ test04() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_line(A + 2*B));
-  gr.add_generator(grid_point(C, 2));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_line(A + 2*B));
+  gr.add_grid_generator(grid_point(C, 2));
 
   gr.get_covering_box(box1);
 
@@ -276,7 +276,7 @@ test06() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point(16*A + 6*B - 6*C, 7));
+  gr.add_grid_generator(grid_point(16*A + 6*B - 6*C, 7));
 
   gr.get_covering_box(box1);
 
@@ -353,11 +353,11 @@ test08() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A + B));
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(2*A));
-  gr.add_generator(grid_point(C));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A + B));
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(2*A));
+  gr.add_grid_generator(grid_point(C));
 
   gr.get_covering_box(box1);
 
@@ -438,10 +438,10 @@ test10() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(B));
-  gr.add_generator(grid_line(C));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(B));
+  gr.add_grid_generator(grid_line(C));
 
   gr.get_covering_box(box1);
 
@@ -487,11 +487,11 @@ test11() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A + 2*D));
-  gr.add_generator(grid_point(B + 4*D));
-  gr.add_generator(grid_point(C + 8*D));
-  gr.add_generator(grid_point(16*D));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A + 2*D));
+  gr.add_grid_generator(grid_point(B + 4*D));
+  gr.add_grid_generator(grid_point(C + 8*D));
+  gr.add_grid_generator(grid_point(16*D));
 
   gr.get_covering_box(box1);
 
@@ -536,10 +536,10 @@ test12() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(C));
-  gr.add_generator(grid_point(D));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(C));
+  gr.add_grid_generator(grid_point(D));
 
   gr.get_covering_box(box1);
 
@@ -626,7 +626,7 @@ test14() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point(16*A + 14*B - 7*C, 7));
+  gr.add_grid_generator(grid_point(16*A + 14*B - 7*C, 7));
 
   gr.get_covering_box(box1);
 
@@ -666,10 +666,10 @@ test15() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A, 6));
-  gr.add_generator(grid_point(B, 3));
-  gr.add_generator(grid_point(C, 2));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A, 6));
+  gr.add_grid_generator(grid_point(B, 3));
+  gr.add_grid_generator(grid_point(C, 2));
 
   gr.get_covering_box(box1);
 
@@ -775,9 +775,9 @@ test18() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point(B));
-  gr.add_generator(parameter(3*A));
-  gr.add_generator(parameter(3*A + 2*B));
+  gr.add_grid_generator(grid_point(B));
+  gr.add_grid_generator(parameter(3*A));
+  gr.add_grid_generator(parameter(3*A + 2*B));
 
   gr.get_covering_box(box1);
 
@@ -818,11 +818,11 @@ test19() {
   Bounding_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(7*A));
-  gr.add_generator(parameter(5*B-3*A));
-  gr.add_generator(parameter(3*A));
-  gr.add_generator(grid_point(C+A));
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(7*A));
+  gr.add_grid_generator(parameter(5*B-3*A));
+  gr.add_grid_generator(parameter(3*A));
+  gr.add_grid_generator(grid_point(C+A));
 
   gr.get_covering_box(box1);
 

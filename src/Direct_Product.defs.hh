@@ -841,7 +841,7 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
   */
-  void add_generator(const Grid_Generator& g);
+  void add_grid_generator(const Grid_Generator& g);
 
   /*! \brief
     Adds a copy of generator \p g to the system of generators of \p

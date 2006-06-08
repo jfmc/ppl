@@ -138,7 +138,7 @@ test07() {
   Direct_Product<NNC_Polyhedron, Grid> dp(gs);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(A + B));
+  known_gr.add_grid_generator(grid_point(A + B));
 
   bool ok = (dp.domain2() == known_gr);
 
@@ -156,7 +156,7 @@ test08() {
   Direct_Product<NNC_Polyhedron, Grid> dp(gs);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point(A + 7*C));
+  known_gr.add_grid_generator(grid_point(A + 7*C));
 
   bool ok = (dp.domain2() == known_gr);
 

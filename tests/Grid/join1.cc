@@ -119,7 +119,7 @@ test04() {
 
   Grid gr1(gs1);
 
-  gr1.add_generator(parameter(-C));
+  gr1.add_grid_generator(parameter(-C));
   print_generators(gr1, "*** gr1 ***");
 
   Grid_Generator_System gs2;

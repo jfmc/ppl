@@ -125,8 +125,8 @@ test06() {
   gr1.add_congruence(C %= 0);
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point());
-  gr2.add_generator(grid_point(2*A + 2*B + 2*C));
+  gr2.add_grid_generator(grid_point());
+  gr2.add_grid_generator(grid_point(2*A + 2*B + 2*C));
 
   bool ok = (gr1.contains(gr2));
 
@@ -144,8 +144,8 @@ test07() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(grid_point(2*A + 2*B + 2*C));
+  gr1.add_grid_generator(grid_point());
+  gr1.add_grid_generator(grid_point(2*A + 2*B + 2*C));
 
   Grid gr2(3);
   gr2.add_congruence(A - B %= 0);
@@ -165,10 +165,10 @@ test08() {
   Variable A(0);
 
   Grid gr1(1, EMPTY);
-  gr1.add_generator(grid_point());
+  gr1.add_grid_generator(grid_point());
 
   Grid gr2(1, EMPTY);
-  gr2.add_generator(grid_point(A));
+  gr2.add_grid_generator(grid_point(A));
 
   bool ok = !gr1.contains(gr2) && !gr2.contains(gr1);
 
@@ -182,7 +182,7 @@ test08() {
 bool
 test09() {
   Grid gr1(1, EMPTY);
-  gr1.add_generator(grid_point());
+  gr1.add_grid_generator(grid_point());
 
   Grid gr2(21, EMPTY);
 

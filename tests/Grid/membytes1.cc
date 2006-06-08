@@ -38,10 +38,10 @@ add_congruence(Grid& gr, const Congruence& cg) {
 }
 
 void
-add_generator(Grid& gr, const Grid_Generator& g) {
+add_grid_generator(Grid& gr, const Grid_Generator& g) {
   const memory_size_type gr_memory_before = gr.total_memory_in_bytes();
   const memory_size_type g_memory = g.total_memory_in_bytes();
-  gr.add_generator(g);
+  gr.add_grid_generator(g);
   const memory_size_type gr_memory_after = gr.total_memory_in_bytes();
   nout << gr_memory_before
        << " + " << g_memory
@@ -52,7 +52,7 @@ add_generator(Grid& gr, const Grid_Generator& g) {
 void
 minimize(Grid& gr) {
   const memory_size_type gr_memory_before = gr.total_memory_in_bytes();
-  (void) gr.minimized_generators();
+  (void) gr.minimized_grid_generators();
   const memory_size_type gr_memory_after = gr.total_memory_in_bytes();
   nout << gr_memory_before
        << " -m-> " << gr_memory_after
@@ -142,7 +142,7 @@ test01() {
   const Congruence_System& cgs = gr1.congruences();
   const memory_size_type cgs_total_size = cgs.total_memory_in_bytes();
   const memory_size_type cgs_external_size = cgs.external_memory_in_bytes();
-  const Grid_Generator_System& gs = gr1.generators();
+  const Grid_Generator_System& gs = gr1.grid_generators();
   const memory_size_type gs_total_size = gs.total_memory_in_bytes();
   const memory_size_type gs_external_size = gs.external_memory_in_bytes();
 
@@ -168,7 +168,7 @@ test01() {
   unsigned n = 0;
   for (Grid_Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i) {
-    add_generator(gr2, *i);
+    add_grid_generator(gr2, *i);
     if (++n % 4 == 0)
       minimize(gr2);
   }

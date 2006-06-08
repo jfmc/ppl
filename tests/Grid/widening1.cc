@@ -503,22 +503,22 @@ test17() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(C, 3));
-  gr1.add_generator(grid_point(C + A - 2*B, 3));
+  gr1.add_grid_generator(grid_point(C, 3));
+  gr1.add_grid_generator(grid_point(C + A - 2*B, 3));
 
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point(C, 3));
-  gr2.add_generator(grid_point(2*C + A - 2*B, 6));
+  gr2.add_grid_generator(grid_point(C, 3));
+  gr2.add_grid_generator(grid_point(2*C + A - 2*B, 6));
 
   print_generators(gr2, "*** gr2 ***");
 
   gr2.congruence_widening_assign(gr1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point(C, 3));
-  known_gr.add_generator(grid_line(A - 2*B));
+  known_gr.add_grid_generator(grid_point(C, 3));
+  known_gr.add_grid_generator(grid_line(A - 2*B));
 
   bool ok = (gr2 == known_gr);
 
@@ -537,14 +537,14 @@ test18() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(C, 3));
-  gr1.add_generator(grid_point(C + A - 2*B, 3));
+  gr1.add_grid_generator(grid_point(C, 3));
+  gr1.add_grid_generator(grid_point(C + A - 2*B, 3));
 
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(4, EMPTY);
-  gr2.add_generator(grid_point(C, 3));
-  gr2.add_generator(grid_point(2*C + A - 2*B, 6));
+  gr2.add_grid_generator(grid_point(C, 3));
+  gr2.add_grid_generator(grid_point(2*C + A - 2*B, 6));
 
   print_generators(gr2, "*** gr2 ***");
 

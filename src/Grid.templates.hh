@@ -566,7 +566,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   // If control gets here, then `pfunc' is not a permutation and some
   // dimensions must be projected away.
 
-  const Grid_Generator_System& old_gensys = generators();
+  const Grid_Generator_System& old_gensys = grid_generators();
 
   if (old_gensys.num_generators() == 0) {
     // The grid is empty.

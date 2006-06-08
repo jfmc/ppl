@@ -219,7 +219,7 @@ PPL::Grid::affine_dimension() const {
     if (generators_are_minimized())
       return gen_sys.num_generators() - 1;
     if (!(congruences_are_up_to_date() && congruences_are_minimized()))
-      return minimized_generators().num_generators() - 1;
+      return minimized_grid_generators().num_generators() - 1;
   }
   else
     minimized_congruences();
@@ -273,7 +273,7 @@ PPL::Grid::minimized_congruences() const {
 }
 
 const PPL::Grid_Generator_System&
-PPL::Grid::generators() const {
+PPL::Grid::grid_generators() const {
   if (space_dim == 0) {
     assert(gen_sys.space_dimension() == 0
 	   && gen_sys.num_generators() == (marked_empty() ? 0 : 1));
@@ -295,7 +295,7 @@ PPL::Grid::generators() const {
 }
 
 const PPL::Grid_Generator_System&
-PPL::Grid::minimized_generators() const {
+PPL::Grid::minimized_grid_generators() const {
   if (space_dim == 0) {
     assert(gen_sys.space_dimension() == 0
 	   && gen_sys.num_generators() == (marked_empty() ? 0 : 1));
@@ -1020,7 +1020,7 @@ PPL::Grid::add_congruence_and_minimize(const Constraint& c) {
 }
 
 void
-PPL::Grid::add_generator(const Grid_Generator& g) {
+PPL::Grid::add_grid_generator(const Grid_Generator& g) {
   // The dimension of `g' must be at most space_dim.
   const dimension_type g_space_dim = g.space_dimension();
   if (space_dim < g_space_dim)
@@ -1064,10 +1064,10 @@ PPL::Grid::add_generator(const Grid_Generator& g) {
 }
 
 bool
-PPL::Grid::add_generator_and_minimize(const Grid_Generator& g) {
+PPL::Grid::add_grid_generator_and_minimize(const Grid_Generator& g) {
   // TODO: this is just an executable specification.
   Grid_Generator_System gs(g);
-  return add_recycled_generators_and_minimize(gs);
+  return add_recycled_grid_generators_and_minimize(gs);
 }
 
 void
@@ -1279,7 +1279,7 @@ PPL::Grid::add_recycled_constraints_and_minimize(Constraint_System& cs) {
 }
 
 void
-PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
+PPL::Grid::add_recycled_grid_generators(Grid_Generator_System& gs) {
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
@@ -1338,14 +1338,14 @@ PPL::Grid::add_recycled_generators(Grid_Generator_System& gs) {
 }
 
 void
-PPL::Grid::add_generators(const Grid_Generator_System& gs) {
+PPL::Grid::add_grid_generators(const Grid_Generator_System& gs) {
   // TODO: this is just an executable specification.
   Grid_Generator_System gs_copy = gs;
-  add_recycled_generators(gs_copy);
+  add_recycled_grid_generators(gs_copy);
 }
 
 bool
-PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
+PPL::Grid::add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs) {
   // Dimension-compatibility check: the dimension of `gs' must be less
   // than or equal to that of space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
@@ -1396,10 +1396,10 @@ PPL::Grid::add_recycled_generators_and_minimize(Grid_Generator_System& gs) {
 }
 
 bool
-PPL::Grid::add_generators_and_minimize(const Grid_Generator_System& gs) {
+PPL::Grid::add_grid_generators_and_minimize(const Grid_Generator_System& gs) {
   // TODO: this is just an executable specification.
   Grid_Generator_System gs_copy = gs;
-  return add_recycled_generators_and_minimize(gs_copy);
+  return add_recycled_grid_generators_and_minimize(gs_copy);
 }
 
 void
@@ -1853,7 +1853,7 @@ generalized_affine_preimage(const Variable var,
   // Note: DO check for emptyness here, as we will later add a line.
   if (is_empty())
     return;
-  add_generator(grid_line(var));
+  add_grid_generator(grid_line(var));
   assert(OK());
 }
 
@@ -1953,7 +1953,7 @@ generalized_affine_image(const Linear_Expression& lhs,
 
     // Cylindrificate on all the variables occurring in the left hand
     // side expression.
-    add_recycled_generators(new_lines);
+    add_recycled_grid_generators(new_lines);
 
     // Constrain the left hand side expression so that it is congruent to
     // the right hand side expression modulo `modulus'.
@@ -2059,7 +2059,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       return;
 
     // Cylindrificate on all the variables occurring in `lhs'.
-    add_recycled_generators(new_lines);
+    add_recycled_grid_generators(new_lines);
   }
   assert(OK());
 }

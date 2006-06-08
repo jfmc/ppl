@@ -90,18 +90,18 @@ test04() {
   Variable C(2);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(A + 2*B));
-  gr.add_generator(grid_point());
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(A + 2*B));
+  gr.add_grid_generator(grid_point());
   print_generators(gr, "***  ***");
 
   gr.expand_space_dimension(A, 1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_point(A + 2*B));
-  known_gr.add_generator(grid_point(C));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_point(A + 2*B));
+  known_gr.add_grid_generator(grid_point(C));
 
   bool ok = (gr == known_gr);
   print_congruences(gr, "*** gr.expand_space_dimension(A, 1) ***");

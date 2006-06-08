@@ -336,7 +336,7 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   // A strict subset of the parameters was selected.
 
   Grid result(x.space_dim, EMPTY);
-  result.add_recycled_generators(ggs);
+  result.add_recycled_grid_generators(ggs);
 
   // Check whether we are using the widening-with-tokens technique
   // and there are still tokens available.

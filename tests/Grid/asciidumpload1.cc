@@ -119,8 +119,8 @@ test04() {
   Variable C(2);
 
   Grid gr1(4, EMPTY);
-  gr1.add_generator(grid_point(3*A + C));
-  gr1.add_generator(parameter(3*A));
+  gr1.add_grid_generator(grid_point(3*A + C));
+  gr1.add_grid_generator(parameter(3*A));
 
   print_generators(gr1, "*** gr1 ***");
 
@@ -152,8 +152,8 @@ test05() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(3*A + C));
-  gr1.add_generator(parameter(3*A));
+  gr1.add_grid_generator(grid_point(3*A + C));
+  gr1.add_grid_generator(parameter(3*A));
 
   print_generators(gr1, "*** gr1 ***");
 

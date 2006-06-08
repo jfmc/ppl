@@ -164,7 +164,7 @@ Direct_Product<D1, D2>::add_congruence(const Congruence& cg) {
 
 template <typename D1, typename D2>
 inline void
-Direct_Product<D1, D2>::add_generator(const Grid_Generator& g) {
+Direct_Product<D1, D2>::add_grid_generator(const Grid_Generator& g) {
 }
 
 template <typename D1, typename D2>

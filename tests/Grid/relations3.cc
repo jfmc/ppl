@@ -31,7 +31,7 @@ test01() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(A - B));
+  gr.add_grid_generator(grid_point(A - B));
   print_generators(gr, "*** gr ***");
 
   bool ok = gr.relation_with(A - B >= 1) == Poly_Con_Relation::is_included();
@@ -46,8 +46,8 @@ test02() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_line(A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_line(A));
   print_generators(gr, "*** gr ***");
 
   using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -77,7 +77,7 @@ test03() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(A + B));
+  gr.add_grid_generator(grid_point(A + B));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(B == 1)
@@ -134,8 +134,8 @@ test06() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(2*A + 5*B));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(2*A + 5*B));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(5*A - 2*B == 1)
@@ -154,7 +154,7 @@ test07() {
   Variable A(0);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point(A, 2));
+  gr.add_grid_generator(grid_point(A, 2));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(A == 3)
@@ -175,8 +175,8 @@ test08() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(parameter(A, 5));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(parameter(A, 5));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(10*A == 1)
@@ -193,8 +193,8 @@ test09() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(parameter(A, 5));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(parameter(A, 5));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(Linear_Expression(10) == 10)
@@ -212,8 +212,8 @@ test10() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(parameter(A, 5));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(parameter(A, 5));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(A + B == 0)
@@ -272,8 +272,8 @@ test13() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(3*A));
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(3*A));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(A == 0)
@@ -290,8 +290,8 @@ test14() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(3*A));
-  gr.add_generator(grid_point(6*A));
+  gr.add_grid_generator(grid_point(3*A));
+  gr.add_grid_generator(grid_point(6*A));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(A + B == 0)
@@ -308,8 +308,8 @@ test15() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(3*A));
-  gr.add_generator(parameter(3*A));
+  gr.add_grid_generator(grid_point(3*A));
+  gr.add_grid_generator(parameter(3*A));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(A + B == 0)
@@ -346,8 +346,8 @@ test17() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(B));
-  gr.add_generator(parameter(A));
+  gr.add_grid_generator(grid_point(B));
+  gr.add_grid_generator(parameter(A));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(A > 1)
@@ -371,9 +371,9 @@ test18() {
 
   // Regularly spaced parallel lines along a slanted plane in 3D.
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point(A + B + C));
-  gr.add_generator(grid_line(A - 2*B + 3*C));
-  gr.add_generator(parameter(A - B, 3));
+  gr.add_grid_generator(grid_point(A + B + C));
+  gr.add_grid_generator(grid_line(A - 2*B + 3*C));
+  gr.add_grid_generator(parameter(A - B, 3));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(A + B + C == 0)
