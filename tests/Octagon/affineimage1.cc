@@ -411,6 +411,32 @@ test15() {
   return ok;
 }
 
+bool
+test16() {
+  Variable x(0);
+  Variable y(1);
+
+  TOctagonal_Shape oc(2);
+  oc.add_constraint(x <= 2);
+  oc.add_constraint(x - y <= 3);
+  oc.add_constraint(y <= 2);
+
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_image(y, 2*x - 4, -2);
+
+  Octagonal_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(x <= 2);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(x + y == 2);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
+
+  print_constraints(oc, "*** oc1.affine_image(y, 2*x - 4, -2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -429,4 +455,5 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
