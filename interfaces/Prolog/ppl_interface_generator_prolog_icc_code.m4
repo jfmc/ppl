@@ -23,8 +23,9 @@ handle_exception(const not_a_4CLASS4_handle& e) {
 
 ')
 
-define(`m4_term_to_class_handle_code',
-`namespace {
+define(`m4_term_to_class_handle_code', `dnl
+namespace {
+
 4CPP_CLASS4*
 term_to_4CLASS4_handle(Prolog_term_ref t_ph) {
   if (Prolog_is_address(t_ph)) {
@@ -34,6 +35,7 @@ term_to_4CLASS4_handle(Prolog_term_ref t_ph) {
   }
   throw ppl_handle_mismatch(t_ph);
 }
+
 } // namespace
 
 ')
