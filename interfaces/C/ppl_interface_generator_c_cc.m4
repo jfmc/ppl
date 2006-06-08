@@ -6,19 +6,28 @@ include(`ppl_interface_generator_common.m4')dnl
 include(`ppl_interface_generator_c_dat.m4')dnl
 divert(-1)dnl
 
-# m4_extra_class_code
+dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
+dnl Prefix extra code for each class.
 define(`m4_pre_extra_class_code', `dnl
-DECLARE_CONVERSIONS(m4_class, m4_cpp_class)
+/* Interfacing $1 */
+
+DECLARE_CONVERSIONS($1, $2)
 
 ')dnl
 
+dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
+dnl Postfix extra code for each class.
 define(`m4_post_extra_class_code', `dnl
-DEFINE_PRINT_FUNCTIONS(m4_class)
+DEFINE_PRINT_FUNCTIONS($1)
 
 ')dnl
 
 divert`'dnl
+dnl
 dnl Output the fixed preamble.
 include(`ppl_interface_generator_c_cc_preamble')
-dnl Generate the non-fixed postamble.
+dnl
+dnl Generate the non-fixed part of the file.
 m4_all_classes_code`'dnl
+dnl
+dnl End of file generation.

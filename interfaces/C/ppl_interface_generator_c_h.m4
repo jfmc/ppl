@@ -4,23 +4,26 @@ dnl Include files defining macros that generate the non-fixed part.
 include(`ppl_interface_generator_c_h_code.m4')dnl
 include(`ppl_interface_generator_common.m4')dnl
 include(`ppl_interface_generator_c_dat.m4')dnl
+dnl
 divert(-1)dnl
 
+dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 define(`m4_pre_extra_class_code', `dnl
 
-PPL_TYPE_DECLARATION(m4_class);
+PPL_TYPE_DECLARATION($1);
 
-/*! \name Functions Related to m4_class */
+/*! \name Functions Related to $1 */
 /*@{*/
 
 ')dnl
 
+dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Postfix extra code for each class.
 define(`m4_post_extra_class_code', `dnl
-PPL_DECLARE_PRINT_FUNCTIONS(m4_class)
+PPL_DECLARE_PRINT_FUNCTIONS($1)
 
-/*@}*/ /* Functions Related to m4_class */
+/*@}*/ /* Functions Related to $1 */
 ')
 
 divert`'dnl
@@ -44,4 +47,5 @@ dnl Generate the fixed postamble.
 /*@}*/ /* \defgroup PPL_C_interface */
 
 #endif /* !defined(PPL_ppl_c_h) */
+dnl
 dnl End of file generation.
