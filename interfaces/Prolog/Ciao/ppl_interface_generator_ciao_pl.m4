@@ -33,13 +33,14 @@ define(`m4_extension', `ifelse(start, 0, , `COMMA
 patsubst(ppl_prolog_sys_code, COMMA, `,')`'dnl
 undivert(1)`'dnl
 divert`'dnl
-define(`check_fail', ifelse(index($1, nofail), -1, failok, nofail))
+define(`check_fail', `ifelse(index($1, nofail), -1, failok, nofail)')
 define(`term', `Term$1')dnl
 define(`anyterm', `any_term')dnl
 define(`interm', `in(Term$1)')dnl
-define(`m4_extension', `ifelse(check_fail(`$3'), nofail,
+define(`m4_extension', `ifelse(check_fail($3), nofail,
   `:- true pred $1`'ifelse(`$2', 0, ,(`'m4_term_sequence($2, `interm'))
           :: `'m4_term_sequence($2, `anyterm', ` *')) +  foreign.
+
 ',
   `:- true pred $1_2(`'m4_term_sequence($2, `interm')`'ifelse(`$2', 0, `go(Success)', `, go(Success)'))
           :: `'m4_term_sequence($2, `anyterm', ` *')`'ifelse(`$2', 0, ` int', ` * int')
@@ -54,6 +55,6 @@ undivert(2)dnl
 divert`'dnl
 define(`start', 0)dnl
 define(`m4_extension',
-  `ifelse(check_fail(`$3'), nofail, ,ifelse(start, 0, , `COMMA
+  `ifelse(check_fail($3), nofail, ,ifelse(start, 0, , `COMMA
 ')	`'$1_2/incr($2)`'undefine(`start'))')dnl
 patsubst(ppl_prolog_sys_code, COMMA, `,')`'dnl

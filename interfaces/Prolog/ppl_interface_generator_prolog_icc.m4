@@ -11,9 +11,10 @@ divert(-1)dnl
 # only if needed for that class. Takes care to set class name and
 # dependent schemas in this code.
 define(`m4_add_widening_extrapolation_code',
-  `define(`num_widenexps',
-     m4_ifndef(num_`'m4_class`'_widenexps, 0))dnl
-ifelse(num_widenexps, 0, ,
+  `define(`non_zero_widenexps',
+     `m4_ifndef(num_`'m4_class_kind`'_widenexps,
+                  m4_ifndef(num_widenexps, 0))')dnl
+ifelse(non_zero_widenexps, 0, ,
   m4_replace_class_patterns(m4_replace_pattern(constrainer,
     widening_extrapolation_code)))')
 
@@ -22,9 +23,7 @@ ifelse(num_widenexps, 0, ,
 # adds the extra code used by the binary operator predicate code
 # only if needed for that class.
 define(`m4_add_bop_assign_code',
-  `define(`num_binops1',
-        m4_ifndef(num_`'m4_class`'_binops, m4_ifndef(num_`'binops, 0)))dnl
-ifelse(num_binops1, 0, , m4_replace_class_patterns(bop_assign_code))')
+  `m4_replace_class_patterns(bop_assign_code)')
 
 define(`m4_add_term_to_class_handle_code',
   `m4_replace_class_patterns(m4_term_to_class_handle_code)')
