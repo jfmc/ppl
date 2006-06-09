@@ -369,13 +369,17 @@ public:
   //! Returns the system of constraints in reduced form.
   const Constraint_System& minimized_constraints() const;
 
-#if 0
   //! Returns the system of generators.
-  const Grid_Generator_System& generators() const;
+  const Generator_System& generators() const;
 
   //! Returns the minimized system of generators.
-  const Grid_Generator_System& minimized_generators() const;
-#endif
+  const Generator_System& minimized_generators() const;
+
+  //! Returns the system of grid generators.
+  const Grid_Generator_System& grid_generators() const;
+
+  //! Returns the minimized system of grid generators.
+  const Grid_Generator_System& minimized_grid_generators() const;
 
 
   //! Returns the relations holding between \p *this and \p cg.
@@ -383,19 +387,21 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
-  // FIXME: Poly_Con_Relation seems to encode exactly what we want
-  // here.  We must find a new name for that class.  Temporarily,
-  // we keep using it without changing the name.
   Poly_Con_Relation relation_with(const Congruence& cg) const;
+
+  //! Returns the relations holding between \p *this and \p c.
+  /*
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Constraint& c) const;
 
   //! Returns the relations holding between \p *this and \p g.
   /*
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
-  // FIXME: see the comment for Poly_Con_Relation above.
-  Poly_Gen_Relation
-  relation_with(const Grid_Generator& g) const;
+  Poly_Gen_Relation relation_with(const Grid_Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is an empty
@@ -854,7 +860,7 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
   */
-  bool add_generator_and_minimize(const Grid_Generator& g);
+  bool add_grid_generator_and_minimize(const Grid_Generator& g);
 
   //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!
@@ -1045,8 +1051,8 @@ public:
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
   /*! \brief
-    Adds a copy of the generators in \p gs to the system of generators
-    of \p *this.
+    Adds a copy of the grid generators in \p gs to the system of
+    generators of \p *this.
 
     \param gs
     Contains the generators that will be added to the system of
@@ -1057,7 +1063,7 @@ public:
     \p *this is empty and the system of generators \p gs is not empty,
     but has no points.
   */
-  void add_generators(const Grid_Generator_System& gs);
+  void add_grid_generators(const Grid_Generator_System& gs);
 
   /*! \brief
     Adds the generators in \p gs to the system of generators of \p
@@ -1076,7 +1082,7 @@ public:
     The only assumption that can be made about \p gs upon successful
     or exceptional return is that it can be safely destroyed.
   */
-  void add_recycled_generators(Grid_Generator_System& gs);
+  void add_recycled_grid_generators(Grid_Generator_System& gs);
 
   /*! \brief
     Adds a copy of the generators in \p gs to the system of generators
@@ -1094,7 +1100,7 @@ public:
     *this is empty and the system of generators \p gs is not empty,
     but has no points.
   */
-  bool add_generators_and_minimize(const Grid_Generator_System& gs);
+  bool add_grid_generators_and_minimize(const Grid_Generator_System& gs);
 
   /*! \brief
     Adds the generators in \p gs to the system of generators of \p
@@ -1116,7 +1122,7 @@ public:
     The only assumption that can be made about \p gs upon successful
     or exceptional return is that it can be safely destroyed.
   */
-  bool add_recycled_generators_and_minimize(Grid_Generator_System& gs);
+  bool add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs);
 
   /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.  The
@@ -1684,6 +1690,7 @@ public:
     \ref Direct_Product_Expand_Space_Dimension "expanded" to \p m new space dimensions
     \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
   */
+  // FIX m s/b const?
   void expand_space_dimension(Variable var, dimension_type m);
 
   //! Folds the space dimensions in \p to_be_folded into \p var.

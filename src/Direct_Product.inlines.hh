@@ -168,6 +168,12 @@ Direct_Product<D1, D2>::add_grid_generator(const Grid_Generator& g) {
 }
 
 template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::add_grid_generator_and_minimize(const Grid_Generator& g) {
+  return false;
+}
+
+template <typename D1, typename D2>
 inline Direct_Product<D1, D2>&
 Direct_Product<D1, D2>::operator=(const Direct_Product& y) {
   d1 = y.d1;
@@ -187,13 +193,12 @@ Direct_Product<D1, D2>::domain2() const {
   return d2;
 }
 
-#if 0
 template <typename D1, typename D2>
-inline const D1&
+inline const Congruence_System&
 Direct_Product<D1, D2>::congruences() const {
-  return d1.congruences();
+  // FIX return ref to universe of correct dim?
+  return Congruence_System::zero_dim_empty();
 }
-#endif
 
 template <typename D1, typename D2>
 inline bool
@@ -217,6 +222,64 @@ template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::reduce_domain2_with_domain1() {
   return false;
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::add_space_dimensions_and_embed(dimension_type m) {
+  d1.add_space_dimensions_and_embed(m);
+  d2.add_space_dimensions_and_embed(m);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::add_space_dimensions_and_project(dimension_type m) {
+  d1.add_space_dimensions_and_project(m);
+  d2.add_space_dimensions_and_project(m);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::concatenate_assign(const Direct_Product& y) {
+  d1.concatenate_assign(y.d1);
+  d2.concatenate_assign(y.d2);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::remove_space_dimensions(const Variables_Set& to_be_removed) {
+  d1.remove_space_dimensions(to_be_removed);
+  d2.remove_space_dimensions(to_be_removed);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::remove_higher_space_dimensions(dimension_type new_dimension) {
+  d1.remove_higher_space_dimensions(new_dimension);
+  d2.remove_higher_space_dimensions(new_dimension);
+}
+
+template <typename D1, typename D2>
+template <typename Partial_Function>
+inline void
+Direct_Product<D1, D2>::map_space_dimensions(const Partial_Function& pfunc) {
+  d1.map_space_dimensions(pfunc);
+  d2.map_space_dimensions(pfunc);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::expand_space_dimension(Variable var, dimension_type m) {
+  d1.expand_space_dimension(var, m);
+  d2.expand_space_dimension(var, m);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::fold_space_dimensions(const Variables_Set& to_be_folded,
+					      Variable var) {
+  d1.fold_space_dimensions(to_be_folded, var);
+  d2.fold_space_dimensions(to_be_folded, var);
 }
 
 PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(D1, D2, Direct_Product)

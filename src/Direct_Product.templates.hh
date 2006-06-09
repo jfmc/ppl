@@ -31,6 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+// FIX Direct_Product.cc for full specializations
+
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::ascii_load(std::istream& s) {
@@ -56,6 +58,12 @@ Direct_Product<NNC_Polyhedron, Grid>::Direct_Product(Grid_Generator_System& gs)
 }
 
 template <>
+inline const Congruence_System&
+Direct_Product<NNC_Polyhedron, Grid>::congruences() const {
+  return d2.congruences();
+}
+
+template <>
 inline void
 Direct_Product<NNC_Polyhedron, Grid>::add_grid_generator(const Grid_Generator& g) {
   d2.add_grid_generator(g);
@@ -67,7 +75,17 @@ Direct_Product<C_Polyhedron, Grid>::add_grid_generator(const Grid_Generator& g) 
   d2.add_grid_generator(g);
 }
 
-// FIX Direct_Product.cc
+template <>
+inline bool
+Direct_Product<NNC_Polyhedron, Grid>::add_grid_generator_and_minimize(const Grid_Generator& g) {
+  return d2.add_grid_generator_and_minimize(g);
+}
+
+template <>
+inline bool
+Direct_Product<C_Polyhedron, Grid>::add_grid_generator_and_minimize(const Grid_Generator& g) {
+  return d2.add_grid_generator_and_minimize(g);
+}
 
 template <typename D1, typename D2>
 bool
