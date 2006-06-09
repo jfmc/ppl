@@ -1,20 +1,35 @@
 dnl Classes to be implemented and C++ versions of these classes.
 include(ppl_interface_instantiations.m4)
 
-dnl m4_class_group
+dnl m4_group_names expands to all the group names.
 dnl
-dnl There are two class groups:
-dnl GRID for all the grid-like classes,
-dnl SHAPE for classes denoting subsets of a vector space that have some shape.
-define(`m4_class_group',
-  `ifelse($1, Grid, GRID, SHAPE)')
+dnl Each group_name in the expansion should
+dnl have a corresponding definition for
+dnl "m4_`'group_name`'_group
+dnl which must be defined as a (comma separated) list of class kinds.
+dnl
+dnl If more groups are wanted, then these must be added to this list.
+dnl and the list of class_kinds they include be defined.
+dnl If a group_name occurs in the extra text preceded by a - after
+dnl a procedure name, then no code for any classes in that group.
+dnl Conversely, if a group_name preceded by a + occurs in the extra text after
+dnl a procedure name, then no code for any classes in that group.
+dnl Note that in case of conflict, the group_name preceded by a -
+dnl takes precedence.
+dnl For instance, with:
+dnl "+shape -bd_shape" following a procedure name
+dnl only code for the Polyhedron class
+dnl and the Octagonal_Shape class for that procedure will be generated.
+define(`m4_group_names', `dnl
+all, shape, wr_shape, polyhedron, grid, bd_shape, octagonal_shape')
 
-dnl class_super_group
-dnl
-dnl There is one class super_group:
-dnl POINTS for classes defining some Domain based on sets of Points
-dnl (ie grid and shape classes)
-define(`m4_class_super_group', `POINTS')
+define(`m4_all_group', `Polyhedron, Grid, BD_Shape, Octagonal_Shape')
+define(`m4_shape_group', `Polyhedron, BD_Shape, Octagonal_Shape')
+define(`m4_wr_shape_group', `BD_Shape, Octagonal_Shape')
+define(`m4_polyhedron_group', Polyhedron)
+define(`m4_grid_group', Grid)
+define(`m4_bd_shape_group', BD_Shape)
+define(`m4_octagonal_shape_group', Octagonal_Shape)
 
 dnl m4_pattern_list
 dnl
@@ -201,6 +216,7 @@ define(`num_comparisons', 3)
 define(`comparison1', `contains')
 define(`comparison2', `strictly_contains')
 define(`comparison3', `is_disjoint_from')
+define(`num_BD_Shape_comparisons', 2)
 
 dnl num_class_binops
 dnl class_binop

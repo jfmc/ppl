@@ -123,13 +123,16 @@ patsubst(`patsubst(`$3',
   m4_pattern_delimiter`'CPP_CLASS`'m4_pattern_delimiter, $2)dnl
 ')
 
+define(`m4_get_arity', `regexp(`$1', `/\([0-9]*\)', \1)')
+define(`m4_get_attribute', `regexp(`$1', `\*\(nofail\)', \1)')
+
 dnl m4_get_code_schema(Procedure_Name)
 dnl
 dnl Procedure name schemas are replaced by the code schema.
-define(`m4_get_code_schema',
-  `patsubst(`$1',
-     `[ ]*\(ppl_[^ /]+\)\(/\([0-9]+\)\)?[ ]*\([a-z]*\).*',
-     `m4_extension(\1, \3, \4)')')
+define(`m4_get_code_schema', `dnl
+patsubst(`$1',
+     `[ ]*\(ppl_[^ /]+\)\(.*\)',
+        `m4_extension(\1, m4_get_arity(\2), m4_get_attribute(\2))')')
 
 dnl m4_extension(Procedure Name)
 dnl
@@ -166,6 +169,66 @@ patsubst(`$2', `\(.*\)',
                                   m4_pattern_list)')dnl
 ')
 
+dnl m4_proc_keep_or_throw(
+dnl     Class_Kind, Procedure_Info, +_or_-, Group1, Group2, ...)
+dnl
+dnl This compares the Class_Kind with the groups in the
+dnl third and subsequent arguments that are also in the groups
+dnl in the procedure info.
+dnl For each group, it checks if Class_Kind is in that group;
+dnl if it is, it checks if +group or -group
+dnl (depending if +_or_- is + or - is in the Procedure_Info.
+dnl Once it finds such a group, it stops iterating through the groups
+dnl and expands to 1. If no such group is found, it expands to 0.
+define(`m4_proc_keep_or_throw', `dnl
+ifelse($#, 0, 0, $#, 1, 0, $#, 2, 0, $#, 3, 0,
+  $#, 4, `m4_proc_keep_or_throw_aux($1, $2, $3, $4)',
+    `ifelse(m4_proc_keep_or_throw_aux($1, $2, $3, $4), 1, 1,
+      m4_proc_keep_or_throw($1, $2, $3, shift(shift(shift(shift($@))))))')dnl
+')
+
+dnl m4_proc_keep_or_throw_aux(
+dnl     Class_Kind, Procedure_Info, +_or_-, Group)
+dnl
+dnl This checks if Class_Kind is in Group;
+dnl if it is, it checks if +Group or -Group
+dnl (depending if +_or_- is + or - is in the Procedure_Info;
+dnl if it is, then it expands to 1, otherwise, expands to 0.
+define(`m4_proc_keep_or_throw_aux', `dnl
+ifelse(m4_check_if_class_in_group($1, m4_$4_group), 1,
+  `ifelse(index($2, $3$4), -1, 0, 1)', 0)dnl
+')
+
+dnl m4_check_if_class_in_group(Class_Kind, Class_Kind1, Class_Kind2, ...)
+dnl
+dnl This expands to 1 only if Class_Kind matches a Class_Kind`'i
+dnl in the rest of the list; otherwise, it expands to 0.
+define(`m4_check_if_class_in_group', `dnl
+ifelse($#, 0, 0, $#, 1, 0,
+$#, 2, `ifelse($1, $2, 1, 0)',
+$1, $2, 1, `dnl
+m4_check_if_class_in_group($1, shift(shift($@)))dnl
+')dnl
+')
+
+dnl m4_filter(Class_Kind, Procedure_Name)
+dnl
+dnl Keeps just those procedure names that are needed for the given class kind.
+dnl It first checks if there is a group including the Class_name
+dnl in Procedure_Name, preceded by a -.
+dnl if so, it expands to the empty string.
+dnl If this is not the case, it checks if there is a group
+dnl including the Class_name in Procedure_Name, preceded by a +.
+dnl if so, it expands to the given Procedure_Name.
+define(`m4_filter', `dnl
+define(`m4_proc_info_string',
+  patsubst(`$2', `[ ]*ppl_[^ ]+ \(.*\)', \1))dnl
+ifelse(m4_proc_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, ,
+  ifelse(m4_proc_keep_or_throw($1, m4_proc_info_string, +, m4_group_names), 1,
+    $2))dnl
+undefine(m4_proc_info_string)dnl
+')
+
 dnl m4_filter_all(Class_Kind, Procedure_Name1, ProcedureName2, ...)
 dnl
 dnl Keeps just those procedure names that are needed for the given class kind.
@@ -176,20 +239,6 @@ ifelse($2, `', `', `dnl
 ifelse(m4_filter($1, $2), `', `', `$2, ')dnl
 m4_filter_all($1, shift(shift($@)))dnl
 ')dnl
-')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl There are several codes for keeping or eliminating a schema name
-dnl and the tests here correspond to these.
-define(`m4_filter', `dnl
-ifelse(index($2, X`'$1), -1,
-  ifelse(index($2, $1), -1,
-    ifelse(index($2, All), -1,
-      ifelse(index($2, m4_class_group($1)), -1,
-        ifelse(index($2, m4_class_super_group($1)), -1, `',
-          $2), $2), $2), $2))')dnl
 ')
 
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
