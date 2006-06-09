@@ -340,7 +340,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     if (generators_are_minimized()) {
       // Count the actual number of rows that are now redundant.
       dimension_type num_redundant = 0;
-      dimension_type num_old_gs = space_dim - new_dimension;
+      const dimension_type num_old_gs = space_dim - new_dimension;
       for (dimension_type row = 0; row < num_old_gs; ++row)
 	dim_kinds[row] == GEN_VIRTUAL || ++num_redundant;
       if (num_redundant > 0) {
@@ -364,8 +364,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     con_sys.remove_higher_space_dimensions(new_dimension);
     // Count the actual number of rows that are now redundant.
     dimension_type num_redundant = 0;
-    dimension_type num_old_cgs = space_dim - new_dimension;
-    for (dimension_type row = 0; row < num_old_cgs; ++row)
+    for (dimension_type row = space_dim; row > new_dimension; --row)
       dim_kinds[row] == CON_VIRTUAL || ++num_redundant;
     if (num_redundant > 0) {
       dimension_type rows = con_sys.num_rows();
