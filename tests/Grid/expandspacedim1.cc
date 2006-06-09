@@ -93,7 +93,7 @@ test04() {
   gr.add_grid_generator(grid_point(A));
   gr.add_grid_generator(grid_point(A + 2*B));
   gr.add_grid_generator(grid_point());
-  print_generators(gr, "***  ***");
+  print_generators(gr, "*** gr ***");
 
   gr.expand_space_dimension(A, 1);
 
