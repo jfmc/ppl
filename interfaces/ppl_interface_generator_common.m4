@@ -54,7 +54,7 @@ dnl ====== is influenced by the overall interface generator architecture.
 dnl =====================================================================
 
 dnl The pattern delimiter.
-define(`m4_pattern_delimiter', 4)
+define(`m4_pattern_delimiter', `@')
 
 dnl m4_replace_pattern(Class_Kind, String, Pattern)
 dnl
@@ -131,17 +131,22 @@ dnl
 dnl Procedure name schemas are replaced by the code schema.
 define(`m4_get_code_schema', `dnl
 patsubst(`$1',
-     `[ ]*\(ppl_[^ /]+\)\(.*\)',
-        `m4_extension(\1, m4_get_arity(\2), m4_get_attribute(\2))')')
+         `[ ]*\(ppl_[^ /]+\)\(.*\)',
+         `m4_extension(\1, m4_get_arity(\2), m4_get_attribute(\2))')')
 
-dnl m4_extension(Procedure Name)
+dnl m4_extension(Procedure_Name, [Arity, Attribute])
 dnl
-dnl Adds "_code" to Procedure Name so that it
-dnl matches the code macro definition name.
+dnl Appends "_code" to Procedure_Name so that it can match the name
+dnl of one of the macros defined (if eveer) in file *_code.m4 and get
+dnl therefore expanded to the corresponding code schema.
 dnl
-dnl This has to be redefined in the Prolog system files
-dnl for the specific extensions needed for the code there.
-define(`m4_extension', `m4_ifndef($1`'_code, `')')
+dnl By default, arguments Arity and Attribute are ignored. When and where
+dnl these are needed (e.g., in the Prolog system files), the macro
+dnl m4_extension will be referined appropriately.
+dnl
+dnl Note: the macro `$1_code' has to be called using builtin `indir'
+dnl because it is not a legal m4 identifier (it contains `@').
+define(`m4_extension', `ifdef(`$1_code', `indir(`$1_code')', `')')
 
 
 dnl m4_procedure_names_to_code(Class_Kind,
