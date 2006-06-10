@@ -16,19 +16,20 @@ dnl Conversely, if a group_name preceded by a + occurs in the extra text after
 dnl a procedure name, then no code for any classes in that group.
 dnl
 dnl More formally, if the extra text for a procedure includes
-dnl +g1 +g2 ''' +gn and -h1 -h2 ... -hn
-dnl where g1,g2, ..., gn and h1, h2, ..., hn are group names,
+dnl +g1 +g2 ''' +gm and -h1 -h2 ... -hn
+dnl where g1,g2, ..., gm and h1, h2, ..., hn are group names,
 dnl then the actual class kinds that code will be generated for
 dnl will be determined using set difference "\":
-dnl (m4_g1_group union m4_g2_group union ... union m4_gn_group)\
-dnl (m4_h1_group union m4_h2_group union ... union hn_group)
+dnl (m4_g1_group union m4_g2_group union ... union m4_gm_group)\
+dnl (m4_h1_group union m4_h2_group union ... union m4_hn_group)
 dnl
 dnl That is: in case of conflict between the + and - groups,
-dnl group_names preceded by - take precedence.
+dnl the - takes precedence over the +;
+dnl all class kinds for group_names preceded by - are filtered away.
 dnl For instance, with:
-dnl "+shape -bd_shape" following a procedure name
-dnl only code for the Polyhedron class
-dnl and the Octagonal_Shape class for that procedure will be generated.
+dnl "+shape -bd_shape"
+dnl following a procedure name, only code (for that procedure)
+dnl for the Polyhedron and Octagonal_Shape class will be generated.
 define(`m4_group_names', `dnl
 all, shape, wr_shape, polyhedron, grid, bd_shape, octagonal_shape')
 
