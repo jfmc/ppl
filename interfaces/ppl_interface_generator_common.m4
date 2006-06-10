@@ -195,9 +195,9 @@ ifelse($#, 0, 0, $#, 1, 0, $#, 2, 0, $#, 3, 0,
 dnl m4_proc_keep_or_throw_aux(
 dnl     Class_Kind, Procedure_Info, +_or_-, Group)
 dnl
-dnl This checks if Class_Kind is in Group;
+dnl This checks if or Class_Kind is in Group;
 dnl if it is, it checks if +Group or -Group
-dnl (depending if +_or_- is + or - is in the Procedure_Info;
+dnl (depending if +_or_-Group is in the Procedure_Info;
 dnl if it is, then it expands to 1, otherwise, expands to 0.
 define(`m4_proc_keep_or_throw_aux', `dnl
 ifelse(m4_check_if_class_in_group($1, m4_$4_group), 1,
@@ -219,11 +219,11 @@ m4_check_if_class_in_group($1, shift(shift($@)))dnl
 dnl m4_filter(Class_Kind, Procedure_Name)
 dnl
 dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
+dnl It first checks if there is a group including the Class_Kind
 dnl in Procedure_Name, preceded by a -.
 dnl if so, it expands to the empty string.
 dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
+dnl including the Class_Kind in Procedure_Name, preceded by a +.
 dnl if so, it expands to the given Procedure_Name.
 define(`m4_filter', `dnl
 define(`m4_proc_info_string',
@@ -237,8 +237,8 @@ undefine(m4_proc_info_string)dnl
 dnl m4_filter_all(Class_Kind, Procedure_Name1, ProcedureName2, ...)
 dnl
 dnl Keeps just those procedure names that are needed for the given class kind.
-dnl There are several codes for keeping or eliminating a schema name
-dnl and the tests here correspond to these.
+dnl The classes to be kept or filtered away are determined by extra info
+dnl included with each Procedure_Name
 define(`m4_filter_all', `dnl
 ifelse($2, `', `', `dnl
 ifelse(m4_filter($1, $2), `', `', `$2, ')dnl

@@ -14,8 +14,17 @@ dnl If a group_name occurs in the extra text preceded by a - after
 dnl a procedure name, then no code for any classes in that group.
 dnl Conversely, if a group_name preceded by a + occurs in the extra text after
 dnl a procedure name, then no code for any classes in that group.
-dnl Note that in case of conflict, the group_name preceded by a -
-dnl takes precedence.
+dnl
+dnl More formally, if the extra text for a procedure includes
+dnl +g1 +g2 ''' +gn and -h1 -h2 ... -hn
+dnl where g1,g2, ..., gn and h1, h2, ..., hn are group names,
+dnl then the actual class kinds that code will be generated for
+dnl will be determined using set difference "\":
+dnl (m4_g1_group union m4_g2_group union ... union m4_gn_group)\
+dnl (m4_h1_group union m4_h2_group union ... union hn_group)
+dnl
+dnl That is: in case of conflict between the + and - groups,
+dnl group_names preceded by - take precedence.
 dnl For instance, with:
 dnl "+shape -bd_shape" following a procedure name
 dnl only code for the Polyhedron class
