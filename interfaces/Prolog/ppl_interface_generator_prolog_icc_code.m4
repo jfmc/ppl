@@ -2,18 +2,18 @@ divert(-1)dnl
 
 define(`m4_class_exception_handler_code',
 `void
-handle_exception(const not_a_4CLASS4_handle& e) {
+handle_exception(const not_a_@CLASS@_handle& e) {
   Prolog_term_ref found = Prolog_new_term_ref();
   Prolog_construct_compound(found, a_found, e.term());
 
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_construct_compound(expected, a_expected,
-			    Prolog_atom_term_from_string("4CLASS4_handle"));
+			    Prolog_atom_term_from_string("@CLASS@_handle"));
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
 			    Prolog_atom_term_from_string
-			    ("term_to_4CLASS4_handle"));
+			    ("term_to_@CLASS@_handle"));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
@@ -26,12 +26,12 @@ handle_exception(const not_a_4CLASS4_handle& e) {
 define(`m4_term_to_class_handle_code', `dnl
 namespace {
 
-4CPP_CLASS4*
-term_to_4CLASS4_handle(Prolog_term_ref t_ph) {
+@CPP_CLASS@*
+term_to_@CLASS@_handle(Prolog_term_ref t_ph) {
   if (Prolog_is_address(t_ph)) {
     void* p;
     if (Prolog_get_address(t_ph, &p))
-      return static_cast<4CPP_CLASS4*>(p);
+      return static_cast<@CPP_CLASS@*>(p);
   }
   throw ppl_handle_mismatch(t_ph);
 }
@@ -40,19 +40,19 @@ term_to_4CLASS4_handle(Prolog_term_ref t_ph) {
 
 ')
 
-define(`ppl_new_4TOPOLOGY44CLASS4_from_space_dimension_code',
+define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
-ppl_new_4TOPOLOGY44CLASS4_from_space_dimension
+ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 (Prolog_term_ref t_nd, Prolog_term_ref t_uoe, Prolog_term_ref t_ph) {
   try {
-    4CPP_CLASS4* ph;
+    @CPP_CLASS@* ph;
     Prolog_atom uoe = term_to_universe_or_empty(t_uoe);
 
     if (uoe == a_empty)
-        ph = new 4TOPOLOGY44CPP_CLASS4(term_to_unsigned<dimension_type>(t_nd),
+        ph = new @TOPOLOGY@@CPP_CLASS@(term_to_unsigned<dimension_type>(t_nd),
 			      EMPTY);
       else
-        ph = new 4TOPOLOGY44CPP_CLASS4(term_to_unsigned<dimension_type>(t_nd));
+        ph = new @TOPOLOGY@@CPP_CLASS@(term_to_unsigned<dimension_type>(t_nd));
 
 
     Prolog_term_ref tmp = Prolog_new_term_ref();
@@ -69,17 +69,17 @@ ppl_new_4TOPOLOGY44CLASS4_from_space_dimension
 
 ')
 
-define(`ppl_new_4TOPOLOGY44CLASS4_from_4INTOPOLOGY44CLASS4_code',
+define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_new_4TOPOLOGY44CLASS4_from_4INTOPOLOGY44CLASS4
+ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@
 (Prolog_term_ref t_ph_source, Prolog_term_ref t_ph) {
   try {
-    4CPP_CLASS4* ph;
-    const 4INTOPOLOGY44CPP_CLASS4* ph_source
-	= static_cast<const 4INTOPOLOGY44CPP_CLASS4*>
-	(term_to_4CLASS4_handle(t_ph_source));
+    @CPP_CLASS@* ph;
+    const @INTOPOLOGY@@CPP_CLASS@* ph_source
+	= static_cast<const @INTOPOLOGY@@CPP_CLASS@*>
+	(term_to_@CLASS@_handle(t_ph_source));
     CHECK(ph_source);
-        ph = new 4TOPOLOGY44CPP_CLASS4(*ph_source);
+        ph = new @TOPOLOGY@@CPP_CLASS@(*ph_source);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -94,24 +94,24 @@ ppl_new_4TOPOLOGY44CLASS4_from_4INTOPOLOGY44CLASS4
 
 ')
 
-define(`ppl_new_4TOPOLOGY44CLASS4_from_4REPRESENT4s_code',
+define(`ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s_code',
 `extern "C" Prolog_foreign_return_type
-ppl_new_4TOPOLOGY44CLASS4_from_4REPRESENT4s
+ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s
 (Prolog_term_ref t_clist, Prolog_term_ref t_ph) {
   try {
-    4UREPRESENT4_System cs;
+    @UREPRESENT@_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_4REPRESENT4(c));
+      cs.insert(build_@REPRESENT@(c));
     }
 
     // Check the list is properly terminated.
     check_nil_terminating(t_clist);
 
-    4CPP_CLASS4* ph;
-    ph = new 4TOPOLOGY44CPP_CLASS4(cs);
+    @CPP_CLASS@* ph;
+    ph = new @TOPOLOGY@@CPP_CLASS@(cs);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -126,9 +126,9 @@ ppl_new_4TOPOLOGY44CLASS4_from_4REPRESENT4s
 
 ')
 
-define(`ppl_new_4TOPOLOGY44CLASS4_from_4BOX4_code',
+define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_new_4TOPOLOGY44CLASS4_from_4BOX4
+ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
 (Prolog_term_ref t_bb, Prolog_term_ref t_ph) {
   try {
     // Compute the space dimension.
@@ -188,8 +188,8 @@ ppl_new_4TOPOLOGY44CLASS4_from_4BOX4
 	bbox.lower_upper_bound(i, closed, n, d);
     }
 
-    4CPP_CLASS4* ph;
-    ph = new 4TOPOLOGY44CPP_CLASS4(bbox, From_`'4UBOX4());
+    @CPP_CLASS@* ph;
+    ph = new @TOPOLOGY@@CPP_CLASS@(bbox, From_`'@UBOX@());
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -204,12 +204,12 @@ ppl_new_4TOPOLOGY44CLASS4_from_4BOX4
 
 ')
 
-define(`ppl_4CLASS4_swap_code',
+define(`ppl_@CLASS@_swap_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+ppl_@CLASS@_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
-    4CPP_CLASS4* lhs = term_to_4CLASS4_handle(t_lhs);
-    4CPP_CLASS4* rhs = term_to_4CLASS4_handle(t_rhs);
+    @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
+    @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     lhs->swap(*rhs);
@@ -220,11 +220,11 @@ ppl_4CLASS4_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
 
 ')
 
-define(`ppl_delete_4CLASS4_code',
+define(`ppl_delete_@CLASS@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_delete_4CLASS4(Prolog_term_ref t_ph) {
+ppl_delete_@CLASS@(Prolog_term_ref t_ph) {
   try {
-    const 4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     UNREGISTER(ph);
     delete ph;
     return PROLOG_SUCCESS;
@@ -234,13 +234,13 @@ ppl_delete_4CLASS4(Prolog_term_ref t_ph) {
 
 ')
 
-define(`ppl_4CLASS4_4DIMENSION4_code',
+define(`ppl_@CLASS@_@DIMENSION@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_4DIMENSION4(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
+ppl_@CLASS@_@DIMENSION@(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
   try {
-    const 4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    if (unify_ulong(t_sd, ph->4DIMENSION4()))
+    if (unify_ulong(t_sd, ph->@DIMENSION@()))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -248,20 +248,20 @@ ppl_4CLASS4_4DIMENSION4(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
 
 ')
 
-define(`ppl_4CLASS4_get_4DESCRIBE4s_code',
+define(`ppl_@CLASS@_get_@DESCRIBE@s_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_get_4DESCRIBE4s
+ppl_@CLASS@_get_@DESCRIBE@s
 (Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
   try {
-    const 4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    const 4UDESCRIBE4_System& gs = ph->4ALT_DESCRIBE4s();
-    for (4UDESCRIBE4_System::const_iterator i = gs.begin(),
+    const @UDESCRIBE@_System& gs = ph->@ALT_DESCRIBE@s();
+    for (@UDESCRIBE@_System::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i)
-      Prolog_construct_cons(tail, 4DESCRIBE4_term(*i), tail);
+      Prolog_construct_cons(tail, @DESCRIBE@_term(*i), tail);
 
     if (Prolog_unify(t_glist, tail))
       return PROLOG_SUCCESS;
@@ -271,20 +271,20 @@ ppl_4CLASS4_get_4DESCRIBE4s
 
 ')
 
-define(`ppl_4CLASS4_get_minimized_4DESCRIBE4s_code',
+define(`ppl_@CLASS@_get_minimized_@DESCRIBE@s_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_get_minimized_4DESCRIBE4s
+ppl_@CLASS@_get_minimized_@DESCRIBE@s
 (Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
   try {
-    const 4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    const 4UDESCRIBE4_System& gs = ph->minimized_4ALT_DESCRIBE4s();
-    for (4UDESCRIBE4_System::const_iterator i = gs.begin(),
+    const @UDESCRIBE@_System& gs = ph->minimized_@ALT_DESCRIBE@s();
+    for (@UDESCRIBE@_System::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i)
-      Prolog_construct_cons(tail, 4DESCRIBE4_term(*i), tail);
+      Prolog_construct_cons(tail, @DESCRIBE@_term(*i), tail);
 
     if (Prolog_unify(t_glist, tail))
       return PROLOG_SUCCESS;
@@ -294,14 +294,14 @@ ppl_4CLASS4_get_minimized_4DESCRIBE4s
 
 ')
 
-define(`ppl_4CLASS4_relation_with_4DESCRIBE4_code',
+define(`ppl_@CLASS@_relation_with_@DESCRIBE@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_relation_with_4DESCRIBE4
+ppl_@CLASS@_relation_with_@DESCRIBE@
 (Prolog_term_ref t_ph, Prolog_term_ref t_c, Prolog_term_ref t_r) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-relation_with_4DESCRIBE4_code`'
+relation_with_@DESCRIBE@_code`'
     if (Prolog_unify(t_r, tail))
       return PROLOG_SUCCESS;
   }
@@ -400,9 +400,9 @@ define(`relation_with_grid_generator_code', `
     }
 ')
 
-define(`ppl_Grid_get_4BOX4_code',
+define(`ppl_Grid_get_@BOX@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_Grid_get_4BOX4
+ppl_Grid_get_@BOX@
 (Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
   try {
     Grid* ph = term_to_Grid_handle(t_ph);
@@ -410,7 +410,7 @@ ppl_Grid_get_4BOX4
 
     dimension_type dimension = ph->space_dimension();
     Bounding_Box bbox(dimension);
-    ph->4ALT_BOX4(bbox);
+    ph->@ALT_BOX@(bbox);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     for (dimension_type i = dimension; i-- > 0; )
@@ -423,12 +423,12 @@ ppl_Grid_get_4BOX4
 
 ')
 
-define(`ppl_4CLASS4_get_4BOX4_code',
+define(`ppl_@CLASS@_get_@BOX@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_get_4BOX4
+ppl_@CLASS@_get_@BOX@
 (Prolog_term_ref t_ph, Prolog_term_ref t_cc, Prolog_term_ref t_bb) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
 
     Prolog_atom p_cc = term_to_complexity_class(t_cc);
@@ -442,7 +442,7 @@ ppl_4CLASS4_get_4BOX4
 
     dimension_type dimension = ph->space_dimension();
     Bounding_Box bbox(dimension);
-    ph->shrink_4BOX4(bbox, cc);
+    ph->shrink_@BOX@(bbox, cc);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     for (dimension_type i = dimension; i-- > 0; )
@@ -455,13 +455,13 @@ ppl_4CLASS4_get_4BOX4
 
 ')
 
-define(`ppl_4CLASS4_is_4STATE4_code',
+define(`ppl_@CLASS@_is_@STATE@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_is_4STATE4(Prolog_term_ref t_ph) {
+ppl_@CLASS@_is_@STATE@(Prolog_term_ref t_ph) {
   try {
-    const 4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    if (ph->is_4STATE4())
+    if (ph->is_@STATE@())
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -469,11 +469,11 @@ ppl_4CLASS4_is_4STATE4(Prolog_term_ref t_ph) {
 
 ')
 
-define(`ppl_4CLASS4_topological_closure_assign_code',
+define(`ppl_@CLASS@_topological_closure_assign_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_topological_closure_assign(Prolog_term_ref t_ph) {
+ppl_@CLASS@_topological_closure_assign(Prolog_term_ref t_ph) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     ph->topological_closure_assign();
     return PROLOG_SUCCESS;
@@ -483,15 +483,15 @@ ppl_4CLASS4_topological_closure_assign(Prolog_term_ref t_ph) {
 
 ')
 
-define(`ppl_4CLASS4_bounds_from_4ABOVEBELOW4_code',
+define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_bounds_from_4ABOVEBELOW4
+ppl_@CLASS@_bounds_from_@ABOVEBELOW@
 (Prolog_term_ref t_ph, Prolog_term_ref t_expr) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     Linear_Expression l = build_linear_expression(t_expr);
-    if (ph->bounds_from_4ABOVEBELOW4(l))
+    if (ph->bounds_from_@ABOVEBELOW@(l))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -499,20 +499,20 @@ ppl_4CLASS4_bounds_from_4ABOVEBELOW4
 
 ')
 
-define(`ppl_4CLASS4_4MAXMIN4_code',
+define(`ppl_@CLASS@_@MAXMIN@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_4MAXMIN4
+ppl_@CLASS@_@MAXMIN@
 (Prolog_term_ref t_ph, Prolog_term_ref t_le_expr,
  Prolog_term_ref t_n,  Prolog_term_ref t_d,
  Prolog_term_ref t_maxmin) {
  try {
-    const 4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     const Linear_Expression le = build_linear_expression(t_le_expr);
     Coefficient n;
     Coefficient d;
     bool maxmin;
-    if (ph->4MAXMIN4(le, n, d, maxmin)) {
+    if (ph->@MAXMIN@(le, n, d, maxmin)) {
       Prolog_term_ref t = Prolog_new_term_ref();
       Prolog_atom a = (maxmin ? a_true : a_false);
       Prolog_put_atom(t, a);
@@ -527,28 +527,28 @@ ppl_4CLASS4_4MAXMIN4
 
 ')
 
-define(`ppl_4CLASS4_4MAXMIN4_with_point_code',
+define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_4MAXMIN4_with_point
+ppl_@CLASS@_@MAXMIN@_with_point
 (Prolog_term_ref t_ph, Prolog_term_ref t_le_expr,
  Prolog_term_ref t_n, Prolog_term_ref t_d,
  Prolog_term_ref t_maxmin, Prolog_term_ref t_g) {
  try {
-    const 4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     const Linear_Expression le = build_linear_expression(t_le_expr);
     Coefficient n;
     Coefficient d;
     bool maxmin;
-    4UGENERATOR4 g(4POINT4());
-    if (ph->4MAXMIN4(le, n, d, maxmin, g)) {
+    @UGENERATOR@ g(@POINT@());
+    if (ph->@MAXMIN@(le, n, d, maxmin, g)) {
       Prolog_term_ref t = Prolog_new_term_ref();
       Prolog_atom a = (maxmin ? a_true : a_false);
       Prolog_put_atom(t, a);
       if (Prolog_unify(t_n, Coefficient_to_integer_term(n))
 	  && Prolog_unify(t_d, Coefficient_to_integer_term(d))
 	  && Prolog_unify(t_maxmin, t)
-	  && Prolog_unify(t_g, 4GENERATOR4_term(g)))
+	  && Prolog_unify(t_g, @GENERATOR@_term(g)))
 	return PROLOG_SUCCESS;
     }
  }
@@ -557,16 +557,16 @@ ppl_4CLASS4_4MAXMIN4_with_point
 
 ')
 
-define(`ppl_4CLASS4_4COMPARISON4_4CLASS4_code',
+define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_4COMPARISON4_4CLASS4
+ppl_@CLASS@_@COMPARISON@_@CLASS@
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
-    const 4CPP_CLASS4* lhs = term_to_4CLASS4_handle(t_lhs);
-    const 4CPP_CLASS4* rhs = term_to_4CLASS4_handle(t_rhs);
+    const @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
+    const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    if (lhs->4COMPARISON4(*rhs))
+    if (lhs->@COMPARISON@(*rhs))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -574,13 +574,13 @@ ppl_4CLASS4_4COMPARISON4_4CLASS4
 
 ')
 
-define(`ppl_4CLASS4_equals_4CLASS4_code',
+define(`ppl_@CLASS@_equals_@CLASS@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_equals_4CLASS4
+ppl_@CLASS@_equals_@CLASS@
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
-    const 4CPP_CLASS4* lhs = term_to_4CLASS4_handle(t_lhs);
-    const 4CPP_CLASS4* rhs = term_to_4CLASS4_handle(t_rhs);
+    const @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
+    const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     if (*lhs == *rhs)
@@ -591,11 +591,11 @@ ppl_4CLASS4_equals_4CLASS4
 
 ')
 
-define(`ppl_4CLASS4_OK_code',
+define(`ppl_@CLASS@_OK_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_OK(Prolog_term_ref t_ph) {
+ppl_@CLASS@_OK(Prolog_term_ref t_ph) {
   try {
-    const 4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     if (ph->OK())
       return PROLOG_SUCCESS;
@@ -605,13 +605,13 @@ ppl_4CLASS4_OK(Prolog_term_ref t_ph) {
 
 ')
 
-define(`ppl_4CLASS4_add_4REPRESENT4_code',
+define(`ppl_@CLASS@_add_@REPRESENT@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_add_4REPRESENT4(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
+ppl_@CLASS@_add_@REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    ph->add_4ALT_REPRESENT4(build_4REPRESENT4(t_c));
+    ph->add_@ALT_REPRESENT@(build_@REPRESENT@(t_c));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -619,14 +619,14 @@ ppl_4CLASS4_add_4REPRESENT4(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
 
 ')
 
-define(`ppl_4CLASS4_add_4REPRESENT4_and_minimize_code',
+define(`ppl_@CLASS@_add_@REPRESENT@_and_minimize_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_add_4REPRESENT4_and_minimize
+ppl_@CLASS@_add_@REPRESENT@_and_minimize
 (Prolog_term_ref t_ph, Prolog_term_ref t_c) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    if (ph->add_4ALT_REPRESENT4_and_minimize(build_4REPRESENT4(t_c)))
+    if (ph->add_@ALT_REPRESENT@_and_minimize(build_@REPRESENT@(t_c)))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -634,25 +634,25 @@ ppl_4CLASS4_add_4REPRESENT4_and_minimize
 
 ')
 
-define(`ppl_4CLASS4_add_4REPRESENT4s_code',
+define(`ppl_@CLASS@_add_@REPRESENT@s_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_add_4REPRESENT4s
+ppl_@CLASS@_add_@REPRESENT@s
 (Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    4UREPRESENT4_System cs;
+    @UREPRESENT@_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_4REPRESENT4(c));
+      cs.insert(build_@REPRESENT@(c));
     }
 
     // Check the list is properly terminated.
     check_nil_terminating(t_clist);
 
-    ph->add_4ALT_REPRESENT4s(cs);
+    ph->add_@ALT_REPRESENT@s(cs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -660,25 +660,25 @@ ppl_4CLASS4_add_4REPRESENT4s
 
 ')
 
-define(`ppl_4CLASS4_add_4REPRESENT4s_and_minimize_code',
+define(`ppl_@CLASS@_add_@REPRESENT@s_and_minimize_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_add_4REPRESENT4s_and_minimize
+ppl_@CLASS@_add_@REPRESENT@s_and_minimize
 (Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    4UREPRESENT4_System cs;
+    @UREPRESENT@_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_4REPRESENT4(c));
+      cs.insert(build_@REPRESENT@(c));
     }
 
     // Check the list is properly terminated.
     check_nil_terminating(t_clist);
 
-    if (ph->add_4ALT_REPRESENT4s_and_minimize(cs))
+    if (ph->add_@ALT_REPRESENT@s_and_minimize(cs))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -692,10 +692,10 @@ define(`bop_assign_code',
 Prolog_foreign_return_type
 bop_assign(Prolog_term_ref t_lhs,
 	   Prolog_term_ref t_rhs,
-	   void (4CPP_CLASS4::* bop_assign)(const 4CPP_CLASS4&)) {
+	   void (@CPP_CLASS@::* bop_assign)(const @CPP_CLASS@&)) {
   try {
-    4CPP_CLASS4* lhs = term_to_4CLASS4_handle(t_lhs);
-    const 4CPP_CLASS4* rhs = term_to_4CLASS4_handle(t_rhs);
+    @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
+    const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     (lhs->*bop_assign)(*rhs);
@@ -707,11 +707,11 @@ bop_assign(Prolog_term_ref t_lhs,
 Prolog_foreign_return_type
 bop_assign_and_minimize(Prolog_term_ref t_lhs,
 			Prolog_term_ref t_rhs,
-			bool (4CPP_CLASS4::*
-			      bop_assign_and_minimize)(const 4CPP_CLASS4&)) {
+			bool (@CPP_CLASS@::*
+			      bop_assign_and_minimize)(const @CPP_CLASS@&)) {
   try {
-    4CPP_CLASS4* lhs = term_to_4CLASS4_handle(t_lhs);
-    const 4CPP_CLASS4* rhs = term_to_4CLASS4_handle(t_rhs);
+    @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
+    const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     if ((lhs->*bop_assign_and_minimize)(*rhs))
@@ -724,35 +724,35 @@ bop_assign_and_minimize(Prolog_term_ref t_lhs,
 
 ')
 
-define(`ppl_4CLASS4_4BINOP4_code',
+define(`ppl_@CLASS@_@BINOP@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_4BINOP4
+ppl_@CLASS@_@BINOP@
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   return bop_assign(t_lhs, t_rhs,
-		    &4CPP_CLASS4::4BINOP4);
+		    &@CPP_CLASS@::@BINOP@);
 }
 
 ')
 
-define(`ppl_4CLASS4_4BINMINOP4_code',
+define(`ppl_@CLASS@_@BINMINOP@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_4BINMINOP4
+ppl_@CLASS@_@BINMINOP@
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   return bop_assign_and_minimize(t_lhs, t_rhs,
-		    &4CPP_CLASS4::4BINMINOP4);
+		    &@CPP_CLASS@::@BINMINOP@);
 }
 
 ')
 
-define(`ppl_4CLASS4_4AFFIMAGE4_code',
+define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_4AFFIMAGE4
+ppl_@CLASS@_@AFFIMAGE@
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_v, Prolog_term_ref t_le, Prolog_term_ref t_d) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    ph->4AFFIMAGE4(term_to_Variable(t_v),
+    ph->@AFFIMAGE@(term_to_Variable(t_v),
 		     build_linear_expression(t_le),
 		     term_to_Coefficient(t_d));
     return PROLOG_SUCCESS;
@@ -762,16 +762,16 @@ ppl_4CLASS4_4AFFIMAGE4
 
 ')
 
-define(`ppl_Grid_generalized_4AFFIMAGE4_code',
+define(`ppl_Grid_generalized_@AFFIMAGE@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_Grid_generalized_4AFFIMAGE4
+ppl_Grid_generalized_@AFFIMAGE@
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_v, Prolog_term_ref t_le, Prolog_term_ref t_d,
  Prolog_term_ref t_m) {
   try {
     Grid* ph = term_to_Grid_handle(t_ph);
     CHECK(ph);
-    ph->generalized_4AFFIMAGE4(term_to_Variable(t_v),
+    ph->generalized_@AFFIMAGE@(term_to_Variable(t_v),
 				 build_linear_expression(t_le),
 				 term_to_Coefficient(t_d),
 				 term_to_Coefficient(t_m));
@@ -782,17 +782,17 @@ ppl_Grid_generalized_4AFFIMAGE4
 
 ')
 
-define(`ppl_4CLASS4_generalized_4AFFIMAGE4_code',
+define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_generalized_4AFFIMAGE4
+ppl_@CLASS@_generalized_@AFFIMAGE@
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_v, Prolog_term_ref t_r, Prolog_term_ref t_le,
  Prolog_term_ref t_d) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     Relation_Symbol r = term_to_relation_symbol(t_r);
-    ph->generalized_4AFFIMAGE4(term_to_Variable(t_v),
+    ph->generalized_@AFFIMAGE@(term_to_Variable(t_v),
 				 r,
 				 build_linear_expression(t_le),
 				 term_to_Coefficient(t_d));
@@ -803,15 +803,15 @@ ppl_4CLASS4_generalized_4AFFIMAGE4
 
 ')
 
-define(`ppl_Grid_generalized_4AFFIMAGE4_lhs_rhs_code',
+define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
 `extern "C" Prolog_foreign_return_type
-ppl_Grid_generalized_4AFFIMAGE4_lhs_rhs
+ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_m) {
   try {
     Grid* ph = term_to_Grid_handle(t_ph);
     CHECK(ph);
-    ph->generalized_4AFFIMAGE4(build_linear_expression(t_lhs),
+    ph->generalized_@AFFIMAGE@(build_linear_expression(t_lhs),
 				 build_linear_expression(t_rhs),
 				 term_to_Coefficient(t_m));
     return PROLOG_SUCCESS;
@@ -821,16 +821,16 @@ ppl_Grid_generalized_4AFFIMAGE4_lhs_rhs
 
 ')
 
-define(`ppl_4CLASS4_generalized_4AFFIMAGE4_lhs_rhs_code',
+define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_generalized_4AFFIMAGE4_lhs_rhs
+ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_lhs, Prolog_term_ref t_r, Prolog_term_ref t_rhs) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     Relation_Symbol r = term_to_relation_symbol(t_r);
-    ph->generalized_4AFFIMAGE4(build_linear_expression(t_lhs),
+    ph->generalized_@AFFIMAGE@(build_linear_expression(t_lhs),
 				 r,
 				 build_linear_expression(t_rhs));
     return PROLOG_SUCCESS;
@@ -840,16 +840,16 @@ ppl_4CLASS4_generalized_4AFFIMAGE4_lhs_rhs
 
 ')
 
-define(`ppl_4CLASS4_bounded_4AFFIMAGE4_code',
+define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_bounded_4AFFIMAGE4
+ppl_@CLASS@_bounded_@AFFIMAGE@
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_v, Prolog_term_ref t_lb_le, Prolog_term_ref t_ub_le,
  Prolog_term_ref t_d) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    ph->bounded_4AFFIMAGE4(term_to_Variable(t_v),
+    ph->bounded_@AFFIMAGE@(term_to_Variable(t_v),
 			     build_linear_expression(t_lb_le),
 			     build_linear_expression(t_ub_le),
 			     term_to_Coefficient(t_d));
@@ -866,11 +866,11 @@ define(`widening_extrapolation_code',
 Prolog_foreign_return_type
 widening_assign(Prolog_term_ref t_lhs,
 		Prolog_term_ref t_rhs,
-		void (4CPP_CLASS4::* widening_assign)(const 4CPP_CLASS4&,
+		void (@CPP_CLASS@::* widening_assign)(const @CPP_CLASS@&,
 						     unsigned* tp)) {
   try {
-    4CPP_CLASS4* lhs = term_to_4CLASS4_handle(t_lhs);
-    const 4CPP_CLASS4* rhs = term_to_4CLASS4_handle(t_rhs);
+    @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
+    const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     (lhs->*widening_assign)(*rhs, 0);
@@ -884,12 +884,12 @@ widening_assign_with_tokens(Prolog_term_ref t_lhs,
 			    Prolog_term_ref t_rhs,
 			    Prolog_term_ref t_ti,
 			    Prolog_term_ref t_to,
-			    void (4CPP_CLASS4::*
-				  widening_assign)(const 4CPP_CLASS4&,
+			    void (@CPP_CLASS@::*
+				  widening_assign)(const @CPP_CLASS@&,
 						   unsigned* tp)) {
   try {
-    4CPP_CLASS4* lhs = term_to_4CLASS4_handle(t_lhs);
-    const 4CPP_CLASS4* rhs = term_to_4CLASS4_handle(t_rhs);
+    @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
+    const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     unsigned t = term_to_unsigned<unsigned>(t_ti);
@@ -903,21 +903,21 @@ widening_assign_with_tokens(Prolog_term_ref t_lhs,
 Prolog_foreign_return_type
 limited_extrapolation_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
- void (4CPP_CLASS4::* limited_extrap_assign)
-      (const 4CPP_CLASS4&,
-       const 4UALT_CONSTRAINER4_System&,
+ void (@CPP_CLASS@::* limited_extrap_assign)
+      (const @CPP_CLASS@&,
+       const @UALT_CONSTRAINER@_System&,
        unsigned* tp)) {
   try {
-    4CPP_CLASS4* lhs = term_to_4CLASS4_handle(t_lhs);
-    const 4CPP_CLASS4* rhs = term_to_4CLASS4_handle(t_rhs);
+    @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
+    const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    4UALT_CONSTRAINER4_System cs;
+    @UALT_CONSTRAINER@_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-     cs.insert(build_4CONSTRAINER4(c));
+     cs.insert(build_@CONSTRAINER@(c));
     }
 
     // Check the list is properly terminated.
@@ -933,21 +933,21 @@ Prolog_foreign_return_type
 limited_extrapolation_assign_with_tokens
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
  Prolog_term_ref t_ti, Prolog_term_ref t_to,
- void (4CPP_CLASS4::* limited_extrap_assign)
-      (const 4CPP_CLASS4&,
-       const 4UALT_CONSTRAINER4_System&,
+ void (@CPP_CLASS@::* limited_extrap_assign)
+      (const @CPP_CLASS@&,
+       const @UALT_CONSTRAINER@_System&,
        unsigned* tp)) {
   try {
-    4CPP_CLASS4* lhs = term_to_4CLASS4_handle(t_lhs);
-    const 4CPP_CLASS4* rhs = term_to_4CLASS4_handle(t_rhs);
+    @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
+    const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    4UALT_CONSTRAINER4_System cs;
+    @UALT_CONSTRAINER@_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_4CONSTRAINER4(c));
+      cs.insert(build_@CONSTRAINER@(c));
     }
 
     // Check the list is properly terminated.
@@ -965,86 +965,86 @@ limited_extrapolation_assign_with_tokens
 
 ')
 
-define(`ppl_4CLASS4_4WIDENEXP4_widening_assign_with_tokens_code',
+define(`ppl_@CLASS@_@WIDENEXP@_widening_assign_with_tokens_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_4WIDENEXP4_widening_assign_with_tokens
+ppl_@CLASS@_@WIDENEXP@_widening_assign_with_tokens
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
  Prolog_term_ref t_ti, Prolog_term_ref t_to) {
   return widening_assign_with_tokens(t_lhs, t_rhs, t_ti, t_to,
-                                     &4CPP_CLASS4::4WIDENEXP4_widening_assign);
+                                     &@CPP_CLASS@::@WIDENEXP@_widening_assign);
 }
 
 ')
 
-define(`ppl_4CLASS4_4WIDENEXP4_widening_assign_code',
+define(`ppl_@CLASS@_@WIDENEXP@_widening_assign_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_4WIDENEXP4_widening_assign
+ppl_@CLASS@_@WIDENEXP@_widening_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   return widening_assign(t_lhs, t_rhs,
-                         &4CPP_CLASS4::4WIDENEXP4_widening_assign);
+                         &@CPP_CLASS@::@WIDENEXP@_widening_assign);
 }
 
 ')
 
-define(`ppl_4CLASS4_limited_4WIDENEXP4_extrapolation_assign_with_tokens_code',
+define(`ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_with_tokens_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_limited_4WIDENEXP4_extrapolation_assign_with_tokens
+ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_with_tokens
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
  Prolog_term_ref t_ti, Prolog_term_ref t_to) {
   return
     limited_extrapolation_assign_with_tokens
      (t_lhs, t_rhs, t_clist, t_ti, t_to,
-      &4CPP_CLASS4::limited_4WIDENEXP4_extrapolation_assign);
+      &@CPP_CLASS@::limited_@WIDENEXP@_extrapolation_assign);
 }
 
 ')
 
-define(`ppl_4CLASS4_limited_4WIDENEXP4_extrapolation_assign_code',
+define(`ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_limited_4WIDENEXP4_extrapolation_assign
+ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist) {
   return
     limited_extrapolation_assign(t_lhs, t_rhs, t_clist,
-				 &4CPP_CLASS4::
-				 limited_4WIDENEXP4_extrapolation_assign);
+				 &@CPP_CLASS@::
+				 limited_@WIDENEXP@_extrapolation_assign);
 }
 
 ')
 
-define(`ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign_with_tokens_code',
+define(`ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_with_tokens_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign_with_tokens
+ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_with_tokens
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
  Prolog_term_ref t_ti, Prolog_term_ref t_to) {
   return
     limited_extrapolation_assign_with_tokens
       (t_lhs, t_rhs, t_clist, t_ti, t_to,
-       &4CPP_CLASS4::bounded_4WIDENEXP4_extrapolation_assign);
+       &@CPP_CLASS@::bounded_@WIDENEXP@_extrapolation_assign);
 }
 
 ')
 
-define(`ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign_code',
+define(`ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_bounded_4WIDENEXP4_extrapolation_assign
+ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist) {
   return
     limited_extrapolation_assign(t_lhs, t_rhs, t_clist,
-				 &4CPP_CLASS4::
-				 bounded_4WIDENEXP4_extrapolation_assign);
+				 &@CPP_CLASS@::
+				 bounded_@WIDENEXP@_extrapolation_assign);
 }
 
 ')
 
-define(`ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4_code',
+define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4
+ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@
 (Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     dimension_type d = term_to_unsigned<dimension_type>(t_nnd);
-      ph->add_space_dimensions_4EMBEDPROJECT4(d);
+      ph->add_space_dimensions_@EMBEDPROJECT@(d);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1052,12 +1052,12 @@ ppl_4CLASS4_add_space_dimensions_4EMBEDPROJECT4
 
 ')
 
-define(`ppl_4CLASS4_remove_space_dimensions_code',
+define(`ppl_@CLASS@_remove_space_dimensions_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_remove_space_dimensions
+ppl_@CLASS@_remove_space_dimensions
 (Prolog_term_ref t_ph, Prolog_term_ref t_vlist) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     Variables_Set dead_variables;
     Prolog_term_ref v = Prolog_new_term_ref();
@@ -1077,12 +1077,12 @@ ppl_4CLASS4_remove_space_dimensions
 
 ')
 
-define(`ppl_4CLASS4_remove_higher_space_dimensions_code',
+define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_remove_higher_space_dimensions
+ppl_@CLASS@_remove_higher_space_dimensions
 (Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     ph->remove_higher_space_dimensions(term_to_unsigned<dimension_type>(t_nd));
     return PROLOG_SUCCESS;
@@ -1092,12 +1092,12 @@ ppl_4CLASS4_remove_higher_space_dimensions
 
 ')
 
-define(`ppl_4CLASS4_expand_space_dimension_code',
+define(`ppl_@CLASS@_expand_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_expand_space_dimension
+ppl_@CLASS@_expand_space_dimension
 (Prolog_term_ref t_ph, Prolog_term_ref t_v, Prolog_term_ref t_nd) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     ph->expand_space_dimension(term_to_Variable(t_v),
 			       term_to_unsigned<dimension_type>(t_nd));
@@ -1108,12 +1108,12 @@ ppl_4CLASS4_expand_space_dimension
 
 ')
 
-define(`ppl_4CLASS4_fold_space_dimensions_code',
+define(`ppl_@CLASS@_fold_space_dimensions_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_fold_space_dimensions
+ppl_@CLASS@_fold_space_dimensions
 (Prolog_term_ref t_ph, Prolog_term_ref t_vlist, Prolog_term_ref t_v) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     Variables_Set fold_variables;
     Prolog_term_ref v = Prolog_new_term_ref();
@@ -1133,12 +1133,12 @@ ppl_4CLASS4_fold_space_dimensions
 
 ')
 
-define(`ppl_4CLASS4_map_space_dimensions_code',
+define(`ppl_@CLASS@_map_space_dimensions_code',
 `extern "C" Prolog_foreign_return_type
-ppl_4CLASS4_map_space_dimensions
+ppl_@CLASS@_map_space_dimensions
 (Prolog_term_ref t_ph, Prolog_term_ref t_pfunc) {
   try {
-    4CPP_CLASS4* ph = term_to_4CLASS4_handle(t_ph);
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     dimension_type space_dim = ph->space_dimension();
     CHECK(ph);
     PFunc pfunc;
