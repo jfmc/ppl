@@ -11,10 +11,10 @@ dnl m4_pattern_delimiter(String)
 dnl
 dnl For the system files we use the macro names
 dnl where the patterns have no delimiters
-dnl FIXME The `4' is temporary.
+dnl FIXME The `@' is temporary.
 dnl This needs to be replaced by the empty string `'
 dnl when the dat.m4 and code.m4 files are changed.
-define(`m4_pattern_delimiter', `4')
+define(`m4_pattern_delimiter', `@')
 
 dnl m4_term_sequence(Number of Iterations, String to be Repeated)
 dnl
