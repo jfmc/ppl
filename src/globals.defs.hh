@@ -269,6 +269,23 @@ T low_bits_mask(unsigned n);
     std::cerr << *this;							\
   }
 
+// FIX class_prefix changed from 1 param version, to accomodate `,'
+#define PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,		\
+						type_symbol2,		\
+						class_prefix)		\
+  template <typename type_symbol1, typename type_symbol2>		\
+  void									\
+  class_prefix<type_symbol1, type_symbol2>::ascii_dump() const {	\
+    ascii_dump(std::cerr);						\
+  }									\
+									\
+  template <typename type_symbol1, typename type_symbol2>		\
+  void									\
+  class_prefix<type_symbol1, type_symbol2>::print() const {		\
+    using namespace IO_Operators;					\
+    std::cerr << *this;							\
+  }
+
 #define PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(type_symbol, class_prefix) \
   template <typename type_symbol>					\
   void									\

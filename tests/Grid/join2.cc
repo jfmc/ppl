@@ -110,7 +110,7 @@ test04() {
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(4, EMPTY);
-  gr2.add_generator(grid_point(2*A));
+  gr2.add_grid_generator(grid_point(2*A));
   print_generators(gr2, "*** gr2 ***");
 
   Grid known_gr = gr2;
@@ -131,8 +131,8 @@ test05() {
   Variable B(1);
 
   Grid gr1(4, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(grid_line(B));
+  gr1.add_grid_generator(grid_point());
+  gr1.add_grid_generator(grid_line(B));
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(4, EMPTY);
@@ -308,6 +308,78 @@ test11() {
   return false;
 }
 
+// join_assign_and_minimize - Divisor normalization.
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator_System gs1;
+  gs1.insert(grid_point(0*C));
+  gs1.insert(grid_line(A));
+  gs1.insert(grid_line(B));
+
+  Grid gr1(gs1);
+  print_generators(gr1, "*** gr1 ***");
+
+  Grid_Generator_System gs2;
+  gs2.insert(grid_point());
+  gs2.insert(grid_point(C, 3));
+
+  Grid gr2(gs2);
+  print_generators(gr2, "*** gr2 ***");
+
+  gr1.join_assign_and_minimize(gr2);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((3*C %= 0) / 1);
+
+  Grid known_gr(known_cgs);
+
+  bool ok = (gr1 == known_gr);
+
+  print_congruences(gr1, "*** gr1.join_assign_and_minimize(gr2) ***");
+
+  return ok;
+}
+
+// Previous test using upper_bound_assign_and_minimize.
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator_System gs1;
+  gs1.insert(grid_point(0*C));
+  gs1.insert(grid_line(A));
+  gs1.insert(grid_line(B));
+
+  Grid gr1(gs1);
+  print_generators(gr1, "*** gr1 ***");
+
+  Grid_Generator_System gs2;
+  gs2.insert(grid_point());
+  gs2.insert(grid_point(C, 3));
+
+  Grid gr2(gs2);
+  print_generators(gr2, "*** gr2 ***");
+
+  gr1.upper_bound_assign_and_minimize(gr2);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((3*C %= 0) / 1);
+
+  Grid known_gr(known_cgs);
+
+  bool ok = (gr1 == known_gr);
+
+  print_congruences(gr1, "*** gr1.upper_bound_assign_and_minimize(gr2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -322,4 +394,6 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN

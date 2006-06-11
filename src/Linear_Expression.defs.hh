@@ -301,6 +301,17 @@ public:
   */
   explicit Linear_Expression(const Generator& g);
 
+  /*! \brief
+    Builds the linear expression corresponding to grid generator \p g
+    (for points, parameters and lines the divisor is not copied).
+
+    Given the grid generator
+    \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
+    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
+    The inhomogeneous term of the linear expression is always 0.
+  */
+  explicit Linear_Expression(const Grid_Generator& g);
+
   //! Builds the linear expression corresponding to congruence \p cg.
   /*!
     Given the congruence

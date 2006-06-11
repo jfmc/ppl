@@ -237,7 +237,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	--source_index;
 	TRACE(cerr << "  parameter" << endl);
 	cg[dims] = 1;		// A proper congruence.
-	cg[dim] = diagonal_lcm / source[source_index][dim];
+	exact_div_assign(cg[dim], diagonal_lcm, source[source_index][dim]);
       }
       ++dest_index;
     }
@@ -281,10 +281,11 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
 	gcd_assign(multiplier, cg[dim], source_dim);
-	multiplier = source_dim / multiplier;
+	exact_div_assign(multiplier, source_dim, multiplier);
 	multiply_grid(multiplier, cg, dest, dest_num_rows, dims);
 
-	cg[dim] /= source_dim;
+	Coefficient& cg_dim = cg[dim];
+	exact_div_assign(cg_dim, cg_dim, source_dim);
       }
       TRACE(cerr << "dest after dividing grid:" << endl);
       TRACE(dest.ascii_dump(cerr));
@@ -436,7 +437,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	assert(dim_kinds[dim] == PROPER_CONGRUENCE);
 	TRACE(cerr << "  proper_congruence" << endl);
 	g.set_is_parameter_or_point();
-	g[dim] = diagonal_lcm / source[source_index][dim];
+	exact_div_assign(g[dim], diagonal_lcm, source[source_index][dim]);
 	++source_index;
       }
       --dest_index;
@@ -479,11 +480,12 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
         // of `g' is a multiple of `source_dim'.  This ensures that
         // the result of the division that follows is a whole number.
 	gcd_assign(reduced_source_dim, g[dim], source_dim);
-	reduced_source_dim = source_dim / reduced_source_dim;
+	exact_div_assign(reduced_source_dim, source_dim, reduced_source_dim);
 	multiply_grid(reduced_source_dim, g, dest, dest_num_rows,
 		      dims + 1 /* parameter divisor */);
 
-	g[dim] /= source_dim;
+	Coefficient& g_dim = g[dim];
+	exact_div_assign(g_dim, g_dim, source_dim);
       }
       TRACE(cerr << "dest after dividing grid:" << endl);
       TRACE(dest.ascii_dump(cerr));

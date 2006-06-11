@@ -1,4 +1,4 @@
-/* Test Grid::remove_space_dimensions().
+/* Test Grid::remove_higher_space_dimensions().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,8 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 
 namespace {
-
-// Testing remove_higher_space_dimensions
 
 // From congruences.
 bool
@@ -125,10 +123,10 @@ test05() {
   Variable C(2);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
-  gr.add_generator_and_minimize(grid_point(B));
-  gr.add_generator(grid_line(C));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator_and_minimize(grid_point(B));
+  gr.add_grid_generator(grid_line(C));
   print_generators(gr, "*** gr ***");
 
   Grid known_gr = gr;
@@ -150,10 +148,10 @@ test06() {
   Variable C(2);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
-  gr.add_generator_and_minimize(grid_point(B));
-  gr.add_generator(grid_line(C));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator_and_minimize(grid_point(B));
+  gr.add_grid_generator(grid_line(C));
   print_generators(gr, "*** gr ***");
 
   gr.remove_higher_space_dimensions(0);
@@ -293,6 +291,31 @@ test11() {
   return ok;
 }
 
+// Where the redundant row with the lowest dim_kinds entry is a
+// congruence or equality.
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr(3);
+  gr.add_congruence((A %= 0) / 2);
+  gr.add_congruence((A - C %= 0) / 2);
+  print_congruences(gr, "*** gr ***");
+
+  gr.remove_higher_space_dimensions(2);
+
+  Grid known_gr(2);
+  known_gr.add_congruence((A %= 0) / 2);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.remove_higher_space_dimensions(2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -307,4 +330,5 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN

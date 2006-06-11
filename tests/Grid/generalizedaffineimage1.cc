@@ -37,8 +37,8 @@ test01() {
   gr.generalized_affine_image(B, Linear_Expression::zero(), 1, 0);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
 
   bool ok = (gr == known_gr);
 
@@ -63,9 +63,9 @@ test02() {
   gr.generalized_affine_image(B, Linear_Expression::zero(), 2);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_point(B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_point(B));
 
   bool ok = (gr == known_gr);
 
@@ -90,9 +90,9 @@ test03() {
   gr.generalized_affine_image(B, A + 1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A - B));
-  known_gr.add_generator(grid_point(B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A - B));
+  known_gr.add_grid_generator(grid_point(B));
 
   bool ok = (gr == known_gr);
 
@@ -117,9 +117,9 @@ test04() {
   gr.generalized_affine_image(B, A + 1, 2);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(B, 2));
-  known_gr.add_generator(grid_point(B + A));
-  known_gr.add_generator(grid_point(3*B, 2));
+  known_gr.add_grid_generator(grid_point(B, 2));
+  known_gr.add_grid_generator(grid_point(B + A));
+  known_gr.add_grid_generator(grid_point(3*B, 2));
 
   bool ok = (gr == known_gr);
 
@@ -144,9 +144,9 @@ test05() {
   gr.generalized_affine_image(B, A + 1, 2, 3);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(B, 2));
-  known_gr.add_generator(grid_point(A + B));
-  known_gr.add_generator(grid_point(7*B, 2));
+  known_gr.add_grid_generator(grid_point(B, 2));
+  known_gr.add_grid_generator(grid_point(A + B));
+  known_gr.add_grid_generator(grid_point(7*B, 2));
 
   bool ok = (gr == known_gr);
 
@@ -171,9 +171,9 @@ test06() {
   gr.generalized_affine_image(B, A + 2, -2);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(-B));
-  known_gr.add_generator(grid_point(-3*B + 2*A, 2));
-  known_gr.add_generator(grid_point(-2*B));
+  known_gr.add_grid_generator(grid_point(-B));
+  known_gr.add_grid_generator(grid_point(-3*B + 2*A, 2));
+  known_gr.add_grid_generator(grid_point(-2*B));
 
   bool ok = (gr == known_gr);
 
@@ -198,9 +198,9 @@ test07() {
   gr.generalized_affine_image(B, A + 2, 1, -7);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(2*B));
-  known_gr.add_generator(grid_point(A + 3*B));
-  known_gr.add_generator(grid_point(9*B));
+  known_gr.add_grid_generator(grid_point(2*B));
+  known_gr.add_grid_generator(grid_point(A + 3*B));
+  known_gr.add_grid_generator(grid_point(9*B));
 
   bool ok = (gr == known_gr);
 
@@ -226,11 +226,11 @@ test08() {
   gr.generalized_affine_image(A, A - C + 2, 1, 5);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point(2*A));
-  known_gr.add_generator(grid_point(2*A + 3*B));
-  known_gr.add_generator(grid_line(A + C));
-  known_gr.add_generator(grid_point(4*A));  // Original modulus.
-  known_gr.add_generator(grid_point(7*A));  // Transformation modulus.
+  known_gr.add_grid_generator(grid_point(2*A));
+  known_gr.add_grid_generator(grid_point(2*A + 3*B));
+  known_gr.add_grid_generator(grid_line(A + C));
+  known_gr.add_grid_generator(grid_point(4*A));  // Original modulus.
+  known_gr.add_grid_generator(grid_point(7*A));  // Transformation modulus.
 
   bool ok = (gr == known_gr);
 

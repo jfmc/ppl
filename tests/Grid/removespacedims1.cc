@@ -201,10 +201,10 @@ test07() {
   Variable C(2);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
-  gr.add_generator_and_minimize(grid_point(B));
-  gr.add_generator(grid_line(C));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator_and_minimize(grid_point(B));
+  gr.add_grid_generator(grid_line(C));
   print_generators(gr, "*** gr ***");
 
   Variables_Set vars;
@@ -230,10 +230,10 @@ test08() {
   Variable C(2);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
-  gr.add_generator(parameter(B));
-  gr.add_generator(grid_line(C));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(parameter(B));
+  gr.add_grid_generator(grid_line(C));
   print_generators(gr, "*** gr ***");
 
   Variables_Set vars;
@@ -260,10 +260,10 @@ test09() {
   Variable C(2);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
-  gr.add_generator_and_minimize(grid_point(B));
-  gr.add_generator(grid_line(C));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator_and_minimize(grid_point(B));
+  gr.add_grid_generator(grid_line(C));
   print_generators(gr, "*** gr ***");
 
   Variables_Set vars;
@@ -287,10 +287,10 @@ test10() {
   Variable C(2);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
-  gr.add_generator_and_minimize(grid_point(B));
-  gr.add_generator(grid_line(C));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator_and_minimize(grid_point(B));
+  gr.add_grid_generator(grid_line(C));
   print_generators(gr, "*** gr ***");
 
   Variables_Set vars;

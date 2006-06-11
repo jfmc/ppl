@@ -1,4 +1,4 @@
-/* Test Grid::minimized_generators().
+/* Test Grid::minimized_grid_generators().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -32,7 +32,7 @@ test01() {
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_grid_generators();
 
   Grid gr2(gs);
 
@@ -52,7 +52,7 @@ test02() {
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_grid_generators();
 
   Grid gr2(gs);
 
@@ -70,7 +70,7 @@ test03() {
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_grid_generators();
 
   Grid gr2(gs);
 
@@ -89,7 +89,7 @@ test04() {
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_grid_generators();
 
   Grid gr2(gs);
 
@@ -108,17 +108,17 @@ test05() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(3*B));
-  gr1.add_generator(grid_point(5*A + 2*B));
-  gr1.add_generator(grid_point(10*A + B));
-  gr1.add_generator(grid_point(7*B));
-  gr1.add_generator(grid_point(3*B + 4*C));
-  gr1.add_generator(grid_line(C));
+  gr1.add_grid_generator(grid_point(3*B));
+  gr1.add_grid_generator(grid_point(5*A + 2*B));
+  gr1.add_grid_generator(grid_point(10*A + B));
+  gr1.add_grid_generator(grid_point(7*B));
+  gr1.add_grid_generator(grid_point(3*B + 4*C));
+  gr1.add_grid_generator(grid_line(C));
   print_generators(gr1, "*** gr1 ***");
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_grid_generators();
 
   Grid gr2(gs);
 
@@ -142,7 +142,7 @@ test06() {
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_grid_generators();
 
   Grid gr2(gs);
 
@@ -159,11 +159,11 @@ bool
 test07() {
   Grid gr1(2, EMPTY);
 
-  const Grid_Generator_System& gs = gr1.minimized_generators();
+  const Grid_Generator_System& gs = gr1.minimized_grid_generators();
 
   // Add a point.  The idea is to check that `gs' still refers to a
   // generator system that matches the grid.
-  gr1.add_generator(grid_point());
+  gr1.add_grid_generator(grid_point());
   print_generators(gr1, "*** gr1 ***");
 
   Grid known_gr = gr1;
@@ -183,7 +183,7 @@ bool
 test08() {
   Grid gr1(0);
 
-  const Grid_Generator_System& gs = gr1.minimized_generators();
+  const Grid_Generator_System& gs = gr1.minimized_grid_generators();
 
   // Empty the grid.  The idea is to check that `gs' still refers to a
   // generator system that matches the grid.
@@ -213,7 +213,7 @@ test09() {
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.minimized_generators();
+  Grid_Generator_System gs = gr1.minimized_grid_generators();
 
   Grid gr2(gs);
 

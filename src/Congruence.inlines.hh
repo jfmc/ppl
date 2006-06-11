@@ -179,12 +179,6 @@ Congruence::modulus() const {
   return (*this)[size()-1];
 }
 
-inline Coefficient&
-Congruence::modulus() {
-  assert(size() > 0);
-  return (*this)[size()-1];
-}
-
 inline bool
 Congruence::is_proper_congruence() const {
   return modulus() > 0;
@@ -203,7 +197,7 @@ Congruence::is_equal_at_dimension(dimension_type dim,
 
 inline void
 Congruence::set_is_equality() {
-  modulus() = 0;
+  (*this)[size()-1] = 0;
 }
 
 inline void

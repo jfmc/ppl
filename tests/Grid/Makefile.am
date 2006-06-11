@@ -51,7 +51,7 @@ affinedim1 \
 affineimage1 affineimage2 \
 affinepreimage1 affinepreimage2 \
 asciidumpload1 asciidumpload2 asciidumpload3 asciidumpload4 asciidumpload5 \
-asciidumpload6 \
+asciidumpload6 asciidumpload7 \
 bhz03widening1 \
 bounded1 \
 boundingbox1 boundingbox2 \
@@ -64,6 +64,7 @@ congruences2 \
 contains1 \
 copyconstruct1 \
 coveringbox1 coveringbox2 \
+directproduct1 \
 discrete1 \
 disjoint1 \
 equals1 \
@@ -126,6 +127,7 @@ asciidumpload3_SOURCES = asciidumpload3.cc
 asciidumpload4_SOURCES = asciidumpload4.cc
 asciidumpload5_SOURCES = asciidumpload5.cc
 asciidumpload6_SOURCES = asciidumpload6.cc
+asciidumpload7_SOURCES = asciidumpload7.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
 
@@ -148,6 +150,8 @@ congruences2_SOURCES = congruences2.cc
 contains1_SOURCES = contains1.cc
 
 copyconstruct1_SOURCES = copyconstruct1.cc
+
+directproduct1_SOURCES = directproduct1.cc
 
 discrete1_SOURCES = discrete1.cc
 
@@ -277,4 +281,5 @@ ascii_dump_load2.dat \
 ascii_dump_load3.dat \
 ascii_dump_load4.dat \
 ascii_dump_load5.dat \
-ascii_dump_load6.dat
+ascii_dump_load6.dat \
+ascii_dump_load7.dat

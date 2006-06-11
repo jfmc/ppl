@@ -239,7 +239,7 @@ test08() {
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
-  gr2.add_generators(gs2);
+  gr2.add_grid_generators(gs2);
   print_generators(gr2, "*** gr2 ***");
 
   gr1.intersection_assign(gr2);
@@ -262,7 +262,7 @@ test08() {
 bool
 test09() {
   Grid gr1(1, EMPTY);
-  gr1.add_generator(grid_point());
+  gr1.add_grid_generator(grid_point());
 
   Grid gr2(3);
 
@@ -459,7 +459,7 @@ test16() {
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
-  gr2.add_generators(gs2);
+  gr2.add_grid_generators(gs2);
   print_generators(gr2, "*** gr2 ***");
 
   gr1.intersection_assign_and_minimize(gr2);

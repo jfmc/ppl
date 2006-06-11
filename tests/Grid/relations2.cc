@@ -31,7 +31,7 @@ test01() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(A - B));
+  gr.add_grid_generator(grid_point(A - B));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -46,8 +46,8 @@ test02() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(4*A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(4*A));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -63,8 +63,8 @@ test03() {
   Variable C(2);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(2*A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(2*A));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -80,8 +80,8 @@ test04() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_line(A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_line(A));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -98,7 +98,7 @@ test05() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(A + B));
+  gr.add_grid_generator(grid_point(A + B));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -162,8 +162,8 @@ test08() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(2*A + 5*B));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(2*A + 5*B));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -195,7 +195,7 @@ test10() {
   Variable A(0);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point(A, 2));
+  gr.add_grid_generator(grid_point(A, 2));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -215,8 +215,8 @@ test11() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(parameter(A, 5));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(parameter(A, 5));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with((10*A %= 1) / 0)
@@ -231,8 +231,8 @@ test12() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(parameter(A, 5));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(parameter(A, 5));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -248,8 +248,8 @@ test13() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(parameter(A, 5));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(parameter(A, 5));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -305,8 +305,8 @@ test16() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(3*A));
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(3*A));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -323,8 +323,8 @@ test17() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point(3*A));
-  gr.add_generator(grid_point(6*A));
+  gr.add_grid_generator(grid_point(3*A));
+  gr.add_grid_generator(grid_point(6*A));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -341,8 +341,8 @@ test18() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point(3*A));
-  gr.add_generator(parameter(3*A));
+  gr.add_grid_generator(grid_point(3*A));
+  gr.add_grid_generator(parameter(3*A));
   print_generators(gr, "*** gr ***");
 
   bool ok

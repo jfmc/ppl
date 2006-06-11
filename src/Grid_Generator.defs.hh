@@ -363,15 +363,6 @@ public:
   */
   bool all_homogeneous_terms_are_zero() const;
 
-  /*! \brief
-    Scales \p *this to be represented with a divisor of \p d (if
-    \*this is a parameter or point).
-
-    \exception std::invalid_argument
-    Thrown if \p d is zero.
-  */
-  void scale_to_divisor(Coefficient_traits::const_reference d);
-
   PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -400,6 +391,17 @@ public:
   void coefficient_swap(Grid_Generator& y);
 
 private:
+  /*! \brief
+    Scales \p *this to be represented with a divisor of \p d (if
+    \*this is a parameter or point).
+
+    It is assumed that \p d is a multiple of the current divisor.
+
+    \exception std::invalid_argument
+    Thrown if \p d is zero.
+  */
+  void scale_to_divisor(Coefficient_traits::const_reference d);
+
   /*! \brief
     Constructs from polyhedron generator \p g, stealing the underlying
     data structures from \p g.
@@ -458,8 +460,8 @@ private:
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
   // FIXME: The following friend declaration is for operator[] and
-  //        divisor() access in Grid::conversion, Grid::simplify and
-  //        Grid::relation_with(c).
+  //        divisor() access in Grid::conversion, Grid::simplify,
+  //        Grid::relation_with(c) and Grid::Grid(box, *).
   friend class Grid;
 
   friend class Grid_Generator_System;
@@ -467,6 +469,7 @@ private:
   friend class Congruence_System;
   friend class Scalar_Products;
   friend class Topology_Adjusted_Scalar_Product_Sign;
+  friend class Linear_Expression;
 };
 
 

@@ -329,16 +329,12 @@ PPL::Grid_Generator_System
     dimension_type tbr_col = tbr->space_dimension();
     // Move all columns in between to the left.
     while (src_col < tbr_col)
-      // FIXME: consider whether Linear_System must have a swap_columns()
-      // method.  If the answer is "no", remove this Matrix:: qualification.
       Matrix::swap_columns(dst_col++, src_col++);
     ++src_col;
   }
   // Move any remaining columns.
   const dimension_type num_columns = this->num_columns();
   while (src_col < num_columns)
-    // FIXME: consider whether Linear_System must have a swap_columns()
-    // method.  If the answer is "no", remove this Matrix:: qualification.
     Matrix::swap_columns(dst_col++, src_col++);
 
   // The number of remaining columns is `dst_col'.

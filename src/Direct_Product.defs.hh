@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Direct_Product_defs_hh 1
 
 #include "Direct_Product.types.hh"
+#include "globals.defs.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Congruence.types.hh"
@@ -252,6 +253,7 @@ public:
   template <typename Box>
   Direct_Product(const Box& box, From_Bounding_Box dummy);
 
+  // FIXME: should this be only for grid instantiations?
   //! Builds a grid out of a generic, interval-based covering box.
   /*!
     The covering box is a set of upper and lower values for each
@@ -344,46 +346,72 @@ public:
   */
   dimension_type affine_dimension() const;
 
+  //! Returns a constant reference to the first of the pair.
+  const D1& domain1() const;
+
+  //! Returns a constant reference to the second of the pair.
+  const D2& domain2() const;
+
+
+  //! FIXME maybe these should be something like
+  //const pair<D1::con_type&, D2::con_type&> constraining_systems() const;
+  //const pair<D1::gen_type&, D2::gen_type&> generating_systems() const;
+
   //! Returns the system of congruences.
   const Congruence_System& congruences() const;
 
   //! Returns the system of congruences in reduced form.
   const Congruence_System& minimized_congruences() const;
 
+  //! Returns the system of constraints.
+  const Constraint_System& constraints() const;
+
+  //! Returns the system of constraints in reduced form.
+  const Constraint_System& minimized_constraints() const;
+
   //! Returns the system of generators.
-  const Grid_Generator_System& generators() const;
+  const Generator_System& generators() const;
 
   //! Returns the minimized system of generators.
-  const Grid_Generator_System& minimized_generators() const;
+  const Generator_System& minimized_generators() const;
+
+  //! Returns the system of grid generators.
+  const Grid_Generator_System& grid_generators() const;
+
+  //! Returns the minimized system of grid generators.
+  const Grid_Generator_System& minimized_grid_generators() const;
+
 
   //! Returns the relations holding between \p *this and \p cg.
   /*
     \exception std::invalid_argument
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
-  // FIXME: Poly_Con_Relation seems to encode exactly what we want
-  // here.  We must find a new name for that class.  Temporarily,
-  // we keep using it without changing the name.
   Poly_Con_Relation relation_with(const Congruence& cg) const;
+
+  //! Returns the relations holding between \p *this and \p c.
+  /*
+    \exception std::invalid_argument
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
+  */
+  Poly_Con_Relation relation_with(const Constraint& c) const;
 
   //! Returns the relations holding between \p *this and \p g.
   /*
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
-  // FIXME: see the comment for Poly_Con_Relation above.
-  Poly_Gen_Relation
-  relation_with(const Grid_Generator& g) const;
+  Poly_Gen_Relation relation_with(const Grid_Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is an empty
-    grid.
+    product.
   */
   bool is_empty() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is a universe
-    grid.
+    product.
   */
   bool is_universe() const;
 
@@ -430,6 +458,30 @@ public:
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
   bool bounds_from_below(const Linear_Expression& expr) const;
+
+  //! Reduce the instance of the second domain with the first.
+  /*
+    \return
+    <CODE>true</CODE> if and only if resulting components are strictly
+    contained in the originals.
+  */
+  bool reduce_domain1_with_domain2();
+
+  //! Reduce the instance of the first domain with the second.
+  /*
+    \return
+    <CODE>true</CODE> if and only if resulting components are strictly
+    contained in the originals.
+  */
+  bool reduce_domain2_with_domain1();
+
+  //! Reduce.
+  /*
+    \return
+    <CODE>true</CODE> if and only if either of the resulting component
+    is strictly contained in the respective original.
+  */
+  bool reduce();
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
@@ -739,7 +791,7 @@ public:
     invariants are violated. This is useful for the purpose of
     debugging the library.
   */
-  bool OK(bool check_not_empty = false) const;
+  bool OK(/*bool check_not_empty = false*/) const;
 
   //@} // Member Functions that Do Not Modify the Direct_Product
 
@@ -795,7 +847,7 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
   */
-  void add_generator(const Grid_Generator& g);
+  void add_grid_generator(const Grid_Generator& g);
 
   /*! \brief
     Adds a copy of generator \p g to the system of generators of \p
@@ -808,7 +860,7 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
   */
-  bool add_generator_and_minimize(const Grid_Generator& g);
+  bool add_grid_generator_and_minimize(const Grid_Generator& g);
 
   //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!
@@ -999,8 +1051,8 @@ public:
   bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
   /*! \brief
-    Adds a copy of the generators in \p gs to the system of generators
-    of \p *this.
+    Adds a copy of the grid generators in \p gs to the system of
+    generators of \p *this.
 
     \param gs
     Contains the generators that will be added to the system of
@@ -1011,7 +1063,7 @@ public:
     \p *this is empty and the system of generators \p gs is not empty,
     but has no points.
   */
-  void add_generators(const Grid_Generator_System& gs);
+  void add_grid_generators(const Grid_Generator_System& gs);
 
   /*! \brief
     Adds the generators in \p gs to the system of generators of \p
@@ -1030,7 +1082,7 @@ public:
     The only assumption that can be made about \p gs upon successful
     or exceptional return is that it can be safely destroyed.
   */
-  void add_recycled_generators(Grid_Generator_System& gs);
+  void add_recycled_grid_generators(Grid_Generator_System& gs);
 
   /*! \brief
     Adds a copy of the generators in \p gs to the system of generators
@@ -1048,7 +1100,7 @@ public:
     *this is empty and the system of generators \p gs is not empty,
     but has no points.
   */
-  bool add_generators_and_minimize(const Grid_Generator_System& gs);
+  bool add_grid_generators_and_minimize(const Grid_Generator_System& gs);
 
   /*! \brief
     Adds the generators in \p gs to the system of generators of \p
@@ -1070,7 +1122,7 @@ public:
     The only assumption that can be made about \p gs upon successful
     or exceptional return is that it can be safely destroyed.
   */
-  bool add_recycled_generators_and_minimize(Grid_Generator_System& gs);
+  bool add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs);
 
   /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.  The
@@ -1082,30 +1134,6 @@ public:
   void intersection_assign(const Direct_Product& y);
 
   /*! \brief
-    Assigns to \p *this the intersection of \p *this and \p y,
-    reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool intersection_assign_and_minimize(const Direct_Product& y);
-
-  /*! \brief
-    Assigns to \p *this the join of \p *this and \p y, reducing the
-    result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  bool join_assign_and_minimize(const Direct_Product& y);
-
-  /*! \brief
     Assigns to \p *this an upper bound of \p *this and \p y.
 
     \exception std::invalid_argument
@@ -1114,16 +1142,13 @@ public:
   void upper_bound_assign(const Direct_Product& y);
 
   /*! \brief
-    If the join of \p *this and \p y is exact it is assigned to \p
+    If the this of \p *this and \p y is exact it is assigned to \p
     *this and <CODE>true</CODE> is returned, otherwise
     <CODE>false</CODE> is returned.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool join_assign_if_exact(const Direct_Product& y);
-
-  //! Same as join_assign_if_exact(y).
   bool upper_bound_assign_if_exact(const Direct_Product& y);
 
   /*! \brief
@@ -1665,6 +1690,7 @@ public:
     \ref Direct_Product_Expand_Space_Dimension "expanded" to \p m new space dimensions
     \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
   */
+  // FIX m s/b const?
   void expand_space_dimension(Variable var, dimension_type m);
 
   //! Folds the space dimensions in \p to_be_folded into \p var.
@@ -1697,6 +1723,10 @@ public:
   friend bool
   Parma_Polyhedra_Library::operator==<>(const Direct_Product<D1, D2>& x,
 					const Direct_Product<D1, D2>& y);
+
+  friend std::ostream&
+  Parma_Polyhedra_Library::IO_Operators::
+  operator<<<>(std::ostream& s, const Direct_Product<D1, D2>& dp);
 
 
   //! \name Miscellaneous Member Functions
@@ -1732,6 +1762,27 @@ public:
 
   //@} // Miscellaneous Member Functions
 
+private:
+  /*! \brief
+    Reduces first component with first, by checking if second is
+    empty.
+
+    \return
+    <CODE>true</CODE> if and only if resulting components are strictly
+    contained in the originals.
+  */
+  bool empty_reduce_d1_with_d2();
+
+  /*! \brief
+    Reduces second component with first, by checking if first is
+    empty.
+
+    \return
+    <CODE>true</CODE> if and only if resulting components are strictly
+    contained in the originals.
+  */
+  bool empty_reduce_d2_with_d1();
+
 protected:
   //! The type of the first component.
   typedef D1 Domain1;
@@ -1745,7 +1796,6 @@ protected:
   //! The second component.
   D2 d2;
 };
-
 
 namespace std {
 

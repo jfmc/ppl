@@ -207,9 +207,9 @@ bool operator!=(const Grid& x, const Grid& y);
   generators (a point, and two lines).
   \code
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(0*x + 0*y));
-  gr.add_generator(grid_line(x));
-  gr.add_generator(grid_line(y));
+  gr.add_grid_generator(grid_point(0*x + 0*y));
+  gr.add_grid_generator(grid_line(x));
+  gr.add_grid_generator(grid_line(y));
   \endcode
   Note that a generator system must contain a point when describing
   a grid.  To ensure that this is always the case it is required
@@ -256,9 +256,9 @@ bool operator!=(const Grid& x, const Grid& y);
   <CODE>affine_image</CODE>:
   \code
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(0*x + 0*y));
-  gr.add_generator(grid_point(4*x + 0*y));
-  gr.add_generator(grid_point(0*x + 2*y));
+  gr.add_grid_generator(grid_point(0*x + 0*y));
+  gr.add_grid_generator(grid_point(4*x + 0*y));
+  gr.add_grid_generator(grid_point(0*x + 2*y));
   Linear_Expression expr = x + 3;
   gr.affine_image(x, expr);
   \endcode
@@ -289,9 +289,9 @@ bool operator!=(const Grid& x, const Grid& y);
   <CODE>affine_preimage</CODE>:
   \code
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(0*x + 0*y));
-  gr.add_generator(grid_point(4*x + 0*y));
-  gr.add_generator(grid_point(0*x + 2*y));
+  gr.add_grid_generator(grid_point(0*x + 0*y));
+  gr.add_grid_generator(grid_point(4*x + 0*y));
+  gr.add_grid_generator(grid_point(0*x + 2*y));
   Linear_Expression expr = x + 3;
   gr.affine_preimage(x, expr);
   \endcode
@@ -495,7 +495,7 @@ public:
     returns <CODE>true</CODE> if and only if the bounding box
     describes the empty set.
     \code
-      bool get_lower_bound(dimension_type k, bool closed,
+      bool get_lower_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -511,7 +511,7 @@ public:
     have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
     the unique representation for zero.
     \code
-      bool get_upper_bound(dimension_type k, bool closed,
+      bool get_upper_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -566,7 +566,7 @@ public:
     returns <CODE>true</CODE> if and only if the covering box
     describes the empty set.
     \code
-      bool get_lower_bound(dimension_type k, bool closed,
+      bool get_lower_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -582,7 +582,7 @@ public:
     have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
     the unique representation for zero.
     \code
-      bool get_upper_bound(dimension_type k, bool closed,
+      bool get_upper_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -626,10 +626,10 @@ public:
   const Congruence_System& minimized_congruences() const;
 
   //! Returns the system of generators.
-  const Grid_Generator_System& generators() const;
+  const Grid_Generator_System& grid_generators() const;
 
   //! Returns the minimized system of generators.
-  const Grid_Generator_System& minimized_generators() const;
+  const Grid_Generator_System& minimized_grid_generators() const;
 
   //! Returns the relations holding between \p *this and \p cg.
   /*
@@ -675,6 +675,8 @@ public:
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is a
     topologically closed subset of the vector space.
+
+    A grid is always topologically closed.
   */
   bool is_topologically_closed() const;
 
@@ -878,7 +880,7 @@ public:
     returns the dimension of the vector space enclosing the grid
     represented by the bounding box.
     \code
-      bool get_lower_bound(dimension_type k, bool closed,
+      bool get_lower_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -894,7 +896,7 @@ public:
     have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
     the unique representation for zero.
     \code
-      bool get_upper_bound(dimension_type k, bool closed,
+      bool get_upper_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -1080,7 +1082,7 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
   */
-  void add_generator(const Grid_Generator& g);
+  void add_grid_generator(const Grid_Generator& g);
 
   /*! \brief
     Adds a copy of generator \p g to the system of generators of \p
@@ -1093,7 +1095,7 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
   */
-  bool add_generator_and_minimize(const Grid_Generator& g);
+  bool add_grid_generator_and_minimize(const Grid_Generator& g);
 
   //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!
@@ -1305,7 +1307,7 @@ public:
     \p *this is empty and the system of generators \p gs is not empty,
     but has no points.
   */
-  void add_generators(const Grid_Generator_System& gs);
+  void add_grid_generators(const Grid_Generator_System& gs);
 
   /*! \brief
     Adds the generators in \p gs to the system of generators of \p
@@ -1322,7 +1324,7 @@ public:
     The only assumption that can be made about \p gs upon successful
     or exceptional return is that it can be safely destroyed.
   */
-  void add_recycled_generators(Grid_Generator_System& gs);
+  void add_recycled_grid_generators(Grid_Generator_System& gs);
 
   /*! \brief
     Adds a copy of the generators in \p gs to the system of generators
@@ -1340,7 +1342,7 @@ public:
     *this is empty and the system of generators \p gs is not empty,
     but has no points.
   */
-  bool add_generators_and_minimize(const Grid_Generator_System& gs);
+  bool add_grid_generators_and_minimize(const Grid_Generator_System& gs);
 
   /*! \brief
     Adds the generators in \p gs to the system of generators of \p
@@ -1360,7 +1362,7 @@ public:
     The only assumption that can be made about \p gs upon successful
     or exceptional return is that it can be safely destroyed.
   */
-  bool add_recycled_generators_and_minimize(Grid_Generator_System& gs);
+  bool add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs);
 
   /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.  The
@@ -1405,6 +1407,9 @@ public:
 
   //! Same as join_assign(y).
   void upper_bound_assign(const Grid& y);
+
+  //! Same as join_assign_and_minimize(y).
+  void upper_bound_assign_and_minimize(const Grid& y);
 
   /*! \brief
     If the join of \p *this and \p y is exact it is assigned to \p

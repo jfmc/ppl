@@ -422,6 +422,7 @@ test20() {
   return ok;
 }
 
+#if 0 // scale_to_divisor is now private.
 // Exception in method scale_to_divisor.
 static bool
 test21() {
@@ -442,6 +443,7 @@ test21() {
   }
   return false;
 }
+#endif
 
 // Exception when trying to get the divisor of a line.
 static bool
@@ -462,6 +464,20 @@ test22() {
   catch (...) {
   }
   return false;
+}
+
+// Method zero_dim_point.
+static bool
+test23() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Linear_Expression le(grid_point(A - B - 2*C));
+
+  bool ok = (grid_point(A - B - 2*C) == grid_point(A - B - 2*C));
+
+  return ok;
 }
 
 } // namespace
@@ -487,6 +503,7 @@ BEGIN_MAIN
   DO_TEST(test18);
   DO_TEST(test19);
   DO_TEST(test20);
-  DO_TEST(test21);
+  //DO_TEST(test21);
   DO_TEST(test22);
+  DO_TEST(test23);
 END_MAIN

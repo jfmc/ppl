@@ -97,8 +97,8 @@ test03() {
   gr.add_congruences_and_minimize(cgs);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(2*A - 2*B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(2*A - 2*B));
 
   bool ok = (gr == known_gr);
 
@@ -124,8 +124,8 @@ test04() {
   gr.add_recycled_congruences_and_minimize(cgs);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(2*A + 2*B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(2*A + 2*B));
 
   bool ok = (gr == known_gr);
 
@@ -239,7 +239,7 @@ test09() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_generator(grid_point(3*A + B));
+  gr.add_grid_generator(grid_point(3*A + B));
 
   Grid known_gr = gr;
 
@@ -314,7 +314,7 @@ test12() {
 
   // Ensure both systems are up to date with only generators minimal.
   gr.affine_image(A, 1*A);
-  gr.minimized_generators();
+  gr.minimized_grid_generators();
 
   print_congruences(gr, "*** gr ***");
 
@@ -396,8 +396,8 @@ test15() {
   Variable A(0);
 
   Grid gr(2);
-  gr.add_generator(grid_point());
-  gr.add_generator_and_minimize(parameter(3*A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator_and_minimize(parameter(3*A));
 
   // Ensure both systems are up to date with only congruences minimal.
   gr.affine_image(A, 1*A);

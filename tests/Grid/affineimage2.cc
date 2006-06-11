@@ -44,9 +44,9 @@ test01() {
   gr.affine_image(A, 2*A, 5);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(2*A, 15));
-  known_gr.add_generator(grid_point(5*B, 10));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(2*A, 15));
+  known_gr.add_grid_generator(grid_point(5*B, 10));
 
   bool ok = (gr == known_gr);
 
@@ -63,14 +63,14 @@ test02() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(A));
 
   print_generators(gr, "*** gr ***");
 
   gr.affine_image(A, B + 2, -3);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(-2*A, 3));
+  known_gr.add_grid_generator(grid_point(-2*A, 3));
 
   bool ok = (gr == known_gr);
 
@@ -263,7 +263,7 @@ test10() {
   Variable D(3);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(2*A + 0*B));
+  gr.add_grid_generator(grid_point(2*A + 0*B));
 
   print_congruences(gr, "*** gr ***");
 
@@ -315,7 +315,7 @@ test11() {
   Grid gr(2, EMPTY);
 
   for(int j = 0; j < 4; j++) {
-    gr.add_generators_and_minimize(ggs);
+    gr.add_grid_generators_and_minimize(ggs);
 
     for(int i = 0; i < j; i++) {
       gr.affine_image(A, 3*A);
@@ -328,7 +328,7 @@ test11() {
     gr1.join_assign(gr);
   }
 
-  gr.add_generators_and_minimize(ggs);
+  gr.add_grid_generators_and_minimize(ggs);
 
   bool ok = (gr == gr1);
 
@@ -360,7 +360,7 @@ test12() {
   Grid gr(2, EMPTY);
 
   for(int j = 0; j < 3; j++) {
-    gr.add_generators_and_minimize(ggs);
+    gr.add_grid_generators_and_minimize(ggs);
 
     for(int i = 0; i < j; i++) {
       gr.affine_image(A, *tem1*A);
@@ -373,7 +373,7 @@ test12() {
     gr1.join_assign(gr);
   }
 
-  gr.add_generators_and_minimize(ggs);
+  gr.add_grid_generators_and_minimize(ggs);
 
   delete tem1; delete tem2; delete tem3;
 

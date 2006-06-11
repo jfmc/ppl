@@ -226,11 +226,11 @@ test09() {
   Variable D(3);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(B));
-  gr.add_generator(grid_line(A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(B));
+  gr.add_grid_generator(grid_line(A));
 
-  gr.minimized_generators();
+  gr.minimized_grid_generators();
 
   print_generators(gr, "*** gr ***");
 
@@ -482,9 +482,9 @@ test18() {
   gr.add_space_dimensions_and_project(2);
 
   Grid known_gr(4, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(parameter(A));
-  known_gr.add_generator(grid_line(B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(parameter(A));
+  known_gr.add_grid_generator(grid_line(B));
 
   bool ok = (gr == known_gr);
 
@@ -504,10 +504,10 @@ test19() {
   Variable D(3);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_line(A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_line(A));
 
-  gr.minimized_generators();
+  gr.minimized_grid_generators();
 
   print_generators(gr, "*** gr ***");
 

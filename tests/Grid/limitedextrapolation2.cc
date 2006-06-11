@@ -360,15 +360,15 @@ test12() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(C, 3));
-  gr1.add_generator(grid_line(A - 2*B));
-  gr1.add_generator(grid_point(C + 3*A + 3*C, 3));
+  gr1.add_grid_generator(grid_point(C, 3));
+  gr1.add_grid_generator(grid_line(A - 2*B));
+  gr1.add_grid_generator(grid_point(C + 3*A + 3*C, 3));
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point(C, 3));
-  gr2.add_generator(grid_line(A - 2*B));
-  gr2.add_generator(grid_line(A + C));
+  gr2.add_grid_generator(grid_point(C, 3));
+  gr2.add_grid_generator(grid_line(A - 2*B));
+  gr2.add_grid_generator(grid_line(A + C));
   print_generators(gr2, "*** gr2 ***");
 
   Grid known_gr = gr2;
@@ -393,13 +393,13 @@ test13() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(C, 3));
-  gr1.add_generator(grid_point(C + A - 2*B, 3));
+  gr1.add_grid_generator(grid_point(C, 3));
+  gr1.add_grid_generator(grid_point(C + A - 2*B, 3));
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(5, EMPTY);
-  gr2.add_generator(grid_point(C, 3));
-  gr2.add_generator(grid_point(2*C + A - 2*B, 6));
+  gr2.add_grid_generator(grid_point(C, 3));
+  gr2.add_grid_generator(grid_point(2*C + A - 2*B, 6));
   print_generators(gr2, "*** gr2 ***");
 
   Congruence_System cgs;
@@ -425,13 +425,13 @@ test14() {
   Variable C(2);
 
   Grid gr1(2, EMPTY);
-  gr1.add_generator(grid_point(A));
-  gr1.add_generator(parameter(B, 3));
+  gr1.add_grid_generator(grid_point(A));
+  gr1.add_grid_generator(parameter(B, 3));
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(2, EMPTY);
-  gr2.add_generator(grid_point(A));
-  gr2.add_generator(parameter(B, 6));
+  gr2.add_grid_generator(grid_point(A));
+  gr2.add_grid_generator(parameter(B, 6));
   print_generators(gr2, "*** gr2 ***");
 
   Congruence_System cgs;
@@ -455,13 +455,13 @@ test15() {
   Variable A(0);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(parameter(A, 3));
+  gr1.add_grid_generator(grid_point());
+  gr1.add_grid_generator(parameter(A, 3));
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point());
-  gr2.add_generator(parameter(A, 6));
+  gr2.add_grid_generator(grid_point());
+  gr2.add_grid_generator(parameter(A, 6));
   print_generators(gr2, "*** gr2 ***");
 
   Congruence_System cgs;
@@ -469,8 +469,8 @@ test15() {
   gr2.limited_generator_extrapolation_assign(gr1, cgs);
 
   Grid known_gr = gr2;
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_line(A));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_line(A));
 
   bool ok = (gr2 == known_gr);
 

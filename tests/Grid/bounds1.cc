@@ -70,10 +70,10 @@ test04() {
   Variable B(1);
 
   Grid gr_gs_min(2, EMPTY);
-  gr_gs_min.add_generator_and_minimize(grid_point(3*A + 2*B, 3));
+  gr_gs_min.add_grid_generator_and_minimize(grid_point(3*A + 2*B, 3));
 
   Grid gr_gs_needs_min(2, EMPTY);
-  gr_gs_needs_min.add_generator(grid_point(3*A + 2*B, 3));
+  gr_gs_needs_min.add_grid_generator(grid_point(3*A + 2*B, 3));
 
   Grid gr_cgs_needs_min(2);
   gr_cgs_needs_min.add_congruence(A == 1);
@@ -104,12 +104,12 @@ test05() {
   Variable B(1);
 
   Grid gr_gs_min(2, EMPTY);
-  gr_gs_min.add_generator(grid_point());
-  gr_gs_min.add_generator_and_minimize(grid_line(B));
+  gr_gs_min.add_grid_generator(grid_point());
+  gr_gs_min.add_grid_generator_and_minimize(grid_line(B));
 
   Grid gr_gs_needs_min(2, EMPTY);
-  gr_gs_needs_min.add_generator(grid_point());
-  gr_gs_needs_min.add_generator(grid_line(B));
+  gr_gs_needs_min.add_grid_generator(grid_point());
+  gr_gs_needs_min.add_grid_generator(grid_line(B));
 
   Grid gr_cgs_needs_min(2);
   gr_cgs_needs_min.add_congruence(A == 0);
@@ -140,12 +140,12 @@ test06() {
   Variable B(1);
 
   Grid gr_gs_min(2, EMPTY);
-  gr_gs_min.add_generator(grid_point());
-  gr_gs_min.add_generator_and_minimize(grid_line(2*A + B));
+  gr_gs_min.add_grid_generator(grid_point());
+  gr_gs_min.add_grid_generator_and_minimize(grid_line(2*A + B));
 
   Grid gr_gs_needs_min(2, EMPTY);
-  gr_gs_needs_min.add_generator(grid_point());
-  gr_gs_needs_min.add_generator(grid_line(2*A + B));
+  gr_gs_needs_min.add_grid_generator(grid_point());
+  gr_gs_needs_min.add_grid_generator(grid_line(2*A + B));
 
   Grid gr_cgs_needs_min(2);
   gr_cgs_needs_min.add_congruence(A - 2*B == 0);
@@ -175,12 +175,12 @@ test07() {
   Variable B(1);
 
   Grid gr_gs_min(2, EMPTY);
-  gr_gs_min.add_generator(grid_point());
-  gr_gs_min.add_generator_and_minimize(grid_line(A + 2*B));
+  gr_gs_min.add_grid_generator(grid_point());
+  gr_gs_min.add_grid_generator_and_minimize(grid_line(A + 2*B));
 
   Grid gr_gs_needs_min(2, EMPTY);
-  gr_gs_needs_min.add_generator(grid_point());
-  gr_gs_needs_min.add_generator(grid_line(A + 2*B));
+  gr_gs_needs_min.add_grid_generator(grid_point());
+  gr_gs_needs_min.add_grid_generator(grid_line(A + 2*B));
 
   Grid gr_cgs_needs_min(2);
   gr_cgs_needs_min.add_congruence(2*A - B == 0);
@@ -211,12 +211,12 @@ test08() {
   Variable B(1);
 
   Grid gr_gs_min(2, EMPTY);
-  gr_gs_min.add_generator(grid_point());
-  gr_gs_min.add_generator_and_minimize(grid_point(A + 2*B));
+  gr_gs_min.add_grid_generator(grid_point());
+  gr_gs_min.add_grid_generator_and_minimize(grid_point(A + 2*B));
 
   Grid gr_gs_needs_min(2, EMPTY);
-  gr_gs_needs_min.add_generator(grid_point());
-  gr_gs_needs_min.add_generator(grid_point(A + 2*B));
+  gr_gs_needs_min.add_grid_generator(grid_point());
+  gr_gs_needs_min.add_grid_generator(grid_point(A + 2*B));
 
   Grid gr_cgs_needs_min(2);
   gr_cgs_needs_min.add_congruence(2*A - B == 0);
@@ -247,14 +247,14 @@ test09() {
   Variable B(1);
 
   Grid gr_gs_min(2, EMPTY);
-  gr_gs_min.add_generator(grid_point());
-  gr_gs_min.add_generator(grid_line(A));
-  gr_gs_min.add_generator_and_minimize(grid_line(B));
+  gr_gs_min.add_grid_generator(grid_point());
+  gr_gs_min.add_grid_generator(grid_line(A));
+  gr_gs_min.add_grid_generator_and_minimize(grid_line(B));
 
   Grid gr_gs_needs_min(2, EMPTY);
-  gr_gs_needs_min.add_generator(grid_point());
-  gr_gs_needs_min.add_generator(grid_line(A));
-  gr_gs_needs_min.add_generator(grid_line(B));
+  gr_gs_needs_min.add_grid_generator(grid_point());
+  gr_gs_needs_min.add_grid_generator(grid_line(A));
+  gr_gs_needs_min.add_grid_generator(grid_line(B));
 
   Grid gr_cgs_needs_min(2);
 
@@ -285,14 +285,14 @@ test10() {
   Variable C(2);
 
   Grid gr_gs_min(3, EMPTY);
-  gr_gs_min.add_generator(grid_point());
-  gr_gs_min.add_generator(grid_line(A));
-  gr_gs_min.add_generator_and_minimize(grid_point(B + C));
+  gr_gs_min.add_grid_generator(grid_point());
+  gr_gs_min.add_grid_generator(grid_line(A));
+  gr_gs_min.add_grid_generator_and_minimize(grid_point(B + C));
 
   Grid gr_gs_needs_min(3, EMPTY);
-  gr_gs_needs_min.add_generator(grid_point());
-  gr_gs_needs_min.add_generator(grid_line(A));
-  gr_gs_needs_min.add_generator(grid_point(B + C));
+  gr_gs_needs_min.add_grid_generator(grid_point());
+  gr_gs_needs_min.add_grid_generator(grid_line(A));
+  gr_gs_needs_min.add_grid_generator(grid_point(B + C));
 
   Grid gr_cgs_needs_min(3);
   gr_cgs_needs_min.add_congruence(B - C == 0);
@@ -324,14 +324,14 @@ test11() {
   Variable C(2);
 
   Grid gr_gs_min(3, EMPTY);
-  gr_gs_min.add_generator(grid_point());
-  gr_gs_min.add_generator(grid_line(3*B + C));
-  gr_gs_min.add_generator_and_minimize(grid_line(A - 2*B));
+  gr_gs_min.add_grid_generator(grid_point());
+  gr_gs_min.add_grid_generator(grid_line(3*B + C));
+  gr_gs_min.add_grid_generator_and_minimize(grid_line(A - 2*B));
 
   Grid gr_gs_needs_min(3, EMPTY);
-  gr_gs_needs_min.add_generator(grid_point());
-  gr_gs_needs_min.add_generator(grid_line(3*B + C));
-  gr_gs_needs_min.add_generator(grid_line(A - 2*B));
+  gr_gs_needs_min.add_grid_generator(grid_point());
+  gr_gs_needs_min.add_grid_generator(grid_line(3*B + C));
+  gr_gs_needs_min.add_grid_generator(grid_line(A - 2*B));
 
   Grid gr_cgs_needs_min(3);
   gr_cgs_needs_min.add_congruence(2*A + B - 3*C == 0);
@@ -365,10 +365,10 @@ test12() {
   Variable F(5);
 
   Grid gr_gs_min(6, EMPTY);
-  gr_gs_min.add_generator_and_minimize(grid_point(7*A - 11*B + 19*F));
+  gr_gs_min.add_grid_generator_and_minimize(grid_point(7*A - 11*B + 19*F));
 
   Grid gr_gs_needs_min(6, EMPTY);
-  gr_gs_needs_min.add_generator(grid_point(7*A - 11*B + 19*F));
+  gr_gs_needs_min.add_grid_generator(grid_point(7*A - 11*B + 19*F));
 
   Grid gr_cgs_needs_min(6);
   gr_cgs_needs_min.add_congruence(A == 7);

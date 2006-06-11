@@ -81,9 +81,9 @@ test01() {
   Bounding_Box known_box(box);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(B));
-  gr.add_generator(grid_point(3*A + B));
-  gr.add_generator(grid_point(3*A + 3*B));
+  gr.add_grid_generator(grid_point(B));
+  gr.add_grid_generator(grid_point(3*A + B));
+  gr.add_grid_generator(grid_point(3*A + 3*B));
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
@@ -111,9 +111,9 @@ test02() {
   Bounding_Box known_box(box);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(  A +   B));
-  gr.add_generator(grid_point(2*A + 3*B));
-  gr.add_generator(grid_point(  A + 4*B));
+  gr.add_grid_generator(grid_point(  A +   B));
+  gr.add_grid_generator(grid_point(2*A + 3*B));
+  gr.add_grid_generator(grid_point(  A + 4*B));
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
@@ -139,9 +139,9 @@ test03() {
   box.lower_upper_bound(1, true, 2, 2);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(2*A));
-  gr.add_generator(grid_point(  A + 2*B, 2));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(2*A));
+  gr.add_grid_generator(grid_point(  A + 2*B, 2));
 
   Bounding_Box known_box(box);
 
@@ -165,9 +165,9 @@ test04() {
   Bounding_Box box(3);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_line(A + 2*B));
-  gr.add_generator(grid_point(C, 2));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_line(A + 2*B));
+  gr.add_grid_generator(grid_point(C, 2));
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
@@ -214,7 +214,7 @@ test06() {
   Bounding_Box box1(3);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point(16*A + 6*B - 6*C, 7));
+  gr.add_grid_generator(grid_point(16*A + 6*B - 6*C, 7));
 
   gr.shrink_bounding_box(box1);
   nout << "*** box1 ***" << endl << box1 << endl;
@@ -283,10 +283,10 @@ test08() {
   Bounding_Box box(3);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A + B));
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(2*A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A + B));
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(2*A));
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
@@ -402,10 +402,10 @@ test12() {
   Bounding_Box box1(4);
 
   Grid gr(4, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(C));
-  gr.add_generator(grid_point(D));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(C));
+  gr.add_grid_generator(grid_point(D));
 
   print_generators(gr, "*** gr ***");
 
@@ -437,9 +437,9 @@ test13() {
   Bounding_Box box(4);
 
   Grid gr(4, EMPTY);
-  gr.add_generator(grid_point(  A + 2*B + 4*C, 4));
-  gr.add_generator(grid_point(2*A + 2*B + 4*C, 4));
-  gr.add_generator(grid_point(  A + 2*B + 4*C + D, 4));
+  gr.add_grid_generator(grid_point(  A + 2*B + 4*C, 4));
+  gr.add_grid_generator(grid_point(2*A + 2*B + 4*C, 4));
+  gr.add_grid_generator(grid_point(  A + 2*B + 4*C + D, 4));
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;

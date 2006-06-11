@@ -43,7 +43,7 @@ test01() {
   gr1.add_congruence((A - B %= 2) / 5);
   gr1.add_congruence(B %= 0);
 
-  gr1.minimized_generators();
+  gr1.minimized_grid_generators();
 
   fstream f;
   open(f, my_file, ios_base::out);
@@ -402,7 +402,7 @@ test14() {
   gr1.add_congruence(B %= 0);
   gr1.add_congruence(C == 4);
 
-  gr1.minimized_generators();
+  gr1.minimized_grid_generators();
 
   fstream f;
   open(f, my_file, ios_base::out);

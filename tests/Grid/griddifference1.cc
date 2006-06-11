@@ -39,8 +39,8 @@ test01() {
   gr1.grid_difference_assign(gr2);
 
   Grid known_gr(1, EMPTY);
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_point(3*A));
+  known_gr.add_grid_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_point(3*A));
 
   bool ok = (gr1 == known_gr);
 
@@ -171,16 +171,16 @@ test07() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(grid_point(A - 2*C));
-  gr1.add_generator(grid_point(3*B));
+  gr1.add_grid_generator(grid_point());
+  gr1.add_grid_generator(grid_point(A - 2*C));
+  gr1.add_grid_generator(grid_point(3*B));
   print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point(A));
-  gr2.add_generator(grid_point(A + 2*C));
-  gr2.add_generator(grid_point(3*A));
-  gr2.add_generator(grid_point(A + 3*B));
+  gr2.add_grid_generator(grid_point(A));
+  gr2.add_grid_generator(grid_point(A + 2*C));
+  gr2.add_grid_generator(grid_point(3*A));
+  gr2.add_grid_generator(grid_point(A + 3*B));
 
   gr1.grid_difference_assign(gr2);
 
@@ -222,9 +222,9 @@ test09() {
   Variable B(1);
 
   Grid gr1(2, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(grid_line(A));
-  gr1.add_generator(grid_point(B));
+  gr1.add_grid_generator(grid_point());
+  gr1.add_grid_generator(grid_line(A));
+  gr1.add_grid_generator(grid_point(B));
   print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
@@ -249,9 +249,9 @@ test10() {
   Variable B(1);
 
   Grid gr1(2, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(grid_point(A));
-  gr1.add_generator(grid_point(B));
+  gr1.add_grid_generator(grid_point());
+  gr1.add_grid_generator(grid_point(A));
+  gr1.add_grid_generator(grid_point(B));
   print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);

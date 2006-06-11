@@ -34,8 +34,8 @@ test01() {
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(2, EMPTY);
-  gr2.add_generator(grid_point());
-  gr2.add_generator(grid_point(A));
+  gr2.add_grid_generator(grid_point());
+  gr2.add_grid_generator(grid_point(A));
 
   print_generators(gr2, "*** gr2 ***");
 
@@ -46,7 +46,7 @@ test01() {
   bool ok = (gr2 == known_gr);
 
   print_generators(gr2,
-        "*** gr2.generator_widening_assign(gr1) ***");
+		   "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -57,8 +57,8 @@ test02() {
   Variable A(0);
 
   Grid gr1(1, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(parameter(A));
+  gr1.add_grid_generator(grid_point());
+  gr1.add_grid_generator(parameter(A));
 
   print_generators(gr1, "*** gr1 ***");
 
@@ -73,7 +73,7 @@ test02() {
   bool ok = (gr2 == known_gr);
 
   print_generators(gr2,
-        "*** gr2.generator_widening_assign(gr1) ***");
+		   "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -98,7 +98,7 @@ test03() {
   bool ok = (gr2 == known_gr);
 
   print_generators(gr2,
-        "*** gr2.generator_widening_assign(gr1) ***");
+		   "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -110,15 +110,15 @@ test04() {
   Variable B(1);
 
   Grid gr1(2, EMPTY);
-  gr1.add_generator(grid_point(B));
-  gr1.add_generator(parameter(A));
+  gr1.add_grid_generator(grid_point(B));
+  gr1.add_grid_generator(parameter(A));
 
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(2, EMPTY);
-  gr2.add_generator(grid_point(B));
-  gr2.add_generator(parameter(A));
-  gr2.add_generator(parameter(A + B));
+  gr2.add_grid_generator(grid_point(B));
+  gr2.add_grid_generator(parameter(A));
+  gr2.add_grid_generator(parameter(A + B));
 
   print_generators(gr2, "*** gr2 ***");
 
@@ -129,7 +129,7 @@ test04() {
   bool ok = (gr2 == known_gr);
 
   print_generators(gr2,
-        "*** gr2.generator_widening_assign(gr1) ***");
+		   "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -142,17 +142,17 @@ test05() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(A, 2));
-  gr1.add_generator(grid_point(B, 2));
-  gr1.add_generator(grid_point(C));
+  gr1.add_grid_generator(grid_point(A, 2));
+  gr1.add_grid_generator(grid_point(B, 2));
+  gr1.add_grid_generator(grid_point(C));
 
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point(A, 2));
-  gr2.add_generator(grid_point(B, 2));
-  gr2.add_generator(grid_point(C));
-  gr2.add_generator(grid_point(4*C + A, 4));
+  gr2.add_grid_generator(grid_point(A, 2));
+  gr2.add_grid_generator(grid_point(B, 2));
+  gr2.add_grid_generator(grid_point(C));
+  gr2.add_grid_generator(grid_point(4*C + A, 4));
 
   print_generators(gr2, "*** gr2 ***");
 
@@ -163,7 +163,7 @@ test05() {
   bool ok = (gr2 == known_gr);
 
   print_generators(gr2,
-        "*** gr2.generator_widening_assign(gr1) ***");
+		   "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -176,29 +176,29 @@ test06() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(A, 2));
-  gr1.add_generator(parameter(B));
-  gr1.add_generator(parameter(C));
+  gr1.add_grid_generator(grid_point(A, 2));
+  gr1.add_grid_generator(parameter(B));
+  gr1.add_grid_generator(parameter(C));
 
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point(A, 2));
-  gr2.add_generator(parameter(B, 2));
-  gr2.add_generator(parameter(C, 2));
+  gr2.add_grid_generator(grid_point(A, 2));
+  gr2.add_grid_generator(parameter(B, 2));
+  gr2.add_grid_generator(parameter(C, 2));
 
   print_generators(gr2, "*** gr2 ***");
 
   Grid known_gr = gr2;
-  known_gr.add_generator(grid_line(B));
-  known_gr.add_generator(grid_line(C));
+  known_gr.add_grid_generator(grid_line(B));
+  known_gr.add_grid_generator(grid_line(C));
 
   gr2.generator_widening_assign(gr1);
 
   bool ok = (gr2 == known_gr);
 
   print_generators(gr2,
-        "*** gr2.generator_widening_assign(gr1) ***");
+		   "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -229,7 +229,7 @@ test07() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.generator_widening_assign(gr1) ***");
+		    "*** gr2.generator_widening_assign(gr1) ***");
 
   return ok;
 }
@@ -260,7 +260,7 @@ test08() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+		    "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -293,7 +293,7 @@ test09() {
   nout << "*** `tokens' (which should be 3), are = *** " << tokens << endl;
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1, &tokens) ***");
+		    "*** gr2.widening_assign(gr1, &tokens) ***");
 
   return ok;
 }
@@ -329,7 +329,7 @@ test10() {
   nout << "*** `tokens' (which should be 4), are = *** " << tokens << endl;
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1, &tokens) ***");
+		    "*** gr2.widening_assign(gr1, &tokens) ***");
 
   return ok;
 }
@@ -352,7 +352,7 @@ test11() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+		    "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -383,7 +383,7 @@ test12() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+		    "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -414,7 +414,7 @@ test13() {
   bool ok = (gr2 == known_gr);
 
   print_congruences(gr2,
-        "*** gr2.widening_assign(gr1) ***");
+		    "*** gr2.widening_assign(gr1) ***");
 
   return ok;
 }
@@ -427,14 +427,14 @@ test14() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(C, 3));
-  gr1.add_generator(grid_point(C + A - 2*B, 3));
+  gr1.add_grid_generator(grid_point(C, 3));
+  gr1.add_grid_generator(grid_point(C + A - 2*B, 3));
 
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(4, EMPTY);
-  gr2.add_generator(grid_point(C, 3));
-  gr2.add_generator(grid_point(2*C + A - 2*B, 6));
+  gr2.add_grid_generator(grid_point(C, 3));
+  gr2.add_grid_generator(grid_point(2*C + A - 2*B, 6));
 
   print_generators(gr2, "*** gr2 ***");
 

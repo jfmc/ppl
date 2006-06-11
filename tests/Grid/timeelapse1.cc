@@ -119,7 +119,7 @@ test05() {
   print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2, EMPTY);
-  gr2.add_generator(grid_point());
+  gr2.add_grid_generator(grid_point());
   print_generators(gr2, "*** gr2 ***");
 
   Grid known_gr(gr1);
@@ -220,22 +220,22 @@ test09() {
   Variable D(3);
 
   Grid gr1(4, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(grid_point(2*A));
-  gr1.add_generator(grid_point(4*A));
-  gr1.add_generator(grid_point(D));
+  gr1.add_grid_generator(grid_point());
+  gr1.add_grid_generator(grid_point(2*A));
+  gr1.add_grid_generator(grid_point(4*A));
+  gr1.add_grid_generator(grid_point(D));
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(4, EMPTY);
-  gr2.add_generator(grid_point(A));
+  gr2.add_grid_generator(grid_point(A));
   print_generators(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
 
   Grid known_gr(4, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_point(D));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_point(D));
 
   bool ok = (gr1 == known_gr);
 
@@ -274,7 +274,7 @@ test10() {
 bool
 test11() {
   Grid gr1(1, EMPTY);
-  gr1.add_generator(grid_point());
+  gr1.add_grid_generator(grid_point());
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(19, EMPTY);
@@ -300,20 +300,20 @@ test12() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(grid_point(A + 2*B - 3*C, 3));
+  gr1.add_grid_generator(grid_point());
+  gr1.add_grid_generator(grid_point(A + 2*B - 3*C, 3));
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point(3*A - B + 4*C, 7));
+  gr2.add_grid_generator(grid_point(3*A - B + 4*C, 7));
   print_generators(gr2, "*** gr2 ***");
 
   gr1.time_elapse_assign(gr2);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A + 2*B - 3*C, 3));
-  known_gr.add_generator(grid_point(3*A - B + 4*C, 7));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A + 2*B - 3*C, 3));
+  known_gr.add_grid_generator(grid_point(3*A - B + 4*C, 7));
 
   bool ok = (gr1 == known_gr);
 

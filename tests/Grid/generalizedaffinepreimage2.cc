@@ -39,9 +39,9 @@ test01() {
 				 Linear_Expression(1));
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_line(B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_line(B));
 
   bool ok = (gr == known_gr);
 
@@ -65,9 +65,9 @@ test02() {
   gr.generalized_affine_preimage(Linear_Expression::zero(), A - B, 5);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A + B));
-  known_gr.add_generator(grid_point(5*A));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A + B));
+  known_gr.add_grid_generator(grid_point(5*A));
 
   bool ok = (gr == known_gr);
 
@@ -93,10 +93,10 @@ test03() {
   gr.generalized_affine_preimage(A - B, C);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_line(A));
-  known_gr.add_generator(grid_line(B));
-  known_gr.add_generator(grid_point(3*C));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_line(A));
+  known_gr.add_grid_generator(grid_line(B));
+  known_gr.add_grid_generator(grid_point(3*C));
 
   bool ok = (gr == known_gr);
 
@@ -145,9 +145,9 @@ test05() {
   gr.generalized_affine_preimage(A + 2*B, A - B, 3);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_line(A + B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_line(A + B));
 
   bool ok = (gr == known_gr);
 
@@ -166,10 +166,10 @@ test06() {
   Variable C(2);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(A + B));
-  gr.add_generator(grid_point(2*A));
-  gr.add_generator(grid_point(2*A + 2*B));
-  gr.add_generator(grid_point(3*A + B));
+  gr.add_grid_generator(grid_point(A + B));
+  gr.add_grid_generator(grid_point(2*A));
+  gr.add_grid_generator(grid_point(2*A + 2*B));
+  gr.add_grid_generator(grid_point(3*A + B));
 
   Grid known_gr(gr);
 
