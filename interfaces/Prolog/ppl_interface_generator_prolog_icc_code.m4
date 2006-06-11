@@ -258,7 +258,7 @@ ppl_@CLASS@_get_@DESCRIBE@s
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    const @UDESCRIBE@_System& gs = ph->@ALT_DESCRIBE@s();
+    const @UDESCRIBE@_System& gs = ph->@DESCRIBE@s();
     for (@UDESCRIBE@_System::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i)
       Prolog_construct_cons(tail, @DESCRIBE@_term(*i), tail);
@@ -281,7 +281,7 @@ ppl_@CLASS@_get_minimized_@DESCRIBE@s
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    const @UDESCRIBE@_System& gs = ph->minimized_@ALT_DESCRIBE@s();
+    const @UDESCRIBE@_System& gs = ph->minimized_@DESCRIBE@s();
     for (@UDESCRIBE@_System::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i)
       Prolog_construct_cons(tail, @DESCRIBE@_term(*i), tail);
@@ -400,9 +400,9 @@ define(`relation_with_grid_generator_code', `
     }
 ')
 
-define(`ppl_Grid_get_@BOX@_code',
+define(`ppl_Grid_get_bounding_box_code',
 `extern "C" Prolog_foreign_return_type
-ppl_Grid_get_@BOX@
+ppl_Grid_get_bounding_box
 (Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
   try {
     Grid* ph = term_to_Grid_handle(t_ph);
@@ -410,7 +410,30 @@ ppl_Grid_get_@BOX@
 
     dimension_type dimension = ph->space_dimension();
     Bounding_Box bbox(dimension);
-    ph->@ALT_BOX@(bbox);
+    ph->shrink_bounding_box(bbox);
+    Prolog_term_ref tail = Prolog_new_term_ref();
+    Prolog_put_atom(tail, a_nil);
+    for (dimension_type i = dimension; i-- > 0; )
+      Prolog_construct_cons(tail, interval_term(bbox[i]), tail);
+    if (Prolog_unify(t_bb, tail))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+define(`ppl_Grid_get_covering_box_code',
+`extern "C" Prolog_foreign_return_type
+ppl_Grid_get_covering_box
+(Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
+  try {
+    Grid* ph = term_to_Grid_handle(t_ph);
+    CHECK(ph);
+
+    dimension_type dimension = ph->space_dimension();
+    Bounding_Box bbox(dimension);
+    ph->get_covering_box(bbox);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     for (dimension_type i = dimension; i-- > 0; )
@@ -611,7 +634,7 @@ ppl_@CLASS@_add_@REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    ph->add_@ALT_REPRESENT@(build_@REPRESENT@(t_c));
+    ph->add_@REPRESENT@(build_@REPRESENT@(t_c));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -626,7 +649,7 @@ ppl_@CLASS@_add_@REPRESENT@_and_minimize
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    if (ph->add_@ALT_REPRESENT@_and_minimize(build_@REPRESENT@(t_c)))
+    if (ph->add_@REPRESENT@_and_minimize(build_@REPRESENT@(t_c)))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -652,7 +675,7 @@ ppl_@CLASS@_add_@REPRESENT@s
     // Check the list is properly terminated.
     check_nil_terminating(t_clist);
 
-    ph->add_@ALT_REPRESENT@s(cs);
+    ph->add_@REPRESENT@s(cs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -678,7 +701,7 @@ ppl_@CLASS@_add_@REPRESENT@s_and_minimize
     // Check the list is properly terminated.
     check_nil_terminating(t_clist);
 
-    if (ph->add_@ALT_REPRESENT@s_and_minimize(cs))
+    if (ph->add_@REPRESENT@s_and_minimize(cs))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -905,14 +928,14 @@ limited_extrapolation_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
  void (@CPP_CLASS@::* limited_extrap_assign)
       (const @CPP_CLASS@&,
-       const @UALT_CONSTRAINER@_System&,
+       const @UCONSTRAINER@_System&,
        unsigned* tp)) {
   try {
     @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
     const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    @UALT_CONSTRAINER@_System cs;
+    @UCONSTRAINER@_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
@@ -935,14 +958,14 @@ limited_extrapolation_assign_with_tokens
  Prolog_term_ref t_ti, Prolog_term_ref t_to,
  void (@CPP_CLASS@::* limited_extrap_assign)
       (const @CPP_CLASS@&,
-       const @UALT_CONSTRAINER@_System&,
+       const @UCONSTRAINER@_System&,
        unsigned* tp)) {
   try {
     @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
     const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    @UALT_CONSTRAINER@_System cs;
+    @UCONSTRAINER@_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {

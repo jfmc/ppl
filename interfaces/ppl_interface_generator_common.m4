@@ -227,7 +227,8 @@ dnl including the Class_Kind in Procedure_Name, preceded by a +.
 dnl if so, it expands to the given Procedure_Name.
 define(`m4_filter', `dnl
 define(`m4_proc_info_string',
-  patsubst(`$2', `[ ]*ppl_[^ ]+ \(.*\)', \1))dnl
+  patsubst(`$2', `[ ]*ppl_[^ 
+]\(.*\)', \1))dnl
 ifelse(m4_proc_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, ,
   ifelse(m4_proc_keep_or_throw($1, m4_proc_info_string, +, m4_group_names), 1,
     $2))dnl

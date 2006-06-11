@@ -116,7 +116,7 @@ ppl_@CLASS@_@DESCRIBE@s
 (ppl_const_@CLASS@_t ph,
  ppl_const_@UDESCRIBE@_System_t* pcs) try {
   const @CPP_CLASS@& pph = *to_const(ph);
-  const @UDESCRIBE@_System& cs = pph.@ALT_DESCRIBE@s();
+  const @UDESCRIBE@_System& cs = pph.@DESCRIBE@s();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -130,7 +130,7 @@ ppl_@CLASS@_minimized_@DESCRIBE@s
 (ppl_const_@CLASS@_t ph,
  ppl_const_@UDESCRIBE@_System_t* pcs) try {
   const @CPP_CLASS@& pph = *to_const(ph);
-  const @UDESCRIBE@_System& cs = pph.minimized_@ALT_DESCRIBE@s();
+  const @UDESCRIBE@_System& cs = pph.minimized_@DESCRIBE@s();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -305,7 +305,7 @@ ppl_@CLASS@_add_@REPRESENT@
  ppl_const_@UREPRESENT@_t c) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
   const @UREPRESENT@& cc = *to_const(c);
-  pph.add_@ALT_REPRESENT@(cc);
+  pph.add_@REPRESENT@(cc);
   return 0;
 }
 CATCH_ALL
@@ -319,7 +319,7 @@ ppl_@CLASS@_add_@REPRESENT@_and_minimize
  ppl_const_@UREPRESENT@_t c) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
   const @UREPRESENT@& cc = *to_const(c);
-  return pph.add_@ALT_REPRESENT@_and_minimize(cc) ? 1 : 0;
+  return pph.add_@REPRESENT@_and_minimize(cc) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -332,7 +332,7 @@ ppl_@CLASS@_add_@REPRESENT@s
  ppl_const_@UREPRESENT@_System_t cs) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
   const @UREPRESENT@_System& ccs = *to_const(cs);
-  pph.add_@ALT_REPRESENT@s(ccs);
+  pph.add_@REPRESENT@s(ccs);
   return 0;
 }
 CATCH_ALL
@@ -346,7 +346,7 @@ ppl_@CLASS@_add_@REPRESENT@s_and_minimize
  ppl_const_@UREPRESENT@_System_t cs) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
   const @UREPRESENT@_System& ccs = *to_const(cs);
-  return pph.add_@ALT_REPRESENT@s_and_minimize(ccs) ? 1 : 0;
+  return pph.add_@REPRESENT@s_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -359,7 +359,7 @@ ppl_@CLASS@_add_recycled_@REPRESENT@s
  ppl_@UREPRESENT@_System_t cs) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
   @UREPRESENT@_System& ccs = *to_nonconst(cs);
-  pph.add_recycled_@ALT_REPRESENT@s(ccs);
+  pph.add_recycled_@REPRESENT@s(ccs);
   return 0;
 }
 CATCH_ALL
@@ -373,7 +373,7 @@ ppl_@CLASS@_add_recycled_@REPRESENT@s_and_minimize
  ppl_@UREPRESENT@_System_t cs) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
   @UREPRESENT@_System& ccs = *to_nonconst(cs);
-  return pph.add_recycled_@ALT_REPRESENT@s_and_minimize(ccs) ? 1 : 0;
+  return pph.add_recycled_@REPRESENT@s_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
 
