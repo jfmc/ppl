@@ -474,6 +474,62 @@ test15() {
   return ok;
 }
 
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagonal_Shape oc(3);
+  oc.add_constraint(C >= 1);
+  oc.add_constraint(A <= 10);
+
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_image(B, A + C + 1);
+  print_constraints(oc, "*** oc ***");
+
+  Octagonal_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(C >= 1);
+  known_result.add_constraint(A <= 10);
+  known_result.add_constraint(B - A >= 2);
+  known_result.add_constraint(B - C <= 11);
+
+  bool ok = check_result(oc, known_result);
+
+  print_constraints(oc, "*** oc.affine_image(A, B + C + 1) ***");
+
+  return ok;
+}
+
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagonal_Shape oc(3);
+  oc.add_constraint(C >= 1);
+  oc.add_constraint(A <= 10);
+
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_image(B, A + C + 1, -1);
+  print_constraints(oc, "*** oc ***");
+
+  Octagonal_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(C >= 1);
+  known_result.add_constraint(A <= 10);
+  known_result.add_constraint(B + A <= -2);
+  known_result.add_constraint(B + C >= -11);
+
+  bool ok = check_result(oc, known_result);
+
+  print_constraints(oc, "*** oc.affine_image(A, B + C + 1, -1) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -492,4 +548,6 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN

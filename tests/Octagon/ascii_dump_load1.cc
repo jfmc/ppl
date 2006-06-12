@@ -28,9 +28,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+const char* my_file = "ascii_dump_load1.dat";
+
 bool
 test01() {
-  const char* my_file = "ascii_dump_load1.dat";
+
+  nout << "test01()" << endl;
+
   Variable A(0);
   Variable B(1);
 
@@ -58,7 +62,9 @@ test01() {
 
 bool
 test02() {
-  const char* my_file = "ascii_dump_load1.dat";
+
+  nout << "test02()" << endl;
+
   Variable A(0);
   Variable B(1);
 
@@ -82,7 +88,9 @@ test02() {
 
 bool
 test03() {
-  const char* my_file = "ascii_dump_load1.dat";
+
+  nout << "test03()" << endl;
+
   Variable A(0);
   Variable B(1);
 
@@ -114,7 +122,9 @@ test03() {
 
 bool
 test04() {
-  const char* my_file = "ascii_dump_load1.dat";
+
+  nout << "test04()" << endl;
+
   Variable A(0);
   Variable B(1);
 
@@ -146,7 +156,9 @@ test04() {
 
 bool
 test05() {
-  const char* my_file = "ascii_dump_load1.dat";
+
+ nout << "test05()" << endl;
+
   Variable A(0);
   Variable B(1);
 
@@ -178,7 +190,9 @@ test05() {
 
 bool
 test06() {
-  const char* my_file = "ascii_dump_load1.dat";
+
+  nout << "test06()" << endl;
+
   Variable A(0);
   Variable B(1);
 
@@ -210,7 +224,9 @@ test06() {
 
 bool
 test07() {
-  const char* my_file = "ascii_dump_load1.dat";
+
+  nout << "test07()" << endl;
+
   Variable A(0);
   Variable B(1);
 
@@ -245,7 +261,9 @@ test07() {
 
 bool
 test08() {
-  const char* my_file = "ascii_dump_load1.dat";
+
+  nout << "test08()" << endl;
+
   TOctagonal_Shape oc1(0, EMPTY);
 
   std::fstream f;
