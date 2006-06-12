@@ -322,18 +322,6 @@ Direct_Product<D1, D2>::is_universe() const {
 }
 
 template <typename D1, typename D2>
-inline bool
-Direct_Product<D1, D2>::reduce_domain1_with_domain2() {
-  return false;
-}
-
-template <typename D1, typename D2>
-inline bool
-Direct_Product<D1, D2>::reduce_domain2_with_domain1() {
-  return false;
-}
-
-template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>::add_space_dimensions_and_embed(dimension_type m) {
   d1.add_space_dimensions_and_embed(m);
@@ -432,6 +420,27 @@ IO_Operators::operator<<(std::ostream& s, const Direct_Product<D1, D2>& dp) {
 	   << dp.d1
 	   << "Domain 2:\n"
 	   << dp.d2;
+}
+
+// FIXME: move to dedicated file once name decided
+
+template <typename D1, typename D2>
+inline
+Reduced_Product<D1, D2>::Reduced_Product(dimension_type num_dimensions,
+					 const Degenerate_Element kind)
+  : Direct_Product<D1, D2>(num_dimensions, kind) {
+}
+
+template <typename D1, typename D2>
+inline bool
+Reduced_Product<D1, D2>::reduce_domain1_with_domain2() {
+  return false;
+}
+
+template <typename D1, typename D2>
+inline bool
+Reduced_Product<D1, D2>::reduce_domain2_with_domain1() {
+  return false;
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -111,6 +111,84 @@ Direct_Product<C_Polyhedron, Grid>::add_generator_and_minimize(const Generator& 
   return d1.add_generator_and_minimize(g);
 }
 
+template <>
+inline void
+Direct_Product<NNC_Polyhedron, Grid>
+::generalized_affine_image(Variable var,
+			   const Relation_Symbol relsym,
+			   const Linear_Expression& expr,
+			   Coefficient_traits::const_reference denominator) {
+  d1.generalized_affine_image(var, relsym, expr, denominator);
+}
+
+template <>
+inline void
+Direct_Product<NNC_Polyhedron, Grid>
+::generalized_affine_image(Variable var,
+			   const Linear_Expression& expr,
+			   Coefficient_traits::const_reference denominator,
+			   Coefficient_traits::const_reference modulus) {
+  d2.generalized_affine_image(var, expr, denominator, modulus);
+}
+
+template <>
+inline void
+Direct_Product<NNC_Polyhedron, Grid>
+::generalized_affine_preimage(Variable var,
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator) {
+  d1.generalized_affine_preimage(var, relsym, expr, denominator);
+}
+
+template <>
+inline void
+Direct_Product<NNC_Polyhedron, Grid>
+::generalized_affine_preimage(Variable var,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator,
+			      Coefficient_traits::const_reference modulus) {
+  d2.generalized_affine_preimage(var, expr, denominator, modulus);
+}
+
+template <>
+inline void
+Direct_Product<NNC_Polyhedron, Grid>
+::generalized_affine_image(const Linear_Expression& lhs,
+			   const Relation_Symbol relsym,
+			   const Linear_Expression& rhs) {
+  d1.generalized_affine_image(lhs, relsym, rhs);
+}
+
+template <>
+inline void
+Direct_Product<NNC_Polyhedron, Grid>
+::generalized_affine_image(const Linear_Expression& lhs,
+			   const Linear_Expression& rhs,
+			   Coefficient_traits::const_reference modulus) {
+  d2.generalized_affine_image(lhs, rhs, modulus);
+}
+
+template <>
+inline void
+Direct_Product<NNC_Polyhedron, Grid>
+::generalized_affine_preimage(const Linear_Expression& lhs,
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& rhs) {
+  d1.generalized_affine_preimage(lhs, relsym, rhs);
+}
+
+template <>
+inline void
+Direct_Product<NNC_Polyhedron, Grid>
+::generalized_affine_preimage(const Linear_Expression& lhs,
+			      const Linear_Expression& rhs,
+			      Coefficient_traits::const_reference modulus) {
+  d2.generalized_affine_preimage(lhs, rhs, modulus);
+}
+
+// FIXME: move to dedicated file once name decided
+
 template <typename D1, typename D2>
 bool
 Direct_Product<D1, D2>::empty_reduce_d1_with_d2() {
@@ -139,40 +217,40 @@ Direct_Product<D1, D2>::empty_reduce_d2_with_d1() {
 
 template <>
 inline bool
-Direct_Product<NNC_Polyhedron, Grid>::reduce_domain1_with_domain2() {
+Reduced_Product<NNC_Polyhedron, Grid>::reduce_domain1_with_domain2() {
   return empty_reduce_d1_with_d2();
 }
 
 template <>
 inline bool
-Direct_Product<C_Polyhedron, Grid>::reduce_domain1_with_domain2() {
+Reduced_Product<C_Polyhedron, Grid>::reduce_domain1_with_domain2() {
   return empty_reduce_d1_with_d2();
 }
 
 #if 0
 template <>
 inline bool
-Direct_Product<BD_Shape<T>, Grid>::reduce_domain1_with_domain2() {
+Reduced_Product<BD_Shape<T>, Grid>::reduce_domain1_with_domain2() {
   return empty_reduce_d1_with_d2();
 }
 #endif
 
 template <>
 inline bool
-Direct_Product<NNC_Polyhedron, Grid>::reduce_domain2_with_domain1() {
+Reduced_Product<NNC_Polyhedron, Grid>::reduce_domain2_with_domain1() {
   return empty_reduce_d2_with_d1();
 }
 
 template <>
 inline bool
-Direct_Product<C_Polyhedron, Grid>::reduce_domain2_with_domain1() {
+Reduced_Product<C_Polyhedron, Grid>::reduce_domain2_with_domain1() {
   return empty_reduce_d2_with_d1();
 }
 
 #if 0
 template <typename T>
 inline bool
-Direct_Product<BD_Shape<T>, Grid>::reduce_domain2_with_domain1() {
+Reduced_Product<BD_Shape<T>, Grid>::reduce_domain2_with_domain1() {
   return empty_reduce_d2_with_d1();
 }
 #endif
@@ -180,7 +258,7 @@ Direct_Product<BD_Shape<T>, Grid>::reduce_domain2_with_domain1() {
 #if 0
 template <typename D1, typename D2>
 inline bool
-Direct_Product<D1, D2>::reduce_ph_with_gr() {
+Reduced_Product<D1, D2>::reduce_ph_with_gr() {
   // Skeleton attempt at simple reduction.
 
   // Reduce ph d1 with gr d2 by moving ph c's to nearest grid point
@@ -263,7 +341,7 @@ Direct_Product<D1, D2>::reduce_ph_with_gr() {
 
 template <>
 inline bool
-Direct_Product<Parma_Polyhedra_Library::NNC_Polyhedron,
+Reduced_Product<Parma_Polyhedra_Library::NNC_Polyhedron,
 	       Parma_Polyhedra_Library::Grid>::reduce() {
   bool modified = reduce_domain1_with_domain2();
   if (reduce_domain2_with_domain1()) {
@@ -281,89 +359,13 @@ Direct_Product<Parma_Polyhedra_Library::NNC_Polyhedron,
 
 template <typename D1, typename D2>
 bool
-Direct_Product<D1, D2>::reduce() {
+Reduced_Product<D1, D2>::reduce() {
   bool modified = reduce_domain1_with_domain2();
   if (reduce_domain2_with_domain1()) {
     modified = true;
     while (reduce_domain1_with_domain2() && reduce_domain1_with_domain2());
   }
   return modified;
-}
-
-template <>
-inline void
-Direct_Product<NNC_Polyhedron, Grid>
-::generalized_affine_image(Variable var,
-			   const Relation_Symbol relsym,
-			   const Linear_Expression& expr,
-			   Coefficient_traits::const_reference denominator) {
-  d1.generalized_affine_image(var, relsym, expr, denominator);
-}
-
-template <>
-inline void
-Direct_Product<NNC_Polyhedron, Grid>
-::generalized_affine_image(Variable var,
-			   const Linear_Expression& expr,
-			   Coefficient_traits::const_reference denominator,
-			   Coefficient_traits::const_reference modulus) {
-  d2.generalized_affine_image(var, expr, denominator, modulus);
-}
-
-template <>
-inline void
-Direct_Product<NNC_Polyhedron, Grid>
-::generalized_affine_preimage(Variable var,
-			      const Relation_Symbol relsym,
-			      const Linear_Expression& expr,
-			      Coefficient_traits::const_reference denominator) {
-  d1.generalized_affine_preimage(var, relsym, expr, denominator);
-}
-
-template <>
-inline void
-Direct_Product<NNC_Polyhedron, Grid>
-::generalized_affine_preimage(Variable var,
-			      const Linear_Expression& expr,
-			      Coefficient_traits::const_reference denominator,
-			      Coefficient_traits::const_reference modulus) {
-  d2.generalized_affine_preimage(var, expr, denominator, modulus);
-}
-
-template <>
-inline void
-Direct_Product<NNC_Polyhedron, Grid>
-::generalized_affine_image(const Linear_Expression& lhs,
-			   const Relation_Symbol relsym,
-			   const Linear_Expression& rhs) {
-  d1.generalized_affine_image(lhs, relsym, rhs);
-}
-
-template <>
-inline void
-Direct_Product<NNC_Polyhedron, Grid>
-::generalized_affine_image(const Linear_Expression& lhs,
-			   const Linear_Expression& rhs,
-			   Coefficient_traits::const_reference modulus) {
-  d2.generalized_affine_image(lhs, rhs, modulus);
-}
-
-template <>
-inline void
-Direct_Product<NNC_Polyhedron, Grid>
-::generalized_affine_preimage(const Linear_Expression& lhs,
-			      const Relation_Symbol relsym,
-			      const Linear_Expression& rhs) {
-  d1.generalized_affine_preimage(lhs, relsym, rhs);
-}
-
-template <>
-inline void
-Direct_Product<NNC_Polyhedron, Grid>
-::generalized_affine_preimage(const Linear_Expression& lhs,
-			      const Linear_Expression& rhs,
-			      Coefficient_traits::const_reference modulus) {
-  d2.generalized_affine_preimage(lhs, rhs, modulus);
 }
 
 } // namespace Parma_Polyhedra_Library

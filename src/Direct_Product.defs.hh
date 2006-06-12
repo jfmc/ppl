@@ -491,30 +491,6 @@ public:
   */
   bool bounds_from_below(const Linear_Expression& expr) const;
 
-  //! Reduce the instance of the second domain with the first.
-  /*
-    \return
-    <CODE>true</CODE> if and only if resulting components are strictly
-    contained in the originals.
-  */
-  bool reduce_domain1_with_domain2();
-
-  //! Reduce the instance of the first domain with the second.
-  /*
-    \return
-    <CODE>true</CODE> if and only if resulting components are strictly
-    contained in the originals.
-  */
-  bool reduce_domain2_with_domain1();
-
-  //! Reduce.
-  /*
-    \return
-    <CODE>true</CODE> if and only if either of the resulting component
-    is strictly contained in the respective original.
-  */
-  bool reduce();
-
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
     \p expr is bounded from above in \p *this, in which case the
@@ -1927,7 +1903,8 @@ public:
 
   //@} // Miscellaneous Member Functions
 
-private:
+protected:
+
   /*! \brief
     Reduces first component with first, by checking if second is
     empty.
@@ -1948,7 +1925,6 @@ private:
   */
   bool empty_reduce_d2_with_d1();
 
-protected:
   //! The type of the first component.
   typedef D1 Domain1;
 
@@ -1960,6 +1936,52 @@ protected:
 
   //! The second component.
   D2 d2;
+};
+
+// FIXME: move to dedicated file once name decided
+
+template <typename D1, typename D2>
+class Parma_Polyhedra_Library::Reduced_Product
+  : public Parma_Polyhedra_Library::Direct_Product<D1, D2> {
+public:
+  //! Builds an object having the specified properties.
+  /*!
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the pair;
+
+    \param kind
+    Specifies whether a universe or an empty pair has to be built.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Reduced_Product(dimension_type num_dimensions = 0,
+			   const Degenerate_Element kind = UNIVERSE);
+
+  //! Reduce the instance of the second domain with the first.
+  /*
+    \return
+    <CODE>true</CODE> if and only if resulting components are strictly
+    contained in the originals.
+  */
+  bool reduce_domain1_with_domain2();
+
+  //! Reduce the instance of the first domain with the second.
+  /*
+    \return
+    <CODE>true</CODE> if and only if resulting components are strictly
+    contained in the originals.
+  */
+  bool reduce_domain2_with_domain1();
+
+  //! Reduce.
+  /*
+    \return
+    <CODE>true</CODE> if and only if either of the resulting component
+    is strictly contained in the respective original.
+  */
+  bool reduce();
 };
 
 namespace std {
