@@ -21,23 +21,18 @@ define(`m4_add_bop_assign_code', `dnl
 m4_replace_class_patterns($1, $2, bop_assign_code)dnl
 ')
 
-dnl m4_get_num_widenexps(Class_Kind)
-dnl
-dnl Get the number of widenings for the provided Class_Kind.
-define(`get_num_widenexps', `dnl
-m4_ifndef(num_`$1'_widenexps,
-          m4_ifndef(num_widenexps, 0))dnl
-')
-
 dnl m4_add_widening_extrapolation_code(Class, CPP_Class, Class_Kind)
 dnl
 dnl Adds the extra code used by the widening and extrapolation predicates.
 define(`m4_add_widening_extrapolation_code', `dnl
-ifelse(get_num_widenexps($3), 0, ,
+define(`m4_exists_widenexp', `dnl
+ifdef(`m4_$3_widenexp_replacement', 1, 0)')dnl
+ifelse(m4_exists_widenexp, 0, ,
   `m4_replace_class_patterns($1, $2,
                              m4_replace_pattern($3,
                                                 widening_extrapolation_code,
                                                 constrainer))')dnl
+undefine(`m4_num_widenexps')
 ')
 
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)

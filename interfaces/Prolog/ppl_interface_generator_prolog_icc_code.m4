@@ -423,9 +423,9 @@ ppl_Grid_get_bounding_box
 
 ')
 
-define(`ppl_Grid_get_covering_box_code',
+define(`ppl_Grid_get_@BOX@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_Grid_get_covering_box
+ppl_Grid_get_@BOX@
 (Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
   try {
     Grid* ph = term_to_Grid_handle(t_ph);
@@ -433,7 +433,7 @@ ppl_Grid_get_covering_box
 
     dimension_type dimension = ph->space_dimension();
     Bounding_Box bbox(dimension);
-    ph->get_covering_box(bbox);
+    ph->@ALT_BOX@(bbox);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     for (dimension_type i = dimension; i-- > 0; )

@@ -65,196 +65,96 @@ widenexp,
 box,
 describe')
 
-dnl num_class_widenexps
-dnl class_widenexp
-dnl
+dnl The topology of the domain element. The default is the empty string.
+define(`m4_topology_replacement', `')
+define(`m4_Polyhedron_topology_replacement', ``C_, NNC_'')
+
+dnl The topology used to copy from another element of the domain
+define(`m4_intopology_replacement', `')
+define(`m4_Polyhedron_intopology_replacement', ``C_, NNC_'')
+
 dnl The widening and extrapolation operators.
-define(`num_Polyhedron_widenexps', 2)
-define(`Polyhedron_widenexp1', `BHRZ03')
-define(`Polyhedron_widenexp2', `H79')
-define(`num_Grid_widenexps', 2)
-define(`Grid_widenexp1', `congruence')
-define(`Grid_widenexp2', `generator')
-dnl define(`Grid_widenexp3', `BDHMZ06')
-define(`Grid_widenexp3', `')
-define(`num_BD_Shape_widenexps',2)
-define(`BD_Shape_widenexp1',`BHMZ05')
-define(`BD_Shape_widenexp2',`H79')
-dnl define(`BD_Shape_widenexp3',`CC76')
-define(`num_Octagonal_Shape_widenexps',1)
-define(`Octagonal_Shape_widenexp1',CH78)
+define(`m4_widenexp_replacement', `')
+define(`m4_Polyhedron_widenexp_replacement', ``BHRZ03, H79'')
+define(`m4_Grid_widenexp_replacement', ``congruence, generator'')
+define(`m4_BD_Shape_widenexp_replacement', ``BHMZ05, H79'')
+define(`m4_Octagonal_Shape_widenexp_replacement', ``CH78'')
 
-dnl num_class_topologys
-dnl class_topology
-dnl
-dnl Some classes can have a topology.
-dnl The "_" only needed when topology exists.
-define(`num_topologys', 1)
-define(`topology1', `')
-define(`num_Polyhedron_topologys', 2)
-define(`Polyhedron_topology1', `C_')
-define(`Polyhedron_topology2', `NNC_')
-define(`num_intopologys', 1)
-define(`intopology1', `')
-define(`num_Polyhedron_intopologys', 2)
-define(`Polyhedron_intopology1', `C_')
-define(`Polyhedron_intopology2', `NNC_')
-
-dnl num_class_boxs
-dnl class_box
-dnl
 dnl The shape classes have bounding boxes while the grid classes also
 dnl have covering boxes.
-define(`num_boxs', 1)
-define(`box1', `bounding_box')
-define(`num_Grid_boxs', 2)
-define(`Grid_box2', `covering_box')
-define(`alt_Grid_box1', `shrink_bounding_box')
-define(`alt_Grid_box2', `get_covering_box')
+define(`m4_box_replacement', `bounding_box')
+define(`m4_Grid_box_replacement', ```m4_box_replacement', covering_box'')
+define(`m4_Grid_box_bounding_box_alt_replacement', ``shrink_bounding_box'')
+define(`m4_Grid_box_covering_box_alt_replacement', ``get_covering_box'')
 
-dnl num_class_dimensions
-dnl class_dimension
-dnl
-dnl  space or affine dimensions
-define(`num_dimensions', 2)
-define(`dimension1', `space_dimension')
-define(`dimension2', `affine_dimension')
+dnl  Space or affine dimensions
+define(`m4_dimension_replacement', `space_dimension, affine_dimension')
 
-dnl num_class_generators
-dnl class_generator
-dnl
 dnl The different kinds of objects use to generate a class.
-define(`num_generators', 1)
-define(`generator1', `generator')
-define(`Grid_generator1', `grid_generator')
+define(`m4_generator_replacement', `generator')
+define(`m4_Grid_generator_replacement', ``grid_generator'')
 
-dnl num_class_points
-dnl class_point
-dnl
 dnl  The different kinds of points.
-define(`num_points', 1)
-define(`point1', `point')
-define(`Grid_point1', `grid_point')
+define(`m4_point_replacement', `point')
+define(`m4_Grid_point_replacement', ``grid_point'')
 
-dnl num_class_constrainers
-dnl class_constrainer
-dnl
-dnl  The constrainer objects used to define a class.
-define(`num_constrainers', 1)
-define(`constrainer1', `constraint')
-define(`Grid_constrainer1', `congruence')
+dnl  The constrainer objects used to describe a class.
+define(`m4_constrainer_replacement', `constraint')
+define(`m4_Grid_constrainer_replacement', ``congruence'')
 
-dnl num_class_represents
-dnl class_represent?
-dnl
-dnl  The different kinds of objects use to construct a class.
-define(`num_represents', 2)
-define(`represent1', `constraint')
-define(`represent2', `generator')
-define(`num_Grid_represents', 3)
-define(`Grid_represent2', `grid_generator')
-define(`alt_Grid_represent2', `generator')
-define(`Grid_represent3', `congruence')
-define(`num_BD_Shape_represents', 1)
-define(`num_Octagonal_Shape_represents', 1)
+dnl  The different kinds of objects use to represent a class.
+define(`m4_represent_replacement', `constraint')
+define(`m4_Polyhedron_represent_replacement',
+         ```m4_represent_replacement', generator'')
+define(`m4_Grid_represent_replacement',
+         ```m4_represent_replacement', grid_generator, congruence'')
 
-
-dnl num_class_describes
-dnl class_describe
-dnl
 dnl  The different kinds of objects use to describe a class.
-define(`num_describes', 2)
-define(`describe1', `constraint')
-define(`describe2', `generator')
-define(`num_Grid_describe', 2)
-define(`Grid_describe1', `congruence')
-define(`Grid_describe2', `grid_generator')
-define(`alt_Grid_describe2', `generator')
-define(`num_BD_Shape_describes', 1)
-define(`num_Octagonal_Shape_describes', 1)
+define(`m4_describe_replacement', `constraint')
+define(`m4_Polyhedron_describe_replacement',
+         ```m4_describe_replacement', generator'')
+define(`m4_Grid_describe_replacement',
+         ``congruence, grid_generator'')
 
-dnl num_class_states
-dnl class_State
-dnl
-dnl  the "is" predicates
-define(`num_states', 4)
-define(`state1', `empty')
-define(`state2', `universe')
-define(`state3', `bounded')
-define(`state4', `topologically_closed')
-define(`num_BD_Shape_states', 3)
-define(`num_Grid_states', 5)
-define(`Grid_state5', `discrete')
+dnl  The "is" predicates
+define(`m4_state_replacement', `empty, universe, bounded')
+define(`m4_Polyhedron_state_replacement',
+         ```m4_state_replacement', topologically_closed'')
+define(`m4_Grid_state_replacement',
+        ```m4_state_replacement', topologically_closed, discrete'')
 
-dnl num_class_bounds
-dnl class_bounds
-dnl
-dnl  above or below
-define(`num_abovebelows', 2)
-define(`abovebelow1', `above')
-define(`abovebelow2', `below')
+dnl  Above or below
+define(`m4_abovebelow_replacement', `above, below')
 
-dnl num_class_maxmins
-dnl class_maxmin
-dnl
 dnl  Maximize or Minimize
-define(`num_maxmins', 2)
-define(`maxmin1', `maximize')
-define(`maxmin2', `minimize')
+define(`m4_maxmin_replacement', `maximize, minimize')
 
-dnl num_class_embedprojects
-dnl class_embedproject
-dnl
 dnl  Embed or project
-define(`num_embedprojects', 2)
-define(`embedproject1', `and_embed')
-define(`embedproject2', `and_project')
+define(`m4_embedproject_replacement', `and_embed, and_project')
 
-dnl num_class_affimages
-dnl class_affimage
-dnl
-dnl  affine_image or affine_preimage
-define(`num_affimages', 2)
-define(`affimage1', `affine_image')
-define(`affimage2', `affine_preimage')
+dnl  Affine_image or affine_preimage
+define(`m4_affimage_replacement', `affine_image, affine_preimage')
 
-dnl num_class_comparisons
-dnl class_comparison
-dnl
 dnl  One object can be contained, strictly contained or disjoint in the other.
-define(`num_comparisons', 3)
-define(`comparison1', `contains')
-define(`comparison2', `strictly_contains')
-define(`comparison3', `is_disjoint_from')
-define(`num_BD_Shape_comparisons', 2)
+define(`m4_comparison_replacement',
+         `contains, strictly_contains, is_disjoint_from')
 
-dnl num_class_binops
-dnl class_binop
-dnl
 dnl  The different kinds of binary operators.
-define(`num_binops', 5)
-define(`binop1', `intersection_assign')
-define(`binop2', `upper_bound_assign')
-define(`binop3', `difference_assign')
-define(`binop4', `concatenate_assign')
-define(`binop5', `time_elapse_assign')
-define(`num_Polyhedron_binops', 7)
-define(`Polyhedron_binop6', `poly_hull_assign')
-define(`Polyhedron_binop7', `poly_difference_assign')
-define(`num_BD_Shape_binops', 6)
-define(`BD_Shape_binop6', `bds_hull_assign')
-define(`num_Octagonal_Shape_binops', 6)
-define(`Octagonal_Shape_binop6', `oct_hull_assign')
-define(`num_Grid_binops', 6)
-define(`Grid_binop6', `join_assign')
+define(`m4_binop_replacement',
+         `intersection_assign, upper_bound_assign, difference_assign,
+          concatenate_assign, time_elapse_assign')
+define(`m4_Polyhedron_binop_replacement',
+         ```m4_binop_replacement', poly_hull_assign, poly_difference_assign'')
+define(`m4_Grid_binop_replacement',
+         ```m4_binop_replacement', join_assign'')
+define(`m4_BD_Shape_binop_replacement',
+         ```m4_binop_replacement', bds_hull_assign'')
+define(`m4_Octagonal_Shape_binop_replacement',
+         ```m4_binop_replacement', oct_hull_assign'')
 
-dnl num_class_binminops
-dnl class_binminop
-dnl
 dnl  The different kinds of "and_minimize" binary operators.
-define(`num_binminops', 1)
-define(`binminop1', `intersection_assign_and_minimize')
-define(`num_Polyhedron_binminops', 2)
-define(`Polyhedron_binminop2', `poly_hull_assign_and_minimize')
-define(`num_Grid_binminops', 2)
-define(`Grid_binminop2', `join_assign_and_minimize')
+define(`m4_binminop_replacement', `intersection_assign_and_minimize')
+define(`m4_Polyhedron_binminop_replacement',
+         ```m4_binminop_replacement', poly_hull_assign_and_minimize'')
+define(`m4_Grid_binminops_replacement',
+         ```m4_binminop_replacement', join_assign_and_minimize'')

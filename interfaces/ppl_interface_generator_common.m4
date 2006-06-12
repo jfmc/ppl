@@ -60,44 +60,52 @@ dnl m4_replace_pattern(Class_Kind, String, Pattern)
 dnl
 dnl Replaces in String occurrences of the capitalised form of Pattern
 dnl by the required actual string (determined both by the Class_Kind
-dnl and Pattern). There are additional codes to help provide the
-dnl appropriate pattern for the replacmement.
+dnl and Pattern).
+define(`m4_replace_pattern', `dnl
+define(`PATTERN', m4_upcase($3))dnl
+ifelse(index(`$2', PATTERN), `-1', $2, `dnl
+m4_replace_pattern_aux1($1, $2, $3,
+  m4_ifndef(`m4_$1_$3_replacement', ``m4_$3_replacement''))dnl
+')dnl
+undefine(`PATTERN')dnl
+')
+
+dnl m4_replace_pattern_aux1
+dnl
+dnl This extra definition is used to expand the default replacement
+dnl string m4_<pattern>_replacement.
+define(`m4_replace_pattern_aux1', m4_replace_pattern_aux(`$*'))
+
+dnl m4_replace_pattern_aux(Class_Kind, String, Replacement1, Replacement2, ...)
+dnl
+dnl This iteratively calls m4_replace_pattern_once/3 to replace
+dnl a delimited form of PATTERN by Replacement`'i.
+define(`m4_replace_pattern_aux', `dnl
+ifelse($#, 0, ,$#, 1, , $#, 2, , $#, 3, ,
+$#, 4, m4_replace_pattern_once($1, $2, $3, $4),
+  `dnl
+m4_replace_pattern_once($1, $2, $3, $4)dnl
+m4_replace_pattern_aux($1, $2, $3, shift(shift(shift(shift($@)))))')dnl
+')
+
+dnl m4_replace_pattern_once(Class_Kind, String, Replacement)
+dnl
+dnl The delimted PATTERN is replaced by Replacement in the String.
+dnl There are additional codes to help provide the right form of
+dnl the replacmement.
 dnl - alt_ means that the alternative string must be used if one exists.
 dnl - U means that the alt_actual string must be capitalised at start
 dnl   of word and after "_".
-define(`m4_replace_pattern', `dnl
-define(`PATTERN', m4_upcase($3))dnl
-ifelse(index(`$2', PATTERN), `-1', `$2', `dnl
-define(`num_strings',
-       `m4_ifndef(num_`'$1`'_`'$3`'s,
-                  m4_ifndef(num_`'$3`'s, 0))')dnl
-ifelse(num_strings, 0, ,
-  `m4_forloop(`m4_i', 1, num_strings, `dnl
-define(`replacement',
-       m4_ifndef($1`'_`'$3`'m4_i, m4_ifndef($3`'m4_i, `')))dnl
-define(`alt_replacement',
-       m4_ifndef(alt_`'$1`'_`'$3`'m4_i, replacement))dnl
-define(`Replacement',
-       m4_capfirstletters(replacement))dnl
-define(`Alt_Replacement',
-       m4_capfirstletters(alt_replacement))dnl
-patsubst(patsubst(patsubst(patsubst(`$2',
+define(`m4_replace_pattern_once', `dnl
+patsubst(patsubst(patsubst(patsubst($2,
            m4_pattern_delimiter`'U`'PATTERN`'m4_pattern_delimiter,
-             Replacement),
+             m4_capfirstletters($4)),
            m4_pattern_delimiter`'UALT_`'PATTERN`'m4_pattern_delimiter,
-             Alt_Replacement),
+             m4_capfirstletters(m4_ifndef(`m4_$1_$3_$4_alt_replacement', $4))),
            m4_pattern_delimiter`'ALT_`'PATTERN`'m4_pattern_delimiter,
-             alt_replacement),
+             m4_ifndef(`m4_$1_$3_$4_alt_replacement', $4)),
            m4_pattern_delimiter`'PATTERN`'m4_pattern_delimiter,
-             replacement)dnl
-undefine(`Alt_Replacement')dnl
-undefine(`Replacement')dnl
-undefine(`alt_replacement')dnl
-undefine(`replacement')dnl
-')')dnl
-undefine(`num_strings')dnl
-')dnl
-undefine(`PATTERN')dnl
+             $4)dnl
 ')
 
 dnl m4_replace_all_patterns(Class_Kind, String, Pattern1, Pattern2, ...)
@@ -227,8 +235,7 @@ dnl including the Class_Kind in Procedure_Name, preceded by a +.
 dnl if so, it expands to the given Procedure_Name.
 define(`m4_filter', `dnl
 define(`m4_proc_info_string',
-  patsubst(`$2', `[ ]*ppl_[^ 
-]\(.*\)', \1))dnl
+  patsubst(`$2', `[ ]*ppl_[^ ]+ \(.*\)', \1))dnl
 ifelse(m4_proc_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, ,
   ifelse(m4_proc_keep_or_throw($1, m4_proc_info_string, +, m4_group_names), 1,
     $2))dnl
