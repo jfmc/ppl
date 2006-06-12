@@ -862,6 +862,29 @@ public:
   */
   bool add_grid_generator_and_minimize(const Grid_Generator& g);
 
+  /*! \brief
+    Adds a copy of generator \p g to the system of generators of \p
+    *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible,
+    or if \p *this is an empty grid and \p g is not a point.
+  */
+  void add_generator(const Generator& g);
+
+  /*! \brief
+    Adds a copy of generator \p g to the system of generators of \p
+    *this, reducing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible,
+    or if \p *this is an empty grid and \p g is not a point.
+  */
+  bool add_generator_and_minimize(const Generator& g);
+
   //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!
     \param cgs
@@ -1125,6 +1148,80 @@ public:
   bool add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs);
 
   /*! \brief
+    Adds a copy of the generators in \p gs to the system of generators
+    of \p *this.
+
+    \param gs
+    Contains the generators that will be added to the system of
+    generators of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p gs are dimension-incompatible, or if
+    \p *this is empty and the system of generators \p gs is not empty,
+    but has no points.
+  */
+  void add_generators(const Generator_System& gs);
+
+  /*! \brief
+    Adds the generators in \p gs to the system of generators of \p
+    *this.
+
+    \param gs
+    The generator system that may be recycled, adding its generators
+    to the system of generators of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p gs are dimension-incompatible, or if
+    \p *this is empty and the system of generators \p gs is not empty,
+    but has no points.
+
+    \warning
+    The only assumption that can be made about \p gs upon successful
+    or exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_generators(Generator_System& gs);
+
+  /*! \brief
+    Adds a copy of the generators in \p gs to the system of generators
+    of \p *this, reducing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param gs
+    Contains the generators that will be added to the system of
+    generators of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p gs are dimension-incompatible, or if \p
+    *this is empty and the system of generators \p gs is not empty,
+    but has no points.
+  */
+  bool add_generators_and_minimize(const Generator_System& gs);
+
+  /*! \brief
+    Adds the generators in \p gs to the system of generators of \p
+    *this, reducing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param gs
+    The generator system that may be recycled, adding its generators
+    to the system of generators of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p gs are dimension-incompatible, or if \p
+    *this is empty and the system of generators \p gs is not empty,
+    but has no points.
+
+    \warning
+    The only assumption that can be made about \p gs upon successful
+    or exceptional return is that it can be safely destroyed.
+  */
+  bool add_recycled_generators_and_minimize(Generator_System& gs);
+
+  /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.  The
     result is not guaranteed to be reduced.
 
@@ -1181,45 +1278,6 @@ public:
     dimension-incompatible or if \p var is not a space dimension of
     \p *this.
 
-    \if Include_Implementation_Details
-
-    When considering the generators of a grid, the
-    affine transformation
-    \f[
-      \frac{\sum_{i=0}^{n-1} a_i x_i + b}{\mathrm{denominator}}
-    \f]
-    is assigned to \p var where \p expr is
-    \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
-    (\f$b\f$ is the inhomogeneous term).
-
-    If congruences are up-to-date, it uses the specialized function
-    affine_preimage() (for the system of congruences)
-    and inverse transformation to reach the same result.
-    To obtain the inverse transformation we use the following observation.
-
-    Observation:
-    -# The affine transformation is invertible if the coefficient
-       of \p var in this transformation (i.e., \f$a_\mathrm{var}\f$)
-       is different from zero.
-    -# If the transformation is invertible, then we can write
-       \f[
-  	 \mathrm{denominator} * {x'}_\mathrm{var}
-	   = \sum_{i = 0}^{n - 1} a_i x_i + b
-	   = a_\mathrm{var} x_\mathrm{var}
-	     + \sum_{i \neq var} a_i x_i + b,
-       \f]
-       so that the inverse transformation is
-       \f[
-	 a_\mathrm{var} x_\mathrm{var}
-           = \mathrm{denominator} * {x'}_\mathrm{var}
-             - \sum_{i \neq j} a_i x_i - b.
-       \f]
-
-    Then, if the transformation is invertible, all the entities that
-    were up-to-date remain up-to-date. Otherwise only generators remain
-    up-to-date.
-
-    \endif
   */
   void affine_image(Variable var,
 		    const Linear_Expression& expr,
@@ -1245,50 +1303,43 @@ public:
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
     dimension-incompatible or if \p var is not a space dimension of \p *this.
-
-    \if Include_Implementation_Details
-
-    When considering congruences of a grid, the affine transformation
-    \f[
-      \frac{\sum_{i=0}^{n-1} a_i x_i + b}{denominator},
-    \f]
-    is assigned to \p var where \p expr is
-    \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
-    (\f$b\f$ is the inhomogeneous term).
-
-    If generators are up-to-date, then the specialized function
-    affine_image() is used (for the system of generators)
-    and inverse transformation to reach the same result.
-    To obtain the inverse transformation, we use the following observation.
-
-    Observation:
-    -# The affine transformation is invertible if the coefficient
-       of \p var in this transformation (i.e. \f$a_\mathrm{var}\f$)
-       is different from zero.
-    -# If the transformation is invertible, then we can write
-       \f[
-  	 \mathrm{denominator} * {x'}_\mathrm{var}
-	   = \sum_{i = 0}^{n - 1} a_i x_i + b
-           = a_\mathrm{var} x_\mathrm{var}
-               + \sum_{i \neq \mathrm{var}} a_i x_i + b,
-       \f],
-       the inverse transformation is
-       \f[
-	 a_\mathrm{var} x_\mathrm{var}
-           = \mathrm{denominator} * {x'}_\mathrm{var}
-               - \sum_{i \neq j} a_i x_i - b.
-       \f].
-
-    Then, if the transformation is invertible, all the entities that
-    were up-to-date remain up-to-date. Otherwise only congruences remain
-    up-to-date.
-
-    \endif
   */
   void affine_preimage(Variable var,
 		       const Linear_Expression& expr,
 		       Coefficient_traits::const_reference denominator
 		         = Coefficient_one());
+
+  /*! \brief
+    Assigns to \p *this the image of \p *this with respect to the
+    \ref Generalized_Affine_Relations "generalized affine relation"
+    \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+    where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+    by \p relsym.
+
+    \param var
+    The left hand side variable of the generalized affine relation;
+
+    \param relsym
+    The relation symbol;
+
+    \param expr
+    The numerator of the right hand side affine expression;
+
+    \param denominator
+    The denominator of the right hand side affine expression (optional
+    argument with default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this are
+    dimension-incompatible or if \p var is not a space dimension of \p *this
+    or if \p *this is a C_Polyhedron and \p relsym is a strict
+    relation symbol.
+  */
+  void generalized_affine_image(Variable var,
+				const Relation_Symbol relsym,
+				const Linear_Expression& expr,
+				Coefficient_traits::const_reference denominator
+				  = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
@@ -1325,6 +1376,39 @@ public:
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Generalized_Affine_Relations "generalized affine relation"
+    \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+    where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+    by \p relsym.
+
+    \param var
+    The left hand side variable of the generalized affine relation;
+
+    \param relsym
+    The relation symbol;
+
+    \param expr
+    The numerator of the right hand side affine expression;
+
+    \param denominator
+    The denominator of the right hand side affine expression (optional
+    argument with default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this are
+    dimension-incompatible or if \p var is not a space dimension of \p *this
+    or if \p *this is a C_Polyhedron and \p relsym is a strict
+    relation symbol.
+  */
+  void
+  generalized_affine_preimage(Variable var,
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator
+			      = Coefficient_one());
+
+  /*! \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
     \ref Grid_Generalized_Image "generalized affine relation"
     \f$\mathrm{var}' = \frac{\mathrm{expr}}{\mathrm{denominator}}
     \pmod{\mathrm{modulus}}\f$.
@@ -1357,6 +1441,30 @@ public:
 				   = Coefficient_one());
 
   /*! \brief
+    Assigns to \p *this the image of \p *this with respect to the
+    \ref Generalized_Affine_Relations "generalized affine relation"
+    \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+    \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+
+    \param lhs
+    The left hand side affine expression;
+
+    \param relsym
+    The relation symbol;
+
+    \param rhs
+    The right hand side affine expression.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs
+    or if \p *this is a C_Polyhedron and \p relsym is a strict
+    relation symbol.
+  */
+  void generalized_affine_image(const Linear_Expression& lhs,
+				const Relation_Symbol relsym,
+				const Linear_Expression& rhs);
+
+  /*! \brief
     Assigns to \p *this the image of \p *this with respect to
     the \ref Grid_Generalized_Image "generalized affine relation"
     \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
@@ -1380,6 +1488,30 @@ public:
 				const Linear_Expression& rhs,
 				Coefficient_traits::const_reference modulus
 				= Coefficient_one());
+
+  /*! \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Generalized_Affine_Relations "generalized affine relation"
+    \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+    \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+
+    \param lhs
+    The left hand side affine expression;
+
+    \param relsym
+    The relation symbol;
+
+    \param rhs
+    The right hand side affine expression.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs
+    or if \p *this is a C_Polyhedron and \p relsym is a strict
+    relation symbol.
+  */
+  void generalized_affine_preimage(const Linear_Expression& lhs,
+				   const Relation_Symbol relsym,
+				   const Linear_Expression& rhs);
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the

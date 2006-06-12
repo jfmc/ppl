@@ -114,6 +114,20 @@ Direct_Product<D1, D2>::affine_dimension() const {
 
 template <typename D1, typename D2>
 inline void
+Direct_Product<D1, D2>::intersection_assign(const Direct_Product& y) {
+  d1.intersection_assign(y.d1);
+  d2.intersection_assign(y.d2);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::difference_assign(const Direct_Product& y) {
+  d1.difference_assign(y.d1);
+  d2.difference_assign(y.d2);
+}
+
+template <typename D1, typename D2>
+inline void
 Direct_Product<D1, D2>::upper_bound_assign(const Direct_Product& y) {
   d1.upper_bound_assign(y.d1);
   d2.upper_bound_assign(y.d2);
@@ -128,9 +142,90 @@ Direct_Product<D1, D2>::upper_bound_assign_if_exact(const Direct_Product& y) {
 
 template <typename D1, typename D2>
 inline void
-Direct_Product<D1, D2>::intersection_assign(const Direct_Product& y) {
-  d1.intersection_assign(y.d1);
-  d2.intersection_assign(y.d2);
+Direct_Product<D1, D2>
+::affine_image(Variable var,
+	       const Linear_Expression& expr,
+	       Coefficient_traits::const_reference denominator) {
+  d1.affine_image(var, expr, denominator);
+  d2.affine_image(var, expr, denominator);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>
+::affine_preimage(Variable var,
+		  const Linear_Expression& expr,
+		  Coefficient_traits::const_reference denominator) {
+  d1.affine_preimage(var, expr, denominator);
+  d2.affine_preimage(var, expr, denominator);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>
+::generalized_affine_image(Variable var,
+			   const Relation_Symbol relsym,
+			   const Linear_Expression& expr,
+			   Coefficient_traits::const_reference denominator) {
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>
+::generalized_affine_image(Variable var,
+			   const Linear_Expression& expr,
+			   Coefficient_traits::const_reference denominator,
+			   Coefficient_traits::const_reference modulus) {
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>
+::generalized_affine_preimage(Variable var,
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator) {
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>
+::generalized_affine_preimage(Variable var,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator,
+			      Coefficient_traits::const_reference modulus) {
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>
+::generalized_affine_image(const Linear_Expression& lhs,
+			   const Relation_Symbol relsym,
+			   const Linear_Expression& rhs) {
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>
+::generalized_affine_image(const Linear_Expression& lhs,
+			   const Linear_Expression& rhs,
+			   Coefficient_traits::const_reference modulus) {
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>
+::generalized_affine_preimage(const Linear_Expression& lhs,
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& rhs) {
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>
+::generalized_affine_preimage(const Linear_Expression& lhs,
+			      const Linear_Expression& rhs,
+			      Coefficient_traits::const_reference modulus) {
 }
 
 template <typename D1, typename D2>
