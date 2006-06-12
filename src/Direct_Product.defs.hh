@@ -191,6 +191,38 @@ public:
   */
   explicit Direct_Product(Grid_Generator_System& gs);
 
+  //! Builds a pair, copying a system of generators.
+  /*!
+    The pair inherits the space dimension of the generator system.
+
+    \param const_gs
+    The system of generators to be approximated by the pair.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Direct_Product(const Generator_System& const_gs);
+
+  //! Builds a pair, recycling a system of generators.
+  /*!
+    The pair inherits the space dimension of the generator system.
+
+    \param gs
+    The system of generators to be approximated by the pair.
+    Its data-structures may be recycled to build the pair.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
+  */
+  explicit Direct_Product(Generator_System& gs);
+
   //! Builds a pair out of a generic, interval-based bounding box.
   /*!
     \param box
@@ -1550,6 +1582,7 @@ public:
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
 
+  // FIXME: what to do about widenings? add method for every widening?
   /*! \brief
     Assigns to \p *this the result of computing the \ref Direct_Product_Widening
     "Direct_Product widening" between \p *this and \p y using generator systems.
@@ -1609,8 +1642,8 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
   */
   void limited_congruence_extrapolation_assign(const Direct_Product& y,
-				    const Congruence_System& cgs,
-				    unsigned* tp = NULL);
+					       const Congruence_System& cgs,
+					       unsigned* tp = NULL);
 
   /*! \brief
     Improves the result of the generator variant of the
@@ -1633,8 +1666,8 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
   */
   void limited_generator_extrapolation_assign(const Direct_Product& y,
-				    const Congruence_System& cgs,
-				    unsigned* tp = NULL);
+					      const Congruence_System& cgs,
+					      unsigned* tp = NULL);
 
   /*! \brief
     Improves the result of the \ref Direct_Product_Widening "Direct_Product widening"

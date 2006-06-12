@@ -230,6 +230,20 @@ Direct_Product<D1, D2>
 
 template <typename D1, typename D2>
 inline void
+Direct_Product<D1, D2>::time_elapse_assign(const Direct_Product& y) {
+  d1.time_elapse_assign(y.d1);
+  d2.time_elapse_assign(y.d2);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::topological_closure_assign() {
+  d1.topological_closure_assign();
+  d2.topological_closure_assign();
+}
+
+template <typename D1, typename D2>
+inline void
 Direct_Product<D1, D2>::swap(Direct_Product& y) {
   std::swap(d1, y.d1);
   std::swap(d2, y.d2);
