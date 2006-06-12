@@ -84,9 +84,6 @@ test04() {
   bool ok = (dp.domain1() == known_ph
 	     && dp.domain2() == known_gr);
 
-  nout << "*** Direct_Product<NNC_Polyhedron, Grid> dp(cgs) ***"
-       << endl << dp << endl;
-
   return ok;
 }
 
@@ -324,27 +321,9 @@ test17() {
   return ok;
 }
 
-// reduce()
-bool
-test18() {
-  Variable A(0);
-
-  Direct_Product<NNC_Polyhedron, Grid> dp(1);
-  dp.add_constraint(A > 7);
-  dp.add_constraint(A < 7);
-
-  bool ok = dp.domain2().is_universe();
-
-  dp.reduce();
-
-  ok &= dp.domain2().is_empty();
-
-  return ok;
-}
-
 // is_universe() where both domain objects are empty.
 bool
-test19() {
+test18() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -358,7 +337,7 @@ test19() {
 
 // is_universe() where one domain object is universe.
 bool
-test20() {
+test19() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -374,7 +353,7 @@ test20() {
 
 // is_universe() where both domain objects are universe.
 bool
-test21() {
+test20() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -388,7 +367,7 @@ test21() {
 
 // intersection_assign()
 bool
-test22() {
+test21() {
   Variable A(0);
   Variable B(1);
 
@@ -414,7 +393,7 @@ test22() {
 
 // upper_bound_assign(dp2)
 bool
-test23() {
+test22() {
   Variable A(0);
   Variable B(1);
 
@@ -439,7 +418,7 @@ test23() {
 
 // upper_bound_assign_if_exact()
 bool
-test24() {
+test23() {
   Variable A(0);
   Variable B(1);
 
@@ -463,7 +442,7 @@ test24() {
 
 // difference_assign()
 bool
-test25() {
+test24() {
   Variable A(0);
   Variable B(1);
 
@@ -489,7 +468,7 @@ test25() {
 
 // add_space_dimensions_and_embed()
 bool
-test26() {
+test25() {
   Variable A(0);
   Variable B(1);
 
@@ -510,7 +489,7 @@ test26() {
 
 // add_space_dimensions_and_project()
 bool
-test27() {
+test26() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -533,7 +512,7 @@ test27() {
 
 // concatenate_assign()
 bool
-test28() {
+test27() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -562,7 +541,7 @@ test28() {
 
 // remove_space_dimensions()
 bool
-test29() {
+test28() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -589,7 +568,7 @@ test29() {
 
 // remove_higher_space_dimensions()
 bool
-test30() {
+test29() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -612,7 +591,7 @@ test30() {
 
 // map_space_dimensions()
 bool
-test31() {
+test30() {
   Variable A(0);
   Variable B(1);
 
@@ -637,7 +616,7 @@ test31() {
 
 // expand_space_dimension()
 bool
-test32() {
+test31() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -662,7 +641,7 @@ test32() {
 
 // fold_space_dimensions()
 bool
-test33() {
+test32() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -693,7 +672,7 @@ test33() {
 
 // affine_image()
 bool
-test34() {
+test33() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -717,7 +696,7 @@ test34() {
 
 // affine_preimage()
 bool
-test35() {
+test34() {
   Variable A(0);
   Variable B(1);
 
@@ -737,7 +716,7 @@ test35() {
 
 // generalized_affine_image(v, e, relsym, d)
 bool
-test36() {
+test35() {
   Variable A(0);
   Variable B(1);
 
@@ -762,7 +741,7 @@ test36() {
 
 // generalized_affine_image(v, e, d, modulus)
 bool
-test37() {
+test36() {
   Variable A(0);
   Variable B(1);
 
@@ -785,7 +764,7 @@ test37() {
 
 // generalized_affine_preimage(v, e, relsym, d)
 bool
-test38() {
+test37() {
   Variable A(0);
   Variable B(1);
 
@@ -810,7 +789,7 @@ test38() {
 
 // generalized_affine_preimage(v, e, d, modulus)
 bool
-test39() {
+test38() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -838,7 +817,7 @@ test39() {
 
 // generalized_affine_image(lhs, relsym, rhs)
 bool
-test40() {
+test39() {
   Variable A(0);
   Variable B(1);
 
@@ -864,7 +843,7 @@ test40() {
 
 // generalized_affine_image(lhs, rhs, modulus)
 bool
-test41() {
+test40() {
   Variable A(0);
   Variable B(1);
 
@@ -890,7 +869,7 @@ test41() {
 
 // generalized_affine_preimage(lhs, relsym, rhs)
 bool
-test42() {
+test41() {
   Variable A(0);
   Variable B(1);
 
@@ -915,7 +894,7 @@ test42() {
 
 // generalized_affine_preimage(lhs, rhs, modulus)
 bool
-test43() {
+test42() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -935,80 +914,74 @@ test43() {
   return ok;
 }
 
-#if 0
-// reduce()
+// time_elapse_assign(y)
 bool
-testr0() {
+test43() {
   Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-  Direct_Product<NNC_Polyhedron, Grid> dp(1);
+  Direct_Product<NNC_Polyhedron, Grid> dp1(3, EMPTY);
+  dp1.add_grid_generator(grid_point());
+  dp1.add_grid_generator(grid_point(A + 2*B - 3*C, 3));
+  dp1.add_generator(point(3*A));
+  dp1.add_generator(ray(A));
+  dp1.add_generator(point(3*B));
+  dp1.add_generator(ray(B));
+  dp1.add_generator(line(C));
 
-  dp.add_congruence((A %= 0) / 2);
-  dp.add_constraint(A >= 7);
+  Direct_Product<NNC_Polyhedron, Grid> dp2(3, EMPTY);
+  dp2.add_grid_generator(grid_point(3*A - B + 4*C, 7));
+  dp2.add_generator(point(A + B));
 
-  bool ok = dp.reduce();
+  dp1.time_elapse_assign(dp2);
 
-  Direct_Product<NNC_Polyhedron, Grid> known_dp(1);
-  known_dp.add_congruence((A %= 0) / 2);
-  known_dp.add_constraint(A >= 8);
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(3, EMPTY);
+  known_dp.add_grid_generator(grid_point());
+  known_dp.add_grid_generator(grid_point(A + 2*B - 3*C, 3));
+  known_dp.add_grid_generator(grid_point(3*A - B + 4*C, 7));
+  // Same Generators as dp1.
+  known_dp.add_generator(point(3*A));
+  known_dp.add_generator(ray(A));
+  known_dp.add_generator(point(3*B));
+  known_dp.add_generator(ray(B));
+  known_dp.add_generator(line(C));
 
-  ok &= (dp == known_dp);
+  bool ok = (dp1 == known_dp);
 
   return ok;
 }
 
-// reduce() where there is a ph divisor > 1
+// topological_closure_assign
 bool
-testr2() {
+test44() {
   Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-  Direct_Product<NNC_Polyhedron, Grid> dp(1);
+  Direct_Product<NNC_Polyhedron, Grid> dp(3, EMPTY);
+  dp.add_grid_generator(grid_point());
+  dp.add_grid_generator(grid_point(A + 2*B - 3*C, 3));
+  dp.add_generator(point(A));
+  dp.domain1().constraints();
+  dp.add_generator(closure_point());
+  dp.add_generator(ray(A));
+  dp.add_generator(ray(B));
 
-  dp.add_congruence((A %= 0) / 3);
-  dp.add_constraint(3*A >= 2);
+  dp.topological_closure_assign();
 
-  Direct_Product<NNC_Polyhedron, Grid> original_dp = dp;
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(3, EMPTY);
+  known_dp.add_generator(point());
+  known_dp.add_generator(ray(A));
+  known_dp.add_generator(ray(B));
+  // Grid_Generators as in dp.
+  known_dp.add_grid_generator(grid_point());
+  known_dp.add_grid_generator(grid_point(A + 2*B - 3*C, 3));
 
-  bool ok = dp.reduce();
-
-  if (dp.domain1().strictly_contains(original_dp.domain1())) {
-    ok = false;
-    nout << "Polyhedron was reduced." << endl;
-  }
-  else
-    nout << "Polyhedron stayed the same." << endl;
-
-  if (dp.domain2().strictly_contains(original_dp.domain2())) {
-    ok = false;
-    nout << "Grid was reduced." << endl;
-  }
-  else
-    nout << "Grid stayed the same." << endl;
+  bool ok = (dp == known_dp);
 
   return ok;
 }
-
-// reduce() where there is a ph divisor > 1
-bool
-testr1() {
-  Variable A(0);
-
-  Direct_Product<NNC_Polyhedron, Grid> dp(1);
-
-  dp.add_congruence((A %= 0) / 2);
-  dp.add_constraint(3*A >= 2);
-
-  bool ok = dp.reduce();
-
-  Direct_Product<NNC_Polyhedron, Grid> known_dp(1);
-  known_dp.add_congruence((A %= 0) / 2);
-  known_dp.add_constraint(A >= 2);
-
-  ok &= (dp == known_dp);
-
-  return ok;
-}
-#endif
 
 } // namespace
 
@@ -1056,4 +1029,5 @@ BEGIN_MAIN
   DO_TEST(test41);
   DO_TEST(test42);
   DO_TEST(test43);
+  DO_TEST(test44);
 END_MAIN

@@ -64,7 +64,7 @@ congruences2 \
 contains1 \
 copyconstruct1 \
 coveringbox1 coveringbox2 \
-directproduct1 \
+directproduct1 directproduct2 \
 discrete1 \
 disjoint1 \
 equals1 \
@@ -152,6 +152,7 @@ contains1_SOURCES = contains1.cc
 copyconstruct1_SOURCES = copyconstruct1.cc
 
 directproduct1_SOURCES = directproduct1.cc
+directproduct2_SOURCES = directproduct2.cc
 
 discrete1_SOURCES = discrete1.cc
 
