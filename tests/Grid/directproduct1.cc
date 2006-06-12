@@ -386,9 +386,35 @@ test21() {
   return ok;
 }
 
-// upper_bound_assign(dp2)
+// intersection_assign()
 bool
 test22() {
+  Variable A(0);
+  Variable B(1);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp1(3);
+  dp1.add_constraint(A >= 0);
+  dp1.add_congruence((A %= 0) / 2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp2(3);
+  dp2.add_constraint(A <= 0);
+  dp2.add_congruence((A %= 0) / 7);
+
+  dp1.intersection_assign(dp2);
+
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(3);
+  known_dp.add_congruence((A %= 0) / 14);
+  known_dp.add_constraint(A >= 0);
+  known_dp.add_constraint(A <= 0);
+
+  bool ok = (dp1 == known_dp);
+
+  return ok;
+}
+
+// upper_bound_assign(dp2)
+bool
+test23() {
   Variable A(0);
   Variable B(1);
 
@@ -413,7 +439,7 @@ test22() {
 
 // upper_bound_assign_if_exact()
 bool
-test23() {
+test24() {
   Variable A(0);
   Variable B(1);
 
@@ -435,26 +461,26 @@ test23() {
   return ok;
 }
 
-// intersection_assign()
+// difference_assign()
 bool
-test24() {
+test25() {
   Variable A(0);
   Variable B(1);
 
   Direct_Product<NNC_Polyhedron, Grid> dp1(3);
-  dp1.add_constraint(A >= 0);
-  dp1.add_congruence((A %= 0) / 2);
+  dp1.add_constraint(A > 0);
+  dp1.add_congruence((A - B %= 0) / 2);
 
   Direct_Product<NNC_Polyhedron, Grid> dp2(3);
-  dp2.add_constraint(A <= 0);
-  dp2.add_congruence((A %= 0) / 7);
+  dp2.add_constraint(A > 3);
+  dp2.add_congruence((A - B %= 0) / 4);
 
-  dp1.intersection_assign(dp2);
+  dp1.difference_assign(dp2);
 
   Direct_Product<NNC_Polyhedron, Grid> known_dp(3);
-  known_dp.add_congruence((A %= 0) / 14);
-  known_dp.add_constraint(A >= 0);
-  known_dp.add_constraint(A <= 0);
+  known_dp.add_constraint(A > 0);
+  known_dp.add_constraint(A <= 3);
+  known_dp.add_congruence((A - B %= 2) / 4);
 
   bool ok = (dp1 == known_dp);
 
@@ -463,7 +489,7 @@ test24() {
 
 // add_space_dimensions_and_embed()
 bool
-test25() {
+test26() {
   Variable A(0);
   Variable B(1);
 
@@ -484,7 +510,7 @@ test25() {
 
 // add_space_dimensions_and_project()
 bool
-test26() {
+test27() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -507,7 +533,7 @@ test26() {
 
 // concatenate_assign()
 bool
-test27() {
+test28() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -536,7 +562,7 @@ test27() {
 
 // remove_space_dimensions()
 bool
-test28() {
+test29() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -563,7 +589,7 @@ test28() {
 
 // remove_higher_space_dimensions()
 bool
-test29() {
+test30() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -586,7 +612,7 @@ test29() {
 
 // map_space_dimensions()
 bool
-test30() {
+test31() {
   Variable A(0);
   Variable B(1);
 
@@ -611,7 +637,7 @@ test30() {
 
 // expand_space_dimension()
 bool
-test31() {
+test32() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -636,7 +662,7 @@ test31() {
 
 // fold_space_dimensions()
 bool
-test32() {
+test33() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -659,6 +685,250 @@ test32() {
   Direct_Product<NNC_Polyhedron, Grid> known_dp(1);
   known_dp.add_congruence((A %= 2) / 7);
   known_dp.add_constraint(A <= 10);
+
+  bool ok = (dp == known_dp);
+
+  return ok;
+}
+
+// affine_image()
+bool
+test34() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence((B %= 2) / 14);
+  dp.add_constraint(A <= 5);
+  dp.add_constraint(B <= 10);
+
+  dp.affine_image(A, B + C);
+
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(3);
+  known_dp.add_congruence((B %= 2) / 14);
+  known_dp.add_constraint(A - B - C == 0);
+  known_dp.add_constraint(B <= 10);
+
+  bool ok = (dp == known_dp);
+
+  return ok;
+}
+
+// affine_preimage()
+bool
+test35() {
+  Variable A(0);
+  Variable B(1);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_constraint(A - B == 0);
+  dp.add_congruence((A %= 0) / 3);
+
+  dp.affine_preimage(A, B);
+
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(3);
+  known_dp.add_congruence((B %= 0) / 3);
+
+  bool ok = (dp == known_dp);
+
+  return ok;
+}
+
+// generalized_affine_image(v, e, relsym, d)
+bool
+test36() {
+  Variable A(0);
+  Variable B(1);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence(A %= 0);
+  dp.add_congruence((A + B %= 0) / 2);
+  dp.add_constraint(B >= 0);
+  dp.add_constraint(A - B >= 0);
+
+  dp.generalized_affine_image(A, EQUAL, A + 2);
+
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(3);
+  known_dp.add_congruence(A %= 0);
+  known_dp.add_congruence((A + B %= 0) / 2);
+  known_dp.add_constraint(B >= 0);
+  known_dp.add_constraint(A - B >= 2);
+
+  bool ok = (dp == known_dp);
+
+  return ok;
+}
+
+// generalized_affine_image(v, e, d, modulus)
+bool
+test37() {
+  Variable A(0);
+  Variable B(1);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence(A %= 0);
+  dp.add_congruence((A + B %= 0) / 2);
+  dp.add_constraint(A > 3);
+
+  dp.generalized_affine_image(B, A + 1, 2);
+
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(3);
+  known_dp.add_congruence((A - 2*B %= -1) / 2);
+  known_dp.add_congruence(A %= 0);
+  known_dp.add_constraint(A > 3);
+
+  bool ok = (dp == known_dp);
+
+  return ok;
+}
+
+// generalized_affine_preimage(v, e, relsym, d)
+bool
+test38() {
+  Variable A(0);
+  Variable B(1);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_constraint(A >= 0);
+  dp.add_constraint(A <= 4);
+  dp.add_constraint(B <= 5);
+  dp.add_constraint(A <= B);
+  dp.add_congruence(A %= B);
+
+  dp.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, A+2);
+
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(3);
+  known_dp.add_constraint(0 <= A);
+  known_dp.add_constraint(A <= 3);
+  known_dp.add_congruence(A %= B);
+
+  bool ok = (dp == known_dp);
+
+  return ok;
+}
+
+// generalized_affine_preimage(v, e, d, modulus)
+bool
+test39() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence(A %= 0);
+  dp.add_congruence((B %= 0) / 2);
+
+  dp.generalized_affine_preimage(B, A + B, 1, 0);
+
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(3, EMPTY);
+  known_dp.add_grid_generator(grid_point());
+  known_dp.add_grid_generator(parameter(2*B));
+  known_dp.add_grid_generator(parameter(A + B));
+  known_dp.add_grid_generator(grid_line(C));
+  known_dp.add_generator(point());
+  known_dp.add_generator(line(A));
+  known_dp.add_generator(line(B));
+  known_dp.add_generator(line(C));
+
+  bool ok = (dp == known_dp);
+
+  return ok;
+}
+
+// generalized_affine_image(lhs, relsym, rhs)
+bool
+test40() {
+  Variable A(0);
+  Variable B(1);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence(A %= 0);
+  dp.add_constraint(B >= 0);
+  dp.add_constraint(A - B >= 1);
+
+  dp.generalized_affine_image(Linear_Expression(2),
+			      LESS_THAN_OR_EQUAL,
+			      A + B);
+
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(3);
+  known_dp.add_congruence(A %= 0);
+  known_dp.add_constraint(B >= 0);
+  known_dp.add_constraint(A - B >= 1);
+  known_dp.add_constraint(2 <= A + B);
+
+  bool ok = (dp == known_dp);
+
+  return ok;
+}
+
+// generalized_affine_image(lhs, rhs, modulus)
+bool
+test41() {
+  Variable A(0);
+  Variable B(1);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(2);
+  dp.add_congruence((A %= 0) / 1);
+  dp.add_congruence((B %= 0) / 2);
+  dp.add_constraint(A <= 3);
+
+  dp.generalized_affine_image(A + 2*B, A - B, 3);
+
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(2, EMPTY);
+  known_dp.add_grid_generator(grid_point());
+  known_dp.add_grid_generator(grid_point(B, 2));
+  known_dp.add_grid_generator(grid_line(2*A - B));
+  known_dp.add_generator(point(3*A));
+  known_dp.add_generator(ray(-A));
+  known_dp.add_generator(line(B));
+
+  bool ok = (dp == known_dp);
+
+  return ok;
+}
+
+// generalized_affine_preimage(lhs, relsym, rhs)
+bool
+test42() {
+  Variable A(0);
+  Variable B(1);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_constraint(A >= 0);
+  dp.add_constraint(A <= 4);
+  dp.add_constraint(B <= 5);
+  dp.add_constraint(A <= B);
+  dp.add_congruence(A %= B);
+
+  dp.generalized_affine_preimage(1*B, GREATER_THAN_OR_EQUAL, A+2);
+
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(3);
+  known_dp.add_constraint(0 <= A);
+  known_dp.add_constraint(A <= 3);
+  known_dp.add_congruence(A %= B);
+
+  bool ok = (dp == known_dp);
+
+  return ok;
+}
+
+// generalized_affine_preimage(lhs, rhs, modulus)
+bool
+test43() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_constraint(A - B == 0);
+
+  dp.generalized_affine_preimage(A - B, 2*A - 2*B, 5);
+
+  Direct_Product<NNC_Polyhedron, Grid> known_dp(3);
+  known_dp.add_congruence((2*A - 2*B %= 0) / 5);
+  known_dp.add_constraint(A - B >= 0);
+  known_dp.add_constraint(A - B <= 0);
 
   bool ok = (dp == known_dp);
 
@@ -775,4 +1045,15 @@ BEGIN_MAIN
   DO_TEST(test30);
   DO_TEST(test31);
   DO_TEST(test32);
+  DO_TEST(test33);
+  DO_TEST(test34);
+  DO_TEST(test35);
+  DO_TEST(test36);
+  DO_TEST(test37);
+  DO_TEST(test38);
+  DO_TEST(test39);
+  DO_TEST(test40);
+  DO_TEST(test41);
+  DO_TEST(test42);
+  DO_TEST(test43);
 END_MAIN
