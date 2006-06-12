@@ -459,7 +459,6 @@ test14() {
         "*** gr.generalized_affine_preimage(B, A + B, 1, 0) ***");
 
   return ok;
-
 }
 
 // Expression with a negative modulus, where the variable occurs in
@@ -489,8 +488,43 @@ test15() {
         "*** gr.generalized_affine_preimage(B, A + B, 1, -7) ***");
 
   return ok;
-
 }
+
+// Test similar to test01 in
+// tests/Polyhedron/generalizedaffinepreimage2.cc
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr(2, EMPTY);
+  gr.add_grid_generator(grid_point(A + B));
+  gr.add_grid_generator(grid_point(2*A));
+  gr.add_grid_generator(grid_point(2*A + 2*B));
+  gr.add_grid_generator(grid_point(3*A + B));
+
+  Grid known_gr(gr);
+
+  print_congruences(gr, "*** gr ***");
+
+  gr.generalized_affine_preimage(B, B+2, 1, 5);
+
+  // A longer way of computing the generalized affine preimage below.
+  known_gr.add_space_dimensions_and_embed(1);
+  known_gr.add_congruence((B %= C+2) / 5);
+  Variables_Set vset;
+  vset.insert(B);
+  known_gr.remove_space_dimensions(vset);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+        "*** gr.generalized_affine_preimage(A + 2*B, A - B, 3) ***");
+
+  return ok;
+}
+
 
 } // namespace
 
@@ -511,4 +545,5 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
