@@ -60,6 +60,7 @@ check_PROGRAMS = \
 	frompolyhedron1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
+	generalizedaffineimage5 \
 	generalizedaffinepreimage1 generalizedaffinepreimage2 \
 	generalizedaffinepreimage3 \
 	intersection1 \
@@ -159,6 +160,7 @@ generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
 generalizedaffineimage4_SOURCES = generalizedaffineimage4.cc
+generalizedaffineimage5_SOURCES = generalizedaffineimage5.cc
 
 generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc

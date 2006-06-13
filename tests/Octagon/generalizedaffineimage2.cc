@@ -310,6 +310,35 @@ test10() {
   return ok;
 }
 
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+  Linear_Expression e1(2);
+  Linear_Expression e2(B);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A + B == 0);
+  oct.add_constraint(B <= 1);
+
+  print_constraints(oct, "*** oct ***");
+
+  Octagonal_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A >= -1);
+  known_result.add_constraint(B >= 2);
+  known_result.add_constraint(B <= 1);
+  known_result.add_constraint(A + B == 0);
+
+  oct.generalized_affine_image(e1, LESS_THAN_OR_EQUAL, e2);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
+
+  print_constraints(oct, "*** oct.generalized_affine_image(2, "
+                         "LESS_THAN_OR_EQUAL, B) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -323,4 +352,5 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN
