@@ -58,9 +58,80 @@ Direct_Product<NNC_Polyhedron, Grid>::Direct_Product(Grid_Generator_System& gs)
 }
 
 template <>
+inline
+Direct_Product<NNC_Polyhedron, Grid>::Direct_Product(const Generator_System& gs)
+  : d1(gs) {
+}
+
+template <>
+inline
+Direct_Product<NNC_Polyhedron, Grid>::Direct_Product(Generator_System& gs)
+  : d1(gs) {
+}
+
+template <>
+template <typename Box>
+inline
+Direct_Product<NNC_Polyhedron, Grid>::Direct_Product(const Box& box,
+						     From_Covering_Box dummy)
+  : d2(box, dummy) {
+  // FIXME: create ph from covering box
+}
+
+template <>
+inline const Constraint_System&
+Direct_Product<NNC_Polyhedron, Grid>::constraints() const {
+  const_cast<NNC_Polyhedron&>(d1).add_congruences(d2.minimized_congruences());
+  return d1.constraints();
+}
+
+template <>
+inline const Constraint_System&
+Direct_Product<NNC_Polyhedron, Grid>::minimized_constraints() const {
+  const_cast<NNC_Polyhedron&>(d1).add_congruences(d2.minimized_congruences());
+  return d1.minimized_constraints();
+}
+
+template <>
 inline const Congruence_System&
 Direct_Product<NNC_Polyhedron, Grid>::congruences() const {
+  const_cast<Grid&>(d2).add_constraints(d1.minimized_constraints());
   return d2.congruences();
+}
+
+template <>
+inline const Congruence_System&
+Direct_Product<NNC_Polyhedron, Grid>::minimized_congruences() const {
+  const_cast<Grid&>(d2).add_constraints(d1.minimized_constraints());
+  return d2.minimized_congruences();
+}
+
+template <>
+inline const Generator_System&
+Direct_Product<NNC_Polyhedron, Grid>::generators() const {
+  const_cast<NNC_Polyhedron&>(d1).add_congruences(d2.minimized_congruences());
+  return d1.generators();
+}
+
+template <>
+inline const Generator_System&
+Direct_Product<NNC_Polyhedron, Grid>::minimized_generators() const {
+  const_cast<NNC_Polyhedron&>(d1).add_congruences(d2.minimized_congruences());
+  return d1.minimized_generators();
+}
+
+template <>
+inline const Grid_Generator_System&
+Direct_Product<NNC_Polyhedron, Grid>::grid_generators() const {
+  const_cast<Grid&>(d2).add_constraints(d1.minimized_constraints());
+  return d2.grid_generators();
+}
+
+template <>
+inline const Grid_Generator_System&
+Direct_Product<NNC_Polyhedron, Grid>::minimized_grid_generators() const {
+  const_cast<Grid&>(d2).add_constraints(d1.minimized_constraints());
+  return d2.minimized_grid_generators();
 }
 
 template <>
@@ -247,7 +318,9 @@ Reduced_Product<C_Polyhedron, Grid>::reduce_domain2_with_domain1() {
   return empty_reduce_d2_with_d1();
 }
 
+// FIXME: error: no member function 'reduce_domain2_with_domain1' declared in 'Parma_Polyhedra_Library::Reduced_Product<Parma_Polyhedra_Library::BD_Shape<T>, Parma_Polyhedra_Library::Grid>'
 #if 0
+template <>
 template <typename T>
 inline bool
 Reduced_Product<BD_Shape<T>, Grid>::reduce_domain2_with_domain1() {

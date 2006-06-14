@@ -76,6 +76,31 @@ Direct_Product<D1, D2>::Direct_Product(Grid_Generator_System& gs) {
 
 template <typename D1, typename D2>
 inline
+Direct_Product<D1, D2>::Direct_Product(const Generator_System& gs) {
+}
+
+template <typename D1, typename D2>
+inline
+Direct_Product<D1, D2>::Direct_Product(Generator_System& gs) {
+}
+
+template <typename D1, typename D2>
+template <typename Box>
+inline
+Direct_Product<D1, D2>::Direct_Product(const Box& box,
+				       From_Bounding_Box dummy)
+  : d1(box, dummy), d2(box, dummy) {
+}
+
+template <typename D1, typename D2>
+template <typename Box>
+inline
+Direct_Product<D1, D2>::Direct_Product(const Box& box,
+				       From_Covering_Box dummy) {
+}
+
+template <typename D1, typename D2>
+inline
 Direct_Product<D1, D2>::Direct_Product(const Direct_Product& y)
   : d1(y.d1), d2(y.d2) {
 }
@@ -250,14 +275,6 @@ Direct_Product<D1, D2>::swap(Direct_Product& y) {
 }
 
 template <typename D1, typename D2>
-template <typename Box>
-inline
-Direct_Product<D1, D2>::Direct_Product(const Box& box,
-				       From_Bounding_Box dummy)
-  : d1(box, dummy), d2(box, dummy) {
-}
-
-template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>::add_constraint(const Constraint& c) {
   d1.add_constraint(c);
@@ -307,6 +324,55 @@ inline const Congruence_System&
 Direct_Product<D1, D2>::congruences() const {
   // FIX return ref to universe of correct dim?
   return Congruence_System::zero_dim_empty();
+}
+
+template <typename D1, typename D2>
+inline const Congruence_System&
+Direct_Product<D1, D2>::minimized_congruences() const {
+  // FIX return ref to universe of correct dim?
+  return Congruence_System::zero_dim_empty();
+}
+
+template <typename D1, typename D2>
+inline const Constraint_System&
+Direct_Product<D1, D2>::constraints() const {
+  // FIX return ref to universe of correct dim?
+  return Constraint_System::zero_dim_empty();
+}
+
+template <typename D1, typename D2>
+inline const Constraint_System&
+Direct_Product<D1, D2>::minimized_constraints() const {
+  // FIX return ref to universe of correct dim?
+  return Constraint_System::zero_dim_empty();
+}
+
+template <typename D1, typename D2>
+inline const Generator_System&
+Direct_Product<D1, D2>::generators() const {
+  // FIX return ref to correct dim?
+  return Generator_System::zero_dim_univ();
+}
+
+template <typename D1, typename D2>
+inline const Generator_System&
+Direct_Product<D1, D2>::minimized_generators() const {
+  // FIX return ref to correct dim?
+  return Generator_System::zero_dim_univ();
+}
+
+template <typename D1, typename D2>
+inline const Grid_Generator_System&
+Direct_Product<D1, D2>::grid_generators() const {
+  // FIX return ref to correct dim?
+  return Grid_Generator_System::zero_dim_univ();
+}
+
+template <typename D1, typename D2>
+inline const Grid_Generator_System&
+Direct_Product<D1, D2>::minimized_grid_generators() const {
+  // FIX return ref to correct dim?
+  return Grid_Generator_System::zero_dim_univ();
 }
 
 template <typename D1, typename D2>

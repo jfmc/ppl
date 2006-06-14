@@ -285,7 +285,6 @@ public:
   template <typename Box>
   Direct_Product(const Box& box, From_Bounding_Box dummy);
 
-  // FIXME: should this be only for grid instantiations?
   //! Builds a grid out of a generic, interval-based covering box.
   /*!
     The covering box is a set of upper and lower values for each
@@ -385,21 +384,17 @@ public:
   const D2& domain2() const;
 
 
-  //! FIXME maybe these should be something like
-  //const pair<D1::con_type&, D2::con_type&> constraining_systems() const;
-  //const pair<D1::gen_type&, D2::gen_type&> generating_systems() const;
+  //! Returns the system of constraints.
+  const Constraint_System& constraints() const;
+
+  //! Returns the system of constraints in reduced form.
+  const Constraint_System& minimized_constraints() const;
 
   //! Returns the system of congruences.
   const Congruence_System& congruences() const;
 
   //! Returns the system of congruences in reduced form.
   const Congruence_System& minimized_congruences() const;
-
-  //! Returns the system of constraints.
-  const Constraint_System& constraints() const;
-
-  //! Returns the system of constraints in reduced form.
-  const Constraint_System& minimized_constraints() const;
 
   //! Returns the system of generators.
   const Generator_System& generators() const;
@@ -434,6 +429,14 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
   Poly_Gen_Relation relation_with(const Grid_Generator& g) const;
+
+  //! Returns the relations holding between \p *this and \p g.
+  /*
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible.
+  */
+  Poly_Gen_Relation relation_with(const Generator& g) const;
+
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is an empty
