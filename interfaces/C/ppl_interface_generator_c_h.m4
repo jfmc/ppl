@@ -11,7 +11,7 @@ dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 define(`m4_pre_extra_class_code', `dnl
 
-PPL_TYPE_DECLARATION($1);
+PPL_TYPE_DECLARATION(m4_interface_class$1);
 
 /*! \name Functions Related to $1 */
 /*@{*/
@@ -21,9 +21,9 @@ PPL_TYPE_DECLARATION($1);
 dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Postfix extra code for each class.
 define(`m4_post_extra_class_code', `dnl
-PPL_DECLARE_PRINT_FUNCTIONS($1)
+PPL_DECLARE_PRINT_FUNCTIONS(m4_interface_class$1)
 
-/*@}*/ /* Functions Related to $1 */
+/*@}*/ /* Functions Related to m4_interface_class$1 */
 ')
 
 divert`'dnl

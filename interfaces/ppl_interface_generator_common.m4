@@ -227,18 +227,17 @@ m4_check_if_class_in_group($1, shift(shift($@)))dnl
 dnl m4_filter(Class_Kind, Procedure_Name)
 dnl
 dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_Kind
+dnl It first checks if there is a group including the Class_name
 dnl in Procedure_Name, preceded by a -.
 dnl if so, it expands to the empty string.
 dnl If this is not the case, it checks if there is a group
-dnl including the Class_Kind in Procedure_Name, preceded by a +.
+dnl including the Class_name in Procedure_Name, preceded by a +.
 dnl if so, it expands to the given Procedure_Name.
 define(`m4_filter', `dnl
 define(`m4_proc_info_string',
-  patsubst(`$2', `[ ]*ppl_[^ ]+ \(.*\)', \1))dnl
-ifelse(m4_proc_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, ,
-  ifelse(m4_proc_keep_or_throw($1, m4_proc_info_string, +, m4_group_names), 1,
-    $2))dnl
+       `patsubst(`$2', `[ ]*ppl_[^ ]+ \(.*\)', \1)')dnl
+ifelse(m4_proc_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, 0,
+  m4_proc_keep_or_throw($1, m4_proc_info_string, +, m4_group_names))dnl
 undefine(m4_proc_info_string)dnl
 ')
 
@@ -248,8 +247,10 @@ dnl Keeps just those procedure names that are needed for the given class kind.
 dnl The classes to be kept or filtered away are determined by extra info
 dnl included with each Procedure_Name
 define(`m4_filter_all', `dnl
-ifelse($2, `', `', `dnl
-ifelse(m4_filter($1, $2), `', `', `$2, ')dnl
+ifelse($#, 0, ,$# , 1, ,
+$#, 2,`ifelse(m4_filter($1, $2), 1, `$2')',
+`ifelse(m4_filter($1, $2), 1, `$2,
+')dnl
 m4_filter_all($1, shift(shift($@)))dnl
 ')dnl
 ')
@@ -260,21 +261,25 @@ dnl Default (empty) definitions for pre- and post- code for each class.
 define(`m4_pre_extra_class_code', `')dnl
 define(`m4_post_extra_class_code', `')dnl
 
-dnl m4_one_class_code(Class, CPP_Class, Class_Kind)
+dnl m4_one_class_code(Class_Counter, Class_Kind)
 dnl
 dnl Takes main procedure input list and each procedure is checked
 dnl to see if there is a macro with "_code" extension that defines the code.
 dnl Then a macro sets the class and other schematic components.
 define(`m4_one_class_code', `dnl
-m4_pre_extra_class_code($1, $2, $3)dnl
+define(`m4_class', m4_interface_class$1)dnl
+define(`m4_cpp_class', m4_cplusplus_class$1)dnl
+m4_pre_extra_class_code($1, $2)dnl
 define(`m4_filtered_proc_list',
-       `m4_filter_all($3, m4_procedure_list)')dnl
+       `m4_filter_all($2, m4_procedure_list)')dnl
 define(`m4_procedure_code',
-       `m4_procedure_names_to_code($3, m4_filtered_proc_list)')dnl
-m4_replace_class_patterns($1, $2, m4_procedure_code)dnl
+       `m4_procedure_names_to_code($2, m4_filtered_proc_list)')dnl
+m4_replace_class_patterns(m4_interface_class$1, m4_cpp_class, m4_procedure_code)dnl
 undefine(`m4_procedure_code')dnl
 undefine(`m4_filtered_proc_list')dnl
-m4_post_extra_class_code($1, $2, $3)dnl
+undefine(`m4_class')dnl
+undefine(`m4_cpp_class')dnl
+m4_post_extra_class_code($1, $2)dnl
 ')
 
 dnl m4_all_classes_loop(counter)
@@ -297,14 +302,10 @@ dnl   m4_class_kind ==> BD_Shape;
 define(`m4_all_classes_loop', `dnl
 ifdef(m4_interface_class`'$1, `dnl
 dnl Provide meaningful names to actual arguments of m4_one_class_code.
-define(`m4_class', m4_interface_class$1)dnl
-define(`m4_cpp_class', m4_cplusplus_class$1)dnl
 define(`m4_class_kind', m4_class$1_component1)dnl
 dnl
-m4_one_class_code(m4_class, m4_cpp_class, m4_class_kind)dnl
+m4_one_class_code($1, m4_class_kind)dnl
 dnl
-undefine(`m4_class')dnl
-undefine(`m4_cpp_class')dnl
 undefine(`m4_class_kind')dnl
 m4_all_classes_loop(incr($1))')dnl
 ')

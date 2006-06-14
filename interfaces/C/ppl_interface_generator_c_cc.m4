@@ -9,16 +9,16 @@ divert(-1)dnl
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 define(`m4_pre_extra_class_code', `dnl
-/* Interfacing $1 */
+/* Interfacing m4_interface_class$1 */
 
-DECLARE_CONVERSIONS($1, $2)
+DECLARE_CONVERSIONS(m4_interface_class$1, m4_cplusplus_class$1)
 
 ')dnl
 
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Postfix extra code for each class.
 define(`m4_post_extra_class_code', `dnl
-DEFINE_PRINT_FUNCTIONS($1)
+DEFINE_PRINT_FUNCTIONS(m4_interface_class$1)
 
 ')dnl
 

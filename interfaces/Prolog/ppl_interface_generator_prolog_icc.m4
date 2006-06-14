@@ -38,9 +38,13 @@ undefine(`m4_num_widenexps')
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 define(`m4_pre_extra_class_code', `dnl
-m4_add_term_to_class_handle_code($1, $2)`'dnl
-m4_add_bop_assign_code($1, $2)`'dnl
-m4_add_widening_extrapolation_code($1, $2, $3)`'dnl
+define(`m4_classx', m4_interface_class$1)dnl
+define(`m4_cpp_classx', m4_cplusplus_class$1)dnl
+m4_add_term_to_class_handle_code(m4_classx, m4_cpp_classx)`'dnl
+m4_add_bop_assign_code(m4_classx, m4_cpp_classx)`'dnl
+m4_add_widening_extrapolation_code(m4_classx, m4_cpp_classx, $2)`'dnl
+undefine(`m4_classx')dnl
+undefine(`m4_cpp_classx')dnl
 ')
 
 divert`'dnl

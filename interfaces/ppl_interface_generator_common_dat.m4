@@ -156,5 +156,5 @@ dnl  The different kinds of "and_minimize" binary operators.
 define(`m4_binminop_replacement', `intersection_assign_and_minimize')
 define(`m4_Polyhedron_binminop_replacement',
          ```m4_binminop_replacement', poly_hull_assign_and_minimize'')
-define(`m4_Grid_binminops_replacement',
+define(`m4_Grid_binminop_replacement',
          ```m4_binminop_replacement', join_assign_and_minimize'')
