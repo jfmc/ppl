@@ -67,7 +67,7 @@ test03() {
   return ok;
 }
 
-// Direct_Product(cgs), domain1(), domain2
+// Direct_Product(cgs), domain1(), domain2()
 bool
 test04() {
   Variable A(0);
@@ -201,7 +201,7 @@ test10() {
   return ok;
 }
 
-// space_dimension
+// space_dimension()
 bool
 test11() {
   Variable A(0);
@@ -216,7 +216,7 @@ test11() {
   return ok;
 }
 
-// Copy constructor
+// Copy constructor.
 bool
 test12() {
   Variable A(0);
@@ -233,7 +233,7 @@ test12() {
   return ok;
 }
 
-// affine_dimension
+// affine_dimension()
 bool
 test13() {
   Variable A(0);
@@ -252,6 +252,28 @@ test13() {
   return ok;
 }
 
+#define define_identical(type)					\
+  bool								\
+  identical(const type& cs1, const type& cs2) {			\
+    type::const_iterator i1 = cs1.begin();			\
+    type::const_iterator i2 = cs2.begin();			\
+    type::const_iterator cs1_end = cs1.end();			\
+    type::const_iterator cs2_end = cs2.end();			\
+    for (; i1 != cs1_end && i2 != cs2_end; ++i1, ++i2) {	\
+      if (i1->space_dimension() != i2->space_dimension())	\
+	return false;						\
+      for (dimension_type d = i1->space_dimension(); d-- > 0; )	\
+	if (i1->coefficient(Variable(d))			\
+	    != i2->coefficient(Variable(d)))			\
+	  return false;						\
+    }								\
+    if (i2 == cs2.end() && i1 == cs1.end())			\
+      return true;						\
+    return false;						\
+  }
+
+define_identical(Congruence_System);
+
 // congruences()
 bool
 test14() {
@@ -268,14 +290,139 @@ test14() {
   cgs.insert(A %= 9);
   cgs.insert(B + C %= 3);
 
-  bool ok = (dp.congruences() == cgs);
+  bool ok = identical(dp.congruences(), cgs);
+
+  return ok;
+}
+
+// minimized_congruences()
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence(B + C %= 3);
+  dp.add_constraint(A >= 9);
+  dp.add_constraint(A <= 9);
+
+  Congruence_System cgs;
+  cgs.insert(B + C %= 0);
+  cgs.insert((A %= 9) / 0);
+  cgs.insert(Linear_Expression(0) %= -1);
+
+  bool ok = identical(dp.minimized_congruences(), cgs);
+
+  return ok;
+}
+
+// constraints()
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence((B + C %= 3) / 0);
+  dp.add_constraint(A > 9);
+  dp.add_constraint(A <= 11);
+
+  NNC_Polyhedron ph(dp.space_dimension());
+  ph.add_constraints(dp.constraints());
+
+  NNC_Polyhedron known_ph(dp.space_dimension());
+  known_ph.add_constraint(B + C == 3);
+  known_ph.add_constraint(A <= 11);
+  known_ph.add_constraint(A > 9);
+
+  bool ok = (ph == known_ph);
+
+  return ok;
+}
+
+// minimized_constraints()
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence((B + C %= 3) / 0);
+  dp.add_constraint(A > 9);
+  dp.add_constraint(A <= 11);
+
+  NNC_Polyhedron ph(dp.space_dimension());
+  ph.add_constraints(dp.constraints());
+
+  NNC_Polyhedron known_ph(dp.space_dimension());
+  known_ph.add_constraint(A > 9);
+  known_ph.add_constraint(B + C == 3);
+  known_ph.add_constraint(A <= 11);
+
+  bool ok = (ph == known_ph);
+
+  return ok;
+}
+
+// generators()
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence((B + C %= 3) / 0);
+  dp.add_constraint(A > 9);
+  dp.add_constraint(A <= 11);
+
+  NNC_Polyhedron ph(dp.space_dimension());
+  ph.add_generators(dp.generators());
+
+  NNC_Polyhedron known_ph(dp.space_dimension());
+  known_ph.add_generator(closure_point(9*A + 3*B));
+  known_ph.add_generator(point(11*A + 3*B));
+  known_ph.add_generator(line(B + C));
+
+  bool ok = (ph == known_ph);
+
+  return ok;
+}
+
+// minimized_generators()
+bool
+test19() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Direct_Product<NNC_Polyhedron, Grid> dp(3);
+  dp.add_congruence((B + C %= 3) / 0);
+  dp.add_constraint(A > 9);
+  dp.add_constraint(A <= 11);
+
+  NNC_Polyhedron ph(dp.space_dimension());
+  ph.add_generators(dp.generators());
+
+  NNC_Polyhedron known_ph(dp.space_dimension());
+  known_ph.add_generator(line(B - C));
+  known_ph.add_generator(closure_point(9*A + 3*B));
+  known_ph.add_generator(point(10*A + 3*B));
+  known_ph.add_generator(point(11*A + 3*B));
+
+  // Maybe this should check that the generators are minimized.
+
+  bool ok = (ph == known_ph);
 
   return ok;
 }
 
 // is_empty() where both domain objects have points.
 bool
-test15() {
+test20() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -291,7 +438,7 @@ test15() {
 
 // is_empty() where one domain object is empty.
 bool
-test16() {
+test21() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -307,7 +454,7 @@ test16() {
 
 // is_empty() where both domain objects are empty.
 bool
-test17() {
+test22() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -323,7 +470,7 @@ test17() {
 
 // is_universe() where both domain objects are empty.
 bool
-test18() {
+test23() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -337,7 +484,7 @@ test18() {
 
 // is_universe() where one domain object is universe.
 bool
-test19() {
+test24() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -353,7 +500,7 @@ test19() {
 
 // is_universe() where both domain objects are universe.
 bool
-test20() {
+test25() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -367,7 +514,7 @@ test20() {
 
 // intersection_assign()
 bool
-test21() {
+test26() {
   Variable A(0);
   Variable B(1);
 
@@ -393,7 +540,7 @@ test21() {
 
 // upper_bound_assign(dp2)
 bool
-test22() {
+test27() {
   Variable A(0);
   Variable B(1);
 
@@ -418,7 +565,7 @@ test22() {
 
 // upper_bound_assign_if_exact()
 bool
-test23() {
+test28() {
   Variable A(0);
   Variable B(1);
 
@@ -442,7 +589,7 @@ test23() {
 
 // difference_assign()
 bool
-test24() {
+test29() {
   Variable A(0);
   Variable B(1);
 
@@ -468,7 +615,7 @@ test24() {
 
 // add_space_dimensions_and_embed()
 bool
-test25() {
+test30() {
   Variable A(0);
   Variable B(1);
 
@@ -489,7 +636,7 @@ test25() {
 
 // add_space_dimensions_and_project()
 bool
-test26() {
+test31() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -512,7 +659,7 @@ test26() {
 
 // concatenate_assign()
 bool
-test27() {
+test32() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -541,7 +688,7 @@ test27() {
 
 // remove_space_dimensions()
 bool
-test28() {
+test33() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -568,7 +715,7 @@ test28() {
 
 // remove_higher_space_dimensions()
 bool
-test29() {
+test34() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -591,7 +738,7 @@ test29() {
 
 // map_space_dimensions()
 bool
-test30() {
+test35() {
   Variable A(0);
   Variable B(1);
 
@@ -616,7 +763,7 @@ test30() {
 
 // expand_space_dimension()
 bool
-test31() {
+test36() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -641,7 +788,7 @@ test31() {
 
 // fold_space_dimensions()
 bool
-test32() {
+test37() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -672,7 +819,7 @@ test32() {
 
 // affine_image()
 bool
-test33() {
+test38() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -696,7 +843,7 @@ test33() {
 
 // affine_preimage()
 bool
-test34() {
+test39() {
   Variable A(0);
   Variable B(1);
 
@@ -716,7 +863,7 @@ test34() {
 
 // generalized_affine_image(v, e, relsym, d)
 bool
-test35() {
+test40() {
   Variable A(0);
   Variable B(1);
 
@@ -741,7 +888,7 @@ test35() {
 
 // generalized_affine_image(v, e, d, modulus)
 bool
-test36() {
+test41() {
   Variable A(0);
   Variable B(1);
 
@@ -764,7 +911,7 @@ test36() {
 
 // generalized_affine_preimage(v, e, relsym, d)
 bool
-test37() {
+test42() {
   Variable A(0);
   Variable B(1);
 
@@ -789,7 +936,7 @@ test37() {
 
 // generalized_affine_preimage(v, e, d, modulus)
 bool
-test38() {
+test43() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -817,7 +964,7 @@ test38() {
 
 // generalized_affine_image(lhs, relsym, rhs)
 bool
-test39() {
+test44() {
   Variable A(0);
   Variable B(1);
 
@@ -843,7 +990,7 @@ test39() {
 
 // generalized_affine_image(lhs, rhs, modulus)
 bool
-test40() {
+test45() {
   Variable A(0);
   Variable B(1);
 
@@ -869,7 +1016,7 @@ test40() {
 
 // generalized_affine_preimage(lhs, relsym, rhs)
 bool
-test41() {
+test46() {
   Variable A(0);
   Variable B(1);
 
@@ -894,7 +1041,7 @@ test41() {
 
 // generalized_affine_preimage(lhs, rhs, modulus)
 bool
-test42() {
+test47() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -916,7 +1063,7 @@ test42() {
 
 // time_elapse_assign(y)
 bool
-test43() {
+test48() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -954,7 +1101,7 @@ test43() {
 
 // topological_closure_assign
 bool
-test44() {
+test49() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1030,4 +1177,9 @@ BEGIN_MAIN
   DO_TEST(test42);
   DO_TEST(test43);
   DO_TEST(test44);
+  DO_TEST(test45);
+  DO_TEST(test46);
+  DO_TEST(test47);
+  DO_TEST(test48);
+  DO_TEST(test49);
 END_MAIN
