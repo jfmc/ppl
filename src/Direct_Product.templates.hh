@@ -136,51 +136,124 @@ Direct_Product<NNC_Polyhedron, Grid>::minimized_grid_generators() const {
 
 template <>
 inline void
-Direct_Product<NNC_Polyhedron, Grid>::add_grid_generator(const Grid_Generator& g) {
-  d2.add_grid_generator(g);
+Direct_Product<NNC_Polyhedron, Grid>::add_congruence(const Congruence& cg) {
+  d1.add_congruence(cg);
+  d2.add_congruence(cg);
 }
 
-template <>
-inline void
-Direct_Product<C_Polyhedron, Grid>::add_grid_generator(const Grid_Generator& g) {
-  d2.add_grid_generator(g);
-}
+#define SPECIALIZE(class1, class2)					\
+  template <>								\
+  inline void								\
+  Direct_Product<class1, class2>::add_generator(const Generator& g) {	\
+    d1.add_generator(g);						\
+  }									\
+  template <>								\
+  inline void								\
+  Direct_Product<class2, class1>::add_generator(const Generator& g) {	\
+    d2.add_generator(g);						\
+  }
 
-template <>
-inline bool
-Direct_Product<NNC_Polyhedron, Grid>::add_grid_generator_and_minimize(const Grid_Generator& g) {
-  return d2.add_grid_generator_and_minimize(g);
-}
+SPECIALIZE(NNC_Polyhedron, Grid);
+SPECIALIZE(C_Polyhedron, Grid);
+#undef SPECIALIZE
 
-template <>
-inline bool
-Direct_Product<C_Polyhedron, Grid>::add_grid_generator_and_minimize(const Grid_Generator& g) {
-  return d2.add_grid_generator_and_minimize(g);
-}
+#define SPECIALIZE(class1, class2)					\
+  template <>								\
+  inline bool								\
+  Direct_Product<class1, class2>::add_generator_and_minimize(const Generator& g) { \
+    return d1.add_generator_and_minimize(g);				\
+  }									\
+  template <>								\
+  inline bool								\
+  Direct_Product<class2, class1>::add_generator_and_minimize(const Generator& g) { \
+    return d2.add_generator_and_minimize(g);				\
+  }
 
-template <>
-inline void
-Direct_Product<NNC_Polyhedron, Grid>::add_generator(const Generator& g) {
-  d1.add_generator(g);
-}
+SPECIALIZE(NNC_Polyhedron, Grid);
+SPECIALIZE(C_Polyhedron, Grid);
+#undef SPECIALIZE
 
-template <>
-inline void
-Direct_Product<C_Polyhedron, Grid>::add_generator(const Generator& g) {
-  d1.add_generator(g);
-}
+#define SPECIALIZE(class1, class2)					\
+  template <>								\
+  inline void								\
+  Direct_Product<class1, class2>::add_grid_generator(const Grid_Generator& g) { \
+    d2.add_grid_generator(g);						\
+  }									\
+  template <>								\
+  inline void								\
+  Direct_Product<class2, class1>::add_grid_generator(const Grid_Generator& g) { \
+    d1.add_grid_generator(g);						\
+  }
 
-template <>
-inline bool
-Direct_Product<NNC_Polyhedron, Grid>::add_generator_and_minimize(const Generator& g) {
-  return d1.add_generator_and_minimize(g);
-}
+SPECIALIZE(NNC_Polyhedron, Grid);
+SPECIALIZE(C_Polyhedron, Grid);
+#undef SPECIALIZE
 
-template <>
-inline bool
-Direct_Product<C_Polyhedron, Grid>::add_generator_and_minimize(const Generator& g) {
-  return d1.add_generator_and_minimize(g);
-}
+#define SPECIALIZE(class1, class2)					\
+  template <>								\
+  inline bool								\
+  Direct_Product<class1, class2>::add_grid_generator_and_minimize(const Grid_Generator& g) { \
+    return d2.add_grid_generator_and_minimize(g);			\
+  }									\
+  template <>								\
+  inline bool								\
+  Direct_Product<class2, class1>::add_grid_generator_and_minimize(const Grid_Generator& g) { \
+    return d1.add_grid_generator_and_minimize(g);			\
+  }
+
+SPECIALIZE(NNC_Polyhedron, Grid);
+SPECIALIZE(C_Polyhedron, Grid);
+#undef SPECIALIZE
+
+#define SPECIALIZE(ph_class, gr_class)					\
+  template <>								\
+  inline void								\
+  Direct_Product<ph_class, gr_class>::add_congruences(const Congruence_System& cgs) { \
+    d1.add_congruences(cgs);						\
+    d2.add_congruences(cgs);						\
+  }									\
+  template <>								\
+  inline void								\
+  Direct_Product<gr_class, ph_class>::add_congruences(const Congruence_System& cgs) { \
+    d1.add_congruences(cgs);						\
+    d2.add_congruences(cgs);						\
+  }									\
+
+SPECIALIZE(NNC_Polyhedron, Grid);
+SPECIALIZE(C_Polyhedron, Grid);
+#undef SPECIALIZE
+
+#define SPECIALIZE(ph_class, gr_class)					\
+  template <>								\
+  inline void								\
+  Direct_Product<ph_class, gr_class>::add_generators(const Generator_System& gs) { \
+    d1.add_generators(gs);						\
+  }									\
+  template <>								\
+  inline void								\
+  Direct_Product<gr_class, ph_class>::add_generators(const Generator_System& gs) { \
+    d2.add_generators(gs);						\
+  }
+
+SPECIALIZE(NNC_Polyhedron, Grid);
+SPECIALIZE(C_Polyhedron, Grid);
+#undef SPECIALIZE
+
+#define SPECIALIZE(ph_class, gr_class)					\
+  template <>								\
+  inline void								\
+  Direct_Product<ph_class, gr_class>::add_grid_generators(const Grid_Generator_System& gs) { \
+    d2.add_grid_generators(gs);						\
+  }									\
+  template <>								\
+  inline void								\
+  Direct_Product<gr_class, ph_class>::add_grid_generators(const Grid_Generator_System& gs) { \
+    d1.add_grid_generators(gs);						\
+  }
+
+SPECIALIZE(NNC_Polyhedron, Grid);
+SPECIALIZE(C_Polyhedron, Grid);
+#undef SPECIALIZE
 
 template <>
 inline void
@@ -258,13 +331,20 @@ Direct_Product<NNC_Polyhedron, Grid>
   d2.generalized_affine_preimage(lhs, rhs, modulus);
 }
 
+template <>
+inline bool
+Direct_Product<NNC_Polyhedron, Grid>::is_discrete() const {
+  const Direct_Product& op = *this;
+  return op.d1.affine_dimension() == 0 || op.d2.is_discrete();
+}
+
 // FIXME: move to dedicated file once name decided
 
 template <>
 inline bool
 Open_Product<NNC_Polyhedron, Grid>::is_discrete() const {
   const Open_Product& op = *this;
-  return op.d1.space_dimension() == 0 || op.d2.is_discrete();
+  return op.d1.affine_dimension() == 0 || op.d2.is_discrete();
 }
 
 template <typename D1, typename D2>

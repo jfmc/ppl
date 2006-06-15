@@ -284,8 +284,17 @@ Direct_Product<D1, D2>::add_constraint(const Constraint& c) {
 template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>::add_congruence(const Congruence& cg) {
-  d1.add_congruence(cg);
-  d2.add_congruence(cg);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::add_generator(const Generator& g) {
+}
+
+template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::add_generator_and_minimize(const Generator& g) {
+  return is_empty();
 }
 
 template <typename D1, typename D2>
@@ -296,7 +305,43 @@ Direct_Product<D1, D2>::add_grid_generator(const Grid_Generator& g) {
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::add_grid_generator_and_minimize(const Grid_Generator& g) {
-  return false;
+  return is_empty;
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::add_constraints(const Constraint_System& cs) {
+  d1.add_constraints(cs);
+  d2.add_constraints(cs);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::add_recycled_constraints(Constraint_System& cs) {
+  d1.add_recycled_constraints(cs);
+  d2.add_recycled_constraints(cs);
+}
+
+template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::add_recycled_constraints_and_minimize(Constraint_System& cs) {
+  return d1.add_recycled_constraints_and_minimize(cs)
+    || d2.add_recycled_constraints_and_minimize(cs);
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::add_congruences(const Congruence_System& cgs) {
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::add_generators(const Generator_System& gs) {
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::add_grid_generators(const Grid_Generator_System& gs) {
 }
 
 template <typename D1, typename D2>
@@ -396,7 +441,7 @@ Direct_Product<D1, D2>::is_topologically_closed() const {
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::is_disjoint_from(const Direct_Product& y) const {
-  return d1.is_disjoint_from(y.d1) && d2.is_disjoint_from(y.d2);
+  return d1.is_disjoint_from(y.d1) || d2.is_disjoint_from(y.d2);
 }
 
 template <typename D1, typename D2>
@@ -409,7 +454,7 @@ Direct_Product<D1, D2>::is_discrete() const {
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::is_bounded() const {
-  return d1.is_bounded() && d2.is_bounded();
+  return d1.is_bounded() || d2.is_bounded();
 }
 
 template <typename D1, typename D2>
@@ -523,11 +568,100 @@ Open_Product<D1, D2>::Open_Product(dimension_type num_dimensions,
 }
 
 template <typename D1, typename D2>
+inline
+Open_Product<D1, D2>::Open_Product(const Congruence_System& ccgs)
+  : Direct_Product<D1, D2>(ccgs) {
+}
+
+template <typename D1, typename D2>
+inline
+Open_Product<D1, D2>::Open_Product(Congruence_System& cgs)
+  : Direct_Product<D1, D2>(cgs) {
+}
+
+template <typename D1, typename D2>
+inline
+Open_Product<D1, D2>::Open_Product(const Constraint_System& ccs)
+  : Direct_Product<D1, D2>(ccs) {
+}
+
+template <typename D1, typename D2>
+inline
+Open_Product<D1, D2>::Open_Product(Constraint_System& cs)
+  : Direct_Product<D1, D2>(cs) {
+}
+
+template <typename D1, typename D2>
+inline
+Open_Product<D1, D2>::Open_Product(const Grid_Generator_System& gs)
+  : Direct_Product<D1, D2>(gs) {
+}
+
+template <typename D1, typename D2>
+inline
+Open_Product<D1, D2>::Open_Product(Grid_Generator_System& gs)
+  : Direct_Product<D1, D2>(gs) {
+}
+
+template <typename D1, typename D2>
+inline
+Open_Product<D1, D2>::Open_Product(const Generator_System& gs)
+  : Direct_Product<D1, D2>(gs) {
+}
+
+template <typename D1, typename D2>
+inline
+Open_Product<D1, D2>::Open_Product(Generator_System& gs)
+  : Direct_Product<D1, D2>(gs) {
+}
+
+template <typename D1, typename D2>
+template <typename Box>
+inline
+Open_Product<D1, D2>::Open_Product(const Box& box,
+				       From_Bounding_Box dummy)
+  : Direct_Product<D1, D2>(box, dummy) {
+}
+
+template <typename D1, typename D2>
+template <typename Box>
+inline
+Open_Product<D1, D2>::Open_Product(const Box& box,
+				       From_Covering_Box dummy)
+  : Direct_Product<D1, D2>(box, dummy) {
+}
+
+template <typename D1, typename D2>
+inline
+Open_Product<D1, D2>::Open_Product(const Open_Product& y)
+  : Direct_Product<D1, D2>(y) {
+}
+
+template <typename D1, typename D2>
+inline
+Open_Product<D1, D2>::~Open_Product() {
+}
+
+template <typename D1, typename D2>
+inline Open_Product<D1, D2>&
+Open_Product<D1, D2>::operator=(const Open_Product& y) {
+  return Direct_Product<D1, D2>::operator=(y);
+}
+
+template <typename D1, typename D2>
 inline bool
 Open_Product<D1, D2>::is_empty() const {
   // FIX intersection.is_empty()
   const Open_Product& op = *this;
   return op.d1.is_empty() || op.d2.is_empty();
+}
+
+template <typename D1, typename D2>
+inline bool
+Open_Product<D1, D2>::is_universe() const {
+  // FIX intersection.is_universe()
+  const Open_Product& op = *this;
+  return op.d1.is_universe() && op.d2.is_universe();
 }
 
 template <typename D1, typename D2>
@@ -543,7 +677,7 @@ inline bool
 Open_Product<D1, D2>::is_disjoint_from(const Open_Product& y) const {
   // FIX intersection.is_disjoint_from(y.intersection)
   const Open_Product& op = *this;
-  return op.d1.is_disjoint_from(y.d1) && op.d2.is_disjoint_from(y.d2);
+  return op.d1.is_disjoint_from(y.d1) || op.d2.is_disjoint_from(y.d2);
 }
 
 template <typename D1, typename D2>
@@ -551,7 +685,7 @@ inline bool
 Open_Product<D1, D2>::is_bounded() const {
   // FIX intersection.is_bounded()
   const Open_Product& op = *this;
-  return op.d1.is_bounded() && op.d2.is_bounded();
+  return op.d1.is_bounded() || op.d2.is_bounded();
 }
 
 template <typename D1, typename D2>
@@ -559,7 +693,7 @@ inline bool
 Open_Product<D1, D2>::is_discrete() const {
   // FIX intersection.is_discrete()
   const Open_Product& op = *this;
-  return op.d1.is_discrete() && op.d2.is_discrete();
+  return op.d1.is_discrete() || op.d2.is_discrete();
 }
 
 template <typename D1, typename D2>

@@ -811,6 +811,27 @@ public:
   //! \name Space Dimension Preserving Member Functions that May Modify the Direct_Product
   //@{
 
+  //! Adds constraint \p c to \p *this.
+  /*!
+    The addition can only affect \p *this if \p c is an equality.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  void add_constraint(const Constraint& c);
+
+  //! Adds constraint \p c to \p *this, reducing the result.
+  /*!
+    The addition can only affect \p *this if \p c is an equality.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  bool add_constraint_and_minimize(const Constraint& c);
+
   //! Adds a copy of congruence \p cg to \p *this.
   /*!
     \exception std::invalid_argument
@@ -818,15 +839,6 @@ public:
     dimension-incompatible.
   */
   void add_congruence(const Congruence& cg);
-
-  //! Adds constraint \p c to \p *this.
-  /*!
-    The addition can only affect \p *this if \p c is an equality.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible.
-  */
-  void add_congruence(const Constraint& c);
 
   /*! \brief
     Adds a copy of congruence \p cg to the system of congruences of \p
@@ -839,41 +851,6 @@ public:
     Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
   bool add_congruence_and_minimize(const Congruence& c);
-
-  //! Adds a copy of constraint \p c to \p *this, reducing the result.
-  /*!
-    The addition can only affect \p *this if \p c is an equality.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are dimension-incompatible.
-  */
-  bool add_congruence_and_minimize(const Constraint& c);
-
-  /*! \brief
-    Adds a copy of generator \p g to the system of generators of \p
-    *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are dimension-incompatible,
-    or if \p *this is an empty grid and \p g is not a point.
-  */
-  void add_grid_generator(const Grid_Generator& g);
-
-  /*! \brief
-    Adds a copy of generator \p g to the system of generators of \p
-    *this, reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are dimension-incompatible,
-    or if \p *this is an empty grid and \p g is not a point.
-  */
-  bool add_grid_generator_and_minimize(const Grid_Generator& g);
 
   /*! \brief
     Adds a copy of generator \p g to the system of generators of \p
@@ -898,6 +875,29 @@ public:
   */
   bool add_generator_and_minimize(const Generator& g);
 
+  /*! \brief
+    Adds a copy of generator \p g to the system of generators of \p
+    *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible,
+    or if \p *this is an empty grid and \p g is not a point.
+  */
+  void add_grid_generator(const Grid_Generator& g);
+
+  /*! \brief
+    Adds a copy of generator \p g to the system of generators of \p
+    *this, reducing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible,
+    or if \p *this is an empty grid and \p g is not a point.
+  */
+  bool add_grid_generator_and_minimize(const Grid_Generator& g);
+
   //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!
     \param cgs
@@ -908,17 +908,6 @@ public:
     Thrown if \p *this and \p cgs are dimension-incompatible.
   */
   void add_congruences(const Congruence_System& cgs);
-
-  //! Adds a copy of each equality constraint in \p cs to \p *this.
-  /*!
-    \param cs
-    The congruences that will be considered for addition to the system
-    of congruences of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cgs are dimension-incompatible.
-  */
-  void add_congruences(const Constraint_System& cs);
 
   //! Adds the congruences in \p cgs to *this.
   /*!
@@ -935,22 +924,6 @@ public:
   */
   void add_recycled_congruences(Congruence_System& cgs);
 
-  //! Adds the equality constraints in \p cs to \p *this.
-  /*!
-    \param cs
-    The constraint system from which constraints will be considered
-    for addition to the system of congruences of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-
-    \warning
-
-    The only assumption that can be made about \p cs upon successful
-    or exceptional return is that it can be safely destroyed.
-  */
-  void add_recycled_congruences(Constraint_System& cs);
-
   /*! \brief
     Adds a copy of the congruences in \p cgs to the system of
     congruences of \p *this, reducing the result.
@@ -966,22 +939,6 @@ public:
     Thrown if \p *this and \p cgs are dimension-incompatible.
   */
   bool add_congruences_and_minimize(const Congruence_System& cgs);
-
-  /*! \brief
-    Adds a copy of each equality constraint in \p cs to \p *this,
-    reducing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    Contains the constraints that will be added to the system of
-    congruences of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-  */
-  bool add_congruences_and_minimize(const Constraint_System& cs);
 
   /*! \brief
     Adds the congruences in \p cgs to the system of congruences of \p
@@ -1002,45 +959,6 @@ public:
     or exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_congruences_and_minimize(Congruence_System& cgs);
-
-  //! Adds the equalities in \p cs to \p *this, reducing the result.
-  /*!
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraint system that may be recycled, adding its
-    equalities to the system of congruences of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are dimension-incompatible.
-
-    \warning
-    The only assumption that can be made about \p cs upon successful
-    or exceptional return is that it can be safely destroyed.
-  */
-  bool add_recycled_congruences_and_minimize(Constraint_System& cs);
-
-  //! Adds constraint \p c to \p *this.
-  /*!
-    The addition can only affect \p *this if \p c is an equality.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p c are dimension-incompatible.
-  */
-  void add_constraint(const Constraint& c);
-
-  //! Adds constraint \p c to \p *this, reducing the result.
-  /*!
-    The addition can only affect \p *this if \p c is an equality.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p c are dimension-incompatible.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
 
   //! Adds copies of the equality constraints in \p cs to \p *this.
   /*!
@@ -1073,6 +991,7 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
+    Adds the constraints in \p cs to \p *this, reducing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -1882,7 +1801,7 @@ public:
   ~Direct_Product();
 
   /*! \brief
-    Swaps \p *this with grid \p y.  (\p *this and \p y can be
+    Swaps \p *this with Direct_Product \p y.  (\p *this and \p y can be
     dimension-incompatible.)
   */
   void swap(Direct_Product& y);
@@ -1942,6 +1861,268 @@ public:
   */
   explicit Open_Product(dimension_type num_dimensions = 0,
 			const Degenerate_Element kind = UNIVERSE);
+
+  //! Builds a pair, copying a system of congruences.
+  /*!
+    The pair inherits the space dimension of the congruence system.
+
+    \param cgs
+    The system of congruences to be approximated by the pair.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Open_Product(const Congruence_System& cgs);
+
+  //! Builds a pair, recycling a system of congruences.
+  /*!
+    The pair inherits the space dimension of the congruence system.
+
+    \param cgs
+    The system of congruences to be approximates by the pair.
+    Its data-structures may be recycled to build the pair.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Open_Product(Congruence_System& cgs);
+
+  //! Builds a pair, copying a system of constraints.
+  /*!
+    The pair inherits the space dimension of the constraint system.
+
+    \param cs
+    The system of constraints to be approximated by the pair.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Open_Product(const Constraint_System& cs);
+
+  //! Builds a pair, recycling a system of constraints.
+  /*!
+    The pair inherits the space dimension of the constraint system.
+
+    \param cs
+    The system of constraints to be approximated by the pair.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Open_Product(Constraint_System& cs);
+
+  //! Builds a pair, copying a system of generators.
+  /*!
+    The pair inherits the space dimension of the generator system.
+
+    \param const_gs
+    The system of generators to be approximated by the pair.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Open_Product(const Grid_Generator_System& const_gs);
+
+  //! Builds a pair, recycling a system of generators.
+  /*!
+    The pair inherits the space dimension of the generator system.
+
+    \param gs
+    The system of generators to be approximated by the pair.
+    Its data-structures may be recycled to build the pair.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
+  */
+  explicit Open_Product(Grid_Generator_System& gs);
+
+  //! Builds a pair, copying a system of generators.
+  /*!
+    The pair inherits the space dimension of the generator system.
+
+    \param const_gs
+    The system of generators to be approximated by the pair.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Open_Product(const Generator_System& const_gs);
+
+  //! Builds a pair, recycling a system of generators.
+  /*!
+    The pair inherits the space dimension of the generator system.
+
+    \param gs
+    The system of generators to be approximated by the pair.
+    Its data-structures may be recycled to build the pair.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
+  */
+  explicit Open_Product(Generator_System& gs);
+
+  //! Builds a pair out of a generic, interval-based bounding box.
+  /*!
+    \param box
+    The bounding box representing the pair to be built.  The box can
+    contain only point and universe intervals;
+
+    \param dummy
+    A dummy tag to make this constructor syntactically unique.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p box exceeds the maximum
+    allowed space dimension.
+
+    \exception std::invalid_argument
+    Thrown if \p box contains at least one interval with: a
+    topologically open bound, a single bound, or two bounds which have
+    space between them.
+
+    The template class Box must provide the following methods.
+    \code
+      dimension_type space_dimension() const
+    \endcode
+    returns the dimension of the vector space enclosing the pair
+    represented by the bounding box.
+    \code
+      bool is_empty() const
+    \endcode
+    returns <CODE>true</CODE> if and only if the bounding box
+    describes the empty set.
+    \code
+      bool get_lower_bound(dimension_type k, bool closed,
+                           Coefficient& n, Coefficient& d) const
+    \endcode
+    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
+    space dimension.  If \f$I\f$ is not bounded from below, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the lower boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
+    corresponds to the greatest lower bound of \f$I\f$.  The fraction
+    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
+    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
+    the unique representation for zero.
+    \code
+      bool get_upper_bound(dimension_type k, bool closed,
+                           Coefficient& n, Coefficient& d) const
+    \endcode
+    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
+    space dimension.  If \f$I\f$ is not bounded from above, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the upper boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
+    corresponds to the least upper bound of \f$I\f$.
+  */
+  template <typename Box>
+  Open_Product(const Box& box, From_Bounding_Box dummy);
+
+  //! Builds a grid out of a generic, interval-based covering box.
+  /*!
+    The covering box is a set of upper and lower values for each
+    dimension.  When a covering box is tiled onto empty space the
+    corners of the tiles form a rectilinear grid.
+
+    A box interval with only one bound fixes the values of all grid
+    points in the dimension associated with the box to the value of
+    the bound.  A box interval which has upper and lower bounds of
+    equal value allows all grid points with any value in the dimension
+    associated with the interval.  The presence of a universe interval
+    results in the empty grid.  The empty box produces the empty grid
+    of the same dimension as the box.
+
+    \param box
+    The covering box representing the grid to be built;
+
+    \param dummy
+    A dummy tag to make this constructor syntactically unique.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p box exceeds the maximum
+    allowed space dimension.
+
+    \exception std::invalid_argument
+    Thrown if \p box contains any topologically open bounds.
+
+    The template class Box must provide the following methods.
+    \code
+      dimension_type space_dimension() const
+    \endcode
+    returns the dimension of the vector space enclosing the grid
+    represented by the covering box.
+    \code
+      bool is_empty() const
+    \endcode
+    returns <CODE>true</CODE> if and only if the covering box
+    describes the empty set.
+    \code
+      bool get_lower_bound(dimension_type k, bool closed,
+                           Coefficient& n, Coefficient& d) const
+    \endcode
+    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
+    space dimension.  If \f$I\f$ is not bounded from below, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the lower boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
+    corresponds to the greatest lower bound of \f$I\f$.  The fraction
+    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
+    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
+    the unique representation for zero.
+    \code
+      bool get_upper_bound(dimension_type k, bool closed,
+                           Coefficient& n, Coefficient& d) const
+    \endcode
+    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
+    space dimension.  If \f$I\f$ is not bounded from above, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the upper boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
+    corresponds to the least upper bound of \f$I\f$.
+  */
+  template <typename Box>
+  Open_Product(const Box& box, From_Covering_Box dummy);
+
+  //! Ordinary copy-constructor.
+  Open_Product(const Open_Product& y);
+
+  //! Destructor.
+  ~Open_Product();
+
+  /*! \brief
+    The assignment operator.  (\p *this and \p y can be
+    dimension-incompatible.)
+  */
+  Open_Product& operator=(const Open_Product& y);
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is an empty
