@@ -28,7 +28,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
-typedef Reduced_Product<NNC_Polyhedron, Grid> Product;
+typedef Open_Product<NNC_Polyhedron, Grid> Product;
 
 // reduce()
 bool
