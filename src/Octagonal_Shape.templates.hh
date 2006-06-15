@@ -3902,7 +3902,7 @@ Octagonal_Shape<T>
     	// i.e.,  `-v + w <= -b/denominator'.
 	if (var_id < w_id)
 	  add_octagonal_constraint(n_w+1, n_var+1, d);
-	if (var_id > w_id)
+	else
 	  add_octagonal_constraint(n_var, n_w, d);
       }
       else if (w_coeff == minus_den) {
