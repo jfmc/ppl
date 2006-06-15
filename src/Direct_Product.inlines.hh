@@ -388,6 +388,31 @@ Direct_Product<D1, D2>::is_universe() const {
 }
 
 template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::is_topologically_closed() const {
+  return d1.is_topologically_closed() && d2.is_topologically_closed();
+}
+
+template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::is_disjoint_from(const Direct_Product& y) const {
+  return d1.is_disjoint_from(y.d1) && d2.is_disjoint_from(y.d2);
+}
+
+template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::is_discrete() const {
+  // Assume wholeness.  Must be specialized for Grid.
+  return false;
+}
+
+template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::is_bounded() const {
+  return d1.is_bounded() && d2.is_bounded();
+}
+
+template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>::add_space_dimensions_and_embed(dimension_type m) {
   d1.add_space_dimensions_and_embed(m);
@@ -492,20 +517,60 @@ IO_Operators::operator<<(std::ostream& s, const Direct_Product<D1, D2>& dp) {
 
 template <typename D1, typename D2>
 inline
-Reduced_Product<D1, D2>::Reduced_Product(dimension_type num_dimensions,
-					 const Degenerate_Element kind)
+Open_Product<D1, D2>::Open_Product(dimension_type num_dimensions,
+				   const Degenerate_Element kind)
   : Direct_Product<D1, D2>(num_dimensions, kind) {
 }
 
 template <typename D1, typename D2>
 inline bool
-Reduced_Product<D1, D2>::reduce_domain1_with_domain2() {
+Open_Product<D1, D2>::is_empty() const {
+  // FIX intersection.is_empty()
+  const Open_Product& op = *this;
+  return op.d1.is_empty() || op.d2.is_empty();
+}
+
+template <typename D1, typename D2>
+inline bool
+Open_Product<D1, D2>::is_topologically_closed() const {
+  // FIX intersection.is_topologically_closed()
+  const Open_Product& op = *this;
+  return op.d1.is_topologically_closed() && op.d2.is_topologically_closed();
+}
+
+template <typename D1, typename D2>
+inline bool
+Open_Product<D1, D2>::is_disjoint_from(const Open_Product& y) const {
+  // FIX intersection.is_disjoint_from(y.intersection)
+  const Open_Product& op = *this;
+  return op.d1.is_disjoint_from(y.d1) && op.d2.is_disjoint_from(y.d2);
+}
+
+template <typename D1, typename D2>
+inline bool
+Open_Product<D1, D2>::is_bounded() const {
+  // FIX intersection.is_bounded()
+  const Open_Product& op = *this;
+  return op.d1.is_bounded() && op.d2.is_bounded();
+}
+
+template <typename D1, typename D2>
+inline bool
+Open_Product<D1, D2>::is_discrete() const {
+  // FIX intersection.is_discrete()
+  const Open_Product& op = *this;
+  return op.d1.is_discrete() && op.d2.is_discrete();
+}
+
+template <typename D1, typename D2>
+inline bool
+Open_Product<D1, D2>::reduce_domain1_with_domain2() {
   return false;
 }
 
 template <typename D1, typename D2>
 inline bool
-Reduced_Product<D1, D2>::reduce_domain2_with_domain1() {
+Open_Product<D1, D2>::reduce_domain2_with_domain1() {
   return false;
 }
 

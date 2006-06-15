@@ -260,9 +260,18 @@ Direct_Product<NNC_Polyhedron, Grid>
 
 // FIXME: move to dedicated file once name decided
 
+template <>
+inline bool
+Open_Product<NNC_Polyhedron, Grid>::is_discrete() const {
+  const Open_Product& op = *this;
+  return op.d1.space_dimension() == 0 || op.d2.is_discrete();
+}
+
 template <typename D1, typename D2>
 bool
-Direct_Product<D1, D2>::empty_reduce_d1_with_d2() {
+Open_Product<D1, D2>::empty_reduce_d1_with_d2() {
+  D1& d1 = this->d1;
+  D2& d2 = this->d2;
   d2.minimized_congruences();
   if (d2.is_empty()) {
     if (d1.is_empty())
@@ -275,7 +284,9 @@ Direct_Product<D1, D2>::empty_reduce_d1_with_d2() {
 
 template <typename D1, typename D2>
 bool
-Direct_Product<D1, D2>::empty_reduce_d2_with_d1() {
+Open_Product<D1, D2>::empty_reduce_d2_with_d1() {
+  D1& d1 = this->d1;
+  D2& d2 = this->d2;
   d1.minimized_constraints();
   if (d1.is_empty()) {
     if (d2.is_empty())
@@ -288,42 +299,42 @@ Direct_Product<D1, D2>::empty_reduce_d2_with_d1() {
 
 template <>
 inline bool
-Reduced_Product<NNC_Polyhedron, Grid>::reduce_domain1_with_domain2() {
+Open_Product<NNC_Polyhedron, Grid>::reduce_domain1_with_domain2() {
   return empty_reduce_d1_with_d2();
 }
 
 template <>
 inline bool
-Reduced_Product<C_Polyhedron, Grid>::reduce_domain1_with_domain2() {
+Open_Product<C_Polyhedron, Grid>::reduce_domain1_with_domain2() {
   return empty_reduce_d1_with_d2();
 }
 
 #if 0
 template <>
 inline bool
-Reduced_Product<BD_Shape<T>, Grid>::reduce_domain1_with_domain2() {
+Open_Product<BD_Shape<T>, Grid>::reduce_domain1_with_domain2() {
   return empty_reduce_d1_with_d2();
 }
 #endif
 
 template <>
 inline bool
-Reduced_Product<NNC_Polyhedron, Grid>::reduce_domain2_with_domain1() {
+Open_Product<NNC_Polyhedron, Grid>::reduce_domain2_with_domain1() {
   return empty_reduce_d2_with_d1();
 }
 
 template <>
 inline bool
-Reduced_Product<C_Polyhedron, Grid>::reduce_domain2_with_domain1() {
+Open_Product<C_Polyhedron, Grid>::reduce_domain2_with_domain1() {
   return empty_reduce_d2_with_d1();
 }
 
-// FIXME: error: no member function 'reduce_domain2_with_domain1' declared in 'Parma_Polyhedra_Library::Reduced_Product<Parma_Polyhedra_Library::BD_Shape<T>, Parma_Polyhedra_Library::Grid>'
+// FIXME: error: no member function 'reduce_domain2_with_domain1' declared in 'Parma_Polyhedra_Library::Open_Product<Parma_Polyhedra_Library::BD_Shape<T>, Parma_Polyhedra_Library::Grid>'
 #if 0
 template <>
 template <typename T>
 inline bool
-Reduced_Product<BD_Shape<T>, Grid>::reduce_domain2_with_domain1() {
+Open_Product<BD_Shape<T>, Grid>::reduce_domain2_with_domain1() {
   return empty_reduce_d2_with_d1();
 }
 #endif
@@ -331,7 +342,7 @@ Reduced_Product<BD_Shape<T>, Grid>::reduce_domain2_with_domain1() {
 #if 0
 template <typename D1, typename D2>
 inline bool
-Reduced_Product<D1, D2>::reduce_ph_with_gr() {
+Open_Product<D1, D2>::reduce_ph_with_gr() {
   // Skeleton attempt at simple reduction.
 
   // Reduce ph d1 with gr d2 by moving ph c's to nearest grid point
@@ -414,8 +425,7 @@ Reduced_Product<D1, D2>::reduce_ph_with_gr() {
 
 template <>
 inline bool
-Reduced_Product<Parma_Polyhedra_Library::NNC_Polyhedron,
-	       Parma_Polyhedra_Library::Grid>::reduce() {
+Open_Product<NNC_Polyhedron, Grid>::reduce() {
   bool modified = reduce_domain1_with_domain2();
   if (reduce_domain2_with_domain1()) {
     modified = true;
@@ -432,7 +442,7 @@ Reduced_Product<Parma_Polyhedra_Library::NNC_Polyhedron,
 
 template <typename D1, typename D2>
 bool
-Reduced_Product<D1, D2>::reduce() {
+Open_Product<D1, D2>::reduce() {
   bool modified = reduce_domain1_with_domain2();
   if (reduce_domain2_with_domain1()) {
     modified = true;

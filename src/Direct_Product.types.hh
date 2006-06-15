@@ -18,7 +18,7 @@ template <typename D1, typename D2>
 class Direct_Product;
 
 template <typename D1, typename D2>
-class Reduced_Product;
+class Open_Product;
 
 } // namespace Parma_Polyhedra_Library
 

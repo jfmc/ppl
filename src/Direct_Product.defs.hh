@@ -409,12 +409,7 @@ public:
   const Grid_Generator_System& minimized_grid_generators() const;
 
 
-  //! Returns the relations holding between \p *this and \p cg.
-  /*
-    \exception std::invalid_argument
-    Thrown if \p *this and congruence \p cg are dimension-incompatible.
-  */
-  Poly_Con_Relation relation_with(const Congruence& cg) const;
+  // FIXME: implement relation_with(*)
 
   //! Returns the relations holding between \p *this and \p c.
   /*
@@ -423,12 +418,12 @@ public:
   */
   Poly_Con_Relation relation_with(const Constraint& c) const;
 
-  //! Returns the relations holding between \p *this and \p g.
+  //! Returns the relations holding between \p *this and \p cg.
   /*
     \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are dimension-incompatible.
+    Thrown if \p *this and congruence \p cg are dimension-incompatible.
   */
-  Poly_Gen_Relation relation_with(const Grid_Generator& g) const;
+  Poly_Con_Relation relation_with(const Congruence& cg) const;
 
   //! Returns the relations holding between \p *this and \p g.
   /*
@@ -436,6 +431,13 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
   Poly_Gen_Relation relation_with(const Generator& g) const;
+
+  //! Returns the relations holding between \p *this and \p g.
+  /*
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible.
+  */
+  Poly_Gen_Relation relation_with(const Grid_Generator& g) const;
 
 
   /*! \brief
@@ -1907,6 +1909,77 @@ public:
   //@} // Miscellaneous Member Functions
 
 protected:
+  //! The type of the first component.
+  typedef D1 Domain1;
+
+  //! The type of the second component.
+  typedef D2 Domain2;
+
+  //! The first component.
+  D1 d1;
+
+  //! The second component.
+  D2 d2;
+};
+
+// FIXME: move to dedicated file once name decided
+
+template <typename D1, typename D2>
+class Parma_Polyhedra_Library::Open_Product
+  : public Parma_Polyhedra_Library::Direct_Product<D1, D2> {
+public:
+  //! Builds an object having the specified properties.
+  /*!
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the pair;
+
+    \param kind
+    Specifies whether a universe or an empty pair has to be built.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Open_Product(dimension_type num_dimensions = 0,
+			const Degenerate_Element kind = UNIVERSE);
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is an empty
+    product.
+  */
+  bool is_empty() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is a universe
+    product.
+  */
+  bool is_universe() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is a
+    topologically closed subset of the vector space.
+  */
+  bool is_topologically_closed() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this and \p y are
+    disjoint.
+
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are dimension-incompatible.
+  */
+  bool is_disjoint_from(const Open_Product& y) const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
+  /*!
+    A grid is discrete if it can be defined by a generator system which
+    contains only points and parameters.  This includes the empty grid
+    and any grid in dimension zero.
+  */
+  bool is_discrete() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
+  bool is_bounded() const;
 
   /*! \brief
     Reduces first component with first, by checking if second is
@@ -1927,40 +2000,6 @@ protected:
     contained in the originals.
   */
   bool empty_reduce_d2_with_d1();
-
-  //! The type of the first component.
-  typedef D1 Domain1;
-
-  //! The type of the second component.
-  typedef D2 Domain2;
-
-  //! The first component.
-  D1 d1;
-
-  //! The second component.
-  D2 d2;
-};
-
-// FIXME: move to dedicated file once name decided
-
-template <typename D1, typename D2>
-class Parma_Polyhedra_Library::Reduced_Product
-  : public Parma_Polyhedra_Library::Direct_Product<D1, D2> {
-public:
-  //! Builds an object having the specified properties.
-  /*!
-    \param num_dimensions
-    The number of dimensions of the vector space enclosing the pair;
-
-    \param kind
-    Specifies whether a universe or an empty pair has to be built.
-
-    \exception std::length_error
-    Thrown if \p num_dimensions exceeds the maximum allowed space
-    dimension.
-  */
-  explicit Reduced_Product(dimension_type num_dimensions = 0,
-			   const Degenerate_Element kind = UNIVERSE);
 
   //! Reduce the instance of the second domain with the first.
   /*
