@@ -1,6 +1,106 @@
 dnl Classes to be implemented and C++ versions of these classes.
 include(ppl_interface_instantiations.m4)
 
+dnl =====================================================================
+dnl ===== The first set of macros here initialise the class names   =====
+dnl ===== using "@" separated lists and defined                     =====
+dnl ===== by macros in ppl_interface_instantiations.m4.             =====
+dnl =====================================================================
+
+dnl m4_init_interface_classes(Class_List)
+dnl
+dnl Parses the comma-separated list of class names Class_List
+dnl for the names of the classes used to form the names of procedures
+dnl in the user interface.
+define(`m4_init_interface_classes', `m4_init_interface_classes_aux(1, $1)')
+
+dnl m4_init_interface_classes_aux(counter, Class_List)
+dnl
+dnl counter    - is the index to the first class in Class_List
+dnl Class_List - is the tail part of the input list of interface
+dnl              class names.
+dnl The macro also defines m4_num_classes to be the number of classes
+dnl in the full list (ie counter + number in the current list - 1).
+dnl The macro calls itself recursively to process the complete list.
+define(`m4_init_interface_classes_aux',
+  `ifelse($2, `',  `define(m4_num_classes, decr($1))',
+    `regexp($2, `\([^@]+\)@?\(.*\)',
+      `define(m4_interface_class`'$1, \1)dnl
+m4_init_interface_classes_aux(incr($1), \2)')')')
+
+dnl m4_init_cplusplus_classes(Class_List)
+dnl
+dnl Parses the comma-separated list of class names Class_List
+dnl to be used in the C++ code implementing the interface procedures.
+dnl The components of the class name are also separated out
+dnl and defined as m4_class<class_num>_component<component_num>
+dnl (see comment and example for m4_init_class_name_components/3).
+define(`m4_init_cplusplus_classes', `m4_init_cplusplus_classes_aux(1, $1)')
+
+dnl m4_init_cplusplus_classes_aux(counter, Class_List)
+dnl
+dnl counter    - is the index to the first class in Class_List
+dnl Class_List - is the tail part of the input list of cplusplus
+dnl              class names.
+dnl
+dnl The macro also calls the macro m4_init_class_name_components/3
+dnl to extract the details of the components from the top
+dnl cplusplus name in the list.
+dnl The macro calls itself recursively to process the complete list.
+define(`m4_init_cplusplus_classes_aux',
+  `ifelse($2, `', ,
+    `regexp($2, `\([^@]+\)@?\(.*\)',
+       `define(m4_cplusplus_class`'$1, \1)dnl
+m4_init_class_name_components($1, 1, \1)dnl
+m4_init_cplusplus_classes_aux(incr($1), \2)')')')
+
+dnl m4_init_class_name_components(Class Num, Component_Num, String)
+dnl
+dnl The components of the class name in String are separated out
+dnl by recursively getting the first part before the "<"
+dnl removing the outer angle brackets and calling this macro again
+dnl with the remaining string.
+dnl Each component is defined as
+dnl m4_class<Class Num>_component<Component Num>
+dnl The total number of components is defined by the macro
+dnl m4_num_class<Class Num>_components
+dnl
+dnl For example:
+dnl if there is the interface list of classes
+dnl Polyhedron, Grid, BD_Shape_int32_t,
+dnl                     Polyhedra_Powerset_BD_Shape_signed_char
+dnl and the cplusplus list of classes
+dnl Polyhedron, Grid, BD_Shape<int32_t>,
+dnl                     Polyhedra_Powerset<BD_Shape<signed char> >
+dnl then the initialization code would define
+dnl m4_interface_class1 as Polyhedron
+dnl m4_interface_class2 as Grid
+dnl m4_interface_class3 as BD_Shape_int32_t
+dnl m4_interface_class4 as Polyhedra_Powerset_BD_Shape_signed_char
+dnl m4_cplusplus_class1 as Polyhedron
+dnl m4_cplusplus_class2 as Grid
+dnl m4_cplusplus_class3 as BD_Shape<int32_t>
+dnl m4_cplusplus_class4 as Polyhedra_Powerset<BD_Shape<signed char> >
+dnl m4_class1_component1 as Polyhedron
+dnl m4_class2_component2 as Grid
+dnl m4_class3_component1 as BD_Shape
+dnl m4_class3_component2 as int32_t
+dnl m4_class4_component1 as Polyhedra_Powerset
+dnl m4_class4_component2 as BD_Shape
+dnl m4_class4_component3 as signed char
+dnl m4_class1_num_components as 1
+dnl m4_class2_num_components as 1
+dnl m4_class3_num_components as 2
+dnl m4_class4_num_components as 3
+define(`m4_init_class_name_components',
+  `ifelse($3, `', ,
+    `ifelse(index($3, <), -1,
+      define(m4_class`'$1_component`'$2, $3)dnl
+define(m4_class`'$1_num_components, $2),
+        `regexp($3, `\([^ <]+\)[<]\(.*\)[ ]*[>]',
+          `define(m4_class`'$1_component`'$2, \1)dnl
+m4_init_class_name_components($1, incr($2), \2)')')')')
+
 dnl m4_group_names expands to all the group names.
 dnl
 dnl Each group_name in the expansion should

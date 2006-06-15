@@ -26,6 +26,20 @@ define(`m4_term_sequence',
      `$2(1)`'ifelse(`$1', 1, ,
        `m4_forloop(`i', 2, `$1', `m4_separator(`$3') $2(i)')')')')
 
+dnl m4_procedure_names_to_code(Class_Kind,
+dnl                            Procedure_Name1, Procedure_Name2, ...)
+dnl
+dnl Each name from the second argument onwards is replaced
+dnl with the code and then the schema patterns in the code
+dnl are replaced by the various instances.
+define(`m4_library_names_to_code', `dnl
+ifelse($#, 0, ,$#, 1, m4_get_code_schema($1),
+       `dnl
+m4_get_code_schema($1)dnl
+m4_library_names_to_code(shift($@))dnl
+')dnl
+')
+
 dnl ppl_prolog_sys_code
 dnl
 dnl For each recognised class in the "classes" list,
@@ -33,8 +47,7 @@ dnl takes main predicate input list and sends one line at a time to
 dnl a macro that adds extensions for the result of
 dnl a macro that sets the class and the schema(s).
 define(`ppl_prolog_sys_code', `dnl
-dnl Note: passing a dummy Class_Kind.
-m4_procedure_names_to_code(`', m4_library_predicate_list)dnl
+m4_library_names_to_code(m4_library_predicate_list)dnl
 m4_all_classes_code`'dnl
 ')
 divert`'dnl
