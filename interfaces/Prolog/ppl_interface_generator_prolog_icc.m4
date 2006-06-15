@@ -29,7 +29,7 @@ define(`m4_exists_widenexp', `dnl
 ifdef(`m4_$2_widenexp_replacement', 1, 0)')dnl
 ifelse(m4_exists_widenexp, 0, ,
   `m4_replace_class_patterns($1,
-                             m4_replace_pattern($2,
+                             m4_replace_one_pattern($2,
                                                 widening_extrapolation_code,
                                                 constrainer))')dnl
 undefine(`m4_num_widenexps')
