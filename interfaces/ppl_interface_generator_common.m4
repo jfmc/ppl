@@ -56,39 +56,39 @@ dnl =====================================================================
 dnl The pattern delimiter.
 define(`m4_pattern_delimiter', `@')
 
-dnl m4_replace_pattern(Class_Kind, String, Pattern)
+dnl m4_replace_one_pattern(Class_Kind, String, Pattern)
 dnl
 dnl Replaces in String occurrences of the capitalised form of Pattern
 dnl by the required actual string (determined both by the Class_Kind
 dnl and Pattern).
-define(`m4_replace_pattern', `dnl
+define(`m4_replace_one_pattern', `dnl
 define(`PATTERN', m4_upcase($3))dnl
 ifelse(index(`$2', PATTERN), `-1', $2, `dnl
-m4_replace_pattern_aux1($1, $2, $3,
+m4_replace_one_pattern_aux1($1, $2, $3,
   m4_ifndef(`m4_$1_$3_replacement', ``m4_$3_replacement''))dnl
 ')dnl
 undefine(`PATTERN')dnl
 ')
 
-dnl m4_replace_pattern_aux1
+dnl m4_replace_one_pattern_aux1
 dnl
 dnl This extra definition is used to expand the default replacement
 dnl string m4_<pattern>_replacement.
-define(`m4_replace_pattern_aux1', m4_replace_pattern_aux(`$*'))
+define(`m4_replace_one_pattern_aux1', m4_replace_one_pattern_aux(`$*'))
 
-dnl m4_replace_pattern_aux(Class_Kind, String, Replacement1, Replacement2, ...)
+dnl m4_replace_one_pattern_aux(Class_Kind, String, Replacement1, Replacement2, ...)
 dnl
-dnl This iteratively calls m4_replace_pattern_once/3 to replace
+dnl This iteratively calls m4_replace_one_pattern_once/3 to replace
 dnl a delimited form of PATTERN by Replacement`'i.
-define(`m4_replace_pattern_aux', `dnl
+define(`m4_replace_one_pattern_aux', `dnl
 ifelse($#, 0, ,$#, 1, , $#, 2, , $#, 3, ,
-$#, 4, m4_replace_pattern_once($1, $2, $3, $4),
+$#, 4, m4_replace_one_pattern_once($1, $2, $3, $4),
   `dnl
-m4_replace_pattern_once($1, $2, $3, $4)dnl
-m4_replace_pattern_aux($1, $2, $3, shift(shift(shift(shift($@)))))')dnl
+m4_replace_one_pattern_once($1, $2, $3, $4)dnl
+m4_replace_one_pattern_aux($1, $2, $3, shift(shift(shift(shift($@)))))')dnl
 ')
 
-dnl m4_replace_pattern_once(Class_Kind, String, Replacement)
+dnl m4_replace_one_pattern_once(Class_Kind, String, Replacement)
 dnl
 dnl The delimted PATTERN is replaced by Replacement in the String.
 dnl There are additional codes to help provide the right form of
@@ -96,7 +96,7 @@ dnl the replacmement.
 dnl - alt_ means that the alternative string must be used if one exists.
 dnl - U means that the alt_actual string must be capitalised at start
 dnl   of word and after "_".
-define(`m4_replace_pattern_once', `dnl
+define(`m4_replace_one_pattern_once', `dnl
 patsubst(patsubst(patsubst(patsubst($2,
            m4_pattern_delimiter`'U`'PATTERN`'m4_pattern_delimiter,
              m4_capfirstletters($4)),
@@ -115,9 +115,33 @@ dnl all of the patterns listed from the third argument onwards.
 define(`m4_replace_all_patterns', `dnl
 ifelse($3, `', ``$2'',
        `m4_replace_all_patterns($1,
-                                m4_replace_pattern($1, $2, $3),
+                                m4_replace_one_pattern($1, $2, $3),
                                 shift(shift(shift($@))))')dnl
 ')
+
+dnl m4_add_topology(Class_Kind)
+dnl
+dnl If Class_Kind is Polyhedron, this expands to @TOPOLOGY@Class_Kind .
+dnl Otherwise it expands to Class_Kind.
+define(`m4_add_topology', `dnl
+ifelse($1, Polyhedron, @`'$2`'TOPOLOGY@`'$1, $1)')
+
+dnl m4_construct_top_cplusplus_class_name(
+dnl     Class_Counter, Component_Counter, Prefix_Cpp_Name)
+dnl
+dnl Reconstructs the cplusplus name from its components
+dnl where, each component = `Polyhedron', is prefixed by @TOPOLOGY@
+define(`m4_construct_top_cplusplus_class_name',
+`dnl
+m4_construct_top_cplusplus_class_name_aux($1, 1,
+m4_add_topology(m4_class$1_component1, $2), $2)')
+
+define(`m4_construct_top_cplusplus_class_name_aux',
+   `dnl
+ifelse(m4_class$1_num_components, $2, $3,
+   `dnl
+m4_construct_top_cplusplus_class_name_aux($1, incr($2),
+$3<`'m4_add_topology(m4_class`'$1_component`'incr($2), $4), $4)>')')
 
 dnl m4_replace_class_patterns(Class, CPP_Class, String)
 dnl
@@ -126,9 +150,11 @@ dnl
 dnl The macro replaces in String the different patterns for
 dnl the class kind, class interface name and class C++ name.
 define(`m4_replace_class_patterns', `dnl
-patsubst(`patsubst(`$2',
-  m4_pattern_delimiter`'CLASS`'m4_pattern_delimiter, m4_interface_class$1)',
-  m4_pattern_delimiter`'CPP_CLASS`'m4_pattern_delimiter, m4_cplusplus_class$1)dnl
+patsubst(patsubst(patsubst(patsubst(`$2',
+  m4_pattern_delimiter`'CLASS`'m4_pattern_delimiter, m4_interface_class$1),
+  m4_pattern_delimiter`'CPP_CLASS`'m4_pattern_delimiter, m4_cplusplus_class$1),
+  m4_pattern_delimiter`'CPP_TOP_CLASS`'m4_pattern_delimiter, m4_construct_top_cplusplus_class_name($1, `')),
+  m4_pattern_delimiter`'CPP_INTOP_CLASS`'m4_pattern_delimiter, m4_construct_top_cplusplus_class_name($1, `IN'))dnl
 ')
 
 define(`m4_get_arity', `regexp(`$1', `/\([0-9]*\)', \1)')
