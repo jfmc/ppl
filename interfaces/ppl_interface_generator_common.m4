@@ -155,7 +155,7 @@ dnl Procedure name schemas are replaced by the code schema.
 define(`m4_get_code_schema', `dnl
 patsubst(`$1',
          `[ ]*\(ppl_[^ /]+\)\(.*\)',
-         `m4_extension(\1, m4_get_arity(\2), m4_get_attribute(\2))')')
+         `m4_extension(\1, m4_get_arity(\2), m4_get_attribute(\2), $2)')')
 
 dnl m4_extension(Procedure_Name, [Arity, Attribute])
 dnl
@@ -193,7 +193,7 @@ dnl The procedure specification is replaced with the code.
 define(`m4_procedure_name_to_code', `dnl
 patsubst(`$3', `\(.*\)', `dnl
 m4_replace_all_patterns($1, $2,
-  m4_replace_class_patterns($1, m4_get_code_schema(\1)),
+  m4_replace_class_patterns($1, m4_get_code_schema(\1, 1)),
     m4_pattern_list)')dnl
 ')
 
@@ -299,7 +299,7 @@ define(`m4_filtered_proc_list',
 m4_procedure_names_to_code($1, $2, m4_filtered_proc_list)dnl
 undefine(`m4_filtered_proc_list')dnl
 m4_post_extra_class_code($1, $2)dnl
-'))
+')
 
 dnl m4_all_classes_loop(counter)
 dnl

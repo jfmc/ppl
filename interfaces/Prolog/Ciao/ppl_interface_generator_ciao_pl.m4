@@ -27,9 +27,8 @@ divert(3)
 
 divert`'dnl
 include(`ppl_interface_generator_prolog_systems.m4')dnl
-define(`start', 0)
-define(`m4_extension', `ifelse(start, 0, , `COMMA
-')	  $1/$2`'undefine(`start')')dnl
+define(`m4_extension', `ifelse($4, 0, , `COMMA
+')	  $1/$2')dnl
 patsubst(ppl_prolog_sys_code, COMMA, `,')`'dnl
 undivert(1)`'dnl
 divert`'dnl
@@ -53,8 +52,7 @@ $1`'ifelse(`$2', 0, ,`(m4_term_sequence($2, `term'))') :-
 ppl_prolog_sys_code`'dnl
 undivert(2)dnl
 divert`'dnl
-define(`start', 0)dnl
 define(`m4_extension',
-  `ifelse(check_fail($3), nofail, ,ifelse(start, 0, , `COMMA
-')	`'$1_2/incr($2)`'undefine(`start'))')dnl
+  `ifelse(check_fail($3), nofail, ,ifelse($4, 0, , `COMMA
+')	`'$1_2/incr($2))')dnl
 patsubst(ppl_prolog_sys_code, COMMA, `,')`'dnl

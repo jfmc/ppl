@@ -41,7 +41,7 @@ ppl_LP_Problem_solve/2,
 ppl_LP_Problem_feasible_point/2,
 ppl_LP_Problem_optimizing_point/2,
 ppl_LP_Problem_optimal_value/3,
-ppl_LP_Problem_evaluate_objective_function/4,
+ppl_LP_Problem_evaluate_objective_function/4`'dnl
 ')
 
 dnl m4_procedure_list
@@ -105,7 +105,7 @@ ppl_@CLASS@_remove_space_dimensions/2 +all,
 ppl_@CLASS@_remove_higher_space_dimensions/2 *nofail +all,
 ppl_@CLASS@_expand_space_dimension/3 *nofail +all -bd_shape,
 ppl_@CLASS@_fold_space_dimensions/3  +all -bd_shape,
-ppl_@CLASS@_map_space_dimensions/2 +all
+ppl_@CLASS@_map_space_dimensions/2 +all`'dnl
 ')
 
 divert`'dnl
