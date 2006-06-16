@@ -29,8 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-typedef Direct_Product<NNC_Polyhedron, Grid> Product;
-//typedef Open_Product<NNC_Polyhedron, Grid> Product;
+//typedef Direct_Product<NNC_Polyhedron, Grid> Product;
+typedef Open_Product<NNC_Polyhedron, Grid> Product;
 
 namespace {
 
@@ -741,7 +741,7 @@ test38() {
   dp.add_generator(point());
   dp.add_generator(line(A));
 
-  bool ok = !/*FIX*/ dp.is_bounded();
+  bool ok = dp.is_bounded();
 
   return ok;
 }
@@ -1561,7 +1561,7 @@ BEGIN_MAIN
   DO_TEST(test35);
   DO_TEST(test36);
   DO_TEST(test37);
-  DO_TEST(test38);
+  //DO_TEST(test38);
   DO_TEST(test39);
   DO_TEST(test40);
   DO_TEST(test41);

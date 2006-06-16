@@ -20,6 +20,10 @@ class Direct_Product;
 template <typename D1, typename D2>
 class Open_Product;
 
+typedef Open_Product<Grid, C_Polyhedron> Grid_C_Polyhedron;
+typedef Open_Product<Grid, NNC_Polyhedron> Grid_NNC_Polyhedron;
+typedef Grid_NNC_Polyhedron Grid_Polyhedron;
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Direct_Product_types_hh)

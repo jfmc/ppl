@@ -123,8 +123,28 @@ testr1() {
 }
 #endif
 
+// FIX tests that are specific to Open_Product
+
+// is_bounded(), due to intersection.
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  Product dp(2, EMPTY);
+  dp.add_grid_generator(grid_point());
+  dp.add_grid_generator(grid_line(A + B));
+  dp.add_generator(point());
+  dp.add_generator(line(A));
+
+  bool ok = dp.is_bounded();
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN

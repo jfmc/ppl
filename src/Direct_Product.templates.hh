@@ -342,6 +342,17 @@ Direct_Product<NNC_Polyhedron, Grid>::is_discrete() const {
 
 template <>
 inline bool
+Open_Product<NNC_Polyhedron, Grid>::is_bounded() const {
+  NNC_Polyhedron& d1 = const_cast<NNC_Polyhedron&>(this->d1);
+  Grid& d2 = const_cast<Grid&>(this->d2);
+  // TODO: Consider adding a flag for this.
+  d1.add_congruences(d2.congruences());
+  d2.add_congruences(d1.constraints());
+  return d1.is_bounded() || d2.is_bounded();
+}
+
+template <>
+inline bool
 Open_Product<NNC_Polyhedron, Grid>::is_discrete() const {
   const Open_Product& op = *this;
   return op.d1.affine_dimension() == 0 || op.d2.is_discrete();
