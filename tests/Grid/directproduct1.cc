@@ -746,9 +746,153 @@ test38() {
   return ok;
 }
 
-// intersection_assign()
+// contains()
 bool
 test39() {
+  Variable A(0);
+
+  Product dp(1);
+  dp.add_constraint(A < 3);
+  dp.add_congruence((A %= 3) / 2);
+
+  Product dp2(1);
+  dp2.add_constraint(A < 3);
+  dp2.add_congruence(A %= 3);
+
+  bool ok = !dp.contains(dp2);
+
+  return ok;
+}
+
+// contains()
+bool
+test40() {
+  Variable A(0);
+
+  Product dp(1);
+  dp.add_congruence(A %= 3);
+  dp.add_constraint(A < 3);
+
+  Product dp2(1);
+  dp2.add_congruence((A %= 3) / 2);
+  dp2.add_constraint(A < 2);
+
+  bool ok = dp.contains(dp2);
+
+  return ok;
+}
+
+// contains(), due to intersection.
+bool
+test41() {
+  Variable A(0);
+  Variable B(1);
+
+  Product dp(1);
+  dp.add_congruence((A == 0) / 0);
+
+  Product dp2(1);
+  dp2.add_constraint(A < 2);
+  dp2.add_constraint(A > -1);
+  dp2.add_congruence((A %= 0) / 3);
+
+  bool ok = !/* FIX */ dp.contains(dp2);
+
+  return ok;
+}
+
+// strictly_contains()
+bool
+test42() {
+  Variable A(0);
+
+  Product dp(1);
+  dp.add_constraint(A < 1);
+  dp.add_congruence(A %= 3);
+
+  Product dp2(1);
+  dp2.add_constraint(A < 2);
+  dp2.add_congruence(A %= 3);
+
+  bool ok = !dp.strictly_contains(dp2);
+
+  return ok;
+}
+
+// strictly_contains()
+bool
+test43() {
+  Variable A(0);
+
+  Product dp(1);
+  dp.add_constraint(A < 3);
+  dp.add_congruence(A %= 3);
+
+  Product dp2(1);
+  dp2.add_constraint(A < 2);
+  dp2.add_congruence(A %= 3);
+
+  bool ok = !dp.strictly_contains(dp2);
+
+  return ok;
+}
+
+// strictly_contains()
+bool
+test44() {
+  Variable A(0);
+
+  Product dp(1);
+  dp.add_constraint(A < 3);
+  dp.add_congruence(A %= 3);
+
+  Product dp2(1);
+  dp2.add_constraint(A < 2);
+  dp2.add_congruence((A %= 3) / 2);
+
+  bool ok = dp.strictly_contains(dp2);
+
+  return ok;
+}
+
+// strictly_contains(), due to intersection.
+bool
+test45() {
+  Variable A(0);
+
+  Product dp(1);
+  dp.add_congruence(A %= 3);
+
+  Product dp2(1);
+  dp2.add_congruence((A %= 3) / 2);
+
+  bool ok = !/* FIX */ dp.strictly_contains(dp2);
+
+  return ok;
+}
+
+// strictly_contains(), due to intersection.
+bool
+test46() {
+  Variable A(0);
+  Variable B(1);
+
+  Product dp(1);
+  dp.add_congruence((A %= 0) / 6);
+
+  Product dp2(1);
+  dp2.add_constraint(A < 2);
+  dp2.add_constraint(A > -1);
+  dp2.add_congruence((A %= 0) / 3);
+
+  bool ok = !/*FIX*/ dp.strictly_contains(dp2);
+
+  return ok;
+}
+
+// intersection_assign()
+bool
+test47() {
   Variable A(0);
   Variable B(1);
 
@@ -774,7 +918,7 @@ test39() {
 
 // upper_bound_assign(dp2)
 bool
-test40() {
+test48() {
   Variable A(0);
   Variable B(1);
 
@@ -799,7 +943,7 @@ test40() {
 
 // upper_bound_assign_if_exact()
 bool
-test41() {
+test49() {
   Variable A(0);
   Variable B(1);
 
@@ -823,7 +967,7 @@ test41() {
 
 // difference_assign()
 bool
-test42() {
+test50() {
   Variable A(0);
   Variable B(1);
 
@@ -849,7 +993,7 @@ test42() {
 
 // add_space_dimensions_and_embed()
 bool
-test43() {
+test51() {
   Variable A(0);
   Variable B(1);
 
@@ -870,7 +1014,7 @@ test43() {
 
 // add_space_dimensions_and_project()
 bool
-test44() {
+test52() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -893,7 +1037,7 @@ test44() {
 
 // concatenate_assign()
 bool
-test45() {
+test53() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -922,7 +1066,7 @@ test45() {
 
 // remove_space_dimensions()
 bool
-test46() {
+test54() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -949,7 +1093,7 @@ test46() {
 
 // remove_higher_space_dimensions()
 bool
-test47() {
+test55() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -972,7 +1116,7 @@ test47() {
 
 // map_space_dimensions()
 bool
-test48() {
+test56() {
   Variable A(0);
   Variable B(1);
 
@@ -997,7 +1141,7 @@ test48() {
 
 // expand_space_dimension()
 bool
-test49() {
+test57() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1022,7 +1166,7 @@ test49() {
 
 // fold_space_dimensions()
 bool
-test50() {
+test58() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1053,7 +1197,7 @@ test50() {
 
 // affine_image()
 bool
-test51() {
+test59() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1077,7 +1221,7 @@ test51() {
 
 // affine_preimage()
 bool
-test52() {
+test60() {
   Variable A(0);
   Variable B(1);
 
@@ -1097,7 +1241,7 @@ test52() {
 
 // generalized_affine_image(v, e, relsym, d)
 bool
-test53() {
+test61() {
   Variable A(0);
   Variable B(1);
 
@@ -1122,7 +1266,7 @@ test53() {
 
 // generalized_affine_image(v, e, d, modulus)
 bool
-test54() {
+test62() {
   Variable A(0);
   Variable B(1);
 
@@ -1145,7 +1289,7 @@ test54() {
 
 // generalized_affine_preimage(v, e, relsym, d)
 bool
-test55() {
+test63() {
   Variable A(0);
   Variable B(1);
 
@@ -1171,7 +1315,7 @@ test55() {
 // generalized_affine_preimage(v, e, d, modulus), add_generator(),
 // add_generators(), add_grid_generators()
 bool
-test56() {
+test64() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1205,7 +1349,7 @@ test56() {
 
 // generalized_affine_image(lhs, relsym, rhs)
 bool
-test57() {
+test65() {
   Variable A(0);
   Variable B(1);
 
@@ -1231,7 +1375,7 @@ test57() {
 
 // generalized_affine_image(lhs, rhs, modulus), add_congruences(cgs)
 bool
-test58() {
+test66() {
   Variable A(0);
   Variable B(1);
 
@@ -1260,7 +1404,7 @@ test58() {
 
 // generalized_affine_preimage(lhs, relsym, rhs), add_constraints(cs)
 bool
-test59() {
+test67() {
   Variable A(0);
   Variable B(1);
 
@@ -1288,7 +1432,7 @@ test59() {
 
 // generalized_affine_preimage(lhs, rhs, modulus)
 bool
-test60() {
+test68() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1310,7 +1454,7 @@ test60() {
 
 // time_elapse_assign(y)
 bool
-test61() {
+test69() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1348,7 +1492,7 @@ test61() {
 
 // topological_closure_assign
 bool
-test62() {
+test70() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1442,4 +1586,12 @@ BEGIN_MAIN
   DO_TEST(test60);
   DO_TEST(test61);
   DO_TEST(test62);
+  DO_TEST(test63);
+  DO_TEST(test64);
+  DO_TEST(test65);
+  DO_TEST(test66);
+  DO_TEST(test67);
+  DO_TEST(test68);
+  DO_TEST(test69);
+  DO_TEST(test70);
 END_MAIN
