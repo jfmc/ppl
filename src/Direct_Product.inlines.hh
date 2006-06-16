@@ -515,6 +515,18 @@ Direct_Product<D1, D2>::fold_space_dimensions(const Variables_Set& to_be_folded,
   d2.fold_space_dimensions(to_be_folded, var);
 }
 
+template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::contains(const Direct_Product& y) const {
+  return d1.contains(y.d1) && d2.contains(y.d2);
+}
+
+template <typename D1, typename D2>
+inline bool
+Direct_Product<D1, D2>::strictly_contains(const Direct_Product& y) const {
+  return d1.strictly_contains(y.d1) && d2.strictly_contains(y.d2);
+}
+
 PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(D1, D2, Direct_Product)
 
 template <typename D1, typename D2>
@@ -659,7 +671,6 @@ Open_Product<D1, D2>::is_empty() const {
 template <typename D1, typename D2>
 inline bool
 Open_Product<D1, D2>::is_universe() const {
-  // FIX intersection.is_universe()
   const Open_Product& op = *this;
   return op.d1.is_universe() && op.d2.is_universe();
 }
@@ -694,6 +705,22 @@ Open_Product<D1, D2>::is_discrete() const {
   // FIX intersection.is_discrete()
   const Open_Product& op = *this;
   return op.d1.is_discrete() || op.d2.is_discrete();
+}
+
+template <typename D1, typename D2>
+inline bool
+Open_Product<D1, D2>::contains(const Open_Product& y) const {
+  // FIX intersection.contains(y)
+  const Open_Product& op = *this;
+  return op.d1.contains(y.d1) && op.d2.contains(y.d2);
+}
+
+template <typename D1, typename D2>
+inline bool
+Open_Product<D1, D2>::strictly_contains(const Open_Product& y) const {
+  // FIX intersection.strictly_contains(y)
+  const Open_Product& op = *this;
+  return op.d1.strictly_contains(y.d1) && op.d2.strictly_contains(y.d2);
 }
 
 template <typename D1, typename D2>

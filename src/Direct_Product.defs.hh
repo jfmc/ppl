@@ -478,6 +478,8 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
   bool is_bounded() const;
 
+  // FIXME: implement bound,max,min methods
+
   //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!
     This method is the same as bounds_from_below.
@@ -2161,6 +2163,22 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
   bool is_bounded() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool contains(const Open_Product& y) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this strictly
+    contains \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool strictly_contains(const Open_Product& y) const;
 
   /*! \brief
     Reduces first component with first, by checking if second is
