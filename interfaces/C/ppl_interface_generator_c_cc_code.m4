@@ -6,7 +6,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 (ppl_@CLASS@_t* pph,
  ppl_dimension_type d,
  int empty) try {
-  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(d, empty ? EMPTY : UNIVERSE));
+  *pph = to_nonconst(new @CPP_TOP_CLASS@(d, empty ? EMPTY : UNIVERSE));
   return 0;
 }
 CATCH_ALL
@@ -18,9 +18,9 @@ define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@_code',
 ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@
 (ppl_@CLASS@_t* pph,
  ppl_const_@CLASS@_t ph) try {
-  const @INTOPOLOGY@@CPP_CLASS@& phh
-    = *static_cast<const @INTOPOLOGY@@CPP_CLASS@*>(to_const(ph));
-  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(phh));
+  const @CPP_INTOP_CLASS@& phh
+    = *static_cast<const @CPP_INTOP_CLASS@*>(to_const(ph));
+  *pph = to_nonconst(new @CPP_TOP_CLASS@(phh));
   return 0;
 }
 CATCH_ALL;
@@ -32,7 +32,7 @@ define(`ppl_new_@TOPOLOGY@@CLASS@_from_@UREPRESENT@_System_code',
 ppl_new_@TOPOLOGY@@CLASS@_from_@UREPRESENT@_System
 (ppl_@CLASS@_t* pph, ppl_const_@UREPRESENT@_System_t cs) try {
   const @UREPRESENT@_System& ccs = *to_const(cs);
-  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(ccs));
+  *pph = to_nonconst(new @CPP_TOP_CLASS@(ccs));
   return 0;
 }
 CATCH_ALL
@@ -44,7 +44,7 @@ define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UREPRESENT@_System_code',
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@UREPRESENT@_System
 (ppl_@CLASS@_t* pph, ppl_@UREPRESENT@_System_t cs) try {
   @UREPRESENT@_System& ccs = *to_nonconst(cs);
-  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(ccs));
+  *pph = to_nonconst(new @CPP_TOP_CLASS@(ccs));
   return 0;
 }
 CATCH_ALL
@@ -65,7 +65,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
 			ppl_Coefficient_t d)) try {
   C_Build_Box cbbox(space_dimension, is_empty,
 		    get_lower_bound, get_upper_bound);
-  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(cbbox, From_Bounding_Box()));
+  *pph = to_nonconst(new @CPP_TOP_CLASS@(cbbox, From_Bounding_Box()));
   return 0;
 }
 CATCH_ALL
@@ -87,10 +87,10 @@ define(`ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@_code',
 ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@
 (ppl_@CLASS@_t dst,
  ppl_const_@CLASS@_t src) try {
-  const @TOPOLOGY@@CPP_CLASS@& ssrc
-    = *static_cast<const @TOPOLOGY@@CPP_CLASS@*>(to_const(src));
-  @TOPOLOGY@@CPP_CLASS@& ddst
-    = *static_cast<@TOPOLOGY@@CPP_CLASS@*>(to_nonconst(dst));
+  const @CPP_TOP_CLASS@& ssrc
+    = *static_cast<const @CPP_TOP_CLASS@*>(to_const(src));
+  @CPP_TOP_CLASS@& ddst
+    = *static_cast<@CPP_TOP_CLASS@*>(to_nonconst(dst));
   ddst = ssrc;
   return 0;
 }
