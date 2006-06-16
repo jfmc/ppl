@@ -990,6 +990,8 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
   if (cg.is_equality()) {
     Linear_Expression le(cg);
     Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
+    // Enforce normalization.
+    c.strong_normalize();
     add_constraint(c);
   }
 }
@@ -1497,7 +1499,9 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
     if (i->is_equality()) {
       Linear_Expression le(*i);
       Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
-      // FIXME: Steal the row in c when adding it to cs.
+      // Enforce normalization.
+      c.strong_normalize();
+      // TODO: Consider stealing the row in c when adding it to cs.
       cs.insert(c);
       inserted = true;
     }
