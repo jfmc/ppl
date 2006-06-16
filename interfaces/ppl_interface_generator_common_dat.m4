@@ -168,105 +168,105 @@ describe')
 
 dnl The topology of the domain element. The default is the empty string.
 define(`m4_topology_replacement', `')
-define(`m4_Polyhedron_topology_replacement', ``C_, NNC_'')
+define(`m4_Polyhedron_topology_replacement', `C_, NNC_')
 define(`m4_Polyhedra_Powerset_topology_replacement',
-  `ifelse(index(m4_cplusplus_class$1, Polyhedron), -1, `', ``C_, NNC_'')dnl
+  `ifelse(index(m4_cplusplus_class$1, Polyhedron), -1, `', `C_, NNC_')`'dnl
 ')
 
 dnl The topology used to copy from another element of the domain
 define(`m4_intopology_replacement', `')
-define(`m4_Polyhedron_intopology_replacement', ``C_, NNC_'')
+define(`m4_Polyhedron_intopology_replacement', `C_, NNC_')
 define(`m4_Polyhedra_Powerset_intopology_replacement',
-  `ifelse(index(m4_cplusplus_class$1, Polyhedron), -1, `', ``C_, NNC_'')dnl
+  `ifelse(index(m4_cplusplus_class$1, Polyhedron), -1, `', `C_, NNC_')dnl
 ')
 
 dnl The widening and extrapolation operators.
 define(`m4_widenexp_replacement', `')
-define(`m4_Polyhedron_widenexp_replacement', ``BHRZ03, H79'')
-define(`m4_Grid_widenexp_replacement', ``congruence, generator'')
-define(`m4_BD_Shape_widenexp_replacement', ``BHMZ05, H79'')
-define(`m4_Octagonal_Shape_widenexp_replacement', ``CH78'')
+define(`m4_Polyhedron_widenexp_replacement', `BHRZ03, H79')
+define(`m4_Grid_widenexp_replacement', `congruence, generator')
+define(`m4_BD_Shape_widenexp_replacement', `BHMZ05, H79')
+define(`m4_Octagonal_Shape_widenexp_replacement', `CH78')
 
 dnl The shape classes have bounding boxes while the grid classes also
 dnl have covering boxes.
-define(`m4_box_replacement', ``bounding_box'')
-define(`m4_Grid_box_replacement', ``bounding_box, covering_box'')
-define(`m4_Grid_box_bounding_box_alt_replacement', ``shrink_bounding_box'')
-define(`m4_Grid_box_covering_box_alt_replacement', ``get_covering_box'')
+define(`m4_box_replacement', `bounding_box')
+define(`m4_Grid_box_replacement', `bounding_box, covering_box')
+define(`m4_Grid_box_bounding_box_alt_replacement', `shrink_bounding_box')
+define(`m4_Grid_box_covering_box_alt_replacement', `get_covering_box')
 
 dnl  Space or affine dimensions
-define(`m4_dimension_replacement', ``space_dimension, affine_dimension'')
+define(`m4_dimension_replacement', `space_dimension, affine_dimension')
 
 dnl The different kinds of objects use to generate a class.
-define(`m4_generator_replacement', ``generator'')
-define(`m4_Grid_generator_replacement', ``grid_generator'')
+define(`m4_generator_replacement', `generator')
+define(`m4_Grid_generator_replacement', `grid_generator')
 
 dnl  The different kinds of points.
-define(`m4_point_replacement', ``point'')
-define(`m4_Grid_point_replacement', ``grid_point'')
+define(`m4_point_replacement', `point')
+define(`m4_Grid_point_replacement', `grid_point')
 
 dnl  The constrainer objects used to describe a class.
-define(`m4_constrainer_replacement', ``constraint'')
-define(`m4_Grid_constrainer_replacement', ``congruence'')
+define(`m4_constrainer_replacement', `constraint')
+define(`m4_Grid_constrainer_replacement', `congruence')
 
 dnl  The different kinds of objects use to represent a class.
-define(`m4_represent_replacement', ``constraint'')
+define(`m4_represent_replacement', `constraint')
 define(`m4_Polyhedron_represent_replacement',
-         ``constraint, generator'')
+         `constraint, generator')
 define(`m4_Grid_represent_replacement',
-         ``constraint, grid_generator, congruence'')
+         `constraint, grid_generator, congruence')
 
 dnl  The different kinds of objects use to describe a class.
-define(`m4_describe_replacement', ``constraint'')
+define(`m4_describe_replacement', `constraint')
 define(`m4_Polyhedron_describe_replacement',
-         ``constraint, generator'')
+         `constraint, generator')
 define(`m4_Grid_describe_replacement',
-         ``congruence, grid_generator'')
+         `congruence, grid_generator')
 
 dnl  The "is" predicates
-define(`m4_state_replacement', ``empty, universe, bounded'')
+define(`m4_state_replacement', `empty, universe, bounded')
 define(`m4_Polyhedron_state_replacement',
-         ``empty, universe, bounded, topologically_closed'')
+         `empty, universe, bounded, topologically_closed')
 define(`m4_Grid_state_replacement',
-        ``empty, universe, bounded, topologically_closed, discrete'')
+        `empty, universe, bounded, topologically_closed, discrete')
 
 dnl  Above or below
-define(`m4_abovebelow_replacement', ``above, below'')
+define(`m4_abovebelow_replacement', `above, below')
 
 dnl  Maximize or Minimize
-define(`m4_maxmin_replacement', ``maximize, minimize'')
+define(`m4_maxmin_replacement', `maximize, minimize')
 
 dnl  Embed or project
-define(`m4_embedproject_replacement', ``and_embed, and_project'')
+define(`m4_embedproject_replacement', `and_embed, and_project')
 
 dnl  Affine_image or affine_preimage
-define(`m4_affimage_replacement', ``affine_image, affine_preimage'')
+define(`m4_affimage_replacement', `affine_image, affine_preimage')
 
 dnl  One object can be contained, strictly contained or disjoint in the other.
 define(`m4_comparison_replacement',
-         ``contains, strictly_contains, is_disjoint_from'')
+         `contains, strictly_contains, is_disjoint_from')
 
 dnl  The different kinds of binary operators.
 define(`m4_binop_replacement',
-         ``intersection_assign, upper_bound_assign, difference_assign,
-          concatenate_assign, time_elapse_assign'')
+         `intersection_assign, upper_bound_assign, difference_assign,
+          concatenate_assign, time_elapse_assign')
 define(`m4_Polyhedron_binop_replacement',
-         ``intersection_assign, upper_bound_assign, difference_assign,
+         `intersection_assign, upper_bound_assign, difference_assign,
           concatenate_assign, time_elapse_assign, poly_hull_assign,
-          poly_difference_assign'')
+          poly_difference_assign')
 define(`m4_Grid_binop_replacement',
-         ``intersection_assign, upper_bound_assign, difference_assign,
-          concatenate_assign, time_elapse_assign, join_assign'')
+         `intersection_assign, upper_bound_assign, difference_assign,
+          concatenate_assign, time_elapse_assign, join_assign')
 define(`m4_BD_Shape_binop_replacement',
-         ``intersection_assign, upper_bound_assign, difference_assign,
-          concatenate_assign, time_elapse_assign, bds_hull_assign'')
+         `intersection_assign, upper_bound_assign, difference_assign,
+          concatenate_assign, time_elapse_assign, bds_hull_assign')
 define(`m4_Octagonal_Shape_binop_replacement',
-         ``intersection_assign, upper_bound_assign, difference_assign,
-          concatenate_assign, time_elapse_assign, oct_hull_assign'')
+         `intersection_assign, upper_bound_assign, difference_assign,
+          concatenate_assign, time_elapse_assign, oct_hull_assign')
 
 dnl  The different kinds of "and_minimize" binary operators.
-define(`m4_binminop_replacement', ``intersection_assign_and_minimize'')
+define(`m4_binminop_replacement', `intersection_assign_and_minimize')
 define(`m4_Polyhedron_binminop_replacement',
-         ``intersection_assign_and_minimize, poly_hull_assign_and_minimize'')
+         `intersection_assign_and_minimize, poly_hull_assign_and_minimize')
 define(`m4_Grid_binminop_replacement',
-         ``intersection_assign_and_minimize, join_assign_and_minimize'')
+         `intersection_assign_and_minimize, join_assign_and_minimize')

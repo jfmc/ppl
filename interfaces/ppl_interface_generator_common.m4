@@ -56,38 +56,6 @@ dnl =====================================================================
 dnl The pattern delimiter.
 define(`m4_pattern_delimiter', `@')
 
-dnl m4_replace_one_pattern(Class_Number, Class_Kind, String, Pattern)
-dnl
-dnl Replaces in String occurrences of the capitalised form of Pattern
-dnl by the required actual string (determined both by the Class_Kind
-dnl and Pattern).
-define(`m4_replace_one_pattern', `dnl
-define(`PATTERN', m4_upcase($4))dnl
-ifelse(index(`$3', PATTERN), `-1', $3, `dnl
-m4_replace_one_pattern_aux1($2, $3, $4,
-  ifdef(`m4_$2_$4_replacement', `m4_$2_$4_replacement($1)', `m4_$4_replacement'))dnl
-')dnl
-undefine(`PATTERN')dnl
-')
-
-dnl m4_replace_one_pattern_aux1
-dnl
-dnl This extra definition is used to expand the default replacement
-dnl string m4_<pattern>_replacement.
-define(`m4_replace_one_pattern_aux1', m4_replace_one_pattern_aux(`$*'))
-
-dnl m4_replace_one_pattern_aux(Class_Kind, String, Replacement1, Replacement2, ...)
-dnl
-dnl This iteratively calls m4_replace_one_pattern_once/3 to replace
-dnl a delimited form of PATTERN by Replacement`'i.
-define(`m4_replace_one_pattern_aux', `dnl
-ifelse($#, 0, ,$#, 1, , $#, 2, , $#, 3, ,
-$#, 4, m4_replace_one_pattern_once($1, $2, $3, $4),
-  `dnl
-m4_replace_one_pattern_once($1, $2, $3, $4)dnl
-m4_replace_one_pattern_aux($1, $2, $3, shift(shift(shift(shift($@)))))')dnl
-')
-
 dnl m4_replace_one_pattern_once(Class_Kind, String, Replacement)
 dnl
 dnl The delimted PATTERN is replaced by Replacement in the String.
@@ -105,7 +73,34 @@ patsubst(patsubst(patsubst(patsubst($2,
            m4_pattern_delimiter`'ALT_`'PATTERN`'m4_pattern_delimiter,
              m4_ifndef(`m4_$1_$3_$4_alt_replacement', $4)),
            m4_pattern_delimiter`'PATTERN`'m4_pattern_delimiter,
-             $4)dnl
+             $4)`'dnl
+')
+
+dnl m4_replace_one_pattern_aux(Class_Kind, String, Replacement1, Replacement2, ...)
+dnl
+dnl This iteratively calls m4_replace_one_pattern_once/3 to replace
+dnl a delimited form of PATTERN by Replacement`'i.
+define(`m4_replace_one_pattern_aux', `dnl
+ifelse($#, 0, ,$#, 1, , $#, 2, , $#, 3, ,
+$#, 4, m4_replace_one_pattern_once($1, $2, $3, $4),
+  `dnl
+m4_replace_one_pattern_once($1, $2, $3, $4)`'dnl
+m4_replace_one_pattern_aux($1, $2, $3, shift(shift(shift(shift($@)))))')`'dnl
+')
+
+dnl m4_replace_one_pattern(Class_Number, Class_Kind, String, Pattern)
+dnl
+dnl Replaces in String occurrences of the capitalised form of Pattern
+dnl by the required actual string (determined both by the Class_Kind
+dnl and Pattern).
+define(`m4_replace_one_pattern', `dnl
+define(`PATTERN', m4_upcase($4))`'dnl
+ifelse(index(`$3', PATTERN), `-1', $3, `dnl
+m4_replace_one_pattern_aux($2, $3, $4,
+  ifdef(`m4_$2_$4_replacement',
+    `m4_$2_$4_replacement($1)', `m4_$4_replacement'))`'dnl
+')`'dnl
+undefine(`PATTERN')`'dnl
 ')
 
 dnl m4_replace_all_patterns(
@@ -117,7 +112,7 @@ define(`m4_replace_all_patterns', `dnl
 ifelse($4, `', ``$3'',
        `m4_replace_all_patterns($1, $2,
                                 m4_replace_one_pattern($1, $2, $3, $4),
-                                shift(shift(shift(shift($@)))))')dnl
+                                shift(shift(shift(shift($@)))))')`'dnl
 ')
 
 dnl m4_add_topology(Class_Number, String)
@@ -143,7 +138,7 @@ patsubst(patsubst(patsubst(patsubst(`$2',
   m4_pattern_delimiter`'CPP_TOP_CLASS`'m4_pattern_delimiter,
     m4_add_topology($1, `')),
   m4_pattern_delimiter`'CPP_INTOP_CLASS`'m4_pattern_delimiter,
-    m4_add_topology($1, `IN'))dnl
+    m4_add_topology($1, `IN'))`'dnl
 ')
 
 define(`m4_get_arity', `regexp(`$1', `/\([0-9]*\)', \1)')
@@ -182,8 +177,8 @@ define(`m4_procedure_names_to_code', `dnl
 ifelse($#, 0, , $#, 1, ,$#, 2, ,
        $#, 3, `m4_procedure_name_to_code($1, $2, $3)',
        `dnl
-m4_procedure_name_to_code($1, $2, $3)dnl
-m4_procedure_names_to_code($1, $2, shift(shift(shift($@))))dnl
+m4_procedure_name_to_code($1, $2, $3)`'dnl
+m4_procedure_names_to_code($1, $2, shift(shift(shift($@))))`'dnl
 ')dnl
 ')
 
@@ -194,7 +189,7 @@ define(`m4_procedure_name_to_code', `dnl
 patsubst(`$3', `\(.*\)', `dnl
 m4_replace_all_patterns($1, $2,
   m4_replace_class_patterns($1, m4_get_code_schema(\1, 1)),
-    m4_pattern_list)')dnl
+    m4_pattern_list)')`'dnl
 ')
 
 dnl m4_proc_keep_or_throw(
@@ -212,7 +207,7 @@ define(`m4_proc_keep_or_throw', `dnl
 ifelse($#, 0, 0, $#, 1, 0, $#, 2, 0, $#, 3, 0,
   $#, 4, `m4_proc_keep_or_throw_aux($1, $2, $3, $4)',
     `ifelse(m4_proc_keep_or_throw_aux($1, $2, $3, $4), 1, 1,
-      m4_proc_keep_or_throw($1, $2, $3, shift(shift(shift(shift($@))))))')dnl
+      m4_proc_keep_or_throw($1, $2, $3, shift(shift(shift(shift($@))))))')`'dnl
 ')
 
 dnl m4_proc_keep_or_throw_aux(
@@ -224,7 +219,7 @@ dnl (depending if +_or_-Group is in the Procedure_Info;
 dnl if it is, then it expands to 1, otherwise, expands to 0.
 define(`m4_proc_keep_or_throw_aux', `dnl
 ifelse(m4_check_if_class_in_group($1, m4_$4_group), 1,
-  `ifelse(index($2, $3$4), -1, 0, 1)', 0)dnl
+  `ifelse(index($2, $3$4), -1, 0, 1)', 0)`'dnl
 ')
 
 dnl m4_check_if_class_in_group(Class_Kind, Class_Kind1, Class_Kind2, ...)
@@ -250,10 +245,10 @@ dnl including the Class_name in Procedure_Name, preceded by a +.
 dnl if so, it expands to the given Procedure_Name.
 define(`m4_filter', `dnl
 define(`m4_proc_info_string',
-       `patsubst(`$2', `[ ]*ppl_[^ ]+ \(.*\)', \1)')dnl
+       `patsubst(`$2', `[ ]*ppl_[^ ]+ \(.*\)', \1)')`'dnl
 ifelse(m4_proc_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, 0,
-  m4_proc_keep_or_throw($1, m4_proc_info_string, +, m4_group_names))dnl
-undefine(m4_proc_info_string)dnl
+  m4_proc_keep_or_throw($1, m4_proc_info_string, +, m4_group_names))`'dnl
+undefine(m4_proc_info_string)`'dnl
 ')
 
 dnl m4_filter_all(Class_Kind, Procedure_Name1, ProcedureName2, ...)
@@ -263,70 +258,46 @@ dnl The classes to be kept or filtered away are determined by extra info
 dnl included with each Procedure_Name
 define(`m4_filter_all', `dnl
 ifelse($#, 0, ,$# , 1, ,
-$#, 2,`ifelse(m4_filter($1, $2), 1, `$2')',
-`ifelse(m4_filter($1, $2), 1, `$2,
-')dnl
-m4_filter_all($1, shift(shift($@)))dnl
-')dnl
+  $#, 2,
+    `ifelse(m4_filter($1, $2), 1, `$2')',
+    `ifelse(m4_filter($1, $2), 1, `$2,
+')`'dnl
+m4_filter_all($1, shift(shift($@)))`'dnl
+')`'dnl
 ')
 
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Default (empty) definitions for pre- and post- code for each class.
-define(`m4_pre_extra_class_code', `')dnl
-define(`m4_post_extra_class_code', `')dnl
+define(`m4_pre_extra_class_code', `')
+define(`m4_post_extra_class_code', `')
 
 dnl m4_one_class_code(Class_Counter, Class_Kind)
 dnl
 dnl Takes main procedure input list and each procedure is checked
 dnl to see if there is a macro with "_code" extension that defines the code.
 dnl Then a macro sets the class and other schematic components.
-# define(`m4_one_class_code', `dnl
-# m4_pre_extra_class_code($1, $2)dnl
-# define(`m4_filtered_proc_list',
-#        `m4_filter_all($2, m4_procedure_list)')dnl
-# define(`m4_procedure_code',
-#        `m4_procedure_names_to_code($2, m4_filtered_proc_list)')dnl
-# m4_replace_class_patterns($1, m4_procedure_code)dnl
-# undefine(`m4_procedure_code')dnl
-# undefine(`m4_filtered_proc_list')dnl
-# m4_post_extra_class_code($1, $2)dnl
-# ')
 define(`m4_one_class_code', `dnl
-m4_pre_extra_class_code($1, $2)dnl
+m4_pre_extra_class_code($1, $2)`'dnl
 define(`m4_filtered_proc_list',
-       `m4_filter_all($2, m4_procedure_list)')dnl
-m4_procedure_names_to_code($1, $2, m4_filtered_proc_list)dnl
-undefine(`m4_filtered_proc_list')dnl
-m4_post_extra_class_code($1, $2)dnl
+       `m4_filter_all($2, m4_procedure_list)')`'dnl
+m4_procedure_names_to_code($1, $2, m4_filtered_proc_list)`'dnl
+undefine(`m4_filtered_proc_list')`'dnl
+m4_post_extra_class_code($1, $2)`'dnl
 ')
 
 dnl m4_all_classes_loop(counter)
 dnl
 dnl This iterates through the classes to generate the code.
 dnl All the required classes are defined by m4_interface_class`'counter.
-dnl The m4_class      =  m4_interface_class`'counter
-dnl                      ie the current class interface name;
-dnl the m4_cpp_class  = the complete cplusplus class name;
-dnl the m4_class_kind = the first component of the cplusplus class name;
-dnl Once all the class names etc have been defined, the actual
-dnl code is generated by the macro m4_one_class_code.
-dnl
-dnl For instance, given that the 2nd class is BD_Shape<int8_t>
-dnl with interface name BD_Shape_int8_t, before calling the macro
-dnl m4_one_class_code, we have:
-dnl   m4_class      ==> BD_Shape_int8_t;
-dnl   m4_cpp_class  ==> BD_Shape<int8_t>;
-dnl   m4_class_kind ==> BD_Shape;
+dnl The class kind = m4_class$1_component1,
+dnl the first component of the cplusplus class name;
+dnl The actual code for each class is generated by
+dnl the macro m4_one_class_code.
 define(`m4_all_classes_loop', `dnl
 ifdef(m4_interface_class`'$1, `dnl
-dnl Provide meaningful names to actual arguments of m4_one_class_code.
-define(`m4_class_kind', m4_class$1_component1)dnl
-dnl
-m4_one_class_code($1, m4_class_kind)dnl
-dnl
-undefine(`m4_class_kind')dnl
-m4_all_classes_loop(incr($1))')dnl
+m4_one_class_code($1, m4_class$1_component1)`'dnl
+m4_all_classes_loop(incr($1))')`'dnl
 ')
 
 dnl m4_all_classes_code
@@ -337,9 +308,9 @@ dnl and then calls the main loop m4_all_classes_loop for generating
 dnl all the required classes.
 define(`m4_all_classes_code', `dnl
 dnl Provides the class name macro definitions by calling
-m4_init_interface_classes(m4_interface_classes_names)dnl
-m4_init_cplusplus_classes(m4_cplusplus_classes_names)dnl
-m4_all_classes_loop(1)dnl
+m4_init_interface_classes(m4_interface_classes_names)`'dnl
+m4_init_cplusplus_classes(m4_cplusplus_classes_names)`'dnl
+m4_all_classes_loop(1)`'dnl
 ')
 
 divert`'dnl

@@ -35,9 +35,9 @@ dnl are replaced by the various instances.
 define(`m4_library_names_to_code', `dnl
 ifelse($#, 0, ,$#, 1, ,$#, 2, m4_get_code_schema($2, $1),
        `dnl
-m4_get_code_schema($2, $1)dnl
-m4_library_names_to_code(incr($1), shift(shift($@)))dnl
-')dnl
+m4_get_code_schema($2, $1)`'dnl
+m4_library_names_to_code(incr($1), shift(shift($@)))`'dnl
+')`'dnl
 ')
 
 dnl ppl_prolog_sys_code
@@ -47,7 +47,7 @@ dnl takes main predicate input list and sends one line at a time to
 dnl a macro that adds extensions for the result of
 dnl a macro that sets the class and the schema(s).
 define(`ppl_prolog_sys_code', `dnl
-m4_library_names_to_code(0, m4_library_predicate_list)dnl
+m4_library_names_to_code(0, m4_library_predicate_list)`'dnl
 m4_all_classes_code`'dnl
 ')
 divert`'dnl
