@@ -190,7 +190,7 @@ define(`m4_Octagonal_Shape_widenexp_replacement', `CH78')
 dnl The shape classes have bounding boxes while the grid classes also
 dnl have covering boxes.
 define(`m4_box_replacement', `bounding_box')
-define(`m4_Grid_box_replacement', `bounding_box, covering_box')
+define(`m4_Grid_box_replacement', `m4_box_replacement, covering_box')
 define(`m4_Grid_box_bounding_box_alt_replacement', `shrink_bounding_box')
 define(`m4_Grid_box_covering_box_alt_replacement', `get_covering_box')
 
@@ -226,9 +226,9 @@ define(`m4_Grid_describe_replacement',
 dnl  The "is" predicates
 define(`m4_state_replacement', `empty, universe, bounded')
 define(`m4_Polyhedron_state_replacement',
-         `empty, universe, bounded, topologically_closed')
+         `m4_state_replacement, topologically_closed')
 define(`m4_Grid_state_replacement',
-        `empty, universe, bounded, topologically_closed, discrete')
+        `m4_state_replacement, topologically_closed, discrete')
 
 dnl  Above or below
 define(`m4_abovebelow_replacement', `above, below')
@@ -251,22 +251,17 @@ define(`m4_binop_replacement',
          `intersection_assign, upper_bound_assign, difference_assign,
           concatenate_assign, time_elapse_assign')
 define(`m4_Polyhedron_binop_replacement',
-         `intersection_assign, upper_bound_assign, difference_assign,
-          concatenate_assign, time_elapse_assign, poly_hull_assign,
-          poly_difference_assign')
+         `m4_binop_replacement, poly_hull_assign, poly_difference_assign')
 define(`m4_Grid_binop_replacement',
-         `intersection_assign, upper_bound_assign, difference_assign,
-          concatenate_assign, time_elapse_assign, join_assign')
+         `m4_binop_replacement, join_assign')
 define(`m4_BD_Shape_binop_replacement',
-         `intersection_assign, upper_bound_assign, difference_assign,
-          concatenate_assign, time_elapse_assign, bds_hull_assign')
+         `m4_binop_replacement, bds_hull_assign')
 define(`m4_Octagonal_Shape_binop_replacement',
-         `intersection_assign, upper_bound_assign, difference_assign,
-          concatenate_assign, time_elapse_assign, oct_hull_assign')
+         `m4_binop_replacement, oct_hull_assign')
 
 dnl  The different kinds of "and_minimize" binary operators.
 define(`m4_binminop_replacement', `intersection_assign_and_minimize')
 define(`m4_Polyhedron_binminop_replacement',
-         `intersection_assign_and_minimize, poly_hull_assign_and_minimize')
+         `m4_binminop_replacement, poly_hull_assign_and_minimize')
 define(`m4_Grid_binminop_replacement',
-         `intersection_assign_and_minimize, join_assign_and_minimize')
+         `m4_binminop_replacement, join_assign_and_minimize')
