@@ -59,7 +59,7 @@ dnl in the ppl_interface_generator_*_code.m4 file.
 dnl The <name> must be exactly as written here.
 dnl
 define(`m4_procedure_list', `dnl
-ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3 +all,
+ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3 +all +polyhedra_powerset,
 ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@/2 +all,
 ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s/2 +all,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@/2 +all -bd_shape,

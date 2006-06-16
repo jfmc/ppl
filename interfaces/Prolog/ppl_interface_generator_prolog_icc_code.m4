@@ -45,7 +45,7 @@ define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 (Prolog_term_ref t_nd, Prolog_term_ref t_uoe, Prolog_term_ref t_ph) {
   try {
-    @CPP_CLASS@* ph;
+    @CPP_TOP_CLASS@* ph;
     Prolog_atom uoe = term_to_universe_or_empty(t_uoe);
 
     if (uoe == a_empty)
@@ -74,7 +74,7 @@ define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@_code',
 ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@
 (Prolog_term_ref t_ph_source, Prolog_term_ref t_ph) {
   try {
-    @CPP_CLASS@* ph;
+    @CPP_TOP_CLASS@* ph;
     const @CPP_INTOP_CLASS@* ph_source
 	= static_cast<const @CPP_INTOP_CLASS@*>
 	(term_to_@CLASS@_handle(t_ph_source));
@@ -110,7 +110,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s
     // Check the list is properly terminated.
     check_nil_terminating(t_clist);
 
-    @CPP_CLASS@* ph;
+    @CPP_TOP_CLASS@* ph;
     ph = new @CPP_TOP_CLASS@(cs);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
@@ -188,7 +188,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
 	bbox.lower_upper_bound(i, closed, n, d);
     }
 
-    @CPP_CLASS@* ph;
+    @CPP_TOP_CLASS@* ph;
     ph = new @CPP_TOP_CLASS@(bbox, From_`'@UBOX@());
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
