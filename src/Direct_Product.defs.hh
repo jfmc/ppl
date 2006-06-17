@@ -383,7 +383,6 @@ public:
   //! Returns a constant reference to the second of the pair.
   const D2& domain2() const;
 
-
   //! Returns the system of constraints.
   const Constraint_System& constraints() const;
 
@@ -407,7 +406,6 @@ public:
 
   //! Returns the minimized system of grid generators.
   const Grid_Generator_System& minimized_grid_generators() const;
-
 
   // FIXME: implement relation_with(*)
 
@@ -1484,7 +1482,9 @@ public:
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
 
-  // FIXME: what to do about widenings? add method for every widening?
+  // FIXME: What to do about widenings? Add method for every widening?
+  //        Add a standard widening method to each class?
+
   /*! \brief
     Assigns to \p *this the result of computing the \ref Direct_Product_Widening
     "Direct_Product widening" between \p *this and \p y using generator systems.

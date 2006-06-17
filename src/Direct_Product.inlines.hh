@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Direct_Product_inlines_hh
 #define PPL_Direct_Product_inlines_hh 1
 
-#include <algorithm>
+#include "compiler.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -527,6 +527,23 @@ Direct_Product<D1, D2>::strictly_contains(const Direct_Product& y) const {
   return d1.strictly_contains(y.d1) && d2.strictly_contains(y.d2);
 }
 
+template <typename D1, typename D2>
+template <typename Box>
+inline void
+Direct_Product<D1, D2>::shrink_bounding_box(Box& box) const {
+  d1.shrink_bounding_box(box);
+  d2.shrink_bounding_box(box);
+  // FIX shrink to intersection
+}
+
+template <typename D1, typename D2>
+template <typename Box>
+inline void
+Direct_Product<D1, D2>::get_covering_box(Box& box) const {
+  // FIXME
+  used(box);
+}
+
 PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(D1, D2, Direct_Product)
 
 template <typename D1, typename D2>
@@ -631,7 +648,7 @@ template <typename D1, typename D2>
 template <typename Box>
 inline
 Open_Product<D1, D2>::Open_Product(const Box& box,
-				       From_Bounding_Box dummy)
+				   From_Bounding_Box dummy)
   : Direct_Product<D1, D2>(box, dummy) {
 }
 
@@ -639,8 +656,7 @@ template <typename D1, typename D2>
 template <typename Box>
 inline
 Open_Product<D1, D2>::Open_Product(const Box& box,
-				       From_Covering_Box dummy)
-  : Direct_Product<D1, D2>(box, dummy) {
+				   From_Covering_Box dummy) {
 }
 
 template <typename D1, typename D2>

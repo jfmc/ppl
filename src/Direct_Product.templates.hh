@@ -74,8 +74,7 @@ template <typename Box>
 inline
 Direct_Product<NNC_Polyhedron, Grid>::Direct_Product(const Box& box,
 						     From_Covering_Box dummy)
-  : d2(box, dummy) {
-  // FIXME: create ph from covering box
+  : d1(box.space_dimension()), d2(box, dummy) {
 }
 
 template <>
@@ -338,13 +337,33 @@ Direct_Product<NNC_Polyhedron, Grid>::is_discrete() const {
   return op.d1.affine_dimension() == 0 || op.d2.is_discrete();
 }
 
+template <>
+template <typename Box>
+inline void
+Direct_Product<NNC_Polyhedron, Grid>::get_covering_box(Box& box) const {
+  // FIXME: Is there a sensible interpretation of covering box for
+  //        polyhedron?  Perhaps this should just return false if the
+  //        intersection is a polyhedron.
+  d2.get_covering_box(box);
+}
+
 // FIXME: move to dedicated file once name decided
+
+template <>
+template <typename Box>
+inline
+Open_Product<NNC_Polyhedron, Grid>::Open_Product(const Box& box,
+						 From_Covering_Box dummy)
+  : Direct_Product<NNC_Polyhedron, Grid>(box, dummy) {
+  // FIXME: reduce the resulting ph with the grid?
+}
 
 template <>
 inline bool
 Open_Product<NNC_Polyhedron, Grid>::is_bounded() const {
   NNC_Polyhedron& d1 = const_cast<NNC_Polyhedron&>(this->d1);
   Grid& d2 = const_cast<Grid&>(this->d2);
+  // FIX do this every time a component changes (eg when adding cgs)?
   // TODO: Consider adding a flag for this.
   d1.add_congruences(d2.congruences());
   d2.add_congruences(d1.constraints());
