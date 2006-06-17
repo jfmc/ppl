@@ -325,6 +325,9 @@ copy_compare(const T& a, const T& b) {
   return tem_a == tem_b;
 }
 
+//! Return true if and only if x equals y.
+bool operator==(const Bounding_Box& x, const Bounding_Box& y);
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_ppl_test_hh)
