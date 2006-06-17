@@ -29,8 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-//typedef Direct_Product<NNC_Polyhedron, Grid> Product;
-typedef Open_Product<NNC_Polyhedron, Grid> Product;
+typedef Direct_Product<NNC_Polyhedron, Grid> Product;
+//typedef Open_Product<NNC_Polyhedron, Grid> Product;
 
 namespace {
 
@@ -171,14 +171,13 @@ test08() {
 // Product(bounding_box)
 bool
 test09() {
-  Variable A(0);
   Variable B(1);
 
   Bounding_Box box(2);
   box.raise_lower_bound(1, true, 2, 3);
   box.lower_upper_bound(1, true, 2, 3);
 
-  Product dp1(box, From_Bounding_Box());
+  Product dp(box, From_Bounding_Box());
 
   Grid known_gr(2);
   known_gr.add_congruence(3*B == 2);
@@ -186,14 +185,37 @@ test09() {
   NNC_Polyhedron known_ph(2);
   known_ph.add_constraint(3*B == 2);
 
-  bool ok = (dp1.domain1() == known_ph && dp1.domain2() == known_gr);
+  bool ok = (dp.domain1() == known_ph && dp.domain2() == known_gr);
+
+  return ok;
+}
+
+// Product(covering_box)
+bool
+test10() {
+  Variable B(1);
+
+  Bounding_Box box(2);
+  box.raise_lower_bound(0, true, 0, 1);
+  box.lower_upper_bound(0, true, 0, 1);
+  box.raise_lower_bound(1, true, 2, 3);
+  box.lower_upper_bound(1, true, 3, 3);
+
+  Product dp(box, From_Covering_Box());
+
+  Grid known_gr(2);
+  known_gr.add_congruence(3*B %= 0);
+
+  NNC_Polyhedron known_ph(2);
+
+  bool ok = (dp.domain1() == known_ph && dp.domain2() == known_gr);
 
   return ok;
 }
 
 // operator=
 bool
-test10() {
+test11() {
   Variable A(0);
   Variable B(1);
 
@@ -211,7 +233,7 @@ test10() {
 
 // space_dimension()
 bool
-test11() {
+test12() {
   Variable A(0);
   Variable E(4);
 
@@ -226,7 +248,7 @@ test11() {
 
 // Copy constructor.
 bool
-test12() {
+test13() {
   Variable A(0);
   Variable B(2);
 
@@ -243,7 +265,7 @@ test12() {
 
 // affine_dimension()
 bool
-test13() {
+test14() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -284,7 +306,7 @@ define_identical(Congruence_System);
 
 // congruences()
 bool
-test14() {
+test15() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -305,7 +327,7 @@ test14() {
 
 // minimized_congruences()
 bool
-test15() {
+test16() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -327,7 +349,7 @@ test15() {
 
 // constraints()
 bool
-test16() {
+test17() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -352,7 +374,7 @@ test16() {
 
 // minimized_constraints()
 bool
-test17() {
+test18() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -377,7 +399,7 @@ test17() {
 
 // generators()
 bool
-test18() {
+test19() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -402,7 +424,7 @@ test18() {
 
 // minimized_generators()
 bool
-test19() {
+test20() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -430,7 +452,7 @@ test19() {
 
 // is_empty() where both domain objects have points.
 bool
-test20() {
+test21() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -446,10 +468,8 @@ test20() {
 
 // is_empty() where one domain object is empty.
 bool
-test21() {
+test22() {
   Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Product dp(3);
   dp.add_congruence((A %= 0) / 2);
@@ -462,10 +482,8 @@ test21() {
 
 // is_empty() where both domain objects are empty.
 bool
-test22() {
+test23() {
   Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Product dp(3);
   dp.add_constraint(A == 1);
@@ -478,11 +496,7 @@ test22() {
 
 // is_universe() where both domain objects are empty.
 bool
-test23() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
+test24() {
   Product dp(3, EMPTY);
 
   bool ok = !dp.is_universe();
@@ -492,10 +506,8 @@ test23() {
 
 // is_universe() where one domain object is universe.
 bool
-test24() {
+test25() {
   Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Product dp(3);
   dp.add_congruence((A %= 0) / 2);
@@ -508,11 +520,7 @@ test24() {
 
 // is_universe() where both domain objects are universe.
 bool
-test25() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
+test26() {
   Product dp(3);
 
   bool ok = dp.is_universe();
@@ -523,10 +531,8 @@ test25() {
 // is_topologically_closed() where the Polyhedron is topologically
 // open.
 bool
-test26() {
+test27() {
   Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Product dp(3);
   dp.add_constraint(A < 3);
@@ -540,10 +546,8 @@ test26() {
 // is_topologically_closed() where the Polyhedron is topologically
 // closed.
 bool
-test27() {
+test28() {
   Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Product dp(3);
   dp.add_constraint(A <= 3);
@@ -557,10 +561,8 @@ test27() {
 // is_topologically_closed() where the Polyhedron is topologically
 // open and the intersection is closed.
 bool
-test28() {
+test29() {
   Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Product dp(3);
   dp.add_constraint(A < 3);
@@ -573,7 +575,7 @@ test28() {
 
 // is_disjoint_from(dp), due to the Polyhedra.
 bool
-test29() {
+test30() {
   Variable B(1);
 
   Product dp1(12);
@@ -589,7 +591,7 @@ test29() {
 
 // is_disjoint_from(dp), due to the Grids.
 bool
-test30() {
+test31() {
   Variable A(0);
 
   Product dp1(3);
@@ -605,10 +607,8 @@ test30() {
 
 // is_disjoint_from(dp), due to either.
 bool
-test31() {
+test32() {
   Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Product dp1(3);
   dp1.add_constraint(A < 3);
@@ -625,10 +625,8 @@ test31() {
 
 // is_disjoint_from(dp), due to both.
 bool
-test32() {
+test33() {
   Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
   Product dp1(3);
   dp1.add_constraint(A < 6);
@@ -645,7 +643,7 @@ test32() {
 
 // is_discrete(), due to grid.
 bool
-test33() {
+test34() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -663,7 +661,7 @@ test33() {
 
 // is_discrete(), due to polyhedron.
 bool
-test34() {
+test35() {
   Variable A(0);
   Variable B(1);
 
@@ -679,10 +677,9 @@ test34() {
 
 // is_discrete(), due to intersection.
 bool
-test35() {
+test36() {
   Variable A(0);
   Variable B(1);
-  Variable C(2);
 
   Product dp(3, EMPTY);
   dp.add_grid_generator(grid_point());
@@ -697,7 +694,7 @@ test35() {
 
 // is_bounded(), due to polyhedron.
 bool
-test36() {
+test37() {
   Variable A(0);
   Variable B(1);
 
@@ -715,9 +712,8 @@ test36() {
 
 // is_bounded(), due to grid.
 bool
-test37() {
+test38() {
   Variable A(0);
-  Variable B(1);
 
   Product dp(2, EMPTY);
   dp.add_generator(point());
@@ -731,7 +727,7 @@ test37() {
 
 // is_bounded(), due to intersection.
 bool
-test38() {
+test39() {
   Variable A(0);
   Variable B(1);
 
@@ -748,7 +744,7 @@ test38() {
 
 // contains()
 bool
-test39() {
+test40() {
   Variable A(0);
 
   Product dp(1);
@@ -766,7 +762,7 @@ test39() {
 
 // contains()
 bool
-test40() {
+test41() {
   Variable A(0);
 
   Product dp(1);
@@ -784,9 +780,8 @@ test40() {
 
 // contains(), due to intersection.
 bool
-test41() {
+test42() {
   Variable A(0);
-  Variable B(1);
 
   Product dp(1);
   dp.add_congruence((A == 0) / 0);
@@ -803,29 +798,11 @@ test41() {
 
 // strictly_contains()
 bool
-test42() {
-  Variable A(0);
-
-  Product dp(1);
-  dp.add_constraint(A < 1);
-  dp.add_congruence(A %= 3);
-
-  Product dp2(1);
-  dp2.add_constraint(A < 2);
-  dp2.add_congruence(A %= 3);
-
-  bool ok = !dp.strictly_contains(dp2);
-
-  return ok;
-}
-
-// strictly_contains()
-bool
 test43() {
   Variable A(0);
 
   Product dp(1);
-  dp.add_constraint(A < 3);
+  dp.add_constraint(A < 1);
   dp.add_congruence(A %= 3);
 
   Product dp2(1);
@@ -848,6 +825,24 @@ test44() {
 
   Product dp2(1);
   dp2.add_constraint(A < 2);
+  dp2.add_congruence(A %= 3);
+
+  bool ok = !dp.strictly_contains(dp2);
+
+  return ok;
+}
+
+// strictly_contains()
+bool
+test45() {
+  Variable A(0);
+
+  Product dp(1);
+  dp.add_constraint(A < 3);
+  dp.add_congruence(A %= 3);
+
+  Product dp2(1);
+  dp2.add_constraint(A < 2);
   dp2.add_congruence((A %= 3) / 2);
 
   bool ok = dp.strictly_contains(dp2);
@@ -857,7 +852,7 @@ test44() {
 
 // strictly_contains(), due to intersection.
 bool
-test45() {
+test46() {
   Variable A(0);
 
   Product dp(1);
@@ -873,9 +868,8 @@ test45() {
 
 // strictly_contains(), due to intersection.
 bool
-test46() {
+test47() {
   Variable A(0);
-  Variable B(1);
 
   Product dp(1);
   dp.add_congruence((A %= 0) / 6);
@@ -890,9 +884,126 @@ test46() {
   return ok;
 }
 
+// shrink_bounding_box(box)
+bool
+test48() {
+  Variable A(0);
+
+  Bounding_Box box(1);
+  box.raise_lower_bound(0, true, 2, 3);
+  box.lower_upper_bound(0, true, 6, 1);
+
+  Product dp(1);
+  dp.add_constraint(A <= 4);
+  dp.add_constraint(A >= 2);
+  dp.add_congruence(A %= 0);
+
+  dp.shrink_bounding_box(box);
+
+  Bounding_Box known_box(1);
+  known_box.raise_lower_bound(0, true, 2, 1);
+  known_box.lower_upper_bound(0, true, 4, 1);
+
+  bool ok = (box == known_box);
+
+  return ok;
+}
+
+// shrink_bounding_box(box), shrink to intersection.
+bool
+test49() {
+  Variable A(0);
+
+  Bounding_Box box(1);
+  box.raise_lower_bound(0, true, 2, 3);
+  box.lower_upper_bound(0, true, 6, 1);
+
+  Product dp(1);
+  dp.add_constraint(A <= 4);
+  dp.add_constraint(A >= 2);
+  dp.add_congruence((A %= 0) / 3);
+
+  dp.shrink_bounding_box(box);
+
+  Bounding_Box known_box(1);
+  known_box.raise_lower_bound(0, true, 3, 1);
+  known_box.lower_upper_bound(0, true, 3, 1);
+
+  bool ok = !/*FIX*/ (box == known_box);
+
+  return ok;
+}
+
+// get_covering_box(box), via grid.
+bool
+test50() {
+  Variable A(0);
+
+  Bounding_Box box(1);
+
+  Product dp(1);
+  dp.add_congruence((A %= 0) / 3);
+
+  dp.get_covering_box(box);
+
+  Bounding_Box known_box(1);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 3, 1);
+
+  bool ok = (box == known_box);
+
+  return ok;
+}
+
+// get_covering_box(box), via polyhedron.
+bool
+test51() {
+  Variable B(1);
+
+  Bounding_Box box(1);
+
+  Product dp(2);
+  dp.add_constraint(B < 3);
+  dp.add_constraint(B > 0);
+
+  dp.get_covering_box(box);
+
+  Bounding_Box known_box(1);
+  known_box.raise_lower_bound(1, true, 0 /* FIX */, 1);
+  known_box.lower_upper_bound(1, true, 0 /* FIX */, 1);
+
+  bool ok = (box == known_box);
+
+  return ok;
+}
+
+// get_covering_box(box), via intersection.
+bool
+test52() {
+  Variable A(0);
+  Variable B(1);
+
+  Bounding_Box box(2);
+
+  Product dp(2);
+  dp.add_constraint(B <= 0);
+  dp.add_constraint(B >= 0);
+  dp.add_congruence(A - B %= 0);
+
+  dp.get_covering_box(box);
+
+  Bounding_Box known_box(2);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 1, 1);
+
+  bool ok = !/* FIX */ (box == known_box);
+
+  return ok;
+}
+
 // intersection_assign()
 bool
-test47() {
+test53() {
   Variable A(0);
   Variable B(1);
 
@@ -918,7 +1029,7 @@ test47() {
 
 // upper_bound_assign(dp2)
 bool
-test48() {
+test54() {
   Variable A(0);
   Variable B(1);
 
@@ -943,7 +1054,7 @@ test48() {
 
 // upper_bound_assign_if_exact()
 bool
-test49() {
+test55() {
   Variable A(0);
   Variable B(1);
 
@@ -967,7 +1078,7 @@ test49() {
 
 // difference_assign()
 bool
-test50() {
+test56() {
   Variable A(0);
   Variable B(1);
 
@@ -993,7 +1104,7 @@ test50() {
 
 // add_space_dimensions_and_embed()
 bool
-test51() {
+test57() {
   Variable A(0);
   Variable B(1);
 
@@ -1014,7 +1125,7 @@ test51() {
 
 // add_space_dimensions_and_project()
 bool
-test52() {
+test58() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1037,7 +1148,7 @@ test52() {
 
 // concatenate_assign()
 bool
-test53() {
+test59() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1066,7 +1177,7 @@ test53() {
 
 // remove_space_dimensions()
 bool
-test54() {
+test60() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -1093,7 +1204,7 @@ test54() {
 
 // remove_higher_space_dimensions()
 bool
-test55() {
+test61() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -1116,7 +1227,7 @@ test55() {
 
 // map_space_dimensions()
 bool
-test56() {
+test62() {
   Variable A(0);
   Variable B(1);
 
@@ -1141,7 +1252,7 @@ test56() {
 
 // expand_space_dimension()
 bool
-test57() {
+test63() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1166,7 +1277,7 @@ test57() {
 
 // fold_space_dimensions()
 bool
-test58() {
+test64() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1197,7 +1308,7 @@ test58() {
 
 // affine_image()
 bool
-test59() {
+test65() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1221,7 +1332,7 @@ test59() {
 
 // affine_preimage()
 bool
-test60() {
+test66() {
   Variable A(0);
   Variable B(1);
 
@@ -1241,7 +1352,7 @@ test60() {
 
 // generalized_affine_image(v, e, relsym, d)
 bool
-test61() {
+test67() {
   Variable A(0);
   Variable B(1);
 
@@ -1266,7 +1377,7 @@ test61() {
 
 // generalized_affine_image(v, e, d, modulus)
 bool
-test62() {
+test68() {
   Variable A(0);
   Variable B(1);
 
@@ -1289,7 +1400,7 @@ test62() {
 
 // generalized_affine_preimage(v, e, relsym, d)
 bool
-test63() {
+test69() {
   Variable A(0);
   Variable B(1);
 
@@ -1315,7 +1426,7 @@ test63() {
 // generalized_affine_preimage(v, e, d, modulus), add_generator(),
 // add_generators(), add_grid_generators()
 bool
-test64() {
+test70() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1349,7 +1460,7 @@ test64() {
 
 // generalized_affine_image(lhs, relsym, rhs)
 bool
-test65() {
+test71() {
   Variable A(0);
   Variable B(1);
 
@@ -1375,7 +1486,7 @@ test65() {
 
 // generalized_affine_image(lhs, rhs, modulus), add_congruences(cgs)
 bool
-test66() {
+test72() {
   Variable A(0);
   Variable B(1);
 
@@ -1404,7 +1515,7 @@ test66() {
 
 // generalized_affine_preimage(lhs, relsym, rhs), add_constraints(cs)
 bool
-test67() {
+test73() {
   Variable A(0);
   Variable B(1);
 
@@ -1432,7 +1543,7 @@ test67() {
 
 // generalized_affine_preimage(lhs, rhs, modulus)
 bool
-test68() {
+test74() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1454,7 +1565,7 @@ test68() {
 
 // time_elapse_assign(y)
 bool
-test69() {
+test75() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1492,7 +1603,7 @@ test69() {
 
 // topological_closure_assign
 bool
-test70() {
+test76() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1512,7 +1623,7 @@ test70() {
   known_dp.add_generator(point());
   known_dp.add_generator(ray(A));
   known_dp.add_generator(ray(B));
-  // Grid_Generators as in dp.
+  // Add Grid_Generators as to dp.
   known_dp.add_grid_generator(grid_point());
   known_dp.add_grid_generator(grid_point(A + 2*B - 3*C, 3));
 
@@ -1561,8 +1672,8 @@ BEGIN_MAIN
   DO_TEST(test35);
   DO_TEST(test36);
   DO_TEST(test37);
-  //DO_TEST(test38);
-  DO_TEST(test39);
+  DO_TEST(test38);
+  //DO_TEST(test39);
   DO_TEST(test40);
   DO_TEST(test41);
   DO_TEST(test42);
@@ -1574,7 +1685,7 @@ BEGIN_MAIN
   DO_TEST(test48);
   DO_TEST(test49);
   DO_TEST(test50);
-  DO_TEST(test51);
+  //DO_TEST(test51);
   DO_TEST(test52);
   DO_TEST(test53);
   DO_TEST(test54);
@@ -1594,4 +1705,10 @@ BEGIN_MAIN
   DO_TEST(test68);
   DO_TEST(test69);
   DO_TEST(test70);
+  DO_TEST(test71);
+  DO_TEST(test72);
+  DO_TEST(test73);
+  DO_TEST(test74);
+  DO_TEST(test75);
+  DO_TEST(test76);
 END_MAIN
