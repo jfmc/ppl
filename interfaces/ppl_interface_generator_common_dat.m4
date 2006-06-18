@@ -28,53 +28,57 @@ define(`m4_init_interface_classes_aux',
       `define(m4_interface_class`'$1, \1)dnl
 m4_init_interface_classes_aux(incr($1), \2)')')')
 
-
+dnl m4_subst_comma(String1, String2,...)
+dnl
+dnl String1, String2,... is the "@"-separated list of C++ class names
+dnl provided by the configuration.
+dnl As the product classes have their arguments ","-separated,
+dnl the "," separates the list into macro arguments.
+dnl This macro iterates through these macro arguments, replacing the
+dnl "," by "COMMA" so that the C++ names are handled as intended.
 define(`m4_subst_comma',
 `ifelse($#, 0, , $#, 1, $1,
   `$1`'COMMA`'m4_subst_comma(shift($@))')')
 
 dnl m4_init_cplusplus_classes(Class_List)
 dnl
-dnl Parses the comma-separated list of class names Class_List
+dnl Parses the "@"-separated list of class names Class_List
 dnl to be used in the C++ code implementing the interface procedures.
-dnl The components of the class name are also separated out
-dnl and defined as m4_class<class_num>_component<component_num>
-dnl (see comment and example for m4_init_class_name_components/3).
+dnl Note that first the "," is replaced using the macro m4_subst_comma.
 define(`m4_init_cplusplus_classes',
  `m4_init_cplusplus_classes_aux(1, m4_subst_comma($@))')
 
-dnl m4_init_cplusplus_classes_aux(counter, Class_List)
+dnl m4_init_cplusplus_classes_aux(Class_Counter, Class_List)
 dnl
-dnl counter    - is the index to the first class in Class_List
-dnl Class_List - is the tail part of the input list of cplusplus
-dnl              class names.
+dnl Class_Counter    - is the index to the first class in Class_List
+dnl Class_List       - is the tail part of the input list of cplusplus
+dnl                    class names.
 dnl
-dnl The macro also calls the macro m4_init_class_name_components/3
-dnl to extract the details of the components from the top
-dnl cplusplus name in the list.
+dnl This defines the macro m4_cplusplus_class`'Class_Counter.
+dnl It also calls the macros m4_get_class_kind/2 and m4_get_class_body/2
+dnl to define the m4_class_kind`'Class_Counter m4_class_body`'Class_Counter.
+dnl
+dnl For example,
+dnl If the Class_Counter is 3 and the class list start with
+dnl C++ name Direct_Product<Polyhedron, Grid>, then
+dnl m4_cplusplus_class3 => Direct_Product<Polyhedron@COMMA@Grid>
+dnl m4_class_kind3 => Direct_Product
+dnl m4_class_body3 => <Polyhedron@COMMA@Grid>
+dnl
 dnl The macro calls itself recursively to process the complete list.
 define(`m4_init_cplusplus_classes_aux',
   `ifelse($2, `', ,
     `regexp($2, `\([^@]+\)@?\(.*\)',
-       `define(m4_cplusplus_class`'$1, `patsubst(\1, COMMA, @COMMA@)')`'dnl
+       `define(m4_cplusplus_class`'$1, patsubst(\1, COMMA, @COMMA@))`'dnl
 m4_get_class_kind(`$1', \1)`'dnl
 m4_get_class_body(`$1', patsubst(\1, COMMA, @COMMA@))`'dnl
 m4_init_cplusplus_classes_aux(`incr($1)', `\2')')')`'dnl
 ')
 
-define(`m4_get_class_kind',
-  `define(m4_class_kind`'$1,
-    `ifelse(`$2', `', ,
-      `ifelse(index(`$2', <), -1, `$2',
-        `regexp(`$2', `\([^ <]+\)[<]\(.*\)[ ]*[>]', `\1')')')')')
-define(`m4_get_class_body',
-  `define(m4_class_body`'$1,
-    `ifelse(`$2', `', ,
-      `ifelse(index(`$2', <), -1, `',
-        `regexp(`$2', `[^ <]+\([<]\(.*\)[ ]*[>]\)', `\1')')')')')
-
 dnl m4_get_class_kind(Class_Counter, String)
 dnl m4_get_class_body(Class_Counter, String)
+dnl
+dnl String = a cplusplus class name.
 dnl
 dnl The head (class_kind) and the body of
 dnl the C++ class name in String are separated out.
@@ -88,7 +92,7 @@ dnl m4_class_body1 => `'
 dnl If String = Polyhedra_Powerset<BD_Shape<signed char> >
 dnl               and Class_Counter = 2
 dnl m4_class_kind2 => `Polyhedra_Powerset'
-dnl m4_class_body1 => `<BD_Shape<signed char> >'
+dnl m4_class_body2 => `<BD_Shape<signed char> >'
 define(`m4_get_class_kind',
   `define(m4_class_kind`'$1,
     `ifelse(`$2', `', ,
