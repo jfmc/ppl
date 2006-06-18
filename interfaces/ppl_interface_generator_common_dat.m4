@@ -28,6 +28,11 @@ define(`m4_init_interface_classes_aux',
       `define(m4_interface_class`'$1, \1)dnl
 m4_init_interface_classes_aux(incr($1), \2)')')')
 
+
+define(`m4_subst_comma',
+`ifelse($#, 0, , $#, 1, $1,
+  `$1`'COMMA`'m4_subst_comma(shift($@))')')
+
 dnl m4_init_cplusplus_classes(Class_List)
 dnl
 dnl Parses the comma-separated list of class names Class_List
@@ -35,7 +40,8 @@ dnl to be used in the C++ code implementing the interface procedures.
 dnl The components of the class name are also separated out
 dnl and defined as m4_class<class_num>_component<component_num>
 dnl (see comment and example for m4_init_class_name_components/3).
-define(`m4_init_cplusplus_classes', `m4_init_cplusplus_classes_aux(1, $1)')
+define(`m4_init_cplusplus_classes',
+ `m4_init_cplusplus_classes_aux(1, m4_subst_comma($@))')
 
 dnl m4_init_cplusplus_classes_aux(counter, Class_List)
 dnl
@@ -50,56 +56,51 @@ dnl The macro calls itself recursively to process the complete list.
 define(`m4_init_cplusplus_classes_aux',
   `ifelse($2, `', ,
     `regexp($2, `\([^@]+\)@?\(.*\)',
-       `define(m4_cplusplus_class`'$1, \1)dnl
-m4_init_class_name_components($1, 1, \1)dnl
-m4_init_cplusplus_classes_aux(incr($1), \2)')')')
+       `define(m4_cplusplus_class`'$1, `patsubst(\1, COMMA, @COMMA@)')`'dnl
+m4_get_class_kind(`$1', \1)`'dnl
+m4_get_class_body(`$1', patsubst(\1, COMMA, @COMMA@))`'dnl
+m4_init_cplusplus_classes_aux(`incr($1)', `\2')')')`'dnl
+')
 
-dnl m4_init_class_name_components(Class Num, Component_Num, String)
+define(`m4_get_class_kind',
+  `define(m4_class_kind`'$1,
+    `ifelse(`$2', `', ,
+      `ifelse(index(`$2', <), -1, `$2',
+        `regexp(`$2', `\([^ <]+\)[<]\(.*\)[ ]*[>]', `\1')')')')')
+define(`m4_get_class_body',
+  `define(m4_class_body`'$1,
+    `ifelse(`$2', `', ,
+      `ifelse(index(`$2', <), -1, `',
+        `regexp(`$2', `[^ <]+\([<]\(.*\)[ ]*[>]\)', `\1')')')')')
+
+dnl m4_get_class_kind(Class_Counter, String)
+dnl m4_get_class_body(Class_Counter, String)
 dnl
-dnl The components of the class name in String are separated out
-dnl by recursively getting the first part before the "<"
-dnl removing the outer angle brackets and calling this macro again
-dnl with the remaining string.
-dnl Each component is defined as
-dnl m4_class<Class Num>_component<Component Num>
-dnl The total number of components is defined by the macro
-dnl m4_num_class<Class Num>_components
+dnl The head (class_kind) and the body of
+dnl the C++ class name in String are separated out.
+dnl m4_class_kind`'Class_Counter = the first part before the "<"
+dnl m4_class_body`'Class_Counter = the rest
 dnl
 dnl For example:
-dnl if there is the interface list of classes
-dnl Polyhedron, Grid, BD_Shape_int32_t,
-dnl                     Polyhedra_Powerset_BD_Shape_signed_char
-dnl and the cplusplus list of classes
-dnl Polyhedron, Grid, BD_Shape<int32_t>,
-dnl                     Polyhedra_Powerset<BD_Shape<signed char> >
-dnl then the initialization code would define
-dnl m4_interface_class1 as Polyhedron
-dnl m4_interface_class2 as Grid
-dnl m4_interface_class3 as BD_Shape_int32_t
-dnl m4_interface_class4 as Polyhedra_Powerset_BD_Shape_signed_char
-dnl m4_cplusplus_class1 as Polyhedron
-dnl m4_cplusplus_class2 as Grid
-dnl m4_cplusplus_class3 as BD_Shape<int32_t>
-dnl m4_cplusplus_class4 as Polyhedra_Powerset<BD_Shape<signed char> >
-dnl m4_class1_component1 as Polyhedron
-dnl m4_class2_component2 as Grid
-dnl m4_class3_component1 as BD_Shape
-dnl m4_class3_component2 as int32_t
-dnl m4_class4_component1 as Polyhedra_Powerset
-dnl m4_class4_component2 as BD_Shape
-dnl m4_class4_component3 as signed char
-dnl m4_class1_num_components as 1
-dnl m4_class2_num_components as 1
-dnl m4_class3_num_components as 2
-dnl m4_class4_num_components as 3
-define(`m4_init_class_name_components',
-  `ifelse($3, `', ,
-    `ifelse(index($3, <), -1,
-      define(m4_class`'$1_component`'$2, $3)dnl
-define(m4_class`'$1_num_components, $2),
-        `regexp($3, `\([^ <]+\)[<]\(.*\)[ ]*[>]',
-          `define(m4_class`'$1_component`'$2, \1)dnl
-m4_init_class_name_components($1, incr($2), \2)')')')')
+dnl If String = Polyhedron and Class_Counter = 1
+dnl m4_class_kind1 => `Polyhedron'
+dnl m4_class_body1 => `'
+dnl If String = Polyhedra_Powerset<BD_Shape<signed char> >
+dnl               and Class_Counter = 2
+dnl m4_class_kind2 => `Polyhedra_Powerset'
+dnl m4_class_body1 => `<BD_Shape<signed char> >'
+define(`m4_get_class_kind',
+  `define(m4_class_kind`'$1,
+    `ifelse(`$2', `', ,
+      `ifelse(index(`$2', <), -1, `$2',
+        `regexp(`$2', `\([^ <]+\)[<]\(.*\)[ ]*[>]', `\1')')')')')
+
+define(`m4_get_class_body',
+  `define(m4_class_body`'$1,
+    `ifelse(`$2', `', ,
+      `ifelse(index(`$2', <), -1, `',
+        `regexp(`$2', `[^ <]+\([<]\(.*\)[ ]*[>]\)', `\1')')')')')
+
 
 dnl m4_group_names expands to all the group names.
 dnl
