@@ -349,94 +349,43 @@ Direct_Product<NNC_Polyhedron, Grid>::get_covering_box(Box& box) const {
 
 // FIXME: move to dedicated file once name decided
 
-template <>
-template <typename Box>
-inline
-Open_Product<NNC_Polyhedron, Grid>::Open_Product(const Box& box,
-						 From_Covering_Box dummy)
-  : Direct_Product<NNC_Polyhedron, Grid>(box, dummy) {
-  // FIXME: reduce the resulting ph with the grid?
-}
+template <bool R(NNC_Polyhedron&, Grid&)>
+struct Open_Product_is_bounded<NNC_Polyhedron, Grid, R> {
+  static inline bool
+  function(const Open_Product<NNC_Polyhedron, Grid, R>& op) {
+    NNC_Polyhedron& d1 = const_cast<NNC_Polyhedron&>(op.d1);
+    Grid& d2 = const_cast<Grid&>(op.d2);
+    // FIX do this every time a component changes (eg when adding cgs)?
+    // TODO: Consider adding a flag for this.
+    d1.add_congruences(d2.congruences());
+    d2.add_congruences(d1.constraints());
+    return d1.is_bounded() || d2.is_bounded();
+    return false;
+  }
+};
 
-template <>
-inline bool
-Open_Product<NNC_Polyhedron, Grid>::is_bounded() const {
-  NNC_Polyhedron& d1 = const_cast<NNC_Polyhedron&>(this->d1);
-  Grid& d2 = const_cast<Grid&>(this->d2);
-  // FIX do this every time a component changes (eg when adding cgs)?
-  // TODO: Consider adding a flag for this.
-  d1.add_congruences(d2.congruences());
-  d2.add_congruences(d1.constraints());
-  return d1.is_bounded() || d2.is_bounded();
-}
-
-template <>
-inline bool
-Open_Product<NNC_Polyhedron, Grid>::is_discrete() const {
-  const Open_Product& op = *this;
-  return op.d1.affine_dimension() == 0 || op.d2.is_discrete();
-}
+template <bool R(NNC_Polyhedron&, Grid&)>
+struct Open_Product_is_discrete<NNC_Polyhedron, Grid, R> {
+  static inline bool
+  function(const Open_Product<NNC_Polyhedron, Grid, R>& op) {
+    return op.d1.affine_dimension() == 0 || op.d2.is_discrete();
+  }
+};
 
 template <typename D1, typename D2>
 bool
-Open_Product<D1, D2>::empty_reduce_d1_with_d2() {
-  D1& d1 = this->d1;
-  D2& d2 = this->d2;
-  d2.minimized_congruences();
+empty_check_reduce(D1& d1, D2& d2) {
   if (d2.is_empty()) {
     if (d1.is_empty())
       return false;
     d1.add_constraint(Constraint::zero_dim_false());
     return true;
   }
-  return false;
-}
-
-template <typename D1, typename D2>
-bool
-Open_Product<D1, D2>::empty_reduce_d2_with_d1() {
-  D1& d1 = this->d1;
-  D2& d2 = this->d2;
-  d1.minimized_constraints();
   if (d1.is_empty()) {
-    if (d2.is_empty())
-      return false;
-    d2.add_congruence(Congruence::zero_dim_false());
+    d2.add_constraint(Constraint::zero_dim_false());
     return true;
   }
-  return true;
-}
-
-template <>
-inline bool
-Open_Product<NNC_Polyhedron, Grid>::reduce_domain1_with_domain2() {
-  return empty_reduce_d1_with_d2();
-}
-
-template <>
-inline bool
-Open_Product<C_Polyhedron, Grid>::reduce_domain1_with_domain2() {
-  return empty_reduce_d1_with_d2();
-}
-
-#if 0
-template <>
-inline bool
-Open_Product<BD_Shape<T>, Grid>::reduce_domain1_with_domain2() {
-  return empty_reduce_d1_with_d2();
-}
-#endif
-
-template <>
-inline bool
-Open_Product<NNC_Polyhedron, Grid>::reduce_domain2_with_domain1() {
-  return empty_reduce_d2_with_d1();
-}
-
-template <>
-inline bool
-Open_Product<C_Polyhedron, Grid>::reduce_domain2_with_domain1() {
-  return empty_reduce_d2_with_d1();
+  return false;
 }
 
 // FIXME: error: no member function 'reduce_domain2_with_domain1' declared in 'Parma_Polyhedra_Library::Open_Product<Parma_Polyhedra_Library::BD_Shape<T>, Parma_Polyhedra_Library::Grid>'
@@ -450,31 +399,33 @@ Open_Product<BD_Shape<T>, Grid>::reduce_domain2_with_domain1() {
 #endif
 
 #if 0
-template <typename D1, typename D2>
+template <>
 inline bool
-Open_Product<D1, D2>::reduce_ph_with_gr() {
+Open_Product<NNC_Polyhedron, Grid>::reduce_ph_with_gr() {
   // Skeleton attempt at simple reduction.
+
+  if (d1.has_pending_constraints() && !d1.process_pending_constraints())
+    // d1 found empty.
+    // FIX set d2 empty
+    return false;
 
   // Reduce ph d1 with gr d2 by moving ph c's to nearest grid point
   // (any grid point, inside or outside the ph).
 
   // Always either ==, >= or >.
   // FIX include >
+
   // for each axis
 
   // FIX using dim 1 (A)
 
-  //    flatten points to axis
+  //    flatten grid points to axis  (maybe just calc mod of points in this dim)
 
-  D2 d2_copy = d2;
+  Grid d2_copy = d2;
   //d2_copy.remove_higher_space_dimensions(1);
   // FIX need to leave single space dim
 
-  //    for each relational c in ph
-
-  if (d1.has_pending_constraints() && !d1.process_pending_constraints())
-    // d1 found empty.
-    return false;
+  //    for each relational c (>=,>) in ph
 
   TEMP_INTEGER(temp);
   bool modified = false;
@@ -490,7 +441,7 @@ Open_Product<D1, D2>::reduce_ph_with_gr() {
     if (c.is_equality() || c.coefficient(Variable(0)) == 0)
       continue;
 
-  //          incr/decr const term to nearest grid point (depending on direction of relation)
+  //          incr/decr const term of c to nearest grid point (depending on ~ direction of relation)
 
     // FIX assume >=
 
@@ -506,16 +457,20 @@ Open_Product<D1, D2>::reduce_ph_with_gr() {
     cgs.begin()->ascii_dump();
     // FIX include cg cterm <> 0
 
-    // Substitute into cg the FIX extreme value of the single
+
+    // Find the FIX extreme value (const / coeff of dim) of the single
     // dimension of c.
-    temp = (- writable_c[0] *
+    //temp = writable_c[0] / writable_c[1];
+    // Substitute the extreme value into cg.
+    temp = (- /* temp */ writable_c[0] *
 	    (cgs.begin()->coefficient(Variable(0))))
       + (cgs.begin()->inhomogeneous_term());
     // Find the distance to the next module closest to the origin.
     temp %= (cgs.begin()->modulus() * writable_c[1]);
-    writable_c[0] -= temp;
+    std::cout << "   writable_c[0] -= " << temp << std::endl;
+    writable_c[0] -= temp;   // -x % y == -(x % y)
     if (temp < 0)
-      // Raise to next module.
+      // Lower by a module.
       writable_c[0] -= cgs.begin()->modulus();
 
     writable_c.strong_normalize();
@@ -532,34 +487,6 @@ Open_Product<D1, D2>::reduce_ph_with_gr() {
   return modified;
 }
 #endif
-
-template <>
-inline bool
-Open_Product<NNC_Polyhedron, Grid>::reduce() {
-  bool modified = reduce_domain1_with_domain2();
-  if (reduce_domain2_with_domain1()) {
-    modified = true;
-    while (reduce_domain1_with_domain2() && reduce_domain1_with_domain2());
-  }
-#if 0
-  if (reduce_ph_with_gr()) {
-    modified = true;
-    while (reduce_ph_with_gr() && reduce_ph_with_gr());
-  }
-#endif
-  return modified;
-}
-
-template <typename D1, typename D2>
-bool
-Open_Product<D1, D2>::reduce() {
-  bool modified = reduce_domain1_with_domain2();
-  if (reduce_domain2_with_domain1()) {
-    modified = true;
-    while (reduce_domain1_with_domain2() && reduce_domain1_with_domain2());
-  }
-  return modified;
-}
 
 } // namespace Parma_Polyhedra_Library
 

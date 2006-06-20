@@ -1845,7 +1845,24 @@ protected:
 
 // FIXME: move to dedicated file once name decided
 
+namespace Parma_Polyhedra_Library {
+
 template <typename D1, typename D2>
+bool standard_reduce (D1& d1, D2& d2);
+
+template <typename D1, typename D2>
+bool empty_check_reduce();
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+struct Open_Product_is_bounded;
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+struct Open_Product_is_discrete;
+
+} // namespace Parma_Polyhedra_Library;
+
+template <typename D1, typename D2,
+	  bool R(D1&, D2&) = Parma_Polyhedra_Library::standard_reduce>
 class Parma_Polyhedra_Library::Open_Product
   : public Parma_Polyhedra_Library::Direct_Product<D1, D2> {
 public:
@@ -2180,42 +2197,6 @@ public:
   */
   bool strictly_contains(const Open_Product& y) const;
 
-  /*! \brief
-    Reduces first component with first, by checking if second is
-    empty.
-
-    \return
-    <CODE>true</CODE> if and only if resulting components are strictly
-    contained in the originals.
-  */
-  bool empty_reduce_d1_with_d2();
-
-  /*! \brief
-    Reduces second component with first, by checking if first is
-    empty.
-
-    \return
-    <CODE>true</CODE> if and only if resulting components are strictly
-    contained in the originals.
-  */
-  bool empty_reduce_d2_with_d1();
-
-  //! Reduce the instance of the second domain with the first.
-  /*
-    \return
-    <CODE>true</CODE> if and only if resulting components are strictly
-    contained in the originals.
-  */
-  bool reduce_domain1_with_domain2();
-
-  //! Reduce the instance of the first domain with the second.
-  /*
-    \return
-    <CODE>true</CODE> if and only if resulting components are strictly
-    contained in the originals.
-  */
-  bool reduce_domain2_with_domain1();
-
   //! Reduce.
   /*
     \return
@@ -2223,6 +2204,12 @@ public:
     is strictly contained in the respective original.
   */
   bool reduce();
+
+  template <typename Domain1, typename Domain2, bool Reduce(D1&, D2&)>
+  friend struct Parma_Polyhedra_Library::Open_Product_is_bounded;
+
+  template <typename Domain1, typename Domain2, bool Reduce(D1&, D2&)>
+  friend struct Parma_Polyhedra_Library::Open_Product_is_discrete;
 };
 
 namespace std {
