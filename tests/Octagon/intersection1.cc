@@ -289,6 +289,72 @@ test09() {
   return false;
 }
 
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+  // Variable C(2);
+
+  TOctagonal_Shape oc1(3);
+  oc1.add_constraint(A <= 5);
+  oc1.add_constraint(A + B <= 1);
+  oc1.add_constraint(A + B >= -1);
+
+  print_constraints(oc1, "*** oc1 ***");
+
+  TOctagonal_Shape oc2(3, EMPTY);
+
+  print_constraints(oc2, "*** oc2 ***");
+
+  Octagonal_Shape<mpq_class> known_result(3, EMPTY);
+
+  oc1.intersection_assign(oc2);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
+
+  print_constraints(oc1, "*** oc1.intersection_assign(oc2) ***");
+
+  return ok;
+}
+
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+  cs.insert(A <= 5);
+  cs.insert(A - B <= -1);
+  cs.insert(A + B <= -1);
+
+  TOctagonal_Shape oc1(3);
+  oc1.add_constraints_and_minimize(cs);
+
+  print_constraints(oc1, "*** oc1 ***");
+
+  TOctagonal_Shape oc2(3);
+  oc2.add_constraint(C <= 2);
+  oc2.add_constraint(A - B <= -2);
+  oc2.add_constraint(A + B <= -3);
+
+  print_constraints(oc2, "*** oc2 ***");
+
+  oc1.intersection_assign(oc2);
+
+  Octagonal_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(A <= -1);
+  known_result.add_constraint(C <= 2);
+  known_result.add_constraint(A - B <= -2);
+  known_result.add_constraint(A + B <= -3);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
+
+  print_constraints(oc1, "*** oc1.intersection_assign(oc2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -301,4 +367,6 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN
