@@ -2206,7 +2206,7 @@ public:
     <CODE>true</CODE> if and only if either of the resulting component
     is strictly contained in the respective original.
   */
-  bool reduce();
+  bool reduce() const;
 
   template <typename Domain1, typename Domain2, bool Reduce(D1&, D2&)>
   friend struct Parma_Polyhedra_Library::Open_Product_is_bounded;
@@ -2216,10 +2216,10 @@ public:
 
 protected:
   //! Clears the reduced flag.
-  void clear_reduced_flag();
+  void clear_reduced_flag() const;
 
   //! Sets the reduced flag.
-  void set_reduced_flag();
+  void set_reduced_flag() const;
 
   //! Return <CODE>true</CODE> if and only if the reduced flag is set.
   bool is_reduced() const;

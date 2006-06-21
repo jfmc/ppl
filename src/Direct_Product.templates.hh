@@ -353,6 +353,7 @@ template <bool R(NNC_Polyhedron&, Grid&)>
 struct Open_Product_is_discrete<NNC_Polyhedron, Grid, R> {
   static inline bool
   function(const Open_Product<NNC_Polyhedron, Grid, R>& op) {
+    op.reduce();
     return op.d1.affine_dimension() == 0 || op.d2.is_discrete();
   }
 };

@@ -586,9 +586,11 @@ IO_Operators::operator<<(std::ostream& s, const Direct_Product<D1, D2>& dp) {
 	   << dp.d2;
 }
 
-// FIXME: move to dedicated file once name decided
+// FIXME: Move to dedicated file once name decided.
 
-// FIX reduce every time a component changes (eg when adding cgs)
+// FIXME: Consider adding closure_point_reduce for D1 nnc D2 gr
+//        which converts any ph closure points that intersect w gr
+//        into points
 
 template <typename D1, typename D2>
 inline bool propagate_constraints_reduce(D1& d1, D2& d2) {
@@ -706,8 +708,8 @@ Open_Product<D1, D2, R>::operator=(const Open_Product& y) {
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline bool
 Open_Product<D1, D2, R>::is_empty() const {
-  // FIX intersection.is_empty()
   const Open_Product& op = *this;
+  op.reduce();
   return op.d1.is_empty() || op.d2.is_empty();
 }
 
@@ -715,30 +717,33 @@ template <typename D1, typename D2, bool R(D1&, D2&)>
 inline bool
 Open_Product<D1, D2, R>::is_universe() const {
   const Open_Product& op = *this;
+  op.reduce();
   return op.d1.is_universe() && op.d2.is_universe();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline bool
 Open_Product<D1, D2, R>::is_topologically_closed() const {
-  // FIX intersection.is_topologically_closed()
   const Open_Product& op = *this;
+  op.reduce();
   return op.d1.is_topologically_closed() && op.d2.is_topologically_closed();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline bool
 Open_Product<D1, D2, R>::is_disjoint_from(const Open_Product& y) const {
-  // FIX intersection.is_disjoint_from(y.intersection)
   const Open_Product& op = *this;
-  return op.d1.is_disjoint_from(y.d1) || op.d2.is_disjoint_from(y.d2);
+  Open_Product copy = op;
+  copy.intersection_assign(y);
+  copy.reduce();
+  return copy.is_empty();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 struct Open_Product_is_bounded {
   static inline bool
   function(const Open_Product<D1, D2, R>& op) {
-    const_cast<Open_Product<D1, D2, R>&>(op).reduce();
+    op.reduce();
     return op.d1.is_bounded() || op.d2.is_bounded();
   }
 };
@@ -753,6 +758,7 @@ template <typename D1, typename D2, bool R(D1&, D2&)>
 struct Open_Product_is_discrete {
   static inline bool
   function(const Open_Product<D1, D2, R>& op) {
+    op.reduce();
     return op.d1.is_discrete() || op.d2.is_discrete();
   }
 };
@@ -766,23 +772,23 @@ Open_Product<D1, D2, R>::is_discrete() const {
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline bool
 Open_Product<D1, D2, R>::contains(const Open_Product& y) const {
-  // FIX intersection.contains(y)
   const Open_Product& op = *this;
+  op.reduce();
   return op.d1.contains(y.d1) && op.d2.contains(y.d2);
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline bool
 Open_Product<D1, D2, R>::strictly_contains(const Open_Product& y) const {
-  // FIX intersection.strictly_contains(y)
   const Open_Product& op = *this;
+  op.reduce();
   return op.d1.strictly_contains(y.d1) && op.d2.strictly_contains(y.d2);
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline bool
-Open_Product<D1, D2, R>::reduce() {
-  Open_Product& op = *this;
+Open_Product<D1, D2, R>::reduce() const {
+  Open_Product& op = const_cast<Open_Product&>(*this);
   if (op.is_reduced())
     return false;
   bool modified = R(op.d1, op.d2);
@@ -798,14 +804,14 @@ Open_Product<D1, D2, R>::is_reduced() const {
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline void
-Open_Product<D1, D2, R>::clear_reduced_flag() {
-  reduced = false;
+Open_Product<D1, D2, R>::clear_reduced_flag() const {
+  const_cast<Open_Product&>(*this).reduced = false;
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline void
-Open_Product<D1, D2, R>::set_reduced_flag() {
-  reduced = true;
+Open_Product<D1, D2, R>::set_reduced_flag() const {
+  const_cast<Open_Product&>(*this).reduced = true;
 }
 
 } // namespace Parma_Polyhedra_Library
