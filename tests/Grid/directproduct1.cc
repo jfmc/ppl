@@ -24,13 +24,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 // FIXME: Spread these tests into many files.
 
-// FIX For now this file contains tests that pass for both
-// Direct_Product and Open_Product.
-
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+#define OPEN_PRODUCT
+
+#ifdef OPEN_PRODUCT
+typedef Open_Product<NNC_Polyhedron, Grid> Product;
+#else
 typedef Direct_Product<NNC_Polyhedron, Grid> Product;
-//typedef Open_Product<NNC_Polyhedron, Grid> Product;
+#endif
 
 namespace {
 
@@ -641,9 +643,39 @@ test33() {
   return ok;
 }
 
-// is_discrete(), due to grid.
+// is_disjoint_from(dp), due to the intersection of the entire direct
+// products (i.e. the dp1 and dp2 polyhedron components intersect, as
+// do the grid components).
 bool
 test34() {
+  Variable A(0);
+  Variable B(1);
+
+  Product dp1(2);
+  dp1.add_constraint(A <= 4);
+  dp1.add_constraint(A >= 0);
+  dp1.add_constraint(A - B <= 0);
+  dp1.add_constraint(A - B >= 2);
+  dp1.add_congruence((A %= 0) / 2);
+  dp1.add_congruence((A %= 0) / 4);
+
+  Product dp2(2);
+  dp2.add_constraint(A <= 4);
+  dp2.add_constraint(A <= 0);
+  dp2.add_constraint(A + B >= 4);
+  dp2.add_constraint(A + B <= 6);
+  // Same grid as dp1.
+  dp2.add_congruence((A %= 0) / 2);
+  dp2.add_congruence((A %= 0) / 4);
+
+  bool ok = dp1.is_disjoint_from(dp2);
+
+  return ok;
+}
+
+// is_discrete(), due to grid.
+bool
+test35() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -661,7 +693,7 @@ test34() {
 
 // is_discrete(), due to polyhedron.
 bool
-test35() {
+test36() {
   Variable A(0);
   Variable B(1);
 
@@ -677,7 +709,7 @@ test35() {
 
 // is_discrete(), due to intersection.
 bool
-test36() {
+test37() {
   Variable A(0);
   Variable B(1);
 
@@ -687,14 +719,14 @@ test36() {
   dp.add_generator(point());
   dp.add_generator(line(A));
 
-  bool ok = !/*FIX*/ dp.is_discrete();
+  bool ok = dp.is_discrete();
 
   return ok;
 }
 
 // is_bounded(), due to polyhedron.
 bool
-test37() {
+test38() {
   Variable A(0);
   Variable B(1);
 
@@ -712,7 +744,7 @@ test37() {
 
 // is_bounded(), due to grid.
 bool
-test38() {
+test39() {
   Variable A(0);
 
   Product dp(2, EMPTY);
@@ -727,7 +759,7 @@ test38() {
 
 // is_bounded(), due to intersection.
 bool
-test39() {
+test40() {
   Variable A(0);
   Variable B(1);
 
@@ -744,7 +776,7 @@ test39() {
 
 // contains()
 bool
-test40() {
+test41() {
   Variable A(0);
 
   Product dp(1);
@@ -762,7 +794,7 @@ test40() {
 
 // contains()
 bool
-test41() {
+test42() {
   Variable A(0);
 
   Product dp(1);
@@ -780,7 +812,7 @@ test41() {
 
 // contains(), due to intersection.
 bool
-test42() {
+test43() {
   Variable A(0);
 
   Product dp(1);
@@ -798,29 +830,11 @@ test42() {
 
 // strictly_contains()
 bool
-test43() {
-  Variable A(0);
-
-  Product dp(1);
-  dp.add_constraint(A < 1);
-  dp.add_congruence(A %= 3);
-
-  Product dp2(1);
-  dp2.add_constraint(A < 2);
-  dp2.add_congruence(A %= 3);
-
-  bool ok = !dp.strictly_contains(dp2);
-
-  return ok;
-}
-
-// strictly_contains()
-bool
 test44() {
   Variable A(0);
 
   Product dp(1);
-  dp.add_constraint(A < 3);
+  dp.add_constraint(A < 1);
   dp.add_congruence(A %= 3);
 
   Product dp2(1);
@@ -843,6 +857,24 @@ test45() {
 
   Product dp2(1);
   dp2.add_constraint(A < 2);
+  dp2.add_congruence(A %= 3);
+
+  bool ok = !dp.strictly_contains(dp2);
+
+  return ok;
+}
+
+// strictly_contains()
+bool
+test46() {
+  Variable A(0);
+
+  Product dp(1);
+  dp.add_constraint(A < 3);
+  dp.add_congruence(A %= 3);
+
+  Product dp2(1);
+  dp2.add_constraint(A < 2);
   dp2.add_congruence((A %= 3) / 2);
 
   bool ok = dp.strictly_contains(dp2);
@@ -852,7 +884,7 @@ test45() {
 
 // strictly_contains(), due to intersection.
 bool
-test46() {
+test47() {
   Variable A(0);
 
   Product dp(1);
@@ -868,7 +900,7 @@ test46() {
 
 // strictly_contains(), due to intersection.
 bool
-test47() {
+test48() {
   Variable A(0);
 
   Product dp(1);
@@ -886,7 +918,7 @@ test47() {
 
 // shrink_bounding_box(box)
 bool
-test48() {
+test49() {
   Variable A(0);
 
   Bounding_Box box(1);
@@ -911,7 +943,7 @@ test48() {
 
 // shrink_bounding_box(box), shrink to intersection.
 bool
-test49() {
+test50() {
   Variable A(0);
 
   Bounding_Box box(1);
@@ -936,7 +968,7 @@ test49() {
 
 // get_covering_box(box), via grid.
 bool
-test50() {
+test51() {
   Variable A(0);
 
   Bounding_Box box(1);
@@ -957,7 +989,7 @@ test50() {
 
 // get_covering_box(box), via polyhedron.
 bool
-test51() {
+test52() {
   Variable B(1);
 
   Bounding_Box box(1);
@@ -979,7 +1011,7 @@ test51() {
 
 // get_covering_box(box), via intersection.
 bool
-test52() {
+test53() {
   Variable A(0);
   Variable B(1);
 
@@ -1003,7 +1035,7 @@ test52() {
 
 // intersection_assign()
 bool
-test53() {
+test54() {
   Variable A(0);
   Variable B(1);
 
@@ -1029,7 +1061,7 @@ test53() {
 
 // upper_bound_assign(dp2)
 bool
-test54() {
+test55() {
   Variable A(0);
   Variable B(1);
 
@@ -1054,7 +1086,7 @@ test54() {
 
 // upper_bound_assign_if_exact()
 bool
-test55() {
+test56() {
   Variable A(0);
   Variable B(1);
 
@@ -1078,7 +1110,7 @@ test55() {
 
 // difference_assign()
 bool
-test56() {
+test57() {
   Variable A(0);
   Variable B(1);
 
@@ -1104,7 +1136,7 @@ test56() {
 
 // add_space_dimensions_and_embed()
 bool
-test57() {
+test58() {
   Variable A(0);
   Variable B(1);
 
@@ -1125,7 +1157,7 @@ test57() {
 
 // add_space_dimensions_and_project()
 bool
-test58() {
+test59() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1148,7 +1180,7 @@ test58() {
 
 // concatenate_assign()
 bool
-test59() {
+test60() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1177,7 +1209,7 @@ test59() {
 
 // remove_space_dimensions()
 bool
-test60() {
+test61() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -1204,7 +1236,7 @@ test60() {
 
 // remove_higher_space_dimensions()
 bool
-test61() {
+test62() {
   Variable A(0);
   Variable C(2);
   Variable D(3);
@@ -1227,7 +1259,7 @@ test61() {
 
 // map_space_dimensions()
 bool
-test62() {
+test63() {
   Variable A(0);
   Variable B(1);
 
@@ -1252,7 +1284,7 @@ test62() {
 
 // expand_space_dimension()
 bool
-test63() {
+test64() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1277,7 +1309,7 @@ test63() {
 
 // fold_space_dimensions()
 bool
-test64() {
+test65() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1308,7 +1340,7 @@ test64() {
 
 // affine_image()
 bool
-test65() {
+test66() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1332,7 +1364,7 @@ test65() {
 
 // affine_preimage()
 bool
-test66() {
+test67() {
   Variable A(0);
   Variable B(1);
 
@@ -1352,7 +1384,7 @@ test66() {
 
 // generalized_affine_image(v, e, relsym, d)
 bool
-test67() {
+test68() {
   Variable A(0);
   Variable B(1);
 
@@ -1377,7 +1409,7 @@ test67() {
 
 // generalized_affine_image(v, e, d, modulus)
 bool
-test68() {
+test69() {
   Variable A(0);
   Variable B(1);
 
@@ -1400,7 +1432,7 @@ test68() {
 
 // generalized_affine_preimage(v, e, relsym, d)
 bool
-test69() {
+test70() {
   Variable A(0);
   Variable B(1);
 
@@ -1426,7 +1458,7 @@ test69() {
 // generalized_affine_preimage(v, e, d, modulus), add_generator(),
 // add_generators(), add_grid_generators()
 bool
-test70() {
+test71() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1460,7 +1492,7 @@ test70() {
 
 // generalized_affine_image(lhs, relsym, rhs)
 bool
-test71() {
+test72() {
   Variable A(0);
   Variable B(1);
 
@@ -1486,7 +1518,7 @@ test71() {
 
 // generalized_affine_image(lhs, rhs, modulus), add_congruences(cgs)
 bool
-test72() {
+test73() {
   Variable A(0);
   Variable B(1);
 
@@ -1515,7 +1547,7 @@ test72() {
 
 // generalized_affine_preimage(lhs, relsym, rhs), add_constraints(cs)
 bool
-test73() {
+test74() {
   Variable A(0);
   Variable B(1);
 
@@ -1543,7 +1575,7 @@ test73() {
 
 // generalized_affine_preimage(lhs, rhs, modulus)
 bool
-test74() {
+test75() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1565,7 +1597,7 @@ test74() {
 
 // time_elapse_assign(y)
 bool
-test75() {
+test76() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1603,7 +1635,7 @@ test75() {
 
 // topological_closure_assign
 bool
-test76() {
+test77() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1671,10 +1703,14 @@ BEGIN_MAIN
   DO_TEST(test34);
   DO_TEST(test35);
   DO_TEST(test36);
+#ifdef OPEN_PRODUCT
   DO_TEST(test37);
+#endif
   DO_TEST(test38);
-  //DO_TEST(test39);
+  DO_TEST(test39);
+#ifdef OPEN_PRODUCT
   DO_TEST(test40);
+#endif
   DO_TEST(test41);
   DO_TEST(test42);
   DO_TEST(test43);
@@ -1685,8 +1721,8 @@ BEGIN_MAIN
   DO_TEST(test48);
   DO_TEST(test49);
   DO_TEST(test50);
-  //DO_TEST(test51);
-  DO_TEST(test52);
+  DO_TEST(test51);
+  //DO_TEST(test52);
   DO_TEST(test53);
   DO_TEST(test54);
   DO_TEST(test55);
@@ -1711,4 +1747,5 @@ BEGIN_MAIN
   DO_TEST(test74);
   DO_TEST(test75);
   DO_TEST(test76);
+  DO_TEST(test77);
 END_MAIN
