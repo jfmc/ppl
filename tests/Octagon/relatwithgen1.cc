@@ -282,6 +282,149 @@ test12() {
   return false;
 }
 
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A <= 2);
+  oct.add_constraint(A + B <= 3);
+  oct.add_constraint(A - B >= 0);
+
+  print_constraints(oct, "*** oct ***");
+
+  Poly_Gen_Relation rel = oct.relation_with(line(-2*B));
+
+  using namespace IO_Operators;
+  nout << "oct.relation_with(line(-2*B)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A + B == 3);
+  oct.add_constraint(A - B == 0);
+
+  print_constraints(oct, "*** oct ***");
+
+  Poly_Gen_Relation rel = oct.relation_with(line(-2*B));
+
+  using namespace IO_Operators;
+  nout << "oct.relation_with(line(-2*B)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A - B == 0);
+
+  print_constraints(oct, "*** oct ***");
+
+  Poly_Gen_Relation rel = oct.relation_with(line(2*B));
+
+  using namespace IO_Operators;
+  nout << "oct.relation_with(line(2*B)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A - B <= 0);
+
+  print_constraints(oct, "*** oct ***");
+
+  Poly_Gen_Relation rel = oct.relation_with(point(A + 2*B));
+
+  using namespace IO_Operators;
+  nout << "oct.relation_with(point(A + 2*B)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::subsumes();
+
+  return rel == known_result;
+}
+
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(B - A <= 0);
+
+  print_constraints(oct, "*** oct ***");
+
+  Poly_Gen_Relation rel = oct.relation_with(point(A + 2*B));
+
+  using namespace IO_Operators;
+  nout << "oct.relation_with(point(A + 2*B)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(B - A <= 0);
+
+  print_constraints(oct, "*** oct ***");
+
+  Poly_Gen_Relation rel = oct.relation_with(line(B - 3*A + 5));
+
+  using namespace IO_Operators;
+  nout << "oct.relation_with(line(B - 3*A + 5)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test19() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(B <= 2);
+
+  print_constraints(oct, "*** oct ***");
+
+  Poly_Gen_Relation rel = oct.relation_with(line(2*B));
+
+  using namespace IO_Operators;
+  nout << "oct.relation_with(line(-2*B)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -297,4 +440,11 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN
