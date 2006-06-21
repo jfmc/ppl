@@ -533,14 +533,13 @@ inline void
 Direct_Product<D1, D2>::shrink_bounding_box(Box& box) const {
   d1.shrink_bounding_box(box);
   d2.shrink_bounding_box(box);
-  // FIX shrink to intersection
 }
 
 template <typename D1, typename D2>
 template <typename Box>
 inline void
 Direct_Product<D1, D2>::get_covering_box(Box& box) const {
-  // FIXME
+  // FIXME: Should every domain have this?
   used(box);
 }
 
@@ -589,9 +588,19 @@ IO_Operators::operator<<(std::ostream& s, const Direct_Product<D1, D2>& dp) {
 
 // FIXME: move to dedicated file once name decided
 
+// FIX reduce every time a component changes (eg when adding cgs)
+
+template <typename D1, typename D2>
+inline bool propagate_constraints_reduce(D1& d1, D2& d2) {
+  d1.add_constraints(d2.constraints());
+  d2.add_constraints(d1.constraints());
+  return true;
+}
+
 template <typename D1, typename D2>
 inline bool standard_reduce (D1& d1, D2& d2) {
-  return empty_check_reduce(d1, d2);
+  return empty_check_reduce(d1, d2)
+    || propagate_constraints_reduce(d1, d2);
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
@@ -599,54 +608,63 @@ inline
 Open_Product<D1, D2, R>::Open_Product(dimension_type num_dimensions,
 				      const Degenerate_Element kind)
   : Direct_Product<D1, D2>(num_dimensions, kind) {
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline
 Open_Product<D1, D2, R>::Open_Product(const Congruence_System& ccgs)
   : Direct_Product<D1, D2>(ccgs) {
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline
 Open_Product<D1, D2, R>::Open_Product(Congruence_System& cgs)
   : Direct_Product<D1, D2>(cgs) {
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline
 Open_Product<D1, D2, R>::Open_Product(const Constraint_System& ccs)
   : Direct_Product<D1, D2>(ccs) {
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline
 Open_Product<D1, D2, R>::Open_Product(Constraint_System& cs)
   : Direct_Product<D1, D2>(cs) {
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline
 Open_Product<D1, D2, R>::Open_Product(const Grid_Generator_System& gs)
   : Direct_Product<D1, D2>(gs) {
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline
 Open_Product<D1, D2, R>::Open_Product(Grid_Generator_System& gs)
   : Direct_Product<D1, D2>(gs) {
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline
 Open_Product<D1, D2, R>::Open_Product(const Generator_System& gs)
   : Direct_Product<D1, D2>(gs) {
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline
 Open_Product<D1, D2, R>::Open_Product(Generator_System& gs)
   : Direct_Product<D1, D2>(gs) {
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
@@ -655,6 +673,7 @@ inline
 Open_Product<D1, D2, R>::Open_Product(const Box& box,
 				      From_Bounding_Box dummy)
   : Direct_Product<D1, D2>(box, dummy) {
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
@@ -663,14 +682,14 @@ inline
 Open_Product<D1, D2, R>::Open_Product(const Box& box,
 				      From_Covering_Box dummy)
   : Direct_Product<D1, D2>(box, dummy) {
-  used(box);
-  used(dummy);
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline
 Open_Product<D1, D2, R>::Open_Product(const Open_Product& y)
   : Direct_Product<D1, D2>(y) {
+  clear_reduced_flag();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
@@ -719,6 +738,7 @@ template <typename D1, typename D2, bool R(D1&, D2&)>
 struct Open_Product_is_bounded {
   static inline bool
   function(const Open_Product<D1, D2, R>& op) {
+    const_cast<Open_Product<D1, D2, R>&>(op).reduce();
     return op.d1.is_bounded() || op.d2.is_bounded();
   }
 };
@@ -763,7 +783,29 @@ template <typename D1, typename D2, bool R(D1&, D2&)>
 inline bool
 Open_Product<D1, D2, R>::reduce() {
   Open_Product& op = *this;
-  return R(op.d1, op.d2);
+  if (op.is_reduced())
+    return false;
+  bool modified = R(op.d1, op.d2);
+  set_reduced_flag();
+  return modified;
+}
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+inline bool
+Open_Product<D1, D2, R>::is_reduced() const {
+  return reduced;
+}
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+inline void
+Open_Product<D1, D2, R>::clear_reduced_flag() {
+  reduced = false;
+}
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+inline void
+Open_Product<D1, D2, R>::set_reduced_flag() {
+  reduced = true;
 }
 
 } // namespace Parma_Polyhedra_Library

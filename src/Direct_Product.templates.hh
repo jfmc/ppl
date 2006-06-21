@@ -350,21 +350,6 @@ Direct_Product<NNC_Polyhedron, Grid>::get_covering_box(Box& box) const {
 // FIXME: move to dedicated file once name decided
 
 template <bool R(NNC_Polyhedron&, Grid&)>
-struct Open_Product_is_bounded<NNC_Polyhedron, Grid, R> {
-  static inline bool
-  function(const Open_Product<NNC_Polyhedron, Grid, R>& op) {
-    NNC_Polyhedron& d1 = const_cast<NNC_Polyhedron&>(op.d1);
-    Grid& d2 = const_cast<Grid&>(op.d2);
-    // FIX do this every time a component changes (eg when adding cgs)?
-    // TODO: Consider adding a flag for this.
-    d1.add_congruences(d2.congruences());
-    d2.add_congruences(d1.constraints());
-    return d1.is_bounded() || d2.is_bounded();
-    return false;
-  }
-};
-
-template <bool R(NNC_Polyhedron&, Grid&)>
 struct Open_Product_is_discrete<NNC_Polyhedron, Grid, R> {
   static inline bool
   function(const Open_Product<NNC_Polyhedron, Grid, R>& op) {
@@ -387,6 +372,27 @@ empty_check_reduce(D1& d1, D2& d2) {
   }
   return false;
 }
+
+#define SPECIALIZE(ph_class, gr_class)					\
+  template <>								\
+  inline bool								\
+  propagate_constraints_reduce(ph_class& d1, gr_class& d2) {		\
+    d1.add_congruences(d2.congruences());				\
+    d2.add_congruences(d1.constraints());				\
+    return true;							\
+  }									\
+									\
+  template <>								\
+  inline bool								\
+  propagate_constraints_reduce(gr_class& d1, ph_class& d2) {		\
+    d1.add_congruences(d2.constraints());				\
+    d2.add_congruences(d1.congruences());				\
+    return true;							\
+  }
+
+SPECIALIZE(NNC_Polyhedron, Grid);
+SPECIALIZE(C_Polyhedron, Grid);
+#undef SPECIALIZE
 
 // FIXME: error: no member function 'reduce_domain2_with_domain1' declared in 'Parma_Polyhedra_Library::Open_Product<Parma_Polyhedra_Library::BD_Shape<T>, Parma_Polyhedra_Library::Grid>'
 #if 0

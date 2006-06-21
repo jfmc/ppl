@@ -1482,7 +1482,7 @@ public:
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
 
-  // FIXME: What to do about widenings? Add method for every widening?
+  // FIXME: What to do about widenings? Add a method for every widening?
   //        Add a standard widening method to each class?
 
   /*! \brief
@@ -1853,6 +1853,9 @@ bool standard_reduce (D1& d1, D2& d2);
 template <typename D1, typename D2>
 bool empty_check_reduce();
 
+template <typename D1, typename D2>
+bool propagate_constraints_reduce();
+
 template <typename D1, typename D2, bool R(D1&, D2&)>
 struct Open_Product_is_bounded;
 
@@ -2210,6 +2213,22 @@ public:
 
   template <typename Domain1, typename Domain2, bool Reduce(D1&, D2&)>
   friend struct Parma_Polyhedra_Library::Open_Product_is_discrete;
+
+protected:
+  //! Clears the reduced flag.
+  void clear_reduced_flag();
+
+  //! Sets the reduced flag.
+  void set_reduced_flag();
+
+  //! Return <CODE>true</CODE> if and only if the reduced flag is set.
+  bool is_reduced() const;
+
+  /*! \brief
+    Flag to record whether the components are reduced with respect
+    to each other.
+  */
+  bool reduced;
 };
 
 namespace std {
