@@ -316,6 +316,33 @@ test14() {
   return false;
 }
 
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A + B == 3);
+  oct.add_constraint(A <= 4);
+  oct.add_constraint(B >= 2);
+
+  print_constraints(oct, "--- oct ---");
+
+  Constraint c(A + B == 3);
+
+  print_constraint(c, "--- c ---");
+
+  Poly_Con_Relation rel = oct.relation_with(c);
+
+  using namespace IO_Operators;
+  nout << "oct.relation_with(c) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
+    && Poly_Con_Relation::is_included();
+
+  return rel == known_result;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -333,5 +360,6 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN
 
