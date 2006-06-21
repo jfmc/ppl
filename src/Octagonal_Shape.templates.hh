@@ -605,6 +605,8 @@ Octagonal_Shape<T>::is_strong_coherent() const {
   // strongly closed matrix is also strong-coherent, as it must be.
   const dimension_type num_rows = matrix.num_rows();
 
+  // Allocated here once and for all.
+  N semi_sum;
   // The strong-coherence is: for every indexes i and j (and i != j)
   // matrix[i][j] <= (matrix[i][ci] + matrix[cj][j])/2
   // where ci = i + 1, if i is even number or
@@ -620,12 +622,11 @@ Octagonal_Shape<T>::is_strong_coherent() const {
 	const N& m_cj_j = matrix[coherent_index(j)][j];
 	if (!is_plus_infinity(m_i_ci) &&
 	    !is_plus_infinity(m_cj_j)) {
-	  N d;
-	  // Compute (m_i_ci + m_cj_j)/2 into `d', rounding the result
-	  // towards plus infinity.
-	  add_assign_r(d, m_i_ci, m_cj_j, ROUND_UP);
-	  div2exp_assign_r(d, d, 1, ROUND_UP);
-	  if (m_i[j] > d)
+	  // Compute (m_i_ci + m_cj_j)/2 into `semi_sum',
+	  // rounding the result towards plus infinity.
+	  add_assign_r(semi_sum, m_i_ci, m_cj_j, ROUND_UP);
+	  div2exp_assign_r(semi_sum, semi_sum, 1, ROUND_UP);
+	  if (m_i[j] > semi_sum)
 	    return false;
 	}
       }
@@ -1036,6 +1037,9 @@ Octagonal_Shape<T>::strong_closure_assign() const {
   //   ch = h + 1, if h is an even number;
   //   ch = h - 1, if h is an odd number.
 
+  // Allocated here once and for all.
+  N sum;
+
   // Step 1: closure.
   for (Row_Iterator k_iter = m_begin; k_iter != m_end; ++k_iter) {
     const dimension_type k = k_iter.index();
@@ -1061,7 +1065,6 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 // 	  const N& x_k_j = (j < rs_k) ? x_k[j] : x_cj[ck];
 // 	  if (!is_plus_infinity(x_k_j)) {
 // 	    N& x_i_j = (j < rs_i) ? x_i[j] : x_cj[ci];
-// 	    N sum;
 // 	    add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
 // 	    min_assign(x_i_j, sum);
 // 	  }
@@ -1076,7 +1079,6 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 	for (dimension_type j = 0; j < min_rs; ++j) {
 	  const N& x_k_j = x_k[j];
 	  if (!is_plus_infinity(x_k_j)) {
-	    N sum;
 	    add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
 	    min_assign(x_i[j], sum);
 	  }
@@ -1091,7 +1093,6 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 	    // The loop body for index `j'.
 	    const N& x_k_j = x_k[j];
 	    if (!is_plus_infinity(x_k_j)) {
-	      N sum;
 	      add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
 	      assert(coherent_index(j) == j+1);
 	      min_assign(x.matrix[j+1][ci], sum);
@@ -1099,7 +1100,6 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 	    // The loop body for index `j+1'.
 	    const N& x_k_j1 = x_k[j+1];
 	    if (!is_plus_infinity(x_k_j1)) {
-	      N sum;
 	      add_assign_r(sum, x_i_k, x_k_j1, ROUND_UP);
 	      assert(coherent_index(j+1) == j);
 	      min_assign(x.matrix[j][ci], sum);
@@ -1115,7 +1115,6 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 	    assert(coherent_index(j) == j+1);
 	    const N& x_k_j = x.matrix[j+1][ck];
 	    if (!is_plus_infinity(x_k_j)) {
-	      N sum;
 	      add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
 	      min_assign(x_i[j], sum);
 	    }
@@ -1123,7 +1122,6 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 	    assert(coherent_index(j+1) == j);
 	    const N& x_k_j1 = x.matrix[j][ck];
 	    if (!is_plus_infinity(x_k_j1)) {
-	      N sum;
 	      add_assign_r(sum, x_i_k, x_k_j1, ROUND_UP);
 	      min_assign(x_i[j+1], sum);
 	    }
@@ -1140,7 +1138,6 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 	  Row_Reference x_cj = *x_cj_iter;
 	  const N& x_k_j = x_cj[ck];
 	  if (!is_plus_infinity(x_k_j)) {
-	    N sum;
 	    add_assign_r(sum, x_i_k, x_k_j, ROUND_UP);
 	    min_assign(x_cj[ci], sum);
 	  }
@@ -1149,7 +1146,6 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 	  Row_Reference x_cj1 = *(--x_cj_iter);
 	  const N& x_k_j1 = x_cj1[ck];
 	  if (!is_plus_infinity(x_k_j1)) {
-	    N sum;
 	    add_assign_r(sum, x_i_k, x_k_j1, ROUND_UP);
 	    min_assign(x_cj1[ci], sum);
 	  }
