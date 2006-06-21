@@ -558,6 +558,131 @@ test14() {
   return false;
 }
 
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+
+  unsigned tokens = 6;
+
+  TOctagonal_Shape oc1(2);
+  oc1.add_constraint(A >= 1);
+  oc1.add_constraint(B >= 0);
+
+  print_constraints(oc1, "*** oc1 ***");
+
+  TOctagonal_Shape oc2(2);
+  oc2.add_constraint(A >= 0);
+  oc2.add_constraint(B >= 0);
+  oc2.add_constraint(A - B >= 2);
+
+  print_constraints(oc2, "*** oc2 ***");
+
+  oc1.BHMZ05_widening_assign(oc2, &tokens);
+
+  Octagonal_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(A >= 1);
+
+#undef TOKENS
+#define TOKENS 5
+
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result)
+    && (tokens == TOKENS);
+
+  nout << "tokens: before " << TOKENS << ", after " << tokens <<
+    endl;
+
+  print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
+
+  return ok;
+}
+
+bool
+test16() {
+  Variable x(0);
+  Variable y(1);
+
+  TOctagonal_Shape oc1(2);
+  oc1.add_constraint(x <= 1);
+  oc1.add_constraint(x - y <= 2);
+  oc1.add_constraint(y - x <= 7);
+
+  print_constraints(oc1, "*** oc1 ***");
+
+  TOctagonal_Shape oc2(2);
+  oc2.add_constraint(x - y <= 2);
+  oc2.add_constraint(-x <= 3);
+  oc2.add_constraint(x <= 0);
+  oc2.add_constraint(y - x <= 2);
+
+  print_constraints(oc2, "*** oc2 ***");
+
+#undef TOKENS
+#define TOKENS 0
+
+  unsigned tokens = TOKENS;
+
+  oc1.BHMZ05_widening_assign(oc2, &tokens);
+
+  Octagonal_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(x - y <= 2);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result)
+    && (tokens == TOKENS);
+
+  nout << "tokens: before " << TOKENS << ", after " << tokens <<
+    endl;
+
+  print_constraints(oc1, "*** oc1.BHMZ05_widening_assign(oc2) ***");
+
+  return ok;
+}
+
+bool
+test17() {
+  Variable x(0);
+  Variable y(1);
+
+  unsigned tokens = 6;
+
+  Constraint_System cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(x <= 1);
+  cs1.insert(y == 0);
+  TOctagonal_Shape oct1(cs1);
+
+  print_constraints(oct1, "*** oct1 ***");
+
+  Constraint_System cs2;
+  cs2.insert(x <= 1);
+  cs2.insert(y >= 0);
+  cs2.insert(y - x <= 0);
+  TOctagonal_Shape oct2(cs2);
+
+  print_constraints(oct2, "*** oct2 ***");
+
+  oct2.BHMZ05_widening_assign(oct1, &tokens);
+
+  Octagonal_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(x <= 1);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(y - x <= 0);
+
+#undef TOKENS
+#define TOKENS 6
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct2) == known_result)
+    && (tokens == TOKENS);
+
+  nout << "tokens: before " << TOKENS << ", after " << tokens <<
+    endl;
+
+  print_constraints(oct2, "*** oct2.BHMZ05_widening_assign(oct1) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -575,6 +700,9 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN
 
 
