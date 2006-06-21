@@ -222,6 +222,140 @@ test07() {
   return false;
 }
 
+bool
+test08() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  TOctagonal_Shape oc(4);
+  oc.add_constraint(x - y <= 0);
+  oc.add_constraint(z <= 2);
+  oc.add_constraint(w >= 3);
+
+  print_constraints(oc, "*** oc ***");
+
+  // This is the set of the variables that we want to remove.
+  Variables_Set to_be_removed;
+
+  oc.remove_space_dimensions(to_be_removed);
+
+  Octagonal_Shape<mpq_class> known_result(oc);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
+
+  print_constraints(oc, "*** oc.remove_space_dimensions() ***");
+
+  return ok;
+}
+
+bool
+test09() {
+  TOctagonal_Shape oc(0);
+
+  print_constraints(oc, "*** oc ***");
+
+  // This is the set of the variables that we want to remove.
+  Variables_Set to_be_removed;
+
+  oc.remove_space_dimensions(to_be_removed);
+
+  Octagonal_Shape<mpq_class> known_result(oc);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
+
+  print_constraints(oc, "*** oc.remove_space_dimensions() ***");
+
+  return ok;
+}
+
+bool
+test10() {
+  Variable x1(0);
+  Variable x2(1);
+  Variable x3(2);
+  Variable x4(3);
+  Variable x5(4);
+  Variable x6(5);
+
+  TOctagonal_Shape oct1(6);
+  oct1.add_constraint(x1 >= 1);
+  oct1.add_constraint(x1 + x3 >= 2);
+  oct1.add_constraint(x2 - x3 <= 4);
+  oct1.add_constraint(x4 - x1  >= 0);
+  oct1.add_constraint(x6 <= 7);
+  oct1.add_constraint(x5 + x4 >= 1);
+
+  print_constraints(oct1, "*** oct1 ***");
+
+  oct1.remove_higher_space_dimensions(6);
+
+  Octagonal_Shape<mpq_class> known_result(oct1);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
+
+  print_constraints(oct1, "*** oct1.remove_higher_space_dimensions(6) ***");
+
+  return ok;
+}
+
+bool
+test11() {
+  Variable x1(0);
+  Variable x2(1);
+  Variable x3(2);
+
+  TOctagonal_Shape oct1(3);
+  oct1.add_constraint(x1 - x2 >= 13);
+  oct1.add_constraint(x2 <= 3);
+  oct1.add_constraint(x2 + x3 == 5);
+
+  print_constraints(oct1, "*** oct1 ***");
+
+  oct1.remove_higher_space_dimensions(0);
+
+  Octagonal_Shape<mpq_class> known_result(0, UNIVERSE);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
+
+  print_constraints(oct1, "*** oct1.remove_higher_space_dimensions(0) ***");
+
+  return ok;
+}
+
+bool
+test12() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
+
+  TOctagonal_Shape oc(4);
+  oc.add_constraint(x - y <= 0);
+  oc.add_constraint(z <= 2);
+  oc.add_constraint(w >= 3);
+
+  print_constraints(oc, "*** oc ***");
+
+  // This is the set of the variables that we want to remove.
+  Variables_Set to_be_removed;
+  to_be_removed.insert(x);
+  to_be_removed.insert(y);
+  to_be_removed.insert(z);
+  to_be_removed.insert(w);
+
+  oc.remove_space_dimensions(to_be_removed);
+
+  Octagonal_Shape<mpq_class> known_result(0, UNIVERSE);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
+
+  print_constraints(oc, "*** oc.remove_space_dimensions({x, y, z, w}) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -232,4 +366,9 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN
