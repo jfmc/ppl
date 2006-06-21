@@ -281,6 +281,40 @@ test08() {
   return ok;
 }
 
+bool
+test09() {
+
+  nout << "test09()" << endl;
+
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oc(2);
+  oc.add_constraint(A >= 0);
+  oc.add_constraint(B >= 0);
+
+  std::fstream f;
+  open(f, my_file, std::ios_base::out);
+  oc.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, std::ios_base::in | std::ios_base::out);
+  std::string str;
+  do
+    f >> str;
+  while (str != "space_dim");
+  f.seekp(0, std::ios_base::cur);
+  f << " A";
+  close(f);
+
+  open(f, my_file, std::ios_base::in);
+  TOctagonal_Shape oc2;
+  bool ok = !oc2.ascii_load(f);
+  close(f);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -292,4 +326,5 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
