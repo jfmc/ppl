@@ -153,6 +153,108 @@ test05() {
   return ok;
 }
 
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(ray(2*A + B));
+  gs.insert(ray(-3*A + D));
+
+  TOctagonal_Shape oct(gs);
+
+  Octagonal_Shape<mpq_class> known_result(4);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(C == 0);
+  known_result.add_constraint(D >= 0);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
+
+  print_constraints(oct, "*** oct ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(ray(-3*A + 4));
+  gs.insert(ray(-2*D - 4));
+
+  TOctagonal_Shape oct(gs);
+
+  Octagonal_Shape<mpq_class> known_result(4);
+  known_result.add_constraint(A <= 0);
+  known_result.add_constraint(B == 0);
+  known_result.add_constraint(C == 0);
+  known_result.add_constraint(D <= 0);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
+
+  print_constraints(oct, "*** oct ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(line(2*A + B));
+  gs.insert(line(-3*A + D));
+
+  TOctagonal_Shape oct(gs);
+
+  Octagonal_Shape<mpq_class> known_result(4);
+  known_result.add_constraint(C == 0);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
+
+  print_constraints(oct, "*** oct ***");
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(line(2*A + 4));
+  gs.insert(line(D - 3));
+
+  TOctagonal_Shape oct(gs);
+
+  Octagonal_Shape<mpq_class> known_result(4);
+  known_result.add_constraint(B == 0);
+  known_result.add_constraint(C == 0);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
+
+  print_constraints(oct, "*** oct ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -161,4 +263,8 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
