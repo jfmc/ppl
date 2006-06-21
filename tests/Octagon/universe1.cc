@@ -74,10 +74,38 @@ test03() {
   return !universe;
 }
 
+bool
+test04() {
+  TOctagonal_Shape oc(0);
+
+  bool universe = oc.is_universe();
+
+  nout << "*** oc.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return universe;
+}
+
+bool
+test05() {
+  //  Variable x(0);
+
+  TOctagonal_Shape oc(1, EMPTY);
+
+  bool universe = oc.is_universe();
+
+  nout << "*** oc.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return !universe;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN
