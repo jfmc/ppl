@@ -56,9 +56,9 @@ dnl =====================================================================
 dnl The pattern delimiter.
 define(`m4_pattern_delimiter', `@')
 
-dnl m4_replace_one_pattern_once(Class_Kind, String, Replacement)
+dnl m4_replace_one_pattern_once(Class_Kind, String, Pattern, Replacement)
 dnl
-dnl The delimted PATTERN is replaced by Replacement in the String.
+dnl The delimited PATTERN is replaced by Replacement in the String.
 dnl There are additional codes to help provide the right form of
 dnl the replacmement.
 dnl - alt_ means that the alternative string must be used if one exists.
@@ -66,14 +66,15 @@ dnl - U means that the alt_actual string must be capitalised at start
 dnl   of word and after "_".
 define(`m4_replace_one_pattern_once', `dnl
 patsubst(patsubst(patsubst(patsubst($2,
-           m4_pattern_delimiter`'U`'PATTERN`'m4_pattern_delimiter,
-             m4_capfirstletters($4)),
-           m4_pattern_delimiter`'UALT_`'PATTERN`'m4_pattern_delimiter,
-             m4_capfirstletters(m4_ifndef(`m4_$1_$3_$4_alt_replacement', $4))),
-           m4_pattern_delimiter`'ALT_`'PATTERN`'m4_pattern_delimiter,
-             m4_ifndef(`m4_$1_$3_$4_alt_replacement', $4)),
-           m4_pattern_delimiter`'PATTERN`'m4_pattern_delimiter,
-             $4)`'dnl
+  m4_pattern_delimiter`'U`'PATTERN`'m4_pattern_delimiter,
+    m4_capfirstletters($4)),
+  m4_pattern_delimiter`'UALT_`'PATTERN`'m4_pattern_delimiter,
+    m4_capfirstletters(
+      m4_ifndef(`m4_$1_$3_$4_alt_replacement', $4))),
+  m4_pattern_delimiter`'ALT_`'PATTERN`'m4_pattern_delimiter,
+    m4_ifndef(`m4_$1_$3_$4_alt_replacement', $4)),
+  m4_pattern_delimiter`'PATTERN`'m4_pattern_delimiter,
+    $4)`'dnl
 ')
 
 dnl m4_replace_one_pattern_aux(Class_Kind, String, Replacement1, Replacement2, ...)
@@ -88,17 +89,17 @@ m4_replace_one_pattern_once($1, $2, $3, $4)`'dnl
 m4_replace_one_pattern_aux($1, $2, $3, shift(shift(shift(shift($@)))))')`'dnl
 ')
 
-dnl m4_replace_one_pattern(Class_Number, Class_Kind, String, Pattern)
+dnl m4_replace_one_pattern(Class_Number, String, Pattern)
 dnl
 dnl Replaces in String occurrences of the capitalised form of Pattern
 dnl by the required actual string (determined both by the Class_Kind
 dnl and Pattern).
 define(`m4_replace_one_pattern', `dnl
-define(`PATTERN', m4_upcase($4))`'dnl
-ifelse(index(`$3', PATTERN), `-1', $3, `dnl
-m4_replace_one_pattern_aux($2, $3, $4,
-  ifdef(`m4_$2_$4_replacement',
-    `m4_$2_$4_replacement($1)', `m4_$4_replacement'))`'dnl
+define(`PATTERN', m4_upcase($3))`'dnl
+ifelse(index(`$2', PATTERN), `-1', $2, `dnl
+m4_replace_one_pattern_aux(m4_class_kind`'$1, $2, $3,
+  ifdef(m4_`'m4_class_kind$1`'_$3_replacement,
+    m4_`'m4_class_kind$1`'_$3_replacement($1), `m4_$3_replacement($1)'))`'dnl
 ')`'dnl
 undefine(`PATTERN')`'dnl
 ')
@@ -109,41 +110,10 @@ dnl
 dnl A (recursive) macro to replace, inside the second argument String,
 dnl all of the patterns listed from the third argument onwards.
 define(`m4_replace_all_patterns', `dnl
-ifelse($4, `', ``$3'',
-       `m4_replace_all_patterns($1, $2,
-                                m4_replace_one_pattern($1, $2, $3, $4),
-                                shift(shift(shift(shift($@)))))')`'dnl
-')
-
-dnl m4_add_topology(Class_Number, String)
-dnl
-dnl If the C++ name for Class_Number has a component Polyhedron,
-dnl then every occurrence of Polyhedron in the C++ name is replaced by
-dnl @String`'TOPOLOGY@Polyhedron.
-define(`m4_add_topology', `dnl
-patsubst(m4_cplusplus_class$1, Polyhedron, @`'$2`'TOPOLOGY@`'Polyhedron)')
-
-dnl m4_replace_class_patterns(Class, CPP_Class, String)
-dnl
-dnl String - the code for all the methods for the current class.
-dnl
-dnl The macro replaces in String the different patterns for
-dnl the class interface name and class C++ name.
-dnl @CLASS@ is replaced by the interface name
-dnl @CPP_CLASS@ is replaced by the cplusplus name
-dnl @CPP_TOP_CLASS@ (resp., @CPP_INTOP_CLASS@) is replaced by the
-dnl cplusplus name where every occurrence of Polyhedron is
-dnl preceded by "@TOPOLOGY@" (resp., "@INTOPOLOGY@").
-define(`m4_replace_class_patterns', `dnl
-patsubst(patsubst(patsubst(patsubst(`$2',
-  m4_pattern_delimiter`'CLASS`'m4_pattern_delimiter,
-    m4_interface_class$1),
-  m4_pattern_delimiter`'CPP_CLASS`'m4_pattern_delimiter,
-    m4_cplusplus_class$1),
-  m4_pattern_delimiter`'CPP_TOP_CLASS`'m4_pattern_delimiter,
-    m4_add_topology($1, `')),
-  m4_pattern_delimiter`'CPP_INTOP_CLASS`'m4_pattern_delimiter,
-    m4_add_topology($1, `IN'))`'dnl
+ifelse($3, `', ``$2'',
+       `m4_replace_all_patterns($1,
+                                m4_replace_one_pattern($1, $2, $3),
+                                shift(shift(shift($@))))')`'dnl
 ')
 
 dnl m4_get_arity(Procedure_Schema)
@@ -200,10 +170,15 @@ m4_procedure_names_to_code($1, $2, shift(shift(shift($@))))`'dnl
 dnl m4_procedure_name_to_code(Class_Number, Class_Kind, Procedure_Name)
 dnl
 dnl The procedure specification is replaced with the code.
+# define(`m4_procedure_name_to_code', `dnl
+# patsubst(`$3', `\(.*\)', `dnl
+# m4_replace_all_patterns($1, $2,
+#   m4_replace_class_patterns($1, m4_get_code_schema(\1, 1)),
+#     m4_pattern_list)')`'dnl
+# ')
 define(`m4_procedure_name_to_code', `dnl
 patsubst(`$3', `\(.*\)', `dnl
-m4_replace_all_patterns($1, $2,
-  m4_replace_class_patterns($1, m4_get_code_schema(\1, 1)),
+m4_replace_all_patterns($1, m4_get_code_schema(\1, 1),
     m4_pattern_list)')`'dnl
 ')
 

@@ -45,14 +45,14 @@ define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 (Prolog_term_ref t_nd, Prolog_term_ref t_uoe, Prolog_term_ref t_ph) {
   try {
-    @CPP_TOP_CLASS@* ph;
+    @TOPOLOGY@@CPP_CLASS@* ph;
     Prolog_atom uoe = term_to_universe_or_empty(t_uoe);
 
     if (uoe == a_empty)
-        ph = new @CPP_TOP_CLASS@(term_to_unsigned<dimension_type>(t_nd),
+        ph = new @TOPOLOGY@@CPP_CLASS@(term_to_unsigned<dimension_type>(t_nd),
 			      EMPTY);
       else
-        ph = new @CPP_TOP_CLASS@(term_to_unsigned<dimension_type>(t_nd));
+        ph = new @TOPOLOGY@@CPP_CLASS@(term_to_unsigned<dimension_type>(t_nd));
 
 
     Prolog_term_ref tmp = Prolog_new_term_ref();
@@ -74,12 +74,12 @@ define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@_code',
 ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@
 (Prolog_term_ref t_ph_source, Prolog_term_ref t_ph) {
   try {
-    @CPP_TOP_CLASS@* ph;
-    const @CPP_INTOP_CLASS@* ph_source
-	= static_cast<const @CPP_INTOP_CLASS@*>
+    @TOPOLOGY@@CPP_CLASS@* ph;
+    const @INTOPOLOGY@@CPP_CLASS@* ph_source
+	= static_cast<const @INTOPOLOGY@@CPP_CLASS@*>
 	(term_to_@CLASS@_handle(t_ph_source));
     CHECK(ph_source);
-        ph = new @CPP_TOP_CLASS@(*ph_source);
+        ph = new @TOPOLOGY@@CPP_CLASS@(*ph_source);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -110,8 +110,8 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s
     // Check the list is properly terminated.
     check_nil_terminating(t_clist);
 
-    @CPP_TOP_CLASS@* ph;
-    ph = new @CPP_TOP_CLASS@(cs);
+    @TOPOLOGY@@CPP_CLASS@* ph;
+    ph = new @TOPOLOGY@@CPP_CLASS@(cs);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -188,8 +188,8 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
 	bbox.lower_upper_bound(i, closed, n, d);
     }
 
-    @CPP_TOP_CLASS@* ph;
-    ph = new @CPP_TOP_CLASS@(bbox, From_`'@UBOX@());
+    @TOPOLOGY@@CPP_CLASS@* ph;
+    ph = new @TOPOLOGY@@CPP_CLASS@(bbox, From_`'@UBOX@());
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {

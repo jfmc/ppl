@@ -14,20 +14,6 @@ dnl for the names of the classes used to form the names of procedures
 dnl in the user interface.
 define(`m4_init_interface_classes', `m4_init_interface_classes_aux(1, $1)')
 
-dnl m4_init_interface_classes_aux(counter, Class_List)
-dnl
-dnl counter    - is the index to the first class in Class_List
-dnl Class_List - is the tail part of the input list of interface
-dnl              class names.
-dnl The macro also defines m4_num_classes to be the number of classes
-dnl in the full list (ie counter + number in the current list - 1).
-dnl The macro calls itself recursively to process the complete list.
-define(`m4_init_interface_classes_aux',
-  `ifelse($2, `',  `define(m4_num_classes, decr($1))',
-    `regexp($2, `\([^@]+\)@?\(.*\)',
-      `define(m4_interface_class`'$1, \1)dnl
-m4_init_interface_classes_aux(incr($1), \2)')')')
-
 dnl m4_subst_comma(String1, String2,...)
 dnl
 dnl String1, String2,... is the "@"-separated list of C++ class names
@@ -48,31 +34,128 @@ dnl Note that first the "," is replaced using the macro m4_subst_comma.
 define(`m4_init_cplusplus_classes',
  `m4_init_cplusplus_classes_aux(1, m4_subst_comma($@))')
 
+
+dnl m4_init_interface_classes_aux(Class_Counter, Class_List)
+dnl
+dnl Class_Counter - is the index to the first class in Class_List;
+dnl Class_List    - is a tail part of the input list of interface
+dnl                 class names.
+dnl The macro also defines m4_num_classes to be the number of classes
+dnl in the full list (ie counter + number in the current list - 1).
+dnl The macro calls m4_init_interface_names to define the next
+dnl interface names and then to to call this macro to recursively
+dnl process the rest of the list.
+define(`m4_init_interface_classes_aux', `dnl
+ifelse($2, `',  `define(m4_num_classes, decr($1))',
+  regexp(`$2', `\([^@]+\)@?\(.*\)',
+    `m4_init_interface_names($1, \1, \2)'))`'dnl
+')
+
+dnl m4_init_interface_names(Class_Counter, Class, Class_List)
+dnl
+dnl Class_Counter - is the index to the first class in Class_List;
+dnl Class         - is the interface class name, as input;
+dnl Class_List    - is a tail part of the input list of interface
+dnl                 class names.
+dnl The macro has three cases.
+dnl If the class name does not containg "Polyhedron",
+dnl then m4_interface_class`'Class_Counter => Class;
+dnl If the class name is simply "Polyhedron",
+dnl then m4_interface_class`'Class_Counter => Class;
+dnl Otherwise
+dnl m4_interface_class`'Class_Counter => C_Class and
+dnl m4_interface_class`'Class_Counter+1 => NNC_Class.
+dnl In all cases, the m4_init_interface_classes_aux is called again
+dnl to process the rest of the list with a new value for the class counter.
+define(`m4_init_interface_names', `dnl
+ifelse(
+  index($2, Polyhedron), -1,
+    `define(m4_interface_class`'$1, $2)`'dnl
+m4_init_interface_classes_aux(incr($1), $3)',
+  `$2', `Polyhedron',
+    `define(m4_interface_class`'$1, $2)`'dnl
+m4_init_interface_classes_aux(incr($1), $3)',
+    `define(m4_interface_class`'$1, m4_prefix_polyhedron($2, C))`'dnl
+define(m4_interface_class`'incr($1), m4_prefix_polyhedron($2, NNC))`'dnl
+m4_init_interface_classes_aux(incr(incr($1)), $3)')`'dnl
+')
+
+dnl m4_prefix_polyhedron(Class, String)
+dnl
+dnl Every occurrence of Polyhedron in the name is replaced by
+dnl String_Polyhedron.
+define(`m4_prefix_polyhedron', `dnl
+patsubst($1, Polyhedron, $2_Polyhedron)`'dnl
+')
+
+dnl m4_init_cplusplus_classes(Class_List)
+dnl
+dnl Parses the "@"-separated list of class names Class_List
+dnl to be used in the C++ code implementing the interface procedures.
+dnl Note that first the "," is replaced using the macro m4_subst_comma.
+define(`m4_init_cplusplus_classes',
+ `m4_init_cplusplus_classes_aux(1, m4_subst_comma($@))')
+
 dnl m4_init_cplusplus_classes_aux(Class_Counter, Class_List)
 dnl
-dnl Class_Counter    - is the index to the first class in Class_List
-dnl Class_List       - is the tail part of the input list of cplusplus
-dnl                    class names.
+dnl Class_Counter - is the index to the first class in Class_List;
+dnl Class_List    - is a tail part of the input list of cplusplus
+dnl                 class names.
+dnl The macro calls m4_init_cplusplus_names to define the next
+dnl cplusplus names and then to to call this macro to recursively
+dnl process the rest of the list.
+dnl The COMMA pattern is revised to @COMMA@ as soon as a class name
+dnl has been separated from the @-separated list of classes and
+dnl any unnecessary spaces removed.
+define(`m4_init_cplusplus_classes_aux', `dnl
+ifelse($2, `',  `',
+  regexp(`$2', `\([^@]+\)@?\(.*\)',
+    `m4_init_cplusplus_names(`$1',
+      patsubst(patsubst(\1, COMMA, @COMMA@), ` ', `'), `\2')'))`'dnl
+')
+
+dnl m4_init_cplusplus_names(Class_Counter, Class, Class_List)
 dnl
-dnl This defines the macro m4_cplusplus_class`'Class_Counter.
-dnl It also calls the macros m4_get_class_kind/2 and m4_get_class_body/2
-dnl to define the m4_class_kind`'Class_Counter m4_class_body`'Class_Counter.
+dnl Class_Counter - is the index to the first class in Class_List;
+dnl Class         - is the cplusplus class name, as input;
+dnl Class_List    - is a tail part of the input list of cplusplus
+dnl                 class names.
+dnl The macro has three cases.
+dnl If the class name does not contain "Polyhedron",
+dnl then m4_init_cplusplus_names_aux(Class_Counter, Class) is called;
+dnl If the class name is simply "Polyhedron",
+dnl then m4_init_cplusplus_names_aux(Class_Counter, Class) is called;
+dnl Otherwise
+dnl then m4_init_cplusplus_names_aux(Class_Counter, ClassC)
+dnl and m4_init_cplusplus_names_aux(Class_Counter, ClassNNC) are called
+dnl where ClassC and ClassNNC are defined by m4_prefix_polyhedron(Class, C)
+dnl and m4_prefix_polyhedron(Class, NNC), respectively;
+dnl In all cases, the m4_init_cplusplus_classes_aux is called again
+dnl to process the rest of the list with a new value for the class counter.
+define(`m4_init_cplusplus_names', `dnl
+ifelse(
+  index($2, Polyhedron), -1, `m4_init_cplusplus_names_aux($1, $2)`'dnl
+m4_init_cplusplus_classes_aux(incr($1), $3)',
+  $2, `Polyhedron', `m4_init_cplusplus_names_aux($1, $2)`'dnl
+m4_init_cplusplus_classes_aux(incr($1), $3)',
+    `m4_init_cplusplus_names_aux($1, m4_prefix_polyhedron($2, C))`'dnl
+m4_init_cplusplus_names_aux(incr($1), m4_prefix_polyhedron($2, NNC))`'dnl
+m4_init_cplusplus_classes_aux(incr(incr($1)), $3)')`'dnl
+')
+
+dnl m4_init_cplusplus_names_aux(Class_Counter, Class)
 dnl
-dnl For example,
-dnl If the Class_Counter is 3 and the class list start with
-dnl C++ name Direct_Product<Polyhedron, Grid>, then
-dnl m4_cplusplus_class3 => Direct_Product<Polyhedron@COMMA@Grid>
-dnl m4_class_kind3 => Direct_Product
-dnl m4_class_body3 => <Polyhedron@COMMA@Grid>
-dnl
-dnl The macro calls itself recursively to process the complete list.
-define(`m4_init_cplusplus_classes_aux',
-  `ifelse($2, `', ,
-    `regexp($2, `\([^@]+\)@?\(.*\)',
-       `define(m4_cplusplus_class`'$1, patsubst(\1, COMMA, @COMMA@))`'dnl
-m4_get_class_kind(`$1', \1)`'dnl
-m4_get_class_body(`$1', patsubst(\1, COMMA, @COMMA@))`'dnl
-m4_init_cplusplus_classes_aux(`incr($1)', `\2')')')`'dnl
+dnl Class_Counter - is the index to the first class in Class_List;
+dnl Class         - is the cplusplus class name, as input;
+dnl This macro just defines three macros,
+dnl defining the cplusplus_class_name`'Class_Counter,
+dnl class_kind`'Class_Counter and class_body`'Class_Counter,
+dnl where the kind is the part preceding the first "<"
+dnl and the body is the rest of the full cplusplus name.
+define(`m4_init_cplusplus_names_aux', `dnl
+  define(m4_cplusplus_class`'$1, `$2')`'dnl
+m4_get_class_kind(`$1', `$2')`'dnl
+m4_get_class_body(`$1', `$2')`'dnl
 ')
 
 dnl m4_get_class_kind(Class_Counter, String)
@@ -97,13 +180,13 @@ define(`m4_get_class_kind',
   `define(m4_class_kind`'$1,
     `ifelse(`$2', `', ,
       `ifelse(index(`$2', <), -1, `$2',
-        `regexp(`$2', `\([^ <]+\)[<]\(.*\)[ ]*[>]', `\1')')')')')
+        `regexp(`$2', `\([^ <]+\)[.]*', `\1')')')')')
 
 define(`m4_get_class_body',
   `define(m4_class_body`'$1,
     `ifelse(`$2', `', ,
       `ifelse(index(`$2', <), -1, `',
-        `regexp(`$2', `[^ <]+\([<]\(.*\)[ ]*[>]\)', `\1')')')')')
+        `regexp(`$2', `[^ <]+\([<]\(.*\)[>]\)', `\1')')')')')
 
 
 dnl m4_group_names expands to all the group names.
@@ -136,9 +219,22 @@ dnl "+shape -bd_shape"
 dnl following a procedure name, only code (for that procedure)
 dnl for the Polyhedron and Octagonal_Shape class will be generated.
 define(`m4_group_names', `dnl
-all, shape, wr_shape, polyhedron, grid, bd_shape, octagonal_shape, polyhedra_powerset')
+all,
+simple_pps,
+simple,
+shape,
+wr_shape,
+polyhedron,
+grid,
+bd_shape,
+octagonal_shape,
+polyhedra_powerset')
 
-define(`m4_all_group', `Polyhedron, Grid, BD_Shape, Octagonal_Shape')
+define(`m4_all_group',
+  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Polyhedra_Powerset')
+define(`m4_simple_pps_group',
+  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Polyhedra_Powerset')
+define(`m4_simple_group', `Polyhedron, Grid, BD_Shape, Octagonal_Shape')
 define(`m4_shape_group', `Polyhedron, BD_Shape, Octagonal_Shape')
 define(`m4_wr_shape_group', `BD_Shape, Octagonal_Shape')
 define(`m4_polyhedron_group', Polyhedron)
@@ -152,6 +248,8 @@ dnl
 dnl Returns a list of patterns (in lowercase) used for the generation
 dnl of procedure names and code schemas.
 define(`m4_pattern_list', `dnl
+class,
+cpp_class,
 intopology,
 topology,
 represent,
@@ -171,19 +269,19 @@ widenexp,
 box,
 describe')
 
+dnl The interface class name.
+define(`m4_class_replacement', m4_interface_class`'$1)
+
+dnl The cplusplus class name.
+define(`m4_cpp_class_replacement', m4_cplusplus_class`'$1)
+
 dnl The topology of the domain element. The default is the empty string.
 define(`m4_topology_replacement', `')
 define(`m4_Polyhedron_topology_replacement', `C_, NNC_')
-define(`m4_Polyhedra_Powerset_topology_replacement',
-  `ifelse(index(m4_cplusplus_class$1, Polyhedron), -1, `', `C_, NNC_')`'dnl
-')
 
 dnl The topology used to copy from another element of the domain
 define(`m4_intopology_replacement', `')
 define(`m4_Polyhedron_intopology_replacement', `C_, NNC_')
-define(`m4_Polyhedra_Powerset_intopology_replacement',
-  `ifelse(index(m4_cplusplus_class$1, Polyhedron), -1, `', `C_, NNC_')dnl
-')
 
 dnl The widening and extrapolation operators.
 define(`m4_widenexp_replacement', `')
@@ -201,6 +299,7 @@ define(`m4_Grid_box_covering_box_alt_replacement', `get_covering_box')
 
 dnl  Space or affine dimensions
 define(`m4_dimension_replacement', `space_dimension, affine_dimension')
+define(`m4_Polyhedra_Powerset_dimension_replacement',`space_dimension')
 
 dnl The different kinds of objects use to generate a class.
 define(`m4_generator_replacement', `generator')
