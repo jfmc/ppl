@@ -58,8 +58,136 @@ test01() {
   return ok;
 }
 
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, EMPTY);
+
+  TOctagonal_Shape oct1(ph, SIMPLEX_COMPLEXITY);
+  TOctagonal_Shape oct2(ph, ANY_COMPLEXITY);
+
+  Octagonal_Shape<mpq_class> known_result(2, EMPTY);
+
+  bool ok = (oct1 == oct2
+	     && check_result(oct1, known_result));
+
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  C_Polyhedron ph(0, UNIVERSE);
+
+  TOctagonal_Shape oct1(ph, SIMPLEX_COMPLEXITY);
+  TOctagonal_Shape oct2(ph, ANY_COMPLEXITY);
+
+  Octagonal_Shape<mpq_class> known_result(0);
+
+  bool ok = (oct1 == oct2
+	     && check_result(oct1, known_result));
+
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
+
+  return ok;
+}
+
+bool
+test04() {
+//   Variable A(0);
+//   Variable B(1);
+//   Variable C(2);
+//   Variable D(3);
+
+  C_Polyhedron ph(4, UNIVERSE);
+
+  TOctagonal_Shape oct1(ph, SIMPLEX_COMPLEXITY);
+  TOctagonal_Shape oct2(ph, ANY_COMPLEXITY);
+
+  Octagonal_Shape<mpq_class> known_result(4);
+
+  bool ok = (oct1 == oct2
+	     && check_result(oct1, known_result));
+
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(2*A - 3*B >= 4);
+  cs.insert(Linear_Expression(-3) >= 0);
+  cs.insert(Linear_Expression(7) == 0);
+  C_Polyhedron ph(cs);
+
+  TOctagonal_Shape oct1(ph, SIMPLEX_COMPLEXITY);
+  TOctagonal_Shape oct2(ph, ANY_COMPLEXITY);
+
+  Octagonal_Shape<mpq_class> known_result(2, EMPTY);
+
+  bool ok = (oct1 == oct2
+	     && check_result(oct1, known_result));
+
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Constraint_System cs;
+  cs.insert(A - B >= 4);
+  cs.insert(-C - D >= 0);
+  cs.insert(A + B - C == 0);
+  cs.insert(-A + B - C < 4);
+  cs.insert(A - B - C + D > 1);
+  NNC_Polyhedron ph(cs);
+
+  TOctagonal_Shape oct1(ph, SIMPLEX_COMPLEXITY);
+  TOctagonal_Shape oct2(ph, ANY_COMPLEXITY);
+
+  Octagonal_Shape<mpq_class> known_result(4);
+  known_result.add_constraint(A >= -2);
+  known_result.add_constraint(4*B <= -5);
+  known_result.add_constraint(A - B >= 4);
+  known_result.add_constraint(4*(A - C) >= 5);
+  known_result.add_constraint(B + D <= 2);
+  known_result.add_constraint(B - C <= 2);
+  known_result.add_constraint(C + D <= 0);
+
+  bool ok = (oct1 == oct2
+	     && check_result(oct1, known_result));
+
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN
