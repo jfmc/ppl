@@ -125,6 +125,124 @@ test04() {
   return false;
 }
 
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct1(2);
+  oct1.add_constraint(A <= 0);
+  oct1.add_constraint(A >= -2);
+  oct1.add_constraint(B == 0);
+
+  print_constraints(oct1, "*** oct1 ***");
+
+  TOctagonal_Shape oct2(2, EMPTY);
+
+  print_constraints(oct2, "*** oct2 ***");
+
+  Octagonal_Shape<mpq_class> known_result(oct1);
+
+  oct1.oct_difference_assign(oct2);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
+
+  print_constraints(oct1, "*** oct1.oct_difference_assign(oc2) ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  TOctagonal_Shape oc1(4);
+  oc1.add_constraint(D == 0);
+  oc1.add_constraint(C == 0);
+  oc1.add_constraint(B == 0);
+  oc1.add_constraint(A == 0);
+
+  print_constraints(oc1, "*** oc1 ***");
+
+  TOctagonal_Shape oc2(4);
+  oc1.add_constraint(A + D >= 0);
+  oc1.add_constraint(C >= 0);
+  oc1.add_constraint(B >= 0);
+  oc1.add_constraint(A == 0);
+
+  print_constraints(oc2, "*** oc2 ***");
+
+  Octagonal_Shape<mpq_class> known_result(4, EMPTY);
+
+  oc1.oct_difference_assign(oc2);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
+
+  print_constraints(oc1, "*** oc1.oct_difference_assign(oc2) ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct1(2);
+  oct1.add_constraint(A >= 1);
+  oct1.add_constraint(B >= 0);
+  oct1.add_constraint(A + B <= 3);
+
+  print_constraints(oct1, "*** oct1 ***");
+
+  TOctagonal_Shape oct2(2);
+  oct2.add_constraint(A + B <= 10);
+
+  print_constraints(oct2, "*** oct2 ***");
+
+  Octagonal_Shape<mpq_class> known_result(2, EMPTY);
+  print_constraints(oct2, "*** oct2 ***");
+
+  oct1.oct_difference_assign(oct2);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
+
+  print_constraints(oct1, "*** oct1.oct_difference_assign(oct2) ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct1(2);
+  oct1.add_constraint(A + B <= 3);
+
+  print_constraints(oct1, "*** oct1 ***");
+
+  TOctagonal_Shape oct2(2);
+  oct2.add_constraint(A + B >= 1);
+  oct2.add_constraint(A + B <= 10);
+
+  print_constraints(oct2, "*** oct2 ***");
+
+  Octagonal_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A + B <= 1);
+
+  oct1.oct_difference_assign(oct2);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
+
+  print_constraints(oct1, "*** oct1.oct_difference_assign(oct2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -132,4 +250,8 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN
