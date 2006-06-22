@@ -144,7 +144,7 @@ test05() {
   Variable z(2);
   Variable w(3);
 
-  // A 10-dim space, empty polyhedron.
+  // A 4-dim space, empty polyhedron.
   TOctagonal_Shape oc(4, EMPTY);
 
   print_constraints(oc, "*** oc ***");
@@ -162,7 +162,7 @@ test05() {
 
   bool ok = (Octagonal_Shape<mpq_class>(oc) == known_result);
 
-  print_constraints(oc, "*** oc.remove_space_dimensions() ***");
+  print_constraints(oc, "*** oc.remove_space_dimensions({x, y, z, w}) ***");
 
   return ok;
 }
