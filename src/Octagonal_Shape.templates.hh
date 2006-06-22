@@ -2284,7 +2284,7 @@ Octagonal_Shape<T>::CC76_narrowing_assign(const Octagonal_Shape& y) {
     return;
   strong_closure_assign();
   // If `*this' is empty, we return.
-  if (y.marked_empty())
+  if (marked_empty())
     return;
 
   // We consider a constraint of `*this', if its value is `plus_infinity',
