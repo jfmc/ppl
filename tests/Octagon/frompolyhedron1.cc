@@ -181,6 +181,55 @@ test06() {
   return ok;
 }
 
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(2*A - 3*B >= 4);
+  cs.insert(-3*A >= 0);
+  cs.insert(B + 2 == 0);
+  C_Polyhedron ph(cs);
+
+  TOctagonal_Shape oct1(ph, POLYNOMIAL_COMPLEXITY);
+
+  Octagonal_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A <= 0);
+  known_result.add_constraint(B == -2);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
+
+  print_constraints(oct1, "*** oct1 ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 4);
+  cs.insert(B >= 10);
+  cs.insert(B <= 0);
+  C_Polyhedron ph(cs);
+
+  TOctagonal_Shape oct1(ph, SIMPLEX_COMPLEXITY);
+  TOctagonal_Shape oct2(ph, ANY_COMPLEXITY);
+
+  Octagonal_Shape<mpq_class> known_result(2,EMPTY);
+
+  bool ok = (oct1 == oct2
+	     && Octagonal_Shape<mpq_class>(oct1) == known_result);
+
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -190,4 +239,6 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN
