@@ -44,13 +44,13 @@ test01() {
 
   print_constraints(oc2, "*** oc2 ***");
 
-  oc1.intersection_assign(oc2);
-
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(x <= 3);
   known_result.add_constraint(-y <= -2);
   known_result.add_constraint(x - y <= 4);
   known_result.add_constraint(x + y <= 6);
+
+  oc1.intersection_assign(oc2);
 
   bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
@@ -81,8 +81,6 @@ test02() {
 
   print_constraints(oc2, "*** oc2 ***");
 
-  oc1.intersection_assign(oc2);
-
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= 2);
   known_result.add_constraint(C <= 2);
@@ -90,6 +88,8 @@ test02() {
   known_result.add_constraint(A + B <= 7);
   known_result.add_constraint(A - C <= 5);
   known_result.add_constraint(A + C <= 1);
+
+  oc1.intersection_assign(oc2);
 
   bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
@@ -118,13 +118,13 @@ test03() {
 
   print_constraints(oc2, "*** oc2 ***");
 
-  oc1.intersection_assign(oc2);
-
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= -1);
   known_result.add_constraint(C <= 2);
   known_result.add_constraint(A - B <= -1);
   known_result.add_constraint(A + B <= -1);
+
+  oc1.intersection_assign(oc2);
 
   bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
@@ -152,9 +152,9 @@ test04() {
 
   print_constraints(oc2, "*** oc2 ***");
 
-  oc1.intersection_assign(oc2);
-
   Octagonal_Shape<mpq_class> known_result(3, EMPTY);
+
+  oc1.intersection_assign(oc2);
 
   bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
@@ -171,9 +171,9 @@ test05() {
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
 
-  oc1.intersection_assign(oc2);
-
   Octagonal_Shape<mpq_class> known_result(0, EMPTY);
+
+  oc1.intersection_assign(oc2);
 
   bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
@@ -190,9 +190,9 @@ test06() {
   print_constraints(oc1, "*** oc1 ***");
   print_constraints(oc2, "*** oc2 ***");
 
-  oc1.intersection_assign(oc2);
-
   Octagonal_Shape<mpq_class> known_result(0);
+
+  oc1.intersection_assign(oc2);
 
   bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
