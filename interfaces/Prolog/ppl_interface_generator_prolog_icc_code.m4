@@ -69,15 +69,15 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 
 ')
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@_code',
+define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@
+ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@
 (Prolog_term_ref t_ph_source, Prolog_term_ref t_ph) {
   try {
     @TOPOLOGY@@CPP_CLASS@* ph;
-    const @INTOPOLOGY@@CPP_CLASS@* ph_source
-	= static_cast<const @INTOPOLOGY@@CPP_CLASS@*>
-	(term_to_@CLASS@_handle(t_ph_source));
+    const @INTOPOLOGY@@ALT_FRIEND@* ph_source
+	= static_cast<const @INTOPOLOGY@@ALT_FRIEND@*>
+	(term_to_@FRIEND@_handle(t_ph_source));
     CHECK(ph_source);
         ph = new @TOPOLOGY@@CPP_CLASS@(*ph_source);
     Prolog_term_ref tmp = Prolog_new_term_ref();

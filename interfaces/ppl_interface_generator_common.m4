@@ -47,6 +47,16 @@ dnl If Macro is defined, use that definition;
 dnl otherwise use the Default Definition.
 define(`m4_ifndef', `ifdef(`$1', $1, $2)')
 
+dnl m4_nargs expands to the number of arguments.
+dnl
+dnl Code copied from m4 documentation.
+define(`m4_nargs', `$#')
+
+dnl m4_arg(Ind, Arg1, Arg2, ...)
+dnl
+dnl m4_arg expands to Arg`'Ind
+define(`m4_arg',
+`ifelse($1, 0, , $1, 1, $2, `m4_arg(decr($1), shift(shift($@)))')')
 
 dnl =====================================================================
 dnl ====== The following are application dependent macros: their meaning
@@ -56,37 +66,51 @@ dnl =====================================================================
 dnl The pattern delimiter.
 define(`m4_pattern_delimiter', `@')
 
-dnl m4_replace_one_pattern_once(Class_Kind, String, Pattern, Replacement)
+dnl m4_replace_one_pattern_once(
+dnl   Class_Number, String, Pattern, Counter)
 dnl
-dnl The delimited PATTERN is replaced by Replacement in the String.
+dnl The delimited PATTERN  in the String is replaced by the Counter
+dnl argument in m4_replacements.
 dnl There are additional codes to help provide the right form of
 dnl the replacmement.
-dnl - alt_ means that the alternative string must be used if one exists.
+dnl - alt_ means that the alternative replacement in m4_alt_replacements
+dnl must be used if one exists.
 dnl - U means that the alt_actual string must be capitalised at start
 dnl   of word and after "_".
 define(`m4_replace_one_pattern_once', `dnl
+dnl
+dnl m4_replace is the replacement for pattern
+define(`m4_replace', `m4_arg($4, m4_replacements)')`'dnl
+dnl
+dnl m4_alt_replace is the replacement for alt_pattern
+define(`m4_alt_replace', `m4_arg($4, m4_alt_replacements)')`'dnl
+dnl
 patsubst(patsubst(patsubst(patsubst($2,
   m4_pattern_delimiter`'U`'PATTERN`'m4_pattern_delimiter,
-    m4_capfirstletters($4)),
+    m4_capfirstletters(m4_replace)),
   m4_pattern_delimiter`'UALT_`'PATTERN`'m4_pattern_delimiter,
-    m4_capfirstletters(
-      m4_ifndef(`m4_$1_$3_$4_alt_replacement', $4))),
+    m4_capfirstletters(m4_alt_replace)),
   m4_pattern_delimiter`'ALT_`'PATTERN`'m4_pattern_delimiter,
-    m4_ifndef(`m4_$1_$3_$4_alt_replacement', $4)),
+    m4_alt_replace),
   m4_pattern_delimiter`'PATTERN`'m4_pattern_delimiter,
-    $4)`'dnl
+    m4_replace)`'dnl
+dnl
+undefine(`m4_replace')`'dnl
+undefine(`m4_alt_replace')`'dnl
 ')
 
-dnl m4_replace_one_pattern_aux(Class_Kind, String, Replacement1, Replacement2, ...)
+dnl m4_replace_one_pattern_aux(
+dnl Class_Number, String, Pattern, Counter)
 dnl
 dnl This iteratively calls m4_replace_one_pattern_once/3 to replace
-dnl a delimited form of PATTERN by Replacement`'i.
+dnl a delimited form of PATTERN by the Counter argument in m4_replacements
+dnl or m4_alt_replacements.
 define(`m4_replace_one_pattern_aux', `dnl
-ifelse($#, 0, ,$#, 1, , $#, 2, , $#, 3, ,
-$#, 4, m4_replace_one_pattern_once($1, $2, $3, $4),
+ifelse($4, m4_nargs(m4_replacements),
+  `m4_replace_one_pattern_once($1, $2, $3, $4)',
   `dnl
 m4_replace_one_pattern_once($1, $2, $3, $4)`'dnl
-m4_replace_one_pattern_aux($1, $2, $3, shift(shift(shift(shift($@)))))')`'dnl
+m4_replace_one_pattern_aux($1, $2, $3, incr($4))')`'dnl
 ')
 
 dnl m4_replace_one_pattern(Class_Number, String, Pattern)
@@ -95,17 +119,34 @@ dnl Replaces in String occurrences of the capitalised form of Pattern
 dnl by the required actual string (determined both by the Class_Kind
 dnl and Pattern).
 define(`m4_replace_one_pattern', `dnl
+dnl
+dnl the PATTERN (in uppercase) is the string to be replaced.
 define(`PATTERN', m4_upcase($3))`'dnl
-ifelse(index(`$2', PATTERN), `-1', $2, `dnl
-m4_replace_one_pattern_aux(m4_class_kind`'$1, $2, $3,
+dnl
+dnl m4_replacements is the replacement list for the pattern.
+define(`m4_replacements', `dnl
   ifdef(m4_`'m4_class_kind$1`'_$3_replacement,
-    m4_`'m4_class_kind$1`'_$3_replacement($1), `m4_$3_replacement($1)'))`'dnl
-')`'dnl
+    m4_`'m4_class_kind$1`'_$3_replacement($1),
+    `m4_$3_replacement($1)')')`'dnl
+dnl
+dnl m4_alt_replacements is the alternative replacement list for pattern.
+define(`m4_alt_replacements', `dnl
+  ifdef(m4_`'m4_class_kind$1`'_$3_alt_replacement,
+    m4_`'m4_class_kind$1`'_$3_alt_replacement($1),
+    `ifdef(`m4_$3_alt_replacement',
+      `m4_$3_alt_replacement($1)',
+      `m4_replacements')')')`'dnl
+dnl
+ifelse(index(`$2', PATTERN), `-1', $2, `dnl
+m4_replace_one_pattern_aux($1, $2, $3, 1)')`'dnl
+dnl
 undefine(`PATTERN')`'dnl
+undefine(`m4_replacements')`'dnl
+undefine(`m4_alt_replacements')`'dnl
 ')
 
 dnl m4_replace_all_patterns(
-dnl    Class_Number, Class_Kind, String, Pattern1, Pattern2, ...)
+dnl    Class_Number, String, Pattern1, Pattern2, ...)
 dnl
 dnl A (recursive) macro to replace, inside the second argument String,
 dnl all of the patterns listed from the third argument onwards.
@@ -292,7 +333,6 @@ ifdef(m4_interface_class`'$1,
 `patsubst(m4_one_class_code($1, m4_class_kind$1), @COMMA@, `,')`'dnl
 m4_all_classes_loop(incr($1))')`'dnl
 ')
-dnl patsubst(m4_one_class_code($1, m4_class_kind$1), @COMMA@, `,')`'dnl
 
 dnl m4_all_classes_code
 dnl

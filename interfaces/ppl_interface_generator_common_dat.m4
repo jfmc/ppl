@@ -250,6 +250,7 @@ dnl of procedure names and code schemas.
 define(`m4_pattern_list', `dnl
 class,
 cpp_class,
+friend,
 intopology,
 topology,
 represent,
@@ -275,6 +276,15 @@ define(`m4_class_replacement', m4_interface_class`'$1)
 dnl The cplusplus class name.
 define(`m4_cpp_class_replacement', m4_cplusplus_class`'$1)
 
+dnl The friend class name.
+define(`m4_friend_replacement', m4_interface_class`'$1)
+define(`m4_friend_alt_replacement', m4_cplusplus_class`'$1)
+# define(`m4_BD_Shape_friend_replacement',
+#   `ifelse(`index(m4_cpluplus_classes_names, Polyhedron)', -1,
+#     `m4_friend_replacement($1)', `m4_friend_replacement($1), Polyhedron')')
+# define(`m4_BD_Shape_friend_alt_replacement',
+#     m4_cplusplus_class`'$1)
+
 dnl The topology of the domain element. The default is the empty string.
 define(`m4_topology_replacement', `')
 define(`m4_Polyhedron_topology_replacement', `C_, NNC_')
@@ -294,6 +304,7 @@ dnl The shape classes have bounding boxes while the grid classes also
 dnl have covering boxes.
 define(`m4_box_replacement', `bounding_box')
 define(`m4_Grid_box_replacement', `m4_box_replacement, covering_box')
+define(`m4_Grid_box_alt_replacement', `shrink_bounding_box, get_covering_box')
 define(`m4_Grid_box_bounding_box_alt_replacement', `shrink_bounding_box')
 define(`m4_Grid_box_covering_box_alt_replacement', `get_covering_box')
 
@@ -333,6 +344,7 @@ define(`m4_Polyhedron_state_replacement',
          `m4_state_replacement, topologically_closed')
 define(`m4_Grid_state_replacement',
         `m4_state_replacement, topologically_closed, discrete')
+define(`m4_Polyhedra_Powerset_state_replacement',`')
 
 dnl  Above or below
 define(`m4_abovebelow_replacement', `above, below')
@@ -349,6 +361,8 @@ define(`m4_affimage_replacement', `affine_image, affine_preimage')
 dnl  One object can be contained, strictly contained or disjoint in the other.
 define(`m4_comparison_replacement',
          `contains, strictly_contains, is_disjoint_from')
+define(`m4_Polyhedra_Powerset_comparison_replacement',
+         `geometrically_covers, geometrically_equals')
 
 dnl  The different kinds of binary operators.
 define(`m4_binop_replacement',
@@ -362,6 +376,9 @@ define(`m4_BD_Shape_binop_replacement',
          `m4_binop_replacement, bds_hull_assign')
 define(`m4_Octagonal_Shape_binop_replacement',
          `m4_binop_replacement, oct_hull_assign')
+define(`m4_Polyhedra_Powerset_binop_replacement',
+          `intersection_assign, poly_difference_assign, concatenate_assign,
+           time_elapse_assign')
 
 dnl  The different kinds of "and_minimize" binary operators.
 define(`m4_binminop_replacement', `intersection_assign_and_minimize')
