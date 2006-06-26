@@ -27,11 +27,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #define OPEN_PRODUCT
+#define GRID_IS_D1
 
 #ifdef OPEN_PRODUCT
+#ifdef GRID_IS_D1
+typedef Open_Product<Grid, NNC_Polyhedron> Product;
+#else
 typedef Open_Product<NNC_Polyhedron, Grid> Product;
+#endif
+#else
+#ifdef GRID_IS_D1
+typedef Direct_Product<Grid, NNC_Polyhedron> Product;
 #else
 typedef Direct_Product<NNC_Polyhedron, Grid> Product;
+#endif
 #endif
 
 namespace {
@@ -91,8 +100,13 @@ test04() {
   Grid known_gr(1);
   known_gr.add_congruence((A %= 0) / 4);
 
+#ifdef GRID_IS_D1
+  bool ok = (dp.domain1() == known_gr
+	     && dp.domain2() == known_ph);
+#else
   bool ok = (dp.domain1() == known_ph
 	     && dp.domain2() == known_gr);
+#endif
 
   return ok;
 }
@@ -129,7 +143,11 @@ test06() {
   Grid known_gr(1);
   known_gr.add_congruence(A == 9);
 
+#ifdef GRID_IS_D1
+  bool ok = (dp1 == dp2 && dp1.domain1() == known_gr);
+#else
   bool ok = (dp1 == dp2 && dp1.domain2() == known_gr);
+#endif
 
   return ok;
 }
@@ -147,7 +165,11 @@ test07() {
   Grid known_gr(2, EMPTY);
   known_gr.add_grid_generator(grid_point(A + B));
 
+#ifdef GRID_IS_D1
+  bool ok = (dp.domain1() == known_gr);
+#else
   bool ok = (dp.domain2() == known_gr);
+#endif
 
   return ok;
 }
@@ -165,7 +187,11 @@ test08() {
   Grid known_gr(3, EMPTY);
   known_gr.add_grid_generator(grid_point(A + 7*C));
 
+#ifdef GRID_IS_D1
+  bool ok = (dp.domain1() == known_gr);
+#else
   bool ok = (dp.domain2() == known_gr);
+#endif
 
   return ok;
 }
@@ -187,7 +213,11 @@ test09() {
   NNC_Polyhedron known_ph(2);
   known_ph.add_constraint(3*B == 2);
 
+#ifdef GRID_IS_D1
+  bool ok = (dp.domain1() == known_gr && dp.domain2() == known_ph);
+#else
   bool ok = (dp.domain1() == known_ph && dp.domain2() == known_gr);
+#endif
 
   return ok;
 }
@@ -210,7 +240,11 @@ test10() {
 
   NNC_Polyhedron known_ph(2);
 
+#ifdef GRID_IS_D1
+  bool ok = (dp.domain1() == known_gr && dp.domain2() == known_ph);
+#else
   bool ok = (dp.domain1() == known_ph && dp.domain2() == known_gr);
+#endif
 
   return ok;
 }
@@ -278,33 +312,17 @@ test14() {
   dp.add_constraint(B == 2);
 
   bool ok = (dp.affine_dimension() == 1
+#ifdef GRID_IS_D1
+	     && dp.domain1().affine_dimension() == 2
+	     && dp.domain2().affine_dimension() == 1
+#else
 	     && dp.domain1().affine_dimension() == 1
-	     && dp.domain2().affine_dimension() == 2);
+	     && dp.domain2().affine_dimension() == 2
+#endif
+	     );
 
   return ok;
 }
-
-#define define_identical(type)					\
-  bool								\
-  identical(const type& cs1, const type& cs2) {			\
-    type::const_iterator i1 = cs1.begin();			\
-    type::const_iterator i2 = cs2.begin();			\
-    type::const_iterator cs1_end = cs1.end();			\
-    type::const_iterator cs2_end = cs2.end();			\
-    for (; i1 != cs1_end && i2 != cs2_end; ++i1, ++i2) {	\
-      if (i1->space_dimension() != i2->space_dimension())	\
-	return false;						\
-      for (dimension_type d = i1->space_dimension(); d-- > 0; )	\
-	if (i1->coefficient(Variable(d))			\
-	    != i2->coefficient(Variable(d)))			\
-	  return false;						\
-    }								\
-    if (i2 == cs2.end() && i1 == cs1.end())			\
-      return true;						\
-    return false;						\
-  }
-
-define_identical(Congruence_System);
 
 // congruences()
 bool
@@ -318,11 +336,14 @@ test15() {
   dp.add_congruence(B + C %= 3);
 
   Congruence_System cgs;
-  cgs.insert(Linear_Expression(0) %= -1);
-  cgs.insert(A %= 9);
-  cgs.insert(B + C %= 3);
+  cgs.insert(B + C %= 0);
+  cgs.insert(A %= 0);
 
-  bool ok = identical(dp.congruences(), cgs);
+  Grid known_gr(cgs);
+
+  Grid gr(dp.congruences());
+
+  bool ok = gr == known_gr;
 
   return ok;
 }
@@ -340,11 +361,14 @@ test16() {
   dp.add_constraint(A <= 9);
 
   Congruence_System cgs;
-  cgs.insert(B + C %= 0);
+  cgs.insert(B + C %= 3);
   cgs.insert((A %= 9) / 0);
-  cgs.insert(Linear_Expression(0) %= -1);
 
-  bool ok = identical(dp.minimized_congruences(), cgs);
+  Grid known_gr(cgs);
+
+  Grid gr(dp.minimized_congruences());
+
+  bool ok = gr == known_gr;
 
   return ok;
 }
@@ -1644,7 +1668,11 @@ test77() {
   dp.add_grid_generator(grid_point());
   dp.add_grid_generator(grid_point(A + 2*B - 3*C, 3));
   dp.add_generator(point(A));
+#ifdef GRID_IS_D1
+  dp.domain2().constraints();
+#else
   dp.domain1().constraints();
+#endif
   dp.add_generator(closure_point());
   dp.add_generator(ray(A));
   dp.add_generator(ray(B));
@@ -1682,7 +1710,9 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+#ifdef OPEN_PRODUCT
   DO_TEST(test16);
+#endif
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
