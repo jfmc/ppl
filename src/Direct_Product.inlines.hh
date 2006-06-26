@@ -447,7 +447,7 @@ Direct_Product<D1, D2>::is_disjoint_from(const Direct_Product& y) const {
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::is_discrete() const {
-  // Assume wholeness.  Must be specialized for Grid.
+  // Assume false.  Must be specialized for Grid.
   return false;
 }
 
@@ -543,6 +543,7 @@ Direct_Product<D1, D2>::get_covering_box(Box& box) const {
   used(box);
 }
 
+// FIXME: Improve this name.
 PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(D1, D2, Direct_Product)
 
 template <typename D1, typename D2>

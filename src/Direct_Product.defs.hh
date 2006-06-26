@@ -2146,6 +2146,30 @@ public:
   */
   Open_Product& operator=(const Open_Product& y);
 
+  //! Returns the system of constraints.
+  const Constraint_System& constraints() const;
+
+  //! Returns the system of constraints in reduced form.
+  const Constraint_System& minimized_constraints() const;
+
+  //! Returns the system of congruences.
+  const Congruence_System& congruences() const;
+
+  //! Returns the system of congruences in reduced form.
+  const Congruence_System& minimized_congruences() const;
+
+  //! Returns the system of generators.
+  const Generator_System& generators() const;
+
+  //! Returns the minimized system of generators.
+  const Generator_System& minimized_generators() const;
+
+  //! Returns the system of grid generators.
+  const Grid_Generator_System& grid_generators() const;
+
+  //! Returns the minimized system of grid generators.
+  const Grid_Generator_System& minimized_grid_generators() const;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is an empty
     product.
