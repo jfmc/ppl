@@ -111,7 +111,7 @@ define(`m4_init_cplusplus_classes_aux', `dnl
 ifelse($2, `',  `',
   regexp(`$2', `\([^@]+\)@?\(.*\)',
     `m4_init_cplusplus_names(`$1',
-      patsubst(patsubst(\1, COMMA, @COMMA@), ` ', `'), `\2')'))`'dnl
+      patsubst(\1, COMMA, @COMMA@), `\2')'))`'dnl
 ')
 
 dnl m4_init_cplusplus_names(Class_Counter, Class, Class_List)
@@ -349,7 +349,9 @@ dnl
 define(`m4_Polyhedra_Powerset_friend_replacement', `dnl
 dnl
 m4_interface_class`'$1`'dnl
-m4_same_class_kind(Polyhedron, interface)`'dnl
+dnl FIXME:
+dnl Seems to need topology here.
+dnl m4_same_class_kind(Polyhedron, interface)`'dnl
 ')
 dnl
 define(`m4_Polyhedra_Powerset_friend_alt_replacement', `dnl
