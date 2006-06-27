@@ -22,6 +22,7 @@
 
 # Interface generator files.
 interface_generator_files = \
+../ppl_interface_generator_common_dat.m4 \
 ppl_interface_generator_c_dat.m4 \
 ppl_interface_generator_c_h.m4 \
 ppl_interface_generator_c_h_code.m4 \
