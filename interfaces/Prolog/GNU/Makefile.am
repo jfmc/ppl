@@ -21,8 +21,8 @@
 # site: http://www.cs.unipr.it/ppl/ .
 
 EXTRA_DIST = \
-ppl_gprolog_sd.cc \
 ppl_interface_generator_gprolog_pl.m4 \
+ppl_gprolog_sd.cc \
 gp_clpq.pl \
 gnu_pl_check.pl
 
@@ -45,7 +45,16 @@ $(top_builddir)/Watchdog/src/libpwl.la \
 @extra_libraries@
 libppl_gprolog_la_LDFLAGS = -module -avoid-version
 
-ppl_gprolog.pl: ppl_interface_generator_gprolog_pl.m4 Makefile
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_gprolog_pl.m4
+
+ppl_gprolog.pl: $(interface_generator_dependencies) Makefile
 	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_gprolog_pl.m4 > $@
 

@@ -41,16 +41,23 @@ expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a
 
 if BUILD_XSB_PROLOG_INTERFACE
 
-ppl_xsb.H: ppl_interface_generator_xsb_H.m4 Makefile
+BUILT_SOURCES = ppl_xsb.H ppl_xsb.cc
+
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4
+
+ppl_xsb.H: $(interface_generator_dependencies) ppl_interface_generator_xsb_H.m4 Makefile
 	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_H.m4 > $@
 
-BUILT_SOURCES = ppl_xsb.cc
-
-ppl_xsb.cc: ppl_interface_generator_xsb_cc.m4 Makefile
+ppl_xsb.cc: $(interface_generator_dependencies) ppl_interface_generator_xsb_cc.m4 Makefile
 	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_cc.m4 > $@
-
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/interfaces/Prolog \

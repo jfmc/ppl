@@ -23,6 +23,7 @@
 SICSTUS_CFLI_FILES = sicstus_cfli.h sicstus_cfli.ic sicstus_cfli.cc
 
 EXTRA_DIST = \
+ppl_interface_generator_sicstus_sd_cc.m4 \
 $(SICSTUS_CFLI_FILES) \
 ppl_sicstus_sd.cc \
 ppl_sicstus.pl \
@@ -40,7 +41,16 @@ $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 
 BUILT_SOURCES = ppl_sicstus_sd.cc
 
-ppl_sicstus_sd.cc: ppl_interface_generator_sicstus_sd_cc.m4 Makefile
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_sicstus_sd_cc.m4
+
+ppl_sicstus_sd.cc: $(interface_generator_dependencies) Makefile
 	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_sicstus_sd_cc.m4 > $@
 

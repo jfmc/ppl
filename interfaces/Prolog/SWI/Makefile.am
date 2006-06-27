@@ -21,6 +21,7 @@
 # site: http://www.cs.unipr.it/ppl/ .
 
 EXTRA_DIST = \
+ppl_interface_generator_swiprolog_cc.m4 \
 ppl_swiprolog.pl \
 pl_clpq.cc \
 pl_clpq.pl \
@@ -38,9 +39,16 @@ $(SWI_PROLOG_INCLUDE_OPTIONS) \
 
 BUILT_SOURCES = ppl_swiprolog.cc
 
-nodist_noinst_HEADERS = ppl_swiprolog.cc
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_swiprolog_cc.m4
 
-ppl_swiprolog.cc: ppl_interface_generator_swiprolog_cc.m4 Makefile
+ppl_swiprolog.cc: $(interface_generator_dependencies) Makefile
 	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_swiprolog_cc.m4 > $@
 

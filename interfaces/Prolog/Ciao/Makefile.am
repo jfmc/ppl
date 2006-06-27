@@ -22,7 +22,11 @@
 
 abs_srcdir = @abs_srcdir@
 
-EXTRA_DIST = ppl_ciao.pl ciao_clpq.pl ciao_clpq2.pl ciao_pl_check.pl
+EXTRA_DIST = \
+ppl_interface_generator_ciao_pl.m4 \
+ciao_clpq.pl \
+ciao_clpq2.pl \
+ciao_pl_check.pl
 
 if BUILD_CIAO_PROLOG_INTERFACE
 if ENABLE_SHARED
@@ -43,7 +47,16 @@ libppl_ciao_la_LDFLAGS = -module -avoid-version
 
 pkglib_DATA = ppl_ciao.po
 
-ppl_ciao.pl: ppl_interface_generator_ciao_pl.m4 Makefile
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_ciao_pl.m4
+
+ppl_ciao.pl: $(interface_generator_dependencies) Makefile
 	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_ciao_pl.m4 > $@
 
