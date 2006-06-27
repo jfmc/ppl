@@ -297,11 +297,12 @@ m4_filter_all($1, shift(shift($@)))`'dnl
 ')`'dnl
 ')
 
-dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
-dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
+dnl m4_pre_extra_class_code(Class_Counter, Class_Kind)
+dnl m4_post_extra_class_code(Class_Counter, Class_Kind)
 dnl Default (empty) definitions for pre- and post- code for each class.
 define(`m4_pre_extra_class_code', `')
 define(`m4_post_extra_class_code', `')
+define(`m4_init_all_classes_code', `')
 
 dnl m4_one_class_code(Class_Counter, Class_Kind)
 dnl
@@ -334,6 +335,12 @@ ifdef(m4_interface_class`'$1,
 m4_all_classes_loop(incr($1))')`'dnl
 ')
 
+dnl m4_pre_all_classes_code
+dnl
+dnl Default (empty) definitions for code that must
+dnl be placed before all classes code.
+define(`m4_pre_all_classes_code', `')
+
 dnl m4_all_classes_code
 dnl
 dnl This initializes the macros for the classes requested by the user
@@ -350,6 +357,7 @@ define(`m4_all_classes_code', `dnl
 dnl Provides the class name macro definitions by calling
 m4_init_interface_classes(m4_interface_classes_names)`'dnl
 m4_init_cplusplus_classes(m4_cplusplus_classes_names)`'dnl
+m4_pre_all_classes_code`'dnl
 m4_all_classes_loop(1)`'dnl
 ')
 

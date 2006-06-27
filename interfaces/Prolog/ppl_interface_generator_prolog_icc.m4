@@ -15,6 +15,16 @@ m4_replace_all_patterns($1, m4_term_to_class_handle_code,
   m4_pattern_list)`'dnl
 ')
 
+dnl m4_pre_all_classes_code
+dnl
+dnl Definition for converting a term to a class handle code for all
+dnl classes must be placed before all the generated code so that one class
+dnl can be copied from another.
+define(`m4_pre_all_classes_code', `dnl
+m4_forloop(m4_ind, 1, m4_num_classes,
+  `m4_add_term_to_class_handle_code(m4_ind)')`'dnl
+')
+
 dnl m4_add_bop_assign_code(Class, CPP_Class)
 dnl
 dnl Adds the extra code used by the binary operators.
@@ -34,7 +44,7 @@ m4_replace_all_patterns($1, widening_extrapolation_code,
 dnl m4_pre_extra_class_code(Class_Counter, Class_Kind)
 dnl Prefix extra code for each class.
 define(`m4_pre_extra_class_code', `dnl
-m4_add_term_to_class_handle_code($1)`'dnl
+dnl m4_add_term_to_class_handle_code($1)`'dnl
 m4_add_bop_assign_code($1)`'dnl
 m4_add_widening_extrapolation_code($1, $2)`'dnl
 ')

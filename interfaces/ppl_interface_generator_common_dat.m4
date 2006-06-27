@@ -279,11 +279,92 @@ define(`m4_cpp_class_replacement', m4_cplusplus_class`'$1)
 dnl The friend class name.
 define(`m4_friend_replacement', m4_interface_class`'$1)
 define(`m4_friend_alt_replacement', m4_cplusplus_class`'$1)
-# define(`m4_BD_Shape_friend_replacement',
-#   `ifelse(`index(m4_cpluplus_classes_names, Polyhedron)', -1,
-#     `m4_friend_replacement($1)', `m4_friend_replacement($1), Polyhedron')')
-# define(`m4_BD_Shape_friend_alt_replacement',
-#     m4_cplusplus_class`'$1)
+
+dnl For BD_Shape class kind, any class with the same kind is a friend
+dnl Also the class Polyhedron is a friend if Polyhedron is a
+dnl generated class.
+dnl
+dnl FIXME:
+dnl This is defined specifically for the BD_Shape class kind,
+dnl but it could be written more generically for reuse with any class kind.
+dnl The code for the Polyhedron friend class here could be simpler
+dnl Currently it is just a clone of the BD_Shape friend class code.
+define(`m4_BD_Shape_friend_replacement', `dnl
+dnl
+dnl Initialise a flag to ensure the comma in the list is a separator only.
+define(`m4_start_replacement', 0)`'dnl
+dnl
+dnl Make all classes with class kind BD_Shape a friend
+m4_forloop(m4_ind, 1, m4_num_classes, `dnl
+dnl
+dnl Temporary definitions for the loop iteration.
+define(`m4_this_class_kind', m4_class_kind`'m4_ind)`'dnl
+define(`m4_this_int_class', m4_interface_class`'m4_ind)`'dnl
+ifelse(BD_Shape, m4_this_class_kind,
+  `ifelse(m4_start_replacement, 0,
+     `undefine(`m4_start_replacement')`'m4_this_int_class',
+    `, 'm4_this_int_class)')`'dnl
+dnl
+dnl Undefine temporary definitions before next iteration of loop.
+undefine(`m4_this_class_kind')`'dnl
+undefine(`m4_this_int_class')`'dnl
+')`'dnl
+dnl
+dnl Make all classes with class kind Polyhedron a friend
+m4_forloop(m4_ind, 1, m4_num_classes, `dnl
+dnl
+dnl Temporary definitions for the loop iteration.
+define(`m4_this_class_kind', m4_class_kind`'m4_ind)`'dnl
+define(`m4_this_int_class', m4_interface_class`'m4_ind)`'dnl
+ifelse(Polyhedron, m4_this_class_kind,
+  `ifelse(m4_start_replacement, 0,
+     `undefine(`m4_start_replacement')`'m4_this_int_class',
+    `, 'm4_this_int_class)')`'dnl
+dnl
+dnl Undefine temporary definitions before next iteration of loop.
+undefine(`m4_this_class_kind')`'dnl
+undefine(`m4_this_int_class')`'dnl
+')`'dnl
+')
+dnl
+dnl Defines the alternative friend name for cplusplus code.
+dnl This code is a clone of the previous macro definition.
+dnl
+define(`m4_BD_Shape_friend_alt_replacement', `dnl
+define(`m4_start_replacement', 0)`'dnl
+dnl
+dnl Make all classes with class kind BD_Shape a friend
+m4_forloop(m4_ind, 1, m4_num_classes, `dnl
+dnl
+dnl Temporary definitions for the loop iteration.
+define(`m4_this_class_kind', m4_class_kind`'m4_ind)`'dnl
+define(`m4_this_cpp_class', m4_cplusplus_class`'m4_ind)`'dnl
+ifelse(BD_Shape, m4_this_class_kind,
+  `ifelse(m4_start_replacement, 0,
+     `undefine(`m4_start_replacement')`'m4_this_cpp_class',
+    `, 'm4_this_cpp_class)')`'dnl
+dnl
+dnl Undefine temporary definitions before next iteration of loop.
+undefine(`m4_this_class_kind')`'dnl
+undefine(`m4_this_cpp_class')`'dnl
+')`'dnl
+dnl
+dnl Make all classes with class kind Polyhedron a friend
+m4_forloop(m4_ind, 1, m4_num_classes, `dnl
+dnl
+dnl Temporary definitions for the loop iteration.
+define(`m4_this_class_kind', m4_class_kind`'m4_ind)`'dnl
+define(`m4_this_cpp_class', m4_cplusplus_class`'m4_ind)`'dnl
+ifelse(Polyhedron, m4_this_class_kind,
+  `ifelse(m4_start_replacement, 0,
+     `undefine(`m4_start_replacement')`'m4_this_cpp_class',
+    `, 'm4_this_cpp_class)')`'dnl
+dnl
+dnl Undefine temporary definitions before next iteration of loop.
+undefine(`m4_this_class_kind')`'dnl
+undefine(`m4_this_cpp_class')`'dnl
+')`'dnl
+')
 
 dnl The topology of the domain element. The default is the empty string.
 define(`m4_topology_replacement', `')
