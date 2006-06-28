@@ -94,7 +94,7 @@ dnl Parses the "@"-separated list of class names Class_List
 dnl to be used in the C++ code implementing the interface procedures.
 dnl Note that first the "," is replaced using the macro m4_subst_comma.
 define(`m4_init_cplusplus_classes',
- `m4_init_cplusplus_classes_aux(1, m4_subst_comma($@))')
+  `m4_init_cplusplus_classes_aux(1, m4_subst_comma($@))')
 
 dnl m4_init_cplusplus_classes_aux(Class_Counter, Class_List)
 dnl
@@ -112,6 +112,14 @@ ifelse($2, `',  `',
   regexp(`$2', `\([^@]+\)@?\(.*\)',
     `m4_init_cplusplus_names(`$1',
       patsubst(\1, COMMA, @COMMA@), `\2')'))`'dnl
+')
+
+dnl m4_prefix_polyhedron(Class, String)
+dnl
+dnl Every occurrence of Polyhedron in the name is replaced by
+dnl String_Polyhedron.
+define(`m4_prefix_polyhedron', `dnl
+patsubst($1, Polyhedron, $2_Polyhedron)`'dnl
 ')
 
 dnl m4_init_cplusplus_names(Class_Counter, Class, Class_List)
@@ -135,11 +143,15 @@ dnl to process the rest of the list with a new value for the class counter.
 define(`m4_init_cplusplus_names', `dnl
 ifelse(
   index($2, Polyhedron), -1, `m4_init_cplusplus_names_aux($1, $2)`'dnl
+define(m4_class_topology`'$1, `')`'dnl
 m4_init_cplusplus_classes_aux(incr($1), $3)',
   $2, `Polyhedron', `m4_init_cplusplus_names_aux($1, $2)`'dnl
+define(m4_class_topology`'$1, `')`'dnl
 m4_init_cplusplus_classes_aux(incr($1), $3)',
-    `m4_init_cplusplus_names_aux($1, m4_prefix_polyhedron($2, C))`'dnl
+  `m4_init_cplusplus_names_aux($1, m4_prefix_polyhedron($2, C))`'dnl
+define(m4_class_topology`'$1, C_)`'dnl
 m4_init_cplusplus_names_aux(incr($1), m4_prefix_polyhedron($2, NNC))`'dnl
+define(m4_class_topology`'incr($1), NNC_)`'dnl
 m4_init_cplusplus_classes_aux(incr(incr($1)), $3)')`'dnl
 ')
 
@@ -186,7 +198,7 @@ define(`m4_get_class_body',
   `define(m4_class_body`'$1,
     `ifelse(`$2', `', ,
       `ifelse(index(`$2', <), -1, `',
-        `regexp(`$2', `[^ <]+\([<]\(.*\)[>]\)', `\1')')')')')
+        `regexp(`$2', `[^ <]+[<]\(.*\w>?\)[ ]*[>]', `\1')')')')')
 
 
 dnl m4_group_names expands to all the group names.
@@ -277,86 +289,103 @@ dnl The cplusplus class name.
 define(`m4_cpp_class_replacement', m4_cplusplus_class`'$1)
 
 dnl The friend class name.
+dnl First the default - every class is a friend of itself.
 define(`m4_friend_replacement', m4_interface_class`'$1)
 define(`m4_friend_alt_replacement', m4_cplusplus_class`'$1)
 
-dnl m4_same_class_kind(Class_Kind, Name_Type)
+dnl Several classes for friend replacement use the next two macros:
+dnl m4_same_class_string/4 and m4_same_class_string_aux/4
+
+dnl m4_same_class_string(String, Name_Type, Class_Name_Type, Topology)
 dnl
-dnl Class_Kind = any class kind
+dnl String = class kind or cplusplus_class name (= the class body)
+dnl depending on Class_Name_Type.
 dnl Name_Type  = "interface" or "cplusplus".
-dnl This macro is just to define the friend replacements.
-dnl It expands to a comma separated list of all classes with class kind $1.
-dnl The macro expands to either the full interface name or cplusplus
-dnl name, deleding o whether $2 = "interface" or "cplusplus"
-define(`m4_same_class_kind', `dnl
-dnl Find all interface class names with class kind $1
+dnl Class_Name_Type = "class_kind" or "cplusplus_class".
+dnl This and the "_aux"  macros are needed to define the friend replacements.
+dnl The macro expands to a list of either the full interface name or cplusplus
+dnl name, depending on whether $2 = "interface" or "cplusplus"
+define(`m4_same_class_string', `dnl
+dnl Find all interface class names for $1 in the class list.
 m4_forloop(m4_ind, 1, m4_num_classes, `dnl
-dnl
-dnl Temporary definitions for the loop iteration.
-define(`m4_this_class_kind', m4_class_kind`'m4_ind)`'dnl
-define(`m4_this_class', m4_$2_class`'m4_ind)`'dnl
-ifelse($1, m4_this_class_kind,
-  `ifelse(m4_start_replacement, 0,
-     `undefine(`m4_start_replacement')`'m4_this_class',
-    `, 'm4_this_class)')`'dnl
-dnl
-dnl Undefine temporary definitions before next iteration of loop.
-undefine(`m4_this_class_kind')`'dnl
-undefine(`m4_this_class')`'dnl
+m4_same_class_string_aux(
+  $1, m4_$4`'m4_ind, m4_$2_class`'m4_ind, $3)`'dnl
 ')`'dnl
 ')
 
-dnl For BD_Shape class kind, any class with kind BD_Shape is a friend
+define(`m4_same_class_string_aux', `dnl
+dnl comma is a separator so the first element has no comma.
+ifelse($1, $4`'$2,
+  `ifelse(m4_replace_list_start, 0,
+     `undefine(`m4_replace_list_start')$4`'$3',
+    `, '$4`'$3)')`'dnl
+')
+
+dnl For BD_Shape class kind, any generated class with kind BD_Shape
+dnl is a friend.
 dnl Also if Polyhedron is a generated class it is a friend
 dnl
 define(`m4_BD_Shape_friend_replacement', `dnl
 dnl
 dnl Initialise a flag to ensure the comma in the list is a separator only.
-define(`m4_start_replacement', 0)`'dnl
-m4_same_class_kind(BD_Shape, interface)`'dnl
-dnl m4_same_class_kind(Polyhedron, interface)`'dnl
+define(`m4_replace_list_start', 0)`'dnl
+m4_same_class_string(
+  BD_Shape, interface, m4_class_topology$1, class_kind)`'dnl
+m4_same_class_string(
+  Polyhedron, interface, m4_class_topology$1, class_kind)`'dnl
 ')
 dnl
 dnl Defines the alternative friend name for cplusplus code.
 define(`m4_BD_Shape_friend_alt_replacement', `dnl
-define(`m4_start_replacement', 0)`'dnl
-m4_same_class_kind(BD_Shape, cplusplus)`'dnl
-dnl m4_same_class_kind(Polyhedron, cplusplus)`'dnl
+define(`m4_replace_list_start', 0)`'dnl
+m4_same_class_string(
+  BD_Shape, cplusplus, m4_class_topology$1, class_kind)`'dnl
+m4_same_class_string(
+  Polyhedron, cplusplus, m4_class_topology$1, class_kind)`'dnl
 ')
 
-dnl For Octagon class kind, any class with kind Octagon is a friend
+dnl For Octagon class kind, any generated class with kind BD_Shape
+dnl is a friend.
 dnl Also if Polyhedron is a generated class it is a friend
 dnl
 define(`m4_Octagon_friend_replacement', `dnl
 dnl
 dnl Initialise a flag to ensure the comma in the list is a separator only.
-define(`m4_start_replacement', 0)`'dnl
-m4_same_class_kind(Octagon, interface)`'dnl
-m4_same_class_kind(Polyhedron, interface)`'dnl
+define(`m4_replace_list_start', 0)`'dnl
+m4_same_class_string(
+  Octagon, interface, m4_class_topology$1, class_kind)`'dnl
+m4_same_class_string(
+  Polyhedron, interface, m4_class_topology$1, class_kind)`'dnl
 ')
 dnl
 define(`m4_Octagon_friend_alt_replacement', `dnl
 dnl
 dnl Initialise a flag to ensure the comma in the list is a separator only.
-define(`m4_start_replacement', 0)`'dnl
-m4_same_class_kind(Octagon, cplusplus)`'dnl
-m4_same_class_kind(Polyhedron, cplusplus)`'dnl
+define(`m4_replace_list_start', 0)`'dnl
+m4_same_class_string(
+  Octagon, cplusplus, m4_class_topology$1, class_kind)`'dnl
+m4_same_class_string(
+  Polyhedron, cplusplus, m4_class_topology$1, class_kind)`'dnl
 ')
 
-dnl For Polyhedra_Powerset class kind, if class Polyhedron is
-dnl a generated class, it is a friend
+dnl For Polyhedra_Powerset class kind, if the body is C_Polyhedron
+dnl or NNC_Polyhedron,
+dnl and Polyhedron is generated, then C_Polyhedron
+dnl (if the body is C_Polyhedron) or
+dnl NNC_Polyhedron (if the body is NNCC_Polyhedron)
+dnl is a friend. 
 dnl
 define(`m4_Polyhedra_Powerset_friend_replacement', `dnl
 dnl
-m4_interface_class`'$1`'dnl
-dnl FIXME:
-dnl Seems to need topology here.
-dnl m4_same_class_kind(Polyhedron, interface)`'dnl
+m4_interface_class$1`'dnl
+m4_same_class_string(
+  m4_class_body$1, interface, m4_class_topology$1, cplusplus_class)`'dnl
 ')
 dnl
 define(`m4_Polyhedra_Powerset_friend_alt_replacement', `dnl
-m4_cplusplus_class`'$1`'dnl
-m4_same_class_kind(Polyhedron, cplusplus)`'dnl
+m4_cplusplus_class$1`'dnl
+m4_same_class_string(
+  m4_class_body$1, cplusplus, m4_class_topology$1, cplusplus_class)`'dnl
 ')
 
 dnl The topology of the domain element. The default is the empty string.

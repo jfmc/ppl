@@ -13,6 +13,10 @@ dnl Adds the code to convert a term to a Class handle.
 define(`m4_add_term_to_class_handle_code', `dnl
 m4_replace_all_patterns($1, m4_term_to_class_handle_code,
   m4_pattern_list)`'dnl
+ifelse(m4_cplusplus_class$1, Polyhedron, `dnl
+m4_replace_all_patterns($1, m4_term_to_topology_Polyhedron_handle_code,
+  m4_pattern_list)`'dnl
+')`'dnl
 ')
 
 dnl m4_pre_all_classes_code

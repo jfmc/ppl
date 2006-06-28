@@ -40,6 +40,18 @@ term_to_@CLASS@_handle(Prolog_term_ref t_ph) {
 
 ')
 
+define(`m4_term_to_topology_Polyhedron_handle_code', `dnl
+namespace {
+
+inline @TOPOLOGY@Polyhedron*
+term_to_@TOPOLOGY@Polyhedron_handle(Prolog_term_ref t_ph) {
+  return static_cast<@TOPOLOGY@Polyhedron*>(term_to_Polyhedron_handle(t_ph));
+}
+
+} // namespace
+
+')
+
 define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
