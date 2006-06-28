@@ -265,12 +265,14 @@ cpp_class,
 friend,
 intopology,
 topology,
+disjunct,
 represent,
 dimension,
 generator,
 point,
 constrainer,
 state,
+simplify,
 abovebelow,
 maxmin,
 embedproject,
@@ -423,6 +425,34 @@ dnl  The constrainer objects used to describe a class.
 define(`m4_constrainer_replacement', `constraint')
 define(`m4_Grid_constrainer_replacement', `congruence')
 
+dnl The different kinds of objects that are elements of a Polyhedra_Powerset.
+
+dnl The class body is a cplusplus name but we also need the matching
+dnl interface name.
+dnl The interface name is found using two auxilliary macros:
+dnl m4_get_interface_class_name/2 and
+dnl m4_get_interface_class_name_aux/4
+
+dnl m4_get_interface_class_name(Cpp_Class_Name, Topology)
+dnl
+dnl expands to the interface name for the cplusplus class.
+dnl If the class is C_Polyhderon or NNC_Polyhedron
+dnl then the topology has to be added to the configuration name.
+define(`m4_get_interface_class_name', `dnl
+m4_forloop(m4_ind, 1, m4_num_classes, `dnl
+m4_get_interface_class_name_aux(
+  $1, m4_cplusplus_class`'m4_ind, $2, m4_interface_class`'m4_ind)')`'dnl
+')
+
+define(`m4_get_interface_class_name_aux', `dnl
+ifelse($1, $3`'$2, $3`'$4)`'dnl
+')
+
+define(`m4_disjunct_replacement', `dnl
+m4_get_interface_class_name(m4_class_body`'$1, m4_class_topology`'$1)`'dnl
+')
+define(`m4_disjunct_alt_replacement', m4_class_body`'$1)')
+
 dnl  The different kinds of objects use to represent a class.
 define(`m4_represent_replacement', `constraint')
 define(`m4_Polyhedron_represent_replacement',
@@ -444,6 +474,10 @@ define(`m4_Polyhedron_state_replacement',
 define(`m4_Grid_state_replacement',
         `m4_state_replacement, topologically_closed, discrete')
 define(`m4_Polyhedra_Powerset_state_replacement',`')
+
+dnl  The "simplify" predicates
+define(`m4_simplify_replacement', `topological_closure_assign')
+define(`m4_Polyhedra_Powerset_simplify_replacement', `pairwise_reduce')
 
 dnl  Above or below
 define(`m4_abovebelow_replacement', `above, below')

@@ -504,13 +504,13 @@ ppl_@CLASS@_is_@STATE@(Prolog_term_ref t_ph) {
 
 ')
 
-define(`ppl_@CLASS@_topological_closure_assign_code',
+define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_topological_closure_assign(Prolog_term_ref t_ph) {
+ppl_@CLASS@_@SIMPLIFY@(Prolog_term_ref t_ph) {
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    ph->topological_closure_assign();
+    ph->@SIMPLIFY@();
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -653,6 +653,35 @@ ppl_@CLASS@_add_@REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
 }
 
 ')
+
+define(`ppl_@CLASS@_add_disjunct_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
+  try {
+    @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
+    CHECK(ph);
+    @ALT_DISJUNCT@* d = term_to_@DISJUNCT@_handle(t_d);
+    CHECK(d);
+    ph->add_disjunct(*d);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+# extern "C" Prolog_foreign_return_type
+# ppl_Polyhedra_Powerset_BD_Shape_mpq_class_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
+#   try {
+#     Polyhedra_Powerset<BD_Shape<mpq_class> >* ph = term_to_Polyhedra_Powerset_BD_Shape_mpq_class_handle(t_ph);
+#     CHECK(ph);
+#     BD_Shape<mpq_class>* d = term_to_BD_Shape_mpq_class_handle(t_d);
+#     CHECK(d);
+#     ph->add_disjunct(*d);
+#     return PROLOG_SUCCESS;
+#   }
+#   CATCH_ALL;
+# }
 
 define(`ppl_@CLASS@_add_@REPRESENT@_and_minimize_code',
 `extern "C" Prolog_foreign_return_type
