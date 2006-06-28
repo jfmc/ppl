@@ -165,7 +165,7 @@ dnl class_kind`'Class_Counter and class_body`'Class_Counter,
 dnl where the kind is the part preceding the first "<"
 dnl and the body is the rest of the full cplusplus name.
 define(`m4_init_cplusplus_names_aux', `dnl
-  define(m4_cplusplus_class`'$1, `$2')`'dnl
+define(m4_cplusplus_class`'$1, `$2')`'dnl
 m4_get_class_kind(`$1', `$2')`'dnl
 m4_get_class_body(`$1', `$2')`'dnl
 ')
@@ -334,7 +334,7 @@ m4_same_class_string(
 m4_same_class_string(
   Polyhedron, interface, m4_class_topology$1, class_kind)`'dnl
 ')
-dnl
+
 dnl Defines the alternative friend name for cplusplus code.
 define(`m4_BD_Shape_friend_alt_replacement', `dnl
 define(`m4_replace_list_start', 0)`'dnl
@@ -349,18 +349,14 @@ dnl is a friend.
 dnl Also if Polyhedron is a generated class it is a friend
 dnl
 define(`m4_Octagon_friend_replacement', `dnl
-dnl
-dnl Initialise a flag to ensure the comma in the list is a separator only.
 define(`m4_replace_list_start', 0)`'dnl
 m4_same_class_string(
   Octagon, interface, m4_class_topology$1, class_kind)`'dnl
 m4_same_class_string(
   Polyhedron, interface, m4_class_topology$1, class_kind)`'dnl
 ')
-dnl
+
 define(`m4_Octagon_friend_alt_replacement', `dnl
-dnl
-dnl Initialise a flag to ensure the comma in the list is a separator only.
 define(`m4_replace_list_start', 0)`'dnl
 m4_same_class_string(
   Octagon, cplusplus, m4_class_topology$1, class_kind)`'dnl
@@ -373,7 +369,7 @@ dnl or NNC_Polyhedron,
 dnl and Polyhedron is generated, then C_Polyhedron
 dnl (if the body is C_Polyhedron) or
 dnl NNC_Polyhedron (if the body is NNCC_Polyhedron)
-dnl is a friend. 
+dnl is a friend.
 dnl
 define(`m4_Polyhedra_Powerset_friend_replacement', `dnl
 dnl
