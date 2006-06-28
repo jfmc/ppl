@@ -306,6 +306,33 @@ ppl_@CLASS@_get_minimized_@DESCRIBE@s
 
 ')
 
+define(`ppl_@CLASS@_get_disjuncts_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_get_disjuncts(Prolog_term_ref t_pps,
+                                     Prolog_term_ref t_dlist) {
+  try {
+    const @CPP_CLASS@* pps = term_to_@CLASS@_handle(t_pps);
+    CHECK(pps);
+
+    Prolog_term_ref tail = Prolog_new_term_ref();
+    Prolog_put_atom(tail, a_nil);
+    for (@CPP_CLASS@::const_iterator i = pps->begin(),
+           pps_end = pps->end(); i != pps_end; ++i) {
+      Prolog_term_ref t_d = Prolog_new_term_ref();
+      Prolog_put_address(t_d,
+			 const_cast<void*>(static_cast<const void*>(&(*i))));
+      Prolog_construct_cons(tail, t_d, tail);
+    }
+
+    if (Prolog_unify(t_dlist, tail))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+
 define(`ppl_@CLASS@_relation_with_@DESCRIBE@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_relation_with_@DESCRIBE@
@@ -669,19 +696,6 @@ ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
 }
 
 ')
-
-# extern "C" Prolog_foreign_return_type
-# ppl_Polyhedra_Powerset_BD_Shape_mpq_class_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
-#   try {
-#     Polyhedra_Powerset<BD_Shape<mpq_class> >* ph = term_to_Polyhedra_Powerset_BD_Shape_mpq_class_handle(t_ph);
-#     CHECK(ph);
-#     BD_Shape<mpq_class>* d = term_to_BD_Shape_mpq_class_handle(t_d);
-#     CHECK(d);
-#     ph->add_disjunct(*d);
-#     return PROLOG_SUCCESS;
-#   }
-#   CATCH_ALL;
-# }
 
 define(`ppl_@CLASS@_add_@REPRESENT@_and_minimize_code',
 `extern "C" Prolog_foreign_return_type
