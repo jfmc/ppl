@@ -61,7 +61,11 @@ template <typename T>
 template <typename U>
 inline
 OR_Matrix<T>::Pseudo_Row<U>::Pseudo_Row()
-  : first(0) {
+  : first(0)
+#if EXTRA_ROW_DEBUG
+  , size_(0)
+#endif
+{
   // FIXME: is zeroing necessary/wanted?
 }
 
@@ -124,7 +128,15 @@ template <typename U>
 inline
 OR_Matrix<T>::any_row_iterator<U>
 ::any_row_iterator(const dimension_type n_rows)
-  : e(n_rows) {
+#if 0
+  : e(n_rows)
+#else
+  : value(),
+    e(n_rows),
+    // This zeroing will just silence an annoying compiler warning.
+    i(0)
+#endif
+{
 }
 
 template <typename T>
@@ -395,8 +407,7 @@ OR_Matrix<T>::swap(OR_Matrix& y) {
 
 //! Returns the integer square root of \p x.
 inline unsigned long
-isqrt(unsigned long x)
-{
+isqrt(unsigned long x) {
   unsigned long r = 0;
   for (unsigned long t = 0x40000000; t; t >>= 2) {
     unsigned long s = r + t;
