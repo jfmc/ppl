@@ -455,6 +455,7 @@ private:
 	       const Congruence_System& cgs);
 
   friend class Parma_Polyhedra_Library::Scalar_Products;
+  friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Congruence_System;
   friend class Parma_Polyhedra_Library::Congruence_System::const_iterator;
   // FIXME: The following friend declaration is at least for
