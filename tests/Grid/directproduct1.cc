@@ -222,6 +222,9 @@ test09() {
   return ok;
 }
 
+// FIXME: Waiting for covering box methods, details in
+//        Direct_Product.defs.hh.
+#if 0
 // Product(covering_box)
 bool
 test10() {
@@ -248,6 +251,7 @@ test10() {
 
   return ok;
 }
+#endif
 
 // operator=
 bool
@@ -335,11 +339,15 @@ test15() {
   dp.add_congruence(A %= 9);
   dp.add_congruence(B + C %= 3);
 
+#ifdef GRID_IS_D1
   Congruence_System cgs;
   cgs.insert(B + C %= 0);
   cgs.insert(A %= 0);
 
   Grid known_gr(cgs);
+#else
+  Grid known_gr(3);
+#endif
 
   Grid gr(dp.congruences());
 
@@ -361,8 +369,10 @@ test16() {
   dp.add_constraint(A <= 9);
 
   Congruence_System cgs;
+#ifdef GRID_IS_D1
   cgs.insert(B + C %= 3);
-  cgs.insert((A %= 9) / 0);
+#endif
+  cgs.insert((A + 0*C %= 9) / 0);
 
   Grid known_gr(cgs);
 
@@ -390,8 +400,10 @@ test17() {
 
   NNC_Polyhedron known_ph(dp.space_dimension());
   known_ph.add_constraint(B + C == 3);
+#ifndef GRID_IS_D1
   known_ph.add_constraint(A <= 11);
   known_ph.add_constraint(A > 9);
+#endif
 
   bool ok = (ph == known_ph);
 
@@ -414,9 +426,11 @@ test18() {
   ph.add_constraints(dp.constraints());
 
   NNC_Polyhedron known_ph(dp.space_dimension());
-  known_ph.add_constraint(A > 9);
   known_ph.add_constraint(B + C == 3);
+#ifndef GRID_IS_D1
+  known_ph.add_constraint(A > 9);
   known_ph.add_constraint(A <= 11);
+#endif
 
   bool ok = (ph == known_ph);
 
@@ -990,6 +1004,9 @@ test50() {
   return ok;
 }
 
+// FIXME: Waiting for covering box methods, details in
+//        Direct_Product.defs.hh.
+#if 0
 // get_covering_box(box), via grid.
 bool
 test51() {
@@ -1056,6 +1073,7 @@ test53() {
 
   return ok;
 }
+#endif
 
 // intersection_assign()
 bool
@@ -1362,6 +1380,8 @@ test65() {
   return ok;
 }
 
+// FIXME: Wait for implementation.
+#if 0
 // affine_image()
 bool
 test66() {
@@ -1618,6 +1638,7 @@ test75() {
 
   return ok;
 }
+#endif
 
 // time_elapse_assign(y)
 bool
@@ -1704,7 +1725,7 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
-  DO_TEST(test10);
+  //DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST(test13);
@@ -1751,9 +1772,11 @@ BEGIN_MAIN
   DO_TEST(test48);
   DO_TEST(test49);
   DO_TEST(test50);
+#if 0
   DO_TEST(test51);
   //DO_TEST(test52);
   DO_TEST(test53);
+#endif
   DO_TEST(test54);
   DO_TEST(test55);
   DO_TEST(test56);
@@ -1766,6 +1789,7 @@ BEGIN_MAIN
   DO_TEST(test63);
   DO_TEST(test64);
   DO_TEST(test65);
+#if 0
   DO_TEST(test66);
   DO_TEST(test67);
   DO_TEST(test68);
@@ -1776,6 +1800,7 @@ BEGIN_MAIN
   DO_TEST(test73);
   DO_TEST(test74);
   DO_TEST(test75);
+#endif
   DO_TEST_F8(test76);
   DO_TEST(test77);
 END_MAIN
