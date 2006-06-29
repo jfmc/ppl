@@ -469,5 +469,6 @@ private:
 };
 
 #include "Congruence.inlines.hh"
+#include "Congruence_System.inlines.hh"
 
 #endif // !defined(PPL_Congruence_defs_hh)

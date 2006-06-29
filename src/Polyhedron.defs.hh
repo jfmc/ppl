@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
 #include "Grid_Generator_System.defs.hh"
+#include "Grid_Generator_System.inlines.hh"
 #include "Saturation_Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Congruence.defs.hh"
