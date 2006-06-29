@@ -20,6 +20,8 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+SWI_CFLI_FILES = swi_cfli.h swi_cfli.ic swi_cfli.cc
+
 EXTRA_DIST = \
 ppl_interface_generator_swiprolog_cc.m4 \
 ppl_swiprolog.pl \
