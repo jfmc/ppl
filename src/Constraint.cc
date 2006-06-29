@@ -238,7 +238,7 @@ PPL_OUTPUT_DEFINITIONS(Constraint)
 
 bool
 PPL::Constraint::OK() const {
-  // Topology consistency check.
+  // Topology consistency checks.
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
   if (size() < min_size) {
 #ifndef NDEBUG
@@ -247,6 +247,14 @@ PPL::Constraint::OK() const {
 	      << std::endl
 	      << "size is " << size()
 	      << ", minimum is " << min_size << "."
+	      << std::endl;
+#endif
+    return false;
+  }
+
+  if (is_equality() && !is_necessarily_closed() && (*this)[size() - 1] != 0) {
+#ifndef NDEBUG
+    std::cerr << "Illegal constraint: an equality cannot be strict."
 	      << std::endl;
 #endif
     return false;
