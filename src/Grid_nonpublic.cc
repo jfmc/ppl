@@ -48,6 +48,59 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
+PPL::Grid::construct(dimension_type num_dimensions,
+		     const Degenerate_Element kind) {
+  space_dim = num_dimensions;
+
+  if (kind == EMPTY) {
+    // Set emptiness directly instead of with set_empty, as gen_sys is
+    // already correctly initialized.
+
+    status.set_empty();
+
+    // Extend the zero dim false congruence system to the appropriate
+    // dimension and then store it in `con_sys'.
+    Congruence_System cgs(Congruence::zero_dim_false());
+    cgs.increase_space_dimension(space_dim);
+    const_cast<Congruence_System&>(con_sys).swap(cgs);
+
+    assert(OK());
+    return;
+  }
+
+  if (num_dimensions > 0) {
+    con_sys.increase_space_dimension(num_dimensions);
+
+    // Initialise both systems to universe representations.
+
+    set_congruences_minimized();
+    set_generators_minimized();
+    dim_kinds.resize(num_dimensions + 1);
+
+    // Extend the zero dim integrality congruence system to the
+    // appropriate dimension and then store it in `con_sys'.
+    Congruence_System cgs(Congruence::zero_dim_integrality());
+    cgs.increase_space_dimension(space_dim);
+    cgs[0][0] = 1; // Recover minimal form after cgs(zdi) normalization.
+    con_sys.swap(cgs);
+
+    dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a. PARAMETER */;
+
+    // Trivially true point.
+    gen_sys.insert(grid_point(0*(Variable(0))));
+
+    // A line for each dimension.
+    dimension_type dim = 0;
+    while (dim < num_dimensions) {
+      gen_sys.insert(grid_line(Variable(dim)));
+      dim_kinds[++dim] = CON_VIRTUAL /* a.k.a. LINE */;
+    }
+  }
+  else
+    set_zero_dim_univ();
+}
+
+void
 PPL::Grid::construct(const Congruence_System& ccgs) {
   // Protecting against space dimension overflow is up to the caller.
   assert(ccgs.space_dimension() <= max_space_dimension());
@@ -113,7 +166,7 @@ PPL::Grid::construct(const Grid_Generator_System& const_gs) {
 
   // Non-empty valid generator systems have a supporting point, at least.
   if (!const_gs.has_points())
-    throw_invalid_generators("Grid(const_gs)", "gs");
+    throw_invalid_generators("Grid(const_ggs)", "ggs");
 
   if (space_dim > 0) {
     // TODO: this implementation is just an executable specification.

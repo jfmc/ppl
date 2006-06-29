@@ -433,7 +433,7 @@ public:
   */
   explicit Grid(Constraint_System& cs);
 
-  //! Builds a grid, copying a system of generators.
+  //! Builds a grid, copying a system of grid generators.
   /*!
     The grid inherits the space dimension of the generator system.
 
@@ -449,7 +449,7 @@ public:
   */
   explicit Grid(const Grid_Generator_System& const_gs);
 
-  //! Builds a grid, recycling a system of generators.
+  //! Builds a grid, recycling a system of grid generators.
   /*!
     The grid inherits the space dimension of the generator system.
 
@@ -464,6 +464,38 @@ public:
     Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
   */
   explicit Grid(Grid_Generator_System& gs);
+
+  //! Builds a grid, copying a system of generators.
+  /*!
+    The grid inherits the space dimension of the generator system.
+
+    \param const_gs
+    The system of generators defining the grid.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Grid(const Generator_System& const_gs);
+
+  //! Builds a grid, recycling a system of generators.
+  /*!
+    The grid inherits the space dimension of the generator system.
+
+    \param gs
+    The system of generators defining the grid.  Its data-structures
+    may be recycled to build the grid.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
+  */
+  explicit Grid(Generator_System& gs);
 
   //! Builds a grid out of a generic, interval-based bounding box.
   /*!
@@ -619,11 +651,32 @@ public:
   */
   dimension_type affine_dimension() const;
 
+  //! Returns a system of constraints constructed from the grid equalities.
+  Constraint_System constraints() const;
+
+  /*! \brief
+    Returns a system of constraints constructed from the equalities
+    in the minimal congruence system.
+  */
+  Constraint_System minimized_constraints() const;
+
   //! Returns the system of congruences.
   const Congruence_System& congruences() const;
 
   //! Returns the system of congruences in reduced form.
   const Congruence_System& minimized_congruences() const;
+
+  /*! \brief
+    Returns a universe system of generators of the same number of
+    dimensions as the Grid.
+  */
+  Generator_System generators() const;
+
+  /*! \brief
+    Returns a universe system of generators of the same number of
+    dimensions as the Grid.
+  */
+  Generator_System minimized_generators() const;
 
   //! Returns the system of generators.
   const Grid_Generator_System& grid_generators() const;
@@ -1075,8 +1128,8 @@ public:
   bool add_congruence_and_minimize(const Constraint& c);
 
   /*! \brief
-    Adds a copy of generator \p g to the system of generators of \p
-    *this.
+    Adds a copy of grid generator \p g to the system of generators of
+    \p *this.
 
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible,
@@ -1085,8 +1138,8 @@ public:
   void add_grid_generator(const Grid_Generator& g);
 
   /*! \brief
-    Adds a copy of generator \p g to the system of generators of \p
-    *this, reducing the result.
+    Adds a copy of grid generator \p g to the system of generators of
+    \p *this, reducing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -1096,6 +1149,12 @@ public:
     or if \p *this is an empty grid and \p g is not a point.
   */
   bool add_grid_generator_and_minimize(const Grid_Generator& g);
+
+  //! Domain compatibility method.
+  void add_generator(const Generator& g) const;
+
+  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
+  bool add_generator_and_minimize(const Generator& g) const;
 
   //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!
@@ -2090,6 +2149,17 @@ private:
   // types is last to first.
   Dimension_Kinds dim_kinds;
 
+  //! Builds a grid universe or empty grid.
+  /*!
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the grid;
+
+    \param kind
+    specifies whether the universe or the empty grid has to be built.
+  */
+  void construct(dimension_type num_dimensions,
+		 const Degenerate_Element kind);
+
   //! Builds a grid from a system of congruences.
   /*!
     The grid inherits the space dimension of the congruence system.
@@ -2099,6 +2169,15 @@ private:
   */
   void construct(const Congruence_System& cgs);
 
+  //! Builds a grid from a system of grid generators.
+  /*!
+    The grid inherits the space dimension of the generator system.
+
+    \param gs
+    The system of grid generators defining the grid;
+  */
+  void construct(const Grid_Generator_System& gs);
+
   //! Builds a grid from a system of generators.
   /*!
     The grid inherits the space dimension of the generator system.
@@ -2106,7 +2185,7 @@ private:
     \param gs
     The system of generators defining the grid;
   */
-  void construct(const Grid_Generator_System& gs);
+  void construct(const Generator_System& gs);
 
   //! \name Private Verifiers: Verify if Individual Flags are Set
   //@{

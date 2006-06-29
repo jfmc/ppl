@@ -46,6 +46,20 @@ Grid::set_congruences_up_to_date() {
 }
 
 inline
+Grid::Grid(dimension_type num_dimensions,
+	   const Degenerate_Element kind)
+  : con_sys(),
+    gen_sys(num_dimensions > max_space_dimension()
+	    ? (throw_space_dimension_overflow("Grid(n, k)",
+					      "n exceeds the maximum "
+					      "allowed space dimension"),
+	       0)
+	    : num_dimensions) {
+  construct(num_dimensions, kind);
+  assert(OK());
+}
+
+inline
 Grid::Grid(const Congruence_System& ccgs)
   : con_sys(ccgs.space_dimension() > max_space_dimension()
 	    ? throw_space_dimension_overflow("Grid(ccgs)",
@@ -72,7 +86,7 @@ Grid::Grid(Congruence_System& cgs)
 inline
 Grid::Grid(const Grid_Generator_System& gs)
   : con_sys(gs.space_dimension() > max_space_dimension()
-	    ? throw_space_dimension_overflow("Grid(gs)",
+	    ? throw_space_dimension_overflow("Grid(ggs)",
 					     "the space dimension of gs "
 					     "exceeds the maximum allowed "
 					     "space dimension"), 0
@@ -84,7 +98,7 @@ Grid::Grid(const Grid_Generator_System& gs)
 inline
 Grid::Grid(Grid_Generator_System& gs)
   : con_sys(gs.space_dimension() > max_space_dimension()
-	    ? throw_space_dimension_overflow("Grid(gs)",
+	    ? throw_space_dimension_overflow("Grid(ggs)",
 					     "the space dimension of gs "
 					     "exceeds the maximum allowed "
 					     "space dimension"), 0
@@ -94,7 +108,57 @@ Grid::Grid(Grid_Generator_System& gs)
 }
 
 inline
+Grid::Grid(const Generator_System& gs)
+  : con_sys(),
+    gen_sys(gs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(gs)",
+					     "n exceeds the maximum "
+					     "allowed space dimension"), 0
+	    : gs.space_dimension()) {
+  construct(gs.space_dimension(), UNIVERSE);
+}
+
+inline
+Grid::Grid(Generator_System& gs)
+  : con_sys(),
+    gen_sys(gs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(gs)",
+					     "n exceeds the maximum "
+					     "allowed space dimension"), 0
+	    : gs.space_dimension()) {
+  construct(gs.space_dimension(), UNIVERSE);
+}
+
+inline
 Grid::~Grid() {
+}
+
+inline Generator_System
+Grid::generators() const {
+  Generator_System gs;
+  // Trivially true point.
+  gs.insert(point());
+  // A line for each dimension.
+  dimension_type dim = space_dimension();
+  while (dim--)
+    gs.insert(line(Variable(dim)));
+  return gs;
+}
+
+inline Generator_System
+Grid::minimized_generators() const {
+  return generators();
+}
+
+inline void
+Grid::add_generator(const Generator& g) const {
+  used(g);
+}
+
+inline bool
+Grid::add_generator_and_minimize(const Generator& g) const {
+  used(g);
+  return !is_empty();
 }
 
 inline memory_size_type
@@ -105,6 +169,16 @@ Grid::total_memory_in_bytes() const {
 inline dimension_type
 Grid::space_dimension() const {
   return space_dim;
+}
+
+inline Constraint_System
+Grid::constraints() const {
+  return Constraint_System(congruences());;
+}
+
+inline Constraint_System
+Grid::minimized_constraints() const {
+  return Constraint_System(minimized_congruences());;
 }
 
 inline void
