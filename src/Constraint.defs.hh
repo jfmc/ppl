@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Polyhedron.types.hh"
+#include "Congruence.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -261,6 +262,13 @@ public:
   //! Ordinary copy-constructor.
   Constraint(const Constraint& c);
 
+  //! Copy-constructs from equality congruence \p cg.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p cg is a proper congruence.
+  */
+  explicit Constraint(const Congruence& cg);
+
   //! Destructor.
   ~Constraint();
 
@@ -413,6 +421,16 @@ private:
     stealing the coefficients from \p e.
   */
   Constraint(Linear_Expression& e, Type type, Topology topology);
+
+  //! Constructs from a congruence, with specified size and capacity.
+  Constraint(const Congruence& cg, dimension_type sz, dimension_type capacity);
+
+  /*! \brief
+    Throws a <CODE>std::invalid_argument</CODE> exception containing
+    error message \p message.
+  */
+  void
+  throw_invalid_argument(const char* method, const char* message) const;
 
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception
