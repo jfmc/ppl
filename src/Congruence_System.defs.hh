@@ -193,7 +193,7 @@ public:
     inserted.
 
     \exception std::invalid_argument
-    Thrown if \p c is a relation.
+    Thrown if \p c is a relational constraint.
   */
   void insert(const Constraint& c);
 
