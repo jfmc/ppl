@@ -33,6 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
+#include "Grid_Generator_System.defs.hh"
 #include "Saturation_Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Congruence.defs.hh"
@@ -528,6 +529,21 @@ public:
   //! Returns the system of generators, with no redundant generator.
   const Generator_System& minimized_generators() const;
 
+  //! Returns a system of congruences created from the constraints.
+  Congruence_System congruences() const;
+
+  /*! \brief
+    Returns a system of congruences created from the minimized
+    constraints.
+  */
+  Congruence_System minimized_congruences() const;
+
+  //! Returns a universe system of grid generators.
+  Grid_Generator_System grid_generators() const;
+
+  //! Returns a universe system of grid generators.
+  Grid_Generator_System minimized_grid_generators() const;
+
   /*! \brief
     Returns the relations holding between the polyhedron \p *this
     and the constraint \p c.
@@ -571,6 +587,9 @@ public:
     dimension-incompatible.
   */
   bool is_disjoint_from(const Polyhedron& y) const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
+  bool is_discrete() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
@@ -870,6 +889,12 @@ public:
     \p g is not a point.
   */
   bool add_generator_and_minimize(const Generator& g);
+
+  //! Domain compatibility method.
+  void add_grid_generator(const Grid_Generator& g) const;
+
+  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
+  bool add_grid_generator_and_minimize(const Grid_Generator& g) const;
 
   /*! \brief
     Adds a copy of congruence \p cg to the system of congruences of \p
