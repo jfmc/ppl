@@ -26,7 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+// FIXME: Test both Direct_Product and Open_Product.
 #define OPEN_PRODUCT
+// FIXME: Also test the other combination (Product<Ph, Grid>).
 #define GRID_IS_D1
 
 #ifdef OPEN_PRODUCT
@@ -1713,6 +1715,41 @@ test77() {
   return ok;
 }
 
+// widening_assign
+bool
+test78() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Product dp_prev(3, EMPTY);
+  dp_prev.add_grid_generator(grid_point());
+  dp_prev.add_grid_generator(grid_point(A, 3));
+  dp_prev.add_grid_generator(grid_point(2*B));
+  dp_prev.add_generator(point(A));
+  dp_prev.add_generator(point(2*A));
+  dp_prev.add_generator(point(2*A + B));
+
+  Product dp(dp_prev);
+  dp.add_grid_generator(parameter(A, 6));
+  dp.add_generator(point(2*A + 2*B));
+  dp.upper_bound_assign(dp_prev);
+
+  dp.widening_assign(dp_prev);
+
+  Product known_dp(3, EMPTY);
+  known_dp.add_grid_generator(grid_point());
+  known_dp.add_grid_generator(grid_point(2*B));
+  known_dp.add_grid_generator(grid_line(A));
+  known_dp.add_generator(point(2*A));
+  known_dp.add_generator(ray(-A));
+  known_dp.add_generator(ray(B));
+
+  bool ok = (dp == known_dp);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -1803,4 +1840,5 @@ BEGIN_MAIN
 #endif
   DO_TEST_F8(test76);
   DO_TEST(test77);
+  DO_TEST(test78);
 END_MAIN
