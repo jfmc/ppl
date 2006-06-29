@@ -426,8 +426,8 @@ public:
   */
   Grid_Generator_System minimized_grid_generators() const;
 
-  // FIXME: implement relation_with(*)  table
-
+  // FIXME: Implement relation_with(*).
+#if 0
   //! Returns the relations holding between \p *this and \p c.
   /*
     \exception std::invalid_argument
@@ -455,7 +455,7 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
   Poly_Gen_Relation relation_with(const Grid_Generator& g) const;
-
+#endif
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is an empty
