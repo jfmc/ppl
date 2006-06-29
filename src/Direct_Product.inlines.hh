@@ -66,17 +66,20 @@ Direct_Product<D1, D2>::Direct_Product(Constraint_System& cs)
 
 template <typename D1, typename D2>
 inline
-Direct_Product<D1, D2>::Direct_Product(const Grid_Generator_System& gs) {
+Direct_Product<D1, D2>::Direct_Product(const Grid_Generator_System& gs)
+  : d1(gs), d2(gs) {
 }
 
 template <typename D1, typename D2>
 inline
-Direct_Product<D1, D2>::Direct_Product(Grid_Generator_System& gs) {
+Direct_Product<D1, D2>::Direct_Product(Grid_Generator_System& gs)
+  : d1(gs), d2(gs) {
 }
 
 template <typename D1, typename D2>
 inline
-Direct_Product<D1, D2>::Direct_Product(const Generator_System& gs) {
+Direct_Product<D1, D2>::Direct_Product(const Generator_System& gs)
+  : d1(gs), d2(gs) {
 }
 
 template <typename D1, typename D2>
@@ -92,12 +95,14 @@ Direct_Product<D1, D2>::Direct_Product(const Box& box,
   : d1(box, dummy), d2(box, dummy) {
 }
 
+#if 0
 template <typename D1, typename D2>
 template <typename Box>
 inline
 Direct_Product<D1, D2>::Direct_Product(const Box& box,
 				       From_Covering_Box dummy) {
 }
+#endif
 
 template <typename D1, typename D2>
 inline
@@ -165,6 +170,7 @@ Direct_Product<D1, D2>::upper_bound_assign_if_exact(const Direct_Product& y) {
     || d2.upper_bound_assign_if_exact(y.d2);
 }
 
+#if 0
 template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>
@@ -192,6 +198,8 @@ Direct_Product<D1, D2>
 			   const Relation_Symbol relsym,
 			   const Linear_Expression& expr,
 			   Coefficient_traits::const_reference denominator) {
+  d1.generalized_affine_image(var, relsym, expr, denominator);
+  d2.generalized_affine_image(var, relsym, expr, denominator);
 }
 
 template <typename D1, typename D2>
@@ -201,6 +209,8 @@ Direct_Product<D1, D2>
 			   const Linear_Expression& expr,
 			   Coefficient_traits::const_reference denominator,
 			   Coefficient_traits::const_reference modulus) {
+  d1.generalized_affine_image(var, expr, denominator, modulus);
+  d2.generalized_affine_image(var, expr, denominator, modulus);
 }
 
 template <typename D1, typename D2>
@@ -210,6 +220,8 @@ Direct_Product<D1, D2>
 			      const Relation_Symbol relsym,
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator) {
+  d1.generalized_affine_preimage(var, relsym, expr, denominator);
+  d2.generalized_affine_preimage(var, relsym, expr, denominator);
 }
 
 template <typename D1, typename D2>
@@ -219,6 +231,8 @@ Direct_Product<D1, D2>
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator,
 			      Coefficient_traits::const_reference modulus) {
+  d1.generalized_affine_preimage(var, expr, denominator, modulus);
+  d2.generalized_affine_preimage(var, expr, denominator, modulus);
 }
 
 template <typename D1, typename D2>
@@ -227,6 +241,8 @@ Direct_Product<D1, D2>
 ::generalized_affine_image(const Linear_Expression& lhs,
 			   const Relation_Symbol relsym,
 			   const Linear_Expression& rhs) {
+  d1.generalized_affine_image(lhs, relsym, rhs);
+  d2.generalized_affine_image(lhs, relsym, rhs);
 }
 
 template <typename D1, typename D2>
@@ -235,6 +251,8 @@ Direct_Product<D1, D2>
 ::generalized_affine_image(const Linear_Expression& lhs,
 			   const Linear_Expression& rhs,
 			   Coefficient_traits::const_reference modulus) {
+  d1.generalized_affine_image(lhs, rhs, modulus);
+  d2.generalized_affine_image(lhs, rhs, modulus);
 }
 
 template <typename D1, typename D2>
@@ -243,6 +261,8 @@ Direct_Product<D1, D2>
 ::generalized_affine_preimage(const Linear_Expression& lhs,
 			      const Relation_Symbol relsym,
 			      const Linear_Expression& rhs) {
+  d1.generalized_affine_preimage(lhs, relsym, rhs);
+  d2.generalized_affine_preimage(lhs, relsym, rhs);
 }
 
 template <typename D1, typename D2>
@@ -251,7 +271,10 @@ Direct_Product<D1, D2>
 ::generalized_affine_preimage(const Linear_Expression& lhs,
 			      const Linear_Expression& rhs,
 			      Coefficient_traits::const_reference modulus) {
+  d1.generalized_affine_preimage(lhs, rhs, modulus);
+  d2.generalized_affine_preimage(lhs, rhs, modulus);
 }
+#endif
 
 template <typename D1, typename D2>
 inline void
@@ -284,28 +307,36 @@ Direct_Product<D1, D2>::add_constraint(const Constraint& c) {
 template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>::add_congruence(const Congruence& cg) {
+  d1.add_congruence(cg);
+  d2.add_congruence(cg);
 }
 
 template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>::add_generator(const Generator& g) {
+  d1.add_generator(g);
+  d2.add_generator(g);
 }
 
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::add_generator_and_minimize(const Generator& g) {
-  return is_empty();
+  bool empty = d1.add_generator_and_minimize(g);
+  return d2.add_generator_and_minimize(g) || empty;
 }
 
 template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>::add_grid_generator(const Grid_Generator& g) {
+  d1.add_grid_generator(g);
+  d2.add_grid_generator(g);
 }
 
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::add_grid_generator_and_minimize(const Grid_Generator& g) {
-  return is_empty;
+  bool empty = d1.add_grid_generator_and_minimize(g);
+  return d2.add_grid_generator_and_minimize(g) || empty;
 }
 
 template <typename D1, typename D2>
@@ -325,23 +356,29 @@ Direct_Product<D1, D2>::add_recycled_constraints(Constraint_System& cs) {
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::add_recycled_constraints_and_minimize(Constraint_System& cs) {
-  return d1.add_recycled_constraints_and_minimize(cs)
-    || d2.add_recycled_constraints_and_minimize(cs);
+  bool empty = d1.add_recycled_constraints_and_minimize(cs);
+  return d2.add_recycled_constraints_and_minimize(cs) || empty;
 }
 
 template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>::add_congruences(const Congruence_System& cgs) {
+  d1.add_congruences(cgs);
+  d2.add_congruences(cgs);
 }
 
 template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>::add_generators(const Generator_System& gs) {
+  d1.add_generators(gs);
+  d2.add_generators(gs);
 }
 
 template <typename D1, typename D2>
 inline void
 Direct_Product<D1, D2>::add_grid_generators(const Grid_Generator_System& gs) {
+  d1.add_grid_generators(gs);
+  d2.add_grid_generators(gs);
 }
 
 template <typename D1, typename D2>
@@ -364,60 +401,56 @@ Direct_Product<D1, D2>::domain2() const {
   return d2;
 }
 
-template <typename D1, typename D2>
-inline const Congruence_System&
-Direct_Product<D1, D2>::congruences() const {
-  // FIX return ref to universe of correct dim?
-  return Congruence_System::zero_dim_empty();
-}
+// FIXME: These could do some sort of check on which component best
+//        approximates the product, and return the system from that
+//        component.
 
 template <typename D1, typename D2>
-inline const Congruence_System&
-Direct_Product<D1, D2>::minimized_congruences() const {
-  // FIX return ref to universe of correct dim?
-  return Congruence_System::zero_dim_empty();
-}
-
-template <typename D1, typename D2>
-inline const Constraint_System&
+inline Constraint_System
 Direct_Product<D1, D2>::constraints() const {
-  // FIX return ref to universe of correct dim?
-  return Constraint_System::zero_dim_empty();
+  return d1.constraints();
 }
 
 template <typename D1, typename D2>
-inline const Constraint_System&
+inline Constraint_System
 Direct_Product<D1, D2>::minimized_constraints() const {
-  // FIX return ref to universe of correct dim?
-  return Constraint_System::zero_dim_empty();
+  return d1.minimized_constraints();
 }
 
 template <typename D1, typename D2>
-inline const Generator_System&
+inline Congruence_System
+Direct_Product<D1, D2>::congruences() const {
+  return d1.congruences();
+}
+
+template <typename D1, typename D2>
+inline Congruence_System
+Direct_Product<D1, D2>::minimized_congruences() const {
+  return d1.minimized_congruences();
+}
+
+template <typename D1, typename D2>
+inline Generator_System
 Direct_Product<D1, D2>::generators() const {
-  // FIX return ref to correct dim?
-  return Generator_System::zero_dim_univ();
+  return d1.generators();
 }
 
 template <typename D1, typename D2>
-inline const Generator_System&
+inline Generator_System
 Direct_Product<D1, D2>::minimized_generators() const {
-  // FIX return ref to correct dim?
-  return Generator_System::zero_dim_univ();
+  return d1.minimized_generators();
 }
 
 template <typename D1, typename D2>
-inline const Grid_Generator_System&
+inline Grid_Generator_System
 Direct_Product<D1, D2>::grid_generators() const {
-  // FIX return ref to correct dim?
-  return Grid_Generator_System::zero_dim_univ();
+  return d1.grid_generators();
 }
 
 template <typename D1, typename D2>
-inline const Grid_Generator_System&
+inline Grid_Generator_System
 Direct_Product<D1, D2>::minimized_grid_generators() const {
-  // FIX return ref to correct dim?
-  return Grid_Generator_System::zero_dim_univ();
+  return d1.minimized_grid_generators();
 }
 
 template <typename D1, typename D2>
@@ -447,14 +480,21 @@ Direct_Product<D1, D2>::is_disjoint_from(const Direct_Product& y) const {
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::is_discrete() const {
-  // Assume false.  Must be specialized for Grid.
-  return false;
+  return d1.is_discrete() || d2.is_discrete();
 }
 
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::is_bounded() const {
   return d1.is_bounded() || d2.is_bounded();
+}
+
+template <typename D1, typename D2>
+inline void
+Direct_Product<D1, D2>::widening_assign(const Direct_Product& y,
+					unsigned* tp) {
+  d1.widening_assign(y.d1, tp);
+  d2.widening_assign(y.d2, tp);
 }
 
 template <typename D1, typename D2>
@@ -535,13 +575,14 @@ Direct_Product<D1, D2>::shrink_bounding_box(Box& box) const {
   d2.shrink_bounding_box(box);
 }
 
+#if 0
 template <typename D1, typename D2>
 template <typename Box>
 inline void
 Direct_Product<D1, D2>::get_covering_box(Box& box) const {
-  // FIXME: Should every domain have this?
   used(box);
 }
+#endif
 
 // FIXME: Improve this name.
 PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(D1, D2, Direct_Product)
@@ -587,11 +628,8 @@ IO_Operators::operator<<(std::ostream& s, const Direct_Product<D1, D2>& dp) {
 	   << dp.d2;
 }
 
-// FIXME: Move to dedicated file once name decided.
-
-// FIXME: Consider adding closure_point_reduce for D1 nnc D2 gr
-//        which converts any ph closure points that intersect w gr
-//        into points
+// FIXME: Move to dedicated file when name for Open_Product is
+//        decided.
 
 template <typename D1, typename D2>
 inline bool propagate_constraints_reduce(D1& d1, D2& d2) {
@@ -679,6 +717,7 @@ Open_Product<D1, D2, R>::Open_Product(const Box& box,
   clear_reduced_flag();
 }
 
+#if 0
 template <typename D1, typename D2, bool R(D1&, D2&)>
 template <typename Box>
 inline
@@ -687,6 +726,7 @@ Open_Product<D1, D2, R>::Open_Product(const Box& box,
   : Direct_Product<D1, D2>(box, dummy) {
   clear_reduced_flag();
 }
+#endif
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline
@@ -704,6 +744,70 @@ template <typename D1, typename D2, bool R(D1&, D2&)>
 inline Open_Product<D1, D2, R>&
 Open_Product<D1, D2, R>::operator=(const Open_Product& y) {
   return Direct_Product<D1, D2>::operator=(y);
+}
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+inline Constraint_System
+Open_Product<D1, D2, R>::constraints() const {
+  const Open_Product& op = *this;
+  op.reduce();
+  return op.d1.constraints();
+}
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+inline Constraint_System
+Open_Product<D1, D2, R>::minimized_constraints() const {
+  const Open_Product& op = *this;
+  op.reduce();
+  return op.d1.minimized_constraints();
+}
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+inline Congruence_System
+Open_Product<D1, D2, R>::congruences() const {
+  const Open_Product& op = *this;
+  op.reduce();
+  return op.d1.congruences();
+}
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+inline Congruence_System
+Open_Product<D1, D2, R>::minimized_congruences() const {
+  const Open_Product& op = *this;
+  op.reduce();
+  return op.d1.minimized_congruences();
+}
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+inline Generator_System
+Open_Product<D1, D2, R>::generators() const {
+  const Open_Product& op = *this;
+  op.reduce();
+  return op.d1.generators();
+}
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+inline Generator_System
+Open_Product<D1, D2, R>::minimized_generators() const {
+  const Open_Product& op = *this;
+  op.reduce();
+  return op.d1.minimized_generators();
+}
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+inline Grid_Generator_System
+Open_Product<D1, D2, R>::grid_generators() const {
+  const Open_Product& op = *this;
+  op.reduce();
+  return op.d1.grid_generators();
+}
+
+template <typename D1, typename D2, bool R(D1&, D2&)>
+inline Grid_Generator_System
+Open_Product<D1, D2, R>::minimized_grid_generators() const {
+  const Open_Product& op = *this;
+  op.reduce();
+  return op.d1.minimized_grid_generators();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
@@ -741,33 +845,19 @@ Open_Product<D1, D2, R>::is_disjoint_from(const Open_Product& y) const {
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
-struct Open_Product_is_bounded {
-  static inline bool
-  function(const Open_Product<D1, D2, R>& op) {
-    op.reduce();
-    return op.d1.is_bounded() || op.d2.is_bounded();
-  }
-};
-
-template <typename D1, typename D2, bool R(D1&, D2&)>
 inline bool
 Open_Product<D1, D2, R>::is_bounded() const {
-  return Open_Product_is_bounded<D1, D2, R>::function(*this);
+  const Open_Product& op = *this;
+  op.reduce();
+  return op.d1.is_bounded() || op.d2.is_bounded();
 }
-
-template <typename D1, typename D2, bool R(D1&, D2&)>
-struct Open_Product_is_discrete {
-  static inline bool
-  function(const Open_Product<D1, D2, R>& op) {
-    op.reduce();
-    return op.d1.is_discrete() || op.d2.is_discrete();
-  }
-};
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline bool
 Open_Product<D1, D2, R>::is_discrete() const {
-  return Open_Product_is_discrete<D1, D2, R>::function(*this);
+  const Open_Product& op = *this;
+  op.reduce();
+  return op.d1.is_discrete() || op.d2.is_discrete();
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>

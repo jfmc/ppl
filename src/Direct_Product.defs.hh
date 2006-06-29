@@ -82,7 +82,7 @@ bool operator!=(const Direct_Product<D1, D2>& x,
 /*! \ingroup PPL_CXX_interface
   An object of the class Direct_Product represents a direct product.
 
-  FIXME: continue here.
+  FIXME: Continue here.
 */
 
 template <typename D1, typename D2>
@@ -285,6 +285,10 @@ public:
   template <typename Box>
   Direct_Product(const Box& box, From_Bounding_Box dummy);
 
+  // FIXME: Grid is the only domain which has this constructor.  Is
+  //        there a sensible interpretation of covering box for the
+  //        other domains?
+#if 0
   //! Builds a grid out of a generic, interval-based covering box.
   /*!
     The covering box is a set of upper and lower values for each
@@ -355,6 +359,7 @@ public:
   */
   template <typename Box>
   Direct_Product(const Box& box, From_Covering_Box dummy);
+#endif
 
   //! Ordinary copy-constructor.
   Direct_Product(const Direct_Product& y);
@@ -383,31 +388,45 @@ public:
   //! Returns a constant reference to the second of the pair.
   const D2& domain2() const;
 
-  //! Returns the system of constraints.
-  const Constraint_System& constraints() const;
+  // FIXME: These simply return the system from the first component.
+  //        If they are updated to return combinations of the
+  //        component systems, then these will have to return values
+  //        instead of references.
 
-  //! Returns the system of constraints in reduced form.
-  const Constraint_System& minimized_constraints() const;
+  //! Returns a system of constraints which approximates \p *this.
+  Constraint_System constraints() const;
 
-  //! Returns the system of congruences.
-  const Congruence_System& congruences() const;
+  /*! \brief
+    Returns a system of constraints which approximates \p *this, in
+    reduced form.
+  */
+  Constraint_System minimized_constraints() const;
 
-  //! Returns the system of congruences in reduced form.
-  const Congruence_System& minimized_congruences() const;
+  //! Returns a system of constraints which approximates \p *this.
+  Congruence_System congruences() const;
 
-  //! Returns the system of generators.
-  const Generator_System& generators() const;
+  /*! \brief
+    Returns a system of congruences which approximates \p *this, in
+    reduced form.
+  */
+  Congruence_System minimized_congruences() const;
+
+  //! Returns a system of generators which approximates \p *this.
+  Generator_System generators() const;
 
   //! Returns the minimized system of generators.
-  const Generator_System& minimized_generators() const;
+  Generator_System minimized_generators() const;
 
-  //! Returns the system of grid generators.
-  const Grid_Generator_System& grid_generators() const;
+  //! Returns a system of grid generators which approximates \p *this.
+  Grid_Generator_System grid_generators() const;
 
-  //! Returns the minimized system of grid generators.
-  const Grid_Generator_System& minimized_grid_generators() const;
+  /*! \brief
+    Returns a system of grid generators which approximates \p *this,
+    in reduced form.
+  */
+  Grid_Generator_System minimized_grid_generators() const;
 
-  // FIXME: implement relation_with(*)
+  // FIXME: implement relation_with(*)  table
 
   //! Returns the relations holding between \p *this and \p c.
   /*
@@ -476,8 +495,8 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
   bool is_bounded() const;
 
-  // FIXME: implement bound,max,min methods
-
+  // FIXME: Explain issues.
+#if 0
   //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!
     This method is the same as bounds_from_below.
@@ -625,6 +644,7 @@ public:
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
 		Grid_Generator& point) const;
+#endif
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -1189,6 +1209,9 @@ public:
   */
   void difference_assign(const Direct_Product& y);
 
+  // FIXME: Finish these when their interface is cleaned up, taking
+  //        into account the extra Grid versions.
+#if 0
   /*! \brief
     Assigns to \p *this the \ref Direct_Product_Affine_Transformation
     "affine image" of \p
@@ -1469,6 +1492,7 @@ public:
 				   const Linear_Expression& rhs,
 				   Coefficient_traits::const_reference modulus
 				   = Coefficient_one());
+#endif
 
   /*! \brief
     Assigns to \p *this the result of computing the \ref Direct_Product_Time_Elapse
@@ -1482,25 +1506,7 @@ public:
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
 
-  // FIXME: What to do about widenings? Add a method for every widening?
-  //        Add a standard widening method to each class?
-
-  /*! \brief
-    Assigns to \p *this the result of computing the \ref Direct_Product_Widening
-    "Direct_Product widening" between \p *this and \p y using generator systems.
-
-    \param y
-    A grid that <EM>must</EM> be contained in \p *this;
-
-    \param tp
-    An optional pointer to an unsigned variable storing the number of
-    available tokens (to be used when applying the
-    \ref Direct_Product_Widening_with_Tokens "widening with tokens" delay technique).
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  void generator_widening_assign(const Direct_Product& y, unsigned* tp = NULL);
+  // TODO: Add a way to call other widenings.
 
   /*! \brief
     Assigns to \p *this the result of computing the \ref Direct_Product_Widening
@@ -1522,77 +1528,6 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void widening_assign(const Direct_Product& y, unsigned* tp = NULL);
-
-  /*! \brief
-    Improves the result of the congruence variant of
-    \ref Direct_Product_Widening "Direct_Product widening" computation by also enforcing
-    those congruences in \p cgs that are satisfied by all the points
-    of \p *this.
-
-    \param y
-    A grid that <EM>must</EM> be contained in \p *this;
-
-    \param cgs
-    The system of congruences used to improve the widened grid;
-
-    \param tp
-    An optional pointer to an unsigned variable storing the number of
-    available tokens (to be used when applying the
-    \ref Direct_Product_Widening_with_Tokens "widening with tokens" delay technique).
-
-    \exception std::invalid_argument
-    Thrown if \p *this, \p y and \p cs are dimension-incompatible.
-  */
-  void limited_congruence_extrapolation_assign(const Direct_Product& y,
-					       const Congruence_System& cgs,
-					       unsigned* tp = NULL);
-
-  /*! \brief
-    Improves the result of the generator variant of the
-    \ref Direct_Product_Widening "Direct_Product widening"
-    computation by also enforcing those congruences in \p cgs that are
-    satisfied by all the points of \p *this.
-
-    \param y
-    A grid that <EM>must</EM> be contained in \p *this;
-
-    \param cgs
-    The system of congruences used to improve the widened grid;
-
-    \param tp
-    An optional pointer to an unsigned variable storing the number of
-    available tokens (to be used when applying the
-    \ref Direct_Product_Widening_with_Tokens "widening with tokens" delay technique).
-
-    \exception std::invalid_argument
-    Thrown if \p *this, \p y and \p cs are dimension-incompatible.
-  */
-  void limited_generator_extrapolation_assign(const Direct_Product& y,
-					      const Congruence_System& cgs,
-					      unsigned* tp = NULL);
-
-  /*! \brief
-    Improves the result of the \ref Direct_Product_Widening "Direct_Product widening"
-    computation by also enforcing those congruences in \p cgs that are
-    satisfied by all the points of \p *this.
-
-    \param y
-    A grid that <EM>must</EM> be contained in \p *this;
-
-    \param cgs
-    The system of congruences used to improve the widened grid;
-
-    \param tp
-    An optional pointer to an unsigned variable storing the number of
-    available tokens (to be used when applying the
-    \ref Direct_Product_Widening_with_Tokens "widening with tokens" delay technique).
-
-    \exception std::invalid_argument
-    Thrown if \p *this, \p y and \p cs are dimension-incompatible.
-  */
-  void limited_extrapolation_assign(const Direct_Product& y,
-				    const Congruence_System& cgs,
-				    unsigned* tp = NULL);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
@@ -1757,7 +1692,6 @@ public:
     \ref Direct_Product_Expand_Space_Dimension "expanded" to \p m new space dimensions
     \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
   */
-  // FIX m s/b const?
   void expand_space_dimension(Variable var, dimension_type m);
 
   //! Folds the space dimensions in \p to_be_folded into \p var.
@@ -1843,7 +1777,7 @@ protected:
   D2 d2;
 };
 
-// FIXME: move to dedicated file once name decided
+// FIXME: Move to dedicated file when name of Open_Product is decided.
 
 namespace Parma_Polyhedra_Library {
 
@@ -1855,12 +1789,6 @@ bool empty_check_reduce();
 
 template <typename D1, typename D2>
 bool propagate_constraints_reduce();
-
-template <typename D1, typename D2, bool R(D1&, D2&)>
-struct Open_Product_is_bounded;
-
-template <typename D1, typename D2, bool R(D1&, D2&)>
-struct Open_Product_is_discrete;
 
 } // namespace Parma_Polyhedra_Library;
 
@@ -2063,6 +1991,8 @@ public:
   template <typename Box>
   Open_Product(const Box& box, From_Bounding_Box dummy);
 
+  // FIXME: Explained in Direct_Product above.
+#if 0
   //! Builds a grid out of a generic, interval-based covering box.
   /*!
     The covering box is a set of upper and lower values for each
@@ -2133,6 +2063,7 @@ public:
   */
   template <typename Box>
   Open_Product(const Box& box, From_Covering_Box dummy);
+#endif
 
   //! Ordinary copy-constructor.
   Open_Product(const Open_Product& y);
@@ -2147,28 +2078,28 @@ public:
   Open_Product& operator=(const Open_Product& y);
 
   //! Returns the system of constraints.
-  const Constraint_System& constraints() const;
+  Constraint_System constraints() const;
 
   //! Returns the system of constraints in reduced form.
-  const Constraint_System& minimized_constraints() const;
+  Constraint_System minimized_constraints() const;
 
   //! Returns the system of congruences.
-  const Congruence_System& congruences() const;
+  Congruence_System congruences() const;
 
   //! Returns the system of congruences in reduced form.
-  const Congruence_System& minimized_congruences() const;
+  Congruence_System minimized_congruences() const;
 
   //! Returns the system of generators.
-  const Generator_System& generators() const;
+  Generator_System generators() const;
 
   //! Returns the minimized system of generators.
-  const Generator_System& minimized_generators() const;
+  Generator_System minimized_generators() const;
 
   //! Returns the system of grid generators.
-  const Grid_Generator_System& grid_generators() const;
+  Grid_Generator_System grid_generators() const;
 
   //! Returns the minimized system of grid generators.
-  const Grid_Generator_System& minimized_grid_generators() const;
+  Grid_Generator_System minimized_grid_generators() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is an empty
@@ -2231,12 +2162,6 @@ public:
     is strictly contained in the respective original.
   */
   bool reduce() const;
-
-  template <typename Domain1, typename Domain2, bool Reduce(D1&, D2&)>
-  friend struct Parma_Polyhedra_Library::Open_Product_is_bounded;
-
-  template <typename Domain1, typename Domain2, bool Reduce(D1&, D2&)>
-  friend struct Parma_Polyhedra_Library::Open_Product_is_discrete;
 
 protected:
   //! Clears the reduced flag.
