@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Interval.defs.hh"
 #include "Grid_Generator.defs.hh"
 #include "Grid_Generator_System.defs.hh"
+#include "Grid_Generator_System.inlines.hh"
 #include <algorithm>
 #include <deque>
 
