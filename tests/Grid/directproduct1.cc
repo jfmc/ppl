@@ -30,6 +30,15 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define OPEN_PRODUCT
 // FIXME: Also test the other combination (Product<Ph, Grid>).
 #define GRID_IS_D1
+// FIXME: Also test with C_Polyhedron.
+#define PH_IS_NNC
+
+#ifdef PH_IS_NNC
+#define DO_TEST_NNC(test) DO_TEST(test)
+#else
+#define NNC_Polyhedron C_Polyhedron
+#define DO_TEST_NNC(test)
+#endif
 
 #ifdef OPEN_PRODUCT
 #ifdef GRID_IS_D1
@@ -1764,49 +1773,49 @@ BEGIN_MAIN
   DO_TEST(test09);
   //DO_TEST(test10);
   DO_TEST(test11);
-  DO_TEST(test12);
+  DO_TEST_NNC(test12);
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
 #ifdef OPEN_PRODUCT
   DO_TEST(test16);
 #endif
-  DO_TEST(test17);
-  DO_TEST(test18);
-  DO_TEST(test19);
-  DO_TEST(test20);
+  DO_TEST_NNC(test17);
+  DO_TEST_NNC(test18);
+  DO_TEST_NNC(test19);
+  DO_TEST_NNC(test20);
   DO_TEST(test21);
   DO_TEST(test22);
   DO_TEST(test23);
   DO_TEST(test24);
   DO_TEST(test25);
   DO_TEST(test26);
-  DO_TEST(test27);
+  DO_TEST_NNC(test27);
   DO_TEST(test28);
-  DO_TEST(test29);
-  DO_TEST(test30);
+  DO_TEST_NNC(test29);
+  DO_TEST_NNC(test30);
   DO_TEST(test31);
-  DO_TEST(test32);
-  DO_TEST(test33);
+  DO_TEST_NNC(test32);
+  DO_TEST_NNC(test33);
   DO_TEST(test34);
   DO_TEST(test35);
   DO_TEST(test36);
 #ifdef OPEN_PRODUCT
   DO_TEST(test37);
 #endif
-  DO_TEST(test38);
+  DO_TEST_NNC(test38);
   DO_TEST(test39);
 #ifdef OPEN_PRODUCT
   DO_TEST(test40);
 #endif
-  DO_TEST(test41);
-  DO_TEST(test42);
-  DO_TEST(test43);
-  DO_TEST(test44);
-  DO_TEST(test45);
-  DO_TEST(test46);
+  DO_TEST_NNC(test41);
+  DO_TEST_NNC(test42);
+  DO_TEST_NNC(test43);
+  DO_TEST_NNC(test44);
+  DO_TEST_NNC(test45);
+  DO_TEST_NNC(test46);
   DO_TEST(test47);
-  DO_TEST(test48);
+  DO_TEST_NNC(test48);
   DO_TEST(test49);
   DO_TEST(test50);
 #if 0
@@ -1817,10 +1826,10 @@ BEGIN_MAIN
   DO_TEST(test54);
   DO_TEST(test55);
   DO_TEST(test56);
-  DO_TEST(test57);
+  DO_TEST_NNC(test57);
   DO_TEST(test58);
   DO_TEST(test59);
-  DO_TEST(test60);
+  DO_TEST_NNC(test60);
   DO_TEST(test61);
   DO_TEST(test62);
   DO_TEST(test63);
@@ -1839,6 +1848,6 @@ BEGIN_MAIN
   DO_TEST(test75);
 #endif
   DO_TEST_F8(test76);
-  DO_TEST(test77);
+  DO_TEST_NNC(test77);
   DO_TEST(test78);
 END_MAIN
