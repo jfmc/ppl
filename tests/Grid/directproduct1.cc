@@ -1776,6 +1776,6 @@ BEGIN_MAIN
   DO_TEST(test73);
   DO_TEST(test74);
   DO_TEST(test75);
-  DO_TEST(test76);
+  DO_TEST_F8(test76);
   DO_TEST(test77);
 END_MAIN
