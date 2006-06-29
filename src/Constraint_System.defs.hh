@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "Constraint.types.hh"
 #include "LP_Problem.types.hh"
+#include "Congruence_System.types.hh"
 #include <iterator>
 #include <iosfwd>
 
@@ -131,6 +132,9 @@ public:
 
   //! Builds the singleton system containing only constraint \p c.
   explicit Constraint_System(const Constraint& c);
+
+  //! Builds a system containing copies of any equalities in \p cgs.
+  explicit Constraint_System(const Congruence_System& cgs);
 
   //! Ordinary copy-constructor.
   Constraint_System(const Constraint_System& cs);
