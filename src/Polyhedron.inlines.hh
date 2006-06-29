@@ -109,6 +109,11 @@ Polyhedron::difference_assign(const Polyhedron& y) {
   poly_difference_assign(y);
 }
 
+inline void
+Polyhedron::widening_assign(const Polyhedron& y, unsigned* tp) {
+  H79_widening_assign(y, tp);
+}
+
 inline
 Polyhedron::~Polyhedron() {
 }

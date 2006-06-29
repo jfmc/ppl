@@ -1589,6 +1589,9 @@ public:
   */
   void H79_widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
+  //! Same as H79_widening_assign(y, tp).
+  void widening_assign(const Polyhedron& y, unsigned* tp = 0);
+
   /*! \brief
     Improves the result of the \ref H79_widening "H79-widening"
     computation by also enforcing those constraints in \p cs that are
