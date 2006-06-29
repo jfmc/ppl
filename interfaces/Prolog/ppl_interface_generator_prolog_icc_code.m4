@@ -1064,6 +1064,18 @@ ppl_@CLASS@_@WIDENEXP@_widening_assign
 
 ')
 
+dnl FIXME: Polyhedra_Powerset widening = TODO
+define(`ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign
+(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  return widening_assign(t_lhs, t_rhs,
+                         &@CPP_CLASS@::@WIDENEXP@_widening_assign,
+                         &@CPP_BODY@::@BODYWIDENEXP@_widening_assign);
+}
+
+')
+
 define(`ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_with_tokens_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_with_tokens

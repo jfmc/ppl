@@ -58,6 +58,29 @@ dnl m4_arg expands to Arg`'Ind
 define(`m4_arg',
 `ifelse($1, 0, , $1, 1, $2, `m4_arg(decr($1), shift(shift($@)))')')
 
+dnl m4_arg_counter(String, Arg1, Arg2, ...)
+dnl
+dnl If String = Arg`'Counter, m4_arg_counter expands to Counter
+dnl where Counter is the least index for which this holds.
+dnl Otherwise it expands to the empty string.
+define(`m4_arg_counter', `m4_arg_counter_aux(1, $@)')
+
+define(`m4_arg_counter_aux', `dnl
+ifelse($#, 0, ,$#, 1, , $#, 2, ,
+  $2, $3, $1,
+  $#, 3, ,
+  `m4_arg_counter_aux(incr($1), $2, shift(shift(shift($@))))')`'dnl
+')
+
+dnl m4_echo_unquoted(Args)
+dnl
+dnl Code copied from m4 documentation where it is called echo1.
+define(`m4_echo_unquoted', `$*')
+dnl m4_echo_quoted(Args)
+dnl
+dnl Code copied from m4 documentation where it is called echo2.
+define(`m4_echo_quoted', `$@')
+
 dnl =====================================================================
 dnl ====== The following are application dependent macros: their meaning
 dnl ====== is influenced by the overall interface generator architecture.
@@ -249,20 +272,8 @@ dnl if it is, it checks if +Group or -Group
 dnl (depending if +_or_-Group is in the Procedure_Info;
 dnl if it is, then it expands to 1, otherwise, expands to 0.
 define(`m4_proc_keep_or_throw_aux', `dnl
-ifelse(m4_check_if_class_in_group($1, m4_$4_group), 1,
-  `ifelse(index($2, $3$4), -1, 0, 1)', 0)`'dnl
-')
-
-dnl m4_check_if_class_in_group(Class_Kind, Class_Kind1, Class_Kind2, ...)
-dnl
-dnl This expands to 1 only if Class_Kind matches a Class_Kind`'i
-dnl in the rest of the list; otherwise, it expands to 0.
-define(`m4_check_if_class_in_group', `dnl
-ifelse($#, 0, 0, $#, 1, 0,
-$#, 2, `ifelse($1, $2, 1, 0)',
-$1, $2, 1, `dnl
-m4_check_if_class_in_group($1, shift(shift($@)))dnl
-')dnl
+ifelse(m4_arg_counter($1, m4_$4_group), `', 0,
+  `ifelse(index($2, $3$4), -1, 0, 1)')`'dnl
 ')
 
 dnl m4_filter(Class_Kind, Procedure_Name)

@@ -400,6 +400,7 @@ define(`m4_Polyhedron_widenexp_replacement', `BHRZ03, H79')
 define(`m4_Grid_widenexp_replacement', `congruence, generator')
 define(`m4_BD_Shape_widenexp_replacement', `BHMZ05, H79')
 define(`m4_Octagonal_Shape_widenexp_replacement', `CH78')
+define(`m4_Polyhedra_Powerset_widenexp_replacement', `BHZ03')
 
 dnl The shape classes have bounding boxes while the grid classes also
 dnl have covering boxes.
