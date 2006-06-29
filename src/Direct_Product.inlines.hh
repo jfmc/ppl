@@ -401,9 +401,8 @@ Direct_Product<D1, D2>::domain2() const {
   return d2;
 }
 
-// FIXME: These could do some sort of check on which component best
-//        approximates the product, and return the system from that
-//        component.
+// TODO: Consider adding a check on which component best approximates
+//       the product, and returning the system from that component.
 
 template <typename D1, typename D2>
 inline Constraint_System

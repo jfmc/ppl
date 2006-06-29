@@ -269,7 +269,10 @@ T low_bits_mask(unsigned n);
     std::cerr << *this;							\
   }
 
-// FIX class_prefix changed from 1 param version, to accomodate `,'
+// FIXME: The class_prefix has changed from
+//        PPL_OUTPUT_TEMPLATE_DEFINITIONS, to work around `,'.
+//        Perhaps PPL_OUTPUT_TEMPLATE_DEFINITIONS should be changed to
+//        match this.
 #define PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,		\
 						type_symbol2,		\
 						class_prefix)		\

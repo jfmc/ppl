@@ -388,11 +388,6 @@ public:
   //! Returns a constant reference to the second of the pair.
   const D2& domain2() const;
 
-  // FIXME: These simply return the system from the first component.
-  //        If they are updated to return combinations of the
-  //        component systems, then these will have to return values
-  //        instead of references.
-
   //! Returns a system of constraints which approximates \p *this.
   Constraint_System constraints() const;
 
@@ -495,7 +490,7 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
   bool is_bounded() const;
 
-  // FIXME: Explain issues.
+  // FIXME: Implement these.
 #if 0
   //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!

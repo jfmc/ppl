@@ -31,8 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-// FIX Direct_Product.cc for full specializations
-
 template <typename D1, typename D2>
 inline bool
 Direct_Product<D1, D2>::ascii_load(std::istream& s) {
