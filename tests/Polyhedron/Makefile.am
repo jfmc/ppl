@@ -644,7 +644,10 @@ check_PROGRAMS = $(TESTS) $(BUGS)
 
 EXTRA_DIST = $(watchdog1_SRCS)
 
-BUGS = bug2
+BUGS = bug1 bug2
+
+bug1_SOURCES = bug1.cc
+bug1_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
 
 bug2_SOURCES = bug2.cc
 bug2_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
