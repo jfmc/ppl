@@ -441,12 +441,10 @@ dnl If the class is C_Polyhderon or NNC_Polyhedron
 dnl then the topology has to be added to the configuration name.
 define(`m4_get_interface_class_name', `dnl
 m4_forloop(m4_ind, 1, m4_num_classes, `dnl
-m4_get_interface_class_name_aux(
-  $1, m4_cplusplus_class`'m4_ind, $2, m4_interface_class`'m4_ind)')`'dnl
-')
-
-define(`m4_get_interface_class_name_aux', `dnl
-ifelse($1, $3`'$2, $3`'$4)`'dnl
+ifelse($1,
+  $2`'m4_echo_unquoted(m4_cplusplus_class`'m4_ind),
+  $2`'m4_echo_unquoted(m4_interface_class`'m4_ind))`'dnl
+')`'dnl
 ')
 
 define(`m4_disjunct_replacement', `dnl
