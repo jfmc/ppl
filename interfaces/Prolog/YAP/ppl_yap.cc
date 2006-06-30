@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "pwl.hh"
 #include <Yap/YapInterface.h>
 #include <cassert>
-#include <cassert>
 #include <climits>
 
 typedef YAP_Term Prolog_term_ref;
@@ -43,8 +42,6 @@ const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
 namespace PPL = Parma_Polyhedra_Library;
 
 namespace {
-
-Prolog_atom a_throw;
 
 /*!
   True if and only if the Prolog engine supports unbounded integers.
@@ -78,8 +75,6 @@ ppl_Prolog_sysdep_init() {
   Prolog_has_unbounded_integers = true;
   Prolog_min_integer = 0;
   Prolog_max_integer = 0;
-
-  a_throw = YAP_LookupAtom("throw");
 }
 
 /*!
