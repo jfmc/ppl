@@ -1,4 +1,4 @@
-/* SWI-Prolog Common Foreign Language Interface: definitions. -*- C -*-
+/* SWI Prolog Common Foreign Language Interface: definitions. -*- C -*-
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -62,19 +62,22 @@ Prolog_put_long(Prolog_term_ref t, long l) {
   return 1;
 }
 
+static int tmp_mpz_t_initialized = 0;
+static mpz_t tmp_mpz_t;
+
 /*!
   Assign to \p t a Prolog integer with value \p ul.
 */
 static int
 Prolog_put_big_ulong(Prolog_term_ref t, unsigned long ul) {
-  static int tmp_initialized = 0;
-  static mpz_t tmp;
   assert(ul > LONG_MAX && ul > (uint64_t) INT64_MAX);
-  if (tmp_initialized)
-    mpz_init_set_ui(tmp, ul);
+  if (!tmp_mpz_t_initialized) {
+    mpz_init_set_ui(tmp_mpz_t, ul);
+    tmp_mpz_t_initialized = 1;
+  }
   else
-    mpz_set_ui(tmp, ul);
-  return PL_unify_mpz(t, tmp);
+    mpz_set_ui(tmp_mpz_t, ul);
+  return PL_unify_mpz(t, tmp_mpz_t);
 }
 
 /*!
