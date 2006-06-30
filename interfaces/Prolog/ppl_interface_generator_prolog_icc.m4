@@ -37,20 +37,11 @@ m4_replace_all_patterns($1, bop_assign_code,
   m4_pattern_list)`'dnl
 ')
 
-dnl m4_add_widening_extrapolation_code(Class_Counter, Class_Kind)
-dnl
-dnl Adds the extra code used by the widening and extrapolation predicates.
-define(`m4_add_widening_extrapolation_code', `dnl
-m4_replace_all_patterns($1, widening_extrapolation_code,
-  m4_pattern_list)`'dnl
-')
-
 dnl m4_pre_extra_class_code(Class_Counter, Class_Kind)
 dnl Prefix extra code for each class.
 define(`m4_pre_extra_class_code', `dnl
 dnl m4_add_term_to_class_handle_code($1)`'dnl
 m4_add_bop_assign_code($1)`'dnl
-m4_add_widening_extrapolation_code($1, $2)`'dnl
 ')
 
 divert`'dnl

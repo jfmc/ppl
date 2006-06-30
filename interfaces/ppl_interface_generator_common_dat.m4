@@ -283,6 +283,7 @@ binminop,
 widenexp,
 widen,
 extrapolation,
+limitedbounded,
 box,
 describe')
 
@@ -415,6 +416,10 @@ define(`m4_Octagonal_Shape_extrapolation_replacement', `CH78')
   `m4_Octagonal_Shape_widen_replacement')
 define(`m4_Polyhedra_Powerset_extrapolation_replacement',
   `m4_Polyhedra_Powerset_widen_replacement')
+
+dnl  Above or below
+define(`m4_limitedbounded_replacement', `limited')
+define(`m4_Polyhedron_limitedbounded_replacement', `limited, bounded')
 
 dnl The shape classes have bounding boxes while the grid classes also
 dnl have covering boxes.

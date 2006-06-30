@@ -938,83 +938,60 @@ ppl_@CLASS@_bounded_@AFFIMAGE@
 
 ')
 
-define(`widening_extrapolation_code',
-`namespace {
-
-Prolog_foreign_return_type
-widening_assign(Prolog_term_ref t_lhs,
-		Prolog_term_ref t_rhs,
-		void (@CPP_CLASS@::* widening_assign)(const @CPP_CLASS@&,
-						     unsigned* tp)) {
-  try {
-    @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
-    const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
-    CHECK(lhs);
-    CHECK(rhs);
-    (lhs->*widening_assign)(*rhs, 0);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
-Prolog_foreign_return_type
-widening_assign_with_tokens(Prolog_term_ref t_lhs,
-			    Prolog_term_ref t_rhs,
-			    Prolog_term_ref t_ti,
-			    Prolog_term_ref t_to,
-			    void (@CPP_CLASS@::*
-				  widening_assign)(const @CPP_CLASS@&,
-						   unsigned* tp)) {
+define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
+(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
+ Prolog_term_ref t_ti, Prolog_term_ref t_to) {
   try {
     @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
     const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
     unsigned t = term_to_unsigned<unsigned>(t_ti);
-    (lhs->*widening_assign)(*rhs, &t);
+    lhs->@WIDEN@_widening_assign(*rhs, &t);
       if (unify_long(t_to, t))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
 
-Prolog_foreign_return_type
-limited_extrapolation_assign
-(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
- void (@CPP_CLASS@::* limited_extrap_assign)
-      (const @CPP_CLASS@&,
-       const @UCONSTRAINER@_System&,
-       unsigned* tp)) {
+')
+
+define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_@WIDEN@_widening_assign
+(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
     @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
     const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    @UCONSTRAINER@_System cs;
-    Prolog_term_ref c = Prolog_new_term_ref();
-
-    while (Prolog_is_cons(t_clist)) {
-      Prolog_get_cons(t_clist, c, t_clist);
-     cs.insert(build_@CONSTRAINER@(c));
-    }
-
-    // Check the list is properly terminated.
-    check_nil_terminating(t_clist);
-
-    (lhs->*limited_extrap_assign)(*rhs, cs, 0);
+    lhs->@WIDEN@_widening_assign(*rhs, 0);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
 
-Prolog_foreign_return_type
-limited_extrapolation_assign_with_tokens
+')
+
+dnl FIXME: Polyhedra_Powerset widening = TODO
+define(`ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign
+(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  return widening_assign(t_lhs, t_rhs,
+                         &@CPP_CLASS@::@WIDENEXP@_widening_assign,
+                         &@CPP_BODY@::@BODYWIDENEXP@_widening_assign);
+}
+
+')
+
+define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
- Prolog_term_ref t_ti, Prolog_term_ref t_to,
- void (@CPP_CLASS@::* limited_extrap_assign)
-      (const @CPP_CLASS@&,
-       const @UCONSTRAINER@_System&,
-       unsigned* tp)) {
+ Prolog_term_ref t_ti, Prolog_term_ref t_to) {
   try {
     @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
     const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
@@ -1032,96 +1009,39 @@ limited_extrapolation_assign_with_tokens
     check_nil_terminating(t_clist);
 
     unsigned t = term_to_unsigned<unsigned>(t_ti);
-   (lhs->*limited_extrap_assign)(*rhs, cs, &t);
+   lhs->@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign(*rhs, cs, &t);
       if (unify_long(t_to, t))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
 
-} // namespace
-
 ')
 
-define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
+define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
-(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
- Prolog_term_ref t_ti, Prolog_term_ref t_to) {
-  return widening_assign_with_tokens(t_lhs, t_rhs, t_ti, t_to,
-                                     &@CPP_CLASS@::@WIDEN@_widening_assign);
-}
-
-')
-
-define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_@WIDEN@_widening_assign
-(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
-  return widening_assign(t_lhs, t_rhs,
-                         &@CPP_CLASS@::@WIDEN@_widening_assign);
-}
-
-')
-
-dnl FIXME: Polyhedra_Powerset widening = TODO
-define(`ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign
-(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
-  return widening_assign(t_lhs, t_rhs,
-                         &@CPP_CLASS@::@WIDENEXP@_widening_assign,
-                         &@CPP_BODY@::@BODYWIDENEXP@_widening_assign);
-}
-
-')
-
-define(`ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens
-(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
- Prolog_term_ref t_ti, Prolog_term_ref t_to) {
-  return
-    limited_extrapolation_assign_with_tokens
-     (t_lhs, t_rhs, t_clist, t_ti, t_to,
-      &@CPP_CLASS@::limited_@EXTRAPOLATION@_extrapolation_assign);
-}
-
-')
-
-define(`ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign
+ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist) {
-  return
-    limited_extrapolation_assign(t_lhs, t_rhs, t_clist,
-				 &@CPP_CLASS@::
-				 limited_@EXTRAPOLATION@_extrapolation_assign);
-}
+  try {
+    @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
+    const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
+    CHECK(lhs);
+    CHECK(rhs);
+    @UCONSTRAINER@_System cs;
+    Prolog_term_ref c = Prolog_new_term_ref();
 
-')
+    while (Prolog_is_cons(t_clist)) {
+      Prolog_get_cons(t_clist, c, t_clist);
+     cs.insert(build_@CONSTRAINER@(c));
+    }
 
-define(`ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens
-(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
- Prolog_term_ref t_ti, Prolog_term_ref t_to) {
-  return
-    limited_extrapolation_assign_with_tokens
-      (t_lhs, t_rhs, t_clist, t_ti, t_to,
-       &@CPP_CLASS@::bounded_@EXTRAPOLATION@_extrapolation_assign);
-}
+    // Check the list is properly terminated.
+    check_nil_terminating(t_clist);
 
-')
-
-define(`ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign
-(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist) {
-  return
-    limited_extrapolation_assign(t_lhs, t_rhs, t_clist,
-				 &@CPP_CLASS@::
-				 bounded_@EXTRAPOLATION@_extrapolation_assign);
+    lhs->@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign(*rhs, cs, 0);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
 }
 
 ')
