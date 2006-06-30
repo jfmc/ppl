@@ -1043,23 +1043,23 @@ limited_extrapolation_assign_with_tokens
 
 ')
 
-define(`ppl_@CLASS@_@WIDENEXP@_widening_assign_with_tokens_code',
+define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_@WIDENEXP@_widening_assign_with_tokens
+ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
  Prolog_term_ref t_ti, Prolog_term_ref t_to) {
   return widening_assign_with_tokens(t_lhs, t_rhs, t_ti, t_to,
-                                     &@CPP_CLASS@::@WIDENEXP@_widening_assign);
+                                     &@CPP_CLASS@::@WIDEN@_widening_assign);
 }
 
 ')
 
-define(`ppl_@CLASS@_@WIDENEXP@_widening_assign_code',
+define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_@WIDENEXP@_widening_assign
+ppl_@CLASS@_@WIDEN@_widening_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   return widening_assign(t_lhs, t_rhs,
-                         &@CPP_CLASS@::@WIDENEXP@_widening_assign);
+                         &@CPP_CLASS@::@WIDEN@_widening_assign);
 }
 
 ')
@@ -1076,52 +1076,52 @@ ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign
 
 ')
 
-define(`ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_with_tokens_code',
+define(`ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_with_tokens
+ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
  Prolog_term_ref t_ti, Prolog_term_ref t_to) {
   return
     limited_extrapolation_assign_with_tokens
      (t_lhs, t_rhs, t_clist, t_ti, t_to,
-      &@CPP_CLASS@::limited_@WIDENEXP@_extrapolation_assign);
+      &@CPP_CLASS@::limited_@EXTRAPOLATION@_extrapolation_assign);
 }
 
 ')
 
-define(`ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_code',
+define(`ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign
+ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist) {
   return
     limited_extrapolation_assign(t_lhs, t_rhs, t_clist,
 				 &@CPP_CLASS@::
-				 limited_@WIDENEXP@_extrapolation_assign);
+				 limited_@EXTRAPOLATION@_extrapolation_assign);
 }
 
 ')
 
-define(`ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_with_tokens_code',
+define(`ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_with_tokens
+ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
  Prolog_term_ref t_ti, Prolog_term_ref t_to) {
   return
     limited_extrapolation_assign_with_tokens
       (t_lhs, t_rhs, t_clist, t_ti, t_to,
-       &@CPP_CLASS@::bounded_@WIDENEXP@_extrapolation_assign);
+       &@CPP_CLASS@::bounded_@EXTRAPOLATION@_extrapolation_assign);
 }
 
 ')
 
-define(`ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_code',
+define(`ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign
+ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist) {
   return
     limited_extrapolation_assign(t_lhs, t_rhs, t_clist,
 				 &@CPP_CLASS@::
-				 bounded_@WIDENEXP@_extrapolation_assign);
+				 bounded_@EXTRAPOLATION@_extrapolation_assign);
 }
 
 ')

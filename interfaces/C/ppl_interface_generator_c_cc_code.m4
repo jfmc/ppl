@@ -451,35 +451,35 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_@WIDENEXP@_widening_assign_with_tokens_code',
+define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `int
-ppl_@CLASS@_@WIDENEXP@_widening_assign_with_tokens
+ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  unsigned* tp) try {
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
-  xx.@WIDENEXP@_widening_assign(yy, tp);
+  xx.@WIDEN@_widening_assign(yy, tp);
   return 0;
 }
 CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_@WIDENEXP@_widening_assign_code',
+define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `int
-ppl_@CLASS@_@WIDENEXP@_widening_assign
+ppl_@CLASS@_@WIDEN@_widening_assign
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y) try {
-  return ppl_@CLASS@_@WIDENEXP@_widening_assign_with_tokens(x, y, 0);
+  return ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens(x, y, 0);
 }
 CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_with_tokens_code',
+define(`ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `int
-ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_with_tokens
+ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_const_@UCONSTRAINER@_System_t cs,
@@ -487,30 +487,30 @@ ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_with_tokens
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
   const @UCONSTRAINER@_System& ccs = *to_const(cs);
-  xx.limited_@WIDENEXP@_extrapolation_assign(yy, ccs, tp);
+  xx.limited_@EXTRAPOLATION@_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
 CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_code',
+define(`ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_code',
 `int
-ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign
+ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_const_@UCONSTRAINER@_System_t cs) try {
   return
-    ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_with_tokens
+    ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens
       (x, y, cs, 0);
 }
 CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_with_tokens_code',
+define(`ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `int
-ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_with_tokens
+ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_const_@UCONSTRAINER@_System_t cs,
@@ -518,21 +518,21 @@ ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_with_tokens
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
   const @UCONSTRAINER@_System& ccs = *to_const(cs);
-  xx.bounded_@WIDENEXP@_extrapolation_assign(yy, ccs, tp);
+  xx.bounded_@EXTRAPOLATION@_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
 CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_code',
+define(`ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_code',
 `int
-ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign
+ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_const_@UCONSTRAINER@_System_t cs) try {
   return
-    ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_with_tokens
+    ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens
       (x, y, cs, 0);
 }
 CATCH_ALL

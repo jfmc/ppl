@@ -281,6 +281,8 @@ comparison,
 binop,
 binminop,
 widenexp,
+widen,
+extrapolation,
 box,
 describe')
 
@@ -394,13 +396,25 @@ dnl The topology used to copy from another element of the domain
 define(`m4_intopology_replacement', `')
 define(`m4_Polyhedron_intopology_replacement', `C_, NNC_')
 
-dnl The widening and extrapolation operators.
-define(`m4_widenexp_replacement', `')
-define(`m4_Polyhedron_widenexp_replacement', `BHRZ03, H79')
-define(`m4_Grid_widenexp_replacement', `congruence, generator')
-define(`m4_BD_Shape_widenexp_replacement', `BHMZ05, H79')
-define(`m4_Octagonal_Shape_widenexp_replacement', `CH78')
-define(`m4_Polyhedra_Powerset_widenexp_replacement', `BHZ03')
+dnl The widening operators.
+define(`m4_widen_replacement', `')
+define(`m4_Polyhedron_widen_replacement', `BHRZ03, H79')
+define(`m4_Grid_widen_replacement', `congruence, generator')
+define(`m4_BD_Shape_widen_replacement', `BHMZ05, H79')
+define(`m4_Octagonal_Shape_widen_replacement', `CH78')
+define(`m4_Polyhedra_Powerset_widen_replacement', `BHZ03')
+
+dnl The extrapolation operators.
+define(`m4_extrapolation_replacement', `m4_widen_replacement')
+define(`m4_Polyhedron_extrapolation_replacement',
+  `m4_Polyhedron_widen_replacement')
+define(`m4_Grid_extrapolation_replacement', `m4_Grid_widen_replacement')
+define(`m4_BD_Shape_extrapolation_replacement',
+  `m4_BD_Shape_widen_replacement, CC76')
+define(`m4_Octagonal_Shape_extrapolation_replacement', `CH78')
+  `m4_Octagonal_Shape_widen_replacement')
+define(`m4_Polyhedra_Powerset_extrapolation_replacement',
+  `m4_Polyhedra_Powerset_widen_replacement')
 
 dnl The shape classes have bounding boxes while the grid classes also
 dnl have covering boxes.
