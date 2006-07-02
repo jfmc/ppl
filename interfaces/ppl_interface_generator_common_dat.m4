@@ -143,15 +143,11 @@ dnl to process the rest of the list with a new value for the class counter.
 define(`m4_init_cplusplus_names', `dnl
 ifelse(
   index($2, Polyhedron), -1, `m4_init_cplusplus_names_aux($1, $2)`'dnl
-define(m4_class_topology`'$1, `')`'dnl
 m4_init_cplusplus_classes_aux(incr($1), $3)',
   $2, `Polyhedron', `m4_init_cplusplus_names_aux($1, $2)`'dnl
-define(m4_class_topology`'$1, `')`'dnl
 m4_init_cplusplus_classes_aux(incr($1), $3)',
   `m4_init_cplusplus_names_aux($1, m4_prefix_polyhedron($2, C))`'dnl
-define(m4_class_topology`'$1, C_)`'dnl
 m4_init_cplusplus_names_aux(incr($1), m4_prefix_polyhedron($2, NNC))`'dnl
-define(m4_class_topology`'incr($1), NNC_)`'dnl
 m4_init_cplusplus_classes_aux(incr(incr($1)), $3)')`'dnl
 ')
 
@@ -200,6 +196,31 @@ define(`m4_get_class_body',
       `ifelse(index(`$2', <), -1, `',
         `regexp(`$2', `[^ <]+[<]\(.*\w>?\)[ ]*[>]', `\1')')')')')
 
+
+dnl m4_get_class_topology(Class)
+dnl
+dnl expands to the empty string unless the class is
+dnl C_Polyhedron or NNC_Polyhedron, in which case it expands to
+dnl "C_" or "NNC" respectively.
+define(`m4_get_class_topology', `dnl
+ifelse(index($1, C_), 0, C_,
+index($1, NNC_), 0, NNC_)`'dnl
+')
+
+dnl m4_get_class_counter(Cpp_Class_Name, Topology)
+dnl
+dnl expands to the class counter for the cplusplus class.
+dnl If the class is C_Polyhderon or NNC_Polyhedron
+dnl then the topology may have to be added to the configuration name.
+define(`m4_get_class_counter', `dnl
+m4_forloop(m4_ind, 1, m4_num_classes, `dnl
+ifelse(
+  $1, m4_get_class_topology($1)`'m4_echo_unquoted(m4_cplusplus_class`'m4_ind),
+    m4_ind,
+  $1, m4_echo_unquoted(m4_cplusplus_class`'m4_ind),
+    m4_ind)`'dnl
+')`'dnl
+')
 
 dnl m4_group_names expands to all the group names.
 dnl
@@ -335,18 +356,18 @@ dnl
 dnl Initialise a flag to ensure the comma in the list is a separator only.
 define(`m4_replace_list_start', 0)`'dnl
 m4_same_class_string(
-  BD_Shape, interface, m4_class_topology$1, class_kind)`'dnl
+  BD_Shape, interface, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
 m4_same_class_string(
-  Polyhedron, interface, m4_class_topology$1, class_kind)`'dnl
+  Polyhedron, interface, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
 ')
 
 dnl Defines the alternative friend name for cplusplus code.
 define(`m4_BD_Shape_friend_alt_replacement', `dnl
 define(`m4_replace_list_start', 0)`'dnl
 m4_same_class_string(
-  BD_Shape, cplusplus, m4_class_topology$1, class_kind)`'dnl
+  BD_Shape, cplusplus, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
 m4_same_class_string(
-  Polyhedron, cplusplus, m4_class_topology$1, class_kind)`'dnl
+  Polyhedron, cplusplus, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
 ')
 
 dnl For Octagon class kind, any generated class with kind BD_Shape
@@ -356,17 +377,17 @@ dnl
 define(`m4_Octagon_friend_replacement', `dnl
 define(`m4_replace_list_start', 0)`'dnl
 m4_same_class_string(
-  Octagon, interface, m4_class_topology$1, class_kind)`'dnl
+  Octagon, interface, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
 m4_same_class_string(
-  Polyhedron, interface, m4_class_topology$1, class_kind)`'dnl
+  Polyhedron, interface, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
 ')
 
 define(`m4_Octagon_friend_alt_replacement', `dnl
 define(`m4_replace_list_start', 0)`'dnl
 m4_same_class_string(
-  Octagon, cplusplus, m4_class_topology$1, class_kind)`'dnl
+  Octagon, cplusplus, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
 m4_same_class_string(
-  Polyhedron, cplusplus, m4_class_topology$1, class_kind)`'dnl
+  Polyhedron, cplusplus, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
 ')
 
 dnl For Polyhedra_Powerset class kind, if the body is C_Polyhedron
@@ -404,6 +425,9 @@ define(`m4_Grid_widen_replacement', `congruence, generator')
 define(`m4_BD_Shape_widen_replacement', `BHMZ05, H79')
 define(`m4_Octagonal_Shape_widen_replacement', `CH78')
 define(`m4_Polyhedra_Powerset_widen_replacement', `BHZ03')
+dnl The alt_replacement defines the certificates for the widenings
+define(`m4_Polyhedron_widen_alt_replacement', `BHRZ03, H79')
+define(`m4_Grid_widen_alt_replacement', `Grid, Grid')
 
 dnl The extrapolation operators.
 define(`m4_extrapolation_replacement', `m4_widen_replacement')
@@ -417,7 +441,7 @@ define(`m4_Octagonal_Shape_extrapolation_replacement', `CH78')
 define(`m4_Polyhedra_Powerset_extrapolation_replacement',
   `m4_Polyhedra_Powerset_widen_replacement')
 
-dnl  Above or below
+dnl Limited or bounded
 define(`m4_limitedbounded_replacement', `limited')
 define(`m4_Polyhedron_limitedbounded_replacement', `limited, bounded')
 
@@ -461,15 +485,15 @@ dnl then the topology has to be added to the configuration name.
 define(`m4_get_interface_class_name', `dnl
 m4_forloop(m4_ind, 1, m4_num_classes, `dnl
 ifelse($1,
-  $2`'m4_echo_unquoted(m4_cplusplus_class`'m4_ind),
-  $2`'m4_echo_unquoted(m4_interface_class`'m4_ind))`'dnl
+  m4_get_class_topology($1)`'m4_echo_unquoted(m4_cplusplus_class`'m4_ind),
+  m4_get_class_topology($1)`'m4_echo_unquoted(m4_interface_class`'m4_ind))`'dnl
 ')`'dnl
 ')
 
 define(`m4_disjunct_replacement', `dnl
-m4_get_interface_class_name(m4_class_body`'$1, m4_class_topology`'$1)`'dnl
+m4_get_interface_class_name(m4_class_body`'$1)`'dnl
 ')
-define(`m4_disjunct_alt_replacement', m4_class_body`'$1)')
+define(`m4_disjunct_alt_replacement', m4_class_body`'$1)
 
 dnl  The different kinds of objects use to represent a class.
 define(`m4_represent_replacement', `constraint')
