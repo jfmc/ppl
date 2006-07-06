@@ -1720,9 +1720,11 @@ public:
   Parma_Polyhedra_Library::operator==<>(const Direct_Product<D1, D2>& x,
 					const Direct_Product<D1, D2>& y);
 
+#if 0
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::
-  operator<<<>(std::ostream& s, const Direct_Product<D1, D2>& dp);
+  operator<<(std::ostream& s, const Direct_Product<D1, D2>& dp);
+#endif
 
 
   //! \name Miscellaneous Member Functions
