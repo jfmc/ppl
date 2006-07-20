@@ -14,27 +14,6 @@ dnl for the names of the classes used to form the names of procedures
 dnl in the user interface.
 define(`m4_init_interface_classes', `m4_init_interface_classes_aux(1, $1)')
 
-dnl m4_subst_comma(String1, String2,...)
-dnl
-dnl String1, String2,... is the "@"-separated list of C++ class names
-dnl provided by the configuration.
-dnl As the product classes have their arguments ","-separated,
-dnl the "," separates the list into macro arguments.
-dnl This macro iterates through these macro arguments, replacing the
-dnl "," by "COMMA" so that the C++ names are handled as intended.
-define(`m4_subst_comma',
-`ifelse($#, 0, , $#, 1, $1,
-  `$1`'COMMA`'m4_subst_comma(shift($@))')')
-
-dnl m4_init_cplusplus_classes(Class_List)
-dnl
-dnl Parses the "@"-separated list of class names Class_List
-dnl to be used in the C++ code implementing the interface procedures.
-dnl Note that first the "," is replaced using the macro m4_subst_comma.
-define(`m4_init_cplusplus_classes',
- `m4_init_cplusplus_classes_aux(1, m4_subst_comma($@))')
-
-
 dnl m4_init_interface_classes_aux(Class_Counter, Class_List)
 dnl
 dnl Class_Counter - is the index to the first class in Class_List;
@@ -58,7 +37,7 @@ dnl Class         - is the interface class name, as input;
 dnl Class_List    - is a tail part of the input list of interface
 dnl                 class names.
 dnl The macro has three cases.
-dnl If the class name does not containg "Polyhedron",
+dnl If the class name does not contain "Polyhedron",
 dnl then m4_interface_class`'Class_Counter => Class;
 dnl If the class name is simply "Polyhedron",
 dnl then m4_interface_class`'Class_Counter => Class;
@@ -88,6 +67,18 @@ define(`m4_prefix_polyhedron', `dnl
 patsubst($1, Polyhedron, $2_Polyhedron)`'dnl
 ')
 
+dnl m4_subst_comma(String1, String2,...)
+dnl
+dnl String1, String2,... is the "@"-separated list of C++ class names
+dnl provided by the configuration.
+dnl As the product classes have their arguments ","-separated,
+dnl the "," separates the list into macro arguments.
+dnl This macro iterates through these macro arguments, replacing the
+dnl "," by "COMMA" so that the C++ names are handled as intended.
+define(`m4_subst_comma',
+`ifelse($#, 0, , $#, 1, $1,
+  `$1`'COMMA`'m4_subst_comma(shift($@))')')
+
 dnl m4_init_cplusplus_classes(Class_List)
 dnl
 dnl Parses the "@"-separated list of class names Class_List
@@ -98,15 +89,14 @@ define(`m4_init_cplusplus_classes',
 
 dnl m4_init_cplusplus_classes_aux(Class_Counter, Class_List)
 dnl
-dnl Class_Counter - is the index to the first class in Class_List;
+dnl Class_Counter - is the index to the next class in Class_List;
 dnl Class_List    - is a tail part of the input list of cplusplus
 dnl                 class names.
 dnl The macro calls m4_init_cplusplus_names to define the next
-dnl cplusplus names and then to to call this macro to recursively
+dnl cplusplus names and then calls itself to recursively
 dnl process the rest of the list.
 dnl The COMMA pattern is revised to @COMMA@ as soon as a class name
-dnl has been separated from the @-separated list of classes and
-dnl any unnecessary spaces removed.
+dnl has been separated from the @-separated list of classes.
 define(`m4_init_cplusplus_classes_aux', `dnl
 ifelse($2, `',  `',
   regexp(`$2', `\([^@]+\)@?\(.*\)',
@@ -124,7 +114,7 @@ patsubst($1, Polyhedron, $2_Polyhedron)`'dnl
 
 dnl m4_init_cplusplus_names(Class_Counter, Class, Class_List)
 dnl
-dnl Class_Counter - is the index to the first class in Class_List;
+dnl Class_Counter - is the index to the next class in Class_List;
 dnl Class         - is the cplusplus class name, as input;
 dnl Class_List    - is a tail part of the input list of cplusplus
 dnl                 class names.
@@ -135,7 +125,7 @@ dnl If the class name is simply "Polyhedron",
 dnl then m4_init_cplusplus_names_aux(Class_Counter, Class) is called;
 dnl Otherwise
 dnl then m4_init_cplusplus_names_aux(Class_Counter, ClassC)
-dnl and m4_init_cplusplus_names_aux(Class_Counter, ClassNNC) are called
+dnl and m4_init_cplusplus_names_aux(Class_Counter+1, ClassNNC) are called
 dnl where ClassC and ClassNNC are defined by m4_prefix_polyhedron(Class, C)
 dnl and m4_prefix_polyhedron(Class, NNC), respectively;
 dnl In all cases, the m4_init_cplusplus_classes_aux is called again
@@ -153,17 +143,45 @@ m4_init_cplusplus_classes_aux(incr(incr($1)), $3)')`'dnl
 
 dnl m4_init_cplusplus_names_aux(Class_Counter, Class)
 dnl
-dnl Class_Counter - is the index to the first class in Class_List;
+dnl Class_Counter - is the index to Class;
 dnl Class         - is the cplusplus class name, as input;
-dnl This macro just defines three macros,
-dnl defining the cplusplus_class_name`'Class_Counter,
-dnl class_kind`'Class_Counter and class_body`'Class_Counter,
+dnl This macro defines three class dependent macros:
+dnl - m4_cplusplus_class`'Class_Counter,
+dnl - m4_class_kind`'Class_Counter and
+dnl - m4_class_body`'Class_Counter,
 dnl where the kind is the part preceding the first "<"
 dnl and the body is the rest of the full cplusplus name.
+dnl
+dnl FIXME: This only works for product classes whose components
+dnl        are _not_ themselves products.
+dnl If the class kind is a Direct_Product or Open_Product,
+dnl it also calls the macro m4_parse_body_class(`$1')
+dnl to define subclasses
+dnl m4_cplusplus_class`'Class_Counter_1 and
+dnl m4_cplusplus_class`'Class_Counter_2
+dnl for the two components.
+dnl 
 define(`m4_init_cplusplus_names_aux', `dnl
 define(m4_cplusplus_class`'$1, `$2')`'dnl
 m4_get_class_kind(`$1', `$2')`'dnl
 m4_get_class_body(`$1', `$2')`'dnl
+ifelse(m4_class_kind`'$1, Direct_Product,
+  m4_parse_body_class(`$1'),
+       m4_class_kind`'$1, Open_Product,
+  m4_parse_body_class(`$1'))`'dnl
+')
+
+dnl m4_parse_body_class(Class_Counter)
+dnl This only should be called when the class kind is a product
+dnl and the components are separated by "@COMMA@".
+dnl The components are defined as:
+dnl m4_cplusplus_class`'Class_Counter_1 and
+dnl m4_cplusplus_class`'Class_Counter_2
+define(`m4_parse_body_class', `dnl
+define(m4_cplusplus_class`'$1`'_1,
+    `regexp(m4_class_body$1, `\([^@]*\).*', `\1')')`'dnl
+define(m4_cplusplus_class`'$1`'_2,
+    `regexp(m4_class_body$1, `\([^@]*\)@COMMA@\(.*\)', `\2')')`'dnl
 ')
 
 dnl m4_get_class_kind(Class_Counter, String)
@@ -183,7 +201,7 @@ dnl m4_class_body1 => `'
 dnl If String = Polyhedra_Powerset<BD_Shape<signed char> >
 dnl               and Class_Counter = 2
 dnl m4_class_kind2 => `Polyhedra_Powerset'
-dnl m4_class_body2 => `<BD_Shape<signed char> >'
+dnl m4_class_body2 => `BD_Shape<signed char>'
 define(`m4_get_class_kind',
   `define(m4_class_kind`'$1,
     `ifelse(`$2', `', ,
@@ -201,7 +219,7 @@ dnl m4_get_class_topology(Class)
 dnl
 dnl expands to the empty string unless the class is
 dnl C_Polyhedron or NNC_Polyhedron, in which case it expands to
-dnl "C_" or "NNC" respectively.
+dnl "C_" or "NNC_" respectively.
 define(`m4_get_class_topology', `dnl
 ifelse(index($1, C_), 0, C_,
 index($1, NNC_), 0, NNC_)`'dnl
@@ -394,14 +412,14 @@ dnl For Polyhedra_Powerset class kind, if the body is C_Polyhedron
 dnl or NNC_Polyhedron,
 dnl and Polyhedron is generated, then C_Polyhedron
 dnl (if the body is C_Polyhedron) or
-dnl NNC_Polyhedron (if the body is NNCC_Polyhedron)
+dnl NNC_Polyhedron (if the body is NNC_Polyhedron)
 dnl is a friend.
 dnl
 define(`m4_Polyhedra_Powerset_friend_replacement', `dnl
 dnl
 m4_interface_class$1`'dnl
 m4_same_class_string(
-  m4_class_body$1, interface, m4_class_topology$1, cplusplus_class)`'dnl
+  M4_class_body$1, interface, m4_class_topology$1, cplusplus_class)`'dnl
 ')
 dnl
 define(`m4_Polyhedra_Powerset_friend_alt_replacement', `dnl
