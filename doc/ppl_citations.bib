@@ -11,6 +11,28 @@
   Volume = 3945,
   Year = 2006,
   ISBN = "3-540-33438-6",
+  Abstract = "Despite its simplicity, the size-change termination
+              principle, presented by Lee, Jones and Ben-Amram in
+              [LJB01], is surprisingly strong and is able to show
+              termination for a large class of programs. A significant
+              limitation for its use, however, is the fact that the
+              SCT requires data types to be well-founded, and that all
+              mechanisms used to determine termination must involve
+              decreases in these global, well-founded partial orders.
+              Following is an extension of the size-change principle
+              that allows for non-well founded data types, and a
+              realization of this principle for integer data
+              types. The extended size-change principle is realized
+              through combining abstract interpretation over the
+              domain of convex polyhedra with the use of size-change
+              graphs. In the cases when data types \emph{are} well
+              founded, the method handles every case that is handled
+              by LJB size-change termination.  The method has been
+              implemented in a subject language independent shared
+              library, \texttt{libesct} (available at [Ave05a]), as
+              well as for the ANSI C specializer
+              $\texttt{C-Mix}_\texttt{II}$, handling a
+              subset of its internal language \texttt{Core-C}."
 }
 
 @Inproceedings{BagnaraR-CZ05,
@@ -88,6 +110,46 @@
   Number = "1/2",
   Pages = "1--193",
   Year = 2006,
+  Abstract = "The explosive growth of embedded electronics is bringing
+              information and control systems of increasing complexity
+              to every aspects of our lives. The most challenging
+              designs are safety-critical systems, such as
+              transportation systems (e.g., airplanes, cars, and
+              trains), industrial plants and health care
+              monitoring. The difficulties reside in accommodating
+              constraints both on functionality and
+              implementation. The correct behavior must be guaranteed
+              under diverse states of the environment and potential
+              failures; implementation has to meet cost, size, and
+              power consumption requirements. The design is therefore
+              subject to extensive mathematical analysis and
+              simulation. However, traditional models of information
+              systems do not interface well to the continuous evolving
+              nature of the environment in which these devices
+              operate.  Thus, in practice, different mathematical
+              representations have to be mixed to analyze the overall
+              behavior of the system. \emph{Hybrid systems} are a
+              particular class of mixed models that focus on the
+              combination of discrete and continuous subsystems. There
+              is a wealth of tools and languages that have been
+              proposed over the years to handle hybrid
+              systems. However, each tool makes different assumptions
+              on the environment, resulting in somewhat different
+              notions of hybrid system. This makes it difficult to
+              share information among tools. Thus, the community
+              cannot maximally leverage the substantial amount of work
+              that has been directed to this important topic. In this
+              paper, we review and compare hybrid system tools by
+              highlighting their differences in terms of their
+              underlying semantics, expressive power and mathematical
+              mechanisms.  We conclude our review with a comparative
+              summary, which suggests the need for a unifying approach
+              to hybrid systems design. As a step in this direction,
+              we make the case for a \emph{semantic-aware interchange
+              format}, which would enable the use of joint techniques,
+              make a formal comparison between different approaches
+              possible, and facilitate exporting and importing design
+              representations."
 }
 
 @Inproceedings{DooseM05,
@@ -530,6 +592,25 @@
   Volume = 3920,
   Year = 2006,
   ISBN = "3-540-33056-9",
+  Abstract = "Abstract interpretation techniques prove properties of
+              programs by computing abstract fixpoints. All such
+              analyses suffer from the possibility of false errors. We
+              present a new counterexample driven refinement technique
+              to reduce false errors in abstract interpretations.  Our
+              technique keeps track of the precision losses during
+              forward fixpoint computation, and does a precise
+              backward propagation from the error to either confirm
+              the error as a true error, or identify a refinement so
+              as to avoid the false error.  Our technique is quite
+              simple, and is independent of the specific abstract
+              domain used. An implementation of our technique for
+              affine transition systems is able to prove invariants
+              generated by the StInG tool [19] without doing any
+              specialized analysis for linear relations. Thus, we hope
+              that the technique can work for other abstract domains
+              as well.We sketch how our technique can be used to
+              perform shape analysis by simply defining an appropriate
+              widening operator over shape graphs."
 }
 
 @Inproceedings{HalbwachsMP-V03,
@@ -596,6 +677,37 @@
   Year = 2006,
   Note = "Contribution to the GNU Compilers Collection Developers Summit 2006
           (GCC Summit 06), Ottawa, Canada, June 28--30, 2006",
+  Abstract = "We present a plan to add loop nest optimizations in GCC
+              based on polyhedral representations of loop nests. We
+              advocate a static analysis approach based on a hierarchy
+              of interchangeable abstractions with solvers that range
+              from the exact solvers such as OMEGA, to faster but less
+              precise solvers based on more coarse abstractions. The
+              intermediate representation GRAPHITE (GIMPLE Represented
+              as Polyhedra with Interchangeable Envelopes), built on
+              GIMPLE and the natural loops, hosts the high level loop
+              transformations. We base this presentation on the
+              WRaP-IT project developed in the Alchemy group at INRIA
+              Futurs and Paris-Sud University, on the PIPS compiler
+              developed at École des mines de Paris, and on a joint
+              work with several members of the static analysis and
+              polyhedral compilation community in France.
+
+              The main goal of this project is to bring more high
+              level loop optimizations to GCC: loop fusion, tiling,
+              strip mining, etc. Thanks to the WRaP-IT experience, we
+              know that the polyhedral analyzes and transformations
+              are affordable in a production compiler. A second goal
+              of this project is to experiment with compile time
+              reduction versus attainable precision when replacing
+              operations on polyhedra with faster operations on more
+              abstract domains. However, the use of a too coarse
+              representation for computing might also result in an
+              over approximated solution that cannot be used in
+              subsequent computations. There exists a trade off
+              between speed of the computation and the attainable
+              precision that has not yet been analyzed for real world
+              programs."
 }
 
 @Inproceedings{SankaranarayananSM04,
