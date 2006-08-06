@@ -388,6 +388,37 @@
               differential VCO circuit."
 }
 
+@Inproceedings{GonnordH06,
+  Author = "L. Gonnord and N. Halbwachs",
+  Title = "Combining Widening and Acceleration in Linear Relation Analysis",
+  Booktitle = "Static Analysis:
+               Proceedings of the 13th International Symposium",
+  Address = "Seoul, Korea",
+  Year = 2006,
+  Editor = "K. Yi",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Abstract = "Linear Relation Analysis [CH78,Hal79] is one of the
+              first, but still one of the most powerful, abstract
+              interpretations working in an infinite lattice. As such,
+              it makes use of a widening operator to enforce the
+              convergence of fixpoint computations. While the
+              approximation due to widening can be arbitrarily refined
+              by delaying the application of widening, the analysis
+              quickly becomes too expensive with the increase of
+              delay. Previous attempts at improving the precision of
+              widening are not completely satisfactory, since none of
+              them is guaranteed to improve the precision of the
+              result, and they can nevertheless increase the cost of
+              the analysis. In this paper, we investigate an
+              improvement of Linear Relation Analysis consisting in
+              computing, when possible, the exact (abstract) effect of
+              a loop. This technique is fully compatible with the use
+              of widening, and whenever it applies, it improves both
+              the precision and the performance of the analysis.",
+  Note = "To appear"
+}
+
 @Inproceedings{GopanR06,
   Author = "D. Gopan and T. Reps",
   Title = "Lookahead Widening",
@@ -395,6 +426,9 @@
                Proceedings of the 18th International Conference",
   Address = "Seattle, Washington, USA",
   Year = 2006,
+  Editor = "T. Ball and R. Jones",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
   Abstract = "We present \emph{lookahead widening}, a novel technique
               for using existing widening and narrowing operators to
               improve the precision of static analysis. This technique
@@ -405,9 +439,6 @@
               effort. Experimental results indicate that the technique
               is able to achieve sizable precision improvements at
               reasonable costs.",
-  Editor = "T. Ball and R. Jones",
-  Publisher = "Springer-Verlag, Berlin",
-  Series = "Lecture Notes in Computer Science",
   Note = "To appear"
 }
 
