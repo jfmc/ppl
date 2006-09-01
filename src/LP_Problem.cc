@@ -312,7 +312,6 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
   return true;
 }
 
-
 bool
 PPL::LP_Problem::process_pending_constraints() {
   const dimension_type num_original_rows = tableau.num_rows();
@@ -759,7 +758,6 @@ bool
 PPL::LP_Problem::compute_simplex() {
   const dimension_type allowed_non_increasing_loops = 200;
   dimension_type non_increased_times = 0;
-  bool computed_challenger_value = false;
   bool call_textbook = false;
   Coefficient cost_sgn_coeff = working_cost[working_cost.size()-1];
   Coefficient current_num = working_cost[0]*sgn(cost_sgn_coeff);
@@ -788,9 +786,10 @@ PPL::LP_Problem::compute_simplex() {
     pivot(entering_var_index, exiting_base_index);
 
     // Now begins the objective function's value check to choose between
-    // the  `textbook' and the float `steepest-edge` technique.
+    // the `textbook' and the float `steepest-edge' technique.
     cost_sgn_coeff = working_cost[working_cost.size()-1];
-    Coefficient challenger = working_cost[0] * sgn(cost_sgn_coeff);
+    Coefficient challenger = working_cost[0] * sgn(cost_sgn_coeff) *
+      current_den;
     Coefficient current = current_num * abs(cost_sgn_coeff);
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
@@ -798,15 +797,10 @@ PPL::LP_Problem::compute_simplex() {
       std::cout << "Primal Simplex: iteration "
 		<< num_iterations << "." << std::endl;
 #endif
-    // Initialization during first loop.
-    if (!computed_challenger_value){
-      computed_challenger_value = true;
-      continue;
-    }
      //  If the following condition fails, probably there's a bug.
-    assert(challenger >= current );
-      // If the value of the objective function doesn't improve,
-      // keep track of that.
+    assert(challenger >= current);
+    // If the value of the objective function doesn't improve,
+    // keep track of that.
     if (challenger == current) {
       ++non_increased_times;
       // In the following case we will proceed using the `textbook'
@@ -819,9 +813,9 @@ PPL::LP_Problem::compute_simplex() {
       non_increased_times = 0;
       if (call_textbook)
 	call_textbook = false;
-      current_num = working_cost[0]*sgn(working_cost[working_cost.size()-1]);
-      current_den = abs(working_cost[working_cost.size()-1]);
     }
+    current_num = working_cost[0]*sgn(working_cost[working_cost.size()-1]);
+    current_den = abs(working_cost[working_cost.size()-1]);
   }
 }
 
@@ -889,7 +883,7 @@ PPL::LP_Problem::prepare_first_phase(const std::vector<dimension_type>
   // the artificial variables (which enter the base).
   // As for the cost function, all the artificial variables should have
   // coefficient -1.
-  for (dimension_type i = 0,k = 0; i < tableau.num_rows(); ++i) {
+  for (dimension_type i = 0, k = 0; i < tableau.num_rows(); ++i) {
     // If the previously inserted slack variable has the oppisite sign of the
     // inhomogeneous term, we can omit the artificial variable. This can save
     // a lot of time.
