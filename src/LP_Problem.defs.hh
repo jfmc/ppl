@@ -226,7 +226,6 @@ private:
   Matrix tableau;
   //! The working cost function.
   Row working_cost;
-
   //! The `i' index is set to <CODE>true</CODE> if tableau[i] is an artificial
   //! variable, is set to <CODE>false</CODE> otherwise.
   std::vector<bool> is_artificial;
@@ -246,8 +245,6 @@ private:
 
   //! An enumerated type describing the internal status of the LP problem.
   enum Status {
-    //! The LP problem has not been solved yet.
-    UNSOLVED,
     //! The LP problem is unsatisfiable.
     UNSATISFIABLE,
     //! The LP problem is satisfiable; a feasible solution has been computed.
@@ -266,6 +263,11 @@ private:
 
   //! The internal state of the LP problem.
   Status status;
+
+  //! A boolean encoding the fact that the internal data structures
+  //! for checking satsfiability / optimizing the problem are properly built.
+  //! Used internally to check more properties in OK().
+  bool initialized;
 
   //! The constraint system describing the feasible region.
   Constraint_System input_cs;

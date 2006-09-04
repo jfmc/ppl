@@ -29,7 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-// FIXME: we start from `UNSOLVED' to let work incrementality.
 inline
 LP_Problem::LP_Problem()
   : tableau(),
@@ -37,12 +36,14 @@ LP_Problem::LP_Problem()
     is_artificial(),
     mapping(),
     base(),
-    status(UNSOLVED),
+    status(PARTIALLY_SATISFIABLE),
+    initialized(false),
     input_cs(),
     pending_input_cs(),
     input_obj_function(),
     opt_mode(MAXIMIZATION),
-    last_generator(point()) {
+    last_generator(point())
+{
   assert(OK());
 }
 
@@ -55,14 +56,15 @@ LP_Problem::LP_Problem(const Constraint_System& cs,
     is_artificial(),
     mapping(),
     base(),
-    status(UNSOLVED),
-    input_cs(!cs.has_strict_inequalities()
+    status(PARTIALLY_SATISFIABLE),
+    initialized(false),
+    input_cs(),
+    pending_input_cs(!cs.has_strict_inequalities()
 	     ? cs
 	     : (throw std::invalid_argument("PPL::LP_Problem::"
                            "LP_Problem(cs, obj, m):\n"
                            "cs contains strict inequalities."),
 		cs)),
-    pending_input_cs(),
     input_obj_function(obj.space_dimension() <= cs.space_dimension()
 		       ? obj
 		       : (throw std::invalid_argument("PPL::LP_Problem::"
@@ -71,7 +73,8 @@ LP_Problem::LP_Problem(const Constraint_System& cs,
 				     "incompatible space dimensions."),
 			  obj)),
     opt_mode(mode),
-    last_generator(point()) {
+    last_generator(point())
+{
   assert(OK());
 }
 
@@ -83,11 +86,13 @@ LP_Problem::LP_Problem(const LP_Problem& y)
     mapping(y.mapping),
     base(y.base),
     status(y.status),
+    initialized(y.initialized),
     input_cs(y.input_cs),
     pending_input_cs(y.pending_input_cs),
     input_obj_function(y.input_obj_function),
     opt_mode(y.opt_mode),
-    last_generator(y.last_generator) {
+    last_generator(y.last_generator)
+{
   assert(OK());
 }
 
@@ -100,13 +105,9 @@ LP_Problem::add_constraint(const Constraint& c) {
   if (c.is_strict_inequality())
     throw std::invalid_argument("PPL::LP_Problem::add_constraint(c):\n"
 				"c is a strict inequality.");
-  if (status == UNSOLVED)
-    input_cs.insert(c);
-  else {
-    pending_input_cs.insert(c);
-    if (status != UNSATISFIABLE)
-      status = PARTIALLY_SATISFIABLE;
-  }
+  pending_input_cs.insert(c);
+  if (status != UNSATISFIABLE)
+    status = PARTIALLY_SATISFIABLE;
   assert(OK());
 }
 
@@ -116,15 +117,10 @@ LP_Problem::add_constraints(const Constraint_System& cs) {
     throw std::invalid_argument("PPL::LP_Problem::add_constraints(cs):\n"
 				"cs contains strict inequalities.");
   const dimension_type cs_num_rows = cs.num_rows();
-  if (status == UNSOLVED)
-    for (dimension_type i = cs_num_rows; i-- > 0; )
-      input_cs.insert(cs[i]);
-  else {
-    for (dimension_type i = cs_num_rows; i-- > 0; )
-      pending_input_cs.insert(cs[i]);
-    if (status != UNSATISFIABLE)
-      status = PARTIALLY_SATISFIABLE;
-  }
+  for (dimension_type i = cs_num_rows; i-- > 0; )
+    pending_input_cs.insert(cs[i]);
+  if (status != UNSATISFIABLE)
+    status = PARTIALLY_SATISFIABLE;
   assert(OK());
 }
 
@@ -146,7 +142,7 @@ LP_Problem::set_optimization_mode(Optimization_Mode mode) {
     opt_mode = mode;
     if (status == UNBOUNDED || status == OPTIMIZED)
       status = SATISFIABLE;
-    assert(OK());
+    //  assert(OK());
   }
 }
 
