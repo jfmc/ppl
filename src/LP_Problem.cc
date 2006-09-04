@@ -207,7 +207,7 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
     if (found_many_nonzero_coeffs) {
       // CHECKME: Is it true that in the first phase we can apply
       // `is_satisfied()' with the generator `point()'?  If so, the following
-      // code the following code works even if we doesn't have a feasible
+      // code the following code works even if we don't have a feasible
       // point.
       // Check for satisfiabilty of the inequality. This can be done if we
       // have a feasible point of *this.
