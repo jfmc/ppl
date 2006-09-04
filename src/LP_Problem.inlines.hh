@@ -73,8 +73,7 @@ LP_Problem::LP_Problem(const Constraint_System& cs,
 				     "incompatible space dimensions."),
 			  obj)),
     opt_mode(mode),
-    last_generator(point())
-{
+    last_generator(point()) {
   assert(OK());
 }
 
@@ -91,8 +90,7 @@ LP_Problem::LP_Problem(const LP_Problem& y)
     pending_input_cs(y.pending_input_cs),
     input_obj_function(y.input_obj_function),
     opt_mode(y.opt_mode),
-    last_generator(y.last_generator)
-{
+    last_generator(y.last_generator){
   assert(OK());
 }
 
@@ -211,6 +209,7 @@ LP_Problem::swap(LP_Problem& y) {
   std::swap(working_cost, y.working_cost);
   std::swap(is_artificial, y.is_artificial);
   std::swap(mapping, y.mapping);
+  std::swap(initialized, y.initialized);
   std::swap(base, y.base);
   std::swap(status, y.status);
   std::swap(input_cs, y.input_cs);
