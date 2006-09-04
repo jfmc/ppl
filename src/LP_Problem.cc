@@ -318,7 +318,9 @@ PPL::LP_Problem::process_pending_constraints() {
   const dimension_type input_cs_sd = input_cs.space_dimension();
   const dimension_type pending_cs_num_rows = pending_input_cs.num_rows();
   const dimension_type pending_cs_num_cols = pending_input_cs.num_columns();
-  dimension_type new_rows = 0, new_slacks = 0, new_var_columns = 0;
+  dimension_type new_rows = 0;
+  dimension_type new_slacks = 0;
+  dimension_type new_var_columns = 0;
   std::deque<bool> is_tableau_constraint;
   std::deque<bool> nonnegative_variable;
   std::vector<dimension_type> unfeasible_tableau_rows;
@@ -785,8 +787,8 @@ PPL::LP_Problem::compute_simplex() {
   const dimension_type tableau_num_rows = tableau.num_rows();
   while (true) {
     // Choose the index of the variable entering the base, if any.
-    const dimension_type entering_var_index = call_textbook ?
-      textbook_entering_index() : steepest_edge_entering_index();
+    const dimension_type entering_var_index = call_textbook
+      ? textbook_entering_index() : steepest_edge_entering_index();
 
     // If no entering index was computed, the problem is solved.
     if (entering_var_index == 0)
@@ -807,8 +809,8 @@ PPL::LP_Problem::compute_simplex() {
     // Now begins the objective function's value check to choose between
     // the `textbook' and the float `steepest-edge' technique.
     cost_sgn_coeff = working_cost[working_cost.size()-1];
-    Coefficient challenger = working_cost[0] * sgn(cost_sgn_coeff) *
-      current_den;
+    Coefficient challenger = working_cost[0] * sgn(cost_sgn_coeff)
+      * current_den;
     Coefficient current = current_num * abs(cost_sgn_coeff);
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
