@@ -42,8 +42,7 @@ LP_Problem::LP_Problem()
     pending_input_cs(),
     input_obj_function(),
     opt_mode(MAXIMIZATION),
-    last_generator(point())
-{
+    last_generator(point()) {
   assert(OK());
 }
 
@@ -90,7 +89,7 @@ LP_Problem::LP_Problem(const LP_Problem& y)
     pending_input_cs(y.pending_input_cs),
     input_obj_function(y.input_obj_function),
     opt_mode(y.opt_mode),
-    last_generator(y.last_generator){
+    last_generator(y.last_generator) {
   assert(OK());
 }
 
