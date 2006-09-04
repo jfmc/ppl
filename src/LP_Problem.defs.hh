@@ -352,13 +352,6 @@ private:
     satisfied by `last_generator' and do not require artificial variables to
     have a starting feasible base.
 
-    \param bool bootstrap
-    This boolean encodes if `parse_constraints' is called for the first time or
-    not. If set to <CODE>false</CODE>, is called for the first time and so
-    \p *this doesn't have a valid `last_generator'.
-    If set to <CODE>true</CODE>, `parse_constraints' is not called for the
-    first time and so \p *this has a valid `last_generator'.
-
 */
   bool parse_constraints(const Constraint_System& cs,
 			 dimension_type& new_num_rows,
@@ -366,8 +359,7 @@ private:
 			 std::deque<bool>& is_tableau_constraint,
 			 std::deque<bool>& nonnegative_variable,
 			 std::vector<dimension_type>& unfeasible_tableau_rows,
-			 std::deque<bool>& satisfied_ineqs,
-			 const bool bootstrap);
+			 std::deque<bool>& satisfied_ineqs);
   /*! \brief
     Checks for optimality and, if it does not hold, computes the column
     index of the variable entering the base of the LP problem.
