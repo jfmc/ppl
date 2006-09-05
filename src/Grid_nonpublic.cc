@@ -483,7 +483,9 @@ void
 PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 			      Grid_Generator_System& gen_sys) {
   dimension_type row = 0;
+#ifndef NDEBUG
   dimension_type num_rows = gen_sys.num_generators();
+#endif
   assert(num_rows > 0);
 
   // Find the first point in gen_sys.
