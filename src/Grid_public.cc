@@ -1573,9 +1573,9 @@ PPL::Grid::affine_image(const Variable var,
 	con_sys.affine_preimage(var_space_dim, inverse, expr[var_space_dim]);
       }
       else {
-	// The new denominator is negative:
-	// we negate everything once more, as Congruence_System::affine_preimage()
-	// requires the third argument to be positive.
+	// The new denominator is negative: we negate everything once
+	// more, as Congruence_System::affine_preimage() requires the
+	// third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
 	neg_assign(inverse[var_space_dim]);
@@ -1652,9 +1652,9 @@ affine_preimage(const Variable var,
 	gen_sys.affine_image(var_space_dim, inverse, expr[var_space_dim]);
       }
       else {
-	// The new denominator is negative:
-	// we negate everything once more, as Grid_Generator_System::affine_image()
-	// requires the third argument to be positive.
+	// The new denominator is negative: we negate everything once
+	// more, as Grid_Generator_System::affine_image() requires the
+	// third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
 	neg_assign(inverse[var_space_dim]);
