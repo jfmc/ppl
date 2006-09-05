@@ -777,8 +777,8 @@ PPL::LP_Problem
 #if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 bool
 PPL::LP_Problem::compute_simplex() {
-  const dimension_type allowed_non_increasing_loops = 200;
-  dimension_type non_increased_times = 0;
+  const unsigned long allowed_non_increasing_loops = 200;
+  unsigned long non_increased_times = 0;
   bool call_textbook = false;
   Coefficient cost_sgn_coeff = working_cost[working_cost.size()-1];
   Coefficient current_num = working_cost[0]*sgn(cost_sgn_coeff);
