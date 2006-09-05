@@ -781,7 +781,12 @@ PPL::LP_Problem::compute_simplex() {
   unsigned long non_increased_times = 0;
   bool call_textbook = false;
   Coefficient cost_sgn_coeff = working_cost[working_cost.size()-1];
-  Coefficient current_num = working_cost[0]*sgn(cost_sgn_coeff);
+  Coefficient current_num = 0;
+  // CHECKME: How to use the ternary operator? Compilation fails.
+  if (cost_sgn_coeff < 0)
+    neg_assign(current_num, working_cost[0]);
+  else
+    current_num = working_cost[0];
   Coefficient current_den = abs(cost_sgn_coeff);
   assert(tableau.num_columns() == working_cost.size());
   const dimension_type tableau_num_rows = tableau.num_rows();
@@ -809,8 +814,13 @@ PPL::LP_Problem::compute_simplex() {
     // Now begins the objective function's value check to choose between
     // the `textbook' and the float `steepest-edge' technique.
     cost_sgn_coeff = working_cost[working_cost.size()-1];
-    Coefficient challenger = working_cost[0] * sgn(cost_sgn_coeff)
-      * current_den;
+
+    Coefficient challenger = 0;
+    if (cost_sgn_coeff < 0)
+      neg_assign(challenger, working_cost[0]);
+    else
+      challenger = working_cost[0];
+    challenger *= current_den;
     Coefficient current = current_num * abs(cost_sgn_coeff);
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
@@ -835,8 +845,11 @@ PPL::LP_Problem::compute_simplex() {
       if (call_textbook)
 	call_textbook = false;
     }
-    current_num = working_cost[0]*sgn(working_cost[working_cost.size()-1]);
-    current_den = abs(working_cost[working_cost.size()-1]);
+    if (cost_sgn_coeff < 0)
+      neg_assign(current_num, working_cost[0]);
+    else
+      current_num = working_cost[0];
+    current_den = abs(cost_sgn_coeff);
   }
 }
 
