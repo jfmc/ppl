@@ -152,9 +152,10 @@ public:
   /*!
     The polyhedron inherits the space dimension of the generator system.
 
-    \param gs
-    The system of generators defining the polyhedron.
+    \param ggs
+    The system of grid generators defining the polyhedron.
 
+    FIXME: is the following correct?
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points,
     or if it contains closure points.
@@ -165,11 +166,12 @@ public:
   /*!
     The polyhedron inherits the space dimension of the generator system.
 
-    \param gs
+    \param ggs
     The system of generators defining the polyhedron.  It is not
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    FIXME: is the following correct?
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points,
     or if it contains closure points.
