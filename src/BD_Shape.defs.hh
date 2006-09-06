@@ -810,6 +810,28 @@ public:
 				   denominator = Coefficient_one());
 
   /*! \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Generalized_Affine_Relations "affine relation"
+    \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+    \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+
+    \param lhs
+    The left hand side affine expression.
+
+    \param relsym
+    The relation symbol.
+
+    \param rhs
+    The right hand side affine expression.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs
+    or if \p relsym is a strict relation symbol.
+  */
+  void generalized_affine_preimage(const Linear_Expression& lhs,
+				   Relation_Symbol relsym,
+				   const Linear_Expression& rhs);
+  /*! \brief
     Assigns to \p *this the result of computing the
     \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
 

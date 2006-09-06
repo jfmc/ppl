@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_LP_Problem_inlines_hh 1
 
 #include "Constraint.defs.hh"
-#include "Constraint_System.defs.hh"
 #include <stdexcept>
 
 namespace Parma_Polyhedra_Library {

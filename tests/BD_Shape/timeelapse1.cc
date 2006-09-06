@@ -189,12 +189,12 @@ test06() {
     bd1.time_elapse_assign(bd2);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

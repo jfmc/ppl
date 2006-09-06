@@ -1,4 +1,4 @@
-/* Try to reproduce a strange behavior observed on MacOs X.
+/* Test class Grid_Generator_System.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,42 +21,35 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include <fstream>
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+namespace {
 
-int
-main() TRY {
-  std::ifstream s(SRCDIR "/bug2.dat");
-  if (!s) {
-    std::cerr << "Cannot open data file!!!" << endl;
-    exit(1);
-  }
+// recycling_insert(g) where the dimension of g is greater than the
+// generator system.
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
 
-  NNC_Polyhedron ph;
-  ph.ascii_load(s);
+  Grid_Generator_System gs(1);
 
-  const Constraint_System& cs = ph.constraints();
-  unsigned num_constraints = 0;
-  for (Constraint_System::const_iterator i = cs.begin(), cs_end = cs.end();
-       i != cs_end;
-       ++i)
-    ++num_constraints;
-  ph.ascii_dump(nout);
-  const Generator_System& gs = ph.generators();
-  unsigned num_points = 0;
-  for (Generator_System::const_iterator i = gs.begin(), gs_end = gs.end();
-       i != gs_end;
-       ++i) {
-    if (i->type() != Generator::POINT) {
+  Grid_Generator g = grid_point(A + B);
 
-      nout << "i->type() == " << i->type() << endl;
+  gs.recycling_insert(g);
 
-      exit(1);
-    }
-    ++num_points;
-  }
+  print_generators(gs, "*** gs ***");
 
-  return 0;
+  Grid_Generator_System known_gs(grid_point(A + B));
+
+  bool ok = (gs == known_gs);
+
+  print_generators(known_gs, "*** known_gs ***");
+
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

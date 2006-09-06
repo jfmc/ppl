@@ -199,10 +199,10 @@ test06() {
   gr.map_space_dimensions(function);
 
   Grid known_gr(4, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(B));
-  known_gr.add_generator(grid_point(2*A));
-  known_gr.add_generator(grid_point(2*A + B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(B));
+  known_gr.add_grid_generator(grid_point(2*A));
+  known_gr.add_grid_generator(grid_point(2*A + B));
 
   bool ok = (gr == known_gr);
 
@@ -234,8 +234,8 @@ test07() {
   gr.map_space_dimensions(function);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_line(A));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_line(A));
 
   bool ok = (gr == known_gr);
 
@@ -278,18 +278,18 @@ test09() {
   function.insert(1, 0);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point(4*A, 2));
-  gr.add_generator(grid_point(4*A + B, 2));
+  gr.add_grid_generator(grid_point(4*A, 2));
+  gr.add_grid_generator(grid_point(4*A + B, 2));
 
   // Force minimization.
-  gr.minimized_generators();
+  gr.minimized_grid_generators();
   print_generators(gr, "*** gr ***");
 
   gr.map_space_dimensions(function);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(4*B, 2));
-  known_gr.add_generator(grid_point(4*B + A, 2));
+  known_gr.add_grid_generator(grid_point(4*B, 2));
+  known_gr.add_grid_generator(grid_point(4*B + A, 2));
 
   bool ok = (gr == known_gr);
 

@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Interval.defs.hh"
 #include "Generator.defs.hh"
 #include "LP_Problem.defs.hh"
+#include "compiler.hh"
 #include <algorithm>
 #include <deque>
 
@@ -56,6 +57,11 @@ Polyhedron::topology() const {
 }
 
 inline bool
+Polyhedron::is_discrete() const {
+  return affine_dimension() == 0;
+}
+
+inline bool
 Polyhedron::is_necessarily_closed() const {
   // We can check either one of the two matrices.
   // (`con_sys' is slightly better, since it is placed at offset 0.)
@@ -67,6 +73,32 @@ Polyhedron::space_dimension() const {
   return space_dim;
 }
 
+inline Congruence_System
+Polyhedron::congruences() const {
+  return Congruence_System(constraints());
+}
+
+inline Congruence_System
+Polyhedron::minimized_congruences() const {
+  return Congruence_System(minimized_constraints());
+}
+
+inline Grid_Generator_System
+Polyhedron::minimized_grid_generators() const {
+  return grid_generators();
+}
+
+inline void
+Polyhedron::add_grid_generator(const Grid_Generator& g) const {
+  used(g);
+}
+
+inline bool
+Polyhedron::add_grid_generator_and_minimize(const Grid_Generator& g) const {
+  used(g);
+  return !is_empty();
+}
+
 inline void
 Polyhedron::upper_bound_assign(const Polyhedron& y) {
   poly_hull_assign(y);
@@ -75,6 +107,11 @@ Polyhedron::upper_bound_assign(const Polyhedron& y) {
 inline void
 Polyhedron::difference_assign(const Polyhedron& y) {
   poly_difference_assign(y);
+}
+
+inline void
+Polyhedron::widening_assign(const Polyhedron& y, unsigned* tp) {
+  H79_widening_assign(y, tp);
 }
 
 inline

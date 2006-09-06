@@ -89,10 +89,10 @@ test03() {
   gr.add_congruence((A %= 0) / 7);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(parameter(7*A));
-  known_gr.add_generator(parameter(7*B));
-  known_gr.add_generator(grid_line(C));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(parameter(7*A));
+  known_gr.add_grid_generator(parameter(7*B));
+  known_gr.add_grid_generator(grid_line(C));
 
   bool ok = (gr == known_gr);
 
@@ -113,16 +113,36 @@ test04() {
   gr.add_congruence_and_minimize((A %= 0) / 7);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(parameter(7*A));
-  known_gr.add_generator(parameter(7*B));
-  known_gr.add_generator(grid_line(C));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(parameter(7*A));
+  known_gr.add_grid_generator(parameter(7*B));
+  known_gr.add_grid_generator(grid_line(C));
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr, "***  gr.add_congruence((A %= 0) / 7) ***");
 
   return ok;
+}
+
+// Space dimension exception.
+static bool
+test05() {
+  Variable A(0);
+  Variable C(2);
+
+  Grid gr(2);
+
+  try {
+    gr.add_congruence(A + C %= 0);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
 }
 
 } // namespace
@@ -132,4 +152,5 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN

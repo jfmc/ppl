@@ -54,6 +54,19 @@ PPL::Scalar_Products::assign(Coefficient& z,
 
 void
 PPL::Scalar_Products::assign(Coefficient& z,
+			     const Constraint& x,
+			     const Grid_Generator& y) {
+  // Scalar product is only defined if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() <= y.size());
+  z = 0;
+  for (dimension_type i = x.size(); i-- > 0; )
+    // The following line optimizes the computation of z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
+void
+PPL::Scalar_Products::assign(Coefficient& z,
 			     const Congruence& x, const Grid_Generator& y) {
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
@@ -113,6 +126,20 @@ PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
   // Scalar product is only defined if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size());
+  z = 0;
+  // Note the pre-decrement of `i': last iteration should be for `i == 1'.
+  for (dimension_type i = x.size() - 1; --i > 0; )
+    // The following line optimizes the computation of z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
+void
+PPL::Scalar_Products::homogeneous_assign(Coefficient& z,
+					 const Grid_Generator& x,
+					 const Constraint& y) {
+  // Scalar product is only defined if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() - 1 <= y.size());
   z = 0;
   // Note the pre-decrement of `i': last iteration should be for `i == 1'.
   for (dimension_type i = x.size() - 1; --i > 0; )

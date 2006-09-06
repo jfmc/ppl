@@ -245,11 +245,11 @@ test12() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Point with zero divisor.
@@ -264,11 +264,11 @@ test13() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Line.
@@ -283,11 +283,11 @@ test14() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // is_equivalent_to() and is_equal_to(): generators have different types
@@ -359,8 +359,8 @@ test17() {
 
   Linear_Expression e;
 
-  for (int i = a.space_dimension() - 1; i >= 0; i--)
-      e += (i + 1) * a.coefficient(Variable(i)) * Variable(i);
+  for (dimension_type i = a.space_dimension(); i-- > 0; )
+    e += (i + 1) * a.coefficient(Variable(i)) * Variable(i);
   Grid_Generator b = parameter(e, 2);
 
   Grid_Generator c(parameter(2*A - 2*B + 9*C, a.divisor()));
@@ -371,8 +371,117 @@ test17() {
   return ok;
 }
 
+// Copy construction of a grid generator.
+static bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator a(parameter(A - 2*B + 3*C, -2));
+
+  Grid_Generator b(a);
+
+  bool ok = (a == b);
+
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
+}
+
+// Method zero_dim_point.
+static bool
+test19() {
+  Grid_Generator a(Grid_Generator::zero_dim_point());
+
+  Grid_Generator b(grid_point());
+
+  bool ok = (a == b);
+
+  print_generator(a, "*** a ***");
+  print_generator(b, "*** b ***");
+
+  return ok;
+}
+
+// Method `type'.
+static bool
+test20() {
+  Variable C(2);
+
+  Grid_Generator::Type a = grid_point(2*C).type();
+
+  Grid_Generator::Type b = grid_point(3*C).type();
+
+  bool ok = (a == b);
+
+  nout << "*** a ***" << a << std::endl;
+  nout << "*** b ***" << b << std::endl;
+
+  return ok;
+}
+
+#if 0 // scale_to_divisor is now private.
+// Exception in method scale_to_divisor.
+static bool
+test21() {
+  Variable C(2);
+
+  Grid_Generator a = grid_point(2*C, 3);
+
+  print_generator(a, "*** a ***");
+
+  try {
+    a.scale_to_divisor(0);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+#endif
+
+// Exception when trying to get the divisor of a line.
+static bool
+test22() {
+  Variable C(2);
+
+  Grid_Generator a = grid_line(2*C);
+
+  print_generator(a, "*** a ***");
+
+  try {
+    a.divisor();
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+// Method zero_dim_point.
+static bool
+test23() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Linear_Expression le(grid_point(A - B - 2*C));
+
+  bool ok = (grid_point(A - B - 2*C) == grid_point(A - B - 2*C));
+
+  return ok;
+}
 
 } // namespace
+
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
@@ -391,4 +500,10 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
+  //DO_TEST(test21);
+  DO_TEST(test22);
+  DO_TEST(test23);
 END_MAIN

@@ -440,12 +440,12 @@ test13() {
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -475,12 +475,12 @@ test14() {
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -509,12 +509,12 @@ test15() {
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

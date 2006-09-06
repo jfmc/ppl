@@ -33,6 +33,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
+#include "Grid_Generator_System.defs.hh"
+#include "Grid_Generator_System.inlines.hh"
 #include "Saturation_Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Congruence.defs.hh"
@@ -396,7 +398,7 @@ protected:
 
     \param cs
     The system of constraints defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
     \exception std::invalid_argument
@@ -429,7 +431,7 @@ protected:
 
     \param gs
     The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
     \exception std::invalid_argument
@@ -464,7 +466,7 @@ protected:
     methods below.  However, if <CODE>is_empty()</CODE> returns
     <CODE>true</CODE>, none of the functions below will be called.
     \code
-      bool get_lower_bound(dimension_type k, bool closed,
+      bool get_lower_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
@@ -480,7 +482,7 @@ protected:
     have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
     the unique representation for zero.
     \code
-      bool get_upper_bound(dimension_type k, bool closed,
+      bool get_upper_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
@@ -528,6 +530,21 @@ public:
   //! Returns the system of generators, with no redundant generator.
   const Generator_System& minimized_generators() const;
 
+  //! Returns a system of congruences created from the constraints.
+  Congruence_System congruences() const;
+
+  /*! \brief
+    Returns a system of congruences created from the minimized
+    constraints.
+  */
+  Congruence_System minimized_congruences() const;
+
+  //! Returns a universe system of grid generators.
+  Grid_Generator_System grid_generators() const;
+
+  //! Returns a universe system of grid generators.
+  Grid_Generator_System minimized_grid_generators() const;
+
   /*! \brief
     Returns the relations holding between the polyhedron \p *this
     and the constraint \p c.
@@ -571,6 +588,9 @@ public:
     dimension-incompatible.
   */
   bool is_disjoint_from(const Polyhedron& y) const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
+  bool is_discrete() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
@@ -871,6 +891,12 @@ public:
   */
   bool add_generator_and_minimize(const Generator& g);
 
+  //! Domain compatibility method.
+  void add_grid_generator(const Grid_Generator& g) const;
+
+  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
+  bool add_grid_generator_and_minimize(const Grid_Generator& g) const;
+
   /*! \brief
     Adds a copy of congruence \p cg to the system of congruences of \p
     *this (without minimizing the result).
@@ -900,8 +926,8 @@ public:
     of \p *this (without minimizing the result).
 
     \param cs
-    The constraint system that will be recycled, adding its
-    constraints to the system of constraints of \p *this.
+    The constraint system to be added to \p *this.  The constraints in
+    \p cs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are topology-incompatible or
@@ -938,8 +964,8 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param cs
-    The constraint system that will be recycled, adding its
-    constraints to the system of constraints of \p *this.
+    The constraint system to be added to \p *this.  The constraints in
+    \p cs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are topology-incompatible or
@@ -971,8 +997,8 @@ public:
     of \p *this (without minimizing the result).
 
     \param gs
-    The generator system that will be recycled, adding its generators
-    to the system of generators of \p *this.
+    The generator system to be added to \p *this.  The generators in
+    \p gs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are topology-incompatible or
@@ -1011,8 +1037,8 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param gs
-    The generator system that will be recycled, adding its generators
-    to the system of generators of \p *this.
+    The generator system to be added to \p *this.  The generators in
+    \p gs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are topology-incompatible or
@@ -1563,6 +1589,9 @@ public:
     dimension-incompatible.
   */
   void H79_widening_assign(const Polyhedron& y, unsigned* tp = 0);
+
+  //! Same as H79_widening_assign(y, tp).
+  void widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
   /*! \brief
     Improves the result of the \ref H79_widening "H79-widening"

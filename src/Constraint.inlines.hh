@@ -24,8 +24,47 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Constraint_inlines_hh 1
 
 #include "Linear_Expression.defs.hh"
+#include "Congruence.defs.hh"
 
 namespace Parma_Polyhedra_Library {
+
+inline
+Constraint::Constraint(const Congruence& cg)
+  : Linear_Row(cg.is_equality()
+	       // Extra columns for inhomogeneous term and epsilon
+	       // coefficient.
+	       ? cg.space_dimension() + 2
+	       : (throw_invalid_argument("Constraint(cg)",
+					 "congruence cg must be an equality."),
+		  0),
+	       compute_capacity(cg.space_dimension() + 2, Row::max_size()),
+	       Flags(NOT_NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+  // Copy coefficients.
+  assert(cg.space_dimension() > 0);
+  dimension_type i = cg.space_dimension();
+  operator[](i) = cg[i];
+  while (i-- > 0)
+    operator[](i) = cg[i];
+  // Enforce normalization.
+  strong_normalize();
+}
+
+inline
+Constraint::Constraint(const Congruence& cg,
+		       dimension_type sz,
+		       dimension_type capacity)
+  : Linear_Row(cg.is_equality()
+	       ? sz
+	       : (throw_invalid_argument("Constraint(cg, sz, c)",
+					 "congruence cg must be an equality."),
+		  0),
+	       capacity,
+	       Flags(NOT_NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+  // Copy coefficients.
+  assert(sz > 0);
+  while (sz-- > 0)
+    operator[](sz) = cg[sz];
+}
 
 inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {

@@ -89,7 +89,7 @@ public:
 
     \param cs
     The system of constraints defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
     \exception std::invalid_argument
@@ -116,7 +116,7 @@ public:
 
     \param gs
     The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
     \exception std::invalid_argument
@@ -131,7 +131,7 @@ public:
 
     \param cgs
     The system of congruences defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
   */
   explicit C_Polyhedron(const Congruence_System& cgs);
@@ -143,10 +143,38 @@ public:
 
     \param cgs
     The system of congruences defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
   */
   explicit C_Polyhedron(Congruence_System& cgs);
+
+  //! Builds a C polyhedron from a system of grid generators.
+  /*!
+    The polyhedron inherits the space dimension of the generator system.
+
+    \param gs
+    The system of generators defining the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points,
+    or if it contains closure points.
+  */
+  explicit C_Polyhedron(const Grid_Generator_System& ggs);
+
+  //! Builds a C polyhedron recycling a system of grid generators.
+  /*!
+    The polyhedron inherits the space dimension of the generator system.
+
+    \param gs
+    The system of generators defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures may be
+    recycled to build the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points,
+    or if it contains closure points.
+  */
+  explicit C_Polyhedron(Grid_Generator_System& ggs);
 
   /*! \brief
     Builds a C polyhedron representing the topological closure

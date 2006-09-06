@@ -156,7 +156,7 @@ test09() {
   gs.insert(grid_line(E));
 
   Grid gr(5);
-  gr.add_generators(gs);
+  gr.add_grid_generators(gs);
 
   bool ok = (!gr.is_empty());
 

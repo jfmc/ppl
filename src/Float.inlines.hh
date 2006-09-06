@@ -68,12 +68,12 @@ float_ieee754_single::sign_bit() const {
 
 inline void
 float_ieee754_single::dec() {
-  word--;
+  --word;
 }
 
 inline void
 float_ieee754_single::inc() {
-  word++;
+  ++word;
 }
 
 inline void
@@ -132,21 +132,21 @@ float_ieee754_double::sign_bit() const {
 inline void
 float_ieee754_double::dec() {
   if (lsp == 0) {
-    msp--;
+    --msp;
     lsp = LSP_MAX;
   }
   else
-    lsp--;
+    --lsp;
 }
 
 inline void
 float_ieee754_double::inc() {
   if (lsp == LSP_MAX) {
-    msp++;
+    ++msp;
     lsp = 0;
   }
   else
-    lsp++;
+    ++lsp;
 }
 
 inline void
@@ -218,21 +218,21 @@ float_intel_double_extended::sign_bit() const {
 inline void
 float_intel_double_extended::dec() {
   if ((lsp & LSP_DMAX) == 0) {
-    msp--;
+    --msp;
     lsp = (msp & MSP_NEG_INF) == 0 ? LSP_DMAX : LSP_NMAX;
   }
   else
-    lsp--;
+    --lsp;
 }
 
 inline void
 float_intel_double_extended::inc() {
   if ((lsp & LSP_DMAX) == LSP_DMAX) {
-    msp++;
+    ++msp;
     lsp = LSP_DMAX + 1;
   }
   else
-    lsp++;
+    ++lsp;
 }
 
 inline void
@@ -296,21 +296,21 @@ float_ieee754_quad::sign_bit() const {
 inline void
 float_ieee754_quad::dec() {
   if (lsp == 0) {
-    msp--;
+    --msp;
     lsp = LSP_MAX;
   }
   else
-    lsp--;
+    --lsp;
 }
 
 inline void
 float_ieee754_quad::inc() {
   if (lsp == LSP_MAX) {
-    msp++;
+    ++msp;
     lsp = 0;
   }
   else
-    lsp++;
+    ++lsp;
 }
 
 inline void

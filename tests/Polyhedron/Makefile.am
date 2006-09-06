@@ -646,10 +646,7 @@ check_PROGRAMS = $(TESTS) $(BUGS)
 
 EXTRA_DIST = $(watchdog1_SRCS)
 
-BUGS = bug2
-
-bug2_SOURCES = bug2.cc
-bug2_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
+BUGS =
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat \

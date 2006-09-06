@@ -193,7 +193,7 @@ public:
     inserted.
 
     \exception std::invalid_argument
-    Thrown if \p c is a relation.
+    Thrown if \p c is a relational constraint.
   */
   void insert(const Constraint& c);
 
@@ -353,8 +353,22 @@ public:
   */
   void add_unit_rows_and_columns(dimension_type dims);
 
+protected:
+
+  //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
+  bool satisfies_all_congruences(const Grid_Generator& g) const;
+
+private:
+
+  //! Builds an empty (i.e. zero rows) system of dimension \p d.
+  explicit Congruence_System(const dimension_type d);
+
   /*! \brief
     Concatenates copies of the congruences from \p cgs onto \p *this.
+
+    \param cgs
+    The congruence system to append to \p this.  The number of rows in
+    \p cgs must be strictly positive.
 
     The matrix for the new system of congruences is obtained by
     leaving the old system in the upper left-hand side and placing the
@@ -362,13 +376,6 @@ public:
     with zeroes.
   */
   void concatenate(const Congruence_System& cgs);
-
-protected:
-
-  //! Returns <CODE>true</CODE> if \p g satisfies all the congruences.
-  bool satisfies_all_congruences(const Grid_Generator& g) const;
-
-private:
 
   //! Adjusts all expressions to have the same moduli.
   void normalize_moduli();
@@ -390,7 +397,6 @@ private:
   void insert_verbatim(const Congruence& cg);
 
   friend class const_iterator;
-  // FIXME: Reduce the dependence on this declaration.
   friend class Grid;
   friend class Grid_Certificate;
 
@@ -460,19 +466,28 @@ private:
 		       const Linear_Expression& expr,
 		       Coefficient_traits::const_reference denominator);
 
+  /*! \brief
+    Removes the higher dimensions of the system so that the resulting
+    system will have dimension \p new_dimension.
+
+    The value of \p new_dimension must be at most the space dimension
+    of \p *this.
+  */
+  void remove_higher_space_dimensions(const dimension_type new_dimension);
+
   //! Resizes the system without worrying about the old contents.
   /*!
-    \param new_n_rows
+    \param new_num_rows
     The number of rows of the resized system;
 
-    \param new_n_columns
+    \param new_num_columns
     The number of columns of the resized system.
 
     The system is expanded to the specified dimensions avoiding
     reallocation whenever possible.
     The contents of the original system is lost.
   */
-  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns);
+  void resize_no_copy(dimension_type new_num_rows, dimension_type new_num_columns);
 };
 
 // Congruence_System.inlines.hh is not included here on purpose.

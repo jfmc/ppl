@@ -295,7 +295,7 @@ test10() {
 
   print_generators(ph1, "*** After add_generators_assign ***");
   print_generators(copy_ph1,
-		    "*** After add_generators_and_minimize ***");
+		   "*** After add_generators_and_minimize ***");
 
   return ok;
 }

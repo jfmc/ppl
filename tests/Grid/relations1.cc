@@ -80,7 +80,7 @@ test04() {
   print_congruences(gr, "*** gr ***");
 
   bool ok
-     = (gr.relation_with(grid_point(2*A)) == Poly_Gen_Relation::nothing());
+    = (gr.relation_with(grid_point(2*A)) == Poly_Gen_Relation::nothing());
 
   return ok;
 }
@@ -97,7 +97,7 @@ test05() {
   print_congruences(gr, "*** gr ***");
 
   bool ok = (gr.relation_with(grid_point()) == Poly_Gen_Relation::nothing()
-       && gr.relation_with(grid_point(-B)) == Poly_Gen_Relation::nothing());
+	     && gr.relation_with(grid_point(-B)) == Poly_Gen_Relation::nothing());
 
   return ok;
 }
@@ -144,11 +144,11 @@ test08() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Zero dimension universe grid.

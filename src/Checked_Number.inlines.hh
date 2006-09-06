@@ -696,6 +696,9 @@ DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
 DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
 DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)
 
+DEF_ASSIGN_FUN2_1(abs_assign, abs_assign_r)
+DEF_ASSIGN_FUN2_2(abs_assign, abs_assign_r)
+
 DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul_assign_r)
 
 DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)

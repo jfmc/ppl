@@ -207,9 +207,9 @@ bool operator!=(const Grid& x, const Grid& y);
   generators (a point, and two lines).
   \code
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(0*x + 0*y));
-  gr.add_generator(grid_line(x));
-  gr.add_generator(grid_line(y));
+  gr.add_grid_generator(grid_point(0*x + 0*y));
+  gr.add_grid_generator(grid_line(x));
+  gr.add_grid_generator(grid_line(y));
   \endcode
   Note that a generator system must contain a point when describing
   a grid.  To ensure that this is always the case it is required
@@ -256,9 +256,9 @@ bool operator!=(const Grid& x, const Grid& y);
   <CODE>affine_image</CODE>:
   \code
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(0*x + 0*y));
-  gr.add_generator(grid_point(4*x + 0*y));
-  gr.add_generator(grid_point(0*x + 2*y));
+  gr.add_grid_generator(grid_point(0*x + 0*y));
+  gr.add_grid_generator(grid_point(4*x + 0*y));
+  gr.add_grid_generator(grid_point(0*x + 2*y));
   Linear_Expression expr = x + 3;
   gr.affine_image(x, expr);
   \endcode
@@ -289,9 +289,9 @@ bool operator!=(const Grid& x, const Grid& y);
   <CODE>affine_preimage</CODE>:
   \code
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(0*x + 0*y));
-  gr.add_generator(grid_point(4*x + 0*y));
-  gr.add_generator(grid_point(0*x + 2*y));
+  gr.add_grid_generator(grid_point(0*x + 0*y));
+  gr.add_grid_generator(grid_point(4*x + 0*y));
+  gr.add_grid_generator(grid_point(0*x + 2*y));
   Linear_Expression expr = x + 3;
   gr.affine_preimage(x, expr);
   \endcode
@@ -398,7 +398,7 @@ public:
 
     \param cgs
     The system of congruences defining the grid.  Its data-structures
-    will be recycled to build the grid.
+    may be recycled to build the grid.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
@@ -424,7 +424,8 @@ public:
     The grid inherits the space dimension of the constraint system.
 
     \param cs
-    The system of constraints defining the grid.
+    The system of constraints defining the grid.  Its data-structures
+    may be recycled to build the grid.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
@@ -432,7 +433,7 @@ public:
   */
   explicit Grid(Constraint_System& cs);
 
-  //! Builds a grid, copying a system of generators.
+  //! Builds a grid, copying a system of grid generators.
   /*!
     The grid inherits the space dimension of the generator system.
 
@@ -448,13 +449,13 @@ public:
   */
   explicit Grid(const Grid_Generator_System& const_gs);
 
-  //! Builds a grid, recycling a system of generators.
+  //! Builds a grid, recycling a system of grid generators.
   /*!
     The grid inherits the space dimension of the generator system.
 
     \param gs
     The system of generators defining the grid.  Its data-structures
-    will be recycled to build the grid.
+    may be recycled to build the grid.
 
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
@@ -463,6 +464,38 @@ public:
     Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
   */
   explicit Grid(Grid_Generator_System& gs);
+
+  //! Builds a grid, copying a system of generators.
+  /*!
+    The grid inherits the space dimension of the generator system.
+
+    \param const_gs
+    The system of generators defining the grid.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Grid(const Generator_System& const_gs);
+
+  //! Builds a grid, recycling a system of generators.
+  /*!
+    The grid inherits the space dimension of the generator system.
+
+    \param gs
+    The system of generators defining the grid.  Its data-structures
+    may be recycled to build the grid.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
+  */
+  explicit Grid(Generator_System& gs);
 
   //! Builds a grid out of a generic, interval-based bounding box.
   /*!
@@ -494,7 +527,7 @@ public:
     returns <CODE>true</CODE> if and only if the bounding box
     describes the empty set.
     \code
-      bool get_lower_bound(dimension_type k, bool closed,
+      bool get_lower_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -510,7 +543,7 @@ public:
     have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
     the unique representation for zero.
     \code
-      bool get_upper_bound(dimension_type k, bool closed,
+      bool get_upper_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -565,7 +598,7 @@ public:
     returns <CODE>true</CODE> if and only if the covering box
     describes the empty set.
     \code
-      bool get_lower_bound(dimension_type k, bool closed,
+      bool get_lower_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -581,7 +614,7 @@ public:
     have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
     the unique representation for zero.
     \code
-      bool get_upper_bound(dimension_type k, bool closed,
+      bool get_upper_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -618,17 +651,38 @@ public:
   */
   dimension_type affine_dimension() const;
 
+  //! Returns a system of constraints constructed from the grid equalities.
+  Constraint_System constraints() const;
+
+  /*! \brief
+    Returns a system of constraints constructed from the equalities
+    in the minimal congruence system.
+  */
+  Constraint_System minimized_constraints() const;
+
   //! Returns the system of congruences.
   const Congruence_System& congruences() const;
 
   //! Returns the system of congruences in reduced form.
   const Congruence_System& minimized_congruences() const;
 
+  /*! \brief
+    Returns a universe system of generators of the same number of
+    dimensions as the Grid.
+  */
+  Generator_System generators() const;
+
+  /*! \brief
+    Returns a universe system of generators of the same number of
+    dimensions as the Grid.
+  */
+  Generator_System minimized_generators() const;
+
   //! Returns the system of generators.
-  const Grid_Generator_System& generators() const;
+  const Grid_Generator_System& grid_generators() const;
 
   //! Returns the minimized system of generators.
-  const Grid_Generator_System& minimized_generators() const;
+  const Grid_Generator_System& minimized_grid_generators() const;
 
   //! Returns the relations holding between \p *this and \p cg.
   /*
@@ -649,6 +703,16 @@ public:
   Poly_Gen_Relation
   relation_with(const Grid_Generator& g) const;
 
+  //! Returns the relations holding between \p *this and \p c.
+  /*
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
+  */
+  // FIXME: Poly_Con_Relation seems to encode exactly what we want
+  // here.  We must find a new name for that class.  Temporarily,
+  // we keep using it without changing the name.
+  Poly_Con_Relation relation_with(const Constraint& c) const;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is an empty
     grid.
@@ -664,6 +728,8 @@ public:
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is a
     topologically closed subset of the vector space.
+
+    A grid is always topologically closed.
   */
   bool is_topologically_closed() const;
 
@@ -867,7 +933,7 @@ public:
     returns the dimension of the vector space enclosing the grid
     represented by the bounding box.
     \code
-      bool get_lower_bound(dimension_type k, bool closed,
+      bool get_lower_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -883,7 +949,7 @@ public:
     have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
     the unique representation for zero.
     \code
-      bool get_upper_bound(dimension_type k, bool closed,
+      bool get_upper_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
@@ -1062,18 +1128,18 @@ public:
   bool add_congruence_and_minimize(const Constraint& c);
 
   /*! \brief
-    Adds a copy of generator \p g to the system of generators of \p
-    *this.
+    Adds a copy of grid generator \p g to the system of generators of
+    \p *this.
 
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
   */
-  void add_generator(const Grid_Generator& g);
+  void add_grid_generator(const Grid_Generator& g);
 
   /*! \brief
-    Adds a copy of generator \p g to the system of generators of \p
-    *this, reducing the result.
+    Adds a copy of grid generator \p g to the system of generators of
+    \p *this, reducing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -1082,7 +1148,13 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
   */
-  bool add_generator_and_minimize(const Grid_Generator& g);
+  bool add_grid_generator_and_minimize(const Grid_Generator& g);
+
+  //! Domain compatibility method.
+  void add_generator(const Generator& g) const;
+
+  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
+  bool add_generator_and_minimize(const Generator& g) const;
 
   //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!
@@ -1109,8 +1181,8 @@ public:
   //! Adds the congruences in \p cgs to *this.
   /*!
     \param cgs
-    The congruence system that will be recycled, adding its
-    congruences to the system of congruences of \p *this.
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
@@ -1124,14 +1196,13 @@ public:
   //! Adds the equality constraints in \p cs to \p *this.
   /*!
     \param cs
-    The constraint system from which constraints will be considered
-    for addition to the system of congruences of \p *this.
+    The constraint system to be added to \p *this.  The equalities in
+    \p cs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
 
     \warning
-
     The only assumption that can be made about \p cs upon successful
     or exceptional return is that it can be safely destroyed.
   */
@@ -1177,8 +1248,8 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param cgs
-    The congruence system that will be recycled, adding its
-    congruences to the system of congruences of \p *this.
+    The congruence system to be added to \p *this.  The congruences in
+    \p cgs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cgs are dimension-incompatible.
@@ -1195,8 +1266,8 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param cs
-    The constraint system that will be recycled, adding its
-    equalities to the system of congruences of \p *this.
+    The constraint system to be added to \p *this.  The equalities in
+    \p cs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
@@ -1249,6 +1320,10 @@ public:
 
   //! Adds the equality constraints in \p cs to \p *this.
   /*!
+    \param cs
+    The constraint system to be added to \p *this.  The equalities in
+    \p cs may be recycled.
+
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
 
@@ -1259,6 +1334,12 @@ public:
   void add_recycled_constraints(Constraint_System& cs);
 
   /*! \brief
+    Adds the equality constraints in \p cs to \p *this, reducing the
+    result.
+
+    \param cs
+    The constraint system to be added to \p *this.  The equalities in
+    \p cs may be recycled.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -1285,26 +1366,24 @@ public:
     \p *this is empty and the system of generators \p gs is not empty,
     but has no points.
   */
-  void add_generators(const Grid_Generator_System& gs);
+  void add_grid_generators(const Grid_Generator_System& gs);
 
   /*! \brief
     Adds the generators in \p gs to the system of generators of \p
     *this.
 
     \param gs
-    The generator system that will be recycled, adding its generators
-    to the system of generators of \p *this.
+    The generator system to be added to \p *this.  The generators in
+    \p gs may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if
-    \p *this is empty and the system of generators \p gs is not empty,
-    but has no points.
+    Thrown if \p *this and \p gs are dimension-incompatible.
 
     \warning
     The only assumption that can be made about \p gs upon successful
     or exceptional return is that it can be safely destroyed.
   */
-  void add_recycled_generators(Grid_Generator_System& gs);
+  void add_recycled_grid_generators(Grid_Generator_System& gs);
 
   /*! \brief
     Adds a copy of the generators in \p gs to the system of generators
@@ -1322,7 +1401,7 @@ public:
     *this is empty and the system of generators \p gs is not empty,
     but has no points.
   */
-  bool add_generators_and_minimize(const Grid_Generator_System& gs);
+  bool add_grid_generators_and_minimize(const Grid_Generator_System& gs);
 
   /*! \brief
     Adds the generators in \p gs to the system of generators of \p
@@ -1332,19 +1411,17 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param gs
-    The generator system that will be recycled, adding its generators
-    to the system of generators of \p *this.
+    The generator system to be added to \p *this.  The generators in
+    \p gs may be recycled.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p gs are dimension-incompatible, or if \p
-    *this is empty and the system of generators \p gs is not empty,
-    but has no points.
+    Thrown if \p *this and \p gs are dimension-incompatible.
 
     \warning
     The only assumption that can be made about \p gs upon successful
     or exceptional return is that it can be safely destroyed.
   */
-  bool add_recycled_generators_and_minimize(Grid_Generator_System& gs);
+  bool add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs);
 
   /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.  The
@@ -1389,6 +1466,9 @@ public:
 
   //! Same as join_assign(y).
   void upper_bound_assign(const Grid& y);
+
+  //! Same as join_assign_and_minimize(y).
+  void upper_bound_assign_and_minimize(const Grid& y);
 
   /*! \brief
     If the join of \p *this and \p y is exact it is assigned to \p
@@ -1752,8 +1832,8 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
   */
   void limited_congruence_extrapolation_assign(const Grid& y,
-				    const Congruence_System& cgs,
-				    unsigned* tp = NULL);
+					       const Congruence_System& cgs,
+					       unsigned* tp = NULL);
 
   /*! \brief
     Improves the result of the generator variant of the
@@ -1776,8 +1856,8 @@ public:
     Thrown if \p *this, \p y and \p cs are dimension-incompatible.
   */
   void limited_generator_extrapolation_assign(const Grid& y,
-				    const Congruence_System& cgs,
-				    unsigned* tp = NULL);
+					      const Congruence_System& cgs,
+					      unsigned* tp = NULL);
 
   /*! \brief
     Improves the result of the \ref Grid_Widening "Grid widening"
@@ -1891,7 +1971,7 @@ public:
     Thrown if \p new_dimensions is greater than the space dimension of
     \p *this.
   */
-  void remove_higher_space_dimensions(dimension_type new_dimension);
+  void remove_higher_space_dimensions(const dimension_type new_dimension);
 
   /*! \brief
     Remaps the dimensions of the vector space according to
@@ -2069,6 +2149,17 @@ private:
   // types is last to first.
   Dimension_Kinds dim_kinds;
 
+  //! Builds a grid universe or empty grid.
+  /*!
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the grid;
+
+    \param kind
+    specifies whether the universe or the empty grid has to be built.
+  */
+  void construct(dimension_type num_dimensions,
+		 const Degenerate_Element kind);
+
   //! Builds a grid from a system of congruences.
   /*!
     The grid inherits the space dimension of the congruence system.
@@ -2078,6 +2169,15 @@ private:
   */
   void construct(const Congruence_System& cgs);
 
+  //! Builds a grid from a system of grid generators.
+  /*!
+    The grid inherits the space dimension of the generator system.
+
+    \param gs
+    The system of grid generators defining the grid;
+  */
+  void construct(const Grid_Generator_System& gs);
+
   //! Builds a grid from a system of generators.
   /*!
     The grid inherits the space dimension of the generator system.
@@ -2085,7 +2185,7 @@ private:
     \param gs
     The system of generators defining the grid;
   */
-  void construct(const Grid_Generator_System& gs);
+  void construct(const Generator_System& gs);
 
   //! \name Private Verifiers: Verify if Individual Flags are Set
   //@{
@@ -2325,32 +2425,52 @@ private:
     Converts \p sys to an equivalent system in which the divisors are
     of equal value.
 
-    \return
-    The new system divisor, or zero if \p divisor was zero.
-
     \param sys
-    The generator system to be normalized.
+    The generator system to be normalized.  It must have at least one
+    row.
 
     \param divisor
-    An extra divisor to include in the calculation of the common
-    divisor of \p sys.
+    A reference to the initial value of the divisor.  The resulting
+    value of this object is the new system divisor.
 
     \param first_point
     If \p first_point has a value other than NULL then it is taken as
     the first point in \p sys, and it is assumed that any following
     points have the same divisor as \p first_point.
   */
-  static Coefficient
+  static void
   normalize_divisors(Grid_Generator_System& sys,
-		     Coefficient_traits::const_reference divisor
-		     = Coefficient_one(),
+		     Coefficient& divisor,
 		     Grid_Generator* first_point = NULL);
+
+  //! Normalizes the divisors in \p sys.
+  /*!
+    Converts \p sys to an equivalent system in which the divisors are
+    of equal value.
+
+    \param sys
+    The generator system to be normalized.  It must have at least one
+    row.
+  */
+  static void
+  normalize_divisors(Grid_Generator_System& sys);
 
   //! Normalize all the divisors in \p sys and \p gen_sys.
   /*!
     Modify \p sys and \p gen_sys to use the same single divisor value
     for all generators, leaving each system representing the grid it
     represented originally.
+
+    \param sys
+    The first of the generator systems to be normalized.
+
+    \param gen_sys
+    The second of the generator systems to be normalized.  This system
+    must have at least one row and the divisors of the generators in
+    this system must be equal.
+
+    \exception std::runtime_error
+    Thrown if all rows in \p gen_sys are lines and/or parameters.
   */
   static void normalize_divisors(Grid_Generator_System& sys,
 				 Grid_Generator_System& gen_sys);

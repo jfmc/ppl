@@ -125,9 +125,9 @@ test05() {
   Variable C(2);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point(A + 2*B + 2*C));
-  gr.add_generator(grid_point(A + 2*B + 4*C));
-  gr.add_generator(grid_point(A + 6*B + 2*C));
+  gr.add_grid_generator(grid_point(A + 2*B + 2*C));
+  gr.add_grid_generator(grid_point(A + 2*B + 4*C));
+  gr.add_grid_generator(grid_point(A + 6*B + 2*C));
   print_generators(gr, "*** gr ***");
 
   Variables_Set to_fold;
@@ -136,8 +136,8 @@ test05() {
   gr.fold_space_dimensions(to_fold, B);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(A + 2*B));
-  known_gr.add_generator(grid_point(A + 4*B));
+  known_gr.add_grid_generator(grid_point(A + 2*B));
+  known_gr.add_grid_generator(grid_point(A + 4*B));
 
   bool ok = (gr == known_gr);
   print_congruences(gr, "*** gr.fold_space_dimensions(to_fold, B) ***");
@@ -327,11 +327,11 @@ test12() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Highest variable in set of greater dimension than grid.
@@ -349,11 +349,11 @@ test13() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Dimension of highest variable in set greater than dimension of
@@ -373,11 +373,11 @@ test14() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

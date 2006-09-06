@@ -35,8 +35,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.defs.hh"
 #include <iosfwd>
 
-namespace PPL = Parma_Polyhedra_Library;
-
 namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
@@ -198,7 +196,7 @@ swap(Parma_Polyhedra_Library::Congruence& x,
     cout << "Congruence cg1 is an equality." << endl;
   else {
     Linear_Expression e;
-    for (int i = cg1.space_dimension() - 1; i >= 0; --i)
+    for (dimension_type i = cg1.space_dimension(); i-- > 0; )
       e += 2 * cg1.coefficient(Variable(i)) * Variable(i);
       e += 2 * cg1.inhomogeneous_term();
     Congruence cg2((e %= 0) / m);
@@ -375,9 +373,6 @@ protected:
 
 private:
 
-  //! Returns a reference to the modulus of \p *this.
-  Coefficient& modulus();
-
   //! Marks this congruence as a linear equality.
   void set_is_equality();
 
@@ -414,18 +409,10 @@ private:
     The Linear_Expression holding the coefficients.
 
     \param m
-    The modulus for the congruence.
-
-    \param capacity
-    If <CODE>true</CODE> then the size of the \p le row is expanded
-    and the modulus is stored in the extra space.  In this case it is
-    assumed that \p le has spare capacity of at least one element.
-    If <CODE>false</CODE> then the modulus is stored in the last
-    element of the \p le row.
+    The modulus for the congruence, which must be zero or greater.
   */
   Congruence(Linear_Expression& le,
-	     Coefficient_traits::const_reference m,
-	     bool capacity = true);
+	     Coefficient_traits::const_reference m);
 
   //! Swaps \p *this with \p y.
   void swap(Congruence& y);
@@ -447,35 +434,41 @@ private:
 			       Variable v) const;
 
   friend Congruence
-  PPL::operator/(const Congruence& cg,
+  Parma_Polyhedra_Library::operator/(const Congruence& cg,
 		 Coefficient_traits::const_reference k);
 
   friend Congruence
-  PPL::operator/(const Constraint& c,
+  Parma_Polyhedra_Library::operator/(const Constraint& c,
 		 Coefficient_traits::const_reference m);
 
   friend bool
-  PPL::operator==(const Congruence& x, const Congruence& y);
+  Parma_Polyhedra_Library::operator==(const Congruence& x,
+				      const Congruence& y);
 
   friend bool
-  PPL::operator!=(const Congruence& x, const Congruence& y);
+  Parma_Polyhedra_Library::operator!=(const Congruence& x,
+				      const Congruence& y);
 
   friend std::ostream&
-  PPL::IO_Operators::operator<<(std::ostream& s,
-				const Congruence_System& cgs);
+  Parma_Polyhedra_Library::IO_Operators
+  ::operator<<(std::ostream& s,
+	       const Congruence_System& cgs);
 
-  friend class PPL::Scalar_Products;
-  friend class PPL::Congruence_System;
-  friend class PPL::Congruence_System::const_iterator;
+  friend class Parma_Polyhedra_Library::Scalar_Products;
+  friend class Parma_Polyhedra_Library::Constraint;
+  friend class Parma_Polyhedra_Library::Congruence_System;
+  friend class Parma_Polyhedra_Library::Congruence_System::const_iterator;
   // FIXME: The following friend declaration is at least for
   //        operator[] access in Grid::conversion.
-  friend class PPL::Grid;
-  friend class PPL::Linear_Expression;
+  friend class Parma_Polyhedra_Library::Grid;
+  friend class Parma_Polyhedra_Library::Linear_Expression;
 
   friend void
-  std::swap(PPL::Congruence& x, PPL::Congruence& y);
+  std::swap(Parma_Polyhedra_Library::Congruence& x,
+	    Parma_Polyhedra_Library::Congruence& y);
 };
 
 #include "Congruence.inlines.hh"
+#include "Congruence_System.inlines.hh"
 
 #endif // !defined(PPL_Congruence_defs_hh)

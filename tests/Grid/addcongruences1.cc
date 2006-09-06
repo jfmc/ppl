@@ -97,8 +97,8 @@ test03() {
   gr.add_congruences_and_minimize(cgs);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(2*A - 2*B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(2*A - 2*B));
 
   bool ok = (gr == known_gr);
 
@@ -124,13 +124,13 @@ test04() {
   gr.add_recycled_congruences_and_minimize(cgs);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(2*A + 2*B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(2*A + 2*B));
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
+		    "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
 
   return ok;
 }
@@ -152,11 +152,11 @@ test05() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // add_congruences(cgs) -- space dimension exception
@@ -175,11 +175,11 @@ test06() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // add_recycled_congruences_and_minimize(cgs) -- space dimension
@@ -198,11 +198,11 @@ test07() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // add_recycled_congruences, empty grid.
@@ -239,7 +239,7 @@ test09() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.add_generator(grid_point(3*A + B));
+  gr.add_grid_generator(grid_point(3*A + B));
 
   Grid known_gr = gr;
 
@@ -250,7 +250,7 @@ test09() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_recycled_congruences_and_minimize(cgs ***");
+		    "*** gr.add_recycled_congruences_and_minimize(cgs ***");
 
   return ok;
 }
@@ -299,7 +299,7 @@ test11() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
+		    "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
 
   return ok;
 }
@@ -314,7 +314,7 @@ test12() {
 
   // Ensure both systems are up to date with only generators minimal.
   gr.affine_image(A, 1*A);
-  gr.minimized_generators();
+  gr.minimized_grid_generators();
 
   print_congruences(gr, "*** gr ***");
 
@@ -327,7 +327,7 @@ test12() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
+		    "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
 
   return ok;
 }
@@ -354,7 +354,7 @@ test13() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
+		    "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
 
   return ok;
 }
@@ -389,6 +389,36 @@ test14() {
   return ok;
 }
 
+// add_recycled_congruences_and_minimize, add empty system to grid
+// with minimized congruences and up to date generators.
+bool
+test15() {
+  Variable A(0);
+
+  Grid gr(2);
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator_and_minimize(parameter(3*A));
+
+  // Ensure both systems are up to date with only congruences minimal.
+  gr.affine_image(A, 1*A);
+  gr.minimized_congruences();
+
+  print_congruences(gr, "*** gr ***");
+
+  Congruence_System cgs;
+
+  gr.add_recycled_congruences_and_minimize(cgs);
+
+  Grid known_gr(2);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+		    "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -406,4 +436,5 @@ BEGIN_MAIN
   DO_TEST(test12);
   DO_TEST(test13);
   DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

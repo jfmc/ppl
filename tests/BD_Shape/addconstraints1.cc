@@ -65,12 +65,12 @@ test02() {
     bd1.add_constraint(y < 0);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -89,64 +89,16 @@ test03() {
     bd1.add_constraint(y - x + z >= 0);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
 test04() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-
-  TBD_Shape bd1(3);
-
-  try {
-    // This is an invalid use of function
-    // BD_Shape::add_constraint: it is illegal
-    // to add a constraint with three dimension.
-    bd1.add_constraint(x <= 0);
-    bd1.add_constraint(y - x + z >= 0);
-  }
-  catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
-  }
-  catch (...) {
-    return false;
-  }
-  return true;
-}
-
-bool
-test05() {
-  Variable x(0);
-  Variable y(1);
-  // Variable z(2);
-
-  TBD_Shape bd1(3);
-
-  try {
-    // This is an invalid use of function
-    // BD_Shape::add_constraint: it is illegal
-    // to add a constraint with two different coefficients.
-    bd1.add_constraint(x <= 0);
-    bd1.add_constraint(2*y - 3*x <= 0);
-  }
-  catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
-  }
-  catch (...) {
-    return false;
-  }
-  return true;
-}
-
-bool
-test06() {
   Variable x(0);
   Variable y(1);
 
@@ -162,16 +114,16 @@ test06() {
     bd.add_constraints_and_minimize(cs);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
-test07() {
+test05() {
   Variable y(1);
 
   TBD_Shape bd(1);
@@ -184,16 +136,16 @@ test07() {
     bd.add_constraint(y >= 0);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
-test08() {
+test06() {
   Variable x(0);
   Variable y(1);
 
@@ -209,12 +161,12 @@ test08() {
     bd.add_constraints(cs);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace
@@ -226,6 +178,4 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST(test07);
-  DO_TEST(test08);
 END_MAIN

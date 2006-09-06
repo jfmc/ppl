@@ -162,7 +162,7 @@ std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   bool needed_divisor = false;
   bool extra_parentheses = false;
-  const int num_variables = g.space_dimension();
+  const dimension_type num_variables = g.space_dimension();
   Generator::Type t = g.type();
   switch (t) {
   case Generator::LINE:
@@ -179,8 +179,8 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   any_point:
     if (g[0] != 1) {
       needed_divisor = true;
-      int num_non_zero_coefficients = 0;
-      for (int v = 0; v < num_variables; ++v)
+      dimension_type num_non_zero_coefficients = 0;
+      for (dimension_type v = 0; v < num_variables; ++v)
 	if (g[v+1] != 0)
 	  if (++num_non_zero_coefficients > 1) {
 	    extra_parentheses = true;
@@ -192,7 +192,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   }
 
   bool first = true;
-  for (int v = 0; v < num_variables; ++v) {
+  for (dimension_type v = 0; v < num_variables; ++v) {
     Coefficient gv = g[v+1];
     if (gv != 0) {
       if (!first) {

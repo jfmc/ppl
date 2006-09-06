@@ -38,7 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Congruence_System::Congruence_System(const Constraint_System& cs)
-  : Matrix(0, 2) {
+  : Matrix(0, cs.space_dimension() + 2) {
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
@@ -50,14 +50,14 @@ PPL::Congruence_System::
 increase_space_dimension(const dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
-  dimension_type cols_to_add = new_space_dim - space_dimension();
+  const dimension_type cols_to_add = new_space_dim - space_dimension();
 
   if (cols_to_add)
     if (num_rows()) {
-      dimension_type old_num_cols = num_columns();
+      const dimension_type old_num_columns = num_columns();
       add_zero_columns(cols_to_add);
       // Move the moduli.
-      swap_columns(num_columns() - 1, old_num_cols - 1);
+      swap_columns(num_columns() - 1, old_num_columns - 1);
     }
     else
       // Empty system.
@@ -96,7 +96,7 @@ PPL::Congruence_System::insert_verbatim(const Congruence& cg) {
 
 void
 PPL::Congruence_System::insert(const Constraint& c) {
-  dimension_type cg_size = c.space_dimension() + 2;
+  const dimension_type cg_size = c.space_dimension() + 2;
   const dimension_type old_num_columns = num_columns();
   if (cg_size < old_num_columns) {
     // Create a congruence of the required size from `c'.
@@ -123,18 +123,18 @@ void
 PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
   const dimension_type old_num_rows = num_rows();
   const dimension_type cgs_num_rows = cgs.num_rows();
-  const dimension_type old_num_cols = num_columns();
-  dimension_type cgs_num_cols = cgs.num_columns();
-  if (old_num_cols >= cgs_num_cols)
+  const dimension_type old_num_columns = num_columns();
+  dimension_type cgs_num_columns = cgs.num_columns();
+  if (old_num_columns >= cgs_num_columns)
     add_zero_rows(cgs_num_rows, Row::Flags());
   else {
     add_zero_rows_and_columns(cgs_num_rows,
-			      cgs_num_cols - old_num_cols,
+			      cgs_num_columns - old_num_columns,
 			      Row::Flags());
     // Swap the modulus column into the new last column.
-    swap_columns(old_num_cols - 1, num_columns() - 1);
+    swap_columns(old_num_columns - 1, num_columns() - 1);
   }
-  --cgs_num_cols; // Convert to modulus index.
+  --cgs_num_columns; // Convert to modulus index.
   const dimension_type mod_index = num_columns() - 1;
   for (dimension_type i = cgs_num_rows; i-- > 0; ) {
     // Swap one coefficient at a time into the newly added rows, instead
@@ -142,9 +142,9 @@ PPL::Congruence_System::recycling_insert(Congruence_System& cgs) {
     // have the same capacities as the existing rows.
     Congruence& new_cg = operator[](old_num_rows + i);
     Congruence& old_cg = cgs[i];
-    for (dimension_type j = cgs_num_cols; j-- > 0; )
+    for (dimension_type j = cgs_num_columns; j-- > 0; )
       std::swap(new_cg[j], old_cg[j]);
-    std::swap(new_cg[mod_index], old_cg[cgs_num_cols]); // Modulus.
+    std::swap(new_cg[mod_index], old_cg[cgs_num_columns]); // Modulus.
   }
 
   assert(OK());
@@ -154,29 +154,29 @@ void
 PPL::Congruence_System::insert(const Congruence_System& y) {
   Congruence_System& x = *this;
 
-  const dimension_type x_n_rows = x.num_rows();
-  const dimension_type y_n_rows = y.num_rows();
-  const dimension_type old_n_cols = x.num_columns();
-  const dimension_type y_n_cols = y.num_columns();
+  const dimension_type x_num_rows = x.num_rows();
+  const dimension_type y_num_rows = y.num_rows();
+  const dimension_type old_num_columns = x.num_columns();
+  const dimension_type y_num_columns = y.num_columns();
   // Grow to the required size.
-  if (old_n_cols >= y_n_cols)
-    add_zero_rows(y_n_rows, Row::Flags());
+  if (old_num_columns >= y_num_columns)
+    add_zero_rows(y_num_rows, Row::Flags());
   else {
-    add_zero_rows_and_columns(y_n_rows,
-			      y_n_cols - old_n_cols,
+    add_zero_rows_and_columns(y_num_rows,
+			      y_num_columns - old_num_columns,
 			      Row::Flags());
     // Swap the modulus column into the new last column.
-    swap_columns(old_n_cols - 1, num_columns() - 1);
+    swap_columns(old_num_columns - 1, num_columns() - 1);
   }
 
   // Copy the rows of `y', forcing size and capacity.
   const dimension_type x_mod_index = x.num_columns() - 1;
-  const dimension_type y_mod_index = y_n_cols - 1;
-  for (dimension_type i = y_n_rows; i-- > 0; ) {
+  const dimension_type y_mod_index = y_num_columns - 1;
+  for (dimension_type i = y_num_rows; i-- > 0; ) {
     Row copy(y[i], x.row_size, x.row_capacity);
     // Swap the modulus to the correct column.
     std::swap(copy[x_mod_index], copy[y_mod_index]);
-    std::swap(copy, x[x_n_rows+i]);
+    std::swap(copy, x[x_num_rows+i]);
   }
   assert(OK());
 }
@@ -197,21 +197,20 @@ PPL::Congruence_System::normalize_moduli() {
 	return;
     }
     while (row > 0) {
-      TEMP_INTEGER(modulus);
-      modulus = operator[](--row).modulus();
+      Coefficient_traits::const_reference
+	modulus = operator[](--row).modulus();
       if (modulus > 0)
 	lcm_assign(lcm, lcm, modulus);
     }
 
     // Represent every row using the LCM as the modulus.
+    TEMP_INTEGER(factor);
     dimension_type row_size = operator[](0).size();
     for (row = num_rows(); row-- > 0; ) {
-      TEMP_INTEGER(modulus);
-      modulus = operator[](row).modulus();
+      Coefficient_traits::const_reference modulus = operator[](row).modulus();
       if (modulus <= 0 || modulus == lcm)
 	continue;
-      TEMP_INTEGER(factor);
-      factor = lcm / modulus;
+      exact_div_assign(factor, lcm, modulus);
       for (dimension_type col = row_size; col-- > 0; )
 	operator[](row)[col] *= factor;
       operator[](row)[row_size-1] = lcm;
@@ -237,7 +236,7 @@ PPL::Congruence_System::is_equal_to(const Congruence_System& cgs) const {
 bool
 PPL::Congruence_System::has_linear_equalities() const {
   const Congruence_System& cgs = *this;
-  dimension_type modulus_index = cgs.num_columns() - 1;
+  const dimension_type modulus_index = cgs.num_columns() - 1;
   for (dimension_type i = cgs.num_rows(); i-- > 0; )
     if (cgs[i][modulus_index] == 0)
       return true;
@@ -345,8 +344,8 @@ affine_preimage(dimension_type v,
   assert(expr.space_dimension() <= space_dimension());
   assert(denominator > 0);
 
-  const dimension_type n_columns = num_columns();
-  const dimension_type n_rows = num_rows();
+  const dimension_type num_columns = this->num_columns();
+  const dimension_type num_rows = this->num_rows();
   const dimension_type expr_size = expr.size();
   const bool not_invertible = (v >= expr_size || expr[v] == 0);
   Congruence_System& x = *this;
@@ -354,7 +353,7 @@ affine_preimage(dimension_type v,
   if (denominator == 1)
     // Optimized computation only considering columns having indexes <
     // expr_size.
-    for (dimension_type i = n_rows; i-- > 0; ) {
+    for (dimension_type i = num_rows; i-- > 0; ) {
       Congruence& row = x[i];
       Coefficient& row_v = row[v];
       if (row_v != 0) {
@@ -369,11 +368,11 @@ affine_preimage(dimension_type v,
       }
     }
   else
-    for (dimension_type i = n_rows; i-- > 0; ) {
+    for (dimension_type i = num_rows; i-- > 0; ) {
       Congruence& row = x[i];
       Coefficient& row_v = row[v];
       if (row_v != 0) {
-	for (dimension_type j = n_columns; j-- > 0; )
+	for (dimension_type j = num_columns; j-- > 0; )
 	  if (j != v) {
 	    Coefficient& row_j = row[j];
 	    row_j *= denominator;
@@ -405,19 +404,20 @@ PPL_OUTPUT_DEFINITIONS(Congruence_System)
 bool
 PPL::Congruence_System::ascii_load(std::istream& s) {
   std::string str;
-  dimension_type nrows;
-  dimension_type ncols;
-  if (!(s >> nrows))
+  dimension_type num_rows;
+  dimension_type num_columns;
+  if (!(s >> num_rows))
     return false;
   if (!(s >> str))
     return false;
-  if (!(s >> ncols))
+  if (!(s >> num_columns))
     return false;
-  resize_no_copy(nrows, ncols);
+  resize_no_copy(num_rows, num_columns);
 
   Congruence_System& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i)
-    x[i].ascii_load(s);
+    if (!x[i].ascii_load(s))
+      return false;
 
   // Check for well-formedness.
   assert(OK());
@@ -515,11 +515,6 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
   dimension_type added_rows = cgs.num_rows();
   dimension_type added_columns = cgs.space_dimension();
 
-  if (added_rows == 0) {
-    increase_space_dimension(space_dimension() + added_columns);
-    return;
-  }
-
   dimension_type old_num_rows = num_rows();
   dimension_type old_modi = num_columns() - 1;
   dimension_type old_space_dim = space_dimension();
@@ -547,4 +542,25 @@ PPL::Congruence_System::concatenate(const Congruence_System& const_cgs) {
     for (dimension_type j = cgs_num_columns; j-- > 1; )
       std::swap(cg_old[j], cg_new[old_space_dim + j]);
   }
+}
+
+void
+PPL::Congruence_System
+::remove_higher_space_dimensions(const dimension_type new_dimension) {
+  dimension_type space_dim = space_dimension();
+
+  assert(new_dimension <= space_dim);
+
+  // The removal of no dimensions from any system is a no-op.  Note
+  // that this case also captures the only legal removal of dimensions
+  // from a system in a 0-dim space.
+  if (new_dimension == space_dim)
+    return;
+
+  // Swap the modulus column into the column that will become the last
+  // column.
+  swap_columns(new_dimension + 1, space_dim + 1);
+
+  remove_trailing_columns(space_dim - new_dimension);
+  assert(OK());
 }

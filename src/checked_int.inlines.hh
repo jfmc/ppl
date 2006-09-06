@@ -127,7 +127,7 @@ template <typename Policy, typename To>
 inline Result
 round_lt_int_no_overflow(To& to, Rounding_Dir dir) {
   if (dir == ROUND_DOWN) {
-    to--;
+    --to;
     return V_GT;
   }
   return V_LT;
@@ -137,7 +137,7 @@ template <typename Policy, typename To>
 inline Result
 round_gt_int_no_overflow(To& to, Rounding_Dir dir) {
   if (dir == ROUND_UP) {
-    to++;
+    ++to;
     return V_LT;
   }
   return V_GT;
@@ -154,7 +154,7 @@ round_lt_int(To& to, Rounding_Dir dir) {
       }
       return V_NEG_OVERFLOW;
     } else {
-      to--;
+      --to;
       return V_GT;
     }
   }
@@ -172,7 +172,7 @@ round_gt_int(To& to, Rounding_Dir dir) {
       }
       return V_POS_OVERFLOW;
     } else {
-      to++;
+      ++to;
       return V_LT;
     }
   }

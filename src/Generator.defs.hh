@@ -217,7 +217,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   if (g1.is_point()) {
     cout << "Point g1: " << g1 << endl;
     Linear_Expression e;
-    for (int i = g1.space_dimension() - 1; i >= 0; i--)
+    for (dimension_type i = g1.space_dimension(); i-- > 0; )
       e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
     Generator g2 = closure_point(e, g1.divisor());
     cout << "Closure point g2: " << g2 << endl;

@@ -32,6 +32,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
+PPL::Constraint::throw_invalid_argument(const char* method,
+					const char* message) const {
+  std::ostringstream s;
+  s << "PPL::Constraint::" << method << ":" << std::endl
+    << message;
+  throw std::invalid_argument(s.str());
+}
+
+void
 PPL::Constraint::throw_dimension_incompatible(const char* method,
 					      const char* name_var,
 					      const Variable v) const {
@@ -175,9 +184,9 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
 /*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
-  const int num_variables = c.space_dimension();
+  const dimension_type num_variables = c.space_dimension();
   bool first = true;
-  for (int v = 0; v < num_variables; ++v) {
+  for (dimension_type v = 0; v < num_variables; ++v) {
     Coefficient cv = c.coefficient(Variable(v));
     if (cv != 0) {
       if (!first) {
@@ -238,7 +247,7 @@ PPL_OUTPUT_DEFINITIONS(Constraint)
 
 bool
 PPL::Constraint::OK() const {
-  // Topology consistency check.
+  // Topology consistency checks.
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
   if (size() < min_size) {
 #ifndef NDEBUG
@@ -247,6 +256,14 @@ PPL::Constraint::OK() const {
 	      << std::endl
 	      << "size is " << size()
 	      << ", minimum is " << min_size << "."
+	      << std::endl;
+#endif
+    return false;
+  }
+
+  if (is_equality() && !is_necessarily_closed() && (*this)[size() - 1] != 0) {
+#ifndef NDEBUG
+    std::cerr << "Illegal constraint: an equality cannot be strict."
 	      << std::endl;
 #endif
     return false;

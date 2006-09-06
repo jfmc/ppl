@@ -254,12 +254,12 @@ test08() {
     bd.remove_higher_space_dimensions(7);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -288,12 +288,12 @@ test09() {
     bd.remove_space_dimensions(to_be_removed);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

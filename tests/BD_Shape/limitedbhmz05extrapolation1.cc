@@ -440,12 +440,12 @@ test10() {
     bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -466,12 +466,12 @@ test11() {
     bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -500,12 +500,12 @@ test12() {
     bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

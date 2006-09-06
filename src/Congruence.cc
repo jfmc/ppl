@@ -120,7 +120,7 @@ PPL::Congruence::create(const Linear_Expression& e1, const Linear_Expression& e2
   Linear_Expression diff(e1_dim > e2_dim ? e1 : e2,
 			 dim + 2);
   diff -= (e1_dim > e2_dim ? e2 : e1);
-  Congruence cg(diff, 1, false);
+  Congruence cg(diff, 1);
   return cg;
 }
 
@@ -146,9 +146,9 @@ PPL::Congruence::throw_dimension_incompatible(const char* method,
 /*! \relates Parma_Polyhedra_Library::Congruence */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
-  const int num_variables = c.space_dimension();
+  const dimension_type num_variables = c.space_dimension();
   bool first = true;
-  for (int v = 0; v < num_variables; ++v) {
+  for (dimension_type v = 0; v < num_variables; ++v) {
     Coefficient cv = c.coefficient(Variable(v));
     if (cv != 0) {
       if (!first) {
@@ -223,7 +223,7 @@ PPL::Congruence::ascii_load(std::istream& s) {
     if (!(s >> x[col]))
       return false;
     else
-      col++;
+      ++col;
 
   if (!(s >> str) || str.compare("m"))
     return false;

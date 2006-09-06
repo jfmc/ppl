@@ -67,6 +67,11 @@ Congruence_System::Congruence_System(const Congruence_System& cs)
 }
 
 inline
+Congruence_System::Congruence_System(const dimension_type d)
+  : Matrix(0, d + 2) {
+}
+
+inline
 Congruence_System::~Congruence_System() {
 }
 
@@ -93,9 +98,9 @@ Congruence_System::clear() {
 }
 
 inline void
-Congruence_System::resize_no_copy(const dimension_type new_n_rows,
-				  const dimension_type new_n_columns) {
-  Matrix::resize_no_copy(new_n_rows, new_n_columns, Row::Flags());
+Congruence_System::resize_no_copy(const dimension_type new_num_rows,
+				  const dimension_type new_num_columns) {
+  Matrix::resize_no_copy(new_num_rows, new_num_columns, Row::Flags());
 }
 
 inline const Congruence_System&

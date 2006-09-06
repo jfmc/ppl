@@ -31,7 +31,7 @@ test01() {
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.generators();
+  Grid_Generator_System gs = gr1.grid_generators();
 
   Grid gr2(gs);
 
@@ -49,7 +49,7 @@ test02() {
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.generators();
+  Grid_Generator_System gs = gr1.grid_generators();
 
   Grid gr2(gs);
 
@@ -67,7 +67,7 @@ test03() {
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.generators();
+  Grid_Generator_System gs = gr1.grid_generators();
 
   Grid gr2(gs);
 
@@ -85,7 +85,7 @@ test04() {
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.generators();
+  Grid_Generator_System gs = gr1.grid_generators();
 
   Grid gr2(gs);
 
@@ -104,14 +104,14 @@ test05() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(3*B));
-  gr1.add_generator(grid_point(5*A + 2*B));
-  gr1.add_generator(grid_point(7*B));
-  gr1.add_generator(grid_line(C));
+  gr1.add_grid_generator(grid_point(3*B));
+  gr1.add_grid_generator(grid_point(5*A + 2*B));
+  gr1.add_grid_generator(grid_point(7*B));
+  gr1.add_grid_generator(grid_line(C));
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.generators();
+  Grid_Generator_System gs = gr1.grid_generators();
 
   Grid gr2(gs);
 
@@ -134,7 +134,7 @@ test06() {
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.generators();
+  Grid_Generator_System gs = gr1.grid_generators();
 
   Grid gr2(gs);
 
@@ -151,11 +151,11 @@ bool
 test07() {
   Grid gr1(3, EMPTY);
 
-  const Grid_Generator_System& gs = gr1.generators();
+  const Grid_Generator_System& gs = gr1.grid_generators();
 
   // Add a point.  The idea is to check that `gs' still refers to a
   // generator system that matches the grid.
-  gr1.add_generator(grid_point());
+  gr1.add_grid_generator(grid_point());
 
   Grid known_gr = gr1;
 
@@ -174,7 +174,7 @@ bool
 test08() {
   Grid gr1(0);
 
-  const Grid_Generator_System& gs = gr1.generators();
+  const Grid_Generator_System& gs = gr1.grid_generators();
 
   // Empty the grid.  The idea is to check that `gs' still refers to a
   // generator system that matches the grid.
@@ -202,7 +202,7 @@ test09() {
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.generators();
+  Grid_Generator_System gs = gr1.grid_generators();
 
   Grid gr2(gs);
 
@@ -221,14 +221,14 @@ test10() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(3*B, 2));
-  gr1.add_generator(grid_point(5*A + 2*B));
-  gr1.add_generator(parameter(11*B, 2));
-  gr1.add_generator(grid_line(C));
+  gr1.add_grid_generator(grid_point(3*B, 2));
+  gr1.add_grid_generator(grid_point(5*A + 2*B));
+  gr1.add_grid_generator(parameter(11*B, 2));
+  gr1.add_grid_generator(grid_line(C));
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.generators();
+  Grid_Generator_System gs = gr1.grid_generators();
 
   Grid gr2(gs);
 
@@ -247,14 +247,14 @@ test11() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(3*B));
-  gr1.add_generator(grid_point(5*A + 2*B));
-  gr1.add_generator(parameter(11*B, 2));
-  gr1.add_generator(grid_line(C));
+  gr1.add_grid_generator(grid_point(3*B));
+  gr1.add_grid_generator(grid_point(5*A + 2*B));
+  gr1.add_grid_generator(parameter(11*B, 2));
+  gr1.add_grid_generator(grid_line(C));
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.generators();
+  Grid_Generator_System gs = gr1.grid_generators();
 
   Grid gr2(gs);
 
@@ -273,14 +273,14 @@ test12() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(3*B));
-  gr1.add_generator(grid_point(5*A + 2*B));
-  gr1.add_generator(parameter(11*B));
-  gr1.add_generator(grid_line(C));
+  gr1.add_grid_generator(grid_point(3*B));
+  gr1.add_grid_generator(grid_point(5*A + 2*B));
+  gr1.add_grid_generator(parameter(11*B));
+  gr1.add_grid_generator(grid_line(C));
 
   Grid known_gr = gr1;
 
-  Grid_Generator_System gs = gr1.generators();
+  Grid_Generator_System gs = gr1.grid_generators();
 
   Grid gr2(gs);
 
@@ -311,9 +311,9 @@ test13() {
   Grid gr(gs);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point(3*A, 2));
-  known_gr.add_generator(grid_point(5*A + 2*B, 3));
-  known_gr.add_generator(parameter(11*C, 2));
+  known_gr.add_grid_generator(grid_point(3*A, 2));
+  known_gr.add_grid_generator(grid_point(5*A + 2*B, 3));
+  known_gr.add_grid_generator(parameter(11*C, 2));
 
   bool ok = (gr == known_gr);
 
@@ -408,9 +408,9 @@ test17() {
   Grid gr(ggs);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point(3*B));
-  known_gr.add_generator(parameter(11*B));
-  known_gr.add_generator(grid_line(C));
+  known_gr.add_grid_generator(grid_point(3*B));
+  known_gr.add_grid_generator(parameter(11*B));
+  known_gr.add_grid_generator(grid_line(C));
 
   bool ok = (gr == known_gr);
 
@@ -435,9 +435,9 @@ test18() {
   Grid gr(ggs);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point(3*B));
-  known_gr.add_generator(parameter(11*B));
-  known_gr.add_generator(grid_line(C));
+  known_gr.add_grid_generator(grid_point(3*B));
+  known_gr.add_grid_generator(parameter(11*B));
+  known_gr.add_grid_generator(grid_line(C));
 
   bool ok = (gr != known_gr);
 

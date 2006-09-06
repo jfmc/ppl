@@ -31,7 +31,7 @@ test01() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(A - B));
+  gr.add_grid_generator(grid_point(A - B));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -46,8 +46,8 @@ test02() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(4*A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(4*A));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -63,8 +63,8 @@ test03() {
   Variable C(2);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(2*A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(2*A));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -80,25 +80,25 @@ test04() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_line(A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_line(A));
   print_generators(gr, "*** gr ***");
 
   bool ok
-     = (gr.relation_with((A + 0*B %= 0) / 0) == Poly_Con_Relation::strictly_intersects()
-	&& gr.relation_with((B + 0*B %= -2) / 0) == Poly_Con_Relation::is_disjoint());
+    = (gr.relation_with((A + 0*B %= 0) / 0) == Poly_Con_Relation::strictly_intersects()
+       && gr.relation_with((B + 0*B %= -2) / 0) == Poly_Con_Relation::is_disjoint());
 
   return ok;
 }
 
-// Inclusion of a point.
+// Inclusion of a point grid.
 bool
 test05() {
   Variable A(0);
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(A + B));
+  gr.add_grid_generator(grid_point(A + B));
   print_generators(gr, "*** gr ***");
 
   bool ok
@@ -117,8 +117,8 @@ test06() {
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with((B %= 0) / 2)
-      == (Poly_Con_Relation::is_included()
-	  && Poly_Con_Relation::is_disjoint()));
+	     == (Poly_Con_Relation::is_included()
+		 && Poly_Con_Relation::is_disjoint()));
 
   return ok;
 }
@@ -131,26 +131,26 @@ test07() {
 
   bool ok
     = (// Trivially false congruence.
-      gr.relation_with(Congruence::zero_dim_false())
-      == Poly_Con_Relation::is_disjoint()
-      // False congruence.
-      && gr.relation_with((Linear_Expression(5) %= 1) / 3)
-      == Poly_Con_Relation::is_disjoint()
-      // False equality.
-      && gr.relation_with((Linear_Expression(1) %= 0) / 0)
-      == Poly_Con_Relation::is_disjoint()
-      // Proper congruence.
-      && gr.relation_with(Linear_Expression(1) %= 1)
-      == Poly_Con_Relation::is_included()
-      // Proper congruence.
-      && gr.relation_with((Linear_Expression(5) %= 1) / 4)
-      == Poly_Con_Relation::is_included()
-      // Equality.
-      && gr.relation_with(Linear_Expression(1) %= 1)
-      == Poly_Con_Relation::is_included()
-      // Integrality congruence.
-      && gr.relation_with(Congruence::zero_dim_integrality())
-      == Poly_Con_Relation::is_included());
+       gr.relation_with(Congruence::zero_dim_false())
+       == Poly_Con_Relation::is_disjoint()
+       // False congruence.
+       && gr.relation_with((Linear_Expression(5) %= 1) / 3)
+       == Poly_Con_Relation::is_disjoint()
+       // False equality.
+       && gr.relation_with((Linear_Expression(1) %= 0) / 0)
+       == Poly_Con_Relation::is_disjoint()
+       // Proper congruence.
+       && gr.relation_with(Linear_Expression(1) %= 1)
+       == Poly_Con_Relation::is_included()
+       // Proper congruence.
+       && gr.relation_with((Linear_Expression(5) %= 1) / 4)
+       == Poly_Con_Relation::is_included()
+       // Equality.
+       && gr.relation_with(Linear_Expression(1) %= 1)
+       == Poly_Con_Relation::is_included()
+       // Integrality congruence.
+       && gr.relation_with(Congruence::zero_dim_integrality())
+       == Poly_Con_Relation::is_included());
 
   return ok;
 }
@@ -162,13 +162,13 @@ test08() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(2*A + 5*B));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(2*A + 5*B));
   print_generators(gr, "*** gr ***");
 
   bool ok
     = (gr.relation_with((5*A - 2*B == 1) / 0)
-      == Poly_Con_Relation::is_disjoint());
+       == Poly_Con_Relation::is_disjoint());
 
   return ok;
 }
@@ -195,16 +195,16 @@ test10() {
   Variable A(0);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point(A, 2));
+  gr.add_grid_generator(grid_point(A, 2));
   print_generators(gr, "*** gr ***");
 
   bool ok
     = (gr.relation_with((A %= 3) / 0)
-      == Poly_Con_Relation::is_disjoint()
-      && gr.relation_with((2*A %= 1) / 0)
-      == Poly_Con_Relation::is_included()
-      && gr.relation_with(2*A %= 1)
-      == Poly_Con_Relation::is_included());
+       == Poly_Con_Relation::is_disjoint()
+       && gr.relation_with((2*A %= 1) / 0)
+       == Poly_Con_Relation::is_included()
+       && gr.relation_with(2*A %= 1)
+       == Poly_Con_Relation::is_included());
 
   return ok;
 }
@@ -215,12 +215,12 @@ test11() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(parameter(A, 5));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(parameter(A, 5));
   print_generators(gr, "*** gr ***");
 
   bool ok = (gr.relation_with((10*A %= 1) / 0)
-      == Poly_Con_Relation::is_disjoint());
+	     == Poly_Con_Relation::is_disjoint());
 
   return ok;
 }
@@ -231,13 +231,13 @@ test12() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(parameter(A, 5));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(parameter(A, 5));
   print_generators(gr, "*** gr ***");
 
   bool ok
     = (gr.relation_with((10*A %= 0) / 1)
-      == Poly_Con_Relation::is_included());
+       == Poly_Con_Relation::is_included());
 
   return ok;
 }
@@ -248,13 +248,13 @@ test13() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(parameter(A, 5));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(parameter(A, 5));
   print_generators(gr, "*** gr ***");
 
   bool ok
     = (gr.relation_with(A %= 0)
-      == Poly_Con_Relation::strictly_intersects());
+       == Poly_Con_Relation::strictly_intersects());
 
   return ok;
 }
@@ -273,11 +273,11 @@ test14() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Empty grid, where updating finds the grid empty.
@@ -293,8 +293,8 @@ test15() {
 
   bool ok
     = (gr.relation_with((B %= 0) / 2)
-        == (Poly_Con_Relation::is_included()
-	    && Poly_Con_Relation::is_disjoint()));
+       == (Poly_Con_Relation::is_included()
+	   && Poly_Con_Relation::is_disjoint()));
 
   return ok;
 }
@@ -305,13 +305,13 @@ test16() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(3*A));
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(3*A));
   print_generators(gr, "*** gr ***");
 
   bool ok
     = (gr.relation_with((A %= 0) / 4)
-      == Poly_Con_Relation::is_disjoint());
+       == Poly_Con_Relation::is_disjoint());
 
   return ok;
 }
@@ -323,13 +323,13 @@ test17() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point(3*A));
-  gr.add_generator(grid_point(6*A));
+  gr.add_grid_generator(grid_point(3*A));
+  gr.add_grid_generator(grid_point(6*A));
   print_generators(gr, "*** gr ***");
 
   bool ok
     = (gr.relation_with((A %= 0) / 8)
-      == Poly_Con_Relation::strictly_intersects());
+       == Poly_Con_Relation::strictly_intersects());
 
   return ok;
 }
@@ -341,13 +341,13 @@ test18() {
   Variable A(0);
 
   Grid gr(1, EMPTY);
-  gr.add_generator(grid_point(3*A));
-  gr.add_generator(parameter(3*A));
+  gr.add_grid_generator(grid_point(3*A));
+  gr.add_grid_generator(parameter(3*A));
   print_generators(gr, "*** gr ***");
 
   bool ok
     = (gr.relation_with((A %= 0) / 8)
-      == Poly_Con_Relation::strictly_intersects());
+       == Poly_Con_Relation::strictly_intersects());
 
   return ok;
 }
@@ -364,8 +364,8 @@ test19() {
 
   bool ok
     = (gr.relation_with((A %= 0) / 8)
-      == (Poly_Con_Relation::is_included()
-	    && Poly_Con_Relation::is_disjoint()));
+       == (Poly_Con_Relation::is_included()
+	   && Poly_Con_Relation::is_disjoint()));
 
   return ok;
 }

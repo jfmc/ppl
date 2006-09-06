@@ -66,6 +66,13 @@ Scalar_Products::sign(const Generator& g, const Constraint& c) {
 }
 
 inline int
+Scalar_Products::sign(const Constraint& c, const Grid_Generator& g) {
+  TEMP_INTEGER(z);
+  assign(z, c, g);
+  return sgn(z);
+}
+
+inline int
 Scalar_Products::reduced_sign(const Constraint& c, const Generator& g) {
   return reduced_sign(static_cast<const Linear_Row&>(c),
 		      static_cast<const Linear_Row&>(g));
@@ -107,6 +114,14 @@ Scalar_Products::homogeneous_sign(const Linear_Expression& e,
 				  const Grid_Generator& g) {
   return homogeneous_sign(static_cast<const Linear_Row&>(e),
 			  static_cast<const Linear_Row&>(g));
+}
+
+inline int
+Scalar_Products::homogeneous_sign(const Grid_Generator& g,
+				  const Constraint& c) {
+  TEMP_INTEGER(z);
+  homogeneous_assign(z, g, c);
+  return sgn(z);
 }
 
 inline

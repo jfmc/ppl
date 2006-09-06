@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
+#include "Grid_Generator.defs.hh"
 #include "Congruence.defs.hh"
 #include <stdexcept>
 
@@ -39,6 +40,14 @@ PPL::Linear_Expression::Linear_Expression(const Constraint& c)
 }
 
 PPL::Linear_Expression::Linear_Expression(const Generator& g)
+  : Linear_Row(g.space_dimension() + 1, Linear_Row::Flags()) {
+  Linear_Expression& e = *this;
+  // Do not copy the divisor of `g'.
+  for (dimension_type i = size(); --i > 0; )
+    e[i] = g[i];
+}
+
+PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
   : Linear_Row(g.space_dimension() + 1, Linear_Row::Flags()) {
   Linear_Expression& e = *this;
   // Do not copy the divisor of `g'.
@@ -244,9 +253,9 @@ PPL::Linear_Expression::OK() const {
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
-  const int num_variables = e.space_dimension();
+  const dimension_type num_variables = e.space_dimension();
   bool first = true;
-  for (int v = 0; v < num_variables; ++v) {
+  for (dimension_type v = 0; v < num_variables; ++v) {
     Coefficient ev = e[v+1];
     if (ev != 0) {
       if (!first) {

@@ -129,10 +129,52 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
 }
 
 void
+PPL::Grid_Generator::ascii_dump(std::ostream& s) const {
+  const Grid_Generator& x = *this;
+  dimension_type x_size = x.size();
+  for (dimension_type i = 0; i < x_size; ++i)
+    s << x[i] << ' ';
+  switch (x.type()) {
+  case Generator::LINE:
+    s << "L";
+    break;
+  case Generator::RAY:
+    s << "Q";
+    break;
+  case Generator::POINT:
+    s << "P";
+    break;
+  }
+  s << "\n";
+}
+
+bool
+PPL::Grid_Generator::ascii_load(std::istream& s) {
+  Grid_Generator& x = *this;
+  const dimension_type x_size = x.size();
+  for (dimension_type col = 0; col < x_size; ++col)
+    if (!(s >> x[col]))
+      return false;
+
+  std::string str;
+  if (!(s >> str))
+    return false;
+  if (str == "L")
+    x.set_is_line();
+  else if (str == "P" || str == "Q")
+    x.set_is_ray_or_point();
+  else
+    return false;
+
+  return true;
+}
+
+void
 PPL::Grid_Generator::set_is_parameter() {
   if (is_line())
     set_is_parameter_or_point();
-  else {
+  else if (!is_line_or_parameter()) {
+    // The generator is a point.
     Generator::operator[](size() - 1) = Generator::operator[](0);
     Generator::operator[](0) = 0;
   }
@@ -195,7 +237,7 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
 				  "d == 0.");
 
     TEMP_INTEGER(factor);
-    factor = d / divisor();
+    exact_div_assign(factor, d, divisor());
     set_divisor(d);
     assert(factor > 0);
     if (factor > 1)
@@ -209,7 +251,7 @@ std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
   bool need_divisor = false;
   bool extra_parentheses = false;
-  const int num_variables = g.space_dimension();
+  const dimension_type num_variables = g.space_dimension();
   Grid_Generator::Type t = g.type();
   switch (t) {
   case Grid_Generator::LINE:
@@ -225,8 +267,8 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
     if (g[0] > 1) {
     any_point:
       need_divisor = true;
-      int num_non_zero_coefficients = 0;
-      for (int v = 0; v < num_variables; ++v)
+      dimension_type num_non_zero_coefficients = 0;
+      for (dimension_type v = 0; v < num_variables; ++v)
 	if (g[v+1] != 0)
 	  if (++num_non_zero_coefficients > 1) {
 	    extra_parentheses = true;
@@ -238,7 +280,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
   }
 
   bool first = true;
-  for (int v = 0; v < num_variables; ++v) {
+  for (dimension_type v = 0; v < num_variables; ++v) {
     Coefficient gv = g[v+1];
     if (gv != 0) {
       if (!first) {
