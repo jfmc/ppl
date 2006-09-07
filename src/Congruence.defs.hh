@@ -191,7 +191,7 @@ swap(Parma_Polyhedra_Library::Congruence& x,
   \code
   Congruence cg1((x - 5*y + 3*z %= 4) / 5);
   cout << "Congruence cg1: " << cg1 << endl;
-  Coefficient m = cg1.modulus();
+  const Coefficient& m = cg1.modulus();
   if (m == 0)
     cout << "Congruence cg1 is an equality." << endl;
   else {

@@ -64,7 +64,7 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
 
 PPL::Grid_Generator
 PPL::Grid_Generator::grid_point(const Linear_Expression& e,
-			   Coefficient_traits::const_reference d) {
+				Coefficient_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::grid_point(e, d):\n"
 				"d == 0.");
@@ -279,9 +279,10 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
     break;
   }
 
+  TEMP_INTEGER(gv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
-    Coefficient gv = g[v+1];
+    gv = g[v+1];
     if (gv != 0) {
       if (!first) {
 	if (gv > 0)

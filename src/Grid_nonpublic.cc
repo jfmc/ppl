@@ -482,20 +482,20 @@ PPL::Grid::minimize() const {
 void
 PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 			      Grid_Generator_System& gen_sys) {
-  dimension_type row = 0;
 #ifndef NDEBUG
-  dimension_type num_rows = gen_sys.num_generators();
+  const dimension_type num_rows = gen_sys.num_generators();
 #endif
   assert(num_rows > 0);
 
   // Find the first point in gen_sys.
+  dimension_type row = 0;
   while (gen_sys[row].is_line_or_parameter()) {
     ++row;
     // gen_sys should have at least one point.
     assert(row < num_rows);
   }
   Grid_Generator& first_point = gen_sys[row];
-  Coefficient_traits::const_reference gen_sys_divisor = first_point.divisor();
+  const Coefficient& gen_sys_divisor = first_point.divisor();
 
 #ifndef NDEBUG
   // Check that the divisors in gen_sys are equal.
@@ -507,7 +507,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
       else
 	assert(false);
   }
-#endif
+#endif // !defined(NDEBUG)
 
   TEMP_INTEGER(divisor);
   divisor = gen_sys_divisor;

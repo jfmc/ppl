@@ -2335,7 +2335,8 @@ generalized_affine_preimage(const Variable var,
   if (var_coefficient != 0) {
     Linear_Expression inverse_expr
       = expr - (denominator + var_coefficient) * var;
-    Coefficient inverse_denominator = - var_coefficient;
+    TEMP_INTEGER(inverse_denominator);
+    neg_assign(inverse_denominator, var_coefficient);
     Relation_Symbol inverse_relsym
       = (sgn(denominator) == sgn(inverse_denominator))
       ? relsym : reversed_relsym;

@@ -60,14 +60,16 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   for (dimension_type k = space_dim; k-- > 0; ) {
     // See if we have a valid lower bound.
     bool l_closed = false;
-    Coefficient l_n, l_d;
+    TEMP_INTEGER(l_n);
+    TEMP_INTEGER(l_d);
     bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
     if (l_bounded && topol == NECESSARILY_CLOSED && !l_closed)
       throw_invalid_argument("C_Polyhedron(const Box& box):",
 			     " box has an open lower bound");
     // See if we have a valid upper bound.
     bool u_closed = false;
-    Coefficient u_n, u_d;
+    TEMP_INTEGER(u_n);
+    TEMP_INTEGER(u_d);
     bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
     if (u_bounded && topol == NECESSARILY_CLOSED && !u_closed)
       throw_invalid_argument("C_Polyhedron(const Box& box):",
@@ -220,8 +222,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	    varid = j;
       }
       if (varid != space_dim) {
-	Coefficient_traits::const_reference d = c.coefficient(Variable(varid));
-	Coefficient_traits::const_reference n = c.inhomogeneous_term();
+	const Coefficient& d = c.coefficient(Variable(varid));
+	const Coefficient& n = c.inhomogeneous_term();
 	// The constraint `c' is of the form
 	// `Variable(varid) + n / d rel 0', where
 	// `rel' is either the relation `==', `>=', or `>'.
@@ -308,9 +310,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       case Generator::POINT:
       case Generator::CLOSURE_POINT:
 	{
-	  Coefficient_traits::const_reference d = g.divisor();
+	  const Coefficient& d = g.divisor();
 	  for (dimension_type j = space_dim; j-- > 0; ) {
-	    Coefficient_traits::const_reference n = g.coefficient(Variable(j));
+	    const Coefficient& n = g.coefficient(Variable(j));
 	    mpq_class q;
 	    assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
 	    assign_r(q.get_den(), d, ROUND_NOT_NEEDED);

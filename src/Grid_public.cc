@@ -300,7 +300,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
   TEMP_INTEGER(point_sp);
   point_sp = 0;
 
-  Coefficient_traits::const_reference modulus = cg.modulus();
+  const Coefficient& modulus = cg.modulus();
 
   TEMP_INTEGER(div);
   div = 0;
@@ -1506,7 +1506,7 @@ PPL::Grid::grid_difference_assign(const Grid& y) {
     if (cg.is_proper_congruence()) {
       const Linear_Expression e = Linear_Expression(cg);
       // Congruence cg is ((e %= 0) / m).
-      Coefficient_traits::const_reference m = cg.modulus();
+      const Coefficient& m = cg.modulus();
       // If x is included in the grid defined by the congruences cg
       // and its 2-complement (i.e. the grid defined by the congruence
       // (2e %= 0) / m) then add the 2-complement to the potential
@@ -1765,11 +1765,12 @@ generalized_affine_preimage(const Variable var,
 
   // Check whether the preimage of this affine relation can be easily
   // computed as the image of its inverse relation.
-  Coefficient_traits::const_reference var_coefficient = expr.coefficient(var);
+  const Coefficient& var_coefficient = expr.coefficient(var);
   if (var_space_dim <= expr_space_dim && var_coefficient != 0) {
     Linear_Expression inverse_expr
       = expr - (denominator + var_coefficient) * var;
-    Coefficient inverse_denominator = - var_coefficient;
+    TEMP_INTEGER(inverse_denominator);
+    neg_assign(inverse_denominator, var_coefficient);
     if (modulus < 0)
       generalized_affine_image(var, inverse_expr, inverse_denominator,
 			       - modulus);

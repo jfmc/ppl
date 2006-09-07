@@ -89,7 +89,7 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
 
 	    // Scale the point to use as divisor the lcm of the
 	    // divisors of the existing point and the lower bound.
-	    Coefficient_traits::const_reference point_divisor = point.divisor();
+	    const Coefficient& point_divisor = point.divisor();
 	    gcd_assign(u_n, l_d, point_divisor);
 	    // `u_n' now holds the gcd.
 	    exact_div_assign(u_n, point_divisor, u_n);
@@ -175,7 +175,7 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
       // TODO: Consider producing the system(s) in minimized form.
       if (box.get_lower_bound(k, closed, l_n, l_d)) {
 
-	Coefficient_traits::const_reference point_divisor = point.divisor();
+	const Coefficient& point_divisor = point.divisor();
 	assert(l_d > 0);
 	assert(point_divisor > 0);
 	// Use `d' to hold the gcd.
@@ -220,7 +220,7 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
       }
       else
 	if (box.get_upper_bound(k, closed, u_n, u_d)) {
-	  Coefficient_traits::const_reference point_divisor = point.divisor();
+	  const Coefficient& point_divisor = point.divisor();
 	  assert(u_d > 0);
 	  assert(point_divisor > 0);
 	  // Use `d' to hold the gcd.
@@ -321,7 +321,7 @@ Grid::shrink_bounding_box(Box& box) const {
   // value of the associated coefficient in the point.
   const Grid_Generator& point = *first_point;
   TEMP_INTEGER(bound);
-  Coefficient_traits::const_reference divisor = point.divisor();
+  const Coefficient& divisor = point.divisor();
   for (dimension_type dim = num_dims; dim-- > 0; )
     if (bounded_interval[dim]) {
       // Reduce the bound fraction first.
@@ -416,7 +416,7 @@ Grid::get_covering_box(Box& box) const {
     // addition of the lower bound and the shortest distance in the
     // given dimension between any two grid points.
     const Grid_Generator& point = *first_point;
-    Coefficient_traits::const_reference divisor = point.divisor();
+    const Coefficient& divisor = point.divisor();
     TEMP_INTEGER(lower_bound);
     for (dimension_type dim = num_dims; dim-- > 0; ) {
       if (interval_emptiness[dim])
@@ -460,7 +460,7 @@ Grid::get_covering_box(Box& box) const {
   }
   else {
     const Grid_Generator& point = gen_sys[0];
-    Coefficient_traits::const_reference divisor = point.divisor();
+    const Coefficient& divisor = point.divisor();
     // The covering box of a single point has only lower bounds.
     for (dimension_type dim = num_dims; dim-- > 0; ) {
       // Reduce the bound fraction first.
@@ -595,7 +595,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
     if (i->is_point())
       break;
   assert(i != old_gensys_end);
-  Coefficient_traits::const_reference system_divisor = i->divisor();
+  const Coefficient& system_divisor = i->divisor();
   for (Grid_Generator_System::const_iterator i = old_gensys.begin();
        i != old_gensys_end;
        ++i) {

@@ -197,8 +197,7 @@ PPL::Congruence_System::normalize_moduli() {
 	return;
     }
     while (row > 0) {
-      Coefficient_traits::const_reference
-	modulus = operator[](--row).modulus();
+      const Coefficient& modulus = operator[](--row).modulus();
       if (modulus > 0)
 	lcm_assign(lcm, lcm, modulus);
     }
@@ -207,7 +206,7 @@ PPL::Congruence_System::normalize_moduli() {
     TEMP_INTEGER(factor);
     dimension_type row_size = operator[](0).size();
     for (row = num_rows(); row-- > 0; ) {
-      Coefficient_traits::const_reference modulus = operator[](row).modulus();
+      const Coefficient& modulus = operator[](row).modulus();
       if (modulus <= 0 || modulus == lcm)
 	continue;
       exact_div_assign(factor, lcm, modulus);

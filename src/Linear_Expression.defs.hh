@@ -443,8 +443,8 @@ private:
 				      Coefficient_traits::const_reference n);
 
   friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const Linear_Expression& e);
+  Parma_Polyhedra_Library::IO_Operators
+  ::operator<<(std::ostream& s, const Linear_Expression& e);
 };
 
 #include "Linear_Expression.inlines.hh"

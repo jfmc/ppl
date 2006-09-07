@@ -185,9 +185,10 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
   const dimension_type num_variables = c.space_dimension();
+  TEMP_INTEGER(cv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
-    Coefficient cv = c.coefficient(Variable(v));
+    cv = c.coefficient(Variable(v));
     if (cv != 0) {
       if (!first) {
 	if (cv > 0)

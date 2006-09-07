@@ -45,7 +45,7 @@ Grid::reduce_reduced(M& sys,
 		     const bool generators) {
   R& pivot = sys[pivot_index];
 
-  Coefficient_traits::const_reference pivot_dim = pivot[dim];
+  const Coefficient& pivot_dim = pivot[dim];
 
   if (pivot_dim == 0)
     return;
@@ -80,7 +80,7 @@ Grid::reduce_reduced(M& sys,
 	    && dim_kinds[kinds_index] == PARAMETER)) {
       R& row = sys[row_index];
 
-      Coefficient_traits::const_reference row_dim = row[dim];
+      const Coefficient& row_dim = row[dim];
       // num_rows_to_subtract may be positive or negative.
       num_rows_to_subtract = row_dim / pivot_dim;
 
@@ -114,7 +114,7 @@ Grid::reduce_line_with_line(Grid_Generator& row, Grid_Generator& pivot,
 			    dimension_type column) {
   TRACE(cerr << "reduce_line_with_line" << endl);
 
-  Coefficient_traits::const_reference pivot_column = pivot[column];
+  const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
   TEMP_INTEGER(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
@@ -145,7 +145,7 @@ Grid::reduce_equality_with_equality(Congruence& row,
   // Assume two equalities.
   assert(row.modulus() == 0 && pivot.modulus() == 0);
 
-  Coefficient_traits::const_reference pivot_column = pivot[column];
+  const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
   TEMP_INTEGER(reduced_row_col);
   // Use reduced_row_col temporarily to hold the gcd.
@@ -219,7 +219,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // change here may be needed there too.
   TRACE(cerr << "reduce_parameter_with_line" << endl);
 
-  Coefficient_traits::const_reference pivot_column = pivot[column];
+  const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
 
   // Subtract one to allow for the parameter divisor column
@@ -276,7 +276,7 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   TRACE(cerr << "reduce_congruence_with_equality" << endl);
   assert(row.modulus() > 0 && pivot.modulus() == 0);
 
-  Coefficient_traits::const_reference pivot_column = pivot[column];
+  const Coefficient& pivot_column = pivot[column];
   Coefficient& row_column = row[column];
 
   dimension_type num_columns = sys.num_columns();
@@ -466,7 +466,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // Ensure that the parameter divisors are the same as the system
   // divisor.
   TRACE(cerr << "updating param divisors" << endl);
-  Coefficient_traits::const_reference system_divisor = sys[0][0];
+  const Coefficient& system_divisor = sys[0][0];
   for (dimension_type row = sys.num_generators() - 1,
 	 dim = sys.num_columns() - 2;
        dim > 0; --dim)

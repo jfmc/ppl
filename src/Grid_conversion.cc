@@ -266,8 +266,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
     if (dim_kinds[dim] != GEN_VIRTUAL) {
       --source_index;
-      Coefficient_traits::const_reference source_dim
-	= source[source_index][dim];
+      const Coefficient& source_dim = source[source_index][dim];
 
       // In the rows in `dest' above `dest_index' divide each element
       // at column `dim' by `source_dim'.
@@ -306,8 +305,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       TRACE(cerr << "  tem_source_index: " << tem_source_index << endl);
       if (dim_kinds[dim_prec] != GEN_VIRTUAL) {
 	--tem_source_index;
-	Coefficient_traits::const_reference source_dim
-	  = source[tem_source_index][dim];
+	const Coefficient& source_dim = source[tem_source_index][dim];
 	TRACE(cerr << "  rows:" << endl);
 	// In order to compute the transpose of the inverse of
 	// `source', subtract source[tem_source_index][dim] times the
@@ -330,7 +328,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     TRACE(dest.ascii_dump(cerr));
   }
   // Set the modulus in every congruence.
-  Coefficient_traits::const_reference modulus = dest[dest_num_rows - 1][0];
+  const Coefficient& modulus = dest[dest_num_rows - 1][0];
   for (dimension_type row = dest_num_rows; row-- > 0; ) {
     Congruence& cg = dest[row];
     if (cg[dims] > 0)
@@ -465,8 +463,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
     if (dim_kinds[dim] != CON_VIRTUAL) {
       --source_index;
-      Coefficient_traits::const_reference source_dim
-	= source[source_index][dim];
+      const Coefficient& source_dim = source[source_index][dim];
 
       // In the rows in `dest' above `dest_index' divide each element
       // at column `dim' by `source_dim'.
@@ -506,8 +503,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       TRACE(cerr << "  tem_source_index: " << tem_source_index << endl);
       if (dim_kinds[dim_fol] != CON_VIRTUAL) {
 	--tem_source_index;
-	Coefficient_traits::const_reference source_dim
-	  = source[tem_source_index][dim];
+	const Coefficient& source_dim = source[tem_source_index][dim];
 	TRACE(cerr << "  rows:" << endl);
 	// In order to compute the transpose of the inverse of
 	// `source', subtract source[tem_source_index][dim] times the
@@ -543,7 +539,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   // Ensure that the parameter divisors are the same as the divisor of
   // the point.
-  Coefficient_traits::const_reference system_divisor = dest[0][0];
+  const Coefficient& system_divisor = dest[0][0];
   for (dimension_type row = dest.num_generators() - 1, dim = dims;
        dim-- > 1; )
     switch (dim_kinds[dim]) {

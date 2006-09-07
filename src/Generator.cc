@@ -191,9 +191,10 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
     break;
   }
 
+  TEMP_INTEGER(gv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
-    Coefficient gv = g[v+1];
+    gv = g[v+1];
     if (gv != 0) {
       if (!first) {
 	if (gv > 0)
