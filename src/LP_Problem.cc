@@ -1338,11 +1338,9 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
   for (dimension_type i = 0; i != base_size; ++i)
     s << base[i] << ' ';
 
-  // FIXME: no ascii_dump() for Generator?
-  // last_generator.ascii_dump(s);
   s << "\nlast_generator\n";
-  s << last_generator << "\n";
-  s << std::endl;
+  last_generator.ascii_dump(s);
+
   const dimension_type mapping_size = mapping.size();
   s << "\nmapping(" << mapping_size << ")\n";
   for (dimension_type i = 1; i < mapping_size; ++i)
