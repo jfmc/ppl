@@ -789,7 +789,7 @@ PPL::LP_Problem::compute_simplex() {
   Coefficient current_num  = working_cost[0];
   if (cost_sgn_coeff < 0)
     neg_assign(current_num);
-  Coefficient current_den = 0;
+  Coefficient current_den;
   abs_assign(current_den, cost_sgn_coeff);
   assert(tableau.num_columns() == working_cost.size());
   const dimension_type tableau_num_rows = tableau.num_rows();
