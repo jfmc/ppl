@@ -1053,9 +1053,15 @@ PPL::LP_Problem::second_phase() {
   if (status == UNBOUNDED || status == OPTIMIZED)
     return;
 
-  Row new_cost = input_obj_function;
+  // Build the objective function for the second phase.
+  const dimension_type input_obj_function_sd
+    = input_obj_function.space_dimension();
+  Row new_cost(input_obj_function_sd + 1, Row::Flags());
+  for (dimension_type i = input_obj_function_sd; i-- > 0; )
+    new_cost[i+1] = input_obj_function.coefficient(Variable(i));
+  new_cost[0] = input_obj_function.inhomogeneous_term();
 
- // Negate the cost function if we are minimizing.
+  // Negate the cost function if we are minimizing.
  if (opt_mode == MINIMIZATION)
     for (dimension_type i = new_cost.size(); i-- > 0; )
       neg_assign(new_cost[i]);
@@ -1306,7 +1312,9 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
   s << "pending_input_cs\n";
   pending_input_cs.ascii_dump(s);
   s << "\ninput_obj_function\n";
-  input_obj_function.ascii_dump(s);
+  // FIXME: Temporarly disabled, waiting for
+  //        Linear_Expression::ascii_dump(ostream).
+  //  input_obj_function.ascii_dump(s);
   s << "\nopt_mode " << (opt_mode == MAXIMIZATION ? "MAX" : "MIN") << "\n";
 
   s << "\nstatus: ";
