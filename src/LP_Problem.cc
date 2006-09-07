@@ -651,7 +651,7 @@ PPL::LP_Problem::steepest_edge_entering_index() const {
   }
   return entering_index;
 }
-#endif
+#endif // PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 
 // See pag. 47 of Papadimitriou.
 
@@ -697,7 +697,7 @@ PPL::LP_Problem::linear_combine(Row& x,
 	sub_mul_assign(x_i, y_i, normalized_x_k);
 #else
       sub_mul_assign(x_i, y[i], normalized_x_k);
-#endif
+#endif // 1
     }
   x[k] = 0;
   x.normalize();
@@ -884,7 +884,7 @@ PPL::LP_Problem::compute_simplex() {
 #endif
   }
 }
-#endif
+#endif // PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 
 
 //See pag 55-56 Papadimitriou.
