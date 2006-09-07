@@ -982,12 +982,12 @@ PPL::LP_Problem::compute_generator() const {
     if (is_in_base(original_var, row)) {
       const Row& t_row = tableau[row];
       if (t_row[original_var] > 0) {
-	num_i= -t_row[0];
-	den_i= t_row[original_var];
+	neg_assign(num_i, t_row[0]);
+	den_i = t_row[original_var];
       }
       else {
-	num_i= t_row[0];
-	den_i= -t_row[original_var];
+	num_i = t_row[0];
+	neg_assign(den_i, t_row[original_var]);
       }
     }
     else {
