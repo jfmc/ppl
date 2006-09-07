@@ -763,10 +763,10 @@ PPL::LP_Problem
       lcm_assign(lcm, t_ee, t_ie);
       exact_div_assign(current_min, lcm, t_ee);
       current_min *= t_e[0];
-      abs_assign(current_min, current_min);
+      abs_assign(current_min);
       exact_div_assign(challenger, lcm, t_ie);
       challenger *= t_i[0];
-      abs_assign(challenger, challenger);
+      abs_assign(challenger);
       current_min -= challenger;
       const int sign = sgn(current_min);
       if (sign > 0
