@@ -154,6 +154,7 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
 
   const dimension_type cs_num_rows = cs.num_rows();
   const dimension_type cs_num_cols = cs.num_columns();
+
   // Step 1:
   // determine variables that are constrained to be nonnegative,
   // detect (non-negativity or tautology) constraints that will not
@@ -266,7 +267,8 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
       // The variable index is not equal to the column index.
       const dimension_type nonzero_var_index = nonzero_coeff_column_index - 1;
 
-      const int sgn_a = sgn(cs_i.coefficient(Variable(nonzero_coeff_column_index-1)));
+      const int sgn_a
+	= sgn(cs_i.coefficient(Variable(nonzero_coeff_column_index-1)));
       const int sgn_b = sgn(cs_i.inhomogeneous_term());
       // Cases 1-3: apply method A.
       if (sgn_a == sgn_b) {
@@ -415,21 +417,21 @@ PPL::LP_Problem::process_pending_constraints() {
 	if (mapping[0].second != 0)
 	  tableau_k[mapping[0].second] = -cs_i.inhomogeneous_term();
 
-      // Add the slack variable, if needed.
-      if (cs_i.is_inequality()) {
-	tableau_k[--slack_index] = -1;
-	is_artificial.push_back(false);
-	// If the constraint is already satisfied, we will not use artificial
-	// variables to compute a feasible base: this to speed up
-	// the algorithm.
-	if (satisfied_ineqs[i]) {
- 	  base[k] = slack_index;
- 	  worked_out_row[k] = true;
+	// Add the slack variable, if needed.
+	if (cs_i.is_inequality()) {
+	  tableau_k[--slack_index] = -1;
+	  is_artificial.push_back(false);
+	  // If the constraint is already satisfied, we will not use artificial
+	  // variables to compute a feasible base: this to speed up
+	  // the algorithm.
+	  if (satisfied_ineqs[i]) {
+	    base[k] = slack_index;
+	    worked_out_row[k] = true;
+	  }
 	}
-      }
-      for (dimension_type j = base_size; j-- > 0; )
-	if (k != j && tableau_k[base[j]] != 0 && base[j] != 0)
-	  linear_combine(tableau_k, tableau[j], base[j]);
+	for (dimension_type j = base_size; j-- > 0; )
+	  if (k != j && tableau_k[base[j]] != 0 && base[j] != 0)
+	    linear_combine(tableau_k, tableau[j], base[j]);
     }
 
   // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
@@ -734,7 +736,7 @@ PPL::LP_Problem
   // is strictly positive and minimal.
 
   // Find the first tableau constraint `c' having a positive value for
-  //   tableau[i][entering_var_index] / tableau[i][base[i]]
+  // tableau[i][entering_var_index] / tableau[i][base[i]]
   const dimension_type tableau_num_rows = tableau.num_rows();
   dimension_type exiting_base_index = tableau_num_rows;
   for (dimension_type i = 0; i < tableau_num_rows; ++i) {
@@ -847,10 +849,10 @@ PPL::LP_Problem::compute_simplex() {
       if (call_textbook)
 	call_textbook = false;
     }
-     current_num = working_cost[0];
-   if (cost_sgn_coeff < 0)
+    current_num = working_cost[0];
+    if (cost_sgn_coeff < 0)
       neg_assign(current_num);
-   abs_assign(current_den, cost_sgn_coeff);
+    abs_assign(current_den, cost_sgn_coeff);
   }
 }
 
@@ -1062,7 +1064,7 @@ PPL::LP_Problem::second_phase() {
   new_cost[0] = input_obj_function.inhomogeneous_term();
 
   // Negate the cost function if we are minimizing.
- if (opt_mode == MINIMIZATION)
+  if (opt_mode == MINIMIZATION)
     for (dimension_type i = new_cost.size(); i-- > 0; )
       neg_assign(new_cost[i]);
 
@@ -1148,7 +1150,7 @@ PPL::LP_Problem::is_satisfiable() const {
       LP_Problem& x = const_cast<LP_Problem&>(*this);
       // This code tries to handle the case that happens if the tableau is
       // empty, so it must be initialized.
-           if (tableau.num_columns() == 0) {
+      if (tableau.num_columns() == 0) {
 	// Add two columns, the first that handles the inhomogeneous term and
 	// the second that represent the `sign'.
 	x.tableau.add_zero_columns(2);
@@ -1159,12 +1161,12 @@ PPL::LP_Problem::is_satisfiable() const {
 	// The internal data structures are ready, so prepare for more
 	// assertion to be checked.
 	x.initialized = true;
-	   }
-        // Apply incrementality to the pending Constraint_System.
+      }
+      // Apply incrementality to the pending Constraint_System.
       x.process_pending_constraints();
       assert(OK());
       return (status != UNSATISFIABLE);
-	}
+    }
     break;
   }
   // Avoid compiler warnings.
@@ -1312,9 +1314,7 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
   s << "pending_input_cs\n";
   pending_input_cs.ascii_dump(s);
   s << "\ninput_obj_function\n";
-  // FIXME: Temporarly disabled, waiting for
-  //        Linear_Expression::ascii_dump(ostream).
-  //  input_obj_function.ascii_dump(s);
+  input_obj_function.ascii_dump(s);
   s << "\nopt_mode " << (opt_mode == MAXIMIZATION ? "MAX" : "MIN") << "\n";
 
   s << "\nstatus: ";
@@ -1353,7 +1353,8 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
   const dimension_type mapping_size = mapping.size();
   s << "\nmapping(" << mapping_size << ")\n";
   for (dimension_type i = 1; i < mapping_size; ++i)
-    s << "\n"<< i << "->" << mapping[i].first << "->" << mapping[i].second << ' ';
+    s << "\n"<< i << "->" << mapping[i].first << "->" << mapping[i].second
+      << ' ';
   const dimension_type is_artificial_size = is_artificial.size();
   s << "\nis_artificial(" << is_artificial_size << ")\n";
   for (dimension_type i = 1; i < is_artificial_size; ++i) {
