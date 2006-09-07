@@ -788,11 +788,13 @@ PPL::LP_Problem::compute_simplex() {
   const unsigned long allowed_non_increasing_loops = 200;
   unsigned long non_increased_times = 0;
   bool call_textbook = false;
-  Coefficient cost_sgn_coeff = working_cost[working_cost.size()-1];
-  Coefficient current_num = working_cost[0];
+  TEMP_INTEGER(cost_sgn_coeff);
+  TEMP_INTEGER(current_num);
+  TEMP_INTEGER(current_den);
+  cost_sgn_coeff = working_cost[working_cost.size()-1];
+  current_num = working_cost[0];
   if (cost_sgn_coeff < 0)
     neg_assign(current_num);
-  TEMP_INTEGER(current_den);
   abs_assign(current_den, cost_sgn_coeff);
   assert(tableau.num_columns() == working_cost.size());
   const dimension_type tableau_num_rows = tableau.num_rows();
@@ -821,11 +823,13 @@ PPL::LP_Problem::compute_simplex() {
     // the `textbook' and the float `steepest-edge' technique.
     cost_sgn_coeff = working_cost[working_cost.size()-1];
 
-    Coefficient challenger = working_cost[0];
+    TEMP_INTEGER(challenger);
+    TEMP_INTEGER(current);
+    challenger = working_cost[0];
     if (cost_sgn_coeff < 0)
       neg_assign(challenger);
     challenger *= current_den;
-    Coefficient current = current_num * abs(cost_sgn_coeff);
+    current = current_num * abs(cost_sgn_coeff);
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
     if (num_iterations % 200 == 0)
