@@ -416,7 +416,6 @@ private:
   friend class Parma_Polyhedra_Library::Generator_System::const_iterator;
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
-  friend class Parma_Polyhedra_Library::LP_Problem;
   friend class Parma_Polyhedra_Library::Grid_Generator;
   // This is for access to Row and Linear_Row in `insert'.
   friend class Parma_Polyhedra_Library::Grid_Generator_System;

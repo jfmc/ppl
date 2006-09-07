@@ -488,9 +488,10 @@ PPL::LP_Problem::process_pending_constraints() {
   // the problem is unbounded as soon as the cost function has
   // a variable with a positive coefficient.
   if (tableau_num_rows == 0) {
-    dimension_type input_obj_function_size = input_obj_function.size();
-    for (dimension_type i = input_obj_function_size; i-- > 1; )
-      if (input_obj_function[i] > 0){
+    const dimension_type input_obj_function_size
+      = input_obj_function.space_dimension();
+    for (dimension_type i = input_obj_function_size; i-- > 0; )
+      if (input_obj_function.coefficient(Variable(i)) > 0) {
 	status = UNBOUNDED;
 	return true;
       }
@@ -786,10 +787,10 @@ PPL::LP_Problem::compute_simplex() {
   unsigned long non_increased_times = 0;
   bool call_textbook = false;
   Coefficient cost_sgn_coeff = working_cost[working_cost.size()-1];
-  Coefficient current_num  = working_cost[0];
+  Coefficient current_num = working_cost[0];
   if (cost_sgn_coeff < 0)
     neg_assign(current_num);
-  Coefficient current_den;
+  TEMP_INTEGER(current_den);
   abs_assign(current_den, cost_sgn_coeff);
   assert(tableau.num_columns() == working_cost.size());
   const dimension_type tableau_num_rows = tableau.num_rows();
