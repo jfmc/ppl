@@ -1360,3 +1360,7 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
     is_artificial[i] ?  s << "true" : s << "false";
   }
 }
+
+// FIXME: temporarily commented out. To be restored as soon as we
+// have a working implementation of operator<<.
+// PPL_OUTPUT_DEFINITIONS(LP_Problem)
