@@ -401,7 +401,6 @@ public:
   void swap(Constraint& y);
 
 private:
-  friend class Parma_Polyhedra_Library::LP_Problem;
   friend class Parma_Polyhedra_Library::Congruence;
   friend class Parma_Polyhedra_Library::Scalar_Products;
   friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;

@@ -133,7 +133,7 @@ PPL::LP_Problem::is_satisfied(const Constraint& ineq) const {
   assert(ineq.is_inequality());
   // Scalar_Products::sign() requires the second argument to be at least
   // as large as the first one.
-  int sp_sign = last_generator.size() <= ineq.size()
+  int sp_sign = last_generator.space_dimension() <= ineq.space_dimension()
     ? Scalar_Products::sign(last_generator, ineq)
     : Scalar_Products::sign(ineq, last_generator);
   return sp_sign >= 0;
@@ -185,15 +185,15 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
 
   // Process each row of the `cs' matrix.
   for (dimension_type i = cs_num_rows; i-- > 0; ) {
-    const Linear_Row& cs_i = cs[i];
+    const Constraint& cs_i = cs[i];
     bool found_a_nonzero_coeff = false;
     bool found_many_nonzero_coeffs = false;
     dimension_type nonzero_coeff_column_index = 0;
     for (dimension_type j = cs_num_cols; j-- > 1; ) {
-      if (cs_i[j] != 0)
+      if (cs_i.coefficient(Variable(j-1)) != 0)
 	if (found_a_nonzero_coeff) {
 	  found_many_nonzero_coeffs = true;
-	  if (cs_i.is_ray_or_point_or_inequality())
+	  if (cs_i.is_inequality())
 	    ++num_slack_variables;
 	  break;
 	}
@@ -219,14 +219,14 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
     if (!found_a_nonzero_coeff) {
       // All coefficients are 0.
       // The constraint is either trivially true or trivially false.
-      if (cs_i.is_ray_or_point_or_inequality()) {
-	if (cs_i[0] < 0)
+      if (cs_i.is_inequality()) {
+	if (cs_i.inhomogeneous_term() < 0)
 	  // A constraint such as -1 >= 0 is trivially false.
 	  return false;
       }
       else
 	// The constraint is an equality.
-	if (cs_i[0] != 0)
+	if (cs_i.inhomogeneous_term() != 0)
 	  // A constraint such as 1 == 0 is trivially false.
 	  return false;
       // Here the constraint is trivially true.
@@ -266,15 +266,15 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
       // The variable index is not equal to the column index.
       const dimension_type nonzero_var_index = nonzero_coeff_column_index - 1;
 
-      const int sgn_a = sgn(cs_i[nonzero_coeff_column_index]);
-      const int sgn_b = sgn(cs_i[0]);
+      const int sgn_a = sgn(cs_i.coefficient(Variable(nonzero_coeff_column_index-1)));
+      const int sgn_b = sgn(cs_i.inhomogeneous_term());
       // Cases 1-3: apply method A.
       if (sgn_a == sgn_b) {
-	if (cs_i.is_ray_or_point_or_inequality())
+	if (cs_i.is_inequality())
 	  ++num_slack_variables;
       }
       // Cases 4-5: apply method B.
-      else if (cs_i.is_line_or_equality()) {
+      else if (cs_i.is_equality()) {
 	if (!nonnegative_variable[nonzero_var_index]) {
 	  nonnegative_variable[nonzero_var_index] = true;
 	  --tableau_num_cols;
@@ -403,15 +403,20 @@ PPL::LP_Problem::process_pending_constraints() {
     if (is_tableau_constraint[i]) {
       // Copy the original constraint in the tableau.
       Row& tableau_k = tableau[--k];
-      const Linear_Row& cs_i = pending_input_cs[i];
-      for (dimension_type j = pending_cs_num_cols; j-- > 0; ) {
-	tableau_k[mapping[j].first] = cs_i[j];
+      const Constraint& cs_i = pending_input_cs[i];
+      for (dimension_type j = pending_cs_num_cols; j-- > 1; ) {
+	tableau_k[mapping[j].first] = cs_i.coefficient(Variable(j-1));
 	// Split if needed.
 	if (mapping[j].second != 0)
-	  tableau_k[mapping[j].second] = -cs_i[j];
+	  tableau_k[mapping[j].second] = -cs_i.coefficient(Variable(j-1));
       }
+	tableau_k[mapping[0].first] = cs_i.inhomogeneous_term();
+	// Split if needed.
+	if (mapping[0].second != 0)
+	  tableau_k[mapping[0].second] = -cs_i.inhomogeneous_term();
+
       // Add the slack variable, if needed.
-      if (cs_i.is_ray_or_point_or_inequality()) {
+      if (cs_i.is_inequality()) {
 	tableau_k[--slack_index] = -1;
 	is_artificial.push_back(false);
 	// If the constraint is already satisfied, we will not use artificial
@@ -758,10 +763,10 @@ PPL::LP_Problem
       lcm_assign(lcm, t_ee, t_ie);
       exact_div_assign(current_min, lcm, t_ee);
       current_min *= t_e[0];
-      current_min = abs(current_min);
+      abs_assign(current_min, current_min);
       exact_div_assign(challenger, lcm, t_ie);
       challenger *= t_i[0];
-      challenger = abs(challenger);
+      abs_assign(challenger, challenger);
       current_min -= challenger;
       const int sign = sgn(current_min);
       if (sign > 0
@@ -784,7 +789,8 @@ PPL::LP_Problem::compute_simplex() {
   Coefficient current_num  = working_cost[0];
   if (cost_sgn_coeff < 0)
     neg_assign(current_num);
-  Coefficient current_den = abs(cost_sgn_coeff);
+  Coefficient current_den = 0;
+  abs_assign(current_den, cost_sgn_coeff);
   assert(tableau.num_columns() == working_cost.size());
   const dimension_type tableau_num_rows = tableau.num_rows();
   while (true) {
@@ -843,7 +849,7 @@ PPL::LP_Problem::compute_simplex() {
      current_num = working_cost[0];
    if (cost_sgn_coeff < 0)
       neg_assign(current_num);
-    current_den = abs(cost_sgn_coeff);
+   abs_assign(current_den, cost_sgn_coeff);
   }
 }
 
@@ -1150,11 +1156,8 @@ PPL::LP_Problem::is_satisfiable() const {
         // Apply incrementality to the pending Constraint_System.
       x.process_pending_constraints();
       assert(OK());
-      if (status == UNSATISFIABLE)
-	return false;
-      else
-	return true;
-    }
+      return (status != UNSATISFIABLE);
+	}
     break;
   }
   // Avoid compiler warnings.
