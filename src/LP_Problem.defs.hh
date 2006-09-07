@@ -34,8 +34,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.defs.hh"
 #include <vector>
 #include <deque>
-#include <map>
 #include <iosfwd>
+
 //! A Linear Programming problem.
 class Parma_Polyhedra_Library::LP_Problem {
 public:
@@ -353,7 +353,7 @@ private:
     satisfied by `last_generator' and do not require artificial variables to
     have a starting feasible base.
 
-*/
+  */
   bool parse_constraints(const Constraint_System& cs,
 			 dimension_type& new_num_rows,
 			 dimension_type& num_slack_variables,

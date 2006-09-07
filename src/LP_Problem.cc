@@ -22,22 +22,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 #include "LP_Problem.defs.hh"
-#include "globals.types.hh"
 #include "globals.defs.hh"
 #include "Row.defs.hh"
-#include "Matrix.defs.hh"
-#include "Linear_Row.defs.hh"
-#include "Linear_System.defs.hh"
 #include "Linear_Expression.defs.hh"
+#include "Constraint.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "Generator.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include <stdexcept>
-#include <sstream>
-#include <map>
 #include <deque>
-#include <set>
 #include <algorithm>
 
 #ifdef PPL_NOISY_SIMPLEX
@@ -1072,7 +1066,7 @@ PPL::LP_Problem::second_phase() {
     for (dimension_type i = new_cost.size(); i-- > 0; )
       neg_assign(new_cost[i]);
 
-  // Substitute properly the cost function in the `costs' Matrix.
+  // Substitute properly the cost function in the `costs' matrix.
   const dimension_type cost_zero_size = working_cost.size();
   Row tmp_cost = Row(new_cost, cost_zero_size, cost_zero_size);
   tmp_cost.swap(working_cost);
@@ -1166,7 +1160,7 @@ PPL::LP_Problem::is_satisfiable() const {
 	// assertion to be checked.
 	x.initialized = true;
       }
-      // Apply incrementality to the pending Constraint_System.
+      // Apply incrementality to the pending constraint system.
       x.process_pending_constraints();
       assert(OK());
       return (status != UNSATISFIABLE);
