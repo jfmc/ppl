@@ -187,7 +187,7 @@ process_options(int argc, char* argv[]) {
 
     case 'c':
       check_optimum = 1;
-      fatal("option --check (-c) not implemented yet");
+      // fatal("option --check (-c) not implemented yet");
       break;
 
     case 'm':
