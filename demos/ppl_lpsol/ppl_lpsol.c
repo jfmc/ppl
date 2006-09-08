@@ -870,7 +870,7 @@ solve(char* file_name) {
     ppl_Coefficient_to_mpz_t(optimum_d, tmp_z);
     mpz_mul(tmp_z, tmp_z, den_lcm);
     mpq_set_den(optimum, tmp_z);
-    fprintf(output_file, "Optimum value:%.10g\n", mpq_get_d(optimum));
+    fprintf(output_file, "Optimum value: %.10g\n", mpq_get_d(optimum));
     mpq_clear(optimum);
     fprintf(output_file, "Optimum location:\n");
     ppl_Generator_divisor(optimum_value, ppl_coeff);
