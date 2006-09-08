@@ -383,7 +383,9 @@ public:
   const T& operator[](dimension_type k) const;
   //@}
 
-private:
+  // FIXME: the following was "private:", not "public:".
+public:
+
   //! The number of coefficients in the row.
   dimension_type size_;
 

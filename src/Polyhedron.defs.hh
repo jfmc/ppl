@@ -43,6 +43,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BHRZ03_Certificate.types.hh"
 #include "H79_Certificate.types.hh"
 #include "BD_Shape.types.hh"
+#include "Octagonal_Shape.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -2414,6 +2415,7 @@ private:
   //@} // Minimization-Related Static Member Functions
 
   template <typename T> friend class Parma_Polyhedra_Library::BD_Shape;
+  template <typename T> friend class Parma_Polyhedra_Library::Octagonal_Shape;
   friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
   friend class Parma_Polyhedra_Library::H79_Certificate;
 

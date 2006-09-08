@@ -1,0 +1,201 @@
+# Automake source file for the Parma Polyhedra Library.
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+#
+# This file is part of the Parma Polyhedra Library (PPL).
+#
+# The PPL is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
+# option) any later version.
+#
+# The PPL is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+#
+# For the most up-to-date information see the Parma Polyhedra Library
+# site: http://www.cs.unipr.it/ppl/ .
+
+#CHECKER =
+CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
+
+TESTS_ENVIRONMENT = CHEKER="$(CHECKER)"
+
+AM_CPPFLAGS = \
+$(TEST_CPPFLAGS) \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/src \
+-I$(top_srcdir)/tests \
+-I$(top_srcdir)/utils \
+@extra_includes@ \
+@debug_flag@
+
+LDADD = \
+$(top_builddir)/utils/libppl_utils.a \
+$(top_builddir)/tests/libppl_tests.a \
+$(top_builddir)/src/libppl.la \
+@extra_libraries@
+
+check_PROGRAMS = \
+	addspacedims1 \
+	affinedimension1 \
+	affineimage1 affineimage2 \
+	affinepreimage1 affinepreimage2 \
+	ascii_dump_load1 \
+	bhz03widening1 \
+	bhmz05widening1 \
+	bounded1 \
+	cc76extrapolation1 \
+	cc76narrowing1 \
+	chinainit \
+	concatenate1 \
+	constraints1 \
+	contains1 \
+	empty1 \
+	fromgensys1 \
+	frompolyhedron1 \
+	generalizedaffineimage1 generalizedaffineimage2 \
+	generalizedaffineimage3 generalizedaffineimage4 \
+	generalizedaffineimage5 \
+	generalizedaffinepreimage1 generalizedaffinepreimage2 \
+	generalizedaffinepreimage3 generalizedaffinepreimage4 \
+	intersection1 \
+	limitedbhmz05extrapolation1 \
+	limitedcc76extrapolation1 \
+	mapspacedims1 \
+	maxspacedim \
+	minconstraints1 \
+	octdifference1 \
+	octhull1 \
+	relatwithcons1 relatwithcons2 \
+	relatwithgen1 \
+	removespacedims1 \
+	timeelapse1 \
+	universe1 \
+	writeoctagon1
+
+
+# This will be overriden by the `run_tests' script.
+TEST_CPPFLAGS=-DOCTAGONAL_SHAPE_INSTANCE=mpq_class
+
+dist_check_SCRIPTS = run_tests
+
+TESTS = $(dist_check_SCRIPTS)
+
+XFAIL_TESTS =
+
+if SUPPORTED_FLOAT
+FLOAT_INSTANCE=float
+endif
+if SUPPORTED_DOUBLE
+DOUBLE_INSTANCE=double
+endif
+if SUPPORTED_LONG_DOUBLE
+LONG_DOUBLE_INSTANCE=long_double
+endif
+
+# NOTE: mpq_class must be the first in the list.
+INSTANCES = \
+mpq_class \
+$(FLOAT_INSTANCE) \
+$(DOUBLE_INSTANCE) \
+$(LONG_DOUBLE_INSTANCE) \
+mpz_class \
+int8_t \
+int16_t \
+int32_t \
+int64_t
+
+print_check_PROGRAMS:
+	echo $(check_PROGRAMS)
+
+print_INSTANCES:
+	echo $(INSTANCES)
+
+#
+# Sources for the tests
+#
+
+addspacedims1_SOURCES = addspacedims1.cc
+
+affinedimension1_SOURCES = affinedimension1.cc
+
+affineimage1_SOURCES = affineimage1.cc
+affineimage2_SOURCES = affineimage2.cc
+
+affinepreimage1_SOURCES = affinepreimage1.cc
+affinepreimage2_SOURCES = affinepreimage2.cc
+
+ascii_dump_load1_SOURCES = ascii_dump_load1.cc
+
+bhz03widening1_SOURCES = bhz03widening1.cc
+
+bhmz05widening1_SOURCES = bhmz05widening1.cc
+
+bounded1_SOURCES = bounded1.cc
+
+cc76extrapolation1_SOURCES = cc76extrapolation1.cc
+
+cc76narrowing1_SOURCES = cc76narrowing1.cc
+
+chinainit_SOURCES = chinainit.cc
+
+concatenate1_SOURCES = concatenate1.cc
+
+constraints1_SOURCES = constraints1.cc
+
+contains1_SOURCES = contains1.cc
+
+empty1_SOURCES = empty1.cc
+
+fromgensys1_SOURCES = fromgensys1.cc
+
+frompolyhedron1_SOURCES = frompolyhedron1.cc
+
+generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
+generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
+generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
+generalizedaffineimage4_SOURCES = generalizedaffineimage4.cc
+generalizedaffineimage5_SOURCES = generalizedaffineimage5.cc
+
+generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
+generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
+generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
+generalizedaffinepreimage4_SOURCES = generalizedaffinepreimage4.cc
+
+intersection1_SOURCES = intersection1.cc
+
+limitedbhmz05extrapolation1_SOURCES = limitedbhmz05extrapolation1.cc
+
+limitedcc76extrapolation1_SOURCES = limitedcc76extrapolation1.cc
+
+mapspacedims1_SOURCES = mapspacedims1.cc
+
+maxspacedim_SOURCES = maxspacedim.cc
+
+minconstraints1_SOURCES = minconstraints1.cc
+
+octdifference1_SOURCES = octdifference1.cc
+
+octhull1_SOURCES = octhull1.cc
+
+relatwithcons1_SOURCES = relatwithcons1.cc
+relatwithcons2_SOURCES = relatwithcons2.cc
+
+relatwithgen1_SOURCES = relatwithgen1.cc
+
+removespacedims1_SOURCES = removespacedims1.cc
+
+timeelapse1_SOURCES = timeelapse1.cc
+
+universe1_SOURCES = universe1.cc
+
+writeoctagon1_SOURCES = writeoctagon1.cc
+
+
+MOSTLYCLEANFILES = \
+ascii_dump_load1.dat

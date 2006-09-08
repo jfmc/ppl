@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.defs.hh"
 #include "Checked_Number.defs.hh"
+#include "distances.defs.hh"
 #include <cassert>
 #include <iostream>
 
@@ -192,41 +193,6 @@ DB_Matrix<T>::operator=(const DB_Matrix& y) {
   return *this;
 }
 
-template <typename To, typename From>
-struct maybe_assign_struct {
-  static inline Result
-  function(const To*& top, To& tmp, const From& from, Rounding_Dir dir) {
-    // When `To' and `From' are different types, we make the conversion
-    // and use `tmp'.
-    top = &tmp;
-    return assign_r(tmp, from, dir);
-  }
-};
-
-template <typename Type>
-struct maybe_assign_struct<Type, Type> {
-  static inline Result
-  function(const Type*& top, Type&, const Type& from, Rounding_Dir) {
-    // When the types are the same, conversion is unnecessary.
-    top = &from;
-    return V_EQ;
-  }
-};
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \brief
-  Assigns to \p top a pointer to a location that holds the
-  conversion, according to \p dir, of \p from to type \p To.  When
-  necessary, and only when necessary, the variable \p tmp is used to
-  hold the result of conversion.
-*/
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename To, typename From>
-inline Result
-maybe_assign(const To*& top, To& tmp, const From& from, Rounding_Dir dir) {
-  return maybe_assign_struct<To, From>::function(top, tmp, from, dir);
-}
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -281,18 +247,6 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return true;
 }
 
-template <typename Temp>
-struct Rectilinear_Distance_Specialization {
-  static inline void
-  combine(Temp& running, const Temp& current, Rounding_Dir dir) {
-    add_assign_r(running, running, current, dir);
-  }
-
-  static inline void
-  finalize(Temp&, Rounding_Dir) {
-  }
-};
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -314,20 +268,6 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 }
 
 
-template <typename Temp>
-struct Euclidean_Distance_Specialization {
-  static inline void
-  combine(Temp& running, Temp& current, Rounding_Dir dir) {
-    mul_assign_r(current, current, current, dir);
-    add_assign_r(running, running, current, dir);
-  }
-
-  static inline void
-  finalize(Temp& running, Rounding_Dir dir) {
-    sqrt_assign_r(running, running, dir);
-  }
-};
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -347,20 +287,6 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 								  tmp1,
 								  tmp2);
 }
-
-
-template <typename Temp>
-struct L_Infinity_Distance_Specialization {
-  static inline void
-  combine(Temp& running, const Temp& current, Rounding_Dir) {
-    if (current > running)
-      running = current;
-  }
-
-  static inline void
-  finalize(Temp&, Rounding_Dir) {
-  }
-};
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */

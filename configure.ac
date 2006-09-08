@@ -837,6 +837,7 @@ AC_CONFIG_FILES(Makefile
                 src/ppl-config.cc
                 tests/Makefile
                 tests/BD_Shape/Makefile
+                tests/Octagon/Makefile
                 tests/Polyhedron/Makefile
                 tests/Grid/Makefile
                 utils/Makefile

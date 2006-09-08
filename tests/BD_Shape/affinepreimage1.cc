@@ -41,7 +41,7 @@ test01() {
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(y <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(bd1, "*** bd1.affine_preimage(x, y) ***");
 
@@ -65,7 +65,7 @@ test02() {
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B >= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_preimage(A, B-1) ***");
 
@@ -89,7 +89,7 @@ test03() {
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(B >= 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_preimage(A, 2*A + 2, 2) ***");
 
@@ -112,7 +112,7 @@ test04() {
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.affine_preimage(B, 3) ***");
 

@@ -108,6 +108,7 @@ Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
 globals.types.hh \
+distances.types.hh \
 Interval.types.hh \
 Bounding_Box.types.hh \
 Constraint.types.hh \
@@ -142,6 +143,8 @@ Ptr_Iterator.types.hh \
 DB_Row.types.hh \
 DB_Matrix.types.hh \
 BD_Shape.types.hh \
+OR_Matrix.types.hh \
+Octagonal_Shape.types.hh \
 fpu.types.hh \
 Float.defs.hh \
 Float.inlines.hh \
@@ -172,6 +175,8 @@ Coefficient.defs.hh \
 Coefficient.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
+distances.defs.hh \
+distances.inlines.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 Bounding_Box.defs.hh \
@@ -252,6 +257,13 @@ BD_Shape.defs.hh \
 BDS_Status.inlines.hh \
 BD_Shape.inlines.hh \
 BD_Shape.templates.hh \
+OR_Matrix.defs.hh \
+OR_Matrix.inlines.hh \
+OR_Matrix.templates.hh \
+Octagonal_Shape.defs.hh \
+Og_Status.inlines.hh \
+Octagonal_Shape.inlines.hh \
+Octagonal_Shape.templates.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
@@ -273,7 +285,8 @@ algorithms.hh
 NESTED_INCLUDE_FILES = \
 Ph_Status.idefs.hh \
 Grid_Status.idefs.hh \
-BDS_Status.idefs.hh
+BDS_Status.idefs.hh \
+Og_Status.idefs.hh
 
 libppl_la_SOURCES = \
 Bounding_Box.cc \
@@ -312,6 +325,7 @@ Grid_public.cc \
 Grid_chdims.cc \
 Grid_widenings.cc \
 BD_Shape.cc \
+Octagonal_Shape.cc \
 Polyhedra_Powerset.cc \
 Row.cc \
 Linear_Row.cc \

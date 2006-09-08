@@ -109,7 +109,7 @@ test04() {
 
   BD_Shape<mpq_class> known_result(bd1);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   return ok;
 }

@@ -53,7 +53,7 @@ test01() {
   known_result.add_constraint(-y <= 8);
   known_result.add_constraint(y <= 8);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
@@ -92,7 +92,7 @@ test02() {
   known_result.add_constraint(z - y <= 3);
   known_result.add_constraint(z - x <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
@@ -122,7 +122,7 @@ test03() {
 
   bd2.CC76_narrowing_assign(bd1);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
@@ -153,7 +153,7 @@ test04() {
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 
@@ -171,7 +171,7 @@ test05() {
 
   bd2.CC76_narrowing_assign(bd1);
 
-  bool ok = (BD_Shape<mpq_class>(bd2) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
   print_constraints(bd2, "*** bd2.CC76_narrowing_assign(bd1) ***");
 

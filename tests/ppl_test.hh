@@ -212,6 +212,10 @@ using std::endl;
 #define BD_SHAPE_INSTANCE mpq_class
 #endif
 
+#ifndef OCTAGONAL_SHAPE_INSTANCE
+#define OCTAGONAL_SHAPE_INSTANCE mpq_class
+#endif
+
 namespace Parma_Polyhedra_Library {
 
 //! Utility typedef to allow a macro argument to denote the long double type.
@@ -219,6 +223,9 @@ typedef long double long_double;
 
 //! The incarnation of BD_Shape under test.
 typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
+
+//! The incarnation of Octagonal_Shape under test.
+typedef Octagonal_Shape<OCTAGONAL_SHAPE_INSTANCE> TOctagonal_Shape;
 
 bool
 check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
@@ -307,6 +314,94 @@ template <typename T>
 bool
 check_result(const BD_Shape<T>& computed_result,
 	     const BD_Shape<mpq_class>& known_result) {
+  return std::numeric_limits<T>::is_integer
+    ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
+    : check_result_i(computed_result, known_result, 0, 0, 0);
+}
+
+template <typename T>
+bool
+check_result_i(const Octagonal_Shape<T>& computed_result,
+	       const Octagonal_Shape<mpq_class>& known_result,
+	       const char* max_r_d_s,
+	       const char* max_e_d_s,
+	       const char* max_l_d_s) {
+  using namespace IO_Operators;
+  Octagonal_Shape<mpq_class> q_computed_result(computed_result);
+  // Handle in a more efficient way the case where equality is expected.
+  if (max_r_d_s == 0 && max_e_d_s == 0 && max_l_d_s == 0) {
+    if (q_computed_result != known_result) {
+      nout << "Equality does not hold:"
+	   << "\ncomputed result is\n"
+	   << q_computed_result
+	   << "\nknown result is\n"
+	   << known_result
+	   << endl;
+      return false;
+    }
+    else
+      return true;
+  }
+
+  if (!q_computed_result.contains(known_result)) {
+    nout << "Containment does not hold:"
+	 << "\ncomputed result is\n"
+	 << q_computed_result
+	 << "\nknown result is\n"
+	 << known_result
+	 << endl;
+    return false;
+  }
+
+  Checked_Number<mpq_class, Extended_Number_Policy> r_d;
+  rectilinear_distance_assign(r_d, known_result, q_computed_result, ROUND_UP);
+  Checked_Number<mpq_class, Extended_Number_Policy> e_d;
+  euclidean_distance_assign(e_d, known_result, q_computed_result, ROUND_UP);
+  Checked_Number<mpq_class, Extended_Number_Policy> l_d;
+  l_infinity_distance_assign(l_d, known_result, q_computed_result, ROUND_UP);
+  bool ok_r = check_distance(r_d, max_r_d_s, "rectilinear");
+  bool ok_e = check_distance(e_d, max_e_d_s, "euclidean");
+  bool ok_l = check_distance(l_d, max_l_d_s, "l_infinity");
+  bool ok = ok_r && ok_e && ok_l;
+  if (!ok) {
+    nout << "Computed result is\n"
+	 << q_computed_result
+	 << "\nknown result is\n"
+	 << known_result
+	 << endl;
+  }
+  return ok;
+}
+
+template <typename T>
+bool
+check_result(const Octagonal_Shape<T>& computed_result,
+	     const Octagonal_Shape<mpq_class>& known_result,
+	     const char* max_r_d_s,
+	     const char* max_e_d_s,
+	     const char* max_l_d_s) {
+  return std::numeric_limits<T>::is_integer
+    ? check_result_i(computed_result, known_result,
+		     "+inf", "+inf", "+inf")
+    : check_result_i(computed_result, known_result,
+		     max_r_d_s, max_e_d_s, max_l_d_s);
+}
+
+template <>
+inline bool
+check_result(const Octagonal_Shape<mpq_class>& computed_result,
+	     const Octagonal_Shape<mpq_class>& known_result,
+	     const char*,
+	     const char*,
+	     const char*) {
+  return check_result_i(computed_result, known_result,
+			0, 0, 0);
+}
+
+template <typename T>
+bool
+check_result(const Octagonal_Shape<T>& computed_result,
+	     const Octagonal_Shape<mpq_class>& known_result) {
   return std::numeric_limits<T>::is_integer
     ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result, 0, 0, 0);
