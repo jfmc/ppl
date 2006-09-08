@@ -119,7 +119,7 @@ static unsigned long max_seconds_of_cpu_time = 0;
 static unsigned long max_bytes_of_virtual_memory = 0;
 static const char* output_argument = 0;
 FILE* output_file = NULL;
-static int check_optimum = 0;
+static int check_results = 0;
 static int use_simplex = 0;
 static int print_timings = 0;
 static int verbose = 0;
@@ -186,9 +186,7 @@ process_options(int argc, char* argv[]) {
       break;
 
     case 'c':
-      check_optimum = 1;
-      // FIXME: temporarly disabled to force `make check'.
-      // fatal("option --check (-c) not implemented yet");
+      check_results = 1;
       break;
 
     case 'm':
@@ -534,7 +532,8 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (empty) {
     fprintf(output_file, "Unfeasible problem.\n");
-    /* FIXME: check!!! */
+    /* TODO: if the `--check' option has been given, use GLPK to check
+       that the problem is indeed unfeasible.  */
     return 0;
   }
 
@@ -552,7 +551,8 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (unbounded) {
     fprintf(output_file, "Unbounded problem.\n");
-    /* FIXME: check!!! */
+    /* TODO: if the `--check' option has been given, use GLPK to check
+       that the problem is indeed unbounded.  */
     return 0;
   }
 
@@ -655,19 +655,22 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 
   if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE) {
     fprintf(output_file, "Unfeasible problem.\n");
-    /* FIXME: check!!! */
+    /* TODO: if the `--check' option has been given, use GLPK to check
+       that the problem is indeed unfeasible.  */
     return 0;
   }
 
   else if (status != PPL_LP_PROBLEM_STATUS_UNFEASIBLE && no_optimization) {
     fprintf(output_file, "Feasible problem.\n");
-    /* FIXME: check!!! */
+    /* TODO: if the `--check' option has been given, use GLPK to check
+       that the problem is indeed feasible.  */
     return 0;
   }
 
   else if (status == PPL_LP_PROBLEM_STATUS_UNBOUNDED) {
     fprintf(output_file, "Unbounded problem.\n");
-    /* FIXME: check!!! */
+    /* TODO: if the `--check' option has been given, use GLPK to check
+       that the problem is indeed unbounded.  */
     return 0;
   }
   else if (status == PPL_LP_PROBLEM_STATUS_OPTIMIZED) {
@@ -679,6 +682,18 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   }
   else
     fatal("internal error");
+}
+
+static void
+check_feasibility(ppl_const_Constraint_System_t cs,
+		  ppl_const_Generator_t g) {
+  ppl_Polyhedron_t ph;
+  unsigned int relation;
+  ppl_new_C_Polyhedron_from_Constraint_System(&ph, cs);
+  relation = ppl_Polyhedron_relation_with_Generator(ph, g);
+  ppl_delete_Polyhedron(ph);
+  if (relation != PPL_POLY_GEN_RELATION_SUBSUMES)
+    fprintf(stderr, "The computed optimum is NOT a feasible point!\n");
 }
 
 static void
@@ -861,7 +876,6 @@ solve(char* file_name) {
 			    optimum_d,
 			    optimum_value);
 
-  ppl_delete_Constraint_System(ppl_cs);
   ppl_delete_Linear_Expression(ppl_objective_le);
 
   if (optimum_found) {
@@ -883,8 +897,15 @@ solve(char* file_name) {
       ppl_io_fprint_variable(output_file, i);
       fprintf(output_file, " = %.10g\n", mpq_get_d(tmp1_q));
     }
+    if (check_results) {
+      // TODO: currently checking only feasibility.
+      // Find a way to also check for optimality: probably the best
+      // thing to do is to use GLPK for that purpose.
+      check_feasibility(ppl_cs, optimum_value);
+    }
   }
 
+  ppl_delete_Constraint_System(ppl_cs);
   ppl_delete_Coefficient(optimum_d);
   ppl_delete_Coefficient(optimum_n);
   ppl_delete_Generator(optimum_value);
