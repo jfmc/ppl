@@ -66,9 +66,6 @@ PPL::
 LP_Problem::unsplit(dimension_type var_index,
 		    std::vector<dimension_type>&
 		    unfeasible_tableau_rows) {
-  // We are surely removing a non artificial column.
-  is_artificial.pop_back();
-
   const dimension_type tableau_nrows = tableau.num_rows();
   const dimension_type column = mapping[var_index].second;
 
@@ -348,16 +345,11 @@ PPL::LP_Problem::process_pending_constraints() {
 	mapping.push_back(std::make_pair(first_free_tableau_index+j,
 					 first_free_tableau_index+1+j));
 	++j;
-	// These are not artificial variables.
-	is_artificial.push_back(false);
-	is_artificial.push_back(false);
 	new_var_columns += 2;
       }
       // The variable is nonnegative.
       else {
 	mapping.push_back(std::make_pair(first_free_tableau_index+j, 0));
-	// This is not an artificial variable.
-	is_artificial.push_back(false);
 	++new_var_columns;
       }
     }
@@ -394,6 +386,12 @@ PPL::LP_Problem::process_pending_constraints() {
   dimension_type slack_index = tableau_num_columns - artificial_cols - 1;
   dimension_type artificial_index = slack_index;
 
+ // The first column index of the tableau that contains an
+  // artificial variable. Encode with 0 the fact the there aren't
+  // artificial variables.
+  const dimension_type begin_artificials = artificial_cols > 0
+    ? artificial_index : 0;
+
   // Proceed with the insertion of the constraints.
   for (dimension_type k = tableau_num_rows, i = pending_cs_num_rows; i-- > 0; )
     if (is_tableau_constraint[i]) {
@@ -414,7 +412,6 @@ PPL::LP_Problem::process_pending_constraints() {
 	// Add the slack variable, if needed.
 	if (cs_i.is_inequality()) {
 	  tableau_k[--slack_index] = -1;
-	  is_artificial.push_back(false);
 	  // If the constraint is already satisfied, we will not use artificial
 	  // variables to compute a feasible base: this to speed up
 	  // the algorithm.
@@ -437,10 +434,6 @@ PPL::LP_Problem::process_pending_constraints() {
       for (dimension_type j = tableau_num_columns; j-- > 0; )
 	neg_assign(tableau_i[j]);
   }
-
-  // Sync `is_artificial'.
-  if (artificial_cols > 0)
-    is_artificial.insert(is_artificial.end(), artificial_cols, true);
 
   // Set the working cost function with the right size.
   working_cost = Row(tableau_num_columns, Row::Flags());
@@ -467,6 +460,8 @@ PPL::LP_Problem::process_pending_constraints() {
     base[i] = artificial_index;
     ++artificial_index;
   }
+  // The last column index of the tableau containing an artificial variable.
+  const dimension_type end_artificials = artificial_index - 1;
 
   // Set the extra-coefficient of the cost functions to record its sign.
   // This is done to keep track of the possible sign's inversion.
@@ -523,7 +518,8 @@ PPL::LP_Problem::process_pending_constraints() {
   }
 
   // Prepare *this for a possible second phase.
-  erase_artificials();
+  if (begin_artificials != 0)
+    erase_artificials(begin_artificials, end_artificials);
   compute_generator();
   status = SATISFIABLE;
   assert(OK());
@@ -890,18 +886,19 @@ PPL::LP_Problem::compute_simplex() {
 
 //See pag 55-56 Papadimitriou.
 void
-PPL::LP_Problem::erase_artificials() {
+PPL::LP_Problem::erase_artificials(const dimension_type begin_artificials,
+				   const dimension_type end_artificials) {
   const dimension_type tableau_last_index = tableau.num_columns() - 1;
   dimension_type tableau_n_rows = tableau.num_rows();
-  const dimension_type is_artificial_size = is_artificial.size();
   // Step 1: try to remove from the base all the remaining slack variables.
   for (dimension_type i = 0; i < tableau_n_rows; ++i)
-    if (is_artificial[base[i]]) {
+    if (begin_artificials <= base[i] && base[i] <= end_artificials) {
       // Search for a non-zero element to enter the base.
       Row& tableau_i = tableau[i];
       bool redundant = true;
-      for (dimension_type j = is_artificial_size; j-- > 1; )
-	if (!is_artificial[j] && tableau_i[j] != 0) {
+      for (dimension_type j = end_artificials+1; j-- > 1; )
+	if (!(begin_artificials <= j && j <= end_artificials)
+	    && tableau_i[j] != 0) {
 	  pivot(j, i);
 	  redundant = false;
 	  break;
@@ -922,23 +919,15 @@ PPL::LP_Problem::erase_artificials() {
       }
     }
 
+
   // Step 2: Adjust data structures so as to enter phase 2 of the simplex.
 
   // Compute the dimensions of the new tableau.
   dimension_type num_artificials = 0;
-  for (dimension_type i = is_artificial.size(); i-- > 1; )
-    if (is_artificial[i]) {
+  for (dimension_type i = end_artificials + 1; i-- > 1; )
+    if (begin_artificials <= i && i <= end_artificials) {
       ++num_artificials;
-      if (i != is_artificial.size()-1) {
-	// WARNING: this case, at the moment is not possible. The
-	// following code (still rough and not working) will be useful
-	// when `incrementality' will be modified.
-	assert(false);
-	tableau.swap_columns(i, tableau.num_columns()-1);
-	is_artificial[i] = is_artificial[is_artificial.size()-1];
-      }
       tableau.remove_trailing_columns(1);
-      is_artificial.pop_back();
     }
 
   // Zero the last column of the tableau.
@@ -1125,7 +1114,6 @@ PPL::LP_Problem::evaluate_objective_function(const Generator& evaluating_point,
   normalize2(ext_n, evaluating_point.divisor(), ext_n, ext_d);
 }
 
-// FIXME: assert(OK()) before returning.
 bool
 PPL::LP_Problem::is_satisfiable() const {
 #if PPL_NOISY_SIMPLEX
@@ -1152,8 +1140,6 @@ PPL::LP_Problem::is_satisfiable() const {
 	// Add two columns, the first that handles the inhomogeneous term and
 	// the second that represent the `sign'.
 	x.tableau.add_zero_columns(2);
-	// Sync `is_artificial' for the inhomogeneous term.
-	x.is_artificial.push_back(false);
 	// Sync `mapping' for the inhomogeneous term.
 	x.mapping.push_back(std::make_pair(0, 0));
 	// The internal data structures are ready, so prepare for more
@@ -1235,15 +1221,6 @@ PPL::LP_Problem::OK() const {
     if (tableau_nrows != base.size()) {
 #ifndef NDEBUG
       cerr << "tableau and base have incompatible sizes" << endl;
-      ascii_dump(cerr);
-#endif
-      return false;
-    }
-    // The number of columns in the tableau and in `is_artificial.size()+1'
-    // should be equal.
-    if (tableau_ncols != is_artificial.size()+1) {
-#ifndef NDEBUG
-      cerr << "tableau and `is_artificial' have incompatible sizes" << endl;
       ascii_dump(cerr);
 #endif
       return false;
@@ -1353,12 +1330,6 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
   for (dimension_type i = 1; i < mapping_size; ++i)
     s << "\n"<< i << "->" << mapping[i].first << "->" << mapping[i].second
       << ' ';
-  const dimension_type is_artificial_size = is_artificial.size();
-  s << "\nis_artificial(" << is_artificial_size << ")\n";
-  for (dimension_type i = 1; i < is_artificial_size; ++i) {
-    s << "\n"<< i << "->";
-    is_artificial[i] ?  s << "true" : s << "false";
-  }
 }
 
 // FIXME: temporarily commented out. To be restored as soon as we

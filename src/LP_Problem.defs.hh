@@ -221,9 +221,6 @@ private:
   Matrix tableau;
   //! The working cost function.
   Row working_cost;
-  //! The `i' index is set to <CODE>true</CODE> if tableau[i] is an artificial
-  //! variable, is set to <CODE>false</CODE> otherwise.
-  std::vector<bool> is_artificial;
 
   //! A map between the variables of `input_cs' and `tableau'.
   /*!
@@ -452,7 +449,8 @@ private:
     Drop unnecessary artificial variables from the tableau and get ready
     for the second phase of the simplex algorithm.
   */
-  void erase_artificials();
+  void erase_artificials(const dimension_type begin_artificials,
+			 const dimension_type end_artificials);
 
   bool is_in_base(const dimension_type var_index,
 		  dimension_type& row_index) const;

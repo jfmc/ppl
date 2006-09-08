@@ -32,7 +32,6 @@ inline
 LP_Problem::LP_Problem()
   : tableau(),
     working_cost(0, Row::Flags()),
-    is_artificial(),
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
@@ -51,7 +50,6 @@ LP_Problem::LP_Problem(const Constraint_System& cs,
 		       const Optimization_Mode mode)
   : tableau(),
     working_cost(0, Row::Flags()),
-    is_artificial(),
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
@@ -79,7 +77,6 @@ inline
 LP_Problem::LP_Problem(const LP_Problem& y)
   : tableau(y.tableau),
     working_cost(y.working_cost),
-    is_artificial(y.is_artificial),
     mapping(y.mapping),
     base(y.base),
     status(y.status),
@@ -205,7 +202,6 @@ inline void
 LP_Problem::swap(LP_Problem& y) {
   std::swap(tableau, y.tableau);
   std::swap(working_cost, y.working_cost);
-  std::swap(is_artificial, y.is_artificial);
   std::swap(mapping, y.mapping);
   std::swap(initialized, y.initialized);
   std::swap(base, y.base);
@@ -250,9 +246,8 @@ LP_Problem::external_memory_in_bytes() const {
     + pending_input_cs.external_memory_in_bytes()
     + input_obj_function.external_memory_in_bytes()
     + last_generator.external_memory_in_bytes();
-  // Adding the external memory for `base' and `is_artificial'.
+  // Adding the external memory for `base'.
   n += base.capacity() * sizeof(dimension_type);
-  n += is_artificial.capacity() * sizeof(bool);
   // CHECKME: is it right this way of computing the memory used by `mapping'?
   n += mapping.capacity() * sizeof(std::pair<dimension_type, dimension_type>);
   return n;
