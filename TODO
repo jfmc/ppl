@@ -53,6 +53,8 @@ Efficiency Issues
   as far as the classes Linear_Expression, Constraint and Generator
   are concerned.
 
+- Provide a better implementation of computing squares in LP_Problem's
+  steepest-edge to avoid big numbers.
 
 Debian packaging
 ================

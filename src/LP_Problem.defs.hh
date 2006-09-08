@@ -33,11 +33,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Generator.defs.hh"
 #include <vector>
-#include <map>
+#include <deque>
 #include <iosfwd>
 
 //! A Linear Programming problem.
-/*! \ingroup PPL_CXX_interface */
 class Parma_Polyhedra_Library::LP_Problem {
 public:
   //! Default constructor: builds a trivial LP problem.
@@ -87,8 +86,13 @@ public:
   //! Returns the space dimension of the current LP problem.
   dimension_type space_dimension() const;
 
+#if 0 // FIXME: properly implement the following to avoid a copy.
   //! Returns the constraints defining the current feasible region.
   const Constraint_System& constraints() const;
+#else
+  //! Returns the constraints defining the current feasible region.
+  Constraint_System constraints() const;
+#endif
 
   //! Returns the current objective function.
   const Linear_Expression& objective_function() const;
@@ -217,21 +221,22 @@ private:
   Matrix tableau;
   //! The working cost function.
   Row working_cost;
+
+  //! A map between the variables of `input_cs' and `tableau'.
+  /*!
+    Contains all the pairs (i, j) such that mapping[i].first encodes the index
+    of the column in the tableau where input_cs[i] is stored; mapping[i].second
+    not a zero, encodes the split part of the tableau of input_cs[i].
+    The "positive" one is represented by mapping[i].first and
+    the "negative" one is represented by mapping[i].second.
+  */
+  std::vector<std::pair<dimension_type, dimension_type> > mapping;
+
   //! The current basic solution.
   std::vector<dimension_type> base;
-  //! A mapping between original variables and split ones.
-  /*!
-    Contains all the pairs (i, j) such that Variable(i) (that was not found
-    to be constrained in sign) has been split into two nonnegative variables.
-    The "positive" one is represented again by Variable(i), and
-    the "negative" one is represented by Variable(j).
-  */
-  std::map<dimension_type, dimension_type> dim_map;
 
   //! An enumerated type describing the internal status of the LP problem.
   enum Status {
-    //! The LP problem has not been solved yet.
-    UNSOLVED,
     //! The LP problem is unsatisfiable.
     UNSATISFIABLE,
     //! The LP problem is satisfiable; a feasible solution has been computed.
@@ -251,8 +256,16 @@ private:
   //! The internal state of the LP problem.
   Status status;
 
+  //! A boolean encoding the fact that the internal data structures
+  //! for checking satsfiability / optimizing the problem are properly built.
+  //! Used internally to check more properties in OK().
+  bool initialized;
+
   //! The constraint system describing the feasible region.
   Constraint_System input_cs;
+
+  //! The constraint system containing the pending constraints.
+  Constraint_System pending_input_cs;
 
   //! The objective function to be optimized.
   Linear_Expression input_obj_function;
@@ -263,6 +276,14 @@ private:
   //! The last successfully computed feasible or optimizing point.
   Generator last_generator;
 
+  //! Processes the pending constraints of \p *this.
+  /*!
+    \return
+    <CODE>true</CODE> if and only if the LP problem is satisfiable after
+    processing the pending constraints, <CODE>false</CODE> otherwise.
+  */
+  bool process_pending_constraints();
+
   /*! \brief
     Optimizes the current LP problem using the second phase of the
     primal simplex algorithm.
@@ -271,7 +292,7 @@ private:
 
   /*! \brief
     Assigns to \p this->tableau a simplex tableau representing the
-    current LP problem, inserting into \p this->dim_map the information
+    current LP problem, inserting into \p this->mapping the information
     that is required to recover the original LP problem.
 
     \return
@@ -282,8 +303,55 @@ private:
     <CODE>OPTIMIZED_LP_PROBLEM></CODE> if the problem is neither trivially
     unfeasible nor trivially unbounded (the tableau was computed successfully).
   */
-  LP_Problem_Status compute_tableau();
+  LP_Problem_Status compute_tableau(std::vector<dimension_type>&
+				    worked_out_row);
 
+  /*! \brief
+    Parses all the constraints passed to the method to know how to resize the
+    internal tableau.
+
+    \return
+    <CODE>UNSATISFIABLE</CODE> if is detected a trivially false constraint,
+    <CODE>SATISFIABLE</CODE> otherwise.
+
+    \param cs
+    The Constraint_System to be checked.
+
+    \param new_num_rows
+    This will store the number of rows that has to be added to the original
+    tableau.
+
+    \param num_slack_variables
+    This will store the number of slack variables that has to be added to
+    the original tableau.
+
+    \param is_tableau_constraint
+    Every element of this vector will be set to <CODE>true</CODE> if the
+    associated pending constraint has to be inserted in the tableau,
+    <CODE>false</CODE> otherwise.
+
+    \param nonnegative_variable
+    This will encode for each variable if this one was splitted or not.
+    Every element of this vector will be set to <CODE>true</CODE> if the
+    associated variable is splitted, <CODE>false</CODE> otherwise.
+
+    \param unfeasible_tableau_rows
+    This will contain all the row indexes of the tableau that are no more
+    satisfied after adding more contraints to \p *this.
+
+    \param satisfied_ineqs
+    This will contain all the row indexes of the tableau that are already
+    satisfied by `last_generator' and do not require artificial variables to
+    have a starting feasible base.
+
+  */
+  bool parse_constraints(const Constraint_System& cs,
+			 dimension_type& new_num_rows,
+			 dimension_type& num_slack_variables,
+			 std::deque<bool>& is_tableau_constraint,
+			 std::deque<bool>& nonnegative_variable,
+			 std::vector<dimension_type>& unfeasible_tableau_rows,
+			 std::deque<bool>& satisfied_ineqs);
   /*! \brief
     Checks for optimality and, if it does not hold, computes the column
     index of the variable entering the base of the LP problem.
@@ -293,7 +361,7 @@ private:
     The column index of the variable that enters the base. If no such
     variable exists, optimality was achieved and <CODE>0</CODE> is retuned.
   */
-  dimension_type get_entering_var_index() const;
+  dimension_type textbook_entering_index() const;
 
   /*! \brief
     Computes the row index of the variable exiting the base
@@ -326,8 +394,7 @@ private:
   static void linear_combine(Row& x, const Row& y, const dimension_type k);
 
   /*! \brief
-    Swaps two variables in base during the simplex algorithm,
-    performing the needed linear combinations.
+    Performs the pivoting operation on the tableau.
 
     \param entering_var_index
     The index of the variable entering the base.
@@ -335,8 +402,8 @@ private:
     \param exiting_base_index
     The index of the row exiting the base.
   */
-  void swap_base(const dimension_type entering_var_index,
-		 const dimension_type exiting_base_index);
+  void pivot(const dimension_type entering_var_index,
+	     const dimension_type exiting_base_index);
 
   /*! \brief
     Checks for optimality and, if it does not hold, computes the column
@@ -363,7 +430,7 @@ private:
     lcm of all the variables in base to get the good ``weight'' of each
     Coefficient of the tableau.
   */
-  dimension_type steepest_edge() const;
+  dimension_type steepest_edge_entering_index() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and if only the algorithm successfully
@@ -372,22 +439,44 @@ private:
   bool compute_simplex();
 
   /*! \brief
-    Adds the slack variables to satisfy the standard form of a LP problem,
-    inserts the "sign" to the cost functions, and makes the
-    necessary swaps to express the problem with the 1st phase base.
+    Adds artificial variables to satisfy the standard form of a LP problem,
+    inserts the "sign" to the cost functions, and makes the necessary pivoting
+    operations to express the problem with the 1st phase base.
   */
-  void prepare_first_phase();
+  void prepare_first_phase(std::vector<dimension_type> worked_out_rows);
 
   /*! \brief
-    Drop unnecessary slack variables from the tableau and get ready
+    Drop unnecessary artificial variables from the tableau and get ready
     for the second phase of the simplex algorithm.
   */
-  void erase_slacks();
+  void erase_artificials(const dimension_type begin_artificials,
+			 const dimension_type end_artificials);
 
   bool is_in_base(const dimension_type var_index,
 		  dimension_type& row_index) const;
 
-  Generator compute_generator() const;
+  /*! \brief
+    Computes a valid generator that satisifies all the constraints of the
+    Linear Programming problem associated to \p *this.
+  */
+  void compute_generator() const;
+
+ /*! \brief
+   Unsplits a variable in the tableau if a nonnegativity constraint is
+   detected.
+
+   \param var_index
+   The index of the variable that has to be unsplit.
+
+   \param nonfeasible_cs
+   This will contain all the row indexes that are no more satisfied by
+   the current computed generator after unsplitting a variable.
+ */
+  void unsplit(dimension_type var_index,
+	       std::vector<dimension_type>& nonfeasible_cs);
+
+  bool is_satisfied(const Constraint& constraint) const;
+
 };
 
 #include "LP_Problem.inlines.hh"

@@ -30,9 +30,16 @@ namespace Parma_Polyhedra_Library {
 
 inline
 LP_Problem::LP_Problem()
-  : tableau(), working_cost(0, Row::Flags()),
-    base(),  dim_map(), status(OPTIMIZED),
-    input_cs(), input_obj_function(), opt_mode(MAXIMIZATION),
+  : tableau(),
+    working_cost(0, Row::Flags()),
+    mapping(),
+    base(),
+    status(PARTIALLY_SATISFIABLE),
+    initialized(false),
+    input_cs(),
+    pending_input_cs(),
+    input_obj_function(),
+    opt_mode(MAXIMIZATION),
     last_generator(point()) {
   assert(OK());
 }
@@ -41,13 +48,18 @@ inline
 LP_Problem::LP_Problem(const Constraint_System& cs,
 		       const Linear_Expression& obj,
 		       const Optimization_Mode mode)
-  : tableau(), working_cost(0, Row::Flags()),
-    base(), dim_map(), status(UNSOLVED),
-    input_cs(!cs.has_strict_inequalities()
+  : tableau(),
+    working_cost(0, Row::Flags()),
+    mapping(),
+    base(),
+    status(PARTIALLY_SATISFIABLE),
+    initialized(false),
+    input_cs(),
+    pending_input_cs(!cs.has_strict_inequalities()
 	     ? cs
 	     : (throw std::invalid_argument("PPL::LP_Problem::"
-			   "LP_Problem(cs, obj, m):\n"
-			   "cs contains strict inequalities."),
+                           "LP_Problem(cs, obj, m):\n"
+                           "cs contains strict inequalities."),
 		cs)),
     input_obj_function(obj.space_dimension() <= cs.space_dimension()
 		       ? obj
@@ -63,10 +75,17 @@ LP_Problem::LP_Problem(const Constraint_System& cs,
 
 inline
 LP_Problem::LP_Problem(const LP_Problem& y)
-  : tableau(y.tableau), working_cost(y.working_cost),
-    base(y.base), dim_map(y.dim_map), status(y.status),
-    input_cs(y.input_cs), input_obj_function(y.input_obj_function),
-    opt_mode(y.opt_mode), last_generator(y.last_generator) {
+  : tableau(y.tableau),
+    working_cost(y.working_cost),
+    mapping(y.mapping),
+    base(y.base),
+    status(y.status),
+    initialized(y.initialized),
+    input_cs(y.input_cs),
+    pending_input_cs(y.pending_input_cs),
+    input_obj_function(y.input_obj_function),
+    opt_mode(y.opt_mode),
+    last_generator(y.last_generator) {
   assert(OK());
 }
 
@@ -75,38 +94,49 @@ LP_Problem::~LP_Problem() {
 }
 
 inline void
-LP_Problem::swap(LP_Problem& y) {
-  std::swap(tableau, y.tableau);
-  std::swap(working_cost, y.working_cost);
-  std::swap(base, y.base);
-  std::swap(dim_map, y.dim_map);
-  std::swap(status, y.status);
-  std::swap(input_cs, y.input_cs);
-  std::swap(input_obj_function, y.input_obj_function);
-  std::swap(opt_mode, y.opt_mode);
-  std::swap(last_generator, y.last_generator);
+LP_Problem::add_constraint(const Constraint& c) {
+  if (c.is_strict_inequality())
+    throw std::invalid_argument("PPL::LP_Problem::add_constraint(c):\n"
+				"c is a strict inequality.");
+  pending_input_cs.insert(c);
+  if (status != UNSATISFIABLE)
+    status = PARTIALLY_SATISFIABLE;
+  assert(OK());
 }
 
-inline LP_Problem&
-LP_Problem::operator=(const LP_Problem& y) {
-  LP_Problem tmp(y);
-  swap(tmp);
-  return *this;
+inline void
+LP_Problem::add_constraints(const Constraint_System& cs) {
+  if (cs.has_strict_inequalities())
+    throw std::invalid_argument("PPL::LP_Problem::add_constraints(cs):\n"
+				"cs contains strict inequalities.");
+  const dimension_type cs_num_rows = cs.num_rows();
+  for (dimension_type i = cs_num_rows; i-- > 0; )
+    pending_input_cs.insert(cs[i]);
+  if (status != UNSATISFIABLE)
+    status = PARTIALLY_SATISFIABLE;
+  assert(OK());
 }
 
-inline dimension_type
-LP_Problem::max_space_dimension() {
-  return Constraint_System::max_space_dimension();
+inline void
+LP_Problem::set_objective_function(const Linear_Expression& obj) {
+  if (space_dimension() < obj.space_dimension())
+    throw std::invalid_argument("PPL::LP_Problem::"
+				"set_objective_function(obj):\n"
+				"*this and obj are dimension incompatible.");
+  input_obj_function = obj;
+  if (status == UNBOUNDED || status == OPTIMIZED)
+    status = SATISFIABLE;
+  assert(OK());
 }
 
-inline dimension_type
-LP_Problem::space_dimension() const {
-  return input_cs.space_dimension();
-}
-
-inline const Constraint_System&
-LP_Problem::constraints() const {
-  return input_cs;
+inline void
+LP_Problem::set_optimization_mode(Optimization_Mode mode) {
+  if (opt_mode != mode) {
+    opt_mode = mode;
+    if (status == UNBOUNDED || status == OPTIMIZED)
+      status = SATISFIABLE;
+    //  assert(OK());
+  }
 }
 
 inline const Linear_Expression&
@@ -119,75 +149,32 @@ LP_Problem::optimization_mode() const {
   return opt_mode;
 }
 
-inline void
-LP_Problem::clear() {
-  LP_Problem tmp;
-  swap(tmp);
+inline const Generator&
+LP_Problem::feasible_point() const {
+  if (is_satisfiable())
+    return last_generator;
+  else
+    throw std::domain_error("PPL::LP_Problem::feasible_point():\n"
+			    "*this is not satisfiable.");
 }
 
-inline void
-LP_Problem::add_constraint(const Constraint& c) {
-  if (c.is_strict_inequality())
-    throw std::invalid_argument("PPL::LP_Problem::add_constraint(c):\n"
-				"c is a strict inequality.");
-  input_cs.insert(c);
-  if (status != UNSATISFIABLE)
-    // TODO: apply an incremental version of the simplex algorithm,
-    // setting `status' to PARTIALLY_SATISFIABLE;
-    status = UNSOLVED;
+inline const Generator&
+LP_Problem::optimizing_point() const {
+  if (solve() == OPTIMIZED_LP_PROBLEM)
+    return last_generator;
+  else
+    throw std::domain_error("PPL::LP_Problem::optimizing_point():\n"
+			    "*this doesn't have an optimizing point.");
 }
 
-inline void
-LP_Problem::add_constraints(const Constraint_System& cs) {
-  if (cs.has_strict_inequalities())
-    throw std::invalid_argument("PPL::LP_Problem::add_constraints(cs):\n"
-				"cs contains strict inequalities.");
-  const dimension_type cs_num_rows = cs.num_rows();
-  for (dimension_type i = cs_num_rows; i-- > 0; )
-    input_cs.insert(cs[i]);
-  if (status != UNSATISFIABLE)
-    // TODO: apply an incremental version of the simplex algorithm,
-    // setting `status' to PARTIALLY_SATISFIABLE;
-    status = UNSOLVED;
-  assert(OK());
-}
-
-inline void
-LP_Problem::set_objective_function(const Linear_Expression& obj) {
-  if (space_dimension() < obj.space_dimension())
-    throw std::invalid_argument("PPL::LP_Problem::"
-				"set_objective_function(obj):\n"
-				"*this and obj are dimension incompatible.");
-  switch (status) {
-  case UNBOUNDED:
-    status = SATISFIABLE;
-    break;
-  case OPTIMIZED:
-    status = SATISFIABLE;
-    break;
-  default:
-    break;
-  }
-  input_obj_function = obj;
-  assert(OK());
-}
-
-inline void
-LP_Problem::set_optimization_mode(Optimization_Mode mode) {
-  if (opt_mode == mode)
-    return;
-  switch (status) {
-  case UNBOUNDED:
-    status = SATISFIABLE;
-    break;
-  case OPTIMIZED:
-    status = SATISFIABLE;
-    break;
-  default:
-    break;
-  }
-  opt_mode = mode;
-  assert(OK());
+inline Constraint_System
+LP_Problem::constraints() const {
+  // FIXME : avoid the copy if possible.
+  Constraint_System cs(input_cs);
+  for (dimension_type i = 0,
+	 i_end = pending_input_cs.num_rows(); i != i_end; ++i)
+    cs.insert(pending_input_cs[i]);
+  return cs;
 }
 
 inline LP_Problem_Status
@@ -197,35 +184,57 @@ LP_Problem::solve() const {
     x.second_phase();
     if (x.status == UNBOUNDED)
       return UNBOUNDED_LP_PROBLEM;
-    if (x.status == OPTIMIZED)
+    else {
+      assert(x.status == OPTIMIZED);
       return OPTIMIZED_LP_PROBLEM;
+    }
   }
   return UNFEASIBLE_LP_PROBLEM;
 }
 
-inline const Generator&
-LP_Problem::feasible_point() const {
-  if (is_satisfiable()) {
-    assert(OK());
-    return last_generator;
-  }
-  throw std::domain_error("PPL::LP_Problem::feasible_point():\n"
-			  "*this is not satisfiable.");
-}
-
-inline const Generator&
-LP_Problem::optimizing_point() const {
-  if (solve() == OPTIMIZED_LP_PROBLEM)
-    return last_generator;
-  throw std::domain_error("PPL::LP_Problem::optimizing_point():\n"
-			  "*this doesn't have an optimizing point.");
+inline void
+LP_Problem::optimal_value(Coefficient& num, Coefficient& den) const {
+  const Generator& g = optimizing_point();
+  evaluate_objective_function(g, num, den);
 }
 
 inline void
-LP_Problem::optimal_value(Coefficient& num, Coefficient& den) const {
-  const Generator& g_ref = optimizing_point();
-  evaluate_objective_function(g_ref, num, den);
-  assert(OK());
+LP_Problem::swap(LP_Problem& y) {
+  std::swap(tableau, y.tableau);
+  std::swap(working_cost, y.working_cost);
+  std::swap(mapping, y.mapping);
+  std::swap(initialized, y.initialized);
+  std::swap(base, y.base);
+  std::swap(status, y.status);
+  std::swap(input_cs, y.input_cs);
+  std::swap(pending_input_cs, y.pending_input_cs);
+  std::swap(input_obj_function, y.input_obj_function);
+  std::swap(opt_mode, y.opt_mode);
+  std::swap(last_generator, y.last_generator);
+}
+
+inline LP_Problem&
+LP_Problem::operator=(const LP_Problem& y) {
+  LP_Problem tmp(y);
+  swap(tmp);
+  return *this;
+}
+
+inline void
+LP_Problem::clear() {
+  LP_Problem tmp;
+  swap(tmp);
+}
+
+inline dimension_type
+LP_Problem::max_space_dimension() {
+  return Constraint_System::max_space_dimension();
+}
+
+inline dimension_type
+LP_Problem::space_dimension() const {
+  return std::max(input_cs.space_dimension(),
+		  pending_input_cs.space_dimension());
 }
 
 inline memory_size_type
@@ -234,14 +243,13 @@ LP_Problem::external_memory_in_bytes() const {
     = tableau.external_memory_in_bytes()
     + working_cost.external_memory_in_bytes()
     + input_cs.external_memory_in_bytes()
+    + pending_input_cs.external_memory_in_bytes()
     + input_obj_function.external_memory_in_bytes()
     + last_generator.external_memory_in_bytes();
   // Adding the external memory for `base'.
   n += base.capacity() * sizeof(dimension_type);
-  // Adding the external memory for `dim_map'.
-  // CHECK ME: just a lower approximation?
-  n += dim_map.size()
-    * sizeof(std::map<dimension_type, dimension_type>::value_type);
+  // CHECKME: is it right this way of computing the memory used by `mapping'?
+  n += mapping.capacity() * sizeof(std::pair<dimension_type, dimension_type>);
   return n;
 }
 

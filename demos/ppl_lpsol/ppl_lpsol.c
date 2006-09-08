@@ -72,18 +72,19 @@ static const char* ppl_source_version = PPL_VERSION;
 
 #ifdef HAVE_GETOPT_H
 static struct option long_options[] = {
-  {"check",          no_argument,       0, 'c'},
-  {"help",           no_argument,       0, 'h'},
-  {"version",        no_argument,       0, 'V'},
-  {"min",            no_argument,       0, 'm'},
-  {"max",            no_argument,       0, 'M'},
-  {"max-cpu",        required_argument, 0, 'C'},
-  {"max-memory",     required_argument, 0, 'R'},
-  {"output",         required_argument, 0, 'o'},
-  {"enumerate",      no_argument,       0, 'e'},
-  {"simplex",        no_argument,       0, 's'},
-  {"timings",        no_argument,       0, 't'},
-  {"verbose",        no_argument,       0, 'v'},
+  {"check",           no_argument,       0, 'c'},
+  {"help",            no_argument,       0, 'h'},
+  {"incremental",     no_argument,       0, 'i'},
+  {"min",             no_argument,       0, 'm'},
+  {"max",             no_argument,       0, 'M'},
+  {"max-cpu",         required_argument, 0, 'C'},
+  {"max-memory",      required_argument, 0, 'V'},
+  {"output",          required_argument, 0, 'o'},
+  {"enumerate",       no_argument,       0, 'e'},
+  {"no-optimization", no_argument,       0, 'n'},
+  {"simplex",         no_argument,       0, 's'},
+  {"timings",         no_argument,       0, 't'},
+  {"verbose",         no_argument,       0, 'v'},
   {0, 0, 0, 0}
 };
 #endif
@@ -91,12 +92,13 @@ static struct option long_options[] = {
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
 "  -c, --check             checks plausibility of the optimum value found\n"
+"  -i, --incremental       solves the problem incrementally\n"
 "  -m, --min               minimizes the objective function\n"
+"  -n, --no-optimization   checks for satisfiability\n"
 "  -M, --max               maximizes the objective function (default)\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
-"  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
-"  -h, --help              prints this help text to stdout\n"
-"  -V, --version           prints version information to stdout\n"
+"  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
+"  -h, --help              prints this help text to stderr\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
 "  -e, --enumerate         use the (expensive!) enumeration method\n"
 "  -s, --simplex           use the simplex method\n"
@@ -109,7 +111,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "bcemMC:R:hVo:stv"
+#define OPTION_LETTERS "bceimnMC:V:ho:stv"
 
 static const char* program_name = 0;
 
@@ -117,11 +119,13 @@ static unsigned long max_seconds_of_cpu_time = 0;
 static unsigned long max_bytes_of_virtual_memory = 0;
 static const char* output_argument = 0;
 FILE* output_file = NULL;
-static int check_optimum = 0;
+static int check_results = 0;
 static int use_simplex = 0;
 static int print_timings = 0;
 static int verbose = 0;
 static int maximize = 1;
+static int incremental = 0;
+static int no_optimization = 0;
 
 static void
 my_exit(int status) {
@@ -161,6 +165,8 @@ process_options(int argc, char* argv[]) {
 #endif
   int enumerate_required = 0;
   int simplex_required = 0;
+  int incremental_required = 0;
+  int no_optimization_required = 0;
   int c;
   char* endptr;
   long l;
@@ -180,7 +186,7 @@ process_options(int argc, char* argv[]) {
       break;
 
     case 'c':
-      check_optimum = 1;
+      check_results = 1;
       break;
 
     case 'm':
@@ -193,27 +199,22 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stdout, usage_string, argv[0]);
+      fprintf(stderr, usage_string, argv[0]);
       my_exit(0);
-      break;
-
-    case 'V':
-      fprintf(stdout, "%s\n", PPL_VERSION);
-      exit(0);
       break;
 
     case 'C':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-C'");
+	fatal("a non-negative integer must follow `-c'");
       else
 	max_seconds_of_cpu_time = l;
       break;
 
-    case 'R':
+    case 'V':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-R'");
+	fatal("a non-negative integer must follow `-m'");
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;
@@ -238,18 +239,33 @@ process_options(int argc, char* argv[]) {
       verbose = 1;
       break;
 
+    case 'i':
+      incremental_required = 1;
+      break;
+
+    case 'n':
+      no_optimization_required = 1;
+      break;
+
     default:
       abort();
     }
   }
 
-  if (enumerate_required && simplex_required)
-    fatal("--enumerate and --simplex are incompatible options");
+  if (enumerate_required && (simplex_required || incremental_required ||
+			     no_optimization_required))
+      fatal("Some incompatible options were given to ppl_lpsol");
 
   if (enumerate_required)
     use_simplex = 0;
   else if (simplex_required)
     use_simplex = 1;
+
+  if (incremental_required)
+    incremental = 1;
+
+  if (no_optimization_required)
+    no_optimization = 1;
 
   if (optind >= argc) {
     if (verbose)
@@ -516,7 +532,8 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (empty) {
     fprintf(output_file, "Unfeasible problem.\n");
-    /* FIXME: check!!! */
+    /* TODO: if the `--check' option has been given, use GLPK to check
+       that the problem is indeed unfeasible.  */
     return 0;
   }
 
@@ -534,7 +551,8 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (unbounded) {
     fprintf(output_file, "Unbounded problem.\n");
-    /* FIXME: check!!! */
+    /* TODO: if the `--check' option has been given, use GLPK to check
+       that the problem is indeed unbounded.  */
     return 0;
   }
 
@@ -575,8 +593,58 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   ppl_LP_Problem_t lp;
   int mode = maximize
     ? PPL_LP_PROBLEM_MAXIMIZATION : PPL_LP_PROBLEM_MINIMIZATION;
-  ppl_new_LP_Problem(&lp, cs, objective, mode);
-  status = ppl_LP_Problem_solve(lp);
+
+  if(incremental) {
+    ppl_new_LP_Problem_trivial(&lp);
+    // Add a dummy contraint to have a correct space dimension.
+    ppl_dimension_type space_dim;
+    ppl_Linear_Expression_t dummy_le;
+    ppl_Constraint_t dummy_c;
+    ppl_Constraint_System_space_dimension(cs, &space_dim);
+    /*  fprintf(stderr, "\nSpace dimension: %d\n", space_dim); */
+    ppl_new_Linear_Expression_with_dimension(&dummy_le, space_dim);
+    ppl_new_Constraint(&dummy_c, dummy_le, PPL_CONSTRAINT_TYPE_EQUAL);
+    ppl_LP_Problem_add_constraint(lp, dummy_c);
+    ppl_delete_Linear_Expression(dummy_le);
+    ppl_delete_Constraint(dummy_c);
+    ppl_LP_Problem_set_objective_function(lp, objective);
+    ppl_LP_Problem_set_optimization_mode(lp, mode);
+
+    // Add the constraints in `cs' one at a time.
+    ppl_Constraint_System_const_iterator_t i;
+    ppl_Constraint_System_const_iterator_t iend;
+    ppl_new_Constraint_System_const_iterator(&i);
+    ppl_new_Constraint_System_const_iterator(&iend);
+    ppl_Constraint_System_begin(cs, i);
+    ppl_Constraint_System_end(cs, iend);
+    int counter;
+    counter = 0;
+    while (!ppl_Constraint_System_const_iterator_equal_test(i, iend)) {
+      ++counter;
+      if (verbose)
+	fprintf(stdout, "\nSolving constraint %d\n", counter);
+      ppl_const_Constraint_t c;
+      ppl_Constraint_System_const_iterator_dereference(i, &c);
+      ppl_LP_Problem_add_constraint(lp, c);
+
+      if(no_optimization) {
+	status = ppl_LP_Problem_is_satisfiable(lp);
+	if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE)
+	  break;
+      }
+      else
+	status = ppl_LP_Problem_solve(lp);
+      ppl_Constraint_System_const_iterator_increment(i);
+    }
+    ppl_delete_Constraint_System_const_iterator(i);
+    ppl_delete_Constraint_System_const_iterator(iend);
+  }
+
+  else {
+    ppl_new_LP_Problem(&lp, cs, objective, mode);
+    status = no_optimization ? ppl_LP_Problem_is_satisfiable(lp) :
+                               ppl_LP_Problem_solve(lp);
+ }
 
   if (print_timings) {
     fprintf(stderr, "Time to solve the LP problem: ");
@@ -587,12 +655,22 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 
   if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE) {
     fprintf(output_file, "Unfeasible problem.\n");
-    /* FIXME: check!!! */
+    /* TODO: if the `--check' option has been given, use GLPK to check
+       that the problem is indeed unfeasible.  */
     return 0;
   }
+
+  else if (status != PPL_LP_PROBLEM_STATUS_UNFEASIBLE && no_optimization) {
+    fprintf(output_file, "Feasible problem.\n");
+    /* TODO: if the `--check' option has been given, use GLPK to check
+       that the problem is indeed feasible.  */
+    return 0;
+  }
+
   else if (status == PPL_LP_PROBLEM_STATUS_UNBOUNDED) {
     fprintf(output_file, "Unbounded problem.\n");
-    /* FIXME: check!!! */
+    /* TODO: if the `--check' option has been given, use GLPK to check
+       that the problem is indeed unbounded.  */
     return 0;
   }
   else if (status == PPL_LP_PROBLEM_STATUS_OPTIMIZED) {
@@ -798,6 +876,8 @@ solve(char* file_name) {
 			    optimum_d,
 			    optimum_value);
 
+  ppl_delete_Linear_Expression(ppl_objective_le);
+
   if (optimum_found) {
     mpq_init(optimum);
     ppl_Coefficient_to_mpz_t(optimum_n, tmp_z);
@@ -817,15 +897,15 @@ solve(char* file_name) {
       ppl_io_fprint_variable(output_file, i);
       fprintf(output_file, " = %.10g\n", mpq_get_d(tmp1_q));
     }
-    if (check_optimum) {
+    if (check_results) {
       // TODO: currently checking only feasibility.
-      // Find a way to also check for optimality.
+      // Find a way to also check for optimality: probably the best
+      // thing to do is to use GLPK for that purpose.
       check_feasibility(ppl_cs, optimum_value);
     }
   }
 
   ppl_delete_Constraint_System(ppl_cs);
-  ppl_delete_Linear_Expression(ppl_objective_le);
   ppl_delete_Coefficient(optimum_d);
   ppl_delete_Coefficient(optimum_n);
   ppl_delete_Generator(optimum_value);

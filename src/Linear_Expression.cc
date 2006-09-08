@@ -298,3 +298,5 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
     s << Coefficient_zero();
   return s;
 }
+
+PPL_OUTPUT_DEFINITIONS(Linear_Expression)
