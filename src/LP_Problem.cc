@@ -144,7 +144,7 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
 			 false);
 
   const dimension_type cs_num_rows = cs.num_rows();
-  const dimension_type cs_num_cols = cs.num_columns();
+  const dimension_type cs_space_dim = cs.space_dimension();
 
   // Step 1:
   // determine variables that are constrained to be nonnegative,
@@ -154,7 +154,7 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
   // Counters determining the dimensions of the tableau:
   // initialized here, they will be updated while examining `cs'.
   tableau_num_rows = cs_num_rows;
-  dimension_type tableau_num_cols = 2*(cs_num_cols - 1);
+  dimension_type tableau_num_cols = 2*cs_space_dim;
   num_slack_variables = 0;
 
   // On exit, `is_tableau_constraint[i]' will be true if and only if
@@ -164,13 +164,13 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
 
   // On exit, `nonnegative_variable[j]' will be true if and only if
   // Variable(j) is bound to be nonnegative in `cs'.
-  nonnegative_variable = std::deque<bool> (cs_num_cols - 1, false);
+  nonnegative_variable = std::deque<bool> (cs_space_dim, false);
 
   // Check for already known infos about space dimensions and store them in
   // `nonnegative_variable'.
   const dimension_type mapping_size = mapping.size();
-  for (dimension_type i = std::min(mapping_size, cs_num_cols); i-- > 1; )
-    if(mapping[i].second == 0) {
+  for (dimension_type i = std::min(mapping_size, cs_space_dim+1); i-- > 1; )
+    if (mapping[i].second == 0) {
       nonnegative_variable[i-1] = true;
       --tableau_num_cols;
     }
@@ -181,8 +181,8 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
     bool found_a_nonzero_coeff = false;
     bool found_many_nonzero_coeffs = false;
     dimension_type nonzero_coeff_column_index = 0;
-    for (dimension_type j = cs_num_cols; j-- > 1; ) {
-      if (cs_i.coefficient(Variable(j-1)) != 0)
+    for (dimension_type sd = cs_space_dim; sd-- > 0; ) {
+      if (cs_i.coefficient(Variable(sd)) != 0)
 	if (found_a_nonzero_coeff) {
 	  found_many_nonzero_coeffs = true;
 	  if (cs_i.is_inequality())
@@ -190,7 +190,7 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
 	  break;
 	}
 	else {
-	  nonzero_coeff_column_index = j;
+	  nonzero_coeff_column_index = sd + 1;
 	  found_a_nonzero_coeff = true;
 	}
     }
@@ -307,10 +307,9 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
 bool
 PPL::LP_Problem::process_pending_constraints() {
   const dimension_type num_original_rows = tableau.num_rows();
-  const dimension_type new_c_sd = pending_input_cs.space_dimension();
   const dimension_type input_cs_sd = input_cs.space_dimension();
+  const dimension_type pending_cs_sd = pending_input_cs.space_dimension();
   const dimension_type pending_cs_num_rows = pending_input_cs.num_rows();
-  const dimension_type pending_cs_num_cols = pending_input_cs.num_columns();
   dimension_type new_rows = 0;
   dimension_type new_slacks = 0;
   dimension_type new_var_columns = 0;
@@ -335,8 +334,8 @@ PPL::LP_Problem::process_pending_constraints() {
   };
   const dimension_type first_free_tableau_index = tableau.num_columns()-1;
 
-  if (new_c_sd > input_cs_sd) {
-    const dimension_type space_diff = new_c_sd - input_cs_sd;
+  if (pending_cs_sd > input_cs_sd) {
+    const dimension_type space_diff = pending_cs_sd - input_cs_sd;
     for (dimension_type i = 0, j = 0; i < space_diff; ++i, ++j) {
       // Set `mapping' properly to store that every variable is split.
       // In the folliwing case the value of the orginal Variable can be
@@ -360,12 +359,12 @@ PPL::LP_Problem::process_pending_constraints() {
   dimension_type num_satisfied_ineqs = std::count(satisfied_ineqs.begin(),
 						  satisfied_ineqs.end(),
 						  true);
-  const dimension_type unfeasible_tableau_rows_size =
-    unfeasible_tableau_rows.size();
-  const dimension_type artificial_cols = new_rows +
-    unfeasible_tableau_rows_size - num_satisfied_ineqs;
-  const dimension_type new_total_columns = new_var_columns + new_slacks +
-    artificial_cols;
+  const dimension_type unfeasible_tableau_rows_size
+    = unfeasible_tableau_rows.size();
+  const dimension_type artificial_cols
+    = new_rows + unfeasible_tableau_rows_size - num_satisfied_ineqs;
+  const dimension_type new_total_columns
+    = new_var_columns + new_slacks + artificial_cols;
   if (new_rows > 0)
     tableau.add_zero_rows(new_rows, Row::Flags());
   if (new_total_columns > 0)
@@ -398,31 +397,32 @@ PPL::LP_Problem::process_pending_constraints() {
       // Copy the original constraint in the tableau.
       Row& tableau_k = tableau[--k];
       const Constraint& cs_i = pending_input_cs[i];
-      for (dimension_type j = pending_cs_num_cols; j-- > 1; ) {
-	tableau_k[mapping[j].first] = cs_i.coefficient(Variable(j-1));
+      for (dimension_type sd = pending_cs_sd; sd-- > 0; ) {
+	tableau_k[mapping[sd+1].first] = cs_i.coefficient(Variable(sd));
 	// Split if needed.
-	if (mapping[j].second != 0)
-	  tableau_k[mapping[j].second] = -cs_i.coefficient(Variable(j-1));
+	if (mapping[sd+1].second != 0)
+	  neg_assign(tableau_k[mapping[sd+1].second],
+		     tableau_k[mapping[sd+1].first]);
       }
-	tableau_k[mapping[0].first] = cs_i.inhomogeneous_term();
-	// Split if needed.
-	if (mapping[0].second != 0)
-	  tableau_k[mapping[0].second] = -cs_i.inhomogeneous_term();
+      tableau_k[mapping[0].first] = cs_i.inhomogeneous_term();
+      // Split if needed.
+      if (mapping[0].second != 0)
+	tableau_k[mapping[0].second] = -cs_i.inhomogeneous_term();
 
-	// Add the slack variable, if needed.
-	if (cs_i.is_inequality()) {
-	  tableau_k[--slack_index] = -1;
-	  // If the constraint is already satisfied, we will not use artificial
-	  // variables to compute a feasible base: this to speed up
-	  // the algorithm.
+      // Add the slack variable, if needed.
+      if (cs_i.is_inequality()) {
+	tableau_k[--slack_index] = -1;
+	// If the constraint is already satisfied, we will not use artificial
+	// variables to compute a feasible base: this to speed up
+	// the algorithm.
 	  if (satisfied_ineqs[i]) {
 	    base[k] = slack_index;
 	    worked_out_row[k] = true;
 	  }
-	}
-	for (dimension_type j = base_size; j-- > 0; )
-	  if (k != j && tableau_k[base[j]] != 0 && base[j] != 0)
-	    linear_combine(tableau_k, tableau[j], base[j]);
+      }
+      for (dimension_type j = base_size; j-- > 0; )
+	if (k != j && tableau_k[base[j]] != 0 && base[j] != 0)
+	  linear_combine(tableau_k, tableau[j], base[j]);
     }
 
   // We negate the row if tableau[i][0] <= 0 to get the inhomogeneous term > 0.
@@ -1225,8 +1225,9 @@ PPL::LP_Problem::OK() const {
 #endif
       return false;
     }
-    // The size  of `input_cs' and `mapping' should be equal.
-    if (input_cs.num_columns() != mapping.size()) {
+    // The size of `mapping' should be equal to the space dimension
+    // of `input_cs' plus one.
+    if (mapping.size() != input_cs.space_dimension() + 1) {
 #ifndef NDEBUG
       cerr << "`input_cs' and `mapping' have incompatible sizes" << endl;
       ascii_dump(cerr);
