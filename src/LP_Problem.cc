@@ -1159,10 +1159,8 @@ PPL::LP_Problem::is_satisfiable() const {
     }
     break;
   }
-  // Avoid compiler warnings.
-  // We should not reach these lines.
-  assert(false);
-  return true;
+  // We should not be here!
+  throw std::runtime_error("PPL internal error");
 }
 
 bool
