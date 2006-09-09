@@ -109,7 +109,6 @@ enum Result {
 
 bool is_special(Result r);
 Result classify(Result r);
-Result sign(Result r);
 
 } // namespace Parma_Polyhedra_Library
 

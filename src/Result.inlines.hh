@@ -37,24 +37,6 @@ is_special(Result r) {
   return classify(r) != VC_NORMAL;
 }
 
-inline Result
-sign(Result r) {
-  switch (r) {
-  case V_LT:
-  case V_EQ:
-  case V_GT:
-  case VC_NAN:
-    return r;
-  case VC_MINUS_INFINITY:
-    return V_LT;
-  case VC_PLUS_INFINITY:
-    return V_GT;
-  default:
-    assert(false);
-    return VC_NAN;
-  }
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Result_inlines_hh)
