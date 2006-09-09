@@ -534,10 +534,10 @@ PPL::dimension_type
 PPL::LP_Problem::steepest_edge_entering_index() const {
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
-  double challenger_num = 0;
-  double challenger_den = 0;
-  double challenger_value = 0;
-  double current_value = 0;
+  double challenger_num = 0.0;
+  double challenger_den = 0.0;
+  double challenger_value = 0.0;
+  double current_value = 0.0;
   dimension_type entering_index = 0;
   const int cost_sign = sgn(working_cost[working_cost.size() - 1]);
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
