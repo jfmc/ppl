@@ -86,7 +86,7 @@ limitedh79extrapolation1 \
 linearpartition1 \
 linexpression1 \
 linearsystem1 \
-lpproblem1 lpproblem2 lpproblem3 \
+lpproblem1 \
 mapspacedims1 \
 matrix1 \
 max_min1 \
