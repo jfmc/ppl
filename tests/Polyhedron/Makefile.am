@@ -293,8 +293,6 @@ linexpression1_SOURCES = linexpression1.cc
 linearsystem1_SOURCES = linearsystem1.cc
 
 lpproblem1_SOURCES = lpproblem1.cc
-lpproblem2_SOURCES = lpproblem2.cc
-lpproblem3_SOURCES = lpproblem3.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
