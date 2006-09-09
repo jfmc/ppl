@@ -549,12 +549,14 @@ PPL::LP_Problem::steepest_edge_entering_index() const {
       challenger_num = fabs(challenger_num);
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
-      challenger_den = 1;
+      challenger_den = 1.0;
       for (dimension_type i = tableau_num_rows; i-- > 0; ) {
 	const Row& tableau_i = tableau[i];
 	const Coefficient& tableau_ij = tableau_i[j];
 	if (tableau_ij != 0) {
-	  mpq_class real_coeff(tableau_ij, tableau_i[base[i]]);
+	  assert(tableau_i[base[i]] != 0);
+	  static mpq_class real_coeff(raw_value(tableau_ij),
+				      raw_value(tableau_i[base[i]]));
 	  // FIXME: we may have undefined behavior in the following line!
 	  // See the GMP documentation.
 	  double float_tableau_value = real_coeff.get_d();
