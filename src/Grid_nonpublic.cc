@@ -502,10 +502,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
   for (dimension_type i = row + 1; i < num_rows; ++i) {
     Grid_Generator& g = gen_sys[i];
     if (g.is_parameter_or_point())
-      if (gen_sys_divisor == g.divisor())
-	continue;
-      else
-	assert(false);
+      assert(gen_sys_divisor == g.divisor());
   }
 #endif // !defined(NDEBUG)
 
