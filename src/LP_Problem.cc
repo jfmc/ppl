@@ -73,7 +73,7 @@ LP_Problem::unsplit(dimension_type var_index,
     // In the following case the negative side of the splitted Variable is
     // in base: this means that the constraint will be nonfeasible.
     if (base[i] == mapping[var_index].second) {
-      // CHECKME: I don't know if is possible that the positive and the
+      // CHECKME: I do not know if is possible that the positive and the
       // negative part of a splitted Variable can be together in base: it
       // seems that this case is not possible. The algorithm i have written
       // requires that condition.
@@ -199,7 +199,7 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
     if (found_many_nonzero_coeffs) {
       // CHECKME: Is it true that in the first phase we can apply
       // `is_satisfied()' with the generator `point()'?  If so, the following
-      // code the following code works even if we don't have a feasible
+      // code the following code works even if we do not have a feasible
       // point.
       // Check for satisfiabilty of the inequality. This can be done if we
       // have a feasible point of *this.
@@ -231,9 +231,12 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
       /*
 
       We have the following methods:
-      A) Do split the variable and do add the constraint in the tableau.
-      B) Don't split the variable and do add the constraint in the tableau.
-      C) Don't split the variable and don't add the constraint in the tableau.
+      A) Do split the variable and do add the constraint
+         in the tableau.
+      B) Do not split the variable and do add the constraint
+         in the tableau.
+      C) Do not split the variable and do not add the constraint
+         in the tableau.
 
       Let the constraint be (a*v + b relsym 0).
       These are the 12 possible combinations we can have:
@@ -372,7 +375,7 @@ PPL::LP_Problem::process_pending_constraints() {
   dimension_type tableau_num_rows = tableau.num_rows();
 
   // The following vector will be useful know if a constraint is feasible
-  // and doesn't require an additional artificial variable.
+  // and does not require an additional artificial variable.
   std::deque<bool> worked_out_row (tableau_num_rows, false);
   dimension_type tableau_num_columns = tableau.num_columns();
 
@@ -386,7 +389,7 @@ PPL::LP_Problem::process_pending_constraints() {
   dimension_type artificial_index = slack_index;
 
  // The first column index of the tableau that contains an
-  // artificial variable. Encode with 0 the fact the there aren't
+  // artificial variable. Encode with 0 the fact the there are not
   // artificial variables.
   const dimension_type begin_artificials = artificial_cols > 0
     ? artificial_index : 0;
@@ -539,7 +542,7 @@ PPL::LP_Problem::steepest_edge_entering_index() const {
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
     const Coefficient& cost_j = working_cost[j];
     if (sgn(cost_j) == cost_sign) {
-      // We can't compute the (exact) square root of abs(\Delta x_j).
+      // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
       challenger_num = fabs(raw_value(cost_j).get_d());
       // Due to our integer implementation, the `1' term in the denominator
@@ -611,7 +614,7 @@ PPL::LP_Problem::steepest_edge_entering_index() const {
   for (dimension_type j = tableau.num_columns() - 1; j-- > 1; ) {
     const Coefficient& cost_j = working_cost[j];
     if (sgn(cost_j) == cost_sign) {
-      // We can't compute the (exact) square root of abs(\Delta x_j).
+      // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
       challenger_num = cost_j * cost_j;
       // Due to our integer implementation, the `1' term in the denominator
@@ -828,7 +831,7 @@ PPL::LP_Problem::compute_simplex() {
 #endif
      //  If the following condition fails, probably there's a bug.
     assert(challenger >= current);
-    // If the value of the objective function doesn't improve,
+    // If the value of the objective function does not improve,
     // keep track of that.
     if (challenger == current) {
       ++non_increased_times;
