@@ -4,6 +4,10 @@ Enhancements for PPL 0.10
 
 - Ensure the tests in tests/Polyhedron/lpproblem* cover every line of
   code in LP_Problem.*.
+- `make check' in ppl_lpsol must run also the incremental version
+  of the simplex solver.
+- LP_Problem: add an ascii_load() operator (mostly already completed)
+  and the operator<< .
 - Develop a C and Prolog interfaces for all the supported domains.
 - Incorporate the domain of intervals.
 - Reduce the number of FIXMEs to no more than 20.
