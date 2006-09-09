@@ -824,7 +824,8 @@ PPL::LP_Problem::compute_simplex() {
     if (cost_sgn_coeff < 0)
       neg_assign(challenger);
     challenger *= current_den;
-    current = current_num * abs(cost_sgn_coeff);
+    abs_assign(current, cost_sgn_coeff);
+    current *= current_num;
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
     if (num_iterations % 200 == 0)
