@@ -122,7 +122,7 @@ test05() {
   fstream f;
   open(f, my_file, ios_base::out);
   f << "2 x 3\n"
-    << "0 1 err 1\n";
+    << "size 3 0 1 err 1\n";
   close(f);
 
   open(f, my_file, ios_base::in);
