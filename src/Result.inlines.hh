@@ -23,15 +23,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Result_inlines_hh
 #define PPL_Result_inlines_hh 1
 
-#include <cassert>
-
 namespace Parma_Polyhedra_Library {
 
+/*! \relates Parma_Polyhedra_Library::Result */
 inline Result
 classify(Result r) {
   return static_cast<Result>(r & VC_MASK);
 }
 
+/*! \relates Parma_Polyhedra_Library::Result */
 inline bool
 is_special(Result r) {
   return classify(r) != VC_NORMAL;
