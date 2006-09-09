@@ -153,7 +153,8 @@ round_lt_int(To& to, Rounding_Dir dir) {
 	return V_GT;
       }
       return V_NEG_OVERFLOW;
-    } else {
+    }
+    else {
       --to;
       return V_GT;
     }
@@ -171,7 +172,8 @@ round_gt_int(To& to, Rounding_Dir dir) {
 	return V_LT;
       }
       return V_POS_OVERFLOW;
-    } else {
+    }
+    else {
       ++to;
       return V_LT;
     }

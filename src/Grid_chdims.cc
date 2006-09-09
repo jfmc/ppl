@@ -359,7 +359,8 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     // Extra 2 columns for inhomogeneous term and modulus.
     cgs.increase_space_dimension(new_dimension + 2);
     con_sys.swap(cgs);
-  } else {
+  }
+  else {
     assert(congruences_are_minimized());
     con_sys.remove_higher_space_dimensions(new_dimension);
     // Count the actual number of rows that are now redundant.

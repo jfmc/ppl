@@ -59,7 +59,8 @@ Grid::reduce_reduced(M& sys,
     line_or_equality = LINE;
     virtual_kind = GEN_VIRTUAL;
     jump = -1;
-  } else {
+  }
+  else {
     line_or_equality = EQUALITY;
     virtual_kind = CON_VIRTUAL;
     jump = 1;
