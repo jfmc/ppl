@@ -205,11 +205,13 @@ PPL::Congruence::is_trivial_false() const {
 void
 PPL::Congruence::ascii_dump(std::ostream& s) const {
   const Row& x = *this;
-  dimension_type x_size = x.size();
-  for (dimension_type i = 0; i < x_size - 1; ++i)
-    s << x[i] << ' ';
-  if (x_size)
+  const dimension_type x_size = x.size();
+  s << "size " << x_size << " ";
+  if (x_size > 0) {
+    for (dimension_type i = 0; i < x_size - 1; ++i)
+      s << x[i] << ' ';
     s << "m " << x[x_size - 1];
+  }
   s << std::endl;
 }
 
@@ -218,20 +220,30 @@ PPL_OUTPUT_DEFINITIONS(Congruence)
 bool
 PPL::Congruence::ascii_load(std::istream& s) {
   std::string str;
-  Congruence& x = *this;
-  dimension_type col = 0;
-  while (col < x.size() - 1)
-    if (!(s >> x[col]))
+  if (!(s >> str) || str != "size")
+    return false;
+  dimension_type new_size;
+  if (!(s >> new_size))
+    return false;
+
+  Row& x = *this;
+  const dimension_type old_size = x.size();
+  if (new_size < old_size)
+    x.shrink(new_size);
+  else if (new_size > old_size) {
+    Row y(new_size, Row::Flags());
+    x.swap(y);
+  }
+
+  if (new_size > 0) {
+    for (dimension_type col = 0; col < new_size - 1; ++col)
+      if (!(s >> x[col]))
+	return false;
+    if (!(s >> str) || (str.compare("m") != 0))
       return false;
-    else
-      ++col;
-
-  if (!(s >> str) || str.compare("m"))
-    return false;
-
-  if (!(s >> x[col]))
-    return false;
-
+    if (!(s >> x[new_size-1]))
+      return false;
+  }
   return true;
 }
 

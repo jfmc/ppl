@@ -179,7 +179,8 @@ PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
 void
 PPL::Linear_Row::ascii_dump(std::ostream& s) const {
   const Row& x = *this;
-  dimension_type x_size = x.size();
+  const dimension_type x_size = x.size();
+  s << "size " << x_size << " ";
   for (dimension_type i = 0; i < x_size; ++i)
     s << x[i] << ' ';
   s << "f ";
@@ -191,10 +192,23 @@ PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_Row)
 
 bool
 PPL::Linear_Row::ascii_load(std::istream& s) {
-  Row& x = *this;
   std::string str;
-  const dimension_type x_size = x.size();
-  for (dimension_type col = 0; col < x_size; ++col)
+  if (!(s >> str) || str != "size")
+    return false;
+  dimension_type new_size;
+  if (!(s >> new_size))
+    return false;
+
+  Row& x = *this;
+  const dimension_type old_size = x.size();
+  if (new_size < old_size)
+    x.shrink(new_size);
+  else if (new_size > old_size) {
+    Row y(new_size, Row::Flags());
+    x.swap(y);
+  }
+
+  for (dimension_type col = 0; col < new_size; ++col)
     if (!(s >> x[col]))
       return false;
   if (!(s >> str) || (str.compare("f") != 0))

@@ -131,7 +131,8 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
 void
 PPL::Grid_Generator::ascii_dump(std::ostream& s) const {
   const Grid_Generator& x = *this;
-  dimension_type x_size = x.size();
+  const dimension_type x_size = x.size();
+  s << "size " << x_size << " ";
   for (dimension_type i = 0; i < x_size; ++i)
     s << x[i] << ' ';
   switch (x.type()) {
@@ -148,21 +149,36 @@ PPL::Grid_Generator::ascii_dump(std::ostream& s) const {
   s << "\n";
 }
 
+PPL_OUTPUT_DEFINITIONS(Grid_Generator)
+
 bool
 PPL::Grid_Generator::ascii_load(std::istream& s) {
-  Grid_Generator& x = *this;
-  const dimension_type x_size = x.size();
-  for (dimension_type col = 0; col < x_size; ++col)
+  std::string str;
+  if (!(s >> str) || str != "size")
+    return false;
+  dimension_type new_size;
+  if (!(s >> new_size))
+    return false;
+
+  Row& x = *this;
+  const dimension_type old_size = x.size();
+  if (new_size < old_size)
+    x.shrink(new_size);
+  else if (new_size > old_size) {
+    Row y(new_size, Row::Flags());
+    x.swap(y);
+  }
+
+  for (dimension_type col = 0; col < new_size; ++col)
     if (!(s >> x[col]))
       return false;
 
-  std::string str;
   if (!(s >> str))
     return false;
   if (str == "L")
-    x.set_is_line();
+    set_is_line();
   else if (str == "P" || str == "Q")
-    x.set_is_ray_or_point();
+    set_is_ray_or_point();
   else
     return false;
 
@@ -388,5 +404,3 @@ PPL::Grid_Generator::OK() const {
   // All tests passed.
   return true;
 }
-
-PPL_OUTPUT_DEFINITIONS(Grid_Generator)
