@@ -522,7 +522,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 void
 PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 			      Coefficient& divisor,
-			      Grid_Generator* first_point) {
+			      const Grid_Generator* first_point) {
   assert(divisor >= 0);
   if (sys.space_dimension() > 0 && divisor > 0) {
     dimension_type row = 0;
@@ -541,7 +541,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
       // Calculate the LCM of the given divisor and the divisor of
       // every point or parameter.
       while (row < num_rows) {
-	Grid_Generator& g = sys[row];
+	const Grid_Generator& g = sys[row];
 	if (g.is_parameter_or_point())
 	  lcm_assign(divisor, divisor, g.divisor());
 	++row;

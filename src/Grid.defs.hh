@@ -2441,7 +2441,7 @@ private:
   static void
   normalize_divisors(Grid_Generator_System& sys,
 		     Coefficient& divisor,
-		     Grid_Generator* first_point = NULL);
+		     const Grid_Generator* first_point = NULL);
 
   //! Normalizes the divisors in \p sys.
   /*!
