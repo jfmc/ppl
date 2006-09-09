@@ -2,6 +2,8 @@
 Enhancements for PPL 0.10
 =========================
 
+- Ensure the tests in tests/Polyhedron/lpproblem* cover every line of
+  code in LP_Problem.*.
 - Develop a C and Prolog interfaces for all the supported domains.
 - Incorporate the domain of intervals.
 - Reduce the number of FIXMEs to no more than 20.
@@ -15,8 +17,6 @@ Enhancements for PPL 0.10
   to have memory-guarded computations.
 - Reconsider the handling of temporary coefficients.
 - Provide a generic implementation for the `widening with tokens'.
-- Transform LP_Problem into an incremental solver and add to it support
-  for abandoning costly computations.
 - Add a widening for grids using only generator representations.
 
 
