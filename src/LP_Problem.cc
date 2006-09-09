@@ -33,13 +33,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <deque>
 #include <algorithm>
+#include <cmath>
 
 #ifdef PPL_NOISY_SIMPLEX
 #include <iostream>
 #endif
 
 #ifndef PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
-#define PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT 0
+#define PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT 1
 #endif
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -544,7 +545,8 @@ PPL::LP_Problem::steepest_edge_entering_index() const {
     if (sgn(cost_j) == cost_sign) {
       // We cannot compute the (exact) square root of abs(\Delta x_j).
       // The workaround is to compute the square of `cost[j]'.
-      challenger_num = fabs(raw_value(cost_j).get_d());
+      assign_r(challenger_num, cost_j, ROUND_IGNORE);
+      challenger_num = fabs(challenger_num);
       // Due to our integer implementation, the `1' term in the denominator
       // of the original formula has to be replaced by `squared_lcm_basis'.
       challenger_den = 1;
