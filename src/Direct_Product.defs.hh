@@ -78,7 +78,7 @@ bool operator!=(const Direct_Product<D1, D2>& x,
 } // namespace Parma_Polyhedra_Library
 
 
-//! A grid.
+//! A Direct Product.
 /*! \ingroup PPL_CXX_interface
   An object of the class Direct_Product represents a direct product.
 
@@ -159,15 +159,15 @@ public:
   */
   explicit Direct_Product(Constraint_System& cs);
 
-  //! Builds a pair, copying a system of generators.
+  //! Builds a pair, copying a system of grid generators.
   /*!
-    The pair inherits the space dimension of the generator system.
+    The pair inherits the space dimension of the grid generator system.
 
     \param const_gs
-    The system of generators to be approximated by the pair.
+    The system of grid generators to be approximated by the pair.
 
     \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points.
+    Thrown if the system of grid generators is not empty but has no points.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
@@ -175,16 +175,16 @@ public:
   */
   explicit Direct_Product(const Grid_Generator_System& const_gs);
 
-  //! Builds a pair, recycling a system of generators.
+  //! Builds a pair, recycling a system of grid generators.
   /*!
-    The pair inherits the space dimension of the generator system.
+    The pair inherits the space dimension of the grid generator system.
 
     \param gs
-    The system of generators to be approximated by the pair.
+    The system of grid generators to be approximated by the pair.
     Its data-structures may be recycled to build the pair.
 
     \exception std::invalid_argument
-    Thrown if the system of generators is not empty but has no points.
+    Thrown if the system of grid generators is not empty but has no points.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
@@ -289,7 +289,7 @@ public:
   //        there a sensible interpretation of covering box for the
   //        other domains?
 #if 0
-  //! Builds a grid out of a generic, interval-based covering box.
+  //! Builds a direct product out of a generic, interval-based covering box.
   /*!
     The covering box is a set of upper and lower values for each
     dimension.  When a covering box is tiled onto empty space the
@@ -376,9 +376,14 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  // TODO: the "affine dimension for a direct product.
+  // depends on its semantics.
+  // If the semantics is intersection of its components, then
+  // it will depend on all the equalities in both components.
   /*! \brief
     Returns \f$0\f$, if \p *this is empty; otherwise, returns
-    the \ref Direct_Product_Affine_Dimension "affine dimension" of \p *this.
+    the \ref Affine_Independence_and_Affine_Dimension
+    "affine dimension" of \p *this.
   */
   dimension_type affine_dimension() const;
 
@@ -891,24 +896,24 @@ public:
   bool add_generator_and_minimize(const Generator& g);
 
   /*! \brief
-    Adds a copy of generator \p g to the system of generators of \p
+    Adds a copy of grid generator \p g to the system of grid generators of \p
     *this.
 
     \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are dimension-incompatible,
-    or if \p *this is an empty grid and \p g is not a point.
+    Thrown if \p *this and grid generator \p g are dimension-incompatible,
+    or if \p *this is empty and \p g is not a grid point.
   */
   void add_grid_generator(const Grid_Generator& g);
 
   /*! \brief
-    Adds a copy of generator \p g to the system of generators of \p
+    Adds a copy of grid generator \p g to the system of grid generators of \p
     *this, reducing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are dimension-incompatible,
+    Thrown if \p *this and grid generator \p g are dimension-incompatible,
     or if \p *this is an empty grid and \p g is not a point.
   */
   bool add_grid_generator_and_minimize(const Grid_Generator& g);
@@ -1022,30 +1027,30 @@ public:
 
   /*! \brief
     Adds a copy of the grid generators in \p gs to the system of
-    generators of \p *this.
+    grid generators of \p *this.
 
     \param gs
     Contains the generators that will be added to the system of
-    generators of \p *this.
+    grid generators of \p *this.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are dimension-incompatible, or if
-    \p *this is empty and the system of generators \p gs is not empty,
-    but has no points.
+    \p *this is empty and the system of grid generators \p gs is not empty,
+    but has no grid points.
   */
   void add_grid_generators(const Grid_Generator_System& gs);
 
   /*! \brief
-    Adds the generators in \p gs to the system of generators of \p
+    Adds the grid generators in \p gs to the system of generators of \p
     *this.
 
     \param gs
-    The generator system that may be recycled, adding its generators
-    to the system of generators of \p *this.
+    The grid generator system that may be recycled, adding its grid generators
+    to the system of grid generators of \p *this.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are dimension-incompatible, or if
-    \p *this is empty and the system of generators \p gs is not empty,
+    \p *this is empty and the system of grid generators \p gs is not empty,
     but has no points.
 
     \warning
@@ -1055,19 +1060,19 @@ public:
   void add_recycled_grid_generators(Grid_Generator_System& gs);
 
   /*! \brief
-    Adds a copy of the generators in \p gs to the system of generators
-    of \p *this, reducing the result.
+    Adds a copy of the grid generators in \p gs to the system of
+    grid generators of \p *this, reducing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
 
     \param gs
-    Contains the generators that will be added to the system of
-    generators of \p *this.
+    Contains the grid generators that will be added to the system of
+    grid generators of \p *this.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are dimension-incompatible, or if \p
-    *this is empty and the system of generators \p gs is not empty,
+    *this is empty and the system of grid generators \p gs is not empty,
     but has no points.
   */
   bool add_grid_generators_and_minimize(const Grid_Generator_System& gs);
@@ -1208,7 +1213,7 @@ public:
   //        into account the extra Grid versions.
 #if 0
   /*! \brief
-    Assigns to \p *this the \ref Direct_Product_Affine_Transformation
+    Assigns to \p *this the \ref Single_Update_Affine_Functions
     "affine image" of \p
     *this under the function mapping variable \p var to the affine
     expression specified by \p expr and \p denominator.
@@ -1235,7 +1240,7 @@ public:
 		    = Coefficient_one());
 
   /*! \brief
-    Assigns to \p *this the \ref Direct_Product_Affine_Transformation
+    Assigns to \p *this the \ref  Single_Update_Affine_Functions
     "affine preimage" of
     \p *this under the function mapping variable \p var to the affine
     expression specified by \p expr and \p denominator.
@@ -1416,7 +1421,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
-    the \ref Grid_Generalized_Image "generalized affine relation"
+    the \ref Generalized_Image "generalized affine relation"
     \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
 
     \param lhs
@@ -1465,7 +1470,7 @@ public:
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
-    \ref Grid_Generalized_Image "generalized affine relation"
+    \ref Generalized_Image "generalized affine relation"
     \f$\mathrm{lhs}' = \mathrm{rhs} \pmod{\mathrm{modulus}}\f$.
 
     \param lhs
@@ -1490,7 +1495,7 @@ public:
 #endif
 
   /*! \brief
-    Assigns to \p *this the result of computing the \ref Direct_Product_Time_Elapse
+    Assigns to \p *this the result of computing the \ref Time_Elapse_Operator
     "time-elapse" between \p *this and \p y.
 
     \exception std::invalid_argument
@@ -1504,20 +1509,20 @@ public:
   // TODO: Add a way to call other widenings.
 
   /*! \brief
-    Assigns to \p *this the result of computing the \ref Direct_Product_Widening
-    "Direct_Product widening" between \p *this and \p y.
+    Assigns to \p *this the result of computing the
+    "widening" between \p *this and \p y.
 
     This widening uses either the congruence or generator systems
     depending on which of the systems describing x and y
     are up to date and minimized.
 
     \param y
-    A grid that <EM>must</EM> be contained in \p *this;
+    A direct product that <EM>must</EM> be contained in \p *this;
 
     \param tp
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
-    \ref Direct_Product_Widening_with_Tokens "widening with tokens" delay technique).
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
@@ -1530,8 +1535,9 @@ public:
   //@{
 
   /*! \brief
-    Adds \p m new space dimensions and embeds the old grid in the new
-    vector space.
+    Adds \p m new space dimensions and embeds the components
+    <code>*this.domain1()</code> and <code>*this.domain2()</code>
+    in the new vector space.
 
     \param m
     The number of dimensions to add.
@@ -1539,25 +1545,11 @@ public:
     \exception std::length_error
     Thrown if adding \p m new space dimensions would cause the vector
     space to exceed dimension <CODE>max_space_dimension()</CODE>.
-
-    The new space dimensions will be those having the highest indexes
-    in the new grid, which is characterized by a system of congruences
-    in which the variables which are the new dimensions can have any
-    value.  For instance, when starting from the grid \f$\cL \sseq
-    \Rset^2\f$ and adding a third space dimension, the result will be
-    the grid
-    \f[
-      \bigl\{\,
-        (x, y, z)^\transpose \in \Rset^3
-      \bigm|
-        (x, y)^\transpose \in \cL
-      \,\bigr\}.
-    \f]
-  */
+ */
   void add_space_dimensions_and_embed(dimension_type m);
 
   /*! \brief
-    Adds \p m new space dimensions to the grid and does not embed it
+    Adds \p m new space dimensions and does not embed the components
     in the new vector space.
 
     \param m
@@ -1566,26 +1558,15 @@ public:
     \exception std::length_error
     Thrown if adding \p m new space dimensions would cause the
     vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
-
-    The new space dimensions will be those having the highest indexes
-    in the new grid, which is characterized by a system of congruences
-    in which the variables running through the new dimensions are all
-    constrained to be equal to 0.  For instance, when starting from
-    the grid \f$\cL \sseq \Rset^2\f$ and adding a third space
-    dimension, the result will be the grid
-    \f[
-      \bigl\{\,
-        (x, y, 0)^\transpose \in \Rset^3
-      \bigm|
-        (x, y)^\transpose \in \cL
-      \,\bigr\}.
-    \f]
   */
   void add_space_dimensions_and_project(dimension_type m);
 
   /*! \brief
-    Assigns to \p *this the \ref Direct_Product_Concatenate "concatenation" of
-    \p *this and \p y, taken in this order.
+    Assigns to <code>*this.domain1()</code> the "concatenation" of
+    <code>*this.domain1()</code> and <code>y.domain1()</code>
+    and the "concatenation" of <code>*this.domain2()</code> and
+    <code>y.domain2()</code>, taken in this order.
+    See also \ref Concatenating_Polyhedra and \ref Grid_Concatenate.
 
     \exception std::length_error
     Thrown if the concatenation would cause the vector space
@@ -1656,11 +1637,12 @@ public:
     assigned to \p j and <CODE>true</CODE> is returned.  If \f$f\f$ is
     undefined in \f$k\f$, then <CODE>false</CODE> is returned.
     This method is called at most \f$n\f$ times, where \f$n\f$ is the
-    dimension of the vector space enclosing the grid.
+    dimension of the vector space enclosing \p *this.
 
     The result is undefined if \p pfunc does not encode a partial
-    function with the properties described in the
-    \ref Direct_Product_Map_Space_Dimensions "specification of the mapping operator".
+    function with the properties described in
+    \ref Mapping_the_Dimensions_of_the_Vector_Space
+    "specification of the mapping operator".
   */
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);
@@ -1684,7 +1666,8 @@ public:
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
     and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
     then the \f$k\f$-th space dimension is
-    \ref Direct_Product_Expand_Space_Dimension "expanded" to \p m new space dimensions
+    \ref Expanding_One_Dimension_of_the_Vector_Space_to_Multiple_Dimensions
+    "expanded" to \p m new space dimensions
     \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
   */
   void expand_space_dimension(Variable var, dimension_type m);
@@ -1709,8 +1692,9 @@ public:
     \p to_be_folded is a set of variables whose maximum space dimension
     is also less than or equal to \f$n\f$, and \p var is not a member
     of \p to_be_folded, then the space dimensions corresponding to
-    variables in \p to_be_folded are \ref Direct_Product_Fold_Space_Dimensions "folded"
-    into the \f$k\f$-th space dimension.
+    variables in \p to_be_folded are
+    \ref Folding_Multiple_Dimensions_of_the_Vector_Space_into_One_Dimension
+    "folded" into the \f$k\f$-th space dimension.
   */
   void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
 
