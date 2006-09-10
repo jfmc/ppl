@@ -1323,11 +1323,11 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
 
   s << "\ntableau\n";
   tableau.ascii_dump(s);
-  s << "\nworking_cost(" << working_cost.size()<< ")\n";
+  s << "\nworking_cost( " << working_cost.size()<< " )\n";
   working_cost.ascii_dump(s);
 
   const dimension_type base_size = base.size();
-  s << "\nbase (" << base_size << ")\n";
+  s << "\nbase( " << base_size << " )\n";
   for (dimension_type i = 0; i != base_size; ++i)
     s << base[i] << ' ';
 
@@ -1335,12 +1335,151 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
   last_generator.ascii_dump(s);
 
   const dimension_type mapping_size = mapping.size();
-  s << "\nmapping(" << mapping_size << ")\n";
+  s << "\nmapping( " << mapping_size << " )\n";
   for (dimension_type i = 1; i < mapping_size; ++i)
-    s << "\n"<< i << "->" << mapping[i].first << "->" << mapping[i].second
+    s << "\n"<< i << " -> " << mapping[i].first << " -> " << mapping[i].second
       << ' ';
 }
 
 // FIXME: temporarily commented out. To be restored as soon as we
 // have a working implementation of operator<<.
 // PPL_OUTPUT_DEFINITIONS(LP_Problem)
+
+bool
+PPL::LP_Problem::ascii_load(std::istream& s) {
+  std::string str;
+
+  if(!(s >> str) || str!= "input_cs")
+    return false;
+
+  if(!input_cs.ascii_load(s))
+    return false;
+
+  if(!(s >> str) || str!= "pending_input_cs")
+    return false;
+
+  if(!pending_input_cs.ascii_load(s))
+    return false;
+
+  if(!(s >> str) || str!= "input_obj_function")
+    return false;
+
+  if(!input_obj_function.ascii_load(s))
+    return false;
+
+  if(!(s >> str) || str!= "opt_mode")
+    return false;
+
+  if(!(s >> str))
+    return false;
+
+  if (str == "MAX")
+    set_optimization_mode(MAXIMIZATION);
+  else {
+    if (str != "MIN")
+      return false;
+    set_optimization_mode(MINIMIZATION);
+  }
+
+  if(!(s >> str) || str!= "status:")
+    return false;
+
+  if(!(s >> str))
+    return false;
+
+  if (str == "UNSAT")
+    status = UNSATISFIABLE;
+
+  if (str == "SATIS")
+    status = SATISFIABLE;
+
+  if (str == "UNBOU")
+    status = UNBOUNDED;
+
+  if (str == "OPTIM")
+    status = OPTIMIZED;
+
+  else {
+    if (str != "P_SAT")
+      return false;
+    status = PARTIALLY_SATISFIABLE;
+  }
+
+  if(!(s >> str) || str!= "tableau")
+    return false;
+
+  if(!tableau.ascii_load(s))
+    return false;
+
+  if(!(s >> str) || str!= "working_cost(")
+    return false;
+
+  dimension_type working_cost_dim;
+
+  if(!(s >> working_cost_dim))
+    return false;
+
+  if(!(s >> str) || str!= ")")
+    return false;
+
+  if(!working_cost.ascii_load(s))
+    return false;
+
+  if(!(s >> str) || str!= "base(")
+    return false;
+
+  dimension_type base_size;
+  if(!(s >> base_size))
+    return false;
+
+  if(!(s >> str) || str!= ")")
+    return false;
+
+  dimension_type base_value;
+  for (dimension_type i = 0; i != base_size; ++i) {
+    if (!(s >> base_value))
+      return false;
+    base.push_back(base_value);
+  }
+
+  if(!(s >> str) || str!= "last_generator")
+    return false;
+
+  if(!last_generator.ascii_load(s))
+    return false;
+
+  if(!(s >> str) || str!= "mapping(")
+    return false;
+
+  dimension_type mapping_size;
+  if(!(s >> mapping_size))
+    return false;
+
+  if(!(s >> str) || str!= ")")
+    return false;
+
+  dimension_type first_value;
+  dimension_type second_value;
+  dimension_type index;
+
+  // The first `mapping' index is never used, so we initialize
+  // it pushing back a dummy value.
+  mapping.push_back(std::make_pair(0,0));
+
+  for (dimension_type i = 1; i < mapping_size; ++i) {
+    if (!(s >> index))
+      return false;
+    if(!(s >> str) || str!= "->")
+      return false;
+    if (!(s >> first_value))
+      return false;
+    if(!(s >> str) || str!= "->")
+      return false;
+    if (!(s >> second_value))
+      return false;
+    mapping.push_back(std::make_pair(first_value, second_value));
+  }
+
+  assert(OK());
+  return true;
+}
