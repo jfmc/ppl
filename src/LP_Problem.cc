@@ -532,6 +532,7 @@ PPL::LP_Problem::process_pending_constraints() {
 #if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 PPL::dimension_type
 PPL::LP_Problem::steepest_edge_entering_index() const {
+  static mpq_class real_coeff;
   const dimension_type tableau_num_rows = tableau.num_rows();
   assert(tableau_num_rows == base.size());
   double challenger_num = 0.0;
@@ -555,8 +556,9 @@ PPL::LP_Problem::steepest_edge_entering_index() const {
 	const Coefficient& tableau_ij = tableau_i[j];
 	if (tableau_ij != 0) {
 	  assert(tableau_i[base[i]] != 0);
-	  static mpq_class real_coeff(raw_value(tableau_ij),
-				      raw_value(tableau_i[base[i]]));
+	  assign_r(real_coeff.get_num(), tableau_ij, ROUND_NOT_NEEDED);
+	  assign_r(real_coeff.get_den(), tableau_i[base[i]], ROUND_NOT_NEEDED);
+	  real_coeff.canonicalize();
 	  // FIXME: we may have undefined behavior in the following line!
 	  // See the GMP documentation.
 	  double float_tableau_value = real_coeff.get_d();
