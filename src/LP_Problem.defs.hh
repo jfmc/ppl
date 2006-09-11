@@ -36,6 +36,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <deque>
 #include <iosfwd>
 
+namespace Parma_Polyhedra_Library {
+
+namespace IO_Operators {
+
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::LP_Problem */
+std::ostream&
+operator<<(std::ostream& s, const LP_Problem& lp);
+
+} // namespace IO_Operators
+
+} // namespace Parma_Polyhedra_Library
+
 //! A Linear Programming problem.
 class Parma_Polyhedra_Library::LP_Problem {
 public:

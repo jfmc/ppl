@@ -1343,7 +1343,7 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
 
 // FIXME: temporarily commented out. To be restored as soon as we
 // have a working implementation of operator<<.
-// PPL_OUTPUT_DEFINITIONS(LP_Problem)
+PPL_OUTPUT_DEFINITIONS(LP_Problem)
 
 bool
 PPL::LP_Problem::ascii_load(std::istream& s) {
@@ -1482,4 +1482,19 @@ PPL::LP_Problem::ascii_load(std::istream& s) {
 
   assert(OK());
   return true;
+}
+
+/*! \relates Parma_Polyhedra_Library::LP_Problem */
+std::ostream&
+PPL::IO_Operators::operator<<(std::ostream& s, const LP_Problem& cs) {
+  s << "Constraints: ";
+  s << cs.constraints();
+  s << "\nObjective function: ";
+  s << cs.objective_function();
+  s << "\nOptimization Mode: ";
+  if (cs.optimization_mode() == MAXIMIZATION)
+    s << "MAX";
+  else
+    s << "MIN";
+  return s;
 }
