@@ -1341,10 +1341,7 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
       << ' ';
 }
 
-// FIXME: temporarily commented out. To be restored as soon as we
-// have a working implementation of operator<<.
 PPL_OUTPUT_DEFINITIONS(LP_Problem)
-
 bool
 PPL::LP_Problem::ascii_load(std::istream& s) {
   std::string str;
