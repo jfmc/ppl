@@ -137,9 +137,10 @@ Direct_Product<D1, D2>::space_dimension() const {
 template <typename D1, typename D2>
 inline dimension_type
 Direct_Product<D1, D2>::affine_dimension() const {
-  const dimension_type d1_dim = d1.affine_dimension();
-  const dimension_type d2_dim = d2.affine_dimension();
-  return std::min(d1_dim, d2_dim);
+  C_Polyhedron ph1(d1.constraints());
+  const C_Polyhedron ph2(d2.constraints());
+  ph1.upper_bound_assign(ph2);
+  return ph1.affine_dimension();
 }
 
 template <typename D1, typename D2>

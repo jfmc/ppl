@@ -322,19 +322,17 @@ test14() {
   Variable C(2);
 
   Product dp(3);
-  dp.add_constraint(A - C <= 9);
-  dp.add_constraint(A - C >= 9);
-  dp.add_constraint(B == 2);
+  Constraint_System cs;
+  cs.insert(A - C <= 9);
+  cs.insert(A - C >= 9);
+  cs.insert(B == 2);
+  cs.insert(C == 4);
+  dp.add_constraints(cs);
+  dp.add_generator(point(2*C));
 
-  bool ok = (dp.affine_dimension() == 1
-#ifdef GRID_IS_D1
-	     && dp.domain1().affine_dimension() == 2
-	     && dp.domain2().affine_dimension() == 1
-#else
-	     && dp.domain1().affine_dimension() == 1
-	     && dp.domain2().affine_dimension() == 2
-#endif
-	     );
+  bool ok = (dp.affine_dimension() == 2
+             && dp.domain1().affine_dimension() == 1
+	     && dp.domain2().affine_dimension() == 1);
 
   return ok;
 }

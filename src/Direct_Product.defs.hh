@@ -376,14 +376,9 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  // TODO: the "affine dimension for a direct product.
-  // depends on its semantics.
-  // If the semantics is intersection of its components, then
-  // it will depend on all the equalities in both components.
   /*! \brief
-    Returns \f$0\f$, if \p *this is empty; otherwise, returns
-    the \ref Affine_Independence_and_Affine_Dimension
-    "affine dimension" of \p *this.
+    Returns the \ref Affine_Independence_and_Affine_Dimension
+    "affine dimension" of the convex hull of the components of \p *this.
   */
   dimension_type affine_dimension() const;
 
@@ -1536,8 +1531,7 @@ public:
 
   /*! \brief
     Adds \p m new space dimensions and embeds the components
-    <code>*this.domain1()</code> and <code>*this.domain2()</code>
-    in the new vector space.
+    of \p *this in the new vector space.
 
     \param m
     The number of dimensions to add.
@@ -1562,10 +1556,9 @@ public:
   void add_space_dimensions_and_project(dimension_type m);
 
   /*! \brief
-    Assigns to <code>*this.domain1()</code> the "concatenation" of
-    <code>*this.domain1()</code> and <code>y.domain1()</code>
-    and the "concatenation" of <code>*this.domain2()</code> and
-    <code>y.domain2()</code>, taken in this order.
+    Assigns to the first (resp., second) component of \p *this
+    the "concatenation" of the first (resp., second) components
+    of \p *this and \p y, taken in this order.
     See also \ref Concatenating_Polyhedra and \ref Grid_Concatenate.
 
     \exception std::length_error
