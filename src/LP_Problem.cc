@@ -1484,14 +1484,13 @@ PPL::LP_Problem::ascii_load(std::istream& s) {
 /*! \relates Parma_Polyhedra_Library::LP_Problem */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const LP_Problem& cs) {
-  s << "Constraints: ";
-  s << cs.constraints();
-  s << "\nObjective function: ";
-  s << cs.objective_function();
-  s << "\nOptimization Mode: ";
-  if (cs.optimization_mode() == MAXIMIZATION)
-    s << "MAX";
-  else
-    s << "MIN";
+  s << "Constraints: "
+    << cs.constraints()
+    << "\nObjective function: "
+    << cs.objective_function()
+    << "\nOptimization mode: "
+    << (cs.optimization_mode() == MAXIMIZATION
+	? "MAXIMIZATION"
+	: "MINIMIZATION");
   return s;
 }
