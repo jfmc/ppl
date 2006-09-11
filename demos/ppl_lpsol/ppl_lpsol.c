@@ -916,7 +916,9 @@ solve(char* file_name) {
 static void
 error_handler(enum ppl_enum_error_code code,
 	      const char* description) {
-  fatal("PPL error code %d\n%s", code, description);
+  if (output_argument)
+    fprintf(output_file, "PPL error code %d: %s", code, description);
+  fatal("PPL error code %d: %s", code, description);
 }
 
 #if !CXX_SUPPORTS_ATTRIBUTE_WEAK
