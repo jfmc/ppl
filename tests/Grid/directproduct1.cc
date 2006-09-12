@@ -314,6 +314,7 @@ test13() {
   return ok;
 }
 
+
 // affine_dimension()
 bool
 test14() {
@@ -322,17 +323,34 @@ test14() {
   Variable C(2);
 
   Product dp(3);
-  Constraint_System cs;
-  cs.insert(A - C <= 9);
-  cs.insert(A - C >= 9);
-  cs.insert(B == 2);
-  cs.insert(C == 4);
-  dp.add_constraints(cs);
-  dp.add_generator(point(2*C));
+  dp.add_constraint(A - C <= 9);
+  dp.add_constraint(A - C >= 9);
+  dp.add_constraint(B == 2);
 
-  bool ok = (dp.affine_dimension() == 2
-             && dp.domain1().affine_dimension() == 1
-	     && dp.domain2().affine_dimension() == 1);
+  bool ok = (dp.affine_dimension() == 1
+#ifdef GRID_IS_D1
+	     && dp.domain1().affine_dimension() == 2
+	     && dp.domain2().affine_dimension() == 1
+#else
+	     && dp.domain1().affine_dimension() == 1
+	     && dp.domain2().affine_dimension() == 2
+#endif
+	     );
+
+  if (ok) {
+    dp.add_constraint(C == 4);
+    dp.add_generator(ray(B));
+    dp.add_generator(point(A + C));
+    ok &= (dp.affine_dimension() == 1
+#ifdef GRID_IS_D1
+	   && dp.domain1().affine_dimension() == 1
+	   && dp.domain2().affine_dimension() == 2
+#else
+	   && dp.domain1().affine_dimension() == 2
+	   && dp.domain2().affine_dimension() == 1
+#endif
+	   );
+  }
 
   return ok;
 }

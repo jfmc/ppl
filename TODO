@@ -13,7 +13,6 @@ Enhancements for PPL 0.10
 - Reduce the number of FIXMEs to no more than 20.
 - Complete the manual pages for ppl-config, ppl_lpsol and ppl_lcdd.
 - Write a manual page for ppl (3).
-- Ensure that the Grid tests cover all the code.
 - Provide a single, generic implementation to replace all our status
   classes.
 - Clearly explain, in the documentation, how (not) to use

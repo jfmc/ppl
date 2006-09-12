@@ -289,22 +289,13 @@ public:
   //        there a sensible interpretation of covering box for the
   //        other domains?
 #if 0
-  //! Builds a direct product out of a generic, interval-based covering box.
+  /*! \brief
+    Builds a direct product out of a generic, interval-based
+      \ref Rectilinear_Grids "covering box".
+  */
   /*!
-    The covering box is a set of upper and lower values for each
-    dimension.  When a covering box is tiled onto empty space the
-    corners of the tiles form a rectilinear grid.
-
-    A box interval with only one bound fixes the values of all grid
-    points in the dimension associated with the box to the value of
-    the bound.  A box interval which has upper and lower bounds of
-    equal value allows all grid points with any value in the dimension
-    associated with the interval.  The presence of a universe interval
-    results in the empty grid.  The empty box produces the empty grid
-    of the same dimension as the box.
-
     \param box
-    The covering box representing the grid to be built;
+    The covering box representing the pair to be built;
 
     \param dummy
     A dummy tag to make this constructor syntactically unique.
@@ -320,7 +311,7 @@ public:
     \code
       dimension_type space_dimension() const
     \endcode
-    returns the dimension of the vector space enclosing the grid
+    returns the dimension of the vector space enclosing the pair
     represented by the covering box.
     \code
       bool is_empty() const
@@ -377,8 +368,10 @@ public:
   dimension_type space_dimension() const;
 
   /*! \brief
-    Returns the \ref Affine_Independence_and_Affine_Dimension
-    "affine dimension" of the convex hull of the components of \p *this.
+    Returns the minimum \ref Affine_Independence_and_Affine_Dimension
+    "affine dimension"
+    (see also \ref Grid_Affine_Dimension "grid affine dimension")
+    of the components of \p *this.
   */
   dimension_type affine_dimension() const;
 
@@ -577,7 +570,7 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty and
-    \p expr is bounded from below in \p *this, in which case the
+    \p expr is bounded from below i \p *this, in which case the
     infimum value is computed.
 
     \param expr
@@ -670,7 +663,7 @@ public:
     \code
       dimension_type space_dimension() const
     \endcode
-    returns the dimension of the vector space enclosing the grid
+    returns the dimension of the vector space enclosing the pair
     represented by the bounding box.
     \code
       bool get_lower_bound(dimension_type k, bool closed,
@@ -735,25 +728,6 @@ public:
 
   //! Writes the covering box for \p *this into \p box.
   /*!
-    The covering box is a set of upper and lower values for each
-    dimension.  When the covering box written into \p box is tiled
-    onto empty space the corners of the tiles form the sparsest
-    rectilinear grid that includes \p *this.
-
-    The value of the lower bound of each interval of the resulting \p
-    box are as close as possible to the origin, with positive values
-    taking preference when the lowest positive value equals the lowest
-    negative value.
-
-    If all the points have a single value in a particular dimension of
-    the grid then there is only a lower bound on the interval produced
-    in \p box, and the lower bound denotes the single value for the
-    dimension.  If the coordinates of the points in a particular
-    dimension include every value then the upper and lower bounds of
-    the associated interval in \p box are set equal.  The empty grid
-    produces the empty \p box.  The zero dimension universe grid
-    produces the zero dimension universe box.
-
     \param box
     The Box into which the covering box is written.
 
@@ -768,7 +742,7 @@ public:
     \code
       dimension_type space_dimension() const
     \endcode
-    returns the dimension of the vector space enclosing the grid
+    returns the dimension of the vector space enclosing the pair
     represented by the covering box.
     \code
       set_empty()
@@ -873,7 +847,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible,
-    or if \p *this is an empty grid and \p g is not a point.
+    or if \p *this is empty and \p g is not a point.
   */
   void add_generator(const Generator& g);
 
@@ -886,7 +860,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible,
-    or if \p *this is an empty grid and \p g is not a point.
+    or if \p *this is empty and \p g is not a point.
   */
   bool add_generator_and_minimize(const Generator& g);
 
@@ -909,7 +883,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and grid generator \p g are dimension-incompatible,
-    or if \p *this is an empty grid and \p g is not a point.
+    or if \p *this is empty and \p g is not a point.
   */
   bool add_grid_generator_and_minimize(const Grid_Generator& g);
 
@@ -1036,7 +1010,7 @@ public:
   void add_grid_generators(const Grid_Generator_System& gs);
 
   /*! \brief
-    Adds the grid generators in \p gs to the system of generators of \p
+    Adds the grid generators in \p gs to the system of grid generators of \p
     *this.
 
     \param gs
@@ -1046,7 +1020,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are dimension-incompatible, or if
     \p *this is empty and the system of grid generators \p gs is not empty,
-    but has no points.
+    but has no grid points.
 
     \warning
     The only assumption that can be made about \p gs upon successful
@@ -1068,7 +1042,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are dimension-incompatible, or if \p
     *this is empty and the system of grid generators \p gs is not empty,
-    but has no points.
+    but has no  grid points.
   */
   bool add_grid_generators_and_minimize(const Grid_Generator_System& gs);
 
@@ -1085,8 +1059,8 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are dimension-incompatible, or if \p
-    *this is empty and the system of generators \p gs is not empty,
-    but has no points.
+    *this is empty and the system of grid generators \p gs is not empty,
+    but has no grid points.
 
     \warning
     The only assumption that can be made about \p gs upon successful
@@ -1591,7 +1565,7 @@ public:
 
   /*! \brief
     Remaps the dimensions of the vector space according to
-    a \ref Direct_Product_Map_Space_Dimensions "partial function".
+    a \ref Map_Space_Dimensions "partial function".
 
     If \p pfunc maps only some of the dimensions of \p *this then the
     rest will be projected away.
