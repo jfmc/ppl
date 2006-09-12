@@ -1264,21 +1264,22 @@ PPL::LP_Problem::OK() const {
       // tableau[i][base[i] must be different from zero.
       // tableau[i][base[j], with i different from j, must not be a zero.
       for (dimension_type j = tableau_nrows; j-- > 0; )
-	if (i != j && tableau[j][base[i]] != 0)
+	if (i != j && tableau[j][base[i]] != 0) {
+#ifndef NDEBUG
+	  cerr << "tableau[i][base[i] must be different from zero" << endl;
+	  ascii_dump(cerr);
+#endif
 	  return false;
-      if (tableau[i][base[i]] == 0)
-	return false;
-    }
-
-    // The vector base should contain indices of tableau's columns.
-    for (dimension_type i = base.size(); i-- > 0; )
+	}
       if (tableau[i][base[i]] == 0) {
 #ifndef NDEBUG
-	cerr << "tableau[base] contains a zero!" << endl;
+	cerr << "tableau[i][base[j], with i different from j, must not be "
+	     << "a zero" << endl;
 	ascii_dump(cerr);
 #endif
 	return false;
       }
+    }
 
     // The last column of the tableau must contain only zeroes.
     for (dimension_type i = tableau_nrows; i-- > 0; )
