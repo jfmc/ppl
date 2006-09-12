@@ -1253,7 +1253,7 @@ PPL::LP_Problem::OK() const {
     }
 
     // The vector base should contain indices of tableau's columns.
-    for (dimension_type i = base.size(); i-- > 0; )
+    for (dimension_type i = base.size(); i-- > 0; ) {
       if (base[i] > tableau_ncols) {
 #ifndef NDEBUG
 	cerr << "base contains an invalid column index" << endl;
@@ -1261,6 +1261,15 @@ PPL::LP_Problem::OK() const {
 #endif
 	return false;
       }
+      // tableau[i][base[i] must be different from zero.
+      // tableau[i][base[j], with i different from j, must not be a zero.
+      for (dimension_type j = tableau_nrows; j-- > 0; )
+	if (i != j && tableau[j][base[i]] != 0)
+	  return false;
+      if (tableau[i][base[i]] == 0)
+	return false;
+    }
+
     // The vector base should contain indices of tableau's columns.
     for (dimension_type i = base.size(); i-- > 0; )
       if (tableau[i][base[i]] == 0) {
@@ -1281,8 +1290,6 @@ PPL::LP_Problem::OK() const {
 #endif
 	return false;
       }
-
-    // FIXME: still to be completed...
   }
 
   // All checks passed.
