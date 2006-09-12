@@ -1341,8 +1341,8 @@ test05() {
 
 BEGIN_MAIN
   DO_TEST_F64(test01);
-  DO_TEST_F64(test02);
+  DO_TEST_F32(test02);
   DO_TEST_F64(test03);
-  DO_TEST_F64(test04);
+  DO_TEST_F32(test04);
   DO_TEST_F64(test05);
 END_MAIN
