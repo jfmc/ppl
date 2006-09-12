@@ -86,7 +86,6 @@ limitedh79extrapolation1 \
 linearpartition1 \
 linexpression1 \
 linearsystem1 \
-lpproblem1 \
 mapspacedims1 \
 matrix1 \
 max_min1 \
@@ -291,8 +290,6 @@ linearpartition1_SOURCES = linearpartition1.cc
 linexpression1_SOURCES = linexpression1.cc
 
 linearsystem1_SOURCES = linearsystem1.cc
-
-lpproblem1_SOURCES = lpproblem1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
