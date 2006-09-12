@@ -425,9 +425,9 @@ maybe_check_results(const int lp_status, const double lp_optimum_value) {
   const char* lpx_status_string;
 
   // FIXME: this must be set by a program option (with default).
-  const double check_threshold = 0.0000001;
+  //const double check_threshold = 0.0000001;
   //const double check_threshold = 0.0000000000000000000001;
-  //const double check_threshold = 0.0;
+  const double check_threshold = 0.0;
 
   if (!check_results)
     return;
@@ -471,7 +471,8 @@ maybe_check_results(const int lp_status, const double lp_optimum_value) {
   else if (lp_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
 	   && lpx_status == LPX_OPT) {
     double lpx_optimum_value = lpx_get_obj_val(lp);
-    if (abs(lp_optimum_value - lpx_optimum_value) < check_threshold) {
+    fprintf(output_file, "I AM HERE!!!\n");
+    if (abs(lp_optimum_value - lpx_optimum_value) > check_threshold) {
       error("check failed: for GLPK the problem's optimum is %.10g",
 	    lpx_optimum_value);
       check_results_failed = 1;
