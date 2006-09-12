@@ -126,6 +126,7 @@ static int verbose = 0;
 static int maximize = 1;
 static int incremental = 0;
 static int no_optimization = 0;
+static int check_results_failed = 0;
 
 static void
 my_exit(int status) {
@@ -142,6 +143,30 @@ fatal(const char* format, ...) {
   fprintf(stderr, "\n");
   va_end(ap);
   my_exit(1);
+}
+
+static void
+warning(const char* format, ...) {
+  va_list ap;
+  va_start(ap, format);
+  fprintf(stderr, "%s: warning: ", program_name);
+  vfprintf(stderr, format, ap);
+  fprintf(stderr, "\n");
+  va_end(ap);
+}
+
+static void
+error(const char* format, ...) {
+  va_list ap;
+  va_start(ap, format);
+  fprintf(stderr, "%s: ", program_name);
+  vfprintf(stderr, format, ap);
+  fprintf(stderr, "\n");
+  if (output_argument) {
+    vfprintf(output_file, format, ap);
+    fprintf(output_file, "\n");
+  }
+  va_end(ap);
 }
 
 static const char*
@@ -252,9 +277,11 @@ process_options(int argc, char* argv[]) {
     }
   }
 
-  if (enumerate_required && (simplex_required || incremental_required ||
-			     no_optimization_required))
-      fatal("Some incompatible options were given to ppl_lpsol");
+  if (enumerate_required
+      && (simplex_required
+	  || incremental_required
+	  || no_optimization_required))
+      fatal("-e option is incompatible with -s, -i and -n");
 
   if (enumerate_required)
     use_simplex = 0;
@@ -392,6 +419,65 @@ static mpq_t tmp1_q;
 static mpq_t tmp2_q;
 static ppl_Coefficient_t ppl_coeff;
 static LPX* lp;
+
+static void
+maybe_check_results(const int lp_status, const double lp_optimum_value) {
+  const char* lpx_status_string;
+
+  // FIXME: this must be set by a program option (with default).
+  const double check_threshold = 0.0000001;
+  //const double check_threshold = 0.0000000000000000000001;
+  //const double check_threshold = 0.0;
+
+  if (!check_results)
+    return;
+
+  // Disable GLPK output.
+  lpx_set_int_parm(lp, LPX_K_MSGLEV, 0);
+
+  // If the problem has integer or binary columns, we can't check
+  // the correctness of the solution found.
+  if (lpx_get_num_int(lp) + lpx_get_num_bin(lp) > 0) {
+    warning("check skipped for ILP problem");
+    return;
+  }
+  const int lpx_mode = maximize ? LPX_MAX : LPX_MIN;
+  lpx_set_obj_dir(lp, lpx_mode);
+  lpx_simplex(lp);
+  const int lpx_status = lpx_get_status(lp);
+  if ((lp_status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE
+       && lpx_status != LPX_NOFEAS)
+      || (lp_status == PPL_LP_PROBLEM_STATUS_UNBOUNDED
+	  && lpx_status != LPX_UNBND)
+      || (lp_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
+	  && lpx_status != LPX_OPT)) {
+    switch (lpx_status) {
+    case LPX_NOFEAS:
+      lpx_status_string = "unfeasible";
+      break;
+    case LPX_UNBND:
+      lpx_status_string = "unbounded";
+      break;
+    case LPX_OPT:
+      lpx_status_string = "optimizable";
+      break;
+    default:
+      lpx_status_string = "<?>";
+      break;
+    }
+    error("check failed: for GLPK the problem is %s", lpx_status_string);
+    check_results_failed = 1;
+  }
+  else if (lp_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
+	   && lpx_status == LPX_OPT) {
+    double lpx_optimum_value = lpx_get_obj_val(lp);
+    if (abs(lp_optimum_value - lpx_optimum_value) < check_threshold) {
+      error("check failed: for GLPK the problem's optimum is %.10g",
+	    lpx_optimum_value);
+      check_results_failed = 1;
+    }
+  }
+}
 
 static const char*
 variable_output_function(ppl_dimension_type var) {
@@ -532,8 +618,7 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (empty) {
     fprintf(output_file, "Unfeasible problem.\n");
-    /* TODO: if the `--check' option has been given, use GLPK to check
-       that the problem is indeed unfeasible.  */
+    maybe_check_results(PPL_LP_PROBLEM_STATUS_UNFEASIBLE, 0.0);
     return 0;
   }
 
@@ -551,8 +636,7 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (unbounded) {
     fprintf(output_file, "Unbounded problem.\n");
-    /* TODO: if the `--check' option has been given, use GLPK to check
-       that the problem is indeed unbounded.  */
+    maybe_check_results(PPL_LP_PROBLEM_STATUS_UNBOUNDED, 0.0);
     return 0;
   }
 
@@ -589,19 +673,18 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Coefficient_t optimum_d,
 		   ppl_Generator_t point) {
   int status;
-
   ppl_LP_Problem_t lp;
   int mode = maximize
     ? PPL_LP_PROBLEM_MAXIMIZATION : PPL_LP_PROBLEM_MINIMIZATION;
 
-  if(incremental) {
+  if (incremental) {
     ppl_new_LP_Problem_trivial(&lp);
     // Add a dummy contraint to have a correct space dimension.
     ppl_dimension_type space_dim;
     ppl_Linear_Expression_t dummy_le;
     ppl_Constraint_t dummy_c;
+
     ppl_Constraint_System_space_dimension(cs, &space_dim);
-    /*  fprintf(stderr, "\nSpace dimension: %d\n", space_dim); */
     ppl_new_Linear_Expression_with_dimension(&dummy_le, space_dim);
     ppl_new_Constraint(&dummy_c, dummy_le, PPL_CONSTRAINT_TYPE_EQUAL);
     ppl_LP_Problem_add_constraint(lp, dummy_c);
@@ -627,7 +710,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
       ppl_Constraint_System_const_iterator_dereference(i, &c);
       ppl_LP_Problem_add_constraint(lp, c);
 
-      if(no_optimization) {
+      if (no_optimization) {
 	status = ppl_LP_Problem_is_satisfiable(lp);
 	if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE)
 	  break;
@@ -655,22 +738,17 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 
   if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE) {
     fprintf(output_file, "Unfeasible problem.\n");
-    /* TODO: if the `--check' option has been given, use GLPK to check
-       that the problem is indeed unfeasible.  */
+    maybe_check_results(status, 0.0);
     return 0;
   }
-
   else if (status != PPL_LP_PROBLEM_STATUS_UNFEASIBLE && no_optimization) {
     fprintf(output_file, "Feasible problem.\n");
-    /* TODO: if the `--check' option has been given, use GLPK to check
-       that the problem is indeed feasible.  */
+    maybe_check_results(status, 0.0);
     return 0;
   }
-
   else if (status == PPL_LP_PROBLEM_STATUS_UNBOUNDED) {
     fprintf(output_file, "Unbounded problem.\n");
-    /* TODO: if the `--check' option has been given, use GLPK to check
-       that the problem is indeed unbounded.  */
+    maybe_check_results(status, 0.0);
     return 0;
   }
   else if (status == PPL_LP_PROBLEM_STATUS_OPTIMIZED) {
@@ -682,24 +760,15 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   }
   else
     fatal("internal error");
-}
 
-static void
-check_feasibility(ppl_const_Constraint_System_t cs,
-		  ppl_const_Generator_t g) {
-  ppl_Polyhedron_t ph;
-  unsigned int relation;
-  ppl_new_C_Polyhedron_from_Constraint_System(&ph, cs);
-  relation = ppl_Polyhedron_relation_with_Generator(ph, g);
-  ppl_delete_Polyhedron(ph);
-  if (relation != PPL_POLY_GEN_RELATION_SUBSUMES)
-    fprintf(stderr, "The computed optimum is NOT a feasible point!\n");
+  // This is just to avoid a compiler warning.
+  return 0;
 }
 
 static void
 solve(char* file_name) {
   ppl_Constraint_System_t ppl_cs;
-  ppl_Generator_t optimum_value;
+  ppl_Generator_t optimum_location;
   ppl_Linear_Expression_t ppl_le;
   int dimension, row, num_rows, column, nz, i, type;
   int* coefficient_index;
@@ -862,19 +931,19 @@ solve(char* file_name) {
 
   ppl_new_Coefficient(&optimum_n);
   ppl_new_Coefficient(&optimum_d);
-  ppl_new_Generator_zero_dim_point(&optimum_value);
+  ppl_new_Generator_zero_dim_point(&optimum_location);
 
   optimum_found = use_simplex
     ? solve_with_simplex(ppl_cs,
 			 ppl_objective_le,
 			 optimum_n,
 			 optimum_d,
-			 optimum_value)
+			 optimum_location)
     : solve_with_generators(ppl_cs,
 			    ppl_objective_le,
 			    optimum_n,
 			    optimum_d,
-			    optimum_value);
+			    optimum_location);
 
   ppl_delete_Linear_Expression(ppl_objective_le);
 
@@ -888,27 +957,32 @@ solve(char* file_name) {
     fprintf(output_file, "Optimum value: %.10g\n", mpq_get_d(optimum));
     mpq_clear(optimum);
     fprintf(output_file, "Optimum location:\n");
-    ppl_Generator_divisor(optimum_value, ppl_coeff);
+    ppl_Generator_divisor(optimum_location, ppl_coeff);
     ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
     for (i = 0; i < dimension; ++i) {
       mpz_set(mpq_denref(tmp1_q), tmp_z);
-      ppl_Generator_coefficient(optimum_value, i, ppl_coeff);
+      ppl_Generator_coefficient(optimum_location, i, ppl_coeff);
       ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
       ppl_io_fprint_variable(output_file, i);
       fprintf(output_file, " = %.10g\n", mpq_get_d(tmp1_q));
     }
-    if (check_results) {
-      // TODO: currently checking only feasibility.
-      // Find a way to also check for optimality: probably the best
-      // thing to do is to use GLPK for that purpose.
-      check_feasibility(ppl_cs, optimum_value);
+#ifndef NDEBUG
+    {
+      ppl_Polyhedron_t ph;
+      unsigned int relation;
+      ppl_new_C_Polyhedron_from_Constraint_System(&ph, cs);
+      relation = ppl_Polyhedron_relation_with_Generator(ph, g);
+      ppl_delete_Polyhedron(ph);
+      assert(relation == PPL_POLY_GEN_RELATION_SUBSUMES);
     }
+#endif
+    maybe_check_results(PPL_LP_PROBLEM_STATUS_OPTIMIZED,
+			mpq_get_d(optimum));
   }
-
   ppl_delete_Constraint_System(ppl_cs);
   ppl_delete_Coefficient(optimum_d);
   ppl_delete_Coefficient(optimum_n);
-  ppl_delete_Generator(optimum_value);
+  ppl_delete_Generator(optimum_location);
 
   lpx_delete_prob(lp);
 }
@@ -958,8 +1032,15 @@ main(int argc, char* argv[]) {
   if (max_bytes_of_virtual_memory > 0)
     limit_virtual_memory(max_bytes_of_virtual_memory);
 
-  while (optind < argc)
+  while (optind < argc) {
+    if (check_results)
+      check_results_failed = 0;
+
     solve(argv[optind++]);
+
+    if (check_results && check_results_failed)
+      break;
+  }
 
   /* Finalize globals. */
   ppl_delete_Coefficient(ppl_coeff);
@@ -971,7 +1052,8 @@ main(int argc, char* argv[]) {
   if (output_argument)
     fclose(output_file);
 
-  my_exit(0);
+  my_exit((check_results && check_results_failed) ? 1 : 0);
 
+  // This is just to avoid a compiler warning.
   return 0;
 }
