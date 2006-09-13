@@ -440,53 +440,54 @@ static mpz_t tmp_z;
 static mpq_t tmp1_q;
 static mpq_t tmp2_q;
 static ppl_Coefficient_t ppl_coeff;
-static LPX* lp;
+static LPX* glpk_lp;
 
 static void
-maybe_check_results(const int lp_status, const double lp_optimum_value) {
-  const char* lpx_status_string;
+maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
+  const char* glpk_status_string;
 
   if (!check_results)
     return;
 
   // Disable GLPK output.
-  lpx_set_int_parm(lp, LPX_K_MSGLEV, 0);
+  lpx_set_int_parm(glpk_lp, LPX_K_MSGLEV, 0);
+
   // Set the problem class to LP. This forces MIP problems to be treated as
   // LP ones.
-  lpx_set_class(lp, LPX_LP);
-  const int lpx_mode = maximize ? LPX_MAX : LPX_MIN;
-  lpx_set_obj_dir(lp, lpx_mode);
-  lpx_simplex(lp);
-  const int lpx_status = lpx_get_status(lp);
-  if ((lp_status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE
-       && lpx_status != LPX_NOFEAS)
-      || (lp_status == PPL_LP_PROBLEM_STATUS_UNBOUNDED
-	  && lpx_status != LPX_UNBND)
-      || (lp_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
-	  && lpx_status != LPX_OPT)) {
-    switch (lpx_status) {
+  lpx_set_class(glpk_lp, LPX_LP);
+  const int glpk_mode = maximize ? LPX_MAX : LPX_MIN;
+  lpx_set_obj_dir(glpk_lp, glpk_mode);
+  lpx_simplex(glpk_lp);
+  const int glpk_status = lpx_get_status(glpk_lp);
+  if ((ppl_status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE
+       && glpk_status != LPX_NOFEAS)
+      || (ppl_status == PPL_LP_PROBLEM_STATUS_UNBOUNDED
+	  && glpk_status != LPX_UNBND)
+      || (ppl_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
+	  && glpk_status != LPX_OPT)) {
+    switch (glpk_status) {
     case LPX_NOFEAS:
-      lpx_status_string = "unfeasible";
+      glpk_status_string = "unfeasible";
       break;
     case LPX_UNBND:
-      lpx_status_string = "unbounded";
+      glpk_status_string = "unbounded";
       break;
     case LPX_OPT:
-      lpx_status_string = "optimizable";
+      glpk_status_string = "optimizable";
       break;
     default:
-      lpx_status_string = "<?>";
+      glpk_status_string = "<?>";
       break;
     }
-    error("check failed: for GLPK the problem is %s", lpx_status_string);
+    error("check failed: for GLPK the problem is %s", glpk_status_string);
     check_results_failed = 1;
   }
-  else if (lp_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
-	   && lpx_status == LPX_OPT) {
-    double lpx_optimum_value = lpx_get_obj_val(lp);
-    if (fabs(lp_optimum_value - lpx_optimum_value) > check_threshold) {
+  else if (ppl_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
+	   && glpk_status == LPX_OPT) {
+    double glpk_optimum_value = lpx_get_obj_val(glpk_lp);
+    if (fabs(ppl_optimum_value - glpk_optimum_value) > check_threshold) {
       error("check failed: for GLPK the problem's optimum is %.10g",
-	    lpx_optimum_value);
+	    glpk_optimum_value);
       check_results_failed = 1;
     }
   }
@@ -494,7 +495,7 @@ maybe_check_results(const int lp_status, const double lp_optimum_value) {
 
 static const char*
 variable_output_function(ppl_dimension_type var) {
-  const char* name = lpx_get_col_name(lp, var+1);
+  const char* name = lpx_get_col_name(glpk_lp, var+1);
   if (name != NULL)
     return name;
   else
@@ -686,12 +687,12 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Coefficient_t optimum_d,
 		   ppl_Generator_t point) {
   int status;
-  ppl_LP_Problem_t lp;
+  ppl_LP_Problem_t ppl_lp;
   int mode = maximize
     ? PPL_LP_PROBLEM_MAXIMIZATION : PPL_LP_PROBLEM_MINIMIZATION;
 
   if (incremental) {
-    ppl_new_LP_Problem_trivial(&lp);
+    ppl_new_LP_Problem_trivial(&ppl_lp);
     // Add a dummy contraint to have a correct space dimension.
     ppl_dimension_type space_dim;
     ppl_Linear_Expression_t dummy_le;
@@ -700,11 +701,11 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     ppl_Constraint_System_space_dimension(cs, &space_dim);
     ppl_new_Linear_Expression_with_dimension(&dummy_le, space_dim);
     ppl_new_Constraint(&dummy_c, dummy_le, PPL_CONSTRAINT_TYPE_EQUAL);
-    ppl_LP_Problem_add_constraint(lp, dummy_c);
+    ppl_LP_Problem_add_constraint(ppl_lp, dummy_c);
     ppl_delete_Linear_Expression(dummy_le);
     ppl_delete_Constraint(dummy_c);
-    ppl_LP_Problem_set_objective_function(lp, objective);
-    ppl_LP_Problem_set_optimization_mode(lp, mode);
+    ppl_LP_Problem_set_objective_function(ppl_lp, objective);
+    ppl_LP_Problem_set_optimization_mode(ppl_lp, mode);
 
     // Add the constraints in `cs' one at a time.
     ppl_Constraint_System_const_iterator_t i;
@@ -721,15 +722,15 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 	fprintf(stdout, "\nSolving constraint %d\n", counter);
       ppl_const_Constraint_t c;
       ppl_Constraint_System_const_iterator_dereference(i, &c);
-      ppl_LP_Problem_add_constraint(lp, c);
+      ppl_LP_Problem_add_constraint(ppl_lp, c);
 
       if (no_optimization) {
-	status = ppl_LP_Problem_is_satisfiable(lp);
+	status = ppl_LP_Problem_is_satisfiable(ppl_lp);
 	if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE)
 	  break;
       }
       else
-	status = ppl_LP_Problem_solve(lp);
+	status = ppl_LP_Problem_solve(ppl_lp);
       ppl_Constraint_System_const_iterator_increment(i);
     }
     ppl_delete_Constraint_System_const_iterator(i);
@@ -737,9 +738,9 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   }
 
   else {
-    ppl_new_LP_Problem(&lp, cs, objective, mode);
-    status = no_optimization ? ppl_LP_Problem_is_satisfiable(lp) :
-                               ppl_LP_Problem_solve(lp);
+    ppl_new_LP_Problem(&ppl_lp, cs, objective, mode);
+    status = no_optimization ? ppl_LP_Problem_is_satisfiable(ppl_lp) :
+                               ppl_LP_Problem_solve(ppl_lp);
  }
 
   if (print_timings) {
@@ -765,9 +766,9 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     return 0;
   }
   else if (status == PPL_LP_PROBLEM_STATUS_OPTIMIZED) {
-    ppl_LP_Problem_optimal_value(lp, optimum_n, optimum_d);
+    ppl_LP_Problem_optimal_value(ppl_lp, optimum_n, optimum_d);
     ppl_const_Generator_t g;
-    ppl_LP_Problem_optimizing_point(lp, &g);
+    ppl_LP_Problem_optimizing_point(ppl_lp, &g);
     ppl_assign_Generator_from_Generator(point, g);
     return 1;
   }
@@ -800,8 +801,8 @@ solve(char* file_name) {
   if (print_timings)
     start_clock();
 
-  lp = lpx_read_mps(file_name);
-  if (lp == NULL)
+  glpk_lp = lpx_read_mps(file_name);
+  if (glpk_lp == NULL)
     fatal("cannot read MPS file `%s'", file_name);
 
   if (print_timings) {
@@ -811,7 +812,7 @@ solve(char* file_name) {
     start_clock();
   }
 
-  dimension = lpx_get_num_cols(lp);
+  dimension = lpx_get_num_cols(glpk_lp);
 
   coefficient_index = (int*) malloc((dimension+1)*sizeof(int));
   coefficient_value = (double*) malloc((dimension+1)*sizeof(double));
@@ -831,18 +832,18 @@ solve(char* file_name) {
     fprintf(output_file, "Constraints:\n");
 
   /* Set up the row (ordinary) constraints. */
-  num_rows = lpx_get_num_rows(lp);
+  num_rows = lpx_get_num_rows(glpk_lp);
   for (row = 1; row <= num_rows; ++row) {
     /* Initialize the least common multiple computation. */
     mpz_set_si(den_lcm, 1);
     /* Set `nz' to the number of non-zero coefficients. */
-    nz = lpx_get_mat_row(lp, row, coefficient_index, coefficient_value);
+    nz = lpx_get_mat_row(glpk_lp, row, coefficient_index, coefficient_value);
     for (i = 1; i <= nz; ++i) {
       mpq_set_d(rational_coefficient[i], coefficient_value[i]);
       /* Update den_lcm. */
       mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_coefficient[i]));
     }
-    lpx_get_row_bnds(lp, row, &type, &lb, &ub);
+    lpx_get_row_bnds(glpk_lp, row, &type, &lb, &ub);
     mpq_set_d(rational_lb, lb);
     mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_lb));
     mpq_set_d(rational_ub, ub);
@@ -876,8 +877,7 @@ solve(char* file_name) {
 
   /* Set up the columns constraints, i.e., variable bounds. */
   for (column = 1; column <= dimension; ++column) {
-
-    lpx_get_col_bnds(lp, column, &type, &lb, &ub);
+    lpx_get_col_bnds(glpk_lp, column, &type, &lb, &ub);
 
     mpq_set_d(rational_lb, lb);
     mpq_set_d(rational_ub, ub);
@@ -906,10 +906,10 @@ solve(char* file_name) {
   mpz_set_si(den_lcm, 1);
 
   mpq_init(objective[0]);
-  mpq_set_d(objective[0], lpx_get_obj_coef(lp, 0));
+  mpq_set_d(objective[0], lpx_get_obj_coef(glpk_lp, 0));
   for (i = 1; i <= dimension; ++i) {
     mpq_init(objective[i]);
-    mpq_set_d(objective[i], lpx_get_obj_coef(lp, i));
+    mpq_set_d(objective[i], lpx_get_obj_coef(glpk_lp, i));
     /* Update den_lcm. */
     mpz_lcm(den_lcm, den_lcm, mpq_denref(objective[i]));
   }
@@ -998,7 +998,7 @@ solve(char* file_name) {
   ppl_delete_Coefficient(optimum_n);
   ppl_delete_Generator(optimum_location);
 
-  lpx_delete_prob(lp);
+  lpx_delete_prob(glpk_lp);
 }
 
 static void
