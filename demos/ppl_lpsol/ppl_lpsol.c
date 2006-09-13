@@ -426,8 +426,6 @@ maybe_check_results(const int lp_status, const double lp_optimum_value) {
 
   // FIXME: this must be set by a program option (with default).
   const double check_threshold = 0.0000001;
-  //const double check_threshold =   0.1;
-  //const double check_threshold = 0.0;
 
   if (!check_results)
     return;
@@ -977,9 +975,9 @@ solve(char* file_name) {
 #endif
     maybe_check_results(PPL_LP_PROBLEM_STATUS_OPTIMIZED,
 			mpq_get_d(optimum));
-  }
-  if (optimum_found)
     mpq_clear(optimum);
+  }
+
   ppl_delete_Constraint_System(ppl_cs);
   ppl_delete_Coefficient(optimum_d);
   ppl_delete_Coefficient(optimum_n);
