@@ -445,20 +445,20 @@ static LPX* glpk_lp;
 static void
 maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
   const char* glpk_status_string;
+  int glpk_status;
 
   if (!check_results)
     return;
 
-  // Disable GLPK output.
+  /* Disable GLPK output. */
   lpx_set_int_parm(glpk_lp, LPX_K_MSGLEV, 0);
 
-  // Set the problem class to LP. This forces MIP problems to be treated as
-  // LP ones.
+  /* Set the problem class to LP: MIP problems are thus treated as LP ones. */
   lpx_set_class(glpk_lp, LPX_LP);
-  const int glpk_mode = maximize ? LPX_MAX : LPX_MIN;
-  lpx_set_obj_dir(glpk_lp, glpk_mode);
+
+  lpx_set_obj_dir(glpk_lp, (maximize ? LPX_MAX : LPX_MIN));
   lpx_simplex(glpk_lp);
-  const int glpk_status = lpx_get_status(glpk_lp);
+  glpk_status = lpx_get_status(glpk_lp);
   if ((ppl_status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE
        && glpk_status != LPX_NOFEAS)
       || (ppl_status == PPL_LP_PROBLEM_STATUS_UNBOUNDED
@@ -686,41 +686,45 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Coefficient_t optimum_n,
 		   ppl_Coefficient_t optimum_d,
 		   ppl_Generator_t point) {
-  int status;
   ppl_LP_Problem_t ppl_lp;
+  int status;
+  ppl_dimension_type space_dim;
+  ppl_Linear_Expression_t dummy_le;
+  ppl_Constraint_t dummy_c;
+  ppl_const_Constraint_t c;
+  ppl_const_Generator_t g;
+  ppl_Constraint_System_const_iterator_t i;
+  ppl_Constraint_System_const_iterator_t iend;
+  int counter;
   int mode = maximize
-    ? PPL_LP_PROBLEM_MAXIMIZATION : PPL_LP_PROBLEM_MINIMIZATION;
+    ? PPL_LP_PROBLEM_MAXIMIZATION
+    : PPL_LP_PROBLEM_MINIMIZATION;
 
   if (incremental) {
     ppl_new_LP_Problem_trivial(&ppl_lp);
-    // Add a dummy contraint to have a correct space dimension.
-    ppl_dimension_type space_dim;
-    ppl_Linear_Expression_t dummy_le;
-    ppl_Constraint_t dummy_c;
 
+    /* Add a dummy contraint to have a correct space dimension. */
     ppl_Constraint_System_space_dimension(cs, &space_dim);
     ppl_new_Linear_Expression_with_dimension(&dummy_le, space_dim);
     ppl_new_Constraint(&dummy_c, dummy_le, PPL_CONSTRAINT_TYPE_EQUAL);
     ppl_LP_Problem_add_constraint(ppl_lp, dummy_c);
     ppl_delete_Linear_Expression(dummy_le);
     ppl_delete_Constraint(dummy_c);
+
     ppl_LP_Problem_set_objective_function(ppl_lp, objective);
     ppl_LP_Problem_set_optimization_mode(ppl_lp, mode);
 
-    // Add the constraints in `cs' one at a time.
-    ppl_Constraint_System_const_iterator_t i;
-    ppl_Constraint_System_const_iterator_t iend;
+    /* Add the constraints to `cs' one at a time. */
     ppl_new_Constraint_System_const_iterator(&i);
     ppl_new_Constraint_System_const_iterator(&iend);
     ppl_Constraint_System_begin(cs, i);
     ppl_Constraint_System_end(cs, iend);
-    int counter;
+
     counter = 0;
     while (!ppl_Constraint_System_const_iterator_equal_test(i, iend)) {
       ++counter;
       if (verbose)
 	fprintf(stdout, "\nSolving constraint %d\n", counter);
-      ppl_const_Constraint_t c;
       ppl_Constraint_System_const_iterator_dereference(i, &c);
       ppl_LP_Problem_add_constraint(ppl_lp, c);
 
@@ -767,7 +771,6 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   }
   else if (status == PPL_LP_PROBLEM_STATUS_OPTIMIZED) {
     ppl_LP_Problem_optimal_value(ppl_lp, optimum_n, optimum_d);
-    ppl_const_Generator_t g;
     ppl_LP_Problem_optimizing_point(ppl_lp, &g);
     ppl_assign_Generator_from_Generator(point, g);
     return 1;
@@ -775,7 +778,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   else
     fatal("internal error");
 
-  // This is just to avoid a compiler warning.
+  /* This is just to avoid a compiler warning. */
   return 0;
 }
 
@@ -1081,6 +1084,6 @@ main(int argc, char* argv[]) {
 
   my_exit((check_results && check_results_failed) ? 1 : 0);
 
-  // This is just to avoid a compiler warning.
+  /* This is just to avoid a compiler warning. */
   return 0;
 }
