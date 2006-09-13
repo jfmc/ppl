@@ -978,7 +978,8 @@ solve(char* file_name) {
     maybe_check_results(PPL_LP_PROBLEM_STATUS_OPTIMIZED,
 			mpq_get_d(optimum));
   }
-  mpq_clear(optimum);
+  if (optimum_found)
+    mpq_clear(optimum);
   ppl_delete_Constraint_System(ppl_cs);
   ppl_delete_Coefficient(optimum_d);
   ppl_delete_Coefficient(optimum_n);
