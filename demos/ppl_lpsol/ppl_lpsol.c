@@ -86,6 +86,7 @@ static struct option long_options[] = {
   {"simplex",         no_argument,       0, 's'},
   {"timings",         no_argument,       0, 't'},
   {"verbose",         no_argument,       0, 'v'},
+  {"version",         no_argument,       0, 'V'},
   {0, 0, 0, 0}
 };
 #endif
@@ -96,24 +97,24 @@ static const char* usage_string
 "                          with a tolerance of THRESHOLD (default %.10g)\n"
 "  -i, --incremental       solves the problem incrementally\n"
 "  -m, --min               minimizes the objective function\n"
-"  -n, --no-optimization   checks for satisfiability\n"
+"  -n, --no-optimization   checks for satisfiability only\n"
 "  -M, --max               maximizes the objective function (default)\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
-"  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
+"  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stderr\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
 "  -e, --enumerate         use the (expensive!) enumeration method\n"
 "  -s, --simplex           use the simplex method\n"
 "  -t, --timings           prints timings to stderr\n"
-"  -v, --verbose           outputs also the constraints "
-"and objective function\n"
+"  -v, --verbose           produces lots of output\n"
+"  -V, --version           prints version information to stdout\n"
 #ifndef HAVE_GETOPT_H
 "\n"
 "NOTE: this version does not support long options.\n"
 #endif
 ;
 
-#define OPTION_LETTERS "bc::eimnMC:V:ho:stv"
+#define OPTION_LETTERS "bc::eimnMC:R:ho:stVv"
 
 static const char* program_name = 0;
 
@@ -149,6 +150,7 @@ fatal(const char* format, ...) {
   my_exit(1);
 }
 
+#if 0
 static void
 warning(const char* format, ...) {
   va_list ap;
@@ -158,6 +160,7 @@ warning(const char* format, ...) {
   fprintf(stderr, "\n");
   va_end(ap);
 }
+#endif
 
 static void
 error(const char* format, ...) {
@@ -238,22 +241,22 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stderr, usage_string, argv[0], default_check_threshold);
+      fprintf(stdout, usage_string, argv[0], default_check_threshold);
       my_exit(0);
       break;
 
     case 'C':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-c'");
+	fatal("a non-negative integer must follow `-C'");
       else
 	max_seconds_of_cpu_time = l;
       break;
 
-    case 'V':
+    case 'R':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-m'");
+	fatal("a non-negative integer must follow `-R'");
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;
@@ -276,6 +279,11 @@ process_options(int argc, char* argv[]) {
 
     case 'v':
       verbose = 1;
+      break;
+
+    case 'V':
+      fprintf(stdout, "%s\n", PPL_VERSION);
+      my_exit(0);
       break;
 
     case 'i':
@@ -1009,7 +1017,9 @@ set_GMP_memory_allocation_functions(void) {
 
 #ifdef NDEBUG
 static int
-glpk_message_interceptor(void* info, char *msg) {
+glpk_message_interceptor(void* info, char* msg) {
+  (void) info;
+  (void) msg;
   return 1;
 }
 #endif
