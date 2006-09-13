@@ -73,7 +73,7 @@ static const char* ppl_source_version = PPL_VERSION;
 
 #ifdef HAVE_GETOPT_H
 static struct option long_options[] = {
-  {"check",           no_argument,       0, 'c'},
+  {"check",           optional_argument, 0, 'c'},
   {"help",            no_argument,       0, 'h'},
   {"incremental",     no_argument,       0, 'i'},
   {"min",             no_argument,       0, 'm'},
@@ -92,7 +92,8 @@ static struct option long_options[] = {
 
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
-"  -c, --check             checks plausibility of the optimum value found\n"
+"  -c, --check[=THRESHOLD] checks the obtained results;  optima are checked\n"
+"                          with a tolerance of THRESHOLD (default %.10g)\n"
 "  -i, --incremental       solves the problem incrementally\n"
 "  -m, --min               minimizes the objective function\n"
 "  -n, --no-optimization   checks for satisfiability\n"
@@ -112,7 +113,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "bceimnMC:V:ho:stv"
+#define OPTION_LETTERS "bc::eimnMC:V:ho:stv"
 
 static const char* program_name = 0;
 
@@ -128,6 +129,8 @@ static int maximize = 1;
 static int incremental = 0;
 static int no_optimization = 0;
 static int check_results_failed = 0;
+static double check_threshold = 0.0;
+static const double default_check_threshold = 0.000000001;
 
 static void
 my_exit(int status) {
@@ -196,6 +199,7 @@ process_options(int argc, char* argv[]) {
   int c;
   char* endptr;
   long l;
+  double d;
 
   while (1) {
 #ifdef HAVE_GETOPT_H
@@ -213,6 +217,15 @@ process_options(int argc, char* argv[]) {
 
     case 'c':
       check_results = 1;
+      if (optarg) {
+	d = strtod(optarg, &endptr);
+	if (*endptr || errno == ERANGE || d < 0.0)
+	  fatal("only a non-negative floating point number can `-c'");
+	else
+	  check_threshold = d;
+      }
+      else
+	check_threshold = default_check_threshold;
       break;
 
     case 'm':
@@ -225,7 +238,7 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stderr, usage_string, argv[0]);
+      fprintf(stderr, usage_string, argv[0], default_check_threshold);
       my_exit(0);
       break;
 
@@ -424,9 +437,6 @@ static LPX* lp;
 static void
 maybe_check_results(const int lp_status, const double lp_optimum_value) {
   const char* lpx_status_string;
-
-  // FIXME: this must be set by a program option (with default).
-  const double check_threshold = 0.000000001;
 
   if (!check_results)
     return;
