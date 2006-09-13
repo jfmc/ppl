@@ -437,7 +437,7 @@ maybe_check_results(const int lp_status, const double lp_optimum_value) {
 
   // If the problem has integer or binary columns, we can't check
   // the correctness of the solution found.
-  if (lpx_get_num_int(lp) + lpx_get_num_bin(lp) > 0) {
+  if (lpx_get_class(lp) != LPX_LP) {
     warning("check skipped for ILP problem");
     return;
   }
@@ -471,7 +471,6 @@ maybe_check_results(const int lp_status, const double lp_optimum_value) {
   else if (lp_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
 	   && lpx_status == LPX_OPT) {
     double lpx_optimum_value = lpx_get_obj_val(lp);
-    fprintf(output_file, "I AM HERE!!!\n");
     if (abs(lp_optimum_value - lpx_optimum_value) > check_threshold) {
       error("check failed: for GLPK the problem's optimum is %.10g",
 	    lpx_optimum_value);
@@ -971,8 +970,8 @@ solve(char* file_name) {
     {
       ppl_Polyhedron_t ph;
       unsigned int relation;
-      ppl_new_C_Polyhedron_from_Constraint_System(&ph, cs);
-      relation = ppl_Polyhedron_relation_with_Generator(ph, g);
+      ppl_new_C_Polyhedron_from_Constraint_System(&ph, ppl_cs);
+      relation = ppl_Polyhedron_relation_with_Generator(ph, optimum_location);
       ppl_delete_Polyhedron(ph);
       assert(relation == PPL_POLY_GEN_RELATION_SUBSUMES);
     }
