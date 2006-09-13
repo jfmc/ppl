@@ -717,12 +717,9 @@ PPL::Grid::OK(bool check_not_empty) const {
       }
 
       // Check if the system of generators is well-formed.
-      if (!gen_sys.OK()) {
-#ifndef NDEBUG
-	cerr << "gen_sys OK failed." << endl;
-#endif
+      if (!gen_sys.OK())
 	goto fail;
-      }
+
       // Check each generator in the system.
       for (dimension_type i = gen_sys.num_generators(); i-- > 0; ) {
 	const Grid_Generator& g = gen_sys[i];
@@ -813,12 +810,8 @@ PPL::Grid::OK(bool check_not_empty) const {
 
   if (congruences_are_up_to_date()) {
     // Check if the system of congruences is well-formed.
-    if (!con_sys.OK()) {
-#ifndef NDEBUG
-      cerr << "con_sys OK failed." << endl;
-#endif
+    if (!con_sys.OK())
       goto fail;
-    }
 
     Grid tem_gr = *this;
     Congruence_System cs_copy = tem_gr.con_sys;
