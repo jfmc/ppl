@@ -33,6 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <math.h>
 
 #ifdef HAVE_GETOPT_H
 # include <getopt.h>
@@ -465,7 +466,7 @@ maybe_check_results(const int lp_status, const double lp_optimum_value) {
   else if (lp_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
 	   && lpx_status == LPX_OPT) {
     double lpx_optimum_value = lpx_get_obj_val(lp);
-    if (abs(lp_optimum_value - lpx_optimum_value) > check_threshold) {
+    if (fabs(lp_optimum_value - lpx_optimum_value) > check_threshold) {
       error("check failed: for GLPK the problem's optimum is %.10g",
 	    lpx_optimum_value);
       check_results_failed = 1;
