@@ -432,13 +432,9 @@ maybe_check_results(const int lp_status, const double lp_optimum_value) {
 
   // Disable GLPK output.
   lpx_set_int_parm(lp, LPX_K_MSGLEV, 0);
-
-  // If the problem has integer or binary columns, we can't check
-  // the correctness of the solution found.
-  if (lpx_get_class(lp) != LPX_LP) {
-    warning("check skipped for ILP problem");
-    return;
-  }
+  // Set the problem class to LP. This forces MIP problems to be treated as
+  // LP ones.
+  lpx_set_class(lp, LPX_LP);
   const int lpx_mode = maximize ? LPX_MAX : LPX_MIN;
   lpx_set_obj_dir(lp, lpx_mode);
   lpx_simplex(lp);
