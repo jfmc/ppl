@@ -425,9 +425,9 @@ maybe_check_results(const int lp_status, const double lp_optimum_value) {
   const char* lpx_status_string;
 
   // FIXME: this must be set by a program option (with default).
-  //const double check_threshold = 0.0000001;
-  //const double check_threshold = 0.0000000000000000000001;
-  const double check_threshold = 0.0;
+  const double check_threshold = 0.0000001;
+  //const double check_threshold =   0.1;
+  //const double check_threshold = 0.0;
 
   if (!check_results)
     return;
@@ -955,7 +955,6 @@ solve(char* file_name) {
     mpz_mul(tmp_z, tmp_z, den_lcm);
     mpq_set_den(optimum, tmp_z);
     fprintf(output_file, "Optimum value: %.10g\n", mpq_get_d(optimum));
-    mpq_clear(optimum);
     fprintf(output_file, "Optimum location:\n");
     ppl_Generator_divisor(optimum_location, ppl_coeff);
     ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
@@ -979,6 +978,7 @@ solve(char* file_name) {
     maybe_check_results(PPL_LP_PROBLEM_STATUS_OPTIMIZED,
 			mpq_get_d(optimum));
   }
+  mpq_clear(optimum);
   ppl_delete_Constraint_System(ppl_cs);
   ppl_delete_Coefficient(optimum_d);
   ppl_delete_Coefficient(optimum_n);
@@ -1001,6 +1001,13 @@ set_GMP_memory_allocation_functions(void) {
 }
 #endif
 
+#ifdef NDEBUG
+static int
+glpk_message_interceptor(void* info, char *msg) {
+  return 1;
+}
+#endif
+
 int
 main(int argc, char* argv[]) {
   program_name = argv[0];
@@ -1016,6 +1023,10 @@ main(int argc, char* argv[]) {
 
   if (ppl_io_set_variable_output_function(variable_output_function) < 0)
     fatal("cannot install the custom variable output function");
+
+#ifdef NDEBUG
+  lib_set_print_hook(0, glpk_message_interceptor);
+#endif
 
   /* Process command line options. */
   process_options(argc, argv);
