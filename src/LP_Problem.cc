@@ -1495,7 +1495,8 @@ PPL::LP_Problem::ascii_load(std::istream& s) {
 
   // The first `mapping' index is never used, so we initialize
   // it pushing back a dummy value.
-  mapping.push_back(std::make_pair(0,0));
+  if (tableau.num_columns() != 0)
+    mapping.push_back(std::make_pair(0,0));
 
   for (dimension_type i = 1; i < mapping_size; ++i) {
     if (!(s >> index))
