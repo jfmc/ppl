@@ -1173,6 +1173,23 @@ PPL::LP_Problem::OK() const {
   using std::endl;
   using std::cerr;
 #endif
+
+  // Check that every member used is OK.
+  if (!tableau.OK())
+    return false;
+
+  if (!input_cs.OK())
+    return false;
+
+  if (!pending_input_cs.OK())
+    return false;
+
+  if (!input_obj_function.OK())
+    return false;
+
+  if (!last_generator.OK())
+    return false;
+
   const dimension_type input_sd = input_cs.space_dimension();
   const dimension_type pending_input_sd = pending_input_cs.space_dimension();
   // Constraint system should contain no strict inequalities.
@@ -1392,17 +1409,25 @@ PPL::LP_Problem::ascii_load(std::istream& s) {
   if(!(s >> str))
     return false;
 
-  if (str == "UNSAT")
+  if (str == "UNSAT") {
     status = UNSATISFIABLE;
+    goto status_loaded;
+  }
 
-  if (str == "SATIS")
+  if (str == "SATIS") {
     status = SATISFIABLE;
+    goto status_loaded;
+  }
 
-  if (str == "UNBOU")
+  if (str == "UNBOU") {
     status = UNBOUNDED;
+    goto status_loaded;
+  }
 
-  if (str == "OPTIM")
+  if (str == "OPTIM") {
     status = OPTIMIZED;
+    goto status_loaded;
+  }
 
   else {
     if (str != "P_SAT")
@@ -1410,6 +1435,7 @@ PPL::LP_Problem::ascii_load(std::istream& s) {
     status = PARTIALLY_SATISFIABLE;
   }
 
+ status_loaded:
   if(!(s >> str) || str!= "tableau")
     return false;
 
