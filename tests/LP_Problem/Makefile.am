@@ -41,19 +41,23 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 TESTS = \
+ascii_dump_load1 \
 exceptions1 \
 lpproblem1 \
-ascii_dump_load1
+lpproblem2
 
 #
 # Sources for the tests
 #
 
+ascii_dump_load1_SOURCES = ascii_dump_load1.cc
+
 exceptions1_SOURCES = exceptions1.cc
 
 lpproblem1_SOURCES = lpproblem1.cc
 
-ascii_dump_load1_SOURCES = ascii_dump_load1.cc
+lpproblem2_SOURCES = lpproblem2.cc
+
 
 XFAIL_ALWAYS =
 
