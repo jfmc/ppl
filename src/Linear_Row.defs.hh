@@ -375,6 +375,12 @@ public:
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
+  /*! \brief
+    Checks if all the invariants are satisfied and that the actual
+    size and capacity match the values provided as arguments.
+  */
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
 
 private:

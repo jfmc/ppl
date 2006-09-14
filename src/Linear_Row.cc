@@ -217,6 +217,11 @@ PPL::Linear_Row::ascii_load(std::istream& s) {
 }
 
 bool
+PPL::Linear_Row::OK() const {
+  return Row::OK();
+}
+
+bool
 PPL::Linear_Row::OK(const dimension_type row_size,
 		    const dimension_type row_capacity) const {
   return Row::OK(row_size, row_capacity);

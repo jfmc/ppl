@@ -246,8 +246,7 @@ PPL::operator*=(Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 bool
 PPL::Linear_Expression::OK() const {
-  dimension_type sz = size();
-  return Linear_Row::OK(sz, sz);
+  return Linear_Row::OK();
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */

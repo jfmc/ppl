@@ -207,12 +207,7 @@ PPL::Row_Impl_Handler::Impl::external_memory_in_bytes() const {
 }
 
 bool
-PPL::Row::OK(const dimension_type row_size,
-	     const dimension_type
-#if EXTRA_ROW_DEBUG
-	     row_capacity
-#endif
-	     ) const {
+PPL::Row::OK() const {
 #ifndef NDEBUG
   using std::endl;
   using std::cerr;
@@ -226,11 +221,8 @@ PPL::Row::OK(const dimension_type row_size,
 	 << endl;
     is_broken = true;
   }
-  else if (capacity_ == 1 && row_capacity == 0)
-    // This is fine.
-    ;
   else
-# endif
+# endif // !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity_ > max_size()) {
     cerr << "Row capacity exceeds the maximum allowed size:"
 	 << endl
@@ -239,27 +231,13 @@ PPL::Row::OK(const dimension_type row_size,
 	 << endl;
     is_broken = true;
   }
-  if (capacity_ != row_capacity) {
-    cerr << "Row capacity mismatch: is " << capacity_
-	 << ", should be " << row_capacity << "."
-	 << endl;
-    is_broken = true;
-  }
-#endif
+#endif // EXTRA_ROW_DEBUG
   if (size() > max_size()) {
 #ifndef NDEBUG
     cerr << "Row size exceeds the maximum allowed size:"
 	 << endl
 	 << "is " << size()
 	 << ", should be less than or equal to " << max_size() << "."
-	 << endl;
-#endif
-    is_broken = true;
-  }
-  if (size() != row_size) {
-#ifndef NDEBUG
-    cerr << "Row size mismatch: is " << size()
-	 << ", should be " << row_size << "."
 	 << endl;
 #endif
     is_broken = true;
@@ -273,7 +251,49 @@ PPL::Row::OK(const dimension_type row_size,
 #endif
     is_broken = true;
   }
+#endif // EXTRA_ROW_DEBUG
+  return !is_broken;
+}
+
+bool
+PPL::Row::OK(const dimension_type row_size,
+	     const dimension_type
+#if EXTRA_ROW_DEBUG
+	     row_capacity
 #endif
+	     ) const {
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+
+  bool is_broken = !OK();
+
+#if EXTRA_ROW_DEBUG
+  // Check the declared capacity.
+# if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  if (capacity_ == 1 && row_capacity == 0)
+    // This is fine.
+    ;
+  else
+# endif // !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  if (capacity_ != row_capacity) {
+    cerr << "Row capacity mismatch: is " << capacity_
+	 << ", should be " << row_capacity << "."
+	 << endl;
+    is_broken = true;
+  }
+#endif // EXTRA_ROW_DEBUG
+
+  // Check the declared size.
+  if (size() != row_size) {
+#ifndef NDEBUG
+    cerr << "Row size mismatch: is " << size()
+	 << ", should be " << row_size << "."
+	 << endl;
+#endif
+    is_broken = true;
+  }
   return !is_broken;
 }
 
