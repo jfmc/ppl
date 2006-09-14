@@ -37,12 +37,15 @@ test01() {
   const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
   Variable B(1);
+
   Constraint_System cs;
   cs.insert(A - B >= 2);
   cs.insert(B >= 0);
+
   Linear_Expression cost(A + 2*B);
   LP_Problem lp1(cs, cost, MAXIMIZATION);
   lp1.solve();
+
   fstream f;
   open(f, my_file, ios_base::out);
   lp1.ascii_dump(f);
@@ -51,6 +54,7 @@ test01() {
   open(f, my_file, ios_base::in);
   LP_Problem lp2;
   bool ok = lp2.ascii_load(f);
+  close(f);
   return ok;
 }
 
@@ -59,10 +63,13 @@ test02() {
   const char* my_file = "ascii_dump_load1.dat";
   Variable A(0);
   Variable B(1);
+
   Constraint_System cs;
   cs.insert(10*A - B >= 11);
   cs.insert(B >= 0);
+
   Linear_Expression cost(17*A + 2*B);
+
   LP_Problem lp1(cs, cost, MINIMIZATION);
   fstream f;
   open(f, my_file, ios_base::out);
@@ -74,8 +81,9 @@ test02() {
   open(f, my_file, ios_base::in);
   LP_Problem lp2;
   bool ok = !lp2.ascii_load(f);
+  close(f);
   return ok;
- }
+}
 
 bool
 test03() {
@@ -121,13 +129,17 @@ test04() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
+
   Constraint_System cs;
   cs.insert(A >= 10);
   cs.insert(A <= 5);
   cs.insert(C <= 11);
+
   Linear_Expression cost(A + 2*B + 3*C);
+
   LP_Problem lp1(cs, cost, MAXIMIZATION);
   lp1.solve();
+
   fstream f;
   open(f, my_file, ios_base::out);
   lp1.ascii_dump(f);
@@ -136,6 +148,7 @@ test04() {
   open(f, my_file, ios_base::in);
   LP_Problem lp2;
   bool ok = lp2.ascii_load(f);
+  close(f);
   return ok;
 }
 
@@ -145,13 +158,17 @@ test05() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
+
   Constraint_System cs;
   cs.insert(A >= 123);
   cs.insert(A + 2*B + 11*C <= 5434);
   cs.insert(C <= 11);
+
   Linear_Expression cost(A - 11*B);
+
   LP_Problem lp1(cs, cost, MINIMIZATION);
   lp1.solve();
+
   fstream f;
   open(f, my_file, ios_base::out);
   lp1.ascii_dump(f);
@@ -168,6 +185,188 @@ test05() {
   open(f, my_file, ios_base::in);
   LP_Problem lp2;
   bool ok = !lp2.ascii_load(f);
+  close(f);
+  return ok;
+}
+
+// Unfeasible problem, not solved.
+bool
+test06() {
+  const char* my_file = "ascii_dump_load1.dat";
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+  cs.insert(A - B >= 2);
+  cs.insert(C >= 10);
+  cs.insert(B >= 10);
+  cs.insert(B + C <= 15);
+
+  Linear_Expression cost(A + 2*B);
+  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  fstream f;
+  open(f, my_file, ios_base::out);
+  lp1.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  LP_Problem lp2;
+  bool ok = lp2.ascii_load(f) && lp1.solve() == lp2.solve();
+  close(f);
+  return ok;
+}
+
+// Unbounded problem, not solved.
+bool
+test07() {
+  const char* my_file = "ascii_dump_load1.dat";
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+
+  cs.insert(A >= 2);
+  cs.insert(C >= 10);
+  cs.insert(B + A <= 15);
+
+  Linear_Expression cost(1*C);
+
+  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  fstream f;
+  open(f, my_file, ios_base::out);
+  lp1.ascii_dump(f);
+  close(f);
+
+  LP_Problem lp2;
+  open(f, my_file, ios_base::in);
+  bool ok = lp2.ascii_load(f) && lp1.solve() == lp2.solve();
+  close(f);
+  return ok;
+}
+
+
+// Problem with optimum, not solved.
+bool
+test08() {
+  const char* my_file = "ascii_dump_load1.dat";
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+  cs.insert(A + B >= 2);
+  cs.insert(C >= 10);
+  cs.insert(B + C <= 15);
+  cs.insert(A <= 30);
+  cs.insert(B <= 50);
+
+  Linear_Expression cost(1*C + 2*B);
+
+  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  fstream f;
+  open(f, my_file, ios_base::out);
+  lp1.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  LP_Problem lp2;
+  bool ok = lp2.ascii_load(f) &&
+    lp1.optimizing_point() == lp2.optimizing_point();
+  close(f);
+  return ok;
+}
+
+// Unfeasible problem, solved.
+bool
+test09() {
+  const char* my_file = "ascii_dump_load1.dat";
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+  cs.insert(A - B >= 2);
+  cs.insert(C >= 10);
+  cs.insert(B >= 10);
+  cs.insert(B + C <= 15);
+
+  Linear_Expression cost(A + 2*B);
+  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  lp1.solve();
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  lp1.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  LP_Problem lp2;
+  bool ok = lp2.ascii_load(f) && lp1.solve() == lp2.solve();
+  close(f);
+  return ok;
+}
+
+// Unbounded problem, solved.
+bool
+test10() {
+  const char* my_file = "ascii_dump_load1.dat";
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+
+  cs.insert(A >= 2);
+  cs.insert(C >= 10);
+  cs.insert(B + A <= 15);
+
+  Linear_Expression cost(1*C);
+  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  lp1.solve();
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  lp1.ascii_dump(f);
+  close(f);
+
+  LP_Problem lp2;
+  open(f, my_file, ios_base::in);
+  bool ok = lp2.ascii_load(f) && lp1.solve() == lp2.solve();
+  close(f);
+  return ok;
+}
+
+
+// Problem with optimum, solved.
+bool
+test11() {
+  const char* my_file = "ascii_dump_load1.dat";
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+  cs.insert(A + B >= 2);
+  cs.insert(C >= 10);
+  cs.insert(B + C <= 15);
+  cs.insert(A <= 30);
+  cs.insert(B <= 50);
+
+  Linear_Expression cost(1*C);
+  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  lp1.solve();
+  fstream f;
+  open(f, my_file, ios_base::out);
+  lp1.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  LP_Problem lp2;
+  bool ok = lp2.ascii_load(f) &&
+    lp1.optimizing_point() == lp2.optimizing_point();
+  close(f);
   return ok;
 }
 
@@ -179,4 +378,10 @@ BEGIN_MAIN
   DO_TEST_F8(test03);
   DO_TEST(test04);
   DO_TEST_F16(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN
