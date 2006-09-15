@@ -350,9 +350,13 @@ PPL::IO_Operators::operator<<(std::ostream& s,
 
 bool
 PPL::Grid_Generator::OK() const {
+  // A Grid_Generator must be a valid Generator.
+  if (!Generator::OK())
+    return false;
+
   if (!is_necessarily_closed()) {
 #ifndef NDEBUG
-    std::cerr << "Grid_Generator Generator should be necessarily closed."
+    std::cerr << "Grid_Generator should be necessarily closed."
 	      << std::endl;
 #endif
     return false;

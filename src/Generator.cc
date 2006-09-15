@@ -291,7 +291,9 @@ PPL_OUTPUT_DEFINITIONS(Generator)
 
 bool
 PPL::Generator::OK() const {
-  const Generator& g = *this;
+  // Check the underlying Linear_Row object.
+  if (!Linear_Row::OK())
+    return false;
 
   // Topology consistency check.
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
@@ -308,6 +310,7 @@ PPL::Generator::OK() const {
   }
 
   // Normalization check.
+  const Generator& g = *this;
   Generator tmp = g;
   tmp.strong_normalize();
   if (tmp != g) {

@@ -248,6 +248,10 @@ PPL_OUTPUT_DEFINITIONS(Constraint)
 
 bool
 PPL::Constraint::OK() const {
+  // Check the underlying Linear_Row object.
+  if (!Linear_Row::OK())
+    return false;
+
   // Topology consistency checks.
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
   if (size() < min_size) {

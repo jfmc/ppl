@@ -249,6 +249,10 @@ PPL::Congruence::ascii_load(std::istream& s) {
 
 bool
 PPL::Congruence::OK() const {
+  // A Congruence must be a valid Row.
+  if (!Row::OK())
+    return false;
+
   // Modulus check.
   if (modulus() < 0) {
 #ifndef NDEBUG
