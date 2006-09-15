@@ -213,12 +213,13 @@ private:
     tmp_rational.canonicalize();
     assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
     assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
-    LP_Problem lp_aux1 = lp;
-    lp_aux1.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
-    solve(lp_aux1);
-    LP_Problem lp_aux2 = lp;
-    lp_aux2.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
-    solve(lp_aux2);
+    LP_Problem lp_aux = lp;
+    lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+    solve(lp_aux);
+    // TODO: change this when we be able to remove constraints.
+    lp_aux = lp;
+    lp_aux.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
+    solve(lp_aux);
     return lp_status;
   }
 
