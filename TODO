@@ -2,6 +2,8 @@
 Enhancements for PPL 0.10
 =========================
 
+- Make sure users know that GCC 3.4.x are known to miscompile at least
+  one of the development snapshots that led to PPL 0.10.
 - Ensure the tests in tests/Polyhedron/lpproblem* cover every line of
   code in LP_Problem.*.
 - `make check' in ppl_lpsol must run also the incremental version
