@@ -452,13 +452,6 @@ private:
   bool compute_simplex();
 
   /*! \brief
-    Adds artificial variables to satisfy the standard form of a LP problem,
-    inserts the "sign" to the cost functions, and makes the necessary pivoting
-    operations to express the problem with the 1st phase base.
-  */
-  void prepare_first_phase(std::vector<dimension_type> worked_out_rows);
-
-  /*! \brief
     Drop unnecessary artificial variables from the tableau and get ready
     for the second phase of the simplex algorithm.
   */

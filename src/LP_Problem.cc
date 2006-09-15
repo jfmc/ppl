@@ -474,7 +474,7 @@ PPL::LP_Problem::process_pending_constraints() {
 
   // Express the problem in terms of the variables in base.
   for (dimension_type i = tableau_num_rows; i-- > 0; )
-    if(working_cost[base[i]] != 0)
+    if (working_cost[base[i]] != 0)
       linear_combine(working_cost, tableau[i], base[i]);
 
   // Deal with trivial cases.
@@ -1367,32 +1367,33 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
 }
 
 PPL_OUTPUT_DEFINITIONS(LP_Problem)
+
 bool
 PPL::LP_Problem::ascii_load(std::istream& s) {
   std::string str;
 
-  if(!(s >> str) || str!= "input_cs")
+  if (!(s >> str) || str!= "input_cs")
     return false;
 
-  if(!input_cs.ascii_load(s))
+  if (!input_cs.ascii_load(s))
     return false;
 
-  if(!(s >> str) || str!= "pending_input_cs")
+  if (!(s >> str) || str!= "pending_input_cs")
     return false;
 
-  if(!pending_input_cs.ascii_load(s))
+  if (!pending_input_cs.ascii_load(s))
     return false;
 
-  if(!(s >> str) || str!= "input_obj_function")
+  if (!(s >> str) || str!= "input_obj_function")
     return false;
 
-  if(!input_obj_function.ascii_load(s))
+  if (!input_obj_function.ascii_load(s))
     return false;
 
-  if(!(s >> str) || str!= "opt_mode")
+  if (!(s >> str) || str!= "opt_mode")
     return false;
 
-  if(!(s >> str))
+  if (!(s >> str))
     return false;
 
   if (str == "MAX")
@@ -1403,67 +1404,53 @@ PPL::LP_Problem::ascii_load(std::istream& s) {
     set_optimization_mode(MINIMIZATION);
   }
 
-  if(!(s >> str) || str!= "status:")
+  if (!(s >> str) || str!= "status:")
     return false;
 
-  if(!(s >> str))
+  if (!(s >> str))
     return false;
 
-  if (str == "UNSAT") {
+  if (str == "UNSAT")
     status = UNSATISFIABLE;
-    goto status_loaded;
-  }
-
-  if (str == "SATIS") {
+  else if (str == "SATIS")
     status = SATISFIABLE;
-    goto status_loaded;
-  }
-
-  if (str == "UNBOU") {
+  else if (str == "UNBOU")
     status = UNBOUNDED;
-    goto status_loaded;
-  }
-
-  if (str == "OPTIM") {
+  else if (str == "OPTIM")
     status = OPTIMIZED;
-    goto status_loaded;
-  }
-
-  else {
-    if (str != "P_SAT")
-      return false;
+  else if (str == "P_SAT")
     status = PARTIALLY_SATISFIABLE;
-  }
-
- status_loaded:
-  if(!(s >> str) || str!= "tableau")
+  else
     return false;
 
-  if(!tableau.ascii_load(s))
+  if (!(s >> str) || str!= "tableau")
     return false;
 
-  if(!(s >> str) || str!= "working_cost(")
+  if (!tableau.ascii_load(s))
+    return false;
+
+  if (!(s >> str) || str!= "working_cost(")
     return false;
 
   dimension_type working_cost_dim;
 
-  if(!(s >> working_cost_dim))
+  if (!(s >> working_cost_dim))
     return false;
 
-  if(!(s >> str) || str!= ")")
+  if (!(s >> str) || str!= ")")
     return false;
 
-  if(!working_cost.ascii_load(s))
+  if (!working_cost.ascii_load(s))
     return false;
 
-  if(!(s >> str) || str!= "base(")
+  if (!(s >> str) || str!= "base(")
     return false;
 
   dimension_type base_size;
-  if(!(s >> base_size))
+  if (!(s >> base_size))
     return false;
 
-  if(!(s >> str) || str!= ")")
+  if (!(s >> str) || str!= ")")
     return false;
 
   dimension_type base_value;
@@ -1473,20 +1460,20 @@ PPL::LP_Problem::ascii_load(std::istream& s) {
     base.push_back(base_value);
   }
 
-  if(!(s >> str) || str!= "last_generator")
+  if (!(s >> str) || str!= "last_generator")
     return false;
 
-  if(!last_generator.ascii_load(s))
+  if (!last_generator.ascii_load(s))
     return false;
 
-  if(!(s >> str) || str!= "mapping(")
+  if (!(s >> str) || str!= "mapping(")
     return false;
 
   dimension_type mapping_size;
-  if(!(s >> mapping_size))
+  if (!(s >> mapping_size))
     return false;
 
-  if(!(s >> str) || str!= ")")
+  if (!(s >> str) || str!= ")")
     return false;
 
   dimension_type first_value;
@@ -1501,11 +1488,11 @@ PPL::LP_Problem::ascii_load(std::istream& s) {
   for (dimension_type i = 1; i < mapping_size; ++i) {
     if (!(s >> index))
       return false;
-    if(!(s >> str) || str!= "->")
+    if (!(s >> str) || str!= "->")
       return false;
     if (!(s >> first_value))
       return false;
-    if(!(s >> str) || str!= "->")
+    if (!(s >> str) || str!= "->")
       return false;
     if (!(s >> second_value))
       return false;
