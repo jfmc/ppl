@@ -24,55 +24,55 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Ask_Tell_defs_hh
 
 #include "Ask_Tell.types.hh"
-#include "Constraint_System.types.hh"
-#include "Constraint.types.hh"
-#include "Variable.defs.hh"
-//#include "globals.defs.hh"
+// #include "Constraint_System.types.hh"
+// #include "Constraint.types.hh"
+// #include "Variable.defs.hh"
+// #include "globals.defs.hh"
 #include <iosfwd>
 #include <list>
 
 namespace Parma_Polyhedra_Library {
 
-template <typename CS>
-Ask_Tell<CS>
-operator+(const Ask_Tell<CS>&, const Ask_Tell<CS>&);
+template <typename D>
+Ask_Tell<D>
+operator+(const Ask_Tell<D>&, const Ask_Tell<D>&);
 
-template <typename CS>
-Ask_Tell<CS>
-operator*(const Ask_Tell<CS>&, const Ask_Tell<CS>&);
+template <typename D>
+Ask_Tell<D>
+operator*(const Ask_Tell<D>&, const Ask_Tell<D>&);
 
-template <typename CS>
-CS
-project(const Ask_Tell<CS>&);
+template <typename D>
+D
+project(const Ask_Tell<D>&);
 
 namespace IO_Operators {
 
-template <typename CS>
+template <typename D>
 std::ostream&
-operator<<(std::ostream&, const Ask_Tell<CS>&);
+operator<<(std::ostream&, const Ask_Tell<D>&);
 
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
 //! A pair of (ask and tell) constraints.
-template <typename CS>
+template <typename D>
 class Parma_Polyhedra_Library::Ask_Tell_Pair {
 public:
   //! Pair constructor.
-  Ask_Tell_Pair(const CS& ask, const CS& tell);
+  Ask_Tell_Pair(const D& ask, const D& tell);
 
   //! Const accessor to the <EM>ask</EM> component.
-  const CS& ask() const;
+  const D& ask() const;
 
   //! Non-const accessor to the <EM>ask</EM> component.
-  CS& ask();
+  D& ask();
 
   //! Const accessor to the <EM>ask</EM> component.
-  const CS& tell() const;
+  const D& tell() const;
 
   //! Non-const accessor to the <EM>tell</EM> component.
-  CS& tell();
+  D& tell();
 
   /*! \brief
     Returns <CODE>true</CODE> if \p *this definitely entails \p y.
@@ -84,10 +84,10 @@ public:
 
 private:
   //! The <EM>ask</EM> component.
-  CS a;
+  D a;
 
   //! The <EM>tell</EM> component.
-  CS t;
+  D t;
 };
 
 //! The ask and tell construction on constraint systems.
@@ -95,35 +95,44 @@ private:
   This class offers a generic implementation of <EM>ask-and-tell
   constraint systems</EM> as defined in \ref Bag98 "[Bag98]".
 */
-template <typename CS>
+template <typename D>
 class Parma_Polyhedra_Library::Ask_Tell {
 protected:
-  void pair_insert(const CS& a, const CS& t);
-  void pair_insert_good(const CS& a, const CS& t);
+  void pair_insert(const D& a, const D& t);
+  void pair_insert_good(const D& a, const D& t);
 
   bool reduce();
   bool deduce();
   bool absorb();
   void engine();
 
-  bool probe(const CS& tellv, const CS& askv) const;
+  bool probe(const D& tellv, const D& askv) const;
 
 public:
-  //! Builds a universe (top) or empty (bottom) ask-and-tell agent.
-  /*!
-    \param num_dimensions
-    The number of dimensions of the vector space enclosing the
-    ask-and-tell agent;
+  //! \name Constructors and Destructor
+  //@{
 
-    \param universe
-    If <CODE>true</CODE>, a universe ask-and-tell agent is built; an
-    empty agent is built otherwise.
+  /*! \brief
+    Default constructor: builds the top of the ask-and-tell constraint
+    system (i.e., the empty system).
   */
-  explicit Ask_Tell(dimension_type num_dimensions = 0,
-		   bool universe = true);
+  Ask_Tell();
 
-  //! Ordinary copy-constructor.
+  //! Copy constructor.
   Ask_Tell(const Ask_Tell& y);
+
+  /*! \brief
+    If \p p is not top, builds an ask-and-tell system containing only \p p.
+    Builds the empty system otherwise.
+  */
+  explicit Ask_Tell(const Ask_Tell_Pair<D>& p);
+
+  /*! \brief
+    If \p ask and \p tell do not constitute a top pair, builds an
+    ask-and-tell system containing only that pair.
+    Builds the empty system otherwise.
+  */
+  Ask_Tell(const D& ask, const D& tell);
 
   /*! \brief
     The assignment operator.
@@ -141,7 +150,7 @@ public:
   Ask_Tell(const Constraint_System& cs);
 
   //! Adds to \p *this the pair constituted by \p ask and \p tell.
-  Ask_Tell& add_pair(const CS& ask, const CS& tell);
+  Ask_Tell& add_pair(const D& ask, const D& tell);
 
   Ask_Tell& bottom();
 
@@ -181,9 +190,6 @@ public:
     represents the empty set).
   */
   bool is_bottom() const;
-
-  //! Returns the dimension of the vector space enclosing \p *this.
-  dimension_type space_dimension() const;
 
   //! Intersects \p *this with (a copy of) constraint \p c.
   /*!
@@ -243,14 +249,14 @@ public:
 
   void H79_extrapolation_assign(const Ask_Tell& y);
 
-  friend Ask_Tell operator +<>(const Ask_Tell<CS>& x,
-			      const Ask_Tell<CS>& y);
+  friend Ask_Tell operator +<>(const Ask_Tell<D>& x,
+			      const Ask_Tell<D>& y);
   friend Ask_Tell operator *<>(const Ask_Tell& x, const Ask_Tell& y);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  friend CS project<>(const Ask_Tell& x);
+  friend D project<>(const Ask_Tell& x);
 
 private:
   //! An ask-tell agent is implemented as a sequence of ask-tell pairs
@@ -258,13 +264,10 @@ private:
     The particular sequence employed must support efficient deletion
     in any position and efficient back insertion.
   */
-  typedef std::list<Ask_Tell_Pair<CS> > Sequence;
+  typedef std::list<Ask_Tell_Pair<D> > Sequence;
 
   //! The sequence container holding powerset's elements.
   Sequence sequence;
-
-  //! The number of dimensions of the enclosing vector space.
-  dimension_type space_dim;
 
 public:
   typedef typename Sequence::size_type size_type;
@@ -303,9 +306,9 @@ namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Ask_Tell */
-template <typename CS>
-void swap(Parma_Polyhedra_Library::Ask_Tell<CS>& x,
-	  Parma_Polyhedra_Library::Ask_Tell<CS>& y);
+template <typename D>
+void swap(Parma_Polyhedra_Library::Ask_Tell<D>& x,
+	  Parma_Polyhedra_Library::Ask_Tell<D>& y);
 
 } // namespace std
 

@@ -31,42 +31,42 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename CS>
-Ask_Tell_Pair<CS>::Ask_Tell_Pair(const CS& ask, const CS& tell)
+template <typename D>
+Ask_Tell_Pair<D>::Ask_Tell_Pair(const D& ask, const D& tell)
   : a(ask), t(tell) {
 }
 
-template <typename CS>
-const CS&
-Ask_Tell_Pair<CS>::ask() const {
+template <typename D>
+const D&
+Ask_Tell_Pair<D>::ask() const {
   return a;
 }
 
-template <typename CS>
-CS&
-Ask_Tell_Pair<CS>::ask() {
+template <typename D>
+D&
+Ask_Tell_Pair<D>::ask() {
   return a;
 }
 
-template <typename CS>
-const CS&
-Ask_Tell_Pair<CS>::tell() const {
+template <typename D>
+const D&
+Ask_Tell_Pair<D>::tell() const {
   return t;
 }
 
-template <typename CS>
-CS&
-Ask_Tell_Pair<CS>::tell() {
+template <typename D>
+D&
+Ask_Tell_Pair<D>::tell() {
   return t;
 }
 
-template <typename CS>
+template <typename D>
 bool
-Ask_Tell_Pair<CS>::definitely_entails(const Ask_Tell_Pair& y) const {
-  const CS& ax = ask();
-  const CS& tx = tell();
-  const CS& ay = y.ask();
-  const CS& ty = y.tell();
+Ask_Tell_Pair<D>::definitely_entails(const Ask_Tell_Pair& y) const {
+  const D& ax = ask();
+  const D& tx = tell();
+  const D& ay = y.ask();
+  const D& ty = y.tell();
    if(!ay.definitely_entails(ax))
     return false;
   else if (tx.definitely_entails(ty))
@@ -79,202 +79,188 @@ Ask_Tell_Pair<CS>::definitely_entails(const Ask_Tell_Pair& y) const {
 }
 
 
-template <typename CS>
-Ask_Tell<CS>::Ask_Tell(dimension_type num_dimensions, bool universe)
-  : space_dim(num_dimensions) {
-  if (!universe)
-    add_pair(CS(num_dimensions, true), CS(num_dimensions, false));
+template <typename D>
+Ask_Tell<D>::Ask_Tell() {
 }
 
-template <typename CS>
-Ask_Tell<CS>::Ask_Tell(const Ask_Tell<CS>& y)
-  : sequence(y.sequence), space_dim(y.space_dim) {
+template <typename D>
+Ask_Tell<D>::Ask_Tell(const Ask_Tell<D>& y)
+  : sequence(y.sequence) {
 }
 
-template <typename CS>
-Ask_Tell<CS>&
-Ask_Tell<CS>:: operator=(const Ask_Tell<CS>& y) {
+template <typename D>
+Ask_Tell<D>::Ask_Tell(const D& ask, const D& tell) {
+  if (!tell.is_top())
+    pair_insert(ask, tell);
+}
+
+template <typename D>
+Ask_Tell<D>&
+Ask_Tell<D>:: operator=(const Ask_Tell<D>& y) {
   sequence = y.sequence;
-  space_dim = y.space_dim;
   return *this;
 }
 
-template <typename CS>
+template <typename D>
 inline void
-Ask_Tell<CS>::swap(Ask_Tell& y) {
+Ask_Tell<D>::swap(Ask_Tell& y) {
   std::swap(sequence, y.sequence);
-  std::swap(space_dim, y.space_dim);
 }
 
-template <typename CS>
-Ask_Tell<CS>::Ask_Tell(const Constraint_System& cs)
-  : space_dim(cs.space_dimension()) {
-  CS tell(cs);
-  if (!tell.is_top()) {
-    CS ask(space_dim);
-    pair_insert_good(ask, tell);
-  }
-}
-
-template <typename CS>
-dimension_type
-Ask_Tell<CS>::space_dimension() const {
-  return space_dim;
-}
-
-template <typename CS>
-typename Ask_Tell<CS>::iterator
-Ask_Tell<CS>::begin() {
+template <typename D>
+typename Ask_Tell<D>::iterator
+Ask_Tell<D>::begin() {
   return sequence.begin();
 }
 
-template <typename CS>
-typename Ask_Tell<CS>::const_iterator
-Ask_Tell<CS>::begin() const {
+template <typename D>
+typename Ask_Tell<D>::const_iterator
+Ask_Tell<D>::begin() const {
   return sequence.begin();
 }
 
-template <typename CS>
-typename Ask_Tell<CS>::iterator
-Ask_Tell<CS>::end() {
+template <typename D>
+typename Ask_Tell<D>::iterator
+Ask_Tell<D>::end() {
   return sequence.end();
 }
 
-template <typename CS>
-typename Ask_Tell<CS>::const_iterator
-Ask_Tell<CS>::end() const {
+template <typename D>
+typename Ask_Tell<D>::const_iterator
+Ask_Tell<D>::end() const {
   return sequence.end();
 }
 
-template <typename CS>
-typename Ask_Tell<CS>::reverse_iterator
-Ask_Tell<CS>::rbegin() {
+template <typename D>
+typename Ask_Tell<D>::reverse_iterator
+Ask_Tell<D>::rbegin() {
   return sequence.rbegin();
 }
 
-template <typename CS>
-typename Ask_Tell<CS>::const_reverse_iterator
-Ask_Tell<CS>::rbegin() const {
+template <typename D>
+typename Ask_Tell<D>::const_reverse_iterator
+Ask_Tell<D>::rbegin() const {
   return sequence.rbegin();
 }
 
-template <typename CS>
-typename Ask_Tell<CS>::reverse_iterator
-Ask_Tell<CS>::rend() {
+template <typename D>
+typename Ask_Tell<D>::reverse_iterator
+Ask_Tell<D>::rend() {
   return sequence.rend();
 }
 
-template <typename CS>
-typename Ask_Tell<CS>::const_reverse_iterator
-Ask_Tell<CS>::rend() const {
+template <typename D>
+typename Ask_Tell<D>::const_reverse_iterator
+Ask_Tell<D>::rend() const {
   return sequence.rend();
 }
 
-template <typename CS>
-typename Ask_Tell<CS>::size_type
-Ask_Tell<CS>::size() const {
+template <typename D>
+typename Ask_Tell<D>::size_type
+Ask_Tell<D>::size() const {
   return sequence.size();
 }
 
-template <typename CS>
+template <typename D>
 void
-Ask_Tell<CS>::pair_insert_good(const CS& a, const CS& t) {
-  sequence.push_back(Ask_Tell_Pair<CS>(a, t));
+Ask_Tell<D>::pair_insert_good(const D& a, const D& t) {
+  sequence.push_back(Ask_Tell_Pair<D>(a, t));
 }
 
-template <typename CS>
+template <typename D>
 void
-Ask_Tell<CS>::pair_insert(const CS& a, const CS& t) {
-  if (!t.definitely_entails(a)) {
-    CS newt = t;
-    newt.meet_assign(a);
-    pair_insert_good(a, newt);
+Ask_Tell<D>::pair_insert(const D& ask, const D& tell) {
+  if (tell.definitely_entails(ask))
+    pair_insert_good(ask, tell);
+  else {
+    D new_tell = tell;
+    new_tell.meet_assign(ask);
+    pair_insert_good(ask, new_tell);
   }
-  else
-    pair_insert_good(a, t);
 }
 
-template <typename CS>
+#if 0
+template <typename D>
 void
-Ask_Tell<CS>::add_constraint(const Constraint& c) {
-  CS tell(space_dim);
+Ask_Tell<D>::add_constraint(const Constraint& c) {
+  D tell(space_dim);
   tell.add_constraint(c);
   if (!tell.is_top()) {
-    CS ask(space_dim);
+    D ask(space_dim);
     pair_insert_good(ask, tell);
   }
   engine();
   assert(OK());
 }
 
-template <typename CS>
+template <typename D>
 void
-Ask_Tell<CS>::add_constraints(const Constraint_System& cs) {
-  CS tell(cs);
+Ask_Tell<D>::add_constraints(const Constraint_System& cs) {
+  D tell(cs);
   if (!tell.is_top()) {
-    CS ask(space_dim);
+    D ask(space_dim);
     pair_insert_good(ask, tell);
   }
   engine();
   assert(OK());
 }
 
-template <typename CS>
+template <typename D>
 void
-Ask_Tell<CS>::add_space_dimensions_and_embed(dimension_type m) {
+Ask_Tell<D>::add_space_dimensions_and_embed(dimension_type m) {
   space_dim += m;
-  for (typename Ask_Tell<CS>::iterator i = begin(),
+  for (typename Ask_Tell<D>::iterator i = begin(),
 	 send = end(); i != send; ++i) {
-    Ask_Tell_Pair<CS>& p = *i;
+    Ask_Tell_Pair<D>& p = *i;
     p.ask().add_space_dimensions_and_embed(m);
     p.tell().add_space_dimensions_and_embed(m);
   }
   assert(OK());
 }
 
-template <typename CS>
+template <typename D>
 void
-Ask_Tell<CS>::add_space_dimensions_and_project(dimension_type m) {
+Ask_Tell<D>::add_space_dimensions_and_project(dimension_type m) {
   space_dim += m;
-  for (typename Ask_Tell<CS>::iterator i = begin(),
+  for (typename Ask_Tell<D>::iterator i = begin(),
 	 send = end(); i != send; ++i) {
-    Ask_Tell_Pair<CS>& p = *i;
+    Ask_Tell_Pair<D>& p = *i;
     p.ask().add_space_dimensions_and_project(m);
     p.tell().add_space_dimensions_and_project(m);
   }
   assert(OK());
 }
 
-template <typename CS>
+template <typename D>
 void
-Ask_Tell<CS>::remove_space_dimensions(const Variables_Set& to_be_removed) {
+Ask_Tell<D>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   space_dim -= to_be_removed.size();
-  for (typename Ask_Tell<CS>::iterator i = begin(),
+  for (typename Ask_Tell<D>::iterator i = begin(),
 	 send = end(); i != send; ++i) {
-    Ask_Tell_Pair<CS>& p = *i;
+    Ask_Tell_Pair<D>& p = *i;
     p.ask().remove_space_dimensions(to_be_removed);
     p.tell().remove_space_dimensions(to_be_removed);
   }
   assert(OK());
 }
 
-template <typename CS>
+template <typename D>
 void
-Ask_Tell<CS>::remove_higher_space_dimensions(dimension_type new_dimension) {
+Ask_Tell<D>::remove_higher_space_dimensions(dimension_type new_dimension) {
   space_dim = new_dimension;
-  for (typename Ask_Tell<CS>::iterator i = begin(),
+  for (typename Ask_Tell<D>::iterator i = begin(),
 	 send = end(); i != send; ++i) {
-    Ask_Tell_Pair<CS>& p = *i;
+    Ask_Tell_Pair<D>& p = *i;
     p.ask().remove_higher_space_dimensions(new_dimension);
     p.tell().remove_higher_space_dimensions(new_dimension);
   }
   assert(OK());
 }
 
-template <typename CS>
+template <typename D>
 template <typename Partial_Function>
 void
-Ask_Tell<CS>::map_space_dimensions(const Partial_Function& pfunc) {
+Ask_Tell<D>::map_space_dimensions(const Partial_Function& pfunc) {
   if (is_top()) {
     dimension_type n = 0;
     for (dimension_type i = space_dim; i-- > 0; ) {
@@ -287,7 +273,7 @@ Ask_Tell<CS>::map_space_dimensions(const Partial_Function& pfunc) {
   else {
     iterator sbegin = begin();
     for (iterator i = sbegin, send = end(); i != send; ++i) {
-      Ask_Tell_Pair<CS>& p = *i;
+      Ask_Tell_Pair<D>& p = *i;
       p.ask().map_space_dimensions(pfunc);
       p.tell().map_space_dimensions(pfunc);
     }
@@ -295,6 +281,7 @@ Ask_Tell<CS>::map_space_dimensions(const Partial_Function& pfunc) {
   }
   assert(OK());
 }
+#endif
 
 // Reduction
 //
@@ -307,9 +294,9 @@ Ask_Tell<CS>::map_space_dimensions(const Partial_Function& pfunc) {
 //     the map is well formed and there are no two pairs x and y such that
 //     x.ASK.definitely_entails(y.ASK) && y.TELL.definitely_entails(x.TELL).
 
-template <typename CS>
+template <typename D>
 bool
-Ask_Tell<CS>::reduce() {
+Ask_Tell<D>::reduce() {
   bool changed = false;
   for (iterator sbegin = begin(),
 	 send = end(), xi = sbegin; xi != send; ++xi)
@@ -341,13 +328,13 @@ Ask_Tell<CS>::reduce() {
 //     and...
 //
 
-template <typename CS>
+template <typename D>
 bool
-Ask_Tell<CS>::deduce() {
+Ask_Tell<D>::deduce() {
   bool changed = false;
   for (iterator sbegin = begin(),
 	 send = end(), xi = sbegin; xi != send; ++xi) {
-    CS& xi_tell = xi->tell();
+    D& xi_tell = xi->tell();
     bool tell_changed;
     do {
       tell_changed = false;
@@ -369,16 +356,16 @@ Ask_Tell<CS>::deduce() {
 
 // Absorption
 
-template <typename CS>
+template <typename D>
 bool
-Ask_Tell<CS>::absorb() {
+Ask_Tell<D>::absorb() {
   bool changed = false;
   for (iterator sbegin = begin(),
 	 send = end(), xi = sbegin, xin; xi != send; xi = xin) {
     xin = xi;
     ++xin;
-    CS& xi_ask = xi->ask();
-    CS& xi_tell = xi->tell();
+    D& xi_ask = xi->ask();
+    D& xi_tell = xi->tell();
     // We are may strengthen the ask component of the pair referenced by xi.
     // If we do it the pair may become useless (i.e., with the ask component
     // entailing the tell component) and thus be discarded.
@@ -388,8 +375,8 @@ Ask_Tell<CS>::absorb() {
       ask_changed = false;
       for (iterator yi = sbegin; yi != send; ++yi) {
 	if (xi != yi) {
-	  CS& yi_ask = yi->ask();
-	  CS& yi_tell = yi->tell();
+	  D& yi_ask = yi->ask();
+	  D& yi_tell = yi->tell();
 	  if (xi_ask.definitely_entails(yi_ask)
 	      && !xi_ask.definitely_entails(yi_tell)) {
 	    xi_ask.meet_assign(yi_tell);
@@ -413,8 +400,8 @@ Ask_Tell<CS>::absorb() {
 
 // Engine
 
-template <typename CS>
-void Ask_Tell<CS>::engine() {
+template <typename D>
+void Ask_Tell<D>::engine() {
   reduce();
   deduce();
   absorb();
@@ -422,10 +409,10 @@ void Ask_Tell<CS>::engine() {
 
 // Bottom
 
-template <typename CS>
-Ask_Tell<CS>&
-Ask_Tell<CS>::bottom() {
-  CS top, bottom;
+template <typename D>
+Ask_Tell<D>&
+Ask_Tell<D>::bottom() {
+  D top, bottom;
   erase(begin(), end());
   bottom.bottom();
   pair_insert_good(top, bottom);
@@ -434,10 +421,10 @@ Ask_Tell<CS>::bottom() {
 
 // Entailment
 
-template <typename CS>
+template <typename D>
 bool
-Ask_Tell<CS>::definitely_entails(const Ask_Tell<CS>& y) const {
-  const Ask_Tell<CS>& x = *this;
+Ask_Tell<D>::definitely_entails(const Ask_Tell<D>& y) const {
+  const Ask_Tell<D>& x = *this;
   if (x.size() == 1 && y.size() == 1)
     return (*x.begin()).definitely_entails(*y.begin());
   else {
@@ -459,9 +446,9 @@ Ask_Tell<CS>::definitely_entails(const Ask_Tell<CS>& y) const {
   }
 }
 
-template <typename CS>
-Ask_Tell<CS>&
-Ask_Tell<CS>::add_pair(const CS& ask, const CS& tell) {
+template <typename D>
+Ask_Tell<D>&
+Ask_Tell<D>::add_pair(const D& ask, const D& tell) {
   if (!ask.definitely_entails(tell)) {
     pair_insert(ask, tell);
     engine();
@@ -471,30 +458,30 @@ Ask_Tell<CS>::add_pair(const CS& ask, const CS& tell) {
 }
 
 /*! \relates Ask_Tell */
-template <typename CS>
+template <typename D>
 inline
-bool operator==(const Ask_Tell<CS>& x, const Ask_Tell<CS>& y) {
+bool operator==(const Ask_Tell<D>& x, const Ask_Tell<D>& y) {
   return x.size() == y.size() && equal(x.begin(), x.end(), y.begin());
 }
 
 /*! \relates Ask_Tell */
-template <typename CS>
+template <typename D>
 inline
-bool operator!=(const Ask_Tell<CS>& x, const Ask_Tell<CS>& y) {
+bool operator!=(const Ask_Tell<D>& x, const Ask_Tell<D>& y) {
   return !(x == y);
 }
 
 // Simple tests
 
-template <typename CS>
+template <typename D>
 bool
-Ask_Tell<CS>::is_top() const {
+Ask_Tell<D>::is_top() const {
   return sequence.empty();
 }
 
-template <typename CS>
+template <typename D>
 bool
-Ask_Tell<CS>::is_bottom() const {
+Ask_Tell<D>::is_bottom() const {
   if (size() == 1)
     return begin()->ask().is_top() && begin()->tell().is_bottom();
   else
@@ -503,10 +490,10 @@ Ask_Tell<CS>::is_bottom() const {
 
 // Projection
 
-template <typename CS>
-CS
-project(const Ask_Tell<CS>& x) {
-  CS ret;
+template <typename D>
+D
+project(const Ask_Tell<D>& x) {
+  D ret;
   if (!x.empty() && (x.begin())->ask().is_top())
     ret = (x.begin())->tell();
   return ret;
@@ -514,54 +501,56 @@ project(const Ask_Tell<CS>& x) {
 
 // Meet operators
 
-template <typename CS>
-Ask_Tell<CS>
-operator*(const Ask_Tell<CS>& x, const Ask_Tell<CS>& y) {
-  typename Ask_Tell<CS>::const_iterator yi;
-  Ask_Tell<CS> ret(x);
+template <typename D>
+Ask_Tell<D>
+operator*(const Ask_Tell<D>& x, const Ask_Tell<D>& y) {
+  typename Ask_Tell<D>::const_iterator yi;
+  Ask_Tell<D> ret(x);
   for (yi = y.begin(); yi != y.end(); ++yi)
     ret.pair_insert_good(yi->ask(), yi->tell());
   ret.engine();
   return ret;
 }
 
-template <typename CS>
+template <typename D>
 void
-Ask_Tell<CS>::meet_assign(const Ask_Tell<CS>& y) {
+Ask_Tell<D>::meet_assign(const Ask_Tell<D>& y) {
   std::copy(y.begin(), y.end(), back_inserter(sequence));
   engine();
   assert(OK());
 }
 
-template <typename CS>
+#if 0
+template <typename D>
 void
-Ask_Tell<CS>::concatenate_assign(const Ask_Tell<CS>& y) {
+Ask_Tell<D>::concatenate_assign(const Ask_Tell<D>& y) {
   dimension_type old_space_dim = space_dim;
   add_space_dimensions_and_embed(y.space_dimension());
-  for (typename Ask_Tell<CS>::const_iterator y_end = y.end(),
+  for (typename Ask_Tell<D>::const_iterator y_end = y.end(),
 	 yi = y.begin(); yi != y_end; ++yi) {
-    CS ask(old_space_dim);
+    D ask(old_space_dim);
     ask.concatenate_assign(yi->ask());
-    CS tell(old_space_dim);
+    D tell(old_space_dim);
     tell.concatenate_assign(yi->tell());
     pair_insert_good(ask, tell);
   }
   assert(OK());
 }
+#endif
 
 // Join operators
 
-template <typename CS>
-Ask_Tell<CS>
-operator+(const Ask_Tell<CS>& x, const Ask_Tell<CS>& y) {
-  Ask_Tell<CS> z(x.space_dimension());
-  for (typename Ask_Tell<CS>::const_iterator xi = x.begin(),
+template <typename D>
+Ask_Tell<D>
+operator+(const Ask_Tell<D>& x, const Ask_Tell<D>& y) {
+  Ask_Tell<D> z();
+  for (typename Ask_Tell<D>::const_iterator xi = x.begin(),
 	 x_end = x.end(); xi != x_end; ++xi)
-    for (typename Ask_Tell<CS>::const_iterator yi = y.begin(),
+    for (typename Ask_Tell<D>::const_iterator yi = y.begin(),
 	   y_end = y.end(); yi != y_end; ++yi) {
-      CS tell = xi->tell();
+      D tell = xi->tell();
       tell.upper_bound_assign(yi->tell());
-      CS ask = xi->ask();
+      D ask = xi->ask();
       ask.meet_assign(yi->ask());
       if (!ask.definitely_entails(tell))
 	z.pair_insert(ask, tell);
@@ -570,21 +559,21 @@ operator+(const Ask_Tell<CS>& x, const Ask_Tell<CS>& y) {
   return z;
 }
 
-template <typename CS>
+template <typename D>
 void
-Ask_Tell<CS>::upper_bound_assign(const Ask_Tell& y) {
+Ask_Tell<D>::upper_bound_assign(const Ask_Tell& y) {
   *this = *this + y;
 }
 
 // Hiding
 
-template <typename CS>
+template <typename D>
 bool
-Ask_Tell<CS>::probe(const CS& tell, const CS& ask) const {
+Ask_Tell<D>::probe(const D& tell, const D& ask) const {
   const_iterator yi;
   bool tell_changed;
 
-  CS xtell(tell);
+  D xtell(tell);
   tell_changed = true;
   while (tell_changed) {
     tell_changed = false;
@@ -601,14 +590,14 @@ Ask_Tell<CS>::probe(const CS& tell, const CS& ask) const {
   return false;
 }
 
-template <typename CS>
+template <typename D>
 bool
-Ask_Tell<CS>::OK() const {
-  for (typename Ask_Tell<CS>::const_iterator i = begin(),
+Ask_Tell<D>::OK() const {
+  for (typename Ask_Tell<D>::const_iterator i = begin(),
 	 send = end(); i != send; ++i) {
-    const Ask_Tell_Pair<CS>& p = *i;
-    if (!p.ask().OK() || p.ask().space_dimension() != space_dim
-	|| !p.tell().OK() || p.tell().space_dimension() != space_dim
+    const Ask_Tell_Pair<D>& p = *i;
+    if (!p.ask().OK()
+	|| !p.tell().OK()
 	|| p.ask().definitely_entails(p.tell()))
       return false;
   }
@@ -617,15 +606,15 @@ Ask_Tell<CS>::OK() const {
 
 namespace IO_Operators {
 
-template <typename CS>
+template <typename D>
 std::ostream&
-operator<<(std::ostream& s, const Ask_Tell<CS>& x) {
+operator<<(std::ostream& s, const Ask_Tell<D>& x) {
   if (x.is_top())
     s << "true";
   else if (x.is_bottom())
     s << "false";
   else
-    for (typename Ask_Tell<CS>::const_iterator xi = x.begin(),
+    for (typename Ask_Tell<D>::const_iterator xi = x.begin(),
 	   x_end = x.end(); xi != x_end; ++xi)
       s << "(" << xi->ask() << " -> " << xi->tell() << ")";
   return s;
@@ -633,9 +622,9 @@ operator<<(std::ostream& s, const Ask_Tell<CS>& x) {
 
 } // namespace IO_Operators
 
-template <typename CS>
+template <typename D>
 void
-Ask_Tell<CS>::H79_extrapolation_assign(const Ask_Tell& y) {
+Ask_Tell<D>::H79_extrapolation_assign(const Ask_Tell& y) {
   using namespace IO_Operators;
   std::cout << *this << "\n"
 	    << y << std::endl;
@@ -647,10 +636,10 @@ Ask_Tell<CS>::H79_extrapolation_assign(const Ask_Tell& y) {
 namespace std {
 
 /*! \relates Parma_Polyhedra_Library::Ask_Tell */
-template <typename CS>
+template <typename D>
 inline void
-swap(Parma_Polyhedra_Library::Ask_Tell<CS>& x,
-     Parma_Polyhedra_Library::Ask_Tell<CS>& y) {
+swap(Parma_Polyhedra_Library::Ask_Tell<D>& x,
+     Parma_Polyhedra_Library::Ask_Tell<D>& y) {
   x.swap(y);
 }
 
