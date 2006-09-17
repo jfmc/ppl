@@ -72,10 +72,6 @@ public:
   }
 
   void upper_bound_assign(const Fcaibvp& y) {
-    set.insert(y.set.begin(), y.set.end());
-  }
-
-  void meet_assign(const Fcaibvp& y) {
     Fcaibvp& x = *this;
     Fcaibvp z;
     std::set_intersection(x.set.begin(), x.set.end(),
@@ -83,6 +79,10 @@ public:
 			  std::inserter(z.set, z.set.begin()),
 			  Compare());
     std::swap(x, z);
+  }
+
+  void meet_assign(const Fcaibvp& y) {
+    set.insert(y.set.begin(), y.set.end());
   }
 
   bool OK() const {
