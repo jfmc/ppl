@@ -71,9 +71,9 @@ public:
   void ascii_dump(std::ostream& s) const;
 
   //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  //! Loads from \p s an ASCII representation (as produced by
+  //! ascii_dump(std::ostream&)) and sets \p *this accordingly.
+  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   bool ascii_load(std::istream& s);
 
 private:

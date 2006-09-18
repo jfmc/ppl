@@ -176,10 +176,10 @@ public:
 
     PPL_OUTPUT_DECLARATIONS
 
-    //! Uses the ASCII Flags representation from \p s to recreate *this.
-    /*!
-      Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-      otherwise.  The ASCII representation is as output by \ref ascii_dump.
+    /*! \brief
+      Loads from \p s an ASCII representation (as produced by
+      ascii_dump(std::ostream&)) and sets \p *this accordingly.
+      Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
     */
     bool ascii_load(std::istream& s);
 
@@ -367,10 +367,10 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-  //! Uses the ASCII Linear_Row representation from \p s to recreate *this.
-  /*!
-    Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-    otherwise.  The ASCII representation is as output by \ref ascii_dump.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&)) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
   bool ascii_load(std::istream& s);
 

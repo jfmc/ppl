@@ -777,23 +777,7 @@ public:
   void get_covering_box(Box& box) const;
 
   //! Checks if all the invariants are satisfied.
-  /*!
-    \return
-    <CODE>true</CODE> if and only if \p *this satisfies all the
-    invariants and either \p check_not_empty is <CODE>false</CODE> or
-    \p *this is not empty.
-
-    \param check_not_empty
-    <CODE>true</CODE> if and only if, in addition to checking the
-    invariants, \p *this must be checked to be not empty.
-
-    The check is performed so as to intrude as little as possible.  If
-    the library has been compiled with run-time assertions enabled,
-    error messages are written on <CODE>std::cerr</CODE> in case
-    invariants are violated. This is useful for the purpose of
-    debugging the library.
-  */
-  bool OK(/*bool check_not_empty = false*/) const;
+  bool OK() const;
 
   //@} // Member Functions that Do Not Modify the Direct_Product
 
@@ -1565,7 +1549,7 @@ public:
 
   /*! \brief
     Remaps the dimensions of the vector space according to
-    a \ref Map_Space_Dimensions "partial function".
+    a \ref Mapping_the_Dimensions_of_the_Vector_Space "partial function".
 
     If \p pfunc maps only some of the dimensions of \p *this then the
     rest will be projected away.
@@ -1695,10 +1679,8 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
-
-     \return
-     <CODE>true</CODE> if successful, else <CODE>false</CODE>.
+    ascii_dump(std::ostream&)) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);

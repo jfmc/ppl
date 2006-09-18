@@ -2096,10 +2096,8 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
-
-     \return
-     <CODE>true</CODE> if successful, else <CODE>false</CODE>.
+    ascii_dump(std::ostream&)) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
