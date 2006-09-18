@@ -188,7 +188,7 @@ Ask_Tell<D>::pair_insert(const D& ask, const D& tell) {
   }
 }
 
-// Reduction
+
 //
 // Preconditions:
 //
@@ -200,120 +200,11 @@ Ask_Tell<D>::pair_insert(const D& ask, const D& tell) {
 //     x.ASK.definitely_entails(y.ASK) && y.TELL.definitely_entails(x.TELL).
 
 template <typename D>
-bool
-Ask_Tell<D>::reduce() {
-  bool changed = false;
-  for (iterator sbegin = begin(),
-	 send = end(), xi = sbegin; xi != send; ++xi)
-    for (iterator yi = sbegin, yin; yi != send; yi = yin) {
-      yin = yi;
-      ++yin;
-      if (xi != yi
-	  && yi->ask().definitely_entails(xi->ask())
-	  && xi->tell().definitely_entails(yi->tell())) {
-	erase(yi);
-	sbegin = begin();
-	send = end();
-	changed = true;
-      }
-    }
-  assert(OK());
-  return changed;
-}
-
-// Deduction
-//
-// Preconditions:
-//
-//     the map is well formed and the postcondition of reduce() is satisfied.
-//
-// Postconditions:
-//
-//     the map is well formed, the postcondition of reduce() is satisfied,
-//     and...
-//
-
-template <typename D>
-bool
-Ask_Tell<D>::deduce() {
-  bool changed = false;
-  for (iterator sbegin = begin(),
-	 send = end(), xi = sbegin; xi != send; ++xi) {
-    D& xi_tell = xi->tell();
-    bool tell_changed;
-    do {
-      tell_changed = false;
-      for (iterator yi = sbegin; yi != send; ++yi) {
-	if (xi != yi
-	    && xi_tell.definitely_entails(yi->ask())
-	    && !xi_tell.definitely_entails(yi->tell())) {
-	  xi_tell.meet_assign(yi->tell());
-	  changed = tell_changed = true;
-	  }
-	}
-    } while (tell_changed);
-  }
-  if (changed)
-    (void) reduce();
-  assert(OK());
-  return changed;
-}
-
-// Absorption
-
-template <typename D>
-bool
-Ask_Tell<D>::absorb() {
-  bool changed = false;
-  for (iterator sbegin = begin(),
-	 send = end(), xi = sbegin, xin; xi != send; xi = xin) {
-    xin = xi;
-    ++xin;
-    D& xi_ask = xi->ask();
-    D& xi_tell = xi->tell();
-    // We may strengthen the ask component of the pair referenced by `xi'.
-    // If we do it, the pair may become useless (i.e., with the ask
-    // component entailing the tell component) and thus to be
-    // discarded.
-    bool must_check_xi_pair = false;
-    bool ask_changed;
-    do {
-      ask_changed = false;
-      for (iterator yi = sbegin; yi != send; ++yi) {
-	if (xi != yi) {
-	  D& yi_ask = yi->ask();
-	  D& yi_tell = yi->tell();
-	  if (xi_ask.definitely_entails(yi_ask)
-	      && !xi_ask.definitely_entails(yi_tell)) {
-	    xi_ask.meet_assign(yi_tell);
-	    must_check_xi_pair = true;
-	    ask_changed = true;
-	  }
-	}
-      }
-    } while (ask_changed);
-    if (must_check_xi_pair) {
-      changed = true;
-      if (xi_ask.definitely_entails(xi_tell)) {
-	erase(xi);
-	sbegin = begin();
-	send = end();
-      }
-    }
-  }
-  if (changed)
-    (void) reduce();
-  assert(OK());
-  return changed;
-}
-
-// Engine
-
-template <typename D>
-void Ask_Tell<D>::engine() {
+void Ask_Tell<D>::normalize() {
   reduce();
   deduce();
   absorb();
+  assert(is_normalized());
 }
 
 // Bottom
@@ -327,8 +218,6 @@ Ask_Tell<D>::bottom() {
   pair_insert_good(top, bottom);
   return *this;
 }
-
-// Entailment
 
 template <typename D>
 bool
@@ -349,7 +238,7 @@ Ask_Tell<D>&
 Ask_Tell<D>::add_pair(const D& ask, const D& tell) {
   if (!ask.definitely_entails(tell)) {
     pair_insert(ask, tell);
-    engine();
+    normalize();
   }
   assert(OK());
   return *this;
@@ -391,7 +280,7 @@ template <typename D>
 void
 Ask_Tell<D>::meet_assign(const Ask_Tell<D>& y) {
   std::copy(y.begin(), y.end(), back_inserter(sequence));
-  engine();
+  normalize();
   assert(OK());
 }
 
@@ -411,7 +300,7 @@ Ask_Tell<D>::upper_bound_assign(const Ask_Tell& y) {
       if (!ask.definitely_entails(tell))
 	z.pair_insert(ask, tell);
     }
-  z.engine();
+  z.normalize();
   *this = z;
   assert(OK());
 }

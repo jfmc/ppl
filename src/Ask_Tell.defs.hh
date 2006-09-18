@@ -273,11 +273,28 @@ protected:
   void pair_insert(const D& a, const D& t);
   void pair_insert_good(const D& a, const D& t);
 
+  /*
+    Postcondition:
+    the map is well formed and there are no two pairs x and y such that
+    x.ASK.definitely_entails(y.ASK) && y.TELL.definitely_entails(x.TELL).
+  */
   bool reduce();
-  bool deduce();
-  bool absorb();
-  void engine();
 
+  // Preconditions:
+  //
+  //     the map is well formed and the postcondition of reduce() is satisfied.
+  //
+  // Postconditions:
+  //
+  //     the map is well formed, the postcondition of reduce() is satisfied,
+  //     and...
+  //
+  bool deduce();
+
+  bool absorb();
+  void normalize();
+
+  bool is_normalized() const;
   bool probe(const D& tellv, const D& askv) const;
 };
 
