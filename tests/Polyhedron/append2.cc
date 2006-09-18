@@ -122,7 +122,7 @@ main() TRY {
   C_Polyhedron final;
   fix_point(start, induct, final, recursive_offset, arity, num_vars);
 
-    print_constraints(expect, "*** expected ***");
+  print_constraints(expect, "*** expected ***");
 
   return final == expect ? 0 : 1;
 }

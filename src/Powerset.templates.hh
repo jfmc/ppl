@@ -147,8 +147,8 @@ Powerset<D>::is_omega_reduced() const {
 template <typename D>
 typename Powerset<D>::iterator
 Powerset<D>::add_non_bottom_disjunct(const D& d,
-				      iterator first,
-				      iterator last) {
+				     iterator first,
+				     iterator last) {
   for (iterator xi = first; xi != last; ) {
     const D& xv = *xi;
     if (d.definitely_entails(xv))
@@ -207,7 +207,7 @@ template <typename D>
 template <typename Binary_Operator_Assign>
 void
 Powerset<D>::pairwise_apply_assign(const Powerset& y,
-				    Binary_Operator_Assign op_assign) {
+				   Binary_Operator_Assign op_assign) {
   // Ensure omega-reduction here, since what follows has quadratic complexity.
   omega_reduce();
   y.omega_reduce();
