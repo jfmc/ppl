@@ -33,20 +33,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
+/*! \relates Ask_Tell */
 template <typename D>
-Ask_Tell<D>
-operator+(const Ask_Tell<D>&, const Ask_Tell<D>&);
+bool
+operator==(const Ask_Tell<D>& x, const Ask_Tell<D>& y);
 
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are not equivalent.
+/*! \relates Ask_Tell */
 template <typename D>
-Ask_Tell<D>
-operator*(const Ask_Tell<D>&, const Ask_Tell<D>&);
-
-template <typename D>
-D
-project(const Ask_Tell<D>&);
+bool
+operator!=(const Ask_Tell<D>& x, const Ask_Tell<D>& y);
 
 namespace IO_Operators {
 
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::Ask_Tell */
 template <typename D>
 std::ostream&
 operator<<(std::ostream&, const Ask_Tell<D>&);
@@ -55,7 +57,7 @@ operator<<(std::ostream&, const Ask_Tell<D>&);
 
 } // namespace Parma_Polyhedra_Library
 
-//! A pair of (ask and tell) constraints.
+//! A pair of <EM>ask</EM> and <EM>tell</EM> descriptions.
 template <typename D>
 class Parma_Polyhedra_Library::Ask_Tell_Pair {
 public:
@@ -97,17 +99,6 @@ private:
 */
 template <typename D>
 class Parma_Polyhedra_Library::Ask_Tell {
-protected:
-  void pair_insert(const D& a, const D& t);
-  void pair_insert_good(const D& a, const D& t);
-
-  bool reduce();
-  bool deduce();
-  bool absorb();
-  void engine();
-
-  bool probe(const D& tellv, const D& askv) const;
-
 public:
   //! \name Constructors and Destructor
   //@{
@@ -134,40 +125,13 @@ public:
   */
   Ask_Tell(const D& ask, const D& tell);
 
-  /*! \brief
-    The assignment operator.
-    (\p *this and \p y can be dimension-incompatible.)
-  */
-  Ask_Tell& operator=(const Ask_Tell& y);
+  //! Destructor.
+  ~Ask_Tell();
 
-  //! Swaps \p *this with \p y.
-  void swap(Ask_Tell& y);
+  //@} // Constructors and Destructor
 
-  /*! \brief
-    Creates an ask-and-tell constraint system with the same
-    information contents as \p cs.
-  */
-  Ask_Tell(const Constraint_System& cs);
-
-  //! Adds to \p *this the pair constituted by \p ask and \p tell.
-  Ask_Tell& add_pair(const D& ask, const D& tell);
-
-  Ask_Tell& bottom();
-
-  //! Assigns to \p *this an upper bound of \p *this and \p y.
-  void upper_bound_assign(const Ask_Tell& y);
-
-  //! Assigns to \p *this the meet of \p *this and \p y.
-  void meet_assign(const Ask_Tell& y);
-
-  //! Assigns to \p *this the concatenation of \p *this and \p y.
-  /*!
-    Seeing an ask-and-tell agent as a set of tuples, this method
-    assigns to \p *this all the tuples that can be obtained by
-    concatenating, in the order given, a tuple of \p *this with
-    a tuple of \p y.
-  */
-  void concatenate_assign(const Ask_Tell& y);
+  //! \name Member Functions that Do Not Modify the Ask_Tell Element
+  //@{
 
   /*! \brief
     Returns <CODE>true</CODE> if \p *this definitely entails \p y.
@@ -191,72 +155,57 @@ public:
   */
   bool is_bottom() const;
 
-  //! Intersects \p *this with (a copy of) constraint \p c.
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are topology-incompatible
-    or dimension-incompatible.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
   */
-  void add_constraint(const Constraint& c);
-
-  //! Intersects \p *this with (a copy of) the constraints in \p cs.
-  /*!
-    \param cs
-    Contains the constraints to intersect with.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-  */
-  void add_constraints(const Constraint_System& cs);
+  memory_size_type total_memory_in_bytes() const;
 
   /*! \brief
-    Adds \p m new dimensions to the vector space, embedding
-    the old polyhedron in the new space.
+    Returns a lower bound to the size in bytes of the memory
+    managed by \p *this.
   */
-  void add_space_dimensions_and_embed(dimension_type m);
-
-  /*! \brief
-    Adds \p m new dimensions to the vector space
-    and does not embed it in the new space.
-  */
-  void add_space_dimensions_and_project(dimension_type m);
-
-  //! Removes all the specified dimensions from the vector space.
-  /*!
-    \param to_be_removed
-    The set of Variable objects corresponding to the space dimensions
-    to be removed.
-
-    \exception std::invalid_argument
-    Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p to_be_removed.
-  */
-  void remove_space_dimensions(const Variables_Set& to_be_removed);
-
-  /*! \brief
-    Removes the higher dimensions of the vector space so that
-    the resulting space will have dimension \p new_dimension.
-
-    \exception std::invalid_argument
-    Thrown if \p new_dimensions is greater than the space dimension of
-    \p *this.
-  */
-  void remove_higher_space_dimensions(dimension_type new_dimension);
-
-  template <typename Partial_Function>
-  void map_space_dimensions(const Partial_Function& pfunc);
-
-  void H79_extrapolation_assign(const Ask_Tell& y);
-
-  friend Ask_Tell operator +<>(const Ask_Tell<D>& x,
-			      const Ask_Tell<D>& y);
-  friend Ask_Tell operator *<>(const Ask_Tell& x, const Ask_Tell& y);
+  memory_size_type external_memory_in_bytes() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  friend D project<>(const Ask_Tell& x);
+  //@} // Member Functions that Do Not Modify the Ask_Tell Element
+
+  //! \name Member Functions that May Modify the Ask_Tell Element
+  //@{
+
+  /*! \brief
+    The assignment operator.
+    (\p *this and \p y can be dimension-incompatible.)
+  */
+  Ask_Tell& operator=(const Ask_Tell& y);
+
+  //! Swaps \p *this with \p y.
+  void swap(Ask_Tell& y);
+
+  //! Assigns to \p *this an upper bound of \p *this and \p y.
+  void upper_bound_assign(const Ask_Tell& y);
+
+  //! Assigns to \p *this the meet of \p *this and \p y.
+  void meet_assign(const Ask_Tell& y);
+
+  //@} // Member Functions that May Modify the Ask_Tell element
+
+  Ask_Tell& bottom();
+
+  //! Assigns to \p *this the concatenation of \p *this and \p y.
+  /*!
+    Seeing an ask-and-tell agent as a set of tuples, this method
+    assigns to \p *this all the tuples that can be obtained by
+    concatenating, in the order given, a tuple of \p *this with
+    a tuple of \p y.
+  */
+  void concatenate_assign(const Ask_Tell& y);
+
+
+  template <typename Partial_Function>
+  void map_space_dimensions(const Partial_Function& pfunc);
 
 private:
   //! An ask-tell agent is implemented as a sequence of ask-tell pairs
@@ -292,6 +241,26 @@ public:
   reverse_iterator rend();
   const_reverse_iterator rend() const;
 
+  //! \name Member Functions for the Direct Manipulation of Pairs
+  //@{
+
+  //! Adds to \p *this the pair constituted by \p ask and \p tell.
+  Ask_Tell& add_pair(const D& ask, const D& tell);
+
+  /*! \brief
+    Drops the pair in \p *this pointed to by \p position, returning
+    an iterator to the pair following \p position.
+  */
+  iterator drop_pair(iterator position);
+
+  //! Drops all the pairs from \p first to \p last (excluded).
+  void drop_pairs(iterator first, iterator last);
+
+  //! Drops all the pairs, making \p *this an empty powerset.
+  void clear();
+
+  //@} // Member Functions for the Direct Manipulation of Pairs
+
 //protected:
   iterator erase(iterator first, iterator last) {
     return sequence.erase(first, last);
@@ -299,6 +268,17 @@ public:
   iterator erase(iterator position) {
     return sequence.erase(position);
   }
+
+protected:
+  void pair_insert(const D& a, const D& t);
+  void pair_insert_good(const D& a, const D& t);
+
+  bool reduce();
+  bool deduce();
+  bool absorb();
+  void engine();
+
+  bool probe(const D& tellv, const D& askv) const;
 };
 
 
@@ -313,5 +293,6 @@ void swap(Parma_Polyhedra_Library::Ask_Tell<D>& x,
 } // namespace std
 
 #include "Ask_Tell.inlines.hh"
+#include "Ask_Tell.templates.hh"
 
 #endif // !defined(PPL_Ask_Tell_defs_hh)
