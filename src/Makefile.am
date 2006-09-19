@@ -271,10 +271,10 @@ Powerset.types.hh \
 Powerset.defs.hh \
 Powerset.inlines.hh \
 Powerset.templates.hh \
-Polyhedra_Powerset.types.hh \
-Polyhedra_Powerset.defs.hh \
-Polyhedra_Powerset.inlines.hh \
-Polyhedra_Powerset.templates.hh \
+Pointset_Powerset.types.hh \
+Pointset_Powerset.defs.hh \
+Pointset_Powerset.inlines.hh \
+Pointset_Powerset.templates.hh \
 Direct_Product.types.hh \
 Direct_Product.defs.hh \
 Direct_Product.inlines.hh \
@@ -326,7 +326,7 @@ Grid_chdims.cc \
 Grid_widenings.cc \
 BD_Shape.cc \
 Octagonal_Shape.cc \
-Polyhedra_Powerset.cc \
+Pointset_Powerset.cc \
 Row.cc \
 Linear_Row.cc \
 Saturation_Matrix.cc \

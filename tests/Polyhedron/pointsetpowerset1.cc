@@ -1,4 +1,4 @@
-/* Test Polyhedra_Powerset<PH>.
+/* Test Pointset_Powerset<PH>.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -27,7 +27,7 @@ namespace {
 bool
 test01() {
   Constraint_System cs = Constraint_System::zero_dim_empty();
-  Polyhedra_Powerset<C_Polyhedron> ps(cs);
+  Pointset_Powerset<C_Polyhedron> ps(cs);
   return ps.OK();
 }
 
@@ -35,7 +35,7 @@ bool
 test02() {
   Variable x(0);
   Constraint_System cs;
-  Polyhedra_Powerset<NNC_Polyhedron> nnc_ps(1, EMPTY);
+  Pointset_Powerset<NNC_Polyhedron> nnc_ps(1, EMPTY);
 
   cs.clear();
   cs.insert(x > 0);
@@ -47,7 +47,7 @@ test02() {
   cs.insert(x < 1);
   nnc_ps.add_disjunct(NNC_Polyhedron(cs));
 
-  Polyhedra_Powerset<C_Polyhedron> c_ps(nnc_ps);
+  Pointset_Powerset<C_Polyhedron> c_ps(nnc_ps);
 
   return c_ps.OK();
 }
@@ -56,7 +56,7 @@ bool
 test03() {
   Variable x(0);
   Constraint_System cs;
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
 
   cs.clear();
   cs.insert(x >= 0);
@@ -70,7 +70,7 @@ test03() {
 
   c_ps.add_constraint(x == 1);
 
-  Polyhedra_Powerset<NNC_Polyhedron> nnc_ps(c_ps);
+  Pointset_Powerset<NNC_Polyhedron> nnc_ps(c_ps);
 
   return nnc_ps.OK();
 }
@@ -78,7 +78,7 @@ test03() {
 bool
 test04() {
   Variable x(0);
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
@@ -97,7 +97,7 @@ test04() {
 
 bool
 test05() {
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
 
   bool ok = c_ps.is_bottom();
 
@@ -114,12 +114,12 @@ test05() {
 bool
 test06() {
   Variable x(0);
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
   cs.insert(x >= 0);
   c_ps.add_disjunct(C_Polyhedron(cs));
 
-  Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
   Constraint_System cs1;
   cs1.insert(x >= 0);
   cs1.insert(x <= 2);
@@ -133,7 +133,7 @@ test06() {
 bool
 test07() {
   Variable x(0);
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
@@ -153,7 +153,7 @@ test07() {
 bool
 test08() {
   Variable x(0);
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
@@ -173,7 +173,7 @@ test08() {
 
 bool
 test09() {
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   bool ok = (c_ps.space_dimension() == 1);
   return ok;
 }
@@ -181,7 +181,7 @@ test09() {
 bool
 test10() {
   Variable x(0);
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x <= 2);
@@ -207,14 +207,14 @@ test10() {
 bool
 test11() {
   Variable x(0);
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
   cs.insert(x <= 2);
   c_ps.add_disjunct(C_Polyhedron(cs));
 
-  Polyhedra_Powerset<C_Polyhedron> c_ps1;
+  Pointset_Powerset<C_Polyhedron> c_ps1;
   c_ps1 = c_ps;
 
   bool ok = !c_ps.empty();
@@ -224,14 +224,14 @@ test11() {
 bool
 test12() {
   Variable x(0);
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
   cs.insert(x <= 2);
   c_ps.add_disjunct(C_Polyhedron(cs));
 
-  Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
   c_ps.swap(c_ps1);
 
   bool ok = (c_ps.empty() && !c_ps1.empty());
@@ -241,7 +241,7 @@ test12() {
 bool
 test13() {
   Variable x(0);
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
@@ -252,7 +252,7 @@ test13() {
   cs.insert(x >= 1);
   cs.insert(x <= 3);
 
-  Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
   c_ps1.add_disjunct(C_Polyhedron(cs));
   c_ps.least_upper_bound_assign(c_ps1);
 
@@ -260,7 +260,7 @@ test13() {
   cs.insert(x >= 0);
   cs.insert(x <= 3);
 
-  Polyhedra_Powerset<C_Polyhedron> c_ps2(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps2(1, EMPTY);
   c_ps2.add_disjunct(C_Polyhedron(cs));
 
   bool ok = c_ps.definitely_entails(c_ps2);
@@ -272,7 +272,7 @@ test13() {
 bool
 test14() {
   Variable x(0);
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
@@ -283,7 +283,7 @@ test14() {
   cs.insert(x >= 1);
   cs.insert(x <= 3);
 
-  Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
   c_ps1.add_disjunct(C_Polyhedron(cs));
   c_ps.upper_bound_assign(c_ps1);
 
@@ -291,7 +291,7 @@ test14() {
   cs.insert(x >= 0);
   cs.insert(x <= 3);
 
-  Polyhedra_Powerset<C_Polyhedron> c_ps2(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps2(1, EMPTY);
   c_ps2.add_disjunct(C_Polyhedron(cs));
 
   bool ok = c_ps.definitely_entails(c_ps2);
@@ -303,14 +303,14 @@ test14() {
 bool
 test15() {
   Variable x(0);
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
   cs.insert(x <= 2);
   c_ps.add_disjunct(C_Polyhedron(cs));
 
-  Polyhedra_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
 
   cs.clear();
   cs.insert(x >= 1);
@@ -321,7 +321,7 @@ test15() {
   cs.clear();
   cs.insert(x >= 1);
   cs.insert(x <= 2);
-  Polyhedra_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
   c_ps_expected.add_disjunct(C_Polyhedron(cs));
 
   bool ok = c_ps.definitely_entails(c_ps_expected);
@@ -333,7 +333,7 @@ test15() {
 bool
 test16() {
   Variable x(0);
-  Polyhedra_Powerset<C_Polyhedron> c_ps(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
   Constraint_System cs;
 
   cs.insert(x >= 0);
@@ -350,7 +350,7 @@ test16() {
   cs.clear();
   cs.insert(x >= 0);
   cs.insert(x <= 3);
-  Polyhedra_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
+  Pointset_Powerset<C_Polyhedron> c_ps_expected(1, EMPTY);
   c_ps_expected.add_disjunct(C_Polyhedron(cs));
 
   bool ok = c_ps.definitely_entails(c_ps_expected);

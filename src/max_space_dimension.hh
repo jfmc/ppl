@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
-#include "Polyhedra_Powerset.defs.hh"
+#include "Pointset_Powerset.defs.hh"
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
@@ -37,8 +37,8 @@ max_space_dimension() {
   using std::min;
   return
     min(Polyhedron::max_space_dimension(),
-	min(Polyhedra_Powerset<C_Polyhedron>::max_space_dimension(),
-	    Polyhedra_Powerset<NNC_Polyhedron>::max_space_dimension()
+	min(Pointset_Powerset<C_Polyhedron>::max_space_dimension(),
+	    Pointset_Powerset<NNC_Polyhedron>::max_space_dimension()
 	    )
 	);
 }

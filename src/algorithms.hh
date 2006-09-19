@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_algorithms_hh 1
 
 #include "NNC_Polyhedron.defs.hh"
-#include "Polyhedra_Powerset.defs.hh"
+#include "Pointset_Powerset.defs.hh"
 #include <utility>
 #include <cassert>
 
@@ -52,10 +52,10 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
   PH phull = p;
   NNC_Polyhedron nnc_p(p);
   phull.poly_hull_assign(q);
-  std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >
+  std::pair<PH, Pointset_Powerset<NNC_Polyhedron> >
     partition = linear_partition(q, phull);
-  const Polyhedra_Powerset<NNC_Polyhedron>& s = partition.second;
-  typedef Polyhedra_Powerset<NNC_Polyhedron>::const_iterator iter;
+  const Pointset_Powerset<NNC_Polyhedron>& s = partition.second;
+  typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i)
     // The polyhedral hull is exact if and only if all the elements
     // of the partition of the polyhedral hull of `p' and `q' with

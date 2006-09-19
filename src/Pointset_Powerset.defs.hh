@@ -1,4 +1,4 @@
-/* Polyhedra_Powerset class declaration.
+/* Pointset_Powerset class declaration.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,10 +20,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Polyhedra_Powerset_defs_hh
-#define PPL_Polyhedra_Powerset_defs_hh
+#ifndef PPL_Pointset_Powerset_defs_hh
+#define PPL_Pointset_Powerset_defs_hh
 
-#include "Polyhedra_Powerset.types.hh"
+#include "Pointset_Powerset.types.hh"
 #include "globals.defs.hh"
 #include "BHRZ03_Certificate.types.hh"
 #include "Constraint.types.hh"
@@ -43,7 +43,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! The powerset construction instantiated on PPL polyhedra.
 /*! \ingroup PPL_CXX_interface */
 template <typename PH>
-class Parma_Polyhedra_Library::Polyhedra_Powerset
+class Parma_Polyhedra_Library::Pointset_Powerset
   : public Parma_Polyhedra_Library::Powerset
 <Parma_Polyhedra_Library::Determinate<PH> > {
 public:
@@ -54,13 +54,13 @@ private:
   typedef Powerset<CS> Base;
 
 public:
-  //! Returns the maximum space dimension a Polyhedra_Powerset<PH> can handle.
+  //! Returns the maximum space dimension a Pointset_Powerset<PH> can handle.
   static dimension_type max_space_dimension();
 
   //! \name Constructors
   //@{
 
-  //! Builds a universe (top) or empty (bottom) Polyhedra_Powerset.
+  //! Builds a universe (top) or empty (bottom) Pointset_Powerset.
   /*!
     \param num_dimensions
     The number of dimensions of the vector space enclosing the powerset;
@@ -69,34 +69,34 @@ public:
     Specifies whether the universe or the empty powerset has to be built.
   */
   explicit
-  Polyhedra_Powerset(dimension_type num_dimensions = 0,
+  Pointset_Powerset(dimension_type num_dimensions = 0,
 		     Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
-  Polyhedra_Powerset(const Polyhedra_Powerset& y);
+  Pointset_Powerset(const Pointset_Powerset& y);
 
   /*! \brief
     If \p ph is nonempty, builds a powerset containing only \p ph.
     Builds the empty powerset otherwise.
   */
-  explicit Polyhedra_Powerset(const PH& ph);
+  explicit Pointset_Powerset(const PH& ph);
 
   /*! \brief
     Copy-constructor allowing a source powerset with elements of a
     different polyhedron kind.
   */
   template <typename QH>
-  explicit Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
+  explicit Pointset_Powerset(const Pointset_Powerset<QH>& y);
 
   /*! \brief
-    Creates a Polyhedra_Powerset with a single polyhedron
+    Creates a Pointset_Powerset with a single polyhedron
     with the same information contents as \p cs.
   */
-  explicit Polyhedra_Powerset(const Constraint_System& cs);
+  explicit Pointset_Powerset(const Constraint_System& cs);
 
-  //! Creates a Polyhedra_Powerset with a single polyhedron
+  //! Creates a Pointset_Powerset with a single polyhedron
   //! with the same information contents as \p cgs.
-  explicit Polyhedra_Powerset(const Congruence_System& cgs);
+  explicit Pointset_Powerset(const Congruence_System& cgs);
 
   //@} // Constructors and Destructor
 
@@ -118,7 +118,7 @@ public:
     \warning
     This may be <EM>really</EM> expensive!
   */
-  bool geometrically_covers(const Polyhedra_Powerset& y) const;
+  bool geometrically_covers(const Pointset_Powerset& y) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is geometrically
@@ -132,7 +132,7 @@ public:
     \warning
     This may be <EM>really</EM> expensive!
   */
-  bool geometrically_equals(const Polyhedra_Powerset& y) const;
+  bool geometrically_equals(const Pointset_Powerset& y) const;
 
   /*! \brief
     Returns a lower bound to the total size in bytes of the memory
@@ -247,7 +247,7 @@ public:
     see \ref BGP99 "[BGP99]" and \ref BHZ03b "[BHZ03b]".
   */
   template <typename Widening>
-  void BGP99_extrapolation_assign(const Polyhedra_Powerset& y,
+  void BGP99_extrapolation_assign(const Pointset_Powerset& y,
 				  Widening wf,
 				  unsigned max_disjuncts);
 
@@ -281,7 +281,7 @@ public:
     by \p Cert, see BHRZ03_Certificate or H79_Certificate.
   */
   template <typename Cert, typename Widening>
-  void BHZ03_widening_assign(const Polyhedra_Powerset& y, Widening wf);
+  void BHZ03_widening_assign(const Pointset_Powerset& y, Widening wf);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
@@ -292,7 +292,7 @@ public:
     The assignment operator
     (\p *this and \p y can be dimension-incompatible).
   */
-  Polyhedra_Powerset& operator=(const Polyhedra_Powerset& y);
+  Pointset_Powerset& operator=(const Pointset_Powerset& y);
 
   /*! \brief
     Assignment operator allowing a source powerset with elements of a
@@ -300,10 +300,10 @@ public:
     (\p *this and \p y can be dimension-incompatible).
   */
   template <typename QH>
-  Polyhedra_Powerset& operator=(const Polyhedra_Powerset<QH>& y);
+  Pointset_Powerset& operator=(const Pointset_Powerset<QH>& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Polyhedra_Powerset& y);
+  void swap(Pointset_Powerset& y);
 
   /*! \brief
     Adds \p m new dimensions to the vector space containing \p *this
@@ -322,7 +322,7 @@ public:
     The result is obtained by intersecting each polyhedron in \p *this
     with each polyhedron in \p y and collecting all these intersections.
   */
-  void intersection_assign(const Polyhedra_Powerset& y);
+  void intersection_assign(const Pointset_Powerset& y);
 
   //! Assigns to \p *this the difference of \p *this and \p y.
   /*!
@@ -331,7 +331,7 @@ public:
     in \p *this with each polyhedron in \p y and collecting all these
     differences.
   */
-  void poly_difference_assign(const Polyhedra_Powerset& y);
+  void poly_difference_assign(const Pointset_Powerset& y);
 
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
@@ -339,7 +339,7 @@ public:
     \ref Concatenating_Polyhedra "concatenation" of each polyhedron
     in \p *this with each polyhedron in \p y.
   */
-  void concatenate_assign(const Polyhedra_Powerset& y);
+  void concatenate_assign(const Pointset_Powerset& y);
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -349,7 +349,7 @@ public:
     \ref Time_Elapse_Operator "time elapse" of each polyhedron
     in \p *this with each polyhedron in \p y.
   */
-  void time_elapse_assign(const Polyhedra_Powerset& y);
+  void time_elapse_assign(const Pointset_Powerset& y);
 
   //! Removes all the specified space dimensions.
   /*!
@@ -416,7 +416,7 @@ private:
     to \p *this and \p y, using the widening function \p wf.
   */
   template <typename Widening>
-  void BGP99_heuristics_assign(const Polyhedra_Powerset& y, Widening wf);
+  void BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf);
 
   //! Records in \p cert_ms the certificates for this set of polyhedra.
   template <typename Cert>
@@ -434,23 +434,23 @@ private:
 
   // FIXME: here it should be enough to befriend the templatic constructor
   //   template <typename QH>
-  //   Polyhedra_Powerset(const Polyhedra_Powerset<QH>&)
+  //   Pointset_Powerset(const Pointset_Powerset<QH>&)
   // but, apparently, this cannot be done.
   // As a workaround, we could use
-  //   friend class Polyhedra_Powerset<NNC_Polyhedron>
+  //   friend class Pointset_Powerset<NNC_Polyhedron>
   // but GCC 3.3.3 has a bug that causes its rejection.
-  // So, temporarily, we make all Polyhedra_Powerset's friends of each other.
-  template <typename QH> friend class Polyhedra_Powerset;
+  // So, temporarily, we make all Pointset_Powerset's friends of each other.
+  template <typename QH> friend class Pointset_Powerset;
 };
 
 
 namespace Parma_Polyhedra_Library {
 
 //! Partitions \p q with respect to \p p.
-/*! \relates Polyhedra_Powerset
+/*! \relates Pointset_Powerset
   Let \p p and \p q be two polyhedra.
   The function returns an object <CODE>r</CODE> of type
-  <CODE>std::pair\<PH, Polyhedra_Powerset\<NNC_Polyhedron\> \></CODE>
+  <CODE>std::pair\<PH, Pointset_Powerset\<NNC_Polyhedron\> \></CODE>
   such that
   - <CODE>r.first</CODE> is the intersection of \p p and \p q;
   - <CODE>r.second</CODE> has the property that all its elements are
@@ -467,24 +467,24 @@ namespace Parma_Polyhedra_Library {
   \endif
 */
 template <typename PH>
-std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >
+std::pair<PH, Pointset_Powerset<NNC_Polyhedron> >
 linear_partition(const PH& p, const PH& q);
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if the union of
   the NNC polyhedra in \p ps contains the NNC polyhedron \p ph.
 
-  \relates Polyhedra_Powerset
+  \relates Pointset_Powerset
 */
 bool
 check_containment(const NNC_Polyhedron& ph,
-		  const Polyhedra_Powerset<NNC_Polyhedron>& ps);
+		  const Pointset_Powerset<NNC_Polyhedron>& ps);
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if the union of
   the objects in \p ps contains \p ph.
 
-  \relates Polyhedra_Powerset
+  \relates Pointset_Powerset
   \note
   It is assumed that the template parameter PH can be converted
   without precision loss into an NNC_Polyhedron; otherwise,
@@ -492,7 +492,7 @@ check_containment(const NNC_Polyhedron& ph,
 */
 template <typename PH>
 bool
-check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps);
+check_containment(const PH& ph, const Pointset_Powerset<PH>& ps);
 
 // CHECK ME: according to the Intel compiler, the declaration of the
 // following specialization (of the class template parameter) should come
@@ -500,8 +500,8 @@ check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps);
 // (where the member template parameter is specialized too).
 template <>
 template <typename QH>
-Polyhedra_Powerset<NNC_Polyhedron>
-::Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
+Pointset_Powerset<NNC_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<QH>& y);
 
 // CHECK ME: according to the Intel compiler, the declaration of the
 // following specialization (of the class template parameter) should come
@@ -509,30 +509,30 @@ Polyhedra_Powerset<NNC_Polyhedron>
 // (where the member template parameter is specialized too).
 template <>
 template <typename QH>
-Polyhedra_Powerset<C_Polyhedron>
-::Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
+Pointset_Powerset<C_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<QH>& y);
 
 // Non-inline full specializations should be declared here
 // so as to inhibit multiple instantiations of the generic template.
 template <>
 template <>
-Polyhedra_Powerset<NNC_Polyhedron>
-::Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y);
+Pointset_Powerset<NNC_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y);
 
 template <>
 template <>
-Polyhedra_Powerset<C_Polyhedron>
-::Polyhedra_Powerset(const Polyhedra_Powerset<NNC_Polyhedron>& y);
+Pointset_Powerset<C_Polyhedron>
+::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y);
 
 template <>
 void
-Polyhedra_Powerset<NNC_Polyhedron>
-::poly_difference_assign(const Polyhedra_Powerset& y);
+Pointset_Powerset<NNC_Polyhedron>
+::poly_difference_assign(const Pointset_Powerset& y);
 
 template <>
 bool
-Polyhedra_Powerset<NNC_Polyhedron>
-::geometrically_covers(const Polyhedra_Powerset& y) const;
+Pointset_Powerset<NNC_Polyhedron>
+::geometrically_covers(const Pointset_Powerset& y) const;
 
 } // namespace Parma_Polyhedra_Library
 
@@ -540,14 +540,14 @@ Polyhedra_Powerset<NNC_Polyhedron>
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Polyhedra_Powerset */
+/*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
 template <typename PH>
-void swap(Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& x,
-	  Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& y);
+void swap(Parma_Polyhedra_Library::Pointset_Powerset<PH>& x,
+	  Parma_Polyhedra_Library::Pointset_Powerset<PH>& y);
 
 } // namespace std
 
-#include "Polyhedra_Powerset.inlines.hh"
-#include "Polyhedra_Powerset.templates.hh"
+#include "Pointset_Powerset.inlines.hh"
+#include "Pointset_Powerset.templates.hh"
 
-#endif // !defined(PPL_Polyhedra_Powerset_defs_hh)
+#endif // !defined(PPL_Pointset_Powerset_defs_hh)

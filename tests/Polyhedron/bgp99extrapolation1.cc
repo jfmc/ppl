@@ -1,4 +1,4 @@
-/* Test Polyhedra_Powerset<PH>::BGP99_extrapolation_assign().
+/* Test Pointset_Powerset<PH>::BGP99_extrapolation_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -71,9 +71,9 @@ aux1_test01(unsigned n) {
   return p[n];
 }
 
-Polyhedra_Powerset<C_Polyhedron>
+Pointset_Powerset<C_Polyhedron>
 aux2_test01(unsigned n) {
-  Polyhedra_Powerset<C_Polyhedron> s(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> s(2, EMPTY);
   if (n == 0) {
 
     nout << "S0 = { P0 }" << endl;
@@ -126,7 +126,7 @@ test01() {
   // Install the alternate output function.
   Variable::set_output_function(aux3_test01);
 
-  Polyhedra_Powerset<C_Polyhedron> T = aux2_test01(0);
+  Pointset_Powerset<C_Polyhedron> T = aux2_test01(0);
 
   using namespace Parma_Polyhedra_Library::IO_Operators;
 
@@ -134,7 +134,7 @@ test01() {
 
   bool converged = false;
   for (unsigned n = 1; !converged && n <= 20; ++n) {
-    Polyhedra_Powerset<C_Polyhedron> Sn = aux2_test01(n);
+    Pointset_Powerset<C_Polyhedron> Sn = aux2_test01(n);
 
     nout << "S" << n << " = " << Sn << endl;
 
@@ -194,7 +194,7 @@ test02() {
   ps1_9.add_constraint(A - B >= -12);
   ps1_9.add_constraint(A >= 2);
 
-  Polyhedra_Powerset<C_Polyhedron> ps1(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps1(2, EMPTY);
   ps1.add_disjunct(ps1_1);
   ps1.add_disjunct(ps1_2);
   ps1.add_disjunct(ps1_3);
@@ -222,7 +222,7 @@ test02() {
   ps2_4.add_constraint(A - B >= -16);
   ps2_4.add_constraint(A >= 3);
 
-  Polyhedra_Powerset<C_Polyhedron> ps2(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps2(2, EMPTY);
   ps2.add_disjunct(ps2_1);
   ps2.add_disjunct(ps2_2);
   ps2.add_disjunct(ps2_3);
@@ -237,7 +237,7 @@ test02() {
   ps1.BGP99_extrapolation_assign
     (ps2, widen_fun_ref(&Polyhedron::H79_widening_assign), 7);
 
-  Polyhedra_Powerset<C_Polyhedron> known_result(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> known_result(2, EMPTY);
   C_Polyhedron kr_1(2);
   kr_1.add_constraint(A - B >= -16);
   kr_1.add_constraint(A >= 3);

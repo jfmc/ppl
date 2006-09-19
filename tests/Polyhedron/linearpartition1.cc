@@ -246,9 +246,9 @@ test03() {
 
 // Compute the complement.
 template <typename PH>
-Polyhedra_Powerset<NNC_Polyhedron>
+Pointset_Powerset<NNC_Polyhedron>
 aux_test04(const PH& ph) {
-  std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> > partition
+  std::pair<PH, Pointset_Powerset<NNC_Polyhedron> > partition
     = linear_partition(ph, PH(ph.space_dimension(), UNIVERSE));
   return partition.second;
 }
@@ -267,7 +267,7 @@ test04() {
   using namespace IO_Operators;
   nout << "p = " << p << endl;
 
-  Polyhedra_Powerset<NNC_Polyhedron> p_c = aux_test04(p);
+  Pointset_Powerset<NNC_Polyhedron> p_c = aux_test04(p);
 
   nout << "complement(p) = " << p_c << endl;
 
@@ -279,7 +279,7 @@ test04() {
 
   nout << "q = " << q << endl;
 
-  Polyhedra_Powerset<NNC_Polyhedron> q_c = aux_test04(q);
+  Pointset_Powerset<NNC_Polyhedron> q_c = aux_test04(q);
 
   nout << "complement(q) = " << q_c << endl;
 

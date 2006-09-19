@@ -1,4 +1,4 @@
-/* Polyhedra_Powerset class implementation: non-inline functions.
+/* Pointset_Powerset class implementation: non-inline functions.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,7 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-#include "Polyhedra_Powerset.defs.hh"
+#include "Pointset_Powerset.defs.hh"
 #include <utility>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -30,11 +30,11 @@ namespace PPL = Parma_Polyhedra_Library;
 // See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
 // template <>
 // template <>
-// PPL::Polyhedra_Powerset<PPL::NNC_Polyhedron>
-// ::Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y)
+// PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
+// ::Pointset_Powerset(const Pointset_Powerset<C_Polyhedron>& y)
 //   : Base(), space_dim(y.space_dimension()) {
-//   Polyhedra_Powerset& x = *this;
-//   for (Polyhedra_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
+//   Pointset_Powerset& x = *this;
+//   for (Pointset_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
 // 	 y_end = y.end(); i != y_end; ++i)
 //     x.sequence.push_back(Determinate<NNC_Polyhedron>(
 //                            NNC_Polyhedron(i->element()))
@@ -47,11 +47,11 @@ namespace PPL = Parma_Polyhedra_Library;
 // See http://gcc.gnu.org/bugzilla/show_bug.cgi?id=13635.
 // template <>
 // template <>
-// PPL::Polyhedra_Powerset<PPL::C_Polyhedron>
-// ::Polyhedra_Powerset(const Polyhedra_Powerset<NNC_Polyhedron>& y)
+// PPL::Pointset_Powerset<PPL::C_Polyhedron>
+// ::Pointset_Powerset(const Pointset_Powerset<NNC_Polyhedron>& y)
 //   : Base(), space_dim(y.space_dimension()) {
-//   Polyhedra_Powerset& x = *this;
-//   for (Polyhedra_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
+//   Pointset_Powerset& x = *this;
+//   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
 // 	 y_end = y.end(); i != y_end; ++i)
 //     x.sequence.push_back(Determinate<C_Polyhedron>(
 //                            C_Polyhedron(i->element()))
@@ -66,9 +66,9 @@ namespace PPL = Parma_Polyhedra_Library;
 
 template <>
 void
-PPL::Polyhedra_Powerset<PPL::NNC_Polyhedron>
-::poly_difference_assign(const Polyhedra_Powerset& y) {
-  Polyhedra_Powerset& x = *this;
+PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
+::poly_difference_assign(const Pointset_Powerset& y) {
+  Pointset_Powerset& x = *this;
   // Ensure omega-reduction.
   x.omega_reduce();
   y.omega_reduce();
@@ -78,9 +78,9 @@ PPL::Polyhedra_Powerset<PPL::NNC_Polyhedron>
     Sequence tmp_sequence;
     for (Sequence_const_iterator nsi = new_sequence.begin(),
 	   ns_end = new_sequence.end(); nsi != ns_end; ++nsi) {
-      std::pair<NNC_Polyhedron, Polyhedra_Powerset<NNC_Polyhedron> > partition
+      std::pair<NNC_Polyhedron, Pointset_Powerset<NNC_Polyhedron> > partition
 	= linear_partition(py, nsi->element());
-      const Polyhedra_Powerset<NNC_Polyhedron>& residues = partition.second;
+      const Pointset_Powerset<NNC_Polyhedron>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
     }
@@ -93,25 +93,25 @@ PPL::Polyhedra_Powerset<PPL::NNC_Polyhedron>
 
 template <>
 bool
-PPL::Polyhedra_Powerset<PPL::NNC_Polyhedron>
-::geometrically_covers(const Polyhedra_Powerset& y) const {
-  const Polyhedra_Powerset& x = *this;
+PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
+::geometrically_covers(const Pointset_Powerset& y) const {
+  const Pointset_Powerset& x = *this;
   for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi)
     if (!check_containment(yi->element(), x))
       return false;
   return true;
 }
 
-/*! \relates Parma_Polyhedra_Library::Polyhedra_Powerset */
+/*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
 bool
 PPL::check_containment(const NNC_Polyhedron& ph,
-		       const Polyhedra_Powerset<NNC_Polyhedron>& ps) {
-  Polyhedra_Powerset<NNC_Polyhedron> tmp(ph.space_dimension(), EMPTY);
+		       const Pointset_Powerset<NNC_Polyhedron>& ps) {
+  Pointset_Powerset<NNC_Polyhedron> tmp(ph.space_dimension(), EMPTY);
   tmp.add_disjunct(ph);
-  for (Polyhedra_Powerset<NNC_Polyhedron>::const_iterator
+  for (Pointset_Powerset<NNC_Polyhedron>::const_iterator
 	 i = ps.begin(), ps_end = ps.end(); i != ps_end; ++i) {
     const NNC_Polyhedron& pi = i->element();
-    for (Polyhedra_Powerset<NNC_Polyhedron>::iterator
+    for (Pointset_Powerset<NNC_Polyhedron>::iterator
 	   j = tmp.begin(); j != tmp.end(); ) {
       const NNC_Polyhedron& pj = j->element();
       if (pi.contains(pj))
@@ -122,15 +122,15 @@ PPL::check_containment(const NNC_Polyhedron& ph,
     if (tmp.empty())
       return true;
     else {
-      Polyhedra_Powerset<NNC_Polyhedron> new_disjuncts(ph.space_dimension(),
+      Pointset_Powerset<NNC_Polyhedron> new_disjuncts(ph.space_dimension(),
 						       EMPTY);
-      for (Polyhedra_Powerset<NNC_Polyhedron>::iterator
+      for (Pointset_Powerset<NNC_Polyhedron>::iterator
 	     j = tmp.begin(); j != tmp.end(); ) {
 	const NNC_Polyhedron& pj = j->element();
 	if (pj.is_disjoint_from(pi))
 	  ++j;
 	else {
-	  std::pair<NNC_Polyhedron, Polyhedra_Powerset<NNC_Polyhedron> >
+	  std::pair<NNC_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
 	    partition = linear_partition(pi, pj);
 	  new_disjuncts.upper_bound_assign(partition.second);
 	  j = tmp.drop_disjunct(j);

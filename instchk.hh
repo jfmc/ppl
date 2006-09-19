@@ -35,7 +35,7 @@ public:
   static bool valid_instantiation() {
     return true;
   }
-  static bool valid_Polyhedra_Powerset_argument() {
+  static bool valid_Pointset_Powerset_argument() {
     return true;
   }
 };
@@ -71,10 +71,10 @@ public:
 };
 
 template <typename PH>
-class Polyhedra_Powerset {
+class Pointset_Powerset {
 public:
   static bool valid_instantiation() {
-    return PH::valid_Polyhedra_Powerset_argument();
+    return PH::valid_Pointset_Powerset_argument();
   }
 };
 

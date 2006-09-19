@@ -1,4 +1,4 @@
-/* Test Polyhedra_Powerset<Grid>::BHZ03_widening_assign().
+/* Test Pointset_Powerset<Grid>::BHZ03_widening_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-typedef Polyhedra_Powerset<Grid> GSet;
+typedef Pointset_Powerset<Grid> GSet;
 
 namespace {
 

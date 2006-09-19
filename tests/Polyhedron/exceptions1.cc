@@ -1294,11 +1294,11 @@ error52() {
   C_Polyhedron ph(1);
   ph.add_constraint(A >= 1);
 
-  Polyhedra_Powerset<C_Polyhedron> ps(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> ps(2, EMPTY);
 
   try {
     // This is an incorrect use of function
-    // Polyhedra_Powerset::add_disjunct(ph): the powerset and
+    // Pointset_Powerset::add_disjunct(ph): the powerset and
     // the added disjunct should have the same space dimension.
     ps.add_disjunct(ph);
     exit(1);

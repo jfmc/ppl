@@ -117,7 +117,7 @@ print_constraints(const Parma_Polyhedra_Library::Octagonal_Shape<T>& oc,
 
 template <typename PH>
 void
-print_constraints(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
+print_constraints(const Parma_Polyhedra_Library::Pointset_Powerset<PH>& pps,
 		  const std::string& intro = "",
 		  std::ostream& s = nout) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -128,7 +128,7 @@ print_constraints(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
 
 template <typename PH>
 void
-print_congruences(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
+print_congruences(const Parma_Polyhedra_Library::Pointset_Powerset<PH>& pps,
 		  const std::string& intro = "",
 		  std::ostream& s = nout) {
   using namespace Parma_Polyhedra_Library::IO_Operators;

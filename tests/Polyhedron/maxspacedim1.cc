@@ -35,8 +35,8 @@ template dimension_type foo<Constraint_System>();
 template dimension_type foo<Generator_System>();
 template dimension_type foo<C_Polyhedron>();
 template dimension_type foo<NNC_Polyhedron>();
-template dimension_type foo<Polyhedra_Powerset<C_Polyhedron> >();
-template dimension_type foo<Polyhedra_Powerset<NNC_Polyhedron> >();
+template dimension_type foo<Pointset_Powerset<C_Polyhedron> >();
+template dimension_type foo<Pointset_Powerset<NNC_Polyhedron> >();
 
 #define PRINT(T) \
 nout << #T "::max_space_dimension() = " << T::max_space_dimension() << endl
@@ -53,8 +53,8 @@ main() TRY {
   PRINT(Generator_System);
   PRINT(C_Polyhedron);
   PRINT(NNC_Polyhedron);
-  PRINT(Polyhedra_Powerset<C_Polyhedron>);
-  PRINT(Polyhedra_Powerset<NNC_Polyhedron>);
+  PRINT(Pointset_Powerset<C_Polyhedron>);
+  PRINT(Pointset_Powerset<NNC_Polyhedron>);
 
   // FIXME.
   return 0;

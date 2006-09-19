@@ -1,4 +1,4 @@
-/* Test Polyhedra_Powerset<PH>::BHZ03_widening_assign().
+/* Test Pointset_Powerset<PH>::BHZ03_widening_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -29,7 +29,7 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  typedef Polyhedra_Powerset<TOctagonal_Shape> PSet;
+  typedef Pointset_Powerset<TOctagonal_Shape> PSet;
 
   TOctagonal_Shape p(2);
   TOctagonal_Shape q(2);

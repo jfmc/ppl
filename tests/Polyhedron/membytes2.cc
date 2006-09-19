@@ -53,7 +53,7 @@ main() TRY {
        << "dph.external_memory_in_bytes() = " << dph_external_size
        << endl;
 
-  Polyhedra_Powerset<C_Polyhedron> pph(ph);
+  Pointset_Powerset<C_Polyhedron> pph(ph);
 
   C_Polyhedron qh(3);
   qh.add_constraint(x >= 0);
@@ -62,9 +62,9 @@ main() TRY {
   qh.add_constraint(x <= 1);
   qh.add_constraint(y <= 1);
   qh.add_constraint(z <= 1);
-  Polyhedra_Powerset<C_Polyhedron> pqh(qh);
+  Pointset_Powerset<C_Polyhedron> pqh(qh);
 
-  Polyhedra_Powerset<C_Polyhedron> prh = pqh;
+  Pointset_Powerset<C_Polyhedron> prh = pqh;
   prh.poly_difference_assign(pph);
 
   const memory_size_type pph_total_size = pph.total_memory_in_bytes();

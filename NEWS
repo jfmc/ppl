@@ -16,6 +16,10 @@ o  Incremental simplex ...
 
 o  Direct_Product ...
 
+o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
+   since it can be applied to non-polyhedral abstractions, such as
+   the one offered by the Grid class.
+
 
 Bugfixes
 ========

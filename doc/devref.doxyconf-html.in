@@ -638,11 +638,11 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Powerset.defs.hh \
                          @srcdir@/../src/Powerset.inlines.hh \
                          @srcdir@/../src/Powerset.templates.hh \
-                         @srcdir@/../src/Polyhedra_Powerset.types.hh \
-                         @srcdir@/../src/Polyhedra_Powerset.defs.hh \
-                         @srcdir@/../src/Polyhedra_Powerset.inlines.hh \
-                         @srcdir@/../src/Polyhedra_Powerset.templates.hh \
-                         @srcdir@/../src/Polyhedra_Powerset.cc \
+                         @srcdir@/../src/Pointset_Powerset.types.hh \
+                         @srcdir@/../src/Pointset_Powerset.defs.hh \
+                         @srcdir@/../src/Pointset_Powerset.inlines.hh \
+                         @srcdir@/../src/Pointset_Powerset.templates.hh \
+                         @srcdir@/../src/Pointset_Powerset.cc \
                          @srcdir@/../src/algorithms.hh \
                          @srcdir@/../src/LP_Problem.types.hh \
                          @srcdir@/../src/LP_Problem.defs.hh \
