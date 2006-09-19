@@ -77,7 +77,7 @@ public:
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&)) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
   bool ascii_load(std::istream& s);

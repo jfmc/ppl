@@ -346,11 +346,11 @@ public:
 
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    ascii_dump(std::ostream&)) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
 
     Reads into a Linear_System object the information produced by the
-    output of ascii_dump(std::ostream&).  The specialized methods
+    output of ascii_dump(std::ostream&) const.  The specialized methods
     provided by Constraint_System and Generator_System take care of
     properly reading the contents of the system.
   */
