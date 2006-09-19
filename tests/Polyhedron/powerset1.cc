@@ -21,8 +21,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include <algorithm>
-#include <set>
 
 namespace {
 
@@ -121,14 +119,9 @@ operator!=(const Fcaibvp& x, const Fcaibvp& y) {
   return !(x == y);
 }
 
-} // namespace
-
-int
-main() TRY {
-  set_handlers();
-
-  // Use every public Powerset method.
-
+// Uses every public Powerset method.
+bool
+test01() {
   typedef Powerset<Fcaibvp> PS;
 
   Variable A(0);
@@ -139,54 +132,55 @@ main() TRY {
   PS ps2 = ps1;
 
   if (ps2 != ps1 || !(ps2 == ps1))
-    exit(1);
+    return false;
 
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-  nout << "ps1:" << std::endl << ps1 << std::endl;
+  using namespace IO_Operators;
+  // FIXME: why the following line does not compile?
+  //nout << "ps1:" << endl << ps1 << endl;
 
   Fcaibvp d(A);
   PS ps3(d);
 
   if (!ps1.definitely_entails(ps3))
-    exit(1);
+    return false;
 
   if (ps3.is_top())
-    exit(1);
+    return false;
 
   if (ps1.is_bottom())
-    exit(1);
+    return false;
 
-  nout << "Total memory: " << ps3.total_memory_in_bytes() << std::endl
-       << "External memory: " << ps3.external_memory_in_bytes() << std::endl;
+  nout << "Total memory: " << ps3.total_memory_in_bytes() << endl
+       << "External memory: " << ps3.external_memory_in_bytes() << endl;
 
   ps3.omega_reduce();
 
   if (ps3.size() == 0)
-    exit(1);
+    return false;
 
   if (ps3.empty())
-    exit(1);
+    return false;
 
   // Iterator.
   dimension_type count = 0;
   for (PS::iterator i = ps3.begin(); i != ps3.end(); ++i)
     ++count;
   if (count != 1)
-    exit(1);
+    return false;
 
   // Constant iterator.
   count = 0;
   for (PS::const_iterator i = ps3.begin(); i != ps3.end(); ++i)
     ++count;
   if (count != 1)
-    exit(1);
+    return false;
 
   // Reverse iterator.
   count = 0;
   for (PS::reverse_iterator i = ps3.rbegin(); i != ps3.rend(); ++i)
     ++count;
   if (count != 1)
-    exit(1);
+    return false;
 
   // Constant reverse iterator.
   count = 0;
@@ -194,56 +188,93 @@ main() TRY {
 	 ps3_rend = ps3.rend(); i != ps3_rend; ++i)
     ++count;
   if (count != 1)
-    exit(1);
+    return false;
 
   // Omega iterator typedef.
   count = 0;
   for (PS::omega_iterator i = ps3.begin(); i != ps3.end(); ++i)
     ++count;
   if (count != 1)
-    exit(1);
+    return false;
 
   ps2 = ps3;
   PS ps_empty;
   ps2.drop_disjunct(ps2.begin());
   if (ps2 != ps_empty)
-    exit(1);
+    return false;
 
   ps2 = ps3;
   ps2.drop_disjuncts(ps2.begin(),ps2.end());
   if (ps2 != ps_empty)
-    exit(1);
+    return false;
 
   ps2 = ps3;
   ps2.clear();
   if (ps2 != ps_empty)
-    exit(1);
+    return false;
 
   ps3.swap(ps2);
   ps3.swap(ps2);
   if (ps3 != ps1 || ps2 != ps_empty)
-    exit(1);
+    return false;
 
   ps2 = ps_empty;
   ps2.least_upper_bound_assign(ps3);
   if (ps2 != ps3)
-    exit(1);
+    return false;
 
   ps2 = ps_empty;
   ps2.upper_bound_assign(ps3);
   if (ps2 != ps3)
-    exit(1);
+    return false;
 
   Variable B(1);
   ps2 = ps1;
   ps2.meet_assign(ps3);
   if (ps2 != ps3)
-    exit(1);
+    return false;
 
   ps3.collapse();
   if (ps3.size() != 1)
-    exit(1);
+    return false;
 
-  return 0;
+  return true;
 }
-CATCH
+
+bool
+test02() {
+  Variable X(0);
+  Variable Y(1);
+
+  Fcaibvp XY(X);
+  XY.meet_assign(Fcaibvp(Y));
+
+  Powerset<Fcaibvp> ps;
+
+  ps.add_disjunct(Fcaibvp(X));
+  ps.add_disjunct(XY);
+  return ps.OK();
+}
+
+bool
+test03() {
+  Variable X(0);
+  Variable Y(1);
+
+  Fcaibvp XY(X);
+  XY.meet_assign(Fcaibvp(Y));
+
+  Powerset<Fcaibvp> ps;
+
+  ps.add_disjunct(XY);
+  ps.add_disjunct(Fcaibvp(X));
+  return ps.OK();
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+END_MAIN
