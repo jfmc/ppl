@@ -29,10 +29,10 @@ namespace Parma_Polyhedra_Library {
 
 template <typename D>
 bool
-Ask_Tell<D>::is_normalized() const {
-  for (const_iterator sbegin = begin(),
-	 send = end(), xi = sbegin; xi != send; ++xi)
-    for (const_iterator yi = sbegin; yi != send; ++yi)
+Ask_Tell<D>::check_normalized() const {
+  for (const_iterator x_begin = begin(),
+	 x_end = end(), xi = x_begin; xi != x_end; ++xi)
+    for (const_iterator yi = x_begin; yi != x_end; ++yi)
       if (xi != yi) {
 	if (xi->tell().definitely_entails(yi->tell())) {
 	  if (yi->ask().definitely_entails(xi->ask()))
@@ -51,19 +51,19 @@ template <typename D>
 bool
 Ask_Tell<D>::reduce() {
   bool changed = false;
-  for (iterator sbegin = begin(),
-	 send = end(), xi = sbegin; xi != send; ++xi)
-    for (iterator yi = sbegin, yin; yi != send; yi = yin) {
-      yin = yi;
-      ++yin;
+  for (iterator x_begin = begin(),
+	 x_end = end(), xi = x_begin; xi != x_end; ++xi)
+    for (iterator yi = x_begin; yi != x_end; ) {
       if (xi != yi
 	  && yi->ask().definitely_entails(xi->ask())
 	  && xi->tell().definitely_entails(yi->tell())) {
-	erase(yi);
-	sbegin = begin();
-	send = end();
+	yi = erase(yi);
+	x_begin = begin();
+	x_end = end();
 	changed = true;
       }
+      else
+	++yi;
     }
   assert(OK());
   return changed;
@@ -73,13 +73,13 @@ template <typename D>
 bool
 Ask_Tell<D>::deduce() {
   bool changed = false;
-  for (iterator sbegin = begin(),
-	 send = end(), xi = sbegin; xi != send; ++xi) {
+  for (iterator x_begin = begin(),
+	 x_end = end(), xi = x_begin; xi != x_end; ++xi) {
     D& xi_tell = xi->tell();
     bool tell_changed;
     do {
       tell_changed = false;
-      for (iterator yi = sbegin; yi != send; ++yi) {
+      for (iterator yi = x_begin; yi != x_end; ++yi) {
 	if (xi != yi
 	    && xi_tell.definitely_entails(yi->ask())
 	    && !xi_tell.definitely_entails(yi->tell())) {
@@ -99,10 +99,8 @@ template <typename D>
 bool
 Ask_Tell<D>::absorb() {
   bool changed = false;
-  for (iterator sbegin = begin(),
-	 send = end(), xi = sbegin, xin; xi != send; xi = xin) {
-    xin = xi;
-    ++xin;
+  for (iterator x_begin = begin(),
+	 x_end = end(), xi = x_begin; xi != x_end; ) {
     D& xi_ask = xi->ask();
     D& xi_tell = xi->tell();
     // We may strengthen the ask component of the pair referenced by `xi'.
@@ -113,7 +111,7 @@ Ask_Tell<D>::absorb() {
     bool ask_changed;
     do {
       ask_changed = false;
-      for (iterator yi = sbegin; yi != send; ++yi) {
+      for (iterator yi = x_begin; yi != x_end; ++yi) {
 	if (xi != yi) {
 	  D& yi_ask = yi->ask();
 	  D& yi_tell = yi->tell();
@@ -129,11 +127,15 @@ Ask_Tell<D>::absorb() {
     if (must_check_xi_pair) {
       changed = true;
       if (xi_ask.definitely_entails(xi_tell)) {
-	erase(xi);
-	sbegin = begin();
-	send = end();
+	xi = erase(xi);
+	x_begin = begin();
+	x_end = end();
       }
+      else
+	++xi;
     }
+    else
+      ++xi;
   }
   if (changed)
     (void) reduce();
@@ -144,9 +146,9 @@ Ask_Tell<D>::absorb() {
 template <typename D>
 bool
 Ask_Tell<D>::OK() const {
-  for (typename Ask_Tell<D>::const_iterator i = begin(),
-	 send = end(); i != send; ++i) {
-    const Ask_Tell_Pair<D>& p = *i;
+  for (typename Ask_Tell<D>::const_iterator xi = begin(),
+	 x_end = end(); xi != x_end; ++xi) {
+    const Ask_Tell_Pair<D>& p = *xi;
     if (!p.ask().OK())
       return false;
     if (!p.tell().OK())
@@ -159,6 +161,13 @@ Ask_Tell<D>::OK() const {
 #endif
       return false;
     }
+  }
+  if (normalized && !check_normalized()) {
+#ifndef NDEBUG
+    std::cerr << "Ask_Tell claims to be normalized, but it is not!"
+	      << std::endl;
+#endif
+    return false;
   }
   return true;
 }

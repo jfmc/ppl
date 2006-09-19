@@ -192,8 +192,6 @@ public:
 
   //@} // Member Functions that May Modify the Ask_Tell element
 
-  Ask_Tell& bottom();
-
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
     Seeing an ask-and-tell agent as a set of tuples, this method
@@ -217,6 +215,9 @@ private:
 
   //! The sequence container holding powerset's elements.
   Sequence sequence;
+
+  //! If <CODE>true</CODE>, \p *this is normalized.
+  mutable bool normalized;
 
 public:
   typedef typename Sequence::size_type size_type;
@@ -292,10 +293,22 @@ protected:
   bool deduce();
 
   bool absorb();
-  void normalize();
 
-  bool is_normalized() const;
+public: // FIXME
+  void normalize() const;
+protected:
+
   bool probe(const D& tellv, const D& askv) const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is normalized.
+  bool is_normalized() const;
+
+private:
+  /*! \brief
+    Does the hard work of checking whether \p *this is normalized
+    and returns <CODE>true</CODE> if and only if it is.
+  */
+  bool check_normalized() const;
 };
 
 

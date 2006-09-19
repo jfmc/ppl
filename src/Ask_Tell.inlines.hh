@@ -83,16 +83,18 @@ Ask_Tell_Pair<D>::definitely_entails(const Ask_Tell_Pair& y) const {
 }
 
 template <typename D>
-Ask_Tell<D>::Ask_Tell() {
+Ask_Tell<D>::Ask_Tell()
+  : sequence(), normalized(true) {
 }
 
 template <typename D>
 Ask_Tell<D>::Ask_Tell(const Ask_Tell<D>& y)
-  : sequence(y.sequence) {
+  : sequence(y.sequence), normalized(y.normalized) {
 }
 
 template <typename D>
-Ask_Tell<D>::Ask_Tell(const D& ask, const D& tell) {
+Ask_Tell<D>::Ask_Tell(const D& ask, const D& tell)
+  : sequence(), normalized(true) {
   if (!tell.is_top())
     pair_insert(ask, tell);
 }
@@ -106,6 +108,7 @@ template <typename D>
 Ask_Tell<D>&
 Ask_Tell<D>::operator=(const Ask_Tell<D>& y) {
   sequence = y.sequence;
+  normalized = y.normalized;
   return *this;
 }
 
@@ -113,6 +116,7 @@ template <typename D>
 inline void
 Ask_Tell<D>::swap(Ask_Tell& y) {
   std::swap(sequence, y.sequence);
+  std::swap(normalized, y.normalized);
 }
 
 template <typename D>
@@ -174,6 +178,7 @@ void
 Ask_Tell<D>::pair_insert_good(const D& ask, const D& tell) {
   assert(!ask.definitely_entails(tell));
   sequence.push_back(Ask_Tell_Pair<D>(ask, tell));
+  normalized = false;
 }
 
 template <typename D>
@@ -188,41 +193,35 @@ Ask_Tell<D>::pair_insert(const D& ask, const D& tell) {
   }
 }
 
-
-//
-// Preconditions:
-//
-//     the map is well formed.
-//
-// Postconditions:
-//
-//     the map is well formed and there are no two pairs x and y such that
-//     x.ASK.definitely_entails(y.ASK) && y.TELL.definitely_entails(x.TELL).
-
 template <typename D>
-void Ask_Tell<D>::normalize() {
-  reduce();
-  deduce();
-  absorb();
-  assert(is_normalized());
+void
+Ask_Tell<D>::normalize() const {
+  if (normalized)
+    return;
+
+  Ask_Tell& x = const_cast<Ask_Tell&>(*this);
+  x.reduce();
+  x.deduce();
+  x.absorb();
+  normalized = true;
+
+  assert(OK());
 }
 
-// Bottom
-
 template <typename D>
-Ask_Tell<D>&
-Ask_Tell<D>::bottom() {
-  D top, bottom;
-  erase(begin(), end());
-  bottom.bottom();
-  pair_insert_good(top, bottom);
-  return *this;
+bool
+Ask_Tell<D>::is_normalized() const {
+  if (!normalized && check_normalized())
+    normalized = true;
+  return normalized;
 }
 
 template <typename D>
 bool
 Ask_Tell<D>::definitely_entails(const Ask_Tell<D>& y) const {
   const Ask_Tell<D>& x = *this;
+  x.normalize();
+  y.normalize();
   bool found = true;
   for (const_iterator x_begin = x.begin(), x_end = x.end(), y_end = y.end(),
 	 yi = y.begin(); found && yi != y_end; ++yi) {
@@ -236,10 +235,8 @@ Ask_Tell<D>::definitely_entails(const Ask_Tell<D>& y) const {
 template <typename D>
 Ask_Tell<D>&
 Ask_Tell<D>::add_pair(const D& ask, const D& tell) {
-  if (!ask.definitely_entails(tell)) {
+  if (!ask.definitely_entails(tell))
     pair_insert(ask, tell);
-    normalize();
-  }
   assert(OK());
   return *this;
 }
@@ -258,8 +255,6 @@ bool operator!=(const Ask_Tell<D>& x, const Ask_Tell<D>& y) {
   return !(x == y);
 }
 
-// Simple tests
-
 template <typename D>
 bool
 Ask_Tell<D>::is_top() const {
@@ -269,18 +264,21 @@ Ask_Tell<D>::is_top() const {
 template <typename D>
 bool
 Ask_Tell<D>::is_bottom() const {
-  const_iterator i = begin();
-  const Ask_Tell_Pair<D> p = *i;
-  bool r = p.ask().is_top() && p.tell().is_bottom();
-  assert(!r || ++i == end());
-  return r;
+  // Must normalize for correctness.
+  const_iterator xi = begin();
+  const_iterator x_end = end();
+  return xi != x_end
+    && xi->ask().is_top() && xi->tell().is_bottom()
+    && ++xi == x_end;
 }
 
 template <typename D>
 void
 Ask_Tell<D>::meet_assign(const Ask_Tell<D>& y) {
-  std::copy(y.begin(), y.end(), back_inserter(sequence));
-  normalize();
+  if (!y.empty()) {
+    std::copy(y.begin(), y.end(), back_inserter(sequence));
+    normalized = false;
+  }
   assert(OK());
 }
 
@@ -288,6 +286,8 @@ template <typename D>
 void
 Ask_Tell<D>::upper_bound_assign(const Ask_Tell& y) {
   const Ask_Tell& x = *this;
+  x.normalize();
+  y.normalize();
   Ask_Tell<D> z;
   for (typename Ask_Tell<D>::const_iterator xi = x.begin(),
 	 x_end = x.end(); xi != x_end; ++xi)
@@ -300,7 +300,6 @@ Ask_Tell<D>::upper_bound_assign(const Ask_Tell& y) {
       if (!ask.definitely_entails(tell))
 	z.pair_insert(ask, tell);
     }
-  z.normalize();
   *this = z;
   assert(OK());
 }
