@@ -839,7 +839,7 @@ AC_CONFIG_FILES(Makefile
                 tests/BD_Shape/Makefile
                 tests/Grid/Makefile
                 tests/LP_Problem/Makefile
-                tests/Octagon/Makefile
+                tests/Octagonal_Shape/Makefile
                 tests/Polyhedron/Makefile
                 utils/Makefile
                 m4/Makefile
