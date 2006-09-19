@@ -287,7 +287,9 @@ Polyhedra_Powerset<PH>::pairwise_reduce() {
 	const PH& pj = sj->element();
 	if (pi.upper_bound_assign_if_exact(pj)) {
 	  marked[si_index] = marked[sj_index] = true;
-	  new_x.add_non_bottom_disjunct(pi);
+	  // FIXME: check whether the preservation of reduction was
+	  // actually meant here.
+	  new_x.add_non_bottom_disjunct_preserve_reduction(pi);
 	  ++deleted;
 	  goto next;
 	}
@@ -301,7 +303,9 @@ Polyhedra_Powerset<PH>::pairwise_reduce() {
     for (const_iterator xi = x.begin(),
 	   x_end = x.end(); xi != x_end; ++xi, ++xi_index)
       if (!marked[xi_index])
-	nx_begin = new_x.add_non_bottom_disjunct(*xi, nx_begin, nx_end);
+	nx_begin = new_x.add_non_bottom_disjunct_preserve_reduction(*xi,
+								    nx_begin,
+								    nx_end);
     std::swap(x.sequence, new_x.sequence);
     n -= deleted;
   } while (deleted > 0);
@@ -339,7 +343,9 @@ BGP99_heuristics_assign(const Polyhedra_Powerset& y, Widening wf) {
       if (pi.contains(pj)) {
 	PH pi_copy = pi;
 	wf(pi_copy, pj);
-	new_x.add_non_bottom_disjunct(pi_copy);
+	// FIXME: check whether the preservation of reduction was
+	// actually meant here.
+	new_x.add_non_bottom_disjunct_preserve_reduction(pi_copy);
 	marked[i_index] = true;
       }
     }
@@ -348,7 +354,9 @@ BGP99_heuristics_assign(const Polyhedra_Powerset& y, Widening wf) {
   i_index = 0;
   for (const_iterator i = x_begin; i != x_end; ++i, ++i_index)
     if (!marked[i_index])
-      nx_begin = new_x.add_non_bottom_disjunct(*i, nx_begin, nx_end);
+      nx_begin = new_x.add_non_bottom_disjunct_preserve_reduction(*i,
+								  nx_begin,
+								  nx_end);
   std::swap(x.sequence, new_x.sequence);
   assert(x.OK());
   assert(x.is_omega_reduced());

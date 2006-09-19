@@ -118,26 +118,14 @@ Polyhedra_Powerset<C_Polyhedron>
 template <typename PH>
 inline
 Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Constraint_System& cs)
-  // FIXME: calling Base(Determinate<PH>(cs)) will automatically handle
-  // the flag `reduced', but it will also force a non-emptiness test
-  // on the constraint system `cs'.
-  : Base(), space_dim(cs.space_dimension()) {
-  Polyhedra_Powerset& x = *this;
-  x.sequence.push_back(Determinate<PH>(cs));
-  x.reduced = false;
-  assert(x.OK());
+  : Base(Determinate<PH>(cs)), space_dim(cs.space_dimension()) {
+  assert(OK());
 }
 
 template <typename PH>
 inline
 Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Congruence_System& cgs)
-  // FIXME: calling Base(Determinate<PH>(cgs)) will automatically handle
-  // the flag `reduced', but it will also force a non-emptiness test
-  // on the congruence system `cgs'.
-  : Base(), space_dim(cgs.space_dimension()) {
-  Polyhedra_Powerset& x = *this;
-  x.sequence.push_back(Determinate<PH>(cgs));
-  x.reduced = false;
+  : Base(Determinate<PH>(cgs)), space_dim(cgs.space_dimension()) {
   assert(OK());
 }
 

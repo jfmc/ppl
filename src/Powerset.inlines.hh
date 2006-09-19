@@ -306,9 +306,8 @@ Powerset<D>::Powerset()
 template <typename D>
 inline
 Powerset<D>::Powerset(const D& d)
-  : sequence(), reduced(true) {
-  if (!d.is_bottom())
-    sequence.push_back(d);
+  : sequence(), reduced(false) {
+  sequence.push_back(d);
   assert(OK());
 }
 
@@ -319,16 +318,16 @@ Powerset<D>::~Powerset() {
 
 template <typename D>
 inline void
-Powerset<D>::add_non_bottom_disjunct(const D& d) {
-  assert(!d.is_bottom());
-  add_non_bottom_disjunct(d, begin(), end());
+Powerset<D>::add_non_bottom_disjunct_preserve_reduction(const D& d) {
+  // !d.is_bottom() is asserted by the callee.
+  add_non_bottom_disjunct_preserve_reduction(d, begin(), end());
 }
 
 template <typename D>
 inline void
 Powerset<D>::add_disjunct(const D& d) {
-  if (!d.is_bottom())
-    add_non_bottom_disjunct(d);
+  sequence.push_back(d);
+  reduced = false;
 }
 
 /*! \relates Powerset */

@@ -385,16 +385,21 @@ protected:
     elements in these positions that would be made Omega-redundant by the
     addition of \p d are dropped and \p d is added to the reduced
     sequence.
+    If \p *this is reduced before an invocation of this method,
+    it will be reduced upon successful return from the method.
   */
-  iterator add_non_bottom_disjunct(const D& d,
-				   iterator first,
-				   iterator last);
+  iterator add_non_bottom_disjunct_preserve_reduction(const D& d,
+						      iterator first,
+						      iterator last);
 
   /*! \brief
-    Adds to \p *this the disjunct \p d,
-    assuming \p d is not the bottom element.
+    Adds to \p *this the disjunct \p d, assuming \p d is not the
+    bottom element and preserving Omega-reduction.
+
+    If \p *this is reduced before an invocation of this method,
+    it will be reduced upon successful return from the method.
   */
-  void add_non_bottom_disjunct(const D& d);
+  void add_non_bottom_disjunct_preserve_reduction(const D& d);
 
   /*! \brief
     Assigns to \p *this the result of applying \p op_assign pairwise
