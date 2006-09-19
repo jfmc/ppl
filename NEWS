@@ -10,7 +10,10 @@ NEWS for version 0.10  (released date to be decided)
 New and Changed Features
 ========================
 
-o  Octagons ...
+o  The new class Octagonal_Shape provides an implementation of the domain
+   of octagonal shapes (including a provably correct widening) as proposed
+   by Roberto Bagnara, Patricia Hill, Elena Mazzi and Enea Zaffanella in
+   their SAS 2005 paper.
 
 o  Incremental simplex ...
 
