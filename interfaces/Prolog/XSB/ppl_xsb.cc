@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl.hh"
 #include "pwl.hh"
 #include <cinterf.h>
-#include <cstdio>
 
 // In XSB versions up to and including 2.7.1, <error_xsb.h> does not
 // come with the extern "C" wrapper.
@@ -252,10 +251,7 @@ Prolog_construct_cons(Prolog_term_ref& c,
 */
 inline void
 Prolog_raise_exception(Prolog_term_ref t) {
-  // FIXME: how should we set the second parameter to xsb_throw?
-  printf("In xsb_throw()!!!\n");
-  fprintf(stderr, "In xsb_throw()!!!\n");
-  xsb_throw(t, 100*sizeof(Cell));
+  xsb_throw(t);
 }
 
 /*!
