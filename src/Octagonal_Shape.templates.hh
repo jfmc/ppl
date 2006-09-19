@@ -23,8 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Octagonal_Shape_templates_hh
 #define PPL_Octagonal_Shape_templates_hh 1
 
-#include "Poly_Con_Relation.defs.hh"
-#include "Poly_Gen_Relation.defs.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -490,8 +488,8 @@ Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape& y) {
   // If `*this' is an empty 0-dim space octagon, then it is sufficient
   // to adjust the dimension of the vector space.
   if (space_dim == 0 && marked_empty()) {
-      add_space_dimensions_and_embed(y.space_dim);
-      assert(OK());
+    add_space_dimensions_and_embed(y.space_dim);
+    assert(OK());
     return;
   }
 
@@ -618,10 +616,10 @@ Octagonal_Shape<T>::is_strong_coherent() const {
     const N& m_i_ci = m_i[coherent_index(i)];
     for (dimension_type j = matrix.row_size(i); j-- > 0; )
       // Note: on the main diagonal only PLUS_INFINITY can occur.
-      if (i != j){
+      if (i != j) {
 	const N& m_cj_j = matrix[coherent_index(j)][j];
-	if (!is_plus_infinity(m_i_ci) &&
-	    !is_plus_infinity(m_cj_j)) {
+	if (!is_plus_infinity(m_i_ci)
+	    && !is_plus_infinity(m_cj_j)) {
 	  // Compute (m_i_ci + m_cj_j)/2 into `semi_sum',
 	  // rounding the result towards plus infinity.
 	  add_assign_r(semi_sum, m_i_ci, m_cj_j, ROUND_UP);
@@ -2258,9 +2256,9 @@ Octagonal_Shape<T>::CC76_narrowing_assign(const Octagonal_Shape& y) {
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
        iend = matrix.element_end(); i != iend; ++i, ++j) {
-     if (!is_plus_infinity(*i) &&
-	 !is_plus_infinity(*j) &&
-	 *i != *j){
+     if (!is_plus_infinity(*i)
+	 && !is_plus_infinity(*j)
+	 && *i != *j) {
       *i = *j;
       is_oct_changed = true;
     }
