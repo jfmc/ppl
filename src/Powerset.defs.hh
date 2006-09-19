@@ -248,11 +248,13 @@ public:
     while still ensuring a correct handling of Omega-reduction.
   */
   typedef omega_iterator iterator;
+
   //! A bidirectional %const_iterator on the disjuncts of a Powerset element.
   typedef omega_const_iterator const_iterator;
 
   //! The reverse iterator type built from Powerset::iterator.
   typedef std::reverse_iterator<iterator> reverse_iterator;
+
   //! The reverse iterator type built from Powerset::const_iterator.
   typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -298,14 +300,17 @@ public:
     is not empty; otherwise, returns the before-the-start reverse_iterator.
   */
   reverse_iterator rbegin();
+
   //! Returns the before-the-start reverse_iterator.
   reverse_iterator rend();
+
   /*! \brief
     Returns a const_reverse_iterator pointing to the last disjunct,
     if \p *this is not empty; otherwise, returns the before-the-start
     const_reverse_iterator.
   */
   const_reverse_iterator rbegin() const;
+
   //! Returns the before-the-start const_reverse_iterator.
   const_reverse_iterator rend() const;
 
