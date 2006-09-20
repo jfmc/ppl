@@ -108,6 +108,7 @@ Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
 globals.types.hh \
+iterator_to_const.types.hh \
 distances.types.hh \
 Interval.types.hh \
 Bounding_Box.types.hh \
@@ -175,6 +176,8 @@ Coefficient.defs.hh \
 Coefficient.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
+iterator_to_const.defs.hh \
+iterator_to_const.inlines.hh \
 distances.defs.hh \
 distances.inlines.hh \
 Interval.defs.hh \
@@ -276,6 +279,14 @@ Pointset_Powerset.types.hh \
 Pointset_Powerset.defs.hh \
 Pointset_Powerset.inlines.hh \
 Pointset_Powerset.templates.hh \
+Ask_Tell.types.hh \
+Ask_Tell.defs.hh \
+Ask_Tell.inlines.hh \
+Ask_Tell.templates.hh \
+Pointset_Ask_Tell.types.hh \
+Pointset_Ask_Tell.defs.hh \
+Pointset_Ask_Tell.inlines.hh \
+Pointset_Ask_Tell.templates.hh \
 Direct_Product.types.hh \
 Direct_Product.defs.hh \
 Direct_Product.inlines.hh \
@@ -328,6 +339,7 @@ Grid_widenings.cc \
 BD_Shape.cc \
 Octagonal_Shape.cc \
 Pointset_Powerset.cc \
+Pointset_Ask_Tell.cc \
 Row.cc \
 Linear_Row.cc \
 Saturation_Matrix.cc \

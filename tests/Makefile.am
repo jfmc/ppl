@@ -20,7 +20,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = . LP_Problem Octagonal_Shape BD_Shape Polyhedron Grid
+SUBDIRS = . Ask_Tell LP_Problem Octagonal_Shape BD_Shape Polyhedron Grid
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
 

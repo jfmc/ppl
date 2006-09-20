@@ -836,6 +836,7 @@ AC_CONFIG_FILES(Makefile
                 src/version.hh
                 src/ppl-config.cc
                 tests/Makefile
+                tests/Ask_Tell/Makefile
                 tests/BD_Shape/Makefile
                 tests/Grid/Makefile
                 tests/LP_Problem/Makefile

@@ -24,10 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Ask_Tell_defs_hh
 
 #include "Ask_Tell.types.hh"
-// #include "Constraint_System.types.hh"
-// #include "Constraint.types.hh"
-// #include "Variable.defs.hh"
-// #include "globals.defs.hh"
+#include "iterator_to_const.defs.hh"
 #include <iosfwd>
 #include <list>
 
@@ -92,7 +89,7 @@ private:
   D t;
 };
 
-//! The ask and tell construction on constraint systems.
+//! The ask and tell construction on a base-level domain.
 /*!
   This class offers a generic implementation of <EM>ask-and-tell
   constraint systems</EM> as defined in \ref Bag98 "[Bag98]".
@@ -130,7 +127,7 @@ public:
 
   //@} // Constructors and Destructor
 
-  //! \name Member Functions that Do Not Modify the Ask_Tell Element
+  //! \name Member Functions that Do Not Modify the Ask_Tell Object
   //@{
 
   /*! \brief
@@ -170,9 +167,133 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  //@} // Member Functions that Do Not Modify the Ask_Tell Element
+  //@} // Member Functions that Do Not Modify the Ask_Tell Object
 
-  //! \name Member Functions that May Modify the Ask_Tell Element
+protected:
+  //! An ask-tell agent is composed of pairs.
+  typedef Ask_Tell_Pair<D> Pair;
+
+  //! An ask-tell agent is implemented as a sequence of ask-tell pairs.
+  /*!
+    The particular sequence employed must support efficient deletion
+    in any position and efficient back insertion.
+  */
+  typedef std::list<Ask_Tell_Pair<D> > Sequence;
+
+  //! Alias for the low-level iterator on the pairs.
+  typedef typename Sequence::iterator Sequence_iterator;
+
+  //! Alias for the low-level %const_iterator on the pairs.
+  typedef typename Sequence::const_iterator Sequence_const_iterator;
+
+  //! The sequence container holding the pairs/
+  Sequence sequence;
+
+  //! If <CODE>true</CODE>, \p *this is normalized.
+  mutable bool normalized;
+
+public:
+  // Sequence manipulation types, accessors and modifiers
+  typedef typename Sequence::size_type size_type;
+  typedef typename Sequence::value_type value_type;
+
+  /*! \brief
+    Alias for a <EM>read-only</EM> bidirectional %iterator on the
+    pairs an Ask_Tell object.
+
+    By using this iterator type, the pairs cannot be overwritten,
+    but they can be removed using methods
+    <CODE>drop_pair(iterator position)</CODE> and
+    <CODE>drop_pairs(iterator first, iterator last)</CODE>,
+    while still ensuring a correct handling of normalization.
+  */
+  typedef iterator_to_const<Sequence> iterator;
+
+  //! A bidirectional %const_iterator on the disjuncts of a Powerset element.
+  typedef const_iterator_to_const<Sequence> const_iterator;
+
+  //! The reverse iterator type built from Powerset::iterator.
+  typedef std::reverse_iterator<iterator> reverse_iterator;
+
+  //! The reverse iterator type built from Powerset::const_iterator.
+  typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+
+  //! \name Member Functions for the Direct Manipulation of Pairs
+  //@{
+
+  /*! \brief
+    Normalizes the pairs in \p *this.
+
+    This method is declared <CODE>const</CODE> because, even though
+    normalization may change the syntactic representation of \p *this,
+    its semantics will be unchanged.
+  */
+  void normalize() const;
+
+  //! Returns the number of pairs.
+  size_type size() const;
+
+  //! Returns <CODE>true</CODE> if and only if there are no pairs in \p *this.
+  bool empty() const;
+
+  /*! \brief
+    Returns an iterator pointing to the first pair, if \p *this
+    is not empty; otherwise, returns the past-the-end iterator.
+  */
+  iterator begin();
+
+  //! Returns the past-the-end iterator.
+  iterator end();
+
+  /*! \brief
+    Returns a const_iterator pointing to the first pair, if \p *this
+    is not empty; otherwise, returns the past-the-end const_iterator.
+  */
+  const_iterator begin() const;
+
+  //! Returns the past-the-end const_iterator.
+  const_iterator end() const;
+
+  /*! \brief
+    Returns a reverse_iterator pointing to the last pair, if \p *this
+    is not empty; otherwise, returns the before-the-start reverse_iterator.
+  */
+  reverse_iterator rbegin();
+
+  //! Returns the before-the-start reverse_iterator.
+  reverse_iterator rend();
+
+  /*! \brief
+    Returns a const_reverse_iterator pointing to the last pair,
+    if \p *this is not empty; otherwise, returns the before-the-start
+    const_reverse_iterator.
+  */
+  const_reverse_iterator rbegin() const;
+
+  //! Returns the before-the-start const_reverse_iterator.
+  const_reverse_iterator rend() const;
+
+  //! Adds to \p *this the pair \p p.
+  Ask_Tell& add_pair(const Ask_Tell_Pair<D>& p);
+
+  //! Adds to \p *this the pair constituted by \p ask and \p tell.
+  Ask_Tell& add_pair(const D& ask, const D& tell);
+
+  /*! \brief
+    Drops the pair in \p *this pointed to by \p position, returning
+    an iterator to the pair following \p position.
+  */
+  iterator drop_pair(iterator position);
+
+  //! Drops all the pairs from \p first to \p last (excluded).
+  void drop_pairs(iterator first, iterator last);
+
+  //! Drops all the pairs, making \p *this an empty powerset.
+  void clear();
+
+  //@} // Member Functions for the Direct Manipulation of Pairs
+
+  //! \name Member Functions that May Modify the Ask_Tell Object
   //@{
 
   /*! \brief
@@ -192,85 +313,10 @@ public:
 
   //@} // Member Functions that May Modify the Ask_Tell element
 
-  //! Assigns to \p *this the concatenation of \p *this and \p y.
-  /*!
-    Seeing an ask-and-tell agent as a set of tuples, this method
-    assigns to \p *this all the tuples that can be obtained by
-    concatenating, in the order given, a tuple of \p *this with
-    a tuple of \p y.
-  */
-  void concatenate_assign(const Ask_Tell& y);
-
-
-  template <typename Partial_Function>
-  void map_space_dimensions(const Partial_Function& pfunc);
-
-private:
-  //! An ask-tell agent is implemented as a sequence of ask-tell pairs
-  /*!
-    The particular sequence employed must support efficient deletion
-    in any position and efficient back insertion.
-  */
-  typedef std::list<Ask_Tell_Pair<D> > Sequence;
-
-  //! The sequence container holding powerset's elements.
-  Sequence sequence;
-
-  //! If <CODE>true</CODE>, \p *this is normalized.
-  mutable bool normalized;
-
-public:
-  typedef typename Sequence::size_type size_type;
-
-  size_type size() const;
-
-  typedef typename Sequence::iterator iterator;
-  typedef typename Sequence::const_iterator const_iterator;
-  typedef typename Sequence::reverse_iterator reverse_iterator;
-  typedef typename Sequence::const_reverse_iterator const_reverse_iterator;
-  typedef typename Sequence::value_type value_type;
-
-  iterator begin();
-  const_iterator begin() const;
-
-  iterator end();
-  const_iterator end() const;
-
-  reverse_iterator rbegin();
-  const_reverse_iterator rbegin() const;
-
-  reverse_iterator rend();
-  const_reverse_iterator rend() const;
-
-  //! \name Member Functions for the Direct Manipulation of Pairs
-  //@{
-
-  //! Adds to \p *this the pair constituted by \p ask and \p tell.
-  Ask_Tell& add_pair(const D& ask, const D& tell);
-
-  /*! \brief
-    Drops the pair in \p *this pointed to by \p position, returning
-    an iterator to the pair following \p position.
-  */
-  iterator drop_pair(iterator position);
-
-  //! Drops all the pairs from \p first to \p last (excluded).
-  void drop_pairs(iterator first, iterator last);
-
-  //! Drops all the pairs, making \p *this an empty powerset.
-  void clear();
-
-  //@} // Member Functions for the Direct Manipulation of Pairs
-
-//protected:
-  iterator erase(iterator first, iterator last) {
-    return sequence.erase(first, last);
-  }
-  iterator erase(iterator position) {
-    return sequence.erase(position);
-  }
-
 protected:
+  //! Returns <CODE>true</CODE> if and only if \p *this is normalized.
+  bool is_normalized() const;
+
   void pair_insert(const D& a, const D& t);
   void pair_insert_good(const D& a, const D& t);
 
@@ -294,21 +340,14 @@ protected:
 
   bool absorb();
 
-public: // FIXME
-  void normalize() const;
-protected:
-
-  bool probe(const D& tellv, const D& askv) const;
-
-  //! Returns <CODE>true</CODE> if and only if \p *this is normalized.
-  bool is_normalized() const;
-
-private:
   /*! \brief
     Does the hard work of checking whether \p *this is normalized
     and returns <CODE>true</CODE> if and only if it is.
   */
   bool check_normalized() const;
+
+protected:
+  bool probe(const D& tellv, const D& askv) const;
 };
 
 

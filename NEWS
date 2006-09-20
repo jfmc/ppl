@@ -25,6 +25,10 @@ o  Added support for the incremental solution of LP problems: it is now
 
 o  Direct_Product ...
 
+o  Ask_Tell ...
+
+o  Pointset_Ask_Tell ...
+
 o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
    since it can be applied to non-polyhedral abstractions, such as
    the one offered by the Grid class.

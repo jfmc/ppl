@@ -51,15 +51,15 @@ template <typename D>
 bool
 Ask_Tell<D>::reduce() {
   bool changed = false;
-  for (iterator x_begin = begin(),
-	 x_end = end(), xi = x_begin; xi != x_end; ++xi)
-    for (iterator yi = x_begin; yi != x_end; ) {
+  for (Sequence_iterator x_begin = sequence.begin(),
+	 x_end = sequence.end(), xi = x_begin; xi != x_end; ++xi)
+    for (Sequence_iterator yi = x_begin; yi != x_end; ) {
       if (xi != yi
 	  && yi->ask().definitely_entails(xi->ask())
 	  && xi->tell().definitely_entails(yi->tell())) {
-	yi = erase(yi);
-	x_begin = begin();
-	x_end = end();
+	yi = sequence.erase(yi);
+	x_begin = sequence.begin();
+	x_end = sequence.end();
 	changed = true;
       }
       else
@@ -73,13 +73,13 @@ template <typename D>
 bool
 Ask_Tell<D>::deduce() {
   bool changed = false;
-  for (iterator x_begin = begin(),
-	 x_end = end(), xi = x_begin; xi != x_end; ++xi) {
+  for (Sequence_iterator x_begin = sequence.begin(),
+	 x_end = sequence.end(), xi = x_begin; xi != x_end; ++xi) {
     D& xi_tell = xi->tell();
     bool tell_changed;
     do {
       tell_changed = false;
-      for (iterator yi = x_begin; yi != x_end; ++yi) {
+      for (Sequence_iterator yi = x_begin; yi != x_end; ++yi) {
 	if (xi != yi
 	    && xi_tell.definitely_entails(yi->ask())
 	    && !xi_tell.definitely_entails(yi->tell())) {
@@ -99,8 +99,8 @@ template <typename D>
 bool
 Ask_Tell<D>::absorb() {
   bool changed = false;
-  for (iterator x_begin = begin(),
-	 x_end = end(), xi = x_begin; xi != x_end; ) {
+  for (Sequence_iterator x_begin = sequence.begin(),
+	 x_end = sequence.end(), xi = x_begin; xi != x_end; ) {
     D& xi_ask = xi->ask();
     D& xi_tell = xi->tell();
     // We may strengthen the ask component of the pair referenced by `xi'.
@@ -111,7 +111,7 @@ Ask_Tell<D>::absorb() {
     bool ask_changed;
     do {
       ask_changed = false;
-      for (iterator yi = x_begin; yi != x_end; ++yi) {
+      for (Sequence_iterator yi = x_begin; yi != x_end; ++yi) {
 	if (xi != yi) {
 	  D& yi_ask = yi->ask();
 	  D& yi_tell = yi->tell();
@@ -127,9 +127,9 @@ Ask_Tell<D>::absorb() {
     if (must_check_xi_pair) {
       changed = true;
       if (xi_ask.definitely_entails(xi_tell)) {
-	xi = erase(xi);
-	x_begin = begin();
-	x_end = end();
+	xi = sequence.erase(xi);
+	x_begin = sequence.begin();
+	x_end = sequence.end();
       }
       else
 	++xi;
@@ -155,6 +155,7 @@ Ask_Tell<D>::OK() const {
       return false;
     if (p.ask().definitely_entails(p.tell())) {
 #ifndef NDEBUG
+      using namespace IO_Operators;
       std::cerr << "Illegal agent in ask-and-tell: "
 		<< p.ask() << " -> " << p.tell()
 		<< std::endl;
