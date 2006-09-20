@@ -198,6 +198,300 @@ test08() {
   }
 }
 
+void
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(A <= 0);
+  dimension_type cs_space_dimension = cs.space_dimension();
+
+  Linear_Expression cost(A + B);
+
+  try {
+    // This tries to make the cost function incompatible with the LP_Problem
+    // space dimension.
+    LP_Problem lp(cs_space_dimension, cs, cost, MAXIMIZATION);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(A <= 0);
+
+  Linear_Expression cost(A + B);
+
+  try {
+     // This tries to overflow the maximum space dimension.
+    LP_Problem lp(LP_Problem::max_space_dimension() + 1, cs, cost,
+		  MAXIMIZATION);
+    exit(1);
+  }
+  catch (length_error& e) {
+    nout << "length_error: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+test11() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(A < 0);
+  dimension_type cs_space_dimension = cs.space_dimension();
+
+  Linear_Expression cost(A + B);
+
+  try {
+     // This tries to build an LP_Problem with strict inequalities.
+    LP_Problem lp(cs_space_dimension, cs, cost, MAXIMIZATION);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(B <= 0);
+  dimension_type cs_space_dimension = cs.space_dimension();
+
+  Linear_Expression cost(A + B);
+
+  LP_Problem lp(cs_space_dimension, cs, cost, MAXIMIZATION);
+  try {
+    // This tries to add Constraint that exceeds the LP_Problem
+    // space dimension.
+    lp.add_constraint(C >= 0);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+test13() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(B <= 0);
+  dimension_type cs_space_dimension = cs.space_dimension();
+
+  Linear_Expression cost(A + B);
+
+  LP_Problem lp(cs_space_dimension, cs, cost, MAXIMIZATION);
+  try {
+    // This tries to add a strict inequality.
+    lp.add_constraint(B > 0);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+test14() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(B <= 0);
+  dimension_type cs_space_dimension = cs.space_dimension();
+
+  Linear_Expression cost(A + B);
+
+  Constraint_System incompatible_cs;
+  incompatible_cs.insert(C >= 6);
+  incompatible_cs.insert(D <= 0);
+
+  LP_Problem lp(cs_space_dimension, cs, cost, MAXIMIZATION);
+  try {
+    // Adds a Constraint_System that exceeds the space dimension of the
+    // LP_Problem.
+    lp.add_constraints(incompatible_cs);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+test15() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(B <= 0);
+  dimension_type cs_space_dimension = cs.space_dimension();
+
+  Linear_Expression cost(A + B);
+
+  Constraint_System incompatible_cs;
+  incompatible_cs.insert(A >= 10);
+  incompatible_cs.insert(B < 22 );
+
+  LP_Problem lp(cs_space_dimension, cs, cost, MAXIMIZATION);
+  try {
+    // Thist tries to add Constraint_System that contains a strict inequality.
+    lp.add_constraints(incompatible_cs);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+test16() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(B <= 0);
+
+  Linear_Expression cost(A + B);
+
+  try {
+     // This tries to overflow the maximum space dimension.
+    LP_Problem lp(LP_Problem::max_space_dimension() + 1, cs.begin(), cs.end(),
+		  A + B, MAXIMIZATION);
+    exit(1);
+  }
+  catch (length_error& e) {
+    nout << "length_error: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(B <= 0);
+
+  Linear_Expression cost(A + B);
+
+  try {
+     // This tries to let exceed the objective function space dimension.
+    LP_Problem lp(cs.space_dimension(), cs.begin(), cs.end(),
+		  A + B + C, MAXIMIZATION);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+test18() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(B < 0);
+
+  Linear_Expression cost(A + B);
+
+  try {
+     // This tries to build an LP_Problem with strict inequalities..
+    LP_Problem lp(cs.space_dimension(), cs.begin(), cs.end(),
+		  A + B, MAXIMIZATION);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+test19() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 6);
+  cs.insert(B <= 0);
+
+  Linear_Expression cost(A + B);
+
+  try {
+     // This tries to build an LP_Problem with a wrong space dimension.
+    LP_Problem lp(cs.space_dimension() - 1, cs.begin(), cs.end(),
+		  A + B, MAXIMIZATION);
+    exit(1);
+  }
+  catch (invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 } // namespace
 
 int
@@ -212,6 +506,17 @@ main() TRY {
   test06();
   test07();
   test08();
+  test09();
+  test10();
+  test11();
+  test12();
+  test13();
+  test14();
+  test15();
+  test16();
+  test17();
+  test18();
+  test19();
 
   return 0;
 }
