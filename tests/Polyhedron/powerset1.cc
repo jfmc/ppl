@@ -96,8 +96,13 @@ operator<<(std::ostream& s, const Fcaibvp& x) {
   for (Fcaibvp::Set::const_iterator i = x.set.begin(),
 	 x_end = x.set.end(); i != x_end; ) {
     const Variable& v = *i++;
+#if 0
+    // GCC 3.3.3 does not accept this.
     using IO_Operators::operator<<;
     s << v;
+#else
+    Parma_Polyhedra_Library::IO_Operators::operator<<(s, v);
+#endif
     if (i != x_end)
       s << ", ";
   }
@@ -130,8 +135,15 @@ test01() {
   if (ps2 != ps1 || !(ps2 == ps1))
     return false;
 
+#if 0
+  // GCC 3.3.3 does not accept this.
   using IO_Operators::operator<<;
   nout << "ps1:" << endl << ps1 << endl;
+#else
+  nout << "ps1:" << endl;
+  Parma_Polyhedra_Library::IO_Operators::operator<<(nout, ps1);
+  nout << endl;
+#endif
 
   Fcaibvp d(A);
   PS ps3(d);
