@@ -503,7 +503,7 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #define ppl_Polyhedron_expand_space_dimension xsb_stub_ppl_Polyhedron_expand_space_dimension
 #define ppl_Polyhedron_fold_space_dimensions xsb_stub_ppl_Polyhedron_fold_space_dimensions
 #define ppl_Polyhedron_map_space_dimensions xsb_stub_ppl_Polyhedron_map_space_dimensions
-#define ppl_new_LP_Problem_trivial xsb_stub_ppl_new_LP_Problem_trivial
+#define ppl_new_LP_Problem_from_space_dimension xsb_stub_ppl_new_LP_Problem_from_space_dimension
 #define ppl_new_LP_Problem xsb_stub_ppl_new_LP_Problem
 #define ppl_new_LP_Problem_from_LP_Problem xsb_stub_ppl_new_LP_Problem_from_LP_Problem
 #define ppl_LP_Problem_swap xsb_stub_ppl_LP_Problem_swap
@@ -513,6 +513,7 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #define ppl_LP_Problem_objective_function xsb_stub_ppl_LP_Problem_objective_function
 #define ppl_LP_Problem_optimization_mode xsb_stub_ppl_LP_Problem_optimization_mode
 #define ppl_LP_Problem_clear xsb_stub_ppl_LP_Problem_clear
+#define ppl_LP_Problem_add_space_dimensions_and_embed xsb_stub_ppl_LP_Problem_add_space_dimensions_and_embed
 #define ppl_LP_Problem_add_constraint xsb_stub_ppl_LP_Problem_add_constraint
 #define ppl_LP_Problem_add_constraints xsb_stub_ppl_LP_Problem_add_constraints
 #define ppl_LP_Problem_set_objective_function xsb_stub_ppl_LP_Problem_set_objective_function
@@ -624,7 +625,7 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #undef ppl_Polyhedron_expand_space_dimension
 #undef ppl_Polyhedron_fold_space_dimensions
 #undef ppl_Polyhedron_map_space_dimensions
-#undef ppl_new_LP_Problem_trivial
+#undef ppl_new_LP_Problem_from_space_dimension
 #undef ppl_new_LP_Problem
 #undef ppl_new_LP_Problem_from_LP_Problem
 #undef ppl_LP_Problem_swap
@@ -634,6 +635,7 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #undef ppl_LP_Problem_objective_function
 #undef ppl_LP_Problem_optimization_mode
 #undef ppl_LP_Problem_clear
+#undef ppl_LP_Problem_add_space_dimensions_and_embed
 #undef ppl_LP_Problem_add_constraint
 #undef ppl_LP_Problem_add_constraints
 #undef ppl_LP_Problem_set_objective_function
@@ -806,8 +808,8 @@ XSB_ENTRY_2(ppl_Polyhedron_remove_higher_space_dimensions)
 XSB_ENTRY_3(ppl_Polyhedron_expand_space_dimension)
 XSB_ENTRY_3(ppl_Polyhedron_fold_space_dimensions)
 XSB_ENTRY_2(ppl_Polyhedron_map_space_dimensions)
-XSB_ENTRY_1(ppl_new_LP_Problem_trivial)
-XSB_ENTRY_4(ppl_new_LP_Problem)
+XSB_ENTRY_2(ppl_new_LP_Problem_from_space_dimension)
+XSB_ENTRY_5(ppl_new_LP_Problem)
 XSB_ENTRY_2(ppl_new_LP_Problem_from_LP_Problem)
 XSB_ENTRY_2(ppl_LP_Problem_swap)
 XSB_ENTRY_1(ppl_delete_LP_Problem)
@@ -816,6 +818,7 @@ XSB_ENTRY_2(ppl_LP_Problem_constraints)
 XSB_ENTRY_2(ppl_LP_Problem_objective_function)
 XSB_ENTRY_2(ppl_LP_Problem_optimization_mode)
 XSB_ENTRY_1(ppl_LP_Problem_clear)
+XSB_ENTRY_2(ppl_LP_Problem_add_space_dimensions_and_embed)
 XSB_ENTRY_2(ppl_LP_Problem_add_constraint)
 XSB_ENTRY_2(ppl_LP_Problem_add_constraints)
 XSB_ENTRY_2(ppl_LP_Problem_set_objective_function)
