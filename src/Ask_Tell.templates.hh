@@ -153,6 +153,7 @@ Ask_Tell<D>::OK() const {
       return false;
     if (!p.tell().OK())
       return false;
+#if 0
     if (p.ask().definitely_entails(p.tell())) {
 #ifndef NDEBUG
       using namespace IO_Operators;
@@ -162,6 +163,7 @@ Ask_Tell<D>::OK() const {
 #endif
       return false;
     }
+#endif
   }
   if (normalized && !check_normalized()) {
 #ifndef NDEBUG

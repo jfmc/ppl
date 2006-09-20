@@ -100,36 +100,18 @@ template <typename PH>
 void
 Pointset_Ask_Tell<PH>::concatenate_assign(const Pointset_Ask_Tell& y) {
   Pointset_Ask_Tell& x = *this;
-  // Ensure omega-reduction here, since what follows has quadratic complexity.
-  x.omega_reduce();
-  y.omega_reduce();
-  Pointset_Ask_Tell<PH> new_x(x.space_dim + y.space_dim, EMPTY);
-  for (const_iterator xi = x.begin(), x_end = x.end(),
-	 y_begin = y.begin(), y_end = y.end(); xi != x_end; ) {
-    for (const_iterator yi = y_begin; yi != y_end; ++yi) {
-      CS zi = *xi;
-      zi.concatenate_assign(*yi);
-      assert(!zi.is_bottom());
-      new_x.sequence.push_back(zi);
-    }
-    ++xi;
-    if (abandon_expensive_computations && xi != x_end && y_begin != y_end) {
-      // Hurry up!
-      PH xph = xi->element();
-      for (++xi; xi != x_end; ++xi)
-	xph.upper_bound_assign(xi->element());
-      const_iterator yi = y_begin;
-      PH yph = yi->element();
-      for (++yi; yi != y_end; ++yi)
-	yph.upper_bound_assign(yi->element());
-      xph.concatenate_assign(yph);
-      x.swap(new_x);
-      x.add_disjunct(xph);
-      assert(x.OK());
-      return;
-    }
+  for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
+    CS ask(PH(space_dim, UNIVERSE));
+    ask.concatenate_assign(yi->ask());
+    CS tell(PH(space_dim, UNIVERSE));
+    tell.concatenate_assign(yi->tell());
+    // FIXME: why the following does not work?
+    //x.sequence.push_back(Pair(ask, tell));
+    x.sequence.push_back(Ask_Tell_Pair<CS>(ask, tell));
   }
-  x.swap(new_x);
+  space_dim += y.space_dim;
+  if (x.normalized)
+    x.normalized = y.normalized;
   assert(x.OK());
 }
 
@@ -219,8 +201,9 @@ remove_space_dimensions(const Variables_Set& to_be_removed) {
   if (num_removed > 0) {
     for (Sequence_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().remove_space_dimensions(to_be_removed);
-      x.reduced = false;
+      si->ask().element().remove_space_dimensions(to_be_removed);
+      si->tell().element().remove_space_dimensions(to_be_removed);
+      x.normalized = false;
     }
     x.space_dim -= num_removed;
     assert(x.OK());
@@ -235,7 +218,8 @@ Pointset_Ask_Tell<PH>::remove_higher_space_dimensions(dimension_type
   if (new_dimension < x.space_dim) {
     for (Sequence_iterator si = x.sequence.begin(),
 	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->element().remove_higher_space_dimensions(new_dimension);
+      si->ask().element().remove_higher_space_dimensions(new_dimension);
+      si->tell().element().remove_higher_space_dimensions(new_dimension);
       x.reduced = false;
     }
     x.space_dim = new_dimension;

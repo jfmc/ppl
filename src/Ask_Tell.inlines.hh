@@ -273,6 +273,12 @@ Ask_Tell<D>::is_bottom() const {
 }
 
 template <typename D>
+bool
+Ask_Tell<D>::empty() const {
+  return sequence.empty();
+}
+
+template <typename D>
 void
 Ask_Tell<D>::meet_assign(const Ask_Tell<D>& y) {
   if (!y.empty()) {
