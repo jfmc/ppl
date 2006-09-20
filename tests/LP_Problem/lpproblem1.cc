@@ -119,7 +119,7 @@ test01() {
   // Cost function.
   Linear_Expression cost(-10*X02 - 8*X14 - 15*X23 - 12*X36 + 250*X39);
 
-  LP_Problem lp = LP_Problem(cs, cost, MAXIMIZATION);
+  LP_Problem lp = LP_Problem(cs.space_dimension(), cs, cost, MAXIMIZATION);
 
   if (lp.solve() != OPTIMIZED_LP_PROBLEM)
     return false;
@@ -177,7 +177,7 @@ test02() {
   for (dimension_type i = A.id(); i <= H.id(); ++i)
     cs.insert(Variable(i) >= 0);
 
-  LP_Problem lp = LP_Problem(cs, cost, MAXIMIZATION);
+  LP_Problem lp = LP_Problem(cs.space_dimension(), cs, cost, MAXIMIZATION);
 
   Generator pg = lp.optimizing_point();
   nout << "Optimizing point = ";
@@ -724,7 +724,7 @@ test03() {
   // Cost function
   Linear_Expression cost(10*A + 21*B + 31*C + 45*D);
 
-  LP_Problem lp = LP_Problem(cs, cost, MAXIMIZATION);
+  LP_Problem lp = LP_Problem(cs.space_dimension(), cs, cost, MAXIMIZATION);
 
   Generator pg = lp.optimizing_point();
   nout << "Optimizing point obtained by simplex:\n";
@@ -775,7 +775,7 @@ test04() {
   for (dimension_type i = A.id(); i <= H.id(); ++i)
     cs.insert(Variable(i) >= 0);
 
-  LP_Problem lp = LP_Problem(cs, cost, MAXIMIZATION);
+  LP_Problem lp = LP_Problem(cs.space_dimension(), cs, cost, MAXIMIZATION);
 
   Generator pg = lp.optimizing_point();
   nout << "Optimizing point = ";
@@ -1323,7 +1323,7 @@ test05() {
   // Cost function
   Linear_Expression cost(10*A + 21*B + 31*C + 45*D);
 
-  LP_Problem lp = LP_Problem(cs, cost, MAXIMIZATION);
+  LP_Problem lp = LP_Problem(cs.space_dimension(), cs, cost, MAXIMIZATION);
 
   Generator pg = lp.optimizing_point();
   nout << "Optimizing point = ";

@@ -149,7 +149,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       if (complexity == SIMPLEX_COMPLEXITY
 	  // TODO: find a workaround for NNC polyhedra.
 	  && is_necessarily_closed()) {
-	LP_Problem lp(con_sys);
+	LP_Problem lp(con_sys.space_dimension(), con_sys);
 	if (!lp.is_satisfiable()) {
 	  box.set_empty();
 	  return;

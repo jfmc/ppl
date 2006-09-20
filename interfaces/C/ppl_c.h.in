@@ -2432,17 +2432,21 @@ ppl_Polyhedron_fold_space_dimensions PPL_PROTO((ppl_Polyhedron_t ph,
 /*@{*/
 
 /*! \brief
-  Builds a trivial LP problem and writes a handle to it at address \p plp.
+  Builds a trivial LP problem of dimension \p d and writes an
+  handle to it at address \p plp.
 */
 int
-ppl_new_LP_Problem_trivial PPL_PROTO((ppl_LP_Problem_t* plp));
+ppl_new_LP_Problem_from_dimension PPL_PROTO((ppl_LP_Problem_t* plp,
+					     ppl_dimension_type d));
 
 /*! \brief
-  Builds an LP problem having feasible region \p cs, objective function
-  \p le and optimization mode \p m; writes a handle to it at address \p plp.
+  Builds an LP problem of space dimension \p d having feasible region \p cs,
+  objective function \p le and optimization mode \p m; writes a handle to
+  it at address \p plp.
 */
 int
 ppl_new_LP_Problem PPL_PROTO((ppl_LP_Problem_t* plp,
+			      ppl_dimension_type d,
 			      ppl_const_Constraint_System_t cs,
 			      ppl_const_Linear_Expression_t le,
 			      int m));
@@ -2477,12 +2481,21 @@ ppl_LP_Problem_space_dimension
 PPL_PROTO((ppl_const_LP_Problem_t lp, ppl_dimension_type* m));
 
 /*! \brief
-  Writes a const handle to the constraint system defining the
-  feasible region of the LP problem \p lp at address \p pcs.
+  Writes to \p m the number of constraints defining
+  the feasible region of \p lp.
 */
 int
-ppl_LP_Problem_constraints PPL_PROTO((ppl_const_LP_Problem_t lp,
-				      ppl_const_Constraint_System_t* pcs));
+ppl_LP_Problem_number_of_constraints PPL_PROTO((ppl_const_LP_Problem_t lp,
+						ppl_dimension_type* m));
+
+/*! \brief
+  Writes at address \p pc a const handle to the \p i-th constraint
+  defining the feasible region of the LP problem \p lp
+*/
+int
+ppl_LP_Problem_constraint_at_index PPL_PROTO((ppl_const_LP_Problem_t lp,
+					      ppl_dimension_type i,
+					      ppl_const_Constraint_t* pc));
 
 /*! \brief
   Writes a const handle to the linear expression defining the
@@ -2505,8 +2518,16 @@ int
 ppl_LP_Problem_clear PPL_PROTO((ppl_LP_Problem_t lp));
 
 /*! \brief
+  Adds \p d new dimensions to the space enclosing the LP problem \p lp
+  and to \p lp itself.
+*/
+int
+ppl_LP_Problem_add_space_dimensions_and_embed
+PPL_PROTO((ppl_LP_Problem_t lp, ppl_dimension_type d));
+
+/*! \brief
   Modifies the feasible region of the LP problem \p lp by adding a copy
-  of the constraint \p c; the space dimension is increased, if necessary.
+  of the constraint \p c.
 */
 int
 ppl_LP_Problem_add_constraint PPL_PROTO((ppl_LP_Problem_t lp,
@@ -2514,7 +2535,7 @@ ppl_LP_Problem_add_constraint PPL_PROTO((ppl_LP_Problem_t lp,
 
 /*! \brief
   Modifies the feasible region of the LP problem \p lp by adding a copy
-  of the constraints in \p cs; the space dimension is increased, if necessary.
+  of the constraints in \p cs.
 */
 int
 ppl_LP_Problem_add_constraints PPL_PROTO((ppl_LP_Problem_t lp,

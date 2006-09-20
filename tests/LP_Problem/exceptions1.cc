@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 
 using std::invalid_argument;
+using std::length_error;
 using std::domain_error;
 
 namespace {
@@ -30,10 +31,10 @@ namespace {
 void
 test01() {
   Variable A(0);
-  LP_Problem lp;
   Constraint_System cs;
   cs.insert(A >= 6);
   cs.insert(A > -6);
+  LP_Problem lp(cs.space_dimension());
 
   try {
     // This tries to build an invalid LP_Problem object: the feasible
@@ -77,7 +78,7 @@ test03() {
   Constraint_System cs;
   cs.insert(A >= 6);
   cs.insert(A <= 0);
-  LP_Problem lp(cs, A, MAXIMIZATION);
+  LP_Problem lp(cs.space_dimension(), cs, A, MAXIMIZATION);
 
   try {
     // We cannot extract a feasible point from an unsatisfiable LP_Problem.
@@ -98,7 +99,7 @@ test04() {
   Variable A(0);
   Constraint_System cs;
   cs.insert(A >= 6);
-  LP_Problem lp(cs, A, MAXIMIZATION);
+  LP_Problem lp(cs.space_dimension(), cs, A, MAXIMIZATION);
 
   try {
     // We cannot extract an optimizing point from an unbounded LP_Problem.
@@ -120,7 +121,7 @@ test05() {
   Variable B(1);
   Constraint_System cs;
   cs.insert(A >= 6);
-  LP_Problem lp(cs, A, MAXIMIZATION);
+  LP_Problem lp(cs.space_dimension(), cs, A, MAXIMIZATION);
   Generator p = point(A + B);
   Coefficient num;
   Coefficient den;
@@ -145,7 +146,7 @@ test06() {
   Variable A(0);
   Constraint_System cs;
   cs.insert(A >= 6);
-  LP_Problem lp(cs, A, MAXIMIZATION);
+  LP_Problem lp(cs.space_dimension(), cs, A, MAXIMIZATION);
   Generator r = ray(A);
   Coefficient num;
   Coefficient den;
@@ -164,6 +165,39 @@ test06() {
   }
 }
 
+void
+test07() {
+  try {
+    // This tries to overflow the maximum space dimension.
+    LP_Problem lp(LP_Problem::max_space_dimension() + 1);
+
+    exit(1);
+  }
+  catch (length_error& e) {
+    nout << "length_error: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+test08() {
+  LP_Problem lp(1);
+  try {
+    // This tries to overflow the maximum space dimension.
+    lp.add_space_dimensions_and_embed(LP_Problem::max_space_dimension());
+
+    exit(1);
+  }
+  catch (length_error& e) {
+    nout << "length_error: " << e.what() << endl << endl;
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 } // namespace
 
 int
@@ -176,6 +210,8 @@ main() TRY {
   test04();
   test05();
   test06();
+  test07();
+  test08();
 
   return 0;
 }

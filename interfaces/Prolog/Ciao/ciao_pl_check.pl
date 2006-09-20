@@ -125,7 +125,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_expand_space_dimension/3,
 	ppl_Polyhedron_fold_space_dimensions/3,
 	ppl_Polyhedron_map_space_dimensions/2,
-        ppl_new_LP_Problem_trivial/1,
+        ppl_new_LP_Problem_from_space_dimension/2,
         ppl_new_LP_Problem/4,
         ppl_new_LP_Problem_from_LP_Problem/2,
         ppl_LP_Problem_swap/2,

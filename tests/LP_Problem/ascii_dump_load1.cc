@@ -43,7 +43,7 @@ test01() {
   cs.insert(B >= 0);
 
   Linear_Expression cost(A + 2*B);
-  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  LP_Problem lp1(cs.space_dimension(), cs, cost, MAXIMIZATION);
   lp1.solve();
 
   fstream f;
@@ -70,7 +70,7 @@ test02() {
 
   Linear_Expression cost(17*A + 2*B);
 
-  LP_Problem lp1(cs, cost, MINIMIZATION);
+  LP_Problem lp1(cs.space_dimension(), cs, cost, MINIMIZATION);
   fstream f;
   open(f, my_file, ios_base::out);
   lp1.ascii_dump(f);
@@ -98,7 +98,7 @@ test03() {
   cs.insert(C <= 11);
 
   Linear_Expression cost(17*A + 2*B -2*C);
-  LP_Problem lp1(cs, cost, MINIMIZATION);
+  LP_Problem lp1(cs.space_dimension(), cs, cost, MINIMIZATION);
   lp1.solve();
 
   fstream f;
@@ -110,7 +110,7 @@ test03() {
   string str;
   do
     f >> str;
-  while (str != "pending_input_cs");
+  while (str != "opt_mode");
   f.seekp(0, ios_base::cur);
   f << " Q";
   close(f);
@@ -137,7 +137,7 @@ test04() {
 
   Linear_Expression cost(A + 2*B + 3*C);
 
-  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  LP_Problem lp1(cs.space_dimension(), cs, cost, MAXIMIZATION);
   lp1.solve();
 
   fstream f;
@@ -166,7 +166,7 @@ test05() {
 
   Linear_Expression cost(A - 11*B);
 
-  LP_Problem lp1(cs, cost, MINIMIZATION);
+  LP_Problem lp1(cs.space_dimension(), cs, cost, MINIMIZATION);
   lp1.solve();
 
   fstream f;
@@ -204,7 +204,7 @@ test06() {
   cs.insert(B + C <= 15);
 
   Linear_Expression cost(A + 2*B);
-  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  LP_Problem lp1(cs.space_dimension(), cs, cost, MAXIMIZATION);
   fstream f;
   open(f, my_file, ios_base::out);
   lp1.ascii_dump(f);
@@ -233,7 +233,7 @@ test07() {
 
   Linear_Expression cost(1*C);
 
-  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  LP_Problem lp1(cs.space_dimension(), cs, cost, MAXIMIZATION);
   fstream f;
   open(f, my_file, ios_base::out);
   lp1.ascii_dump(f);
@@ -264,7 +264,7 @@ test08() {
 
   Linear_Expression cost(1*C + 2*B);
 
-  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  LP_Problem lp1(cs.space_dimension(), cs, cost, MAXIMIZATION);
   fstream f;
   open(f, my_file, ios_base::out);
   lp1.ascii_dump(f);
@@ -293,7 +293,7 @@ test09() {
   cs.insert(B + C <= 15);
 
   Linear_Expression cost(A + 2*B);
-  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  LP_Problem lp1(cs.space_dimension(), cs, cost, MAXIMIZATION);
   lp1.solve();
 
   fstream f;
@@ -323,7 +323,7 @@ test10() {
   cs.insert(B + A <= 15);
 
   Linear_Expression cost(1*C);
-  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  LP_Problem lp1(cs.space_dimension(), cs, cost, MAXIMIZATION);
   lp1.solve();
 
   fstream f;
@@ -355,7 +355,7 @@ test11() {
   cs.insert(B <= 50);
 
   Linear_Expression cost(1*C);
-  LP_Problem lp1(cs, cost, MAXIMIZATION);
+  LP_Problem lp1(cs.space_dimension(), cs, cost, MAXIMIZATION);
   lp1.solve();
   fstream f;
   open(f, my_file, ios_base::out);

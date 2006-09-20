@@ -567,8 +567,8 @@ YAP_STUB_2(ppl_Polyhedron_remove_higher_space_dimensions)
 YAP_STUB_3(ppl_Polyhedron_expand_space_dimension)
 YAP_STUB_3(ppl_Polyhedron_fold_space_dimensions)
 YAP_STUB_2(ppl_Polyhedron_map_space_dimensions)
-YAP_STUB_1(ppl_new_LP_Problem_trivial)
-YAP_STUB_4(ppl_new_LP_Problem)
+YAP_STUB_2(ppl_new_LP_Problem_from_space_dimension)
+YAP_STUB_5(ppl_new_LP_Problem)
 YAP_STUB_2(ppl_new_LP_Problem_from_LP_Problem)
 YAP_STUB_2(ppl_LP_Problem_swap)
 YAP_STUB_1(ppl_delete_LP_Problem)
@@ -577,6 +577,7 @@ YAP_STUB_2(ppl_LP_Problem_constraints)
 YAP_STUB_2(ppl_LP_Problem_objective_function)
 YAP_STUB_2(ppl_LP_Problem_optimization_mode)
 YAP_STUB_1(ppl_LP_Problem_clear)
+YAP_STUB_2(ppl_LP_Problem_add_space_dimensions_and_embed)
 YAP_STUB_2(ppl_LP_Problem_add_constraint)
 YAP_STUB_2(ppl_LP_Problem_add_constraints)
 YAP_STUB_2(ppl_LP_Problem_set_objective_function)
@@ -696,8 +697,8 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_expand_space_dimension, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_fold_space_dimensions, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_map_space_dimensions, 2);
-  YAP_USER_C_PREDICATE(ppl_new_LP_Problem_trivial, 1);
-  YAP_USER_C_PREDICATE(ppl_new_LP_Problem, 4);
+  YAP_USER_C_PREDICATE(ppl_new_LP_Problem_from_space_dimension, 2);
+  YAP_USER_C_PREDICATE(ppl_new_LP_Problem, 5);
   YAP_USER_C_PREDICATE(ppl_new_LP_Problem_from_LP_Problem, 2);
   YAP_USER_C_PREDICATE(ppl_LP_Problem_swap, 2);
   YAP_USER_C_PREDICATE(ppl_delete_LP_Problem, 1);
@@ -706,6 +707,7 @@ init() {
   YAP_USER_C_PREDICATE(ppl_LP_Problem_objective_function, 2);
   YAP_USER_C_PREDICATE(ppl_LP_Problem_optimization_mode, 2);
   YAP_USER_C_PREDICATE(ppl_LP_Problem_clear, 1);
+  YAP_USER_C_PREDICATE(ppl_LP_Problem_add_space_dimensions_and_embed, 2);
   YAP_USER_C_PREDICATE(ppl_LP_Problem_add_constraint, 2);
   YAP_USER_C_PREDICATE(ppl_LP_Problem_add_constraints, 2);
   YAP_USER_C_PREDICATE(ppl_LP_Problem_set_objective_function, 2);

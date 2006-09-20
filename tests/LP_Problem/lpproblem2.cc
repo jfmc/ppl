@@ -48,7 +48,7 @@ public:
 	      const Variables_Set& ivs = Variables_Set(),
 	      const Linear_Expression& obj = Linear_Expression::zero(),
 	      Optimization_Mode mode = MAXIMIZATION)
-    : lp_problem(cs, obj, mode),
+    : lp_problem(cs.space_dimension(), cs, obj, mode),
       i_variables(ivs),
       have_provisional_optimum(false),
       provisional_optimum_value(),
@@ -65,16 +65,6 @@ public:
   dimension_type space_dimension() const {
     return lp_problem.space_dimension();
   }
-
-  #if 0 // FIXME: properly implement the following to avoid a copy.
-  //! Returns the constraints defining the current feasible region.
-  const Constraint_System& constraints() const;
-#else
-  //! Returns the constraints defining the current feasible region.
-  Constraint_System constraints() const {
-    return lp_problem.constraints();
-  }
-#endif
 
   //! Returns the current objective function.
   const Linear_Expression& objective_function() const {

@@ -689,8 +689,6 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   ppl_LP_Problem_t ppl_lp;
   int status;
   ppl_dimension_type space_dim;
-  ppl_Linear_Expression_t dummy_le;
-  ppl_Constraint_t dummy_c;
   ppl_const_Constraint_t c;
   ppl_const_Generator_t g;
   ppl_Constraint_System_const_iterator_t i;
@@ -700,21 +698,13 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     ? PPL_LP_PROBLEM_MAXIMIZATION
     : PPL_LP_PROBLEM_MINIMIZATION;
 
+  ppl_Constraint_System_space_dimension(cs, &space_dim);
+  ppl_new_LP_Problem_from_dimension(&ppl_lp, space_dim);
+  ppl_LP_Problem_set_objective_function(ppl_lp, objective);
+  ppl_LP_Problem_set_optimization_mode(ppl_lp, mode);
+
   if (incremental) {
-    ppl_new_LP_Problem_trivial(&ppl_lp);
-
-    /* Add a dummy contraint to have a correct space dimension. */
-    ppl_Constraint_System_space_dimension(cs, &space_dim);
-    ppl_new_Linear_Expression_with_dimension(&dummy_le, space_dim);
-    ppl_new_Constraint(&dummy_c, dummy_le, PPL_CONSTRAINT_TYPE_EQUAL);
-    ppl_LP_Problem_add_constraint(ppl_lp, dummy_c);
-    ppl_delete_Linear_Expression(dummy_le);
-    ppl_delete_Constraint(dummy_c);
-
-    ppl_LP_Problem_set_objective_function(ppl_lp, objective);
-    ppl_LP_Problem_set_optimization_mode(ppl_lp, mode);
-
-    /* Add the constraints to `cs' one at a time. */
+    /* Add the constraints of `cs' one at a time. */
     ppl_new_Constraint_System_const_iterator(&i);
     ppl_new_Constraint_System_const_iterator(&iend);
     ppl_Constraint_System_begin(cs, i);
@@ -742,10 +732,10 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   }
 
   else {
-    ppl_new_LP_Problem(&ppl_lp, cs, objective, mode);
+    ppl_LP_Problem_add_constraints(ppl_lp, cs);
     status = no_optimization ? ppl_LP_Problem_is_satisfiable(ppl_lp) :
                                ppl_LP_Problem_solve(ppl_lp);
- }
+  }
 
   if (print_timings) {
     fprintf(stderr, "Time to solve the LP problem: ");

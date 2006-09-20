@@ -208,7 +208,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   // If `complexity' allows it, use simplex to derive the exact (modulo
   // the fact that our BDSs are topologically closed) variable bounds.
   if (complexity == SIMPLEX_COMPLEXITY) {
-    LP_Problem lp;
+    LP_Problem lp(num_dimensions);
     lp.set_optimization_mode(MAXIMIZATION);
 
     const Constraint_System& ph_cs = ph.constraints();

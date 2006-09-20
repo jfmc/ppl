@@ -1210,6 +1210,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // topology of `cs' even on exceptional execution path.
       cs.set_necessarily_closed();
       try {
+	lp.add_space_dimensions_and_embed(cs.space_dimension());
 	lp.add_constraints(cs);
 	cs.set_not_necessarily_closed();
       }

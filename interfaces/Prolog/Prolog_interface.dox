@@ -570,7 +570,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_new_LP_Problem_trivial(-Handle)
+  ppl_new_LP_Problem_from_space_dimension(+Dimension_Type, -Handle)
 </CODE>
 
 <CODE>
@@ -608,6 +608,10 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 
 <CODE>
   ppl_LP_Problem_clear(+Handle)
+</CODE>
+
+<CODE>
+  ppl_LP_Problem_add_space_dimensions_and_embed(+Handle, +Dimension_Type)
 </CODE>
 
 <CODE>
@@ -1799,11 +1803,11 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    "specifying the map_space_dimensions operator".
 
 <H2><CODE>
-  ppl_new_LP_Problem_trivial(-Handle)
+  ppl_new_LP_Problem_from_space_dimension(+Dimension_Type, -Handle)
 </CODE></H2>
 
-   Creates an LP Problem \f$\mathrm{LP}\f$ with
-   the feasible region the \f$0\f$-dimensional universe,
+   Creates an LP Problem \f$\mathrm{LP}\f$ with the feasible region
+   the vector space of dimension <CODE>Dimension_Type</CODE>,
    objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\mathrm{LP}\f$.
 
@@ -1872,6 +1876,13 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
   to be the trivial problem with
   the feasible region the \f$0\f$-dimensional universe,
   objective function \f$0\f$ and optimization mode <CODE>max</CODE>.
+
+<H2><CODE> ppl_LP_Problem_add_space_dimensions_and_embed(
+             +Handle, +Dimension_Type)
+ </CODE></H2>
+
+   Embeds the LP problem referenced by <CODE>Handle</CODE>
+   in a space that is enlarged by <CODE>Dimension_Type</CODE> dimensions,
 
 <H2><CODE>
   ppl_LP_Problem_add_constraint(+Handle, +Constraint)

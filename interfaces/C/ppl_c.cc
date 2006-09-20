@@ -2268,20 +2268,23 @@ ppl_Polyhedron_OK(ppl_const_Polyhedron_t ph) try {
 CATCH_ALL
 
 int
-ppl_new_LP_Problem_trivial(ppl_LP_Problem_t* plp) try {
-  *plp = to_nonconst(new LP_Problem());
+ppl_new_LP_Problem_from_dimension(ppl_LP_Problem_t* plp,
+				  ppl_dimension_type d) try {
+  *plp = to_nonconst(new LP_Problem(d));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_LP_Problem(ppl_LP_Problem_t* plp, ppl_const_Constraint_System_t cs,
+ppl_new_LP_Problem(ppl_LP_Problem_t* plp,
+		   ppl_dimension_type d,
+		   ppl_const_Constraint_System_t cs,
 		   ppl_const_Linear_Expression_t le, int m) try {
   const Constraint_System& ccs = *to_const(cs);
   const Linear_Expression& lle = *to_const(le);
   Optimization_Mode mm = (m == PPL_LP_PROBLEM_MINIMIZATION)
     ? MINIMIZATION : MAXIMIZATION;
-  *plp = to_nonconst(new LP_Problem(ccs, lle, mm));
+  *plp = to_nonconst(new LP_Problem(d, ccs, lle, mm));
   return 0;
 }
 CATCH_ALL
@@ -2321,10 +2324,26 @@ ppl_LP_Problem_space_dimension(ppl_const_LP_Problem_t lp,
 CATCH_ALL
 
 int
-ppl_LP_Problem_constraints(ppl_const_LP_Problem_t lp,
-			   ppl_const_Constraint_System_t* pcs) try {
-  const Constraint_System& cs = to_const(lp)->constraints();
-  *pcs = to_const(&cs);
+ppl_LP_Problem_number_of_constraints(ppl_const_LP_Problem_t lp,
+				     ppl_dimension_type* m) try {
+  const LP_Problem& llp = *to_const(lp);
+  *m = llp.constraints_end() - llp.constraints_begin();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_constraint_at_index(ppl_const_LP_Problem_t lp,
+				   ppl_dimension_type i,
+				   ppl_const_Constraint_t* pc) try {
+#ifndef NDEBUG
+  ppl_dimension_type num_constraints;
+  ppl_LP_Problem_number_of_constraints(lp, &num_constraints);
+  assert(i < num_constraints);
+#endif
+  const LP_Problem& llp = *to_const(lp);
+  const Constraint& c = *(llp.constraints_begin() + i);
+  *pc = to_const(&c);
   return 0;
 }
 CATCH_ALL
@@ -2347,6 +2366,15 @@ CATCH_ALL
 int
 ppl_LP_Problem_clear(ppl_LP_Problem_t lp) try {
   to_nonconst(lp)->clear();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LP_Problem_add_space_dimensions_and_embed(ppl_LP_Problem_t lp,
+					      ppl_dimension_type d) try {
+  LP_Problem& llp = *to_nonconst(lp);
+  llp.add_space_dimensions_and_embed(d);
   return 0;
 }
 CATCH_ALL

@@ -119,8 +119,8 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_expand_space_dimension/3,
         ppl_Polyhedron_fold_space_dimensions/3,
         ppl_Polyhedron_map_space_dimensions/2,
-	ppl_new_LP_Problem_trivial/1,
-	ppl_new_LP_Problem/4,
+	ppl_new_LP_Problem_from_space_dimension/2,
+	ppl_new_LP_Problem/5,
 	ppl_new_LP_Problem_from_LP_Problem/2,
 	ppl_LP_Problem_swap/2,
 	ppl_delete_LP_Problem/1,
@@ -129,6 +129,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_LP_Problem_objective_function/2,
 	ppl_LP_Problem_optimization_mode/2,
 	ppl_LP_Problem_clear/1,
+	ppl_LP_Problem_add_space_dimensions_and_embed/1,
 	ppl_LP_Problem_add_constraint/2,
 	ppl_LP_Problem_add_constraints/2,
 	ppl_LP_Problem_set_objective_function/2,
@@ -902,19 +903,22 @@ ppl_Polyhedron_map_space_dimensions(Handle, PIFunc) :-
   :: any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_map_space_dimensions)).
 
-:- true pred ppl_new_LP_Problem_trivial_2(in(Term1), go(Success))
-          :: any_term * int
-  + (returns(Success), foreign(ppl_new_LP_Problem_trivial)).
- 
-ppl_new_LP_Problem_trivial(Term1) :-
-   ppl_new_LP_Problem_trivial_2(Term1, 1).
+:- true pred ppl_new_LP_Problem_from_space_dimension_2(in(Term1),
+                                                       in(Term2),
+                                                       go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_new_LP_Problem_from_space_dimension)).
 
-:- true pred ppl_new_LP_Problem_2(in(Term1), in(Term2), in(Term3), in(Term4), go(Success))
-          :: any_term * any_term * any_term * any_term * int
+ppl_new_LP_Problem_from_space_dimension(Term1, Term2) :-
+   ppl_new_LP_Problem_from_space_dimension_2(Term1, Term2, 1).
+
+:- true pred ppl_new_LP_Problem_2(in(Term1), in(Term2), in(Term3),
+                                  in(Term4), in(Term5), go(Success))
+          :: any_term * any_term * any_term * any_term * any_term * int
   + (returns(Success), foreign(ppl_new_LP_Problem)).
  
-ppl_new_LP_Problem(Term1, Term2, Term3, Term4) :-
-   ppl_new_LP_Problem_2(Term1, Term2, Term3, Term4, 1).
+ppl_new_LP_Problem(Term1, Term2, Term3, Term4, Term5) :-
+   ppl_new_LP_Problem_2(Term1, Term2, Term3, Term4, Term5, 1).
 
 :- true pred ppl_new_LP_Problem_from_LP_Problem_2(in(Term1), in(Term2), go(Success))
           :: any_term * any_term * int
@@ -971,6 +975,15 @@ ppl_LP_Problem_optimization_mode(Term1, Term2) :-
  
 ppl_LP_Problem_clear(Term1) :-
    ppl_LP_Problem_clear_2(Term1, 1).
+
+:- true pred ppl_LP_Problem_add_space_dimensions_and_embed_2(in(Term1),
+                                                             in(Term2),
+                                                             go(Success))
+          :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_LP_Problem_add_space_dimensions_and_embed)).
+ 
+ppl_LP_Problem_add_space_dimensions_and_embed(Term1, Term2) :-
+   ppl_LP_Problem_add_space_dimensions_and_embed_2(Term1, Term2, 1).
 
 :- true pred ppl_LP_Problem_add_constraint_2(in(Term1), in(Term2), go(Success))
           :: any_term * any_term * int
@@ -1203,7 +1216,7 @@ ppl_LP_Problem_OK(Term1) :-
         ppl_Polyhedron_fold_space_dimensions_2/4,
 %        ppl_Polyhedron_map_space_dimensions/2
         ppl_Polyhedron_map_space_dimensions_2/3,
-	ppl_new_LP_Problem_trivial_2/2,
+	ppl_new_LP_Problem_from_space_dimension_2/2,
 	ppl_new_LP_Problem_2/5,
 	ppl_new_LP_Problem_from_LP_Problem_2/3,
 	ppl_LP_Problem_swap_2/3,
@@ -1213,6 +1226,7 @@ ppl_LP_Problem_OK(Term1) :-
 	ppl_LP_Problem_objective_function_2/3,
 	ppl_LP_Problem_optimization_mode_2/3,
 	ppl_LP_Problem_clear_2/2,
+	ppl_LP_Problem_add_space_dimensions_and_embed_2/3,
 	ppl_LP_Problem_add_constraint_2/3,
 	ppl_LP_Problem_add_constraints_2/3,
 	ppl_LP_Problem_set_objective_function_2/3,
