@@ -52,17 +52,63 @@ operator<<(std::ostream& s, const LP_Problem& lp);
 //! A Linear Programming problem.
 class Parma_Polyhedra_Library::LP_Problem {
 public:
-  //! Default constructor: builds a trivial LP problem.
+  //! Builds a trivial LP problem.
   /*!
-    The trivial LP problem requires to maximize the objective function
-    \f$0\f$ on the zero-dimensional vector space under no constraints
-    at all: the origin of the vector space is the optimal solution.
+    A trivial LP problem requires to maximize the objective function
+    \f$0\f$ on a vector space under no constraints at all:
+    the origin of the vector space is an optimal solution.
+
+    \param dim
+    The dimension of the vector space encosing \p *this
+    (optional argument with default value <CODE>MAXIMIZATION</CODE>).
+
+    \exception std::length_error
+    Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
   */
-  LP_Problem();
+  explicit LP_Problem(dimension_type dim = 0);
 
   /*! \brief
-    Builds an LP problem from the constraint system \p cs, the objective
-    function \p obj and optimization mode \p mode.
+    Builds an LP problem having space dimension \p dim from the sequence
+    of constraints in the range \p first_constraint and \p last_constraint,
+    the objective function \p obj and optimization mode \p mode.
+
+    \param dim
+    The dimension of the vector space enclosing \p *this.
+
+    \param first_constraint
+    An input iterator to the start of teh sequence of constraints.
+
+    \param last_constraint
+    A past-the-end input iterator to the sequence of constraints.
+
+    \param obj
+    The objective function for the LP problem (optional argument with
+    default value \f$0\f$).
+
+    \param mode
+    The optimization mode (optional argument with default value
+    <CODE>MAXIMIZATION</CODE>).
+
+    \exception std::length_error
+    Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
+
+    \exception std::invalid_argument
+    Thrown if a constraint in the sequence is a strict inequality
+    or if the space dimension of a constraint (resp., of the
+    objective function) is strictly greater than \p dim.
+  */
+  template <typename In>
+  LP_Problem(dimension_type dim,
+	     In first_constraint, In last_constraint,
+	     const Linear_Expression& obj = Linear_Expression::zero(),
+	     Optimization_Mode mode = MAXIMIZATION);
+
+  /*! \brief
+    Builds an LP problem having space dimension \p dim from the constraint
+    system \p cs, the objective function \p obj and optimization mode \p mode.
+
+    \param dim
+    The dimension of the vector space enclosing \p *this.
 
     \param cs
     The constraint system defining the feasible region for the LP problem.
@@ -75,14 +121,18 @@ public:
     The optimization mode (optional argument with default value
     <CODE>MAXIMIZATION</CODE>).
 
+    \exception std::length_error
+    Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
+
     \exception std::invalid_argument
     Thrown if the constraint system contains any strict inequality
-    or if the space dimension of the objective function is strictly
-    greater than the space dimension of the constraint system.
+    or if the space dimension of the constraint system (resp., the
+    objective function) is strictly greater than \p dim.
   */
-  explicit LP_Problem(const Constraint_System& cs,
-		      const Linear_Expression& obj = Linear_Expression::zero(),
-		      Optimization_Mode mode = MAXIMIZATION);
+  LP_Problem(dimension_type dim,
+	     const Constraint_System& cs,
+	     const Linear_Expression& obj = Linear_Expression::zero(),
+	     Optimization_Mode mode = MAXIMIZATION);
 
   //! Ordinary copy-constructor.
   LP_Problem(const LP_Problem& y);
@@ -98,14 +148,6 @@ public:
 
   //! Returns the space dimension of the current LP problem.
   dimension_type space_dimension() const;
-
-#if 0 // FIXME: properly implement the following to avoid a copy.
-  //! Returns the constraints defining the current feasible region.
-  const Constraint_System& constraints() const;
-#else
-  //! Returns the constraints defining the current feasible region.
-  Constraint_System constraints() const;
-#endif
 
   //! Returns the current objective function.
   const Linear_Expression& objective_function() const;
@@ -130,7 +172,9 @@ public:
     increasing the number of space dimensions if needed.
 
     \exception std::invalid_argument
-    Thrown if the constraint system \p cs contains any strict inequality.
+    Thrown if the constraint system \p cs contains any strict inequality
+    or if its space dimension is strictly greater than the space dimension
+    of \p *this.
   */
   void add_constraints(const Constraint_System& cs);
 
@@ -209,6 +253,45 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+  /*! \brief
+    Adds \p m new space dimensions and embeds the old LP problem
+    in the new vector space.
+
+    \param m
+    The number of dimensions to add.
+
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the
+    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
+    The new space dimensions will be those having the highest indexes
+    in the new LP problem; they are initially unconstrained.
+  */
+  void add_space_dimensions_and_embed(dimension_type m);
+
+private:
+  //! A type alias for a sequence of constraints.
+  typedef std::vector<Constraint> Constraint_Sequence;
+
+public:
+  /*! \brief
+    A type alias for the read-only iterator on the constraints
+    defining the feasible reagion of the LP problem.
+  */
+  typedef Constraint_Sequence::const_iterator const_iterator;
+
+  /*! \brief
+    Returns a read-only iterator to the first constraint defining
+    the current feasible region.
+  */
+  const_iterator constraints_begin() const;
+
+  /*! \brief
+    Returns a past-the-end read-only iterator to the sequence of
+    constraints defining the current feasible region.
+  */
+  const_iterator constraints_end() const;
+
   PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -230,8 +313,18 @@ public:
   void swap(LP_Problem& y);
 
 private:
+  //! The dimension of the vector space.
+  dimension_type external_space_dim;
+
+  /*! \brief
+    The space dimension of the current (partial) solution of the
+    LP problem; it may be smaller than \p external_space_dim.
+  */
+  dimension_type internal_space_dim;
+
   //! The matrix encoding the current feasible region in tableau form.
   Matrix tableau;
+
   //! The working cost function.
   Row working_cost;
 
@@ -274,11 +367,11 @@ private:
   //! Used internally to check more properties in OK().
   bool initialized;
 
-  //! The constraint system describing the feasible region.
-  Constraint_System input_cs;
+  //! The sequence of constraints describing the feasible region.
+  Constraint_Sequence input_cs;
 
-  //! The constraint system containing the pending constraints.
-  Constraint_System pending_input_cs;
+  //! The first index of `input_cs' containing a pending constraint.
+  dimension_type first_pending_constraint;
 
   //! The objective function to be optimized.
   Linear_Expression input_obj_function;
@@ -320,15 +413,12 @@ private:
 				    worked_out_row);
 
   /*! \brief
-    Parses all the constraints passed to the method to know how to resize the
-    internal tableau.
+    Parses the pending constraints to gather information on
+    how to resize the tableau.
 
     \return
     <CODE>UNSATISFIABLE</CODE> if is detected a trivially false constraint,
     <CODE>SATISFIABLE</CODE> otherwise.
-
-    \param cs
-    The Constraint_System to be checked.
 
     \param new_num_rows
     This will store the number of rows that has to be added to the original
@@ -358,8 +448,7 @@ private:
     have a starting feasible base.
 
   */
-  bool parse_constraints(const Constraint_System& cs,
-			 dimension_type& new_num_rows,
+  bool parse_constraints(dimension_type& new_num_rows,
 			 dimension_type& num_slack_variables,
 			 std::deque<bool>& is_tableau_constraint,
 			 std::deque<bool>& nonnegative_variable,
@@ -467,24 +556,28 @@ private:
   */
   void compute_generator() const;
 
- /*! \brief
-   Unsplits a variable in the tableau if a nonnegativity constraint is
-   detected.
+  /*! \brief
+    Unsplits a variable in the tableau if a nonnegativity constraint is
+    detected.
 
-   \param var_index
-   The index of the variable that has to be unsplit.
+    \param var_index
+    The index of the variable that has to be unsplit.
 
-   \param nonfeasible_cs
-   This will contain all the row indexes that are no more satisfied by
-   the current computed generator after unsplitting a variable.
- */
+    \param nonfeasible_cs
+    This will contain all the row indexes that are no more satisfied by
+    the current computed generator after unsplitting a variable.
+  */
   void unsplit(dimension_type var_index,
 	       std::vector<dimension_type>& nonfeasible_cs);
 
-  bool is_satisfied(const Constraint& constraint) const;
-
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if constraint \p c is
+    satisfied by \p last_generator.
+  */
+  bool is_satisfied(const Constraint& c) const;
 };
 
 #include "LP_Problem.inlines.hh"
+#include "LP_Problem.templates.hh"
 
 #endif // !defined(PPL_LP_Problem_defs_hh)

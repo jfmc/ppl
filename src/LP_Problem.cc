@@ -121,19 +121,17 @@ LP_Problem::unsplit(dimension_type var_index,
 }
 
 bool
-PPL::LP_Problem::is_satisfied(const Constraint& ineq) const {
-  assert(ineq.is_inequality());
+PPL::LP_Problem::is_satisfied(const Constraint& c) const {
   // Scalar_Products::sign() requires the second argument to be at least
   // as large as the first one.
-  int sp_sign = last_generator.space_dimension() <= ineq.space_dimension()
-    ? Scalar_Products::sign(last_generator, ineq)
-    : Scalar_Products::sign(ineq, last_generator);
-  return sp_sign >= 0;
+  int sp_sign = last_generator.space_dimension() <= c.space_dimension()
+    ? Scalar_Products::sign(last_generator, c)
+    : Scalar_Products::sign(c, last_generator);
+  return c.is_inequality() ? sp_sign >= 0 : sp_sign == 0;
 }
 
 bool
-PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
-				   dimension_type& tableau_num_rows,
+PPL::LP_Problem::parse_constraints(dimension_type& tableau_num_rows,
 				   dimension_type& num_slack_variables,
 				   std::deque<bool>& is_tableau_constraint,
 				   std::deque<bool>& nonnegative_variable,
@@ -141,11 +139,11 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
 				   unfeasible_tableau_rows,
 				   std::deque<bool>& satisfied_ineqs) {
   satisfied_ineqs.clear();
-  satisfied_ineqs.insert(satisfied_ineqs.end(), pending_input_cs.num_rows(),
+  satisfied_ineqs.insert(satisfied_ineqs.end(), input_cs.size(),
 			 false);
 
-  const dimension_type cs_num_rows = cs.num_rows();
-  const dimension_type cs_space_dim = cs.space_dimension();
+  const dimension_type cs_num_rows = input_cs.size();
+  const dimension_type cs_space_dim = external_space_dim;
 
   // Step 1:
   // determine variables that are constrained to be nonnegative,
@@ -177,12 +175,12 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
     }
 
   // Process each row of the `cs' matrix.
-  for (dimension_type i = cs_num_rows; i-- > 0; ) {
-    const Constraint& cs_i = cs[i];
+  for (dimension_type i = cs_num_rows; i-- > first_pending_constraint; ) {
+    const Constraint& cs_i = input_cs[i];
     bool found_a_nonzero_coeff = false;
     bool found_many_nonzero_coeffs = false;
     dimension_type nonzero_coeff_column_index = 0;
-    for (dimension_type sd = cs_space_dim; sd-- > 0; ) {
+    for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
       if (cs_i.coefficient(Variable(sd)) != 0)
 	if (found_a_nonzero_coeff) {
 	  found_many_nonzero_coeffs = true;
@@ -200,11 +198,10 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
     if (found_many_nonzero_coeffs) {
       // CHECKME: Is it true that in the first phase we can apply
       // `is_satisfied()' with the generator `point()'?  If so, the following
-      // code the following code works even if we do not have a feasible
-      // point.
+      // code works even if we do not have a feasible point.
       // Check for satisfiabilty of the inequality. This can be done if we
       // have a feasible point of *this.
-      if (cs[i].is_inequality() && is_satisfied(cs[i]))
+      if (cs_i.is_inequality() && is_satisfied(cs_i))
 	satisfied_ineqs[i] = true;
       continue;
     }
@@ -311,9 +308,6 @@ PPL::LP_Problem::parse_constraints(const Constraint_System& cs,
 bool
 PPL::LP_Problem::process_pending_constraints() {
   const dimension_type num_original_rows = tableau.num_rows();
-  const dimension_type input_cs_sd = input_cs.space_dimension();
-  const dimension_type pending_cs_sd = pending_input_cs.space_dimension();
-  const dimension_type pending_cs_num_rows = pending_input_cs.num_rows();
   dimension_type new_rows = 0;
   dimension_type new_slacks = 0;
   dimension_type new_var_columns = 0;
@@ -324,27 +318,22 @@ PPL::LP_Problem::process_pending_constraints() {
   // Check the new constraints to adjust the data structures.
   // If `false' is returned, the pending constraints are trivially
   // unfeasible.
-  if (!parse_constraints(pending_input_cs, new_rows,
-			 new_slacks, is_tableau_constraint,
+  if (!parse_constraints(new_rows, new_slacks, is_tableau_constraint,
 			 nonnegative_variable, unfeasible_tableau_rows,
 			 satisfied_ineqs)) {
-    // Insert the pending constraints in `input_cs'.
-    for (dimension_type i = pending_cs_num_rows; i-- > 0; )
-      input_cs.insert(pending_input_cs[i]);
-    // The pending constraints are no more pending.
-    pending_input_cs.clear();
     status = UNSATISFIABLE;
     return false;
   };
+
   const dimension_type first_free_tableau_index = tableau.num_columns()-1;
 
-  if (pending_cs_sd > input_cs_sd) {
-    const dimension_type space_diff = pending_cs_sd - input_cs_sd;
+  if (external_space_dim > internal_space_dim) {
+    const dimension_type space_diff = external_space_dim - internal_space_dim;
     for (dimension_type i = 0, j = 0; i < space_diff; ++i, ++j) {
       // Set `mapping' properly to store that every variable is split.
       // In the folliwing case the value of the orginal Variable can be
       // negative.
-      if (!nonnegative_variable[input_cs_sd+i]) {
+      if (!nonnegative_variable[internal_space_dim+i]) {
 	mapping.push_back(std::make_pair(first_free_tableau_index+j,
 					 first_free_tableau_index+1+j));
 	++j;
@@ -396,12 +385,13 @@ PPL::LP_Problem::process_pending_constraints() {
     ? artificial_index : 0;
 
   // Proceed with the insertion of the constraints.
-  for (dimension_type k = tableau_num_rows, i = pending_cs_num_rows; i-- > 0; )
+  for (dimension_type k = tableau_num_rows, i = input_cs.size();
+       i-- > first_pending_constraint;  )
     if (is_tableau_constraint[i]) {
       // Copy the original constraint in the tableau.
       Row& tableau_k = tableau[--k];
-      const Constraint& cs_i = pending_input_cs[i];
-      for (dimension_type sd = pending_cs_sd; sd-- > 0; ) {
+      const Constraint& cs_i = input_cs[i];
+      for (dimension_type sd = cs_i.space_dimension(); sd-- > 0; ) {
 	tableau_k[mapping[sd+1].first] = cs_i.coefficient(Variable(sd));
 	// Split if needed.
 	if (mapping[sd+1].second != 0)
@@ -500,20 +490,13 @@ PPL::LP_Problem::process_pending_constraints() {
     return true;
   }
 
-// Now we are ready to solve the first phase.
+  // Now we are ready to solve the first phase.
   bool first_phase_succesful = compute_simplex();
 
 #if PPL_NOISY_SIMPLEX
   std::cout << "LP_Problem::solve: 1st phase ended at iteration "
  	    << num_iterations << "." << std::endl;
 #endif
-
-  // Insert the pending constraints in `input_cs'.
-  for (dimension_type i = pending_cs_num_rows; i-- > 0; )
-    input_cs.insert(pending_input_cs[i]);
-
-  // The pending constraints are no more pending.
-  pending_input_cs.clear();
 
   if (!first_phase_succesful || working_cost[0] != 0) {
     // The feasible region is empty.
@@ -960,13 +943,12 @@ void
 PPL::LP_Problem::compute_generator() const {
   // We will store in num[] and in den[] the numerators and
   // the denominators of every variable of the original problem.
-  const dimension_type original_space_dim = input_cs.space_dimension();
-  std::vector<Coefficient> num(original_space_dim);
-  std::vector<Coefficient> den(original_space_dim);
+  std::vector<Coefficient> num(external_space_dim);
+  std::vector<Coefficient> den(external_space_dim);
   dimension_type row = 0;
 
   // We start to compute num[] and den[].
-  for (dimension_type i = original_space_dim; i-- > 0; ) {
+  for (dimension_type i = external_space_dim; i-- > 0; ) {
     Coefficient& num_i = num[i];
     Coefficient& den_i = den[i];
     // Get the value of the variable from the tableau
@@ -1026,18 +1008,18 @@ PPL::LP_Problem::compute_generator() const {
   // Compute the lcm of all denominators.
   TEMP_INTEGER(lcm);
   lcm = den[0];
-  for (dimension_type i = 1; i < original_space_dim; ++i)
+  for (dimension_type i = 1; i < external_space_dim; ++i)
     lcm_assign(lcm, lcm, den[i]);
   // Use the denominators to store the numerators' multipliers
   // and then compute the normalized numerators.
-  for (dimension_type i = original_space_dim; i-- > 0; ) {
+  for (dimension_type i = external_space_dim; i-- > 0; ) {
     exact_div_assign(den[i], lcm, den[i]);
     num[i] *= den[i];
   }
 
   // Finally, build the generator.
   Linear_Expression expr;
-  for (dimension_type i = original_space_dim; i-- > 0; )
+  for (dimension_type i = external_space_dim; i-- > 0; )
     expr += num[i] * Variable(i);
 
   LP_Problem& x = const_cast<LP_Problem&>(*this);
@@ -1113,11 +1095,11 @@ PPL::LP_Problem::evaluate_objective_function(const Generator& evaluating_point,
 
   // Compute the smallest space dimension  between `input_obj_function'
   // and `evaluating_point'.
-  const dimension_type space_dim
+  const dimension_type working_space_dim
     = std::min(ep_space_dim, input_obj_function.space_dimension());
   // Compute the optimal value of the cost function.
   ext_n = input_obj_function.inhomogeneous_term();
-  for (dimension_type i = space_dim; i-- > 0; )
+  for (dimension_type i = working_space_dim; i-- > 0; )
     ext_n += evaluating_point.coefficient(Variable(i))
       * input_obj_function.coefficient(Variable(i));
   // Numerator and denominator should be coprime.
@@ -1158,6 +1140,10 @@ PPL::LP_Problem::is_satisfiable() const {
       }
       // Apply incrementality to the pending constraint system.
       x.process_pending_constraints();
+      // Update `first_pending_constraint': no more pending.
+      x.first_pending_constraint = input_cs.size();
+      // Update also `internal_space_dim'.
+      x.internal_space_dim = x.external_space_dim;
       assert(OK());
       return (status != UNSATISFIABLE);
     }
@@ -1173,27 +1159,25 @@ PPL::LP_Problem::OK() const {
   using std::endl;
   using std::cerr;
 #endif
-
+  const dimension_type input_cs_num_rows = input_cs.size();
   // Check that every member used is OK.
-  if (!tableau.OK())
-    return false;
 
-  if (!input_cs.OK())
-    return false;
+  for (dimension_type i = input_cs_num_rows; i-- > 0; )
+    if (!input_cs[i].OK())
+      return false;
 
-  if (!pending_input_cs.OK())
-    return false;
+   if (!tableau.OK())
+     return false;
 
-  if (!input_obj_function.OK())
-    return false;
+   if (!input_obj_function.OK())
+     return false;
 
-  if (!last_generator.OK())
-    return false;
+   if (!last_generator.OK())
+     return false;
 
-  const dimension_type input_sd = input_cs.space_dimension();
-  const dimension_type pending_input_sd = pending_input_cs.space_dimension();
-  // Constraint system should contain no strict inequalities.
-  if (input_cs.has_strict_inequalities()) {
+   // Constraint system should contain no strict inequalities.
+   for (dimension_type i = input_cs_num_rows; i-- > 0; )
+     if (input_cs[i].is_strict_inequality()) {
 #ifndef NDEBUG
     cerr << "The feasible region of the LP_Problem is defined by "
 	 << "a constraint system containing strict inequalities."
@@ -1203,40 +1187,42 @@ PPL::LP_Problem::OK() const {
     return false;
   }
 
-  // Constraint system and objective function should be dimension compatible.
-  const dimension_type space_dim = std::max(input_sd, pending_input_sd);
-  if (space_dim < input_obj_function.space_dimension()) {
+   // Constraint system and objective function should be dimension compatible.
+   if (external_space_dim < input_obj_function.space_dimension()) {
 #ifndef NDEBUG
-    cerr << "The LP_Problem and the objective function have "
-	 << "incompatible space dimensions ("
-	 << space_dim << " < " << input_obj_function.space_dimension() << ")."
-	 << endl;
-    ascii_dump(cerr);
+     cerr << "The LP_Problem and the objective function have "
+	  << "incompatible space dimensions ("
+	  << external_space_dim << " < " << input_obj_function.space_dimension() << ")."
+	  << endl;
+     ascii_dump(cerr);
 #endif
-    return false;
-  }
+     return false;
+   }
 
-  if (status != UNSATISFIABLE && initialized)  {
+   if (status != UNSATISFIABLE && initialized)  {
     // Here `last_generator' has to be meaningful.
     // Check for dimension compatibility and actual feasibility.
-    if (input_sd != last_generator.space_dimension()) {
+    if (external_space_dim != last_generator.space_dimension()) {
 #ifndef NDEBUG
       cerr << "The LP_Problem and the cached feasible point have "
  	   << "incompatible space dimensions ("
- 	   << input_sd << " != " << last_generator.space_dimension() << ")."
+ 	   << external_space_dim << " != "
+	   << last_generator.space_dimension() << ")."
  	   << endl;
       ascii_dump(cerr);
 #endif
       return false;
     }
-    if (!input_cs.satisfies_all_constraints(last_generator)) {
+
+    for (dimension_type i = 0; i < first_pending_constraint; ++i)
+      if (!is_satisfied(input_cs[i])) {
 #ifndef NDEBUG
-      cerr << "The cached feasible point does not belong to "
- 	   << "the feasible region of the LP_Problem."
- 	   << endl;
-      ascii_dump(cerr);
+	cerr << "The cached feasible point does not belong to "
+	     << "the feasible region of the LP_Problem."
+	     << endl;
+	ascii_dump(cerr);
 #endif
-      return false;
+	return false;
     }
 
     const dimension_type tableau_nrows = tableau.num_rows();
@@ -1252,7 +1238,7 @@ PPL::LP_Problem::OK() const {
     }
     // The size of `mapping' should be equal to the space dimension
     // of `input_cs' plus one.
-    if (mapping.size() != input_cs.space_dimension() + 1) {
+    if (mapping.size() != external_space_dim + 1) {
 #ifndef NDEBUG
       cerr << "`input_cs' and `mapping' have incompatible sizes" << endl;
       ascii_dump(cerr);
@@ -1308,20 +1294,27 @@ PPL::LP_Problem::OK() const {
 #endif
 	return false;
       }
-  }
+   }
 
-  // All checks passed.
-  return true;
+   // All checks passed.
+   return true;
 }
 
 void
 PPL::LP_Problem::ascii_dump(std::ostream& s) const {
   using namespace IO_Operators;
+  s << "\nexternal_space_dim: " << external_space_dim << " \n";
+  s << "\ninternal_space_dim: " << internal_space_dim << " \n";
 
-  s << "input_cs\n";
-  input_cs.ascii_dump(s);
-  s << "pending_input_cs\n";
-  pending_input_cs.ascii_dump(s);
+  const dimension_type input_cs_size = input_cs.size();
+
+  s << "\ninput_cs( " << input_cs_size << " )\n";
+  for (dimension_type i = 0; i < input_cs_size; ++i)
+    input_cs[i].ascii_dump(s);
+
+  s << "\nfirst_pending_constraint: " <<  first_pending_constraint
+    << std::endl;
+
   s << "\ninput_obj_function\n";
   input_obj_function.ascii_dump(s);
   s << "\nopt_mode " << (opt_mode == MAXIMIZATION ? "MAX" : "MIN") << "\n";
@@ -1371,17 +1364,40 @@ PPL_OUTPUT_DEFINITIONS(LP_Problem)
 bool
 PPL::LP_Problem::ascii_load(std::istream& s) {
   std::string str;
-
-  if (!(s >> str) || str!= "input_cs")
+if (!(s >> str) || str!= "external_space_dim:")
     return false;
 
-  if (!input_cs.ascii_load(s))
+if (!(s >> external_space_dim))
     return false;
 
-  if (!(s >> str) || str!= "pending_input_cs")
+if (!(s >> str) || str!= "internal_space_dim:")
     return false;
 
-  if (!pending_input_cs.ascii_load(s))
+if (!(s >> internal_space_dim))
+    return false;
+
+ if (!(s >> str) || str!= "input_cs(")
+    return false;
+
+  dimension_type input_cs_size;
+
+  if (!(s >> input_cs_size))
+    return false;
+
+  if (!(s >> str) || str!= ")")
+    return false;
+
+  Constraint c(Constraint::zero_dim_positivity());
+  for (dimension_type i = 0; i < input_cs_size; ++i) {
+    if(!c.ascii_load(s))
+      return false;
+    input_cs.push_back(c);
+  }
+
+  if (!(s >> str) || str!= "first_pending_constraint:")
+    return false;
+
+  if (!(s >> first_pending_constraint))
     return false;
 
   if (!(s >> str) || str!= "input_obj_function")
@@ -1505,13 +1521,15 @@ PPL::LP_Problem::ascii_load(std::istream& s) {
 
 /*! \relates Parma_Polyhedra_Library::LP_Problem */
 std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const LP_Problem& cs) {
-  s << "Constraints: "
-    << cs.constraints()
-    << "\nObjective function: "
-    << cs.objective_function()
+PPL::IO_Operators::operator<<(std::ostream& s, const LP_Problem& lp) {
+  s << "Constraints:\n";
+  for (LP_Problem::const_iterator i = lp.constraints_begin(),
+	 i_end = lp.constraints_end(); i != i_end; ++i)
+    s << "\n" << *i;
+  s << "\nObjective function: "
+    << lp.objective_function()
     << "\nOptimization mode: "
-    << (cs.optimization_mode() == MAXIMIZATION
+    << (lp.optimization_mode() == MAXIMIZATION
 	? "MAXIMIZATION"
 	: "MINIMIZATION");
   return s;

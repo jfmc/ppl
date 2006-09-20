@@ -28,61 +28,88 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+inline dimension_type
+LP_Problem::max_space_dimension() {
+  return Constraint::max_space_dimension();
+}
+
+inline dimension_type
+LP_Problem::space_dimension() const {
+  return external_space_dim;
+}
+
 inline
-LP_Problem::LP_Problem()
-  : tableau(),
+LP_Problem::LP_Problem(const dimension_type dim)
+  : external_space_dim(dim),
+    internal_space_dim(0),
+    tableau(),
     working_cost(0, Row::Flags()),
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
     initialized(false),
     input_cs(),
-    pending_input_cs(),
+    first_pending_constraint(0),
     input_obj_function(),
     opt_mode(MAXIMIZATION),
     last_generator(point()) {
+  // Check for space dimension overflow.
+  if (dim > max_space_dimension())
+    throw std::length_error("PPL::LP_Problem::LP_Problem(d, cs, obj, m):\n"
+			    "d exceeds the maximum allowed space dimension");
   assert(OK());
 }
 
 inline
-LP_Problem::LP_Problem(const Constraint_System& cs,
+LP_Problem::LP_Problem(const dimension_type dim,
+		       const Constraint_System& cs,
 		       const Linear_Expression& obj,
 		       const Optimization_Mode mode)
-  : tableau(),
+  : external_space_dim(dim),
+    internal_space_dim(0),
+    tableau(),
     working_cost(0, Row::Flags()),
     mapping(),
     base(),
     status(PARTIALLY_SATISFIABLE),
     initialized(false),
     input_cs(),
-    pending_input_cs(!cs.has_strict_inequalities()
-	     ? cs
-	     : (throw std::invalid_argument("PPL::LP_Problem::"
-                           "LP_Problem(cs, obj, m):\n"
-                           "cs contains strict inequalities."),
-		cs)),
-    input_obj_function(obj.space_dimension() <= cs.space_dimension()
-		       ? obj
-		       : (throw std::invalid_argument("PPL::LP_Problem::"
-			             "LP_Problem(cs, obj, m):\n"
-				     "cs and obj have "
-				     "incompatible space dimensions."),
-			  obj)),
+    first_pending_constraint(0),
+    input_obj_function(obj),
     opt_mode(mode),
     last_generator(point()) {
+  // Check for space dimension overflow.
+  if (dim > max_space_dimension())
+    throw std::length_error("PPL::LP_Problem::LP_Problem(d, cs, obj, m):\n"
+			    "d exceeds the maximum allowed space dimension");
+  // Check the objective function.
+  if (obj.space_dimension() > dim)
+    throw std::invalid_argument("PPL::LP_Problem::LP_Problem(d, cs, obj, m):\n"
+				"the space dimension of obj exceeds d.");
+  // Check the constraint system.
+  if (cs.space_dimension() > dim)
+    throw std::invalid_argument("PPL::LP_Problem::LP_Problem(d, cs, obj, m):\n"
+				"the space dimension of cs exceeds d.");
+  if (cs.has_strict_inequalities())
+    throw std::invalid_argument("PPL::LP_Problem::LP_Problem(d, cs, obj, m):\n"
+				"cs contains strict inequalities.");
+  // Actually copy the constraints.
+  input_cs.insert(input_cs.end(), cs.begin(), cs.end());
   assert(OK());
 }
 
 inline
 LP_Problem::LP_Problem(const LP_Problem& y)
-  : tableau(y.tableau),
+  : external_space_dim(y.external_space_dim),
+    internal_space_dim(y.internal_space_dim),
+    tableau(y.tableau),
     working_cost(y.working_cost),
     mapping(y.mapping),
     base(y.base),
     status(y.status),
     initialized(y.initialized),
     input_cs(y.input_cs),
-    pending_input_cs(y.pending_input_cs),
+    first_pending_constraint(y.first_pending_constraint),
     input_obj_function(y.input_obj_function),
     opt_mode(y.opt_mode),
     last_generator(y.last_generator) {
@@ -95,10 +122,13 @@ LP_Problem::~LP_Problem() {
 
 inline void
 LP_Problem::add_constraint(const Constraint& c) {
+  if (space_dimension() < c.space_dimension())
+    throw std::invalid_argument("PPL::LP_Problem::add_constraint(c):\n"
+				"*this and c are dimension-incompatible.");
   if (c.is_strict_inequality())
     throw std::invalid_argument("PPL::LP_Problem::add_constraint(c):\n"
 				"c is a strict inequality.");
-  pending_input_cs.insert(c);
+  input_cs.push_back(c);
   if (status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
   assert(OK());
@@ -106,12 +136,13 @@ LP_Problem::add_constraint(const Constraint& c) {
 
 inline void
 LP_Problem::add_constraints(const Constraint_System& cs) {
+  if (space_dimension() < cs.space_dimension())
+    throw std::invalid_argument("PPL::LP_Problem::add_constraints(cs):\n"
+				"*this and cs are dimension-incompatible.");
   if (cs.has_strict_inequalities())
     throw std::invalid_argument("PPL::LP_Problem::add_constraints(cs):\n"
 				"cs contains strict inequalities.");
-  const dimension_type cs_num_rows = cs.num_rows();
-  for (dimension_type i = cs_num_rows; i-- > 0; )
-    pending_input_cs.insert(cs[i]);
+  input_cs.insert(input_cs.end(), cs.begin(), cs.end());
   if (status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
   assert(OK());
@@ -130,12 +161,12 @@ LP_Problem::set_objective_function(const Linear_Expression& obj) {
 }
 
 inline void
-LP_Problem::set_optimization_mode(Optimization_Mode mode) {
+LP_Problem::set_optimization_mode(const Optimization_Mode mode) {
   if (opt_mode != mode) {
     opt_mode = mode;
     if (status == UNBOUNDED || status == OPTIMIZED)
       status = SATISFIABLE;
-    //  assert(OK());
+    assert(OK());
   }
 }
 
@@ -167,16 +198,6 @@ LP_Problem::optimizing_point() const {
 			    "*this doesn't have an optimizing point.");
 }
 
-inline Constraint_System
-LP_Problem::constraints() const {
-  // FIXME : avoid the copy if possible.
-  Constraint_System cs(input_cs);
-  for (dimension_type i = 0,
-	 i_end = pending_input_cs.num_rows(); i != i_end; ++i)
-    cs.insert(pending_input_cs[i]);
-  return cs;
-}
-
 inline LP_Problem_Status
 LP_Problem::solve() const {
   if (is_satisfiable()) {
@@ -198,8 +219,20 @@ LP_Problem::optimal_value(Coefficient& num, Coefficient& den) const {
   evaluate_objective_function(g, num, den);
 }
 
+inline LP_Problem::const_iterator
+LP_Problem::constraints_begin() const {
+  return input_cs.begin();
+};
+
+inline LP_Problem::const_iterator
+LP_Problem::constraints_end() const {
+  return input_cs.end();
+};
+
 inline void
 LP_Problem::swap(LP_Problem& y) {
+  std::swap(external_space_dim, y.external_space_dim);
+  std::swap(internal_space_dim, y.internal_space_dim);
   std::swap(tableau, y.tableau);
   std::swap(working_cost, y.working_cost);
   std::swap(mapping, y.mapping);
@@ -207,7 +240,7 @@ LP_Problem::swap(LP_Problem& y) {
   std::swap(base, y.base);
   std::swap(status, y.status);
   std::swap(input_cs, y.input_cs);
-  std::swap(pending_input_cs, y.pending_input_cs);
+  std::swap(first_pending_constraint, y.first_pending_constraint);
   std::swap(input_obj_function, y.input_obj_function);
   std::swap(opt_mode, y.opt_mode);
   std::swap(last_generator, y.last_generator);
@@ -226,15 +259,19 @@ LP_Problem::clear() {
   swap(tmp);
 }
 
-inline dimension_type
-LP_Problem::max_space_dimension() {
-  return Constraint_System::max_space_dimension();
-}
-
-inline dimension_type
-LP_Problem::space_dimension() const {
-  return std::max(input_cs.space_dimension(),
-		  pending_input_cs.space_dimension());
+inline void
+LP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
+  // The space dimension of the resulting LP problem should not
+  // overflow the maximum allowed space dimension.
+  if (m > max_space_dimension() - space_dimension())
+    throw std::length_error("PPL::LP_Problem::"
+			    "add_space_dimensions_and_embed(m):\n"
+			    "adding m new space dimensions exceeds "
+			    "the maximum allowed space dimension");
+  external_space_dim += m;
+  if (status != UNSATISFIABLE)
+    status = PARTIALLY_SATISFIABLE;
+  assert(OK());
 }
 
 inline memory_size_type
@@ -242,13 +279,16 @@ LP_Problem::external_memory_in_bytes() const {
   memory_size_type n
     = tableau.external_memory_in_bytes()
     + working_cost.external_memory_in_bytes()
-    + input_cs.external_memory_in_bytes()
-    + pending_input_cs.external_memory_in_bytes()
     + input_obj_function.external_memory_in_bytes()
     + last_generator.external_memory_in_bytes();
+  // Adding the external memory for `input_cs'.
+  n += input_cs.capacity() * sizeof(Constraint);
+  for (const_iterator i = input_cs.begin(),
+	 i_end = input_cs.end(); i != i_end; ++i)
+    n += (i->external_memory_in_bytes());
   // Adding the external memory for `base'.
   n += base.capacity() * sizeof(dimension_type);
-  // CHECKME: is it right this way of computing the memory used by `mapping'?
+  // Adding the external memory for `mapping'.
   n += mapping.capacity() * sizeof(std::pair<dimension_type, dimension_type>);
   return n;
 }
