@@ -220,6 +220,7 @@ Scalar_Products.defs.hh \
 Scalar_Products.inlines.hh \
 LP_Problem.defs.hh \
 LP_Problem.inlines.hh \
+LP_Problem.templates.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
