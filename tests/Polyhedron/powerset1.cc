@@ -24,111 +24,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-class Fcaibvp;
-
-bool operator==(const Fcaibvp& x, const Fcaibvp& y);
-bool operator!=(const Fcaibvp& x, const Fcaibvp& y);
-
-std::ostream& operator<<(std::ostream& s, const Fcaibvp& x);
-
-// A class for representing Finite Conjunctions of Attribute
-// Independent Boolean Variable Properties.
-class Fcaibvp {
-private:
-  typedef Variable::Compare Compare;
-  typedef std::set<Variable, Compare> Set;
-
-  Set set;
-
-public:
-  Fcaibvp()
-    : set() {
-  }
-
-  explicit Fcaibvp(const Variable& x)
-    : set() {
-    set.insert(x);
-  }
-
-  memory_size_type total_memory_in_bytes() const {
-    return 1;
-  }
-
-  bool is_top() const {
-    return set.empty();
-  }
-
-  bool is_bottom() const {
-    return false;
-  }
-
-  bool definitely_entails(const Fcaibvp& y) const{
-    const Fcaibvp& x = *this;
-    return std::includes(x.set.begin(), x.set.end(),
-			 y.set.begin(), y.set.end(),
-			 Compare());
-  }
-
-  void upper_bound_assign(const Fcaibvp& y) {
-    Fcaibvp& x = *this;
-    Fcaibvp z;
-    std::set_intersection(x.set.begin(), x.set.end(),
-			  y.set.begin(), y.set.end(),
-			  std::inserter(z.set, z.set.begin()),
-			  Compare());
-    std::swap(x, z);
-  }
-
-  void meet_assign(const Fcaibvp& y) {
-    set.insert(y.set.begin(), y.set.end());
-  }
-
-  bool OK() const {
-    return true;
-  }
-
-  friend std::ostream& operator<<(std::ostream& s, const Fcaibvp& x);
-};
-
-std::ostream&
-operator<<(std::ostream& s, const Fcaibvp& x) {
-  s << "{";
-  for (Fcaibvp::Set::const_iterator i = x.set.begin(),
-	 x_end = x.set.end(); i != x_end; ) {
-    const Variable& v = *i++;
-#if 0
-    // GCC 3.3.3 does not accept this.
-    using IO_Operators::operator<<;
-    s << v;
-#else
-    Parma_Polyhedra_Library::IO_Operators::operator<<(s, v);
-#endif
-    if (i != x_end)
-      s << ", ";
-  }
-  s << "}";
-  return s;
-}
-
-bool
-operator==(const Fcaibvp& x, const Fcaibvp& y) {
-  return x.definitely_entails(y) && y.definitely_entails(x);
-}
-
-bool
-operator!=(const Fcaibvp& x, const Fcaibvp& y) {
-  return !(x == y);
-}
-
 // Uses every public Powerset method.
 bool
 test01() {
-  typedef Powerset<Fcaibvp> PS;
+  typedef Powerset<FCAIBVP> PS;
 
   Variable A(0);
 
   PS ps1;
-  ps1.add_disjunct(Fcaibvp(A));
+  ps1.add_disjunct(FCAIBVP(A));
 
   PS ps2 = ps1;
 
@@ -145,7 +49,7 @@ test01() {
   nout << endl;
 #endif
 
-  Fcaibvp d(A);
+  FCAIBVP d(A);
   PS ps3(d);
 
   if (!ps1.definitely_entails(ps3))
@@ -193,13 +97,6 @@ test01() {
   count = 0;
   for (PS::const_reverse_iterator i = ps3.rbegin(),
 	 ps3_rend = ps3.rend(); i != ps3_rend; ++i)
-    ++count;
-  if (count != 1)
-    return false;
-
-  // Omega iterator typedef.
-  count = 0;
-  for (PS::omega_iterator i = ps3.begin(); i != ps3.end(); ++i)
     ++count;
   if (count != 1)
     return false;
@@ -253,12 +150,12 @@ test02() {
   Variable X(0);
   Variable Y(1);
 
-  Fcaibvp XY(X);
-  XY.meet_assign(Fcaibvp(Y));
+  FCAIBVP XY(X);
+  XY.meet_assign(FCAIBVP(Y));
 
-  Powerset<Fcaibvp> ps;
+  Powerset<FCAIBVP> ps;
 
-  ps.add_disjunct(Fcaibvp(X));
+  ps.add_disjunct(FCAIBVP(X));
   ps.add_disjunct(XY);
   return ps.OK();
 }
@@ -268,13 +165,13 @@ test03() {
   Variable X(0);
   Variable Y(1);
 
-  Fcaibvp XY(X);
-  XY.meet_assign(Fcaibvp(Y));
+  FCAIBVP XY(X);
+  XY.meet_assign(FCAIBVP(Y));
 
-  Powerset<Fcaibvp> ps;
+  Powerset<FCAIBVP> ps;
 
   ps.add_disjunct(XY);
-  ps.add_disjunct(Fcaibvp(X));
+  ps.add_disjunct(FCAIBVP(X));
   return ps.OK();
 }
 
