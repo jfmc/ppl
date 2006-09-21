@@ -206,7 +206,6 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
   if (gs_begin == gs_end) {
     // An empty generator system defines the empty polyhedron.
     set_empty();
-    assert(OK());
     return;
   }
 
