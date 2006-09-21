@@ -63,10 +63,8 @@ minimize(C_Polyhedron& ph) {
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -213,6 +211,9 @@ main() TRY {
   nout << "Sum of sizes of contained generators = " << gs_elements_size
        << endl << endl;
 
-  return 0;
+  return true;
 }
-CATCH
+
+BEGIN_MAIN
+  DO_TEST_F8(test01);
+END_MAIN
