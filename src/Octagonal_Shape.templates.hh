@@ -1790,7 +1790,6 @@ Octagonal_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
   if (pfunc.has_empty_codomain()) {
     // All dimensions vanish: the octagon becomes zero_dimensional.
     remove_higher_space_dimensions(0);
-    assert(OK());
     return;
   }
 
