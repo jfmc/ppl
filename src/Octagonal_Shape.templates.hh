@@ -2213,7 +2213,6 @@ Octagonal_Shape<T>
   get_limiting_octagon(cs, limiting_octagon);
   BHMZ05_widening_assign(y, tp);
   intersection_assign(limiting_octagon);
-  assert(OK());
 }
 
 template <typename T>
