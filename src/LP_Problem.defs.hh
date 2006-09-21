@@ -27,10 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.types.hh"
 #include "Row.defs.hh"
 #include "Matrix.defs.hh"
-#include "Constraint_System.defs.hh"
-#include "Constraint_System.inlines.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.types.hh"
+#include "Constraint_System.types.hh"
 #include "Generator.defs.hh"
 #include <vector>
 #include <deque>
