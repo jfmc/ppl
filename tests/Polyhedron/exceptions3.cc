@@ -22,12 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using std::length_error;
-
 namespace {
 
-void
-error1() {
+bool
+test01() {
   try {
     // This is an invalid use of the constructor of a Variable:
     // it is illegal to (try to) build a variable with an id()
@@ -38,19 +36,19 @@ error1() {
     (void) v.id();
 
     // It is an error if the exception is not thrown.
-    exit(1);
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
-    exit(1);
   }
+  return false;
 }
 
-void
-error2() {
+bool
+test02() {
   try {
     Variable v(Linear_Expression::max_space_dimension());
     // This is an invalid use of the constructor of a Linear_Expression:
@@ -58,20 +56,20 @@ error2() {
     // greater than Linear_Expression::max_space_dimension().
     Linear_Expression e(v);
 
-    // It is an error if the exception is not thrown.
-    exit(1);
+   // It is an error if the exception is not thrown.
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
-    exit(1);
   }
+  return false;
 }
 
-void
-error3() {
+bool
+test03() {
   try {
     Variable v(Linear_Expression::max_space_dimension());
     // This is an invalid use of the constructor of a Linear_Expression:
@@ -81,19 +79,19 @@ error3() {
     e += v;
 
     // It is an error if the exception is not thrown.
-    exit(1);
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
-    exit(1);
-  }
+   }
+  return false;
 }
 
-void
-error4() {
+bool
+test04() {
   try {
     Variable v(Linear_Expression::max_space_dimension());
     // This is an invalid use of the constructor of a Linear_Expression:
@@ -103,19 +101,19 @@ error4() {
     e -= v;
 
     // It is an error if the exception is not thrown.
-    exit(1);
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
-    exit(1);
-  }
+   }
+  return false;
 }
 
-void
-error5() {
+bool
+test05() {
   try {
     // This is an invalid use of the constructor of a polyhedron:
     // it is illegal to (try to) build a polyhedron with a dimensions
@@ -123,19 +121,19 @@ error5() {
     C_Polyhedron ph(C_Polyhedron::max_space_dimension() + 1);
 
     // It is an error if the exception is not thrown.
-    exit(1);
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
-    exit(1);
   }
+  return false;
 }
 
-void
-error6() {
+bool
+test06() {
   try {
     C_Polyhedron ph(1);
     // This is an invalid use of the method for adding dimensions:
@@ -144,19 +142,19 @@ error6() {
     ph.add_space_dimensions_and_embed(C_Polyhedron::max_space_dimension());
 
     // It is an error if the exception is not thrown.
-    exit(1);
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
-    exit(1);
   }
+  return false;
 }
 
-void
-error7() {
+bool
+test07() {
   try {
     C_Polyhedron ph(1);
     // This is an invalid use of the method for adding dimensions:
@@ -165,19 +163,19 @@ error7() {
     ph.add_space_dimensions_and_project(C_Polyhedron::max_space_dimension());
 
     // It is an error if the exception is not thrown.
-    exit(1);
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
-    exit(1);
   }
+  return false;
 }
 
-void
-error8() {
+bool
+test08() {
   try {
     C_Polyhedron ph(C_Polyhedron::max_space_dimension(), EMPTY);
     // This is an invalid use of the method for concatenating polyhedra:
@@ -187,19 +185,19 @@ error8() {
     ph.concatenate_assign(C_Polyhedron(1));
 
     // It is an error if the exception is not thrown.
-    exit(1);
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
-    exit(1);
   }
+  return false;
 }
 
-void
-error9() {
+bool
+test09() {
   try {
     C_Polyhedron ph(1);
     // This is an invalid use of the method for expanding space dimensions:
@@ -210,33 +208,27 @@ error9() {
 			      C_Polyhedron::max_space_dimension());
 
     // It is an error if the exception is not thrown.
-    exit(1);
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
-    exit(1);
   }
+  return false;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  error1();
-  error2();
-  error3();
-  error4();
-  error5();
-  error6();
-  error7();
-  error8();
-  error9();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+END_MAIN
