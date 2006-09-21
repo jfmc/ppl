@@ -47,7 +47,6 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
   if (gs_begin == gs_end) {
     // An empty generator system defines the empty polyhedron.
     set_empty();
-    assert(OK());
     return;
   }
 
@@ -347,7 +346,6 @@ BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   // let `*this' become empty.
   if (y_space_dim == 0 && y.marked_empty()) {
     set_empty();
-    assert(OK());
     return;
   }
 
@@ -1367,7 +1365,6 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
   if (pfunc.has_empty_codomain()) {
     // All dimensions vanish: the BDS becomes zero_dimensional.
     remove_higher_space_dimensions(0);
-    assert(OK());
     return;
   }
 
@@ -1649,7 +1646,6 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
   get_limiting_shape(cs, limiting_shape);
   CC76_extrapolation_assign(y, tp);
   intersection_assign(limiting_shape);
-  assert(OK());
 }
 
 template <typename T>
@@ -1770,7 +1766,6 @@ BD_Shape<T>::limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
   get_limiting_shape(cs, limiting_shape);
   BHMZ05_widening_assign(y, tp);
   intersection_assign(limiting_shape);
-  assert(OK());
 }
 
 template <typename T>
@@ -2410,7 +2405,6 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     // The relation symbol is "==":
     // this is just an affine image computation.
     affine_image(var, expr, denominator);
-    assert(OK());
     return;
   }
 
@@ -2989,7 +2983,6 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
     // The relation symbol is "==":
     // this is just an affine preimage computation.
     affine_preimage(var, expr, denominator);
-    assert(OK());
     return;
   }
 

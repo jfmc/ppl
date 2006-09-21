@@ -207,7 +207,6 @@ BD_Shape<T>::BD_Shape(const Constraint_System& cs)
     // A (non zero-dim) universe BDS is shortest-path closed.
     status.set_shortest_path_closed();
   add_constraints(cs);
-  assert(OK());
 }
 
 template <typename T>
