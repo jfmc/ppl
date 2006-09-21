@@ -232,8 +232,7 @@ public:
   void add_constraint(const Constraint& c);
 
   /*! \brief
-    Adds a copy of the constraints in \p cs to the LP problem,
-    increasing the number of space dimensions if needed.
+    Adds a copy of the constraints in \p cs to the LP problem.
 
     \exception std::invalid_argument
     Thrown if the constraint system \p cs contains any strict inequality
