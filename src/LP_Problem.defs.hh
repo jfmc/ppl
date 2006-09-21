@@ -56,7 +56,7 @@ operator<<(std::ostream& s, const LP_Problem& lp);
    - the feasible region, by means of a finite set of linear equality
      and non-strict inequality constraints;
    - the objective function, described by a Linear_Expression;
-   - the oprimization mode (either maximization or minimization).
+   - the optimization mode (either maximization or minimization).
 
   The class provides support for the (incremental) solution of the
   LP problem based on the simplex method. The result of the resolution
@@ -81,7 +81,7 @@ public:
     the origin of the vector space is an optimal solution.
 
     \param dim
-    The dimension of the vector space encosing \p *this
+    The dimension of the vector space enclosing \p *this
     (optional argument with default value \f$0\f$).
 
     \exception std::length_error
@@ -177,7 +177,7 @@ private:
 public:
   /*! \brief
     A type alias for the read-only iterator on the constraints
-    defining the feasible reagion.
+    defining the feasible region.
   */
   typedef Constraint_Sequence::const_iterator const_iterator;
 
@@ -465,7 +465,7 @@ private:
 
     \param unfeasible_tableau_rows
     This will contain all the row indexes of the tableau that are no more
-    satisfied after adding more contraints to \p *this.
+    satisfied after adding more constraints to \p *this.
 
     \param satisfied_ineqs
     This will contain all the row indexes of the tableau that are already
@@ -486,7 +486,7 @@ private:
 
     \return
     The column index of the variable that enters the base. If no such
-    variable exists, optimality was achieved and <CODE>0</CODE> is retuned.
+    variable exists, optimality was achieved and <CODE>0</CODE> is returned.
   */
   dimension_type textbook_entering_index() const;
 
@@ -538,7 +538,7 @@ private:
 
     \return
     The column index of the variable that enters the base. If no such
-    variable exists, optimality was achieved and <CODE>0</CODE> is retuned.
+    variable exists, optimality was achieved and <CODE>0</CODE> is returned.
 
     To compute the entering_index, the steepest edge algorithm chooses
     the index `j' such that \f$\frac{d_{j}}{\|\Delta x^{j} \|}\f$ is the
@@ -551,7 +551,7 @@ private:
     \f]
     Recall that, due to the Integer implementation of the algorithm, our
     tableau doesn't contain the ``real'' \f$\alpha\f$ values, but these
-    can be computed dividing the value of the cofficient by the value of
+    can be computed dividing the value of the coefficient by the value of
     the variable in base. Obviously the result may not be an Integer, so
     we will proceed in another way: the following code will compute the
     lcm of all the variables in base to get the good ``weight'' of each
@@ -576,7 +576,7 @@ private:
 		  dimension_type& row_index) const;
 
   /*! \brief
-    Computes a valid generator that satisifies all the constraints of the
+    Computes a valid generator that satisfies all the constraints of the
     Linear Programming problem associated to \p *this.
   */
   void compute_generator() const;
