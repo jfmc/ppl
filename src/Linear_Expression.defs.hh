@@ -38,7 +38,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator_System.types.hh"
 #include "Polyhedron.types.hh"
 #include "Grid.types.hh"
-#include "LP_Problem.types.hh"
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
