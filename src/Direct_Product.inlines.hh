@@ -519,14 +519,16 @@ Direct_Product<D1, D2>::concatenate_assign(const Direct_Product& y) {
 
 template <typename D1, typename D2>
 inline void
-Direct_Product<D1, D2>::remove_space_dimensions(const Variables_Set& to_be_removed) {
+Direct_Product<D1, D2>
+::remove_space_dimensions(const Variables_Set& to_be_removed) {
   d1.remove_space_dimensions(to_be_removed);
   d2.remove_space_dimensions(to_be_removed);
 }
 
 template <typename D1, typename D2>
 inline void
-Direct_Product<D1, D2>::remove_higher_space_dimensions(dimension_type new_dimension) {
+Direct_Product<D1, D2>
+::remove_higher_space_dimensions(dimension_type new_dimension) {
   d1.remove_higher_space_dimensions(new_dimension);
   d2.remove_higher_space_dimensions(new_dimension);
 }
@@ -548,8 +550,9 @@ Direct_Product<D1, D2>::expand_space_dimension(Variable var, dimension_type m) {
 
 template <typename D1, typename D2>
 inline void
-Direct_Product<D1, D2>::fold_space_dimensions(const Variables_Set& to_be_folded,
-					      Variable var) {
+Direct_Product<D1, D2>
+::fold_space_dimensions(const Variables_Set& to_be_folded,
+			Variable var) {
   d1.fold_space_dimensions(to_be_folded, var);
   d2.fold_space_dimensions(to_be_folded, var);
 }

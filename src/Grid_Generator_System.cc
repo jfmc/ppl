@@ -21,11 +21,10 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-
 #include "Grid_Generator_System.defs.hh"
 #include "Grid_Generator_System.inlines.hh"
 #include "Scalar_Products.defs.hh"
-
+#include "Variables_Set.defs.hh"
 #include <cassert>
 #include <iostream>
 

@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
 #include "Polyhedron.defs.hh"
-#include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include "Determinate.defs.hh"
 #include "Ask_Tell.defs.hh"
 #include <iosfwd>

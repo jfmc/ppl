@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.types.hh"
 #include "globals.defs.hh"
 #include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Constraint_System.defs.hh"

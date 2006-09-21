@@ -1,4 +1,4 @@
-/* Variable class implementation (non-inline functions).
+/* Variables_Set class implementation (non-inline functions).
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,30 +21,35 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-#include "Variable.defs.hh"
+#include "Variables_Set.defs.hh"
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Variable::output_function_type*
-PPL::Variable::current_output_function = 0;
+PPL::Variables_Set::Variables_Set(const Variable& v, const Variable& w)
+  : Base() {
+  for (dimension_type d = v.id(), last = w.id(); d <= last; ++d)
+    insert(Variable(d));
+}
 
 bool
-PPL::Variable::OK() const {
-  return id() < max_space_dimension();
+PPL::Variables_Set::OK() const {
+  for (const_iterator i = begin(), set_end = end(); i != set_end; ++i)
+    if (!i->OK())
+      return false;
+  return true;
 }
 
-void
-PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
-  dimension_type varid = v.id();
-  s << static_cast<char>('A' + varid % 26);
-  if (dimension_type i = varid / 26)
-    s << i;
-}
-
-/*! \relates Parma_Polyhedra_Library::Variable */
+/*! \relates Parma_Polyhedra_Library::Variables_Set */
 std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Variable& v) {
-  (*Variable::current_output_function)(s, v);
+PPL::IO_Operators::operator<<(std::ostream& s, const Variables_Set& vs) {
+  s << '{';
+  for (Variables_Set::const_iterator i = vs.begin(),
+	 vs_end = vs.end(); i != vs_end; ) {
+    s << ' ' << *i++;
+    if (i != vs_end)
+      s << ',';
+  }
+  s << " }";
   return s;
 }

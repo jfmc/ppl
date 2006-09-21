@@ -121,6 +121,7 @@ Row.types.hh \
 Linear_Row.types.hh \
 Matrix.types.hh \
 Variable.types.hh \
+Variables_Set.types.hh \
 Linear_Expression.types.hh \
 Linear_System.types.hh \
 Saturation_Row.types.hh \
@@ -187,6 +188,8 @@ Bounding_Box.defs.hh \
 Bounding_Box.inlines.hh \
 Variable.defs.hh \
 Variable.inlines.hh \
+Variables_Set.defs.hh \
+Variables_Set.inlines.hh \
 Init.defs.hh \
 initializer.hh \
 Topology.hh \
@@ -352,6 +355,7 @@ Saturation_Row.cc \
 Ph_Status.cc \
 Grid_Status.cc \
 Variable.cc \
+Variables_Set.cc \
 conversion.cc \
 minimize.cc \
 simplify.cc \

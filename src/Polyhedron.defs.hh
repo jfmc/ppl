@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "globals.types.hh"
 #include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"

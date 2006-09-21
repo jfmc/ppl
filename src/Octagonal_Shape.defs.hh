@@ -35,6 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "Polyhedron.types.hh"
 #include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include "Checked_Number.defs.hh"
 #include <vector>
 #include <cstddef>

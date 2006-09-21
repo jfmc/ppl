@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Polyhedron.defs.hh"
+#include "Variables_Set.defs.hh"
 #include <cassert>
 
 #define BE_LAZY 1

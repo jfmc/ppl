@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator_System.types.hh"
 #include "Generator_System.defs.hh"
 #include "Grid_Generator.types.hh"
-#include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {

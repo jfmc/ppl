@@ -35,6 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator_System.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
+#include "Variables_Set.types.hh"
 
 namespace Parma_Polyhedra_Library {
 

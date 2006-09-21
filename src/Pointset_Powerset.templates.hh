@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.inlines.hh"
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
+#include "Variables_Set.defs.hh"
 #include <algorithm>
 #include <deque>
 #include <string>

@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "LP_Problem.defs.hh"
+#include "Variables_Set.defs.hh"
 #include <cassert>
 #include <vector>
 #include <deque>

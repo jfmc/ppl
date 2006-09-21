@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_MIP_Problem_templates_hh
 #define PPL_MIP_Problem_templates_hh 1
 
+#include "Variables_Set.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 template <typename In>
