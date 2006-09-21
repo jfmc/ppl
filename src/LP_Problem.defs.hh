@@ -377,8 +377,8 @@ private:
     OPTIMIZED,
     /*! \brief
       The feasible region of the LP problem has been changed by adding
-      new constraints; a feasible solution for the old constraints has
-      been computed.
+      new space dimensions or new constraints; a feasible solution for
+      the old feasible region is still available.
     */
     PARTIALLY_SATISFIABLE
   };
@@ -386,9 +386,11 @@ private:
   //! The internal state of the LP problem.
   Status status;
 
-  //! A boolean encoding the fact that the internal data structures
-  //! for checking satsfiability / optimizing the problem are properly built.
-  //! Used internally to check more properties in OK().
+  /*! \brief
+    A boolean encoding whether or not internal data structures have
+    already been properly sized and populated: useful to allow for
+    deeper checks in method OK().
+  */
   bool initialized;
 
   //! The sequence of constraints describing the feasible region.
