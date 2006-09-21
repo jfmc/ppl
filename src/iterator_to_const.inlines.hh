@@ -106,7 +106,8 @@ const_iterator_to_const<Container>::const_iterator_to_const()
 
 template <typename Container>
 inline
-const_iterator_to_const<Container>::const_iterator_to_const(const const_iterator_to_const& y)
+const_iterator_to_const<Container>
+::const_iterator_to_const(const const_iterator_to_const& y)
   : base(y.base) {
 }
 
@@ -160,7 +161,8 @@ const_iterator_to_const<Container>::operator--(int) {
 
 template <typename Container>
 inline bool
-const_iterator_to_const<Container>::operator==(const const_iterator_to_const& y) const {
+const_iterator_to_const<Container>
+::operator==(const const_iterator_to_const& y) const {
   return base == y.base;
 }
 
@@ -178,7 +180,7 @@ const_iterator_to_const<Container>
   : base(y.base) {
 }
 
-/*! \relates Powerset::const_iterator_to_const */
+/*! \relates const_iterator_to_const */
 template <typename Container>
 inline bool
 operator==(const iterator_to_const<Container>& x,
@@ -186,7 +188,7 @@ operator==(const iterator_to_const<Container>& x,
   return const_iterator_to_const<Container>(x).operator==(y);
 }
 
-/*! \relates Powerset::const_iterator_to_const */
+/*! \relates const_iterator_to_const */
 template <typename Container>
 inline bool
 operator!=(const iterator_to_const<Container>& x,
