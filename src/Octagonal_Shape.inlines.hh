@@ -233,7 +233,6 @@ Octagonal_Shape<T>
     if (marked_strongly_closed())
       status.reset_strongly_closed();
   }
-  assert(OK());
 }
 
 template <typename T>
