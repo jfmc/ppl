@@ -516,7 +516,6 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
     if (marked_shortest_path_closed())
       status.reset_shortest_path_closed();
   }
-  assert(OK());
 }
 
 template <typename T>
