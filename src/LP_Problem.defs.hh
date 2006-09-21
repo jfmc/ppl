@@ -50,6 +50,29 @@ operator<<(std::ostream& s, const LP_Problem& lp);
 } // namespace Parma_Polyhedra_Library
 
 //! A Linear Programming problem.
+/*! \ingroup PPL_CXX_interface
+  An object of this class encodes a Linear Programming problem.
+  The LP problem is specified by providing:
+   - the dimension of the vector space;
+   - the feasible region, by means of a finite set of linear equality
+     and non-strict inequality constraints;
+   - the objective function, described by a Linear_Expression;
+   - the oprimization mode (either maximization or minimization).
+
+  The class provides support for the (incremental) solution of the
+  LP problem based on the simplex method. The result of the resolution
+  process is expressed in terms of an enumeration, encoding the
+  feasibility and the unboundedness of the optimization problem.
+  The class supports simple feasibility tests (i.e., no optimization),
+  as well as the extraction of an optimal (resp., feasible) point,
+  provided the LP_Problem is optimizable (resp., feasible).
+
+  By exploiting the incremental nature of the solver, it is possible
+  to re-use part of the computational work already done when solving
+  variants of a given LP_Problem: currently, incremental resolution
+  supports the addition of space dimensions, the addition of constraints,
+  the change of objective function and the change of optimization mode.
+*/
 class Parma_Polyhedra_Library::LP_Problem {
 public:
   //! Builds a trivial LP problem.
@@ -60,7 +83,7 @@ public:
 
     \param dim
     The dimension of the vector space encosing \p *this
-    (optional argument with default value <CODE>MAXIMIZATION</CODE>).
+    (optional argument with default value \f$0\f$).
 
     \exception std::length_error
     Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
@@ -111,11 +134,10 @@ public:
     The dimension of the vector space enclosing \p *this.
 
     \param cs
-    The constraint system defining the feasible region for the LP problem.
+    The constraint system defining the feasible region.
 
     \param obj
-    The objective function for the LP problem (optional argument with
-    default value \f$0\f$).
+    The objective function (optional argument with default value \f$0\f$).
 
     \param mode
     The optimization mode (optional argument with default value
@@ -146,29 +168,68 @@ public:
   //! Returns the maximum space dimension a LP_Problem can handle.
   static dimension_type max_space_dimension();
 
-  //! Returns the space dimension of the current LP problem.
+  //! Returns the space dimension of the LP problem.
   dimension_type space_dimension() const;
 
-  //! Returns the current objective function.
+private:
+  //! A type alias for a sequence of constraints.
+  typedef std::vector<Constraint> Constraint_Sequence;
+
+public:
+  /*! \brief
+    A type alias for the read-only iterator on the constraints
+    defining the feasible reagion of the LP problem.
+  */
+  typedef Constraint_Sequence::const_iterator const_iterator;
+
+  /*! \brief
+    Returns a read-only iterator to the first constraint defining
+    the feasible region.
+  */
+  const_iterator constraints_begin() const;
+
+  /*! \brief
+    Returns a past-the-end read-only iterator to the sequence of
+    constraints defining the feasible region.
+  */
+  const_iterator constraints_end() const;
+
+  //! Returns the objective function.
   const Linear_Expression& objective_function() const;
 
-  //! Returns the current optimization mode.
+  //! Returns the optimization mode.
   Optimization_Mode optimization_mode() const;
 
   //! Resets \p *this to be equal to the trivial LP problem.
   void clear();
 
   /*! \brief
-    Adds a copy of constraint \p c to the current LP problem,
-    increasing the number of space dimensions if needed.
+    Adds \p m new space dimensions and embeds the old LP problem
+    in the new vector space.
+
+    \param m
+    The number of dimensions to add.
+
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the
+    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
+    The new space dimensions will be those having the highest indexes
+    in the new LP problem; they are initially unconstrained.
+  */
+  void add_space_dimensions_and_embed(dimension_type m);
+
+  /*! \brief
+    Adds a copy of constraint \p c to the LP problem.
 
     \exception std::invalid_argument
-    Thrown if the constraint \p c is a strict inequality.
+    Thrown if the constraint \p c is a strict inequality or if its space
+    dimension is strictly greater than the space dimension of \p *this.
   */
   void add_constraint(const Constraint& c);
 
   /*! \brief
-    Adds a copy of the constraints in \p cs to the current LP problem,
+    Adds a copy of the constraints in \p cs to the LP problem,
     increasing the number of space dimensions if needed.
 
     \exception std::invalid_argument
@@ -196,7 +257,7 @@ public:
   */
   bool is_satisfiable() const;
 
-  //! Optimizes the current LP problem using the primal simplex algorithm.
+  //! Optimizes the LP problem using the primal simplex algorithm.
   /*!
     \return
     An LP_Problem_Status flag indicating the outcome of the optimization
@@ -252,45 +313,6 @@ public:
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
-
-  /*! \brief
-    Adds \p m new space dimensions and embeds the old LP problem
-    in the new vector space.
-
-    \param m
-    The number of dimensions to add.
-
-    \exception std::length_error
-    Thrown if adding \p m new space dimensions would cause the
-    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
-
-    The new space dimensions will be those having the highest indexes
-    in the new LP problem; they are initially unconstrained.
-  */
-  void add_space_dimensions_and_embed(dimension_type m);
-
-private:
-  //! A type alias for a sequence of constraints.
-  typedef std::vector<Constraint> Constraint_Sequence;
-
-public:
-  /*! \brief
-    A type alias for the read-only iterator on the constraints
-    defining the feasible reagion of the LP problem.
-  */
-  typedef Constraint_Sequence::const_iterator const_iterator;
-
-  /*! \brief
-    Returns a read-only iterator to the first constraint defining
-    the current feasible region.
-  */
-  const_iterator constraints_begin() const;
-
-  /*! \brief
-    Returns a past-the-end read-only iterator to the sequence of
-    constraints defining the current feasible region.
-  */
-  const_iterator constraints_end() const;
 
   PPL_OUTPUT_DECLARATIONS
 
@@ -391,14 +413,14 @@ private:
   bool process_pending_constraints();
 
   /*! \brief
-    Optimizes the current LP problem using the second phase of the
+    Optimizes the LP problem using the second phase of the
     primal simplex algorithm.
   */
   void second_phase();
 
   /*! \brief
     Assigns to \p this->tableau a simplex tableau representing the
-    current LP problem, inserting into \p this->mapping the information
+    LP problem, inserting into \p this->mapping the information
     that is required to recover the original LP problem.
 
     \return
@@ -565,7 +587,7 @@ private:
 
     \param nonfeasible_cs
     This will contain all the row indexes that are no more satisfied by
-    the current computed generator after unsplitting a variable.
+    the computed generator after unsplitting a variable.
   */
   void unsplit(dimension_type var_index,
 	       std::vector<dimension_type>& nonfeasible_cs);
