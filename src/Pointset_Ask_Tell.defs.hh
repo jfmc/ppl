@@ -446,54 +446,6 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
-//! Partitions \p q with respect to \p p.
-/*! \relates Pointset_Ask_Tell
-  Let \p p and \p q be two polyhedra.
-  The function returns an object <CODE>r</CODE> of type
-  <CODE>std::pair\<PH, Pointset_Ask_Tell\<NNC_Polyhedron\> \></CODE>
-  such that
-  - <CODE>r.first</CODE> is the intersection of \p p and \p q;
-  - <CODE>r.second</CODE> has the property that all its elements are
-    pairwise disjoint and disjoint from \p p;
-  - the union of <CODE>r.first</CODE> with all the elements of
-    <CODE>r.second</CODE> gives \p q (i.e., <CODE>r</CODE> is the
-    representation of a partition of \p q).
-
-  \if Include_Implementation_Details
-
-  See
-  <A HREF="http://www.cs.unipr.it/ppl/Documentation/bibliography#Srivastava93">
-  this paper</A> for more information about the implementation.
-  \endif
-*/
-template <typename PH>
-std::pair<PH, Pointset_Ask_Tell<NNC_Polyhedron> >
-linear_partition(const PH& p, const PH& q);
-
-/*! \brief
-  Returns <CODE>true</CODE> if and only if the union of
-  the NNC polyhedra in \p ps contains the NNC polyhedron \p ph.
-
-  \relates Pointset_Ask_Tell
-*/
-bool
-check_containment(const NNC_Polyhedron& ph,
-		  const Pointset_Ask_Tell<NNC_Polyhedron>& ps);
-
-/*! \brief
-  Returns <CODE>true</CODE> if and only if the union of
-  the objects in \p ps contains \p ph.
-
-  \relates Pointset_Ask_Tell
-  \note
-  It is assumed that the template parameter PH can be converted
-  without precision loss into an NNC_Polyhedron; otherwise,
-  an incorrect result might be obtained.
-*/
-template <typename PH>
-bool
-check_containment(const PH& ph, const Pointset_Ask_Tell<PH>& ps);
-
 // CHECK ME: according to the Intel compiler, the declaration of the
 // following specialization (of the class template parameter) should come
 // before the declaration of the corresponding full specialization

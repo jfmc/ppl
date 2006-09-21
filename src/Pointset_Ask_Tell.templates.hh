@@ -631,60 +631,6 @@ Pointset_Ask_Tell<PH>::OK() const {
   return x.Base::OK();
 }
 
-
-namespace Implementation {
-
-namespace Pointset_Ask_Tells {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Partitions polyhedron \p qq according to constraint \p c.
-/*! \relates Parma_Polyhedra_Library::Pointset_Ask_Tell
-  On exit, the intersection of \p qq and constraint \p c is stored
-  in \p qq, whereas the intersection of \p qq with the negation of \p c
-  is added as a new disjunct of the powerset \p r.
-*/
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename PH>
-void
-linear_partition_aux(const Constraint& c,
-		     PH& qq,
-		     Pointset_Ask_Tell<NNC_Polyhedron>& r) {
-  Linear_Expression le(c);
-  Constraint neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
-  NNC_Polyhedron qqq(qq);
-  if (qqq.add_constraint_and_minimize(neg_c))
-    r.add_disjunct(qqq);
-  qq.add_constraint(c);
-}
-
-} // namespace Pointset_Ask_Tells
-
-} // namespace Implementation
-
-
-/*! \relates Pointset_Ask_Tell */
-template <typename PH>
-std::pair<PH, Pointset_Ask_Tell<NNC_Polyhedron> >
-linear_partition(const PH& p, const PH& q) {
-  using Implementation::Pointset_Ask_Tells::linear_partition_aux;
-
-  Pointset_Ask_Tell<NNC_Polyhedron> r(p.space_dimension(), EMPTY);
-  PH qq = q;
-  const Constraint_System& pcs = p.constraints();
-  for (Constraint_System::const_iterator i = pcs.begin(),
-	 pcs_end = pcs.end(); i != pcs_end; ++i) {
-    const Constraint c = *i;
-    if (c.is_equality()) {
-      Linear_Expression le(c);
-      linear_partition_aux(le <= 0, qq, r);
-      linear_partition_aux(le >= 0, qq, r);
-    }
-    else
-      linear_partition_aux(c, qq, r);
-  }
-  return std::pair<PH, Pointset_Ask_Tell<NNC_Polyhedron> >(qq, r);
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Pointset_Ask_Tell_templates_hh)
