@@ -108,10 +108,8 @@ fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   C_Polyhedron start;
   C_Polyhedron induct;
   C_Polyhedron expect;
@@ -124,6 +122,9 @@ main() TRY {
 
   print_constraints(expect, "*** expected ***");
 
-  return final == expect ? 0 : 1;
+  return final == expect ? true : false;
 }
-CATCH
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

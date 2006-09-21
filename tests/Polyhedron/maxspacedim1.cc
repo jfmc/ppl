@@ -41,10 +41,8 @@ template dimension_type foo<Pointset_Powerset<NNC_Polyhedron> >();
 #define PRINT(T) \
 nout << #T "::max_space_dimension() = " << T::max_space_dimension() << endl
 
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   PRINT(Variable);
   PRINT(Linear_Expression);
   PRINT(Constraint);
@@ -57,6 +55,10 @@ main() TRY {
   PRINT(Pointset_Powerset<NNC_Polyhedron>);
 
   // FIXME.
-  return 0;
+  return true;
 }
-CATCH
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN
+
