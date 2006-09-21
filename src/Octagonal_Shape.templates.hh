@@ -2103,7 +2103,6 @@ Octagonal_Shape<T>
   get_limiting_octagon(cs, limiting_octagon);
   CC76_extrapolation_assign(y, tp);
   intersection_assign(limiting_octagon);
-  assert(OK());
 }
 
 template <typename T>
