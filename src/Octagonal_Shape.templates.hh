@@ -2977,8 +2977,8 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
 	// `expr == w_coeff*w + b', where `w != var'.
 	// Remove all constraints on `var'.
 	forget_all_octagonal_constraints(var_id);
+	assert(OK());
       }
-      assert(OK());
       return;
     }
   }
@@ -3001,11 +3001,11 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
       affine_image(var, inverse, -coeff_v);
     }
   }
-  else
+  else {
     // The transformation is not invertible: all constraints on `var' are lost.
     forget_all_octagonal_constraints(var_id);
-
-  assert(OK());
+    assert(OK());
+  }
 }
 
 template <typename T>
