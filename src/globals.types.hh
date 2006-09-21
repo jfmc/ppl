@@ -68,6 +68,15 @@ enum Optimization_Mode {
   MAXIMIZATION
 };
 
+//! An assertion concerning the integrality of a set of variables.
+/*! \ingroup PPL_CXX_interface */
+enum Variables_Integrality {
+  //! All variables are constrained to take integer variables.
+  ALL_INTEGER_VARIABLES,
+  //! No variables are constrained to take integer variables.
+  ALL_REAL_VARIABLES
+};
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_globals_types_hh)
