@@ -22,13 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using std::invalid_argument;
-using std::domain_error;
-
 namespace {
 
-void
-error1() {
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -41,21 +38,19 @@ error1() {
     // it is illegal to build a closed polyhedron starting from
     // a system of constraints that contains strict-inequalities.
     C_Polyhedron ph(cs);
-
-    // It is an error if the exception is not thrown.
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
     // It is an error if the wrong exception is thrown.
-    exit(1);
   }
+  return false;
 }
 
-void
-error2() {
+bool
+test02() {
   Variable x(0);
   Variable y(1);
 
@@ -72,16 +67,17 @@ error2() {
     C_Polyhedron ph(gs);
     exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error3() {
+bool
+test03() {
   Variable x(0);
   Variable y(1);
 
@@ -92,18 +88,18 @@ error3() {
     // illegal to insert a strict-inequality into a system of
     // constraints of a closed polyhedron.
     ph.add_constraint(x - y > 0);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error4() {
+bool
+test04() {
   C_Polyhedron ph(3, EMPTY);
 
   try {
@@ -111,18 +107,18 @@ error4() {
     // is illegal to insert a closure-point into a system of
     // generators of a closed polyhedron.
     ph.add_generator(closure_point(Linear_Expression(2)));
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error5() {
+bool
+test05() {
   Variable x(0);
   Variable y(1);
 
@@ -139,18 +135,18 @@ error5() {
     // add_constraints_and_minimize(cs): it is illegal to add a system of
     // constraints that contains strict-inequalities to a closed polyhedron.
     ph.add_constraints_and_minimize(cs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error6() {
+bool
+test06() {
   Variable x(0);
   Variable y(1);
 
@@ -164,18 +160,18 @@ error6() {
     // it is illegal to add a system of constraints that contains
     // strict-inequalities to a closed polyhedron.
     ph.add_constraints(cs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
-  }
+    return true;
+}
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error7() {
+bool
+test07() {
   Variable x(0);
   Variable y(1);
 
@@ -191,18 +187,18 @@ error7() {
     // is illegal to apply this method to a closed polyhedron with a
     // NNC Polyhedron.
     ph.concatenate_assign(qh);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error8() {
+bool
+test08() {
   Variable x(0);
   Variable y(1);
 
@@ -219,18 +215,18 @@ error8() {
     // system of generators that contains closure-points to a closed
     // polyhedron.
     ph.add_generators_and_minimize(gs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error9() {
+bool
+test09() {
   Variable x(0);
   Variable y(1);
 
@@ -245,18 +241,18 @@ error9() {
     // illegal to add a system of generators that contains closure-points
     // to a closed polyhedron.
     ph.add_generators(gs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error10() {
+bool
+test10() {
   Variable A(0);
   Variable B(1);
 
@@ -270,18 +266,18 @@ error10() {
     // `GREATER_THAN' is an illegal relation for necessarily closed
     // polyhedron.
     ph.generalized_affine_image(A + B, GREATER_THAN, A - B);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error11() {
+bool
+test11() {
   Variable A(0);
   Variable B(1);
 
@@ -300,18 +296,18 @@ error11() {
     // `intersection_assign_and_minimize': it is illegal to apply
     // to a closed polyhedron and a non-closed polyhedron.
     ph1.intersection_assign_and_minimize(ph2);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error12() {
+bool
+test12() {
   Variable A(0);
   Variable B(1);
 
@@ -330,18 +326,18 @@ error12() {
     // `intersection_assign': it is illegal to apply this function
     // to a closed polyhedron and a non-closed polyhedron.
     ph1.intersection_assign(ph2);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error13() {
+bool
+test13() {
   Variable A(0);
   Variable B(1);
 
@@ -365,18 +361,18 @@ error13() {
      // this function to a closed polyhedron and a
      // non-closed polyhedron.
     ph1.poly_hull_assign_and_minimize(ph2);
-    exit(1);
-  }
-  catch (invalid_argument& e) {
+   }
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+   return false;
 }
 
-void
-error14() {
+bool
+test14() {
   Variable A(0);
   Variable B(1);
 
@@ -399,18 +395,18 @@ error14() {
     // `poly_hull_assign': it is illegal to apply this function
     // to a closed polyhedron and a non-closed polyhedron.
     ph1.poly_hull_assign(ph2);
-    exit(1);
-  }
-  catch (invalid_argument& e) {
+   }
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+   return false;
 }
 
-void
-error15() {
+bool
+test15() {
   Variable A(0);
   Variable B(1);
 
@@ -434,18 +430,18 @@ error15() {
     // `poly_difference_assign': it is illegal to apply this function
     // to a closed polyhedron and a non-closed polyhedron.
     ph1.poly_difference_assign(ph2);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error16() {
+bool
+test16() {
   Variable A(0);
   Variable B(1);
 
@@ -467,18 +463,18 @@ error16() {
     // `H79_widening_assign': it is illegal to apply this function
     // to a closed polyhedron and a non-closed polyhedron.
     ph2.H79_widening_assign(ph1);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error17() {
+bool
+test17() {
   Variable A(0);
   Variable B(1);
 
@@ -505,18 +501,18 @@ error17() {
     // apply this function to a closed polyhedron and
     // a non-closed polyhedron.
     ph2.limited_H79_extrapolation_assign(ph1, cs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error18() {
+bool
+test18() {
   Variable A(0);
   Variable B(1);
 
@@ -543,18 +539,18 @@ error18() {
     // apply this function to two closed polyhedra and
     // to a non-closed system of constraints.
     ph2.limited_H79_extrapolation_assign(ph1, cs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
-  }
+    return true;
+}
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error19() {
+bool
+test19() {
   Variable A(0);
   Variable B(1);
 
@@ -577,18 +573,18 @@ error19() {
     // apply this function to a closed polyhedron and
     // a non-closed polyhedron.
     ph1.time_elapse_assign(ph2);
-    exit(1);
-  }
-  catch (invalid_argument& e) {
+ }
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
-  }
+    return true;
+ }
   catch (...) {
-    exit(1);
   }
+ return false;
 }
 
-void
-error20() {
+bool
+test20() {
   Variable A(0);
 
   C_Polyhedron ph1(1);
@@ -605,18 +601,18 @@ error20() {
     // illegal to apply this method to a closed polyhedron and a
     // non-closed polyhedron.
     ph1.contains(ph2);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error21() {
+bool
+test21() {
   Variable A(0);
   Variable B(1);
 
@@ -634,18 +630,18 @@ error21() {
     // closed polyhedron starting from a system of constraints
     // that contains strict inequalities.
     C_Polyhedron ph2(cs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error22() {
+bool
+test22() {
   Variable A(0);
 
   Generator_System gs1;
@@ -663,18 +659,18 @@ error22() {
     // a closed polyhedron starting from a constant non-closed
     // system of generators.
     C_Polyhedron ph2(gs2);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error23() {
+bool
+test23() {
   NNC_Polyhedron ph(0, EMPTY);
 
   try {
@@ -682,18 +678,18 @@ error23() {
     // `add_generator(g)': it is illegal add a closure point
     // to a zero-dimensional and empty non-closed polyhedron.
     ph.add_generator(closure_point());
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error24() {
+bool
+test24() {
   NNC_Polyhedron ph(0, EMPTY);
 
   print_constraints(ph, "*** ph ***");
@@ -707,18 +703,18 @@ error24() {
     // add a system of generators that does not contain points
     // to an empty zero-dimensional polyhedron.
     ph.add_generators_and_minimize(gs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error25() {
+bool
+test25() {
   NNC_Polyhedron ph(0, EMPTY);
 
   print_constraints(ph, "*** ph ***");
@@ -732,18 +728,18 @@ error25() {
     // add a system of generators that does not contain points
     // to an empty zero-dimensional polyhedron.
     ph.add_generators(gs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error26() {
+bool
+test26() {
   Variable A(0);
 
   NNC_Polyhedron ph1(1);
@@ -760,18 +756,18 @@ error26() {
     // it is illegal to apply this method to a
     // closed polyhedron and a non-closed polyhedron.
     ph2.contains(ph1);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error27() {
+bool
+test27() {
   Variable A(0);
   Variable B(1);
 
@@ -799,18 +795,18 @@ error27() {
     // a non-closed polyhedron and a system of
     // constraints that contains strict inequalities.
     ph2.limited_H79_extrapolation_assign(ph1, cs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error28() {
+bool
+test28() {
   Variable A(0);
   Variable B(1);
 
@@ -830,18 +826,18 @@ error28() {
     // apply this function to a non-closed polyhedron and
     // a non-closed polyhedron.
     ph2.BHRZ03_widening_assign(ph1);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error29() {
+bool
+test29() {
   Variable A(0);
   Variable B(1);
 
@@ -852,18 +848,18 @@ error29() {
     // it is illegal to use a denominator
     // equal to zero.
     gs.insert(closure_point(A + 2*B, 0));
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error30() {
+bool
+test30() {
   Variable A(0);
   Variable B(1);
 
@@ -879,18 +875,18 @@ error30() {
     // to apply this function to a closed and a
     // not necessarily closed polyhedron.
     ph1.swap(ph2);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error31() {
+bool
+test31() {
   Variable A(0);
 
   C_Polyhedron ph(1);
@@ -902,54 +898,48 @@ error31() {
     // `GREATER_THAN' is an illegal relation for necessarily closed
     // polyhedron.
     ph.generalized_affine_image(A, GREATER_THAN, A + 1);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  error1();
-  error2();
-  error3();
-  error4();
-  error5();
-  error6();
-  error7();
-  error8();
-  error9();
-  error10();
-  error11();
-  error12();
-  error13();
-  error14();
-  error15();
-  error16();
-  error17();
-  error18();
-  error19();
-  error20();
-  error21();
-  error22();
-  error23();
-  error24();
-  error25();
-  error26();
-  error27();
-  error28();
-  error29();
-  error30();
-  error31();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
+  DO_TEST(test21);
+  DO_TEST(test22);
+  DO_TEST(test23);
+  DO_TEST(test24);
+  DO_TEST(test25);
+  DO_TEST(test26);
+  DO_TEST(test27);
+  DO_TEST(test28);
+  DO_TEST(test29);
+  DO_TEST(test30);
+  DO_TEST(test31);
+END_MAIN
