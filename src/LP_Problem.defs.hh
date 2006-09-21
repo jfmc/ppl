@@ -68,7 +68,7 @@ operator<<(std::ostream& s, const LP_Problem& lp);
   provided the LP_Problem is optimizable (resp., feasible).
 
   By exploiting the incremental nature of the solver, it is possible
-  to re-use part of the computational work already done when solving
+  to reuse part of the computational work already done when solving
   variants of a given LP_Problem: currently, incremental resolution
   supports the addition of space dimensions, the addition of constraints,
   the change of objective function and the change of optimization mode.
@@ -91,22 +91,22 @@ public:
   explicit LP_Problem(dimension_type dim = 0);
 
   /*! \brief
-    Builds an LP problem having space dimension \p dim from the sequence
-    of constraints in the range \p first_constraint and \p last_constraint,
+    Builds an LP problem having space dimension \p dim
+    from the sequence of constraints in the range
+    \f$[\mathrm{first\_constraint}, \mathrm{last\_constraint})\f$,
     the objective function \p obj and optimization mode \p mode.
 
     \param dim
     The dimension of the vector space enclosing \p *this.
 
     \param first_constraint
-    An input iterator to the start of teh sequence of constraints.
+    An input iterator to the start of the sequence of constraints.
 
     \param last_constraint
     A past-the-end input iterator to the sequence of constraints.
 
     \param obj
-    The objective function for the LP problem (optional argument with
-    default value \f$0\f$).
+    The objective function (optional argument with default value \f$0\f$).
 
     \param mode
     The optimization mode (optional argument with default value
@@ -165,7 +165,7 @@ public:
   //! Assignment operator.
   LP_Problem& operator=(const LP_Problem& y);
 
-  //! Returns the maximum space dimension a LP_Problem can handle.
+  //! Returns the maximum space dimension an LP_Problem can handle.
   static dimension_type max_space_dimension();
 
   //! Returns the space dimension of the LP problem.
@@ -178,7 +178,7 @@ private:
 public:
   /*! \brief
     A type alias for the read-only iterator on the constraints
-    defining the feasible reagion of the LP problem.
+    defining the feasible reagion.
   */
   typedef Constraint_Sequence::const_iterator const_iterator;
 
@@ -201,6 +201,9 @@ public:
   Optimization_Mode optimization_mode() const;
 
   //! Resets \p *this to be equal to the trivial LP problem.
+  /*!
+    The space dimension is reset to \f$0\f$.
+  */
   void clear();
 
   /*! \brief
@@ -598,6 +601,15 @@ private:
   */
   bool is_satisfied(const Constraint& c) const;
 };
+
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::LP_Problem */
+void swap(Parma_Polyhedra_Library::LP_Problem& x,
+	  Parma_Polyhedra_Library::LP_Problem& y);
+
+} // namespace std
 
 #include "LP_Problem.inlines.hh"
 #include "LP_Problem.templates.hh"
