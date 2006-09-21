@@ -22,13 +22,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using std::invalid_argument;
-using std::length_error;
-using std::domain_error;
-
 namespace {
 
-void
+bool
 test01() {
   Variable A(0);
   Constraint_System cs;
@@ -40,18 +36,17 @@ test01() {
     // This tries to build an invalid LP_Problem object: the feasible
     // region can not be defined using strict inequalities.
     lp.add_constraints(cs);
-
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test02() {
   Variable A(0);
   LP_Problem lp;
@@ -61,18 +56,17 @@ test02() {
     // of the objective function can not be greater than the space dimension
     // of the feasible region.
     lp.set_objective_function(A);
-
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test03() {
   Variable A(0);
   Constraint_System cs;
@@ -83,18 +77,17 @@ test03() {
   try {
     // We cannot extract a feasible point from an unsatisfiable LP_Problem.
     Generator fp = lp.feasible_point();
-
-    exit(1);
   }
-  catch (domain_error& e) {
+  catch (std::domain_error& e) {
     nout << "domain_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test04() {
   Variable A(0);
   Constraint_System cs;
@@ -104,18 +97,18 @@ test04() {
   try {
     // We cannot extract an optimizing point from an unbounded LP_Problem.
     Generator fp = lp.optimizing_point();
-
-    exit(1);
   }
-  catch (domain_error& e) {
+
+  catch (std::domain_error& e) {
     nout << "domain_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test05() {
   Variable A(0);
   Variable B(1);
@@ -130,18 +123,17 @@ test05() {
     // This tries to evaluate the objective function on a space dimension
     // incompatible generator.
     lp.evaluate_objective_function(p, num, den);
-
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test06() {
   Variable A(0);
   Constraint_System cs;
@@ -154,51 +146,48 @@ test06() {
   try {
     // This tries to evaluate the objective function on a ray.
     lp.evaluate_objective_function(r, num, den);
-
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test07() {
   try {
     // This tries to overflow the maximum space dimension.
     LP_Problem lp(LP_Problem::max_space_dimension() + 1);
-
-    exit(1);
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test08() {
   LP_Problem lp(1);
   try {
     // This tries to overflow the maximum space dimension.
     lp.add_space_dimensions_and_embed(LP_Problem::max_space_dimension());
-
-    exit(1);
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test09() {
   Variable A(0);
   Variable B(1);
@@ -214,17 +203,18 @@ test09() {
     // This tries to make the cost function incompatible with the LP_Problem
     // space dimension.
     LP_Problem lp(cs_space_dimension, cs, cost, MAXIMIZATION);
-    exit(1);
+
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test10() {
   Variable A(0);
   Variable B(1);
@@ -236,20 +226,21 @@ test10() {
   Linear_Expression cost(A + B);
 
   try {
-     // This tries to overflow the maximum space dimension.
+    // This tries to overflow the maximum space dimension.
     LP_Problem lp(LP_Problem::max_space_dimension() + 1, cs, cost,
 		  MAXIMIZATION);
-    exit(1);
+
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test11() {
   Variable A(0);
   Variable B(1);
@@ -262,19 +253,19 @@ test11() {
   Linear_Expression cost(A + B);
 
   try {
-     // This tries to build an LP_Problem with strict inequalities.
+    // This tries to build an LP_Problem with strict inequalities.
     LP_Problem lp(cs_space_dimension, cs, cost, MAXIMIZATION);
-    exit(1);
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test12() {
   Variable A(0);
   Variable B(1);
@@ -292,17 +283,18 @@ test12() {
     // This tries to add Constraint that exceeds the LP_Problem
     // space dimension.
     lp.add_constraint(C >= 0);
-    exit(1);
+
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test13() {
   Variable A(0);
   Variable B(1);
@@ -318,17 +310,18 @@ test13() {
   try {
     // This tries to add a strict inequality.
     lp.add_constraint(B > 0);
-    exit(1);
+
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test14() {
   Variable A(0);
   Variable B(1);
@@ -351,17 +344,18 @@ test14() {
     // Adds a Constraint_System that exceeds the space dimension of the
     // LP_Problem.
     lp.add_constraints(incompatible_cs);
-    exit(1);
+
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test15() {
   Variable A(0);
   Variable B(1);
@@ -381,17 +375,18 @@ test15() {
   try {
     // Thist tries to add Constraint_System that contains a strict inequality.
     lp.add_constraints(incompatible_cs);
-    exit(1);
+
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test16() {
   Variable A(0);
   Variable B(1);
@@ -403,20 +398,21 @@ test16() {
   Linear_Expression cost(A + B);
 
   try {
-     // This tries to overflow the maximum space dimension.
+    // This tries to overflow the maximum space dimension.
     LP_Problem lp(LP_Problem::max_space_dimension() + 1, cs.begin(), cs.end(),
 		  A + B, MAXIMIZATION);
-    exit(1);
+
   }
-  catch (length_error& e) {
+  catch (std::length_error& e) {
     nout << "length_error: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test17() {
   Variable A(0);
   Variable B(1);
@@ -429,20 +425,21 @@ test17() {
   Linear_Expression cost(A + B);
 
   try {
-     // This tries to let exceed the objective function space dimension.
+    // This tries to let exceed the objective function space dimension.
     LP_Problem lp(cs.space_dimension(), cs.begin(), cs.end(),
 		  A + B + C, MAXIMIZATION);
-    exit(1);
+
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test18() {
   Variable A(0);
   Variable B(1);
@@ -454,20 +451,21 @@ test18() {
   Linear_Expression cost(A + B);
 
   try {
-     // This tries to build an LP_Problem with strict inequalities..
+    // This tries to build an LP_Problem with strict inequalities..
     LP_Problem lp(cs.space_dimension(), cs.begin(), cs.end(),
 		  A + B, MAXIMIZATION);
-    exit(1);
+
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
+bool
 test19() {
   Variable A(0);
   Variable B(1);
@@ -479,45 +477,40 @@ test19() {
   Linear_Expression cost(A + B);
 
   try {
-     // This tries to build an LP_Problem with a wrong space dimension.
+    // This tries to build an LP_Problem with a wrong space dimension.
     LP_Problem lp(cs.space_dimension() - 1, cs.begin(), cs.end(),
 		  A + B, MAXIMIZATION);
-    exit(1);
+
   }
-  catch (invalid_argument& e) {
+  catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  test01();
-  test02();
-  test03();
-  test04();
-  test05();
-  test06();
-  test07();
-  test08();
-  test09();
-  test10();
-  test11();
-  test12();
-  test13();
-  test14();
-  test15();
-  test16();
-  test17();
-  test18();
-  test19();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+END_MAIN
