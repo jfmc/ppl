@@ -2340,8 +2340,8 @@ BD_Shape<T>::affine_preimage(const Variable var,
 	// Shortest-path closure is preserved, but not reduction.
 	if (marked_shortest_path_reduced())
 	  status.reset_shortest_path_reduced();
+	assert(OK());
       }
-      assert(OK());
       return;
     }
   }

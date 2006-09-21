@@ -150,8 +150,8 @@ BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
     if (num_dimensions > 0)
       // A (non zero-dim) universe BDS is closed.
       status.set_shortest_path_closed();
+    assert(OK());
   }
-  assert(OK());
 }
 
 template <typename T>
