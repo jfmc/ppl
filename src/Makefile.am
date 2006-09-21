@@ -131,6 +131,7 @@ Grid_Generator_System.types.hh \
 Congruence_System.types.hh \
 Scalar_Products.types.hh \
 LP_Problem.types.hh \
+MIP_Problem.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
@@ -224,6 +225,9 @@ Scalar_Products.inlines.hh \
 LP_Problem.defs.hh \
 LP_Problem.inlines.hh \
 LP_Problem.templates.hh \
+MIP_Problem.defs.hh \
+MIP_Problem.inlines.hh \
+MIP_Problem.templates.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
@@ -321,6 +325,7 @@ Linear_System.cc \
 Matrix.cc \
 Scalar_Products.cc \
 LP_Problem.cc \
+MIP_Problem.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
