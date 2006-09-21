@@ -488,7 +488,6 @@ Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape& y) {
   // to adjust the dimension of the vector space.
   if (space_dim == 0 && marked_empty()) {
     add_space_dimensions_and_embed(y.space_dim);
-    assert(OK());
     return;
   }
 
