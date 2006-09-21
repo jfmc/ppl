@@ -27,10 +27,11 @@ namespace Parma_Polyhedra_Library {
 
 template <typename In>
 MIP_Problem::MIP_Problem(const dimension_type dim,
-		       In first_constraint,
-		       In last_constraint,
-		       const Linear_Expression& obj,
-		       const Optimization_Mode mode)
+			 In first,
+			 In last,
+			 const Variables_Set& int_vars,
+			 const Linear_Expression& obj,
+			 const Optimization_Mode mode)
   : external_space_dim(dim),
     internal_space_dim(0),
     tableau(),
@@ -44,6 +45,9 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
     input_obj_function(obj),
     opt_mode(mode),
     last_generator(point()) {
+  if (!int_vars.empty())
+    throw std::runtime_error("PPL internal error: unimplemented feature");
+
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
     throw std::length_error("PPL::MIP_Problem::"
@@ -55,7 +59,57 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
 				"MIP_Problem(d, first, last, obj, m):\n"
 				"the space dimension of obj exceeds d.");
   // Check the constraints.
-  for (In i = first_constraint; i != last_constraint; ++i) {
+  for (In i = first; i != last; ++i) {
+    if (i->is_strict_inequality())
+      throw std::invalid_argument("PPL::MIP_Problem::"
+				  "MIP_Problem(d, first, last, obj, m):\n"
+				  "range [first, last) contains a strict "
+				  "inequality constraint.");
+    if (i->space_dimension() > dim)
+      throw std::invalid_argument("PPL::MIP_Problem::"
+				  "MIP_Problem(d, first, last, obj, m):\n"
+				  "range [first, last) contains a constraint "
+				  "having space dimension greater than d.");
+    input_cs.push_back(*i);
+  }
+  assert(OK());
+}
+
+template <typename In>
+MIP_Problem::MIP_Problem(const dimension_type dim,
+			 In first,
+			 In last,
+			 Variables_Integrality integrality,
+			 const Linear_Expression& obj,
+			 const Optimization_Mode mode)
+  : external_space_dim(dim),
+    internal_space_dim(0),
+    tableau(),
+    working_cost(0, Row::Flags()),
+    mapping(),
+    base(),
+    status(PARTIALLY_SATISFIABLE),
+    initialized(false),
+    input_cs(),
+    first_pending_constraint(0),
+    input_obj_function(obj),
+    opt_mode(mode),
+    last_generator(point()) {
+  if (integrality == ALL_INTEGER_VARIABLES)
+    throw std::runtime_error("PPL internal error: unimplemented feature");
+
+  // Check for space dimension overflow.
+  if (dim > max_space_dimension())
+    throw std::length_error("PPL::MIP_Problem::"
+			    "MIP_Problem(d, first, last, obj, m):\n"
+			    "d exceeds the maximum allowed space dimension");
+  // Check the objective function.
+  if (obj.space_dimension() > dim)
+    throw std::invalid_argument("PPL::MIP_Problem::"
+				"MIP_Problem(d, first, last, obj, m):\n"
+				"the space dimension of obj exceeds d.");
+  // Check the constraints.
+  for (In i = first; i != last; ++i) {
     if (i->is_strict_inequality())
       throw std::invalid_argument("PPL::MIP_Problem::"
 				  "MIP_Problem(d, first, last, obj, m):\n"

@@ -48,18 +48,21 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
 
 } // namespace Parma_Polyhedra_Library
 
-//! A Linear Programming problem.
+//! A Mixed Integer (linear) Programming problem.
 /*! \ingroup PPL_CXX_interface
-  An object of this class encodes a Linear Programming problem.
+  An object of this class encodes a mixed integer (linear) programming problem.
   The MIP problem is specified by providing:
    - the dimension of the vector space;
    - the feasible region, by means of a finite set of linear equality
      and non-strict inequality constraints;
+   - the subset of the unknown variables that range over the integers
+     (the other variables implicitly ranging over the reals);
    - the objective function, described by a Linear_Expression;
    - the oprimization mode (either maximization or minimization).
 
   The class provides support for the (incremental) solution of the
-  MIP problem based on the simplex method. The result of the resolution
+  MIP problem based on variations of the revised simplex method and
+  on branch-and-bound techniques. The result of the resolution
   process is expressed in terms of an enumeration, encoding the
   feasibility and the unboundedness of the optimization problem.
   The class supports simple feasibility tests (i.e., no optimization),
@@ -92,17 +95,20 @@ public:
   /*! \brief
     Builds an MIP problem having space dimension \p dim
     from the sequence of constraints in the range
-    \f$[\mathrm{first\_constraint}, \mathrm{last\_constraint})\f$,
+    \f$[\mathrm{first}, \mathrm{last})\f$,
     the objective function \p obj and optimization mode \p mode.
 
     \param dim
     The dimension of the vector space enclosing \p *this.
 
-    \param first_constraint
+    \param first
     An input iterator to the start of the sequence of constraints.
 
-    \param last_constraint
+    \param last
     A past-the-end input iterator to the sequence of constraints.
+
+    \param int_vars
+    The set of variables that are constrained to take integer values.
 
     \param obj
     The objective function (optional argument with default value \f$0\f$).
@@ -117,13 +123,32 @@ public:
     \exception std::invalid_argument
     Thrown if a constraint in the sequence is a strict inequality
     or if the space dimension of a constraint (resp., of the
-    objective function) is strictly greater than \p dim.
+    objective function or of the integer variables) is strictly
+    greater than \p dim.
   */
   template <typename In>
   MIP_Problem(dimension_type dim,
-	     In first_constraint, In last_constraint,
-	     const Linear_Expression& obj = Linear_Expression::zero(),
-	     Optimization_Mode mode = MAXIMIZATION);
+	      In first, In last,
+	      const Variables_Set& int_vars,
+	      const Linear_Expression& obj = Linear_Expression::zero(),
+	      Optimization_Mode mode = MAXIMIZATION);
+
+  /*! \brief
+    Builds a pure IP or a pure LP problem.
+
+    This is equivalent to
+    <CODE>MIP_Problem(dim, first, last, int_vars, obj, mode)</CODE>
+    where <CODE>int_vars</CODE> is the empty set, if \p integrality
+    is <CODE>ALL_REAL_VARIABLES</CODE>, and <CODE>int_vars</CODE>
+    is the set of all variables of space dimension up to (and excluding)
+    \p dim, if \p integrality is <CODE>ALL_INTEGER_VARIABLES</CODE>.
+  */
+  template <typename In>
+  MIP_Problem(dimension_type dim,
+	      In first, In last,
+	      Variables_Integrality integrality,
+	      const Linear_Expression& obj = Linear_Expression::zero(),
+	      Optimization_Mode mode = MAXIMIZATION);
 
   /*! \brief
     Builds an MIP problem having space dimension \p dim from the constraint
@@ -151,9 +176,9 @@ public:
     objective function) is strictly greater than \p dim.
   */
   MIP_Problem(dimension_type dim,
-	     const Constraint_System& cs,
-	     const Linear_Expression& obj = Linear_Expression::zero(),
-	     Optimization_Mode mode = MAXIMIZATION);
+	      const Constraint_System& cs,
+	      const Linear_Expression& obj = Linear_Expression::zero(),
+	      Optimization_Mode mode = MAXIMIZATION);
 
   //! Ordinary copy-constructor.
   MIP_Problem(const MIP_Problem& y);
