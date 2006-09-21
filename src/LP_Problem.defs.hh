@@ -259,7 +259,7 @@ public:
   */
   bool is_satisfiable() const;
 
-  //! Optimizes the LP problem using the primal simplex algorithm.
+  //! Optimizes the LP problem.
   /*!
     \return
     An LP_Problem_Status flag indicating the outcome of the optimization
