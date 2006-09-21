@@ -35,10 +35,8 @@ shift_rename_add(const C_Polyhedron& p,
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -103,6 +101,11 @@ main() TRY {
 
   print_constraints(expected, "*** expected ***");
 
-  return current == expected ? 0 : 1;
+  return current == expected ? true : false;
 }
-CATCH
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN
+
+
