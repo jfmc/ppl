@@ -587,7 +587,6 @@ $(XFAIL_WITH_INT32)
 
 XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
-membytes1 \
 randphull1 \
 smm1 \
 nnc_membytes1 \
