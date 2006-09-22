@@ -1287,19 +1287,18 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // Dimension-compatibility check: the variable having
-  // maximum cardinality is the one occurring last in the set.
-  const dimension_type max_dim_to_be_removed = to_be_removed.rbegin()->id();
   const dimension_type old_space_dim = space_dimension();
-  if (max_dim_to_be_removed >= old_space_dim)
-    throw_dimension_incompatible("remove_space_dimensions(vs)",
-				 max_dim_to_be_removed);
+
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_removed.space_dimension();
+  if (old_space_dim < min_space_dim)
+    throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
   // Shortest-path closure is necessary to keep precision.
   shortest_path_closure_assign();
 
-  // When removing _all_ dimensions from a BDS,
-  // we obtain the zero-dimensional BDS.
+  // When removing _all_ dimensions from a BDS, we obtain the
+  // zero-dimensional BDS.
   const dimension_type new_space_dim = old_space_dim - to_be_removed.size();
   if (new_space_dim == 0) {
     dbm.resize_no_copy(1);

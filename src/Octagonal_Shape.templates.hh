@@ -1716,12 +1716,10 @@ Octagonal_Shape<T>
     return;
   }
 
-  // Dimension-compatibility check: the variable having
-  // maximum cardinality is the one occurring last in the set.
-  const dimension_type max_dim_to_be_removed = to_be_removed.rbegin()->id();
-  if (max_dim_to_be_removed >= space_dim)
-    throw_dimension_incompatible("remove_space_dimensions(vs)",
-				 max_dim_to_be_removed + 1);
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_removed.space_dimension();
+  if (space_dim < min_space_dim)
+    throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
   const dimension_type new_space_dim = space_dim - to_be_removed.size();
 
@@ -1752,9 +1750,12 @@ Octagonal_Shape<T>
     if (to_be_removed.count(Variable(i)))
       ++i;
     else {
-      typename OR_Matrix<N>::const_row_iterator row_iter = matrix.row_begin()+2*i;
-      typename OR_Matrix<N>::const_row_reference_type row_ref = *row_iter;
-      typename OR_Matrix<N>::const_row_reference_type row_ref1 = *(++row_iter);
+      typename OR_Matrix<N>::const_row_iterator
+	row_iter = matrix.row_begin()+2*i;
+      typename OR_Matrix<N>::const_row_reference_type
+	row_ref = *row_iter;
+      typename OR_Matrix<N>::const_row_reference_type
+	row_ref1 = *(++row_iter);
       // If variable(j) is to remove, we pass another variable,
       // else we shift its cells to up right.
       // Attention: first we shift the cells corrispondent to the first

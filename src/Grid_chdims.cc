@@ -268,10 +268,8 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // Dimension-compatibility check: the variable having maximum space
-  // dimension is the one occurring last in the set.
-  const dimension_type
-    min_space_dim = to_be_removed.rbegin()->space_dimension();
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_removed.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
@@ -457,10 +455,10 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
     return;
 
   // All variables in `to_be_folded' must be dimensions of the grid.
-  if (to_be_folded.rbegin()->space_dimension() > space_dim)
+  if (to_be_folded.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
-				 "*tbf.rbegin()",
-				 *to_be_folded.rbegin());
+				 "tbf.space_dimension()",
+				 to_be_folded.space_dimension());
 
   // Moreover, `var' must not occur in `to_be_folded'.
   if (to_be_folded.find(var) != to_be_folded.end())
