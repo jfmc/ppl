@@ -144,6 +144,28 @@ Ask_Tell<D>::absorb() {
 }
 
 template <typename D>
+void
+Ask_Tell<D>::upper_bound_assign(const Ask_Tell& y) {
+  const Ask_Tell& x = *this;
+  x.normalize();
+  y.normalize();
+  Ask_Tell<D> z;
+  for (typename Ask_Tell<D>::const_iterator xi = x.begin(),
+	 x_end = x.end(); xi != x_end; ++xi)
+    for (typename Ask_Tell<D>::const_iterator yi = y.begin(),
+	   y_end = y.end(); yi != y_end; ++yi) {
+      D tell = xi->tell();
+      tell.upper_bound_assign(yi->tell());
+      D ask = xi->ask();
+      ask.meet_assign(yi->ask());
+      if (!ask.definitely_entails(tell))
+	z.pair_insert(ask, tell);
+    }
+  *this = z;
+  assert(OK());
+}
+
+template <typename D>
 bool
 Ask_Tell<D>::OK() const {
   for (typename Ask_Tell<D>::const_iterator xi = begin(),
@@ -153,7 +175,6 @@ Ask_Tell<D>::OK() const {
       return false;
     if (!p.tell().OK())
       return false;
-#if 0
     if (p.ask().definitely_entails(p.tell())) {
 #ifndef NDEBUG
       using namespace IO_Operators;
@@ -163,7 +184,6 @@ Ask_Tell<D>::OK() const {
 #endif
       return false;
     }
-#endif
   }
   if (normalized && !check_normalized()) {
 #ifndef NDEBUG

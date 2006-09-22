@@ -201,10 +201,19 @@ remove_space_dimensions(const Variables_Set& to_be_removed) {
   Variables_Set::size_type num_removed = to_be_removed.size();
   if (num_removed > 0) {
     for (Sequence_iterator si = x.sequence.begin(),
-	   s_end = x.sequence.end(); si != s_end; ++si) {
-      si->ask().element().remove_space_dimensions(to_be_removed);
-      si->tell().element().remove_space_dimensions(to_be_removed);
-      x.normalized = false;
+	   s_end = x.sequence.end(); si != s_end; ) {
+      PH& ask = si->ask().element();
+      PH& tell = si->tell().element();
+      ask.remove_space_dimensions(to_be_removed);
+      tell.remove_space_dimensions(to_be_removed);
+      if (tell.contains(ask)) {
+	si = x.sequence.erase(si);
+	s_end = x.sequence.end();
+      }
+      else {
+	x.normalized = false;
+	++si;
+      }
     }
     x.space_dim -= num_removed;
     assert(x.OK());

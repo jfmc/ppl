@@ -288,28 +288,6 @@ Ask_Tell<D>::meet_assign(const Ask_Tell& y) {
   assert(OK());
 }
 
-template <typename D>
-void
-Ask_Tell<D>::upper_bound_assign(const Ask_Tell& y) {
-  const Ask_Tell& x = *this;
-  x.normalize();
-  y.normalize();
-  Ask_Tell<D> z;
-  for (typename Ask_Tell<D>::const_iterator xi = x.begin(),
-	 x_end = x.end(); xi != x_end; ++xi)
-    for (typename Ask_Tell<D>::const_iterator yi = y.begin(),
-	   y_end = y.end(); yi != y_end; ++yi) {
-      D tell = xi->tell();
-      tell.upper_bound_assign(yi->tell());
-      D ask = xi->ask();
-      ask.meet_assign(yi->ask());
-      if (!ask.definitely_entails(tell))
-	z.pair_insert(ask, tell);
-    }
-  *this = z;
-  assert(OK());
-}
-
 // Hiding
 
 template <typename D>
