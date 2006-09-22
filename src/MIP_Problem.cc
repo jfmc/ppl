@@ -1224,7 +1224,7 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
   dimension_type nonint_dim = 0;
   // FIXME: we need a divisibility test for Coefficient.
   for (Variables_Set::const_iterator v_begin = i_variables.begin(),
-	 v_end = i_variables.end(); v_begin != v_end; ++v_begin)   {
+	 v_end = i_variables.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(Variable(v_begin->id())), p_divisor);
     if (gcd != p_divisor) {
       nonint_dim = v_begin->id();
@@ -1299,7 +1299,7 @@ PPL::MIP_Problem::OK() const {
      return false;
    }
 
-   if (status != UNSATISFIABLE && initialized)  {
+   if (status != UNSATISFIABLE && initialized) {
     // Here `last_generator' has to be meaningful.
     // Check for dimension compatibility and actual feasibility.
     if (external_space_dim != last_generator.space_dimension()) {
