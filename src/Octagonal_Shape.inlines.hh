@@ -116,7 +116,6 @@ Octagonal_Shape<T>::Octagonal_Shape(const Constraint_System& cs)
     // A (non zero-dim) universe octagon is strong closed.
     status.set_strongly_closed();
   add_constraints(cs);
-  assert(OK());
 }
 
 template <typename T>
