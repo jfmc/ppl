@@ -75,60 +75,6 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
   assert(OK());
 }
 
-template <typename In>
-MIP_Problem::MIP_Problem(const dimension_type dim,
-			 In first,
-			 In last,
-			 Variables_Integrality integrality,
-			 const Linear_Expression& obj,
-			 const Optimization_Mode mode)
-  : external_space_dim(dim),
-    internal_space_dim(0),
-    tableau(),
-    working_cost(0, Row::Flags()),
-    mapping(),
-    base(),
-    status(PARTIALLY_SATISFIABLE),
-    initialized(false),
-    input_cs(),
-    first_pending_constraint(0),
-    input_obj_function(obj),
-    opt_mode(mode),
-    last_generator(point()),
-    i_variables() {
-  // Check for space dimension overflow.
-  if (dim > max_space_dimension())
-    throw std::length_error("PPL::MIP_Problem::"
-			    "MIP_Problem(d, first, last, obj, m):\n"
-			    "d exceeds the maximum allowed space dimension");
-  // Check the objective function.
-  if (obj.space_dimension() > dim)
-    throw std::invalid_argument("PPL::MIP_Problem::"
-				"MIP_Problem(d, first, last, obj, m):\n"
-				"the space dimension of obj exceeds d.");
-  // Check the constraints.
-  for (In i = first; i != last; ++i) {
-    if (i->is_strict_inequality())
-      throw std::invalid_argument("PPL::MIP_Problem::"
-				  "MIP_Problem(d, first, last, obj, m):\n"
-				  "range [first, last) contains a strict "
-				  "inequality constraint.");
-    if (i->space_dimension() > dim)
-      throw std::invalid_argument("PPL::MIP_Problem::"
-				  "MIP_Problem(d, first, last, obj, m):\n"
-				  "range [first, last) contains a constraint "
-				  "having space dimension greater than d.");
-    input_cs.push_back(*i);
-  }
-
-  // All the coefficients of the computed solution must be integers.
-  if (integrality == ALL_INTEGER_VARIABLES)
-    for (dimension_type i = 0; i < dim; ++i)
-      i_variables.insert(Variable(i));
-
-  assert(OK());
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_MIP_Problem_templates_hh)

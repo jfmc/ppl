@@ -136,23 +136,6 @@ public:
 	      Optimization_Mode mode = MAXIMIZATION);
 
   /*! \brief
-    Builds a pure IP or a pure LP problem.
-
-    This is equivalent to
-    <CODE>MIP_Problem(dim, first, last, int_vars, obj, mode)</CODE>
-    where <CODE>int_vars</CODE> is the empty set, if \p integrality
-    is <CODE>ALL_REAL_VARIABLES</CODE>, and <CODE>int_vars</CODE>
-    is the set of all variables of space dimension up to (and excluding)
-    \p dim, if \p integrality is <CODE>ALL_INTEGER_VARIABLES</CODE>.
-  */
-  template <typename In>
-  MIP_Problem(dimension_type dim,
-	      In first, In last,
-	      Variables_Integrality integrality,
-	      const Linear_Expression& obj = Linear_Expression::zero(),
-	      Optimization_Mode mode = MAXIMIZATION);
-
-  /*! \brief
     Builds an MIP problem having space dimension \p dim from the constraint
     system \p cs, the objective function \p obj and optimization mode \p mode.
 
