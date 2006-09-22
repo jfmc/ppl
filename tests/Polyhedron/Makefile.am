@@ -91,7 +91,7 @@ matrix1 \
 max_min1 \
 maxspacedim1 \
 mc91 \
-membytes1 membytes2 \
+membytes1 \
 memory1 memory2 \
 minconstraints1 minconstraints2 \
 mingenerators1 mingenerators2 \
@@ -161,7 +161,7 @@ nnc_linearpartition1 \
 nnc_mapspacedims1 \
 nnc_max_min1 \
 nnc_mc91 \
-nnc_membytes1 nnc_membytes2 \
+nnc_membytes1 \
 nnc_minconstraints1 \
 nnc_mingenerators1 \
 nnc_onepoint \
@@ -302,7 +302,6 @@ maxspacedim1_SOURCES = maxspacedim1.cc
 mc91_SOURCES = mc91.cc
 
 membytes1_SOURCES = membytes1.cc
-membytes2_SOURCES = membytes2.cc
 
 memory1_SOURCES = memory1.cc
 memory2_SOURCES = memory2.cc
@@ -513,8 +512,6 @@ nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_membytes1_SOURCES = membytes1.cc
 nnc_membytes1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_membytes2_SOURCES = membytes2.cc
-nnc_membytes2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_minconstraints1_SOURCES = minconstraints1.cc
 nnc_minconstraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -589,14 +586,11 @@ XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
 randphull1 \
 smm1 \
-nnc_membytes1 \
 nnc_randphull1 \
 nnc_smm1
 
 XFAIL_WITH_INT8_A = \
-$(XFAIL_WITH_INT8) \
-membytes2 \
-nnc_membytes2
+$(XFAIL_WITH_INT8)
 
 if USE_INT64
 
