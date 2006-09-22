@@ -129,7 +129,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_LP_Problem_objective_function/2,
 	ppl_LP_Problem_optimization_mode/2,
 	ppl_LP_Problem_clear/1,
-	ppl_LP_Problem_add_space_dimensions_and_embed/1,
+	ppl_LP_Problem_add_space_dimensions_and_embed/2,
 	ppl_LP_Problem_add_constraint/2,
 	ppl_LP_Problem_add_constraints/2,
 	ppl_LP_Problem_set_objective_function/2,
