@@ -22,39 +22,66 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-template <typename T>
-dimension_type foo() {
-  return T::max_space_dimension();
-}
+#define test01_DO_CLASS(T)			\
+  nout << #T "::max_space_dimension() = "	\
+	  << T::max_space_dimension() << endl
 
-template dimension_type foo<Variable>();
-template dimension_type foo<Linear_Expression>();
-template dimension_type foo<Constraint>();
-template dimension_type foo<Generator>();
-template dimension_type foo<Constraint_System>();
-template dimension_type foo<Generator_System>();
-template dimension_type foo<C_Polyhedron>();
-template dimension_type foo<NNC_Polyhedron>();
-template dimension_type foo<Pointset_Powerset<C_Polyhedron> >();
-template dimension_type foo<Pointset_Powerset<NNC_Polyhedron> >();
+#define test01_DO_WRD(WRD)			\
+  test01_DO_CLASS(WRD<int8_t>);			\
+  test01_DO_CLASS(WRD<int16_t>);		\
+  test01_DO_CLASS(WRD<int32_t>);		\
+  test01_DO_CLASS(WRD<int64_t>);		\
+  test01_DO_CLASS(WRD<mpz_class>);		\
+  test01_DO_CLASS(WRD<mpq_class>);		\
+  test01_DO_CLASS(WRD<float>);			\
+  test01_DO_CLASS(WRD<double>);			\
+  test01_DO_CLASS(WRD<long double>)
 
-#define PRINT(T) \
-nout << #T "::max_space_dimension() = " << T::max_space_dimension() << endl
+#define test01_DO_CONSTR_CLASS(CONSTR, T)				\
+  nout << #CONSTR "<" #T ">::max_space_dimension() = "			\
+	  << CONSTR<T>::max_space_dimension() << endl
+
+#define test01_DO_CONSTR_WRD(CONSTR, WRD)			\
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<int8_t>);			\
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<int16_t>);			\
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<int32_t>);			\
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<int64_t>);			\
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<mpz_class>);		\
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<mpq_class>);		\
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<float>);			\
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<double>);			\
+  test01_DO_CONSTR_CLASS(CONSTR, WRD<long double>)
 
 bool
 test01() {
-  PRINT(Variable);
-  PRINT(Linear_Expression);
-  PRINT(Constraint);
-  PRINT(Generator);
-  PRINT(Constraint_System);
-  PRINT(Generator_System);
-  PRINT(C_Polyhedron);
-  PRINT(NNC_Polyhedron);
-  PRINT(Pointset_Powerset<C_Polyhedron>);
-  PRINT(Pointset_Powerset<NNC_Polyhedron>);
+  test01_DO_CLASS(Variable);
+  test01_DO_CLASS(Variables_Set);
+  test01_DO_CLASS(Linear_Expression);
+  test01_DO_CLASS(Constraint);
+  test01_DO_CLASS(Congruence);
+  test01_DO_CLASS(Generator);
+  test01_DO_CLASS(Grid_Generator);
+  test01_DO_CLASS(Constraint_System);
+  test01_DO_CLASS(Congruence_System);
+  test01_DO_CLASS(Generator_System);
+  test01_DO_CLASS(Grid_Generator_System);
+  test01_DO_CLASS(C_Polyhedron);
+  test01_DO_CLASS(NNC_Polyhedron);
+  test01_DO_CLASS(Grid);
+  test01_DO_WRD(BD_Shape);
+  test01_DO_WRD(Octagonal_Shape);
+  test01_DO_CONSTR_CLASS(Pointset_Powerset, C_Polyhedron);
+  test01_DO_CONSTR_CLASS(Pointset_Powerset, NNC_Polyhedron);
+  test01_DO_CONSTR_CLASS(Pointset_Powerset, Grid);
+  test01_DO_CONSTR_WRD(Pointset_Powerset, BD_Shape);
+  test01_DO_CONSTR_WRD(Pointset_Powerset, Octagonal_Shape);
+  test01_DO_CONSTR_CLASS(Pointset_Ask_Tell, C_Polyhedron);
+  test01_DO_CONSTR_CLASS(Pointset_Ask_Tell, NNC_Polyhedron);
+  test01_DO_CONSTR_CLASS(Pointset_Ask_Tell, Grid);
+  test01_DO_CONSTR_WRD(Pointset_Ask_Tell, BD_Shape);
+  test01_DO_CONSTR_WRD(Pointset_Ask_Tell, Octagonal_Shape);
 
-  // FIXME.
+  // FIXME: we are not testing very much.
   return true;
 }
 
