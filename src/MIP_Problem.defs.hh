@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.types.hh"
 #include "Generator.defs.hh"
 #include "Variables_Set.types.hh"
+#include "Variables_Set.defs.hh"
 #include <vector>
 #include <deque>
 #include <iosfwd>
@@ -59,7 +60,7 @@ operator<<(std::ostream& s, const MIP_Problem& lp);
    - the subset of the unknown variables that range over the integers
      (the other variables implicitly ranging over the reals);
    - the objective function, described by a Linear_Expression;
-   - the oprimization mode (either maximization or minimization).
+   - the optimization mode (either maximization or minimization).
 
   The class provides support for the (incremental) solution of the
   MIP problem based on variations of the revised simplex method and
@@ -433,6 +434,10 @@ private:
   //! The last successfully computed feasible or optimizing point.
   Generator last_generator;
 
+  // The Variable_Set containing all the Variables that are constrained
+  // to have an integer value.
+  Variables_Set i_variables;
+
   //! Processes the pending constraints of \p *this.
   /*!
     \return
@@ -626,6 +631,11 @@ private:
     satisfied by \p last_generator.
   */
   bool is_satisfied(const Constraint& c) const;
+
+  MIP_Problem_Status handle_mip(bool& have_provisional_optimum,
+				mpq_class& provisional_optimum_value,
+				Generator& provisional_optimum_point,
+				MIP_Problem& lp) const;
 };
 
 namespace std {

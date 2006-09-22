@@ -46,10 +46,8 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
     first_pending_constraint(0),
     input_obj_function(obj),
     opt_mode(mode),
-    last_generator(point()) {
-  if (!int_vars.empty())
-    throw std::runtime_error("PPL internal error: unimplemented feature");
-
+    last_generator(point()),
+    i_variables(int_vars) {
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
     throw std::length_error("PPL::MIP_Problem::"
@@ -96,10 +94,8 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
     first_pending_constraint(0),
     input_obj_function(obj),
     opt_mode(mode),
-    last_generator(point()) {
-  if (integrality == ALL_INTEGER_VARIABLES)
-    throw std::runtime_error("PPL internal error: unimplemented feature");
-
+    last_generator(point()),
+    i_variables() {
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
     throw std::length_error("PPL::MIP_Problem::"
@@ -124,6 +120,12 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
 				  "having space dimension greater than d.");
     input_cs.push_back(*i);
   }
+
+  // All the coefficients of the computed solution must be integers.
+  if (integrality == ALL_INTEGER_VARIABLES)
+    for (dimension_type i = 0; i < dim; ++i)
+      i_variables.insert(Variable(i));
+
   assert(OK());
 }
 

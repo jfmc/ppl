@@ -52,7 +52,8 @@ MIP_Problem::MIP_Problem(const dimension_type dim)
     first_pending_constraint(0),
     input_obj_function(),
     opt_mode(MAXIMIZATION),
-    last_generator(point()) {
+    last_generator(point()),
+    i_variables() {
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
     throw std::length_error("PPL::MIP_Problem::MIP_Problem(d, cs, obj, m):\n"
@@ -77,7 +78,8 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
     first_pending_constraint(0),
     input_obj_function(obj),
     opt_mode(mode),
-    last_generator(point()) {
+    last_generator(point()),
+    i_variables() {
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
     throw std::length_error("PPL::MIP_Problem::MIP_Problem(d, cs, obj, m):\n"
@@ -115,7 +117,8 @@ MIP_Problem::MIP_Problem(const MIP_Problem& y)
     first_pending_constraint(y.first_pending_constraint),
     input_obj_function(y.input_obj_function),
     opt_mode(y.opt_mode),
-    last_generator(y.last_generator) {
+    last_generator(y.last_generator),
+    i_variables() {
   assert(OK());
 }
 
@@ -198,14 +201,25 @@ MIP_Problem::optimizing_point() const {
     return last_generator;
   else
     throw std::domain_error("PPL::MIP_Problem::optimizing_point():\n"
-			    "*this doesn't have an optimizing point.");
+ 			    "*this doesn't have an optimizing point.");
 }
 
 inline MIP_Problem_Status
-MIP_Problem::solve() const {
+MIP_Problem::solve() const{
   if (is_satisfiable()) {
     MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-    x.second_phase();
+    if (i_variables.empty())
+      x.second_phase();
+    else {
+      mpq_class provisional_optimum;
+      Generator g = point();
+      bool have_provisional_optimum = false;
+      MIP_Problem_Status tmp_status =  handle_mip(have_provisional_optimum,
+						  provisional_optimum, g, x);
+      x.last_generator = g;
+      return tmp_status;
+    }
+
     if (x.status == UNBOUNDED)
       return UNBOUNDED_MIP_PROBLEM;
     else {
@@ -247,6 +261,7 @@ MIP_Problem::swap(MIP_Problem& y) {
   std::swap(input_obj_function, y.input_obj_function);
   std::swap(opt_mode, y.opt_mode);
   std::swap(last_generator, y.last_generator);
+  std::swap(i_variables, y.i_variables);
 }
 
 inline MIP_Problem&

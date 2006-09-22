@@ -1154,6 +1154,103 @@ PPL::MIP_Problem::is_satisfiable() const {
   throw std::runtime_error("PPL internal error");
 }
 
+PPL::MIP_Problem_Status
+PPL::MIP_Problem::handle_mip(bool& have_provisional_optimum,
+			     mpq_class& provisional_optimum_value,
+			     Generator& provisional_optimum_point,
+			     MIP_Problem& lp) const {
+  // Solve the problem as a non MIP one, it must be done internally.
+  PPL::MIP_Problem_Status lp_status;
+  if (lp.is_satisfiable()) {
+    lp.second_phase();
+  lp_status =  (lp.status == OPTIMIZED) ? OPTIMIZED_MIP_PROBLEM
+    : UNBOUNDED_MIP_PROBLEM;
+  }
+  else
+    lp_status = UNFEASIBLE_MIP_PROBLEM;
+
+  if (lp_status == UNFEASIBLE_MIP_PROBLEM)
+    return UNFEASIBLE_MIP_PROBLEM;
+  mpq_class tmp_rational;
+
+  Generator p = point();
+  TEMP_INTEGER(tmp_coeff1);
+  TEMP_INTEGER(tmp_coeff2);
+
+  if (lp_status == UNBOUNDED_MIP_PROBLEM)
+    p = lp.feasible_point();
+  else {
+    assert(lp_status == OPTIMIZED_MIP_PROBLEM);
+    // Do not call optimizing_point().
+    p = lp.last_generator;
+    lp.evaluate_objective_function(p, tmp_coeff1, tmp_coeff2);
+    assign_r(tmp_rational.get_num(), tmp_coeff1, ROUND_NOT_NEEDED);
+    assign_r(tmp_rational.get_den(), tmp_coeff2, ROUND_NOT_NEEDED);
+    tmp_rational.canonicalize();
+    if (have_provisional_optimum
+	&& ((optimization_mode() == MAXIMIZATION
+	     && tmp_rational <= provisional_optimum_value)
+	    || tmp_rational >= provisional_optimum_value))
+      // Abandon this path.
+      return lp_status;
+  }
+
+  bool found_satisfiable_generator = true;
+  TEMP_INTEGER(gcd);
+  const Coefficient& p_divisor = p.divisor();
+
+  for (Variables_Set::const_iterator v_begin = i_variables.begin(),
+	 v_end = i_variables.end(); v_begin != v_end; ++v_begin)   {
+    gcd_assign(gcd, p.coefficient(Variable(v_begin->id())), p_divisor);
+    if (gcd != p_divisor)
+      found_satisfiable_generator = false;
+  }
+    if (found_satisfiable_generator) {
+    // All the coordinates of `point' are satisfiable.
+    if (lp_status == UNBOUNDED_MIP_PROBLEM)
+      return lp_status;
+
+    if (!have_provisional_optimum
+	|| (optimization_mode() == MAXIMIZATION
+	    && tmp_rational > provisional_optimum_value)
+	|| tmp_rational < provisional_optimum_value) {
+      provisional_optimum_value = tmp_rational;
+      provisional_optimum_point = p;
+      have_provisional_optimum = true;
+    }
+    return lp_status;
+  }
+  dimension_type nonint_dim = 0;
+  // FIXME: we need a divisibility test for Coefficient.
+  for (Variables_Set::const_iterator v_begin = i_variables.begin(),
+	 v_end = i_variables.end(); v_begin != v_end; ++v_begin)   {
+    gcd_assign(gcd, p.coefficient(Variable(v_begin->id())), p_divisor);
+    if (gcd != p_divisor) {
+      nonint_dim = v_begin->id();
+      break;
+    }
+  }
+  assert(nonint_dim < space_dimension());
+
+  assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
+	   ROUND_NOT_NEEDED);
+  assign_r(tmp_rational.get_den(), p_divisor,
+	   ROUND_NOT_NEEDED);
+  tmp_rational.canonicalize();
+  assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
+  assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
+  MIP_Problem lp_aux = lp;
+  lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+  handle_mip(have_provisional_optimum, provisional_optimum_value,
+ 	     provisional_optimum_point, lp_aux);
+  // TODO: change this when we be able to remove constraints.
+  lp_aux = lp;
+  lp_aux.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
+  handle_mip(have_provisional_optimum, provisional_optimum_value,
+	     provisional_optimum_point, lp_aux);
+  return lp_status;
+}
+
 bool
 PPL::MIP_Problem::OK() const {
 #ifndef NDEBUG
