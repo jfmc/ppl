@@ -417,8 +417,10 @@ private:
   //! The last successfully computed feasible or optimizing point.
   Generator last_generator;
 
-  // The Variable_Set containing all the Variables that are constrained
-  // to have an integer value.
+  /*! \brief
+    The Variable_Set containing all the Variables that are constrained
+    to have an integer value.
+  */
   Variables_Set i_variables;
 
   //! Processes the pending constraints of \p *this.
@@ -615,10 +617,13 @@ private:
   */
   bool is_satisfied(const Constraint& c) const;
 
-  MIP_Problem_Status handle_mip(bool& have_provisional_optimum,
-				mpq_class& provisional_optimum_value,
-				Generator& provisional_optimum_point,
-				MIP_Problem& lp) const;
+  MIP_Problem_Status solve_mip(bool& have_provisional_optimum,
+			       mpq_class& provisional_optimum_value,
+			       Generator& provisional_optimum_point,
+			       MIP_Problem& lp) const;
+
+  bool is_lp_satisfiable() const;
+
 };
 
 namespace std {

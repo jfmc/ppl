@@ -1108,7 +1108,7 @@ PPL::MIP_Problem
 }
 
 bool
-PPL::MIP_Problem::is_satisfiable() const {
+PPL::MIP_Problem::is_lp_satisfiable() const {
 #if PPL_NOISY_SIMPLEX
   num_iterations = 0;
 #endif
@@ -1139,6 +1139,7 @@ PPL::MIP_Problem::is_satisfiable() const {
 	// assertion to be checked.
 	x.initialized = true;
       }
+
       // Apply incrementality to the pending constraint system.
       x.process_pending_constraints();
       // Update `first_pending_constraint': no more pending.
@@ -1155,13 +1156,13 @@ PPL::MIP_Problem::is_satisfiable() const {
 }
 
 PPL::MIP_Problem_Status
-PPL::MIP_Problem::handle_mip(bool& have_provisional_optimum,
+PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
 			     mpq_class& provisional_optimum_value,
 			     Generator& provisional_optimum_point,
 			     MIP_Problem& lp) const {
   // Solve the problem as a non MIP one, it must be done internally.
   PPL::MIP_Problem_Status lp_status;
-  if (lp.is_satisfiable()) {
+  if (lp.is_lp_satisfiable()) {
     lp.second_phase();
   lp_status =  (lp.status == OPTIMIZED) ? OPTIMIZED_MIP_PROBLEM
     : UNBOUNDED_MIP_PROBLEM;
@@ -1241,13 +1242,13 @@ PPL::MIP_Problem::handle_mip(bool& have_provisional_optimum,
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   MIP_Problem lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
-  handle_mip(have_provisional_optimum, provisional_optimum_value,
+  solve_mip(have_provisional_optimum, provisional_optimum_value,
  	     provisional_optimum_point, lp_aux);
   // TODO: change this when we be able to remove constraints.
   lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
-  handle_mip(have_provisional_optimum, provisional_optimum_value,
-	     provisional_optimum_point, lp_aux);
+  solve_mip(have_provisional_optimum, provisional_optimum_value,
+	    provisional_optimum_point, lp_aux);
   return lp_status;
 }
 

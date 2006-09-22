@@ -204,6 +204,21 @@ MIP_Problem::optimizing_point() const {
  			    "*this doesn't have an optimizing point.");
 }
 
+inline bool
+MIP_Problem::is_satisfiable() const {
+  if (i_variables.empty())
+    return is_lp_satisfiable();
+  // MIP Case.
+  // Save the original objective function.
+  Linear_Expression previous_obj_function = objective_function();
+  MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+  x.set_objective_function(Linear_Expression(0));
+  MIP_Problem_Status tmp_status = x.solve();
+  // Restore the old objective function.
+  x.set_objective_function(previous_obj_function);
+  return tmp_status != UNFEASIBLE_MIP_PROBLEM;
+}
+
 inline MIP_Problem_Status
 MIP_Problem::solve() const{
   if (is_satisfiable()) {
@@ -214,8 +229,8 @@ MIP_Problem::solve() const{
       mpq_class provisional_optimum;
       Generator g = point();
       bool have_provisional_optimum = false;
-      MIP_Problem_Status tmp_status =  handle_mip(have_provisional_optimum,
-						  provisional_optimum, g, x);
+      MIP_Problem_Status tmp_status =  solve_mip(have_provisional_optimum,
+						 provisional_optimum, g, x);
       x.last_generator = g;
       return tmp_status;
     }
