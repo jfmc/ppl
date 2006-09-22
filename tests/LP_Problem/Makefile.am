@@ -60,6 +60,10 @@ lpproblem1_SOURCES = lpproblem1.cc
 
 lpproblem2_SOURCES = lpproblem2.cc
 
+mipproblem1_SOURCES = mipproblem1.cc
+
+mipproblem2_SOURCES = mipproblem2.cc
+
 
 XFAIL_ALWAYS =
 
