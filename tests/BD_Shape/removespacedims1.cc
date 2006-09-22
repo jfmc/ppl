@@ -296,6 +296,80 @@ test09() {
   return false;
 }
 
+bool
+test10() {
+  Variable x1(0);
+  Variable x2(1);
+  Variable x3(2);
+  Variable x4(3);
+  Variable x5(4);
+
+  Constraint_System cs;
+  cs.insert(x1 - x2 <= 1);
+  cs.insert(x2 - x3 <= 3);
+  cs.insert(x3 - x1 <= 0);
+  cs.insert(x2 >= 6);
+  cs.insert(x4 >= 4);
+  cs.insert(x5 - x3 == 3);
+  TBD_Shape bd(cs);
+
+  print_constraints(bd, "*** bd ***");
+
+  cs = bd.minimized_constraints();
+  bd.remove_higher_space_dimensions(3);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(x1 - x2 <=1);
+  known_result.add_constraint(x2 - x3 <= 3);
+  known_result.add_constraint(x3 - x1 <= 0);
+  known_result.add_constraint(x2 >= 6);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd, "*** bd.remove_higher_space_dimensions(3) ***");
+
+  return ok;
+}
+
+bool
+test11() {
+  Variable x1(0);
+  Variable x2(1);
+  Variable x3(2);
+  Variable x4(3);
+  Variable x5(4);
+
+  Constraint_System cs;
+  cs.insert(x1 - x2 <= 1);
+  cs.insert(x2 - x3 <= 3);
+  cs.insert(x3 - x1 <= 0);
+  cs.insert(x2 >= 6);
+  cs.insert(x4 >= 4);
+  cs.insert(x5 - x3 == 3);
+  TBD_Shape bd(cs);
+
+  print_constraints(bd, "*** bd ***");
+
+  Variables_Set to_be_removed;
+  to_be_removed.insert(x4);
+  to_be_removed.insert(x5);
+
+  cs = bd.minimized_constraints();
+  bd.remove_space_dimensions(to_be_removed);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(x1 - x2 <=1);
+  known_result.add_constraint(x2 - x3 <= 3);
+  known_result.add_constraint(x3 - x1 <= 0);
+  known_result.add_constraint(x2 >= 6);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd, "*** bd.remove_space_dimensions({x4, x5}) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -308,4 +382,6 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN
