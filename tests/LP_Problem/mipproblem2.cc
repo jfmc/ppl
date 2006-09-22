@@ -30,20 +30,17 @@ test01() {
   Variable B(1);
   Variable C(2);
 
-  // Cost function
-  Linear_Expression cost(-2*A - 3*B - 4*C);
-
   // Feasible region.
   Constraint_System cs;
   cs.insert(A + B <= 1);
   cs.insert(A + C <= 1);
   cs.insert(B + C <= 1);
-  Variables_Set ivs;
-  for (dimension_type i = A.id(); i <= C.id(); ++i) {
-    ivs.insert(Variable(i));
-    cs.insert(Variable(i) >= 0);
-    cs.insert(Variable(i) <= 1);
-  }
+
+  // All integer variables.
+  Variables_Set ivs(A, C);
+
+  // Cost function.
+  Linear_Expression cost(-2*A - 3*B - 4*C);
 
   MIP_Problem ilp(cs.space_dimension(), cs.begin(), cs.end(), ivs, cost,
 		  MINIMIZATION);
@@ -61,16 +58,18 @@ bool
 test02() {
   Variable A(0);
   Variable B(1);
+
+  // Feasible region.
   Constraint_System cs;
   cs.insert(-2*A - B >= -5);
   cs.insert(4*A -4*B >= -5);
   cs.insert(A >= 0);
   cs.insert(B >= 0);
 
-  Variables_Set ivs;
-  for (dimension_type i = A.id(); i <= B.id(); ++i)
-    ivs.insert(Variable(i));
+  // All integer variables.
+  Variables_Set ivs(A, B);
 
+  // Objective function.
   Linear_Expression cost(A - 2*B);
 
   MIP_Problem ilp(cs.space_dimension(), cs.begin(), cs.end(), ivs, cost,
