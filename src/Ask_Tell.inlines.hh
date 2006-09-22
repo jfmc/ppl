@@ -88,7 +88,7 @@ Ask_Tell<D>::Ask_Tell()
 }
 
 template <typename D>
-Ask_Tell<D>::Ask_Tell(const Ask_Tell<D>& y)
+Ask_Tell<D>::Ask_Tell(const Ask_Tell& y)
   : sequence(y.sequence), normalized(y.normalized) {
 }
 
@@ -106,7 +106,7 @@ Ask_Tell<D>::~Ask_Tell() {
 
 template <typename D>
 Ask_Tell<D>&
-Ask_Tell<D>::operator=(const Ask_Tell<D>& y) {
+Ask_Tell<D>::operator=(const Ask_Tell& y) {
   sequence = y.sequence;
   normalized = y.normalized;
   return *this;
@@ -218,7 +218,7 @@ Ask_Tell<D>::is_normalized() const {
 
 template <typename D>
 bool
-Ask_Tell<D>::definitely_entails(const Ask_Tell<D>& y) const {
+Ask_Tell<D>::definitely_entails(const Ask_Tell& y) const {
   const Ask_Tell<D>& x = *this;
   x.normalize();
   y.normalize();
@@ -280,7 +280,7 @@ Ask_Tell<D>::empty() const {
 
 template <typename D>
 void
-Ask_Tell<D>::meet_assign(const Ask_Tell<D>& y) {
+Ask_Tell<D>::meet_assign(const Ask_Tell& y) {
   if (!y.empty()) {
     std::copy(y.begin(), y.end(), back_inserter(sequence));
     normalized = false;
