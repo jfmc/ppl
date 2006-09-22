@@ -105,6 +105,7 @@ test04() {
   print_function(function, "*** function ***");
   print_constraints(bd1, "*** bd1 ***");
 
+  cs = bd1.minimized_constraints();
   bd1.map_space_dimensions(function);
 
   BD_Shape<mpq_class> known_result(2);
