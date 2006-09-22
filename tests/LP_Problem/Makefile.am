@@ -44,7 +44,9 @@ TESTS = \
 ascii_dump_load1 \
 exceptions1 \
 lpproblem1 \
-lpproblem2
+lpproblem2 \
+mipproblem1 \
+mipproblem2
 
 #
 # Sources for the tests

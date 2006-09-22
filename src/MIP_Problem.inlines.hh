@@ -221,26 +221,26 @@ MIP_Problem::is_satisfiable() const {
 
 inline MIP_Problem_Status
 MIP_Problem::solve() const{
-  if (is_satisfiable()) {
-    MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-    if (i_variables.empty())
+  MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+  if (i_variables.empty()) {
+    if (is_lp_satisfiable())
       x.second_phase();
-    else {
-      mpq_class provisional_optimum;
-      Generator g = point();
-      bool have_provisional_optimum = false;
-      MIP_Problem_Status tmp_status =  solve_mip(have_provisional_optimum,
-						 provisional_optimum, g, x);
-      x.last_generator = g;
-      return tmp_status;
-    }
+  }
+  else {
+    mpq_class provisional_optimum;
+    Generator g = point();
+    bool have_provisional_optimum = false;
+    MIP_Problem_Status tmp_status =  solve_mip(have_provisional_optimum,
+					       provisional_optimum, g, x);
+    x.last_generator = g;
+    return tmp_status;
+  }
 
-    if (x.status == UNBOUNDED)
-      return UNBOUNDED_MIP_PROBLEM;
-    else {
-      assert(x.status == OPTIMIZED);
-      return OPTIMIZED_MIP_PROBLEM;
-    }
+  if (x.status == UNBOUNDED)
+    return UNBOUNDED_MIP_PROBLEM;
+  else {
+    assert(x.status == OPTIMIZED);
+    return OPTIMIZED_MIP_PROBLEM;
   }
   return UNFEASIBLE_MIP_PROBLEM;
 }
