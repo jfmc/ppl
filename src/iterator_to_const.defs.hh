@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_iterator_to_const_hh 1
 
 #include "iterator_to_const.types.hh"
+#include "Powerset.types.hh"
+#include "Ask_Tell.types.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An iterator on the disjuncts of a Powerset element.
@@ -46,9 +48,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Container>
 class Parma_Polyhedra_Library::iterator_to_const {
-  // FIXME
-  //protected:
-public:
+private:
   //! The type of the underlying mutable iterator.
   typedef typename Container::iterator Base;
 
@@ -63,6 +63,8 @@ public:
   iterator_to_const(const Base& b);
 
   friend class const_iterator_to_const<Container>;
+  template <typename T> friend class Powerset;
+  template <typename T> friend class Ask_Tell;
 
 public:
   // Same traits of the const_iterator, therefore
@@ -119,9 +121,7 @@ public:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Container>
 class Parma_Polyhedra_Library::const_iterator_to_const {
-  // FIXME
-  //protected:
-public:
+private:
   //! The type of the underlying %const_iterator.
   typedef typename Container::const_iterator Base;
 
@@ -135,6 +135,8 @@ public:
   const_iterator_to_const(const Base& b);
 
   friend class iterator_to_const<Container>;
+  template <typename T> friend class Powerset;
+  template <typename T> friend class Ask_Tell;
 
 public:
   // Same traits of the underlying const_iterator.
