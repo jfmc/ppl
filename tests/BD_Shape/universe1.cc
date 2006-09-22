@@ -55,9 +55,35 @@ test02() {
   return universe;
 }
 
+bool
+test03() {
+  TBD_Shape bd(0);
+
+  bool universe = bd.is_universe();
+
+  nout << "*** bd.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return universe;
+}
+
+bool
+test04() {
+  TBD_Shape bd(20, EMPTY);
+
+  bool universe = bd.is_universe();
+
+  nout << "*** bd.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return !universe;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN
