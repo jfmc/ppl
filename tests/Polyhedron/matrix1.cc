@@ -26,13 +26,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-const char* data_file = "matrix1.dat";
-
 bool
 test01() {
   Variable A(0);
   Variable B(1);
   Random_Number_Generator r;
+  const char* data_file = "matrix1.dat";
 
   for (dimension_type num_rows = 0; num_rows <= 3; ++num_rows)
     for (dimension_type num_cols = 0; num_cols <= 3; ++num_cols) {
