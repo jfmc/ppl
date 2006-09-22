@@ -69,9 +69,8 @@ public:
   static dimension_type max_space_dimension();
 
   /*! \brief
-    If \p *this is not empty, returns the dimension of the smallest
-    vector space enclosing all the variables.  Returns
-    <CODE>not_a_dimension()</CODE> otherwise.
+    Returns the dimension of the smallest vector space enclosing all
+    the variables.
   */
   dimension_type space_dimension() const;
 
