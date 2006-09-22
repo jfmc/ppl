@@ -3732,7 +3732,6 @@ Octagonal_Shape<T>
     // The relation symbol is "==":
     // this is just an affine preimage computation.
     affine_preimage(var, expr, denominator);
-    assert(OK());
     return;
   }
 
