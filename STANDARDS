@@ -431,6 +431,10 @@ o  The test functions should be written
 o  The test functions should return true if the test succeeds and false
    if it fails.
 
+o  If a test requires auxiliary functions and/or classes, put them
+   in a namespace named, e.g., `test10_namespace', which in turn is
+   within the anonymous namespace.
+
 o  Following all the test functions, include:
 
         BEGIN_MAIN
