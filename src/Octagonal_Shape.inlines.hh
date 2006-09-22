@@ -304,7 +304,6 @@ Octagonal_Shape<T>::add_constraints(const Constraint_System& cs) {
   Constraint_System::const_iterator i_end = cs.end();
   for (Constraint_System::const_iterator i = cs.begin(); i != i_end; ++i)
     add_constraint(*i);
-  assert(OK());
 }
 
 template <typename T>
