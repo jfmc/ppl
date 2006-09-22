@@ -21,10 +21,9 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-
 #include "Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
-
+#include "MIP_Problem.defs.hh"
 #include <cassert>
 #include <iostream>
 
@@ -437,6 +436,28 @@ PPL::Polyhedron::is_topologically_closed() const {
   // of its constraint system, it has no strict inequalities.
   strongly_minimize_constraints();
   return marked_empty() || !con_sys.has_strict_inequalities();
+}
+
+bool
+PPL::Polyhedron::contains_integer_point() const {
+  // Any empty polyhedron does not contain integer points.
+  if (marked_empty())
+    return false;
+
+  // A zero-dimensional, universe polyhedron has, by convention, an
+  // integer point.
+  if (space_dim == 0)
+    return true;
+
+  if (has_something_pending() && !process_pending())
+    // Empty again.
+    return true;
+
+  const Constraint_System& cs = constraints();
+  MIP_Problem mip(space_dim,
+		  cs.begin(), cs.end(),
+		  Variables_Set(Variable(0), Variable(space_dim-1)));
+  return mip.is_satisfiable();
 }
 
 bool
