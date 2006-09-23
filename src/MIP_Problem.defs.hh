@@ -624,6 +624,7 @@ private:
 
   bool is_lp_satisfiable() const;
 
+  bool is_mip_satisfiable(MIP_Problem& mip, Generator& p) const;
 };
 
 namespace std {

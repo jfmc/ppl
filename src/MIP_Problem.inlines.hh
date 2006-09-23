@@ -209,14 +209,19 @@ MIP_Problem::is_satisfiable() const {
   if (i_variables.empty())
     return is_lp_satisfiable();
   // MIP Case.
-  // Save the original objective function.
-  Linear_Expression previous_obj_function = objective_function();
+  // If the MIP Problem is already satisfiable, return true.
+  if (status == SATISFIABLE)
+    return true;
   MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-  x.set_objective_function(Linear_Expression(0));
-  MIP_Problem_Status tmp_status = x.solve();
-  // Restore the old objective function.
-  x.set_objective_function(previous_obj_function);
-  return tmp_status != UNFEASIBLE_MIP_PROBLEM;
+  Generator p = point();
+  bool is_satisfiable = is_mip_satisfiable(x, p);
+  if (is_satisfiable) {
+    x.last_generator = p;
+    x.status = SATISFIABLE;
+  }
+  else
+    x.status = UNSATISFIABLE;
+  return is_satisfiable;
 }
 
 inline MIP_Problem_Status
