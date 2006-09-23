@@ -540,6 +540,12 @@ public:
   bool is_bounded() const;
 
   /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains (at least) an integer point.
+  */
+  bool contains_integer_point() const;
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this satisfies
     all its invariants.
   */
