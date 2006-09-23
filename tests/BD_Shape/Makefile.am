@@ -59,6 +59,7 @@ closure1 \
 concatenate1 \
 constraints1 \
 contains1 \
+containsintegerpoint1 \
 empty1 \
 equality1 \
 fromgensys1 \
@@ -159,6 +160,8 @@ concatenate1_SOURCES = concatenate1.cc
 constraints1_SOURCES = constraints1.cc
 
 contains1_SOURCES = contains1.cc
+
+containsintegerpoint1_SOURCES = containsintegerpoint1.cc
 
 empty1_SOURCES = empty1.cc
 
