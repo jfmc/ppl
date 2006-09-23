@@ -512,6 +512,7 @@ YAP_STUB_3(ppl_Polyhedron_get_bounding_box)
 YAP_STUB_1(ppl_Polyhedron_is_empty)
 YAP_STUB_1(ppl_Polyhedron_is_universe)
 YAP_STUB_1(ppl_Polyhedron_is_bounded)
+YAP_STUB_1(ppl_Polyhedron_contains_integer_point)
 YAP_STUB_2(ppl_Polyhedron_bounds_from_above)
 YAP_STUB_2(ppl_Polyhedron_bounds_from_below)
 YAP_STUB_5(ppl_Polyhedron_maximize)
@@ -638,6 +639,7 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_is_empty, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_is_universe, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_is_bounded, 1);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_contains_integer_point, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_bounds_from_above, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_bounds_from_below, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_maximize, 5);

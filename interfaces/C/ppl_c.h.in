@@ -1645,6 +1645,13 @@ int
 ppl_Polyhedron_is_bounded PPL_PROTO((ppl_const_Polyhedron_t ph));
 
 /*! \brief
+  Returns a positive integer if \p ph contains at least one integer
+  point; returns 0 otherwise.
+*/
+int
+ppl_Polyhedron_contains_integer_point PPL_PROTO((ppl_const_Polyhedron_t ph));
+
+/*! \brief
   Returns a positive integer if \p le is bounded from above in \p ph;
   returns 0 otherwise.
 */

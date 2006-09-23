@@ -2060,6 +2060,17 @@ ppl_Polyhedron_is_bounded(Prolog_term_ref t_ph) {
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_contains_integer_point(Prolog_term_ref t_ph) {
+  try {
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    if (ph->contains_integer_point())
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_bounds_from_above(Prolog_term_ref t_ph,
 				 Prolog_term_ref t_expr) {
   try {

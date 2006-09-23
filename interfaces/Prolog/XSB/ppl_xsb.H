@@ -63,6 +63,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_is_empty/1,
 	ppl_Polyhedron_is_universe/1,
 	ppl_Polyhedron_is_bounded/1,
+	ppl_Polyhedron_contains_integer_point/1,
 	ppl_Polyhedron_bounds_from_above/2,
 	ppl_Polyhedron_bounds_from_below/2,
 	ppl_Polyhedron_maximize/5,

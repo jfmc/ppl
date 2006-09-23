@@ -541,7 +541,7 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
-    contains (at least) an integer point.
+    contains at least one integer point.
   */
   bool contains_integer_point() const;
 

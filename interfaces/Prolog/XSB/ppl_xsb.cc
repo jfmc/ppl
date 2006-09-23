@@ -448,6 +448,7 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #define ppl_Polyhedron_is_empty xsb_stub_ppl_Polyhedron_is_empty
 #define ppl_Polyhedron_is_universe xsb_stub_ppl_Polyhedron_is_universe
 #define ppl_Polyhedron_is_bounded xsb_stub_ppl_Polyhedron_is_bounded
+#define ppl_Polyhedron_contains_integer_point xsb_stub_ppl_Polyhedron_contains_integer_point
 #define ppl_Polyhedron_bounds_from_above xsb_stub_ppl_Polyhedron_bounds_from_above
 #define ppl_Polyhedron_bounds_from_below xsb_stub_ppl_Polyhedron_bounds_from_below
 #define ppl_Polyhedron_maximize xsb_stub_ppl_Polyhedron_maximize
@@ -570,6 +571,7 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 #undef ppl_Polyhedron_is_empty
 #undef ppl_Polyhedron_is_universe
 #undef ppl_Polyhedron_is_bounded
+#undef ppl_Polyhedron_contains_integer_point
 #undef ppl_Polyhedron_bounds_from_above
 #undef ppl_Polyhedron_bounds_from_below
 #undef ppl_Polyhedron_maximize
@@ -753,6 +755,7 @@ XSB_ENTRY_3(ppl_Polyhedron_get_bounding_box)
 XSB_ENTRY_1(ppl_Polyhedron_is_empty)
 XSB_ENTRY_1(ppl_Polyhedron_is_universe)
 XSB_ENTRY_1(ppl_Polyhedron_is_bounded)
+XSB_ENTRY_1(ppl_Polyhedron_contains_integer_point)
 XSB_ENTRY_2(ppl_Polyhedron_bounds_from_above)
 XSB_ENTRY_2(ppl_Polyhedron_bounds_from_below)
 XSB_ENTRY_5(ppl_Polyhedron_maximize)

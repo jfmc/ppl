@@ -249,6 +249,7 @@ SP_STUB_3(ppl_Polyhedron_get_bounding_box)
 SP_STUB_1(ppl_Polyhedron_is_empty)
 SP_STUB_1(ppl_Polyhedron_is_universe)
 SP_STUB_1(ppl_Polyhedron_is_bounded)
+SP_STUB_1(ppl_Polyhedron_contains_integer_point)
 SP_STUB_2(ppl_Polyhedron_bounds_from_above)
 SP_STUB_2(ppl_Polyhedron_bounds_from_below)
 SP_STUB_5(ppl_Polyhedron_maximize)
@@ -383,6 +384,7 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_is_empty, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_is_universe, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_is_bounded, 1);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_contains_integer_point, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounds_from_above, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounds_from_below, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_maximize, 5);

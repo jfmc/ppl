@@ -2153,6 +2153,13 @@ ppl_Polyhedron_is_bounded(ppl_const_Polyhedron_t ph) try {
 CATCH_ALL
 
 int
+ppl_Polyhedron_contains_integer_point(ppl_const_Polyhedron_t ph) try {
+  const Polyhedron& pph = *to_const(ph);
+  return pph.contains_integer_point() ? 1 : 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_bounds_from_above(ppl_const_Polyhedron_t ph,
 				 ppl_const_Linear_Expression_t le) try {
   const Polyhedron& pph = *to_const(ph);

@@ -64,6 +64,7 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_is_empty/1,
         ppl_Polyhedron_is_universe/1,
         ppl_Polyhedron_is_bounded/1,
+        ppl_Polyhedron_contains_integer_point/1,
         ppl_Polyhedron_bounds_from_above/2,
         ppl_Polyhedron_bounds_from_below/2,
         ppl_Polyhedron_maximize/5,
@@ -483,6 +484,14 @@ ppl_Polyhedron_is_universe(Handle) :-
 
 ppl_Polyhedron_is_bounded(Handle) :-
 	ppl_Polyhedron_is_bounded_2(Handle, 1).
+
+:- true pred ppl_Polyhedron_contains_integer_point_2(in(Handle),
+                                         go(Success))
+  :: any_term * int
+  + (returns(Success), foreign(ppl_Polyhedron_contains_integer_point)).
+
+ppl_Polyhedron_contains_integer_point(Handle) :-
+	ppl_Polyhedron_contains_integer_point_2(Handle, 1).
 
 :- true pred ppl_Polyhedron_bounds_from_above_2(in(Handle),
                                                 in(Linear_Expression),
@@ -1134,6 +1143,8 @@ ppl_LP_Problem_OK(Term1) :-
         ppl_Polyhedron_is_universe_2/2,
 %        ppl_Polyhedron_is_bounded/1,
         ppl_Polyhedron_is_bounded_2/2,
+%        ppl_Polyhedron_contains_integer_point/1,
+        ppl_Polyhedron_contains_integer_point_2/2,
 %        ppl_Polyhedron_bounds_from_above/2,
         ppl_Polyhedron_bounds_from_above_2/3,
 %        ppl_Polyhedron_bounds_from_below/2,
@@ -1355,6 +1366,9 @@ since the above version of this is temporary.
              :: any_term + foreign.
 
 :- true pred ppl_Polyhedron_is_bounded(in(Handle))
+             :: any_term + foreign.
+
+:- true pred ppl_Polyhedron_contains_integer_point(in(Handle))
              :: any_term + foreign.
 
 :- true pred ppl_Polyhedron_bounds_from_above(in(Handle), in(Linear_Expression))
@@ -1634,6 +1648,7 @@ since the above version of this is temporary.
         ppl_Polyhedron_is_empty/1,
         ppl_Polyhedron_is_universe/1,
         ppl_Polyhedron_is_bounded/1,
+        ppl_Polyhedron_contains_integer_point/1,
         ppl_Polyhedron_bounds_from_above/2,
         ppl_Polyhedron_bounds_from_below/2,
         ppl_Polyhedron_maximize/5,
