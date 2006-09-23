@@ -1157,21 +1157,19 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
 
 PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
-			     mpq_class& provisional_optimum_value,
-			     Generator& provisional_optimum_point,
-			     MIP_Problem& lp) const {
+			    mpq_class& provisional_optimum_value,
+			    Generator& provisional_optimum_point,
+			    MIP_Problem& lp) const {
   // Solve the problem as a non MIP one, it must be done internally.
   PPL::MIP_Problem_Status lp_status;
   if (lp.is_lp_satisfiable()) {
     lp.second_phase();
-  lp_status =  (lp.status == OPTIMIZED) ? OPTIMIZED_MIP_PROBLEM
-    : UNBOUNDED_MIP_PROBLEM;
+    lp_status = (lp.status == OPTIMIZED) ? OPTIMIZED_MIP_PROBLEM
+      : UNBOUNDED_MIP_PROBLEM;
   }
   else
-    lp_status = UNFEASIBLE_MIP_PROBLEM;
-
-  if (lp_status == UNFEASIBLE_MIP_PROBLEM)
     return UNFEASIBLE_MIP_PROBLEM;
+
   mpq_class tmp_rational;
 
   Generator p = point();
@@ -1199,14 +1197,17 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
   bool found_satisfiable_generator = true;
   TEMP_INTEGER(gcd);
   const Coefficient& p_divisor = p.divisor();
-
+  dimension_type nonint_dim;
   for (Variables_Set::const_iterator v_begin = i_variables.begin(),
-	 v_end = i_variables.end(); v_begin != v_end; ++v_begin)   {
+	 v_end = i_variables.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(Variable(v_begin->id())), p_divisor);
-    if (gcd != p_divisor)
+    if (gcd != p_divisor) {
+      nonint_dim = v_begin->id();
       found_satisfiable_generator = false;
+      break;
+    }
   }
-    if (found_satisfiable_generator) {
+  if (found_satisfiable_generator) {
     // All the coordinates of `point' are satisfiable.
     if (lp_status == UNBOUNDED_MIP_PROBLEM)
       return lp_status;
@@ -1221,16 +1222,7 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
     }
     return lp_status;
   }
-  dimension_type nonint_dim = 0;
-  // FIXME: we need a divisibility test for Coefficient.
-  for (Variables_Set::const_iterator v_begin = i_variables.begin(),
-	 v_end = i_variables.end(); v_begin != v_end; ++v_begin) {
-    gcd_assign(gcd, p.coefficient(Variable(v_begin->id())), p_divisor);
-    if (gcd != p_divisor) {
-      nonint_dim = v_begin->id();
-      break;
-    }
-  }
+
   assert(nonint_dim < space_dimension());
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
@@ -1243,7 +1235,7 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
   MIP_Problem lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
   solve_mip(have_provisional_optimum, provisional_optimum_value,
- 	     provisional_optimum_point, lp_aux);
+	    provisional_optimum_point, lp_aux);
   // TODO: change this when we be able to remove constraints.
   lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) >= tmp_coeff2);

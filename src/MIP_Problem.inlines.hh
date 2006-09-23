@@ -223,26 +223,40 @@ inline MIP_Problem_Status
 MIP_Problem::solve() const{
   MIP_Problem& x = const_cast<MIP_Problem&>(*this);
   if (i_variables.empty()) {
-    if (is_lp_satisfiable())
+    // LP Problem case.
+    if (is_lp_satisfiable()) {
       x.second_phase();
+      if (x.status == UNBOUNDED)
+	return UNBOUNDED_MIP_PROBLEM;
+      else {
+	assert(x.status == OPTIMIZED);
+	return OPTIMIZED_MIP_PROBLEM;
+      }
+    }
+    return UNFEASIBLE_MIP_PROBLEM;
   }
-  else {
-    mpq_class provisional_optimum;
-    Generator g = point();
-    bool have_provisional_optimum = false;
-    MIP_Problem_Status tmp_status =  solve_mip(have_provisional_optimum,
-					       provisional_optimum, g, x);
-    x.last_generator = g;
-    return tmp_status;
+  // MIP Problem case.
+  mpq_class provisional_optimum;
+  Generator g = point();
+  bool have_provisional_optimum = false;
+  MIP_Problem_Status mip_status = solve_mip(have_provisional_optimum,
+					    provisional_optimum, g, x);
+  // Set the internal status because the original problem (x),
+  // passed by reference in solve_mip(), was solved as a normal LP Problem.
+  switch (mip_status) {
+  case UNFEASIBLE_MIP_PROBLEM:
+    x.status = UNSATISFIABLE;
+    break;
+  case UNBOUNDED_MIP_PROBLEM:
+    x.status = UNBOUNDED;
+    break;
+  case OPTIMIZED_MIP_PROBLEM:
+    x.status = OPTIMIZED;
+    break;
   }
-
-  if (x.status == UNBOUNDED)
-    return UNBOUNDED_MIP_PROBLEM;
-  else {
-    assert(x.status == OPTIMIZED);
-    return OPTIMIZED_MIP_PROBLEM;
-  }
-  return UNFEASIBLE_MIP_PROBLEM;
+  // Set the internal generator.
+  x.last_generator = g;
+  return mip_status;
 }
 
 inline void
