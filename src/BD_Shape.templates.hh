@@ -614,12 +614,12 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   // The variable(i-1) and variable(j-1) are equivalent if and only if
   // m_i_j == -(m_j_i).
   for (dimension_type i = 0; i < x_space_dim; ++i) {
-    const DB_Row<N>& xdbm_i = x_copy.dbm[i];
+    const DB_Row<N>& x_copy_dbm_i = x_copy.dbm[i];
     for (dimension_type j = i + 1; j <= x_space_dim; ++j) {
-      N negated_xdbm_ji;
-      if (neg_assign_r(negated_xdbm_ji, x_copy.dbm[j][i],
+      N negated_x_copy_dbm_ji;
+      if (neg_assign_r(negated_x_copy_dbm_ji, x_copy.dbm[j][i],
 		       ROUND_NOT_NEEDED) == V_EQ
-	  && negated_xdbm_ji == xdbm_i[j])
+	  && negated_x_copy_dbm_ji == x_copy_dbm_i[j])
 	// Two equivalent variables have got the same leader
 	// (the smaller variable).
 	leader[j] = leader[i];
@@ -1013,17 +1013,17 @@ BD_Shape<T>::shortest_path_closure_assign() const {
 
   N sum;
   for (dimension_type k = num_dimensions + 1; k-- > 0; ) {
-    const DB_Row<N>& xdbm_k = x.dbm[k];
+    const DB_Row<N>& x_dbm_k = x.dbm[k];
     for (dimension_type i = num_dimensions + 1; i-- > 0; ) {
-      DB_Row<N>& xdbm_i = x.dbm[i];
-      const N& xdbm_i_k = xdbm_i[k];
-      if (!is_plus_infinity(xdbm_i_k))
+      DB_Row<N>& x_dbm_i = x.dbm[i];
+      const N& x_dbm_i_k = x_dbm_i[k];
+      if (!is_plus_infinity(x_dbm_i_k))
 	for (dimension_type j = num_dimensions + 1; j-- > 0; ) {
-	  const N& xdbm_k_j = xdbm_k[j];
-	  if (!is_plus_infinity(xdbm_k_j)) {
+	  const N& x_dbm_k_j = x_dbm_k[j];
+	  if (!is_plus_infinity(x_dbm_k_j)) {
 	    // Rounding upward for correctness.
-	    add_assign_r(sum, xdbm_i_k, xdbm_k_j, ROUND_UP);
-	    min_assign(xdbm_i[j], sum);
+	    add_assign_r(sum, x_dbm_i_k, x_dbm_k_j, ROUND_UP);
+	    min_assign(x_dbm_i[j], sum);
 	  }
 	}
     }
