@@ -1188,7 +1188,7 @@ a parameter \f$k\f$ and only apply widenings starting from the
 
 The library also supports an improved widening delay strategy,
 that we call <EM>widening with tokens</EM> \ref BHRZ03a "[BHRZ03a]".
-A token is a sort of wildcard allowing for the replacement of the widening
+A token is a sort of wild card allowing for the replacement of the widening
 application by the exact upper bound computation: the token is used
 (and thus consumed) only when the widening would have resulted in an
 actual precision loss (as opposed to the <EM>potential</EM> precision loss
@@ -1265,7 +1265,7 @@ of octagonal constraints or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
 
 Note that, since any bounded difference is also an octagonal constraint,
 any BDS is also an OS. The name ``octagonal'' comes from the fact that,
-in a vector space of dimension 2, a bounded OS can have eigth sides
+in a vector space of dimension 2, a bounded OS can have eight sides
 at most.
 
 \subsection Weakly_Relational_Shape_Interface Weakly-Relational Shapes Interface
@@ -1533,7 +1533,7 @@ In this section we introduce rational grids
 as provided by the library.
 See also \ref BDHMZ05 "[BDHMZ05]" for a detailed description of this domain.
 
-The libary supports two representations for the grids domain;
+The library supports two representations for the grids domain;
 <EM>congruence systems</EM> and <EM>grid generator systems</EM>.
 We first describe <EM>linear congruence relations</EM> which form the elements
 of a congruence system.
@@ -2291,7 +2291,7 @@ R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Z
 \anchor BHMZ05
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Mazzi, and E.&nbsp;Zaffanella.
   Widening Operators for Weakly-Relational Numeric Abstractions.
-  In C.&nbsp;Hankin and I.&nbsp;Silveroni, editors, <i>Static Analysis:
+  In C.&nbsp;Hankin and I.&nbsp;Siveroni, editors, <i>Static Analysis:
   Proceedings of the 12th International Symposium</i>, volume 3672 of
   <i>Lecture Notes in Computer Science</i>, pages 3-18, London, UK, 2005.
   Springer-Verlag, Berlin.
