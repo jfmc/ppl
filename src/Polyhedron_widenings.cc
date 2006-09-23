@@ -190,7 +190,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // If we only have the generators of `x' and the dimensions of
   // the two polyhedra are the same, we can compute the standard
-  // widening by using the specification in CousotH78, therefore
+  // widening by using the specification in [CousotH78], therefore
   // avoiding converting from generators to constraints.
   if (x.has_pending_generators() || !x.constraints_are_up_to_date()) {
     Constraint_System CH78_cs(tpl);
