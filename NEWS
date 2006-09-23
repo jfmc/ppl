@@ -187,7 +187,7 @@ o  Added Polyhedron methods difference_assign() and join_assign(),
 
 o  The helper function widen_fun_ref() building a limited widening
    function is now templatic even on the second argument (i.e., the
-   limiting constraint system). The templatic widening method
+   limiting constraint system). The template widening method
 
      Polyhedra_Powerset<PH>::BHZ03_widening_assign()
 
@@ -314,7 +314,7 @@ o  New functions added to the C interface:
    allow C applications to obtain information about the Coefficient
    integer numerical type.
 
-   The new Prolog interface predicates ppl_Coeffient_is_bounded/0,
+   The new Prolog interface predicates ppl_Coefficient_is_bounded/0,
    ppl_Coefficient_max/1 and ppl_Coefficient_min/1 provide the same
    functionality.
 
@@ -615,7 +615,7 @@ NEWS for version 0.6  (released on August 18, 2004)
 New and Changed Features
 ========================
 
-o  New templatic classes Determinate, PowerSet, and Polyhedra_PowerSet.
+o  New template classes Determinate, PowerSet, and Polyhedra_PowerSet.
    The first two classes realize, in a completely generic way, the
    determinate and powerset constructions described by Roberto Bagnara
    in his 1998, Science of Computer Programming paper.  The third class
@@ -830,7 +830,7 @@ o  Timeout computation facilities have been added to the Prolog interfaces:
    ppl_timeout_exception_atom/1, ppl_set_timeout/1, ppl_reset_timeout/0.
 
 o  Many efficiency improvements have been achieved.  Part of these have
-   been obtained by increasing the degree of "lazyness" of the library.
+   been obtained by increasing the degree of "laziness" of the library.
 
 o  Many portability and standard-conformance improvements: the library
    can now be compiled with GNU g++, Intel C++ Compiler 7.0 for Linux,
@@ -1018,7 +1018,7 @@ o  Added support for timeout-guarded operations.  It is now possible
 o  The methods named convex_hull_* and convex_difference_*
    have been renamed poly_hull_* and poly_difference_*.
 
-o  All methods named *_and_minimize() now return a boolean
+o  All methods named *_and_minimize() now return a Boolean
    flag that is false if the result is empty.
 
 o  All method and variable names containing the word "vertex"
@@ -1081,7 +1081,7 @@ NEWS for version 0.3 (released on February 26, 2002)
 New Features
 ============
 
-o  The library has been ported under libtool: it is now possible
+o  The library has been ported under Libtool: it is now possible
    to build dynamic libraries as well.
 
 o  We now use the integer C++ class of GMP to represent the
@@ -1114,7 +1114,7 @@ o  Fixed Polyhedron::satisfies(const Constraint&) and
    Polyhedron::affine_image().
 
 o  Polyhedron::limited_widening_assign(const Polyhedron&, ConSys&)
-   was erroneously returning a (random) boolean: it is now a void
+   was erroneously returning a (random) Boolean: it is now a void
    method.
 
 
