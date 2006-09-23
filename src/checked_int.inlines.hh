@@ -1228,7 +1228,7 @@ mul2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
 
 template <typename Type>
 inline void
-isqrtrem_(Type& q, Type& r, const Type from) {
+isqrtrem(Type& q, Type& r, const Type from) {
   q = 0;
   r = from;
   Type t(1);
@@ -1246,7 +1246,7 @@ template <typename Policy, typename Type>
 inline Result
 sqrt_unsigned_int(Type& to, const Type from, Rounding_Dir dir) {
   Type rem;
-  isqrtrem_(to, rem, from);
+  isqrtrem(to, rem, from);
   if (dir == ROUND_IGNORE)
     return V_GE;
   if (rem == 0)
