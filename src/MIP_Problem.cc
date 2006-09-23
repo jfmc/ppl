@@ -1235,7 +1235,7 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
   lp_aux.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
   solve_mip(have_provisional_optimum, provisional_optimum_value,
 	    provisional_optimum_point, lp_aux);
-  return lp_status;
+  return have_provisional_optimum ? lp_status : UNFEASIBLE_MIP_PROBLEM;
 }
 
 bool
@@ -1278,12 +1278,14 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   MIP_Problem lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
-  is_mip_satisfiable(lp_aux, p);
+  if (is_mip_satisfiable(lp_aux, p))
+    return true;
   // TODO: change this when we be able to remove constraints.
   lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
-  is_mip_satisfiable(lp_aux, p);
-  return true;
+  if (is_mip_satisfiable(lp_aux, p))
+    return true;
+  return false;
 }
 
 bool
