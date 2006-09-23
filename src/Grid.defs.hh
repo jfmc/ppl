@@ -44,18 +44,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <iosfwd>
 
-// Dimension kind vector tracing
-#define print_dim_kinds(msg, dim_kinds)					\
-  std::cout << msg << "dim_kinds:";					\
-  for (Dimension_Kinds::iterator i = dim_kinds.begin(); i != dim_kinds.end(); ++i) \
-    std::cout << " " << *i;						\
-  std::cout << std::endl;
-#if 0
-#define trace_dim_kinds(msg, dim_kinds) print_dim_kinds(msg, dim_kinds)
-#else
-#define trace_dim_kinds(msg, dim_kinds)
-#endif
-
 namespace Parma_Polyhedra_Library {
 
 namespace IO_Operators {
