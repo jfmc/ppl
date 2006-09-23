@@ -73,7 +73,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& cgr)
       // gr contains at least one point.
       Grid::simplify(gr.gen_sys, gr.dim_kinds);
       // If gen_sys contained rows before being reduced, it should
-      // contain at least a single point afterwards.
+      // contain at least a single point afterward.
       assert(gr.gen_sys.num_generators() > 0);
       gr.set_generators_minimized();
     }

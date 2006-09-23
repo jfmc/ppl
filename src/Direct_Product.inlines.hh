@@ -334,7 +334,8 @@ Direct_Product<D1, D2>::add_grid_generator(const Grid_Generator& g) {
 
 template <typename D1, typename D2>
 inline bool
-Direct_Product<D1, D2>::add_grid_generator_and_minimize(const Grid_Generator& g) {
+Direct_Product<D1, D2>
+::add_grid_generator_and_minimize(const Grid_Generator& g) {
   bool empty = d1.add_grid_generator_and_minimize(g);
   return d2.add_grid_generator_and_minimize(g) || empty;
 }
@@ -355,7 +356,8 @@ Direct_Product<D1, D2>::add_recycled_constraints(Constraint_System& cs) {
 
 template <typename D1, typename D2>
 inline bool
-Direct_Product<D1, D2>::add_recycled_constraints_and_minimize(Constraint_System& cs) {
+Direct_Product<D1, D2>
+::add_recycled_constraints_and_minimize(Constraint_System& cs) {
   bool empty = d1.add_recycled_constraints_and_minimize(cs);
   return d2.add_recycled_constraints_and_minimize(cs) || empty;
 }
@@ -543,7 +545,8 @@ Direct_Product<D1, D2>::map_space_dimensions(const Partial_Function& pfunc) {
 
 template <typename D1, typename D2>
 inline void
-Direct_Product<D1, D2>::expand_space_dimension(Variable var, dimension_type m) {
+Direct_Product<D1, D2>
+::expand_space_dimension(Variable var, dimension_type m) {
   d1.expand_space_dimension(var, m);
   d2.expand_space_dimension(var, m);
 }

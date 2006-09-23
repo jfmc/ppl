@@ -215,7 +215,7 @@ Octagonal_Shape<T>::Status::ascii_load(std::istream& s) {
   else
     reset_strongly_closed();
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK());
   return true;
 }

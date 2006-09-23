@@ -192,7 +192,7 @@ Grid::reduce_pc_with_pc(R& row, R& pivot,
 	     << ", reduced_row_col " << reduced_row_col << endl);
 
   // Multiply row, then subtract from it a multiple of pivot such that
-  // the result in row[column] is zero.  Afterwards, multiply pivot,
+  // the result in row[column] is zero.  Afterward, multiply pivot,
   // then add to it a (possibly negative) multiple of row such that
   // the result in pivot[column] is the smallest possible positive
   // integer.

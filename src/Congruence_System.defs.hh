@@ -487,7 +487,8 @@ private:
     reallocation whenever possible.
     The contents of the original system is lost.
   */
-  void resize_no_copy(dimension_type new_num_rows, dimension_type new_num_columns);
+  void resize_no_copy(dimension_type new_num_rows,
+		      dimension_type new_num_columns);
 };
 
 // Congruence_System.inlines.hh is not included here on purpose.

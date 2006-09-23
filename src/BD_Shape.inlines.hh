@@ -186,7 +186,7 @@ template <typename T>
 inline void
 BD_Shape<T>::add_constraints(const Constraint_System& cs) {
   for (Constraint_System::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i)
+	 cs_end = cs.end(); i != cs_end; ++i)
     add_constraint(*i);
   assert(OK());
 }

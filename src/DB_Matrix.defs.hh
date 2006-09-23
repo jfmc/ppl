@@ -52,7 +52,7 @@ operator<<(std::ostream& s, const DB_Matrix<T>& c);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for the square matrices.
 /*! \ingroup PPL_CXX_interface
-  The templatic class DB_Matrix<T> allows for the representation of
+  The template class DB_Matrix<T> allows for the representation of
   a square matrix of T objects.
   Each DB_Matrix<T> object can be viewed as a multiset of DB_Row<T>.
 */

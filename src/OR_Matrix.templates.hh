@@ -61,7 +61,7 @@ OR_Matrix<T>::ascii_dump(std::ostream& s) const {
   dimension_type space = x.space_dimension();
   s << space << separator << "\n";
   for (const_row_iterator i = x.row_begin(),
-	 xend = x.row_end(); i != xend; ++i) {
+	 x_row_end = x.row_end(); i != x_row_end; ++i) {
     const_row_reference_type r = *i;
     dimension_type rs = i.row_size();
     for (dimension_type j = 0; j < rs; ++j) {

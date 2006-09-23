@@ -235,7 +235,8 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
       if (!s || r == V_CVT_STR_UNK)
 	return false;
     }
-  // Check for well-formedness.
+
+  // Check invariants.
   assert(OK());
   return true;
 }

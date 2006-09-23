@@ -68,7 +68,7 @@ operator<<(std::ostream& s, const Powerset<D>& x);
   that the disjuncts cannot be overwritten. Rather, by using the class
   <CODE>iterator</CODE>, it is possible to drop one or more disjuncts
   (possibly so as to later add back modified versions).  As an example
-  of iterator usage, the following templatic function drops from
+  of iterator usage, the following template function drops from
   powerset \p ps all the disjuncts that would have become redundant by
   the addition of an external element \p d.
 

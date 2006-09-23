@@ -99,7 +99,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
     else
       // Adding to `lp' a topologically closed version of `ph_cs'.
       for (Constraint_System::const_iterator i = ph_cs.begin(),
-	     iend = ph_cs.end(); i != iend; ++i) {
+	     ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i) {
 	const Constraint& c = *i;
 	if (c.is_strict_inequality())
 	  lp.add_constraint(Linear_Expression(c) >= 0);
@@ -504,7 +504,7 @@ Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape& y) {
   typename OR_Matrix<N>::const_element_iterator
     y_it = y.matrix.element_begin();
   for(typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + onr,
-	iend = matrix.row_end(); i != iend; ++i) {
+	matrix_row_end = matrix.row_end(); i != matrix_row_end; ++i) {
     typename OR_Matrix<N>::row_reference_type r = *i;
     dimension_type rs_i = i.row_size();
     for (dimension_type j = onr; j < rs_i; ++j, ++y_it)
@@ -544,7 +544,7 @@ Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const {
   // is greater than or equal to the correspondent one of `y'.
   for (typename OR_Matrix<N>::const_element_iterator
 	 i = matrix.element_begin(), j = y.matrix.element_begin(),
-	 iend = matrix.element_end(); i != iend; ++i, ++j)
+	 matrix_element_end = matrix.element_end(); i != matrix_element_end; ++i, ++j)
     if (*i < *j)
       return false;
   return true;
@@ -565,7 +565,7 @@ Octagonal_Shape<T>::is_universe() const {
   // An universe octagon can only contains trivial  constraints.
   for (typename OR_Matrix<N>::const_element_iterator
 	 i = matrix.element_begin(),
-	 iend = matrix.element_end(); i != iend; ++i)
+	 matrix_element_end = matrix.element_end(); i != matrix_element_end; ++i)
     if (!is_plus_infinity(*i))
       return false;
 
@@ -582,7 +582,7 @@ Octagonal_Shape<T>::is_bounded() const {
 
   // A bounded octagon never can contains trivial constraints.
   for (typename OR_Matrix<N>::const_row_iterator i = matrix.row_begin(),
-	 iend = matrix.row_end(); i != iend; ++i) {
+	 matrix_row_end = matrix.row_end(); i != matrix_row_end; ++i) {
     typename OR_Matrix<N>::const_row_reference_type x_i = *i;
     const dimension_type i_index = i.index();
     for (dimension_type j = i.row_size(); j-- > 0; )
@@ -643,7 +643,7 @@ Octagonal_Shape<T>::is_strongly_reduced() const {
   // The matrix representing an OS is strongly reduced if, by removing
   // any constraint, the resulting matrix describes a different OS.
   for (typename OR_Matrix<N>::const_row_iterator iter = matrix.row_begin(),
-	 iend = matrix.row_end(); iter != iend; ++iter) {
+	 matrix_row_end = matrix.row_end(); iter != matrix_row_end; ++iter) {
     typename OR_Matrix<N>::const_row_reference_type m_i = *iter;
     const dimension_type i = iter.index();
     for (dimension_type j = iter.row_size(); j-- > 0; ) {
@@ -833,7 +833,7 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
   // checking if the generator satisfies all the constraints in the octagon.
   // To check if the generator satisfies all the constraints it's enough
   // studying the sign of the scalar product between the generator and
-  // all the contraints in the octagon.
+  // all the constraints in the octagon.
 
   // Use these type aliases for short.
   typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
@@ -1117,7 +1117,7 @@ Octagonal_Shape<T>::strong_closure_assign() const {
     }
   }
 
-  // Check for emptyness: the octagon is empty if and only if there is a
+  // Check for emptiness: the octagon is empty if and only if there is a
   // negative value in the main diagonal.
   for (Row_Iterator i = m_begin; i != m_end; ++i) {
     N& x_i_i = (*i)[i.index()];
@@ -1294,7 +1294,7 @@ Octagonal_Shape<T>
     }
   }
 
-  // Check for emptyness: the octagon is empty if and only if there is a
+  // Check for emptiness: the octagon is empty if and only if there is a
   // negative value on the main diagonal.
   for (Row_Iterator i = m_begin; i != m_end; ++i) {
     N& x_i_i = (*i)[i.index()];
@@ -1341,7 +1341,7 @@ Octagonal_Shape<T>
       N neg_m_ci_cj;
       if (neg_assign_r(neg_m_ci_cj, m_ci[cj], ROUND_NOT_NEEDED) == V_EQ
 	      && neg_m_ci_cj == m_i[j]) {
-        // Choose as successor the variable having the greaterer index.
+        // Choose as successor the variable having the greatest index.
         successor[j] = i;
       }
     }
@@ -1364,7 +1364,7 @@ Octagonal_Shape<T>
     leaders.push_back(i);
   // Now compute actual leaders.
   for (typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin(),
-	 iend = matrix.row_end(); i_iter != iend; ++i_iter) {
+	 matrix_row_end = matrix.row_end(); i_iter != matrix_row_end; ++i_iter) {
     typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
     dimension_type i = i_iter.index();
     typename OR_Matrix<N>::const_row_reference_type m_ci =
@@ -1525,7 +1525,8 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
   // variables.
   // Note: the singular class is not connected with the other classes.
   if (exist_sing_class) {
-    aux.matrix[sing_leader][sing_leader+1] = matrix[sing_leader][sing_leader+1];
+    aux.matrix[sing_leader][sing_leader+1]
+      = matrix[sing_leader][sing_leader+1];
     if (successor[sing_leader+1] != sing_leader+1) {
       dimension_type j = sing_leader;
       dimension_type nxt_jj = successor[j+1];
@@ -1537,7 +1538,8 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
       aux.matrix[j+1][j] = matrix[j+1][j];
     }
     else
-      aux.matrix[sing_leader+1][sing_leader] = matrix[sing_leader+1][sing_leader];
+      aux.matrix[sing_leader+1][sing_leader]
+	= matrix[sing_leader+1][sing_leader];
   }
 
   Octagonal_Shape<T>& x = const_cast<Octagonal_Shape<T>&>(*this);
@@ -1578,7 +1580,7 @@ Octagonal_Shape<T>::oct_hull_assign(const Octagonal_Shape& y) {
   using Implementation::BD_Shapes::max_assign;
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
-	 iend = matrix.element_end(); i != iend; ++i, ++j)
+	 matrix_element_end = matrix.element_end(); i != matrix_element_end; ++i, ++j)
     max_assign(*i, *j);
 
   // The result is still closed.
@@ -1691,7 +1693,7 @@ Octagonal_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
   // We insert 0 where it needs.
   // Attention: now num_rows of matrix is update!
   for (typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + n,
-	 iend =  matrix.row_end(); i != iend; i += 2) {
+	 matrix_row_end =  matrix.row_end(); i != matrix_row_end; i += 2) {
     typename OR_Matrix<N>::row_reference_type x_i = *i;
     typename OR_Matrix<N>::row_reference_type x_ci = *(i+1);
     const dimension_type ind = i.index();
@@ -1782,9 +1784,9 @@ Octagonal_Shape<T>
 }
 
 template <typename T>
-template <typename PartialFunction>
+template <typename Partial_Function>
 void
-Octagonal_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
+Octagonal_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
   if (space_dim == 0)
     return;
 
@@ -1893,7 +1895,9 @@ Octagonal_Shape<T>::intersection_assign(const Octagonal_Shape& y) {
 
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
-	 iend = matrix.element_end(); i != iend; ++i, ++j) {
+	 matrix_element_end = matrix.element_end();
+       i != matrix_element_end;
+       ++i, ++j) {
     N& elem = *i;
     const N& y_elem = *j;
     if (y_elem < elem) {
@@ -1961,7 +1965,9 @@ Octagonal_Shape<T>::CC76_extrapolation_assign(const Octagonal_Shape& y,
   // is removed altogether.
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
-	 iend = matrix.element_end(); i != iend; ++i, ++j) {
+	 matrix_element_end = matrix.element_end();
+       i != matrix_element_end;
+       ++i, ++j) {
     const N& y_elem = *j;
     N& elem = *i;
     if (y_elem < elem) {
@@ -2156,7 +2162,9 @@ Octagonal_Shape<T>::BHMZ05_widening_assign(const Octagonal_Shape& y,
   // Extrapolate unstable bounds.
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
-       iend = matrix.element_end(); i != iend; ++i, ++j) {
+       matrix_element_end = matrix.element_end();
+       i != matrix_element_end;
+       ++i, ++j) {
     N& elem = *i;
       // Note: in the following line the use of `!=' (as opposed to
       // the use of `<' that would seem -but is not- equivalent) is
@@ -2251,7 +2259,9 @@ Octagonal_Shape<T>::CC76_narrowing_assign(const Octagonal_Shape& y) {
   bool is_oct_changed = false;
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
-       iend = matrix.element_end(); i != iend; ++i, ++j) {
+       matrix_element_end = matrix.element_end();
+       i != matrix_element_end;
+       ++i, ++j) {
      if (!is_plus_infinity(*i)
 	 && !is_plus_infinity(*j)
 	 && *i != *j) {
@@ -2959,7 +2969,7 @@ Octagonal_Shape<T>::affine_preimage(const Variable var,
   // - If t == 2, the `expr' is of the general form.
 
   if (t == 0) {
-    // Case 1: expr = n; remove all costraints on `var'.
+    // Case 1: expr = n; remove all constraints on `var'.
     forget_all_octagonal_constraints(var_id);
     assert(OK());
     return;
@@ -3736,7 +3746,7 @@ Octagonal_Shape<T>
     return;
   }
 
-  // The image of an empty ocatgon is empty too.
+  // The image of an empty octagon is empty too.
   strong_closure_assign();
   if (marked_empty())
     return;
@@ -4605,7 +4615,7 @@ Octagonal_Shape<T>::OK() const {
 
   // MINUS_INFINITY cannot occur at all.
   for (typename OR_Matrix<N>::const_row_iterator i = matrix.row_begin(),
-	 iend = matrix.row_end(); i != iend; ++i) {
+	 matrix_row_end = matrix.row_end(); i != matrix_row_end; ++i) {
     typename OR_Matrix<N>::const_row_reference_type x_i = *i;
     for (dimension_type j = i.row_size(); j-- > 0; )
       if (is_minus_infinity(x_i[j])) {

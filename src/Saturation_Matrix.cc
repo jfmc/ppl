@@ -176,7 +176,8 @@ PPL::Saturation_Matrix::ascii_load(std::istream& s) {
       else
 	x[i].clear(j);
     }
-  // Check for well-formedness.
+
+  // Check invariants.
   assert(OK());
   return true;
 }

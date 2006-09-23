@@ -418,7 +418,7 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
     if (!x[i].ascii_load(s))
       return false;
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK());
   return true;
 }

@@ -449,7 +449,7 @@ PPL::Polyhedron::contains_integer_point() const {
   if (space_dim == 0)
     return true;
 
-  // CHECK ME: do we really want to call conversion to check for emptyness?
+  // CHECK ME: do we really want to call conversion to check for emptiness?
   if (has_pending_constraints() && !process_pending())
     // Empty again.
     return true;
@@ -2183,7 +2183,7 @@ bounded_affine_preimage(const Variable var,
       add_constraint(denominator*var <= lb_expr);
     }
     // Any image of an empty polyhedron is empty.
-    // Note: DO check for emptyness here, as we will later add a line.
+    // Note: DO check for emptiness here, as we will later add a line.
     if (is_empty())
       return;
     add_generator(line(var));
@@ -2254,7 +2254,7 @@ generalized_affine_image(const Variable var,
     return;
 
   // Any image of an empty polyhedron is empty.
-  // Note: DO check for emptyness here, as we will later add a ray.
+  // Note: DO check for emptiness here, as we will later add a ray.
   if (is_empty())
     return;
 
@@ -2403,7 +2403,7 @@ generalized_affine_preimage(const Variable var,
     break;
   }
   // If the shrunk polyhedron is empty, its preimage is empty too.
-  // Note: DO check for emptyness here, as we will later add a line.
+  // Note: DO check for emptiness here, as we will later add a line.
   if (is_empty())
     return;
   add_generator(line(var));
@@ -2521,7 +2521,7 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     // there is no need to add a further dimension.
 
     // Any image of an empty polyhedron is empty.
-    // Note: DO check for emptyness here, as we will add lines.
+    // Note: DO check for emptiness here, as we will add lines.
     if (is_empty())
       return;
 
@@ -2667,7 +2667,7 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
       break;
     }
     // Any image of an empty polyhedron is empty.
-    // Note: DO check for emptyness here, as we will add lines.
+    // Note: DO check for emptiness here, as we will add lines.
     if (is_empty())
       return;
     // Cylindrificate on all the variables occurring in `lhs'.
@@ -2990,7 +2990,7 @@ PPL::Polyhedron::ascii_load(std::istream& s) {
   if (!sat_g.ascii_load(s))
     return false;
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK());
   return true;
 }

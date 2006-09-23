@@ -386,7 +386,7 @@ private:
   Status status;
 
   /*! \brief
-    A boolean encoding whether or not internal data structures have
+    A Boolean encoding whether or not internal data structures have
     already been properly sized and populated: useful to allow for
     deeper checks in method OK().
   */

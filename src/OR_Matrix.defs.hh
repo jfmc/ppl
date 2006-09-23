@@ -300,7 +300,7 @@ public:
     The space dimension of the matrix that will be created.
 
     This constructor creates a matrix with \p 2*space_dim rows.
-    Each element is inizialized to plus infinity.
+    Each element is initialized to plus infinity.
   */
   OR_Matrix(dimension_type space_dim);
 
@@ -325,7 +325,7 @@ private:
     Creates a DB_Row which contains the rows of the OR_Matrix
     inserting each successive row to the end of the vec.
     To contain all the elements of OR_Matrix the size of the DB_Row
-    is 2*n*(n+1), where the n is the caracteristic parameter of
+    is 2*n*(n+1), where the n is the characteristic parameter of
     OR_Matrix.
   */
   DB_Row<T> vec;
@@ -363,7 +363,7 @@ public:
     with the specified dimension, copying the old elements
     in the upper part of the new matrix, which is
     then assigned to \p *this.
-    Each new element is inizialized to plus infinity.
+    Each new element is initialized to plus infinity.
   */
   void grow(dimension_type new_dim);
 
@@ -388,7 +388,7 @@ public:
     with the specified dimension, copying the old elements
     in the upper part of the new matrix, which is
     then assigned to \p *this. In this case each element is
-    inizialized to plus infinity.
+    initialized to plus infinity.
     If the new dimension is less than the old one, it erase
     from matrix to the end the rows with index greater than 2*new_dim-1
   */

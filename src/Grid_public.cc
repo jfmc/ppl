@@ -291,7 +291,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
   // Return one of the relations
   // 'strictly_intersects'   a strict subset of the grid points satisfy cg
   // 'is_included'	     every grid point satisfies cg
-  // 'is_disjoint'	     cg and the grid occupy seperate spaces.
+  // 'is_disjoint'	     cg and the grid occupy separate spaces.
 
   // There is always a point.
 
@@ -458,7 +458,7 @@ PPL::Grid::relation_with(const Constraint& c) const {
   // Return one of the relations
   // 'strictly_intersects'   a strict subset of the grid points satisfy c
   // 'is_included'	     every grid point satisfies c
-  // 'is_disjoint'	     c and the grid occupy seperate spaces.
+  // 'is_disjoint'	     c and the grid occupy separate spaces.
 
   // There is always a point.
 
@@ -732,8 +732,8 @@ PPL::Grid::OK(bool check_not_empty) const {
 	}
       }
 
-      // A non-empty system of generators describing a grid is valid iff
-      // it contains a point.
+      // A non-empty system of generators describing a grid is valid
+      // if and only if it contains a point.
       if (gen_sys.num_generators() > 0 && !gen_sys.has_points()) {
 #ifndef NDEBUG
 	cerr << "Non-empty generator system declared up-to-date "
@@ -786,7 +786,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 	assert(gs.num_generators() > 0);
 	simplify(gs, dk);
 	// gs contained rows before being reduced, so it should
-	// contain at least a single point afterwards.
+	// contain at least a single point afterward.
 	assert(gs.num_generators() > 0);
 	for (dimension_type row = gen_sys.num_generators(); row-- > 0; ) {
 	  Grid_Generator& g = gs[row];
@@ -1276,7 +1276,8 @@ PPL::Grid::add_grid_generators(const Grid_Generator_System& gs) {
 }
 
 bool
-PPL::Grid::add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs) {
+PPL
+::Grid::add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs) {
   // Dimension-compatibility check: the dimension of `gs' must be less
   // than or equal to that of space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
@@ -1782,7 +1783,7 @@ generalized_affine_preimage(const Variable var,
     add_congruence((denominator*var %= expr) / denominator /= modulus);
 
   // If the resulting grid is empty, its preimage is empty too.
-  // Note: DO check for emptyness here, as we will later add a line.
+  // Note: DO check for emptiness here, as we will later add a line.
   if (is_empty())
     return;
   add_grid_generator(grid_line(var));
@@ -1856,7 +1857,7 @@ generalized_affine_image(const Linear_Expression& lhs,
       // Cylindrificate on all the variables occurring in the left
       // hand side expression.
 
-      // Ajust `new_lines' to the right dimension.
+      // Adjust `new_lines' to the right dimension.
       new_lines.insert(parameter(0*Variable(space_dim-1)));
       // Add the lines to `gen_sys'.
       gen_sys.recycling_insert(new_lines);
@@ -1959,7 +1960,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       // Cylindrificate on all the variables occurring in the left
       // hand side
 
-      // Ajust `new_lines' to the right dimension.
+      // Adjust `new_lines' to the right dimension.
       new_lines.insert(parameter(0*Variable(space_dim-1)));
       // Add the lines to `gen_sys'.
       gen_sys.recycling_insert(new_lines);
@@ -2199,8 +2200,7 @@ PPL::Grid::ascii_load(std::istream& s) {
     }
   }
 
-
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK());
   return true;
 }

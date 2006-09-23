@@ -754,7 +754,7 @@ SPECIALIZE_ASSIGN(int_nan, unsigned long long, Not_A_Number)
 template <typename T>
 struct Larger;
 
-// The following may be tuned for performance on specific architecture.
+// The following may be tuned for performance on specific architectures.
 //
 // Current guidelines:
 //   - avoid division where possible (larger type variant for mul)

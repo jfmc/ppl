@@ -171,7 +171,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 
   assert(upper_triangular(source, dim_kinds));
 
-  // Initialise matrix row number counters and compute the LCM of the
+  // Initialize matrix row number counters and compute the LCM of the
   // diagonal entries of the parameters in `source'.
   //
   // The top-down order of the generator system rows corresponds to
@@ -370,7 +370,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 
   assert(lower_triangular(source, dim_kinds));
 
-  // Initialise matrix row number counters and compute the LCM of the
+  // Initialize matrix row number counters and compute the LCM of the
   // diagonal entries of the proper congruences in `source'.
   dimension_type source_num_rows = 0, dest_num_rows = 0;
   TEMP_INTEGER(diagonal_lcm);

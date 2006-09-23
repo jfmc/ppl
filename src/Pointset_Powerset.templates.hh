@@ -416,10 +416,10 @@ is_cert_multiset_stabilizing(const std::map<Cert, size_type,
   collect_certificates(x_cert_ms);
   typename Cert_Multiset::const_iterator
     xi = x_cert_ms.begin(),
-    xend = x_cert_ms.end(),
+    x_cert_ms_end = x_cert_ms.end(),
     yi = y_cert_ms.begin(),
-    yend = y_cert_ms.end();
-  while (xi != xend && yi != yend) {
+    y_cert_ms_end = y_cert_ms.end();
+  while (xi != x_cert_ms_end && yi != y_cert_ms_end) {
     const Cert& xi_cert = xi->first;
     const Cert& yi_cert = yi->first;
     switch (xi_cert.compare(yi_cert)) {
@@ -447,9 +447,9 @@ is_cert_multiset_stabilizing(const std::map<Cert, size_type,
       return true;
     }
   }
-  // Here xi == xend or yi == yend.
+  // Here xi == x_cert_ms_end or yi == y_cert_ms_end.
   // Stabilization is achieved if `y_cert_ms' still has other elements.
-  return yi != yend;
+  return yi != y_cert_ms_end;
 }
 
 template <typename PH>
@@ -611,7 +611,7 @@ Pointset_Powerset<PH>::ascii_load(std::istream& s) {
   }
   x.swap(new_x);
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(x.OK());
   return true;
 }

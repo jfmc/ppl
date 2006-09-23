@@ -232,7 +232,7 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
     if (!x[i].ascii_load(s))
       return false;
 
-  // Checking for well-formedness.
+  // Check invariants.
   assert(OK());
 
   return true;

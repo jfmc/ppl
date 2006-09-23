@@ -1077,7 +1077,7 @@ public:
     \param pfunc
     The partial function specifying the destiny of each dimension.
 
-    The template class PartialFunction must provide the following
+    The template class Partial_Function must provide the following
     methods.
     \code
       bool has_empty_codomain() const
@@ -1106,8 +1106,8 @@ public:
     function with the properties described in the
     \ref map_space_dimensions "specification of the mapping operator".
   */
-  template <typename PartialFunction>
-  void map_space_dimensions(const PartialFunction& pfunc);
+  template <typename Partial_Function>
+  void map_space_dimensions(const Partial_Function& pfunc);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
@@ -1251,7 +1251,7 @@ private:
     <CODE>-v - u \<= -lb_v - lb_u</CODE> and
     <CODE>-v + u \<= -lb_v + ub_u</CODE>.
     We can be more precise if variable \c u played an active role in the
-    computation of (the negartion of) the lower bound for \c v.
+    computation of (the negation of) the lower bound for \c v.
 
     Namely, if the corresponding coefficient
     <CODE>q == sc_expr[u]/sc_den</CODE> of \c u in \p sc_expr
@@ -1318,7 +1318,7 @@ private:
   //! Assigns to \c this->matrix its strong closure.
   /*!
     Strong closure is a necessary condition for the precision and/or
-    the correctness of many methods. It explicity records into \c matrix
+    the correctness of many methods. It explicitly records into \c matrix
     those constraints that are implicitly obtainable by the other ones,
     therefore obtaining a canonical representation for the OS.
   */

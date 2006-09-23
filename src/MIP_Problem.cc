@@ -165,8 +165,8 @@ PPL::MIP_Problem::parse_constraints(dimension_type& tableau_num_rows,
   // Variable(j) is bound to be nonnegative in `cs'.
   nonnegative_variable = std::deque<bool> (cs_space_dim, false);
 
-  // Check for already known infos about space dimensions and store them in
-  // `nonnegative_variable'.
+  // Check for already known information about space dimensions and
+  // store them in `nonnegative_variable'.
   const dimension_type mapping_size = mapping.size();
   for (dimension_type i = std::min(mapping_size, cs_space_dim+1); i-- > 1; )
     if (mapping[i].second == 0) {
@@ -199,7 +199,7 @@ PPL::MIP_Problem::parse_constraints(dimension_type& tableau_num_rows,
       // CHECKME: Is it true that in the first phase we can apply
       // `is_satisfied()' with the generator `point()'?  If so, the following
       // code works even if we do not have a feasible point.
-      // Check for satisfiabilty of the inequality. This can be done if we
+      // Check for satisfiability of the inequality. This can be done if we
       // have a feasible point of *this.
       if (cs_i.is_inequality() && is_satisfied(cs_i))
 	satisfied_ineqs[i] = true;
@@ -331,7 +331,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     const dimension_type space_diff = external_space_dim - internal_space_dim;
     for (dimension_type i = 0, j = 0; i < space_diff; ++i, ++j) {
       // Set `mapping' properly to store that every variable is split.
-      // In the folliwing case the value of the orginal Variable can be
+      // In the following case the value of the original Variable can be
       // negative.
       if (!nonnegative_variable[internal_space_dim+i]) {
 	mapping.push_back(std::make_pair(first_free_tableau_index+j,
@@ -481,7 +481,7 @@ PPL::MIP_Problem::process_pending_constraints() {
 	return true;
       }
     // The problem is neither trivially unfeasible nor trivially unbounded.
-    // The tableau was successfull computed and the caller has to figure
+    // The tableau was successful computed and the caller has to figure
     // out which case applies.
     status = OPTIMIZED;
     // Ensure the right space dimension is obtained.
@@ -555,7 +555,7 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
  	continue;
       }
       challenger_value = challenger_num / sqrt(challenger_den);
-      // Update the values, if the challeger wins.
+      // Update the values, if the challenger wins.
       if (challenger_value > current_value) {
 	std::swap(challenger_value, current_value);
 	entering_index = j;
@@ -626,7 +626,7 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
       }
       challenger_value = challenger_num * current_den;
       current_value = current_num * challenger_den;
-      // Update the values, if the challeger wins.
+      // Update the values, if the challenger wins.
       if (challenger_value > current_value) {
 	std::swap(current_num, challenger_num);
 	std::swap(current_den, challenger_den);
@@ -638,8 +638,7 @@ PPL::MIP_Problem::steepest_edge_entering_index() const {
 }
 #endif // PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 
-// See pag. 47 of Papadimitriou.
-
+// See page 47 of [PapadimitriouS98].
 PPL::dimension_type
 PPL::MIP_Problem::textbook_entering_index() const {
   // The variable entering the base is the first one whose coefficient
@@ -688,8 +687,7 @@ PPL::MIP_Problem::linear_combine(Row& x,
   x.normalize();
 }
 
-// See pag 42-43 of Papadimitriou.
-
+// See pages 42-43 of [PapadimitriouS98].
 void
 PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
 			const dimension_type exiting_base_index) {
@@ -707,8 +705,7 @@ PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
   base[exiting_base_index] = entering_var_index;
 }
 
-// See pag. 47 + 50 of Papadimitriou.
-
+// See pages 47 and 50 of [PapadimitriouS98].
 PPL::dimension_type
 PPL::MIP_Problem
 ::get_exiting_base_index(const dimension_type entering_var_index) const  {
@@ -762,8 +759,7 @@ PPL::MIP_Problem
   return exiting_base_index;
 }
 
-// See pag 49 of Papadimitriou.
-
+// See page 49 of [PapadimitriouS98].
 #if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 bool
 PPL::MIP_Problem::compute_simplex() {
@@ -877,7 +873,7 @@ PPL::MIP_Problem::compute_simplex() {
 #endif // PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 
 
-//See pag 55-56 Papadimitriou.
+// See pages 55-56 of [PapadimitriouS98].
 void
 PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
 				    const dimension_type end_artificials) {
@@ -936,9 +932,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   working_cost.shrink(working_cost_new_size);
 }
 
-// See pag 55 of Papadimitriou.
-
-
+// See page 55 of [PapadimitriouS98].
 void
 PPL::MIP_Problem::compute_generator() const {
   // We will store in num[] and in den[] the numerators and

@@ -314,7 +314,7 @@ PPL::Matrix::ascii_load(std::istream& s) {
     if (!x[row].ascii_load(s))
       return false;
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK());
   return true;
 }

@@ -113,7 +113,7 @@ bool operator!=(const Grid& x, const Grid& y);
   Most operators on grids are provided with two implementations:
   one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
   also enforces the minimization of the representations,
-  and returns the boolean value <CODE>false</CODE> whenever
+  and returns the Boolean value <CODE>false</CODE> whenever
   the resulting grid turns out to be empty.
 
   A key attributes of any grid is its space dimension (the dimension

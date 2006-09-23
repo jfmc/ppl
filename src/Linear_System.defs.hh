@@ -328,7 +328,7 @@ public:
   void back_substitute(dimension_type n_lines_or_equalities);
 
   /*! \brief
-    Applies Gaussian's elimination and back-substitution so as to
+    Applies Gaussian elimination and back-substitution so as to
     simplify the linear system.
   */
   void simplify();
@@ -487,7 +487,7 @@ public:
   bool operator<(const With_Saturation_Matrix_iterator& y) const;
   //@}
 
-  //! Dereferencing operator.
+  //! Dereference operator.
   reference operator*() const;
 
   //! Access-through operator.

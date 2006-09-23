@@ -333,7 +333,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     return;
   }
 
-  // Favour the generators, as is done by is_empty().
+  // Favor the generators, as is done by is_empty().
   if (generators_are_up_to_date()) {
     gen_sys.remove_higher_space_dimensions(new_dimension);
     if (generators_are_minimized()) {

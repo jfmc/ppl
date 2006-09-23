@@ -940,7 +940,7 @@ public:
     As was the case for widening operators, the argument \p y is meant to
     denote the value computed in the previous iteration step, whereas
     \p *this denotes the value computed in the current iteration step
-    (in the <EM>descreasing</EM> iteration sequence). Hence, the call
+    (in the <EM>decreasing</EM> iteration sequence). Hence, the call
     <CODE>x.CC76_narrowing_assign(y)</CODE> will assign to \p x
     the result of the computation \f$\mathtt{y} \Delta \mathtt{x}\f$.
   */
@@ -1111,7 +1111,7 @@ public:
     \param pfunc
     The partial function specifying the destiny of each dimension.
 
-    The template class PartialFunction must provide the following
+    The template class Partial_Function must provide the following
     methods.
     \code
       bool has_empty_codomain() const
@@ -1141,8 +1141,8 @@ public:
     \ref Mapping_the_Dimensions_of_the_Vector_Space
     "specification of the mapping operator".
   */
-  template <typename PartialFunction>
-  void map_space_dimensions(const PartialFunction& pfunc);
+  template <typename Partial_Function>
+  void map_space_dimensions(const Partial_Function& pfunc);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 

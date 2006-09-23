@@ -90,7 +90,7 @@ PPL::compute_leader_indices(const std::vector<dimension_type>& predecessor,
   assert(indices.size() == 0);
   assert(0 == predecessor[0]);
   indices.push_back(0);
-  for (dimension_type i = 1, iend = predecessor.size(); i != iend; ++i)
+  for (dimension_type i = 1, p_size = predecessor.size(); i != p_size; ++i)
     if (i == predecessor[i])
       indices.push_back(i);
 }

@@ -117,8 +117,8 @@ struct Extended_Number_Policy {
   static const int check_sqrt_neg = 0;
   static const int handle_nan = 1;
   static const int handle_infinity = 1;
-  // Don't uncomment the following.
-  // The compile time error on conversions is the expected behaviour.
+  // Do not uncomment the following.
+  // The compile time error on conversions is the expected behavior.
   // static const int convertible = 0;
 #ifdef DEBUG_ROUND_NOT_NEEDED
   static const int fpu_check_inexact = 1;
@@ -128,8 +128,8 @@ struct Extended_Number_Policy {
   static const int check_nan_args = 1;
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
   static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
-  // Don't uncomment the following.
-  // The compile time error is the expected behaviour.
+  // Do not uncomment the following.
+  // The compile time error is the expected behavior.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
   // static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_UP;
   // static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;
@@ -152,8 +152,8 @@ struct WRD_Extended_Number_Policy {
   static const int check_sqrt_neg = 0;
   static const int handle_nan = 1;
   static const int handle_infinity = 1;
-  // Don't uncomment the following.
-  // The compile time error on conversions is the expected behaviour.
+  // Do not uncomment the following.
+  // The compile time error on conversions is the expected behavior.
   // static const int convertible = 0;
 #ifdef DEBUG_ROUND_NOT_NEEDED
   static const int fpu_check_inexact = 1;
@@ -163,8 +163,8 @@ struct WRD_Extended_Number_Policy {
   static const int check_nan_args = 0;
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
   static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
-  // Don't uncomment the following.
-  // The compile time error is the expected behaviour.
+  // Do not uncomment the following.
+  // The compile time error is the expected behavior.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
   // static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_UP;
   // static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;

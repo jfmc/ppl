@@ -431,7 +431,7 @@ Grid::get_covering_box(Box& box) const {
 	// leaving the sign the same.
 	lower_bound %= interval_sizes[dim];
 	// Check if the lowest value the other side of the origin is
-	// closer to the origin, prefering the lowest positive if they
+	// closer to the origin, preferring the lowest positive if they
 	// are equal.
 	if (lower_bound > 0) {
 	  if (interval_sizes[dim] - lower_bound < lower_bound)

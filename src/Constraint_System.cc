@@ -564,7 +564,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
     // Reaching this point means that the input was illegal.
     return false;
   }
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK());
   return true;
 }

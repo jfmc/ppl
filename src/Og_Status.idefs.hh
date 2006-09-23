@@ -35,7 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     vector space \f$\Rset^0 = \{\cdot\}\f$;
   - <EM>empty</EM>: the polyhedron is the empty set;
   - <EM>strongly closed</EM>: the Octagonal_Shape object is strongly
-    closed, so that all the constraints are as tigher as possible.
+    closed, so that all the constraints are as tight as possible.
 
   Not all the conjunctions of these elementary assertions constitute
   a legal Status.  In fact:

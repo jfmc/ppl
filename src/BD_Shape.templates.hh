@@ -217,7 +217,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
     else
       // Adding to `lp' a topologically closed version of `ph_cs'.
       for (Constraint_System::const_iterator i = ph_cs.begin(),
-	     iend = ph_cs.end(); i != iend; ++i) {
+	     ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i) {
 	const Constraint& c = *i;
 	if (c.is_strict_inequality())
 	  lp.add_constraint(Linear_Expression(c) >= 0);
@@ -525,7 +525,7 @@ BD_Shape<T>::compute_leaders(std::vector<dimension_type>& leaders) const {
   compute_predecessors(leaders);
   // Flatten the predecessor chains so as to obtain leaders.
   assert(leaders[0] == 0);
-  for (dimension_type i = 1, iend = leaders.size(); i != iend; ++i) {
+  for (dimension_type i = 1, l_size = leaders.size(); i != l_size; ++i) {
     const dimension_type l_i = leaders[i];
     assert(l_i <= i);
     if (l_i != i) {
@@ -552,7 +552,7 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   const BD_Shape x_copy = *this;
   const dimension_type x_space_dim = x_copy.space_dimension();
   x_copy.shortest_path_closure_assign();
-  // If we just discovered emptyness, it cannot be reduced.
+  // If we just discovered emptiness, it cannot be reduced.
   if (x_copy.marked_empty())
     return false;
 
@@ -825,22 +825,22 @@ BD_Shape<T>::relation_with(const Generator& g) const {
   if (space_dim < g_space_dim)
     throw_dimension_incompatible("relation_with(g)", g);
 
-  // The empty bdiff cannot subsume a generator.
+  // The empty BDS cannot subsume a generator.
   if (marked_empty())
     return Poly_Gen_Relation::nothing();
 
-  // A universe BD shape in a zero-dimensional space subsumes
+  // A universe BDS in a zero-dimensional space subsumes
   // all the generators of a zero-dimensional space.
   if (space_dim == 0)
     return Poly_Gen_Relation::subsumes();
 
   const bool is_line = g.is_line();
 
-  // The relation between the bdiff and the given generator is obtained
-  // checking if the generator satisfies all the constraints in the bdiff.
+  // The relation between the BDS and the given generator is obtained
+  // checking if the generator satisfies all the constraints in the BDS.
   // To check if the generator satisfies all the constraints it's enough
   // studying the sign of the scalar product between the generator and
-  // all the constraints in the bdiff.
+  // all the constraints in the BDS.
 
   // We find in `*this' all the constraints.
   for (dimension_type i = 0; i <= space_dim; ++i) {
@@ -983,7 +983,7 @@ BD_Shape<T>::shortest_path_closure_assign() const {
     }
   }
 
-  // Check for emptyness: the BDS is empty if and only if there is a
+  // Check for emptiness: the BDS is empty if and only if there is a
   // negative value on the main diagonal of `dbm'.
   for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
     N& x_dbm_hh = x.dbm[h][h];
@@ -1009,7 +1009,7 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
   if (marked_shortest_path_reduced())
     return;
 
-  // First find the tighest constraints for this BDS.
+  // First find the tightest constraints for this BDS.
   shortest_path_closure_assign();
 
   // If `*this' is empty, then there is nothing to reduce.
@@ -1136,7 +1136,7 @@ BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("bds_difference_assign(y)", y);
 
-  BD_Shape new_bdiffs(space_dim, EMPTY);
+  BD_Shape new_bd_shape(space_dim, EMPTY);
 
   BD_Shape& x = *this;
 
@@ -1189,13 +1189,13 @@ BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
     if (c.is_equality()) {
       BD_Shape w = x;
       if (w.add_constraint_and_minimize(e <= 0))
-	new_bdiffs.bds_hull_assign(w);
+	new_bd_shape.bds_hull_assign(w);
       change = z.add_constraint_and_minimize(e >= 0);
     }
     if (change)
-      new_bdiffs.bds_hull_assign(z);
+      new_bd_shape.bds_hull_assign(z);
   }
-  *this = new_bdiffs;
+  *this = new_bd_shape;
   // The result is still closed, because both bds_hull_assign() and
   // add_constraint_and_minimize() preserve closure.
   assert(OK());
@@ -1354,9 +1354,9 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
 }
 
 template <typename T>
-template <typename PartialFunction>
+template <typename Partial_Function>
 void
-BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
+BD_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
   const dimension_type space_dim = space_dimension();
   // TODO: this implementation is just an executable specification.
   if (space_dim == 0)
@@ -3009,7 +3009,7 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 
   // Here `var_coefficient == 0', so that the preimage cannot
   // be easily computed by inverting the affine relation.
-  // Shrink the BD shape by adding the constraint induced
+  // Shrink the BDS by adding the constraint induced
   // by the affine relation.
   const Coefficient& b = expr.inhomogeneous_term();
   // Number of non-zero coefficients in `expr': will be set to

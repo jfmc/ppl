@@ -71,7 +71,7 @@ PPL::Grid::construct(dimension_type num_dimensions,
   if (num_dimensions > 0) {
     con_sys.increase_space_dimension(num_dimensions);
 
-    // Initialise both systems to universe representations.
+    // Initialize both systems to universe representations.
 
     set_congruences_minimized();
     set_generators_minimized();
@@ -385,7 +385,7 @@ PPL::Grid::update_congruences() const {
     gr.simplify(gr.gen_sys, gr.dim_kinds);
 
   // `gen_sys' contained rows before being reduced, so it should
-  // contain at least a single point afterwards.
+  // contain at least a single point afterward.
   assert(gen_sys.num_generators() > 0);
 
   // Populate `con_sys' with congruences characterizing the grid

@@ -432,7 +432,7 @@ private:
                                                    typename Cert::Compare>&
 				    y_cert_ms) const;
 
-  // FIXME: here it should be enough to befriend the templatic constructor
+  // FIXME: here it should be enough to befriend the template constructor
   //   template <typename QH>
   //   Pointset_Ask_Tell(const Pointset_Ask_Tell<QH>&)
   // but, apparently, this cannot be done.
