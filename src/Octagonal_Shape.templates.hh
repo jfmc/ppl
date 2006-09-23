@@ -492,7 +492,7 @@ Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape& y) {
 
   // This is the old number of rows in the matrix. It is equal to
   // the first index of columns to change.
-  dimension_type onr = matrix.num_rows();
+  dimension_type old_num_rows = matrix.num_rows();
   // First we increase the space dimension of `*this' by adding
   // `y.space_dimension()' new dimensions.
   // The matrix for the new octagon is obtained
@@ -502,11 +502,11 @@ Octagonal_Shape<T>::concatenate_assign(const Octagonal_Shape& y) {
   add_space_dimensions_and_embed(y.space_dim);
   typename OR_Matrix<N>::const_element_iterator
     y_it = y.matrix.element_begin();
-  for(typename OR_Matrix<N>::row_iterator i = matrix.row_begin() + onr,
+  for(typename OR_Matrix<N>::row_iterator i = matrix.row_begin()+old_num_rows,
 	matrix_row_end = matrix.row_end(); i != matrix_row_end; ++i) {
     typename OR_Matrix<N>::row_reference_type r = *i;
     dimension_type rs_i = i.row_size();
-    for (dimension_type j = onr; j < rs_i; ++j, ++y_it)
+    for (dimension_type j = old_num_rows; j < rs_i; ++j, ++y_it)
       r[j] = *y_it;
   }
 
@@ -1389,11 +1389,11 @@ Octagonal_Shape<T>
   dimension_type successor_size = successor.size();
   std::deque<bool> dealt_with(successor_size, false);
   for (dimension_type i = 0; i < successor_size; ++i) {
-    dimension_type nxt_i = successor[i];
+    dimension_type next_i = successor[i];
     if (!dealt_with[i]) {
       // The index is a leader.
       // Now check if it is a leader of a singular class or not.
-      if (nxt_i == coherent_index(i)) {
+      if (next_i == coherent_index(i)) {
         exist_sing_class = true;
         sing_leader = i;
       }
@@ -1401,7 +1401,7 @@ Octagonal_Shape<T>
         no_sing_leaders.push_back(i);
     }
     // The following index isn't a leader.
-    dealt_with[nxt_i] = true;
+    dealt_with[next_i] = true;
   }
 }
 
@@ -1446,11 +1446,11 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
       // automatically connected.
       if (i != successor[i]) {
         dimension_type j = i;
-        dimension_type nxt_j = successor[j];
-        while (j != nxt_j) {
-          aux.matrix[nxt_j][j] = matrix[nxt_j][j];
-          j = nxt_j;
-          nxt_j = successor[j];
+        dimension_type next_j = successor[j];
+        while (j != next_j) {
+          aux.matrix[next_j][j] = matrix[next_j][j];
+          j = next_j;
+          next_j = successor[j];
         }
         const dimension_type cj = coherent_index(j);
         aux.matrix[cj][ci] = matrix[cj][ci];
@@ -1525,11 +1525,11 @@ Octagonal_Shape<T>::strong_reduction_assign() const {
       = matrix[sing_leader][sing_leader+1];
     if (successor[sing_leader+1] != sing_leader+1) {
       dimension_type j = sing_leader;
-      dimension_type nxt_jj = successor[j+1];
-      while (nxt_jj != j+1) {
-	aux.matrix[nxt_jj][j] = matrix[nxt_jj][j];
-	j = nxt_jj;
-	nxt_jj = successor[j+1];
+      dimension_type next_jj = successor[j+1];
+      while (next_jj != j+1) {
+	aux.matrix[next_jj][j] = matrix[next_jj][j];
+	j = next_jj;
+	next_jj = successor[j+1];
       }
       aux.matrix[j+1][j] = matrix[j+1][j];
     }

@@ -1312,24 +1312,25 @@ PPL::LP_Problem::ascii_dump(std::ostream& s) const {
 
   s << "\ninput_obj_function\n";
   input_obj_function.ascii_dump(s);
-  s << "\nopt_mode " << (opt_mode == MAXIMIZATION ? "MAX" : "MIN") << "\n";
+  s << "\nopt_mode "
+    << (opt_mode == MAXIMIZATION ? "MAXIMIZATION" : "MINIMIZATION") << "\n";
 
   s << "\nstatus: ";
   switch (status) {
   case UNSATISFIABLE:
-    s << "UNSAT";
+    s << "UNSATISFIABLE";
     break;
   case SATISFIABLE:
-    s << "SATIS";
+    s << "SATISFIABLE";
     break;
   case UNBOUNDED:
-    s << "UNBOU";
+    s << "UNBOUNDED";
     break;
   case OPTIMIZED:
-    s << "OPTIM";
+    s << "OPTIMIZED";
     break;
   case PARTIALLY_SATISFIABLE:
-    s << "P_SAT";
+    s << "PARTIALLY_SATISFIABLE";
     break;
   }
   s << "\n";
@@ -1359,19 +1360,19 @@ PPL_OUTPUT_DEFINITIONS(LP_Problem)
 bool
 PPL::LP_Problem::ascii_load(std::istream& s) {
   std::string str;
-if (!(s >> str) || str!= "external_space_dim:")
+if (!(s >> str) || str != "external_space_dim:")
     return false;
 
 if (!(s >> external_space_dim))
     return false;
 
-if (!(s >> str) || str!= "internal_space_dim:")
+if (!(s >> str) || str != "internal_space_dim:")
     return false;
 
 if (!(s >> internal_space_dim))
     return false;
 
- if (!(s >> str) || str!= "input_cs(")
+ if (!(s >> str) || str != "input_cs(")
     return false;
 
   dimension_type input_cs_size;
@@ -1379,7 +1380,7 @@ if (!(s >> internal_space_dim))
   if (!(s >> input_cs_size))
     return false;
 
-  if (!(s >> str) || str!= ")")
+  if (!(s >> str) || str != ")")
     return false;
 
   Constraint c(Constraint::zero_dim_positivity());
@@ -1389,58 +1390,58 @@ if (!(s >> internal_space_dim))
     input_cs.push_back(c);
   }
 
-  if (!(s >> str) || str!= "first_pending_constraint:")
+  if (!(s >> str) || str != "first_pending_constraint:")
     return false;
 
   if (!(s >> first_pending_constraint))
     return false;
 
-  if (!(s >> str) || str!= "input_obj_function")
+  if (!(s >> str) || str != "input_obj_function")
     return false;
 
   if (!input_obj_function.ascii_load(s))
     return false;
 
-  if (!(s >> str) || str!= "opt_mode")
+  if (!(s >> str) || str != "opt_mode")
     return false;
 
   if (!(s >> str))
     return false;
 
-  if (str == "MAX")
+  if (str == "MAXIMIZATION")
     set_optimization_mode(MAXIMIZATION);
   else {
-    if (str != "MIN")
+    if (str != "MINIMIZATION")
       return false;
     set_optimization_mode(MINIMIZATION);
   }
 
-  if (!(s >> str) || str!= "status:")
+  if (!(s >> str) || str != "status:")
     return false;
 
   if (!(s >> str))
     return false;
 
-  if (str == "UNSAT")
+  if (str == "UNSATISFIABLE")
     status = UNSATISFIABLE;
-  else if (str == "SATIS")
+  else if (str == "SATISFIABLE")
     status = SATISFIABLE;
-  else if (str == "UNBOU")
+  else if (str == "UNBOUNDED")
     status = UNBOUNDED;
-  else if (str == "OPTIM")
+  else if (str == "OPTIMIZED")
     status = OPTIMIZED;
-  else if (str == "P_SAT")
+  else if (str == "PARTIALLY_SATISFIABLE")
     status = PARTIALLY_SATISFIABLE;
   else
     return false;
 
-  if (!(s >> str) || str!= "tableau")
+  if (!(s >> str) || str != "tableau")
     return false;
 
   if (!tableau.ascii_load(s))
     return false;
 
-  if (!(s >> str) || str!= "working_cost(")
+  if (!(s >> str) || str != "working_cost(")
     return false;
 
   dimension_type working_cost_dim;
@@ -1448,20 +1449,20 @@ if (!(s >> internal_space_dim))
   if (!(s >> working_cost_dim))
     return false;
 
-  if (!(s >> str) || str!= ")")
+  if (!(s >> str) || str != ")")
     return false;
 
   if (!working_cost.ascii_load(s))
     return false;
 
-  if (!(s >> str) || str!= "base(")
+  if (!(s >> str) || str != "base(")
     return false;
 
   dimension_type base_size;
   if (!(s >> base_size))
     return false;
 
-  if (!(s >> str) || str!= ")")
+  if (!(s >> str) || str != ")")
     return false;
 
   dimension_type base_value;
@@ -1471,20 +1472,20 @@ if (!(s >> internal_space_dim))
     base.push_back(base_value);
   }
 
-  if (!(s >> str) || str!= "last_generator")
+  if (!(s >> str) || str != "last_generator")
     return false;
 
   if (!last_generator.ascii_load(s))
     return false;
 
-  if (!(s >> str) || str!= "mapping(")
+  if (!(s >> str) || str != "mapping(")
     return false;
 
   dimension_type mapping_size;
   if (!(s >> mapping_size))
     return false;
 
-  if (!(s >> str) || str!= ")")
+  if (!(s >> str) || str != ")")
     return false;
 
   dimension_type first_value;
@@ -1499,11 +1500,11 @@ if (!(s >> internal_space_dim))
   for (dimension_type i = 1; i < mapping_size; ++i) {
     if (!(s >> index))
       return false;
-    if (!(s >> str) || str!= "->")
+    if (!(s >> str) || str != "->")
       return false;
     if (!(s >> first_value))
       return false;
-    if (!(s >> str) || str!= "->")
+    if (!(s >> str) || str != "->")
       return false;
     if (!(s >> second_value))
       return false;
