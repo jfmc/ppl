@@ -78,11 +78,12 @@ static struct option long_options[] = {
   {"incremental",     no_argument,       0, 'i'},
   {"min",             no_argument,       0, 'm'},
   {"max",             no_argument,       0, 'M'},
+  {"no-optimization", no_argument,       0, 'n'},
+  {"no-mip",          no_argument,       0, 'r'},
   {"max-cpu",         required_argument, 0, 'C'},
   {"max-memory",      required_argument, 0, 'V'},
   {"output",          required_argument, 0, 'o'},
   {"enumerate",       no_argument,       0, 'e'},
-  {"no-optimization", no_argument,       0, 'n'},
   {"simplex",         no_argument,       0, 's'},
   {"timings",         no_argument,       0, 't'},
   {"verbose",         no_argument,       0, 'v'},
@@ -97,8 +98,9 @@ static const char* usage_string
 "                          with a tolerance of THRESHOLD (default %.10g)\n"
 "  -i, --incremental       solves the problem incrementally\n"
 "  -m, --min               minimizes the objective function\n"
-"  -n, --no-optimization   checks for satisfiability only\n"
 "  -M, --max               maximizes the objective function (default)\n"
+"  -n, --no-optimization   checks for satisfiability only\n"
+"  -r, --no-mip            consider integer variables as real variables\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
 "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stderr\n"
@@ -129,6 +131,7 @@ static int verbose = 0;
 static int maximize = 1;
 static int incremental = 0;
 static int no_optimization = 0;
+static int no_mip = 0;
 static int check_results_failed = 0;
 static double check_threshold = 0.0;
 static const double default_check_threshold = 0.000000001;
@@ -199,6 +202,7 @@ process_options(int argc, char* argv[]) {
   int simplex_required = 0;
   int incremental_required = 0;
   int no_optimization_required = 0;
+  int no_mip_required = 0;
   int c;
   char* endptr;
   long l;
@@ -294,6 +298,10 @@ process_options(int argc, char* argv[]) {
       no_optimization_required = 1;
       break;
 
+    case 'r':
+      no_mip_required = 1;
+      break;
+
     default:
       abort();
     }
@@ -315,6 +323,9 @@ process_options(int argc, char* argv[]) {
 
   if (no_optimization_required)
     no_optimization = 1;
+
+  if (no_mip_required)
+    no_mip = 1;
 
   if (optind >= argc) {
     if (verbose)
