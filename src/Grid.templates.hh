@@ -262,16 +262,16 @@ Grid::shrink_bounding_box(Box& box) const {
     throw_dimension_incompatible("shrink_bounding_box(box)", "box",
 				 box.space_dimension());
 
-  TEMP_INTEGER(temp);
+  TEMP_INTEGER(tmp);
 
   // Check that all bounds are closed.  This check must be done before
   // the empty test below, as an open bound might mean an empty box.
   for (dimension_type k = space_dim; k-- > 0; ) {
     bool closed = false;
     // FIXME: Perhaps introduce box::is_bounded_and_closed.
-    if (box.get_lower_bound(k, closed, temp, temp) && !closed)
+    if (box.get_lower_bound(k, closed, tmp, tmp) && !closed)
       throw_invalid_argument("shrink_bounding_box(box)", "box");
-    if (box.get_upper_bound(k, closed, temp, temp) && !closed)
+    if (box.get_upper_bound(k, closed, tmp, tmp) && !closed)
       throw_invalid_argument("shrink_bounding_box(box)", "box");
   }
 
@@ -325,13 +325,13 @@ Grid::shrink_bounding_box(Box& box) const {
   for (dimension_type dim = num_dims; dim-- > 0; )
     if (bounded_interval[dim]) {
       // Reduce the bound fraction first.
-      gcd_assign(temp, point[dim+1], divisor);
-      // `temp' is the GCD.
-      exact_div_assign(bound, point[dim+1], temp);
-      exact_div_assign(temp, divisor, temp);
-      // `temp' is now the reduced divisor.
-      box.raise_lower_bound(dim, true, bound, temp);
-      box.lower_upper_bound(dim, true, bound, temp);
+      gcd_assign(tmp, point[dim+1], divisor);
+      // `tmp' is the GCD.
+      exact_div_assign(bound, point[dim+1], tmp);
+      exact_div_assign(tmp, divisor, tmp);
+      // `tmp' is now the reduced divisor.
+      box.raise_lower_bound(dim, true, bound, tmp);
+      box.lower_upper_bound(dim, true, bound, tmp);
     }
 }
 

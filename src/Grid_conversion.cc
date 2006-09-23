@@ -296,24 +296,24 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     // Consider each dimension `dim_prec' that precedes `dim', as the
     // rows in `dest' that follow `dim_index' have zeroes at index
     // `dim'.
-    dimension_type tem_source_index = source_index;
+    dimension_type tmp_source_index = source_index;
     if (dim_kinds[dim] != LINE)
       ++dest_index;
     for (dimension_type dim_prec = dim; dim_prec-- > 0; ) {
       TRACE(cerr << "  dim_prec: " << dim_prec);
       TRACE(cerr << "  dest_index: " << dest_index);
-      TRACE(cerr << "  tem_source_index: " << tem_source_index << endl);
+      TRACE(cerr << "  tmp_source_index: " << tmp_source_index << endl);
       if (dim_kinds[dim_prec] != GEN_VIRTUAL) {
-	--tem_source_index;
-	const Coefficient& source_dim = source[tem_source_index][dim];
+	--tmp_source_index;
+	const Coefficient& source_dim = source[tmp_source_index][dim];
 	TRACE(cerr << "  rows:" << endl);
 	// In order to compute the transpose of the inverse of
-	// `source', subtract source[tem_source_index][dim] times the
+	// `source', subtract source[tmp_source_index][dim] times the
 	// column vector in `dest' at `dim' from the column vector in
 	// `dest' at `dim_prec'.
 	//
 	// I.e., for each row `dest_index' in `dest' that is above the
-	// row `dest_index', subtract dest[tem_source_index][dim]
+	// row `dest_index', subtract dest[tmp_source_index][dim]
 	// times the entry `dim' from the entry at `dim_prec'.
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  assert(row < dest_num_rows);
@@ -494,24 +494,24 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     // Consider each dimension `dim_fol' that follows `dim', as the
     // rows in `dest' that follow row `dest_index' are zero at index
     // `dim'.
-    dimension_type tem_source_index = source_index;
+    dimension_type tmp_source_index = source_index;
     if (dim_kinds[dim] != EQUALITY)
       ++dest_index;
     for (dimension_type dim_fol = dim + 1; dim_fol < dims; ++dim_fol) {
       TRACE(cerr << "  dim_fol: " << dim_fol);
       TRACE(cerr << "  dest_index: " << dest_index);
-      TRACE(cerr << "  tem_source_index: " << tem_source_index << endl);
+      TRACE(cerr << "  tmp_source_index: " << tmp_source_index << endl);
       if (dim_kinds[dim_fol] != CON_VIRTUAL) {
-	--tem_source_index;
-	const Coefficient& source_dim = source[tem_source_index][dim];
+	--tmp_source_index;
+	const Coefficient& source_dim = source[tmp_source_index][dim];
 	TRACE(cerr << "  rows:" << endl);
 	// In order to compute the transpose of the inverse of
-	// `source', subtract source[tem_source_index][dim] times the
+	// `source', subtract source[tmp_source_index][dim] times the
 	// column vector in `dest' at `dim' from the column vector in
 	// `dest' at `dim_fol'.
 	//
 	// I.e., for each row `dest_index' in `dest' that is above the
-	// row `dest_index', subtract dest[tem_source_index][dim]
+	// row `dest_index', subtract dest[tmp_source_index][dim]
 	// times the entry `dim' from the entry at `dim_fol'.
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  assert(row < dest_num_rows);

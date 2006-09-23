@@ -207,20 +207,20 @@ PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
   if (x_type != y.type())
     return false;
 
-  Grid_Generator tem(*this);
-  Grid_Generator tem_y(y);
+  Grid_Generator tmp = *this;
+  Grid_Generator tmp_y = y;
   dimension_type& last = x_space_dim;
   ++last;
   if (x_type == POINT || x_type == LINE) {
-    tem[last] = 0;
-    tem_y[last] = 0;
+    tmp[last] = 0;
+    tmp_y[last] = 0;
   }
   // Normalize the copies, including the divisor column.
-  tem.Row::normalize();
-  tem_y.Row::normalize();
+  tmp.Row::normalize();
+  tmp_y.Row::normalize();
   // Check for equality.
   while (last-- > 0)
-    if (tem[last] != tem_y[last])
+    if (tmp[last] != tmp_y[last])
       return false;
   return true;
 }
