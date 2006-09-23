@@ -209,11 +209,10 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
     return;
   }
 
-  // Use these type aliases for short
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
   typename OR_Matrix<N>::row_iterator mat_begin = matrix.row_begin();
-  N tmp;
 
+  N tmp;
   bool mat_initialized = false;
   bool point_seen = false;
   // Going through all the points and closure points.
@@ -835,10 +834,9 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
   // studying the sign of the scalar product between the generator and
   // all the constraints in the octagon.
 
-  // Use these type aliases for short.
   typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
-  // Avoid recomputations.
+
   const Row_Iterator m_begin = matrix.row_begin();
   const Row_Iterator m_end = matrix.row_end();
 
@@ -1008,10 +1006,9 @@ Octagonal_Shape<T>::strong_closure_assign() const {
   // is going to be modified by the closure algorithm.
   Octagonal_Shape& x = const_cast<Octagonal_Shape<T>&>(*this);
 
-  // Use these type aliases for short.
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
-  // Avoid recomputations.
+
   const dimension_type n_rows = x.matrix.num_rows();
   const Row_Iterator m_begin = x.matrix.row_begin();
   const Row_Iterator m_end = x.matrix.row_end();
@@ -1188,10 +1185,9 @@ Octagonal_Shape<T>
 
   Octagonal_Shape& x = const_cast<Octagonal_Shape<T>&>(*this);
 
-  // Use these type aliases for short.
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
-  // Avoid recomputations.
+
   const Row_Iterator m_begin = x.matrix.row_begin();
   const Row_Iterator m_end = x.matrix.row_end();
 
@@ -1812,10 +1808,9 @@ Octagonal_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
   // We create a new matrix with the new space dimension.
   OR_Matrix<N> x(new_space_dim);
 
-  // Use these type aliases for short.
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
-  // Avoid repeated computations.
+
   Row_Iterator m_begin = x.row_begin();
   Row_Iterator m_end = x.row_end();
 
@@ -2010,12 +2005,11 @@ Octagonal_Shape<T>
     // Constraints that are not octagonal differences are ignored.
     if (extract_octagonal_difference(c, cs_space_dim, num_vars, i, j,
 				     coeff, term)) {
-      // Use these type aliases for short.
       typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
       typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
       typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
       typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
-      // Avoid recomputations.
+
       Row_iterator m_begin = matrix.row_begin();
 
       // Select the cell to be modified for the "<=" part of the constraint.
@@ -2555,12 +2549,11 @@ Octagonal_Shape<T>::affine_image(const Variable var,
       else
         w_id = i;
 
-  // Use these type aliases for short.
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
-  // Avoid repeated computations.
+
   const Row_Iterator m_begin = matrix.row_begin();
   const Row_Iterator m_end = matrix.row_end();
   const dimension_type n_var = 2*var_id;
@@ -3079,12 +3072,11 @@ Octagonal_Shape<T>
       else
         w_id = i;
 
-  // Use these type aliases for short.
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
   typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
-  // Avoid repeated computations.
+
   const Row_Iterator m_begin = matrix.row_begin();
   const Row_Iterator m_end = matrix.row_end();
   const dimension_type n_var = 2*var_id;
@@ -3792,10 +3784,10 @@ Octagonal_Shape<T>
   // - If t == 0, then expr == b, with `b' a constant;
   // - If t == 1, then expr == a*j + b, where `j != v';
   // - If t == 2, the `expr' is of the general form.
-  // Use these type aliases for short.
+
   typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
-  // Avoid repeated computations.
+
   const Row_Iterator m_begin = matrix.row_begin();
   const dimension_type n_var = 2*var_id;
   TEMP_INTEGER(minus_den);
@@ -4282,13 +4274,12 @@ Octagonal_Shape<T>::constraints() const {
     // For the time being, we force the dimension with the following line.
     cs.insert(0*Variable(space_dim-1) <= 0);
 
-    // Use these type aliases for short.
     typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
     typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
-    // Avoid repeated computations.
+
     Row_Iterator m_begin = matrix.row_begin();
     Row_Iterator m_end = matrix.row_end();
-    // Avoid multiple (de-)allocations.
+
     TEMP_INTEGER(a);
     TEMP_INTEGER(b);
 
@@ -4394,7 +4385,6 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
     return s;
   }
 
-  // Use these type aliases for short.
   typedef typename Octagonal_Shape<T>::coefficient_type N;
   typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
@@ -4402,7 +4392,6 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
   // Records whether or not we still have to print the first constraint.
   bool first = true;
 
-  // Avoid repeated computations.
   Row_Iterator m_begin = x.matrix.row_begin();
   Row_Iterator m_end = x.matrix.row_end();
 
