@@ -558,6 +558,11 @@ public:
   */
   bool is_bounded() const;
 
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains (at least) an integer point.
+  */
+  bool contains_integer_point() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -1314,6 +1319,8 @@ private:
     unary constraints, there is also the constraint that represent their sum.
   */
   bool is_strong_coherent() const;
+
+  bool tight_coherence_would_make_empty() const;
 
   //! Assigns to \c this->matrix its strong closure.
   /*!

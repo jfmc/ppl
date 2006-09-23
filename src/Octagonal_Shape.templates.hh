@@ -595,6 +595,61 @@ Octagonal_Shape<T>::is_bounded() const {
 
 template <typename T>
 bool
+Octagonal_Shape<T>::contains_integer_point() const {
+  // Force strong closure.
+  if (is_empty())
+    return false;
+  const dimension_type space_dim = space_dimension();
+  if (space_dim == 0)
+    return true;
+
+  // A strongly closed and consistent Octagonal_Shape defined by
+  // integer constraints can only be empty due to tight coeherence.
+  if (std::numeric_limits<T>::is_integer)
+    return !tight_coherence_would_make_empty();
+
+  // Build an integer Octagonal_Shape oct_z with bounds at least as
+  // tight as those in *this and then recheck for emptyness, also
+  // exploiting tight-coherence.
+  Octagonal_Shape<mpz_class> oct_z(space_dim);
+  oct_z.status.reset_strongly_closed();
+
+  typedef Octagonal_Shape<mpz_class>::N Z;
+  N tmp;
+  bool all_integers = true;
+  typename OR_Matrix<N>::const_element_iterator x_i = matrix.element_begin();
+  for (typename OR_Matrix<Z>::element_iterator
+	 z_i = oct_z.matrix.element_begin(),
+	 z_end = oct_z.matrix.element_end(); z_i != z_end; ++z_i, ++x_i) {
+    const N& d = *x_i;
+    if (is_plus_infinity(d))
+      continue;
+    if (is_integer(d))
+      assign_r(*z_i, d, ROUND_NOT_NEEDED);
+    else {
+      all_integers = false;
+      Z& d_z = *z_i;
+      // Copy d into d_z, but rounding downwards.
+      neg_assign_r(tmp, d, ROUND_NOT_NEEDED);
+      assign_r(d_z, tmp, ROUND_UP);
+      neg_assign_r(d_z, d_z, ROUND_NOT_NEEDED);
+    }
+  }
+  // Restore strong closure.
+  if (all_integers)
+    // oct_z unchanged, so it is still strongly closed.
+    oct_z.status.set_strongly_closed();
+  else {
+    // oct_z changed: recompute strong closure.
+    oct_z.strong_closure_assign();
+    if (oct_z.marked_empty())
+      return false;
+  }
+  return !oct_z.tight_coherence_would_make_empty();
+}
+
+template <typename T>
+bool
 Octagonal_Shape<T>::is_strong_coherent() const {
   // This method is only used by method OK() so as to check if a
   // strongly closed matrix is also strong-coherent, as it must be.
@@ -1165,6 +1220,30 @@ Octagonal_Shape<T>::strong_coherence_assign() {
 }
 
 template <typename T>
+bool
+Octagonal_Shape<T>::tight_coherence_would_make_empty() const {
+  assert(std::numeric_limits<N>::is_integer);
+  assert(marked_strongly_closed());
+  N tmp;
+  N two;
+  assign_r(two, 2, ROUND_NOT_NEEDED);
+  const dimension_type space_dim = space_dimension();
+  for (dimension_type i = 0; i < 2*space_dim; i += 2) {
+    const dimension_type ci = i+1;
+    const N& mat_i_ci = matrix[i][ci];
+    if (!is_plus_infinity(mat_i_ci)
+	// Check for oddness of `mat_i_ci'.
+	&& rem_assign_r(tmp, mat_i_ci, two, ROUND_NOT_NEEDED) == V_EQ
+ 	&& tmp != 0
+	// Check for zero-equivalence of `i' and `ci'.
+	&& neg_assign_r(tmp, mat_i_ci, ROUND_NOT_NEEDED) == V_EQ
+	&& tmp == matrix[ci][i])
+      return true;
+  }
+  return false;
+}
+
+template <typename T>
 void
 Octagonal_Shape<T>
 ::incremental_strong_closure_assign(const Variable var) const {
@@ -1576,7 +1655,8 @@ Octagonal_Shape<T>::oct_hull_assign(const Octagonal_Shape& y) {
   using Implementation::BD_Shapes::max_assign;
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
-	 matrix_element_end = matrix.element_end(); i != matrix_element_end; ++i, ++j)
+	 matrix_element_end = matrix.element_end();
+       i != matrix_element_end; ++i, ++j)
     max_assign(*i, *j);
 
   // The result is still closed.
