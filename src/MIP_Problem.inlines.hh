@@ -223,7 +223,6 @@ MIP_Problem::is_satisfiable() const {
       if (i_variables.empty())
 	return is_lp_satisfiable();
       // MIP Case.
-      // If the MIP Problem is already satisfiable, return `true'.
       MIP_Problem& x = const_cast<MIP_Problem&>(*this);
       Generator p = point();
       bool is_satisfiable = is_mip_satisfiable(x, p);
@@ -278,8 +277,7 @@ MIP_Problem::solve() const{
 					       provisional_optimum, g, x);
      // Set the internal status because the original problem (x),
      // passed by reference in solve_mip(), was solved as a normal LP Problem.
-     switch (mip_status)
-       {
+     switch (mip_status) {
        case UNFEASIBLE_MIP_PROBLEM:
 	 x.status = UNSATISFIABLE;
 	 break;
