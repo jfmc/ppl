@@ -449,11 +449,23 @@ PPL::Polyhedron::contains_integer_point() const {
   if (space_dim == 0)
     return true;
 
-  if (has_something_pending() && !process_pending())
+  // CHECK ME: do we really want to call conversion to check for emptyness?
+  if (has_pending_constraints() && !process_pending())
     // Empty again.
     return true;
 
+  // Is any integer point already available?
+  if (generators_are_up_to_date() && !has_pending_constraints())
+    for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
+      if (gen_sys[i].is_point() && gen_sys[i].divisor() == 1)
+	return true;
+
   const Constraint_System& cs = constraints();
+  // TODO: provide a correct implementation for strict inequalities.
+  if (cs.has_strict_inequalities())
+    throw std::invalid_argument("PPL::NNC_Polyhedron::"
+				"contains_integer_points():\n"
+				"strict inequalities not supported yet.");
   MIP_Problem mip(space_dim,
 		  cs.begin(), cs.end(),
 		  Variables_Set(Variable(0), Variable(space_dim-1)));

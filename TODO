@@ -29,6 +29,7 @@ Enhancements for PPL 0.10
 Enhancements for PPL 0.10 or later versions
 ==========================================
 
+- Provide support for strict inequalities in LP/MIP problems.
 - Implement void Polyhedron::envelope_assign(const Polyhedron& y).
 - Implement the extrapolation operators defined in HenzingerH95
   and HenzingerPW01.
