@@ -486,8 +486,8 @@ BD_Shape<T>::is_bounded() const {
 template <typename T>
 bool
 BD_Shape<T>::contains_integer_point() const {
-  shortest_path_closure_assign();
-  if (marked_empty())
+  // Force shortest-path closure.
+  if (is_empty())
     return false;
 
   const dimension_type space_dim = space_dimension();
@@ -501,34 +501,31 @@ BD_Shape<T>::contains_integer_point() const {
 
   // Build an integer BD_Shape z with bounds at least as tight as
   // those in *this and then recheck for emptyness.
-  BD_Shape<mpz_class> z(space_dim);
+  BD_Shape<mpz_class> bds_z(space_dim);
   typedef BD_Shape<mpz_class>::N Z;
-  z.status.reset_shortest_path_closed();
+  bds_z.status.reset_shortest_path_closed();
   N tmp;
   bool all_integers = true;
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
-    DB_Row<Z>& z_i = z.dbm[i];
+    DB_Row<Z>& z_i = bds_z.dbm[i];
     const DB_Row<N>& dbm_i = dbm[i];
     for (dimension_type j = space_dim + 1; j-- > 0; ) {
       const N& dbm_i_j = dbm_i[j];
       if (is_plus_infinity(dbm_i_j))
 	continue;
-      Z& z_i_j = z_i[j];
       if (is_integer(dbm_i_j))
-	assign_r(z_i_j, dbm_i_j, ROUND_NOT_NEEDED);
+	assign_r(z_i[j], dbm_i_j, ROUND_NOT_NEEDED);
       else {
 	all_integers = false;
+	Z& z_i_j = z_i[j];
 	// Copy dbm_i_j into z_i_j, but rounding downwards.
 	neg_assign_r(tmp, dbm_i_j, ROUND_NOT_NEEDED);
-	assign_r(z_i_j, dbm_i_j, ROUND_UP);
+	assign_r(z_i_j, tmp, ROUND_UP);
 	neg_assign_r(z_i_j, z_i_j, ROUND_NOT_NEEDED);
       }
     }
   }
-  if (all_integers)
-    return true;
-  else
-    return !z.is_empty();
+  return all_integers || !bds_z.is_empty();
 }
 
 
