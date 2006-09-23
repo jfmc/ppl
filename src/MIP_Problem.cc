@@ -1103,50 +1103,34 @@ PPL::MIP_Problem
 
 bool
 PPL::MIP_Problem::is_lp_satisfiable() const {
+  assert(status == SATISFIABLE || status == PARTIALLY_SATISFIABLE);
+  if (status == SATISFIABLE)
+    return true;
 #if PPL_NOISY_SIMPLEX
   num_iterations = 0;
 #endif
-  // Check `status' to filter out trivial cases.
-  switch (status) {
-  case UNSATISFIABLE:
-    assert(OK());
-    return false;
-  case SATISFIABLE:
-    // Intentionally fall through.
-  case UNBOUNDED:
-    // Intentionally fall through.
-  case OPTIMIZED:
-    assert(OK());
-    return true;
-  case PARTIALLY_SATISFIABLE:
-    {
-      MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-      // This code tries to handle the case that happens if the tableau is
-      // empty, so it must be initialized.
-      if (tableau.num_columns() == 0) {
-	// Add two columns, the first that handles the inhomogeneous term and
-	// the second that represent the `sign'.
-	x.tableau.add_zero_columns(2);
-	// Sync `mapping' for the inhomogeneous term.
-	x.mapping.push_back(std::make_pair(0, 0));
-	// The internal data structures are ready, so prepare for more
-	// assertion to be checked.
-	x.initialized = true;
-      }
-
-      // Apply incrementality to the pending constraint system.
-      x.process_pending_constraints();
-      // Update `first_pending_constraint': no more pending.
-      x.first_pending_constraint = input_cs.size();
-      // Update also `internal_space_dim'.
-      x.internal_space_dim = x.external_space_dim;
-      assert(OK());
-      return (status != UNSATISFIABLE);
-    }
-    break;
+  MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+  // This code tries to handle the case that happens if the tableau is
+  // empty, so it must be initialized.
+  if (tableau.num_columns() == 0) {
+    // Add two columns, the first that handles the inhomogeneous term and
+    // the second that represent the `sign'.
+    x.tableau.add_zero_columns(2);
+    // Sync `mapping' for the inhomogeneous term.
+    x.mapping.push_back(std::make_pair(0, 0));
+    // The internal data structures are ready, so prepare for more
+    // assertion to be checked.
+    x.initialized = true;
   }
-  // We should not be here!
-  throw std::runtime_error("PPL internal error");
+
+  // Apply incrementality to the pending constraint system.
+  x.process_pending_constraints();
+  // Update `first_pending_constraint': no more pending.
+  x.first_pending_constraint = input_cs.size();
+  // Update also `internal_space_dim'.
+  x.internal_space_dim = x.external_space_dim;
+  assert(OK());
+  return (status != UNSATISFIABLE);
 }
 
 PPL::MIP_Problem_Status
@@ -1171,7 +1155,7 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
   TEMP_INTEGER(tmp_coeff2);
 
   if (lp_status == UNBOUNDED_MIP_PROBLEM)
-    p = lp.feasible_point();
+    p = lp.last_generator;
   else {
     assert(lp_status == OPTIMIZED_MIP_PROBLEM);
     // Do not call optimizing_point().
@@ -1205,7 +1189,6 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
     // All the coordinates of `point' are satisfiable.
     if (lp_status == UNBOUNDED_MIP_PROBLEM)
       return lp_status;
-
     if (!have_provisional_optimum
 	|| (optimization_mode() == MAXIMIZATION
 	    && tmp_rational > provisional_optimum_value)
@@ -1283,10 +1266,8 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   // TODO: change this when we will be able to remove constraints.
   lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
-  if (is_mip_satisfiable(lp_aux, p))
-    return true;
-  return false;
-}
+  return is_mip_satisfiable(lp_aux, p);
+  }
 
 bool
 PPL::MIP_Problem::OK() const {

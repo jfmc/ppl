@@ -206,62 +206,98 @@ MIP_Problem::optimizing_point() const {
 
 inline bool
 MIP_Problem::is_satisfiable() const {
-  if (i_variables.empty())
-    return is_lp_satisfiable();
-  // MIP Case.
-  // If the MIP Problem is already satisfiable, return true.
-  if (status == SATISFIABLE)
+  // Check `status' to filter out trivial cases.
+  switch (status) {
+  case UNSATISFIABLE:
+    assert(OK());
+    return false;
+  case SATISFIABLE:
+    // Intentionally fall through
+  case UNBOUNDED:
+    // Intentionally fall through.
+  case OPTIMIZED:
+    assert(OK());
     return true;
-  MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-  Generator p = point();
-  bool is_satisfiable = is_mip_satisfiable(x, p);
-  if (is_satisfiable) {
-    x.last_generator = p;
-    x.status = SATISFIABLE;
+  case PARTIALLY_SATISFIABLE:
+    { // LP case.
+      if (i_variables.empty())
+	return is_lp_satisfiable();
+      // MIP Case.
+      // If the MIP Problem is already satisfiable, return `true'.
+      MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+      Generator p = point();
+      bool is_satisfiable = is_mip_satisfiable(x, p);
+      if (is_satisfiable) {
+	x.last_generator = p;
+	x.status = SATISFIABLE;
+      }
+      else
+	x.status = UNSATISFIABLE;
+      return is_satisfiable;
+    }
   }
-  else
-    x.status = UNSATISFIABLE;
-  return is_satisfiable;
+  // We should not be here!
+  throw std::runtime_error("PPL internal error");
 }
 
 inline MIP_Problem_Status
 MIP_Problem::solve() const{
-  MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-  if (i_variables.empty()) {
-    // LP Problem case.
-    if (is_lp_satisfiable()) {
-      x.second_phase();
-      if (x.status == UNBOUNDED)
-	return UNBOUNDED_MIP_PROBLEM;
-      else {
-	assert(x.status == OPTIMIZED);
-	return OPTIMIZED_MIP_PROBLEM;
-      }
-    }
+  switch (status) {
+  case UNSATISFIABLE:
+    assert(OK());
     return UNFEASIBLE_MIP_PROBLEM;
+  case UNBOUNDED:
+    assert(OK());
+    return UNBOUNDED_MIP_PROBLEM;
+  case OPTIMIZED:
+    assert(OK());
+  return OPTIMIZED_MIP_PROBLEM;
+ case SATISFIABLE:
+   // Intentionally fall through
+ case PARTIALLY_SATISFIABLE:
+   {
+     MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+     if (i_variables.empty()) {
+       // LP Problem case.
+       if (is_lp_satisfiable()) {
+	 x.second_phase();
+	 if (x.status == UNBOUNDED)
+	   return UNBOUNDED_MIP_PROBLEM;
+	 else {
+	   assert(x.status == OPTIMIZED);
+	   return OPTIMIZED_MIP_PROBLEM;
+	 }
+       }
+       return UNFEASIBLE_MIP_PROBLEM;
+     }
+     // MIP Problem case.
+     mpq_class provisional_optimum;
+     Generator g = point();
+     bool have_provisional_optimum = false;
+     MIP_Problem_Status mip_status = solve_mip(have_provisional_optimum,
+					       provisional_optimum, g, x);
+     // Set the internal status because the original problem (x),
+     // passed by reference in solve_mip(), was solved as a normal LP Problem.
+     switch (mip_status)
+       {
+       case UNFEASIBLE_MIP_PROBLEM:
+	 x.status = UNSATISFIABLE;
+	 break;
+       case UNBOUNDED_MIP_PROBLEM:
+	 x.status = UNBOUNDED;
+	 break;
+       case OPTIMIZED_MIP_PROBLEM:
+	 x.status = OPTIMIZED;
+	 break;
+       }
+     // Set the internal generator.
+     x.last_generator = g;
+     assert(OK());
+     return mip_status;
+   }
   }
-  // MIP Problem case.
-  mpq_class provisional_optimum;
-  Generator g = point();
-  bool have_provisional_optimum = false;
-  MIP_Problem_Status mip_status = solve_mip(have_provisional_optimum,
-					    provisional_optimum, g, x);
-  // Set the internal status because the original problem (x),
-  // passed by reference in solve_mip(), was solved as a normal LP Problem.
-  switch (mip_status) {
-  case UNFEASIBLE_MIP_PROBLEM:
-    x.status = UNSATISFIABLE;
-    break;
-  case UNBOUNDED_MIP_PROBLEM:
-    x.status = UNBOUNDED;
-    break;
-  case OPTIMIZED_MIP_PROBLEM:
-    x.status = OPTIMIZED;
-    break;
-  }
-  // Set the internal generator.
-  x.last_generator = g;
-  return mip_status;
+  // We should not be here!
+  throw std::runtime_error("PPL internal error");
 }
 
 inline void
