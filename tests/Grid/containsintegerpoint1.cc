@@ -1,4 +1,4 @@
-/* Test Grid::is_pointed().
+/* Test Grid::contains_integer_point().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

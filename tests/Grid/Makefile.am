@@ -62,6 +62,7 @@ congruence1 \
 congruences1 \
 congruences2 \
 contains1 \
+containsintegerpoint1 \
 copyconstruct1 \
 coveringbox1 coveringbox2 \
 directproduct1 directproduct2 \
@@ -86,7 +87,6 @@ maxmin1 \
 membytes1 \
 mingenerators1 \
 mincongruences1 \
-onepoint1 \
 outputoperator1 outputoperator2 outputoperator3 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
@@ -150,6 +150,8 @@ congruences2_SOURCES = congruences2.cc
 
 contains1_SOURCES = contains1.cc
 
+containsintegerpoint1_SOURCES = containsintegerpoint1.cc
+
 copyconstruct1_SOURCES = copyconstruct1.cc
 
 directproduct1_SOURCES = directproduct1.cc
@@ -211,8 +213,6 @@ mingenerators1_SOURCES = mingenerators1.cc
 outputoperator1_SOURCES = outputoperator1.cc
 outputoperator2_SOURCES = outputoperator2.cc
 outputoperator3_SOURCES = outputoperator3.cc
-
-onepoint1_SOURCES = onepoint1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
