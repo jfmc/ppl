@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
+
 namespace BD_Shapes {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -95,33 +96,32 @@ max_assign(N& x, const N& y) {
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns <CODE>true</CODE> if and only if \p m is an even number.
+//! Returns <CODE>true</CODE> if and only if \p x is an even number.
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T, typename Policy>
 inline bool
-is_even(const Checked_Number<T, Policy>& m) {
-  Checked_Number<T, Policy> half_m;
-  return
-    div2exp_assign_r(half_m, m, 1, ROUND_IGNORE) == V_EQ
-    && is_integer(half_m);
+is_even(const Checked_Number<T, Policy>& x) {
+  Checked_Number<T, Policy> half_x;
+  return div2exp_assign_r(half_x, x, 1, ROUND_DIRECT) == V_EQ
+    && is_integer(half_x);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns <CODE>true</CODE> if and only if \f$m = -n\f$.
+//! Returns <CODE>true</CODE> if and only if \f$x = -y\f$.
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T, typename Policy>
 inline bool
-is_additive_inverse(const Checked_Number<T, Policy>& m,
-		    const Checked_Number<T, Policy>& n) {
-  Checked_Number<T, Policy> negated_m;
-  return
-    neg_assign_r(negated_m, m, ROUND_IGNORE) == V_EQ
-    && negated_m == n;
+is_additive_inverse(const Checked_Number<T, Policy>& x,
+		    const Checked_Number<T, Policy>& y) {
+  Checked_Number<T, Policy> negated_x;
+  return neg_assign_r(negated_x, x, ROUND_DIRECT) == V_EQ
+    && negated_x == y;
 }
 
 } // namespace BD_Shapes
+
 } // namespace Implementation
 
 
