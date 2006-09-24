@@ -2,6 +2,8 @@
 Enhancements for PPL 0.10
 =========================
 
+- Revise the documentation for all the congruences() and
+  minimized_congruences() methods.
 - Add tests for ppl_Polyhedron_contains_integer_point/1 in pl_check.pl.
 - Make sure users know that GCC 3.4.x are known to miscompile at least
   one of the development snapshots that led to PPL 0.10.
