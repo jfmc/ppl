@@ -180,6 +180,12 @@ public:
   //! Returns the space dimension of the MIP problem.
   dimension_type space_dimension() const;
 
+  /*! \brief
+    Returns the Variables_Set containing all the variables constrained
+    to be integral.
+  */
+  const Variables_Set& integer_space_dimensions() const;
+
 private:
   //! A type alias for a sequence of constraints.
   typedef std::vector<Constraint> Constraint_Sequence;
@@ -230,6 +236,15 @@ public:
     in the new MIP problem; they are initially unconstrained.
   */
   void add_space_dimensions_and_embed(dimension_type m);
+
+  /*! \brief
+    Sets the variables in set \p i_vars to be integer space dimensions.
+
+    \exception std::invalid_argument
+    Thrown if some variable is \p i_vars does not correspond to
+    a space dimension in \p *this.
+  */
+  void set_integer_space_dimensions(const Variables_Set& i_vars);
 
   /*! \brief
     Adds a copy of constraint \p c to the MIP problem.
@@ -321,14 +336,6 @@ public:
     if the MIP problem is unbounded or not satisfiable.
   */
   void optimal_value(Coefficient& num, Coefficient& den) const;
-
-  /*! \brief
-    Returns the Variables_Set containing all the variables constrained
-    to be integral.
-  */
-  const Variables_Set& integer_space_dimensions() const;
-
-  void set_integer_space_dimensions(const Variables_Set& i_vars);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
