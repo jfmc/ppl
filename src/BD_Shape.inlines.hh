@@ -94,6 +94,33 @@ max_assign(N& x, const N& y) {
     x = y;
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p m is an even number.
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T, typename Policy>
+inline bool
+is_even(const Checked_Number<T, Policy>& m) {
+  Checked_Number<T, Policy> half_m;
+  return
+    div2exp_assign_r(half_m, m, 1, ROUND_IGNORE) == V_EQ
+    && is_integer(half_m);
+}
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \f$m = -n\f$.
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T, typename Policy>
+inline bool
+is_additive_inverse(const Checked_Number<T, Policy>& m,
+		    const Checked_Number<T, Policy>& n) {
+  Checked_Number<T, Policy> negated_m;
+  return
+    neg_assign_r(negated_m, m, ROUND_IGNORE) == V_EQ
+    && negated_m == n;
+}
+
 } // namespace BD_Shapes
 } // namespace Implementation
 
