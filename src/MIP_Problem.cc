@@ -283,6 +283,24 @@ PPL::MIP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
   assert(OK());
 }
 
+void
+PPL::MIP_Problem::set_integer_space_dimensions(const Variables_Set& i_vars) {
+  dimension_type i_vars_original_size = i_variables.size();
+  for (Variables_Set::const_iterator i_vars_begin = i_vars.begin(),
+	 i_vars_end = i_vars.end(); i_vars_begin != i_vars_end;
+       ++i_vars_begin) {
+    if (i_vars_begin->id() > external_space_dim)
+      throw std::invalid_argument("PPL::MIP_Problem::"
+				  "evaluate_objective_function(p, n, d):\n"
+				  "*this and p are dimension incompatible.");
+    i_variables.insert(*i_vars_begin);
+  }
+  // If a new integral Variable is inserted, set the internal status to
+  // PARTIALLY_SATISFIABLE.
+  if (i_variables.size() != i_vars_original_size)
+    status = PARTIALLY_SATISFIABLE;
+}
+
 bool
 PPL::MIP_Problem::is_in_base(const dimension_type var_index,
 			     dimension_type& row_index) const {

@@ -323,10 +323,12 @@ public:
   void optimal_value(Coefficient& num, Coefficient& den) const;
 
   /*! \brief
-  Returns the Variables_Set containing all the variables constrained
-  to be integral.
+    Returns the Variables_Set containing all the variables constrained
+    to be integral.
   */
   const Variables_Set& integer_space_dimensions() const;
+
+  void set_integer_space_dimensions(const Variables_Set& i_vars);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
