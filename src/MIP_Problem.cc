@@ -298,7 +298,7 @@ PPL::MIP_Problem::set_integer_space_dimensions(const Variables_Set& i_vars) {
   }
   // If a new integral Variable is inserted, set the internal status to
   // PARTIALLY_SATISFIABLE.
-  if (i_variables.size() != i_vars_original_size)
+  if (i_variables.size() != i_vars_original_size && status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
 }
 
