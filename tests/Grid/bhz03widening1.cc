@@ -28,7 +28,7 @@ typedef Pointset_Powerset<Grid> GSet;
 
 namespace {
 
-// Joins of grids in powersets shows that series is stabilising.
+// Joins of grids in powersets shows that series is stabilizing.
 bool
 test01() {
   Variable A(0);

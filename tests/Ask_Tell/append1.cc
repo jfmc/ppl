@@ -32,9 +32,11 @@ void
 shift_rename_add(const DEF_Formula& p,
 		 dimension_type offset,
 		 DEF_Formula& q) {
+  assert(p.OK());
   for (DEF_Formula::const_iterator i = p.begin(),
 	 p_end = p.end(); i != p_end; ++i)
     q.add_pair(FCAIBVP(i->ask(), offset), FCAIBVP(i->tell(), offset));
+  assert(q.OK());
 }
 
 void
@@ -83,7 +85,7 @@ bool test01() {
   DEF_Formula a = a1;
   a.upper_bound_assign(a2);
 
-#if 0
+#if 1
   nout << "a1 = " << a1 << endl
        << "a2 = " << a2 << endl
        << "a = " << a << endl;
@@ -169,10 +171,98 @@ test02() {
   return current == expected;
 }
 
+bool
+test03() {
+  typedef Pointset_Ask_Tell<C_Polyhedron> AT;
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+  Variable F(5);
+
+  // This is the base case:
+  // append(A,B,C) :- A = [], B = C.
+  C_Polyhedron base_ask(3);
+  base_ask.add_constraint(A == 0);
+  C_Polyhedron base_tell(3);
+  base_tell.add_constraint(B >= 0);
+  base_tell.add_constraint(C == B);
+  AT base(3);
+  base.add_pair(base_ask, base_tell);
+
+  print_constraints(base, "*** base ***");
+
+  // This is the inductive case:
+  // append(A,B,C) :- A = [X|D], B = E, C = [X|F], append(D,E,F).
+  C_Polyhedron inductive_ask(6);
+  inductive_ask.add_constraint(A >= 1);
+  C_Polyhedron inductive_tell(6);
+  inductive_tell.add_constraint(A + F == C + D);
+  inductive_tell.add_constraint(B == E);
+  inductive_tell.add_constraint(C + D >= A);
+  inductive_tell.add_constraint(D >= 0);
+  inductive_tell.add_constraint(B >= 0);
+  inductive_tell.add_constraint(A >= D + 1);
+  AT inductive(6);
+  inductive.add_pair(inductive_ask, inductive_tell);
+
+  print_constraints(inductive, "*** inductive ***");
+
+  // Initialize the fixpoint iteration.
+  AT current = base;
+
+  print_constraints(current, "*** start ***");
+
+  // Contains the polyhedron computed at the previous iteration.
+  AT previous;
+  do {
+    previous = current;
+    current = inductive;
+
+    //shift_rename_add(previous, 3, current);
+    {
+      AT r(3, UNIVERSE);
+      r.concatenate_assign(previous);
+      current.meet_assign(r);
+    }
+
+    print_constraints(current, "*** after shift_rename_add ***");
+
+    std::cout << "space_dim = " << current.space_dimension() << std::endl;
+    if (!current.OK())
+      abort();
+
+    Variables_Set dimensions_to_remove(D, F);
+    current.remove_space_dimensions(dimensions_to_remove);
+
+    current.normalize();
+    print_constraints(current, "*** after remove_space_dimensions ***");
+
+    current.upper_bound_assign(previous);
+
+    print_constraints(current, "*** after poly_hull_assign_and_minimize***");
+
+  } while (current != previous);
+
+#if 0
+  C_Polyhedron expected(3);
+  expected.add_constraint(A + B == C);
+  expected.add_constraint(B >= 0);
+  expected.add_constraint(C >= B);
+
+  print_constraints(expected, "*** expected ***");
+
+  return current == expected ? 0 : 1;
+#endif
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
+  DO_TEST(test03);
 END_MAIN
-

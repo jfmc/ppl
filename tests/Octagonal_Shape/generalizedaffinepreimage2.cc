@@ -114,7 +114,7 @@ test04() {
     // This is an incorrect use of the function
     // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
     // it is illegal to pass an expression whose space dimension is
-    // greather than the octagon's space dimension.
+    // greater than the octagon's space dimension.
     oct.generalized_affine_preimage(y, GREATER_THAN_OR_EQUAL, z);
   }
   catch (std::invalid_argument& e) {
@@ -165,7 +165,7 @@ test06() {
     // This is an incorrect use of function
     // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
     // it is illegal to apply to a variable that space dimension is
-    // greather than the octagon's space dimension.
+    // greater than the octagon's space dimension.
     oct.generalized_affine_preimage(C, GREATER_THAN_OR_EQUAL, B - A);
   }
   catch (std::invalid_argument& e) {

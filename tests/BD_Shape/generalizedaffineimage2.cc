@@ -429,7 +429,7 @@ test16() {
     // This is an incorrect use of the function
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply it to an expression whose space dimension is
-    // greather than the BDS's space dimension.
+    // greater than the BDS's space dimension.
     bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, z);
   }
   catch (std::invalid_argument& e) {

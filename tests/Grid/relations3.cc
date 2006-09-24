@@ -169,7 +169,7 @@ test07() {
   return ok;
 }
 
-// Grid with a divisor that is greater than zero: seperate spaces.
+// Grid with a divisor that is greater than zero: separate spaces.
 bool
 test08() {
   Variable A(0);

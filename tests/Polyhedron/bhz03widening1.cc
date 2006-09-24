@@ -492,7 +492,7 @@ test06() {
 }
 
 // This tests the first case of the widening definition when the widening
-// does nothing as the lgo for the polyhull is decreasing.
+// does nothing as the lgo for the poly-hull is decreasing.
 bool
 test07() {
   Variable X(0);
@@ -565,7 +565,7 @@ test07() {
 }
 
 // This tests the first case of the widening definition when the widening
-// does nothing; the polyhull is stable with respect to the certificate
+// does nothing; the poly-hull is stable with respect to the certificate
 // and the multiset ordering for this certificate is decreasing.
 bool
 test08() {

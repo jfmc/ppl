@@ -373,7 +373,7 @@ test15() {
 
   LP_Problem lp(cs_space_dimension, cs, cost, MAXIMIZATION);
   try {
-    // Thist tries to add Constraint_System that contains a strict inequality.
+    // This tries to add Constraint_System that contains a strict inequality.
     lp.add_constraints(incompatible_cs);
 
   }

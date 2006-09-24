@@ -130,7 +130,7 @@ test05() {
 
   try {
     // This is an invalid use of the function
-    // RBD_Shape::add_constraint(c): it is illegal to insert a
+    // BD_Shape::add_constraint(c): it is illegal to insert a
     // constraints that contains a variable that is not in the space
     // of the polyhedron.
     bd.add_constraint(y >= 0);

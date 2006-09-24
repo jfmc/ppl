@@ -216,7 +216,7 @@ test07() {
   cs2.insert(D - A <= -3);
   TOctagonal_Shape oc2(4);
 
-  // The octagon oc2 is empty, infact it has a negative cycle.
+  // The octagon oc2 is empty, since it has a negative cycle.
   oc2.add_constraints(cs2);
 
   print_constraints(oc2, "*** oc2 ***");

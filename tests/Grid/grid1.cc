@@ -111,7 +111,7 @@ test03() {
   return ok;
 }
 
-// test from Chiara conversion_test.cc
+// test from Chiara conversion_test.cc.
 bool
 test04() {
   Variable A(0);
@@ -419,8 +419,6 @@ test14() {
   return ok;
 }
 
-// Bigger values (param_test7a from Chiara Convert_Test.cc) -- in
-// grid1_64.cc.
 // Test reduce_line_with_line (param_test9 from Chiara Convert_Test.cc).
 bool
 test15() {

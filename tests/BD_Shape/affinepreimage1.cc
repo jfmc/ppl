@@ -157,7 +157,7 @@ test06() {
     // This is an incorrect use of the function
     // BD_Shape::affine_preimage(v, expr, d): it is illegal
     // to apply it to an expression whose space dimension is
-    // greather than the space dimension of the BDS.
+    // greater than the space dimension of the BDS.
     bd.affine_preimage(y, z);
   }
   catch (std::invalid_argument& e) {

@@ -196,7 +196,7 @@ test02() {
   if (num != num_kr || den != den_kr)
     return false;
 
-  // Reoptimizing using another objective function.
+  // Reoptimize using another objective function.
   Linear_Expression new_cost = -51*A + 632*B;
   lp.set_objective_function(new_cost);
   pg = lp.optimizing_point();
@@ -213,7 +213,7 @@ test02() {
   if (num != num_kr || den != den_kr)
     return false;
 
-  // Reoptimizing after changing optimization mode.
+  // Reoptimize after changing optimization mode.
   lp.set_optimization_mode(MINIMIZATION);
   pg = lp.optimizing_point();
   nout << "Optimizing point = ";
@@ -794,7 +794,7 @@ test04() {
   if (num != num_kr || den != den_kr)
     return false;
 
-  // Reoptimizing using another objective function.
+  // Reoptimize using another objective function.
   Linear_Expression new_cost = -51*A + 632*B;
   lp.set_objective_function(new_cost);
   pg = lp.optimizing_point();
@@ -811,7 +811,7 @@ test04() {
   if (num != num_kr || den != den_kr)
     return false;
 
-  // Reoptimizing after changing optimization mode.
+  // Reoptimize after changing optimization mode.
   lp.set_optimization_mode(MINIMIZATION);
   pg = lp.optimizing_point();
   nout << "Optimizing point = ";
