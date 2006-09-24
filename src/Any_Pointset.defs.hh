@@ -319,6 +319,7 @@ public:
   */
   virtual bool strictly_contains(const Any_Pointset& y) const = 0;
 
+#if 0
   /*! \brief
     Uses \p *this to shrink a generic, interval-based bounding box.
     Assigns to \p box the intersection of \p box with the smallest
@@ -387,25 +388,10 @@ public:
   template <typename Box>
   void shrink_bounding_box(Box& box,
 			   Complexity_Class complexity = ANY_COMPLEXITY) const;
+#endif
 
   //! Checks if all the invariants are satisfied.
-  /*!
-    \return
-    <CODE>true</CODE> if and only if \p *this satisfies all the
-    invariants and either \p check_not_empty is <CODE>false</CODE> or
-    \p *this is not empty.
-
-    \param check_not_empty
-    <CODE>true</CODE> if and only if, in addition to checking the
-    invariants, \p *this must be checked to be not empty.
-
-    The check is performed so as to intrude as little as possible.  If
-    the library has been compiled with run-time assertions enabled,
-    error messages are written on <CODE>std::cerr</CODE> in case
-    invariants are violated. This is useful for the purpose of
-    debugging the library.
-  */
-  bool OK(bool check_not_empty = false) const;
+  virtual bool OK() const = 0;
 
   //@} // Member Functions that Do Not Modify the Any_Pointset
 
@@ -420,21 +406,9 @@ public:
     Thrown if \p *this and constraint \p c are topology-incompatible
     or dimension-incompatible.
   */
-  void add_constraint(const Constraint& c);
+  virtual void add_constraint(const Constraint& c) = 0;
 
-  /*! \brief
-    Adds a copy of constraint \p c to the system of constraints
-    of \p *this, minimizing the result
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are topology-incompatible
-    or dimension-incompatible.
-  */
-  bool add_constraint_and_minimize(const Constraint& c);
-
+#if 0
   /*! \brief
     Adds a copy of generator \p g to the system of generators
     of \p *this (without minimizing the result).
@@ -444,27 +418,10 @@ public:
     dimension-incompatible, or if \p *this is an empty pointset and
     \p g is not a point.
   */
-  void add_generator(const Generator& g);
-
-  /*! \brief
-    Adds a copy of generator \p g to the system of generators
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and generator \p g are topology-incompatible or
-    dimension-incompatible, or if \p *this is an empty pointset and
-    \p g is not a point.
-  */
-  bool add_generator_and_minimize(const Generator& g);
+  virtual void add_generator(const Generator& g) = 0;
 
   //! Domain compatibility method.
-  void add_grid_generator(const Grid_Generator& g) const;
-
-  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
-  bool add_grid_generator_and_minimize(const Grid_Generator& g) const;
+  virtual void add_grid_generator(const Grid_Generator& g) const = 0;
 
   /*! \brief
     Adds a copy of congruence \p cg to the system of congruences of \p
@@ -474,7 +431,8 @@ public:
     Thrown if \p *this and congruence \p cg are topology-incompatible
     or dimension-incompatible.
   */
-  void add_congruence(const Congruence& cg);
+  virtual void add_congruence(const Congruence& cg) = 0;
+#endif
 
   /*! \brief
     Adds a copy of the constraints in \p cs to the system
@@ -488,64 +446,9 @@ public:
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
   */
-  void add_constraints(const Constraint_System& cs);
+  virtual void add_constraints(const Constraint_System& cs) = 0;
 
-  /*! \brief
-    Adds the constraints in \p cs to the system of constraints
-    of \p *this (without minimizing the result).
-
-    \param cs
-    The constraint system to be added to \p *this.  The constraints in
-    \p cs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-
-    \warning
-    The only assumption that can be made on \p cs upon successful or
-    exceptional return is that it can be safely destroyed.
-  */
-  void add_recycled_constraints(Constraint_System& cs);
-
-  /*! \brief
-    Adds a copy of the constraints in \p cs to the system
-    of constraints of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    Contains the constraints that will be added to the system of
-    constraints of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-  */
-  bool add_constraints_and_minimize(const Constraint_System& cs);
-
-  /*! \brief
-    Adds the constraints in \p cs to the system of constraints
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param cs
-    The constraint system to be added to \p *this.  The constraints in
-    \p cs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-
-    \warning
-    The only assumption that can be made on \p cs upon successful or
-    exceptional return is that it can be safely destroyed.
-  */
-  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
-
+#if 0
   /*! \brief
     Adds a copy of the generators in \p gs to the system
     of generators of \p *this (without minimizing the result).
@@ -559,66 +462,7 @@ public:
     dimension-incompatible, or if \p *this is empty and the system of
     generators \p gs is not empty, but has no points.
   */
-  void add_generators(const Generator_System& gs);
-
-  /*! \brief
-    Adds the generators in \p gs to the system of generators
-    of \p *this (without minimizing the result).
-
-    \param gs
-    The generator system to be added to \p *this.  The generators in
-    \p gs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are topology-incompatible or
-    dimension-incompatible, or if \p *this is empty and the system of
-    generators \p gs is not empty, but has no points.
-
-    \warning
-    The only assumption that can be made on \p gs upon successful or
-    exceptional return is that it can be safely destroyed.
-  */
-  void add_recycled_generators(Generator_System& gs);
-
-  /*! \brief
-    Adds a copy of the generators in \p gs to the system
-    of generators of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param gs
-    Contains the generators that will be added to the system of
-    generators of \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are topology-incompatible or
-    dimension-incompatible, or if \p *this is empty and the the system
-    of generators \p gs is not empty, but has no points.
-  */
-  bool add_generators_and_minimize(const Generator_System& gs);
-
-  /*! \brief
-    Adds the generators in \p gs to the system of generators
-    of \p *this, minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \param gs
-    The generator system to be added to \p *this.  The generators in
-    \p gs may be recycled.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p gs are topology-incompatible or
-    dimension-incompatible, or if \p *this is empty and the the system
-    of generators \p gs is not empty, but has no points.
-
-    \warning
-    The only assumption that can be made on \p gs upon successful or
-    exceptional return is that it can be safely destroyed.
-  */
-  bool add_recycled_generators_and_minimize(Generator_System& gs);
+  virtual void add_generators(const Generator_System& gs) = 0;
 
   /*! \brief
     Adds to \p *this constraints equivalent to the congruences in \p
@@ -632,7 +476,8 @@ public:
     Thrown if \p *this and \p cgs are topology-incompatible or
     dimension-incompatible.
   */
-  void add_congruences(const Congruence_System& cgs);
+  virtual void add_congruences(const Congruence_System& cgs) = 0;
+#endif
 
   /*! \brief
     Assigns to \p *this the intersection of \p *this and \p y.
@@ -642,46 +487,18 @@ public:
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
   */
-  void intersection_assign(const Any_Pointset& y);
+  virtual void intersection_assign(const Any_Pointset& y) = 0;
+
 
   /*! \brief
-    Assigns to \p *this the intersection of \p *this and \p y,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
+    Assigns to \p *this the smallest pointset, in the class of
+    \p *this and \p y, that contains both \p *this and \p y.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
   */
-  bool intersection_assign_and_minimize(const Any_Pointset& y);
-
-  /*! \brief
-    Assigns to \p *this the poly-hull of \p *this and \p y.
-    The result is not guaranteed to be minimized.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
-  */
-  void poly_hull_assign(const Any_Pointset& y);
-
-  /*! \brief
-    Assigns to \p *this the poly-hull of \p *this and \p y,
-    minimizing the result.
-
-    \return
-    <CODE>false</CODE> if and only if the result is empty.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
-  */
-  bool poly_hull_assign_and_minimize(const Any_Pointset& y);
-
-  //! Same as poly_hull_assign(y).
-  void upper_bound_assign(const Any_Pointset& y);
+  virtual void upper_bound_assign(const Any_Pointset& y) = 0;
 
   /*! \brief
     Assigns to \p *this
@@ -694,8 +511,16 @@ public:
   */
   void poly_difference_assign(const Any_Pointset& y);
 
-  //! Same as poly_difference_assign(y).
-  void difference_assign(const Any_Pointset& y);
+  /*! \brief
+    Assigns to \p *this the smallest pointset, in the class of \p
+    *this and \p y, that contains the set-theoretic difference of \p
+    *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  virtual void difference_assign(const Any_Pointset& y) = 0;
 
   /*! \brief
     Assigns to \p *this the
@@ -786,10 +611,10 @@ public:
     - symmetries.
     \endif
   */
-  void affine_image(Variable var,
-		    const Linear_Expression& expr,
-		    Coefficient_traits::const_reference denominator
-		      = Coefficient_one());
+  virtual void affine_image(Variable var,
+			    const Linear_Expression& expr,
+			    Coefficient_traits::const_reference denominator
+			    = Coefficient_one()) = 0;
 
   /*! \brief
     Assigns to \p *this the
@@ -878,10 +703,10 @@ public:
     \f]
     \endif
   */
-  void affine_preimage(Variable var,
-		       const Linear_Expression& expr,
-		       Coefficient_traits::const_reference denominator
-		         = Coefficient_one());
+  virtual void affine_preimage(Variable var,
+			       const Linear_Expression& expr,
+			       Coefficient_traits::const_reference denominator
+			       = Coefficient_one()) = 0;
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -909,11 +734,12 @@ public:
     or if \p *this is a C_Any_Pointset and \p relsym is a strict
     relation symbol.
   */
+  virtual
   void generalized_affine_image(Variable var,
 				const Relation_Symbol relsym,
 				const Linear_Expression& expr,
 				Coefficient_traits::const_reference denominator
-				  = Coefficient_one());
+				= Coefficient_one()) = 0;
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -941,12 +767,12 @@ public:
     or if \p *this is a C_Any_Pointset and \p relsym is a strict
     relation symbol.
   */
-  void
+  virtual void
   generalized_affine_preimage(Variable var,
 			      const Relation_Symbol relsym,
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference denominator
-			      = Coefficient_one());
+			      = Coefficient_one()) = 0;
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -968,9 +794,9 @@ public:
     or if \p *this is a C_Any_Pointset and \p relsym is a strict
     relation symbol.
   */
-  void generalized_affine_image(const Linear_Expression& lhs,
-				const Relation_Symbol relsym,
-				const Linear_Expression& rhs);
+  virtual void generalized_affine_image(const Linear_Expression& lhs,
+					const Relation_Symbol relsym,
+					const Linear_Expression& rhs) = 0;
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -992,10 +818,11 @@ public:
     or if \p *this is a C_Any_Pointset and \p relsym is a strict
     relation symbol.
   */
-  void generalized_affine_preimage(const Linear_Expression& lhs,
-				   const Relation_Symbol relsym,
-				   const Linear_Expression& rhs);
+  virtual void generalized_affine_preimage(const Linear_Expression& lhs,
+					   const Relation_Symbol relsym,
+					   const Linear_Expression& rhs) = 0;
 
+#if 0
   /*!
     \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -1022,11 +849,12 @@ public:
     and \p *this are dimension-incompatible or if \p var is not a space
     dimension of \p *this.
   */
+  virtual
   void bounded_affine_image(Variable var,
 			    const Linear_Expression& lb_expr,
 			    const Linear_Expression& ub_expr,
 			    Coefficient_traits::const_reference denominator
-			    = Coefficient_one());
+			    = Coefficient_one()) = 0;
 
   /*!
     \brief
@@ -1054,11 +882,13 @@ public:
     and \p *this are dimension-incompatible or if \p var is not a space
     dimension of \p *this.
   */
+  virtual
   void bounded_affine_preimage(Variable var,
 			       const Linear_Expression& lb_expr,
 			       const Linear_Expression& ub_expr,
 			       Coefficient_traits::const_reference denominator
-			       = Coefficient_one());
+			       = Coefficient_one()) = 0;
+#endif
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1068,7 +898,7 @@ public:
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
   */
-  void time_elapse_assign(const Any_Pointset& y);
+  virtual void time_elapse_assign(const Any_Pointset& y) = 0;
 
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
@@ -1429,17 +1259,96 @@ class WRAPPER_NAME : public Any_Pointset {				\
     x.remove_higher_space_dimensions(new_dimension);			\
   }									\
 									\
+  void add_constraint(const Constraint& c) {				\
+    x.add_constraint(c);						\
+  }									\
+									\
+  void add_constraints(const Constraint_System& cs) {			\
+    x.add_constraints(cs);						\
+  }									\
+									\
+  void intersection_assign(const Any_Pointset& y) {			\
+    x.intersection_assign(dynamic_cast<const BASE_CLASS&>(y));		\
+  }									\
+  void upper_bound_assign(const Any_Pointset& y) {			\
+    x.upper_bound_assign(dynamic_cast<const BASE_CLASS&>(y));		\
+  }									\
+  void difference_assign(const Any_Pointset& y) {			\
+    x.difference_assign(dynamic_cast<const BASE_CLASS&>(y));		\
+  }									\
   void concatenate_assign(const Any_Pointset& y) {			\
     x.concatenate_assign(dynamic_cast<const BASE_CLASS&>(y));		\
   }									\
+  void time_elapse_assign(const Any_Pointset& y) {			\
+    x.time_elapse_assign(dynamic_cast<const BASE_CLASS&>(y));		\
+  }									\
 									\
-  memory_size_type total_memory_in_bytes() const {			\
+  void affine_image(Variable var,					\
+		    const Linear_Expression& expr,			\
+		    Coefficient_traits::const_reference denominator	\
+		    = Coefficient_one()) {				\
+    x.affine_image(var, expr, denominator);				\
+  }									\
+  void affine_preimage(Variable var,					\
+		       const Linear_Expression& expr,			\
+		       Coefficient_traits::const_reference denominator	\
+		       = Coefficient_one()) {				\
+    x.affine_image(var, expr, denominator);				\
+  }									\
+  void generalized_affine_image(Variable var,				\
+				const Relation_Symbol relsym,		\
+				const Linear_Expression& expr,		\
+				Coefficient_traits::const_reference	\
+				denominator = Coefficient_one()) {	\
+    x.generalized_affine_image(var, relsym, expr, denominator);		\
+  }									\
+  void									\
+  generalized_affine_preimage(Variable var,				\
+			      const Relation_Symbol relsym,		\
+			      const Linear_Expression& expr,		\
+			      Coefficient_traits::const_reference denominator \
+			      = Coefficient_one()) {			\
+    x.generalized_affine_preimage(var, relsym, expr, denominator);	\
+  }									\
+  virtual void generalized_affine_image(const Linear_Expression& lhs,	\
+					const Relation_Symbol relsym,	\
+					const Linear_Expression& rhs) { \
+    x.generalized_affine_image(lhs, relsym, rhs);			\
+  }									\
+  void generalized_affine_preimage(const Linear_Expression& lhs,	\
+				   const Relation_Symbol relsym,	\
+				   const Linear_Expression& rhs) {	\
+    x.generalized_affine_preimage(lhs, relsym, rhs);			\
+  }									\
+									\
+memory_size_type total_memory_in_bytes() const {			\
     return x.total_memory_in_bytes();					\
   }									\
   memory_size_type external_memory_in_bytes() const {			\
     return x.total_memory_in_bytes();					\
   }									\
+									\
+  bool OK() const {							\
+    return x.OK();							\
+  }									\
 };
+
+#if 0
+  void bounded_affine_image(Variable var,				\
+			    const Linear_Expression& lb_expr,		\
+			    const Linear_Expression& ub_expr,		\
+			    Coefficient_traits::const_reference		\
+			    denominator = Coefficient_one()) {		\
+    x.bounded_affine_image(var, lb_expr, ub_expr, denominator);		\
+  }									\
+  void bounded_affine_preimage(Variable var,				\
+			       const Linear_Expression& lb_expr,	\
+			       const Linear_Expression& ub_expr,	\
+			       Coefficient_traits::const_reference	\
+			       denominator = Coefficient_one()) {	\
+    x.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);	\
+  }
+#endif
 
 namespace Parma_Polyhedra_Library {
 
@@ -1450,8 +1359,8 @@ PPL_ANY_POINTSET_WRAPPER_CLASS(, NNC_Polyhedron_Pointset, NNC_Polyhedron)
 PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, BD_Shape_Pointset, BD_Shape<T>)
 PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, Octagonal_Shape_Pointset, Octagonal_Shape<T>)
 
-//C_Polyhedron_Pointset a;
-//Octagonal_Shape_Pointset<double> b(C_Polyhedron(3));
+C_Polyhedron_Pointset a(C_Polyhedron(3));
+Octagonal_Shape_Pointset<double> b(C_Polyhedron(3));
 
 } // namespace Parma_Polyhedra_Library
 
