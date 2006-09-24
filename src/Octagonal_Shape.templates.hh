@@ -35,6 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 // FIXME: this is only to get access to
 // Implementation::BD_Shapes::div_round_up(),
 // Implementation::BD_Shapes::numer_denom(),
+// Implementation::BD_Shapes::is_additive_inverse().
 // Implementation::BD_Shapes::min_assign().
 #include "BD_Shape.defs.hh"
 
@@ -865,7 +866,9 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
 template <typename T>
 Poly_Gen_Relation
 Octagonal_Shape<T>::relation_with(const Generator& g) const {
-  dimension_type g_space_dim = g.space_dimension();
+  using Implementation::BD_Shapes::is_additive_inverse;
+
+  const dimension_type g_space_dim = g.space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim < g_space_dim)
@@ -879,7 +882,6 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
   // all the generators of a zero-dimensional space.
   if (space_dim == 0)
     return Poly_Gen_Relation::subsumes();
-
 
   const bool is_line = g.is_line();
 
@@ -905,11 +907,7 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
     // We have the unary constraints.
     const Variable x(i/2);
     const bool dimension_incompatible = x.space_dimension() > g_space_dim;
-    N negated_m_i_ii;
-    const bool is_unary_equality
-      = neg_assign_r(negated_m_i_ii, m_i_ii, ROUND_NOT_NEEDED) == V_EQ
-      && negated_m_i_ii == m_ii_i;
-    if (is_unary_equality) {
+    if (is_additive_inverse(m_i_ii, m_ii_i)) {
       // The constraint has form ax = b.
       // To satisfy the constraint it's necessary that the scalar product
       // is not zero.It happens when the coefficient of the variable 'x'
@@ -972,18 +970,11 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
 				    && g.coefficient(y) == 0)
 	|| (y_dimension_incompatible && g.coefficient(x) == 0)
 	|| (x_dimension_incompatible && y_dimension_incompatible);
+
       // FIXME! Find better names.
-      N negated_m_ii_jj;
-      const bool is_binary_equality
-	= neg_assign_r(negated_m_ii_jj, m_ii_jj, ROUND_NOT_NEEDED) == V_EQ
-	&& negated_m_ii_jj == m_i_j;
-      N negated_m_i_jj;
-      const bool is_a_binary_equality
-	= neg_assign_r(negated_m_i_jj, m_i_jj, ROUND_NOT_NEEDED) == V_EQ
-	&& negated_m_i_jj == m_ii_j;
-
+      const bool is_binary_equality = is_additive_inverse(m_ii_jj, m_i_j);
+      const bool is_a_binary_equality = is_additive_inverse(m_i_jj, m_ii_j);
       Coefficient g_coefficient_y;
-
       if (is_binary_equality || is_a_binary_equality) {
 	// The scalar product has the form
 	// 'a * y_i - a * x_j' (or  'a * x_j + a * y_i')
@@ -1222,22 +1213,19 @@ Octagonal_Shape<T>::strong_coherence_assign() {
 template <typename T>
 bool
 Octagonal_Shape<T>::tight_coherence_would_make_empty() const {
+  using Implementation::BD_Shapes::is_additive_inverse;
+  using Implementation::BD_Shapes::is_even;
   assert(std::numeric_limits<N>::is_integer);
   assert(marked_strongly_closed());
-  N tmp;
-  N two;
-  assign_r(two, 2, ROUND_NOT_NEEDED);
   const dimension_type space_dim = space_dimension();
   for (dimension_type i = 0; i < 2*space_dim; i += 2) {
     const dimension_type ci = i+1;
     const N& mat_i_ci = matrix[i][ci];
     if (!is_plus_infinity(mat_i_ci)
 	// Check for oddness of `mat_i_ci'.
-	&& rem_assign_r(tmp, mat_i_ci, two, ROUND_NOT_NEEDED) == V_EQ
- 	&& tmp != 0
+	&& !is_even(mat_i_ci)
 	// Check for zero-equivalence of `i' and `ci'.
-	&& neg_assign_r(tmp, mat_i_ci, ROUND_NOT_NEEDED) == V_EQ
-	&& tmp == matrix[ci][i])
+	&& is_additive_inverse(mat_i_ci, matrix[ci][i]))
       return true;
   }
   return false;
@@ -1413,12 +1401,10 @@ Octagonal_Shape<T>
     for (dimension_type j = 0; j < i; ++j) {
     //for (dimension_type j = i; j-- > 0; ) {
       dimension_type cj = coherent_index(j);
-      N neg_m_ci_cj;
-      if (neg_assign_r(neg_m_ci_cj, m_ci[cj], ROUND_NOT_NEEDED) == V_EQ
-	      && neg_m_ci_cj == m_i[j]) {
+      using Implementation::BD_Shapes::is_additive_inverse;
+      if (is_additive_inverse(m_ci[cj], m_i[j]))
         // Choose as successor the variable having the greatest index.
         successor[j] = i;
-      }
     }
   }
 }
@@ -1439,19 +1425,18 @@ Octagonal_Shape<T>
     leaders.push_back(i);
   // Now compute actual leaders.
   for (typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin(),
-	 matrix_row_end = matrix.row_end(); i_iter != matrix_row_end; ++i_iter) {
+	 matrix_row_end = matrix.row_end();
+       i_iter != matrix_row_end; ++i_iter) {
     typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
     dimension_type i = i_iter.index();
     typename OR_Matrix<N>::const_row_reference_type m_ci =
       (i%2) ? *(i_iter-1) : *(i_iter+1);
     for (dimension_type j = 0; j < i; ++j) {
       dimension_type cj = coherent_index(j);
-      N neg_m_ci_cj;
-      if (neg_assign_r(neg_m_ci_cj, m_ci[cj], ROUND_NOT_NEEDED) == V_EQ
-	      && neg_m_ci_cj == m_i[j]) {
+      using Implementation::BD_Shapes::is_additive_inverse;
+      if (is_additive_inverse(m_ci[cj], m_i[j]))
         // Choose as leader the variable having the smaller index.
 	leaders[i] = leaders[j];
-      }
     }
   }
 }
@@ -4341,6 +4326,7 @@ template <typename T>
 Constraint_System
 Octagonal_Shape<T>::constraints() const {
   using Implementation::BD_Shapes::numer_denom;
+  using Implementation::BD_Shapes::is_additive_inverse;
 
   Constraint_System cs;
   if (space_dim == 0) {
@@ -4372,9 +4358,7 @@ Octagonal_Shape<T>::constraints() const {
       const N& c_ii_i = (*i_iter)[i];
       ++i_iter;
       // Go through unary constraints.
-      N negated_c_i_ii;
-      if (neg_assign_r(negated_c_i_ii, c_i_ii, ROUND_NOT_NEEDED) == V_EQ
-	  && negated_c_i_ii == c_ii_i) {
+      if (is_additive_inverse(c_i_ii, c_ii_i)) {
 	// We have a unary equality constraint.
 	numer_denom(c_ii_i, b, a);
 	a *= 2;
@@ -4406,9 +4390,7 @@ Octagonal_Shape<T>::constraints() const {
 	const N& c_i_j = r_i[j];
 	const N& c_ii_jj = r_ii[j+1];
 	const Variable x(j/2);
-	N negated_c_ii_jj;
-	if (neg_assign_r(negated_c_ii_jj, c_ii_jj, ROUND_NOT_NEEDED) == V_EQ
-	    && negated_c_ii_jj == c_i_j) {
+	if (is_additive_inverse(c_ii_jj, c_i_j)) {
 	  // We have an equality constraint of the form ax - ay = b.
 	  numer_denom(c_i_j, b, a);
 	  cs.insert(a*x - a*y == b);
@@ -4427,9 +4409,7 @@ Octagonal_Shape<T>::constraints() const {
 
 	const N& c_ii_j = r_ii[j];
 	const N& c_i_jj = r_i[j+1];
-	N negated_c_i_jj;
-	if (neg_assign_r(negated_c_i_jj, c_i_jj, ROUND_NOT_NEEDED) == V_EQ
-	    && negated_c_i_jj == c_ii_j) {
+	if (is_additive_inverse(c_i_jj, c_ii_j)) {
 	  // We have an equality constraint of the form ax + ay = b.
 	  numer_denom(c_ii_j, b, a);
 	  cs.insert(a*x + a*y == b);
@@ -4465,6 +4445,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
     return s;
   }
 
+  using Implementation::BD_Shapes::is_additive_inverse;
   typedef typename Octagonal_Shape<T>::coefficient_type N;
   typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
@@ -4475,6 +4456,9 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
   Row_Iterator m_begin = x.matrix.row_begin();
   Row_Iterator m_end = x.matrix.row_end();
 
+  // Temporaries.
+  N negation;
+  N half;
   // Go through all the unary constraints.
   // (Note: loop iterator is incremented in the loop body.)
   for (Row_Iterator i_iter = m_begin; i_iter != m_end; ) {
@@ -4485,48 +4469,46 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
     const N& x_ii_i = (*i_iter)[i];
     ++i_iter;
     // Check whether or not it is an equality constraint.
-    N negated_x_i_ii;
-    if (neg_assign_r(negated_x_i_ii, x_i_ii, ROUND_NOT_NEEDED) == V_EQ
-	&& negated_x_i_ii == x_ii_i) {
+    if (is_additive_inverse(x_i_ii, x_ii_i)) {
       // It is an equality.
       assert(!is_plus_infinity(x_i_ii) && !is_plus_infinity(x_ii_i));
       if (first)
 	first = false;
       else
 	s << ", ";
-      // CHECKME:
       // If the value bound can NOT be divided by 2 exactly,
       // then we output the constraint `2*v_i == bound'.
-      N half_x_ii_i;
-      if (div2exp_assign_r(half_x_ii_i, x_ii_i, 1, ROUND_NOT_NEEDED) == V_EQ)
-	s << v_i << " == " << half_x_ii_i;
+      if (div2exp_assign_r(half, x_ii_i, 1, ROUND_UP) == V_EQ)
+	s << v_i << " == " << half;
       else
-	s << " 2*" << v_i << " == " << x_ii_i;
+	s << "2*" << v_i << " == " << x_ii_i;
     }
     else {
-      // We will print non-strict inequalities, if any.
+      // We will print unary non-strict inequalities, if any.
       if (!is_plus_infinity(x_i_ii)) {
 	if (first)
 	  first = false;
-	// We have got a constraint with an only Variable.
 	else
 	  s << ", ";
-	s << v_i;
-	N minus_half_x_i_ii;
-	neg_assign_r(minus_half_x_i_ii, x_i_ii, ROUND_DOWN);
-	div2exp_assign_r(minus_half_x_i_ii, minus_half_x_i_ii, 1,
-			 ROUND_NOT_NEEDED);
-	s << " >= " << minus_half_x_i_ii;
+	neg_assign_r(negation, x_i_ii, ROUND_NOT_NEEDED);
+	// If the value bound can NOT be divided by 2 exactly,
+	// then we output the constraint `2*v_i >= negation'.
+	if (div2exp_assign_r(half, negation, 1, ROUND_UP) == V_EQ)
+	  s << v_i << " >= " << half;
+	else
+	  s << "2*" << v_i << " >= " << negation;
       }
       if (!is_plus_infinity(x_ii_i)) {
 	if (first)
 	  first = false;
 	else
 	  s << ", ";
-	s << v_i;
-	N half_x_ii_i;
-	div2exp_assign_r(half_x_ii_i, x_ii_i, 1, ROUND_UP);
-	s << " <= " << half_x_ii_i;
+	// If the value bound can NOT be divided by 2 exactly,
+	// then we output the constraint `2*v_i <= bound'.
+	if (div2exp_assign_r(half, x_ii_i, 1, ROUND_UP) == V_EQ)
+	  s << v_i << " <= " << half;
+	else
+	  s << "2*" << v_i << " <= " << x_ii_i;
       }
     }
   }
@@ -4547,9 +4529,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
       const N& x_ii_jj = r_ii[j+1];
       const N& x_i_j = r_i[j];
       // Check whether or not it is an equality constraint.
-      N negated_x_ii_jj;
-      if (neg_assign_r(negated_x_ii_jj, x_ii_jj, ROUND_NOT_NEEDED) == V_EQ
-	  && negated_x_ii_jj == x_i_j) {
+      if (is_additive_inverse(x_ii_jj, x_i_j)) {
 	// It is an equality.
 	assert(!is_plus_infinity(x_i_j) && !is_plus_infinity(x_ii_jj));
 	if (first)
@@ -4571,9 +4551,8 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
 	  if (x_i_j >= 0)
 	    s << v_j << " - " << v_i << " <= " << x_i_j;
 	  else {
-	    N negated_x_i_j;
-	    neg_assign_r(negated_x_i_j, x_i_j, ROUND_DOWN);
-	    s << v_i << " - " << v_j << " >= " << negated_x_i_j;
+	    neg_assign_r(negation, x_i_j, ROUND_DOWN);
+	    s << v_i << " - " << v_j << " >= " << negation;
 	  }
 	}
 	if (!is_plus_infinity(x_ii_jj)) {
@@ -4584,9 +4563,8 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
 	  if (x_ii_jj >= 0)
 	    s << v_i << " - " << v_j << " <= " << x_ii_jj;
 	  else {
-	    N negated_x_ii_jj;
-	    neg_assign_r(negated_x_ii_jj, x_ii_jj, ROUND_DOWN);
-	    s << v_j << " - " << v_i << " >= " << negated_x_ii_jj;
+	    neg_assign_r(negation, x_ii_jj, ROUND_DOWN);
+	    s << v_j << " - " << v_i << " >= " << negation;
 	  }
 	}
       }
@@ -4594,9 +4572,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
       const N& x_i_jj = r_i[j+1];
       const N& x_ii_j = r_ii[j];
       // Check whether or not it is an equality constraint.
-      N negated_x_i_jj;
-      if (neg_assign_r(negated_x_i_jj, x_i_jj, ROUND_NOT_NEEDED) == V_EQ
-	  && negated_x_i_jj == x_ii_j) {
+      if (is_additive_inverse(x_i_jj, x_ii_j)) {
 	// It is an equality.
 	assert(!is_plus_infinity(x_i_jj) && !is_plus_infinity(x_ii_j));
 	if (first)
@@ -4612,9 +4588,8 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
 	    first = false;
 	  else
 	    s << ", ";
-	  N negated_x_i_jj;
-	  neg_assign_r(negated_x_i_jj, x_i_jj, ROUND_DOWN);
-	  s << v_j << " + " << v_i << " >= " << negated_x_i_jj;
+	  neg_assign_r(negation, x_i_jj, ROUND_DOWN);
+	  s << v_j << " + " << v_i << " >= " << negation;
 	}
 	if (!is_plus_infinity(x_ii_j)) {
 	  if (first)
