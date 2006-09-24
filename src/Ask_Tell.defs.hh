@@ -340,6 +340,8 @@ protected:
 
   bool absorb();
 
+  void deabsorb() const;
+
   /*! \brief
     Does the hard work of checking whether \p *this is normalized
     and returns <CODE>true</CODE> if and only if it is.

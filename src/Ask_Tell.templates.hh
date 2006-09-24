@@ -145,10 +145,47 @@ Ask_Tell<D>::absorb() {
 
 template <typename D>
 void
+Ask_Tell<D>::deabsorb() const {
+  if (D::has_nontrivial_weakening()) {
+    Sequence new_sequence;
+    for (Sequence_const_iterator x_begin = sequence.begin(),
+	   x_end = sequence.end(), xi = x_begin; xi != x_end; ++xi)
+      for (Sequence_const_iterator yi = x_begin; yi != x_end; ++yi) {
+	if (xi != yi) {
+	  const D& xi_ask = xi->ask();
+	  const D& yi_ask = yi->ask();
+	  if (xi_ask.definitely_entails(yi_ask)) {
+	    D new_ask = xi_ask;
+	    new_ask.weakening_assign(yi->tell());
+	    new_ask.meet_assign(yi_ask);
+	    if (!new_ask.definitely_entails(xi_ask))
+	      new_sequence.push_back(Pair(new_ask, xi->tell()));
+	  }
+	}
+      }
+    if (!new_sequence.empty()) {
+      Ask_Tell& x = const_cast<Ask_Tell&>(*this);
+      std::copy(new_sequence.begin(), new_sequence.end(),
+		back_inserter(x.sequence));
+      x.reduce();
+      x.deduce();
+      normalized = false;
+    }
+  }
+  else if (!normalized) {
+    Ask_Tell& x = const_cast<Ask_Tell&>(*this);
+    x.reduce();
+    x.deduce();
+  }
+  assert(OK());
+}
+
+template <typename D>
+void
 Ask_Tell<D>::upper_bound_assign(const Ask_Tell& y) {
   const Ask_Tell& x = *this;
-  x.normalize();
-  y.normalize();
+  x.deabsorb();
+  y.deabsorb();
   Ask_Tell<D> z;
   for (typename Ask_Tell<D>::const_iterator xi = x.begin(),
 	 x_end = x.end(); xi != x_end; ++xi)

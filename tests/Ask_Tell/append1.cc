@@ -230,10 +230,6 @@ test03() {
 
     print_constraints(current, "*** after shift_rename_add ***");
 
-    std::cout << "space_dim = " << current.space_dimension() << std::endl;
-    if (!current.OK())
-      abort();
-
     Variables_Set dimensions_to_remove(D, F);
     current.remove_space_dimensions(dimensions_to_remove);
 

@@ -176,6 +176,20 @@ Determinate<PH>::meet_assign(const Determinate& y) {
 }
 
 template <typename PH>
+inline bool
+Determinate<PH>::has_nontrivial_weakening() {
+  // FIXME
+  return true;
+}
+
+template <typename PH>
+inline void
+Determinate<PH>::weakening_assign(const Determinate& y) {
+  // FIXME
+  element().difference_assign(y.element());
+}
+
+template <typename PH>
 inline void
 Determinate<PH>::concatenate_assign(const Determinate& y) {
   element().concatenate_assign(y.element());

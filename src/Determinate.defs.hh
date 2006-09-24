@@ -135,6 +135,12 @@ public:
   */
   memory_size_type external_memory_in_bytes() const;
 
+  /*!
+    Returns <CODE>true</CODE> if and only if this domain
+    has a nontrivial weakening operator.
+  */
+  static bool has_nontrivial_weakening();
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -149,6 +155,9 @@ public:
 
   //! Assigns to \p *this the meet of \p *this and \p y.
   void meet_assign(const Determinate& y);
+
+  //! Assigns to \p *this the result of weakening \p *this with \p y.
+  void weakening_assign(const Determinate& y);
 
   /*! \brief
     Assigns to \p *this the \ref Concatenating_Polyhedra "concatenation"
