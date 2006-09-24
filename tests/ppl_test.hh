@@ -408,19 +408,6 @@ check_result(const Octagonal_Shape<T>& computed_result,
     : check_result_i(computed_result, known_result, 0, 0, 0);
 }
 
-//! Compare copies of \p a and \p b.
-/*!
-  Comparing temporary copies ensures that the underlying
-  representation of \p a and \p b stays the same.
-*/
-template <typename T>
-inline bool
-copy_compare(const T& a, const T& b) {
-  const T tem_a = a;
-  const T tem_b = b;
-  return tem_a == tem_b;
-}
-
 //! Return true if and only if x equals y.
 bool operator==(const Bounding_Box& x, const Bounding_Box& y);
 
