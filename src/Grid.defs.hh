@@ -742,6 +742,12 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
   bool is_bounded() const;
 
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains at least one integer point.
+  */
+  bool contains_integer_point() const;
+
   //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!
     This method is the same as bounds_from_below.

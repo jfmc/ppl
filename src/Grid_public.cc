@@ -630,6 +630,31 @@ PPL::Grid::is_topologically_closed() const {
 }
 
 bool
+PPL::Grid::contains_integer_point() const {
+  // Empty grids have no points.
+  if (marked_empty())
+    return false;
+
+  // A zero-dimensional, universe grid has, by convention, an
+  // integer point.
+  if (space_dim == 0)
+    return true;
+
+  // A grid has an integer point if its intersection with the integer
+  // grid is non-empty.
+  Congruence_System cgs;
+  for (dimension_type var_index = space_dim; var_index-- > 0; ) {
+    cgs.insert(Variable(var_index) %= 0);
+  }
+
+  Grid& gr = const_cast<Grid&>(*this);
+  if (gr.add_congruences_and_minimize(cgs))
+    return true;
+
+  return false;
+}
+
+bool
 PPL::Grid::OK(bool check_not_empty) const {
 #ifndef NDEBUG
   using std::endl;

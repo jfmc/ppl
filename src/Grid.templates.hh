@@ -317,8 +317,9 @@ Grid::shrink_bounding_box(Box& box) const {
 	bounded_interval[col] = false;
   }
 
-  // Attempt to set both bounds of each boundable interval to the
-  // value of the associated coefficient in the point.
+  // For each dimension that is bounded by the grid, set both bounds
+  // of the interval to the value of the associated coefficient in a
+  // generator point.
   const Grid_Generator& point = *first_point;
   TEMP_INTEGER(bound);
   const Coefficient& divisor = point.divisor();
