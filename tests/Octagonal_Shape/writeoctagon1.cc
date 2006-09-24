@@ -89,10 +89,28 @@ test03() {
   return true;
 }
 
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
+
+  Octagonal_Shape<mpz_class> oc1(2);
+
+  oc1.add_constraint(x + y == 2);
+  oc1.add_constraint(x - y == 1);
+
+  (void) oc1.is_empty();
+  print_constraints(oc1, "*** oc1 ***");
+
+  // FIXME!!!
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN
