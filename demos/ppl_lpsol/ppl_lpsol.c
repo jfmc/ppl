@@ -719,8 +719,8 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   ppl_Constraint_System_const_iterator_t iend;
   int counter;
   int mode = maximize
-    ? PPL_LP_PROBLEM_MAXIMIZATION
-    : PPL_LP_PROBLEM_MINIMIZATION;
+    ? PPL_OPTIMIZATION_MODE_MAXIMIZATION
+    : PPL_OPTIMIZATION_MODE_MINIMIZATION;
 
   ppl_Constraint_System_space_dimension(cs, &space_dim);
   ppl_new_LP_Problem_from_dimension(&ppl_lp, space_dim);
