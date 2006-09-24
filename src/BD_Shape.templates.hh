@@ -533,6 +533,7 @@ template <typename T>
 void
 BD_Shape<T>
 ::compute_predecessors(std::vector<dimension_type>& predecessor) const {
+  using Implementation::BD_Shapes::is_additive_inverse;
   assert(!marked_empty() && marked_shortest_path_closed());
   assert(predecessor.size() == 0);
   // Variables are ordered according to their index.
@@ -550,14 +551,11 @@ BD_Shape<T>
     if (i == predecessor[i]) {
       const DB_Row<N>& dbm_i = dbm[i];
       for (dimension_type j = i; j-- > 0; )
-	if (j == predecessor[j]) {
-	  N negated_dbm_ji;
-	  if (neg_assign_r(negated_dbm_ji, dbm[j][i], ROUND_NOT_NEEDED) == V_EQ
-	      && negated_dbm_ji == dbm_i[j]) {
-	    // Choose as predecessor the variable having the smaller index.
-	    predecessor[i] = j;
-	    break;
-	  }
+	if (j == predecessor[j]
+	    && is_additive_inverse(dbm[j][i], dbm_i[j])) {
+	  // Choose as predecessor the variable having the smaller index.
+	  predecessor[i] = j;
+	  break;
 	}
     }
 }
@@ -585,6 +583,7 @@ BD_Shape<T>::compute_leaders(std::vector<dimension_type>& leaders) const {
 template <typename T>
 bool
 BD_Shape<T>::is_shortest_path_reduced() const {
+  using Implementation::BD_Shapes::is_additive_inverse;
   // If the BDS is empty, it is also reduced.
   if (marked_empty())
     return true;
@@ -615,15 +614,11 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   // m_i_j == -(m_j_i).
   for (dimension_type i = 0; i < x_space_dim; ++i) {
     const DB_Row<N>& x_copy_dbm_i = x_copy.dbm[i];
-    for (dimension_type j = i + 1; j <= x_space_dim; ++j) {
-      N negated_x_copy_dbm_ji;
-      if (neg_assign_r(negated_x_copy_dbm_ji, x_copy.dbm[j][i],
-		       ROUND_NOT_NEEDED) == V_EQ
-	  && negated_x_copy_dbm_ji == x_copy_dbm_i[j])
+    for (dimension_type j = i + 1; j <= x_space_dim; ++j)
+      if (is_additive_inverse(x_copy.dbm[j][i], x_copy_dbm_i[j]))
 	// Two equivalent variables have got the same leader
 	// (the smaller variable).
 	leader[j] = leader[i];
-    }
   }
 
   // Step 2: we check if there are redundant constraints in the zero_cycle
@@ -864,6 +859,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 template <typename T>
 Poly_Gen_Relation
 BD_Shape<T>::relation_with(const Generator& g) const {
+  using Implementation::BD_Shapes::is_additive_inverse;
   const dimension_type space_dim = space_dimension();
   const dimension_type g_space_dim = g.space_dimension();
 
@@ -895,10 +891,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
       const bool x_dimension_incompatible = x.space_dimension() > g_space_dim;
       const N& dbm_ij = dbm[i][j];
       const N& dbm_ji = dbm[j][i];
-      N negated_dbm_ji;
-      const bool is_equality
-	= neg_assign_r(negated_dbm_ji, dbm_ji, ROUND_NOT_NEEDED) == V_EQ
-	&& negated_dbm_ji == dbm_ij;
+      const bool is_equality = is_additive_inverse(dbm_ji, dbm_ij);
       const bool dbm_ij_is_infinity = is_plus_infinity(dbm_ij);
       const bool dbm_ji_is_infinity = is_plus_infinity(dbm_ji);
       if (i != 0) {
@@ -3452,6 +3445,7 @@ template <typename T>
 Constraint_System
 BD_Shape<T>::constraints() const {
   using Implementation::BD_Shapes::numer_denom;
+  using Implementation::BD_Shapes::is_additive_inverse;
 
   Constraint_System cs;
   const dimension_type space_dim = space_dimension();
@@ -3477,9 +3471,7 @@ BD_Shape<T>::constraints() const {
       const Variable x(j-1);
       const N& dbm_0j = dbm_0[j];
       const N& dbm_j0 = dbm[j][0];
-      N negated_dbm_j0;
-      if (neg_assign_r(negated_dbm_j0, dbm_j0, ROUND_NOT_NEEDED) == V_EQ
-	  && negated_dbm_j0 == dbm_0j) {
+      if (is_additive_inverse(dbm_j0, dbm_0j)) {
 	// We have a unary equality constraint.
 	numer_denom(dbm_0j, b, a);
 	cs.insert(a*x == b);
@@ -3505,9 +3497,7 @@ BD_Shape<T>::constraints() const {
 	const Variable x(j-1);
 	const N& dbm_ij = dbm_i[j];
 	const N& dbm_ji = dbm[j][i];
-	N negated_dbm_ji;
-	if (neg_assign_r(negated_dbm_ji, dbm_ji, ROUND_NOT_NEEDED) == V_EQ
-	    && negated_dbm_ji == dbm_ij) {
+	if (is_additive_inverse(dbm_ji, dbm_ij)) {
 	  // We have a binary equality constraint.
 	  numer_denom(dbm_ij, b, a);
 	  cs.insert(a*x - a*y == b);
@@ -3617,6 +3607,7 @@ BD_Shape<T>::minimized_constraints() const {
 template <typename T>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
+  using Implementation::BD_Shapes::is_additive_inverse;
   typedef typename BD_Shape<T>::coefficient_type N;
   if (c.is_universe())
     s << "true";
@@ -3631,9 +3622,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	for (dimension_type j = i + 1; j <= n; ++j) {
 	  const N& c_i_j = c.dbm[i][j];
 	  const N& c_j_i = c.dbm[j][i];
-	  N negated_c_ji;
-	  if (neg_assign_r(negated_c_ji, c_j_i, ROUND_NOT_NEEDED) == V_EQ
-	      && negated_c_ji == c_i_j) {
+	  if (is_additive_inverse(c_j_i, c_i_j)) {
 	    // We will print an equality.
 	    if (first)
 	      first = false;
