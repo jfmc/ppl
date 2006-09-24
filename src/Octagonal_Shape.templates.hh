@@ -4494,7 +4494,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
 	first = false;
       else
 	s << ", ";
-      // CHECK ME:
+      // CHECKME:
       // If the value bound can NOT be divided by 2 exactly,
       // then we output the constraint `2*v_i == bound'.
       N half_x_ii_i;

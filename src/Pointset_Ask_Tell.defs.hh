@@ -446,7 +446,7 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
-// CHECK ME: according to the Intel compiler, the declaration of the
+// CHECKME: according to the Intel compiler, the declaration of the
 // following specialization (of the class template parameter) should come
 // before the declaration of the corresponding full specialization
 // (where the member template parameter is specialized too).
@@ -455,7 +455,7 @@ template <typename QH>
 Pointset_Ask_Tell<NNC_Polyhedron>
 ::Pointset_Ask_Tell(const Pointset_Ask_Tell<QH>& y);
 
-// CHECK ME: according to the Intel compiler, the declaration of the
+// CHECKME: according to the Intel compiler, the declaration of the
 // following specialization (of the class template parameter) should come
 // before the declaration of the corresponding full specialization
 // (where the member template parameter is specialized too).

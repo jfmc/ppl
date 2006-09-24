@@ -449,7 +449,7 @@ PPL::Polyhedron::contains_integer_point() const {
   if (space_dim == 0)
     return true;
 
-  // CHECK ME: do we really want to call conversion to check for emptiness?
+  // CHECKME: do we really want to call conversion to check for emptiness?
   if (has_pending_constraints() && !process_pending())
     // Empty again.
     return true;

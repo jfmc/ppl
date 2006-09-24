@@ -107,7 +107,7 @@ PPL::Polyhedron
   // (built starting from the given constraint and `y.gen_sys')
   // is a row of the saturation matrix `tmp_sat_g'.
 
-  // CHECK ME: the following comment is only applicable when `y.gen_sys'
+  // CHECKME: the following comment is only applicable when `y.gen_sys'
   // is minimized. In that case, the comment suggests that it would be
   // possible to use a fast (but incomplete) redundancy test based on
   // the number of saturators in `buffer'.

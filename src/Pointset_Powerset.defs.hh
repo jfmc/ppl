@@ -494,7 +494,7 @@ template <typename PH>
 bool
 check_containment(const PH& ph, const Pointset_Powerset<PH>& ps);
 
-// CHECK ME: according to the Intel compiler, the declaration of the
+// CHECKME: according to the Intel compiler, the declaration of the
 // following specialization (of the class template parameter) should come
 // before the declaration of the corresponding full specialization
 // (where the member template parameter is specialized too).
@@ -503,7 +503,7 @@ template <typename QH>
 Pointset_Powerset<NNC_Polyhedron>
 ::Pointset_Powerset(const Pointset_Powerset<QH>& y);
 
-// CHECK ME: according to the Intel compiler, the declaration of the
+// CHECKME: according to the Intel compiler, the declaration of the
 // following specialization (of the class template parameter) should come
 // before the declaration of the corresponding full specialization
 // (where the member template parameter is specialized too).
