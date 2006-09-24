@@ -309,9 +309,8 @@ process_options(int argc, char* argv[]) {
 
   if (enumerate_required
       && (simplex_required
-	  || incremental_required
-	  || no_optimization_required))
-      fatal("-e option is incompatible with -s, -i and -n");
+	  || incremental_required))
+      fatal("-e option is incompatible with -s and -i");
 
   if (enumerate_required)
     use_simplex = 0;
@@ -475,7 +474,12 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
       || (ppl_status == PPL_LP_PROBLEM_STATUS_UNBOUNDED
 	  && glpk_status != LPX_UNBND)
       || (ppl_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
-	  && glpk_status != LPX_OPT)) {
+	  && glpk_status != LPX_OPT)
+      /* Deal with `no_optimization' flag */
+      || (no_optimization && (ppl_status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE
+			      && glpk_status != LPX_NOFEAS))
+      || (no_optimization && (ppl_status != PPL_LP_PROBLEM_STATUS_OPTIMIZED
+	  && glpk_status == LPX_NOFEAS))) {
     switch (glpk_status) {
     case LPX_NOFEAS:
       glpk_status_string = "unfeasible";
@@ -493,7 +497,7 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
     error("check failed: for GLPK the problem is %s", glpk_status_string);
     check_results_failed = 1;
   }
-  else if (ppl_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
+  else if (!no_optimization && ppl_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
 	   && glpk_status == LPX_OPT) {
     double glpk_optimum_value = lpx_get_obj_val(glpk_lp);
     if (fabs(ppl_optimum_value - glpk_optimum_value) > check_threshold) {
@@ -647,6 +651,14 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
     return 0;
   }
 
+  if (!empty && no_optimization) {
+    fprintf(output_file, "Feasible problem.\n");
+    /*   Kludge: let's pass PPL_LP_PROBLEM_STATUS_OPTIMIZED, */
+    /*   to let work `maybe_check_results'. */
+    maybe_check_results(PPL_LP_PROBLEM_STATUS_OPTIMIZED, 0.0);
+    return 0;
+  }
+
   /* Check whether the problem is unbounded. */
   unbounded = maximize
     ? !ppl_Polyhedron_bounds_from_above(ppl_ph, ppl_objective_le)
@@ -699,6 +711,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Generator_t point) {
   ppl_LP_Problem_t ppl_lp;
   int status;
+  int satisfiable;
   ppl_dimension_type space_dim;
   ppl_const_Constraint_t c;
   ppl_const_Generator_t g;
@@ -730,8 +743,8 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
       ppl_LP_Problem_add_constraint(ppl_lp, c);
 
       if (no_optimization) {
-	status = ppl_LP_Problem_is_satisfiable(ppl_lp);
-	if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE)
+	satisfiable = ppl_LP_Problem_is_satisfiable(ppl_lp);
+	if (!satisfiable)
 	  break;
       }
       else
@@ -744,8 +757,10 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 
   else {
     ppl_LP_Problem_add_constraints(ppl_lp, cs);
-    status = no_optimization ? ppl_LP_Problem_is_satisfiable(ppl_lp) :
-                               ppl_LP_Problem_solve(ppl_lp);
+    if (no_optimization)
+      satisfiable =  ppl_LP_Problem_is_satisfiable(ppl_lp);
+    else
+      status = ppl_LP_Problem_solve(ppl_lp);
   }
 
   if (print_timings) {
@@ -760,9 +775,11 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     maybe_check_results(status, 0.0);
     return 0;
   }
-  else if (status != PPL_LP_PROBLEM_STATUS_UNFEASIBLE && no_optimization) {
+  else if (no_optimization && satisfiable) {
     fprintf(output_file, "Feasible problem.\n");
-    maybe_check_results(status, 0.0);
+    /*   Kludge: let's pass PPL_LP_PROBLEM_STATUS_OPTIMIZED, */
+    /*   to let work `maybe_check_results'. */
+    maybe_check_results(PPL_LP_PROBLEM_STATUS_OPTIMIZED, 0.0);
     return 0;
   }
   else if (status == PPL_LP_PROBLEM_STATUS_UNBOUNDED) {
