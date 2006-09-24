@@ -291,8 +291,9 @@ PPL::MIP_Problem::set_integer_space_dimensions(const Variables_Set& i_vars) {
        ++i_vars_begin) {
     if (i_vars_begin->id() > external_space_dim)
       throw std::invalid_argument("PPL::MIP_Problem::"
-				  "evaluate_objective_function(p, n, d):\n"
-				  "*this and p are dimension incompatible.");
+				  "set_integer_space_dimensions(i_vars):\n"
+				  "*this and i_vars are dimension "
+				  "incompatible.");
     i_variables.insert(*i_vars_begin);
   }
   // If a new integral Variable is inserted, set the internal status to
