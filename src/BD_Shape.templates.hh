@@ -3760,6 +3760,13 @@ BD_Shape<T>::ascii_load(std::istream& s) {
 }
 
 template <typename T>
+memory_size_type
+BD_Shape<T>::external_memory_in_bytes() const {
+  // FIXME!
+  return 1;
+}
+
+template <typename T>
 bool
 BD_Shape<T>::OK() const {
   // Check whether the difference-bound matrix is well-formed.

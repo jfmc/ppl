@@ -634,6 +634,12 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   return l_infinity_distance_assign<To, To, T>(r, x, y, dir);
 }
 
+template <typename T>
+inline memory_size_type
+Octagonal_Shape<T>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {

@@ -721,6 +721,12 @@ BD_Shape<T>::forget_binary_dbm_constraints(const dimension_type v) {
   }
 }
 
+template <typename T>
+inline memory_size_type
+BD_Shape<T>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
