@@ -298,6 +298,9 @@ Direct_Product.types.hh \
 Direct_Product.defs.hh \
 Direct_Product.inlines.hh \
 Direct_Product.templates.hh \
+Any_Pointset.types.hh \
+Any_Pointset.defs.hh \
+Any_Pointset.inlines.hh \
 max_space_dimension.hh \
 algorithms.hh
 
