@@ -99,6 +99,16 @@ FCAIBVP::meet_assign(const FCAIBVP& y) {
   set.insert(y.set.begin(), y.set.end());
 }
 
+inline void
+FCAIBVP::weakening_assign(const FCAIBVP& y) {
+  difference_assign(y);
+}
+
+inline bool
+FCAIBVP::has_nontrivial_weakening() {
+  return true;
+}
+
 inline bool
 FCAIBVP::OK() const {
   return true;

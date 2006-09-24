@@ -79,6 +79,10 @@ public:
 
   void meet_assign(const FCAIBVP& y);
 
+  void weakening_assign(const FCAIBVP& y);
+
+  static bool has_nontrivial_weakening();
+
   bool OK() const;
 
   friend std::ostream&
