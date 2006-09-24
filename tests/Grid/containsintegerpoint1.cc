@@ -254,6 +254,25 @@ test09() {
   return ok;
 }
 
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid gr(3);
+  gr.add_congruence(4*A %= 0);
+
+  Grid gr_copy = gr;
+
+  bool ok = (gr.contains_integer_point() && gr == gr_copy);
+
+  print_congruences(gr, "*** gr ***");
+  print_congruences(gr_copy, "*** gr_copy ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -266,4 +285,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

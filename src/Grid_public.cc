@@ -647,7 +647,7 @@ PPL::Grid::contains_integer_point() const {
     cgs.insert(Variable(var_index) %= 0);
   }
 
-  Grid& gr = const_cast<Grid&>(*this);
+  Grid gr = *this;
   if (gr.add_congruences_and_minimize(cgs))
     return true;
 
