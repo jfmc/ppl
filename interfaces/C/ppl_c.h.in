@@ -357,6 +357,8 @@ PPL_TYPE_DECLARATION(Polyhedron);
 
 PPL_TYPE_DECLARATION(LP_Problem);
 
+PPL_TYPE_DECLARATION(MIP_Problem);
+
 #undef PPL_TYPE_DECLARATION
 
 /*! \name Functions Related to Coefficients */
@@ -1145,14 +1147,29 @@ extern int PPL_LP_PROBLEM_STATUS_UNBOUNDED;
 extern int PPL_LP_PROBLEM_STATUS_OPTIMIZED;
 
 /*! \brief
+  Code of the "unfeasible MIP problem" status.
+*/
+extern int PPL_MIP_PROBLEM_STATUS_UNFEASIBLE;
+
+/*! \brief
+  Code of the "unbounded MIP problem" status.
+*/
+extern int PPL_MIP_PROBLEM_STATUS_UNBOUNDED;
+
+/*! \brief
+  Code of the "optimized MIP problem" status.
+*/
+extern int PPL_MIP_PROBLEM_STATUS_OPTIMIZED;
+
+/*! \brief
   Code of the "maximization" optimization mode.
 */
-extern int PPL_LP_PROBLEM_MAXIMIZATION;
+  extern int PPL_OPTIMIZATION_MODE_MAXIMIZATION;
 
 /*! \brief
   Code of the "minimization" optimization mode.
 */
-extern int PPL_LP_PROBLEM_MINIMIZATION;
+extern int PPL_OPTIMIZATION_MODE_MINIMIZATION;
 
 /*! \brief
   Individual bit saying that the polyhedron and the set of points
@@ -2645,6 +2662,243 @@ int
 ppl_LP_Problem_OK PPL_PROTO((ppl_const_LP_Problem_t lp));
 
 /*@}*/ /* Functions Related to LP Problems */
+
+
+/*! \name Functions Related to MIP Problems */
+/*@{*/
+
+/*! \brief
+  Builds a trivial MIP problem of dimension \p d and writes an
+  handle to it at address \p pmip.
+*/
+int
+ppl_new_MIP_Problem_from_dimension PPL_PROTO((ppl_MIP_Problem_t* pmip,
+					      ppl_dimension_type d));
+
+/*! \brief
+  Builds an MIP problem of space dimension \p d having feasible region \p cs,
+  objective function \p le and optimization mode \p m; writes a handle to
+  it at address \p pmip.
+*/
+int
+ppl_new_MIP_Problem PPL_PROTO((ppl_MIP_Problem_t* pmip,
+			       ppl_dimension_type d,
+			       ppl_const_Constraint_System_t cs,
+			       ppl_const_Linear_Expression_t le,
+			       int m));
+
+/*! \brief
+  Builds an MIP problem that is a copy of \p mip; writes a handle
+  for the newly created system at address \p pmip.
+*/
+int
+ppl_new_MIP_Problem_from_MIP_Problem
+PPL_PROTO((ppl_MIP_Problem_t* pmip, ppl_const_MIP_Problem_t mip));
+
+/*! \brief
+  Invalidates the handle \p mip: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_MIP_Problem PPL_PROTO((ppl_const_MIP_Problem_t mip));
+
+/*! \brief
+  Assigns a copy of the MIP problem \p src to \p dst.
+*/
+int
+ppl_assign_MIP_Problem_from_MIP_Problem
+PPL_PROTO((ppl_MIP_Problem_t dst, ppl_const_MIP_Problem_t src));
+
+/*! \brief
+  Writes to \p m the dimension of the vector space enclosing \p mip.
+*/
+int
+ppl_MIP_Problem_space_dimension
+PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_dimension_type* m));
+
+/*! \brief
+  Writes to \p m the number of integer space dimensions of \p mip.
+*/
+int
+ppl_MIP_Problem_number_of_integer_space_dimensions
+PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_dimension_type* m));
+
+/*! \brief
+  Writes in the first positions of the array \p ds all the integer space
+  dimensions of problem \p mip. If the array is not big enough to hold
+  all of the integer space dimensions, the behavior is undefined.
+*/
+int
+ppl_MIP_Problem_integer_space_dimensions
+PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_dimension_type ds[]));
+
+/*! \brief
+  Writes to \p m the number of constraints defining
+  the feasible region of \p mip.
+*/
+int
+ppl_MIP_Problem_number_of_constraints PPL_PROTO((ppl_const_MIP_Problem_t mip,
+						 ppl_dimension_type* m));
+
+/*! \brief
+  Writes at address \p pc a const handle to the \p i-th constraint
+  defining the feasible region of the MIP problem \p mip
+*/
+int
+ppl_MIP_Problem_constraint_at_index PPL_PROTO((ppl_const_MIP_Problem_t mip,
+					       ppl_dimension_type i,
+					       ppl_const_Constraint_t* pc));
+
+/*! \brief
+  Writes a const handle to the linear expression defining the
+  objective function of the MIP problem \p mip at address \p ple.
+*/
+int
+ppl_MIP_Problem_objective_function
+PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_const_Linear_Expression_t* ple));
+
+/*! \brief
+  Returns the optimization mode of the MIP problem \p mip.
+*/
+int
+ppl_MIP_Problem_optimization_mode PPL_PROTO((ppl_const_MIP_Problem_t mip));
+
+/*! \brief
+  Resets the MIP problem to be a trivial problem of space dimension 0.
+*/
+int
+ppl_MIP_Problem_clear PPL_PROTO((ppl_MIP_Problem_t mip));
+
+/*! \brief
+  Adds \p d new dimensions to the space enclosing the MIP problem \p mip
+  and to \p mip itself.
+*/
+int
+ppl_MIP_Problem_add_space_dimensions_and_embed
+PPL_PROTO((ppl_MIP_Problem_t mip, ppl_dimension_type d));
+
+/*! \brief
+  Sets the space dimensions that are specified in first \p n positions
+  of the array \p ds to be integer dimensions of problem \p mip.
+  The presence of duplicates in \p ds is a waste but an innocuous one.
+*/
+int
+ppl_MIP_Problem_set_integer_space_dimensions
+PPL_PROTO((ppl_MIP_Problem_t mip, ppl_dimension_type ds[], size_t n));
+
+/*! \brief
+  Modifies the feasible region of the MIP problem \p mip by adding a copy
+  of the constraint \p c.
+*/
+int
+ppl_MIP_Problem_add_constraint PPL_PROTO((ppl_MIP_Problem_t mip,
+					  ppl_const_Constraint_t c));
+
+/*! \brief
+  Modifies the feasible region of the MIP problem \p mip by adding a copy
+  of the constraints in \p cs.
+*/
+int
+ppl_MIP_Problem_add_constraints PPL_PROTO((ppl_MIP_Problem_t mip,
+					   ppl_const_Constraint_System_t cs));
+
+/*! \brief
+  Sets the objective function of the MIP problem \p mip to a copy of \p le.
+*/
+int
+ppl_MIP_Problem_set_objective_function
+PPL_PROTO((ppl_MIP_Problem_t mip, ppl_const_Linear_Expression_t le));
+
+/*! \brief
+  Sets the optimization mode of the MIP problem \p mip to \p mode.
+*/
+int
+ppl_MIP_Problem_set_optimization_mode PPL_PROTO((ppl_MIP_Problem_t mip,
+						 int mode));
+
+/*! \brief
+  Returns a positive integer if \p mip is satisfiable; returns 0 otherwise.
+*/
+int
+ppl_MIP_Problem_is_satisfiable PPL_PROTO((ppl_const_MIP_Problem_t mip));
+
+/*! \brief
+  Solves the MIP problem \p mip, returning an exit status.
+
+  \return
+  <CODE>PPL_MIP_PROBLEM_STATUS_UNFEASIBLE</CODE> if the MIP problem
+  is not satisfiable;
+  <CODE>PPL_MIP_PROBLEM_STATUS_UNBOUNDED</CODE> if the MIP problem
+  is satisfiable but there is no finite bound to the value of
+  the objective function;
+  <CODE>PPL_MIP_PROBLEM_STATUS_OPTIMIZED</CODE> if the MIP problem
+  admits an optimal solution.
+*/
+int
+ppl_MIP_Problem_solve PPL_PROTO((ppl_const_MIP_Problem_t mip));
+
+/*! \brief
+  Evaluates the objective function of \p mip on point \p g.
+
+  \param mip
+  The MIP problem defining the objective function;
+
+  \param g
+  The generator on which the objective function will be evaluated;
+
+  \param num
+  Will be assigned the numerator of the objective function value;
+
+  \param den
+  Will be assigned the denominator of the objective function value;
+*/
+int
+ppl_MIP_Problem_evaluate_objective_function
+PPL_PROTO((ppl_const_MIP_Problem_t mip, ppl_const_Generator_t g,
+	   ppl_Coefficient_t num, ppl_Coefficient_t den));
+
+/*! \brief
+  Writes a const handle to a feasible point for the MIP problem \p mip
+  at address \p pg.
+*/
+int
+ppl_MIP_Problem_feasible_point PPL_PROTO((ppl_const_MIP_Problem_t mip,
+					  ppl_const_Generator_t* pg));
+
+/*! \brief
+  Writes a const handle to an optimizing point for the MIP problem \p mip
+  at address \p pg.
+*/
+int
+ppl_MIP_Problem_optimizing_point PPL_PROTO((ppl_const_MIP_Problem_t mip,
+					    ppl_const_Generator_t* pg));
+
+/*! \brief
+  Returns the optimal value for \p mip.
+
+  \param mip
+  The MIP problem;
+
+  \param num
+  Will be assigned the numerator of the optimal value;
+
+  \param den
+  Will be assigned the denominator of the optimal value.
+*/
+int
+ppl_MIP_Problem_optimal_value
+PPL_PROTO((ppl_const_MIP_Problem_t mip,
+	   ppl_Coefficient_t num, ppl_Coefficient_t den));
+
+/*! \brief
+  Returns a positive integer if \p mip is well formed, i.e., if it
+  satisfies all its implementation invariants; returns 0 and perhaps
+  makes some noise if \p mip is broken.  Useful for debugging purposes.
+*/
+int
+ppl_MIP_Problem_OK PPL_PROTO((ppl_const_MIP_Problem_t mip));
+
+/*@}*/ /* Functions Related to MIP Problems */
 
 
 /*! \name Simple I/O Functions */

@@ -114,8 +114,12 @@ int PPL_LP_PROBLEM_STATUS_UNFEASIBLE;
 int PPL_LP_PROBLEM_STATUS_UNBOUNDED;
 int PPL_LP_PROBLEM_STATUS_OPTIMIZED;
 
-int PPL_LP_PROBLEM_MINIMIZATION;
-int PPL_LP_PROBLEM_MAXIMIZATION;
+int PPL_MIP_PROBLEM_STATUS_UNFEASIBLE;
+int PPL_MIP_PROBLEM_STATUS_UNBOUNDED;
+int PPL_MIP_PROBLEM_STATUS_OPTIMIZED;
+
+int PPL_OPTIMIZATION_MODE_MINIMIZATION;
+int PPL_OPTIMIZATION_MODE_MAXIMIZATION;
 
 namespace {
 
@@ -214,8 +218,12 @@ ppl_initialize(void) try {
   PPL_LP_PROBLEM_STATUS_UNBOUNDED = UNBOUNDED_LP_PROBLEM;
   PPL_LP_PROBLEM_STATUS_OPTIMIZED = OPTIMIZED_LP_PROBLEM;
 
-  PPL_LP_PROBLEM_MINIMIZATION = MINIMIZATION;
-  PPL_LP_PROBLEM_MAXIMIZATION = MAXIMIZATION;
+  PPL_MIP_PROBLEM_STATUS_UNFEASIBLE = UNFEASIBLE_MIP_PROBLEM;
+  PPL_MIP_PROBLEM_STATUS_UNBOUNDED = UNBOUNDED_MIP_PROBLEM;
+  PPL_MIP_PROBLEM_STATUS_OPTIMIZED = OPTIMIZED_MIP_PROBLEM;
+
+  PPL_OPTIMIZATION_MODE_MINIMIZATION = MINIMIZATION;
+  PPL_OPTIMIZATION_MODE_MAXIMIZATION = MAXIMIZATION;
 
   c_variable_output_function = c_variable_default_output_function;
   saved_cxx_Variable_output_function = Variable::get_output_function();
@@ -316,6 +324,8 @@ DECLARE_CONVERSIONS(Generator_System_const_iterator)
 DECLARE_CONVERSIONS(Polyhedron)
 
 DECLARE_CONVERSIONS(LP_Problem)
+
+DECLARE_CONVERSIONS(MIP_Problem)
 
 
 int
@@ -2289,7 +2299,7 @@ ppl_new_LP_Problem(ppl_LP_Problem_t* plp,
 		   ppl_const_Linear_Expression_t le, int m) try {
   const Constraint_System& ccs = *to_const(cs);
   const Linear_Expression& lle = *to_const(le);
-  Optimization_Mode mm = (m == PPL_LP_PROBLEM_MINIMIZATION)
+  Optimization_Mode mm = (m == PPL_OPTIMIZATION_MODE_MINIMIZATION)
     ? MINIMIZATION : MAXIMIZATION;
   *plp = to_nonconst(new LP_Problem(d, ccs, lle, mm));
   return 0;
@@ -2419,7 +2429,7 @@ CATCH_ALL
 int
 ppl_LP_Problem_set_optimization_mode(ppl_LP_Problem_t lp, int mode) try {
   LP_Problem& llp = *to_nonconst(lp);
-  Optimization_Mode m = (mode == PPL_LP_PROBLEM_MINIMIZATION)
+  Optimization_Mode m = (mode == PPL_OPTIMIZATION_MODE_MINIMIZATION)
     ? MINIMIZATION : MAXIMIZATION;
   llp.set_optimization_mode(m);
   return 0;
@@ -2484,6 +2494,253 @@ CATCH_ALL
 int
 ppl_LP_Problem_OK(ppl_const_LP_Problem_t lp) try {
   return to_const(lp)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_new_MIP_Problem_from_dimension(ppl_MIP_Problem_t* pmip,
+				   ppl_dimension_type d) try {
+  *pmip = to_nonconst(new MIP_Problem(d));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_MIP_Problem(ppl_MIP_Problem_t* pmip,
+		    ppl_dimension_type d,
+		    ppl_const_Constraint_System_t cs,
+		    ppl_const_Linear_Expression_t le, int m) try {
+  const Constraint_System& ccs = *to_const(cs);
+  const Linear_Expression& lle = *to_const(le);
+  Optimization_Mode mm = (m == PPL_OPTIMIZATION_MODE_MINIMIZATION)
+    ? MINIMIZATION : MAXIMIZATION;
+  *pmip = to_nonconst(new MIP_Problem(d, ccs, lle, mm));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_MIP_Problem_from_MIP_Problem(ppl_MIP_Problem_t* pmip,
+				     ppl_const_MIP_Problem_t mip) try {
+  const MIP_Problem& mmip = *to_const(mip);
+  *pmip = to_nonconst(new MIP_Problem(mmip));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_MIP_Problem(ppl_const_MIP_Problem_t mip) try {
+  delete to_const(mip);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_MIP_Problem_from_MIP_Problem(ppl_MIP_Problem_t dst,
+					ppl_const_MIP_Problem_t src) try {
+  const MIP_Problem& ssrc = *to_const(src);
+  MIP_Problem& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_space_dimension(ppl_const_MIP_Problem_t mip,
+				ppl_dimension_type* m) try {
+  *m = to_const(mip)->space_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_number_of_integer_space_dimensions(ppl_const_MIP_Problem_t mip,
+						   ppl_dimension_type* m) try {
+  const MIP_Problem& mmip = *to_const(mip);
+  *m = mmip.integer_space_dimensions().size();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_integer_space_dimensions(ppl_const_MIP_Problem_t mip,
+					 ppl_dimension_type ds[]) try {
+  const Variables_Set& vars = to_const(mip)->integer_space_dimensions();
+  ppl_dimension_type* ds_i = ds;
+  for (Variables_Set::const_iterator v_iter = vars.begin(),
+	 v_end = vars.end(); v_iter != v_end; ++v_iter, ++ds_i)
+    *ds_i = v_iter->id();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_number_of_constraints(ppl_const_MIP_Problem_t mip,
+				      ppl_dimension_type* m) try {
+  const MIP_Problem& mmip = *to_const(mip);
+  *m = mmip.constraints_end() - mmip.constraints_begin();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_constraint_at_index(ppl_const_MIP_Problem_t mip,
+				    ppl_dimension_type i,
+				    ppl_const_Constraint_t* pc) try {
+#ifndef NDEBUG
+  ppl_dimension_type num_constraints;
+  ppl_MIP_Problem_number_of_constraints(mip, &num_constraints);
+  assert(i < num_constraints);
+#endif
+  const MIP_Problem& mmip = *to_const(mip);
+  const Constraint& c = *(mmip.constraints_begin() + i);
+  *pc = to_const(&c);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_objective_function(ppl_const_MIP_Problem_t mip,
+				   ppl_const_Linear_Expression_t* ple) try {
+  const Linear_Expression& le = to_const(mip)->objective_function();
+  *ple = to_const(&le);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_optimization_mode(ppl_const_MIP_Problem_t mip) try {
+  return to_const(mip)->optimization_mode();
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_clear(ppl_MIP_Problem_t mip) try {
+  to_nonconst(mip)->clear();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_add_space_dimensions_and_embed(ppl_MIP_Problem_t mip,
+					       ppl_dimension_type d) try {
+  MIP_Problem& mmip = *to_nonconst(mip);
+  mmip.add_space_dimensions_and_embed(d);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_set_integer_space_dimensions(ppl_MIP_Problem_t mip,
+					     ppl_dimension_type ds[],
+					     size_t n) try {
+  MIP_Problem& mmip = *to_nonconst(mip);
+  Variables_Set to_be_set;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    to_be_set.insert(Variable(ds[i]));
+  mmip.set_integer_space_dimensions(to_be_set);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_add_constraint(ppl_MIP_Problem_t mip,
+			       ppl_const_Constraint_t c) try {
+  const Constraint& cc = *to_const(c);
+  MIP_Problem& mmip = *to_nonconst(mip);
+  mmip.add_constraint(cc);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_add_constraints(ppl_MIP_Problem_t mip,
+				ppl_const_Constraint_System_t cs) try {
+  const Constraint_System& ccs = *to_const(cs);
+  MIP_Problem& mmip = *to_nonconst(mip);
+  mmip.add_constraints(ccs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_set_objective_function(ppl_MIP_Problem_t mip,
+				       ppl_const_Linear_Expression_t le) try {
+  const Linear_Expression& lle = *to_const(le);
+  MIP_Problem& mmip = *to_nonconst(mip);
+  mmip.set_objective_function(lle);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_set_optimization_mode(ppl_MIP_Problem_t mip, int mode) try {
+  MIP_Problem& mmip = *to_nonconst(mip);
+  Optimization_Mode m = (mode == PPL_OPTIMIZATION_MODE_MINIMIZATION)
+    ? MINIMIZATION : MAXIMIZATION;
+  mmip.set_optimization_mode(m);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_is_satisfiable(ppl_const_MIP_Problem_t mip) try {
+  return to_const(mip)->is_satisfiable() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_solve(ppl_const_MIP_Problem_t mip) try {
+  return to_const(mip)->solve();
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_evaluate_objective_function(ppl_const_MIP_Problem_t mip,
+					    ppl_const_Generator_t g,
+					    ppl_Coefficient_t num,
+					    ppl_Coefficient_t den) try {
+  const MIP_Problem& mmip = *to_const(mip);
+  const Generator& gg = *to_const(g);
+  Coefficient& nnum = *to_nonconst(num);
+  Coefficient& dden = *to_nonconst(den);
+  mmip.evaluate_objective_function(gg, nnum, dden);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_feasible_point(ppl_const_MIP_Problem_t mip,
+			       ppl_const_Generator_t* pg) try {
+  const Generator& g = to_const(mip)->feasible_point();
+  *pg = to_const(&g);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_optimizing_point(ppl_const_MIP_Problem_t mip,
+				 ppl_const_Generator_t* pg) try {
+  const Generator& g = to_const(mip)->optimizing_point();
+  *pg = to_const(&g);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_optimal_value(ppl_const_MIP_Problem_t mip,
+			      ppl_Coefficient_t num,
+			      ppl_Coefficient_t den) try {
+  Coefficient& nnum = *to_nonconst(num);
+  Coefficient& dden = *to_nonconst(den);
+  to_const(mip)->optimal_value(nnum, dden);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_MIP_Problem_OK(ppl_const_MIP_Problem_t mip) try {
+  return to_const(mip)->OK() ? 1 : 0;
 }
 CATCH_ALL
 
