@@ -28,22 +28,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Ask_Tell.types.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! An iterator on the disjuncts of a Powerset element.
+//! An iterator on a sequence of read-only objects.
 /*! \ingroup PPL_CXX_interface
-  This class implements a <EM>read-only</EM> bidirectional iterator
-  on the sequence of disjuncts. That is, by using an instance of
-  this iterator class it is not possible to overwrite the disjuncts
-  contained in a Powerset element. However, using such an instance
-  allows for the removal of disjuncts by using methods
-  <CODE>Powerset::drop_disjunct(iterator position)</CODE> and
-  <CODE>Powerset::drop_disjuncts(iterator first, iterator last)</CODE>.
-  Such a policy is needed to allow for a reliable use of the Boolean
-  flag <CODE>Powerset::reduced</CODE>.
+  This template class implements a bidirectional <EM>read-only</EM>
+  iterator on the sequence of objects <CODE>Container</CODE>.
+  By using this iterator class it is not possible to modify the objects
+  contained in <CODE>Container</CODE>; rather, object modification has
+  to be implemented by object replacement, i.e., by using the methods
+  provided by <CODE>Container</CODE> to remove/insert objects.
+  Such a policy (a modifiable container of read-only objects) allows
+  for a reliable enforcement of invariants (such as sortedness of the
+  objects in the sequence).
 
   \note
-  For any developers' need, (low-level) iterators on the sequence of
-  disjuncts are still available by accessing the protected member
-  <CODE>Powerset::sequence</CODE>.
+  For any developers' need, suitable friend declarations allow for
+  accessing the low-level iterators on the sequence of objects.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Container>
@@ -113,10 +112,11 @@ public:
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A %const_iterator on the disjuncts of a Powerset element.
+//! A %const_iterator on a sequence of read-only objects.
 /*! \ingroup PPL_CXX_interface
-  This class implements a read-only bidirectional iterator
-  on the sequence of disjuncts.
+  This class, besides implementing a read-only bidirectional iterator
+  on a read-only sequence of objects, ensures interoperability
+  with template class iterator_to_const.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Container>
