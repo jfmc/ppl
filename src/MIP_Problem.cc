@@ -256,10 +256,10 @@ PPL::MIP_Problem::solve() const{
 	 break;
        case OPTIMIZED_MIP_PROBLEM:
 	 x.status = OPTIMIZED;
+	 // Set the internal generator.
+	 x.last_generator = g;
 	 break;
-       }
-     // Set the internal generator.
-     x.last_generator = g;
+     }
      assert(OK());
      return mip_status;
    }
@@ -1443,6 +1443,12 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
 	|| tmp_rational < provisional_optimum_value) {
       provisional_optimum_value = tmp_rational;
       provisional_optimum_point = p;
+      // This is a feasible point: we can return it if the problem
+      // is unbounded and we have to return a feasible point.
+      if (!have_provisional_optimum) {
+	MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+	x.last_generator = p;
+      }
       have_provisional_optimum = true;
     }
     return lp_status;
