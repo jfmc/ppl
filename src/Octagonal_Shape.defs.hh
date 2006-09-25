@@ -571,6 +571,12 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
+    is a topologically closed subset of the vector space.
+  */
+  bool is_topologically_closed() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
     contains (at least) an integer point.
   */
   bool contains_integer_point() const;

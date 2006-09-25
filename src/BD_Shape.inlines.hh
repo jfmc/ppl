@@ -300,6 +300,12 @@ BD_Shape<T>::is_empty() const {
   return marked_empty();
 }
 
+template <typename T>
+inline bool
+BD_Shape<T>::is_topologically_closed() const {
+  return true;
+}
+
 /*! \relates BD_Shape */
 template <typename T>
 inline bool

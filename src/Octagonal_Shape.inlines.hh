@@ -153,6 +153,12 @@ Octagonal_Shape<T>::is_empty() const {
   return marked_empty();
 }
 
+template <typename T>
+inline bool
+Octagonal_Shape<T>::is_topologically_closed() const {
+  return true;
+}
+
 /*! \relates Octagonal_Shape */
 template <typename T>
 inline bool
