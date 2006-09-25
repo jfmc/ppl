@@ -552,6 +552,13 @@ Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const {
 
 template <typename T>
 bool
+Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& /*y*/) const {
+  // FIXME!
+  return false;
+}
+
+template <typename T>
+bool
 Octagonal_Shape<T>::is_universe() const {
   // An empty octagon isn't, of course, universe.
   if (marked_empty())
@@ -564,12 +571,20 @@ Octagonal_Shape<T>::is_universe() const {
 
   // An universe octagon can only contains trivial  constraints.
   for (typename OR_Matrix<N>::const_element_iterator
-	 i = matrix.element_begin(),
-	 matrix_element_end = matrix.element_end(); i != matrix_element_end; ++i)
+	 i = matrix.element_begin(), matrix_element_end = matrix.element_end();
+       i != matrix_element_end;
+       ++i)
     if (!is_plus_infinity(*i))
       return false;
 
   return true;
+}
+
+template <typename T>
+bool
+Octagonal_Shape<T>::is_discrete() const {
+  // FIXME!
+  return false;
 }
 
 template <typename T>

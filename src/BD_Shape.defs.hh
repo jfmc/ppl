@@ -511,6 +511,14 @@ public:
   */
   bool strictly_contains(const BD_Shape& y) const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool is_disjoint_from(const BD_Shape& y) const;
+
   //! Returns the relations holding between \p *this and the constraint \p c.
   /*!
     \exception std::invalid_argument
@@ -532,6 +540,9 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p *this is a universe BDS.
   bool is_universe() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
+  bool is_discrete() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this

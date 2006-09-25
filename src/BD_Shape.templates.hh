@@ -440,6 +440,13 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
 
 template <typename T>
 bool
+BD_Shape<T>::is_disjoint_from(const BD_Shape& /*y*/) const {
+  // FIXME!
+  return false;
+}
+
+template <typename T>
+bool
 BD_Shape<T>::is_universe() const {
   if (marked_empty())
     return false;
@@ -459,6 +466,13 @@ BD_Shape<T>::is_universe() const {
 	return false;
   }
   return true;
+}
+
+template <typename T>
+bool
+BD_Shape<T>::is_discrete() const {
+  // FIXME!
+  return false;
 }
 
 template <typename T>
