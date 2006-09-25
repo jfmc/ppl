@@ -136,36 +136,28 @@ public:
   */
   virtual bool is_universe() const = 0;
 
-#if 0
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     is a topologically closed subset of the vector space.
   */
-  bool is_topologically_closed() const;
-
-  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p x and \p y are topology-incompatible or
-    dimension-incompatible.
-  */
-  bool is_disjoint_from(const Any_Pointset& y) const;
+  virtual bool is_topologically_closed() const = 0;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
-  bool is_discrete() const;
+  virtual bool is_discrete() const = 0;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     is a bounded pointset.
   */
-  bool is_bounded() const;
+  virtual bool is_bounded() const = 0;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     contains at least one integer point.
   */
-  bool contains_integer_point() const;
+  virtual bool contains_integer_point() const = 0;
 
+#if 0
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
     bounded from above in \p *this.
@@ -318,6 +310,14 @@ public:
     dimension-incompatible.
   */
   virtual bool strictly_contains(const Any_Pointset& y) const = 0;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  virtual bool is_disjoint_from(const Any_Pointset& y) const = 0;
 
 #if 0
   /*! \brief
@@ -499,17 +499,6 @@ public:
     dimension-incompatible.
   */
   virtual void upper_bound_assign(const Any_Pointset& y) = 0;
-
-  /*! \brief
-    Assigns to \p *this
-    the \ref Convex_Polyhedral_Difference "poly-difference"
-    of \p *this and \p y. The result is not guaranteed to be minimized.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
-  */
-  void poly_difference_assign(const Any_Pointset& y);
 
   /*! \brief
     Assigns to \p *this the smallest pointset, in the class of \p
@@ -1238,12 +1227,27 @@ class WRAPPER_NAME : public Any_Pointset {				\
   bool is_universe() const {						\
     return x.is_universe();						\
   }									\
+  bool is_bounded() const {						\
+    return x.is_bounded();						\
+  }									\
+  bool is_topologically_closed() const {				\
+    return x.is_topologically_closed();					\
+  }									\
+  bool is_discrete() const {						\
+    return x.is_discrete();						\
+  }									\
+  bool contains_integer_point() const {					\
+    return x.contains_integer_point();					\
+  }									\
 									\
   bool contains(const Any_Pointset& y) const {				\
     return x.contains(dynamic_cast<const BASE_CLASS&>(y));		\
   }									\
   bool strictly_contains(const Any_Pointset& y) const {			\
     return x.strictly_contains(dynamic_cast<const BASE_CLASS&>(y));	\
+  }									\
+  bool is_disjoint_from(const Any_Pointset& y) const {			\
+    return x.is_disjoint_from(dynamic_cast<const BASE_CLASS&>(y));	\
   }									\
 									\
   void add_space_dimensions_and_embed(dimension_type m) {		\
@@ -1321,7 +1325,7 @@ class WRAPPER_NAME : public Any_Pointset {				\
     x.generalized_affine_preimage(lhs, relsym, rhs);			\
   }									\
 									\
-memory_size_type total_memory_in_bytes() const {			\
+  memory_size_type total_memory_in_bytes() const {			\
     return x.total_memory_in_bytes();					\
   }									\
   memory_size_type external_memory_in_bytes() const {			\
@@ -1359,8 +1363,8 @@ PPL_ANY_POINTSET_WRAPPER_CLASS(, NNC_Polyhedron_Pointset, NNC_Polyhedron)
 PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, BD_Shape_Pointset, BD_Shape<T>)
 PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, Octagonal_Shape_Pointset, Octagonal_Shape<T>)
 
-//C_Polyhedron_Pointset a(C_Polyhedron(3));
-//Octagonal_Shape_Pointset<double> b(C_Polyhedron(3));
+C_Polyhedron_Pointset a(C_Polyhedron(3));
+Octagonal_Shape_Pointset<double> b(C_Polyhedron(3));
 
 } // namespace Parma_Polyhedra_Library
 
