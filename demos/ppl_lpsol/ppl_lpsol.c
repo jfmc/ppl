@@ -116,7 +116,7 @@ static const char* usage_string
 #endif
 ;
 
-#define OPTION_LETTERS "bc::eimnMC:R:ho:stVv"
+#define OPTION_LETTERS "bc::eimnMC:R:ho:rstVv"
 
 static const char* program_name = 0;
 
