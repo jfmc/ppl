@@ -2923,21 +2923,38 @@ ppl_io_print_ ## Type PPL_PROTO((ppl_const_ ## Type ## _t x)); \
 int \
 ppl_io_fprint_ ## Type PPL_PROTO((FILE* stream, ppl_const_ ## Type ## _t x));
 
+#define PPL_DECLARE_ASCII_DUMP_FUNCTIONS(Type) \
+/*! \brief Dumps an ascii representation of \p x on \p stream. */ \
+int \
+ppl_ ## Type ## _ascii_dump PPL_PROTO((ppl_const_ ## Type ## _t x, \
+                                       FILE* stream));
+
+#define PPL_DECLARE_OUTPUT_FUNCTIONS(Type) \
+PPL_DECLARE_PRINT_FUNCTIONS(Type) \
+PPL_DECLARE_ASCII_DUMP_FUNCTIONS(Type)
+
+/* No ascii dump for Coefficient */
 PPL_DECLARE_PRINT_FUNCTIONS(Coefficient)
 
-PPL_DECLARE_PRINT_FUNCTIONS(Linear_Expression)
+PPL_DECLARE_OUTPUT_FUNCTIONS(Linear_Expression)
 
-PPL_DECLARE_PRINT_FUNCTIONS(Constraint)
+PPL_DECLARE_OUTPUT_FUNCTIONS(Constraint)
 
-PPL_DECLARE_PRINT_FUNCTIONS(Constraint_System)
+PPL_DECLARE_OUTPUT_FUNCTIONS(Constraint_System)
 
-PPL_DECLARE_PRINT_FUNCTIONS(Generator)
+PPL_DECLARE_OUTPUT_FUNCTIONS(Generator)
 
-PPL_DECLARE_PRINT_FUNCTIONS(Generator_System)
+PPL_DECLARE_OUTPUT_FUNCTIONS(Generator_System)
 
-PPL_DECLARE_PRINT_FUNCTIONS(Polyhedron)
+PPL_DECLARE_OUTPUT_FUNCTIONS(Polyhedron)
+
+PPL_DECLARE_OUTPUT_FUNCTIONS(LP_Problem)
+
+PPL_DECLARE_OUTPUT_FUNCTIONS(MIP_Problem)
 
 #undef PPL_DECLARE_PRINT_FUNCTIONS
+#undef PPL_DECLARE_ASCII_DUMP_FUNCTIONS
+#undef PPL_DECLARE_OUTPUT_FUNCTIONS
 
 /*! \brief
   The type of output functions used for printing variables.

@@ -2785,19 +2785,39 @@ ppl_io_fprint_ ## Type(FILE* stream, ppl_const_ ## Type ## _t x) try { \
 } \
 CATCH_ALL
 
+#define DEFINE_ASCII_DUMP_FUNCTIONS(Type) \
+int \
+ppl_ ## Type ## _ascii_dump(ppl_const_ ## Type ## _t x, FILE* stream) try { \
+  std::ostringstream s; \
+  to_const(x)->ascii_dump(s);		  \
+  if (fputs(s.str().c_str(), stream) < 0) \
+    return PPL_STDIO_ERROR; \
+  return 0; \
+} \
+CATCH_ALL
+
+#define DEFINE_OUTPUT_FUNCTIONS(Type) \
+DEFINE_PRINT_FUNCTIONS(Type) \
+DEFINE_ASCII_DUMP_FUNCTIONS(Type)
+
+/* No ascii dump for Coefficient */
 DEFINE_PRINT_FUNCTIONS(Coefficient)
 
-DEFINE_PRINT_FUNCTIONS(Linear_Expression)
+DEFINE_OUTPUT_FUNCTIONS(Linear_Expression)
 
-DEFINE_PRINT_FUNCTIONS(Constraint)
+DEFINE_OUTPUT_FUNCTIONS(Constraint)
 
-DEFINE_PRINT_FUNCTIONS(Constraint_System)
+DEFINE_OUTPUT_FUNCTIONS(Constraint_System)
 
-DEFINE_PRINT_FUNCTIONS(Generator)
+DEFINE_OUTPUT_FUNCTIONS(Generator)
 
-DEFINE_PRINT_FUNCTIONS(Generator_System)
+DEFINE_OUTPUT_FUNCTIONS(Generator_System)
 
-DEFINE_PRINT_FUNCTIONS(Polyhedron)
+DEFINE_OUTPUT_FUNCTIONS(Polyhedron)
+
+DEFINE_OUTPUT_FUNCTIONS(LP_Problem)
+
+DEFINE_OUTPUT_FUNCTIONS(MIP_Problem)
 
 int
 ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p)
