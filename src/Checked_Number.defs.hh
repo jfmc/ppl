@@ -38,10 +38,10 @@ struct Checked_Number_Transparent_Policy {
   //! Checks for attempts to add infinities with different sign.
   static const int check_inf_add_inf = 0;
 
-  //! Checks for attempts to sub infinities with same sign.
+  //! Checks for attempts to subtract infinities with same sign.
   static const int check_inf_sub_inf = 0;
 
-  //! Checks for attempts to mul infinities by zero.
+  //! Checks for attempts to multiply infinities by zero.
   static const int check_inf_mul_zero = 0;
 
   //! Checks for attempts to divide by zero.
