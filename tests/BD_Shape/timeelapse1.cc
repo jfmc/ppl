@@ -26,27 +26,27 @@ namespace {
 
 bool
 test01() {
-  TBD_Shape oc1(2, EMPTY);
-  TBD_Shape oc2(2);
+  TBD_Shape bd1(2, EMPTY);
+  TBD_Shape bd2(2);
 
-  print_constraints(oc1, "**** oc1 ****");
-  print_constraints(oc2, "**** oc2 ****");
+  print_constraints(bd1, "**** bd1 ****");
+  print_constraints(bd2, "**** bd2 ****");
 
-  oc1.time_elapse_assign(oc2);
+  bd1.time_elapse_assign(bd2);
 
-  TBD_Shape oc3(2);
-  TBD_Shape oc4(2, EMPTY);
+  TBD_Shape bd3(2);
+  TBD_Shape bd4(2, EMPTY);
 
-  print_constraints(oc3, "**** oc3 ****");
-  print_constraints(oc4, "**** oc4 ****");
+  print_constraints(bd3, "**** bd3 ****");
+  print_constraints(bd4, "**** bd4 ****");
 
-  oc3.time_elapse_assign(oc4);
+  bd3.time_elapse_assign(bd4);
 
-  bool ok = (oc1.is_empty()
-		&& oc3.is_empty());
+  bool ok = (bd1.is_empty()
+		&& bd3.is_empty());
 
-  print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
-  print_constraints(oc3, "**** oc3_time_elapse_assign(oc4) ****");
+  print_constraints(bd1, "**** bd1_time_elapse_assign(bd2) ****");
+  print_constraints(bd3, "**** bd3_time_elapse_assign(bd4) ****");
 
   return ok;
 }
@@ -56,28 +56,28 @@ test02() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape oc1(2);
-  oc1.add_constraint(x >= 0);
-  oc1.add_constraint(y >= 0);
-  oc1.add_constraint(x + y - 2 <= 0);
+  TBD_Shape bd1(2);
+  bd1.add_constraint(x >= 0);
+  bd1.add_constraint(y >= 0);
+  bd1.add_constraint(x + y - 2 <= 0);
 
-  TBD_Shape oc2(2);
-  oc2.add_constraint(x >= 2);
-  oc2.add_constraint(x <= 4);
-  oc2.add_constraint(y == 3);
+  TBD_Shape bd2(2);
+  bd2.add_constraint(x >= 2);
+  bd2.add_constraint(x <= 4);
+  bd2.add_constraint(y == 3);
 
-  print_constraints(oc1, "**** oc1 ****");
-  print_constraints(oc2, "**** oc2 ****");
+  print_constraints(bd1, "**** bd1 ****");
+  print_constraints(bd2, "**** bd2 ****");
 
-  oc1.time_elapse_assign(oc2);
+  bd1.time_elapse_assign(bd2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(y >= 0);
 
-  bool ok = (BD_Shape<mpq_class>(oc1) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
+  print_constraints(bd1, "**** bd1_time_elapse_assign(bd2) ****");
 
   return ok;
 }
@@ -87,26 +87,26 @@ test03() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape oc1(2);
-  oc1.add_constraint(x >= 1);
-  oc1.add_constraint(x <= 3);
-  oc1.add_constraint(y >= 1);
-  oc1.add_constraint(y <= 3);
+  TBD_Shape bd1(2);
+  bd1.add_constraint(x >= 1);
+  bd1.add_constraint(x <= 3);
+  bd1.add_constraint(y >= 1);
+  bd1.add_constraint(y <= 3);
 
-  TBD_Shape oc2(2);
-  oc2.add_constraint(y == 5);
+  TBD_Shape bd2(2);
+  bd2.add_constraint(y == 5);
 
-  print_constraints(oc1, "**** oc1 ****");
-  print_constraints(oc2, "**** oc2 ****");
+  print_constraints(bd1, "**** bd1 ****");
+  print_constraints(bd2, "**** bd2 ****");
 
-  oc1.time_elapse_assign(oc2);
+  bd1.time_elapse_assign(bd2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(y >= 1);
 
-  bool ok = (BD_Shape<mpq_class>(oc1) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
+  print_constraints(bd1, "**** bd1_time_elapse_assign(bd2) ****");
 
   return ok;
 }
@@ -116,24 +116,24 @@ test04() {
   Variable x(0);
   Variable y(1);
 
-  TBD_Shape oc1(3);
-  oc1.add_constraint(x <= 3);
-  oc1.add_constraint(y <= 5);
+  TBD_Shape bd1(3);
+  bd1.add_constraint(x <= 3);
+  bd1.add_constraint(y <= 5);
 
-  TBD_Shape oc2(3);
-  oc2.add_constraint(x <= 2);
-  oc2.add_constraint(y <= 3);
+  TBD_Shape bd2(3);
+  bd2.add_constraint(x <= 2);
+  bd2.add_constraint(y <= 3);
 
-  print_constraints(oc1, "**** oc1 ****");
-  print_constraints(oc2, "**** oc2 ****");
+  print_constraints(bd1, "**** bd1 ****");
+  print_constraints(bd2, "**** bd2 ****");
 
-  oc1.time_elapse_assign(oc2);
+  bd1.time_elapse_assign(bd2);
 
   BD_Shape<mpq_class> known_result(3);
 
-  bool ok = (BD_Shape<mpq_class>(oc1) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(oc1, "**** oc1_time_elapse_assign(oc2) ****");
+  print_constraints(bd1, "**** bd1_time_elapse_assign(bd2) ****");
 
   return ok;
 }
@@ -144,30 +144,30 @@ test05() {
   Variable y(1);
   Variable z(2);
 
-  TBD_Shape oc1(3);
-  oc1.add_constraint(x <= 2);
-  oc1.add_constraint(x >= 1);
-  oc1.add_constraint(y <= 5);
-  oc1.add_constraint(y >= 10);
-  oc1.add_constraint(z >= 1);
+  TBD_Shape bd1(3);
+  bd1.add_constraint(x <= 2);
+  bd1.add_constraint(x >= 1);
+  bd1.add_constraint(y <= 5);
+  bd1.add_constraint(y >= 10);
+  bd1.add_constraint(z >= 1);
 
-  TBD_Shape oc2(3);
-  oc2.add_constraint(x <= 9);
-  oc2.add_constraint(x >= 0);
-  oc2.add_constraint(y <= 3);
-  oc2.add_constraint(y >= -1);
-  oc2.add_constraint(z >= 2);
+  TBD_Shape bd2(3);
+  bd2.add_constraint(x <= 9);
+  bd2.add_constraint(x >= 0);
+  bd2.add_constraint(y <= 3);
+  bd2.add_constraint(y >= -1);
+  bd2.add_constraint(z >= 2);
 
-  print_constraints(oc1, "**** oc1 ****");
-  print_constraints(oc2, "**** oc2 ****");
+  print_constraints(bd1, "**** bd1 ****");
+  print_constraints(bd2, "**** bd2 ****");
 
-  oc1.time_elapse_assign(oc2);
+  bd1.time_elapse_assign(bd2);
 
   BD_Shape<mpq_class> known_result(3, EMPTY);
 
-  bool ok = (BD_Shape<mpq_class>(oc1) == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(oc1, "**** oc1.time_elapse_assign(oc2) ****");
+  print_constraints(bd1, "**** bd1.time_elapse_assign(bd2) ****");
 
   return ok;
 }
