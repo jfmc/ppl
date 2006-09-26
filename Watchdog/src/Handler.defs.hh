@@ -37,7 +37,7 @@ public:
 
 //! A kind of Handler that installs a flag onto a flag-holder.
 /*!
-  The templatic class Handler_Flag<Flag_Base, Flag> is an handler whose
+  The template class Handler_Flag<Flag_Base, Flag> is an handler whose
   job is to install a flag onto an <EM>holder</EM> for the flag.
   The flag is of type \p Flag and the holder is a (volatile) pointer
   to \p Flag_Base.  Installing the flag onto the holder means making
