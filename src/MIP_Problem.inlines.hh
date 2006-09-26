@@ -54,7 +54,7 @@ MIP_Problem::MIP_Problem(const MIP_Problem& y)
     input_obj_function(y.input_obj_function),
     opt_mode(y.opt_mode),
     last_generator(y.last_generator),
-    i_variables() {
+    i_variables(y.i_variables) {
   assert(OK());
 }
 
