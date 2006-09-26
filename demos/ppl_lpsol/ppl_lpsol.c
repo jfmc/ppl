@@ -451,44 +451,95 @@ static mpq_t tmp1_q;
 static mpq_t tmp2_q;
 static ppl_Coefficient_t ppl_coeff;
 static LPX* glpk_lp;
+static int glpk_lp_problem_kind;
+static int glpk_lp_num_int;
+static ppl_dimension_type* integer_variables;
 
 static void
 maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
   const char* glpk_status_string;
   int glpk_status;
-
-  if (!check_results)
+  int treat_as_lp = 0;
+  /*  Is impossible to check results if we are dealing with MIP problems */
+  /*   and we are using enumeration. */
+  if (!check_results ||(use_simplex == 0 && glpk_lp_problem_kind == LPX_MIP))
     return;
 
   /* Disable GLPK output. */
   lpx_set_int_parm(glpk_lp, LPX_K_MSGLEV, 0);
 
-  /* Set the problem class to LP: MIP problems are thus treated as LP ones. */
-  lpx_set_class(glpk_lp, LPX_LP);
-
+  if (no_mip || glpk_lp_problem_kind == LPX_LP)
+    treat_as_lp = 1;
   lpx_set_obj_dir(glpk_lp, (maximize ? LPX_MAX : LPX_MIN));
-  lpx_simplex(glpk_lp);
-  glpk_status = lpx_get_status(glpk_lp);
-  if ((ppl_status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE
-       && glpk_status != LPX_NOFEAS)
-      || (ppl_status == PPL_LP_PROBLEM_STATUS_UNBOUNDED
-	  && glpk_status != LPX_UNBND)
-      || (ppl_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
-	  && glpk_status != LPX_OPT)
+  if (treat_as_lp) {
+    /* Set the problem class to LP: MIP problems are thus treated as */
+    /*  LP ones. */
+    lpx_set_class(glpk_lp, LPX_LP);
+    lpx_simplex(glpk_lp);
+    glpk_status = lpx_get_status(glpk_lp);
+    if ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+	 && glpk_status != LPX_NOFEAS)
+	|| (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED
+	    && glpk_status != LPX_UNBND)
+	|| (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+	    && glpk_status != LPX_OPT)
+	/* Deal with `no_optimization' flag */
+	|| (no_optimization && (ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+				&& glpk_status != LPX_NOFEAS))
+	|| (no_optimization && (ppl_status != PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+				&& glpk_status == LPX_NOFEAS))) {
+      switch (glpk_status) {
+      case LPX_NOFEAS:
+	glpk_status_string = "unfeasible";
+	break;
+      case LPX_UNBND:
+	glpk_status_string = "unbounded";
+	break;
+      case LPX_OPT:
+	glpk_status_string = "optimizable";
+	break;
+      default:
+	glpk_status_string = "<?>";
+	break;
+      }
+      error("check failed: for GLPK the problem is %s", glpk_status_string);
+      check_results_failed = 1;
+    }
+    else if (!no_optimization && ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+	     && glpk_status == LPX_OPT) {
+      double glpk_optimum_value = lpx_get_obj_val(glpk_lp);
+      if (fabs(ppl_optimum_value - glpk_optimum_value) > check_threshold) {
+	error("check failed: for GLPK the problem's optimum is %.10g",
+	      glpk_optimum_value);
+	check_results_failed = 1;
+      }
+    }
+    return;
+  }
+  /*  MIP case */
+  /*  FIXME: deal properly also with unbounded case. */
+  lpx_intopt(glpk_lp);
+  glpk_status = lpx_mip_status(glpk_lp);
+  if ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+       && glpk_status != LPX_I_NOFEAS)
+      || (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED &&
+	  glpk_status != LPX_I_UNDEF)
+      || (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+	  && glpk_status != LPX_I_OPT)
       /* Deal with `no_optimization' flag */
-      || (no_optimization && (ppl_status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE
-			      && glpk_status != LPX_NOFEAS))
-      || (no_optimization && (ppl_status != PPL_LP_PROBLEM_STATUS_OPTIMIZED
-	  && glpk_status == LPX_NOFEAS))) {
+      || (no_optimization && (ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+			      && glpk_status != LPX_I_NOFEAS))
+      || (no_optimization && (ppl_status != PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+			      && glpk_status == LPX_I_NOFEAS))) {
     switch (glpk_status) {
-    case LPX_NOFEAS:
+    case LPX_I_NOFEAS:
       glpk_status_string = "unfeasible";
       break;
-    case LPX_UNBND:
-      glpk_status_string = "unbounded";
-      break;
-    case LPX_OPT:
+    case LPX_I_OPT:
       glpk_status_string = "optimizable";
+      break;
+    case LPX_I_UNDEF:
+      glpk_status_string = "unbounded";
       break;
     default:
       glpk_status_string = "<?>";
@@ -497,9 +548,9 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
     error("check failed: for GLPK the problem is %s", glpk_status_string);
     check_results_failed = 1;
   }
-  else if (!no_optimization && ppl_status == PPL_LP_PROBLEM_STATUS_OPTIMIZED
-	   && glpk_status == LPX_OPT) {
-    double glpk_optimum_value = lpx_get_obj_val(glpk_lp);
+  else if (!no_optimization && ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+	   && glpk_status == LPX_I_OPT) {
+    double glpk_optimum_value = lpx_mip_obj_val(glpk_lp);
     if (fabs(ppl_optimum_value - glpk_optimum_value) > check_threshold) {
       error("check failed: for GLPK the problem's optimum is %.10g",
 	    glpk_optimum_value);
@@ -647,15 +698,15 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (empty) {
     fprintf(output_file, "Unfeasible problem.\n");
-    maybe_check_results(PPL_LP_PROBLEM_STATUS_UNFEASIBLE, 0.0);
+    maybe_check_results(PPL_MIP_PROBLEM_STATUS_UNFEASIBLE, 0.0);
     return 0;
   }
 
   if (!empty && no_optimization) {
     fprintf(output_file, "Feasible problem.\n");
-    /*   Kludge: let's pass PPL_LP_PROBLEM_STATUS_OPTIMIZED, */
+    /*   Kludge: let's pass PPL_MIP_PROBLEM_STATUS_OPTIMIZED, */
     /*   to let work `maybe_check_results'. */
-    maybe_check_results(PPL_LP_PROBLEM_STATUS_OPTIMIZED, 0.0);
+    maybe_check_results(PPL_MIP_PROBLEM_STATUS_OPTIMIZED, 0.0);
     return 0;
   }
 
@@ -673,7 +724,7 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (unbounded) {
     fprintf(output_file, "Unbounded problem.\n");
-    maybe_check_results(PPL_LP_PROBLEM_STATUS_UNBOUNDED, 0.0);
+    maybe_check_results(PPL_MIP_PROBLEM_STATUS_UNBOUNDED, 0.0);
     return 0;
   }
 
@@ -709,9 +760,9 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 		   ppl_Coefficient_t optimum_n,
 		   ppl_Coefficient_t optimum_d,
 		   ppl_Generator_t point) {
-  ppl_LP_Problem_t ppl_lp;
-  int status;
-  int satisfiable;
+  ppl_MIP_Problem_t ppl_mip;
+  int status = 0;
+  int satisfiable = 0;
   ppl_dimension_type space_dim;
   ppl_const_Constraint_t c;
   ppl_const_Generator_t g;
@@ -723,10 +774,12 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     : PPL_OPTIMIZATION_MODE_MINIMIZATION;
 
   ppl_Constraint_System_space_dimension(cs, &space_dim);
-  ppl_new_LP_Problem_from_dimension(&ppl_lp, space_dim);
-  ppl_LP_Problem_set_objective_function(ppl_lp, objective);
-  ppl_LP_Problem_set_optimization_mode(ppl_lp, mode);
-
+  ppl_new_MIP_Problem_from_dimension(&ppl_mip, space_dim);
+  ppl_MIP_Problem_set_objective_function(ppl_mip, objective);
+  ppl_MIP_Problem_set_optimization_mode(ppl_mip, mode);
+  if (!no_mip)
+    ppl_MIP_Problem_set_integer_space_dimensions(ppl_mip, integer_variables,
+						 glpk_lp_num_int);
   if (incremental) {
     /* Add the constraints of `cs' one at a time. */
     ppl_new_Constraint_System_const_iterator(&i);
@@ -740,15 +793,15 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
       if (verbose)
 	fprintf(stdout, "\nSolving constraint %d\n", counter);
       ppl_Constraint_System_const_iterator_dereference(i, &c);
-      ppl_LP_Problem_add_constraint(ppl_lp, c);
+      ppl_MIP_Problem_add_constraint(ppl_mip, c);
 
       if (no_optimization) {
-	satisfiable = ppl_LP_Problem_is_satisfiable(ppl_lp);
+	satisfiable = ppl_MIP_Problem_is_satisfiable(ppl_mip);
 	if (!satisfiable)
 	  break;
       }
       else
-	status = ppl_LP_Problem_solve(ppl_lp);
+	status = ppl_MIP_Problem_solve(ppl_mip);
       ppl_Constraint_System_const_iterator_increment(i);
     }
     ppl_delete_Constraint_System_const_iterator(i);
@@ -756,11 +809,11 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   }
 
   else {
-    ppl_LP_Problem_add_constraints(ppl_lp, cs);
+    ppl_MIP_Problem_add_constraints(ppl_mip, cs);
     if (no_optimization)
-      satisfiable =  ppl_LP_Problem_is_satisfiable(ppl_lp);
+      satisfiable =  ppl_MIP_Problem_is_satisfiable(ppl_mip);
     else
-      status = ppl_LP_Problem_solve(ppl_lp);
+      status = ppl_MIP_Problem_solve(ppl_mip);
   }
 
   if (print_timings) {
@@ -770,26 +823,27 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     start_clock();
   }
 
-  if (status == PPL_LP_PROBLEM_STATUS_UNFEASIBLE) {
+  if ((no_optimization && !satisfiable)
+      || (!no_optimization && status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE)) {
     fprintf(output_file, "Unfeasible problem.\n");
     maybe_check_results(status, 0.0);
     return 0;
   }
   else if (no_optimization && satisfiable) {
     fprintf(output_file, "Feasible problem.\n");
-    /*   Kludge: let's pass PPL_LP_PROBLEM_STATUS_OPTIMIZED, */
+    /*   Kludge: let's pass PPL_MIP_PROBLEM_STATUS_OPTIMIZED, */
     /*   to let work `maybe_check_results'. */
-    maybe_check_results(PPL_LP_PROBLEM_STATUS_OPTIMIZED, 0.0);
+    maybe_check_results(PPL_MIP_PROBLEM_STATUS_OPTIMIZED, 0.0);
     return 0;
   }
-  else if (status == PPL_LP_PROBLEM_STATUS_UNBOUNDED) {
+  else if (status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED) {
     fprintf(output_file, "Unbounded problem.\n");
     maybe_check_results(status, 0.0);
     return 0;
   }
-  else if (status == PPL_LP_PROBLEM_STATUS_OPTIMIZED) {
-    ppl_LP_Problem_optimal_value(ppl_lp, optimum_n, optimum_d);
-    ppl_LP_Problem_optimizing_point(ppl_lp, &g);
+  else if (status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED) {
+    ppl_MIP_Problem_optimal_value(ppl_mip, optimum_n, optimum_d);
+    ppl_MIP_Problem_optimizing_point(ppl_mip, &g);
     ppl_assign_Generator_from_Generator(point, g);
     return 1;
   }
@@ -805,7 +859,7 @@ solve(char* file_name) {
   ppl_Constraint_System_t ppl_cs;
   ppl_Generator_t optimum_location;
   ppl_Linear_Expression_t ppl_le;
-  int dimension, row, num_rows, column, nz, i, type;
+  int dimension, row, num_rows, column, nz, i, j, type;
   int* coefficient_index;
   double lb, ub;
   double* coefficient_value;
@@ -833,8 +887,21 @@ solve(char* file_name) {
     start_clock();
   }
 
+  glpk_lp_problem_kind = lpx_get_class(glpk_lp);
+
   dimension = lpx_get_num_cols(glpk_lp);
 
+  /* Read Variables constrained to be integer. */
+  if (glpk_lp_problem_kind == LPX_MIP) {
+    glpk_lp_num_int = lpx_get_num_int(glpk_lp);
+    integer_variables = (ppl_dimension_type*)
+      malloc((glpk_lp_num_int + 1)*sizeof(ppl_dimension_type));
+    for (i = 1, j = 0; i <= dimension; ++i)
+      if (lpx_get_col_kind(glpk_lp, i) ==  LPX_IV) {
+	integer_variables[j] = i-1;
+	++j;
+      }
+  }
   coefficient_index = (int*) malloc((dimension+1)*sizeof(int));
   coefficient_value = (double*) malloc((dimension+1)*sizeof(double));
   rational_coefficient = (mpq_t*) malloc((dimension+1)*sizeof(mpq_t));
@@ -981,6 +1048,9 @@ solve(char* file_name) {
 
   ppl_delete_Linear_Expression(ppl_objective_le);
 
+  if (glpk_lp_problem_kind == LPX_MIP)
+      free(integer_variables);
+
   if (optimum_found) {
     mpq_init(optimum);
     ppl_Coefficient_to_mpz_t(optimum_n, tmp_z);
@@ -1009,7 +1079,7 @@ solve(char* file_name) {
       assert(relation == PPL_POLY_GEN_RELATION_SUBSUMES);
     }
 #endif
-    maybe_check_results(PPL_LP_PROBLEM_STATUS_OPTIMIZED,
+    maybe_check_results(PPL_MIP_PROBLEM_STATUS_OPTIMIZED,
 			mpq_get_d(optimum));
     mpq_clear(optimum);
   }

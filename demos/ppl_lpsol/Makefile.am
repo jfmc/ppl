@@ -145,7 +145,7 @@ check-local: ppl_lpsol
 	  for m in -m -M; \
 	  do \
 	    echo "*** ppl_lpsol -s $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -s $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
+	    ./ppl_lpsol -r -s $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
 	$(DIFF_COMMAND)
