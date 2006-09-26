@@ -122,6 +122,67 @@ test04() {
   return contains;
 }
 
+bool
+test05() {
+  Variable x(0);
+  Variable y(1);
+
+  Constraint_System cs;
+  cs.insert(x >= 1);
+  cs.insert(3*y - 3*x <= 2);
+  cs.insert(8*x - 8*y >= 7);
+
+  Octagonal_Shape<mpz_class> oct(2);
+  oct.add_constraints(cs);
+
+  print_constraints(oct, "*** oct ***");
+
+  oct.add_constraint_and_minimize(x <= 0);
+
+  print_constraints(oct, "*** oct ***");
+
+  bool contains = oct.contains_integer_point();
+
+  nout << "oct.contains_integer_point() == "
+       << (contains ? "true" : "false") << endl;
+
+  return !contains;
+}
+
+bool
+test06() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(x <= 1);
+  cs.insert(3*y <= 2);
+  cs.insert(3*y >= 1);
+
+  Octagonal_Shape<float> oct(3);
+  oct.add_constraints(cs);
+
+  print_constraints(oct, "*** oct ***");
+
+  // This is the set of the variables that we want to remove.
+  Variables_Set to_be_removed;
+  to_be_removed.insert(x);
+  to_be_removed.insert(y);
+  to_be_removed.insert(z);
+  oct.remove_space_dimensions(to_be_removed);
+
+  print_constraints(oct, "*** oct ***");
+
+  bool contains = oct.contains_integer_point();
+
+  nout << "oct.contains_integer_point() == "
+       << (contains ? "true" : "false") << endl;
+
+  return contains;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -129,4 +190,6 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN
