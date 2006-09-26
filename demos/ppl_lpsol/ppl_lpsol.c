@@ -477,17 +477,16 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
     lpx_set_class(glpk_lp, LPX_LP);
     lpx_simplex(glpk_lp);
     glpk_status = lpx_get_status(glpk_lp);
-    if ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
-	 && glpk_status != LPX_NOFEAS)
-	|| (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED
-	    && glpk_status != LPX_UNBND)
-	|| (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
-	    && glpk_status != LPX_OPT)
-	/* Deal with `no_optimization' flag */
-	|| (no_optimization && (ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
-				&& glpk_status != LPX_NOFEAS))
-	|| (no_optimization && (ppl_status != PPL_MIP_PROBLEM_STATUS_OPTIMIZED
-				&& glpk_status == LPX_NOFEAS))) {
+    if ((!no_optimization && ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+			       && glpk_status != LPX_NOFEAS)
+			      ||(ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED
+				 && glpk_status != LPX_UNBND)
+			      ||(ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+				 && glpk_status != LPX_OPT)))
+	||(no_optimization && ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+				&& glpk_status != LPX_NOFEAS)
+			      ||(ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+				 && glpk_status == LPX_NOFEAS)))) {
       switch (glpk_status) {
       case LPX_NOFEAS:
 	glpk_status_string = "unfeasible";
@@ -517,20 +516,18 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
     return;
   }
   /*  MIP case */
-  /*  FIXME: deal properly also with unbounded case. */
   lpx_intopt(glpk_lp);
   glpk_status = lpx_mip_status(glpk_lp);
-  if ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
-       && glpk_status != LPX_I_NOFEAS)
-      || (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED &&
-	  glpk_status != LPX_I_UNDEF)
-      || (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
-	  && glpk_status != LPX_I_OPT)
-      /* Deal with `no_optimization' flag */
-      || (no_optimization && (ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
-			      && glpk_status != LPX_I_NOFEAS))
-      || (no_optimization && (ppl_status != PPL_MIP_PROBLEM_STATUS_OPTIMIZED
-			      && glpk_status == LPX_I_NOFEAS))) {
+  if ((!no_optimization && ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+			     && glpk_status != LPX_I_NOFEAS)
+			    || (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED
+				&& glpk_status != LPX_I_UNDEF)
+			    || (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+				&& glpk_status != LPX_I_OPT)))
+      || (no_optimization && ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+			       && glpk_status != LPX_I_NOFEAS)
+			      ||(ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+				 && glpk_status == LPX_I_NOFEAS)))) {
     switch (glpk_status) {
     case LPX_I_NOFEAS:
       glpk_status_string = "unfeasible";
