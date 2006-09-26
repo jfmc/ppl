@@ -825,20 +825,19 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     cs_without_pending.erase_to_end(con_sys.first_pending_row());
     cs_without_pending.unset_pending_rows();
     Constraint_System copy_of_con_sys = cs_without_pending;
-    Generator_System new_gen_sys(topology());
-    Saturation_Matrix new_sat_g;
+    bool empty = false;
+    if (check_not_empty || constraints_are_minimized()) {
+      Generator_System new_gen_sys(topology());
+      Saturation_Matrix new_sat_g;
+      empty = minimize(true, copy_of_con_sys, new_gen_sys, new_sat_g);
+    }
 
-    if (minimize(true, copy_of_con_sys, new_gen_sys, new_sat_g)) {
-      if (check_not_empty) {
-	// Want to know the satisfiability of the constraints.
+    if (empty && check_not_empty) {
 #ifndef NDEBUG
-	cerr << "Unsatisfiable system of constraints!"
-	     << endl;
+      cerr << "Unsatisfiable system of constraints!"
+	   << endl;
 #endif
-	goto bomb;
-      }
-      // The polyhedron is empty, there is nothing else to check.
-      return true;
+      goto bomb;
     }
 
     if (constraints_are_minimized()) {
