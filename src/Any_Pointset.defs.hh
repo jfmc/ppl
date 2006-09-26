@@ -1363,8 +1363,8 @@ PPL_ANY_POINTSET_WRAPPER_CLASS(, NNC_Polyhedron_Pointset, NNC_Polyhedron)
 PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, BD_Shape_Pointset, BD_Shape<T>)
 PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, Octagonal_Shape_Pointset, Octagonal_Shape<T>)
 
-C_Polyhedron_Pointset a(C_Polyhedron(3));
-Octagonal_Shape_Pointset<double> b(C_Polyhedron(3));
+//C_Polyhedron_Pointset a(C_Polyhedron(3));
+//Octagonal_Shape_Pointset<double> b(C_Polyhedron(3));
 
 } // namespace Parma_Polyhedra_Library
 
