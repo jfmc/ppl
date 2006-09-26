@@ -271,8 +271,8 @@ test10() {
 
   Grid gr1 = gr;  // second grid - initial state
 
-  gr1.generalized_affine_image(B, 18*A + B, 1, 0);
-  gr1.generalized_affine_image(A, 15*A, 1, 0);
+  gr1.generalized_affine_image(B, EQUAL, 18*A + B, 1, 0);
+  gr1.generalized_affine_image(A, EQUAL, 15*A, 1, 0);
                   // second grid - 1 pass through procedure
 
   Grid gr2 = gr;  // third grid - initial state
