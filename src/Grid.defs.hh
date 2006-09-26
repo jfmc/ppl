@@ -1632,6 +1632,10 @@ public:
     \param var
     The left hand side variable of the generalized affine relation;
 
+    \param relsym
+    The relation symbol where EQUAL is the symbol for a congruence
+    relation;
+
     \param expr
     The numerator of the right hand side affine expression;
 
@@ -1642,19 +1646,21 @@ public:
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
     indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
+    of zero.
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
     dimension-incompatible or if \p var is not a space dimension of \p
     *this.
   */
-  void generalized_affine_image(Variable var,
-				const Linear_Expression& expr,
-				Coefficient_traits::const_reference denominator
-				= Coefficient_one(),
-				Coefficient_traits::const_reference modulus
-				= Coefficient_one());
+  void
+  generalized_affine_image(Variable var,
+			   const Relation_Symbol relsym,
+			   const Linear_Expression& expr,
+			   Coefficient_traits::const_reference denominator
+			   = Coefficient_one(),
+			   Coefficient_traits::const_reference modulus
+			   = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1665,6 +1671,10 @@ public:
     \param var
     The left hand side variable of the generalized affine relation;
 
+    \param relsym
+    The relation symbol where EQUAL is the symbol for a congruence
+    relation;
+
     \param expr
     The numerator of the right hand side affine expression;
 
@@ -1682,12 +1692,14 @@ public:
     dimension-incompatible or if \p var is not a space dimension of \p
     *this.
   */
-  void generalized_affine_preimage(Variable var,
-				   const Linear_Expression& expr,
-				   Coefficient_traits::const_reference denominator
-				   = Coefficient_one(),
-				   Coefficient_traits::const_reference modulus
-				   = Coefficient_one());
+  void
+  generalized_affine_preimage(Variable var,
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator
+			      = Coefficient_one(),
+			      Coefficient_traits::const_reference modulus
+			      = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
@@ -1696,6 +1708,10 @@ public:
 
     \param lhs
     The left hand side affine expression.
+
+    \param relsym
+    The relation symbol where EQUAL is the symbol for a congruence
+    relation;
 
     \param rhs
     The right hand side affine expression.
@@ -1709,10 +1725,12 @@ public:
     Thrown if \p *this is dimension-incompatible with \p lhs or \p
     rhs.
   */
-  void generalized_affine_image(const Linear_Expression& lhs,
-				const Linear_Expression& rhs,
-				Coefficient_traits::const_reference modulus
-				= Coefficient_one());
+  void
+  generalized_affine_image(const Linear_Expression& lhs,
+			   const Relation_Symbol relsym,
+			   const Linear_Expression& rhs,
+			   Coefficient_traits::const_reference modulus
+			   = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1721,6 +1739,10 @@ public:
 
     \param lhs
     The left hand side affine expression;
+
+    \param relsym
+    The relation symbol where EQUAL is the symbol for a congruence
+    relation;
 
     \param rhs
     The right hand side affine expression;
@@ -1734,10 +1756,12 @@ public:
     Thrown if \p *this is dimension-incompatible with \p lhs or \p
     rhs.
   */
-  void generalized_affine_preimage(const Linear_Expression& lhs,
-				   const Linear_Expression& rhs,
-				   Coefficient_traits::const_reference modulus
-				   = Coefficient_one());
+  void
+  generalized_affine_preimage(const Linear_Expression& lhs,
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& rhs,
+			      Coefficient_traits::const_reference modulus
+			      = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the result of computing the \ref Grid_Time_Elapse

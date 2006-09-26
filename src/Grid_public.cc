@@ -587,41 +587,19 @@ PPL::Grid::is_bounded() const {
 bool
 PPL::Grid::is_discrete() const {
   // A zero-dimensional or empty grid is discrete.
-  if (space_dim == 0 || marked_empty())
+  if (space_dim == 0
+      || marked_empty()
+      || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
-  if (generators_are_minimized()) {
-  line_search:
-    // Search for lines in the minimized generator system.
+    // Search for lines in the generator system.
     for (dimension_type row = gen_sys.num_generators(); row-- > 1; )
       if (gen_sys[row].is_line())
 	return false;
+
+  // The system of generators is composed only by
+  // points and parameters: the polyhedron is discrete.
     return true;
-  }
-
-  if (congruences_are_minimized())
-    return con_sys.has_a_free_dimension();
-
-  Grid& gr = const_cast<Grid&>(*this);
-  if (generators_are_up_to_date()) {
-    // Minimize the generator system.
-    gr.simplify(gr.gen_sys, gr.dim_kinds);
-    gr.set_generators_minimized();
-
-    goto line_search;
-  }
-
-  // Generators are out of date.
-
-  // Minimize the congruence system to find out whether it is empty.
-  if (gr.simplify(gr.con_sys, gr.dim_kinds)) {
-    // The congruence system reduced to the empty grid.
-    gr.set_empty();
-    return true;
-  }
-  gr.set_congruences_minimized();
-
-  return gr.con_sys.has_a_free_dimension();
 }
 
 bool
@@ -1703,9 +1681,15 @@ affine_preimage(const Variable var,
 void
 PPL::Grid::
 generalized_affine_image(const Variable var,
+			 const Relation_Symbol relsym,
 			 const Linear_Expression& expr,
 			 Coefficient_traits::const_reference denominator,
 			 Coefficient_traits::const_reference modulus) {
+
+  // FIXME: This assumes relsym == EQUAL. The other possible values
+  // must also be implemented to be safe.
+  assert(relsym == EQUAL);
+
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");
@@ -1756,9 +1740,15 @@ generalized_affine_image(const Variable var,
 
 void PPL::Grid::
 generalized_affine_preimage(const Variable var,
+			    const Relation_Symbol relsym,
 			    const Linear_Expression& expr,
 			    Coefficient_traits::const_reference denominator,
 			    Coefficient_traits::const_reference modulus) {
+
+  // FIXME: This assumes relsym == EQUAL. The other possible values
+  // must also be implemented to be safe.
+  assert(relsym == EQUAL);
+
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("generalized_affine_preimage(v, e, d, m)",
@@ -1791,10 +1781,10 @@ generalized_affine_preimage(const Variable var,
     TEMP_INTEGER(inverse_denominator);
     neg_assign(inverse_denominator, var_coefficient);
     if (modulus < 0)
-      generalized_affine_image(var, inverse_expr, inverse_denominator,
+      generalized_affine_image(var, EQUAL, inverse_expr, inverse_denominator,
 			       - modulus);
     else
-      generalized_affine_image(var, inverse_expr, inverse_denominator,
+      generalized_affine_image(var, EQUAL, inverse_expr, inverse_denominator,
 			       modulus);
     return;
   }
@@ -1818,8 +1808,14 @@ generalized_affine_preimage(const Variable var,
 void
 PPL::Grid::
 generalized_affine_image(const Linear_Expression& lhs,
+			 const Relation_Symbol relsym,
 			 const Linear_Expression& rhs,
 			 Coefficient_traits::const_reference modulus) {
+
+  // FIXME: This assumes relsym == EQUAL. The other possible values
+  // must also be implemented to be safe.
+  assert(relsym == EQUAL);
+
   // Dimension-compatibility checks.
   // The dimension of `lhs' should be at most the dimension of
   // `*this'.
@@ -1923,8 +1919,14 @@ generalized_affine_image(const Linear_Expression& lhs,
 
 void PPL::Grid::
 generalized_affine_preimage(const Linear_Expression& lhs,
+			    const Relation_Symbol relsym,
 			    const Linear_Expression& rhs,
 			    Coefficient_traits::const_reference modulus) {
+
+  // FIXME: This assumes relsym == EQUAL. The other possible values
+  // must also be implemented to be safe.
+  assert(relsym == EQUAL);
+
   // The dimension of `lhs' must be at most the dimension of `*this'.
   dimension_type lhs_space_dim = lhs.space_dimension();
   if (space_dim < lhs_space_dim)
