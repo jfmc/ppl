@@ -23,7 +23,7 @@
 #CHECKER =
 CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(top_srcdir)/tests/valgrind_suppressions
 
-TESTS_ENVIRONMENT = CHEKER="$(CHECKER)"
+TESTS_ENVIRONMENT = CHECKER="$(CHECKER)"
 
 AM_CPPFLAGS = \
 $(TEST_CPPFLAGS) \
@@ -80,7 +80,7 @@ check_PROGRAMS = \
 	writeoctagon1
 
 
-# This will be overriden by the `run_tests' script.
+# This will be overridden by the `run_tests' script.
 TEST_CPPFLAGS=-DOCTAGONAL_SHAPE_INSTANCE=mpq_class
 
 dist_check_SCRIPTS = run_tests
