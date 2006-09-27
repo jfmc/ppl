@@ -1719,7 +1719,7 @@ public:
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
     indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
+    of zero.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with \p lhs or \p
@@ -1730,7 +1730,7 @@ public:
 			   const Relation_Symbol relsym,
 			   const Linear_Expression& rhs,
 			   Coefficient_traits::const_reference modulus
-			   = Coefficient_one());
+			   = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1750,7 +1750,7 @@ public:
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
     indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
+    of zero.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with \p lhs or \p
@@ -1761,7 +1761,7 @@ public:
 			      const Relation_Symbol relsym,
 			      const Linear_Expression& rhs,
 			      Coefficient_traits::const_reference modulus
-			      = Coefficient_one());
+			      = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the result of computing the \ref Grid_Time_Elapse

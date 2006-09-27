@@ -1686,30 +1686,49 @@ generalized_affine_image(const Variable var,
 			 Coefficient_traits::const_reference denominator,
 			 Coefficient_traits::const_reference modulus) {
 
-  // FIXME: This assumes relsym == EQUAL. The other possible values
-  // must also be implemented to be safe.
-  assert(relsym == EQUAL);
-
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");
+    throw_invalid_argument("generalized_affine_image(v, r, e, d, m)",
+                           "d == 0");
 
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
   const dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
-    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
+    throw_dimension_incompatible("generalized_affine_image(v, r, e, d, m)",
 				 "e", expr);
   // `var' should be one of the dimensions of the grid.
   const dimension_type var_space_dim = var.space_dimension();
   if (space_dim < var_space_dim)
-    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
+    throw_dimension_incompatible("generalized_affine_image(v, r, e, d, m)",
 				 "v", var);
 
   // Any image of an empty grid is empty.
   if (marked_empty())
     return;
+
+  // If relsym is not EQUAL, then we return a safe approximation
+  // by adding a line in the direction of var.
+  if (relsym != EQUAL) {
+
+    if (modulus != 0)
+      throw_invalid_argument("generalized_affine_image(v, r, e, d, m)",
+                             "r != EQUAL && m != 0");
+
+    generators_are_up_to_date() || minimize();
+
+    // Any image of an empty grid is empty.
+    if (marked_empty())
+      return;
+
+    add_grid_generator(grid_line(var));
+
+    assert(OK());
+    return;
+  }
+
+  assert(relsym == EQUAL);
 
   affine_image(var, expr, denominator);
 
@@ -1745,9 +1764,6 @@ generalized_affine_preimage(const Variable var,
 			    Coefficient_traits::const_reference denominator,
 			    Coefficient_traits::const_reference modulus) {
 
-  // FIXME: This assumes relsym == EQUAL. The other possible values
-  // must also be implemented to be safe.
-  assert(relsym == EQUAL);
 
   // The denominator cannot be zero.
   if (denominator == 0)
@@ -1765,6 +1781,28 @@ generalized_affine_preimage(const Variable var,
   if (space_dim < var_space_dim)
     throw_dimension_incompatible("generalized_affine_preimage(v, e, d, m)",
 				 "v", var);
+
+  // If relsym is not EQUAL, then we return a safe approximation
+  // by adding a line in the direction of var.
+  if (relsym != EQUAL) {
+
+    if (modulus != 0)
+      throw_invalid_argument("generalized_affine_preimage(v, r, e, d, m)",
+                             "r != EQUAL && m != 0");
+
+    generators_are_up_to_date() || minimize();
+
+    // Any image of an empty grid is empty.
+    if (marked_empty())
+      return;
+
+    add_grid_generator(grid_line(var));
+
+    assert(OK());
+    return;
+  }
+
+  assert(relsym == EQUAL);
 
   // Check whether the affine relation is an affine function.
   if (modulus == 0) {
@@ -1812,10 +1850,6 @@ generalized_affine_image(const Linear_Expression& lhs,
 			 const Linear_Expression& rhs,
 			 Coefficient_traits::const_reference modulus) {
 
-  // FIXME: This assumes relsym == EQUAL. The other possible values
-  // must also be implemented to be safe.
-  assert(relsym == EQUAL);
-
   // Dimension-compatibility checks.
   // The dimension of `lhs' should be at most the dimension of
   // `*this'.
@@ -1833,6 +1867,30 @@ generalized_affine_image(const Linear_Expression& lhs,
   // Any image of an empty grid is empty.
   if (marked_empty())
     return;
+
+  // If relsym is not EQUAL, then we return a safe approximation
+  // by adding a line in the direction of var.
+  if (relsym != EQUAL) {
+
+    if (modulus != 0)
+      throw_invalid_argument("generalized_affine_image(e1, r, e2, m)",
+                             "r != EQUAL && m != 0");
+
+    generators_are_up_to_date() || minimize();
+
+    // Any image of an empty grid is empty.
+    if (marked_empty())
+      return;
+
+    for (dimension_type i = space_dim; i-- > 0; )
+      if (lhs.coefficient(Variable(i)) != 0)
+	add_grid_generator(grid_line(Variable(i)));
+
+    assert(OK());
+    return;
+  }
+
+  assert(relsym == EQUAL);
 
   TEMP_INTEGER(tmp_modulus);
   tmp_modulus = modulus;
@@ -1923,10 +1981,6 @@ generalized_affine_preimage(const Linear_Expression& lhs,
 			    const Linear_Expression& rhs,
 			    Coefficient_traits::const_reference modulus) {
 
-  // FIXME: This assumes relsym == EQUAL. The other possible values
-  // must also be implemented to be safe.
-  assert(relsym == EQUAL);
-
   // The dimension of `lhs' must be at most the dimension of `*this'.
   dimension_type lhs_space_dim = lhs.space_dimension();
   if (space_dim < lhs_space_dim)
@@ -1941,6 +1995,30 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   // Any preimage of an empty polyhedron is empty.
   if (marked_empty())
     return;
+
+  // If relsym is not EQUAL, then we return a safe approximation
+  // by adding a line in the direction of var.
+  if (relsym != EQUAL) {
+
+    if (modulus != 0)
+      throw_invalid_argument("generalized_affine_preimage(e1, r, e2, m)",
+                             "r != EQUAL && m != 0");
+
+    generators_are_up_to_date() || minimize();
+
+    // Any image of an empty grid is empty.
+    if (marked_empty())
+      return;
+
+    for (dimension_type i = lhs_space_dim + 1; i-- > 0; )
+      if (lhs.coefficient(Variable(i)) != 0)
+	add_grid_generator(grid_line(Variable(i)));
+
+    assert(OK());
+    return;
+  }
+
+  assert(relsym == EQUAL);
 
   TEMP_INTEGER(tmp_modulus);
   tmp_modulus = modulus;
