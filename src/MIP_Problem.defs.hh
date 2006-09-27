@@ -416,7 +416,7 @@ private:
     deeper checks in method OK().
   */
   bool initialized;
-
+ 
   //! The sequence of constraints describing the feasible region.
   Constraint_Sequence input_cs;
 
@@ -632,14 +632,14 @@ private:
   */
   bool is_satisfied(const Constraint& c) const;
 
-  MIP_Problem_Status solve_mip(bool& have_provisional_optimum,
-			       mpq_class& provisional_optimum_value,
-			       Generator& provisional_optimum_point,
-			       MIP_Problem& lp) const;
+  static MIP_Problem_Status solve_mip(bool& have_provisional_optimum,
+				      mpq_class& provisional_optimum_value,
+				      Generator& provisional_optimum_point,
+				      MIP_Problem& lp);
 
   bool is_lp_satisfiable() const;
 
-  bool is_mip_satisfiable(MIP_Problem& mip, Generator& p) const;
+  static bool is_mip_satisfiable(MIP_Problem& mip, Generator& p);
 };
 
 namespace std {

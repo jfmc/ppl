@@ -195,14 +195,16 @@ PPL::MIP_Problem::is_satisfiable() const {
       // MIP Case.
       MIP_Problem& x = const_cast<MIP_Problem&>(*this);
       Generator p = point();
-      bool is_satisfiable = is_mip_satisfiable(x, p);
-      if (is_satisfiable) {
+      x.is_lp_satisfiable();
+      if (is_mip_satisfiable(x, p)) {
 	x.last_generator = p;
 	x.status = SATISFIABLE;
+	return true;
       }
-      else
+      else {
 	x.status = UNSATISFIABLE;
-      return is_satisfiable;
+	return false;
+      }
     }
   }
   // We should not be here!
@@ -240,19 +242,29 @@ PPL::MIP_Problem::solve() const{
        return UNFEASIBLE_MIP_PROBLEM;
      }
      // MIP Problem case.
+     if (x.is_lp_satisfiable())
+       x.second_phase();
+     else {
+       x.status = UNSATISFIABLE;
+       return UNFEASIBLE_MIP_PROBLEM;
+     }
      mpq_class provisional_optimum;
      Generator g = point();
      bool have_provisional_optimum = false;
+
+     MIP_Problem mip_copy(*this);
      MIP_Problem_Status mip_status = solve_mip(have_provisional_optimum,
-					       provisional_optimum, g, x);
-     // Set the internal status because the original problem (x),
-     // passed by reference in solve_mip(), was solved as a normal LP Problem.
+					       provisional_optimum, g,
+					       mip_copy);
      switch (mip_status) {
-       case UNFEASIBLE_MIP_PROBLEM:
-	 x.status = UNSATISFIABLE;
-	 break;
-       case UNBOUNDED_MIP_PROBLEM:
+     case UNFEASIBLE_MIP_PROBLEM:
+       x.status = UNSATISFIABLE;
+       break;
+     case UNBOUNDED_MIP_PROBLEM:
 	 x.status = UNBOUNDED;
+	 // FIXME: How to handle this case? We can have an UNBOUNDED problem
+	 //        without feasible points.
+	 x.last_generator = g;
 	 break;
        case OPTIMIZED_MIP_PROBLEM:
 	 x.status = OPTIMIZED;
@@ -1351,13 +1363,23 @@ PPL::MIP_Problem
 
 bool
 PPL::MIP_Problem::is_lp_satisfiable() const {
-  assert(status == SATISFIABLE || status == PARTIALLY_SATISFIABLE);
-  if (status == SATISFIABLE)
-    return true;
 #if PPL_NOISY_SIMPLEX
   num_iterations = 0;
 #endif
-  MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+  switch (status) {
+  case UNSATISFIABLE:
+    return false;
+    break;
+  case SATISFIABLE:
+   // Intentionally fall through.
+  case UNBOUNDED:
+    // Intentionally fall through.
+  case OPTIMIZED:
+    // Intentionally fall through.
+    return true;
+  case PARTIALLY_SATISFIABLE:
+    {
+    MIP_Problem& x = const_cast<MIP_Problem&>(*this);
   // This code tries to handle the case that happens if the tableau is
   // empty, so it must be initialized.
   if (tableau.num_columns() == 0) {
@@ -1379,13 +1401,17 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
   x.internal_space_dim = x.external_space_dim;
   assert(OK());
   return (status != UNSATISFIABLE);
+    }
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL internal error");
 }
 
 PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
 			    mpq_class& provisional_optimum_value,
 			    Generator& provisional_optimum_point,
-			    MIP_Problem& lp) const {
+			    MIP_Problem& lp) {
   // Solve the problem as a non MIP one, it must be done internally.
   PPL::MIP_Problem_Status lp_status;
   if (lp.is_lp_satisfiable()) {
@@ -1413,7 +1439,7 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
     assign_r(tmp_rational.get_den(), tmp_coeff2, ROUND_NOT_NEEDED);
     tmp_rational.canonicalize();
     if (have_provisional_optimum
-	&& ((optimization_mode() == MAXIMIZATION
+	&& ((lp.optimization_mode() == MAXIMIZATION
 	     && tmp_rational <= provisional_optimum_value)
 	    || tmp_rational >= provisional_optimum_value))
       // Abandon this path.
@@ -1424,9 +1450,10 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
   TEMP_INTEGER(gcd);
   const Coefficient& p_divisor = p.divisor();
   dimension_type nonint_dim;
-  for (Variables_Set::const_iterator v_begin = i_variables.begin(),
-	 v_end = i_variables.end(); v_begin != v_end; ++v_begin) {
-    gcd_assign(gcd, p.coefficient(Variable(v_begin->id())), p_divisor);
+  Variables_Set i_vars = lp.integer_space_dimensions();
+  for (Variables_Set::const_iterator v_begin = i_vars.begin(),
+	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
+    gcd_assign(gcd, p.coefficient(*v_begin), p_divisor);
     if (gcd != p_divisor) {
       nonint_dim = v_begin->id();
       found_satisfiable_generator = false;
@@ -1438,23 +1465,17 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
     if (lp_status == UNBOUNDED_MIP_PROBLEM)
       return lp_status;
     if (!have_provisional_optimum
-	|| (optimization_mode() == MAXIMIZATION
+	|| (lp.optimization_mode() == MAXIMIZATION
 	    && tmp_rational > provisional_optimum_value)
 	|| tmp_rational < provisional_optimum_value) {
       provisional_optimum_value = tmp_rational;
       provisional_optimum_point = p;
-      // This is a feasible point: we can return it if the problem
-      // is unbounded and we have to return a feasible point.
-      if (!have_provisional_optimum) {
-	MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-	x.last_generator = p;
-      }
       have_provisional_optimum = true;
     }
     return lp_status;
   }
 
-  assert(nonint_dim < space_dimension());
+  assert(nonint_dim < lp.space_dimension());
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
 	   ROUND_NOT_NEEDED);
@@ -1463,21 +1484,21 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
   tmp_rational.canonicalize();
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
+  {
   MIP_Problem lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
   solve_mip(have_provisional_optimum, provisional_optimum_value,
 	    provisional_optimum_point, lp_aux);
+  }
   // TODO: change this when we will be able to remove constraints.
-  lp_aux = lp;
-  lp_aux.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
+  lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
   solve_mip(have_provisional_optimum, provisional_optimum_value,
-	    provisional_optimum_point, lp_aux);
+	    provisional_optimum_point, lp);
   return have_provisional_optimum ? lp_status : UNFEASIBLE_MIP_PROBLEM;
 }
 
 bool
-PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
-				     Generator& p) const {
+PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p) {
   // Solve the problem as a non MIP one, it must be done internally.
   if (!lp.is_lp_satisfiable())
     return false;
@@ -1492,9 +1513,10 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   TEMP_INTEGER(gcd);
   const Coefficient& p_divisor = p.divisor();
   dimension_type nonint_dim;
-  for (Variables_Set::const_iterator v_begin = i_variables.begin(),
-	 v_end = i_variables.end(); v_begin != v_end; ++v_begin) {
-    gcd_assign(gcd, p.coefficient(Variable(v_begin->id())), p_divisor);
+  Variables_Set i_vars = lp.integer_space_dimensions();
+  for (Variables_Set::const_iterator v_begin = i_vars.begin(),
+	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
+    gcd_assign(gcd, p.coefficient(*v_begin), p_divisor);
     if (gcd != p_divisor) {
       nonint_dim = v_begin->id();
       found_satisfiable_generator = false;
@@ -1504,7 +1526,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   if (found_satisfiable_generator)
     return true;
 
-  assert(nonint_dim < space_dimension());
+  assert(nonint_dim < lp.space_dimension());
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(nonint_dim)),
 	   ROUND_NOT_NEEDED);
@@ -1513,15 +1535,15 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp,
   tmp_rational.canonicalize();
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
-  MIP_Problem lp_aux = lp;
-  lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
-  if (is_mip_satisfiable(lp_aux, p))
-    return true;
-  // TODO: change this when we will be able to remove constraints.
-  lp_aux = lp;
-  lp_aux.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
-  return is_mip_satisfiable(lp_aux, p);
+  {
+    MIP_Problem lp_aux = lp;
+    lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+    if (is_mip_satisfiable(lp_aux, p))
+      return true;
   }
+  lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
+  return is_mip_satisfiable(lp, p);
+}
 
 bool
 PPL::MIP_Problem::OK() const {
@@ -1594,7 +1616,20 @@ PPL::MIP_Problem::OK() const {
 	ascii_dump(cerr);
 #endif
 	return false;
-    }
+      }
+    // FIXME: temporarly commented out. This should be called only
+    // when we have really in integer solutions, and not when we are
+    // solving the problem with the `branch and bound' technique.
+    // // Check that every integer declared Variable is really integer.
+    //     // in the solution found.
+    //     TEMP_INTEGER(gcd);
+    //       for (Variables_Set::const_iterator v_begin = i_variables.begin(),
+    // 	     v_end = i_variables.end(); v_begin != v_end; ++v_begin) {
+    // 	gcd_assign(gcd, last_generator.coefficient(*v_begin),
+    // 		   last_generator.divisor());
+    // 	if (gcd != last_generator.divisor())
+    // 	  return false;
+    //       }
 
     const dimension_type tableau_nrows = tableau.num_rows();
     const dimension_type tableau_ncols = tableau.num_columns();
