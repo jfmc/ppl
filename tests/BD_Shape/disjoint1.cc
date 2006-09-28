@@ -1,0 +1,107 @@
+/* Test BD_Shape::is_disjoint_from(const BD_Shape& y).
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#include "ppl_test.hh"
+
+namespace {
+
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(B == 0);
+  bd1.add_constraint(A >= 1);
+  bd1.add_constraint(A <= 2);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraint(A == 0);
+  bd2.add_constraint(B >= 1);
+  bd2.add_constraint(B <= 2);
+
+  bool ok = bd1.is_disjoint_from(bd2);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  return ok;
+}
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd1(3);
+
+  TBD_Shape bd2(3);
+  bd2.add_constraint(A <= 3);
+  bd2.add_constraint(B - A <= -1);
+  bd2.add_constraint(B >= -5);
+
+  bool disjoint = bd1.is_disjoint_from(bd2);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  return !disjoint;
+}
+
+bool
+test03() {
+  Variable x1(0);
+  Variable x2(1);
+
+  Constraint_System cs1;
+  cs1.insert(x1 >= -4);
+  cs1.insert(x2 - x1 <= 0);
+  cs1.insert(x1 - x2 <= -5);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraints(cs1);
+
+  print_constraints(bd1, "*** bd1 ***");
+
+  Constraint_System cs2;
+  cs2.insert(2*x1 >= 1);
+  cs2.insert(2*x1 <= 3);
+  cs2.insert(6*x2 <= 1);
+  cs2.insert(3*x2 >= -2);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraints(cs2);
+
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool disjoint = bd1.is_disjoint_from(bd2);
+
+  return disjoint;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+END_MAIN
