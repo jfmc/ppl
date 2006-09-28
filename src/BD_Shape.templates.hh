@@ -440,9 +440,10 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
 
 template <typename T>
 bool
-BD_Shape<T>::is_disjoint_from(const BD_Shape& /*y*/) const {
-  // FIXME!
-  return false;
+BD_Shape<T>::is_disjoint_from(const BD_Shape& y) const {
+  BD_Shape z = *this;
+  z.intersection_assign_and_minimize(y);
+  return z.is_empty();
 }
 
 template <typename T>
