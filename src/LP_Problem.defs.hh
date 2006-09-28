@@ -582,7 +582,7 @@ private:
   void compute_generator() const;
 
   /*! \brief
-    Merge split variables in the tableau if a nonnegativity constraint is
+    Merges split variables in the tableau if a nonnegativity constraint is
     detected.
 
     \param var_index
