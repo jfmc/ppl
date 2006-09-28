@@ -80,6 +80,7 @@ test01() {
   print_constraints(icosahedron, "*** icosahedron ***");
   print_constraints(column, "*** column ***");
   print_constraints(computed_result, "*** computed_result ***");
+  print_constraints(known_result, "*** known_result ***");
 
   return ok;
 }
