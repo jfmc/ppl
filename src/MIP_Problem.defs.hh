@@ -416,7 +416,7 @@ private:
     deeper checks in method OK().
   */
   bool initialized;
- 
+
   //! The sequence of constraints describing the feasible region.
   Constraint_Sequence input_cs;
 
@@ -490,9 +490,9 @@ private:
     <CODE>false</CODE> otherwise.
 
     \param nonnegative_variable
-    This will encode for each variable if this one was splitted or not.
+    This will encode for each variable if this one was split or not.
     Every element of this vector will be set to <CODE>true</CODE> if the
-    associated variable is splitted, <CODE>false</CODE> otherwise.
+    associated variable is split, <CODE>false</CODE> otherwise.
 
     \param unfeasible_tableau_rows
     This will contain all the row indexes of the tableau that are no more
@@ -613,15 +613,15 @@ private:
   void compute_generator() const;
 
   /*! \brief
-    Merges split variables in the tableau if a nonnegativity constraint is
-    detected.
+    Merges previously split variables in the tableau if a nonnegativity
+    constraint is detected.
 
     \param var_index
-    The index of the variable that has to be unsplit.
+    The index of the variable that has to be merged.
 
     \param nonfeasible_cs
     This will contain all the row indexes that are no more satisfied by
-    the computed generator after unsplitting a variable.
+    the computed generator after merging a variable.
   */
   void merge_split_variables(dimension_type var_index,
 			      std::vector<dimension_type>& nonfeasible_cs);
