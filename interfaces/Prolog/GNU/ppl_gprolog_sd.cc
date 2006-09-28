@@ -81,7 +81,7 @@ ppl_Prolog_sysdep_init() {
 }
 
 /*!
-  Perform system-dependent de-itialization.
+  Perform system-dependent de-initialization.
 */
 void
 ppl_Prolog_sysdep_deinit() {

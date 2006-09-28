@@ -86,7 +86,7 @@ pl_clpq_SOURCES = pl_clpq.cc
 pl_clpq2_SOURCES = pl_clpq.cc
 
 # Notice: we are linking statically until we understand whether
-# and if libtool and plld can interoperate.
+# and if Libtool and plld can interoperate.
 ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o | libppl_swiprolog.la
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " ","` \

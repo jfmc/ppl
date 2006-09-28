@@ -111,7 +111,6 @@ test03() {
   return ok;
 }
 
-// test from Chiara conversion_test.cc
 bool
 test04() {
   Variable A(0);
@@ -144,7 +143,6 @@ test04() {
   return ok;
 }
 
-// test1 from Chiara conversion_test.cc.
 bool
 test05() {
   Variable A(0);
@@ -175,7 +173,6 @@ test05() {
   return ok;
 }
 
-// test2 from Chiara conversion_test.cc.
 bool
 test06() {
   Variable A(0);
@@ -208,7 +205,6 @@ test06() {
   return ok;
 }
 
-// test3 from Chiara conversion_test.cc.
 bool
 test07() {
   Variable A(0);
@@ -239,7 +235,6 @@ test07() {
   return ok;
 }
 
-// param_test1 from Chiara Convert_Test.cc.
 bool
 test08() {
   Variable A(0);
@@ -271,7 +266,6 @@ test08() {
   return ok;
 }
 
-// param_test2 from Chiara Convert_Test.cc.
 bool
 test09() {
   Variable A(0);
@@ -301,7 +295,6 @@ test09() {
   return ok;
 }
 
-// param_test3 from Chiara Convert_Test.cc.
 bool
 test10() {
   Variable A(0);
@@ -332,7 +325,6 @@ test10() {
   return ok;
 }
 
-// param_test5 from Chiara Convert_Test.cc.
 bool
 test11() {
   Variable A(0);
@@ -362,7 +354,6 @@ test11() {
   return ok;
 }
 
-// param_test6 from Chiara Convert_Test.cc.
 bool
 test12() {
   Variable A(0);
@@ -419,9 +410,6 @@ test14() {
   return ok;
 }
 
-// Bigger values (param_test7a from Chiara Convert_Test.cc) -- in
-// grid1_64.cc.
-// Test reduce_line_with_line (param_test9 from Chiara Convert_Test.cc).
 bool
 test15() {
   Variable A(0);
@@ -451,8 +439,6 @@ test15() {
   return ok;
 }
 
-// Grids from a water monitor example (from param_test10 from Chiara
-// Convert_test.cc).
 bool
 test16() {
   Variable A(0);
@@ -487,7 +473,6 @@ test16() {
   return ok;
 }
 
-// param_test11 from Chiara Convert_Test.cc.
 bool
 test17() {
   Variable A(0);
@@ -560,7 +545,7 @@ test20() {
   return ok;
 }
 
-// Even bigger values (param_test8 from Chiara Convert_Test.cc).
+// Using large values for the coordinates
 bool
 test21() {
   Variable A(0);
@@ -615,7 +600,7 @@ test21() {
   return ok;
 }
 
-// Bigger values (param_test7a from Chiara Convert_Test.cc).
+// Using large values for the coefficients.
 bool
 test22() {
   Variable A(0);
@@ -646,7 +631,6 @@ test22() {
   return ok;
 }
 
-// test4 from Chiara conversion_test.cc.
 bool
 test23() {
   Variable A(0);
@@ -680,7 +664,6 @@ test23() {
   return ok;
 }
 
-// param_test4 from Chiara Convert_Test.cc.
 bool
 test24() {
   Variable A(0);

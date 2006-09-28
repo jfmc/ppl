@@ -1,3 +1,39 @@
+2006-09-06 Wednesday 20:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* INSTALL, config.guess, config.sub, install-sh, missing,
+	  mkinstalldirs (simplex.[1,3,3,2,1,1]): Third merge from the main
+	  trunk.
+
+2006-06-29 Thursday 17:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* INSTALL (1.5), config.guess (1.21), config.sub (1.20), install-sh
+	  (1.14), missing (1.9), mkinstalldirs (1.6): Updated from Autoconf
+	  2.60.
+
+2006-05-08 Monday 19:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS, ChangeLog, Makefile.am, NEWS, README, config.guess,
+	  config.sub, src/.cvsignore, src/Makefile.am, src/Watchdog.cc,
+	  utils/.cvsignore, utils/Makefile.am
+	  (simplex.[1,2,2,1,2,2,2,1,2,2,1,2]): Second merge from main
+	  trunk.
+
+2006-05-08 Monday 18:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Watchdog.cc (octagons.1): First merge from main trunk.
+
+2006-04-08 Saturday 16:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Watchdog.cc (1.3): Typo fixed in comment.
+
+2006-03-12 Sunday 08:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (ppl-0_9-branch.1): Mark ChangeLog.
+
+2006-03-10 Friday 17:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.15): Updated.
+
 2006-03-10 Friday 16:45  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* README (1.14): Updated.
@@ -26,7 +62,7 @@
 	* src/Makefile.in (grids.4): Makefile.in is automatically
 	  generated: it should not be under CVS.
 
-2006-01-25 Wednesday 19:31  Matthew Mundell <mattm@comp.leeds.ac.uk>
+2006-01-25 Wednesday 19:31  Matthew Mundell
 
 	* CREDITS, ChangeLog, NEWS, README (grids.[1,3,2,3]): Eighth and
 	  last merge from the main trunk.
@@ -55,7 +91,7 @@
 
 	* NEWS (1.8): Release date decided.
 
-2006-01-16 Monday 02:10  Matthew Mundell <mattm@comp.leeds.ac.uk>
+2006-01-16 Monday 02:10  Matthew Mundell
 
 	* ChangeLog, Makefile.am, NEWS, README, config.guess, config.sub,
 	  configure.ac, install-sh, ltmain.sh,
@@ -79,11 +115,11 @@
 	  Seventh (last but one?) merge of the main trunk to the grids
 	  branch.
 
-2006-01-14 Saturday 15:48  Matthew Mundell <mattm@comp.leeds.ac.uk>
+2006-01-14 Saturday 15:48  Matthew Mundell
 
 	* NEWS (1.7): Add detail to the 0.5 Time entry.
 
-2006-01-14 Saturday 15:37  Matthew Mundell <mattm@comp.leeds.ac.uk>
+2006-01-14 Saturday 15:37  Matthew Mundell
 
 	* NEWS (1.6): Update 0.8 entries from ChangeLog.
 
@@ -195,7 +231,7 @@
 	  (grids.[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]):
 	  Files moved as in the main trunk.
 
-2005-09-28 Wednesday 21:04  Matthew Mundell <mattm@comp.leeds.ac.uk>
+2005-09-28 Wednesday 21:04  Matthew Mundell
 
 	* .cvsignore, ChangeLog, Doubly_Linked_Object.defs.hh,
 	  Doubly_Linked_Object.inlines.hh, Doubly_Linked_Object.types.hh,

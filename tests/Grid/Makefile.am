@@ -56,22 +56,26 @@ bhz03widening1 \
 bounded1 \
 boundingbox1 boundingbox2 \
 bounds1 \
+boundedaffineimage1 \
+boundedaffinepreimage1 \
 certificate1 \
 concatenate1 \
 congruence1 \
 congruences1 \
 congruences2 \
 contains1 \
+containsintegerpoint1 \
 copyconstruct1 \
 coveringbox1 coveringbox2 \
-directproduct1 \
+directproduct1 directproduct2 \
 discrete1 \
 disjoint1 \
 equals1 \
 expandspacedim1 \
 foldspacedims1 \
-generalizedaffineimage1 generalizedaffineimage2 \
+generalizedaffineimage1 generalizedaffineimage2 generalizedaffineimage3 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
+generalizedaffinepreimage3 \
 generator1 \
 generators1 generators2 \
 grid1 grid2 grid3 \
@@ -138,6 +142,10 @@ boundingbox2_SOURCES = boundingbox2.cc
 
 bounds1_SOURCES = bounds1.cc
 
+boundedaffineimage1_SOURCES = boundedaffineimage1.cc
+
+boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
+
 certificate1_SOURCES = certificate1.cc
 
 concatenate1_SOURCES = concatenate1.cc
@@ -149,9 +157,12 @@ congruences2_SOURCES = congruences2.cc
 
 contains1_SOURCES = contains1.cc
 
+containsintegerpoint1_SOURCES = containsintegerpoint1.cc
+
 copyconstruct1_SOURCES = copyconstruct1.cc
 
 directproduct1_SOURCES = directproduct1.cc
+directproduct2_SOURCES = directproduct2.cc
 
 discrete1_SOURCES = discrete1.cc
 
@@ -165,9 +176,11 @@ foldspacedims1_SOURCES = foldspacedims1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
+generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
 
 generalizedaffinepreimage1_SOURCES = generalizedaffinepreimage1.cc
 generalizedaffinepreimage2_SOURCES = generalizedaffinepreimage2.cc
+generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
 
 generator1_SOURCES = generator1.cc
 

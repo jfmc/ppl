@@ -69,7 +69,7 @@ bool subset_or_equal(const Saturation_Row& x, const Saturation_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
-  Set-theoretic inclusion test: sets \p strict_subset to a boolean
+  Set-theoretic inclusion test: sets \p strict_subset to a Boolean
   indicating whether the inclusion is strict or not.
 
   \relates Saturation_Row

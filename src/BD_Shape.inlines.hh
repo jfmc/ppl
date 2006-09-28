@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
+
 namespace BD_Shapes {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -94,7 +95,33 @@ max_assign(N& x, const N& y) {
     x = y;
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x is an even number.
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T, typename Policy>
+inline bool
+is_even(const Checked_Number<T, Policy>& x) {
+  Checked_Number<T, Policy> half_x;
+  return div2exp_assign_r(half_x, x, 1, ROUND_DIRECT) == V_EQ
+    && is_integer(half_x);
+}
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \f$x = -y\f$.
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T, typename Policy>
+inline bool
+is_additive_inverse(const Checked_Number<T, Policy>& x,
+		    const Checked_Number<T, Policy>& y) {
+  Checked_Number<T, Policy> negated_x;
+  return neg_assign_r(negated_x, x, ROUND_DIRECT) == V_EQ
+    && negated_x == y;
+}
+
 } // namespace BD_Shapes
+
 } // namespace Implementation
 
 
@@ -150,8 +177,8 @@ BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
     if (num_dimensions > 0)
       // A (non zero-dim) universe BDS is closed.
       status.set_shortest_path_closed();
+    assert(OK());
   }
-  assert(OK());
 }
 
 template <typename T>
@@ -186,7 +213,7 @@ template <typename T>
 inline void
 BD_Shape<T>::add_constraints(const Constraint_System& cs) {
   for (Constraint_System::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i)
+	 cs_end = cs.end(); i != cs_end; ++i)
     add_constraint(*i);
   assert(OK());
 }
@@ -219,7 +246,6 @@ BD_Shape<T>::BD_Shape(const Constraint_System& cs)
     // A (non zero-dim) universe BDS is shortest-path closed.
     status.set_shortest_path_closed();
   add_constraints(cs);
-  assert(OK());
 }
 
 template <typename T>
@@ -542,7 +568,6 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
     if (marked_shortest_path_closed())
       status.reset_shortest_path_closed();
   }
-  assert(OK());
 }
 
 template <typename T>
@@ -642,13 +667,6 @@ BD_Shape<T>::intersection_assign_and_minimize(const BD_Shape& y) {
 }
 
 template <typename T>
-inline bool
-BD_Shape<T>::is_disjoint_from(const BD_Shape& y) const {
-  BD_Shape<T> z = *this;
-  return !z.intersection_assign_and_minimize(y);
-}
-
-template <typename T>
 inline void
 BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y, unsigned* tp) {
   static N stop_points[] = {
@@ -726,6 +744,12 @@ BD_Shape<T>::forget_binary_dbm_constraints(const dimension_type v) {
     dbm_v[i] = PLUS_INFINITY;
     dbm[i][v] = PLUS_INFINITY;
   }
+}
+
+template <typename T>
+inline memory_size_type
+BD_Shape<T>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 } // namespace Parma_Polyhedra_Library

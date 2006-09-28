@@ -52,7 +52,7 @@ public:
   void push_back(T& obj);
 
   /*! \brief
-    Inserts \p obj jyst before \p position and returns an iterator
+    Inserts \p obj just before \p position and returns an iterator
     that points to the inserted object.
   */
   Iterator insert(Iterator position, T& obj);

@@ -1201,7 +1201,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 
     // If we haven't found an upper bound for the epsilon dimension,
     // then we have to check whether such an upper bound is implied
-    // by the remaining constraints (exploiting teh simplex algorithm).
+    // by the remaining constraints (exploiting the simplex algorithm).
     if (!found_eps_leq_one) {
       LP_Problem lp;
       // KLUDGE: temporarily mark the constraint system as if it was
@@ -1210,6 +1210,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // topology of `cs' even on exceptional execution path.
       cs.set_necessarily_closed();
       try {
+	lp.add_space_dimensions_and_embed(cs.space_dimension());
 	lp.add_constraints(cs);
 	cs.set_not_necessarily_closed();
       }

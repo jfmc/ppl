@@ -311,7 +311,7 @@ test11() {
   return ok;
 }
 
-// Second parameer of greater dimension than grid.
+// Second parameter of greater dimension than grid.
 bool
 test12() {
   Variable A(0);

@@ -368,7 +368,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -522,5 +522,6 @@ std::ostream& operator<<(std::ostream& s, const Grid_Generator::Type& t);
 } // namespace Parma_Polyhedra_Library
 
 #include "Grid_Generator.inlines.hh"
+#include "Grid_Generator_System.inlines.hh"
 
 #endif // !defined(PPL_Grid_Generator_defs_hh)

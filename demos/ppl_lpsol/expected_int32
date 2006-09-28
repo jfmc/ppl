@@ -1,5 +1,7 @@
 *** ppl_lpsol -e -m -oobtained afiro.mps
+PPL error code -6: Negative overflow.
 *** ppl_lpsol -e -M -oobtained afiro.mps
+PPL error code -6: Negative overflow.
 *** ppl_lpsol -e -m -oobtained bgprtr.mps
 Unfeasible problem.
 *** ppl_lpsol -e -M -oobtained bgprtr.mps
@@ -34,17 +36,29 @@ Optimum location:
 x1 = 0
 x2 = 0
 *** ppl_lpsol -s -m -oobtained adlittle.mps
+PPL error code -6: Negative overflow.
 *** ppl_lpsol -s -M -oobtained adlittle.mps
+PPL error code -6: Negative overflow.
 *** ppl_lpsol -s -m -oobtained afiro.mps
+PPL error code -6: Negative overflow.
 *** ppl_lpsol -s -M -oobtained afiro.mps
+PPL error code -6: Negative overflow.
 *** ppl_lpsol -s -m -oobtained bgprtr.mps
+Unfeasible problem.
 *** ppl_lpsol -s -M -oobtained bgprtr.mps
+Unfeasible problem.
 *** ppl_lpsol -s -m -oobtained blend.mps
+PPL error code -6: Negative overflow.
 *** ppl_lpsol -s -M -oobtained blend.mps
+PPL error code -6: Negative overflow.
 *** ppl_lpsol -s -m -oobtained boeing1.mps
+PPL error code -6: Positive overflow.
 *** ppl_lpsol -s -M -oobtained boeing1.mps
+PPL error code -6: Positive overflow.
 *** ppl_lpsol -s -m -oobtained boeing2.mps
+PPL error code -6: Positive overflow.
 *** ppl_lpsol -s -M -oobtained boeing2.mps
+PPL error code -6: Positive overflow.
 *** ppl_lpsol -s -m -oobtained ex1.mps
 Optimum value: -3.75
 Optimum location:
@@ -56,7 +70,9 @@ Optimum location:
 x1 = 2.5
 x2 = 0
 *** ppl_lpsol -s -m -oobtained kb2.mps
+PPL error code -6: Negative overflow.
 *** ppl_lpsol -s -M -oobtained kb2.mps
+PPL error code -6: Negative overflow.
 *** ppl_lpsol -s -m -oobtained mip.mps
 Optimum value: 24.07692308
 Optimum location:
@@ -84,11 +100,17 @@ x1 = 0
 x2 = 0
 x3 = 0
 *** ppl_lpsol -s -m -oobtained sc105.mps
+PPL error code -6: Positive overflow.
 *** ppl_lpsol -s -M -oobtained sc105.mps
+PPL error code -6: Positive overflow.
 *** ppl_lpsol -s -m -oobtained sc50a.mps
+PPL error code -6: Positive overflow.
 *** ppl_lpsol -s -M -oobtained sc50a.mps
+PPL error code -6: Positive overflow.
 *** ppl_lpsol -s -m -oobtained sc50b.mps
+PPL error code -6: Positive overflow.
 *** ppl_lpsol -s -M -oobtained sc50b.mps
+PPL error code -6: Positive overflow.
 *** ppl_lpsol -s -m -oobtained unboundedmin.mps
 Unbounded problem.
 *** ppl_lpsol -s -M -oobtained unboundedmin.mps

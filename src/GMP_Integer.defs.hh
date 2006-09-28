@@ -66,6 +66,14 @@ void neg_assign(GMP_Integer& x);
 /*! \relates GMP_Integer */
 void neg_assign(GMP_Integer& x, const GMP_Integer& y);
 
+//! Assigns to \p x its absolute value.
+/*! \relates GMP_Integer */
+void abs_assign(GMP_Integer& x);
+
+//! Assigns to \p x the absolute value of \p y.
+/*! \relates GMP_Integer */
+void abs_assign(GMP_Integer& x, const GMP_Integer& y);
+
 //! Assigns to \p x the greatest common divisor of \p y and \p z.
 /*! \relates GMP_Integer */
 void gcd_assign(GMP_Integer& x,

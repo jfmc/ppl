@@ -310,7 +310,7 @@ test11() {
   known_result.add_constraint(A == 1);
   known_result.add_constraint(B <= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(A, EQUAL, 1) ***");
 
@@ -338,7 +338,7 @@ test12() {
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B <= 9);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(B-3,EQUAL, B+1) ***");
 
@@ -429,7 +429,7 @@ test16() {
     // This is an incorrect use of the function
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply it to an expression whose space dimension is
-    // greather than the BDS's space dimension.
+    // greater than the BDS's space dimension.
     bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, z);
   }
   catch (std::invalid_argument& e) {

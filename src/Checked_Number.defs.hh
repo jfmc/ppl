@@ -38,10 +38,10 @@ struct Checked_Number_Transparent_Policy {
   //! Checks for attempts to add infinities with different sign.
   static const int check_inf_add_inf = 0;
 
-  //! Checks for attempts to sub infinities with same sign.
+  //! Checks for attempts to subtract infinities with same sign.
   static const int check_inf_sub_inf = 0;
 
-  //! Checks for attempts to mul infinities by zero.
+  //! Checks for attempts to multiply infinities by zero.
   static const int check_inf_mul_zero = 0;
 
   //! Checks for attempts to divide by zero.
@@ -117,8 +117,8 @@ struct Extended_Number_Policy {
   static const int check_sqrt_neg = 0;
   static const int handle_nan = 1;
   static const int handle_infinity = 1;
-  // Don't uncomment the following.
-  // The compile time error on conversions is the expected behaviour.
+  // Do not uncomment the following.
+  // The compile time error on conversions is the expected behavior.
   // static const int convertible = 0;
 #ifdef DEBUG_ROUND_NOT_NEEDED
   static const int fpu_check_inexact = 1;
@@ -128,8 +128,43 @@ struct Extended_Number_Policy {
   static const int check_nan_args = 1;
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
   static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
-  // Don't uncomment the following.
-  // The compile time error is the expected behaviour.
+  // Do not uncomment the following.
+  // The compile time error is the expected behavior.
+  // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
+  // static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_UP;
+  // static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;
+  // static const Rounding_Dir ROUND_DEFAULT_INPUT = ROUND_UP;
+  // static const Rounding_Dir ROUND_DEFAULT_OUTPUT = ROUND_UP;
+  static void handle_result(Result r);
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_CXX_interface */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+struct WRD_Extended_Number_Policy {
+  static const int check_overflow = 1;
+  static const int check_inf_add_inf = 0;
+  static const int check_inf_sub_inf = 0;
+  static const int check_inf_mul_zero = 0;
+  static const int check_div_zero = 0;
+  static const int check_inf_div_inf = 0;
+  static const int check_inf_mod = 0;
+  static const int check_sqrt_neg = 0;
+  static const int handle_nan = 1;
+  static const int handle_infinity = 1;
+  // Do not uncomment the following.
+  // The compile time error on conversions is the expected behavior.
+  // static const int convertible = 0;
+#ifdef DEBUG_ROUND_NOT_NEEDED
+  static const int fpu_check_inexact = 1;
+#else
+  static const int fpu_check_inexact = 0;
+#endif
+  static const int check_nan_args = 0;
+  static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
+  static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
+  // Do not uncomment the following.
+  // The compile time error is the expected behavior.
   // static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_UP;
   // static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_UP;
   // static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_UP;
@@ -598,6 +633,24 @@ operator-(const Checked_Number<T, Policy>& x);
 template <typename T, typename Policy>
 void
 neg_assign(Checked_Number<T, Policy>& x);
+
+//! Assigns to \p x the negation of \p y.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+neg_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
+
+//! Assigns to \p x its absolute value.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+abs_assign(Checked_Number<T, Policy>& x);
+
+//! Assigns to \p x the absolute value of \p y.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+abs_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 //! Assigns to \p x the value <CODE>x + y * z</CODE>.
 /*! \relates Checked_Number */

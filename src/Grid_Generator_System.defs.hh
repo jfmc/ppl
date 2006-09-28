@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator_System.types.hh"
 #include "Generator_System.defs.hh"
 #include "Grid_Generator.types.hh"
-#include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -346,9 +346,9 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by \ref
-    ascii_dump) and sets \p *this accordingly.  Returns
-    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
 
     Resizes the matrix of generators using the numbers of rows and columns
     read from \p s, then initializes the coordinates of each generator

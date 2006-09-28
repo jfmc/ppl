@@ -21,9 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-
 #include "Variable.defs.hh"
-
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;

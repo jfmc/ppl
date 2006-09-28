@@ -89,6 +89,32 @@ NNC_Polyhedron::NNC_Polyhedron(Generator_System& gs)
 						 "space dimension"), gs)) {
 }
 
+inline
+NNC_Polyhedron::NNC_Polyhedron(const Grid_Generator_System& gs)
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       gs.space_dimension() <= max_space_dimension()
+	       ? gs.space_dimension()
+	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+						 "NNC_Polyhedron(ggs)",
+						 "the space dimension of ggs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
+}
+
+inline
+NNC_Polyhedron::NNC_Polyhedron(Grid_Generator_System& gs)
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       gs.space_dimension() <= max_space_dimension()
+	       ? gs.space_dimension()
+	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+						 "NNC_Polyhedron(ggs)",
+						 "the space dimension of ggs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
+}
+
 template <typename Box>
 inline
 NNC_Polyhedron::NNC_Polyhedron(const Box& box, From_Bounding_Box)

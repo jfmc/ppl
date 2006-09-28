@@ -1188,7 +1188,7 @@ a parameter \f$k\f$ and only apply widenings starting from the
 
 The library also supports an improved widening delay strategy,
 that we call <EM>widening with tokens</EM> \ref BHRZ03a "[BHRZ03a]".
-A token is a sort of wildcard allowing for the replacement of the widening
+A token is a sort of wild card allowing for the replacement of the widening
 application by the exact upper bound computation: the token is used
 (and thus consumed) only when the widening would have resulted in an
 actual precision loss (as opposed to the <EM>potential</EM> precision loss
@@ -1224,7 +1224,16 @@ that their results cannot be worse than the smallest
 \ref bounding_boxes "bounding box" enclosing the two argument polyhedra.
 
 
-\section Bounded_Difference_Shapes Bounded Difference Shapes
+\section Weakly_Relational_Shapes Weakly-Relational Shapes
+
+The PPL provides support for computations on numerical domains that,
+in selected contexts, can achieve a better precision/efficiency ratio
+with respect to the corresponding computations on a ``fully
+relational'' domain of convex polyhedra.  This is achieved by
+restricting the syntactic form of the constraints that can be used to
+describe the domain elements.
+
+\subsection Bounded_Difference_Shapes Bounded Difference Shapes
 
 For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
 and for each relation symbol \f$\mathord{\relsym} \in \{ =, \geq\}\f$,
@@ -1239,47 +1248,72 @@ A convex polyhedron \f$\cP \in \CPset_n\f$ is said to be a
 either \f$\cP\f$ can be expressed as the intersection of a finite number
 of bounded difference constraints or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
 
-By construction, a BDS is always topologically closed.
-Under the usual set inclusion ordering, the set of all BDSs on the vector
-space \f$\Rset^n\f$ is a lattice having the empty set \f$\emptyset\f$
-and the universe \f$\Rset^n\f$ as the smallest and the biggest elements,
-respectively.
-In theoretical terms, it is a meet sub-lattice of \f$\CPset_n\f$, meaning
-that the intersection of a finite set of BDSs is still a BDS; on the other
-hand, in general the poly-hull of two BDSs is not a BDS. The smallest BDS
-containing a finite set of BDSs is said to be their <EM>bds-hull</EM>.
+\subsection Octagonal_Shapes Octagonal Shapes
 
-The PPL provides support for computations on the domain of rational
-bounded difference shapes that, in selected contexts, can achieve a
-better precision/efficiency ratio with respect to the corresponding
-computations on a domain of convex polyhedra.
+For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
+and for each relation symbol \f$\mathord{\relsym} \in \{ =, \geq\}\f$,
+the linear constraint \f$\langle \vect{a}, \vect{x} \rangle \relsym b\f$
+is said to be an <EM>octagonal</EM> if there exist two indices
+\f$i, j \in \{ 0, \ldots, n-1 \}\f$ such that:
+  - \f$a_i, a_j \in \{ -1, 0, 1 \}\f$;
+  - \f$a_k = 0\f$, for all \f$k \notin \{ i, j \}\f$.
+
+A convex polyhedron \f$\cP \in \CPset_n\f$ is said to be an
+<EM>octagonal shape</EM> (OS, for short) if and only if
+either \f$\cP\f$ can be expressed as the intersection of a finite number
+of octagonal constraints or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
+
+Note that, since any bounded difference is also an octagonal constraint,
+any BDS is also an OS. The name ``octagonal'' comes from the fact that,
+in a vector space of dimension 2, a bounded OS can have eight sides
+at most.
+
+\subsection Weakly_Relational_Shape_Interface Weakly-Relational Shapes Interface
+By construction, any BDS or OS is always topologically closed.
+Under the usual set inclusion ordering, the set of all BDSs (resp., OSs)
+on the vector space \f$\Rset^n\f$ is a lattice having the empty set
+\f$\emptyset\f$ and the universe \f$\Rset^n\f$ as the smallest and
+the biggest elements, respectively.
+In theoretical terms, it is a meet sub-lattice of \f$\CPset_n\f$;
+moreover, the lattice of BDSs is a meet sublattice of the lattice of OSs.
+The least upper bound of a finite set of BDSs (resp., OSs) is said to be
+their <EM>bds-hull</EM> (resp., <EM>oct-hull</EM>).
+
 As far as the representation of the rational inhomogeneous term of
-each bounded difference is concerned, several <EM>rounding-aware</EM>
-implementation choices are available, including:
+each bounded difference or octagonal constraint is concerned, several
+<EM>rounding-aware</EM> implementation choices are available, including:
   - bounded precision integer types;
   - bounded precision floating point types;
   - unbounded precision integer and rational types, as provided by GMP.
 
-The user interface for BDSs is meant to be as similar as possible to
-the one developed for the domain of closed polyhedra: in particular,
-all operators on polyhedra are also available for the domain of BDSs,
-even though they are typically characterized by a lower degree of precision.
+The user interface for BDSs and OSs is meant to be as similar as
+possible to the one developed for the domain of closed polyhedra: in
+particular, all operators on polyhedra are also available for the
+domains of BDSs and OSs, even though they are typically characterized
+by a lower degree of precision.
+For instance, the <EM>bds-difference</EM> and <EM>oct-difference</EM>
+operators return (the smallest) over-approximations of the set-theoretical
+difference operator on the corresponding domains.
+In the case of (generalized) images and preimages of affine relations,
+suitable (possibly not-optimal) over-approximations are computed when
+the considered relations cannot be precisely modeled by only using
+bounded differences or octagonal constraints.
 
-\subsection Widening_and_Extrapolation_Operators_on_BD_Shapes Widening and Extrapolation Operators on BD Shapes
+\subsection Widening_and_Extrapolation_Operators_on_WR_Shapes Widening and Extrapolation Operators on Weakly-Relational Shapes
 
 \anchor BHMZ05_widening
-For the domain of BDSs, the library provides a variant of the widening
-operator for convex polyhedra defined in \ref CH78 "[CH78]".
+For the domains of BDSs and OSs, the library provides a variant of
+the widening operator for convex polyhedra defined in \ref CH78 "[CH78]".
 The implementation follows the specification in \ref BHMZ05 "[BHMZ05]",
-resulting in an operator which is well-defined on the domain of BDSs
-(i.e., it does not depend on the internal representation of BDSs),
+resulting in an operator which is well-defined on the corresponding domain
+(i.e., it does not depend on the internal representation of BDSs or OSs),
 while still ensuring convergence in a finite number of steps.
 
 \anchor CC76_extrapolation
 The library also implements an extension of the widening operator for
 intervals as defined in \ref CC76 "[CC76]". The reader is warned that
-such an extension, even though being well-defined on the domain of BDSs,
-is not provided with a convergence guarantee and is therefore an
+such an extension, even though being well-defined on the domain of BDSs
+and OSs, is not provided with a convergence guarantee and is therefore an
 extrapolation operator.
 
 
@@ -1499,7 +1533,7 @@ In this section we introduce rational grids
 as provided by the library.
 See also \ref BDHMZ05 "[BDHMZ05]" for a detailed description of this domain.
 
-The libary supports two representations for the grids domain;
+The library supports two representations for the grids domain;
 <EM>congruence systems</EM> and <EM>grid generator systems</EM>.
 We first describe <EM>linear congruence relations</EM> which form the elements
 of a congruence system.
@@ -2257,7 +2291,7 @@ R.&nbsp;Bagnara, K.&nbsp;Dobson, P.&nbsp;M. Hill, M.&nbsp;Mundell, and E.&nbsp;Z
 \anchor BHMZ05
 R.&nbsp;Bagnara, P.&nbsp;M. Hill, E.&nbsp;Mazzi, and E.&nbsp;Zaffanella.
   Widening Operators for Weakly-Relational Numeric Abstractions.
-  In C.&nbsp;Hankin and I.&nbsp;Silveroni, editors, <i>Static Analysis:
+  In C.&nbsp;Hankin and I.&nbsp;Siveroni, editors, <i>Static Analysis:
   Proceedings of the 12th International Symposium</i>, volume 3672 of
   <i>Lecture Notes in Computer Science</i>, pages 3-18, London, UK, 2005.
   Springer-Verlag, Berlin.

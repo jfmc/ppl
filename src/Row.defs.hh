@@ -291,10 +291,10 @@ public:
 
   PPL_OUTPUT_DECLARATIONS
 
-  //! Uses the ASCII Row representation at \p s to recreate *this.
-  /*!
-    Returns <CODE>true</CODE> if successful, <CODE>false</CODE>
-    otherwise.  The ASCII representation is as output by \ref ascii_dump.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
   bool ascii_load(std::istream& s);
 
@@ -323,6 +323,12 @@ public:
   memory_size_type external_memory_in_bytes(dimension_type capacity) const;
 
   //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
+  /*! \brief
+    Checks if all the invariants are satisfied and that the actual
+    size and capacity match the values provided as arguments.
+  */
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
 
 private:

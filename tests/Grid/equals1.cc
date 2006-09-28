@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// Grids the same, gr defined by generatorss and known_gr by congruences.
+// Grids the same, gr defined by generators and known_gr by congruences.
 bool
 test01() {
   Variable A(0);

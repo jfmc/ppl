@@ -23,36 +23,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Result_inlines_hh
 #define PPL_Result_inlines_hh 1
 
-#include <cassert>
-
 namespace Parma_Polyhedra_Library {
 
+/*! \relates Parma_Polyhedra_Library::Result */
 inline Result
 classify(Result r) {
   return static_cast<Result>(r & VC_MASK);
 }
 
+/*! \relates Parma_Polyhedra_Library::Result */
 inline bool
 is_special(Result r) {
   return classify(r) != VC_NORMAL;
-}
-
-inline Result
-sign(Result r) {
-  switch (r) {
-  case V_LT:
-  case V_EQ:
-  case V_GT:
-  case VC_NAN:
-    return r;
-  case VC_MINUS_INFINITY:
-    return V_LT;
-  case VC_PLUS_INFINITY:
-    return V_GT;
-  default:
-    assert(false);
-    return VC_NAN;
-  }
 }
 
 } // namespace Parma_Polyhedra_Library

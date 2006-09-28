@@ -34,68 +34,6 @@ namespace PPL = Parma_Polyhedra_Library;
 // TODO: In the Grid constructors adapt and use the given system if it
 //       is modifiable, instead of using a copy.
 
-PPL::Grid::Grid(dimension_type num_dimensions,
-		const Degenerate_Element kind)
-  : con_sys(),
-    gen_sys(num_dimensions > max_space_dimension()
-	    ? (throw_space_dimension_overflow("Grid(n, k)",
-					      "n exceeds the maximum "
-					      "allowed space dimension"),
-	       0)
-	    : num_dimensions) {
-
-  space_dim = num_dimensions;
-
-  if (kind == EMPTY) {
-    // Set emptiness directly instead of with set_empty, as gen_sys is
-    // already correctly initialized.
-
-    status.set_empty();
-
-    // Extend the zero dim false congruence system to the appropriate
-    // dimension and then store it in `con_sys'.
-    Congruence_System cgs(Congruence::zero_dim_false());
-    cgs.increase_space_dimension(space_dim);
-    const_cast<Congruence_System&>(con_sys).swap(cgs);
-
-    assert(OK());
-    return;
-  }
-
-  if (num_dimensions > 0) {
-    con_sys.increase_space_dimension(num_dimensions);
-
-    // Initialise both systems to universe representations.
-
-    set_congruences_minimized();
-    set_generators_minimized();
-    dim_kinds.resize(num_dimensions + 1);
-
-    // Extend the zero dim integrality congruence system to the
-    // appropriate dimension and then store it in `con_sys'.
-    Congruence_System cgs(Congruence::zero_dim_integrality());
-    cgs.increase_space_dimension(space_dim);
-    cgs[0][0] = 1; // Recover minimal form after cgs(zdi) normalization.
-    con_sys.swap(cgs);
-
-    dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a. PARAMETER */;
-
-    // Trivially true point.
-    gen_sys.insert(grid_point(0*(Variable(0))));
-
-    // A line for each dimension.
-    dimension_type dim = 0;
-    while (dim < num_dimensions) {
-      gen_sys.insert(grid_line(Variable(dim++)));
-      dim_kinds[dim] = CON_VIRTUAL /* a.k.a. LINE */;
-    }
-  }
-  else
-    set_zero_dim_univ();
-
-  assert(OK());
-}
-
 PPL::Grid::Grid(const Grid& y)
   : con_sys(),
     gen_sys(),
@@ -353,7 +291,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
   // Return one of the relations
   // 'strictly_intersects'   a strict subset of the grid points satisfy cg
   // 'is_included'	     every grid point satisfies cg
-  // 'is_disjoint'	     cg and the grid occupy seperate spaces.
+  // 'is_disjoint'	     cg and the grid occupy separate spaces.
 
   // There is always a point.
 
@@ -362,7 +300,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
   TEMP_INTEGER(point_sp);
   point_sp = 0;
 
-  Coefficient_traits::const_reference modulus = cg.modulus();
+  const Coefficient& modulus = cg.modulus();
 
   TEMP_INTEGER(div);
   div = 0;
@@ -520,7 +458,7 @@ PPL::Grid::relation_with(const Constraint& c) const {
   // Return one of the relations
   // 'strictly_intersects'   a strict subset of the grid points satisfy c
   // 'is_included'	     every grid point satisfies c
-  // 'is_disjoint'	     c and the grid occupy seperate spaces.
+  // 'is_disjoint'	     c and the grid occupy separate spaces.
 
   // There is always a point.
 
@@ -649,46 +587,49 @@ PPL::Grid::is_bounded() const {
 bool
 PPL::Grid::is_discrete() const {
   // A zero-dimensional or empty grid is discrete.
-  if (space_dim == 0 || marked_empty())
+  if (space_dim == 0
+      || marked_empty()
+      || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
-  if (generators_are_minimized()) {
-  line_search:
-    // Search for lines in the minimized generator system.
+    // Search for lines in the generator system.
     for (dimension_type row = gen_sys.num_generators(); row-- > 1; )
       if (gen_sys[row].is_line())
 	return false;
+
+  // The system of generators is composed only by
+  // points and parameters: the polyhedron is discrete.
     return true;
-  }
-
-  if (congruences_are_minimized())
-    return con_sys.has_a_free_dimension();
-
-  Grid& gr = const_cast<Grid&>(*this);
-  if (generators_are_up_to_date()) {
-    // Minimize the generator system.
-    gr.simplify(gr.gen_sys, gr.dim_kinds);
-    gr.set_generators_minimized();
-
-    goto line_search;
-  }
-
-  // Generators are out of date.
-
-  // Minimize the congruence system to find out whether it is empty.
-  if (gr.simplify(gr.con_sys, gr.dim_kinds)) {
-    // The congruence system reduced to the empty grid.
-    gr.set_empty();
-    return true;
-  }
-  gr.set_congruences_minimized();
-
-  return gr.con_sys.has_a_free_dimension();
 }
 
 bool
 PPL::Grid::is_topologically_closed() const {
   return true;
+}
+
+bool
+PPL::Grid::contains_integer_point() const {
+  // Empty grids have no points.
+  if (marked_empty())
+    return false;
+
+  // A zero-dimensional, universe grid has, by convention, an
+  // integer point.
+  if (space_dim == 0)
+    return true;
+
+  // A grid has an integer point if its intersection with the integer
+  // grid is non-empty.
+  Congruence_System cgs;
+  for (dimension_type var_index = space_dim; var_index-- > 0; ) {
+    cgs.insert(Variable(var_index) %= 0);
+  }
+
+  Grid gr = *this;
+  if (gr.add_congruences_and_minimize(cgs))
+    return true;
+
+  return false;
 }
 
 bool
@@ -779,12 +720,9 @@ PPL::Grid::OK(bool check_not_empty) const {
       }
 
       // Check if the system of generators is well-formed.
-      if (!gen_sys.OK()) {
-#ifndef NDEBUG
-	cerr << "gen_sys OK failed." << endl;
-#endif
+      if (!gen_sys.OK())
 	goto fail;
-      }
+
       // Check each generator in the system.
       for (dimension_type i = gen_sys.num_generators(); i-- > 0; ) {
 	const Grid_Generator& g = gen_sys[i];
@@ -797,8 +735,8 @@ PPL::Grid::OK(bool check_not_empty) const {
 	}
       }
 
-      // A non-empty system of generators describing a grid is valid iff
-      // it contains a point.
+      // A non-empty system of generators describing a grid is valid
+      // if and only if it contains a point.
       if (gen_sys.num_generators() > 0 && !gen_sys.has_points()) {
 #ifndef NDEBUG
 	cerr << "Non-empty generator system declared up-to-date "
@@ -851,7 +789,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 	assert(gs.num_generators() > 0);
 	simplify(gs, dk);
 	// gs contained rows before being reduced, so it should
-	// contain at least a single point afterwards.
+	// contain at least a single point afterward.
 	assert(gs.num_generators() > 0);
 	for (dimension_type row = gen_sys.num_generators(); row-- > 0; ) {
 	  Grid_Generator& g = gs[row];
@@ -875,22 +813,18 @@ PPL::Grid::OK(bool check_not_empty) const {
 
   if (congruences_are_up_to_date()) {
     // Check if the system of congruences is well-formed.
-    if (!con_sys.OK()) {
-#ifndef NDEBUG
-      cerr << "con_sys OK failed." << endl;
-#endif
+    if (!con_sys.OK())
       goto fail;
-    }
 
-    Grid tem_gr = *this;
-    Congruence_System cs_copy = tem_gr.con_sys;
+    Grid tmp_gr = *this;
+    Congruence_System cs_copy = tmp_gr.con_sys;
 
-    // Clear the generators in tem_gr.
+    // Clear the generators in tmp_gr.
     Grid_Generator_System gs(space_dim);
-    std::swap(tem_gr.gen_sys, gs);
-    tem_gr.clear_generators_up_to_date();
+    std::swap(tmp_gr.gen_sys, gs);
+    tmp_gr.clear_generators_up_to_date();
 
-    if (!tem_gr.update_generators()) {
+    if (!tmp_gr.update_generators()) {
       if (check_not_empty) {
 	// Want to know the satisfiability of the congruences.
 #ifndef NDEBUG
@@ -1345,7 +1279,8 @@ PPL::Grid::add_grid_generators(const Grid_Generator_System& gs) {
 }
 
 bool
-PPL::Grid::add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs) {
+PPL
+::Grid::add_recycled_grid_generators_and_minimize(Grid_Generator_System& gs) {
   // Dimension-compatibility check: the dimension of `gs' must be less
   // than or equal to that of space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
@@ -1568,7 +1503,7 @@ PPL::Grid::grid_difference_assign(const Grid& y) {
     if (cg.is_proper_congruence()) {
       const Linear_Expression e = Linear_Expression(cg);
       // Congruence cg is ((e %= 0) / m).
-      Coefficient_traits::const_reference m = cg.modulus();
+      const Coefficient& m = cg.modulus();
       // If x is included in the grid defined by the congruences cg
       // and its 2-complement (i.e. the grid defined by the congruence
       // (2e %= 0) / m) then add the 2-complement to the potential
@@ -1635,9 +1570,9 @@ PPL::Grid::affine_image(const Variable var,
 	con_sys.affine_preimage(var_space_dim, inverse, expr[var_space_dim]);
       }
       else {
-	// The new denominator is negative:
-	// we negate everything once more, as Congruence_System::affine_preimage()
-	// requires the third argument to be positive.
+	// The new denominator is negative: we negate everything once
+	// more, as Congruence_System::affine_preimage() requires the
+	// third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
 	neg_assign(inverse[var_space_dim]);
@@ -1714,9 +1649,9 @@ affine_preimage(const Variable var,
 	gen_sys.affine_image(var_space_dim, inverse, expr[var_space_dim]);
       }
       else {
-	// The new denominator is negative:
-	// we negate everything once more, as Grid_Generator_System::affine_image()
-	// requires the third argument to be positive.
+	// The new denominator is negative: we negate everything once
+	// more, as Grid_Generator_System::affine_image() requires the
+	// third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
 	neg_assign(inverse[var_space_dim]);
@@ -1746,29 +1681,54 @@ affine_preimage(const Variable var,
 void
 PPL::Grid::
 generalized_affine_image(const Variable var,
+			 const Relation_Symbol relsym,
 			 const Linear_Expression& expr,
 			 Coefficient_traits::const_reference denominator,
 			 Coefficient_traits::const_reference modulus) {
+
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");
+    throw_invalid_argument("generalized_affine_image(v, r, e, d, m)",
+                           "d == 0");
 
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
   const dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
-    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
+    throw_dimension_incompatible("generalized_affine_image(v, r, e, d, m)",
 				 "e", expr);
   // `var' should be one of the dimensions of the grid.
   const dimension_type var_space_dim = var.space_dimension();
   if (space_dim < var_space_dim)
-    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
+    throw_dimension_incompatible("generalized_affine_image(v, r, e, d, m)",
 				 "v", var);
 
   // Any image of an empty grid is empty.
   if (marked_empty())
     return;
+
+  // If relsym is not EQUAL, then we return a safe approximation
+  // by adding a line in the direction of var.
+  if (relsym != EQUAL) {
+
+    if (modulus != 0)
+      throw_invalid_argument("generalized_affine_image(v, r, e, d, m)",
+                             "r != EQUAL && m != 0");
+
+    generators_are_up_to_date() || minimize();
+
+    // Any image of an empty grid is empty.
+    if (marked_empty())
+      return;
+
+    add_grid_generator(grid_line(var));
+
+    assert(OK());
+    return;
+  }
+
+  assert(relsym == EQUAL);
 
   affine_image(var, expr, denominator);
 
@@ -1799,9 +1759,12 @@ generalized_affine_image(const Variable var,
 
 void PPL::Grid::
 generalized_affine_preimage(const Variable var,
+			    const Relation_Symbol relsym,
 			    const Linear_Expression& expr,
 			    Coefficient_traits::const_reference denominator,
 			    Coefficient_traits::const_reference modulus) {
+
+
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("generalized_affine_preimage(v, e, d, m)",
@@ -1819,6 +1782,28 @@ generalized_affine_preimage(const Variable var,
     throw_dimension_incompatible("generalized_affine_preimage(v, e, d, m)",
 				 "v", var);
 
+  // If relsym is not EQUAL, then we return a safe approximation
+  // by adding a line in the direction of var.
+  if (relsym != EQUAL) {
+
+    if (modulus != 0)
+      throw_invalid_argument("generalized_affine_preimage(v, r, e, d, m)",
+                             "r != EQUAL && m != 0");
+
+    generators_are_up_to_date() || minimize();
+
+    // Any image of an empty grid is empty.
+    if (marked_empty())
+      return;
+
+    add_grid_generator(grid_line(var));
+
+    assert(OK());
+    return;
+  }
+
+  assert(relsym == EQUAL);
+
   // Check whether the affine relation is an affine function.
   if (modulus == 0) {
     affine_preimage(var, expr, denominator);
@@ -1827,16 +1812,17 @@ generalized_affine_preimage(const Variable var,
 
   // Check whether the preimage of this affine relation can be easily
   // computed as the image of its inverse relation.
-  Coefficient_traits::const_reference var_coefficient = expr.coefficient(var);
+  const Coefficient& var_coefficient = expr.coefficient(var);
   if (var_space_dim <= expr_space_dim && var_coefficient != 0) {
     Linear_Expression inverse_expr
       = expr - (denominator + var_coefficient) * var;
-    Coefficient inverse_denominator = - var_coefficient;
+    TEMP_INTEGER(inverse_denominator);
+    neg_assign(inverse_denominator, var_coefficient);
     if (modulus < 0)
-      generalized_affine_image(var, inverse_expr, inverse_denominator,
+      generalized_affine_image(var, EQUAL, inverse_expr, inverse_denominator,
 			       - modulus);
     else
-      generalized_affine_image(var, inverse_expr, inverse_denominator,
+      generalized_affine_image(var, EQUAL, inverse_expr, inverse_denominator,
 			       modulus);
     return;
   }
@@ -1850,7 +1836,7 @@ generalized_affine_preimage(const Variable var,
     add_congruence((denominator*var %= expr) / denominator /= modulus);
 
   // If the resulting grid is empty, its preimage is empty too.
-  // Note: DO check for emptyness here, as we will later add a line.
+  // Note: DO check for emptiness here, as we will later add a line.
   if (is_empty())
     return;
   add_grid_generator(grid_line(var));
@@ -1860,8 +1846,10 @@ generalized_affine_preimage(const Variable var,
 void
 PPL::Grid::
 generalized_affine_image(const Linear_Expression& lhs,
+			 const Relation_Symbol relsym,
 			 const Linear_Expression& rhs,
 			 Coefficient_traits::const_reference modulus) {
+
   // Dimension-compatibility checks.
   // The dimension of `lhs' should be at most the dimension of
   // `*this'.
@@ -1880,17 +1868,41 @@ generalized_affine_image(const Linear_Expression& lhs,
   if (marked_empty())
     return;
 
-  TEMP_INTEGER(temp_modulus);
-  temp_modulus = modulus;
-  if (temp_modulus < 0)
-    neg_assign(temp_modulus);
+  // If relsym is not EQUAL, then we return a safe approximation
+  // by adding a line in the direction of var.
+  if (relsym != EQUAL) {
+
+    if (modulus != 0)
+      throw_invalid_argument("generalized_affine_image(e1, r, e2, m)",
+                             "r != EQUAL && m != 0");
+
+    generators_are_up_to_date() || minimize();
+
+    // Any image of an empty grid is empty.
+    if (marked_empty())
+      return;
+
+    for (dimension_type i = space_dim; i-- > 0; )
+      if (lhs.coefficient(Variable(i)) != 0)
+	add_grid_generator(grid_line(Variable(i)));
+
+    assert(OK());
+    return;
+  }
+
+  assert(relsym == EQUAL);
+
+  TEMP_INTEGER(tmp_modulus);
+  tmp_modulus = modulus;
+  if (tmp_modulus < 0)
+    neg_assign(tmp_modulus);
 
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
   do {
     if (lhs_space_dim == 0) {
       // All variables have zero coefficients, so `lhs' is a constant.
-      add_congruence((lhs %= rhs) / temp_modulus);
+      add_congruence((lhs %= rhs) / tmp_modulus);
       return;
     }
   }
@@ -1924,7 +1936,7 @@ generalized_affine_image(const Linear_Expression& lhs,
       // Cylindrificate on all the variables occurring in the left
       // hand side expression.
 
-      // Ajust `new_lines' to the right dimension.
+      // Adjust `new_lines' to the right dimension.
       new_lines.insert(parameter(0*Variable(space_dim-1)));
       // Add the lines to `gen_sys'.
       gen_sys.recycling_insert(new_lines);
@@ -1936,7 +1948,7 @@ generalized_affine_image(const Linear_Expression& lhs,
       // Constrain the new dimension so that it is congruent to the left
       // hand side expression modulo `modulus'.
       // TODO: Use add_congruence() when it has been updated.
-      Congruence_System new_cgs2((lhs %= new_var) / temp_modulus);
+      Congruence_System new_cgs2((lhs %= new_var) / tmp_modulus);
       add_recycled_congruences(new_cgs2);
     }
 
@@ -1957,7 +1969,7 @@ generalized_affine_image(const Linear_Expression& lhs,
 
     // Constrain the left hand side expression so that it is congruent to
     // the right hand side expression modulo `modulus'.
-    add_congruence((lhs %= rhs) / temp_modulus);
+    add_congruence((lhs %= rhs) / tmp_modulus);
   }
 
   assert(OK());
@@ -1965,8 +1977,10 @@ generalized_affine_image(const Linear_Expression& lhs,
 
 void PPL::Grid::
 generalized_affine_preimage(const Linear_Expression& lhs,
+			    const Relation_Symbol relsym,
 			    const Linear_Expression& rhs,
 			    Coefficient_traits::const_reference modulus) {
+
   // The dimension of `lhs' must be at most the dimension of `*this'.
   dimension_type lhs_space_dim = lhs.space_dimension();
   if (space_dim < lhs_space_dim)
@@ -1982,10 +1996,34 @@ generalized_affine_preimage(const Linear_Expression& lhs,
   if (marked_empty())
     return;
 
-  TEMP_INTEGER(temp_modulus);
-  temp_modulus = modulus;
-  if (temp_modulus < 0)
-    neg_assign(temp_modulus);
+  // If relsym is not EQUAL, then we return a safe approximation
+  // by adding a line in the direction of var.
+  if (relsym != EQUAL) {
+
+    if (modulus != 0)
+      throw_invalid_argument("generalized_affine_preimage(e1, r, e2, m)",
+                             "r != EQUAL && m != 0");
+
+    generators_are_up_to_date() || minimize();
+
+    // Any image of an empty grid is empty.
+    if (marked_empty())
+      return;
+
+    for (dimension_type i = lhs_space_dim + 1; i-- > 0; )
+      if (lhs.coefficient(Variable(i)) != 0)
+	add_grid_generator(grid_line(Variable(i)));
+
+    assert(OK());
+    return;
+  }
+
+  assert(relsym == EQUAL);
+
+  TEMP_INTEGER(tmp_modulus);
+  tmp_modulus = modulus;
+  if (tmp_modulus < 0)
+    neg_assign(tmp_modulus);
 
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
@@ -1993,7 +2031,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     if (lhs_space_dim == 0) {
       // All variables have zero coefficients, so `lhs' is a constant.
       // In this case, preimage and image happen to be the same.
-      add_congruence((lhs %= rhs) / temp_modulus);
+      add_congruence((lhs %= rhs) / tmp_modulus);
       return;
     }
   }
@@ -2027,7 +2065,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       // Cylindrificate on all the variables occurring in the left
       // hand side
 
-      // Ajust `new_lines' to the right dimension.
+      // Adjust `new_lines' to the right dimension.
       new_lines.insert(parameter(0*Variable(space_dim-1)));
       // Add the lines to `gen_sys'.
       gen_sys.recycling_insert(new_lines);
@@ -2039,7 +2077,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
       // Constrain the new dimension so that it is related to
       // the right hand side modulo `modulus'.
       // TODO: Use add_congruence() when it has been updated.
-      Congruence_System new_cgs2((rhs %= new_var) / temp_modulus);
+      Congruence_System new_cgs2((rhs %= new_var) / tmp_modulus);
       add_recycled_congruences(new_cgs2);
     }
 
@@ -2052,7 +2090,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
 
     // Constrain the left hand side expression so that it is congruent to
     // the right hand side expression modulo `mod'.
-    add_congruence((lhs %= rhs) / temp_modulus);
+    add_congruence((lhs %= rhs) / tmp_modulus);
 
     // Any image of an empty grid is empty.
     if (is_empty())
@@ -2061,6 +2099,91 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     // Cylindrificate on all the variables occurring in `lhs'.
     add_recycled_grid_generators(new_lines);
   }
+  assert(OK());
+}
+
+void
+PPL::Grid::
+bounded_affine_image(const Variable var,
+		     const Linear_Expression& lb_expr,
+		     const Linear_Expression& ub_expr,
+		     Coefficient_traits::const_reference denominator) {
+
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_invalid_argument("bounded_affine_image(v, lb, ub, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
+				 "v", var);
+  // The dimension of `lb_expr' and `ub_expr' should not be
+  // greater than the dimension of `*this'.
+  const dimension_type lb_space_dim = lb_expr.space_dimension();
+  if (space_dim < lb_space_dim)
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+				 "lb", lb_expr);
+  const dimension_type ub_space_dim = ub_expr.space_dimension();
+  if (space_dim < ub_space_dim)
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+				 "ub", ub_expr);
+
+  // Any image of an empty grid is empty.
+  if (marked_empty())
+    return;
+
+  // In all other cases, generalized_affine_preimage() must
+  // just add a line in the direction of var.
+  generalized_affine_image(var,
+			   LESS_THAN_OR_EQUAL,
+			   ub_expr,
+			   denominator);
+
+  assert(OK());
+}
+
+
+void
+PPL::Grid::
+bounded_affine_preimage(const Variable var,
+			const Linear_Expression& lb_expr,
+			const Linear_Expression& ub_expr,
+			Coefficient_traits::const_reference denominator) {
+
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_invalid_argument("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
+				 "v", var);
+  // The dimension of `lb_expr' and `ub_expr' should not be
+  // greater than the dimension of `*this'.
+  const dimension_type lb_space_dim = lb_expr.space_dimension();
+  if (space_dim < lb_space_dim)
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+				 "lb", lb_expr);
+  const dimension_type ub_space_dim = ub_expr.space_dimension();
+  if (space_dim < ub_space_dim)
+    throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub)",
+				 "ub", ub_expr);
+
+  // Any preimage of an empty polyhedron is empty.
+  if (marked_empty())
+    return;
+
+  // In all other cases, generalized_affine_preimage() must
+  // just add a line in the direction of var.
+  generalized_affine_preimage(var,
+			      LESS_THAN_OR_EQUAL,
+			      ub_expr,
+			      denominator);
+
   assert(OK());
 }
 
@@ -2267,8 +2390,7 @@ PPL::Grid::ascii_load(std::istream& s) {
     }
   }
 
-
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK());
   return true;
 }

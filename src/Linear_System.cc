@@ -173,7 +173,7 @@ PPL::Linear_System::ascii_load(std::istream& s) {
     if (!x[row].ascii_load(s))
       return false;
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK(true));
   return true;
 }
@@ -340,7 +340,7 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
   std::vector<Row>::iterator new_last = swapping_unique(first, last);
   // Finally, remove duplicates.
   rows.erase(new_last, last);
-  // NOTE: we cannot check for well-formedness of the system here,
+  // NOTE: we cannot check all invariants of the system here,
   // because the caller still has to update `index_first_pending'.
 }
 
@@ -605,7 +605,7 @@ PPL::Linear_System
   const dimension_type ncols = x.num_columns();
   // Trying to keep sortedness.
   bool still_sorted = x.is_sorted();
-  // This deque of booleans will be used to flag those rows that,
+  // This deque of Booleans will be used to flag those rows that,
   // before exiting, need to be re-checked for sortedness.
   std::deque<bool> check_for_sortedness;
   if (still_sorted)
@@ -703,7 +703,7 @@ PPL::Linear_System::simplify() {
       }
       ++n_lines_or_equalities;
     }
-  // Apply Gaussian's elimination to the subsystem of lines/equalities.
+  // Apply Gaussian elimination to the subsystem of lines/equalities.
   const dimension_type rank = x.gauss(n_lines_or_equalities);
   // Eliminate any redundant line/equality that has been detected.
   if (rank < n_lines_or_equalities) {

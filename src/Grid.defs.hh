@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid.types.hh"
 #include "globals.defs.hh"
 #include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Constraint_System.defs.hh"
@@ -42,18 +43,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Certificate.types.hh"
 #include <vector>
 #include <iosfwd>
-
-// Dimension kind vector tracing
-#define print_dim_kinds(msg, dim_kinds)					\
-  std::cout << msg << "dim_kinds:";					\
-  for (Dimension_Kinds::iterator i = dim_kinds.begin(); i != dim_kinds.end(); ++i) \
-    std::cout << " " << *i;						\
-  std::cout << std::endl;
-#if 0
-#define trace_dim_kinds(msg, dim_kinds) print_dim_kinds(msg, dim_kinds)
-#else
-#define trace_dim_kinds(msg, dim_kinds)
-#endif
 
 namespace Parma_Polyhedra_Library {
 
@@ -112,7 +101,7 @@ bool operator!=(const Grid& x, const Grid& y);
   Most operators on grids are provided with two implementations:
   one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
   also enforces the minimization of the representations,
-  and returns the boolean value <CODE>false</CODE> whenever
+  and returns the Boolean value <CODE>false</CODE> whenever
   the resulting grid turns out to be empty.
 
   A key attributes of any grid is its space dimension (the dimension
@@ -433,7 +422,7 @@ public:
   */
   explicit Grid(Constraint_System& cs);
 
-  //! Builds a grid, copying a system of generators.
+  //! Builds a grid, copying a system of grid generators.
   /*!
     The grid inherits the space dimension of the generator system.
 
@@ -449,7 +438,7 @@ public:
   */
   explicit Grid(const Grid_Generator_System& const_gs);
 
-  //! Builds a grid, recycling a system of generators.
+  //! Builds a grid, recycling a system of grid generators.
   /*!
     The grid inherits the space dimension of the generator system.
 
@@ -464,6 +453,38 @@ public:
     Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
   */
   explicit Grid(Grid_Generator_System& gs);
+
+  //! Builds a grid, copying a system of generators.
+  /*!
+    The grid inherits the space dimension of the generator system.
+
+    \param const_gs
+    The system of generators defining the grid.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space
+    dimension.
+  */
+  explicit Grid(const Generator_System& const_gs);
+
+  //! Builds a grid, recycling a system of generators.
+  /*!
+    The grid inherits the space dimension of the generator system.
+
+    \param gs
+    The system of generators defining the grid.  Its data-structures
+    may be recycled to build the grid.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+
+    \exception std::length_error
+    Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
+  */
+  explicit Grid(Generator_System& gs);
 
   //! Builds a grid out of a generic, interval-based bounding box.
   /*!
@@ -619,11 +640,32 @@ public:
   */
   dimension_type affine_dimension() const;
 
+  //! Returns a system of constraints constructed from the grid equalities.
+  Constraint_System constraints() const;
+
+  /*! \brief
+    Returns a system of constraints constructed from the equalities
+    in the minimal congruence system.
+  */
+  Constraint_System minimized_constraints() const;
+
   //! Returns the system of congruences.
   const Congruence_System& congruences() const;
 
   //! Returns the system of congruences in reduced form.
   const Congruence_System& minimized_congruences() const;
+
+  /*! \brief
+    Returns a universe system of generators of the same number of
+    dimensions as the Grid.
+  */
+  Generator_System generators() const;
+
+  /*! \brief
+    Returns a universe system of generators of the same number of
+    dimensions as the Grid.
+  */
+  Generator_System minimized_generators() const;
 
   //! Returns the system of generators.
   const Grid_Generator_System& grid_generators() const;
@@ -699,6 +741,12 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p *this is bounded.
   bool is_bounded() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains at least one integer point.
+  */
+  bool contains_integer_point() const;
 
   //! Returns <CODE>true</CODE> if and only if \p expr is bounded in \p *this.
   /*!
@@ -1075,8 +1123,8 @@ public:
   bool add_congruence_and_minimize(const Constraint& c);
 
   /*! \brief
-    Adds a copy of generator \p g to the system of generators of \p
-    *this.
+    Adds a copy of grid generator \p g to the system of generators of
+    \p *this.
 
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible,
@@ -1085,8 +1133,8 @@ public:
   void add_grid_generator(const Grid_Generator& g);
 
   /*! \brief
-    Adds a copy of generator \p g to the system of generators of \p
-    *this, reducing the result.
+    Adds a copy of grid generator \p g to the system of generators of
+    \p *this, reducing the result.
 
     \return
     <CODE>false</CODE> if and only if the result is empty.
@@ -1096,6 +1144,12 @@ public:
     or if \p *this is an empty grid and \p g is not a point.
   */
   bool add_grid_generator_and_minimize(const Grid_Generator& g);
+
+  //! Domain compatibility method.
+  void add_generator(const Generator& g) const;
+
+  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
+  bool add_generator_and_minimize(const Generator& g) const;
 
   //! Adds a copy of each congruence in \p cgs to \p *this.
   /*!
@@ -1578,6 +1632,10 @@ public:
     \param var
     The left hand side variable of the generalized affine relation;
 
+    \param relsym
+    The relation symbol where EQUAL is the symbol for a congruence
+    relation;
+
     \param expr
     The numerator of the right hand side affine expression;
 
@@ -1588,19 +1646,21 @@ public:
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
     indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
+    of zero.
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
     dimension-incompatible or if \p var is not a space dimension of \p
     *this.
   */
-  void generalized_affine_image(Variable var,
-				const Linear_Expression& expr,
-				Coefficient_traits::const_reference denominator
-				= Coefficient_one(),
-				Coefficient_traits::const_reference modulus
-				= Coefficient_one());
+  void
+  generalized_affine_image(Variable var,
+			   const Relation_Symbol relsym,
+			   const Linear_Expression& expr,
+			   Coefficient_traits::const_reference denominator
+			   = Coefficient_one(),
+			   Coefficient_traits::const_reference modulus
+			   = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1611,6 +1671,10 @@ public:
     \param var
     The left hand side variable of the generalized affine relation;
 
+    \param relsym
+    The relation symbol where EQUAL is the symbol for a congruence
+    relation;
+
     \param expr
     The numerator of the right hand side affine expression;
 
@@ -1628,12 +1692,14 @@ public:
     dimension-incompatible or if \p var is not a space dimension of \p
     *this.
   */
-  void generalized_affine_preimage(Variable var,
-				   const Linear_Expression& expr,
-				   Coefficient_traits::const_reference denominator
-				   = Coefficient_one(),
-				   Coefficient_traits::const_reference modulus
-				   = Coefficient_one());
+  void
+  generalized_affine_preimage(Variable var,
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& expr,
+			      Coefficient_traits::const_reference denominator
+			      = Coefficient_one(),
+			      Coefficient_traits::const_reference modulus
+			      = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the image of \p *this with respect to
@@ -1643,22 +1709,28 @@ public:
     \param lhs
     The left hand side affine expression.
 
+    \param relsym
+    The relation symbol where EQUAL is the symbol for a congruence
+    relation;
+
     \param rhs
     The right hand side affine expression.
 
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
     indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
+    of zero.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with \p lhs or \p
     rhs.
   */
-  void generalized_affine_image(const Linear_Expression& lhs,
-				const Linear_Expression& rhs,
-				Coefficient_traits::const_reference modulus
-				= Coefficient_one());
+  void
+  generalized_affine_image(const Linear_Expression& lhs,
+			   const Relation_Symbol relsym,
+			   const Linear_Expression& rhs,
+			   Coefficient_traits::const_reference modulus
+			   = Coefficient_zero());
 
   /*! \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -1668,22 +1740,92 @@ public:
     \param lhs
     The left hand side affine expression;
 
+    \param relsym
+    The relation symbol where EQUAL is the symbol for a congruence
+    relation;
+
     \param rhs
     The right hand side affine expression;
 
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
     indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
+    of zero.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with \p lhs or \p
     rhs.
   */
-  void generalized_affine_preimage(const Linear_Expression& lhs,
-				   const Linear_Expression& rhs,
-				   Coefficient_traits::const_reference modulus
-				   = Coefficient_one());
+  void
+  generalized_affine_preimage(const Linear_Expression& lhs,
+			      const Relation_Symbol relsym,
+			      const Linear_Expression& rhs,
+			      Coefficient_traits::const_reference modulus
+			      = Coefficient_zero());
+
+  /*!
+    \brief
+    Assigns to \p *this the image of \p *this with respect to the
+    \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
+    \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
+         \leq \mathrm{var}'
+           \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+
+    \param var
+    The variable updated by the affine relation;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void bounded_affine_image(Variable var,
+			    const Linear_Expression& lb_expr,
+			    const Linear_Expression& ub_expr,
+			    Coefficient_traits::const_reference denominator
+			    = Coefficient_one());
+
+  /*!
+    \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
+    \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
+         \leq \mathrm{var}'
+           \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+
+    \param var
+    The variable updated by the affine relation;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void bounded_affine_preimage(Variable var,
+			       const Linear_Expression& lb_expr,
+			       const Linear_Expression& ub_expr,
+			       Coefficient_traits::const_reference denominator
+			       = Coefficient_one());
 
   /*! \brief
     Assigns to \p *this the result of computing the \ref Grid_Time_Elapse
@@ -2037,10 +2179,8 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
-
-     \return
-     <CODE>true</CODE> if successful, else <CODE>false</CODE>.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
@@ -2090,6 +2230,17 @@ private:
   // types is last to first.
   Dimension_Kinds dim_kinds;
 
+  //! Builds a grid universe or empty grid.
+  /*!
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the grid;
+
+    \param kind
+    specifies whether the universe or the empty grid has to be built.
+  */
+  void construct(dimension_type num_dimensions,
+		 const Degenerate_Element kind);
+
   //! Builds a grid from a system of congruences.
   /*!
     The grid inherits the space dimension of the congruence system.
@@ -2099,6 +2250,15 @@ private:
   */
   void construct(const Congruence_System& cgs);
 
+  //! Builds a grid from a system of grid generators.
+  /*!
+    The grid inherits the space dimension of the generator system.
+
+    \param gs
+    The system of grid generators defining the grid;
+  */
+  void construct(const Grid_Generator_System& gs);
+
   //! Builds a grid from a system of generators.
   /*!
     The grid inherits the space dimension of the generator system.
@@ -2106,7 +2266,7 @@ private:
     \param gs
     The system of generators defining the grid;
   */
-  void construct(const Grid_Generator_System& gs);
+  void construct(const Generator_System& gs);
 
   //! \name Private Verifiers: Verify if Individual Flags are Set
   //@{
@@ -2362,7 +2522,7 @@ private:
   static void
   normalize_divisors(Grid_Generator_System& sys,
 		     Coefficient& divisor,
-		     Grid_Generator* first_point = NULL);
+		     const Grid_Generator* first_point = NULL);
 
   //! Normalizes the divisors in \p sys.
   /*!

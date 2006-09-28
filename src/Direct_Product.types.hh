@@ -17,6 +17,9 @@ namespace Parma_Polyhedra_Library {
 template <typename D1, typename D2>
 class Direct_Product;
 
+template <typename D1, typename D2, bool R(D1&, D2&)>
+class Open_Product;
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Direct_Product_types_hh)

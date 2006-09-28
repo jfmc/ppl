@@ -191,9 +191,10 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
     break;
   }
 
+  TEMP_INTEGER(gv);
   bool first = true;
   for (dimension_type v = 0; v < num_variables; ++v) {
-    Coefficient gv = g[v+1];
+    gv = g[v+1];
     if (gv != 0) {
       if (!first) {
 	if (gv > 0)
@@ -290,7 +291,9 @@ PPL_OUTPUT_DEFINITIONS(Generator)
 
 bool
 PPL::Generator::OK() const {
-  const Generator& g = *this;
+  // Check the underlying Linear_Row object.
+  if (!Linear_Row::OK())
+    return false;
 
   // Topology consistency check.
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
@@ -307,6 +310,7 @@ PPL::Generator::OK() const {
   }
 
   // Normalization check.
+  const Generator& g = *this;
   Generator tmp = g;
   tmp.strong_normalize();
   if (tmp != g) {

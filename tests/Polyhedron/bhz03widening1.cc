@@ -1,4 +1,4 @@
-/* Test Polyhedra_Powerset<PH>::BHZ03_widening_assign().
+/* Test Pointset_Powerset<PH>::BHZ03_widening_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -73,9 +73,9 @@ aux1_test01(unsigned n) {
   return p[n];
 }
 
-Polyhedra_Powerset<C_Polyhedron>
+Pointset_Powerset<C_Polyhedron>
 aux2_test01(unsigned n) {
-  Polyhedra_Powerset<C_Polyhedron> s(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> s(2, EMPTY);
   if (n == 0) {
 
     nout << "S0 = { P0 }" << endl;
@@ -128,13 +128,13 @@ test01() {
   // Install the alternate output function.
   Variable::set_output_function(aux3_test01);
 
-  Polyhedra_Powerset<C_Polyhedron> T = aux2_test01(0);
+  Pointset_Powerset<C_Polyhedron> T = aux2_test01(0);
 
   nout << "T0 = " << T << endl;
 
   bool converged = false;
   for (unsigned n = 1; !converged && n <= 20; ++n) {
-    Polyhedra_Powerset<C_Polyhedron> Sn = aux2_test01(n);
+    Pointset_Powerset<C_Polyhedron> Sn = aux2_test01(n);
 
     nout << "S" << n << " = " << Sn << endl;
 
@@ -173,12 +173,12 @@ test02() {
   s.add_constraint(A >= 1);
   s.add_constraint(A <= 6);
   s.add_constraint(B == 1);
-  Polyhedra_Powerset<C_Polyhedron> P(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> P(2, EMPTY);
   P.add_disjunct(p);
   P.add_disjunct(q);
   P.add_disjunct(r);
   P.add_disjunct(s);
-  Polyhedra_Powerset<C_Polyhedron> Q(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> Q(2, EMPTY);
   Q.add_disjunct(p);
   Q.add_disjunct(q);
   Q.add_disjunct(s);
@@ -186,7 +186,7 @@ test02() {
   nout << "P = " << P << endl
        << "Q = " << Q << endl;
 
-  Polyhedra_Powerset<C_Polyhedron> old_P = P;
+  Pointset_Powerset<C_Polyhedron> old_P = P;
   P.BHZ03_widening_assign<BHRZ03_Certificate>
     (Q, widen_fun_ref(&Polyhedron::H79_widening_assign));
 
@@ -218,7 +218,7 @@ test03() {
   p3.add_constraint(X <= 4);
   p3.add_constraint(Y <= 3);
 
-  Polyhedra_Powerset<C_Polyhedron> T1(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> T1(2, EMPTY);
   T1.add_disjunct(p1);
   T1.add_disjunct(p2);
   T1.add_disjunct(p3);
@@ -229,7 +229,7 @@ test03() {
   p4.add_constraint(X <= 2);
   p4.add_constraint(Y <= 5);
 
-  Polyhedra_Powerset<C_Polyhedron> T2(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> T2(2, EMPTY);
   T2.add_disjunct(p1);
   T2.add_disjunct(p2);
   T2.add_disjunct(p3);
@@ -238,7 +238,7 @@ test03() {
   nout << "T1 = " << T1 << endl
        << "T2 = " << T2 << endl;
 
-  Polyhedra_Powerset<C_Polyhedron> old_T2 = T2;
+  Pointset_Powerset<C_Polyhedron> old_T2 = T2;
   T2.BHZ03_widening_assign<BHRZ03_Certificate>
     (T1, widen_fun_ref(&Polyhedron::H79_widening_assign));
 
@@ -247,7 +247,7 @@ test03() {
   pd.add_constraint(X <= 4);
   pd.add_constraint(X + 2*Y >= 10);
 
-  Polyhedra_Powerset<C_Polyhedron> known_result = old_T2;
+  Pointset_Powerset<C_Polyhedron> known_result = old_T2;
   known_result.add_disjunct(pd);
 
   nout << "T2.BHZ03(T1, H79)" << " = " << T2 << endl;
@@ -303,9 +303,9 @@ aux1_test04(unsigned n) {
   return p[n];
 }
 
-Polyhedra_Powerset<C_Polyhedron>
+Pointset_Powerset<C_Polyhedron>
 aux2_test04(unsigned n) {
-  Polyhedra_Powerset<C_Polyhedron> s(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> s(2, EMPTY);
   if (n == 0) {
 
     nout << "S0 = { P0 }" << endl;
@@ -358,13 +358,13 @@ test04() {
   // Install the alternate output function.
   Variable::set_output_function(aux3_test04);
 
-  Polyhedra_Powerset<C_Polyhedron> T = aux2_test04(0);
+  Pointset_Powerset<C_Polyhedron> T = aux2_test04(0);
 
   nout << "T0 = " << T << endl;
 
   bool converged = false;
   for (unsigned n = 1; !converged && n <= 20; ++n) {
-    Polyhedra_Powerset<C_Polyhedron> Sn = aux2_test04(n);
+    Pointset_Powerset<C_Polyhedron> Sn = aux2_test04(n);
 
     nout << "S" << n << " = " << Sn << endl;
 
@@ -403,12 +403,12 @@ test05() {
   s.add_constraint(A >= 1);
   s.add_constraint(A <= 6);
   s.add_constraint(B == 1);
-  Polyhedra_Powerset<C_Polyhedron> P(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> P(2, EMPTY);
   P.add_disjunct(p);
   P.add_disjunct(q);
   P.add_disjunct(r);
   P.add_disjunct(s);
-  Polyhedra_Powerset<C_Polyhedron> Q(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> Q(2, EMPTY);
   Q.add_disjunct(p);
   Q.add_disjunct(q);
   Q.add_disjunct(s);
@@ -416,7 +416,7 @@ test05() {
   nout << "P = " << P << endl
        << "Q = " << Q << endl;
 
-  Polyhedra_Powerset<C_Polyhedron> old_P = P;
+  Pointset_Powerset<C_Polyhedron> old_P = P;
   P.BHZ03_widening_assign<H79_Certificate>
     (Q, widen_fun_ref(&Polyhedron::H79_widening_assign));
 
@@ -448,7 +448,7 @@ test06() {
   p4.add_constraint(X <= 2);
   p4.add_constraint(Y <= 5);
 
-  Polyhedra_Powerset<C_Polyhedron> T1(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> T1(2, EMPTY);
   T1.add_disjunct(p1);
   T1.add_disjunct(p3);
   T1.add_disjunct(p4);
@@ -459,7 +459,7 @@ test06() {
   p2.add_constraint(X <= 1);
   p2.add_constraint(Y <= 3);
 
-  Polyhedra_Powerset<C_Polyhedron> T2(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> T2(2, EMPTY);
   T2.add_disjunct(p1);
   T2.add_disjunct(p2);
   T2.add_disjunct(p3);
@@ -468,7 +468,7 @@ test06() {
   nout << "T1 = " << T1 << endl
        << "T2 = " << T2 << endl;
 
-  Polyhedra_Powerset<C_Polyhedron> old_T2 = T2;
+  Pointset_Powerset<C_Polyhedron> old_T2 = T2;
   T2.BHZ03_widening_assign<BHRZ03_Certificate>
     (T1, widen_fun_ref(&Polyhedron::H79_widening_assign));
 
@@ -480,7 +480,7 @@ test06() {
   phull_T2.add_constraint(X - 2*Y <= 2);
   phull_T2.add_constraint(X + Y <= 7);
 
-  Polyhedra_Powerset<C_Polyhedron> known_result(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> known_result(2, EMPTY);
   known_result.add_disjunct(phull_T2);
 
   nout << "T2.BHZ03(T1, H79)" << " = " << T2 << endl;
@@ -492,7 +492,7 @@ test06() {
 }
 
 // This tests the first case of the widening definition when the widening
-// does nothing as the lgo for the polyhull is decreasing.
+// does nothing as the lgo for the poly-hull is decreasing.
 bool
 test07() {
   Variable X(0);
@@ -521,7 +521,7 @@ test07() {
   p4.add_constraint(X <= 4);
   p4.add_constraint(Y <= 3);
 
-  Polyhedra_Powerset<C_Polyhedron> T1(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> T1(2, EMPTY);
   T1.add_disjunct(p1);
   T1.add_disjunct(p2);
   T1.add_disjunct(p3);
@@ -545,7 +545,7 @@ test07() {
   q3.add_constraint(X <= 6);
   q3.add_constraint(Y <= 2);
 
-  Polyhedra_Powerset<C_Polyhedron> T2(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> T2(2, EMPTY);
   T2.add_disjunct(q1);
   T2.add_disjunct(q2);
   T2.add_disjunct(q3);
@@ -553,7 +553,7 @@ test07() {
   nout << "T1 = " << T1 << endl
        << "T2 = " << T2 << endl;
 
-  Polyhedra_Powerset<C_Polyhedron> old_T2 = T2;
+  Pointset_Powerset<C_Polyhedron> old_T2 = T2;
   T2.BHZ03_widening_assign<BHRZ03_Certificate>
     (T1, widen_fun_ref(&Polyhedron::H79_widening_assign));
 
@@ -565,7 +565,7 @@ test07() {
 }
 
 // This tests the first case of the widening definition when the widening
-// does nothing; the polyhull is stable with respect to the certificate
+// does nothing; the poly-hull is stable with respect to the certificate
 // and the multiset ordering for this certificate is decreasing.
 bool
 test08() {
@@ -592,7 +592,7 @@ test08() {
   p3.add_constraint(X <= 7);
   p3.add_constraint(Y <= 3);
 
-  Polyhedra_Powerset<C_Polyhedron> T1(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> T1(2, EMPTY);
   T1.add_disjunct(p1);
   T1.add_disjunct(p2);
   T1.add_disjunct(p3);
@@ -615,7 +615,7 @@ test08() {
   q3.add_constraint(X <= 12);
   q3.add_constraint(Y <= 4);
 
-  Polyhedra_Powerset<C_Polyhedron> T2(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> T2(2, EMPTY);
   T2.add_disjunct(q1);
   T2.add_disjunct(q2);
   T2.add_disjunct(q3);
@@ -623,7 +623,7 @@ test08() {
   nout << "T1 = " << T1 << endl
        << "T2 = " << T2 << endl;
 
-  Polyhedra_Powerset<C_Polyhedron> old_T2 = T2;
+  Pointset_Powerset<C_Polyhedron> old_T2 = T2;
   T2.BHZ03_widening_assign<BHRZ03_Certificate>
     (T1, widen_fun_ref(&Polyhedron::H79_widening_assign));
 
@@ -665,7 +665,7 @@ test09() {
   p4.add_constraint(X <= 8);
   p4.add_constraint(Y <= 5);
 
-  Polyhedra_Powerset<C_Polyhedron> T1(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> T1(2, EMPTY);
   T1.add_disjunct(p1);
   T1.add_disjunct(p2);
   T1.add_disjunct(p3);
@@ -677,7 +677,7 @@ test09() {
   q1.add_constraint(Y - X <= 2);
   q1.add_constraint(X + Y <= 8);
 
-  Polyhedra_Powerset<C_Polyhedron> T2(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> T2(2, EMPTY);
   T2.add_disjunct(q1);
   T2.add_disjunct(p2);
   T2.add_disjunct(p3);
@@ -686,7 +686,7 @@ test09() {
   nout << "T1 = " << T1 << endl
        << "T2 = " << T2 << endl;
 
-  Polyhedra_Powerset<C_Polyhedron> old_T2 = T2;
+  Pointset_Powerset<C_Polyhedron> old_T2 = T2;
   T2.BHZ03_widening_assign<BHRZ03_Certificate>
     (T1, widen_fun_ref(&Polyhedron::H79_widening_assign));
 
@@ -695,7 +695,7 @@ test09() {
   r1.add_constraint(Y - X <= 2);
   r1.add_constraint(X + Y <= 8);
 
-  Polyhedra_Powerset<C_Polyhedron> known_result(2, EMPTY);
+  Pointset_Powerset<C_Polyhedron> known_result(2, EMPTY);
   known_result.add_disjunct(r1);
   known_result.add_disjunct(p2);
   known_result.add_disjunct(p3);

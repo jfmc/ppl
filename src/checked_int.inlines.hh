@@ -153,7 +153,8 @@ round_lt_int(To& to, Rounding_Dir dir) {
 	return V_GT;
       }
       return V_NEG_OVERFLOW;
-    } else {
+    }
+    else {
       --to;
       return V_GT;
     }
@@ -171,7 +172,8 @@ round_gt_int(To& to, Rounding_Dir dir) {
 	return V_LT;
       }
       return V_POS_OVERFLOW;
-    } else {
+    }
+    else {
       ++to;
       return V_LT;
     }
@@ -752,7 +754,7 @@ SPECIALIZE_ASSIGN(int_nan, unsigned long long, Not_A_Number)
 template <typename T>
 struct Larger;
 
-// The following may be tuned for performance on specific architecture.
+// The following may be tuned for performance on specific architectures.
 //
 // Current guidelines:
 //   - avoid division where possible (larger type variant for mul)
@@ -1226,7 +1228,7 @@ mul2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
 
 template <typename Type>
 inline void
-isqrtrem_(Type& q, Type& r, const Type from) {
+isqrtrem(Type& q, Type& r, const Type from) {
   q = 0;
   r = from;
   Type t(1);
@@ -1244,7 +1246,7 @@ template <typename Policy, typename Type>
 inline Result
 sqrt_unsigned_int(Type& to, const Type from, Rounding_Dir dir) {
   Type rem;
-  isqrtrem_(to, rem, from);
+  isqrtrem(to, rem, from);
   if (dir == ROUND_IGNORE)
     return V_GE;
   if (rem == 0)

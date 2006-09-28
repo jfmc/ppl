@@ -129,9 +129,9 @@ namespace PPL = Parma_Polyhedra_Library;
     -# given \f$C\f$ find \f$G\f$ such that \f$(C, G)\f$ is a DD pair;
     -# given \f$G\f$ find \f$C\f$ such that \f$(C, G)\f$ is a DD pair.
 
-  Using Farkas' lemma we can prove that these two problems are
+  Using Farkas' Lemma we can prove that these two problems are
   computationally equivalent (i.e., linear-time reducible to each other).
-  Farkas' lemma establishes a fundamental property of vectors in
+  Farkas' Lemma establishes a fundamental property of vectors in
   \f$\Rset^n\f$ that, in a sense, captures the essence of duality.
   Consider a matrix \f$A \in \Rset^{m \times n}\f$ and let
   \f$\{ \vect{a}_1, \ldots, \vect{a}_m \}\f$ be its set of row vectors.
@@ -177,7 +177,7 @@ namespace PPL = Parma_Polyhedra_Library;
     \exists \vect{\lambda} \geq \vect{0}
       \mathrel{.} \vect{x}^\mathrm{T} = \vect{\lambda}^\mathrm{T}G^\mathrm{T}
   \f$,
-  which, by Farkas' lemma is equivalent to
+  which, by Farkas' Lemma is equivalent to
   \f$
     \forall \vect{y} \mathrel{:} (G^\mathrm{T}\vect{y} \geq \vect{0} \implies
                                  \langle \vect{y}, \vect{x} \rangle \geq 0)
@@ -191,7 +191,7 @@ namespace PPL = Parma_Polyhedra_Library;
     \forall \vect{x} \mathrel{:} (C\vect{x} \geq \vect{0} \implies
     \langle \vect{x}, \vect{z} \rangle \geq 0)
   \f$.
-  By Farkas' lemma, this is equivalent to
+  By Farkas' Lemma, this is equivalent to
   \f$\exists \vect{\mu} \geq \vect{0} \mathrel{.}
   \vect{z}^\mathrm{T} = \vect{\mu}^\mathrm{T} C\f$,
   which is equivalent to what we wanted to prove, that is,
@@ -216,7 +216,7 @@ namespace PPL = Parma_Polyhedra_Library;
   \f$\exists \vect{\mu} \geq \vect{0} \mathrel{.}
   \vect{z} = C^\mathrm{T}\vect{\mu}\f$
   and we will prove that \f$G^\mathrm{T}\vect{z} \geq \vect{0}\f$.
-  By Farkas' lemma, the assumption
+  By Farkas' Lemma, the assumption
   \f$\exists \vect{\mu} \geq \vect{0} \mathrel{.}
   \vect{z}^\mathrm{T} = \vect{\mu}^\mathrm{T}C\f$,
   is equivalent to
@@ -394,9 +394,10 @@ PPL::Polyhedron::conversion(Linear_System& source,
     // otherwise the scalar product below will bomb.
     assert(source_num_columns == dest_num_columns);
 
-    // `scalar_prod[i]' will contain the scalar product
-    // of the constraint `source_k' and the generator `dest[i]'.
-    // This product is 0 iff the generator saturates the constraint.
+    // `scalar_prod[i]' will contain the scalar product of the
+    // constraint `source_k' and the generator `dest[i]'.  This
+    // product is 0 if and only if the generator saturates the
+    // constraint.
     static std::vector<Coefficient> scalar_prod;
     const int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)

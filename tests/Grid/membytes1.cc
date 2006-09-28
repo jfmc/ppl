@@ -231,7 +231,7 @@ test02() {
        << "dgr.external_memory_in_bytes() = " << dgr_external_size
        << endl;
 
-  Polyhedra_Powerset<Grid> pgr1(gr1);
+  Pointset_Powerset<Grid> pgr1(gr1);
 
   Grid gr2(3);
   gr2.add_constraint(x >= 0);
@@ -240,12 +240,12 @@ test02() {
   gr2.add_constraint(x <= 1);
   gr2.add_constraint(y <= 1);
   gr2.add_constraint(z <= 1);
-  Polyhedra_Powerset<Grid> pgr2(gr2);
+  Pointset_Powerset<Grid> pgr2(gr2);
 
   // TODO: Include these sections when poly_difference_assign is
   //       defined for Grid.
 #if 0
-  Polyhedra_Powerset<Grid> p2gr2 = pgr2;
+  Pointset_Powerset<Grid> p2gr2 = pgr2;
   p2gr2.poly_difference_assign(pgr1);
 #endif
 

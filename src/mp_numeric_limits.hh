@@ -59,7 +59,7 @@ public:
   static const bool is_bounded = false;
   static const bool is_modulo = false;
   static const bool traps = false;
-  static const bool tinyness_before = false;
+  static const bool tininess_before = false;
   static const float_round_style round_style = round_toward_zero;
 
   static Type min() {
@@ -120,7 +120,7 @@ public:
   static const bool is_bounded = false;
   static const bool is_modulo = false;
   static const bool traps = false;
-  static const bool tinyness_before = false;
+  static const bool tininess_before = false;
   static const float_round_style round_style = round_toward_zero;
 
   static Type min() {

@@ -104,9 +104,20 @@ print_constraints(const Parma_Polyhedra_Library::BD_Shape<T>& bd,
   s << bd << std::endl;
 }
 
+template <typename T>
+void
+print_constraints(const Parma_Polyhedra_Library::Octagonal_Shape<T>& oc,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (!intro.empty())
+    s << intro << std::endl;
+  s << oc << std::endl;
+}
+
 template <typename PH>
 void
-print_constraints(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
+print_constraints(const Parma_Polyhedra_Library::Pointset_Powerset<PH>& pps,
 		  const std::string& intro = "",
 		  std::ostream& s = nout) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
@@ -117,13 +128,24 @@ print_constraints(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
 
 template <typename PH>
 void
-print_congruences(const Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& pps,
+print_congruences(const Parma_Polyhedra_Library::Pointset_Powerset<PH>& pps,
 		  const std::string& intro = "",
 		  std::ostream& s = nout) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
   if (!intro.empty())
     s << intro << std::endl;
   s << pps << std::endl;
+}
+
+template <typename PH>
+void
+print_constraints(const Parma_Polyhedra_Library::Pointset_Ask_Tell<PH>& pat,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (!intro.empty())
+    s << intro << std::endl;
+  s << pat << std::endl;
 }
 
 void

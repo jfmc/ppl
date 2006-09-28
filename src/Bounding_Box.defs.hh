@@ -180,7 +180,7 @@ private:
   */
   std::vector<Interval> vec;
   /*! \brief
-    A boolean flag indicating emptiness of the bounding box.
+    A Boolean flag indicating emptiness of the bounding box.
     Only meaningful when \p empty_up_to_date is <CODE>true</CODE>.
   */
   mutable bool empty;

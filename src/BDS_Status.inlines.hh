@@ -256,7 +256,7 @@ BD_Shape<T>::Status::ascii_load(std::istream& s) {
   else
     reset_shortest_path_reduced();
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK());
   return true;
 }

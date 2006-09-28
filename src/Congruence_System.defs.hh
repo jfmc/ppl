@@ -193,7 +193,7 @@ public:
     inserted.
 
     \exception std::invalid_argument
-    Thrown if \p c is a relation.
+    Thrown if \p c is a relational constraint.
   */
   void insert(const Constraint& c);
 
@@ -315,9 +315,9 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by \ref
-    ascii_dump) and sets \p *this accordingly.  Returns
-    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
@@ -487,7 +487,8 @@ private:
     reallocation whenever possible.
     The contents of the original system is lost.
   */
-  void resize_no_copy(dimension_type new_num_rows, dimension_type new_num_columns);
+  void resize_no_copy(dimension_type new_num_rows,
+		      dimension_type new_num_columns);
 };
 
 // Congruence_System.inlines.hh is not included here on purpose.

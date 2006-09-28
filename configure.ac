@@ -23,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre1],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre2],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -843,9 +843,12 @@ AC_CONFIG_FILES(Makefile
                 src/version.hh
                 src/ppl-config.cc
                 tests/Makefile
+                tests/Ask_Tell/Makefile
                 tests/BD_Shape/Makefile
-                tests/Polyhedron/Makefile
                 tests/Grid/Makefile
+                tests/LP_Problem/Makefile
+                tests/Octagonal_Shape/Makefile
+                tests/Polyhedron/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile

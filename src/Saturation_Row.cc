@@ -222,7 +222,7 @@ PPL::compare(const Saturation_Row& x, const Saturation_Row& y) {
     const mp_limb_t xl = *xp;
     const mp_limb_t yl = *yp;
     if (xl != yl) {
-      // Get the one's where they are different.
+      // Get the ones where they are different.
       const mp_limb_t diff = xl ^ yl;
       // First bit that is different.
       const mp_limb_t mask = diff & ~(diff-1);

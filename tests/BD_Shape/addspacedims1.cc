@@ -43,7 +43,7 @@ test01() {
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(z <= 2);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
 		    "*** bd.add_space_dimensions_and_embed(2) "
@@ -63,7 +63,7 @@ test02() {
   bd1.add_space_dimensions_and_embed(2);
   bd2.add_space_dimensions_and_embed(1);
 
-  bool ok = (bd1 == bd2) ;
+  bool ok = (bd1 == bd2);
 
   print_constraints(bd1, "*** bd1.add_space_dimensions_and_embed(2) ***");
   print_constraints(bd2, "*** bd2.add_space_dimensions_and_embed(1) ***");
@@ -191,7 +191,7 @@ test08() {
   known_result.add_constraint(w == 0);
   known_result.add_constraint(z == 0);
 
-  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.add_space_dimensions_and_project(2) ***");
 
@@ -209,7 +209,7 @@ test09() {
   bd1.add_space_dimensions_and_project(2);
   bd2.add_space_dimensions_and_project(1);
 
-  bool ok = (bd1 == bd2) ;
+  bool ok = (bd1 == bd2);
 
   print_constraints(bd1, "*** bd1.add_space_dimensions_and_project(2) ***");
   print_constraints(bd2, "*** bd2.add_space_dimensions_and_project(1) ***");
@@ -260,6 +260,60 @@ test11() {
   return ok;
 }
 
+bool
+test12() {
+  Variable A(0);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(A >= 0);
+  bd1.add_constraint(A <= 2);
+
+  TBD_Shape bd2(bd1);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bd1.add_space_dimensions_and_project(0);
+  bd1.add_space_dimensions_and_embed(0);
+
+  bool ok = (bd1 == bd2);
+
+  print_constraints(bd1, "*** bd1.add_space_dimensions_and_project(0) ***");
+  print_constraints(bd2, "*** bd2.add_space_dimensions_and_embed(0) ***");
+
+  return ok;
+}
+
+bool
+test13() {
+  Variable x(0);
+  //Variable y(1);
+  Variable z(2);
+
+  Constraint_System cs;
+  cs.insert(x <= 2);
+
+  TBD_Shape bd(cs);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.minimized_constraints();
+  bd.add_space_dimensions_and_embed(3);
+  bd.add_constraint(z <= 2);
+
+  BD_Shape<mpq_class> known_result(4);
+  known_result.add_constraint(x <= 2);
+  known_result.add_constraint(z <= 2);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result) ;
+
+  print_constraints(bd,
+		    "*** bd.add_space_dimensions_and_embed(2) "
+		    "and bd.add_constraint(z <= 2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -274,4 +328,6 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN

@@ -62,13 +62,13 @@ private:
   Watchdog(const Watchdog&);
   Watchdog& operator=(const Watchdog&);
 
-  // Pass this to getitimer.
+  // Pass this to getitimer().
   static itimerval current_timer_status;
 
   // Get the timer value.
   static void get_timer(Time& time);
 
-  // Pass this to setitimer.
+  // Pass this to setitimer().
   static itimerval signal_once;
 
   // Last time value we set the timer to.

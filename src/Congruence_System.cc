@@ -38,7 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Congruence_System::Congruence_System(const Constraint_System& cs)
-  : Matrix(0, 2) {
+  : Matrix(0, cs.space_dimension() + 2) {
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
@@ -197,8 +197,7 @@ PPL::Congruence_System::normalize_moduli() {
 	return;
     }
     while (row > 0) {
-      Coefficient_traits::const_reference
-	modulus = operator[](--row).modulus();
+      const Coefficient& modulus = operator[](--row).modulus();
       if (modulus > 0)
 	lcm_assign(lcm, lcm, modulus);
     }
@@ -207,7 +206,7 @@ PPL::Congruence_System::normalize_moduli() {
     TEMP_INTEGER(factor);
     dimension_type row_size = operator[](0).size();
     for (row = num_rows(); row-- > 0; ) {
-      Coefficient_traits::const_reference modulus = operator[](row).modulus();
+      const Coefficient& modulus = operator[](row).modulus();
       if (modulus <= 0 || modulus == lcm)
 	continue;
       exact_div_assign(factor, lcm, modulus);
@@ -419,7 +418,7 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
     if (!x[i].ascii_load(s))
       return false;
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK());
   return true;
 }

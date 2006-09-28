@@ -95,7 +95,7 @@ namespace Parma_Polyhedra_Library {
 
 //! Wraps a widening method into a function object.
 /*!
-  \relates Polyhedra_Powerset
+  \relates Pointset_Powerset
 
   \param wm
   The widening method.
@@ -106,7 +106,7 @@ widen_fun_ref(void (PH::* wm)(const PH&, unsigned*));
 
 //! Wraps a limited widening method into a function object.
 /*!
-  \relates Polyhedra_Powerset
+  \relates Pointset_Powerset
 
   \param lwm
   The limited widening method.

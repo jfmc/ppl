@@ -27,12 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-#define TRACE(x)
-//#define TRACE(x) x
-
-TRACE(using std::endl;)
-TRACE(using std::cerr;)
-
 // X 0 0 0  upside down, so  x x x X
 // x X 0 0                   x x X 0
 // x x X 0                   x X 0 0
@@ -159,19 +153,12 @@ Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
 void
 Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 		 Dimension_Kinds& dim_kinds) {
-  TRACE(cerr << "============= convert gs to cgs" << endl);
-  TRACE(cerr << "source:" << endl);
-  TRACE(source.ascii_dump(cerr));
-  TRACE(cerr << "dest:" << endl);
-  TRACE(dest.ascii_dump(cerr));
-  trace_dim_kinds("gs to cgs ", dim_kinds);
-
   // Quite similar to the congruence to generator version below.
   // Changes here may be needed there too.
 
   assert(upper_triangular(source, dim_kinds));
 
-  // Initialise matrix row number counters and compute the LCM of the
+  // Initialize matrix row number counters and compute the LCM of the
   // diagonal entries of the parameters in `source'.
   //
   // The top-down order of the generator system rows corresponds to
@@ -199,8 +186,6 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       // Lines map to virtual congruences.
     }
   assert(source_index == 0);
-  TRACE(cerr << "diagonal_lcm: " << diagonal_lcm << endl);
-  TRACE(cerr << "dest_num_rows: " << dest_num_rows << endl);
 
   // `source' must be regular.
   if (diagonal_lcm == 0)
@@ -215,11 +200,8 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   dimension_type dest_index = 0;
   source_index = source.num_generators();
   for (dimension_type dim = dims; dim-- > 0; ) {
-    TRACE(cerr << "init dim " << dim << endl);
-    if (dim_kinds[dim] == LINE) {
-      TRACE(cerr << "  line" << endl);
+    if (dim_kinds[dim] == LINE)
       --source_index;
-    }
     else {
       Congruence& cg = dest[dest_index];
       for (dimension_type j = dim; j-- > 0; )
@@ -228,14 +210,12 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	cg[j] = 0;
 
       if (dim_kinds[dim] == GEN_VIRTUAL) {
-	TRACE(cerr << "  gen_virtual" << endl);
 	cg[dims] = 0;		// An equality.
 	cg[dim] = 1;
       }
       else {
 	assert(dim_kinds[dim] == PARAMETER);
 	--source_index;
-	TRACE(cerr << "  parameter" << endl);
 	cg[dims] = 1;		// A proper congruence.
 	exact_div_assign(cg[dim], diagonal_lcm, source[source_index][dim]);
       }
@@ -246,9 +226,6 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   assert(source_index == 0);
   assert(dest_index == dest_num_rows);
   assert(lower_triangular(dest, dim_kinds));
-
-  TRACE(cerr << "dest after init:" << endl);
-  TRACE(dest.ascii_dump(cerr));
 
   // Convert.
   //
@@ -262,19 +239,13 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   TEMP_INTEGER(multiplier);
 
   for (dimension_type dim = dims; dim-- > 0; ) {
-    TRACE(cerr << "dim: " << dim << endl);
-
     if (dim_kinds[dim] != GEN_VIRTUAL) {
       --source_index;
-      Coefficient_traits::const_reference source_dim
-	= source[source_index][dim];
+      const Coefficient& source_dim = source[source_index][dim];
 
       // In the rows in `dest' above `dest_index' divide each element
       // at column `dim' by `source_dim'.
       for (dimension_type row = dest_index; row-- > 0; ) {
-	TRACE(cerr << "  row " << row << endl);
-	TRACE(dest.ascii_dump(cerr));
-
 	Congruence& cg = dest[row];
 
 	// Multiply the representation of `dest' such that entry `dim'
@@ -287,8 +258,6 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
 	Coefficient& cg_dim = cg[dim];
 	exact_div_assign(cg_dim, cg_dim, source_dim);
       }
-      TRACE(cerr << "dest after dividing grid:" << endl);
-      TRACE(dest.ascii_dump(cerr));
     }
 
     // Invert and transpose the source row at `source_index' into the
@@ -297,48 +266,37 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     // Consider each dimension `dim_prec' that precedes `dim', as the
     // rows in `dest' that follow `dim_index' have zeroes at index
     // `dim'.
-    dimension_type tem_source_index = source_index;
+    dimension_type tmp_source_index = source_index;
     if (dim_kinds[dim] != LINE)
       ++dest_index;
     for (dimension_type dim_prec = dim; dim_prec-- > 0; ) {
-      TRACE(cerr << "  dim_prec: " << dim_prec);
-      TRACE(cerr << "  dest_index: " << dest_index);
-      TRACE(cerr << "  tem_source_index: " << tem_source_index << endl);
       if (dim_kinds[dim_prec] != GEN_VIRTUAL) {
-	--tem_source_index;
-	Coefficient_traits::const_reference source_dim
-	  = source[tem_source_index][dim];
-	TRACE(cerr << "  rows:" << endl);
+	--tmp_source_index;
+	const Coefficient& source_dim = source[tmp_source_index][dim];
 	// In order to compute the transpose of the inverse of
-	// `source', subtract source[tem_source_index][dim] times the
+	// `source', subtract source[tmp_source_index][dim] times the
 	// column vector in `dest' at `dim' from the column vector in
 	// `dest' at `dim_prec'.
 	//
 	// I.e., for each row `dest_index' in `dest' that is above the
-	// row `dest_index', subtract dest[tem_source_index][dim]
+	// row `dest_index', subtract dest[tmp_source_index][dim]
 	// times the entry `dim' from the entry at `dim_prec'.
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  assert(row < dest_num_rows);
-	  TRACE(cerr << "       " << row << endl);
 	  Congruence& cg = dest[row];
 	  sub_mul_assign(cg[dim_prec], source_dim, cg[dim]);
 	}
       }
     }
-
-    TRACE(cerr << "dest after processing preceding rows:" << endl);
-    TRACE(dest.ascii_dump(cerr));
   }
   // Set the modulus in every congruence.
-  Coefficient_traits::const_reference modulus = dest[dest_num_rows - 1][0];
+  const Coefficient& modulus = dest[dest_num_rows - 1][0];
   for (dimension_type row = dest_num_rows; row-- > 0; ) {
     Congruence& cg = dest[row];
     if (cg[dims] > 0)
       // `cg' is a proper congruence.
       cg[dims] = modulus;
   }
-  TRACE(cerr << "dest after setting moduli:" << endl);
-  TRACE(dest.ascii_dump(cerr));
 
   assert(lower_triangular(dest, dim_kinds));
 
@@ -348,31 +306,18 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
       // Factor the "diagonal" congruence out of the preceding rows.
       reduce_reduced<Congruence_System, Congruence>
 	(dest, dim, i++, 0, dim, dim_kinds, false);
-  TRACE(cerr << "dest after strong reduction:" << endl);
-  TRACE(dest.ascii_dump(cerr));
 #endif
-
-  trace_dim_kinds("gs to cgs end ", dim_kinds);
-
-  TRACE(cerr << "------------------- gs to cgs conversion done." << endl);
 }
 
 void
 Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 		 Dimension_Kinds& dim_kinds) {
-  TRACE(cerr << "============= convert cgs to gs" << endl);
-  TRACE(cerr << "source:" << endl);
-  TRACE(source.ascii_dump(cerr));
-  TRACE(cerr << "dest:" << endl);
-  TRACE(dest.ascii_dump(cerr));
-  trace_dim_kinds("cgs to gs ", dim_kinds);
-
   // Quite similar to the generator to congruence version above.
   // Changes here may be needed there too.
 
   assert(lower_triangular(source, dim_kinds));
 
-  // Initialise matrix row number counters and compute the LCM of the
+  // Initialize matrix row number counters and compute the LCM of the
   // diagonal entries of the proper congruences in `source'.
   dimension_type source_num_rows = 0, dest_num_rows = 0;
   TEMP_INTEGER(diagonal_lcm);
@@ -394,9 +339,6 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       // Equalities map to virtual generators.
       ++source_num_rows;
     }
-  TRACE(cerr << "diagonal_lcm: " << diagonal_lcm << endl);
-  TRACE(cerr << "source_num_rows: " << source_num_rows << endl);
-  TRACE(cerr << "dest_num_rows: " << dest_num_rows << endl);
 
   // `source' must be regular.
   if (diagonal_lcm == 0)
@@ -416,9 +358,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // The generator system has a bottom-up ordering.
   dimension_type dest_index = dest_num_rows - 1;
   for (dimension_type dim = dims; dim-- > 0; ) {
-    TRACE(cerr << "init dim " << dim << endl);
     if (dim_kinds[dim] == EQUALITY) {
-      TRACE(cerr << "  equality" << endl);
       ++source_index;
     }
     else {
@@ -429,13 +369,11 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	g[j] = 0;
 
       if (dim_kinds[dim] == CON_VIRTUAL) {
-	TRACE(cerr << "  con_virtual" << endl);
 	g.set_is_line();
 	g[dim] = 1;
       }
       else {
 	assert(dim_kinds[dim] == PROPER_CONGRUENCE);
-	TRACE(cerr << "  proper_congruence" << endl);
 	g.set_is_parameter_or_point();
 	exact_div_assign(g[dim], diagonal_lcm, source[source_index][dim]);
 	++source_index;
@@ -445,9 +383,6 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   }
 
   assert(upper_triangular(dest, dim_kinds));
-
-  TRACE(cerr << "dest after init:" << endl);
-  TRACE(dest.ascii_dump(cerr));
 
   // Convert.
   //
@@ -461,19 +396,13 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   TEMP_INTEGER(reduced_source_dim);
 
   for (dimension_type dim = 0; dim < dims; ++dim) {
-    TRACE(cerr << "dim: " << dim << endl);
-
     if (dim_kinds[dim] != CON_VIRTUAL) {
       --source_index;
-      Coefficient_traits::const_reference source_dim
-	= source[source_index][dim];
+      const Coefficient& source_dim = source[source_index][dim];
 
       // In the rows in `dest' above `dest_index' divide each element
       // at column `dim' by `source_dim'.
       for (dimension_type row = dest_index; row-- > 0; ) {
-	TRACE(cerr << "  row " << row << endl);
-	TRACE(dest.ascii_dump(cerr));
-
 	Grid_Generator& g = dest[row];
 
 	// Multiply the representation of `dest' such that entry `dim'
@@ -487,8 +416,6 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 	Coefficient& g_dim = g[dim];
 	exact_div_assign(g_dim, g_dim, source_dim);
       }
-      TRACE(cerr << "dest after dividing grid:" << endl);
-      TRACE(dest.ascii_dump(cerr));
     }
 
     // Invert and transpose the source row at `source_index' into the
@@ -497,36 +424,28 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     // Consider each dimension `dim_fol' that follows `dim', as the
     // rows in `dest' that follow row `dest_index' are zero at index
     // `dim'.
-    dimension_type tem_source_index = source_index;
+    dimension_type tmp_source_index = source_index;
     if (dim_kinds[dim] != EQUALITY)
       ++dest_index;
     for (dimension_type dim_fol = dim + 1; dim_fol < dims; ++dim_fol) {
-      TRACE(cerr << "  dim_fol: " << dim_fol);
-      TRACE(cerr << "  dest_index: " << dest_index);
-      TRACE(cerr << "  tem_source_index: " << tem_source_index << endl);
       if (dim_kinds[dim_fol] != CON_VIRTUAL) {
-	--tem_source_index;
-	Coefficient_traits::const_reference source_dim
-	  = source[tem_source_index][dim];
-	TRACE(cerr << "  rows:" << endl);
+	--tmp_source_index;
+	const Coefficient& source_dim = source[tmp_source_index][dim];
 	// In order to compute the transpose of the inverse of
-	// `source', subtract source[tem_source_index][dim] times the
+	// `source', subtract source[tmp_source_index][dim] times the
 	// column vector in `dest' at `dim' from the column vector in
 	// `dest' at `dim_fol'.
 	//
 	// I.e., for each row `dest_index' in `dest' that is above the
-	// row `dest_index', subtract dest[tem_source_index][dim]
+	// row `dest_index', subtract dest[tmp_source_index][dim]
 	// times the entry `dim' from the entry at `dim_fol'.
 	for (dimension_type row = dest_index; row-- > 0; ) {
 	  assert(row < dest_num_rows);
-	  TRACE(cerr << "       " << row << endl);
 	  Grid_Generator& g = dest[row];
 	  sub_mul_assign(g[dim_fol], source_dim, g[dim]);
 	}
       }
     }
-    TRACE(cerr << "dest after processing preceding rows:" << endl);
-    TRACE(dest.ascii_dump(cerr));
   }
 
   assert(upper_triangular(dest, dim_kinds));
@@ -537,13 +456,11 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
       // Factor the "diagonal" generator out of the preceding rows.
       reduce_reduced<Grid_Generator_System, Grid_Generator>
 	(dest, dim, i++, dim, dims - 1, dim_kinds);
-  TRACE(cerr << "dest after strong reduction:" << endl);
-  TRACE(dest.ascii_dump(cerr));
 #endif
 
   // Ensure that the parameter divisors are the same as the divisor of
   // the point.
-  Coefficient_traits::const_reference system_divisor = dest[0][0];
+  const Coefficient& system_divisor = dest[0][0];
   for (dimension_type row = dest.num_generators() - 1, dim = dims;
        dim-- > 1; )
     switch (dim_kinds[dim]) {
@@ -554,14 +471,6 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     case GEN_VIRTUAL:
       break;
     }
-  TRACE(cerr << "dest after updating param divisors:" << endl);
-  TRACE(dest.ascii_dump(cerr));
-
-  trace_dim_kinds("cgs to gs end ", dim_kinds);
-
-  TRACE(cerr << "------------------- cgs to gs conversion done." << endl);
 }
-
-#undef TRACE
 
 } // namespace Parma_Polyhedra_Library

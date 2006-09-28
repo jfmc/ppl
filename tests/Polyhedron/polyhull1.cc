@@ -250,7 +250,7 @@ test07() {
   bool ok = (ph1 == known_result);
 
   print_generators(ph1,
-		   "*** After ph1.poly_hull_assugn_and_minimize(ph2) ***");
+		   "*** After ph1.poly_hull_assign_and_minimize(ph2) ***");
 
   return ok;
 }

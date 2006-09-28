@@ -108,6 +108,8 @@ Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
 globals.types.hh \
+iterator_to_const.types.hh \
+distances.types.hh \
 Interval.types.hh \
 Bounding_Box.types.hh \
 Constraint.types.hh \
@@ -119,6 +121,7 @@ Row.types.hh \
 Linear_Row.types.hh \
 Matrix.types.hh \
 Variable.types.hh \
+Variables_Set.types.hh \
 Linear_Expression.types.hh \
 Linear_System.types.hh \
 Saturation_Row.types.hh \
@@ -129,6 +132,7 @@ Grid_Generator_System.types.hh \
 Congruence_System.types.hh \
 Scalar_Products.types.hh \
 LP_Problem.types.hh \
+MIP_Problem.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
@@ -142,6 +146,8 @@ Ptr_Iterator.types.hh \
 DB_Row.types.hh \
 DB_Matrix.types.hh \
 BD_Shape.types.hh \
+OR_Matrix.types.hh \
+Octagonal_Shape.types.hh \
 fpu.types.hh \
 Float.defs.hh \
 Float.inlines.hh \
@@ -172,12 +178,18 @@ Coefficient.defs.hh \
 Coefficient.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
+iterator_to_const.defs.hh \
+iterator_to_const.inlines.hh \
+distances.defs.hh \
+distances.inlines.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 Bounding_Box.defs.hh \
 Bounding_Box.inlines.hh \
 Variable.defs.hh \
 Variable.inlines.hh \
+Variables_Set.defs.hh \
+Variables_Set.inlines.hh \
 Init.defs.hh \
 initializer.hh \
 Topology.hh \
@@ -215,6 +227,10 @@ Scalar_Products.defs.hh \
 Scalar_Products.inlines.hh \
 LP_Problem.defs.hh \
 LP_Problem.inlines.hh \
+LP_Problem.templates.hh \
+MIP_Problem.defs.hh \
+MIP_Problem.inlines.hh \
+MIP_Problem.templates.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
@@ -252,6 +268,13 @@ BD_Shape.defs.hh \
 BDS_Status.inlines.hh \
 BD_Shape.inlines.hh \
 BD_Shape.templates.hh \
+OR_Matrix.defs.hh \
+OR_Matrix.inlines.hh \
+OR_Matrix.templates.hh \
+Octagonal_Shape.defs.hh \
+Og_Status.inlines.hh \
+Octagonal_Shape.inlines.hh \
+Octagonal_Shape.templates.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
@@ -259,21 +282,33 @@ Powerset.types.hh \
 Powerset.defs.hh \
 Powerset.inlines.hh \
 Powerset.templates.hh \
-Polyhedra_Powerset.types.hh \
-Polyhedra_Powerset.defs.hh \
-Polyhedra_Powerset.inlines.hh \
-Polyhedra_Powerset.templates.hh \
+Pointset_Powerset.types.hh \
+Pointset_Powerset.defs.hh \
+Pointset_Powerset.inlines.hh \
+Pointset_Powerset.templates.hh \
+Ask_Tell.types.hh \
+Ask_Tell.defs.hh \
+Ask_Tell.inlines.hh \
+Ask_Tell.templates.hh \
+Pointset_Ask_Tell.types.hh \
+Pointset_Ask_Tell.defs.hh \
+Pointset_Ask_Tell.inlines.hh \
+Pointset_Ask_Tell.templates.hh \
 Direct_Product.types.hh \
 Direct_Product.defs.hh \
 Direct_Product.inlines.hh \
 Direct_Product.templates.hh \
+Any_Pointset.types.hh \
+Any_Pointset.defs.hh \
+Any_Pointset.inlines.hh \
 max_space_dimension.hh \
 algorithms.hh
 
 NESTED_INCLUDE_FILES = \
 Ph_Status.idefs.hh \
 Grid_Status.idefs.hh \
-BDS_Status.idefs.hh
+BDS_Status.idefs.hh \
+Og_Status.idefs.hh
 
 libppl_la_SOURCES = \
 Bounding_Box.cc \
@@ -296,6 +331,7 @@ Linear_System.cc \
 Matrix.cc \
 Scalar_Products.cc \
 LP_Problem.cc \
+MIP_Problem.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
@@ -312,7 +348,9 @@ Grid_public.cc \
 Grid_chdims.cc \
 Grid_widenings.cc \
 BD_Shape.cc \
-Polyhedra_Powerset.cc \
+Octagonal_Shape.cc \
+Pointset_Powerset.cc \
+Pointset_Ask_Tell.cc \
 Row.cc \
 Linear_Row.cc \
 Saturation_Matrix.cc \
@@ -320,6 +358,7 @@ Saturation_Row.cc \
 Ph_Status.cc \
 Grid_Status.cc \
 Variable.cc \
+Variables_Set.cc \
 conversion.cc \
 minimize.cc \
 simplify.cc \

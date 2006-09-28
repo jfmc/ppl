@@ -28,46 +28,6 @@ namespace {
 
 #define SPACE_DIM 2
 
-bool
-operator==(const Bounding_Box& x, const Bounding_Box& y) {
-  dimension_type dimension = x.space_dimension();
-  if (dimension != y.space_dimension())
-    return false;
-
-  if (x.is_empty() && y.is_empty())
-    return true;
-
-  if (x.is_empty() || y.is_empty())
-    return false;
-
-  TEMP_INTEGER(n_x);
-  TEMP_INTEGER(n_y);
-  TEMP_INTEGER(d_x);
-  TEMP_INTEGER(d_y);
-
-  for (dimension_type i = dimension; i-- > 0; ) {
-    bool tem;
-    bool x_closed = x.get_lower_bound(i, tem, n_x, d_x);
-    bool y_closed = y.get_lower_bound(i, tem, n_y, d_y);
-    if (x_closed == y_closed) {
-      if (x_closed && (n_x != n_y || d_x != d_y))
-	return false;
-    }
-    else
-      return false;
-    x_closed = x.get_upper_bound(i, tem, n_x, d_x);
-    y_closed = y.get_upper_bound(i, tem, n_y, d_y);
-    if (x_closed == y_closed) {
-      if (x_closed && (n_x != n_y || d_x != d_y))
-	return false;
-    }
-    else
-      return false;
-  }
-
-  return true;
-}
-
 // Rectilinear grid defined by points with the origin
 // not a point of the grid or a point of the covering box..
 bool

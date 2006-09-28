@@ -86,13 +86,12 @@ limitedh79extrapolation1 \
 linearpartition1 \
 linexpression1 \
 linearsystem1 \
-lpproblem1 \
 mapspacedims1 \
 matrix1 \
 max_min1 \
 maxspacedim1 \
 mc91 \
-membytes1 membytes2 \
+membytes1 \
 memory1 memory2 \
 minconstraints1 minconstraints2 \
 mingenerators1 mingenerators2 \
@@ -102,7 +101,7 @@ onepoint \
 permute \
 polydifference1 polydifference2 \
 polyhull1 polyhull2 \
-polypowerset1 \
+pointsetpowerset1 \
 powerset1 \
 randphull1 randphull2 \
 relations1 relations2 relations3 \
@@ -162,7 +161,7 @@ nnc_linearpartition1 \
 nnc_mapspacedims1 \
 nnc_max_min1 \
 nnc_mc91 \
-nnc_membytes1 nnc_membytes2 \
+nnc_membytes1 \
 nnc_minconstraints1 \
 nnc_mingenerators1 \
 nnc_onepoint \
@@ -292,8 +291,6 @@ linexpression1_SOURCES = linexpression1.cc
 
 linearsystem1_SOURCES = linearsystem1.cc
 
-lpproblem1_SOURCES = lpproblem1.cc
-
 mapspacedims1_SOURCES = mapspacedims1.cc
 
 matrix1_SOURCES = matrix1.cc
@@ -305,7 +302,6 @@ maxspacedim1_SOURCES = maxspacedim1.cc
 mc91_SOURCES = mc91.cc
 
 membytes1_SOURCES = membytes1.cc
-membytes2_SOURCES = membytes2.cc
 
 memory1_SOURCES = memory1.cc
 memory2_SOURCES = memory2.cc
@@ -331,7 +327,7 @@ polydifference2_SOURCES = polydifference2.cc
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
 
-polypowerset1_SOURCES = polypowerset1.cc
+pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 
 powerset1_SOURCES = powerset1.cc
 
@@ -516,8 +512,6 @@ nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_membytes1_SOURCES = membytes1.cc
 nnc_membytes1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_membytes2_SOURCES = membytes2.cc
-nnc_membytes2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_minconstraints1_SOURCES = minconstraints1.cc
 nnc_minconstraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -590,17 +584,13 @@ $(XFAIL_WITH_INT32)
 
 XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
-membytes1 \
 randphull1 \
 smm1 \
-nnc_membytes1 \
 nnc_randphull1 \
 nnc_smm1
 
 XFAIL_WITH_INT8_A = \
-$(XFAIL_WITH_INT8) \
-membytes2 \
-nnc_membytes2
+$(XFAIL_WITH_INT8)
 
 if USE_INT64
 
@@ -644,10 +634,7 @@ check_PROGRAMS = $(TESTS) $(BUGS)
 
 EXTRA_DIST = $(watchdog1_SRCS)
 
-BUGS = bug2
-
-bug2_SOURCES = bug2.cc
-bug2_CXXFLAGS = -DSRCDIR=\"$(srcdir)\"
+BUGS =
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat \

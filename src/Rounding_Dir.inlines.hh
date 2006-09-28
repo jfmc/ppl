@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Rounding_Dir_inlines_hh 1
 
 #include "Rounding_Dir.defs.hh"
+#include <cassert>
 
 namespace Parma_Polyhedra_Library {
 

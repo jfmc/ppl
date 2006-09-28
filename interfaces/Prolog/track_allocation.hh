@@ -56,15 +56,18 @@ inline
 Poly_Tracker::~Poly_Tracker() {
   Set::size_type n = s.size();
   if (n > 0)
-    std::cerr << "Poly_Tracker: " << n << " polyhedra leaked!" << std::endl;
+    std::cerr
+      << "Poly_Tracker: " << n << " polyhedra leaked!"
+      << std::endl;
 }
 
 inline void
 Poly_Tracker::insert(const void* pp) {
   std::pair<Set::iterator, bool> stat = s.insert(pp);
   if (!stat.second) {
-    std::cerr << "Poly_Tracker: two polyhedra at the same address "
-	      << "at the same time?!" << std::endl;
+    std::cerr
+      << "Poly_Tracker: two polyhedra at the same address at the same time?!"
+      << std::endl;
     abort();
   }
 }
@@ -72,8 +75,9 @@ Poly_Tracker::insert(const void* pp) {
 inline void
 Poly_Tracker::check(const void* pp) const {
   if (s.find(pp) == s.end()) {
-    std::cerr << "Poly_Tracker: attempt to access an inexistent polyhedron."
-	      << std::endl;
+    std::cerr
+      << "Poly_Tracker: attempt to access a nonexistent polyhedron."
+      << std::endl;
     abort();
   }
 }
@@ -81,9 +85,9 @@ Poly_Tracker::check(const void* pp) const {
 void
 Poly_Tracker::remove(const void* pp) {
   if (s.erase(pp) != 1) {
-    std::cerr << "Poly_Tracker: attempt to deallocate "
-	      << "an inexistent polyhedron."
-	      << std::endl;
+    std::cerr
+      << "Poly_Tracker: attempt to deallocate a nonexistent polyhedron."
+      << std::endl;
     abort();
   }
 }

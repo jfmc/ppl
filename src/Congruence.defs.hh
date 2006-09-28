@@ -191,7 +191,7 @@ swap(Parma_Polyhedra_Library::Congruence& x,
   \code
   Congruence cg1((x - 5*y + 3*z %= 4) / 5);
   cout << "Congruence cg1: " << cg1 << endl;
-  Coefficient m = cg1.modulus();
+  const Coefficient& m = cg1.modulus();
   if (m == 0)
     cout << "Congruence cg1 is an equality." << endl;
   else {
@@ -455,6 +455,7 @@ private:
 	       const Congruence_System& cgs);
 
   friend class Parma_Polyhedra_Library::Scalar_Products;
+  friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Congruence_System;
   friend class Parma_Polyhedra_Library::Congruence_System::const_iterator;
   // FIXME: The following friend declaration is at least for
@@ -468,5 +469,6 @@ private:
 };
 
 #include "Congruence.inlines.hh"
+#include "Congruence_System.inlines.hh"
 
 #endif // !defined(PPL_Congruence_defs_hh)

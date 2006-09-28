@@ -40,7 +40,7 @@ class numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
 									\
  public:								\
   static const bool has_infinity = Policy::handle_infinity;		\
-  static const bool has_quiet_NaN =  Policy::handle_nan;			\
+  static const bool has_quiet_NaN =  Policy::handle_nan;		\
 									\
   static Type min() {							\
     return Parma_Polyhedra_Library::Checked::Extended_Int<Policy, T>::min; \
@@ -59,7 +59,7 @@ class numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
 									\
   static Type quiet_NaN() {						\
     return								\
-      Policy::handle_nan							\
+      Policy::handle_nan						\
       ? Parma_Polyhedra_Library::NOT_A_NUMBER				\
       : static_cast<Type>(0);						\
   }									\

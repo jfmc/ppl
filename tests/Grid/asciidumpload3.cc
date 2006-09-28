@@ -66,12 +66,12 @@ test02() {
 
   fstream f;
   open(f, my_file, ios_base::out);
-  f << "1\n";
+  f << "size 2 1\n";
   close(f);
 
   open(f, my_file, ios_base::in);
   Congruence cg(0*A %= 0);
-  bool ok =! cg.ascii_load(f);
+  bool ok = !cg.ascii_load(f);
   close(f);
 
   return ok;
@@ -84,12 +84,12 @@ test03() {
 
   fstream f;
   open(f, my_file, ios_base::out);
-  f << "1 0 err 1\n";
+  f << "size 3 1 0 err 1\n";
   close(f);
 
   open(f, my_file, ios_base::in);
   Congruence cg(0*A %= 0);
-  bool ok =! cg.ascii_load(f);
+  bool ok = !cg.ascii_load(f);
   close(f);
 
   return ok;
@@ -102,12 +102,12 @@ test04() {
 
   fstream f;
   open(f, my_file, ios_base::out);
-  f << "1 0 m\n";
+  f << "size 3 1 0 m\n";
   close(f);
 
   open(f, my_file, ios_base::in);
   Congruence cg(0*A %= 0);
-  bool ok =! cg.ascii_load(f);
+  bool ok = !cg.ascii_load(f);
   close(f);
 
   return ok;

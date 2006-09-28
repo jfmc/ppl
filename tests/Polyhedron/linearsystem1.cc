@@ -59,7 +59,7 @@ test01() {
       if (std::numeric_limits<Coefficient>::is_bounded
 	  && row[col] == std::numeric_limits<Coefficient>::min())
 	// Here the randomly generated coefficients is equal to the
-	// allowed minimum value for a signed integer datatype that
+	// allowed minimum value for a signed integer data type that
 	// might adopt the 2's complement representation
 	// (e.g., -128 for 8 bit signed integers).
 	// Thus, it would cause a positive overflow during the normalization

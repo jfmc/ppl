@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Polyhedron.types.hh"
 #include "Constraint.types.hh"
-#include "LP_Problem.types.hh"
+#include "Congruence_System.types.hh"
 #include <iterator>
 #include <iosfwd>
 
@@ -131,6 +131,9 @@ public:
 
   //! Builds the singleton system containing only constraint \p c.
   explicit Constraint_System(const Constraint& c);
+
+  //! Builds a system containing copies of any equalities in \p cgs.
+  explicit Constraint_System(const Congruence_System& cgs);
 
   //! Ordinary copy-constructor.
   Constraint_System(const Constraint_System& cs);
@@ -270,7 +273,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -288,7 +291,6 @@ public:
 private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
-  friend class Parma_Polyhedra_Library::LP_Problem;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,
@@ -371,7 +373,7 @@ private:
   dimension_type num_inequalities() const;
 
   /*! \brief
-    Applies Gaussian's elimination and back-substitution so as
+    Applies Gaussian elimination and back-substitution so as
     to provide a partial simplification of the system of constraints.
 
     It is assumed that the system has no pending constraints.

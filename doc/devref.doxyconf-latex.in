@@ -494,6 +494,9 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/globals.types.hh \
                          @srcdir@/../src/globals.inlines.hh \
                          @srcdir@/../src/globals.cc \
+                         @srcdir@/../src/distances.types.hh \
+                         @srcdir@/../src/distances.defs.hh \
+                         @srcdir@/../src/distances.inlines.hh \
                          @srcdir@/../src/Topology.hh \
                          @srcdir@/../src/Row.types.hh \
                          @srcdir@/../src/Row.defs.hh \
@@ -628,14 +631,27 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Grid_Certificate.cc \
                          @srcdir@/../src/Determinate.defs.hh \
                          @srcdir@/../src/Determinate.inlines.hh \
+                         @srcdir@/../src/iterator_to_const.types.hh \
+                         @srcdir@/../src/iterator_to_const.defs.hh \
+                         @srcdir@/../src/iterator_to_const.inlines.hh \
+                         @srcdir@/../src/Powerset.types.hh \
                          @srcdir@/../src/Powerset.defs.hh \
                          @srcdir@/../src/Powerset.inlines.hh \
                          @srcdir@/../src/Powerset.templates.hh \
-                         @srcdir@/../src/Polyhedra_Powerset.types.hh \
-                         @srcdir@/../src/Polyhedra_Powerset.defs.hh \
-                         @srcdir@/../src/Polyhedra_Powerset.inlines.hh \
-                         @srcdir@/../src/Polyhedra_Powerset.templates.hh \
-                         @srcdir@/../src/Polyhedra_Powerset.cc \
+                         @srcdir@/../src/Pointset_Powerset.types.hh \
+                         @srcdir@/../src/Pointset_Powerset.defs.hh \
+                         @srcdir@/../src/Pointset_Powerset.inlines.hh \
+                         @srcdir@/../src/Pointset_Powerset.templates.hh \
+                         @srcdir@/../src/Pointset_Powerset.cc \
+                         @srcdir@/../src/Ask_Tell.types.hh \
+                         @srcdir@/../src/Ask_Tell.defs.hh \
+                         @srcdir@/../src/Ask_Tell.inlines.hh \
+                         @srcdir@/../src/Ask_Tell.templates.hh \
+                         @srcdir@/../src/Pointset_Ask_Tell.types.hh \
+                         @srcdir@/../src/Pointset_Ask_Tell.defs.hh \
+                         @srcdir@/../src/Pointset_Ask_Tell.inlines.hh \
+                         @srcdir@/../src/Pointset_Ask_Tell.templates.hh \
+                         @srcdir@/../src/Pointset_Ask_Tell.cc \
                          @srcdir@/../src/algorithms.hh \
                          @srcdir@/../src/LP_Problem.types.hh \
                          @srcdir@/../src/LP_Problem.defs.hh \
@@ -654,6 +670,15 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/BD_Shape.inlines.hh \
                          @srcdir@/../src/BD_Shape.templates.hh \
                          @srcdir@/../src/BD_Shape.cc \
+                         @srcdir@/../src/OR_Matrix.types.hh \
+                         @srcdir@/../src/OR_Matrix.defs.hh \
+                         @srcdir@/../src/OR_Matrix.inlines.hh \
+                         @srcdir@/../src/OR_Matrix.templates.hh \
+                         @srcdir@/../src/Octagonal_Shape.types.hh \
+                         @srcdir@/../src/Octagonal_Shape.defs.hh \
+                         @srcdir@/../src/Octagonal_Shape.inlines.hh \
+                         @srcdir@/../src/Octagonal_Shape.templates.hh \
+                         @srcdir@/../src/Octagonal_Shape.cc \
                          ../interfaces/C/ppl_c.h \
                          @srcdir@/../interfaces/C/ppl_c.cc \
                          @srcdir@/../interfaces/Prolog/Prolog_interface.dox \

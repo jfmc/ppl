@@ -328,7 +328,7 @@ public:
   void back_substitute(dimension_type n_lines_or_equalities);
 
   /*! \brief
-    Applies Gaussian's elimination and back-substitution so as to
+    Applies Gaussian elimination and back-substitution so as to
     simplify the linear system.
   */
   void simplify();
@@ -345,12 +345,12 @@ public:
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by \ref
-    ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-    if successful, <CODE>false</CODE> otherwise.
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
 
     Reads into a Linear_System object the information produced by the
-    output of <CODE>ascii_dump()</CODE>.  The specialized methods
+    output of ascii_dump(std::ostream&) const.  The specialized methods
     provided by Constraint_System and Generator_System take care of
     properly reading the contents of the system.
   */
@@ -487,7 +487,7 @@ public:
   bool operator<(const With_Saturation_Matrix_iterator& y) const;
   //@}
 
-  //! Dereferencing operator.
+  //! Dereference operator.
   reference operator*() const;
 
   //! Access-through operator.

@@ -72,10 +72,10 @@ C_Polyhedron::C_Polyhedron(const Generator_System& gs)
 	       gs.space_dimension() <= max_space_dimension()
 	       ? gs
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(cs)",
+						 "C_Polyhedron(gs)",
 						 "the space dimension of gs "
 						 "exceeds the maximum allowed "
-						 "space dimension"), gs)){
+						 "space dimension"), gs)) {
 }
 
 inline
@@ -84,10 +84,38 @@ C_Polyhedron::C_Polyhedron(Generator_System& gs)
 	       gs.space_dimension() <= max_space_dimension()
 	       ? gs
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(cs)",
+						 "C_Polyhedron(gs)",
 						 "the space dimension of gs "
 						 "exceeds the maximum allowed "
-						 "space dimension"), gs)){
+						 "space dimension"), gs)) {
+}
+
+inline
+C_Polyhedron::C_Polyhedron(const Grid_Generator_System& ggs)
+  : Polyhedron(NECESSARILY_CLOSED,
+	       ggs.space_dimension() <= max_space_dimension()
+	       ? ggs.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(ggs)",
+						 "the space dimension of ggs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
+  // FIXME: is this implementation complete?
+}
+
+inline
+C_Polyhedron::C_Polyhedron(Grid_Generator_System& ggs)
+  : Polyhedron(NECESSARILY_CLOSED,
+	       ggs.space_dimension() <= max_space_dimension()
+	       ? ggs.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(ggs)",
+						 "the space dimension of ggs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
+  // FIXME: is this implementation complete?
 }
 
 template <typename Box>

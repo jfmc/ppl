@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Grid.defs.hh"
+#include "Variables_Set.defs.hh"
 #include <cassert>
 
 #define BE_LAZY 1
@@ -267,10 +268,8 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // Dimension-compatibility check: the variable having maximum space
-  // dimension is the one occurring last in the set.
-  const dimension_type
-    min_space_dim = to_be_removed.rbegin()->space_dimension();
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_removed.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
@@ -334,7 +333,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     return;
   }
 
-  // Favour the generators, as is done by is_empty().
+  // Favor the generators, as is done by is_empty().
   if (generators_are_up_to_date()) {
     gen_sys.remove_higher_space_dimensions(new_dimension);
     if (generators_are_minimized()) {
@@ -359,7 +358,8 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     // Extra 2 columns for inhomogeneous term and modulus.
     cgs.increase_space_dimension(new_dimension + 2);
     con_sys.swap(cgs);
-  } else {
+  }
+  else {
     assert(congruences_are_minimized());
     con_sys.remove_higher_space_dimensions(new_dimension);
     // Count the actual number of rows that are now redundant.
@@ -455,10 +455,10 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
     return;
 
   // All variables in `to_be_folded' must be dimensions of the grid.
-  if (to_be_folded.rbegin()->space_dimension() > space_dim)
+  if (to_be_folded.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
-				 "*tbf.rbegin()",
-				 *to_be_folded.rbegin());
+				 "tbf.space_dimension()",
+				 to_be_folded.space_dimension());
 
   // Moreover, `var' must not occur in `to_be_folded'.
   if (to_be_folded.find(var) != to_be_folded.end())

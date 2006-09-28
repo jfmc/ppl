@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.types.hh"
 #include "Polyhedron.types.hh"
 #include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.defs.hh"
@@ -510,6 +511,14 @@ public:
   */
   bool strictly_contains(const BD_Shape& y) const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool is_disjoint_from(const BD_Shape& y) const;
+
   //! Returns the relations holding between \p *this and the constraint \p c.
   /*!
     \exception std::invalid_argument
@@ -532,18 +541,14 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is a universe BDS.
   bool is_universe() const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
+  bool is_discrete() const;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     is a topologically closed subset of the vector space.
   */
   bool is_topologically_closed() const;
-
-  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p x and \p y are dimension-incompatible.
-  */
-  bool is_disjoint_from(const BD_Shape& y) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is a bounded BDS.
   bool is_bounded() const;
@@ -616,6 +621,12 @@ public:
   template <typename Box>
   void shrink_bounding_box(Box& box,
 			   Complexity_Class complexity = ANY_COMPLEXITY) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains at least one integer point.
+  */
+  bool contains_integer_point() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this satisfies
@@ -1060,7 +1071,7 @@ public:
     As was the case for widening operators, the argument \p y is meant to
     denote the value computed in the previous iteration step, whereas
     \p *this denotes the value computed in the current iteration step
-    (in the <EM>descreasing</EM> iteration sequence). Hence, the call
+    (in the <EM>decreasing</EM> iteration sequence). Hence, the call
     <CODE>x.CC76_narrowing_assign(y)</CODE> will assign to \p x
     the result of the computation \f$\mathtt{y} \Delta \mathtt{x}\f$.
   */
@@ -1231,7 +1242,7 @@ public:
     \param pfunc
     The partial function specifying the destiny of each dimension.
 
-    The template class PartialFunction must provide the following
+    The template class Partial_Function must provide the following
     methods.
     \code
       bool has_empty_codomain() const
@@ -1261,8 +1272,8 @@ public:
     \ref Mapping_the_Dimensions_of_the_Vector_Space
     "specification of the mapping operator".
   */
-  template <typename PartialFunction>
-  void map_space_dimensions(const PartialFunction& pfunc);
+  template <typename Partial_Function>
+  void map_space_dimensions(const Partial_Function& pfunc);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
@@ -1270,12 +1281,18 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
-    and sets \p *this accordingly.  Returns <CODE>true</CODE> if successful,
-    <CODE>false</CODE> otherwise.
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
 
   friend bool Parma_Polyhedra_Library::operator==<T>(const BD_Shape<T>& x,
 						     const BD_Shape<T>& y);

@@ -43,7 +43,7 @@ test01() {
   known_result.add_constraint(B == 5);
   known_result.add_constraint(B - A <= 5);
 
-  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
   print_constraints(known_result, "*** known_result ***");
 
@@ -130,7 +130,7 @@ test05() {
 
   try {
     // This is an invalid use of the function
-    // RBD_Shape::add_constraint(c): it is illegal to insert a
+    // BD_Shape::add_constraint(c): it is illegal to insert a
     // constraints that contains a variable that is not in the space
     // of the polyhedron.
     bd.add_constraint(y >= 0);

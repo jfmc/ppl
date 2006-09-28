@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "globals.types.hh"
 #include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
@@ -33,6 +34,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
+#include "Grid_Generator_System.defs.hh"
+#include "Grid_Generator_System.inlines.hh"
 #include "Saturation_Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Congruence.defs.hh"
@@ -41,6 +44,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BHRZ03_Certificate.types.hh"
 #include "H79_Certificate.types.hh"
 #include "BD_Shape.types.hh"
+#include "Octagonal_Shape.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -528,6 +532,21 @@ public:
   //! Returns the system of generators, with no redundant generator.
   const Generator_System& minimized_generators() const;
 
+  //! Returns a system of congruences created from the constraints.
+  Congruence_System congruences() const;
+
+  /*! \brief
+    Returns a system of congruences created from the minimized
+    constraints.
+  */
+  Congruence_System minimized_congruences() const;
+
+  //! Returns a universe system of grid generators.
+  Grid_Generator_System grid_generators() const;
+
+  //! Returns a universe system of grid generators.
+  Grid_Generator_System minimized_grid_generators() const;
+
   /*! \brief
     Returns the relations holding between the polyhedron \p *this
     and the constraint \p c.
@@ -572,11 +591,20 @@ public:
   */
   bool is_disjoint_from(const Polyhedron& y) const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
+  bool is_discrete() const;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     is a bounded polyhedron.
   */
   bool is_bounded() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains at least one integer point.
+  */
+  bool contains_integer_point() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
@@ -870,6 +898,12 @@ public:
     \p g is not a point.
   */
   bool add_generator_and_minimize(const Generator& g);
+
+  //! Domain compatibility method.
+  void add_grid_generator(const Grid_Generator& g) const;
+
+  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
+  bool add_grid_generator_and_minimize(const Grid_Generator& g) const;
 
   /*! \brief
     Adds a copy of congruence \p cg to the system of congruences of \p
@@ -1564,6 +1598,9 @@ public:
   */
   void H79_widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
+  //! Same as H79_widening_assign(y, tp).
+  void widening_assign(const Polyhedron& y, unsigned* tp = 0);
+
   /*! \brief
     Improves the result of the \ref H79_widening "H79-widening"
     computation by also enforcing those constraints in \p cs that are
@@ -1824,7 +1861,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -2385,6 +2422,7 @@ private:
   //@} // Minimization-Related Static Member Functions
 
   template <typename T> friend class Parma_Polyhedra_Library::BD_Shape;
+  template <typename T> friend class Parma_Polyhedra_Library::Octagonal_Shape;
   friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
   friend class Parma_Polyhedra_Library::H79_Certificate;
 

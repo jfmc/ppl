@@ -48,6 +48,59 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
+PPL::Grid::construct(dimension_type num_dimensions,
+		     const Degenerate_Element kind) {
+  space_dim = num_dimensions;
+
+  if (kind == EMPTY) {
+    // Set emptiness directly instead of with set_empty, as gen_sys is
+    // already correctly initialized.
+
+    status.set_empty();
+
+    // Extend the zero dim false congruence system to the appropriate
+    // dimension and then store it in `con_sys'.
+    Congruence_System cgs(Congruence::zero_dim_false());
+    cgs.increase_space_dimension(space_dim);
+    const_cast<Congruence_System&>(con_sys).swap(cgs);
+
+    assert(OK());
+    return;
+  }
+
+  if (num_dimensions > 0) {
+    con_sys.increase_space_dimension(num_dimensions);
+
+    // Initialize both systems to universe representations.
+
+    set_congruences_minimized();
+    set_generators_minimized();
+    dim_kinds.resize(num_dimensions + 1);
+
+    // Extend the zero dim integrality congruence system to the
+    // appropriate dimension and then store it in `con_sys'.
+    Congruence_System cgs(Congruence::zero_dim_integrality());
+    cgs.increase_space_dimension(space_dim);
+    cgs[0][0] = 1; // Recover minimal form after cgs(zdi) normalization.
+    con_sys.swap(cgs);
+
+    dim_kinds[0] = PROPER_CONGRUENCE /* a.k.a. PARAMETER */;
+
+    // Trivially true point.
+    gen_sys.insert(grid_point(0*(Variable(0))));
+
+    // A line for each dimension.
+    dimension_type dim = 0;
+    while (dim < num_dimensions) {
+      gen_sys.insert(grid_line(Variable(dim)));
+      dim_kinds[++dim] = CON_VIRTUAL /* a.k.a. LINE */;
+    }
+  }
+  else
+    set_zero_dim_univ();
+}
+
+void
 PPL::Grid::construct(const Congruence_System& ccgs) {
   // Protecting against space dimension overflow is up to the caller.
   assert(ccgs.space_dimension() <= max_space_dimension());
@@ -113,7 +166,7 @@ PPL::Grid::construct(const Grid_Generator_System& const_gs) {
 
   // Non-empty valid generator systems have a supporting point, at least.
   if (!const_gs.has_points())
-    throw_invalid_generators("Grid(const_gs)", "gs");
+    throw_invalid_generators("Grid(const_ggs)", "ggs");
 
   if (space_dim > 0) {
     // TODO: this implementation is just an executable specification.
@@ -332,7 +385,7 @@ PPL::Grid::update_congruences() const {
     gr.simplify(gr.gen_sys, gr.dim_kinds);
 
   // `gen_sys' contained rows before being reduced, so it should
-  // contain at least a single point afterwards.
+  // contain at least a single point afterward.
   assert(gen_sys.num_generators() > 0);
 
   // Populate `con_sys' with congruences characterizing the grid
@@ -429,30 +482,29 @@ PPL::Grid::minimize() const {
 void
 PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 			      Grid_Generator_System& gen_sys) {
-  dimension_type row = 0;
-  dimension_type num_rows = gen_sys.num_generators();
+#ifndef NDEBUG
+  const dimension_type num_rows = gen_sys.num_generators();
+#endif
   assert(num_rows > 0);
 
   // Find the first point in gen_sys.
+  dimension_type row = 0;
   while (gen_sys[row].is_line_or_parameter()) {
     ++row;
     // gen_sys should have at least one point.
     assert(row < num_rows);
   }
   Grid_Generator& first_point = gen_sys[row];
-  Coefficient_traits::const_reference gen_sys_divisor = first_point.divisor();
+  const Coefficient& gen_sys_divisor = first_point.divisor();
 
 #ifndef NDEBUG
   // Check that the divisors in gen_sys are equal.
   for (dimension_type i = row + 1; i < num_rows; ++i) {
     Grid_Generator& g = gen_sys[i];
     if (g.is_parameter_or_point())
-      if (gen_sys_divisor == g.divisor())
-	continue;
-      else
-	assert(false);
+      assert(gen_sys_divisor == g.divisor());
   }
-#endif
+#endif // !defined(NDEBUG)
 
   TEMP_INTEGER(divisor);
   divisor = gen_sys_divisor;
@@ -470,7 +522,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 void
 PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
 			      Coefficient& divisor,
-			      Grid_Generator* first_point) {
+			      const Grid_Generator* first_point) {
   assert(divisor >= 0);
   if (sys.space_dimension() > 0 && divisor > 0) {
     dimension_type row = 0;
@@ -489,7 +541,7 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
       // Calculate the LCM of the given divisor and the divisor of
       // every point or parameter.
       while (row < num_rows) {
-	Grid_Generator& g = sys[row];
+	const Grid_Generator& g = sys[row];
 	if (g.is_parameter_or_point())
 	  lcm_assign(divisor, divisor, g.divisor());
 	++row;

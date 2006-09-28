@@ -57,10 +57,10 @@ namespace PWL = Parma_Watchdog_Library;
 using std::cerr;
 using std::endl;
 
-// Pass this to getitimer.
+// Pass this to getitimer().
 itimerval PWL::Watchdog::current_timer_status;
 
-// Pass this to setitimer.
+// Pass this to setitimer().
 itimerval PWL::Watchdog::signal_once;
 
 // Last time value we set the timer to.

@@ -79,8 +79,8 @@ PPL::Grid::congruence_widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
-  // As noted in definitions.dox, stable behaviour is only guaranteed
-  // if y is contained in or equal to x.
+  // Stable behavior is only guaranteed if y is contained in or equal
+  // to x.
 #ifndef NDEBUG
   {
     // Assume y is contained in or equal to x.
@@ -281,8 +281,8 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("generator_widening_assign(y)", "y", y);
 
-  // As noted in definitions.dox, stable behaviour is only guaranteed
-  // if y is contained in or equal to x.
+  // Stable behavior is only guaranteed if y is contained in or equal
+  // to x.
 #ifndef NDEBUG
   {
     // Assume y is contained in or equal to x.
@@ -432,8 +432,8 @@ PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
-  // As noted in definitions.dox, stable behaviour is only guaranteed
-  // if y is contained in or equal to x.
+  // Stable behavior is only guaranteed if y is contained in or equal
+  // to x.
 #ifndef NDEBUG
   {
     // Assume y is contained in or equal to x.

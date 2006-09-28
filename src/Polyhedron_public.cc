@@ -21,10 +21,9 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-
 #include "Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
-
+#include "MIP_Problem.defs.hh"
 #include <cassert>
 #include <iostream>
 
@@ -170,6 +169,18 @@ PPL::Polyhedron::minimized_generators() const {
   // system will also ensure sortedness, which is required to correctly
   // filter away the matched closure points.
   return generators();
+}
+
+PPL::Grid_Generator_System
+PPL::Polyhedron::grid_generators() const {
+  Grid_Generator_System ggs(space_dim);
+  // Trivially true point.
+  ggs.insert(grid_point(0*(Variable(0))));
+  // A line for each dimension.
+  dimension_type dim = 0;
+  while (dim < space_dim)
+    ggs.insert(grid_line(Variable(dim)));
+  return ggs;
 }
 
 PPL::Poly_Con_Relation
@@ -425,6 +436,40 @@ PPL::Polyhedron::is_topologically_closed() const {
   // of its constraint system, it has no strict inequalities.
   strongly_minimize_constraints();
   return marked_empty() || !con_sys.has_strict_inequalities();
+}
+
+bool
+PPL::Polyhedron::contains_integer_point() const {
+  // Any empty polyhedron does not contain integer points.
+  if (marked_empty())
+    return false;
+
+  // A zero-dimensional, universe polyhedron has, by convention, an
+  // integer point.
+  if (space_dim == 0)
+    return true;
+
+  // CHECKME: do we really want to call conversion to check for emptiness?
+  if (has_pending_constraints() && !process_pending())
+    // Empty again.
+    return true;
+
+  // Is any integer point already available?
+  if (generators_are_up_to_date() && !has_pending_constraints())
+    for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
+      if (gen_sys[i].is_point() && gen_sys[i].divisor() == 1)
+	return true;
+
+  const Constraint_System& cs = constraints();
+  // TODO: provide a correct implementation for strict inequalities.
+  if (cs.has_strict_inequalities())
+    throw std::invalid_argument("PPL::NNC_Polyhedron::"
+				"contains_integer_points():\n"
+				"strict inequalities not supported yet.");
+  MIP_Problem mip(space_dim,
+		  cs.begin(), cs.end(),
+		  Variables_Set(Variable(0), Variable(space_dim-1)));
+  return mip.is_satisfiable();
 }
 
 bool
@@ -780,20 +825,19 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     cs_without_pending.erase_to_end(con_sys.first_pending_row());
     cs_without_pending.unset_pending_rows();
     Constraint_System copy_of_con_sys = cs_without_pending;
-    Generator_System new_gen_sys(topology());
-    Saturation_Matrix new_sat_g;
+    bool empty = false;
+    if (check_not_empty || constraints_are_minimized()) {
+      Generator_System new_gen_sys(topology());
+      Saturation_Matrix new_sat_g;
+      empty = minimize(true, copy_of_con_sys, new_gen_sys, new_sat_g);
+    }
 
-    if (minimize(true, copy_of_con_sys, new_gen_sys, new_sat_g)) {
-      if (check_not_empty) {
-	// Want to know the satisfiability of the constraints.
+    if (empty && check_not_empty) {
 #ifndef NDEBUG
-	cerr << "Unsatisfiable system of constraints!"
-	     << endl;
+      cerr << "Unsatisfiable system of constraints!"
+	   << endl;
 #endif
-	goto bomb;
-      }
-      // The polyhedron is empty, there is nothing else to check.
-      return true;
+      goto bomb;
     }
 
     if (constraints_are_minimized()) {
@@ -990,6 +1034,8 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
   if (cg.is_equality()) {
     Linear_Expression le(cg);
     Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
+    // Enforce normalization.
+    c.strong_normalize();
     add_constraint(c);
   }
 }
@@ -1497,7 +1543,9 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
     if (i->is_equality()) {
       Linear_Expression le(*i);
       Constraint c(le, Constraint::EQUALITY, NECESSARILY_CLOSED);
-      // FIXME: Steal the row in c when adding it to cs.
+      // Enforce normalization.
+      c.strong_normalize();
+      // TODO: Consider stealing the row in c when adding it to cs.
       cs.insert(c);
       inserted = true;
     }
@@ -2134,7 +2182,7 @@ bounded_affine_preimage(const Variable var,
       add_constraint(denominator*var <= lb_expr);
     }
     // Any image of an empty polyhedron is empty.
-    // Note: DO check for emptyness here, as we will later add a line.
+    // Note: DO check for emptiness here, as we will later add a line.
     if (is_empty())
       return;
     add_generator(line(var));
@@ -2205,7 +2253,7 @@ generalized_affine_image(const Variable var,
     return;
 
   // Any image of an empty polyhedron is empty.
-  // Note: DO check for emptyness here, as we will later add a ray.
+  // Note: DO check for emptiness here, as we will later add a ray.
   if (is_empty())
     return;
 
@@ -2319,7 +2367,8 @@ generalized_affine_preimage(const Variable var,
   if (var_coefficient != 0) {
     Linear_Expression inverse_expr
       = expr - (denominator + var_coefficient) * var;
-    Coefficient inverse_denominator = - var_coefficient;
+    TEMP_INTEGER(inverse_denominator);
+    neg_assign(inverse_denominator, var_coefficient);
     Relation_Symbol inverse_relsym
       = (sgn(denominator) == sgn(inverse_denominator))
       ? relsym : reversed_relsym;
@@ -2353,7 +2402,7 @@ generalized_affine_preimage(const Variable var,
     break;
   }
   // If the shrunk polyhedron is empty, its preimage is empty too.
-  // Note: DO check for emptyness here, as we will later add a line.
+  // Note: DO check for emptiness here, as we will later add a line.
   if (is_empty())
     return;
   add_generator(line(var));
@@ -2471,7 +2520,7 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     // there is no need to add a further dimension.
 
     // Any image of an empty polyhedron is empty.
-    // Note: DO check for emptyness here, as we will add lines.
+    // Note: DO check for emptiness here, as we will add lines.
     if (is_empty())
       return;
 
@@ -2617,7 +2666,7 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
       break;
     }
     // Any image of an empty polyhedron is empty.
-    // Note: DO check for emptyness here, as we will add lines.
+    // Note: DO check for emptiness here, as we will add lines.
     if (is_empty())
       return;
     // Cylindrificate on all the variables occurring in `lhs'.
@@ -2940,7 +2989,7 @@ PPL::Polyhedron::ascii_load(std::istream& s) {
   if (!sat_g.ascii_load(s))
     return false;
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK());
   return true;
 }

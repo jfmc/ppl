@@ -2139,7 +2139,7 @@ time_watch(Topology, Goal, No_Time_Out, Time_Out) :-
 %%%%%%%%%%%%%%%%% LP_Problem tests %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 lp_problem :-
-  lp_trivial,
+  lp_from_space_dim,
   lp_from_cons,
   lp_from_lp,
   lp_swap,
@@ -2150,9 +2150,9 @@ lp_problem :-
   lp_solve,
   lp_eval.
 
-lp_trivial :-
-  clean_ppl_new_LP_Problem_trivial(LP),
-  ppl_LP_Problem_space_dimension(LP, 0),
+lp_from_space_dim :-
+  clean_ppl_new_LP_Problem_from_space_dimension(5, LP),
+  ppl_LP_Problem_space_dimension(LP, 5),
   ppl_LP_Problem_objective_function(LP, Obj),
   compare_lin_expressions(Obj, 0),
   ppl_LP_Problem_optimization_mode(LP, max),
@@ -2165,7 +2165,7 @@ lp_trivial :-
 
 lp_from_cons :-
   make_vars(3, [A, B, C]),
-  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
+  clean_ppl_new_LP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
   ppl_LP_Problem_space_dimension(LP, 3),
   ppl_LP_Problem_constraints(LP, CS),
   ppl_LP_Problem_objective_function(LP, Obj),
@@ -2182,7 +2182,7 @@ lp_from_cons :-
 
 lp_from_lp :-
   make_vars(3, [A, B, C]),
-  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP1),
+  clean_ppl_new_LP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP1),
   clean_ppl_new_LP_Problem_from_LP_Problem(LP1, LP),
   ppl_LP_Problem_objective_function(LP, Obj),
   compare_lin_expressions(Obj, C),
@@ -2200,8 +2200,8 @@ lp_from_lp :-
 
 lp_swap :-
   make_vars(3, [A, B, C]),
-  clean_ppl_new_LP_Problem_trivial(LP),
-  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP1),
+  clean_ppl_new_LP_Problem_from_space_dimension(0, LP),
+  clean_ppl_new_LP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP1),
   ppl_LP_Problem_swap(LP, LP1),
   ppl_LP_Problem_constraints(LP, CS),
   ppl_LP_Problem_constraints(LP1, CS1),
@@ -2220,7 +2220,7 @@ lp_swap :-
 
 lp_get :-
   make_vars(3, [A, B, C]),
-  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
+  clean_ppl_new_LP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
   ppl_LP_Problem_constraints(LP, CS),
   clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
   clean_ppl_new_Polyhedron_from_constraints(c,
@@ -2237,7 +2237,7 @@ lp_get :-
 
 lp_clear :-
   make_vars(3, [A, B, C]),
-  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, min, LP),
+  clean_ppl_new_LP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], C, min, LP),
   ppl_LP_Problem_clear(LP),
   ppl_LP_Problem_space_dimension(LP, D),
   D == 0,
@@ -2254,7 +2254,7 @@ lp_clear :-
 
 lp_satisfiable :-
   make_vars(3, [A, B, C]),
-  clean_ppl_new_LP_Problem([A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
+  clean_ppl_new_LP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP),
   ppl_LP_Problem_is_satisfiable(LP),
   ppl_LP_Problem_add_constraint(LP, A + B =< 0),
   \+ ppl_LP_Problem_is_satisfiable(LP),
@@ -2263,10 +2263,12 @@ lp_satisfiable :-
 
 lp_add :-
   make_vars(3, [A, B, C]),
-  clean_ppl_new_LP_Problem_trivial(LP),
+  clean_ppl_new_LP_Problem_from_space_dimension(0, LP),
+  ppl_LP_Problem_add_space_dimensions_and_embed(LP, 1),
   ppl_LP_Problem_add_constraint(LP, A >= 0),
+  ppl_LP_Problem_add_space_dimensions_and_embed(LP, 2),
   ppl_LP_Problem_add_constraints(LP, [A =< 3, A + B + C >= 9, B >= 5, C =< 5]),
-  clean_ppl_new_LP_Problem([A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5],
+  clean_ppl_new_LP_Problem(3, [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5],
       2*B-C, max, LP1),
   ppl_LP_Problem_solve(LP, Status),
   ppl_LP_Problem_solve(LP1, Status),
@@ -2286,7 +2288,7 @@ lp_add :-
 lp_set :-
   make_vars(3, [A, B, C]),
   clean_ppl_new_LP_Problem(
-    [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], 0, max, LP),
+    3, [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], 0, max, LP),
   ppl_LP_Problem_objective_function(LP, 0),
   ppl_LP_Problem_optimization_mode(LP, max),
   ppl_LP_Problem_set_objective_function(LP, 2*B-C),
@@ -2301,7 +2303,7 @@ lp_set :-
 lp_solve :-
   make_vars(3, [A, B, C]),
   clean_ppl_new_LP_Problem(
-    [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], 0, max, LP),
+    3, [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], 0, max, LP),
   ppl_LP_Problem_objective_function(LP, 0),
   ppl_LP_Problem_optimization_mode(LP, max),
   ppl_LP_Problem_set_objective_function(LP, 2*B-C),
@@ -2317,8 +2319,8 @@ lp_solve :-
 
 lp_eval :-
   make_vars(3, [A, B, C]),
-  clean_ppl_new_LP_Problem([A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5],
-      2*B-C, min, LP),
+  clean_ppl_new_LP_Problem(
+      3, [A >= 0, A =< 3, A + B + C >= 9, B >= 5, C =< 5], 2*B-C, min, LP),
   \+ ppl_LP_Problem_optimizing_point(LP, closure_point(_X)),
   ppl_LP_Problem_optimizing_point(LP, Point),
   ppl_LP_Problem_feasible_point(LP, Point),
@@ -2961,12 +2963,12 @@ clean_ppl_new_Polyhedron_from_bounding_box(T, Box, P) :-
   ),
   cleanup_ppl_Polyhedron(P).
 
-clean_ppl_new_LP_Problem_trivial(LP) :-
-  ppl_new_LP_Problem_trivial(LP),
+clean_ppl_new_LP_Problem_from_space_dimension(N, LP) :-
+  ppl_new_LP_Problem_from_space_dimension(N, LP),
   cleanup_ppl_LP_Problem(LP).
 
-clean_ppl_new_LP_Problem(CS, Obj, Opt, LP) :-
-  ppl_new_LP_Problem(CS, Obj, Opt, LP),
+clean_ppl_new_LP_Problem(Dim, CS, Obj, Opt, LP) :-
+  ppl_new_LP_Problem(Dim, CS, Obj, Opt, LP),
   cleanup_ppl_LP_Problem(LP).
 
 clean_ppl_new_LP_Problem_from_LP_Problem(LP1, LP) :-

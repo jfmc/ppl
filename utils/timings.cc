@@ -78,8 +78,13 @@ print_clock(ostream& s) {
       else
 	hsecs = 0;
     }
-    else
+    else {
       hsecs = ((current_usecs - saved_usecs) + 5000) / 10000;
+      if (hsecs == 100) {
+	++secs;
+	hsecs = 0;
+      }
+    }
     assert(hsecs >= 0 && hsecs < 100 && secs >= 0);
     int fill_char = s.fill();
     s << secs << "." << setfill('0') << setw(2) << hsecs;

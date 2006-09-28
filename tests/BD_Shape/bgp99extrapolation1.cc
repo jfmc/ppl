@@ -1,4 +1,4 @@
-/* Test Polyhedra_Powerset<PH>::BGP99_extrapolation_assign().
+/* Test Pointset_Powerset<PH>::BGP99_extrapolation_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -26,7 +26,7 @@ namespace {
 
 bool
 test01() {
-  typedef Polyhedra_Powerset<TBD_Shape> BDS_Set;
+  typedef Pointset_Powerset<TBD_Shape> BDS_Set;
 
   Variable A(0);
   Variable B(1);

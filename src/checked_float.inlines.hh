@@ -682,8 +682,9 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
   if (exponent > (signed int)Float<T>::Binary::EXPONENT_MAX) {
     mpz_clear(mantissa);
     goto overflow;
-  } else if (exponent < Float<T>::Binary::EXPONENT_MIN - 1) {
-    /* Denormalized */
+  }
+  else if (exponent < Float<T>::Binary::EXPONENT_MIN - 1) {
+    // Denormalized.
     exponent = Float<T>::Binary::EXPONENT_MIN - 1;
   }
   Float<T> f(to);

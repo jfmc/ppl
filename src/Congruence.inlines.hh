@@ -56,7 +56,8 @@ Congruence::~Congruence() {
 }
 
 inline Congruence
-Congruence::create(const Linear_Expression& e, Coefficient_traits::const_reference n) {
+Congruence::create(const Linear_Expression& e,
+		   Coefficient_traits::const_reference n) {
   // Ensure that diff has capacity for the modulus.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
@@ -65,7 +66,8 @@ Congruence::create(const Linear_Expression& e, Coefficient_traits::const_referen
 }
 
 inline Congruence
-Congruence::create(Coefficient_traits::const_reference n, const Linear_Expression& e) {
+Congruence::create(Coefficient_traits::const_reference n,
+		   const Linear_Expression& e) {
   // Ensure that diff has capacity for the modulus.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;

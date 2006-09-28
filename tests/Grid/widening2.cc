@@ -203,7 +203,9 @@ test06() {
   return ok;
 }
 
-// Widening example in fm06.
+// The next two tests are based on an example in [BagnaraDHMZ06a].
+// Widening should only be applied where the grid to be widened is in
+// strong minimal form.
 bool
 test07() {
   Variable A(0);
@@ -234,7 +236,8 @@ test07() {
   return ok;
 }
 
-// Check for strong minimal form
+// This uses the same grids as before but with the given representation
+// not in strong minimal form.
 bool
 test08() {
   Variable A(0);

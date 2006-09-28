@@ -235,7 +235,7 @@ PPL::Generator_System::has_closure_points() const {
     return false;
   // Adopt the point of view of the user.
   for (Generator_System::const_iterator i = begin(),
-	 iend = end(); i != iend; ++i)
+	 this_end = end(); i != this_end; ++i)
     if (i->is_closure_point())
       return true;
   return false;
@@ -505,7 +505,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
       // The hyperplane implicitly defined by the non-strict inequality `c'
       // is included in the set of points satisfying `c'.
       result = result && Poly_Con_Relation::is_included();
-      // The following boolean variable will be set to `false'
+      // The following Boolean variable will be set to `false'
       // as soon as either we find (any) point or we find a
       // non-saturating ray.
       bool first_point_or_nonsaturating_ray = true;
@@ -616,7 +616,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
       // The hyperplane implicitly defined by the strict inequality `c'
       // is disjoint from the set of points satisfying `c'.
       result = result && Poly_Con_Relation::is_disjoint();
-      // The following boolean variable will be set to `false'
+      // The following Boolean variable will be set to `false'
       // as soon as either we find (any) point or we find a
       // non-saturating ray.
       bool first_point_or_nonsaturating_ray = true;
@@ -934,8 +934,7 @@ PPL::Generator_System::ascii_load(std::istream& s) {
     return false;
   }
 
-  // Checking for well-formedness.
-
+  // Check invariants.
   assert(OK());
   return true;
 }

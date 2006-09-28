@@ -180,11 +180,11 @@ test07() {
 }
 
 /* If EXPECTED is true:
-     If G satifies CGS, then return true, else print an error message
+     If G satisfies CGS, then return true, else print an error message
      and return false.
 
    And if EXPECTED is false:
-     If G satifies CGS, then print an error message and return false,
+     If G satisfies CGS, then print an error message and return false,
      else return true.
 */
 bool

@@ -232,7 +232,8 @@ mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
       default:
 	goto inf_mul_zero;
       }
-    } else if (is_pinf<From2_Policy>(y)) {
+    }
+    else if (is_pinf<From2_Policy>(y)) {
       switch (sgn<From1_Policy>(x)) {
       case V_LT:
       minf:
@@ -296,7 +297,8 @@ add_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
       default:
 	goto inf_mul_zero;
       }
-    } else if (is_pinf<From2_Policy>(y)) {
+    }
+    else if (is_pinf<From2_Policy>(y)) {
       switch (sgn<From1_Policy>(x)) {
       case V_LT:
       a_minf:
@@ -375,7 +377,8 @@ sub_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
       default:
 	goto inf_mul_zero;
       }
-    } else if (is_pinf<From2_Policy>(y)) {
+    }
+    else if (is_pinf<From2_Policy>(y)) {
       switch (sgn<From1_Policy>(x)) {
       case V_LT:
       a_minf:

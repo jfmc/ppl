@@ -229,7 +229,7 @@ test06() {
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
 
-  bool ok = (bd1 == bd2) ;
+  bool ok = (bd1 == bd2);
 
   return ok;
 }
