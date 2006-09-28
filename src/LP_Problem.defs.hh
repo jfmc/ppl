@@ -582,7 +582,7 @@ private:
   void compute_generator() const;
 
   /*! \brief
-    Unsplits a variable in the tableau if a nonnegativity constraint is
+    Merge split variables in the tableau if a nonnegativity constraint is
     detected.
 
     \param var_index
@@ -592,8 +592,8 @@ private:
     This will contain all the row indexes that are no more satisfied by
     the computed generator after unsplitting a variable.
   */
-  void unsplit(dimension_type var_index,
-	       std::vector<dimension_type>& nonfeasible_cs);
+  void merge_split_variables(dimension_type var_index,
+			     std::vector<dimension_type>& nonfeasible_cs);
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if constraint \p c is

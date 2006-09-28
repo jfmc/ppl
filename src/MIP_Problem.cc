@@ -324,18 +324,18 @@ PPL::MIP_Problem::is_in_base(const dimension_type var_index,
 }
 
 void
-PPL::MIP_Problem::unsplit(dimension_type var_index,
-			  std::vector<dimension_type>&
-			  unfeasible_tableau_rows) {
+PPL::MIP_Problem::merge_split_variables(dimension_type var_index,
+					std::vector<dimension_type>&
+					unfeasible_tableau_rows) {
   const dimension_type tableau_nrows = tableau.num_rows();
   const dimension_type column = mapping[var_index].second;
 
   for (dimension_type i = 0; i < tableau_nrows; ++i) {
-    // In the following case the negative side of the splitted Variable is
+    // In the following case the negative side of the split Variable is
     // in base: this means that the constraint will be nonfeasible.
     if (base[i] == mapping[var_index].second) {
       // CHECKME: I do not know if is possible that the positive and the
-      // negative part of a splitted Variable can be together in base: it
+      // negative part of a split Variable can be together in base: it
       // seems that this case is not possible. The algorithm i have written
       // requires that condition.
       // This code is run only for testing purposes.
@@ -363,7 +363,7 @@ PPL::MIP_Problem::unsplit(dimension_type var_index,
   }
   tableau.remove_trailing_columns(1);
 
-  // var_index is no longer splitted.
+  // var_index is no longer split.
   mapping[var_index].second = 0;
 
   // Adjust data structured, `shifting' the proper columns to the left by 1.
@@ -545,12 +545,13 @@ PPL::MIP_Problem::parse_constraints(dimension_type& tableau_num_rows,
       // Case 7: apply method C.
       else if (sgn_a > 0) {
 	// This is the most important case in the incrementality solving:
-	// unsplit two Variables.
+	// merge two Variables.
 	if (!nonnegative_variable[nonzero_var_index]) {
 	  nonnegative_variable[nonzero_var_index] = true;
 	  --tableau_num_cols;
 	  if (nonzero_coeff_column_index < mapping_size)
-	    unsplit(nonzero_coeff_column_index, unfeasible_tableau_rows);
+	    merge_split_variables(nonzero_coeff_column_index,
+				  unfeasible_tableau_rows);
 	  is_tableau_constraint[i] = false;
 	}
 	else
