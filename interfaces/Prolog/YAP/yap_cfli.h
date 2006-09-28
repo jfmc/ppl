@@ -49,10 +49,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 //extern "C" {
 #endif
 
-#include <cassert>
-#include <climits>
-
-typedef YAP_Term Prolog_term_ref;
+typedef YAP_Term* Prolog_term_ref;
 typedef YAP_Atom Prolog_atom;
 typedef YAP_Bool Prolog_foreign_return_type;
 
