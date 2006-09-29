@@ -79,7 +79,7 @@ test04() {
   Variables_Set v_set_second(E ,I);
   Variables_Set v_union;
   Variables_Set v_difference;
-  // FIXME: Here an a call to set_union(...), set_difference(..).
+  // FIXME: Here a call to set_union(...), set_difference(..).
   return true;
 }
 
