@@ -454,6 +454,7 @@ PPL::Polyhedron::contains_integer_point() const {
     // Empty again.
     return true;
 
+  // FIXME: do also exploit info regarding rays and lines, if possible.
   // Is any integer point already available?
   if (generators_are_up_to_date() && !has_pending_constraints())
     for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
@@ -461,14 +462,95 @@ PPL::Polyhedron::contains_integer_point() const {
 	return true;
 
   const Constraint_System& cs = constraints();
-  // TODO: provide a correct implementation for strict inequalities.
-  if (cs.has_strict_inequalities())
-    throw std::invalid_argument("PPL::NNC_Polyhedron::"
-				"contains_integer_points():\n"
-				"strict inequalities not supported yet.");
+#if 0 // TEMPORARILY DISABLED.
   MIP_Problem mip(space_dim,
 		  cs.begin(), cs.end(),
 		  Variables_Set(Variable(0), Variable(space_dim-1)));
+#else
+  // FIXME: temporary workaround, to be removed as soon as the MIP
+  // problem class will correctly and precisely handle
+  // ((strict) in-) equality constraints having all integer variables.
+  MIP_Problem mip(space_dim);
+  mip.set_integer_space_dimensions(Variables_Set(Variable(0),
+						 Variable(space_dim-1)));
+  TEMP_INTEGER(homogeneous_gcd);
+  TEMP_INTEGER(gcd);
+  mpq_class rational_inhomogeneous;
+  TEMP_INTEGER(tightened_inhomogeneous);
+  for (Constraint_System::const_iterator cs_i = cs.begin(),
+	 cs_end = cs.end(); cs_i != cs_end; ++cs_i) {
+    const Constraint& c = *cs_i;
+    const Constraint::Type c_type = c.type();
+    const Coefficient& inhomogeneous = c.inhomogeneous_term();
+    if (c_type == Constraint::STRICT_INEQUALITY) {
+      // CHECKME: should we change the behavior of Linear_Expression(c) ?
+      // Compute the GCD of the coefficients of c
+      // (disregarding the inhomogeneous term and the espilon dimension).
+      homogeneous_gcd = 0;
+      for (dimension_type i = space_dim; i-- > 0; )
+	gcd_assign(homogeneous_gcd,
+		   homogeneous_gcd, c.coefficient(Variable(i)));
+      Linear_Expression le;
+      for (dimension_type i = space_dim; i-- > 0; )
+	le += (c.coefficient(Variable(i)) / homogeneous_gcd) * Variable(i);
+      // Add the integer part of `inhomogeneous'.
+      le += (inhomogeneous / homogeneous_gcd);
+      // Further tighten the constraint if the inhomogeneous term
+      // was integer, i.e., if `homogeneous_gcd' divides `inhomogeneous'.
+      gcd_assign(gcd, homogeneous_gcd, inhomogeneous);
+      if (gcd == homogeneous_gcd)
+	le -= 1;
+      mip.add_constraint(le >= 0);
+    }
+    else {
+      // Equality or non-strict inequality.
+      // If possible, avoid useless gcd computations.
+      if (inhomogeneous == 0)
+	// The inhomogeneous term cannot be tightened.
+	mip.add_constraint(c);
+      else {
+	// Compute the GCD of the coefficients of c
+	// (disregarding the inhomogeneous term)
+	// to see whether or not the inhomogeneous term can be tightened.
+	homogeneous_gcd = 0;
+	for (dimension_type i = space_dim; i-- > 0; )
+	  gcd_assign(homogeneous_gcd,
+		     homogeneous_gcd, c.coefficient(Variable(i)));
+	if (homogeneous_gcd == 1)
+	  // The normalized inhomogeneous term is integer:
+	  // add the constraint as-is.
+	  mip.add_constraint(c);
+	else {
+	  assert(homogeneous_gcd > 1);
+	  // Here the normalized inhomogeneous term is rational:
+	  // the constraint has to be tightened.
+#ifndef NDEBUG
+	  // `homogeneous_gcd' does not divide `inhomogeneous'.
+	  // FIXME: add a divisibility test for Coefficient.
+	  gcd_assign(gcd, homogeneous_gcd, inhomogeneous);
+	  assert(gcd == 1);
+#endif
+	  if (c.type() == Constraint::EQUALITY)
+	    return false;
+	  // Extract the homogeneous part of the constraint.
+	  Linear_Expression le = Linear_Expression(c);
+	  le -= inhomogeneous;
+	  // Tighten the inhomogeneous term.
+	  assign_r(rational_inhomogeneous.get_num(),
+		   inhomogeneous, ROUND_NOT_NEEDED);
+	  assign_r(rational_inhomogeneous.get_den(),
+		   homogeneous_gcd, ROUND_NOT_NEEDED);
+	  // Note: canonicalization is not needed (as gcd == 1).
+	  assign_r(tightened_inhomogeneous,
+		   rational_inhomogeneous, ROUND_DOWN);
+	  tightened_inhomogeneous *= homogeneous_gcd;
+	  le += tightened_inhomogeneous;
+	  mip.add_constraint(le >= 0);
+	}
+      }
+    }
+  }
+#endif // TEMPORARY WORKAROUND.
   return mip.is_satisfiable();
 }
 
