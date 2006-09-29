@@ -552,9 +552,10 @@ Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const {
 
 template <typename T>
 bool
-Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& /*y*/) const {
-  // FIXME!
-  return false;
+Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& y) const {
+  Octagonal_Shape z = *this;
+  z.intersection_assign_and_minimize(y);
+  return z.is_empty();
 }
 
 template <typename T>
