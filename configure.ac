@@ -546,7 +546,7 @@ AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
 AC_CONFIG_SUBDIRS(Watchdog)
 
 # This is the list of available interfaces: lowercase and blank-separated.
-available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml"
+available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
 
 # This is the list of interfaces that are enabled by default.
 #default_interfaces="cxx c swi_prolog"
@@ -615,16 +615,25 @@ AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes)
 
 # Checks for systems for which the interface is enabled.
 
-# OCaml
-if test x${ciao_prolog_interface_enabled} = xyes
+# Java
+if test x${java_interface_enabled} = xyes
 then
-  AC_CHECK_PROG(OCAML_COMPILER, ocamlc, ocamlc)
-  if test x"$OCAML_COMPILER" = xocamlc
+  AM_PROG_GCJ
+  AC_CHECK_PROG(JAVAH, javah, javah)
+  AC_CHECK_PROG(JAVAC, javac, javac)
+fi
+AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test x$JAVAC = xjavac)
+
+# OCaml
+if test x${ocaml_interface_enabled} = xyes
+then
+  AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
+  if test x"$OCAMLC" = xocamlc
   then
     ocamlc_root=`ocamlc -where`
   fi
 fi
-AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAML_COMPILER = xocamlc)
+AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc)
 
 # Ciao Prolog
 if test x${ciao_prolog_interface_enabled} = xyes
