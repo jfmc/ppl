@@ -75,11 +75,15 @@ test04() {
   Variable H(7);
   Variable I(8);
 
-  Variables_Set v_set(A, C);
-  Variables_Set v_set_second(E ,I);
-  Variables_Set v_union;
-  Variables_Set v_difference;
-  // FIXME: Here a call to set_union(...), set_difference(..).
+  Variables_Set vs1(A, C);
+  Variables_Set vs2(E ,I);
+  Variables_Set vs_union;
+  Variables_Set vs_difference;
+  std::set_union(vs1.begin(), vs1.end(),
+		 vs2.begin(), vs2.end(),
+		 std::inserter(vs_union, vs_union.begin()),
+		 Variable::Compare());
+  // FIXME: test also set_difference() here.
   return true;
 }
 
