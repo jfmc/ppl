@@ -198,9 +198,9 @@ dnl For example:
 dnl If String = Polyhedron and Class_Counter = 1
 dnl m4_class_kind1 => `Polyhedron'
 dnl m4_class_body1 => `'
-dnl If String = Polyhedra_Powerset<BD_Shape<signed char> >
+dnl If String = Pointset_Powerset<BD_Shape<signed char> >
 dnl               and Class_Counter = 2
-dnl m4_class_kind2 => `Polyhedra_Powerset'
+dnl m4_class_kind2 => `Pointset_Powerset'
 dnl m4_class_body2 => `BD_Shape<signed char>'
 define(`m4_get_class_kind',
   `define(m4_class_kind`'$1,
@@ -279,12 +279,12 @@ polyhedron,
 grid,
 bd_shape,
 octagonal_shape,
-polyhedra_powerset')
+pointset_powerset')
 
 define(`m4_all_group',
-  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Polyhedra_Powerset')
+  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Pointset_Powerset')
 define(`m4_simple_pps_group',
-  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Polyhedra_Powerset')
+  `Polyhedron, Grid, BD_Shape, Octagonal_Shape, Pointset_Powerset')
 define(`m4_simple_group', `Polyhedron, Grid, BD_Shape, Octagonal_Shape')
 define(`m4_shape_group', `Polyhedron, BD_Shape, Octagonal_Shape')
 define(`m4_wr_shape_group', `BD_Shape, Octagonal_Shape')
@@ -292,7 +292,7 @@ define(`m4_polyhedron_group', Polyhedron)
 define(`m4_grid_group', Grid)
 define(`m4_bd_shape_group', BD_Shape)
 define(`m4_octagonal_shape_group', Octagonal_Shape)
-define(`m4_polyhedra_powerset_group', Polyhedra_Powerset)
+define(`m4_pointset_powerset_group', Pointset_Powerset)
 
 dnl m4_pattern_list
 dnl
@@ -408,21 +408,21 @@ m4_same_class_string(
   Polyhedron, cplusplus, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
 ')
 
-dnl For Polyhedra_Powerset class kind, if the body is C_Polyhedron
+dnl For Pointset_Powerset class kind, if the body is C_Polyhedron
 dnl or NNC_Polyhedron,
 dnl and Polyhedron is generated, then C_Polyhedron
 dnl (if the body is C_Polyhedron) or
 dnl NNC_Polyhedron (if the body is NNC_Polyhedron)
 dnl is a friend.
 dnl
-define(`m4_Polyhedra_Powerset_friend_replacement', `dnl
+define(`m4_Pointset_Powerset_friend_replacement', `dnl
 dnl
 m4_interface_class$1`'dnl
 m4_same_class_string(
   M4_class_body$1, interface, m4_class_topology$1, cplusplus_class)`'dnl
 ')
 dnl
-define(`m4_Polyhedra_Powerset_friend_alt_replacement', `dnl
+define(`m4_Pointset_Powerset_friend_alt_replacement', `dnl
 m4_cplusplus_class$1`'dnl
 m4_same_class_string(
   m4_class_body$1, cplusplus, m4_class_topology$1, cplusplus_class)`'dnl
@@ -442,7 +442,7 @@ define(`m4_Polyhedron_widen_replacement', `BHRZ03, H79')
 define(`m4_Grid_widen_replacement', `congruence, generator')
 define(`m4_BD_Shape_widen_replacement', `BHMZ05, H79')
 define(`m4_Octagonal_Shape_widen_replacement', `CH78')
-define(`m4_Polyhedra_Powerset_widen_replacement', `BHZ03')
+define(`m4_Pointset_Powerset_widen_replacement', `BHZ03')
 dnl The alt_replacement defines the certificates for the widenings
 define(`m4_Polyhedron_widen_alt_replacement', `BHRZ03, H79')
 define(`m4_Grid_widen_alt_replacement', `Grid, Grid')
@@ -456,8 +456,8 @@ define(`m4_BD_Shape_extrapolation_replacement',
   `m4_BD_Shape_widen_replacement, CC76')
 define(`m4_Octagonal_Shape_extrapolation_replacement', `CH78')
   `m4_Octagonal_Shape_widen_replacement')
-define(`m4_Polyhedra_Powerset_extrapolation_replacement',
-  `m4_Polyhedra_Powerset_widen_replacement')
+define(`m4_Pointset_Powerset_extrapolation_replacement',
+  `m4_Pointset_Powerset_widen_replacement')
 
 dnl Limited or bounded
 define(`m4_limitedbounded_replacement', `limited')
@@ -473,7 +473,7 @@ define(`m4_Grid_box_covering_box_alt_replacement', `get_covering_box')
 
 dnl  Space or affine dimensions
 define(`m4_dimension_replacement', `space_dimension, affine_dimension')
-define(`m4_Polyhedra_Powerset_dimension_replacement',`space_dimension')
+define(`m4_Pointset_Powerset_dimension_replacement',`space_dimension')
 
 dnl The different kinds of objects use to generate a class.
 define(`m4_generator_replacement', `generator')
@@ -487,7 +487,7 @@ dnl  The constrainer objects used to describe a class.
 define(`m4_constrainer_replacement', `constraint')
 define(`m4_Grid_constrainer_replacement', `congruence')
 
-dnl The different kinds of objects that are elements of a Polyhedra_Powerset.
+dnl The different kinds of objects that are elements of a Pointset_Powerset.
 
 dnl The class body is a cplusplus name but we also need the matching
 dnl interface name.
@@ -533,11 +533,11 @@ define(`m4_Polyhedron_state_replacement',
          `m4_state_replacement, topologically_closed')
 define(`m4_Grid_state_replacement',
         `m4_state_replacement, topologically_closed, discrete')
-define(`m4_Polyhedra_Powerset_state_replacement',`')
+define(`m4_Pointset_Powerset_state_replacement',`')
 
 dnl  The "simplify" predicates
 define(`m4_simplify_replacement', `topological_closure_assign')
-define(`m4_Polyhedra_Powerset_simplify_replacement', `pairwise_reduce')
+define(`m4_Pointset_Powerset_simplify_replacement', `pairwise_reduce')
 
 dnl  Above or below
 define(`m4_abovebelow_replacement', `above, below')
@@ -554,7 +554,7 @@ define(`m4_affimage_replacement', `affine_image, affine_preimage')
 dnl  One object can be contained, strictly contained or disjoint in the other.
 define(`m4_comparison_replacement',
          `contains, strictly_contains, is_disjoint_from')
-define(`m4_Polyhedra_Powerset_comparison_replacement',
+define(`m4_Pointset_Powerset_comparison_replacement',
          `geometrically_covers, geometrically_equals')
 
 dnl  The different kinds of binary operators.
@@ -569,7 +569,7 @@ define(`m4_BD_Shape_binop_replacement',
          `m4_binop_replacement, bds_hull_assign')
 define(`m4_Octagonal_Shape_binop_replacement',
          `m4_binop_replacement, oct_hull_assign')
-define(`m4_Polyhedra_Powerset_binop_replacement',
+define(`m4_Pointset_Powerset_binop_replacement',
           `intersection_assign, poly_difference_assign, concatenate_assign,
            time_elapse_assign')
 
