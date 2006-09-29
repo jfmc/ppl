@@ -151,11 +151,11 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_is_@STATE@_code',
+define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 `int
-ppl_@CLASS@_is_@STATE@(ppl_const_@CLASS@_t ph) try {
+ppl_@CLASS@_@HAS_PROPERTY@(ppl_const_@CLASS@_t ph) try {
   const @CPP_CLASS@& pph = *to_const(ph);
-  return pph.is_@STATE@() ? 1 : 0;
+  return pph.@HAS_PROPERTY@() ? 1 : 0;
 }
 CATCH_ALL
 

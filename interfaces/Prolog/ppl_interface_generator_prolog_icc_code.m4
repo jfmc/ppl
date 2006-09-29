@@ -517,13 +517,13 @@ ppl_@CLASS@_get_@BOX@
 
 ')
 
-define(`ppl_@CLASS@_is_@STATE@_code',
+define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_is_@STATE@(Prolog_term_ref t_ph) {
+ppl_@CLASS@_@HAS_PROPERTY@(Prolog_term_ref t_ph) {
   try {
     const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    if (ph->is_@STATE@())
+    if (ph->@HAS_PROPERTY@())
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;

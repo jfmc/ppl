@@ -46,11 +46,12 @@ ppl_LP_Problem_evaluate_objective_function/4`'dnl
 
 dnl m4_procedure_list
 dnl This class using patterns wherever possible.
-dnl Which classes the schema applies to is determined by the following codes:
-dnl If code is POINTS = the point-domain classes ie grid and polyhedra classes;
-dnl            All = all classes
-dnl            SHAPE = the polyhedra-shape classes;
-dnl A class name with an "X" in front means it is not included.
+dnl Which classes the schema applies to is determined by +/-group_name.
+dnl The group_names represent sets of PPL classes +group1 and -group2.
+dnl These are defined in ../ppl_interface_generator_common_dat.m4.
+dnl The actual classes the schema applies to is the set difference
+dnl +group1 \ -group2 where a missing +group1 or -group2 is
+dnl assumed to be the empty set.
 dnl Where "@CLASS@" is replaced by the class name, then that class only
 dnl is applicable for that schema.
 dnl
@@ -72,7 +73,7 @@ ppl_@CLASS@_get_disjuncts/2 +polyhedra_powerset,
 ppl_@CLASS@_relation_with_@DESCRIBE@/3 +simple,
 ppl_@CLASS@_get_@BOX@/3 +shape -bd_shape,
 ppl_Grid_get_@BOX@/2 +grid,
-ppl_@CLASS@_is_@STATE@/1 +simple,
+ppl_@CLASS@_@HAS_PROPERTY@/1 +simple,
 ppl_@CLASS@_@SIMPLIFY@/1 *nofail +simple_pps -bd_shape,
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@/2 +simple -bd_shape,
 ppl_@CLASS@_@MAXMIN@/5 +simple -bd_shape,

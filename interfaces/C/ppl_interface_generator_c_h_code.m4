@@ -87,9 +87,9 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 
 ')
 
-define(`ppl_@CLASS@_is_@STATE@_code',
+define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 `int
-ppl_@CLASS@_is_@STATE@ PPL_PROTO((ppl_const_@CLASS@_t ph));
+ppl_@CLASS@_@HAS_PROPERTY@ PPL_PROTO((ppl_const_@CLASS@_t ph));
 
 ')
 

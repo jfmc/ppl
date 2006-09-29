@@ -310,7 +310,7 @@ dimension,
 generator,
 point,
 constrainer,
-state,
+has_property,
 simplify,
 abovebelow,
 maxmin,
@@ -527,13 +527,13 @@ define(`m4_Polyhedron_describe_replacement',
 define(`m4_Grid_describe_replacement',
          `congruence, grid_generator')
 
-dnl  The "is" predicates
-define(`m4_state_replacement', `empty, universe, bounded')
-define(`m4_Polyhedron_state_replacement',
-         `m4_state_replacement, topologically_closed')
-define(`m4_Grid_state_replacement',
-        `m4_state_replacement, topologically_closed, discrete')
-define(`m4_Pointset_Powerset_state_replacement',`')
+dnl  The unary "has_property" predicates
+define(`m4_has_property_replacement', `is_empty, is_universe, is_bounded, contains_integer_point')
+define(`m4_Polyhedron_has_property_replacement',
+         `m4_has_property_replacement, is_topologically_closed')
+define(`m4_Grid_has_property_replacement',
+        `m4_has_property_replacement, is_topologically_closed, is_discrete')
+define(`m4_Pointset_Powerset_has_property_replacement',`')
 
 dnl  The "simplify" predicates
 define(`m4_simplify_replacement', `topological_closure_assign')
