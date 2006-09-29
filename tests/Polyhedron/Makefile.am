@@ -111,6 +111,7 @@ timeelapse1 timeelapse2 \
 topclosed1 \
 topclosure1 \
 universe1 universe2 \
+variablesset1 \
 writeconsys1 \
 writegensys1 \
 writepolyhedron1 writepolyhedron2 \
@@ -353,6 +354,8 @@ topclosure1_SOURCES = topclosure1.cc
 
 universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc
+
+variablesset1_SOURCES = variablesset1.cc
 
 writeconsys1_SOURCES = writeconsys1.cc
 
