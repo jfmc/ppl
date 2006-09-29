@@ -2139,7 +2139,6 @@ time_watch(Topology, Goal, No_Time_Out, Time_Out) :-
 %%%%%%%%%%%%%%%%% LP_Problem tests %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 lp_problem :-
-  lp_from_space_dim,
   lp_from_cons,
   lp_from_lp,
   lp_swap,
@@ -2149,19 +2148,6 @@ lp_problem :-
   lp_set,
   lp_solve,
   lp_eval.
-
-lp_from_space_dim :-
-  clean_ppl_new_LP_Problem_from_space_dimension(5, LP),
-  ppl_LP_Problem_space_dimension(LP, 5),
-  ppl_LP_Problem_objective_function(LP, Obj),
-  compare_lin_expressions(Obj, 0),
-  ppl_LP_Problem_optimization_mode(LP, max),
-  ppl_LP_Problem_constraints(LP, CS),
-  clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
-  ppl_Polyhedron_is_universe(PH),
-  !,
-  ppl_delete_Polyhedron(PH),
-  ppl_delete_LP_Problem(LP).
 
 lp_from_cons :-
   make_vars(3, [A, B, C]),
@@ -2200,7 +2186,7 @@ lp_from_lp :-
 
 lp_swap :-
   make_vars(3, [A, B, C]),
-  clean_ppl_new_LP_Problem_from_space_dimension(0, LP),
+  clean_ppl_new_LP_Problem(0, [], 0, max, LP),
   clean_ppl_new_LP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], C, max, LP1),
   ppl_LP_Problem_swap(LP, LP1),
   ppl_LP_Problem_constraints(LP, CS),
@@ -2962,10 +2948,6 @@ clean_ppl_new_Polyhedron_from_bounding_box(T, Box, P) :-
     ppl_new_NNC_Polyhedron_from_bounding_box(Box, P)
   ),
   cleanup_ppl_Polyhedron(P).
-
-clean_ppl_new_LP_Problem_from_space_dimension(N, LP) :-
-  ppl_new_LP_Problem_from_space_dimension(N, LP),
-  cleanup_ppl_LP_Problem(LP).
 
 clean_ppl_new_LP_Problem(Dim, CS, Obj, Opt, LP) :-
   ppl_new_LP_Problem(Dim, CS, Obj, Opt, LP),

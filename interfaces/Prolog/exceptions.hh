@@ -88,30 +88,9 @@ public:
   }
 };
 
-class not_a_polyhedron_kind : public internal_exception {
-public:
-  explicit not_a_polyhedron_kind(Prolog_term_ref t)
-    : internal_exception(t) {
-  }
-};
-
-class not_a_polyhedron_handle : public internal_exception {
-public:
-  explicit not_a_polyhedron_handle(Prolog_term_ref t)
-    : internal_exception(t) {
-  }
-};
-
 class not_an_optimization_mode : public internal_exception {
 public:
   explicit not_an_optimization_mode(Prolog_term_ref t)
-    : internal_exception(t) {
-  }
-};
-
-class not_an_lp_problem_handle : public internal_exception {
-public:
-  explicit not_an_lp_problem_handle(Prolog_term_ref t)
     : internal_exception(t) {
   }
 };
@@ -170,5 +149,13 @@ public:
 
   const char* where() const {
     return w;
+  }
+
+};
+
+class ppl_handle_mismatch : public internal_exception {
+public:
+  explicit ppl_handle_mismatch(Prolog_term_ref t)
+    : internal_exception(t) {
   }
 };

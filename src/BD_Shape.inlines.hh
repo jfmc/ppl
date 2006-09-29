@@ -227,6 +227,18 @@ BD_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
 }
 
 template <typename T>
+inline void
+BD_Shape<T>::add_recycled_constraints(Constraint_System& cs) {
+  add_constraints(cs);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::add_recycled_constraints_and_minimize(Constraint_System& cs) {
+  return add_constraints_and_minimize(cs);
+}
+
+template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const Constraint_System& cs)
   : dbm(cs.space_dimension() + 1), status(), redundancy_dbm() {
@@ -304,6 +316,13 @@ template <typename T>
 inline bool
 BD_Shape<T>::is_topologically_closed() const {
   return true;
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::topological_closure_assign() {
+  // Nothing to be done.
+  return;
 }
 
 /*! \relates BD_Shape */

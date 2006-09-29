@@ -20,8 +20,10 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+SWI_CFLI_FILES = swi_cfli.h swi_cfli.ic swi_cfli.cc
+
 EXTRA_DIST = \
-ppl_swiprolog.cc \
+ppl_interface_generator_swiprolog_cc.m4 \
 ppl_swiprolog.pl \
 pl_clpq.cc \
 pl_clpq.pl \
@@ -30,10 +32,27 @@ swi_pl_check.pl
 if BUILD_SWI_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces/Prolog \
+-I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 -I$(top_builddir)/Watchdog/src \
 $(SWI_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
+
+BUILT_SOURCES = ppl_swiprolog.cc
+
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_swiprolog_cc.m4
+
+ppl_swiprolog.cc: $(interface_generator_dependencies) Makefile
+	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_swiprolog_cc.m4 > $@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la
 libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
@@ -76,7 +95,7 @@ ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o | libppl_swiprolog.la
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
 		@extra_libraries@
 
-pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl | libppl_swiprolog.la 
+pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl | libppl_swiprolog.la
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " ","` \
 		-o $@ $+ \
@@ -84,7 +103,7 @@ pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl | libppl
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
 		@extra_libraries@
 
-pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq2.pl | libppl_swiprolog.la 
+pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq2.pl | libppl_swiprolog.la
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) \
 		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " ","` \
 		-o $@ $+ \

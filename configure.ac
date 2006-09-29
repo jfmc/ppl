@@ -675,53 +675,58 @@ then
 fi
 AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE, test x$YAP_PROLOG = xyap)
 
-# # This is the list of interfaces that are enabled by default.
-# # Different instantiations are separated by a '@' character.
-# default_instantiations="Polyhedron @ BD_Shape<int8_t>"
-# 
-# enableval=not_specified
-# AC_MSG_CHECKING([which instantiations are enabled])
-# AC_ARG_ENABLE(instantiations,
-#   AC_HELP_STRING([--enable-instantiations],
-#     [enable instantiations for the non-C++ interfaces]))
-# case x"${enableval}" in
-# xyes | x)
-#   AC_MSG_ERROR([--enable-instantiations needs at least one argument])
-#   ;;
-# xno | xnone)
-#   enabled_instantiations=
-#   AC_MSG_RESULT(none)
-#   ;;
-# *)
-#   if test x"${enableval}" = xnot_specified
-#   then
-#     enableval=${default_instantiations}
-#   fi
-#   # Make the list blank-separated.
-#   required_instantiations=`echo "${enableval}" | sed -e 's/[[ 	]][[ 	]]*//g' -e 's/@/ /g' -e 's/[[ 	]][[ 	]]*/ /g'`
-#   # Check the specified instantiations for validity.
-#   ac_save_CPPFLAGS="$CPPFLAGS"
-#   CPPFLAGS="$CPPFLAGS -I${srcdir}"
-#   for instantiation in ${required_instantiations}
-#   do
-#     AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-# #include "instchk.hh"
-# 
-# using namespace Parma_Polyhedra_Library;
-# 
-# bool valid = ${instantiation}::valid_instantiation();
-# ]])],
-#       valid_instantiation=yes,
-#       valid_instantiation=no)
-#     if test x${valid_instantiation} != xyes
-#     then
-#       AC_MSG_ERROR([invalid instantiation ${instantiation}])
-#     fi
-#   done
-#   CPPFLAGS="$ac_save_CPPFLAGS"
-#   AC_MSG_RESULT([${required_instantiations}])
-#   ;;
-# esac
+# This is the list of interfaces that are enabled by default.
+# Different instantiations are separated by a '@' character.
+default_instantiations="Polyhedron @ BD_Shape<int8_t>"
+
+enableval=not_specified
+AC_MSG_CHECKING([which instantiations are enabled])
+AC_ARG_ENABLE(instantiations,
+  AC_HELP_STRING([--enable-instantiations],
+    [enable instantiations for the non-C++ interfaces]))
+case x"${enableval}" in
+xyes | x)
+  AC_MSG_ERROR([--enable-instantiations needs at least one argument])
+  ;;
+xno | xnone)
+  enabled_instantiations=
+  AC_MSG_RESULT(none)
+  ;;
+*)
+  if test x"${enableval}" = xnot_specified
+  then
+    enableval=${default_instantiations}
+  fi
+  # Avoid extra blanks.
+  required_instantiations=`echo "${enableval}" | sed -e 's/[[ 	]][[ 	]]*//g' -e 's/long\([[a-z]]\)/long \1/g' -e 's/signed\([[a-z]]\)/signed \1/g' -e 's/\([[a-z]]\)int/\1 int/g' -e 's/>>/> >/g'`
+  # Check the specified instantiations for validity.
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS -I${srcdir}"
+  old_IFS="${IFS}"
+  IFS=@
+  set -- ${required_instantiations}
+  IFS="${old_IFS}"
+  for instantiation
+  do
+    AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include "instchk.hh"
+
+using namespace Parma_Polyhedra_Library;
+
+bool valid = ${instantiation}::valid_instantiation();
+]])],
+      valid_instantiation=yes,
+      valid_instantiation=no)
+    if test x${valid_instantiation} != xyes
+    then
+      AC_MSG_ERROR([invalid instantiation ${instantiation}])
+    fi
+  done
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ]]/_/g'`
+  AC_MSG_RESULT([${required_instantiations}])
+  ;;
+esac
 
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
@@ -826,6 +831,8 @@ AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
 AC_SUBST(coefficient_mnemonic)
+AC_SUBST(required_instantiations)
+AC_SUBST(required_instantiations_canonical_names)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
@@ -856,7 +863,7 @@ AC_CONFIG_FILES(Makefile
                 doc/devref.doxyconf-html
                 interfaces/Makefile
                 interfaces/C/Makefile
-                interfaces/C/ppl_c.h
+                interfaces/C/ppl_c_version.h
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile

@@ -21,3 +21,20 @@
 # site: http://www.cs.unipr.it/ppl/ .
 
 SUBDIRS = C Prolog
+
+REQUIRED_INSTANTIATIONS = \
+@required_instantiations@
+
+REQUIRED_INSTANTIATIONS_CANONICAL_NAMES = \
+@required_instantiations_canonical_names@
+
+BUILT_SOURCES = ppl_interface_instantiations.m4
+
+ppl_interface_instantiations.m4: Makefile
+	echo "define(\`m4_interface_classes_names', \`$(REQUIRED_INSTANTIATIONS_CANONICAL_NAMES)')" > $@
+	echo "define(\`m4_cplusplus_classes_names', \`$(REQUIRED_INSTANTIATIONS)')" >> $@
+
+EXTRA_DIST = \
+ppl_interface_generator_common.m4 \
+ppl_interface_generator_common_dat.m4 \
+ppl_interface_generator_copyright

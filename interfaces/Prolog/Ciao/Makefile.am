@@ -22,12 +22,17 @@
 
 abs_srcdir = @abs_srcdir@
 
-EXTRA_DIST = ppl_ciao.pl ciao_clpq.pl ciao_clpq2.pl ciao_pl_check.pl
+EXTRA_DIST = \
+ppl_interface_generator_ciao_pl.m4 \
+ciao_clpq.pl \
+ciao_clpq2.pl \
+ciao_pl_check.pl
 
 if BUILD_CIAO_PROLOG_INTERFACE
 if ENABLE_SHARED
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 -I$(top_builddir)/Watchdog/src \
 @extra_includes@
@@ -42,10 +47,20 @@ libppl_ciao_la_LDFLAGS = -module -avoid-version
 
 pkglib_DATA = ppl_ciao.po
 
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_ciao_pl.m4
+
+ppl_ciao.pl: $(interface_generator_dependencies) Makefile
+	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_ciao_pl.m4 > $@
+
 ppl_ciao.po: ppl_ciao.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ppl_ciao.pl .; \
-	fi
 	ciaoc -c ppl_ciao.pl
 
 # All the invocations of `ciaoc' to build `ciao_pl_check', `ciao_clpq'
@@ -129,7 +144,7 @@ pl_check_test: ciao_pl_check$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
 			 >obtained_pchk
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
-clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECTED_CLPQ) 
+clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECTED_CLPQ)
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	GLOBALSTKSIZE=1000000 \
@@ -158,11 +173,6 @@ MOSTLYCLEANFILES = \
 ciao_clpq ciao_clpq2 ciao_pl_check \
 obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS)
-
-mostlyclean-local:
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ppl_ciao.pl; \
-	fi
 
 endif ENABLE_SHARED
 endif BUILD_CIAO_PROLOG_INTERFACE
