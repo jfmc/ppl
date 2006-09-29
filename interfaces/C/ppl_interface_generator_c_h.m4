@@ -21,7 +21,7 @@ PPL_TYPE_DECLARATION(m4_interface_class$1);
 dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Postfix extra code for each class.
 define(`m4_post_extra_class_code', `dnl
-PPL_DECLARE_PRINT_FUNCTIONS(m4_interface_class$1)
+PPL_DECLARE_OUTPUT_FUNCTIONS(m4_interface_class$1)
 
 /*@}*/ /* Functions Related to m4_interface_class$1 */
 ')
@@ -42,6 +42,8 @@ dnl Generate the fixed postamble.
 
 #undef PPL_TYPE_DECLARATION
 #undef PPL_DECLARE_PRINT_FUNCTIONS
+#undef PPL_DECLARE_ASCII_DUMP_FUNCTIONS
+#undef PPL_DECLARE_OUTPUT_FUNCTIONS
 #undef PPL_PROTO
 
 /*@}*/ /* \defgroup PPL_C_interface */
