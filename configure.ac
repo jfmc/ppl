@@ -618,7 +618,6 @@ AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes)
 # Java
 if test x${java_interface_enabled} = xyes
 then
-  AM_PROG_GCJ
   AC_CHECK_PROG(JAVAH, javah, javah)
   AC_CHECK_PROG(JAVAC, javac, javac)
 fi
@@ -885,6 +884,7 @@ AC_CONFIG_FILES(Makefile
                 interfaces/Makefile
                 interfaces/C/Makefile
                 interfaces/C/ppl_c_version.h
+                interfaces/OCaml/Makefile
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile
