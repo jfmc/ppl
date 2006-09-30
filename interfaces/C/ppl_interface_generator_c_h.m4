@@ -13,7 +13,7 @@ define(`m4_pre_extra_class_code', `dnl
 
 PPL_TYPE_DECLARATION(m4_interface_class$1);
 
-/*! \name Functions Related to $1 */
+/*! \name Functions Related to m4_interface_class$1 */
 /*@{*/
 
 ')dnl
