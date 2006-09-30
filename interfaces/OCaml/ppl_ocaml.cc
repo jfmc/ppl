@@ -166,6 +166,22 @@ build_Generator(value g) {
   }
 }
 
+Constraint_System
+build_Constraint_System(value cl) {
+  Constraint_System cs;
+  for (mlsize_t i = 0, cl_size = Wosize_val(cl); i < cl_size; ++i)
+    cs.insert(build_Constraint(Field(cl, i)));
+  return cs;
+}
+
+Generator_System
+build_Generator_System(value gl) {
+  Generator_System gs;
+  for (mlsize_t i = 0, gl_size = Wosize_val(gl); i < gl_size; ++i)
+    gs.insert(build_Generator(Field(gl, i)));
+  return gs;
+}
+
 extern "C"
 CAMLprim void
 test_linear_expression(value ocaml_le) {
