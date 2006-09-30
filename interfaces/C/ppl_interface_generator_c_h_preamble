@@ -340,6 +340,69 @@ PPL_TYPE_DECLARATION(LP_Problem);
 
 PPL_TYPE_DECLARATION(MIP_Problem);
 
+
+/*! \name Simple I/O Functions */
+/*@{*/
+
+/*! \brief Pretty-prints \p var to <CODE>stdout</CODE>. */
+int
+ppl_io_print_variable PPL_PROTO((ppl_dimension_type var));
+
+/*! \brief Pretty-prints \p var to the given output \p stream. */
+int
+ppl_io_fprint_variable PPL_PROTO((FILE* stream, ppl_dimension_type var));
+
+/*! \brief
+  The type of output functions used for printing variables.
+
+  An output function for variables must write a textual representation
+  for \p var to a character buffer, null-terminate it, and return a
+  pointer to the beginning of the buffer.  In case the operation fails,
+  0 should be returned and perhaps <CODE>errno</CODE> should be set
+  in a meaningful way.  The library does nothing with the buffer, besides
+  printing its contents.
+*/
+typedef const char*
+ppl_io_variable_output_function_type(ppl_dimension_type var);
+
+/*! \brief
+  Sets the output function to be used for printing variables to \p p.
+*/
+int
+ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p);
+
+/*! \brief
+  Writes a pointer to the current variable output function to \p pp.
+*/
+int
+ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp);
+
+#undef PPL_DECLARE_PRINT_FUNCTIONS
+#undef PPL_DECLARE_ASCII_DUMP_FUNCTIONS
+#undef PPL_DECLARE_OUTPUT_FUNCTIONS
+
+#define PPL_DECLARE_PRINT_FUNCTIONS(Type) \
+/*! \brief Prints \p x to <CODE>stdout</CODE>. */ \
+int \
+ppl_io_print_ ## Type PPL_PROTO((ppl_const_ ## Type ## _t x)); \
+ \
+/*! \brief Prints \p x to the given output \p stream. */ \
+int \
+ppl_io_fprint_ ## Type PPL_PROTO((FILE* stream, ppl_const_ ## Type ## _t x));
+
+#define PPL_DECLARE_ASCII_DUMP_FUNCTIONS(Type) \
+/*! \brief Dumps an ascii representation of \p x on \p stream. */ \
+int \
+ppl_ ## Type ## _ascii_dump PPL_PROTO((ppl_const_ ## Type ## _t x, \
+                                       FILE* stream));
+
+#define PPL_DECLARE_OUTPUT_FUNCTIONS(Type) \
+PPL_DECLARE_PRINT_FUNCTIONS(Type) \
+PPL_DECLARE_ASCII_DUMP_FUNCTIONS(Type)
+
+/*@}*/ /* Simple I/O Functions */
+
+
 /*! \name Functions Related to Coefficients */
 /*@{*/
 
@@ -421,7 +484,11 @@ ppl_Coefficient_min PPL_PROTO((mpz_t min));
 int
 ppl_Coefficient_max PPL_PROTO((mpz_t max));
 
+/* No ascii dump for Coefficient */
+PPL_DECLARE_PRINT_FUNCTIONS(Coefficient)
+
 /*@}*/ /* Functions Related to Coefficients */
+
 
 /*! \name Functions Related to Linear Expressions */
 /*@{*/
@@ -567,7 +634,10 @@ PPL_PROTO((ppl_const_Linear_Expression_t le, ppl_Coefficient_t n));
 int
 ppl_Linear_Expression_OK PPL_PROTO((ppl_const_Linear_Expression_t le));
 
+PPL_DECLARE_OUTPUT_FUNCTIONS(Linear_Expression)
+
 /*@}*/ /* Functions Related to Linear Expressions */
+
 
 /*! \brief
   Describes the relations represented by a constraint.
@@ -673,7 +743,10 @@ ppl_Constraint_inhomogeneous_term PPL_PROTO((ppl_const_Constraint_t c,
 int
 ppl_Constraint_OK PPL_PROTO((ppl_const_Constraint_t c));
 
+PPL_DECLARE_OUTPUT_FUNCTIONS(Constraint)
+
 /*@}*/ /* Functions Related to Constraints */
+
 
 /*! \name Functions Related to Constraint Systems */
 /*@{*/
@@ -761,6 +834,8 @@ ppl_Constraint_System_insert_Constraint PPL_PROTO((ppl_Constraint_System_t cs,
 */
 int
 ppl_Constraint_System_OK PPL_PROTO((ppl_const_Constraint_System_t cs));
+
+PPL_DECLARE_OUTPUT_FUNCTIONS(Constraint_System)
 
 
 /*! \brief
@@ -947,7 +1022,10 @@ ppl_Generator_divisor PPL_PROTO((ppl_const_Generator_t g,
 int
 ppl_Generator_OK PPL_PROTO((ppl_const_Generator_t g));
 
+PPL_DECLARE_OUTPUT_FUNCTIONS(Generator)
+
 /*@}*/ /* Functions Related to Generators */
+
 
 /*! \name Functions Related to Generator Systems */
 /*@{*/
@@ -1028,6 +1106,8 @@ ppl_Generator_System_insert_Generator PPL_PROTO((ppl_Generator_System_t gs,
 */
 int
 ppl_Generator_System_OK PPL_PROTO((ppl_const_Generator_System_t gs));
+
+PPL_DECLARE_OUTPUT_FUNCTIONS(Generator_System)
 
 
 /*! \brief
@@ -1196,7 +1276,10 @@ ppl_Congruence_modulus PPL_PROTO((ppl_const_Congruence_t c,
 int
 ppl_Congruence_OK PPL_PROTO((ppl_const_Congruence_t c));
 
+PPL_DECLARE_OUTPUT_FUNCTIONS(Congruence)
+
 /*@}*/ /* Functions Related to Congruences */
+
 
 /*! \name Functions Related to Congruence Systems */
 /*@{*/
@@ -1277,6 +1360,8 @@ ppl_Congruence_System_insert_Congruence PPL_PROTO((ppl_Congruence_System_t cs,
 int
 ppl_Congruence_System_OK PPL_PROTO((ppl_const_Congruence_System_t cs));
 
+PPL_DECLARE_OUTPUT_FUNCTIONS(Congruence_System)
+
 
 /*! \brief
   Builds a new `const iterator' and writes a handle to it at address
@@ -1355,6 +1440,7 @@ PPL_PROTO((ppl_const_Congruence_System_const_iterator_t x,
 	   ppl_const_Congruence_System_const_iterator_t y));
 
 /*@}*/ /* Functions Related to Congruence Systems */
+
 
 /*! \brief
   Describes the different kinds of grid generators.
@@ -1453,7 +1539,10 @@ ppl_Grid_Generator_divisor PPL_PROTO((ppl_const_Grid_Generator_t g,
 int
 ppl_Grid_Generator_OK PPL_PROTO((ppl_const_Grid_Generator_t g));
 
+PPL_DECLARE_OUTPUT_FUNCTIONS(Grid_Generator)
+
 /*@}*/ /* Functions Related to Grid_Generators */
+
 
 /*! \name Functions Related to Grid_Generator Systems */
 /*@{*/
@@ -1540,6 +1629,8 @@ PPL_PROTO((ppl_Grid_Generator_System_t gs,
 int
 ppl_Grid_Generator_System_OK PPL_PROTO((ppl_const_Grid_Generator_System_t gs));
 
+PPL_DECLARE_OUTPUT_FUNCTIONS(Grid_Generator_System)
+
 
 /*! \brief
   Builds a new `const iterator' and writes a handle to it at address
@@ -1618,6 +1709,7 @@ PPL_PROTO((ppl_const_Grid_Generator_System_const_iterator_t x,
 	   ppl_const_Grid_Generator_System_const_iterator_t y));
 
 /*@}*/ /* Functions Related to Grid_Generator Systems */
+
 
 /*! \brief
   Code of the worst-case polynomial complexity class.
@@ -1915,6 +2007,8 @@ PPL_PROTO((ppl_const_LP_Problem_t lp,
 int
 ppl_LP_Problem_OK PPL_PROTO((ppl_const_LP_Problem_t lp));
 
+PPL_DECLARE_OUTPUT_FUNCTIONS(LP_Problem)
+
 /*@}*/ /* Functions Related to LP Problems */
 
 
@@ -2152,91 +2246,6 @@ PPL_PROTO((ppl_const_MIP_Problem_t mip,
 int
 ppl_MIP_Problem_OK PPL_PROTO((ppl_const_MIP_Problem_t mip));
 
-/*@}*/ /* Functions Related to MIP Problems */
-
-
-/*! \name Simple I/O Functions */
-/*@{*/
-
-/*! \brief Pretty-prints \p var to <CODE>stdout</CODE>. */
-int
-ppl_io_print_variable PPL_PROTO((ppl_dimension_type var));
-
-/*! \brief Pretty-prints \p var to the given output \p stream. */
-int
-ppl_io_fprint_variable PPL_PROTO((FILE* stream, ppl_dimension_type var));
-
-#undef PPL_DECLARE_PRINT_FUNCTIONS
-#undef PPL_DECLARE_ASCII_DUMP_FUNCTIONS
-#undef PPL_DECLARE_OUTPUT_FUNCTIONS
-
-#define PPL_DECLARE_PRINT_FUNCTIONS(Type) \
-/*! \brief Prints \p x to <CODE>stdout</CODE>. */ \
-int \
-ppl_io_print_ ## Type PPL_PROTO((ppl_const_ ## Type ## _t x)); \
- \
-/*! \brief Prints \p x to the given output \p stream. */ \
-int \
-ppl_io_fprint_ ## Type PPL_PROTO((FILE* stream, ppl_const_ ## Type ## _t x));
-
-#define PPL_DECLARE_ASCII_DUMP_FUNCTIONS(Type) \
-/*! \brief Dumps an ascii representation of \p x on \p stream. */ \
-int \
-ppl_ ## Type ## _ascii_dump PPL_PROTO((ppl_const_ ## Type ## _t x, \
-                                       FILE* stream));
-
-#define PPL_DECLARE_OUTPUT_FUNCTIONS(Type) \
-PPL_DECLARE_PRINT_FUNCTIONS(Type) \
-PPL_DECLARE_ASCII_DUMP_FUNCTIONS(Type)
-
-/* No ascii dump for Coefficient */
-PPL_DECLARE_PRINT_FUNCTIONS(Coefficient)
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Linear_Expression)
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Constraint)
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Constraint_System)
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Generator)
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Generator_System)
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Congruence)
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Congruence_System)
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Grid_Generator)
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(Grid_Generator_System)
-
-PPL_DECLARE_OUTPUT_FUNCTIONS(LP_Problem)
-
 PPL_DECLARE_OUTPUT_FUNCTIONS(MIP_Problem)
 
-/*! \brief
-  The type of output functions used for printing variables.
-
-  An output function for variables must write a textual representation
-  for \p var to a character buffer, null-terminate it, and return a
-  pointer to the beginning of the buffer.  In case the operation fails,
-  0 should be returned and perhaps <CODE>errno</CODE> should be set
-  in a meaningful way.  The library does nothing with the buffer, besides
-  printing its contents.
-*/
-typedef const char*
-ppl_io_variable_output_function_type(ppl_dimension_type var);
-
-/*! \brief
-  Sets the output function to be used for printing variables to \p p.
-*/
-int
-ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p);
-
-/*! \brief
-  Writes a pointer to the current variable output function to \p pp.
-*/
-int
-ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp);
-
-/*@}*/ /* Simple I/O Functions */
+/*@}*/ /* Functions Related to MIP Problems */
