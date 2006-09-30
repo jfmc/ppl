@@ -570,6 +570,75 @@ public:
   bool is_bounded() const;
 
   /*! \brief
+    Uses \p *this to shrink a generic, interval-based bounding box.
+    Assigns to \p box the intersection of \p box with the smallest
+    bounding box containing \p *this.
+
+    \param box
+    The bounding box to be shrunk;
+
+    \param complexity
+    The complexity class of the algorithm to be used.
+
+    If the OS \p *this or \p box is empty, then the empty box
+    is returned.
+
+    If \p *this and \p box are non-empty, then, for
+    each space dimension \f$k\f$ with variable \f$\mathrm{var}\f$, let
+    \f$u\f$ be the upper and \f$l\f$ the lower bound of the smallest
+    interval containing \p *this.
+
+    If \f$l\f$ is infinite, then \p box is unaltered; if \f$l\f$ is
+    finite, then the \p box interval for space dimension \f$k\f$ is
+    (destructively) intersected with \f$[l, +\mathrm{infty})\f$ if a
+    point of \p *this satisfies \f$\mathrm{var} == l\f$ and with
+    \f$(l, +\mathrm{infty})\f$ otherwise.
+
+    Similarly, if \f$u\f$ is infinite, then \p box is unaltered; if
+    \f$u\f$ is finite, then the \p box interval for space dimension
+    \f$k\f$ is (destructively) intersected with \f$(-\mathrm{infty},
+    u]\f$ if a point of \p *this satisfies \f$\mathrm{var} == u\f$ and
+    with \f$(-\mathrm{infty}, u)\f$ otherwise.
+
+    The template class Box must provide the following methods, whose
+    return values, if any, are simply ignored.
+    \code
+      set_empty()
+    \endcode
+    causes the box to become empty, i.e., to represent the empty set.
+    \code
+      raise_lower_bound(dimension_type k, bool closed,
+                        Coefficient_traits::const_reference n,
+                        Coefficient_traits::const_reference d)
+    \endcode
+    intersects the interval corresponding to the <CODE>k</CODE>-th
+    space dimension
+    with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
+    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
+    \code
+      lower_upper_bound(dimension_type k, bool closed,
+                        Coefficient_traits::const_reference n,
+                        Coefficient_traits::const_reference d)
+    \endcode
+    intersects the interval corresponding to the <CODE>k</CODE>-th
+    space dimension
+    with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
+    with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
+    is <CODE>false</CODE>.
+
+    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
+    will be called at most once for each possible value for <CODE>k</CODE>
+    and for all such calls the fraction \f$n/d\f$ will be in canonical form,
+    that is, \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$
+    is positive, \f$0/1\f$ being the unique representation for zero.
+    The same guarantee is offered for the function
+    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
+  */
+  template <typename Box>
+  void shrink_bounding_box(Box& box,
+			   Complexity_Class complexity = ANY_COMPLEXITY) const;
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     is a topologically closed subset of the vector space.
   */
@@ -876,6 +945,9 @@ public:
     Thrown if \p *this and \p y are dimension-incompatible.
   */
   void time_elapse_assign(const Octagonal_Shape& y);
+
+  //! Assigns to \p *this its topological closure.
+  void topological_closure_assign();
 
   /*! \brief
     Assigns to \p *this the result of computing the
