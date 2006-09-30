@@ -115,7 +115,56 @@ build_Linear_Expression(value e) {
   }
 }
 
-#include <fstream>
+Constraint
+build_Constraint(value c) {
+  value e1 = Field(c, 0);
+  value e2 = Field(c, 1);
+  switch (Tag_val(c)) {
+  case 0:
+    // Less_Than
+    return build_Linear_Expression(e1) < build_Linear_Expression(e2);
+  case 1:
+    // Less_Than_Or_Equal
+    return build_Linear_Expression(e1) <= build_Linear_Expression(e2);
+  case 2:
+    // Equal
+    return build_Linear_Expression(e1) == build_Linear_Expression(e2);
+  case 3:
+    // Greater_Than
+    return build_Linear_Expression(e1) > build_Linear_Expression(e2);
+  case 4:
+    // Greater_Than_Or_Equal
+    return build_Linear_Expression(e1) >= build_Linear_Expression(e2);
+  default:
+    caml_invalid_argument("Error building PPL::Constraint");
+  }
+}
+
+Generator
+build_Generator(value g) {
+  switch (Tag_val(g)) {
+  case 0:
+    // Line
+    return Generator::line(build_Linear_Expression(Field(g, 0)));
+  case 1:
+    // Ray
+    return Generator::ray(build_Linear_Expression(Field(g, 0)));
+  case 2: {
+    // Point
+    mpz_class z((__mpz_struct*) Data_custom_val(Field(g, 1)));
+    return Generator::point(build_Linear_Expression(Field(g, 0)),
+			    Coefficient(z.get_mpz_t()) );
+  }
+  case 3: {
+    // Closure_point
+    mpz_class z((__mpz_struct*) Data_custom_val(Field(g, 1)));
+    return Generator::closure_point(build_Linear_Expression(Field(g, 0)),
+				    Coefficient(z.get_mpz_t()) );
+  }
+  default:
+    caml_invalid_argument("Error building PPL::Constraint");
+  }
+}
 
 extern "C"
 CAMLprim void
@@ -123,6 +172,24 @@ test_linear_expression(value ocaml_le) {
   CAMLparam1(ocaml_le);
   Linear_Expression cxx_le = build_Linear_Expression(ocaml_le);
   std::cout << cxx_le << std::endl;
+  CAMLreturn0;
+}
+
+extern "C"
+CAMLprim void
+test_linear_constraint(value ocaml_c) {
+  CAMLparam1(ocaml_c);
+  Constraint cxx_c = build_Constraint(ocaml_c);
+  std::cout << cxx_c << std::endl;
+  CAMLreturn0;
+}
+
+extern "C"
+CAMLprim void
+test_linear_generator(value ocaml_g) {
+  CAMLparam1(ocaml_g);
+  Generator cxx_g = build_Generator(ocaml_g);
+  std::cout << cxx_g << std::endl;
   CAMLreturn0;
 }
 
