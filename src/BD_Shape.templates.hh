@@ -1419,7 +1419,6 @@ BD_Shape<T>::shrink_bounding_box(Box& box, Complexity_Class ) const {
   const dimension_type space_dim = space_dimension();
   if (space_dim == 0)
     return;
-  // CHECK ME: is the following correct?
   mpq_class q;
   const DB_Row<N>& dbm_0 = dbm[0];
   for (dimension_type j = space_dim; j-- > 0; ) {
@@ -1431,7 +1430,7 @@ BD_Shape<T>::shrink_bounding_box(Box& box, Complexity_Class ) const {
     }
     // Checking the upper bound.
     if (!is_plus_infinity(dbm_0[j+1])) {
-      assign_r(q, dbm[j+1][0], ROUND_NOT_NEEDED);
+      assign_r(q, dbm_0[j+1], ROUND_NOT_NEEDED);
       box.lower_upper_bound(j, true, q.get_num(), q.get_den());
     }
   }
