@@ -539,7 +539,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code'
+define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `int
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@
 (ppl_@CLASS@_t ph,
@@ -552,7 +552,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_remove_space_dimensions_code'
+define(`ppl_@CLASS@_remove_space_dimensions_code',
 `int
 ppl_@CLASS@_remove_space_dimensions
 (ppl_@CLASS@_t ph,
@@ -569,7 +569,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_remove_higher_space_dimensions_code'
+define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `int
 ppl_@CLASS@_remove_higher_space_dimensions
 (ppl_@CLASS@_t ph,
@@ -582,7 +582,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_map_space_dimensions_code'
+define(`ppl_@CLASS@_map_space_dimensions_code',
 `int
 ppl_@CLASS@_map_space_dimensions
 (ppl_@CLASS@_t ph,
@@ -597,7 +597,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_expand_space_dimension_code'
+define(`ppl_@CLASS@_expand_space_dimension_code',
 `int
 ppl_@CLASS@_expand_space_dimension
 (ppl_@CLASS@_t ph,
@@ -611,7 +611,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_fold_space_dimensions_code'
+define(`ppl_@CLASS@_fold_space_dimensions_code',
 `int
 ppl_@CLASS@_fold_space_dimensions
 (ppl_@CLASS@_t ph,
