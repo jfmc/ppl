@@ -37,16 +37,8 @@ external test_linear_constraint:
 external test_linear_generator:
   linear_generator -> unit = "test_linear_generator"
 
-(*
-val add_contraint_to_consys :
-  linear_constraint list -> linear_constraint -> linear_constraint list
+external test_constraint_system:
+  constraint_system -> unit = "test_constraint_system"
 
-val add_generator_to_gensys :
-    linear_generator list -> linear_generator -> linear_generator list
-
-external test_con_sys:
-  linear_constraint list -> unit = "test_con_sys"
-
-external test_gen_sys:
-  linear_generator list -> unit = "test_con_sys"
-*)
+external test_generator_system:
+  generator_system -> unit = "test_generator_system"

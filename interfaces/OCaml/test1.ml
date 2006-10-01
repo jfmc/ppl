@@ -108,4 +108,17 @@ print_string "Build and print a PPL::Generator:\n" ;;
 
 test_linear_generator (Ray e3) ;;
 
+(* Build a PPL::Constraint_System out of an OCaml constraint_system. *)
+
+print_string "Build and print a PPL::Constraint_System:\n" ;;
+
+test_constraint_system [e3 >/ e1; e1 >/ e2; e1 <=/ e2 -/ n] ;;
+
+(* Build a PPL::Generator_System out of an OCaml generator_system. *)
+
+print_string "Build and print a PPL::Generator_System:\n" ;;
+
+test_generator_system [(Ray e3); (Line e1); (Closure_Point (e2, (Z.from_int 5)))] ;;
+
 print_string "Bye!\n"
+

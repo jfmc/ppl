@@ -169,16 +169,20 @@ build_Generator(value g) {
 Constraint_System
 build_Constraint_System(value cl) {
   Constraint_System cs;
-  for (mlsize_t i = 0, cl_size = Wosize_val(cl); i < cl_size; ++i)
-    cs.insert(build_Constraint(Field(cl, i)));
+  while (cl != Val_int(0)) {
+    cs.insert(build_Constraint(Field(cl, 0)));
+    cl = Field(cl, 1);
+  }
   return cs;
 }
 
 Generator_System
 build_Generator_System(value gl) {
   Generator_System gs;
-  for (mlsize_t i = 0, gl_size = Wosize_val(gl); i < gl_size; ++i)
-    gs.insert(build_Generator(Field(gl, i)));
+  while (gl != Val_int(0)) {
+    gs.insert(build_Generator(Field(gl, 0)));
+    gl = Field(gl, 1);
+  }
   return gs;
 }
 
@@ -202,10 +206,28 @@ test_linear_constraint(value ocaml_c) {
 
 extern "C"
 CAMLprim void
+test_constraint_system(value cl) {
+  CAMLparam1(cl);
+  Constraint_System cs = build_Constraint_System(cl);
+  std::cout << cs << std::endl;
+  CAMLreturn0;
+}
+
+extern "C"
+CAMLprim void
 test_linear_generator(value ocaml_g) {
   CAMLparam1(ocaml_g);
   Generator cxx_g = build_Generator(ocaml_g);
   std::cout << cxx_g << std::endl;
+  CAMLreturn0;
+}
+
+extern "C"
+CAMLprim void
+test_generator_system(value gl) {
+  CAMLparam1(gl);
+  Generator_System gs = build_Generator_System(gl);
+  std::cout << gs << std::endl;
   CAMLreturn0;
 }
 
