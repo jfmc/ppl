@@ -673,7 +673,7 @@ term_to_universe_or_empty(Prolog_term_ref t, const char* where) {
 }
 
 Linear_Expression
-build_linear_expression(Prolog_term_ref t) {
+build_linear_expression(Prolog_term_ref t, const char* where) {
   if (Prolog_is_integer(t))
     return Linear_Expression(integer_term_to_Coefficient(t));
   else if (Prolog_is_compound(t)) {
@@ -687,11 +687,10 @@ build_linear_expression(Prolog_term_ref t) {
 	Prolog_get_arg(1, t, arg);
 	if (functor == a_minus)
 	  // Unary minus.
-	  return -build_linear_expression(arg);
+	  return -build_linear_expression(arg, where);
 	else if (functor == a_dollar_VAR)
 	  // Variable.
-	  return Variable(term_to_unsigned<dimension_type>(arg,
-							   "build_linear_expression"));
+	  return Variable(term_to_unsigned<dimension_type>(arg, where));
       }
       break;
     case 2:
@@ -704,42 +703,41 @@ build_linear_expression(Prolog_term_ref t) {
 	  // Plus.
 	  if (Prolog_is_integer(arg1))
 	    return integer_term_to_Coefficient(arg1)
-	      + build_linear_expression(arg2);
+	      + build_linear_expression(arg2, where);
 	  else if (Prolog_is_integer(arg2))
-	    return build_linear_expression(arg1)
+	    return build_linear_expression(arg1, where)
 	      + integer_term_to_Coefficient(arg2);
 	  else
-	    return build_linear_expression(arg1)
-	      + build_linear_expression(arg2);
+	    return build_linear_expression(arg1, where)
+	      + build_linear_expression(arg2, where);
 	else if (functor == a_minus)
 	  // Minus.
 	  if (Prolog_is_integer(arg1))
 	    return integer_term_to_Coefficient(arg1)
-	      - build_linear_expression(arg2);
+	      - build_linear_expression(arg2, where);
 	  else if (Prolog_is_integer(arg2))
-	    return build_linear_expression(arg1)
+	    return build_linear_expression(arg1, where)
 	      - integer_term_to_Coefficient(arg2);
 	  else
-	    return build_linear_expression(arg1)
-	      - build_linear_expression(arg2);
+	    return build_linear_expression(arg1, where)
+	      - build_linear_expression(arg2, where);
 	else if (functor == a_asterisk)
 	  // Times.
 	  if (Prolog_is_integer(arg1))
 	    return integer_term_to_Coefficient(arg1)
-	      * build_linear_expression(arg2);
+	      * build_linear_expression(arg2, where);
 	  else if (Prolog_is_integer(arg2))
-	    return build_linear_expression(arg1)
+	    return build_linear_expression(arg1, where)
 	      * integer_term_to_Coefficient(arg2);
       }
     }
   }
   // Invalid.
-  throw non_linear(t, "build_linear_expression");
+  throw non_linear(t, where);
 }
 
-
 Constraint
-build_constraint(Prolog_term_ref t) {
+build_constraint(Prolog_term_ref t, const char* where) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
@@ -753,65 +751,65 @@ build_constraint(Prolog_term_ref t) {
 	// =
 	if (Prolog_is_integer(arg1))
 	  return integer_term_to_Coefficient(arg1)
-	    == build_linear_expression(arg2);
+	    == build_linear_expression(arg2, where);
 	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1)
+	  return build_linear_expression(arg1, where)
 	    == integer_term_to_Coefficient(arg2);
 	else
-	  return build_linear_expression(arg1)
-	    == build_linear_expression(arg2);
+	  return build_linear_expression(arg1, where)
+	    == build_linear_expression(arg2, where);
       else if (functor == a_equal_less_than)
 	// =<
 	if (Prolog_is_integer(arg1))
 	  return integer_term_to_Coefficient(arg1)
-	    <= build_linear_expression(arg2);
+	    <= build_linear_expression(arg2, where);
 	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1)
+	  return build_linear_expression(arg1, where)
 	    <= integer_term_to_Coefficient(arg2);
 	else
-	  return build_linear_expression(arg1)
-	    <= build_linear_expression(arg2);
+	  return build_linear_expression(arg1, where)
+	    <= build_linear_expression(arg2, where);
       else if (functor == a_greater_than_equal)
 	// >=
 	if (Prolog_is_integer(arg1))
 	  return integer_term_to_Coefficient(arg1)
-	    >= build_linear_expression(arg2);
+	    >= build_linear_expression(arg2, where);
 	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1)
+	  return build_linear_expression(arg1, where)
 	    >= integer_term_to_Coefficient(arg2);
 	else
-	  return build_linear_expression(arg1)
-	    >= build_linear_expression(arg2);
+	  return build_linear_expression(arg1, where)
+	    >= build_linear_expression(arg2, where);
       else if (functor == a_less_than)
 	// <
 	if (Prolog_is_integer(arg1))
 	  return integer_term_to_Coefficient(arg1)
-	    < build_linear_expression(arg2);
+	    < build_linear_expression(arg2, where);
 	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1)
+	  return build_linear_expression(arg1, where)
 	    < integer_term_to_Coefficient(arg2);
 	else
-	  return build_linear_expression(arg1)
-	    < build_linear_expression(arg2);
+	  return build_linear_expression(arg1, where)
+	    < build_linear_expression(arg2, where);
       else if (functor == a_greater_than)
 	// >
 	if (Prolog_is_integer(arg1))
 	  return integer_term_to_Coefficient(arg1)
-	    > build_linear_expression(arg2);
+	    > build_linear_expression(arg2, where);
 	else if (Prolog_is_integer(arg2))
-	  return build_linear_expression(arg1)
+	  return build_linear_expression(arg1, where)
 	    > integer_term_to_Coefficient(arg2);
 	else
-	  return build_linear_expression(arg1)
-	    > build_linear_expression(arg2);
+	  return build_linear_expression(arg1, where)
+	    > build_linear_expression(arg2, where);
     }
   }
   // Invalid.
-  throw non_linear(t, "build_constraint");
+  throw non_linear(t, where);
 }
 
 Congruence
-build_congruence(Prolog_term_ref t) {
+build_congruence(Prolog_term_ref t, const char* where) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
@@ -835,13 +833,13 @@ build_congruence(Prolog_term_ref t) {
               Prolog_get_arg(1, arg1, arg11);
               Prolog_get_arg(2, arg1, arg12);
               if (Prolog_is_integer(arg12))
-	        return (build_linear_expression(arg11)
+	        return (build_linear_expression(arg11, where)
 			%= integer_term_to_Coefficient(arg12))
-                    / integer_term_to_Coefficient(arg2);
+		  / integer_term_to_Coefficient(arg2);
 	      else
-	        return (build_linear_expression(arg11)
-			%= build_linear_expression(arg12))
-                    / integer_term_to_Coefficient(arg2);
+	        return (build_linear_expression(arg11, where)
+			%= build_linear_expression(arg12, where))
+		  / integer_term_to_Coefficient(arg2);
 	    }
 	  }
 	}
@@ -850,31 +848,31 @@ build_congruence(Prolog_term_ref t) {
         if (functor == a_is_congruent_to)
       	  // =:=
           if (Prolog_is_integer(arg2))
-	    return build_linear_expression(arg1)
-		    %= integer_term_to_Coefficient(arg2);
+	    return build_linear_expression(arg1, where)
+	      %= integer_term_to_Coefficient(arg2);
 	  else
-	    return build_linear_expression(arg1)
-		    %= build_linear_expression(arg2);
+	    return build_linear_expression(arg1, where)
+	      %= build_linear_expression(arg2, where);
 	else
           if (functor == a_equal)
 	    // =
 	    if (Prolog_is_integer(arg1))
 	      return (integer_term_to_Coefficient(arg1)
-	        %= build_linear_expression(arg2)) / 0;
+		      %= build_linear_expression(arg2, where)) / 0;
 	    else if (Prolog_is_integer(arg2))
-	      return (build_linear_expression(arg1)
-	        %= integer_term_to_Coefficient(arg2)) / 0;
+	      return (build_linear_expression(arg1, where)
+		      %= integer_term_to_Coefficient(arg2)) / 0;
 	    else
-	      return (build_linear_expression(arg1)
-	        %= build_linear_expression(arg2)) / 0;
+	      return (build_linear_expression(arg1, where)
+		      %= build_linear_expression(arg2, where)) / 0;
     }
   }
   // Invalid.
-  throw non_linear(t, "build_congruence");
+  throw non_linear(t, where);
 }
 
 Generator
-build_generator(Prolog_term_ref t) {
+build_generator(Prolog_term_ref t, const char* where) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
@@ -883,13 +881,13 @@ build_generator(Prolog_term_ref t) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
       if (functor == a_line)
-	return Generator::line(build_linear_expression(arg));
+	return Generator::line(build_linear_expression(arg, where));
       else if (functor == a_ray)
-	return Generator::ray(build_linear_expression(arg));
+	return Generator::ray(build_linear_expression(arg, where));
       else if (functor == a_point)
-	return Generator::point(build_linear_expression(arg));
+	return Generator::point(build_linear_expression(arg, where));
       else if (functor == a_closure_point)
-	return Generator::closure_point(build_linear_expression(arg));
+	return Generator::closure_point(build_linear_expression(arg, where));
     }
     else if (arity == 2) {
       Prolog_term_ref arg1 = Prolog_new_term_ref();
@@ -898,20 +896,20 @@ build_generator(Prolog_term_ref t) {
       Prolog_get_arg(2, t, arg2);
       if (Prolog_is_integer(arg2)) {
         if (functor == a_point)
-	  return Generator::point(build_linear_expression(arg1),
+	  return Generator::point(build_linear_expression(arg1, where),
 				  integer_term_to_Coefficient(arg2));
         else if (functor == a_closure_point)
-	  return Generator::closure_point(build_linear_expression(arg1),
+	  return Generator::closure_point(build_linear_expression(arg1, where),
 					  integer_term_to_Coefficient(arg2));
       }
     }
   }
   // Invalid.
-  throw non_linear(t, "build_generator");
+  throw non_linear(t, where);
 }
 
 Grid_Generator
-build_grid_generator(Prolog_term_ref t) {
+build_grid_generator(Prolog_term_ref t, const char* where) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
@@ -920,11 +918,11 @@ build_grid_generator(Prolog_term_ref t) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
       if (functor == a_grid_line)
-	return Grid_Generator::grid_line(build_linear_expression(arg));
+	return Grid_Generator::grid_line(build_linear_expression(arg, where));
       else if (functor == a_parameter)
-	return Grid_Generator::parameter(build_linear_expression(arg));
+	return Grid_Generator::parameter(build_linear_expression(arg, where));
       else if (functor == a_grid_point)
-	return Grid_Generator::grid_point(build_linear_expression(arg));
+	return Grid_Generator::grid_point(build_linear_expression(arg, where));
     }
     else if (arity == 2) {
       Prolog_term_ref arg1 = Prolog_new_term_ref();
@@ -933,16 +931,18 @@ build_grid_generator(Prolog_term_ref t) {
       Prolog_get_arg(2, t, arg2);
       if (Prolog_is_integer(arg2)) {
         if (functor == a_grid_point)
-	  return Grid_Generator::grid_point(build_linear_expression(arg1),
-				  integer_term_to_Coefficient(arg2));
+	  return Grid_Generator::grid_point(build_linear_expression(arg1,
+								    where),
+					    integer_term_to_Coefficient(arg2));
         else if (functor == a_parameter)
-	  return Grid_Generator::parameter(build_linear_expression(arg1),
+	  return Grid_Generator::parameter(build_linear_expression(arg1,
+								   where),
 					  integer_term_to_Coefficient(arg2));
       }
     }
   }
   // Invalid.
-  throw non_linear(t, "build_generator");
+  throw non_linear(t, where);
 }
 
 template <typename R>
@@ -1137,14 +1137,14 @@ term_to_Coefficient(Prolog_term_ref t, const char* where) {
 }
 
 Prolog_atom
-term_to_optimization_mode(Prolog_term_ref t) {
+term_to_optimization_mode(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
 	&& (name == a_max || name == a_min))
       return name;
   }
-  throw not_an_optimization_mode(t, "term_to_optimization_mode");
+  throw not_an_optimization_mode(t, where);
 }
 
 bool Prolog_interface_initialized = false;
@@ -1601,14 +1601,14 @@ interval_term(const Interval& i) {
 }
 
 Prolog_atom
-term_to_complexity_class(Prolog_term_ref t) {
+term_to_complexity_class(Prolog_term_ref t, const char* where) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
     if (Prolog_get_atom_name(t, &name)
 	&& (name == a_polynomial || name == a_simplex || name == a_any))
       return name;
   }
-  throw not_a_complexity_class(t, "term_to_complexity_class");
+  throw not_a_complexity_class(t, where);
 }
 
 } // namespace
@@ -1616,13 +1616,13 @@ term_to_complexity_class(Prolog_term_ref t) {
 namespace {
 
 LP_Problem*
-term_to_LP_Problem_handle(Prolog_term_ref t_ph) {
+term_to_LP_Problem_handle(Prolog_term_ref t_ph, const char* where) {
   if (Prolog_is_address(t_ph)) {
     void* p;
     if (Prolog_get_address(t_ph, &p))
       return static_cast<LP_Problem*>(p);
   }
-  throw ppl_handle_mismatch(t_ph, "term_to_LP_Problem_handle");
+  throw ppl_handle_mismatch(t_ph, where);
 }
 
 } // namespace
@@ -1653,23 +1653,23 @@ ppl_new_LP_Problem(Prolog_term_ref t_nd,
 		   Prolog_term_ref t_le_expr,
 		   Prolog_term_ref t_opt,
 		   Prolog_term_ref t_lp) {
+  static const char* where = "ppl_new_LP_Problem/5";
   try {
     Constraint_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_constraint(c));
+      cs.insert(build_constraint(c, where));
     }
     // Check the list is properly terminated.
-    check_nil_terminating(t_clist, "ppl_new_LP_Problem");
+    check_nil_terminating(t_clist, where);
 
-    const Linear_Expression le = build_linear_expression(t_le_expr);
-    Prolog_atom opt = term_to_optimization_mode(t_opt);
+    const Linear_Expression le = build_linear_expression(t_le_expr, where);
+    Prolog_atom opt = term_to_optimization_mode(t_opt, where);
     Optimization_Mode mode = (opt == a_max) ? MAXIMIZATION : MINIMIZATION;
 
     LP_Problem* lp
-      = new LP_Problem(term_to_unsigned<dimension_type>(t_nd,
-							"ppl_new_LP_Problem/5"),
+      = new LP_Problem(term_to_unsigned<dimension_type>(t_nd, where),
 		       cs, le, mode);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, lp);
@@ -1686,10 +1686,11 @@ ppl_new_LP_Problem(Prolog_term_ref t_nd,
 extern "C" Prolog_foreign_return_type
 ppl_new_LP_Problem_from_LP_Problem(Prolog_term_ref t_lp_source,
 				   Prolog_term_ref t_lp) {
+  static const char* where = "ppl_new_LP_Problem_from_LP_Problem/2";
   try {
     const LP_Problem* lp_source
       = static_cast<const LP_Problem*>
-        (term_to_LP_Problem_handle(t_lp_source));
+      (term_to_LP_Problem_handle(t_lp_source, where));
     CHECK(lp_source);
     LP_Problem* lp = new LP_Problem(*lp_source);
     Prolog_term_ref tmp = Prolog_new_term_ref();
@@ -1706,9 +1707,10 @@ ppl_new_LP_Problem_from_LP_Problem(Prolog_term_ref t_lp_source,
 
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  static const char* where = "ppl_LP_Problem_swap/2";
   try {
-    LP_Problem* lhs = term_to_LP_Problem_handle(t_lhs);
-    LP_Problem* rhs = term_to_LP_Problem_handle(t_rhs);
+    LP_Problem* lhs = term_to_LP_Problem_handle(t_lhs, where);
+    LP_Problem* rhs = term_to_LP_Problem_handle(t_rhs, where);
     CHECK(lhs);
     CHECK(rhs);
     lhs->swap(*rhs);
@@ -1719,8 +1721,9 @@ ppl_LP_Problem_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
 
 extern "C" Prolog_foreign_return_type
 ppl_delete_LP_Problem(Prolog_term_ref t_lp) {
+  static const char* where = "ppl_delete_LP_Problem/1";
   try {
-    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     UNREGISTER(lp);
     delete lp;
     return PROLOG_SUCCESS;
@@ -1730,8 +1733,9 @@ ppl_delete_LP_Problem(Prolog_term_ref t_lp) {
 
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_space_dimension(Prolog_term_ref t_lp, Prolog_term_ref t_sd) {
+  static const char* where = "ppl_LP_Problem_space_dimension/2";
   try {
-    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
     if (unify_ulong(t_sd, lp->space_dimension()))
       return PROLOG_SUCCESS;
@@ -1739,12 +1743,12 @@ ppl_LP_Problem_space_dimension(Prolog_term_ref t_lp, Prolog_term_ref t_sd) {
   CATCH_ALL;
 }
 
-
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_constraints(Prolog_term_ref t_lp,
 			   Prolog_term_ref t_clist) {
+  static const char* where = "ppl_LP_Problem_constraints/2";
   try {
-    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -1762,8 +1766,9 @@ ppl_LP_Problem_constraints(Prolog_term_ref t_lp,
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_objective_function(Prolog_term_ref t_lp,
 				  Prolog_term_ref t_le_expr) {
+  static const char* where = "ppl_LP_Problem_objective_function/2";
   try {
-    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
 
     const Linear_Expression& le = lp->objective_function();
@@ -1778,8 +1783,9 @@ ppl_LP_Problem_objective_function(Prolog_term_ref t_lp,
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_optimization_mode(Prolog_term_ref t_lp,
 				 Prolog_term_ref t_opt) {
+  static const char* where = "ppl_LP_Problem_optimization_mode/2";
   try {
-    LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
 
     Optimization_Mode mode = lp->optimization_mode();
@@ -1794,8 +1800,9 @@ ppl_LP_Problem_optimization_mode(Prolog_term_ref t_lp,
 
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_clear(Prolog_term_ref t_lp) {
+  static const char* where = "ppl_LP_Problem_clear/1";
   try {
-    LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
     lp->clear();
     return PROLOG_SUCCESS;
@@ -1808,7 +1815,7 @@ ppl_LP_Problem_add_space_dimensions_and_embed
 (Prolog_term_ref t_lp, Prolog_term_ref t_nnd) {
   static const char* where = "ppl_LP_Problem_add_space_dimensions_and_embed/2";
   try {
-    LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
     dimension_type d = term_to_unsigned<dimension_type>(t_nnd, where);
     lp->add_space_dimensions_and_embed(d);
@@ -1819,10 +1826,11 @@ ppl_LP_Problem_add_space_dimensions_and_embed
 
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_add_constraint(Prolog_term_ref t_lp, Prolog_term_ref t_c) {
+  static const char* where = "ppl_LP_Problem_add_constraint/2";
   try {
-    LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
-    lp->add_constraint(build_constraint(t_c));
+    lp->add_constraint(build_constraint(t_c, where));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1831,19 +1839,20 @@ ppl_LP_Problem_add_constraint(Prolog_term_ref t_lp, Prolog_term_ref t_c) {
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_add_constraints(Prolog_term_ref t_lp,
 			       Prolog_term_ref t_clist) {
+  static const char* where = "ppl_LP_Problem_add_constraints/2";
   try {
-    LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
     Constraint_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_constraint(c));
+      cs.insert(build_constraint(c, where));
     }
 
     // Check the list is properly terminated.
-    check_nil_terminating(t_clist, "ppl_LP_Problem_add_constraints");
+    check_nil_terminating(t_clist, where);
 
     lp->add_constraints(cs);
     return PROLOG_SUCCESS;
@@ -1854,10 +1863,11 @@ ppl_LP_Problem_add_constraints(Prolog_term_ref t_lp,
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_set_objective_function(Prolog_term_ref t_lp,
 				      Prolog_term_ref t_le_expr) {
+  static const char* where = "ppl_LP_Problem_set_objective_function/2";
   try {
-    LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
-    lp->set_objective_function(build_linear_expression(t_le_expr));
+    lp->set_objective_function(build_linear_expression(t_le_expr, where));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1866,11 +1876,12 @@ ppl_LP_Problem_set_objective_function(Prolog_term_ref t_lp,
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_set_optimization_mode(Prolog_term_ref t_lp,
 				     Prolog_term_ref t_opt) {
+  static const char* where = "ppl_LP_Problem_set_optimization_mode/2";
   try {
-    LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
 
-    Prolog_atom opt = term_to_optimization_mode(t_opt);
+    Prolog_atom opt = term_to_optimization_mode(t_opt, where);
     Optimization_Mode mode = (opt == a_max) ? MAXIMIZATION : MINIMIZATION;
     lp->set_optimization_mode(mode);
     return PROLOG_SUCCESS;
@@ -1880,8 +1891,9 @@ ppl_LP_Problem_set_optimization_mode(Prolog_term_ref t_lp,
 
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_is_satisfiable(Prolog_term_ref t_lp) {
+  static const char* where = "ppl_LP_Problem_is_satisfiable/1";
   try {
-    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
     if (lp->is_satisfiable())
       return PROLOG_SUCCESS;
@@ -1891,8 +1903,9 @@ ppl_LP_Problem_is_satisfiable(Prolog_term_ref t_lp) {
 
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_solve(Prolog_term_ref t_lp, Prolog_term_ref t_status) {
+  static const char* where = "ppl_LP_Problem_solve/2";
   try {
-    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
 
     Prolog_atom a;
@@ -1920,8 +1933,9 @@ ppl_LP_Problem_solve(Prolog_term_ref t_lp, Prolog_term_ref t_status) {
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_feasible_point(Prolog_term_ref t_lp,
 			      Prolog_term_ref t_g) {
- try {
-    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+  static const char* where = "ppl_LP_Problem_feasible_point/2";
+  try {
+    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
     const Generator& g = lp->feasible_point();
     if (Prolog_unify(t_g, generator_term(g)))
@@ -1933,22 +1947,24 @@ ppl_LP_Problem_feasible_point(Prolog_term_ref t_lp,
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_optimizing_point(Prolog_term_ref t_lp,
 				Prolog_term_ref t_g) {
- try {
-    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+  static const char* where = "ppl_LP_Problem_optimizing_point/2";
+  try {
+    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
     const Generator& g = lp->optimizing_point();
     if (Prolog_unify(t_g, generator_term(g)))
       return PROLOG_SUCCESS;
- }
- CATCH_ALL;
+  }
+  CATCH_ALL;
 }
 
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_optimal_value(Prolog_term_ref t_lp,
 			     Prolog_term_ref t_n,
 			     Prolog_term_ref t_d) {
- try {
-    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+  static const char* where = "ppl_LP_Problem_optimal_value/3";
+  try {
+    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
     Coefficient n;
     Coefficient d;
@@ -1965,23 +1981,25 @@ ppl_LP_Problem_evaluate_objective_function(Prolog_term_ref t_lp,
 					   Prolog_term_ref t_g,
 					   Prolog_term_ref t_n,
 					   Prolog_term_ref t_d) {
- try {
-    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+  static const char* where = "ppl_LP_Problem_evaluate_objective_function/4";
+  try {
+    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
     Coefficient n;
     Coefficient d;
-    lp->evaluate_objective_function(build_generator(t_g), n, d);
+    lp->evaluate_objective_function(build_generator(t_g, where), n, d);
     if (Prolog_unify(t_n, Coefficient_to_integer_term(n))
 	&& Prolog_unify(t_d, Coefficient_to_integer_term(d)))
       return PROLOG_SUCCESS;
- }
- CATCH_ALL;
+  }
+  CATCH_ALL;
 }
 
 extern "C" Prolog_foreign_return_type
 ppl_LP_Problem_OK(Prolog_term_ref t_lp) {
+  static const char* where = "ppl_LP_Problem_OK/1";
   try {
-    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp);
+    const LP_Problem* lp = term_to_LP_Problem_handle(t_lp, where);
     CHECK(lp);
     if (lp->OK())
       return PROLOG_SUCCESS;

@@ -126,7 +126,6 @@ public:
 class PPL_integer_out_of_range {
 private:
   Parma_Polyhedra_Library::Coefficient n;
-  const char* w;
 
 public:
   PPL_integer_out_of_range(const Parma_Polyhedra_Library::Coefficient& value)
@@ -135,10 +134,6 @@ public:
 
   const Parma_Polyhedra_Library::Coefficient value() const {
     return n;
-  }
-
-  const char* where() const {
-    return w;
   }
 };
 
