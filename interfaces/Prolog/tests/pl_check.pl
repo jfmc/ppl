@@ -2949,6 +2949,10 @@ clean_ppl_new_Polyhedron_from_bounding_box(T, Box, P) :-
   ),
   cleanup_ppl_Polyhedron(P).
 
+clean_ppl_new_LP_Problem_from_space_dimension(Dim, LP) :-
+  ppl_new_LP_Problem_from_space_dimension(Dim, LP),
+  cleanup_ppl_LP_Problem(LP).
+
 clean_ppl_new_LP_Problem(Dim, CS, Obj, Opt, LP) :-
   ppl_new_LP_Problem(Dim, CS, Obj, Opt, LP),
   cleanup_ppl_LP_Problem(LP).
