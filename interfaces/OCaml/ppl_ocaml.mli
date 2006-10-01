@@ -28,6 +28,14 @@ type constraint_system = linear_constraint list
 
 type generator_system = linear_generator list
 
+type polyhedron
+
+external ppl_new_C_Polyhedron_from_space_dimension:
+  int -> polyhedron = "ppl_new_C_Polyhedron_from_space_dimension"
+
+external ppl_Polyhedron_space_dimension:
+  polyhedron -> int = "ppl_Polyhedron_space_dimension"
+
 external test_linear_expression:
   linear_expression -> unit = "test_linear_expression"
 

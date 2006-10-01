@@ -120,5 +120,16 @@ print_string "Build and print a PPL::Generator_System:\n" ;;
 
 test_generator_system [(Ray e3); (Line e1); (Closure_Point (e2, (Z.from_int 5)))] ;;
 
+(* Build some PPL::Polyhedron. *)
+
+for i = 6 downto 0 do
+  let ph = ppl_new_C_Polyhedron_from_space_dimension(i)
+  in let dimension =  ppl_Polyhedron_space_dimension(ph)
+  in printf "dimension %d\n" dimension
+done;;
+print_newline();;
+
+at_exit Gc.full_major;;
+
 print_string "Bye!\n"
 

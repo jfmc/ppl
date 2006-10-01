@@ -186,6 +186,59 @@ build_Generator_System(value gl) {
   return gs;
 }
 
+//! Give access to the embedded Polyhedron* in \p v.
+inline Polyhedron*&
+p_Polyhedron_val(value v) {
+  return *reinterpret_cast<Polyhedron**>(Data_custom_val(v));
+}
+
+void
+custom_Polyhedron_finalize(value v) {
+  std::cerr << "About to delete a polyhedron " << *p_Polyhedron_val(v)
+	    << std::endl;
+  delete p_Polyhedron_val(v);
+}
+
+static struct custom_operations Polyhedron_custom_operations = {
+  "Polyhedron",
+  custom_Polyhedron_finalize,
+  custom_compare_default,
+  custom_hash_default,
+  custom_serialize_default,
+  custom_deserialize_default
+};
+
+inline value
+val_p_Polyhedron(const Polyhedron& ph) {
+  value v = caml_alloc_custom(&Polyhedron_custom_operations,
+			      sizeof(Polyhedron*), 0, 1);
+  p_Polyhedron_val(v) = const_cast<Polyhedron*>(&ph);
+  return(v);
+}
+
+extern "C"
+CAMLprim value
+ppl_new_C_Polyhedron_from_space_dimension(value d) try {
+  CAMLparam1(d);
+  int dd = Int_val(d);
+  if (dd < 0)
+    abort();
+  CAMLreturn(val_p_Polyhedron(*new C_Polyhedron(dd)));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_space_dimension(value ph) try {
+  CAMLparam1(ph);
+  const Polyhedron& pph = *p_Polyhedron_val(ph);
+  dimension_type d = pph.space_dimension();
+  if (d > INT_MAX)
+    abort();
+  CAMLreturn(Val_int(d));
+}
+CATCH_ALL
+
 extern "C"
 CAMLprim void
 test_linear_expression(value ocaml_le) {
