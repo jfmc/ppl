@@ -8,16 +8,16 @@ handle_exception(const not_a_@CLASS@_handle& e) {
 
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_construct_compound(expected, a_expected,
-			    Prolog_atom_term_from_string("@CLASS@_handle"));
+                            Prolog_atom_term_from_string("@CLASS@_handle"));
 
   Prolog_term_ref where = Prolog_new_term_ref();
   Prolog_construct_compound(where, a_where,
-			    Prolog_atom_term_from_string
-			    ("term_to_@CLASS@_handle"));
+                            Prolog_atom_term_from_string
+                            ("term_to_@CLASS@_handle"));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
   Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-			    found, expected, where);
+                            found, expected, where);
   Prolog_raise_exception(exception_term);
 }
 
@@ -33,7 +33,7 @@ term_to_@CLASS@_handle(Prolog_term_ref t_ph) {
     if (Prolog_get_address(t_ph, &p))
       return static_cast<@CPP_CLASS@*>(p);
   }
-  throw ppl_handle_mismatch(t_ph);
+  throw ppl_handle_mismatch(t_ph, "term_to_@CLASS@_handle");
 }
 
 } // namespace
@@ -56,16 +56,19 @@ define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 (Prolog_term_ref t_nd, Prolog_term_ref t_uoe, Prolog_term_ref t_ph) {
+  static const char* where = "ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3";
   try {
     @TOPOLOGY@@CPP_CLASS@* ph;
-    Prolog_atom uoe = term_to_universe_or_empty(t_uoe);
+    Prolog_atom uoe = term_to_universe_or_empty(t_uoe, where);
 
     if (uoe == a_empty)
-        ph = new @TOPOLOGY@@CPP_CLASS@(term_to_unsigned<dimension_type>(t_nd),
-			      EMPTY);
-      else
-        ph = new @TOPOLOGY@@CPP_CLASS@(term_to_unsigned<dimension_type>(t_nd));
-
+      ph = new @TOPOLOGY@@CPP_CLASS@(term_to_unsigned<dimension_type>(t_nd,
+                                                                      where),
+                                     EMPTY);
+    else
+      ph = new @TOPOLOGY@@CPP_CLASS@(term_to_unsigned<dimension_type>(t_nd,
+                                                                      where),
+                                     UNIVERSE);
 
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
@@ -88,8 +91,8 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@
   try {
     @TOPOLOGY@@CPP_CLASS@* ph;
     const @INTOPOLOGY@@ALT_FRIEND@* ph_source
-	= static_cast<const @INTOPOLOGY@@ALT_FRIEND@*>
-	(term_to_@FRIEND@_handle(t_ph_source));
+        = static_cast<const @INTOPOLOGY@@ALT_FRIEND@*>
+        (term_to_@FRIEND@_handle(t_ph_source));
     CHECK(ph_source);
         ph = new @TOPOLOGY@@CPP_CLASS@(*ph_source);
     Prolog_term_ref tmp = Prolog_new_term_ref();
@@ -110,6 +113,7 @@ define(`ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s_code',
 `extern "C" Prolog_foreign_return_type
 ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s
 (Prolog_term_ref t_clist, Prolog_term_ref t_ph) {
+  static const char* where = "ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s/2";
   try {
     @UREPRESENT@_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
@@ -120,7 +124,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s
     }
 
     // Check the list is properly terminated.
-    check_nil_terminating(t_clist);
+    check_nil_terminating(t_clist, where);
 
     @TOPOLOGY@@CPP_CLASS@* ph;
     ph = new @TOPOLOGY@@CPP_CLASS@(cs);
@@ -142,6 +146,7 @@ define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
 (Prolog_term_ref t_bb, Prolog_term_ref t_ph) {
+  static const char* where = "ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@/2";
   try {
     // Compute the space dimension.
     Prolog_term_ref t_l = Prolog_new_term_ref();
@@ -152,7 +157,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
       Prolog_get_cons(t_l, t_interval, t_l);
 
     // Check the list is properly terminated.
-    check_nil_terminating(t_l);
+    check_nil_terminating(t_l, where);
 
     Bounding_Box bbox(dimension);
     // Set bbox to reflect its Prolog representation.
@@ -161,23 +166,23 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
       // An interval is either the atom empty or of the form
       // i(Lower_Bound, Upper_Bound).
       if (Prolog_is_atom(t_interval)) {
-	Prolog_atom name;
-	if (Prolog_get_atom_name(t_interval, &name) && name == a_empty) {
-	  bbox.set_empty();
-	  continue;
-	}
-	else
-	  return PROLOG_FAILURE;
+        Prolog_atom name;
+        if (Prolog_get_atom_name(t_interval, &name) && name == a_empty) {
+          bbox.set_empty();
+          continue;
+        }
+        else
+          return PROLOG_FAILURE;
       }
 
       if (!Prolog_is_compound(t_interval))
-	return PROLOG_FAILURE;
+        return PROLOG_FAILURE;
 
       Prolog_atom functor;
       int arity;
       Prolog_get_compound_name_arity(t_interval, &functor, &arity);
       if (arity != 2 || functor != a_i)
-	return PROLOG_FAILURE;
+        return PROLOG_FAILURE;
 
       bool finite;
       bool closed;
@@ -188,16 +193,16 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
       // Get and raise the lower bound.
       Prolog_get_arg(1, t_interval, t_bound);
       if (!term_to_boundary(t_bound, LOWER, finite, closed, n, d))
-	return PROLOG_FAILURE;
+        return PROLOG_FAILURE;
       if (finite)
-	bbox.raise_lower_bound(i, closed, n, d);
+        bbox.raise_lower_bound(i, closed, n, d);
 
       // Get and lower the upper bound.
       Prolog_get_arg(2, t_interval, t_bound);
       if (!term_to_boundary(t_bound, UPPER, finite, closed, n, d))
-	return PROLOG_FAILURE;
+        return PROLOG_FAILURE;
       if (finite)
-	bbox.lower_upper_bound(i, closed, n, d);
+        bbox.lower_upper_bound(i, closed, n, d);
     }
 
     @TOPOLOGY@@CPP_CLASS@* ph;
@@ -272,7 +277,7 @@ ppl_@CLASS@_get_@DESCRIBE@s
     Prolog_put_atom(tail, a_nil);
     const @UDESCRIBE@_System& gs = ph->@DESCRIBE@s();
     for (@UDESCRIBE@_System::const_iterator i = gs.begin(),
-	   gs_end = gs.end(); i != gs_end; ++i)
+           gs_end = gs.end(); i != gs_end; ++i)
       Prolog_construct_cons(tail, @DESCRIBE@_term(*i), tail);
 
     if (Prolog_unify(t_glist, tail))
@@ -295,7 +300,7 @@ ppl_@CLASS@_get_minimized_@DESCRIBE@s
     Prolog_put_atom(tail, a_nil);
     const @UDESCRIBE@_System& gs = ph->minimized_@DESCRIBE@s();
     for (@UDESCRIBE@_System::const_iterator i = gs.begin(),
-	   gs_end = gs.end(); i != gs_end; ++i)
+           gs_end = gs.end(); i != gs_end; ++i)
       Prolog_construct_cons(tail, @DESCRIBE@_term(*i), tail);
 
     if (Prolog_unify(t_glist, tail))
@@ -320,7 +325,7 @@ ppl_@CLASS@_get_disjuncts(Prolog_term_ref t_pps,
            pps_end = pps->end(); i != pps_end; ++i) {
       Prolog_term_ref t_d = Prolog_new_term_ref();
       Prolog_put_address(t_d,
-			 const_cast<void*>(static_cast<const void*>(&(*i))));
+                         const_cast<void*>(static_cast<const void*>(&(*i))));
       Prolog_construct_cons(tail, t_d, tail);
     }
 
@@ -357,27 +362,27 @@ define(`relation_with_constraint_code', `
     while (r != Poly_Con_Relation::nothing()) {
       if (r.implies(Poly_Con_Relation::is_disjoint())) {
         Prolog_term_ref t_dis = Prolog_new_term_ref();
-	Prolog_put_atom(t_dis, a_is_disjoint);
+        Prolog_put_atom(t_dis, a_is_disjoint);
         Prolog_construct_cons(tail, t_dis, tail);
-	r = r - Poly_Con_Relation::is_disjoint();
+        r = r - Poly_Con_Relation::is_disjoint();
       }
       else if (r.implies(Poly_Con_Relation::strictly_intersects())) {
         Prolog_term_ref t_sin = Prolog_new_term_ref();
-	Prolog_put_atom(t_sin, a_strictly_intersects);
+        Prolog_put_atom(t_sin, a_strictly_intersects);
         Prolog_construct_cons(tail, t_sin, tail);
-	r = r - Poly_Con_Relation::strictly_intersects();
+        r = r - Poly_Con_Relation::strictly_intersects();
       }
       else if (r.implies(Poly_Con_Relation::is_included())) {
         Prolog_term_ref t_inc = Prolog_new_term_ref();
-	Prolog_put_atom(t_inc, a_is_included);
+        Prolog_put_atom(t_inc, a_is_included);
         Prolog_construct_cons(tail, t_inc, tail);
-	r = r - Poly_Con_Relation::is_included();
+        r = r - Poly_Con_Relation::is_included();
       }
       else if (r.implies(Poly_Con_Relation::saturates())) {
         Prolog_term_ref t_sat = Prolog_new_term_ref();
-	Prolog_put_atom(t_sat, a_saturates);
+        Prolog_put_atom(t_sat, a_saturates);
         Prolog_construct_cons(tail, t_sat, tail);
-	r = r - Poly_Con_Relation::saturates();
+        r = r - Poly_Con_Relation::saturates();
       }
     }
 ')
@@ -390,21 +395,21 @@ define(`relation_with_congruence_code', `
     while (r != Poly_Con_Relation::nothing()) {
       if (r.implies(Poly_Con_Relation::is_disjoint())) {
         Prolog_term_ref t_dis = Prolog_new_term_ref();
-	Prolog_put_atom(t_dis, a_is_disjoint);
+        Prolog_put_atom(t_dis, a_is_disjoint);
         Prolog_construct_cons(tail, t_dis, tail);
-	r = r - Poly_Con_Relation::is_disjoint();
+        r = r - Poly_Con_Relation::is_disjoint();
       }
       else if (r.implies(Poly_Con_Relation::strictly_intersects())) {
         Prolog_term_ref t_sin = Prolog_new_term_ref();
-	Prolog_put_atom(t_sin, a_strictly_intersects);
+        Prolog_put_atom(t_sin, a_strictly_intersects);
         Prolog_construct_cons(tail, t_sin, tail);
-	r = r - Poly_Con_Relation::strictly_intersects();
+        r = r - Poly_Con_Relation::strictly_intersects();
       }
       else if (r.implies(Poly_Con_Relation::is_included())) {
         Prolog_term_ref t_inc = Prolog_new_term_ref();
-	Prolog_put_atom(t_inc, a_is_included);
+        Prolog_put_atom(t_inc, a_is_included);
         Prolog_construct_cons(tail, t_inc, tail);
-	r = r - Poly_Con_Relation::is_included();
+        r = r - Poly_Con_Relation::is_included();
       }
     }
 ')
@@ -417,9 +422,9 @@ define(`relation_with_generator_code', `
     while (r != Poly_Gen_Relation::nothing()) {
       if (r.implies(Poly_Gen_Relation::subsumes())) {
         Prolog_term_ref t_sub = Prolog_new_term_ref();
-	Prolog_put_atom(t_sub, a_subsumes);
+        Prolog_put_atom(t_sub, a_subsumes);
         Prolog_construct_cons(tail, t_sub, tail);
-	r = r - Poly_Gen_Relation::subsumes();
+        r = r - Poly_Gen_Relation::subsumes();
       }
     }
 ')
@@ -432,9 +437,9 @@ define(`relation_with_grid_generator_code', `
     while (r != Poly_Gen_Relation::nothing()) {
       if (r.implies(Poly_Gen_Relation::subsumes())) {
         Prolog_term_ref t_sub = Prolog_new_term_ref();
-	Prolog_put_atom(t_sub, a_subsumes);
+        Prolog_put_atom(t_sub, a_subsumes);
         Prolog_construct_cons(tail, t_sub, tail);
-	r = r - Poly_Gen_Relation::subsumes();
+        r = r - Poly_Gen_Relation::subsumes();
       }
     }
 ')
@@ -579,9 +584,9 @@ ppl_@CLASS@_@MAXMIN@
       Prolog_atom a = (maxmin ? a_true : a_false);
       Prolog_put_atom(t, a);
       if (Prolog_unify(t_n, Coefficient_to_integer_term(n))
-	  && Prolog_unify(t_d, Coefficient_to_integer_term(d))
-	  && Prolog_unify(t_maxmin, t))
-	return PROLOG_SUCCESS;
+          && Prolog_unify(t_d, Coefficient_to_integer_term(d))
+          && Prolog_unify(t_maxmin, t))
+        return PROLOG_SUCCESS;
     }
  }
  CATCH_ALL;
@@ -608,10 +613,10 @@ ppl_@CLASS@_@MAXMIN@_with_point
       Prolog_atom a = (maxmin ? a_true : a_false);
       Prolog_put_atom(t, a);
       if (Prolog_unify(t_n, Coefficient_to_integer_term(n))
-	  && Prolog_unify(t_d, Coefficient_to_integer_term(d))
-	  && Prolog_unify(t_maxmin, t)
-	  && Prolog_unify(t_g, @GENERATOR@_term(g)))
-	return PROLOG_SUCCESS;
+          && Prolog_unify(t_d, Coefficient_to_integer_term(d))
+          && Prolog_unify(t_maxmin, t)
+          && Prolog_unify(t_g, @GENERATOR@_term(g)))
+        return PROLOG_SUCCESS;
     }
  }
  CATCH_ALL;
@@ -716,6 +721,7 @@ define(`ppl_@CLASS@_add_@REPRESENT@s_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_add_@REPRESENT@s
 (Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
+  static const char* where = "ppl_@CLASS@_add_@REPRESENT@s/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
@@ -728,7 +734,7 @@ ppl_@CLASS@_add_@REPRESENT@s
     }
 
     // Check the list is properly terminated.
-    check_nil_terminating(t_clist);
+    check_nil_terminating(t_clist, where);
 
     ph->add_@REPRESENT@s(cs);
     return PROLOG_SUCCESS;
@@ -742,6 +748,7 @@ define(`ppl_@CLASS@_add_@REPRESENT@s_and_minimize_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_add_@REPRESENT@s_and_minimize
 (Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
+  static const char* where = "ppl_@CLASS@_add_@REPRESENT@s_and_minimize/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
@@ -754,7 +761,7 @@ ppl_@CLASS@_add_@REPRESENT@s_and_minimize
     }
 
     // Check the list is properly terminated.
-    check_nil_terminating(t_clist);
+    check_nil_terminating(t_clist, where);
 
     if (ph->add_@REPRESENT@s_and_minimize(cs))
       return PROLOG_SUCCESS;
@@ -769,8 +776,8 @@ define(`bop_assign_code',
 
 Prolog_foreign_return_type
 bop_assign(Prolog_term_ref t_lhs,
-	   Prolog_term_ref t_rhs,
-	   void (@CPP_CLASS@::* bop_assign)(const @CPP_CLASS@&)) {
+           Prolog_term_ref t_rhs,
+           void (@CPP_CLASS@::* bop_assign)(const @CPP_CLASS@&)) {
   try {
     @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
     const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
@@ -784,9 +791,9 @@ bop_assign(Prolog_term_ref t_lhs,
 
 Prolog_foreign_return_type
 bop_assign_and_minimize(Prolog_term_ref t_lhs,
-			Prolog_term_ref t_rhs,
-			bool (@CPP_CLASS@::*
-			      bop_assign_and_minimize)(const @CPP_CLASS@&)) {
+                        Prolog_term_ref t_rhs,
+                        bool (@CPP_CLASS@::*
+                              bop_assign_and_minimize)(const @CPP_CLASS@&)) {
   try {
     @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
     const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
@@ -807,7 +814,7 @@ define(`ppl_@CLASS@_@BINOP@_code',
 ppl_@CLASS@_@BINOP@
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   return bop_assign(t_lhs, t_rhs,
-		    &@CPP_CLASS@::@BINOP@);
+                    &@CPP_CLASS@::@BINOP@);
 }
 
 ')
@@ -817,7 +824,7 @@ define(`ppl_@CLASS@_@BINMINOP@_code',
 ppl_@CLASS@_@BINMINOP@
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   return bop_assign_and_minimize(t_lhs, t_rhs,
-		    &@CPP_CLASS@::@BINMINOP@);
+                    &@CPP_CLASS@::@BINMINOP@);
 }
 
 ')
@@ -827,12 +834,13 @@ define(`ppl_@CLASS@_@AFFIMAGE@_code',
 ppl_@CLASS@_@AFFIMAGE@
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_v, Prolog_term_ref t_le, Prolog_term_ref t_d) {
+  const char* where = "ppl_@CLASS@_@AFFIMAGE@/4";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    ph->@AFFIMAGE@(term_to_Variable(t_v),
-		     build_linear_expression(t_le),
-		     term_to_Coefficient(t_d));
+    ph->@AFFIMAGE@(term_to_Variable(t_v, where),
+                   build_linear_expression(t_le),
+                   term_to_Coefficient(t_d, where));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -846,13 +854,14 @@ ppl_Grid_generalized_@AFFIMAGE@
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_v, Prolog_term_ref t_le, Prolog_term_ref t_d,
  Prolog_term_ref t_m) {
+  const char* where = "ppl_Grid_generalized_@AFFIMAGE@/5";
   try {
     Grid* ph = term_to_Grid_handle(t_ph);
     CHECK(ph);
-    ph->generalized_@AFFIMAGE@(term_to_Variable(t_v),
-				 build_linear_expression(t_le),
-				 term_to_Coefficient(t_d),
-				 term_to_Coefficient(t_m));
+    ph->generalized_@AFFIMAGE@(term_to_Variable(t_v, where),
+                               build_linear_expression(t_le),
+                               term_to_Coefficient(t_d, where),
+                               term_to_Coefficient(t_m, where));
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -866,14 +875,15 @@ ppl_@CLASS@_generalized_@AFFIMAGE@
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_v, Prolog_term_ref t_r, Prolog_term_ref t_le,
  Prolog_term_ref t_d) {
+  static const char* where = "ppl_@CLASS@_generalized_@AFFIMAGE@/5";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
     Relation_Symbol r = term_to_relation_symbol(t_r);
-    ph->generalized_@AFFIMAGE@(term_to_Variable(t_v),
-				 r,
-				 build_linear_expression(t_le),
-				 term_to_Coefficient(t_d));
+    ph->generalized_@AFFIMAGE@(term_to_Variable(t_v, where),
+                               r,
+                               build_linear_expression(t_le),
+                               term_to_Coefficient(t_d, where));
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -890,8 +900,8 @@ ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs
     Grid* ph = term_to_Grid_handle(t_ph);
     CHECK(ph);
     ph->generalized_@AFFIMAGE@(build_linear_expression(t_lhs),
-				 build_linear_expression(t_rhs),
-				 term_to_Coefficient(t_m));
+                                 build_linear_expression(t_rhs),
+                                 term_to_Coefficient(t_m));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -909,8 +919,8 @@ ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs
     CHECK(ph);
     Relation_Symbol r = term_to_relation_symbol(t_r);
     ph->generalized_@AFFIMAGE@(build_linear_expression(t_lhs),
-				 r,
-				 build_linear_expression(t_rhs));
+                                 r,
+                                 build_linear_expression(t_rhs));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -924,13 +934,14 @@ ppl_@CLASS@_bounded_@AFFIMAGE@
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_v, Prolog_term_ref t_lb_le, Prolog_term_ref t_ub_le,
  Prolog_term_ref t_d) {
+  static const char* where = "ppl_@CLASS@_bounded_@AFFIMAGE@/5";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    ph->bounded_@AFFIMAGE@(term_to_Variable(t_v),
-			     build_linear_expression(t_lb_le),
-			     build_linear_expression(t_ub_le),
-			     term_to_Coefficient(t_d));
+    ph->bounded_@AFFIMAGE@(term_to_Variable(t_v, where),
+                           build_linear_expression(t_lb_le),
+                           build_linear_expression(t_ub_le),
+                           term_to_Coefficient(t_d, where));
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -943,12 +954,13 @@ define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
  Prolog_term_ref t_ti, Prolog_term_ref t_to) {
+  static const char* where = "ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens/4";
   try {
     @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
     const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    unsigned t = term_to_unsigned<unsigned>(t_ti);
+    unsigned t = term_to_unsigned<unsigned>(t_ti, where);
     lhs->@WIDEN@_widening_assign(*rhs, &t);
       if (unify_long(t_to, t))
       return PROLOG_SUCCESS;
@@ -992,6 +1004,7 @@ define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_t
 ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
  Prolog_term_ref t_ti, Prolog_term_ref t_to) {
+  static const char* where = "ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens/5";
   try {
     @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
     const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
@@ -1006,11 +1019,11 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
     }
 
     // Check the list is properly terminated.
-    check_nil_terminating(t_clist);
+    check_nil_terminating(t_clist, where);
 
-    unsigned t = term_to_unsigned<unsigned>(t_ti);
-   lhs->@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign(*rhs, cs, &t);
-      if (unify_long(t_to, t))
+    unsigned t = term_to_unsigned<unsigned>(t_ti, where);
+    lhs->@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign(*rhs, cs, &t);
+    if (unify_long(t_to, t))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1022,6 +1035,7 @@ define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist) {
+  static const char* where = "ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign/3";
   try {
     @CPP_CLASS@* lhs = term_to_@CLASS@_handle(t_lhs);
     const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs);
@@ -1036,7 +1050,7 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign
     }
 
     // Check the list is properly terminated.
-    check_nil_terminating(t_clist);
+    check_nil_terminating(t_clist, where);
 
     lhs->@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign(*rhs, cs, 0);
     return PROLOG_SUCCESS;
@@ -1050,11 +1064,12 @@ define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@
 (Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
+  static const char* where = "ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    dimension_type d = term_to_unsigned<dimension_type>(t_nnd);
-      ph->add_space_dimensions_@EMBEDPROJECT@(d);
+    dimension_type d = term_to_unsigned<dimension_type>(t_nnd, where);
+    ph->add_space_dimensions_@EMBEDPROJECT@(d);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1066,6 +1081,7 @@ define(`ppl_@CLASS@_remove_space_dimensions_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_remove_space_dimensions
 (Prolog_term_ref t_ph, Prolog_term_ref t_vlist) {
+  static const char* where = "ppl_@CLASS@_remove_space_dimensions/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
@@ -1073,11 +1089,11 @@ ppl_@CLASS@_remove_space_dimensions
     Prolog_term_ref v = Prolog_new_term_ref();
     while (Prolog_is_cons(t_vlist)) {
       Prolog_get_cons(t_vlist, v, t_vlist);
-      dead_variables.insert(term_to_Variable(v));
+      dead_variables.insert(term_to_Variable(v, where));
     }
 
     // Check the list is properly terminated.
-    check_nil_terminating(t_vlist);
+    check_nil_terminating(t_vlist, where);
 
     ph->remove_space_dimensions(dead_variables);
     return PROLOG_SUCCESS;
@@ -1091,10 +1107,12 @@ define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_remove_higher_space_dimensions
 (Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
+  static const char* where = "ppl_@CLASS@_remove_higher_space_dimensions/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    ph->remove_higher_space_dimensions(term_to_unsigned<dimension_type>(t_nd));
+    ph->remove_higher_space_dimensions(term_to_unsigned<dimension_type>(t_nd,
+                                                                        where));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1106,11 +1124,12 @@ define(`ppl_@CLASS@_expand_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_expand_space_dimension
 (Prolog_term_ref t_ph, Prolog_term_ref t_v, Prolog_term_ref t_nd) {
+  static const char* where = "ppl_@CLASS@_expand_space_dimension/3";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
-    ph->expand_space_dimension(term_to_Variable(t_v),
-			       term_to_unsigned<dimension_type>(t_nd));
+    ph->expand_space_dimension(term_to_Variable(t_v, where),
+                               term_to_unsigned<dimension_type>(t_nd, where));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1122,6 +1141,7 @@ define(`ppl_@CLASS@_fold_space_dimensions_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_fold_space_dimensions
 (Prolog_term_ref t_ph, Prolog_term_ref t_vlist, Prolog_term_ref t_v) {
+  static const char* where = "ppl_@CLASS@_fold_space_dimensions/3";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     CHECK(ph);
@@ -1129,13 +1149,13 @@ ppl_@CLASS@_fold_space_dimensions
     Prolog_term_ref v = Prolog_new_term_ref();
     while (Prolog_is_cons(t_vlist)) {
       Prolog_get_cons(t_vlist, v, t_vlist);
-      fold_variables.insert(term_to_Variable(v));
+      fold_variables.insert(term_to_Variable(v, where));
     }
 
     // Check the list is properly terminated.
-    check_nil_terminating(t_vlist);
+    check_nil_terminating(t_vlist, where);
 
-    ph->fold_space_dimensions(fold_variables, term_to_Variable(t_v));
+    ph->fold_space_dimensions(fold_variables, term_to_Variable(t_v, where));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1147,6 +1167,7 @@ define(`ppl_@CLASS@_map_space_dimensions_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_map_space_dimensions
 (Prolog_term_ref t_ph, Prolog_term_ref t_pfunc) {
+  static const char* where = "ppl_@CLASS@_map_space_dimensions/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph);
     dimension_type space_dim = ph->space_dimension();
@@ -1159,19 +1180,19 @@ ppl_@CLASS@_map_space_dimensions
       int arity;
       Prolog_get_compound_name_arity(t_pair, &functor, &arity);
       if (arity != 2 || functor != a_minus)
-	return PROLOG_FAILURE;
+        return PROLOG_FAILURE;
       Prolog_term_ref t_i = Prolog_new_term_ref();
       Prolog_term_ref t_j = Prolog_new_term_ref();
       Prolog_get_arg(1, t_pair, t_i);
       Prolog_get_arg(2, t_pair, t_j);
-      dimension_type i = term_to_Variable(t_i).id();
-      dimension_type j = term_to_Variable(t_j).id();
+      dimension_type i = term_to_Variable(t_i, where).id();
+      dimension_type j = term_to_Variable(t_j, where).id();
       if (i >= space_dim || !pfunc.insert(i, j))
-	return PROLOG_FAILURE;
+        return PROLOG_FAILURE;
     }
 
     // Check the list is properly terminated.
-    check_nil_terminating(t_pfunc);
+    check_nil_terminating(t_pfunc, where);
 
     ph->map_space_dimensions(pfunc);
     return PROLOG_SUCCESS;
