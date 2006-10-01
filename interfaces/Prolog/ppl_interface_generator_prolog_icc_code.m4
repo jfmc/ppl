@@ -257,7 +257,7 @@ ppl_delete_@CLASS@(Prolog_term_ref t_ph) {
 define(`ppl_@CLASS@_@DIMENSION@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@DIMENSION@(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_@DIMENSION@/2";
   try {
     const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -273,7 +273,7 @@ define(`ppl_@CLASS@_get_@DESCRIBE@s_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_get_@DESCRIBE@s
 (Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_get_@DESCRIBE@s/2";
   try {
     const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -297,7 +297,7 @@ define(`ppl_@CLASS@_get_minimized_@DESCRIBE@s_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_get_minimized_@DESCRIBE@s
 (Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_get_minimized_@DESCRIBE@s/2";
   try {
     const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -349,7 +349,7 @@ define(`ppl_@CLASS@_relation_with_@DESCRIBE@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_relation_with_@DESCRIBE@
 (Prolog_term_ref t_ph, Prolog_term_ref t_c, Prolog_term_ref t_r) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_relation_with_@DESCRIBE@/3";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -536,7 +536,7 @@ ppl_@CLASS@_get_@BOX@
 define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@HAS_PROPERTY@(Prolog_term_ref t_ph) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_@HAS_PROPERTY@/1";
   try {
     const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -551,7 +551,7 @@ ppl_@CLASS@_@HAS_PROPERTY@(Prolog_term_ref t_ph) {
 define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@SIMPLIFY@(Prolog_term_ref t_ph) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_@SIMPLIFY@/1";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -567,7 +567,7 @@ define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@
 (Prolog_term_ref t_ph, Prolog_term_ref t_expr) {
-  static const char* where = "ppl_@CLASS@_bounds_from_@ABOVEBELOW@";
+  static const char* where = "ppl_@CLASS@_bounds_from_@ABOVEBELOW@/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -586,7 +586,7 @@ ppl_@CLASS@_@MAXMIN@
 (Prolog_term_ref t_ph, Prolog_term_ref t_le_expr,
  Prolog_term_ref t_n,  Prolog_term_ref t_d,
  Prolog_term_ref t_maxmin) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_@MAXMIN@/5";
   try {
     const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -615,7 +615,7 @@ ppl_@CLASS@_@MAXMIN@_with_point
 (Prolog_term_ref t_ph, Prolog_term_ref t_le_expr,
  Prolog_term_ref t_n, Prolog_term_ref t_d,
  Prolog_term_ref t_maxmin, Prolog_term_ref t_g) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_@MAXMIN@_with_point/6";
   try {
     const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -679,7 +679,7 @@ ppl_@CLASS@_equals_@CLASS@
 define(`ppl_@CLASS@_OK_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_OK(Prolog_term_ref t_ph) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_OK/1";
   try {
     const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -694,7 +694,7 @@ ppl_@CLASS@_OK(Prolog_term_ref t_ph) {
 define(`ppl_@CLASS@_add_@REPRESENT@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_add_@REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_add_@REPRESENT@/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -709,7 +709,7 @@ ppl_@CLASS@_add_@REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
 define(`ppl_@CLASS@_add_disjunct_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_add_disjunct/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -727,7 +727,7 @@ define(`ppl_@CLASS@_add_@REPRESENT@_and_minimize_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_add_@REPRESENT@_and_minimize
 (Prolog_term_ref t_ph, Prolog_term_ref t_c) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_add_@REPRESENT@_and_minimize/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -939,7 +939,7 @@ define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs
 (Prolog_term_ref t_ph,
  Prolog_term_ref t_lhs, Prolog_term_ref t_r, Prolog_term_ref t_rhs) {
-  static const char* where = "FIXME";
+  static const char* where = "ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs/4";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
