@@ -76,15 +76,30 @@ test04() {
   Variable I(8);
 
   Variables_Set vs1(A, C);
-  Variables_Set vs2(E ,I);
+  Variables_Set vs2(E, I);
   Variables_Set vs_union;
   Variables_Set vs_difference;
+  Variables_Set vs_intersection;
   std::set_union(vs1.begin(), vs1.end(),
 		 vs2.begin(), vs2.end(),
 		 std::inserter(vs_union, vs_union.begin()),
 		 Variable::Compare());
-  // FIXME: test also set_difference() here.
-  return true;
+  if (vs_union.size() != 8)
+    return false;
+
+  std::set_difference(vs1.begin(), vs1.end(),
+		      vs2.begin(), vs2.end(),
+		      std::inserter(vs_difference, vs_difference.begin()),
+		      Variable::Compare());
+  if (vs_difference.size() != 3)
+    return false;
+
+  std::set_intersection(vs1.begin(), vs1.end(),
+			vs2.begin(), vs2.end(),
+			std::inserter(vs_intersection,
+				      vs_intersection.begin()),
+			Variable::Compare());
+  return (vs_intersection.size() == 0);
 }
 
 
