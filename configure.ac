@@ -696,7 +696,7 @@ AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE, test x$YAP_PROLOG = xyap)
 
 # This is the list of interfaces that are enabled by default.
 # Different instantiations are separated by a '@' character.
-default_instantiations="Polyhedron @ BD_Shape<int8_t>"
+default_instantiations="Polyhedron @ Grid @ BD_Shape<int8_t>"
 
 enableval=not_specified
 AC_MSG_CHECKING([which instantiations are enabled])
