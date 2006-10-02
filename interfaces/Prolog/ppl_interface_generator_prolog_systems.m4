@@ -26,7 +26,7 @@ define(`m4_term_sequence',
      `$2(1)`'ifelse(`$1', 1, ,
        `m4_forloop(`i', 2, `$1', `m4_separator(`$3') $2(i)')')')')
 
-dnl m4_procedure_names_to_code(Class_Kind,
+dnl m4_library_names_to_code(Class_Kind,
 dnl                            Procedure_Name1, Procedure_Name2, ...)
 dnl
 dnl Each name from the second argument onwards is replaced

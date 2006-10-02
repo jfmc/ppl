@@ -213,7 +213,9 @@ dnl m4_extension will be referined appropriately.
 dnl
 dnl Note: the macro `$1_code' has to be called using builtin `indir'
 dnl because it is not a legal m4 identifier (it contains `@').
-define(`m4_extension', `ifdef(`$1_code', `indir(`$1_code')', `')')
+define(`default_code', `')
+define(`m4_extension', `ifdef(`$1_code', `indir(`$1_code')',
+  `default_code($1)')')
 
 
 dnl m4_procedure_names_to_code(Class_Number, Class_Kind,
@@ -240,6 +242,7 @@ dnl The procedure specification is replaced with the code.
 #   m4_replace_class_patterns($1, m4_get_code_schema(\1, 1)),
 #     m4_pattern_list)')`'dnl
 # ')
+undefine(`m4_procedure_name_to_code')
 define(`m4_procedure_name_to_code', `dnl
 patsubst(`$3', `\(.*\)', `dnl
 m4_replace_all_patterns($1, m4_get_code_schema(\1, 1),
