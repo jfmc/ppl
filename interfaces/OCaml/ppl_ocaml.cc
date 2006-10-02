@@ -200,7 +200,7 @@ custom_Polyhedron_finalize(value v) {
 }
 
 static struct custom_operations Polyhedron_custom_operations = {
-  "Polyhedron",
+  "it.unipr.cs.ppl" "." PPL_VERSION "." "Polyhedron",
   custom_Polyhedron_finalize,
   custom_compare_default,
   custom_hash_default,

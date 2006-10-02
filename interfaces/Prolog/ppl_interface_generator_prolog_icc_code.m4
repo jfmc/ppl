@@ -883,9 +883,8 @@ ppl_Grid_generalized_@AFFIMAGE@
   try {
     Grid* ph = term_to_Grid_handle(t_ph, where);
     CHECK(ph);
-    Relation_Symbol r = term_to_relation_symbol(t_r, where);
     ph->generalized_@AFFIMAGE@(term_to_Variable(t_v, where),
-                               r,
+                               term_to_relation_symbol(t_r, where),
                                build_linear_expression(t_le, where),
                                term_to_Coefficient(t_d, where),
                                term_to_Coefficient(t_m, where));
@@ -906,9 +905,8 @@ ppl_@CLASS@_generalized_@AFFIMAGE@
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
-    Relation_Symbol r = term_to_relation_symbol(t_r, where);
     ph->generalized_@AFFIMAGE@(term_to_Variable(t_v, where),
-                               r,
+                               term_to_relation_symbol(t_r, where),
                                build_linear_expression(t_le, where),
                                term_to_Coefficient(t_d, where));
       return PROLOG_SUCCESS;
@@ -922,15 +920,14 @@ define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
 `extern "C" Prolog_foreign_return_type
 ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs
 (Prolog_term_ref t_ph,
- Prolog_term_ref t_lhs, Prolog_term_ref t_r, Prolog_term_ref t_rhs,
+ Prolog_term_ref t_r, Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
  Prolog_term_ref t_m) {
-  static const char* where = "ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs/5";
+ static const char* where = "ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs/5";
   try {
     Grid* ph = term_to_Grid_handle(t_ph, where);
     CHECK(ph);
-    Relation_Symbol r = term_to_relation_symbol(t_r, where);
     ph->generalized_@AFFIMAGE@(build_linear_expression(t_lhs, where),
-                               r,
+                               term_to_relation_symbol(t_r, where),
                                build_linear_expression(t_rhs, where),
                                term_to_Coefficient(t_m, where));
     return PROLOG_SUCCESS;
