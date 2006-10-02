@@ -1,5 +1,4 @@
 m4_divert(-1)
-m4_define(`dnl', `m4_dnl')
 
 dnl =====================================================================
 dnl ====== The following are application independent helper macros ======
@@ -544,4 +543,4 @@ m4_pre_all_classes_code`'dnl
 m4_all_classes_loop(1)`'dnl
 ')
 
-divert`'dnl
+m4_divert`'dnl
