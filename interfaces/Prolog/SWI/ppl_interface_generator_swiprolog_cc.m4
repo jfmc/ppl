@@ -1,6 +1,7 @@
+m4_define(`dnl', `m4_dnl')
 dnl This file generates ppl_swiprolog.cc.
 /* SWI Prolog interface.
-include(`ppl_interface_generator_copyright')`'dnl
+m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
 #define __STDC_LIMIT_MACROS
@@ -96,19 +97,19 @@ uninstall() {
   ppl_finalize();
 }
 dnl
-divert`'dnl
+m4_divert`'dnl
 dnl
 dnl Include common macros for generating system dependent code.
-include(`ppl_interface_generator_prolog_systems.m4')dnl
+m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 dnl
 dnl Redefine m4_extension as useful for SWI Prolog.
 dnl m4_extension(Predicate_Name, Arity)
 dnl Note: SPACES is just a marker to generated the two spaces of
 dnl indentation following it.
-define(`m4_extension', `dnl
+m4_define(`m4_extension', `dnl
 SPACES  PL_EXTENSION_ENTRY($1, $2)
 ')dnl
 dnl Now remove the marker SPACES.
-patsubst(ppl_prolog_sys_code, SPACES, `')dnl
+m4_patsubst(ppl_prolog_sys_code, SPACES, `')dnl
 dnl
 dnl End of file generation.

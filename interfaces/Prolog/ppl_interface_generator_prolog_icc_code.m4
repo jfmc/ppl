@@ -1,6 +1,6 @@
-divert(-1)dnl
+m4_divert(-1)dnl
 
-define(`m4_class_exception_handler_code',
+m4_define(`m4_class_exception_handler_code',
 `void
 handle_exception(const not_a_@CLASS@_handle& e) {
   Prolog_term_ref found = Prolog_new_term_ref();
@@ -22,7 +22,7 @@ handle_exception(const not_a_@CLASS@_handle& e) {
 
 ')
 
-define(`m4_term_to_class_handle_code', `dnl
+m4_define(`m4_term_to_class_handle_code', `dnl
 namespace {
 
 @CPP_CLASS@*
@@ -39,7 +39,7 @@ term_to_@CLASS@_handle(Prolog_term_ref t_ph, const char* where) {
 
 ')
 
-define(`m4_term_to_topology_Polyhedron_handle_code', `dnl
+m4_define(`m4_term_to_topology_Polyhedron_handle_code', `dnl
 namespace {
 
 inline @TOPOLOGY@Polyhedron*
@@ -52,7 +52,7 @@ term_to_@TOPOLOGY@Polyhedron_handle(Prolog_term_ref t_ph, const char* where) {
 
 ')
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 (Prolog_term_ref t_nd, Prolog_term_ref t_uoe, Prolog_term_ref t_ph) {
@@ -84,7 +84,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 
 ')
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@
 (Prolog_term_ref t_ph_source, Prolog_term_ref t_ph) {
@@ -110,7 +110,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@
 
 ')
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s_code',
 `extern "C" Prolog_foreign_return_type
 ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s
 (Prolog_term_ref t_clist, Prolog_term_ref t_ph) {
@@ -143,7 +143,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s
 
 ')
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
 (Prolog_term_ref t_bb, Prolog_term_ref t_ph) {
@@ -222,7 +222,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
 
 ')
 
-define(`ppl_@CLASS@_swap_code',
+m4_define(`ppl_@CLASS@_swap_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   static const char* where = "ppl_@CLASS@_swap/2";
@@ -239,7 +239,7 @@ ppl_@CLASS@_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
 
 ')
 
-define(`ppl_delete_@CLASS@_code',
+m4_define(`ppl_delete_@CLASS@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_delete_@CLASS@(Prolog_term_ref t_ph) {
   static const char* where = "ppl_delete_@CLASS@/1";
@@ -254,7 +254,7 @@ ppl_delete_@CLASS@(Prolog_term_ref t_ph) {
 
 ')
 
-define(`ppl_@CLASS@_@DIMENSION@_code',
+m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@DIMENSION@(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
   static const char* where = "ppl_@CLASS@_@DIMENSION@/2";
@@ -269,7 +269,7 @@ ppl_@CLASS@_@DIMENSION@(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
 
 ')
 
-define(`ppl_@CLASS@_get_@DESCRIBE@s_code',
+m4_define(`ppl_@CLASS@_get_@DESCRIBE@s_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_get_@DESCRIBE@s
 (Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
@@ -293,7 +293,7 @@ ppl_@CLASS@_get_@DESCRIBE@s
 
 ')
 
-define(`ppl_@CLASS@_get_minimized_@DESCRIBE@s_code',
+m4_define(`ppl_@CLASS@_get_minimized_@DESCRIBE@s_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_get_minimized_@DESCRIBE@s
 (Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
@@ -317,7 +317,7 @@ ppl_@CLASS@_get_minimized_@DESCRIBE@s
 
 ')
 
-define(`ppl_@CLASS@_get_disjuncts_code',
+m4_define(`ppl_@CLASS@_get_disjuncts_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_get_disjuncts(Prolog_term_ref t_pps,
 			  Prolog_term_ref t_dlist) {
@@ -345,7 +345,7 @@ ppl_@CLASS@_get_disjuncts(Prolog_term_ref t_pps,
 ')
 
 
-define(`ppl_@CLASS@_relation_with_@DESCRIBE@_code',
+m4_define(`ppl_@CLASS@_relation_with_@DESCRIBE@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_relation_with_@DESCRIBE@
 (Prolog_term_ref t_ph, Prolog_term_ref t_c, Prolog_term_ref t_r) {
@@ -362,7 +362,7 @@ relation_with_@DESCRIBE@_code`'
 
 ')
 
-define(`relation_with_constraint_code', `
+m4_define(`relation_with_constraint_code', `
     Poly_Con_Relation r = ph->relation_with(build_constraint(t_c, where));
 
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -395,7 +395,7 @@ define(`relation_with_constraint_code', `
     }
 ')
 
-define(`relation_with_congruence_code', `
+m4_define(`relation_with_congruence_code', `
     Poly_Con_Relation r = ph->relation_with(build_congruence(t_c, where));
 
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -422,7 +422,7 @@ define(`relation_with_congruence_code', `
     }
 ')
 
-define(`relation_with_generator_code', `
+m4_define(`relation_with_generator_code', `
     Poly_Gen_Relation r = ph->relation_with(build_generator(t_c, where));
 
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -437,7 +437,7 @@ define(`relation_with_generator_code', `
     }
 ')
 
-define(`relation_with_grid_generator_code', `
+m4_define(`relation_with_grid_generator_code', `
     Poly_Gen_Relation r = ph->relation_with(build_grid_generator(t_c, where));
 
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -452,7 +452,7 @@ define(`relation_with_grid_generator_code', `
     }
 ')
 
-define(`ppl_Grid_get_bounding_box_code',
+m4_define(`ppl_Grid_get_bounding_box_code',
 `extern "C" Prolog_foreign_return_type
 ppl_Grid_get_bounding_box
 (Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
@@ -476,7 +476,7 @@ ppl_Grid_get_bounding_box
 
 ')
 
-define(`ppl_Grid_get_@BOX@_code',
+m4_define(`ppl_Grid_get_@BOX@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_Grid_get_@BOX@
 (Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
@@ -500,7 +500,7 @@ ppl_Grid_get_@BOX@
 
 ')
 
-define(`ppl_@CLASS@_get_@BOX@_code',
+m4_define(`ppl_@CLASS@_get_@BOX@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_get_@BOX@
 (Prolog_term_ref t_ph, Prolog_term_ref t_cc, Prolog_term_ref t_bb) {
@@ -533,7 +533,7 @@ ppl_@CLASS@_get_@BOX@
 
 ')
 
-define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
+m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@HAS_PROPERTY@(Prolog_term_ref t_ph) {
   static const char* where = "ppl_@CLASS@_@HAS_PROPERTY@/1";
@@ -548,7 +548,7 @@ ppl_@CLASS@_@HAS_PROPERTY@(Prolog_term_ref t_ph) {
 
 ')
 
-define(`ppl_@CLASS@_@SIMPLIFY@_code',
+m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@SIMPLIFY@(Prolog_term_ref t_ph) {
   static const char* where = "ppl_@CLASS@_@SIMPLIFY@/1";
@@ -563,7 +563,7 @@ ppl_@CLASS@_@SIMPLIFY@(Prolog_term_ref t_ph) {
 
 ')
 
-define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
+m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@
 (Prolog_term_ref t_ph, Prolog_term_ref t_expr) {
@@ -580,7 +580,7 @@ ppl_@CLASS@_bounds_from_@ABOVEBELOW@
 
 ')
 
-define(`ppl_@CLASS@_@MAXMIN@_code',
+m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@MAXMIN@
 (Prolog_term_ref t_ph, Prolog_term_ref t_le_expr,
@@ -609,7 +609,7 @@ ppl_@CLASS@_@MAXMIN@
 
 ')
 
-define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
+m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@MAXMIN@_with_point
 (Prolog_term_ref t_ph, Prolog_term_ref t_le_expr,
@@ -640,7 +640,7 @@ ppl_@CLASS@_@MAXMIN@_with_point
 
 ')
 
-define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
+m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@COMPARISON@_@CLASS@
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
@@ -658,7 +658,7 @@ ppl_@CLASS@_@COMPARISON@_@CLASS@
 
 ')
 
-define(`ppl_@CLASS@_equals_@CLASS@_code',
+m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_equals_@CLASS@
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
@@ -676,7 +676,7 @@ ppl_@CLASS@_equals_@CLASS@
 
 ')
 
-define(`ppl_@CLASS@_OK_code',
+m4_define(`ppl_@CLASS@_OK_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_OK(Prolog_term_ref t_ph) {
   static const char* where = "ppl_@CLASS@_OK/1";
@@ -691,7 +691,7 @@ ppl_@CLASS@_OK(Prolog_term_ref t_ph) {
 
 ')
 
-define(`ppl_@CLASS@_add_@REPRESENT@_code',
+m4_define(`ppl_@CLASS@_add_@REPRESENT@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_add_@REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
   static const char* where = "ppl_@CLASS@_add_@REPRESENT@/2";
@@ -706,7 +706,7 @@ ppl_@CLASS@_add_@REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
 
 ')
 
-define(`ppl_@CLASS@_add_disjunct_code',
+m4_define(`ppl_@CLASS@_add_disjunct_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
   static const char* where = "ppl_@CLASS@_add_disjunct/2";
@@ -723,7 +723,7 @@ ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
 
 ')
 
-define(`ppl_@CLASS@_add_@REPRESENT@_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@REPRESENT@_and_minimize_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_add_@REPRESENT@_and_minimize
 (Prolog_term_ref t_ph, Prolog_term_ref t_c) {
@@ -739,7 +739,7 @@ ppl_@CLASS@_add_@REPRESENT@_and_minimize
 
 ')
 
-define(`ppl_@CLASS@_add_@REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_@REPRESENT@s_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_add_@REPRESENT@s
 (Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
@@ -766,7 +766,7 @@ ppl_@CLASS@_add_@REPRESENT@s
 
 ')
 
-define(`ppl_@CLASS@_add_@REPRESENT@s_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@REPRESENT@s_and_minimize_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_add_@REPRESENT@s_and_minimize
 (Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
@@ -793,7 +793,7 @@ ppl_@CLASS@_add_@REPRESENT@s_and_minimize
 
 ')
 
-define(`bop_assign_code',
+m4_define(`bop_assign_code',
 `namespace {
 
 Prolog_foreign_return_type
@@ -833,7 +833,7 @@ bop_assign_and_minimize(Prolog_term_ref t_lhs,
 
 ')
 
-define(`ppl_@CLASS@_@BINOP@_code',
+m4_define(`ppl_@CLASS@_@BINOP@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@BINOP@
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
@@ -843,7 +843,7 @@ ppl_@CLASS@_@BINOP@
 
 ')
 
-define(`ppl_@CLASS@_@BINMINOP@_code',
+m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@BINMINOP@
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
@@ -854,7 +854,7 @@ ppl_@CLASS@_@BINMINOP@
 
 ')
 
-define(`ppl_@CLASS@_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@AFFIMAGE@
 (Prolog_term_ref t_ph,
@@ -873,7 +873,7 @@ ppl_@CLASS@_@AFFIMAGE@
 
 ')
 
-define(`ppl_Grid_generalized_@AFFIMAGE@_code',
+m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_Grid_generalized_@AFFIMAGE@
 (Prolog_term_ref t_ph,
@@ -895,7 +895,7 @@ ppl_Grid_generalized_@AFFIMAGE@
 
 ')
 
-define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_generalized_@AFFIMAGE@
 (Prolog_term_ref t_ph,
@@ -916,7 +916,7 @@ ppl_@CLASS@_generalized_@AFFIMAGE@
 
 ')
 
-define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
+m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
 `extern "C" Prolog_foreign_return_type
 ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs
 (Prolog_term_ref t_ph,
@@ -937,7 +937,7 @@ ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs
 
 ')
 
-define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs
 (Prolog_term_ref t_ph,
@@ -957,7 +957,7 @@ ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs
 
 ')
 
-define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_bounded_@AFFIMAGE@
 (Prolog_term_ref t_ph,
@@ -978,7 +978,7 @@ ppl_@CLASS@_bounded_@AFFIMAGE@
 
 ')
 
-define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
@@ -999,7 +999,7 @@ ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
 
 ')
 
-define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@WIDEN@_widening_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
@@ -1018,7 +1018,7 @@ ppl_@CLASS@_@WIDEN@_widening_assign
 ')
 
 dnl FIXME: Polyhedra_Powerset widening = TODO
-define(`ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign_code',
+m4_define(`ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
@@ -1030,7 +1030,7 @@ ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign
 
 ')
 
-define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist,
@@ -1062,7 +1062,7 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 
 ')
 
-define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign
 (Prolog_term_ref t_lhs, Prolog_term_ref t_rhs, Prolog_term_ref t_clist) {
@@ -1091,7 +1091,7 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign
 
 ')
 
-define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
+m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@
 (Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
@@ -1108,7 +1108,7 @@ ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@
 
 ')
 
-define(`ppl_@CLASS@_remove_space_dimensions_code',
+m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_remove_space_dimensions
 (Prolog_term_ref t_ph, Prolog_term_ref t_vlist) {
@@ -1134,7 +1134,7 @@ ppl_@CLASS@_remove_space_dimensions
 
 ')
 
-define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
+m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_remove_higher_space_dimensions
 (Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
@@ -1151,7 +1151,7 @@ ppl_@CLASS@_remove_higher_space_dimensions
 
 ')
 
-define(`ppl_@CLASS@_expand_space_dimension_code',
+m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_expand_space_dimension
 (Prolog_term_ref t_ph, Prolog_term_ref t_v, Prolog_term_ref t_nd) {
@@ -1168,7 +1168,7 @@ ppl_@CLASS@_expand_space_dimension
 
 ')
 
-define(`ppl_@CLASS@_fold_space_dimensions_code',
+m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_fold_space_dimensions
 (Prolog_term_ref t_ph, Prolog_term_ref t_vlist, Prolog_term_ref t_v) {
@@ -1194,7 +1194,7 @@ ppl_@CLASS@_fold_space_dimensions
 
 ')
 
-define(`ppl_@CLASS@_map_space_dimensions_code',
+m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_map_space_dimensions
 (Prolog_term_ref t_ph, Prolog_term_ref t_pfunc) {

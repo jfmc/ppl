@@ -1,6 +1,7 @@
+m4_define(`dnl', `m4_dnl')
 dnl This file generates ppl_sicstus_sd.cc.
 /* SICStus Prolog interface: system-dependent part.
-include(`ppl_interface_generator_copyright')`'dnl
+m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
 #include "ppl.hh"
@@ -190,7 +191,7 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
   return name(arg1, arg2, arg3, arg4, arg5, arg6); \
 }
 
-divert(1)
+m4_divert(1)
 #define SP_DEFINE_C_PREDICATE(name, arity) \
   SP_define_c_predicate(#name, arity, "user", sp_stub_##name, NULL)
 
@@ -205,7 +206,7 @@ ppl_sicstus_init(int /* when */) {
       return;
     }
   }
-divert(2)dnl
+m4_divert(2)dnl
 }
 
 extern "C" void
@@ -217,25 +218,25 @@ ppl_sicstus_deinit(int /* when */) {
   ppl_finalize();
 }
 dnl
-divert`'dnl
+m4_divert`'dnl
 dnl
 dnl Include common macros for generating system dependent code.
-include(`ppl_interface_generator_prolog_systems.m4')dnl
+m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 dnl
 dnl Redefine m4_extension to generate SICStus stubs.
 dnl m4_extension(Predicate_Name, Arity)
-define(`m4_extension', `dnl
+m4_define(`m4_extension', `dnl
 SP_STUB_$2($1)
 ')dnl
 dnl Generate stubs.
 ppl_prolog_sys_code`'dnl
-undivert(1)`'dnl
+m4_undivert(1)`'dnl
 dnl
-divert`'dnl
+m4_divert`'dnl
 dnl
 dnl Redefine m4_extension to generate SICStus user predicates.
 dnl m4_extension(Predicate_Name, Arity)
-define(`m4_extension', `dnl
+m4_define(`m4_extension', `dnl
   SP_DEFINE_C_PREDICATE($1, $2);
 ')dnl
 dnl Generate user predicates.

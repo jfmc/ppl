@@ -1,6 +1,6 @@
-divert(-1)dnl
+m4_divert(-1)dnl
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension
 (ppl_@CLASS@_t* pph,
@@ -13,7 +13,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@
 (ppl_@CLASS@_t* pph,
@@ -27,7 +27,7 @@ CATCH_ALL;
 
 ')
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_from_@UREPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@UREPRESENT@_System_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_@UREPRESENT@_System
 (ppl_@CLASS@_t* pph, ppl_const_@UREPRESENT@_System_t cs) try {
@@ -39,7 +39,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UREPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UREPRESENT@_System_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@UREPRESENT@_System
 (ppl_@CLASS@_t* pph, ppl_@UREPRESENT@_System_t cs) try {
@@ -51,7 +51,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
 `int
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
 (ppl_@CLASS@_t* pph,
@@ -72,7 +72,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_delete_@CLASS@_code',
+m4_define(`ppl_delete_@CLASS@_code',
 `int
 ppl_delete_@CLASS@(ppl_const_@CLASS@_t ph) try {
   delete to_const(ph);
@@ -82,7 +82,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@_code',
+m4_define(`ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@_code',
 `int
 ppl_assign_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@
 (ppl_@CLASS@_t dst,
@@ -98,7 +98,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_@DIMENSION@_code',
+m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 `int
 ppl_@CLASS@_@DIMENSION@
 (ppl_const_@CLASS@_t ph,
@@ -110,7 +110,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_@DESCRIBE@s_code',
+m4_define(`ppl_@CLASS@_@DESCRIBE@s_code',
 `int
 ppl_@CLASS@_@DESCRIBE@s
 (ppl_const_@CLASS@_t ph,
@@ -124,7 +124,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_minimized_@DESCRIBE@s_code',
+m4_define(`ppl_@CLASS@_minimized_@DESCRIBE@s_code',
 `int
 ppl_@CLASS@_minimized_@DESCRIBE@s
 (ppl_const_@CLASS@_t ph,
@@ -138,7 +138,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_relation_with_@UDESCRIBE@_code',
+m4_define(`ppl_@CLASS@_relation_with_@UDESCRIBE@_code',
 `int
 ppl_@CLASS@_relation_with_@UDESCRIBE@
 (ppl_const_@CLASS@_t ph,
@@ -151,7 +151,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
+m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 `int
 ppl_@CLASS@_@HAS_PROPERTY@(ppl_const_@CLASS@_t ph) try {
   const @CPP_CLASS@& pph = *to_const(ph);
@@ -161,7 +161,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
+m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `int
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@
 (ppl_const_@CLASS@_t ph,
@@ -174,7 +174,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_@MAXMIN@_code',
+m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `int
 ppl_@CLASS@_@MAXMIN@
 (ppl_const_@CLASS@_t ph,
@@ -198,7 +198,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_shrink_@BOX@_code',
+m4_define(`ppl_@CLASS@_shrink_@BOX@_code',
 `int
 ppl_@CLASS@_shrink_@BOX@
 (ppl_const_@CLASS@_t ph,
@@ -224,7 +224,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
+m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `int
 ppl_@CLASS@_@COMPARISON@_@CLASS@
 (ppl_const_@CLASS@_t x,
@@ -238,7 +238,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_equals_@CLASS@_code',
+m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
 `int
 ppl_@CLASS@_equals_@CLASS@
 (ppl_const_@CLASS@_t x,
@@ -251,7 +251,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_OK_code',
+m4_define(`ppl_@CLASS@_OK_code',
 `int
 ppl_@CLASS@_OK(ppl_const_@CLASS@_t ph) try {
   return to_const(ph)->OK() ? 1 : 0;
@@ -260,7 +260,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_topological_closure_assign_code',
+m4_define(`ppl_@CLASS@_topological_closure_assign_code',
 `int
 ppl_@CLASS@_topological_closure_assign(ppl_@CLASS@_t ph) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
@@ -271,7 +271,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_@BINOP@_code',
+m4_define(`ppl_@CLASS@_@BINOP@_code',
 `int
 ppl_@CLASS@_@BINOP@
 (ppl_@CLASS@_t x,
@@ -285,7 +285,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_@BINMINOP@_code',
+m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 `int
 ppl_@CLASS@_@BINMINOP@
 (ppl_@CLASS@_t x,
@@ -298,7 +298,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_add_@REPRESENT@_code',
+m4_define(`ppl_@CLASS@_add_@REPRESENT@_code',
 `int
 ppl_@CLASS@_add_@REPRESENT@
 (ppl_@CLASS@_t ph,
@@ -312,7 +312,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_add_@REPRESENT@_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@REPRESENT@_and_minimize_code',
 `int
 ppl_@CLASS@_add_@REPRESENT@_and_minimize
 (ppl_@CLASS@_t ph,
@@ -325,7 +325,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_add_@REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_@REPRESENT@s_code',
 `int
 ppl_@CLASS@_add_@REPRESENT@s
 (ppl_@CLASS@_t ph,
@@ -339,7 +339,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_add_@REPRESENT@s_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@REPRESENT@s_and_minimize_code',
 `int
 ppl_@CLASS@_add_@REPRESENT@s_and_minimize
 (ppl_@CLASS@_t ph,
@@ -352,7 +352,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_add_recycled_@REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_recycled_@REPRESENT@s_code',
 `int
 ppl_@CLASS@_add_recycled_@REPRESENT@s
 (ppl_@CLASS@_t ph,
@@ -366,7 +366,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_add_recycled_@REPRESENT@s_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_recycled_@REPRESENT@s_and_minimize_code',
 `int
 ppl_@CLASS@_add_recycled_@REPRESENT@s_and_minimize
 (ppl_@CLASS@_t ph,
@@ -379,7 +379,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `int
 ppl_@CLASS@_@AFFIMAGE@
 (ppl_@CLASS@_t ph,
@@ -396,7 +396,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `int
 ppl_@CLASS@_bounded_@AFFIMAGE@
 (ppl_@CLASS@_t ph,
@@ -415,7 +415,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_code',
 `int
 ppl_@CLASS@_generalized_@AFFIMAGE@
 (ppl_@CLASS@_t ph,
@@ -434,7 +434,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `int
 ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs
 (ppl_@CLASS@_t ph,
@@ -451,7 +451,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `int
 ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
 (ppl_@CLASS@_t x,
@@ -466,7 +466,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `int
 ppl_@CLASS@_@WIDEN@_widening_assign
 (ppl_@CLASS@_t x,
@@ -477,7 +477,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `int
 ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 (ppl_@CLASS@_t x,
@@ -494,7 +494,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_code',
 `int
 ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign
 (ppl_@CLASS@_t x,
@@ -508,7 +508,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `int
 ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens
 (ppl_@CLASS@_t x,
@@ -525,7 +525,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_code',
 `int
 ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign
 (ppl_@CLASS@_t x,
@@ -539,7 +539,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
+m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `int
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@
 (ppl_@CLASS@_t ph,
@@ -552,7 +552,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_remove_space_dimensions_code',
+m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
 `int
 ppl_@CLASS@_remove_space_dimensions
 (ppl_@CLASS@_t ph,
@@ -569,7 +569,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
+m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `int
 ppl_@CLASS@_remove_higher_space_dimensions
 (ppl_@CLASS@_t ph,
@@ -582,7 +582,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_map_space_dimensions_code',
+m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 `int
 ppl_@CLASS@_map_space_dimensions
 (ppl_@CLASS@_t ph,
@@ -597,7 +597,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_expand_space_dimension_code',
+m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 `int
 ppl_@CLASS@_expand_space_dimension
 (ppl_@CLASS@_t ph,
@@ -611,7 +611,7 @@ CATCH_ALL
 
 ')
 
-define(`ppl_@CLASS@_fold_space_dimensions_code',
+m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 `int
 ppl_@CLASS@_fold_space_dimensions
 (ppl_@CLASS@_t ph,

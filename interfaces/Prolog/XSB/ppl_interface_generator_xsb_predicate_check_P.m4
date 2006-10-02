@@ -1,6 +1,7 @@
+m4_define(`dnl', `m4_dnl')
 dnl This file generates ppl_ciao_predicate_check.pl
 /* XSB Prolog interface: XSB Prolog part for checking all predicates.
-include(`ppl_interface_generator_copyright')
+m4_include(`ppl_interface_generator_copyright')
 */
 
 :- compiler_options([xpp_on]).
@@ -9,7 +10,7 @@ include(`ppl_interface_generator_copyright')
 
 :- import append/3, length/2, member/2 from basics.
 :- import
-divert(1)
+m4_divert(1)
    from ppl_xsb.
 
 :- [ppl_xsb].
@@ -27,9 +28,9 @@ main :-
     nl.
 
 :- main.
-divert`'dnl
-include(`ppl_interface_generator_prolog_systems.m4')dnl
-define(`m4_extension', `ifelse($4, 0, , `COMMA
+m4_divert`'dnl
+m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
+m4_define(`m4_extension', `m4_ifelse($4, 0, , `COMMA
 ')	  $1/$2')dnl
-patsubst(ppl_prolog_sys_code, COMMA, `,')`'dnl
-undivert(1)`'dnl
+m4_patsubst(ppl_prolog_sys_code, COMMA, `,')`'dnl
+m4_undivert(1)`'dnl

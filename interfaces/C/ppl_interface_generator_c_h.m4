@@ -1,11 +1,12 @@
+m4_define(`dnl', `m4_dnl')
 dnl This file is to generate ppl_c.h.
 dnl
 dnl Include files defining macros that generate the non-fixed part.
-include(`ppl_interface_generator_c_h_code.m4')dnl
-include(`ppl_interface_generator_common.m4')dnl
-include(`ppl_interface_generator_c_dat.m4')dnl
+m4_include(`ppl_interface_generator_c_h_code.m4')dnl
+m4_include(`ppl_interface_generator_common.m4')dnl
+m4_include(`ppl_interface_generator_c_dat.m4')dnl
 dnl
-divert(-1)dnl
+m4_divert(-1)dnl
 
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
@@ -26,10 +27,10 @@ PPL_DECLARE_OUTPUT_FUNCTIONS(m4_interface_class$1)
 /*@}*/ /* Functions Related to m4_interface_class$1 */
 ')
 
-divert`'dnl
+m4_divert`'dnl
 dnl
 dnl Output the fixed preamble.
-include(`ppl_interface_generator_c_h_preamble')
+m4_include(`ppl_interface_generator_c_h_preamble')
 dnl
 dnl Generate the non-fixed part of the file.
 m4_all_classes_code`'dnl

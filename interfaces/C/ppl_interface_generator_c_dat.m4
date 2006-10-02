@@ -1,7 +1,7 @@
 divert(-1)
 
 dnl Include the language independent `dat' information.
-include(`ppl_interface_generator_common_dat.m4')
+m4_include(`ppl_interface_generator_common_dat.m4')
 
 dnl m4_procedure_list
 dnl This class using patterns wherever possible.
@@ -18,7 +18,7 @@ dnl Note that the code for the schema "<name>_code" must be defined
 dnl in the ppl_interface_generator_*_code.m4 file.
 dnl The <name> must be exactly as written here.
 dnl
-define(`m4_procedure_list', `dnl
+m4_define(`m4_procedure_list', `dnl
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension +simple,
 ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@ +simple,
 ppl_new_@TOPOLOGY@@CLASS@_from_@UREPRESENT@_System +simple,
@@ -72,5 +72,5 @@ ppl_@CLASS@_fold_space_dimensions +simple -wr_shape,
 ppl_@CLASS@_map_space_dimensions +simple
 ')
 
-divert`'dnl
+m4_divert`'dnl
 
