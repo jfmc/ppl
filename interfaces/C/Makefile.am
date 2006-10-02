@@ -75,11 +75,11 @@ interface_generator_dependencies = \
 $(interface_generator_files)
 
 ppl_c.h: $(interface_generator_dependencies) Makefile
-	m4 -I.. -I$(srcdir) -I$(srcdir)/.. \
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_h.m4 > $@
 
 ppl_c.cc: $(interface_generator_dependencies) Makefile
-	m4 -I.. -I$(srcdir) -I$(srcdir)/.. \
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_c_cc.m4 > $@
 
 AM_CPPFLAGS = \

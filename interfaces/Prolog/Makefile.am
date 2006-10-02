@@ -48,5 +48,5 @@ ppl_interface_generator_prolog_icc_code.m4 \
 ppl_interface_generator_prolog_icc_preamble
 
 ppl_prolog.icc: $(interface_generator_dependencies) Makefile
-	m4 -I.. -I$(srcdir) -I$(srcdir)/.. \
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_prolog_icc.m4 > $@

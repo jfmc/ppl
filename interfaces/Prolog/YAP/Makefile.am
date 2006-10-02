@@ -41,7 +41,7 @@ interface_generator_dependencies = \
 ppl_interface_generator_yap_cc.m4
 
 ppl_yap.cc: $(interface_generator_dependencies) Makefile
-	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_yap_cc.m4 > $@
 
 if ENABLE_SHARED

@@ -52,11 +52,11 @@ interface_generator_dependencies = \
 ../ppl_interface_generator_prolog_systems.m4
 
 ppl_xsb.H: $(interface_generator_dependencies) ppl_interface_generator_xsb_H.m4 Makefile
-	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_H.m4 > $@
 
 ppl_xsb.cc: $(interface_generator_dependencies) ppl_interface_generator_xsb_cc.m4 Makefile
-	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_xsb_cc.m4 > $@
 
 AM_CPPFLAGS = \

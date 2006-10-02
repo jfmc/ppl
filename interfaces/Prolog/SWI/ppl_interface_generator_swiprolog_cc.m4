@@ -80,7 +80,7 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
 namespace {
 
 PL_extension predicates[] = {
-divert(1)dnl
+m4_divert(1)dnl
   { NULL, 0, NULL, 0 }
 };
 

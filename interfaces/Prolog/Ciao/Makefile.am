@@ -57,7 +57,7 @@ interface_generator_dependencies = \
 ppl_interface_generator_ciao_pl.m4
 
 ppl_ciao.pl: $(interface_generator_dependencies) Makefile
-	m4 -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_ciao_pl.m4 > $@
 
 ppl_ciao.po: ppl_ciao.pl
