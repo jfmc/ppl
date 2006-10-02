@@ -904,7 +904,7 @@ ppl_@CLASS@_generalized_@AFFIMAGE@
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
-    Relation_Symbol r = term_to_relation_symbol(t_r);
+    Relation_Symbol r = term_to_relation_symbol(t_r, where);
     ph->generalized_@AFFIMAGE@(term_to_Variable(t_v, where),
                                r,
                                build_linear_expression(t_le, where),
@@ -943,7 +943,7 @@ ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
-    Relation_Symbol r = term_to_relation_symbol(t_r);
+    Relation_Symbol r = term_to_relation_symbol(t_r, where);
     ph->generalized_@AFFIMAGE@(build_linear_expression(t_lhs, where),
                                r,
                                build_linear_expression(t_rhs, where));
