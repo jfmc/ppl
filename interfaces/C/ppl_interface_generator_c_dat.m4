@@ -1,4 +1,4 @@
-divert(-1)
+m4_divert(-1)
 
 dnl Include the language independent `dat' information.
 m4_include(`ppl_interface_generator_common_dat.m4')
