@@ -312,7 +312,7 @@ PPL::MIP_Problem::set_integer_space_dimensions(const Variables_Set& i_vars) {
 				  "incompatible.");
     i_variables.insert(*i_vars_begin);
   }
-  // If a new integral Variable is inserted, set the internal status to
+  // If a new integral variable is inserted, set the internal status to
   // PARTIALLY_SATISFIABLE.
   if (i_variables.size() != i_vars_original_size && status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
@@ -335,11 +335,11 @@ PPL::MIP_Problem::merge_split_variables(dimension_type var_index,
   const dimension_type column = mapping[var_index].second;
 
   for (dimension_type i = 0; i < tableau_nrows; ++i) {
-    // In the following case the negative side of the split Variable is
+    // In the following case the negative side of the split variable is
     // in base: this means that the constraint will be nonfeasible.
     if (base[i] == mapping[var_index].second) {
       // CHECKME: I do not know if is possible that the positive and the
-      // negative part of a split Variable can be together in base: it
+      // negative part of a split variable can be together in base: it
       // seems that this case is not possible. The algorithm i have written
       // requires that condition.
       // This code is run only for testing purposes.
@@ -552,7 +552,7 @@ PPL::MIP_Problem::parse_constraints(dimension_type& tableau_num_rows,
       // Case 7: apply method C.
       else if (sgn_a > 0) {
 	// This is the most important case in the incrementality solving:
-	// merge two Variables.
+	// merge two variables.
 	if (!nonnegative_variable[nonzero_var_index]) {
 	  nonnegative_variable[nonzero_var_index] = true;
 	  --tableau_num_cols;
@@ -599,7 +599,7 @@ PPL::MIP_Problem::process_pending_constraints() {
     const dimension_type space_diff = external_space_dim - internal_space_dim;
     for (dimension_type i = 0, j = 0; i < space_diff; ++i, ++j) {
       // Set `mapping' properly to store that every variable is split.
-      // In the following case the value of the original Variable can be
+      // In the following case the value of the original variable can be
       // negative.
       if (!nonnegative_variable[internal_space_dim+i]) {
 	mapping.push_back(std::make_pair(first_free_tableau_index+j,
@@ -1508,7 +1508,7 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
 bool
 PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
 					    dimension_type& branching_index) {
-  // Insert here the Variables that don't satisfy the integrality condition.
+  // Insert here the variables that don't satisfy the integrality condition.
   const Constraint_Sequence& input_cs = mip.input_cs;
   const Generator& last_generator = mip.last_generator;
   const Coefficient& last_generator_divisor = last_generator.divisor();
@@ -1536,7 +1536,7 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
   dimension_type current_num_appearances = 0;
   dimension_type winning_num_appearances = 0;
 
-  // For every candidate Varible, check how many times this appear in the
+  // For every candidate variable, check how many times this appear in the
   // active constraints.
   for (Variables_Set::const_iterator v_it = candidate_variables.begin(),
 	 v_end = candidate_variables.end(); v_it != v_end; ++v_it) {
@@ -1684,7 +1684,7 @@ PPL::MIP_Problem::OK() const {
     // FIXME: temporarly commented out. This should be called only
     // when we have really in integer solutions, and not when we are
     // solving the problem with the `branch and bound' technique.
-    // // Check that every integer declared Variable is really integer.
+    // // Check that every integer declared variable is really integer.
     //     // in the solution found.
     //     TEMP_INTEGER(gcd);
     //       for (Variables_Set::const_iterator v_begin = i_variables.begin(),
