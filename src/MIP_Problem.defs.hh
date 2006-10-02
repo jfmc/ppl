@@ -628,9 +628,21 @@ private:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if constraint \p c is
-    satisfied by \p last_generator.
+    satisfied by \p g.
+
+    \param c
+    The constraint that has to be satisfied by \g.
+
+    \param g
+    The generator that must satisfy \p c.
+
+    \param check_equality
+    If set to <CODE>true</CODE>, treats inequalities as equalities.
+    Uset to check `active constraints'.
   */
-  bool is_satisfied(const Constraint& c) const;
+
+  static bool is_satisfied(const Constraint& c, const Generator& g,
+			   bool check_equality = false);
 
   static MIP_Problem_Status solve_mip(bool& have_provisional_optimum,
 				      mpq_class& provisional_optimum_value,
@@ -640,6 +652,20 @@ private:
   bool is_lp_satisfiable() const;
 
   static bool is_mip_satisfiable(MIP_Problem& mip, Generator& p);
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only `last_generator' satisfies all the
+    integrality coditions.
+
+    \param mip
+    The MIP_Problem.
+
+    \param branching_index
+    If <CODE>false</CODE> is returned, this will encode the Variable index on
+    which must be applied the `branch and bound` algorithm.
+  */
+  static bool choose_branching_variable(const MIP_Problem& mip,
+					dimension_type& branching_index);
 };
 
 namespace std {

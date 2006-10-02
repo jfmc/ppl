@@ -43,6 +43,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT 1
 #endif
 
+#ifndef PPL_SIMPLEX_USE_MIP_HEURISTIC
+#define PPL_SIMPLEX_USE_MIP_HEURISTIC 1
+#endif
+
 namespace PPL = Parma_Polyhedra_Library;
 
 #if PPL_NOISY_SIMPLEX
@@ -381,12 +385,15 @@ PPL::MIP_Problem::merge_split_variables(dimension_type var_index,
 }
 
 bool
-PPL::MIP_Problem::is_satisfied(const Constraint& c) const {
+PPL::MIP_Problem::is_satisfied(const Constraint& c, const Generator& g,
+			       bool check_equality) {
   // Scalar_Products::sign() requires the second argument to be at least
   // as large as the first one.
-  int sp_sign = last_generator.space_dimension() <= c.space_dimension()
-    ? Scalar_Products::sign(last_generator, c)
-    : Scalar_Products::sign(c, last_generator);
+  int sp_sign = g.space_dimension() <= c.space_dimension()
+    ? Scalar_Products::sign(g, c)
+    : Scalar_Products::sign(c, g);
+  if (check_equality)
+    return sp_sign == 0;
   return c.is_inequality() ? sp_sign >= 0 : sp_sign == 0;
 }
 
@@ -461,7 +468,7 @@ PPL::MIP_Problem::parse_constraints(dimension_type& tableau_num_rows,
       // code works even if we do not have a feasible point.
       // Check for satisfiability of the inequality. This can be done if we
       // have a feasible point of *this.
-      if (cs_i.is_inequality() && is_satisfied(cs_i))
+      if (cs_i.is_inequality() && is_satisfied(cs_i, last_generator))
 	satisfied_ineqs[i] = true;
       continue;
     }
@@ -1499,11 +1506,59 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
 }
 
 bool
+PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
+					    dimension_type& branching_index) {
+  // Insert here the Variables that don't satisfy the integrality condition.
+  const Constraint_Sequence& input_cs = mip.input_cs;
+  const Generator& last_generator = mip.last_generator;
+  const Coefficient& last_generator_divisor = last_generator.divisor();
+  Variables_Set i_vars = mip.integer_space_dimensions();
+  Variables_Set candidate_variables;
+
+  TEMP_INTEGER(gcd);
+  for (Variables_Set::const_iterator v_it = i_vars.begin(),
+	 v_end = i_vars.end(); v_it != v_end; ++v_it) {
+    gcd_assign(gcd, last_generator.coefficient(*v_it), last_generator_divisor);
+    if (gcd != last_generator_divisor)
+      candidate_variables.insert(*v_it);
+  }
+  // If this set is empty, we have finished.
+  if (candidate_variables.empty())
+    return true;
+
+  // Check how many `active constraints' we have and track them.
+  const dimension_type input_cs_num_rows = input_cs.size();
+  std::deque<bool> satisfiable_constraints (input_cs_num_rows, false);
+  for (dimension_type i = input_cs_num_rows; i-- > 0; )
+    if (is_satisfied(input_cs[i], last_generator, true))
+      satisfiable_constraints[i] = true;
+
+  dimension_type current_num_appearances = 0;
+  dimension_type winning_num_appearances = 0;
+
+  // For every candidate Varible, check how many times this appear in the
+  // active constraints.
+  for (Variables_Set::const_iterator v_it = candidate_variables.begin(),
+	 v_end = candidate_variables.end(); v_it != v_end; ++v_it) {
+    current_num_appearances = 0;
+    for (dimension_type i = input_cs_num_rows; i-- > 0; )
+      if (satisfiable_constraints[i]
+	  && v_it->space_dimension() <= input_cs[i].space_dimension()
+	  && input_cs[i].coefficient(*v_it) != 0)
+	++current_num_appearances;
+    if (current_num_appearances >= winning_num_appearances) {
+      winning_num_appearances = current_num_appearances;
+      branching_index = v_it->id();
+    }
+  }
+  return false;
+}
+
+bool
 PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p) {
   // Solve the problem as a non MIP one, it must be done internally.
   if (!lp.is_lp_satisfiable())
     return false;
-
   mpq_class tmp_rational;
 
   TEMP_INTEGER(tmp_coeff1);
@@ -1511,9 +1566,14 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p) {
   p = lp.last_generator;
 
   bool found_satisfiable_generator = true;
-  TEMP_INTEGER(gcd);
-  const Coefficient& p_divisor = p.divisor();
   dimension_type nonint_dim;
+  const Coefficient& p_divisor = p.divisor();
+
+#if PPL_SIMPLEX_USE_MIP_HEURISTIC
+  found_satisfiable_generator = choose_branching_variable(lp, nonint_dim);
+#else
+
+  TEMP_INTEGER(gcd);
   Variables_Set i_vars = lp.integer_space_dimensions();
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
@@ -1524,8 +1584,11 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p) {
       break;
     }
   }
+#endif
+
   if (found_satisfiable_generator)
     return true;
+
 
   assert(nonint_dim < lp.space_dimension());
 
@@ -1609,7 +1672,7 @@ PPL::MIP_Problem::OK() const {
     }
 
     for (dimension_type i = 0; i < first_pending_constraint; ++i)
-      if (!is_satisfied(input_cs[i])) {
+      if (!is_satisfied(input_cs[i], last_generator)) {
 #ifndef NDEBUG
 	cerr << "The cached feasible point does not belong to "
 	     << "the feasible region of the MIP_Problem."
