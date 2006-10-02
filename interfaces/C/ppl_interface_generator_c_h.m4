@@ -10,7 +10,7 @@ m4_divert(-1)dnl
 
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
-define(`m4_pre_extra_class_code', `dnl
+m4_define(`m4_pre_extra_class_code', `dnl
 
 PPL_TYPE_DECLARATION(m4_interface_class$1);
 

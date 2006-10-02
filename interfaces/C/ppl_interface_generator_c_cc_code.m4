@@ -629,4 +629,4 @@ CATCH_ALL
 
 ')
 
-divert`'dnl
+m4_divert`'dnl
