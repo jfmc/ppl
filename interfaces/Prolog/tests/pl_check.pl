@@ -1011,7 +1011,7 @@ ppl_BD_Shape_int8_t_map_space_dimensions_test.
 make_vars(Dim, Var_List):-
   make_var_list(0, Dim, Var_List).
 make_var_list(Dim,Dim,[]):- !.
-make_var_list(I,Dim,[`$VAR'(I)|Var_List]):-
+make_var_list(I,Dim,['$VAR'(I)|Var_List]):-
   (I1 is I + 1,
   make_var_list(I1,Dim,Var_List)).
 
@@ -1029,14 +1029,14 @@ ppl_congruence_system_test_data(2, CS, [A]) :-
   CS = [A = 0].
 
 ppl_generator_system_test_data(1, GS, [A]) :-
-  GS = [point(), line(A)].
+  GS = [point, line(A)].
 
 ppl_generator_system_test_data(2, GS, [A]) :-
-   [point()].
+   GS = [point(A)].
 
 ppl_grid_generator_system_test_data(1, GS, [A]) :-
-  GS = [grid_point(), grid_line(A)].
+  GS = [grid_point, grid_line(A)].
 
 ppl_grid_generator_system_test_data(2, GS, [A]) :-
-   [grid_point()].
+   GS = [grid_point(A)].
 
