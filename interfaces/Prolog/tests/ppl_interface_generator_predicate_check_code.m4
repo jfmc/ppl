@@ -1,3 +1,4 @@
+m4_define(`dnl', `m4_dnl')
 dnl This file contains the schematic tests for the Prolog interface predicates.
 dnl
 dnl Note that to avoid m4 treating commas as m4 argument separators,
@@ -5,7 +6,7 @@ dnl all tests must be between `(' and `)'.
 dnl
 dnl First we define some test data.
 dnl
-define(`m4_test_data_code',
+m4_define(`m4_test_data_code',
 `
 ppl_constraints_test_data(1, CS, _) :-
   CS = [].
@@ -33,8 +34,8 @@ ppl_grid_generator_system_test_data(2, GS, [A]) :-
 
 ')
 
-define(`m4_var_list_code',
-`changequote(`{{', `}}')
+m4_define(`m4_var_list_code',
+`m4_changequote(`{{', `}}')
 % make_var_list(+I,+Dimension,?Variable_List)
 % constructs a list of variables with indices from I to Dimension - 1.
 % It is assumed that I =< Dimension.
@@ -46,10 +47,10 @@ make_var_list(I,Dim,[`$VAR'(I)|Var_List]):-
   (I1 is I + 1,
   make_var_list(I1,Dim,Var_List)).
 
-changequote`'dnl
+m4_changequote`'dnl
 ')
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_test :-
   (
@@ -59,7 +60,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_test :-
 
 ')
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
 `
 ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_test :-
   (
@@ -71,7 +72,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_test :-
 
 ')
 
-define(`ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s_code',
 `
 ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s_test :-
   (make_vars(1, Vs),
@@ -86,4 +87,4 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s_test :-
 ')
 
 
-divert`'dnl
+m4_divert`'dnl
