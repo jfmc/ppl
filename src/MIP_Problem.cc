@@ -1530,7 +1530,10 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
   const dimension_type input_cs_num_rows = input_cs.size();
   std::deque<bool> satisfiable_constraints (input_cs_num_rows, false);
   for (dimension_type i = input_cs_num_rows; i-- > 0; )
-    if (is_satisfied(input_cs[i], last_generator, true))
+    // An equality is an `active constraint' by definition.
+    // If we have an inequality, check if it is an `active constraint'.
+    if (input_cs[i].is_equality()
+	|| is_satisfied(input_cs[i], last_generator, true))
       satisfiable_constraints[i] = true;
 
   dimension_type current_num_appearances = 0;

@@ -662,7 +662,7 @@ private:
 
     \param branching_index
     If <CODE>false</CODE> is returned, this will encode the Variable index on
-    which must be applied the `branch and bound` algorithm.
+    which must be applied the `branch and bound' algorithm.
   */
   static bool choose_branching_variable(const MIP_Problem& mip,
 					dimension_type& branching_index);
