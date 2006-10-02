@@ -122,7 +122,9 @@ catch (const std::exception& e) {					\
 #if COEFFICIENT_BITS == 0
 
 #define DO_TEST_F64(test) DO_TEST(test)
+#define DO_TEST_F64A(test) DO_TEST(test)
 #define DO_TEST_F32(test) DO_TEST(test)
+#define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
@@ -130,28 +132,64 @@ catch (const std::exception& e) {					\
 
 #elif COEFFICIENT_BITS == 64
 
+#ifdef NDEBUG
+
 #define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST(test)
 #define DO_TEST_F32(test) DO_TEST(test)
+#define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
+
+#else
+
+#define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
+#define DO_TEST_F32(test) DO_TEST(test)
+#define DO_TEST_F32A(test) DO_TEST(test)
+#define DO_TEST_F16(test) DO_TEST(test)
+#define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8(test) DO_TEST(test)
+#define DO_TEST_F8A(test) DO_TEST(test)
+
+#endif // !defined(NDEBUG)
 
 #elif COEFFICIENT_BITS == 32
 
+#ifdef NDEBUG
+
 #define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
 #define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
+
+#else
+
+#define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
+#define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F32A(test) DO_TEST_F(test)
+#define DO_TEST_F16(test) DO_TEST(test)
+#define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8(test) DO_TEST(test)
+#define DO_TEST_F8A(test) DO_TEST(test)
+
+#endif // !defined(NDEBUG)
 
 #elif COEFFICIENT_BITS == 16
 
 #ifdef NDEBUG
 
 #define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
 #define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F32A(test) DO_TEST_F(test)
 #define DO_TEST_F16(test) DO_TEST_F(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
@@ -160,7 +198,9 @@ catch (const std::exception& e) {					\
 #else
 
 #define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
 #define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F32A(test) DO_TEST_F(test)
 #define DO_TEST_F16(test) DO_TEST_F(test)
 #define DO_TEST_F16A(test) DO_TEST_F(test)
 #define DO_TEST_F8(test) DO_TEST(test)
@@ -173,7 +213,9 @@ catch (const std::exception& e) {					\
 #ifdef NDEBUG
 
 #define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
 #define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F32A(test) DO_TEST_F(test)
 #define DO_TEST_F16(test) DO_TEST_F(test)
 #define DO_TEST_F16A(test) DO_TEST_F(test)
 #define DO_TEST_F8(test) DO_TEST_F(test)
@@ -182,7 +224,9 @@ catch (const std::exception& e) {					\
 #else
 
 #define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
 #define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F32A(test) DO_TEST_F(test)
 #define DO_TEST_F16(test) DO_TEST_F(test)
 #define DO_TEST_F16A(test) DO_TEST_F(test)
 #define DO_TEST_F8(test) DO_TEST_F(test)
