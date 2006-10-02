@@ -20,7 +20,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = OCaml C Prolog
+SUBDIRS = C Prolog
 
 REQUIRED_INSTANTIATIONS = \
 @required_instantiations@
