@@ -1462,8 +1462,8 @@ PPL::MIP_Problem::solve_mip(bool& have_incument_solution,
     if (have_incument_solution
 	&& ((lp.optimization_mode() == MAXIMIZATION
  	     && tmp_rational <= incument_solution_value)
- 	    || lp.optimization_mode() == MINIMIZATION
-	    && tmp_rational >= incument_solution_value))
+ 	    || (lp.optimization_mode() == MINIMIZATION
+		&& tmp_rational >= incument_solution_value)))
       // Abandon this path.
       return lp_status;
   }
