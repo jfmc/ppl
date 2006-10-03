@@ -583,13 +583,6 @@ Octagonal_Shape<T>::is_universe() const {
 
 template <typename T>
 bool
-Octagonal_Shape<T>::is_discrete() const {
-  // FIXME!
-  return false;
-}
-
-template <typename T>
-bool
 Octagonal_Shape<T>::is_bounded() const {
   strong_closure_assign();
   // A zero-dimensional or empty octagon is bounded.

@@ -56,6 +56,7 @@ check_PROGRAMS = \
 	constraints1 \
 	contains1 \
 	containsintegerpoint1 \
+	discrete1 \
 	disjoint1 \
 	empty1 \
 	fromgensys1 \
@@ -153,6 +154,8 @@ constraints1_SOURCES = constraints1.cc
 contains1_SOURCES = contains1.cc
 
 containsintegerpoint1_SOURCES = containsintegerpoint1.cc
+
+discrete1_SOURCES = discrete1.cc
 
 disjoint1_SOURCES = disjoint1.cc
 

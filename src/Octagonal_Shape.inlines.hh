@@ -148,6 +148,12 @@ Octagonal_Shape<T>::space_dimension() const {
 
 template <typename T>
 inline bool
+Octagonal_Shape<T>::is_discrete() const {
+  return affine_dimension() == 0;
+}
+
+template <typename T>
+inline bool
 Octagonal_Shape<T>::is_empty() const {
   strong_closure_assign();
   return marked_empty();
