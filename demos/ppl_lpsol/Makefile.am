@@ -144,7 +144,7 @@ check-local: ppl_lpsol
 	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
 	  for m in -m -M; \
 	  do \
-	    echo "*** ppl_lpsol -s $$m -oobtained $$file" >>obtained; \
+	    echo "*** ppl_lpsol -r -s $$m -oobtained $$file" >>obtained; \
 	    ./ppl_lpsol -r -s $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
