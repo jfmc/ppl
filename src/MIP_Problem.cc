@@ -1470,8 +1470,11 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
   }
   if (found_satisfiable_generator) {
     // All the coordinates of `point' are satisfiable.
-    if (lp_status == UNBOUNDED_MIP_PROBLEM)
+    if (lp_status == UNBOUNDED_MIP_PROBLEM) {
+      // This is a point that belongs to the MIP_Problem.
+      provisional_optimum_point = p;
       return lp_status;
+    }
     if (!have_provisional_optimum
 	|| (lp.optimization_mode() == MAXIMIZATION
 	    && tmp_rational > provisional_optimum_value)
