@@ -470,12 +470,6 @@ BD_Shape<T>::is_universe() const {
 
 template <typename T>
 bool
-BD_Shape<T>::is_discrete() const {
-  return affine_dimension() == 0;
-}
-
-template <typename T>
-bool
 BD_Shape<T>::is_bounded() const {
   shortest_path_closure_assign();
   const dimension_type space_dim = space_dimension();

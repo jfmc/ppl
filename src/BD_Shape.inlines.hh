@@ -319,6 +319,12 @@ BD_Shape<T>::is_topologically_closed() const {
 }
 
 template <typename T>
+inline bool
+BD_Shape<T>::is_discrete() const {
+  return affine_dimension() == 0;
+}
+
+template <typename T>
 inline void
 BD_Shape<T>::topological_closure_assign() {
   // Nothing to be done.
