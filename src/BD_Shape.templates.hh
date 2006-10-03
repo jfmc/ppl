@@ -276,6 +276,34 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
 }
 
 template <typename T>
+dimension_type
+BD_Shape<T>::affine_dimension() const {
+  const dimension_type space_dim = space_dimension();
+
+  // Shortest-path closure is necessary to detect emptiness
+  // and all (possibly implicit) equalities.
+  shortest_path_closure_assign();
+  if (marked_empty())
+    return 0;
+
+  // The vector `predecessor' is used to represent equivalence classes:
+  // `predecessor[i] == i' if and only if `i' is the leader of its
+  // equivalence class (i.e., the minimum index in the class);
+  std::vector<dimension_type> predecessor;
+  compute_predecessors(predecessor);
+
+  // Due to the fictitious variable `0', the affine dimension is one
+  // less the number of equivalence classes.
+  dimension_type affine_dim = 0;
+  // Note: disregard the first equivalence class.
+  for (dimension_type i = 1; i <= space_dim; ++i)
+    if (predecessor[i] == i)
+      ++affine_dim;
+
+  return affine_dim;
+}
+
+template <typename T>
 void
 BD_Shape<T>::add_constraint(const Constraint& c) {
   using Implementation::BD_Shapes::div_round_up;
@@ -2041,6 +2069,28 @@ BD_Shape<T>
 	  }
 	}
     }
+}
+
+template <typename T>
+void
+BD_Shape<T>::forget_all_dbm_constraints(const dimension_type v) {
+  assert(0 < v && v <= dbm.num_rows());
+  DB_Row<N>& dbm_v = dbm[v];
+  for (dimension_type i = dbm.num_rows(); i-- > 0; ) {
+    dbm_v[i] = PLUS_INFINITY;
+    dbm[i][v] = PLUS_INFINITY;
+  }
+}
+
+template <typename T>
+void
+BD_Shape<T>::forget_binary_dbm_constraints(const dimension_type v) {
+  assert(0 < v && v <= dbm.num_rows());
+  DB_Row<N>& dbm_v = dbm[v];
+  for (dimension_type i = dbm.num_rows()-1; i > 0; --i) {
+    dbm_v[i] = PLUS_INFINITY;
+    dbm[i][v] = PLUS_INFINITY;
+  }
 }
 
 template <typename T>
