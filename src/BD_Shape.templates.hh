@@ -441,8 +441,35 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
 template <typename T>
 bool
 BD_Shape<T>::is_disjoint_from(const BD_Shape& y) const {
-  BD_Shape z = *this;
-  return !z.intersection_assign_and_minimize(y);
+  const dimension_type space_dim = space_dimension();
+  // Dimension-compatibility check.
+  if (space_dim != y.space_dimension())
+    throw_dimension_incompatible("is_disjoint_from(y)", y);
+
+  // If one of the two systems of bounded differences is empty,
+  // then the two systems of bounded differences are disjoint.
+  shortest_path_closure_assign();
+  if (marked_empty())
+    return true;
+  y.shortest_path_closure_assign();
+  if (y.marked_empty())
+    return true;
+
+  N tmp;
+  // Two systems of bounded differences are disjoint when
+  // their intersection is empty, i.e. if exist one constraint
+  // such that the lower bound of one of two BDS is greater than
+  // upper bound of the other.
+  for (dimension_type i = space_dim; i > 0; --i) {
+    const DB_Row<N>& x_i = dbm[i];
+    for (dimension_type j = space_dim; j > 0; --j) {
+      neg_assign_r(tmp, y.dbm[j][i], ROUND_UP);
+      if (x_i[j] < tmp)
+	return true;
+    }
+  }
+
+  return false;
 }
 
 template <typename T>
