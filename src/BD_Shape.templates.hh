@@ -471,8 +471,7 @@ BD_Shape<T>::is_universe() const {
 template <typename T>
 bool
 BD_Shape<T>::is_discrete() const {
-  // FIXME!
-  return false;
+  return affine_dimension() == 0;
 }
 
 template <typename T>
