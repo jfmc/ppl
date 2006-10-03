@@ -45,7 +45,7 @@ test01() {
   Test_Congruence b((A %= 5 - 3*C - 2*B) / 7);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -66,7 +66,7 @@ test02() {
   Test_Congruence b((A %= -5 - 3*C - 2*B) / 7);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -87,7 +87,7 @@ test03() {
   Test_Congruence b((16*A + 2*B %= - 64 - 8*C) / 4);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -108,7 +108,7 @@ test04() {
   Test_Congruence b((- A %= - 2*B + 5 - 3*C) / 7);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -132,7 +132,7 @@ test05() {
   Test_Congruence b(A + 4*B %= 5 - 3*C);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -153,7 +153,7 @@ test06() {
   Test_Congruence b((3*A + 24*B %= -19 - 3*C) / 0);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -174,7 +174,7 @@ test07() {
   Test_Congruence b((A + 4*B == 17 - 3*C) / 3);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -195,7 +195,7 @@ test08() {
   Test_Congruence b(A + 4*B == 17 - 3*C);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -218,7 +218,7 @@ test09() {
   b /= 3;
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -298,7 +298,7 @@ test11() {
   Test_Congruence b((A + 4*B %= -1 - 3*C) / -3);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -321,7 +321,7 @@ test12() {
   Test_Congruence b((-A + 4*B %= - 3*C - 17*D - 2*E - 4) / -3);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -339,7 +339,7 @@ test13() {
   Test_Congruence b(le %= 0);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -360,7 +360,7 @@ test14() {
   Test_Congruence b((A %= -5 - 3*C - 2*B) / 7);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");

@@ -177,7 +177,7 @@ test06() {
 
   Grid_Certificate grc2(gr2);
 
-  bool ok (grc1.compare(grc2) == 0);
+  bool ok = (grc1.compare(grc2) == 0);
 
   print_congruences(gr1, "*** gr1 ***");
   print_congruences(gr2, "*** gr2 ***");

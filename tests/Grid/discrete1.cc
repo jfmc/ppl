@@ -317,7 +317,7 @@ test11() {
   gr.add_congruence(A == 1);
   gr.add_congruence(A == 2);
 
-  bool ok (gr.is_discrete());
+  bool ok = (gr.is_discrete());
 
   print_congruences(gr, "*** gr ***");
 
