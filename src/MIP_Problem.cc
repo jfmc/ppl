@@ -262,10 +262,12 @@ PPL::MIP_Problem::solve() const{
      bool have_provisional_optimum = false;
 
      MIP_Problem mip_copy(*this);
-     dimension_type node = 0;
+     // This encodes the recorsion level that solve_mip() has reached
+     // during the `branch and bound' algorithm.
+     unsigned long long recorsion_depth = 0;
      MIP_Problem_Status mip_status = solve_mip(have_provisional_optimum,
 					       provisional_optimum, g,
-					       mip_copy, node);
+					       mip_copy, recorsion_depth);
      switch (mip_status) {
      case UNFEASIBLE_MIP_PROBLEM:
        x.status = UNSATISFIABLE;
@@ -1426,10 +1428,10 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
 			    mpq_class& provisional_optimum_value,
 			    Generator& provisional_optimum_point,
 			    MIP_Problem& lp,
-			    dimension_type node) {
+			    unsigned long long recorsion_depth) {
+  ++recorsion_depth;
 #if PPL_NOISY_SIMPLEX
-  ++node;
-  std::cerr << "Solving node at level: " << node << std::endl;
+  std::cerr << "Recorsion_Depth at level: " << recorsion_depth << std::endl;
 #endif
   // Solve the problem as a non MIP one, it must be done internally.
   PPL::MIP_Problem_Status lp_status;
@@ -1517,12 +1519,12 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
   MIP_Problem lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
   solve_mip(have_provisional_optimum, provisional_optimum_value,
-	    provisional_optimum_point, lp_aux, node);
+	    provisional_optimum_point, lp_aux, recorsion_depth);
   }
   // TODO: change this when we will be able to remove constraints.
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
   solve_mip(have_provisional_optimum, provisional_optimum_value,
-	    provisional_optimum_point, lp, node);
+	    provisional_optimum_point, lp, recorsion_depth);
   return have_provisional_optimum ? lp_status : UNFEASIBLE_MIP_PROBLEM;
 }
 

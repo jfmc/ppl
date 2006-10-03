@@ -644,10 +644,31 @@ private:
   static bool is_satisfied(const Constraint& c, const Generator& g,
 			   bool check_equality = false);
 
+  /*! \brief
+    Returns a MIP_Problem_Status that encodes the solution of the MIP_Problem.
+
+    \param have_provisional_optimum
+    A boolean that is used to store if the solving process has found a
+    provisional optimum point.
+
+    \param provisional_optimum_value
+    An mpq_class that represents the evaluated value of the provisional
+    optimum point found.
+
+    \param provisional_optimum_point
+    A Generator that encodes the provisional optimum point found.
+    If the MIP_Problem status return in `OPTIMIZED', this will contain
+    the optimality point.
+
+    \param dimension_type recorsion_depth
+    Used for debugging purposes, this encodes the recorsion depth reached
+    during the `branch and bound' alogrithm.
+  */
   static MIP_Problem_Status solve_mip(bool& have_provisional_optimum,
 				      mpq_class& provisional_optimum_value,
 				      Generator& provisional_optimum_point,
-				      MIP_Problem& lp, dimension_type node);
+				      MIP_Problem& lp,
+				      unsigned long long recorsion_depth);
 
   bool is_lp_satisfiable() const;
 
