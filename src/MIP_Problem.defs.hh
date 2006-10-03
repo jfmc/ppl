@@ -647,7 +647,7 @@ private:
   static MIP_Problem_Status solve_mip(bool& have_provisional_optimum,
 				      mpq_class& provisional_optimum_value,
 				      Generator& provisional_optimum_point,
-				      MIP_Problem& lp);
+				      MIP_Problem& lp, dimension_type node);
 
   bool is_lp_satisfiable() const;
 

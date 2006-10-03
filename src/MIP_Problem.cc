@@ -35,8 +35,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <cmath>
 
-#ifdef PPL_NOISY_SIMPLEX
-#include <iostream>
+#ifndef PPL_NOISY_SIMPLEX
+#define PPL_NOISY_SIMPLEX 0
 #endif
 
 #ifndef PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
@@ -46,6 +46,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_SIMPLEX_USE_MIP_HEURISTIC
 #define PPL_SIMPLEX_USE_MIP_HEURISTIC 1
 #endif
+
+#ifdef PPL_NOISY_SIMPLEX
+#include <iostream>
+#endif
+
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -257,9 +262,10 @@ PPL::MIP_Problem::solve() const{
      bool have_provisional_optimum = false;
 
      MIP_Problem mip_copy(*this);
+     dimension_type node = 0;
      MIP_Problem_Status mip_status = solve_mip(have_provisional_optimum,
 					       provisional_optimum, g,
-					       mip_copy);
+					       mip_copy, node);
      switch (mip_status) {
      case UNFEASIBLE_MIP_PROBLEM:
        x.status = UNSATISFIABLE;
@@ -1419,7 +1425,12 @@ PPL::MIP_Problem_Status
 PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
 			    mpq_class& provisional_optimum_value,
 			    Generator& provisional_optimum_point,
-			    MIP_Problem& lp) {
+			    MIP_Problem& lp,
+			    dimension_type node) {
+#if PPL_NOISY_SIMPLEX
+  ++node;
+  std::cerr << "Solving node at level: " << node << std::endl;
+#endif
   // Solve the problem as a non MIP one, it must be done internally.
   PPL::MIP_Problem_Status lp_status;
   if (lp.is_lp_satisfiable()) {
@@ -1448,8 +1459,9 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
     tmp_rational.canonicalize();
     if (have_provisional_optimum
 	&& ((lp.optimization_mode() == MAXIMIZATION
-	     && tmp_rational <= provisional_optimum_value)
-	    || tmp_rational >= provisional_optimum_value))
+ 	     && tmp_rational <= provisional_optimum_value)
+ 	    || lp.optimization_mode() == MINIMIZATION
+	    && tmp_rational >= provisional_optimum_value))
       // Abandon this path.
       return lp_status;
   }
@@ -1481,7 +1493,12 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
 	|| tmp_rational < provisional_optimum_value) {
       provisional_optimum_value = tmp_rational;
       provisional_optimum_point = p;
+      Coefficient a , b;
       have_provisional_optimum = true;
+#if PPL_NOISY_SIMPLEX
+      lp.evaluate_objective_function(p, a, b);
+      std::cerr << "new value found: " << a << "/" << b << std::endl;
+#endif
     }
     return lp_status;
   }
@@ -1499,12 +1516,12 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
   MIP_Problem lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
   solve_mip(have_provisional_optimum, provisional_optimum_value,
-	    provisional_optimum_point, lp_aux);
+	    provisional_optimum_point, lp_aux, node);
   }
   // TODO: change this when we will be able to remove constraints.
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
   solve_mip(have_provisional_optimum, provisional_optimum_value,
-	    provisional_optimum_point, lp);
+	    provisional_optimum_point, lp, node);
   return have_provisional_optimum ? lp_status : UNFEASIBLE_MIP_PROBLEM;
 }
 
