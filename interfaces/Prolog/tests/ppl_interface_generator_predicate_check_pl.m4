@@ -40,8 +40,9 @@ m4_define(`default_code', `$1_test.
 ')`'dnl
 m4_all_classes_code`'dnl
 dnl
-m4_var_list_code`'dnl
-m4_test_data_code`'dnl
+m4_changequote(`@<<@',`@>>@')@<<@@>>@dnl
+m4_include(@<<@ppl_interface_generator_predicate_check_extra_code@>>@)
+m4_changequote
 dnl End of file generation.
 m4_undivert(2)`'dnl
 m4_divert`'dnl
