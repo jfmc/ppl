@@ -1493,11 +1493,12 @@ PPL::MIP_Problem::solve_mip(bool& have_provisional_optimum,
 	|| tmp_rational < provisional_optimum_value) {
       provisional_optimum_value = tmp_rational;
       provisional_optimum_point = p;
-      Coefficient a , b;
       have_provisional_optimum = true;
 #if PPL_NOISY_SIMPLEX
-      lp.evaluate_objective_function(p, a, b);
-      std::cerr << "new value found: " << a << "/" << b << std::endl;
+      Coefficient num;
+      Coefficient den;
+      lp.evaluate_objective_function(p, num, den);
+      std::cerr << "new value found: " << num << "/" << den << std::endl;
 #endif
     }
     return lp_status;
