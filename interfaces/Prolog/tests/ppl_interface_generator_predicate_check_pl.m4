@@ -33,12 +33,20 @@ m4_undivert(1)`'dnl
 m4_divert`'dnl
 dnl Generate the tests.
 dnl
+
 m4_popdef(`m4_extension')`'dnl
 m4_include(`ppl_interface_generator_predicate_check_code.m4')`'dnl
 dnl Define a default test.
 m4_pushdef(`m4_default_code', `$1_test(ok).
 
 ')`'dnl
+
+dnl m4_pre_extra_class_code(Class_Counter, Class_Kind)
+dnl Prefix extra code for each class.
+m4_define(`m4_pre_extra_class_code', `dnl
+m4_add_extra_class_code($1)`'dnl
+')
+
 m4_patsubst(m4_library_names_to_code(0, m4_library_predicate_list), COMMA, `,')`'dnl
 m4_all_classes_code`'dnl
 dnl

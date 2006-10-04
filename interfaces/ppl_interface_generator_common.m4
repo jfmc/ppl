@@ -209,13 +209,13 @@ dnl therefore expanded to the corresponding code schema.
 dnl
 dnl By default, arguments Arity and Attribute are ignored. When and where
 dnl these are needed (e.g., in the Prolog system files), the macro
-dnl m4_extension will be referined appropriately.
+dnl m4_extension will be redefined appropriately.
 dnl
 dnl Note: the macro `$1_code' has to be called using builtin `indir'
 dnl because it is not a legal m4 identifier (it contains `@').
-m4_define(`default_code', `')
+m4_define(`m4_default_code', `')
 m4_define(`m4_extension', `m4_ifdef(`$1_code', `m4_indir(`$1_code')',
-  `default_code($1)')')
+  `m4_default_code($1)')')
 
 
 dnl m4_procedure_names_to_code(Class_Number, Class_Kind,
@@ -236,12 +236,6 @@ m4_procedure_names_to_code($1, $2, m4_shift(m4_shift(m4_shift($@))))`'dnl
 dnl m4_procedure_name_to_code(Class_Number, Class_Kind, Procedure_Name)
 dnl
 dnl The procedure specification is replaced with the code.
-# define(`m4_procedure_name_to_code', `dnl
-# m4_patsubst(`$3', `\(.*\)', `dnl
-# m4_replace_all_patterns($1, $2,
-#   m4_replace_class_patterns($1, m4_get_code_schema(\1, 1)),
-#     m4_pattern_list)')`'dnl
-# ')
 m4_undefine(`m4_procedure_name_to_code')
 m4_define(`m4_procedure_name_to_code', `dnl
 m4_patsubst(`$3', `\(.*\)', `dnl
@@ -278,174 +272,6 @@ m4_define(`m4_proc_keep_or_throw_aux', `dnl
 m4_ifelse(m4_arg_counter($1, m4_$4_group), `', 0,
   `m4_ifelse(m4_index($2, $3$4), -1, 0, 1)')`'dnl
 ')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
-
-dnl m4_filter(Class_Kind, Procedure_Name)
-dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
-m4_de')
 
 dnl m4_filter(Class_Kind, Procedure_Name)
 dnl

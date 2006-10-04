@@ -375,18 +375,23 @@ dnl
 dnl Initialise a flag to ensure the comma in the list is a separator only.
 m4_define(`m4_replace_list_start', 0)`'dnl
 m4_same_class_string(
-  BD_Shape, interface, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
+  BD_Shape, interface,
+  m4_get_class_topology(m4_class_body$1),
+  class_kind)`'dnl
 m4_same_class_string(
-  Polyhedron, interface, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
+  Polyhedron, interface,,
+  class_kind)`'dnl
 ')
 
 dnl Defines the alternative friend name for cplusplus code.
 m4_define(`m4_BD_Shape_friend_alt_replacement', `dnl
 m4_define(`m4_replace_list_start', 0)`'dnl
 m4_same_class_string(
-  BD_Shape, cplusplus, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
+  BD_Shape, cplusplus,,
+  class_kind)`'dnl
 m4_same_class_string(
-  Polyhedron, cplusplus, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
+  Polyhedron, cplusplus,,
+  class_kind)
 ')
 
 dnl For Octagon class kind, any generated class with kind BD_Shape
