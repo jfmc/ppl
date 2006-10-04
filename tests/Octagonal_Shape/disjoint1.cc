@@ -109,7 +109,8 @@ test04() {
 
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
-
+  oct1.ascii_dump(std::cerr);
+  oct2.ascii_dump(std::cerr);
   return !disjoint;
 }
 
@@ -132,6 +133,32 @@ test05() {
   return disjoint;
 }
 
+bool
+test06() {
+  Variable x(0);
+  Variable y(1);
+
+  TOctagonal_Shape oc1(2);
+  oc1.add_constraint(x >= y);
+
+  TOctagonal_Shape oc2(3);
+
+  try {
+    // This is an invalid use of function
+    // Octagonal_Shape::is_disjoint_from(oc2): it is illegal
+    // to apply this function to two polyhedra of different dimensions.
+    oc1.is_disjoint_from(oc2);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+    return false;
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -140,4 +167,5 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN

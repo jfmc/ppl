@@ -553,9 +553,55 @@ Octagonal_Shape<T>::contains(const Octagonal_Shape& y) const {
 template <typename T>
 bool
 Octagonal_Shape<T>::is_disjoint_from(const Octagonal_Shape& y) const {
-  Octagonal_Shape z = *this;
-  z.intersection_assign_and_minimize(y);
-  return z.is_empty();
+  // Dimension-compatibility check.
+  if (space_dim != y.space_dim)
+    throw_dimension_incompatible("is_disjoint_from(y)", y);
+
+  // If one Octagonal_Shape is empty, the Octagonal_Shapes are disjoint.
+  strong_closure_assign();
+  if (marked_empty())
+    return true;
+  y.strong_closure_assign();
+  if (y.marked_empty())
+    return true;
+
+  // Two Octagonal_Shapes are disjoint if and only if their intersection
+  // is empty, i.e., if and only if there exists a variable such that
+  // the upper bound of the constraint on that variable in the first
+  // Octagonal_Shape is strictly less than the lower bound of
+  // the correspomding constraint in the second Octagonal_Shape or vice versa.
+
+  const dimension_type n_rows = matrix.num_rows();
+
+  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
+
+  const Row_Iterator m_begin = matrix.row_begin();
+  const Row_Iterator m_end = matrix.row_end();
+
+  const Row_Iterator y_begin = y.matrix.row_begin();
+  const Row_Iterator y_end = y.matrix.row_end();
+
+  for (Row_Iterator i_iter = m_begin; i_iter != m_end; ++i_iter) {
+    const dimension_type i = i_iter.index();
+    const dimension_type ci = coherent_index(i);
+    const dimension_type rs_i = i_iter.row_size();
+    Row_Reference m_i = *i_iter;
+    Row_Reference m_ci = (i%2) ? *(i_iter-1) : *(i_iter+1);
+    for (dimension_type j = 0; j < n_rows; ++j) {
+      const dimension_type cj = coherent_index(j);
+      Row_Reference m_cj = *(m_begin + cj);
+      const N& m_i_j = (j < rs_i) ? m_i[j] : m_cj[ci];
+      Row_Reference y_ci = *(y_begin + ci);
+      Row_Reference y_j = *(y_begin + j);
+      const N& y_ci_cj = (j < rs_i) ? y_ci[cj] : y_j[i];
+      N neg_y_ci_cj;
+      neg_assign_r(neg_y_ci_cj, y_ci_cj, ROUND_UP);
+      if (m_i_j < neg_y_ci_cj)
+	return true;
+    }
+  }
+  return false;
 }
 
 template <typename T>
