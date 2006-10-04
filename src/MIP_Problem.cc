@@ -268,16 +268,16 @@ PPL::MIP_Problem::solve() const{
        x.is_solving_mip = false;
        return UNFEASIBLE_MIP_PROBLEM;
      }
-     mpq_class incument_solution;
+     mpq_class incumbent_solution;
      Generator g = point();
-     bool have_incument_solution = false;
+     bool have_incumbent_solution = false;
 
      MIP_Problem mip_copy(*this);
      // This encodes the recursion level that solve_mip() has reached
      // during the `branch and bound' algorithm.
-     unsigned long long recursion_depth = 0;
-     MIP_Problem_Status mip_status = solve_mip(have_incument_solution,
-					       incument_solution, g,
+     unsigned long recursion_depth = 0;
+     MIP_Problem_Status mip_status = solve_mip(have_incumbent_solution,
+					       incumbent_solution, g,
 					       mip_copy, recursion_depth);
      x.is_solving_mip = false;
      switch (mip_status) {
@@ -1436,9 +1436,9 @@ PPL::MIP_Problem::is_lp_satisfiable() const {
 }
 
 PPL::MIP_Problem_Status
-PPL::MIP_Problem::solve_mip(bool& have_incument_solution,
-			    mpq_class& incument_solution_value,
-			    Generator& incument_solution_point,
+PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
+			    mpq_class& incumbent_solution_value,
+			    Generator& incumbent_solution_point,
 			    MIP_Problem& lp,
 			    unsigned long long recursion_depth) {
   ++recursion_depth;
@@ -1471,11 +1471,11 @@ PPL::MIP_Problem::solve_mip(bool& have_incument_solution,
     assign_r(tmp_rational.get_num(), tmp_coeff1, ROUND_NOT_NEEDED);
     assign_r(tmp_rational.get_den(), tmp_coeff2, ROUND_NOT_NEEDED);
     tmp_rational.canonicalize();
-    if (have_incument_solution
+    if (have_incumbent_solution
 	&& ((lp.optimization_mode() == MAXIMIZATION
- 	     && tmp_rational <= incument_solution_value)
+ 	     && tmp_rational <= incumbent_solution_value)
  	    || (lp.optimization_mode() == MINIMIZATION
-		&& tmp_rational >= incument_solution_value)))
+		&& tmp_rational >= incumbent_solution_value)))
       // Abandon this path.
       return lp_status;
   }
@@ -1498,16 +1498,16 @@ PPL::MIP_Problem::solve_mip(bool& have_incument_solution,
     // All the coordinates of `point' are satisfiable.
     if (lp_status == UNBOUNDED_MIP_PROBLEM) {
       // This is a point that belongs to the MIP_Problem.
-      incument_solution_point = p;
+      incumbent_solution_point = p;
       return lp_status;
     }
-    if (!have_incument_solution
+    if (!have_incumbent_solution
 	|| (lp.optimization_mode() == MAXIMIZATION
-	    && tmp_rational > incument_solution_value)
-	|| tmp_rational < incument_solution_value) {
-      incument_solution_value = tmp_rational;
-      incument_solution_point = p;
-      have_incument_solution = true;
+	    && tmp_rational > incumbent_solution_value)
+	|| tmp_rational < incumbent_solution_value) {
+      incumbent_solution_value = tmp_rational;
+      incumbent_solution_point = p;
+      have_incumbent_solution = true;
 #if PPL_NOISY_SIMPLEX
       Coefficient num;
       Coefficient den;
@@ -1530,14 +1530,14 @@ PPL::MIP_Problem::solve_mip(bool& have_incument_solution,
   {
   MIP_Problem lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
-  solve_mip(have_incument_solution, incument_solution_value,
-	    incument_solution_point, lp_aux, recursion_depth);
+  solve_mip(have_incumbent_solution, incumbent_solution_value,
+	    incumbent_solution_point, lp_aux, recursion_depth);
   }
   // TODO: change this when we will be able to remove constraints.
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
-  solve_mip(have_incument_solution, incument_solution_value,
-	    incument_solution_point, lp, recursion_depth);
-  return have_incument_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;
+  solve_mip(have_incumbent_solution, incumbent_solution_value,
+	    incumbent_solution_point, lp, recursion_depth);
+  return have_incumbent_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;
 }
 
 bool

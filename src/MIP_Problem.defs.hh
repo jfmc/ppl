@@ -654,15 +654,15 @@ private:
   /*! \brief
     Returns a MIP_Problem_Status that encodes the solution of the MIP_Problem.
 
-    \param have_incument_solution
+    \param have_incumbent_solution
     A boolean that is used to store if the solving process has found a
     provisional optimum point.
 
-    \param incument_solution_value
+    \param incumbent_solution_value
     An mpq_class that represents the evaluated value of the provisional
     optimum point found.
 
-    \param incument_solution_point
+    \param incumbent_solution_point
     A Generator that encodes the provisional optimum point found.
     If the MIP_Problem status return in `OPTIMIZED', this will contain
     the optimality point.
@@ -671,9 +671,9 @@ private:
     Used for debugging purposes, this encodes the recursion depth reached
     during the `branch and bound' alogrithm.
   */
-  static MIP_Problem_Status solve_mip(bool& have_incument_solution,
-				      mpq_class& incument_solution_value,
-				      Generator& incument_solution_point,
+  static MIP_Problem_Status solve_mip(bool& have_incumbent_solution,
+				      mpq_class& incumbent_solution_value,
+				      Generator& incumbent_solution_point,
 				      MIP_Problem& lp,
 				      unsigned long long recursion_depth);
 
