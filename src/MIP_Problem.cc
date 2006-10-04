@@ -71,6 +71,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
     base(),
     status(PARTIALLY_SATISFIABLE),
     initialized(false),
+    is_solving_mip(false),
     input_cs(),
     first_pending_constraint(0),
     input_obj_function(),
@@ -96,6 +97,7 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
     base(),
     status(PARTIALLY_SATISFIABLE),
     initialized(false),
+    is_solving_mip(false),
     input_cs(),
     first_pending_constraint(0),
     input_obj_function(obj),
@@ -204,15 +206,20 @@ PPL::MIP_Problem::is_satisfiable() const {
       // MIP Case.
       MIP_Problem& x = const_cast<MIP_Problem&>(*this);
       Generator p = point();
+      // This disable the Variable integrality check in OK() until we will
+      // find a feasible point.
+      x.is_solving_mip = true;
       x.is_lp_satisfiable();
-      if (is_mip_satisfiable(x, p)) {
+         if (is_mip_satisfiable(x, p)) {
 	x.last_generator = p;
 	x.status = SATISFIABLE;
-	return true;
+	x.is_solving_mip = false;
+   	return true;
       }
       else {
 	x.status = UNSATISFIABLE;
-	return false;
+	x.is_solving_mip = false;
+   	return false;
       }
     }
   }
@@ -251,10 +258,14 @@ PPL::MIP_Problem::solve() const{
        return UNFEASIBLE_MIP_PROBLEM;
      }
      // MIP Problem case.
+     // This disable the Variable integrality check in OK() until we will find
+     // an optimizing point.
+     x.is_solving_mip = true;
      if (x.is_lp_satisfiable())
        x.second_phase();
      else {
        x.status = UNSATISFIABLE;
+       x.is_solving_mip = false;
        return UNFEASIBLE_MIP_PROBLEM;
      }
      mpq_class incument_solution;
@@ -268,6 +279,7 @@ PPL::MIP_Problem::solve() const{
      MIP_Problem_Status mip_status = solve_mip(have_incument_solution,
 					       incument_solution, g,
 					       mip_copy, recursion_depth);
+     x.is_solving_mip = false;
      switch (mip_status) {
      case UNFEASIBLE_MIP_PROBLEM:
        x.status = UNSATISFIABLE;
@@ -1707,19 +1719,19 @@ PPL::MIP_Problem::OK() const {
 #endif
 	return false;
       }
-    // FIXME: temporarly commented out. This should be called only
-    // when we have really in integer solutions, and not when we are
-    // solving the problem with the `branch and bound' technique.
-    // // Check that every integer declared variable is really integer.
-    //     // in the solution found.
-    //     TEMP_INTEGER(gcd);
-    //       for (Variables_Set::const_iterator v_begin = i_variables.begin(),
-    // 	     v_end = i_variables.end(); v_begin != v_end; ++v_begin) {
-    // 	gcd_assign(gcd, last_generator.coefficient(*v_begin),
-    // 		   last_generator.divisor());
-    // 	if (gcd != last_generator.divisor())
-    // 	  return false;
-    //       }
+
+    // Check that every integer declared variable is really integer.
+    // in the solution found.
+    if (!is_solving_mip) {
+      TEMP_INTEGER(gcd);
+      for (Variables_Set::const_iterator v_it = i_variables.begin(),
+	     v_end = i_variables.end(); v_it != v_end; ++v_it) {
+	gcd_assign(gcd, last_generator.coefficient(*v_it),
+		   last_generator.divisor());
+	if (gcd != last_generator.divisor())
+	  return false;
+      }
+    }
 
     const dimension_type tableau_nrows = tableau.num_rows();
     const dimension_type tableau_ncols = tableau.num_columns();

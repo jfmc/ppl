@@ -417,6 +417,13 @@ private:
   */
   bool initialized;
 
+  /*! \brief
+    A Boolean encoding whether or not the internal methods are solving
+    MIP_Problems with a non empty i_variables Variables_Set: useful to disable
+    or enable some checks in method OK().
+  */
+  bool is_solving_mip;
+
   //! The sequence of constraints describing the feasible region.
   Constraint_Sequence input_cs;
 

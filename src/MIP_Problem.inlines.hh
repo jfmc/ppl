@@ -49,6 +49,7 @@ MIP_Problem::MIP_Problem(const MIP_Problem& y)
     base(y.base),
     status(y.status),
     initialized(y.initialized),
+    is_solving_mip(y.is_solving_mip),
     input_cs(y.input_cs),
     first_pending_constraint(y.first_pending_constraint),
     input_obj_function(y.input_obj_function),
@@ -112,6 +113,7 @@ MIP_Problem::swap(MIP_Problem& y) {
   std::swap(working_cost, y.working_cost);
   std::swap(mapping, y.mapping);
   std::swap(initialized, y.initialized);
+  std::swap(is_solving_mip, y.is_solving_mip);
   std::swap(base, y.base);
   std::swap(status, y.status);
   std::swap(input_cs, y.input_cs);
