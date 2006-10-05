@@ -257,6 +257,15 @@ operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
 }
 
 template <typename T>
+memory_size_type
+DB_Matrix<T>::external_memory_in_bytes() const {
+  memory_size_type n = rows.capacity() * sizeof(DB_Row<T>);
+  for (dimension_type i = num_rows(); i-- > 0; )
+    n += rows[i].external_memory_in_bytes(row_capacity);
+  return n;
+}
+
+template <typename T>
 bool
 DB_Matrix<T>::OK() const {
 #ifndef NDEBUG

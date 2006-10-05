@@ -55,6 +55,27 @@ DB_Row_Impl_Handler<T>::Impl::operator delete(void* p, dimension_type) {
 }
 
 template <typename T>
+inline memory_size_type
+DB_Row_Impl_Handler<T>::Impl
+::total_memory_in_bytes(dimension_type capacity) const {
+  return
+    sizeof(*this)
+    + capacity*sizeof(T)
+#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+    - 1*sizeof(T)
+#endif
+    + external_memory_in_bytes();
+}
+
+template <typename T>
+inline memory_size_type
+DB_Row_Impl_Handler<T>::Impl::total_memory_in_bytes() const {
+  // In general, this is a lower bound, as the capacity of *this
+  // may be strictly greater than `size_'
+  return total_memory_in_bytes(size_);
+}
+
+template <typename T>
 inline dimension_type
 DB_Row_Impl_Handler<T>::Impl::max_size() {
   return size_t(-1)/sizeof(T);
@@ -347,6 +368,36 @@ inline typename DB_Row<T>::const_iterator
 DB_Row<T>::end() const {
   const DB_Row<T>& x = *this;
   return const_iterator(x.impl->vec_ + x.impl->size_);
+}
+
+template <typename T>
+inline memory_size_type
+DB_Row<T>::external_memory_in_bytes(dimension_type capacity) const {
+  const DB_Row<T>& x = *this;
+  return x.impl->total_memory_in_bytes(capacity);
+}
+
+template <typename T>
+inline memory_size_type
+DB_Row<T>::total_memory_in_bytes(dimension_type capacity) const {
+  return sizeof(*this) + external_memory_in_bytes(capacity);
+}
+
+template <typename T>
+inline memory_size_type
+DB_Row<T>::external_memory_in_bytes() const {
+  const DB_Row<T>& x = *this;
+#if EXTRA_ROW_DEBUG
+  return x.impl->total_memory_in_bytes(x.capacity_);
+#else
+  return x.impl->total_memory_in_bytes();
+#endif
+}
+
+template <typename T>
+inline memory_size_type
+DB_Row<T>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 /*! \relates DB_Row */

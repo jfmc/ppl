@@ -3884,7 +3884,7 @@ template <typename T>
 memory_size_type
 BD_Shape<T>::external_memory_in_bytes() const {
   // FIXME!
-  return 1;
+  return dbm.external_memory_in_bytes();
 }
 
 template <typename T>
