@@ -662,17 +662,12 @@ private:
     \param i_vars
     A set containing all the variables that are constrained to have an integer
     value.
-
-    \param dimension_type recursion_depth
-    Used for debugging purposes, this encodes the recursion depth reached
-    during the `branch and bound' alogrithm.
   */
   static MIP_Problem_Status solve_mip(bool& have_incumbent_solution,
 				      mpq_class& incumbent_solution_value,
 				      Generator& incumbent_solution_point,
 				      MIP_Problem& mip,
-				      const Variables_Set& i_vars,
-				      unsigned long recursion_depth);
+				      const Variables_Set& i_vars);
 
   bool is_lp_satisfiable() const;
 

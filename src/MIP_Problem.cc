@@ -279,14 +279,10 @@ PPL::MIP_Problem::solve() const{
      // Treat this MIP_Problem as an LP one: we ha have to deal with
      // the relaxation in solve_mip().
      mip_copy.i_variables.clear();
-     // This encodes the recursion level that solve_mip() has reached
-     // during the `branch and bound' algorithm.
-     unsigned long recursion_depth = 0;
      MIP_Problem_Status mip_status = solve_mip(have_incumbent_solution,
 					       incumbent_solution, g,
 					       mip_copy,
-					       this_variables_set,
-					       recursion_depth);
+					       this_variables_set);
      // Restore i_variables;
      x.i_variables = this_variables_set;
      switch (mip_status) {
@@ -1449,12 +1445,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 			    mpq_class& incumbent_solution_value,
 			    Generator& incumbent_solution_point,
 			    MIP_Problem& lp,
-			    const Variables_Set& i_vars,
-			    unsigned long recursion_depth) {
-  ++recursion_depth;
-#if PPL_NOISY_SIMPLEX
-  std::cerr << "Recursion_Depth at level: " << recursion_depth << std::endl;
-#endif
+			    const Variables_Set& i_vars) {
   // Solve the problem as a non MIP one, it must be done internally.
   PPL::MIP_Problem_Status lp_status;
   if (lp.is_lp_satisfiable()) {
@@ -1494,7 +1485,6 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   TEMP_INTEGER(gcd);
   const Coefficient& p_divisor = p.divisor();
   dimension_type nonint_dim;
-  //  Variables_Set i_vars = lp.integer_space_dimensions();
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(*v_begin), p_divisor);
@@ -1541,12 +1531,12 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   MIP_Problem lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
   solve_mip(have_incumbent_solution, incumbent_solution_value,
-	    incumbent_solution_point, lp_aux, i_vars, recursion_depth);
+	    incumbent_solution_point, lp_aux, i_vars);
   }
   // TODO: change this when we will be able to remove constraints.
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
   solve_mip(have_incumbent_solution, incumbent_solution_value,
-	    incumbent_solution_point, lp, i_vars, recursion_depth);
+	    incumbent_solution_point, lp, i_vars);
   return have_incumbent_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;
 }
 
