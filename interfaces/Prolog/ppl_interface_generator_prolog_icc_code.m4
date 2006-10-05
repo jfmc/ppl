@@ -110,18 +110,18 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `extern "C" Prolog_foreign_return_type
-ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s
+ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s
 (Prolog_term_ref t_clist, Prolog_term_ref t_ph) {
-  static const char* where = "ppl_new_@TOPOLOGY@@CLASS@_from_@REPRESENT@s/2";
+  static const char* where = "ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s/2";
   try {
-    @UREPRESENT@_System cs;
+    @UBUILD_REPRESENT@_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_@REPRESENT@(c, where));
+      cs.insert(build_@BUILD_REPRESENT@(c, where));
     }
 
     // Check the list is properly terminated.
@@ -269,21 +269,21 @@ ppl_@CLASS@_@DIMENSION@(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
 
 ')
 
-m4_define(`ppl_@CLASS@_get_@DESCRIBE@s_code',
+m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_get_@DESCRIBE@s
+ppl_@CLASS@_get_@GET_REPRESENT@s
 (Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
-  static const char* where = "ppl_@CLASS@_get_@DESCRIBE@s/2";
+  static const char* where = "ppl_@CLASS@_get_@GET_REPRESENT@s/2";
   try {
     const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    const @UDESCRIBE@_System& gs = ph->@DESCRIBE@s();
-    for (@UDESCRIBE@_System::const_iterator i = gs.begin(),
+    const @UGET_REPRESENT@_System& gs = ph->@GET_REPRESENT@s();
+    for (@UGET_REPRESENT@_System::const_iterator i = gs.begin(),
            gs_end = gs.end(); i != gs_end; ++i)
-      Prolog_construct_cons(tail, @DESCRIBE@_term(*i), tail);
+      Prolog_construct_cons(tail, @GET_REPRESENT@_term(*i), tail);
 
     if (Prolog_unify(t_glist, tail))
       return PROLOG_SUCCESS;
@@ -293,21 +293,21 @@ ppl_@CLASS@_get_@DESCRIBE@s
 
 ')
 
-m4_define(`ppl_@CLASS@_get_minimized_@DESCRIBE@s_code',
+m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_get_minimized_@DESCRIBE@s
+ppl_@CLASS@_get_minimized_@GET_REPRESENT@s
 (Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
-  static const char* where = "ppl_@CLASS@_get_minimized_@DESCRIBE@s/2";
+  static const char* where = "ppl_@CLASS@_get_minimized_@GET_REPRESENT@s/2";
   try {
     const @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    const @UDESCRIBE@_System& gs = ph->minimized_@DESCRIBE@s();
-    for (@UDESCRIBE@_System::const_iterator i = gs.begin(),
+    const @UGET_REPRESENT@_System& gs = ph->minimized_@GET_REPRESENT@s();
+    for (@UGET_REPRESENT@_System::const_iterator i = gs.begin(),
            gs_end = gs.end(); i != gs_end; ++i)
-      Prolog_construct_cons(tail, @DESCRIBE@_term(*i), tail);
+      Prolog_construct_cons(tail, @GET_REPRESENT@_term(*i), tail);
 
     if (Prolog_unify(t_glist, tail))
       return PROLOG_SUCCESS;
@@ -345,15 +345,15 @@ ppl_@CLASS@_get_disjuncts(Prolog_term_ref t_pps,
 ')
 
 
-m4_define(`ppl_@CLASS@_relation_with_@DESCRIBE@_code',
+m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_relation_with_@DESCRIBE@
+ppl_@CLASS@_relation_with_@RELATION_REPRESENT@
 (Prolog_term_ref t_ph, Prolog_term_ref t_c, Prolog_term_ref t_r) {
-  static const char* where = "ppl_@CLASS@_relation_with_@DESCRIBE@/3";
+  static const char* where = "ppl_@CLASS@_relation_with_@RELATION_REPRESENT@/3";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
-relation_with_@DESCRIBE@_code`'
+relation_with_@RELATION_REPRESENT@_code`'
     if (Prolog_unify(t_r, tail))
       return PROLOG_SUCCESS;
   }
@@ -691,14 +691,14 @@ ppl_@CLASS@_OK(Prolog_term_ref t_ph) {
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@REPRESENT@_code',
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_add_@REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
-  static const char* where = "ppl_@CLASS@_add_@REPRESENT@/2";
+ppl_@CLASS@_add_@ADD_REPRESENT@(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
+  static const char* where = "ppl_@CLASS@_add_@ADD_REPRESENT@/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
-    ph->add_@REPRESENT@(build_@REPRESENT@(t_c, where));
+    ph->add_@ADD_REPRESENT@(build_@ADD_REPRESENT@(t_c, where));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -723,15 +723,15 @@ ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@REPRESENT@_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_add_@REPRESENT@_and_minimize
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize
 (Prolog_term_ref t_ph, Prolog_term_ref t_c) {
-  static const char* where = "ppl_@CLASS@_add_@REPRESENT@_and_minimize/2";
+  static const char* where = "ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
-    if (ph->add_@REPRESENT@_and_minimize(build_@REPRESENT@(t_c, where)))
+    if (ph->add_@ADD_REPRESENT@_and_minimize(build_@ADD_REPRESENT@(t_c, where)))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -739,26 +739,26 @@ ppl_@CLASS@_add_@REPRESENT@_and_minimize
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_add_@REPRESENT@s
+ppl_@CLASS@_add_@ADD_REPRESENT@s
 (Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
-  static const char* where = "ppl_@CLASS@_add_@REPRESENT@s/2";
+  static const char* where = "ppl_@CLASS@_add_@ADD_REPRESENT@s/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
-    @UREPRESENT@_System cs;
+    @UADD_REPRESENT@_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_@REPRESENT@(c, where));
+      cs.insert(build_@ADD_REPRESENT@(c, where));
     }
 
     // Check the list is properly terminated.
     check_nil_terminating(t_clist, where);
 
-    ph->add_@REPRESENT@s(cs);
+    ph->add_@ADD_REPRESENT@s(cs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -766,26 +766,26 @@ ppl_@CLASS@_add_@REPRESENT@s
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@REPRESENT@s_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_add_@REPRESENT@s_and_minimize
+ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize
 (Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
-  static const char* where = "ppl_@CLASS@_add_@REPRESENT@s_and_minimize/2";
+  static const char* where = "ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize/2";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
-    @UREPRESENT@_System cs;
+    @UADD_REPRESENT@_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
 
     while (Prolog_is_cons(t_clist)) {
       Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_@REPRESENT@(c, where));
+      cs.insert(build_@ADD_REPRESENT@(c, where));
     }
 
     // Check the list is properly terminated.
     check_nil_terminating(t_clist, where);
 
-    if (ph->add_@REPRESENT@s_and_minimize(cs))
+    if (ph->add_@ADD_REPRESENT@s_and_minimize(cs))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;

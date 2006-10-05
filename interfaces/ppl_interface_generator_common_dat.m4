@@ -306,7 +306,10 @@ friend,
 intopology,
 topology,
 disjunct,
-represent,
+build_represent,
+get_represent,
+relation_represent,
+add_represent,
 dimension,
 generator,
 point,
@@ -324,8 +327,7 @@ widenexp,
 widen,
 extrapolation,
 limitedbounded,
-box,
-describe')
+box')
 
 dnl The interface class name.
 m4_define(`m4_class_replacement', m4_interface_class`'$1)
@@ -520,17 +522,31 @@ m4_get_interface_class_name(m4_class_body`'$1)`'dnl
 m4_define(`m4_disjunct_alt_replacement', m4_class_body`'$1)
 
 dnl  The different kinds of objects use to represent a class.
-m4_define(`m4_represent_replacement', `constraint')
-m4_define(`m4_Polyhedron_represent_replacement',
+m4_define(`m4_build_represent_replacement', `constraint, generator')
+m4_define(`m4_Polyhedron_build_represent_replacement',
          `constraint, generator')
-m4_define(`m4_Grid_represent_replacement',
+m4_define(`m4_Grid_build_represent_replacement',
+         `constraint, grid_generator, congruence')
+
+dnl  The different kinds of objects that can be added to a class.
+m4_define(`m4_relation_represent_replacement', `constraint')
+m4_define(`m4_Polyhedron_relation_represent_replacement',
+         `constraint, generator')
+m4_define(`m4_Grid_relation_represent_replacement',
+         `constraint, grid_generator, congruence')
+
+dnl  The different kinds of objects that can be added to a class.
+m4_define(`m4_add_represent_replacement', `constraint')
+m4_define(`m4_Polyhedron_add_represent_replacement',
+         `constraint, generator')
+m4_define(`m4_Grid_add_represent_replacement',
          `constraint, grid_generator, congruence')
 
 dnl  The different kinds of objects use to describe a class.
-m4_define(`m4_describe_replacement', `constraint')
-m4_define(`m4_Polyhedron_describe_replacement',
-         `constraint, generator')
-m4_define(`m4_Grid_describe_replacement',
+m4_define(`m4_get_represent_replacement', `constraint')
+m4_define(`m4_Polyhedron_get_represent_replacement',
+         `constraint, generator, congruence')
+m4_define(`m4_Grid_get_represent_replacement',
          `congruence, grid_generator')
 
 dnl  The unary "has_property" predicates

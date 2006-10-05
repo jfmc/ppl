@@ -14,17 +14,17 @@ PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@CLASS@_t ph));
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@UREPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System_code',
 `int
-ppl_new_@TOPOLOGY@@CLASS@_from_@UREPRESENT@_System
-PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@UREPRESENT@_System_t cs));
+ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System
+PPL_PROTO((ppl_@CLASS@_t* pph, ppl_const_@UBUILD_REPRESENT@_System_t cs));
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UREPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System_code',
 `int
-ppl_new_@TOPOLOGY@@CLASS@_recycle_@UREPRESENT@_System
-PPL_PROTO((ppl_@CLASS@_t* pph, ppl_@UREPRESENT@_System_t cs));
+ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System
+PPL_PROTO((ppl_@CLASS@_t* pph, ppl_@UBUILD_REPRESENT@_System_t cs));
 
 ')
 
@@ -63,27 +63,27 @@ PPL_PROTO((ppl_const_@CLASS@_t ph, ppl_dimension_type* m));
 
 ')
 
-m4_define(`ppl_@CLASS@_@DESCRIBE@s_code',
+m4_define(`ppl_@CLASS@_@GET_REPRESENT@s_code',
 `int
-ppl_@CLASS@_@DESCRIBE@s
+ppl_@CLASS@_@GET_REPRESENT@s
 PPL_PROTO((ppl_const_@CLASS@_t ph,
-           ppl_const_@UDESCRIBE@_System_t* pcs));
+           ppl_const_@UGET_REPRESENT@_System_t* pcs));
 
 ')
 
-m4_define(`ppl_@CLASS@_minimized_@DESCRIBE@s_code',
+m4_define(`ppl_@CLASS@_minimized_@GET_REPRESENT@s_code',
 `int
-ppl_@CLASS@_minimized_@DESCRIBE@s
+ppl_@CLASS@_minimized_@GET_REPRESENT@s
 PPL_PROTO((ppl_const_@CLASS@_t ph,
-           ppl_const_@UDESCRIBE@_System_t* pcs));
+           ppl_const_@UGET_REPRESENT@_System_t* pcs));
 
 ')
 
-m4_define(`ppl_@CLASS@_relation_with_@UDESCRIBE@_code',
+m4_define(`ppl_@CLASS@_relation_with_@URELATION_REPRESENT@_code',
 `int
-ppl_@CLASS@_relation_with_@UDESCRIBE@
+ppl_@CLASS@_relation_with_@URELATION_REPRESENT@
 PPL_PROTO((ppl_const_@CLASS@_t ph,
-           ppl_const_@UDESCRIBE@_t c));
+           ppl_const_@URELATION_REPRESENT@_t c));
 
 ')
 
@@ -172,51 +172,51 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@REPRESENT@_code',
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 `int
-ppl_@CLASS@_add_@REPRESENT@
+ppl_@CLASS@_add_@ADD_REPRESENT@
 PPL_PROTO((ppl_@CLASS@_t ph,
-           ppl_const_@UREPRESENT@_t c));
+           ppl_const_@UADD_REPRESENT@_t c));
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@REPRESENT@_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 `int
-ppl_@CLASS@_add_@REPRESENT@_and_minimize
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize
 PPL_PROTO((ppl_@CLASS@_t ph,
-           ppl_const_@UREPRESENT@_t c));
+           ppl_const_@UADD_REPRESENT@_t c));
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `int
-ppl_@CLASS@_add_@REPRESENT@s
+ppl_@CLASS@_add_@ADD_REPRESENT@s
 PPL_PROTO((ppl_@CLASS@_t ph,
-           ppl_const_@UREPRESENT@_System_t cs));
+           ppl_const_@UADD_REPRESENT@_System_t cs));
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@REPRESENT@s_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 `int
-ppl_@CLASS@_add_@REPRESENT@s_and_minimize
+ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize
 PPL_PROTO((ppl_@CLASS@_t ph,
-           ppl_const_@UREPRESENT@_System_t cs));
+           ppl_const_@UADD_REPRESENT@_System_t cs));
 
 ')
 
-m4_define(`ppl_@CLASS@_add_recycled_@REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_code',
 `int
-ppl_@CLASS@_add_recycled_@REPRESENT@s
+ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s
 PPL_PROTO((ppl_@CLASS@_t ph,
-           ppl_@UREPRESENT@_System_t cs));
+           ppl_@UADD_REPRESENT@_System_t cs));
 
 ')
 
-m4_define(`ppl_@CLASS@_add_recycled_@REPRESENT@s_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize_code',
 `int
-ppl_@CLASS@_add_recycled_@REPRESENT@s_and_minimize
+ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize
 PPL_PROTO((ppl_@CLASS@_t ph,
-           ppl_@UREPRESENT@_System_t cs));
+           ppl_@UADD_REPRESENT@_System_t cs));
 
 ')
 
