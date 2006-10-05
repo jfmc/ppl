@@ -51,6 +51,11 @@ gcd_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
 }
 
 inline void
+rem_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
+  mpz_tdiv_r(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
+}
+
+inline void
 gcdext_assign(GMP_Integer& x,
 	      const GMP_Integer& y, const GMP_Integer& z,
 	      GMP_Integer& s, GMP_Integer& t) {

@@ -771,6 +771,8 @@ DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul_assign_r)
 
 DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul_assign_r)
 
+DEF_ASSIGN_FUN3_3(rem_assign, rem_assign_r)
+
 DEF_ASSIGN_FUN3_3(gcd_assign, gcd_assign_r)
 
 DEF_ASSIGN_FUN5_5(gcdext_assign, gcdext_assign_r)

@@ -74,6 +74,11 @@ void abs_assign(GMP_Integer& x);
 /*! \relates GMP_Integer */
 void abs_assign(GMP_Integer& x, const GMP_Integer& y);
 
+//! Assigns to \p x the remainder of the division of \p y by \p z.
+/*! \relates GMP_Integer */
+void rem_assign(GMP_Integer& x,
+		const GMP_Integer& y, const GMP_Integer& z);
+
 //! Assigns to \p x the greatest common divisor of \p y and \p z.
 /*! \relates GMP_Integer */
 void gcd_assign(GMP_Integer& x,
