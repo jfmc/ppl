@@ -98,10 +98,77 @@ test03() {
   return disjoint;
 }
 
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(x >= y);
+
+  TBD_Shape bd2(3);
+
+  try {
+    // This is an invalid use of function
+    // BD_Shape::is_disjoint_from(bd2): it is illegal
+    // to apply this function to two polyhedra of different dimensions.
+    bd1.is_disjoint_from(bd2);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+    return false;
+  }
+  return false;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd1(2, EMPTY);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraint(A - B <= 5);
+
+  bool disjoint = bd1.is_disjoint_from(bd2);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  return disjoint;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(A >= 0);
+  bd1.add_constraint(B >= -4);
+
+  TBD_Shape bd2(2, EMPTY);
+
+  bool disjoint = bd1.is_disjoint_from(bd2);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  return disjoint;
+}
+
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN

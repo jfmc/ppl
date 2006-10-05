@@ -357,7 +357,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   }
 
   // In general, adding a constraint does not preserve the shortest-path
-  // closure or reduction of the system of bounded differences.
+  // closure or reduction of the bounded difference shape.
   if (changed && marked_shortest_path_closed())
     status.reset_shortest_path_closed();
   assert(OK());
@@ -371,7 +371,7 @@ BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   const dimension_type x_space_dim = x.space_dimension();
   const dimension_type y_space_dim = y.space_dimension();
 
-  // If `y' is an empty 0-dim space system of bounded differences,
+  // If `y' is an empty 0-dim space bounded difference shape,
   // let `*this' become empty.
   if (y_space_dim == 0 && y.marked_empty()) {
     set_empty();
@@ -429,7 +429,7 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
   }
 
   /*
-    The `y' system of bounded differences need be closed.
+    The `y' bounded difference shape need be closed.
     In fact if, for example, in `*this' we have the constraints:
 
     x1 - x2 <= 1;
@@ -474,8 +474,8 @@ BD_Shape<T>::is_disjoint_from(const BD_Shape& y) const {
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("is_disjoint_from(y)", y);
 
-  // If one of the two systems of bounded differences is empty,
-  // then the two systems of bounded differences are disjoint.
+  // If one of the two bounded difference shape is empty,
+  // then the two bounded difference shape are disjoint.
   shortest_path_closure_assign();
   if (marked_empty())
     return true;
@@ -483,11 +483,19 @@ BD_Shape<T>::is_disjoint_from(const BD_Shape& y) const {
   if (y.marked_empty())
     return true;
 
+  // Two BDSs are disjoint when their intersection is empty.
+  // That is if and only if there exists at least a bounded difference
+  // such that the upper bound of the bounded difference in the first
+  // BD_Shape is strictly less than the lower bound of
+  // the corresponding bounded difference in the second BD_Shape
+  // or vice versa.
+  // For example: let be
+  // in `*this':    -a_j_i <= v_j - v_i <= a_i_j;
+  // and in `y':    -b_j_i <= v_j - v_i <= b_i_j;
+  // `*this' and `y' are disjoint if
+  // 1.) a_i_j < -b_j_i or
+  // 2.) b_i_j < -a_j_i.
   N tmp;
-  // Two systems of bounded differences are disjoint when
-  // their intersection is empty, i.e. if exist one constraint
-  // such that the lower bound of one of two BDS is greater than
-  // upper bound of the other.
   for (dimension_type i = space_dim; i > 0; --i) {
     const DB_Row<N>& x_i = dbm[i];
     for (dimension_type j = space_dim; j > 0; --j) {
@@ -512,7 +520,7 @@ BD_Shape<T>::is_universe() const {
   if (space_dim == 0)
     return true;
 
-  // A system of bounded differences defining the universe BDS can only
+  // A bounded difference shape defining the universe BDS can only
   // contain trivial constraints.
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
     const DB_Row<N>& dbm_i = dbm[i];
@@ -532,7 +540,7 @@ BD_Shape<T>::is_bounded() const {
   if (marked_empty() || space_dim == 0)
     return true;
 
-  // A system of bounded differences defining the bounded BDS never can
+  // A bounded difference shape defining the bounded BDS never can
   // contain trivial constraints.
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
     const DB_Row<N>& dbm_i = dbm[i];
@@ -684,7 +692,7 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   }
 
   // Step 2: we check if there are redundant constraints in the zero_cycle
-  // free systems of bounded differences, considering only the leaders.
+  // free bounded difference shape, considering only the leaders.
   // A constraint `c' is redundant, when there are two constraints such that
   // their sum is the same constraint with the inhomogeneous term
   // less than or equal to the `c' one.
@@ -1242,17 +1250,17 @@ BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
   BD_Shape& x = *this;
 
   x.shortest_path_closure_assign();
-  // The difference of an empty system of bounded differences
-  // and of a system of bounded differences `p' is empty.
+  // The difference of an empty bounded difference shape
+  // and of a bounded difference shape `p' is empty.
   if (x.marked_empty())
     return;
   y.shortest_path_closure_assign();
-  // The difference of a system of bounded differences `p'
-  // and an empty system of bounded differences is `p'.
+  // The difference of a bounded difference shape `p'
+  // and an empty bounded difference shape is `p'.
   if (y.marked_empty())
     return;
 
-  // If both systems of bounded differences are zero-dimensional,
+  // If both bounded difference shapes are zero-dimensional,
   // then at this point they are necessarily universe system of
   // bounded differences, so that their difference is empty.
   if (space_dim == 0) {
@@ -1274,10 +1282,10 @@ BD_Shape<T>::bds_difference_assign(const BD_Shape& y) {
   for (Constraint_System::const_iterator i = y_cs.begin(),
 	 y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
     const Constraint& c = *i;
-    // If the system of bounded differences `x' is included
-    // in the system of bounded differences defined by `c',
+    // If the bounded difference shape `x' is included
+    // in the bounded difference shape defined by `c',
     // then `c' _must_ be skipped, as adding its complement to `x'
-    // would result in the empty system of bounded differences,
+    // would result in the empty bounded difference shape,
     // and as we would obtain a result that is less precise
     // than the bds-difference.
     if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
@@ -1314,7 +1322,7 @@ BD_Shape<T>::add_space_dimensions_and_embed(const dimension_type m) {
   const bool was_zero_dim_univ = (!marked_empty() && space_dim == 0);
 
   // To embed an n-dimension space BDS in a (n+m)-dimension space,
-  // we just add `m' rows and columns in the system of bounded differences,
+  // we just add `m' rows and columns in the bounded difference shape,
   // initialized to PLUS_INFINITY.
   dbm.grow(new_space_dim + 1);
 
@@ -1358,7 +1366,7 @@ BD_Shape<T>::add_space_dimensions_and_project(const dimension_type m) {
     return;
   }
 
-  // To project an n-dimension space system of bounded differences
+  // To project an n-dimension space bounded difference shape
   // in a (n+m)-dimension space, we add `m' rows and columns.
   // In the first row and column of the matrix we add `zero' from
   // the (n+1)-th position to the end.
@@ -1505,7 +1513,7 @@ BD_Shape<T>::map_space_dimensions(const Partial_Function& pfunc) {
     shortest_path_closure_assign();
 
   // If the BDS is empty, then it is sufficient to adjust the
-  // space dimension of the system of bounded differences.
+  // space dimension of the bounded difference shape.
   if (marked_empty()) {
     remove_higher_space_dimensions(new_space_dim);
     return;
@@ -1561,7 +1569,7 @@ BD_Shape<T>::intersection_assign(const BD_Shape& y) {
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("intersection_assign(y)", y);
 
-  // If one of the two systems of bounded differences is empty,
+  // If one of the two bounded difference shapes is empty,
   // the intersection is empty.
   if (marked_empty())
     return;
@@ -1570,13 +1578,13 @@ BD_Shape<T>::intersection_assign(const BD_Shape& y) {
     return;
   }
 
-  // If both systems of bounded differences are zero-dimensional,
+  // If both bounded difference shapes are zero-dimensional,
   // then at this point they are necessarily non-empty,
   // so that their intersection is non-empty too.
   if (space_dim == 0)
     return;
 
-  // To intersect two systems of bounded differences we compare
+  // To intersect two bounded difference shapes we compare
   // the constraints and we choose the less values.
   bool changed = false;
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
@@ -1618,7 +1626,7 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
   }
 #endif
 
-  // If both systems of bounded differences are zero-dimensional,
+  // If both bounded difference shapes are zero-dimensional,
   // since `*this' contains `y', we simply return `*this'.
   if (space_dim == 0)
     return;
@@ -1724,7 +1732,7 @@ BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
   }
 
   // In general, adding a constraint does not preserve the shortest-path
-  // closure of the system of bounded differences.
+  // closure of the bounded difference shape.
   if (changed && limiting_shape.marked_shortest_path_closed())
     limiting_shape.status.reset_shortest_path_closed();
 }
@@ -1916,7 +1924,7 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
   }
 #endif
 
-  // If both systems of bounded differences are zero-dimensional,
+  // If both bounded difference shapes are zero-dimensional,
   // since `y' contains `*this', we simply return `*this'.
   if (space_dim == 0)
     return;
@@ -2436,7 +2444,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
     throw_dimension_incompatible("affine_preimage(v, e, d)", "e", expr);
 
   // `var' should be one of the dimensions of
-  // the systems of bounded differences.
+  // the bounded difference shapes.
   const dimension_type v = var.id() + 1;
   if (v > space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", var.id());
@@ -3725,7 +3733,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
   if (c.is_universe())
     s << "true";
   else {
-    // We control empty system of bounded differences.
+    // We control empty bounded difference shape.
     dimension_type n = c.space_dimension();
     if (c.marked_empty())
       s << "false";
