@@ -71,7 +71,6 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
     base(),
     status(PARTIALLY_SATISFIABLE),
     initialized(false),
-    is_solving_mip(false),
     input_cs(),
     first_pending_constraint(0),
     input_obj_function(),
@@ -97,7 +96,6 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
     base(),
     status(PARTIALLY_SATISFIABLE),
     initialized(false),
-    is_solving_mip(false),
     input_cs(),
     first_pending_constraint(0),
     input_obj_function(obj),
@@ -204,22 +202,25 @@ PPL::MIP_Problem::is_satisfiable() const {
       if (i_variables.empty())
 	return is_lp_satisfiable();
       // MIP Case.
+      const Variables_Set this_variables_set = integer_space_dimensions();
       MIP_Problem& x = const_cast<MIP_Problem&>(*this);
       Generator p = point();
       // This disable the Variable integrality check in OK() until we will
       // find a feasible point.
-      x.is_solving_mip = true;
+      x.i_variables.clear();
       x.is_lp_satisfiable();
-         if (is_mip_satisfiable(x, p)) {
+         if (is_mip_satisfiable(x, p, this_variables_set)) {
 	x.last_generator = p;
 	x.status = SATISFIABLE;
-	x.is_solving_mip = false;
-   	return true;
-      }
+	// Restore i_variables;
+    	x.i_variables = this_variables_set;
+	return true;
+	 }
       else {
 	x.status = UNSATISFIABLE;
-	x.is_solving_mip = false;
-   	return false;
+	// Restore i_variables;
+    	x.i_variables = this_variables_set;
+	return false;
       }
     }
   }
@@ -260,12 +261,14 @@ PPL::MIP_Problem::solve() const{
      // MIP Problem case.
      // This disable the Variable integrality check in OK() until we will find
      // an optimizing point.
-     x.is_solving_mip = true;
+     const Variables_Set this_variables_set = integer_space_dimensions();
+     x.i_variables.clear();
      if (x.is_lp_satisfiable())
        x.second_phase();
      else {
        x.status = UNSATISFIABLE;
-       x.is_solving_mip = false;
+       // Restore i_variables;
+       x.i_variables = this_variables_set;
        return UNFEASIBLE_MIP_PROBLEM;
      }
      mpq_class incumbent_solution;
@@ -273,13 +276,19 @@ PPL::MIP_Problem::solve() const{
      bool have_incumbent_solution = false;
 
      MIP_Problem mip_copy(*this);
+     // Treat this MIP_Problem as an LP one: we ha have to deal with
+     // the relaxation in solve_mip().
+     mip_copy.i_variables.clear();
      // This encodes the recursion level that solve_mip() has reached
      // during the `branch and bound' algorithm.
      unsigned long recursion_depth = 0;
      MIP_Problem_Status mip_status = solve_mip(have_incumbent_solution,
 					       incumbent_solution, g,
-					       mip_copy, recursion_depth);
-     x.is_solving_mip = false;
+					       mip_copy,
+					       this_variables_set,
+					       recursion_depth);
+     // Restore i_variables;
+     x.i_variables = this_variables_set;
      switch (mip_status) {
      case UNFEASIBLE_MIP_PROBLEM:
        x.status = UNSATISFIABLE;
@@ -1440,6 +1449,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 			    mpq_class& incumbent_solution_value,
 			    Generator& incumbent_solution_point,
 			    MIP_Problem& lp,
+			    const Variables_Set& i_vars,
 			    unsigned long long recursion_depth) {
   ++recursion_depth;
 #if PPL_NOISY_SIMPLEX
@@ -1484,7 +1494,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   TEMP_INTEGER(gcd);
   const Coefficient& p_divisor = p.divisor();
   dimension_type nonint_dim;
-  Variables_Set i_vars = lp.integer_space_dimensions();
+  //  Variables_Set i_vars = lp.integer_space_dimensions();
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(*v_begin), p_divisor);
@@ -1531,23 +1541,23 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   MIP_Problem lp_aux = lp;
   lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
   solve_mip(have_incumbent_solution, incumbent_solution_value,
-	    incumbent_solution_point, lp_aux, recursion_depth);
+	    incumbent_solution_point, lp_aux, i_vars, recursion_depth);
   }
   // TODO: change this when we will be able to remove constraints.
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
   solve_mip(have_incumbent_solution, incumbent_solution_value,
-	    incumbent_solution_point, lp, recursion_depth);
+	    incumbent_solution_point, lp, i_vars, recursion_depth);
   return have_incumbent_solution ? lp_status : UNFEASIBLE_MIP_PROBLEM;
 }
 
 bool
 PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
+					    const Variables_Set& i_vars,
 					    dimension_type& branching_index) {
   // Insert here the variables that don't satisfy the integrality condition.
   const Constraint_Sequence& input_cs = mip.input_cs;
   const Generator& last_generator = mip.last_generator;
   const Coefficient& last_generator_divisor = last_generator.divisor();
-  Variables_Set i_vars = mip.integer_space_dimensions();
   Variables_Set candidate_variables;
 
   TEMP_INTEGER(gcd);
@@ -1593,7 +1603,8 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
 }
 
 bool
-PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p) {
+PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
+				     const Variables_Set& i_vars) {
   // Solve the problem as a non MIP one, it must be done internally.
   if (!lp.is_lp_satisfiable())
     return false;
@@ -1608,11 +1619,12 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p) {
   const Coefficient& p_divisor = p.divisor();
 
 #if PPL_SIMPLEX_USE_MIP_HEURISTIC
-  found_satisfiable_generator = choose_branching_variable(lp, nonint_dim);
+  found_satisfiable_generator = choose_branching_variable(lp, i_vars,
+							  nonint_dim);
 #else
 
   TEMP_INTEGER(gcd);
-  Variables_Set i_vars = lp.integer_space_dimensions();
+  i_vars = lp.integer_space_dimensions();
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(*v_begin), p_divisor);
@@ -1640,11 +1652,11 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p) {
   {
     MIP_Problem lp_aux = lp;
     lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
-    if (is_mip_satisfiable(lp_aux, p))
+    if (is_mip_satisfiable(lp_aux, p, i_vars))
       return true;
   }
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
-  return is_mip_satisfiable(lp, p);
+  return is_mip_satisfiable(lp, p, i_vars);
 }
 
 bool
@@ -1722,7 +1734,7 @@ PPL::MIP_Problem::OK() const {
 
     // Check that every integer declared variable is really integer.
     // in the solution found.
-    if (!is_solving_mip) {
+    if (!i_variables.empty()) {
       TEMP_INTEGER(gcd);
       for (Variables_Set::const_iterator v_it = i_variables.begin(),
 	     v_end = i_variables.end(); v_it != v_end; ++v_it) {

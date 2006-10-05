@@ -417,13 +417,6 @@ private:
   */
   bool initialized;
 
-  /*! \brief
-    A Boolean encoding whether or not the internal methods are solving
-    MIP_Problems with a non empty i_variables Variables_Set: useful to disable
-    or enable some checks in method OK().
-  */
-  bool is_solving_mip;
-
   //! The sequence of constraints describing the feasible region.
   Constraint_Sequence input_cs;
 
@@ -667,6 +660,13 @@ private:
     If the MIP_Problem status return in `OPTIMIZED', this will contain
     the optimality point.
 
+    \param mip
+    The MIP_Problem that has to be solved.
+
+    \param i_vars
+    The Variable_Set containing all the Variables that are constrained
+    to have an integer value.
+
     \param dimension_type recursion_depth
     Used for debugging purposes, this encodes the recursion depth reached
     during the `branch and bound' alogrithm.
@@ -674,12 +674,30 @@ private:
   static MIP_Problem_Status solve_mip(bool& have_incumbent_solution,
 				      mpq_class& incumbent_solution_value,
 				      Generator& incumbent_solution_point,
-				      MIP_Problem& lp,
+				      MIP_Problem& mip,
+				      const Variables_Set& i_vars,
 				      unsigned long long recursion_depth);
 
   bool is_lp_satisfiable() const;
 
-  static bool is_mip_satisfiable(MIP_Problem& mip, Generator& p);
+  /*! \brief
+    Used with MIP_Problems with a non empty integer Variables_Se,
+    returns <CODE>true</CODE> if and if only a MIP_Problem is satisfiable,
+    returns <CODE>false</CODE> otherwise.
+
+    \param mip
+    The MIP_Problem that has to be solved.
+
+    \param p
+    A Generator that will encode the feasible point, only if <CODE>true</CODE>
+    is returned.
+
+    \param i_vars
+    The Variable_Set containing all the Variables that are constrained
+    to have an integer value.
+  */
+  static bool is_mip_satisfiable(MIP_Problem& mip, Generator& p,
+				 const Variables_Set& i_vars);
 
   /*! \brief
     Returns <CODE>true</CODE> if and only `last_generator' satisfies all the
@@ -693,6 +711,7 @@ private:
     which must be applied the `branch and bound' algorithm.
   */
   static bool choose_branching_variable(const MIP_Problem& mip,
+					const Variables_Set& i_vars,
 					dimension_type& branching_index);
 };
 
