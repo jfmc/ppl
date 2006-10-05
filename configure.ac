@@ -694,6 +694,18 @@ then
 fi
 AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE, test x$YAP_PROLOG = xyap)
 
+# Test if *any* Prolog system has to be built.
+if test x${CIAO_PROLOG} = xciao \
+|| test x${GNU_PROLOG} = xgprolog \
+|| test x${have_sicstus_prolog} = xyes \
+|| test x${have_swi_prolog} = xyes \
+|| test x${have_xsb_prolog} = xyes \
+|| test x${YAP_PROLOG} = xyap
+then
+  SOME_PROLOG=yes
+fi
+AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
+
 # This is the list of interfaces that are enabled by default.
 # Different instantiations are separated by a '@' character.
 default_instantiations="Polyhedron @ Grid @ BD_Shape<int8_t>"
@@ -881,6 +893,14 @@ AC_CONFIG_FILES(Makefile
                 doc/devref.doxyconf-latex
                 doc/user.doxyconf-html
                 doc/devref.doxyconf-html
+                doc/user-c-interface.doxyconf-latex
+                doc/devref-c-interface.doxyconf-latex
+                doc/user-c-interface.doxyconf-html
+                doc/devref-c-interface.doxyconf-html
+                doc/user-prolog-interface.doxyconf-latex
+                doc/devref-prolog-interface.doxyconf-latex
+                doc/user-prolog-interface.doxyconf-html
+                doc/devref-prolog-interface.doxyconf-html
                 interfaces/Makefile
                 interfaces/C/Makefile
                 interfaces/C/ppl_c_version.h
