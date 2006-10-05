@@ -181,8 +181,7 @@ public:
   dimension_type space_dimension() const;
 
   /*! \brief
-    Returns the Variables_Set containing all the variables constrained
-    to be integral.
+    Returns a set containing all the variables constrained to be integral.
   */
   const Variables_Set& integer_space_dimensions() const;
 
@@ -433,7 +432,7 @@ private:
   Generator last_generator;
 
   /*! \brief
-    The Variable_Set containing all the Variables that are constrained
+    A set containing all the variables that are constrained
     to have an integer value.
   */
   Variables_Set i_variables;
@@ -645,27 +644,24 @@ private:
 			   bool check_equality = false);
 
   /*! \brief
-    Returns a MIP_Problem_Status that encodes the solution of the MIP_Problem.
+    Returns a status that encodes the solution of the MIP problem.
 
     \param have_incumbent_solution
-    A boolean that is used to store if the solving process has found a
-    provisional optimum point.
+    It is used to store if the solving process has found a provisional
+    optimum point.
 
     \param incumbent_solution_value
-    An mpq_class that represents the evaluated value of the provisional
-    optimum point found.
+    Encodes the evaluated value of the provisional optimum point found.
 
     \param incumbent_solution_point
-    A Generator that encodes the provisional optimum point found.
-    If the MIP_Problem status return in `OPTIMIZED', this will contain
-    the optimality point.
+    If the method returns `OPTIMIZED', this will contain the optimality point.
 
     \param mip
-    The MIP_Problem that has to be solved.
+    The problem that has to be solved.
 
     \param i_vars
-    The Variable_Set containing all the Variables that are constrained
-    to have an integer value.
+    A set containing all the variables that are constrained to have an integer
+    value.
 
     \param dimension_type recursion_depth
     Used for debugging purposes, this encodes the recursion depth reached
@@ -676,35 +672,34 @@ private:
 				      Generator& incumbent_solution_point,
 				      MIP_Problem& mip,
 				      const Variables_Set& i_vars,
-				      unsigned long long recursion_depth);
+				      unsigned long recursion_depth);
 
   bool is_lp_satisfiable() const;
 
   /*! \brief
-    Used with MIP_Problems with a non empty integer Variables_Se,
-    returns <CODE>true</CODE> if and if only a MIP_Problem is satisfiable,
+    Used with MIP_Problems with a non empty `i_vars',
+    returns <CODE>true</CODE> if and if only a MIP problem is satisfiable,
     returns <CODE>false</CODE> otherwise.
 
     \param mip
-    The MIP_Problem that has to be solved.
+    The problem that has to be solved.
 
     \param p
-    A Generator that will encode the feasible point, only if <CODE>true</CODE>
-    is returned.
+    This will encode the feasible point, only if <CODE>true</CODE> is returned.
 
     \param i_vars
-    The Variable_Set containing all the Variables that are constrained
-    to have an integer value.
+    This encodes all the variables that are constrained to have an
+    integer value.
   */
   static bool is_mip_satisfiable(MIP_Problem& mip, Generator& p,
 				 const Variables_Set& i_vars);
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only `last_generator' satisfies all the
+    Returns <CODE>true</CODE> if and if only `last_generator' satisfies all the
     integrality coditions.
 
     \param mip
-    The MIP_Problem.
+    The MIP problem.
 
     \param branching_index
     If <CODE>false</CODE> is returned, this will encode the Variable index on

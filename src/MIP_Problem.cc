@@ -1450,7 +1450,7 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
 			    Generator& incumbent_solution_point,
 			    MIP_Problem& lp,
 			    const Variables_Set& i_vars,
-			    unsigned long long recursion_depth) {
+			    unsigned long recursion_depth) {
   ++recursion_depth;
 #if PPL_NOISY_SIMPLEX
   std::cerr << "Recursion_Depth at level: " << recursion_depth << std::endl;
