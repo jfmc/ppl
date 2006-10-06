@@ -817,7 +817,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   else {
     ppl_MIP_Problem_add_constraints(ppl_mip, cs);
     if (no_optimization)
-      satisfiable =  ppl_MIP_Problem_is_satisfiable(ppl_mip);
+      satisfiable = ppl_MIP_Problem_is_satisfiable(ppl_mip);
     else
       status = ppl_MIP_Problem_solve(ppl_mip);
   }
@@ -905,7 +905,7 @@ solve(char* file_name) {
       integer_variables = (ppl_dimension_type*)
 	malloc((glpk_lp_num_int + 1)*sizeof(ppl_dimension_type));
       for (i = 0, j = 0; i < dimension; ++i)
-	if (lpx_get_col_kind(glpk_lp, i+1) ==  LPX_IV) {
+	if (lpx_get_col_kind(glpk_lp, i+1) == LPX_IV) {
 	  integer_variables[j] = i;
 	  if (verbose) {
 	    ppl_io_fprint_variable(output_file, i);
