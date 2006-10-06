@@ -892,7 +892,7 @@ solve(char* file_name) {
   /* Read Variables constrained to be integer. */
     if (glpk_lp_problem_kind == LPX_MIP && !no_mip && use_simplex) {
       if (verbose)
-	fprintf(output_file, "Integer Variables:\n");
+	fprintf(output_file, "Integer variables:\n");
       glpk_lp_num_int = lpx_get_num_int(glpk_lp);
       integer_variables = (ppl_dimension_type*)
 	malloc((glpk_lp_num_int + 1)*sizeof(ppl_dimension_type));
