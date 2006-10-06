@@ -1,6 +1,5 @@
 /* Solve linear programming problems by either vertex/point enumeration
-   or the primal simplex algorithm. Just a toy to test the C interface
-   of the library.
+   or the primal simplex algorithm.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
