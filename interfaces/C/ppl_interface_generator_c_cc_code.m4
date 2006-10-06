@@ -27,11 +27,11 @@ CATCH_ALL;
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@UREPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System_code',
 `int
-ppl_new_@TOPOLOGY@@CLASS@_from_@UREPRESENT@_System
-(ppl_@CLASS@_t* pph, ppl_const_@UREPRESENT@_System_t cs) try {
-  const @UREPRESENT@_System& ccs = *to_const(cs);
+ppl_new_@TOPOLOGY@@CLASS@_from_@UBUILD_REPRESENT@_System
+(ppl_@CLASS@_t* pph, ppl_const_@UBUILD_REPRESENT@_System_t cs) try {
+  const @UBUILD_REPRESENT@_System& ccs = *to_const(cs);
   *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(ccs));
   return 0;
 }
@@ -39,11 +39,11 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UREPRESENT@_System_code',
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System_code',
 `int
-ppl_new_@TOPOLOGY@@CLASS@_recycle_@UREPRESENT@_System
-(ppl_@CLASS@_t* pph, ppl_@UREPRESENT@_System_t cs) try {
-  @UREPRESENT@_System& ccs = *to_nonconst(cs);
+ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System
+(ppl_@CLASS@_t* pph, ppl_@UBUILD_REPRESENT@_System_t cs) try {
+  @UBUILD_REPRESENT@_System& ccs = *to_nonconst(cs);
   *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(ccs));
   return 0;
 }
@@ -110,13 +110,13 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@DESCRIBE@s_code',
+m4_define(`ppl_@CLASS@_@GET_REPRESENT@s_code',
 `int
-ppl_@CLASS@_@DESCRIBE@s
+ppl_@CLASS@_@GET_REPRESENT@s
 (ppl_const_@CLASS@_t ph,
- ppl_const_@UDESCRIBE@_System_t* pcs) try {
+ ppl_const_@UGET_REPRESENT@_System_t* pcs) try {
   const @CPP_CLASS@& pph = *to_const(ph);
-  const @UDESCRIBE@_System& cs = pph.@DESCRIBE@s();
+  const @UGET_REPRESENT@_System& cs = pph.@GET_REPRESENT@s();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -124,13 +124,13 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_minimized_@DESCRIBE@s_code',
+m4_define(`ppl_@CLASS@_minimized_@GET_REPRESENT@s_code',
 `int
-ppl_@CLASS@_minimized_@DESCRIBE@s
+ppl_@CLASS@_minimized_@GET_REPRESENT@s
 (ppl_const_@CLASS@_t ph,
- ppl_const_@UDESCRIBE@_System_t* pcs) try {
+ ppl_const_@UGET_REPRESENT@_System_t* pcs) try {
   const @CPP_CLASS@& pph = *to_const(ph);
-  const @UDESCRIBE@_System& cs = pph.minimized_@DESCRIBE@s();
+  const @UGET_REPRESENT@_System& cs = pph.minimized_@GET_REPRESENT@s();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -138,13 +138,13 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_relation_with_@UDESCRIBE@_code',
+m4_define(`ppl_@CLASS@_relation_with_@URELATION_REPRESENT@_code',
 `int
-ppl_@CLASS@_relation_with_@UDESCRIBE@
+ppl_@CLASS@_relation_with_@URELATION_REPRESENT@
 (ppl_const_@CLASS@_t ph,
- ppl_const_@UDESCRIBE@_t c) try {
+ ppl_const_@URELATION_REPRESENT@_t c) try {
   const @CPP_CLASS@& pph = *to_const(ph);
-  const @UDESCRIBE@& cc = *to_const(c);
+  const @URELATION_REPRESENT@& cc = *to_const(c);
   return pph.relation_with(cc).get_flags();
 }
 CATCH_ALL
@@ -298,82 +298,82 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@REPRESENT@_code',
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 `int
-ppl_@CLASS@_add_@REPRESENT@
+ppl_@CLASS@_add_@ADD_REPRESENT@
 (ppl_@CLASS@_t ph,
- ppl_const_@UREPRESENT@_t c) try {
+ ppl_const_@UADD_REPRESENT@_t c) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  const @UREPRESENT@& cc = *to_const(c);
-  pph.add_@REPRESENT@(cc);
+  const @UADD_REPRESENT@& cc = *to_const(c);
+  pph.add_@ADD_REPRESENT@(cc);
   return 0;
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@REPRESENT@_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 `int
-ppl_@CLASS@_add_@REPRESENT@_and_minimize
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize
 (ppl_@CLASS@_t ph,
- ppl_const_@UREPRESENT@_t c) try {
+ ppl_const_@UADD_REPRESENT@_t c) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  const @UREPRESENT@& cc = *to_const(c);
-  return pph.add_@REPRESENT@_and_minimize(cc) ? 1 : 0;
+  const @UADD_REPRESENT@& cc = *to_const(c);
+  return pph.add_@ADD_REPRESENT@_and_minimize(cc) ? 1 : 0;
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `int
-ppl_@CLASS@_add_@REPRESENT@s
+ppl_@CLASS@_add_@ADD_REPRESENT@s
 (ppl_@CLASS@_t ph,
- ppl_const_@UREPRESENT@_System_t cs) try {
+ ppl_const_@UADD_REPRESENT@_System_t cs) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  const @UREPRESENT@_System& ccs = *to_const(cs);
-  pph.add_@REPRESENT@s(ccs);
+  const @UADD_REPRESENT@_System& ccs = *to_const(cs);
+  pph.add_@ADD_REPRESENT@s(ccs);
   return 0;
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@REPRESENT@s_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 `int
-ppl_@CLASS@_add_@REPRESENT@s_and_minimize
+ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize
 (ppl_@CLASS@_t ph,
- ppl_const_@UREPRESENT@_System_t cs) try {
+ ppl_const_@UADD_REPRESENT@_System_t cs) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  const @UREPRESENT@_System& ccs = *to_const(cs);
-  return pph.add_@REPRESENT@s_and_minimize(ccs) ? 1 : 0;
+  const @UADD_REPRESENT@_System& ccs = *to_const(cs);
+  return pph.add_@ADD_REPRESENT@s_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_recycled_@REPRESENT@s_code',
+m4_define(`ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_code',
 `int
-ppl_@CLASS@_add_recycled_@REPRESENT@s
+ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s
 (ppl_@CLASS@_t ph,
- ppl_@UREPRESENT@_System_t cs) try {
+ ppl_@UADD_REPRESENT@_System_t cs) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  @UREPRESENT@_System& ccs = *to_nonconst(cs);
-  pph.add_recycled_@REPRESENT@s(ccs);
+  @UADD_REPRESENT@_System& ccs = *to_nonconst(cs);
+  pph.add_recycled_@ADD_REPRESENT@s(ccs);
   return 0;
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_add_recycled_@REPRESENT@s_and_minimize_code',
+m4_define(`ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize_code',
 `int
-ppl_@CLASS@_add_recycled_@REPRESENT@s_and_minimize
+ppl_@CLASS@_add_recycled_@ADD_REPRESENT@s_and_minimize
 (ppl_@CLASS@_t ph,
- ppl_@UREPRESENT@_System_t cs) try {
+ ppl_@UADD_REPRESENT@_System_t cs) try {
   @CPP_CLASS@& pph = *to_nonconst(ph);
-  @UREPRESENT@_System& ccs = *to_nonconst(cs);
-  return pph.add_recycled_@REPRESENT@s_and_minimize(ccs) ? 1 : 0;
+  @UADD_REPRESENT@_System& ccs = *to_nonconst(cs);
+  return pph.add_recycled_@ADD_REPRESENT@s_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
 

@@ -284,70 +284,76 @@ m4_replace_all_procedure_specs_by_code($1, m4_shift(m4_shift($@)))`'dnl
 ')
 
 dnl =====================================================================
-dnl ====== The next macros deal with filtering the procedure            =
-dnl ====== specifications according to the +/-group names in the flags  =
+dnl ====== The next set of macros filter the procedure specifications   =
+dnl ====== according to the +/-group names in the extra flags in the    =
+dnl ====== procedure specification.                                     =
 dnl =====================================================================
 
-dnl m4_proc_keep_or_throw(
-dnl     Class_Kind, Procedure_Info, +_or_-, Group1, Group2, ...)
+dnl m4_keep_or_throw_for_one_group(
+dnl     Class_Kind, Procedure_Spec, +_or_-, Group)
 dnl
-dnl This compares the Class_Kind with the groups in the
-dnl third and subsequent arguments that are also in the groups
-dnl in the procedure info.
-dnl For each group, it checks if Class_Kind is in that group;
-dnl if it is, it checks if +group or -group
-dnl (depending if +_or_- is + or - is in the Procedure_Info.
-dnl Once it finds such a group, it stops iterating through the groups
-dnl and expands to 1. If no such group is found, it expands to 0.
-m4_define(`m4_proc_keep_or_throw', `dnl
-m4_ifelse($#, 0, 0, $#, 1, 0, $#, 2, 0, $#, 3, 0,
-  $#, 4, `m4_proc_keep_or_throw_aux($1, $2, $3, $4)',
-    `m4_ifelse(m4_proc_keep_or_throw_aux($1, $2, $3, $4), 1, 1,
-      m4_proc_keep_or_throw($1, $2, $3,
-                            m4_shift(m4_shift(m4_shift(m4_shift($@))))))')`'dnl
-')
-
-dnl m4_proc_keep_or_throw_aux(
-dnl     Class_Kind, Procedure_Info, +_or_-, Group)
-dnl
-dnl This checks if or Class_Kind is in Group;
+dnl Class_Kind      - The current class kind;
+dnl Procedure_Spec  - A schematic procedure name with flags still attached;
+dnl +_or_-          - + or -;
+dnl Group           - A group name.
+dnl This checks if or Class_Kind is in the list of class kinds defined
+dnl by Group (in ppl_interface_generator_common_dat.m4);
 dnl if it is, it checks if +Group or -Group
-dnl (depending if +_or_-Group is in the Procedure_Info;
+dnl (depending if +_or_- is + or -) is included in the Procedure_Spec;
 dnl if it is, then it expands to 1, otherwise, expands to 0.
-m4_define(`m4_proc_keep_or_throw_aux', `dnl
+m4_define(`m4_keep_or_throw_for_one_group', `dnl
 m4_ifelse(m4_arg_counter($1, m4_$4_group), `', 0,
   `m4_ifelse(m4_index($2, $3$4), -1, 0, 1)')`'dnl
 ')
 
-dnl m4_filter(Class_Kind, Procedure_Name)
+dnl m4_keep_or_throw(
+dnl     Class_Kind, Procedure_Spec, +_or_-, Group1, Group2, ...)
 dnl
-dnl Keeps just those procedure names that are needed for the given class kind.
-dnl It first checks if there is a group including the Class_name
-dnl in Procedure_Name, preceded by a -.
-dnl if so, it expands to the empty string.
-dnl If this is not the case, it checks if there is a group
-dnl including the Class_name in Procedure_Name, preceded by a +.
-dnl if so, it expands to the given Procedure_Name.
-m4_define(`m4_filter', `dnl
+dnl Class_Kind      - The current class kind;
+dnl Procedure_Spec  - A schematic procedure name with flags still attached;
+dnl +_or_-          - + or -;
+dnl Group1          - A group name;
+dnl ....
+dnl Groupk          - A group name.
+m4_define(`m4_keep_or_throw', `dnl
+m4_ifelse($#, 0, 0, $#, 1, 0, $#, 2, 0, $#, 3, 0,
+  $#, 4, `m4_keep_or_throw_for_one_group($1, $2, $3, $4)',
+    `m4_ifelse(m4_keep_or_throw_for_one_group($1, $2, $3, $4), 1, 1,
+      m4_keep_or_throw($1, $2, $3,
+                       m4_shift(m4_shift(m4_shift(m4_shift($@))))))')`'dnl
+')
+
+dnl m4_filter_one_procedure(Class_Kind, Procedure_Spec)
+dnl
+dnl Class_Kind      - The current class kind;
+dnl Procedure_Spec  - A schematic procedure name with flags still attached;
+dnl Keeps just those procedures that are wanted for the given class kind.
+dnl It first checks if there is a group in Procedure_Spec, whose
+dnl definition includes the Class_Kind, preceded by a "-",
+dnl if so, it expands to the empty string;
+dnl otherwise, it checks if there is a group in Procedure_Spec, whose
+dnl definition includes the Class_Kind, preceded by a "+",
+dnl if so, it expands to Procedure_Spec.
+m4_define(`m4_filter_one_procedure', `dnl
 m4_define(`m4_proc_info_string',
        `m4_patsubst(`$2', `[ ]*ppl_[^ ]+ \(.*\)', \1)')`'dnl
-m4_ifelse(m4_proc_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, 0,
-  m4_proc_keep_or_throw($1, m4_proc_info_string, +, m4_group_names))`'dnl
+m4_ifelse(m4_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, 0,
+  m4_keep_or_throw($1, m4_proc_info_string, +, m4_group_names))`'dnl
 m4_undefine(m4_proc_info_string)`'dnl
 ')
 
-dnl m4_filter_all(Class_Kind, Procedure_Name1, ProcedureName2, ...)
+dnl m4_filter_all_procedures(Class_Kind, Procedure_Name1, ProcedureName2, ...)
 dnl
 dnl Keeps just those procedure names that are needed for the given class kind.
 dnl The classes to be kept or filtered away are determined by extra info
 dnl included with each Procedure_Name
-m4_define(`m4_filter_all', `dnl
+m4_define(`m4_filter_all_procedures', `dnl
 m4_ifelse($#, 0, ,$# , 1, ,
   $#, 2,
-    `m4_ifelse(m4_filter($1, $2), 1, `$2')',
-    `m4_ifelse(m4_filter($1, $2), 1, `$2,
+    `m4_ifelse(m4_filter_one_procedure($1, $2), 1, `$2')',
+    `m4_ifelse(m4_filter_one_procedure($1, $2), 1, `$2,
 ')`'dnl
-m4_filter_all($1, m4_shift(m4_shift($@)))`'dnl
+m4_filter_all_procedures($1, m4_shift(m4_shift($@)))`'dnl
 ')`'dnl
 ')
 
@@ -372,7 +378,7 @@ dnl that class is added.
 m4_define(`m4_one_class_code', `dnl
 m4_pre_extra_class_code($1, $2)`'dnl
 m4_define(`m4_filtered_proc_list',
-       `m4_filter_all($2, m4_procedure_list)')`'dnl
+       `m4_filter_all_procedures($2, m4_procedure_list)')`'dnl
 m4_replace_all_procedure_specs_by_code($1, m4_filtered_proc_list)`'dnl
 m4_undefine(`m4_filtered_proc_list')`'dnl
 m4_post_extra_class_code($1, $2)`'dnl
