@@ -41,7 +41,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef HAVE_UNISTD_H
 /* Include this for `getopt()': especially important if we do not have
-   <getopt.h>.  */
+   <getopt.h>. */
 # include <unistd.h>
 #endif
 
@@ -55,7 +55,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef HAVE_SYS_RESOURCE_H
 /* This should be included after <time.h> and <sys/time.h> so as to make
-   sure we have the definitions for, e.g., `ru_utime'.  */
+   sure we have the definitions for, e.g., `ru_utime'. */
 # include <sys/resource.h>
 #endif
 
@@ -460,34 +460,39 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
   const char* glpk_status_string;
   int glpk_status;
   int treat_as_lp = 0;
-  /*  Is impossible to check results if we are dealing with MIP problems */
-  /*  and we are using enumeration. */
+  /* Is impossible to check results if we are dealing with MIP problems
+     and we are using enumeration. */
   if (!check_results)
     return;
 
   /* Disable GLPK output. */
   lpx_set_int_parm(glpk_lp, LPX_K_MSGLEV, 0);
 
-  if (no_mip || glpk_lp_problem_kind == LPX_LP
+  if (no_mip
+      || glpk_lp_problem_kind == LPX_LP
       || (use_simplex == 0 && glpk_lp_problem_kind == LPX_MIP))
     treat_as_lp = 1;
+
   lpx_set_obj_dir(glpk_lp, (maximize ? LPX_MAX : LPX_MIN));
+
   if (treat_as_lp) {
-    /* Set the problem class to LP: MIP problems are thus treated as */
-    /*  LP ones. */
+    /* Set the problem class to LP: MIP problems are thus treated as
+       LP ones. */
     lpx_set_class(glpk_lp, LPX_LP);
     lpx_simplex(glpk_lp);
     glpk_status = lpx_get_status(glpk_lp);
-    if ((!no_optimization && ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
-			       && glpk_status != LPX_NOFEAS)
-			      ||(ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED
-				 && glpk_status != LPX_UNBND)
-			      ||(ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
-				 && glpk_status != LPX_OPT)))
-	||(no_optimization && ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
-				&& glpk_status != LPX_NOFEAS)
-			      ||(ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
-				 && glpk_status == LPX_NOFEAS)))) {
+    if ((!no_optimization
+	 && ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+	      && glpk_status != LPX_NOFEAS)
+	     || (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED
+		 && glpk_status != LPX_UNBND)
+	     || (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+		&& glpk_status != LPX_OPT)))
+	|| (no_optimization
+	    && ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+		 && glpk_status != LPX_NOFEAS)
+		|| (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+		    && glpk_status == LPX_NOFEAS)))) {
       switch (glpk_status) {
       case LPX_NOFEAS:
 	glpk_status_string = "unfeasible";
@@ -505,7 +510,8 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
       error("check failed: for GLPK the problem is %s", glpk_status_string);
       check_results_failed = 1;
     }
-    else if (!no_optimization && ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+    else if (!no_optimization
+	     && ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
 	     && glpk_status == LPX_OPT) {
       double glpk_optimum_value = lpx_get_obj_val(glpk_lp);
       if (fabs(ppl_optimum_value - glpk_optimum_value) > check_threshold) {
@@ -516,19 +522,21 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
     }
     return;
   }
-  /*  MIP case */
+  /* MIP case. */
   lpx_intopt(glpk_lp);
   glpk_status = lpx_mip_status(glpk_lp);
-  if ((!no_optimization && ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
-			     && glpk_status != LPX_I_NOFEAS)
-			    || (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED
-				&& glpk_status != LPX_I_UNDEF)
-			    || (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
-				&& glpk_status != LPX_I_OPT)))
-      || (no_optimization && ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
-			       && glpk_status != LPX_I_NOFEAS)
-			      ||(ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
-				 && glpk_status == LPX_I_NOFEAS)))) {
+  if ((!no_optimization
+       && ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+	    && glpk_status != LPX_I_NOFEAS)
+	   || (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED
+	       && glpk_status != LPX_I_UNDEF)
+	   || (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+	       && glpk_status != LPX_I_OPT)))
+      || (no_optimization
+	  && ((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
+	       && glpk_status != LPX_I_NOFEAS)
+	      ||(ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+		 && glpk_status == LPX_I_NOFEAS)))) {
     switch (glpk_status) {
     case LPX_I_NOFEAS:
       glpk_status_string = "unfeasible";
@@ -546,7 +554,8 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
     error("check failed: for GLPK the problem is %s", glpk_status_string);
     check_results_failed = 1;
   }
-  else if (!no_optimization && ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
+  else if (!no_optimization
+	   && ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
 	   && glpk_status == LPX_I_OPT) {
     double glpk_optimum_value = lpx_mip_obj_val(glpk_lp);
     if (fabs(ppl_optimum_value - glpk_optimum_value) > check_threshold) {
@@ -702,8 +711,8 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
 
   if (!empty && no_optimization) {
     fprintf(output_file, "Feasible problem.\n");
-    /*   Kludge: let's pass PPL_MIP_PROBLEM_STATUS_OPTIMIZED, */
-    /*   to let work `maybe_check_results'. */
+    /* Kludge: let's pass PPL_MIP_PROBLEM_STATUS_OPTIMIZED,
+       to let work `maybe_check_results'. */
     maybe_check_results(PPL_MIP_PROBLEM_STATUS_OPTIMIZED, 0.0);
     return 0;
   }
@@ -829,8 +838,8 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   }
   else if (no_optimization && satisfiable) {
     fprintf(output_file, "Feasible problem.\n");
-    /*   Kludge: let's pass PPL_MIP_PROBLEM_STATUS_OPTIMIZED, */
-    /*   to let work `maybe_check_results'. */
+    /* Kludge: let's pass PPL_MIP_PROBLEM_STATUS_OPTIMIZED,
+       to let work `maybe_check_results'. */
     maybe_check_results(PPL_MIP_PROBLEM_STATUS_OPTIMIZED, 0.0);
     return 0;
   }
@@ -889,7 +898,7 @@ solve(char* file_name) {
 
   dimension = lpx_get_num_cols(glpk_lp);
 
-  /* Read Variables constrained to be integer. */
+  /* Read variables constrained to be integer. */
     if (glpk_lp_problem_kind == LPX_MIP && !no_mip && use_simplex) {
       if (verbose)
 	fprintf(output_file, "Integer variables:\n");
