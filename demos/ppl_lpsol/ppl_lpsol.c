@@ -309,8 +309,8 @@ process_options(int argc, char* argv[]) {
 
   if (enumerate_required
       && (simplex_required
-	  || incremental_required))
-      fatal("-e option is incompatible with -s and -i");
+	  || incremental_required || no_mip_required))
+      fatal("-e option is incompatible with -i, -r and -s");
 
   if (enumerate_required)
     use_simplex = 0;
@@ -461,14 +461,15 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
   int glpk_status;
   int treat_as_lp = 0;
   /*  Is impossible to check results if we are dealing with MIP problems */
-  /*   and we are using enumeration. */
-  if (!check_results ||(use_simplex == 0 && glpk_lp_problem_kind == LPX_MIP))
+  /*  and we are using enumeration. */
+  if (!check_results)
     return;
 
   /* Disable GLPK output. */
   lpx_set_int_parm(glpk_lp, LPX_K_MSGLEV, 0);
 
-  if (no_mip || glpk_lp_problem_kind == LPX_LP)
+  if (no_mip || glpk_lp_problem_kind == LPX_LP
+      || (use_simplex == 0 && glpk_lp_problem_kind == LPX_MIP))
     treat_as_lp = 1;
   lpx_set_obj_dir(glpk_lp, (maximize ? LPX_MAX : LPX_MIN));
   if (treat_as_lp) {
@@ -889,16 +890,22 @@ solve(char* file_name) {
   dimension = lpx_get_num_cols(glpk_lp);
 
   /* Read Variables constrained to be integer. */
-  if (glpk_lp_problem_kind == LPX_MIP) {
-    glpk_lp_num_int = lpx_get_num_int(glpk_lp);
-    integer_variables = (ppl_dimension_type*)
-      malloc((glpk_lp_num_int + 1)*sizeof(ppl_dimension_type));
-    for (i = 1, j = 0; i <= dimension; ++i)
-      if (lpx_get_col_kind(glpk_lp, i) ==  LPX_IV) {
-	integer_variables[j] = i-1;
-	++j;
-      }
-  }
+    if (glpk_lp_problem_kind == LPX_MIP && !no_mip && use_simplex) {
+      if (verbose)
+	fprintf(output_file, "Integer Variables:\n");
+      glpk_lp_num_int = lpx_get_num_int(glpk_lp);
+      integer_variables = (ppl_dimension_type*)
+	malloc((glpk_lp_num_int + 1)*sizeof(ppl_dimension_type));
+      for (i = 0, j = 0; i < dimension; ++i)
+	if (lpx_get_col_kind(glpk_lp, i+1) ==  LPX_IV) {
+	  integer_variables[j] = i;
+	  if (verbose) {
+	    ppl_io_fprint_variable(output_file, i);
+	    fprintf(output_file, " ");
+	  }
+	  ++j;
+	}
+    }
   coefficient_index = (int*) malloc((dimension+1)*sizeof(int));
   coefficient_value = (double*) malloc((dimension+1)*sizeof(double));
   rational_coefficient = (mpq_t*) malloc((dimension+1)*sizeof(mpq_t));
@@ -914,7 +921,7 @@ solve(char* file_name) {
   mpz_init(den_lcm);
 
   if (verbose)
-    fprintf(output_file, "Constraints:\n");
+    fprintf(output_file, "\nConstraints:\n");
 
   /* Set up the row (ordinary) constraints. */
   num_rows = lpx_get_num_rows(glpk_lp);
