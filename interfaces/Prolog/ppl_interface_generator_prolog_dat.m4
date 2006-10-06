@@ -108,7 +108,7 @@ ppl_@CLASS@_remove_space_dimensions/2 +simple_pps,
 ppl_@CLASS@_remove_higher_space_dimensions/2 *nofail +simple_pps,
 ppl_@CLASS@_expand_space_dimension/3 *nofail +simple -bd_shape,
 ppl_@CLASS@_fold_space_dimensions/3  +simple -bd_shape,
-ppl_@CLASS@_map_space_dimensions/2 +simple_pps`'dnl
+ppl_@CLASS@_map_space_dimensions/2 +simple_pps
 ')
 
 m4_divert`'dnl

@@ -86,29 +86,36 @@ dnl ====== The following are application dependent macros: their meaning
 dnl ====== is influenced by the overall interface generator architecture.
 dnl =====================================================================
 
-dnl The pattern delimiter.
+dnl =====================================================================
+dnl ====== The next group of macros process the patterns in the code ====
+dnl =====================================================================
+
+dnl m4_pattern_delimiter
+dnl
+dnl In case the pattern delimiter needs to be changed,
+dnl this is defined as a global variable
 m4_define(`m4_pattern_delimiter', `@')
 
-dnl m4_replace_one_pattern_once(
-dnl   Class_Number, String, Pattern, Counter)
+dnl m4_expand_pattern_by_one_replacement(Pattern, Index)
 dnl
-dnl The delimited PATTERN  in the String is replaced by the Counter
-dnl argument in m4_replacements.
-dnl There are additional codes to help provide the right form of
-dnl the replacmement.
+dnl Pattern       - is the pattern;
+dnl Index         - is the index of the replacement.
+dnl The delimited PATTERN is replaced by the Index'th argument in
+dnl m4_replacements.
+dnl Additional codes help provide the right form of the replacmement:
 dnl - alt_ means that the alternative replacement in m4_alt_replacements
 dnl must be used if one exists.
 dnl - U means that the alt_actual string must be capitalised at start
 dnl   of word and after "_".
-m4_define(`m4_replace_one_pattern_once', `dnl
+m4_define(`m4_expand_pattern_by_one_replacement', `dnl
 dnl
 dnl m4_replace is the replacement for pattern
-m4_define(`m4_replace', `m4_arg($4, m4_replacements)')`'dnl
+m4_define(`m4_replace', `m4_arg($2, m4_replacements)')`'dnl
 dnl
 dnl m4_alt_replace is the replacement for alt_pattern
-m4_define(`m4_alt_replace', `m4_arg($4, m4_alt_replacements)')`'dnl
+m4_define(`m4_alt_replace', `m4_arg($2, m4_alt_replacements)')`'dnl
 dnl
-m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst($2,
+m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst($1,
   m4_pattern_delimiter`'U`'PATTERN`'m4_pattern_delimiter,
     m4_capfirstletters(m4_replace)),
   m4_pattern_delimiter`'UALT_`'PATTERN`'m4_pattern_delimiter,
@@ -122,26 +129,30 @@ m4_undefine(`m4_replace')`'dnl
 m4_undefine(`m4_alt_replace')`'dnl
 ')
 
-dnl m4_replace_one_pattern_aux(
-dnl Class_Number, String, Pattern, Counter)
+dnl m4_expand_pattern_by_replacements(Pattern, Index)
 dnl
-dnl This iteratively calls m4_replace_one_pattern_once/3 to replace
-dnl a delimited form of PATTERN by the Counter argument in m4_replacements
+dnl Pattern       - is the pattern;
+dnl Index         - is the index of the replacement.
+dnl This iteratively calls m4_expand_pattern_by_one_replacement/2 to replace
+dnl a delimited form of PATTERN by the Index'th argument in m4_replacements
 dnl or m4_alt_replacements.
-m4_define(`m4_replace_one_pattern_aux', `dnl
-m4_ifelse($4, m4_nargs(m4_replacements),
-  `m4_replace_one_pattern_once($1, $2, $3, $4)',
+m4_define(`m4_expand_pattern_by_replacements', `dnl
+m4_ifelse($2, m4_nargs(m4_replacements),
+  `m4_expand_pattern_by_one_replacement($1, $2)',
   `dnl
-m4_replace_one_pattern_once($1, $2, $3, $4)`'dnl
-m4_replace_one_pattern_aux($1, $2, $3, m4_incr($4))')`'dnl
+m4_expand_pattern_by_one_replacement($1, $2)`'dnl
+m4_expand_pattern_by_replacements($1, m4_incr($2))')`'dnl
 ')
 
-dnl m4_replace_one_pattern(Class_Number, String, Pattern)
+dnl m4_replace_one_pattern_in_string(Class_Number, String, Pattern)
 dnl
-dnl Replaces in String occurrences of the capitalised form of Pattern
-dnl by the required actual string (determined both by the Class_Kind
-dnl and Pattern).
-m4_define(`m4_replace_one_pattern', `dnl
+dnl Class_Number  - is the index to Class in Class_List;
+dnl String        - is the code to be changed;
+dnl Pattern       - is the pattern to be replaced;
+dnl Replaces all occurrences of the capitalised form of Pattern
+dnl in String by the required replacement
+dnl (determined both by the class kind of Class and Pattern).
+m4_define(`m4_replace_one_pattern_in_string', `dnl
 dnl
 dnl the PATTERN (in uppercase) is the string to be replaced.
 m4_define(`PATTERN', m4_upcase($3))`'dnl
@@ -161,55 +172,62 @@ m4_define(`m4_alt_replacements', `dnl
       `m4_replacements')')')`'dnl
 dnl
 m4_ifelse(m4_index(`$2', PATTERN), `-1', $2, `dnl
-m4_replace_one_pattern_aux($1, $2, $3, 1)')`'dnl
+m4_expand_pattern_by_replacements($2, 1)')`'dnl
 dnl
 m4_undefine(`PATTERN')`'dnl
 m4_undefine(`m4_replacements')`'dnl
 m4_undefine(`m4_alt_replacements')`'dnl
 ')
 
-dnl m4_replace_all_patterns(
+dnl m4_replace_all_patterns_in_string(
 dnl    Class_Number, String, Pattern1, Pattern2, ...)
 dnl
 dnl A (recursive) macro to replace, inside the second argument String,
 dnl all of the patterns listed from the third argument onwards.
-m4_define(`m4_replace_all_patterns', `dnl
+m4_define(`m4_replace_all_patterns_in_string', `dnl
 m4_ifelse($3, `', ``$2'',
-       `m4_replace_all_patterns($1,
-                                m4_replace_one_pattern($1, $2, $3),
+       `m4_replace_all_patterns_in_string($1,
+                                m4_replace_one_pattern_in_string($1, $2, $3),
                                 m4_shift(m4_shift(m4_shift($@))))')`'dnl
 ')
 
-dnl m4_get_arity(Procedure_Schema)
+dnl =====================================================================
+dnl ====== The next macros deal with instantiating the schematic code ===
+dnl ====== and also generates lists of names augmented with extensions. =
+dnl =====================================================================
+
+
+dnl m4_get_arity(Procedure_Flags)
 dnl
-dnl If the substring "/Arity" is found in the Procedure_Schema,
-dnl this  expands to Arity.
+dnl Procedure_Flags - The schematic code flags;
+dnl If the substring "/Arity" is found in the Procedure_Flags,
+dnl this macro expands to Arity.
 m4_define(`m4_get_arity', `m4_regexp(`$1', `/\([0-9]*\)', \1)')
 
-dnl m4_get_attribute(Procedure_Schema)
+dnl m4_get_attribute(Procedure_Flags)
 dnl
-dnl If the substring "*nofail" is found in the Procedure_Schema,
-dnl this  expands to "nofail"
-dnl This is needed for the Ciao system code.
+dnl Procedure_Flags - The schematic code flags;
+dnl If the substring "*nofail" is found in the Procedure_Flags,
+dnl this macro expands to "nofail"
+dnl This is only needed for the Ciao system code.
 m4_define(`m4_get_attribute', `m4_regexp(`$1', `\*\(nofail\)', \1)')
 
-dnl m4_get_code_schema(Procedure_Name)
+dnl m4_extension(Procedure_Name, [Arity, Attribute], Start_Flag)
 dnl
-dnl Procedure name schemas are replaced by the code schema.
-m4_define(`m4_get_code_schema', `dnl
-m4_patsubst(`$1',
-         `[ ]*\(ppl_[^ /]+\)\(.*\)',
-         `m4_extension(\1, m4_get_arity(\2), m4_get_attribute(\2), $2)')')
-
-dnl m4_extension(Procedure_Name, [Arity, Attribute])
+dnl Procedure_Name - The schematic name;
+dnl Arity          - The arity of the procedure;
+dnl Attribute      - The attribute `nofail' or `';
+dnl Start_Flag     - 0 suppresses any separator.
+dnl                  (Needed for expanding Prolog lists of atoms etc.).
 dnl
+dnl The default definition.
 dnl Appends "_code" to Procedure_Name so that it can match the name
-dnl of one of the macros defined (if eveer) in file *_code.m4 and get
+dnl of one of the macros defined (if ever) in file *_code.m4 and get
 dnl therefore expanded to the corresponding code schema.
 dnl
-dnl By default, arguments Arity and Attribute are ignored. When and where
-dnl these are needed (e.g., in the Prolog system files), the macro
-dnl m4_extension will be redefined appropriately.
+dnl Here arguments Arity and Attribute are ignored.
+dnl This macro is redefined when a different extension is needed.
+dnl (e.g., in the Prolog system files).
 dnl
 dnl Note: the macro `$1_code' has to be called using builtin `indir'
 dnl because it is not a legal m4 identifier (it contains `@').
@@ -217,31 +235,58 @@ m4_define(`m4_default_code', `')
 m4_define(`m4_extension', `m4_ifdef(`$1_code', `m4_indir(`$1_code')',
   `m4_default_code($1)')')
 
-
-dnl m4_procedure_names_to_code(Class_Number, Class_Kind,
-dnl                            Procedure_Name1, Procedure_Name2, ...)
+dnl m4_get_schematic_code(Procedure_Spec, Start_Flag)
 dnl
+dnl Procedure_Spec - The schematic procedure name, complete with any flags;
+dnl Start_Flag     - 0 suppresses any separator.
+dnl                  (Needed for expanding Prolog lists of atoms etc.).
+dnl Procedure_Spec has the flags removed and expanded to
+dnl the extended code.
+m4_define(`m4_get_schematic_code', `dnl
+m4_patsubst(`$1',
+         `[ ]*\(ppl_[^ /]+\)\(.*\)',
+         `m4_extension(\1, m4_get_arity(\2), m4_get_attribute(\2), $2)')')
+
+dnl m4_replace_procedure_spec_by_code(Class_Number, Procedure_Spec)
+dnl
+dnl Class_Number   - The current class index.
+dnl Procedure_Spec - The schematic procedure name, complete with any flags;
+dnl The procedure specification is replaced with the code and then
+dnl the patterns in the code are replaced by the required replacements.
+dnl
+dnl Note: one schematic specification will replaced by a single
+dnl matching schematic code item; which is then replaced by several
+dnl instances.
+m4_undefine(`m4_replace_procedure_spec_by_code')
+m4_define(`m4_replace_procedure_spec_by_code', `dnl
+m4_patsubst(`$2', `\(.*\)', `dnl
+m4_replace_all_patterns_in_string($1, m4_get_schematic_code(\1, 1),
+    m4_pattern_list)')`'dnl
+')
+
+dnl m4_replace_all_procedure_specs_by_code(Class_Number,
+dnl                            Procedure_Spec1, Procedure_Spec2, ...)
+dnl
+dnl Class_Number    - The current class index.
+dnl Procedure_Spec1 - A schematic procedure name;
+dnl ...
+dnl Procedure_Speck - A schematic procedure name
 dnl Each name from the second argument onwards is replaced
 dnl with the code and then the schema patterns in the code
 dnl are replaced by the various instances.
-m4_define(`m4_procedure_names_to_code', `dnl
-m4_ifelse($#, 0, , $#, 1, ,$#, 2, ,
-       $#, 3, `m4_procedure_name_to_code($1, $2, $3)',
+m4_define(`m4_replace_all_procedure_specs_by_code', `dnl
+m4_ifelse($#, 0, , $#, 1, ,
+       $#, 2, `m4_replace_procedure_spec_by_code($1, $2)',
        `dnl
-m4_procedure_name_to_code($1, $2, $3)`'dnl
-m4_procedure_names_to_code($1, $2, m4_shift(m4_shift(m4_shift($@))))`'dnl
+m4_replace_procedure_spec_by_code($1, $2)`'dnl
+m4_replace_all_procedure_specs_by_code($1, m4_shift(m4_shift($@)))`'dnl
 ')dnl
 ')
 
-dnl m4_procedure_name_to_code(Class_Number, Class_Kind, Procedure_Name)
-dnl
-dnl The procedure specification is replaced with the code.
-m4_undefine(`m4_procedure_name_to_code')
-m4_define(`m4_procedure_name_to_code', `dnl
-m4_patsubst(`$3', `\(.*\)', `dnl
-m4_replace_all_patterns($1, m4_get_code_schema(\1, 1),
-    m4_pattern_list)')`'dnl
-')
+dnl =====================================================================
+dnl ====== The next macros deal with filtering the procedure            =
+dnl ====== specifications according to the +/-group names in the flags  =
+dnl =====================================================================
 
 dnl m4_proc_keep_or_throw(
 dnl     Class_Kind, Procedure_Info, +_or_-, Group1, Group2, ...)
@@ -258,7 +303,8 @@ m4_define(`m4_proc_keep_or_throw', `dnl
 m4_ifelse($#, 0, 0, $#, 1, 0, $#, 2, 0, $#, 3, 0,
   $#, 4, `m4_proc_keep_or_throw_aux($1, $2, $3, $4)',
     `m4_ifelse(m4_proc_keep_or_throw_aux($1, $2, $3, $4), 1, 1,
-      m4_proc_keep_or_throw($1, $2, $3, m4_shift(m4_shift(m4_shift(m4_shift($@))))))')`'dnl
+      m4_proc_keep_or_throw($1, $2, $3,
+                            m4_shift(m4_shift(m4_shift(m4_shift($@))))))')`'dnl
 ')
 
 dnl m4_proc_keep_or_throw_aux(
@@ -327,7 +373,7 @@ m4_define(`m4_one_class_code', `dnl
 m4_pre_extra_class_code($1, $2)`'dnl
 m4_define(`m4_filtered_proc_list',
        `m4_filter_all($2, m4_procedure_list)')`'dnl
-m4_procedure_names_to_code($1, $2, m4_filtered_proc_list)`'dnl
+m4_replace_all_procedure_specs_by_code($1, m4_filtered_proc_list)`'dnl
 m4_undefine(`m4_filtered_proc_list')`'dnl
 m4_post_extra_class_code($1, $2)`'dnl
 ')

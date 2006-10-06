@@ -33,9 +33,9 @@ dnl Each name from the second argument onwards is replaced
 dnl with the code and then the schema patterns in the code
 dnl are replaced by the various instances.
 m4_define(`m4_library_names_to_code', `dnl
-m4_ifelse($#, 0, ,$#, 1, ,$#, 2, m4_get_code_schema($2, $1),
+m4_ifelse($#, 0, ,$#, 1, ,$#, 2, m4_get_schematic_code($2, $1),
        `dnl
-m4_get_code_schema($2, $1)`'dnl
+m4_get_schematic_code($2, $1)`'dnl
 m4_library_names_to_code(m4_incr($1), m4_shift(m4_shift($@)))`'dnl
 ')`'dnl
 ')
