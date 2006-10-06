@@ -31,7 +31,7 @@ m4_ifelse($4, 0, , `COMMA
 dnl
 m4_patsubst(m4_library_names_to_code(0, m4_library_predicate_list),
             COMMA, `,')`'dnl
-m4_patsubst(m4_all_classes_code, COMMA, `,')`'dnl
+m4_patsubst(m4_all_code, COMMA, `,')`'dnl
 `,'
 m4_undivert(1)`'dnl
 m4_divert`'dnl
@@ -49,7 +49,7 @@ m4_define(`m4_pre_extra_class_code', `dnl
 m4_add_extra_class_code($1)`'dnl
 ')`'dnl
 m4_patsubst(m4_library_names_to_code(0, m4_library_predicate_list), COMMA, `,')`'dnl
-m4_all_classes_code`'dnl
+m4_all_code`'dnl
 dnl
 m4_popdef(`m4_default_code')`'dnl
 m4_changequote(`@<<@',`@>>@')@<<@@>>@dnl

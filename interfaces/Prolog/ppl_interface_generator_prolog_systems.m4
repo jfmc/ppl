@@ -48,6 +48,6 @@ dnl a macro that adds extensions for the result of
 dnl a macro that sets the class and the schema(s).
 m4_define(`ppl_prolog_sys_code', `dnl
 m4_library_names_to_code(0, m4_library_predicate_list)`'dnl
-m4_all_classes_code`'dnl
+m4_all_code`'dnl
 ')
 m4_divert`'dnl

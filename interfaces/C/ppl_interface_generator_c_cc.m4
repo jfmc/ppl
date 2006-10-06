@@ -33,6 +33,6 @@ dnl Change the quote characters back to the standard.
 m4_changequote`'dnl
 dnl
 dnl Generate the non-fixed part of the file.
-m4_all_classes_code`'dnl
+m4_all_code`'dnl
 dnl
 dnl End of file generation.

@@ -54,7 +54,7 @@ dnl Output the fixed preamble.
 m4_include(`ppl_interface_generator_prolog_icc_preamble')
 dnl
 dnl Generate the non-fixed part of the file.
-m4_all_classes_code`'dnl
+m4_all_code`'dnl
 dnl
 dnl End of file generation.
 
