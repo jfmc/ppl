@@ -31,7 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator.defs.hh"
-#include "Variables_Set.types.hh"
 #include "Variables_Set.defs.hh"
 #include <vector>
 #include <deque>
@@ -662,30 +661,10 @@ private:
   void merge_split_variables(dimension_type var_index,
 			      std::vector<dimension_type>& nonfeasible_cs);
 
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if constraint \p c is
-    satisfied by \p g.
-
-    \param c
-    The constraint that has to be satisfied by \g.
-
-    \param g
-    The generator that must satisfy \p c.
-  */
-
+  //! Returns <CODE>true</CODE> if and only if \p c is satisfied by \p g.
   static bool is_satisfied(const Constraint& c, const Generator& g);
 
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if constraint \p c is
-    saturated by \p g.
-
-    \param c
-    The constraint that has to be saturated by \g.
-
-    \param g
-    The generator that must saturate \p c.
-  */
-
+  //! Returns <CODE>true</CODE> if and only if \p c is saturated by \p g.
   static bool is_saturated(const Constraint& c, const Generator& g);
 
   /*! \brief
@@ -742,7 +721,7 @@ private:
     The MIP problem.
 
     \param branching_index
-    If <CODE>false</CODE> is returned, this will encode the Variable index on
+    If <CODE>false</CODE> is returned, this will encode the variable index on
     which must be applied the `branch and bound' algorithm.
   */
   static bool choose_branching_variable(const MIP_Problem& mip,
