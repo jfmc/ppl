@@ -56,19 +56,24 @@ void
 ppl_Prolog_sysdep_deinit() {
 }
 
-PPL::Coefficient
-integer_term_to_Coefficient(Prolog_term_ref t) {
+int
+Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
   assert(Prolog_is_integer(t));
   PL_get_mpz(t, tmp_mpz_class.get_mpz_t());
-  return PPL::Coefficient(tmp_mpz_class);
+  n = tmp_mpz_class;
+  return 1;
 }
 
-Prolog_term_ref
-Coefficient_to_integer_term(const PPL::Coefficient& n) {
+int
+Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
   PPL::assign_r(tmp_mpz_class, n, PPL::ROUND_NOT_NEEDED);
-  Prolog_term_ref t = Prolog_new_term_ref();
-  PL_unify_mpz(t, tmp_mpz_class.get_mpz_t());
-  return t;
+  return PL_unify_mpz(t, tmp_mpz_class.get_mpz_t());
+}
+
+int
+Prolog_put_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
+  PL_put_variable(t);
+  return Prolog_unify_Coefficient(t, n);
 }
 
 } // namespace

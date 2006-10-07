@@ -51,35 +51,41 @@ void
 ppl_Prolog_sysdep_deinit() {
 }
 
-PPL::Coefficient
-integer_term_to_Coefficient(Prolog_term_ref t) {
+int
+Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
   assert(SP_is_integer(t));
   long v;
-  if (SP_get_integer(t, &v) != 0)
-    return PPL::Coefficient(v);
+  if (SP_get_integer(t, &v) == SP_SUCCESS)
+    n = v;
   else {
     char* s;
-    if (SP_get_number_chars(t, &s) != 0)
-      return PPL::Coefficient(s);
+    if (SP_get_number_chars(t, &s) == SP_SUCCESS)
+      n = PPL::Coefficient(s);
     else
-      throw unknown_interface_error("integer_term_to_Coefficient");
+      return SP_FAILURE;
+  }
+  return SP_SUCCESS;
+}
+
+int
+Prolog_put_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
+  long l = 0;
+  if (PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED) == PPL::V_EQ)
+    return SP_put_integer(t, l);
+  else {
+    std::ostringstream s;
+    s << n;
+    return SP_put_number_chars(t, s.str().c_str());
   }
 }
 
-Prolog_term_ref
-Coefficient_to_integer_term(const PPL::Coefficient& n) {
-  Prolog_term_ref t = Prolog_new_term_ref();
-  long l = 0;
-  if (PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED) == PPL::V_EQ) {
-    if (SP_put_integer(t, l) == 0)
-      throw unknown_interface_error("Coefficient_to_integer_term()");
-  } else {
-    std::ostringstream s;
-    s << n;
-    if (SP_put_number_chars(t, s.str().c_str()) == 0)
-      throw unknown_interface_error("Coefficient_to_integer_term()");
-  }
-  return t;
+int
+Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
+  Prolog_term_ref u = Prolog_new_term_ref();
+  if (Prolog_put_Coefficient(u, n) == SP_SUCCESS)
+    return SP_unify(t, u);
+  else
+    return SP_FAILURE;
 }
 
 } // namespace

@@ -651,7 +651,8 @@ term_to_unsigned(Prolog_term_ref t, const char* where) {
     else
       d = l;
   else {
-    Coefficient v = integer_term_to_Coefficient(t);
+    Coefficient v;
+    Prolog_get_Coefficient(t, v);
     if (v < 0)
       throw not_unsigned_integer(t, where);
     if (assign_r(d, raw_value(v), ROUND_NOT_NEEDED) != V_EQ)
@@ -670,6 +671,23 @@ term_to_universe_or_empty(Prolog_term_ref t, const char* where) {
       return name;
   }
   throw not_universe_or_empty(t, where);
+}
+
+PPL::Coefficient
+integer_term_to_Coefficient(Prolog_term_ref t) {
+  Coefficient n;
+  assert(Prolog_is_integer(t));
+  if (!Prolog_get_Coefficient(t, n))
+    abort();
+  return n;
+}
+
+Prolog_term_ref
+Coefficient_to_integer_term(const PPL::Coefficient& n) {
+  Prolog_term_ref t = Prolog_new_term_ref();
+  if (!Prolog_put_Coefficient(t, n))
+    abort();
+  return t;
 }
 
 Linear_Expression
@@ -1424,7 +1442,8 @@ ppl_Coefficient_min(Prolog_term_ref t_min) {
       Coefficient min = std::numeric_limits<Coefficient>::min();
       if (Prolog_has_unbounded_integers
 	  || (min >= Prolog_min_integer && min <= Prolog_min_integer))
-	return Prolog_unify(t_min, Coefficient_to_integer_term(min));
+	return Prolog_unify_Coefficient(t_min, min)
+	  ? PROLOG_SUCCESS : PROLOG_FAILURE;
     }
   }
   CATCH_ALL;
@@ -1437,7 +1456,8 @@ ppl_Coefficient_max(Prolog_term_ref t_max) {
       Coefficient max = std::numeric_limits<Coefficient>::max();
       if (Prolog_has_unbounded_integers
 	  || (max >= Prolog_min_integer && max <= Prolog_min_integer))
-	return Prolog_unify(t_max, Coefficient_to_integer_term(max));
+	return Prolog_unify_Coefficient(t_max, max)
+	  ? PROLOG_SUCCESS : PROLOG_FAILURE;
     }
   }
   CATCH_ALL;
@@ -1565,7 +1585,7 @@ extended_rational_term(const ERational& e) {
     Coefficient numerator = raw_value(e).get_num();
     Coefficient denominator = raw_value(e).get_den();
     if (denominator == 1)
-      Prolog_put_term(t, Coefficient_to_integer_term(numerator));
+      Prolog_put_Coefficient(t, numerator);
     else
       Prolog_construct_compound(t, a_slash,
 				Coefficient_to_integer_term(numerator),
@@ -1970,8 +1990,8 @@ ppl_LP_Problem_optimal_value(Prolog_term_ref t_lp,
     Coefficient n;
     Coefficient d;
     lp->optimal_value(n, d);
-    if (Prolog_unify(t_n, Coefficient_to_integer_term(n))
-	&& Prolog_unify(t_d, Coefficient_to_integer_term(d)))
+    if (Prolog_unify_Coefficient(t_n, n)
+	&& Prolog_unify_Coefficient(t_d, d))
       return PROLOG_SUCCESS;
  }
  CATCH_ALL;
@@ -1989,8 +2009,8 @@ ppl_LP_Problem_evaluate_objective_function(Prolog_term_ref t_lp,
     Coefficient n;
     Coefficient d;
     lp->evaluate_objective_function(build_generator(t_g, where), n, d);
-    if (Prolog_unify(t_n, Coefficient_to_integer_term(n))
-	&& Prolog_unify(t_d, Coefficient_to_integer_term(d)))
+    if (Prolog_unify_Coefficient(t_n, n)
+	&& Prolog_unify_Coefficient(t_d, d))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;

@@ -598,8 +598,8 @@ ppl_@CLASS@_@MAXMIN@
       Prolog_term_ref t = Prolog_new_term_ref();
       Prolog_atom a = (maxmin ? a_true : a_false);
       Prolog_put_atom(t, a);
-      if (Prolog_unify(t_n, Coefficient_to_integer_term(n))
-          && Prolog_unify(t_d, Coefficient_to_integer_term(d))
+      if (Prolog_unify_Coefficient(t_n, n)
+          && Prolog_unify_Coefficient(t_d, d)
           && Prolog_unify(t_maxmin, t))
         return PROLOG_SUCCESS;
     }
@@ -628,8 +628,8 @@ ppl_@CLASS@_@MAXMIN@_with_point
       Prolog_term_ref t = Prolog_new_term_ref();
       Prolog_atom a = (maxmin ? a_true : a_false);
       Prolog_put_atom(t, a);
-      if (Prolog_unify(t_n, Coefficient_to_integer_term(n))
-          && Prolog_unify(t_d, Coefficient_to_integer_term(d))
+      if (Prolog_unify_Coefficient(t_n, n)
+          && Prolog_unify_Coefficient(t_d, d)
           && Prolog_unify(t_maxmin, t)
           && Prolog_unify(t_g, @GENERATOR@_term(g)))
         return PROLOG_SUCCESS;

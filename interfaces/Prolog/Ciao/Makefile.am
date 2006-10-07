@@ -22,8 +22,11 @@
 
 abs_srcdir = @abs_srcdir@
 
+CIAO_CFLI_FILES = ciao_cfli.hh
+
 EXTRA_DIST = \
 ppl_interface_generator_ciao_pl.m4 \
+$(CIAO_CFLI_FILES) \
 ciao_clpq.pl \
 ciao_clpq2.pl \
 ciao_pl_check.pl

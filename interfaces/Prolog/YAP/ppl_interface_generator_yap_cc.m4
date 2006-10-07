@@ -6,7 +6,7 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 
 #include "ppl.hh"
 #include "pwl.hh"
-#include "yap_cfli.h"
+#include "yap_cfli.hh"
 #include "../exceptions.hh"
 #include <cassert>
 #include <climits>
@@ -60,29 +60,36 @@ void
 ppl_Prolog_sysdep_deinit() {
 }
 
-PPL::Coefficient
-integer_term_to_Coefficient(Prolog_term_ref t) {
-  PPL::Coefficient n;
+int
+Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
+  assert(Prolog_is_integer(t));
   if (YAP_IsBigNumTerm(t) != FALSE) {
     YAP_BigNumOfTerm(t, tmp_mpz_class.get_mpz_t());
     n = tmp_mpz_class;
   }
   else
     n = YAP_IntOfTerm(t);
-  return n;
+  return 1;
 }
 
-Prolog_term_ref
-Coefficient_to_integer_term(const PPL::Coefficient& n) {
+int
+Prolog_put_Coefficient(Prolog_term_ref& t, const PPL::Coefficient& n) {
   if (n >= LONG_MIN && n <= LONG_MAX) {
     long l = 0;
     PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED);
-    return YAP_MkIntTerm(l);
+    t = YAP_MkIntTerm(l);
   }
   else {
     PPL::assign_r(tmp_mpz_class, n, PPL::ROUND_NOT_NEEDED);
-    return YAP_MkBigNumTerm(tmp_mpz_class.get_mpz_t());
+    t = YAP_MkBigNumTerm(tmp_mpz_class.get_mpz_t());
   }
+  return 1;
+}
+
+int
+Prolog_unify_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
+  Prolog_term_ref u = Prolog_new_term_ref();
+  return Prolog_put_Coefficient(u, n) && YAP_Unify(t, u);
 }
 
 } // namespace

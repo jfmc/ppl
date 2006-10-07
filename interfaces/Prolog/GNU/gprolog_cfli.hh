@@ -1,4 +1,4 @@
-/* YAP Prolog Common Foreign Language Interface: definitions. -*- C -*-
+/* GNU Prolog Common Foreign Language Interface.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,14 +20,39 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include <assert.h>
-#include <limits.h>
-#include <gmp.h>
+#ifndef PCFLI_gprolog_cfli_hh
+#define PCFLI_gprolog_cfli_hh 1
+
+#include <gprolog.h>
+#include <cassert>
+
+typedef PlTerm Prolog_term_ref;
+typedef int Prolog_atom;
+typedef Bool Prolog_foreign_return_type;
+
+const Prolog_foreign_return_type PROLOG_SUCCESS = TRUE;
+const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
+
+namespace {
+
+inline Prolog_atom
+a_dollar_address() {
+  static Prolog_atom a = Create_Allocate_Atom("$address");
+  return a;
+}
+
+inline Prolog_atom
+a_throw() {
+  static Prolog_atom a = Find_Atom("throw");
+  return a;
+}
+
+} // namespace
 
 /*!
   Return a new term reference.
 */
-PCFLI_EXTERN_INLINE Prolog_term_ref
+inline Prolog_term_ref
 Prolog_new_term_ref() {
   return 0;
 }
@@ -36,8 +61,8 @@ Prolog_new_term_ref() {
   Make \p t be a reference to the same term referenced by \p u,
   i.e., assign \p u to \p t.
 */
-PCFLI_EXTERN_INLINE int
-Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
+inline int
+Prolog_put_term(Prolog_term_ref& t, Prolog_term_ref u) {
   t = u;
   return 1;
 }
@@ -45,60 +70,45 @@ Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
 /*!
   Assign to \p t a Prolog integer with value \p l.
 */
-PCFLI_EXTERN_INLINE int
-Prolog_put_long(Prolog_term_ref t, long l) {
-  *t = YAP_MkIntTerm(l);
-  return 1;
+inline int
+Prolog_put_long(Prolog_term_ref& t, long l) {
+  if (l < INT_LOWEST_VALUE || l > INT_GREATEST_VALUE)
+    return 0;
+  else {
+    t = Mk_Integer(l);
+    return 1;
+  }
 }
-
-static int tmp_mpz_t_initialized = 0;
-static mpz_t tmp_mpz_t;
 
 /*!
   Assign to \p t a Prolog integer with value \p ul.
 */
-PCFLI_EXTERN_INLINE int
-Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
-  if (ul <= LONG_MAX)
-    *t = YAP_MkIntTerm(ul);
+inline int
+Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
+  if (ul > static_cast<unsigned long>(INT_GREATEST_VALUE))
+    return 0;
   else {
-    if (!tmp_mpz_t_initialized) {
-      mpz_init_set_ui(tmp_mpz_t, ul);
-      tmp_mpz_t_initialized = 1;
-    }
-    else
-      mpz_set_ui(tmp_mpz_t, ul);
-    *t = YAP_MkBigNumTerm(tmp_mpz_t);
+    t = Mk_Integer(ul);
+    return 1;
   }
-  return 1;
 }
 
 /*!
   Assign to \p t an atom whose name is given
   by the null-terminated string \p s.
 */
-PCFLI_EXTERN_INLINE int
-Prolog_put_atom_chars(Prolog_term_ref t, const char* s) {
-  *t = YAP_MkAtomTerm(YAP_FullLookupAtom(s));
+inline int
+Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
+  t = Mk_Atom(Create_Allocate_Atom(const_cast<char*>(s)));
   return 1;
 }
 
 /*!
   Assign to \p t the Prolog atom \p a.
 */
-PCFLI_EXTERN_INLINE int
-Prolog_put_atom(Prolog_term_ref t, Prolog_atom a) {
-  *t = YAP_MkAtomTerm(a);
-  return 1;
-}
-
-/*!
-  Assign to \p t a term representing the address contained in \p p.
-*/
-PCFLI_EXTERN_INLINE int
-Prolog_put_address(Prolog_term_ref t, void* p) {
-  assert(sizeof(long) >= sizeof(void*));
-  *t = YAP_MkIntTerm(reinterpret_cast<long>(p));
+inline int
+Prolog_put_atom(Prolog_term_ref& t, Prolog_atom a) {
+  t = Mk_Atom(a);
   return 1;
 }
 
@@ -107,20 +117,20 @@ Prolog_put_address(Prolog_term_ref t, void* p) {
 */
 Prolog_atom
 Prolog_atom_from_string(const char* s) {
-  return YAP_FullLookupAtom(s);
+  return Create_Allocate_Atom(const_cast<char*>(s));
 }
 
-static YAP_Term args[4];
+Prolog_term_ref args[4];
 
 /*!
   Assign to \p t a compound term whose principal functor is \p f
   of arity 1 with argument \p a1.
 */
-PCFLI_EXTERN_INLINE int
-Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
+inline int
+Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1) {
-  args[0] = *a1;
-  *t = YAP_MkApplTerm(YAP_MkFunctor(f, 1), 1, args);
+  args[0] = a1;
+  t = Mk_Compound(f, 1, args);
   return 1;
 }
 
@@ -128,12 +138,12 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
   Assign to \p t a compound term whose principal functor is \p f
   of arity 2 with arguments \p a1 and \p a2.
 */
-PCFLI_EXTERN_INLINE int
-Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
+inline int
+Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
-  args[0] = *a1;
-  args[1] = *a2;
-  *t = YAP_MkApplTerm(YAP_MkFunctor(f, 2), 2, args);
+  args[0] = a1;
+  args[1] = a2;
+  t = Mk_Compound(f, 2, args);
   return 1;
 }
 
@@ -141,14 +151,14 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
   Assign to \p t a compound term whose principal functor is \p f
   of arity 3 with arguments \p a1, \p a2 and \p a3.
 */
-PCFLI_EXTERN_INLINE int
-Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
+inline int
+Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3) {
-  args[0] = *a1;
-  args[1] = *a2;
-  args[2] = *a3;
-  *t = YAP_MkApplTerm(YAP_MkFunctor(f, 3), 3, args);
+  args[0] = a1;
+  args[1] = a2;
+  args[2] = a3;
+  t = Mk_Compound(f, 3, args);
   return 1;
 }
 
@@ -156,82 +166,95 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
   Assign to \p t a compound term whose principal functor is \p f
   of arity 4 with arguments \p a1, \p a2, \p a3 and \p a4.
 */
-PCFLI_EXTERN_INLINE int
-Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
+inline int
+Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
-  args[0] = *a1;
-  args[1] = *a2;
-  args[2] = *a3;
-  args[3] = *a4;
-  *t = YAP_MkApplTerm(YAP_MkFunctor(f, 4), 4, args);
+  args[0] = a1;
+  args[1] = a2;
+  args[2] = a3;
+  args[3] = a4;
+  t = Mk_Compound(f, 4, args);
   return 1;
 }
 
 /*!
   Assign to \p c a Prolog list whose head is \p h and tail is \p t.
 */
-PCFLI_EXTERN_INLINE int
-Prolog_construct_cons(Prolog_term_ref c,
+inline int
+Prolog_construct_cons(Prolog_term_ref& c,
 		      Prolog_term_ref h, Prolog_term_ref t) {
-  *c = YAP_MkPairTerm(*h, *t);
+  args[0] = h;
+  args[1] = t;
+  c = Mk_List(args);
   return 1;
+}
+
+/*!
+  Assign to \p t a term representing the address contained in \p p.
+*/
+inline int
+Prolog_put_address(Prolog_term_ref& t, void* p) {
+  union {
+    unsigned long l;
+    unsigned short s[2];
+  } u;
+  u.l = reinterpret_cast<unsigned long>(p);
+  return Prolog_construct_compound(t, a_dollar_address(),
+				   Mk_Positive(u.s[0]), Mk_Positive(u.s[1]));
 }
 
 /*!
   Raise a Prolog exception with \p t as the exception term.
 */
-PCFLI_EXTERN_INLINE void
+inline void
 Prolog_raise_exception(Prolog_term_ref t) {
-  YAP_Throw(*t);
+  Pl_Exec_Continuation(a_throw(), 1, &t);
 }
 
 /*!
   Return true if \p t is a Prolog variable, false otherwise.
 */
-PCFLI_EXTERN_INLINE int
+inline int
 Prolog_is_variable(Prolog_term_ref t) {
-  return YAP_IsVarTerm(*t) != FALSE;
+  return Blt_Var(t) != FALSE;
 }
 
 /*!
   Return true if \p t is a Prolog atom, false otherwise.
 */
-PCFLI_EXTERN_INLINE int
+inline int
 Prolog_is_atom(Prolog_term_ref t) {
-  return YAP_IsAtomTerm(*t) != FALSE;
+  return Blt_Atom(t) != FALSE;
 }
 
 /*!
   Return true if \p t is a Prolog integer, false otherwise.
 */
-PCFLI_EXTERN_INLINE int
+inline int
 Prolog_is_integer(Prolog_term_ref t) {
-  return YAP_IsIntTerm(*t) != FALSE || YAP_IsBigNumTerm(*t) != FALSE;
-}
-
-/*!
-  Return true if \p t is the representation of an address, false otherwise.
-*/
-PCFLI_EXTERN_INLINE int
-Prolog_is_address(Prolog_term_ref t) {
-  return YAP_IsIntTerm(*t) != FALSE;
+  return Blt_Integer(t) != FALSE;
 }
 
 /*!
   Return true if \p t is a Prolog compound term, false otherwise.
 */
-PCFLI_EXTERN_INLINE int
+inline int
 Prolog_is_compound(Prolog_term_ref t) {
-  return YAP_IsApplTerm(*t) != FALSE;
+  return Blt_Compound(t) != FALSE;
 }
 
 /*!
   Return true if \p t is a Prolog list, false otherwise.
 */
-PCFLI_EXTERN_INLINE int
+inline int
 Prolog_is_cons(Prolog_term_ref t) {
-  return YAP_IsPairTerm(*t) != FALSE;
+  if (Blt_Compound(t) == FALSE)
+    return 0;
+  Prolog_atom name;
+  int arity;
+  Rd_Compound(t, &name, &arity);
+  return name == ATOM_CHAR('.') && arity == 2;
 }
 
 /*!
@@ -240,35 +263,55 @@ Prolog_is_cons(Prolog_term_ref t) {
   return false otherwise.  The behavior is undefined if \p t is
   not a Prolog integer.
 */
-PCFLI_EXTERN_INLINE int
+inline int
 Prolog_get_long(Prolog_term_ref t, long* lp) {
   assert(Prolog_is_integer(t));
-  if (YAP_IsBigNumTerm(*t) != FALSE) {
-    if (!tmp_mpz_t_initialized) {
-      mpz_init(tmp_mpz_t);
-      tmp_mpz_t_initialized = 1;
-    }
-    YAP_BigNumOfTerm(*t, tmp_mpz_t);
-    if (mpz_cmp_si(tmp_mpz_t, LONG_MIN) >= 0
-	&& mpz_cmp_si(tmp_mpz_t, LONG_MAX) <= 0)
-      *lp = mpz_get_si(tmp_mpz_t);
-    else
+  *lp = Rd_Integer_Check(t);
+  return 1;
+}
+
+/*!
+  Return true if \p t is the representation of an address, false otherwise.
+*/
+inline int
+Prolog_is_address(Prolog_term_ref t) {
+  if (!Prolog_is_compound(t))
+    return 0;
+  Prolog_atom name;
+  int arity;
+  Prolog_term_ref* a = Rd_Compound_Check(t, &name, &arity);
+  if (name != a_dollar_address() || arity != 2)
+    return 0;
+  for (int i = 0; i <= 1; ++i) {
+    if (!Prolog_is_integer(a[i]))
+      return 0;
+    long l;
+    if (!Prolog_get_long(a[i], &l))
+      return 0;
+    if (l < 0 || l > USHRT_MAX)
       return 0;
   }
-  else
-    *lp = YAP_IntOfTerm(*t);
   return 1;
 }
 
 /*!
   If \p t is the Prolog representation for a memory address, return
-  true and store that address into to \p v; return false otherwise.
+  true and store that address into \p v; return false otherwise.
   The behavior is undefined if \p t is not an address.
 */
-PCFLI_EXTERN_INLINE int
+inline int
 Prolog_get_address(Prolog_term_ref t, void** vpp) {
   assert(Prolog_is_address(t));
-  *vpp = reinterpret_cast<void*>(YAP_IntOfTerm(*t));
+  static Prolog_atom dummy_name;
+  static int dummy_arity;
+  Prolog_term_ref* a = Rd_Compound_Check(t, &dummy_name, &dummy_arity);
+  union {
+    unsigned long l;
+    unsigned short s[2];
+  } u;
+  u.s[0] = Rd_Integer_Check(a[0]);
+  u.s[1] = Rd_Integer_Check(a[1]);
+  *vpp = reinterpret_cast<void*>(u.l);
   return 1;
 }
 
@@ -276,10 +319,10 @@ Prolog_get_address(Prolog_term_ref t, void** vpp) {
   If \p t is a Prolog atom, return true and store its name into \p name.
   The behavior is undefined if \p t is not a Prolog atom.
 */
-PCFLI_EXTERN_INLINE int
+inline int
 Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom* ap) {
   assert(Prolog_is_atom(t));
-  *ap = YAP_AtomOfTerm(*t);
+  *ap = Rd_Atom_Check(t);
   return 1;
 }
 
@@ -288,12 +331,10 @@ Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom* ap) {
   and arity into \p name and \p arity, respectively.
   The behavior is undefined if \p t is not a Prolog compound term.
 */
-PCFLI_EXTERN_INLINE int
+inline int
 Prolog_get_compound_name_arity(Prolog_term_ref t, Prolog_atom* ap, int* ip) {
   assert(Prolog_is_compound(t));
-  YAP_Functor f = YAP_FunctorOfTerm(*t);
-  *ap = YAP_NameOfFunctor(f);
-  *ip = YAP_ArityOfFunctor(f);
+  Rd_Compound_Check(t, ap, ip);
   return 1;
 }
 
@@ -303,10 +344,12 @@ Prolog_get_compound_name_arity(Prolog_term_ref t, Prolog_atom* ap, int* ip) {
   i-th (principal) argument of \p t.
   The behavior is undefined if \p t is not a Prolog compound term.
 */
-PCFLI_EXTERN_INLINE int
-Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a) {
+inline int
+Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref& a) {
   assert(Prolog_is_compound(t));
-  *a = YAP_ArgOfTerm(i, *t);
+  static Prolog_atom dummy_name;
+  static int dummy_arity;
+  a = Rd_Compound_Check(t, &dummy_name, &dummy_arity)[i-1];
   return 1;
 }
 
@@ -315,11 +358,12 @@ Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a) {
   tail to \p h and \p t, respectively.
   The behavior is undefined if \p c is not a Prolog cons.
 */
-PCFLI_EXTERN_INLINE int
-Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref h, Prolog_term_ref t) {
+inline int
+Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref& h, Prolog_term_ref& t) {
   assert(Prolog_is_cons(c));
-  *h = YAP_HeadOfTerm(*c);
-  *t = YAP_TailOfTerm(*c);
+  Prolog_term_ref* ht = Rd_List_Check(c);
+  h = ht[0];
+  t = ht[1];
   return 1;
 }
 
@@ -327,7 +371,9 @@ Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref h, Prolog_term_ref t) {
   Unify the terms referenced by \p t and \p u and return true
   if the unification is successful; return false otherwise.
 */
-PCFLI_EXTERN_INLINE int
+inline int
 Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
-  return YAP_Unify(*t, *u) != FALSE;
+  return Unify(t, u) != FALSE;
 }
+
+#endif // !defined(PCFLI_gprolog_cfli_hh)
