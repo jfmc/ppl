@@ -671,14 +671,22 @@ private:
 
     \param g
     The generator that must satisfy \p c.
-
-    \param check_equality
-    If set to <CODE>true</CODE>, treats inequalities as equalities.
-    Uset to check `active constraints'.
   */
 
-  static bool is_satisfied(const Constraint& c, const Generator& g,
-			   bool check_equality = false);
+  static bool is_satisfied(const Constraint& c, const Generator& g);
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if constraint \p c is
+    saturated by \p g.
+
+    \param c
+    The constraint that has to be saturated by \g.
+
+    \param g
+    The generator that must saturate \p c.
+  */
+
+  static bool is_saturated(const Constraint& c, const Generator& g);
 
   /*! \brief
     Returns a status that encodes the solution of the MIP problem.

@@ -410,16 +410,23 @@ PPL::MIP_Problem::merge_split_variables(dimension_type var_index,
 }
 
 bool
-PPL::MIP_Problem::is_satisfied(const Constraint& c, const Generator& g,
-			       bool check_equality) {
+PPL::MIP_Problem::is_satisfied(const Constraint& c, const Generator& g) {
   // Scalar_Products::sign() requires the second argument to be at least
   // as large as the first one.
   int sp_sign = g.space_dimension() <= c.space_dimension()
     ? Scalar_Products::sign(g, c)
     : Scalar_Products::sign(c, g);
-  if (check_equality)
-    return sp_sign == 0;
   return c.is_inequality() ? sp_sign >= 0 : sp_sign == 0;
+}
+
+bool
+PPL::MIP_Problem::is_saturated(const Constraint& c, const Generator& g) {
+  // Scalar_Products::sign() requires the second argument to be at least
+  // as large as the first one.
+  int sp_sign = g.space_dimension() <= c.space_dimension()
+    ? Scalar_Products::sign(g, c)
+    : Scalar_Products::sign(c, g);
+  return sp_sign == 0;
 }
 
 bool
@@ -1568,7 +1575,7 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
     // An equality is an `active constraint' by definition.
     // If we have an inequality, check if it is an `active constraint'.
     if (input_cs[i].is_equality()
-	|| is_satisfied(input_cs[i], last_generator, true))
+	|| is_saturated(input_cs[i], last_generator))
       satisfiable_constraints[i] = true;
 
   dimension_type current_num_appearances = 0;
