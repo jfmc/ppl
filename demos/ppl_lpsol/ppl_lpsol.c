@@ -465,8 +465,7 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
   /* Disable GLPK output. */
   lpx_set_int_parm(glpk_lp, LPX_K_MSGLEV, 0);
 
-  if (no_mip
-      || (glpk_lp_problem_kind == LPX_LP))
+  if (no_mip || glpk_lp_problem_kind == LPX_LP)
     treat_as_lp = 1;
 
   lpx_set_obj_dir(glpk_lp, (maximize ? LPX_MAX : LPX_MIN));
@@ -479,17 +478,22 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
     glpk_status = lpx_get_status(glpk_lp);
   }
   else {
-    /* MIP case. */
-    lpx_intopt(glpk_lp);
+    int stat = 0;
+ /* MIP case. */
+    stat = lpx_intopt(glpk_lp);
     glpk_status = lpx_mip_status(glpk_lp);
   }
-  /* If no_optimization is true, the second case is not possibile */
+  /* If no_optimization is enabled, the second case is not possibile */
   if (!((ppl_status == PPL_MIP_PROBLEM_STATUS_UNFEASIBLE
 	 && (glpk_status == LPX_NOFEAS || glpk_status == LPX_I_NOFEAS))
 	|| (ppl_status == PPL_MIP_PROBLEM_STATUS_UNBOUNDED
 	    && (glpk_status == LPX_UNBND || glpk_status == LPX_I_UNDEF))
 	|| (ppl_status == PPL_MIP_PROBLEM_STATUS_OPTIMIZED
-	    && (glpk_status == LPX_OPT || glpk_status == LPX_I_OPT))))  {
+	    && ((glpk_status == LPX_OPT || glpk_status == LPX_I_OPT)
+		/*If no_optimization is enabled, check if the problem is
+		  unbounded for GLPK */
+		|| (no_optimization && (glpk_status == LPX_UNBND
+					|| glpk_status == LPX_I_UNDEF))))))  {
     switch (glpk_status) {
     case LPX_NOFEAS:
       glpk_status_string = "unfeasible";
