@@ -325,17 +325,17 @@ PPL::MIP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
 }
 
 void
-PPL::MIP_Problem::set_integer_space_dimensions(const Variables_Set& i_vars) {
+PPL::MIP_Problem::add_to_integer_space_dimensions(const Variables_Set&
+						  i_vars) {
   dimension_type i_vars_original_size = i_variables.size();
-  for (Variables_Set::const_iterator i_vars_begin = i_vars.begin(),
-	 i_vars_end = i_vars.end(); i_vars_begin != i_vars_end;
-       ++i_vars_begin) {
-    if (i_vars_begin->id() > external_space_dim)
+  for (Variables_Set::const_iterator i_vars_it = i_vars.begin(),
+	 i_vars_end = i_vars.end(); i_vars_it != i_vars_end; ++i_vars_it) {
+    if (i_vars_it->id() > external_space_dim)
       throw std::invalid_argument("PPL::MIP_Problem::"
-				  "set_integer_space_dimensions(i_vars):\n"
+				  "add_to_integer_space_dimension(i_vars):\n"
 				  "*this and i_vars are dimension "
 				  "incompatible.");
-    i_variables.insert(*i_vars_begin);
+    i_variables.insert(*i_vars_it);
   }
   // If a new integral variable is inserted, set the internal status to
   // PARTIALLY_SATISFIABLE.

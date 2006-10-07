@@ -2287,14 +2287,14 @@ ppl_MIP_Problem_add_space_dimensions_and_embed(ppl_MIP_Problem_t mip,
 CATCH_ALL
 
 int
-ppl_MIP_Problem_set_integer_space_dimensions(ppl_MIP_Problem_t mip,
-					     ppl_dimension_type ds[],
-					     size_t n) try {
+ppl_MIP_Problem_add_to_integer_space_dimensions(ppl_MIP_Problem_t mip,
+					        ppl_dimension_type ds[],
+					        size_t n) try {
   MIP_Problem& mmip = *to_nonconst(mip);
   Variables_Set to_be_set;
   for (ppl_dimension_type i = n; i-- > 0; )
     to_be_set.insert(Variable(ds[i]));
-  mmip.set_integer_space_dimensions(to_be_set);
+  mmip.add_to_integer_space_dimensions(to_be_set);
   return 0;
 }
 CATCH_ALL

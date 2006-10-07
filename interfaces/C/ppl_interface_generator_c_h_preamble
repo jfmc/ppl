@@ -1,4 +1,3 @@
-
 /* Header file for the C interface.  -*- C -*-
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -2131,7 +2130,7 @@ PPL_PROTO((ppl_MIP_Problem_t mip, ppl_dimension_type d));
   The presence of duplicates in \p ds is a waste but an innocuous one.
 */
 int
-ppl_MIP_Problem_set_integer_space_dimensions
+ppl_MIP_Problem_add_to_integer_space_dimensions
 PPL_PROTO((ppl_MIP_Problem_t mip, ppl_dimension_type ds[], size_t n));
 
 /*! \brief

@@ -48,6 +48,60 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
     opt_mode(mode),
     last_generator(point()),
     i_variables(int_vars) {
+  // Check that integer Variables_Set does not exceed the space dimension
+  // of the problem.
+   if (i_variables.space_dimension() > external_space_dim)
+     throw std::invalid_argument("PPL::MIP_Problem::"
+				 "set_integer_space_dimensions(int_vars):\n"
+				 "*this and i_vars are dimension "
+				 "incompatible.");
+
+  // Check for space dimension overflow.
+  if (dim > max_space_dimension())
+    throw std::length_error("PPL::MIP_Problem::"
+			    "MIP_Problem(d, first, last, obj, m):\n"
+			    "d exceeds the maximum allowed space dimension");
+  // Check the objective function.
+  if (obj.space_dimension() > dim)
+    throw std::invalid_argument("PPL::MIP_Problem::"
+				"MIP_Problem(d, first, last, obj, m):\n"
+				"the space dimension of obj exceeds d.");
+  // Check the constraints.
+  for (In i = first; i != last; ++i) {
+    if (i->is_strict_inequality())
+      throw std::invalid_argument("PPL::MIP_Problem::"
+				  "MIP_Problem(d, first, last, obj, m):\n"
+				  "range [first, last) contains a strict "
+				  "inequality constraint.");
+    if (i->space_dimension() > dim)
+      throw std::invalid_argument("PPL::MIP_Problem::"
+				  "MIP_Problem(d, first, last, obj, m):\n"
+				  "range [first, last) contains a constraint "
+				  "having space dimension greater than d.");
+    input_cs.push_back(*i);
+  }
+  assert(OK());
+}
+
+template <typename In>
+MIP_Problem::MIP_Problem(dimension_type dim,
+			 In first, In last,
+			 const Linear_Expression& obj,
+			 Optimization_Mode mode)
+  : external_space_dim(dim),
+    internal_space_dim(0),
+    tableau(),
+    working_cost(0, Row::Flags()),
+    mapping(),
+    base(),
+    status(PARTIALLY_SATISFIABLE),
+    initialized(false),
+    input_cs(),
+    first_pending_constraint(0),
+    input_obj_function(obj),
+    opt_mode(mode),
+    last_generator(point()),
+    i_variables() {
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
     throw std::length_error("PPL::MIP_Problem::"

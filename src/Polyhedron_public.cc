@@ -471,8 +471,8 @@ PPL::Polyhedron::contains_integer_point() const {
   // problem class will correctly and precisely handle
   // ((strict) in-) equality constraints having all integer variables.
   MIP_Problem mip(space_dim);
-  mip.set_integer_space_dimensions(Variables_Set(Variable(0),
-						 Variable(space_dim-1)));
+  mip.add_to_integer_space_dimensions(Variables_Set(Variable(0),
+						    Variable(space_dim-1)));
   TEMP_INTEGER(homogeneous_gcd);
   TEMP_INTEGER(gcd);
   mpq_class rational_inhomogeneous;

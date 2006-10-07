@@ -94,7 +94,7 @@ static struct option long_options[] = {
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
 "  -c, --check[=THRESHOLD] checks the obtained results;  optima are checked\n"
-"                          with a tolerance of THRESHOLD (default 0.001)\n"
+"                          with a tolerance of THRESHOLD (default %.10g)\n"
 "  -i, --incremental       solves the problem incrementally\n"
 "  -m, --min               minimizes the objective function\n"
 "  -M, --max               maximizes the objective function (default)\n"
@@ -133,7 +133,7 @@ static int no_optimization = 0;
 static int no_mip = 0;
 static int check_results_failed = 0;
 static double check_threshold = 0.0;
-static const double default_check_threshold = 0.001;
+static const double default_check_threshold = 0.000000001;
 
 static void
 my_exit(int status) {
@@ -749,8 +749,8 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   ppl_MIP_Problem_set_objective_function(ppl_mip, objective);
   ppl_MIP_Problem_set_optimization_mode(ppl_mip, mode);
   if (!no_mip)
-    ppl_MIP_Problem_set_integer_space_dimensions(ppl_mip, integer_variables,
-						 glpk_lp_num_int);
+    ppl_MIP_Problem_add_to_integer_space_dimensions(ppl_mip, integer_variables,
+						    glpk_lp_num_int);
   if (incremental) {
     /* Add the constraints of `cs' one at a time. */
     ppl_new_Constraint_System_const_iterator(&i);

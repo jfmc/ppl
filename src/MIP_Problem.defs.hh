@@ -123,10 +123,10 @@ public:
     Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
 
     \exception std::invalid_argument
-    Thrown if a constraint in the sequence is a strict inequality
-    or if the space dimension of a constraint (resp., of the
-    objective function or of the integer variables) is strictly
-    greater than \p dim.
+    Thrown if a constraint in the sequence is a strict inequality,
+    if the space dimension of a constraint (resp., of the
+    objective function or of the integer variables) or the space dimension
+    of the integer variable set is strictly greater than \p dim.
   */
   template <typename In>
   MIP_Problem(dimension_type dim,
@@ -134,6 +134,43 @@ public:
 	      const Variables_Set& int_vars,
 	      const Linear_Expression& obj = Linear_Expression::zero(),
 	      Optimization_Mode mode = MAXIMIZATION);
+
+  /*! \brief
+    Builds an MIP problem having space dimension \p dim
+    from the sequence of constraints in the range
+    \f$[\mathrm{first}, \mathrm{last})\f$,
+    the objective function \p obj and optimization mode \p mode.
+
+    \param dim
+    The dimension of the vector space enclosing \p *this.
+
+    \param first
+    An input iterator to the start of the sequence of constraints.
+
+    \param last
+    A past-the-end input iterator to the sequence of constraints.
+
+    \param obj
+    The objective function (optional argument with default value \f$0\f$).
+
+    \param mode
+    The optimization mode (optional argument with default value
+    <CODE>MAXIMIZATION</CODE>).
+
+    \exception std::length_error
+    Thrown if \p dim exceeds <CODE>max_space_dimension()</CODE>.
+
+    \exception std::invalid_argument
+    Thrown if a constraint in the sequence is a strict inequality
+    or if the space dimension of a constraint (resp., of the
+    objective function or of the integer variables) is strictly
+    greater than \p dim.
+  */
+template <typename In>
+MIP_Problem(dimension_type dim,
+	    In first, In last,
+	    const Linear_Expression& obj = Linear_Expression::zero(),
+	    Optimization_Mode mode = MAXIMIZATION);
 
   /*! \brief
     Builds an MIP problem having space dimension \p dim from the constraint
@@ -243,7 +280,7 @@ public:
     Thrown if some variable is \p i_vars does not correspond to
     a space dimension in \p *this.
   */
-  void set_integer_space_dimensions(const Variables_Set& i_vars);
+  void add_to_integer_space_dimensions(const Variables_Set& i_vars);
 
   /*! \brief
     Adds a copy of constraint \p c to the MIP problem.
