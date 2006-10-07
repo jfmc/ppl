@@ -478,9 +478,8 @@ maybe_check_results(const int ppl_status, const double ppl_optimum_value) {
     glpk_status = lpx_get_status(glpk_lp);
   }
   else {
-    int stat = 0;
- /* MIP case. */
-    stat = lpx_intopt(glpk_lp);
+    /* MIP case. */
+    lpx_intopt(glpk_lp);
     glpk_status = lpx_mip_status(glpk_lp);
   }
   /* If no_optimization is enabled, the second case is not possibile */
