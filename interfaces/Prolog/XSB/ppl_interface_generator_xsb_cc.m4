@@ -61,7 +61,6 @@ Prolog_put_Coefficient(Prolog_term_ref& t, const PPL::Coefficient& n) {
   long l = 0;
   if (PPL::assign_r(l, n, PPL::ROUND_NOT_NEEDED) != PPL::V_EQ)
     throw PPL_integer_out_of_range(n);
-  Prolog_term_ref t = p2p_new();
   return Prolog_put_long(t, l);
 }
 
