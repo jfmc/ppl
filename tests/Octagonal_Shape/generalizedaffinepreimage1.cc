@@ -356,7 +356,7 @@ test12() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  bool ok = check_result(oct, known_result, "7.39e-6", "4.07e-6", "2.55e-6");
+  bool ok = check_result(oct, known_result, "1.16e-5", "5.04e-6", "3.50e-6");
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
