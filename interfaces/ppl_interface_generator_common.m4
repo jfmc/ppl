@@ -233,7 +233,8 @@ dnl Note: the macro `$1_code' has to be called using builtin `indir'
 dnl because it is not a legal m4 identifier (it contains `@').
 m4_define(`m4_default_code', `')
 m4_define(`m4_extension', `m4_ifdef(`$1_code', `m4_indir(`$1_code')',
-  `m4_default_code($1)')')
+  `m4_default_code($1)')`'dnl
+')
 
 dnl m4_get_schematic_code(Procedure_Spec, Start_Flag)
 dnl
@@ -245,7 +246,7 @@ dnl the extended code.
 m4_define(`m4_get_schematic_code', `dnl
 m4_patsubst(`$1',
          `[ ]*\(ppl_[^ /]+\)\(.*\)',
-         `m4_extension(\1, m4_get_arity(\2), m4_get_attribute(\2), $2)')')
+         `m4_extension(\1, m4_get_arity(\2), m4_get_attribute(\2), $2, $3)')')
 
 dnl m4_replace_procedure_spec_by_code(Class_Number, Procedure_Spec)
 dnl
@@ -260,7 +261,8 @@ dnl instances.
 m4_undefine(`m4_replace_procedure_spec_by_code')
 m4_define(`m4_replace_procedure_spec_by_code', `dnl
 m4_patsubst(`$2', `\(.*\)', `dnl
-m4_replace_all_patterns_in_string($1, m4_get_schematic_code(\1, 1),
+m4_replace_all_patterns_in_string($1,
+  m4_get_schematic_code(\1, 1, m4_class_kind$1),
     m4_pattern_list)')`'dnl
 ')
 
@@ -342,22 +344,31 @@ m4_ifelse(m4_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, 0,
 m4_undefine(m4_proc_info_string)`'dnl
 ')
 
-dnl m4_filter_all_procedures(Class_Kind, Procedure_Spec1, ProcedureSpec2, ...)
+dnl m4_filter_all_procedures(Class_Kind, keep_or_throw_flag,
+dnl                         Procedure_Spec1, ProcedureSpec2, ...)
 dnl
 dnl Class_Kind      - The current class kind;
+dnl keep_or_throw_flag
+dnl                 - has value 1 or 0;
 dnl Procedure_Spec1 - A schematic procedure name with flags still attached;
 dnl ...
 dnl Procedure_Speck - A schematic procedure name with flags still attached;
 dnl Keeps just those procedure names that are needed for the given class kind.
 dnl The classes to be kept or filtered away are determined by extra info
 dnl included with each Procedure_Name
+dnl The keep_or_throw_flag determines if the filtered procedures
+dnl are the wanted (value 1) procedures or the unwanted ones (value 0);
+dnl Here we only use the wanted procedures list.
+dnl The unwanted list is used when generating the Prolog tests.
 m4_define(`m4_filter_all_procedures', `dnl
-m4_ifelse($#, 0, ,$# , 1, ,
-  $#, 2,
-    `m4_ifelse(m4_filter_one_procedure($1, $2), 1, `$2')',
-    `m4_ifelse(m4_filter_one_procedure($1, $2), 1, `$2,
+m4_ifelse($#, 0, , $#, 1, , $#, 2, ,
+  $#, 3,
+    `m4_ifelse(m4_filter_one_procedure($1, $3), $2,
+       `$3')',
+    `m4_ifelse(m4_filter_one_procedure($1, $3), $2,
+       `$3,
 ')`'dnl
-m4_filter_all_procedures($1, m4_shift(m4_shift($@)))`'dnl
+m4_filter_all_procedures($1, $2, m4_shift(m4_shift(m4_shift($@))))`'dnl
 ')`'dnl
 ')
 
@@ -391,7 +402,7 @@ dnl that class is added.
 m4_define(`m4_one_class_code', `dnl
 m4_pre_extra_class_code($1, $2)`'dnl
 m4_define(`m4_filtered_proc_list',
-       `m4_filter_all_procedures($2, m4_procedure_list)')`'dnl
+       `m4_filter_all_procedures($2, 1, m4_procedure_list)')`'dnl
 m4_replace_all_procedure_specs_by_code($1, m4_filtered_proc_list)`'dnl
 m4_undefine(`m4_filtered_proc_list')`'dnl
 m4_post_extra_class_code($1, $2)`'dnl

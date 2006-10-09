@@ -22,26 +22,34 @@ write_error(Predicate_name) :-
 
 /* Some test data. */
 
-ppl_constraints_test_data(1, CS, _) :-
-  CS = [].
+ppl_constraints_test_data(1, 1, CS, universe) :-
+  (make_vars(1, [A]),
+  CS = [A = A]).
 
-ppl_constraints_test_data(2, CS, [A]) :-
-  CS = [A = 0].
+ppl_constraints_test_data(2, 1, CS, universe) :-
+  (make_vars(1, [A]),
+  CS = [A = 0]).
 
-ppl_congruences_test_data(1, CS, [_]) :-
-  CS = [].
+ppl_congruences_test_data(1, 1, CS, universe) :-
+  (make_vars(1, [A]),
+  CS = [A = A]).
 
-ppl_congruences_test_data(2, CS, [A]) :-
-  CS = [A = 0].
+ppl_congruences_test_data(2, 1, CS, universe) :-
+  (make_vars(1, [A]),
+  CS = [A = 0]).
 
-ppl_generators_test_data(1, GS, [A]) :-
-  GS = [point(0), line(A)].
+ppl_generators_test_data(1, 1, GS, empty) :-
+  (make_vars(1, [A]),
+  GS = [point(0), line(A)]).
 
-ppl_generators_test_data(2, GS, [A]) :-
-  GS = [point(A)].
+ppl_generators_test_data(2, 1, GS, empty) :-
+  (make_vars(1, [A]),
+  GS = [point(0*A)]).
 
-ppl_grid_generators_test_data(1, GS, [A]) :-
-  GS = [grid_point(0), grid_line(A)].
+ppl_grid_generators_test_data(1, 1, GS, empty) :-
+  (make_vars(1, [A]),
+  GS = [grid_point(0), grid_line(A)]).
 
-ppl_grid_generators_test_data(2, GS, [A]) :-
-  GS = [grid_point(A)].
+ppl_grid_generators_test_data(2, 1, GS, empty) :-
+  (make_vars(1, [A]),
+  GS = [grid_point(0*A)]).

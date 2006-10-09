@@ -38,16 +38,25 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_test(notok).
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `
+:- discontiguous(ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_all_checks/1).
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_test(ok) :-
-  (make_vars(1, Vs),
-  ppl_@BUILD_REPRESENT@s_test_data(1, CS1, Vs),
-  ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(CS1, PS1),
-  ppl_delete_@CLASS@(PS1),
-  ppl_@BUILD_REPRESENT@s_test_data(2, CS2, Vs),
-  ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(CS2, PS2),
-  ppl_delete_@CLASS@(PS2),
-  !).
+  (ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_all_checks(1),
+  ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_all_checks(2)).
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_test(notok).
+
+ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_all_checks(Test_Data) :-
+  (ppl_@BUILD_REPRESENT@s_test_data(Test_Data, Space_Dim, RS1, _),
+  ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(RS1, PS1),
+  ppl_@ADD_REPRESENT@s_test_data(Test_Data,
+                                 Space_Dim, RS1a, Universe_or_Empty1a),
+  ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+                                                 Universe_or_Empty1a,
+                                                 PS1a),
+  ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1a, RS1a),
+  ppl_@CLASS@_equals_@CLASS@(PS1, PS1a),
+  ppl_delete_@CLASS@(PS1),
+  ppl_delete_@CLASS@(PS1a),
+  !).
 
 ')
 
