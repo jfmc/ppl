@@ -20,7 +20,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = . Ciao GNU SICStus SWI XSB tests
+SUBDIRS = . Ciao GNU SICStus SWI XSB YAP tests
 
 interface_generator_files = \
 ppl_interface_generator_prolog_dat.m4 \
