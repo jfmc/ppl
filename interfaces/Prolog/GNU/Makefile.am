@@ -20,7 +20,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-GPROLOG_CFLI_FILES = ciao_cfli.hh
+GPROLOG_CFLI_FILES = gprolog_cfli.hh
 
 EXTRA_DIST = \
 ppl_interface_generator_gprolog_pl.m4 \
