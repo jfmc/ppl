@@ -58,8 +58,9 @@ test02() {
 
 bool
 test03() {
-  Variables_Set v_set(Variable(Variable::max_space_dimension()-1),
-		      Variable(0));
+  Variable first(Variable::max_space_dimension()-1);
+  Variable last(0);
+  Variables_Set v_set(first, last);
   return true;
 }
 
