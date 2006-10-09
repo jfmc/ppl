@@ -109,8 +109,7 @@ test04() {
 
   print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
-  oct1.ascii_dump(std::cerr);
-  oct2.ascii_dump(std::cerr);
+
   return !disjoint;
 }
 
