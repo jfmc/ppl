@@ -89,12 +89,6 @@ operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 /*! \relates Parma_Polyhedra_Library::Congruence */
 inline Congruence
-operator%=(Coefficient_traits::const_reference n, const Linear_Expression& e) {
-  return Congruence::create(n, e);
-}
-
-/*! \relates Parma_Polyhedra_Library::Congruence */
-inline Congruence
 operator/(const Congruence& cg, Coefficient_traits::const_reference k) {
   Congruence ret(cg, k);
   return ret;
