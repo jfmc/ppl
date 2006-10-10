@@ -863,7 +863,7 @@ solve(char* file_name) {
 
   glpk_lp_problem_kind = lpx_get_class(glpk_lp);
   if (glpk_lp_problem_kind == LPX_MIP && !no_mip && !use_simplex)
-     fatal("the enumaration solving method can not handle MIP problems");
+     fatal("the enumeration solving method can not handle MIP problems");
 
   dimension = lpx_get_num_cols(glpk_lp);
 
