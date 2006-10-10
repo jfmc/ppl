@@ -10,6 +10,7 @@ dnl ==================================================================
 dnl
 m4_include(`ppl_interface_generator_common.m4')`'dnl
 m4_include(`ppl_interface_generator_prolog_dat.m4')dnl
+m4_include(`ppl_interface_generator_predicate_check_code.m4')`'dnl
 dnl
 dnl ==================================================================
 dnl Macros needed to generate all the test code, both for the library
@@ -36,6 +37,7 @@ check_all :-
   ppl_initialize,
 m4_divert(1)`'dnl
   ppl_finalize.
+
 dnl
 dnl ==================================================================
 dnl Any required declarations for the tests go here
@@ -69,12 +71,18 @@ dnl -----------------------------------------------------------------
 dnl Extra files and definitions for divert(1)
 dnl -----------------------------------------------------------------
 m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
+m4_define(`m4_start1', 0)`'dnl
 m4_pushdef(`m4_extension', `dnl
-m4_ifelse($4, 0, , `COMMA
-')  ((\+$1_test(ok),
+m4_ifdef(`$1_code',
+         `m4_ifelse(m4_check_test_usability($1, $5), keep,
+                    `m4_ifelse(m4_start1, 0,
+                      `m4_undefine(`m4_start1')', `
+')'  ((\+$1_test(ok)COMMA
     $1_test(notok))
       -> write_error($1)
-      ;  true)')`'dnl
+      ;  true)COMMA
+)')`'dnl
+')`'dnl
 dnl
 dnl -----------------------------------------------------------------
 dnl Main calls to macros to generate code for divert(1)
@@ -82,7 +90,6 @@ dnl -----------------------------------------------------------------
 m4_patsubst(m4_library_names_to_code(0, m4_library_predicate_list),
             COMMA, `,')`'dnl
 m4_patsubst(m4_all_code, COMMA, `,')`'dnl
-`,'
 m4_undivert(1)`'dnl
 m4_divert`'dnl
 dnl
@@ -95,7 +102,9 @@ dnl Extra definitions for divert(2)
 dnl -----------------------------------------------------------------
 m4_popdef(`m4_extension')`'dnl
 m4_pushdef(`m4_extension', `dnl
-:- discontiguous($1_test/1).
+m4_ifdef(`$1_code',
+         `m4_ifelse(m4_check_test_usability($1, $5), keep,
+:- discontiguous($1_test/1).)')
 ')`'dnl
 dnl -----------------------------------------------------------------
 dnl Main call to macros to generate code for divert(2)
@@ -116,12 +125,8 @@ m4_popdef(`m4_extension')`'dnl
 m4_ifdef(`$1_code',
 `m4_ifelse(m4_check_test_usability($1, $5), keep, m4_indir(`$1_code'))',
          `m4_default_code($1)')`'dnl
-
-m4_include(`ppl_interface_generator_predicate_check_code.m4')`'dnl
 dnl Define a default test.
-m4_pushdef(`m4_default_code', `$1_test(ok).
-
-')`'dnl
+m4_pushdef(`m4_default_code', `')`'dnl
 dnl
 dnl -----------------------------------------------------------------
 dnl Main call to macros to generate code for divert(3)
@@ -146,14 +151,12 @@ m4_add_extra_class_code($1)`'dnl
 ')`'dnl
 m4_include(`ppl_interface_generator_predicate_check_code.m4')`'dnl
 dnl
-m4_pushdef(`m4_default_code', `$1_test(ok).
-')`'dnl
+m4_pushdef(`m4_default_code', `')`'dnl
 dnl
 m4_define(`m4_extension', `dnl
 m4_ifdef(`$1_code',
 `m4_ifelse(m4_check_test_usability($1, $5), keep, m4_indir(`$1_code'))',
-         `m4_default_code($1)`'dnl
-')`'dnl
+         `m4_default_code($1)')`'dnl
 ')
 dnl
 dnl -----------------------------------------------------------------
@@ -169,7 +172,7 @@ dnl Generate code for divert(5), the test data and similar generic code
 dnl ==================================================================
 dnl
 dnl -----------------------------------------------------------------
-dnl Extra definitions for divert(1)
+dnl Extra definitions for divert(5)
 dnl -----------------------------------------------------------------
 m4_popdef(`m4_default_code')`'dnl
 dnl
