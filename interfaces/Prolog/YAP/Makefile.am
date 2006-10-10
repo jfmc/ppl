@@ -20,8 +20,11 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+YAP_CFLI_FILES = yap_cfli.hh
+
 EXTRA_DIST = \
 ppl_interface_generator_yap_cc.m4 \
+$(YAP_CFLI_FILES) \
 ppl_yap.pl \
 yap_clpq.pl \
 yap_clpq2.pl \
