@@ -1337,58 +1337,410 @@ test05() {
   return true;
 }
 
-/* FIXME: add tests to check MIP_Problem with the following:
+bool test06() {
+  Variable A(0);
+  Variable B(1);
+  Linear_Expression cost(A + B);
+  Constraint_System cs;
+  cs.insert(-A - B >= -8);
+  cs.insert(-A - 3*B >= -18);
+  cs.insert(-A + B >= -4);
+  cs.insert(A >= 0);
+  cs.insert(B >= 0);
 
-maximize
-A+B
-subject to
--A - B >= -8, -A - 3*B >= -18, -A + B >= -4, A >= 0, B >= 0
+  MIP_Problem mip = MIP_Problem(cs.space_dimension(), cs, cost, MAXIMIZATION);
 
-maximize
-A+B
-subject to
--A - 3*B >= -4, -5*A - B >= -5, -3*A - 2*B >= -2,
-A + 3*B >= -1, 2*A - B >= -2
+  const Coefficient num_kr = 8;
+  const Coefficient den_kr = 1;
+  Coefficient num;
+  Coefficient den;
 
-maximize
-12*A + 6*B + 4*C + 3*D
-subject to
-A >= 0, B >= 0, C >= 0, D >= 0,
-3008*A + 20980*B - 97775*C - 101225*D >= 0,
-3985*A + 25643*B - 135871*C - 130580*D >= 0,
-4324*A + 26978*B - 133655*C - 168473*D >= 0,
-3534*A + 25361*B - 46243*C - 100407*D >= 0,
-8836*A + 40796*B - 176661*C - 215616*D >= 0,
-5376*A + 37562*B - 182576*C - 217615*D >= 0,
-2491*A + 16544*B - 49440*C - 83639*D >= 0,
-4775*A + 39122*B - 136701*C - 193393*D >= 0,
-8046*A + 42958*B - 225138*C - 256575*D >= 0,
-8554*A + 48955*B - 257370*C - 312877*D >= 0,
-6147*A + 45514*B - 165274*C - 227099*D >= 0,
-8366*A + 55140*B - 203989*C - 321623*D >= 0,
-13479*A + 68037*B - 174270*C - 341743*D >= 0,
-21808*A + 78302*B - 322990*C - 487539*D >= 0,
--8554*A - 48955*B >= -10000,
--257370*C - 312877*D >= -10000
+  Generator pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
 
-maximize
-A + B + C
-subject to
-A >= -1, B >= -1, C >= -1, -A >= -1, -B >= -1, -C >= -1
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  Generator pg_kr = point(6*A + 2*B);
+  if (pg != pg_kr)
+    return false;
 
-minimize
-10*A + 3*B
-subject to
-A + B >= 0, B >= 0, B = 3, 2*C + 2*D = 9
+  // Set Variable A to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(A));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
 
-*/
+  // Set Variable B to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(B));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  return true;
+}
+
+bool test07() {
+  Variable A(0);
+  Variable B(1);
+  Linear_Expression cost(A + B);
+  Constraint_System cs;
+  cs.insert(-A - 3*B >= -4);
+  cs.insert(-5*A - B >= -5);
+  cs.insert(-3*A - 2*B >= -2);
+  cs.insert(A + 3*B >= -1);
+  cs.insert(2*A - B >= -2);
+
+  MIP_Problem mip = MIP_Problem(cs.space_dimension(), cs, cost, MAXIMIZATION);
+
+  Coefficient num_kr = 8;
+  Coefficient den_kr = 7;
+  Coefficient num;
+  Coefficient den;
+
+  Generator pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  Generator pg_kr = point(-2*A + 10*B, 7);
+  if (pg != pg_kr)
+    return false;
+
+  // Set Variable A to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(A));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+
+  num_kr = 1;
+  den_kr = 1;
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  pg_kr = point(B);
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  // Set Variable B to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(B));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  return true;
+}
+
+bool test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Linear_Expression cost(12*A + 6*B + 4*C + 3*D);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B >= 0);
+  cs.insert(C >= 0);
+  cs.insert(D >= 0);
+  cs.insert(3008*A + 20980*B - 97775*C - 101225*D >= 0);
+  cs.insert(3985*A + 25643*B - 135871*C - 130580*D >= 0);
+  cs.insert(4324*A + 26978*B - 133655*C - 168473*D >= 0);
+  cs.insert(3534*A + 25361*B - 46243*C - 100407*D >= 0);
+  cs.insert(8836*A + 40796*B - 176661*C - 215616*D >= 0);
+  cs.insert(5376*A + 37562*B - 182576*C - 217615*D >= 0);
+  cs.insert(2491*A + 16544*B - 49440*C - 83639*D >= 0);
+  cs.insert(4775*A + 39122*B - 136701*C - 193393*D >= 0);
+  cs.insert(8046*A + 42958*B - 225138*C - 256575*D >= 0);
+  cs.insert(8554*A + 48955*B - 257370*C - 312877*D >= 0);
+  cs.insert(6147*A + 45514*B - 165274*C - 227099*D >= 0);
+  cs.insert(8366*A + 55140*B - 203989*C - 321623*D >= 0);
+  cs.insert(13479*A + 68037*B - 174270*C - 341743*D >= 0);
+  cs.insert(21808*A + 78302*B - 322990*C - 487539*D >= 0);
+  cs.insert(-8554*A - 48955*B >= -10000);
+  cs.insert(-257370*C - 312877*D >= -10000);
+
+  MIP_Problem mip = MIP_Problem(cs.space_dimension(), cs, cost, MAXIMIZATION);
+
+  Coefficient num_kr = Coefficient("8231960000");
+  Coefficient den_kr = 581120267;
+  Coefficient num;
+  Coefficient den;
+
+  Generator pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  Generator pg_kr = point(679355000*A + 19925000*C + 0*D, 581120267);
+  if (pg != pg_kr)
+    return false;
+
+  // Set Variable A to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(A));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+
+  num_kr = Coefficient("81926256268");
+  den_kr = Coefficient("6651564805");
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  pg_kr = point(Coefficient("6651564805")*A + 196469466*B + 232165453*C + 0*D,
+		Coefficient("6651564805"));
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  // Set Variable B to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(B));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+
+  num_kr = 1646392;
+  den_kr = 135871;
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  pg_kr = point(135871*A + 3985*C + 0*D, 135871);
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  // Set Variable C to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(C));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+
+  num_kr = 2335041;
+  den_kr = 193393;
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  pg_kr = point(193393*A + 4775*D, 193393);
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  // Set Variable D to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(D));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+
+  num_kr = 12;
+  den_kr = 1;
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  pg_kr = point(A + 0*D);
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  return true;
+}
+
+bool test09() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Linear_Expression cost(A + B + C);
+  Constraint_System cs;
+  cs.insert(A >= -1);
+  cs.insert(B >= -1);
+  cs.insert(C >= -1);
+  cs.insert(-A >= -1);
+  cs.insert(-B >= -1);
+  cs.insert(-C >= -1);
+
+  MIP_Problem mip = MIP_Problem(cs.space_dimension(), cs, cost, MAXIMIZATION);
+
+  Coefficient num_kr = 3;
+  Coefficient den_kr = 1;
+  Coefficient num;
+  Coefficient den;
+
+  Generator pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  Generator pg_kr = point(A + B + C);
+  if (pg != pg_kr)
+    return false;
+
+  // Set Variable A to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(A));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  // Set Variable B to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(B));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  // Set Variable C to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(C));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  return true;
+}
+
+// FIXME: this test is disabled: it loops if all the variables are constrained
+// to be integer.
+bool test10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Linear_Expression cost(10*A + 3*B);
+  Constraint_System cs;
+  cs.insert(A + B >= 0);
+  cs.insert(B >= 0);
+  cs.insert(B == 3);
+  cs.insert(2*C + 2*D == 9);
+
+  MIP_Problem mip = MIP_Problem(cs.space_dimension(), cs, cost, MINIMIZATION);
+  Coefficient num_kr = -21;
+  Coefficient den_kr = 1;
+  Coefficient num;
+  Coefficient den;
+  Generator pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  Generator pg_kr = point(-6*A + 6*B + 9*D, 2);
+  if (pg != pg_kr)
+    return false;
+
+  // Set Variable A to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(A));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  // Set Variable B to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(B));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  // Set Variable C to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(C));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+  // Set Variable D to be constrained to have an integer value.
+  mip.add_to_integer_space_dimensions(Variables_Set(D));
+  pg = mip.optimizing_point();
+  mip.evaluate_objective_function(pg, num, den);
+
+  nout << "Optimum value = " << num << "/" << den << endl;
+  if (num != num_kr || den != den_kr)
+    return false;
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  if (pg != pg_kr)
+    return false;
+
+  return true;
+}
+
 
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST_F64(test01);
-  DO_TEST_F32(test02);
-  DO_TEST_F64(test03);
-  DO_TEST_F32(test04);
-  DO_TEST_F64(test05);
+   DO_TEST_F64(test01);
+   DO_TEST_F32(test02);
+   DO_TEST_F64(test03);
+   DO_TEST_F32(test04);
+   DO_TEST_F64(test05);
+   DO_TEST(test06);
+   DO_TEST(test07);
+   DO_TEST_F64(test08);
+   DO_TEST(test09);
 END_MAIN
