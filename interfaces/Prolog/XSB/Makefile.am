@@ -22,9 +22,12 @@
 
 abs_srcdir = @abs_srcdir@
 
+XSB_CFLI_FILES = xsb_cfli.hh
+
 EXTRA_DIST = \
 ppl_interface_generator_xsb_cc.m4 \
 ppl_interface_generator_xsb_H.m4 \
+$(XSB_CFLI_FILES) \
 xsb_clpq.P \
 xsb_clpq2.P \
 xsb_pl_check.P \
