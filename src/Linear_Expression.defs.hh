@@ -43,21 +43,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
 
-//! Returns the congruence \p e1 = \p e2 \p \pmod{1}.
-/*! \relates Congruence */
-Congruence
-operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the congruence \p e = \p n \p \pmod{1}.
-/*! \relates Congruence */
-Congruence
-operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the congruence \f$n = e \pmod{1}\f$.
-/*! \relates Congruence */
-Congruence
-operator%=(Coefficient_traits::const_reference n, const Linear_Expression& e);
-
 //! Returns the linear expression \p e1 + \p e2.
 /*! \relates Linear_Expression */
 Linear_Expression
