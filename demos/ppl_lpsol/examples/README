@@ -1,7 +1,10 @@
 Most of the examples in this directory have been taken from the `lp'
-library of Netlib [1].
+library of Netlib [1], Miplib [2] and from the Polytechnic school of
+Montreal [3].
 
 
 --------
 
 [1] http://www.netlib.org/
+[2] http://miplib.zib.de/
+[3] http://www.cours.polymtl.ca/mth6403/Documentations.htm
