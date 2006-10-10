@@ -143,8 +143,8 @@ sc50b.mps \
 ship08l.mps
 
 DO_NOT_CHECK_PROBLEMS = \
-ex12.mps \
 ex11.mps \
+ex12.mps \
 mas74.mps \
 mas76.mps \
 modglob.mps
