@@ -347,17 +347,17 @@ test13() {
   return ok;
 }
 
-// Only an inhomogeneous term on left hand side.
+// Linear expressions on both sides.
 static bool
 test14() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
-  Test_Congruence a((-5 %= A + 2*B + 3*C) / 7);
+  Test_Congruence a((A - 5 %= 2*B + 3*C) / 7);
   a.strong_normalize();
 
-  Test_Congruence b((A %= -5 - 3*C - 2*B) / 7);
+  Test_Congruence b((-A %= -5 - 3*C - 2*B) / 7);
   b.strong_normalize();
 
   bool ok = (a == b);
