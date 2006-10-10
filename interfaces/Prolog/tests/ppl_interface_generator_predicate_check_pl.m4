@@ -14,7 +14,7 @@ m4_include(`ppl_interface_generator_predicate_check_code.m4')`'dnl
 dnl
 dnl ==================================================================
 dnl Macros needed to generate all the test code, both for the library
-dnl and the class dependent predicates
+dnl and the class dependet predicates
 dnl ==================================================================
 dnl
 m4_define(`m4_filter_code', `dnl
@@ -76,12 +76,11 @@ m4_pushdef(`m4_extension', `dnl
 m4_ifdef(`$1_code',
          `m4_ifelse(m4_check_test_usability($1, $5), keep,
                     `m4_ifelse(m4_start1, 0,
-                      `m4_undefine(`m4_start1')', `
-')'  ((\+$1_test(ok)COMMA
-    $1_test(notok))
+                      `m4_undefine(`m4_start1')  ', `
+')'  `  ($1_test
       -> write_error($1)
       ;  true)COMMA
-)')`'dnl
+')')`'dnl
 ')`'dnl
 dnl
 dnl -----------------------------------------------------------------
@@ -104,7 +103,7 @@ m4_popdef(`m4_extension')`'dnl
 m4_pushdef(`m4_extension', `dnl
 m4_ifdef(`$1_code',
          `m4_ifelse(m4_check_test_usability($1, $5), keep,
-:- discontiguous($1_test/1).)')
+:- discontiguous($1_test/0).)')
 ')`'dnl
 dnl -----------------------------------------------------------------
 dnl Main call to macros to generate code for divert(2)
