@@ -38,7 +38,7 @@ test01() {
   v_set.insert(C);
   v_set.insert(B);
   v_set.insert(G);
-  // FIXME: Here, and in the other test, use operator=.
+  // FIXME: Here, and in the other test, use operator==.
   return v_set.size() == Variables_Set(A, G).size();
 }
 
@@ -52,7 +52,7 @@ test02() {
   Variable F(5);
 
   Variables_Set v_set(F, A);
-  return v_set.size() == 0;
+  return v_set.empty();
 }
 
 bool
@@ -60,7 +60,7 @@ test03() {
   Variable first(Variable::max_space_dimension()-1);
   Variable last(0);
   Variables_Set v_set(first, last);
-  return v_set.size() == 0;
+  return v_set.empty();
 }
 
 bool
@@ -99,7 +99,7 @@ test04() {
 			std::inserter(vs_intersection,
 				      vs_intersection.begin()),
 			Variable::Compare());
-  return vs_intersection.size() == 0;
+  return vs_intersection.empty();
 }
 
 
@@ -109,7 +109,7 @@ test05() {
 
   Variables_Set v_set;
 
-  if (v_set.space_dimension() != 0)
+  if (!v_set.empty())
     return false;
 
   v_set.insert(Variable(A));
