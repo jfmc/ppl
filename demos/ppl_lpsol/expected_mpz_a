@@ -3200,38 +3200,6 @@ Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
-*** ppl_lpsol -s -r -m -oobtained ex11.mps
-Optimum value: 20
-Optimum location:
-x1 = 1.459667544e-319
-x2 = 20
-*** ppl_lpsol -s -r -M -oobtained ex11.mps
-Optimum value: 3505.714286
-Optimum location:
-x1 = 871.4285714
-x2 = 20
-*** ppl_lpsol -s -m -oobtained ex11.mps
-Optimum value: 24
-Optimum location:
-x1 = 1
-x2 = 20
-*** ppl_lpsol -s -M -oobtained ex11.mps
-Optimum value: 3504.3
-Optimum location:
-x1 = 871
-x2 = 20.3
-*** ppl_lpsol -e -r -m -oobtained ex11.mps
-Optimum value: 20
-Optimum location:
-x1 = 1.459667544e-319
-x2 = 20
-*** ppl_lpsol -e -r -M -oobtained ex11.mps
-Optimum value: 3505.714286
-Optimum location:
-x1 = 871.4285714
-x2 = 20
-*** ppl_lpsol -s -n -oobtained ex11.mps
-Feasible problem.
 *** ppl_lpsol -r -s -m -oobtained mas74.mps
 Optimum value: 10482.79528
 Optimum location:

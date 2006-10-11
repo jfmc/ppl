@@ -236,41 +236,24 @@ check-local: ppl_lpsol
 	  echo "*** ppl_lpsol -e -r $$m -oobtained $$file" >>obtained; \
 	  ./ppl_lpsol -e -r $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	done
-	-for m in -m -M; \
-	do \
-	 echo "*** ppl_lpsol -s -r $$m -oobtained ex11.mps" >>obtained; \
-	 ./ppl_lpsol -s -r $(CHECK_OPTION) $(srcdir)/examples/ex11.mps $$m -oobtained >/dev/null; \
-	done
-	-for m in -m -M; \
-	do \
-	   echo "*** ppl_lpsol -s $$m -oobtained ex11.mps" >>obtained; \
-	  ./ppl_lpsol -s $$m $(srcdir)/examples/ex11.mps -oobtained >/dev/null;\
-	done
-	-for m in -m -M; \
-	do \
-	  echo "*** ppl_lpsol -e -r $$m -oobtained ex11.mps" >>obtained; \
-	  ./ppl_lpsol -e -r $$m $(CHECK_OPTION) $(srcdir)/examples/ex11.mps -oobtained >/dev/null; \
-	done;
-	-echo "*** ppl_lpsol -s -n -oobtained ex11.mps" >>obtained ;\
-	./ppl_lpsol -s -n $(srcdir)/examples/ex11.mps -oobtained >/dev/null
-	-echo "*** ppl_lpsol -r -s -m -oobtained mas74.mps" >>obtained ;\
-	./ppl_lpsol -r -s -m $(CHECK_OPTION) $(srcdir)/examples/mas74.mps -oobtained >/dev/null
-	-echo "*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas74.mps" >>obtained ;\
-	./ppl_lpsol -r -s -M -c0.000123 $(srcdir)/examples/mas74.mps $$m -oobtained >/dev/null
-	-echo "*** ppl_lpsol -n -s -oobtained mas74.mps" >>obtained ;\
-	./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/mas74.mps -oobtained >/dev/null
-	-echo "*** ppl_lpsol -r -s -m -oobtained mas76.mps" >>obtained ;\
-	./ppl_lpsol -r -s -m $(CHECK_OPTION) $(srcdir)/examples/mas76.mps -oobtained >/dev/null
-	-echo "*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas76.mps" >>obtained ;\
-	./ppl_lpsol -r -s -M -c0.000123 $(srcdir)/examples/mas76.mps -oobtained >/dev/null
-	-echo "*** ppl_lpsol -n -s -oobtained mas76.mps" >>obtained; \
-	./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/mas76.mps -oobtained >/dev/null
-	-echo "*** ppl_lpsol -r -s -m -c0.0000002 -oobtained modglob.mps" >>obtained ;\
-	./ppl_lpsol -r -s -m -c0.0000002 $(srcdir)/examples/modglob.mps -oobtained >/dev/null
-	-echo "*** ppl_lpsol -r -s -M -c0.000003 -oobtained modglob.mps" >>obtained ;\
-	./ppl_lpsol -r -s -M -c0.000003 $(srcdir)/examples/modglob.mps -oobtained >/dev/null
-	-echo "*** ppl_lpsol -n -s -oobtained modglob.mps" >>obtained ;\
-	./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/modglob.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -r -s -m -oobtained mas74.mps" >>obtained
+	-./ppl_lpsol -r -s -m $(CHECK_OPTION) $(srcdir)/examples/mas74.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas74.mps" >>obtained
+	-./ppl_lpsol -r -s -M -c0.000123 $(srcdir)/examples/mas74.mps $$m -oobtained >/dev/null
+	echo "*** ppl_lpsol -n -s -oobtained mas74.mps" >>obtained
+	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/mas74.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -r -s -m -oobtained mas76.mps" >>obtained
+	-./ppl_lpsol -r -s -m $(CHECK_OPTION) $(srcdir)/examples/mas76.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas76.mps" >>obtained
+	-./ppl_lpsol -r -s -M -c0.000123 $(srcdir)/examples/mas76.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -n -s -oobtained mas76.mps" >>obtained
+	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/mas76.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -r -s -m -c0.0000002 -oobtained modglob.mps" >>obtained
+	-./ppl_lpsol -r -s -m -c0.0000002 $(srcdir)/examples/modglob.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -r -s -M -c0.000003 -oobtained modglob.mps" >>obtained
+	-./ppl_lpsol -r -s -M -c0.000003 $(srcdir)/examples/modglob.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -n -s -oobtained modglob.mps" >>obtained
+	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/modglob.mps -oobtained >/dev/null
 	$(DIFF_COMMAND)
 
 MOSTLYCLEANFILES = \

@@ -973,20 +973,6 @@ Optimum value: 0
 Optimum location:
 x1 = 0
 x2 = 0
-*** ppl_lpsol -s -r -m -oobtained ex11.mps
-PPL error code -6: Positive overflow.
-*** ppl_lpsol -s -r -M -oobtained ex11.mps
-PPL error code -6: Positive overflow.
-*** ppl_lpsol -s -m -oobtained ex11.mps
-PPL error code -6: Positive overflow.
-*** ppl_lpsol -s -M -oobtained ex11.mps
-PPL error code -6: Positive overflow.
-*** ppl_lpsol -e -r -m -oobtained ex11.mps
-PPL error code -6: Positive overflow.
-*** ppl_lpsol -e -r -M -oobtained ex11.mps
-PPL error code -6: Positive overflow.
-*** ppl_lpsol -s -n -oobtained ex11.mps
-PPL error code -6: Positive overflow.
 *** ppl_lpsol -r -s -m -oobtained mas74.mps
 PPL error code -6: Positive overflow.
 *** ppl_lpsol -r -s -M -c0.000123 -oobtained mas74.mps
