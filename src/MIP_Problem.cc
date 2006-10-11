@@ -1619,9 +1619,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   found_satisfiable_generator = choose_branching_variable(lp, i_vars,
 							  nonint_dim);
 #else
-
   TEMP_INTEGER(gcd);
-  i_vars = lp.integer_space_dimensions();
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
     gcd_assign(gcd, p.coefficient(*v_begin), p_divisor);
