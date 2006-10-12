@@ -166,7 +166,8 @@ m4_define(`m4_find_arity',
 dnl
 m4_define(`m4_make_clean_defs', `dnl
 clean_$1`'m4_ifelse(`$2', 0, , `(`'m4_arg_sequence($2))') :-
-  $1`'m4_ifelse(`$2', 0, , `(`'m4_arg_sequence($2))').
+  ($1`'m4_ifelse(`$2', 0, , `(`'m4_arg_sequence($2))'),
+  ppl_cleanup_@CLASS@(Arg`'$2)).
 ')`'dnl
 dnl
 m4_define(`m4_replace_patterns_in_clean_defs', `dnl

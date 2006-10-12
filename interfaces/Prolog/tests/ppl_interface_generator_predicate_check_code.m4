@@ -4,8 +4,8 @@ dnl
 m4_define(`m4_add_extra_class_code', `dnl
 m4_ifelse(m4_cplusplus_class$1, Polyhedron,
   `
-ppl_new_Polyhedron_from_space_dimension(Dim, UorE, PS) :-
-    ppl_new_C_Polyhedron_from_space_dimension(Dim, UorE, PS).
+clean_ppl_new_Polyhedron_from_space_dimension(Dim, UorE, PS) :-
+    clean_ppl_new_C_Polyhedron_from_space_dimension(Dim, UorE, PS).
 ')
 
 ppl_cleanup_@CLASS@(_).
@@ -31,7 +31,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_test :-
   (
-   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(0, empty, PS),
+   clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(0, empty, PS),
    ppl_delete_@CLASS@(PS)
   ->
    fail ; true).
@@ -42,8 +42,8 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
 `
 ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_test :-
   (
-   ppl_new_@INTOPOLOGY@@FRIEND@_from_space_dimension(0, universe, PS),
-   ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@(PS, PS1),
+   clean_ppl_new_@INTOPOLOGY@@FRIEND@_from_space_dimension(0, universe, PS),
+   clean_ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@(PS, PS1),
    ppl_delete_@FRIEND@(PS),
    ppl_delete_@CLASS@(PS1)
   ->
@@ -58,10 +58,10 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_test :-
    (TEST_DATA = 1 ; TEST_DATA = 2),
    (
     ppl_@BUILD_REPRESENT@s_test_data(TEST_DATA, Space_Dim, RS1, _),
-    ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(RS1, PS1),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(RS1, PS1),
     ppl_@ADD_REPRESENT@s_test_data(TEST_DATA,
                                    Space_Dim, RS1a, Universe_or_Empty1a),
-    ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
                                                    Universe_or_Empty1a,
                                                    PS1a),
     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1a, RS1a),
@@ -74,5 +74,42 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_test :-
 
 ')
 
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
+`
+ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_test :-
+  (
+   (TEST_DATA = 1, TEST_DATA = 2, TEST_DATA = 3,
+    TEST_DATA = 4, TEST_DATA = 5, TEST_DATA = 6),
+   (
+    ppl_box_test_data(TEST_DATA, _Space_Dim, Box),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box, PS),
+    ppl_@CLASS@_get_@BOX@(PS, any, Box1),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box1, PS1),
+    ppl_@CLASS@_equals_@CLASS@(PS, PS1),
+    ppl_delete_@CLASS@(PS),
+    ppl_delete_@CLASS@(PS1)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_swap_code',
+`
+ppl_new_@TOPOLOGY@@CLASS@_swap_test :-
+  (
+   (
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(3, universe, PS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(2, empty, PS1),
+    ppl_@CLASS@_swap(PS, PS1),
+    ppl_@CLASS@_is_empty(PS),
+    ppl_@CLASS@_is_universe(PS1),
+    ppl_delete_Polyhedron(PS),
+    ppl_delete_Polyhedron(PS1)
+   ->
+     fail ; true)
+  ).
+
+')
 
 m4_divert`'dnl

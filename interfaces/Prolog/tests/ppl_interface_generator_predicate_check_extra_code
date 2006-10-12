@@ -53,3 +53,10 @@ ppl_grid_generators_test_data(1, 1, GS, empty) :-
 ppl_grid_generators_test_data(2, 1, GS, empty) :-
   (make_vars(1, [A]),
   GS = [grid_point(0*A)]).
+
+ppl_box_test_data(1, 1, [i(c(0), o(pinf))]).
+ppl_box_test_data(2, 1, [i(c(0), c(0))]).
+ppl_box_test_data(3, 1, [empty]).
+ppl_box_test_data(4, 2, [i(c(1/2), o(pinf)), i(o(minf), c(-1/2))]).
+ppl_box_test_data(5, 0, [empty]).
+ppl_box_test_data(6, 2, [i(c(-4), c(1)), i(c(-1), c(1))]).
