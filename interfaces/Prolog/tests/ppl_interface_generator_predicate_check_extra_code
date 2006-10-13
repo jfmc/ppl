@@ -22,41 +22,62 @@ write_error(Predicate_name) :-
 
 /* Some test data. */
 
-ppl_constraints_test_data(1, 1, CS, universe) :-
+ppl_constraints_test_data(1, _Topology, 1, CS, universe) :-
   (make_vars(1, [A]),
   CS = [A = A]).
 
-ppl_constraints_test_data(2, 1, CS, universe) :-
+ppl_constraints_test_data(2, _Topology, 1, CS, universe) :-
   (make_vars(1, [A]),
   CS = [A = 0]).
 
-ppl_congruences_test_data(1, 1, CS, universe) :-
+ppl_constraints_test_data(3, T, 1, CS, universe) :-
+  (T \= t_NNC_,
+  make_vars(1, [A]),
+  CS = [A >= 0]).
+
+ppl_constraints_test_data(3, t_NNC_, 1, CS, universe) :-
+  (make_vars(1, [A]),
+  CS = [A > 0]).
+
+ppl_congruences_test_data(1, _Topology, 1, CS, universe) :-
   (make_vars(1, [A]),
   CS = [A = A]).
 
-ppl_congruences_test_data(2, 1, CS, universe) :-
+ppl_congruences_test_data(2, _Topology, 1, CS, universe) :-
   (make_vars(1, [A]),
   CS = [A = 0]).
 
-ppl_generators_test_data(1, 1, GS, empty) :-
+ppl_generators_test_data(1, _Topology, 1, GS, empty) :-
   (make_vars(1, [A]),
   GS = [point(0), line(A)]).
 
-ppl_generators_test_data(2, 1, GS, empty) :-
+ppl_generators_test_data(2, _Topology, 1, GS, empty) :-
   (make_vars(1, [A]),
   GS = [point(0*A)]).
 
-ppl_grid_generators_test_data(1, 1, GS, empty) :-
+ppl_generators_test_data(3, T, 1, GS, empty) :-
+  (T \= t_NNC_,
+  make_vars(1, [A]),
+  GS = [point(0*A), ray(A)]).
+
+ppl_generators_test_data(3, t_NNC_, 1, GS, empty) :-
+  (make_vars(1, [A]),
+  GS = [closure_point(0*A), point(A), ray(A)]).
+
+ppl_grid_generators_test_data(1, _Topology, 1, GS, empty) :-
   (make_vars(1, [A]),
   GS = [grid_point(0), grid_line(A)]).
 
-ppl_grid_generators_test_data(2, 1, GS, empty) :-
+ppl_grid_generators_test_data(2, _Topology, 1, GS, empty) :-
   (make_vars(1, [A]),
   GS = [grid_point(0*A)]).
 
-ppl_box_test_data(1, 1, [i(c(0), o(pinf))]).
-ppl_box_test_data(2, 1, [i(c(0), c(0))]).
-ppl_box_test_data(3, 1, [empty]).
-ppl_box_test_data(4, 2, [i(c(1/2), o(pinf)), i(o(minf), c(-1/2))]).
-ppl_box_test_data(5, 0, [empty]).
-ppl_box_test_data(6, 2, [i(c(-4), c(1)), i(c(-1), c(1))]).
+ppl_box_test_data(1, _Topology, 1, [i(c(0), o(pinf))]).
+ppl_box_test_data(2, _Topology, 1, [i(c(0), c(0))]).
+ppl_box_test_data(3, _Topology, 1, [empty]).
+ppl_box_test_data(4, _Topology, 2, [i(c(1/2), o(pinf)), i(o(minf), c(-1/2))]).
+ppl_box_test_data(5, _Topology, 0, [empty]).
+ppl_box_test_data(6, _Topology, 2, [i(c(-4), c(1)), i(c(-1), c(1))]).
+ppl_box_test_data(7, T, 2, [i(c(0/2), o(pinf)), i(o(minf), c(1))]) :-
+  T \= t_NNC_.
+ppl_box_test_data(7, t_NNC_, 2, [i(o(0/2), o(pinf)), i(o(minf), o(1))]).
