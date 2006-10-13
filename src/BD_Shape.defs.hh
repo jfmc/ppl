@@ -960,6 +960,70 @@ public:
   void generalized_affine_preimage(const Linear_Expression& lhs,
 				   Relation_Symbol relsym,
 				   const Linear_Expression& rhs);
+
+  /*!
+    \brief
+    Assigns to \p *this the image of \p *this with respect to the
+    \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
+    \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
+         \leq \mathrm{var}'
+           \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+
+    \param var
+    The variable updated by the affine relation;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void bounded_affine_image(Variable var,
+			    const Linear_Expression& lb_expr,
+			    const Linear_Expression& ub_expr,
+			    Coefficient_traits::const_reference denominator
+			    = Coefficient_one());
+
+  /*!
+    \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
+    \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
+         \leq \mathrm{var}'
+           \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+
+    \param var
+    The variable updated by the affine relation;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void bounded_affine_preimage(Variable var,
+			       const Linear_Expression& lb_expr,
+			       const Linear_Expression& ub_expr,
+			       Coefficient_traits::const_reference denominator
+			       = Coefficient_one());
   /*! \brief
     Assigns to \p *this the result of computing the
     \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.

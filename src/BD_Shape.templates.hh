@@ -2529,6 +2529,250 @@ BD_Shape<T>::affine_preimage(const Variable var,
 
 template <typename T>
 void
+BD_Shape<T>
+::bounded_affine_image(const Variable var,
+		       const Linear_Expression& lb_expr,
+		       const Linear_Expression& ub_expr,
+		       Coefficient_traits::const_reference denominator) {
+  using Implementation::BD_Shapes::div_round_up;
+
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_generic("bounded_affine_image(v, lb, ub, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  // `var' should be one of the dimensions of the BD_Shape.
+  const dimension_type bds_space_dim = space_dimension();
+  const dimension_type v = var.id() + 1;
+  if (v > bds_space_dim)
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
+				 "v", var);
+  // The dimension of `lb_expr' and `ub_expr' should not be
+  // greater than the dimension of `*this'.
+  const dimension_type lb_space_dim = lb_expr.space_dimension();
+  if (bds_space_dim < lb_space_dim)
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+				 "lb", lb_expr);
+  const dimension_type ub_space_dim = ub_expr.space_dimension();
+  if (bds_space_dim < ub_space_dim)
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+				 "ub", ub_expr);
+
+  // Any image of an empty BDS is empty.
+  shortest_path_closure_assign();
+  if (marked_empty())
+    return;
+
+  const Coefficient& b = ub_expr.inhomogeneous_term();
+  // Number of non-zero coefficients in `ub_expr': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type t = 0;
+  // Index of the last non-zero coefficient in `ub_expr', if any.
+  dimension_type w = 0;
+  // Get information about the number of non-zero coefficients in `expr'.
+  for (dimension_type i = ub_space_dim; i-- > 0; )
+    if (ub_expr.coefficient(Variable(i)) != 0)
+      if (t++ == 1)
+	break;
+      else
+	w = i+1;
+
+  // Now we know the form of `ub_expr':
+  // - If t == 0, then ub_expr == b, with `b' a constant;
+  // - If t == 1, then ub_expr == a*w + b, where `w' can be `v' or another
+  //   variable; in this second case we have to check whether `a' is
+  //   equal to `denominator' or `-denominator', since otherwise we have
+  //   to fall back on the general form;
+  // - If t == 2, the `ub_expr' is of the general form.
+  TEMP_INTEGER(minus_den);
+  neg_assign(minus_den, denominator);
+
+  if (t == 0) {
+    // Case 1: ub_expr == b.
+    generalized_affine_image(var,
+			     GREATER_THAN_OR_EQUAL,
+			     lb_expr,
+			     denominator);
+    // Add the constraint `var <= b/denominator'.
+    add_dbm_constraint(0, v, b, denominator);
+    assert(OK());
+    return;
+  }
+
+  if (t == 1) {
+    // Value of the one and only non-zero coefficient in `ub_expr'.
+    const Coefficient& a = ub_expr.coefficient(Variable(w-1));
+    if (a == denominator || a == minus_den) {
+      // Case 2: expr == a*w + b, with a == +/- denominator.
+      if (w == v) {
+	// Here `var' occurs in `ub_expr'.
+	// To ease the computation, we add an additional dimension.
+	const Variable new_var = Variable(bds_space_dim);
+	add_space_dimensions_and_embed(1);
+	// Constrain the new dimension to be equal to `ub_expr'.
+	affine_image(new_var, ub_expr, denominator);
+	// NOTE: enforce shortest-path closure for precision.
+	shortest_path_closure_assign();
+	assert(!marked_empty());
+	// Apply the affine lower bound.
+	generalized_affine_image(var,
+				 GREATER_THAN_OR_EQUAL,
+				 lb_expr,
+				 denominator);
+	// Now apply the affine upper bound, as recorded in `new_var'.
+	add_constraint_and_minimize(var <= new_var);
+	// Remove the temporarily added dimension.
+	remove_higher_space_dimensions(bds_space_dim);
+	return;
+      }
+      else {
+	// Here `w != v', so that `expr' is of the form
+	// +/-denominator * w + b.
+	// Apply the affine lower bound.
+	generalized_affine_image(var,
+				 GREATER_THAN_OR_EQUAL,
+				 lb_expr,
+				 denominator);
+	if (a == denominator) {
+	  // Add the new constraint `v - w == b/denominator'.
+	  add_dbm_constraint(w, v, b, denominator);
+	}
+	else {
+	  // Here a == -denominator, so that we should be adding
+	  // the constraint `v + w == b/denominator'.
+	  // Approximate it by computing lower and upper bounds for `w'.
+	  const N& dbm_w0 = dbm[w][0];
+	  if (!is_plus_infinity(dbm_w0)) {
+	    // Add the constraint `v <= b/denominator - lower_w'.
+	    N d;
+	    div_round_up(d, b, denominator);
+	    add_assign_r(dbm[0][v], d, dbm_w0, ROUND_UP);
+	    status.reset_shortest_path_closed();
+	  }
+	}
+	assert(OK());
+	return;
+      }
+    }
+  }
+
+  // General case.
+  // Either t == 2, so that
+  // ub_expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2,
+  // or t == 1, ub_expr == a*w + b, but a <> +/- denominator.
+  // We will remove all the constraints on `var' and add back
+  // constraints providing upper and lower bounds for `var'.
+
+  // Compute upper approximations for `ub_expr' into `pos_sum'
+  // taking into account the sign of `denominator'.
+  const bool is_sc = (denominator > 0);
+  TEMP_INTEGER(minus_b);
+  neg_assign(minus_b, b);
+  const Coefficient& sc_b = is_sc ? b : minus_b;
+  const Coefficient& sc_den = is_sc ? denominator : minus_den;
+  const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+  // NOTE: here, for optimization purposes, `minus_expr' is only assigned
+  // when `denominator' is negative. Do not use it unless you are sure
+  // it has been correctly assigned.
+  Linear_Expression minus_expr;
+  if (!is_sc)
+    minus_expr = -ub_expr;
+  const Linear_Expression& sc_expr = is_sc ? ub_expr : minus_expr;
+
+  N pos_sum;
+  // Index of the variable that are unbounded in `this->dbm'.
+  // (The initializations are just to quiet a compiler warning.)
+  dimension_type pos_pinf_index = 0;
+  // Number of unbounded variables found.
+  dimension_type pos_pinf_count = 0;
+
+  // Approximate the inhomogeneous term.
+  assign_r(pos_sum, sc_b, ROUND_UP);
+
+  // Approximate the homogeneous part of `sc_expr'.
+  // Note: indices above `w' can be disregarded, as they all have
+  // a zero coefficient in `sc_expr'.
+  const DB_Row<N>& dbm_0 = dbm[0];
+  for (dimension_type i = w; i > 0; --i) {
+    const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
+    const int sign_i = sgn(sc_i);
+    if (sign_i > 0) {
+      N coeff_i;
+      assign_r(coeff_i, sc_i, ROUND_UP);
+      // Approximating `sc_expr'.
+      if (pos_pinf_count <= 1) {
+	const N& up_approx_i = dbm_0[i];
+	if (!is_plus_infinity(up_approx_i))
+	  add_mul_assign_r(pos_sum, coeff_i, up_approx_i, ROUND_UP);
+	else {
+	  ++pos_pinf_count;
+	  pos_pinf_index = i;
+	}
+      }
+    }
+    else if (sign_i < 0) {
+      TEMP_INTEGER(minus_sc_i);
+      neg_assign(minus_sc_i, sc_i);
+      N minus_coeff_i;
+      assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
+      // Approximating `sc_expr'.
+      if (pos_pinf_count <= 1) {
+	const N& up_approx_minus_i = dbm[i][0];
+	if (!is_plus_infinity(up_approx_minus_i))
+	  add_mul_assign_r(pos_sum,
+			   minus_coeff_i, up_approx_minus_i, ROUND_UP);
+	else {
+	  ++pos_pinf_count;
+	  pos_pinf_index = i;
+	}
+      }
+    }
+  }
+  // Apply the affine lower bound.
+  generalized_affine_image(var,
+			   GREATER_THAN_OR_EQUAL,
+			   lb_expr,
+			   denominator);
+  // Return immediately if no approximation could be computed.
+  if (pos_pinf_count > 1) {
+    return;
+  }
+
+  // In the following, shortest-path closure will be definitely lost.
+  status.reset_shortest_path_closed();
+
+  // Before computing quotients, the denominator should be approximated
+  // towards zero. Since `sc_den' is known to be positive, this amounts to
+  // rounding downwards, which is achieved as usual by rounding upwards
+  // `minus_sc_den' and negating again the result.
+  N down_sc_den;
+  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+  neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
+
+  // Exploit the upper approximation, if possible.
+  if (pos_pinf_count <= 1) {
+    // Compute quotient (if needed).
+    if (down_sc_den != 1)
+      div_assign_r(pos_sum, pos_sum, down_sc_den, ROUND_UP);
+    // Add the upper bound constraint, if meaningful.
+    if (pos_pinf_count == 0) {
+      // Add the constraint `v <= pos_sum'.
+      assign_r(dbm[0][v], pos_sum, ROUND_UP);
+      // Deduce constraints of the form `v - u', where `u != v'.
+      deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
+    }
+    else
+      // Here `pos_pinf_count == 1'.
+      if (pos_pinf_index != v
+	  && sc_expr.coefficient(Variable(pos_pinf_index-1)) == sc_den)
+	// Add the constraint `v - pos_pinf_index <= pos_sum'.
+	assign_r(dbm[pos_pinf_index][v], pos_sum, ROUND_UP);
+  }
+  assert(OK());
+}
+
+template <typename T>
+void
 BD_Shape<T>::generalized_affine_image(const Variable var,
 				      const Relation_Symbol relsym,
 				      const Linear_Expression& expr,
