@@ -53,6 +53,7 @@ bgp99extrapolation1 \
 bhmz05widening1 \
 bhz03widening1 \
 bounded1 \
+boundedaffineimage1 \
 cc76narrowing1 \
 cc76extrapolation1 \
 closure1 \
@@ -150,6 +151,8 @@ bhmz05widening1_SOURCES = bhmz05widening1.cc
 bhz03widening1_SOURCES = bhz03widening1.cc
 
 bounded1_SOURCES = bounded1.cc
+
+boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 
 cc76narrowing1_SOURCES = cc76narrowing1.cc
 
