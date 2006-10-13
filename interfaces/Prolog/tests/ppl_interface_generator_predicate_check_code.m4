@@ -88,30 +88,30 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_test :-
     ppl_@CLASS@_equals_@CLASS@(PS, PS1),
     ppl_delete_@CLASS@(PS),
     ppl_delete_@CLASS@(PS1),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(Box, 0),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box, 0),
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [i(x, c(1/2)), i(c(0), o(pinf))], _),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [i(x(minf), c(1/2)), i(c(0), o(pinf))], _),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [i(o(minf), c(1/2)), i(c(0), c(pinf))], _),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [i(c(minf), c(1/2)), i(c(0), o(pinf))], _),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [i(o(minf), c(inf)), i(c(0), o(pinf))], _),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [i(c(minf), c(1+2)), i(c(0), o(pinf))], _),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [i(c(minf), c(n/2)), i(c(0), o(pinf))], _),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [i(c(minf), c(2/d)), i(c(0), o(pinf))], _),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [i(c(minf), c(2/1)), i(c(n), o(pinf))], _),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [i(e), i(c(n), o(pinf))], _),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [i(c(minf), c(2/1), c(1)), i(c(n), o(pinf))], _),
-    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(
+    \+ clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(
              [x(c(minf), c(2/1)), i(c(n), o(pinf))], _)
    ->
     fail ; true)
