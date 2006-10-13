@@ -190,7 +190,16 @@ m4_ifelse($#, 0, ,
 dnl
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_replace_all_patterns_in_string($1,
-  m4_add_extra_class_code($1),
+  m4_add_topology_class_code($1),
+  m4_pattern_list)`'dnl
+m4_replace_all_patterns_in_string($1,
+  m4_add_cleanup_class_code($1),
+  m4_pattern_list)`'dnl
+m4_replace_all_patterns_in_string($1,
+  m4_add_out_class_code($1),
+  m4_pattern_list)`'dnl
+m4_replace_all_patterns_in_string($1,
+  m4_add_out_extra_class_code($1),
   m4_pattern_list)`'dnl
 m4_extras($1, m4_procedure_list)
 ')`'dnl

@@ -1,16 +1,19 @@
 m4_define(`dnl', `m4_dnl')
 dnl This file contains the schematic tests for the Prolog interface predicates.
 dnl
-m4_define(`m4_add_extra_class_code', `dnl
+m4_define(`m4_add_topology_class_code', `dnl
 m4_ifelse(m4_cplusplus_class$1, Polyhedron,
   `
 clean_ppl_new_Polyhedron_from_space_dimension(Dim, UorE, PS) :-
     clean_ppl_new_C_Polyhedron_from_space_dimension(Dim, UorE, PS).
 ')
 
+')
+
+m4_define(`m4_add_cleanup_class_code', `dnl
 ppl_cleanup_@CLASS@(_).
 ppl_cleanup_@CLASS@(P) :-
-  (ppl_delete_@CLASS@(P), fail).
+  (out_@CLASS@(P), ppl_delete_@CLASS@(P), fail).
 
 ppl_cleanup_all_@CLASS@([]).
 ppl_cleanup_all_@CLASS@([_|_]).
@@ -21,6 +24,21 @@ ppl_delete_all_@CLASS@([]).
 ppl_delete_all_@CLASS@([P|Ps]) :-
   (ppl_delete_@CLASS@(P),
   ppl_delete_all_@CLASS@(Ps)).
+
+')
+
+m4_define(`m4_add_out_class_code', `dnl
+out_@CLASS@(P):-
+  ((noisy(N), N < 2) -> true ;
+    ppl_@CLASS@_get_@GET_REPRESENT@s(P, RS),
+    nl, write(RS), nl,
+    fail
+  ).
+
+')
+
+m4_define(`m4_add_out_extra_class_code', `dnl
+out_@CLASS@(_P).
 
 ')
 

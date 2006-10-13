@@ -4,6 +4,45 @@
 %                                                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+:- dynamic(noisy/1).
+
+% check_noisy
+% This also executes all the test predicates but also prints some messages
+% including the banner, version numbers and expected output from
+% the exception tests.
+
+check_noisy :-
+   make_noisy,
+   check_all,
+   make_quiet.
+
+check_extra_noisy :-
+   make_extra_noisy,
+   check_all,
+   make_quiet.
+
+%%%%%%%%%%%% predicates for switching on/off output messages %
+
+make_extra_noisy :-
+  (retract(noisy(_)) ->
+      make_extra_noisy
+  ;
+      assertz(noisy(2))
+  ).
+
+make_noisy :-
+  (retract(noisy(_)) ->
+      make_noisy
+  ;
+      assertz(noisy(1))
+  ).
+
+make_quiet :-
+  (retract(noisy(_)) ->
+      make_quiet
+   ; assertz(noisy(0))
+  ).
+
 % make_var_list(+I,+Dimension,?Variable_List)
 % constructs a list of variables with indices from I to Dimension - 1.
 % It is assumed that I =< Dimension.
