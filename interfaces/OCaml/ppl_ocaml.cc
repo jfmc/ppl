@@ -89,7 +89,7 @@ build_Linear_Expression(value e) {
   case 1: {
     // Coefficient
     mpz_class z((__mpz_struct*) Data_custom_val(Field(e, 0)));
-    return Linear_Expression(Coefficient(z.get_mpz_t()));
+    return Linear_Expression(Coefficient(z));
   }
   case 2:
     // Unary_Plus
@@ -108,7 +108,7 @@ build_Linear_Expression(value e) {
   case 6: {
     // Times
     mpz_class z((__mpz_struct*) Data_custom_val(Field(e, 0)));
-    return Coefficient(z.get_mpz_t()) * build_Linear_Expression(Field(e, 1));
+    return Coefficient(z) * build_Linear_Expression(Field(e, 1));
   }
   default:
     caml_invalid_argument("Error building PPL::Linear_Expression");
@@ -153,13 +153,13 @@ build_Generator(value g) {
     // Point
     mpz_class z((__mpz_struct*) Data_custom_val(Field(g, 1)));
     return Generator::point(build_Linear_Expression(Field(g, 0)),
-			    Coefficient(z.get_mpz_t()) );
+			    Coefficient(z));
   }
   case 3: {
     // Closure_point
     mpz_class z((__mpz_struct*) Data_custom_val(Field(g, 1)));
     return Generator::closure_point(build_Linear_Expression(Field(g, 0)),
-				    Coefficient(z.get_mpz_t()) );
+				    Coefficient(z));
   }
   default:
     caml_invalid_argument("Error building PPL::Constraint");
