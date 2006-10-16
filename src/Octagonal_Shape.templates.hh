@@ -91,7 +91,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
   // If `complexity' allows it, use simplex to derive the exact (modulo
   // the fact that our OSs are topologically closed) variable bounds.
   if (complexity == SIMPLEX_COMPLEXITY) {
-    LP_Problem lp(num_dimensions);
+    MIP_Problem lp(num_dimensions);
     lp.set_optimization_mode(MAXIMIZATION);
 
     const Constraint_System& ph_cs = ph.constraints();
@@ -124,7 +124,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
       Variable x(i);
       // Evaluate optimal upper bound for `x <= ub'.
       lp.set_objective_function(x);
-      if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+      if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, num, den);
 	num *= 2;
@@ -134,7 +134,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
       for (dimension_type j = 0; j < i; ++j) {
 	Variable y(j);
 	lp.set_objective_function(x + y);
-	if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+	if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	  g = lp.optimizing_point();
 	  lp.evaluate_objective_function(g, num, den);
 	  div_round_up(matrix[2*i+1][2*j], num, den);
@@ -146,7 +146,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
 	  continue;
 	Variable y(j);
 	lp.set_objective_function(x - y);
-	if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+	if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	  g = lp.optimizing_point();
 	  lp.evaluate_objective_function(g, num, den);
 	  div_round_up((i < j ? matrix[2*j][2*i] : matrix[2*i+1][2*j+1]),
@@ -159,7 +159,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
 	  continue;
 	Variable y(j);
 	lp.set_objective_function(x - y);
-	if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+	if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	  g = lp.optimizing_point();
 	  lp.evaluate_objective_function(g, num, den);
 	  div_round_up((i < j ? matrix[2*j][2*i] : matrix[2*i+1][2*j+1]),
@@ -170,7 +170,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
       for (dimension_type j = 0; j < i; ++j) {
 	Variable y(j);
 	lp.set_objective_function(-x - y);
-	if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+	if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	  g = lp.optimizing_point();
 	  lp.evaluate_objective_function(g, num, den);
  	  div_round_up(matrix[2*i][2*j+1], num, den);
@@ -178,7 +178,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
       }
       // Evaluate optimal upper bound for `-x <= ub'.
       lp.set_objective_function(-x);
-      if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+      if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, num, den);
 	num *= 2;
@@ -448,6 +448,9 @@ template <typename T>
 dimension_type
 Octagonal_Shape<T>::affine_dimension() const {
   const dimension_type n_rows = matrix.num_rows();
+  // A zero-space-dim shape always has affine dimension zero.
+  if (n_rows == 0)
+    return 0;
 
   // Strong closure is necessary to detect emptiness
   // and all (possibly implicit) equalities.
