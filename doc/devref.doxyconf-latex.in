@@ -127,10 +127,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Linear_System.defs.hh \
                          @srcdir@/../src/Linear_System.inlines.hh \
                          @srcdir@/../src/Linear_System.cc \
-                         @srcdir@/../src/LP_Problem.types.hh \
-                         @srcdir@/../src/LP_Problem.defs.hh \
-                         @srcdir@/../src/LP_Problem.inlines.hh \
-                         @srcdir@/../src/LP_Problem.cc \
+                         @srcdir@/../src/MIP_Problem.types.hh \
+                         @srcdir@/../src/MIP_Problem.defs.hh \
+                         @srcdir@/../src/MIP_Problem.inlines.hh \
+                         @srcdir@/../src/MIP_Problem.cc \
                          @srcdir@/../src/Saturation_Row.types.hh \
                          @srcdir@/../src/Saturation_Row.defs.hh \
                          @srcdir@/../src/Saturation_Row.inlines.hh \
@@ -270,10 +270,6 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Pointset_Ask_Tell.templates.hh \
                          @srcdir@/../src/Pointset_Ask_Tell.cc \
                          @srcdir@/../src/algorithms.hh \
-                         @srcdir@/../src/LP_Problem.types.hh \
-                         @srcdir@/../src/LP_Problem.defs.hh \
-                         @srcdir@/../src/LP_Problem.inlines.hh \
-                         @srcdir@/../src/LP_Problem.cc \
                          @srcdir@/../src/DB_Row.types.hh \
                          @srcdir@/../src/DB_Row.defs.hh \
                          @srcdir@/../src/DB_Row.inlines.hh \
