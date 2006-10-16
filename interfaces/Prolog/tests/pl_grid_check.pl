@@ -2040,10 +2040,10 @@ delete_all_ppl_Polyhedra([P|Ps]) :-
   ppl_delete_Polyhedron(P),
   delete_all_ppl_Polyhedra(Ps).
 
-cleanup_ppl_LP_Problem(_).
-cleanup_ppl_LP_Problem(LP) :-
-  out(lp, LP),
-  ppl_delete_LP_Problem(LP), fail.
+cleanup_ppl_MIP_Problem(_).
+cleanup_ppl_MIP_Problem(MIP) :-
+  out(mip, MIP),
+  ppl_delete_MIP_Problem(MIP), fail.
 
 cleanup_ppl_Grid(_).
 cleanup_ppl_Grid(GR) :-
@@ -2063,11 +2063,11 @@ out(gs, P):-
     nl, write(GS), nl
   ).
 
-out(lp, LP):-
+out(mip, MIP):-
   ((noisy(N), N < 2) -> true ;
-    ppl_LP_Problem_constraints(LP, CS),
-    ppl_LP_Problem_objective_function(LP, Obj),
-    ppl_LP_Problem_optimization_mode(LP, Opt),
+    ppl_MIP_Problem_constraints(MIP, CS),
+    ppl_MIP_Problem_objective_function(MIP, Obj),
+    ppl_MIP_Problem_optimization_mode(MIP, Opt),
     nl,
     write(' constraint system is: '), write(CS), nl,
     write(' objective function is: '), write(Obj), nl,
