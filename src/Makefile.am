@@ -131,7 +131,6 @@ Generator_System.types.hh \
 Grid_Generator_System.types.hh \
 Congruence_System.types.hh \
 Scalar_Products.types.hh \
-LP_Problem.types.hh \
 MIP_Problem.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
@@ -225,9 +224,6 @@ Grid_Generator_System.inlines.hh \
 Congruence_System.inlines.hh \
 Scalar_Products.defs.hh \
 Scalar_Products.inlines.hh \
-LP_Problem.defs.hh \
-LP_Problem.inlines.hh \
-LP_Problem.templates.hh \
 MIP_Problem.defs.hh \
 MIP_Problem.inlines.hh \
 MIP_Problem.templates.hh \
@@ -330,7 +326,6 @@ Linear_Expression.cc \
 Linear_System.cc \
 Matrix.cc \
 Scalar_Products.cc \
-LP_Problem.cc \
 MIP_Problem.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
