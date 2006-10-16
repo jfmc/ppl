@@ -748,7 +748,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
     : PPL_OPTIMIZATION_MODE_MINIMIZATION;
 
   ppl_Constraint_System_space_dimension(cs, &space_dim);
-  ppl_new_MIP_Problem_from_dimension(&ppl_mip, space_dim);
+  ppl_new_MIP_Problem_from_space_dimension(&ppl_mip, space_dim);
   ppl_MIP_Problem_set_objective_function(ppl_mip, objective);
   ppl_MIP_Problem_set_optimization_mode(ppl_mip, mode);
   if (!no_mip)
@@ -791,7 +791,7 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
   }
 
   if (print_timings) {
-    fprintf(stderr, "Time to solve the LP problem: ");
+    fprintf(stderr, "Time to solve the problem: ");
     print_clock(stderr);
     fprintf(stderr, " s\n");
     start_clock();
