@@ -278,25 +278,13 @@ test10() {
 
 bool
 test11() {
-  TBD_Shape bd1(0, UNIVERSE);
+  TBD_Shape bd(0, UNIVERSE);
 
-  Constraint_System cs = bd1.constraints();
-
-  TBD_Shape bd(cs);
+  const dimension_type affine_dim = bd.affine_dimension();
 
   print_constraints(bd, "*** bd ***");
 
-  dimension_type affine_dim = bd.affine_dimension();
-
-  nout << endl
-       << "The affine dimension of a system of `bd' "
-       << endl
-       << affine_dim
-       << endl;
-
-   bool ok = (affine_dim == 0);
-
-  return ok;
+  return (affine_dim == 0);
 }
 
 } // namespace

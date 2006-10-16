@@ -276,6 +276,17 @@ test10() {
   return ok;
 }
 
+bool
+test11() {
+  TOctagonal_Shape oct(0, UNIVERSE);
+
+  const dimension_type affine_dim = oct.affine_dimension();
+
+  print_constraints(oct, "*** oct ***");
+
+  return affine_dim == 0;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -289,5 +300,6 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN
 
