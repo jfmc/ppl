@@ -878,7 +878,7 @@ AC_CONFIG_FILES(Makefile
                 tests/Ask_Tell/Makefile
                 tests/BD_Shape/Makefile
                 tests/Grid/Makefile
-                tests/LP_Problem/Makefile
+                tests/MIP_Problem/Makefile
                 tests/Octagonal_Shape/Makefile
                 tests/Polyhedron/Makefile
                 utils/Makefile
