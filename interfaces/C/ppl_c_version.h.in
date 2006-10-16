@@ -1,3 +1,5 @@
+/*! \file ppl_c_version.h */
+
 /*! \brief
   A string containing the PPL version.
 
