@@ -15,13 +15,14 @@ o  The new class Octagonal_Shape provides an implementation of the domain
    by Roberto Bagnara, Patricia Hill, Elena Mazzi and Enea Zaffanella in
    their SAS 2005 paper.
 
-o  Added support for the incremental solution of LP problems: it is now
+o  The class LP_Problem has been renamed MIP_Problem and now supports
+   the solution of Mixed Integer (Linear) Programming problems. Also
+   added support for the incremental solution of MIP problems: it is now
    possible to add new space dimensions or new constraints to the
    feasible region, as well as change the objective function and the
    optimization mode, while still exploiting some of the computational
    work done before these changes. See the documentation of class
-   LP_Problem for a detailed description of a couple of changes to the
-   public interface.
+   MIP_Problem for a detailed description of the public interface.
 
 o  contains_integer_point() ...
 
