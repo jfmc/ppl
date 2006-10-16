@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Interval.defs.hh"
 #include "Generator.defs.hh"
-#include "LP_Problem.defs.hh"
 #include "compiler.hh"
 #include <algorithm>
 #include <deque>
