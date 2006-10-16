@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Interval.defs.hh"
 #include "Generator.defs.hh"
-#include "LP_Problem.defs.hh"
+#include "MIP_Problem.defs.hh"
 #include <algorithm>
 #include <deque>
 
@@ -144,12 +144,12 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  box.set_empty();
 	  return;
 	}
-      // If `complexity' allows it, use the LP_Problem solver to determine
+      // If `complexity' allows it, use the MIP_Problem solver to determine
       // whether or not the polyhedron is empty.
       if (complexity == SIMPLEX_COMPLEXITY
 	  // TODO: find a workaround for NNC polyhedra.
 	  && is_necessarily_closed()) {
-	LP_Problem lp(con_sys.space_dimension(), con_sys);
+	MIP_Problem lp(con_sys.space_dimension(), con_sys);
 	if (!lp.is_satisfiable()) {
 	  box.set_empty();
 	  return;

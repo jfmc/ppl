@@ -1203,7 +1203,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     // then we have to check whether such an upper bound is implied
     // by the remaining constraints (exploiting the simplex algorithm).
     if (!found_eps_leq_one) {
-      LP_Problem lp;
+      MIP_Problem lp;
       // KLUDGE: temporarily mark the constraint system as if it was
       // necessarily closed, so that we can interpret the epsilon
       // dimension as a standard dimension. Be careful to reset the
@@ -1221,11 +1221,11 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // The objective function is `epsilon'.
       lp.set_objective_function(Variable(x.space_dim));
       lp.set_optimization_mode(MAXIMIZATION);
-      LP_Problem_Status status = lp.solve();
-      assert(status != UNFEASIBLE_LP_PROBLEM);
+      MIP_Problem_Status status = lp.solve();
+      assert(status != UNFEASIBLE_MIP_PROBLEM);
       // If the epsilon dimension is actually unbounded,
       // then add the eps_leq_one constraint.
-      if (status == UNBOUNDED_LP_PROBLEM)
+      if (status == UNBOUNDED_MIP_PROBLEM)
 	cs.insert(Constraint::epsilon_leq_one());
     }
   }
