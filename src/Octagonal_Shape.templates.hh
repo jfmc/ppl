@@ -445,6 +445,34 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
 }
 
 template <typename T>
+void
+Octagonal_Shape<T>::add_constraints(const Constraint_System& cs) {
+  Constraint_System::const_iterator i_end = cs.end();
+  for (Constraint_System::const_iterator i = cs.begin(); i != i_end; ++i)
+    add_constraint(*i);
+}
+
+template <typename T>
+bool
+Octagonal_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
+  bool was_closed = marked_strongly_closed();
+  add_constraint(c);
+  // If the OS was strongly closed and we add a single constraint,
+  // it is convenient to use the incremental strong-closure algorithm,
+  // as we known that the constraint has affected two variables at most.
+  // (The cost is O(n^2) instead of O(n^3).)
+  if (was_closed)
+    for (dimension_type i = c.space_dimension(); i-- > 0;)
+      if (c.coefficient(Variable(i)) != 0) {
+	incremental_strong_closure_assign(Variable(i));
+	break;
+      }
+  else
+    strong_closure_assign();
+  return !(marked_empty());
+}
+
+template <typename T>
 dimension_type
 Octagonal_Shape<T>::affine_dimension() const {
   const dimension_type n_rows = matrix.num_rows();
@@ -2630,6 +2658,50 @@ Octagonal_Shape<T>
 
 template <typename T>
 void
+Octagonal_Shape<T>
+::forget_all_octagonal_constraints(const dimension_type v_id) {
+  assert(v_id < space_dim);
+  const dimension_type n_v = 2*v_id;
+  typename OR_Matrix<N>::row_iterator m_iter = matrix.row_begin() + n_v;
+  typename OR_Matrix<N>::row_reference_type r_v = *m_iter;
+  typename OR_Matrix<N>::row_reference_type r_cv = *(++m_iter);
+  for (dimension_type h = m_iter.row_size(); h-- > 0; ) {
+    r_v[h] = PLUS_INFINITY;
+    r_cv[h] = PLUS_INFINITY;
+  }
+  ++m_iter;
+  for (typename OR_Matrix<N>::row_iterator m_end = matrix.row_end();
+       m_iter != m_end; ++m_iter) {
+    typename OR_Matrix<N>::row_reference_type r = *m_iter;
+    r[n_v] = PLUS_INFINITY;
+    r[n_v+1] = PLUS_INFINITY;
+  }
+}
+
+template <typename T>
+void
+Octagonal_Shape<T>
+::forget_binary_octagonal_constraints(const dimension_type v_id) {
+  assert(v_id < space_dim);
+  const dimension_type n_v = 2*v_id;
+  typename OR_Matrix<N>::row_iterator m_iter = matrix.row_begin() + n_v;
+  typename OR_Matrix<N>::row_reference_type r_v = *m_iter;
+  typename OR_Matrix<N>::row_reference_type r_cv = *(++m_iter);
+  for (dimension_type k = n_v; k-- > 0; ) {
+    r_v[k] = PLUS_INFINITY;
+    r_cv[k] = PLUS_INFINITY;
+  }
+  ++m_iter;
+  for (typename OR_Matrix<N>::row_iterator m_end = matrix.row_end();
+       m_iter != m_end; ++m_iter) {
+    typename OR_Matrix<N>::row_reference_type r = *m_iter;
+    r[n_v] = PLUS_INFINITY;
+    r[n_v+1] = PLUS_INFINITY;
+  }
+}
+
+template <typename T>
+void
 Octagonal_Shape<T>::affine_image(const Variable var,
 				 const Linear_Expression& expr,
 				 Coefficient_traits::const_reference
@@ -3819,6 +3891,296 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 
   assert(OK());
 }
+
+template <typename T>
+void
+Octagonal_Shape<T>::bounded_affine_image(const Variable var,
+					 const Linear_Expression& lb_expr,
+					 const Linear_Expression& ub_expr,
+					 Coefficient_traits::const_reference
+					 denominator) {
+  using Implementation::BD_Shapes::div_round_up;
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_generic("bounded_affine_image(v, lb, ub, d)", "d == 0");
+
+  // `var' should be one of the dimensions of the octagon.
+  const dimension_type var_id = var.id();
+  if (space_dim < var_id + 1)
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
+				 var.id()+1);
+
+  // The dimension of `lb_expr' and `ub_expr' should not be
+  // greater than the dimension of `*this'.
+  const dimension_type lb_space_dim = lb_expr.space_dimension();
+  if (space_dim < lb_space_dim)
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+				 "lb", lb_expr);
+  const dimension_type ub_space_dim = ub_expr.space_dimension();
+  if (space_dim < ub_space_dim)
+    throw_dimension_incompatible("bounded_affine_image(v, lb, ub)",
+				 "ub", ub_expr);
+
+  strong_closure_assign();
+  // The image of an empty octagon is empty too.
+  if (marked_empty())
+    return;
+
+  // Number of non-zero coefficients in `lb_expr': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type t = 0;
+  // Variable-index of the last non-zero coefficient in `lb_expr', if any.
+  dimension_type w_id = 0;
+
+  // Get information about the number of non-zero coefficients in `lb_expr'.
+  // The `expr' must not be in two or plus variables.
+  for (dimension_type i = lb_space_dim; i-- > 0; )
+    if (lb_expr.coefficient(Variable(i)) != 0)
+      if (t++ == 1)
+	break;
+      else
+	w_id = i;
+
+  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
+
+  const Row_Iterator m_begin = matrix.row_begin();
+  const Row_Iterator m_end = matrix.row_end();
+  const dimension_type n_var = 2*var_id;
+  const Coefficient& b = lb_expr.inhomogeneous_term();
+  TEMP_INTEGER(minus_den);
+  neg_assign_r(minus_den, denominator, ROUND_NOT_NEEDED);
+
+  // `w' is the variable with index `w_id'.
+  // Now we know the form of `lb_expr':
+  // - If t == 0, then lb_expr == b, with `b' a constant;
+  // - If t == 1, then lb_expr == a*w + b, where `w' can be `v' or another
+  //   variable; in this second case we have to check whether `a' is
+  //   equal to `denominator' or `-denominator', since otherwise we have
+  //   to fall back on the general form;
+  // - If t == 2, the `lb_expr' is of the general form.
+
+  if (t == 0) {
+    // Case 1: lb_expr == b.
+    generalized_affine_image(var,
+			     LESS_THAN_OR_EQUAL,
+			     ub_expr,
+			     denominator);
+    TEMP_INTEGER(two_b);
+    two_b = 2*b;
+    // Add the constraint `var >= b/denominator'.
+    add_octagonal_constraint(n_var, n_var+1, two_b, minus_den);
+    assert(OK());
+    return;
+  }
+
+  if (t == 1) {
+    // The one and only non-zero homogeneous coefficient in `lb_expr'.
+    const Coefficient& w_coeff = lb_expr.coefficient(Variable(w_id));
+    if (w_coeff == denominator || w_coeff == minus_den) {
+      // Case 2: lb_expr = w_coeff*w + b, with w_coeff = +/- denominator.
+     if (w_id == var_id) {
+	// Here `var' occurs in `lb_expr'.
+	// To ease the computation, we add an additional dimension.
+	const Variable new_var = Variable(space_dim);
+	add_space_dimensions_and_embed(1);
+	// Constrain the new dimension to be equal to `lb_expr'.
+	// Here `lb_expr' is of the form: +/- denominator * v + b.
+	affine_image(new_var, lb_expr, denominator);
+	// Enforce the strong closure for precision.
+	strong_closure_assign();
+	assert(!marked_empty());
+	// Apply the affine upper bound.
+	generalized_affine_image(var,
+				 LESS_THAN_OR_EQUAL,
+				 ub_expr,
+				 denominator);
+	// Now apply the affine lower bound, as recorded in `new_var'
+  	add_constraint_and_minimize(var >= new_var);
+	// Remove the temporarily added dimension.
+	remove_higher_space_dimensions(space_dim-1);
+	return;
+      }
+      else {
+	// Apply the affine upper bound.
+	generalized_affine_image(var,
+				 LESS_THAN_OR_EQUAL,
+				 ub_expr,
+				 denominator);
+	// Here `w != var', so that `lb_expr' is of the form
+	// +/-denominator * w + b.
+	const dimension_type n_w = 2*w_id;
+	// Add the new constraint `var - w >= b/denominator'.
+	if (w_coeff == denominator)
+	  if (var_id < w_id)
+	    add_octagonal_constraint(n_w+1, n_var+1, b, minus_den);
+	  else
+	    add_octagonal_constraint(n_var, n_w, b, minus_den);
+	else {
+	  // Add the new constraint `var + w >= b/denominator'.
+	  if (var_id < w_id)
+	    add_octagonal_constraint(n_w, n_var+1, b, minus_den);
+	  else
+	    add_octagonal_constraint(n_var, n_w+1, b, minus_den);
+	}
+	assert(OK());
+	return;
+      }
+    }
+  }
+
+  // General case.
+  // Either t == 2, so that
+  // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2,
+  // or t == 1, expr == a*w + b, but a <> +/- denominator.
+  // We will remove all the constraints on `var' and add back
+  // constraints providing upper and lower bounds for `var'.
+
+  // Compute upper approximations for `expr' and `-expr'
+  // into `pos_sum' and `neg_sum', respectively, taking into account
+  // the sign of `denominator'.
+  // Note: approximating `-expr' from above and then negating the
+  // result is the same as approximating `expr' from below.
+  const bool is_sc = (denominator > 0);
+  TEMP_INTEGER(minus_b);
+  neg_assign_r(minus_b, b, ROUND_NOT_NEEDED);
+
+  const Coefficient& minus_sc_b = is_sc ? minus_b : b;
+  const Coefficient& sc_den = is_sc ? denominator : minus_den;
+  const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+  // NOTE: here, for optimization purposes, `minus_expr' is only assigned
+  // when `denominator' is negative. Do not use it unless you are sure
+  // it has been correctly assigned.
+  Linear_Expression minus_expr;
+  if (!is_sc)
+    minus_expr = -lb_expr;
+  const Linear_Expression& sc_expr = is_sc ? lb_expr : minus_expr;
+
+  N neg_sum;
+  // Indices of the variables that are unbounded in `this->matrix'.
+  // (The initializations are just to quiet a compiler warning.)
+  dimension_type neg_pinf_index = 0;
+  // Number of unbounded variables found.
+  dimension_type neg_pinf_count = 0;
+
+  // Approximate the inhomogeneous term.
+  assign_r(neg_sum, minus_sc_b, ROUND_UP);
+
+  // Approximate the homogeneous part of `sc_expr'.
+  // Note: indices above `w' can be disregarded, as they all have
+  // a zero coefficient in `sc_expr'.
+  for (Row_iterator m_iter = m_begin, m_iter_end = m_iter + (2*w_id) + 2;
+       m_iter != m_iter_end; ) {
+    const dimension_type n_i = m_iter.index();
+    const dimension_type id = n_i/2;
+    Row_reference m_i = *m_iter;
+    ++m_iter;
+    Row_reference m_ci = *m_iter;
+    ++m_iter;
+    const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
+    const int sign_i = sgn(sc_i);
+    if (sign_i > 0) {
+      N coeff_i;
+      assign_r(coeff_i, sc_i, ROUND_UP);
+      // Approximating `-sc_expr'.
+      if (neg_pinf_count <= 1) {
+	const N& double_up_approx_minus_i = m_i[n_i+1];
+	if (!is_plus_infinity(double_up_approx_minus_i)) {
+	  N up_approx_minus_i;
+	  div2exp_assign_r(up_approx_minus_i,
+			   double_up_approx_minus_i, 1, ROUND_UP);
+	  add_mul_assign_r(neg_sum, coeff_i, up_approx_minus_i, ROUND_UP);
+	}
+	else {
+	  ++neg_pinf_count;
+	  neg_pinf_index = id;
+	}
+      }
+    }
+    else if (sign_i < 0) {
+      TEMP_INTEGER(minus_sc_i);
+      neg_assign_r(minus_sc_i, sc_i, ROUND_NOT_NEEDED);
+      N minus_coeff_i;
+      assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
+      // Approximating `-sc_expr'.
+      if (neg_pinf_count <= 1) {
+	const N& double_up_approx_i = m_ci[n_i];
+	if (!is_plus_infinity(double_up_approx_i)) {
+	  N up_approx_i;
+	  div2exp_assign_r(up_approx_i, double_up_approx_i, 1, ROUND_UP);
+	  add_mul_assign_r(neg_sum, minus_coeff_i, up_approx_i, ROUND_UP);
+	}
+	else {
+	  ++neg_pinf_count;
+	  neg_pinf_index = id;
+	}
+      }
+    }
+  }
+
+  // Apply the affine upper bound.
+  generalized_affine_image(var,
+			   LESS_THAN_OR_EQUAL,
+			   ub_expr,
+			   denominator);
+
+  // Return immediately if no approximation could be computed.
+  if (neg_pinf_count > 1) {
+    return;
+  }
+
+  // In the following, strong closure will be definitely lost.
+  status.reset_strongly_closed();
+
+  // Before computing quotients, the denominator should be approximated
+  // towards zero. Since `sc_den' is known to be positive, this amounts to
+  // rounding downwards, which is achieved as usual by rounding upwards
+  // `minus_sc_den' and negating again the result.
+  N down_sc_den;
+  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+  neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
+
+  // Exploit the lower approximation, if possible.
+  if (neg_pinf_count <= 1) {
+    // Compute quotient (if needed).
+    if (down_sc_den != 1)
+      div_assign_r(neg_sum, neg_sum, down_sc_den, ROUND_UP);
+    // Add the lower bound constraint, if meaningful.
+    if (neg_pinf_count == 0) {
+      // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
+      N double_neg_sum = neg_sum;
+      mul2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
+      assign_r(matrix[n_var][n_var+1], double_neg_sum, ROUND_UP);
+      // Deduce constraints of the form `-v +/- u', where `u != v'.
+      deduce_minus_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, neg_sum);
+    }
+    else
+      // Here `neg_pinf_count == 1'.
+      if (neg_pinf_index != var_id) {
+	const Coefficient& npi = sc_expr.coefficient(Variable(neg_pinf_index));
+	if (npi == sc_den)
+	  // Add the constraint `v - neg_pinf_index >= -neg_sum',
+	  // i.e., `neg_pinf_index - v <= neg_sum'.
+	  if (neg_pinf_index < var_id)
+	    assign_r(matrix[n_var][2*neg_pinf_index], neg_sum, ROUND_UP);
+	  else
+	    assign_r(matrix[2*neg_pinf_index+1][n_var+1], neg_sum, ROUND_UP);
+	else
+	  if (npi == minus_sc_den)
+	    // Add the constraint `v + neg_pinf_index >= -neg_sum',
+	    // i.e., `-neg_pinf_index - v <= neg_sum'.
+	    if (neg_pinf_index < var_id)
+	      assign_r(matrix[n_var][2*neg_pinf_index+1], neg_sum, ROUND_UP);
+	    else
+	      assign_r(matrix[2*neg_pinf_index][n_var+1], neg_sum, ROUND_UP);
+      }
+  }
+
+  assert(OK());
+}
+
 
 template <typename T>
 void

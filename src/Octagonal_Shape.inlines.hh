@@ -274,58 +274,6 @@ Octagonal_Shape<T>
 }
 
 template <typename T>
-inline void
-Octagonal_Shape<T>
-::forget_all_octagonal_constraints(const dimension_type v_id) {
-  assert(v_id < space_dim);
-  const dimension_type n_v = 2*v_id;
-  typename OR_Matrix<N>::row_iterator m_iter = matrix.row_begin() + n_v;
-  typename OR_Matrix<N>::row_reference_type r_v = *m_iter;
-  typename OR_Matrix<N>::row_reference_type r_cv = *(++m_iter);
-  for (dimension_type h = m_iter.row_size(); h-- > 0; ) {
-    r_v[h] = PLUS_INFINITY;
-    r_cv[h] = PLUS_INFINITY;
-  }
-  ++m_iter;
-  for (typename OR_Matrix<N>::row_iterator m_end = matrix.row_end();
-       m_iter != m_end; ++m_iter) {
-    typename OR_Matrix<N>::row_reference_type r = *m_iter;
-    r[n_v] = PLUS_INFINITY;
-    r[n_v+1] = PLUS_INFINITY;
-  }
-}
-
-template <typename T>
-inline void
-Octagonal_Shape<T>
-::forget_binary_octagonal_constraints(const dimension_type v_id) {
-  assert(v_id < space_dim);
-  const dimension_type n_v = 2*v_id;
-  typename OR_Matrix<N>::row_iterator m_iter = matrix.row_begin() + n_v;
-  typename OR_Matrix<N>::row_reference_type r_v = *m_iter;
-  typename OR_Matrix<N>::row_reference_type r_cv = *(++m_iter);
-  for (dimension_type k = n_v; k-- > 0; ) {
-    r_v[k] = PLUS_INFINITY;
-    r_cv[k] = PLUS_INFINITY;
-  }
-  ++m_iter;
-  for (typename OR_Matrix<N>::row_iterator m_end = matrix.row_end();
-       m_iter != m_end; ++m_iter) {
-    typename OR_Matrix<N>::row_reference_type r = *m_iter;
-    r[n_v] = PLUS_INFINITY;
-    r[n_v+1] = PLUS_INFINITY;
-  }
-}
-
-template <typename T>
-inline void
-Octagonal_Shape<T>::add_constraints(const Constraint_System& cs) {
-  Constraint_System::const_iterator i_end = cs.end();
-  for (Constraint_System::const_iterator i = cs.begin(); i != i_end; ++i)
-    add_constraint(*i);
-}
-
-template <typename T>
 inline bool
 Octagonal_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
   add_constraints(cs);
@@ -399,26 +347,6 @@ Octagonal_Shape<T>::time_elapse_assign(const Octagonal_Shape& y) {
   Octagonal_Shape<T> x(px);
   swap(x);
   assert(OK());
-}
-
-template <typename T>
-inline bool
-Octagonal_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
-  bool was_closed = marked_strongly_closed();
-  add_constraint(c);
-  // If the OS was strongly closed and we add a single constraint,
-  // it is convenient to use the incremental strong-closure algorithm,
-  // as we known that the constraint has affected two variables at most.
-  // (The cost is O(n^2) instead of O(n^3).)
-  if (was_closed)
-    for (dimension_type i = c.space_dimension(); i-- > 0;)
-      if (c.coefficient(Variable(i)) != 0) {
-	incremental_strong_closure_assign(Variable(i));
-	break;
-      }
-  else
-    strong_closure_assign();
-  return !(marked_empty());
 }
 
 template <typename T>

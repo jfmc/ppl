@@ -49,6 +49,7 @@ check_PROGRAMS = \
 	bhz03widening1 \
 	bhmz05widening1 \
 	bounded1 \
+	boundedaffineimage1 \
 	cc76extrapolation1 \
 	cc76narrowing1 \
 	chinainit \
@@ -140,6 +141,8 @@ bhz03widening1_SOURCES = bhz03widening1.cc
 bhmz05widening1_SOURCES = bhmz05widening1.cc
 
 bounded1_SOURCES = bounded1.cc
+
+boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 
 cc76extrapolation1_SOURCES = cc76extrapolation1.cc
 
