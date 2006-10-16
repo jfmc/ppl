@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
-#include "LP_Problem.defs.hh"
+#include "MIP_Problem.defs.hh"
 #include "Variables_Set.defs.hh"
 #include <cassert>
 #include <vector>
@@ -208,7 +208,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   // If `complexity' allows it, use simplex to derive the exact (modulo
   // the fact that our BDSs are topologically closed) variable bounds.
   if (complexity == SIMPLEX_COMPLEXITY) {
-    LP_Problem lp(num_dimensions);
+    MIP_Problem lp(num_dimensions);
     lp.set_optimization_mode(MAXIMIZATION);
 
     const Constraint_System& ph_cs = ph.constraints();
@@ -241,7 +241,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       Variable x(i-1);
       // Evaluate optimal upper bound for `x <= ub'.
       lp.set_objective_function(x);
-      if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+      if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, num, den);
 	div_round_up(dbm[0][i], num, den);
@@ -252,7 +252,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
 	  continue;
 	Variable y(j-1);
 	lp.set_objective_function(x - y);
-	if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+	if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	  g = lp.optimizing_point();
 	  lp.evaluate_objective_function(g, num, den);
 	  div_round_up(dbm[j][i], num, den);
@@ -260,7 +260,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
       }
       // Evaluate optimal upper bound for `-x <= ub'.
       lp.set_objective_function(-x);
-      if (lp.solve() == OPTIMIZED_LP_PROBLEM) {
+      if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, num, den);
 	div_round_up(dbm[i][0], num, den);
@@ -279,6 +279,9 @@ template <typename T>
 dimension_type
 BD_Shape<T>::affine_dimension() const {
   const dimension_type space_dim = space_dimension();
+  // A zero-space-dim shape always has affine dimension zero.
+  if (space_dim == 0)
+    return 0;
 
   // Shortest-path closure is necessary to detect emptiness
   // and all (possibly implicit) equalities.
