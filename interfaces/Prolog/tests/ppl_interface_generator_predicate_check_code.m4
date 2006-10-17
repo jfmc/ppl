@@ -13,7 +13,7 @@ clean_ppl_new_Polyhedron_from_space_dimension(Dim, UorE, PS) :-
 m4_define(`m4_add_cleanup_class_code', `dnl
 ppl_cleanup_@CLASS@(_).
 ppl_cleanup_@CLASS@(P) :-
-  (out_@CLASS@(P), ppl_delete_@CLASS@(P), fail).
+  (out_@CLASS@(P), fail).
 
 ppl_cleanup_all_@CLASS@([]).
 ppl_cleanup_all_@CLASS@([_|_]).
@@ -31,14 +31,15 @@ m4_define(`m4_add_out_class_code', `dnl
 out_@CLASS@(P):-
   ((noisy(N), N < 2) -> true ;
     ppl_@CLASS@_get_@GET_REPRESENT@s(P, RS),
-    nl, write(RS), nl,
+    display_message([nl, @GET_REPRESENT@s, are, nl, RS, nl]),
     fail
   ).
 
 ')
 
 m4_define(`m4_add_out_extra_class_code', `dnl
-out_@CLASS@(_P).
+out_@CLASS@(P) :-
+  ppl_delete_@CLASS@(P).
 
 ')
 
@@ -139,7 +140,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_test :-
 
 m4_define(`ppl_@CLASS@_swap_code',
 `
-ppl_new_@TOPOLOGY@@CLASS@_swap_test :-
+ppl_@CLASS@_swap_test :-
   (
    (
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(3, universe, PS),
@@ -149,6 +150,40 @@ ppl_new_@TOPOLOGY@@CLASS@_swap_test :-
     ppl_@CLASS@_is_universe(PS1),
     ppl_delete_@CLASS@(PS),
     ppl_delete_@CLASS@(PS1)
+   ->
+     fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_@DIMENSION@_code',
+`
+ppl_@CLASS@_@DIMENSION@_test :-
+  (
+   (
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(2, universe, PS),
+    \+ppl_@CLASS@_@DIMENSION@(PS, 3),
+    ppl_@CLASS@_@DIMENSION@(PS, N),
+    N == 2,
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(2, empty, PS1),
+    ppl_@CLASS@_@DIMENSION@(PS1, N1),
+    (@DIMENSION@ == space_dimension -> N1 == 2 ; N1 == 0),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s([], PS2),
+    ppl_@CLASS@_@DIMENSION@(PS2, N2),
+    N2 == 0,
+    ppl_@BUILD_REPRESENT@s_test_data(1, t_@TOPOLOGY@, Space_Dim, RS3, _),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(RS3, PS3),
+    ppl_@CLASS@_@DIMENSION@(PS3, N3),
+    (@DIMENSION@ == space_dimension -> N3 == Space_Dim ; N3 == Space_Dim),
+    ppl_@BUILD_REPRESENT@s_test_data(2, t_@TOPOLOGY@, Space_Dim, RS4, _),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(RS4, PS4),
+    ppl_@CLASS@_@DIMENSION@(PS4, N4),
+    (@DIMENSION@ == space_dimension -> N4 == Space_Dim ; N4 == 0),
+    ppl_delete_@CLASS@(PS),
+    ppl_delete_@CLASS@(PS1),
+    ppl_delete_@CLASS@(PS2),
+    ppl_delete_@CLASS@(PS3),
+    ppl_delete_@CLASS@(PS4)
    ->
      fail ; true)
   ).

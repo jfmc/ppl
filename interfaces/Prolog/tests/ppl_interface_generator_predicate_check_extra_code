@@ -43,6 +43,30 @@ make_quiet :-
    ; assertz(noisy(0))
   ).
 
+%%%%%%%%%%%% predicates for output messages %%%%%%%%%%%%%%%%%%%%%
+
+error_message(Message):-
+   write_all(Message),
+   fail.
+
+display_message(Message):-
+    noisy(_),
+    (noisy(0) -> true ;
+     (write_all(Message))
+    ).
+
+write_all([]) :- nl.
+write_all([Phrase|Phrases]):-
+   (Phrase == nl ->
+      nl
+   ;
+      (write(Phrase),
+      write(' '))
+   ),
+   write_all(Phrases).
+
+%%%%%%%%%%%% predicates for variable generation %%%%%%%%%%%%%%%%%%
+
 % make_var_list(+I,+Dimension,?Variable_List)
 % constructs a list of variables with indices from I to Dimension - 1.
 % It is assumed that I =< Dimension.
@@ -54,10 +78,15 @@ make_var_list(I, Dim, ['$VAR'(I)|Var_List]) :-
   (I1 is I + 1,
   make_var_list(I1, Dim, Var_List)).
 
+%%%%%%%%%%%% predicates for succeeded and failed predicate %%%%%%%
+
+write_success(Predicate_name) :-
+  display_message([test, for, Predicate_name, 'succeeded.']).
+
 write_error(Predicate_name) :-
-  write(' test for '),
-  write(Predicate_name),
-  write(' failed.'), nl.
+  write_all([test, for, Predicate_name, 'failed.']).
+
+%%%%%%%%%%%% predicates for test data %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 /* Some test data. */
 

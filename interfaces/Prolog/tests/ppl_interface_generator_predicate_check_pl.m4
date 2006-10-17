@@ -40,6 +40,7 @@ dnl The top level call is a call to a test for each predicate
 dnl ==================================================================
 dnl
 check_all :-
+  (noisy(_) -> true; make_quiet),
   ppl_initialize,
 m4_divert(1)`'dnl
   ppl_finalize.
@@ -84,8 +85,8 @@ m4_ifdef(`$1_code',
                     `m4_ifelse(m4_start1, 0,
                       `m4_undefine(`m4_start1')  ', `
 ')'  `  ($1_test
-      -> write_error($1)
-      ;  true)COMMA
+      -> (!COMMA write_error($1))
+      ;  write_success($1))COMMA
 ')')`'dnl
 ')`'dnl
 dnl
