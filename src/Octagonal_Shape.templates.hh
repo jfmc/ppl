@@ -1558,6 +1558,10 @@ Octagonal_Shape<T>
 template <typename T>
 void
 Octagonal_Shape<T>::strong_reduction_assign() const {
+  // Zero-dimensional Octagonal shapes are necessarily reduced.
+  if (space_dim == 0)
+    return;
+
   // First find the tightest constraints for this octagon.
   strong_closure_assign();
 
