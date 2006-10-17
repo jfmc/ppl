@@ -79,8 +79,10 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
     i_variables() {
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
-    throw std::length_error("PPL::MIP_Problem::MIP_Problem(d, cs, obj, m):\n"
-			    "d exceeds the maximum allowed space dimension");
+    throw std::length_error("PPL::MIP_Problem::MIP_Problem(dim, cs, obj, "
+			    "mode):\n"
+			    "dim exceeds the maximum allowed "
+			    "space dimension.");
   assert(OK());
 }
 
@@ -104,18 +106,27 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
     i_variables() {
   // Check for space dimension overflow.
   if (dim > max_space_dimension())
-    throw std::length_error("PPL::MIP_Problem::MIP_Problem(d, cs, obj, m):\n"
-			    "d exceeds the maximum allowed space dimension");
+    throw std::length_error("PPL::MIP_Problem::MIP_Problem(dim, cs, obj, "
+			    "mode):\n"
+			    "dim exceeds the maximum allowed"
+			    "space dimension.");
   // Check the objective function.
-  if (obj.space_dimension() > dim)
-    throw std::invalid_argument("PPL::MIP_Problem::"
-				"MIP_Problem(d, cs, obj, m):\n"
-				"the space dimension of obj exceeds d.");
+  if (obj.space_dimension() > dim) {
+    std::ostringstream s;
+    s << "PPL::MIP_Problem::MIP_Problem(dim, cs, obj,"
+      << " mode):\n"
+      << "obj.space_dimension() == "<< obj.space_dimension()
+      << " exceeds dim == "<< dim << ".";
+    throw std::invalid_argument(s.str());
+  }
   // Check the constraint system.
-  if (cs.space_dimension() > dim)
-    throw std::invalid_argument("PPL::MIP_Problem::"
-				"MIP_Problem(d, cs, obj, m):\n"
-				"the space dimension of cs exceeds d.");
+  if (cs.space_dimension() > dim) {
+    std::ostringstream s;
+    s << "PPL::MIP_Problem::MIP_Problem(dim, cs, obj, mode):\n"
+      << "cs.space_dimension == " << cs.space_dimension() << " exceeds dim == "
+      << dim << ".";
+    throw std::invalid_argument(s.str());
+  }
   if (cs.has_strict_inequalities())
     throw std::invalid_argument("PPL::MIP_Problem::"
 				"MIP_Problem(d, cs, obj, m):\n"
@@ -127,9 +138,13 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
 
 void
 PPL::MIP_Problem::add_constraint(const Constraint& c) {
-  if (space_dimension() < c.space_dimension())
-    throw std::invalid_argument("PPL::MIP_Problem::add_constraint(c):\n"
-				"*this and c are dimension-incompatible.");
+  if (space_dimension() < c.space_dimension()) {
+    std::ostringstream s;
+    s << "PPL::MIP_Problem::add_constraint(c):\n"
+      << "c.space_dimension() == "<< c.space_dimension() << " exceeds "
+      "this->space_dimension == " << space_dimension() << ".";
+    throw std::invalid_argument(s.str());
+  }
   if (c.is_strict_inequality())
     throw std::invalid_argument("PPL::MIP_Problem::add_constraint(c):\n"
 				"c is a strict inequality.");
@@ -141,9 +156,14 @@ PPL::MIP_Problem::add_constraint(const Constraint& c) {
 
 void
 PPL::MIP_Problem::add_constraints(const Constraint_System& cs) {
-  if (space_dimension() < cs.space_dimension())
-    throw std::invalid_argument("PPL::MIP_Problem::add_constraints(cs):\n"
-				"*this and cs are dimension-incompatible.");
+  if (space_dimension() < cs.space_dimension()) {
+    std::ostringstream s;
+    s << "PPL::MIP_Problem::add_constraints(cs):\n"
+      << "cs.space_dimension() == " << cs.space_dimension()
+      << " exceeds this->space_dimension() == " << this->space_dimension()
+      << ".";
+    throw std::invalid_argument(s.str());
+  }
   if (cs.has_strict_inequalities())
     throw std::invalid_argument("PPL::MIP_Problem::add_constraints(cs):\n"
 				"cs contains strict inequalities.");
@@ -155,10 +175,14 @@ PPL::MIP_Problem::add_constraints(const Constraint_System& cs) {
 
 void
 PPL::MIP_Problem::set_objective_function(const Linear_Expression& obj) {
-  if (space_dimension() < obj.space_dimension())
-    throw std::invalid_argument("PPL::MIP_Problem::"
-				"set_objective_function(obj):\n"
-				"*this and obj are dimension incompatible.");
+  if (space_dimension() < obj.space_dimension()) {
+    std::ostringstream s;
+    s << "PPL::MIP_Problem::set_objective_function(obj):\n"
+      << "obj.space_dimension() == " << obj.space_dimension()
+      << " exceeds this->space_dimension == " << space_dimension()
+      << ".";
+    throw std::invalid_argument(s.str());
+  }
   input_obj_function = obj;
   if (status == UNBOUNDED || status == OPTIMIZED)
     status = SATISFIABLE;
@@ -239,71 +263,71 @@ PPL::MIP_Problem::solve() const{
     return UNBOUNDED_MIP_PROBLEM;
   case OPTIMIZED:
     assert(OK());
-  return OPTIMIZED_MIP_PROBLEM;
- case SATISFIABLE:
-   // Intentionally fall through
- case PARTIALLY_SATISFIABLE:
-   {
-     MIP_Problem& x = const_cast<MIP_Problem&>(*this);
-     if (i_variables.empty()) {
-       // LP Problem case.
-       if (is_lp_satisfiable()) {
-	 x.second_phase();
-	 if (x.status == UNBOUNDED)
-	   return UNBOUNDED_MIP_PROBLEM;
-	 else {
-	   assert(x.status == OPTIMIZED);
-	   return OPTIMIZED_MIP_PROBLEM;
-	 }
-       }
-       return UNFEASIBLE_MIP_PROBLEM;
-     }
-     // MIP Problem case.
-     // This disable the Variable integrality check in OK() until we will find
-     // an optimizing point.
-     const Variables_Set this_variables_set = integer_space_dimensions();
-     x.i_variables.clear();
-     if (x.is_lp_satisfiable())
-       x.second_phase();
-     else {
-       x.status = UNSATISFIABLE;
-       // Restore i_variables;
-       x.i_variables = this_variables_set;
-       return UNFEASIBLE_MIP_PROBLEM;
-     }
-     mpq_class incumbent_solution;
-     Generator g = point();
-     bool have_incumbent_solution = false;
+    return OPTIMIZED_MIP_PROBLEM;
+  case SATISFIABLE:
+    // Intentionally fall through
+  case PARTIALLY_SATISFIABLE:
+    {
+      MIP_Problem& x = const_cast<MIP_Problem&>(*this);
+      if (i_variables.empty()) {
+	// LP Problem case.
+	if (is_lp_satisfiable()) {
+	  x.second_phase();
+	  if (x.status == UNBOUNDED)
+	    return UNBOUNDED_MIP_PROBLEM;
+	  else {
+	    assert(x.status == OPTIMIZED);
+	    return OPTIMIZED_MIP_PROBLEM;
+	  }
+	}
+	return UNFEASIBLE_MIP_PROBLEM;
+      }
+      // MIP Problem case.
+      // This disable the Variable integrality check in OK() until we will find
+      // an optimizing point.
+      const Variables_Set this_variables_set = integer_space_dimensions();
+      x.i_variables.clear();
+      if (x.is_lp_satisfiable())
+	x.second_phase();
+      else {
+	x.status = UNSATISFIABLE;
+	// Restore i_variables;
+	x.i_variables = this_variables_set;
+	return UNFEASIBLE_MIP_PROBLEM;
+      }
+      mpq_class incumbent_solution;
+      Generator g = point();
+      bool have_incumbent_solution = false;
 
-     MIP_Problem mip_copy(*this);
-     // Treat this MIP_Problem as an LP one: we ha have to deal with
-     // the relaxation in solve_mip().
-     mip_copy.i_variables.clear();
-     MIP_Problem_Status mip_status = solve_mip(have_incumbent_solution,
-					       incumbent_solution, g,
-					       mip_copy,
-					       this_variables_set);
-     // Restore i_variables;
-     x.i_variables = this_variables_set;
-     switch (mip_status) {
-     case UNFEASIBLE_MIP_PROBLEM:
-       x.status = UNSATISFIABLE;
-       break;
-     case UNBOUNDED_MIP_PROBLEM:
-	 x.status = UNBOUNDED;
-	 // FIXME: How to handle this case? We can have an UNBOUNDED problem
-	 //        without feasible points.
-	 x.last_generator = g;
-	 break;
-       case OPTIMIZED_MIP_PROBLEM:
-	 x.status = OPTIMIZED;
-	 // Set the internal generator.
-	 x.last_generator = g;
-	 break;
-     }
-     assert(OK());
-     return mip_status;
-   }
+      MIP_Problem mip_copy(*this);
+      // Treat this MIP_Problem as an LP one: we ha have to deal with
+      // the relaxation in solve_mip().
+      mip_copy.i_variables.clear();
+      MIP_Problem_Status mip_status = solve_mip(have_incumbent_solution,
+						incumbent_solution, g,
+						mip_copy,
+						this_variables_set);
+      // Restore i_variables;
+      x.i_variables = this_variables_set;
+      switch (mip_status) {
+      case UNFEASIBLE_MIP_PROBLEM:
+	x.status = UNSATISFIABLE;
+	break;
+      case UNBOUNDED_MIP_PROBLEM:
+	x.status = UNBOUNDED;
+	// FIXME: How to handle this case? We can have an UNBOUNDED problem
+	//        without feasible points.
+	x.last_generator = g;
+	break;
+      case OPTIMIZED_MIP_PROBLEM:
+	x.status = OPTIMIZED;
+	// Set the internal generator.
+	x.last_generator = g;
+	break;
+      }
+      assert(OK());
+      return mip_status;
+    }
   }
   // We should not be here!
   throw std::runtime_error("PPL internal error");
@@ -317,7 +341,7 @@ PPL::MIP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
     throw std::length_error("PPL::MIP_Problem::"
 			    "add_space_dimensions_and_embed(m):\n"
 			    "adding m new space dimensions exceeds "
-			    "the maximum allowed space dimension");
+			    "the maximum allowed space dimension.");
   external_space_dim += m;
   if (status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
@@ -333,7 +357,7 @@ PPL::MIP_Problem::add_to_integer_space_dimensions(const Variables_Set&
     if (i_vars_it->id() > external_space_dim)
       throw std::invalid_argument("PPL::MIP_Problem::"
 				  "add_to_integer_space_dimension(i_vars):\n"
-				  "*this and i_vars are dimension "
+				  "*this and i_vars are dimension"
 				  "incompatible.");
     i_variables.insert(*i_vars_it);
   }
