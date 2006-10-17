@@ -39,7 +39,7 @@ test01() {
   try {
     // This is an invalid use of the method
     // Octagonal_Shape::generalized_affine_preimage(v, e, d):
-    // it is illegal to call the method with a zero denominator.
+    // it is illegal to apply the method with denominator equal to zero.
     Coefficient d = 0;
     oct.generalized_affine_preimage(y, LESS_THAN_OR_EQUAL, y + 1, d);
   }
@@ -113,8 +113,8 @@ test04() {
   try {
     // This is an incorrect use of the method
     // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
-    // it is illegal to pass an expression whose space dimension is
-    // greater than the octagon's space dimension.
+    // it is illegal to apply the method to an expression whose
+    // space dimension is greater than the octagon's space dimension.
     oct.generalized_affine_preimage(y, GREATER_THAN_OR_EQUAL, z);
   }
   catch (std::invalid_argument& e) {
@@ -164,7 +164,7 @@ test06() {
   try {
     // This is an incorrect use of method
     // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
-    // it is illegal to apply to a variable that space dimension is
+    // it is illegal to apply the method to a variable that space dimension is
     // greater than the octagon's space dimension.
     oct.generalized_affine_preimage(C, GREATER_THAN_OR_EQUAL, B - A);
   }

@@ -381,7 +381,7 @@ test14() {
   try {
     // This is an incorrect use of the method
     // Octagonal_Shape::generalized_affine_image(v, r, expr, d): it is illegal
-    // to apply to an expression which space dimension is
+    // to apply this method to an expression which space dimension is
     // greater than the octagon's space dimension.
     oct.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, z);
   }
@@ -407,7 +407,7 @@ test15() {
   try {
     // This is an incorrect use of the method
     // Octagonal_Shape::generalized_affine_image(v, r, expr, d): it is illegal
-    // to apply to a variable which space dimension is
+    // to apply this method to a variable which space dimension is
     // greater than the octagon's space dimension.
     oct.generalized_affine_image(z, GREATER_THAN_OR_EQUAL, y);
   }

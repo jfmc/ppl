@@ -491,8 +491,8 @@ test15() {
   try {
     // This is an incorrect use of the method
     // Octagonal_Shape::bounded_affine_image(v, lb_expr, ub_expr, d):
-    // it is illegal to apply it to an expression whose space dimension is
-    // greater than the OS's space dimension.
+    // it is illegal to apply this method to an expression whose
+    // space dimension is greater than the OS's space dimension.
     oct.bounded_affine_image(y, x, z);
   }
   catch (std::invalid_argument& e) {
@@ -516,8 +516,8 @@ test16() {
   try {
     // This is an incorrect use of the method
     // Octagonal_Shape::bounded_affine_image(v, lb_expr, ub_expr, d):
-    // it is illegal to apply it to an expression whose space dimension is
-    // greater than the OS's space dimension.
+    // it is illegal to apply this method to an expression whose
+    // space dimension is greater than the OS's space dimension.
     oct.bounded_affine_image(y, z, x);
   }
   catch (std::invalid_argument& e) {
@@ -540,7 +540,7 @@ test17() {
   try {
     // This is an incorrect use of the method
     // Octagonal_Shape::bounded_affine_image(v, lb_expr, ub_expr, d):
-    // it is illegal to apply to a expression with the denominator
+    // it is illegal to apply this method to an expression with the denominator
     // equal to zero.
     Coefficient d = 0;
     oct.bounded_affine_image(x, Linear_Expression(0), x + 1, d);
