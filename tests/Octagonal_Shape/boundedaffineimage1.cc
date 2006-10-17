@@ -491,8 +491,8 @@ test15() {
   try {
     // This is an incorrect use of the method
     // Octagonal_Shape::bounded_affine_image(v, lb_expr, ub_expr, d):
-    // it is illegal to apply this method to an expression whose
-    // space dimension is greater than the OS's space dimension.
+    // it is illegal to apply this method to an expression having a
+    // space dimension greater than the OS's space dimension.
     oct.bounded_affine_image(y, x, z);
   }
   catch (std::invalid_argument& e) {
@@ -516,8 +516,8 @@ test16() {
   try {
     // This is an incorrect use of the method
     // Octagonal_Shape::bounded_affine_image(v, lb_expr, ub_expr, d):
-    // it is illegal to apply this method to an expression whose
-    // space dimension is greater than the OS's space dimension.
+    // it is illegal to apply this method to an expression having a
+    // space dimension greater than the OS's space dimension.
     oct.bounded_affine_image(y, z, x);
   }
   catch (std::invalid_argument& e) {
@@ -563,10 +563,10 @@ test18() {
   oct.add_constraint(x >= 1);
 
   try {
-    // This is an invalid used of the method
+    // This is an invalid use of the method
     // Octagonal_Shape::bounded_affine_image(v, lb_expr, ub_epxr, d):
     // it is illegal to apply this method to a variable
-    // that is not in the space of the octagon.
+    // which is not in the space of the octagon.
     oct.bounded_affine_image(y, x + 1, Linear_Expression(8));
   }
   catch (std::invalid_argument& e) {
