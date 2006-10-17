@@ -489,7 +489,7 @@ test15() {
   oct.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // Octagonal_Shape::bounded_affine_image(v, lb_expr, ub_expr, d):
     // it is illegal to apply it to an expression whose space dimension is
     // greater than the OS's space dimension.
@@ -514,7 +514,7 @@ test16() {
   oct.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // Octagonal_Shape::bounded_affine_image(v, lb_expr, ub_expr, d):
     // it is illegal to apply it to an expression whose space dimension is
     // greater than the OS's space dimension.
@@ -538,7 +538,7 @@ test17() {
   oct.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // Octagonal_Shape::bounded_affine_image(v, lb_expr, ub_expr, d):
     // it is illegal to apply to a expression with the denominator
     // equal to zero.
@@ -563,9 +563,9 @@ test18() {
   oct.add_constraint(x >= 1);
 
   try {
-    // This is an invalid used of the function
-    // Octagonal_Shape::bounded_affine_image(v, lb_expr, ub_epxr, d): 
-    // it is illegal to apply this function to a variable 
+    // This is an invalid used of the method
+    // Octagonal_Shape::bounded_affine_image(v, lb_expr, ub_epxr, d):
+    // it is illegal to apply this method to a variable
     // that is not in the space of the octagon.
     oct.bounded_affine_image(y, x + 1, Linear_Expression(8));
   }

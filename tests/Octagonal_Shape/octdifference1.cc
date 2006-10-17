@@ -110,9 +110,9 @@ test04() {
   TOctagonal_Shape oc2(5);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // Octagonal_Shape::oct_difference_assign(oc2): it is impossible to apply
-    // this function to two polyhedra of different dimensions.
+    // this method to two polyhedra of different dimensions.
     oc1.oct_difference_assign(oc2);
   }
   catch (std::invalid_argument& e) {

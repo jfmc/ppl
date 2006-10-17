@@ -200,9 +200,9 @@ test08() {
   oc2.add_constraint(y >= 6);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // Octagonal_Shape::CC76_narrowing_assign(oc2): it is
-    // illegal to apply this function to two polyhedra that are not
+    // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
     oc2.CC76_narrowing_assign(oc1);
   }

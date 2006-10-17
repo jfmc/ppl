@@ -172,7 +172,7 @@ test06() {
   TOctagonal_Shape oc(5);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // Octagonal_Shape::remove_higher_dimensions(n): it is illegal to erase
     // a variable that is not in the space of the polyhedron.
     oc.remove_higher_space_dimensions(7);
@@ -205,7 +205,7 @@ test07() {
 
   try {
     to_be_removed.insert(x);
-    // This is an incorrect use use of function
+    // This is an incorrect use use of method
     // Octagonal_Shape::remove_space_dimensions(to_be_remove).
     // Here the set `to_be_removed' still contains variable `z'.
     // This variable is now beyond the space dimension,

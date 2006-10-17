@@ -64,7 +64,7 @@ test02() {
   oct.add_constraint(A >= 0);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // Octagonal_Shape::generalized_affine_preimage(lhs, r, rhs):
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the octagon.
@@ -90,7 +90,7 @@ test03() {
   oct.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // Octagonal_Shape::generalized_affine_preimage(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the octagon.
@@ -117,7 +117,7 @@ test04() {
   oct.add_constraint(C + B >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // Octagonal_Shape::generalized_affine_preimage(lhs, r, rhs):
     // it is illegal to use a strict relation symbol.
     oct.generalized_affine_preimage(B + C, LESS_THAN, A + 1);

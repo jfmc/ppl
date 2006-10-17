@@ -304,9 +304,9 @@ test11() {
   oct.add_constraint(z - x >= 9);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // Octagonal_Shape::generalized_affine_image(v, e, d): it is illegal
-    // applying the function with a linear expression
+    // to apply the method to a linear expression
     // with the denominator equal to zero.
     Coefficient d = 0;
     oct.generalized_affine_image(y, LESS_THAN_OR_EQUAL, y + 1, d);
@@ -330,7 +330,7 @@ test12() {
   oct.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // Octagonal_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to use a strict relation symbol.
     oct.generalized_affine_image(x, LESS_THAN, x + 1);
@@ -354,7 +354,7 @@ test13() {
   oct.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // Octagonal_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to use a strict relation symbol.
     oct.generalized_affine_image(x, GREATER_THAN, x + 1);
@@ -379,7 +379,7 @@ test14() {
   oct.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // Octagonal_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply to an expression which space dimension is
     // greater than the octagon's space dimension.
@@ -405,7 +405,7 @@ test15() {
   oct.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // Octagonal_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply to a variable which space dimension is
     // greater than the octagon's space dimension.
@@ -431,7 +431,7 @@ test16() {
   oct.add_constraint(A >= 0);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // Octagonal_Shape::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the octagon.
@@ -457,7 +457,7 @@ test17() {
   oct.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // Octagonal_Shape::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the octagon.
@@ -483,7 +483,7 @@ test18() {
   oct.add_constraint(1 >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // Octagonal_Shape::generalized_affine_image(lhs, r, rhs): it is illegal
     // to use a strict relation symbol.
     oct.generalized_affine_image(y - 3, GREATER_THAN, x + 1);

@@ -300,7 +300,7 @@ test14() {
   oc.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // Octagon::relation_with(c):
     // it is illegal to use a constraint that is not dimension-compatible
     // with the octagon.

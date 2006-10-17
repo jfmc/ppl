@@ -37,7 +37,7 @@ test01() {
   oct.add_constraint(z - x >= 9);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // Octagonal_Shape::generalized_affine_preimage(v, e, d):
     // it is illegal to call the method with a zero denominator.
     Coefficient d = 0;
@@ -62,7 +62,7 @@ test02() {
   oct.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
     // it is illegal to use a strict relation symbol.
     oct.generalized_affine_preimage(x, LESS_THAN, x + 1);
@@ -86,7 +86,7 @@ test03() {
   oct.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
     // it is illegal to use a strict relation symbol.
     oct.generalized_affine_preimage(x, GREATER_THAN, x + 1);
@@ -111,7 +111,7 @@ test04() {
   oct.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
     // it is illegal to pass an expression whose space dimension is
     // greater than the octagon's space dimension.
@@ -137,7 +137,7 @@ test05() {
   oct.add_constraint(A >= 0);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
     // it is illegal to use a variable in the 'expr' expression that
     // does not appear in the octagon.
@@ -162,7 +162,7 @@ test06() {
   oct.add_constraint(A >= 0);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
     // it is illegal to apply to a variable that space dimension is
     // greater than the octagon's space dimension.

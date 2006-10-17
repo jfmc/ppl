@@ -143,9 +143,9 @@ test06() {
   TOctagonal_Shape oc2(3);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // Octagonal_Shape::is_disjoint_from(oc2): it is illegal
-    // to apply this function to two polyhedra of different dimensions.
+    // to apply this method to two polyhedra of different dimensions.
     oc1.is_disjoint_from(oc2);
   }
   catch (std::invalid_argument& e) {

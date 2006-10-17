@@ -339,9 +339,9 @@ test10() {
   oct2.add_constraint(y + z <= 6);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // Octagonal_Shape::time_elapse_assign(oct1): it is
-    // illegal to apply this function to two polyhedra that are not
+    // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
     oct2.time_elapse_assign(oct1);
   }

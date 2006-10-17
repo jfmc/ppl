@@ -305,9 +305,9 @@ test10() {
   TOctagonal_Shape oc2(10);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // Octagonal_Shape::CC76_extrapolation_assign(oc2): it is illegal
-    // to apply this function to two polyhedra that are not dimensional
+    // to apply this method to two polyhedra that are not dimensional
     // compatible.
     oc2.CC76_extrapolation_assign(oc1);
   }

@@ -542,9 +542,9 @@ test14() {
   TOctagonal_Shape oc2(10);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // Octagonal_Shape::BHMZ05_widening_assign(oc2): it is illegal to apply
-    // this function to two polyhedra that are not dimensional
+    // this method to two polyhedra that are not dimensional
     // compatible.
     oc2.BHMZ05_widening_assign(oc1);
   }

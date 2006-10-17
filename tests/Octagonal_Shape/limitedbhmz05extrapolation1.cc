@@ -236,9 +236,9 @@ test07() {
   cs.insert(y <= 9);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // Octagonal_Shape::limited_BHMZ05_extrapolation_assign(oc2, cs): it is
-    // illegal to apply this function to two polyhedra that are not
+    // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
     oc2.limited_BHMZ05_extrapolation_assign(oc1, cs);
   }
@@ -272,9 +272,9 @@ test08() {
   cs.insert(z <= 5);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // Octagonal_Shape::limited_BHMZ05_extrapolation_assign(oc, cs): it is
-    // illegal to apply this function to a system of constraints that
+    // illegal to apply this method to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
     oc2.limited_BHMZ05_extrapolation_assign(oc1, cs);
   }
@@ -307,9 +307,9 @@ test09() {
   cs.insert(x < 5);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // Octagonal_Shape::limited_BHMZ05_extrapolation_assign(oc, cs): it is
-    // illegal to apply this function to a system of constraints that
+    // illegal to apply this method to a system of constraints that
     // has a strict-inequality.
     oc2.limited_BHMZ05_extrapolation_assign(oc1, cs);
   }

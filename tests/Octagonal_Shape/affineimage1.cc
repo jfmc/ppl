@@ -262,9 +262,9 @@ test10() {
   Linear_Expression coeff1 = x + 1;
 
   try {
-    // This is an invalid use of the function
-    // Octagonal_Shape::affine_image(v, e, d): it is illegal applying
-    // the function with a linear expression with the denominator equal to
+    // This is an invalid use of the method
+    // Octagonal_Shape::affine_image(v, e, d): it is illegal to apply
+    // the method to a linear expression with the denominator equal to
     // zero.
     Coefficient d = 0;
     oct.affine_image(y, coeff1, d);
@@ -289,9 +289,9 @@ test11() {
   oct.add_constraint(x + y >= 2);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // Octagonal_Shape::affine_image(v, expr, d): it is illegal to
-    // apply this function to a variable that is not in the space of
+    // apply this method to a variable that is not in the space of
     // the polyhedron.
     oct.affine_image(y, z - 2);
   }
@@ -317,7 +317,7 @@ test12() {
   oct.add_constraint(x <= 2);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // Octagonal_Shape::affine_image(v, expr, d): it is illegal to
     // use a variable in the expression that does not appear in the
     // space of the polyhedron.
@@ -345,9 +345,9 @@ test13() {
   oct.add_constraint(x <= 2);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // Octagonal_Shape::affine_image(v, expr, d): it is illegal to
-    // apply this function to a variable that is not in the space
+    // apply this method to a variable that is not in the space
     // of the polyhedron.
     oct.affine_image(z, y - x + 1);
   }

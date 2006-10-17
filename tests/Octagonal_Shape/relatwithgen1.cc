@@ -266,7 +266,7 @@ test12() {
   oc.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // Octagon::relation_with(g):
     // it is illegal to use a generator that is
     // dimensional incompatible with the OS.

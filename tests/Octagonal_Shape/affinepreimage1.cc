@@ -159,9 +159,9 @@ test06() {
   oct.add_constraint(z <= 2);
 
   try {
-    // This is an invalid use of the function
-    // Octagonal_Shape::affine_preimage(v, e, d): it is illegal applying
-    // the function with a linear expression with the denominator equal to
+    // This is an invalid use of the method
+    // Octagonal_Shape::affine_preimage(v, e, d): it is illegal to apply
+    // the method to a linear expression with the denominator equal to
     // zero.
     Coefficient d = 0;
     oct.affine_preimage(y, y + 1, d);
@@ -187,9 +187,9 @@ test07() {
   oct.add_constraint(y <= 7);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // Octagonal_Shape::affine_preimage(v, expr, d): it is illegal to
-    // apply this function to a variable that is not in the space of
+    // apply this method to a variable that is not in the space of
     // the polyhedron.
     oct.affine_preimage(x, z - 2);
   }
@@ -214,9 +214,9 @@ test08() {
   oct.add_constraint(y <= 7);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // Octagonal_Shape::affine_preimage(v, expr, d): it is illegal to
-    // apply this function to a variable that is not in the space of
+    // apply this method to a variable that is not in the space of
     // the polyhedron.
     oct.affine_preimage(z, x - 2);
   }
