@@ -101,8 +101,34 @@ test02() {
   return ok;
 }
 
+bool
+test03() {
+  TOctagonal_Shape oc(0, UNIVERSE);
+
+  print_constraints(oc, "*** oc ***");
+
+  const Constraint_System cs = oc.minimized_constraints();
+
+  using namespace IO_Operators;
+  nout << "*** oc.minimized_constraints() ***" << endl;
+
+  dimension_type num_constraints = 0;
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 iend = cs.end(); i != iend; ++i) {
+    nout << *i << endl;
+    ++num_constraints;
+  }
+
+  nout << "num_constraints == " << num_constraints << endl;
+
+  return num_constraints == 0;
+}
+
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
 END_MAIN
