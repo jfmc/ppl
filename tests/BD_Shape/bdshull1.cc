@@ -169,9 +169,9 @@ test05() {
   TBD_Shape bd2(5);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::bds_hull_assign(bd2): it is impossible to apply
-    // this function to two polyhedra of different dimensions.
+    // this method to two polyhedra of different dimensions.
     bd1.bds_hull_assign(bd2);
   }
   catch (std::invalid_argument& e) {
@@ -194,9 +194,9 @@ test06() {
   TBD_Shape bd2(3);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::bds_hull_assign_and_minimize(bd2): it is illegal
-    // to apply this function to two polyhedra of different dimensions.
+    // to apply the method to two polyhedra of different dimensions.
     bd1.bds_hull_assign_and_minimize(bd2);
   }
   catch (std::invalid_argument& e) {

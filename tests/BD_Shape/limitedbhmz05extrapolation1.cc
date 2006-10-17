@@ -433,9 +433,9 @@ test10() {
   cs.insert(z <= 5);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::limited_BHMZ05_extrapolation_assign(bd, cs): it is
-    // illegal to apply this function to a system of constraints that
+    // illegal to apply the method to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
     bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
@@ -459,9 +459,9 @@ test11() {
   cs.insert(y <= 9);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::limited_BHMZ05_extrapolation_assign(bd2, cs): it is
-    // illegal to apply this function to two polyhedra that are not
+    // illegal to apply the method to two polyhedra that are not
     // dimension-compatible.
     bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }
@@ -493,9 +493,9 @@ test12() {
   cs.insert(x < 5);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::limited_BHMZ05_extrapolation_assign(bd, cs): it is
-    // illegal to apply this function to a system of constraints that
+    // illegal to apply the method to a system of constraints that
     // has a strict-inequality.
     bd2.limited_BHMZ05_extrapolation_assign(bd1, cs);
   }

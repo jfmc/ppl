@@ -128,9 +128,9 @@ test05() {
   bd.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::affine_preimage(v, expr, d): it is illegal
-    // to apply to a expression with the denominator
+    // to apply it to a expression with the denominator
     // equal to zero.
     Coefficient d = 0;
     bd.affine_preimage(x, x + 1, d);
@@ -154,7 +154,7 @@ test06() {
   bd.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::affine_preimage(v, expr, d): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the space dimension of the BDS.

@@ -274,9 +274,9 @@ test09() {
   TBD_Shape bd2(3);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::intersection_assign_and_minimize(bd2): it is illegal
-    // to apply this function to two polyhedra of different dimensions.
+    // to apply this method to two polyhedra of different dimensions.
     bd1.intersection_assign_and_minimize(bd2);
   }
   catch (std::invalid_argument& e) {
@@ -294,9 +294,9 @@ test10() {
   TBD_Shape bd2(15);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::intersection_assign(bd2): it is illegal
-    // to apply this function to two polyhedra of different dimensions.
+    // to apply this method to two polyhedra of different dimensions.
     bd1.intersection_assign(bd2);
   }
   catch (std::invalid_argument& e) {

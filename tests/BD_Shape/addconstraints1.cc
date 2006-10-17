@@ -58,7 +58,7 @@ test02() {
   TBD_Shape bd1(2);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::add_constraint: it is illegal
     // to add a strict inequality.
     bd1.add_constraint(x <= 0);
@@ -82,7 +82,7 @@ test03() {
   TBD_Shape bd1(2);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::add_constraint: it is illegal
     // to add a constraint with bigger dimension.
     bd1.add_constraint(x <= 0);
@@ -105,7 +105,7 @@ test04() {
   TBD_Shape bd(1);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::add_constraints_and_minimize(cs): it is illegal to
     // add a system of constraints that is not dimensional incompatible
     // with the polyhedron.
@@ -129,7 +129,7 @@ test05() {
   TBD_Shape bd(1);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::add_constraint(c): it is illegal to insert a
     // constraints that contains a variable that is not in the space
     // of the polyhedron.
@@ -152,7 +152,7 @@ test06() {
   TBD_Shape bd(1);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::add_constraints(cs): it is illegal to add a system
     // of constraints that is dimensional incompatible with the
     // polyhedron.

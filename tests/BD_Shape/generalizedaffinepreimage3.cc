@@ -72,7 +72,7 @@ test02() {
   bd.add_constraint(A >= 0);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::generalized_affine_preimage(lhs, r, rhs):
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the BDS.
@@ -98,7 +98,7 @@ test03() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::generalized_affine_preimage(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the BDS.
@@ -123,10 +123,9 @@ test04() {
   bd.add_constraint(A >= 0);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::generalized_affine_preimage(lhs, r, rhs):
     // it is illegal to use a strict relation symbol.
-
     bd.generalized_affine_preimage(A + B, GREATER_THAN, B + C);
   }
   catch (std::invalid_argument& e) {
@@ -148,7 +147,7 @@ test05() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::generalized_affine_preimage(lhs, r, rhs):
     // it is illegal to use a strict relation symbol.
     bd.generalized_affine_preimage(B + C, LESS_THAN, A + 1);

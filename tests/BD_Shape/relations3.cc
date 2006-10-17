@@ -34,7 +34,7 @@ test01() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::relation_with(c):
     // it is illegal to use a constraint that is
     // dimensional incompatible with the BDS.
@@ -59,7 +59,7 @@ test02() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::relation_with(c):
     // it is illegal to use a constraint that is
     // not a bounded difference.
@@ -84,7 +84,7 @@ test03() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::relation_with(c):
     // it is illegal to use a generator that is
     // dimensional incompatible with the BDS.

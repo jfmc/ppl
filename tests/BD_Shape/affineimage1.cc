@@ -326,9 +326,9 @@ test12() {
   Linear_Expression coeff1 = x + 1;
 
   try {
-    // This is an incorrect use of function
-    // BD_Shape::affine_image(v, expr,d): it is illegal applying
-    // the function with a linear expression with the denominator equal to
+    // This is an incorrect use of method
+    // BD_Shape::affine_image(v, expr,d): it is illegal to apply
+    // the method to a linear expression with the denominator equal to
     // zero.
     Coefficient d = 0;
     bd.affine_image(x, coeff1, d);
@@ -351,9 +351,9 @@ test13() {
   bd.add_constraint(x >= 1);
 
   try {
-    // This is an invalid used of the function
+    // This is an invalid used of the method
     // BD_Shape::affine_image(v, expr, d): it is illegal to
-    // apply this function to a variable that is not in the space of
+    // apply this method to a variable that is not in the space of
     // the polyhedron.
     bd.affine_image(y, x + 1);
   }
@@ -377,7 +377,7 @@ test14() {
   bd.add_constraint(y >= 1);
 
   try {
-    // This is an invalid used of the function
+    // This is an invalid used of the method
     // BD_Shape::affine_image(v, expr, d): it is illegal to
     // use a variable in the expression that does not appear in the
     // space of the polyhedron.
@@ -405,9 +405,9 @@ test15() {
   Linear_Expression coeff1 = 2*x + 1;
 
   try {
-    // This is an incorrect use of function
-    // BD_Shape::affine_image(v, expr,d): it is illegal applying
-    // the function with a linear expression with the denominator equal to
+    // This is an incorrect use of method
+    // BD_Shape::affine_image(v, expr,d): it is illegal to apply
+    // the method to a linear expression with the denominator equal to
     // zero.
     Coefficient d = 0;
     bd.affine_image(x, coeff1, d);

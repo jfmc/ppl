@@ -109,9 +109,9 @@ test04() {
   TBD_Shape bd2(3);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::is_disjoint_from(bd2): it is illegal
-    // to apply this function to two polyhedra of different dimensions.
+    // to apply this method to two polyhedra of different dimensions.
     bd1.is_disjoint_from(bd2);
   }
   catch (std::invalid_argument& e) {

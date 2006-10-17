@@ -182,9 +182,9 @@ test06() {
   TBD_Shape bd2(2);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::time_elapse_assign(bd2): it is
-    // illegal to apply this function to two polyhedra that are not
+    // illegal to apply the method to two polyhedra that are not
     // dimension-compatible.
     bd1.time_elapse_assign(bd2);
   }

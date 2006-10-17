@@ -189,9 +189,9 @@ test06() {
   cs.insert(y >= 6);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::CC76_narrowing_assign(bd2, cs): it is
-    // illegal to apply this function to two polyhedra that are not
+    // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
     bd2.CC76_narrowing_assign(bd1);
   }

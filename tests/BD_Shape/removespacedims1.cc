@@ -248,7 +248,7 @@ test08() {
   TBD_Shape bd(5);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::remove_higher_dimensions(n): it is illegal to erase
     // a variable that is not in the space of the polyhedron.
     bd.remove_higher_space_dimensions(7);
@@ -280,7 +280,7 @@ test09() {
 
   try {
     to_be_removed.insert(x);
-    // This is an incorrect use use of function
+    // This is an incorrect use use of method
     // BD_Shape::remove_dimensions(to_be_remove).
     // Here the set `to_be_removed' still contains variable `z'.
     // This variable is now beyond the space dimension,

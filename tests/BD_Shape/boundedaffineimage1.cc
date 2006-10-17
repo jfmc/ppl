@@ -370,7 +370,7 @@ test13() {
   bd.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::bounded_affine_image(v, lb_expr, ub_expr, d): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the BDS's space dimension.
@@ -395,7 +395,7 @@ test14() {
   bd.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::bounded_affine_image(v, lb_expr, ub_expr, d): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the BDS's space dimension.
@@ -419,9 +419,9 @@ test15() {
   bd.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::bounded_affine_image(v, lb_expr, ub_expr, d): it is illegal
-    // to apply to a expression with the denominator
+    // to apply it to a expression with the denominator
     // equal to zero.
     Coefficient d = 0;
     bd.bounded_affine_image(x, Linear_Expression(0), x + 1, d);
@@ -444,9 +444,9 @@ test16() {
   bd.add_constraint(x >= 1);
 
   try {
-    // This is an invalid used of the function
+    // This is an invalid used of the method
     // BD_Shape::bounded_affine_image(v, lb_expr, ub_epxr, d): it is illegal to
-    // apply this function to a variable that is not in the space of
+    // apply the method to a variable that is not in the space of
     // the polyhedron.
     bd.bounded_affine_image(y, x + 1, Linear_Expression(8));
   }

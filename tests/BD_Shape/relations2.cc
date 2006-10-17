@@ -408,7 +408,7 @@ test20() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::relation_with(c):
     // it is illegal to use a constraint with three
     // dimensions.
