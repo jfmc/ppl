@@ -661,6 +661,11 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   if (marked_empty())
     return true;
 
+  const dimension_type space_dim = space_dimension();
+  // Zero-dimensional BDSs are necessarily reduced.
+  if (space_dim == 0)
+    return true;
+
   // A shortest-path reduced dbm is just a dbm with an indication of
   // those constraints that are redundant. If there is no indication
   // of the redundant constraints, then it cannot be reduced.
@@ -668,26 +673,25 @@ BD_Shape<T>::is_shortest_path_reduced() const {
     return false;
 
   const BD_Shape x_copy = *this;
-  const dimension_type x_space_dim = x_copy.space_dimension();
   x_copy.shortest_path_closure_assign();
   // If we just discovered emptiness, it cannot be reduced.
   if (x_copy.marked_empty())
     return false;
 
   // The vector `leader' is used to indicate which variables are equivalent.
-  std::vector<dimension_type> leader(x_space_dim + 1);
+  std::vector<dimension_type> leader(space_dim + 1);
 
   // We store the leader.
-  for (dimension_type i = x_space_dim + 1; i-- > 0; )
+  for (dimension_type i = space_dim + 1; i-- > 0; )
     leader[i] = i;
 
   // Step 1: we store really the leader with the corrected value.
   // We search for the equivalent or zero-equivalent variables.
   // The variable(i-1) and variable(j-1) are equivalent if and only if
   // m_i_j == -(m_j_i).
-  for (dimension_type i = 0; i < x_space_dim; ++i) {
+  for (dimension_type i = 0; i < space_dim; ++i) {
     const DB_Row<N>& x_copy_dbm_i = x_copy.dbm[i];
-    for (dimension_type j = i + 1; j <= x_space_dim; ++j)
+    for (dimension_type j = i + 1; j <= space_dim; ++j)
       if (is_additive_inverse(x_copy.dbm[j][i], x_copy_dbm_i[j]))
 	// Two equivalent variables have got the same leader
 	// (the smaller variable).
@@ -700,15 +704,15 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   // their sum is the same constraint with the inhomogeneous term
   // less than or equal to the `c' one.
   N c;
-  for (dimension_type k = 0; k <= x_space_dim; ++k)
+  for (dimension_type k = 0; k <= space_dim; ++k)
     if (leader[k] == k) {
       const DB_Row<N>& x_k = x_copy.dbm[k];
-      for (dimension_type i = 0; i <= x_space_dim; ++i)
+      for (dimension_type i = 0; i <= space_dim; ++i)
 	if (leader[i] == i) {
 	  const DB_Row<N>& x_i = x_copy.dbm[i];
 	  const std::deque<bool>& redundancy_i = redundancy_dbm[i];
 	  const N& x_i_k = x_i[k];
-	  for (dimension_type j = 0; j <= x_space_dim; ++j)
+	  for (dimension_type j = 0; j <= space_dim; ++j)
 	    if (leader[j] == j) {
 	      const N& x_i_j = x_i[j];
 	      if (!is_plus_infinity(x_i_j)) {
@@ -724,23 +728,23 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   // that connected all zero-equivalent variables between them.
   // The value `space_dim + 1' is used to indicate that the equivalence
   // class contains a single variable.
-  std::vector<dimension_type> var_conn(x_space_dim + 1);
-  for (dimension_type i = x_space_dim + 1; i-- > 0; )
-    var_conn[i] = x_space_dim + 1;
+  std::vector<dimension_type> var_conn(space_dim + 1);
+  for (dimension_type i = space_dim + 1; i-- > 0; )
+    var_conn[i] = space_dim + 1;
 
   // Step 3: we store really the `var_conn' with the right value, putting
   // the variable with the selected variable is connected:
   // we check the row of each variable:
   // a- each leader could be connected with only zero-equivalent one,
   // b- each no-leader with only another zero-equivalent one.
-  for (dimension_type i = 0; i <= x_space_dim; ++i) {
+  for (dimension_type i = 0; i <= space_dim; ++i) {
     // It count with how many variables the selected variable is
     // connected.
     dimension_type t = 0;
     dimension_type ld_i = leader[i];
     // Case a: leader.
     if (ld_i == i) {
-      for (dimension_type j = 0; j <= x_space_dim; ++j) {
+      for (dimension_type j = 0; j <= space_dim; ++j) {
 	dimension_type ld_j = leader[j];
 	// Only the connectedness with equivalent variables
 	// is considered.
@@ -762,7 +766,7 @@ BD_Shape<T>::is_shortest_path_reduced() const {
     }
     // Case b: no-leader.
     else {
-      for (dimension_type j = 0; j <= x_space_dim; ++j) {
+      for (dimension_type j = 0; j <= space_dim; ++j) {
 	if (!redundancy_dbm[i][j]) {
 	  dimension_type ld_j = leader[j];
 	  if (ld_i != ld_j)
@@ -788,20 +792,20 @@ BD_Shape<T>::is_shortest_path_reduced() const {
 
   // The vector `just_checked' is used to check if
   // a variable is already checked.
-  std::vector<bool> just_checked(x_space_dim + 1);
-  for (dimension_type i = x_space_dim + 1; i-- > 0; )
+  std::vector<bool> just_checked(space_dim + 1);
+  for (dimension_type i = space_dim + 1; i-- > 0; )
     just_checked[i] = false;
 
   // Step 4: we check if there are single cycles that
   // connected all the zero-equivalent variables between them.
-  for (dimension_type i = 0; i <= x_space_dim; ++i) {
+  for (dimension_type i = 0; i <= space_dim; ++i) {
     bool jc_i = just_checked[i];
     // We do not re-check the already considered single cycles.
     if (!jc_i) {
       dimension_type v_con = var_conn[i];
       // We consider only the equivalence classes with
       // 2 or plus variables.
-      if (v_con != x_space_dim + 1) {
+      if (v_con != space_dim + 1) {
 	// There is a single cycle if taken a variable,
 	// we return to this same variable.
 	while (v_con != i) {
@@ -1121,6 +1125,11 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
   if (marked_shortest_path_reduced())
     return;
 
+  const dimension_type space_dim = space_dimension();
+  // Zero-dimensional BDSs are necessarily reduced.
+  if (space_dim == 0)
+    return;
+
   // First find the tightest constraints for this BDS.
   shortest_path_closure_assign();
 
@@ -1138,7 +1147,6 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
   compute_leader_indices(predecessor, leaders);
   const dimension_type num_leaders = leaders.size();
 
-  const dimension_type space_dim = space_dimension();
   // TODO: directly work on `redundancy_dbm' so as to minimize allocations.
   std::deque<bool> redundancy_row(space_dim + 1, true);
   std::vector<std::deque<bool> > redundancy(space_dim + 1, redundancy_row);
