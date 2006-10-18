@@ -1,3 +1,5 @@
+m4_divert(-1)
+
 m4_define(`dnl', `m4_dnl')
 dnl Classes to be implemented and C++ versions of these classes.
 m4_include(ppl_interface_instantiations.m4)
@@ -521,14 +523,23 @@ m4_get_interface_class_name(m4_class_body`'$1)`'dnl
 ')
 m4_define(`m4_disjunct_alt_replacement', m4_class_body`'$1)
 
-dnl  The different kinds of objects use to represent a class.
+dnl  The different kinds of objects that can build a class.
 m4_define(`m4_build_represent_replacement', `constraint, generator')
 m4_define(`m4_Polyhedron_build_represent_replacement',
          `constraint, generator')
 m4_define(`m4_Grid_build_represent_replacement',
          `constraint, grid_generator, congruence')
 
-dnl  The different kinds of objects that can be added to a class.
+dnl  The different kinds of alternative objects that can build
+dnl  the same class.
+dnl  At the moment, this is just used for the test data generator.
+m4_define(`m4_build_represent_alt_replacement', `generator, constraint')
+m4_define(`m4_Polyhedron_build_represent_alt_replacement',
+         `generator, constraint')
+m4_define(`m4_Grid_build_represent_alt_replacement',
+         `constraint, congruence, grid_generator')
+
+dnl  The different kinds of objects that can have a relation with a class.
 m4_define(`m4_relation_represent_replacement', `constraint')
 m4_define(`m4_Polyhedron_relation_represent_replacement',
          `constraint, generator')
@@ -542,7 +553,8 @@ m4_define(`m4_Polyhedron_add_represent_replacement',
 m4_define(`m4_Grid_add_represent_replacement',
          `constraint, grid_generator, congruence')
 
-dnl  The different kinds of objects use to describe a class.
+dnl  The different kinds of objects that can be obtained from a
+dnl  class description.
 m4_define(`m4_get_represent_replacement', `constraint')
 m4_define(`m4_Polyhedron_get_represent_replacement',
          `constraint, generator, congruence')
@@ -601,3 +613,5 @@ m4_define(`m4_Polyhedron_binminop_replacement',
          `m4_binminop_replacement, poly_hull_assign_and_minimize')
 m4_define(`m4_Grid_binminop_replacement',
          `m4_binminop_replacement, join_assign_and_minimize')
+
+m4_divert`'
