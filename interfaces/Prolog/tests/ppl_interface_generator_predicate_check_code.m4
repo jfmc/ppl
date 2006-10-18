@@ -74,7 +74,8 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_test :-
   (
-   (TEST_DATA = 1 ; TEST_DATA = 2 ; TEST_DATA = 3),
+   (TEST_DATA = e0 ; TEST_DATA = 0 ;
+    TEST_DATA = 1 ; TEST_DATA = 2 ; TEST_DATA = 3),
    (
     ppl_@BUILD_REPRESENT@s_test_data(TEST_DATA, t_@TOPOLOGY@, Space_Dim, RS1),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(RS1, PS1),
@@ -94,7 +95,8 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
 `
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_test :-
   (
-   (TEST_DATA = 1, TEST_DATA = 2, TEST_DATA = 3,
+   (TEST_DATA = e0, TEST_DATA = e1, TEST_DATA = 0,
+    TEST_DATA = 1, TEST_DATA = 2, TEST_DATA = 3,
     TEST_DATA = 4, TEST_DATA = 5, TEST_DATA = 6),
    (
     ppl_box_test_data(TEST_DATA, t_@TOPOLOGY@, _Space_Dim, Box),
@@ -181,6 +183,49 @@ ppl_@CLASS@_@DIMENSION@_test :-
     ppl_delete_@CLASS@(PS2),
     ppl_delete_@CLASS@(PS3),
     ppl_delete_@CLASS@(PS4)
+   ->
+     fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
+`
+ppl_@CLASS@_get_@GET_REPRESENT@s_test :-
+  (
+   (TEST_DATA = e0, TEST_DATA = 0,
+    TEST_DATA = 1, TEST_DATA = 2, TEST_DATA = 3),
+   (
+    ppl_@GET_REPRESENT@s_test_data(TEST_DATA, t_@TOPOLOGY@, _, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@GET_REPRESENT@s(RS, PS),
+    ppl_@CLASS@_get_@GET_REPRESENT@(PS, RS1),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@GET_REPRESENT@s(RS1, PS1),
+    ppl_@CLASS@_equals_@CLASS@(PS, PS1),
+    ppl_delete_@CLASS@(PS),
+    ppl_delete_@CLASS@(PS1)
+   ->
+     fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
+`
+ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_test :-
+  (
+   (TEST_DATA = 0,
+    TEST_DATA = 1, TEST_DATA = 2, TEST_DATA = 3),
+   (
+    ppl_@GET_REPRESENT@s_test_data(TEST_DATA, t_@TOPOLOGY@, _, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@GET_REPRESENT@s(RS, PS),
+    ppl_@CLASS@_get_@GET_REPRESENT@(PS, RS1),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@GET_REPRESENT@s(RS1, PS1),
+    ppl_@CLASS@_equals_@CLASS@(PS, PS1),
+    ppl_@GET_REPRESENT@s_test_data(e0, t_@TOPOLOGY@, _, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@GET_REPRESENT@s(RS, PS2),
+    \+ ppl_@CLASS@_get_minimized_@GET_REPRESENT@(PS2, _),
+    ppl_delete_@CLASS@(PS),
+    ppl_delete_@CLASS@(PS1)
    ->
      fail ; true)
   ).

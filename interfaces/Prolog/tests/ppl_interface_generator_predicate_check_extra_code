@@ -78,7 +78,7 @@ make_var_list(I, Dim, ['$VAR'(I)|Var_List]) :-
   (I1 is I + 1,
   make_var_list(I1, Dim, Var_List)).
 
-%%%%%%%%%%%% predicates for succeeded and failed predicate %%%%%%%
+%%%%%%%%%%%% predicates for success and errors.  %%%%%%%%%%%%%%%%%
 
 write_success(Predicate_name) :-
   display_message([test, for, Predicate_name, 'succeeded.']).
@@ -98,7 +98,20 @@ ppl_initial_test_system(congruence, universe).
 ppl_initial_test_system(generator, empty).
 ppl_initial_test_system(grid_generator, empty).
 
-/* Some test data. */
+/* constraint_systems and generator_systems */
+
+ppl_constraints_test_data(e0, _Topology, 0, [0 = 1]).
+ppl_generators_test_data(e0, _Topology, 0, []).
+
+ppl_constraints_test_data(e1, _Topology, 1, CS) :-
+  (make_vars(1, [A]),
+   CS = [A >= 1, A =< 0]).
+ppl_generators_test_data(e1, _Topology, 1, GS) :-
+  (make_vars(1, [A]),
+   GS = [line(A)]).
+
+ppl_constraints_test_data(0, _Topology, 0, []).
+ppl_generators_test_data(0, _Topology, 0, [point(0)]).
 
 ppl_constraints_test_data(1, _Topology, 1, CS) :-
   (make_vars(1, [A]),
@@ -121,18 +134,33 @@ ppl_constraints_test_data(3, T, 1, CS) :-
    make_vars(1, [A]),
    CS = [A >= 0]).
 
-ppl_constraints_test_data(3, t_NNC_, 1, CS) :-
-  (make_vars(1, [A]),
-   CS = [A > 0]).
-
 ppl_generators_test_data(3, T, 1, GS) :-
   (T \= t_NNC_,
    make_vars(1, [A]),
    GS = [point(0*A), ray(A)]).
 
+ppl_constraints_test_data(3, t_NNC_, 1, CS) :-
+  (make_vars(1, [A]),
+   CS = [A > 0]).
+
 ppl_generators_test_data(3, t_NNC_, 1, GS) :-
   (make_vars(1, [A]),
    GS = [closure_point(0*A), point(A), ray(A)]).
+
+/* congruence_systems and grid_generator_systems */
+
+ppl_congruences_test_data(e0, _Topology, 0, [0 = 1]).
+ppl_grid_generators_test_data(e0, _Topology, 0, []).
+
+ppl_congruences_test_data(e1, _Topology, 1, CS) :-
+  (make_vars(1, [A]),
+   CS = [(A =:= 1) / 2, (A =:= 0) / 2]).
+ppl_generators_test_data(e1, _Topology, 1, GS) :-
+  (make_vars(1, [A]),
+   GS = [grid_line(A)]).
+
+ppl_congruences_test_data(0, _Topology, 0, []).
+ppl_grid_generators_test_data(0, _Topology, 0, [grid_point(0)]).
 
 ppl_congruences_test_data(1, _Topology, 1, CS) :-
   (make_vars(1, [A]),
@@ -158,12 +186,16 @@ ppl_grid_generators_test_data(3, _Topology, 1, GS) :-
   (make_vars(1, [A]),
    GS = [grid_point(0*A), parameter(1*A)]).
 
-ppl_box_test_data(1, _Topology, 1, [i(c(0), o(pinf))]).
+/* boxes  */
+
+ppl_box_test_data(e0, _Topology, 0, [empty]).
+ppl_box_test_data(e1, _Topology, 1, [empty]).
+ppl_box_test_data(0, _Topology, 0, []).
+ppl_box_test_data(1, _Topology, 1, [i(o(minf), o(pinf))]).
 ppl_box_test_data(2, _Topology, 1, [i(c(0), c(0))]).
-ppl_box_test_data(3, _Topology, 1, [empty]).
+ppl_box_test_data(3, _Topology, 1, [i(c(0), o(pinf))]).
 ppl_box_test_data(4, _Topology, 2, [i(c(1/2), o(pinf)), i(o(minf), c(-1/2))]).
-ppl_box_test_data(5, _Topology, 0, [empty]).
-ppl_box_test_data(6, _Topology, 2, [i(c(-4), c(1)), i(c(-1), c(1))]).
-ppl_box_test_data(7, T, 2, [i(c(0/2), o(pinf)), i(o(minf), c(1))]) :-
+ppl_box_test_data(5, _Topology, 2, [i(c(-4), c(1)), i(c(-1), c(1))]).
+ppl_box_test_data(6, T, 2, [i(c(0/2), o(pinf)), i(o(minf), c(1))]) :-
   T \= t_NNC_.
-ppl_box_test_data(7, t_NNC_, 2, [i(o(0/2), o(pinf)), i(o(minf), o(1))]).
+ppl_box_test_data(6, t_NNC_, 2, [i(o(0/2), o(pinf)), i(o(minf), o(1))]).
