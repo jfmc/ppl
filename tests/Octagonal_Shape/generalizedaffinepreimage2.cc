@@ -139,7 +139,7 @@ test05() {
   try {
     // This is an incorrect use of method
     // Octagonal_Shape::generalized_affine_preimage(v, r, expr, d):
-    // it is illegal to use a variable in the 'expr' expression which
+    // it is illegal to use a variable in the 'expr' expression that
     // does not appear in the octagon.
     oct.generalized_affine_preimage(A, GREATER_THAN_OR_EQUAL, B + C);
   }
