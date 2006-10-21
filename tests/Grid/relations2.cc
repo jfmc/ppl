@@ -68,7 +68,8 @@ test03() {
   print_generators(gr, "*** gr ***");
 
   bool ok
-    =  (gr.relation_with((A + C %= 0) / 3) == Poly_Con_Relation::strictly_intersects());
+    =  (gr.relation_with((A + C %= 0) / 3)
+        == Poly_Con_Relation::strictly_intersects());
 
   return ok;
 }
@@ -85,8 +86,10 @@ test04() {
   print_generators(gr, "*** gr ***");
 
   bool ok
-    = (gr.relation_with((A + 0*B %= 0) / 0) == Poly_Con_Relation::strictly_intersects()
-       && gr.relation_with((B + 0*B %= -2) / 0) == Poly_Con_Relation::is_disjoint());
+    = (gr.relation_with((A + 0*B %= 0) / 0)
+         == Poly_Con_Relation::strictly_intersects()
+       && gr.relation_with((B + 0*B %= -2) / 0)
+         == Poly_Con_Relation::is_disjoint());
 
   return ok;
 }
@@ -370,6 +373,22 @@ test19() {
   return ok;
 }
 
+// Grid strictly intersects where the inhomogeneous term is non-zero.
+bool
+test20() {
+  Variable A(0);
+
+  Grid gr(1);
+  gr.add_congruence((A %= 0) / 1);
+  print_congruences(gr, "*** gr ***");
+
+  bool ok
+    = (gr.relation_with((2*A %= 1) / 3)
+       == (Poly_Con_Relation::strictly_intersects()));
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -392,4 +411,5 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN
