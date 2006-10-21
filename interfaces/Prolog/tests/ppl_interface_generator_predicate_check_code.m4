@@ -49,7 +49,7 @@ dnl all tests must be between `(' and `)'.
 m4_divert(-1)
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `
-ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_test :-
+ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_3_test :-
   (
    clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(0, empty, PS),
    ppl_delete_@CLASS@(PS)
@@ -60,7 +60,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_test :-
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
 `
-ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_test :-
+ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_2_test :-
   (
    clean_ppl_new_@INTOPOLOGY@@FRIEND@_from_space_dimension(0, universe, PS),
    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@(PS, PS1),
@@ -73,7 +73,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_test :-
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `
-ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_test :-
+ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_2_test :-
   (
    (TEST_DATA = e0 ; TEST_DATA = 0 ;
     TEST_DATA = 1 ; TEST_DATA = 2 ; TEST_DATA = 3),
@@ -94,7 +94,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_test :-
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
 `
-ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_test :-
+ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_2_test :-
   (
    (TEST_DATA = e0; TEST_DATA = e1; TEST_DATA = 0;
     TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3;
@@ -140,7 +140,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_test :-
 
 m4_define(`ppl_@CLASS@_swap_code',
 `
-ppl_@CLASS@_swap_test :-
+ppl_@CLASS@_swap_2_test :-
   (
    (
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(3, universe, PS),
@@ -158,7 +158,7 @@ ppl_@CLASS@_swap_test :-
 
 m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 `
-ppl_@CLASS@_@DIMENSION@_test :-
+ppl_@CLASS@_@DIMENSION@_2_test :-
   (
    (
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(2, universe, PS),
@@ -192,7 +192,7 @@ ppl_@CLASS@_@DIMENSION@_test :-
 
 m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 `
-ppl_@CLASS@_get_@GET_REPRESENT@s_test :-
+ppl_@CLASS@_get_@GET_REPRESENT@s_2_test :-
   (
    (TEST_DATA = e0; TEST_DATA = 0;
     TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
@@ -220,7 +220,7 @@ ppl_@CLASS@_get_@GET_REPRESENT@s_test :-
 
 m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 `
-ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_test :-
+ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_2_test :-
   (
    (TEST_DATA = e0; TEST_DATA = 0;
     TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
@@ -248,7 +248,7 @@ ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_test :-
 
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `
-ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_test :-
+ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_3_test :-
   (
    (TEST_DATA = e0; TEST_DATA = 0;
     TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
@@ -264,5 +264,56 @@ ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_test :-
   ).
 
 ')
+
+m4_define(`ppl_@CLASS@_get_@BOX@_code',
+`
+ppl_@CLASS@_get_@BOX@_3_test :-
+  (
+   (TEST_DATA = e0; TEST_DATA = 0;
+    TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
+   (CC = any ; CC = simplex ; CC = polynomial),
+   (
+    ppl_@CONSTRAINER@s_test_data(TEST_DATA, t_@TOPOLOGY@, _Space_Dim, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
+    ppl_@CLASS@_get_@BOX@(PS, CC, Box),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box, PS1),
+    ppl_@CLASS@_get_@BOX@(PS1, CC, Box1),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box1, PS2),
+    ppl_@CLASS@_equals_@CLASS@(PS1, PS2),
+    ppl_@CLASS@_contains_@CLASS@(PS2, PS),
+    ppl_delete_@CLASS@(PS),
+    ppl_delete_@CLASS@(PS1),
+    ppl_delete_@CLASS@(PS2)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_Grid_get_@BOX@_code',
+`
+ppl_Grid_get_@BOX@_2_test :-
+  (
+   (TEST_DATA = e0; TEST_DATA = 0;
+    TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
+   (
+    ppl_congruences_test_data(TEST_DATA, _, _Space_Dim, RS),
+    clean_ppl_new_Grid_from_congruences(RS, PS),
+    ppl_Grid_get_@BOX@(PS, Box),
+    clean_ppl_new_Grid_from_@BOX@(Box, PS1),
+    ppl_Grid_get_@BOX@(PS1, Box1),
+    clean_ppl_new_Grid_from_@BOX@(Box1, PS2),
+    ppl_Grid_equals_Grid(PS1, PS2),
+    ppl_Grid_contains_Grid(PS2, PS),
+    ppl_delete_Grid(PS),
+    ppl_delete_Grid(PS1),
+    ppl_delete_Grid(PS2)
+   ->
+    fail ; true)
+  ).
+
+')
+
+dnl ppl_@CLASS@_@HAS_PROPERTY@
 
 m4_divert`'dnl

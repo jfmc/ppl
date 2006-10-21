@@ -123,7 +123,7 @@ m4_ifdef(`$1_code',
          `m4_ifelse(m4_check_test_usability($1, $5), keep,
                     `m4_ifelse(m4_start1, 0,
                       `m4_undefine(`m4_start1')  ', `
-')'  ``  '($1_test
+')'  ``  '($1_$2_test
       -> (!COMMA write_error($1))
       ;  write_success($1))COMMA
 `  '')')`'dnl
@@ -135,6 +135,7 @@ dnl -----------------------------------------------------------------
 m4_patsubst(m4_library_names_to_code(0, m4_library_predicate_list),
             COMMA, `,')`'dnl
 m4_patsubst(m4_all_code, COMMA, `,')`'dnl
+m4_popdef(`m4_extension')`'dnl
 m4_undivert(1)`'dnl
 m4_divert`'dnl
 dnl
@@ -145,16 +146,16 @@ dnl
 dnl -----------------------------------------------------------------
 dnl Extra definitions for divert(2)
 dnl -----------------------------------------------------------------
-m4_popdef(`m4_extension')`'dnl
 m4_pushdef(`m4_extension', `dnl
 m4_ifdef(`$1_code',
          `m4_ifelse(m4_check_test_usability($1, $5), keep,
-:- discontiguous($1_test/0).)')
+:- discontiguous($1_$2_test/0).)')
 ')`'dnl
 dnl -----------------------------------------------------------------
 dnl Main call to macros to generate code for divert(2)
 dnl -----------------------------------------------------------------
 m4_all_code`'dnl
+m4_popdef(`m4_extension')`'dnl
 dnl
 m4_undivert(2)`'dnl
 m4_divert`'dnl
@@ -166,18 +167,17 @@ dnl
 dnl -----------------------------------------------------------------
 dnl Extra definitions for divert(3)
 dnl -----------------------------------------------------------------
-m4_popdef(`m4_extension')`'dnl
+m4_pushdef(`m4_extension', `dnl
 m4_ifdef(`$1_code',
-`m4_ifelse(m4_check_test_usability($1, $5), keep, m4_indir(`$1_code'))',
-         `m4_default_code($1)')`'dnl
-dnl Define a default test.
-m4_pushdef(`m4_default_code', `')`'dnl
+`m4_ifelse(m4_check_test_usability($1, $5), keep, m4_indir(`$1_code'))')`'dnl
+')
 dnl
 dnl -----------------------------------------------------------------
 dnl Main call to macros to generate code for divert(3)
 dnl -----------------------------------------------------------------
 m4_patsubst(m4_library_names_to_code(0, m4_library_predicate_list),
   COMMA, `,')`'dnl
+m4_popdef(`m4_extension')`'dnl
 dnl
 m4_undivert(3)`'dnl
 m4_divert`'dnl
@@ -246,20 +246,18 @@ m4_extras($1, m4_procedure_list)
 dnl
 m4_pushdef(`m4_default_code', `')`'dnl
 dnl
-m4_define(`m4_extension', `dnl
+m4_pushdef(`m4_extension', `dnl
 m4_ifdef(`$1_code',
 `m4_ifelse(m4_check_test_usability($1, $5), keep, `
 m4_indir(`$1_code')`'dnl
-')',
-         `m4_default_code($1)')
+')', `')
 ')`'dnl
-dnl Define a default test.
-m4_pushdef(`m4_default_code', `')`'dnl
 dnl
 dnl -----------------------------------------------------------------
 dnl Main call to macros to generate code for divert(4)
 dnl -----------------------------------------------------------------
 m4_all_code`'dnl
+m4_popdef(`m4_extension')`'dnl
 dnl
 m4_undivert(4)`'dnl
 m4_divert`'dnl
@@ -283,6 +281,7 @@ dnl -----------------------------------------------------------------
 dnl Main calls to macros to generate code for divert(5)
 dnl -----------------------------------------------------------------
 m4_patsubst(m4_all_code, COMMA, `,')`'dnl
+m4_popdef(`m4_extension')`'dnl
 m4_undivert(5)`'dnl
 m4_divert`'dnl
 dnl
@@ -293,7 +292,6 @@ dnl
 dnl -----------------------------------------------------------------
 dnl Extra definitions for divert(5)
 dnl -----------------------------------------------------------------
-m4_popdef(`m4_default_code')`'dnl
 dnl
 dnl -----------------------------------------------------------------
 dnl Main call to macros to generate code for divert(5)
