@@ -593,14 +593,14 @@ PPL::Grid::is_discrete() const {
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
-    // Search for lines in the generator system.
-    for (dimension_type row = gen_sys.num_generators(); row-- > 1; )
-      if (gen_sys[row].is_line())
-	return false;
+  // Search for lines in the generator system.
+  for (dimension_type row = gen_sys.num_generators(); row-- > 1; )
+    if (gen_sys[row].is_line())
+      return false;
 
   // The system of generators is composed only by
   // points and parameters: the polyhedron is discrete.
-    return true;
+  return true;
 }
 
 bool
@@ -622,9 +622,8 @@ PPL::Grid::contains_integer_point() const {
   // A grid has an integer point if its intersection with the integer
   // grid is non-empty.
   Congruence_System cgs;
-  for (dimension_type var_index = space_dim; var_index-- > 0; ) {
+  for (dimension_type var_index = space_dim; var_index-- > 0; )
     cgs.insert(Variable(var_index) %= 0);
-  }
 
   Grid gr = *this;
   if (gr.add_congruences_and_minimize(cgs))
