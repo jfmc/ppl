@@ -1,8 +1,8 @@
 m4_divert(-1)
 m4_define(`dnl', `m4_dnl')
-
+dnl
 dnl Include the language independent `dat' information.
-m4_include(`ppl_interface_generator_common_dat.m4')
+m4_include(`ppl_interface_generator_common_dat.m4')`'dnl
 
 dnl Library predicate list.
 m4_define(`m4_library_predicate_list', `dnl
@@ -46,8 +46,8 @@ ppl_MIP_Problem_optimizing_point/2,
 ppl_MIP_Problem_optimal_value/3,
 ppl_MIP_Problem_evaluate_objective_function/4,
 ppl_MIP_Problem_OK/1`'dnl
-')
-
+')`'dnl
+dnl
 dnl m4_procedure_list
 dnl This class using patterns wherever possible.
 dnl Which classes the schema applies to is determined by +/-group_name.
@@ -64,12 +64,12 @@ dnl in the ppl_interface_generator_*_code.m4 file.
 dnl The <name> must be exactly as written here.
 dnl
 m4_define(`m4_procedure_list', `dnl
+ppl_delete_@CLASS@/1 *nofail +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3 +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@/2 +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s/2 +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@/2 +simple -bd_shape,
 ppl_@CLASS@_swap/2 *nofail +simple_pps,
-ppl_delete_@CLASS@/1 *nofail +simple_pps,
 ppl_@CLASS@_@DIMENSION@/2 +simple_pps,
 ppl_@CLASS@_get_@GET_REPRESENT@s/2 +simple,
 ppl_@CLASS@_get_minimized_@GET_REPRESENT@s/2 +simple,
@@ -111,6 +111,6 @@ ppl_@CLASS@_remove_higher_space_dimensions/2 *nofail +simple_pps,
 ppl_@CLASS@_expand_space_dimension/3 *nofail +simple -bd_shape,
 ppl_@CLASS@_fold_space_dimensions/3  +simple -bd_shape,
 ppl_@CLASS@_map_space_dimensions/2 +simple_pps
-')
-
+')`'dnl
+dnl
 m4_divert`'dnl

@@ -1,3 +1,4 @@
+m4_divert(-1)
 m4_define(`dnl', `m4_dnl')
 dnl This file contains the schematic tests for the Prolog interface predicates.
 dnl
@@ -95,9 +96,9 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
 `
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_test :-
   (
-   (TEST_DATA = e0, TEST_DATA = e1, TEST_DATA = 0,
-    TEST_DATA = 1, TEST_DATA = 2, TEST_DATA = 3,
-    TEST_DATA = 4, TEST_DATA = 5, TEST_DATA = 6),
+   (TEST_DATA = e0; TEST_DATA = e1; TEST_DATA = 0;
+    TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3;
+    TEST_DATA = 4; TEST_DATA = 5; TEST_DATA = 6),
    (
     ppl_box_test_data(TEST_DATA, t_@TOPOLOGY@, _Space_Dim, Box),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box, PS),
@@ -193,18 +194,26 @@ m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 `
 ppl_@CLASS@_get_@GET_REPRESENT@s_test :-
   (
-   (TEST_DATA = e0, TEST_DATA = 0,
-    TEST_DATA = 1, TEST_DATA = 2, TEST_DATA = 3),
+   (TEST_DATA = e0; TEST_DATA = 0;
+    TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
    (
-    ppl_@GET_REPRESENT@s_test_data(TEST_DATA, t_@TOPOLOGY@, _, RS),
-    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@GET_REPRESENT@s(RS, PS),
-    ppl_@CLASS@_get_@GET_REPRESENT@(PS, RS1),
-    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@GET_REPRESENT@s(RS1, PS1),
-    ppl_@CLASS@_equals_@CLASS@(PS, PS1),
-    ppl_delete_@CLASS@(PS),
-    ppl_delete_@CLASS@(PS1)
+    ppl_@CONSTRAINER@s_test_data(TEST_DATA, t_@TOPOLOGY@, Space_Dim, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
+    ppl_@CLASS@_get_@GET_REPRESENT@s(PS, RS1),
+    (predicate_exists(ppl_@CLASS@_add_@GET_REPRESENT@s)
+    ->
+      (ppl_initial_test_system(@GET_REPRESENT@, U_or_E),
+      clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+                                                           U_or_E, PS1),
+      ppl_@CLASS@_add_@GET_REPRESENT@s(PS1, RS1),
+      ppl_@CLASS@_equals_@CLASS@(PS, PS1),
+      ppl_delete_@CLASS@(PS1))
+    ;
+      true
+    ),
+    ppl_delete_@CLASS@(PS)
    ->
-     fail ; true)
+    fail ; true)
   ).
 
 ')
@@ -213,21 +222,45 @@ m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 `
 ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_test :-
   (
-   (TEST_DATA = 0,
-    TEST_DATA = 1, TEST_DATA = 2, TEST_DATA = 3),
+   (TEST_DATA = e0; TEST_DATA = 0;
+    TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
    (
-    ppl_@GET_REPRESENT@s_test_data(TEST_DATA, t_@TOPOLOGY@, _, RS),
-    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@GET_REPRESENT@s(RS, PS),
-    ppl_@CLASS@_get_@GET_REPRESENT@(PS, RS1),
-    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@GET_REPRESENT@s(RS1, PS1),
-    ppl_@CLASS@_equals_@CLASS@(PS, PS1),
-    ppl_@GET_REPRESENT@s_test_data(e0, t_@TOPOLOGY@, _, RS),
-    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@GET_REPRESENT@s(RS, PS2),
-    \+ ppl_@CLASS@_get_minimized_@GET_REPRESENT@(PS2, _),
-    ppl_delete_@CLASS@(PS),
-    ppl_delete_@CLASS@(PS1)
+    ppl_@CONSTRAINER@s_test_data(TEST_DATA, t_@TOPOLOGY@, Space_Dim, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
+    ppl_@CLASS@_get_minimized_@GET_REPRESENT@s(PS, RS1),
+    (predicate_exists(ppl_@CLASS@_add_@GET_REPRESENT@s)
+    ->
+      (ppl_initial_test_system(@GET_REPRESENT@, U_or_E),
+      clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+                                                           U_or_E, PS1),
+      ppl_@CLASS@_add_@GET_REPRESENT@s(PS1, RS1),
+      ppl_@CLASS@_equals_@CLASS@(PS, PS1),
+      ppl_delete_@CLASS@(PS1))
+    ;
+      true
+    ),
+    ppl_delete_@CLASS@(PS)
    ->
-     fail ; true)
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
+`
+ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_test :-
+  (
+   (TEST_DATA = e0; TEST_DATA = 0;
+    TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
+   (
+    ppl_@CONSTRAINER@s_test_data(TEST_DATA, t_@TOPOLOGY@, _Space_Dim, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
+    ppl_@RELATION_REPRESENT@_test_data(TEST_DATA, R, Rel_Expected),
+    ppl_@CLASS@_relation_with_@RELATION_REPRESENT@(PS, R, Rel),
+    Rel = Rel_Expected,
+    ppl_delete_@CLASS@(PS)
+   ->
+    fail ; true)
   ).
 
 ')

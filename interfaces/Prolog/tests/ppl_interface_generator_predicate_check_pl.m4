@@ -1,4 +1,4 @@
-m4_define(`dnl', `m4_dnl')
+m4_define(`dnl', `m4_dnl')`'dnl
 dnl This file generates ppl_predicate_check.pl.
 /* Prolog code for checking all predicates.  -*- C++ -*-
 m4_include(`ppl_interface_generator_copyright')dnl
@@ -39,10 +39,17 @@ dnl ==================================================================
 dnl The top level call is a call to a test for each predicate
 dnl ==================================================================
 dnl
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                   %
+%                       Main call for tests                         %
+%                                                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 check_all :-
   (noisy(_) -> true; make_quiet),
   ppl_initialize,
-m4_divert(1)`'dnl
+  m4_divert(1)`'dnl
   ppl_finalize.
 
 dnl
@@ -50,25 +57,56 @@ dnl ==================================================================
 dnl Any required declarations for the tests go here
 dnl ==================================================================
 dnl
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                   %
+%                   discontiguous declarations                      %
+%                                                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 m4_divert(2)`'dnl
 dnl
 dnl ==================================================================
 dnl Tests for the library predicates go here
 dnl ==================================================================
 dnl
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                   %
+%                   library predicate tests                         %
+%                                                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 m4_divert(3)`'dnl
 dnl
 dnl ==================================================================
 dnl Tests for the class dependent predicates go here
 dnl ==================================================================
 dnl
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                   %
+%               class dependent predicate tests                     %
+%                                                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 m4_divert(4)`'dnl
 dnl
 dnl ==================================================================
-dnl Test data and other generic code goes here
+dnl List all class dependent predicates.
 dnl ==================================================================
 dnl
-m4_divert(5)`'dnl
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                   %
+%               list of all class dependent predicates              %
+%                                                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+all_class_dependent_predicates(
+  [
+  m4_divert(5)`'dnl
+  ]
+).
+
+dnl
+dnl ==================================================================
+dnl Other generic test code goes here
+dnl ==================================================================
+dnl
+m4_divert(6)`'dnl
 dnl
 dnl ==================================================================
 dnl Generate code for divert(1), the top-level call
@@ -77,6 +115,7 @@ dnl
 dnl -----------------------------------------------------------------
 dnl Extra files and definitions for divert(1)
 dnl -----------------------------------------------------------------
+m4_divert(-1)`'dnl
 m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 m4_define(`m4_start1', 0)`'dnl
 m4_pushdef(`m4_extension', `dnl
@@ -84,10 +123,10 @@ m4_ifdef(`$1_code',
          `m4_ifelse(m4_check_test_usability($1, $5), keep,
                     `m4_ifelse(m4_start1, 0,
                       `m4_undefine(`m4_start1')  ', `
-')'  `  ($1_test
+')'  ``  '($1_test
       -> (!COMMA write_error($1))
       ;  write_success($1))COMMA
-')')`'dnl
+`  '')')`'dnl
 ')`'dnl
 dnl
 dnl -----------------------------------------------------------------
@@ -209,9 +248,13 @@ m4_pushdef(`m4_default_code', `')`'dnl
 dnl
 m4_define(`m4_extension', `dnl
 m4_ifdef(`$1_code',
-`m4_ifelse(m4_check_test_usability($1, $5), keep, m4_indir(`$1_code'))',
-         `m4_default_code($1)')`'dnl
-')
+`m4_ifelse(m4_check_test_usability($1, $5), keep, `
+m4_indir(`$1_code')`'dnl
+')',
+         `m4_default_code($1)')
+')`'dnl
+dnl Define a default test.
+m4_pushdef(`m4_default_code', `')`'dnl
 dnl
 dnl -----------------------------------------------------------------
 dnl Main call to macros to generate code for divert(4)
@@ -219,6 +262,28 @@ dnl -----------------------------------------------------------------
 m4_all_code`'dnl
 dnl
 m4_undivert(4)`'dnl
+m4_divert`'dnl
+dnl
+dnl ==================================================================
+dnl Generate code for divert(1), the top-level call
+dnl ==================================================================
+dnl
+dnl -----------------------------------------------------------------
+dnl Extra files and definitions for divert(6)
+dnl -----------------------------------------------------------------
+m4_define(`m4_pre_extra_class_code', `')`'dnl
+m4_define(`m4_start1', 0)`'dnl
+m4_pushdef(`m4_extension', `dnl
+m4_ifelse(m4_start1, 0,
+  `m4_undefine(`m4_start1')', `COMMA
+')  `$1'dnl
+')`'dnl
+dnl
+dnl -----------------------------------------------------------------
+dnl Main calls to macros to generate code for divert(5)
+dnl -----------------------------------------------------------------
+m4_patsubst(m4_all_code, COMMA, `,')`'dnl
+m4_undivert(5)`'dnl
 m4_divert`'dnl
 dnl
 dnl ==================================================================
@@ -237,4 +302,5 @@ m4_changequote(`@<<@',`@>>@')@<<@@>>@dnl
 m4_include(
   @<<@ppl_interface_generator_predicate_check_extra_code@>>@)@<<@@>>@dnl
 m4_changequote`'dnl
-m4_undivert(5)`'dnl
+m4_undivert(6)`'dnl
+m4_divert`'dnl
