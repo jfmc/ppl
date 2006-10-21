@@ -3,7 +3,7 @@
 
 This file is part of the Parma Polyhedra Library (PPL).
 
-The PPL is free software; you can redistribute it and/or modify it
+The PPL is fre software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; either version 2 of the License, or (at your
 option) any later version.
@@ -303,7 +303,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
   const Coefficient& modulus = cg.modulus();
 
   TEMP_INTEGER(div);
-  div = 0;
+  div = modulus;
 
   TEMP_INTEGER(sp);
 
@@ -317,7 +317,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 
     case Grid_Generator::POINT:
       if (cg.is_proper_congruence())
-	sp %= modulus;
+	sp %= div;
       if (sp == 0)
 	// The point satisfies the congruence.
 	if (point_sp == 0)
@@ -353,7 +353,7 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 
     case Grid_Generator::PARAMETER:
       if (cg.is_proper_congruence())
-	sp %= (modulus * g->divisor());
+	sp %= (div * g->divisor());
       if (sp == 0)
 	// Parameter g satisfies the cg so the relation depends
 	// entirely on the other generators.
@@ -369,7 +369,8 @@ PPL::Grid::relation_with(const Congruence& cg) const {
       if (point_sp != 0)
 	// At least one of any previously encountered points fails to
 	// satisfy cg.
-	if (point_sp == div)
+	if (point_sp % div == 0)
+	  //////	if (point_sp == div)
 	  // There is also a grid point that satisfies cg.
 	  return Poly_Con_Relation::strictly_intersects();
 
