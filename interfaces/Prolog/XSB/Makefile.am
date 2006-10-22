@@ -84,7 +84,8 @@ ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc ppl_xsb.la Makefile
 	cp -f ppl_xsb.cc ppl_xsb.c
 	echo "consult(ppl_xsb," \
 	  "[cc('$(CXX)'), cc_opts('$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) " \
-	    "$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)')])." \
+	    "$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) " \
+	    "-L../../../src/.libs -L../../../Watchdog/src/.libs')])." \
 		| $(LIBTOOL) --mode=execute \
 			-dlopen ../../../src/libppl.la \
 			-dlopen ../../../Watchdog/src/libpwl.la \
