@@ -175,6 +175,7 @@ template <typename PH>
 inline bool
 Pointset_Powerset<PH>
 ::geometrically_covers(const Pointset_Powerset& y) const {
+  // FIXME: this is buggy when PH is not an abstraction of NNC_Polyhedron.
   const Pointset_Powerset<NNC_Polyhedron> xx(*this);
   const Pointset_Powerset<NNC_Polyhedron> yy(y);
   return xx.geometrically_covers(yy);
@@ -184,6 +185,7 @@ template <typename PH>
 inline bool
 Pointset_Powerset<PH>
 ::geometrically_equals(const Pointset_Powerset& y) const {
+  // FIXME: this is buggy when PH is not an abstraction of NNC_Polyhedron.
   const Pointset_Powerset<NNC_Polyhedron> xx(*this);
   const Pointset_Powerset<NNC_Polyhedron> yy(y);
   return xx.geometrically_covers(yy) && yy.geometrically_covers(xx);
@@ -224,6 +226,7 @@ Pointset_Powerset<PH>
 template <typename PH>
 inline bool
 check_containment(const PH& ph, const Pointset_Powerset<PH>& ps) {
+  // FIXME: this is buggy when PH is not an abstraction of NNC_Polyhedron.
   const NNC_Polyhedron pph = NNC_Polyhedron(ph.constraints());
   const Pointset_Powerset<NNC_Polyhedron> pps(ps);
   return check_containment(pph, pps);
