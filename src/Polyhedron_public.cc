@@ -2569,8 +2569,8 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     // Constrain the new dimension to be equal to the right hand side.
     // (check for emptiness because we will add lines).
     if (add_constraint_and_minimize(new_var == rhs)) {
-      // Cylindrificate on all the variables occurring in the left hand side
-      // (we force minimization because we will need the constraints).
+      // Existentially quantify all the variables occurring in the left hand
+      // side (we force minimization because we will need the constraints).
       add_recycled_generators_and_minimize(new_lines);
 
       // Constrain the new dimension so that it is related to
@@ -2606,7 +2606,7 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     if (is_empty())
       return;
 
-    // Cylindrificate on all the variables occurring in the left hand side
+    // Existentially quantify all the variables occurring in the left hand side
     // (we force minimization because we will need the constraints).
     add_recycled_generators_and_minimize(new_lines);
 
@@ -2696,8 +2696,8 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
     // Constrain the new dimension to be equal to `lhs'
     // (also check for emptiness because we have to add lines).
     if (add_constraint_and_minimize(new_var == lhs)) {
-      // Cylindrificate on all the variables occurring in the left hand side
-      // (we force minimization because we will need the constraints).
+      // Existentially quantify all the variables occurring in the left hand
+      // side (we force minimization because we will need the constraints).
       add_recycled_generators_and_minimize(new_lines);
 
       // Constrain the new dimension so that it is related to
@@ -2751,7 +2751,7 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
     // Note: DO check for emptiness here, as we will add lines.
     if (is_empty())
       return;
-    // Cylindrificate on all the variables occurring in `lhs'.
+    // Existentially quantify all the variables occurring in `lhs'.
     add_recycled_generators(new_lines);
   }
   assert(OK());

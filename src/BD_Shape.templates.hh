@@ -3280,7 +3280,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 
     if (!lhs_vars_intersects_rhs_vars) {
       // `lhs' and `rhs' variables are disjoint.
-      // Cylindrificate on all variables in the lhs.
+      // Existentially quantify all variables in the lhs.
       for (dimension_type i = lhs_vars.size(); i-- > 0; )
 	forget_all_dbm_constraints(lhs_vars[i].id() + 1);
       // Constrain the left hand side expression so that it is related to
@@ -3324,7 +3324,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // ensures some approximation is tried even when the constraint
       // is not a bounded difference.
       affine_image(new_var, rhs);
-      // Cylindrificate on all variables in the lhs.
+      // Existentially quantify all variables in the lhs.
       // NOTE: enforce shortest-path closure for precision.
       shortest_path_closure_assign();
       assert(!marked_empty());
@@ -3766,7 +3766,7 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       // If the shrunk BD_Shape is empty, its preimage is empty too; ...
       if (is_empty())
 	return;
-      // Cylindrificate on all variables in the lhs.
+      // Existentially quantify all variables in the lhs.
       for (dimension_type i = lhs_vars.size(); i-- > 0; )
 	forget_all_dbm_constraints(lhs_vars[i].id() + 1);
     }
@@ -3781,7 +3781,7 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       // ensures some approximation is tried even when the constraint
       // is not a bounded difference.
       affine_image(new_var, lhs);
-      // Cylindrificate on all variables in the lhs.
+      // Existentiallly quantify all variables in the lhs.
       // NOTE: enforce shortest-path closure for precision.
       shortest_path_closure_assign();
       assert(!marked_empty());

@@ -1933,7 +1933,7 @@ generalized_affine_image(const Linear_Expression& lhs,
     if (add_recycled_congruences_and_minimize(new_cgs1)) {
       // The grid still contains points.
 
-      // Cylindrificate on all the variables occurring in the left
+      // Existentially quantify all the variables occurring in the left
       // hand side expression.
 
       // Adjust `new_lines' to the right dimension.
@@ -1963,7 +1963,7 @@ generalized_affine_image(const Linear_Expression& lhs,
     if (is_empty())
       return;
 
-    // Cylindrificate on all the variables occurring in the left hand
+    // Existentially quantify all the variables occurring in the left hand
     // side expression.
     add_recycled_grid_generators(new_lines);
 
@@ -2062,7 +2062,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     if (add_recycled_congruences_and_minimize(new_cgs1)) {
       // The grid still contains points.
 
-      // Cylindrificate on all the variables occurring in the left
+      // Existentially quantify all the variables occurring in the left
       // hand side
 
       // Adjust `new_lines' to the right dimension.
@@ -2096,7 +2096,7 @@ generalized_affine_preimage(const Linear_Expression& lhs,
     if (is_empty())
       return;
 
-    // Cylindrificate on all the variables occurring in `lhs'.
+    // Existentially quantify all the variables occurring in `lhs'.
     add_recycled_grid_generators(new_lines);
   }
   assert(OK());

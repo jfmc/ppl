@@ -3810,7 +3810,7 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 
     if (!lhs_vars_intersects_rhs_vars) {
       // `lhs' and `rhs' variables are disjoint.
-      // Cylindrificate on all variables in the lhs.
+      // Existentially quantify all variables in the lhs.
       for (dimension_type i = lhs_vars.size(); i-- > 0; ) {
 	dimension_type lhs_vars_i = lhs_vars[i].id();
 	forget_all_octagonal_constraints(lhs_vars_i);
@@ -3858,7 +3858,7 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // ensures some approximation is tried even when the constraint
       // is not a bounded difference.
       affine_image(new_var, rhs);
-      // Cylindrificate on all variables in the lhs.
+      // Existentially quantify all variables in the lhs.
       // NOTE: enforce strong closure for precision.
       strong_closure_assign();
       assert(!marked_empty());
@@ -4689,7 +4689,7 @@ Octagonal_Shape<T>
       // Any image of an empty octagon is empty.
       if (is_empty())
 	return;
-      // Cylindrificate on all variables in the lhs.
+      // Existentially quantify all variables in the lhs.
       for (dimension_type i = lhs_vars.size(); i-- > 0; ) {
 	dimension_type lhs_vars_i = lhs_vars[i].id();
 	forget_all_octagonal_constraints(lhs_vars_i);
@@ -4709,7 +4709,7 @@ Octagonal_Shape<T>
       // ensures some approximation is tried even when the constraint
       // is not an octagonal difference.
       affine_image(new_var, lhs);
-      // Cylindrificate on all variables in the lhs.
+      // Existentially quantify all variables in the lhs.
       // NOTE: enforce strong closure for precision.
       strong_closure_assign();
       assert(!marked_empty());
