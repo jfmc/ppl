@@ -5100,7 +5100,8 @@ template <typename T>
 memory_size_type
 Octagonal_Shape<T>::external_memory_in_bytes() const {
   // FIXME!
-  return 1;
+  // return 1;
+  return matrix.external_memory_in_bytes();
 }
 
 template <typename T>

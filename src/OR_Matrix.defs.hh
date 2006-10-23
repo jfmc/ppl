@@ -462,6 +462,12 @@ public:
   */
   bool ascii_load(std::istream& s);
 
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
   friend bool Parma_Polyhedra_Library::operator==<T>(const OR_Matrix<T>& x,
 						     const OR_Matrix<T>& y);
 

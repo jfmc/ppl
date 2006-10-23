@@ -28,6 +28,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
+memory_size_type
+OR_Matrix<T>::external_memory_in_bytes() const{
+  return vec.external_memory_in_bytes();
+}
+
+template <typename T>
 bool
 OR_Matrix<T>::OK() const {
 #ifndef NDEBUG
