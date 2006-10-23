@@ -456,7 +456,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of constraints \p cs contains strict inequalities.
   */
-  Octagonal_Shape(const Constraint_System& cs);
+  explicit Octagonal_Shape(const Constraint_System& cs);
 
   //! Builds an OS from the system of generators \p gs.
   /*!
@@ -466,7 +466,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  Octagonal_Shape(const Generator_System& gs);
+  explicit Octagonal_Shape(const Generator_System& gs);
 
   //! Builds an OS from the polyhedron \p ph.
   /*!
@@ -475,8 +475,8 @@ public:
     \p complexity is \p ANY_COMPLEXITY, then the OS built is the
     smallest one containing \p ph.
   */
-  Octagonal_Shape(const Polyhedron& ph,
-		  Complexity_Class complexity = ANY_COMPLEXITY);
+  explicit Octagonal_Shape(const Polyhedron& ph,
+			   Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator.

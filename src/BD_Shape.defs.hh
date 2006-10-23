@@ -440,7 +440,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of constraints \p cs contains strict inequalities.
   */
-  BD_Shape(const Constraint_System& cs);
+  explicit BD_Shape(const Constraint_System& cs);
 
   //! Builds a BDS from the system of generators \p gs.
   /*!
@@ -450,7 +450,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  BD_Shape(const Generator_System& gs);
+  explicit BD_Shape(const Generator_System& gs);
 
   //! Builds a BDS from the polyhedron \p ph.
   /*!
@@ -459,7 +459,8 @@ public:
     \p complexity is \p ANY_COMPLEXITY, then the BDS built is the
     smallest one containing \p ph.
   */
-  BD_Shape(const Polyhedron& ph, Complexity_Class complexity = ANY_COMPLEXITY);
+  explicit BD_Shape(const Polyhedron& ph,
+		    Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     The assignment operator
