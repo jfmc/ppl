@@ -209,10 +209,11 @@ Pointset_Powerset<PH>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-template <>
+template <typename PH>
 inline void
-Pointset_Powerset<C_Polyhedron>
+Pointset_Powerset<PH>
 ::poly_difference_assign(const Pointset_Powerset& y) {
+  // FIXME: can this become more accurate for, e.g., Grid instances?
   Pointset_Powerset<NNC_Polyhedron> nnc_this(*this);
   Pointset_Powerset<NNC_Polyhedron> nnc_y(y);
   nnc_this.poly_difference_assign(nnc_y);

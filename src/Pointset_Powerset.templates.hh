@@ -69,22 +69,18 @@ Pointset_Powerset<NNC_Polyhedron>
   assert(x.OK());
 }
 
-template <>
+template <typename PH>
 template <typename QH>
-Pointset_Powerset<C_Polyhedron>
+Pointset_Powerset<PH>
 ::Pointset_Powerset(const Pointset_Powerset<QH>& y)
   : Base(), space_dim(y.space_dimension()) {
   Pointset_Powerset& x = *this;
   for (typename Pointset_Powerset<QH>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
-    x.sequence.push_back(Determinate<C_Polyhedron>
-			 (C_Polyhedron(i->element().constraints())));
-
-  // FIXME: the following comment should be rephrased!
+    x.sequence.push_back(Determinate<PH>(PH(i->element().constraints())));
   // Note: this might be non-reduced even when `y' is known to be
-  // omega-reduced, because the constructor of C_Polyhedron, by
-  // enforcing topological closure, may have made different elements
-  // comparable.
+  // omega-reduced, because the constructor of PH may have made
+  // different QH elements to become comparable.
   x.reduced = false;
   assert(x.OK());
 }

@@ -70,7 +70,7 @@ public:
   */
   explicit
   Pointset_Powerset(dimension_type num_dimensions = 0,
-		     Degenerate_Element kind = UNIVERSE);
+		    Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
   Pointset_Powerset(const Pointset_Powerset& y);
@@ -501,15 +501,6 @@ check_containment(const PH& ph, const Pointset_Powerset<PH>& ps);
 template <>
 template <typename QH>
 Pointset_Powerset<NNC_Polyhedron>
-::Pointset_Powerset(const Pointset_Powerset<QH>& y);
-
-// CHECKME: according to the Intel compiler, the declaration of the
-// following specialization (of the class template parameter) should come
-// before the declaration of the corresponding full specialization
-// (where the member template parameter is specialized too).
-template <>
-template <typename QH>
-Pointset_Powerset<C_Polyhedron>
 ::Pointset_Powerset(const Pointset_Powerset<QH>& y);
 
 // Non-inline full specializations should be declared here
