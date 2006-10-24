@@ -32,39 +32,39 @@ import java.math.BigInteger;
 */
 public class Coefficient {
     //! Holds the value of \p this.
-    private BigInteger integer;
+    private BigInteger value;
 
-    //! Builds a coefficient built from an integer.
-    public Coefficient(int value) {
-	integer = new BigInteger(Integer.toString(value));
+    //! Builds a coefficient values \p i.
+    public Coefficient(int i) {
+	value = new BigInteger(Integer.toString(i));
     }
 
-    //! Builds a coefficient built from a long.
-    public Coefficient(long value) {
-	integer = new BigInteger(Long.toString(value));
+    //! Builds a coefficient valued \p l.
+    public Coefficient(long l) {
+	value = new BigInteger(Long.toString(l));
     }
 
-    //! Builds a coefficient built from a BigInteger.
-    public Coefficient(BigInteger b_int) {
-	integer = b_int;
+    //! Builds a coefficient valued \p bi.
+    public Coefficient(BigInteger bi) {
+	value = bi;
     }
 
-    //! Builds a coefficient built from a string that encodes its value.
+    //! Builds a coefficient from the decimal representation in \p s.
     /*!
       \exception java.lang.NumberFormatException
-      Thrown if val is not a valid representation of a BigInteger.
+      Thrown if \p s does not contain a valid decimal representation.
     */
-    public Coefficient(String val) {
-	integer = new BigInteger(val);
+    public Coefficient(String s) {
+	value = new BigInteger(s);
     }
 
-    //! Builds a coefficient built from another coefficient.
+    //! Builds a copy of \p c.
     public Coefficient(Coefficient c) {
-	integer = new BigInteger(c.integer.toString());
+	value = new BigInteger(c.value.toString());
     }
 
     //| Returns the value held by \p this.
     public BigInteger getBigInteger() {
-	return integer;
+	return value;
     }
 }
