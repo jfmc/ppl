@@ -24,6 +24,16 @@ package ppl_java;
 
 import javax.management.RuntimeErrorException;
 
+//! A dimension of the vector space.
+/*! \ingroup PPL_Java_interface
+  An object of the class Variable represents a dimension of the space,
+  that is one of the Cartesian axes.
+  Variables are used as basic blocks in order to build
+  more complex linear expressions.
+  Each variable is identified by a non-negative integer,
+  representing the index of the corresponding Cartesian axis
+  (the first axis has index 0).
+*/
 public class Variable {
     //! The index of the Cartesian axis.
     private int varid;

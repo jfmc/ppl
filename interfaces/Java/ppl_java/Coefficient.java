@@ -24,8 +24,8 @@ package ppl_java;
 
 import java.math.BigInteger;
 
-//! An alias for easily naming the type of PPL coefficients.
-/*! \ingroup PPL_JAVA_interface
+//! FIXME: A PPL coefficient.
+/*! \ingroup PPL_Java_interface
   Objects of type Coefficient are used to implement the integral valued
   coefficients occurring in linear expressions, constraints, generators,
   intervals, bounding boxes and so on.
