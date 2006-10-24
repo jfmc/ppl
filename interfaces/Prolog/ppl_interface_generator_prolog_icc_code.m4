@@ -452,18 +452,18 @@ m4_define(`relation_with_grid_generator_code', `
     }
 ')
 
-m4_define(`ppl_Grid_get_bounding_box_code',
+m4_define(`ppl_@CLASS@_get_covering_box_code',
 `extern "C" Prolog_foreign_return_type
-ppl_Grid_get_bounding_box
+ppl_@CLASS@_get_covering_box
 (Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
-  static const char* where = "ppl_Grid_get_bounding_box/2";
+  static const char* where = "ppl_@CLASS@_get_covering_box/2";
   try {
-    Grid* ph = term_to_Grid_handle(t_ph, where);
+    @CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
 
     dimension_type dimension = ph->space_dimension();
     Bounding_Box bbox(dimension);
-    ph->shrink_bounding_box(bbox);
+    ph->get_covering_box(bbox);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     for (dimension_type i = dimension; i-- > 0; )
@@ -476,35 +476,11 @@ ppl_Grid_get_bounding_box
 
 ')
 
-m4_define(`ppl_Grid_get_@BOX@_code',
+m4_define(`ppl_@CLASS@_get_bounding_box_code',
 `extern "C" Prolog_foreign_return_type
-ppl_Grid_get_@BOX@
-(Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
-  static const char* where = "ppl_Grid_get_@BOX@/2";
-  try {
-    Grid* ph = term_to_Grid_handle(t_ph, where);
-    CHECK(ph);
-
-    dimension_type dimension = ph->space_dimension();
-    Bounding_Box bbox(dimension);
-    ph->@ALT_BOX@(bbox);
-    Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
-    for (dimension_type i = dimension; i-- > 0; )
-      Prolog_construct_cons(tail, interval_term(bbox[i]), tail);
-    if (Prolog_unify(t_bb, tail))
-      return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
-')
-
-m4_define(`ppl_@CLASS@_get_@BOX@_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_get_@BOX@
+ppl_@CLASS@_get_bounding_box
 (Prolog_term_ref t_ph, Prolog_term_ref t_cc, Prolog_term_ref t_bb) {
-  static const char* where = "ppl_@CLASS@_get_@BOX@/3";
+  static const char* where = "ppl_@CLASS@_get_bounding_box/3";
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
@@ -520,7 +496,7 @@ ppl_@CLASS@_get_@BOX@
 
     dimension_type dimension = ph->space_dimension();
     Bounding_Box bbox(dimension);
-    ph->shrink_@BOX@(bbox, cc);
+    ph->shrink_bounding_box(bbox, cc);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     for (dimension_type i = dimension; i-- > 0; )

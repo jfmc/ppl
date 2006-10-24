@@ -475,11 +475,13 @@ m4_define(`m4_Polyhedron_limitedbounded_replacement', `limited, bounded')
 
 dnl The shape classes have bounding boxes while the grid classes also
 dnl have covering boxes.
+# m4_define(`m4_box_replacement', `bounding_box')
+# m4_define(`m4_Grid_box_replacement', `m4_box_replacement, covering_box')
+# m4_define(`m4_Grid_box_alt_replacement', `shrink_bounding_box, get_covering_box')
+# m4_define(`m4_Grid_box_bounding_box_alt_replacement', `shrink_bounding_box')
+# m4_define(`m4_Grid_box_covering_box_alt_replacement', `get_covering_box')
 m4_define(`m4_box_replacement', `bounding_box')
 m4_define(`m4_Grid_box_replacement', `m4_box_replacement, covering_box')
-m4_define(`m4_Grid_box_alt_replacement', `shrink_bounding_box, get_covering_box')
-m4_define(`m4_Grid_box_bounding_box_alt_replacement', `shrink_bounding_box')
-m4_define(`m4_Grid_box_covering_box_alt_replacement', `get_covering_box')
 
 dnl  Space or affine dimensions
 m4_define(`m4_dimension_replacement', `space_dimension, affine_dimension')
@@ -562,11 +564,9 @@ m4_define(`m4_Grid_get_represent_replacement',
          `congruence, grid_generator')
 
 dnl  The unary "has_property" predicates
-m4_define(`m4_has_property_replacement', `is_empty, is_universe, is_bounded, contains_integer_point')
-m4_define(`m4_Polyhedron_has_property_replacement',
-         `m4_has_property_replacement, is_topologically_closed')
+m4_define(`m4_has_property_replacement', `is_empty, is_universe, is_bounded, contains_integer_point, is_topologically_closed')
 m4_define(`m4_Grid_has_property_replacement',
-        `m4_has_property_replacement, is_topologically_closed, is_discrete')
+        `m4_has_property_replacement, is_discrete')
 m4_define(`m4_Pointset_Powerset_has_property_replacement',`')
 
 dnl  The "simplify" predicates

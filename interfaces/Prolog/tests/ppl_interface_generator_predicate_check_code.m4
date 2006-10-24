@@ -78,10 +78,11 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_2_test :-
    (TEST_DATA = e0 ; TEST_DATA = 0 ;
     TEST_DATA = 1 ; TEST_DATA = 2 ; TEST_DATA = 3),
    (
-    ppl_@BUILD_REPRESENT@s_test_data(TEST_DATA, t_@TOPOLOGY@, Space_Dim, RS1),
+    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@,
+                        @BUILD_REPRESENT@s, Space_Dim, RS1),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(RS1, PS1),
-    ppl_@ALT_BUILD_REPRESENT@s_test_data(TEST_DATA, t_@TOPOLOGY@,
-                                   Space_Dim, RS1a),
+    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@,
+                        @ALT_BUILD_REPRESENT@s, Space_Dim, RS1a),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@ALT_BUILD_REPRESENT@s(RS1a, PS1a),
     ppl_@CLASS@_equals_@CLASS@(PS1, PS1a),
     ppl_delete_@CLASS@(PS1),
@@ -100,9 +101,14 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_2_test :-
     TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3;
     TEST_DATA = 4; TEST_DATA = 5; TEST_DATA = 6),
    (
-    ppl_box_test_data(TEST_DATA, t_@TOPOLOGY@, _Space_Dim, Box),
+    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, box, _Space_Dim, Box),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box, PS),
-    ppl_@CLASS@_get_@BOX@(PS, any, Box1),
+    (@BOX@ == bounding_box
+    ->
+      ppl_@CLASS@_get_@BOX@(PS, any, Box1)
+    ;
+      ppl_@CLASS@_get_@BOX@(PS, Box1)
+    ),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box1, PS1),
     ppl_@CLASS@_equals_@CLASS@(PS, PS1),
     ppl_delete_@CLASS@(PS),
@@ -171,11 +177,11 @@ ppl_@CLASS@_@DIMENSION@_2_test :-
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s([], PS2),
     ppl_@CLASS@_@DIMENSION@(PS2, N2),
     N2 == 0,
-    ppl_@BUILD_REPRESENT@s_test_data(1, t_@TOPOLOGY@, Space_Dim, RS3),
+    ppl_build_test_data(1, t_@TOPOLOGY@, @BUILD_REPRESENT@s, Space_Dim, RS3),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(RS3, PS3),
     ppl_@CLASS@_@DIMENSION@(PS3, N3),
     (@DIMENSION@ == space_dimension -> N3 == Space_Dim ; N3 == Space_Dim),
-    ppl_@BUILD_REPRESENT@s_test_data(2, t_@TOPOLOGY@, Space_Dim, RS4),
+    ppl_build_test_data(2, t_@TOPOLOGY@, @BUILD_REPRESENT@s, Space_Dim, RS4),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(RS4, PS4),
     ppl_@CLASS@_@DIMENSION@(PS4, N4),
     (@DIMENSION@ == space_dimension -> N4 == Space_Dim ; N4 == 0),
@@ -197,7 +203,8 @@ ppl_@CLASS@_get_@GET_REPRESENT@s_2_test :-
    (TEST_DATA = e0; TEST_DATA = 0;
     TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
    (
-    ppl_@CONSTRAINER@s_test_data(TEST_DATA, t_@TOPOLOGY@, Space_Dim, RS),
+    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@,
+                        @CONSTRAINER@s, Space_Dim, RS),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
     ppl_@CLASS@_get_@GET_REPRESENT@s(PS, RS1),
     (predicate_exists(ppl_@CLASS@_add_@GET_REPRESENT@s)
@@ -225,7 +232,8 @@ ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_2_test :-
    (TEST_DATA = e0; TEST_DATA = 0;
     TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
    (
-    ppl_@CONSTRAINER@s_test_data(TEST_DATA, t_@TOPOLOGY@, Space_Dim, RS),
+    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@,
+                        @CONSTRAINER@s, Space_Dim, RS),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
     ppl_@CLASS@_get_minimized_@GET_REPRESENT@s(PS, RS1),
     (predicate_exists(ppl_@CLASS@_add_@GET_REPRESENT@s)
@@ -253,9 +261,10 @@ ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_3_test :-
    (TEST_DATA = e0; TEST_DATA = 0;
     TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
    (
-    ppl_@CONSTRAINER@s_test_data(TEST_DATA, t_@TOPOLOGY@, _Space_Dim, RS),
+    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@,
+                        @CONSTRAINER@s, _Space_Dim, RS),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
-    ppl_@RELATION_REPRESENT@_test_data(TEST_DATA, R, Rel_Expected),
+    ppl_relation_test_data(TEST_DATA, @RELATION_REPRESENT@, R, Rel_Expected),
     ppl_@CLASS@_relation_with_@RELATION_REPRESENT@(PS, R, Rel),
     Rel = Rel_Expected,
     ppl_delete_@CLASS@(PS)
@@ -265,55 +274,138 @@ ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_3_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_get_@BOX@_code',
+m4_define(`ppl_@CLASS@_get_bounding_box_code',
 `
-ppl_@CLASS@_get_@BOX@_3_test :-
+ppl_@CLASS@_get_bounding_box_3_test :-
   (
    (TEST_DATA = e0; TEST_DATA = 0;
     TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
    (CC = any ; CC = simplex ; CC = polynomial),
    (
-    ppl_@CONSTRAINER@s_test_data(TEST_DATA, t_@TOPOLOGY@, _Space_Dim, RS),
+    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@,
+                        @CONSTRAINER@s, _Space_Dim, RS),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
-    ppl_@CLASS@_get_@BOX@(PS, CC, Box),
-    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box, PS1),
-    ppl_@CLASS@_get_@BOX@(PS1, CC, Box1),
-    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Box1, PS2),
-    ppl_@CLASS@_equals_@CLASS@(PS1, PS2),
-    ppl_@CLASS@_contains_@CLASS@(PS2, PS),
-    ppl_delete_@CLASS@(PS),
-    ppl_delete_@CLASS@(PS1),
-    ppl_delete_@CLASS@(PS2)
+    ppl_@CLASS@_get_bounding_box(PS, CC, Box),
+    (predicate_exists(ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box)
+    ->
+      clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(Box, PS1),
+      ppl_@CLASS@_get_bounding_box(PS1, CC, Box1),
+      clean_ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box(Box1, PS2),
+      ppl_@CLASS@_equals_@CLASS@(PS1, PS2),
+      ppl_@CLASS@_contains_@CLASS@(PS2, PS),
+      ppl_delete_@CLASS@(PS1),
+      ppl_delete_@CLASS@(PS2)
+    ;
+      true
+    ),
+    ppl_delete_@CLASS@(PS)
    ->
     fail ; true)
   ).
 
 ')
 
-m4_define(`ppl_Grid_get_@BOX@_code',
+m4_define(`ppl_@CLASS@_get_covering_box_code',
 `
-ppl_Grid_get_@BOX@_2_test :-
+ppl_@CLASS@_get_covering_box_2_test :-
   (
    (TEST_DATA = e0; TEST_DATA = 0;
     TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
    (
-    ppl_congruences_test_data(TEST_DATA, _, _Space_Dim, RS),
-    clean_ppl_new_Grid_from_congruences(RS, PS),
-    ppl_Grid_get_@BOX@(PS, Box),
-    clean_ppl_new_Grid_from_@BOX@(Box, PS1),
-    ppl_Grid_get_@BOX@(PS1, Box1),
-    clean_ppl_new_Grid_from_@BOX@(Box1, PS2),
-    ppl_Grid_equals_Grid(PS1, PS2),
-    ppl_Grid_contains_Grid(PS2, PS),
-    ppl_delete_Grid(PS),
-    ppl_delete_Grid(PS1),
-    ppl_delete_Grid(PS2)
+    ppl_build_test_data(TEST_DATA, _, @CONSTRAINER@s, _Space_Dim, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_congruences(RS, PS),
+    ppl_@CLASS@_get_covering_box(PS, Box),
+    (predicate_exists(ppl_new_@TOPOLOGY@@CLASS@_from_covering_box)
+    ->
+      clean_ppl_new_@TOPOLOGY@@CLASS@_from_covering_box(Box, PS1),
+      ppl_@CLASS@_get_covering_box(PS1, Box1),
+      clean_ppl_new_@CLASS@_from_covering_box(Box1, PS2),
+      ppl_@CLASS@_equals_@CLASS@(PS1, PS2),
+      ppl_@CLASS@_contains_@CLASS@(PS2, PS),
+      ppl_delete_@CLASS@(PS1),
+      ppl_delete_@CLASS@(PS2)
+    ;
+      true
+    ),
+    ppl_delete_@CLASS@(PS)
    ->
     fail ; true)
   ).
 
 ')
 
-dnl ppl_@CLASS@_@HAS_PROPERTY@
+m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
+`
+ppl_@CLASS@_@HAS_PROPERTY@_2_test :-
+  (
+   (TEST_DATA = e0; TEST_DATA = 0;
+    TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
+   (
+    ppl_build_test_data(TEST_DATA, _, @CONSTRAINER@s, _Space_Dim, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
+    (ppl_property_test_data(TEST_DATA, t_@TOPOLOGY@,
+                            @CONSTRAINER@, @HAS_PROPERTY@)
+    ->
+      ppl_@CLASS@_@HAS_PROPERTY@(PS)
+    ;
+      \+ ppl_@CLASS@_@HAS_PROPERTY@(PS)
+    ),
+    ppl_delete_@CLASS@(PS)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
+`
+ppl_@CLASS@_@SIMPLIFY@_1_test :-
+  (
+   (TEST_DATA = e0; TEST_DATA = 0;
+    TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
+   (
+    ppl_build_test_data(TEST_DATA, _, @CONSTRAINER@s, _Space_Dim, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS1),
+    ppl_@CLASS@_@SIMPLIFY@(PS),
+    ppl_@CLASS@_OK(PS),
+    ppl_@CLASS@_contains_@CLASS@(PS1, PS),
+    ppl_delete_@CLASS@(PS)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
+`
+ppl_@CLASS@_bounds_from_@ABOVEBELOW@_2_test :-
+  (
+   (TEST_DATA = e0; TEST_DATA = 0;
+    TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
+   (
+    ppl_build_test_data(TEST_DATA, _, @CONSTRAINER@s, _Space_Dim, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
+    (ppl_bounds_test_data(TEST_DATA, @CONSTRAINER@s, LE,
+                          @ABOVEBELOW@, true)
+    ->
+      ppl_@CLASS@_bounds_from_@ABOVEBELOW@(PS, LE)
+    ;
+      true
+    ),
+    (ppl_bounds_test_data(TEST_DATA, @CONSTRAINER@s, LE1,
+                          @ABOVEBELOW@, false)
+    ->
+      \+ ppl_@CLASS@_bounds_from_@ABOVEBELOW@(PS, LE1)
+    ;
+      true
+    ),
+    ppl_@CLASS@_OK(PS),
+    ppl_delete_@CLASS@(PS)
+   ->
+    fail ; true)
+  ).
+
+')
 
 m4_divert`'dnl
