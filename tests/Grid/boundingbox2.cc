@@ -292,28 +292,35 @@ test09() {
   return ok;
 }
 
-// An otherwise valid box having a dimension with an open bound, where
-// the open bound makes the box empty.
+// A box having a dimension with an open bound.
 bool
 test10() {
+  Variable A(0);
+
   Bounding_Box box(2);
-  box.raise_lower_bound(0, true, 3, 7);
-  box.lower_upper_bound(0, true, 3, 7);
-  box.raise_lower_bound(1, false, 1, 2);
+  box.raise_lower_bound(0, true, -3, 7);
+  box.lower_upper_bound(0, false, 3, 7);
+  box.raise_lower_bound(1, false, 1, 3);
   box.lower_upper_bound(1, true, 1, 2);
 
-  Grid gr(3);
+  Grid gr(2);
+  gr.add_congruence((A == 0));
 
-  try {
-    gr.shrink_bounding_box(box);
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
+  gr.shrink_bounding_box(box);
+  nout << "*** box ***" << endl << box << endl;
+
+  Bounding_Box known_box(2);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 0, 1);
+  known_box.raise_lower_bound(1, false, 1, 3);
+  known_box.lower_upper_bound(1, true, 1, 2);
+
+  bool ok = (box == known_box);
+
+  print_congruences(gr,
+      "*** gr.shrink_bounding_box(box) ***");
+
+  return ok;
 }
 
 // An empty grid defined by congruences.
@@ -459,6 +466,55 @@ test15() {
   return ok;
 }
 
+// A box having a dimension with an open bound, where
+// the open bound makes the box empty.
+bool
+test16() {
+  Bounding_Box box(3);
+  box.raise_lower_bound(0, true, 3, 7);
+  box.lower_upper_bound(0, true, 3, 7);
+  box.raise_lower_bound(1, false, 1, 2);
+  box.lower_upper_bound(1, true, 1, 2);
+
+  Grid gr(3);
+
+  gr.shrink_bounding_box(box);
+  nout << "*** box ***" << endl << box << endl;
+
+  Bounding_Box known_box(3);
+  known_box.set_empty();
+
+  bool ok = (box == known_box);
+
+  print_congruences(gr,
+      "*** gr.shrink_bounding_box(box) ***");
+
+  return ok;
+}
+
+// A box having a different number of dimensions to that of the grid.
+bool
+test17() {
+  Bounding_Box box(2);
+  box.raise_lower_bound(0, true, 3, 7);
+  box.lower_upper_bound(0, true, 3, 7);
+  box.raise_lower_bound(1, false, 1, 2);
+  box.lower_upper_bound(1, true, 1, 2);
+
+  Grid gr(3);
+
+  try {
+    gr.shrink_bounding_box(box);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -477,4 +533,6 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN

@@ -46,19 +46,6 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
 
   space_dim = box.space_dimension();
 
-  TEMP_INTEGER(l_n);
-  TEMP_INTEGER(l_d);
-
-  // Check that all bounds are closed.  This check must be done before
-  // the empty test below, as an open bound might mean an empty box.
-  for (dimension_type k = space_dim; k-- > 0; ) {
-    bool closed = false;
-    // FIXME: Perhaps introduce box::is_bounded_and_closed.
-    if (box.get_lower_bound(k, closed, l_n, l_d) && !closed)
-      throw_invalid_argument("Grid(box, from_bounding_box)", "box");
-    if (box.get_upper_bound(k, closed, l_n, l_d) && !closed)
-      throw_invalid_argument("Grid(box, from_bounding_box)", "box");
-  }
 
   if (box.is_empty()) {
     // Empty grid.
@@ -73,6 +60,8 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
     // Initialize the space dimension as indicated by the box.
     con_sys.increase_space_dimension(space_dim);
     // Add congruences and generators according to `box'.
+    TEMP_INTEGER(l_n);
+    TEMP_INTEGER(l_d);
     TEMP_INTEGER(u_n);
     TEMP_INTEGER(u_d);
     gen_sys.insert(grid_point(0*Variable(space_dim-1)));
@@ -105,13 +94,7 @@ Grid::Grid(const Box& box, From_Bounding_Box dummy)
 
 	    continue;
 	  }
-	// The only valid bounded interval is a point interval.
-	throw_invalid_argument("Grid(box, from_bounding_box)", "box");
       }
-      else if (box.get_upper_bound(k, closed, u_n, u_d))
-	// An interval can only be a point or the universe.
-	throw_invalid_argument("Grid(box, from_bounding_box)",
-			       "box");
       // A universe interval allows any value in dimension k.
       gen_sys.insert(grid_line(Variable(k)));
     }
@@ -256,7 +239,7 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
 
 template <typename Box>
 void
-Grid::shrink_bounding_box(Box& box) const {
+Grid::shrink_bounding_box(Box& box, Complexity_Class) const {
   // Dimension-compatibility check.
   if (space_dim > box.space_dimension())
     throw_dimension_incompatible("shrink_bounding_box(box)", "box",
@@ -264,17 +247,7 @@ Grid::shrink_bounding_box(Box& box) const {
 
   TEMP_INTEGER(tmp);
 
-  // Check that all bounds are closed.  This check must be done before
-  // the empty test below, as an open bound might mean an empty box.
-  for (dimension_type k = space_dim; k-- > 0; ) {
-    bool closed = false;
-    // FIXME: Perhaps introduce box::is_bounded_and_closed.
-    if (box.get_lower_bound(k, closed, tmp, tmp) && !closed)
-      throw_invalid_argument("shrink_bounding_box(box)", "box");
-    if (box.get_upper_bound(k, closed, tmp, tmp) && !closed)
-      throw_invalid_argument("shrink_bounding_box(box)", "box");
-  }
-
+  // An empty box will remain empty.
   if (marked_empty()) {
     box.set_empty();
     return;

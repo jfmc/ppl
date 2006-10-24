@@ -488,9 +488,11 @@ public:
 
   //! Builds a grid out of a generic, interval-based bounding box.
   /*!
+    The grid inherits the space dimension of the generator system.
+    The built grid is the most precise grid that includes the box.
+
     \param box
-    The bounding box representing the grid to be built.  The box can
-    contain only point and universe intervals;
+    The bounding box representing the grid to be built.
 
     \param dummy
     A dummy tag to make this constructor syntactically unique.
@@ -498,11 +500,6 @@ public:
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum
     allowed space dimension.
-
-    \exception std::invalid_argument
-    Thrown if \p box contains at least one interval with: a
-    topologically open bound, a single bound, or two bounds which have
-    space between them.
 
     The template class Box must provide the following methods.
     \code
@@ -917,9 +914,11 @@ public:
     \param box
     The bounding box to be shrunk.
 
+    \param complexity
+    This argument is ignored and only for compatibility with the other classes.
+
     \exception std::invalid_argument
-    Thrown if \p *this and \p box are dimension-incompatible, or if \p
-    box contains any topologically open bounds.
+    Thrown if \p *this and \p box are dimension-incompatible.
 
     The template class Box must provide the following methods
     \code
@@ -986,7 +985,8 @@ public:
     <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
   */
   template <typename Box>
-  void shrink_bounding_box(Box& box) const;
+  void shrink_bounding_box(Box& box,
+			   Complexity_Class complexity = ANY_COMPLEXITY) const;
 
   //! Writes the covering box for \p *this into \p box.
   /*!
