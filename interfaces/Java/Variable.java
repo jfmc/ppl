@@ -20,7 +20,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-
 package ppl_java;
 
 import javax.management.RuntimeErrorException;
@@ -36,14 +35,15 @@ public class Variable {
     */
     public Variable(int i) {
 	if (i < 0)
-	    throw new RuntimeErrorException(new Error("ppl_java.Variable::"
-						 + "Variable:\n"
-						 + "an index variable can not"
-						 + " be negative."));
+	    throw new
+		RuntimeErrorException(new Error("ppl_java.Variable::"
+						+ "Variable:"
+						+ " an index variable"
+						+ " cannot be negative."));
 	varid = i;
     }
 
-    //! Returns the index of the Cartesian axis associated to the variable.
+    //! Returns the index of the Cartesian axis associated to \p this.
     public int id() {
 	return varid;
     }
