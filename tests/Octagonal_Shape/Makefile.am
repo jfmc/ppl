@@ -72,6 +72,7 @@ check_PROGRAMS = \
 	limitedcc76extrapolation1 \
 	mapspacedims1 \
 	maxspacedim \
+	membytes1 \
 	minconstraints1 \
 	octdifference1 \
 	octhull1 \
@@ -188,6 +189,8 @@ limitedcc76extrapolation1_SOURCES = limitedcc76extrapolation1.cc
 mapspacedims1_SOURCES = mapspacedims1.cc
 
 maxspacedim_SOURCES = maxspacedim.cc
+
+membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 
