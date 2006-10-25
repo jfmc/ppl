@@ -65,6 +65,8 @@ discrete1 \
 disjoint1 \
 empty1 \
 equality1 \
+expandspacedim1 \
+foldspacedims1 \
 fromgensys1 \
 frompolyhedron1 \
 generalizedaffineimage1 generalizedaffineimage2 \
@@ -175,6 +177,10 @@ disjoint1_SOURCES = disjoint1.cc
 empty1_SOURCES = empty1.cc
 
 equality1_SOURCES = equality1.cc
+
+expandspacedim1_SOURCES = expandspacedim1.cc
+
+foldspacedims1_SOURCES = foldspacedims1.cc
 
 fromgensys1_SOURCES = fromgensys1.cc
 
