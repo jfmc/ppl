@@ -3979,6 +3979,95 @@ BD_Shape<T>::minimized_constraints() const {
   return cs;
 }
 
+template <typename T>
+void
+BD_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
+  dimension_type old_dim = space_dimension();
+  // `var' should be one of the dimensions of the vector space.
+  if (var.space_dimension() > old_dim)
+    throw_dimension_incompatible("expand_space_dimension(v, m)", "v",
+var);
+
+  // The space dimension of the resulting BDS should not
+  // overflow the maximum allowed space dimension.
+  if (m > max_space_dimension() - space_dimension())
+    throw_generic("expand_dimension(v, m)",
+		  "adding m new space dimensions exceeds "
+		  "the maximum allowed space dimension");
+
+  // Nothing to do, if no dimensions must be added.
+  if (m == 0)
+    return;
+
+  // Add the required new dimensions.
+  add_space_dimensions_and_embed(m);
+
+  // For each constraints involving variable `var', we add a
+  // similar constraint with the new variable substituted for
+  // variable `var'.
+  const dimension_type v_id = var.id() + 1;
+  const DB_Row<N>& dbm_v = dbm[v_id];
+  for (dimension_type i = old_dim + 1; i-- > 0; ) {
+    DB_Row<N>& dbm_i = dbm[i];
+    const N& dbm_i_v = dbm[i][v_id];
+    const N& dbm_v_i = dbm_v[i];
+    for (dimension_type j = old_dim+1; j < old_dim+m+1; ++j) {
+      dbm_i[j] = dbm_i_v;
+      dbm[j][i] = dbm_v_i;
+    }
+  }
+  // In general, adding a constraint does not preserve the shortest-path
+  // closure or reduction of the bounded difference shape.
+  if (marked_shortest_path_closed())
+    status.reset_shortest_path_closed();
+  assert(OK());
+}
+
+template <typename T>
+void
+BD_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
+				   Variable var) {
+  using Implementation::BD_Shapes::max_assign;
+
+  dimension_type space_dim = space_dimension();
+  // `var' should be one of the dimensions of the BDS.
+  if (var.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
+				 "v", var);
+
+  // The folding of no dimensions is a no-op.
+  if (to_be_folded.empty())
+    return;
+
+  // All variables in `to_be_folded' should be dimensions of the BDS.
+  if (to_be_folded.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(tbf, ...)",
+				 to_be_folded.space_dimension());
+
+  // Moreover, `var' should not occur in `to_be_folded'.
+  if (to_be_folded.find(var) != to_be_folded.end())
+    throw_generic("fold_space_dimensions(tbf, v)",
+		  "v should not occur in tbf");
+
+  // Recompute the elements of the row and the column corresponding
+  // to variable `var' by taking the join of their value with the
+  // value of the corresponding elements in the row and column of the
+  // variable `to_be_folded'.
+  shortest_path_closure_assign();
+  const dimension_type v_id = var.id() + 1;
+  DB_Row<N>& dbm_v = dbm[v_id];
+  for (Variables_Set::const_iterator i = to_be_folded.begin(),
+	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
+    const dimension_type tbf_id = i->id() + 1;
+    const DB_Row<N>& dbm_tbf = dbm[tbf_id];
+    for (dimension_type j = space_dim +1; j-- > 0; ) {
+      max_assign(dbm[j][v_id], dbm[j][tbf_id]);
+      max_assign(dbm_v[j], dbm_tbf[j]);
+    }
+  }
+  remove_space_dimensions(to_be_folded);
+}
+
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
 template <typename T>
 std::ostream&

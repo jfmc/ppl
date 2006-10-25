@@ -1340,6 +1340,54 @@ public:
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);
 
+  //! Creates \p m copies of the space dimension corresponding to \p var.
+  /*!
+    \param var
+    The variable corresponding to the space dimension to be replicated;
+
+    \param m
+    The number of replicas to be created.
+
+    \exception std::invalid_argument
+    Thrown if \p var does not correspond to a dimension of the vector space.
+
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the
+    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+    and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    then the \f$k\f$-th space dimension is
+    \ref expand_space_dimension "expanded" to \p m new space dimensions
+    \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
+  */
+  void expand_space_dimension(Variable var, dimension_type m);
+
+  //! Folds the space dimensions in \p to_be_folded into \p var.
+  /*!
+    \param to_be_folded
+    The set of Variable objects corresponding to the space dimensions
+    to be folded;
+
+    \param var
+    The variable corresponding to the space dimension that is the
+    destination of the folding operation.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p var or with
+    one of the Variable objects contained in \p to_be_folded.
+    Also thrown if \p var is contained in \p to_be_folded.
+
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+    <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    \p to_be_folded is a set of variables whose maximum space dimension
+    is also less than or equal to \f$n\f$, and \p var is not a member
+    of \p to_be_folded, then the space dimensions corresponding to
+    variables in \p to_be_folded are \ref fold_space_dimensions "folded"
+    into the \f$k\f$-th space dimension.
+  */
+  void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
+
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
   PPL_OUTPUT_DECLARATIONS
