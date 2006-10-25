@@ -104,6 +104,7 @@ public:
 #if 0
   //! Returns a system of congruences that \p *this satisfies.
   virtual Congruence_System congruences() const = 0;
+#endif
 
   /*! \brief
     Returns the relations holding between the pointset \p *this
@@ -122,7 +123,6 @@ public:
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
   Poly_Gen_Relation relation_with(const Generator& g) const;
-#endif
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is
@@ -811,7 +811,6 @@ public:
 					   const Relation_Symbol relsym,
 					   const Linear_Expression& rhs) = 0;
 
-#if 0
   /*!
     \brief
     Assigns to \p *this the image of \p *this with respect to the
@@ -845,6 +844,7 @@ public:
 			    Coefficient_traits::const_reference denominator
 			    = Coefficient_one()) = 0;
 
+#if 0
   /*!
     \brief
     Assigns to \p *this the preimage of \p *this with respect to the
