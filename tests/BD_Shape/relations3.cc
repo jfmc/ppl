@@ -99,10 +99,29 @@ test03() {
   return false;
 }
 
+bool
+test04() {
+  Variable A(0);
+
+  TBD_Shape bd(1);
+  bd.add_constraint(A == -1);
+
+  Poly_Con_Relation rel = bd.relation_with(A == 0);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A == 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN
