@@ -552,7 +552,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
 			 const bool maximize,
 			 Coefficient& ext_n, Coefficient& ext_d,
 			 bool& included,
-			 Generator& point) const {
+			 Generator& g_point) const {
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
   const dimension_type expr_space_dim = expr.space_dimension();
@@ -560,6 +560,18 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
     throw_dimension_incompatible((maximize
 				  ? "maximize(e, ...)"
 				  : "minimize(e, ...)"), "e", expr);
+
+  // Deal with zero-dim polyhedra first.
+  if (space_dim == 0)
+    if (marked_empty())
+      return false;
+    else {
+      ext_n = expr.inhomogeneous_term();
+      ext_d = 1;
+      included = true;
+      g_point = point();
+      return true;
+    }
 
   // For an empty polyhedron we simply return false.
   if (marked_empty()
@@ -638,7 +650,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   ext_n = Coefficient(extremum.get_num());
   ext_d = Coefficient(extremum.get_den());
   included = ext_included;
-  point = gen_sys[ext_position];
+  g_point = gen_sys[ext_position];
 
   return true;
 }
