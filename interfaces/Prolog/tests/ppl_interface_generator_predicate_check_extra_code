@@ -92,6 +92,7 @@ write_error(Predicate_name) :-
 :- discontiguous(ppl_relation_test_data/4).
 :- discontiguous(ppl_property_test_data/4).
 :- discontiguous(ppl_bounds_test_data/5).
+:- discontiguous(ppl_maxmin_test_data/10).
 
 ppl_initial_test_system(constraint, universe).
 ppl_initial_test_system(congruence, universe).
@@ -130,6 +131,8 @@ ppl_property_test_data(e0, _, _, is_discrete).
 
 ppl_bounds_test_data(e0, _, 0, _, true).
 
+ppl_maxmin_test_data(e0, _Topology, _, _, 0, _, _, _, _, false).
+
 /* Test data for test e1 (an empty object in 1 dimension) */
 
 ppl_build_test_data(e1, _Topology, constraints, 1, CS) :-
@@ -153,6 +156,8 @@ ppl_property_test_data_(e1, _, _, is_discrete).
 ppl_bounds_test_data(e1, _, A, _, true) :-
   make_vars(1, [A]).
 
+ppl_maxmin_test_data(e1, _Topology, _, _, 0, _, _, _, _, false).
+
 /* Test data for test 0 (a universe object in 0 dimensions) */
 
 ppl_build_test_data(0, _Topology, constraints, 0, []).
@@ -173,6 +178,11 @@ ppl_property_test_data(0, _, _, is_discrete).
 ppl_property_test_data(0, _, _, contains_integer_point).
 
 ppl_bounds_test_data(0, _, 0, _, true).
+
+ppl_maxmin_test_data(0, _Topology, constraint, _, 0, 0, 1, true,
+                     point(0), true).
+ppl_maxmin_test_data(0, _Topology, congruence, _, 0, 0, 1, true,
+                     grid_point(0), true).
 
 /* Test data for test 1 (a universe object in 1 dimension) */
 
@@ -202,6 +212,9 @@ ppl_property_test_data(1, _, _, contains_integer_point).
 
 ppl_bounds_test_data(1, _, A, _, false) :-
   make_vars(1, [A]).
+
+ppl_maxmin_test_data(1, _Topology, _, _, A, _, _, _, _, false) :-
+   make_vars(1, [A]).
 
 /* Test data for test 2 (an object in 1 dimension with a single point) */
 
@@ -233,6 +246,13 @@ ppl_property_test_data(2, _, _, is_discrete).
 
 ppl_bounds_test_data(2, _, A, _, true) :-
   make_vars(1, [A]).
+
+ppl_maxmin_test_data(2, _Topology, constraint, _, A, 1, 1, true,
+                     point(A), true) :-
+   make_vars(1, [A]).
+ppl_maxmin_test_data(2, _Topology, congruence, _, A, 1, 1, true,
+             grid_point(A), true) :-
+   make_vars(1, [A]).
 
 /* Test data for test 3 (an unbounded non-universe object in 1 dimension) */
 
@@ -278,6 +298,19 @@ ppl_bounds_test_data(3, constraint, A, below, true) :-
   make_vars(1, [A]).
 ppl_bounds_test_data(3, congruence, A, below, false) :-
   make_vars(1, [A]).
+
+ppl_maxmin_test_data(3, t_C_, constraint, maximize, A, _, _, _, _, false) :-
+   make_vars(1, [A]).
+ppl_maxmin_test_data(3, t_C_, constraint, minimize, A, 0, 1, true,
+                     point(0), true) :-
+   make_vars(1, [A]).
+ppl_maxmin_test_data(3, t_NNC_, constraint, maximize, A, _, _, _, _, false) :-
+   make_vars(1, [A]).
+ppl_maxmin_test_data(3, t_NNC_, constraint, minimize, A, 0, 1, false,
+                     closure_point(0), true) :-
+   make_vars(1, [A]).
+ppl_maxmin_test_data(3, _, congruence, _, A, _, _, _, _, false) :-
+   make_vars(1, [A]).
 
 /* boxes  */
 

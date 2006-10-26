@@ -408,4 +408,72 @@ ppl_@CLASS@_bounds_from_@ABOVEBELOW@_2_test :-
 
 ')
 
+m4_define(`ppl_@CLASS@_@MAXMIN@_code',
+`
+ppl_@CLASS@_@MAXMIN@_5_test :-
+  (
+   (TEST_DATA = e0; TEST_DATA = 0;
+    TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
+   (
+    ppl_build_test_data(TEST_DATA, _, @CONSTRAINER@s, _Space_Dim, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
+    ppl_maxmin_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@, @MAXMIN@,
+                         LE, Nexptd, Dexptd, Bexptd, _, SuccessFlag),
+    (SuccessFlag == true
+    ->
+      (ppl_@CLASS@_@MAXMIN@(PS, LE, N, D, B),
+       B == Bexptd, N == Nexptd, D == Dexptd)
+    ;
+      \+ ppl_@CLASS@_@MAXMIN@(PS, LE, N, D, B)
+    ),
+    ppl_@CLASS@_OK(PS),
+    ppl_delete_@CLASS@(PS)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
+`
+ppl_@CLASS@_@MAXMIN@_with_point_6_test :-
+  (
+   (TEST_DATA = e0; TEST_DATA = 0;
+    TEST_DATA = 1; TEST_DATA = 2; TEST_DATA = 3),
+   (
+    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, Dim, RS),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PS),
+    ppl_maxmin_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@, @MAXMIN@,
+                         LE, Nexptd, Dexptd, Bexptd, Gexptd, SuccessFlag),
+    (SuccessFlag == true
+    ->
+      (ppl_@CLASS@_@MAXMIN@_with_point(PS, LE, N, D, B, G),
+       B == Bexptd, N == Nexptd, D == Dexptd,
+       clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, empty, PSG),
+       clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, empty,
+                                                            PSGexptd),
+       (G = closure_point(V)
+       ->
+         (Gexptd = closure_point(Vexptd),
+          ppl_@CLASS@_add_@GENERATOR@(PSG, point(V)),
+          ppl_@CLASS@_add_@GENERATOR@(PSGexptd, point(Vexptd)))
+       ;
+         (ppl_@CLASS@_add_@GENERATOR@(PSG, G),
+          ppl_@CLASS@_add_@GENERATOR@(PSGexptd, Gexptd))
+       ),
+       ppl_@CLASS@_equals_@CLASS@(PSG, PSGexptd))
+    ;
+      \+ ppl_@CLASS@_@MAXMIN@_with_point(PS, LE, N, _, _, _)
+    ),
+    ppl_@CLASS@_OK(PS),
+    ppl_delete_@CLASS@(PS)
+   ->
+    fail ; true)
+  ).
+
+')
+
+dnl ppl_@CLASS@_@MAXMIN@/5 +simple -wr_shape,
+dnl ppl_@CLASS@_@MAXMIN@_with_point/6 +simple -wr_shape,
+
 m4_divert`'dnl
