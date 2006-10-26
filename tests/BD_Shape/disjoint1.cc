@@ -161,6 +161,24 @@ test06() {
   return disjoint;
 }
 
+bool
+test07() {
+  Variable A(0);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(A == 0);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraint(A == 1);
+
+  bool ok = bd1.is_disjoint_from(bd2);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  return ok;
+}
+
 
 } // namespace
 
@@ -171,4 +189,5 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN
