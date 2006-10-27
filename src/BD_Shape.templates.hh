@@ -904,7 +904,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
     if (d == x && d1 == y)
       return Poly_Con_Relation::saturates()
 	&& Poly_Con_Relation::is_included();
-    else if (d < y && d1 > x)
+    else if (d1 > y || d > x)
       return Poly_Con_Relation::is_disjoint();
     else
       return Poly_Con_Relation::strictly_intersects();
