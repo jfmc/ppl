@@ -499,9 +499,9 @@ BD_Shape<T>::is_disjoint_from(const BD_Shape& y) const {
   // 1.) a_i_j < -b_j_i or
   // 2.) b_i_j < -a_j_i.
   N tmp;
-  for (dimension_type i = space_dim; i > 0; --i) {
+  for (dimension_type i = space_dim+1; i-- > 0; ) {
     const DB_Row<N>& x_i = dbm[i];
-    for (dimension_type j = space_dim; j > 0; --j) {
+    for (dimension_type j = space_dim+1; j-- > 0; ) {
       neg_assign_r(tmp, y.dbm[j][i], ROUND_UP);
       if (x_i[j] < tmp)
 	return true;
