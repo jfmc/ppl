@@ -343,6 +343,24 @@ test15() {
   return rel == known_result;
 }
 
+bool
+test16() {
+  Variable A(0);
+
+  TOctagonal_Shape oct(1);
+  oct.add_constraint(A == -1);
+
+  Poly_Con_Relation rel = oct.relation_with(A == 0);
+
+  print_constraints(oct, "--- oct ---");
+  using namespace IO_Operators;
+  nout << "oct.relation_with(A == 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -361,5 +379,6 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
 

@@ -158,6 +158,24 @@ test06() {
   return false;
 }
 
+bool
+test07() {
+  Variable A(0);
+
+  TOctagonal_Shape oct1(2);
+  oct1.add_constraint(A == 0);
+
+  TOctagonal_Shape oct2(2);
+  oct2.add_constraint(A == 1);
+
+  bool ok = oct1.is_disjoint_from(oct2);
+
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -167,4 +185,5 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN

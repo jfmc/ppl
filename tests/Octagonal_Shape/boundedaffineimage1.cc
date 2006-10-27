@@ -430,6 +430,20 @@ test13() {
 
 
   print_constraints(oct, "*** oct ***");
+  C_Polyhedron ph1(oct.constraints());
+  ph1.bounded_affine_image(A, 4*C + 3, Linear_Expression(9));
+  TOctagonal_Shape oct3(ph1);
+  oct3 == oct3;
+  oct3.ascii_dump(std::cerr);
+
+
+  TOctagonal_Shape oct1(oct);
+  TOctagonal_Shape oct2(oct);
+  oct1.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, 4*C + 3);
+  oct2.generalized_affine_image(A, LESS_THAN_OR_EQUAL, Linear_Expression(9));
+  oct1.intersection_assign(oct2);
+  oct1 == oct1;
+  oct1.ascii_dump(std::cerr);
 
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= 9);
@@ -442,7 +456,8 @@ test13() {
   known_result.add_constraint(B - C >= -1);
 
   oct.bounded_affine_image(A, 4*C + 3, Linear_Expression(9));
-
+  oct == oct;
+  oct.ascii_dump(std::cerr);
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,

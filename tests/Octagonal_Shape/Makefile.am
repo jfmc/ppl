@@ -50,6 +50,7 @@ check_PROGRAMS = \
 	bhmz05widening1 \
 	bounded1 \
 	boundedaffineimage1 \
+	boundedaffinepreimage1 \
 	cc76extrapolation1 \
 	cc76narrowing1 \
 	chinainit \
@@ -60,6 +61,7 @@ check_PROGRAMS = \
 	discrete1 \
 	disjoint1 \
 	empty1 \
+	expandspacedim1 \
 	fromgensys1 \
 	frompolyhedron1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
@@ -145,6 +147,8 @@ bounded1_SOURCES = bounded1.cc
 
 boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 
+boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
+
 cc76extrapolation1_SOURCES = cc76extrapolation1.cc
 
 cc76narrowing1_SOURCES = cc76narrowing1.cc
@@ -164,6 +168,8 @@ discrete1_SOURCES = discrete1.cc
 disjoint1_SOURCES = disjoint1.cc
 
 empty1_SOURCES = empty1.cc
+
+expandspacedim1_SOURCES = expandspacedim1.cc
 
 fromgensys1_SOURCES = fromgensys1.cc
 
