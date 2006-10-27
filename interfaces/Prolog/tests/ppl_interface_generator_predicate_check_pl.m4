@@ -233,6 +233,12 @@ m4_replace_all_patterns_in_string($1,
   m4_add_topology_class_code($1),
   m4_pattern_list)`'dnl
 m4_replace_all_patterns_in_string($1,
+  m4_add_build_class_code($1),
+  m4_pattern_list)`'dnl
+m4_replace_all_patterns_in_string($1,
+  m4_add_comparison_class_code($1),
+  m4_pattern_list)`'dnl
+m4_replace_all_patterns_in_string($1,
   m4_add_cleanup_class_code($1),
   m4_pattern_list)`'dnl
 m4_replace_all_patterns_in_string($1,
@@ -263,11 +269,11 @@ m4_undivert(4)`'dnl
 m4_divert`'dnl
 dnl
 dnl ==================================================================
-dnl Generate code for divert(1), the top-level call
+dnl Generate code for divert(5), the top-level call
 dnl ==================================================================
 dnl
 dnl -----------------------------------------------------------------
-dnl Extra files and definitions for divert(6)
+dnl Extra files and definitions for divert(5)
 dnl -----------------------------------------------------------------
 m4_define(`m4_pre_extra_class_code', `')`'dnl
 m4_define(`m4_start1', 0)`'dnl
@@ -286,15 +292,15 @@ m4_undivert(5)`'dnl
 m4_divert`'dnl
 dnl
 dnl ==================================================================
-dnl Generate code for divert(5), the test data and similar generic code
+dnl Generate code for divert(6), the test data and similar generic code
 dnl ==================================================================
 dnl
 dnl -----------------------------------------------------------------
-dnl Extra definitions for divert(5)
+dnl Extra definitions for divert(6)
 dnl -----------------------------------------------------------------
 dnl
 dnl -----------------------------------------------------------------
-dnl Main call to macros to generate code for divert(5)
+dnl Main call to macros to generate code for divert(6)
 dnl -----------------------------------------------------------------
 m4_changequote(`@<<@',`@>>@')@<<@@>>@dnl
 m4_include(

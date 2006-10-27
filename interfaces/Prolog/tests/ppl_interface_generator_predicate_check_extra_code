@@ -80,15 +80,19 @@ make_var_list(I, Dim, ['$VAR'(I)|Var_List]) :-
 
 %%%%%%%%%%%% predicates for success and errors.  %%%%%%%%%%%%%%%%%
 
+:- dynamic(test_failure).
+
 write_success(Predicate_name) :-
   display_message([test, for, Predicate_name, 'succeeded.']).
 
 write_error(Predicate_name) :-
+  assertz(test_failure(Predicate_name)),
   write_all([test, for, Predicate_name, 'failed.']).
 
 %%%%%%%%%%%% predicates for test data %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-:- discontiguous(ppl_build_test_data/5).
+:- discontiguous(ppl_build_test_data/4).
+:- discontiguous(ppl_dimension_test_data/3).
 :- discontiguous(ppl_relation_test_data/4).
 :- discontiguous(ppl_property_test_data/4).
 :- discontiguous(ppl_bounds_test_data/5).
@@ -103,14 +107,16 @@ predicate_exists(Predicate) :-
   all_class_dependent_predicates(List_of_Predicates),
   member(Predicate, List_of_Predicates).
 
-/* Test data for test e0 (an empty object in 0 dimensions) */
+/* Test data for test test00 (an empty object in 0 dimensions) */
 
-ppl_build_test_data(e0, _Topology, constraints, 0, [0 = 1]).
-ppl_build_test_data(e0, _Topology, generators, 0, []).
-ppl_build_test_data(e0, _Topology, congruences, 0, [0 = 1]).
-ppl_build_test_data(e0, _Topology, grid_generators, 0, []).
+ppl_build_test_data(test00, _Topology, constraints, [0 = 1]).
+ppl_build_test_data(test00, _Topology, generators, []).
+ppl_build_test_data(test00, _Topology, congruences, [0 = 1]).
+ppl_build_test_data(test00, _Topology, grid_generators, []).
 
-ppl_relation_test_data(e0, constraint, 0 = 1, Rel) :-
+ppl_dimension_test_data(test00, _, 0).
+
+ppl_relation_test_data(test00, constraint, 0 = 1, Rel) :-
   Rel = [saturates, is_included, is_disjoint]
   ; Rel = [saturates, is_disjoint, is_included]
   ; Rel = [is_included, is_disjoint, saturates]
@@ -119,210 +125,265 @@ ppl_relation_test_data(e0, constraint, 0 = 1, Rel) :-
   ; Rel = [is_disjoint, saturates, is_included]
   ; Rel = [is_disjoint, is_included]
   ; Rel = [is_included, is_disjoint].
-ppl_relation_test_data(e0, generator, point(0), []).
-ppl_relation_test_data(e0, congruence, 0 = 1, Rel) :-
+ppl_relation_test_data(test00, generator, point(0), []).
+ppl_relation_test_data(test00, congruence, 0 = 1, Rel) :-
   Rel = [is_included, is_disjoint] ; Rel = [is_disjoint, is_included].
-ppl_relation_test_data(e0, grid_generator, grid_point(0), []).
+ppl_relation_test_data(test00, grid_generator, grid_point(0), []).
 
-ppl_property_test_data(e0, _, _, is_empty).
-ppl_property_test_data(e0, _, _, is_bounded).
-ppl_property_test_data(e0, _, _, is_topologically_closed).
-ppl_property_test_data(e0, _, _, is_discrete).
+ppl_property_test_data(test00, _, _, is_empty).
+ppl_property_test_data(test00, _, _, is_bounded).
+ppl_property_test_data(test00, _, _, is_topologically_closed).
+ppl_property_test_data(test00, _, _, is_discrete).
 
-ppl_bounds_test_data(e0, _, 0, _, true).
+ppl_bounds_test_data(test00, _, 0, _, true).
 
-ppl_maxmin_test_data(e0, _Topology, _, _, 0, _, _, _, _, false).
+ppl_maxmin_test_data(test00, _Topology, _, _, 0, _, _, _, _, false).
 
-/* Test data for test e1 (an empty object in 1 dimension) */
+/* Test data for test test01 (an empty object in 1 dimension) */
 
-ppl_build_test_data(e1, _Topology, constraints, 1, CS) :-
+ppl_build_test_data(test01, _Topology, constraints, CS) :-
   (make_vars(1, [A]),
    CS = [A >= 1, A =< 0]).
-ppl_build_test_data(e1, _Topology, generators, 1, GS) :-
+ppl_build_test_data(test01, _Topology, generators, GS) :-
   (make_vars(1, [A]),
    GS = [line(A)]).
-ppl_build_test_data(e1, _Topology, congruences, 1, CS) :-
+ppl_build_test_data(test01, _Topology, congruences, CS) :-
   (make_vars(1, [A]),
    CS = [(A =:= 1) / 2, (A =:= 0) / 2]).
-ppl_build_test_data(e1, _Topology, grid_generators, 1, GS) :-
+ppl_build_test_data(test01, _Topology, grid_generators, GS) :-
   (make_vars(1, [A]),
    GS = [grid_line(A)]).
 
-ppl_property_test_data(e1, _, _, is_empty).
-ppl_property_test_data(e1, _, _, is_bounded).
-ppl_property_test_data(e1, _, _, is_topologically_closed).
-ppl_property_test_data_(e1, _, _, is_discrete).
+ppl_dimension_test_data(test01, _, 0).
 
-ppl_bounds_test_data(e1, _, A, _, true) :-
+ppl_property_test_data(test01, _, _, is_empty).
+ppl_property_test_data(test01, _, _, is_bounded).
+ppl_property_test_data(test01, _, _, is_topologically_closed).
+ppl_property_test_data_(test01, _, _, is_discrete).
+
+ppl_bounds_test_data(test01, _, A, _, true) :-
   make_vars(1, [A]).
 
-ppl_maxmin_test_data(e1, _Topology, _, _, 0, _, _, _, _, false).
+ppl_maxmin_test_data(test01, _Topology, _, _, 0, _, _, _, _, false).
 
-/* Test data for test 0 (a universe object in 0 dimensions) */
+/* Test data for test test02 (a universe object in 0 dimensions) */
 
-ppl_build_test_data(0, _Topology, constraints, 0, []).
-ppl_build_test_data(0, _Topology, generators, 0, [point(0)]).
-ppl_build_test_data(0, _Topology, congruences, 0, []).
-ppl_build_test_data(0, _Topology, grid_generators, 0, [grid_point(0)]).
+ppl_build_test_data(test02, _Topology, constraints, []).
+ppl_build_test_data(test02, _Topology, generators, [point(0)]).
+ppl_build_test_data(test02, _Topology, congruences, []).
+ppl_build_test_data(test02, _Topology, grid_generators, [grid_point(0)]).
 
-ppl_relation_test_data(0, constraint, 0 = 0, Rel) :-
+ppl_dimension_test_data(test02, _, 0).
+
+ppl_relation_test_data(test02, constraint, 0 = 0, Rel) :-
   Rel = [saturates, is_included] ; Rel = [is_included, saturates]
   ; Rel = [is_included].
-ppl_relation_test_data(0, generator, point(0), [subsumes]).
-ppl_relation_test_data(0, congruence, 0 = 0, [is_included]).
-ppl_relation_test_data(0, grid_generator, grid_point(0), [subsumes]).
+ppl_relation_test_data(test02, generator, point(0), [subsumes]).
+ppl_relation_test_data(test02, congruence, 0 = 0, [is_included]).
+ppl_relation_test_data(test02, grid_generator, grid_point(0), [subsumes]).
 
-ppl_property_test_data(0, _, _, is_bounded).
-ppl_property_test_data(0, _, _, is_topologically_closed).
-ppl_property_test_data(0, _, _, is_discrete).
-ppl_property_test_data(0, _, _, contains_integer_point).
+ppl_property_test_data(test02, _, _, is_bounded).
+ppl_property_test_data(test02, _, _, is_topologically_closed).
+ppl_property_test_data(test02, _, _, is_discrete).
+ppl_property_test_data(test02, _, _, contains_integer_point).
 
-ppl_bounds_test_data(0, _, 0, _, true).
+ppl_bounds_test_data(test02, _, 0, _, true).
 
-ppl_maxmin_test_data(0, _Topology, constraint, _, 0, 0, 1, true,
+ppl_maxmin_test_data(test02, _Topology, constraint, _, 0, 0, 1, true,
                      point(0), true).
-ppl_maxmin_test_data(0, _Topology, congruence, _, 0, 0, 1, true,
+ppl_maxmin_test_data(test02, _Topology, congruence, _, 0, 0, 1, true,
                      grid_point(0), true).
 
-/* Test data for test 1 (a universe object in 1 dimension) */
+/* Test data for test test03 (a universe object in 1 dimension) */
 
-ppl_build_test_data(1, _Topology, constraints, 1, CS) :-
+ppl_build_test_data(test03, _Topology, constraints, CS) :-
   (make_vars(1, [A]),
    CS = [A = A]).
-ppl_build_test_data(1, _Topology, generators, 1, GS) :-
+ppl_build_test_data(test03, _Topology, generators, GS) :-
   (make_vars(1, [A]),
    GS = [point(0), line(A)]).
-ppl_build_test_data(1, _Topology, congruences, 1, CS) :-
+ppl_build_test_data(test03, _Topology, congruences, CS) :-
   (make_vars(1, [A]),
    CS = [A = A]).
-ppl_build_test_data(1, _Topology, grid_generators, 1, GS) :-
+ppl_build_test_data(test03, _Topology, grid_generators, GS) :-
   (make_vars(1, [A]),
    GS = [grid_point(0), grid_line(A)]).
 
-ppl_relation_test_data(1, constraint, A = 0, [strictly_intersects]) :-
-  make_vars(1, [A]).
-ppl_relation_test_data(1, generator, point(0), [subsumes]).
-ppl_relation_test_data(1, congruence, A = 0, [strictly_intersects]) :-
-  make_vars(1, [A]).
-ppl_relation_test_data(1, grid_generator, grid_point(0), [subsumes]).
+ppl_dimension_test_data(test03, _, 1).
 
-ppl_property_test_data(1, _, _, is_universe).
-ppl_property_test_data(1, _, _, is_topologically_closed).
-ppl_property_test_data(1, _, _, contains_integer_point).
+ppl_relation_test_data(test03, constraint, A = 0, [strictly_intersects]) :-
+  make_vars(1, [A]).
+ppl_relation_test_data(test03, generator, point(0), [subsumes]).
+ppl_relation_test_data(test03, congruence, A = 0, [strictly_intersects]) :-
+  make_vars(1, [A]).
+ppl_relation_test_data(test03, grid_generator, grid_point(0), [subsumes]).
 
-ppl_bounds_test_data(1, _, A, _, false) :-
+ppl_property_test_data(test03, _, _, is_universe).
+ppl_property_test_data(test03, _, _, is_topologically_closed).
+ppl_property_test_data(test03, _, _, contains_integer_point).
+
+ppl_bounds_test_data(test03, _, A, _, false) :-
   make_vars(1, [A]).
 
-ppl_maxmin_test_data(1, _Topology, _, _, A, _, _, _, _, false) :-
+ppl_maxmin_test_data(test03, _Topology, _, _, A, _, _, _, _, false) :-
    make_vars(1, [A]).
 
-/* Test data for test 2 (an object in 1 dimension with a single point) */
+/* Test data for test test04 and test05
+   (an object in 1 dimension with a single point) */
 
-ppl_build_test_data(2, _Topology, constraints, 1, CS) :-
+ppl_build_test_data(test04, _Topology, constraints, CS) :-
   (make_vars(1, [A]),
    CS = [A = 1]).
 
-ppl_build_test_data(2, _Topology, generators, 1, GS) :-
+ppl_build_test_data(test04, _Topology, generators, GS) :-
   (make_vars(1, [A]),
    GS = [point(1*A)]).
-ppl_build_test_data(2, _Topology, congruences, 1, CS) :-
+ppl_build_test_data(test04, _Topology, congruences, CS) :-
   (make_vars(1, [A]),
    CS = [A = 1]).
-ppl_build_test_data(2, _Topology, grid_generators, 1, GS) :-
+ppl_build_test_data(test04, _Topology, grid_generators, GS) :-
   (make_vars(1, [A]),
    GS = [grid_point(1*A)]).
 
-ppl_relation_test_data(2, constraint, A = 0, [is_disjoint]) :-
-  make_vars(1, [A]).
-ppl_relation_test_data(2, generator, point(0), []).
-ppl_relation_test_data(2, congruence, A = 0, [is_disjoint]) :-
-  make_vars(1, [A]).
-ppl_relation_test_data(2, grid_generator, grid_point(0), []).
+ppl_dimension_test_data(test04, space_dimension, 1).
+ppl_dimension_test_data(test04, affine_dimension, 0).
 
-ppl_property_test_data(2, _, _, is_bounded).
-ppl_property_test_data(2, _, _, is_topologically_closed).
-ppl_property_test_data(2, _, _, contains_integer_point).
-ppl_property_test_data(2, _, _, is_discrete).
+ppl_relation_test_data(test04, constraint, A = 0, [is_disjoint]) :-
+  make_vars(1, [A]).
+ppl_relation_test_data(test04, generator, point(0), []).
+ppl_relation_test_data(test04, congruence, A = 0, [is_disjoint]) :-
+  make_vars(1, [A]).
+ppl_relation_test_data(test04, grid_generator, grid_point(0), []).
 
-ppl_bounds_test_data(2, _, A, _, true) :-
+ppl_property_test_data(test04, _, _, is_bounded).
+ppl_property_test_data(test04, _, _, is_topologically_closed).
+ppl_property_test_data(test04, _, _, contains_integer_point).
+ppl_property_test_data(test04, _, _, is_discrete).
+
+ppl_bounds_test_data(test04, _, A, _, true) :-
   make_vars(1, [A]).
 
-ppl_maxmin_test_data(2, _Topology, constraint, _, A, 1, 1, true,
+ppl_maxmin_test_data(test04, _Topology, constraint, _, A, 1, 1, true,
                      point(A), true) :-
    make_vars(1, [A]).
-ppl_maxmin_test_data(2, _Topology, congruence, _, A, 1, 1, true,
+ppl_maxmin_test_data(test04, _Topology, congruence, _, A, 1, 1, true,
              grid_point(A), true) :-
    make_vars(1, [A]).
 
-/* Test data for test 3 (an unbounded non-universe object in 1 dimension) */
+ppl_build_test_data(test05, _Topology, constraints, CS) :-
+  (make_vars(1, [A]),
+   CS = [A = -1]).
+ppl_build_test_data(test05, _Topology, generators, GS) :-
+  (make_vars(1, [A]),
+   GS = [point(-1*A)]).
+ppl_build_test_data(test05, _Topology, congruences, CS) :-
+  (make_vars(1, [A]),
+   CS = [A = -1]).
+ppl_build_test_data(test05, _Topology, grid_generators, GS) :-
+  (make_vars(1, [A]),
+   GS = [grid_point(-1*A)]).
 
-ppl_build_test_data(3, T, constraints, 1, CS) :-
+ppl_dimension_test_data(test05, space_dimension, 1).
+ppl_dimension_test_data(test05, affine_dimension, 0).
+
+ppl_relation_test_data(test05, constraint, A = 0, [is_disjoint]) :-
+  make_vars(1, [A]).
+ppl_relation_test_data(test05, generator, point(0), []).
+ppl_relation_test_data(test05, congruence, A = 0, [is_disjoint]) :-
+  make_vars(1, [A]).
+ppl_relation_test_data(test05, grid_generator, grid_point(0), []).
+
+ppl_property_test_data(test05, _, _, is_bounded).
+ppl_property_test_data(test05, _, _, is_topologically_closed).
+ppl_property_test_data(test05, _, _, contains_integer_point).
+ppl_property_test_data(test05, _, _, is_discrete).
+
+ppl_bounds_test_data(test05, _, A, _, true) :-
+  make_vars(1, [A]).
+
+ppl_maxmin_test_data(test05, _Topology, constraint, _, A, -1, 1, true,
+                     point(-1*A), true) :-
+   make_vars(1, [A]).
+ppl_maxmin_test_data(test05, _Topology, congruence, _, A, -1, 1, true,
+             grid_point(-1*A), true) :-
+   make_vars(1, [A]).
+
+/* Test data for test test06 (an unbounded non-universe object in 1 dimension) */
+
+ppl_build_test_data(test06, T, constraints, CS) :-
   (\+ T == t_NNC_,
    make_vars(1, [A]),
    CS = [A >= 0]).
-ppl_build_test_data(3, T, generators, 1, GS) :-
+ppl_build_test_data(test06, T, generators, GS) :-
   (\+ T == t_NNC_,
    make_vars(1, [A]),
    GS = [point(0*A), ray(A)]).
-ppl_build_test_data(3, t_NNC_, constraints, 1, CS) :-
+ppl_build_test_data(test06, t_NNC_, constraints, CS) :-
   (make_vars(1, [A]),
    CS = [A > 0]).
-ppl_build_test_data(3, t_NNC_, generators, 1, GS) :-
+ppl_build_test_data(test06, t_NNC_, generators, GS) :-
   (make_vars(1, [A]),
    GS = [closure_point(0*A), point(A), ray(A)]).
-ppl_build_test_data(3, _Topology, congruences, 1, CS) :-
+ppl_build_test_data(test06, _Topology, congruences, CS) :-
   (make_vars(1, [A]),
    CS = [A =:= 0]).
-ppl_build_test_data(3, _Topology, grid_generators, 1, GS) :-
+ppl_build_test_data(test06, _Topology, grid_generators, GS) :-
   (make_vars(1, [A]),
    GS = [grid_point(0*A), parameter(1*A)]).
 
-ppl_relation_test_data(3, constraint, A =< 3, [strictly_intersects]) :-
+ppl_dimension_test_data(test06, _, 1).
+
+ppl_relation_test_data(test06, constraint, A =< 3, [strictly_intersects]) :-
   make_vars(1, [A]).
-ppl_relation_test_data(3, generator, point(3*A, 2), [subsumes]) :-
+ppl_relation_test_data(test06, generator, point(3*A, 2), [subsumes]) :-
   make_vars(1, [A]).
-ppl_relation_test_data(3, congruence, (2*A =:= 1) / 3,
+ppl_relation_test_data(test06, congruence, (2*A =:= 1) / 3,
                                               [strictly_intersects]) :-
   make_vars(1, [A]).
-ppl_relation_test_data(3, grid_generator, grid_point(3*A), [subsumes]) :-
+ppl_relation_test_data(test06, grid_generator, grid_point(3*A), [subsumes]) :-
   make_vars(1, [A]).
 
-ppl_property_test_data(3, T, _, is_topologically_closed) :-
+ppl_property_test_data(test06, T, _, is_topologically_closed) :-
   \+ T == t_NNC_.
-ppl_property_test_data(3, _, _, contains_integer_point).
-ppl_property_test_data(3, _, congruence, is_discrete).
+ppl_property_test_data(test06, _, _, contains_integer_point).
+ppl_property_test_data(test06, _, congruence, is_discrete).
 
-ppl_bounds_test_data(3, _, A, above, false) :-
+ppl_bounds_test_data(test06, _, A, above, false) :-
   make_vars(1, [A]).
-ppl_bounds_test_data(3, constraint, A, below, true) :-
+ppl_bounds_test_data(test06, constraint, A, below, true) :-
   make_vars(1, [A]).
-ppl_bounds_test_data(3, congruence, A, below, false) :-
+ppl_bounds_test_data(test06, congruence, A, below, false) :-
   make_vars(1, [A]).
 
-ppl_maxmin_test_data(3, t_C_, constraint, maximize, A, _, _, _, _, false) :-
+ppl_maxmin_test_data(test06, t_C_, constraint, maximize, A, _, _, _, _, false) :-
    make_vars(1, [A]).
-ppl_maxmin_test_data(3, t_C_, constraint, minimize, A, 0, 1, true,
+ppl_maxmin_test_data(test06, t_C_, constraint, minimize, A, 0, 1, true,
                      point(0), true) :-
    make_vars(1, [A]).
-ppl_maxmin_test_data(3, t_NNC_, constraint, maximize, A, _, _, _, _, false) :-
+ppl_maxmin_test_data(test06, t_NNC_, constraint, maximize, A, _, _, _, _, false) :-
    make_vars(1, [A]).
-ppl_maxmin_test_data(3, t_NNC_, constraint, minimize, A, 0, 1, false,
+ppl_maxmin_test_data(test06, t_NNC_, constraint, minimize, A, 0, 1, false,
                      closure_point(0), true) :-
    make_vars(1, [A]).
-ppl_maxmin_test_data(3, _, congruence, _, A, _, _, _, _, false) :-
+ppl_maxmin_test_data(test06, _, congruence, _, A, _, _, _, _, false) :-
    make_vars(1, [A]).
 
 /* boxes  */
 
-ppl_build_test_data(e0, _Topology, box, 0, [empty]).
-ppl_build_test_data(e1, _Topology, box, 1, [empty]).
-ppl_build_test_data(0, _Topology, box, 0, []).
-ppl_build_test_data(1, _Topology, box, 1, [i(o(minf), o(pinf))]).
-ppl_build_test_data(2, _Topology, box, 1, [i(c(1), c(1))]).
-ppl_build_test_data(3, _Topology, box, 1, [i(c(0), o(pinf))]).
-ppl_build_test_data(4, _Topology, box, 2,
+ppl_dimension_test_data(test10, _, 2).
+ppl_dimension_test_data(test11, _, 2).
+ppl_dimension_test_data(test12, _, 2).
+
+ppl_build_test_data(test00, _Topology, box, [empty]).
+ppl_build_test_data(test01, _Topology, box, [empty]).
+ppl_build_test_data(test02, _Topology, box, []).
+ppl_build_test_data(test03, _Topology, box, [i(o(minf), o(pinf))]).
+ppl_build_test_data(test04, _Topology, box, [i(c(1), c(1))]).
+ppl_build_test_data(test05, _Topology, box, [i(c(-1), c(-1))]).
+ppl_build_test_data(test06, _Topology, box, [i(c(0), o(pinf))]).
+ppl_build_test_data(test10, _Topology, box,
                                [i(c(1/2), o(pinf)), i(o(minf), c(-1/2))]).
-ppl_build_test_data(5, _Topology, box, 2, [i(c(-4), c(1)), i(c(-1), c(1))]).
-ppl_build_test_data(6, T, box, 2, [i(c(0/2), o(pinf)), i(o(minf), c(1))]) :-
+ppl_build_test_data(test11, _Topology, box, [i(c(-4), c(1)), i(c(-1), c(1))]).
+ppl_build_test_data(test12, T, box, [i(c(0/2), o(pinf)), i(o(minf), c(1))]) :-
   T \= t_NNC_.
-ppl_build_test_data(6, t_NNC_, box, 2, [i(o(0/2), o(pinf)), i(o(minf), o(1))]).
+ppl_build_test_data(test12, t_NNC_, box, [i(o(0/2), o(pinf)), i(o(minf), o(1))]).
