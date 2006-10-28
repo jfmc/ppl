@@ -154,7 +154,22 @@ ppl_build_test_data(test01, _Topology, grid_generators, GS) :-
   (make_vars(1, [A]),
    GS = [grid_line(A)]).
 
-ppl_dimension_test_data(test01, _, 0).
+ppl_dimension_test_data(test01, space_dimension, 1).
+ppl_dimension_test_data(test01, affine_dimension, 0).
+
+ppl_relation_test_data(test01, constraint, 0 = 1, Rel) :-
+  Rel = [saturates, is_included, is_disjoint]
+  ; Rel = [saturates, is_disjoint, is_included]
+  ; Rel = [is_included, is_disjoint, saturates]
+  ; Rel = [is_included, saturates, is_disjoint]
+  ; Rel = [is_disjoint, is_included, saturates]
+  ; Rel = [is_disjoint, saturates, is_included]
+  ; Rel = [is_disjoint, is_included]
+  ; Rel = [is_included, is_disjoint].
+ppl_relation_test_data(test01, generator, point(0), []).
+ppl_relation_test_data(test01, congruence, 0 = 1, Rel) :-
+  Rel = [is_included, is_disjoint] ; Rel = [is_disjoint, is_included].
+ppl_relation_test_data(test01, grid_generator, grid_point(0), []).
 
 ppl_property_test_data(test01, _, _, is_empty).
 ppl_property_test_data(test01, _, _, is_bounded).
@@ -323,7 +338,7 @@ ppl_build_test_data(test06, t_NNC_, constraints, CS) :-
    CS = [A > 0]).
 ppl_build_test_data(test06, t_NNC_, generators, GS) :-
   (make_vars(1, [A]),
-   GS = [closure_point(0*A), point(A), ray(A)]).
+   GS = [point(A), closure_point(0*A), ray(A)]).
 ppl_build_test_data(test06, _Topology, congruences, CS) :-
   (make_vars(1, [A]),
    CS = [A =:= 0]).

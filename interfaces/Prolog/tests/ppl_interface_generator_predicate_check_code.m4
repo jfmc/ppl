@@ -222,7 +222,7 @@ m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 `
 ppl_@CLASS@_@DIMENSION@_2_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
     (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
      \+ppl_@CLASS@_@DIMENSION@(PS, 3),
@@ -266,7 +266,7 @@ m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 `
 ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_2_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
      ppl_@CLASS@_get_minimized_@GET_REPRESENT@s(PS, RS1),
@@ -293,7 +293,7 @@ m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `
 ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_3_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
      ppl_relation_test_data(TEST_DATA, @RELATION_REPRESENT@, R, Rel_Expected),
@@ -518,5 +518,168 @@ ppl_@CLASS@_@COMPARISON@_@CLASS@_2_test :-
   ).
 
 ')
+
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
+`
+ppl_@CLASS@_add_@ADD_REPRESENT@s_2_test :-
+  (
+   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+   member(TEST_DATA1,
+          [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   (
+     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
+     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS1),
+     ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
+     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
+     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
+     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
+     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS1),
+     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS1),
+     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS1),
+     ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PS1)
+   ->
+     fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
+`
+ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_2_test :-
+  (
+   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+   member(TEST_DATA1,
+          [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   (
+     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
+     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS1),
+     ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
+     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
+     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
+     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS_min),
+     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1_min),
+     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
+     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS1),
+     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS_min, RS),
+     (ppl_@CLASS@_is_empty(PS)
+     ->
+       \+ ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS_min, RS1),
+       ppl_@CLASS@_add_@ADD_REPRESENT@s(PS_min, RS1)
+     ;
+       ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS_min, RS1)
+     ),
+     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS1),
+     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS),
+     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1_min, RS1),
+     (ppl_@CLASS@_is_empty(PS1)
+     ->
+       \+ ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS1_min, RS),
+       ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1_min, RS)
+     ;
+       ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS1_min, RS)
+     ),
+     ppl_@CLASS@_equals_@CLASS@(PS_min, PS1_min),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS1_min),
+     ppl_@CLASS@_equals_@CLASS@(PS1, PS1_min),
+     ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS1_min)
+   ->
+     fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
+`
+:- discontiguous(ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1/3).
+
+ppl_@CLASS@_add_@ADD_REPRESENT@_2_test :-
+  (
+   member(TEST_DATA, [test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
+   ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
+   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
+   ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
+   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
+   (ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, RS)
+   ->
+     fail ; true)
+  ).
+
+ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, []) :-
+  (
+   ppl_@CLASS@_equals_@CLASS@(PS, PS1),
+   ppl_delete_@CLASS@(PS),
+   ppl_delete_@CLASS@(PS1)
+  ).
+ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, [R | RS]) :-
+  (
+     ppl_@CLASS@_add_@ADD_REPRESENT@(PS1, R),
+     ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, RS)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
+`
+:- discontiguous(ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1/3).
+
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test :-
+  (
+   member(TEST_DATA, [test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
+   ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
+   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
+   ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
+   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
+   (ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
+   ->
+     fail ; true)
+  ).
+
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, []) :-
+  (
+   ppl_@CLASS@_equals_@CLASS@(PS, PS1),
+   ppl_delete_@CLASS@(PS),
+   ppl_delete_@CLASS@(PS1)
+  ).
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, [R | RS]) :-
+  (
+     ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize(PS1, R),
+     ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
+  ).
+
+')
+
+dnl ppl_@CLASS@_@BINOP@/2 *nofail +simple,
+dnl ppl_@CLASS@_@BINMINOP@/2 +simple,
+dnl ppl_@CLASS@_@AFFIMAGE@/4 *nofail +simple,
+dnl ppl_@CLASS@_bounded_@AFFIMAGE@/5 *nofail +shape -wr_shape,
+dnl ppl_@CLASS@_generalized_@AFFIMAGE@/5 +shape,
+dnl ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs/4 +shape,
+dnl ppl_Grid_generalized_@AFFIMAGE@/6 +grid,
+dnl ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs/5 +grid,
+dnl ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens/4 +simple,
+dnl ppl_@CLASS@_@WIDEN@_widening_assign/2 *nofail +simple,
+dnl ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens/5 +simple,
+dnl ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign/3 *nofail +simple,
+dnl ppl_BD_Shape_CC76_extrapolation_assign_with_tokens/4 -bd_shape,
+dnl ppl_BD_Shape_CC76_extrapolation_assign/2 *nofail -bd_shape,
+dnl ppl_BD_Shape_CC76_narrowing_assign/2 -bd_shape,
+dnl ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@/2 *nofail +simple_pps,
+dnl ppl_@CLASS@_remove_space_dimensions/2 +simple_pps,
+dnl ppl_@CLASS@_remove_higher_space_dimensions/2 *nofail +simple_pps,
+dnl ppl_@CLASS@_expand_space_dimension/3 *nofail +simple -octagonal_shape,
+dnl ppl_@CLASS@_fold_space_dimensions/3  +simple -octagonal_shape,
+dnl ppl_@CLASS@_map_space_dimensions/2 +simple_pps
 
 m4_divert`'dnl
