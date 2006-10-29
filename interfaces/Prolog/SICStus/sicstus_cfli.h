@@ -1,5 +1,5 @@
 /* SICStus Prolog Common Foreign Language Interface: declarations.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -27,20 +26,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <sicstus/sicstus.h>
 
 #ifdef __GNUC__
-# define PCFLI_EXTERN_INLINE  extern __inline__
-# define PCFLI_INLINE_PROTOTYPES  1
+# define PCFLI_EXTERN_INLINE extern __inline__
+# define PCFLI_INLINE_PROTOTYPES 1
 #endif
 
-#if defined (__cplusplus) && ! defined (PCFLI_EXTERN_INLINE)
-# define PCFLI_EXTERN_INLINE  inline
+#if defined(__cplusplus) && !defined(PCFLI_EXTERN_INLINE)
+# define PCFLI_EXTERN_INLINE inline
 #endif
 
 #ifdef PCFLI_EXTERN_INLINE
 # ifndef PCFLI_INLINE_PROTOTYPES
-#  define PCFLI_INLINE_PROTOTYPES  0
+#  define PCFLI_INLINE_PROTOTYPES 0
 # endif
 #else
-# define PCFLI_INLINE_PROTOTYPES  1
+# define PCFLI_INLINE_PROTOTYPES 1
 #endif
 
 /* Temporary. */
@@ -53,9 +52,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 typedef SP_term_ref Prolog_term_ref;
 typedef SP_atom Prolog_atom;
 typedef int Prolog_foreign_return_type;
+
 static const Prolog_foreign_return_type PROLOG_SUCCESS = SP_SUCCESS;
 static const Prolog_foreign_return_type PROLOG_FAILURE = SP_FAILURE;
-
 
 #if PCFLI_INLINE_PROTOTYPES
 

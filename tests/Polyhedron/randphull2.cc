@@ -1,6 +1,6 @@
 /* Compute random polytopes by generating points on the surface
    of an n-dimensional sphere.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -15,9 +15,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -26,13 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <cmath>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::IO_Operators;
+using std::vector;
 
-#ifndef NOISY
-#define NOISY 0
-#endif
+using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifndef M_PI
 # define M_PI           3.14159265358979323846  /* pi */
@@ -102,13 +97,12 @@ random_polytope(C_Polyhedron& ph, unsigned dimension, unsigned num_points,
 
 } // namespace
 
-
 int
 main() TRY {
   set_handlers();
 
   for (int dimension = 2; dimension <= 6; ++dimension) {
-    C_Polyhedron ph(dimension, C_Polyhedron::EMPTY);
+    C_Polyhedron ph(dimension, EMPTY);
     random_polytope(ph, dimension, dimension*dimension);
     const Constraint_System& cs = ph.constraints();
     unsigned num_constraints = 0;
@@ -121,16 +115,16 @@ main() TRY {
     for (Generator_System::const_iterator i = gs.begin(), gs_end = gs.end();
 	 i != gs_end;
 	 ++i) {
-      if (i->type() != Generator::POINT)
+      if (i->type() != Generator::POINT) {
+	nout << "i->type() == " << i->type() << endl;
 	exit(1);
+      }
       ++num_points;
     }
 
-#if NOISY
-    cout << "dimension = " << dimension
+    nout << "dimension = " << dimension
 	 << ", points = " << num_points << " (" << dimension*dimension << ")"
 	 << ", constraints = " << num_constraints << endl;
-#endif
   }
   return 0;
 }

@@ -1,5 +1,5 @@
 /* Determinate class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -26,33 +25,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Determinate.types.hh"
 #include "Constraint_System.types.hh"
+#include "Congruence_System.types.hh"
 #include "Variable.defs.hh"
-#include "globals.defs.hh"
+#include "globals.types.hh"
 #include <iosfwd>
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {
 
-//! \brief
-//! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y are the same domain element.
-/*!
+/*! \brief
+  Returns <CODE>true</CODE> if and only if
+  \p x and \p y are the same domain element.
+
   \relates Determinate
-  \exception std::invalid_argument
-  Thrown if \p x and \p y are topology-incompatible or
-  dimension-incompatible.
 */
 template <typename PH>
 bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 
-//! \brief
-//! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y are different domain elements.
-/*!
+/*! \brief
+  Returns <CODE>true</CODE> if and only if
+  \p x and \p y are different domain elements.
+
   \relates Determinate
-  \exception std::invalid_argument
-  Thrown if \p x and \p y are topology-incompatible or
-  dimension-incompatible.
 */
 template <typename PH>
 bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
@@ -70,34 +64,29 @@ operator<<(std::ostream&, const Determinate<PH>&);
 } // namespace Parma_Polyhedra_Library
 
 //! Wraps a PPL class into a determinate constraint system interface.
+/*! \ingroup PPL_CXX_interface */
 template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
   //! \name Constructors and Destructor
   //@{
 
-  //! \brief
-  //! Builds either the top or the bottom of the determinate constraint
-  //! system defined on the vector space having \p num_dimensions
-  //! dimensions.
-  /*!
-    The top element, corresponding to the whole vector space,
-    is built if \p universe is \c true; otherwise the bottom element,
-    corresponding to the emptyset, is built. By default,
-    the top of a zero-dimension vector space is built.
+  /*! \brief
+    Injection operator: builds the determinate constraint system element
+    corresponding to the base-level element \p p.
   */
-  explicit
-  Determinate(dimension_type num_dimensions = 0, bool universe = true);
-
-  //! \brief
-  //! Injection operator: builds the determinate constraint system element
-  //! corresponding to the base-level element \p p.
   Determinate(const PH& p);
 
+  /*! \brief
+    Injection operator: builds the determinate constraint system element
+    corresponding to the base-level element represented by \p cs.
+  */
+  Determinate(const Constraint_System& cs);
+
   //! \brief
   //! Injection operator: builds the determinate constraint system element
-  //! corresponding to the base-level element represented by \p cs.
-  Determinate(const Constraint_System& cs);
+  //! corresponding to the base-level element represented by \p cgs.
+  Determinate(const Congruence_System& cgs);
 
   //! Copy constructor.
   Determinate(const Determinate& y);
@@ -110,56 +99,47 @@ public:
   //! \name Member Functions that Do Not Modify the Domain Element
   //@{
 
-  //! Returns the dimension of the vector space enclosing \p *this.
-  dimension_type space_dimension() const;
-
-  //! Returns the system of constraints.
-  const Constraint_System& constraints() const;
-
-  //! Returns the system of constraints, with no redundant constraint.
-  const Constraint_System& minimized_constraints() const;
-
   //! Returns a const reference to the embedded element.
   const PH& element() const;
 
-  //! Returns a reference to the embedded element.
-  PH& element();
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! On return from this method, the representation of \p *this
-  //! is not shared by different Determinate objects.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void mutate();
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is the top of the
-  //! determinate constraint system (i.e., the whole vector space).
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is the top of the
+    determinate constraint system (i.e., the whole vector space).
+  */
   bool is_top() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is the bottom
-  //! of the determinate constraint system.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is the bottom
+    of the determinate constraint system.
+  */
   bool is_bottom() const;
 
-  //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this entails \p y.
   bool definitely_entails(const Determinate& y) const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this and \p y
-  //! are equivalent.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this and \p y
+    are equivalent.
+  */
   bool is_definitely_equivalent_to(const Determinate& y) const;
 
-  //! \brief
-  //! Returns a lower bound to the total size in bytes of the memory
-  //! occupied by \p *this.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
   memory_size_type total_memory_in_bytes() const;
 
-  //! \brief
-  //! Returns a lower bound to the size in bytes of the memory
-  //! managed by \p *this.
+  /*! \brief
+    Returns a lower bound to the size in bytes of the memory
+    managed by \p *this.
+  */
   memory_size_type external_memory_in_bytes() const;
+
+  /*!
+    Returns <CODE>true</CODE> if and only if this domain
+    has a nontrivial weakening operator.
+  */
+  static bool has_nontrivial_weakening();
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -167,44 +147,34 @@ public:
   //@} // Member Functions that Do Not Modify the Domain Element
 
 
-  //! \name Space Dimension Preserving Member Functions that May Modify the Domain Element
+  //! \name Member Functions that May Modify the Domain Element
   //@{
 
-  //! \brief
   //! Assigns to \p *this the upper bound of \p *this and \p y.
   void upper_bound_assign(const Determinate& y);
 
   //! Assigns to \p *this the meet of \p *this and \p y.
   void meet_assign(const Determinate& y);
 
-  //! \brief
-  //! Assigns to \p *this the meet of \p *this and the element
-  //! represented by constraint \p c.
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are topology-incompatible
-    or dimension-incompatible.
+  //! Assigns to \p *this the result of weakening \p *this with \p y.
+  void weakening_assign(const Determinate& y);
+
+  /*! \brief
+    Assigns to \p *this the \ref Concatenating_Polyhedra "concatenation"
+    of \p *this and \p y, taken in this order.
   */
-  void add_constraint(const Constraint& c);
+  void concatenate_assign(const Determinate& y);
 
-  //! \brief
-  //! Assigns to \p *this the meet of \p *this and the element
-  //! represented by the constraints in \p cs.
-  /*!
-    \param cs
-    The constraints to intersect with.  This parameter is not declared
-    <CODE>const</CODE> because it can be modified.
+  //! Returns a reference to the embedded element.
+  PH& element();
 
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    On return from this method, the representation of \p *this
+    is not shared by different Determinate objects.
   */
-  void add_constraints(Constraint_System& cs);
-
-  //@} // Space Dimension Preserving Member Functions that May Modify [...]
-
-  //! \name Member Functions that May Modify the Dimension of the Vector Space
-  //@{
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  void mutate();
 
   //! Assignment operator.
   Determinate& operator=(const Determinate& y);
@@ -212,59 +182,11 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Determinate& y);
 
-  //! \brief
-  //! Adds \p m new space dimensions and embeds the old domain element
-  //! in the new vector space.
-  void add_space_dimensions_and_embed(dimension_type m);
-
-  //! \brief
-  //! Adds \p m new space dimensions to the domain element
-  //! and does not embed it in the new vector space.
-  void add_space_dimensions_and_project(dimension_type m);
-
-  //! \brief
-  //! Assigns to \p *this the \ref concatenate "concatenation"
-  //! of \p *this and \p y, taken in this order.
-  void concatenate_assign(const Determinate& y);
-
-  //! \brief
-  //! Removes all the specified space dimensions.
-  /*!
-    \param to_be_removed
-    The set of Variable objects corresponding to the space dimensions
-    to be removed.
-
-    \exception std::invalid_argument
-    Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p to_be_removed.
-  */
-  void remove_space_dimensions(const Variables_Set& to_be_removed);
-
-  //! \brief
-  //! Removes the higher space dimensions so that the resulting space
-  //! will have dimension \p new_dimension.
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p new_dimensions is greater than the space dimension
-    of \p *this.
-  */
-  void remove_higher_space_dimensions(dimension_type new_dimension);
-
-  //! \brief
-  //! Remaps the dimensions of the vector space according to
-  //! a partial function.
-  /*!
-    See Polyhedron::map_space_dimensions.
-  */
-  template <typename Partial_Function>
-  void map_space_dimensions(const Partial_Function& pfunc);
-
-  //@} // Member Functions that May Modify the Dimension of the Vector Space
+  //@} // Member Functions that May Modify the Domain Element
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
   //! A function adapter for the Determinate class.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     It lifts a Binary_Operator_Assign function object, taking arguments
     of type PH, producing the corresponding function object taking
     arguments of type Determinate<PH>.
@@ -283,19 +205,20 @@ public:
     //! Explicit unary constructor.
     explicit
     Binary_Operator_Assign_Lifter(Binary_Operator_Assign op_assign);
-    
+
     //! Function-application operator.
     void operator()(Determinate& x, const Determinate& y) const;
-    
+
   private:
     //! The function object to be lifted.
     Binary_Operator_Assign op_assign_;
   };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Helper function returning a Binary_Operator_Assign_Lifter object,
-  //! also allowing for the deduction of template arguments.
+  /*! \brief
+    Helper function returning a Binary_Operator_Assign_Lifter object,
+    also allowing for the deduction of template arguments.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   template <typename Binary_Operator_Assign>
   static Binary_Operator_Assign_Lifter<Binary_Operator_Assign>
@@ -303,18 +226,19 @@ public:
 
 private:
   //! The possibly shared representation of a Determinate object.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     By adopting the <EM>copy-on-write</EM> technique, a single
     representation of the base-level object may be shared by more than
     one object of the class Determinate.
   */
   class Rep {
   private:
-    //! \brief
-    //! Count the number of references:
-    //! -   0: leaked, \p ph is non-const;
-    //! -   1: one reference, \p ph is non-const;
-    //! - > 1: more than one reference, \p ph is const.
+    /*! \brief
+      Count the number of references:
+      -   0: leaked, \p ph is non-const;
+      -   1: one reference, \p ph is non-const;
+      - > 1: more than one reference, \p ph is const.
+    */
     mutable unsigned long references;
 
     //! Private and unimplemented: assignment not allowed.
@@ -330,10 +254,11 @@ private:
     //! A possibly shared base-level domain element.
     PH ph;
 
-    //! \brief
-    //! Builds a new representation by creating a domain element
-    //! of the specified kind, in the specified vector space.
-    Rep(dimension_type num_dimensions, Polyhedron::Degenerate_Kind kind);
+    /*! \brief
+      Builds a new representation by creating a domain element
+      of the specified kind, in the specified vector space.
+    */
+    Rep(dimension_type num_dimensions, Degenerate_Element kind);
 
     //! Builds a new representation by copying base-level element \p p.
     Rep(const PH& p);
@@ -341,34 +266,41 @@ private:
     //! Builds a new representation by copying the constraints in \p cs.
     Rep(const Constraint_System& cs);
 
+    //! Builds a new representation by copying the constraints in \p cgs.
+    Rep(const Congruence_System& cgs);
+
     //! Destructor.
     ~Rep();
 
     //! Registers a new reference.
     void new_reference() const;
 
-    //! \brief
-    //! Unregisters one reference; returns <CODE>true</CODE> if and only if
-    //! the representation has become unreferenced.
+    /*! \brief
+      Unregisters one reference; returns <CODE>true</CODE> if and only if
+      the representation has become unreferenced.
+    */
     bool del_reference() const;
 
     //! True if and only if this representation is currently shared.
     bool is_shared() const;
 
-    //! \brief
-    //! Returns a lower bound to the total size in bytes of the memory
-    //! occupied by \p *this.
+    /*! \brief
+      Returns a lower bound to the total size in bytes of the memory
+      occupied by \p *this.
+    */
     memory_size_type total_memory_in_bytes() const;
 
-    //! \brief
-    //! Returns a lower bound to the size in bytes of the memory
-    //! managed by \p *this.
+    /*! \brief
+      Returns a lower bound to the size in bytes of the memory
+      managed by \p *this.
+    */
     memory_size_type external_memory_in_bytes() const;
   };
 
-  //! \brief
-  //! A pointer to the possibly shared representation of
-  //! the base-level domain element.
+  /*! \brief
+    A pointer to the possibly shared representation of
+    the base-level domain element.
+  */
   Rep* prep;
 
   friend bool

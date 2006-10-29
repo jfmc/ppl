@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: conversion().
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -28,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Saturation_Row.defs.hh"
 #include "Saturation_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
-#include "globals.defs.hh"
+#include "Scalar_Products.defs.hh"
 #include <cstddef>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -120,7 +119,7 @@ namespace PPL = Parma_Polyhedra_Library;
   for a non-empty polyhedron \f$P\f$,
   it is always possible to find a generating system \f$G\f$ for \f$P\f$
   such that \f$(C, G)\f$ is a DD pair.
-  Conversely, Weil's theorem ensures that, for each generating system
+  Conversely, Weyl's theorem ensures that, for each generating system
   \f$G\f$, it is possible to find a representation system \f$C\f$
   such that \f$(C, G)\f$ is a DD pair.
 
@@ -130,9 +129,9 @@ namespace PPL = Parma_Polyhedra_Library;
     -# given \f$C\f$ find \f$G\f$ such that \f$(C, G)\f$ is a DD pair;
     -# given \f$G\f$ find \f$C\f$ such that \f$(C, G)\f$ is a DD pair.
 
-  Using Farkas' lemma we can prove that these two problems are
+  Using Farkas' Lemma we can prove that these two problems are
   computationally equivalent (i.e., linear-time reducible to each other).
-  Farkas' lemma establishes a fundamental property of vectors in
+  Farkas' Lemma establishes a fundamental property of vectors in
   \f$\Rset^n\f$ that, in a sense, captures the essence of duality.
   Consider a matrix \f$A \in \Rset^{m \times n}\f$ and let
   \f$\{ \vect{a}_1, \ldots, \vect{a}_m \}\f$ be its set of row vectors.
@@ -178,7 +177,7 @@ namespace PPL = Parma_Polyhedra_Library;
     \exists \vect{\lambda} \geq \vect{0}
       \mathrel{.} \vect{x}^\mathrm{T} = \vect{\lambda}^\mathrm{T}G^\mathrm{T}
   \f$,
-  which, by Farkas' lemma is equivalent to
+  which, by Farkas' Lemma is equivalent to
   \f$
     \forall \vect{y} \mathrel{:} (G^\mathrm{T}\vect{y} \geq \vect{0} \implies
                                  \langle \vect{y}, \vect{x} \rangle \geq 0)
@@ -192,7 +191,7 @@ namespace PPL = Parma_Polyhedra_Library;
     \forall \vect{x} \mathrel{:} (C\vect{x} \geq \vect{0} \implies
     \langle \vect{x}, \vect{z} \rangle \geq 0)
   \f$.
-  By Farkas' lemma, this is equivalent to
+  By Farkas' Lemma, this is equivalent to
   \f$\exists \vect{\mu} \geq \vect{0} \mathrel{.}
   \vect{z}^\mathrm{T} = \vect{\mu}^\mathrm{T} C\f$,
   which is equivalent to what we wanted to prove, that is,
@@ -217,7 +216,7 @@ namespace PPL = Parma_Polyhedra_Library;
   \f$\exists \vect{\mu} \geq \vect{0} \mathrel{.}
   \vect{z} = C^\mathrm{T}\vect{\mu}\f$
   and we will prove that \f$G^\mathrm{T}\vect{z} \geq \vect{0}\f$.
-  By Farkas' lemma, the assumption
+  By Farkas' Lemma, the assumption
   \f$\exists \vect{\mu} \geq \vect{0} \mathrel{.}
   \vect{z}^\mathrm{T} = \vect{\mu}^\mathrm{T}C\f$,
   is equivalent to
@@ -395,9 +394,10 @@ PPL::Polyhedron::conversion(Linear_System& source,
     // otherwise the scalar product below will bomb.
     assert(source_num_columns == dest_num_columns);
 
-    // `scalar_prod[i]' will contain the scalar product
-    // of the constraint `source_k' and the generator `dest[i]'.
-    // This product is 0 iff the generator saturates the constraint.
+    // `scalar_prod[i]' will contain the scalar product of the
+    // constraint `source_k' and the generator `dest[i]'.  This
+    // product is 0 if and only if the generator saturates the
+    // constraint.
     static std::vector<Coefficient> scalar_prod;
     const int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)
@@ -406,9 +406,9 @@ PPL::Polyhedron::conversion(Linear_System& source,
     // that does not saturate the constraint `source_k'.
     dimension_type index_non_zero = 0;
     for ( ; index_non_zero < dest_num_rows; ++index_non_zero) {
-      scalar_product_assign(scalar_prod[index_non_zero],
-			    source_k,
-			    dest[index_non_zero]);
+      Scalar_Products::assign(scalar_prod[index_non_zero],
+			      source_k,
+			      dest[index_non_zero]);
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
@@ -420,7 +420,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 #endif
     }
     for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
-      scalar_product_assign(scalar_prod[i], source_k, dest[i]);
+      Scalar_Products::assign(scalar_prod[i], source_k, dest[i]);
 #if REACTIVE_ABANDONING
       maybe_abandon();
 #endif
@@ -445,9 +445,9 @@ PPL::Polyhedron::conversion(Linear_System& source,
       if (scalar_prod[index_non_zero] < 0) {
 	// The ray `dest[index_non_zero]' lies on the wrong half-space:
 	// we change it to have the opposite direction.
-	negate(scalar_prod[index_non_zero]);
+	neg_assign(scalar_prod[index_non_zero]);
 	for (dimension_type j = dest_num_columns; j-- > 0; )
-	  negate(dest[index_non_zero][j]);
+	  neg_assign(dest[index_non_zero][j]);
       }
       // Having changed a line to a ray, we set `dest' to be a
       // non-sorted system, we decrement the number of lines of `dest' and,
@@ -460,7 +460,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	std::swap(scalar_prod[index_non_zero],
 		  scalar_prod[num_lines_or_equalities]);
       }
-      const Linear_Row& dest_nle = dest[num_lines_or_equalities];
+      Linear_Row& dest_nle = dest[num_lines_or_equalities];
 
       // Computing the new lineality space.
       // Since each line must lie on the hyper-plane corresponding to
@@ -471,34 +471,28 @@ PPL::Polyhedron::conversion(Linear_System& source,
       // We have to consider the remaining lines, having indexes
       // between `index_non_zero' and `num_lines_or_equalities' - 1.
       // Each line that does not saturate the constraint has to be
-      // linearly combined with generator `dest[num_lines_or_equalities]'
-      // so that the resulting new line saturates the constraint.
+      // linearly combined with generator `dest_nle' so that the
+      // resulting new line saturates the constraint.
       // Note that, by Observation 1 above, the resulting new line
       // will still saturate all the constraints that were saturated by
       // the old line.
-#if 0
-      // FIXME: this fragment was to avoid code duplication
-      // and should be carefully reinstated.
-      Coefficient_traits::const_reference
-	scalar_prod_nle = scalar_prod[num_lines_or_equalities];
-      const Row& dest_nle = dest[num_lines_or_equalities];
-#endif
+
+      Coefficient& scalar_prod_nle = scalar_prod[num_lines_or_equalities];
       for (dimension_type
 	     i = index_non_zero; i < num_lines_or_equalities; ++i) {
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
 	  // Coefficient scale = scalar_prod[i];
-	  // scale.gcd_assign(scalar_prod[num_lines_or_equalities]);
+	  // scale.gcd_assign(scalar_prod_nle);
 	  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
-	  // Coefficient normalized_sp_n
-	  //   = scalar_prod[num_lines_or_equalities] / scale;
+	  // Coefficient normalized_sp_n = scalar_prod_nle / scale;
 	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	  //   dest[i][c] *= normalized_sp_n;
 	  //   dest[i][c] -= normalized_sp_i * dest_nle[c];
 	  // }
 	  normalize2(scalar_prod[i],
-		     scalar_prod[num_lines_or_equalities],
+		     scalar_prod_nle,
 		     normalized_sp_i,
 		     normalized_sp_o);
 	  Linear_Row& dest_i = dest[i];
@@ -517,25 +511,24 @@ PPL::Polyhedron::conversion(Linear_System& source,
       // Similarly to what we have done during the computation of
       // the lineality space, we consider all the remaining rays
       // (having indexes strictly greater than `num_lines_or_equalities')
-      // that do not saturate the constraint `source_k'. These rays are
-      // positively combined with the ray `dest[num_lines_or_equalities]'
-      // so that the resulting new rays saturate the constraint.
+      // that do not saturate the constraint `source_k'. These rays
+      // are positively combined with the ray `dest_nle' so that the
+      // resulting new rays saturate the constraint.
       for (dimension_type
 	     i = num_lines_or_equalities + 1; i < dest_num_rows; ++i) {
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
 	  // Coefficient scale = scalar_prod[i];
-	  // scale.gcd_assign(scalar_prod[num_lines_or_equalities]);
+	  // scale.gcd_assign(scalar_prod_nle);
 	  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
-	  // Coefficient normalized_sp_n
-	  // = scalar_prod[num_lines_or_equalities] / scale;
+	  // Coefficient normalized_sp_n = scalar_prod_nle / scale;
 	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	  //   dest[i][c] *= normalized_sp_n;
 	  //   dest[i][c] -= normalized_sp_i * dest_nle[c];
 	  // }
 	  normalize2(scalar_prod[i],
-		     scalar_prod[num_lines_or_equalities],
+		     scalar_prod_nle,
 		     normalized_sp_i,
 		     normalized_sp_o);
 	  Linear_Row& dest_i = dest[i];
@@ -552,23 +545,21 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	maybe_abandon();
 #endif
       }
-      // Since the `scalar_prod[num_lines_or_equalities]' is positive
-      // (by construction), it does not saturate the constraint `source_k'.
-      // Therefore, if the constraint is an inequality,
-      // we set to 1 the corresponding element of `sat' ...
+      // Since the `scalar_prod_nle' is positive (by construction), it
+      // does not saturate the constraint `source_k'.  Therefore, if
+      // the constraint is an inequality, we set to 1 the
+      // corresponding element of `sat' ...
+      Saturation_Row& sat_nle = sat[num_lines_or_equalities];
       if (source_k.is_ray_or_point_or_inequality())
-	sat[num_lines_or_equalities].set(k);
+	sat_nle.set(k);
       // ... otherwise, the constraint is an equality which is
-      // violated by the generator `dest[num_lines_or_equalities]':
-      // the generator has to be removed from `dest'.
+      // violated by the generator `dest_nle': the generator has to be
+      // removed from `dest'.
       else {
 	--dest_num_rows;
-	std::swap(dest[num_lines_or_equalities],
-		  dest[dest_num_rows]);
-	std::swap(scalar_prod[dest_num_rows],
-		  scalar_prod[num_lines_or_equalities]);
-	std::swap(sat[num_lines_or_equalities],
-		  sat[dest_num_rows]);
+	std::swap(dest_nle, dest[dest_num_rows]);
+	std::swap(scalar_prod_nle, scalar_prod[dest_num_rows]);
+	std::swap(sat_nle, sat[dest_num_rows]);
 	// `dest' has already been set as non-sorted.
       }
       // We continue with the next constraint.
@@ -678,8 +669,8 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	      // all the constraints saturated by both `dest[i]' and
 	      // `dest[j]', then they are NOT adjacent.
 	      Saturation_Row new_satrow;
-	      assert(sat[i].last() < 0 || unsigned(sat[i].last()) < k);
-	      assert(sat[j].last() < 0 || unsigned(sat[j].last()) < k);
+	      assert(sat[i].last() == ULONG_MAX || sat[i].last() < k);
+	      assert(sat[j].last() == ULONG_MAX || sat[j].last() < k);
 	      // Being the union of `sat[i]' and `sat[j]',
 	      // `new_satrow' corresponds to a ray that saturates all the
 	      // constraints saturated by both `dest[i]' and `dest[j]'.

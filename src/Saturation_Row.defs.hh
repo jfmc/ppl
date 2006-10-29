@@ -1,5 +1,5 @@
 /* Saturation_Row class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Saturation_Row_defs_hh 1
 
 #include "Saturation_Row.types.hh"
-#include "globals.defs.hh"
+#include "globals.types.hh"
 #include <iosfwd>
 #include <gmp.h>
 #include <vector>
@@ -69,10 +68,12 @@ int compare(const Saturation_Row& x, const Saturation_Row& y);
 bool subset_or_equal(const Saturation_Row& x, const Saturation_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Set-theoretic inclusion test: sets \p strict_subset to a boolean
-//! indicating whether the inclusion is strict or not.
-/*! \relates Saturation_Row */
+/*! \brief
+  Set-theoretic inclusion test: sets \p strict_subset to a Boolean
+  indicating whether the inclusion is strict or not.
+
+  \relates Saturation_Row
+*/
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 bool subset_or_equal(const Saturation_Row& x, const Saturation_Row& y,
 		     bool& strict_subset);
@@ -95,7 +96,7 @@ void set_union(const Saturation_Row& x,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A row of a saturation matrix.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of this class represents a single row of a saturation matrix.
   The saturation row corresponds to a constraint and a system of generators
   (resp., a generator and a system of constraints) and records whether or
@@ -126,16 +127,16 @@ public:
   void swap(Saturation_Row& y);
 
   //! Returns the truth value corresponding to the bit in position \p k.
-  bool operator[](unsigned int k) const;
+  bool operator[](unsigned long k) const;
 
   //! Sets the bit in position \p k.
-  void set(unsigned int k);
+  void set(unsigned long k);
 
   //! Clears the bit in position \p k.
-  void clear(unsigned int k);
+  void clear(unsigned long k);
 
   //! Clears bits from position \p k (included) onward.
-  void clear_from(unsigned int k);
+  void clear_from(unsigned long k);
 
   //! Clears all the bits of the row.
   void clear();
@@ -170,24 +171,26 @@ public:
 				     const Saturation_Row& y,
 				     Saturation_Row& z);
 
-  //! Returns the index of the first set bit or -1 if no bit is set.
-  int first() const;
+  //! Returns the index of the first set bit or ULONG_MAX if no bit is set.
+  unsigned long first() const;
 
-  //! \brief
-  //! Returns the index of the first set bit after \p position
-  //! or -1 if no bit after \p position is set.
-  int next(int position) const;
+  /*! \brief
+    Returns the index of the first set bit after \p position
+    or ULONG_MAX if no bit after \p position is set.
+  */
+  unsigned long next(unsigned long position) const;
 
-  //! Returns the index of the last set bit or -1 if no bit is set.
-  int last() const;
+  //! Returns the index of the last set bit or ULONG_MAX if no bit is set.
+  unsigned long last() const;
 
-  //! \brief
-  //! Returns the index of the first set bit before \p position
-  //! or -1 if no bits before \p position is set.
-  int prev(int position) const;
+  /*! \brief
+    Returns the index of the first set bit before \p position
+    or ULONG_MAX if no bits before \p position is set.
+  */
+  unsigned long prev(unsigned long position) const;
 
   //! Returns the number of set bits in the row.
-  unsigned int count_ones() const;
+  unsigned long count_ones() const;
 
   //! Returns <CODE>true</CODE> if no bit is set in the row.
   bool empty() const;
@@ -202,7 +205,7 @@ public:
   bool OK() const;
 
 private:
-  //! Bitvector representing the row.
+  //! Bit-vector representing the row.
   mpz_t vec;
 
   //! Assuming \p w is nonzero, returns the index of the first set bit in \p w.

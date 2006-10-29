@@ -1,5 +1,5 @@
 /* Linear_System class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -43,7 +42,7 @@ Linear_System::is_sorted() const {
   // The flag `sorted' does not really reflect the sortedness status
   // of a system (if `sorted' evaluates to `false' nothing is known).
   // This assertion is used to ensure that the system
-  // is actualy sorted when `sorted' value is 'true'.
+  // is actually sorted when `sorted' value is 'true'.
   assert(!sorted || check_sorted());
   return sorted;
 }
@@ -70,8 +69,39 @@ Linear_System::Linear_System(Topology topol,
     sorted(true) {
 }
 
+inline dimension_type
+Linear_System::first_pending_row() const {
+  return index_first_pending;
+}
+
+inline dimension_type
+Linear_System::num_pending_rows() const {
+  assert(num_rows() >= first_pending_row());
+  return num_rows() - first_pending_row();
+}
+
+inline void
+Linear_System::unset_pending_rows() {
+  index_first_pending = num_rows();
+}
+
+inline void
+Linear_System::set_index_first_pending_row(const dimension_type i) {
+  index_first_pending = i;
+}
+
 inline
 Linear_System::Linear_System(const Linear_System& y)
+  : Matrix(y),
+    row_topology(y.row_topology) {
+  unset_pending_rows();
+  // Previously pending rows may violate sortedness.
+  sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
+  assert(num_pending_rows() == 0);
+}
+
+inline
+Linear_System::Linear_System(const Linear_System& y, With_Pending)
   : Matrix(y),
     row_topology(y.row_topology),
     index_first_pending(y.index_first_pending),
@@ -82,9 +112,19 @@ inline Linear_System&
 Linear_System::operator=(const Linear_System& y) {
   Matrix::operator=(y);
   row_topology = y.row_topology;
+  unset_pending_rows();
+  // Previously pending rows may violate sortedness.
+  sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
+  assert(num_pending_rows() == 0);
+  return *this;
+}
+
+inline void
+Linear_System::assign_with_pending(const Linear_System& y) {
+  Matrix::operator=(y);
+  row_topology = y.row_topology;
   index_first_pending = y.index_first_pending;
   sorted = y.sorted;
-  return *this;
 }
 
 inline void
@@ -113,27 +153,6 @@ Linear_System::resize_no_copy(const dimension_type new_n_rows,
   // it is very likely that the system will be overwritten as soon as
   // we return.
   set_sorted(false);
-}
-
-inline dimension_type
-Linear_System::first_pending_row() const {
-  return index_first_pending;
-}
-
-inline dimension_type
-Linear_System::num_pending_rows() const {
-  assert(num_rows() >= first_pending_row());
-  return num_rows() - first_pending_row();
-}
-
-inline void
-Linear_System::unset_pending_rows() {
-  index_first_pending = num_rows();
-}
-
-inline void
-Linear_System::set_index_first_pending_row(const dimension_type i) {
-  index_first_pending = i;
 }
 
 inline void

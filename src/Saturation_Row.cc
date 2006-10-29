@@ -1,5 +1,5 @@
 /* Saturation_Row class implementation (non-inline functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -94,22 +93,22 @@ PPL::Saturation_Row::last_one(mp_limb_t w) {
   return r;
 }
 
-int
+unsigned long
 PPL::Saturation_Row::first() const {
-  size_t li = 0;
-  size_t vec_size = mpz_size(vec);
+  const mp_size_t vec_size = vec->_mp_size;
+  assert(vec_size >= 0);
+  mp_size_t li = 0;
   mp_srcptr p = vec->_mp_d;
   for (; li < vec_size; ++li, ++p) {
     const mp_limb_t limb = *p;
     if (limb != 0)
       return li*BITS_PER_GMP_LIMB + first_one(limb);
   }
-  return -1;
+  return ULONG_MAX;
 }
 
-int
-PPL::Saturation_Row::next(int position) const {
-  assert(position >= 0);
+unsigned long
+PPL::Saturation_Row::next(unsigned long position) const {
   ++position;
 
   // The alternative implementation using the mpz_scan1() function
@@ -119,10 +118,11 @@ PPL::Saturation_Row::next(int position) const {
   // unsigned long r = mpz_scan1(vec, position);
   // return (r == ULONG_MAX) ? -1 : r;
 
-  size_t li = position / BITS_PER_GMP_LIMB;
-  const size_t vec_size = mpz_size(vec);
+  mp_size_t li = position / BITS_PER_GMP_LIMB;
+  const mp_size_t vec_size = vec->_mp_size;
+  assert(vec_size >= 0);
   if (li >= vec_size)
-    return -1;
+    return ULONG_MAX;
 
   // Get the first limb.
   mp_srcptr p = vec->_mp_d + li;
@@ -139,14 +139,15 @@ PPL::Saturation_Row::next(int position) const {
     ++p;
     limb = *p;
   }
-  return -1;
+  return ULONG_MAX;
 }
 
-int
+unsigned long
 PPL::Saturation_Row::last() const {
-  size_t li = mpz_size(vec);
+  mp_size_t li = vec->_mp_size;
+  assert(li >= 0);
   if (li == 0)
-    return -1;
+    return ULONG_MAX;
   --li;
   const mp_srcptr p = vec->_mp_d + li;
   const mp_limb_t limb = *p;
@@ -154,18 +155,16 @@ PPL::Saturation_Row::last() const {
   return li*BITS_PER_GMP_LIMB + last_one(limb);
 }
 
-int
-PPL::Saturation_Row::prev(int position) const {
-  assert(position >= 0);
-
+unsigned long
+PPL::Saturation_Row::prev(unsigned long position) const {
   if (position == 0)
-    return -1;
+    return ULONG_MAX;
 
   --position;
 
-  const size_t vec_size = mpz_size(vec);
+  const mp_size_t vec_size = vec->_mp_size;
   assert(vec_size > 0);
-  size_t li = position / BITS_PER_GMP_LIMB;
+  mp_size_t li = position / BITS_PER_GMP_LIMB;
 
   mp_limb_t limb;
   mp_srcptr p = vec->_mp_d;
@@ -179,7 +178,7 @@ PPL::Saturation_Row::prev(int position) const {
   else {
     const mp_limb_t mask
       = (~(mp_limb_t) 0)
-	>> (BITS_PER_GMP_LIMB - ((position + 1) % BITS_PER_GMP_LIMB));
+      >> (BITS_PER_GMP_LIMB - 1 - position % BITS_PER_GMP_LIMB);
     p += li;
     limb = *p & mask;
   }
@@ -193,22 +192,37 @@ PPL::Saturation_Row::prev(int position) const {
     --p;
     limb = *p;
   }
-  return -1;
+  return ULONG_MAX;
+}
+
+bool
+PPL::Saturation_Row::operator[](const unsigned long k) const {
+  const mp_size_t vec_size = vec->_mp_size;
+  assert(vec_size >= 0);
+
+  unsigned long i = k / GMP_NUMB_BITS;
+  if (i >= static_cast<unsigned long>(vec_size))
+    return false;
+
+  mp_limb_t limb = *(vec->_mp_d + i);
+  return (limb >> (k % GMP_NUMB_BITS)) & 1;
 }
 
 /*! \relates Parma_Polyhedra_Library::Saturation_Row */
 int
 PPL::compare(const Saturation_Row& x, const Saturation_Row& y) {
-  const size_t x_size = mpz_size(x.vec);
-  const size_t y_size = mpz_size(y.vec);
-  size_t size = (x_size > y_size ? y_size : x_size);
+  const mp_size_t x_size = x.vec->_mp_size;
+  assert(x_size >= 0);
+  const mp_size_t y_size = y.vec->_mp_size;
+  assert(y_size >= 0);
+  mp_size_t size = (x_size > y_size ? y_size : x_size);
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
   while (size > 0) {
     const mp_limb_t xl = *xp;
     const mp_limb_t yl = *yp;
     if (xl != yl) {
-      // Get the one's where they are different.
+      // Get the ones where they are different.
       const mp_limb_t diff = xl ^ yl;
       // First bit that is different.
       const mp_limb_t mask = diff & ~(diff-1);
@@ -224,8 +238,10 @@ PPL::compare(const Saturation_Row& x, const Saturation_Row& y) {
 /*! \relates Parma_Polyhedra_Library::Saturation_Row */
 bool
 PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y) {
-  size_t x_size = mpz_size(x.vec);
-  size_t y_size = mpz_size(y.vec);
+  mp_size_t x_size = x.vec->_mp_size;
+  assert(x_size >= 0);
+  mp_size_t y_size = y.vec->_mp_size;
+  assert(y_size >= 0);
   if (x_size > y_size)
     return false;
   mp_srcptr xp = x.vec->_mp_d;
@@ -244,8 +260,10 @@ PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y) {
 bool
 PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y,
 		     bool& strict_subset) {
-  size_t x_size = mpz_size(x.vec);
-  size_t y_size = mpz_size(y.vec);
+  mp_size_t x_size = x.vec->_mp_size;
+  assert(x_size >= 0);
+  mp_size_t y_size = y.vec->_mp_size;
+  assert(y_size >= 0);
   if (x_size > y_size)
     return false;
   strict_subset = (x_size < y_size);
@@ -268,8 +286,10 @@ PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y,
 /*! \relates Parma_Polyhedra_Library::Saturation_Row */
 bool
 PPL::strict_subset(const Saturation_Row& x, const Saturation_Row& y) {
-  size_t x_size = mpz_size(x.vec);
-  size_t y_size = mpz_size(y.vec);
+  mp_size_t x_size = x.vec->_mp_size;
+  assert(x_size >= 0);
+  mp_size_t y_size = y.vec->_mp_size;
+  assert(y_size >= 0);
   if (x_size > y_size)
     return false;
   bool different = (x_size < y_size);
@@ -289,9 +309,39 @@ PPL::strict_subset(const Saturation_Row& x, const Saturation_Row& y) {
   return different;
 }
 
+/*! \relates Saturation_Row */
+bool
+PPL::operator==(const Saturation_Row& x, const Saturation_Row& y) {
+  const mp_size_t x_vec_size = x.vec->_mp_size;
+  assert(x_vec_size >= 0);
+  const mp_size_t y_vec_size = y.vec->_mp_size;
+  assert(y_vec_size >= 0);
+
+  if (x_vec_size != y_vec_size)
+    return false;
+
+  return mpn_cmp(x.vec->_mp_d, y.vec->_mp_d, x_vec_size) == 0;
+}
+
+/*! \relates Saturation_Row */
+bool
+PPL::operator!=(const Saturation_Row& x, const Saturation_Row& y) {
+  const mp_size_t x_vec_size = x.vec->_mp_size;
+  assert(x_vec_size >= 0);
+  const mp_size_t y_vec_size = y.vec->_mp_size;
+  assert(y_vec_size >= 0);
+
+  if (x_vec_size != y_vec_size)
+    return true;
+
+  return mpn_cmp(x.vec->_mp_d, y.vec->_mp_d, x_vec_size) != 0;
+}
+
 bool
 PPL::Saturation_Row::OK() const {
-  // FIXME: this must be completed.
-  const size_t vec_size = mpz_size(vec);
-  return vec_size == 0 || mpz_getlimbn(vec, vec_size-1) != 0;
+  const mp_size_t vec_size = vec->_mp_size;
+  const mp_size_t vec_alloc = vec->_mp_alloc;
+  return vec_size >= 0
+    && vec_alloc >= vec_size
+    && (vec_size == 0 || mpz_getlimbn(vec, vec_size-1) != 0);
 }

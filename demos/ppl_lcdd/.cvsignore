@@ -2,4 +2,6 @@
 .libs
 Makefile
 Makefile.in
+obtained
 ppl_lcdd
+tough_examples

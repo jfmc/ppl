@@ -1,5 +1,5 @@
 /* BD_Shape<T>::Status class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -24,19 +23,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_BD_Status_defs_hh
 #define PPL_BD_Status_defs_hh 1
 
+#ifndef PPL_IN_BD_Shape_CLASS
+#error "Do not include BDS_Status.idefs.hh directly; use BD_Shape.defs.hh instead."
+#endif
+
 //! A conjunctive assertion about a BD_Shape<T> object.
-/*!
+/*! \ingroup PPL_CXX_interface
   The assertions supported are:
-  - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimension
+  - <EM>zero-dim universe</EM>: the BDS is the zero-dimension
     vector space \f$\Rset^0 = \{\cdot\}\f$;
-  - <EM>empty</EM>: the polyhedron is the empty set;
-  - <EM>transitively closed</EM>: the BD_Shape object is transitively
-    closed, so that all the constraints are as tigher as possible.
+  - <EM>empty</EM>: the BDS is the empty set;
+  - <EM>shortest-path closed</EM>: the BDS is represented by a shortest-path
+    closed system of bounded differences, so that all the constraints are
+    as tight as possible;
+  - <EM>shortest-path reduced</EM>: the BDS is represented by a shortest-path
+    closed system of bounded differences and each constraint in such a system
+    is marked as being either redundant or non-redundant.
 
   Not all the conjunctions of these elementary assertions constitute
   a legal Status.  In fact:
   - <EM>zero-dim universe</EM> excludes any other assertion;
-  - <EM>empty</EM>: excludes any other assertion.
+  - <EM>empty</EM>: excludes any other assertion;
+  - <EM>shortest-path reduced</EM> implies <EM>shortest-path closed</EM>.
 */
 class Status {
 public:
@@ -53,40 +61,43 @@ public:
   void reset_empty();
   void set_empty();
 
-  bool test_transitively_closed() const;
-  void reset_transitively_closed();
-  void set_transitively_closed();
+  bool test_shortest_path_closed() const;
+  void reset_shortest_path_closed();
+  void set_shortest_path_closed();
+
+  bool test_shortest_path_reduced() const;
+  void reset_shortest_path_reduced();
+  void set_shortest_path_reduced();
   //@}
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
   bool ascii_load(std::istream& s);
 
 private:
   //! Status is implemented by means of a finite bitset.
   typedef unsigned int flags_t;
 
-  //! \name Bitmasks for the individual assertions.
+  //! \name Bit-masks for the individual assertions.
   //@{
-  static const flags_t ZERO_DIM_UNIV       = 0U;
-  static const flags_t EMPTY               = 1U << 0;
-  static const flags_t TRANSITIVELY_CLOSED = 1U << 1;
+  static const flags_t ZERO_DIM_UNIV         = 0U;
+  static const flags_t EMPTY                 = 1U << 0;
+  static const flags_t SHORTEST_PATH_CLOSED  = 1U << 1;
+  static const flags_t SHORTEST_PATH_REDUCED = 1U << 2;
   //@}
 
   //! This holds the current bitset.
   flags_t flags;
 
-  //! Construct from a bitmask.
+  //! Construct from a bit-mask.
   Status(flags_t mask);
 
   //! Check whether <EM>all</EM> bits in \p mask are set.

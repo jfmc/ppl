@@ -1,5 +1,5 @@
 /* BHRZ03_Certificate class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -26,12 +25,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "BHRZ03_Certificate.types.hh"
 #include "Polyhedron.types.hh"
-#include "globals.defs.hh"
+#include "globals.types.hh"
 #include <cassert>
 #include <vector>
 
 //! The convergence certificate for the BHRZ03 widening operator.
-/*!
+/*! \ingroup PPL_CXX_interface
   Convergence certificates are used to instantiate the BHZ03 framework
   so as to define widening operators for the finite powerset domain.
 
@@ -70,14 +69,15 @@ public:
   int compare(const Polyhedron& ph) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if the certificate for
-  //! polyhedron \p ph is stricly smaller than \p *this.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the certificate for
+    polyhedron \p ph is strictly smaller than \p *this.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool is_stabilizing(const Polyhedron& ph) const;
 
   //! A total ordering on BHRZ03 certificates.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     This binary predicate defines a total ordering on BHRZ03 certificates
     which is used when storing information about sets of polyhedra.
   */
@@ -99,14 +99,16 @@ private:
   dimension_type lin_space_dim;
   //! Cardinality of a non-redundant constraint system for the polyhedron.
   dimension_type num_constraints;
-  //! \brief
-  //! Number of non-redundant points in a generator system
-  //! for the polyhedron.
+  /*! \brief
+    Number of non-redundant points in a generator system
+    for the polyhedron.
+  */
   dimension_type num_points;
-  //! \brief
-  //! A vector containing, for each index `0 <= i < space_dim',
-  //! the number of non-redundant rays in a generator system of the
-  //! polyhedron having exactly `i' null coordinates.
+  /*! \brief
+    A vector containing, for each index `0 <= i < space_dim',
+    the number of non-redundant rays in a generator system of the
+    polyhedron having exactly `i' null coordinates.
+  */
   std::vector<dimension_type> num_rays_null_coord;
 };
 

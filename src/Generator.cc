@@ -1,5 +1,5 @@
 /* Generator class implementation (non-inline functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -67,7 +66,7 @@ PPL::Generator::point(const Linear_Expression& e,
   // the invariant: the divisor of a point is strictly positive.
   if (d < 0)
     for (dimension_type i = g.size(); i-- > 0; )
-      negate(g[i]);
+      neg_assign(g[i]);
 
   // Enforce normalization.
   g.normalize();
@@ -122,12 +121,48 @@ PPL::Generator::line(const Linear_Expression& e) {
   return g;
 }
 
+bool
+PPL::Generator::is_equivalent_to(const Generator& y) const {
+  const Generator& x = *this;
+  const dimension_type x_space_dim = x.space_dimension();
+  if (x_space_dim != y.space_dimension())
+    return false;
+
+  const Type x_type = x.type();
+  if (x_type != y.type())
+    return false;
+
+  if (x_type == POINT
+      && !(x.is_necessarily_closed() && y.is_necessarily_closed())) {
+    // Due to the presence of epsilon-coefficients, syntactically
+    // different points may actually encode the same generator.
+    // First, drop the epsilon-coefficient ...
+    Linear_Expression x_expr(x);
+    Linear_Expression y_expr(y);
+    // ... second, re-normalize ...
+    x_expr.normalize();
+    y_expr.normalize();
+    // ... and finally check for syntactic equality.
+    for (dimension_type i = x_space_dim + 1; i-- > 0; )
+      if (x_expr[i] != y_expr[i])
+	return false;
+    return true;
+  }
+
+  // Here the epsilon-coefficient, if present, is zero.
+  // It is sufficient to check for syntactic equality.
+  for (dimension_type i = x_space_dim + 1; i-- > 0; )
+    if (x[i] != y[i])
+      return false;
+  return true;
+}
+
 /*! \relates Parma_Polyhedra_Library::Generator */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   bool needed_divisor = false;
   bool extra_parentheses = false;
-  const int num_variables = g.space_dimension();
+  const dimension_type num_variables = g.space_dimension();
   Generator::Type t = g.type();
   switch (t) {
   case Generator::LINE:
@@ -144,8 +179,8 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   any_point:
     if (g[0] != 1) {
       needed_divisor = true;
-      int num_non_zero_coefficients = 0;
-      for (int v = 0; v < num_variables; ++v)
+      dimension_type num_non_zero_coefficients = 0;
+      for (dimension_type v = 0; v < num_variables; ++v)
 	if (g[v+1] != 0)
 	  if (++num_non_zero_coefficients > 1) {
 	    extra_parentheses = true;
@@ -156,16 +191,17 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
     break;
   }
 
+  TEMP_INTEGER(gv);
   bool first = true;
-  for (int v = 0; v < num_variables; ++v) {
-    Coefficient gv = g[v+1];
+  for (dimension_type v = 0; v < num_variables; ++v) {
+    gv = g[v+1];
     if (gv != 0) {
       if (!first) {
 	if (gv > 0)
 	  s << " + ";
 	else {
 	  s << " - ";
-	  negate(gv);
+	  neg_assign(gv);
 	}
       }
       else
@@ -185,6 +221,28 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   if (needed_divisor)
     s << "/" << g[0];
   s << ")";
+  return s;
+}
+
+/*! \relates Parma_Polyhedra_Library::Generator */
+std::ostream&
+PPL::IO_Operators::operator<<(std::ostream& s, const Generator::Type& t) {
+  const char* n = 0;
+  switch (t) {
+  case Generator::LINE:
+    n = "LINE";
+    break;
+  case Generator::RAY:
+    n = "RAY";
+    break;
+  case Generator::POINT:
+    n = "POINT";
+    break;
+  case Generator::CLOSURE_POINT:
+    n = "CLOSURE_POINT";
+    break;
+  }
+  s << n;
   return s;
 }
 
@@ -229,16 +287,19 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
   }
 }
 
+PPL_OUTPUT_DEFINITIONS(Generator)
 
 bool
 PPL::Generator::OK() const {
-  const Generator& g = *this;
+  // Check the underlying Linear_Row object.
+  if (!Linear_Row::OK())
+    return false;
 
   // Topology consistency check.
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
   if (size() < min_size) {
 #ifndef NDEBUG
-    std::cerr << "Generator has fewer coefficeints than the minumum "
+    std::cerr << "Generator has fewer coefficients than the minimum "
 	      << "allowed by its topology:"
 	      << std::endl
 	      << "size is " << size()
@@ -249,6 +310,7 @@ PPL::Generator::OK() const {
   }
 
   // Normalization check.
+  const Generator& g = *this;
   Generator tmp = g;
   tmp.strong_normalize();
   if (tmp != g) {

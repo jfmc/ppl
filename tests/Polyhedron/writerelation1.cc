@@ -1,6 +1,6 @@
 /* Test operator<<(std::ostream& s, const Poly_Con_Relation& r)
    and operator<<(std::ostream& s, const Poly_Gen_Relation& r).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -15,9 +15,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -27,73 +26,70 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <string>
 #include <fstream>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::IO_Operators;
+using std::fstream;
+using std::ios_base;
 
-#ifndef NOISY
-#define NOISY 0
-#endif
+using namespace IO_Operators;
 
 namespace {
 
-const char* my_file = "writerelation1.dat";
-
-void
-test1() {
+bool
+test01() {
+  const char* my_file = "writerelation1.dat";
   Poly_Con_Relation rel(Poly_Con_Relation::nothing());
-  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
   f << rel << endl;
   close(f);
+  // FIXME.
+  return true;
 }
 
-void
-test2() {
+bool
+test02() {
+  const char* my_file = "writerelation1.dat";
   Poly_Gen_Relation rel(Poly_Gen_Relation::nothing());
-  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
   f << rel << endl;
   close(f);
+  // FIXME.
+  return true;
 }
 
-void
-test3() {
+bool
+test03() {
+  const char* my_file = "writerelation1.dat";
   Poly_Con_Relation rel(Poly_Con_Relation::is_disjoint());
-  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
   f << rel << endl;
   close(f);
+  // FIXME.
+  return true;
 }
 
-void
-test4() {
+bool
+test04() {
+  const char* my_file = "writerelation1.dat";
   Poly_Gen_Relation rel(Poly_Gen_Relation::subsumes());
-  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
   f << rel << endl;
   close(f);
+  // FIXME.
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  test1();
-  test2();
-  test3();
-  test4();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+END_MAIN

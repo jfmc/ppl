@@ -1,5 +1,5 @@
 /* Ptr_Iterator class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -32,7 +31,7 @@ namespace Parma_Polyhedra_Library {
 namespace Implementation {
 
 template <typename P>
-const P&
+inline const P&
 Ptr_Iterator<P>::base() const {
   return p;
 }
@@ -57,78 +56,78 @@ Ptr_Iterator<P>::Ptr_Iterator(const Ptr_Iterator<Q>& y)
 }
 
 template <typename P>
-typename Ptr_Iterator<P>::reference
+inline typename Ptr_Iterator<P>::reference
 Ptr_Iterator<P>::operator*() const {
   return *p;
 }
 
 template <typename P>
-typename Ptr_Iterator<P>::pointer
+inline typename Ptr_Iterator<P>::pointer
 Ptr_Iterator<P>::operator->() const {
   return p;
 }
 
 template <typename P>
-typename Ptr_Iterator<P>::reference
+inline typename Ptr_Iterator<P>::reference
 Ptr_Iterator<P>::operator[](const difference_type m) const {
   return p[m];
 }
 
 template <typename P>
-Ptr_Iterator<P>&
+inline Ptr_Iterator<P>&
 Ptr_Iterator<P>::operator++() {
   ++p;
   return *this;
 }
 
 template <typename P>
-Ptr_Iterator<P>
+inline Ptr_Iterator<P>
 Ptr_Iterator<P>::operator++(int) {
   return Ptr_Iterator(p++);
 }
 
 template <typename P>
-Ptr_Iterator<P>&
+inline Ptr_Iterator<P>&
 Ptr_Iterator<P>::operator--() {
   --p;
   return *this;
 }
 
 template <typename P>
-Ptr_Iterator<P>
+inline Ptr_Iterator<P>
 Ptr_Iterator<P>::operator--(int) {
   return Ptr_Iterator(p--);
 }
 
 
 template <typename P>
-Ptr_Iterator<P>&
+inline Ptr_Iterator<P>&
 Ptr_Iterator<P>::operator+=(const difference_type m) {
   p += m;
   return *this;
 }
 
 template <typename P>
-Ptr_Iterator<P>&
+inline Ptr_Iterator<P>&
 Ptr_Iterator<P>::operator-=(const difference_type m) {
   p -= m;
   return *this;
 }
 
 template <typename P>
-typename Ptr_Iterator<P>::difference_type
+inline typename Ptr_Iterator<P>::difference_type
 Ptr_Iterator<P>::operator-(const Ptr_Iterator& y) const {
   return p - y.p;
 }
 
 template <typename P>
-Ptr_Iterator<P>
+inline Ptr_Iterator<P>
 Ptr_Iterator<P>::operator+(const difference_type m) const {
   return Ptr_Iterator(p + m);
 }
 
 template <typename P>
-Ptr_Iterator<P>
+inline Ptr_Iterator<P>
 Ptr_Iterator<P>::operator-(const difference_type m) const {
   return Ptr_Iterator(p - m);
 }

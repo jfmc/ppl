@@ -1,5 +1,5 @@
 /* Test the timeout facility of the library.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,23 +14,15 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-#include "pwl_install.hh"
+#include "pwl.hh"
 #include "timings.hh"
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -45,19 +37,25 @@ compute_open_hypercube_generators(dimension_type dimension) {
   (void) hypercube.generators();
 }
 
-class Timeout : virtual public exception,
+class Timeout : virtual public std::exception,
 		public Parma_Polyhedra_Library::Throwable {
 public:
   const char* what() const throw() {
     return "Timeout in watchdog1.cc";
   }
+
   void throw_me() const {
     throw *this;
   }
+
   int priority() const {
     return 0;
   }
+
   Timeout() {
+  }
+
+  ~Timeout() throw() {
   }
 };
 
@@ -69,20 +67,18 @@ timed_compute_open_hypercube_generators(dimension_type dimension,
   try {
     Parma_Watchdog_Library::Watchdog
       w(hundredth_secs, abandon_expensive_computations, t);
-#if NOISY
+
     start_clock();
-#endif
+
     compute_open_hypercube_generators(dimension);
     abandon_expensive_computations = 0;
     return true;
   }
   catch (const Timeout& e) {
     abandon_expensive_computations = 0;
-#if NOISY
-    cout << e.what() << " after ";
-    print_clock(cout);
-    cout << " s" << endl;
-#endif
+    nout << e.what() << " after ";
+    print_clock(nout);
+    nout << " s" << endl;
     return false;
   }
   catch (...) {
@@ -104,9 +100,7 @@ main() TRY {
   dimension_type dimension = 0;
   do {
     ++dimension;
-#if NOISY
-    cout << "Trying dimension " << dimension << endl;
-#endif
+    nout << "Trying dimension " << dimension << endl;
   }
   while (timed_compute_open_hypercube_generators(dimension, INIT_TIME));
 
@@ -114,9 +108,7 @@ main() TRY {
   int upper_bound = INIT_TIME;
   do {
     upper_bound *= 2;
-#if NOISY
-    cout << "Trying upper bound " << upper_bound << endl;
-#endif
+    nout << "Trying upper bound " << upper_bound << endl;
   }
   while (!timed_compute_open_hypercube_generators(dimension, upper_bound));
 
@@ -124,19 +116,15 @@ main() TRY {
   int lower_bound = upper_bound/2;
   do {
     int test_time = (lower_bound+upper_bound)/2;
-#if NOISY
-    cout << "Probing " << test_time << endl;
-#endif
+    nout << "Probing " << test_time << endl;
     if (timed_compute_open_hypercube_generators(dimension, test_time))
       upper_bound = test_time;
     else
       lower_bound = test_time;
   } while (upper_bound-lower_bound > 4);
 
-#if NOISY
-  cout << "Estimated time for dimension " << dimension
+  nout << "Estimated time for dimension " << dimension
        << ": " << (lower_bound+upper_bound)/2 << " 100th of sec" << endl;
-#endif
 
   return 0;
 }

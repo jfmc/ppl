@@ -1,5 +1,5 @@
-/* Test the constraint systems' constructions with McCarthy's 91 function.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test the Pointset_Powerset construction with McCarthy's 91 function.
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,68 +14,104 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::IO_Operators;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
+bool
+test01() {
+  typedef Pointset_Powerset<C_Polyhedron> PCS;
 
-typedef Polyhedra_Powerset<C_Polyhedron> PCS;
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+  Variable F(5);
 
-int
-main() TRY {
-  set_handlers();
+  // This is the base case:
+  // mc91(A, B) :- A >= 101, B = A-10.
+  C_Polyhedron base_ph(2);
+  base_ph.add_constraint(A >= 101);
+  base_ph.add_constraint(B == A-10);
+  PCS base(2, EMPTY);
+  base.add_disjunct(base_ph);
 
-  Variable x(0);
-  Variable y(1);
+  print_constraints(base, "*** base ***");
 
-  C_Polyhedron ph1(2);
-  ph1.add_constraint(x <= 101);
-  ph1.add_constraint(y == 91);
+  // This is the inductive case:
+  // mc91(A, B) :- A =< 100, C = A+11, E = D, F = B, mc91(C, D), mc91(E, F).
+  C_Polyhedron inductive_ph(6);
+  inductive_ph.add_constraint(A <= 100);
+  inductive_ph.add_constraint(C == A+11);
+  inductive_ph.add_constraint(E == D);
+  inductive_ph.add_constraint(F == B);
+  PCS inductive(6, EMPTY);
+  inductive.add_disjunct(inductive_ph);
 
-  C_Polyhedron ph2(2);
-  ph2.add_constraint(x >= 102);
-  ph2.add_constraint(y == x-10);
+  print_constraints(inductive, "*** inductive ***");
 
-  PCS p1(2, Polyhedron::EMPTY);
-  p1.add_disjunct(ph1);
-#if NOISY
-  cout << p1 << endl;
-#endif
+  // Initialize the fixpoint iteration.
+  PCS current = base;
 
-  PCS p2(2, Polyhedron::EMPTY);
-  p2.add_disjunct(ph2);
-#if NOISY
-  cout << p2 << endl;
-#endif
+  print_constraints(current, "*** start ***");
 
-  p1.upper_bound_assign(p2);
-#if NOISY
-  cout << p1 << endl;
-#endif
+  // Contains the description computed at the previous iteration.
+  PCS previous;
+  do {
+    previous = current;
+    current = inductive;
+    Pointset_Powerset<C_Polyhedron> b1(2);
+    b1.concatenate_assign(previous);
+    b1.add_space_dimensions_and_embed(2);
+    current.intersection_assign(b1);
+    Pointset_Powerset<C_Polyhedron> b2(4);
+    b2.concatenate_assign(previous);
+    current.intersection_assign(b2);
 
-  p1.meet_assign(p2);
-#if NOISY
-  cout << p1 << endl;
-#endif
+    print_constraints(current, "*** after body solving ***");
 
-  C_Polyhedron top(2);
-  C_Polyhedron y_91(2);
-#if NOISY
-  y_91.add_constraint(y == 91);
-#endif
+    Variables_Set dimensions_to_remove;
+    // Deliberately inserted out of order (!).
+    dimensions_to_remove.insert(D);
+    dimensions_to_remove.insert(C);
+    dimensions_to_remove.insert(F);
+    dimensions_to_remove.insert(E);
+    current.remove_space_dimensions(dimensions_to_remove);
 
-  return 0;
+    print_constraints(current, "*** after remove_space_dimensions ***");
+
+    current.least_upper_bound_assign(previous);
+
+    current.BHZ03_widening_assign<BHRZ03_Certificate>
+      (previous, widen_fun_ref(&Polyhedron::H79_widening_assign));
+
+    print_constraints(current, "*** after lub+widening ***");
+
+  } while (current != previous);
+
+  C_Polyhedron expected_ph(2);
+  expected_ph.add_constraint(A - B <= 10);
+  expected_ph.add_constraint(B >= 91);
+  Pointset_Powerset<C_Polyhedron> expected(2, EMPTY);
+  expected.add_disjunct(expected_ph);
+
+  bool ok = (expected == current);
+
+  print_constraints(expected, "*** expected ***");
+  print_constraints(current, "*** final result ***");
+
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST_F8(test01);
+END_MAIN

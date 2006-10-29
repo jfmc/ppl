@@ -1,6 +1,6 @@
 /* Polyhedron class implementation
    (non-inline operators that may change the dimension of the vector space).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -15,9 +15,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Polyhedron.defs.hh"
+#include "Variables_Set.defs.hh"
 #include <cassert>
 
 #define BE_LAZY 1
@@ -47,21 +47,21 @@ PPL::Polyhedron::add_space_dimensions(Linear_System& sys1,
   // The added rows are in the non-pending part.
   sys2.set_index_first_pending_row(old_index + add_dim);
 
-  // The resulting saturation matrix will be the follow:
+  // The resulting saturation matrix will be as follows:
   // from row    0    to      add_dim-1       : only zeroes
   //          add_dim     add_dim+num_rows-1  : old saturation matrix
 
   // In fact all the old generators saturate all the new constraints
   // because the polyhedron has not been embedded in the new space.
   sat1.resize(sat1.num_rows() + add_dim, sat1.num_columns());
-  // The old matrix is copied at the end of the new matrix.
+  // The old matrix is moved to the end of the new matrix.
   for (dimension_type i = sat1.num_rows() - add_dim; i-- > 0; )
     std::swap(sat1[i], sat1[i+add_dim]);
   // Computes the "sat_c", too.
   sat2.transpose_assign(sat1);
 
   if (!sys1.is_necessarily_closed()) {
-    // Moving the epsilon coefficients in the last column.
+    // Moving the epsilon coefficients to the new last column.
     dimension_type new_eps_index = sys1.num_columns() - 1;
     dimension_type old_eps_index = new_eps_index - add_dim;
     // This swap preserves sortedness of `sys1'.
@@ -131,7 +131,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
   // as the second argument.
   if (constraints_are_up_to_date())
     if (generators_are_up_to_date()) {
-      // `sat_c' must be up to date for add_space_dimensions(...).
+      // `sat_c' must be up to date for add_space_dimensions().
       if (!sat_c_is_up_to_date())
 	update_sat_c();
       // Adds rows and/or columns to both matrices.
@@ -163,13 +163,13 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
 	dimension_type old_eps_index = space_dim + 1;
 	dimension_type new_eps_index = old_eps_index + m;
 	for (dimension_type i = gen_sys.num_rows(); i-- > m; ) {
-	  Linear_Row& r = gen_sys[i];
+	  Generator& r = gen_sys[i];
 	  std::swap(r[old_eps_index], r[new_eps_index]);
 	}
 	// The upper-right corner of `gen_sys' contains the J matrix:
 	// swap coefficients to preserve sortedness.
 	for (dimension_type i = m; i-- > 0; ++old_eps_index) {
-	  Linear_Row& r = gen_sys[i];
+	  Generator& r = gen_sys[i];
 	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
 	}
       }
@@ -231,7 +231,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   // giving the system of constraints as the second argument.
   if (constraints_are_up_to_date())
     if (generators_are_up_to_date()) {
-      // `sat_g' must be up to date for add_space_dimensions(...).
+      // `sat_g' must be up to date for add_space_dimensions().
       if (!sat_g_is_up_to_date())
 	update_sat_g();
       // Adds rows and/or columns to both matrices.
@@ -254,13 +254,13 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
 	  dimension_type old_eps_index = space_dim + 1;
 	  dimension_type new_eps_index = old_eps_index + m;
 	  for (dimension_type i = con_sys.num_rows(); i-- > m; ) {
-	    Linear_Row& r = con_sys[i];
+	    Constraint& r = con_sys[i];
 	    std::swap(r[old_eps_index], r[new_eps_index]);
 	  }
 	  // The upper-right corner of `con_sys' contains the J matrix:
 	  // swap coefficients to preserve sortedness.
 	  for (dimension_type i = m; i-- > 0; ++old_eps_index) {
-	    Linear_Row& r = con_sys[i];
+	    Constraint& r = con_sys[i];
 	    std::swap(r[old_eps_index], r[old_eps_index + 1]);
 	  }
 	}
@@ -350,7 +350,8 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   for (dimension_type i = added_rows; i-- > 0; ) {
     Constraint& c_old = cs[i];
     Constraint& c_new = con_sys[old_num_rows + i];
-    // Method `grow', by default, added inequalities.
+    // Method `add_zero_rows_and_columns', by default, added
+    // inequalities.
     if (c_old.is_equality())
       c_new.set_is_equality();
     // The inhomogeneous term is not displaced.
@@ -380,13 +381,13 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     // `sat_g' by resizing it and shifting its columns?
     if (!sat_c_is_up_to_date()) {
       sat_c.transpose_assign(sat_g);
-      clear_sat_g_up_to_date();
       set_sat_c_up_to_date();
     }
+    clear_sat_g_up_to_date();
     sat_c.resize(sat_c.num_rows() + added_columns, sat_c.num_columns());
     // The old saturation rows are copied at the end of the matrix.
     // The newly introduced lines saturate all the non-pending constraints,
-    // thus their saturations rows are made of zeroes.
+    // thus their saturation rows are made of zeroes.
     for (dimension_type i = sat_c.num_rows() - added_columns; i-- > 0; )
       std::swap(sat_c[i], sat_c[i+added_columns]);
     // Since `added_rows > 0', we now have pending constraints.
@@ -423,17 +424,15 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // Dimension-compatibility check: the variable having
-  // maximum space dimension is the one occurring last in the set.
-  const dimension_type
-    min_space_dim = to_be_removed.rbegin()->space_dimension();
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_removed.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
   const dimension_type new_space_dim = space_dim - to_be_removed.size();
 
   // We need updated generators; note that keeping pending generators
-  // is useless because constraints will be dropped anyway.
+  // is useless because the constraints will be dropped anyway.
   if (marked_empty()
       || (has_something_pending() && !remove_pending_to_obtain_generators())
       || (!generators_are_up_to_date() && !update_generators())) {
@@ -454,9 +453,6 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // FIXME: provide a method in Linear_System that removes a set
-  // of columns and restores strong-normalization only at the end.
-
   // For each variable to be removed, we fill the corresponding column
   // by shifting left those columns that will not be removed.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
@@ -467,22 +463,18 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
     dimension_type tbr_col = tbr->space_dimension();
     // All columns in between are moved to the left.
     while (src_col < tbr_col)
-      // FIXME: consider whether Linear_System must have a swap_columns()
-      // method.  If the answer is "no", remove this Matrix:: qualification.
       gen_sys.Matrix::swap_columns(dst_col++, src_col++);
     ++src_col;
   }
   // Moving the remaining columns.
   const dimension_type gen_sys_num_columns = gen_sys.num_columns();
   while (src_col < gen_sys_num_columns)
-    // FIXME: consider whether Linear_System must have a swap_columns()
-    // method.  If the answer is "no", remove this Matrix:: qualification.
     gen_sys.Matrix::swap_columns(dst_col++, src_col++);
 
   // The number of remaining columns is `dst_col'.
   // Note that resizing also calls `set_sorted(false)'.
   gen_sys.remove_trailing_columns(gen_sys_num_columns - dst_col);
-  // We may have invalid line and rays now.
+  // We may have invalid lines and rays now.
   gen_sys.remove_invalid_lines_and_rays();
 
   // Constraints are not up-to-date and generators are not minimized.
@@ -540,7 +532,7 @@ PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
   }
   // Note that resizing also calls `set_sorted(false)'.
   gen_sys.remove_trailing_columns(space_dim - new_dimension);
-  // We may have invalid line and rays now.
+  // We may have invalid lines and rays now.
   gen_sys.remove_invalid_lines_and_rays();
 
   // Constraints are not up-to-date and generators are not minimized.
@@ -555,7 +547,7 @@ PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
 
 void
 PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
-  // FIXME: this implementation is _really_ an executable specification.
+  // TODO: this implementation is _really_ an executable specification.
 
   // `var' should be one of the dimensions of the vector space.
   if (var.space_dimension() > space_dim)
@@ -582,12 +574,12 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   const dimension_type src_d = var.id();
   const Constraint_System& cs = constraints();
   Constraint_System new_constraints;
-  for(Constraint_System::const_iterator i = cs.begin(),
-	cs_end = cs.end(); i != cs_end; ++i) {
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
 
     // If `c' does not constrain `var', skip it.
-    if(c.coefficient(var) == 0)
+    if (c.coefficient(var) == 0)
       continue;
 
     // Each relevant constraint results in `m' new constraints.
@@ -612,7 +604,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 void
 PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
 				       Variable var) {
-  // FIXME: this implementation is _really_ an executable specification.
+  // TODO: this implementation is _really_ an executable specification.
 
   // `var' should be one of the dimensions of the polyhedron.
   if (var.space_dimension() > space_dim)
@@ -623,10 +615,10 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
     return;
 
   // All variables in `to_be_folded' should be dimensions of the polyhedron.
-  if (to_be_folded.rbegin()->space_dimension() > space_dim)
+  if (to_be_folded.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
-				 "*tbf.rbegin()",
-				 *to_be_folded.rbegin());
+				 "tbf.space_dimension()",
+				 to_be_folded.space_dimension());
 
   // Moreover, `var' should not occur in `to_be_folded'.
   if (to_be_folded.find(var) != to_be_folded.end())

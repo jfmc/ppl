@@ -1,5 +1,5 @@
 /* Row class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -72,8 +71,8 @@ Row::Flags::operator!=(const Flags& y) const {
 }
 
 inline void*
-Row::Impl::operator new(const size_t fixed_size,
-			const dimension_type capacity) {
+Row_Impl_Handler::Impl::operator new(const size_t fixed_size,
+				     const dimension_type capacity) {
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   return ::operator new(fixed_size + capacity*sizeof(Coefficient));
 #else
@@ -83,83 +82,69 @@ Row::Impl::operator new(const size_t fixed_size,
 }
 
 inline void
-Row::Impl::operator delete(void* p) {
+Row_Impl_Handler::Impl::operator delete(void* p) {
   ::operator delete(p);
 }
 
 inline void
-Row::Impl::operator delete(void* p, dimension_type) {
+Row_Impl_Handler::Impl::operator delete(void* p, dimension_type) {
   ::operator delete(p);
 }
 
 inline dimension_type
-Row::Impl::max_size() {
+Row_Impl_Handler::Impl::max_size() {
   return size_t(-1)/sizeof(Coefficient);
 }
 
 inline dimension_type
-Row::Impl::size() const {
+Row_Impl_Handler::Impl::size() const {
   return size_;
 }
 
 inline void
-Row::Impl::set_size(const dimension_type new_size) {
+Row_Impl_Handler::Impl::set_size(const dimension_type new_size) {
   size_ = new_size;
 }
 
 inline void
-Row::Impl::bump_size() {
+Row_Impl_Handler::Impl::bump_size() {
   ++size_;
 }
 
 inline
-Row::Impl::Impl(const dimension_type sz, const Flags f)
+Row_Impl_Handler::Impl::Impl(const Row::Flags f)
   : size_(0), flags_(f) {
-  expand_within_capacity(sz);
 }
 
 inline
-Row::Impl::Impl(const Impl& y)
-  : size_(0), flags_(y.flags_) {
-  copy_construct(y);
-}
-
-inline
-Row::Impl::Impl(const Impl& y, const dimension_type sz)
-  : size_(0), flags_(y.flags_) {
-  copy_construct(y);
-  expand_within_capacity(sz);
-}
-
-inline
-Row::Impl::~Impl() {
+Row_Impl_Handler::Impl::~Impl() {
   shrink(0);
 }
 
 inline const Row::Flags&
-Row::Impl::flags() const {
+Row_Impl_Handler::Impl::flags() const {
   return flags_;
 }
 
 inline Row::Flags&
-Row::Impl::flags() {
+Row_Impl_Handler::Impl::flags() {
   return flags_;
 }
 
 inline Coefficient&
-Row::Impl::operator[](const dimension_type k) {
+Row_Impl_Handler::Impl::operator[](const dimension_type k) {
   assert(k < size());
   return vec_[k];
 }
 
 inline Coefficient_traits::const_reference
-Row::Impl::operator[](const dimension_type k) const {
+Row_Impl_Handler::Impl::operator[](const dimension_type k) const {
   assert(k < size());
   return vec_[k];
 }
 
 inline memory_size_type
-Row::Impl::total_memory_in_bytes(dimension_type capacity) const {
+Row_Impl_Handler::Impl::total_memory_in_bytes(dimension_type capacity) const {
   return
     sizeof(*this)
     + capacity*sizeof(Coefficient)
@@ -170,7 +155,7 @@ Row::Impl::total_memory_in_bytes(dimension_type capacity) const {
 }
 
 inline memory_size_type
-Row::Impl::total_memory_in_bytes() const {
+Row_Impl_Handler::Impl::total_memory_in_bytes() const {
   // In general, this is a lower bound, as the capacity of *this
   // may be strictly greater than `size_'
   return total_memory_in_bytes(size_);
@@ -204,96 +189,41 @@ Row::capacity() const {
 #endif
 
 inline
-Row::Row()
+Row_Impl_Handler::Row_Impl_Handler()
   : impl(0) {
+#if EXTRA_ROW_DEBUG
+  capacity_ = 0;
+#endif
+}
+
+inline
+Row_Impl_Handler::~Row_Impl_Handler() {
+  delete impl;
+}
+
+inline
+Row::Row()
+  : Row_Impl_Handler() {
 }
 
 inline void
-Row::construct(const dimension_type sz,
+Row::allocate(
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
 	       const
 #endif
 	       dimension_type capacity,
 	       const Flags f) {
-  assert(sz <= capacity && capacity <= max_size());
+  assert(capacity <= max_size());
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity == 0)
     ++capacity;
 #endif
-  impl = new (capacity) Impl(sz, f);
+  assert(impl == 0);
+  impl = new (capacity) Impl(f);
 #if EXTRA_ROW_DEBUG
+  assert(capacity_ == 0);
   capacity_ = capacity;
 #endif
-}
-
-inline void
-Row::construct(const dimension_type sz, const Flags f) {
-  construct(sz, sz, f);
-}
-
-inline
-Row::Row(const dimension_type sz, const dimension_type capacity,
-	 const Flags f) {
-  construct(sz, capacity, f);
-}
-
-inline
-Row::Row(const dimension_type sz, const Flags f) {
-  construct(sz, f);
-}
-
-inline
-Row::Row(const Row& y)
-  : impl(y.impl
-	 ? new (compute_capacity(y.size(), Row::max_size())) Impl(*y.impl)
-	 : 0) {
-#if EXTRA_ROW_DEBUG
-# if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  capacity_ = y.impl ? compute_capacity(y.size(), Row::max_size()) : 0;
-# else
-  capacity_ = y.impl ? compute_capacity(y.size(), Row::max_size()) : 1;
-# endif
-#endif
-}
-
-inline
-Row::Row(const Row& y,
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-	 const
-#endif
-	 dimension_type capacity) {
-  assert(y.size() <= capacity && capacity <= max_size());
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  if (capacity == 0)
-    ++capacity;
-#endif
-  impl = y.impl ? new (capacity) Impl(*y.impl) : 0;
-#if EXTRA_ROW_DEBUG
-  capacity_ = capacity;
-#endif
-}
-
-inline
-Row::Row(const Row& y,
-	 const dimension_type sz,
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-	 const
-#endif
-	 dimension_type capacity) {
-  assert(y.size() <= sz && sz <= capacity && capacity <= max_size());
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  if (capacity == 0)
-    ++capacity;
-#endif
-  impl = y.impl ? new (capacity) Impl(*y.impl, sz) : 0;
-#if EXTRA_ROW_DEBUG
-  capacity_ = capacity;
-#endif
-}
-
-inline
-Row::~Row() {
-  delete impl;
 }
 
 inline void
@@ -303,6 +233,78 @@ Row::expand_within_capacity(const dimension_type new_size) {
   assert(new_size <= capacity_);
 #endif
   impl->expand_within_capacity(new_size);
+}
+
+inline void
+Row::copy_construct_coefficients(const Row& y) {
+  assert(impl && y.impl);
+#if EXTRA_ROW_DEBUG
+  assert(y.size() <= capacity_);
+#endif
+  impl->copy_construct_coefficients(*(y.impl));
+}
+
+inline void
+Row::construct(const dimension_type sz,
+	       const dimension_type capacity,
+	       const Flags f) {
+  assert(sz <= capacity && capacity <= max_size());
+  allocate(capacity, f);
+  expand_within_capacity(sz);
+}
+
+inline void
+Row::construct(const dimension_type sz, const Flags f) {
+  construct(sz, sz, f);
+}
+
+inline
+Row::Row(const dimension_type sz,
+	 const dimension_type capacity,
+	 const Flags f)
+  : Row_Impl_Handler() {
+  construct(sz, capacity, f);
+}
+
+inline
+Row::Row(const dimension_type sz, const Flags f)
+  : Row_Impl_Handler() {
+  construct(sz, f);
+}
+
+inline
+Row::Row(const Row& y)
+  : Row_Impl_Handler() {
+  if (y.impl) {
+    allocate(compute_capacity(y.size(), max_size()), y.flags());
+    copy_construct_coefficients(y);
+  }
+}
+
+inline
+Row::Row(const Row& y,
+	 const dimension_type capacity)
+  : Row_Impl_Handler() {
+  assert(y.impl);
+  assert(y.size() <= capacity && capacity <= max_size());
+  allocate(capacity, y.flags());
+  copy_construct_coefficients(y);
+}
+
+inline
+Row::Row(const Row& y,
+	 const dimension_type sz,
+	 const dimension_type capacity)
+  : Row_Impl_Handler() {
+  assert(y.impl);
+  assert(y.size() <= sz && sz <= capacity && capacity <= max_size());
+  allocate(capacity, y.flags());
+  copy_construct_coefficients(y);
+  expand_within_capacity(sz);
+}
+
+inline
+Row::~Row() {
 }
 
 inline void
@@ -339,11 +341,13 @@ Row::operator=(const Row& y) {
 
 inline Coefficient&
 Row::operator[](const dimension_type k) {
+  assert(impl);
   return (*impl)[k];
 }
 
 inline Coefficient_traits::const_reference
 Row::operator[](const dimension_type k) const {
+  assert(impl);
   return (*impl)[k];
 }
 

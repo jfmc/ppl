@@ -1,5 +1,5 @@
 /* Linear_Row class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -48,7 +47,8 @@ inline
 Linear_Row::Flags::Flags(const Topology t, const Kind k)
   : Row::Flags((k << rpi_bit) | (t << nnc_bit)) {
 #ifndef NDEBUG
-  set_bits((1 << rpi_validity_bit) | (1 << nnc_validity_bit));
+  set_bits((1 << rpi_validity_bit)
+	   | (1 << nnc_validity_bit));
 #endif
 }
 
@@ -264,30 +264,6 @@ operator==(const Linear_Row& x, const Linear_Row& y) {
 inline bool
 operator!=(const Linear_Row& x, const Linear_Row& y) {
   return !(x == y);
-}
-
-/*! \relates Linear_Row */
-inline int
-scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
-  TEMP_INTEGER(z);
-  scalar_product_assign(z, x, y);
-  return sgn(z);
-}
-
-/*! \relates Linear_Row */
-inline int
-reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
-  TEMP_INTEGER(z);
-  reduced_scalar_product_assign(z, x, y);
-  return sgn(z);
-}
-
-/*! \relates Linear_Row */
-inline int
-homogeneous_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
-  TEMP_INTEGER(z);
-  homogeneous_scalar_product_assign(z, x, y);
-  return sgn(z);
 }
 
 } // namespace Parma_Polyhedra_Library

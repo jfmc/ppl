@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -17,9 +17,9 @@ namespace Parma_Polyhedra_Library {
 template <typename PH>
 class Widening_Function;
 
-template <typename PH>
+template <typename PH, typename CS>
 class Limited_Widening_Function;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Widening_Function_types_hh)

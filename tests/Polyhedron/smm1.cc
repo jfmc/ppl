@@ -1,5 +1,5 @@
 /* SEND + MORE = MONEY.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,27 +14,20 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace Parma_Polyhedra_Library {
   // Import all the output operators into the main PPL namespace.
   using IO_Operators::operator<<;
 }
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 // The classic cryptarithmetic puzzle:
 //
@@ -123,16 +116,15 @@ main() TRY {
 		      S, E, N, D, M, O, R, Y,
 		      C1, C2, C3, C4);
 	  if (!ph.is_empty()) {
-#if NOISY
-	    cout << "Solution constraints" << endl;
+	    nout << "Solution constraints" << endl;
 	    const Constraint_System& cs = ph.constraints();
-	    copy(cs.begin(), cs.end(),
-		 ostream_iterator<Constraint>(cout, "\n"));
-	    cout << "Solution generators" << endl;
+	    std::copy(cs.begin(), cs.end(),
+		      std::ostream_iterator<Constraint>(nout, "\n"));
+	    nout << "Solution generators" << endl;
 	    const Generator_System& gs = ph.generators();
-	    copy(gs.begin(), gs.end(),
-		 ostream_iterator<Generator>(cout, "\n"));
-#endif
+	    std::copy(gs.begin(), gs.end(),
+		      std::ostream_iterator<Generator>(nout, "\n"));
+
 	    if (solution_found)
 	      return 1;
 

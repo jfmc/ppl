@@ -1,5 +1,5 @@
 /* Generator class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -76,22 +75,28 @@ Generator::is_ray_or_point() const {
 }
 
 inline bool
+Generator::is_line_or_ray() const {
+  return (*this)[0] == 0;
+}
+
+inline bool
 Generator::is_ray() const {
-  return is_ray_or_point() && ((*this)[0] == 0);
+  return is_ray_or_point() && is_line_or_ray();
 }
 
 inline Generator::Type
 Generator::type() const {
   if (is_line())
     return LINE;
-  const Generator& g = *this;
-  if (g[0] == 0)
+  if (is_line_or_ray())
     return RAY;
   if (is_necessarily_closed())
     return POINT;
-  else
+  else {
     // Checking the value of the epsilon coefficient.
+    const Generator& g = *this;
     return (g[size() - 1] == 0) ? CLOSURE_POINT : POINT;
+  }
 }
 
 inline bool
@@ -175,6 +180,28 @@ inline Generator
 closure_point(const Linear_Expression& e,
 	      Coefficient_traits::const_reference d) {
   return Generator::closure_point(e, d);
+}
+
+/*! \relates Generator */
+inline bool
+operator==(const Generator& x, const Generator& y) {
+  return x.is_equivalent_to(y);
+}
+
+/*! \relates Generator */
+inline bool
+operator!=(const Generator& x, const Generator& y) {
+  return !x.is_equivalent_to(y);
+}
+
+inline void
+Generator::ascii_dump(std::ostream& s) const {
+  Linear_Row::ascii_dump(s);
+}
+
+inline bool
+Generator::ascii_load(std::istream& s) {
+  return Linear_Row::ascii_load(s);
 }
 
 inline void

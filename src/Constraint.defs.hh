@@ -1,5 +1,5 @@
 /* Constraint class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,33 +24,44 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Constraint_defs_hh 1
 
 #include "Constraint.types.hh"
+#include "Scalar_Products.types.hh"
 #include "Linear_Row.defs.hh"
 #include "Variable.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Polyhedron.types.hh"
+#include "Congruence.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
-namespace IO_Operators {
-
-//! Output operator.
-/*! \relates Parma_Polyhedra_Library::Constraint */
-std::ostream& operator<<(std::ostream& s, const Constraint& c);
-
-} // namespace IO_Operators
-
 // Put them in the namespace here to declare them friend later.
+
+//! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
+/*! \relates Constraint */
+bool
+operator==(const Constraint& x, const Constraint& y);
+
+//! Returns <CODE>true</CODE> if and only if \p x is not equivalent to \p y.
+/*! \relates Constraint */
+bool
+operator!=(const Constraint& x, const Constraint& y);
 
 //! Returns the constraint \p e1 = \p e2.
 /*! \relates Constraint */
 Constraint
 operator==(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 = \p v2.
+/*! \relates Constraint */
+Constraint
+operator==(Variable v1, Variable v2);
+
 //! Returns the constraint \p e = \p n.
 /*! \relates Constraint */
 Constraint
 operator==(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n = \p e.
 /*! \relates Constraint */
 Constraint
@@ -61,10 +71,17 @@ operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \<= \p v2.
+/*! \relates Constraint */
+Constraint
+operator<=(Variable v1, Variable v2);
+
 //! Returns the constraint \p e \<= \p n.
 /*! \relates Constraint */
 Constraint
 operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n \<= \p e.
 /*! \relates Constraint */
 Constraint
@@ -74,10 +91,17 @@ operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator>=(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \>= \p v2.
+/*! \relates Constraint */
+Constraint
+operator>=(Variable v1, Variable v2);
+
 //! Returns the constraint \p e \>= \p n.
 /*! \relates Constraint */
 Constraint
 operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n \>= \p e.
 /*! \relates Constraint */
 Constraint
@@ -87,10 +111,17 @@ operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator<(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \< \p v2.
+/*! \relates Constraint */
+Constraint
+operator<(Variable v1, Variable v2);
+
 //! Returns the constraint \p e \< \p n.
 /*! \relates Constraint */
 Constraint
 operator<(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n \< \p e.
 /*! \relates Constraint */
 Constraint
@@ -100,10 +131,17 @@ operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
 /*! \relates Constraint */
 Constraint
 operator>(const Linear_Expression& e1, const Linear_Expression& e2);
+
+//! Returns the constraint \p v1 \> \p v2.
+/*! \relates Constraint */
+Constraint
+operator>(Variable v1, Variable v2);
+
 //! Returns the constraint \p e \> \p n.
 /*! \relates Constraint */
 Constraint
 operator>(const Linear_Expression& e, Coefficient_traits::const_reference n);
+
 //! Returns the constraint \p n \> \p e.
 /*! \relates Constraint */
 Constraint
@@ -122,7 +160,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
 } // namespace std
 
 //! A linear equality or inequality.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of the class Constraint is either:
   - an equality: \f$\sum_{i=0}^{n-1} a_i x_i + b = 0\f$;
   - a non-strict inequality: \f$\sum_{i=0}^{n-1} a_i x_i + b \geq 0\f$; or
@@ -193,7 +231,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   \par Example 2
   The following code shows how it is possible to access each single
   coefficient of a constraint. Given an inequality constraint
-  (in this case \f$x - 5y + 3z <= 4\f$), we construct a new constraint
+  (in this case \f$x - 5y + 3z \leq 4\f$), we construct a new constraint
   corresponding to its complement (thus, in this case we want to obtain
   the strict inequality constraint \f$x - 5y + 3z > 4\f$).
   \code
@@ -203,7 +241,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
     cout << "Constraint c1 is not an inequality." << endl;
   else {
     Linear_Expression e;
-    for (int i = c1.space_dimension() - 1; i >= 0; i--)
+    for (dimension_type i = c1.space_dimension(); i-- > 0; )
       e += c1.coefficient(Variable(i)) * Variable(i);
     e += c1.inhomogeneous_term();
     Constraint c2 = c1.is_strict_inequality() ? (e <= 0) : (e < 0);
@@ -223,6 +261,13 @@ class Parma_Polyhedra_Library::Constraint : private Linear_Row {
 public:
   //! Ordinary copy-constructor.
   Constraint(const Constraint& c);
+
+  //! Copy-constructs from equality congruence \p cg.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p cg is a proper congruence.
+  */
+  explicit Constraint(const Congruence& cg);
 
   //! Destructor.
   ~Constraint();
@@ -249,24 +294,28 @@ public:
   //! Returns the constraint type of \p *this.
   Type type() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is an equality constraint.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this is an equality constraint.
+  */
   bool is_equality() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is an inequality constraint (either strict or non-strict).
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this is an inequality constraint (either strict or non-strict).
+  */
   bool is_inequality() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a non-strict inequality constraint.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this is a non-strict inequality constraint.
+  */
   bool is_nonstrict_inequality() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a strict inequality constraint.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this is a strict inequality constraint.
+  */
   bool is_strict_inequality() const;
 
   //! Returns the coefficient of \p v in \p *this.
@@ -282,50 +331,111 @@ public:
   //! The unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
   static const Constraint& zero_dim_false();
 
-  //! \brief
-  //! The true (zero-dimension space) constraint \f$0 \leq 1\f$,
-  //! also known as <EM>positivity constraint</EM>.
+  /*! \brief
+    The true (zero-dimension space) constraint \f$0 \leq 1\f$,
+    also known as <EM>positivity constraint</EM>.
+  */
   static const Constraint& zero_dim_positivity();
 
-  //! \brief
-  //! Returns a lower bound to the total size in bytes of the memory
-  //! occupied by \p *this.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
   memory_size_type total_memory_in_bytes() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this is a tautology (i.e., an always true constraint).
+
+    A tautology can have either one of the following forms:
+    - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 = 0\f$; or
+    - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
+      where \f$b \geq 0\f$; or
+    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
+      where \f$b > 0\f$.
+  */
+  bool is_tautological() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if
+    \p *this is inconsistent (i.e., an always false constraint).
+
+    An inconsistent constraint can have either one of the following forms:
+    - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + b = 0\f$,
+      where \f$b \neq 0\f$; or
+    - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
+      where \f$b < 0\f$; or
+    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
+      where \f$b \leq 0\f$.
+  */
+  bool is_inconsistent() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this and \p y
+    are equivalent constraints.
+
+    Constraints having different space dimensions are not equivalent.
+    Note that constraints having different types may nonetheless be
+    equivalent, if they both are tautologies or inconsistent.
+  */
+  bool is_equivalent_to(const Constraint& y) const;
+
+  PPL_OUTPUT_DECLARATIONS
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+#endif
+  bool ascii_load(std::istream& s);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
-
-private:
-  friend class Parma_Polyhedra_Library::Constraint_System;
-  friend class Parma_Polyhedra_Library::Constraint_System::const_iterator;
-  friend class Parma_Polyhedra_Library::Polyhedron;
-  // FIXME: the following friend declaration is only to grant access to
-  // Generator_System::satisfied_by_all_generators().
-  friend class Parma_Polyhedra_Library::Generator_System;
-
-  friend Parma_Polyhedra_Library::
-  Linear_Expression::Linear_Expression(const Constraint& c);
-
-  friend void std::swap(Parma_Polyhedra_Library::Constraint& x,
-			Parma_Polyhedra_Library::Constraint& y);
-
-  //! Default constructor: private and not implemented.
-  Constraint();
-
-  //! \brief
-  //! Builds a constraint of type \p type and topology \p topology,
-  //! stealing the coefficients from \p e.
-  explicit Constraint(Linear_Expression& e, Type type, Topology topology);
 
   //! Swaps \p *this with \p y.
   void swap(Constraint& y);
 
-  //! \brief
-  //! Throws a <CODE>std::invalid_argument</CODE> exception
-  //! containing the appropriate error message.
+private:
+  friend class Parma_Polyhedra_Library::Congruence;
+  friend class Parma_Polyhedra_Library::Scalar_Products;
+  friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
+  friend class Parma_Polyhedra_Library::Constraint_System;
+  friend class Parma_Polyhedra_Library::Constraint_System::const_iterator;
+  // FIXME: the following friend declaration should be avoided.
+  friend class Parma_Polyhedra_Library::Polyhedron;
+
+  friend
+  Parma_Polyhedra_Library
+  ::Linear_Expression::Linear_Expression(const Constraint& c);
+
+  //! Default constructor: private and not implemented.
+  Constraint();
+
+  /*! \brief
+    Builds a constraint of type \p type and topology \p topology,
+    stealing the coefficients from \p e.
+  */
+  Constraint(Linear_Expression& e, Type type, Topology topology);
+
+  //! Constructs from a congruence, with specified size and capacity.
+  Constraint(const Congruence& cg, dimension_type sz, dimension_type capacity);
+
+  /*! \brief
+    Throws a <CODE>std::invalid_argument</CODE> exception containing
+    error message \p message.
+  */
+  void
+  throw_invalid_argument(const char* method, const char* message) const;
+
+  /*! \brief
+    Throws a <CODE>std::invalid_argument</CODE> exception
+    containing the appropriate error message.
+  */
   void
   throw_dimension_incompatible(const char* method,
 			       const char* name_var,
@@ -384,52 +494,48 @@ private:
   //! Copy-constructor with given size.
   Constraint(const Constraint& c, dimension_type sz);
 
-  //! \brief
-  //! Builds a new copy of the zero-dimension space constraint
-  //! \f$\epsilon \geq 0\f$ (used to implement NNC polyhedra).
+  /*! \brief
+    Builds a new copy of the zero-dimension space constraint
+    \f$\epsilon \geq 0\f$ (used to implement NNC polyhedra).
+  */
   static Constraint construct_epsilon_geq_zero();
 
   //! Returns the zero-dimension space constraint \f$\epsilon \geq 0\f$.
   static const Constraint& epsilon_geq_zero();
 
-  //! \brief
-  //! The zero-dimension space constraint \f$\epsilon \leq 1\f$
-  //! (used to implement NNC polyhedra).
+  /*! \brief
+    The zero-dimension space constraint \f$\epsilon \leq 1\f$
+    (used to implement NNC polyhedra).
+  */
   static const Constraint& epsilon_leq_one();
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a trivially true constraint.
-  /*!
-    Trivially true constraints have either one of the following forms:
-    - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 = 0\f$; or
-    - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
-      where \f$b \geq 0\f$; or
-    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
-      where \f$b > 0\f$.
-  */
-  bool is_trivial_true() const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a trivially false constraint.
-  /*!
-    Trivially false constraints have either one of the following forms:
-    - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + b = 0\f$,
-      where \f$b \neq 0\f$; or
-    - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
-      where \f$b < 0\f$; or
-    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
-      where \f$b \leq 0\f$.
-  */
-  bool is_trivial_false() const;
 
   //! Sets the constraint type to <CODE>EQUALITY</CODE>.
   void set_is_equality();
 
-  //! Sets the constraint type to <CODE>INEQUALITY</CODE>.
+  //! Sets the constraint to be an inequality.
+  /*!
+    Whether the constraint type will become <CODE>NONSTRICT_INEQUALITY</CODE>
+    or <CODE>STRICT_INEQUALITY</CODE> depends on the topology and the value
+    of the low-level coefficients of the constraint.
+  */
   void set_is_inequality();
 };
+
+namespace Parma_Polyhedra_Library {
+
+namespace IO_Operators {
+
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::Constraint */
+std::ostream& operator<<(std::ostream& s, const Constraint& c);
+
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::Constraint */
+std::ostream& operator<<(std::ostream& s, const Constraint::Type& t);
+
+} // namespace IO_Operators
+
+} // namespace Parma_Polyhedra_Library
 
 #include "Constraint.inlines.hh"
 

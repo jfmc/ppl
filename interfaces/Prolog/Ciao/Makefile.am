@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -14,82 +14,97 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
 abs_srcdir = @abs_srcdir@
-VPATH = @srcdir@
 
-@SET_MAKE@
+CIAO_CFLI_FILES = ciao_cfli.hh
 
-SUBDIRS =
+EXTRA_DIST = \
+ppl_interface_generator_ciao_pl.m4 \
+$(CIAO_CFLI_FILES) \
+ciao_clpq.pl \
+ciao_clpq2.pl \
+ciao_pl_check.pl
 
-EXTRA_DIST = ppl_ciao.pl ciao_clpq.pl ciao_clpq2.pl ciao_pl_check.pl
-
-if HAVE_CIAO_PROLOG
+if BUILD_CIAO_PROLOG_INTERFACE
+if ENABLE_SHARED
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src \
+-I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
--I$(top_srcdir)/Watchdog \
+-I$(top_builddir)/Watchdog/src \
 @extra_includes@
 
 pkglib_LTLIBRARIES = libppl_ciao.la
 libppl_ciao_la_SOURCES = ppl_ciao.cc
 libppl_ciao_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
-$(top_builddir)/Watchdog/libpwl.la \
+$(top_builddir)/Watchdog/src/libpwl.la \
 @extra_libraries@
 libppl_ciao_la_LDFLAGS = -module -avoid-version
 
 pkglib_DATA = ppl_ciao.po
 
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_ciao_pl.m4
+
+ppl_ciao.pl: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_ciao_pl.m4 > $@
+
 ppl_ciao.po: ppl_ciao.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ppl_ciao.pl .; \
-	fi
 	ciaoc -c ppl_ciao.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ppl_ciao.pl; \
-	fi
 
-ciao_clpq: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../tests/clpq.pl
+# All the invocations of `ciaoc' to build `ciao_pl_check', `ciao_clpq'
+# and `ciao_clpq2' will try to build identical glue files (e.g.,
+# `ppl_ciao_LINUXi86.so').  On parallel builds, this may cause errors.
+# This is why we make `ciao_clpq' and `ciao_clpq2' depend on `ciao_pl_check':
+# building the latter will build the glue files once and for all;  after
+# that, `ciao_clpq' and `ciao_clpq2' can be built in parallel.
+ciao_pl_check: .libs/libppl_ciao.so ppl_ciao.po ciao_pl_check.pl ../tests/pl_check.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ciao_clpq.pl $(srcdir)/ppl_ciao.pl .; \
-	fi
-	cp -f $(srcdir)/../tests/clpq.pl .
-	ciaoc -o $@ ciao_clpq.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_clpq.pl ppl_ciao.pl; \
-	fi
-	rm -f clpq.pl
-
-ciao_clpq2: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../tests/clpq2.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ciao_clpq2.pl $(srcdir)/ppl_ciao.pl .; \
-	fi
-	cp -f $(srcdir)/../tests/clpq2.pl .
-	ciaoc -o $@ ciao_clpq2.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_clpq2.pl ppl_ciao.pl; \
-	fi
-	rm -f clpq2.pl
-
-ciao_pl_check: libppl_ciao.la ppl_ciao.pl ciao_pl_check.pl ../tests/pl_check.pl
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ciao_pl_check.pl $(srcdir)/ppl_ciao.pl .; \
+	  cp -f $(srcdir)/ciao_pl_check.pl .; \
 	fi
 	cp -f $(srcdir)/../tests/pl_check.pl .
 	ciaoc -o $@ ciao_pl_check.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_pl_check.pl ppl_ciao.pl; \
+	  rm -f ciao_pl_check.pl; \
 	fi
 	rm -f pl_check.pl
+
+ciao_clpq: .libs/libppl_ciao.so ppl_ciao.po ciao_clpq.pl ../tests/clpq.pl | ciao_pl_check
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/ciao_clpq.pl .; \
+	fi
+	cp -f $(srcdir)/../tests/clpq.pl .
+	ciaoc -o $@ ciao_clpq.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f ciao_clpq.pl; \
+	fi
+	rm -f clpq.pl
+
+ciao_clpq2: .libs/libppl_ciao.so ppl_ciao.po ciao_clpq.pl ../tests/clpq2.pl | ciao_pl_check
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/ciao_clpq2.pl .; \
+	fi
+	cp -f $(srcdir)/../tests/clpq2.pl .
+	ciaoc -o $@ ciao_clpq2.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f ciao_clpq2.pl; \
+	fi
+	rm -f clpq2.pl
+
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
@@ -109,48 +124,58 @@ COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
 if ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)_a
 
 else !ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)
-EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)
-EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ = $(srcdir)/../tests/expected_clpq_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ2 = $(srcdir)/../tests/expected_clpq2_$(COEFFICIENT_MNEMONIC)
+EXPECTED_PCHK = $(srcdir)/../tests/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: ciao_clpq$(EXEEXT) ../tests/check_script $(EXPECTED) ciao_clpq2$(EXEEXT) ../tests/check_script2 $(EXPECTED2) ciao_pl_check$(EXEEXT) $(EXPECTED3)
+check-local: pl_check_test clpq_test clpq2_test
+
+pl_check_test: ciao_pl_check$(EXEEXT) .libs/libppl_ciao.so $(EXPECTED_PCHK)
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
+		-dlopen libppl_ciao.la \
+		./ciao_pl_check \
+			 >obtained_pchk
+	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
+
+clpq_test: ciao_clpq$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq $(EXPECTED_CLPQ)
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen libppl_ciao.la \
-		ciao_clpq \
-			<$(srcdir)/../tests/check_script >obtained
-	diff -q --ignore-all-space $(EXPECTED) obtained
+		./ciao_clpq \
+			<$(srcdir)/../tests/script_clpq >obtained_clpq
+	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
+
+clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXPECTED_CLPQ2)
+	LANG=C; \
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
+	GLOBALSTKSIZE=100000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen libppl_ciao.la \
-		ciao_clpq2 \
-			<$(srcdir)/../tests/check_script2 >obtained2
-	diff -q --ignore-all-space $(EXPECTED2) obtained2
-	$(LIBTOOL) --mode=execute \
-		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
-		-dlopen libppl_ciao.la \
-		ciao_pl_check \
-			 >obtained3
-	diff -q --ignore-all-space $(EXPECTED3) obtained3
+		./ciao_clpq2 \
+			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
+	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
 MOSTLYCLEANFILES = \
 *.itf *.po *.c *.so \
 ciao_clpq ciao_clpq2 ciao_pl_check \
-obtained obtained2 obtained3\
+obtained_clpq obtained_clpq2 obtained_pchk \
 $(CLPQ_TESTS)
 
-endif HAVE_CIAO_PROLOG
+endif ENABLE_SHARED
+endif BUILD_CIAO_PROLOG_INTERFACE

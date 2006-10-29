@@ -1,5 +1,5 @@
-/* DB_Row class declaration.   
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* DB_Row class declaration.
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ .*/
@@ -25,61 +24,96 @@ site: http://www.cs.unipr.it/ppl/ .*/
 #define PPL_DB_Row_defs_hh 1
 
 #include "DB_Row.types.hh"
-#include "globals.hh"
+#include "globals.types.hh"
 #include "Ptr_Iterator.defs.hh"
 #include <cstddef>
 #include <vector>
 
 #ifndef EXTRA_ROW_DEBUG
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each instance
-//! of the class DB_Row carries its own capacity; this enables extra
-//! consistency checks to 5 be performed.
+/*! \brief
+  When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each instance
+  of the class DB_Row carries its own capacity; this enables extra
+  consistency checks to be performed.
+  \ingroup PPL_CXX_interface
+*/
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define EXTRA_ROW_DEBUG 0
 #endif
 
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! The base class for the single rows of matrixes.
-/*!
-  The templatic class DB_Row<T> allow the efficient representation of
-  the single rows of a matrix. It contains elements of type T stored 
+//! The handler of the actual DB_Row implementation.
+/*! \ingroup PPL_CXX_interface
+  Exception-safety is the only responsibility of this class: it has
+  to ensure that its \p impl member is correctly deallocated.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T>
+class Parma_Polyhedra_Library::DB_Row_Impl_Handler {
+public:
+  //! Default constructor.
+  DB_Row_Impl_Handler();
+
+  //! Destructor.
+  ~DB_Row_Impl_Handler();
+
+  class Impl;
+
+  //! A pointer to the actual implementation.
+  Impl* impl;
+
+#if EXTRA_ROW_DEBUG
+  //! The capacity of \p impl (only available during debugging).
+  dimension_type capacity_;
+#endif // EXTRA_ROW_DEBUG
+
+private:
+  //! Private and unimplemented: copy construction is not allowed.
+  DB_Row_Impl_Handler(const DB_Row_Impl_Handler&);
+
+  //! Private and unimplemented: copy assignment is not allowed.
+  DB_Row_Impl_Handler& operator=(const DB_Row_Impl_Handler&);
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The base class for the single rows of matrices.
+/*! \ingroup PPL_CXX_interface
+  The class template DB_Row<T> allows for the efficient representation of
+  the single rows of a DB_Matrix. It contains elements of type T stored
   as a vector. The class T is a family of extended numbers that
-  must provide representation for 
+  must provide representation for
   \f$ -\infty \f$, \f$0\f$,\f$ +\infty \f$ (and, consequently for <EM>nan</EM>,
-  <EM>not a number</EM>, since this arises as the ``result'' of 
+  <EM>not a number</EM>, since this arises as the ``result'' of
   undefined sums like \f$ +\infty + (-\infty) \f$).
 
   The class T must provide the following methods:
-  
+
   \code
     T()
   \endcode
   is the default constructor: no assumption is made on the particular
   object constructed, provided <CODE>T().OK()</CODE> gives <CODE>true</CODE>
-  (see below). 
+  (see below).
   \code
     ~T()
   \endcode
   is the destructor.
   \code
-    bool is_nan() const      
+    bool is_nan() const
   \endcode
-  returns <CODE>true</CODE> if and only \p *this represents 
+  returns <CODE>true</CODE> if and only \p *this represents
   the  <EM>not a number</EM> value.
   \code
-    bool OK() const 
+    bool OK() const
   \endcode
   returns <CODE>true</CODE> if and only if \p *this satisfies all
-  its invariants.  
+  its invariants.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
-class Parma_Polyhedra_Library::DB_Row {
+class Parma_Polyhedra_Library::DB_Row : private DB_Row_Impl_Handler<T> {
 public:
-
   //! Pre-constructs a row: construction must be completed by construct().
   DB_Row();
 
@@ -93,14 +127,34 @@ public:
 
   //! Constructs properly a default-constructed element.
   /*!
-    \param sz         The size of the row that will be constructed.
-    \param capacity   The minimum capacity of the row that will be constructed.
-    
-    The row that we are constructing has a minimum capacity, i.e., it
-    can contain at least \p capacity elements, \p sz of which will be
-    constructed now.
+    \param sz
+    The size of the row that will be constructed.
+
+    \param capacity
+    The minimum capacity of the row that will be constructed.
+
+    The row that we are constructing has a minimum capacity of
+    (i.e., it can contain at least) \p elements, \p sz of which
+    will be constructed now.
   */
   void construct(dimension_type sz, dimension_type capacity);
+
+  //! Constructs properly a conservative approximation of \p y.
+  /*!
+    \param y
+    A row containing the elements whose upward approximations will
+    be used to properly construct \p *this.
+
+    \param capacity
+    The capacity of the constructed row.
+
+    It is assumed that \p capacity is greater than or equal to the
+    size of \p y.
+  */
+  template <typename U>
+  void construct_upward_approximation(const DB_Row<U>& y,
+				      dimension_type capacity);
+
   //@}
 
   //! Tight constructor: resizing will require reallocation.
@@ -122,6 +176,7 @@ public:
   /*!
     It is assumed that \p sz is greater than or equal to the size of \p y
     and, of course, that \p sz is less than or equal to \p capacity.
+    Any new position is initialized to \f$+\infty\f$.
   */
   DB_Row(const DB_Row& y, dimension_type sz, dimension_type capacity);
 
@@ -137,26 +192,33 @@ public:
   //! Assigns the implementation of \p y to \p *this.
   void assign(DB_Row& y);
 
-  //! Resizes the row without copying the old contents.
-  /*!
-    Shrinks the row if \p new_sz is less than <CODE>size()</CODE>;
-    otherwise grows the row without copying the old contents.
-  */
-  void resize_no_copy(dimension_type new_sz);
+  /*! \brief
+    Allocates memory for a default constructed DB_Row object,
+    allowing for \p capacity coefficients at most.
 
-  //! Grows the row without copying the old contents.
+    It is assumed that no allocation has been performed before
+    (otherwise, a memory leak will occur).
+    After execution, the size of the DB_Row object is zero.
+  */
+  void allocate(dimension_type capacity);
+
+  //! Expands the row to size \p new_size.
   /*!
     Adds new positions to the implementation of the row
-    obtaining a new row with size \p new_sz.
+    obtaining a new row with size \p new_size.
+    It is assumed that \p new_size is between the current size
+    and capacity of the row. The new positions are initialized
+    to \f$+\infty\f$.
   */
-  void grow_no_copy(dimension_type new_sz);
+  void expand_within_capacity(dimension_type new_size);
 
   //! Shrinks the row by erasing elements at the end.
   /*!
     Destroys elements of the row implementation
-    from position \p new_sz to the end.
+    from position \p new_size to the end.
+    It is assumed that \p new_size is not greater than the current size.
   */
-  void shrink(dimension_type new_sz);
+  void shrink(dimension_type new_size);
 
   //! Returns the size() of the largest possible DB_Row.
   static dimension_type max_size();
@@ -179,47 +241,66 @@ public:
   //! A const random access iterator to access the row's elements.
   typedef Implementation::Ptr_Iterator<const T*> const_iterator;
 
-  //! \brief
-  //! Returns the const iterator pointing to the first element,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const iterator.
+  /*! \brief
+    Returns the const iterator pointing to the first element,
+    if \p *this is not empty;
+    otherwise, returns the past-the-end const iterator.
+  */
   iterator begin();
 
   //! Returns the past-the-end iterator.
   iterator end();
 
-  //! \brief
-  //! Returns the const iterator pointing to the first element,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const iterator.
+  /*! \brief
+    Returns the const iterator pointing to the first element,
+    if \p *this is not empty;
+    otherwise, returns the past-the-end const iterator.
+  */
   const_iterator begin() const;
 
   //! Returns the past-the-end const iterator.
   const_iterator end() const;
 
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
+  memory_size_type total_memory_in_bytes() const;
+
+  /*! \brief
+    Returns a lower bound to the size in bytes of the memory
+    managed by \p *this.
+  */
+  memory_size_type external_memory_in_bytes() const;
+
+  /*! \brief
+    Returns the total size in bytes of the memory occupied by \p *this,
+    provided the capacity of \p *this is given by \p capacity.
+  */
+  memory_size_type total_memory_in_bytes(dimension_type capacity) const;
+
+  /*! \brief
+    Returns the size in bytes of the memory managed by \p *this,
+    provided the capacity of \p *this is given by \p capacity.
+  */
+  memory_size_type external_memory_in_bytes(dimension_type capacity) const;
+
   //! Checks if all the invariants are satisfied.
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
 
 private:
-  class Impl;
+  template <typename U> friend class Parma_Polyhedra_Library::DB_Row;
 
-  //! The real implementation, as far as memory allocation is concerned.
-  Impl* impl;
+  //! Exception-safe copy construction mechanism for coefficients.
+  void copy_construct_coefficients(const DB_Row& y);
 
 #if EXTRA_ROW_DEBUG
-
-  //! The capacity of the row (only available during debugging).
-  dimension_type capacity_;
-
   //! Returns the capacity of the row (only available during debugging).
   dimension_type capacity() const;
-
 #endif // defined(EXTRA_ROW_DEBUG)
 };
 
 namespace Parma_Polyhedra_Library {
-
-
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \name Classical comparison operators.
@@ -228,6 +309,7 @@ namespace Parma_Polyhedra_Library {
 /*! \relates DB_Row */
 template <typename T>
 bool operator==(const DB_Row<T>& x, const DB_Row<T>& y);
+
 /*! \relates DB_Row */
 template <typename T>
 bool operator!=(const DB_Row<T>& x, const DB_Row<T>& y);
@@ -240,13 +322,14 @@ bool operator!=(const DB_Row<T>& x, const DB_Row<T>& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The real implementation of a DB_Row object.
-/*!
-  The class DB_Row::Impl provides the implementation of DB_Row objects and,
-  in particular, of the corresponding memory allocation functions.
+/*! \ingroup PPL_CXX_interface
+  The class DB_Row_Impl_Handler::Impl provides the implementation of
+  DB_Row objects and, in particular, of the corresponding memory
+  allocation functions.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
-class Parma_Polyhedra_Library::DB_Row<T>::Impl {
+class Parma_Polyhedra_Library::DB_Row_Impl_Handler<T>::Impl {
 public:
   //! \name Custom allocator and deallocator.
   //@{
@@ -256,24 +339,20 @@ public:
     beyond the specified \p fixed_size and returns a pointer to the new
     allocated memory.
   */
-  void* operator new(size_t fixed_size, dimension_type capacity);
+  static void* operator new(size_t fixed_size, dimension_type capacity);
 
   //! Uses the standard delete operator to free the memory \p p points to.
-  void operator delete(void* p);
+  static void operator delete(void* p);
 
-  //! \brief Placement version:
-  //! uses the standard operator delete to free the memory \p p points to.
-  void operator delete(void* p, dimension_type capacity);
+  /*! \brief
+    Placement version: uses the standard operator delete to free
+    the memory \p p points to.
+  */
+  static void operator delete(void* p, dimension_type capacity);
   //@}
 
-  //! Sizing constructor.
-  Impl(dimension_type sz);
-
-  //! Copy constructor.
-  Impl(const Impl& y);
-
-  //! Copy constructor with specified size.
-  Impl(const Impl& y, dimension_type sz);
+  //! Default constructor.
+  Impl();
 
   //! Destructor.
   /*!
@@ -282,19 +361,27 @@ public:
   */
   ~Impl();
 
-  //! Resizes without copying the old contents.
+  //! Expands the row to size \p new_size.
   /*!
-    If \p new_sz is less than <CODE>size()</CODE>, shrinks the implementation
-    of the row; otherwise the real implementation is grown without copying
-    the old contents.
+    It is assumed that \p new_size is between the current size and capacity.
   */
-  void resize_no_copy(dimension_type new_sz);
+  void expand_within_capacity(dimension_type new_size);
 
-  //! Grows without copying the old contents.
-  void grow_no_copy(dimension_type new_sz);
+  //! Shrinks the row by erasing elements at the end.
+  /*!
+    It is assumed that \p new_size is not greater than the current size.
+  */
+  void shrink(dimension_type new_size);
 
-  //! Shrinks by erasing elements at the end.
-  void shrink(dimension_type new_sz);
+  //! Exception-safe copy construction mechanism for coefficients.
+  void copy_construct_coefficients(const Impl& y);
+
+  /*! \brief
+    Exception-safe upward approximation construction mechanism
+    for coefficients.
+  */
+  template <typename U>
+  void construct_upward_approximation(const U& y);
 
   //! Returns the size() of the largest possible Impl.
   static dimension_type max_size();
@@ -307,7 +394,7 @@ public:
   //! Sets to \p new_sz the actual size of \p *this.
   void set_size(dimension_type new_sz);
 
-  //! Increment the size of \p *this by 1.
+  //! Increments the size of \p *this by 1.
   void bump_size();
   //@}
 
@@ -320,8 +407,20 @@ public:
   const T& operator[](dimension_type k) const;
   //@}
 
-private:
-  friend class Parma_Polyhedra_Library::DB_Row<T>;
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes(dimension_type capacity) const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
+  // FIXME: the following was "private:", not "public:".
+public:
 
   //! The number of coefficients in the row.
   dimension_type size_;
@@ -333,9 +432,9 @@ private:
 #endif
   ];
 
-  //! Private and unimplemented: default construction is not allowed.
-  Impl();
- 
+  //! Private and unimplemented: copy construction is not allowed.
+  Impl(const Impl& y);
+
   //! Private and unimplemented: assignment is not allowed.
   Impl& operator=(const Impl&);
 
@@ -365,12 +464,7 @@ void iter_swap(typename std::vector<Parma_Polyhedra_Library::DB_Row<T> >
 
 } // namespace std
 
-#ifndef EXTRA_NORMALIZATION
-// If non-zero, lines and equalities are ALWAYS normalized so that the
-// first non-zero coefficient is positive.
-#define EXTRA_NORMALIZATION 0
-#endif
-
 #include "DB_Row.inlines.hh"
+#include "DB_Row.templates.hh"
 
 #endif // !defined(PPL_DB_Row_defs_hh)

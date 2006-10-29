@@ -1,6 +1,5 @@
-/* Test Polyhedron::minimized_generators(): we apply this function
-   to a polyhedron defined by a redundant system of generators.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Polyhedron::minimized_generators().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -15,26 +14,18 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -50,9 +41,7 @@ main() TRY {
 
   const Generator_System gs2 = ph1.minimized_generators();
 
-#if NOISY
   print_generators(gs2, "*** gs2 ***");
-#endif
 
   C_Polyhedron ph2(gs2);
   Generator_System known_gs;
@@ -61,12 +50,36 @@ main() TRY {
   known_gs.insert(ray(B));
   C_Polyhedron known_result(known_gs);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
+  bool ok = (ph2 == known_result);
 
-#if NOISY
   print_generators(ph2, "*** ph2 ***");
-#endif
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  C_Polyhedron ph1(2, EMPTY);
+
+  print_generators(ph1, "*** ph1 ***");
+
+  C_Polyhedron known_result = ph1;
+
+  Generator_System gs = ph1.minimized_generators();
+
+  C_Polyhedron ph2(2, EMPTY);
+  ph2.add_generators(gs);
+
+  bool ok = (ph2 == known_result);
+
+  print_generators(gs, "*** gs ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+END_MAIN

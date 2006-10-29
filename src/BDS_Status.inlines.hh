@@ -1,5 +1,5 @@
 /* BD_Shape<T>::Status class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -104,24 +103,44 @@ BD_Shape<T>::Status::set_empty() {
 
 template <typename T>
 inline bool
-BD_Shape<T>::Status::test_transitively_closed() const {
-  return test_any(TRANSITIVELY_CLOSED);
+BD_Shape<T>::Status::test_shortest_path_closed() const {
+  return test_any(SHORTEST_PATH_CLOSED);
 }
 
 template <typename T>
 inline void
-BD_Shape<T>::Status::reset_transitively_closed() {
-  reset(TRANSITIVELY_CLOSED);
+BD_Shape<T>::Status::reset_shortest_path_closed() {
+  // A system is reduced only if it is also closed.
+  reset(SHORTEST_PATH_CLOSED | SHORTEST_PATH_REDUCED);
 }
 
 template <typename T>
 inline void
-BD_Shape<T>::Status::set_transitively_closed() {
-  set(TRANSITIVELY_CLOSED);
+BD_Shape<T>::Status::set_shortest_path_closed() {
+  set(SHORTEST_PATH_CLOSED);
 }
 
 template <typename T>
 inline bool
+BD_Shape<T>::Status::test_shortest_path_reduced() const {
+  return test_any(SHORTEST_PATH_REDUCED);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::Status::reset_shortest_path_reduced() {
+  reset(SHORTEST_PATH_REDUCED);
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::Status::set_shortest_path_reduced() {
+  assert(test_shortest_path_closed());
+  set(SHORTEST_PATH_REDUCED);
+}
+
+template <typename T>
+bool
 BD_Shape<T>::Status::OK() const {
   if (test_zero_dim_univ())
     // Zero-dim universe is OK.
@@ -141,29 +160,45 @@ BD_Shape<T>::Status::OK() const {
     }
   }
 
+  // Shortest-path reduction implies shortest-path closure.
+  if (test_shortest_path_reduced())
+    if (test_shortest_path_closed())
+      return true;
+    else {
+#ifndef NDEBUG
+      std::cerr << "The shortest-path reduction flag should also imply "
+		<< "the closure flag."
+		<< std::endl;
+#endif
+      return false;
+    }
+
   // Any other case is OK.
   return true;
 }
 
 
-namespace {
- 
+namespace Implementation {
+
+namespace BD_Shapes {
+
 // These are the keywords that indicate the individual assertions.
 const std::string zero_dim_univ = "ZE";
 const std::string empty = "EM";
-const std::string trans_closed = "TC";
+const std::string sp_closed = "SPC";
+const std::string sp_reduced = "SPR";
 const char yes = '+';
 const char no = '-';
 const char sep = ' ';
- 
-/*! \relates Parma_Polyhedra_Library::BD_Shape<T>::Status
+
+/*! \relates Parma_Polyhedra_Library::BD_Shape::Status
   Reads a keyword and its associated on/off flag from \p s.
   Returns <CODE>true</CODE> if the operation is successful,
   returns <CODE>false</CODE> otherwise.
   When successful, \p positive is set to <CODE>true</CODE> if the flag
   is on; it is set to <CODE>false</CODE> otherwise.
 */
-bool
+inline bool
 get_field(std::istream& s, const std::string& keyword, bool& positive) {
   std::string str;
   if (!(s >> str)
@@ -174,20 +209,27 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
   return true;
 }
 
-} // namespace
+} // namespace BD_Shapes
+
+} // namespace Implementation
 
 template <typename T>
-inline void
+void
 BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
+  using namespace Implementation::BD_Shapes;
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
     << (test_empty() ? yes : no) << empty << sep
     << sep
-    << (test_transitively_closed() ? yes : no) << trans_closed << sep;
+    << (test_shortest_path_closed() ? yes : no) << sp_closed << sep
+    << (test_shortest_path_reduced() ? yes : no) << sp_reduced << sep;
 }
 
+PPL_OUTPUT_TEMPLATE_DEFINITIONS_ASCII_ONLY(T, BD_Shape<T>::Status)
+
 template <typename T>
-inline bool
+bool
 BD_Shape<T>::Status::ascii_load(std::istream& s) {
+  using namespace Implementation::BD_Shapes;
   bool positive;
 
   if (!get_field(s, zero_dim_univ, positive))
@@ -200,14 +242,21 @@ BD_Shape<T>::Status::ascii_load(std::istream& s) {
   if (positive)
     set_empty();
 
-  if (!get_field(s, trans_closed, positive))
+  if (!get_field(s, sp_closed, positive))
     return false;
   if (positive)
-    set_transitively_closed();
+    set_shortest_path_closed();
   else
-    reset_transitively_closed();
+    reset_shortest_path_closed();
 
-  // Check for well-formedness.
+  if (!get_field(s, sp_reduced, positive))
+    return false;
+  if (positive)
+    set_shortest_path_reduced();
+  else
+    reset_shortest_path_reduced();
+
+  // Check invariants.
   assert(OK());
   return true;
 }

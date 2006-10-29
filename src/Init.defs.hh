@@ -1,5 +1,5 @@
 /* Init class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,10 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Init_defs_hh 1
 
 #include "Init.types.hh"
+#include "fpu.types.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Class for initialization and finalization.
-/*!
+/*! \ingroup PPL_CXX_interface
   <EM>Nifty Counter</EM> initialization class,
   ensuring that the library is initialized only once
   and before its first use.
@@ -44,6 +44,7 @@ class Parma_Polyhedra_Library::Init {
 private:
   //! Count the number of objects created.
   static unsigned int count;
+  static fpu_rounding_direction_type old_rounding_direction;
 
 public:
   //! Initializes the PPL.

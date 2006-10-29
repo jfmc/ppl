@@ -1,6 +1,6 @@
 /* Polyhedron class implementation
    (non-inline private or protected functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -15,9 +15,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Polyhedron.defs.hh"
-
+#include "Scalar_Products.defs.hh"
 #include <cassert>
 #include <string>
 #include <iostream>
@@ -49,7 +48,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Polyhedron::Polyhedron(const Topology topol,
 			    const dimension_type num_dimensions,
-			    const Degenerate_Kind kind)
+			    const Degenerate_Element kind)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -59,12 +58,11 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
 
   if (kind == EMPTY)
     status.set_empty();
-  else
-    if (num_dimensions > 0) {
-      add_low_level_constraints(con_sys);
-      con_sys.adjust_topology_and_space_dimension(topol, num_dimensions);
-      set_constraints_minimized();
-    }
+  else if (num_dimensions > 0) {
+    con_sys.add_low_level_constraints();
+    con_sys.adjust_topology_and_space_dimension(topol, num_dimensions);
+    set_constraints_minimized();
+  }
   space_dim = num_dimensions;
   assert(OK());
 }
@@ -77,9 +75,9 @@ PPL::Polyhedron::Polyhedron(const Polyhedron& y)
   // Being a protected method, we simply assert that topologies do match.
   assert(topology() == y.topology());
   if (y.constraints_are_up_to_date())
-    con_sys = y.con_sys;
+    con_sys.assign_with_pending(y.con_sys);
   if (y.generators_are_up_to_date())
-    gen_sys = y.gen_sys;
+    gen_sys.assign_with_pending(y.gen_sys);
   if (y.sat_c_is_up_to_date())
     sat_c = y.sat_c;
   if (y.sat_g_is_up_to_date())
@@ -118,7 +116,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
       con_sys.unset_pending_rows();
       con_sys.set_sorted(false);
     }
-    add_low_level_constraints(con_sys);
+    con_sys.add_low_level_constraints();
     set_constraints_up_to_date();
   }
   else {
@@ -126,7 +124,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
     if (cs.num_columns() > 0)
       // See if an inconsistent constraint has been passed.
       for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (cs[i].is_trivial_false()) {
+	if (cs[i].is_inconsistent()) {
 	  // Inconsistent constraint found: the polyhedron is empty.
 	  set_empty();
 	  break;
@@ -164,7 +162,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, Constraint_System& cs)
       con_sys.unset_pending_rows();
       con_sys.set_sorted(false);
     }
-    add_low_level_constraints(con_sys);
+    con_sys.add_low_level_constraints();
     set_constraints_up_to_date();
   }
   else {
@@ -172,7 +170,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, Constraint_System& cs)
     if (cs.num_columns() > 0)
       // See if an inconsistent constraint has been passed.
       for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (cs[i].is_trivial_false()) {
+	if (cs[i].is_inconsistent()) {
 	  // Inconsistent constraint found: the polyhedron is empty.
 	  set_empty();
 	  break;
@@ -196,6 +194,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
   if (gs.num_rows() == 0) {
     space_dim = gs.space_dimension();
     status.set_empty();
+    assert(OK());
     return;
   }
 
@@ -240,6 +239,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
   // we already checked for both the topology-compatibility
   // and the supporting point.
   space_dim = 0;
+  assert(OK());
 }
 
 PPL::Polyhedron::Polyhedron(const Topology topol, Generator_System& gs)
@@ -254,6 +254,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, Generator_System& gs)
   if (gs.num_rows() == 0) {
     space_dim = gs.space_dimension();
     status.set_empty();
+    assert(OK());
     return;
   }
 
@@ -298,6 +299,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, Generator_System& gs)
   // we already checked for both the topology-compatibility
   // and the supporting point.
   space_dim = 0;
+  assert(OK());
 }
 
 PPL::Polyhedron&
@@ -312,9 +314,9 @@ PPL::Polyhedron::operator=(const Polyhedron& y) {
   else {
     status = y.status;
     if (y.constraints_are_up_to_date())
-      con_sys = y.con_sys;
+      con_sys.assign_with_pending(y.con_sys);
     if (y.generators_are_up_to_date())
-      gen_sys = y.gen_sys;
+      gen_sys.assign_with_pending(y.gen_sys);
     if (y.sat_c_is_up_to_date())
       sat_c = y.sat_c;
     if (y.sat_g_is_up_to_date())
@@ -430,7 +432,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       if (c.is_inequality()) {
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  const int sp_sign = scalar_product_sign(c, g);
+	  const int sp_sign = Scalar_Products::sign(c, g);
 	  if (g.is_line()) {
 	    if (sp_sign != 0)
 	      return false;
@@ -444,21 +446,20 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       else {
 	// `c' is an equality.
 	for (dimension_type j = gs.num_rows(); j-- > 0; )
-	  if (scalar_product_sign(c, gs[j]) != 0)
+	  if (Scalar_Products::sign(c, gs[j]) != 0)
 	    return false;
       }
     }
   else {
-    // Here we have a NON-necessarily closed polyhedron: using the
-    // reduced scalar product, which ignores the epsilon coefficient.
-    const dimension_type eps_index = x.space_dim + 1;
+    // Here we have an NNC polyhedron: using the reduced scalar product,
+    // which ignores the epsilon coefficient.
     for (dimension_type i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
       switch (c.type()) {
       case Constraint::NONSTRICT_INEQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  const int sp_sign = reduced_scalar_product_sign(c, g);
+	  const int sp_sign = Scalar_Products::reduced_sign(c, g);
 	  if (g.is_line()) {
 	    if (sp_sign != 0)
 	      return false;
@@ -471,30 +472,34 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
 	break;
       case Constraint::EQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; )
-	  if (reduced_scalar_product_sign(c, gs[j]) != 0)
+	  if (Scalar_Products::reduced_sign(c, gs[j]) != 0)
 	    return false;
 	break;
       case Constraint::STRICT_INEQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  const int sp_sign = reduced_scalar_product_sign(c, g);
-	  if (g[eps_index] > 0) {
-	    // Generator `g' is a point.
+	  const int sp_sign = Scalar_Products::reduced_sign(c, g);
+	  switch (g.type()) {
+	  case Generator::POINT:
 	    // If a point violates or saturates a strict inequality
 	    // (when ignoring the epsilon coefficients) then it is
 	    // not included in the polyhedron.
 	    if (sp_sign <= 0)
 	      return false;
-	  }
-	  else if (g.is_line()) {
+	    break;
+	  case Generator::LINE:
 	    // Lines have to saturate all constraints.
 	    if (sp_sign != 0)
 	      return false;
-	  }
-	  else
+	    break;
+	  case Generator::RAY:
+	    // Intentionally fall through.
+	  case Generator::CLOSURE_POINT:
 	    // The generator is a ray or closure point: usual test.
 	    if (sp_sign < 0)
 	      return false;
+	    break;
+	  }
 	}
 	break;
       }
@@ -527,8 +532,8 @@ PPL::Polyhedron::bounds(const Linear_Expression& expr,
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
     // Only lines and rays in `*this' can cause `expr' to be unbounded.
-    if (g[0] == 0) {
-      const int sp_sign = homogeneous_scalar_product_sign(expr, g);
+    if (g.is_line_or_ray()) {
+      const int sp_sign = Scalar_Products::homogeneous_sign(expr, g);
       if (sp_sign != 0
 	  && (g.is_line()
 	      || (from_above && sp_sign > 0)
@@ -545,8 +550,9 @@ PPL::Polyhedron::bounds(const Linear_Expression& expr,
 bool
 PPL::Polyhedron::max_min(const Linear_Expression& expr,
 			 const bool maximize,
-			 Coefficient& ext_n, Coefficient& ext_d, bool& included,
-			 const Generator** const pppoint) const {
+			 Coefficient& ext_n, Coefficient& ext_d,
+			 bool& included,
+			 Generator& g_point) const {
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
   const dimension_type expr_space_dim = expr.space_dimension();
@@ -554,6 +560,18 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
     throw_dimension_incompatible((maximize
 				  ? "maximize(e, ...)"
 				  : "minimize(e, ...)"), "e", expr);
+
+  // Deal with zero-dim polyhedra first.
+  if (space_dim == 0)
+    if (marked_empty())
+      return false;
+    else {
+      ext_n = expr.inhomogeneous_term();
+      ext_d = 1;
+      included = true;
+      g_point = point();
+      return true;
+    }
 
   // For an empty polyhedron we simply return false.
   if (marked_empty()
@@ -580,9 +598,9 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   TEMP_INTEGER(sp);
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
-    homogeneous_scalar_product_assign(sp, expr, g);
+    Scalar_Products::homogeneous_assign(sp, expr, g);
     // Lines and rays in `*this' can cause `expr' to be unbounded.
-    if (g[0] == 0) {
+    if (g.is_line_or_ray()) {
       const int sp_sign = sgn(sp);
       if (sp_sign != 0
 	  && (g.is_line()
@@ -597,10 +615,8 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
       mpq_class candidate;
-      Checked::assign<Checked::Transparent_Policy>(candidate.get_num(),
-						   raw_value(sp), Rounding(Rounding::IGNORE));
-      Checked::assign<Checked::Transparent_Policy>(candidate.get_den(),
-						   raw_value(g[0]), Rounding(Rounding::IGNORE));
+      assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), g[0], ROUND_NOT_NEEDED);
       candidate.canonicalize();
       const bool g_is_point = g.is_point();
       if (first_candidate
@@ -625,8 +641,8 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
 
   // Add in the constant term in `expr'.
   mpz_class n;
-  Checked::assign<Checked::Transparent_Policy>(n, raw_value(expr[0]), Rounding(Rounding::IGNORE));
-  extremum += n;;
+  assign_r(n, expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
+  extremum += n;
 
   // The polyhedron is bounded in the right direction and we have
   // computed the extremum: write the result into the caller's structures.
@@ -634,8 +650,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
   ext_n = Coefficient(extremum.get_num());
   ext_d = Coefficient(extremum.get_den());
   included = ext_included;
-  if (pppoint != 0)
-    *pppoint = &gen_sys[ext_position];
+  g_point = gen_sys[ext_position];
 
   return true;
 }
@@ -836,7 +851,7 @@ PPL::Polyhedron::update_sat_c() const {
   x.sat_c.resize(gsr, csr);
   for (dimension_type i = gsr; i-- > 0; )
     for (dimension_type j = csr; j-- > 0; ) {
-      const int sp_sign = scalar_product_sign(con_sys[j], gen_sys[i]);
+      const int sp_sign = Scalar_Products::sign(con_sys[j], gen_sys[i]);
       // The negativity of this scalar product would mean
       // that the generator `gen_sys[i]' violates the constraint
       // `con_sys[j]' and it is not possible because both generators
@@ -868,7 +883,7 @@ PPL::Polyhedron::update_sat_g() const {
   x.sat_g.resize(csr, gsr);
   for (dimension_type i = csr; i-- > 0; )
     for (dimension_type j = gsr; j-- > 0; ) {
-      const int sp_sign = scalar_product_sign(con_sys[i], gen_sys[j]);
+      const int sp_sign = Scalar_Products::sign(con_sys[i], gen_sys[j]);
       // The negativity of this scalar product would mean
       // that the generator `gen_sys[j]' violates the constraint
       // `con_sys[i]' and it is not possible because both generators
@@ -1185,29 +1200,46 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       ++i;
 
   if (changed) {
-    // If the constraint system has been changed and we haven't found the
-    // eps_leq_one constraint, insert it to force an upper bound on epsilon.
-    if (!found_eps_leq_one) {
-      // Note: we overwrite the first of the eps-redundant constraints found.
-      assert(cs_rows < cs.num_rows());
-      Constraint& eps_leq_one = cs[cs_rows];
-      eps_leq_one[0] = 1;
-      eps_leq_one[eps_index] = -1;
-      for (dimension_type k = eps_index; k-- > 1; )
-	eps_leq_one[k] = 0;
-      // Bump number of rows.
-      ++cs_rows;
-    }
-    // Erase the eps-redundant constraints, if there are any (the
-    // remaining constraints are not pending).
-    if (cs_rows < cs.num_rows()) {
-      cs.erase_to_end(cs_rows);
-      cs.unset_pending_rows();
-    }
+    // If the constraint system has been changed, we have to erase
+    // the epsilon-redundant constraints.
+    assert(cs_rows < cs.num_rows());
+    cs.erase_to_end(cs_rows);
+    // The remaining constraints are not pending.
+    cs.unset_pending_rows();
     // The constraint system is no longer sorted.
     cs.set_sorted(false);
     // The generator system is no longer up-to-date.
     x.clear_generators_up_to_date();
+
+    // If we haven't found an upper bound for the epsilon dimension,
+    // then we have to check whether such an upper bound is implied
+    // by the remaining constraints (exploiting the simplex algorithm).
+    if (!found_eps_leq_one) {
+      MIP_Problem lp;
+      // KLUDGE: temporarily mark the constraint system as if it was
+      // necessarily closed, so that we can interpret the epsilon
+      // dimension as a standard dimension. Be careful to reset the
+      // topology of `cs' even on exceptional execution path.
+      cs.set_necessarily_closed();
+      try {
+	lp.add_space_dimensions_and_embed(cs.space_dimension());
+	lp.add_constraints(cs);
+	cs.set_not_necessarily_closed();
+      }
+      catch (...) {
+	cs.set_not_necessarily_closed();
+	throw;
+      }
+      // The objective function is `epsilon'.
+      lp.set_objective_function(Variable(x.space_dim));
+      lp.set_optimization_mode(MAXIMIZATION);
+      MIP_Problem_Status status = lp.solve();
+      assert(status != UNFEASIBLE_MIP_PROBLEM);
+      // If the epsilon dimension is actually unbounded,
+      // then add the eps_leq_one constraint.
+      if (status == UNBOUNDED_MIP_PROBLEM)
+	cs.insert(Constraint::epsilon_leq_one());
+    }
   }
 
   assert(OK());
@@ -1445,6 +1477,13 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* cg_name,
+					      const Congruence& cg) const {
+  throw_dimension_incompatible(method, cg_name, cg.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* cs_name,
 					      const Constraint_System& cs) const {
   throw_dimension_incompatible(method, cs_name, cs.space_dimension());
@@ -1455,6 +1494,13 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* gs_name,
 					      const Generator_System& gs) const {
   throw_dimension_incompatible(method, gs_name, gs.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* cgs_name,
+					      const Congruence_System& cgs) const {
+  throw_dimension_incompatible(method, cgs_name, cgs.space_dimension());
 }
 
 void

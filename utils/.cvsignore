@@ -2,3 +2,5 @@
 .libs
 Makefile
 Makefile.in
+build_header
+text2cxxarray

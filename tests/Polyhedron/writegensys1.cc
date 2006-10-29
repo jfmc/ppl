@@ -1,5 +1,5 @@
 /* Test operator<<(std::ostream&, const Generator_System&).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,23 +24,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "files.hh"
 #include <fstream>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-using namespace Parma_Polyhedra_Library::IO_Operators;
+using std::fstream;
+using std::ios_base;
 
-#ifndef NOISY
-#define NOISY 0
-#endif
+using namespace IO_Operators;
 
 namespace {
 
-const char* my_file = "writegensys1.dat";
-
-} // namespace
-
-int
-main() TRY {
-  set_handlers();
+bool
+test01() {
+  const char* my_file = "writegensys1.dat";
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -57,7 +49,49 @@ main() TRY {
   open(f, my_file, ios_base::out);
   f << gs << endl;
   close(f);
-
-  return 0;
+  // FIXME.
+  return true;
 }
-CATCH
+
+bool
+test02() {
+  const char* my_file = "writegensys1.dat";
+  C_Polyhedron ph(3, EMPTY);
+
+  Generator_System gs = ph.generators();
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << gs << endl;
+  close(f);
+  // FIXME.
+  return true;
+}
+
+bool
+test03() {
+  const char* my_file = "writegensys1.dat";
+  Variable A(0);
+  Variable B(1);
+
+  Linear_Expression e1 = 2*A + 4;
+  e1 += B;
+  Generator_System gs;
+  gs.insert(ray(e1));
+  gs.insert(point(3*A + B, 2));
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << gs << endl;
+  close(f);
+  // FIXME.
+  return true;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+END_MAIN

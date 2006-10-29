@@ -1,5 +1,5 @@
 /* Test BD_Shape::limited_H79_extrapolation_assign().
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,24 +14,18 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -41,9 +35,7 @@ main() TRY {
 
   TBD_Shape bd1(cs1);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ****");
-#endif
 
   Constraint_System cs2;
   cs2.insert(x == 0);
@@ -51,29 +43,28 @@ main() TRY {
 
   TBD_Shape bd2(cs2);
 
-#if NOISY
   print_constraints(bd2, "*** bd2 ****");
-#endif
 
   Constraint_System cs;
   cs.insert(x >= 20);
   cs.insert(y >= 3);
 
-#if NOISY
   print_constraints(cs, "*** cs ***");
-#endif
 
-  TBD_Shape computed_result = bd1;
-  computed_result.limited_H79_extrapolation_assign(bd2, cs);
+  bd1.limited_H79_extrapolation_assign(bd2, cs);
 
-  TBD_Shape known_result(2);
+  BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(y >= 3);
 
-#if NOISY
-  print_constraints(computed_result,
-		    "*** bd1.limited_H79_extrapolation_assign(bd2) ****");
-#endif
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  return (computed_result == known_result) ? 0 : 1;
+  print_constraints(bd1, "*** bd1.limited_H79_extrapolation_assign(bd2) ****");
+
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

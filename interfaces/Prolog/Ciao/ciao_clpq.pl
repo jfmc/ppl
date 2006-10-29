@@ -1,5 +1,5 @@
 /* Prolog main program for the toy PPL/CIAO-Prolog CLP(Q) interpreter.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -31,8 +30,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- use_module(ppl_ciao, [
 	ppl_initialize/0,
 	ppl_finalize/0,
-	ppl_new_Polyhedron_from_space_dimension/4,
-	ppl_new_Polyhedron_from_Polyhedron/4,
+	ppl_new_C_Polyhedron_from_space_dimension/3,
+	ppl_new_NNC_Polyhedron_from_space_dimension/3,
+	ppl_new_C_Polyhedron_from_C_Polyhedron/2,
+	ppl_new_C_Polyhedron_from_NNC_Polyhedron/2,
+	ppl_new_NNC_Polyhedron_from_C_Polyhedron/2,
+	ppl_new_NNC_Polyhedron_from_NNC_Polyhedron/2,
 	ppl_delete_Polyhedron/1,
 	ppl_Polyhedron_space_dimension/2,
 	ppl_Polyhedron_get_constraints/2,

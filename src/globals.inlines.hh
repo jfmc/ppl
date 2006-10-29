@@ -1,5 +1,5 @@
 /* Implementation of global objects: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -33,6 +32,10 @@ namespace Parma_Polyhedra_Library {
 inline dimension_type
 not_a_dimension() {
   return std::numeric_limits<dimension_type>::max();
+}
+
+inline
+Throwable::~Throwable() {
 }
 
 inline void
@@ -55,6 +58,7 @@ compute_capacity(const dimension_type requested_size,
   //   : maximum_size;
 }
 
+// FIXME!!!
 inline dimension_type
 compute_capacity(const dimension_type requested_size) {
   // Speculation factor 2.
@@ -64,7 +68,8 @@ compute_capacity(const dimension_type requested_size) {
 }
 
 inline void
-normalize2(const Coefficient& x, const Coefficient& y,
+normalize2(Coefficient_traits::const_reference x,
+	   Coefficient_traits::const_reference y,
 	   Coefficient& nx, Coefficient& ny) {
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, x, y);
@@ -74,7 +79,7 @@ normalize2(const Coefficient& x, const Coefficient& y,
 
 template <typename T>
 inline T
-low_bits_mask(unsigned n) {
+low_bits_mask(const unsigned n) {
   assert(n < unsigned(std::numeric_limits<T>::digits));
   return n == 0 ? 0 : ~(~(T(0u)) << n);
 }

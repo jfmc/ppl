@@ -1,5 +1,5 @@
 /* Test Polyhedron::expand_space_dimension().
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,41 +14,30 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
-Variable A(0);
-Variable B(1);
-Variable C(2);
-Variable D(3);
-
 // Test using constraints for NNC polyhedron.
-void
-test1() {
+bool
+test01() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
 
   NNC_Polyhedron ph1(2);
   ph1.add_constraint(A - B > 2);
   ph1.add_constraint(A + 2*B < 6);
   ph1.add_constraint(B < 6);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
   ph1.expand_space_dimension(B, 2);
 
@@ -65,29 +54,29 @@ test1() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_constraints(ph1, "*** After ph1.expand_space_dimension(B, 2) ***");
-#endif
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 // Test using generators for NNC polyhedron.
-void
-test2() {
-  NNC_Polyhedron ph1(2, NNC_Polyhedron::EMPTY);
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  NNC_Polyhedron ph1(2, EMPTY);
   ph1.add_generator(point(A));
   ph1.add_generator(closure_point(A + B));
   ph1.add_generator(ray(A - B));
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   ph1.expand_space_dimension(A, 2);
 
-  NNC_Polyhedron known_result(4, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron known_result(4, EMPTY);
   known_result.add_generator(point(A + C + D));
   known_result.add_generator(ray(A -B + C + D));
   known_result.add_generator(closure_point(A + C + 2*D));
@@ -100,23 +89,14 @@ test2() {
 
   bool ok = (ph1 == known_result);
 
-#if NOISY
   print_generators(ph1, "***  After ph1.expand_space_dimension(A, 2) ***");
-#endif
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  test1();
-  test2();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+END_MAIN

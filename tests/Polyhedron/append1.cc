@@ -1,5 +1,5 @@
 /* An example of iteration to a post-fixpoint.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,21 +14,13 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -43,10 +35,8 @@ shift_rename_add(const C_Polyhedron& p,
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -60,9 +50,8 @@ main() TRY {
   base.add_constraint(A == 0);
   base.add_constraint(B >= 0);
   base.add_constraint(C == B);
-#if NOISY
+
   print_constraints(base, "*** base ***");
-#endif
 
   // This is the inductive case:
   // append(A,B,C) :- A = [X|D], B = E, C = [X|F], append(D,E,F).
@@ -73,15 +62,13 @@ main() TRY {
   inductive.add_constraint(D >= 0);
   inductive.add_constraint(B >= 0);
   inductive.add_constraint(A >= D + 1);
-#if NOISY
+
   print_constraints(inductive, "*** inductive ***");
-#endif
 
   // Initialize the fixpoint iteration.
   C_Polyhedron current = base;
-#if NOISY
+
   print_constraints(current, "*** start ***");
-#endif
 
   // Contains the polyhedron computed at the previous iteration.
   C_Polyhedron previous;
@@ -89,34 +76,36 @@ main() TRY {
     previous = current;
     current = inductive;
     shift_rename_add(previous, 3, current);
-#if NOISY
+
     print_constraints(current, "*** after shift_rename_add ***");
-#endif
+
     Variables_Set dimensions_to_remove;
     // Deliberately inserted out of order (!).
     dimensions_to_remove.insert(D);
     dimensions_to_remove.insert(F);
     dimensions_to_remove.insert(E);
-    assert(current.OK());
     current.remove_space_dimensions(dimensions_to_remove);
-    assert(current.OK());
-#if NOISY
+
     print_constraints(current, "*** after remove_space_dimensions ***");
-#endif
+
     current.poly_hull_assign_and_minimize(previous);
-#if NOISY
+
     print_constraints(current, "*** after poly_hull_assign_and_minimize***");
-#endif
+
   } while (current != previous);
 
   C_Polyhedron expected(3);
   expected.add_constraint(A + B == C);
   expected.add_constraint(B >= 0);
   expected.add_constraint(C >= B);
-#if NOISY
-    print_constraints(expected, "*** expected ***");
-#endif
 
-  return current == expected ? 0 : 1;
+  print_constraints(expected, "*** expected ***");
+
+  return current == expected ? true : false;
 }
-CATCH
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN
+
+

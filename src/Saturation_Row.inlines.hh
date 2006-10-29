@@ -1,5 +1,5 @@
 /* Saturation_Row class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -24,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Saturation_Row_inlines_hh
 #define PPL_Saturation_Row_inlines_hh 1
 
+#include <cassert>
 // For the declaration of ffs(3).
 #include <cstring>
 
@@ -50,29 +50,25 @@ Saturation_Row::operator=(const Saturation_Row& y) {
   return *this;
 }
 
-inline bool
-Saturation_Row::operator[](const unsigned int k) const {
-  return mpz_tstbit(vec, k);
-}
-
 inline void
-Saturation_Row::set(const unsigned int k) {
+Saturation_Row::set(const unsigned long k) {
   mpz_setbit(vec, k);
 }
 
 inline void
-Saturation_Row::clear(const unsigned int k) {
+Saturation_Row::clear(const unsigned long k) {
   mpz_clrbit(vec, k);
 }
 
 inline void
-Saturation_Row::clear_from(const unsigned int k) {
+Saturation_Row::clear_from(const unsigned long k) {
   mpz_tdiv_r_2exp(vec, vec, k);
 }
 
-inline unsigned int
+inline unsigned long
 Saturation_Row::count_ones() const {
-  return mpz_popcount(vec);
+  assert(vec->_mp_size >= 0);
+  return mpn_popcount(vec->_mp_d, vec->_mp_size);
 }
 
 inline bool
@@ -108,18 +104,6 @@ Saturation_Row::first_one(mp_limb_t w) {
 }
 
 #endif
-
-/*! \relates Saturation_Row */
-inline bool
-operator==(const Saturation_Row& x, const Saturation_Row& y) {
-  return mpz_cmp(x.vec, y.vec) == 0;
-}
-
-/*! \relates Saturation_Row */
-inline bool
-operator!=(const Saturation_Row& x, const Saturation_Row& y) {
-  return mpz_cmp(x.vec, y.vec) != 0;
-}
 
 /*! \relates Saturation_Row */
 inline void

@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: simplify().
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -131,10 +130,10 @@ PPL::Polyhedron::simplify(Linear_System& sys, Saturation_Matrix& sat) {
   // At this point, all the equalities of `sys' (included those
   // inequalities that we just transformed to equalities) have
   // indexes between 0 and `num_lines_or_equalities' - 1,
-  // which is the property needed by the function gauss().
+  // which is the property needed by method gauss().
   // We can simplify the system of equalities, obtaining the rank
   // of `sys' as result.
-  const dimension_type rank = sys.gauss();
+  const dimension_type rank = sys.gauss(num_lines_or_equalities);
 
   // Now the irredundant equalities of `sys' have indexes from 0
   // to `rank' - 1, whereas the equalities having indexes from `rank'

@@ -4,9 +4,11 @@
 *.log
 *.pdf
 *.pdf-dir
+*.ps
 *.ps-dir
 *.ps.gz
 *.tar.gz
 Makefile
 Makefile.in
 ppl-*-html
+user.latex-dir

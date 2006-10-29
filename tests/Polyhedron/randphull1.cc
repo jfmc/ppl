@@ -1,5 +1,5 @@
 /* Compute poly-hulls of random polytopes.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,21 +14,13 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
 
 namespace {
 
@@ -49,12 +41,6 @@ count_points(const C_Polyhedron& ph) {
 
 } // namespace
 
-#if NOISY
-#define COUNT(ph) cout << count_points(ph) << endl
-#else
-#define COUNT(ph) (void) count_points(ph)
-#endif
-
 int
 main() TRY {
   set_handlers();
@@ -67,14 +53,14 @@ main() TRY {
   Variable z(2);
 
   const int maxc = 10000;
-  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
-  COUNT(ph);
+  C_Polyhedron ph(3, EMPTY);
+  nout << count_points(ph) << endl;
   for (int n = 1; n <= 200; ++n) {
     const Coefficient cx = mpz_class(rg.get_z_range(maxc));
     const Coefficient cy = mpz_class(rg.get_z_range(maxc));
     const Coefficient cz = mpz_class(rg.get_z_range(maxc));
     ph.add_generator(point(cx*x + cy*y + cz*z));
-    COUNT(ph);
+    nout << count_points(ph) << endl;
   }
 
   return 0;

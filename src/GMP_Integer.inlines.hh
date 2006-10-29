@@ -1,5 +1,5 @@
 /* GMP_Integer class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -27,13 +26,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline void
-negate(GMP_Integer& x) {
+neg_assign(GMP_Integer& x) {
   mpz_neg(x.get_mpz_t(), x.get_mpz_t());
 }
 
 inline void
-gcd_assign(GMP_Integer& x, const GMP_Integer& y) {
-  mpz_gcd(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
+neg_assign(GMP_Integer& x, const GMP_Integer& y) {
+  mpz_neg(x.get_mpz_t(), y.get_mpz_t());
+}
+
+inline void
+abs_assign(GMP_Integer& x) {
+  mpz_abs(x.get_mpz_t(), x.get_mpz_t());
+}
+
+inline void
+abs_assign(GMP_Integer& x, const GMP_Integer& y) {
+  mpz_abs(x.get_mpz_t(), y.get_mpz_t());
 }
 
 inline void
@@ -42,8 +51,17 @@ gcd_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
 }
 
 inline void
-lcm_assign(GMP_Integer& x, const GMP_Integer& y) {
-  mpz_lcm(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
+rem_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
+  mpz_tdiv_r(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
+}
+
+inline void
+gcdext_assign(GMP_Integer& x,
+	      const GMP_Integer& y, const GMP_Integer& z,
+	      GMP_Integer& s, GMP_Integer& t) {
+  mpz_gcdext(x.get_mpz_t(),
+	     s.get_mpz_t(), t.get_mpz_t(),
+	     y.get_mpz_t(), z.get_mpz_t());
 }
 
 inline void
@@ -62,18 +80,9 @@ sub_mul_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
 }
 
 inline void
-exact_div_assign(GMP_Integer& x, const GMP_Integer& y) {
-  mpz_divexact(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
-}
-
-inline void
 exact_div_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
+  assert(y % z == 0);
   mpz_divexact(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
-}
-
-inline void
-sqrt_assign(GMP_Integer& x) {
-  mpz_sqrt(x.get_mpz_t(), x.get_mpz_t());
 }
 
 inline void
@@ -96,18 +105,19 @@ raw_value(GMP_Integer& x) {
   return x;
 }
 
-inline size_t
+inline memory_size_type
 external_memory_in_bytes(const GMP_Integer& x) {
   return x.get_mpz_t()[0]._mp_alloc * SIZEOF_MP_LIMB_T;
 }
 
-inline size_t
+inline memory_size_type
 total_memory_in_bytes(const GMP_Integer& x) {
   return sizeof(x) + external_memory_in_bytes(x);
 }
 
 } // namespace Parma_Polyhedra_Library
 
+/*! \relates Parma_Polyhedra_Library::GMP_Integer */
 inline void
 std::swap(Parma_Polyhedra_Library::GMP_Integer& x,
 	  Parma_Polyhedra_Library::GMP_Integer& y) {

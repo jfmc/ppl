@@ -1,6 +1,5 @@
-/* Test BD_Shape::constraints(): we compute the system of
-   constraints of a bdiff.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BD_Shape::constraints().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -15,105 +14,111 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
+bool
+test01() {
+  TBD_Shape bd1(0, EMPTY);
 
-static void
-test1() {
-
-  TBD_Shape bd1(0, Polyhedron::EMPTY);
-
-  TBD_Shape known_result(bd1);
+  BD_Shape<mpq_class> known_result(bd1);
 
   Constraint_System cs = bd1.constraints();
   TBD_Shape bd2(cs);
 
-  bool ok = (bd2 == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-static void
-test2() {
+bool
+test02() {
+  TBD_Shape bd1(0, UNIVERSE);
 
-  TBD_Shape bd1(0, Polyhedron::UNIVERSE);
-
-  TBD_Shape known_result(bd1);
+  BD_Shape<mpq_class> known_result(bd1);
 
   Constraint_System cs = bd1.constraints();
   TBD_Shape bd2(cs);
 
-  bool ok = (bd2 == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-static void
-test3() {
+bool
+test03() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
   TBD_Shape bd1(3);
-
   bd1.add_constraint(A >= 0);
   bd1.add_constraint(B >= 0);
   bd1.add_constraint(B - C >= 1);
   bd1.add_constraint(C - A <= 9);
 
-  TBD_Shape known_result(bd1);
+  BD_Shape<mpq_class> known_result(bd1);
 
   bd1.contains(bd1);
 
- Constraint_System cs = bd1.constraints();
- TBD_Shape bd2(cs);
+  Constraint_System cs = bd1.constraints();
+  TBD_Shape bd2(cs);
 
-  bool ok = (bd2 == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
-  if (!ok)
-    exit(1);
+  return ok;
 }
 
-int
-main() TRY {
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-  test1();
-  test2();
-  test3();
+  TBD_Shape bd1(3);
+  bd1.add_constraint(A >= 0);
+  bd1.add_constraint(B >= 0);
+  bd1.add_constraint(B - C == 1);
+  bd1.add_constraint(C - A <= 9);
 
-  return 0;
+  Constraint_System cs = bd1.constraints();
+  TBD_Shape bd2(cs);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+  print_constraints(cs, "*** cs ***");
+
+  BD_Shape<mpq_class> known_result(bd1);
+
+  bool ok = (BD_Shape<mpq_class>(bd2) == known_result);
+
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+END_MAIN

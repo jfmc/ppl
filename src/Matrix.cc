@@ -1,5 +1,5 @@
 /* Matrix class implementation (non-inline functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Matrix.defs.hh"
 #include "Row.defs.hh"
-#include "globals.defs.hh"
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -38,7 +36,7 @@ PPL::Matrix::Matrix(const dimension_type n_rows,
   : rows((assert(n_rows <= max_num_rows()),
 	  n_rows)),
     row_size(n_columns),
-    row_capacity(compute_capacity(n_columns, Row::max_size())) {
+    row_capacity(compute_capacity(n_columns, max_num_columns())) {
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < n_rows; ++i)
     rows[i].construct(n_columns, row_capacity, row_flags);
@@ -91,7 +89,7 @@ PPL::Matrix::add_zero_columns(const dimension_type n) {
     // Capacity exhausted: we must reallocate the rows and
     // make sure all the rows have the same capacity.
     const dimension_type new_row_capacity
-      = compute_capacity(new_num_columns, Row::max_size());
+      = compute_capacity(new_num_columns, max_num_columns());
     assert(new_row_capacity <= max_num_columns());
     for (dimension_type i = num_rows; i-- > 0; ) {
       Row new_row(rows[i], new_num_columns, new_row_capacity);
@@ -156,8 +154,8 @@ PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
     new_matrix.rows.insert(new_matrix.rows.end(), new_num_rows, Row());
     // Construct the new rows.
     new_matrix.row_size = new_num_columns;
-    new_matrix.row_capacity
-      = compute_capacity(new_num_columns, Row::max_size());
+    new_matrix.row_capacity = compute_capacity(new_num_columns,
+					       max_num_columns());
     dimension_type i = new_num_rows;
     while (i-- > old_num_rows)
       new_matrix.rows[i].construct(new_matrix.row_size,
@@ -174,6 +172,35 @@ PPL::Matrix::add_zero_rows_and_columns(const dimension_type n,
     // Put the new vector into place.
     swap(new_matrix);
   }
+}
+
+void
+PPL::Matrix::add_recycled_row(Row& y) {
+  // The added row must have the same size and capacity as the
+  // existing rows of the system.
+  assert(y.OK(row_size, row_capacity));
+  const dimension_type new_rows_size = rows.size() + 1;
+  if (rows.capacity() < new_rows_size) {
+    // Reallocation will take place.
+    std::vector<Row> new_rows;
+    new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
+    new_rows.insert(new_rows.end(), new_rows_size, Row());
+    // Put the new row in place.
+    dimension_type i = new_rows_size-1;
+    std::swap(new_rows[i], y);
+    // Steal the old rows.
+    while (i-- > 0)
+      new_rows[i].swap(rows[i]);
+    // Put the new rows into place.
+    std::swap(rows, new_rows);
+  }
+  else
+    // Reallocation will NOT take place.
+    // Inserts a new empty row at the end,
+    // then substitutes it with a copy of the given row.
+    std::swap(*rows.insert(rows.end(), Row()), y);
+
+  assert(OK());
 }
 
 void
@@ -244,7 +271,7 @@ PPL::Matrix::resize_no_copy(const dimension_type new_n_rows,
 	// Capacity exhausted: we must reallocate the rows and
 	// make sure all the rows have the same capacity.
 	const dimension_type new_row_capacity
-	  = compute_capacity(new_n_columns, Row::max_size());
+	  = compute_capacity(new_n_columns, max_num_columns());
 	for (dimension_type i = old_n_rows; i-- > 0; ) {
 	  Row new_row(new_n_columns, new_row_capacity, row_flags);
 	  std::swap(rows[i], new_row);
@@ -261,34 +288,39 @@ PPL::Matrix::ascii_dump(std::ostream& s) const {
   const Matrix& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
-  s << x_num_rows << " x " << x_num_columns
-    << std::endl;
+  s << x_num_rows << " x " << x_num_columns << "\n";
   for (dimension_type i = 0; i < x_num_rows; ++i)
     x[i].ascii_dump(s);
 }
 
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Matrix)
+
 bool
 PPL::Matrix::ascii_load(std::istream& s) {
+  Matrix& x = *this;
   std::string str;
-  dimension_type nrows;
-  dimension_type ncols;
-  if (!(s >> nrows))
+  dimension_type x_num_rows;
+  dimension_type x_num_cols;
+  if (!(s >> x_num_rows))
     return false;
-  if (!(s >> str))
+  if (!(s >> str) || (str.compare("x") != 0))
     return false;
-  if (!(s >> ncols))
+  if (!(s >> x_num_cols))
+    return false;
+
+  resize_no_copy(x_num_rows, x_num_cols, Row::Flags());
+
+  for (dimension_type row = 0; row < x_num_rows; ++row)
+    if (!x[row].ascii_load(s))
       return false;
-  resize_no_copy(nrows, ncols, Row::Flags());
 
-  // FIXME: must be completed.
-
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK());
   return true;
 }
 
 void
-PPL::Matrix::swap_columns(const dimension_type i,  const dimension_type j) {
+PPL::Matrix::swap_columns(const dimension_type i, const dimension_type j) {
   assert(i != j && i < num_columns() && j < num_columns());
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Row& rows_k = rows[k];
@@ -309,6 +341,7 @@ void
 PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
   TEMP_INTEGER(tmp);
   const dimension_type n = cycles.size();
+  assert(cycles[n - 1] == 0);
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Row& rows_k = rows[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {

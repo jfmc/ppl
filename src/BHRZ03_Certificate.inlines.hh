@@ -1,5 +1,5 @@
 /* BHRZ03_Certificate class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -55,7 +54,7 @@ BHRZ03_Certificate::Compare::operator()(const BHRZ03_Certificate& x,
 					const BHRZ03_Certificate& y) const {
   // For an efficient evaluation of the multiset ordering based
   // on this lgo relation, we want larger elements to come first.
-  return (x.compare(y) == 1);
+  return x.compare(y) == 1;
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -1,0 +1,17 @@
+Document: libppl
+Title: The Parma Polyhedra Library User Manual
+Author: PPL developers <ppl-devel@cs.unipr.it>
+Abstract: This manual contains a general introduction to the Parma
+ Polyhedra Library (PPL) and full documentation of the PPL C++
+ interface.
+Section: Apps/Programming
+
+Format: postscript
+Files: /usr/share/doc/libppl/ppl-user-browse.ps.gz
+
+Format: pdf
+Files: /usr/share/doc/libppl/ppl-user-browse.pdf
+
+Format: HTML
+Index: /usr/share/doc/libppl/html/user-manual/index.html
+Files: /usr/share/doc/libppl/html/user-manual/*.html

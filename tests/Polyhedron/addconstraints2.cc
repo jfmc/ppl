@@ -1,6 +1,5 @@
-/* Test Polyhedron::add_constraints(): we add an empty system of
-   constraints to a non-empty polyhedron.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Polyhedron::add_constrains().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -15,50 +14,80 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 0);
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A - B >= 0);
+  ph1.add_constraint(B >= 0);
 
-  Constraint_System cs;
+  NNC_Polyhedron ph2(1);
+  ph2.add_constraint(A == 0);
 
-#if NOISY
-  print_constraints(ph, "*** ph ***");
+  Constraint_System cs = ph2.constraints();
+
+  print_constraints(ph1, "*** ph1 ***");
   print_constraints(cs, "*** cs ***");
-#endif
 
-  C_Polyhedron known_result(ph);
+  ph1.add_constraints_and_minimize(cs);
 
-  ph.add_constraints(cs);
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A == 0);
+  known_result.add_constraint(B == 0);
 
-  int retval = (ph == known_result) ? 0 : 1;
+  bool ok = (ph1 == known_result);
 
-#if NOISY
-  print_constraints(ph, "*** ph ***");
-#endif
+  print_constraints(ph1, "*** After ph1.add_constraints_and_minimize(cs) ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  NNC_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(B >= 0);
+
+  Constraint_System cs = ph1.constraints();
+
+  C_Polyhedron ph2(3);
+  ph2.add_constraint(A <= 2);
+
+  print_constraints(cs, "*** cs ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  ph2.add_constraints_and_minimize(cs);
+
+  C_Polyhedron known_result(3);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(B >= 0);
+
+  bool ok = (ph2 == known_result);
+
+  print_constraints(ph2, "*** ph2 ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+END_MAIN

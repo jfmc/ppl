@@ -1,5 +1,5 @@
 /* Determinate class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -29,22 +28,32 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename PH>
+inline
 Determinate<PH>::Rep::Rep(dimension_type num_dimensions,
-			  Polyhedron::Degenerate_Kind kind)
+			  Degenerate_Element kind)
   : references(0), ph(num_dimensions, kind) {
 }
 
 template <typename PH>
+inline
 Determinate<PH>::Rep::Rep(const PH& p)
   : references(0), ph(p) {
 }
 
 template <typename PH>
+inline
 Determinate<PH>::Rep::Rep(const Constraint_System& cs)
   : references(0), ph(cs) {
 }
 
 template <typename PH>
+inline
+Determinate<PH>::Rep::Rep(const Congruence_System& cgs)
+  : references(0), ph(cgs) {
+}
+
+template <typename PH>
+inline
 Determinate<PH>::Rep::~Rep() {
   assert(references == 0);
 }
@@ -80,38 +89,42 @@ Determinate<PH>::Rep::total_memory_in_bytes() const {
 }
 
 template <typename PH>
-Determinate<PH>::Determinate(dimension_type num_dimensions, bool universe)
-  : prep(new Rep(num_dimensions,
-		 universe ? Polyhedron::UNIVERSE : Polyhedron::EMPTY)) {
-  prep->new_reference();
-}
-
-template <typename PH>
+inline
 Determinate<PH>::Determinate(const PH& ph)
   : prep(new Rep(ph)) {
   prep->new_reference();
 }
 
 template <typename PH>
+inline
 Determinate<PH>::Determinate(const Constraint_System& cs)
   : prep(new Rep(cs)) {
   prep->new_reference();
 }
 
 template <typename PH>
+inline
+Determinate<PH>::Determinate(const Congruence_System& cgs)
+  : prep(new Rep(cgs)) {
+  prep->new_reference();
+}
+
+template <typename PH>
+inline
 Determinate<PH>::Determinate(const Determinate& y)
   : prep(y.prep) {
   prep->new_reference();
 }
 
 template <typename PH>
+inline
 Determinate<PH>::~Determinate() {
   if (prep->del_reference())
     delete prep;
 }
 
 template <typename PH>
-Determinate<PH>&
+inline Determinate<PH>&
 Determinate<PH>::operator=(const Determinate& y) {
   y.prep->new_reference();
   if (prep->del_reference())
@@ -127,7 +140,7 @@ Determinate<PH>::swap(Determinate& y) {
 }
 
 template <typename PH>
-void
+inline void
 Determinate<PH>::mutate() {
   if (prep->is_shared()) {
     Rep* new_prep = new Rep(prep->ph);
@@ -153,7 +166,7 @@ Determinate<PH>::element() {
 template <typename PH>
 inline void
 Determinate<PH>::upper_bound_assign(const Determinate& y) {
-  element().poly_hull_assign(y.element());
+  element().upper_bound_assign(y.element());
 }
 
 template <typename PH>
@@ -163,19 +176,33 @@ Determinate<PH>::meet_assign(const Determinate& y) {
 }
 
 template <typename PH>
+inline bool
+Determinate<PH>::has_nontrivial_weakening() {
+  // FIXME
+  return true;
+}
+
+template <typename PH>
+inline void
+Determinate<PH>::weakening_assign(const Determinate& y) {
+  // FIXME
+  element().difference_assign(y.element());
+}
+
+template <typename PH>
 inline void
 Determinate<PH>::concatenate_assign(const Determinate& y) {
   element().concatenate_assign(y.element());
 }
 
 template <typename PH>
-bool
+inline bool
 Determinate<PH>::definitely_entails(const Determinate& y) const {
   return prep == y.prep || y.prep->ph.contains(prep->ph);
 }
 
 template <typename PH>
-bool
+inline bool
 Determinate<PH>::is_definitely_equivalent_to(const Determinate& y) const {
   return prep == y.prep || prep->ph == y.prep->ph;
 }
@@ -205,7 +232,7 @@ Determinate<PH>::total_memory_in_bytes() const {
 }
 
 template <typename PH>
-bool
+inline bool
 Determinate<PH>::OK() const {
   return prep->ph.OK();
 }
@@ -214,24 +241,9 @@ namespace IO_Operators {
 
 /*! \relates Parma_Polyhedra_Library::Determinate */
 template <typename PH>
-std::ostream&
+inline std::ostream&
 operator<<(std::ostream& s, const Determinate<PH>& x) {
-  if (x.is_top())
-    s << "true";
-  else if (x.is_bottom())
-    s << "false";
-  else {
-    const Constraint_System& cs = x.constraints();
-    Constraint_System::const_iterator i = cs.begin();
-    Constraint_System::const_iterator cs_end = cs.end();
-    s << "{ ";
-    while (i != cs_end) {
-      s << *i++;
-      if (i != cs_end)
-	s << ", ";
-    }
-    s << " }";
-  }
+  s << x.element();
   return s;
 }
 
@@ -239,84 +251,16 @@ operator<<(std::ostream& s, const Determinate<PH>& x) {
 
 /*! \relates Determinate */
 template <typename PH>
-bool
+inline bool
 operator==(const Determinate<PH>& x, const Determinate<PH>& y) {
   return x.prep == y.prep || x.prep->ph == y.prep->ph;
 }
 
 /*! \relates Determinate */
 template <typename PH>
-bool
+inline bool
 operator!=(const Determinate<PH>& x, const Determinate<PH>& y) {
   return x.prep != y.prep && x.prep->ph != y.prep->ph;
-}
-
-template <typename PH>
-dimension_type
-Determinate<PH>::space_dimension() const {
-  return prep->ph.space_dimension();
-}
-
-template <typename PH>
-const Constraint_System&
-Determinate<PH>::constraints() const {
-  return prep->ph.constraints();
-}
-
-template <typename PH>
-const Constraint_System&
-Determinate<PH>::minimized_constraints() const {
-  return prep->ph.minimized_constraints();
-}
-
-template <typename PH>
-void
-Determinate<PH>::add_constraint(const Constraint& c) {
-  mutate();
-  prep->ph.add_constraint(c);
-}
-
-template <typename PH>
-void
-Determinate<PH>::add_constraints(Constraint_System& cs) {
-  mutate();
-  prep->ph.add_constraints(cs);
-}
-
-template <typename PH>
-void
-Determinate<PH>::add_space_dimensions_and_embed(dimension_type m) {
-  mutate();
-  prep->ph.add_space_dimensions_and_embed(m);
-}
-
-template <typename PH>
-void
-Determinate<PH>::add_space_dimensions_and_project(dimension_type m) {
-  mutate();
-  prep->ph.add_space_dimensions_and_project(m);
-}
-
-template <typename PH>
-void
-Determinate<PH>::remove_space_dimensions(const Variables_Set& to_be_removed) {
-  mutate();
-  prep->ph.remove_space_dimensions(to_be_removed);
-}
-
-template <typename PH>
-void
-Determinate<PH>::remove_higher_space_dimensions(dimension_type new_dimension) {
-  mutate();
-  prep->ph.remove_higher_space_dimensions(new_dimension);
-}
-
-template <typename PH>
-template <typename Partial_Function>
-void
-Determinate<PH>::map_space_dimensions(const Partial_Function& pfunc) {
-  mutate();
-  prep->ph.map_space_dimensions(pfunc);
 }
 
 template <typename PH>

@@ -1,5 +1,5 @@
 /* C_Polyhedron class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -31,7 +30,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
-			   Degenerate_Kind kind)
+			   Degenerate_Element kind)
   : Polyhedron(NECESSARILY_CLOSED,
 	       num_dimensions <= max_space_dimension()
 	       ? num_dimensions
@@ -73,10 +72,10 @@ C_Polyhedron::C_Polyhedron(const Generator_System& gs)
 	       gs.space_dimension() <= max_space_dimension()
 	       ? gs
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(cs)",
+						 "C_Polyhedron(gs)",
 						 "the space dimension of gs "
 						 "exceeds the maximum allowed "
-						 "space dimension"), gs)){
+						 "space dimension"), gs)) {
 }
 
 inline
@@ -85,13 +84,42 @@ C_Polyhedron::C_Polyhedron(Generator_System& gs)
 	       gs.space_dimension() <= max_space_dimension()
 	       ? gs
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "C_Polyhedron(cs)",
+						 "C_Polyhedron(gs)",
 						 "the space dimension of gs "
 						 "exceeds the maximum allowed "
-						 "space dimension"), gs)){
+						 "space dimension"), gs)) {
+}
+
+inline
+C_Polyhedron::C_Polyhedron(const Grid_Generator_System& ggs)
+  : Polyhedron(NECESSARILY_CLOSED,
+	       ggs.space_dimension() <= max_space_dimension()
+	       ? ggs.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(ggs)",
+						 "the space dimension of ggs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
+  // FIXME: is this implementation complete?
+}
+
+inline
+C_Polyhedron::C_Polyhedron(Grid_Generator_System& ggs)
+  : Polyhedron(NECESSARILY_CLOSED,
+	       ggs.space_dimension() <= max_space_dimension()
+	       ? ggs.space_dimension()
+	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
+						 "C_Polyhedron(ggs)",
+						 "the space dimension of ggs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
+  // FIXME: is this implementation complete?
 }
 
 template <typename Box>
+inline
 C_Polyhedron::C_Polyhedron(const Box& box, From_Bounding_Box)
   : Polyhedron(NECESSARILY_CLOSED,
 	       box.space_dimension() <= max_space_dimension()
@@ -123,6 +151,11 @@ C_Polyhedron::operator=(const NNC_Polyhedron& y) {
 
 inline
 C_Polyhedron::~C_Polyhedron() {
+}
+
+inline bool
+C_Polyhedron::upper_bound_assign_if_exact(const C_Polyhedron& y) {
+  return poly_hull_assign_if_exact(y);
 }
 
 } // namespace Parma_Polyhedra_Library

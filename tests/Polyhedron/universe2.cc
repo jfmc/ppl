@@ -1,6 +1,5 @@
-/* Test Polyhedron::is_universe(): we verify that a polyhedron
-   defined by a non-trivial system of constraints is not universal.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test the function is_universe() for a NNC_polyhedron.
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -15,46 +14,66 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
+bool
+test01() {
+  NNC_Polyhedron ph1(4);
+  NNC_Polyhedron ph2(3);
+  NNC_Polyhedron ph3(3);
 
-int
-main() TRY {
-  set_handlers();
+  ph2.add_constraint(Linear_Expression(1) > 0);
+  ph3.add_constraint(Linear_Expression(1) < 0);
 
-  Variable x(0);
-  Variable z(2);
+  Constraint_System cs;
+  NNC_Polyhedron ph4(cs);
 
-  C_Polyhedron ph(3);
-  ph.add_constraint(x >= z);
-  ph.add_constraint(z == 3);
+  print_constraints(ph1, "--- ph1 ---");
+  print_constraints(ph2, "--- ph2 ---");
+  print_constraints(ph3, "--- ph3 ---");
+  print_constraints(ph4, "--- ph4 ---");
 
-#if NOISY
-  print_constraints(ph, "--- ph ---");
-#endif
+  bool universe1 = ph1.is_universe();
 
-  bool universe = ph.is_universe();
-
-#if NOISY
-  cout << "*** ph.is_universe() ***"
+  nout << "*** ph1.is_universe() ***"
        << endl
-       << (universe ? "true" : "false")
+       << (universe1 ? "true" : "false")
        << endl;
-#endif
 
-  return !universe ? 0 : 1;
+  bool universe2 = ph2.is_universe();
+
+  nout << "*** ph2.is_universe() ***"
+       << endl
+       << (universe2 ? "true" : "false")
+       << endl;
+
+  bool universe3 = ph3.is_universe();
+
+  nout << "*** ph3.is_universe() ***"
+       << endl
+       << (universe3 ? "true" : "false")
+       << endl;
+
+  bool universe4 = ph4.is_universe();
+
+  nout << "*** ph4.is_universe() ***"
+       << endl
+       << (universe4 ? "true" : "false")
+       << endl;
+
+  return universe1 && universe2 && !universe3 && universe4;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

@@ -1,5 +1,5 @@
 /* Test Polyhedron::is_bounded().
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,24 +14,18 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -39,12 +33,15 @@ main() TRY {
   C_Polyhedron ph1(2);
   ph1.add_constraint(x >= 0);
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
-#endif
 
-  if (ph1.is_bounded())
-    return 1;
+  return !ph1.is_bounded();
+}
+
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
 
   // This is a bounded polyhedron (it is a square);
   C_Polyhedron ph2(2);
@@ -53,44 +50,57 @@ main() TRY {
   ph2.add_constraint(x <= 4);
   ph2.add_constraint(y <= 4);
 
-#if NOISY
   print_constraints(ph2, "*** ph2 ***");
-#endif
 
-  if (!ph2.is_bounded())
-    return 1;
+  return ph2.is_bounded();
+}
+
+bool
+test03() {
+  Variable x(0);
+  Variable y(1);
 
   // This is a universal, zero-dimensional polyhedron.
   C_Polyhedron ph3;
 
-#if NOISY
   print_constraints(ph3, "*** ph3 ***");
-#endif
 
-  if (!ph3.is_bounded())
-    return 1;
+  return ph3.is_bounded();
+}
+
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
 
   // This is an empty, zero-dimensional polyhedron.
   C_Polyhedron ph4;
   ph4.add_constraint(Linear_Expression(-3) >= 0);
 
-#if NOISY
   print_constraints(ph4, "*** ph4 ***");
-#endif
 
-  if (!ph4.is_bounded())
-    return 1;
+  return ph4.is_bounded();
+}
+
+bool
+test05() {
+  Variable x(0);
+  Variable y(1);
 
   // This is an empty polyhedron.
-  C_Polyhedron ph5(4, C_Polyhedron::EMPTY);
+  C_Polyhedron ph5(4, EMPTY);
 
-#if NOISY
   print_constraints(ph5, "*** ph5 ***");
-#endif
 
-  if (!ph5.is_bounded())
-    return 1;
-
-  return 0;
+  return ph5.is_bounded();
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+END_MAIN

@@ -1,5 +1,5 @@
 /* C_Polyhedron class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -29,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 
 //! A closed convex polyhedron.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class C_Polyhedron represents a
     <EM>topologically closed</EM> convex polyhedron
     in the vector space \f$\Rset^n\f$.
@@ -70,7 +69,7 @@ public:
     by default, a 0-dimension space universe C polyhedron is built.
   */
   explicit C_Polyhedron(dimension_type num_dimensions = 0,
-			Degenerate_Kind kind = UNIVERSE);
+			Degenerate_Element kind = UNIVERSE);
 
   //! Builds a C polyhedron from a system of constraints.
   /*!
@@ -90,7 +89,7 @@ public:
 
     \param cs
     The system of constraints defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
     \exception std::invalid_argument
@@ -117,7 +116,7 @@ public:
 
     \param gs
     The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
     \exception std::invalid_argument
@@ -126,9 +125,63 @@ public:
   */
   explicit C_Polyhedron(Generator_System& gs);
 
-  //! \brief
-  //! Builds a C polyhedron representing the topological closure
-  //! of the NNC polyhedron \p y.
+  //! Builds a C polyhedron from a system of congruences.
+  /*!
+    The polyhedron inherits the space dimension of the congruence system.
+
+    \param cgs
+    The system of congruences defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures may be
+    recycled to build the polyhedron.
+  */
+  explicit C_Polyhedron(const Congruence_System& cgs);
+
+  //! Builds an C polyhedron recycling a system of congruences.
+  /*!
+    The polyhedron inherits the space dimension of the congruence
+    system.
+
+    \param cgs
+    The system of congruences defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures may be
+    recycled to build the polyhedron.
+  */
+  explicit C_Polyhedron(Congruence_System& cgs);
+
+  //! Builds a C polyhedron from a system of grid generators.
+  /*!
+    The polyhedron inherits the space dimension of the generator system.
+
+    \param ggs
+    The system of grid generators defining the polyhedron.
+
+    FIXME: is the following correct?
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points,
+    or if it contains closure points.
+  */
+  explicit C_Polyhedron(const Grid_Generator_System& ggs);
+
+  //! Builds a C polyhedron recycling a system of grid generators.
+  /*!
+    The polyhedron inherits the space dimension of the generator system.
+
+    \param ggs
+    The system of generators defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures may be
+    recycled to build the polyhedron.
+
+    FIXME: is the following correct?
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points,
+    or if it contains closure points.
+  */
+  explicit C_Polyhedron(Grid_Generator_System& ggs);
+
+  /*! \brief
+    Builds a C polyhedron representing the topological closure
+    of the NNC polyhedron \p y.
+  */
   explicit C_Polyhedron(const NNC_Polyhedron& y);
 
   //! Builds a C polyhedron out of a generic, interval-based bounding box.
@@ -159,17 +212,30 @@ public:
   //! Ordinary copy-constructor.
   C_Polyhedron(const C_Polyhedron& y);
 
-  //! \brief
-  //! The assignment operator.
-  //! (\p *this and \p y can be dimension-incompatible.)
+  /*! \brief
+    The assignment operator.
+    (\p *this and \p y can be dimension-incompatible.)
+  */
   C_Polyhedron& operator=(const C_Polyhedron& y);
 
-  //! \brief
   //! Assigns to \p *this the topological closure of the NNC polyhedron \p y.
   C_Polyhedron& operator=(const NNC_Polyhedron& y);
 
   //! Destructor.
   ~C_Polyhedron();
+
+  /*! \brief
+    If the poly-hull of \p *this and \p y is exact it is assigned
+    to \p *this and <CODE>true</CODE> is returned,
+    otherwise <CODE>false</CODE> is returned.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool poly_hull_assign_if_exact(const C_Polyhedron& y);
+
+  //! Same as poly_hull_assign_if_exact(y).
+  bool upper_bound_assign_if_exact(const C_Polyhedron& y);
 };
 
 #include "C_Polyhedron.inlines.hh"

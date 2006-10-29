@@ -1,5 +1,5 @@
 /* Test that the right exceptions are thrown in case of incorrect uses.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,26 +14,18 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
-void
-error1() {
+bool
+test01() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -44,24 +36,18 @@ error1() {
     // it is illegal to build a point with the denominator
     // equal to zero.
     gs.insert(point(x + y + z, 0));
-
-    // It is an error if the exception is not thrown.
-    exit(1);
   }
-
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    // It is an error if the wrong exception is thrown.
-    exit(1);
   }
+  return false;
 }
 
-void
-error2() {
+bool
+test02() {
   Variable x(0);
   Variable y(1);
 
@@ -78,20 +64,19 @@ error2() {
     // zero.
     Coefficient d = 0;
     ph.affine_image(x, coeff1, d);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
- catch (...) {
-    exit(1);
+  catch (...) {
   }
+  return false;
 }
 
-void
-error3() {
+
+bool
+test03() {
   Variable x(0);
   Variable y(1);
 
@@ -104,20 +89,18 @@ error3() {
     // C_Polyhedron::poly_hull_assign(p): it is illegal to use
     // it with two polyhedra of different dimensions.
     ph1.poly_hull_assign_and_minimize(ph2);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
-  catch(...) {
-    exit(1);
+  catch (...) {
   }
+  return false;
 }
 
-void
-error4() {
+bool
+test04() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -131,20 +114,18 @@ error4() {
     // polyhedron starting from a system of generators that does not
     // contain a point.
     C_Polyhedron ph(gs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error5() {
+bool
+test05() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -166,20 +147,18 @@ error5() {
     // This variable is now beyond the space dimension,
     // so that a dimension-incompatibility exception is obtained.
     ph.remove_space_dimensions(to_be_removed);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error6() {
+bool
+test06() {
   Variable x(0);
   Variable y(1);
 
@@ -192,20 +171,18 @@ error6() {
     // apply this function to a variable that is not in the space of
     // the polyhedron.
     ph.affine_image(y, x + 1);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error7() {
+bool
+test07() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -220,20 +197,18 @@ error7() {
     // use a variable in the expression that does not appear in the
     // space of the polyhedron.
     ph.affine_image(y, x + z + 1);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error8() {
+bool
+test08() {
   Variable x(0);
   Variable y(1);
 
@@ -247,20 +222,18 @@ error8() {
     // equal to zero.
     Coefficient d = 0;
     ph.affine_preimage(x, coeff, d);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error9() {
+bool
+test09() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -277,20 +250,18 @@ error9() {
     // the transformation to a variable that is not in the space
     // of the polyhedron.
     ph.affine_preimage(z, x + 1);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error10() {
+bool
+test10() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -307,20 +278,18 @@ error10() {
     // apply to a polyhedron an expression that contains a variable that
     // is not in the space of the polyhedron.
     ph.affine_preimage(y, x + z + 1);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
-  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+ }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error11() {
+bool
+test11() {
   Variable x(0);
   Variable y(1);
 
@@ -334,20 +303,18 @@ error11() {
     // C_Polyhedron::intersection_assign_and_minimize(ph2): it is illegal
     // to apply this function to two polyhedra of different dimensions.
     ph1.intersection_assign_and_minimize(ph2);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error12() {
+bool
+test12() {
   C_Polyhedron ph1(7);
 
   C_Polyhedron ph2(15);
@@ -357,23 +324,21 @@ error12() {
     // C_Polyhedron::intersection_assign(ph2): it is illegal to apply
     // this function to two polyhedron of different dimensions.
     ph1.intersection_assign(ph2);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error13() {
+bool
+test13() {
   Variable w(4);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
   try {
     // This is an invalid use of the function
@@ -383,20 +348,18 @@ error13() {
     Generator_System gs;
     gs.insert(point(w));
     ph.add_generators_and_minimize(gs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error14() {
+bool
+test14() {
   C_Polyhedron ph(5);
 
   try {
@@ -404,20 +367,18 @@ error14() {
     // C_Polyhedron::remove_higher_space_dimensions(n): it is illegal to
     // erase a variable that is not in the space of the polyhedron.
     ph.remove_higher_space_dimensions(7);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error15() {
+bool
+test15() {
   Variable x(0);
   Variable y(1);
 
@@ -431,20 +392,18 @@ error15() {
     Constraint_System cs;
     cs.insert(x - y >= 0);
     ph.add_constraints_and_minimize(cs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error16() {
+bool
+test16() {
   Variable y(1);
 
   C_Polyhedron ph(1);
@@ -455,20 +414,18 @@ error16() {
     // constraints that contains a variable that is not in the space
     // of the polyhedron.
     ph.add_constraint(y >= 0);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error17() {
+bool
+test17() {
   Variable x(0);
   Variable y(1);
 
@@ -482,20 +439,18 @@ error17() {
     Constraint_System cs;
     cs.insert(x - y == 0);
     ph.add_constraints(cs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error18() {
+bool
+test18() {
   Variable x(0);
   Variable y(1);
 
@@ -516,48 +471,44 @@ error18() {
     // C_Polyhedron::poly_hull_assign(ph2): it is illegal to apply
     // this function to two polyhedra with different dimensions.
     ph1.poly_hull_assign(ph2);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error19() {
+bool
+test19() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(1, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(1, EMPTY);
 
   try {
     // This is an invalid use of the function C_Polyhedron::add_generator(g):
     // it is illegal to insert a generator that is dimensional
     // incompatible with the polyhedron.
     ph.add_generator(point(x + y));
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error20() {
+bool
+test20() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(1, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(1, EMPTY);
 
   try {
     // This is an invalid use of the function
@@ -568,20 +519,18 @@ error20() {
     gs.insert(point());
     gs.insert(line(x + y));
     ph.add_generators(gs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error21() {
+bool
+test21() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -597,20 +546,18 @@ error21() {
     // incompatible with the polyhedron.
     Constraint c(z >= 0);
     ph.relation_with(c);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
-  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+}
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error22() {
+bool
+test22() {
   Variable z(2);
 
   C_Polyhedron ph(2);
@@ -622,20 +569,18 @@ error22() {
     // the polyhedron.
     Generator g(point(z));
     ph.relation_with(g);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error23() {
+bool
+test23() {
   C_Polyhedron ph1(5);
   C_Polyhedron ph2(10);
 
@@ -645,20 +590,18 @@ error23() {
     // this function to two polyhedra that are not dimensional
     // compatible.
     ph2.H79_widening_assign(ph1);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error24() {
+bool
+test24() {
   Variable y(1);
 
   C_Polyhedron ph1(1);
@@ -673,20 +616,18 @@ error24() {
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
     ph2.limited_H79_extrapolation_assign(ph1, cs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error25() {
+bool
+test25() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -710,20 +651,18 @@ error25() {
     // illegal to apply this function to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
     ph2.limited_H79_extrapolation_assign(ph1, cs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error26() {
+bool
+test26() {
   Variable x(0);
   Variable y(1);
 
@@ -738,23 +677,21 @@ error26() {
     // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
     ph1.contains(ph2);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error27() {
+bool
+test27() {
   Variable x(0);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
   try {
     // This is an invalid use of method
@@ -763,24 +700,22 @@ error27() {
     // polyhedron.
     Generator g(ray(x));
     ph.add_generator(g);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error28() {
+bool
+test28() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(3, EMPTY);
 
   try {
     // This is an invalid use of the function
@@ -790,24 +725,22 @@ error28() {
     gs.insert(ray(x + y));
     gs.insert(ray(x - y));
     ph.add_generators(gs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error29() {
+bool
+test29() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
   try {
     // This is an invalid use of the function
@@ -818,20 +751,18 @@ error29() {
     gs.insert(line(x));
     gs.insert(line(y));
     ph.add_generators_and_minimize(gs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error30() {
+bool
+test30() {
 
   C_Polyhedron ph1(3);
   C_Polyhedron ph2(5);
@@ -841,20 +772,18 @@ error30() {
     // C_Polyhedron::poly_difference_assign(ph2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
     ph1.poly_difference_assign(ph2);
-    exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error31() {
+bool
+test31() {
   C_Polyhedron ph1(3);
   C_Polyhedron ph2(8);
 
@@ -863,20 +792,18 @@ error31() {
     // C_Polyhedron::time_elapse_assign(p): it is illegal to use
     // it with two polyhedra of different dimensions.
     ph1.time_elapse_assign(ph2);
-    exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error32() {
+bool
+test32() {
   Variable A(0);
   Variable B(1);
 
@@ -886,9 +813,7 @@ error32() {
 
   const Generator_System gs2 = gs1;
 
-#if NOISY
   print_generators(gs2, "*** gs2 ***");
-#endif
 
   try {
     // This is an incorrect use of the function
@@ -896,47 +821,41 @@ error32() {
     // closed polyhedron starting from a constant system of
     // generators that does not contain points.
     C_Polyhedron ph2(gs2);
-    exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error33() {
+bool
+test33() {
   Variable A(0);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(2, EMPTY);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
-#endif
 
   try {
     // This is an incorrect use of the function
     // `add_generator(g)': it is illegal to add a
     // ray to an empty polyhedron.
     ph1.add_generator(ray(A));
-    exit(1);
   }
-  catch(invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error34() {
+bool
+test34() {
   Variable A(0);
   Variable B(1);
 
@@ -950,28 +869,24 @@ error34() {
     // use a variable in the expression that does not appear in the
     // space of the polyhedron.
     ph.bounds_from_above(A + B);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error35() {
+bool
+test35() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   Generator_System gs;
   gs.insert(line(A));
@@ -983,28 +898,24 @@ error35() {
     // add a system of generators that does not contain points
     // to an empty polyhedron.
     ph.add_generators_and_minimize(gs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error36() {
+bool
+test36() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, EMPTY);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
   Generator_System gs;
   gs.insert(ray(A));
@@ -1016,20 +927,18 @@ error36() {
     // add a system of generators that does not contain points
     // to an empty polyhedron.
     ph.add_generators(gs);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error37() {
+bool
+test37() {
   C_Polyhedron ph1(5);
   C_Polyhedron ph2(10);
 
@@ -1039,20 +948,18 @@ error37() {
     // this function to two polyhedra that are not dimensional
     // compatible.
     ph2.BHRZ03_widening_assign(ph1);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error38() {
+bool
+test38() {
   Variable A(0);
   Variable B(1);
 
@@ -1066,20 +973,18 @@ error38() {
     // equal to zero.
     Coefficient d = 0;
     ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, B + 2, d);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
- catch (...) {
-    exit(1);
+  catch (...) {
   }
+  return false;
 }
 
-void
-error39() {
+bool
+test39() {
   Variable A(0);
   Variable B(1);
 
@@ -1091,20 +996,18 @@ error39() {
     // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal to
     // use a variable in the expression that does not appear in the polyhedron.
     ph.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, B);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error40() {
+bool
+test40() {
   Variable A(0);
   Variable B(1);
 
@@ -1117,20 +1020,18 @@ error40() {
     // apply this function to a variable that is not in the space of
     // the polyhedron.
     ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL, A + 1);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error41() {
+bool
+test41() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1144,20 +1045,18 @@ error41() {
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the polyhedron.
     ph.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error42() {
+bool
+test42() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1171,20 +1070,18 @@ error42() {
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the polyhedron.
     ph.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error43() {
+bool
+test43() {
   Generator_System gs;
   Linear_Expression e;
   try {
@@ -1192,20 +1089,18 @@ error43() {
     // Generator::ray(e):
     // the origin can not be a ray.
     gs.insert(ray(e));
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error44() {
+bool
+test44() {
   Generator_System gs;
   Linear_Expression e;
   try {
@@ -1213,20 +1108,18 @@ error44() {
     // Generator::line(e):
     // the origin can not be a line.
     gs.insert(line(e));
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error45() {
+bool
+test45() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1239,20 +1132,18 @@ error45() {
     // of a variable that is not in the space of the
     // generator.
     g.coefficient(C);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error46() {
+bool
+test46() {
   Variable A(0);
   Variable B(1);
 
@@ -1261,20 +1152,18 @@ error46() {
     // This is an incorrect use of method Generator::divisor(): it is
     // illegal to ask for the divisor of a line.
     g.divisor();
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
 }
 
-void
-error47() {
+bool
+test47() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1287,72 +1176,188 @@ error47() {
     // of a variable that is not in the space of the
     // constraint.
     c.coefficient(C);
-    exit(1);
   }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
   }
   catch (...) {
-    exit(1);
   }
+  return false;
+}
+
+bool
+test48() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A - B >= 0);
+
+  try {
+    // This is an incorrect use of function
+    // C_Polyhedron::bounded_affine_image(v, lb_expr, ub_expr, d):
+    // any call with a denominator equal to zero is illegal.
+    Coefficient d = 0;
+    ph.bounded_affine_image(B, A - 7, B + 2, d);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test49() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 0);
+
+  try {
+    // This is an incorrect use of function
+    // C_Polyhedron::bounded_affine_image(v, lb_expr, ub_expr, d):
+    // it is illegal to use a variable in the lower bounding expression
+    // that does not appear in the polyhedron.
+    ph.bounded_affine_image(A, B, A + 7);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test50() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 0);
+
+  try {
+    // This is an incorrect use of function
+    // C_Polyhedron::bounded_affine_image(v, lb_expr, ub_expr, d):
+    // it is illegal to use a variable in the upper bounding expression
+    // that does not appear in the polyhedron.
+    ph.bounded_affine_image(A, A + 7, B);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test51() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 1);
+
+  try {
+    // This is an incorrect use of function
+    // C_Polyhedron::bounded_affine_image(v, lb_expr, ub_expr, d):
+    // it is illegal to bound a variable not occurring in the
+    // vector space embedding the polyhedron.
+    ph.bounded_affine_image(B, A - 7, 2*A - 2);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test52() {
+  Variable A(0);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 1);
+
+  Pointset_Powerset<C_Polyhedron> ps(2, EMPTY);
+
+  try {
+    // This is an incorrect use of function
+    // Pointset_Powerset::add_disjunct(ph): the powerset and
+    // the added disjunct should have the same space dimension.
+    ps.add_disjunct(ph);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
 }
 
 } // namespace
-
-int
-main() TRY {
-  set_handlers();
-
-  error1();
-  error2();
-  error3();
-  error4();
-  error5();
-  error6();
-  error7();
-  error8();
-  error9();
-  error10();
-  error11();
-  error12();
-  error13();
-  error14();
-  error15();
-  error16();
-  error17();
-  error18();
-  error19();
-  error20();
-  error21();
-  error22();
-  error23();
-  error24();
-  error25();
-  error26();
-  error27();
-  error28();
-  error29();
-  error30();
-  error31();
-  error32();
-  error33();
-  error34();
-  error35();
-  error36();
-  error37();
-  error38();
-  error39();
-  error40();
-  error41();
-  error42();
-  error43();
-  error44();
-  error45();
-  error46();
-  error47();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
+  DO_TEST(test21);
+  DO_TEST(test22);
+  DO_TEST(test23);
+  DO_TEST(test24);
+  DO_TEST(test25);
+  DO_TEST(test26);
+  DO_TEST(test27);
+  DO_TEST(test28);
+  DO_TEST(test29);
+  DO_TEST(test30);
+  DO_TEST(test31);
+  DO_TEST(test32);
+  DO_TEST(test33);
+  DO_TEST(test34);
+  DO_TEST(test35);
+  DO_TEST(test36);
+  DO_TEST(test37);
+  DO_TEST(test38);
+  DO_TEST(test39);
+  DO_TEST(test40);
+  DO_TEST(test41);
+  DO_TEST(test42);
+  DO_TEST(test43);
+  DO_TEST(test44);
+  DO_TEST(test45);
+  DO_TEST(test46);
+  DO_TEST(test47);
+  DO_TEST(test48);
+  DO_TEST(test49);
+  DO_TEST(test50);
+  DO_TEST(test51);
+  DO_TEST(test52);
+END_MAIN

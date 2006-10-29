@@ -1,5 +1,5 @@
 %%    LaTeX package providing macros for typesetting the PPL manuals.
-%%    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+%%    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 %%
 %% This file is part of the Parma Polyhedra Library (PPL).
 %%
@@ -14,9 +14,8 @@
 %% for more details.
 %%
 %% You should have received a copy of the GNU General Public License
-%% along with this program; if not, write to the Free Software
-%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-%% USA.
+%% along with this program; if not, write to the Free Software Foundation,
+%% Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 %%
 %% For the most up-to-date information see the Parma Polyhedra Library
 %% site: http://www.cs.unipr.it/ppl/ .
@@ -66,11 +65,22 @@
 \providecommand*{\Zset}{\mathbb{Z}}            % Integers
 \providecommand*{\CPset}{\mathbb{CP}}          % Closed polyhedra
 \providecommand*{\Pset}{\mathbb{P}}            % (NNC) polyhedra
+\providecommand*{\Sset}{\mathbb{S}}            % Reals or rationals
 
+%% Grid notation
+\providecommand*{\Gset}{\mathbb{G}}            % Grid
+\providecommand*{\cg}{\mathord{\mathrm{cg}}}   % Congruence
+\newcommand*{\gcon}{\mathop{\mathrm{gcon}}\nolimits}
+                                               % Grid from congruence system
+\newcommand*{\ggen}{\mathop{\mathrm{ggen}}\nolimits}
+                                               % Grid from generator system
 
 %% Function notation
 \newcommand*{\fund}[3]{\mathord{#1}\colon#2\rightarrow#3}
 \newcommand*{\pard}[3]{\mathord{#1}\colon#2\rightarrowtail#3}
+
+%% Relation notation
+\newcommand*{\reld}[3]{\mathord{#1}\subseteq#2\times#3}
 
 %% Set theory.
 \renewcommand*{\emptyset}{\mathord{\varnothing}}
@@ -107,7 +117,12 @@
 \newcommand*{\st}{\mathrel{.}}
 \newcommand*{\itc}{\mathrel{:}}
 
-% True and false
+%% Integer division and reminder binary operators.
+\newcommand*{\bdiv}{\mathbin{\mathrm{div}}}
+\newcommand*{\brem}{\mathbin{\mathrm{rem}}}
+
+
+%% True and false
 \newcommand*{\false}{\mathord{\textbf{\textup{0}}}}
 \newcommand*{\true}{\mathord{\textbf{\textup{1}}}}
 
@@ -137,6 +152,8 @@
 \newcommand*{\affinehull}{\mathop{\mathrm{affine.hull}}}
 \newcommand*{\convexhull}{\mathop{\mathrm{convex.hull}}}
 \newcommand*{\NNChull}{\mathop{\mathrm{nnc.hull}}}
+\newcommand*{\inthull}{\mathop{\mathrm{int.hull}}}
+\newcommand*{\intaffinehull}{\mathop{\mathrm{int.affine.hull}}}
 
 % Polyhedron functions.
 \newcommand*{\prank}{\mathop{\mathrm{rank}}}

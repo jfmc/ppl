@@ -1,5 +1,5 @@
 /* Poly_Gen_Relation class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Poly_Gen_Relation_defs_hh 1
 
 #include "Poly_Gen_Relation.types.hh"
+#include "globals.defs.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -44,10 +44,12 @@ bool operator!=(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
 Poly_Gen_Relation operator&&(const Poly_Gen_Relation& x,
 			     const Poly_Gen_Relation& y);
 
-//! \brief
-//! Yields the assertion with all the conjuncts of \p x
-//! that are not in \p y.
-/*! \relates Poly_Gen_Relation */
+/*! \brief
+  Yields the assertion with all the conjuncts of \p x
+  that are not in \p y.
+
+  \relates Poly_Gen_Relation
+*/
 Poly_Gen_Relation operator-(const Poly_Gen_Relation& x,
 			    const Poly_Gen_Relation& y);
 
@@ -63,7 +65,7 @@ std::ostream& operator<<(std::ostream& s, const Poly_Gen_Relation& r);
 
 
 //! The relation between a polyhedron and a generator
-/*!
+/*! \ingroup PPL_CXX_interface
   This class implements conjunctions of assertions on the relation
   between a polyhedron and a generator.
 */
@@ -72,11 +74,11 @@ private:
   //! Poly_Gen_Relation is implemented by means of a finite bitset.
   typedef unsigned int flags_t;
 
-  //! \name Bitmasks for the individual assertions
+  //! \name Bit-masks for the individual assertions
   //@{
   static const flags_t NOTHING  = 0U;
   static const flags_t SUBSUMES = 1U << 0;
-  //@} // Bitmasks for the individual assertions
+  //@} // Bit-masks for the individual assertions
 
   //! All assertions together.
   static const flags_t EVERYTHING
@@ -88,11 +90,8 @@ private:
   //! True if and only if the conjunction \p x implies the conjunction \p y.
   static bool implies(flags_t x, flags_t y);
 
-  //! Construct from a bitmask.
+  //! Construct from a bit-mask.
   Poly_Gen_Relation(flags_t mask);
-
-  //! Pretty printing.
-  void ascii_dump(std::ostream& s) const;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const Poly_Gen_Relation& x,
@@ -116,9 +115,10 @@ private:
 
 public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Access the internal flags: this is needed for some foreign
-  //! language interfaces.
+  /*! \brief
+    Access the internal flags: this is needed for some foreign
+    language interfaces.
+  */
 #endif
   flags_t get_flags() const;
 
@@ -128,6 +128,8 @@ public:
 
   //! Adding the generator would not change the polyhedron.
   static Poly_Gen_Relation subsumes();
+
+  PPL_OUTPUT_DECLARATIONS
 
   //! True if and only if \p *this implies \p y.
   bool implies(const Poly_Gen_Relation& y) const;

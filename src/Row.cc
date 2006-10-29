@@ -1,5 +1,5 @@
 /* Row class implementation (non-inline functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Row.defs.hh"
 #include "Coefficient.defs.hh"
-#include "globals.defs.hh"
 #include <iostream>
 #include <iomanip>
 #include <cassert>
@@ -33,7 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Row::Impl::expand_within_capacity(const dimension_type new_size) {
+PPL::Row_Impl_Handler::
+Impl::expand_within_capacity(const dimension_type new_size) {
   assert(size() <= new_size && new_size <= max_size());
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   // vec_[0] is already constructed.
@@ -47,8 +46,8 @@ PPL::Row::Impl::expand_within_capacity(const dimension_type new_size) {
 }
 
 void
-PPL::Row::Impl::shrink(dimension_type new_size) {
-  dimension_type old_size = size();
+PPL::Row_Impl_Handler::Impl::shrink(dimension_type new_size) {
+  const dimension_type old_size = size();
   assert(new_size <= old_size);
   // Since ~Coefficient() does not throw exceptions, nothing here does.
   set_size(new_size);
@@ -64,7 +63,7 @@ PPL::Row::Impl::shrink(dimension_type new_size) {
 }
 
 void
-PPL::Row::Impl::copy_construct(const Impl& y) {
+PPL::Row_Impl_Handler::Impl::copy_construct_coefficients(const Impl& y) {
   const dimension_type y_size = y.size();
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   for (dimension_type i = 0; i < y_size; ++i) {
@@ -85,31 +84,175 @@ PPL::Row::Impl::copy_construct(const Impl& y) {
 }
 
 void
+PPL::Row::normalize() {
+  Row& x = *this;
+  // Compute the GCD of all the coefficients.
+  const dimension_type sz = size();
+  dimension_type i = sz;
+  TEMP_INTEGER(gcd);
+  while (i > 0) {
+    const Coefficient& x_i = x[--i];
+    if (const int x_i_sign = sgn(x_i)) {
+      gcd = x_i;
+      if (x_i_sign < 0)
+	neg_assign(gcd);
+      goto compute_gcd;
+    }
+  }
+  // We reach this point only if all the coefficients were zero.
+  return;
+
+ compute_gcd:
+  if (gcd == 1)
+    return;
+  while (i > 0) {
+    const Coefficient& x_i = x[--i];
+    if (x_i != 0) {
+      // Note: we use the ternary version instead of a more concise
+      // gcd_assign(gcd, x_i) to take advantage of the fact that
+      // `gcd' will decrease very rapidly (see D. Knuth, The Art of
+      // Computer Programming, second edition, Section 4.5.2,
+      // Algorithm C, and the discussion following it).  Our
+      // implementation of gcd_assign(x, y, z) for checked numbers is
+      // optimized for the case where `z' is smaller than `y', so that
+      // on checked numbers we gain.  On the other hand, for the
+      // implementation of gcd_assign(x, y, z) on GMP's unbounded
+      // integers we cannot make any assumption, so here we draw.
+      // Overall, we win.
+      gcd_assign(gcd, x_i, gcd);
+      if (gcd == 1)
+	return;
+    }
+  }
+  // Divide the coefficients by the GCD.
+  for (dimension_type j = sz; j-- > 0; ) {
+    Coefficient& x_j = x[j];
+    exact_div_assign(x_j, x_j, gcd);
+  }
+}
+
+void
 PPL::Row::Flags::ascii_dump(std::ostream& s) const {
-  s << "0x"
-    << std::hex
-    << std::setw(2*sizeof(Flags::base_type))
-    << std::setfill('0')
-    << bits;
+  s << "0x";
+  std::istream::fmtflags f = s.setf(std::istream::hex);
+  std::streamsize sz = s.width(2*sizeof(Flags::base_type));
+  std::ostream::char_type ch = s.fill('0');
+  s << bits;
+  s.fill(ch);
+  s.width(sz);
+  s.flags(f);
+}
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row::Flags)
+
+bool
+PPL::Row::Flags::ascii_load(std::istream& s) {
+  std::string str;
+  std::streamsize sz = s.width(2);
+  if (!(s >> str) || (str.compare("0x") != 0))
+    return false;
+  s.width(sz);
+  std::istream::fmtflags f = s.setf(std::istream::hex);
+  bool r = s >> bits;
+  s.flags(f);
+  return r;
 }
 
 void
 PPL::Row::ascii_dump(std::ostream& s) const {
   const Row& x = *this;
-  dimension_type x_size = x.size();
+  const dimension_type x_size = x.size();
+  s << "size " << x_size << " ";
   for (dimension_type i = 0; i < x_size; ++i)
     s << x[i] << ' ';
   s << "f ";
   flags().ascii_dump(s);
-  s << std::endl;
+  s << "\n";
+}
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Row)
+
+bool
+PPL::Row::ascii_load(std::istream& s) {
+  std::string str;
+  if (!(s >> str) || str != "size")
+    return false;
+  dimension_type new_size;
+  if (!(s >> new_size))
+    return false;
+
+  Row& x = *this;
+  const dimension_type old_size = x.size();
+  if (new_size < old_size)
+    x.shrink(new_size);
+  else if (new_size > old_size) {
+    Row y(new_size, Row::Flags());
+    x.swap(y);
+  }
+
+  for (dimension_type col = 0; col < new_size; ++col)
+    if (!(s >> x[col]))
+      return false;
+  if (!(s >> str) || (str.compare("f") != 0))
+    return false;
+  return flags().ascii_load(s);
 }
 
 PPL::memory_size_type
-PPL::Row::Impl::external_memory_in_bytes() const {
+PPL::Row_Impl_Handler::Impl::external_memory_in_bytes() const {
   memory_size_type n = 0;
   for (dimension_type i = size(); i-- > 0; )
     n += PPL::external_memory_in_bytes(vec_[i]);
   return n;
+}
+
+bool
+PPL::Row::OK() const {
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+
+  bool is_broken = false;
+#if EXTRA_ROW_DEBUG
+# if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  if (capacity_ == 0) {
+    cerr << "Illegal row capacity: is 0, should be at least 1"
+	 << endl;
+    is_broken = true;
+  }
+  else
+# endif // !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  if (capacity_ > max_size()) {
+    cerr << "Row capacity exceeds the maximum allowed size:"
+	 << endl
+	 << "is " << capacity_
+	 << ", should be less than or equal to " << max_size() << "."
+	 << endl;
+    is_broken = true;
+  }
+#endif // EXTRA_ROW_DEBUG
+  if (size() > max_size()) {
+#ifndef NDEBUG
+    cerr << "Row size exceeds the maximum allowed size:"
+	 << endl
+	 << "is " << size()
+	 << ", should be less than or equal to " << max_size() << "."
+	 << endl;
+#endif
+    is_broken = true;
+  }
+#if EXTRA_ROW_DEBUG
+  if (capacity_ < size()) {
+#ifndef NDEBUG
+    cerr << "Row is completely broken: capacity is " << capacity_
+	 << ", size is " << size() << "."
+	 << endl;
+#endif
+    is_broken = true;
+  }
+#endif // EXTRA_ROW_DEBUG
+  return !is_broken;
 }
 
 bool
@@ -124,44 +267,25 @@ PPL::Row::OK(const dimension_type row_size,
   using std::cerr;
 #endif
 
-  bool is_broken = false;
+  bool is_broken = !OK();
+
 #if EXTRA_ROW_DEBUG
+  // Check the declared capacity.
 # if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  if (capacity_ == 0) {
-    cerr << "Illegal row capacity: is 0, should be at least 1"
-	 << endl;
-    is_broken = true;
-  }
-  else if (capacity_ == 1 && row_capacity == 0)
+  if (capacity_ == 1 && row_capacity == 0)
     // This is fine.
     ;
   else
-# endif
-  if (capacity_ > max_size()) {
-    cerr << "Row capacity exceeds the maximum allowed size:"
-	 << endl
-	 << "is " << capacity_
-	 << ", should be less than or equal to " << max_size() << "."
-	 << endl;
-    is_broken = true;
-  }
+# endif // !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity_ != row_capacity) {
     cerr << "Row capacity mismatch: is " << capacity_
 	 << ", should be " << row_capacity << "."
 	 << endl;
     is_broken = true;
   }
-#endif
-  if (size() > max_size()) {
-#ifndef NDEBUG
-    cerr << "Row size exceeds the maximum allowed size:"
-	 << endl
-	 << "is " << size()
-	 << ", should be less than or equal to " << max_size() << "."
-	 << endl;
-#endif
-    is_broken = true;
-  }
+#endif // EXTRA_ROW_DEBUG
+
+  // Check the declared size.
   if (size() != row_size) {
 #ifndef NDEBUG
     cerr << "Row size mismatch: is " << size()
@@ -170,16 +294,6 @@ PPL::Row::OK(const dimension_type row_size,
 #endif
     is_broken = true;
   }
-#if EXTRA_ROW_DEBUG
-  if (capacity_ < size()) {
-#ifndef NDEBUG
-    cerr << "Row is completely broken: capacity is " << capacity_
-	 << ", size is " << size() << "."
-	 << endl;
-#endif
-    is_broken = true;
-  }
-#endif
   return !is_broken;
 }
 

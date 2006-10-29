@@ -1,5 +1,5 @@
 /* Checked extended arithmetic functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -24,8 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_ext_defs_hh
 #define PPL_checked_ext_defs_hh 1
 
-#include <iostream>
-#include "Float.defs.hh"
 #include "checked.defs.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -33,7 +30,7 @@ namespace Parma_Polyhedra_Library {
 namespace Checked {
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
-Result assign_ext(To& to, const From& from, const Rounding& mode);
+Result assign_ext(To& to, const From& from, Rounding_Dir dir);
 
 template <typename Policy, typename Type>
 Result sgn_ext(const Type& x);
@@ -42,43 +39,63 @@ template <typename Policy1, typename Policy2, typename Type1, typename Type2>
 Result cmp_ext(const Type1& x, const Type2& y);
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
-Result neg_ext(To& to, const From& x, const Rounding& mode);
+Result neg_ext(To& to, const From& x, Rounding_Dir dir);
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
-Result abs_ext(To& to, const From& x, const Rounding& mode);
+Result abs_ext(To& to, const From& x, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result add_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
+Result add_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result sub_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
+Result sub_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
+Result mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result div_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
+Result div_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result mod_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
+Result rem_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result add_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
+Result add_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result sub_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
+Result sub_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
-Result sqrt_ext(To& to, const From& x, const Rounding& mode);
+Result sqrt_ext(To& to, const From& x, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result gcd_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
+Result gcd_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result lcm_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+template <typename To1_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To2_Policy, typename To3_Policy,
+	  typename To1, typename From1, typename From2,
+	  typename To3, typename To4>
+Result gcdext_ext(To1& to, const From1& x, const From2& y,
+		  const To2& s, const To3& t, Rounding_Dir dir);
+
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
+Result lcm_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename Policy, typename Type>
-Result print_ext(std::ostream& os, const Type& x, const Numeric_Format& format, const Rounding& mode);
+Result output_ext(std::ostream& os, const Type& x,
+		  const Numeric_Format& format, Rounding_Dir dir);
+
+template <typename Policy, typename Type>
+Result input_ext(Type& x, std::istream& is, Rounding_Dir dir);
 
 } // namespace Checked
 

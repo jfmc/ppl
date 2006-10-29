@@ -1,5 +1,5 @@
 /* Ptr_Iterator class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -61,8 +60,10 @@ Ptr_Iterator<P> operator+(typename Ptr_Iterator<P>::difference_type m,
 
 } // namespace Parma_Polyhedra_Library
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A class to define STL const and non-const iterators from pointer types.
-template<typename P>
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename P>
 class Parma_Polyhedra_Library::Implementation::Ptr_Iterator
   : public std::iterator<typename std::iterator_traits<P>::iterator_category,
 			 typename std::iterator_traits<P>::value_type,
@@ -80,9 +81,10 @@ public:
   //! Construct an iterator pointing at \p q.
   explicit Ptr_Iterator(const P& q);
 
-  //! \brief
-  //! Copy-constructor allowing the construction of a const_iterator
-  //! from a non-const iterator.
+  /*! \brief
+    Copy-constructor allowing the construction of a const_iterator
+    from a non-const iterator.
+  */
   template<typename Q>
   Ptr_Iterator(const Ptr_Iterator<Q>& q);
 
@@ -91,22 +93,22 @@ public:
 
   //! Indirect member selector.
   pointer operator->() const;
-      
+
   //! Subscript operator.
   reference operator[](const difference_type m) const;
-      
+
   //! Prefix increment operator.
   Ptr_Iterator& operator++();
-      
+
   //! Postfix increment operator.
   Ptr_Iterator operator++(int);
 
   //! Prefix decrement operator
   Ptr_Iterator& operator--();
-      
+
   //! Postfix decrement operator.
   Ptr_Iterator operator--(int);
-      
+
   //! Assignment-increment operator.
   Ptr_Iterator& operator+=(const difference_type m);
 
@@ -118,7 +120,7 @@ public:
 
   //! Returns the sum of \p *this and \p m.
   Ptr_Iterator operator+(const difference_type m) const;
-  
+
   //! Returns the difference of \p *this and \p m.
   Ptr_Iterator operator-(const difference_type m) const;
 

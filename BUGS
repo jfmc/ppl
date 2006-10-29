@@ -17,6 +17,6 @@ bugs effectively.
 KNOWN BUGS
 ==========
 
-At the time of the release, the present version of PPL had no known
-bugs (even though it certainly had bugs).  Any bug that has been found
-after the release will be listed at http://www.cs.unipr.it/ppl/Bugs/ .
+All known bugs were resolved before the release.  It is likely that
+there are still bugs in the released version.  Any bugs found after
+the release will be listed at http://www.cs.unipr.it/ppl/Bugs/ .

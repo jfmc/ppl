@@ -1,5 +1,5 @@
 /* Exploit smf when computing the intersection of NNC dual hypercubes.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -24,17 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 #include "timings.hh"
 #include <vector>
-
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-#ifndef VERY_NOISY
-#define VERY_NOISY 0
-#endif
 
 #ifndef EXP_EVAL
 #define EXP_EVAL 0
@@ -120,7 +108,7 @@ NNC_dual_hypercube(const dimension_type dims,
 void
 build_polyhedra(const dimension_type dims,
 		const int perc,
-		vector<NNC_Polyhedron>& ph) {
+		std::vector<NNC_Polyhedron>& ph) {
 
   Linear_Expression weight_center;
 
@@ -156,130 +144,113 @@ build_polyhedra(const dimension_type dims,
 }
 
 void
-computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
-
-#if NOISY
-  cout << endl;
+computation(std::vector<NNC_Polyhedron>& ph, bool enhanced) {
+  nout << endl;
   if (enhanced)
-    cout << "Enhanced computation: ";
+    nout << "Enhanced computation: ";
   else
-    cout << "Standard computation: ";
-  cout << "working with 4 NNC dual hypercubes of dimension "
+    nout << "Standard computation: ";
+  nout << "working with 4 NNC dual hypercubes of dimension "
        << ph[0].space_dimension() << endl;
   start_clock();
-#endif
 
   // Compute the intersection of ph[0] and ph[1].
-#if VERY_NOISY
+
   // Print dimensions of arguments
   // (being careful to override library laziness).
-  cout << "Computing intersection of ph[0] and ph[1]:" << endl;
-  cout << "===  ph[0] generators ===" << endl;
-  ph[0].generators().ascii_dump(cout);
-  cout << "===  ph[1] generators ===" << endl;
-  ph[1].generators().ascii_dump(cout);
-#endif
+  vnout << "Computing intersection of ph[0] and ph[1]:" << endl;
+  vnout << "===  ph[0] generators ===" << endl;
+  ph[0].generators().ascii_dump(vnout);
+  vnout << "===  ph[1] generators ===" << endl;
+  ph[1].generators().ascii_dump(vnout);
+
   if (enhanced) {
     ph[0].minimized_constraints();
     ph[1].minimized_constraints();
-#if VERY_NOISY
+
     // Print dimensions of arguments.
-    cout << "After the computation of smf for constraints" << endl;
-#endif
+    vnout << "After the computation of smf for constraints" << endl;
   }
-#if VERY_NOISY
-  cout << "===  ph[0] constraints ===" << endl;
-  ph[0].constraints().ascii_dump(cout);
-  cout << "===  ph[1] constraints ===" << endl;
-  ph[1].constraints().ascii_dump(cout);
-  cout << endl;
-#endif
+
+  vnout << "===  ph[0] constraints ===" << endl;
+  ph[0].constraints().ascii_dump(vnout);
+  vnout << "===  ph[1] constraints ===" << endl;
+  ph[1].constraints().ascii_dump(vnout);
+  vnout << endl;
+
   ph[0].intersection_assign(ph[1]);
 
   // Compute the intersection of ph[2] and ph[3].
-#if VERY_NOISY
+
   // Print dimensions of arguments
   // (being careful to override library laziness).
-  cout << "Computing intersection of ph[2] and ph[3]:" << endl;
-  cout << "===  ph[2] generators ===" << endl;
-  ph[2].generators().ascii_dump(cout);
-  cout << "===  ph[3] generators ===" << endl;
-  ph[3].generators().ascii_dump(cout);
-#endif
+  vnout << "Computing intersection of ph[2] and ph[3]:" << endl;
+  vnout << "===  ph[2] generators ===" << endl;
+  ph[2].generators().ascii_dump(vnout);
+  vnout << "===  ph[3] generators ===" << endl;
+  ph[3].generators().ascii_dump(vnout);
+
   if (enhanced) {
     ph[2].minimized_constraints();
     ph[3].minimized_constraints();
-#if VERY_NOISY
+
     // Print dimensions of arguments.
-    cout << "After the computation of smf for constraints" << endl;
-#endif
+    vnout << "After the computation of smf for constraints" << endl;
   }
-#if VERY_NOISY
-  cout << "===  ph[2] constraints ===" << endl;
-  ph[2].constraints().ascii_dump(cout);
-  cout << "===  ph[3] constraints ===" << endl;
-  ph[3].constraints().ascii_dump(cout);
-  cout << endl;
-#endif
+  vnout << "===  ph[2] constraints ===" << endl;
+  ph[2].constraints().ascii_dump(vnout);
+  vnout << "===  ph[3] constraints ===" << endl;
+  ph[3].constraints().ascii_dump(vnout);
+  vnout << endl;
+
   ph[2].intersection_assign(ph[3]);
 
   // Compute the poly-hull of ph[0] and ph[2].
-#if VERY_NOISY
-  cout << "Computing poly-hull of ph[0] and ph[2]:" << endl;
-#endif
+  vnout << "Computing poly-hull of ph[0] and ph[2]:" << endl;
   if (enhanced) {
     ph[0].minimized_generators();
     ph[2].minimized_generators();
-#if VERY_NOISY
+
     // Print dimensions of arguments.
-    cout << "After the computation of smf for generators" << endl;
-#endif
+    vnout << "After the computation of smf for generators" << endl;
   }
-#if VERY_NOISY
+
   // Print dimensions of arguments
   // (being careful to override library laziness).
-  cout << "===  ph[0] generators ===" << endl;
-  ph[0].generators().ascii_dump(cout);
-  cout << "===  ph[2] generators ===" << endl;
-  ph[2].generators().ascii_dump(cout);
-  cout << endl;
-#endif
+  vnout << "===  ph[0] generators ===" << endl;
+  ph[0].generators().ascii_dump(vnout);
+  vnout << "===  ph[2] generators ===" << endl;
+  ph[2].generators().ascii_dump(vnout);
+  vnout << endl;
+
   ph[0].poly_hull_assign(ph[2]);
   ph[0].constraints();
-#if NOISY
-  cout << "Wmf final result timing: ";
-  print_clock(cout);
-  cout << endl;
-#endif
 
-#if VERY_NOISY
+  nout << "Wmf final result timing: ";
+  print_clock(nout);
+  nout << endl;
+
   // How many constraints and generators obtained?
-  cout << "Final result (wmf)" << endl;
-  cout << "===  ph[0] constraints ===" << endl;
-  ph[0].constraints().ascii_dump(cout);
-  cout << endl;
-#endif
+  vnout << "Final result (wmf)" << endl;
+  vnout << "===  ph[0] constraints ===" << endl;
+  ph[0].constraints().ascii_dump(vnout);
+  vnout << endl;
 
-#if NOISY
-  cout << "Smf (cons) final result timing: ";
+  nout << "Smf (cons) final result timing: ";
   start_clock();
   ph[0].minimized_constraints();
-  print_clock(cout);
-  cout << endl;
-#endif
-#if VERY_NOISY
+  print_clock(nout);
+  nout << endl;
+
   // How many constraints and generators obtained?
-  cout << "Final result (smf cons)" << endl;
-  cout << "===  ph[0] constraints ===" << endl;
-  ph[0].constraints().ascii_dump(cout);
-#endif
+  vnout << "Final result (smf cons)" << endl;
+  vnout << "===  ph[0] constraints ===" << endl;
+  ph[0].constraints().ascii_dump(vnout);
 }
 
-} // namespace
-
-int
-main() TRY {
-  vector<NNC_Polyhedron> ph;
+bool
+test01() {
+  std::vector<NNC_Polyhedron> ph;
 
 #if EXP_EVAL
   dimension_type first_dim = 4;
@@ -291,13 +262,13 @@ main() TRY {
 
   for (dimension_type dims = first_dim; dims <= last_dim; dims++)
     for (int perc = 25; perc <= 50; perc += 25) {
-#if NOISY
-      cout << endl
+
+      nout << endl
 	   << "++++++++ DIM = " << dims << "  ++++++++"
 	   << endl
 	   << "++++++++ PERC = " << perc << " ++++++++"
 	   << endl;
-#endif
+
       // Standard evaluation strategy.
       ph.clear();
       build_polyhedra(dims, perc, ph);
@@ -308,7 +279,12 @@ main() TRY {
       build_polyhedra(dims, perc, ph);
       computation(ph, true);
     }
-
-  return 0;
+  // FIXME: check the cardinalities of the results obtained.
+  return true;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST_F64A(test01);
+END_MAIN

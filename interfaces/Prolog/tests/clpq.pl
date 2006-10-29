@@ -1,7 +1,7 @@
 % A toy, non-ground meta-interpreter for CLP(Q)
 % for testing the Parma Polyhedra Library and its Prolog interface.
 %
-% Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+% Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 %
 % This file is part of the Parma Polyhedra Library (PPL).
 %
@@ -16,9 +16,8 @@
 % for more details.
 %
 % You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-% USA.
+% along with this program; if not, write to the Free Software Foundation,
+% Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 %
 % For the most up-to-date information see the Parma Polyhedra Library
 % site: http://www.cs.unipr.it/ppl/ .
@@ -42,7 +41,7 @@ solve(Goals, Variable_Names) :-
     assertz(original_goal_variables(Variable_Names)),
     % The initial polyhedron is initialised with
     % `Dims' dimensions, the number of variables in `Goals'.
-    ppl_new_Polyhedron_from_space_dimension(c, Dims, universe, Polyhedron),
+    ppl_new_C_Polyhedron_from_space_dimension(Dims, universe, Polyhedron),
     % Try to reduce `Goals' to the empty continuation.
     (solve(Goals, true, Polyhedron) ->
 	Failed = no
@@ -61,7 +60,7 @@ solve(true, true, Polyhedron) :-
     !,
     % It is time to print the result and see if the user
     % wants to look for more solutions.
-    ppl_new_Polyhedron_from_Polyhedron(c, Polyhedron, c, Q),
+    ppl_new_C_Polyhedron_from_C_Polyhedron(Polyhedron, Q),
     original_goal_variables(Variable_Names),
     length(Variable_Names, Dims),
     ppl_Polyhedron_remove_higher_space_dimensions(Q, Dims),
@@ -104,7 +103,7 @@ solve(Atom, Goals, Polyhedron) :-
     % Copy the current polyhedron and work on the copy.
     % NOTE: the copy is under our responsibility, i.e.,
     %       it is our job to delete it, sooner or later.
-    ppl_new_Polyhedron_from_Polyhedron(c, Polyhedron, c, Poly_Copy),
+    ppl_new_C_Polyhedron_from_C_Polyhedron(Polyhedron, Poly_Copy),
 
     % Rename the selected clause apart and extend the polyhedron.
     ppl_Polyhedron_space_dimension(Poly_Copy, Dims),
@@ -486,7 +485,7 @@ show_copying :-
                        Version 2, June 1991\n\
 \n\
  Copyright (C) 1989, 1991 Free Software Foundation, Inc.\n\
-                       59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n\
+                       51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA\n\
  Everyone is permitted to copy and distribute verbatim copies\n\
  of this license document, but changing it is not allowed.\n\
 \n\
@@ -792,7 +791,7 @@ POSSIBILITY OF SUCH DAMAGES.\n').
 
 common_main :-
   write('\
-Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>\n\
+Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>\n\
 this program is free software, covered by the GNU General Public License,\n\
 and you are welcome to change it and/or distribute copies of it\n\
 under certain conditions.\n\

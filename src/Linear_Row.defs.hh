@@ -1,5 +1,5 @@
 /* Linear_Row class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_Row_defs_hh 1
 
 #include "Linear_Row.types.hh"
+#include "globals.defs.hh"
 #include "Row.defs.hh"
 #include "Topology.hh"
 #include "Linear_Expression.types.hh"
@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for linear expressions, constraints and generators.
-/*!
+/*! \ingroup PPL_CXX_interface
   The class Linear_Row allows us to build objects of the form
   \f$[b, a_0, \ldots, a_{d-1}]_{(t, k)}\f$,
   i.e., a finite sequence of coefficients subscripted by a pair of flags,
@@ -129,14 +129,17 @@ public:
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
 
-  //! \brief
-  //! The type of the object to which the coefficients refer to,
-  //! encoding both topology and kind.
-  /*!
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    The type of the object to which the coefficients refer to,
+    encoding both topology and kind.
+
+    \ingroup PPL_CXX_interface
     This combines the information about the topology (necessarily closed
     or not) and the kind (line/equality or ray/point/inequality)
     of a Linear_Row object.
   */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   class Flags : public Row::Flags {
   public:
     //! Default constructor: builds an object where all flags are invalid.
@@ -165,22 +168,28 @@ public:
     //! Returns <CODE>true</CODE> if and only if \p *this and \p y are equal.
     bool operator==(const Flags& y) const;
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if \p *this and \p y
-    //! are different.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if \p *this and \p y
+      are different.
+    */
     bool operator!=(const Flags& y) const;
 
-    //! \brief
-    //! Writes to \p s an ASCII representation of the internal
-    //! representation of \p *this.
-    void ascii_dump(std::ostream& s) const;
+    PPL_OUTPUT_DECLARATIONS
+
+    /*! \brief
+      Loads from \p s an ASCII representation (as produced by
+      ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+      Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+    */
+    bool ascii_load(std::istream& s);
 
   private:
-    //! Builds the type from a bitmask.
+    //! Builds the type from a bit-mask.
     explicit Flags(base_type mask);
 
     //! \name The bits that are currently in use
     //@{
+    // NB: ascii_load assumes that these are sequential.
     static const unsigned rpi_validity_bit
     = Row::Flags::first_free_bit + 0;
     static const unsigned rpi_bit
@@ -264,20 +273,28 @@ public:
   //! Returns the topological kind of \p *this.
   Topology topology() const;
 
-  //! \brief Returns <CODE>true</CODE> if and only if the topology
-  //! of \p *this row is not necessarily closed.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the topology
+    of \p *this row is not necessarily closed.
+  */
   bool is_not_necessarily_closed() const;
 
-  //! \brief Returns <CODE>true</CODE> if and only if the topology
-  //! of \p *this row is necessarily closed.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the topology
+    of \p *this row is necessarily closed.
+  */
   bool is_necessarily_closed() const;
 
-  //! \brief Returns <CODE>true</CODE> if and only if \p *this row
-  //! represents a line or an equality.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row
+    represents a line or an equality.
+  */
   bool is_line_or_equality() const;
 
-  //! \brief Returns <CODE>true</CODE> if and only if \p *this row
-  //! represents a ray, a point or an inequality.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this row
+    represents a ray, a point or an inequality.
+  */
   bool is_ray_or_point_or_inequality() const;
   //@} // Flags inspection methods
 
@@ -308,29 +325,24 @@ public:
   //! Returns the coefficient \f$a_n\f$.
   Coefficient_traits::const_reference coefficient(dimension_type n) const;
 
-  //! Normalizes the modulo of coefficients so that they are mutually prime.
-  /*!
-    Computes the Greatest Common Divisor (GCD) among the elements of
-    the row and normalizes them by the GCD itself.
+  /*! \brief
+    Normalizes the sign of the coefficients so that the first non-zero
+    (homogeneous) coefficient of a line-or-equality is positive.
   */
-  void normalize();
-
-  //! \brief
-  //! Normalizes the sign of the coefficients so that the first non-zero
-  //! (homogeneous) coefficient of a line-or-equality is positive.
   void sign_normalize();
 
-  //! \brief
-  //! Strong normalization: ensures that different Linear_Row objects
-  //! represent different hyperplanes or hyperspaces.
-  /*!
+  /*! \brief
+    Strong normalization: ensures that different Linear_Row objects
+    represent different hyperplanes or hyperspaces.
+
     Applies both Linear_Row::normalize() and Linear_Row::sign_normalize().
   */
   void strong_normalize();
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if the coefficients are
-  //! strongly normalized.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the coefficients are
+    strongly normalized.
+  */
   bool check_strong_normalized() const;
 
   //! Linearly combines \p *this with \p y so that <CODE>*this[k]</CODE> is 0.
@@ -347,17 +359,28 @@ public:
   */
   void linear_combine(const Linear_Row& y, dimension_type k);
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if all the homogeneous
-  //! terms of \p *this are \f$0\f$.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if all the homogeneous
+    terms of \p *this are \f$0\f$.
+  */
   bool all_homogeneous_terms_are_zero() const;
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
+
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+  bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
+  /*! \brief
+    Checks if all the invariants are satisfied and that the actual
+    size and capacity match the values provided as arguments.
+  */
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
 
 private:
@@ -375,56 +398,6 @@ bool operator==(const Linear_Row& x, const Linear_Row& y);
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates Linear_Row */
 bool operator!=(const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Computes the scalar product of \p x and \p y and assigns it to \p z.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void scalar_product_assign(Coefficient& z,
-			   const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Returns the sign of the scalar product between \p x and \p y.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-int scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Computes the \e reduced scalar product of \p x and \p y,
-//! where the \f$\epsilon\f$ coefficient of \p x is ignored,
-//! and assigns the result to \p z.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void reduced_scalar_product_assign(Coefficient& z,
-				   const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Returns the sign of the \e reduced scalar product of \p x and \p y,
-//! where the \f$\epsilon\f$ coefficient of \p x is ignored.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-int reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Computes the \e homogeneous scalar product of \p x and \p y,
-//! where the inhomogeneous terms are ignored,
-//! and assigns the result to \p z.
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void homogeneous_scalar_product_assign(Coefficient& z,
-				       const Linear_Row& x,
-				       const Linear_Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Returns the sign of the \e homogeneous scalar product of \p x and \p y,
-//! where the inhomogeneous terms are ignored,
-/*! \relates Linear_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-int homogeneous_scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.

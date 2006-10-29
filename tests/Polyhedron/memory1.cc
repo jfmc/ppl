@@ -1,5 +1,5 @@
 /* Test the allocation error recovery facility of the library.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -35,6 +34,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 #ifdef HAVE_SYS_RESOURCE_H
+// This should be included after <time.h> and <sys/time.h> so as to make
+// sure we have the definitions for, e.g., `ru_utime'.
 # include <sys/resource.h>
 #endif
 
@@ -42,19 +43,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 # include <unistd.h>
 #endif
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 // If GMP does not support exceptions the test is pointless.
 // Cygwin has an almost dummy definition of setrlimit().
-#if !GMP_SUPPORTS_EXCEPTIONS \
-|| defined(__CYGWIN__) \
-|| !(HAVE_DECL_RLIMIT_DATA || HAVE_DECL_RLIMIT_RSS \
-     || HAVE_DECL_RLIMIT_VMEM || HAVE_DECL_RLIMIT_AS)
+// For some reason, this test does not work on Alpha machines.
+#if !GMP_SUPPORTS_EXCEPTIONS				\
+  || defined(__CYGWIN__)				\
+  || defined(__alpha)					\
+  || !(HAVE_DECL_RLIMIT_DATA || HAVE_DECL_RLIMIT_RSS	\
+       || HAVE_DECL_RLIMIT_VMEM || HAVE_DECL_RLIMIT_AS)
 
 int
 main() TRY {
@@ -62,7 +58,7 @@ main() TRY {
 }
 CATCH
 
-#else
+#else // GMP_SUPPORTS_EXCEPTIONS && !defined(__CYGWIN__) && ...
 
 namespace {
 
@@ -80,15 +76,15 @@ compute_open_hypercube_generators(dimension_type dimension) {
 #define LIMIT(WHAT) \
 do { \
   if (getrlimit(WHAT, &t) != 0) { \
-    cerr << "getrlimit failed: " << strerror(errno) << endl; \
+    std::cerr << "getrlimit failed: " << strerror(errno) << endl;	\
     exit(1); \
   } \
   t.rlim_cur = bytes; \
   if (setrlimit(WHAT, &t) != 0) { \
-    cerr << "setrlimit failed: " << strerror(errno) << endl; \
+    std::cerr << "setrlimit failed: " << strerror(errno) << endl;	\
     exit(1); \
   } \
-} while(0)
+} while (0)
 
 void
 limit_memory(unsigned long bytes) {
@@ -119,17 +115,15 @@ guarded_compute_open_hypercube_generators(dimension_type dimension,
     compute_open_hypercube_generators(dimension);
     return true;
   }
-  catch (const bad_alloc&) {
-#if NOISY
-    cout << "out of virtual memory" << endl;
-#endif
+  catch (const std::bad_alloc&) {
+    nout << "out of virtual memory" << endl;
     return false;
   }
   catch (...) {
     exit(1);
   }
   // Should never get here.
-  return false;
+  exit(1);
 }
 
 } // namespace
@@ -168,9 +162,7 @@ main() TRY {
   dimension_type dimension = 0;
   do {
     ++dimension;
-#if NOISY
-    cout << "Trying dimension " << dimension << endl;
-#endif
+    nout << "Trying dimension " << dimension << endl;
   }
   while (guarded_compute_open_hypercube_generators(dimension, INIT_MEMORY));
 
@@ -178,9 +170,7 @@ main() TRY {
   unsigned long upper_bound = INIT_MEMORY;
   do {
     upper_bound *= 2;
-#if NOISY
-    cout << "Trying upper bound " << upper_bound << endl;
-#endif
+    nout << "Trying upper bound " << upper_bound << endl;
   }
   while (!guarded_compute_open_hypercube_generators(dimension, upper_bound));
 
@@ -188,19 +178,15 @@ main() TRY {
   int lower_bound = upper_bound/2;
   do {
     int test_memory = (lower_bound+upper_bound)/2;
-#if NOISY
-    cout << "Probing " << test_memory << endl;
-#endif
+    nout << "Probing " << test_memory << endl;
     if (guarded_compute_open_hypercube_generators(dimension, test_memory))
       upper_bound = test_memory;
     else
       lower_bound = test_memory;
   } while (upper_bound-lower_bound > 1024);
 
-#if NOISY
-  cout << "Estimated memory for dimension " << dimension
+  nout << "Estimated memory for dimension " << dimension
        << ": " << (lower_bound+upper_bound)/2 << " bytes" << endl;
-#endif
 
   return 0;
 }

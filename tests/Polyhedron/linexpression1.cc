@@ -1,7 +1,5 @@
-/* Test operator-=(Linear_Expression& e1, const Linear_Expression& e2):
-   in this case the dimension of e2 is strictly greater than
-   the dimension of e1.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Testing Linear_Expression.
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -16,26 +14,21 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
-  set_handlers();
-
+// Test operator-=(Linear_Expression& e1, const Linear_Expression& e2):
+// in this case the dimension of e2 is strictly greater than
+// the dimension of e1.
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -49,12 +42,15 @@ main() TRY {
   C_Polyhedron known_result(2);
   known_result.add_constraint(A - B >= 0);
 
-  int retval = (ph == known_result) ? 0 : 1;
+  bool ok = (ph == known_result);
 
-#if NOISY
   print_constraints(ph, "*** ph ***");
-#endif
 
-  return retval;
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

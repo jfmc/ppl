@@ -1,6 +1,6 @@
 /* Polyhedron class implementation
    (non-inline widening-related member functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -15,9 +15,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -27,6 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 
 #include "BHRZ03_Certificate.defs.hh"
+#include "Bounding_Box.defs.hh"
+#include "Scalar_Products.defs.hh"
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
@@ -35,8 +36,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
-					 Constraint_System& cs_selection) const {
+PPL::Polyhedron
+::select_CH78_constraints(const Polyhedron& y,
+			  Constraint_System& cs_selection) const {
   // Private method: the caller must ensure the following conditions.
   assert(topology() == y.topology()
 	 && topology() == cs_selection.topology()
@@ -61,9 +63,10 @@ PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
 }
 
 void
-PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
-					Constraint_System& cs_selected,
-					Constraint_System& cs_not_selected) const {
+PPL::Polyhedron
+::select_H79_constraints(const Polyhedron& y,
+			 Constraint_System& cs_selected,
+			 Constraint_System& cs_not_selected) const {
   // Private method: the caller must ensure the following conditions
   // (beside the inclusion `y <= x').
   assert(topology() == y.topology()
@@ -82,14 +85,14 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   if (!y.sat_g_is_up_to_date())
     y.update_sat_g();
   Saturation_Matrix tmp_sat_g = y.sat_g;
-  // Remove from `tmp_sat_g' the rows corresponding to trivially true
-  // constraints (i.e., the positivity or epsilon-bounding constraints):
+  // Remove from `tmp_sat_g' the rows corresponding to tautologies
+  // (i.e., the positivity or epsilon-bounding constraints):
   // this is needed in order to widen the polyhedron and not the
   // corresponding homogenized polyhedral cone.
   const Constraint_System& y_cs = y.con_sys;
   dimension_type num_rows = y_cs.num_rows();
   for (dimension_type i = 0; i < num_rows; ++i)
-    if (y_cs[i].is_trivial_true()) {
+    if (y_cs[i].is_tautological()) {
       --num_rows;
       std::swap(tmp_sat_g[i], tmp_sat_g[num_rows]);
     }
@@ -104,7 +107,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   // (built starting from the given constraint and `y.gen_sys')
   // is a row of the saturation matrix `tmp_sat_g'.
 
-  // CHECK ME: the following comment is only applicable when `y.gen_sys'
+  // CHECKME: the following comment is only applicable when `y.gen_sys'
   // is minimized. In that case, the comment suggests that it would be
   // possible to use a fast (but incomplete) redundancy test based on
   // the number of saturators in `buffer'.
@@ -124,7 +127,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
     // all the generators of the polyhedron `y'.
     buffer.clear();
     for (dimension_type j = y.gen_sys.num_rows(); j-- > 0; ) {
-      const int sp_sgn = scalar_product_sign(y.gen_sys[j], ci);
+      const int sp_sgn = Scalar_Products::sign(ci, y.gen_sys[j]);
       // We are assuming that `y <= x'.
       assert(sp_sgn >= 0);
       if (sp_sgn > 0)
@@ -143,8 +146,8 @@ void
 PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
-  const Topology tpl = x.topology();
-  if (tpl != y.topology())
+  const Topology topol = x.topology();
+  if (topol != y.topology())
     throw_topology_incompatible("H79_widening_assign(y)", "y", y);
   // Dimension-compatibility check.
   if (x.space_dim != y.space_dim)
@@ -187,10 +190,10 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // If we only have the generators of `x' and the dimensions of
   // the two polyhedra are the same, we can compute the standard
-  // widening by using the specification in CousotH78, therefore
+  // widening by using the specification in [CousotH78], therefore
   // avoiding converting from generators to constraints.
   if (x.has_pending_generators() || !x.constraints_are_up_to_date()) {
-    Constraint_System CH78_cs(tpl);
+    Constraint_System CH78_cs(topol);
     x.select_CH78_constraints(y, CH78_cs);
 
     if (CH78_cs.num_rows() == y.con_sys.num_rows()) {
@@ -203,7 +206,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     // constraints, since it is a subset of the former.
     else if (CH78_cs.num_equalities() == y.con_sys.num_equalities()) {
       // Let `x' be defined by the constraints in `CH78_cs'.
-      Polyhedron CH78(tpl, x.space_dim, UNIVERSE);
+      Polyhedron CH78(topol, x.space_dim, UNIVERSE);
       CH78.add_recycled_constraints(CH78_cs);
 
       // Check whether we are using the widening-with-tokens technique
@@ -236,10 +239,10 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   else if (!x.constraints_are_up_to_date())
     x.update_constraints();
 
-  // Copy into `H79_con_sys' the constraints of `x' that are common to `y',
+  // Copy into `H79_cs' the constraints of `x' that are common to `y',
   // according to the definition of the H79 widening.
-  Constraint_System H79_cs(tpl);
-  Constraint_System x_minus_H79_cs(tpl);
+  Constraint_System H79_cs(topol);
+  Constraint_System x_minus_H79_cs(topol);
   x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
 
   if (x_minus_H79_cs.num_rows() == 0)
@@ -251,7 +254,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     // NOTE: as `x.con_sys' was not necessarily in minimal form,
     // this does not imply that the result strictly includes `x'.
     // Let `H79' be defined by the constraints in `H79_cs'.
-    Polyhedron H79(tpl, x.space_dim, UNIVERSE);
+    Polyhedron H79(topol, x.space_dim, UNIVERSE);
     H79.add_recycled_constraints(H79_cs);
 
     // Check whether we are using the widening-with-tokens technique
@@ -274,6 +277,14 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
 						  const Constraint_System& cs,
 						  unsigned* tp) {
   Polyhedron& x = *this;
+
+  const dimension_type cs_num_rows = cs.num_rows();
+  // If `cs' is empty, we fall back to ordinary, non-limited widening.
+  if (cs_num_rows == 0) {
+    x.H79_widening_assign(y, tp);
+    return;
+  }
+
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
@@ -335,8 +346,7 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   const Generator_System& x_gen_sys = x.gen_sys;
   // Iterate upwards here so as to keep the relative ordering of constraints.
   // Not really an issue: just aesthetics.
-  for (dimension_type i = 0,
-	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+  for (dimension_type i = 0; i < cs_num_rows; ++i) {
     const Constraint& c = cs[i];
     if (x_gen_sys.satisfied_by_all_generators(c))
       new_cs.insert(c);
@@ -346,62 +356,28 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   assert(OK());
 }
 
-namespace {
-
-using namespace PPL;
-
-class BW_Box {
-private:
-  Constraint_System& con_sys;
-
-public:
-
-  BW_Box(Constraint_System& cs)
-    : con_sys(cs) {
-  }
-
-  void set_empty() {
-    throw std::runtime_error("PPL internal error");
-  }
-
-  void raise_lower_bound(const dimension_type k, const bool closed,
-			 Coefficient_traits::const_reference n,
-			 Coefficient_traits::const_reference d) {
-    if (closed)
-      con_sys.insert(d*Variable(k) >= n);
-    else
-      con_sys.insert(d*Variable(k) > n);
-  }
-
-  void lower_upper_bound(const dimension_type k, const bool closed,
-			 Coefficient_traits::const_reference n,
-			 Coefficient_traits::const_reference d) {
-    if (closed)
-      con_sys.insert(d*Variable(k) <= n);
-    else
-      con_sys.insert(d*Variable(k) < n);
-  }
-};
-
-} // namespace
-
 void
 PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 						  const Constraint_System& cs,
 						  unsigned* tp) {
-  Constraint_System bounding_cs;
-  BW_Box box(bounding_cs);
-  shrink_bounding_box(box, ANY_COMPLEXITY);
+  const dimension_type space_dim = space_dimension();
+  Bounding_Box x_box(space_dim);
+  Bounding_Box y_box(space_dim);
+  shrink_bounding_box(x_box, ANY_COMPLEXITY);
+  y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
+  x_box.CC76_widening_assign(y_box);
   limited_H79_extrapolation_assign(y, cs, tp);
-  add_recycled_constraints(bounding_cs);
+  // TODO: see if some copies can be avoided.
+  // add_recycled_constraints(x_box.constraints());
+  add_constraints(x_box.constraints());
 }
 
-
 bool
-PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
-					      const BHRZ03_Certificate& y_cert,
-					      const Polyhedron& H79,
-					      const Constraint_System& x_minus_H79_cs) {
+PPL::Polyhedron
+::BHRZ03_combining_constraints(const Polyhedron& y,
+			       const BHRZ03_Certificate& y_cert,
+			       const Polyhedron& H79,
+			       const Constraint_System& x_minus_H79_cs) {
   Polyhedron& x = *this;
   // It is assumed that `y <= x <= H79'.
   assert(x.topology() == y.topology()
@@ -428,9 +404,9 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
   if (x_minus_H79_cs_num_rows <= 1)
     return false;
 
-  const Topology tpl = x.topology();
-  Constraint_System combining_cs(tpl);
-  Constraint_System new_cs(tpl);
+  const Topology topol = x.topology();
+  Constraint_System combining_cs(topol);
+  Constraint_System new_cs(topol);
 
   // Consider the points that belong to both `x.gen_sys' and `y.gen_sys'.
   // For NNC polyhedra, the role of points is played by closure points.
@@ -445,7 +421,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
       const Constraint_System& H79_cs = H79.con_sys;
       for (dimension_type j = H79_cs.num_rows(); j-- > 0; ) {
 	const Constraint& c = H79_cs[j];
-	if (c.is_inequality() && scalar_product_sign(c, g) == 0) {
+	if (c.is_inequality() && Scalar_Products::sign(c, g) == 0) {
 	  lies_on_the_boundary_of_H79 = true;
 	  break;
 	}
@@ -453,12 +429,12 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
       if (lies_on_the_boundary_of_H79)
 	continue;
 
-      // Consider all the constraints in `x_minus_H79_con_sys'
+      // Consider all the constraints in `x_minus_H79_cs'
       // that are saturated by the point `g'.
       combining_cs.clear();
       for (dimension_type j = x_minus_H79_cs_num_rows; j-- > 0; ) {
 	const Constraint& c = x_minus_H79_cs[j];
-	if (scalar_product_sign(c, g) == 0)
+	if (Scalar_Products::sign(c, g) == 0)
 	  combining_cs.insert(c);
       }
       // Build a new constraint by combining all the chosen constraints.
@@ -475,9 +451,6 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 	      strict_inequality = true;
 	    e += Linear_Expression(combining_cs[h]);
 	  }
-	  // Simple normalization is enough, since
-	  // `e' will not become an equality constraint.
-	  e.normalize();
 
 	  if (!e.all_homogeneous_terms_are_zero())
 	    if (strict_inequality)
@@ -506,7 +479,8 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
   Polyhedron result = H79;
   result.add_recycled_constraints_and_minimize(new_cs);
 
-  // Check for stabilization wrt `y_cert' and improvement over `H79'.
+  // Check for stabilization with respect to `y_cert' and improvement
+  // over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
     std::swap(x, result);
@@ -573,7 +547,8 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   result.add_recycled_generators_and_minimize(candidate_rays);
   result.intersection_assign_and_minimize(H79);
 
-  // Check for stabilization wrt `y_cert' and improvement over `H79'.
+  // Check for stabilization with respect to `y_cert' and improvement
+  // over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
     std::swap(x, result);
@@ -616,7 +591,8 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 	const Generator& y_g = y.gen_sys[j];
 	if (y_g.is_ray()) {
 	  Generator new_ray(x_g);
-	  // Modify `new_ray' according to the evolution of `x_g' wrt `y_g'.
+	  // Modify `new_ray' according to the evolution of `x_g' with
+	  // respect to `y_g'.
 	  std::deque<bool> considered(x.space_dim + 1);
 	  for (dimension_type k = 1; k < x.space_dim; ++k)
 	    if (!considered[k])
@@ -629,7 +605,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 		  const int clockwise
 		    = sgn(tmp);
 		  const int first_or_third_quadrant
-		    = sgn(x_g[k])*sgn(x_g[h]);
+		    = sgn(x_g[k]) * sgn(x_g[h]);
 		  switch (clockwise * first_or_third_quadrant) {
 		  case -1:
 		    new_ray[k] = 0;
@@ -661,7 +637,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   // Intersect with `H79'.
   result.intersection_assign_and_minimize(H79);
 
-  // Check for stabilization wrt `y' and improvement over `H79'.
+  // Check for stabilization with respect to `y' and improvement over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
     std::swap(x, result);
@@ -743,9 +719,9 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // Copy into `H79_cs' the constraints that are common to `x' and `y',
   // according to the definition of the H79 widening.
   // The other ones are copied into `x_minus_H79_cs'.
-  const Topology tpl = x.topology();
-  Constraint_System H79_cs(tpl);
-  Constraint_System x_minus_H79_cs(tpl);
+  const Topology topol = x.topology();
+  Constraint_System H79_cs(topol);
+  Constraint_System x_minus_H79_cs(topol);
   x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
 
   // We cannot have selected all of the rows, since otherwise
@@ -753,7 +729,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   assert(x_minus_H79_cs.num_rows() > 0);
   // Be careful to obtain the right space dimension
   // (because `H79_cs' may be empty).
-  Polyhedron H79(tpl, x.space_dim, UNIVERSE);
+  Polyhedron H79(topol, x.space_dim, UNIVERSE);
   H79.add_recycled_constraints_and_minimize(H79_cs);
 
   // NOTE: none of the following widening heuristics is intrusive:
@@ -785,10 +761,18 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 }
 
 void
-PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
-						     const Constraint_System& cs,
-						     unsigned* tp) {
+PPL::Polyhedron
+::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
+				      const Constraint_System& cs,
+				      unsigned* tp) {
   Polyhedron& x = *this;
+  const dimension_type cs_num_rows = cs.num_rows();
+  // If `cs' is empty, we fall back to ordinary, non-limited widening.
+  if (cs_num_rows == 0) {
+    x.BHRZ03_widening_assign(y, tp);
+    return;
+  }
+
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
@@ -850,8 +834,7 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
   const Generator_System& x_gen_sys = x.gen_sys;
   // Iterate upwards here so as to keep the relative ordering of constraints.
   // Not really an issue: just aesthetics.
-  for (dimension_type i = 0,
-	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+  for (dimension_type i = 0; i < cs_num_rows; ++i) {
     const Constraint& c = cs[i];
     if (x_gen_sys.satisfied_by_all_generators(c))
       new_cs.insert(c);
@@ -862,12 +845,18 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
 }
 
 void
-PPL::Polyhedron::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
-						     const Constraint_System& cs,
-						     unsigned* tp) {
-  Constraint_System bounding_cs;
-  BW_Box box(bounding_cs);
-  shrink_bounding_box(box, ANY_COMPLEXITY);
+PPL::Polyhedron
+::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
+				      const Constraint_System& cs,
+				      unsigned* tp) {
+  const dimension_type space_dim = space_dimension();
+  Bounding_Box x_box(space_dim);
+  Bounding_Box y_box(space_dim);
+  shrink_bounding_box(x_box, ANY_COMPLEXITY);
+  y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
+  x_box.CC76_widening_assign(y_box);
   limited_BHRZ03_extrapolation_assign(y, cs, tp);
-  add_recycled_constraints(bounding_cs);
+  // TODO: see if some copies can be avoided.
+  // add_recycled_constraints(x_box.constraints());
+  add_constraints(x_box.constraints());
 }

@@ -1,7 +1,5 @@
-/* Test Polyhedron::bounds_from_below() and
-   Polyhedron::bounds_from_above(): a zero-dimensional or an empty
-   polyhedron bounds everything.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Polyhedron::bounds_from_below() and Polyhedron::bounds_from_above().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -16,39 +14,51 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
 
   C_Polyhedron ph1;
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph2(2, EMPTY);
 
-#if NOISY
   print_generators(ph1, "*** ph1 ***");
   print_generators(ph2, "*** ph2 ***");
-#endif
 
   bool ok = ph1.bounds_from_above(Linear_Expression(3))
     && ph2.bounds_from_below(A);
 
-  return ok ? 0 : 1;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 1);
+  ph.add_constraint(B >= 1);
+
+  print_constraints(ph, "*** ph ***");
+
+  bool ok = !ph.bounds_from_above(A + B) && ph.bounds_from_below(A + B);
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+END_MAIN

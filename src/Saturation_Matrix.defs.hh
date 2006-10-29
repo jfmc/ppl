@@ -1,5 +1,5 @@
 /* Saturation_Matrix class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -32,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A saturation matrix.
-/*!
+/*! \ingroup PPL_CXX_interface
   A saturation matrix is used to encode the relation between the
   generators and the constraints of a polyhedron: if a generator
   saturates a constraint the corresponding element of the saturation
@@ -50,9 +49,10 @@ public:
   //! Default constructor.
   Saturation_Matrix();
 
-  //! \brief
-  //! Construct a saturation matrix with \p n_rows rows
-  //! and \p n_columns columns.
+  /*! \brief
+    Construct a saturation matrix with \p n_rows rows
+    and \p n_columns columns.
+  */
   Saturation_Matrix(dimension_type n_rows, dimension_type n_columns);
 
   //! Copy-constructor.
@@ -122,15 +122,13 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -152,6 +150,7 @@ private:
   dimension_type row_size;
 
   //! Ordering predicate (used when implementing the sort algorithm).
+  /*! \ingroup PPL_CXX_interface */
   struct Saturation_Row_Less_Than {
     bool operator()(const Saturation_Row& x, const Saturation_Row& y) const;
   };

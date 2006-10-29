@@ -1,5 +1,5 @@
 /* Test Polyhedron::H79_widening_assign().
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,54 +14,50 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
-  set_handlers();
-
+// This is the example of Figure 3 in [BagnaraRZH02TR].
+bool
+test01() {
   Variable A(0);
-  Variable B(1);
 
-  C_Polyhedron ph1(2);
-  ph1.add_constraint(A >= 2);
-  ph1.add_constraint(B >= 0);
+  NNC_Polyhedron ph1(1);
+  ph1.add_constraint(A > 0);
+  ph1.add_constraint(A < 2);
 
-  C_Polyhedron ph2(2);
-  ph2.add_constraint(A >= 0);
-  ph2.add_constraint(B >= 0);
-  ph2.add_constraint(A-B >= 2);
+  NNC_Polyhedron ph4(1);
+  ph4.add_constraint(4*A >= 1);
+  ph4.add_constraint(4*A <= 3);
 
-#if NOISY
-  print_constraints(ph1, "*** ph1 ***");
-  print_constraints(ph2, "*** ph2 ***");
-#endif
+  NNC_Polyhedron ph = ph4;
+  ph.intersection_assign_and_minimize(ph1);
+  // At this point, ph and ph4 are two different representations
+  // of the same NNC polyhedron.
 
-  ph1.H79_widening_assign(ph2);
+  print_constraints(ph4, "*** ph4 ***");
+  print_constraints(ph, "*** ph ***");
 
-  C_Polyhedron known_result(2);
-  known_result.add_constraint(B >= 0);
+  NNC_Polyhedron known_result(ph4);
 
-  int retval = (ph1 == known_result) ? 0 : 1;
+  ph.H79_widening_assign(ph4);
 
-#if NOISY
-  print_constraints(ph1, "*** After H79_widening_assign ***");
-#endif
+  bool ok = (ph == known_result);
 
-  return retval;
+  print_constraints(ph, "*** After H79_widening_assign ***");
+
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

@@ -1,5 +1,5 @@
 /* H79_Certificate class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -26,12 +25,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "H79_Certificate.types.hh"
 #include "Polyhedron.types.hh"
-#include "globals.defs.hh"
+#include "globals.types.hh"
 #include <cassert>
 #include <vector>
 
 //! A convergence certificate for the H79 widening operator.
-/*!
+/*! \ingroup PPL_CXX_interface
   Convergence certificates are used to instantiate the BHZ03 framework
   so as to define widening operators for the finite powerset domain.
   \note
@@ -42,6 +41,10 @@ class Parma_Polyhedra_Library::H79_Certificate {
 public:
   //! Default constructor.
   H79_Certificate();
+
+  //! Constructor: computes the certificate for \p ph.
+  template <typename PH>
+  H79_Certificate(const PH& ph);
 
   //! Constructor: computes the certificate for \p ph.
   H79_Certificate(const Polyhedron& ph);
@@ -65,10 +68,14 @@ public:
   int compare(const H79_Certificate& y) const;
 
   //! Compares \p *this with the certificate for polyhedron \p ph.
+  template <typename PH>
+  int compare(const PH& ph) const;
+
+  //! Compares \p *this with the certificate for polyhedron \p ph.
   int compare(const Polyhedron& ph) const;
 
   //! A total ordering on H79 certificates.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     This binary predicate defines a total ordering on H79 certificates
     which is used when storing information about sets of polyhedra.
   */

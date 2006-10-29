@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: minimize() and add_and_minimize().
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -110,13 +109,13 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   // in Linear_Row.cc).
   dest.set_sorted(false);
 
-  // NOTE: the system `dest', as it is now, it is not a _legal_
-  //       system of generators, because in the first row we have
-  // a line with a non-zero divisor (which should only happen for
-  // points). However, this is NOT a problem, because `source'
-  // necessarily contains the positivity constraint (or a combination
-  // of it with another constraint) which will restore things as they
-  // should be.
+  // NOTE: the system `dest', as it is now, is not a _legal_ system of
+  //       generators, because in the first row we have a line with a
+  //       non-zero divisor (which should only happen for
+  //       points). However, this is NOT a problem, because `source'
+  //       necessarily contains the positivity constraint (or a
+  //       combination of it with another constraint) which will
+  //       restore things as they should be.
 
 
   // Building a saturation matrix and initializing it by setting

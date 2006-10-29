@@ -1,5 +1,5 @@
 /* Test Polyhedron::bounded_H79_extrapolation_assign().
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,60 +14,61 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
   C_Polyhedron ph1(2);
-  ph1.add_constraint(x >= 3);
-  ph1.add_constraint(x <= 7);
+  ph1.add_constraint(x-3 >= 0);
+  ph1.add_constraint(x-3 <= 1);
+  ph1.add_constraint(y >= 0);
+  ph1.add_constraint(y <= 1);
 
-
-#if NOISY
-  print_constraints(ph1, "*** ph1 ****");
-#endif
+  print_constraints(ph1, "*** ph1 ***");
 
   C_Polyhedron ph2(2);
-  ph2.add_constraint(x >= 3);
-  ph2.add_constraint(x <= 8);
+  ph2.add_constraint(2*x-5 >= 0);
+  ph2.add_constraint(x-3 <= 1);
+  ph2.add_constraint(2*y+3 >= 0);
+  ph2.add_constraint(2*y-5 <= 0);
 
-
-#if NOISY
-  print_constraints(ph2, "*** ph2 ****");
-#endif
+  print_constraints(ph2, "*** ph2 ***");
 
   Constraint_System cs;
-  cs.insert(x <= 100);
+  cs.insert(x >= y);
 
-#if NOISY
-  print_constraints(cs, "*** cs ****");
-#endif
+  print_constraints(cs, "*** cs ***");
 
-  C_Polyhedron computed_result = ph2;
-  computed_result.bounded_H79_extrapolation_assign(ph1, cs);
+  ph2.bounded_H79_extrapolation_assign(ph1, cs);
 
-#if NOISY
-  print_constraints(computed_result,
-		    "*** After bounded_H79_extrapolation_assign ****");
-#endif
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(x >= 2);
+  known_result.add_constraint(x <= 4);
+  known_result.add_constraint(y >= -2);
+  known_result.add_constraint(x >= y);
 
-  return (computed_result == ph2) ? 0 : 1;
+  bool ok = (ph2 == known_result);
+
+  print_constraints(ph2,
+		    "*** After ph2.bounded_H79_extrapolation_assign(ph1, cs) "
+		    "***");
+
+  return ok;
 }
-CATCH
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST_F8A(test01);
+END_MAIN

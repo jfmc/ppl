@@ -1,5 +1,5 @@
 /* Init class implementation (non-inline functions and static variables).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -24,12 +23,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Init.defs.hh"
-#include "globals.defs.hh"
 #include "Variable.defs.hh"
+#include "fpu.defs.hh"
+#include "checked.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
 unsigned int PPL::Init::count = 0;
+
+PPL::fpu_rounding_direction_type PPL::Init::old_rounding_direction;
 
 extern "C" void
 set_GMP_memory_allocation_functions(void)
@@ -50,12 +52,20 @@ PPL::Init::Init() {
     set_GMP_memory_allocation_functions();
     // ... and the default output function for Variable objects is set.
     Variable::set_output_function(Variable::default_output_function);
+#if PPL_CAN_CONTROL_FPU
+    old_rounding_direction = fpu_get_rounding_direction();
+    fpu_set_rounding_direction(ROUND_DIRECT);
+#endif
+    // FIXME: is 3200 a magic number?
+    set_rational_sqrt_precision_parameter(3200);
   }
 }
 
 PPL::Init::~Init() {
   // Only when the last Init object is destroyed...
-  if (--count == 0)
-    // ... well, there is nothing to do, at the moment.
-    ;
+  if (--count == 0) {
+#if PPL_CAN_CONTROL_FPU
+    fpu_set_rounding_direction(old_rounding_direction);
+#endif
+  }
 }

@@ -1,5 +1,5 @@
 /* Linear_Expression class implementation (non-inline functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -27,6 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
+#include "Grid_Generator.defs.hh"
+#include "Congruence.defs.hh"
 #include <stdexcept>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -44,6 +45,21 @@ PPL::Linear_Expression::Linear_Expression(const Generator& g)
   // Do not copy the divisor of `g'.
   for (dimension_type i = size(); --i > 0; )
     e[i] = g[i];
+}
+
+PPL::Linear_Expression::Linear_Expression(const Grid_Generator& g)
+  : Linear_Row(g.space_dimension() + 1, Linear_Row::Flags()) {
+  Linear_Expression& e = *this;
+  // Do not copy the divisor of `g'.
+  for (dimension_type i = size(); --i > 0; )
+    e[i] = g[i];
+}
+
+PPL::Linear_Expression::Linear_Expression(const Congruence& cg)
+  : Linear_Row(cg.space_dimension() + 1, Linear_Row::Flags()) {
+  Linear_Expression& e = *this;
+  for (dimension_type i = size(); i-- > 0; )
+    e[i] = cg[i];
 }
 
 
@@ -80,7 +96,6 @@ PPL::operator+(const Linear_Expression& e1, const Linear_Expression& e2) {
   return r;
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator+(Coefficient_traits::const_reference n,
@@ -90,16 +105,14 @@ PPL::operator+(Coefficient_traits::const_reference n,
   return r;
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator-(const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
-    negate(r[i]);
+    neg_assign(r[i]);
   return r;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
@@ -134,19 +147,17 @@ PPL::operator-(const Linear_Expression& e1, const Linear_Expression& e2) {
   }
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
 PPL::operator-(Coefficient_traits::const_reference n,
 	       const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
-    negate(r[i]);
+    neg_assign(r[i]);
   r[0] += n;
 
   return r;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
@@ -157,7 +168,6 @@ PPL::operator*(Coefficient_traits::const_reference n,
     r[i] *= n;
   return r;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
@@ -176,7 +186,6 @@ PPL::operator+=(Linear_Expression& e1, const Linear_Expression& e2) {
   return e1;
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
 PPL::operator+=(Linear_Expression& e, const Variable v) {
@@ -192,7 +201,6 @@ PPL::operator+=(Linear_Expression& e, const Variable v) {
   ++e[v_space_dim];
   return e;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
@@ -210,7 +218,6 @@ PPL::operator-=(Linear_Expression& e1, const Linear_Expression& e2) {
   }
   return e1;
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression&
@@ -239,24 +246,24 @@ PPL::operator*=(Linear_Expression& e, Coefficient_traits::const_reference n) {
 
 bool
 PPL::Linear_Expression::OK() const {
-  dimension_type sz = size();
-  return Linear_Row::OK(sz, sz);
+  return Linear_Row::OK();
 }
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
-  const int num_variables = e.space_dimension();
+  const dimension_type num_variables = e.space_dimension();
+  TEMP_INTEGER(ev);
   bool first = true;
-  for (int v = 0; v < num_variables; ++v) {
-    Coefficient ev = e[v+1];
+  for (dimension_type v = 0; v < num_variables; ++v) {
+    ev = e[v+1];
     if (ev != 0) {
       if (!first) {
 	if (ev > 0)
 	  s << " + ";
 	else {
 	  s << " - ";
-	  negate(ev);
+	  neg_assign(ev);
 	}
       }
       else
@@ -269,14 +276,15 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
     }
   }
   // Inhomogeneous term.
-  Coefficient it = e[0];
+  TEMP_INTEGER(it);
+  it = e[0];
   if (it != 0) {
     if (!first) {
       if (it > 0)
 	s << " + ";
       else {
 	s << " - ";
-	negate(it);
+	neg_assign(it);
       }
     }
     else
@@ -286,6 +294,8 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Linear_Expression& e) {
 
   if (first)
     // The null linear expression.
-    s << 0;
+    s << Coefficient_zero();
   return s;
 }
+
+PPL_OUTPUT_DEFINITIONS(Linear_Expression)

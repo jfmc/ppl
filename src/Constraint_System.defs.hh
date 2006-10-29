@@ -1,5 +1,5 @@
 /* Constraint_System class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -24,14 +23,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Constraint_System_defs_hh
 #define PPL_Constraint_System_defs_hh 1
 
-#include "Linear_Expression.types.hh"
 #include "Constraint_System.types.hh"
+#include "Linear_Expression.types.hh"
 #include "Linear_System.defs.hh"
 #include "Generator.types.hh"
 #include "Polyhedron.types.hh"
 #include "Constraint.types.hh"
-#include <cstddef>
-#include <vector>
+#include "Congruence_System.types.hh"
 #include <iterator>
 #include <iosfwd>
 
@@ -66,7 +64,7 @@ void swap(Parma_Polyhedra_Library::Constraint_System& x,
 } // namespace std
 
 //! A system of constraints.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class Constraint_System is a system of constraints,
     i.e., a multiset of objects of the class Constraint.
     When inserting constraints in a system, space dimensions are
@@ -93,7 +91,7 @@ void swap(Parma_Polyhedra_Library::Constraint_System& x,
     \endcode
     Note that:
     the constraint system is created with space dimension zero;
-    the first and third constraint insertions increases the space
+    the first and third constraint insertions increase the space
     dimension to \f$1\f$ and \f$2\f$, respectively.
 
     \par Example 2
@@ -134,6 +132,9 @@ public:
   //! Builds the singleton system containing only constraint \p c.
   explicit Constraint_System(const Constraint& c);
 
+  //! Builds a system containing copies of any equalities in \p cgs.
+  explicit Constraint_System(const Congruence_System& cgs);
+
   //! Ordinary copy-constructor.
   Constraint_System(const Constraint_System& cs);
 
@@ -149,25 +150,34 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Removes all the constraints from the constraint system
-  //! and sets its space dimension to 0.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains one or more strict inequality constraints.
+  */
+  bool has_strict_inequalities() const;
+
+  /*! \brief
+    Removes all the constraints from the constraint system
+    and sets its space dimension to 0.
+  */
   void clear();
 
-  //! \brief
-  //! Inserts in \p *this a copy of the constraint \p c,
-  //! increasing the number of space dimensions if needed.
+  /*! \brief
+    Inserts in \p *this a copy of the constraint \p c,
+    increasing the number of space dimensions if needed.
+  */
   void insert(const Constraint& c);
 
-  //! \brief
-  //! Returns the singleton system containing only
-  //! Constraint::zero_dim_false().
+  /*! \brief
+    Returns the singleton system containing only
+    Constraint::zero_dim_false().
+  */
   static const Constraint_System& zero_dim_empty();
 
   //! An iterator over a system of constraints.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     A const_iterator is used to provide read-only access
-    to each constraint contained in an object of Constraint_System.
+    to each constraint contained in a Constraint_System object.
 
     \par Example
     The following code prints the system of constraints
@@ -182,7 +192,7 @@ public:
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
 			   Constraint,
-			   void,
+			   ptrdiff_t,
 			   const Constraint*,
 			   const Constraint&> {
   public:
@@ -210,14 +220,16 @@ public:
     //! Postfix increment operator.
     const_iterator operator++(int);
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are identical.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are identical.
+    */
     bool operator==(const const_iterator& y) const;
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are different.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are different.
+    */
     bool operator!=(const const_iterator& y) const;
 
   private:
@@ -237,10 +249,11 @@ public:
     void skip_forward();
   };
 
-  //! \brief
-  //! Returns the const_iterator pointing to the first constraint,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const_iterator.
+  /*! \brief
+    Returns the const_iterator pointing to the first constraint,
+    if \p *this is not empty;
+    otherwise, returns the past-the-end const_iterator.
+  */
   const_iterator begin() const;
 
   //! Returns the past-the-end const_iterator.
@@ -255,18 +268,14 @@ public:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool OK() const;
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! \ref ascii_dump) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
@@ -276,6 +285,9 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  //! Swaps \p *this with \p y.
+  void swap(Constraint_System& y);
+
 private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
@@ -284,36 +296,27 @@ private:
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,
 				      const Polyhedron& y);
 
-  friend void std::swap(Parma_Polyhedra_Library::Constraint_System& x,
-			Parma_Polyhedra_Library::Constraint_System& y);
-
   //! Builds an empty system of constraints having the specified topology.
   explicit Constraint_System(Topology topol);
 
-  //! \brief
-  //! Builds a system of \p n_rows constraints on a \p n_columns - 1
-  //! dimensional space (including the \f$\epsilon\f$ dimension, if
-  //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
+  /*! \brief
+    Builds a system of \p n_rows constraints on a \p n_columns - 1
+    dimensional space (including the \f$\epsilon\f$ dimension, if
+    \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
+  */
   Constraint_System(Topology topol,
 		    dimension_type n_rows, dimension_type n_columns);
 
-  //! Swaps \p *this with \p y.
-  void swap(Constraint_System& y);
-
-  //! \brief
-  //! Adjusts \p *this so that it matches the topology and
-  //! the number of space dimensions given as parameters
-  //! (adding or removing columns if needed).
-  //! Returns <CODE>false</CODE> if and only if \p topol is
-  //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
-  //! contains strict inequalities.
+  /*! \brief
+    Adjusts \p *this so that it matches the topology and
+    the number of space dimensions given as parameters
+    (adding or removing columns if needed).
+    Returns <CODE>false</CODE> if and only if \p topol is
+    equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
+    contains strict inequalities.
+  */
   bool adjust_topology_and_space_dimension(Topology topol,
 					   dimension_type num_dimensions);
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more strict inequality constraints.
-  bool has_strict_inequalities() const;
 
   //! Returns the \p k- th constraint of the system.
   Constraint& operator[](dimension_type k);
@@ -324,9 +327,7 @@ private:
   //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
   bool satisfies_all_constraints(const Generator& g) const;
 
-  //! \brief
-  //! Substitutes a given column of coefficients by a given
-  //! affine expression.
+  //! Substitutes a given column of coefficients by a given affine expression.
   /*!
     \param v
     Index of the column to which the affine transformation is substituted.
@@ -338,10 +339,11 @@ private:
     \param denominator
     The denominator of the affine transformation.
 
-    We want to allow affine transformations (see the Section \ref
-    operations) having any rational coefficients. Since the coefficients
-    of the constraints are integers we must also provide an integer
-    \p denominator that will be used as denominator of the affine
+    We want to allow affine transformations
+    (see Section \ref Images_and_Preimages_of_Affine_Transfer_Relations)
+    having any rational coefficients. Since the coefficients of the
+    constraints are integers we must also provide an integer \p
+    denominator that will be used as denominator of the affine
     transformation.
     The denominator is required to be a positive integer.
 
@@ -364,17 +366,29 @@ private:
 		       const Linear_Expression& expr,
 		       Coefficient_traits::const_reference denominator);
 
-  //! Returns the number of the equality constraints.
+  //! Returns the number of equality constraints.
   dimension_type num_equalities() const;
 
-  //! Returns the number of the inequality constraints.
+  //! Returns the number of inequality constraints.
   dimension_type num_inequalities() const;
 
-  //! \brief
-  //! Inserts in \p *this a copy of the constraint \p c,
-  //! increasing the number of space dimensions if needed.
-  //! It is a pending constraint.
+  /*! \brief
+    Applies Gaussian elimination and back-substitution so as
+    to provide a partial simplification of the system of constraints.
+
+    It is assumed that the system has no pending constraints.
+  */
+  void simplify();
+
+  /*! \brief
+    Inserts in \p *this a copy of the constraint \p c,
+    increasing the number of space dimensions if needed.
+    It is a pending constraint.
+  */
   void insert_pending(const Constraint& c);
+
+  //! Adds low-level constraints to the constraint system.
+  void add_low_level_constraints();
 };
 
 // Constraint_System.inlines.hh is not included here on purpose.

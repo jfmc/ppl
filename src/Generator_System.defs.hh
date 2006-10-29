@@ -1,5 +1,5 @@
 /* Generator_System class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -24,15 +23,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Generator_System_defs_hh
 #define PPL_Generator_System_defs_hh 1
 
-#include "Linear_Expression.types.hh"
 #include "Generator_System.types.hh"
+#include "Grid_Generator_System.types.hh"
+#include "Linear_Expression.types.hh"
 #include "Linear_System.defs.hh"
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
 #include "Polyhedron.types.hh"
 #include "Poly_Con_Relation.defs.hh"
-#include <cstddef>
-#include <vector>
+#include "Grid.types.hh"
+#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -65,7 +65,7 @@ void swap(Parma_Polyhedra_Library::Generator_System& x,
 } // namespace std
 
 //! A system of generators.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class Generator_System is a system of generators,
     i.e., a multiset of objects of the class Generator
     (lines, rays, points and closure points).
@@ -203,23 +203,26 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Removes all the generators from the generator system
-  //! and sets its space dimension to 0.
+  /*! \brief
+    Removes all the generators from the generator system
+    and sets its space dimension to 0.
+  */
   void clear();
 
-  //! \brief
-  //! Inserts in \p *this a copy of the generator \p g,
-  //! increasing the number of space dimensions if needed.
+  /*! \brief
+    Inserts in \p *this a copy of the generator \p g,
+    increasing the number of space dimensions if needed.
+  */
   void insert(const Generator& g);
 
-  //! \brief
-  //! Returns the singleton system containing only
-  //! Generator::zero_dim_point().
+  /*! \brief
+    Returns the singleton system containing only
+    Generator::zero_dim_point().
+  */
   static const Generator_System& zero_dim_univ();
 
   //! An iterator over a system of generators
-  /*!
+  /*! \ingroup PPL_CXX_interface
       A const_iterator is used to provide read-only access
       to each generator contained in an object of Generator_System.
 
@@ -241,10 +244,10 @@ public:
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
-				Generator,
-				void,
-				const Generator*,
-                                const Generator&> {
+			   Generator,
+			   ptrdiff_t,
+			   const Generator*,
+			   const Generator&> {
   public:
     //! Default constructor.
     const_iterator();
@@ -270,14 +273,16 @@ public:
     //! Postfix increment operator.
     const_iterator operator++(int);
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are identical.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are identical.
+    */
     bool operator==(const const_iterator& y) const;
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are different.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are different.
+    */
     bool operator!=(const const_iterator& y) const;
 
   private:
@@ -293,16 +298,18 @@ public:
     const_iterator(const Linear_System::const_iterator& iter,
 		   const Generator_System& gsys);
 
-    //! \brief
-    //! \p *this skips to the next generator, skipping those
-    //! closure points that are immediately followed by a matching point.
+    /*! \brief
+      \p *this skips to the next generator, skipping those
+      closure points that are immediately followed by a matching point.
+    */
     void skip_forward();
   };
 
-  //! \brief
-  //! Returns the const_iterator pointing to the first generator,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const_iterator.
+  /*! \brief
+    Returns the const_iterator pointing to the first generator,
+    if \p *this is not empty;
+    otherwise, returns the past-the-end const_iterator.
+  */
   const_iterator begin() const;
 
   //! Returns the past-the-end const_iterator.
@@ -315,20 +322,14 @@ public:
   */
   bool OK() const;
 
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump(std::ostream& s) const;
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! \ref ascii_dump) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-  /*!
     Resizes the matrix of generators using the numbers of rows and columns
     read from \p s, then initializes the coordinates of each generator
     and its type reading the contents from \p s.
@@ -342,67 +343,68 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  //! Swaps \p *this with \p y.
+  void swap(Generator_System& y);
+
 private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,
 				      const Polyhedron& y);
 
-  friend void std::swap(Parma_Polyhedra_Library::Generator_System& x,
-			Parma_Polyhedra_Library::Generator_System& y);
-
   //! Builds an empty system of generators having the specified topology.
   explicit Generator_System(Topology topol);
 
-  //! \brief
-  //! Builds a system of \p n_rows rays/points on a \p n_columns - 1
-  //! dimensional space (including the \f$\epsilon\f$ dimension, if
-  //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
+  /*! \brief
+    Builds a system of \p n_rows rays/points on a \p n_columns - 1
+    dimensional space (including the \f$\epsilon\f$ dimension, if
+    \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
+  */
   Generator_System(Topology topol,
 		   dimension_type n_rows, dimension_type n_columns);
 
-  //! Swaps \p *this with \p y.
-  void swap(Generator_System& y);
-
-  //! \brief
-  //! Adjusts \p *this so that it matches the topology and
-  //! the number of space dimensions given as parameters
-  //! (adding or removing columns if needed).
-  //! Returns <CODE>false</CODE> if and only if \p topol is
-  //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
-  //! contains closure points.
+  /*! \brief
+    Adjusts \p *this so that it matches the topology and
+    the number of space dimensions given as parameters
+    (adding or removing columns if needed).
+    Returns <CODE>false</CODE> if and only if \p topol is
+    equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
+    contains closure points.
+  */
   bool adjust_topology_and_space_dimension(Topology topol,
 					   dimension_type num_dimensions);
 
-  //! \brief
-  //! For each unmatched closure point in \p *this, adds the
-  //! corresponding point.
-  /*!
+  /*! \brief
+    For each unmatched closure point in \p *this, adds the
+    corresponding point.
+
     It is assumed that the topology of \p *this
     is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
   */
   void add_corresponding_points();
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more points.
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains one or more points.
+  */
   bool has_points() const;
 
-  //! \brief
-  //! For each unmatched point in \p *this, adds the corresponding
-  //! closure point.
-  /*!
+  /*! \brief
+    For each unmatched point in \p *this, adds the corresponding
+    closure point.
+
     It is assumed that the topology of \p *this
     is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
   */
   void add_corresponding_closure_points();
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more closure points.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains one or more closure points.
+
     Note: the check for the presence of closure points is
     done under the point of view of the user. Namely, we scan
     the generator system using high-level iterators, so that
@@ -417,14 +419,27 @@ private:
   //! Returns a constant reference to the \p k- th generator of the system.
   const Generator& operator[](dimension_type k) const;
 
-  //! \brief
-  //! Returns the relations holding between the generator system
-  //! and the constraint \p c.
+  /*! \brief
+    Returns the relations holding between the generator system
+    and the constraint \p c.
+  */
   Parma_Polyhedra_Library::Poly_Con_Relation
   relation_with(const Constraint& c) const;
 
   //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
   bool satisfied_by_all_generators(const Constraint& c) const;
+
+  //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
+  /*!
+    It is assumed that <CODE>c.is_necessarily_closed()</CODE> holds.
+  */
+  bool satisfied_by_all_generators_C(const Constraint& c) const;
+
+  //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
+  /*!
+    It is assumed that <CODE>c.is_necessarily_closed()</CODE> does not hold.
+  */
+  bool satisfied_by_all_generators_NNC(const Constraint& c) const;
 
   //! Assigns to a given variable an affine expression.
   /*!
@@ -470,10 +485,19 @@ private:
   */
   void remove_invalid_lines_and_rays();
 
-  //! \brief
-  //! Inserts in \p *this a copy of the generator \p g,
-  //! increasing the number of space dimensions if needed.
-  //! It is a pending generator.
+  /*! \brief
+    Applies Gaussian elimination and back-substitution so as
+    to provide a partial simplification of the system of generators.
+
+    It is assumed that the system has no pending generators.
+  */
+  void simplify();
+
+  /*! \brief
+    Inserts in \p *this a copy of the generator \p g,
+    increasing the number of space dimensions if needed.
+    It is a pending generator.
+  */
   void insert_pending(const Generator& g);
 };
 

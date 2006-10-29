@@ -1,5 +1,5 @@
 /* Generator_System class implementation (non-inline functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,8 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator_System.defs.hh"
 #include "Generator_System.inlines.hh"
-
 #include "Constraint.defs.hh"
+#include "Scalar_Products.defs.hh"
 #include <cassert>
 #include <string>
 #include <vector>
@@ -49,12 +48,11 @@ adjust_topology_and_space_dimension(const Topology new_topology,
   if (num_rows() == 0) {
     if (num_columns() == 0)
       if (new_topology == NECESSARILY_CLOSED) {
-	add_zero_columns(++cols_to_be_added);
+	add_zero_columns(cols_to_be_added + 1);
 	set_necessarily_closed();
       }
       else {
-	cols_to_be_added += 2;
-	add_zero_columns(cols_to_be_added);
+	add_zero_columns(cols_to_be_added + 2);
 	set_not_necessarily_closed();
       }
     else
@@ -69,21 +67,20 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	    // Nothing to do.
 	    break;
 	  default:
-	    add_zero_columns(--cols_to_be_added);
+	    add_zero_columns(cols_to_be_added - 1);
 	  }
 	  set_necessarily_closed();
 	}
 	else {
 	  // Here old_topology == NECESSARILY_CLOSED
 	  //  and new_topology == NOT_NECESSARILY_CLOSED.
-	  add_zero_columns(++cols_to_be_added);
+	  add_zero_columns(cols_to_be_added + 1);
 	  set_not_necessarily_closed();
 	}
-      else {
+      else
 	// Here topologies agree.
 	if (cols_to_be_added > 0)
 	  add_zero_columns(cols_to_be_added);
-      }
     assert(OK());
     return true;
   }
@@ -136,7 +133,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	// a NOT_NECESSARILY_CLOSED one by adding a further column
 	// and setting the epsilon coordinate of all points to 1.
 	// Note: normalization is preserved.
-	add_zero_columns(++cols_to_be_added);
+	add_zero_columns(cols_to_be_added + 1);
 	Generator_System& gs = *this;
 	const dimension_type eps_index = new_space_dim + 1;
 	for (dimension_type i = num_rows(); i-- > 0; )
@@ -203,6 +200,7 @@ PPL::Generator_System::add_corresponding_closure_points() {
       gs.add_pending_row(cp);
     }
   }
+  assert(OK());
 }
 
 
@@ -220,7 +218,7 @@ PPL::Generator_System::add_corresponding_points() {
   const dimension_type eps_index = gs.num_columns() - 1;
   for (dimension_type i = 0; i < n_rows; i++) {
     const Generator& g = gs[i];
-    if (g[0] > 0 && g[eps_index] == 0) {
+    if (!g.is_line_or_ray() && g[eps_index] == 0) {
       // `g' is a closure point: adding the point.
       // Note: normalization is preserved.
       Generator p = g;
@@ -228,6 +226,7 @@ PPL::Generator_System::add_corresponding_points() {
       gs.add_pending_row(p);
     }
   }
+  assert(OK());
 }
 
 bool
@@ -236,7 +235,7 @@ PPL::Generator_System::has_closure_points() const {
     return false;
   // Adopt the point of view of the user.
   for (Generator_System::const_iterator i = begin(),
-	 iend = end(); i != iend; ++i)
+	 this_end = end(); i != this_end; ++i)
     if (i->is_closure_point())
       return true;
   return false;
@@ -248,11 +247,11 @@ PPL::Generator_System::has_points() const {
   // Avoiding the repeated tests on topology.
   if (is_necessarily_closed())
     for (dimension_type i = num_rows(); i-- > 0; ) {
-      if (gs[i][0] != 0)
+      if (!gs[i].is_line_or_ray())
 	return true;
     }
   else {
-    // is_necessarily_closed() == false.
+    // !is_necessarily_closed()
     const dimension_type eps_index = gs.num_columns() - 1;
     for (dimension_type i = num_rows(); i-- > 0; )
     if (gs[i][eps_index] != 0)
@@ -299,7 +298,7 @@ PPL::Generator_System::insert(const Generator& g) {
       Generator_System& gs = *this;
       for (dimension_type i = num_rows(); i-- > 0; ) {
 	Generator& gen = gs[i];
-	if (gen[0] != 0)
+	if (!gen.is_line_or_ray())
 	  gen[eps_index] = gen[0];
       }
       set_not_necessarily_closed();
@@ -316,12 +315,13 @@ PPL::Generator_System::insert(const Generator& g) {
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
-      if (tmp_g[0] != 0)
+      if (!tmp_g.is_line_or_ray())
 	tmp_g[new_size - 1] = tmp_g[0];
       tmp_g.set_not_necessarily_closed();
       // Inserting the new generator.
       Linear_System::insert(tmp_g);
     }
+  assert(OK());
 }
 
 void
@@ -342,7 +342,7 @@ PPL::Generator_System::insert_pending(const Generator& g) {
       Generator_System& gs = *this;
       for (dimension_type i = num_rows(); i-- > 0; ) {
 	Generator& gen = gs[i];
-	if (gen[0] != 0)
+	if (!gen.is_line_or_ray())
 	  gen[eps_index] = gen[0];
       }
       set_not_necessarily_closed();
@@ -359,12 +359,13 @@ PPL::Generator_System::insert_pending(const Generator& g) {
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
-      if (tmp_g[0] != 0)
+      if (!tmp_g.is_line_or_ray())
 	tmp_g[new_size - 1] = tmp_g[0];
       tmp_g.set_not_necessarily_closed();
       // Inserting the new generator.
       Linear_System::insert_pending(tmp_g);
     }
+  assert(OK());
 }
 
 PPL::dimension_type
@@ -400,15 +401,13 @@ PPL::Generator_System::num_rays() const {
   // rays have the inhomogeneous term equal to zero.
   if (is_sorted()) {
     for (dimension_type i = num_rows(); i != 0 && gs[--i].is_ray_or_point(); )
-      if (gs[i][0] == 0)
+      if (gs[i].is_line_or_ray())
 	++n;
   }
   else
-    for (dimension_type i = num_rows(); i-- > 0 ; ) {
-      const Generator& g = gs[i];
-      if (g.is_ray_or_point() && g[0] == 0)
+    for (dimension_type i = num_rows(); i-- > 0 ; )
+      if (gs[i].is_ray())
 	++n;
-    }
   return n;
 }
 
@@ -443,7 +442,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 
       for (dimension_type i = n_rows; i-- > 0; ) {
 	const Generator& g = gs[i];
-	const int sp_sign = scalar_product_sign(c, g);
+	const int sp_sign = Scalar_Products::sign(c, g);
 	// Checking whether the generator saturates the equality.
 	// If that is the case, then we have to do something only if
 	// the generator is a point.
@@ -506,14 +505,14 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
       // The hyperplane implicitly defined by the non-strict inequality `c'
       // is included in the set of points satisfying `c'.
       result = result && Poly_Con_Relation::is_included();
-      // The following boolean variable will be set to `false'
+      // The following Boolean variable will be set to `false'
       // as soon as either we find (any) point or we find a
       // non-saturating ray.
       bool first_point_or_nonsaturating_ray = true;
 
       for (dimension_type i = n_rows; i-- > 0; ) {
 	const Generator& g = gs[i];
-	const int sp_sign = scalar_product_sign(c, g);
+	const int sp_sign = Scalar_Products::sign(c, g);
 	// Checking whether the generator saturates the non-strict
 	// inequality. If that is the case, then we have to do something
 	// only if the generator is a point.
@@ -617,7 +616,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
       // The hyperplane implicitly defined by the strict inequality `c'
       // is disjoint from the set of points satisfying `c'.
       result = result && Poly_Con_Relation::is_disjoint();
-      // The following boolean variable will be set to `false'
+      // The following Boolean variable will be set to `false'
       // as soon as either we find (any) point or we find a
       // non-saturating ray.
       bool first_point_or_nonsaturating_ray = true;
@@ -625,7 +624,7 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
 	const Generator& g = gs[i];
 	// Using the reduced scalar product operator to avoid
 	// both topology and num_columns mismatches.
-	const int sp_sign = reduced_scalar_product_sign(c, g);
+	const int sp_sign = Scalar_Products::reduced_sign(c, g);
 	// Checking whether the generator saturates the strict inequality.
 	// If that is the case, then we have to do something
 	// only if the generator is a point.
@@ -721,21 +720,17 @@ bool
 PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
   assert(c.space_dimension() <= space_dimension());
 
-  // Setting `sp_fp' to the appropriate scalar product operator.
+  // Setting `sps' to the appropriate scalar product sign operator.
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
-  int (*sps_fp)(const Linear_Row&, const Linear_Row&);
-  if (c.is_necessarily_closed())
-    sps_fp = PPL::scalar_product_sign;
-  else
-    sps_fp = PPL::reduced_scalar_product_sign;
+  Topology_Adjusted_Scalar_Product_Sign sps(c);
 
   const Generator_System& gs = *this;
   switch (c.type()) {
   case Constraint::EQUALITY:
     // Equalities must be saturated by all generators.
     for (dimension_type i = gs.num_rows(); i-- > 0; )
-      if (sps_fp(c, gs[i]) != 0)
+      if (sps(c, gs[i]) != 0)
 	return false;
     break;
   case Constraint::NONSTRICT_INEQUALITY:
@@ -743,7 +738,7 @@ PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
     // satisfied by all the other generators.
     for (dimension_type i = gs.num_rows(); i-- > 0; ) {
       const Generator& g = gs[i];
-      const int sp_sign = sps_fp(c, g);
+      const int sp_sign = sps(c, g);
       if (g.is_line()) {
 	if (sp_sign != 0)
 	  return false;
@@ -759,7 +754,7 @@ PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
     // satisfied by all generators, and must not be saturated by points.
     for (dimension_type i = gs.num_rows(); i-- > 0; ) {
       const Generator& g = gs[i];
-      const int sp_sign = sps_fp(c, g);
+      const int sp_sign = sps(c, g);
       switch (g.type()) {
       case Generator::POINT:
 	if (sp_sign <= 0)
@@ -784,37 +779,40 @@ PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
 
 
 void
-PPL::Generator_System::affine_image(dimension_type v,
-			  const Linear_Expression& expr,
-			  Coefficient_traits::const_reference denominator) {
+PPL::Generator_System
+::affine_image(dimension_type v,
+	       const Linear_Expression& expr,
+	       Coefficient_traits::const_reference denominator) {
+  Generator_System& x = *this;
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).
-  assert(v > 0 && v <= space_dimension());
-  assert(expr.space_dimension() <= space_dimension());
+  assert(v > 0 && v <= x.space_dimension());
+  assert(expr.space_dimension() <= x.space_dimension());
   assert(denominator > 0);
 
-  const dimension_type n_columns = num_columns();
-  const dimension_type n_rows = num_rows();
-  Generator_System& x = *this;
+  const dimension_type n_columns = x.num_columns();
+  const dimension_type n_rows = x.num_rows();
 
   // Compute the numerator of the affine transformation and assign it
   // to the column of `*this' indexed by `v'.
   TEMP_INTEGER(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = x[i];
-    scalar_product_assign(numerator, expr, row);
+    Scalar_Products::assign(numerator, expr, row);
     std::swap(numerator, row[v]);
   }
 
   if (denominator != 1) {
     // Since we want integer elements in the matrix,
-    // we multiply by the value of `denominator'
-    // all the columns of `*this' having an index different from `v'.
-    for (dimension_type i = n_rows; i-- > 0; )
+    // we multiply by `denominator' all the columns of `*this'
+    // having an index different from `v'.
+    for (dimension_type i = n_rows; i-- > 0; ) {
+      Generator& row = x[i];
       for (dimension_type j = n_columns; j-- > 0; )
 	if (j != v)
-	  x[i][j] *= denominator;
+	  row[j] *= denominator;
+    }
   }
 
   // If the mapping is not invertible we may have transformed
@@ -822,6 +820,7 @@ PPL::Generator_System::affine_image(dimension_type v,
   const bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
   if (not_invertible)
     x.remove_invalid_lines_and_rays();
+
   // Strong normalization also resets the sortedness flag.
   x.strong_normalize();
 }
@@ -829,21 +828,22 @@ PPL::Generator_System::affine_image(dimension_type v,
 void
 PPL::Generator_System::ascii_dump(std::ostream& s) const {
   const Generator_System& x = *this;
-  dimension_type x_num_rows = x.num_rows();
-  dimension_type x_num_columns = x.num_columns();
+  const dimension_type x_num_rows = x.num_rows();
+  const dimension_type x_num_columns = x.num_columns();
   s << "topology " << (is_necessarily_closed()
 		       ? "NECESSARILY_CLOSED"
 		       : "NOT_NECESSARILY_CLOSED")
-    << std::endl
+    << "\n"
     << x_num_rows << " x " << x_num_columns << ' '
     << (x.is_sorted() ? "(sorted)" : "(not_sorted)")
-    << std::endl
+    << "\n"
     << "index_first_pending " << x.first_pending_row()
-    << std::endl;
-  for (dimension_type i = 0; i < x.num_rows(); ++i) {
-    for (dimension_type j = 0; j < x.num_columns(); ++j)
-      s << x[i][j] << ' ';
-    switch (x[i].type()) {
+    << "\n";
+  for (dimension_type i = 0; i < x_num_rows; ++i) {
+    const Generator& g = x[i];
+    for (dimension_type j = 0; j < x_num_columns; ++j)
+      s << g[j] << ' ';
+    switch (g.type()) {
     case Generator::LINE:
       s << "L";
       break;
@@ -857,9 +857,11 @@ PPL::Generator_System::ascii_dump(std::ostream& s) const {
       s << "C";
       break;
     }
-    s << std::endl;
+    s << "\n";
   }
 }
+
+PPL_OUTPUT_DEFINITIONS(Generator_System)
 
 bool
 PPL::Generator_System::ascii_load(std::istream& s) {
@@ -902,7 +904,6 @@ PPL::Generator_System::ascii_load(std::istream& s) {
       if (!(s >> x[i][j]))
 	return false;
 
-    std::string str;
     if (!(s >> str))
       return false;
     if (str == "L")
@@ -932,7 +933,8 @@ PPL::Generator_System::ascii_load(std::istream& s) {
     // Reaching this point means that the input was illegal.
     return false;
   }
-  // Checking for well-formedness.
+
+  // Check invariants.
   assert(OK());
   return true;
 }
@@ -948,7 +950,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
   if (num_pending_rows() == 0) {
     for (dimension_type i = n_rows; i-- > 0; ) {
       Generator& g = gs[i];
-      if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
+      if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/ray has been found.
 	--n_rows;
 	std::swap(g, gs[n_rows]);
@@ -969,7 +971,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
     dimension_type first_pending = first_pending_row();
     for (dimension_type i = first_pending; i-- > 0; ) {
       Generator& g = gs[i];
-      if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
+      if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/ray has been found.
 	--first_pending;
 	std::swap(g, gs[first_pending]);
@@ -984,7 +986,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
     n_rows -= num_invalid_rows;
     for (dimension_type i = n_rows; i-- > first_pending; ) {
       Generator& g = gs[i];
-      if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
+      if (g.is_line_or_ray() && g.all_homogeneous_terms_are_zero()) {
 	// An invalid line/ray has been found.
 	--n_rows;
 	std::swap(g, gs[n_rows]);
@@ -1004,11 +1006,10 @@ PPL::Generator_System::OK() const {
     return false;
 
   // Checking each generator in the system.
-  for (dimension_type i = num_rows(); i-- > 0; ) {
-    const Generator& g = (*this)[i];
-    if (!g.OK())
+  const Generator_System& x = *this;
+  for (dimension_type i = num_rows(); i-- > 0; )
+    if (!x[i].OK())
       return false;
-  }
 
   // All checks passed.
   return true;
@@ -1020,13 +1021,11 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator_System& gs) {
   Generator_System::const_iterator i = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
   if (i == gs_end)
-    s << "false";
-  else {
-    while (i != gs_end) {
-      s << *i++;
-      if (i != gs_end)
-	s << ", ";
-    }
+    return s << "false";
+  while (true) {
+    s << *i++;
+    if (i == gs_end)
+      return s;
+    s << ", ";
   }
-  return s;
 }

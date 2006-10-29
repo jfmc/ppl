@@ -1,5 +1,5 @@
 /* Linear_System class implementation (non-inline functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -24,11 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Linear_System.defs.hh"
-
 #include "Coefficient.defs.hh"
 #include "Row.defs.hh"
-#include "globals.defs.hh"
 #include "Saturation_Matrix.defs.hh"
+#include "Scalar_Products.defs.hh"
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -113,21 +111,27 @@ PPL::Linear_System::set_rows_topology() {
 
 void
 PPL::Linear_System::ascii_dump(std::ostream& s) const {
+  // Prints the topology, the number of rows, the number of columns
+  // and the sorted flag.  The specialized methods provided by
+  // Constraint_System and Generator_System take care of properly
+  // printing the contents of the system.
   const Linear_System& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
   s << "topology " << (is_necessarily_closed()
 		       ? "NECESSARILY_CLOSED"
 		       : "NOT_NECESSARILY_CLOSED")
-    << std::endl
+    << "\n"
     << x_num_rows << " x " << x_num_columns
     << (x.sorted ? "(sorted)" : "(not_sorted)")
-    << std::endl
+    << "\n"
     << "index_first_pending " << x.first_pending_row()
-    << std::endl;
+    << "\n";
   for (dimension_type i = 0; i < x_num_rows; ++i)
     x[i].ascii_dump(s);
 }
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_System)
 
 bool
 PPL::Linear_System::ascii_load(std::istream& s) {
@@ -151,7 +155,7 @@ PPL::Linear_System::ascii_load(std::istream& s) {
   if (!(s >> str))
     return false;
   if (!(s >> ncols))
-      return false;
+    return false;
   resize_no_copy(nrows, ncols);
 
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
@@ -164,9 +168,12 @@ PPL::Linear_System::ascii_load(std::istream& s) {
     return false;
   set_index_first_pending_row(index);
 
-  // FIXME: must be completed.
+  Linear_System& x = *this;
+  for (dimension_type row = 0; row < nrows; ++row)
+    if (!x[row].ascii_load(s))
+      return false;
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK(true));
   return true;
 }
@@ -216,8 +223,8 @@ PPL::Linear_System::insert(const Linear_Row& r) {
 
 void
 PPL::Linear_System::insert_pending(const Linear_Row& r) {
-  // The added row must be strongly normalized and have
-  // the same topology of the system.
+  // The added row must be strongly normalized and have the same
+  // topology of the system.
   assert(r.check_strong_normalized());
   assert(topology() == r.topology());
 
@@ -295,7 +302,7 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
       if (n_rows > 0)
 	set_sorted(compare((*this)[n_rows-1], y[0]) <= 0);
     }
-  
+
   // Add the rows of `y' as if they were pending.
   add_pending_rows(y);
   // There are no pending_rows.
@@ -333,53 +340,33 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
   std::vector<Row>::iterator new_last = swapping_unique(first, last);
   // Finally, remove duplicates.
   rows.erase(new_last, last);
-  // NOTE: we cannot check for well-formedness of the system here,
+  // NOTE: we cannot check all invariants of the system here,
   // because the caller still has to update `index_first_pending'.
 }
 
 void
 PPL::Linear_System::add_row(const Linear_Row& r) {
-  // The added row must be strongly normalized and have
-  // the same number of elements of the existing rows of the system.
+  // The added row must be strongly normalized and have the same
+  // number of elements as the existing rows of the system.
   assert(r.check_strong_normalized());
   assert(r.size() == row_size);
   // This method is only used when the system has no pending rows.
   assert(num_pending_rows() == 0);
-  const bool was_sorted = is_sorted();
-  const dimension_type new_rows_size = rows.size() + 1;
-  if (rows.capacity() < new_rows_size) {
-    // Reallocation will take place.
-    std::vector<Row> new_rows;
-    new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
-    new_rows.insert(new_rows.end(), new_rows_size, Row());
-    // Put the new row in place.
-    Row new_row(r, row_capacity);
-    dimension_type i = new_rows_size-1;
-    std::swap(new_rows[i], new_row);
-    // Steal the old rows.
-    while (i-- > 0)
-      new_rows[i].swap(rows[i]);
-    // Put the new rows into place.
-    std::swap(rows, new_rows);
-  }
-  else {
-    // Reallocation will NOT take place.
-    // Inserts a new empty row at the end,
-    // then substitutes it with a copy of the given row.
-    Row tmp(r, row_capacity);
-    std::swap(*rows.insert(rows.end(), Row()), tmp);
-  }
 
-  //  We update `index_first_pending', because it must
-  // equal to `num_rows()'.
+  const bool was_sorted = is_sorted();
+
+  Matrix::add_row(r);
+
+  //  We update `index_first_pending', because it must be equal to
+  // `num_rows()'.
   set_index_first_pending_row(num_rows());
 
   if (was_sorted) {
     const dimension_type nrows = num_rows();
     // The added row may have caused the system to be not sorted anymore.
     if (nrows > 1) {
-      // If the system is not empty and the inserted row
-      // is the greatest one, the system is set to be sorted.
+      // If the system is not empty and the inserted row is the
+      // greatest one, the system is set to be sorted.
       // If it is not the greatest one then the system is no longer sorted.
       Linear_System& x = *this;
       set_sorted(compare(x[nrows-2], x[nrows-1]) <= 0);
@@ -390,15 +377,15 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
   }
   // The added row was not a pending row.
   assert(num_pending_rows() == 0);
-  // Do not check for strong normalization,
-  // because no modification of rows has occurred.
+  // Do not check for strong normalization, because no modification of
+  // rows has occurred.
   assert(OK(false));
 }
 
 void
 PPL::Linear_System::add_pending_row(const Linear_Row& r) {
-  // The added row must be strongly normalized and have
-  // the same number of elements of the existing rows of the system.
+  // The added row must be strongly normalized and have the same
+  // number of elements of the existing rows of the system.
   assert(r.check_strong_normalized());
   assert(r.size() == row_size);
 
@@ -420,16 +407,16 @@ PPL::Linear_System::add_pending_row(const Linear_Row& r) {
   }
   else {
     // Reallocation will NOT take place.
-    // Inserts a new empty row at the end,
-    // then substitutes it with a copy of the given row.
+    // Inserts a new empty row at the end, then substitutes it with a
+    // copy of the given row.
     Row tmp(r, row_capacity);
     std::swap(*rows.insert(rows.end(), Row()), tmp);
   }
 
   // The added row was a pending row.
   assert(num_pending_rows() > 0);
-  // Do not check for strong normalization,
-  // because no modification of rows has occurred.
+  // Do not check for strong normalization, because no modification of
+  // rows has occurred.
   assert(OK(false));
 }
 
@@ -451,13 +438,13 @@ PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
     // Put the new vector into place.
     std::swap(rows, new_rows);
   }
-  else
+  else {
     // Reallocation will NOT take place.
-    // Insert a new empty row at the end,
-    // then construct it assigning it the given type.
-    // FIXME: this is a kludge
-    static_cast<Linear_Row&>(*rows.insert(rows.end(), Row()))
-      .construct(row_size, row_capacity, flags);
+    // Insert a new empty row at the end, then construct it assigning
+    // it the given type.
+    Row& new_row = *rows.insert(rows.end(), Row());
+    static_cast<Linear_Row&>(new_row).construct(row_size, row_capacity, flags);
+  }
 
   // The added row was a pending row.
   assert(num_pending_rows() > 0);
@@ -547,268 +534,95 @@ PPL::Linear_System::sort_and_remove_with_sat(Saturation_Matrix& sat) {
   sys.set_sorted(true);
 }
 
-void
-PPL::Linear_System::gram_shmidt() {
-  assert(num_pending_rows() == 0);
-
-  // The first part of this algorithm is is an adaptation of the one
-  // proposed in a 1996 TR by Erlingsson, Kaltofen, and Musser
-  // "Generic Gram-Shmidt Orthogonalization by Exact Division".
-
-  // It is assumed that the lines/equalities come first in the system,
-  // which contains no redundant row.
-
-  const dimension_type rank = num_lines_or_equalities();
-  if (rank == 0)
-    return;
-
-#if 0
-  std::cout << "+++ Before Gram-Shmidt +++" << std::endl;
-  ascii_dump(std::cout);
-#endif
-
-  static std::vector<std::vector<Coefficient> > mu;
-  mu.reserve(compute_capacity(rank, mu.max_size()));
-  for (dimension_type i = mu.size(); i < rank; i++) {
-    std::vector<Coefficient> mu_i(i+1);
-    mu.push_back(mu_i);
-  }
-
-  Linear_System& x = *this;
-
-  // Compute the scalar products `x[i]*x[j]',
-  // for all 0 <= j <= i < rank, storing them into `mu[i][j]'.
-  for (dimension_type i = rank; i-- > 0; ) {
-    const Linear_Row& x_i = x[i];
-    std::vector<Coefficient>& mu_i = mu[i];
-    for (dimension_type j = i+1; j-- > 0; )
-      scalar_product_assign(mu_i[j], x_i, x[j]);
-  }
-
-  const dimension_type n_columns = num_columns();
-
-  TEMP_INTEGER(accum);
-  // Start from the second line/equality of the system.
-  for (dimension_type i = 1; i < rank; i++) {
-    Linear_Row& x_i = x[i];
-    std::vector<Coefficient>& mu_i = mu[i];
-
-    // Finish computing `mu[i][j]', for all j <= i.
-    for (dimension_type j = 0; j <= i; j++) {
-      const std::vector<Coefficient>& mu_j = mu[j];
-      if (j > 0)
-	mu_i[j] *= mu[j-1][j-1];
-      accum = 0;
-      for (dimension_type h = 0; h < j; h++) {
-        accum *= mu[h][h];
-	// The following line optimizes the computation of
-	// accum += mu_i[h] * mu_j[h].
-	add_mul_assign(accum, mu_i[h], mu_j[h]);
-	if (h > 0)
-	  exact_div_assign(accum, mu[h-1][h-1]);
-      }
-      mu_i[j] -= accum;
-    }
-
-    // Let the `i'-th line become orthogonal wrt the `j'-th line,
-    // for all 0 <= j < i.
-    for (dimension_type j = 0; j < i; j++) {
-      const Linear_Row& x_j = x[j];
-      const Coefficient& mu_ij = mu_i[j];
-      const Coefficient& mu_jj = mu[j][j];
-      for (dimension_type k = n_columns; k-- > 0; ) {
-        x_i[k] *= mu_jj;
-	// The following line optimizes the computation of
-        // x_i[k] -= mu_ij * x_j[k].
-        sub_mul_assign(x_i[k], mu_ij, x_j[k]);
-	if (j > 0)
-	  exact_div_assign(x_i[k], mu[j-1][j-1]);
-      }
-    }
-  }
-
-  // Normalize the coefficients of the orthogonal base found.
-  for (dimension_type i = rank; i-- > 0; )
-    x[i].strong_normalize();
-
-#if 0
-  std::cout << "+++ After Gram-Shmidt on the base +++" << std::endl;
-  ascii_dump(std::cout);
-#endif
-
-#ifndef NDEBUG
-  // Check that the new base is indeed orthogonal.
-  for (dimension_type i = rank; i-- > 0; ) {
-    const Linear_Row& x_i = x[i];
-    for (dimension_type j = i; j-- > 0; )
-      if (scalar_product_sign(x_i, x[j]) != 0) {
-	std::cout << "Not an orthogonal base" << std::endl;
-	std::cout << "i = " << i << ", j = " << j << std::endl;
-	std::cout << "After Gram-Shmidt on the base" << std::endl;
-	ascii_dump(std::cout);
-	assert(false);
-      }
-  }
-#endif
-
-  // Let denominator = <v_0, v_0> * ... * <v_{rank-1}, v_{rank-1}>
-  // be the product of the squared norms of the orthogonal base.
-  // Define d[j] = denominator / <v_j, v_j>.
-  // Then, the formula to be computed, for each vector w which is not
-  // in the orthogonal base, is the following:
-  //
-  // w' = denominator * w - \sum_{j=0}^{rank-1} (d[j] * <w, v_j> * v_j)
-  //
-  // factors[j] will contain d[j] * <w, v_j>.
-
-  static std::vector<Coefficient> d;
-  static std::vector<Coefficient> factors;
-  d.reserve(compute_capacity(rank, d.max_size()));
-  factors.reserve(compute_capacity(rank, factors.max_size()));
-  if (d.size() < rank) {
-    const dimension_type growth = rank - d.size();
-    d.insert(d.end(), growth, 0);
-    factors.insert(factors.end(), growth, 0);
-  }
-
-  // Computing all the factors d[0], ..., d[rank-1], and the denominator.
-  Coefficient denominator = 1;
-  for (dimension_type i = rank; i-- > 0; ) {
-    const Linear_Row& x_i = x[i];
-    scalar_product_assign(d[i], x_i, x_i);
-    denominator *= d[i];
-  }
-  for (dimension_type i = rank; i-- > 0; )
-    exact_div_assign(d[i], denominator, d[i]);
-
-  // Orthogonalize the rows that are not lines/equalities.
-  const dimension_type n_rows = num_rows();
-  for (dimension_type i = rank; i < n_rows; i++) {
-    Linear_Row& w = x[i];
-    // Compute `factors' according to `w'.
-    for (dimension_type j = rank; j-- > 0; ) {
-      scalar_product_assign(factors[j], w, x[j]);
-      factors[j] *= d[j];
-    }
-    for (dimension_type k = n_columns; k-- > 0; )
-      w[k] *= denominator;
-    for (dimension_type j = rank; j-- > 0; ) {
-      const Linear_Row& v_j = x[j];
-      for (dimension_type k = n_columns; k-- > 0; )
-        sub_mul_assign(w[k], factors[j], v_j[k]);
-    }
-    assert(w.is_ray_or_point_or_inequality());
-    w.normalize();
-
-#if 0
-  std::cout << "+++ After Gram-Shmidt on the whole system +++" << std::endl;
-  ascii_dump(std::cout);
-#endif
-
-#ifndef NDEBUG
-    // Check that w is indeed orthogonal wrt all the vectors in the base.
-    for (dimension_type h = rank; h-- > 0; )
-      if (scalar_product_sign(w, x[h]) != 0) {
-	std::cout << "Not orthogonal" << std::endl;
-	std::cout << "i = " << i << ", h = " << h << std::endl;
-	std::cout << "After Gram-Shmidt on the whole system" << std::endl;
-	ascii_dump(std::cout);
-	assert(false);
-      }
-#endif
-  }
-  // Linear_System may be no longer sorted (unless it has one line/equality
-  // and at most one ray/point/inequality).
-  if (rank > 1 || n_rows > rank + 1)
-    set_sorted(false);
-  // A well-formed system has to be returned.
-  assert(OK(true));
-}
-
 PPL::dimension_type
-PPL::Linear_System::gauss() {
-  // This method is only applied to a well-formed system
-  // having no pending rows.
-  assert(OK(true));
-  assert(num_pending_rows() == 0);
-
+PPL::Linear_System::gauss(const dimension_type n_lines_or_equalities) {
   Linear_System& x = *this;
+  // This method is only applied to a well-formed linear system
+  // having no pending rows and exactly `n_lines_or_equalities'
+  // lines or equalities, all of which occur before the rays or points
+  // or inequalities.
+  assert(x.OK(true));
+  assert(x.num_pending_rows() == 0);
+  assert(n_lines_or_equalities == x.num_lines_or_equalities());
+#ifndef NDEBUG
+  for (dimension_type i = n_lines_or_equalities; i-- > 0; )
+    assert(x[i].is_line_or_equality());
+#endif
+
   dimension_type rank = 0;
   // Will keep track of the variations on the system of equalities.
   bool changed = false;
-  const dimension_type n_columns =  num_columns();
-  const dimension_type n_lines_or_equalities = num_lines_or_equalities();
-  for (dimension_type j = n_columns; j-- > 0; ) {
+  for (dimension_type j = x.num_columns(); j-- > 0; )
     for (dimension_type i = rank; i < n_lines_or_equalities; ++i) {
-      // Looking for the first non-zero coefficient (the pivot)
-      // in the j-th column, starting from the last column.
-      if (x[i][j] != 0) {
-	// We want the pivot to be placed on the secondary diagonal,
-	// if it is not the case, we swap the row containing it
-	// with the one indexed by rank (that can be a previous one
-	// or the same: in this case we do not swap).
-	if (i > rank) {
-	  std::swap(x[i], x[rank]);
-	  // After swapping the system is no longer sorted.
+      // Search for the first row having a non-zero coefficient
+      // (the pivot) in the j-th column.
+      if (x[i][j] == 0)
+	continue;
+      // Pivot found: if needed, swap rows so that this one becomes
+      // the rank-th row in the linear system.
+      if (i > rank) {
+	std::swap(x[i], x[rank]);
+	// After swapping the system is no longer sorted.
+	changed = true;
+      }
+      // Combine the row containing the pivot with all the lines or
+      // equalities following it, so that all the elements on the j-th
+      // column in these rows become 0.
+      for (dimension_type k = i + 1; k < n_lines_or_equalities; ++k)
+	if (x[k][j] != 0) {
+	  x[k].linear_combine(x[rank], j);
 	  changed = true;
 	}
-	// Linear combining the row containing the pivot with
-	// all the ones that follow it such that all the elements
-	// on the j-th column (of these rows) become 0.
-	for (dimension_type k = i + 1; k < n_lines_or_equalities; ++k) {
-	  if (x[k][j] != 0) {
-	    x[k].linear_combine(x[rank], j);
-	    changed = true;
-	  }
-	}
-	// Have to consider the rows following the rank-th one
-	// because until that one are already triangularized.
-	++rank;
-	break;
-      }
+      // Already dealt with the rank-th row.
+      ++rank;
+      // Consider another column index `j'.
+      break;
     }
-  }
   if (changed)
-    set_sorted(false);
+    x.set_sorted(false);
   // A well-formed system is returned.
-  assert(OK(true));
+  assert(x.OK(true));
   return rank;
 }
 
 void
-PPL::Linear_System::back_substitute(const dimension_type rank) {
-  // This method is only applied to a well-formed system
-  // having no pending rows.
-  assert(OK(true));
-  assert(num_pending_rows() == 0);
-  // The system describes a non-empty polyhedron and thus it always
-  // contains a row which is not a line/equality (corresponding to
-  // a vertex or to a low-level constraint).
-  assert(num_rows() > rank);
-
+PPL::Linear_System
+::back_substitute(const dimension_type n_lines_or_equalities) {
   Linear_System& x = *this;
-  const dimension_type nrows = num_rows();
+  // This method is only applied to a well-formed system
+  // having no pending rows and exactly `n_lines_or_equalities'
+  // lines or equalities, all of which occur before the first ray
+  // or point or inequality.
+  assert(x.OK(true));
+  assert(x.num_pending_rows() == 0);
+  assert(n_lines_or_equalities <= x.num_lines_or_equalities());
+#ifndef NDEBUG
+  for (dimension_type i = n_lines_or_equalities; i-- > 0; )
+    assert(x[i].is_line_or_equality());
+#endif
+
+  const dimension_type nrows = x.num_rows();
+  const dimension_type ncols = x.num_columns();
   // Trying to keep sortedness.
-  bool still_sorted = is_sorted();
-  // This deque of booleans will be used to flag those rows that,
+  bool still_sorted = x.is_sorted();
+  // This deque of Booleans will be used to flag those rows that,
   // before exiting, need to be re-checked for sortedness.
   std::deque<bool> check_for_sortedness;
   if (still_sorted)
     check_for_sortedness.insert(check_for_sortedness.end(), nrows, false);
 
-  for (dimension_type k = rank; k-- > 0; ) {
-    // For each row, starting from the rank-th one,
+  for (dimension_type k = n_lines_or_equalities; k-- > 0; ) {
+    // For each line or equality, starting from the last one,
     // looks for the last non-zero element.
-    // j will be the index of such a element.
+    // `j' will be the index of such a element.
     Linear_Row& x_k = x[k];
-    dimension_type j = num_columns() - 1;
+    dimension_type j = ncols - 1;
     while (j != 0 && x_k[j] == 0)
       --j;
 
     // Go through the equalities above `x_k'.
     for (dimension_type i = k; i-- > 0; ) {
       Linear_Row& x_i = x[i];
-      assert(x_i.is_line_or_equality());
       if (x_i[j] != 0) {
 	// Combine linearly `x_i' with `x_k'
 	// so that `x_i[j]' becomes zero.
@@ -830,13 +644,13 @@ PPL::Linear_System::back_substitute(const dimension_type rank) {
     // forced to be positive.
     const bool have_to_negate = (x_k[j] < 0);
     if (have_to_negate)
-      for (dimension_type h = num_columns(); h-- > 0; )
-	PPL::negate(x_k[h]);
+      for (dimension_type h = ncols; h-- > 0; )
+	PPL::neg_assign(x_k[h]);
     // Note: we do not mark index `k' in `check_for_sortedness',
     // because we will later negate back the row.
 
-    // Go through all the inequalities of the system.
-    for (dimension_type i = rank; i < nrows; ++i) {
+    // Go through all the other rows of the system.
+    for (dimension_type i = n_lines_or_equalities; i < nrows; ++i) {
       Linear_Row& x_i = x[i];
       if (x_i[j] != 0) {
 	// Combine linearly the `x_i' with `x_k'
@@ -845,29 +659,71 @@ PPL::Linear_System::back_substitute(const dimension_type rank) {
 	if (still_sorted) {
 	  // Trying to keep sortedness: remember which rows
 	  // have to be re-checked for sortedness at the end.
-	  if (i > rank)
+	  if (i > n_lines_or_equalities)
 	    check_for_sortedness[i-1] = true;
 	  check_for_sortedness[i] = true;
 	}
       }
     }
-
     if (have_to_negate)
       // Negate `x_k' to restore strong-normalization.
-      for (dimension_type h = num_columns(); h-- > 0; )
-	PPL::negate(x_k[h]);
+      for (dimension_type h = ncols; h-- > 0; )
+	PPL::neg_assign(x_k[h]);
   }
 
   // Trying to keep sortedness.
   for (dimension_type i = 0; still_sorted && i < nrows-1; ++i)
     if (check_for_sortedness[i])
-      // Have to check sortedness of `mat[i]' wrt `mat[i+1]'.
+      // Have to check sortedness of `x[i]' with respect to `x[i+1]'.
       still_sorted = (compare(x[i], x[i+1]) <= 0);
   // Set the sortedness flag.
-  set_sorted(still_sorted);
+  x.set_sorted(still_sorted);
 
   // A well-formed system is returned.
-  assert(OK(true));
+  assert(x.OK(true));
+}
+
+void
+PPL::Linear_System::simplify() {
+  Linear_System& x = *this;
+  // This method is only applied to a well-formed system
+  // having no pending rows.
+  assert(x.OK(true));
+  assert(x.num_pending_rows() == 0);
+
+  // Partially sort the linear system so that all lines/equalities come first.
+  dimension_type nrows = x.num_rows();
+  dimension_type n_lines_or_equalities = 0;
+  for (dimension_type i = 0; i < nrows; ++i)
+    if (x[i].is_line_or_equality()) {
+      if (n_lines_or_equalities < i) {
+	std::swap(x[i], x[n_lines_or_equalities]);
+	// The system was not sorted.
+	assert(!x.sorted);
+      }
+      ++n_lines_or_equalities;
+    }
+  // Apply Gaussian elimination to the subsystem of lines/equalities.
+  const dimension_type rank = x.gauss(n_lines_or_equalities);
+  // Eliminate any redundant line/equality that has been detected.
+  if (rank < n_lines_or_equalities) {
+    const dimension_type
+      n_rays_or_points_or_inequalities = nrows - n_lines_or_equalities;
+    const dimension_type
+      num_swaps = std::min(n_lines_or_equalities - rank,
+			   n_rays_or_points_or_inequalities);
+    for (dimension_type i = num_swaps; i-- > 0; )
+      std::swap(x[--nrows], x[rank + i]);
+    x.erase_to_end(nrows);
+    x.unset_pending_rows();
+    if (n_rays_or_points_or_inequalities > num_swaps)
+      x.set_sorted(false);
+    n_lines_or_equalities = rank;
+  }
+  // Apply back-substitution to the system of rays/points/inequalities.
+  x.back_substitute(n_lines_or_equalities);
+  // A well-formed system is returned.
+  assert(x.OK(true));
 }
 
 void
@@ -882,9 +738,9 @@ PPL::Linear_System::add_rows_and_columns(const dimension_type n) {
   for (dimension_type i = old_n_rows; i-- > 0; )
     std::swap(x[i], x[i + n]);
   for (dimension_type i = n, c = old_n_columns; i-- > 0; ) {
-    // The top right-hand sub-system (i.e., the system made
-    // of new rows and columns) is set to the specular image
-    // of the identity matrix.
+    // The top right-hand sub-system (i.e., the system made of new
+    // rows and columns) is set to the specular image of the identity
+    // matrix.
     Linear_Row& r = x[i];
     r[c++] = 1;
     r.set_is_line_or_equality();
@@ -977,7 +833,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
   using std::cerr;
 #endif
 
-  // `index_first_pending' must be less then or equal to `num_rows()'.
+  // `index_first_pending' must be less than or equal to `num_rows()'.
   if (first_pending_row() > num_rows()) {
 #ifndef NDEBUG
     cerr << "Linear_System has a negative number of pending rows!"
@@ -1034,9 +890,9 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
     // Check for strong normalization of rows.
     // Note: normalization cannot be checked inside the
     // Linear_Row::OK() method, because a Linear_Row object may also
-    // implement a Linear_Expression object, which in general cannot be
-    // (strongly) normalized.
-    Linear_System tmp = x;
+    // implement a Linear_Expression object, which in general cannot
+    // be (strongly) normalized.
+    Linear_System tmp(x, With_Pending());
     tmp.strong_normalize();
     if (x != tmp) {
 #ifndef NDEBUG

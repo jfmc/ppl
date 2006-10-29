@@ -1,5 +1,5 @@
-/* BD_Shape class implementation (non inline functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* BD_Shape class declaration.
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,14 +24,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_BD_Shape_defs_hh 1
 
 #include "BD_Shape.types.hh"
+#include "globals.defs.hh"
+#include "Constraint.types.hh"
+#include "Generator.types.hh"
+#include "Linear_Expression.types.hh"
+#include "Constraint_System.types.hh"
+#include "Generator_System.types.hh"
+#include "Poly_Con_Relation.types.hh"
+#include "Poly_Gen_Relation.types.hh"
+#include "Polyhedron.types.hh"
+#include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
-#include "Poly_Con_Relation.defs.hh"
-#include "Poly_Gen_Relation.defs.hh"
-#include <vector>
+#include "Checked_Number.defs.hh"
 #include <cstddef>
-#include <climits>
 #include <iosfwd>
+#include <vector>
+#include <deque>
 
 
 namespace Parma_Polyhedra_Library {
@@ -41,244 +50,303 @@ namespace IO_Operators {
 
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::BD_Shape
-  Writes a textual representation of \p bd on \p s:
-  <CODE>false</CODE> is written if \p bd is an empty system of 
-  bounded differences;
-  <CODE>true</CODE> is written if \p bd is an universe system of
-  bounded differences;
-  a system of constraints defining \p bd is written otherwise,
+  Writes a textual representation of \p bds on \p s:
+  <CODE>false</CODE> is written if \p bds is an empty polyhedron;
+  <CODE>true</CODE> is written if \p bds is the universe polyhedron;
+  a system of constraints defining \p bds is written otherwise,
   all constraints separated by ", ".
 */
 template <typename T>
-std::ostream& 
-operator<<(std::ostream& s, const BD_Shape<T>& c);
+std::ostream&
+operator<<(std::ostream& s, const BD_Shape<T>& bds);
 
 } // namespace IO_Operators
 
-//! \brief
-//! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y represent the same polyhedron.
-/*!
-  \relates BD_Shape
-  Note that \p x and \p y may be dimension-incompatible
-  systems of bounded differences: in this case, the value <CODE>false</CODE> 
-  is returned.
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are the same BDS.
+/*! \relates BD_Shape
+  Note that \p x and \p y may be dimension-incompatible shapes:
+  in this case, the value <CODE>false</CODE> is returned.
 */
 template <typename T>
 bool operator==(const BD_Shape<T>& x, const BD_Shape<T>& y);
-  
-//! \brief
-//! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y aren't the same polyhedron.
-/*!
- \relates BD_Shape
-  Note that \p x and \p y may be dimension-incompatible
-  systems of bounded differences: in this case, the value <CODE>true</CODE> 
-  is returned.
+
+//! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same BDS.
+/*! \relates BD_Shape
+  Note that \p x and \p y may be dimension-incompatible shapes:
+  in this case, the value <CODE>true</CODE> is returned.
 */
 template <typename T>
 bool operator!=(const BD_Shape<T>& x, const BD_Shape<T>& y);
 
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates BD_Shape
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+*/
+template <typename To, typename T>
+bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				 const BD_Shape<T>& x,
+				 const BD_Shape<T>& y,
+				 const Rounding_Dir dir);
+
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates BD_Shape
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+*/
+template <typename Temp, typename To, typename T>
+bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				 const BD_Shape<T>& x,
+				 const BD_Shape<T>& y,
+				 const Rounding_Dir dir);
+
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates BD_Shape
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename T>
+bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				 const BD_Shape<T>& x,
+				 const BD_Shape<T>& y,
+				 const Rounding_Dir dir,
+				 Temp& tmp0,
+				 Temp& tmp1,
+				 Temp& tmp2);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates BD_Shape
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+*/
+template <typename To, typename T>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			       const BD_Shape<T>& x,
+			       const BD_Shape<T>& y,
+			       const Rounding_Dir dir);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates BD_Shape
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+*/
+template <typename Temp, typename To, typename T>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			       const BD_Shape<T>& x,
+			       const BD_Shape<T>& y,
+			       const Rounding_Dir dir);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates BD_Shape
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename T>
+bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			       const BD_Shape<T>& x,
+			       const BD_Shape<T>& y,
+			       const Rounding_Dir dir,
+			       Temp& tmp0,
+			       Temp& tmp1,
+			       Temp& tmp2);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates BD_Shape
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+*/
+template <typename To, typename T>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				const BD_Shape<T>& x,
+				const BD_Shape<T>& y,
+				const Rounding_Dir dir);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates BD_Shape
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+*/
+template <typename Temp, typename To, typename T>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				const BD_Shape<T>& x,
+				const BD_Shape<T>& y,
+				const Rounding_Dir dir);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates BD_Shape
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename T>
+bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+				const BD_Shape<T>& x,
+				const BD_Shape<T>& y,
+				const Rounding_Dir dir,
+				Temp& tmp0,
+				Temp& tmp1,
+				Temp& tmp2);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Decodes the constraint \p c as a bounded difference.
+/*! \relates BD_Shape
+  \return
+  <CODE>true</CODE> if the constraint \p c is a
+  \ref Bounded_Difference_Shapes "bounded difference";
+  <CODE>false</CODE> otherwise.
+
+  \param c
+  The constraint to be decoded.
+
+  \param c_space_dim
+  The space dimension of the constraint \p c (it is <EM>assumed</EM>
+  to match the actual space dimension of \p c).
+
+  \param c_num_vars
+  If <CODE>true</CODE> is returned, then it will be set to the number
+  of variables having a non-zero coefficient. The only legal values
+  will therefore be 0, 1 and 2.
+
+  \param c_first_var
+  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
+  then it will be set to the index of the first variable having
+  a non-zero coefficient in \p c.
+
+  \param c_second_var
+  If <CODE>true</CODE> is returned and if \p c_num_vars is set to 2,
+  then it will be set to the index of the second variable having
+  a non-zero coefficient in \p c.
+
+  \param c_coeff
+  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
+  then it will be set to the value of the first non-zero coefficient
+  in \p c.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+bool extract_bounded_difference(const Constraint& c,
+				const dimension_type c_space_dim,
+				dimension_type& c_num_vars,
+				dimension_type& c_first_var,
+				dimension_type& c_second_var,
+				Coefficient& c_coeff);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Extracts leader indices from the predecessor relation.
+/*! \relates BD_Shape */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void compute_leader_indices(const std::vector<dimension_type>& predecessor,
+			    std::vector<dimension_type>& indices);
+
 } // namespace Parma_Polyhedra_Library
 
-namespace std {
+//! A bounded difference shape.
+/*! \ingroup PPL_CXX_interface
+  The class template BD_Shape<T> allows for the efficient representation
+  of a restricted kind of <EM>topologically closed</EM> convex polyhedra
+  called <EM>bounded difference shapes</EM> (BDSs, for short).
+  The name comes from the fact that the closed affine half-spaces that
+  characterize the polyhedron can be expressed by constraints of the form
+  \f$\pm x_i \leq k\f$ or \f$x_i - x_j \leq k\f$, where the inhomogeneous
+  term \f$k\f$ is a rational number.
 
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::BD_Shape */
-template <typename T>
-void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
-	  Parma_Polyhedra_Library::BD_Shape<T>& y);
+  Based on the class template type parameter \p T, a family of extended
+  numbers is built and used to approximate the inhomogeneous term of
+  bounded differences. These extended numbers provide a representation
+  for the value \f$+\infty\f$, as well as <EM>rounding-aware</EM>
+  implementations for several arithmetic functions.
+  The value of the type parameter \p T may be one of the following:
+    - a bounded precision integer type (e.g., \c int32_t or \c int64_t);
+    - a bounded precision floating point type (e.g., \c float or \c double);
+    - an unbounded integer or rational type, as provided by GMP
+      (i.e., \c mpz_class or \c mpq_class).
 
-} // namespace std
+  The user interface for BDSs is meant to be as similar as possible to
+  the one developed for the polyhedron class C_Polyhedron.  At the
+  interface level, bounded differences are specified using objects of
+  type Constraint: such a constraint is a bounded difference if it is
+  of the form
+    \f[
+      a_i x_i - a_j x_j \relsym b
+    \f]
+  where \f$\mathord{\relsym} \in \{ \leq, =, \geq \}\f$ and
+  \f$a_i\f$, \f$a_j\f$, \f$b\f$ are integer coefficients such that
+  \f$a_i = 0\f$, or \f$a_j = 0\f$, or \f$a_i = a_j\f$.
+  The user is warned that the above Constraint object will be mapped
+  into a <EM>correct</EM> approximation that, depending on the expressive
+  power of the chosen template argument \p T, may loose some precision.
+  In particular, constraint objects that do not encode a bounded difference
+  will be simply (and safely) ignored.
 
-//! \brief
-//! A class representing a restricted kind of convex polyhedra called
-//! <EM>bounded differences</EM> (bdiffs).
-/*!
-  The templatic class BD_Shape<T> allow the efficient representation of
-  a restricted kind of <EM>closed</EM> convex polyhedra called
-  <EM>bounded differences</EM>.  The name comes from fact that the
-  closed affine half-spaces that characterize the polyhedron can be
-  expressed by constraints of the form
-  \f[
-    ax_i - bx_j \leq c
-  \f]  
-  Where \f$a, b \in \{0, 1\}\f$ and \f$c\f$ belongs to some family of
-  extended numbers that is provided by the template argument \p T.
-  This family of extended numbers must provide representation for
-   \f$ -\infty \f$, \f$ 0 \f$, \f$ +\infty \f$ and for <EM>nan</EM>, not 
-  a number, since this arises as the ''result'' of undefined sums like 
-  \f$ +\infty + (-\infty) \f$, and of course, must be closed with 
-  respect to the operations specified below.
-  
-  The class T must provide the following methods:
-  
-  \code
-    T()
-  \endcode
-  is the default constructor: no assumption is made on the particular
-  object constructed, provided <CODE>T().OK()</CODE> gives <CODE>true</CODE>
-  (see below).
-  
-  \code
-    T(int y)
-  \endcode
-  constructs the object that best approximates \p y, from below, 
-  if \f$ y < 0 \f$ and from above, if \f$ y > 0 \f$ .
+  For instance, a Constraint object encoding \f$3x - 3y \leq 1\f$ will be
+  approximated by:
+    - \f$x - y \leq 1\f$,
+      if \p T is a (bounded or unbounded) integer type;
+    - \f$x - y \leq \frac{1}{3}\f$,
+      if \p T is the unbounded rational type \c mpq_class;
+    - \f$x - y \leq k\f$, where \f$k > \frac{1}{3}\f$,
+      if \p T is a floating point type (having no exact representation
+      for \f$\frac{1}{3}\f$).
 
-  \code
-    ~T()
-  \endcode
-  is the destructor.
-    
-  \code
-    T(const T& y)
-  \endcode
-  is the ordinary copy constructor.
-    
-  \code
-   static const T& plus_infinity()
-  \endcode
-  returns a representation for \f$ +\infty \f$.
+  On the other hand, a Constraint object encoding \f$3x - y \leq 1\f$
+  will be safely ignored in all of the above cases.
 
-  \code
-    bool is_plus_infinity() const 
-  \endcode  
-  returns <CODE>true</CODE> if and only if \p *this
-  represents \f$ +\infty \f$.
-  
-  \code
-    bool is_nan() const      
-  \endcode
-  returns <CODE>true</CODE> if and only if \p *this
-  represents the ``not a number'' value.
-  
-  \code
-    bool is_negative() const
-  \endcode
-  returns <CODE>true</CODE> if and only if \p *this is negative.
-  
-  \code
-    bool is_nonnegative() const
-  \endcode
-  returns <CODE>true</CODE> if and only if \p *this is non-negative.
-
-  \code
-    bool is_zero() const 
-  \endcode
-  returns <CODE>true</CODE> if and only if \p *this is zero.
-  
-  \code
-    bool OK() const 
-  \endcode
-  returns <CODE>true</CODE> if and only if \p *this satisfied all its invariants.
-
-  \code
-    T& operator=(const T&) 
-  \endcode
-  is the ordinary assignment operator.
-  
-  \code
-    void numer_denom(Coefficient& num, Coefficient& den) const
-  \endcode
-  sets \p num and \p den to numerator and denominator 
-  of \p *this, where \p *this must be a finite value.
-
-  \code
-    std::ostream& operator<<(std::ostream& s, const T& x)
-  \endcode
-  writes a textual representation of \p x to \p s.
-  
-  \code  
-    std::istream& operator>>(std::istream& s, T& x)
-  \endcode
-  reads a textual representation for \p x from \p s.
-
-  \code
-    bool operator==(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is equal to \p y.
- 
-  \code
-    bool operator!=(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x and \p y are different.
-  
-  \code
-    bool operator>(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is greater than \p y.  
-
-  \code
-    bool operator>=(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is greater than
-  or equal to \p y.  
-
-  \code
-    bool operator<(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is less than \p y.
-
-  \code
-    bool operator<=(const T& x, const T& y)
-  \endcode
-  returns <CODE>true</CODE> if and only if \p x is less than 
-  or equal to \p y.
-  
-  \code
-    T add_round_up(const T& x, const T& y)
-  \endcode
-  returns an approximation from above of the sum of \p x and \p y. 
-  
-  \code
-    T add_round_down(const T& x, const T& y)
-  \endcode
-  returns an approximation from below of the sum of \p x and \p y. 
-
-  \code
-    T negate_round_down(const T& x)
-  \endcode
-  returns an approximation from below of the opposite of \p x . 
-
-  \code
-    T negate_round_up(const T& x)
-  \endcode
-  returns an approximation from above of the opposite of \p x . 
-
-  \code
-  template <>
-    T div_round_up<T>(const Coefficient& x, const Coefficient& y)
-  \endcode
-  returns an approximation from above of the division of \p x by \p y.
-  
-  Now we specify the approximations, applied by methods that add
-  constraints to <EM>bounded differences</EM>. 
-  If the constraint is in the form \f$ ax_i - bx_j \leq c \f$
-  we have the following approximation:
-          \f[
-              ax_i - bx_j \leq c\uparrow
-          \f]
-  otherwise if the constraint is in the form \f$ ax_i - bx_j = c \f$
-  we have the following approximations:
-          \f[
-            \begin{cases}
-              ax_i - bx_j = c, & \text{if } c = c\uparrow
-              = c\downarrow; \\
-              ax_i - bx_j \geq c\downarrow \text{ and } ax_i - bx_j 
-              \leq c\uparrow,  & \text{otherwise}. 
-            \end{cases} 
-          \f]
-  with \f$a, b \in \{0, 1\}\f$, where \f$\uparrow\f$ is used to indicate
-  an approximation from above and \f$\downarrow\f$ 
-  is used to indicate an approximations from below.
-  Moreover the constraints actually inserted depend on the expressive 
-  power of T.
-
-  \par
-  In all the examples it is assumed the class T is defined as above 
-  and that variables <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>  
-  are defined (where they are used) as follows:
+  In the following examples it is assumed that the type argument \p T
+  is one of the possible instances listed above and that variables
+  <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE> are defined
+  (where they are used) as follows:
   \code
     Variable x(0);
     Variable y(1);
@@ -286,8 +354,8 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
   \endcode
 
   \par Example 1
-  The following code builds a <EM>bounded differences</EM> corresponding 
-  to a cube in \f$\Rset^3\f$, given as a system of constraints:
+  The following code builds a BDS corresponding to a cube in \f$\Rset^3\f$,
+  given as a system of constraints:
   \code
     Constraint_System cs;
     cs.insert(x >= 0);
@@ -298,19 +366,9 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
     cs.insert(z <= 1);
     BD_Shape<T> bd(cs);
   \endcode
-  Remark that only constraints of the form of 
-  <EM>bounded differences</EM> are inserted.
-  The following code builds the same bdiffs as above,
-  in fact the only inserted constraints must be of the form
-  \f[
-    ax_i + bx_j \leq c
-  \f]  
-  or
-  \f[
-    ax_i + bx_j = c
-  \f]
-  with \f$a, b \in \{-1, 0, 1\}\f$ and \f$c\f$ belongs to class T,
-  the others are ignored (in this example the constraints 7, 8, 9
+  Since only those constraints having the syntactic form of a
+  <EM>bounded difference</EM> are considered, the following code
+  will build the same BDS as above (i.e., the constraints 7, 8, and 9
   are ignored):
   \code
     Constraint_System cs;
@@ -319,509 +377,830 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
     cs.insert(y >= 0);
     cs.insert(y <= 1);
     cs.insert(z >= 0);
-    cs.insert(z <= 1);          
+    cs.insert(z <= 1);
     cs.insert(x + y <= 0);      // 7
     cs.insert(x - z + x >= 0);  // 8
     cs.insert(3*z - y <= 1);    // 9
     BD_Shape<T> bd(cs);
   \endcode
-
-  \par Example 2
-  The following code shows the use of the function
-  <CODE>CH78_widening_assign</CODE>:
-  \code
-    BD_Shape<T> bd1(2);
-    bd1.add_constraint(x <= 0);
-    bd1.add_constraint(y >= 0);
-    bd1.add_constraint(x - y <= 0);
-
-    BD_Shape<T> bd2(2);
-    bd2.add_constraint(x <= -1);
-    bd2.add_constraint(y >= 0);
-    bd2.add_constraint(x + y <= 0);
-
-    bd1.CH78_widening_assign(bd2);
-  \endcode
-  In this example the starting bdiffs \p bd1 is the fourth quadrant
-  and \p bd2 is an half-plane in \f$\Rset^2\f$. The resulting bdiffs
-  is the half-plane \f$y >= 0\f$.
-
-  \par Example 3
-  The following code shows the use of the function
-  <CODE>CC76_extrapolation_assign</CODE>:
-  \code
-    BD_Shape<T> bd1(2);
-    bd1.add_constraint(x <= 0);
-    bd1.add_constraint(y >= 0);
-    bd1.add_constraint(x - y <= 0);
-
-    BD_Shape<T> bd2(2);
-    bd2.add_constraint(x <= -1);
-    bd2.add_constraint(y >= 0);
-    bd2.add_constraint(x - y <= 0);
-    
-    bd1.CC76_extrapolation_assign(bd2);
-  \endcode
-  In this example the starting bdiffs \p bd1 is the fourth quadrant
-  and \p bd2 is an half-plane in \f$\Rset^2\f$. The resulting bdiffs 
-  is still \p bd1.
-
-  \par Example 4
-  The following code shows the use of the function
-  <CODE>CC76_narrowing_assign</CODE>:
-  \code
-    BD_Shape<T> bd1(2);
-    BD_Shape<T> bd2(2);
-
-    Constraint_System cs;
-    cs.insert(x >= 0);
-    bd2.add_constraints(cs2);
-
-    bd1.CC76_narrowing_assign(bd2);
-  \endcode
-  In this example the starting bdiffs \p bd1 is universe
-  and \p bd2 is non-negative half-lines. The resulting bdiffs 
-  is the same \p bd2.
 */
-
 template <typename T>
-class Parma_Polyhedra_Library::BD_Shape {   
-public:
-  //! \brief
-  //! Returns the maximum space dimension that a system 
-  //! of bounded differences can handle.
-  static dimension_type max_space_dimension();
+class Parma_Polyhedra_Library::BD_Shape {
+private:
+  /*! \brief
+    The (extended) numeric type of the inhomogeneous term of
+    the inequalities defining a BDS.
+  */
+  typedef Checked_Number<T, Extended_Number_Policy> N;
 
-  //! \brief
-  //! The type upon which bounded differences are built, that is,
-  //! the type of their inhomogeneous terms.
+public:
+  //! The numeric base type upon which bounded differences are built.
   typedef T base_type;
 
-  //! Builds a universe or empty system of bounded differences.
-  /*!
-    \param num_dimensions   The number of dimensions of the vector
-                            space enclosing the system of bounded differences.
+  /*! \brief
+    The (extended) numeric type of the inhomogeneous term of the
+    inequalities defining a BDS.
+  */
+  typedef N coefficient_type;
 
-    \param kind             Specifies whether the universe or the empty
-                            system of bounded differences has to be built.
+  //! Returns the maximum space dimension that a BDS can handle.
+  static dimension_type max_space_dimension();
+
+  //! \name Constructors, Assignment, Swap and Destructor
+  //@{
+
+  //! Builds a universe or empty BDS of the specified space dimension.
+  /*!
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the BDS;
+
+    \param kind
+    Specifies whether the universe or the empty BDS has to be built.
   */
   explicit BD_Shape(dimension_type num_dimensions = 0,
-		  Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
+		    Degenerate_Element kind = UNIVERSE);
 
   //! Ordinary copy-constructor.
-  BD_Shape(const BD_Shape& x);
+  BD_Shape(const BD_Shape& y);
 
-  //! Builds a system of bounded differences from a system of constraints.
+  //! Builds a conservative, upward approximation of \p y.
+  template <typename U>
+  explicit BD_Shape(const BD_Shape<U>& y);
+
+  //! Builds a BDS from the system of constraints \p cs.
   /*!
-    The system of bounded differences inherits the space dimension 
-    of system of constraints.
-    \param cs       The system of constraints defining the system 
-                    of bounded differences.
-    \exception std::invalid_argument thrown if the system of constraints \p cs
-                                     contains strict inequalities.
+    The BDS inherits the space dimension of \p cs.
+
+    \param cs
+    A system of constraints: constraints that are not
+    \ref Bounded_Difference_Shapes "bounded differences"
+    are ignored (even though they may have contributed
+    to the space dimension).
+
+    \exception std::invalid_argument
+    Thrown if the system of constraints \p cs contains strict inequalities.
   */
-  BD_Shape(const Constraint_System& cs);
- 
-  //! \brief
-  //! The assignment operator
-  //! (\p *this and \p y can be dimension-incompatible).
+  explicit BD_Shape(const Constraint_System& cs);
+
+  //! Builds a BDS from the system of generators \p gs.
+  /*!
+    Builds the smallest BDS containing the polyhedron defined by \p gs.
+    The BDS inherits the space dimension of \p gs.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+  */
+  explicit BD_Shape(const Generator_System& gs);
+
+  //! Builds a BDS from the polyhedron \p ph.
+  /*!
+    Builds a BDS containing \p ph using algorithms whose complexity
+    does not exceed the one specified by \p complexity.  If
+    \p complexity is \p ANY_COMPLEXITY, then the BDS built is the
+    smallest one containing \p ph.
+  */
+  explicit BD_Shape(const Polyhedron& ph,
+		    Complexity_Class complexity = ANY_COMPLEXITY);
+
+  /*! \brief
+    The assignment operator
+    (\p *this and \p y can be dimension-incompatible).
+  */
   BD_Shape& operator=(const BD_Shape& y);
+
+  /*! \brief
+    Swaps \p *this with \p y
+    (\p *this and \p y can be dimension-incompatible).
+  */
+  void swap(BD_Shape& y);
+
+  //! Destructor.
+  ~BD_Shape();
+
+  //@} Constructors, Assignment, Swap and Destructor
+
+  //! \name Member Functions that Do Not Modify the BD_Shape
+  //@{
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is
-  //! an empty system of bounded differences.
-  bool is_empty() const;
+  /*! \brief
+    Returns \f$0\f$, if \p *this is empty; otherwise, returns the
+    \ref Affine_Independence_and_Affine_Dimension "affine dimension"
+    of \p *this.
+  */
+  dimension_type affine_dimension() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! is an universe system of bounded differences.
-  bool is_universe() const;
+  //! Returns a system of constraints defining \p *this.
+  Constraint_System constraints() const;
+
+  //! Returns a minimized system of constraints defining \p *this.
+  Constraint_System minimized_constraints() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
-  /* 
-    exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool contains(const BD_Shape& y) const;
 
-  //! \brief
-  //! Returns the relations holding between the BD_Shape \p *this
-  //! and the constraint \p c.
+  //! Returns <CODE>true</CODE> if and only if \p *this strictly contains \p y.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool strictly_contains(const BD_Shape& y) const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are topology-incompatible or
+    dimension-incompatible.
+  */
+  bool is_disjoint_from(const BD_Shape& y) const;
+
+  //! Returns the relations holding between \p *this and the constraint \p c.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are dimension-incompatible
-                                       or if \p c is a strict inequality
-				       or if \p c is not a bounded difference.
+    or if \p c is a strict inequality or if \p c is not a bounded
+    difference constraint.
   */
   Poly_Con_Relation relation_with(const Constraint& c) const;
 
-  //! \brief
-  //! Returns the relations holding between the BD_Shape \p *this
-  //! and the generator \p g.
+  //! Returns the relations holding between \p *this and the generator \p g.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and generator \p g are dimension-incompatible.
   */
   Poly_Gen_Relation relation_with(const Generator& g) const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this is an empty BDS.
+  bool is_empty() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is a universe BDS.
+  bool is_universe() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
+  bool is_discrete() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    is a topologically closed subset of the vector space.
+  */
+  bool is_topologically_closed() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is a bounded BDS.
+  bool is_bounded() const;
+
+  /*! \brief
+    Uses \p *this to shrink a generic, interval-based bounding box.
+    Assigns to \p box the intersection of \p box with the smallest
+    bounding box containing \p *this.
+
+    \param box
+    The bounding box to be shrunk;
+
+    \param complexity
+    The complexity class of the algorithm to be used.
+
+    If the BDS \p *this or \p box is empty, then the empty box
+    is returned.
+
+    If \p *this and \p box are non-empty, then, for
+    each space dimension \f$k\f$ with variable \f$\mathrm{var}\f$, let
+    \f$u\f$ be the upper and \f$l\f$ the lower bound of the smallest
+    interval containing \p *this.
+
+    If \f$l\f$ is infinite, then \p box is unaltered; if \f$l\f$ is
+    finite, then the \p box interval for space dimension \f$k\f$ is
+    (destructively) intersected with \f$[l, +\mathrm{infty})\f$ if a
+    point of \p *this satisfies \f$\mathrm{var} == l\f$ and with
+    \f$(l, +\mathrm{infty})\f$ otherwise.
+
+    Similarly, if \f$u\f$ is infinite, then \p box is unaltered; if
+    \f$u\f$ is finite, then the \p box interval for space dimension
+    \f$k\f$ is (destructively) intersected with \f$(-\mathrm{infty},
+    u]\f$ if a point of \p *this satisfies \f$\mathrm{var} == u\f$ and
+    with \f$(-\mathrm{infty}, u)\f$ otherwise.
+
+    The template class Box must provide the following methods, whose
+    return values, if any, are simply ignored.
+    \code
+      set_empty()
+    \endcode
+    causes the box to become empty, i.e., to represent the empty set.
+    \code
+      raise_lower_bound(dimension_type k, bool closed,
+                        Coefficient_traits::const_reference n,
+                        Coefficient_traits::const_reference d)
+    \endcode
+    intersects the interval corresponding to the <CODE>k</CODE>-th
+    space dimension
+    with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
+    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
+    \code
+      lower_upper_bound(dimension_type k, bool closed,
+                        Coefficient_traits::const_reference n,
+                        Coefficient_traits::const_reference d)
+    \endcode
+    intersects the interval corresponding to the <CODE>k</CODE>-th
+    space dimension
+    with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
+    with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
+    is <CODE>false</CODE>.
+
+    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
+    will be called at most once for each possible value for <CODE>k</CODE>
+    and for all such calls the fraction \f$n/d\f$ will be in canonical form,
+    that is, \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$
+    is positive, \f$0/1\f$ being the unique representation for zero.
+    The same guarantee is offered for the function
+    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
+  */
+  template <typename Box>
+  void shrink_bounding_box(Box& box,
+			   Complexity_Class complexity = ANY_COMPLEXITY) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains at least one integer point.
+  */
+  bool contains_integer_point() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this satisfies
+    all its invariants.
+  */
+  bool OK() const;
+
+  //@} Member Functions that Do Not Modify the BD_Shape
+
   //! \name Space-Dimension Preserving Member Functions that May Modify the BD_Shape
   //@{
 
-  //! \brief
-  //! Adds a copy of constraint \p c to the system of constraints
-  //! of \p *this.
-  /*!
-    \exception std::invalid_argument thrown if \p *this and constraint \p c
-                                     are dimension-incompatible,
-				     or if \p c is a strict inequality.
+  /*! \brief
+    Adds a copy of constraint \p c to the system of bounded differences
+    defining \p *this.
+
+    \param c
+    The constraint to be added. If it is not a bounded difference, it
+    will be simply ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible,
+    or if \p c is a strict inequality.
   */
   void add_constraint(const Constraint& c);
 
-  //! \brief
-  //! Adds a copy of constraint \p c to the system of constraints
-  //! of \p *this.
-  /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \exception std::invalid_argument thrown if \p *this and constraint \p c
-                                     are dimension-incompatible,
-				     or if \p c is a strict inequality.
+  /*! \brief
+    Adds a copy of constraint \p c to the system of bounded differences
+    defining \p *this.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param c
+    The constraint to be added. If it is not a bounded difference, it
+    will be simply ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible,
+    or if \p c is a strict inequality.
   */
   bool add_constraint_and_minimize(const Constraint& c);
 
-  //! \brief
-  //! Adds the constraints in \p cs to the system of constraints
-  //! of \p *this.
-  /*!
-    \param  cs              The constraints that will be added to the
-                            current system of constraints.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are dimension-incompatible,
-				     or if there is in \p cs a
-				     strict inequality.
+  /*! \brief
+    Adds the constraints in \p cs to the system of bounded differences
+    defining \p *this.
+
+    \param  cs
+    The constraints that will be added. Constraints that are not bounded
+    differences will be simply ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible,
+    or if \p cs contains a strict inequality.
   */
   void add_constraints(const Constraint_System& cs);
 
-  //! \brief
-  //! Adds the constraints in \p cs to the system of constraints
-  //! of \p *this.
-  /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \param     cs         The constraints that will be added to the
-                          current system of constraints.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are dimension-incompatible,
-				     or if there is in \p cs a
-				     strict inequality.
+  /*! \brief
+    Adds the constraints in \p cs to the system of constraints
+    of \p *this (without minimizing the result).
+
+    \param cs
+    The constraint system to be added to \p *this.  The constraints in
+    \p cs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_constraints(Constraint_System& cs);
+
+  /*! \brief
+    Adds the constraints in \p cs to the system of bounded differences
+    defining \p *this.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param  cs
+    The constraints that will be added. Constraints that are not bounded
+    differences will be simply ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible,
+    or if \p cs contains a strict inequality.
   */
   bool add_constraints_and_minimize(const Constraint_System& cs);
 
-  //! \brief
+  /*! \brief
+    Adds the constraints in \p cs to the system of constraints
+    of \p *this, minimizing the result.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    The constraint system to be added to \p *this.  The constraints in
+    \p cs may be recycled.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
+  */
+  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
+
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   void intersection_assign(const BD_Shape& y);
 
-  //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   bool intersection_assign_and_minimize(const BD_Shape& y);
 
-  //! \brief
-  //! Assigns to \p *this the smallest BD_Shape that contains the convex 
-  //! union of \p *this and \p y.
-  /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+  /*! \brief
+    Assigns to \p *this the smallest BDS containing the convex union
+    of \p *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void poly_hull_assign(const BD_Shape& y);
+  void bds_hull_assign(const BD_Shape& y);
 
-  //! \brief
-  //! Assigns to \p *this the smallest BD_Shape that contains the convex 
-  //! union of \p *this and \p y.
-  /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+  /*! \brief
+    Assigns to \p *this the smallest BDS containing the convex union
+    of \p *this and \p y.
+
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
-  bool poly_hull_assign_and_minimize(const BD_Shape& y);
+  bool bds_hull_assign_and_minimize(const BD_Shape& y);
 
-  //! \brief
-  //! Assigns to \p *this the \ref poly_difference "poly-difference" of
-  //! \p *this and \p y.
-  /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+  //! Same as bds_hull_assign.
+  void upper_bound_assign(const BD_Shape& y);
+
+  /*! \brief
+    If the bds-hull of \p *this and \p y is exact, it is assigned
+    to \p *this and <CODE>true</CODE> is returned,
+    otherwise <CODE>false</CODE> is returned.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void poly_difference_assign(const BD_Shape& y);
+  bool bds_hull_assign_if_exact(const BD_Shape& y);
 
-  //! \brief
-  //! Assigns to \p *this the \ref affine_transformation "affine image"
-  //! of \p *this under the function mapping variable \p var into the
-  //! affine expression specified by \p expr and \p denominator.
-  /*!
-    \param var           The variable to which the affine
-                         expression is assigned.
-    \param expr          The numerator of the affine expression.
-    \param denominator   The denominator of the affine expression
-                         
-    \exception std::invalid_argument thrown if \p denominator is zero
-                                     or if \p expr and \p *this
-                                     are dimension-incompatible
-                                     or if \p var is not a dimension
-                                     of \p *this or if \p expr is in
-                                     two or plus variables
-				     or if the value of coefficient 
-				     of the single variable in \p expr 
-				     is different from value of 
-				     \p denominator.
+  //! Same as bds_hull_assign_if_exact.
+  bool upper_bound_assign_if_exact(const BD_Shape& y);
 
-    Note that, only the linear expressions of the form
-    \f[
-      ax_i + c
-    \f]  
-    with  \f$a \in \{0,\f$ denominator \f$ \}\f$ and \f$c\f$ belong to class T 
-    are accepted.
+  /*! \brief
+    Assigns to \p *this
+    the \ref Convex_Polyhedral_Difference "poly-difference"
+    of \p *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  void bds_difference_assign(const BD_Shape& y);
+
+  //! Same as bds_difference_assign.
+  void difference_assign(const BD_Shape& y);
+
+  /*! \brief
+    Assigns to \p *this the
+    \ref Single_Update_Affine_Functions "affine image"
+    of \p *this under the function mapping variable \p var into the
+    affine expression specified by \p expr and \p denominator.
+
+    \param var
+    The variable to which the affine expression is assigned.
+
+    \param expr
+    The numerator of the affine expression.
+
+    \param denominator
+    The denominator of the affine expression.
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this
+    are dimension-incompatible or if \p var is not a dimension of \p *this.
   */
   void affine_image(Variable var,
 		    const Linear_Expression& expr,
-		    const Coefficient& denominator = Coefficient_one());
+		    Coefficient_traits::const_reference denominator
+		    = Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the \ref affine_transformation "affine preimage"
-  //! of \p *this under the function mapping variable \p var into the
-  //! affine expression specified by \p expr and \p denominator.
-  /*!
-    \param var           The variable to which the affine expression
-                         is substituted.
-    \param expr          The numerator of the affine expression.
-    \param denominator   The denominator of the affine expression.
-    \exception std::invalid_argument thrown if \p denominator is zero
-                                     or if \p expr and \p *this
-                                     are dimension-incompatible
-                                     or if \p var is not a dimension
-                                     of \p *this or if \p expr is in 
-                                     two or plus variables
-				     or if the value of coefficient 
-				     of the single variable in \p expr 
-				     is different from value of 
-				     \p denominator.
-  
-    Note that, only the linear expressions of the form
-    \f[
-      ax_i + c
-    \f]  
-    with  \f$a \in \{0,\f$ denominator \f$ \}\f$ and \f$c\f$ belong to class T 
-    are accepted.
+  /*! \brief
+    Assigns to \p *this the
+    \ref Single_Update_Affine_Functions "affine preimage"
+    of \p *this under the function mapping variable \p var into the
+    affine expression specified by \p expr and \p denominator.
+
+    \param var
+    The variable to which the affine expression is substituted.
+
+    \param expr
+    The numerator of the affine expression.
+
+    \param denominator
+    The denominator of the affine expression.
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this
+    are dimension-incompatible or if \p var is not a dimension of \p *this.
   */
   void affine_preimage(Variable var,
 		       const Linear_Expression& expr,
-		       const Coefficient& denominator = Coefficient_one());
+		       Coefficient_traits::const_reference denominator
+		       = Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer function"
-  //! \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
-  //! where \f$\mathord{\relsym}\f$ is the relation symbol encoded
-  //! by \p relsym.
-  /*!
-    \param var           The left hand side variable of
-                         the generalized affine transfer function.
-    \param relsym        The relation symbol.
-    \param expr          The numerator of the right hand side
-                         affine expression.
-    \param denominator   The denominator of the right hand side affine
-                         expression.
-    \exception std::invalid_argument thrown if \p denominator is zero
-                                     or if \p expr and \p *this
-                                     are dimension-incompatible
-                                     or if \p var is not a dimension
-                                     of \p *this or if \p relsym is 
-                                     a strict relation symbol
-                                     or if \p expr is in two or plus
-				     variables or if the value of 
-                                     coefficient of the single variable 
-                                     in \p expr is different from value of 
-				     \p denominator.
+  /*! \brief
+    Assigns to \p *this the image of \p *this with respect to the
+    \ref Generalized_Affine_Relations "affine relation"
+    \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+    where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+    by \p relsym.
 
-    Note that, only the linear expressions of the form
-    \f[
-      ax_i + c
-    \f]  
-    with  \f$a \in \{0,\f$ denominator \f$ \}\f$ and \f$c\f$ belong to class T 
-    are accepted.
+    \param var
+    The left hand side variable of the generalized affine transfer function.
+
+    \param relsym
+    The relation symbol.
+
+    \param expr
+    The numerator of the right hand side affine expression.
+
+    \param denominator
+    The denominator of the right hand side affine expression.
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this
+    are dimension-incompatible or if \p var is not a dimension
+    of \p *this or if \p relsym is a strict relation symbol.
   */
-
   void generalized_affine_image(Variable var,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& expr,
-				const Coefficient& denominator = Coefficient_one());
+				Coefficient_traits::const_reference denominator
+				= Coefficient_one());
 
-  //! \brief
-  //! Assigns to \p *this the image of \p *this with respect to the
-  //! \ref generalized_image "generalized affine transfer function"
-  //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
-  //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
-  /*!
-    \param lhs           The left hand side affine expression.
-    \param relsym        The relation symbol.
-    \param rhs           The right hand side affine expression.
-    \exception std::invalid_argument thrown if \p *this is
-                                     dimension-incompatible with
-                                     \p lhs or \p rhs
-				     or if \p relsym is a strict relation
-				     symbol
-                                     or if \p lhs and \p rhs are in two
-                                     or plus variables, or both 
-                                     are constants. 
-                    
+  /*! \brief
+    Assigns to \p *this the image of \p *this with respect to the
+    \ref Generalized_Affine_Relations "affine relation"
+    \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+    \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+
+    \param lhs
+    The left hand side affine expression.
+
+    \param relsym
+    The relation symbol.
+
+    \param rhs
+    The right hand side affine expression.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs
+    or if \p relsym is a strict relation symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& rhs);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref time_elapse "time-elapse" between \p *this and \p y.
+  /*! \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Generalized_Affine_Relations "affine relation"
+    \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+    where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+    by \p relsym.
+
+    \param var
+    The left hand side variable of the generalized affine transfer function.
+
+    \param relsym
+    The relation symbol.
+
+    \param expr
+    The numerator of the right hand side affine expression.
+
+    \param denominator
+    The denominator of the right hand side affine expression.
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this
+    are dimension-incompatible or if \p var is not a dimension
+    of \p *this or if \p relsym is a strict relation symbol.
+  */
+  void generalized_affine_preimage(Variable var,
+				   Relation_Symbol relsym,
+				   const Linear_Expression& expr,
+				   Coefficient_traits::const_reference
+				   denominator = Coefficient_one());
+
+  /*! \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Generalized_Affine_Relations "affine relation"
+    \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+    \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+
+    \param lhs
+    The left hand side affine expression.
+
+    \param relsym
+    The relation symbol.
+
+    \param rhs
+    The right hand side affine expression.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs
+    or if \p relsym is a strict relation symbol.
+  */
+  void generalized_affine_preimage(const Linear_Expression& lhs,
+				   Relation_Symbol relsym,
+				   const Linear_Expression& rhs);
+
   /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+    \brief
+    Assigns to \p *this the image of \p *this with respect to the
+    \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
+    \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
+         \leq \mathrm{var}'
+           \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+
+    \param var
+    The variable updated by the affine relation;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void bounded_affine_image(Variable var,
+			    const Linear_Expression& lb_expr,
+			    const Linear_Expression& ub_expr,
+			    Coefficient_traits::const_reference denominator
+			    = Coefficient_one());
+
+  /*!
+    \brief
+    Assigns to \p *this the preimage of \p *this with respect to the
+    \ref Single_Update_Bounded_Affine_Relations "bounded affine relation"
+    \f$\frac{\mathrm{lb\_expr}}{\mathrm{denominator}}
+         \leq \mathrm{var}'
+           \leq \frac{\mathrm{ub\_expr}}{\mathrm{denominator}}\f$.
+
+    \param var
+    The variable updated by the affine relation;
+
+    \param lb_expr
+    The numerator of the lower bounding affine expression;
+
+    \param ub_expr
+    The numerator of the upper bounding affine expression;
+
+    \param denominator
+    The (common) denominator for the lower and upper bounding
+    affine expressions (optional argument with default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p lb_expr (resp., \p ub_expr)
+    and \p *this are dimension-incompatible or if \p var is not a space
+    dimension of \p *this.
+  */
+  void bounded_affine_preimage(Variable var,
+			       const Linear_Expression& lb_expr,
+			       const Linear_Expression& ub_expr,
+			       Coefficient_traits::const_reference denominator
+			       = Coefficient_one());
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   void time_elapse_assign(const BD_Shape& y);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the 
-  //! \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
-  //! The computation is not guarantee to be terminated.
-  /*!
-    \param y                 A system of bounded differences that <EM>must</EM>
-                             be contained in \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
+  //! Assigns to \p *this its topological closure.
+  void topological_closure_assign();
+
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
+
+    \param y
+    A BDS that <EM>must</EM> be contained in \p *this.
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void CC76_extrapolation_assign(const BD_Shape& y);  
+  void CC76_extrapolation_assign(const BD_Shape& y, unsigned* tp = 0);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the 
-  //! \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
-  //! The computation is not guarantee to be terminated.
-  /*!
-    \param y                 A system of bounded differences 
-                             that <EM>must</EM>
-                             be contained in \p *this.
-    \param first             An iterator that points to the first
-                             stop_point.
-    \param last		     An iterator that points to the last
-                             stop_point.	     
-    \exception std::invalid_argument thrown if \p *this and \p y
-                             are dimension-incompatible.
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref CC76_extrapolation "CC76-extrapolation" between \p *this and \p y.
 
-    The stop points are fixed by the user.
+    \param y
+    A BDS that <EM>must</EM> be contained in \p *this.
+
+    \param first
+    An iterator referencing the first stop-point.
+
+    \param last
+    An iterator referencing one past the last stop-point.
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
   template <typename Iterator>
   void CC76_extrapolation_assign(const BD_Shape& y,
-				 Iterator first, Iterator last);
+				 Iterator first, Iterator last,
+				 unsigned* tp = 0);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the 
-  //! \ref CH78_widening "CH78-widening"
-  //! of \p *this and \p y.
-  /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
-  */ 
-  void CH78_widening_assign(const BD_Shape& y); 
-  
-  //! \brief
-  //! Improves the result of the \ref CH78_widening "CH78-widening"
-  //! computation by also enforcing those constraints in \p cs that are
-  //! satisfied by all the points of \p *this.
-  /*!
-    \param y                 A system of bounded differences that 
-                             <EM>must</EM> be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened system of bounded differences.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-                             (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                             are dimension-incompatible or if there is 
-                             in \p cs a strict inequality.
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref BHMZ05_widening "BHMZ05-widening" of \p *this and \p y.
+
+    \param y
+    A BDS that <EM>must</EM> be contained in \p *this.
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void limited_CH78_extrapolation_assign(const BD_Shape& y,
-					 const Constraint_System& cs,
-					 unsigned* tp = 0);
-    
-  //! \brief
-  //! Restores from \p y, the constraints of \p *this, lost by
-  //! \ref CC76_extrapolation "CC76-extrapolation" applications. 
-  /*!
-    \param y                 A system of bounded differences that 
-                             <EM>must</EM> be contained in \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are dimension-incompatible.
-  */ 
+  void BHMZ05_widening_assign(const BD_Shape& y, unsigned* tp = 0);
+
+  /*! \brief
+    Improves the result of the \ref BHMZ05_widening "BHMZ05-widening"
+    computation by also enforcing those constraints in \p cs that are
+    satisfied by all the points of \p *this.
+
+    \param y
+    A BDS that <EM>must</EM> be contained in \p *this.
+
+    \param cs
+    The system of constraints used to improve the widened BDS.
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this, \p y and \p cs are dimension-incompatible or
+    if \p cs contains a strict inequality.
+  */
+  void limited_BHMZ05_extrapolation_assign(const BD_Shape& y,
+					   const Constraint_System& cs,
+					   unsigned* tp = 0);
+
+  /*! \brief
+    Assigns to \p *this the result of restoring in \p y the constraints
+    of \p *this that were lost by
+    \ref CC76_extrapolation "CC76-extrapolation" applications.
+
+    \param y
+    A BDS that <EM>must</EM> contain \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+
+    \note
+    As was the case for widening operators, the argument \p y is meant to
+    denote the value computed in the previous iteration step, whereas
+    \p *this denotes the value computed in the current iteration step
+    (in the <EM>decreasing</EM> iteration sequence). Hence, the call
+    <CODE>x.CC76_narrowing_assign(y)</CODE> will assign to \p x
+    the result of the computation \f$\mathtt{y} \Delta \mathtt{x}\f$.
+  */
   void CC76_narrowing_assign(const BD_Shape& y);
 
-  //! \brief
-  //! Improves the result of the \ref CC76_extrapolation "CC76-extrapolation"
-  //! computation by also enforcing those constraints in \p cs that are
-  //! satisfied by all the points of \p *this.
-  /*!
-    \param y                 A system of bounded differences that 
-                             <EM>must</EM> be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened system of bounded differences.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-			     (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                             are dimension-incompatible or if there is in 
-                             \p cs a strict inequality.
+  /*! \brief
+    Improves the result of the \ref CC76_extrapolation "CC76-extrapolation"
+    computation by also enforcing those constraints in \p cs that are
+    satisfied by all the points of \p *this.
+
+    \param y
+    A BDS that <EM>must</EM> be contained in \p *this.
+
+    \param cs
+    The system of constraints used to improve the widened BDS.
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this, \p y and \p cs are dimension-incompatible or
+    if \p cs contains a strict inequality.
   */
   void limited_CC76_extrapolation_assign(const BD_Shape& y,
 					 const Constraint_System& cs,
 					 unsigned* tp = 0);
-  
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref H79_widening "H79-widening" between \p *this and \p y.
-  /*!
-    \param y           A system of bounded differences that <EM>must</EM>
-                       be contained in \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                       are dimension-incompatible.
+
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref H79_widening "H79-widening" between \p *this and \p y.
+
+    \param y
+    A BDS that <EM>must</EM> be contained in \p *this.
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void H79_widening_assign(const BD_Shape& y);  
- 
-  //! \brief
-  //! Improves the result of the \ref H79_widening "H79-widening"
-  //! computation by also enforcing those constraints in \p cs that are
-  //! satisfied by all the points of \p *this.
-  /*!
-    \param y                 A system of bounded differences that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened system of bounded differences.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-			     (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                             are dimension-incompatible.
+  void H79_widening_assign(const BD_Shape& y, unsigned* tp = 0);
+
+  /*! \brief
+    Improves the result of the \ref H79_widening "H79-widening"
+    computation by also enforcing those constraints in \p cs that are
+    satisfied by all the points of \p *this.
+
+    \param y
+    A BDS that <EM>must</EM> be contained in \p *this.
+
+    \param cs
+    The system of constraints used to improve the widened BDS.
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this, \p y and \p cs are dimension-incompatible.
   */
   void limited_H79_extrapolation_assign(const BD_Shape& y,
 					const Constraint_System& cs,
@@ -829,25 +1208,19 @@ public:
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
 
-  //! Returns the system of constraints.
-  Constraint_System constraints() const;
-
   //! \name Member Functions that May Modify the Dimension of the Vector Space
   //@{
 
-  //! \brief
-  //! Adds \p m new dimensions and embeds the old system of bounded
-  //! differences into the new space.
+  //! Adds \p m new dimensions and embeds the old BDS into the new space.
   /*!
-    \param m      The number of dimensions to add.
+    \param m
+    The number of dimensions to add.
 
-    The new dimensions will be those having the highest indexes
-    in the new system of bounded differences, which is characterized 
-    by a system of constraints in which the variables running through
-    the new dimensions are not constrained.
-    For instance, when starting from the system of bounded differences
-    \f$\cB \sseq \Rset^2\f$ and adding a third dimension, 
-    the result will be the system of bounded differences
+    The new dimensions will be those having the highest indexes in the new
+    BDS, which is defined by a system of bounded differences in which the
+    variables running through the new dimensions are unconstrained.
+    For instance, when starting from the BDS \f$\cB \sseq \Rset^2\f$
+    and adding a third dimension, the result will be the BDS
     \f[
       \bigl\{\,
         (x, y, z)^\transpose \in \Rset^3
@@ -858,19 +1231,19 @@ public:
   */
   void add_space_dimensions_and_embed(dimension_type m);
 
-  //! \brief
-  //! Adds \p m new dimensions to the system of bounded differences
-  //! and does not embed it in the new space.
-  /*!
-    \param m      The number of dimensions to add.
+  /*! \brief
+    Adds \p m new dimensions to the BDS and does not embed it in
+    the new vector space.
 
-    The new dimensions will be those having the highest indexes
-    in the new system of bounded differences, which is characterized 
-    by a system of constraints in which the variables running through
-    the new dimensions are all constrained to be equal to 0.
-    For instance, when starting from the system of bounded differences
-    \f$\cB \sseq \Rset^2\f$ and adding a third dimension, 
-    the result will be the system of bounded differences
+    \param m
+    The number of dimensions to add.
+
+    The new dimensions will be those having the highest indexes in the
+    new BDS, which is defined by a system of bounded differences in
+    which the variables running through the new dimensions are all
+    constrained to be equal to 0.
+    For instance, when starting from the BDS \f$\cB \sseq \Rset^2\f$
+    and adding a third dimension, the result will be the BDS
     \f[
       \bigl\{\,
         (x, y, 0)^\transpose \in \Rset^3
@@ -881,20 +1254,17 @@ public:
   */
   void add_space_dimensions_and_project(dimension_type m);
 
-  //! \brief
-  //! Seeing a system of bounded differences as a set of tuples (its points), 
-  //! assigns to \p *this all the tuples that can be obtained by concatenating,
-  //! in the order given, a tuple of \p *this with a tuple of \p y.
-  /*!
-    Let \f$B \sseq \Rset^n\f$ and \f$D \sseq \Rset^m\f$ be the systems 
-    of bounded differences represented, on entry, by \p *this and 
-    \p y, respectively.
-    Upon successful completion, \p *this will represent the system 
-    of bounded differences
+  /*! \brief
+    Seeing a BDS as a set of tuples (its points),
+    assigns to \p *this all the tuples that can be obtained by concatenating,
+    in the order given, a tuple of \p *this with a tuple of \p y.
+
+    Let \f$B \sseq \Rset^n\f$ and \f$D \sseq \Rset^m\f$ be the BDSs
+    corresponding, on entry, to \p *this and \p y, respectively.
+    Upon successful completion, \p *this will represent the BDS
     \f$R \sseq \Rset^{n+m}\f$ such that
     \f[
-      R
-        \defeq
+      R \defeq
           \Bigl\{\,
             (x_1, \ldots, x_n, y_1, \ldots, y_m)^\transpose
           \Bigm|
@@ -911,32 +1281,33 @@ public:
 
   //! Removes all the specified dimensions.
   /*!
-    \param to_be_removed  The set of Variable objects corresponding
-                          to the dimensions to be removed.
-    \exception std::invalid_argument thrown if \p *this is
-                                     dimension-incompatible with one
-				     of the Variable objects contained
-				     in \p to_be_removed.
+    \param to_be_removed
+    The set of Variable objects corresponding to the dimensions to be removed.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the Variable
+    objects contained in \p to_be_removed.
   */
   void remove_space_dimensions(const Variables_Set& to_be_removed);
 
-  //! \brief
-  //! Removes the higher dimensions so that the resulting space
-  //! will have dimension \p new_dimension.
-  /*!
-    \exception std::invalid_argument thrown if \p new_dimensions is greater
-                                     than the space dimension of \p *this.
+  /*! \brief
+    Removes the higher dimensions so that the resulting space
+    will have dimension \p new_dimension.
+
+    \exception std::invalid_argument
+    Thrown if \p new_dimension is greater than the space dimension
+    of \p *this.
   */
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
-  //! \brief
-  //! Remaps the dimensions of the vector space
-  //! according to a \ref map_space_dimensions "partial function".
-  /*!
-    \param pfunc   The partial function specifying
-                   the destiny of each dimension.
+  /*! \brief
+    Remaps the dimensions of the vector space according to
+    a \ref Mapping_the_Dimensions_of_the_Vector_Space "partial function".
 
-    The template class PartialFunction must provide the following
+    \param pfunc
+    The partial function specifying the destiny of each dimension.
+
+    The template class Partial_Function must provide the following
     methods.
     \code
       bool has_empty_codomain() const
@@ -963,105 +1334,234 @@ public:
 
     The result is undefined if \p pfunc does not encode a partial
     function with the properties described in the
-    \ref map_space_dimensions "specification of the mapping operator".
+    \ref Mapping_the_Dimensions_of_the_Vector_Space
+    "specification of the mapping operator".
   */
-  template <typename PartialFunction>
-  void map_space_dimensions(const PartialFunction& pfunc);
+  template <typename Partial_Function>
+  void map_space_dimensions(const Partial_Function& pfunc);
+
+  //! Creates \p m copies of the space dimension corresponding to \p var.
+  /*!
+    \param var
+    The variable corresponding to the space dimension to be replicated;
+
+    \param m
+    The number of replicas to be created.
+
+    \exception std::invalid_argument
+    Thrown if \p var does not correspond to a dimension of the vector space.
+
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the
+    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+    and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    then the \f$k\f$-th space dimension is
+    \ref expand_space_dimension "expanded" to \p m new space dimensions
+    \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
+  */
+  void expand_space_dimension(Variable var, dimension_type m);
+
+  //! Folds the space dimensions in \p to_be_folded into \p var.
+  /*!
+    \param to_be_folded
+    The set of Variable objects corresponding to the space dimensions
+    to be folded;
+
+    \param var
+    The variable corresponding to the space dimension that is the
+    destination of the folding operation.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p var or with
+    one of the Variable objects contained in \p to_be_folded.
+    Also thrown if \p var is contained in \p to_be_folded.
+
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+    <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    \p to_be_folded is a set of variables whose maximum space dimension
+    is also less than or equal to \f$n\f$, and \p var is not a member
+    of \p to_be_folded, then the space dimensions corresponding to
+    variables in \p to_be_folded are \ref fold_space_dimensions "folded"
+    into the \f$k\f$-th space dimension.
+  */
+  void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
-  //! \name Miscellaneous Member Functions
-  //@{
-
-  //! Destructor.
-  ~BD_Shape();
-
-  //! \brief
-  //! Swaps \p *this with system of bounded differences \p y
-  //! (\p *this and \p y can be dimension-incompatible).
-  void swap(BD_Shape& y);
+  PPL_OUTPUT_DECLARATIONS
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump(std::ostream& s) const;
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
-  //@} // Miscellaneous Member Functions
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
 
-  friend bool Parma_Polyhedra_Library::operator==<T>(const BD_Shape<T>& x, 
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
+  friend bool Parma_Polyhedra_Library::operator==<T>(const BD_Shape<T>& x,
 						     const BD_Shape<T>& y);
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this satisfied all its invariants.
-  bool OK() const;
+  template <typename Temp, typename To, typename U>
+  friend bool Parma_Polyhedra_Library::rectilinear_distance_assign
+  (Checked_Number<To, Extended_Number_Policy>& r,
+   const BD_Shape<U>& x, const BD_Shape<U>& y, const Rounding_Dir dir,
+   Temp& tmp0, Temp& tmp1, Temp& tmp2);
+  template <typename Temp, typename To, typename U>
+  friend bool Parma_Polyhedra_Library::euclidean_distance_assign
+  (Checked_Number<To, Extended_Number_Policy>& r,
+   const BD_Shape<U>& x, const BD_Shape<U>& y, const Rounding_Dir dir,
+   Temp& tmp0, Temp& tmp1, Temp& tmp2);
+  template <typename Temp, typename To, typename U>
+  friend bool Parma_Polyhedra_Library::l_infinity_distance_assign
+  (Checked_Number<To, Extended_Number_Policy>& r,
+   const BD_Shape<U>& x, const BD_Shape<U>& y, const Rounding_Dir dir,
+   Temp& tmp0, Temp& tmp1, Temp& tmp2);
 
 private:
+  template <typename U> friend class Parma_Polyhedra_Library::BD_Shape;
 
-  //! The matrix that represents the system of bounded differences.
-  DB_Matrix<T> dbm;
+  //! The matrix representing the system of bounded differences.
+  DB_Matrix<N> dbm;
 
-  // Please, do not move the following include directive:
-  // `BD_Status.idefs.hh' must be included exactly at this point.
-  // And please do not remove the space separating `#' from `include':
-  // this ensures that the directive will not be moved during the
-  // procedure that automatically creates the library's include file
-  // (see `Makefile.am' in the `src' directory).
-# include "BDS_Status.idefs.hh"
+#define PPL_IN_BD_Shape_CLASS
+#include "BDS_Status.idefs.hh"
+#undef PPL_IN_BD_Shape_CLASS
 
-  //! \brief  
-  //! The status flags to keep track of the internal state,
-  //! flags can be \p zero, \p zero-dim-univ or \p closed.
+  //! The status flags to keep track of the internal state.
   Status status;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if the system of bounded differences
-  //! is known to be empty.
+  //! A matrix of Booleans indicating which constraints are redundant.
+  std::vector<std::deque<bool> > redundancy_dbm;
+
+  //! Returns <CODE>true</CODE> if the BDS is known to be empty.
   /*!
     The return value <CODE>false</CODE> does not necessarily
     implies that \p *this is non-empty.
   */
   bool marked_empty()const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if the system of bounded differences
-  //! is known to be closed.
-  /*!
-    The return value <CODE>false</CODE> does not necessarily
-    implies that \p *this is non-closed.
-  */
-  bool marked_transitively_closed()const;
+  /*! \brief
+    Returns <CODE>true</CODE> if the system of bounded differences
+    is known to be shortest-path closed.
 
-  //! Turns \p *this into an empty system of bounded differences.
+    The return value <CODE>false</CODE> does not necessarily
+    implies that <CODE>this->dbm</CODE> is not shortest-path closed.
+  */
+  bool marked_shortest_path_closed()const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if the system of bounded differences
+    is known to be shortest-path reduced.
+
+    The return value <CODE>false</CODE> does not necessarily
+    implies that <CODE>this->dbm</CODE> is not shortest-path reduced.
+  */
+  bool marked_shortest_path_reduced()const;
+
+  //! Turns \p *this into an empty BDS.
   void set_empty();
 
-  //! \brief
-  //! Turns \p *this into an zero-dimensional universe 
-  //! system of bounded differences.
+  //! Turns \p *this into an zero-dimensional universe BDS.
   void set_zero_dim_univ();
 
- //! Adds to \p *this all implicit constraints and computes the tighter ones.
-  void closure_assign() const;
+  //! Assigns to <CODE>this->dbm</CODE> its shortest-path closure.
+  void shortest_path_closure_assign() const;
 
-  //! Remove the redundant constraints.
-  void transitive_reduction_assign() const;
+  /*! \brief
+    Assigns to <CODE>this->dbm</CODE> its shortest-path closure and
+    records into <CODE>this->redundancy_dbm</CODE> which of the entries
+    in <CODE>this->dbm</CODE> are redundant.
+  */
+  void shortest_path_reduction_assign() const;
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! is a reduced system of bounded differences.
-  bool is_transitively_reduced() const;
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if <CODE>this->dbm</CODE>
+    is shortest-path closed and <CODE>this->redundancy_dbm</CODE>
+    correctly flags the redundant entries in <CODE>this->dbm</CODE>.
+  */
+  bool is_shortest_path_reduced() const;
 
-  //! Initializes \p *this without constraints.
-  void init();
+  //! Adds the constraint <CODE>dbm[i][j] \<= k</CODE>.
+  void add_dbm_constraint(dimension_type i, dimension_type j, N k);
+  //! Adds the constraint <CODE>dbm[i][j] \<= num/den</CODE>.
+  void add_dbm_constraint(dimension_type i, dimension_type j,
+			  Coefficient_traits::const_reference num,
+			  Coefficient_traits::const_reference den);
+
+  //! Removes all the constraints on row/column \p v.
+  void forget_all_dbm_constraints(dimension_type v);
+  //! Removes all binary constraints on row/column \p v.
+  void forget_binary_dbm_constraints(dimension_type v);
+
+  //! An helper function for the computation of affine relations.
+  /*!
+    For each dbm index \p u (less than or equal to \p last_v and different
+    from \p v), deduce constraints of the form <CODE>v - u \<= c</CODE>,
+    starting from \p ub_v which is an upper bound for \p v.
+
+    The shortest-path closure is able to deduce the constraint
+    <CODE>v - u \<= ub_v - lb_u</CODE>. We can be more precise if variable
+    \p u played an active role in the computation of the upper bound for
+    \p v, i.e., if the corresponding coefficient
+    <CODE>q == sc_expr[u]/sc_den</CODE> is greater than zero. In particular:
+      - if <CODE>q \>= 1</CODE>, then <CODE>v - u \<= ub_v - ub_u</CODE>;
+      - if <CODE>0 \< q \< 1</CODE>, then
+        <CODE>v - u \<= ub_v - (q*ub_u + (1-q)*lb_u)</CODE>.
+  */
+  void deduce_v_minus_u_bounds(dimension_type v,
+			       dimension_type last_v,
+			       const Linear_Expression& sc_expr,
+			       Coefficient_traits::const_reference sc_den,
+			       const N& ub_v);
+
+  //! An helper function for the computation of affine relations.
+  /*!
+    For each dbm index \p u (less than or equal to \p last_v and different
+    from \p v), deduce constraints of the form <CODE>u - v \<= c</CODE>,
+    starting from \p minus_lb_v which is a lower bound for \p v.
+
+    The shortest-path closure is able to deduce the constraint
+    <CODE>u - v \<= ub_u - lb_v</CODE>. We can be more precise if variable
+    \p u played an active role in the computation of the lower bound for
+    \p v, i.e., if the corresponding coefficient
+    <CODE>q == sc_expr[u]/sc_den</CODE> is greater than zero.
+    In particular:
+      - if <CODE>q \>= 1</CODE>, then <CODE>u - v \<= lb_u - lb_v</CODE>;
+      - if <CODE>0 \< q \< 1</CODE>, then
+        <CODE>u - v \<= (q*lb_u + (1-q)*ub_u) - lb_v</CODE>.
+  */
+  void deduce_u_minus_v_bounds(dimension_type v,
+			       dimension_type last_v,
+			       const Linear_Expression& sc_expr,
+			       Coefficient_traits::const_reference sc_den,
+			       const N& minus_lb_v);
+
+  /*! \brief
+    Adds to \p limiting_shape the bounded differences in \p cs
+    that are satisfied by \p *this.
+  */
+  void get_limiting_shape(const Constraint_System& cs,
+			  BD_Shape& limiting_shape) const;
+
+  //! Compute the (zero-equivalence classes) predecessor relation.
+  /*!
+    It is assumed that the BDS is not empty and shortest-path closed.
+  */
+  void compute_predecessors(std::vector<dimension_type>& predecessor) const;
+
+  //! Compute the leaders of zero-equivalence classes.
+  /*!
+    It is assumed that the BDS is not empty and shortest-path closed.
+  */
+  void compute_leaders(std::vector<dimension_type>& leaders) const;
 
 #if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&
@@ -1069,10 +1569,10 @@ private:
 						      const BD_Shape<T>& c);
 #else
   // This is too lax than wanted.
-  template <typename S>
+  template <typename U>
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const BD_Shape<S>& c);
+						    const BD_Shape<U>& c);
 #endif
 
   //! \name Exception Throwers
@@ -1082,7 +1582,7 @@ private:
 
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_dim) const;
-  
+
   void throw_dimension_incompatible(const char* method,
 				    const Constraint& c) const;
 
@@ -1091,22 +1591,30 @@ private:
 
   void throw_dimension_incompatible(const char* method,
 				    const char* name_row,
-				    const Linear_Expression& y) const;     
+				    const Linear_Expression& y) const;
 
-  void throw_constraint_incompatible(const char* method) const;
+  static void throw_constraint_incompatible(const char* method);
 
-  void throw_expression_too_complex(const char* method,
-				    const Linear_Expression& e) const;
+  static void throw_expression_too_complex(const char* method,
+					   const Linear_Expression& e);
 
-  void throw_generic(const char* method, const char* reason) const;
-  //@} // Exception Throwers  
+  static void throw_generic(const char* method, const char* reason);
+  //@} // Exception Throwers
+};
 
-  static T default_stop_points[];
 
- };
+namespace std {
 
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+template <typename T>
+void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
+	  Parma_Polyhedra_Library::BD_Shape<T>& y);
+
+} // namespace std
 
 #include "BDS_Status.inlines.hh"
 #include "BD_Shape.inlines.hh"
+#include "BD_Shape.templates.hh"
 
 #endif // !defined(PPL_BD_Shape_defs_hh)

@@ -1,5 +1,5 @@
 /* Saturation_Matrix class implementation (non-inline functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -24,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Saturation_Matrix.defs.hh"
-
 #include "globals.defs.hh"
 #include <iostream>
 #include <string>
@@ -85,7 +83,7 @@ PPL::Saturation_Matrix::transpose() {
   const dimension_type ncols = num_columns();
   Saturation_Matrix tmp(ncols, nrows);
   for (dimension_type i = nrows; i-- > 0; )
-    for (int j = x[i].last(); j >= 0; j = x[i].prev(j))
+    for (unsigned long j = x[i].last(); j != ULONG_MAX; j = x[i].prev(j))
       tmp[j].set(i);
   swap(tmp);
   assert(OK());
@@ -97,7 +95,7 @@ PPL::Saturation_Matrix::transpose_assign(const Saturation_Matrix& y) {
   const dimension_type y_ncols = y.num_columns();
   Saturation_Matrix tmp(y_ncols, y_nrows);
   for (dimension_type i = y_nrows; i-- > 0; )
-    for (int j = y[i].last(); j >= 0; j = y[i].prev(j))
+    for (unsigned long j = y[i].last(); j != ULONG_MAX; j = y[i].prev(j))
       tmp[j].set(i);
   swap(tmp);
   assert(OK());
@@ -141,18 +139,18 @@ PPL::Saturation_Matrix::resize(dimension_type new_n_rows,
 
 void
 PPL::Saturation_Matrix::ascii_dump(std::ostream& s) const {
-  using std::endl;
-
   const Saturation_Matrix& x = *this;
   const char separator = ' ';
   s << num_rows() << separator << 'x' << separator
-    << num_columns() << endl;
+    << num_columns() << "\n";
   for (dimension_type i = 0; i < num_rows(); ++i) {
     for (dimension_type j = 0; j < num_columns(); ++j)
       s << x[i][j] << separator;
-    s << endl;
+    s << "\n";
   }
 }
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Saturation_Matrix)
 
 bool
 PPL::Saturation_Matrix::ascii_load(std::istream& s) {
@@ -178,7 +176,8 @@ PPL::Saturation_Matrix::ascii_load(std::istream& s) {
       else
 	x[i].clear(j);
     }
-  // Check for well-formedness.
+
+  // Check invariants.
   assert(OK());
   return true;
 }
@@ -203,7 +202,7 @@ PPL::Saturation_Matrix::OK() const {
     const Saturation_Row& row = x[i];
     if (!row.OK())
       return false;
-    else if (row.last() >= 0 && unsigned(row.last()) >= row_size) {
+    else if (row.last() != ULONG_MAX && row.last() >= row_size) {
 #ifndef NDEBUG
       cerr << "Saturation_Matrix[" << i << "] is a row with too many bits!"
 	   << endl

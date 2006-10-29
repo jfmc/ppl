@@ -1,5 +1,5 @@
 /* Coefficient class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -27,11 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Coefficient.types.hh"
 #include <iosfwd>
 
-#ifdef NATIVE_INTEGERS
-#include "Native_Integer.defs.hh"
-#endif
-
-#ifdef CHECKED_INTEGERS
+#if defined(CHECKED_INTEGERS) || defined(NATIVE_INTEGERS)
 #include "Checked_Number.defs.hh"
 #include "checked_int.inlines.hh"
 #endif
@@ -42,8 +37,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-const Coefficient& Coefficient_zero();
-const Coefficient& Coefficient_one();
+Coefficient_traits::const_reference Coefficient_zero();
+Coefficient_traits::const_reference Coefficient_one();
 
 } // namespace Parma_Polyhedra_Library
 

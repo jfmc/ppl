@@ -1,0 +1,11 @@
+libppl (0.9) unstable; urgency=low
+
+   * Release 0.9.
+
+ -- Roberto Bagnara <bagnara@cs.unipr.it>  Fri, 10 Mar 2006 18:08:34 +0000
+
+libppl (0.8) unstable; urgency=low
+
+   * Initial upstream release.
+
+ -- Roberto Bagnara <bagnara@cs.unipr.it>  Thu, 19 Jan 2006 23:58:34 +0000

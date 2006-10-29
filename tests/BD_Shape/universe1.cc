@@ -1,5 +1,5 @@
-/* Different ways of creating an universe BD_Shape.
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BD_Shape::is_universe().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,49 +14,76 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
+bool
+test01() {
   Variable x(0);
   Variable y(1);
-  Variable z(2);
 
-  TBD_Shape bd1(4);
-  TBD_Shape bd2(4);
+  TBD_Shape bd(4);
 
+  bd.add_constraint(-x <= 4);
+  bd.add_constraint(y - x <= 0);
+  bd.add_constraint(x - y <= -5);
 
-  bd1.add_constraint(-x <= 4);
-  bd1.add_constraint(y - x <= 0);
-  bd1.add_constraint(x - y <= -5);
+  bool universe = bd.is_universe();
 
-  bool universe1 = bd1.is_universe();
-#if NOISY
-  cout << "*** bd1.is_universe() ***" << endl;
-  cout << (universe1 ? "true" : "false") << endl;
-#endif
+  nout << "*** bd.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
 
-  bool universe2 = bd2.is_universe();
-#if NOISY
-  cout << "*** bd2.is_universe() ***" << endl;
-  cout << (universe2 ? "true" : "false") << endl;
-#endif
-
-  return (universe1 != universe2) ? 0 : 1;
-
+  return !universe;
 }
-CATCH
+
+bool
+test02() {
+  TBD_Shape bd(4);
+
+  bool universe = bd.is_universe();
+
+  nout << "*** bd.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return universe;
+}
+
+bool
+test03() {
+  TBD_Shape bd(0);
+
+  bool universe = bd.is_universe();
+
+  nout << "*** bd.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return universe;
+}
+
+bool
+test04() {
+  TBD_Shape bd(20, EMPTY);
+
+  bool universe = bd.is_universe();
+
+  nout << "*** bd.is_universe() ***" << endl;
+  nout << (universe ? "true" : "false") << endl;
+
+  return !universe;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+END_MAIN

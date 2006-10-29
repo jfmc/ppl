@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -14,17 +14,11 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
-
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
 
 SUBDIRS = examples
 
@@ -70,8 +64,6 @@ if HAVE_MD5SUM
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
-TEXT_MD5SUM = @text_md5sum@
-
 if ASSERTIONS_ENABLED
 
 TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED = \
@@ -111,17 +103,17 @@ $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 
 check-local: ppl_lcdd
 	echo $(TOUGH_EXAMPLES) >tough_examples
-	echo -n >obtained
+	echo $(ECHO_N) "$(ECHO_C)" >obtained
 	LANG=C; \
 	for path in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; \
 	do \
 	  file=`basename $$path`; \
-	  grep -q $$file tough_examples && continue; \
-	  echo -n $$file " " >>obtained; \
+	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
+	  echo $(ECHO_N) $$file " $(ECHO_C)" >>obtained; \
 	  echo ppl_lcdd $$path; \
 	  ./ppl_lcdd $$path | $(TEXT_MD5SUM) >>obtained; \
 	done
-	diff -q $(srcdir)/$(EXPECTED) obtained
+	diff -u $(srcdir)/$(EXPECTED) obtained
 
 MOSTLYCLEANFILES = \
 tough_examples \

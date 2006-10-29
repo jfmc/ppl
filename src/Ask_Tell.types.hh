@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -14,12 +14,12 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename CS>
+template <typename D>
 class Ask_Tell;
 
-template <typename CS>
+template <typename D>
 class Ask_Tell_Pair;
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Ask_Tell_types_hh)

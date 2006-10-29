@@ -1,5 +1,5 @@
 /* Code for keeping track of polyhedra allocations and deallocations.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -57,15 +56,18 @@ inline
 Poly_Tracker::~Poly_Tracker() {
   Set::size_type n = s.size();
   if (n > 0)
-    std::cerr << "Poly_Tracker: " << n << " polyhedra leaked!" << std::endl;
+    std::cerr
+      << "Poly_Tracker: " << n << " polyhedra leaked!"
+      << std::endl;
 }
 
 inline void
 Poly_Tracker::insert(const void* pp) {
   std::pair<Set::iterator, bool> stat = s.insert(pp);
   if (!stat.second) {
-    std::cerr << "Poly_Tracker: two polyhedra at the same address "
-	      << "at the same time?!" << std::endl;
+    std::cerr
+      << "Poly_Tracker: two polyhedra at the same address at the same time?!"
+      << std::endl;
     abort();
   }
 }
@@ -73,8 +75,9 @@ Poly_Tracker::insert(const void* pp) {
 inline void
 Poly_Tracker::check(const void* pp) const {
   if (s.find(pp) == s.end()) {
-    std::cerr << "Poly_Tracker: attempt to access an inexistent polyhedron."
-	      << std::endl;
+    std::cerr
+      << "Poly_Tracker: attempt to access a nonexistent polyhedron."
+      << std::endl;
     abort();
   }
 }
@@ -82,18 +85,22 @@ Poly_Tracker::check(const void* pp) const {
 void
 Poly_Tracker::remove(const void* pp) {
   if (s.erase(pp) != 1) {
-    std::cerr << "Poly_Tracker: attempt to deallocate "
-	      << "an inexistent polyhedron."
-	      << std::endl;
+    std::cerr
+      << "Poly_Tracker: attempt to deallocate a nonexistent polyhedron."
+      << std::endl;
     abort();
   }
 }
 
-static inline Poly_Tracker&
+namespace {
+
+inline Poly_Tracker&
 poly_tracker() {
   static Poly_Tracker pt;
   return pt;
 }
+
+} // namespace
 
 } // namespace Parma_Polyhedra_Library
 

@@ -1,5 +1,5 @@
 /* Test Polyhedron::affine_image().
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,26 +14,18 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -41,21 +33,233 @@ main() TRY {
   C_Polyhedron ph(3);
   ph.add_constraint(C == -2);
   ph.add_constraint(A == 0);
-#if NOISY
+
   print_constraints(ph, "--- ph ---");
-#endif
 
   ph.affine_image(B, A+2, 1);
 
-  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(3, EMPTY);
   known_result.add_generator(point(2*B - 2*C));
 
-  int retval = (ph == known_result) ? 0 : 1;
+  bool ok = (ph == known_result);
 
-#if NOISY
   print_generators(ph, "--- ph after ph.affine_image(B, A+2, 1) ---");
-#endif
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= B);
+  ph.add_constraint(B >= 0);
+  ph.add_constraint(A <= 3);
+
+  print_constraints(ph, "--- ph ---");
+
+  ph.affine_image(A, A+B+1);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A -2*B - 1 >= 0);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(A - B <= 4);
+
+  bool ok = (ph == known_result);
+
+  print_constraints(ph, "--- ph after ph.affine_image(A, A+B+1) ---");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(ray(A));
+  gs.insert(ray(B));
+  C_Polyhedron ph(gs);
+
+  print_generators(ph, "*** ph ***");
+
+  ph.affine_image(A, A + 1, 2);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(2*A >= 1);
+  known_result.add_constraint(B >= 0);
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "*** After ph.affine_image(A, A + 1, 2) ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, EMPTY);
+  ph.add_generator(point(A));
+
+  print_constraints(ph, "--- ph ---");
+
+  ph.affine_image(A, B+2, -3);
+
+  C_Polyhedron known_result(2, EMPTY);
+  known_result.add_generator(point(-2*A, 3));
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "--- ph after ph.affine_image(A, B+2, -3) ---");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 2);
+  ph.add_constraint(A <= 3);
+  ph.add_constraint(B >= 1);
+  ph.add_constraint(2*A >= B);
+
+  print_constraints(ph, "--- ph ---");
+
+  ph.affine_image(B, A-B+2, -3);
+
+  C_Polyhedron known_result(2, EMPTY);
+  known_result.add_generator(point(2*A));
+  known_result.add_generator(point(2*A - B));
+  known_result.add_generator(point(9*A + B, 3));
+  known_result.add_generator(point(9*A - 4*B, 3));
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "--- ph after ph.affine_image(B, A-B+2, -3) ---");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2, EMPTY);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  ph1.affine_image(A, 2*A + B + 1);
+
+  C_Polyhedron known_result(2, EMPTY);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** After ph1.affine_image(A, 2*A + B + 1) ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(point(A));
+  gs.insert(point(B));
+  gs.insert(point(A + B));
+  C_Polyhedron ph(gs);
+
+  print_generators(ph, "*** ph ***");
+
+  ph.affine_image(A, -A - 1, -1);
+
+  Generator_System known_gs;
+  known_gs.insert(point(A));
+  known_gs.insert(point(2*A));
+  known_gs.insert(point(A + B));
+  known_gs.insert(point(2*A + B));
+  C_Polyhedron known_result(known_gs);
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "*** After ph.affine_image(A, -A - 1, -1) ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.generators();
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+  C_Polyhedron copy_ph(ph);
+
+  print_constraints(ph, "*** ph ***");
+
+  ph.affine_image(A, A + 1);
+  copy_ph.affine_image(A, -A - 1, -1);
+
+  bool ok = (ph == copy_ph);
+
+  print_generators(ph, "*** After ph.affine_image(A, A + 1) ***");
+  print_generators(copy_ph,
+		   "*** After copy_ph.affine_image(A, -A - 1, -1) ***");
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.generators();
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+  C_Polyhedron copy_ph(ph);
+
+  print_constraints(ph, "*** ph ***");
+
+  ph.affine_image(B, A + 1);
+  copy_ph.affine_image(B, -A - 1, -1);
+
+  bool ok = (ph == copy_ph);
+
+  print_generators(ph, "*** After ph.affine_image(B, A + 1) ***");
+  print_generators(copy_ph,
+		   "*** After copy_ph.affine_image(B, -A - 1, -1) ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+END_MAIN

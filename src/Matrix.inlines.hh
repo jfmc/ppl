@@ -1,5 +1,5 @@
 /* Matrix class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -24,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Matrix_inlines_hh
 #define PPL_Matrix_inlines_hh 1
 
+#include "globals.defs.hh"
 #include <algorithm>
 #include <cassert>
 
@@ -31,10 +31,7 @@ namespace Parma_Polyhedra_Library {
 
 inline dimension_type
 Matrix::max_num_rows() {
-  // FIXME: isn't this ridiculous?  Creating a vector only to know what
-  // its maximum size is?  Why is vector::max_size() not static?
-  static const dimension_type max_nr = std::vector<Row>().max_size();
-  return max_nr;
+  return std::vector<Row>().max_size();
 }
 
 inline dimension_type
@@ -127,7 +124,7 @@ inline
 Matrix::Matrix(const Matrix& y)
   : rows(y.rows),
     row_size(y.row_size),
-    row_capacity(compute_capacity(y.row_size, Row::max_size())) {
+    row_capacity(compute_capacity(y.row_size, max_num_columns())) {
 }
 
 inline
@@ -146,9 +143,15 @@ Matrix::operator=(const Matrix& y) {
     row_size = y.row_size;
     // ... hence the following assignment must not be done on
     // auto-assignments.
-    row_capacity = compute_capacity(y.row_size, Row::max_size());
+    row_capacity = compute_capacity(y.row_size, max_num_columns());
   }
   return *this;
+}
+
+inline void
+Matrix::add_row(const Row& y) {
+  Row new_row(y, row_capacity);
+  add_recycled_row(new_row);
 }
 
 inline Row&

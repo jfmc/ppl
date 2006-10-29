@@ -1,5 +1,5 @@
 # Autoconf source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -14,9 +14,8 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
@@ -24,7 +23,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.8pre1],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre2],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -61,6 +60,10 @@ AC_SUBST(PPL_VERSION_MINOR)
 AC_SUBST(PPL_VERSION_REVISION)
 AC_SUBST(PPL_VERSION_BETA)
 
+AC_DEFINE_UNQUOTED(PPL_CONFIGURE_OPTIONS, "$ac_configure_args", [This contains the options with which `configure' was invoked.])
+PPL_CONFIGURE_OPTIONS="\"$ac_configure_args\""
+AC_SUBST(PPL_CONFIGURE_OPTIONS)
+
 # Installation directories.
 AC_SUBST([docdir], ['${datadir}/doc/ppl'])
 
@@ -84,8 +87,11 @@ AH_BOTTOM([
   we must make sure <stdint.h> is included before <sys/types.hh> is
   (even indirectly) included.
 */
-#ifdef HAVE_STDINT_H 
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
 #endif
 
 #endif /* !defined(PPL_ppl_config_h) */
@@ -94,14 +100,16 @@ AH_BOTTOM([
 # C compiler
 
 AC_ARG_WITH(cc,
-[  --with-cc=xxx           use XXX as the C compiler],
-CC=$with_cc)
+  AC_HELP_STRING([--with-cc=XXX],
+    [use XXX as the C compiler]),
+  CC=$with_cc)
 
 # C++ compiler
 
 AC_ARG_WITH(cxx,
-[  --with-cxx=xxx          use XXX as the C++ compiler],
-CXX=$with_cxx)
+  AC_HELP_STRING([--with-cxx=XXX],
+    [use XXX as the C++ compiler]),
+  CXX=$with_cxx)
 
 # Compilation flags
 
@@ -111,7 +119,8 @@ OPT_FLAGS=""
 enableval=yes
 AC_MSG_CHECKING([whether to compile with debug info])
 AC_ARG_ENABLE(debugging,
-[  --enable-debugging      compile with debugging information])
+  AC_HELP_STRING([--enable-debugging],
+    [compile with debugging information]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -128,7 +137,8 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to compile for profiling])
 AC_ARG_ENABLE(profiling,
-[  --enable-profiling      compile for profiling])
+  AC_HELP_STRING([--enable-profiling],
+    [compile for profiling]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -146,7 +156,8 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to compile for test coverage])
 AC_ARG_ENABLE(coverage,
-[  --enable-coverage       compile for test coverage])
+  AC_HELP_STRING([--enable-coverage],
+    [compile for test coverage]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -164,7 +175,8 @@ esac
 enableval=no
 AC_MSG_CHECKING([whether to enable checking of run-time assertions])
 AC_ARG_ENABLE(assertions,
-[  --enable-assertions     check run-time assertions])
+  AC_HELP_STRING([--enable-assertions],
+    [check run-time assertions]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -181,7 +193,8 @@ enable_assertions=${enableval}
 enableval=no
 AC_MSG_CHECKING([whether to enable even more run-time assertions])
 AC_ARG_ENABLE(more-assertions,
-[  --enable-more-assertions check even more run-time assertions])
+  AC_HELP_STRING([--enable-more-assertions],
+    [check even more run-time assertions]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -199,7 +212,6 @@ if test x"$enable_more_assertions" = xyes
 then
   enable_assertions=yes
   AC_DEFINE(EXTRA_ROW_DEBUG, 1, [Enable more assertions when defined.])
-  debug_flag="-DEXTRA_ROW_DEBUG=1"
 fi
 
 if test x"$enable_assertions" = xno
@@ -215,7 +227,8 @@ arch=no
 enableval=standard
 AC_MSG_CHECKING([whether to enable optimizations])
 AC_ARG_ENABLE(optimization,
-[  --enable-optimization   enable compiler optimizations])
+  AC_HELP_STRING([--enable-optimization],
+    [enable compiler optimizations]))
 case "${enableval}" in
 sspeed)
   AC_MSG_RESULT(sspeed)
@@ -232,7 +245,7 @@ size)
   OPT_FLAGS="$OPT_FLAGS -Os"
   arch=yes
   ;;
-standard)
+standard | yes)
   AC_MSG_RESULT(standard)
   OPT_FLAGS="$OPT_FLAGS -O2"
   ;;
@@ -240,22 +253,23 @@ mild)
   AC_MSG_RESULT(mild)
   OPT_FLAGS="$OPT_FLAGS -O1"
   ;;
-yes)
-  AC_MSG_RESULT(standard)
-  OPT_FLAGS="$OPT_FLAGS -O2"
+zero)
+  AC_MSG_RESULT(zero)
+  OPT_FLAGS="$OPT_FLAGS -O0"
   ;;
 no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} for --enable-optimization, needs sspeed, speed, size, standard, mild, yes or no])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-optimization, needs sspeed, speed, size, standard, mild, zero, yes or no])
   ;;
 esac
 
 enableval=$arch
 AC_MSG_CHECKING([for which architecture to optimize])
 AC_ARG_ENABLE(arch,
-[  --enable-arch[=arch]      optimize for architecture arch])
+  AC_HELP_STRING([--enable-arch@<:@=ARCH@:>@],
+    [optimize for architecture ARCH]))
 case "${enableval}" in
 yes)
   m=`uname -m`
@@ -278,66 +292,86 @@ no)
   ;;
 esac
 
+enableval=no
+AC_MSG_CHECKING([whether to use precompiled headers])
+AC_ARG_ENABLE(pch,
+  AC_HELP_STRING([--enable-pch],
+    [use precompiled headers, if available]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  COMP_FLAGS="$COMP_FLAGS -Winvalid-pch"
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-pch, needs yes or no])
+  ;;
+esac
+AM_CONDITIONAL(USE_PRECOMPILED_HEADERS, test x"$enableval" = xyes)
+
 CFLAGS="$COMP_FLAGS $OPT_FLAGS"
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 
 enableval=mpz
 AC_MSG_CHECKING([the type of integral values to use as coefficients])
 AC_ARG_ENABLE(coefficients,
-[  --enable-coefficients   select the type of the coefficients])
+  AC_HELP_STRING([--enable-coefficients],
+    [select the type of the coefficients]))
 case "${enableval}" in
 native-int8)
   AC_MSG_RESULT([native 8 bits integers])
   coefficient_kind=native
-  coefficient_type=int8_t
+  coefficient_bits=8
   coefficient_mnemonic=nint8
   ;;
 native-int16)
   AC_MSG_RESULT([native 16 bits integers])
   coefficient_kind=native
-  coefficient_type=int16_t
+  coefficient_bits=16
   coefficient_mnemonic=nint16
   ;;
 native-int32)
   AC_MSG_RESULT([native 32 bits integers])
   coefficient_kind=native
-  coefficient_type=int32_t
+  coefficient_bits=32
   coefficient_mnemonic=nint32
   ;;
 native-int64)
   AC_MSG_RESULT([native 64 bits integers])
   coefficient_kind=native
-  coefficient_type="int64_t"
+  coefficient_bits=64
   coefficient_mnemonic=nint64
   ;;
 checked-int8)
   AC_MSG_RESULT([checked 8 bits integers])
   coefficient_kind=checked
-  coefficient_type=int8_t
+  coefficient_bits=8
   coefficient_mnemonic=int8
   ;;
 checked-int16)
   AC_MSG_RESULT([checked 16 bits integers])
   coefficient_kind=checked
-  coefficient_type=int16_t
+  coefficient_bits=16
   coefficient_mnemonic=int16
   ;;
 checked-int32)
   AC_MSG_RESULT([checked 32 bits integers])
   coefficient_kind=checked
-  coefficient_type=int32_t
+  coefficient_bits=32
   coefficient_mnemonic=int32
   ;;
 checked-int64)
   AC_MSG_RESULT([checked 64 bits integers])
   coefficient_kind=checked
-  coefficient_type="int64_t"
+  coefficient_bits=64
   coefficient_mnemonic=int64
   ;;
 mpz)
   AC_MSG_RESULT([GMP mpz])
   coefficient_kind=unbounded
-  coefficient_type=mpz_class
+  coefficient_bits=0
   coefficient_mnemonic=mpz
   ;;
 *)
@@ -347,43 +381,56 @@ esac
 
 AM_CONDITIONAL(USE_NATIVE_INTEGERS, test x"$coefficient_kind" = xnative)
 AM_CONDITIONAL(USE_CHECKED_INTEGERS, test x"$coefficient_kind" = xchecked)
-AM_CONDITIONAL(USE_INT8, test x"$coefficient_type" = xint8_t)
-AM_CONDITIONAL(USE_INT16, test x"$coefficient_type" = xint16_t)
-AM_CONDITIONAL(USE_INT32, test x"$coefficient_type" = xint32_t)
-AM_CONDITIONAL(USE_INT64, test x"$coefficient_type" = xint64_t)
-AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_type" = xmpz_class)
+AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_kind" = xunbounded)
+AM_CONDITIONAL(USE_INT8, test x"$coefficient_bits" = x8)
+AM_CONDITIONAL(USE_INT16, test x"$coefficient_bits" = x16)
+AM_CONDITIONAL(USE_INT32, test x"$coefficient_bits" = x32)
+AM_CONDITIONAL(USE_INT64, test x"$coefficient_bits" = x64)
 
 
 if test x"$coefficient_kind" = xnative
 then
-  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, Parma_Polyhedra_Library::Native_Integer<$coefficient_type>, [The integral type used to represent coefficients.])
+  coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t, Checked_Number_Transparent_Policy>"
+  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $coefficient_type, [The integral type used to represent coefficients.])
+  AC_DEFINE_UNQUOTED(COEFFICIENT_BITS, $coefficient_bits, [The number of bits of coefficients; 0 if unbounded.])
   AC_DEFINE(NATIVE_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a native one.])
 elif test x"$coefficient_kind" = xchecked
 then
-  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, Parma_Polyhedra_Library::Checked_Number<$coefficient_type>)
+  coefficient_type="Parma_Polyhedra_Library::Checked_Number<int${coefficient_bits}_t>"
+  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, $coefficient_type)
+  AC_DEFINE_UNQUOTED(COEFFICIENT_BITS, $coefficient_bits)
   AC_DEFINE(CHECKED_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a checked one.])
-elif test x"$coefficient_type" = xmpz_class
+elif test x"$coefficient_kind" = xunbounded
 then
   AC_DEFINE(COEFFICIENT_TYPE, mpz_class)
+  AC_DEFINE(COEFFICIENT_BITS, 0)
   AC_DEFINE(GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
 fi
 
 # Allow additions to C and C++ compilation flags
 
 AC_ARG_WITH(cflags,
-[  --with-cflags=xxx       add XXX to the options for the C compiler],
-CFLAGS="$CFLAGS $with_cflags")
+  AC_HELP_STRING([--with-cflags=XXX],
+    [add XXX to the options for the C compiler]),
+  CFLAGS="$CFLAGS $with_cflags")
 
 AC_ARG_WITH(cxxflags,
-[  --with-cxxflags=xxx     add XXX to the options for the C++ compiler],
-CXXFLAGS="$CXXFLAGS $with_cxxflags")
+  AC_HELP_STRING([--with-cxxflags=XXX],
+    [add XXX to the options for the C++ compiler]),
+  CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
 # Checks for programs.
+AC_PROG_EGREP
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CXXCPP
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
+
+# Check for Perl.
+AC_PATH_PROG([PERL], perl, no)
+AC_SUBST([PERL])
+AM_CONDITIONAL(HAVE_PERL, test x"$PERL" != xno)
 
 # Checks for C typedefs, structures, compiler and architecture characteristics.
 AC_LANG(C)
@@ -406,31 +453,31 @@ AC_CHECK_SIZEOF(long double)
 # Use C++ for the remaining checks.
 AC_LANG(C++)
 
+dnl Check for the possibility to control the FPU.
+AC_CHECK_FPU_CONTROL
+
+# Detect the binary format used by C++ floats.
+AC_CXX_FLOAT_BINARY_FORMAT
+
+# Detect the binary format used by C++ doubles.
+AC_CXX_DOUBLE_BINARY_FORMAT
+
+# Detect the binary format used by C++ long doubles.
+AC_CXX_LONG_DOUBLE_BINARY_FORMAT
+
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
 
-# Check whether the C++ compiler provides long double numbers that
-# have bigger range or precision than double.
-AC_CXX_SUPPORTS_LONG_DOUBLE
-
-# Check whether C++ floats comply with IEC 559.
-AC_CXX_FLOAT_IS_IEC_559
-
-# Check whether C++ doubles comply with IEC 559.
-AC_CXX_DOUBLE_IS_IEC_559
-
-# Check whether C++ long doubles comply with IEC 559.
-AC_CXX_LONG_DOUBLE_IS_IEC_559
-
-# Check whether the C++ compiler supports long long integers.
-AC_CXX_SUPPORTS_LONG_LONG
-
 # Checks for the availability of C library functions in C++.
 AC_CHECK_DECLS([ffs], , , [#include <strings.h>])
-AC_CHECK_DECLS([strtoll,strtoull], , , [#include <cstdlib>])
+AC_CHECK_DECLS([getenv,strtof,strtod,strtold,strtoll,strtoull], , , [#include <cstdlib>])
+AC_CHECK_DECLS([fma,fmaf,fmal,rintf,rintl], , , [#include <cmath>])
+
+# Checks for the availability of "fast" integral types.
+AC_CHECK_TYPES([int_fast16_t,int_fast32_t,int_fast64_t,uint_fast16_t,uint_fast32_t,uint_fast64_t])
 
 # Must link everything with libm.
 extra_libraries="${extra_libraries} -lm"
@@ -457,13 +504,30 @@ add --enable-cxx to the configuration options.])
   fi
 fi
 
-extra_includes="${extra_includes} ${gmp_includes_option}"
-extra_libraries="${extra_libraries} ${gmp_library_option}"
+AC_CHECK_MEMBERS([__mpz_struct._mp_alloc,
+                  __mpz_struct._mp_size,
+                  __mpz_struct._mp_d],
+                 ,
+                 gmp_has_changes=yes,
+                 [#include <gmp.h>])
+
+if test x"$gmp_has_changed" = xyes
+then
+  AC_MSG_ERROR([GMP HAS CHANGED:
+*** The PPL exploits some implementation details of GMP that were current
+*** until (at least) version 4.1.4 of GMP.  You seem to be using a version
+*** where these details have changed.
+*** Please report this to ppl-devel@cs.unipr.it.])
+fi
+
+extra_includes="${extra_includes}${extra_includes:+ }${gmp_includes_option}"
+extra_libraries="${extra_libraries}${extra_libraries:+ }${gmp_library_option}"
 
 enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
-[  --enable-watchdog       build also the Parma Watchdog Library])
+  AC_HELP_STRING([--enable-watchdog],
+    [build also the Parma Watchdog Library]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -481,6 +545,220 @@ AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
 # Enabled or not, the Watchdog subdirectory must be configured.
 AC_CONFIG_SUBDIRS(Watchdog)
 
+# This is the list of available interfaces: lowercase and blank-separated.
+available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
+
+# This is the list of interfaces that are enabled by default.
+#default_interfaces="cxx c swi_prolog"
+default_interfaces=${available_interfaces}
+
+enableval=not_specified
+AC_MSG_CHECKING([which interfaces are enabled])
+AC_ARG_ENABLE(interfaces,
+  AC_HELP_STRING([--enable-interfaces],
+    [enable some or all the library interfaces]))
+case x"${enableval}" in
+xyes | x)
+  AC_MSG_ERROR([--enable-interfaces needs at least one argument chosen among ${available_interfaces}, none and all])
+  ;;
+xnone | xno)
+  for interface in ${available_interfaces}
+  do
+    eval ${interface}_interface_enabled=no
+  done
+  AC_MSG_RESULT(none)
+  ;;
+xall)
+  for interface in ${available_interfaces}
+  do
+    eval ${interface}_interface_enabled=yes
+  done
+  AC_MSG_RESULT([${available_interfaces}])
+  ;;
+*)
+  if test x"${enableval}" = xnot_specified
+  then
+    enableval=${default_interfaces}
+  fi
+  # Make the list blank-separated and lowercase; turn "c++" into "cxx".
+  required_interfaces=`echo "${enableval}" | sed -e 's/-/_/g' -e 's/[[ 	,]][[ 	,]]*/ /g' -e 's/c++/cxx/g' | tr '[[:upper:]]' '[[:lower:]]'`
+  # Check that the specified interfaces exist.
+  for interface in ${required_interfaces}
+  do
+    case " ${available_interfaces} " in
+    *\ ${interface}\ *)
+      ;;
+    *)
+      AC_MSG_ERROR([unknown interface ${interface}: must be one of ${available_interfaces}])
+      ;;
+    esac
+  done
+  # Initialize the enabled variable for each interface.
+  for interface in ${available_interfaces}
+  do
+    case " ${required_interfaces} " in
+    *\ ${interface}\ *)
+      eval ${interface}_interface_enabled=yes
+      enabled_interfaces="${enabled_interfaces}${enabled_interfaces:+ }${interface}"
+      ;;
+    *)
+      eval ${interface}_interface_enabled=no
+      ;;
+    esac
+  done
+  AC_MSG_RESULT([${enabled_interfaces}])
+  ;;
+esac
+
+# Set an Automake conditional to build or not to build the C interface.
+AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes)
+
+# Checks for systems for which the interface is enabled.
+
+# Java
+if test x${java_interface_enabled} = xyes
+then
+  AC_CHECK_PROG(JAVAH, javah, javah)
+  AC_CHECK_PROG(JAVAC, javac, javac)
+fi
+AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test x$JAVAC = xjavac)
+
+# OCaml
+if test x${ocaml_interface_enabled} = xyes
+then
+  AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
+  if test x"$OCAMLC" = xocamlc
+  then
+    ocamlc_root=`ocamlc -where`
+  fi
+fi
+AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc)
+
+# Ciao Prolog
+if test x${ciao_prolog_interface_enabled} = xyes
+then
+  AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
+  if test x"$CIAO_PROLOG" = xciao
+  then
+  AC_CHECK_HEADER(ciao_prolog.h,
+                  [],
+                  CIAO_PROLOG="")
+  fi
+fi
+AM_CONDITIONAL(BUILD_CIAO_PROLOG_INTERFACE, test x$CIAO_PROLOG = xciao)
+
+# GNU Prolog
+if test x${gnu_prolog_interface_enabled} = xyes
+then
+  AC_CHECK_PROG(GNU_PROLOG, gprolog, gprolog)
+  if test x"$GNU_PROLOG" = xgprolog
+  then
+    AC_CHECK_HEADER(gprolog.h,
+                    [],
+                    GNU_PROLOG="")
+  fi
+fi
+AM_CONDITIONAL(BUILD_GNU_PROLOG_INTERFACE, test x$GNU_PROLOG = xgprolog)
+
+# SICStus
+if test x${sicstus_prolog_interface_enabled} = xyes
+then
+  AC_CHECK_SICSTUS_PROLOG
+fi
+AM_CONDITIONAL(BUILD_SICSTUS_PROLOG_INTERFACE, test x$have_sicstus_prolog = xyes)
+
+# SWI Prolog
+if test x${swi_prolog_interface_enabled} = xyes
+then
+  AC_CHECK_SWI_PROLOG
+fi
+AM_CONDITIONAL(BUILD_SWI_PROLOG_INTERFACE, test x$have_swi_prolog = xyes)
+
+# XSB
+if test x${xsb_prolog_interface_enabled} = xyes
+then
+  AC_CHECK_XSB_PROLOG
+fi
+AM_CONDITIONAL(BUILD_XSB_PROLOG_INTERFACE, test x$have_xsb_prolog = xyes)
+
+# YAP
+if test x${yap_prolog_interface_enabled} = xyes
+then
+  AC_CHECK_PROG(YAP_PROLOG, yap, yap)
+  if test x"$YAP_PROLOG" = xyap
+  then
+    AC_CHECK_HEADER(Yap/c_interface.h,
+                    [],
+                    YAP_PROLOG="")
+  fi
+fi
+AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE, test x$YAP_PROLOG = xyap)
+
+# Test if *any* Prolog system has to be built.
+if test x${CIAO_PROLOG} = xciao \
+|| test x${GNU_PROLOG} = xgprolog \
+|| test x${have_sicstus_prolog} = xyes \
+|| test x${have_swi_prolog} = xyes \
+|| test x${have_xsb_prolog} = xyes \
+|| test x${YAP_PROLOG} = xyap
+then
+  SOME_PROLOG=yes
+fi
+AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
+
+# This is the list of interfaces that are enabled by default.
+# Different instantiations are separated by a '@' character.
+default_instantiations="Polyhedron @ Grid @ BD_Shape<int8_t>"
+
+enableval=not_specified
+AC_MSG_CHECKING([which instantiations are enabled])
+AC_ARG_ENABLE(instantiations,
+  AC_HELP_STRING([--enable-instantiations],
+    [enable instantiations for the non-C++ interfaces]))
+case x"${enableval}" in
+xyes | x)
+  AC_MSG_ERROR([--enable-instantiations needs at least one argument])
+  ;;
+xno | xnone)
+  enabled_instantiations=
+  AC_MSG_RESULT(none)
+  ;;
+*)
+  if test x"${enableval}" = xnot_specified
+  then
+    enableval=${default_instantiations}
+  fi
+  # Avoid extra blanks.
+  required_instantiations=`echo "${enableval}" | sed -e 's/[[ 	]][[ 	]]*//g' -e 's/long\([[a-z]]\)/long \1/g' -e 's/signed\([[a-z]]\)/signed \1/g' -e 's/\([[a-z]]\)int/\1 int/g' -e 's/>>/> >/g'`
+  # Check the specified instantiations for validity.
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS -I${srcdir}"
+  old_IFS="${IFS}"
+  IFS=@
+  set -- ${required_instantiations}
+  IFS="${old_IFS}"
+  for instantiation
+  do
+    AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include "instchk.hh"
+
+using namespace Parma_Polyhedra_Library;
+
+bool valid = ${instantiation}::valid_instantiation();
+]])],
+      valid_instantiation=yes,
+      valid_instantiation=no)
+    if test x${valid_instantiation} != xyes
+    then
+      AC_MSG_ERROR([invalid instantiation ${instantiation}])
+    fi
+  done
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ]]/_/g'`
+  AC_MSG_RESULT([${required_instantiations}])
+  ;;
+esac
+
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
 # make debugging harder and the build process takes too long.
@@ -488,112 +766,25 @@ AC_CONFIG_SUBDIRS(Watchdog)
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
+AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
+AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
 
-# Checks for programs.
+# Checks for md5sum.
 AC_CHECK_PROG(MD5SUM, md5sum, md5sum)
 AM_CONDITIONAL(HAVE_MD5SUM, test x$MD5SUM = xmd5sum)
-
-# Checks for Prolog systems.
-
-# Ciao Prolog
-
-AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
-if test x"$CIAO_PROLOG" = xciao
+if test x$MD5SUM = xmd5sum
 then
-AC_CHECK_HEADER(ciao_prolog.h,
-                [],
-                CIAO_PROLOG="")
+  AC_TEXT_MD5SUM
 fi
-AM_CONDITIONAL(HAVE_CIAO_PROLOG, test x$CIAO_PROLOG = xciao)
 
-# GNU Prolog
-
-AC_CHECK_PROG(GNU_PROLOG, gprolog, gprolog)
-if test x"$GNU_PROLOG" = xgprolog
-then
-AC_CHECK_HEADER(gprolog.h,
-                [],
-                GNU_PROLOG="")
-fi
-AM_CONDITIONAL(HAVE_GNU_PROLOG, test x$GNU_PROLOG = xgprolog)
-
-# SICStus
-
-AC_CHECK_PROG(SICSTUS_PROLOG, sicstus, sicstus)
-if test x"$SICSTUS_PROLOG" = xsicstus
-then
-# We require SICStus Prolog 3.9.1 or later.
-AC_CHECK_HEADER(sicstus/sicstus.h,
-                AC_MSG_CHECKING([for SICStus version 3.9.1 or later])
-                AC_EGREP_CPP(yes,
-                  [
-                    #include <sicstus/sicstus.h>
-                    #if SICSTUS_MAJOR_VERSION > 3 || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION > 9) || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION == 9 && SICSTUS_REVISION_VERSION >= 1)
-                      yes
-                    #endif
-                  ],
-                  AC_MSG_RESULT(yes),
-                  SICSTUS_PROLOG=""
-                  AC_MSG_RESULT(no)
-                ),
-                SICSTUS_PROLOG="")
-fi
-AM_CONDITIONAL(HAVE_SICSTUS_PROLOG, test x$SICSTUS_PROLOG = xsicstus)
-
-# SWI Prolog
-
-AC_CHECK_PROG(SWI_PROLOG, pl, pl)
-if test x"$SWI_PROLOG" = xpl
-then
-AC_CHECK_HEADER(SWI-Prolog.h,
-                [],
-                SWI_PROLOG="")
-fi
-AM_CONDITIONAL(HAVE_SWI_PROLOG, test x$SWI_PROLOG = xpl)
-
-# XSB
-
-AC_CHECK_PROG(XSB_PROLOG, xsb, xsb)
-# The foreign language interface include file is `cinterf.h',
-# but this resides in the emulator directory and is not installed
-# in any standard place.
-if test x"$XSB_PROLOG" = xxsb
-then
-xsb_emu_dir=`xsb --nobanner --quietload --noprompt \
-                 -e "write('emudir='), \
-                     xsb_configuration(emudir, X), write(X), nl, halt." \
-                 2>/dev/null | sed "s/^emudir=//g"`
-xsb_config_dir=`xsb --nobanner --quietload --noprompt \
-                    -e "write('config_dir='), \
-                        xsb_configuration(config_dir,X), write(X), nl, halt." \
-                    2>/dev/null | sed "s/^config_dir=//g"`
-xsb_includes="-I${xsb_emu_dir} -I${xsb_config_dir}"
-fi
-AM_CONDITIONAL(HAVE_XSB_PROLOG, test x$XSB_PROLOG = xxsb)
-
-# YAP
-
-AC_CHECK_PROG(YAP_PROLOG, yap, yap)
-if test x"$YAP_PROLOG" = xyap
-then
-AC_CHECK_HEADER(Yap/c_interface.h,
-                [],
-                YAP_PROLOG="")
-fi
-AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
-
-# Check for the Mercury compiler
-AC_CHECK_PROG(MERCURY_COMPILER, mmc, mmc)
-AM_CONDITIONAL(HAVE_MERCURY_COMPILER, test x$MERCURY_COMPILER = xmmc)
-
-# Check for the GLPK library
+# Check for the GLPK library.
 AC_LANG_PUSH(C)
 AC_CHECK_HEADER(glpk.h, HAVE_GLPK_H=yes)
 AM_CONDITIONAL(HAVE_GLPK, test x$HAVE_GLPK_H = xyes)
 AC_LANG_POP(C)
 
 # Checks for header files.
-AC_CHECK_HEADERS([getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
+AC_CHECK_HEADERS([fenv.h ieeefp.h getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
 
 # Checks for header declarations.
 AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
@@ -622,57 +813,100 @@ then
 fi
 
 # System-dependent adjustments.
-text_md5sum="$MD5SUM -t"
+cygwin=no
+darwin=no
+solaris=no
 no_undefined=no
 
+case "${host_cpu}" in
+alpha*)
+  if test x"$GCC" = xyes
+  then
+    CFLAGS="$CFLAGS -mfp-rounding-mode=d -mieee"
+    CXXFLAGS="$CXXFLAGS -mfp-rounding-mode=d -mieee"
+  else
+    CFLAGS="$CFLAGS -fprm d -ieee -underflow_to_zero"
+    CXXFLAGS="$CXXFLAGS -fprm d -ieee -underflow_to_zero"
+  fi
+  ;;
+*)
+  ;;
+esac
+
 case "${host_os}" in
+cygwin)
+  cygwin=yes
+  no_undefined=yes
+  ;;
 darwin*)
+  darwin=yes
   if test x"$GCC" = xyes
   then
     CFLAGS="$CFLAGS -Wno-long-double"
     CXXFLAGS="$CXXFLAGS -Wno-long-double"
   fi
-  text_md5sum="$MD5SUM"
   ;;
-cygwin)
-  no_undefined=yes
+solaris*)
+  solaris=yes
   ;;
 *)
   ;;
 esac
+
+AM_CONDITIONAL(HOST_OS_CYGWIN, test x$cygwin = xyes)
+AM_CONDITIONAL(HOST_OS_DARWIN, test x$darwin = xyes)
+AM_CONDITIONAL(HOST_OS_SOLARIS, test x$solaris = xyes)
 AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
 
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
-AC_SUBST(xsb_includes)
 AC_SUBST(coefficient_mnemonic)
-AC_SUBST(text_md5sum)
+AC_SUBST(required_instantiations)
+AC_SUBST(required_instantiations_canonical_names)
+AC_SUBST(ocamlc_root)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
+                debian/Makefile
+                debian/libppl.copyright
+                debian/libppl-pwl.copyright
                 src/Makefile
                 src/version.hh
+                src/ppl-config.cc
                 tests/Makefile
+                tests/Ask_Tell/Makefile
                 tests/BD_Shape/Makefile
+                tests/Grid/Makefile
+                tests/MIP_Problem/Makefile
+                tests/Octagonal_Shape/Makefile
                 tests/Polyhedron/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile
-		demos/ppl_lcdd/Makefile
-		demos/ppl_lcdd/examples/Makefile
-		demos/ppl_lpsol/Makefile
-		demos/ppl_lpsol/examples/Makefile
+                demos/ppl_lcdd/Makefile
+                demos/ppl_lcdd/examples/Makefile
+                demos/ppl_lpsol/Makefile
+                demos/ppl_lpsol/examples/Makefile
                 doc/Makefile
-                doc/user-browse.doxyconf-latex
-                doc/devref-browse.doxyconf-latex
-                doc/user-print.doxyconf-latex
-                doc/devref-print.doxyconf-latex
+                doc/user.doxyconf-latex
+                doc/devref.doxyconf-latex
                 doc/user.doxyconf-html
                 doc/devref.doxyconf-html
+                doc/user-c-interface.doxyconf-latex
+                doc/devref-c-interface.doxyconf-latex
+                doc/user-c-interface.doxyconf-html
+                doc/devref-c-interface.doxyconf-html
+                doc/user-prolog-interface.doxyconf-latex
+                doc/devref-prolog-interface.doxyconf-latex
+                doc/user-prolog-interface.doxyconf-html
+                doc/devref-prolog-interface.doxyconf-html
                 interfaces/Makefile
                 interfaces/C/Makefile
-		interfaces/C/ppl_c.h
+                interfaces/C/ppl_c_version.h
+                interfaces/Java/Makefile
+                interfaces/Java/ppl_java/Makefile
+                interfaces/OCaml/Makefile
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile
@@ -687,10 +921,23 @@ if test x"$gmp_supports_exceptions" = xno
 then
   AC_MSG_WARN([CANNOT PROPAGATE EXCEPTIONS BACK FROM GMP:
 *** MEMORY EXHAUSTION MAY RESULT IN ABRUPT TERMINATION.
-*** If you are using g++, make sure you use version 4.1.3 or higher
-*** and use a version of GMP compiled with the option -fexceptions.
+*** This is OK, if you do not plan to use the bounded memory capabilities
+*** offered by the PPL.  Otherwise, if you are using GCC or the Intel C/C++
+*** compiler, please make sure you use a version of GMP compiled with the
+*** `-fexceptions' compiler option.
 *** To build such a version, you can configure GMP as follows:
 *** CPPFLAGS=-fexceptions ./configure --enable-cxx --prefix=/usr/local])
+fi
+
+if test x"$PERL" = xno
+then
+  AC_MSG_WARN([PERL UNAVAILABLE:
+***  CANNOT REBUILD SOME FILES IF SOURCES ARE CHANGED.
+*** Perl could not be found on your system.  This is OK, if you only plan
+*** to build the PPL without modifying the sources and without trying to
+*** build a distribution out of a CVS working copy.  If this is not the case,
+*** then you need to add Perl to your development environment:
+*** see http://www.perl.org/ for more information.])
 fi
 
 if test x"$coefficient_kind" = xnative

@@ -1,5 +1,5 @@
 /* NNC_Polyhedron class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -29,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 
 //! A not necessarily closed convex polyhedron.
-/*!
+/*! \ingroup PPL_CXX_interface
     An object of the class NNC_Polyhedron represents a
     <EM>not necessarily closed</EM> (NNC) convex polyhedron
     in the vector space \f$\Rset^n\f$.
@@ -59,16 +58,14 @@ public:
     by default, a 0-dimension space universe NNC polyhedron is built.
   */
   explicit NNC_Polyhedron(dimension_type num_dimensions = 0,
-			  Degenerate_Kind kind = UNIVERSE);
+			  Degenerate_Element kind = UNIVERSE);
 
   //! Builds an NNC polyhedron from a system of constraints.
   /*!
     The polyhedron inherits the space dimension of the constraint system.
 
     \param cs
-    The system of constraints defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
-    recycled to build the polyhedron.
+    The system of constraints defining the polyhedron.
   */
   explicit NNC_Polyhedron(const Constraint_System& cs);
 
@@ -78,7 +75,7 @@ public:
 
     \param cs
     The system of constraints defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
   */
   explicit NNC_Polyhedron(Constraint_System& cs);
@@ -88,9 +85,7 @@ public:
     The polyhedron inherits the space dimension of the generator system.
 
     \param gs
-    The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
-    recycled to build the polyhedron.
+    The system of generators defining the polyhedron.
 
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
@@ -103,13 +98,62 @@ public:
 
     \param gs
     The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
   explicit NNC_Polyhedron(Generator_System& gs);
+
+  //! Builds an NNC polyhedron from a system of congruences.
+  /*!
+    The polyhedron inherits the space dimension of the congruence system.
+
+    \param cgs
+    The system of congruences defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures may be
+    recycled to build the polyhedron.
+  */
+  explicit NNC_Polyhedron(const Congruence_System& cgs);
+
+  //! Builds an NNC polyhedron recycling a system of congruences.
+  /*!
+    The polyhedron inherits the space dimension of the congruence
+    system.
+
+    \param cgs
+    The system of congruences defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures may be
+    recycled to build the polyhedron.
+  */
+  explicit NNC_Polyhedron(Congruence_System& cgs);
+
+  //! Builds an NNC polyhedron from a system of grid generators.
+  /*!
+    The polyhedron inherits the space dimension of the generator system.
+
+    \param ggs
+    The system of generators defining the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+  */
+  explicit NNC_Polyhedron(const Grid_Generator_System& ggs);
+
+  //! Builds an NNC polyhedron recycling a system of grid generators.
+  /*!
+    The polyhedron inherits the space dimension of the generator system.
+
+    \param ggs
+    The system of generators defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures may be
+    recycled to build the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+  */
+  explicit NNC_Polyhedron(Grid_Generator_System& ggs);
 
   //! Builds an NNC polyhedron from the C polyhedron \p y.
   explicit NNC_Polyhedron(const C_Polyhedron& y);
@@ -138,18 +182,30 @@ public:
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);
 
-  //! \brief
-  //! The assignment operator.
-  //! (\p *this and \p y can be dimension-incompatible.)
+  /*! \brief
+    The assignment operator.
+    (\p *this and \p y can be dimension-incompatible.)
+  */
   NNC_Polyhedron& operator=(const NNC_Polyhedron& y);
 
-  //! \brief
   //! Assigns to \p *this the C polyhedron \p y.
   NNC_Polyhedron& operator=(const C_Polyhedron& y);
 
   //! Destructor.
   ~NNC_Polyhedron();
 
+  /*! \brief
+    If the poly-hull of \p *this and \p y is exact it is assigned
+    to \p *this and <CODE>true</CODE> is returned,
+    otherwise <CODE>false</CODE> is returned.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  bool poly_hull_assign_if_exact(const NNC_Polyhedron& y);
+
+  //! Same as poly_hull_assign_if_exact(y).
+  bool upper_bound_assign_if_exact(const NNC_Polyhedron& y);
 };
 
 #include "NNC_Polyhedron.inlines.hh"

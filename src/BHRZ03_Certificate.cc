@@ -1,6 +1,6 @@
 /* BHRZ03_Certificate class implementation
    (non-inline member functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -15,9 +15,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -35,9 +34,8 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
   : affine_dim(0), lin_space_dim(0), num_constraints(0), num_points(0),
     num_rays_null_coord(ph.space_dimension(), 0) {
-  // FIXME: provide a correct and reasonably efficient
+  // TODO: provide a correct and reasonably efficient
   // implementation for NNC polyhedra.
-  //assert(ph.is_necessarily_closed());
 
   // The computation of the certificate requires both the
   // constraint and the generator systems in minimal form.
@@ -93,7 +91,7 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
     }
   assert(OK());
 
-  // FIXME: super-kludge.
+  // TODO: this is an inefficient workaround.
   // For NNC polyhedra, constraints might be no longer up-to-date
   // (and hence, neither minimized) due to the strong minimization
   // process applied to generators when constructing the certificate.
@@ -131,9 +129,8 @@ int
 PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   assert(ph.space_dimension() == num_rays_null_coord.size());
 
-  // FIXME: provide a correct and reasonably efficient
+  // TODO: provide a correct and reasonably efficient
   // implementation for NNC polyhedra.
-  //assert(ph.is_necessarily_closed());
 
   // The computation of the certificate requires both the
   // constraint and the generator systems in minimal form.
@@ -157,7 +154,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
     if (i->is_equality())
       --ph_affine_dim;
   }
-  // FIXME: super-kludge.
+  // TODO: this is an inefficient workaround.
   // For NNC polyhedra, constraints might be no longer up-to-date
   // (and hence, neither minimized) due to the strong minimization
   // process applied to generators when constructing the certificate.
@@ -196,7 +193,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
       ++ph_lin_space_dim;
       break;
     }
-  // FIXME: super-kludge.
+  // TODO: this is an inefficient workaround.
   // For NNC polyhedra, constraints might be no longer up-to-date
   // (and hence, neither minimized) due to the strong minimization
   // process applied to generators when constructing the certificate.

@@ -1,5 +1,5 @@
 /* Test Polyhedron::generalized_affine_image().
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,26 +14,18 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
   Variable B(1);
 
@@ -42,25 +34,235 @@ main() TRY {
   ph.add_constraint(A <= 4);
   ph.add_constraint(B <= 5);
   ph.add_constraint(A <= B);
-#if NOISY
+
   print_constraints(ph, "--- ph ---");
-#endif
 
   ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A+2);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point(2*B));
   known_result.add_generator(point(4*A + 6*B));
   known_result.add_generator(ray(B));
 
-  int retval = (ph == known_result) ? 0 : 1;
+  bool ok = (ph == known_result);
 
-#if NOISY
   print_generators(ph, "--- ph after "
 		   "ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A+2)"
 		   " ---");
-#endif
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(A <= 4);
+  ph.add_constraint(B <= 5);
+  ph.add_constraint(A <= B);
+
+  print_constraints(ph, "--- ph ---");
+
+  ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A+2, -2);
+
+  C_Polyhedron known_result(2, EMPTY);
+  known_result.add_generator(point(-B));
+  known_result.add_generator(point(4*A - 3*B));
+  known_result.add_generator(ray(B));
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "--- ph after "
+		   "ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL,"
+		   " A+2, -2) ---");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(2*A <= 3);
+  ph.add_constraint(7*A >= 2);
+  ph.add_constraint(3*B >= 1);
+  ph.add_constraint(2*A >= B);
+
+  print_generators(ph, "--- ph ---");
+
+  ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL, A-B+2, -3);
+
+  C_Polyhedron known_result(2, EMPTY);
+  known_result.add_generator(point(9*A - B, 6));
+  known_result.add_generator(point(2*A - 4*B, 7));
+  known_result.add_generator(ray(-B));
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "--- ph after "
+		   "ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL,"
+		   " A-B+2, -3) ---");
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(B >= 0);
+  ph.add_constraint(A - B >= 0);
+
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron known_result(ph);
+
+  ph.generalized_affine_image(A, EQUAL, A + 2);
+
+  known_result.affine_image(A, A + 2);
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph,
+		   "*** After ph.generalized_affine_image"
+		   "(A, EQUAL, A + 2) ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, EMPTY);
+  ph.add_generator(point(A + B));
+  ph.add_generator(point(3*A + B));
+  ph.add_generator(point(A + 3*B));
+  ph.add_generator(point(3*A + 3*B));
+
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A + B >= 1);
+
+  ph.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, 2*A - B + 2);
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph,
+		   "*** After ph.generalized_affine_image"
+		   "(A + B, GREATER_THAN_OR_EQUAL, 2*A - B + 2) ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2, EMPTY);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  ph1.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B + 1);
+
+  C_Polyhedron known_result(2, EMPTY);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** After ph1.generalized_affine_image"
+		    "(A, LESS_THAN_OR_EQUAL, B + 1) ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2, EMPTY);
+
+  print_constraints(ph1, "*** ph1 ***");
+
+  ph1.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, A + B + 1);
+
+  C_Polyhedron known_result(2, EMPTY);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** After ph1.generalized_affine_image"
+		    "(A + B, GREATER_THAN_OR_EQUAL, A + B + 1) ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(A <= -2);
+
+  print_constraints(ph, "--- ph ---");
+
+  ph.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, A+2);
+
+  C_Polyhedron known_result(1, EMPTY);
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "--- ph after "
+		   "ph.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, A+2)"
+		   " ---");
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable A(0);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(A <= -2);
+
+  print_constraints(ph, "--- ph ---");
+
+  ph.generalized_affine_image(A+1, GREATER_THAN_OR_EQUAL, A+2);
+
+  C_Polyhedron known_result(1, EMPTY);
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "--- ph after "
+		   "ph.generalized_affine_image"
+                   "(A+1, GREATER_THAN_OR_EQUAL, A+2)"
+		   " ---");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST_F8(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+END_MAIN

@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -14,39 +14,41 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
-SUBDIRS = . BD_Shape Polyhedron
+SUBDIRS = . Ask_Tell MIP_Problem Octagonal_Shape BD_Shape Polyhedron Grid
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
 
 check_LIBRARIES = libppl_tests.a
 
 libppl_tests_a_SOURCES = \
-ehandlers.hh \
-ehandlers.cc \
 files.hh \
 files.cc \
 print.hh \
 print.cc \
+ppl_test.cc \
 BBox.cc \
-PFunction.cc
+FCAIBVP.cc \
+Partial_Function.cc
 
 LDADD = $(top_builddir)/src/libppl.la libppl_tests.a -lppl @extra_libraries@
 
 noinst_HEADERS = \
 ppl_test.hh \
 BBox.hh \
-PFunction.hh
+FCAIBVP.defs.hh \
+FCAIBVP.inlines.hh \
+FCAIBVP.types.hh \
+Partial_Function.defs.hh \
+Partial_Function.inlines.hh \
+Partial_Function.types.hh \
+Random_Number_Generator.defs.hh \
+Random_Number_Generator.inlines.hh \
+Random_Number_Generator.types.hh
 
 MOSTLYCLEANFILES =

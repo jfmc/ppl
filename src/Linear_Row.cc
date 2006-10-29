@@ -1,5 +1,5 @@
 /* Linear_Row class implementation (non-inline functions).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,40 +14,20 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "Coefficient.defs.hh"
 #include "Linear_Row.defs.hh"
-#include "globals.defs.hh"
+#include "Coefficient.defs.hh"
 #include <algorithm>
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
-
-void
-PPL::Linear_Row::normalize() {
-  Linear_Row& x = *this;
-  // Compute the GCD of all the coefficients into gcd.
-  TEMP_INTEGER(gcd);
-  gcd = 0;
-  const dimension_type sz = size();
-  for (dimension_type i = sz; i-- > 0; ) {
-    const Coefficient& x_i = x[i];
-    if (x_i != 0)
-      gcd_assign(gcd, x_i);
-  }
-  if (gcd > 1)
-    // Divide the coefficients by the GCD.
-    for (dimension_type i = sz; i-- > 0; )
-      exact_div_assign(x[i], gcd);
-}
 
 void
 PPL::Linear_Row::sign_normalize() {
@@ -66,9 +46,9 @@ PPL::Linear_Row::sign_normalize() {
       // we negate the entire row.
       if (x[first_non_zero] < 0) {
 	for (dimension_type j = first_non_zero; j < sz; ++j)
-	  negate(x[j]);
+	  neg_assign(x[j]);
 	// Also negate the first coefficient.
-	negate(x[0]);
+	neg_assign(x[0]);
       }
   }
 }
@@ -119,48 +99,6 @@ PPL::compare(const Linear_Row& x, const Linear_Row& y) {
   return 0;
 }
 
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
-void
-PPL::scalar_product_assign(Coefficient& z,
-			   const Linear_Row& x, const Linear_Row& y) {
-  // Scalar product is only defined  if `x' and `y' are
-  // dimension-compatible.
-  assert(x.size() <= y.size());
-  z = 0;
-  for (dimension_type i = x.size(); i-- > 0; )
-    // The following line optimizes the computation of z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
-}
-
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
-void
-PPL::reduced_scalar_product_assign(Coefficient& z,
-				   const Linear_Row& x, const Linear_Row& y) {
-  // The reduced scalar product is only defined
-  // if the topology of `x' is NNC and `y' has enough coefficients.
-  assert(!x.is_necessarily_closed());
-  assert(x.size() - 1 <= y.size());
-  z = 0;
-  for (dimension_type i = x.size() - 1; i-- > 0; )
-    // The following line optimizes the computation
-    // of z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
-}
-
-/*! \relates Parma_Polyhedra_Library::Linear_Row */
-void
-PPL::homogeneous_scalar_product_assign(Coefficient& z,
-				       const Linear_Row& x, const Linear_Row& y) {
-  // Scalar product is only defined  if `x' and `y' are
-  // dimension-compatible.
-  assert(x.size() <= y.size());
-  z = 0;
-    // Note the pre-decrement of `i': last iteration should be for `i == 1'.
-  for (dimension_type i = x.size(); --i > 0; )
-    // The following line optimizes the computation of z += x[i] * y[i].
-    add_mul_assign(z, x[i], y[i]);
-}
-
 void
 PPL::Linear_Row::linear_combine(const Linear_Row& y, const dimension_type k) {
   Linear_Row& x = *this;
@@ -199,6 +137,7 @@ const char* rpi_valid = "RPI_V";
 const char* is_rpi = "RPI";
 const char* nnc_valid = "NNC_V";
 const char* is_nnc = "NNC";
+const char* bit_names[] = {rpi_valid, is_rpi, nnc_valid, is_nnc};
 
 } // namespace
 
@@ -215,15 +154,71 @@ PPL::Linear_Row::Flags::ascii_dump(std::ostream& s) const {
     << is_nnc;
 }
 
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_Row::Flags)
+
+bool
+PPL::Linear_Row::Flags::ascii_load(std::istream& s) {
+  std::string str;
+  // Assume that the bits are used in sequence.
+  reset_bits(std::numeric_limits<base_type>::max());
+  for (unsigned int bit = 0;
+       bit < (sizeof(bit_names) / sizeof(char*));
+       ++bit) {
+    if (!(s >> str))
+      return false;
+    if (str[0] == '+')
+      set_bits(1 << Row::Flags::first_free_bit + bit);
+    else if (str[0] != '-')
+      return false;
+    if (str.compare(1, strlen(bit_names[bit]), bit_names[bit]) != 0)
+      return false;
+  }
+  return true;
+}
+
 void
 PPL::Linear_Row::ascii_dump(std::ostream& s) const {
   const Row& x = *this;
-  dimension_type x_size = x.size();
+  const dimension_type x_size = x.size();
+  s << "size " << x_size << " ";
   for (dimension_type i = 0; i < x_size; ++i)
     s << x[i] << ' ';
   s << "f ";
   flags().ascii_dump(s);
-  s << std::endl;
+  s << "\n";
+}
+
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Linear_Row)
+
+bool
+PPL::Linear_Row::ascii_load(std::istream& s) {
+  std::string str;
+  if (!(s >> str) || str != "size")
+    return false;
+  dimension_type new_size;
+  if (!(s >> new_size))
+    return false;
+
+  Row& x = *this;
+  const dimension_type old_size = x.size();
+  if (new_size < old_size)
+    x.shrink(new_size);
+  else if (new_size > old_size) {
+    Row y(new_size, Row::Flags());
+    x.swap(y);
+  }
+
+  for (dimension_type col = 0; col < new_size; ++col)
+    if (!(s >> x[col]))
+      return false;
+  if (!(s >> str) || (str.compare("f") != 0))
+    return false;
+  return flags().ascii_load(s);
+}
+
+bool
+PPL::Linear_Row::OK() const {
+  return Row::OK();
 }
 
 bool

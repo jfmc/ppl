@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -14,9 +14,8 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
@@ -27,15 +26,17 @@ ACLOCAL_AMFLAGS = -I m4
 DISTCHECK_CONFIGURE_FLAGS = \
 --enable-shared --enable-watchdog
 
-srcdir = @srcdir@
-VPATH = @srcdir@
+dist_noinst_SCRIPTS = \
+configure
+
+dist_noinst_HEADERS = \
+instchk.hh
 
 EXTRA_DIST = \
-configure \
 ppl.lsm.in \
 ppl.spec.in \
 BUGS CREDITS README.configure STANDARDS
 
 @SET_MAKE@
 
-SUBDIRS = src Watchdog utils tests interfaces demos doc m4
+SUBDIRS = utils src Watchdog tests interfaces demos doc m4 debian

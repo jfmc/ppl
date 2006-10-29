@@ -1,5 +1,5 @@
-/* Adds a system of generators to a polyhedron and minimizes it.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Polyhedron::add_generators().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,26 +14,18 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable x(0);
   Variable y(1);
 
@@ -43,26 +35,302 @@ main() TRY {
   gs1.insert(line(x));
   C_Polyhedron ph1(gs1);
 
-#if NOISY
   print_generators(ph1, "*** before ***");
-#endif
 
   Generator_System gs2;
   gs2.insert(point());
 
   ph1.add_generators_and_minimize(gs2);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point());
   known_result.add_generator(point(y));
   known_result.add_generator(line(x));
 
-  int retval = (ph1 == known_result) ? 0: 1;
+  bool ok = (ph1 == known_result);
 
-#if NOISY
   print_generators(ph1, "*** add_generators_and_minimize ***");
-#endif
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable x(0);
+
+  C_Polyhedron ph1(2, EMPTY);
+
+  print_generators(ph1, "*** before ***");
+
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(line(x));
+
+  ph1.add_generators(gs);
+
+  C_Polyhedron known_result(2, EMPTY);
+  known_result.add_generator(point());
+  known_result.add_generator(line(x));
+
+  bool ok = (ph1 == known_result);
+
+  print_generators(ph1, "*** add_generators ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  C_Polyhedron ph;
+  ph.add_generator(point());
+
+  print_generators(ph, "*** ph ***");
+
+  Generator_System gs;
+  gs.insert(point());
+
+  print_generators(gs, "*** gs ***");
+
+  ph.add_generators_and_minimize(gs);
+
+  C_Polyhedron known_result;
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "*** After add_generators ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(x >= 1);
+  ph.add_constraint(x <= 0);
+
+  print_constraints(ph, "*** ph ***");
+
+  Generator_System gs;
+  gs.insert(ray(x));
+  gs.insert(point());
+
+  print_generators(gs, "*** gs ***");
+
+  ph.add_generators(gs);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(y == 0);
+  known_result.add_constraint(x >= 0);
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "*** After add_generators ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(x >= 0);
+  ph.add_constraint(x <= -1);
+
+  print_constraints(ph, "*** ph ***");
+
+  Generator_System gs;
+  gs.insert(ray(x + y));
+  gs.insert(point());
+
+  print_generators(gs, "--- gs ---");
+
+  ph.add_generators_and_minimize(gs);
+
+  Generator_System gs_known_result;
+  gs_known_result.insert(point());
+  gs_known_result.insert(ray(x + y));
+  C_Polyhedron known_result(gs_known_result);
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "*** After add_generators_and_minimize ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable x(0);
+  Variable y(1);
+
+  Generator_System gs1;
+  gs1.insert(ray(x + y));
+  gs1.insert(point());
+
+  C_Polyhedron ph(gs1);
+
+  print_generators(ph, "*** ph ***");
+
+  Generator_System gs2;
+  gs2.insert(ray(x));
+  gs2.insert(point());
+
+  print_generators(gs2, "--- gs2 ---");
+
+  ph.add_generators(gs2);
+
+  C_Polyhedron known_result(2, EMPTY);
+  known_result.add_generator(point());
+  known_result.add_generator(ray(x));
+  known_result.add_generator(ray(x + y));
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "*** After add_generators ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 3);
+
+  print_constraints(ph, "*** ph ***");
+
+  C_Polyhedron known_result(ph);
+
+  Generator_System gs;
+  ph.add_generators_and_minimize(gs);
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "*** After ph .add_generators_and_minimize(gs)***");
+
+  return ok;
+}
+
+bool
+test08() {
+  C_Polyhedron ph(0, EMPTY);
+
+  print_generators(ph, "*** ph ***");
+
+  Generator_System gs;
+  gs.insert(point());
+
+  print_generators(gs, "*** gs ***");
+
+  ph.add_generators(gs);
+
+  C_Polyhedron known_result;
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "*** After ph.add_generators(gs); ***");
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable A(0);
+
+  C_Polyhedron ph(2);
+  ph.generators();
+  ph.add_constraint(A >= 0);
+  C_Polyhedron copy_ph(ph);
+
+  Generator_System gs1;
+  gs1.insert(point());
+  gs1.insert(ray(-A));
+  Generator_System gs2(gs1);
+
+  ph.add_generators(gs1);
+  copy_ph.add_generators_and_minimize(gs2);
+
+  bool ok = (ph == copy_ph);
+
+  print_generators(ph, "*** After ph.add_generators(gs1) ***");
+  print_generators(ph,
+		   "*** After copy_ph.add_generators_and_minimize(gs2) ***");
+
+  return ok;
+}
+
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2, EMPTY);
+  ph1.add_generator(point());
+  ph1.constraints();
+  ph1.add_generator(line(A + B));
+  C_Polyhedron copy_ph1 = ph1;
+
+  C_Polyhedron ph2(2, EMPTY);
+  ph2.add_generator(point());
+  ph2.constraints();
+  ph2.add_generator(ray(A));
+  ph2.add_generator(ray(B));
+
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+
+  Generator_System gs1 = ph2.generators();
+  Generator_System gs2 = ph2.generators();
+
+  ph1.add_generators(gs1);
+  copy_ph1.add_generators_and_minimize(gs2);
+
+  bool ok = (ph1 == copy_ph1);
+
+  print_generators(ph1, "*** After add_generators_assign ***");
+  print_generators(copy_ph1,
+		   "*** After add_generators_and_minimize ***");
+
+  return ok;
+}
+
+bool
+test11() {
+  C_Polyhedron ph(1, EMPTY);
+  Generator_System gs(point());
+
+  print_generators(gs, "*** gs ***");
+
+  ph.add_generators(gs);
+
+  C_Polyhedron known_result(1, EMPTY);
+  known_result.add_generator(point());
+
+  bool ok = (ph == known_result);
+
+  print_generators(ph, "*** add_generators_and_minimize ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+END_MAIN

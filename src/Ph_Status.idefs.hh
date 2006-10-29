@@ -1,5 +1,5 @@
 /* Polyhedron::Status class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,22 +14,21 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Polyhedron_defs_hh
-#error "Do not include Ph_Status.idefs.hh directly; use Polyhedron.defs.hh instead."
-#endif
-
 #ifndef PPL_Status_defs_hh
 #define PPL_Status_defs_hh 1
 
+#ifndef PPL_IN_Polyhedron_CLASS
+#error "Do not include Ph_Status.idefs.hh directly; use Polyhedron.defs.hh instead."
+#endif
+
 //! A conjunctive assertion about a polyhedron.
-/*!
+/*! \ingroup PPL_CXX_interface
   The assertions supported are:
   - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimension
     vector space \f$\Rset^0 = \{\cdot\}\f$;
@@ -134,22 +133,20 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
   bool ascii_load(std::istream& s);
 
 private:
   //! Status is implemented by means of a finite bitset.
   typedef unsigned int flags_t;
 
-  //! \name Bitmasks for the individual assertions
+  //! \name Bit-masks for the individual assertions
   //@{
   static const flags_t ZERO_DIM_UNIV    = 0U;
   static const flags_t EMPTY            = 1U << 0;
@@ -161,12 +158,12 @@ private:
   static const flags_t SAT_G_UP_TO_DATE = 1U << 6;
   static const flags_t CS_PENDING       = 1U << 7;
   static const flags_t GS_PENDING       = 1U << 8;
-  //@} // Bitmasks for the individual assertions
+  //@} // Bit-masks for the individual assertions
 
   //! This holds the current bitset.
   flags_t flags;
 
-  //! Construct from a bitmask.
+  //! Construct from a bit-mask.
   Status(flags_t mask);
 
   //! Check whether <EM>all</EM> bits in \p mask are set.

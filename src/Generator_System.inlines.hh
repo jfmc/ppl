@@ -1,5 +1,5 @@
 /* Generator_System class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -51,7 +50,8 @@ Generator_System::Generator_System(const Topology topol)
 
 inline
 Generator_System::Generator_System(const Topology topol,
-	       const dimension_type n_rows, const dimension_type n_columns)
+				   const dimension_type n_rows,
+				   const dimension_type n_columns)
   : Linear_System(topol, n_rows, n_columns) {
 }
 
@@ -187,6 +187,12 @@ Generator_System::external_memory_in_bytes() const {
 inline memory_size_type
 Generator_System::total_memory_in_bytes() const {
   return Linear_System::total_memory_in_bytes();
+}
+
+inline void
+Generator_System::simplify() {
+  Linear_System::simplify();
+  remove_invalid_lines_and_rays();
 }
 
 } // namespace Parma_Polyhedra_Library

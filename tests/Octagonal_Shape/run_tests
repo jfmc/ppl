@@ -1,0 +1,30 @@
+#!/bin/sh
+
+mpz_class_XFAIL_TESTS=
+mpq_class_XFAIL_TESTS=
+int8_t_XFAIL_TESTS=
+int16_t_XFAIL_TESTS=
+int32_t_XFAIL_TESTS=
+int64_t_XFAIL_TESTS=
+float_XFAIL_TESTS=
+double_XFAIL_TESTS=
+long_double_XFAIL_TESTS=
+
+if [ -z "$MAKE" ]
+then
+    MAKE=make
+fi
+
+instances=`MAKEFLAGS='' $MAKE -s print_INSTANCES`
+
+check_PROGRAMS=`MAKEFLAGS='' $MAKE -s print_check_PROGRAMS`
+
+for instance in $instances
+do
+  echo "**************************** " $instance " ****************************"
+  eval xfail_tests='"$'$instance'_XFAIL_TESTS"'
+  [ -f dirty_marker ] && $MAKE clean
+  touch dirty_marker
+  $MAKE check TESTS="$check_PROGRAMS" TESTS_ENVIRONMENT="$CHECKER" TEST_CPPFLAGS="-DOCTAGONAL_SHAPE_INSTANCE=$instance" XFAIL_TESTS=$xfail_tests || exit 1
+  $MAKE clean && rm dirty_marker
+done

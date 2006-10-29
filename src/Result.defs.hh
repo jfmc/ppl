@@ -1,5 +1,5 @@
-/* Result info
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Result enum and supporting function declarations.
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -26,64 +25,96 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Possible outcomes of a checked arithmetic computation.
+/*! \ingroup PPL_CXX_interface */
 enum Result {
-  //! The computed result is inexact and rounded up.
+
+  VC_MASK = 48,
+
+  //! \hideinitializer Ordinary result class.
+  VC_NORMAL = 0,
+
+  //! \hideinitializer The computed result is inexact and rounded up.
   V_LT = 1,
 
-  //! The computed result is inexact and rounded down.
+  //! \hideinitializer The computed result is inexact and rounded down.
   V_GT = 2,
 
-  //! The computed result is exact.
+  //! \hideinitializer The computed result is exact.
   V_EQ = 4,
 
-  //! The computed result is inexact.
+  //! \hideinitializer The computed result is inexact.
   V_NE = V_LT | V_GT,
 
-  //! The computed result may be inexact and rounded up.
+  //! \hideinitializer The computed result may be inexact and rounded up.
   V_LE = V_EQ | V_LT,
 
-  //! The computed result may be inexact and rounded down.
+  //! \hideinitializer The computed result may be inexact and rounded down.
   V_GE = V_EQ | V_GT,
 
-  //! The computed result may be inexact.
+  //! \hideinitializer The computed result may be inexact.
   V_LGE = V_LT | V_EQ | V_GT,
 
-  V_NORMAL = 0,
+  //! \hideinitializer Negative infinity unrepresentable result class.
+  VC_MINUS_INFINITY = 16,
 
-  // Special results.
+  //! \hideinitializer A negative overflow occurred.
+  V_NEG_OVERFLOW = VC_MINUS_INFINITY | V_GT,
 
-  //! \brief
-  //! The exact result does not exist (i.e., the operation does not make
-  //! sense for the given operands) or is unknown (i.e., the operands do
-  //! not encode enough information to give a mean.
-  V_UNKNOWN = 16,
+  //! \hideinitializer Positive infinity unrepresentable result class.
+  VC_PLUS_INFINITY = 32,
 
-  V_MINUS_INFINITY = 32,
+  //! \hideinitializer A positive overflow occurred.
+  V_POS_OVERFLOW = VC_PLUS_INFINITY | V_LT,
 
-  V_PLUS_INFINITY = 48,
+  //! \hideinitializer Not a number result class.
+  VC_NAN = 48,
 
-  V_TYPE_MASK = 48,
+  //! \hideinitializer Converting from unknown string.
+  V_CVT_STR_UNK = 49,
 
-  //! \brief
-  //! The exact result is outside the considered numeric domain
-  //! (e.g., sqrt(-1)).
-  V_DOMAIN = V_UNKNOWN | V_NE,
+  //! \hideinitializer Dividing by zero.
+  V_DIV_ZERO = 50,
 
-  //! A negative overflow occurred.
-  V_NEG_OVERFLOW = V_MINUS_INFINITY | V_GT,
+  //! \hideinitializer Adding two infinities having opposite signs.
+  V_INF_ADD_INF = 51,
 
-  //! A positive overflow occurred.
-  V_POS_OVERFLOW = V_PLUS_INFINITY | V_LT,
+  //! \hideinitializer Dividing two infinities.
+  V_INF_DIV_INF = 52,
 
+  //! \hideinitializer Taking the modulus of an infinity.
+  V_INF_MOD = 53,
+
+  //! \hideinitializer Multiplying an infinity by zero.
+  V_INF_MUL_ZERO = 54,
+
+  //! \hideinitializer Subtracting two infinities having the same sign.
+  V_INF_SUB_INF = 55,
+
+  //! \hideinitializer Computing a remainder modulo zero.
+  V_MOD_ZERO = 56,
+
+  //! \hideinitializer Taking the square root of a negative number.
+  V_SQRT_NEG = 57,
+
+  //! \hideinitializer Unknown result due to intermediate negative overflow.
+  V_UNKNOWN_NEG_OVERFLOW = 58,
+
+  //! \hideinitializer Unknown result due to intermediate positive overflow.
+  V_UNKNOWN_POS_OVERFLOW = 59,
+
+  //! \hideinitializer Unordered comparison.
+  V_UNORD_COMP = 60
 };
 
+//! Extracts the class part of \p r (normal, minus/plus infinity or nan).
+Result classify(Result r);
+
+//! Returns <CODE>true</CODE> if and only if the class or \p r is not normal.
 bool is_special(Result r);
-Result type(Result r);
-Result sign(Result r);
 
 } // namespace Parma_Polyhedra_Library
 
 #include "Result.inlines.hh"
 
 #endif // !defined(PPL_Result_defs_hh)
-

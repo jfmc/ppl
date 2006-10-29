@@ -1,5 +1,5 @@
 /* Generator class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,15 +24,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Generator_defs_hh 1
 
 #include "Generator.types.hh"
+#include "Scalar_Products.types.hh"
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.defs.hh"
+#include "Congruence_System.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Polyhedron.types.hh"
+#include "Grid_Generator.types.hh"
+#include "Grid_Generator_System.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
+
+// Put them in the namespace here to declare them friend later.
 
 namespace IO_Operators {
 
@@ -44,7 +49,6 @@ std::ostream& operator<<(std::ostream& s, const Generator& g);
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
-
 
 namespace std {
 
@@ -57,7 +61,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
 
 
 //! A line, ray, point or closure point.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of the class Generator is one of the following:
 
   - a line \f$\vect{l} = (a_0, \ldots, a_{n-1})^\transpose\f$;
@@ -183,7 +187,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   If a zero divisor is provided, an exception is thrown.
 
   \par Example 5
-  Closures points are specified in the same way we defined points,
+  Closure points are specified in the same way we defined points,
   but invoking their specific constructor function.
   For instance, the closure point
   \f$\vect{c} = (1, 0, 2)^\transpose \in \Rset^3\f$ is defined by
@@ -213,7 +217,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   if (g1.is_point()) {
     cout << "Point g1: " << g1 << endl;
     Linear_Expression e;
-    for (int i = g1.space_dimension() - 1; i >= 0; i--)
+    for (dimension_type i = g1.space_dimension(); i-- > 0; )
       e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
     Generator g2 = closure_point(e, g1.divisor());
     cout << "Closure point g2: " << g2 << endl;
@@ -313,6 +317,11 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is a ray.
   bool is_ray() const;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Returns <CODE>true</CODE> if and only if \p *this is a line or a ray.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool is_line_or_ray() const;
+
   //! Returns <CODE>true</CODE> if and only if \p *this is a point.
   bool is_point() const;
 
@@ -337,59 +346,83 @@ public:
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_point();
 
-  //! \brief
-  //! Returns, as a closure point,
-  //! the origin of the zero-dimensional space \f$\Rset^0\f$.
+  /*! \brief
+    Returns, as a closure point,
+    the origin of the zero-dimensional space \f$\Rset^0\f$.
+  */
   static const Generator& zero_dim_closure_point();
 
-  //! \brief
-  //! Returns a lower bound to the total size in bytes of the memory
-  //! occupied by \p *this.
+  /*! \brief
+    Returns a lower bound to the total size in bytes of the memory
+    occupied by \p *this.
+  */
   memory_size_type total_memory_in_bytes() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this and \p y
+    are equivalent generators.
+
+    Generators having different space dimensions are not equivalent.
+  */
+  bool is_equivalent_to(const Generator& y) const;
+
+  PPL_OUTPUT_DECLARATIONS
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+#endif
+  bool ascii_load(std::istream& s);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
-
-private:
-  //! \brief
-  //! Builds a generatorof type \p type and topology \p topology,
-  //! stealing the coefficients from \p e.
-  Generator(Linear_Expression& e, Type type, Topology topology);
 
   //! Swaps \p *this with \p y.
   void swap(Generator& y);
 
-  //! \brief
-  //! Throw a <CODE>std::invalid_argument</CODE> exception
-  //! containing the appropriate error message.
+private:
+  /*! \brief
+    Builds a generator of type \p type and topology \p topology,
+    stealing the coefficients from \p e.
+  */
+  Generator(Linear_Expression& e, Type type, Topology topology);
+
+  /*! \brief
+    Throw a <CODE>std::invalid_argument</CODE> exception
+    containing the appropriate error message.
+  */
   void
   throw_dimension_incompatible(const char* method,
 			       const char* name_var,
 			       Variable v) const;
 
-  //! \brief
-  //! Throw a <CODE>std::invalid_argument</CODE> exception
-  //! containing the appropriate error message.
+  /*! \brief
+    Throw a <CODE>std::invalid_argument</CODE> exception
+    containing the appropriate error message.
+  */
   void
   throw_invalid_argument(const char* method, const char* reason) const;
 
+  friend class Parma_Polyhedra_Library::Scalar_Products;
+  friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Sign;
+  friend class Parma_Polyhedra_Library::Topology_Adjusted_Scalar_Product_Assign;
   friend class Parma_Polyhedra_Library::Generator_System;
   friend class Parma_Polyhedra_Library::Generator_System::const_iterator;
+  // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::Grid_Generator;
+  // This is for access to Row and Linear_Row in `insert'.
+  friend class Parma_Polyhedra_Library::Grid_Generator_System;
 
   friend
-  Parma_Polyhedra_Library::
-  Linear_Expression::Linear_Expression(const Generator& g);
-
-  // FIXME: the following friend declaration is only to grant access to
-  // Constraint_System::satisfies_all_constraints().
-  friend class Parma_Polyhedra_Library::Constraint_System;
-
-  friend void std::swap(Parma_Polyhedra_Library::Generator& x,
-			Parma_Polyhedra_Library::Generator& y);
+  Parma_Polyhedra_Library
+  ::Linear_Expression::Linear_Expression(const Generator& g);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
@@ -407,10 +440,10 @@ private:
   //! Sets the Linear_Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_ray_or_point();
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if the closure point
-  //! \p *this has the same \e coordinates of the point \p p.
-  /*!
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if the closure point
+    \p *this has the same \e coordinates of the point \p p.
+
     It is \e assumed that \p *this is a closure point, \p p is a point
     and both topologies and space dimensions agree.
   */
@@ -431,19 +464,42 @@ Generator line(const Linear_Expression& e);
 /*! \relates Generator */
 Generator ray(const Linear_Expression& e);
 
-//! \brief
-//! Shorthand for Generator
-//! Generator::point(const Linear_Expression& e, Coefficient_traits::const_reference d).
-/*! \relates Generator */
-Generator point(const Linear_Expression& e = Linear_Expression::zero(),
-		Coefficient_traits::const_reference d = Coefficient_one());
+/*! \brief
+  Shorthand for Generator
+  Generator::point(const Linear_Expression& e, Coefficient_traits::const_reference d).
 
-//! \brief
-//! Shorthand for Generator
-//! Generator::closure_point(const Linear_Expression& e, Coefficient_traits::const_reference d).
+  \relates Generator
+*/
+Generator
+point(const Linear_Expression& e = Linear_Expression::zero(),
+      Coefficient_traits::const_reference d = Coefficient_one());
+
+/*! \brief
+  Shorthand for Generator
+  Generator::closure_point(const Linear_Expression& e, Coefficient_traits::const_reference d).
+
+  \relates Generator
+*/
+Generator
+closure_point(const Linear_Expression& e = Linear_Expression::zero(),
+	      Coefficient_traits::const_reference d = Coefficient_one());
+
+//! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
 /*! \relates Generator */
-Generator closure_point(const Linear_Expression& e = Linear_Expression::zero(),
-			Coefficient_traits::const_reference d = Coefficient_one());
+bool operator==(const Generator& x, const Generator& y);
+
+//! Returns <CODE>true</CODE> if and only if \p x is not equivalent to \p y.
+/*! \relates Generator */
+bool operator!=(const Generator& x, const Generator& y);
+
+
+namespace IO_Operators {
+
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::Generator */
+std::ostream& operator<<(std::ostream& s, const Generator::Type& t);
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 

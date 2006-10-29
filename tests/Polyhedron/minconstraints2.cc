@@ -1,6 +1,5 @@
-/* Test Polyhedron::minimized_constraints(): we apply this function
-   to an empty polyhedron.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Polyhedron::minimized_constraints().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -15,45 +14,57 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <algorithm>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
-  set_handlers();
-
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
-
-#if NOISY
-  print_constraints(ph1, "*** ph1 ***");
-#endif
-
-  C_Polyhedron known_result;
-  known_result = ph1;
+bool
+test01() {
+  NNC_Polyhedron ph1;
 
   Constraint_System cs = ph1.minimized_constraints();
 
-  C_Polyhedron ph2(cs);
+  NNC_Polyhedron ph2(cs);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
+  const Constraint_System& min_cs = ph2.minimized_constraints();
 
-#if NOISY
+  bool ok = (ph1 == ph2
+	     && min_cs.begin() == min_cs.end());
+
+  print_constraints(ph1, "*** ph1 ***");
   print_constraints(cs, "*** cs ***");
-#endif
+  print_constraints(ph2, "*** ph2 ***");
 
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
+
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(x < 1);
+  cs.insert(y > 0);
+
+  NNC_Polyhedron ph(cs);
+  const Constraint_System& min_cs = ph.minimized_constraints();
+  return std::distance(min_cs.begin(), min_cs.end()) == 3;
+}
+
+} // namespace
+
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+END_MAIN
+

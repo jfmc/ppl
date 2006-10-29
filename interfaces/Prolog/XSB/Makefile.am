@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -14,73 +14,83 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
 abs_srcdir = @abs_srcdir@
-VPATH = @srcdir@
 
-@SET_MAKE@
-
-SUBDIRS =
+XSB_CFLI_FILES = xsb_cfli.hh
 
 EXTRA_DIST = \
-ppl_xsb.cc \
-ppl_xsb.H \
+ppl_interface_generator_xsb_cc.m4 \
+ppl_interface_generator_xsb_H.m4 \
+$(XSB_CFLI_FILES) \
 xsb_clpq.P \
 xsb_clpq2.P \
 xsb_pl_check.P \
-expected_mpz expected2_mpz expected3_mpz \
-expected_int8 expected2_int8 expected3_int8 \
-expected_int16 expected2_int16 expected3_int16 \
-expected_int32 expected2_int32 expected3_int32 \
-expected_int64 expected2_int64 expected3_int64 \
-expected_mpz_a expected2_mpz_a expected3_mpz_a \
-expected_int8_a expected2_int8_a expected3_int8_a \
-expected_int16_a expected2_int16_a expected3_int16_a \
-expected_int32_a expected2_int32_a expected3_int32_a \
-expected_int64_a expected2_int64_a expected3_int64_a
+expected_clpq_mpz expected_clpq2_mpz expected_pchk_mpz \
+expected_clpq_int8 expected_clpq2_int8 expected_pchk_int8 \
+expected_clpq_int16 expected_clpq2_int16 expected_pchk_int16 \
+expected_clpq_int32 expected_clpq2_int32 expected_pchk_int32 \
+expected_clpq_int64 expected_clpq2_int64 expected_pchk_int64 \
+expected_clpq_mpz_a expected_clpq2_mpz_a expected_pchk_mpz_a \
+expected_clpq_int8_a expected_clpq2_int8_a expected_pchk_int8_a \
+expected_clpq_int16_a expected_clpq2_int16_a expected_pchk_int16_a \
+expected_clpq_int32_a expected_clpq2_int32_a expected_pchk_int32_a \
+expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a
 
-if HAVE_XSB_PROLOG
+if BUILD_XSB_PROLOG_INTERFACE
+
+BUILT_SOURCES = ppl_xsb.H ppl_xsb.cc
+
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4
+
+ppl_xsb.H: $(interface_generator_dependencies) ppl_interface_generator_xsb_H.m4 Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_xsb_H.m4 > $@
+
+ppl_xsb.cc: $(interface_generator_dependencies) ppl_interface_generator_xsb_cc.m4 Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_xsb_cc.m4 > $@
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src \
+-I$(top_srcdir)/interfaces/Prolog \
+-I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
--I$(top_srcdir)/Watchdog \
-@extra_includes@ \
-@xsb_includes@
+-I$(top_builddir)/Watchdog/src \
+$(XSB_PROLOG_INCLUDE_OPTIONS) \
+@extra_includes@
 
 pkglib_LTLIBRARIES = ppl_xsb.la
 ppl_xsb_la_SOURCES = ppl_xsb.cc
 ppl_xsb_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
-$(top_builddir)/Watchdog/libpwl.la \
+$(top_builddir)/Watchdog/src/libpwl.la \
 @extra_libraries@
 ppl_xsb_la_LDFLAGS = -module -avoid-version
 
 pkglib_DATA = ppl_xsb.xwam
 
 ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc ppl_xsb.la Makefile
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ppl_xsb.H . ; \
-	fi
-	cp -f $(srcdir)/ppl_xsb.cc ppl_xsb.c
+	cp -f ppl_xsb.cc ppl_xsb.c
 	echo "consult(ppl_xsb," \
 	  "[cc('$(CXX)'), cc_opts('$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) " \
-	    "$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)')])." \
+	    "$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) " \
+	    "-L../../../src/.libs -L../../../Watchdog/src/.libs')])." \
 		| $(LIBTOOL) --mode=execute \
 			-dlopen ../../../src/libppl.la \
-			-dlopen ../../../Watchdog/libpwl.la \
+			-dlopen ../../../Watchdog/src/libpwl.la \
 			xsb
 	rm -f ppl_xsb.c
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ppl_xsb.H; \
-	fi
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
@@ -96,8 +106,8 @@ schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
-# FIXME: we are checking against special versions of `expected'
-#        and `expected2'.  This is due to the fact that XSB 2.6
+# FIXME: we are checking against special versions of `expected_clpq'
+#        and `expected_clpq2'.  This is due to the fact that XSB 2.6
 #        and previous versions do not support control escape
 #        sequences.
 
@@ -105,19 +115,19 @@ COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
 if ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/expected_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED2 = $(srcdir)/expected2_$(COEFFICIENT_MNEMONIC)_a
-EXPECTED3 = $(srcdir)/expected3_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ = $(srcdir)/expected_clpq_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_CLPQ2 = $(srcdir)/expected_clpq2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED_PCHK = $(srcdir)/expected_pchk_$(COEFFICIENT_MNEMONIC)_a
 
 else !ASSERTIONS_ENABLED
 
-EXPECTED = $(srcdir)/expected_$(COEFFICIENT_MNEMONIC)
-EXPECTED2 = $(srcdir)/expected2_$(COEFFICIENT_MNEMONIC)
-EXPECTED3 = $(srcdir)/expected3_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ = $(srcdir)/expected_clpq_$(COEFFICIENT_MNEMONIC)
+EXPECTED_CLPQ2 = $(srcdir)/expected_clpq2_$(COEFFICIENT_MNEMONIC)
+EXPECTED_PCHK = $(srcdir)/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPECTED) xsb_clpq2.P ../tests/clpq2.pl ../tests/check_script2 $(EXPECTED2) xsb_pl_check.P ../tests/pl_check.pl
+check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clpq2.P ../tests/clpq2.pl ../tests/script_clpq2 pl_check_test
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	if [ $(abs_srcdir) != `pwd` ]; then \
@@ -127,15 +137,15 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPE
 	rm -f xsb_clpq.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen ppl_xsb.la \
 		xsb xsb_clpq \
-			<$(srcdir)/../tests/check_script >obtained
+			<$(srcdir)/../tests/script_clpq >obtained_clpq
 	rm -f clpq.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_clpq.P; \
 	fi
-	diff -q --ignore-all-space $(EXPECTED) obtained
+	diff -u --ignore-all-space $(EXPECTED_CLPQ) obtained_clpq
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_clpq2.P . ; \
 	fi
@@ -143,15 +153,17 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPE
 	rm -f xsb_clpq2.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen ppl_xsb.la \
 		xsb xsb_clpq2 \
-			<$(srcdir)/../tests/check_script2 >obtained2
+			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	rm -f clpq2.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_clpq2.P; \
 	fi
-	diff -q --ignore-all-space $(EXPECTED2) obtained2
+	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
+
+pl_check_test: ppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_pl_check.P . ; \
 	fi
@@ -159,19 +171,19 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPE
 	rm -f xsb_pl_check.xwam
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
-		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ../../../Watchdog/src/libpwl.la \
 		-dlopen ppl_xsb.la \
 		xsb xsb_pl_check \
-			>obtained3
+			>obtained_pchk
 	rm -f pl_check.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_pl_check.P; \
 	fi
-	diff -q --ignore-all-space $(EXPECTED3) obtained3
+	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
 
 MOSTLYCLEANFILES = \
 ppl_xsb.xwam ppl_xsb.so \
 xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam \
-$(CLPQ_TESTS) obtained obtained2 obtained3
+$(CLPQ_TESTS) obtained_clpq obtained_clpq2 obtained_pchk
 
-endif HAVE_XSB_PROLOG
+endif BUILD_XSB_PROLOG_INTERFACE

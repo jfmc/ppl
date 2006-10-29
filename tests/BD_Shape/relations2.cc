@@ -1,5 +1,5 @@
-/* Test BD_Shape::relation_with(c).
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BD_Shape::relation_with().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,223 +14,436 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-static void test1() {
-  // The zero-dim universe bdiff.
+bool
+test01() {
+  // The zero-dim universe BDS.
   TBD_Shape bd(0);
-  Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= 0);
+  Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) > 0);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(0 >= 0) == " << rel << endl;
-#endif
+  using namespace IO_Operators;
+  nout << "bd.relation_with(0 > 0) == " << rel << endl;
 
-  Poly_Con_Relation known_result = Poly_Con_Relation::is_included()
-    && Poly_Con_Relation::saturates();
+  Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
+    && Poly_Con_Relation::is_disjoint();
 
-  if (rel != known_result)
-    exit(1);
+  return rel == known_result;
 }
 
-static void test2() {
-  // The zero-dim universe bdiff.
+bool
+test02() {
+  // The zero-dim universe BDS.
   TBD_Shape bd(0);
-  Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= 1);
+  Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) > 1);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(0 >= 1) == " << rel << endl;
-#endif
+  using namespace IO_Operators;
+  nout << "bd.relation_with(0 > 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
-  if (rel != known_result)
-    exit(1);
+  return rel == known_result;
 }
 
-static void test3() {
-  // The zero-dim universe bdiff.
-  TBD_Shape bd;
-  Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) >= 0);
+bool
+test03() {
+  // The zero-dim universe BDS.
+  TBD_Shape bd(0);
+  Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) > 0);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(1 >= 0) == " << rel << endl;
-#endif
+  using namespace IO_Operators;
+  nout << "bd.relation_with(1 > 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
-  if (rel != known_result)
-    exit(1);
+  return rel == known_result;
 }
 
-static void test4() {
-  Variable x(0);
-  Variable y(1);
+bool
+test04() {
+  // An empty BDS.
+  TBD_Shape bd(1);
+  bd.add_constraint(Linear_Expression(0) >= 1);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x == 1);
+  Variable A(0);
 
-  Constraint c(x > 1);
-  Poly_Con_Relation rel = bd.relation_with(c);
+  Poly_Con_Relation rel = bd.relation_with(A > 0);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
-  cout << "bd.relation_with(c) == " << rel << endl;
-#endif
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A > 0) = " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
+    && Poly_Con_Relation::is_included()
     && Poly_Con_Relation::is_disjoint();
- 
-  if (rel != known_result)
-    exit(1);
+
+  return rel == known_result;
 }
 
-static void test5() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Constraint_System cs(A - B == 3);
+  TBD_Shape bd(cs);
 
-  TBD_Shape bd(3);
-  bd.add_constraint(x == 1);
-  bd.add_constraint(y <= 0);
-  bd.add_constraint(z >= 2);
+  Poly_Con_Relation rel = bd.relation_with(A - B > 3);
 
-  Constraint c(x > 1);
-  Poly_Con_Relation rel = bd.relation_with(c);
-
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
-  cout << "bd.relation_with(c) == " << rel << endl;
-#endif
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A - B > 3) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
     && Poly_Con_Relation::is_disjoint();
 
-  if (rel != known_result)
-    exit(1);
+  return rel == known_result;
 }
 
-static void test6() {
-  Variable x(0);
-  Variable y(1);
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Constraint_System cs(A - B <= 3);
+  TBD_Shape bd(cs);
 
-  TBD_Shape bd(2);
-  bd.add_constraint(x == 0);
-  bd.add_constraint(y >= 1);
+  Poly_Con_Relation rel = bd.relation_with(A - B > 3);
 
-  Poly_Con_Relation rel = bd.relation_with(-y >= -1);
-
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(-y >= -1) == " << rel << endl;
-#endif
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A - B > 3) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
+bool
+test07() {
+  Variable A(0);
+
+  Constraint_System cs;
+  cs.insert(A <= 1);
+
+  TBD_Shape bd(cs);
+
+  Poly_Con_Relation rel = bd.relation_with(A > 0);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A > 0) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
 
-  if (rel != known_result)
-    exit(1);
+  return rel == known_result;
 }
 
-static void test7() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
 
-  TBD_Shape bd(3);
+  Constraint_System cs;
+  cs.insert(A >= 1);
+  cs.insert(B >= 0);
+  cs.insert(A - B <= 3);
 
-  bd.add_constraint(x - y <= 2);
-  bd.add_constraint(x - z >= -1);
-  bd.add_constraint(y <= 3);
+  TBD_Shape bd(cs);
 
-  Poly_Con_Relation rel = bd.relation_with(y > 3);
+  Poly_Con_Relation rel = bd.relation_with(A - B > 1);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(y > 3) == " << rel << endl;
-#endif
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A - B > 1) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 1);
+  cs.insert(B >= 0);
+  cs.insert(A - B <= 3);
+
+  TBD_Shape bd(cs);
+
+  Poly_Con_Relation rel = bd.relation_with(A > 0);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A > 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
+
+  return rel == known_result;
+}
+
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A == 0);
+  cs.insert(B <= -1);
+  cs.insert(A - B <= 2);
+
+  TBD_Shape bd(cs);
+
+  Poly_Con_Relation rel = bd.relation_with(B - A > 1);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(B - A > 1) == " << rel << endl;
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
-  if (rel != known_result)
-    exit(1);
+  return rel == known_result;
 }
 
-static void test8() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
- 
-  TBD_Shape bd(3);
-
-  bd.add_constraint(x - y <= 2);
-  bd.add_constraint(x - z >= -1);
-  bd.add_constraint(y <= 3);
-
-  Poly_Con_Relation rel = bd.relation_with(-y >= -4);
-
-#if NOISY
-  print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(1 >= 0) == " << rel << endl;
-#endif
-
-  Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
-
-  if (rel != known_result)
-    exit(1);
-}
-
-static void test9() {
+bool
+test11() {
   Variable A(0);
 
   TBD_Shape bd(1);
-  bd.add_constraint(A <= 0);
-  bd.add_constraint(A >= -2);
+  bd.add_constraint(A >= 0);
 
-  Poly_Con_Relation rel = bd.relation_with(Linear_Expression(0) >= -1);
+  Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) >= 1);
 
-#if NOISY
   print_constraints(bd, "--- bd ---");
-  cout << "bd.relation_with(0 >= -1) == " << rel << endl;
-#endif
+  using namespace IO_Operators;
+  nout << "bd.relation_with(1 >= 1) == " << rel << endl;
 
-  Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
+  Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
+    && Poly_Con_Relation::is_included();
 
-  if (rel != known_result)
-    exit(1);
+  return rel == known_result;
 }
 
-int main() TRY {
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
+  TBD_Shape bd(2);
+  bd.add_constraint(A == 1);
+  bd.add_constraint(B >= 2);
 
-  return 0;
+  Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) > 1);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(1 > 1) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
+    && Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
 }
-CATCH
 
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
+  TBD_Shape bd(3);
+  bd.add_constraint(A == 1);
+  bd.add_constraint(B >= 2);
+  bd.add_constraint(C <= 1);
+
+  Poly_Con_Relation rel = bd.relation_with(Linear_Expression(1) == 1);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(1 == 1) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::saturates()
+    && Poly_Con_Relation::is_included();
+
+  return rel == known_result;
+}
+
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A - B >= 0);
+  bd.add_constraint(B >= 0);
+
+  Poly_Gen_Relation rel1 = bd.relation_with(point(B));
+  Poly_Gen_Relation rel2 = bd.relation_with(point(-B));
+
+  print_constraints(bd, "*** bd ***");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(point(B)) == " << rel1 << endl;
+  nout << "bd.relation_with(point(-B)) == " << rel2 << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel1 == known_result && rel2 == known_result;
+}
+
+bool
+test15() {
+  Variable A(0);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+
+  Poly_Gen_Relation rel = bd.relation_with(ray(-A));
+
+  print_constraints(bd, "*** bd ***");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(ray(-A)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test16() {
+  Variable A(0);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+
+  Poly_Gen_Relation rel = bd.relation_with(line(A));
+
+  print_constraints(bd, "*** bd ***");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(line(A)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A == 0);
+  bd.add_constraint(B == 0);
+
+  Poly_Gen_Relation rel = bd.relation_with(closure_point(A));
+
+  print_constraints(bd, "*** bd ***");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(closure_point(A)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 2);
+  bd.add_constraint(B == 0);
+
+  Poly_Gen_Relation rel = bd.relation_with(ray(A + B));
+
+  print_constraints(bd, "*** bd ***");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(ray(A + B)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test19() {
+  // The system of constraints of the BDS contains only
+  // an equality and the generator `g' is a point.
+  Variable A(0);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A == 0);
+
+  Poly_Gen_Relation rel = bd.relation_with(point(2*A));
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(point(2*A)) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(A >= 1);
+
+  try {
+    // This is an incorrect use of method
+    // BD_Shape::relation_with(c):
+    // it is illegal to use a constraint with three
+    // dimensions.
+    Poly_Con_Relation rel = bd.relation_with(A - C - B <= 2);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
+END_MAIN

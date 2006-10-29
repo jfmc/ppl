@@ -1,5 +1,5 @@
 /* Test the total_memory_in_bytes() and external_memory_in_bytes() methods.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,26 +14,17 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
-#ifndef NOISY
-#define NOISY 0
-#endif
-
 namespace {
 
-void loo(...) {
-}
+namespace test01_namespace {
 
 void
 add_constraint(C_Polyhedron& ph, const Constraint& c) {
@@ -41,14 +32,11 @@ add_constraint(C_Polyhedron& ph, const Constraint& c) {
   const memory_size_type c_memory = c.total_memory_in_bytes();
   ph.add_constraint(c);
   const memory_size_type ph_memory_after = ph.total_memory_in_bytes();
-#if NOISY
-  cout << ph_memory_before
+
+  nout << ph_memory_before
        << " + " << c_memory
        << " -> " << ph_memory_after
        << endl;
-#else
-  loo(ph_memory_before, c_memory, ph_memory_after);
-#endif
 }
 
 void
@@ -57,14 +45,11 @@ add_generator(C_Polyhedron& ph, const Generator& g) {
   const memory_size_type g_memory = g.total_memory_in_bytes();
   ph.add_generator(g);
   const memory_size_type ph_memory_after = ph.total_memory_in_bytes();
-#if NOISY
-  cout << ph_memory_before
+
+  nout << ph_memory_before
        << " + " << g_memory
        << " -> " << ph_memory_after
        << endl;
-#else
-  loo(ph_memory_before, g_memory, ph_memory_after);
-#endif
 }
 
 void
@@ -72,23 +57,17 @@ minimize(C_Polyhedron& ph) {
   const memory_size_type ph_memory_before = ph.total_memory_in_bytes();
   (void) ph.minimized_generators();
   const memory_size_type ph_memory_after = ph.total_memory_in_bytes();
-#if NOISY
-  cout << ph_memory_before
+
+  nout << ph_memory_before
        << " -m-> " << ph_memory_after
        << endl;
-#else
-  loo(ph_memory_before, ph_memory_after);
-#endif
 }
 
-} // namespace
+} // namespace test01_namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  // Avoid warnings.
-  loo();
+bool
+test01() {
+  using namespace test01_namespace;
 
   Variable x(0);
   Variable y(1);
@@ -97,63 +76,53 @@ main() TRY {
   const memory_size_type x_total_size = x.total_memory_in_bytes();
   const memory_size_type x_external_size = x.external_memory_in_bytes();
 
-#if NOISY
-  cout << "*** Size of variables ***"
+  nout << "*** Size of variables ***"
        << endl
        << "x.total_memory_in_bytes() = " << x_total_size
        << endl
        << "x.external_memory_in_bytes() = " << x_external_size
        << endl << endl;
-#else
-  loo(x_total_size, x_external_size);
-#endif
-
-#if NOISY
-  cout << "*** Size of linear expressions ***"
+  nout << "*** Size of linear expressions ***"
        << endl;
-#endif
 
   Linear_Expression le(0);
   memory_size_type le_total_size = le.total_memory_in_bytes();
   memory_size_type le_external_size = le.external_memory_in_bytes();
-#if NOISY
+
   using namespace IO_Operators;
-  cout << "(" << le << ").total_memory_in_bytes() = " << le_total_size
+  nout << "(" << le << ").total_memory_in_bytes() = " << le_total_size
        << endl
        << "(" << le << ").external_memory_in_bytes() = " << le_external_size
        << endl;
-#endif
+
   le += x;
   le_total_size = le.total_memory_in_bytes();
   le_external_size = le.external_memory_in_bytes();
-#if NOISY
-  cout << "(" << le << ").total_memory_in_bytes() = " << le_total_size
+
+  nout << "(" << le << ").total_memory_in_bytes() = " << le_total_size
        << endl
        << "(" << le << ").external_memory_in_bytes() = " << le_external_size
        << endl;
-#endif
+
   le += 2*y;
   le_total_size = le.total_memory_in_bytes();
   le_external_size = le.external_memory_in_bytes();
-#if NOISY
-  cout << "(" << le << ").total_memory_in_bytes() = " << le_total_size
+
+  nout << "(" << le << ").total_memory_in_bytes() = " << le_total_size
        << endl
        << "(" << le << ").external_memory_in_bytes() = " << le_external_size
        << endl;
-#endif
+
   le += 4*z;
   le_total_size = le.total_memory_in_bytes();
   le_external_size = le.external_memory_in_bytes();
-#if NOISY
-  cout << "(" << le << ").total_memory_in_bytes() = " << le_total_size
+
+  nout << "(" << le << ").total_memory_in_bytes() = " << le_total_size
        << endl
        << "(" << le << ").external_memory_in_bytes() = " << le_external_size
        << endl << endl;
-#endif
 
-#if NOISY
-  cout << "*** Adding constraints to a polyhedron ***" << endl;
-#endif
+  nout << "*** Adding constraints to a polyhedron ***" << endl;
 
   C_Polyhedron ph(3);
   add_constraint(ph, 4*x - 2*y - z + 14 >= 0);
@@ -191,12 +160,9 @@ main() TRY {
   const memory_size_type gs_total_size = gs.total_memory_in_bytes();
   const memory_size_type gs_external_size = gs.external_memory_in_bytes();
 
-#if NOISY
-  cout << endl;
-#endif
+  nout << endl;
 
-#if NOISY
-  cout << "*** Size of the user-visible polyhedra components ***"
+  nout << "*** Size of the user-visible polyhedra components ***"
        << endl
        << "ph.total_memory_in_bytes() = " << ph_total_size
        << endl
@@ -210,16 +176,9 @@ main() TRY {
        << endl
        << "gs.external_memory_in_bytes() = " << gs_external_size
        << endl << endl;
-#else
-  loo(ph_total_size, cs_total_size, gs_total_size,
-      ph_external_size, cs_external_size, gs_external_size);
-#endif
+  nout << "*** Adding generators to a polyhedron ***" << endl;
 
-#if NOISY
-  cout << "*** Adding generators to a polyhedron ***" << endl;
-#endif
-
-  C_Polyhedron qh(3, Polyhedron::EMPTY);
+  C_Polyhedron qh(3, EMPTY);
   unsigned n = 0;
   for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i) {
@@ -228,44 +187,105 @@ main() TRY {
       minimize(qh);
   }
 
-#if NOISY
-  cout << endl;
-#endif
+  nout << endl;
 
-#if NOISY
-  cout << "*** Size of a constraint system vs size of contained constraints"
+  nout << "*** Size of a constraint system vs size of contained constraints"
        << endl
        << "cs.total_memory_in_bytes() = " << cs_total_size
        << endl;
-#endif
 
   memory_size_type cs_elements_size = 0;
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     cs_elements_size += i->total_memory_in_bytes();
 
-#if NOISY
-  cout << "Sum of sizes of contained constraints = " << cs_elements_size
+  nout << "Sum of sizes of contained constraints = " << cs_elements_size
        << endl << endl;
-#endif
 
-#if NOISY
-  cout << "*** Size of a generator system vs size of contained generators"
+  nout << "*** Size of a generator system vs size of contained generators"
        << endl
        << "gs.total_memory_in_bytes() = " << gs_total_size
        << endl;
-#endif
 
   memory_size_type gs_elements_size = 0;
   for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     gs_elements_size += i->total_memory_in_bytes();
 
-#if NOISY
-  cout << "Sum of sizes of contained generators = " << gs_elements_size
+  nout << "Sum of sizes of contained generators = " << gs_elements_size
        << endl << endl;
-#endif
 
-  return 0;
+  return true;
 }
-CATCH
+
+bool test02() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  C_Polyhedron ph(3);
+  ph.add_constraint(4*x - 2*y - z + 14 >= 0);
+  ph.add_constraint(4*x + 2*y - z + 2 >= 0);
+  ph.add_constraint(x + y - 1 >= 0);
+  ph.add_constraint(x + y + 2*z - 5 >= 0);
+
+  const memory_size_type ph_total_size = ph.total_memory_in_bytes();
+  const memory_size_type ph_external_size = ph.external_memory_in_bytes();
+
+  Determinate<C_Polyhedron> dph(ph);
+
+  const memory_size_type dph_total_size = dph.total_memory_in_bytes();
+  const memory_size_type dph_external_size = dph.external_memory_in_bytes();
+
+  nout << "ph.total_memory_in_bytes() = " << ph_total_size
+       << endl
+       << "ph.external_memory_in_bytes() = " << ph_external_size
+       << endl
+       << "dph.total_memory_in_bytes() = " << dph_total_size
+       << endl
+       << "dph.external_memory_in_bytes() = " << dph_external_size
+       << endl;
+
+  Pointset_Powerset<C_Polyhedron> pph(ph);
+
+  C_Polyhedron qh(3);
+  qh.add_constraint(x >= 0);
+  qh.add_constraint(y >= 0);
+  qh.add_constraint(z >= 0);
+  qh.add_constraint(x <= 1);
+  qh.add_constraint(y <= 1);
+  qh.add_constraint(z <= 1);
+  Pointset_Powerset<C_Polyhedron> pqh(qh);
+
+  Pointset_Powerset<C_Polyhedron> prh = pqh;
+  prh.poly_difference_assign(pph);
+
+  const memory_size_type pph_total_size = pph.total_memory_in_bytes();
+  const memory_size_type pph_external_size = pph.external_memory_in_bytes();
+  const memory_size_type pqh_total_size = pqh.total_memory_in_bytes();
+  const memory_size_type pqh_external_size = pqh.external_memory_in_bytes();
+  const memory_size_type prh_total_size = prh.total_memory_in_bytes();
+  const memory_size_type prh_external_size = prh.external_memory_in_bytes();
+
+  nout << "pph.total_memory_in_bytes() = " << pph_total_size
+       << endl
+       << "pph.external_memory_in_bytes() = " << pph_external_size
+       << endl
+       << "pqh.total_memory_in_bytes() = " << pqh_total_size
+       << endl
+       << "pqh.external_memory_in_bytes() = " << pqh_external_size
+       << endl
+       << "prh.total_memory_in_bytes() = " << prh_total_size
+       << endl
+       << "prh.external_memory_in_bytes() = " << prh_external_size
+       << endl;
+
+  return true;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST_F8(test01);
+  DO_TEST_F8A(test02);
+END_MAIN

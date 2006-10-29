@@ -1,5 +1,5 @@
 /* A sort of clone of the cddlib test program `lcdd'.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -35,7 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #if defined(USE_PPL)
 
-#include "ppl_install.hh"
+#include "ppl.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -107,42 +106,63 @@ typedef Polyhedron* POLYHEDRON_TYPE;
 #include <getopt.h>
 #endif
 
+#ifdef HAVE_UNISTD_H
+// Include this for `getopt()': especially important if we do not have
+// <getopt.h>.
+# include <unistd.h>
+#endif
+
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+
 #ifdef HAVE_SYS_RESOURCE_H
-#include <sys/resource.h>
+// This should be included after <time.h> and <sys/time.h> so as to make
+// sure we have the definitions for, e.g., `ru_utime'.
+# include <sys/resource.h>
 #endif
 
 namespace {
 
+#ifdef HAVE_GETOPT_H
 struct option long_options[] = {
   {"max-cpu",        required_argument, 0, 'C'},
-  {"max-memory",     required_argument, 0, 'V'},
+  {"max-memory",     required_argument, 0, 'R'},
   {"help",           no_argument,       0, 'h'},
   {"output",         required_argument, 0, 'o'},
   {"timings",        no_argument,       0, 't'},
   {"verbose",        no_argument,       0, 'v'},
 #if defined(USE_PPL)
+  {"version",        no_argument,       0, 'V'},
   {"check",          required_argument, 0, 'c'},
 #endif
   {0, 0, 0, 0}
 };
+#endif
 
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
-"  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
-"  -h, --help              prints this help text to stderr\n"
+"  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
+"  -h, --help              prints this help text to stdout\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           produces lots of output\n"
 #if defined(USE_PPL)
+"  -V, --version           prints version information to stdout\n"
 "  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
 #endif
-;
+#ifndef HAVE_GETOPT_H
+"\n"
+"NOTE: this version does not support long options.\n"
+#endif
+"\n"
+"Report bugs to <ppl-devel@cs.unipr.it>.\n";
 
 #if defined(USE_PPL)
-#define OPTION_LETTERS "C:V:ho:tvc:"
+#define OPTION_LETTERS "C:R:ho:tvVc:"
 #else
-#define OPTION_LETTERS "C:V:ho:tvc:"
+#define OPTION_LETTERS "C:R:ho:tv"
 #endif
 
 const char* program_name = 0;
@@ -318,9 +338,14 @@ timeout(int) {
 void
 process_options(int argc, char* argv[]) {
   while (true) {
+#ifdef HAVE_GETOPT_H
     int option_index = 0;
     int c = getopt_long(argc, argv, OPTION_LETTERS, long_options,
 			&option_index);
+#else
+    int c = getopt(argc, argv, OPTION_LETTERS);
+#endif
+
     if (c == EOF)
       break;
 
@@ -332,7 +357,7 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stderr, usage_string, argv[0]);
+      fprintf(stdout, usage_string, argv[0]);
       exit(0);
       break;
 
@@ -344,10 +369,10 @@ process_options(int argc, char* argv[]) {
 	max_seconds_of_cpu_time = l;
       break;
 
-    case 'V':
+    case 'R':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-V'");
+	fatal("a non-negative integer must follow `-R'");
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;
@@ -364,9 +389,18 @@ process_options(int argc, char* argv[]) {
       verbose = true;
       break;
 
+#if defined(USE_PPL)
+
+    case 'V':
+      fprintf(stdout, "%s\n", PPL_VERSION);
+      exit(0);
+      break;
+
     case 'c':
       check_file_name = optarg;
       break;
+
+#endif
 
     default:
       abort();
@@ -972,8 +1006,10 @@ write_polyhedron(std::ostream& out,
 	    guarded_write(out, '0');
 	  else {
 	    mpz_class num, den;
-	    PPL::Checked::assign<PPL::Check_Overflow_Policy>(num, PPL::raw_value(g.coefficient(PPL::Variable(j))), PPL::Rounding(PPL::Rounding::IGNORE));
-	    PPL::Checked::assign<PPL::Check_Overflow_Policy>(den, PPL::raw_value(divisor), PPL::Rounding(PPL::Rounding::IGNORE));
+	    PPL::assign_r(num,
+			g.coefficient(PPL::Variable(j)),
+			PPL::ROUND_NOT_NEEDED);
+	    PPL::assign_r(den, divisor, PPL::ROUND_NOT_NEEDED);
 	    guarded_write(out, mpq_class(num, den));
 	  }
 	}
@@ -1178,7 +1214,7 @@ main(int argc, char* argv[]) try {
 	for (PPL::Generator_System::const_iterator i = ph_gs.begin(),
 	       ph_gs_end = ph_gs.end(); i != ph_gs_end; ++i)
 	  ++ph_num_generators;
-	
+
 	// Count the number of generators of `e_ph'.
 	unsigned e_ph_num_generators = 0;
 	const PPL::Generator_System& e_ph_gs = e_ph.generators();
@@ -1248,15 +1284,15 @@ main(int argc, char* argv[]) try {
 
   return 0;
 }
-catch(const std::bad_alloc&) {
+catch (const std::bad_alloc&) {
   fatal("out of memory");
   exit(1);
 }
-catch(const std::overflow_error& e) {
+catch (const std::overflow_error& e) {
   fatal("arithmetic overflow (%s)", e.what());
   exit(1);
 }
-catch(...) {
+catch (...) {
   fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
   exit(1);
 }

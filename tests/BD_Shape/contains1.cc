@@ -1,5 +1,5 @@
 /* Test BD_Shape::contains().
-   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,24 +14,18 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
+bool
+test01() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -45,22 +39,145 @@ main() TRY {
   bd2.add_constraint(y - z <= 2);
   bd2.add_constraint(z - x <= -5);
 
-#if NOISY
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-#endif
 
-  bool result = bd1.contains(bd2);
+  bool ok = bd1.contains(bd2);
 
-#if NOISY
-  cout << "*** bd1.contains(bd2) ***"
+  nout << "*** bd1.contains(bd2) ***"
        << endl
-       << (result ? "true" : "false")
+       << (ok ? "true" : "false")
        << endl;
-#endif
 
-  int retval = result ? 0 : 1;
-
-  return retval;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  TBD_Shape bd1;
+  TBD_Shape bd2(0, EMPTY);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool ok = bd1.contains(bd2);
+
+  nout << "*** bd1.contains(bd2) ***"
+       << endl
+       << (ok ? "true" : "false")
+       << endl;
+
+  return ok;
+}
+
+bool
+test03() {
+  TBD_Shape bd1(0, EMPTY);
+  TBD_Shape bd2(0, EMPTY);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool ok = bd1.contains(bd2);
+
+  nout << "*** bd1.contains(bd2) ***"
+       << endl
+       << (ok ? "true" : "false")
+       << endl;
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
+
+  TBD_Shape bd1(3);
+  bd1.add_constraint(x - y >= 0);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraint(x - y == 0);
+
+  try {
+    // This is an invalid use of Polyhedron::contains(): it is
+    // illegal to apply this method to two polyhedra that are not
+    // dimension-compatible.
+    bd1.contains(bd2);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Constraint_System cs;
+  cs.insert(D >= 0);
+  cs.insert(C >= 0);
+  cs.insert(B <= 0);
+  cs.insert(A >= 0);
+
+  TBD_Shape bd1(cs);
+
+  print_constraints(bd1, "*** bd1 ***");
+
+  TBD_Shape bd2(cs);
+  bd2.add_constraint(A - B >= 0);
+
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool contained = bd1.contains(bd2);
+
+  nout << "*** bd1.contains(bd2) ***" << endl;
+  nout << (contained ? "true" : "false") << endl;
+
+  return contained;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd1(3);
+  bd1.add_constraint(C <= 0);
+  bd1.add_constraint(B - C <= 1);
+
+  print_constraints(bd1, "*** bd1 ***");
+
+  TBD_Shape bd2(3);
+  bd2.add_constraint(A == 0);
+  bd2.add_constraint(C <= 0);
+  bd2.add_constraint(B - C <= 2);
+
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool contained = bd1.contains(bd2);
+
+  nout << "*** bd1.contains(bd2) ***" << endl;
+  nout << (!contained ? "true" : "false") << endl;
+
+  return !contained;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+END_MAIN

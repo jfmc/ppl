@@ -1,5 +1,5 @@
 /* Matrix class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -34,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A 2-dimensional matrix of coefficients.
-/*!
+/*! \ingroup PPL_CXX_interface
   A Matrix object is a sequence of Row objects and is characterized
   by the matrix dimensions (the number of rows and columns).
   All the rows in a matrix, besides having the same size (corresponding
@@ -44,7 +43,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
 class Parma_Polyhedra_Library::Matrix {
-protected:
+public:
   //! Returns the maximum number of rows of a Matrix.
   static dimension_type max_num_rows();
 
@@ -81,12 +80,13 @@ protected:
   //! Assignment operator.
   Matrix& operator=(const Matrix& y);
 
-public:
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! An iterator over a matrix.
-  /*!
+  /*! \ingroup PPL_CXX_interface
     A const_iterator is used to provide read-only access
     to each row contained in a Matrix object.
   */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   class const_iterator {
   private:
     typedef std::vector<Row>::const_iterator Iter;
@@ -103,9 +103,10 @@ public:
     //! Default constructor.
     const_iterator();
 
-    //! \brief
-    //! Builds a const iterator on the matrix starting from
-    //! an iterator \p b on the elements of the vector \p rows.
+    /*! \brief
+      Builds a const iterator on the matrix starting from
+      an iterator \p b on the elements of the vector \p rows.
+    */
     explicit const_iterator(const Iter& b);
 
     //! Ordinary copy-constructor.
@@ -126,21 +127,23 @@ public:
     //! Postfix increment operator.
     const_iterator operator++(int);
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are identical.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are identical.
+    */
     bool operator==(const const_iterator& y) const;
 
-    //! \brief
-    //! Returns <CODE>true</CODE> if and only if
-    //! \p *this and \p y are different.
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p *this and \p y are different.
+    */
     bool operator!=(const const_iterator& y) const;
   };
 
-  //! \brief
-  //! Returns the const_iterator pointing to the first row,
-  //! if \p *this is not empty;
-  //! otherwise, returns the past-the-end const_iterator.
+  /*! \brief
+    Returns the const_iterator pointing to the first row, if \p *this is
+    not empty; otherwise, returns the past-the-end const_iterator.
+  */
   const_iterator begin() const;
 
   //! Returns the past-the-end const_iterator.
@@ -205,6 +208,32 @@ public:
   void add_zero_rows_and_columns(dimension_type n, dimension_type m,
 				 Row::Flags row_flags);
 
+  //! Adds a copy of the row \p y to the matrix.
+  /*!
+    \param y
+    The row to be copied: it must have the same number of columns as
+    the matrix.
+
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$(r+1) \times c\f$ matrix
+    \f$\bigl({M \atop 0}\bigr)\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
+  */
+  void add_row(const Row& y);
+
+  //! Adds the row \p y to the matrix.
+  /*!
+    \param y
+    The row to be added: it must have the same size and capacity as \p
+    *this.
+
+    Turns the \f$r \times c\f$ matrix \f$M\f$ into
+    the \f$(r+1) \times c\f$ matrix
+    \f$\bigl({M \atop 0}\bigr)\f$.
+    The matrix is expanded avoiding reallocation whenever possible.
+  */
+  void add_recycled_row(Row& y);
+
   //! Makes the matrix shrink by removing its \p n trailing columns.
   void remove_trailing_columns(dimension_type n);
 
@@ -250,9 +279,7 @@ public:
   //! \name Accessors
   //@{
 
-  //! \brief
-  //! Returns the number of columns of the matrix
-  //! (i.e., the size of the rows).
+  //! Returns the number of columns of the matrix (i.e., the size of the rows).
   dimension_type num_columns() const;
 
   //! Returns the number of rows in the matrix.
@@ -271,15 +298,13 @@ public:
   //! Clears the matrix deallocating all its rows.
   void clear();
 
-  //! \brief
-  //! Writes to \p s an ASCII representation of the internal
-  //! representation of \p *this.
-  void ascii_dump(std::ostream& s) const;
+  PPL_OUTPUT_DECLARATIONS
 
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
@@ -288,9 +313,10 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  //! \brief
-  //! Erases from the matrix all the rows but those having
-  //! an index less than \p first_to_erase.
+  /*! \brief
+    Erases from the matrix all the rows but those having
+    an index less than \p first_to_erase.
+  */
   void erase_to_end(dimension_type first_to_erase);
 
   //! Checks if all the invariants are satisfied.

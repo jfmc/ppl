@@ -1,6 +1,5 @@
-/* Test Polyhedron::is_topologically_closed(): every necessarily
-   closed, empty and zero-dimensional polyhedra are topologically closed.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test Polyhedron::is_topologically_closed().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -15,46 +14,82 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+namespace {
 
-#ifndef NOISY
-#define NOISY 0
-#endif
-
-int
-main() TRY {
-  set_handlers();
-
+bool
+test01() {
   Variable A(0);
 
   C_Polyhedron ph1(1);
   ph1.add_constraint(A >= 0);
 
-  NNC_Polyhedron ph2(2, NNC_Polyhedron::EMPTY);
+  NNC_Polyhedron ph2(2, EMPTY);
 
   NNC_Polyhedron ph3;
 
-  bool ok
-    = ph1.is_topologically_closed()
+  bool ok = ph1.is_topologically_closed()
     && ph2.is_topologically_closed()
-    &&  ph3.is_topologically_closed();
+    && ph3.is_topologically_closed();
 
-#if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
   print_constraints(ph3, "*** ph3 ***");
-#endif
 
-  return ok ? 0 : 1;
+  return ok;
 }
-CATCH
+
+bool
+test02() {
+  Variable A(0);
+
+  NNC_Polyhedron ph1(1, EMPTY);
+
+  Generator_System gs1;
+  gs1.insert(point(A));
+  gs1.insert(closure_point());
+  gs1.insert(closure_point(A));
+  ph1.add_generators_and_minimize(gs1);
+
+  bool ok = !ph1.is_topologically_closed();
+
+  print_generators(ph1, "*** ph1 ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs;
+  gs.insert(point(0*B));
+  gs.insert(closure_point(-A));
+  gs.insert(closure_point(A));
+  gs.insert(line(A));
+
+  NNC_Polyhedron ph(gs);
+
+  bool ok = ph.is_topologically_closed();
+
+  print_constraints(ph, "*** ph ***");
+  print_generators(ph, "*** ph ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+END_MAIN

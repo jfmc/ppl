@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -14,16 +14,25 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
-
-dist_noinst_DATA = afiro.mps bgprtr.mps ex1.mps sample.mps unboundedmin.mps
+dist_noinst_DATA = \
+adlittle.mps \
+afiro.mps \
+bgprtr.mps \
+blend.mps \
+boeing1.mps \
+boeing2.mps \
+ex1.mps \
+kb2.mps \
+mip.mps \
+sample.mps \
+sc105.mps \
+sc50a.mps \
+sc50b.mps \
+ship08l.mps \
+unboundedmin.mps

@@ -1,5 +1,5 @@
 /* Constraint class implementation: inline functions.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -25,8 +24,47 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Constraint_inlines_hh 1
 
 #include "Linear_Expression.defs.hh"
+#include "Congruence.defs.hh"
 
 namespace Parma_Polyhedra_Library {
+
+inline
+Constraint::Constraint(const Congruence& cg)
+  : Linear_Row(cg.is_equality()
+	       // Extra columns for inhomogeneous term and epsilon
+	       // coefficient.
+	       ? cg.space_dimension() + 2
+	       : (throw_invalid_argument("Constraint(cg)",
+					 "congruence cg must be an equality."),
+		  0),
+	       compute_capacity(cg.space_dimension() + 2, Row::max_size()),
+	       Flags(NOT_NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+  // Copy coefficients.
+  assert(cg.space_dimension() > 0);
+  dimension_type i = cg.space_dimension();
+  operator[](i) = cg[i];
+  while (i-- > 0)
+    operator[](i) = cg[i];
+  // Enforce normalization.
+  strong_normalize();
+}
+
+inline
+Constraint::Constraint(const Congruence& cg,
+		       dimension_type sz,
+		       dimension_type capacity)
+  : Linear_Row(cg.is_equality()
+	       ? sz
+	       : (throw_invalid_argument("Constraint(cg, sz, c)",
+					 "congruence cg must be an equality."),
+		  0),
+	       capacity,
+	       Flags(NOT_NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+  // Copy coefficients.
+  assert(sz > 0);
+  while (sz-- > 0)
+    operator[](sz) = cg[sz];
+}
 
 inline
 Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {
@@ -132,6 +170,18 @@ Constraint::total_memory_in_bytes() const {
 }
 
 /*! \relates Constraint */
+inline bool
+operator==(const Constraint& x, const Constraint& y) {
+  return x.is_equivalent_to(y);
+}
+
+/*! \relates Constraint */
+inline bool
+operator!=(const Constraint& x, const Constraint& y) {
+  return !x.is_equivalent_to(y);
+}
+
+/*! \relates Constraint */
 inline Constraint
 operator==(const Linear_Expression& e1, const Linear_Expression& e2) {
   Linear_Expression diff = e1 - e2;
@@ -143,12 +193,30 @@ operator==(const Linear_Expression& e1, const Linear_Expression& e2) {
 
 /*! \relates Constraint */
 inline Constraint
+operator==(const Variable v1, const Variable v2) {
+  // TODO: this is just an executable specification.
+  // As this is frequently used by client code, it is important
+  // to provide a more efficient implementation.
+  return Linear_Expression(v1) == Linear_Expression(v2);
+}
+
+/*! \relates Constraint */
+inline Constraint
 operator>=(const Linear_Expression& e1, const Linear_Expression& e2) {
   Linear_Expression diff = e1 - e2;
   Constraint c(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
   // Enforce normalization.
   c.normalize();
   return c;
+}
+
+/*! \relates Constraint */
+inline Constraint
+operator>=(const Variable v1, const Variable v2) {
+  // TODO: this is just an executable specification.
+  // As this is frequently used by client code, it is important
+  // to provide a more efficient implementation.
+  return Linear_Expression(v1) >= Linear_Expression(v2);
 }
 
 /*! \relates Constraint */
@@ -168,6 +236,15 @@ operator>(const Linear_Expression& e1, const Linear_Expression& e2) {
 
   Constraint c(diff, Constraint::STRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
   return c;
+}
+
+/*! \relates Constraint */
+inline Constraint
+operator>(const Variable v1, const Variable v2) {
+  // TODO: this is just an executable specification.
+  // As this is frequently used by client code, it is important
+  // to provide a more efficient implementation.
+  return Linear_Expression(v1) > Linear_Expression(v2);
 }
 
 /*! \relates Constraint */
@@ -248,6 +325,12 @@ operator<=(const Linear_Expression& e1, const Linear_Expression& e2) {
 
 /*! \relates Constraint */
 inline Constraint
+operator<=(const Variable v1, const Variable v2) {
+  return v2 >= v1;
+}
+
+/*! \relates Constraint */
+inline Constraint
 operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e) {
   return e >= n;
 }
@@ -262,6 +345,12 @@ operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
 inline Constraint
 operator<(const Linear_Expression& e1, const Linear_Expression& e2) {
   return e2 > e1;
+}
+
+/*! \relates Constraint */
+inline Constraint
+operator<(const Variable v1, const Variable v2) {
+  return v2 > v1;
 }
 
 /*! \relates Constraint */
@@ -299,6 +388,16 @@ Constraint::epsilon_leq_one() {
   static const Constraint
     eps_leq_one(Linear_Expression::zero() < Coefficient_one());
   return eps_leq_one;
+}
+
+inline void
+Constraint::ascii_dump(std::ostream& s) const {
+  Linear_Row::ascii_dump(s);
+}
+
+inline bool
+Constraint::ascii_load(std::istream& s) {
+  return Linear_Row::ascii_load(s);
 }
 
 inline void

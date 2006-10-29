@@ -1,5 +1,5 @@
 /* Variable class declaration.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -14,9 +14,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
@@ -26,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Variable.types.hh"
 #include "Init.types.hh"
-#include "globals.defs.hh"
+#include "globals.types.hh"
 #include <iosfwd>
 #include <set>
 
@@ -48,10 +47,10 @@ bool less(Variable v, Variable w);
 } // namespace Parma_Polyhedra_Library
 
 //! A dimension of the vector space.
-/*!
+/*! \ingroup PPL_CXX_interface
   An object of the class Variable represents a dimension of the space,
   that is one of the Cartesian axes.
-  Variables are used as base blocks in order to build
+  Variables are used as basic blocks in order to build
   more complex linear expressions.
   Each variable is identified by a non-negative integer,
   representing the index of the corresponding Cartesian axis
@@ -84,7 +83,7 @@ public:
   //! Builds the variable corresponding to the Cartesian axis of index \p i.
   /*!
     \exception std::length_error
-    Thrown if the <CODE>i+1</CODE> exceeds
+    Thrown if <CODE>i+1</CODE> exceeds
     <CODE>Variable::max_space_dimension()</CODE>.
   */
   explicit Variable(dimension_type i);
@@ -101,7 +100,6 @@ public:
   */
   dimension_type space_dimension() const;
 
-  //! \brief
   //! Returns the total size in bytes of the memory occupied by \p *this.
   memory_size_type total_memory_in_bytes() const;
 
@@ -121,6 +119,7 @@ public:
   static output_function_type* get_output_function();
 
   //! Binary predicate defining the total ordering on variables.
+  /*! \ingroup PPL_CXX_interface */
   struct Compare {
     //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
     bool operator()(Variable x, Variable y) const;
@@ -145,12 +144,5 @@ private:
 };
 
 #include "Variable.inlines.hh"
-
-namespace Parma_Polyhedra_Library {
-
-//! An std::set containing variables in increasing order of dimension index.
-typedef std::set<Variable, Variable::Compare> Variables_Set;
-
-} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Variable_defs_hh)

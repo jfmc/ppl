@@ -4,19 +4,422 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.7  (released on December 24, 2004)
+NEWS for version 0.10  (released date to be decided)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
 
-o  Nothing yet.
+o  The new class Octagonal_Shape provides an implementation of the domain
+   of octagonal shapes (including a provably correct widening) as proposed
+   by Roberto Bagnara, Patricia Hill, Elena Mazzi and Enea Zaffanella in
+   their SAS 2005 paper.
+
+o  The class LP_Problem has been renamed MIP_Problem and now supports
+   the solution of Mixed Integer (Linear) Programming problems. Also
+   added support for the incremental solution of MIP problems: it is now
+   possible to add new space dimensions or new constraints to the
+   feasible region, as well as change the objective function and the
+   optimization mode, while still exploiting some of the computational
+   work done before these changes. See the documentation of class
+   MIP_Problem for a detailed description of the public interface.
+
+o  contains_integer_point() ...
+
+o  Direct_Product ...
+
+o  Ask_Tell ...
+
+o  Pointset_Ask_Tell ...
+
+o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
+   since it can be applied to non-polyhedral abstractions, such as
+   the one offered by the Grid class.
+
 
 Bugfixes
 ========
 
-o  None yet.
+o  ...
 
+
+--------------------------------------------------------------------------
+NEWS for version 0.9  (released on March 12, 2006)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+o  The class Grid provides a complete implementation of the relational
+   domain of rational grids.  This can represent all sets that can
+   be expressed by the conjunction of a finite number of congruence
+   equations.  Operations provided include everything that is needed
+   in the field of static analysis and verification, including affine
+   images, preimages and their generalizations, grid-difference and
+   widening operators.  This is the first time such a complete domain
+   is made freely available to the community.
+
+o  Several important portability improvements.  Among other things,
+   it is now possible to build only the static libraries or only
+   the shared libraries.  (Notice that some interfaces depend on
+   the availability of the shared libraries: these will not be built
+   when shared libraries are disabled.)
+
+
+Bugfixes
+========
+
+o  Fixed a bug whereby the SICStus Prolog interface could not be built
+   on x86_64.
+
+o  Fixed a bug in an internal method that, under some circumstances,
+   could cause a wrong result to be computed.
+
+
+--------------------------------------------------------------------------
+NEWS for version 0.8  (released on January 20, 2006)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+o  The class template BD_Shape<T> provides an implementation of the
+   abstract domain of bounded difference shapes. The template type
+   parameter T specifies the basic type used for the inhomogeneous term
+   of bounded difference constraints; it can be instantiated to either
+   GMP's unbounded precision types (mpq_class, mpz_class), native
+   floating point types (float, double), or native integer types
+   (8, 16, 32 and 64 bits wide).
+
+o  New class LP_Problem provides an implementation of the
+   primal simplex algorithm using exact arithmetic.
+
+o  The new program `ppl-config' returns information about the
+   configuration and the installed components of the PPL.
+   This greatly simplifies the task of writing makefiles and
+   automatic configuration scripts.  A manual page for `ppl-config'
+   has also been added.
+
+o  New Autoconf function
+
+     AM_PATH_PPL([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
+
+   allows to test the existence and usability of particular versions of the
+   PPL, defining macros containing the required paths.  The simple addition
+   of, e.g.,
+
+     AM_PATH_PPL(0.8)
+
+   to an application's configure.ac file is all that is needed in most
+   cases.  Paths to the installed version of the PPL will be detected,
+   the version number will be checked to be at least the one
+   indicated, the variables PPL_CPPFLAGS and PPL_LDFLAGS will be set
+   accordingly and a quick sanity check of the PPL installation will
+   be performed.  For more complex tasks, the AM_PATH_PPL function
+   defines the `--with-ppl-prefix' and `--with-ppl-exec-prefix'
+   configure options (useful when the PPL is installed into a
+   non-standard place or when multiple versions of the PPL are
+   installed).  AM_PATH_PPL also defines the `--disable-ppltest'
+   configure option to disable the quick sanity check.  When something
+   fails, AM_PATH_PPL provides accurate indications about what went
+   wrong and how to fix it.  See the sources in m4/ppl.m4 for more
+   information.
+
+o  The browse and print versions of the PS and PDF formats of the user
+   manual have been merged into single documents: ppl-user-0.8.pdf and
+   ppl-user-0.8.ps.gz.  The equivalent developer reference documents
+   have also been merged.
+
+o  One of the possible values for the configuration option
+   `--enable-coefficients' has been renamed from `gmp' to `mpz'.
+
+o  New configuration option `--enable-interfaces' allows some or all of
+   the Prolog and C interfaces to be selectively enabled.
+
+o  Portability has been further improved.
+
+o  Added to C_Polyhedron (resp., NNC_Polyhedron) new method
+
+     bool poly_hull_assign_if_exact(const C_Polyhedron&)
+
+   (resp. bool poly_hull_assign_if_exact(const NNC_Polyhedron&))
+   and its synonym
+
+     bool upper_bound_assign_if_exact(const C_Polyhedron&)
+
+   (resp. bool upper_bound_assign_if_exact(const NNC_Polyhedron&)).
+
+o  Added new typedef `element_type' to template Polyhedra_Powerset,
+   which corresponds to the type of the underlying numeric domain.
+
+o  Output operators have been added for Generator::Type and
+   Constraint::Type.
+
+o  Class Bounding_Box has new method
+
+     Constraint_System Bounding_Box::constraints() const,
+
+   which returns the system of constraints.
+
+o  Class Bounding_Box has new widening methods
+
+     Bounding_Box::CC76_widening_assign(const Bounding_Box& y)
+
+   and
+
+     template <typename Iterator>
+     Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
+                                        Iterator first,
+                                        Iterator last).
+
+o  All methods in class Determinate that are specific to the Polyhedra
+   template parameter have been dropped.  If needed, they can still be
+   invoked through element().
+
+o  Method
+
+     bool Constraint_System::has_strict_inequalities() const
+
+   is now publicly accessible.
+
+o  Added Polyhedron methods difference_assign() and join_assign(),
+   behaving as poly_difference_assign() and poly_hull_assign(),
+   so as to have more uniform interfaces.
+
+o  The helper function widen_fun_ref() building a limited widening
+   function is now templatic even on the second argument (i.e., the
+   limiting constraint system). The template widening method
+
+     Polyhedra_Powerset<PH>::BHZ03_widening_assign()
+
+   no longer has a default value for the certificate parameter.
+
+o  The signatures of Polyhedron methods maximize() and minimize()
+   have been greatly simplified.
+
+o  The function template
+
+     template <typename PH>
+     bool check_containment(const PH&, const Polyhedra_Powerset<PH>&)
+
+   now works whenever there exists a lossless conversion mapping an
+   object of type PH into an NNC_Polyhedron (e.g., when PH = BD_Shape).
+   The same holds for methods
+
+     bool Polyhedra_Powerset<PH>::geometrically_covers()
+
+   and
+
+     bool Polyhedra_Powerset<PH>::geometrically_equals().
+
+o  Disjuncts can be added to an instance of Polyhedra_Powerset with
+   the new method
+
+     void add_disjunct(const PH& ph).
+
+o  The two generalized_affine_image() methods of class Polyhedron
+   are now matched by corresponding methods for computing preimages
+   of affine relations.
+
+o  Added to class Polyhedron the method
+
+     void bounded_affine_image(Variable v,
+                               const Linear_Expression& lb,
+                               const Linear_Expression& ub,
+                               Coefficient_traits::const_reference d
+                                 = Coefficient_one())
+
+   computing the image of the polyhedron according to the
+   transfer relation lb/d <= v' <= ub/d.
+   Also added the corresponding method for computing preimages.
+
+o  The enumeration
+
+     Polyhedron::Degenerate_Kind
+
+   has been placed outside of class Polyhedron and renamed as
+
+     Degenerate_Element.
+
+o  New output operators in namespace IO_Operators:
+
+     std::ostream& operator<<(std::ostream&, const Constraint::Type&)
+
+   and
+
+     std::ostream& operator<<(std::ostream&, const Generator::Type&).
+
+o  Added to class Constraint the methods
+
+     bool is_tautological() const
+
+   and
+
+     bool is_inconsistent() const
+
+   returning true when the constraint is always or never satisfied,
+   respectively.
+
+o  Added to classes Constraint (resp., Generator) the method
+
+     bool is_equivalent_to(const Constraint& y) const
+
+   (resp., bool is_equivalent_to(const Generator& y) const)
+   which check for semantic equivalence of corresponding class
+   instances.  Also made available the (semantic) comparison operators
+   `==' and `!='.
+
+o  The swap() methods of classes Linear_Expression, Constraint, Generator,
+   Constraint_System and Generator_System are now publicly accessible.
+
+o  Added to classes Constraint and Generator the methods
+
+     void ascii_dump(std::ostream& s) const
+
+   and
+
+     void ascii_load(std::istream& s) const.
+
+o  In classes Poly_Con_Relation and Poly_Gen_Relation the methods
+
+     void ascii_dump(std::ostream& s) const
+
+   and
+
+     void ascii_load(std::istream& s) const
+
+   are now publicly accessible.
+
+o  All classes which provide the method
+
+     void ascii_dump(std::ostream& s) const
+
+   now also provide the methods
+
+     void ascii_dump() const
+
+   and
+
+     void print() const.
+
+   These methods print to std::cerr the textual and user-level
+   representation (resp.) of the given object.  This enables the
+   output of such object representations in GDB.
+
+o  New functions added to the C interface:
+
+     int ppl_Coefficient_is_bounded(void),
+     int ppl_Coefficient_min(mpz_t min),
+     int ppl_Coefficient_max(mpz_t max)
+
+   allow C applications to obtain information about the Coefficient
+   integer numerical type.
+
+   The new Prolog interface predicates ppl_Coefficient_is_bounded/0,
+   ppl_Coefficient_max/1 and ppl_Coefficient_min/1 provide the same
+   functionality.
+
+o  All predicates in the Prolog interface that require an input list
+   as an argument will now throw an exception if that argument is not
+   a list.  Before, some predicates, such as
+   ppl_Polyhedron_remove_space_dimensions/2, would fail.
+
+o  In the Prolog interface, the names and arities of the "with_token"
+   widening and extrapolation predicates have been revised to
+   "with_tokens" with an extra argument and the functionality has been
+   revised to match more closely the corresponding C++ interface
+   operators.
+
+o  In the Prolog interface, the names and arities of the predicates
+   that create handles for new polyhedra have been revised to match
+   more closely the corresponding C and C++ interface operators.  That
+   is, instead of having "c" and/or "nnc" as arguments to indicate the
+   topology of the polyhedron, the topologies are now part of the
+   names of the predicates.
+
+o  The SWI-Prolog interface allows now the exchange of unbounded numbers
+   between the PPL and Prolog applications.  This requires SWI-Prolog
+   version 5.6.0 or later version.  Previous versions of SWI-Prolog
+   are no longer supported.
+
+o  The YAP interface allows now the exchange of unbounded numbers
+   between the PPL and Prolog applications.  This requires YAP
+   version 5.1.0 or later version.  Previous versions of YAP
+   are no longer supported.
+
+o  The `ppl_lpsol' demo has now two more options: with `--enumerate' it
+   solves the given linear programming problem by vertex/point
+   enumeration; with `--simplex' (the default) it uses our simplex
+   implementation with exact arithmetic.  The `ppl_lpsol' program,
+   which is only built if a suitable version of GLPK is available, is
+   installed into the directory (selectable at configuration time) for
+   user executables.
+
+o  Manual pages have been added for the ppl_lpsol and ppl_lcdd
+   programs.
+
+o  The new class BD_Shape<T> as well as the "checked" native
+   coefficients selectable with the `--enable-coefficients' configure
+   options, are based on a very general and powerful notion of "number
+   family with a policy".  This is made available to the users of the
+   PPL via the wrapper template class Checked_Number<T, P>, where T is
+   the underlying numeric type (native integer or float of any width,
+   unbounded integer or rational) and `P' is a policy specifying
+   things such as whether to check for overflows and other
+   "exceptional" conditions and what to do in such cases.  The policy
+   also specifies whether T should be extended with representations
+   for infinities or NAN (Not A Number) and default rounding modes.
+   A complete set of arithmetic functions and operators are provided:
+   they either use the default rounding mode or accept a rounding mode
+   as an extra parameter and, depending on the policy, may return a result
+   that indicates the relation that exists between the true mathematical
+   result and the (possibly approximate) computed result. Input/output
+   functions with the same properties (controlled rounding and indications
+   of the approximations) are also provided.
+
+
+Bugfixes
+========
+
+o  Fixed a bug in Polyhedra_Powerset<PH>::concatenate_assign() whereby
+   a temporary Polyhedra_Powerset object was created with the wrong
+   dimension.
+
+o  Corrected a memory leak bug in the demo ppl_lpsol.
+
+o  Corrected a bug in method
+
+     NNC_Polyhedron::minimized_constraints()
+
+   whereby an internal assertion might have been violated.
+
+o  Fixed a bug whereby calling the methods
+
+     Polyhedron::generalized_affine_image()
+
+   on an empty polyhedron could have resulted in an exception thrown.
+
+o  Fixed a bug whereby the occurrence of an `out of memory' error during
+   the allocation of a row of integer coefficients could have resulted
+   in a memory leak.
+
+o  Fixed a bug affecting the specialized constructors
+
+     Polyhedra_Powerset<NNC_Polyhedron>::
+     Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y)
+
+   and
+
+     Polyhedra_Powerset<C_Polyhedron>::
+     Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y)
+
+   whereby the newly built Polyhedra_Powerset object could have been
+   flagged as non-redundant even though it was containing redundant
+   disjuncts. Fixed a similar bug in generic constructor
+
+     Polyhedra_Powerset(const Constraint_System& cs)
+
+   that manifests when `cs' is denoting an empty polyhedron.
 
 --------------------------------------------------------------------------
 NEWS for version 0.7  (released on December 24, 2004)
@@ -213,7 +616,7 @@ NEWS for version 0.6  (released on August 18, 2004)
 New and Changed Features
 ========================
 
-o  New templatic classes Determinate, PowerSet, and Polyhedra_PowerSet.
+o  New template classes Determinate, PowerSet, and Polyhedra_PowerSet.
    The first two classes realize, in a completely generic way, the
    determinate and powerset constructions described by Roberto Bagnara
    in his 1998, Science of Computer Programming paper.  The third class
@@ -428,7 +831,7 @@ o  Timeout computation facilities have been added to the Prolog interfaces:
    ppl_timeout_exception_atom/1, ppl_set_timeout/1, ppl_reset_timeout/0.
 
 o  Many efficiency improvements have been achieved.  Part of these have
-   been obtained by increasing the degree of "lazyness" of the library.
+   been obtained by increasing the degree of "laziness" of the library.
 
 o  Many portability and standard-conformance improvements: the library
    can now be compiled with GNU g++, Intel C++ Compiler 7.0 for Linux,
@@ -616,7 +1019,7 @@ o  Added support for timeout-guarded operations.  It is now possible
 o  The methods named convex_hull_* and convex_difference_*
    have been renamed poly_hull_* and poly_difference_*.
 
-o  All methods named *_and_minimize() now return a boolean
+o  All methods named *_and_minimize() now return a Boolean
    flag that is false if the result is empty.
 
 o  All method and variable names containing the word "vertex"
@@ -679,7 +1082,7 @@ NEWS for version 0.3 (released on February 26, 2002)
 New Features
 ============
 
-o  The library has been ported under libtool: it is now possible
+o  The library has been ported under Libtool: it is now possible
    to build dynamic libraries as well.
 
 o  We now use the integer C++ class of GMP to represent the
@@ -712,7 +1115,7 @@ o  Fixed Polyhedron::satisfies(const Constraint&) and
    Polyhedron::affine_image().
 
 o  Polyhedron::limited_widening_assign(const Polyhedron&, ConSys&)
-   was erroneously returning a (random) boolean: it is now a void
+   was erroneously returning a (random) Boolean: it is now a void
    method.
 
 

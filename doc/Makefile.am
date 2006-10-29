@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -14,28 +14,23 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 #
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-srcdir = @srcdir@
 abs_srcdir = @abs_srcdir@
-VPATH = @srcdir@
-
-@SET_MAKE@
 
 # All the documentation in docdir.
 docdir = @docdir@
-dvidir = $(docdir)
 htmldir = $(docdir)
 pdfdir = $(docdir)
 psdir = $(docdir)
 txtdir = $(docdir)
 
 DOXYGEN = doxygen
+INSTALLDOX = ./installdox -q
 
 PDF_LICENSES = \
 gpl.pdf \
@@ -51,49 +46,178 @@ fdl.txt
 
 LICENSES = \
 $(PDF_LICENSES) \
-$(PS_LICENSES) \
-$(TXT_LICENSES)
+$(TXT_LICENSES) \
+$(PS_LICENSES)
 
-HTML_MANUALS = \
+# Library Core Manuals (C++ interface)
+
+HTML_CORE_MANUALS = \
 ppl-user-@VERSION@-html.tar.gz \
 ppl-devref-@VERSION@-html.tar.gz
 
-PDF_MANUALS = \
-ppl-user-@VERSION@-browse.pdf \
-ppl-user-@VERSION@-print.pdf \
-ppl-devref-@VERSION@-browse.pdf \
-ppl-devref-@VERSION@-print.pdf
+PDF_CORE_MANUALS = \
+ppl-user-@VERSION@.pdf \
+ppl-devref-@VERSION@.pdf
 
-PS_MANUALS = \
-ppl-user-@VERSION@-print.ps.gz \
-ppl-devref-@VERSION@-print.ps.gz
+PS_CORE_MANUALS = \
+ppl-user-@VERSION@.ps.gz \
+ppl-devref-@VERSION@.ps.gz
+
+USER_HTML_DIR = ppl-user-@VERSION@-html
+DEVREF_HTML_DIR = ppl-devref-@VERSION@-html
+
+CORE_HTML_DIRS = $(USER_HTML_DIR) $(DEVREF_HTML_DIR)
+
+DIST_CORE_HTML_DOCS = \
+ppl-user-@VERSION@-html.tar.gz
+
+DIST_CORE_PDF_DOCS = \
+ppl-user-@VERSION@.pdf
+
+DIST_CORE_PS_DOCS = \
+ppl-user-@VERSION@.ps.gz
+
+DOX_FILES = \
+definitions.dox \
+gpl.dox \
+fdl.dox
+
+USER_CORE_STUFF = \
+$(DOX_FILES) \
+user.tex \
+ppl.sty \
+$(top_builddir)/src/ppl.hh
+
+DEVREF_CORE_STUFF = \
+$(DOX_FILES) \
+devref.tex \
+ppl.sty \
+$(PPL_SOURCE_FILES)
+
+
+# C Language Interface Manuals
+if BUILD_C_INTERFACE
+
+HTML_C_INTERFACE_MANUALS = \
+ppl-user-c-interface-@VERSION@-html.tar.gz \
+ppl-devref-c-interface-@VERSION@-html.tar.gz
+
+PDF_C_INTERFACE_MANUALS = \
+ppl-user-c-interface-@VERSION@.pdf \
+ppl-devref-c-interface-@VERSION@.pdf
+
+PS_C_INTERFACE_MANUALS = \
+ppl-user-c-interface-@VERSION@.ps.gz \
+ppl-devref-c-interface-@VERSION@.ps.gz
+
+C_INTERFACE_HTML_DIRS = \
+ppl-user-c-interface-@VERSION@-html \
+ppl-devref-c-interface-@VERSION@-html
+
+DIST_C_INTERFACE_HTML_DOCS = \
+ppl-user-c-interface-@VERSION@-html.tar.gz
+
+DIST_C_INTERFACE_PDF_DOCS = \
+ppl-user-c-interface-@VERSION@.pdf
+
+DIST_C_INTERFACE_PS_DOCS = \
+ppl-user-c-interface-@VERSION@.ps.gz
+
+USER_C_INTERFACE_STUFF = \
+user.tex \
+ppl.sty \
+$(top_builddir)/interfaces/C/ppl_c.h
+
+DEVREF_C_INTERFACE_STUFF = \
+devref.tex \
+ppl.sty \
+$(top_builddir)/interfaces/C/ppl_c.cc
+
+endif BUILD_C_INTERFACE
+
+
+# Prolog Language Interface Manuals
+if BUILD_SOME_PROLOG_INTERFACES
+
+HTML_PROLOG_INTERFACE_MANUALS = \
+ppl-user-prolog-interface-@VERSION@-html.tar.gz \
+ppl-devref-prolog-interface-@VERSION@-html.tar.gz
+
+PDF_PROLOG_INTERFACE_MANUALS = \
+ppl-user-prolog-interface-@VERSION@.pdf \
+ppl-devref-prolog-interface-@VERSION@.pdf
+
+PS_PROLOG_INTERFACE_MANUALS = \
+ppl-user-prolog-interface-@VERSION@.ps.gz \
+ppl-devref-prolog-interface-@VERSION@.ps.gz
+
+PROLOG_INTERFACE_HTML_DIRS = \
+ppl-user-prolog-interface-@VERSION@-html \
+ppl-devref-prolog-interface-@VERSION@-html
+
+DIST_PROLOG_INTERFACE_HTML_DOCS = \
+ppl-user-prolog-interface-@VERSION@-html.tar.gz
+
+DIST_PROLOG_INTERFACE_PDF_DOCS = \
+ppl-user-prolog-interface-@VERSION@.pdf
+
+DIST_PROLOG_INTERFACE_PS_DOCS = \
+ppl-user-prolog-interface-@VERSION@.ps.gz
+
+USER_PROLOG_INTERFACE_STUFF = \
+user.tex \
+ppl.sty \
+../interfaces/Prolog/Prolog_interface.dox \
+$(top_builddir)/interfaces/Prolog/ppl_prolog.icc
+
+DEVREF_PROLOG_INTERFACE_STUFF = \
+devref.tex \
+ppl.sty \
+../interfaces/Prolog/Prolog_interface.dox \
+../interfaces/Prolog/exceptions.hh \
+../interfaces/Prolog/track_allocation.hh \
+$(top_builddir)/interfaces/Prolog/ppl_prolog.icc
+
+endif BUILD_SOME_PROLOG_INTERFACES
+
 
 MANUALS = \
-$(HTML_MANUALS) \
-$(PDF_MANUALS) \
-$(PS_MANUALS)
+$(HTML_CORE_MANUALS) \
+$(HTML_C_INTERFACE_MANUALS) \
+$(HTML_PROLOG_INTERFACE_MANUALS) \
+$(PDF_CORE_MANUALS) \
+$(PDF_C_INTERFACE_MANUALS) \
+$(PDF_PROLOG_INTERFACE_MANUALS) \
+$(PS_CORE_MANUALS) \
+$(PS_C_INTERFACE_MANUALS) \
+$(PS_PROLOG_INTERFACE_MANUALS)
 
 HTML_DIRS = \
-ppl-user-@VERSION@-html \
-ppl-devref-@VERSION@-html
+$(CORE_HTML_DIRS) \
+$(C_INTERFACE_HTML_DIRS) \
+$(PROLOG_INTERFACE_HTML_DIRS)
 
 DIST_HTML_DOCS = \
-ppl-user-@VERSION@-html.tar.gz
+$(DIST_CORE_HTML_DOCS) \
+$(DIST_C_INTERFACE_HTML_DOCS) \
+$(DIST_PROLOG_INTERFACE_HTML_DOCS)
 
 DIST_PDF_DOCS = \
 $(PDF_LICENSES) \
-ppl-user-@VERSION@-browse.pdf \
-ppl-user-@VERSION@-print.pdf
+$(DIST_CORE_PDF_DOCS) \
+$(DIST_C_INTERFACE_PDF_DOCS) \
+$(DIST_PROLOG_INTERFACE_PDF_DOCS)
 
 DIST_PS_DOCS = \
 $(PS_LICENSES) \
-ppl-user-@VERSION@-print.ps.gz
+$(DIST_CORE_PS_DOCS) \
+$(DIST_C_INTERFACE_PS_DOCS) \
+$(DIST_PROLOG_INTERFACE_PS_DOCS)
 
 DIST_TXT_DOCS = \
 $(TXT_LICENSES)
 
-# We distribute some preprocessed user's documentation, both for
-# browsing and for printing.
+# We distribute some preprocessed user's documentation.
 DIST_DOCS = \
 $(DIST_HTML_DOCS) \
 $(DIST_PDF_DOCS) \
@@ -102,16 +226,19 @@ $(DIST_TXT_DOCS)
 
 ALL_TARGETS = \
 $(HTML_DIRS) \
-$(LICENSES) \
+$(PDF_LICENSES) \
+$(PS_LICENSES) \
 $(MANUALS)
 
+dist_man_MANS = \
+ppl-config.1 \
+ppl_lcdd.1 \
+ppl_lpsol.1
 
 # Do nothing by default.
 all:
 
-dist-hook: $(DIST_DOCS)
-
-user-browse: ppl-user-@VERSION@-browse.pdf
+user: ppl-user-@VERSION@.pdf
 
 world: $(ALL_TARGETS)
 
@@ -139,7 +266,7 @@ install-html:
 	  test -f $$ball || test -f $(srcdir)/$$ball || $(MAKE) $$ball; \
 	  dir=`basename $$ball .tar.gz`; \
 	  $(mkinstalldirs) $(DESTDIR)$(htmldir)/$$dir; \
-	  tar zxf `if test -f $$ball; then echo .; else echo $(srcdir); fi`/$$ball; \
+	  gunzip -c `if test -f $$ball; then echo .; else echo $(srcdir); fi`/$$ball | tar xf - ; \
 	  for file in $$dir/*; do \
 	    $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$dir/`basename $$file`; \
 	  done; \
@@ -206,78 +333,106 @@ uninstall-txt:
 
 PPL_SOURCE_FILES = $(wildcard $(srcdir)/../src/*.hh $(srcdir)/../src/*.cc)
 
-DOX_FILES = \
-definitions.dox \
-../interfaces/Prolog/Prolog_interface.dox \
-gpl.dox \
-fdl.dox
-
-USER_STUFF = \
-$(DOX_FILES) \
-user.tex \
-ppl.sty \
-$(top_builddir)/src/ppl.hh \
-../interfaces/C/ppl_c.h
-
-DEVREF_STUFF = \
-$(DOX_FILES) \
-devref.tex \
-ppl.sty \
-$(PPL_SOURCE_FILES)
-
 LATEX_DIRS = \
-user-browse.pdf-dir \
-user-print.pdf-dir \
-devref-browse.pdf-dir \
-devref-print.pdf-dir \
-user-print.ps-dir \
-devref-print.ps-dir
+user.latex-dir \
+devref.latex-dir \
+user-c-interface.latex-dir \
+devref-c-interface.latex-dir \
+user-prolog-interface.latex-dir \
+devref-prolog-interface.latex-dir
 
 TEX_ENV = TEXINPUTS=$(abs_srcdir):$(TEXINPUTS)
 
 .SECONDARY: $(LATEX_DIRS)
 
-%.doxyconf-pdf: %.doxyconf-latex
-	sed -e "s/^USE_PDFLATEX[ ]*=.*$$/USE_PDFLATEX           = YES/g" \
-	    -e "s/latex-dir$$/pdf-dir/g" \
-		$< >$@
-
-%.doxyconf-ps: %.doxyconf-latex
-	sed -e "s/^USE_PDFLATEX[ ]*=.*$$/USE_PDFLATEX           = NO/g" \
-	    -e "s/latex-dir$$/ps-dir/g" \
-		$< >$@
-
-user-%.pdf-dir: user-%.doxyconf-pdf $(USER_STUFF)
+user.latex-dir: user.doxyconf-latex $(USER_CORE_STUFF)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 
-devref-%.pdf-dir: devref-%.doxyconf-pdf $(DEVREF_STUFF)
+devref.latex-dir: devref.doxyconf-latex $(DEVREF_CORE_STUFF)
 	rm -rf $@
 	$(TEX_ENV) $(DOXYGEN) $<
 
-user-%.ps-dir: user-%.doxyconf-ps $(USER_STUFF)
-	rm -rf $@
-	$(TEX_ENV) $(DOXYGEN) $<
-
-devref-%.ps-dir: devref-%.doxyconf-ps $(DEVREF_STUFF)
-	rm -rf $@
-	$(TEX_ENV) $(DOXYGEN) $<
-
-ppl-user-@VERSION@-%.pdf: user-%.pdf-dir
+ppl-user-@VERSION@.pdf: user.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
-ppl-devref-@VERSION@-%.pdf: devref-%.pdf-dir
+ppl-devref-@VERSION@.pdf: devref.latex-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
-ppl-user-@VERSION@-%.ps: user-%.ps-dir
-	$(TEX_ENV) make -C $< refman.ps && mv -f $</refman.ps $@
+$(USER_HTML_DIR): user.doxyconf-html $(USER_CORE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
 
-ppl-devref-@VERSION@-%.ps: devref-%.ps-dir
-	$(TEX_ENV) make -C $< refman.ps && mv -f $</refman.ps $@
+$(DEVREF_HTML_DIR): devref.doxyconf-html $(DEVREF_CORE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
 
-ppl-%-@VERSION@-html: %.doxyconf-html $(DEVREF_STUFF)
-	rm -rf html
-	$(TEX_ENV) $(DOXYGEN) $< && rm -rf $@ && mv -f html $@
+
+# C Language Interface
+if BUILD_C_INTERFACE
+
+user-c-interface.latex-dir: \
+user-c-interface.doxyconf-latex $(USER_C_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+
+devref-c-interface.latex-dir: \
+devref-c-interface.doxyconf-latex $(DEVREF_C_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+
+ppl-user-c-interface-@VERSION@.pdf: user-c-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-devref-c-interface-@VERSION@.pdf: devref-c-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-user-c-interface-@VERSION@-html: \
+user-c-interface.doxyconf-html $(USER_C_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	(cd $@; $(INSTALLDOX) -l $(USER_HTML_DIR).tag@../$(USER_HTML_DIR))
+
+ppl-devref-c-interface-@VERSION@-html: \
+devref-c-interface.doxyconf-html $(DEVREF_C_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	(cd $@; $(INSTALLDOX) -l $(DEVREF_HTML_DIR).tag@../$(DEVREF_HTML_DIR))
+
+endif BUILD_C_INTERFACE
+
+# (System Independent) Prolog Language Interface
+if BUILD_SOME_PROLOG_INTERFACES
+
+user-prolog-interface.latex-dir: \
+user-prolog-interface.doxyconf-latex $(USER_PROLOG_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+
+devref-prolog-interface.latex-dir: \
+devref-prolog-interface.doxyconf-latex $(DEVREF_PROLOG_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+
+ppl-user-prolog-interface-@VERSION@.pdf: user-prolog-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-devref-prolog-interface-@VERSION@.pdf: devref-prolog-interface.latex-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-user-prolog-interface-@VERSION@-html: \
+user-prolog-interface.doxyconf-html $(USER_PROLOG_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	(cd $@; $(INSTALLDOX) -l $(USER_HTML_DIR).tag@../$(USER_HTML_DIR))
+
+ppl-devref-prolog-interface-@VERSION@-html: \
+devref-prolog-interface.doxyconf-html $(DEVREF_PROLOG_INTERFACE_STUFF)
+	rm -rf $@
+	$(TEX_ENV) $(DOXYGEN) $<
+	(cd $@; $(INSTALLDOX) -l $(DEVREF_HTML_DIR).tag@../$(DEVREF_HTML_DIR))
+
+endif BUILD_SOME_PROLOG_INTERFACES
 
 %.tar: %
 	tar cf $@ $<
@@ -288,31 +443,32 @@ ppl-%-@VERSION@-html: %.doxyconf-html $(DEVREF_STUFF)
 %.pdf: %.tex
 	$(TEX_ENV) pdflatex $<
 
-%.dvi: %.tex
-	$(TEX_ENV) latex $<
-
-%.ps:	%.dvi
-	dvips -o $@ $<
+%.ps:	%.pdf
+	pdftops $< $@
 
 EXTRA_DIST= \
 $(DIST_DOCS) \
 $(DOX_FILES) \
-user-browse.doxyconf-latex \
-devref-browse.doxyconf-latex \
-user-print.doxyconf-latex \
-devref-print.doxyconf-latex \
+user.doxyconf-latex \
+devref.doxyconf-latex \
 user.doxyconf-html \
 devref.doxyconf-html \
+user-c-interface.doxyconf-html \
+devref-c-interface.doxyconf-html \
+user-c-interface.doxyconf-latex \
+devref-c-interface.doxyconf-latex \
+user-prolog-interface.doxyconf-html \
+devref-prolog-interface.doxyconf-html \
+user-prolog-interface.doxyconf-latex \
+devref-prolog-interface.doxyconf-latex \
 user.tex \
 devref.tex \
 gpl.tex \
 fdl.tex \
-gpl.txt \
-fdl.txt \
 ppl.sty \
 README.doc
 
 mostlyclean-local:
-	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) *.aux *.log
+	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) $(HTML_DIRS) *.aux *.log
 
-CLEANFILES = $(DIST_DOCS)
+CLEANFILES = $(DIST_HTML_DOCS) $(DIST_PDF_DOCS) $(DIST_PS_DOCS)
