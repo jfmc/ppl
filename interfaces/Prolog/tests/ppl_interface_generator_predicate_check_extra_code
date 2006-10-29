@@ -80,13 +80,10 @@ make_var_list(I, Dim, ['$VAR'(I)|Var_List]) :-
 
 %%%%%%%%%%%% predicates for success and errors.  %%%%%%%%%%%%%%%%%
 
-:- dynamic(test_failure).
-
 write_success(Predicate_name) :-
   display_message([test, for, Predicate_name, 'succeeded.']).
 
 write_error(Predicate_name) :-
-  assertz(test_failure(Predicate_name)),
   write_all([test, for, Predicate_name, 'failed.']).
 
 %%%%%%%%%%%% predicates for test data %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -144,15 +141,11 @@ ppl_maxmin_test_data(test00, _Topology, _, _, 0, _, _, _, _, false).
 ppl_build_test_data(test01, _Topology, constraints, CS) :-
   (make_vars(1, [A]),
    CS = [A >= 1, A =< 0]).
-ppl_build_test_data(test01, _Topology, generators, GS) :-
-  (make_vars(1, [A]),
-   GS = [line(A)]).
+ppl_build_test_data(test01, _Topology, generators, []).
 ppl_build_test_data(test01, _Topology, congruences, CS) :-
   (make_vars(1, [A]),
    CS = [(A =:= 1) / 2, (A =:= 0) / 2]).
-ppl_build_test_data(test01, _Topology, grid_generators, GS) :-
-  (make_vars(1, [A]),
-   GS = [grid_line(A)]).
+ppl_build_test_data(test01, _Topology, grid_generators, []).
 
 ppl_dimension_test_data(test01, space_dimension, 1).
 ppl_dimension_test_data(test01, affine_dimension, 0).

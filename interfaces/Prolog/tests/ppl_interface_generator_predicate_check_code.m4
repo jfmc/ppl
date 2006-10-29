@@ -310,7 +310,7 @@ m4_define(`ppl_@CLASS@_get_bounding_box_code',
 `
 ppl_@CLASS@_get_bounding_box_3_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    (CC = any ; CC = simplex ; CC = polynomial),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
@@ -338,7 +338,7 @@ m4_define(`ppl_@CLASS@_get_covering_box_code',
 `
 ppl_@CLASS@_get_covering_box_2_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
      ppl_@CLASS@_get_covering_box(PS, Box),
@@ -365,7 +365,7 @@ m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 `
 ppl_@CLASS@_@HAS_PROPERTY@_2_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
     (ppl_property_test_data(TEST_DATA, t_@TOPOLOGY@,
@@ -404,7 +404,7 @@ m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@_2_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
      (ppl_bounds_test_data(TEST_DATA, @CONSTRAINER@s, LE,
@@ -433,7 +433,7 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `
 ppl_@CLASS@_@MAXMIN@_5_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
      ppl_maxmin_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@, @MAXMIN@,
@@ -457,7 +457,7 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
 `
 ppl_@CLASS@_@MAXMIN@_with_point_6_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
      ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
@@ -495,7 +495,8 @@ m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `
 ppl_@CLASS@_@COMPARISON@_@CLASS@_2_test :-
   (
-   member(TEST_DATA1, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA1, [test00, test01, test02, test03,
+          test04, test05, test06]),
    ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
    member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
    ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
@@ -523,7 +524,7 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `
 ppl_@CLASS@_add_@ADD_REPRESENT@s_2_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
    member(TEST_DATA1,
           [test00, test02, test03, test04, test05, test06]),
@@ -551,7 +552,7 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 `
 ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_2_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
    member(TEST_DATA1,
           [test00, test02, test03, test04, test05, test06]),
@@ -602,7 +603,7 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 
 ppl_@CLASS@_add_@ADD_REPRESENT@_2_test :-
   (
-   member(TEST_DATA, [test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
    ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
@@ -634,14 +635,15 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test :-
   (
-   member(TEST_DATA, [test02, test03, test04, test05, test06]),
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
    ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
    ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
    ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
    ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
-   (ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
+   ((ppl_@CLASS@_is_empty(PS)
+     ; ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS))
    ->
      fail ; true)
   ).
@@ -660,7 +662,132 @@ ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, [R | RS]) :-
 
 ')
 
-dnl ppl_@CLASS@_@BINOP@/2 *nofail +simple,
+m4_define(`ppl_@CLASS@_@BINOP@_code',
+`
+ppl_@CLASS@_@BINOP@_2_test :-
+  (
+   member(TEST_DATA1, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     ppl_@CLASS@_@BINOP@(PS1_Copy, PS2),
+     ppl_@CLASS@_equals_@CLASS@(PS2, PS2a),
+     (@BINOP@ == intersection_assign
+     ->
+       ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy),
+       ppl_@CLASS@_contains_@CLASS@(PS2, PS1_Copy)
+     ;
+       (@BINOP@ == difference_assign ; @BINOP@ == poly_difference_assign
+       ->
+         ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy)
+       ;
+         (@BINOP@ == time_elapse_assign
+         ->
+           (\+ ppl_@CLASS@_is_empty(PS2)
+           ->
+             ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1)
+           ;
+             ppl_@CLASS@_is_empty(PS1_Copy)
+           )
+         ;
+           (@BINOP@ == concatenate_assign
+           ->
+             ppl_@CLASS@_space_dimension(PS1, Dim1),
+             ppl_@CLASS@_space_dimension(PS2, Dim2),
+             Dim_Conc is Dim1 + Dim2,
+             ppl_@CLASS@_space_dimension(PS1_Copy, Dim_Conc)
+           ;
+             member(@BINOP@,
+                           [upper_bound_assign,
+                            poly_hull_assign,
+                            join_assign,
+                            bds_hull_assign,
+                            oct_hull_assign]),
+             ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
+             ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS2)
+           )
+         )
+       )
+     ),
+     ppl_@CLASS@_OK(PS1),
+     ppl_@CLASS@_OK(PS1_Copy),
+     ppl_@CLASS@_OK(PS2),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS1_Copy),
+     ppl_delete_@CLASS@(PS2),
+     ppl_delete_@CLASS@(PS2a)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_@CLASS@_@BINMINOP@_code',
+`
+ppl_@CLASS@_@BINMINOP@_2_test :-
+  (
+   member(TEST_DATA1, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy_n),
+     (@BINMINOP@ == intersection_assign_and_minimize
+     ->
+       ppl_@CLASS@_intersection_assign(PS1_Copy_n, PS2),
+       (\+ ppl_@CLASS@_is_empty(PS1_Copy_n)
+       ->
+         ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2),
+         \+ ppl_@CLASS@_is_empty(PS1_Copy),
+         ppl_@CLASS@_equals_@CLASS@(PS2, PS2a),
+         ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy),
+         ppl_@CLASS@_contains_@CLASS@(PS2, PS1_Copy)
+       ;
+         \+ ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2)
+       )
+     ;
+       member(@BINMINOP@,
+                     [upper_bound_assign_and_minimize,
+                      poly_hull_assign_and_minimize,
+                      join_assign_and_minimize,
+                      bds_hull_assign_and_minimize,
+                      oct_hull_assign_and_minimize]),
+       ppl_@CLASS@_upper_bound_assign(PS1_Copy_n, PS2),
+       (\+ ppl_@CLASS@_is_empty(PS1_Copy_n)
+       ->
+         ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2),
+         \+ ppl_@CLASS@_is_empty(PS1_Copy),
+         ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
+         ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS2)
+       ;
+         \+ ppl_@CLASS@_@BINMINOP@(PS1_Copy, PS2)
+       )
+     ),
+     ppl_@CLASS@_OK(PS1),
+     ppl_@CLASS@_OK(PS1_Copy),
+     ppl_@CLASS@_OK(PS2),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS1_Copy),
+     ppl_delete_@CLASS@(PS1_Copy_n),
+     ppl_delete_@CLASS@(PS2),
+     ppl_delete_@CLASS@(PS2a)
+   ->
+     fail ; true)
+ ).
+
+')
+
 dnl ppl_@CLASS@_@BINMINOP@/2 +simple,
 dnl ppl_@CLASS@_@AFFIMAGE@/4 *nofail +simple,
 dnl ppl_@CLASS@_bounded_@AFFIMAGE@/5 *nofail +shape -wr_shape,
