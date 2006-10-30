@@ -132,6 +132,9 @@ public:
   //! Sets the bit in position \p k.
   void set(unsigned long k);
 
+  //! Sets bits up to position \p k (excluded).
+  void set_until(unsigned long k);
+
   //! Clears the bit in position \p k.
   void clear(unsigned long k);
 
