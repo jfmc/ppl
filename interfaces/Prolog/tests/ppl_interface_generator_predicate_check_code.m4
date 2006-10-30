@@ -788,13 +788,181 @@ ppl_@CLASS@_@BINMINOP@_2_test :-
 
 ')
 
-dnl ppl_@CLASS@_@BINMINOP@/2 +simple,
-dnl ppl_@CLASS@_@AFFIMAGE@/4 *nofail +simple,
-dnl ppl_@CLASS@_bounded_@AFFIMAGE@/5 *nofail +shape -wr_shape,
-dnl ppl_@CLASS@_generalized_@AFFIMAGE@/5 +shape,
-dnl ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs/4 +shape,
-dnl ppl_Grid_generalized_@AFFIMAGE@/6 +grid,
-dnl ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs/5 +grid,
+m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
+`
+ppl_@CLASS@_@AFFIMAGE@_4_test :-
+  (
+   member(TEST_DATA, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+   Dim > 0,
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy),
+     make_vars(Dim, [Var| _Var_List]),
+     ppl_@CLASS@_@AFFIMAGE@(PS, Var, Var + 5, 1),
+     ppl_@CLASS@_@AFFIMAGE@(PS, Var, Var - 5, 1),
+     (@AFFIMAGE@ == affine_image
+     ->
+       ppl_@CLASS@_@AFFIMAGE@(PS, Var, 3*Var, 1),
+       ppl_@CLASS@_@AFFIMAGE@(PS, Var, Var, 3)
+     ;
+       ppl_@CLASS@_@AFFIMAGE@(PS, Var, Var, 3),
+       ppl_@CLASS@_@AFFIMAGE@(PS, Var, 3*Var, 1)
+     ),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_OK(PS),
+     ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PS_Copy)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
+`
+ppl_@CLASS@_bounded_@AFFIMAGE@_5_test :-
+  (
+   member(TEST_DATA, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+   Dim > 0,
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy),
+     make_vars(Dim, [Var| _Var_List]),
+     ppl_@CLASS@_bounded_@AFFIMAGE@(PS, Var, Var, 2*Var, 3),
+     ppl_@CLASS@_bounded_@AFFIMAGE@(PS, Var, 3*Var, 3*Var, 1),
+     ppl_@CLASS@_OK(PS),
+     ppl_@CLASS@_bounded_@AFFIMAGE@(PS_Copy, Var, 3*Var, 3*Var, 1),
+     ppl_@CLASS@_bounded_@AFFIMAGE@(PS_Copy, Var, Var, 2*Var, 3),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_delete_@CLASS@(PS_Copy),
+     ppl_delete_@CLASS@(PS)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE_code',
+`
+ppl_@CLASS@_generalized_@AFFIMAGE@_5_test :-
+  (
+   member(TEST_DATA, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+   Dim > 0,
+   (t_@TOPOLOGY@ == t_NNC_
+   ->
+     member(Op, [>=, =<, =, >, <])
+   ;
+     member(Op, [>=, =<, =])
+   ),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy),
+     make_vars(Dim, [Var| _Var_List]),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, Op, 2*Var, 3),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, Op, Var + 2, 1),
+     ppl_@CLASS@_OK(PS),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, Op, Var + 2, 1),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, Op, 2*Var, 3),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_delete_@CLASS@(PS_Copy),
+     ppl_delete_@CLASS@(PS)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
+`
+ppl_Grid_generalized_@AFFIMAGE@_6_test :-
+  (
+   member(TEST_DATA, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+   Dim > 0,
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy),
+     make_vars(Dim, [Var| _Var_List]),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, =:=, 2*Var, 3, 5),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, =, Var + 2, 1, 0),
+     ppl_@CLASS@_OK(PS),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, =, Var + 2, 1, 0),
+     ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, =:=, 2*Var, 3, 5),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_delete_@CLASS@(PS_Copy),
+     ppl_delete_@CLASS@(PS)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
+`
+ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_4_test :-
+  (
+   member(TEST_DATA, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+   Dim > 0,
+   (t_@TOPOLOGY@ == t_NNC_
+   ->
+     member(Op, [>=, =<, =, >, <])
+   ;
+     member(Op, [>=, =<, =])
+   ),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy),
+     make_vars(Dim, [Var| _Var_List]),
+     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS, 2*Var, Op, 2*(Var + 2)),
+     ppl_@CLASS@_OK(PS),
+     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS_Copy, Var, Op, Var + 2),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_OK(PS_Copy),
+     ppl_delete_@CLASS@(PS_Copy),
+     ppl_delete_@CLASS@(PS)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
+`
+ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_5_test :-
+  (
+   member(TEST_DATA, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+   Dim > 0,
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy),
+     make_vars(Dim, [Var| _Var_List]),
+     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS, Var + 2, =:=, 2*Var, 5),
+     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS, 1 - Var, =, Var + 2, 0),
+     ppl_@CLASS@_OK(PS),
+     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS_Copy,
+                                                1 - Var, =, Var + 2, 0),
+     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS_Copy,
+                                                Var + 2, =:=, 2*Var, 5),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_delete_@CLASS@(PS_Copy),
+     ppl_delete_@CLASS@(PS)
+   ->
+     fail ; true)
+ ).
+
+')
+
 dnl ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens/4 +simple,
 dnl ppl_@CLASS@_@WIDEN@_widening_assign/2 *nofail +simple,
 dnl ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens/5 +simple,
