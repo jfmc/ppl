@@ -38,11 +38,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.defs.hh"
+#include "Saturation_Matrix.defs.hh"
 #include <cstddef>
 #include <iosfwd>
 #include <vector>
-#include <deque>
-
 
 namespace Parma_Polyhedra_Library {
 
@@ -1438,8 +1437,8 @@ private:
   //! The status flags to keep track of the internal state.
   Status status;
 
-  //! A matrix of Booleans indicating which constraints are redundant.
-  std::vector<std::deque<bool> > redundancy_dbm;
+  //! A matrix indicating which constraints are redundant.
+  Saturation_Matrix redundancy_dbm;
 
   //! Returns <CODE>true</CODE> if the BDS is known to be empty.
   /*!

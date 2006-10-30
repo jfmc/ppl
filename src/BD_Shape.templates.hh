@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "MIP_Problem.defs.hh"
 #include "Variables_Set.defs.hh"
+#include "Saturation_Row.defs.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -710,7 +711,7 @@ BD_Shape<T>::is_shortest_path_reduced() const {
       for (dimension_type i = 0; i <= space_dim; ++i)
 	if (leader[i] == i) {
 	  const DB_Row<N>& x_i = x_copy.dbm[i];
-	  const std::deque<bool>& redundancy_i = redundancy_dbm[i];
+	  const Saturation_Row& redundancy_i = redundancy_dbm[i];
 	  const N& x_i_k = x_i[k];
 	  for (dimension_type j = 0; j <= space_dim; ++j)
 	    if (leader[j] == j) {
@@ -1147,9 +1148,14 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
   compute_leader_indices(predecessor, leaders);
   const dimension_type num_leaders = leaders.size();
 
-  // TODO: directly work on `redundancy_dbm' so as to minimize allocations.
-  std::deque<bool> redundancy_row(space_dim + 1, true);
-  std::vector<std::deque<bool> > redundancy(space_dim + 1, redundancy_row);
+  Saturation_Matrix redundancy(space_dim + 1, space_dim + 1);
+  // Init all constraints to be redundant.
+  // TODO: provide an appropriate method to set multiple bits.
+  Saturation_Row& red_0 = redundancy[0];
+  for (dimension_type j = space_dim + 1; j-- > 0; )
+    red_0.set(j);
+  for (dimension_type i = space_dim + 1; i-- > 0; )
+    redundancy[i] = red_0;
 
   // Step 2: flag non-redundant constraints in the (zero-cycle-free)
   // subsystem of bounded differences having only leaders as variables.
@@ -1157,17 +1163,17 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
   for (dimension_type l_i = 0; l_i < num_leaders; ++l_i) {
     const dimension_type i = leaders[l_i];
     const DB_Row<N>& dbm_i = dbm[i];
-    std::deque<bool>& redundancy_i = redundancy[i];
+    Saturation_Row& redundancy_i = redundancy[i];
     for (dimension_type l_j = 0; l_j < num_leaders; ++l_j) {
       const dimension_type j = leaders[l_j];
       if (redundancy_i[j]) {
 	const N& dbm_i_j = dbm_i[j];
-	redundancy_i[j] = false;
+	redundancy_i.clear(j);
 	for (dimension_type l_k = 0; l_k < num_leaders; ++l_k) {
 	  const dimension_type k = leaders[l_k];
 	  add_assign_r(c, dbm_i[k], dbm[k][j], ROUND_UP);
 	  if (dbm_i_j >= c) {
-	    redundancy_i[j] = true;
+	    redundancy_i.set(j);
 	    break;
 	  }
 	}
@@ -1189,14 +1195,14 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
 	if (j == pred_j) {
 	  // We finally found the leader of `i'.
 	  assert(redundancy[i][j]);
-	  redundancy[i][j] = false;
+	  redundancy[i].clear(j);
 	  // Here we dealt with `j' (i.e., `pred_j'), but it is useless
 	  // to update `dealt_with' because `j' is a leader.
 	  break;
 	}
 	// We haven't found the leader of `i' yet.
 	assert(redundancy[pred_j][j]);
-	redundancy[pred_j][j] = false;
+	redundancy[pred_j].clear(j);
 	dealt_with[pred_j] = true;
 	j = pred_j;
       }
@@ -1849,7 +1855,7 @@ BD_Shape<T>::BHMZ05_widening_assign(const BD_Shape& y, unsigned* tp) {
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
     DB_Row<N>& dbm_i = dbm[i];
     const DB_Row<N>& y_dbm_i = y.dbm[i];
-    const std::deque<bool>& y_redundancy_i = y.redundancy_dbm[i];
+    const Saturation_Row& y_redundancy_i = y.redundancy_dbm[i];
     for (dimension_type j = space_dim + 1; j-- > 0; ) {
       N& dbm_ij = dbm_i[j];
       // Note: in the following line the use of `!=' (as opposed to
@@ -3946,7 +3952,7 @@ BD_Shape<T>::minimized_constraints() const {
 
     // Go through the leaders to generate inequality constraints.
     // First generate all the unary inequalities.
-    const std::deque<bool>& red_0 = redundancy_dbm[0];
+    const Saturation_Row& red_0 = redundancy_dbm[0];
     for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
       const dimension_type i = leader_indices[l_i];
       if (!red_0[i]) {
@@ -3962,7 +3968,7 @@ BD_Shape<T>::minimized_constraints() const {
     for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
       const dimension_type i = leader_indices[l_i];
       const DB_Row<N>& dbm_i = dbm[i];
-      const std::deque<bool>& red_i = redundancy_dbm[i];
+      const Saturation_Row& red_i = redundancy_dbm[i];
       for (dimension_type l_j = l_i + 1; l_j < num_leaders; ++l_j) {
 	const dimension_type j = leader_indices[l_j];
 	if (!red_i[j]) {
@@ -4187,16 +4193,8 @@ BD_Shape<T>::ascii_dump(std::ostream& s) const {
   status.ascii_dump(s);
   s << "\n";
   dbm.ascii_dump(s);
-  // Redundancy info.
   s << "\n";
-  const char separator = ' ';
-  const dimension_type nrows = redundancy_dbm.size();
-  s << nrows << separator << "\n";
-  for (dimension_type i = 0; i < nrows;  ++i) {
-    for (dimension_type j = 0; j < nrows; ++j)
-      s << redundancy_dbm[i][j] << separator;
-    s << "\n";
-  }
+  redundancy_dbm.ascii_dump(s);
 }
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(T, BD_Shape<T>)
@@ -4208,27 +4206,16 @@ BD_Shape<T>::ascii_load(std::istream& s) {
     return false;
   if (!dbm.ascii_load(s))
     return false;
-  // Load redundancy info.
-  dimension_type nrows;
-   if (!(s >> nrows))
+  if (!redundancy_dbm.ascii_load(s))
     return false;
-  redundancy_dbm.clear();
-  redundancy_dbm.reserve(nrows);
-  std::deque<bool> redundancy_row(nrows, false);
-  for (dimension_type i = 0; i < nrows;  ++i) {
-    for (dimension_type j = 0; j < nrows; ++j)
-      if (!(s >> redundancy_row[j]))
-	return false;
-    redundancy_dbm.push_back(redundancy_row);
-  }
   return true;
 }
 
 template <typename T>
 memory_size_type
 BD_Shape<T>::external_memory_in_bytes() const {
-  // FIXME!
-  return dbm.external_memory_in_bytes();
+  return dbm.external_memory_in_bytes()
+    + redundancy_dbm.external_memory_in_bytes();
 }
 
 template <typename T>
