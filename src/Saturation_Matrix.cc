@@ -226,3 +226,17 @@ PPL::Saturation_Matrix::check_sorted() const {
   return true;
 }
 #endif
+
+/*! \relates Parma_Polyhedra_Library::Saturation_Matrix */
+bool
+PPL::operator==(const Saturation_Matrix& x, const Saturation_Matrix& y) {
+  const dimension_type x_num_rows = x.num_rows();
+  if (x_num_rows != y.num_rows()
+      || x.num_columns() != y.num_columns())
+    return false;
+  for (dimension_type i = x_num_rows; i-- > 0; )
+    if (x[i] != y[i])
+      return false;
+  return true;
+}
+

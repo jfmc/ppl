@@ -41,7 +41,7 @@ Saturation_Matrix::max_num_rows() {
 
 inline
 Saturation_Matrix::Saturation_Matrix(const dimension_type n_rows,
-		     const dimension_type n_columns)
+				     const dimension_type n_columns)
   : rows(n_rows),
     row_size(n_columns) {
 }
@@ -126,6 +126,12 @@ Saturation_Matrix::sorted_contains(const Saturation_Row& row) const {
   assert(check_sorted());
   return std::binary_search(rows.begin(), rows.end(), row,
 			    Saturation_Row_Less_Than());
+}
+
+/*! \relates Saturation_Matrix */
+inline bool
+operator!=(const Saturation_Matrix& x, const Saturation_Matrix& y) {
+  return !(x == y);
 }
 
 } // namespace Parma_Polyhedra_Library

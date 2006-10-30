@@ -161,6 +161,22 @@ private:
 
 };
 
+namespace Parma_Polyhedra_Library {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
+/*! \relates Saturation_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+bool operator==(const Saturation_Matrix& x, const Saturation_Matrix& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are not equal.
+/*! \relates Saturation_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+bool operator!=(const Saturation_Matrix& x, const Saturation_Matrix& y);
+
+} // namespace Parma_Polyhedra_Library
+
 namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
