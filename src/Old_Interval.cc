@@ -1,4 +1,4 @@
-/* Non-inline functions for the Interval class and its constituents.
+/* Non-inline functions for the Old_Interval class and its constituents.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "Interval.defs.hh"
+#include "Old_Interval.defs.hh"
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -50,6 +50,6 @@ PPL::UBoundary::OK() const {
 }
 
 bool
-PPL::Interval::OK() const {
+PPL::Old_Interval::OK() const {
   return lower.OK() && upper.OK();
 }

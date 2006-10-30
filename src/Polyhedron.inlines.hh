@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Polyhedron_inlines_hh
 #define PPL_Polyhedron_inlines_hh 1
 
-#include "Interval.defs.hh"
 #include "Generator.defs.hh"
 #include "compiler.hh"
 #include <algorithm>

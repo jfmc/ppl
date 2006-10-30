@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Grid_templates_hh
 #define PPL_Grid_templates_hh 1
 
-#include "Interval.defs.hh"
 #include "Grid_Generator.defs.hh"
 #include "Grid_Generator_System.defs.hh"
 #include "Grid_Generator_System.inlines.hh"

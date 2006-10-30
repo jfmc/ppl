@@ -34,8 +34,8 @@ void
 PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y,
 					Iterator first, Iterator last) {
   for (dimension_type i = vec.size(); i-- > 0; ) {
-    Interval& x_vec_i = vec[i];
-    const Interval& y_vec_i = y.vec[i];
+    Old_Interval& x_vec_i = vec[i];
+    const Old_Interval& y_vec_i = y.vec[i];
 
     // Upper bound.
     UBoundary& x_ub = x_vec_i.upper_bound();

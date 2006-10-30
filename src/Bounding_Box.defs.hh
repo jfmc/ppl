@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Coefficient.types.hh"
 #include "globals.types.hh"
 #include "Coefficient.defs.hh"
-#include "Interval.defs.hh"
+#include "Old_Interval.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include <vector>
@@ -54,7 +54,7 @@ public:
     Returns a reference the interval that bounds
     the box on the <CODE>k</CODE>-th space dimension.
   */
-  const Interval& operator[](dimension_type k) const;
+  const Old_Interval& operator[](dimension_type k) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is empty.
   bool is_empty() const;
@@ -178,7 +178,7 @@ private:
     A vector of rational intervals, one for each dimension
     of the vector space.
   */
-  std::vector<Interval> vec;
+  std::vector<Old_Interval> vec;
   /*! \brief
     A Boolean flag indicating emptiness of the bounding box.
     Only meaningful when \p empty_up_to_date is <CODE>true</CODE>.

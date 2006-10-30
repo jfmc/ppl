@@ -35,7 +35,7 @@ Bounding_Box::space_dimension() const {
   return vec.size();
 }
 
-inline const Interval&
+inline const Old_Interval&
 Bounding_Box::operator[](const dimension_type k) const {
   assert(k < vec.size());
   return vec[k];

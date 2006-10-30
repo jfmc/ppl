@@ -1,4 +1,4 @@
-/* Declarations for the Interval class and its constituents.
+/* Declarations for the Old_Interval class and its constituents.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,10 +20,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Interval_defs_hh
-#define PPL_Interval_defs_hh 1
+#ifndef PPL_Old_Interval_defs_hh
+#define PPL_Old_Interval_defs_hh 1
 
-#include "Interval.types.hh"
+#include "Old_Interval.types.hh"
 #include "Coefficient.defs.hh"
 #include "Checked_Number.defs.hh"
 #include <gmpxx.h>
@@ -141,7 +141,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A interval over the set of rational numbers.
 /*! \ingroup PPL_CXX_interface
-  An object of class Interval represents a closed/half-closed/open
+  An object of class Old_Interval represents a closed/half-closed/open
   interval over the set of rational numbers \f$\Qset\f$.
 
   Note that, even though the implementation is capable to represent
@@ -153,10 +153,10 @@ public:
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
-class Parma_Polyhedra_Library::Interval {
+class Parma_Polyhedra_Library::Old_Interval {
 public:
   //! Constructs the universe interval \f$(-\infty, +\infty) = \Qset\f$.
-  Interval();
+  Old_Interval();
 
   //! Returns <CODE>true</CODE> if and only if \p *this is empty.
   bool is_empty() const;
@@ -199,6 +199,6 @@ private:
   UBoundary upper;
 };
 
-#include "Interval.inlines.hh"
+#include "Old_Interval.inlines.hh"
 
-#endif // !defined(PPL_Interval_defs_hh)
+#endif // !defined(PPL_Old_Interval_defs_hh)

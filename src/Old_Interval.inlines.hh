@@ -1,4 +1,4 @@
-/* Inline functions for the Interval class and its constituents.
+/* Inline functions for the Old_Interval class and its constituents.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Interval_inlines_hh
-#define PPL_Interval_inlines_hh 1
+#ifndef PPL_Old_Interval_inlines_hh
+#define PPL_Old_Interval_inlines_hh 1
 
 #include <cassert>
 #include "Checked_Number.defs.hh"
@@ -73,50 +73,50 @@ operator>(const Boundary& x, const Boundary& y) {
 }
 
 inline
-Interval::Interval()
+Old_Interval::Old_Interval()
   : lower(ERational(MINUS_INFINITY), LBoundary::OPEN),
     upper(ERational(PLUS_INFINITY), UBoundary::OPEN) {
 }
 
 inline bool
-Interval::is_empty() const {
+Old_Interval::is_empty() const {
   return lower > upper;
 }
 
 inline const LBoundary&
-Interval::lower_bound() const {
+Old_Interval::lower_bound() const {
   return lower;
 }
 
 inline LBoundary&
-Interval::lower_bound() {
+Old_Interval::lower_bound() {
   return lower;
 }
 
 inline const UBoundary&
-Interval::upper_bound() const {
+Old_Interval::upper_bound() const {
   return upper;
 }
 
 inline UBoundary&
-Interval::upper_bound() {
+Old_Interval::upper_bound() {
   return upper;
 }
 
 inline void
-Interval::raise_lower_bound(LBoundary new_lower) {
+Old_Interval::raise_lower_bound(LBoundary new_lower) {
   if (new_lower > lower)
     lower = new_lower;
 }
 
 inline void
-Interval::lower_upper_bound(UBoundary new_upper) {
+Old_Interval::lower_upper_bound(UBoundary new_upper) {
   if (new_upper < upper)
     upper = new_upper;
 }
 
 inline void
-Interval::set_empty() {
+Old_Interval::set_empty() {
   lower = LBoundary(ERational(PLUS_INFINITY), LBoundary::OPEN);
   upper = UBoundary(ERational(MINUS_INFINITY), UBoundary::OPEN);
   assert(is_empty());
@@ -124,4 +124,4 @@ Interval::set_empty() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Interval_inlines_hh)
+#endif // !defined(PPL_Old_Interval_inlines_hh)
