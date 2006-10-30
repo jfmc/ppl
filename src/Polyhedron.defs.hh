@@ -36,7 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.inlines.hh"
 #include "Grid_Generator_System.defs.hh"
 #include "Grid_Generator_System.inlines.hh"
-#include "Saturation_Matrix.defs.hh"
+#include "Bit_Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Congruence.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
@@ -1883,10 +1883,10 @@ private:
   Generator_System gen_sys;
 
   //! The saturation matrix having constraints on its columns.
-  Saturation_Matrix sat_c;
+  Bit_Matrix sat_c;
 
   //! The saturation matrix having generators on its columns.
-  Saturation_Matrix sat_g;
+  Bit_Matrix sat_g;
 
 #define PPL_IN_Polyhedron_CLASS
 #include "Ph_Status.idefs.hh"
@@ -2369,8 +2369,8 @@ private:
   */
   static void add_space_dimensions(Linear_System& mat1,
 				   Linear_System& mat2,
-				   Saturation_Matrix& sat1,
-				   Saturation_Matrix& sat2,
+				   Bit_Matrix& sat1,
+				   Bit_Matrix& sat2,
 				   dimension_type add_dim);
 
   //! \name Minimization-Related Static Member Functions
@@ -2381,7 +2381,7 @@ private:
   static bool minimize(bool con_to_gen,
 		       Linear_System& source,
 		       Linear_System& dest,
-		       Saturation_Matrix& sat);
+		       Bit_Matrix& sat);
 
   /*! \brief
     Adds given constraints and builds minimized corresponding generators
@@ -2391,7 +2391,7 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Linear_System& source1,
 			       Linear_System& dest,
-			       Saturation_Matrix& sat,
+			       Bit_Matrix& sat,
 			       const Linear_System& source2);
 
   /*! \brief
@@ -2402,14 +2402,14 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Linear_System& source,
 			       Linear_System& dest,
-			       Saturation_Matrix& sat);
+			       Bit_Matrix& sat);
 
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
   static dimension_type conversion(Linear_System& source,
 				   dimension_type start,
 				   Linear_System& dest,
-				   Saturation_Matrix& sat,
+				   Bit_Matrix& sat,
 				   dimension_type num_lines_or_equalities);
 
   /*! \brief
@@ -2417,7 +2417,7 @@ private:
     <CODE>conversion()</CODE>.
   */
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Linear_System& mat, Saturation_Matrix& sat);
+  static int simplify(Linear_System& mat, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 

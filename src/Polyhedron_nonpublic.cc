@@ -1085,12 +1085,12 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     x.sat_g.transpose_assign(sat_c);
   }
 
-  // These Saturation_Row's will be later used as masks in order to
+  // These Bit_Row's will be later used as masks in order to
   // check saturation conditions restricted to particular subsets of
   // the generator system.
-  Saturation_Row sat_all_but_rays;
-  Saturation_Row sat_all_but_points;
-  Saturation_Row sat_all_but_closure_points;
+  Bit_Row sat_all_but_rays;
+  Bit_Row sat_all_but_points;
+  Bit_Row sat_all_but_closure_points;
 
   const dimension_type gs_rows = gen_sys.num_rows();
   const dimension_type n_lines = gen_sys.num_lines();
@@ -1110,13 +1110,13 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       throw std::runtime_error("PPL internal error: "
 			       "strongly_minimize_constraints.");
     }
-  Saturation_Row sat_lines_and_rays;
+  Bit_Row sat_lines_and_rays;
   set_union(sat_all_but_points, sat_all_but_closure_points,
 	    sat_lines_and_rays);
-  Saturation_Row sat_lines_and_closure_points;
+  Bit_Row sat_lines_and_closure_points;
   set_union(sat_all_but_rays, sat_all_but_points,
 	    sat_lines_and_closure_points);
-  Saturation_Row sat_lines;
+  Bit_Row sat_lines;
   set_union(sat_lines_and_rays, sat_lines_and_closure_points,
 	    sat_lines);
 
@@ -1130,13 +1130,13 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   // eps-redundancy and eventually move them to the bottom part of the
   // system.
   Constraint_System& cs = x.con_sys;
-  Saturation_Matrix& sat = x.sat_g;
+  Bit_Matrix& sat = x.sat_g;
   dimension_type cs_rows = cs.num_rows();
   const dimension_type eps_index = cs.num_columns() - 1;
   for (dimension_type i = 0; i < cs_rows; )
     if (cs[i].is_strict_inequality()) {
       // First, check if it is saturated by no closure points
-      Saturation_Row sat_ci;
+      Bit_Row sat_ci;
       set_union(sat[i], sat_lines_and_closure_points, sat_ci);
       if (sat_ci == sat_lines) {
 	// It is saturated by no closure points.
@@ -1269,9 +1269,9 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     x.sat_c.transpose_assign(sat_g);
   }
 
-  // This Saturation_Row will have all and only the indexes
+  // This Bit_Row will have all and only the indexes
   // of strict inequalities set to 1.
-  Saturation_Row sat_all_but_strict_ineq;
+  Bit_Row sat_all_but_strict_ineq;
   const dimension_type cs_rows = con_sys.num_rows();
   const dimension_type n_equals = con_sys.num_equalities();
   for (dimension_type i = cs_rows; i-- > n_equals; )
@@ -1284,15 +1284,15 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   // For all points in the generator system, check for eps-redundancy
   // and eventually move them to the bottom part of the system.
   Generator_System& gs = const_cast<Generator_System&>(gen_sys);
-  Saturation_Matrix& sat = const_cast<Saturation_Matrix&>(sat_c);
+  Bit_Matrix& sat = const_cast<Bit_Matrix&>(sat_c);
   dimension_type gs_rows = gs.num_rows();
   const dimension_type n_lines = gs.num_lines();
   const dimension_type eps_index = gs.num_columns() - 1;
   for (dimension_type i = n_lines; i < gs_rows; )
     if (gs[i].is_point()) {
-      // Compute the Saturation_Row corresponding to the candidate point
+      // Compute the Bit_Row corresponding to the candidate point
       // when strict inequality constraints are ignored.
-      Saturation_Row sat_gi;
+      Bit_Row sat_gi;
       set_union(sat[i], sat_all_but_strict_ineq, sat_gi);
       // Check if the candidate point is actually eps-redundant:
       // namely, if there exists another point that saturates

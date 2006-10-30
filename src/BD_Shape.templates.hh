@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "MIP_Problem.defs.hh"
 #include "Variables_Set.defs.hh"
-#include "Saturation_Row.defs.hh"
+#include "Bit_Row.defs.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -711,7 +711,7 @@ BD_Shape<T>::is_shortest_path_reduced() const {
       for (dimension_type i = 0; i <= space_dim; ++i)
 	if (leader[i] == i) {
 	  const DB_Row<N>& x_i = x_copy.dbm[i];
-	  const Saturation_Row& redundancy_i = redundancy_dbm[i];
+	  const Bit_Row& redundancy_i = redundancy_dbm[i];
 	  const N& x_i_k = x_i[k];
 	  for (dimension_type j = 0; j <= space_dim; ++j)
 	    if (leader[j] == j) {
@@ -1148,10 +1148,10 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
   compute_leader_indices(predecessor, leaders);
   const dimension_type num_leaders = leaders.size();
 
-  Saturation_Matrix redundancy(space_dim + 1, space_dim + 1);
+  Bit_Matrix redundancy(space_dim + 1, space_dim + 1);
   // Init all constraints to be redundant.
   // TODO: provide an appropriate method to set multiple bits.
-  Saturation_Row& red_0 = redundancy[0];
+  Bit_Row& red_0 = redundancy[0];
   for (dimension_type j = space_dim + 1; j-- > 0; )
     red_0.set(j);
   for (dimension_type i = space_dim + 1; i-- > 0; )
@@ -1163,7 +1163,7 @@ BD_Shape<T>::shortest_path_reduction_assign() const {
   for (dimension_type l_i = 0; l_i < num_leaders; ++l_i) {
     const dimension_type i = leaders[l_i];
     const DB_Row<N>& dbm_i = dbm[i];
-    Saturation_Row& redundancy_i = redundancy[i];
+    Bit_Row& redundancy_i = redundancy[i];
     for (dimension_type l_j = 0; l_j < num_leaders; ++l_j) {
       const dimension_type j = leaders[l_j];
       if (redundancy_i[j]) {
@@ -1855,7 +1855,7 @@ BD_Shape<T>::BHMZ05_widening_assign(const BD_Shape& y, unsigned* tp) {
   for (dimension_type i = space_dim + 1; i-- > 0; ) {
     DB_Row<N>& dbm_i = dbm[i];
     const DB_Row<N>& y_dbm_i = y.dbm[i];
-    const Saturation_Row& y_redundancy_i = y.redundancy_dbm[i];
+    const Bit_Row& y_redundancy_i = y.redundancy_dbm[i];
     for (dimension_type j = space_dim + 1; j-- > 0; ) {
       N& dbm_ij = dbm_i[j];
       // Note: in the following line the use of `!=' (as opposed to
@@ -3952,7 +3952,7 @@ BD_Shape<T>::minimized_constraints() const {
 
     // Go through the leaders to generate inequality constraints.
     // First generate all the unary inequalities.
-    const Saturation_Row& red_0 = redundancy_dbm[0];
+    const Bit_Row& red_0 = redundancy_dbm[0];
     for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
       const dimension_type i = leader_indices[l_i];
       if (!red_0[i]) {
@@ -3968,7 +3968,7 @@ BD_Shape<T>::minimized_constraints() const {
     for (dimension_type l_i = 1; l_i < num_leaders; ++l_i) {
       const dimension_type i = leader_indices[l_i];
       const DB_Row<N>& dbm_i = dbm[i];
-      const Saturation_Row& red_i = redundancy_dbm[i];
+      const Bit_Row& red_i = redundancy_dbm[i];
       for (dimension_type l_j = l_i + 1; l_j < num_leaders; ++l_j) {
 	const dimension_type j = leader_indices[l_j];
 	if (!red_i[j]) {

@@ -38,7 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.defs.hh"
-#include "Saturation_Matrix.defs.hh"
+#include "Bit_Matrix.defs.hh"
 #include <cstddef>
 #include <iosfwd>
 #include <vector>
@@ -1438,7 +1438,7 @@ private:
   Status status;
 
   //! A matrix indicating which constraints are redundant.
-  Saturation_Matrix redundancy_dbm;
+  Bit_Matrix redundancy_dbm;
 
   //! Returns <CODE>true</CODE> if the BDS is known to be empty.
   /*!

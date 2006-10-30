@@ -131,14 +131,14 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/MIP_Problem.defs.hh \
                          @srcdir@/../src/MIP_Problem.inlines.hh \
                          @srcdir@/../src/MIP_Problem.cc \
-                         @srcdir@/../src/Saturation_Row.types.hh \
-                         @srcdir@/../src/Saturation_Row.defs.hh \
-                         @srcdir@/../src/Saturation_Row.inlines.hh \
-                         @srcdir@/../src/Saturation_Row.cc \
-                         @srcdir@/../src/Saturation_Matrix.types.hh \
-                         @srcdir@/../src/Saturation_Matrix.defs.hh \
-                         @srcdir@/../src/Saturation_Matrix.inlines.hh \
-                         @srcdir@/../src/Saturation_Matrix.cc \
+                         @srcdir@/../src/Bit_Row.types.hh \
+                         @srcdir@/../src/Bit_Row.defs.hh \
+                         @srcdir@/../src/Bit_Row.inlines.hh \
+                         @srcdir@/../src/Bit_Row.cc \
+                         @srcdir@/../src/Bit_Matrix.types.hh \
+                         @srcdir@/../src/Bit_Matrix.defs.hh \
+                         @srcdir@/../src/Bit_Matrix.inlines.hh \
+                         @srcdir@/../src/Bit_Matrix.cc \
                          @srcdir@/../src/Variable.types.hh \
                          @srcdir@/../src/Variable.defs.hh \
                          @srcdir@/../src/Variable.inlines.hh \
