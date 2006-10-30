@@ -82,23 +82,20 @@ test04() {
   Variables_Set vs_intersection;
   std::set_union(vs1.begin(), vs1.end(),
 		 vs2.begin(), vs2.end(),
-		 std::inserter(vs_union, vs_union.begin()),
-		 Variable::Compare());
+		 std::inserter(vs_union, vs_union.begin()));
   if (vs_union.size() != 8)
     return false;
 
   std::set_difference(vs1.begin(), vs1.end(),
 		      vs2.begin(), vs2.end(),
-		      std::inserter(vs_difference, vs_difference.begin()),
-		      Variable::Compare());
+		      std::inserter(vs_difference, vs_difference.begin()));
   if (vs_difference.size() != 3)
     return false;
 
   std::set_intersection(vs1.begin(), vs1.end(),
 			vs2.begin(), vs2.end(),
 			std::inserter(vs_intersection,
-				      vs_intersection.begin()),
-			Variable::Compare());
+				      vs_intersection.begin()));
   return vs_intersection.empty();
 }
 

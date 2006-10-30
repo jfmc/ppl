@@ -49,8 +49,7 @@ operator<<(std::ostream& s, const FCAIBVP& x);
 */
 class Parma_Polyhedra_Library::FCAIBVP {
 private:
-  typedef Variable::Compare Compare;
-  typedef std::set<Variable, Compare> Set;
+  typedef std::set<dimension_type> Set;
 
   Set set;
 

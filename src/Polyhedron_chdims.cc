@@ -457,10 +457,10 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // by shifting left those columns that will not be removed.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst_col = tbr->space_dimension();
+  dimension_type dst_col = *tbr + 1;
   dimension_type src_col = dst_col + 1;
   for (++tbr; tbr != tbr_end; ++tbr) {
-    dimension_type tbr_col = tbr->space_dimension();
+    const dimension_type tbr_col = *tbr + 1;
     // All columns in between are moved to the left.
     while (src_col < tbr_col)
       gen_sys.Matrix::swap_columns(dst_col++, src_col++);
@@ -620,15 +620,15 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
 				 "tbf.space_dimension()",
 				 to_be_folded.space_dimension());
 
-  // Moreover, `var' should not occur in `to_be_folded'.
-  if (to_be_folded.find(var) != to_be_folded.end())
+  // Moreover, `var.id()' should not occur in `to_be_folded'.
+  if (to_be_folded.find(var.id()) != to_be_folded.end())
     throw_invalid_argument("fold_space_dimensions(tbf, v)",
 			   "v should not occur in tbf");
 
   for (Variables_Set::const_iterator i = to_be_folded.begin(),
 	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
     Polyhedron copy = *this;
-    copy.affine_image(var, Linear_Expression(*i));
+    copy.affine_image(var, Linear_Expression(Variable(*i)));
     poly_hull_assign(copy);
   }
   remove_space_dimensions(to_be_folded);

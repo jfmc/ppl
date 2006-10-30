@@ -1892,14 +1892,14 @@ Octagonal_Shape<T>
   // If it is to be removed, we pass to the successive one, elsewhere
   // we move its elements in the right position.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
-  dimension_type ftr = tbr->id();
+  dimension_type ftr = *tbr;
   dimension_type ftr_size = 2*ftr*(ftr+1);
   typename OR_Matrix<N>::element_iterator
     iter = matrix.element_begin()+ftr_size;
 
   dimension_type i = ftr + 1;
   while (i < space_dim) {
-    if (to_be_removed.count(Variable(i)))
+    if (to_be_removed.count(i) != 0)
       ++i;
     else {
       typename OR_Matrix<N>::const_row_iterator
@@ -1915,12 +1915,12 @@ Octagonal_Shape<T>
       // second row. We recall that every variable is represented
       // in the `matrix' by two rows and two rows.
       for (dimension_type j = 0; j <= i; ++j)
-	if (!to_be_removed.count(Variable(j))) {
+	if (to_be_removed.count(j) == 0) {
 	  *(iter++) = row_ref[2*j];
 	  *(iter++) = row_ref[2*j+1];
 	}
       for (dimension_type j = 0; j <= i; ++j)
-	if (!to_be_removed.count(Variable(j))) {
+	if (to_be_removed.count(j) == 0) {
 	  *(iter++) = row_ref1[2*j];
 	  *(iter++) = row_ref1[2*j+1];
 	}

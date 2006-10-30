@@ -42,24 +42,25 @@ operator<<(std::ostream& s, const Variables_Set& v);
 
 } // namespace Parma_Polyhedra_Library
 
-//! An std::set containing variables in increasing order of dimension index.
+//! An std::set of variables' indexes.
 class Parma_Polyhedra_Library::Variables_Set
-  : public std::set<Variable, Variable::Compare> {
+  : public std::set<dimension_type> {
 private:
-  typedef std::set<Variable, Variable::Compare> Base;
+  typedef std::set<dimension_type> Base;
 
 public:
-  //! Builds the empty set of variables.
+  //! Builds the empty set of variable indexes.
   Variables_Set();
 
-  //! Builds the singleton set of variables containing \p v;
+  //! Builds the singleton set of indexes containing <CODE>v.id()</CODE>;
   explicit Variables_Set(const Variable& v);
 
   /*! \brief
-    Builds the set of variables in the range \p v to \p w.
+    Builds the set of variables's indexes in the range from
+    <CODE>v.id()</CODE> to <CODE>w.id()</CODE>.
 
     If <CODE>v.id() <= w.id()</CODE>, this constructor builds the
-    set of variables corresponding to the Cartesian axes of indices
+    set of variables' indexes
     <CODE>v.id()</CODE>, <CODE>v.id()+1</CODE>, ..., <CODE>w.id()</CODE>.
     The empty set it built otherwise.
   */
@@ -70,9 +71,15 @@ public:
 
   /*! \brief
     Returns the dimension of the smallest vector space enclosing all
-    the variables.
+    the variables whose indexes are in the set.
   */
   dimension_type space_dimension() const;
+
+  //! Inserts the index of variavle \p v into the set.
+  void insert(Variable v);
+  // The `insert' method above overloads (instead of hiding) the
+  // other `insert' method of std::set.
+  using Base::insert;
 
   //! Returns the total size in bytes of the memory occupied by \p *this.
   memory_size_type total_memory_in_bytes() const;

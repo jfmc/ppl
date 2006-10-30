@@ -33,12 +33,15 @@ FCAIBVP::FCAIBVP()
 inline
 FCAIBVP::FCAIBVP(const Variable& x)
   : set() {
-  set.insert(x);
+  set.insert(x.id());
 }
 
 inline
 FCAIBVP::FCAIBVP(const Variables_Set& y)
-  : set(y) {
+  : set() {
+  for (Variables_Set::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    set.insert(*i);
 }
 
 inline
@@ -46,7 +49,7 @@ FCAIBVP::FCAIBVP(const FCAIBVP& y, unsigned offset)
   : set() {
   for (Set::const_iterator i = y.set.begin(),
 	 y_set_end = y.set.end(); i != y_set_end; ++i)
-    set.insert(Variable(i->id() + offset));
+    set.insert(*i + offset);
 }
 
 inline memory_size_type
@@ -68,8 +71,7 @@ inline bool
 FCAIBVP::definitely_entails(const FCAIBVP& y) const{
   const FCAIBVP& x = *this;
   return std::includes(x.set.begin(), x.set.end(),
-		       y.set.begin(), y.set.end(),
-		       Compare());
+		       y.set.begin(), y.set.end());
 }
 
 inline void
@@ -78,8 +80,7 @@ FCAIBVP::upper_bound_assign(const FCAIBVP& y) {
   FCAIBVP z;
   std::set_intersection(x.set.begin(), x.set.end(),
 			y.set.begin(), y.set.end(),
-			std::inserter(z.set, z.set.begin()),
-			Compare());
+			std::inserter(z.set, z.set.begin()));
   std::swap(x, z);
 }
 
@@ -89,8 +90,7 @@ FCAIBVP::difference_assign(const FCAIBVP& y) {
   FCAIBVP z;
   std::set_difference(x.set.begin(), x.set.end(),
 		      y.set.begin(), y.set.end(),
-		      std::inserter(z.set, z.set.begin()),
-		      Compare());
+		      std::inserter(z.set, z.set.begin()));
   std::swap(x, z);
 }
 

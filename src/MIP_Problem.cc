@@ -349,21 +349,18 @@ PPL::MIP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
 }
 
 void
-PPL::MIP_Problem::add_to_integer_space_dimensions(const Variables_Set&
-						  i_vars) {
-  dimension_type i_vars_original_size = i_variables.size();
-  for (Variables_Set::const_iterator i_vars_it = i_vars.begin(),
-	 i_vars_end = i_vars.end(); i_vars_it != i_vars_end; ++i_vars_it) {
-    if (i_vars_it->id() > external_space_dim)
-      throw std::invalid_argument("PPL::MIP_Problem::"
-				  "add_to_integer_space_dimension(i_vars):\n"
-				  "*this and i_vars are dimension"
-				  "incompatible.");
-    i_variables.insert(*i_vars_it);
-  }
-  // If a new integral variable is inserted, set the internal status to
+PPL::MIP_Problem
+::add_to_integer_space_dimensions(const Variables_Set& i_vars) {
+  if (i_vars.space_dimension() > external_space_dim)
+    throw std::invalid_argument("PPL::MIP_Problem::"
+				"add_to_integer_space_dimension(i_vars):\n"
+				"*this and i_vars are dimension"
+				"incompatible.");
+  const dimension_type original_size = i_variables.size();
+  i_variables.insert(i_vars.begin(), i_vars.end());
+  // If a new integral variable was inserted, set the internal status to
   // PARTIALLY_SATISFIABLE.
-  if (i_variables.size() != i_vars_original_size && status != UNSATISFIABLE)
+  if (i_variables.size() != original_size && status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
 }
 
@@ -1518,9 +1515,9 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   dimension_type nonint_dim;
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
-    gcd_assign(gcd, p.coefficient(*v_begin), p_divisor);
+    gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
     if (gcd != p_divisor) {
-      nonint_dim = v_begin->id();
+      nonint_dim = *v_begin;
       found_satisfiable_generator = false;
       break;
     }
@@ -1584,7 +1581,9 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
   TEMP_INTEGER(gcd);
   for (Variables_Set::const_iterator v_it = i_vars.begin(),
 	 v_end = i_vars.end(); v_it != v_end; ++v_it) {
-    gcd_assign(gcd, last_generator.coefficient(*v_it), last_generator_divisor);
+    gcd_assign(gcd,
+	       last_generator.coefficient(Variable(*v_it)),
+	       last_generator_divisor);
     if (gcd != last_generator_divisor)
       candidate_variables.insert(*v_it);
   }
@@ -1612,12 +1611,12 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
     current_num_appearances = 0;
     for (dimension_type i = input_cs_num_rows; i-- > 0; )
       if (satisfiable_constraints[i]
-	  && v_it->space_dimension() <= input_cs[i].space_dimension()
-	  && input_cs[i].coefficient(*v_it) != 0)
+	  && *v_it < input_cs[i].space_dimension()
+	  && input_cs[i].coefficient(Variable(*v_it)) != 0)
 	++current_num_appearances;
     if (current_num_appearances >= winning_num_appearances) {
       winning_num_appearances = current_num_appearances;
-      branching_index = v_it->id();
+      branching_index = *v_it;
     }
   }
   return false;
@@ -1646,9 +1645,9 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   TEMP_INTEGER(gcd);
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
-    gcd_assign(gcd, p.coefficient(*v_begin), p_divisor);
+    gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
     if (gcd != p_divisor) {
-      nonint_dim = v_begin->id();
+      nonint_dim = *v_begin;
       found_satisfiable_generator = false;
       break;
     }
@@ -1757,7 +1756,7 @@ PPL::MIP_Problem::OK() const {
       TEMP_INTEGER(gcd);
       for (Variables_Set::const_iterator v_it = i_variables.begin(),
 	     v_end = i_variables.end(); v_it != v_end; ++v_it) {
-	gcd_assign(gcd, last_generator.coefficient(*v_it),
+	gcd_assign(gcd, last_generator.coefficient(Variable(*v_it)),
 		   last_generator.divisor());
 	if (gcd != last_generator.divisor())
 	  return false;

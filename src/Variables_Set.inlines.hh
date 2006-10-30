@@ -33,6 +33,11 @@ Variables_Set::Variables_Set()
   : Base() {
 }
 
+inline void
+Variables_Set::insert(const Variable v) {
+  insert(v.id());
+}
+
 inline
 Variables_Set::Variables_Set(const Variable& v)
   : Base() {
@@ -47,16 +52,16 @@ Variables_Set::max_space_dimension() {
 inline dimension_type
 Variables_Set::space_dimension() const {
   reverse_iterator i = rbegin();
-  return i == rend() ? 0 : i->id()+1;
+  return i == rend() ? 0 : *i+1;
 }
 
 inline memory_size_type
 Variables_Set::external_memory_in_bytes() const {
   // We assume sets are implemented by means of red-black trees that
-  // require to store the color (we assume a bool) and three pointers
+  // require to store the color (we assume an enum) and three pointers
   // to the parent, left and right child, respectively.
   enum color { red, black };
-  return size() * (sizeof(color) + 3*sizeof(void*) + sizeof(Variable));
+  return size() * (sizeof(color) + 3*sizeof(void*) + sizeof(dimension_type));
 }
 
 inline memory_size_type

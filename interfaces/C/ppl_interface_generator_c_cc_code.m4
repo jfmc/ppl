@@ -561,7 +561,7 @@ ppl_@CLASS@_remove_space_dimensions
   @CPP_CLASS@& pph = *to_nonconst(ph);
   Variables_Set to_be_removed;
   for (ppl_dimension_type i = n; i-- > 0; )
-    to_be_removed.insert(Variable(ds[i]));
+    to_be_removed.insert(ds[i]);
   pph.remove_space_dimensions(to_be_removed);
   return 0;
 }
@@ -621,7 +621,7 @@ ppl_@CLASS@_fold_space_dimensions
   @CPP_CLASS@& pph = *to_nonconst(ph);
   Variables_Set to_be_folded;
   for (ppl_dimension_type i = n; i-- > 0; )
-    to_be_folded.insert(Variable(ds[i]));
+    to_be_folded.insert(ds[i]);
   pph.fold_space_dimensions(to_be_folded, Variable(d));
   return 0;
 }

@@ -109,7 +109,7 @@ public:
     A past-the-end input iterator to the sequence of constraints.
 
     \param int_vars
-    The set of variables that are constrained to take integer values.
+    The set of variables' indexes that are constrained to take integer values.
 
     \param obj
     The objective function (optional argument with default value \f$0\f$).
@@ -217,7 +217,8 @@ MIP_Problem(dimension_type dim,
   dimension_type space_dimension() const;
 
   /*! \brief
-    Returns a set containing all the variables constrained to be integral.
+    Returns a set containing all the variables' indexes constrained
+    to be integral.
   */
   const Variables_Set& integer_space_dimensions() const;
 
@@ -273,10 +274,11 @@ public:
   void add_space_dimensions_and_embed(dimension_type m);
 
   /*! \brief
-    Sets the variables in set \p i_vars to be integer space dimensions.
+    Sets the variables whose indexes are in set \p i_vars to be
+    integer space dimensions.
 
     \exception std::invalid_argument
-    Thrown if some variable is \p i_vars does not correspond to
+    Thrown if some index in \p i_vars does not correspond to
     a space dimension in \p *this.
   */
   void add_to_integer_space_dimensions(const Variables_Set& i_vars);
@@ -468,7 +470,7 @@ private:
   Generator last_generator;
 
   /*! \brief
-    A set containing all the variables that are constrained
+    A set containing all the indexes of variables that are constrained
     to have an integer value.
   */
   Variables_Set i_variables;

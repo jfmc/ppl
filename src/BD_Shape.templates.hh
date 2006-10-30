@@ -1439,10 +1439,10 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // respectively left and above.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst = tbr->id() + 1;
+  dimension_type dst = *tbr + 1;
   dimension_type src = dst + 1;
   for (++tbr; tbr != tbr_end; ++tbr) {
-    const dimension_type tbr_next = tbr->id() + 1;
+    const dimension_type tbr_next = *tbr + 1;
     // All other columns and rows are moved respectively to the left
     // and above.
     while (src < tbr_next) {
@@ -4044,8 +4044,8 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
     throw_dimension_incompatible("fold_space_dimensions(tbf, ...)",
 				 to_be_folded.space_dimension());
 
-  // Moreover, `var' should not occur in `to_be_folded'.
-  if (to_be_folded.find(var) != to_be_folded.end())
+  // Moreover, `var.id()' should not occur in `to_be_folded'.
+  if (to_be_folded.find(var.id()) != to_be_folded.end())
     throw_generic("fold_space_dimensions(tbf, v)",
 		  "v should not occur in tbf");
 
@@ -4058,7 +4058,7 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
   DB_Row<N>& dbm_v = dbm[v_id];
   for (Variables_Set::const_iterator i = to_be_folded.begin(),
 	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
-    const dimension_type tbf_id = i->id() + 1;
+    const dimension_type tbf_id = *i + 1;
     const DB_Row<N>& dbm_tbf = dbm[tbf_id];
     for (dimension_type j = space_dim +1; j-- > 0; ) {
       max_assign(dbm[j][v_id], dbm[j][tbf_id]);

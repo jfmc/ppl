@@ -1779,7 +1779,7 @@ ppl_MIP_Problem_integer_space_dimensions(Prolog_term_ref t_mip,
 
     for (Variables_Set::const_iterator i = i_vars.begin(),
 	   i_end = i_vars.end(); i != i_end; ++i)
-      Prolog_construct_cons(tail, variable_term(i->id()), tail);
+      Prolog_construct_cons(tail, variable_term(*i), tail);
 
     if (Prolog_unify(t_vlist, tail))
       return PROLOG_SUCCESS;
@@ -1882,7 +1882,7 @@ ppl_MIP_Problem_add_to_integer_space_dimensions(Prolog_term_ref t_mip,
 
     while (Prolog_is_cons(t_vlist)) {
       Prolog_get_cons(t_vlist, v, t_vlist);
-      i_vars.insert(term_to_Variable(v, where));
+      i_vars.insert(term_to_Variable(v, where).id());
     }
 
     // Check the list is properly terminated.

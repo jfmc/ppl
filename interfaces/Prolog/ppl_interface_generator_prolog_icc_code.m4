@@ -1096,7 +1096,7 @@ ppl_@CLASS@_remove_space_dimensions
     Prolog_term_ref v = Prolog_new_term_ref();
     while (Prolog_is_cons(t_vlist)) {
       Prolog_get_cons(t_vlist, v, t_vlist);
-      dead_variables.insert(term_to_Variable(v, where));
+      dead_variables.insert(term_to_Variable(v, where).id());
     }
 
     // Check the list is properly terminated.
@@ -1156,7 +1156,7 @@ ppl_@CLASS@_fold_space_dimensions
     Prolog_term_ref v = Prolog_new_term_ref();
     while (Prolog_is_cons(t_vlist)) {
       Prolog_get_cons(t_vlist, v, t_vlist);
-      fold_variables.insert(term_to_Variable(v, where));
+      fold_variables.insert(term_to_Variable(v, where).id());
     }
 
     // Check the list is properly terminated.
