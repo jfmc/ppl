@@ -30,7 +30,7 @@ namespace Checked {
 template <typename Policy>
 inline Result
 round_lt_mpz(mpz_class& to, Rounding_Dir dir) {
-  if (dir == ROUND_DOWN) {
+  if (round_down(dir)) {
     --to;
     return V_GT;
   }
@@ -40,7 +40,7 @@ round_lt_mpz(mpz_class& to, Rounding_Dir dir) {
 template <typename Policy>
 inline Result
 round_gt_mpz(mpz_class& to, Rounding_Dir dir) {
-  if (dir == ROUND_UP) {
+  if (round_up(dir)) {
     ++to;
     return V_LT;
   }
@@ -228,7 +228,7 @@ SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long long)
 template <typename Policy, typename From>
 inline Result
 assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
-  if (dir == ROUND_IGNORE) {
+  if (round_ignore(dir)) {
     to = from;
     return V_LGE;
   }
@@ -248,18 +248,18 @@ SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
 template <typename Policy>
 inline Result
 assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
-  if (dir == ROUND_IGNORE) {
+  if (round_ignore(dir)) {
     to = from;
     return V_LGE;
   }
   mpz_srcptr n = from.get_num().get_mpz_t();
   mpz_srcptr d = from.get_den().get_mpz_t();
-  if (dir == ROUND_DOWN) {
+  if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
     return mpz_divisible_p(n, d) ? V_EQ : V_GT;
   }
   else {
-    assert(dir == ROUND_UP);
+    assert(round_up(dir));
     mpz_cdiv_q(to.get_mpz_t(), n, d);
     return mpz_divisible_p(n, d) ? V_EQ : V_LT;
   }
@@ -348,16 +348,16 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
     return set_special<Policy>(to, V_DIV_ZERO);
   mpz_srcptr n = x.get_mpz_t();
   mpz_srcptr d = y.get_mpz_t();
-  if (dir == ROUND_IGNORE) {
+  if (round_ignore(dir)) {
     mpz_divexact(to.get_mpz_t(), n, d);
     return V_LGE;
   }
-  if (dir == ROUND_DOWN) {
+  if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
     return mpz_divisible_p(n, d) ? V_EQ : V_GT;
   }
   else {
-    assert(dir == ROUND_UP);
+    assert(round_up(dir));
     mpz_cdiv_q(to.get_mpz_t(), n, d);
     return mpz_divisible_p(n, d) ? V_EQ : V_LT;
   }
@@ -393,16 +393,16 @@ div2exp_mpz(mpz_class& to, const mpz_class& x, int exp, Rounding_Dir dir) {
   if (exp < 0)
     return mul2exp<Policy>(to, x, -exp, dir);
   mpz_srcptr n = x.get_mpz_t();
-  if (dir == ROUND_IGNORE) {
+  if (round_ignore(dir)) {
     mpz_tdiv_q_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);
     return V_LGE;
   }
-  if (dir == ROUND_DOWN) {
+  if (round_down(dir)) {
     mpz_fdiv_q_2exp(to.get_mpz_t(), n, exp);
     return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_GT;
   }
   else {
-    assert(dir == ROUND_UP);
+    assert(round_up(dir));
     mpz_cdiv_q_2exp(to.get_mpz_t(), n, exp);
     return mpz_divisible_2exp_p(n, exp) ? V_EQ : V_LT;
   }
@@ -473,7 +473,7 @@ inline Result
 sqrt_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_sqrt_neg, from < 0))
     return set_special<Policy>(to, V_SQRT_NEG);
-  if (dir == ROUND_IGNORE) {
+  if (round_ignore(dir)) {
     to = sqrt(from);
     return V_GE;
   }

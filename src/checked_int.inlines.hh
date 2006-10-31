@@ -94,7 +94,7 @@ struct Extended_Int {
 template <typename Policy, typename To>
 inline Result
 set_neg_overflow_int(To& to, Rounding_Dir dir) {
-  if (dir == ROUND_UP) {
+  if (round_up(dir)) {
     to = Extended_Int<Policy, To>::min;
     return V_LT;
   }
@@ -110,7 +110,7 @@ set_neg_overflow_int(To& to, Rounding_Dir dir) {
 template <typename Policy, typename To>
 inline Result
 set_pos_overflow_int(To& to, Rounding_Dir dir) {
-  if (dir == ROUND_DOWN) {
+  if (round_down(dir)) {
     to = Extended_Int<Policy, To>::max;
     return V_GT;
   }
@@ -126,7 +126,7 @@ set_pos_overflow_int(To& to, Rounding_Dir dir) {
 template <typename Policy, typename To>
 inline Result
 round_lt_int_no_overflow(To& to, Rounding_Dir dir) {
-  if (dir == ROUND_DOWN) {
+  if (round_down(dir)) {
     --to;
     return V_GT;
   }
@@ -136,7 +136,7 @@ round_lt_int_no_overflow(To& to, Rounding_Dir dir) {
 template <typename Policy, typename To>
 inline Result
 round_gt_int_no_overflow(To& to, Rounding_Dir dir) {
-  if (dir == ROUND_UP) {
+  if (round_up(dir)) {
     ++to;
     return V_LT;
   }
@@ -146,7 +146,7 @@ round_gt_int_no_overflow(To& to, Rounding_Dir dir) {
 template <typename Policy, typename To>
 inline Result
 round_lt_int(To& to, Rounding_Dir dir) {
-  if (dir == ROUND_DOWN) {
+  if (round_down(dir)) {
     if (to == Extended_Int<Policy, To>::min) {
       if (Policy::handle_infinity) {
 	to = Extended_Int<Policy, To>::minus_infinity;
@@ -165,7 +165,7 @@ round_lt_int(To& to, Rounding_Dir dir) {
 template <typename Policy, typename To>
 inline Result
 round_gt_int(To& to, Rounding_Dir dir) {
-  if (dir == ROUND_UP) {
+  if (round_up(dir)) {
     if (to == Extended_Int<Policy, To>::max) {
       if (Policy::handle_infinity) {
 	to = Extended_Int<Policy, To>::plus_infinity;
@@ -470,7 +470,7 @@ assign_int_float(To& to, const From from, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_overflow, (from > Extended_Int<Policy, To>::max)))
     return set_pos_overflow_int<Policy>(to, dir);
   to = static_cast<To>(from);
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_LGE;
   if (from < to)
     return round_lt_int<Policy>(to, dir);
@@ -610,7 +610,7 @@ assign_int_mpq(To& to, const mpq_class& from, Rounding_Dir dir) {
   mpz_srcptr d = from.get_den().get_mpz_t();
   mpz_class q;
   mpz_ptr _q = q.get_mpz_t();
-  if (dir == ROUND_IGNORE) {
+  if (round_ignore(dir)) {
     mpz_tdiv_q(_q, n, d);
     Result r = assign<Policy>(to, q, dir);
     if (r != V_EQ)
@@ -654,7 +654,7 @@ assign_int_minf(To& to, const Minus_Infinity&, Rounding_Dir dir) {
     to = Extended_Int<Policy, To>::minus_infinity;
     return V_EQ;
   }
-  if (dir == ROUND_UP) {
+  if (round_up(dir)) {
     to = Extended_Int<Policy, To>::min;
     return V_LT;
   }
@@ -668,7 +668,7 @@ assign_int_pinf(To& to, const Plus_Infinity&, Rounding_Dir dir) {
     to = Extended_Int<Policy, To>::plus_infinity;
     return V_EQ;
   }
-  if (dir == ROUND_DOWN) {
+  if (round_down(dir)) {
     to = Extended_Int<Policy, To>::max;
     return V_GT;
   }
@@ -1059,7 +1059,7 @@ div_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (Policy::check_overflow && y == -1)
     return neg_signed_int<Policy>(to, x, dir);
   to = x / y;
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_LGE;
   Type m = x % y;
   if (m < 0)
@@ -1076,7 +1076,7 @@ div_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (CHECK_P(Policy::check_div_zero, y == 0))
     return set_special<Policy>(to, V_DIV_ZERO);
   to = x / y;
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_GE;
   Type m = x % y;
   if (m == 0)
@@ -1100,14 +1100,14 @@ div2exp_unsigned_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
     return mul2exp<Policy>(to, x, -exp, dir);
   if (static_cast<unsigned int>(exp) >= sizeof(Type) * 8) {
     to = 0;
-    if (dir == ROUND_IGNORE)
+    if (round_ignore(dir))
       return V_GE;
     if (x == 0)
       return V_EQ;
     return round_gt_int_no_overflow<Policy>(to, dir);
   }
   to = x >> exp;
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_GE;
   if (x & ((static_cast<Type>(1) << exp) - 1))
     return round_gt_int_no_overflow<Policy>(to, dir);
@@ -1123,7 +1123,7 @@ div2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   if (static_cast<unsigned int>(exp) >= sizeof(Type) * 8) {
   zero:
     to = 0;
-    if (dir == ROUND_IGNORE)
+    if (round_ignore(dir))
       return V_LGE;
     if (x < 0)
       return round_lt_int_no_overflow<Policy>(to, dir);
@@ -1141,7 +1141,7 @@ div2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
   }
 #if 0
   to = x / (static_cast<Type>(1) << exp);
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_GE;
   Type r = x % (static_cast<Type>(1) << exp);
   if (r < 0)
@@ -1153,7 +1153,7 @@ div2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
 #else
   // Faster but compiler implementation dependent (see C++98 5.8.3)
   to = x >> exp;
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_GE;
   if (x & ((static_cast<Type>(1) << exp) - 1))
     return round_gt_int_no_overflow<Policy>(to, dir);
@@ -1247,7 +1247,7 @@ inline Result
 sqrt_unsigned_int(Type& to, const Type from, Rounding_Dir dir) {
   Type rem;
   isqrtrem(to, rem, from);
-  if (dir == ROUND_IGNORE)
+  if (round_ignore(dir))
     return V_GE;
   if (rem == 0)
     return V_EQ;
