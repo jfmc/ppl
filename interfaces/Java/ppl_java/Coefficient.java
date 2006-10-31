@@ -31,6 +31,7 @@ import java.math.BigInteger;
   intervals, bounding boxes and so on.
 */
 public class Coefficient {
+
     //! Holds the value of \p this.
     private BigInteger value;
 
@@ -63,7 +64,7 @@ public class Coefficient {
 	value = new BigInteger(c.value.toString());
     }
 
-    //| Returns the value held by \p this.
+    //! Returns the value held by \p this.
     public BigInteger getBigInteger() {
 	return value;
     }

@@ -1,4 +1,4 @@
-/* Common Java method implementation for the Linear_Expression Java interfce.
+/* Linear_Expression Java declaration and implementation.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,13 +21,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 package ppl_java;
-
-//! Common Linear_Expression method implementation.
+//! A linear expression.
 /*! \ingroup PPL_Java_interface
   An object of the class Linear_Expression represents a linear expression
   that can be built from a Linear_Expression_Variable,
   Linear_Expression_Coefficient, Linear_Expression_Sum,
-  Linear_Expression_Differnce, Linear_Expression_Unary_Minus.
+  Linear_Expression_Difference, Linear_Expression_Unary_Minus.
 */
 
 public class Linear_Expression {
@@ -41,7 +40,7 @@ public class Linear_Expression {
     public Linear_Expression subtract(Linear_Expression y) {
 	return new Linear_Expression_Difference(this, y);
     }
-    //! Returns the product of \p times \p c.
+    //! Returns the product of \p this times \p c.
     public Linear_Expression times(Coefficient c) {
 	return new Linear_Expression_Times(this, c);
     }

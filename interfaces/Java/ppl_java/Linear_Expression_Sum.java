@@ -35,7 +35,7 @@ public class Linear_Expression_Sum
     //! The value of the right hand side of \p this.
     protected Linear_Expression rhs;
 
-    //! Builds an object that represents the sum of \p x and \y.
+    //! Builds an object that represents the sum of \p x and \p y.
     public Linear_Expression_Sum(Linear_Expression x, Linear_Expression y) {
         lhs = x;
         rhs = y;

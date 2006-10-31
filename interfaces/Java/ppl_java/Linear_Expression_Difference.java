@@ -34,7 +34,7 @@ public class Linear_Expression_Difference
     //! The value of the right hand side of \p this.
     protected Linear_Expression rhs;
 
-    //! Builds an object that represents the difference of \p x and \y.
+    //! Builds an object that represents the difference of \p x and \p y.
     public Linear_Expression_Difference(Linear_Expression x,
 					Linear_Expression y) {
         lhs = x;
