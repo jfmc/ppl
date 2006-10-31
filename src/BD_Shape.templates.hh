@@ -1459,7 +1459,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
     // All other columns and rows are moved respectively to the left
     // and above.
     while (src < tbr_next) {
-      dbm[dst] = dbm[src];
+      std::swap(dbm[dst], dbm[src]);
       for (dimension_type i = old_space_dim + 1; i-- > 0; ) {
 	DB_Row<N>& dbm_i = dbm[i];
 	dbm_i[dst] = dbm_i[src];
