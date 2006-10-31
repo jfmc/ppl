@@ -267,6 +267,60 @@ test08() {
   return ok;
 }
 
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd1(2, EMPTY);
+
+  print_constraints(bd1, "*** bd1 ***");
+
+  // This is the set of the variables that we want to fold.
+  Variables_Set to_fold;
+  to_fold.insert(A);
+
+  bd1.OK();
+
+  bd1.fold_space_dimensions(to_fold, B);
+
+  TBD_Shape known_result(1, EMPTY);
+
+  bool ok = (bd1 == known_result);
+
+  print_constraints(bd1, "*** After folding {A} into B ***");
+
+  return ok;
+}
+
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd1(1, EMPTY);
+
+  bd1.add_space_dimensions_and_embed(1);
+
+  print_constraints(bd1, "*** bd1 ***");
+
+  // This is the set of the variables that we want to fold.
+  Variables_Set to_fold;
+  to_fold.insert(A);
+
+  bd1.OK();
+
+  bd1.fold_space_dimensions(to_fold, B);
+
+  TBD_Shape known_result(1, EMPTY);
+
+  bool ok = (bd1 == known_result);
+
+  print_constraints(bd1, "*** After folding {A} into B ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -278,4 +332,6 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN
