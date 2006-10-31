@@ -5209,6 +5209,97 @@ Octagonal_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
   assert(OK());
 }
 
+template <typename T>
+void
+Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
+					  Variable var) {
+  using Implementation::BD_Shapes::max_assign;
+
+  // `var' should be one of the dimensions of the octagon.
+  if (var.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(tbf, v)", "v", var);
+
+  // The folding of no dimensions is a no-op.
+  if (to_be_folded.empty())
+    return;
+
+  // All variables in `to_be_folded' should be dimensions of the octagon.
+  if (to_be_folded.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(tbf, ...)",
+				 to_be_folded.space_dimension());
+
+  // Moreover, `var.id()' should not occur in `to_be_folded'.
+  if (to_be_folded.find(var.id()) != to_be_folded.end())
+    throw_generic("fold_space_dimensions(tbf, v)",
+		  "v should not occur in tbf");
+
+  // Recompute the elements of the row and the column corresponding
+  // to variable `var' by taking the join of their value with the
+  // value of the corresponding elements in the row and column of the
+  // variable `to_be_folded'.
+  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+
+  const Row_Iterator m_begin = matrix.row_begin();
+  const Row_Iterator m_end = matrix.row_end();
+
+  strong_closure_assign();
+  const dimension_type n_rows = matrix.num_rows();
+  const dimension_type n_var = 2*var.id();
+  Row_Iterator v_iter = m_begin + n_var;
+  Row_Reference m_v = *v_iter;
+  Row_Reference m_cv = *(v_iter+1);
+  for (Variables_Set::const_iterator i = to_be_folded.begin(),
+	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
+    const dimension_type tbf_id = *i;
+    const dimension_type tbf_var = 2*tbf_id;
+    Row_Iterator tbf_iter = m_begin + tbf_var;
+    Row_Reference m_tbf = *tbf_iter;
+    Row_Reference m_ctbf = *(tbf_iter+1);
+    max_assign(m_v[n_var+1], m_tbf[tbf_var+1]);
+    max_assign(m_cv[n_var], m_ctbf[tbf_var]);
+
+    const dimension_type min_id = std::min(n_var, tbf_var);
+    const dimension_type max_id = std::max(n_var, tbf_var);
+
+    for (dimension_type j = 0; j < min_id; ++j) {
+      const dimension_type cj = coherent_index(j);
+      max_assign(m_v[j], m_tbf[j]);
+      max_assign(m_cv[j], m_ctbf[j]);
+      max_assign(m_cv[cj], m_ctbf[cj]);
+      max_assign(m_v[cj], m_tbf[cj]);
+    }
+    for (dimension_type j = min_id+2; j < max_id; ++j) {
+      const dimension_type cj = coherent_index(j);
+      Row_Iterator j_iter = m_begin + j;
+      Row_Reference m_j = *j_iter;
+      Row_Reference m_cj = (j%2) ? *(j_iter-1) : *(j_iter+1);
+      if (n_var == min_id) {
+	max_assign(m_cj[n_var+1], m_tbf[j]);
+	max_assign(m_cj[n_var], m_ctbf[j]);
+	max_assign(m_j[n_var], m_ctbf[cj]);
+	max_assign(m_j[n_var+1], m_tbf[cj]);
+      }
+      else {
+	max_assign(m_v[j], m_cj[tbf_var+1]);
+	max_assign(m_cv[j], m_cj[tbf_var]);
+	max_assign(m_cv[cj], m_j[tbf_var]);
+	max_assign(m_v[cj], m_j[tbf_var+1]);
+      }
+    }
+    for (dimension_type j = max_id+2; j < n_rows; ++j) {
+      Row_Iterator j_iter = m_begin + j;
+      Row_Reference m_j = *j_iter;
+      Row_Reference m_cj = (j%2) ? *(j_iter-1) : *(j_iter+1);
+      max_assign(m_cj[n_var+1], m_cj[tbf_var+1]);
+      max_assign(m_cj[n_var], m_cj[tbf_var]);
+      max_assign(m_j[n_var], m_j[tbf_var]);
+      max_assign(m_j[n_var+1], m_j[tbf_var+1]);
+    }
+  }
+  remove_space_dimensions(to_be_folded);
+}
+
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
 template <typename T>
 std::ostream&
