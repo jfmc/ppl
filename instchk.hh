@@ -47,7 +47,7 @@ public:
   static bool valid_instantiation() {
     return true;
   }
-  static bool valid_Polyhedra_Powerset_argument() {
+  static bool valid_Pointset_Powerset_argument() {
     return true;
   }
 };
@@ -104,7 +104,18 @@ public:
   static bool valid_instantiation() {
     return valid_BD_Shape_argument<T>();
   }
-  static bool valid_Polyhedra_Powerset_argument() {
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+};
+
+template <typename T>
+class Octagonal_Shape {
+public:
+  static bool valid_instantiation() {
+    return valid_BD_Shape_argument<T>();
+  }
+  static bool valid_Pointset_Powerset_argument() {
     return true;
   }
 };
