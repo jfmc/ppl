@@ -1435,13 +1435,20 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
+  // Handle the case of an empty BD_Shape.
+  if (marked_empty()) {
+    dbm.resize_no_copy(new_space_dim + 1);
+    assert(OK());
+    return;
+  }
+
   // Shortest-path closure is maintained.
   // TODO: see whether reduction can be (efficiently!) maintained too.
   if (marked_shortest_path_reduced())
     status.reset_shortest_path_reduced();
 
   // For each variable to remove, we erase the corresponding column and
-  // row by shifting the other columns and rows, than are not removed,
+  // row by shifting the other columns and rows, that are not removed,
   // respectively left and above.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
@@ -1465,7 +1472,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
 
   // Moving the remaining rows and columns.
   while (src <= old_space_dim) {
-    dbm[dst] = dbm[src];
+    std::swap(dbm[dst], dbm[src]);
     for (dimension_type i = old_space_dim + 1; i-- > 0; ) {
       DB_Row<N>& dbm_i = dbm[i];
       dbm_i[dst] = dbm_i[src];
@@ -4035,7 +4042,7 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
 				   Variable var) {
   using Implementation::BD_Shapes::max_assign;
 
-  dimension_type space_dim = space_dimension();
+  const dimension_type space_dim = space_dimension();
   // `var' should be one of the dimensions of the BDS.
   if (var.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
@@ -4055,20 +4062,22 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
     throw_generic("fold_space_dimensions(tbf, v)",
 		  "v should not occur in tbf");
 
-  // Recompute the elements of the row and the column corresponding
-  // to variable `var' by taking the join of their value with the
-  // value of the corresponding elements in the row and column of the
-  // variable `to_be_folded'.
   shortest_path_closure_assign();
-  const dimension_type v_id = var.id() + 1;
-  DB_Row<N>& dbm_v = dbm[v_id];
-  for (Variables_Set::const_iterator i = to_be_folded.begin(),
-	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
-    const dimension_type tbf_id = *i + 1;
-    const DB_Row<N>& dbm_tbf = dbm[tbf_id];
-    for (dimension_type j = space_dim +1; j-- > 0; ) {
-      max_assign(dbm[j][v_id], dbm[j][tbf_id]);
-      max_assign(dbm_v[j], dbm_tbf[j]);
+  if (!marked_empty()) {
+    // Recompute the elements of the row and the column corresponding
+    // to variable `var' by taking the join of their value with the
+    // value of the corresponding elements in the row and column of the
+    // variable `to_be_folded'.
+    const dimension_type v_id = var.id() + 1;
+    DB_Row<N>& dbm_v = dbm[v_id];
+    for (Variables_Set::const_iterator i = to_be_folded.begin(),
+	   tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
+      const dimension_type tbf_id = *i + 1;
+      const DB_Row<N>& dbm_tbf = dbm[tbf_id];
+      for (dimension_type j = space_dim + 1; j-- > 0; ) {
+	max_assign(dbm[j][v_id], dbm[j][tbf_id]);
+	max_assign(dbm_v[j], dbm_tbf[j]);
+      }
     }
   }
   remove_space_dimensions(to_be_folded);
