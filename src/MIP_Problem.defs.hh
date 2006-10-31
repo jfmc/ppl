@@ -686,8 +686,7 @@ private:
     The problem that has to be solved.
 
     \param i_vars
-    A set containing all the variables that are constrained to have an integer
-    value.
+    The variables that are constrained to take an integer value.
   */
   static MIP_Problem_Status solve_mip(bool& have_incumbent_solution,
 				      mpq_class& incumbent_solution_value,
@@ -709,8 +708,7 @@ private:
     This will encode the feasible point, only if <CODE>true</CODE> is returned.
 
     \param i_vars
-    This encodes all the variables that are constrained to have an
-    integer value.
+    The variables that are constrained to take an integer value.
   */
   static bool is_mip_satisfiable(MIP_Problem& mip, Generator& p,
 				 const Variables_Set& i_vars);
@@ -721,6 +719,9 @@ private:
 
     \param mip
     The MIP problem.
+
+    \param i_vars
+    The variables that are constrained to take an integer value.
 
     \param branching_index
     If <CODE>false</CODE> is returned, this will encode the variable index on
