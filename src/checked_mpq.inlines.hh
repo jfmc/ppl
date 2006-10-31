@@ -88,7 +88,11 @@ SPECIALIZE_IS_PINF(mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_int_mpq(const mpq_class& v) {
-  return !is_nan<Policy>(v) && v.get_den() == 1;
+  if ((Policy::handle_infinity || Policy::handle_nan)
+      && ::sgn(v.get_den()) == 0)
+    return !(Policy::handle_nan && ::sgn(v.get_num()) == 0);
+  else
+    return v.get_den() == 1;
 }
 
 SPECIALIZE_IS_INT(mpq, mpq_class)
