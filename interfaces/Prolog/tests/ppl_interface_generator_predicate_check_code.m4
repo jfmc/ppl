@@ -59,6 +59,48 @@ ppl_@CLASS@_comparison_check(strictly_contains, PS1, PS2, Result) :-
 
 ')
 
+m4_define(`m4_add_wdn_exn_class_code', `dnl
+ppl_@CLASS@_wdn_exn_check_code(PS1, PS1_Copy, PS2, PS2_Copy) :-
+  (
+     ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy),
+     ppl_@CLASS@_contains_@CLASS@(PS1, PS2),
+     ppl_@CLASS@_equals_@CLASS@(PS2, PS2_Copy),
+     ppl_@CLASS@_OK(PS1),
+     ppl_@CLASS@_OK(PS2),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS1_Copy),
+     ppl_delete_@CLASS@(PS2),
+     ppl_delete_@CLASS@(PS2_Copy)
+  ).
+
+ppl_@CLASS@_wdn_exn_with_tokens_check_code(PS1, PS1a, PS1_Copy, PS2, PS2_Copy,
+                                           T, T1) :-
+  (
+     ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy),
+     ppl_@CLASS@_contains_@CLASS@(PS1a, PS1_Copy),
+     ppl_@CLASS@_contains_@CLASS@(PS1, PS2),
+     ppl_@CLASS@_contains_@CLASS@(PS1a, PS1),
+     ppl_@CLASS@_equals_@CLASS@(PS2, PS2_Copy),
+     (T == 1
+     ->
+       ppl_@CLASS@_equals_@CLASS@(PS1, PS1a)
+     ;
+       T == 0,
+       ppl_@CLASS@_equals_@CLASS@(PS1, PS1_Copy)
+     ),
+     T1 == 0,
+     ppl_@CLASS@_OK(PS1),
+     ppl_@CLASS@_OK(PS1a),
+     ppl_@CLASS@_OK(PS2),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS1a),
+     ppl_delete_@CLASS@(PS1_Copy),
+     ppl_delete_@CLASS@(PS2),
+     ppl_delete_@CLASS@(PS2_Copy)
+  ).
+
+')
+
 m4_define(`m4_add_cleanup_class_code', `dnl
 ppl_cleanup_@CLASS@(_).
 ppl_cleanup_@CLASS@(P) :-
@@ -963,18 +1005,326 @@ ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_5_test :-
 
 ')
 
-dnl ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens/4 +simple,
-dnl ppl_@CLASS@_@WIDEN@_widening_assign/2 *nofail +simple,
-dnl ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens/5 +simple,
-dnl ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign/3 *nofail +simple,
-dnl ppl_BD_Shape_CC76_extrapolation_assign_with_tokens/4 -bd_shape,
-dnl ppl_BD_Shape_CC76_extrapolation_assign/2 *nofail -bd_shape,
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
+`
+ppl_@CLASS@_@WIDEN@_widening_assign_2_test :-
+  (
+   member(TEST_DATA1, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@CLASS@_upper_bound_assign(PS1, PS2),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
+     ppl_@CLASS@_@WIDEN@_widening_assign(PS1, PS2),
+     ppl_@CLASS@_wdn_exn_check_code(PS1, PS1_Copy, PS2, PS2_Copy)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
+`
+ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_4_test :-
+  (
+   member(TEST_DATA1, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@CLASS@_upper_bound_assign(PS1, PS2),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1a),
+     ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens(PS1, PS2, 1, T),
+     ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens(PS1a, PS2, 0, T1),
+     ppl_@CLASS@_wdn_exn_with_tokens_check_code(PS1, PS1a, PS1_Copy,
+                                                PS2, PS2_Copy, T, T1)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_code',
+`
+ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_3_test :-
+  (
+   member(TEST_DATA1, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   Dim > 0,
+   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@CLASS@_upper_bound_assign(PS1, PS2),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
+     make_vars(Dim, [Var|_]),
+     ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign(
+           PS1, PS2, [Var = 1]),
+     ppl_@CLASS@_wdn_exn_check_code(PS1, PS1_Copy, PS2, PS2_Copy)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+`
+ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_5_test :-
+  (
+   member(TEST_DATA1, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   Dim > 0,
+   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@CLASS@_upper_bound_assign(PS1, PS2),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1a),
+     make_vars(Dim, [Var|_]),
+     ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(PS1, PS2, [Var = 1], 1, T),
+     ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(PS1a, PS2, [Var = 1], 0, T1),
+     ppl_@CLASS@_wdn_exn_with_tokens_check_code(PS1, PS1a, PS1_Copy,
+                                                PS2, PS2_Copy, T, T1)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_BD_Shape_CC76_extrapolation_assign_code',
+`
+ppl_BD_Shape_CC76_extrapolation_assign_2_test :-
+  (
+   member(TEST_DATA1, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@CLASS@_upper_bound_assign(PS1, PS2),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
+     ppl_BD_Shape_CC76_extrapolation_assign,
+     ppl_@CLASS@_wdn_exn_check_code(PS1, PS1_Copy, PS2, PS2_Copy)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_BD_Shape_CC76_extrapolation_assign_with_tokens_code',
+`
+ppl_BD_Shape_CC76_extrapolation_assign_with_tokens_4_test :-
+  (
+   member(TEST_DATA1, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@CLASS@_upper_bound_assign(PS1, PS2),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1a),
+     ppl_BD_Shape_CC76_extrapolation_assign_with_tokens(PS1, PS2, 1, T),
+     ppl_BD_Shape_CC76_extrapolation_assign_with_tokens(PS1a, PS2, 0, T1),
+     ppl_@CLASS@_wdn_exn_with_tokens_check_code(PS1, PS1a, PS1_Copy,
+                                                PS2, PS2_Copy, T, T1)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
+`
+ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_2_test :-
+  (
+    (
+      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(1, universe, PS),
+      ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@(PS, 1),
+      ppl_@CLASS@_OK(PS),
+      ppl_@CLASS@_space_dimension(PS, 2),
+      (@EMBEDPROJECT@ == and_embed
+      ->
+        ppl_@CLASS@_is_universe(PS)
+      ;
+        ppl_@CLASS@_affine_dimension(PS, 1)
+      ),
+      ppl_@CLASS@_OK(PS)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
+`
+ppl_@CLASS@_remove_higher_space_dimensions_2_test :-
+  (
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_space_dimension(PS, Dim),
+     ppl_@CLASS@_add_space_dimensions_and_embed(PS, 1),
+     ppl_@CLASS@_OK(PS),
+     ppl_@CLASS@_space_dimension(PS, Dim1),
+     Dim1 is Dim + 1,
+     ppl_@CLASS@_remove_higher_space_dimensions(PS, Dim),
+     ppl_@CLASS@_space_dimension(PS, Dim),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_remove_higher_space_dimensions(PS, 0),
+     ppl_@CLASS@_space_dimension(PS, 0),
+     ppl_@CLASS@_OK(PS),
+     ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PS_Copy)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
+`
+ppl_@CLASS@_remove_space_dimensions_2_test :-
+  (
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_space_dimension(PS, Dim),
+     ppl_@CLASS@_add_space_dimensions_and_embed(PS, 1),
+     Dim1 is Dim + 1,
+     ppl_@CLASS@_remove_space_dimensions(PS, []),
+     ppl_@CLASS@_space_dimension(PS, Dim1),
+     make_vars(Dim1, Var_List),
+     append(_, [Var], Var_List),
+     ppl_@CLASS@_remove_space_dimensions(PS, [Var]),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_OK(PS),
+     ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PS_Copy)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_expand_space_dimension_code',
+`
+ppl_@CLASS@_expand_space_dimension_3_test :-
+  (
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@CLASS@_space_dimension(PS, Dim),
+     ppl_@CLASS@_add_space_dimensions_and_embed(PS, 1),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),
+     Dim1 is Dim + 1,
+     make_vars(1, [Var]),
+     ppl_@CLASS@_expand_space_dimension(PS, Var, 0),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     make_vars(Dim1, Var_List),
+     append(_, [Var1], Var_List),
+     ppl_@CLASS@_expand_space_dimension(PS, Var1, 1),
+     Dim2 is Dim1 + 1,
+     ppl_@CLASS@_space_dimension(PS, Dim2),
+     ppl_@CLASS@_remove_higher_space_dimensions(PS, Dim1),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_OK(PS),
+     ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PS_Copy)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
+`
+ppl_@CLASS@_fold_space_dimensions_3_test :-
+  (
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   (c_@CLASS@ == c_BD_Shape_int8_t -> fail ; true),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@CLASS@_space_dimension(PS, Dim),
+     ppl_@CLASS@_add_space_dimensions_and_embed(PS, 1),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),
+     Dim1 is Dim + 1,
+     make_vars(Dim1, [Var | _]),
+     ppl_@CLASS@_fold_space_dimensions(PS, [], Var),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_add_space_dimensions_and_embed(PS, 1),
+     Dim2 is Dim1 + 1,
+     make_vars(Dim2, Var_List),
+     append(_, [Var1], Var_List),
+     ppl_@CLASS@_fold_space_dimensions(PS, [Var], Var1),
+     ppl_@CLASS@_space_dimension(PS, Dim1),
+     ppl_@CLASS@_OK(PS),
+     ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PS_Copy)
+   ->
+    fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_map_space_dimensions_code',
+`
+ppl_@CLASS@_map_space_dimensions_2_test :-
+  (
+   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@CLASS@_space_dimension(PS, Dim),
+     ppl_@CLASS@_add_space_dimensions_and_embed(PS, 1),
+     ppl_@CLASS@_add_space_dimensions_and_project(PS, 1),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PSa),
+     Dim1 is Dim + 2,
+     ppl_@CLASS@_map_space_dimensions(PSa, []),
+     ppl_@CLASS@_space_dimension(PSa, 0),
+     make_vars(Dim1, Var_List),
+     append(_, [Var, Var1], Var_List),
+     make_map_vars(Dim, Var_Map_List),
+     append(Var_Map_List, [Var-Var1, Var1-Var], Var_Map_List1),
+     ppl_@CLASS@_map_space_dimensions(PS, Var_Map_List1),
+     ppl_@CLASS@_map_space_dimensions(PS, Var_Map_List1),
+     ppl_@CLASS@_space_dimension(PS, Dim1),
+     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_OK(PS),
+     ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PSa),
+     ppl_delete_@CLASS@(PS_Copy)
+   ->
+    fail ; true)
+  ).
+
+')
+
 dnl ppl_BD_Shape_CC76_narrowing_assign/2 -bd_shape,
-dnl ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@/2 *nofail +simple_pps,
-dnl ppl_@CLASS@_remove_space_dimensions/2 +simple_pps,
-dnl ppl_@CLASS@_remove_higher_space_dimensions/2 *nofail +simple_pps,
-dnl ppl_@CLASS@_expand_space_dimension/3 *nofail +simple -octagonal_shape,
-dnl ppl_@CLASS@_fold_space_dimensions/3  +simple -octagonal_shape,
-dnl ppl_@CLASS@_map_space_dimensions/2 +simple_pps
 
 m4_divert`'dnl

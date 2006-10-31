@@ -75,8 +75,17 @@ make_vars(Dim, Var_List) :-
   make_var_list(0, Dim, Var_List).
 make_var_list(Dim, Dim, []) :- !.
 make_var_list(I, Dim, ['$VAR'(I)|Var_List]) :-
+  I < Dim,
   (I1 is I + 1,
   make_var_list(I1, Dim, Var_List)).
+
+make_map_vars(Dim, Var_Map_List) :-
+  make_map_var_list(0, Dim, Var_Map_List).
+make_map_var_list(Dim, Dim, []) :- !.
+make_map_var_list(I, Dim, ['$VAR'(I)-'$VAR'(I)|Var_Map_List]) :-
+  I < Dim,
+  (I1 is I + 1,
+  make_map_var_list(I1, Dim, Var_Map_List)).
 
 %%%%%%%%%%%% predicates for success and errors.  %%%%%%%%%%%%%%%%%
 
