@@ -104,7 +104,7 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens/5 +sim
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign/3 *nofail +simple,
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens/4 +wr_shape,
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign/2 *nofail +wr_shape,
-ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign/2 -wr_shape,
+ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign/2 +wr_shape,
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@/2 *nofail +simple_pps,
 ppl_@CLASS@_remove_space_dimensions/2 +simple_pps,
 ppl_@CLASS@_remove_higher_space_dimensions/2 *nofail +simple_pps,

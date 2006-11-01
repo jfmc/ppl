@@ -1070,7 +1070,7 @@ ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign
     const @CPP_CLASS@* rhs = term_to_@CLASS@_handle(t_rhs, where);
     CHECK(lhs);
     CHECK(rhs);
-    lhs->@EXTRAPOLATION@_narrowing_assign(*rhs, 0);
+    lhs->@EXTRAPOLATION@_narrowing_assign(*rhs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
