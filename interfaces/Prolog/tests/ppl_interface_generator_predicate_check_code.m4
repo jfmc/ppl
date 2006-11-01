@@ -12,9 +12,8 @@ clean_ppl_new_Polyhedron_from_space_dimension(Dim, UorE, PS) :-
 ')
 
 m4_define(`m4_add_build_class_code', `dnl
-ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS) :-
-  (ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
-  clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, universe, PS),
+ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Dim) :-
+  (clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, universe, PS),
   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
   ppl_@CLASS@_add_@CONSTRAINER@s(PS, RS)).
 
@@ -264,9 +263,9 @@ m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 `
 ppl_@CLASS@_@DIMENSION@_2_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Space_Dim),
     (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      \+ppl_@CLASS@_@DIMENSION@(PS, 3),
      ppl_dimension_test_data(TEST_DATA, @DIMENSION@, Dim),
      ppl_@CLASS@_@DIMENSION@(PS, Dim),
@@ -281,14 +280,13 @@ m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 `
 ppl_@CLASS@_get_@GET_REPRESENT@s_2_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@CLASS@_get_@GET_REPRESENT@s(PS, RS1),
      (predicate_exists(ppl_@CLASS@_add_@GET_REPRESENT@s)
      ->
        (ppl_initial_test_system(@GET_REPRESENT@, U_or_E),
-        ppl_dimension_test_data(TEST_DATA, space_dimension, Space_Dim),
         clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
                                                              U_or_E, PS1),
         ppl_@CLASS@_add_@GET_REPRESENT@s(PS1, RS1),
@@ -308,14 +306,13 @@ m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 `
 ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_2_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@CLASS@_get_minimized_@GET_REPRESENT@s(PS, RS1),
      (predicate_exists(ppl_@CLASS@_add_@GET_REPRESENT@s)
     ->
        (ppl_initial_test_system(@GET_REPRESENT@, U_or_E),
-        ppl_dimension_test_data(TEST_DATA, space_dimension, Space_Dim),
         clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
                                                            U_or_E, PS1),
         ppl_@CLASS@_add_@GET_REPRESENT@s(PS1, RS1),
@@ -335,9 +332,9 @@ m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `
 ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_3_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_relation_test_data(TEST_DATA, @RELATION_REPRESENT@, R, Rel_Expected),
      ppl_@CLASS@_relation_with_@RELATION_REPRESENT@(PS, R, Rel),
      Rel = Rel_Expected,
@@ -352,10 +349,10 @@ m4_define(`ppl_@CLASS@_get_bounding_box_code',
 `
 ppl_@CLASS@_get_bounding_box_3_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Space_Dim),
    (CC = any ; CC = simplex ; CC = polynomial),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@CLASS@_get_bounding_box(PS, CC, Box),
      (predicate_exists(ppl_new_@TOPOLOGY@@CLASS@_from_bounding_box)
      ->
@@ -380,15 +377,16 @@ m4_define(`ppl_@CLASS@_get_covering_box_code',
 `
 ppl_@CLASS@_get_covering_box_2_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@CLASS@_get_covering_box(PS, Box),
      (predicate_exists(ppl_new_@TOPOLOGY@@CLASS@_from_covering_box)
      ->
        clean_ppl_new_@TOPOLOGY@@CLASS@_from_covering_box(Box, PS1),
        ppl_@CLASS@_get_covering_box(PS1, Box1),
        clean_ppl_new_@CLASS@_from_covering_box(Box1, PS2),
+       ppl_@CLASS@_space_dimension(PS2, Space_Dim),
        ppl_@CLASS@_equals_@CLASS@(PS1, PS2),
        ppl_@CLASS@_contains_@CLASS@(PS2, PS),
        ppl_delete_@CLASS@(PS1),
@@ -407,9 +405,9 @@ m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code',
 `
 ppl_@CLASS@_@HAS_PROPERTY@_2_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
     (ppl_property_test_data(TEST_DATA, t_@TOPOLOGY@,
                             @CONSTRAINER@, @HAS_PROPERTY@)
     ->
@@ -428,10 +426,10 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `
 ppl_@CLASS@_@SIMPLIFY@_1_test :-
   (
-   member(TEST_DATA, [test00, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
      ppl_@CLASS@_@SIMPLIFY@(PS),
      ppl_@CLASS@_OK(PS),
      ppl_@CLASS@_contains_@CLASS@(PS, PS1),
@@ -446,9 +444,9 @@ m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 `
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@_2_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      (ppl_bounds_test_data(TEST_DATA, @CONSTRAINER@s, LE,
                            @ABOVEBELOW@, true)
      ->
@@ -475,9 +473,9 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `
 ppl_@CLASS@_@MAXMIN@_5_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_maxmin_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@, @MAXMIN@,
                           LE, Nexptd, Dexptd, Bexptd, _, SuccessFlag),
      (SuccessFlag == true
@@ -499,19 +497,19 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
 `
 ppl_@CLASS@_@MAXMIN@_with_point_6_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
-     ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_maxmin_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@, @MAXMIN@,
                           LE, Nexptd, Dexptd, Bexptd, Gexptd, SuccessFlag),
      (SuccessFlag == true
      ->
        (ppl_@CLASS@_@MAXMIN@_with_point(PS, LE, N, D, B, G),
         B == Bexptd, N == Nexptd, D == Dexptd,
-        clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, empty, PSG),
-        clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, empty,
-                                                             PSGexptd),
+        clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+                                                             empty, PSG),
+        clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+                                                             empty, PSGexptd),
         (G = closure_point(V)
         ->
           (Gexptd = closure_point(Vexptd),
@@ -537,14 +535,10 @@ m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `
 ppl_@CLASS@_@COMPARISON@_@CLASS@_2_test :-
   (
-   member(TEST_DATA1, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
-   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_comparison_check(@COMPARISON@, PS1, PS2, Result),
      (Result == true
      ->
@@ -566,14 +560,12 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `
 ppl_@CLASS@_add_@ADD_REPRESENT@s_2_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
-   member(TEST_DATA1,
-          [test00, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
-     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS1),
+     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS,
+                         Space_Dim),
+     ppl_build_test_data(TEST_DATA2, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS1,
+                         Space_Dim),
      ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
@@ -594,14 +586,10 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 `
 ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_2_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
-   member(TEST_DATA1,
-          [test00, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Dim),
    (
-     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
-     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS1),
+     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS, Dim),
+     ppl_build_test_data(TEST_DATA2, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS1, Dim),
      ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
@@ -645,13 +633,12 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 
 ppl_@CLASS@_add_@ADD_REPRESENT@_2_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+   choose_test(TEST_DATA, Space_Dim),
    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
    ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
-   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
+   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS),
    ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
-   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
+   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS1),
    (ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, RS)
    ->
      fail ; true)
@@ -677,13 +664,12 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
+   choose_test(TEST_DATA, Space_Dim),
    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
    ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
-   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
+   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS),
    ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
-   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
+   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS1),
    ((ppl_@CLASS@_is_empty(PS)
      ; ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS))
    ->
@@ -698,8 +684,8 @@ ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, []) :-
   ).
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, [R | RS]) :-
   (
-     ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize(PS1, R),
-     ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
+   ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize(PS1, R),
+   ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
   ).
 
 ')
@@ -708,15 +694,11 @@ m4_define(`ppl_@CLASS@_@BINOP@_code',
 `
 ppl_@CLASS@_@BINOP@_2_test :-
   (
-   member(TEST_DATA1, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
-   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a, Space_Dim),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_@CLASS@_@BINOP@(PS1_Copy, PS2),
      ppl_@CLASS@_equals_@CLASS@(PS2, PS2a),
@@ -774,15 +756,11 @@ m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 `
 ppl_@CLASS@_@BINMINOP@_2_test :-
   (
-   member(TEST_DATA1, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
-   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a, Space_Dim),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy_n),
      (@BINMINOP@ == intersection_assign_and_minimize
@@ -834,14 +812,12 @@ m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
 `
 ppl_@CLASS@_@AFFIMAGE@_4_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
-   Dim > 0,
+   choose_test(TEST_DATA, Space_Dim),
+   Space_Dim > 0,
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy),
-     make_vars(Dim, [Var| _Var_List]),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
+     make_vars(Space_Dim, [Var| _Var_List]),
      ppl_@CLASS@_@AFFIMAGE@(PS, Var, Var + 5, 1),
      ppl_@CLASS@_@AFFIMAGE@(PS, Var, Var - 5, 1),
      (@AFFIMAGE@ == affine_image
@@ -866,14 +842,13 @@ m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `
 ppl_@CLASS@_bounded_@AFFIMAGE@_5_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
-   Dim > 0,
+   choose_test(TEST_DATA, Space_Dim),
+   ppl_dimension_test_data(TEST_DATA, space_dimension, Space_Dim),
+   Space_Dim > 0,
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy),
-     make_vars(Dim, [Var| _Var_List]),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
+     make_vars(Space_Dim, [Var| _Var_List]),
      ppl_@CLASS@_bounded_@AFFIMAGE@(PS, Var, Var, 2*Var, 3),
      ppl_@CLASS@_bounded_@AFFIMAGE@(PS, Var, 3*Var, 3*Var, 1),
      ppl_@CLASS@_OK(PS),
@@ -892,10 +867,8 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE_code',
 `
 ppl_@CLASS@_generalized_@AFFIMAGE@_5_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
-   Dim > 0,
+   choose_test(TEST_DATA, Space_Dim),
+   Space_Dim > 0,
    (t_@TOPOLOGY@ == t_NNC_
    ->
      member(Op, [>=, =<, =, >, <])
@@ -903,9 +876,9 @@ ppl_@CLASS@_generalized_@AFFIMAGE@_5_test :-
      member(Op, [>=, =<, =])
    ),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy),
-     make_vars(Dim, [Var| _Var_List]),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
+     make_vars(Space_Dim, [Var| _Var_List]),
      ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, Op, 2*Var, 3),
      ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, Op, Var + 2, 1),
      ppl_@CLASS@_OK(PS),
@@ -924,14 +897,12 @@ m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
 `
 ppl_Grid_generalized_@AFFIMAGE@_6_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
-   Dim > 0,
+   choose_test(TEST_DATA, Space_Dim),
+   Space_Dim > 0,
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy),
-     make_vars(Dim, [Var| _Var_List]),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
+     make_vars(Space_Dim, [Var| _Var_List]),
      ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, =:=, 2*Var, 3, 5),
      ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, =, Var + 2, 1, 0),
      ppl_@CLASS@_OK(PS),
@@ -950,10 +921,8 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `
 ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_4_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
-   Dim > 0,
+   choose_test(TEST_DATA, Space_Dim),
+   Space_Dim > 0,
    (t_@TOPOLOGY@ == t_NNC_
    ->
      member(Op, [>=, =<, =, >, <])
@@ -961,9 +930,9 @@ ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_4_test :-
      member(Op, [>=, =<, =])
    ),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy),
-     make_vars(Dim, [Var| _Var_List]),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
+     make_vars(Space_Dim, [Var| _Var_List]),
      ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS, 2*Var, Op, 2*(Var + 2)),
      ppl_@CLASS@_OK(PS),
      ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS_Copy, Var, Op, Var + 2),
@@ -981,14 +950,12 @@ m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
 `
 ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_5_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim),
-   Dim > 0,
+   choose_test(TEST_DATA, Space_Dim),
+   Space_Dim > 0,
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy),
-     make_vars(Dim, [Var| _Var_List]),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
+     make_vars(Space_Dim, [Var| _Var_List]),
      ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS, Var + 2, =:=, 2*Var, 5),
      ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS, 1 - Var, =, Var + 2, 0),
      ppl_@CLASS@_OK(PS),
@@ -1009,14 +976,10 @@ m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `
 ppl_@CLASS@_@WIDEN@_widening_assign_2_test :-
   (
-   member(TEST_DATA1, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
-   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_upper_bound_assign(PS1, PS2),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
@@ -1032,14 +995,10 @@ m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `
 ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_4_test :-
   (
-   member(TEST_DATA1, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
-   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_upper_bound_assign(PS1, PS2),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
@@ -1058,15 +1017,11 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `
 ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_3_test :-
   (
-   member(TEST_DATA1, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Dim),
    Dim > 0,
-   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Dim),
      ppl_@CLASS@_upper_bound_assign(PS1, PS2),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
@@ -1084,15 +1039,10 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_to
 `
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_5_test :-
   (
-   member(TEST_DATA1, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
-   Dim > 0,
-   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Dim),
      ppl_@CLASS@_upper_bound_assign(PS1, PS2),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
@@ -1112,14 +1062,10 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
 `
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_2_test :-
   (
-   member(TEST_DATA1, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
-   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_upper_bound_assign(PS1, PS2),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
@@ -1135,20 +1081,18 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_4_test :-
   (
-   member(TEST_DATA1, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
-   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_upper_bound_assign(PS1, PS2),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1a),
-     ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(PS1, PS2, 1, T),
-     ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(PS1a, PS2, 0, T1),
+     ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(PS1, PS2,
+                                                                  1, T),
+     ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(PS1a, PS2,
+                                                                  0, T1),
      ppl_@CLASS@_wdn_exn_with_tokens_check_code(PS1, PS1a, PS1_Copy,
                                                 PS2, PS2_Copy, T, T1)
    ->
@@ -1161,19 +1105,23 @@ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
 `
 ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_2_test :-
   (
-   member(TEST_DATA1, [test00, test01, test02, test03,
-          test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
-   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
-   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_upper_bound_assign(PS1, PS2),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
-     ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign(PS1, PS2),
-     ppl_@CLASS@_wdn_exn_check_code(PS1, PS1_Copy, PS2, PS2_Copy)
+     ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign(PS2, PS1),
+     ppl_@CLASS@_contains_@CLASS@(PS2, PS2_Copy),
+     ppl_@CLASS@_contains_@CLASS@(PS1, PS2),
+     ppl_@CLASS@_equals_@CLASS@(PS1, PS1_Copy),
+     ppl_@CLASS@_OK(PS1),
+     ppl_@CLASS@_OK(PS2),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS1_Copy),
+     ppl_delete_@CLASS@(PS2),
+     ppl_delete_@CLASS@(PS2_Copy)
    ->
      fail ; true)
  ).
@@ -1206,11 +1154,10 @@ m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `
 ppl_@CLASS@_remove_higher_space_dimensions_2_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Dim),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),
-     ppl_@CLASS@_space_dimension(PS, Dim),
      ppl_@CLASS@_add_space_dimensions_and_embed(PS, 1),
      ppl_@CLASS@_OK(PS),
      ppl_@CLASS@_space_dimension(PS, Dim1),
@@ -1233,11 +1180,10 @@ m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
 `
 ppl_@CLASS@_remove_space_dimensions_2_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Dim),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),
-     ppl_@CLASS@_space_dimension(PS, Dim),
      ppl_@CLASS@_add_space_dimensions_and_embed(PS, 1),
      Dim1 is Dim + 1,
      ppl_@CLASS@_remove_space_dimensions(PS, []),
@@ -1259,10 +1205,9 @@ m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 `
 ppl_@CLASS@_expand_space_dimension_3_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
-     ppl_@CLASS@_space_dimension(PS, Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Dim),
      ppl_@CLASS@_add_space_dimensions_and_embed(PS, 1),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),
      Dim1 is Dim + 1,
@@ -1289,10 +1234,9 @@ m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 `
 ppl_@CLASS@_fold_space_dimensions_3_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
-     ppl_@CLASS@_space_dimension(PS, Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Dim),
      ppl_@CLASS@_add_space_dimensions_and_embed(PS, 1),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),
      Dim1 is Dim + 1,
@@ -1318,10 +1262,9 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 `
 ppl_@CLASS@_map_space_dimensions_2_test :-
   (
-   member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
+   choose_test(TEST_DATA, Dim),
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
-     ppl_@CLASS@_space_dimension(PS, Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Dim),
      ppl_@CLASS@_add_space_dimensions_and_embed(PS, 1),
      ppl_@CLASS@_add_space_dimensions_and_project(PS, 1),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS, PS_Copy),

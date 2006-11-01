@@ -162,6 +162,9 @@ m4_divert`'dnl
 dnl
 dnl ==================================================================
 dnl Generate code for divert(3), the library predicate tests
+dnl FIXME There are no such tests and, as these could be included
+dnl       in a fixed and separate test program, this part could
+dnl       be removed.
 dnl ==================================================================
 dnl
 dnl -----------------------------------------------------------------
@@ -272,7 +275,9 @@ m4_undivert(4)`'dnl
 m4_divert`'dnl
 dnl
 dnl ==================================================================
-dnl Generate code for divert(5), the top-level call
+dnl Generate code for divert(5),
+dnl which defines the argument of "all_class_dependent_predicates/1",
+dnl a list of all the class dependent predicates that are implemented.
 dnl ==================================================================
 dnl
 dnl -----------------------------------------------------------------
