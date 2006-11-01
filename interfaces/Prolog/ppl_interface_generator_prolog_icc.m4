@@ -41,7 +41,7 @@ m4_replace_all_patterns_in_string($1,
   m4_pattern_list)`'dnl
 ')
 
-dnl m4_pre_extra_class_code(Class_Counter, Class_Kind)
+dnl m4_pre_extra_class_code(Class_Counter)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 dnl m4_add_term_to_class_handle_code($1)`'dnl

@@ -260,7 +260,7 @@ m4_pushdef(`m4_default_code', `')`'dnl
 dnl
 m4_pushdef(`m4_extension', `dnl
 m4_ifdef(`$1_code',
-`m4_ifelse(m4_check_test_usability($1, $5), keep, `
+`m4_ifelse(m4_check_test_usability($1, m4_class_kind$5), keep, `
 m4_indir(`$1_code')`'dnl
 ')', `')
 ')`'dnl
