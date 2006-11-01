@@ -236,11 +236,12 @@ m4_define(`m4_extension', `m4_ifdef(`$1_code', `m4_indir(`$1_code')',
   `m4_default_code($1)')`'dnl
 ')
 
-dnl m4_get_schematic_code(Procedure_Spec, Start_Flag)
+dnl m4_get_schematic_code(Procedure_Spec, Start_Flag, Class_Kind)
 dnl
 dnl Procedure_Spec - The schematic procedure name, complete with any flags;
 dnl Start_Flag     - 0 suppresses any separator.
 dnl                  (Needed for expanding Prolog lists of atoms etc.).
+dnl Class_Kind     - The current class kind;
 dnl Procedure_Spec has the flags removed and expanded to
 dnl the extended code.
 m4_define(`m4_get_schematic_code', `dnl
@@ -292,9 +293,9 @@ dnl ====== procedure specification.                                     =
 dnl =====================================================================
 
 dnl m4_keep_or_throw_for_one_group(
-dnl     Class_Kind, Procedure_Spec, +_or_-, Group)
+dnl     Class__Counter, Procedure_Spec, +_or_-, Group)
 dnl
-dnl Class_Kind      - The current class kind;
+dnl Class_Counter      - The current class counter;
 dnl Procedure_Spec  - A schematic procedure name with flags still attached;
 dnl +_or_-          - + or -;
 dnl Group           - A group name.
@@ -304,14 +305,14 @@ dnl if it is, it checks if +Group or -Group
 dnl (depending if +_or_- is + or -) is included in the Procedure_Spec;
 dnl if it is, then it expands to 1, otherwise, expands to 0.
 m4_define(`m4_keep_or_throw_for_one_group', `dnl
-m4_ifelse(m4_arg_counter($1, m4_$4_group), `', 0,
+m4_ifelse(m4_arg_counter(m4_class_kind$1, m4_$4_group), `', 0,
   `m4_ifelse(m4_index($2, $3$4), -1, 0, 1)')`'dnl
 ')
 
 dnl m4_keep_or_throw(
-dnl     Class_Kind, Procedure_Spec, +_or_-, Group1, Group2, ...)
+dnl     Class_Counter, Procedure_Spec, +_or_-, Group1, Group2, ...)
 dnl
-dnl Class_Kind      - The current class kind;
+dnl Class_Counter   - The current class kind;
 dnl Procedure_Spec  - A schematic procedure name with flags still attached;
 dnl +_or_-          - + or -;
 dnl Group1          - A group name;
@@ -325,9 +326,9 @@ m4_ifelse($#, 0, 0, $#, 1, 0, $#, 2, 0, $#, 3, 0,
                        m4_shift(m4_shift(m4_shift(m4_shift($@))))))')`'dnl
 ')
 
-dnl m4_filter_one_procedure(Class_Kind, Procedure_Spec)
-dnl
-dnl Class_Kind      - The current class kind;
+dnl m4_filter_one_procedure(Class_Counter, Procedure_Spec)
+ dnl
+dnl Class_Counter   - The current class counter;
 dnl Procedure_Spec  - A schematic procedure name with flags still attached;
 dnl Keeps just those procedures that are wanted for the given class kind.
 dnl It first checks if there is a group in Procedure_Spec, whose
@@ -344,10 +345,10 @@ m4_ifelse(m4_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, 0,
 m4_undefine(m4_proc_info_string)`'dnl
 ')
 
-dnl m4_filter_all_procedures(Class_Kind, keep_or_throw_flag,
+dnl m4_filter_all_procedures(Class_Counter, keep_or_throw_flag,
 dnl                         Procedure_Spec1, ProcedureSpec2, ...)
 dnl
-dnl Class_Kind      - The current class kind;
+dnl Class_Counter   - The current class kind;
 dnl keep_or_throw_flag
 dnl                 - has value 1 or 0;
 dnl Procedure_Spec1 - A schematic procedure name with flags still attached;
@@ -373,7 +374,7 @@ m4_filter_all_procedures($1, $2, m4_shift(m4_shift(m4_shift($@))))`'dnl
 ')
 
 dnl =====================================================================
-dnl ====== The final set of macros process the classes, one at a time.  =
+dnl ====== The next set of macros process a single class.   =============
 dnl =====================================================================
 
 dnl m4_pre_extra_class_code(Class_Counter, Class_Kind)
@@ -402,11 +403,15 @@ dnl that class is added.
 m4_define(`m4_one_class_code', `dnl
 m4_pre_extra_class_code($1, $2)`'dnl
 m4_define(`m4_filtered_proc_list',
-       `m4_filter_all_procedures($2, 1, m4_procedure_list)')`'dnl
+       `m4_filter_all_procedures($1, 1, m4_procedure_list)')`'dnl
 m4_replace_all_procedure_specs_by_code($1, m4_filtered_proc_list)`'dnl
 m4_undefine(`m4_filtered_proc_list')`'dnl
 m4_post_extra_class_code($1, $2)`'dnl
 ')
+
+dnl =====================================================================
+dnl === The final set of macros process all the classes, one at a time. =
+dnl =====================================================================
 
 dnl m4_all_classes_code(Class_Counter)
 dnl
