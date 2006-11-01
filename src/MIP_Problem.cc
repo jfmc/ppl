@@ -1556,10 +1556,10 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   {
-  MIP_Problem lp_aux = lp;
-  lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
-  solve_mip(have_incumbent_solution, incumbent_solution_value,
-	    incumbent_solution_point, lp_aux, i_vars);
+    MIP_Problem lp_aux = lp;
+    lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+    solve_mip(have_incumbent_solution, incumbent_solution_value,
+	      incumbent_solution_point, lp_aux, i_vars);
   }
   // TODO: change this when we will be able to remove constraints.
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
