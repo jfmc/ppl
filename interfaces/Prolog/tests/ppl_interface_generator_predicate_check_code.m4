@@ -1054,7 +1054,7 @@ ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_4_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `
 ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_3_test :-
   (
@@ -1071,7 +1071,7 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_3_test :-
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
      make_vars(Dim, [Var|_]),
-     ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign(
+     ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(
            PS1, PS2, [Var = 1]),
      ppl_@CLASS@_wdn_exn_check_code(PS1, PS1_Copy, PS2, PS2_Copy)
    ->
@@ -1080,9 +1080,9 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_3_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `
-ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_5_test :-
+ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_5_test :-
   (
    member(TEST_DATA1, [test00, test01, test02, test03,
           test04, test05, test06]),
@@ -1098,8 +1098,8 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_5_
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1a),
      make_vars(Dim, [Var|_]),
-     ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(PS1, PS2, [Var = 1], 1, T),
-     ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(PS1a, PS2, [Var = 1], 0, T1),
+     ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens(PS1, PS2, [Var = 1], 1, T),
+     ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens(PS1a, PS2, [Var = 1], 0, T1),
      ppl_@CLASS@_wdn_exn_with_tokens_check_code(PS1, PS1a, PS1_Copy,
                                                 PS2, PS2_Copy, T, T1)
    ->
@@ -1108,9 +1108,9 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_5_
 
 ')
 
-m4_define(`ppl_BD_Shape_CC76_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
 `
-ppl_BD_Shape_CC76_extrapolation_assign_2_test :-
+ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_2_test :-
   (
    member(TEST_DATA1, [test00, test01, test02, test03,
           test04, test05, test06]),
@@ -1123,7 +1123,7 @@ ppl_BD_Shape_CC76_extrapolation_assign_2_test :-
      ppl_@CLASS@_upper_bound_assign(PS1, PS2),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
-     ppl_BD_Shape_CC76_extrapolation_assign,
+     ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign(PS1, PS2),
      ppl_@CLASS@_wdn_exn_check_code(PS1, PS1_Copy, PS2, PS2_Copy)
    ->
      fail ; true)
@@ -1131,9 +1131,9 @@ ppl_BD_Shape_CC76_extrapolation_assign_2_test :-
 
 ')
 
-m4_define(`ppl_BD_Shape_CC76_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
 `
-ppl_BD_Shape_CC76_extrapolation_assign_with_tokens_4_test :-
+ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_4_test :-
   (
    member(TEST_DATA1, [test00, test01, test02, test03,
           test04, test05, test06]),
@@ -1147,10 +1147,33 @@ ppl_BD_Shape_CC76_extrapolation_assign_with_tokens_4_test :-
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1a),
-     ppl_BD_Shape_CC76_extrapolation_assign_with_tokens(PS1, PS2, 1, T),
-     ppl_BD_Shape_CC76_extrapolation_assign_with_tokens(PS1a, PS2, 0, T1),
+     ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(PS1, PS2, 1, T),
+     ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens(PS1a, PS2, 0, T1),
      ppl_@CLASS@_wdn_exn_with_tokens_check_code(PS1, PS1a, PS1_Copy,
                                                 PS2, PS2_Copy, T, T1)
+   ->
+     fail ; true)
+ ).
+
+')
+
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
+`
+ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_2_test :-
+  (
+   member(TEST_DATA1, [test00, test01, test02, test03,
+          test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   member(TEST_DATA2, [test00, test02, test03, test04, test05, test06]),
+   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2),
+     ppl_@CLASS@_upper_bound_assign(PS1, PS2),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
+     ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign(PS1, PS2),
+     ppl_@CLASS@_wdn_exn_check_code(PS1, PS1_Copy, PS2, PS2_Copy)
    ->
      fail ; true)
  ).
@@ -1267,7 +1290,6 @@ m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 ppl_@CLASS@_fold_space_dimensions_3_test :-
   (
    member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
-   (c_@CLASS@ == c_BD_Shape_int8_t -> fail ; true),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS),
      ppl_@CLASS@_space_dimension(PS, Dim),
@@ -1325,6 +1347,6 @@ ppl_@CLASS@_map_space_dimensions_2_test :-
 
 ')
 
-dnl ppl_BD_Shape_CC76_narrowing_assign/2 -bd_shape,
+dnl ppl_@CLASS@_@NARROWING@_narrowing_assign/2,
 
 m4_divert`'dnl

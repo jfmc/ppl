@@ -325,9 +325,10 @@ affimage,
 comparison,
 binop,
 binminop,
-widenexp,
+widenexpn,
 widen,
 extrapolation,
+narrow,
 limitedbounded,
 box')
 
@@ -451,23 +452,35 @@ m4_define(`m4_widen_replacement', `')
 m4_define(`m4_Polyhedron_widen_replacement', `BHRZ03, H79')
 m4_define(`m4_Grid_widen_replacement', `congruence, generator')
 m4_define(`m4_BD_Shape_widen_replacement', `BHMZ05, H79')
-m4_define(`m4_Octagonal_Shape_widen_replacement', `CH78')
+m4_define(`m4_Octagonal_Shape_widen_replacement', `BHMZ05')
 m4_define(`m4_Pointset_Powerset_widen_replacement', `BHZ03')
 dnl The alt_replacement defines the certificates for the widenings
 m4_define(`m4_Polyhedron_widen_alt_replacement', `BHRZ03, H79')
 m4_define(`m4_Grid_widen_alt_replacement', `Grid, Grid')
 
 dnl The extrapolation operators.
-m4_define(`m4_extrapolation_replacement', `m4_widen_replacement')
-m4_define(`m4_Polyhedron_extrapolation_replacement',
-  `m4_Polyhedron_widen_replacement')
-m4_define(`m4_Grid_extrapolation_replacement', `m4_Grid_widen_replacement')
+m4_define(`m4_extrapolation_replacement', `')
 m4_define(`m4_BD_Shape_extrapolation_replacement',
-  `m4_BD_Shape_widen_replacement, CC76')
-m4_define(`m4_Octagonal_Shape_extrapolation_replacement', `CH78')
-  `m4_Octagonal_Shape_widen_replacement')
-m4_define(`m4_Pointset_Powerset_extrapolation_replacement',
+  `CC76')
+m4_define(`m4_Octagonal_Shape_extrapolation_replacement',
+   `CC76')
+
+dnl The limited/bounded extrapolation operators.
+m4_define(`m4_widenexpn_replacement', `m4_widen_replacement')
+m4_define(`m4_Polyhedron_widenexpn_replacement',
+  `m4_Polyhedron_widen_replacement')
+m4_define(`m4_Grid_widenexpn_replacement', `m4_Grid_widen_replacement')
+m4_define(`m4_BD_Shape_widenexpn_replacement',
+  `m4_BD_Shape_widen_replacement,
+   m4_BD_Shape_extrapolation_replacement')
+m4_define(`m4_Octagonal_Shape_widenexpn_replacement',
+   `m4_Octagonal_Shape_widen_replacement,
+    m4_Octagonal_Shape_extrapolation_replacement')
+m4_define(`m4_Pointset_Powerset_widenexpn_replacement',
   `m4_Pointset_Powerset_widen_replacement')
+
+dnl The narrowing operators.
+m4_define(`m4_narrow_replacement', `CC76')
 
 dnl Limited or bounded
 m4_define(`m4_limitedbounded_replacement', `limited')
