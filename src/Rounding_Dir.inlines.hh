@@ -84,15 +84,15 @@ round_fpu_check_inexact(Rounding_Dir dir) {
 }
 
 inline fpu_rounding_direction_type
-fpu_dir(Rounding_Dir dir) {
+round_fpu_dir(Rounding_Dir dir) {
   switch (round_dir(dir)) {
   case ROUND_UP:
-    return FPU_UPWARD;
+    return static_cast<fpu_rounding_direction_type>(FPU_UPWARD);
   case ROUND_DOWN:
-    return FPU_DOWNWARD;
+    return static_cast<fpu_rounding_direction_type>(FPU_DOWNWARD);
   default:
     assert(0);
-    return FPU_UPWARD;
+    return static_cast<fpu_rounding_direction_type>(FPU_UPWARD);
   }
 }
 

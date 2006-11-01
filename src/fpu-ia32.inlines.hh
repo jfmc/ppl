@@ -97,7 +97,7 @@ fpu_clear_exceptions() {
 
 inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
-  return fpu_get_control() & FPU_ROUNDING_MASK;
+  return static_cast<fpu_rounding_direction_type>(fpu_get_control() & FPU_ROUNDING_MASK);
 }
 
 inline void
@@ -108,7 +108,7 @@ fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
 inline fpu_rounding_control_word_type
 fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT_BASE | dir);
-  return 0;
+  return static_cast<fpu_rounding_control_word_type>(0);
 }
 
 inline void

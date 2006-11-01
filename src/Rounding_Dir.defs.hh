@@ -76,7 +76,7 @@ bool round_inverse(Rounding_Dir dir);
 
 bool round_fpu_check_inexact(Rounding_Dir dir);
 
-fpu_rounding_direction_type fpu_dir(Rounding_Dir dir);
+fpu_rounding_direction_type round_fpu_dir(Rounding_Dir dir);
 
 } // namespace Parma_Polyhedra_Library
 
