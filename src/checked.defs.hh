@@ -48,7 +48,7 @@ struct Check_Overflow_Policy {
   static const int handle_nan = 0;
   static const int handle_infinity = 0;
   static const int convertible = 1;
-  static const int fpu_check_inexact = 1;
+  static const int fpu_check_inexact = 0;
   static const int check_nan_args = 1;
 };
 
