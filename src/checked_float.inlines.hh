@@ -276,17 +276,17 @@ round_gt_float(To& to, Rounding_Dir dir) {
 template <typename Policy>
 inline void
 prepare_inexact(Rounding_Dir dir) {
-  if (Policy::fpu_check_inexact && dir != ROUND_IGNORE)
+  if (Policy::fpu_check_inexact && round_fpu_check_inexact(dir))
     fpu_reset_inexact();
 }
 
 template <typename Policy>
 inline Result
 result_relation(Rounding_Dir dir) {
-  if (Policy::fpu_check_inexact) {
+  if (Policy::fpu_check_inexact && round_fpu_check_inexact(dir)) {
     if (!fpu_check_inexact())
       return V_EQ;
-    switch (dir) {
+    switch (round_dir(dir)) {
     case ROUND_DOWN:
       return V_GT;
     case ROUND_UP:
@@ -296,7 +296,7 @@ result_relation(Rounding_Dir dir) {
     }
   }
   else {
-    switch (dir) {
+    switch (round_dir(dir)) {
     case ROUND_DOWN:
       return V_GE;
     case ROUND_UP:
@@ -555,7 +555,7 @@ assign_float_int(To& to, const From from, Rounding_Dir dir) {
 template <typename Policy, typename T>
 inline Result
 set_neg_overflow_float(T& to, Rounding_Dir dir) {
-  switch (dir) {
+  switch (round_dir(dir)) {
   case ROUND_UP:
     {
       Float<T> f;
@@ -572,7 +572,7 @@ set_neg_overflow_float(T& to, Rounding_Dir dir) {
 template <typename Policy, typename T>
 inline Result
 set_pos_overflow_float(T& to, Rounding_Dir dir) {
-  switch (dir) {
+  switch (round_dir(dir)) {
   case ROUND_DOWN:
     {
       Float<T> f;
