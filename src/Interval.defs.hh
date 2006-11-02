@@ -47,7 +47,7 @@ public:
   };
   enum Interval_Property {
     DEFINITELY_INTEGER,
-    DEFINITELY_FRACTIONAL,
+    DEFINITELY_NOT_INTEGER,
     DEFINITELY_NOT_EMPTY,
     DEFINITELY_NOT_SINGLETON,
     DEFINITELY_NOT_OTHERWISE,
@@ -60,6 +60,7 @@ public:
   static const bool handle_infinity = Policy::handle_infinity;
   static const bool check_inexact = Policy::check_inexact;
   static const bool check_empty_args = Policy::check_empty_args;
+  static const bool check_integer_args = Policy::check_integer_args;
   static const bool store_unbounded = false;
   static const bool store_open = false;
   static const bool store_integer = false;
@@ -98,6 +99,7 @@ public:
   static const bool handle_infinity = Policy::handle_infinity;
   static const bool check_inexact = Policy::check_inexact;
   static const bool check_empty_args = Policy::check_empty_args;
+  static const bool check_integer_args = Policy::check_integer_args;
   static const bool store_unbounded = Policy::store_unbounded;
   static const bool store_open = Policy::store_open;
   static const bool store_integer = Policy::store_integer;
@@ -108,8 +110,8 @@ public:
   static const unsigned int upper_unbounded_bit = lower_open_bit + store_open;
   static const unsigned int upper_open_bit = upper_unbounded_bit + store_unbounded;
   static const unsigned int definitely_integer_bit = upper_open_bit + store_open;
-  static const unsigned int definitely_fractional_bit = definitely_integer_bit + store_integer;
-  static const unsigned int definitely_not_empty_bit = definitely_fractional_bit + store_integer;
+  static const unsigned int definitely_not_integer_bit = definitely_integer_bit + store_integer;
+  static const unsigned int definitely_not_empty_bit = definitely_not_integer_bit + store_integer;
   static const unsigned int definitely_not_singleton_bit = definitely_not_empty_bit + store_empty;
   static const unsigned int definitely_not_otherwise_bit = definitely_not_singleton_bit + store_singleton;
   static const unsigned int next_bit = definitely_not_otherwise_bit + (store_empty || store_singleton);
@@ -151,9 +153,9 @@ public:
       if (store_integer)
 	set_bit(bitset, definitely_integer_bit);
       break;
-    case DEFINITELY_FRACTIONAL:
+    case DEFINITELY_NOT_INTEGER:
       if (store_integer)
-	set_bit(bitset, definitely_fractional_bit);
+	set_bit(bitset, definitely_not_integer_bit);
       break;
     case DEFINITELY_NOT_EMPTY:
       if (store_empty)
@@ -175,8 +177,8 @@ public:
     switch (p) {
     case DEFINITELY_INTEGER:
       return store_integer && test_bit(bitset, definitely_integer_bit);
-    case DEFINITELY_FRACTIONAL:
-      return store_integer && test_bit(bitset, definitely_fractional_bit);
+    case DEFINITELY_NOT_INTEGER:
+      return store_integer && test_bit(bitset, definitely_not_integer_bit);
     case DEFINITELY_NOT_EMPTY:
       return store_empty && test_bit(bitset, definitely_not_empty_bit);
     case DEFINITELY_NOT_SINGLETON:
@@ -225,6 +227,11 @@ public:
   const Boundary& upper() const {
     return upper_;
   }
+  I_Result set_empty() {
+    assign_r(lower_, 1, ROUND_NOT_NEEDED);
+    assign_r(upper_, 0, ROUND_NOT_NEEDED);
+    return I_EMPTY;
+  }
   bool is_empty() const {
     if (test_interval_property(Info::DEFINITELY_NOT_EMPTY))
       return false;
@@ -264,20 +271,27 @@ public:
   bool is_integer() const {
     if (test_interval_property(Info::DEFINITELY_INTEGER))
       return true;
-    if (test_interval_property(Info::DEFINITELY_FRACTIONAL))
+    if (test_interval_property(Info::DEFINITELY_NOT_INTEGER))
       return false;
     if (is_singleton() && ::is_integer(lower_)) {
       (const_cast<Interval*>(this))->set_interval_property(Info::DEFINITELY_INTEGER);
       return true;
     }
     else {
-      (const_cast<Interval*>(this))->set_interval_property(Info::DEFINITELY_FRACTIONAL);
+      (const_cast<Interval*>(this))->set_interval_property(Info::DEFINITELY_NOT_INTEGER);
       return false;
     }
   }
   Boundary lower_;
   Boundary upper_;
 };
+
+template <typename Boundary, typename Info>
+inline bool
+is_integer(const Interval<Boundary, Info>& x) {
+  return x.is_integer();
+}
+
 
 template <typename Info>
 inline I_Result adjust_boundary_info(Boundary_Type type, Info& info, Result r) {
@@ -401,6 +415,22 @@ gt_boundary(Boundary_Type from1_type, const From1& from1, const From1_Info& from
 		     from1_type, from1, from1_info);
 }
 
+template <typename From1, typename From1_Info, typename From2, typename From2_Info>
+inline bool
+le_boundary(Boundary_Type from1_type, const From1& from1, const From1_Info& from1_info,
+	    Boundary_Type from2_type, const From2& from2, const From2_Info& from2_info) {
+  return !gt_boundary(from2_type, from2, from2_info,
+		      from1_type, from1, from1_info);
+}
+
+template <typename From1, typename From1_Info, typename From2, typename From2_Info>
+inline bool
+ge_boundary(Boundary_Type from1_type, const From1& from1, const From1_Info& from1_info,
+	    Boundary_Type from2_type, const From2& from2, const From2_Info& from2_info) {
+  return !lt_boundary(from2_type, from2, from2_info,
+		      from1_type, from1, from1_info);
+}
+
 template <typename To, typename To_Info, typename From, typename From_Info>
 inline I_Result
 assign_boundary(Boundary_Type to_type, To& to, To_Info& to_info,
@@ -520,6 +550,8 @@ add_assign_boundary(Boundary_Type to_type, To& to, To_Info& to_info,
       return to_type == LOWER ? I_L_EQ : I_U_EQ;
     }
   }
+  // FIXME: missing singularities check
+  // FIXME: invariant open operand gives closed result
   if (To_Info::store_open) {
     if (from1_info.test_boundary_property(from1_type, From1_Info::OPEN) ||
 	from2_info.test_boundary_property(from2_type, From2_Info::OPEN))
@@ -570,6 +602,8 @@ sub_assign_boundary(Boundary_Type to_type, To& to, To_Info& to_info,
       return to_type == LOWER ? I_L_EQ : I_U_EQ;
     }
   }
+  // FIXME: missing singularities check
+  // FIXME: invariant open operand gives closed result
   if (To_Info::store_open) {
     if (from1_info.test_boundary_property(from1_type, From1_Info::OPEN) ||
 	from2_info.test_boundary_property(from2_type, From2_Info::OPEN))
@@ -636,6 +670,8 @@ mul_assign_boundary(Boundary_Type to_type, To& to, To_Info& to_info,
       return to_type == LOWER ? I_L_EQ : I_U_EQ;
     }
   }
+  // FIXME: missing singularities check
+  // FIXME: invariant open operand gives closed result
   if (To_Info::store_open) {
     if (from1_info.test_boundary_property(from1_type, From1_Info::OPEN) ||
 	from2_info.test_boundary_property(from2_type, From2_Info::OPEN))
@@ -695,6 +731,8 @@ div_assign_boundary(Boundary_Type to_type, To& to, To_Info& to_info,
       return to_type == LOWER ? I_L_EQ : I_U_EQ;
     }
   }
+  // FIXME: missing singularities check
+  // FIXME: invariant open operand gives closed result
   if (To_Info::store_open) {
     if (from1_info.test_boundary_property(from1_type, From1_Info::OPEN) ||
 	from2_info.test_boundary_property(from2_type, From2_Info::OPEN))
@@ -735,6 +773,7 @@ struct Scalar_As_Interval_Policy {
   static const bool handle_infinity = false;
   static const bool check_inexact = false;
   static const bool check_empty_args = false;
+  static const bool check_integer_args = true;
 };
 
 typedef Interval_Info_Null<Scalar_As_Interval_Policy> Scalar_As_Interval_Info;
@@ -757,7 +796,7 @@ i_info(const T&) {
 template <typename T>
 inline bool
 i_maybe_check_empty(const T& x) {
-  return Scalar_As_Interval_Info::check_empty_args
+  return i_info(x).check_empty_args
     && is_not_a_number(x);
 }
 
@@ -778,10 +817,21 @@ same_object(const T& x, const T& y) {
   return &x == &y;
 }
 
+// FIXME: add specializations for gmp (others?)
 template <typename T>
 inline void
 assign_or_swap(T& to, const T& from) {
   to = from;
+}
+
+template <typename T>
+inline bool
+check_integer(const T& x) {
+  // TOTHINK: use the policy for x or for the result?
+  if (i_info(x).check_integer_args)
+    return is_integer(x);
+  else
+    return i_info(x).test_interval_property(i_info(x).DEFINITELY_INTEGER);
 }
 
 template <typename To_Boundary, typename To_Info,
@@ -789,12 +839,12 @@ template <typename To_Boundary, typename To_Info,
 inline I_Result
 assign(Interval<To_Boundary, To_Info>& to, const From1& l, const From2& u, bool integer = false) {
   if (i_maybe_check_empty(l) || i_maybe_check_empty(u))
-    return I_EMPTY;
+    return to.set_empty();
   To_Info to_info;
   I_Result rl = assign_boundary(LOWER, to.lower(), to_info,
-				LOWER, l, *static_cast<Scalar_As_Interval_Info*>(0));
+				LOWER, l, i_info(l));
   I_Result ru = assign_boundary(UPPER, to.upper(), to_info,
-				UPPER, u, *static_cast<Scalar_As_Interval_Info*>(0));
+				UPPER, u, i_info(u));
   if (integer)
     to_info.set_interval_property(To_Info::DEFINITELY_INTEGER);
   to.info() = to_info;
@@ -806,16 +856,83 @@ template <typename To_Boundary, typename To_Info,
 inline I_Result
 assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   if (i_maybe_check_empty(x))
-    return I_EMPTY;
+    return to.set_empty();
   To_Info to_info;
   I_Result rl = assign_boundary(LOWER, to.lower(), to_info,
 				LOWER, i_lower(x), i_info(x));
   I_Result ru = assign_boundary(UPPER, to.upper(), to_info,
 				UPPER, i_upper(x), i_info(x));
-  if (i_info(x).test_interval_property(i_info(x).DEFINITELY_INTEGER))
-    to_info.set_interval_property(To_Info::DEFINITELY_INTEGER);
-  if (i_info(x).test_interval_property(i_info(x).DEFINITELY_FRACTIONAL))
-    to_info.set_interval_property(To_Info::DEFINITELY_FRACTIONAL);
+  if (To_Info::store_integer) {
+    if (check_integer(x))
+      to_info.set_interval_property(To_Info::DEFINITELY_INTEGER);
+    else if (i_info(x).test_interval_property(i_info(x).DEFINITELY_NOT_INTEGER))
+      to_info.set_interval_property(To_Info::DEFINITELY_NOT_INTEGER);
+  }
+  to.info() = to_info;
+  return static_cast<I_Result> (rl | ru);
+}
+
+template <typename To_Boundary, typename To_Info,
+	  typename From1, typename From2>
+inline I_Result
+union_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  if (i_maybe_check_empty(x))
+    return assign(to, y);
+  if (i_maybe_check_empty(y))
+    return assign(to, x);
+  To_Info to_info;
+  if (To_Info::store_integer) {
+    if (check_integer(x)) {
+      if (check_integer(y))
+	to_info.set_interval_property(To_Info::DEFINITELY_INTEGER);
+    }
+    else if (i_info(x).test_interval_property(i_info(x).DEFINITELY_NOT_INTEGER)
+	     && i_info(y).test_interval_property(i_info(y).DEFINITELY_NOT_INTEGER))
+      to_info.set_interval_property(To_Info::DEFINITELY_NOT_INTEGER);
+  }
+  I_Result rl, ru;
+  rl = min_assign_boundary(LOWER, to.lower(), to_info,
+			   LOWER, i_lower(x), i_info(x),
+			   LOWER, i_lower(y), i_info(y));
+  ru = max_assign_boundary(UPPER, to.upper(), to_info,
+			   UPPER, i_upper(x), i_info(x),
+			   UPPER, i_upper(y), i_info(y));
+  to.info() = to_info;
+  return static_cast<I_Result> (rl | ru);
+}
+
+template <typename To_Boundary, typename To_Info,
+	  typename From1, typename From2>
+inline I_Result
+intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  To_Info to_info;
+  if (i_info(x).text_interval_property(i_info(x).DEFINITELY_NOT_INTEGER)) {
+    if (check_integer(y))
+      goto empty;
+    else
+      goto not_integer;
+  }
+  if (i_info(y).text_interval_property(i_info(y).DEFINITELY_NOT_INTEGER)) {
+    if (check_integer(x)) {
+    empty:
+      return to.set_empty();
+    }
+    else {
+    not_integer:
+      to_info.set_interval_property(To_Info::DEFINITELY_NOT_INTEGER);
+    }
+  }
+  else if (To_Info::store_integer) {
+    if (check_integer(x) || check_integer(y))
+      to_info.set_interval_property(To_Info::DEFINITELY_INTEGER);
+  }
+  I_Result rl, ru;
+  rl = max_assign_boundary(LOWER, to.lower(), to_info,
+			   LOWER, i_lower(x), i_info(x),
+			   LOWER, i_lower(y), i_info(y));
+  ru = min_assign_boundary(UPPER, to.upper(), to_info,
+			   UPPER, i_upper(x), i_info(x),
+			   UPPER, i_upper(y), i_info(y));
   to.info() = to_info;
   return static_cast<I_Result> (rl | ru);
 }
@@ -825,9 +942,10 @@ template <typename To_Boundary, typename To_Info,
 inline I_Result
 neg_assign(Interval<To_Boundary, To_Info>& to, const T& x) {
   if (i_maybe_check_empty(x))
-    return I_EMPTY;
+    return to.set_empty();
   To_Info to_info;
   I_Result rl, ru;
+  // TOTHINK: it's better to avoid the test and use to_lower unconditionally?
   if (same_object(to.lower(), i_lower(x))) {
     static To_Boundary to_lower;
     rl = neg_assign_boundary(LOWER, to_lower, to_info,
@@ -841,10 +959,12 @@ neg_assign(Interval<To_Boundary, To_Info>& to, const T& x) {
     ru = neg_assign_boundary(UPPER, to.upper(), to_info,
 			     LOWER, i_lower(x), i_info(x));
   }
-  if (i_info(x).test_interval_property(i_info(x).DEFINITELY_INTEGER))
-    to_info.set_interval_property(To_Info::DEFINITELY_INTEGER);
-  if (i_info(x).test_interval_property(i_info(x).DEFINITELY_FRACTIONAL))
-    to_info.set_interval_property(To_Info::DEFINITELY_FRACTIONAL);
+  if (To_Info::store_integer) {
+    if (check_integer(x))
+      to_info.set_interval_property(To_Info::DEFINITELY_INTEGER);
+    else if (i_info(x).test_interval_property(i_info(x).DEFINITELY_NOT_INTEGER))
+      to_info.set_interval_property(To_Info::DEFINITELY_NOT_INTEGER);
+  }
   to.info() = to_info;
   return static_cast<I_Result> (rl | ru);
 }
@@ -854,7 +974,7 @@ template <typename To_Boundary, typename To_Info,
 inline I_Result
 add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (i_maybe_check_empty(x) || i_maybe_check_empty(y))
-    return I_EMPTY;
+    return to.set_empty();
   To_Info to_info;
   I_Result rl = add_assign_boundary(LOWER, to.lower(), to_info,
 				    LOWER, i_lower(x), i_info(x),
@@ -862,8 +982,7 @@ add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   I_Result ru = add_assign_boundary(UPPER, to.upper(), to_info,
 				    UPPER, i_upper(x), i_info(x),
 				    UPPER, i_upper(y), i_info(y));
-  if (i_info(x).test_interval_property(i_info(x).DEFINITELY_INTEGER) ||
-      i_info(y).test_interval_property(i_info(y).DEFINITELY_INTEGER))
+  if (To_Info::store_integer && check_integer(x) && check_integer(y))
     to_info.set_interval_property(To_Info::DEFINITELY_INTEGER);
   to.info() = to_info;
   return static_cast<I_Result> (rl | ru);
@@ -874,9 +993,10 @@ template <typename To_Boundary, typename To_Info,
 inline I_Result
 sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (i_maybe_check_empty(x) || i_maybe_check_empty(y))
-    return I_EMPTY;
+    return to.set_empty();
   To_Info to_info;
   I_Result rl, ru;
+  // TOTHINK: it's better to avoid the test and use to_lower unconditionally?
   if (same_object(to.lower(), i_lower(y))) {
     static To_Boundary to_lower;
     rl = sub_assign_boundary(LOWER, to_lower, to_info,
@@ -895,8 +1015,7 @@ sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 			     UPPER, i_upper(x), i_info(x),
 			     LOWER, i_lower(y), i_info(y));
   }
-  if (i_info(x).test_interval_property(i_info(x).DEFINITELY_INTEGER) ||
-      i_info(y).test_interval_property(i_info(y).DEFINITELY_INTEGER))
+  if (To_Info::store_integer && check_integer(x) && check_integer(y))
     to_info.set_interval_property(To_Info::DEFINITELY_INTEGER);
   to.info() = to_info;
   return static_cast<I_Result> (rl | ru);
