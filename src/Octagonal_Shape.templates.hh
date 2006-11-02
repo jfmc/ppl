@@ -4779,6 +4779,34 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
   if (marked_empty())
     return;
 
+  const Coefficient& expr_v = lb_expr.coefficient(var);
+  if (expr_v != 0) {
+    // Here `var' occurs in `lb_expr'.
+    // To ease the computation, we add an additional dimension.
+    const Variable new_var = Variable(space_dim);
+    add_space_dimensions_and_embed(1);
+    const Linear_Expression lb_inverse
+      = lb_expr - (expr_v + denominator)*var;
+    TEMP_INTEGER(inverse_den);
+    neg_assign(inverse_den, expr_v);
+    affine_image(new_var, lb_inverse, inverse_den);
+    strong_closure_assign();
+    assert(!marked_empty());
+    generalized_affine_preimage(var, LESS_THAN_OR_EQUAL,
+				ub_expr, denominator);
+    if (sgn(denominator) == sgn(inverse_den))
+      add_constraint_and_minimize(var >= new_var) ;
+    else
+      add_constraint_and_minimize(var <= new_var);
+    // Remove the temporarily added dimension.
+    remove_higher_space_dimensions(space_dim-1);
+    return;
+  }
+
+  // Here `lb_var_coefficient == 0', so that the preimage cannot
+  // be easily computed by inverting the affine relation.
+  // Shrink the Octagonal_Shape by adding the constraint induced
+  // by the affine relation.
   const Coefficient& b = lb_expr.inhomogeneous_term();
 
   // Number of non-zero coefficients in `lb_expr': will be set to
@@ -4835,53 +4863,31 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
     const Coefficient& w_coeff = lb_expr.coefficient(Variable(w_id));
     N d;
     const dimension_type n_w = 2*w_id;
-    if (w_id == var_id) {
-      // Here `var' occurs in `lb_expr'.
-      // To ease the computation, we add an additional dimension.
-      const Variable new_var = Variable(space_dim);
-      add_space_dimensions_and_embed(1);
-      const Coefficient& expr_v = lb_expr.coefficient(var);
-      const Linear_Expression lb_inverse
-	= lb_expr - (expr_v + denominator)*var;
-      TEMP_INTEGER(inverse_den);
-      neg_assign(inverse_den, expr_v);
-      affine_image(new_var, lb_inverse, inverse_den);
-      strong_closure_assign();
-      assert(!marked_empty());
-      add_constraint_and_minimize(var >= new_var);
-      generalized_affine_preimage(var, LESS_THAN_OR_EQUAL,
-				  ub_expr, denominator);
-      // Remove the temporarily added dimension.
-      remove_higher_space_dimensions(space_dim-1);
-      assert(OK());
+    div_round_up(d, b, minus_den);
+    // Note that: `w_id != v', so that `expr' is of the form
+    // w_coeff * w + b, with `w_id != v'.
+    if (w_coeff == denominator) {
+      // Add the new constraint `v - w >= b/denominator',
+      // i.e.,  `-v + w <= -b/denominator'.
+      if (var_id < w_id)
+	add_octagonal_constraint(n_w+1, n_var+1, d);
+      else
+	add_octagonal_constraint(n_var, n_w, d);
     }
-    else {
-      div_round_up(d, b, minus_den);
-      // Note that: `w_id != v', so that `expr' is of the form
-      // w_coeff * w + b, with `w_id != v'.
-      if (w_coeff == denominator) {
-    	// Add the new constraint `v - w >= b/denominator',
-    	// i.e.,  `-v + w <= -b/denominator'.
-	if (var_id < w_id)
-	  add_octagonal_constraint(n_w+1, n_var+1, d);
-	else
-	  add_octagonal_constraint(n_var, n_w, d);
-      }
-      else if (w_coeff == minus_den) {
-	// Add the new constraints `v + w >= b/denominator',
-	// i.e.,  `-v - w <= -b/denominator'.
-	if (var_id < w_id)
-	  add_octagonal_constraint(n_w, n_var+1, d);
-	else
-	  add_octagonal_constraint(n_var, n_w+1, d);
-      }
-      // Apply the affine upper bound.
-      generalized_affine_preimage(var,
-				  LESS_THAN_OR_EQUAL,
-				  ub_expr,
-				  denominator);
-      return;
+    else if (w_coeff == minus_den) {
+      // Add the new constraints `v + w >= b/denominator',
+      // i.e.,  `-v - w <= -b/denominator'.
+      if (var_id < w_id)
+	add_octagonal_constraint(n_w, n_var+1, d);
+      else
+	add_octagonal_constraint(n_var, n_w+1, d);
     }
+    // Apply the affine upper bound.
+    generalized_affine_preimage(var,
+				LESS_THAN_OR_EQUAL,
+				ub_expr,
+				denominator);
+    return;
   }
   else {
     // Here t == 2, so that
