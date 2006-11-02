@@ -93,7 +93,7 @@ struct Checked_Number_Default_Policy {
   static const int handle_nan = 0;
   static const int handle_infinity = 0;
   static const int convertible = 1;
-  static const int fpu_check_inexact = 0;
+  static const int fpu_check_inexact = 1;
   static const int check_nan_args = 1;
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
@@ -120,11 +120,7 @@ struct Extended_Number_Policy {
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.
   // static const int convertible = 0;
-#ifdef DEBUG_ROUND_NOT_NEEDED
   static const int fpu_check_inexact = 1;
-#else
-  static const int fpu_check_inexact = 0;
-#endif
   static const int check_nan_args = 1;
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
   static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
@@ -155,11 +151,7 @@ struct WRD_Extended_Number_Policy {
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.
   // static const int convertible = 0;
-#ifdef DEBUG_ROUND_NOT_NEEDED
   static const int fpu_check_inexact = 1;
-#else
-  static const int fpu_check_inexact = 0;
-#endif
   static const int check_nan_args = 0;
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
   static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
