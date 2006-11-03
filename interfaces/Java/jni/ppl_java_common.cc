@@ -71,16 +71,21 @@ build_ppl_constraint(JNIEnv* env, const jobject& j_constraint) {
   jmethodID rel_sym_ordinal_id = env->GetMethodID(rel_sym_class, "ordinal",
 						  "()I");
   jint rel_sym = env->CallIntMethod(kind, rel_sym_ordinal_id);
-  if (rel_sym == 0)
+  switch (rel_sym) {
+  case 0:
     return Constraint(first_le < second_le);
-  if (rel_sym == 1)
+  case 1:
     return Constraint(first_le <= second_le);
-  if (rel_sym == 2)
+  case 2:
     return Constraint(first_le == second_le);
+  case 3:
   if (rel_sym == 3)
     return Constraint(first_le >= second_le);
-  if (rel_sym == 4)
+  case 4:
     return Constraint(first_le > second_le);
+  default:
+    ;
+  }
   jclass newExcCls = env->FindClass("javax/management/RuntimeErrorException");
   env->ThrowNew(newExcCls, "ppl.java: \n runtime error");
   // We should not be here!
@@ -197,16 +202,20 @@ build_generator(JNIEnv* env, const jobject& j_generator) {
 							 "()I");
   jint generator_type_ordinal = env->CallIntMethod(generator_type,
 						   generator_type_ordinal_id);
-  if (generator_type_ordinal == 0)
+  switch (generator_type_ordinal) {
+  case 0:
     return line(build_linear_expression(env, j_le));
-  if (generator_type_ordinal == 1)
+  case 1:
     return ray(build_linear_expression(env, j_le));
-  if (generator_type_ordinal == 2)
+  case 2:
     return point(build_linear_expression(env, j_le),
 		 j_coeff_to_ppl_coeff(env, j_coeff));
-  if (generator_type_ordinal == 3)
+  case 3:
     return closure_point(build_linear_expression(env, j_le),
 			 j_coeff_to_ppl_coeff(env, j_coeff));
+  default:
+    ;
+  }
   jclass newExcCls = env->FindClass("javax/management/RuntimeErrorException");
   env->ThrowNew(newExcCls, "ppl.java: \n runtime error");
   // We should not be here!
