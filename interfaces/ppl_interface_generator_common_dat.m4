@@ -10,9 +10,26 @@ dnl ===== using "@" separated lists and defined                     =====
 dnl ===== by macros in ppl_interface_instantiations.m4.             =====
 dnl =====================================================================
 
+dnl ---------------------------------------------------------------------
+dnl =====  any macros needed for both interfaces and cplusplus      =====
+dnl =====  names go here                           .                =====
+dnl ---------------------------------------------------------------------
+
+dnl m4_prefix_polyhedron(Class, String)
+dnl
+dnl Every occurrence of Polyhedron in the name is replaced by
+dnl String_Polyhedron.
+m4_define(`m4_prefix_polyhedron', `dnl
+m4_patsubst($1, Polyhedron, $2_Polyhedron)`'dnl
+')
+
+dnl ---------------------------------------------------------------------
+dnl =====  m4_init_interface_names is defined.                      =====
+dnl ---------------------------------------------------------------------
+
 dnl m4_init_interface_classes(Class_List)
 dnl
-dnl Parses the comma-separated list of class names Class_List
+dnl Parses the @-separated list of class names Class_List
 dnl for the names of the classes used to form the names of procedures
 dnl in the user interface.
 m4_define(`m4_init_interface_classes', `m4_init_interface_classes_aux(1, $1)')
@@ -62,13 +79,9 @@ m4_define(m4_interface_class`'m4_incr($1), m4_prefix_polyhedron($2, NNC))`'dnl
 m4_init_interface_classes_aux(m4_incr(m4_incr($1)), $3)')`'dnl
 ')
 
-dnl m4_prefix_polyhedron(Class, String)
-dnl
-dnl Every occurrence of Polyhedron in the name is replaced by
-dnl String_Polyhedron.
-m4_define(`m4_prefix_polyhedron', `dnl
-m4_patsubst($1, Polyhedron, $2_Polyhedron)`'dnl
-')
+dnl ---------------------------------------------------------------------
+dnl =====  m4_init_cplusplus_names is defined.                      =====
+dnl ---------------------------------------------------------------------
 
 dnl m4_subst_comma(String1, String2,...)
 dnl
@@ -105,14 +118,6 @@ m4_ifelse($2, `',  `',
   m4_regexp(`$2', `\([^@]+\)@?\(.*\)',
     `m4_init_cplusplus_names(`$1',
       m4_patsubst(\1, COMMA, @COMMA@), `\2')'))`'dnl
-')
-
-dnl m4_prefix_polyhedron(Class, String)
-dnl
-dnl Every occurrence of Polyhedron in the name is replaced by
-dnl String_Polyhedron.
-m4_define(`m4_prefix_polyhedron', `dnl
-m4_patsubst($1, Polyhedron, $2_Polyhedron)`'dnl
 ')
 
 dnl m4_init_cplusplus_names(Class_Counter, Class, Class_List)
@@ -243,6 +248,13 @@ m4_ifelse(
 ')`'dnl
 ')
 
+dnl =====================================================================
+dnl ===== The next set of macros define the groups used             =====
+dnl ===== to specify which classes the schematic procedures apply   =====
+dnl ===== see ppl_interface_generators_c_dat.m4       .             =====
+dnl ===== and ppl_interface_generators_prolog_dat.m4.      .        =====
+dnl =====================================================================
+
 dnl m4_group_names expands to all the group names.
 dnl
 dnl Each group_name in the expansion should
@@ -297,6 +309,11 @@ m4_define(`m4_bd_shape_group', BD_Shape)
 m4_define(`m4_octagonal_shape_group', Octagonal_Shape)
 m4_define(`m4_pointset_powerset_group', Pointset_Powerset)
 
+dnl =====================================================================
+dnl ===== The next set of macros define the replacements            =====
+dnl ===== for the patterns used                                     =====
+dnl =====================================================================
+
 dnl m4_pattern_list
 dnl
 dnl Returns a list of patterns (in lowercase) used for the generation
@@ -343,6 +360,10 @@ dnl First the default - every class is a friend of itself.
 m4_define(`m4_friend_replacement', m4_interface_class`'$1)
 m4_define(`m4_friend_alt_replacement', m4_cplusplus_class`'$1)
 
+dnl To allow for other classes to be friends,
+dnl we cannot just take a predefined list of friends as some
+dnl may not be instantiated and available.
+dnl
 dnl Several classes for friend replacement use the next two macros:
 dnl m4_same_class_string/4 and m4_same_class_string_aux/4
 
@@ -365,59 +386,70 @@ m4_same_class_string_aux(
 
 m4_define(`m4_same_class_string_aux', `dnl
 dnl comma is a separator so the first element has no comma.
-m4_ifelse($1, $4`'$2,
+m4_ifelse($1, $2,
   `m4_ifelse(m4_replace_list_start, 0,
      `m4_undefine(`m4_replace_list_start')$4`'$3',
     `, '$4`'$3)')`'dnl
 ')
 
+dnl This is commented for now as this is not in the C++ interface.
+dnl
 dnl For BD_Shape class kind, any generated class with kind BD_Shape
 dnl is a friend.
-dnl Also if Polyhedron is a generated class it is a friend
+dnl Also if C_Polyhedron is a generated class it is a friend
 dnl
-m4_define(`m4_BD_Shape_friend_replacement', `dnl
+dnl m4_define(`m4_BD_Shape_friend_replacement', `dnl
 dnl
 dnl Initialise a flag to ensure the comma in the list is a separator only.
-m4_define(`m4_replace_list_start', 0)`'dnl
-m4_same_class_string(
-  BD_Shape, interface,
-  m4_get_class_topology(m4_class_body$1),
-  class_kind)`'dnl
-m4_same_class_string(
-  Polyhedron, interface,,
-  class_kind)`'dnl
-')
+dnl m4_define(`m4_replace_list_start', 0)`'dnl
+dnl m4_same_class_string(
+dnl   BD_Shape, interface,,
+dnl   class_kind)`'dnl
+dnl m4_same_class_string(
+dnl   Polyhedron, interface,,
+dnl   class_kind)`'dnl
+dnl ')
 
+dnl This is commented for now as this is not in the C++ interface.
+dnl
 dnl Defines the alternative friend name for cplusplus code.
-m4_define(`m4_BD_Shape_friend_alt_replacement', `dnl
-m4_define(`m4_replace_list_start', 0)`'dnl
-m4_same_class_string(
-  BD_Shape, cplusplus,,
-  class_kind)`'dnl
-m4_same_class_string(
-  Polyhedron, cplusplus,,
-  class_kind)
-')
+dnl m4_define(`m4_BD_Shape_friend_alt_replacement', `dnl
+dnl m4_define(`m4_replace_list_start', 0)`'dnl
+dnl m4_same_class_string(
+dnl   BD_Shape, cplusplus,
+dnl   class_kind)`'dnl
+dnl m4_same_class_string(
+dnl   Polyhedron, cplusplus,,
+dnl   class_kind)
+dnl ')
 
-dnl For Octagon class kind, any generated class with kind BD_Shape
+dnl This is commented for now as this is not in the C++ interface.
+dnl
+dnl For Octagon class kind, any generated class with kind Octagon
 dnl is a friend.
 dnl Also if Polyhedron is a generated class it is a friend
 dnl
-m4_define(`m4_Octagon_friend_replacement', `dnl
-m4_define(`m4_replace_list_start', 0)`'dnl
-m4_same_class_string(
-  Octagon, interface, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
-m4_same_class_string(
-  Polyhedron, interface, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
-')
+dnl m4_define(`m4_Octagonal_Shape_friend_replacement', `dnl
+dnl m4_define(`m4_replace_list_start', 0)`'dnl
+dnl m4_same_class_string(
+dnl   Octagonal_Shape, interface,,
+dnl   class_kind)`'dnl
+dnl m4_same_class_string(
+dnl   Polyhedron, interface,,
+dnl   class_kind)`'dnl
+dnl ')
 
-m4_define(`m4_Octagon_friend_alt_replacement', `dnl
-m4_define(`m4_replace_list_start', 0)`'dnl
-m4_same_class_string(
-  Octagon, cplusplus, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
-m4_same_class_string(
-  Polyhedron, cplusplus, m4_get_class_topology(m4_class_body$1), class_kind)`'dnl
-')
+dnl This is commented for now as this is not in the C++ interface.
+dnl
+dnl m4_define(`m4_Octagonal_Shape_friend_alt_replacement', `dnl
+dnl m4_define(`m4_replace_list_start', 0)`'dnl
+dnl m4_same_class_string(
+dnl   Octagonal_Shape, cplusplus,,
+dnl   class_kind)`'dnl
+dnl m4_same_class_string(
+dnl   Polyhedron, cplusplus, C_,
+dnl   class_kind)`'dnl
+dnl ')
 
 dnl For Pointset_Powerset class kind, if the body is C_Polyhedron
 dnl or NNC_Polyhedron,
@@ -430,13 +462,13 @@ m4_define(`m4_Pointset_Powerset_friend_replacement', `dnl
 dnl
 m4_interface_class$1`'dnl
 m4_same_class_string(
-  M4_class_body$1, interface, m4_class_topology$1, cplusplus_class)`'dnl
+  m4_class_body$1, interface, m4_get_class_topology($1), cplusplus_class)`'dnl
 ')
 dnl
 m4_define(`m4_Pointset_Powerset_friend_alt_replacement', `dnl
 m4_cplusplus_class$1`'dnl
 m4_same_class_string(
-  m4_class_body$1, cplusplus, m4_class_topology$1, cplusplus_class)`'dnl
+  m4_class_body$1, cplusplus, m4_get_class_topology($1), cplusplus_class)`'dnl
 ')
 
 dnl The topology of the domain element. The default is the empty string.

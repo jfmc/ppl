@@ -98,8 +98,6 @@ write_error(Predicate_name) :-
 
 %%%%%%%%%%%% test data selection       %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-choose_2_tests(TEST_DATA1, TEST_DATA2, Dim) :-
-
 choose_test(TEST_DATA, Dim) :-
    member(TEST_DATA, [test00, test01, test02, test03, test04, test05, test06]),
    ppl_dimension_test_data(TEST_DATA, space_dimension, Dim).
