@@ -91,11 +91,16 @@ build_ppl_constraint(JNIEnv* env, const jobject& j_constraint) {
 Linear_Expression
 build_linear_expression(JNIEnv* env, const jobject& j_le) {
   jclass le_sum_class = env->FindClass("ppl_java/Linear_Expression_Sum");
-  jclass le_difference_class = env->FindClass("ppl_java/Linear_Expression_Difference");
-  jclass le_times_class = env->FindClass("ppl_java/Linear_Expression_Times");
-  jclass le_unary_minus_class = env->FindClass("ppl_java/Linear_Expression_Unary_Minus");
-  jclass j_coeff_le_class = env->FindClass("ppl_java/Linear_Expression_Coefficient");
-  jclass j_variable_le_class = env->FindClass("ppl_java/Linear_Expression_Variable");
+  jclass le_difference_class
+    = env->FindClass("ppl_java/Linear_Expression_Difference");
+  jclass le_times_class
+    = env->FindClass("ppl_java/Linear_Expression_Times");
+  jclass le_unary_minus_class
+    = env->FindClass("ppl_java/Linear_Expression_Unary_Minus");
+  jclass j_coeff_le_class
+    = env->FindClass("ppl_java/Linear_Expression_Coefficient");
+  jclass j_variable_le_class
+    = env->FindClass("ppl_java/Linear_Expression_Variable");
   jclass j_variable_class = env->FindClass("ppl_java/Variable");
 
   jclass current_class = env->GetObjectClass(j_le);
@@ -148,8 +153,9 @@ build_linear_expression(JNIEnv* env, const jobject& j_le) {
   if (env->IsAssignableFrom(le_times_class, current_class)) {
     jfieldID le_field_id = env->GetFieldID(current_class, "rhs",
 					   "Lppl_java/Linear_Expression;");
-    jfieldID le_coeff_field_id = env->GetFieldID(current_class, "lhs",
-						 "Lppl_java/Linear_Expression_Coefficient;");
+    jfieldID le_coeff_field_id
+      = env->GetFieldID(current_class, "lhs",
+			"Lppl_java/Linear_Expression_Coefficient;");
     jobject le_value = env->GetObjectField(j_le, le_field_id);
     jobject le_coeff_value = env->GetObjectField(j_le, le_coeff_field_id);
     jfieldID coeff_field_id = env->GetFieldID(j_coeff_le_class,
