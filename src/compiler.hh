@@ -33,6 +33,11 @@ inline void
 used(const T&) {
 }
 
+template <typename T>
+inline void avoid_cse(const T& x) {
+  __asm__ __volatile__ ("" : "+m" (const_cast<T&>(x)));  
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_compiler_hh)
