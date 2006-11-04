@@ -65,7 +65,7 @@ struct Checked_Number_Transparent_Policy {
   //! Representation is identical to primitive.
   static const int convertible = 1;
 
-  //! Checks for FPU inexact result.
+  //! When nonzero, requests to check for FPU inexact result are honored.
   static const int fpu_check_inexact = 0;
 
   //! Checks for NaN arguments
