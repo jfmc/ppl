@@ -64,20 +64,20 @@ typedef struct
 inline int
 fpu_get_control() {
   unsigned short cw;
-  __asm__ __volatile__ ("fnstcw %0" : "=m" (cw));
+  __asm__ __volatile__ ("fnstcw %0" : "=m" (cw) : : "memory");
   return cw;
 }
 
 inline void
 fpu_set_control(int c) {
   unsigned short cw = (unsigned short) c;
-  __asm__ __volatile__ ("fldcw %0" : : "m" (cw));
+  __asm__ __volatile__ ("fldcw %0" : : "m" (cw) : "memory");
 }
 
 inline int
 fpu_get_status() {
   int sw;
-  __asm__ __volatile__ ("fnstsw %0" : "=a" (sw));
+  __asm__ __volatile__ ("fnstsw %0" : "=a" (sw) : : "memory");
   return sw;
 }
 
@@ -85,14 +85,14 @@ inline void
 fpu_clear_status(unsigned short bits) {
   /* There is no fldsw instruction */
   ia32_fenv_t env;
-  __asm__ ("fnstenv %0" : "=m" (env));
+  __asm__ __volatile__ ("fnstenv %0" : "=m" (env));
   env.status_word = (unsigned short) (env.status_word & ~bits);
-  __asm__ ("fldenv %0" : : "m" (env));
+  __asm__ __volatile__ ("fldenv %0" : : "m" (env) : "memory");
 }
 
 inline void
 fpu_clear_exceptions() {
-  __asm__ __volatile__ ("fnclex" : /* No outputs.  */);
+  __asm__ __volatile__ ("fnclex" : /* No outputs.  */ : : "memory");
 }
 
 inline fpu_rounding_direction_type
