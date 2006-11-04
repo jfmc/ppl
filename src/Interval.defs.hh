@@ -95,6 +95,18 @@ is_integer(const Interval<Boundary, Info>& x) {
   return x.is_integer();
 }
 
+inline bool
+is_integer(const char*) {
+  // FIXME:
+  return false;
+}
+
+inline bool
+is_not_a_number(const char*) {
+  // FIXME:
+  return false;
+}
+
 namespace Interval_ {
 
 template <typename Boundary, typename Info>
@@ -156,12 +168,6 @@ maybe_check_empty(const T& x) {
     assert(is_not_a_number(x));
     return false;
   }
-}
-
-inline bool
-maybe_check_empty(const char*) {
-  // FIXME:
-  return false;
 }
 
 template <typename T>
