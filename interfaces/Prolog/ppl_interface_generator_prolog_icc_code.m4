@@ -193,14 +193,14 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
 
       // Get and raise the lower bound.
       Prolog_get_arg(1, t_interval, t_bound);
-      if (!term_to_boundary(t_bound, LOWER, finite, closed, n, d))
+      if (!term_to_boundary(t_bound, LOWER_BOUNDARY, finite, closed, n, d))
         return PROLOG_FAILURE;
       if (finite)
         bbox.raise_lower_bound(i, closed, n, d);
 
       // Get and lower the upper bound.
       Prolog_get_arg(2, t_interval, t_bound);
-      if (!term_to_boundary(t_bound, UPPER, finite, closed, n, d))
+      if (!term_to_boundary(t_bound, UPPER_BOUNDARY, finite, closed, n, d))
         return PROLOG_FAILURE;
       if (finite)
         bbox.lower_upper_bound(i, closed, n, d);
