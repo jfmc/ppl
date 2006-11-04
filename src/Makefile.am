@@ -113,7 +113,6 @@ distances.types.hh \
 Interval.types.hh \
 Old_Interval.types.hh \
 Box.types.hh \
-Bounding_Box.types.hh \
 Constraint.types.hh \
 Generator.types.hh \
 Grid_Generator.types.hh \
@@ -191,8 +190,7 @@ Old_Interval.inlines.hh \
 Box.defs.hh \
 Box.inlines.hh \
 Box.templates.hh \
-Bounding_Box.defs.hh \
-Bounding_Box.inlines.hh \
+Rational_Box.hh \
 Variable.defs.hh \
 Variable.inlines.hh \
 Variables_Set.defs.hh \
@@ -316,7 +314,6 @@ Og_Status.idefs.hh
 
 libppl_la_SOURCES = \
 Box.cc \
-Bounding_Box.cc \
 checked.cc \
 Checked_Number.cc \
 Float.cc \

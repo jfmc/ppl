@@ -73,11 +73,11 @@ template <typename Interval>
 void
 Box<Interval>::CC76_widening_assign(const Box& y) {
   static typename Interval::boundary_type stop_points[] = {
-    Interval::boundary_type(-2),
-    Interval::boundary_type(-1),
-    Interval::boundary_type(0),
-    Interval::boundary_type(1),
-    Interval::boundary_type(2)
+    typename Interval::boundary_type(-2),
+    typename Interval::boundary_type(-1),
+    typename Interval::boundary_type(0),
+    typename Interval::boundary_type(1),
+    typename Interval::boundary_type(2)
   };
   CC76_widening_assign(y,
 		       stop_points,

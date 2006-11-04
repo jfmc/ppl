@@ -160,7 +160,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
     // Check the list is properly terminated.
     check_nil_terminating(t_l, where);
 
-    Bounding_Box bbox(dimension);
+    Implementation::Rational_Box bbox(dimension);
     // Set bbox to reflect its Prolog representation.
     for (dimension_type i = 0; i < dimension; ++i) {
       Prolog_get_cons(t_bb, t_interval, t_bb);
@@ -462,7 +462,7 @@ ppl_@CLASS@_get_covering_box
     CHECK(ph);
 
     dimension_type dimension = ph->space_dimension();
-    Bounding_Box bbox(dimension);
+    Implementation::Rational_Box bbox(dimension);
     ph->get_covering_box(bbox);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
@@ -495,7 +495,7 @@ ppl_@CLASS@_get_bounding_box
       cc = ANY_COMPLEXITY;
 
     dimension_type dimension = ph->space_dimension();
-    Bounding_Box bbox(dimension);
+    Implementation::Rational_Box bbox(dimension);
     ph->shrink_bounding_box(bbox, cc);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);

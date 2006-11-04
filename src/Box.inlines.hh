@@ -68,15 +68,17 @@ inline bool
 Box<Interval>::get_lower_bound(const dimension_type k, bool& closed,
 			       Coefficient& n, Coefficient& d) const {
   assert(k < vec.size());
-  const typename Interval::boundary_type& lb = vec[k].lower();
+  const Interval& vec_k = vec[k];
 
-  if (test_boundary_property(lb, Boundary::UNBOUNDED))
+  if (vec_k.info().test_boundary_property(Boundary::LOWER,
+					  Boundary::UNBOUNDED))
     return false;
 
-  closed = !test_boundary_property(lb, Boundary::OPEN);
+  closed = !vec_k.info().test_boundary_property(Boundary::LOWER,
+						Boundary::OPEN);
 
   mpq_class lr;
-  assign_r(lr, lb, ROUND_NOT_NEEDED);
+  assign_r(lr, vec_k.lower(), ROUND_NOT_NEEDED);
   n = lr.get_num();
   d = lr.get_den();
 
@@ -88,15 +90,17 @@ inline bool
 Box<Interval>::get_upper_bound(const dimension_type k, bool& closed,
 			       Coefficient& n, Coefficient& d) const {
   assert(k < vec.size());
-  const typename Interval::boundary_type& ub = vec[k].upper();
+  const Interval& vec_k = vec[k];
 
-  if (test_boundary_property(ub, Boundary::UNBOUNDED))
+  if (vec_k.info().test_boundary_property(Boundary::UPPER,
+					  Boundary::UNBOUNDED))
     return false;
 
-  closed = !test_boundary_property(ub, Boundary::OPEN);
+  closed = !vec_k.info().test_boundary_property(Boundary::UPPER,
+						Boundary::OPEN);
 
   mpq_class ur;
-  assign_r(ur, ub, ROUND_NOT_NEEDED);
+  assign_r(ur, vec_k.upper(), ROUND_NOT_NEEDED);
   n = ur.get_num();
   d = ur.get_den();
 
@@ -122,7 +126,8 @@ Box<Interval>::raise_lower_bound(const dimension_type k, const bool closed,
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
-  // FIXME: intersect vec[k] with (q, +infty).
+  // FIXME: intersect vec[k] with [q, +infty), if closed is true,
+  // or with (q, +infty, if closed is false.
   empty_up_to_date = false;
 }
 
@@ -137,7 +142,8 @@ Box<Interval>::lower_upper_bound(const dimension_type k, const bool closed,
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
-  // FIXME: intersect vec[k] with (-infty, q).
+  // FIXME: intersect vec[k] with (-infty, q], if closed is true,
+  // or with (-infty, q), if closed is false.
   empty_up_to_date = false;
 }
 

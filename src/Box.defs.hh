@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Box.types.hh"
 #include "globals.types.hh"
+#include "Interval.defs.hh"
 #include "Coefficient.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"

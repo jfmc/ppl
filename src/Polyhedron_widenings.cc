@@ -24,9 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Polyhedron.defs.hh"
-
 #include "BHRZ03_Certificate.defs.hh"
-#include "Bounding_Box.defs.hh"
+#include "Rational_Box.hh"
 #include "Scalar_Products.defs.hh"
 #include <cassert>
 #include <iostream>
@@ -361,8 +360,8 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 						  const Constraint_System& cs,
 						  unsigned* tp) {
   const dimension_type space_dim = space_dimension();
-  Bounding_Box x_box(space_dim);
-  Bounding_Box y_box(space_dim);
+  Implementation::Rational_Box x_box(space_dim);
+  Implementation::Rational_Box y_box(space_dim);
   shrink_bounding_box(x_box, ANY_COMPLEXITY);
   y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
@@ -850,8 +849,8 @@ PPL::Polyhedron
 				      const Constraint_System& cs,
 				      unsigned* tp) {
   const dimension_type space_dim = space_dimension();
-  Bounding_Box x_box(space_dim);
-  Bounding_Box y_box(space_dim);
+  Implementation::Rational_Box x_box(space_dim);
+  Implementation::Rational_Box y_box(space_dim);
   shrink_bounding_box(x_box, ANY_COMPLEXITY);
   y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
