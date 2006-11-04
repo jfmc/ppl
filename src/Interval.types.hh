@@ -9,16 +9,14 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_Old_Interval_types_hh
-#define PPL_Old_Interval_types_hh 1
+#ifndef PPL_Interval_types_hh
+#define PPL_Interval_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-class Old_Boundary;
-class LBoundary;
-class UBoundary;
-class Old_Interval;
+template <typename Boundary, typename Info>
+class Interval;
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Old_Interval_types_hh)
+#endif // !defined(PPL_Interval_types_hh)

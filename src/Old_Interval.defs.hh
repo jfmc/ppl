@@ -39,15 +39,15 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x is less than \p y.
-/*! \relates Boundary */
+/*! \relates Old_Boundary */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool operator<(const Boundary& x, const Boundary& y);
+bool operator<(const Old_Boundary& x, const Old_Boundary& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x is greater than \p y.
-/*! \relates Boundary */
+/*! \relates Old_Boundary */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool operator>(const Boundary& x, const Boundary& y);
+bool operator>(const Old_Boundary& x, const Old_Boundary& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -55,11 +55,11 @@ bool operator>(const Boundary& x, const Boundary& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An extended rational bound of an interval.
 /*! \ingroup PPL_CXX_interface
-  An object of class Boundary represents either an upper or a lower
+  An object of class Old_Boundary represents either an upper or a lower
   bound of an interval over the set of extended rational numbers.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-class Parma_Polyhedra_Library::Boundary {
+class Parma_Polyhedra_Library::Old_Boundary {
 protected:
   //! Kinds of bounds.
   enum Flag {
@@ -77,12 +77,12 @@ protected:
   Flag flag;
 
   //! Builds a bound of kind \p f and having value \p v.
-  Boundary(const ERational& v, Flag f);
+  Old_Boundary(const ERational& v, Flag f);
 
   friend bool
-  Parma_Polyhedra_Library::operator<(const Boundary& x, const Boundary& y);
+  Parma_Polyhedra_Library::operator<(const Old_Boundary& x, const Old_Boundary& y);
   friend bool
-  Parma_Polyhedra_Library::operator>(const Boundary& x, const Boundary& y);
+  Parma_Polyhedra_Library::operator>(const Old_Boundary& x, const Old_Boundary& y);
 
 public:
   //! Returns <CODE>true</CODE> if and only if \p *this is a closed bound.
@@ -100,14 +100,14 @@ public:
 //! The lower bound of an extended rational interval.
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-class Parma_Polyhedra_Library::LBoundary : public Boundary {
+class Parma_Polyhedra_Library::LBoundary : public Old_Boundary {
 public:
   //! Kinds of lower bounds.
   enum Open_Closed {
     //! An open lower bound.
-    OPEN = Boundary::POS,
+    OPEN = Old_Boundary::POS,
     //! A closed lower bound.
-    CLOSED = Boundary::ZERO
+    CLOSED = Old_Boundary::ZERO
   };
 
   //! Builds a lower bound of kind \p f and having value \p v.
@@ -121,14 +121,14 @@ public:
 //! The upper bound of an extended rational interval.
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-class Parma_Polyhedra_Library::UBoundary : public Boundary {
+class Parma_Polyhedra_Library::UBoundary : public Old_Boundary {
 public:
   //! Kinds of upper bounds.
   enum Open_Closed {
     //! An open upper bound.
-    OPEN = Boundary::NEG,
+    OPEN = Old_Boundary::NEG,
     //! A closed upper bound.
-    CLOSED = Boundary::ZERO
+    CLOSED = Old_Boundary::ZERO
   };
 
   //! Builds an upper bound of kind \p f and having value \p v.

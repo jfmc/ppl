@@ -110,6 +110,7 @@ Coefficient.types.hh \
 globals.types.hh \
 iterator_to_const.types.hh \
 distances.types.hh \
+Interval.types.hh \
 Old_Interval.types.hh \
 Bounding_Box.types.hh \
 Constraint.types.hh \
@@ -181,6 +182,9 @@ iterator_to_const.defs.hh \
 iterator_to_const.inlines.hh \
 distances.defs.hh \
 distances.inlines.hh \
+Boundary.defs.hh \
+Interval.defs.hh \
+Interval.inlines.hh \
 Old_Interval.defs.hh \
 Old_Interval.inlines.hh \
 Bounding_Box.defs.hh \

@@ -30,45 +30,45 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Boundary::Boundary(const ERational& v, Flag f)
+Old_Boundary::Old_Boundary(const ERational& v, Flag f)
   : value(v), flag(f) {
 }
 
 inline bool
-Boundary::is_closed() const {
+Old_Boundary::is_closed() const {
   return flag == ZERO;
 }
 
 inline const ERational&
-Boundary::bound() const {
+Old_Boundary::bound() const {
   return value;
 }
 
 inline ERational&
-Boundary::bound() {
+Old_Boundary::bound() {
   return value;
 }
 
 inline
 LBoundary::LBoundary(const ERational& v, Open_Closed f)
-  : Boundary(v, f == CLOSED ? ZERO : POS) {
+  : Old_Boundary(v, f == CLOSED ? ZERO : POS) {
 }
 
 inline
 UBoundary::UBoundary(const ERational& v, Open_Closed f)
-  : Boundary(v, f == CLOSED ? ZERO : NEG) {
+  : Old_Boundary(v, f == CLOSED ? ZERO : NEG) {
 }
 
-/*! \relates Boundary */
+/*! \relates Old_Boundary */
 inline bool
-operator<(const Boundary& x, const Boundary& y) {
+operator<(const Old_Boundary& x, const Old_Boundary& y) {
   return x.value < y.value ||
     (x.value == y.value && x.flag < y.flag);
 }
 
-/*! \relates Boundary */
+/*! \relates Old_Boundary */
 inline bool
-operator>(const Boundary& x, const Boundary& y) {
+operator>(const Old_Boundary& x, const Old_Boundary& y) {
   return y < x;
 }
 
