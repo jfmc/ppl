@@ -38,7 +38,10 @@ private:
     return const_cast<Interval&>(*this);
   }
 public:
+  typedef Boundary boundary_type;
+
   typedef Interval_::Property Property;
+
   Info& info() {
     return *this;
   }

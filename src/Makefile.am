@@ -112,6 +112,7 @@ iterator_to_const.types.hh \
 distances.types.hh \
 Interval.types.hh \
 Old_Interval.types.hh \
+Box.types.hh \
 Bounding_Box.types.hh \
 Constraint.types.hh \
 Generator.types.hh \
@@ -187,6 +188,9 @@ Interval.defs.hh \
 Interval.inlines.hh \
 Old_Interval.defs.hh \
 Old_Interval.inlines.hh \
+Box.defs.hh \
+Box.inlines.hh \
+Box.templates.hh \
 Bounding_Box.defs.hh \
 Bounding_Box.inlines.hh \
 Variable.defs.hh \
@@ -311,6 +315,7 @@ BDS_Status.idefs.hh \
 Og_Status.idefs.hh
 
 libppl_la_SOURCES = \
+Box.cc \
 Bounding_Box.cc \
 checked.cc \
 Checked_Number.cc \
