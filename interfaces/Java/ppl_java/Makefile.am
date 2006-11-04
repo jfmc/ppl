@@ -22,21 +22,32 @@
 
 if BUILD_JAVA_INTERFACE
 
-ppl_java_version = 1:0:0
-
-ppl_javadir = $(prefix)/lib/java/classes/ppl
-
-ppl_java_JAVA = \
+EXTRA_DIST = \
+C_Polyhedron.java \
 Coefficient.java \
+Constraint.java \
+Constraint_System.java \
+Constraint_System.java \
+Generator.java \
+Generator_System.java \
+Generator_Type.java \
+Linear_Expression.java \
+Linear_Expression_Coefficient.java \
+Linear_Expression_Difference.java \
+Linear_Expression_Sum.java \
+Linear_Expression_Times.java \
+Linear_Expression_Unary_Minus.java \
+Linear_Expression_Variable.java \
+PPL_Object.java \
+Polyhedron.java \
+Relation_Symbol.java \
 Variable.java
 
-ppl_java_CLASSES = $(ppl_java_JAVA:.java=.class)
+JAVAROOT = ../
 
-all:	$(ppl_java_CLASSES)
+noinst_JAVA = $(EXTRA_DIST)
 
-Coefficient.class: Coefficient.java
-	$(JAVAC) -d $(top_builddir)/interfaces/Java $(srcdir)/Coefficient.java
-Variable.class: Variable.java
-	$(JAVAC) -d $(top_builddir)/interfaces/Java $(srcdir)/Variable.java
+# Prevent stupid automake from putting JAVAC=javac in Makefile.in
+#JAVAC = @JAVAC@
 
 endif BUILD_JAVA_INTERFACE

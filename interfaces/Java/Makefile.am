@@ -21,3 +21,10 @@
 # site: http://www.cs.unipr.it/ppl/ .
 
 SUBDIRS = ppl_java
+
+data_DATA = ppl_java.jar
+
+CLEANFILES = ppl_java.jar
+
+ppl_java.jar: ppl_java/classnoinst.stamp
+	jar cf ppl_java.jar ppl_java/*.class
