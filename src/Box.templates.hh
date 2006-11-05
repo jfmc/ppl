@@ -23,7 +23,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Box_templates_hh
 #define PPL_Box_templates_hh 1
 
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
+
+// This is only to access Implementation::BD_Shapes::div_round_up.
+#include "BD_Shape.defs.hh"
+
 namespace Parma_Polyhedra_Library {
+
+template <typename Interval>
+inline bool
+Box<Interval>::OK() const {
+  // FIXME: check that the empty flag and the intervals are consistent?
+  for (dimension_type k = vec.size(); k-- > 0; )
+    if (!vec[k].OK())
+      return false;
+  return true;
+}
 
 template <typename Interval>
 bool
@@ -96,6 +112,8 @@ Box<Interval>::intersection_assign(const Box& y) {
 
   for (dimension_type k = vec.size(); k-- > 0; )
     intersect_assign(vec[k], y.vec[k]);
+
+  assert(OK());
 }
 
 template <typename Interval>
@@ -117,6 +135,82 @@ Box<Interval>::box_hull_assign(const Box& y) {
 
   for (dimension_type k = vec.size(); k-- > 0; )
     convex_hull_assign(vec[k], y.vec[k]);
+
+  assert(OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::add_constraint(const Constraint& c) {
+  using Implementation::BD_Shapes::div_round_up;
+
+  const dimension_type c_space_dim = c.space_dimension();
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dimension())
+    throw_dimension_incompatible("add_constraint(c)", c);
+
+  dimension_type c_num_vars = 0;
+  dimension_type c_only_var = 0;
+  TEMP_INTEGER(c_coeff);
+
+  // Constraints that are not interval constraints are ignored.
+  if (!extract_interval_constraint(c, c_space_dim,
+				   c_num_vars, c_only_var, c_coeff))
+    return;
+
+  if (c_num_vars == 0) {
+    // Dealing with a trivial constraint.
+    if (c.inhomogeneous_term() < 0)
+      set_empty();
+    return;
+  }
+
+#if 0
+  // Select the cell to be modified for the "<=" part of the constraint,
+  // and set `coeff' to the absolute value of itself.
+  N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
+  N& y = (coeff < 0) ? dbm[j][i] : dbm[i][j];
+  if (coeff < 0)
+    coeff = -coeff;
+
+  bool changed = false;
+  // Compute the bound for `x', rounding towards plus infinity.
+  N d;
+  div_round_up(d, c.inhomogeneous_term(), coeff);
+  if (x > d) {
+    x = d;
+    changed = true;
+  }
+
+  if (c.is_strict_inequality())
+    ;
+
+
+  if (c.is_equality()) {
+    // Also compute the bound for `y', rounding towards plus infinity.
+    div_round_up(d, -c.inhomogeneous_term(), coeff);
+    if (y > d) {
+      y = d;
+      changed = true;
+    }
+  }
+
+  // In general, adding a constraint does not preserve the shortest-path
+  // closure or reduction of the bounded difference shape.
+  if (changed && marked_shortest_path_closed())
+    status.reset_shortest_path_closed();
+#endif
+
+  assert(OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::add_constraints(const Constraint_System& cs) {
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i)
+    add_constraint(*i);
+  assert(OK());
 }
 
 template <typename Interval>
@@ -159,6 +253,7 @@ Box<Interval>::CC76_widening_assign(const Box& y,
 	x_lb = *--k;
     }
   }
+  assert(OK());
 }
 
 template <typename Interval>

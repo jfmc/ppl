@@ -27,8 +27,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.types.hh"
 #include "Interval.defs.hh"
 #include "Coefficient.defs.hh"
-#include "Constraint_System.defs.hh"
-#include "Constraint_System.inlines.hh"
+#include "Linear_Expression.types.hh"
+#include "Constraint.types.hh"
+#include "Constraint_System.types.hh"
+#include "Generator.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -46,6 +48,9 @@ class Parma_Polyhedra_Library::Box {
 public:
   //! Constructs a universe bounding box of dimension \p num_dimensions.
   Box(dimension_type num_dimensions);
+
+  //! \name Member Functions that Do Not Modify the Box
+  //@{
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
@@ -73,6 +78,41 @@ public:
     contains at least one integer point.
   */
   bool contains_integer_point() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this satisfies
+    all its invariants.
+  */
+  bool OK() const;
+
+  //@} Member Functions that Do Not Modify the Box
+
+  //! \name Space-Dimension Preserving Member Functions that May Modify the Box
+  //@{
+
+  /*! \brief
+    Use the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added. If it is not an interval constraint, it
+    will be simply ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  void add_constraint(const Constraint& c);
+
+  /*! \brief
+    Use the constraints in \p cs to refine \p *this.
+
+    \param  cs
+    The constraints to be added. Constraints that are not interval
+    constraints will be simply ignored.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void add_constraints(const Constraint_System& cs);
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
@@ -278,6 +318,42 @@ template <typename Interval>
 std::ostream& operator<<(std::ostream& s, const Box<Interval>& box);
 
 } // namespace IO_Operators
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Decodes the constraint \p c as a bounded difference.
+/*! \relates BD_Shape
+  \return
+  <CODE>true</CODE> if the constraint \p c is an
+  \ref Boxes "interval constraint";
+  <CODE>false</CODE> otherwise.
+
+  \param c
+  The constraint to be decoded.
+
+  \param c_space_dim
+  The space dimension of the constraint \p c (it is <EM>assumed</EM>
+  to match the actual space dimension of \p c).
+
+  \param c_num_vars
+  If <CODE>true</CODE> is returned, then it will be set to the number
+  of variables having a non-zero coefficient. The only legal values
+  will therefore be 0 and 1.
+
+  \param c_only_var
+  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
+  then it will be set to the index of the only variable having
+  a non-zero coefficient in \p c.
+
+  \param c_coeff
+  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
+  then it will be set to the value of the only non-zero coefficient in \p c.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+bool extract_interval_constraint(const Constraint& c,
+				 const dimension_type c_space_dim,
+				 dimension_type& c_num_vars,
+				 dimension_type& c_only_var,
+				 Coefficient& c_coeff);
 
 } // namespace Parma_Polyhedra_Library
 
