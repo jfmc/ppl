@@ -561,8 +561,8 @@ inline bool
 operator ==(Interval<To_Boundary, To_Info>& to, const T& x) {
   return to.is_empty() == is_empty(x)
     && to.contains_only_integers() == contains_only_integers(x)
-    && to.is_lower_unbounded() == info(x).test_boundary_property(LOWER, UNBOUNDED)
-    && to.is_upper_unbounded() == info(x).test_boundary_property(UPPER, UNBOUNDED)
+    && to.is_lower_unbounded() == is_unbounded(LOWER, lower(x), info(x))
+    && to.is_upper_unbounded() == is_unbounded(UPPER, upper(x), info(x))
     && to.info().test_boundary_property(LOWER, OPEN) == info(x).test_boundary_property(LOWER, OPEN)
     && to.info().test_boundary_property(UPPER, OPEN) == info(x).test_boundary_property(UPPER, OPEN)
     && to.lower() == lower(x)
