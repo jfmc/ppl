@@ -1445,7 +1445,7 @@ private:
     The return value <CODE>false</CODE> does not necessarily
     implies that \p *this is non-empty.
   */
-  bool marked_empty()const;
+  bool marked_empty() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if the system of bounded differences
@@ -1454,7 +1454,7 @@ private:
     The return value <CODE>false</CODE> does not necessarily
     implies that <CODE>this->dbm</CODE> is not shortest-path closed.
   */
-  bool marked_shortest_path_closed()const;
+  bool marked_shortest_path_closed() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if the system of bounded differences
@@ -1463,7 +1463,7 @@ private:
     The return value <CODE>false</CODE> does not necessarily
     implies that <CODE>this->dbm</CODE> is not shortest-path reduced.
   */
-  bool marked_shortest_path_reduced()const;
+  bool marked_shortest_path_reduced() const;
 
   //! Turns \p *this into an empty BDS.
   void set_empty();
