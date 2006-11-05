@@ -97,8 +97,7 @@ Box<Interval>::CC76_widening_assign(const Box& y,
 	  x_ub = *k;
       }
       else
-	// FIXME: set x_ub to unbounded.
-	;
+	x_vec_i.set_upper_unbounded();
     }
 
     // Lower bound.
@@ -112,8 +111,7 @@ Box<Interval>::CC76_widening_assign(const Box& y,
 	  if (k != first)
 	    x_lb = *--k;
 	  else
-	    // FIXME: set x_lb to unbounded.
-	    ;
+	    x_vec_i.set_lower_unbounded();
       }
       else
 	x_lb = *--k;
