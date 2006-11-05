@@ -88,6 +88,19 @@ set_unbounded(Type to_type, To& to, To_Info& to_info) {
   }
 }
 
+template <typename From, typename From_Info>
+inline bool
+is_unbounded(Type from_type, From& from, From_Info& from_info) {
+  if (from_info.test_boundary_property(from_type, UNBOUNDED))
+      return true;
+  // TOTHINK: [inf, inf] is unbounded?
+  if (from_type == LOWER)
+    return is_minus_infinity(from);
+  else
+    return is_plus_infinity(from);
+}
+
+
 template <typename T, typename Info>
 inline void
 sign(Type type, T v, const Info& info) {

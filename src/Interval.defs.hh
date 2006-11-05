@@ -111,6 +111,30 @@ public:
       return false;
     }
   }
+  bool is_lower_unbounded() const {
+    return Boundary::is_unbounded(LOWER, lower_, info());
+  }
+  bool is_upper_unbounded() const {
+    return Boundary::is_unbounded(UPPER, upper_, info());
+  }
+  void set_lower_unbounded() {
+    return set_unbounded(LOWER, lower_, info());
+  }
+  void set_upper_unbounded() {
+    return set_unbounded(UPPER, upper_, info());
+  }
+  bool is_unbounded() const {
+    return is_lower_unbounded() || is_upper_unbounded();
+  }
+  bool is_universe() const {
+    return is_lower_unbounded() && is_upper_unbounded()
+      && !is_integer();
+  }
+  bool is_topologically_closed() const {
+    return is_empty() ||
+      ((!info().test_boundary_property(LOWER, OPEN) || is_lower_unbounded())
+       && (!info().test_boundary_property(UPPER, OPEN) || is_upper_unbounded()));
+  }
   Boundary lower_;
   Boundary upper_;
 };
@@ -338,6 +362,7 @@ intersect_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   I_Result rl, ru;
   rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
   ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
+  // FIXME: boundary normalization for integer interval
   // FIXME: check empty (policy based)?
   return static_cast<I_Result>(rl | ru);
 }
@@ -361,6 +386,7 @@ intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2
   ru = min_assign(UPPER, to.upper(), to_info,
 		  UPPER, upper(x), info(x),
 		  UPPER, upper(y), info(y));
+  // FIXME: boundary normalization for integer interval
   // FIXME: check empty (policy based)?
   to.info() = to_info;
   return static_cast<I_Result>(rl | ru);
