@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator.types.hh"
+#include "Generator_System.types.hh"
 #include "Variable.types.hh"
 #include "Variables_Set.types.hh"
 #include <vector>
@@ -65,6 +66,28 @@ public:
   //! Builds a conservative, upward approximation of \p y.
   template <typename Other_Interval>
   explicit Box(const Box<Other_Interval>& y);
+
+  //! Builds a box from the system of constraints \p cs.
+  /*!
+    The box inherits the space dimension of \p cs.
+
+    \param cs
+    A system of constraints: constraints that are not
+    \ref Boxes "interval constraints"
+    are ignored (even though they may have contributed
+    to the space dimension).
+  */
+  explicit Box(const Constraint_System& cs);
+
+  //! Builds a box from the system of generators \p gs.
+  /*!
+    Builds the smallest box containing the polyhedron defined by \p gs.
+    The box inherits the space dimension of \p gs.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+  */
+  explicit Box(const Generator_System& gs);
 
   //! \name Member Functions that Do Not Modify the Box
   //@{

@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Box_inlines_hh 1
 
 #include "Boundary.defs.hh"
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -37,6 +39,13 @@ template <typename Interval>
 inline
 Box<Interval>::Box(const Box& y)
   : seq(y.seq), empty(y.empty), empty_up_to_date(y.empty_up_to_date) {
+}
+
+template <typename Interval>
+inline
+Box<Interval>::Box(const Constraint_System& cs)
+  : seq(cs.space_dimension()), empty_up_to_date(false) {
+  add_constraints(cs);
 }
 
 template <typename Interval>
