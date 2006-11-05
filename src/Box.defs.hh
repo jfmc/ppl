@@ -50,14 +50,35 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this is an empty box.
+  bool is_empty() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is a universe box.
+  bool is_universe() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    is a topologically closed subset of the vector space.
+  */
+  bool is_topologically_closed() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
+  bool is_discrete() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this is a bounded box.
+  bool is_bounded() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains at least one integer point.
+  */
+  bool contains_integer_point() const;
+
   /*! \brief
     Returns a reference the interval that bounds
     the box on the <CODE>k</CODE>-th space dimension.
   */
   const Interval& operator[](dimension_type k) const;
-
-  //! Returns <CODE>true</CODE> if and only if \p *this is empty.
-  bool is_empty() const;
 
   /*! \brief
     If the <CODE>k</CODE>-th space dimension is unbounded below, returns
@@ -186,6 +207,11 @@ private:
   //! Tells whether or not the flag \p empty is meaningful.
   mutable bool empty_up_to_date;
 
+  /*! \brief
+    Checks the hard way whether \p *this is an empty box:
+    returns <CODE>true</CODE> if and only if it is so.
+  */
+  bool check_empty() const;
 };
 
 namespace Parma_Polyhedra_Library {

@@ -49,18 +49,7 @@ Box<Interval>::operator[](const dimension_type k) const {
 template <typename Interval>
 inline bool
 Box<Interval>::is_empty() const {
-  if (empty_up_to_date)
-    return empty;
-  else {
-    empty_up_to_date = true;
-    for (dimension_type k = vec.size(); k-- > 0; )
-      if (vec[k].is_empty()) {
-	empty = true;
-	return true;
-      }
-    empty = false;
-    return false;
-  }
+  return empty_up_to_date ? empty : check_empty();
 }
 
 template <typename Interval>

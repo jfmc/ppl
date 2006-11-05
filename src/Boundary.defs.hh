@@ -72,7 +72,6 @@ maybe_check_plus_infinity(const T& v) {
   return Policy::handle_infinity && is_plus_infinity(v);
 }
 
-
 template <typename To, typename To_Info>
 inline void
 set_unbounded(Type to_type, To& to, To_Info& to_info) {

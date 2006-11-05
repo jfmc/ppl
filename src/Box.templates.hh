@@ -26,6 +26,58 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Interval>
+bool
+Box<Interval>::check_empty() const {
+  assert(!empty_up_to_date);
+  empty_up_to_date = true;
+  for (dimension_type k = vec.size(); k-- > 0; )
+    if (vec[k].is_empty()) {
+      empty = true;
+      return true;
+    }
+  empty = false;
+  return false;
+}
+
+template <typename Interval>
+bool
+Box<Interval>::is_universe() const {
+  for (dimension_type k = vec.size(); k-- > 0; )
+    if (!vec[k].is_universe())
+      return false;
+  return true;
+}
+
+template <typename Interval>
+bool
+Box<Interval>::is_topologically_closed() const {
+  if (is_empty())
+    return true;
+  for (dimension_type k = vec.size(); k-- > 0; )
+    if (!vec[k].topologicaly_closed())
+      return false;
+  return true;
+}
+
+template <typename Interval>
+bool
+Box<Interval>::is_bounded() const {
+  for (dimension_type k = vec.size(); k-- > 0; )
+    if (!vec[k].is_bounded())
+      return false;
+  return true;
+}
+
+template <typename Interval>
+bool
+Box<Interval>::contains_integer_point() const {
+  for (dimension_type k = vec.size(); k-- > 0; )
+    if (!vec[k].contains_integer_point())
+      return false;
+  return true;
+}
+
+template <typename Interval>
 template <typename Iterator>
 void
 Box<Interval>::CC76_widening_assign(const Box& y,
