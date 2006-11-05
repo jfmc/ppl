@@ -562,14 +562,35 @@ template <typename To_Boundary, typename To_Info,
 	  typename T>
 inline bool
 operator ==(Interval<To_Boundary, To_Info>& to, const T& x) {
-  return to.is_empty() == is_empty(x)
-    && to.contains_only_integers() == contains_only_integers(x)
-    && to.is_lower_unbounded() == is_unbounded(LOWER, lower(x), info(x))
-    && to.is_upper_unbounded() == is_unbounded(UPPER, upper(x), info(x))
-    && to.info().test_boundary_property(LOWER, OPEN) == info(x).test_boundary_property(LOWER, OPEN)
-    && to.info().test_boundary_property(UPPER, OPEN) == info(x).test_boundary_property(UPPER, OPEN)
-    && to.lower() == lower(x)
-    && to.upper() == upper(x);
+  if (to.is_empty())
+    return is_empty(x);
+  else if (is_empty(x))
+    return false;
+
+  if (to.contains_only_integers() != contains_only_integers(x))
+    return false;
+
+  if (to.info().test_boundary_property(LOWER, UNBOUNDED))
+    return info(x).test_boundary_property(LOWER, UNBOUNDED)
+      || (info(x).test_boundary_property(LOWER, OPEN)
+	  && is_minus_infinity(lower(x)));
+  if (info(x).test_boundary_property(LOWER, UNBOUNDED))
+    return to.info().test_boundary_property(LOWER, OPEN)
+      && is_minus_infinity(to.lower);
+  if (to.info().test_boundary_property(LOWER, OPEN) != info(x).test_boundary_property(LOWER, OPEN)
+      || to.lower() != lower(x))
+    return false;
+
+  if (to.info().test_boundary_property(UPPER, UNBOUNDED))
+    return info(x).test_boundary_property(UPPER, UNBOUNDED)
+      || (info(x).test_boundary_property(UPPER, OPEN)
+	  && is_plus_infinity(upper(x)));
+  if (info(x).test_boundary_property(UPPER, UNBOUNDED))
+    return to.info().test_boundary_property(UPPER, OPEN)
+      && is_plus_infinity(to.upper);
+  if (to.info().test_boundary_property(UPPER, OPEN) != info(x).test_boundary_property(UPPER, OPEN)
+      || to.upper() != upper(x))
+    return false;
 }
 
 template <typename To_Boundary, typename To_Info,
