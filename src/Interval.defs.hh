@@ -590,30 +590,9 @@ operator==(const Interval<Boundary, Info>& x, const T& y) {
     return is_empty(y);
   else if (is_empty(y))
     return false;
-
-  if (x.contains_only_integers() != contains_only_integers(y))
-    return false;
-
-  if (x.info().test_boundary_property(LOWER, UNBOUNDED))
-    return info(y).test_boundary_property(LOWER, UNBOUNDED)
-      || (info(y).test_boundary_property(LOWER, OPEN)
-	  && is_minus_infinity(lower(y)));
-  if (info(y).test_boundary_property(LOWER, UNBOUNDED))
-    return x.lower_is_open() && is_minus_infinity(x.lower());
-  if (x.lower_is_open() != info(y).test_boundary_property(LOWER, OPEN)
-      || x.lower() != lower(y))
-    return false;
-
-  if (x.info().test_boundary_property(UPPER, UNBOUNDED))
-    return info(y).test_boundary_property(UPPER, UNBOUNDED)
-      || (info(y).test_boundary_property(UPPER, OPEN)
-	  && is_plus_infinity(upper(y)));
-  if (info(y).test_boundary_property(UPPER, UNBOUNDED))
-    return x.upper_is_open() && is_plus_infinity(x.upper());
-  if (x.upper_is_open() != info(y).test_boundary_property(UPPER, OPEN)
-      || x.upper() != upper(y))
-    return false;
-  return true;
+  return x.contains_only_integers() == contains_only_integers(y)
+    && eq(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
+    && eq(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y));
 }
 
 template <typename Boundary, typename Info,
@@ -622,6 +601,18 @@ inline bool
 operator!=(const Interval<Boundary, Info>& x, const T& y) {
   return !(x == y);
 }
+
+template <typename Boundary, typename Info,
+	  typename T>
+inline bool
+contains(const Interval<Boundary, Info>& x, const T& y) {
+  return le(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
+    && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y))
+    && (!x.contains_only_integers() || contains_only_integers(y));
+}
+
+
+
 
 template <typename To_Boundary, typename To_Info,
 	  typename T>
