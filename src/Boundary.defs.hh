@@ -91,15 +91,10 @@ set_unbounded(Type to_type, To& to, To_Info& to_info) {
 template <typename From, typename From_Info>
 inline bool
 is_unbounded(Type from_type, From& from, From_Info& from_info) {
-  if (from_info.test_boundary_property(from_type, UNBOUNDED))
-      return true;
-  // TOTHINK: [inf, inf] is really unbounded?
-  if (from_type == LOWER)
-    return is_minus_infinity(from);
-  else
-    return is_plus_infinity(from);
+  return from_info.test_boundary_property(from_type, UNBOUNDED)
+    || (from_info.test_boundary_property(from_type, OPEN)
+	&& (from_type == LOWER ? is_minus_infinity(from) : is_plus_infinity(from)));
 }
-
 
 template <typename T, typename Info>
 inline void
@@ -118,9 +113,10 @@ eq(Type from1_type, const From1& from1, const From1_Info& from1_info,
    Type from2_type, const From2& from2, const From2_Info& from2_info) {
   if (from1_info.test_boundary_property(from1_type, UNBOUNDED))
     return from1_type == from2_type
-      && from2_info.test_boundary_property(from2_type, UNBOUNDED);
+      && is_unbounded(from2_type, from2, from2_info);
   else if (from2_info.test_boundary_property(from2_type, UNBOUNDED))
-      return false;
+    return from1_type == from2_type
+      && is_unbounded(from1_type, from1, from1_info);
   if (from1_info.test_boundary_property(from1_type, OPEN)) {
     if (from1_type != from2_type
 	|| !from2_info.test_boundary_property(from2_type, OPEN))
@@ -136,7 +132,7 @@ inline bool
 lt(Type from1_type, const From1& from1, const From1_Info& from1_info,
    Type from2_type, const From2& from2, const From2_Info& from2_info) {
   if (from1_info.test_boundary_property(from1_type, UNBOUNDED)) {
-    if (from2_info.test_boundary_property(from2_type, UNBOUNDED))
+    if (is_unbounded(from2_type, from2, from2_info))
       return from1_type == LOWER && from2_type == UPPER;
     else if (from1_type == LOWER)
       return !maybe_check_minus_infinity<From2_Info>(from2);
@@ -144,7 +140,9 @@ lt(Type from1_type, const From1& from1, const From1_Info& from1_info,
       return maybe_check_plus_infinity<From2_Info>(from2);
   }
   else if (from2_info.test_boundary_property(from2_type, UNBOUNDED)) {
-    if (from2_type == LOWER)
+    if (is_unbounded(from1_type, from1, from1_info))
+      return from1_type == LOWER && from2_type == UPPER;
+    else if (from2_type == LOWER)
       return maybe_check_minus_infinity<From1_Info>(from1);
     else
       return !maybe_check_plus_infinity<From1_Info>(from1);
