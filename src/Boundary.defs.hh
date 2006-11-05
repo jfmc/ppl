@@ -162,24 +162,21 @@ template <typename From1, typename From1_Info, typename From2, typename From2_In
 inline bool
 gt(Type from1_type, const From1& from1, const From1_Info& from1_info,
    Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  return lt(from2_type, from2, from2_info,
-		     from1_type, from1, from1_info);
+  return lt(from2_type, from2, from2_info, from1_type, from1, from1_info);
 }
 
 template <typename From1, typename From1_Info, typename From2, typename From2_Info>
 inline bool
 le(Type from1_type, const From1& from1, const From1_Info& from1_info,
    Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  return !gt(from2_type, from2, from2_info,
-		      from1_type, from1, from1_info);
+  return !gt(from1_type, from1, from1_info, from2_type, from2, from2_info);
 }
 
 template <typename From1, typename From1_Info, typename From2, typename From2_Info>
 inline bool
 ge(Type from1_type, const From1& from1, const From1_Info& from1_info,
    Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  return !lt(from2_type, from2, from2_info,
-		      from1_type, from1, from1_info);
+  return !lt(from1_type, from1, from1_info, from2_type, from2, from2_info);
 }
 
 template <typename To, typename To_Info, typename From, typename From_Info>
