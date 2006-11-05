@@ -74,6 +74,13 @@ public:
   */
   bool contains_integer_point() const;
 
+  //! Assigns to \p *this the intersection of \p *this and \p y.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  void intersection_assign(const Box& y);
+
   /*! \brief
     Returns a reference the interval that bounds
     the box on the <CODE>k</CODE>-th space dimension.
@@ -198,6 +205,13 @@ private:
   //! A vector of intervals, one for each dimension of the vector space.
   std::vector<Interval> vec;
 
+  //! Returns <CODE>true</CODE> if and only if the box is known to be empty.
+  /*!
+    The return value <CODE>false</CODE> does not necessarily
+    implies that \p *this is non-empty.
+  */
+  bool marked_empty()const;
+
   /*! \brief
     A Boolean flag indicating emptiness of the box.
     Only meaningful when \p empty_up_to_date is <CODE>true</CODE>.
@@ -212,6 +226,32 @@ private:
     returns <CODE>true</CODE> if and only if it is so.
   */
   bool check_empty() const;
+
+  //! \name Exception Throwers
+  //@{
+  void throw_dimension_incompatible(const char* method,
+				    const Box& x) const;
+
+  void throw_dimension_incompatible(const char* method,
+				    dimension_type required_dim) const;
+
+  void throw_dimension_incompatible(const char* method,
+				    const Constraint& c) const;
+
+  void throw_dimension_incompatible(const char* method,
+				    const Generator& g) const;
+
+  void throw_dimension_incompatible(const char* method,
+				    const char* name_row,
+				    const Linear_Expression& y) const;
+
+  static void throw_constraint_incompatible(const char* method);
+
+  static void throw_expression_too_complex(const char* method,
+					   const Linear_Expression& e);
+
+  static void throw_generic(const char* method, const char* reason);
+  //@} // Exception Throwers
 };
 
 namespace Parma_Polyhedra_Library {

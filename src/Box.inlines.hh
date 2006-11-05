@@ -48,8 +48,14 @@ Box<Interval>::operator[](const dimension_type k) const {
 
 template <typename Interval>
 inline bool
+Box<Interval>::marked_empty() const {
+  return empty_up_to_date && empty;
+}
+
+template <typename Interval>
+inline bool
 Box<Interval>::is_empty() const {
-  return empty_up_to_date ? empty : check_empty();
+  return marked_empty() || check_empty();
 }
 
 template <typename Interval>

@@ -78,6 +78,27 @@ Box<Interval>::contains_integer_point() const {
 }
 
 template <typename Interval>
+void
+Box<Interval>::intersection_assign(const Box& y) {
+  const dimension_type space_dim = space_dimension();
+
+  // Dimension-compatibility check.
+  if (space_dim != y.space_dimension())
+    throw_dimension_incompatible("intersection_assign(y)", y);
+
+  // If one of the two boxes is empty, the intersection is empty.
+  if (marked_empty())
+    return;
+  if (y.marked_empty()) {
+    set_empty();
+    return;
+  }
+
+  for (dimension_type k = vec.size(); k-- > 0; )
+    intersect_assign(vec[k], y.vec[k]);
+}
+
+template <typename Interval>
 template <typename Iterator>
 void
 Box<Interval>::CC76_widening_assign(const Box& y,
