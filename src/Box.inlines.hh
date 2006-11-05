@@ -30,20 +30,20 @@ namespace Parma_Polyhedra_Library {
 template <typename Interval>
 inline
 Box<Interval>::Box(dimension_type num_dimensions)
-  : vec(num_dimensions), empty(false), empty_up_to_date(true) {
+  : seq(num_dimensions), empty(false), empty_up_to_date(true) {
 }
 
 template <typename Interval>
 inline dimension_type
 Box<Interval>::space_dimension() const {
-  return vec.size();
+  return seq.size();
 }
 
 template <typename Interval>
 inline const Interval&
 Box<Interval>::operator[](const dimension_type k) const {
-  assert(k < vec.size());
-  return vec[k];
+  assert(k < seq.size());
+  return seq[k];
 }
 
 template <typename Interval>
@@ -68,18 +68,18 @@ template <typename Interval>
 inline bool
 Box<Interval>::get_lower_bound(const dimension_type k, bool& closed,
 			       Coefficient& n, Coefficient& d) const {
-  assert(k < vec.size());
-  const Interval& vec_k = vec[k];
+  assert(k < seq.size());
+  const Interval& seq_k = seq[k];
 
-  if (vec_k.info().test_boundary_property(Boundary::LOWER,
+  if (seq_k.info().test_boundary_property(Boundary::LOWER,
 					  Boundary::UNBOUNDED))
     return false;
 
-  closed = !vec_k.info().test_boundary_property(Boundary::LOWER,
+  closed = !seq_k.info().test_boundary_property(Boundary::LOWER,
 						Boundary::OPEN);
 
   mpq_class lr;
-  assign_r(lr, vec_k.lower(), ROUND_NOT_NEEDED);
+  assign_r(lr, seq_k.lower(), ROUND_NOT_NEEDED);
   n = lr.get_num();
   d = lr.get_den();
 
@@ -90,18 +90,18 @@ template <typename Interval>
 inline bool
 Box<Interval>::get_upper_bound(const dimension_type k, bool& closed,
 			       Coefficient& n, Coefficient& d) const {
-  assert(k < vec.size());
-  const Interval& vec_k = vec[k];
+  assert(k < seq.size());
+  const Interval& seq_k = seq[k];
 
-  if (vec_k.info().test_boundary_property(Boundary::UPPER,
+  if (seq_k.info().test_boundary_property(Boundary::UPPER,
 					  Boundary::UNBOUNDED))
     return false;
 
-  closed = !vec_k.info().test_boundary_property(Boundary::UPPER,
+  closed = !seq_k.info().test_boundary_property(Boundary::UPPER,
 						Boundary::OPEN);
 
   mpq_class ur;
-  assign_r(ur, vec_k.upper(), ROUND_NOT_NEEDED);
+  assign_r(ur, seq_k.upper(), ROUND_NOT_NEEDED);
   n = ur.get_num();
   d = ur.get_den();
 
@@ -111,8 +111,8 @@ Box<Interval>::get_upper_bound(const dimension_type k, bool& closed,
 template <typename Interval>
 inline void
 Box<Interval>::set_empty() {
-  for (dimension_type k = vec.size(); k-- > 0; )
-    vec[k].set_empty();
+  for (dimension_type k = seq.size(); k-- > 0; )
+    seq[k].set_empty();
   empty = empty_up_to_date = true;
 }
 
@@ -121,13 +121,13 @@ inline void
 Box<Interval>::raise_lower_bound(const dimension_type k, const bool closed,
 				 Coefficient_traits::const_reference n,
 				 Coefficient_traits::const_reference d) {
-  assert(k < vec.size());
+  assert(k < seq.size());
   assert(d != 0);
   mpq_class q;
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
-  // FIXME: intersect vec[k] with [q, +infty), if closed is true,
+  // FIXME: intersect seq[k] with [q, +infty), if closed is true,
   // or with (q, +infty, if closed is false.
   empty_up_to_date = false;
 }
@@ -137,13 +137,13 @@ inline void
 Box<Interval>::lower_upper_bound(const dimension_type k, const bool closed,
 				 Coefficient_traits::const_reference n,
 				 Coefficient_traits::const_reference d) {
-  assert(k < vec.size());
+  assert(k < seq.size());
   assert(d != 0);
   mpq_class q;
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
-  // FIXME: intersect vec[k] with (-infty, q], if closed is true,
+  // FIXME: intersect seq[k] with (-infty, q], if closed is true,
   // or with (-infty, q), if closed is false.
   empty_up_to_date = false;
 }

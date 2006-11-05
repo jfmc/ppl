@@ -440,8 +440,11 @@ public:
   Constraint_System constraints() const;
 
 private:
-  //! A vector of intervals, one for each dimension of the vector space.
-  std::vector<Interval> vec;
+  //! The type of sequence used to implement the box.
+  typedef std::vector<Interval> Sequence;
+
+  //! A sequence of intervals, one for each dimension of the vector space.
+  Sequence seq;
 
   //! Returns <CODE>true</CODE> if and only if the box is known to be empty.
   /*!

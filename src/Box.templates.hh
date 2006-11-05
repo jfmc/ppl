@@ -35,8 +35,8 @@ template <typename Interval>
 inline bool
 Box<Interval>::OK() const {
   // FIXME: check that the empty flag and the intervals are consistent?
-  for (dimension_type k = vec.size(); k-- > 0; )
-    if (!vec[k].OK())
+  for (dimension_type k = seq.size(); k-- > 0; )
+    if (!seq[k].OK())
       return false;
   return true;
 }
@@ -46,8 +46,8 @@ bool
 Box<Interval>::check_empty() const {
   assert(!empty_up_to_date);
   empty_up_to_date = true;
-  for (dimension_type k = vec.size(); k-- > 0; )
-    if (vec[k].is_empty()) {
+  for (dimension_type k = seq.size(); k-- > 0; )
+    if (seq[k].is_empty()) {
       empty = true;
       return true;
     }
@@ -58,8 +58,8 @@ Box<Interval>::check_empty() const {
 template <typename Interval>
 bool
 Box<Interval>::is_universe() const {
-  for (dimension_type k = vec.size(); k-- > 0; )
-    if (!vec[k].is_universe())
+  for (dimension_type k = seq.size(); k-- > 0; )
+    if (!seq[k].is_universe())
       return false;
   return true;
 }
@@ -69,8 +69,8 @@ bool
 Box<Interval>::is_topologically_closed() const {
   if (is_empty())
     return true;
-  for (dimension_type k = vec.size(); k-- > 0; )
-    if (!vec[k].topologicaly_closed())
+  for (dimension_type k = seq.size(); k-- > 0; )
+    if (!seq[k].topologicaly_closed())
       return false;
   return true;
 }
@@ -78,8 +78,8 @@ Box<Interval>::is_topologically_closed() const {
 template <typename Interval>
 bool
 Box<Interval>::is_bounded() const {
-  for (dimension_type k = vec.size(); k-- > 0; )
-    if (!vec[k].is_bounded())
+  for (dimension_type k = seq.size(); k-- > 0; )
+    if (!seq[k].is_bounded())
       return false;
   return true;
 }
@@ -87,8 +87,8 @@ Box<Interval>::is_bounded() const {
 template <typename Interval>
 bool
 Box<Interval>::contains_integer_point() const {
-  for (dimension_type k = vec.size(); k-- > 0; )
-    if (!vec[k].contains_integer_point())
+  for (dimension_type k = seq.size(); k-- > 0; )
+    if (!seq[k].contains_integer_point())
       return false;
   return true;
 }
@@ -110,8 +110,8 @@ Box<Interval>::intersection_assign(const Box& y) {
     return;
   }
 
-  for (dimension_type k = vec.size(); k-- > 0; )
-    intersect_assign(vec[k], y.vec[k]);
+  for (dimension_type k = seq.size(); k-- > 0; )
+    intersect_assign(seq[k], y.seq[k]);
 
   assert(OK());
 }
@@ -133,8 +133,40 @@ Box<Interval>::box_hull_assign(const Box& y) {
     return;
   }
 
-  for (dimension_type k = vec.size(); k-- > 0; )
-    convex_hull_assign(vec[k], y.vec[k]);
+  for (dimension_type k = seq.size(); k-- > 0; )
+    convex_hull_assign(seq[k], y.seq[k]);
+
+  assert(OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::concatenate_assign(const Box& y) {
+  Box& x = *this;
+
+  const dimension_type x_space_dim = x.space_dimension();
+  const dimension_type y_space_dim = y.space_dimension();
+
+  // If `y' is an empty 0-dim space box let `*this' become empty.
+  if (y_space_dim == 0 && y.marked_empty()) {
+    set_empty();
+    return;
+  }
+
+  // If `x' is an empty 0-dim space box, then it is sufficient to adjust
+  // the dimension of the vector space.
+  if (x_space_dim == 0 && marked_empty()) {
+    x.seq.insert(x.seq.end(), y_space_dim);
+    assert(OK());
+    return;
+  }
+
+  seq.reserve(x_space_dim + y_space_dim);
+  std::copy(y.seq.begin(), y.seq.end(),
+	    std::back_insert_iterator<Sequence>(x.seq));
+
+  if (x.marked_empty() && !y.marked_empty())
+    x.empty_up_to_date = false;
 
   assert(OK());
 }
@@ -218,13 +250,13 @@ template <typename Iterator>
 void
 Box<Interval>::CC76_widening_assign(const Box& y,
 				    Iterator first, Iterator last) {
-  for (dimension_type i = vec.size(); i-- > 0; ) {
-    Interval& x_vec_i = vec[i];
-    const Interval& y_vec_i = y.vec[i];
+  for (dimension_type i = seq.size(); i-- > 0; ) {
+    Interval& x_seq_i = seq[i];
+    const Interval& y_seq_i = y.seq[i];
 
     // Upper bound.
-    typename Interval::boundary_type& x_ub = x_vec_i.upper();
-    const typename Interval::boundary_type& y_ub = y_vec_i.upper();
+    typename Interval::boundary_type& x_ub = x_seq_i.upper();
+    const typename Interval::boundary_type& y_ub = y_seq_i.upper();
     assert(y_ub <= x_ub);
     if (y_ub < x_ub) {
       Iterator k = std::lower_bound(first, last, x_ub);
@@ -233,12 +265,12 @@ Box<Interval>::CC76_widening_assign(const Box& y,
 	  x_ub = *k;
       }
       else
-	x_vec_i.set_upper_unbounded();
+	x_seq_i.set_upper_unbounded();
     }
 
     // Lower bound.
-    typename Interval::boundary_type& x_lb = x_vec_i.upper();
-    const typename Interval::boundary_type& y_lb = y_vec_i.upper();
+    typename Interval::boundary_type& x_lb = x_seq_i.upper();
+    const typename Interval::boundary_type& y_lb = y_seq_i.upper();
     assert(y_lb >= x_lb);
     if (y_lb > x_lb) {
       Iterator k = std::lower_bound(first, last, x_lb);
@@ -247,7 +279,7 @@ Box<Interval>::CC76_widening_assign(const Box& y,
 	  if (k != first)
 	    x_lb = *--k;
 	  else
-	    x_vec_i.set_lower_unbounded();
+	    x_seq_i.set_lower_unbounded();
       }
       else
 	x_lb = *--k;
