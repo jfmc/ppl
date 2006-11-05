@@ -558,40 +558,47 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
   }
 }
 
-template <typename To_Boundary, typename To_Info,
+template <typename Boundary, typename Info,
 	  typename T>
 inline bool
-operator ==(const Interval<To_Boundary, To_Info>& to, const T& x) {
-  if (to.is_empty())
-    return is_empty(x);
-  else if (is_empty(x))
+operator==(const Interval<Boundary, Info>& x, const T& y) {
+  if (x.is_empty())
+    return is_empty(y);
+  else if (is_empty(y))
     return false;
 
-  if (to.contains_only_integers() != contains_only_integers(x))
+  if (x.contains_only_integers() != contains_only_integers(y))
     return false;
 
-  if (to.info().test_boundary_property(LOWER, UNBOUNDED))
-    return info(x).test_boundary_property(LOWER, UNBOUNDED)
-      || (info(x).test_boundary_property(LOWER, OPEN)
-	  && is_minus_infinity(lower(x)));
-  if (info(x).test_boundary_property(LOWER, UNBOUNDED))
-    return to.info().test_boundary_property(LOWER, OPEN)
-      && is_minus_infinity(to.lower);
-  if (to.info().test_boundary_property(LOWER, OPEN) != info(x).test_boundary_property(LOWER, OPEN)
-      || to.lower() != lower(x))
+  if (x.info().test_boundary_property(LOWER, UNBOUNDED))
+    return info(y).test_boundary_property(LOWER, UNBOUNDED)
+      || (info(y).test_boundary_property(LOWER, OPEN)
+	  && is_minus_infinity(lower(y)));
+  if (info(y).test_boundary_property(LOWER, UNBOUNDED))
+    return x.info().test_boundary_property(LOWER, OPEN)
+      && is_minus_infinity(x.lower);
+  if (x.info().test_boundary_property(LOWER, OPEN) != info(y).test_boundary_property(LOWER, OPEN)
+      || x.lower() != lower(y))
     return false;
 
-  if (to.info().test_boundary_property(UPPER, UNBOUNDED))
-    return info(x).test_boundary_property(UPPER, UNBOUNDED)
-      || (info(x).test_boundary_property(UPPER, OPEN)
-	  && is_plus_infinity(upper(x)));
-  if (info(x).test_boundary_property(UPPER, UNBOUNDED))
-    return to.info().test_boundary_property(UPPER, OPEN)
-      && is_plus_infinity(to.upper);
-  if (to.info().test_boundary_property(UPPER, OPEN) != info(x).test_boundary_property(UPPER, OPEN)
-      || to.upper() != upper(x))
+  if (x.info().test_boundary_property(UPPER, UNBOUNDED))
+    return info(y).test_boundary_property(UPPER, UNBOUNDED)
+      || (info(y).test_boundary_property(UPPER, OPEN)
+	  && is_plus_infinity(upper(y)));
+  if (info(y).test_boundary_property(UPPER, UNBOUNDED))
+    return x.info().test_boundary_property(UPPER, OPEN)
+      && is_plus_infinity(x.upper);
+  if (x.info().test_boundary_property(UPPER, OPEN) != info(y).test_boundary_property(UPPER, OPEN)
+      || x.upper() != upper(y))
     return false;
   return true;
+}
+
+template <typename Boundary, typename Info,
+	  typename T>
+inline bool
+operator!=(const Interval<Boundary, Info>& x, const T& y) {
+  return !(x == y);
 }
 
 template <typename To_Boundary, typename To_Info,

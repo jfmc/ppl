@@ -200,6 +200,27 @@ Box<Interval>::concatenate_assign(const Box& y) {
 
 template <typename Interval>
 void
+Box<Interval>::remove_higher_space_dimensions(const dimension_type new_dim) {
+  // Dimension-compatibility check: the variable having
+  // maximum index is the one occurring last in the set.
+  if (new_dim > space_dimension())
+    throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
+				 new_dim);
+
+  // The removal of no dimensions from any box is a no-op.
+  // Note that this case also captures the only legal removal of
+  // dimensions from a zero-dim space box.
+  if (new_dim == space_dimension()) {
+    assert(OK());
+    return;
+  }
+
+  seq.erase(seq.begin() + new_dim, seq.end());
+  assert(OK());
+}
+
+template <typename Interval>
+void
 Box<Interval>::add_constraint(const Constraint& c) {
   using Implementation::BD_Shapes::div_round_up;
 
