@@ -292,6 +292,12 @@ inline const Info&
 info(const Interval<Boundary, Info>& x) {
   return x.info();
 }
+template <typename Boundary, typename Info>
+inline const Info&
+info_open(const Interval<Boundary, Info>& x) {
+  // FIXME: do the right thing!!!
+  return x.info();
+}
 
 struct Scalar_As_Interval_Policy {
   static const bool handle_infinity = false;
@@ -315,6 +321,12 @@ upper(const T& x) {
 template <typename T>
 inline const Scalar_As_Interval_Info&
 info(const T&) {
+  return *static_cast<Scalar_As_Interval_Info*>(0);
+}
+template <typename T>
+inline const Scalar_As_Interval_Info&
+info_open(const T&) {
+  // FIXME: do the right thing!!!
   return *static_cast<Scalar_As_Interval_Info*>(0);
 }
 template <typename T>
