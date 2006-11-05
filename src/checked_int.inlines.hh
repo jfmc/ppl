@@ -937,6 +937,20 @@ neg_unsigned_int(Type& to, const Type from, Rounding_Dir dir) {
 
 template <typename Policy, typename Type>
 inline Result
+floor_int(Type& to, const Type from, Rounding_Dir dir) {
+  to = from;
+  return V_EQ;
+}
+
+template <typename Policy, typename Type>
+inline Result
+ceil_int(Type& to, const Type from, Rounding_Dir dir) {
+  to = from;
+  return V_EQ;
+}
+
+template <typename Policy, typename Type>
+inline Result
 add_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (Policy::check_overflow && Larger<Type>::use_for_add)
     return add_int_larger<Policy>(to, x, y, dir);
@@ -1322,6 +1336,28 @@ output_int(std::ostream& os, Type& from, const Numeric_Format&, Rounding_Dir) {
   os << from;
   return V_EQ;
 }
+
+SPECIALIZE_FLOOR(int, signed char, signed char)
+SPECIALIZE_FLOOR(int, signed short, signed short)
+SPECIALIZE_FLOOR(int, signed int, signed int)
+SPECIALIZE_FLOOR(int, signed long, signed long)
+SPECIALIZE_FLOOR(int, signed long long, signed long long)
+SPECIALIZE_FLOOR(int, unsigned char, unsigned char)
+SPECIALIZE_FLOOR(int, unsigned short, unsigned short)
+SPECIALIZE_FLOOR(int, unsigned int, unsigned int)
+SPECIALIZE_FLOOR(int, unsigned long, unsigned long)
+SPECIALIZE_FLOOR(int, unsigned long long, unsigned long long)
+
+SPECIALIZE_CEIL(int, signed char, signed char)
+SPECIALIZE_CEIL(int, signed short, signed short)
+SPECIALIZE_CEIL(int, signed int, signed int)
+SPECIALIZE_CEIL(int, signed long, signed long)
+SPECIALIZE_CEIL(int, signed long long, signed long long)
+SPECIALIZE_CEIL(int, unsigned char, unsigned char)
+SPECIALIZE_CEIL(int, unsigned short, unsigned short)
+SPECIALIZE_CEIL(int, unsigned int, unsigned int)
+SPECIALIZE_CEIL(int, unsigned long, unsigned long)
+SPECIALIZE_CEIL(int, unsigned long long, unsigned long long)
 
 SPECIALIZE_NEG(signed_int, signed char, signed char)
 SPECIALIZE_NEG(signed_int, signed short, signed short)

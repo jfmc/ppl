@@ -525,6 +525,8 @@ template <typename To, typename From> \
 Result name(To& to, const From& x, Rounding_Dir dir);
 
 FUNC1(assign_r)
+FUNC1(floor_assign_r)
+FUNC1(ceil_assign_r)
 FUNC1(neg_assign_r)
 FUNC1(abs_assign_r)
 FUNC1(sqrt_assign_r)
@@ -619,6 +621,30 @@ operator+(const Checked_Number<T, Policy>& x);
 template <typename T, typename Policy>
 Checked_Number<T, Policy>
 operator-(const Checked_Number<T, Policy>& x);
+
+//! Assigns to \p x largest integral value not greater than \p x.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+floor_assign(Checked_Number<T, Policy>& x);
+
+//! Assigns to \p x largest integral value not greater than \p y.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+floor_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
+
+//! Assigns to \p x smallest integral value not less than \p x.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+ceil_assign(Checked_Number<T, Policy>& x);
+
+//! Assigns to \p x smallest integral value not less than \p y.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+ceil_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 //! Assigns to \p x its negation.
 /*! \relates Checked_Number */

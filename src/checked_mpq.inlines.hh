@@ -224,6 +224,28 @@ SPECIALIZE_ASSIGN(mpq_long_double, mpq_class, long double)
 
 template <typename Policy>
 inline Result
+floor_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir) {
+  mpz_fdiv_q(to.get_num().get_mpz_t(),
+	     from.get_num().get_mpz_t(), from.get_den().get_mpz_t());
+  to.get_den() = 1;
+  return V_EQ;
+}
+
+SPECIALIZE_FLOOR(mpq, mpq_class, mpq_class)
+
+template <typename Policy>
+inline Result
+ceil_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir) {
+  mpz_cdiv_q(to.get_num().get_mpz_t(),
+	     from.get_num().get_mpz_t(), from.get_den().get_mpz_t());
+  to.get_den() = 1;
+  return V_EQ;
+}
+
+SPECIALIZE_CEIL(mpq, mpq_class, mpq_class)
+
+template <typename Policy>
+inline Result
 neg_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir) {
   mpq_neg(to.get_mpq_t(), from.get_mpq_t());
   return V_EQ;

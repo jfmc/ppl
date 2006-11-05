@@ -347,6 +347,43 @@ assign_float_float(To& to, const From from, Rounding_Dir dir) {
 
 template <typename Policy, typename Type>
 inline Result
+floor_float(Type& to, const Type from, Rounding_Dir) {
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(from)))
+    return VC_NAN;
+  if (fpu_direct_rounding(ROUND_DOWN))
+    to = rint(from);
+  else if (fpu_inverse_rounding(ROUND_DOWN))
+    to = -limit_precision(rint(-from));
+  else {
+    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(ROUND_DOWN));
+    avoid_cse(from);
+    to = rint(from);
+    avoid_cse(to);
+    fpu_restore_rounding_direction(old);
+  }
+  return V_EQ;
+}
+template <typename Policy, typename Type>
+inline Result
+ceil_float(Type& to, const Type from, Rounding_Dir) {
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(from)))
+    return VC_NAN;
+  if (fpu_direct_rounding(ROUND_UP))
+    to = rint(from);
+  else if (fpu_inverse_rounding(ROUND_UP))
+    to = -limit_precision(rint(-from));
+  else {
+    fpu_rounding_control_word_type old = fpu_save_rounding_direction(round_fpu_dir(ROUND_UP));
+    avoid_cse(from);
+    to = rint(from);
+    avoid_cse(to);
+    fpu_restore_rounding_direction(old);
+  }
+  return V_EQ;
+}
+
+template <typename Policy, typename Type>
+inline Result
 neg_float(Type& to, const Type from, Rounding_Dir) {
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(from)))
     return VC_NAN;
@@ -848,6 +885,8 @@ SPECIALIZE_IS_INT(float, float)
 SPECIALIZE_ASSIGN(float_minf, float, Minus_Infinity)
 SPECIALIZE_ASSIGN(float_pinf, float, Plus_Infinity)
 SPECIALIZE_ASSIGN(float_nan, float, Not_A_Number)
+SPECIALIZE_FLOOR(float, float, float)
+SPECIALIZE_CEIL(float, float, float)
 SPECIALIZE_NEG(float, float, float)
 SPECIALIZE_ABS(float, float, float)
 SPECIALIZE_ADD(float, float, float, float)
@@ -892,6 +931,8 @@ SPECIALIZE_IS_INT(float, double)
 SPECIALIZE_ASSIGN(float_minf, double, Minus_Infinity)
 SPECIALIZE_ASSIGN(float_pinf, double, Plus_Infinity)
 SPECIALIZE_ASSIGN(float_nan, double, Not_A_Number)
+SPECIALIZE_FLOOR(float, double, double)
+SPECIALIZE_CEIL(float, double, double)
 SPECIALIZE_NEG(float, double, double)
 SPECIALIZE_ABS(float, double, double)
 SPECIALIZE_ADD(float, double, double, double)
@@ -936,6 +977,8 @@ SPECIALIZE_IS_INT(float, long double)
 SPECIALIZE_ASSIGN(float_minf, long double, Minus_Infinity)
 SPECIALIZE_ASSIGN(float_pinf, long double, Plus_Infinity)
 SPECIALIZE_ASSIGN(float_nan, long double, Not_A_Number)
+SPECIALIZE_FLOOR(float, long double, long double)
+SPECIALIZE_CEIL(float, long double, long double)
 SPECIALIZE_NEG(float, long double, long double)
 SPECIALIZE_ABS(float, long double, long double)
 SPECIALIZE_ADD(float, long double, long double, long double)

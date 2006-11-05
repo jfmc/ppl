@@ -420,6 +420,8 @@ name(To& to, const From& x, Rounding_Dir dir) {				\
 
 FUNC1(construct, construct_ext)
 FUNC1(assign_r, assign_ext)
+FUNC1(floor_assign_r, floor_ext)
+FUNC1(ceil_assign_r, ceil_ext)
 FUNC1(neg_assign_r, neg_ext)
 FUNC1(abs_assign_r, abs_ext)
 FUNC1(sqrt_assign_r, sqrt_ext)
@@ -760,6 +762,12 @@ f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y,	\
 }
 
 DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
+
+DEF_ASSIGN_FUN2_1(floor_assign, floor_assign_r)
+DEF_ASSIGN_FUN2_2(floor_assign, floor_assign_r)
+
+DEF_ASSIGN_FUN2_1(ceil_assign, ceil_assign_r)
+DEF_ASSIGN_FUN2_2(ceil_assign, ceil_assign_r)
 
 DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
 DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)

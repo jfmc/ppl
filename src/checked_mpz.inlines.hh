@@ -306,6 +306,24 @@ SPECIALIZE_ASSIGN(mp_nan, mpq_class, Not_A_Number)
 
 template <typename Policy>
 inline Result
+floor_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir) {
+  to = from;
+  return V_EQ;
+}
+
+SPECIALIZE_FLOOR(mpz, mpz_class, mpz_class)
+
+template <typename Policy>
+inline Result
+ceil_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir) {
+  to = from;
+  return V_EQ;
+}
+
+SPECIALIZE_CEIL(mpz, mpz_class, mpz_class)
+
+template <typename Policy>
+inline Result
 neg_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir) {
   mpz_neg(to.get_mpz_t(), from.get_mpz_t());
   return V_EQ;

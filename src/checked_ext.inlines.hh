@@ -96,6 +96,42 @@ neg_ext(To& to, const From& x, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
+floor_ext(To& to, const From& x, Rounding_Dir dir) {
+  if (handle_ext_natively(To) && handle_ext_natively(From))
+    goto native;
+  if (CHECK_P(From_Policy::check_nan_args, is_nan<From_Policy>(x)))
+    return set_special<To_Policy>(to, VC_NAN);
+  else if (is_minf<From_Policy>(x))
+    return assign<To_Policy>(to, MINUS_INFINITY, dir);
+  else if (is_pinf<From_Policy>(x))
+    return assign<To_Policy>(to, PLUS_INFINITY, dir);
+  else {
+  native:
+    return floor<To_Policy>(to, x, dir);
+  }
+}
+
+template <typename To_Policy, typename From_Policy,
+	  typename To, typename From>
+inline Result
+ceil_ext(To& to, const From& x, Rounding_Dir dir) {
+  if (handle_ext_natively(To) && handle_ext_natively(From))
+    goto native;
+  if (CHECK_P(From_Policy::check_nan_args, is_nan<From_Policy>(x)))
+    return set_special<To_Policy>(to, VC_NAN);
+  else if (is_minf<From_Policy>(x))
+    return assign<To_Policy>(to, MINUS_INFINITY, dir);
+  else if (is_pinf<From_Policy>(x))
+    return assign<To_Policy>(to, PLUS_INFINITY, dir);
+  else {
+  native:
+    return ceil<To_Policy>(to, x, dir);
+  }
+}
+
+template <typename To_Policy, typename From_Policy,
+	  typename To, typename From>
+inline Result
 abs_ext(To& to, const From& x, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
     goto native;

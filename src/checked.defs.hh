@@ -290,6 +290,10 @@ struct FUNCTION_CLASS(name) <Policy,					\
   SPECIALIZE_FUN2_0_1(construct, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_ASSIGN(suf, To, From) \
   SPECIALIZE_FUN2_0_1(assign, suf, Result, nonconst, To, const, From, Rounding_Dir)
+#define SPECIALIZE_FLOOR(suf, To, From) \
+  SPECIALIZE_FUN2_0_1(floor, suf, Result, nonconst, To, const, From, Rounding_Dir)
+#define SPECIALIZE_CEIL(suf, To, From) \
+  SPECIALIZE_FUN2_0_1(ceil, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_NEG(suf, To, From) \
   SPECIALIZE_FUN2_0_1(neg, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_ABS(suf, To, From) \
@@ -338,6 +342,8 @@ DECLARE_FUN1_0_0(is_pinf,     bool, const, Type)
 DECLARE_FUN1_0_0(is_int,      bool, const, Type)
 DECLARE_FUN2_0_1(construct,   Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(assign,      Result, nonconst, To, const, From, Rounding_Dir)
+DECLARE_FUN2_0_1(floor,       Result, nonconst, To, const, From, Rounding_Dir)
+DECLARE_FUN2_0_1(ceil,        Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(neg,         Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(abs,         Result, nonconst, To, const, From, Rounding_Dir)
 DECLARE_FUN2_0_1(sqrt,        Result, nonconst, To, const, From, Rounding_Dir)
