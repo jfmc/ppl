@@ -2,6 +2,10 @@
 Enhancements for PPL 0.10
 =========================
 
+- Add a "quick assign" function to checked numbers that allows
+  to efficiently assign small integer constants (like those in
+  the range [-2, 2]) that are guaranteed not to cause any
+  rounding or overflow problems.
 - Revise the documentation for all the congruences() and
   minimized_congruences() methods.
 - Add tests for ppl_Polyhedron_contains_integer_point/1 in pl_check.pl.
