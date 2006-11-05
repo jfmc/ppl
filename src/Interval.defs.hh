@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Interval_defs_hh
 #define PPL_Interval_defs_hh 1
 
+#include "globals.types.hh"
 #include "Interval.types.hh"
 #include "Interval_Info.defs.hh"
 #include <iosfwd>
@@ -47,8 +48,8 @@ private:
   bool is_singleton_() const {
     return eq(LOWER, lower_, info(), UPPER, upper_, info());
   }
-  bool is_integer_() const {
-    return is_singleton() && Parma_Polyhedra_Library::is_integer(lower_);
+  bool is_singleton_integer() const {
+    return is_singleton() && is_integer(lower_);
   }
 
 public:
@@ -99,13 +100,13 @@ public:
     }
 #if 0
     if (info().test_interval_property(ONLY_INTEGERS)) {
-      if (!Parma_Polyhedra_Library::is_integer(lower_)) {
+      if (!is_integer(lower_)) {
 #ifndef NDEBUG
       std::cerr << "The interval is marked to contain only integers, but lower boundary is not an integer." << std::endl;
 #endif
 	return false;
       }
-      if (!Parma_Polyhedra_Library::is_integer(upper_)) {
+      if (!is_integer(upper_)) {
 #ifndef NDEBUG
       std::cerr << "The interval is marked to contain only integers, but upper boundary is not an integer." << std::endl;
 #endif
@@ -114,7 +115,7 @@ public:
     }
 #endif
     if (info().test_interval_property(NOT_ONLY_INTEGERS) &&
-	is_integer_()) {
+	is_singleton_integer()) {
 #ifndef NDEBUG
       std::cerr << "The interval is marked to contain not only integer, but actual content is a singleton integer." << std::endl;
 #endif
@@ -184,12 +185,12 @@ public:
       return false;
     }
   }
-  bool is_integer() const {
+  bool contains_only_integers() const {
     if (info().test_interval_property(ONLY_INTEGERS))
       return true;
     if (info().test_interval_property(NOT_ONLY_INTEGERS))
       return false;
-    if (is_integer_()) {
+    if (is_singleton_integer()) {
       w_info().set_interval_property(ONLY_INTEGERS);
       return true;
     }
@@ -215,7 +216,7 @@ public:
   }
   bool is_universe() const {
     return is_lower_unbounded() && is_upper_unbounded()
-      && !is_integer();
+      && !contains_only_integers();
   }
   bool is_topologically_closed() const {
     return is_empty() ||
@@ -231,20 +232,18 @@ public:
 
 template <typename Boundary, typename Info>
 inline bool
-is_integer(const Interval<Boundary, Info>& x) {
-  return x.is_integer();
+contains_only_integers(const Interval<Boundary, Info>& x) {
+  return x.contains_only_integers();
 }
-
+template <typename Boundary, typename Info>
 inline bool
-is_integer(const char*) {
-  // FIXME:
-  return false;
+is_empty(const Interval<Boundary, Info>& x) {
+  return x.is_empty();
 }
-
+template <typename Boundary, typename Info>
 inline bool
-is_not_a_number(const char*) {
-  // FIXME:
-  return false;
+is_singleton(const Interval<Boundary, Info>& x) {
+  return x.is_singleton();
 }
 
 namespace Interval_ {
@@ -263,16 +262,6 @@ template <typename Boundary, typename Info>
 inline const Info&
 info(const Interval<Boundary, Info>& x) {
   return x.info();
-}
-template <typename Boundary, typename Info>
-inline bool
-maybe_check_empty(const Interval<Boundary, Info>& x) {
-  if (Info::check_empty_args)
-    return x.is_empty();
-  else {
-    assert(x.is_empty());
-    return false;
-  }
 }
 
 struct Scalar_As_Interval_Policy {
@@ -301,11 +290,27 @@ info(const T&) {
 }
 template <typename T>
 inline bool
+is_empty(const T& x) {
+  return is_not_a_number(x);
+}
+template <typename T>
+inline bool
+contains_only_integers(const T& x) {
+  return is_integer(x);
+}
+template <typename T>
+inline bool
+is_singleton(const T& x) {
+  return true;
+}
+
+template <typename T>
+inline bool
 maybe_check_empty(const T& x) {
   if (info(x).check_empty_args)
-    return is_not_a_number(x);
+    return is_empty(x);
   else {
-    assert(is_not_a_number(x));
+    assert(is_empty(x));
     return false;
   }
 }
@@ -315,11 +320,23 @@ inline bool
 check_integer(const T& x) {
   // TOTHINK: use the policy for x or for the result?
   if (info(x).check_integer_args)
-    return is_integer(x);
+    return contains_only_integers(x);
   else
     return info(x).test_interval_property(ONLY_INTEGERS);
 }
 
+}
+
+inline bool
+is_integer(const char*) {
+  // FIXME:
+  return false;
+}
+
+inline bool
+is_not_a_number(const char*) {
+  // FIXME:
+  return false;
 }
 
 template <typename T1, typename T2>
@@ -452,7 +469,7 @@ intersect_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   I_Result rl, ru;
   rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
   ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
-  // FIXME: boundary normalization for integer interval
+  // FIXME: boundary normalization for integer interval?
   // FIXME: check empty (policy based)?
   return static_cast<I_Result>(rl | ru);
 }
@@ -476,10 +493,80 @@ intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2
   ru = min_assign(UPPER, to.upper(), to_info,
 		  UPPER, upper(x), info(x),
 		  UPPER, upper(y), info(y));
-  // FIXME: boundary normalization for integer interval
+  // FIXME: boundary normalization for integer interval?
   // FIXME: check empty (policy based)?
   to.info() = to_info;
   return static_cast<I_Result>(rl | ru);
+}
+
+template <typename To_Boundary, typename To_Info,
+	  typename From>
+inline I_Result
+refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
+  if (maybe_check_empty(x))
+    return to.set_empty();
+  switch (rel) {
+  case LESS_THAN:
+    {
+      I_Result ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info_open(x));
+      return static_cast<I_Result>(I_L_EQ | ru);
+    }
+  case LESS_THAN_OR_EQUAL:
+    {
+      I_Result ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
+      return static_cast<I_Result>(I_L_EQ | ru);
+    }
+  case GREATER_THAN:
+    {
+      I_Result rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info_open(x));
+      return static_cast<I_Result>(rl | I_U_EQ);
+    }
+  case GREATER_THAN_OR_EQUAL:
+    {
+      I_Result rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
+      return static_cast<I_Result>(rl | I_U_EQ);
+    }
+  case EQUAL:
+    return intersect_assign(to, x);
+  case NOT_EQUAL:
+    {
+      if (!is_singleton(x) || !To_Info::store_open)
+	return static_cast<I_Result>(I_L_EQ | I_U_EQ);
+      I_Result rl, ru;
+      if (!to.info().test_boundary_property(LOWER, OPEN)
+	  && to.lower() == lower(x)) {
+	to.info().set_boundary_property(LOWER, OPEN);
+	rl = I_L_GT;
+      }
+      else
+	rl = I_L_EQ;
+      if (!to.info().test_boundary_property(UPPER, OPEN)
+	  && to.upper() == lower(x)) {
+	to.info().set_boundary_property(UPPER, OPEN);
+	ru = I_U_LT;
+      }
+      else
+	ru = I_U_EQ;
+      return static_cast<I_Result>(rl | ru);
+    }
+  default:
+    assert(false);
+    return I_EMPTY;
+  }
+}
+
+template <typename To_Boundary, typename To_Info,
+	  typename T>
+inline bool
+operator ==(Interval<To_Boundary, To_Info>& to, const T& x) {
+  return to.is_empty() == is_empty(x)
+    && to.contains_only_integers() == contains_only_integers(x)
+    && to.is_lower_unbounded() == info(x).test_boundary_property(LOWER, UNBOUNDED)
+    && to.is_upper_unbounded() == info(x).test_boundary_property(UPPER, UNBOUNDED)
+    && to.info().test_boundary_property(LOWER, OPEN) == info(x).test_boundary_property(LOWER, OPEN)
+    && to.info().test_boundary_property(UPPER, OPEN) == info(x).test_boundary_property(UPPER, OPEN)
+    && to.lower() == lower(x)
+    && to.upper() == upper(x);
 }
 
 template <typename To_Boundary, typename To_Info,
@@ -575,7 +662,7 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
     os << (x.info().test_boundary_property(LOWER, OPEN) ? "(" : "[");
     os << x.lower();
   }
-  os << (x.is_integer() ? " .. " : ", ");
+  os << (x.contains_only_integers() ? " .. " : ", ");
   if (x.info().test_boundary_property(UPPER, UNBOUNDED))
     os << "+inf)";
   else {
