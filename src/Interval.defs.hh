@@ -37,10 +37,93 @@ private:
   Info& w_info() const {
     return const_cast<Interval&>(*this);
   }
+  bool is_empty_() const {
+    return lt(UPPER, upper_, info(), LOWER, lower_, info());
+  }
+  bool is_singleton_() const {
+    return eq(LOWER, lower_, info(), UPPER, upper_, info());
+  }
+  bool is_integer_() const {
+    return is_singleton() && Parma_Polyhedra_Library::is_integer(lower_);
+  }
+
 public:
   typedef Boundary boundary_type;
 
   typedef Interval_::Property Property;
+
+  bool OK() const {
+    if (is_not_a_number(lower_)) {
+#ifndef NDEBUG
+      cerr << "The lower boundary is not a number." << endl;
+#endif
+      return false;
+    }
+    if (is_not_a_number(upper_)) {
+#ifndef NDEBUG
+      cerr << "The upper boundary is not a number." << endl;
+#endif
+      return false;
+    }
+    if (info().test_boundary_property(LOWER, UNBOUNDED) &&
+	info().test_boundary_property(LOWER, OPEN)) {
+#ifndef NDEBUG
+      cerr << "The lower boundary is marked unbounded and open." << endl;
+#endif
+      return false;
+    }
+    if (info().test_boundary_property(UPPER, UNBOUNDED) &&
+	info().test_boundary_property(UPPER, OPEN)) {
+#ifndef NDEBUG
+      cerr << "The upper boundary is marked unbounded and open." << endl;
+#endif
+      return false;
+    }
+    if (info().test_interval_property(CARDINALITY_0) &&
+	info().test_interval_property(CARDINALITY_IS) != is_empty_()) {
+#ifndef NDEBUG
+      cerr << "The interval empty flag is incongruent with actual content." << endl;
+#endif
+      return false;
+    }
+    if (info().test_interval_property(CARDINALITY_1) &&
+	info().test_interval_property(CARDINALITY_IS) != is_singleton_()) {
+#ifndef NDEBUG
+      cerr << "The interval singleton flag is incongruent with actual content." << endl;
+#endif
+      return false;
+    }
+#if 0
+    if (info().test_interval_property(ONLY_INTEGERS)) {
+      if (!Parma_Polyhedra_Library::is_integer(lower_)) {
+#ifndef NDEBUG
+      cerr << "The interval is marked to contain only integers, but lower boundary is not an integer." << endl;
+#endif
+	return false;
+      }
+      if (!Parma_Polyhedra_Library::is_integer(upper_)) {
+#ifndef NDEBUG
+      cerr << "The interval is marked to contain only integers, but upper boundary is not an integer." << endl;
+#endif
+	return false;
+      }
+    }
+#endif
+    if (info().test_interval_property(NOT_ONLY_INTEGERS) &&
+	is_integer_()) {
+#ifndef NDEBUG
+      cerr << "The interval is marked to contain not only integer, but actual content is a singleton integer." << endl;
+#endif
+      return false;
+    }
+    if (info().test_interval_property(CARDINALITY_IS) &&
+	info().test_interval_property(CARDINALITY_0) == info().test_interval_property(CARDINALITY_1)) {
+#ifndef NDEBUG
+      cerr << "The interval is marked to know its cardinality, but this is unspecified or ambiguous." << endl;
+#endif
+      return false;
+    }
+  }
 
   Info& info() {
     return *this;
@@ -70,7 +153,7 @@ public:
       return info().test_interval_property(CARDINALITY_0);
     else if (info().test_interval_property(CARDINALITY_0))
       return false;
-    if (lt(UPPER, upper_, info(), LOWER, lower_, info())) {
+    if (is_empty_()) {
       w_info().set_interval_property(CARDINALITY_IS);
       w_info().set_interval_property(CARDINALITY_0);
       w_info().set_interval_property(CARDINALITY_1, false);
@@ -86,7 +169,7 @@ public:
       return info().test_interval_property(CARDINALITY_1);
     else if (info().test_interval_property(CARDINALITY_1))
       return false;
-    if (eq(LOWER, lower_, info(), UPPER, upper_, info())) {
+    if (is_singleton_()) {
       w_info().set_interval_property(CARDINALITY_IS);
       w_info().set_interval_property(CARDINALITY_0, false);
       w_info().set_interval_property(CARDINALITY_1);
@@ -102,7 +185,7 @@ public:
       return true;
     if (info().test_interval_property(NOT_ONLY_INTEGERS))
       return false;
-    if (is_singleton() && Parma_Polyhedra_Library::is_integer(lower_)) {
+    if (is_integer_()) {
       w_info().set_interval_property(ONLY_INTEGERS);
       return true;
     }
@@ -134,6 +217,9 @@ public:
     return is_empty() ||
       ((!info().test_boundary_property(LOWER, OPEN) || is_lower_unbounded())
        && (!info().test_boundary_property(UPPER, OPEN) || is_upper_unbounded()));
+  }
+  bool contains_integer_point() const {
+    return true;
   }
   Boundary lower_;
   Boundary upper_;
