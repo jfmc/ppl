@@ -86,6 +86,19 @@ Box<Interval>::minimized_constraints() const {
 }
 
 template <typename Interval>
+inline void
+Box<Interval>::add_space_dimensions_and_embed(const dimension_type m) {
+  // Adding no dimensions is a no-op.
+  if (m == 0)
+    return;
+
+  // To embed an n-dimension space box in a (n+m)-dimension space,
+  // we just add `m' new (universe) elements to the sequence.
+  seq.insert(seq.end(), m, Interval());
+  assert(OK());
+}
+
+template <typename Interval>
 inline bool
 operator!=(const Box<Interval>& x, const Box<Interval>& y) {
   return !(x == y);

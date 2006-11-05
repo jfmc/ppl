@@ -183,7 +183,7 @@ Box<Interval>::concatenate_assign(const Box& y) {
   // If `x' is an empty 0-dim space box, then it is sufficient to adjust
   // the dimension of the vector space.
   if (x_space_dim == 0 && marked_empty()) {
-    x.seq.insert(x.seq.end(), y_space_dim);
+    x.seq.insert(x.seq.end(), y_space_dim, Interval());
     assert(OK());
     return;
   }
@@ -194,6 +194,21 @@ Box<Interval>::concatenate_assign(const Box& y) {
 
   if (x.marked_empty() && !y.marked_empty())
     x.empty_up_to_date = false;
+
+  assert(OK());
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::add_space_dimensions_and_project(const dimension_type m) {
+  // Adding no dimensions is a no-op.
+  if (m == 0)
+    return;
+
+  const dimension_type old_space_dim = space_dimension();
+  add_space_dimensions_and_embed(m);
+  for (dimension_type k = m; k-- > 0; )
+      assign(seq[old_space_dim+k], 0);
 
   assert(OK());
 }
@@ -422,6 +437,93 @@ IO_Operators::operator<<(std::ostream& s, const Box<Interval>& box) {
     s << "\n";
   }
   return s;
+}
+
+template <typename Interval>
+void
+Box<Interval>::throw_dimension_incompatible(const char* method,
+					    const Box& y) const {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":" << std::endl
+    << "this->space_dimension() == " << space_dimension()
+    << ", y->space_dimension() == " << y.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename Interval>
+void
+Box<Interval>::throw_dimension_incompatible(const char* method,
+					    dimension_type required_dim)
+  const {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":" << std::endl
+    << "this->space_dimension() == " << space_dimension()
+    << ", required dimension == " << required_dim << ".";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename Interval>
+void
+Box<Interval>::throw_dimension_incompatible(const char* method,
+					    const Constraint& c) const {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":" << std::endl
+    << "this->space_dimension() == " << space_dimension()
+    << ", c->space_dimension == " << c.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename Interval>
+void
+Box<Interval>::throw_dimension_incompatible(const char* method,
+					    const Generator& g) const {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":" << std::endl
+    << "this->space_dimension() == " << space_dimension()
+    << ", g->space_dimension == " << g.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename Interval>
+void
+Box<Interval>::throw_constraint_incompatible(const char* method) {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":" << std::endl
+    << "the constraint is incompatible.";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename Interval>
+void
+Box<Interval>::throw_expression_too_complex(const char* method,
+					    const Linear_Expression& e) {
+  using namespace IO_Operators;
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":" << std::endl
+    << e << " is too complex.";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename Interval>
+void
+Box<Interval>::throw_dimension_incompatible(const char* method,
+					    const char* name_row,
+					    const Linear_Expression& y) const {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":" << std::endl
+    << "this->space_dimension() == " << space_dimension()
+    << ", " << name_row << "->space_dimension() == "
+    << y.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename Interval>
+void
+Box<Interval>::throw_generic(const char* method, const char* reason) {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":" << std::endl
+    << reason;
+  throw std::invalid_argument(s.str());
 }
 
 } // namespace Parma_Polyhedra_Library
