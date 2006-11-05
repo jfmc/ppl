@@ -80,6 +80,12 @@ Box<Interval>::upper_bound_assign(const Box& y) {
 }
 
 template <typename Interval>
+Constraint_System
+Box<Interval>::minimized_constraints() const {
+  return constraints();
+}
+
+template <typename Interval>
 inline bool
 operator!=(const Box<Interval>& x, const Box<Interval>& y) {
   return !(x == y);

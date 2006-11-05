@@ -37,7 +37,35 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 #include <iosfwd>
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+namespace Parma_Polyhedra_Library {
+
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are the same box.
+/*! \relates Box
+  Note that \p x and \p y may be dimension-incompatible shapes:
+  in this case, the value <CODE>false</CODE> is returned.
+*/
+template <typename Interval>
+bool operator==(const Box<Interval>& x, const Box<Interval>& y);
+
+//! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same BDS.
+/*! \relates BD_Shape
+  Note that \p x and \p y may be dimension-incompatible shapes:
+  in this case, the value <CODE>true</CODE> is returned.
+*/
+template <typename Interval>
+bool operator!=(const Box<Interval>& x, const Box<Interval>& y);
+
+namespace IO_Operators {
+
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::Box */
+template <typename Interval>
+std::ostream& operator<<(std::ostream& s, const Box<Interval>& box);
+
+} // namespace IO_Operators
+
+} // namespace Parma_Polyhedra_Library
+
 //! A not necessarily closed, iso-oriented hyperrectangle.
 /*! \ingroup PPL_CXX_interface
   A Box object represents the Cartesian product of \f$n\f$
@@ -45,7 +73,6 @@ site: http://www.cs.unipr.it/ppl/ . */
   represented by objects of class \p Interval,
   where \f$n\f$ is the space dimension of the box.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Interval>
 class Parma_Polyhedra_Library::Box {
 public:
@@ -474,10 +501,20 @@ public:
 			 Coefficient_traits::const_reference n,
 			 Coefficient_traits::const_reference d);
 
-  //! Returns a system of constraints corresponding to \p *this.
+  //! Returns a system of constraints defining \p *this.
   Constraint_System constraints() const;
 
+  //! Returns a minimized system of constraints defining \p *this.
+  Constraint_System minimized_constraints() const;
+
 private:
+  template <typename Other_Interval>
+  friend class Parma_Polyhedra_Library::Box;
+
+  friend bool
+  Parma_Polyhedra_Library::operator==<Interval>(const Box<Interval>& x,
+						const Box<Interval>& y);
+
   //! The type of sequence used to implement the box.
   typedef std::vector<Interval> Sequence;
 
@@ -534,33 +571,6 @@ private:
 };
 
 namespace Parma_Polyhedra_Library {
-
-namespace IO_Operators {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Output operator.
-/*! \relates Parma_Polyhedra_Library::Box */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <typename Interval>
-std::ostream& operator<<(std::ostream& s, const Box<Interval>& box);
-
-} // namespace IO_Operators
-
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are the same box.
-/*! \relates Box
-  Note that \p x and \p y may be dimension-incompatible shapes:
-  in this case, the value <CODE>false</CODE> is returned.
-*/
-template <typename Interval>
-bool operator==(const Box<Interval>& x, const Box<Interval>& y);
-
-//! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same BDS.
-/*! \relates BD_Shape
-  Note that \p x and \p y may be dimension-incompatible shapes:
-  in this case, the value <CODE>true</CODE> is returned.
-*/
-template <typename Interval>
-bool operator!=(const Box<Interval>& x, const Box<Interval>& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as a bounded difference.
