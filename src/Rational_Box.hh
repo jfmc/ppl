@@ -31,8 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-namespace Implementation {
-
 struct Rational_Box_Interval_Info_Policy {
   static const bool store_unbounded = true;
   static const bool store_open = true;
@@ -50,8 +48,6 @@ typedef Interval_Info_Bitset<unsigned int, Rational_Box_Interval_Info_Policy>
 Rational_Box_Interval_Info;
 
 typedef Box<Interval<mpq_class, Rational_Box_Interval_Info> > Rational_Box;
-
-} // namespace Implementation
 
 } // namespace Parma_Polyhedra_Library
 

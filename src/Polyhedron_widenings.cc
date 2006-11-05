@@ -360,8 +360,8 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 						  const Constraint_System& cs,
 						  unsigned* tp) {
   const dimension_type space_dim = space_dimension();
-  Implementation::Rational_Box x_box(space_dim);
-  Implementation::Rational_Box y_box(space_dim);
+  Rational_Box x_box(space_dim);
+  Rational_Box y_box(space_dim);
   shrink_bounding_box(x_box, ANY_COMPLEXITY);
   y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
@@ -849,8 +849,8 @@ PPL::Polyhedron
 				      const Constraint_System& cs,
 				      unsigned* tp) {
   const dimension_type space_dim = space_dimension();
-  Implementation::Rational_Box x_box(space_dim);
-  Implementation::Rational_Box y_box(space_dim);
+  Rational_Box x_box(space_dim);
+  Rational_Box y_box(space_dim);
   shrink_bounding_box(x_box, ANY_COMPLEXITY);
   y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
