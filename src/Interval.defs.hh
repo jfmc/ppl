@@ -25,6 +25,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Interval.types.hh"
 #include "Interval_Info.defs.hh"
+#include <iosfwd>
+
+// Temporary!
+#include <iostream>
 
 namespace Parma_Polyhedra_Library {
 
@@ -55,41 +59,41 @@ public:
   bool OK() const {
     if (is_not_a_number(lower_)) {
 #ifndef NDEBUG
-      cerr << "The lower boundary is not a number." << endl;
+      std::cerr << "The lower boundary is not a number." << std::endl;
 #endif
       return false;
     }
     if (is_not_a_number(upper_)) {
 #ifndef NDEBUG
-      cerr << "The upper boundary is not a number." << endl;
+      std::cerr << "The upper boundary is not a number." << std::endl;
 #endif
       return false;
     }
     if (info().test_boundary_property(LOWER, UNBOUNDED) &&
 	info().test_boundary_property(LOWER, OPEN)) {
 #ifndef NDEBUG
-      cerr << "The lower boundary is marked unbounded and open." << endl;
+      std::cerr << "The lower boundary is marked unbounded and open." << std::endl;
 #endif
       return false;
     }
     if (info().test_boundary_property(UPPER, UNBOUNDED) &&
 	info().test_boundary_property(UPPER, OPEN)) {
 #ifndef NDEBUG
-      cerr << "The upper boundary is marked unbounded and open." << endl;
+      std::cerr << "The upper boundary is marked unbounded and open." << std::endl;
 #endif
       return false;
     }
     if (info().test_interval_property(CARDINALITY_0) &&
 	info().test_interval_property(CARDINALITY_IS) != is_empty_()) {
 #ifndef NDEBUG
-      cerr << "The interval empty flag is incongruent with actual content." << endl;
+      std::cerr << "The interval empty flag is incongruent with actual content." << std::endl;
 #endif
       return false;
     }
     if (info().test_interval_property(CARDINALITY_1) &&
 	info().test_interval_property(CARDINALITY_IS) != is_singleton_()) {
 #ifndef NDEBUG
-      cerr << "The interval singleton flag is incongruent with actual content." << endl;
+      std::cerr << "The interval singleton flag is incongruent with actual content." << std::endl;
 #endif
       return false;
     }
@@ -97,13 +101,13 @@ public:
     if (info().test_interval_property(ONLY_INTEGERS)) {
       if (!Parma_Polyhedra_Library::is_integer(lower_)) {
 #ifndef NDEBUG
-      cerr << "The interval is marked to contain only integers, but lower boundary is not an integer." << endl;
+      std::cerr << "The interval is marked to contain only integers, but lower boundary is not an integer." << std::endl;
 #endif
 	return false;
       }
       if (!Parma_Polyhedra_Library::is_integer(upper_)) {
 #ifndef NDEBUG
-      cerr << "The interval is marked to contain only integers, but upper boundary is not an integer." << endl;
+      std::cerr << "The interval is marked to contain only integers, but upper boundary is not an integer." << std::endl;
 #endif
 	return false;
       }
@@ -112,14 +116,14 @@ public:
     if (info().test_interval_property(NOT_ONLY_INTEGERS) &&
 	is_integer_()) {
 #ifndef NDEBUG
-      cerr << "The interval is marked to contain not only integer, but actual content is a singleton integer." << endl;
+      std::cerr << "The interval is marked to contain not only integer, but actual content is a singleton integer." << std::endl;
 #endif
       return false;
     }
     if (info().test_interval_property(CARDINALITY_IS) &&
 	info().test_interval_property(CARDINALITY_0) == info().test_interval_property(CARDINALITY_1)) {
 #ifndef NDEBUG
-      cerr << "The interval is marked to know its cardinality, but this is unspecified or ambiguous." << endl;
+      std::cerr << "The interval is marked to know its cardinality, but this is unspecified or ambiguous." << std::endl;
 #endif
       return false;
     }
