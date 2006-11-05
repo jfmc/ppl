@@ -591,6 +591,7 @@ operator ==(Interval<To_Boundary, To_Info>& to, const T& x) {
   if (to.info().test_boundary_property(UPPER, OPEN) != info(x).test_boundary_property(UPPER, OPEN)
       || to.upper() != upper(x))
     return false;
+  return true;
 }
 
 template <typename To_Boundary, typename To_Info,
