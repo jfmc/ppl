@@ -69,6 +69,25 @@ Box<Interval>::OK() const {
 }
 
 template <typename Interval>
+dimension_type
+Box<Interval>::affine_dimension() const {
+  dimension_type d = space_dimension();
+  // A zero-space-dim box always has affine dimension zero.
+  if (d == 0)
+    return 0;
+
+  // An empty box has affine dimension zero.
+  if (is_empty())
+    return 0;
+
+  for (dimension_type k = d; k-- > 0; )
+    if (seq[k].is_singleton())
+      --d;
+
+  return d;
+}
+
+template <typename Interval>
 bool
 Box<Interval>::check_empty() const {
   assert(!empty_up_to_date);

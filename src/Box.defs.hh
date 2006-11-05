@@ -122,6 +122,13 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  /*! \brief
+    Returns \f$0\f$, if \p *this is empty; otherwise, returns the
+    \ref Affine_Independence_and_Affine_Dimension "affine dimension"
+    of \p *this.
+  */
+  dimension_type affine_dimension() const;
+
   //! Returns <CODE>true</CODE> if and only if \p *this is an empty box.
   bool is_empty() const;
 
