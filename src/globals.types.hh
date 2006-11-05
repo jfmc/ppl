@@ -45,7 +45,9 @@ enum Relation_Symbol {
   //! Greater than or equal to.
   GREATER_THAN_OR_EQUAL,
   //! Greater than.
-  GREATER_THAN
+  GREATER_THAN,
+  //! Not equal to.
+  NOT_EQUAL
 };
 
 //! Complexity pseudo-classes.
