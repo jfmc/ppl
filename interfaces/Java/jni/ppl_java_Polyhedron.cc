@@ -55,7 +55,7 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_is_1bounded
 JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_is_1disjoint_1from
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_polyhedron) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
-  jlong polyhedron_ptr = get_ptr(env, j_this_polyhedron);
+  jlong polyhedron_ptr = get_ptr(env, j_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
   Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(polyhedron_ptr);
   return this_polyhedron->is_disjoint_from(*polyhedron);
@@ -80,7 +80,7 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_bounds_1from_1below
 JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_contains
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_polyhedron) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
-  jlong polyhedron_ptr = get_ptr(env, j_this_polyhedron);
+  jlong polyhedron_ptr = get_ptr(env, j_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
   Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(polyhedron_ptr);
   return this_polyhedron->contains(*polyhedron);
@@ -90,7 +90,7 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_contains
 JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_strictly_1contains
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_polyhedron) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
-  jlong polyhedron_ptr = get_ptr(env, j_this_polyhedron);
+  jlong polyhedron_ptr = get_ptr(env, j_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
   Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(polyhedron_ptr);
   return this_polyhedron->strictly_contains(*polyhedron);

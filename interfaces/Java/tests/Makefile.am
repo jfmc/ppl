@@ -20,11 +20,19 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = ppl_java jni tests
+JAVAROOT = .
 
-data_DATA = ppl_java.jar
+if BUILD_JAVA_INTERFACE
 
-CLEANFILES = ppl_java.jar
+EXTRA_DIST = \
+C_Polyhedron_test1.java
 
-ppl_java.jar: ppl_java/classnoinst.stamp
-	jar cf ppl_java.jar ppl_java/*.class
+
+noinst_JAVA = $(EXTRA_DIST)
+CLASSPATH = ..
+JAVACFLAGS = -classpath $(CLASSPATH)
+
+
+check-local:
+	 java -classpath .:../ -Djava.library.path=../jni/.libs C_Polyhedron_test1
+endif BUILD_JAVA_INTERFACE

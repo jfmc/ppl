@@ -904,9 +904,11 @@ AC_CONFIG_FILES(Makefile
                 interfaces/Makefile
                 interfaces/C/Makefile
                 interfaces/C/ppl_c_version.h
-                interfaces/Java/Makefile
+               	interfaces/Java/Makefile
+		interfaces/Java/jni/Makefile
+		interfaces/Java/tests/Makefile
                 interfaces/Java/ppl_java/Makefile
-                interfaces/OCaml/Makefile
+		interfaces/OCaml/Makefile
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile
