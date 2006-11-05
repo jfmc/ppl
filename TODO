@@ -35,6 +35,9 @@ Enhancements for PPL 0.10
 Enhancements for PPL 0.10 or later versions
 ==========================================
 
+- In the OK() methods, instead of having all those #ifndef NDEBUG,
+  it is probably worthwhile to use a suitable defined `barf' stream
+  that does the right thing.
 - Provide support for strict inequalities in MIP problems.
 - Implement void Polyhedron::envelope_assign(const Polyhedron& y).
 - Implement the extrapolation operators defined in HenzingerH95
