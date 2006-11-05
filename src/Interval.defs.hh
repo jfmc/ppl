@@ -576,7 +576,7 @@ operator==(const Interval<Boundary, Info>& x, const T& y) {
 	  && is_minus_infinity(lower(y)));
   if (info(y).test_boundary_property(LOWER, UNBOUNDED))
     return x.info().test_boundary_property(LOWER, OPEN)
-      && is_minus_infinity(x.lower);
+      && is_minus_infinity(x.lower());
   if (x.info().test_boundary_property(LOWER, OPEN) != info(y).test_boundary_property(LOWER, OPEN)
       || x.lower() != lower(y))
     return false;
@@ -587,7 +587,7 @@ operator==(const Interval<Boundary, Info>& x, const T& y) {
 	  && is_plus_infinity(upper(y)));
   if (info(y).test_boundary_property(UPPER, UNBOUNDED))
     return x.info().test_boundary_property(UPPER, OPEN)
-      && is_plus_infinity(x.upper);
+      && is_plus_infinity(x.upper());
   if (x.info().test_boundary_property(UPPER, OPEN) != info(y).test_boundary_property(UPPER, OPEN)
       || x.upper() != upper(y))
     return false;
