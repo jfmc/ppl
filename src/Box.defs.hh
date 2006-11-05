@@ -508,6 +508,22 @@ std::ostream& operator<<(std::ostream& s, const Box<Interval>& box);
 
 } // namespace IO_Operators
 
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are the same box.
+/*! \relates Box
+  Note that \p x and \p y may be dimension-incompatible shapes:
+  in this case, the value <CODE>false</CODE> is returned.
+*/
+template <typename Interval>
+bool operator==(const Box<Interval>& x, const Box<Interval>& y);
+
+//! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same BDS.
+/*! \relates BD_Shape
+  Note that \p x and \p y may be dimension-incompatible shapes:
+  in this case, the value <CODE>true</CODE> is returned.
+*/
+template <typename Interval>
+bool operator!=(const Box<Interval>& x, const Box<Interval>& y);
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as a bounded difference.
 /*! \relates Box

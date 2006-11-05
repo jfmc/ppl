@@ -66,6 +66,12 @@ Box<Interval>::upper_bound_assign(const Box& y) {
 
 template <typename Interval>
 inline bool
+operator!=(const Box<Interval>& x, const Box<Interval>& y) {
+  return !(x == y);
+}
+
+template <typename Interval>
+inline bool
 Box<Interval>::get_lower_bound(const dimension_type k, bool& closed,
 			       Coefficient& n, Coefficient& d) const {
   assert(k < seq.size());
