@@ -59,6 +59,13 @@ public:
   explicit Box(dimension_type num_dimensions = 0,
 	       Degenerate_Element kind = UNIVERSE);
 
+  //! Ordinary copy-constructor.
+  Box(const Box& y);
+
+  //! Builds a conservative, upward approximation of \p y.
+  template <typename Other_Interval>
+  explicit Box(const Box<Other_Interval>& y);
+
   //! \name Member Functions that Do Not Modify the Box
   //@{
 

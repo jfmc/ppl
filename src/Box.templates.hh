@@ -32,6 +32,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Interval>
+template <typename Other_Interval>
+inline
+Box<Interval>::Box(const Box<Other_Interval>& y)
+  : seq(y.space_dimension()) {
+  if (y.marked_empty())
+    set_empty();
+  else {
+    empty_up_to_date = false;
+    for (dimension_type k = y.space_dimension(); k-- > 0; )
+      assign(seq[k], y.seq[k]);
+  }
+  assert(OK());
+}
+
+template <typename Interval>
 bool
 operator==(const Box<Interval>& x, const Box<Interval>& y) {
   const dimension_type x_space_dim = x.space_dimension();
@@ -47,7 +62,6 @@ operator==(const Box<Interval>& x, const Box<Interval>& y) {
 template <typename Interval>
 bool
 Box<Interval>::OK() const {
-  // FIXME: check that the empty flag and the intervals are consistent?
   for (dimension_type k = seq.size(); k-- > 0; )
     if (!seq[k].OK())
       return false;

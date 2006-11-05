@@ -34,6 +34,12 @@ Box<Interval>::Box(dimension_type num_dimensions, Degenerate_Element kind)
 }
 
 template <typename Interval>
+inline
+Box<Interval>::Box(const Box& y)
+  : seq(y.seq), empty(y.empty), empty_up_to_date(y.empty_up_to_date) {
+}
+
+template <typename Interval>
 inline dimension_type
 Box<Interval>::space_dimension() const {
   return seq.size();
@@ -117,8 +123,6 @@ Box<Interval>::get_upper_bound(const dimension_type k, bool& closed,
 template <typename Interval>
 inline void
 Box<Interval>::set_empty() {
-  for (dimension_type k = seq.size(); k-- > 0; )
-    seq[k].set_empty();
   empty = empty_up_to_date = true;
 }
 
