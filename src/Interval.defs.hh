@@ -342,7 +342,7 @@ contains_only_integers(const T& x) {
 template <typename T>
 inline bool
 is_singleton(const T& x) {
-  return true;
+  return !is_not_a_number(x);
 }
 
 template <typename T>
@@ -628,9 +628,20 @@ template <typename Boundary, typename Info,
 	  typename T>
 inline bool
 contains(const Interval<Boundary, Info>& x, const T& y) {
+  if (is_empty(y))
+    return true;
+  if (x.is_empty())
+    return false;
   return le(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
     && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y))
     && (!x.contains_only_integers() || contains_only_integers(y));
+}
+
+template <typename Boundary, typename Info,
+	  typename T>
+inline bool
+strictly_contains(const Interval<Boundary, Info>& x, const T& y) {
+  return contains(x, y) && x != y;
 }
 
 template <typename To_Boundary, typename To_Info,
