@@ -128,6 +128,9 @@ public:
 #endif
       return false;
     }
+
+    // Everything OK.
+    return true;
   }
 
   Info& info() {
