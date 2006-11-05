@@ -42,12 +42,12 @@ test01() {
 
   box1.intersection_assign(box2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(x <= 3);
   known_result.add_constraint(-y <= -2);
   known_result.add_constraint(x - y <= 4);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -75,14 +75,14 @@ test02() {
 
   box1.intersection_assign(box2);
 
-  Box<mpq_class> known_result(4);
+  Rational_Box known_result(4);
   known_result.add_constraint(x - y <= 4);
   known_result.add_constraint(x <= 3);
   known_result.add_constraint(-y <= -2);
   known_result.add_constraint(z - x <= 0);
   known_result.add_constraint(y - z <= -1);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -112,7 +112,7 @@ test03() {
 
   box1.intersection_assign(box2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(x <= 3);
   known_result.add_constraint(-x <= -1);
   known_result.add_constraint(y <= 3);
@@ -120,7 +120,7 @@ test03() {
   known_result.add_constraint(y - x <= -1);
   known_result.add_constraint(x - y <= 1);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -150,9 +150,9 @@ test04() {
 
   box1.intersection_assign(box2);
 
-  Box<mpq_class> known_result(3, EMPTY);
+  Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -182,9 +182,9 @@ test05() {
 
   box2.intersection_assign(box1);
 
-  Box<mpq_class> known_result(3, EMPTY);
+  Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Box<mpq_class>(box2) == known_result);
+  bool ok = (Rational_Box(box2) == known_result);
 
   print_constraints(box2, "*** box2.intersection_assign(box1) ***");
 
@@ -201,9 +201,9 @@ test06() {
 
   box1.intersection_assign(box2);
 
-  Box<mpq_class> known_result;
+  Rational_Box known_result;
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -226,11 +226,11 @@ test07() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  Box<mpq_class> known_result(box2);
+  Rational_Box known_result(box2);
 
   box1.intersection_assign(box2);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -252,11 +252,11 @@ test08() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  Box<mpq_class> known_result(box2);
+  Rational_Box known_result(box2);
 
   box1.intersection_assign_and_minimize(box2);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -318,9 +318,9 @@ test11() {
 
   box1.intersection_assign(box2);
 
-  Box<mpq_class> known_result(3, EMPTY);
+  Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Box<mpq_class>(box1) == known_result) ;
+  bool ok = (Rational_Box(box1) == known_result) ;
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 
@@ -337,9 +337,9 @@ test12() {
 
   box1.intersection_assign(box2);
 
-  Box<mpq_class> known_result(3, EMPTY);
+  Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Box<mpq_class>(box1) == known_result) ;
+  bool ok = (Rational_Box(box1) == known_result) ;
 
   print_constraints(box1, "*** box1.intersection_assign(box2) ***");
 

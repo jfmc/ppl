@@ -40,8 +40,9 @@ $(top_builddir)/tests/libppl_tests.a \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
+#addconstraints1
+
 check_PROGRAMS = \
-addconstraints1 \
 addspacedims1 \
 affinedimension1 \
 affineimage1 \
@@ -73,6 +74,7 @@ generalizedaffinepreimage1 \
 geomcovers1 \
 intersection1 \
 mapspacedims1 \
+maxspacedim1 \
 membytes1 \
 minconstraints1 \
 relations1 \
@@ -122,7 +124,7 @@ print_INSTANCES:
 # Sources for the tests
 #
 
-addconstraints1_SOURCES = addconstraints1.cc
+#addconstraints1_SOURCES = addconstraints1.cc
 
 addspacedims1_SOURCES = addspacedims1.cc
 

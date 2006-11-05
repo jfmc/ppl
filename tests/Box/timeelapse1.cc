@@ -71,11 +71,11 @@ test02() {
 
   box1.time_elapse_assign(box2);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(x >= 0);
   known_result.add_constraint(y >= 0);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "**** box1_time_elapse_assign(box2) ****");
 
@@ -101,10 +101,10 @@ test03() {
 
   box1.time_elapse_assign(box2);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(y >= 1);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "**** box1_time_elapse_assign(box2) ****");
 
@@ -129,9 +129,9 @@ test04() {
 
   box1.time_elapse_assign(box2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "**** box1_time_elapse_assign(box2) ****");
 
@@ -163,9 +163,9 @@ test05() {
 
   box1.time_elapse_assign(box2);
 
-  Box<mpq_class> known_result(3, EMPTY);
+  Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "**** box1.time_elapse_assign(box2) ****");
 

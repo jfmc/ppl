@@ -40,7 +40,7 @@ test01() {
   TBox box1(ph, SIMPLEX_COMPLEXITY);
   TBox box2(ph, ANY_COMPLEXITY);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(11*A <= 61);
   known_result.add_constraint(2*B <= 5);

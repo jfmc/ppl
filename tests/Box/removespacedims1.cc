@@ -48,11 +48,11 @@ test01() {
 
   box1.remove_space_dimensions(to_be_removed);
 
-  Box<mpq_class> known_result(4);
+  Rational_Box known_result(4);
   known_result.add_constraint(x2 <= 2);
   known_result.add_constraint(x4 <= 5);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.remove_space_dimensions({x3,x5}) ***");
 
@@ -93,9 +93,9 @@ test02() {
 
   box1.remove_space_dimensions(to_be_removed);
 
-  Box<mpq_class> known_result(0);
+  Rational_Box known_result(0);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1,
 		    "*** box1.remove_space_dimensions"
@@ -127,9 +127,9 @@ test03() {
 
   box1.remove_space_dimensions(to_be_removed);
 
-  Box<mpq_class> known_result(1, EMPTY);
+  Rational_Box known_result(1, EMPTY);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.remove_space_dimensions({x1,x3,x4}) ***");
 
@@ -149,9 +149,9 @@ test04() {
 
   box.remove_higher_space_dimensions(0);
 
-  Box<mpq_class> known_result(0, UNIVERSE);
+  Rational_Box known_result(0, UNIVERSE);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.remove_higher_space_dimensions(0) ***");
 
@@ -176,9 +176,9 @@ test05() {
 
   box.remove_higher_space_dimensions(1);
 
-  Box<mpq_class> known_result(1, EMPTY);
+  Rational_Box known_result(1, EMPTY);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.remove_higher_space_dimensions(1) ***");
 
@@ -205,13 +205,13 @@ test06() {
 
   box.remove_higher_space_dimensions(3);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(x1 - x2 <=1);
   known_result.add_constraint(x2 - x3 <= 2);
   known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 5);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.remove_higher_space_dimensions(3) ***");
 
@@ -232,11 +232,11 @@ test07() {
 
   print_constraints(box, "*** box ***");
 
-  Box<mpq_class> known_result(box);
+  Rational_Box known_result(box);
 
   box.remove_higher_space_dimensions(3);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.remove_higher_space_dimensions(3) ***");
 
@@ -318,13 +318,13 @@ test10() {
   cs = box.minimized_constraints();
   box.remove_higher_space_dimensions(3);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(x1 - x2 <=1);
   known_result.add_constraint(x2 - x3 <= 3);
   known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 6);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.remove_higher_space_dimensions(3) ***");
 
@@ -357,13 +357,13 @@ test11() {
   cs = box.minimized_constraints();
   box.remove_space_dimensions(to_be_removed);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(x1 - x2 <=1);
   known_result.add_constraint(x2 - x3 <= 3);
   known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 6);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.remove_space_dimensions({x4, x5}) ***");
 

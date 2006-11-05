@@ -61,7 +61,7 @@ test02() {
   cs.insert(3*y <= 2);
   cs.insert(3*y >= 1);
 
-  Box<mpq_class> box(3);
+  Rational_Box box(3);
   box.add_constraints(cs);
 
   print_constraints(box, "*** box ***");
@@ -111,7 +111,7 @@ test04() {
   cs.insert(3*y - 3*z <= 2);
   cs.insert(8*z - 8*y >= 7);
 
-  Box<mpq_class> box(3);
+  Rational_Box box(3);
   box.add_constraints(cs);
 
   print_constraints(box, "*** box ***");

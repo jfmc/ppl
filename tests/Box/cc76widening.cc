@@ -45,10 +45,10 @@ test01() {
 
   box1.H79_widening_assign(box2);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.CC76_extrapolation_assign(box2) ***");
 

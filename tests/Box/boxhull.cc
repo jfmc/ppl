@@ -47,11 +47,11 @@ test01() {
 
   box1.box_hull_assign(box2);
 
-  Box<mpq_class> known_result(5);
+  Rational_Box known_result(5);
   known_result.add_constraint(x1 <= 5);
   known_result.add_constraint(x1 - x2 <= 20);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
 
@@ -80,7 +80,7 @@ test02() {
 
   box1.box_hull_assign(box2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(x <= 4);
   known_result.add_constraint(y >= -5);
   known_result.add_constraint(x >= -4);
@@ -88,7 +88,7 @@ test02() {
   known_result.add_constraint(x - y <= 8);
   known_result.add_constraint(y - x <= 2);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
 
@@ -115,11 +115,11 @@ test03() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  Box<mpq_class> known_result(box1);
+  Rational_Box known_result(box1);
 
   box1.box_hull_assign(box2);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.box_hull_assign(box2) ***");
 
@@ -148,7 +148,7 @@ test04() {
 
   box1.box_hull_assign_and_minimize(box2);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B >= -5);
   known_result.add_constraint(A >= -4);
@@ -156,7 +156,7 @@ test04() {
   known_result.add_constraint(A - B <= 8);
   known_result.add_constraint(B - A <= 2);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.box_hull_assign_and_minimize(box2) ***");
 
@@ -224,10 +224,10 @@ test07() {
 
   box1.box_hull_assign_and_minimize(box2);
 
-  Box<mpq_class> known_result(1);
+  Rational_Box known_result(1);
   known_result.add_constraint(A <= 3);
 
-  bool ok = (Box<mpq_class>(box1) == known_result) ;
+  bool ok = (Rational_Box(box1) == known_result) ;
 
   print_constraints(box1, "*** box1.box_hull_assign_and_minimize(box2) ***");
 

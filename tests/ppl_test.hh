@@ -266,6 +266,28 @@ namespace Parma_Polyhedra_Library {
 //! Utility typedef to allow a macro argument to denote the long double type.
 typedef long double long_double;
 
+struct Test_Box_Interval_Info_Policy {
+  static const bool store_unbounded = true;
+  static const bool store_open = true;
+  static const bool store_integer = false;
+  static const bool store_empty = true;
+  static const bool store_singleton = true;
+  static const unsigned int next_bit = 0;
+  static const bool handle_infinity = false;
+  static const bool check_inexact = false;
+  static const bool check_empty_args = false;
+  static const bool check_integer_args = false;
+};
+
+typedef Interval_Info_Bitset<unsigned int, Test_Box_Interval_Info_Policy>
+Test_Box_Interval_Info;
+
+typedef Box<Interval<mpq_class, Test_Box_Interval_Info> > Test_Box;
+
+//! The incarnation of BD_Shape under test.
+//typedef Box<BOX_INSTANCE> TBox;
+typedef Test_Box TBox;
+
 //! The incarnation of BD_Shape under test.
 typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
 
@@ -451,9 +473,6 @@ check_result(const Octagonal_Shape<T>& computed_result,
     ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
     : check_result_i(computed_result, known_result, 0, 0, 0);
 }
-
-//! Return true if and only if x equals y.
-bool operator==(const Bounding_Box& x, const Bounding_Box& y);
 
 } // namespace Parma_Polyhedra_Library
 

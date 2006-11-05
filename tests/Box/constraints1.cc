@@ -28,12 +28,12 @@ bool
 test01() {
   TBox box1(0, EMPTY);
 
-  Box<mpq_class> known_result(box1);
+  Rational_Box known_result(box1);
 
   Constraint_System cs = box1.constraints();
   TBox box2(cs);
 
-  bool ok = (Box<mpq_class>(box2) == known_result);
+  bool ok = (Rational_Box(box2) == known_result);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -46,12 +46,12 @@ bool
 test02() {
   TBox box1(0, UNIVERSE);
 
-  Box<mpq_class> known_result(box1);
+  Rational_Box known_result(box1);
 
   Constraint_System cs = box1.constraints();
   TBox box2(cs);
 
-  bool ok = (Box<mpq_class>(box2) == known_result);
+  bool ok = (Rational_Box(box2) == known_result);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -72,14 +72,14 @@ test03() {
   box1.add_constraint(B - C >= 1);
   box1.add_constraint(C - A <= 9);
 
-  Box<mpq_class> known_result(box1);
+  Rational_Box known_result(box1);
 
   box1.contains(box1);
 
   Constraint_System cs = box1.constraints();
   TBox box2(cs);
 
-  bool ok = (Box<mpq_class>(box2) == known_result);
+  bool ok = (Rational_Box(box2) == known_result);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -107,9 +107,9 @@ test04() {
   print_constraints(box2, "*** box2 ***");
   print_constraints(cs, "*** cs ***");
 
-  Box<mpq_class> known_result(box1);
+  Rational_Box known_result(box1);
 
-  bool ok = (Box<mpq_class>(box2) == known_result);
+  bool ok = (Rational_Box(box2) == known_result);
 
   return ok;
 }

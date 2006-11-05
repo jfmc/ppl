@@ -39,7 +39,7 @@ test01() {
   box.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL,
 				 Linear_Expression(-1));
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(2*A == 1);
 
   bool ok = check_result(box, known_result);
@@ -64,9 +64,9 @@ test02() {
 
   box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, Linear_Expression(-1));
 
-  Box<mpq_class> known_result(2, EMPTY);
+  Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
@@ -88,7 +88,7 @@ test03() {
 
   box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -B+1);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(4*A == 1);
   known_result.add_constraint(-B >= 4);
 
@@ -114,7 +114,7 @@ test04() {
 
   box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, B+1);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(4*A == 1);
   known_result.add_constraint(B >= 4);
 
@@ -140,7 +140,7 @@ test05() {
 
   box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 2*B+1);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(7*A == 1);
   known_result.add_constraint(B >= 2);
 
@@ -166,7 +166,7 @@ test06() {
 
   box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -2*B+1);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(5*A == 1);
   known_result.add_constraint(-B >= 2);
 
@@ -192,7 +192,7 @@ test07() {
 
   box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 3*A-2*B+1);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(-2*B >= 3);
 
@@ -218,7 +218,7 @@ test08() {
 
   box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+1);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(-2*B >= 5);
 
@@ -246,7 +246,7 @@ test09() {
 
   box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, 2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(3*B <= 14);
   known_result.add_constraint(3*B - 3*A <= 13);
@@ -284,7 +284,7 @@ test10() {
 
   box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, 3);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(20*B <= -203);
   known_result.add_constraint(60*A - 60*B >= 629);
@@ -316,7 +316,7 @@ test11() {
 
   box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(3*C <= 7);
 
@@ -345,7 +345,7 @@ test12() {
 
   box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, -3);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(12*B >= -35);
   known_result.add_constraint(4*A - 4*B <= 13);
@@ -377,7 +377,7 @@ test13() {
 
   box.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(3*B <= 35);
   known_result.add_constraint(3*B - 3*A <= 34);
@@ -409,7 +409,7 @@ test14() {
 
   box.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(20*B <= 27);
   known_result.add_constraint(60*B - 60*A <= 61);
@@ -442,7 +442,7 @@ test15() {
 
   box.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);

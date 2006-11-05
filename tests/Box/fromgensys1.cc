@@ -29,9 +29,9 @@ test01() {
   Generator_System gs;
   TBox box(gs);
 
-  Box<mpq_class> known_result(0, EMPTY);
+  Rational_Box known_result(0, EMPTY);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -93,7 +93,7 @@ test04() {
   gs.insert(point(2*A + 3*B + 4*C + 5*D));
   TBox box(gs);
 
-  Box<mpq_class> known_result(4);
+  Rational_Box known_result(4);
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(B >= 2);
   known_result.add_constraint(C >= 3);
@@ -104,7 +104,7 @@ test04() {
   known_result.add_constraint(C == D-1);
   known_result.add_constraint(C <= A+2);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box ***");
 
@@ -127,7 +127,7 @@ test05() {
 
   TBox box(ph.generators());
 
-  Box<mpq_class> known_result(4);
+  Rational_Box known_result(4);
   known_result.add_constraint(C <= 30);
   known_result.add_constraint(D >= 4);
   known_result.add_constraint(D <= 10);
@@ -137,7 +137,7 @@ test05() {
   known_result.add_constraint(C - D <= 23);
   known_result.add_constraint(C - D >= 8);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box ***");
 

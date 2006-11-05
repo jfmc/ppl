@@ -51,7 +51,7 @@ test01() {
 
   box1.concatenate_assign(box2);
 
-  Box<mpq_class> known_result(9);
+  Rational_Box known_result(9);
   known_result.add_constraint(x2 - x3 <= 0);
   known_result.add_constraint(x3 <= 2);
   known_result.add_constraint(x6 - x5 <= 2);
@@ -59,7 +59,7 @@ test01() {
   known_result.add_constraint(x8 - x9 <= 2);
   known_result.add_constraint(x9 <= 7);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
 
@@ -82,9 +82,9 @@ test02() {
 
   box2.concatenate_assign(box1);
 
-  Box<mpq_class> known_result(2, EMPTY);
+  Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Box<mpq_class>(box2) == known_result);
+  bool ok = (Rational_Box(box2) == known_result);
 
   print_constraints(box2, "*** box2.concatenate_assign(box1) ***");
 
@@ -111,12 +111,12 @@ test03() {
 
   box1.concatenate_assign(box2);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(x <= 0);
   known_result.add_constraint(y == 3);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
 
@@ -149,7 +149,7 @@ test04() {
 
   box1.concatenate_assign(box2);
 
-  Box<mpq_class> known_result(5);
+  Rational_Box known_result(5);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C >= 0);
@@ -160,7 +160,7 @@ test04() {
   known_result.add_constraint(D - E <= 0);
   known_result.add_constraint(E - D <= 1);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
 
@@ -183,9 +183,9 @@ test05() {
 
   box1.concatenate_assign(box2);
 
-  Box<mpq_class> known_result(2, EMPTY);
+  Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.concatenate_assign(box2) ***");
 

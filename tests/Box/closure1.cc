@@ -355,13 +355,13 @@ add_edges(Box<T>& box, const Edge* edges, unsigned n) {
   } while (0)
 
 bool test01() {
-  Box<mpq_class> qbox1(126);
+  Rational_Box qbox1(126);
   add_edges(qbox1, hawaii, sizeof(hawaii)/sizeof(Edge));
 
   TBox tbox(126);
   add_edges(tbox, hawaii, sizeof(hawaii)/sizeof(Edge));
 
-  Box<mpq_class> qbox2(tbox);
+  Rational_Box qbox2(tbox);
   if (!qbox2.contains(qbox1))
     return false;
 

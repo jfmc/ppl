@@ -45,7 +45,7 @@ test01() {
 
   box2.CC76_narrowing_assign(box1);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y - x <= 7);
   known_result.add_constraint(-x <= 3);
@@ -53,7 +53,7 @@ test01() {
   known_result.add_constraint(-y <= 8);
   known_result.add_constraint(y <= 8);
 
-  bool ok = (Box<mpq_class>(box2) == known_result);
+  bool ok = (Rational_Box(box2) == known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 
@@ -81,7 +81,7 @@ test02() {
 
   box2.CC76_narrowing_assign(box1);
 
-  Box<mpq_class> known_result(4);
+  Rational_Box known_result(4);
   known_result.add_constraint(z <= 1);
   known_result.add_constraint(-y <= 3);
   known_result.add_constraint(y <= 7);
@@ -92,7 +92,7 @@ test02() {
   known_result.add_constraint(z - y <= 3);
   known_result.add_constraint(z - x <= 2);
 
-  bool ok = (Box<mpq_class>(box2) == known_result);
+  bool ok = (Rational_Box(box2) == known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 
@@ -109,7 +109,7 @@ test03() {
   TBox box2(3);
 
   box1.add_constraint(z <= 1);
-  Box<mpq_class> known_result(3, EMPTY);
+  Rational_Box known_result(3, EMPTY);
 
   box2.add_constraint(-y <= 3);
   box2.add_constraint(x >= 4);
@@ -122,7 +122,7 @@ test03() {
 
   box2.CC76_narrowing_assign(box1);
 
-  bool ok = (Box<mpq_class>(box2) == known_result);
+  bool ok = (Rational_Box(box2) == known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 
@@ -151,9 +151,9 @@ test04() {
 
   box2.CC76_narrowing_assign(box1);
 
-  Box<mpq_class> known_result(3, EMPTY);
+  Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Box<mpq_class>(box2) == known_result);
+  bool ok = (Rational_Box(box2) == known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 
@@ -164,14 +164,14 @@ bool
 test05() {
   TBox box1;
   TBox box2(0, EMPTY);
-  Box<mpq_class> known_result(box2);
+  Rational_Box known_result(box2);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
   box2.CC76_narrowing_assign(box1);
 
-  bool ok = (Box<mpq_class>(box2) == known_result);
+  bool ok = (Rational_Box(box2) == known_result);
 
   print_constraints(box2, "*** box2.CC76_narrowing_assign(box1) ***");
 

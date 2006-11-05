@@ -35,9 +35,9 @@ test01() {
 
   box1.map_space_dimensions(function);
 
-  Box<mpq_class> known_result;
+  Rational_Box known_result;
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.map_space_dimensions(function) ***");
 
@@ -55,9 +55,9 @@ test02() {
 
   box1.map_space_dimensions(function);
 
-  Box<mpq_class> known_result(0, EMPTY);
+  Rational_Box known_result(0, EMPTY);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.map_space_dimensions(function) ***");
 
@@ -77,9 +77,9 @@ test03() {
 
   box1.map_space_dimensions(function);
 
-  Box<mpq_class> known_result(2, EMPTY);
+  Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.map_space_dimensions(function) ***");
 
@@ -108,11 +108,11 @@ test04() {
   cs = box1.minimized_constraints();
   box1.map_space_dimensions(function);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(x == 1);
   known_result.add_constraint(y - x <= 3);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.map_space_dimensions(function) ***");
 
@@ -141,10 +141,10 @@ test05() {
 
   box1.map_space_dimensions(function);
 
-  Box<mpq_class> known_result(1);
+  Rational_Box known_result(1);
   known_result.add_constraint(x <= 4);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.map_space_dimensions(function) ***");
 
@@ -174,12 +174,12 @@ test06() {
 
   box1.map_space_dimensions(function);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(y - x <= 7);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.map_space_dimensions(function) ***");
 
@@ -205,12 +205,12 @@ test07() {
 
   box.map_space_dimensions(function);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(x <= -1);
   known_result.add_constraint(y <= 1);
   known_result.add_constraint(x - y <= 3);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.map_space_dimension(function) ***");
 
@@ -242,13 +242,13 @@ test08() {
 
   box.map_space_dimensions(function);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(A == 0);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(C >= 0);
   known_result.add_constraint(B - C == 0);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.map_space_dimensions(function) ***");
 
@@ -268,9 +268,9 @@ test09() {
 
   box.map_space_dimensions(function);
 
-  Box<mpq_class> known_result(0);
+  Rational_Box known_result(0);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.map_space_dimension(function) ***");
 

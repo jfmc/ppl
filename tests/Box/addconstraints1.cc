@@ -38,12 +38,12 @@ test01() {
 
   print_constraints(box1, "*** box1.add_constraints_and_minimize(cs) ***");
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B == 5);
   known_result.add_constraint(B - A <= 5);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(known_result, "*** known_result ***");
 

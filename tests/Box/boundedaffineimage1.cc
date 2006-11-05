@@ -38,11 +38,11 @@ test01() {
 
   box1.bounded_affine_image(x, y, y);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y == 0);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.bounded_affine_image(x, y, y) ***");
 
@@ -63,12 +63,12 @@ test02() {
 
   box1.bounded_affine_image(x, x + 4, x + 4);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y <= 7);
   known_result.add_constraint(x <= 6);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.bounded_affine_image(x, x + 4, x + 4) ***");
 
@@ -89,11 +89,11 @@ test03() {
 
   box1.bounded_affine_image(x, Linear_Expression(4), Linear_Expression(4));
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x == 4);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.bounded_affine_image(x, 4, 4) ***");
 
@@ -112,11 +112,11 @@ test04() {
 
   print_constraints(box1, "*** box1 ***");
 
-  Box<mpq_class> known_result(box1);
+  Rational_Box known_result(box1);
 
   box1.bounded_affine_image(x, x, x);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.bounded_affine_image(x, x, x) ***");
 
@@ -137,12 +137,12 @@ test05() {
 
   box1.bounded_affine_image(x, 2*x - 2, 2*x - 2, 2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y <= 2);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1,
 		    "*** box1.bounded_affine_image(x, 2*x-2, 2*x-2, 2) ***");
@@ -164,11 +164,11 @@ test06() {
 
   box1.bounded_affine_image(y, 2*x, 2*x, 2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(x <= 2);
   known_result.add_constraint(y - x == 0);
 
-  bool ok = (Box<mpq_class>(box1) == known_result);
+  bool ok = (Rational_Box(box1) == known_result);
 
   print_constraints(box1, "*** box1.bounded_affine_image(y, 2*x, 2*x, 2) ***");
 
@@ -190,7 +190,7 @@ test07() {
 
   box.bounded_affine_image(x, -2*x + y + 1, -2*x + y + 1);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(x <= 3);
   known_result.add_constraint(x >= -2);
   known_result.add_constraint(y <= 2);
@@ -198,7 +198,7 @@ test07() {
   known_result.add_constraint(x - y <= 1);
   known_result.add_constraint(x - y >= -1);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box,
 		    "*** box.bounded_affine_image(x, -2*x+y+1, -2*x+y+1) ***");
@@ -226,7 +226,7 @@ test08() {
 
   box.bounded_affine_image(B, Linear_Expression(-1), D + E);
 
-  Box<mpq_class> known_result(5);
+  Rational_Box known_result(5);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(A - C == 2);
@@ -234,7 +234,7 @@ test08() {
   known_result.add_constraint(C <= 2);
   known_result.add_constraint(B >= -1);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.bounded_affine_image(B, -1, D + E) ***");
 
@@ -258,7 +258,7 @@ test09() {
 
   box.bounded_affine_image(C, 3*D - E, 2*C + 1, 5);
 
-  Box<mpq_class> known_result(5);
+  Rational_Box known_result(5);
   known_result.add_constraint(A - B == 0);
   known_result.add_constraint(B <= 1);
   known_result.add_constraint(5*C <= 7);
@@ -289,11 +289,11 @@ test10() {
 
   box.bounded_affine_image(A, -A - 3, B - C + 6*D + F);
 
-  Box<mpq_class> known_result(6);
+  Rational_Box known_result(6);
   known_result.add_constraint(A >= -7);
   known_result.add_constraint(B == 0);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.bounded_affine_image(A, "
 		        "-A - 3, B - C + 6*D + F) ***");
@@ -318,12 +318,12 @@ test11() {
 
   box.bounded_affine_image(B, -B - 2, 7*D - E + 5, 3);
 
-  Box<mpq_class> known_result(5);
+  Rational_Box known_result(5);
   known_result.add_constraint(B >= -1);
   known_result.add_constraint(C - A <= 2);
   known_result.add_constraint(A <= 1);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.bounded_affine_image(B, "
                         "-B - 2, 7*D - E + 5, 3) ***");
@@ -348,11 +348,11 @@ test12() {
 
   box.bounded_affine_image(B, 3*E - 5*D + A - 3*B, 4*A -2*C + 3, -3);
 
-  Box<mpq_class> known_result(5);
+  Rational_Box known_result(5);
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(C - A <= 2);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.bounded_affine_image(B, "
                         "3*E - 5*D + A - 3*B, 4*A - 2*C + 3, -3) ***");

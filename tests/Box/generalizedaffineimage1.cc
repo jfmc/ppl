@@ -39,12 +39,12 @@ test01() {
 
   box.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A+2);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B - A >= 2);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image"
 		        "(B, GREATER_THAN_OR_EQUAL, A+2) ***");
@@ -63,13 +63,13 @@ test02() {
 
   print_constraints(box, "*** box ***");
 
-  Box<mpq_class> known_result(box);
+  Rational_Box known_result(box);
 
   box.generalized_affine_image(A, EQUAL, A + 2);
 
   known_result.affine_image(A, A + 2);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image"
 		    "(A, EQUAL, A + 2) ***");
@@ -88,9 +88,9 @@ test03() {
 
   box.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B + 1);
 
-  Box<mpq_class> known_result(2, EMPTY);
+  Rational_Box known_result(2, EMPTY);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image"
 		    "(A, LESS_THAN_OR_EQUAL, B + 1) ***");
@@ -113,13 +113,13 @@ test04() {
 
   box.generalized_affine_image(x,GREATER_THAN_OR_EQUAL, 2*x - 2, 2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(x >= 1);
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(- y <= 1);
   known_result.add_constraint(x - y >= -1);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(x, "
                         "GREATER_THAN_OR_EQUAL, 2*x - 2, 2) ***");
@@ -141,12 +141,12 @@ test05() {
 
   box.generalized_affine_image(y,GREATER_THAN_OR_EQUAL, 2*x - 2, 2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(x >= 2);
   known_result.add_constraint(x <= 5);
   known_result.add_constraint(y >= x - 1);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(y, "
                         "GREATER_THAN_OR_EQUAL, 2*x - 2, 2) ***");
@@ -171,12 +171,12 @@ test06() {
 
   box.generalized_affine_image(e1, GREATER_THAN_OR_EQUAL, e2);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 5);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(A, "
                         "GREATER_THAN_OR_EQUAL, A) ***");
@@ -199,12 +199,12 @@ test07() {
 
   box.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, Linear_Expression(1));
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(A >= 1);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 5);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(A, "
                         "GREATER_THAN_OR_EQUAL, 1) ***");
@@ -230,7 +230,7 @@ test08() {
 
   box.generalized_affine_image(-B, LESS_THAN_OR_EQUAL, Linear_Expression(1));
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(A - C == 2);
@@ -238,7 +238,7 @@ test08() {
   known_result.add_constraint(C <= 2);
   known_result.add_constraint(B >= -1);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(-B, "
                         "LESS_THAN_OR_EQUAL, 1) ***");
@@ -265,13 +265,13 @@ test09() {
 
   box.generalized_affine_image(e1, LESS_THAN_OR_EQUAL, e2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B <= 5);
   known_result.add_constraint(C - A <= 1);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(C, "
                         "LESS_THAN_OR_EQUAL, A + 1) ***");
@@ -293,11 +293,11 @@ test10() {
 
   box.generalized_affine_image(A, LESS_THAN_OR_EQUAL, Linear_Expression(1));
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(A <= 1);
   known_result.add_constraint(B <= 5);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(A, "
                         "LESS_THAN_OR_EQUAL, 1) ***");
@@ -318,11 +318,11 @@ test11() {
 
   box.generalized_affine_image(3*x + 2, LESS_THAN_OR_EQUAL, 2*x - 3);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
   known_result.add_constraint(x <= 1);
   known_result.add_constraint(y <= 0);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box,
 		    "*** box.generalized_affine_image(3*x + 2, "
@@ -342,7 +342,7 @@ test12() {
 
   print_constraints(box, "*** box ***");
 
-  Box<mpq_class> known_result(box);
+  Rational_Box known_result(box);
 
   box.generalized_affine_image(Linear_Expression(6), EQUAL, 3*x - 4);
 
@@ -370,9 +370,9 @@ test13() {
   box.generalized_affine_image(2*B + 3*A,
 			      LESS_THAN_OR_EQUAL, Linear_Expression(1));
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(3*A + 2*B, "
                         "LESS_THAN_OR_EQUAL, 1) ***");
@@ -391,7 +391,7 @@ test14() {
 
   print_constraints(box, "*** box ***");
 
-  Box<mpq_class> known_result(box);
+  Rational_Box known_result(box);
 
   box.generalized_affine_image(-2*A + 5, EQUAL, -4*B);
 
@@ -419,9 +419,9 @@ test15() {
 
   box.generalized_affine_image(A + 2*B - 5, GREATER_THAN_OR_EQUAL, 3*B);
 
-  Box<mpq_class> known_result(2);
+  Rational_Box known_result(2);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(A + 2*B - 5, "
                         "GREATER_THAN_OR_EQUAL, 3*B) ***");
@@ -444,10 +444,10 @@ test16() {
 
   box.generalized_affine_image(2*B + C + 1, LESS_THAN_OR_EQUAL, A - 3*B + 2*C);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(A <= 1);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box,
 		    "*** box.generalized_affine_image(2*B + C + 1, "
@@ -472,10 +472,10 @@ test17() {
   box.generalized_affine_image(2*B + C + 1,
 			      GREATER_THAN_OR_EQUAL, A - 3*B + 2*C);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(A <= 1);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(2*B + C + 1, "
 		        "GREATER_THAN_OR_EQUAL, A - 3*B + 2*C) ***");
@@ -499,10 +499,10 @@ test18() {
   box.generalized_affine_image(-2*A - B - 1,
 			      GREATER_THAN_OR_EQUAL, 3*A + B + 4*C - 2);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(C <= 3);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(-2*A - B - 1, "
                         "GREATER_THAN_OR_EQUAL, 3*A + B + 4*C - 2) ***");
@@ -525,12 +525,12 @@ test19() {
 
   box.generalized_affine_image(-2*C + 3, LESS_THAN_OR_EQUAL, -3*B + 4);
 
-  Box<mpq_class> known_result(3);
+  Rational_Box known_result(3);
   known_result.add_constraint(A - B == 0);
   known_result.add_constraint(B <= 1);
   known_result.add_constraint(A <= 1);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box, "*** box.generalized_affine_image(-2*C + 3, "
                         "LESS_THAN_OR_EQUAL, -3*B + 4) ***");
@@ -555,9 +555,9 @@ test20() {
 			      GREATER_THAN_OR_EQUAL,
 			      Linear_Expression(4));
 
-  Box<mpq_class> known_result(3, EMPTY);
+  Rational_Box known_result(3, EMPTY);
 
-  bool ok = (Box<mpq_class>(box) == known_result);
+  bool ok = (Rational_Box(box) == known_result);
 
   print_constraints(box,
 		    "*** box.generalized_affine_image(3, "

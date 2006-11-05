@@ -26,7 +26,7 @@ namespace {
 
 bool
 test01() {
-  Box<mpq_class> box1(1);
+  Rational_Box box1(1);
   Box<long> box2(1);
   Box<int> box3(1);
   Box<signed char> box4(1);
