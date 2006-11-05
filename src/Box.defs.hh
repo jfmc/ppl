@@ -31,6 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator.types.hh"
+#include "Variable.types.hh"
+#include "Variables_Set.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -134,6 +136,222 @@ public:
   void upper_bound_assign(const Box& y);
 
   /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
+
+    \param y
+    A bounding box that <EM>must</EM> be contained in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  void CC76_widening_assign(const Box& y);
+
+  /*! \brief
+    Assigns to \p *this the result of computing the
+    \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
+
+    \param y
+    A bounding box that <EM>must</EM> be contained in \p *this.
+
+    \param first
+    An iterator that points to the first stop-point.
+
+    \param last
+    An iterator that points one past the last stop-point.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  template <typename Iterator>
+  void CC76_widening_assign(const Box& y,
+			    Iterator first, Iterator last);
+
+  //@} Space-Dimension Preserving Member Functions that May Modify [...]
+
+  //! \name Member Functions that May Modify the Dimension of the Vector Space
+  //@{
+
+  //! Adds \p m new dimensions and embeds the old box into the new space.
+  /*!
+    \param m
+    The number of dimensions to add.
+
+    The new dimensions will be those having the highest indexes in the new
+    box, which is defined by a system of interval constraints in which the
+    variables running through the new dimensions are unconstrained.
+    For instance, when starting from the box \f$\cB \sseq \Rset^2\f$
+    and adding a third dimension, the result will be the box
+    \f[
+      \bigl\{\,
+        (x, y, z)^\transpose \in \Rset^3
+      \bigm|
+        (x, y)^\transpose \in \cB
+      \,\bigr\}.
+    \f]
+  */
+  void add_space_dimensions_and_embed(dimension_type m);
+
+  /*! \brief
+    Adds \p m new dimensions to the box and does not embed it in
+    the new vector space.
+
+    \param m
+    The number of dimensions to add.
+
+    The new dimensions will be those having the highest indexes in the
+    new box, which is defined by a system of bounded differences in
+    which the variables running through the new dimensions are all
+    constrained to be equal to 0.
+    For instance, when starting from the box \f$\cB \sseq \Rset^2\f$
+    and adding a third dimension, the result will be the box
+    \f[
+      \bigl\{\,
+        (x, y, 0)^\transpose \in \Rset^3
+      \bigm|
+        (x, y)^\transpose \in \cB
+      \,\bigr\}.
+    \f]
+  */
+  void add_space_dimensions_and_project(dimension_type m);
+
+  /*! \brief
+    Seeing a box as a set of tuples (its points),
+    assigns to \p *this all the tuples that can be obtained by concatenating,
+    in the order given, a tuple of \p *this with a tuple of \p y.
+
+    Let \f$B \sseq \Rset^n\f$ and \f$D \sseq \Rset^m\f$ be the boxes
+    corresponding, on entry, to \p *this and \p y, respectively.
+    Upon successful completion, \p *this will represent the box
+    \f$R \sseq \Rset^{n+m}\f$ such that
+    \f[
+      R \defeq
+          \Bigl\{\,
+            (x_1, \ldots, x_n, y_1, \ldots, y_m)^\transpose
+          \Bigm|
+            (x_1, \ldots, x_n)^\transpose \in B,
+            (y_1, \ldots, y_m)^\transpose \in D
+          \,\Bigl\}.
+    \f]
+    Another way of seeing it is as follows: first increases the space
+    dimension of \p *this by adding \p y.space_dimension() new
+    dimensions; then adds to the system of constraints of \p *this a
+    renamed-apart version of the constraints of \p y.
+  */
+  void concatenate_assign(const Box& y);
+
+  //! Removes all the specified dimensions.
+  /*!
+    \param to_be_removed
+    The set of Variable objects corresponding to the dimensions to be removed.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the Variable
+    objects contained in \p to_be_removed.
+  */
+  void remove_space_dimensions(const Variables_Set& to_be_removed);
+
+  /*! \brief
+    Removes the higher dimensions so that the resulting space
+    will have dimension \p new_dimension.
+
+    \exception std::invalid_argument
+    Thrown if \p new_dimension is greater than the space dimension
+    of \p *this.
+  */
+  void remove_higher_space_dimensions(dimension_type new_dimension);
+
+  /*! \brief
+    Remaps the dimensions of the vector space according to
+    a \ref Mapping_the_Dimensions_of_the_Vector_Space "partial function".
+
+    \param pfunc
+    The partial function specifying the destiny of each dimension.
+
+    The template class Partial_Function must provide the following
+    methods.
+    \code
+      bool has_empty_codomain() const
+    \endcode
+    returns <CODE>true</CODE> if and only if the represented partial
+    function has an empty co-domain (i.e., it is always undefined).
+    The <CODE>has_empty_codomain()</CODE> method will always be called
+    before the methods below.  However, if
+    <CODE>has_empty_codomain()</CODE> returns <CODE>true</CODE>, none
+    of the functions below will be called.
+    \code
+      dimension_type max_in_codomain() const
+    \endcode
+    returns the maximum value that belongs to the co-domain
+    of the partial function.
+    \code
+      bool maps(dimension_type i, dimension_type& j) const
+    \endcode
+    Let \f$f\f$ be the represented function and \f$k\f$ be the value
+    of \p i.  If \f$f\f$ is defined in \f$k\f$, then \f$f(k)\f$ is
+    assigned to \p j and <CODE>true</CODE> is returned.
+    If \f$f\f$ is undefined in \f$k\f$, then <CODE>false</CODE> is
+    returned.
+
+    The result is undefined if \p pfunc does not encode a partial
+    function with the properties described in the
+    \ref Mapping_the_Dimensions_of_the_Vector_Space
+    "specification of the mapping operator".
+  */
+  template <typename Partial_Function>
+  void map_space_dimensions(const Partial_Function& pfunc);
+
+  //! Creates \p m copies of the space dimension corresponding to \p var.
+  /*!
+    \param var
+    The variable corresponding to the space dimension to be replicated;
+
+    \param m
+    The number of replicas to be created.
+
+    \exception std::invalid_argument
+    Thrown if \p var does not correspond to a dimension of the vector space.
+
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the
+    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+    and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    then the \f$k\f$-th space dimension is
+    \ref expand_space_dimension "expanded" to \p m new space dimensions
+    \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
+  */
+  void expand_space_dimension(Variable var, dimension_type m);
+
+  //! Folds the space dimensions in \p to_be_folded into \p var.
+  /*!
+    \param to_be_folded
+    The set of Variable objects corresponding to the space dimensions
+    to be folded;
+
+    \param var
+    The variable corresponding to the space dimension that is the
+    destination of the folding operation.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p var or with
+    one of the Variable objects contained in \p to_be_folded.
+    Also thrown if \p var is contained in \p to_be_folded.
+
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+    <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    \p to_be_folded is a set of variables whose maximum space dimension
+    is also less than or equal to \f$n\f$, and \p var is not a member
+    of \p to_be_folded, then the space dimensions corresponding to
+    variables in \p to_be_folded are \ref fold_space_dimensions "folded"
+    into the \f$k\f$-th space dimension.
+  */
+  void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
+
+  //@} // Member Functions that May Modify the Dimension of the Vector Space
+
+  /*! \brief
     Returns a reference the interval that bounds
     the box on the <CODE>k</CODE>-th space dimension.
   */
@@ -221,38 +439,6 @@ public:
   //! Returns a system of constraints corresponding to \p *this.
   Constraint_System constraints() const;
 
-  /*! \brief
-    Assigns to \p *this the result of computing the
-    \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
-
-    \param y
-    A bounding box that <EM>must</EM> be contained in \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  void CC76_widening_assign(const Box& y);
-
-  /*! \brief
-    Assigns to \p *this the result of computing the
-    \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
-
-    \param y
-    A bounding box that <EM>must</EM> be contained in \p *this.
-
-    \param first
-    An iterator that points to the first stop-point.
-
-    \param last
-    An iterator that points one past the last stop-point.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are dimension-incompatible.
-  */
-  template <typename Iterator>
-  void CC76_widening_assign(const Box& y,
-			    Iterator first, Iterator last);
-
 private:
   //! A vector of intervals, one for each dimension of the vector space.
   std::vector<Interval> vec;
@@ -321,7 +507,7 @@ std::ostream& operator<<(std::ostream& s, const Box<Interval>& box);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Decodes the constraint \p c as a bounded difference.
-/*! \relates BD_Shape
+/*! \relates Box
   \return
   <CODE>true</CODE> if the constraint \p c is an
   \ref Boxes "interval constraint";
