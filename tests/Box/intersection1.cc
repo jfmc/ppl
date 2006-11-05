@@ -1,0 +1,364 @@
+/* Test Box::intersection_assign().
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#include "ppl_test.hh"
+
+namespace {
+
+bool
+test01() {
+  Variable x(0);
+  Variable y(1);
+
+  TBox box1(3);
+  box1.add_constraint(x <= 3);
+  box1.add_constraint(x - y <= 4);
+
+  TBox box2(3);
+  box2.add_constraint(-y <= -2);
+  box2.add_constraint(x - y <= 5);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box1.intersection_assign(box2);
+
+  Box<mpq_class> known_result(3);
+  known_result.add_constraint(x <= 3);
+  known_result.add_constraint(-y <= -2);
+  known_result.add_constraint(x - y <= 4);
+
+  bool ok = (Box<mpq_class>(box1) == known_result);
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+
+  return ok;
+}
+
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TBox box1(4);
+  box1.add_constraint(x - y <= 4);
+  box1.add_constraint(x <= 3);
+
+  TBox box2(4);
+  box2.add_constraint(x - y <= 5);
+  box2.add_constraint(-y <= -2);
+  box2.add_constraint(z - x <= 0);
+  box2.add_constraint(y - z <= -1);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box1.intersection_assign(box2);
+
+  Box<mpq_class> known_result(4);
+  known_result.add_constraint(x - y <= 4);
+  known_result.add_constraint(x <= 3);
+  known_result.add_constraint(-y <= -2);
+  known_result.add_constraint(z - x <= 0);
+  known_result.add_constraint(y - z <= -1);
+
+  bool ok = (Box<mpq_class>(box1) == known_result);
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+
+  return ok;
+}
+
+bool
+test03() {
+  Variable x(0);
+  Variable y(1);
+  // Variable z(2);
+
+  TBox box1(3);
+  box1.add_constraint(x <= 4);
+  box1.add_constraint(-x <= -1);
+  box1.add_constraint(y <= 3);
+  box1.add_constraint(-y <= -1);
+  box1.add_constraint(x - y <= 1);
+
+  TBox box2(3);
+  box2.add_constraint(y - x <= -1);
+  box2.add_constraint(x <= 3);
+  box2.add_constraint(-y <= 5);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box1.intersection_assign(box2);
+
+  Box<mpq_class> known_result(3);
+  known_result.add_constraint(x <= 3);
+  known_result.add_constraint(-x <= -1);
+  known_result.add_constraint(y <= 3);
+  known_result.add_constraint(-y <= -1);
+  known_result.add_constraint(y - x <= -1);
+  known_result.add_constraint(x - y <= 1);
+
+  bool ok = (Box<mpq_class>(box1) == known_result);
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+
+  return ok;
+}
+
+bool
+test04() {
+  Variable x(0);
+  Variable y(1);
+  // Variable z(2);
+
+  TBox box1(3);
+  box1.add_constraint(x <= 4);
+  box1.add_constraint(x >= 5);
+  box1.add_constraint(y <= 3);
+  box1.add_constraint(y >= 1);
+  box1.add_constraint(x - y <= 1);
+
+  TBox box2(3);
+  box2.add_constraint(y - x <= -1);
+  box2.add_constraint(x <= 3);
+  box2.add_constraint(y >= -5);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box1.intersection_assign(box2);
+
+  Box<mpq_class> known_result(3, EMPTY);
+
+  bool ok = (Box<mpq_class>(box1) == known_result);
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+
+  return ok;
+}
+
+bool
+test05() {
+  Variable x(0);
+  Variable y(1);
+  // Variable z(2);
+
+  TBox box1(3);
+  box1.add_constraint(x <= 4);
+  box1.add_constraint(x >= 5);
+  box1.add_constraint(y <= 3);
+  box1.add_constraint(y >= 1);
+  box1.add_constraint(x - y <= 1);
+
+  TBox box2(3);
+  box2.add_constraint(y - x <= -1);
+  box2.add_constraint(x <= 3);
+  box2.add_constraint(y >= -5);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box2.intersection_assign(box1);
+
+  Box<mpq_class> known_result(3, EMPTY);
+
+  bool ok = (Box<mpq_class>(box2) == known_result);
+
+  print_constraints(box2, "*** box2.intersection_assign(box1) ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  TBox box1;
+  TBox box2;
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box1.intersection_assign(box2);
+
+  Box<mpq_class> known_result;
+
+  bool ok = (Box<mpq_class>(box1) == known_result);
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable x(0);
+  Variable y(1);
+  // Variable z(2);
+
+  TBox box1(3);
+
+  TBox box2(3);
+  box2.add_constraint(y - x <= -1);
+  box2.add_constraint(x <= 3);
+  box2.add_constraint(y >= -5);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  Box<mpq_class> known_result(box2);
+
+  box1.intersection_assign(box2);
+
+  bool ok = (Box<mpq_class>(box1) == known_result);
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable x(0);
+  Variable y(1);
+  // Variable z(2);
+
+  TBox box1(3);
+  TBox box2(3);
+  box2.add_constraint(y - x <= -1);
+  box2.add_constraint(x <= 3);
+  box2.add_constraint(y >= -5);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  Box<mpq_class> known_result(box2);
+
+  box1.intersection_assign_and_minimize(box2);
+
+  bool ok = (Box<mpq_class>(box1) == known_result);
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable x(0);
+  Variable y(1);
+
+  TBox box1(2);
+  box1.add_constraint(x >= y);
+
+  TBox box2(3);
+
+  try {
+    // This is an invalid use of method
+    // Box::intersection_assign_and_minimize(box2): it is illegal
+    // to apply this method to two polyhedra of different dimensions.
+    box1.intersection_assign_and_minimize(box2);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test10() {
+  TBox box1(7);
+  TBox box2(15);
+
+  try {
+    // This is an invalid use of method
+    // Box::intersection_assign(box2): it is illegal
+    // to apply this method to two polyhedra of different dimensions.
+    box1.intersection_assign(box2);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test11() {
+  TBox box1(3, EMPTY);
+  TBox box2(3);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box1.intersection_assign(box2);
+
+  Box<mpq_class> known_result(3, EMPTY);
+
+  bool ok = (Box<mpq_class>(box1) == known_result) ;
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+
+  return ok;
+}
+
+bool
+test12() {
+  TBox box1(3);
+  TBox box2(3, EMPTY);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box1.intersection_assign(box2);
+
+  Box<mpq_class> known_result(3, EMPTY);
+
+  bool ok = (Box<mpq_class>(box1) == known_result) ;
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+
+  return ok;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+END_MAIN
