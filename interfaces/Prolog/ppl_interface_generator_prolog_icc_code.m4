@@ -689,7 +689,8 @@ ppl_@CLASS@_add_disjunct(Prolog_term_ref t_ph, Prolog_term_ref t_d) {
   try {
     @CPP_CLASS@* ph = term_to_@CLASS@_handle(t_ph, where);
     CHECK(ph);
-    @ALT_DISJUNCT@* d = term_to_@DISJUNCT@_handle(t_d, where);
+    @ALT_DISJUNCT@* d =
+      static_cast<@ALT_DISJUNCT@*>(term_to_@DISJUNCT@_handle(t_d, where));
     CHECK(d);
     ph->add_disjunct(*d);
     return PROLOG_SUCCESS;

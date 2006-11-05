@@ -233,6 +233,28 @@ m4_ifelse(m4_index($1, C_), 0, C_,
 m4_index($1, NNC_), 0, NNC_)`'dnl
 ')
 
+
+dnl m4_get_disjunct_topology(Class_Counter)
+dnl
+dnl expands to the empty string unless the disjunct is
+dnl C_Polyhedron or NNC_Polyhedron, in which case it expands to
+dnl "C_" or "NNC_" respectively.
+m4_define(`m4_get_disjunct_topology', `dnl
+m4_ifelse(m4_index(m4_class_body`'$1, C_), 0, C_,
+m4_index(m4_class_body`'$1, NNC_), 0, NNC_)`'dnl
+')
+
+dnl m4_remove_topology(Class_Name)
+dnl
+dnl expands to the class name unless it is
+dnl C_Polyhedron or NNC_Polyhedron, in which case it expands to
+dnl "Polyhedron".
+m4_define(`m4_remove_topology', `dnl
+m4_ifelse(m4_index($1, C_), 0, Polyhedron,
+m4_index($1, NNC_), 0, Polyhedron,
+$1)`'dnl
+')
+
 dnl m4_get_class_counter(Cpp_Class_Name, Topology)
 dnl
 dnl expands to the class counter for the cplusplus class.
@@ -566,8 +588,9 @@ m4_ifelse($1,
 ')
 
 m4_define(`m4_disjunct_replacement', `dnl
-m4_get_interface_class_name(m4_class_body`'$1)`'dnl
+m4_remove_topology(m4_class_body`'$1)`'dnl
 ')
+
 m4_define(`m4_disjunct_alt_replacement', m4_class_body`'$1)
 
 dnl  The different kinds of objects that can build a class.
@@ -576,6 +599,8 @@ m4_define(`m4_Polyhedron_build_represent_replacement',
          `constraint, generator')
 m4_define(`m4_Grid_build_represent_replacement',
          `constraint, grid_generator, congruence')
+m4_define(`m4_Pointset_Powerset_build_represent_replacement',
+         `constraint, congruence')
 
 dnl  The different kinds of alternative objects that can build
 dnl  the same class.
@@ -585,6 +610,8 @@ m4_define(`m4_Polyhedron_build_represent_alt_replacement',
          `generator, constraint')
 m4_define(`m4_Grid_build_represent_alt_replacement',
          `constraint, congruence, grid_generator')
+m4_define(`m4_Pointset_Powerset_build_represent_alt_replacement',
+         `constraint, congruence')
 
 dnl  The different kinds of objects that can have a relation with a class.
 m4_define(`m4_relation_represent_replacement', `constraint')
@@ -599,6 +626,8 @@ m4_define(`m4_Polyhedron_add_represent_replacement',
          `constraint, generator')
 m4_define(`m4_Grid_add_represent_replacement',
          `constraint, grid_generator, congruence')
+m4_define(`m4_Pointset_Powerset_add_represent_replacement',
+         `constraint')
 
 dnl  The different kinds of objects that can be obtained from a
 dnl  class description.

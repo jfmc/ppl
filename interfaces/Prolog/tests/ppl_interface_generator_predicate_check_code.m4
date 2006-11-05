@@ -247,8 +247,18 @@ ppl_@CLASS@_swap_2_test :-
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(3, universe, PS),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(2, empty, PS1),
     ppl_@CLASS@_swap(PS, PS1),
-    ppl_@CLASS@_is_empty(PS),
-    ppl_@CLASS@_is_universe(PS1),
+    (predicate_exists(ppl_@CLASS@_is_empty)
+    ->
+      ppl_@CLASS@_is_empty(PS),
+      ppl_@CLASS@_is_universe(PS1)
+    ;
+      (predicate_exists(ppl_@CLASS@_geometrically_covers)
+      ->
+        ppl_@CLASS@_geometrically_covers(PS1, PS)
+      ;
+        true
+      )
+    ),
     ppl_@CLASS@_OK(PS),
     ppl_@CLASS@_OK(PS1),
     ppl_delete_@CLASS@(PS),
@@ -322,6 +332,31 @@ ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_2_test :-
         true
      ),
      ppl_delete_@CLASS@(PS)
+   ->
+     fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_get_disjuncts_code',
+`
+ppl_@CLASS@_get_disjuncts_2_test :-
+  (
+   choose_test(TEST_DATA, 1),
+   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
+   (
+     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
+     ppl_@CLASS@_get_disjuncts(PPS, [PS]),
+     ppl_@DISJUNCT@_OK(PS),
+     (predicate_exists(ppl_new_@ALT_DISJUNCT@_from_@CONSTRAINER@s)
+     ->
+       (clean_ppl_new_@ALT_DISJUNCT@_from_@CONSTRAINER@s(RS, PS1),
+        ppl_@DISJUNCT@_equals_@DISJUNCT@(PS, PS1),
+        ppl_delete_@CLASS@(PS1))
+     ;
+       true
+     ),
+     ppl_delete_@CLASS@(PPS)
    ->
      fail ; true)
   ).
@@ -432,7 +467,12 @@ ppl_@CLASS@_@SIMPLIFY@_1_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
      ppl_@CLASS@_@SIMPLIFY@(PS),
      ppl_@CLASS@_OK(PS),
-     ppl_@CLASS@_contains_@CLASS@(PS, PS1),
+     (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
+     ->
+       ppl_@CLASS@_contains_@CLASS@(PS, PS1)
+     ;
+       true
+     ),
      ppl_delete_@CLASS@(PS)
    ->
     fail ; true)
@@ -654,6 +694,24 @@ ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, [R | RS]) :-
   (
      ppl_@CLASS@_add_@ADD_REPRESENT@(PS1, R),
      ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, RS)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_add_disjunct_code',
+`
+ppl_@CLASS@_add_disjunct_2_test :-
+  (
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PPS1, Space_Dim),
+     ppl_@ALT_DISJUNCT@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@CLASS@_add_disjunct(PPS1, PS2),
+     ppl_@CLASS@_OK(PPS1),
+     ppl_delete_@CLASS@(PPS1),
+     ppl_delete_Polyhedron(PS2)
+   ->
+     fail ; true)
   ).
 
 ')
@@ -1139,10 +1197,14 @@ ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_2_test :-
       ppl_@CLASS@_space_dimension(PS, 2),
       (@EMBEDPROJECT@ == and_embed
       ->
-        ppl_@CLASS@_is_universe(PS)
+        ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(2, universe, PS1)
       ;
-        ppl_@CLASS@_affine_dimension(PS, 1)
+        make_vars(2, [Var0, Var1]),
+        ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(
+                            [Var0 = Var0, Var1 = 0], PS1)
       ),
+      ppl_@CLASS@_equals_@CLASS@(PS, PS1),
+      ppl_@CLASS@_OK(PS1),
       ppl_@CLASS@_OK(PS)
    ->
     fail ; true)
