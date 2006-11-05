@@ -550,21 +550,29 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
   case LESS_THAN:
     {
       I_Result ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info_open(x));
+      // FIXME: boundary normalization for integer interval?
+      // FIXME: check empty (policy based)?
       return static_cast<I_Result>(I_L_EQ | ru);
     }
   case LESS_THAN_OR_EQUAL:
     {
       I_Result ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
+      // FIXME: boundary normalization for integer interval?
+      // FIXME: check empty (policy based)?
       return static_cast<I_Result>(I_L_EQ | ru);
     }
   case GREATER_THAN:
     {
       I_Result rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info_open(x));
+      // FIXME: boundary normalization for integer interval?
+      // FIXME: check empty (policy based)?
       return static_cast<I_Result>(rl | I_U_EQ);
     }
   case GREATER_THAN_OR_EQUAL:
     {
       I_Result rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
+      // FIXME: boundary normalization for integer interval?
+      // FIXME: check empty (policy based)?
       return static_cast<I_Result>(rl | I_U_EQ);
     }
   case EQUAL:
@@ -586,6 +594,8 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
       }
       else
 	ru = I_U_EQ;
+      // FIXME: boundary normalization for integer interval?
+      // FIXME: check empty (policy based)?
       return static_cast<I_Result>(rl | ru);
     }
   default:
@@ -622,9 +632,6 @@ contains(const Interval<Boundary, Info>& x, const T& y) {
     && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y))
     && (!x.contains_only_integers() || contains_only_integers(y));
 }
-
-
-
 
 template <typename To_Boundary, typename To_Info,
 	  typename T>
