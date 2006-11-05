@@ -561,7 +561,7 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
 template <typename To_Boundary, typename To_Info,
 	  typename T>
 inline bool
-operator ==(Interval<To_Boundary, To_Info>& to, const T& x) {
+operator ==(const Interval<To_Boundary, To_Info>& to, const T& x) {
   if (to.is_empty())
     return is_empty(x);
   else if (is_empty(x))
