@@ -20,6 +20,8 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+JAVAROOT = ../
+
 if BUILD_JAVA_INTERFACE
 
 EXTRA_DIST = \
@@ -42,8 +44,6 @@ PPL_Object.java \
 Polyhedron.java \
 Relation_Symbol.java \
 Variable.java
-
-JAVAROOT = ../
 
 noinst_JAVA = $(EXTRA_DIST)
 

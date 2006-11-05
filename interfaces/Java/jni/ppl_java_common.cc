@@ -26,7 +26,7 @@ using namespace Parma_Polyhedra_Library;
 Coefficient
 j_coeff_to_ppl_coeff(JNIEnv* env, const jobject& j_coeff) {
   jclass j_coeff_class = env->GetObjectClass(j_coeff);
-  jfieldID fid = env->GetFieldID(j_coeff_class, "integer",
+  jfieldID fid = env->GetFieldID(j_coeff_class, "value",
 				 "Ljava/math/BigInteger;");
   jobject bi = env->GetObjectField(j_coeff, fid);
   jclass big_integer_class = env->GetObjectClass(bi);

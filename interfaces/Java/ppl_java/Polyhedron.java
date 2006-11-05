@@ -34,24 +34,24 @@ public class Polyhedron extends PPL_Object {
       Returns <CODE>true</CODE> if and only if \p this is
       an empty polyhedron.
     */
-    protected native boolean is_empty();
+    public native boolean is_empty();
     /*! \brief
       Returns <CODE>true</CODE> if and only if \p this
       is a universe polyhedron.
     */
-    protected native boolean is_universe();
+    public native boolean is_universe();
 
     /*! \brief
       Returns <CODE>true</CODE> if and only if \p this
       is a topologically closed subset of the vector space.
     */
-    protected native boolean is_topologically_closed();
+    public native boolean is_topologically_closed();
 
     /*! \brief
       Returns <CODE>true</CODE> if and only if \p this
       is a bounded polyhedron.
     */
-    protected native boolean is_bounded();
+    public native boolean is_bounded();
 
     //! Returns <CODE>true</CODE> if and only if \p this and \p y are disjoint.
     /*!
@@ -59,7 +59,7 @@ public class Polyhedron extends PPL_Object {
       Thrown if \p x and \p y are topology-incompatible or
       dimension-incompatible.
     */
-    protected native boolean is_disjoint_from(Polyhedron y);
+    public native boolean is_disjoint_from(Polyhedron y);
 
     /*! \brief
       Returns <CODE>true</CODE> if and only if \p expr is
@@ -69,7 +69,7 @@ public class Polyhedron extends PPL_Object {
       Thrown if \p expr and \p this are dimension-incompatible.
     */
 
-    protected native boolean bounds_from_above(Linear_Expression expr);
+    public native boolean bounds_from_above(Linear_Expression expr);
     /*! \brief
       Returns <CODE>true</CODE> if and only if \p expr is
       bounded from below in \p this.
@@ -78,7 +78,7 @@ public class Polyhedron extends PPL_Object {
       Thrown if \p expr and \p this are dimension-incompatible.
     */
 
-    protected native boolean bounds_from_below(Linear_Expression expr);
+    public native boolean bounds_from_below(Linear_Expression expr);
     //! Returns <CODE>true</CODE> if and only if \p this contains \p y.
     /*!
       \exception RuntimeErrorException
@@ -86,7 +86,7 @@ public class Polyhedron extends PPL_Object {
       dimension-incompatible.
     */
 
-    protected native boolean contains(Polyhedron p);
+    public native boolean contains(Polyhedron p);
 
     /*! \brief
       Returns <CODE>true</CODE> if and only if \p this
@@ -96,6 +96,6 @@ public class Polyhedron extends PPL_Object {
       Thrown if \p this and \p y are topology-incompatible or
       dimension-incompatible.
     */
-    protected native boolean strictly_contains(Polyhedron p);
+    public native boolean strictly_contains(Polyhedron p);
 
 }
