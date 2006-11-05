@@ -47,7 +47,4 @@ Variable.java
 
 noinst_JAVA = $(EXTRA_DIST)
 
-# Prevent stupid automake from putting JAVAC=javac in Makefile.in
-#JAVAC = @JAVAC@
-
 endif BUILD_JAVA_INTERFACE
