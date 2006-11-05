@@ -4317,8 +4317,7 @@ void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
 					  const BD_Shape& y) const {
   std::ostringstream s;
-  s << "PPL::";
-  s << "BD_Shape::" << method << ":" << std::endl
+  s << "PPL::BD_Shape::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
     << ", y->space_dimension() == " << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -4329,8 +4328,7 @@ void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
 					  dimension_type required_dim) const {
   std::ostringstream s;
-  s << "PPL::";
-  s << "BD_Shape::" << method << ":" << std::endl
+  s << "PPL::BD_Shape::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
     << ", required dimension == " << required_dim << ".";
   throw std::invalid_argument(s.str());
@@ -4341,8 +4339,7 @@ void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
 					  const Constraint& c) const {
   std::ostringstream s;
-  s << "PPL::";
-  s << "BD_Shape::" << method << ":" << std::endl
+  s << "PPL::BD_Shape::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
     << ", c->space_dimension == " << c.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -4353,8 +4350,7 @@ void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
 					  const Generator& g) const {
   std::ostringstream s;
-  s << "PPL::";
-  s << "BD_Shape::" << method << ":" << std::endl
+  s << "PPL::BD_Shape::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
     << ", g->space_dimension == " << g.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -4387,21 +4383,18 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 					  const char* name_row,
 					  const Linear_Expression& y) const {
   std::ostringstream s;
-  s << "PPL::";
-  s << "BD_Shape::" << method << ":" << std::endl
+  s << "PPL::BD_Shape::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
     << ", " << name_row << "->space_dimension() == "
     << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
-
 template <typename T>
 void
 BD_Shape<T>::throw_generic(const char* method, const char* reason) {
   std::ostringstream s;
-  s << "PPL::";
-  s << "BD_Shape::" << method << ":" << std::endl
+  s << "PPL::BD_Shape::" << method << ":" << std::endl
     << reason;
   throw std::invalid_argument(s.str());
 }

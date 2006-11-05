@@ -5605,8 +5605,7 @@ Octagonal_Shape<T>
 ::throw_dimension_incompatible(const char* method,
 			       const Octagonal_Shape& y) const {
   std::ostringstream s;
-  s << "PPL::";
-  s << "Octagonal_Shape::" << method << ":\n"
+  s << "PPL::Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", y->space_dimension() == " << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -5618,8 +5617,7 @@ Octagonal_Shape<T>
 ::throw_dimension_incompatible(const char* method,
 			       dimension_type required_dim) const {
   std::ostringstream s;
-  s << "PPL::";
-  s << "Octagonal_Shape::" << method << ":\n"
+  s << "PPL::Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", required dimension == " << required_dim << ".";
   throw std::invalid_argument(s.str());
@@ -5630,8 +5628,7 @@ void
 Octagonal_Shape<T>::throw_dimension_incompatible(const char* method,
 						 const Constraint& c) const {
   std::ostringstream s;
-  s << "PPL::";
-  s << "Octagonal_Shape::" << method << ":\n"
+  s << "PPL::Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", c->space_dimension == " << c.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -5642,8 +5639,7 @@ void
 Octagonal_Shape<T>::throw_dimension_incompatible(const char* method,
 						 const Generator& g) const {
   std::ostringstream s;
-  s << "PPL::";
-  s << "Octagonal_Shape::" << method << ":\n"
+  s << "PPL::Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", g->space_dimension == " << g.space_dimension() << ".";
   throw std::invalid_argument(s.str());
@@ -5670,7 +5666,6 @@ Octagonal_Shape<T>
   throw std::invalid_argument(s.str());
 }
 
-
 template <typename T>
 void
 Octagonal_Shape<T>
@@ -5678,8 +5673,7 @@ Octagonal_Shape<T>
 			       const char* name_row,
 			       const Linear_Expression& y) const {
   std::ostringstream s;
-  s << "PPL::";
-  s << "Octagonal_Shape::" << method << ":\n"
+  s << "PPL::Octagonal_Shape::" << method << ":\n"
     << "this->space_dimension() == " << space_dimension()
     << ", " << name_row << "->space_dimension() == "
     << y.space_dimension() << ".";
@@ -5692,8 +5686,7 @@ void
 Octagonal_Shape<T>::throw_generic(const char* method,
 				  const char* reason) const {
   std::ostringstream s;
-  s << "PPL::";
-  s << "Octagonal_Shape::" << method << ":\n"
+  s << "PPL::Octagonal_Shape::" << method << ":\n"
     << reason;
   throw std::invalid_argument(s.str());
 }
