@@ -43,13 +43,13 @@ private:
     return const_cast<Interval&>(*this);
   }
   bool is_empty_() const {
-    return lt(UPPER, upper_, info(), LOWER, lower_, info());
+    return lt(UPPER, upper(), info(), LOWER, lower(), info());
   }
   bool is_singleton_() const {
-    return eq(LOWER, lower_, info(), UPPER, upper_, info());
+    return eq(LOWER, lower(), info(), UPPER, upper(), info());
   }
   bool is_singleton_integer() const {
-    return is_singleton() && is_integer(lower_);
+    return is_singleton() && is_integer(lower());
   }
 
 public:
@@ -58,27 +58,27 @@ public:
   typedef Interval_::Property Property;
 
   bool OK() const {
-    if (is_not_a_number(lower_)) {
+    if (is_not_a_number(lower())) {
 #ifndef NDEBUG
       std::cerr << "The lower boundary is not a number." << std::endl;
 #endif
       return false;
     }
-    if (is_not_a_number(upper_)) {
+    if (is_not_a_number(upper())) {
 #ifndef NDEBUG
       std::cerr << "The upper boundary is not a number." << std::endl;
 #endif
       return false;
     }
     if (info().test_boundary_property(LOWER, UNBOUNDED) &&
-	info().test_boundary_property(LOWER, OPEN)) {
+	lower_is_open()) {
 #ifndef NDEBUG
       std::cerr << "The lower boundary is marked unbounded and open." << std::endl;
 #endif
       return false;
     }
     if (info().test_boundary_property(UPPER, UNBOUNDED) &&
-	info().test_boundary_property(UPPER, OPEN)) {
+	upper_is_open()) {
 #ifndef NDEBUG
       std::cerr << "The upper boundary is marked unbounded and open." << std::endl;
 #endif
@@ -100,13 +100,13 @@ public:
     }
 #if 0
     if (info().test_interval_property(ONLY_INTEGERS)) {
-      if (!is_integer(lower_)) {
+      if (!is_integer(lower())) {
 #ifndef NDEBUG
       std::cerr << "The interval is marked to contain only integers, but lower boundary is not an integer." << std::endl;
 #endif
 	return false;
       }
-      if (!is_integer(upper_)) {
+      if (!is_integer(upper())) {
 #ifndef NDEBUG
       std::cerr << "The interval is marked to contain only integers, but upper boundary is not an integer." << std::endl;
 #endif
@@ -152,8 +152,8 @@ public:
     return upper_;
   }
   I_Result set_empty() {
-    assign_r(lower_, 1, ROUND_NOT_NEEDED);
-    assign_r(upper_, 0, ROUND_NOT_NEEDED);
+    assign_r(lower(), 1, ROUND_NOT_NEEDED);
+    assign_r(upper(), 0, ROUND_NOT_NEEDED);
     return I_EMPTY;
   }
   bool is_empty() const {
@@ -202,32 +202,58 @@ public:
       return false;
     }
   }
-  bool is_lower_unbounded() const {
-    return Boundary::is_unbounded(LOWER, lower_, info());
+  bool lower_is_open() const {
+    return info().test_boundary_property(LOWER, OPEN);
   }
-  bool is_upper_unbounded() const {
-    return Boundary::is_unbounded(UPPER, upper_, info());
+  bool upper_is_open() const {
+    return info().test_boundary_property(UPPER, OPEN);
   }
-  void set_lower_unbounded() {
-    return set_unbounded(LOWER, lower_, info());
+  void lower_set_open(bool v = true) {
+    return info().set_boundary_property(LOWER, OPEN, v);
   }
-  void set_upper_unbounded() {
-    return set_unbounded(UPPER, upper_, info());
+  void upper_set_open(bool v = true) {
+    return info().set_boundary_property(UPPER, OPEN, v);
+  }
+  bool lower_is_unbounded() const {
+    return Boundary::is_unbounded(LOWER, lower(), info());
+  }
+  bool upper_is_unbounded() const {
+    return Boundary::is_unbounded(UPPER, upper(), info());
+  }
+  void lower_set_unbounded() {
+    return set_unbounded(LOWER, lower(), info());
+  }
+  void upper_set_unbounded() {
+    return set_unbounded(UPPER, upper(), info());
   }
   bool is_unbounded() const {
-    return is_lower_unbounded() || is_upper_unbounded();
+    return lower_is_unbounded() || upper_is_unbounded();
   }
   bool is_universe() const {
-    return is_lower_unbounded() && is_upper_unbounded()
+    return lower_is_unbounded() && upper_is_unbounded()
       && !contains_only_integers();
   }
   bool is_topologically_closed() const {
     return is_empty() ||
-      ((!info().test_boundary_property(LOWER, OPEN) || is_lower_unbounded())
-       && (!info().test_boundary_property(UPPER, OPEN) || is_upper_unbounded()));
+      ((!lower_is_open() || lower_is_unbounded())
+       && (!upper_is_open() || upper_is_unbounded()));
   }
   bool contains_integer_point() const {
-    return true;
+    Boundary l;
+    if (lower_is_open()) {
+      add_assign_r(l, lower(), Boundary(1), ROUND_DOWN);
+      floor_assign_r(l, l, ROUND_DOWN);
+    }
+    else
+      ceil_assign_r(l, lower(), ROUND_DOWN);
+    Boundary u;
+    if (upper_is_open()) {
+      sub_assign_r(l, upper(), Boundary(1), ROUND_UP);
+      ceil_assign_r(l, l, ROUND_UP);
+    }
+    else
+      floor_assign_r(l, upper(), ROUND_UP);
+    return u >= l;
   }
   Boundary lower_;
   Boundary upper_;
@@ -536,16 +562,14 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
       if (!is_singleton(x) || !To_Info::store_open)
 	return static_cast<I_Result>(I_L_EQ | I_U_EQ);
       I_Result rl, ru;
-      if (!to.info().test_boundary_property(LOWER, OPEN)
-	  && to.lower() == lower(x)) {
-	to.info().set_boundary_property(LOWER, OPEN);
+      if (!to.lower_is_open() && to.lower() == lower(x)) {
+	to.lower_set_open();
 	rl = I_L_GT;
       }
       else
 	rl = I_L_EQ;
-      if (!to.info().test_boundary_property(UPPER, OPEN)
-	  && to.upper() == lower(x)) {
-	to.info().set_boundary_property(UPPER, OPEN);
+      if (!to.upper_is_open() && to.upper() == lower(x)) {
+	to.upper_set_open();
 	ru = I_U_LT;
       }
       else
@@ -575,9 +599,8 @@ operator==(const Interval<Boundary, Info>& x, const T& y) {
       || (info(y).test_boundary_property(LOWER, OPEN)
 	  && is_minus_infinity(lower(y)));
   if (info(y).test_boundary_property(LOWER, UNBOUNDED))
-    return x.info().test_boundary_property(LOWER, OPEN)
-      && is_minus_infinity(x.lower());
-  if (x.info().test_boundary_property(LOWER, OPEN) != info(y).test_boundary_property(LOWER, OPEN)
+    return x.lower_is_open() && is_minus_infinity(x.lower());
+  if (x.lower_is_open() != info(y).test_boundary_property(LOWER, OPEN)
       || x.lower() != lower(y))
     return false;
 
@@ -586,9 +609,8 @@ operator==(const Interval<Boundary, Info>& x, const T& y) {
       || (info(y).test_boundary_property(UPPER, OPEN)
 	  && is_plus_infinity(upper(y)));
   if (info(y).test_boundary_property(UPPER, UNBOUNDED))
-    return x.info().test_boundary_property(UPPER, OPEN)
-      && is_plus_infinity(x.upper());
-  if (x.info().test_boundary_property(UPPER, OPEN) != info(y).test_boundary_property(UPPER, OPEN)
+    return x.upper_is_open() && is_plus_infinity(x.upper());
+  if (x.upper_is_open() != info(y).test_boundary_property(UPPER, OPEN)
       || x.upper() != upper(y))
     return false;
   return true;
@@ -691,7 +713,7 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
   if (x.info().test_boundary_property(LOWER, UNBOUNDED))
     os << "(-inf";
   else {
-    os << (x.info().test_boundary_property(LOWER, OPEN) ? "(" : "[");
+    os << (x.lower_is_open() ? "(" : "[");
     os << x.lower();
   }
   os << (x.contains_only_integers() ? " .. " : ", ");
@@ -699,7 +721,7 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
     os << "+inf)";
   else {
     os << x.upper();
-    os << (x.info().test_boundary_property(UPPER, OPEN) ? ")" : "]");
+    os << (x.upper_is_open() ? ")" : "]");
   }
   return os;
 }

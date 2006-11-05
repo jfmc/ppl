@@ -313,7 +313,7 @@ Box<Interval>::CC76_widening_assign(const Box& y,
 	  x_ub = *k;
       }
       else
-	x_seq_i.set_upper_unbounded();
+	x_seq_i.upper_set_unbounded();
     }
 
     // Lower bound.
@@ -327,7 +327,7 @@ Box<Interval>::CC76_widening_assign(const Box& y,
 	  if (k != first)
 	    x_lb = *--k;
 	  else
-	    x_seq_i.set_lower_unbounded();
+	    x_seq_i.lower_set_unbounded();
       }
       else
 	x_lb = *--k;
