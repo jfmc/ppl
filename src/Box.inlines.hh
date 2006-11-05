@@ -165,8 +165,8 @@ Box<Interval>::raise_lower_bound(const dimension_type k, const bool closed,
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
-  // FIXME: intersect seq[k] with [q, +infty), if closed is true,
-  // or with (q, +infty, if closed is false.
+  // FIXME: can exploit the return type?
+  refine(seq[k], (closed ? GREATER_THAN_OR_EQUAL : GREATER_THAN), q);
   empty_up_to_date = false;
 }
 
@@ -181,8 +181,8 @@ Box<Interval>::lower_upper_bound(const dimension_type k, const bool closed,
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
-  // FIXME: intersect seq[k] with (-infty, q], if closed is true,
-  // or with (-infty, q), if closed is false.
+  // FIXME: can exploit the return type?
+  refine(seq[k], (closed ? LESS_THAN_OR_EQUAL : LESS_THAN), q);
   empty_up_to_date = false;
 }
 
