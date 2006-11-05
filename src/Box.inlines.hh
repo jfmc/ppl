@@ -29,8 +29,8 @@ namespace Parma_Polyhedra_Library {
 
 template <typename Interval>
 inline
-Box<Interval>::Box(dimension_type num_dimensions)
-  : seq(num_dimensions), empty(false), empty_up_to_date(true) {
+Box<Interval>::Box(dimension_type num_dimensions, Degenerate_Element kind)
+  : seq(num_dimensions), empty(kind == EMPTY), empty_up_to_date(true) {
 }
 
 template <typename Interval>

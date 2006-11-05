@@ -48,8 +48,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 template <typename Interval>
 class Parma_Polyhedra_Library::Box {
 public:
-  //! Constructs a universe bounding box of dimension \p num_dimensions.
-  Box(dimension_type num_dimensions);
+  //! Builds a universe or empty box of the specified space dimension.
+  /*!
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the box;
+
+    \param kind
+    Specifies whether the universe or the empty box has to be built.
+  */
+  explicit Box(dimension_type num_dimensions = 0,
+	       Degenerate_Element kind = UNIVERSE);
 
   //! \name Member Functions that Do Not Modify the Box
   //@{
