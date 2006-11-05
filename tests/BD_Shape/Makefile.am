@@ -79,7 +79,7 @@ limitedbhmz05extrapolation1 \
 limitedcc76extrapolation1 \
 limitedh79extrapolation1 \
 mapspacedims1 \
-maxspacedim \
+maxspacedim1 \
 membytes1 \
 minconstraints1 \
 relations1 relations2 relations3 \
@@ -208,7 +208,7 @@ limitedh79extrapolation1_SOURCES = limitedh79extrapolation1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
-maxspacedim_SOURCES = maxspacedim.cc
+maxspacedim1_SOURCES = maxspacedim1.cc
 
 membytes1_SOURCES = membytes1.cc
 

@@ -74,7 +74,7 @@ check_PROGRAMS = \
 	limitedbhmz05extrapolation1 \
 	limitedcc76extrapolation1 \
 	mapspacedims1 \
-	maxspacedim \
+	maxspacedim1 \
 	membytes1 \
 	minconstraints1 \
 	octdifference1 \
@@ -197,7 +197,7 @@ limitedcc76extrapolation1_SOURCES = limitedcc76extrapolation1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
-maxspacedim_SOURCES = maxspacedim.cc
+maxspacedim1_SOURCES = maxspacedim1.cc
 
 membytes1_SOURCES = membytes1.cc
 
