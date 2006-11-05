@@ -59,6 +59,12 @@ Box<Interval>::is_empty() const {
 }
 
 template <typename Interval>
+inline void
+Box<Interval>::upper_bound_assign(const Box& y) {
+  box_hull_assign(y);
+}
+
+template <typename Interval>
 inline bool
 Box<Interval>::get_lower_bound(const dimension_type k, bool& closed,
 			       Coefficient& n, Coefficient& d) const {

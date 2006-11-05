@@ -99,6 +99,27 @@ Box<Interval>::intersection_assign(const Box& y) {
 }
 
 template <typename Interval>
+void
+Box<Interval>::box_hull_assign(const Box& y) {
+  const dimension_type space_dim = space_dimension();
+
+  // Dimension-compatibility check.
+  if (space_dim != y.space_dimension())
+    throw_dimension_incompatible("box_hull_assign(y)", y);
+
+  // The hull of a box with an empty box is equal to the first box.
+  if (y.marked_empty())
+    return;
+  if (marked_empty()) {
+    *this = y;
+    return;
+  }
+
+  for (dimension_type k = vec.size(); k-- > 0; )
+    convex_hull_assign(vec[k], y.vec[k]);
+}
+
+template <typename Interval>
 template <typename Iterator>
 void
 Box<Interval>::CC76_widening_assign(const Box& y,

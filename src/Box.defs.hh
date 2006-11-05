@@ -82,6 +82,18 @@ public:
   void intersection_assign(const Box& y);
 
   /*! \brief
+    Assigns to \p *this the smallest box containing the convex union
+    of \p *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  void box_hull_assign(const Box& y);
+
+  //! Same as box_hull_assign.
+  void upper_bound_assign(const Box& y);
+
+  /*! \brief
     Returns a reference the interval that bounds
     the box on the <CODE>k</CODE>-th space dimension.
   */
