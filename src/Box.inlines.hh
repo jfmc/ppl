@@ -111,12 +111,10 @@ Box<Interval>::get_lower_bound(const dimension_type k, bool& closed,
   assert(k < seq.size());
   const Interval& seq_k = seq[k];
 
-  if (seq_k.info().test_boundary_property(Boundary::LOWER,
-					  Boundary::UNBOUNDED))
+  if (seq_k.lower_is_unbounded())
     return false;
 
-  closed = !seq_k.info().test_boundary_property(Boundary::LOWER,
-						Boundary::OPEN);
+  closed = !seq_k.lower_is_open();
 
   mpq_class lr;
   assign_r(lr, seq_k.lower(), ROUND_NOT_NEEDED);
@@ -133,12 +131,10 @@ Box<Interval>::get_upper_bound(const dimension_type k, bool& closed,
   assert(k < seq.size());
   const Interval& seq_k = seq[k];
 
-  if (seq_k.info().test_boundary_property(Boundary::UPPER,
-					  Boundary::UNBOUNDED))
+  if (seq_k.upper_is_unbounded())
     return false;
 
-  closed = !seq_k.info().test_boundary_property(Boundary::UPPER,
-						Boundary::OPEN);
+  closed = !seq_k.upper_is_open();
 
   mpq_class ur;
   assign_r(ur, seq_k.upper(), ROUND_NOT_NEEDED);
