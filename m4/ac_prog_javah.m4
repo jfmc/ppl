@@ -27,7 +27,7 @@ AC_DEFUN([AC_PROG_JAVAH],[
 AC_REQUIRE([AC_CANONICAL_SYSTEM])dnl
 AC_REQUIRE([AC_PROG_CPP])dnl
 if test "x$JAVAPREFIX" = x; then
-        AC_CHECK_PROGS(JAVAH,javah, no, $JAVAPREFIX)
+        AC_CHECK_PROGS(JAVAH,javah, no)
 else
 	AC_PATH_PROGS(JAVAH,javah, no, $JAVAPREFIX)
 fi
