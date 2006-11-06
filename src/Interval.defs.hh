@@ -590,7 +590,7 @@ template <typename To_Boundary, typename To_Info,
 inline I_Result
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   if (To_Info::store_integer) {
-    Integer_Property::Value to_i = to.lazy_integer_property();
+    Integer_Property::Value to_i = lazy_integer_property(to);
     if (to_i == ONLY_INTEGERS_NORMALIZED) {
       if (lazy_integer_property(x) != ONLY_INTEGERS_NORMALIZED)
 	to.info().set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
