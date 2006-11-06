@@ -21,7 +21,7 @@ struct Integer_Property {
   static const Value unsupported_value = MAYBE_SINGLETON_INTEGER;
 };
 
-const Integer_Property& INTEGER = *(Integer_Property*)0;
+static const Integer_Property& INTEGER = *(Integer_Property*)0;
 
 
 struct Property {
