@@ -34,5 +34,5 @@ JAVACFLAGS = -classpath $(CLASSPATH)
 
 
 check-local:
-	 java -classpath .:../ -Djava.library.path=../jni/.libs C_Polyhedron_test1
+	 $(JAVA) -classpath .:../ -Djava.library.path=../jni/.libs C_Polyhedron_test1
 endif BUILD_JAVA_INTERFACE

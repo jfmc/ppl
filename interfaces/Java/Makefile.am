@@ -20,6 +20,8 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+if BUILD_JAVA_INTERFACE
+
 SUBDIRS = ppl_java jni tests
 
 data_DATA = ppl_java.jar
@@ -27,4 +29,6 @@ data_DATA = ppl_java.jar
 CLEANFILES = ppl_java.jar
 
 ppl_java.jar: ppl_java/classnoinst.stamp
-	jar cf ppl_java.jar ppl_java/*.class
+	$(JAR) cf ppl_java.jar ppl_java/*.class
+
+endif BUILD_JAVA_INTERFACE

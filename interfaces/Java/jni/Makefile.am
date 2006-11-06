@@ -40,10 +40,10 @@ ppl_java_Polyhedron.h
 libppl_java_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
 
 ppl_java_C_Polyhedron.h:
-	javah -classpath .. ppl_java.C_Polyhedron
+	$(JAVAH) -classpath .. ppl_java.C_Polyhedron
 
 ppl_java_Polyhedron.h:
-	javah -classpath .. ppl_java.Polyhedron
+	$(JAVAH) -classpath .. ppl_java.Polyhedron
 
 MOSTLYCLEANFILES =
 
