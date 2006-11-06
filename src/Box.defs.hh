@@ -76,6 +76,9 @@ std::ostream& operator<<(std::ostream& s, const Box<Interval>& box);
 template <typename Interval>
 class Parma_Polyhedra_Library::Box {
 public:
+  //! The type of intervals used to implement the box.
+  typedef Interval interval_type;
+
   //! Builds a universe or empty box of the specified space dimension.
   /*!
     \param num_dimensions
