@@ -38,12 +38,29 @@ enum I_Result {
   I_SINGULARITIES = 16
 };
 
-namespace Boundary {
+inline I_Result
+combine(I_Result l, I_Result u) {
+  return static_cast<I_Result>(l | u);
+}
 
-enum Property {
-  UNBOUNDED,
-  OPEN
+namespace Boundary_NS {
+
+struct Property {
+  enum Type {
+    UNBOUNDED_,
+    OPEN_
+  };
+  typedef bool Value;
+  static const Value default_value = true;
+  static const Value unsupported_value = false;
+  Property(Type t)
+    : type(t) {
+  }
+  Type type;
 };
+
+static const Property UNBOUNDED(Property::UNBOUNDED_);
+static const Property OPEN(Property::OPEN_);
 
 enum Type {
   LOWER = ROUND_DOWN,

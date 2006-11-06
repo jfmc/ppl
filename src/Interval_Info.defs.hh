@@ -6,14 +6,33 @@
 
 namespace Parma_Polyhedra_Library {
 
-namespace Interval_ {
-enum Property {
-  ONLY_INTEGERS,
-  NOT_ONLY_INTEGERS,
-  CARDINALITY_0,
-  CARDINALITY_1,
-  CARDINALITY_IS,
+namespace Interval_NS {
+
+struct Property {
+  enum Type {
+    ONLY_INTEGERS_,
+    // The interval doesn't contain only integers.
+    // NOTE: if this flag is set together with ONLY_INTEGERS it means
+    // that the interval contains only integers and boundaries are normalized
+    NOT_ONLY_INTEGERS_,
+    CARDINALITY_0_,
+    CARDINALITY_1_,
+    CARDINALITY_IS_
+  };
+  typedef bool Value;
+  static const Value default_value = true;
+  static const Value unsupported_value = false;
+  Property(Type t)
+    : type(t) {
+  }
+  Type type;
 };
+
+static const Property ONLY_INTEGERS(Property::ONLY_INTEGERS_);
+static const Property NOT_ONLY_INTEGERS(Property::NOT_ONLY_INTEGERS_);
+static const Property CARDINALITY_0(Property::CARDINALITY_0_);
+static const Property CARDINALITY_1(Property::CARDINALITY_1_);
+static const Property CARDINALITY_IS(Property::CARDINALITY_IS_);
 
 template <typename T>
 inline void
@@ -50,8 +69,8 @@ test_bit(const T& bits, unsigned int bit) {
 
 }
 
-using namespace Interval_;
-using namespace Boundary;
+using namespace Interval_NS;
+using namespace Boundary_NS;
 
 template <typename Policy>
 class Interval_Info_Null {
@@ -67,17 +86,21 @@ public:
   static const bool store_singleton = false;
   void clear() {
   }
-  void clear_boundary_properties(Boundary::Type) {
+  void clear_boundary_properties(Boundary_NS::Type) {
   }
-  void set_boundary_property(Boundary::Type, Boundary::Property, bool = true) {
+  template <typename Property>
+  void set_boundary_property(Boundary_NS::Type, const Property&, typename Property::Value = Property::default_value) {
   }
-  bool test_boundary_property(Boundary::Type, Boundary::Property) const {
-    return false;
+  template <typename Property>
+  typename Property::Value test_boundary_property(Boundary_NS::Type, const Property&) const {
+    return Property::unsupported_value;
   }
-  void set_interval_property(Interval_::Property, bool = true) {
+  template <typename Property>
+  void set_interval_property(const Property&, typename Property::Value = Property::default_value) {
   }
-  bool test_interval_property(Interval_::Property) const {
-    return false;
+  template <typename Property>
+  typename Property::Value test_interval_property(const Property&) const {
+    return Property::unsupported_value;
   }
 };
 
@@ -110,19 +133,19 @@ public:
   void clear() {
     reset_bits(bitset);
   }
-  void clear_boundary_properties(Boundary::Type t) {
+  void clear_boundary_properties(Boundary_NS::Type t) {
     if (store_unbounded)
       reset_bit(bitset, t == LOWER ? lower_unbounded_bit : upper_unbounded_bit);
     if (store_open)
       reset_bit(bitset, t == LOWER ? lower_open_bit : upper_open_bit);
   }
-  void set_boundary_property(Boundary::Type t, Boundary::Property p, bool value = true) {
-    switch (p) {
-    case Boundary::UNBOUNDED:
+  void set_boundary_property(Boundary_NS::Type t, Boundary_NS::Property p, bool value = true) {
+    switch (p.type) {
+    case Boundary_NS::Property::UNBOUNDED_:
       if (store_unbounded)
 	set_bit(bitset, t == LOWER ? lower_unbounded_bit : upper_unbounded_bit, value);
       break;
-    case Boundary::OPEN:
+    case Boundary_NS::Property::OPEN_:
       if (store_open)
 	set_bit(bitset, t == LOWER ? lower_open_bit : upper_open_bit, value);
       break;
@@ -130,37 +153,37 @@ public:
       break;
     }
   }
-  bool test_boundary_property(Boundary::Type t, Boundary::Property p) const {
-    switch (p) {
-    case UNBOUNDED:
+  bool test_boundary_property(Boundary_NS::Type t, Boundary_NS::Property p) const {
+    switch (p.type) {
+    case Boundary_NS::Property::UNBOUNDED_:
       return store_unbounded
 	&& test_bit(bitset, t == LOWER ? lower_unbounded_bit : upper_unbounded_bit);
-    case OPEN:
+    case Boundary_NS::Property::OPEN_:
       return store_open
 	&& test_bit(bitset, t == LOWER ? lower_open_bit : upper_open_bit);
     default:
       return false;
     }
   }
-  void set_interval_property(Interval_::Property p, bool value = true) {
-    switch (p) {
-    case ONLY_INTEGERS:
+  void set_interval_property(Interval_NS::Property p, bool value = true) {
+    switch (p.type) {
+    case Interval_NS::Property::ONLY_INTEGERS_:
       if (store_integer)
 	set_bit(bitset, only_integers_bit, value);
       break;
-    case NOT_ONLY_INTEGERS:
+    case Interval_NS::Property::NOT_ONLY_INTEGERS_:
       if (store_integer)
 	set_bit(bitset, not_only_integers_bit, value);
       break;
-    case CARDINALITY_0:
+    case Interval_NS::Property::CARDINALITY_0_:
       if (store_empty)
 	set_bit(bitset, cardinality_0_bit, value);
       break;
-    case CARDINALITY_1:
+    case Interval_NS::Property::CARDINALITY_1_:
       if (store_singleton)
 	set_bit(bitset, cardinality_1_bit, value);
       break;
-    case CARDINALITY_IS:
+    case Interval_NS::Property::CARDINALITY_IS_:
       if (store_empty || store_singleton)
 	set_bit(bitset, cardinality_is_bit, value);
       break;
@@ -168,17 +191,17 @@ public:
       break;
     }
   }
-  bool test_interval_property(Interval_::Property p) const {
-    switch (p) {
-    case ONLY_INTEGERS:
+  bool test_interval_property(Interval_NS::Property p) const {
+    switch (p.type) {
+    case Interval_NS::Property::ONLY_INTEGERS_:
       return store_integer && test_bit(bitset, only_integers_bit);
-    case NOT_ONLY_INTEGERS:
+    case Interval_NS::Property::NOT_ONLY_INTEGERS_:
       return store_integer && test_bit(bitset, not_only_integers_bit);
-    case CARDINALITY_0:
+    case Interval_NS::Property::CARDINALITY_0_:
       return store_empty && test_bit(bitset, cardinality_0_bit);
-    case CARDINALITY_1:
+    case Interval_NS::Property::CARDINALITY_1_:
       return store_singleton && test_bit(bitset, cardinality_1_bit);
-    case CARDINALITY_IS:
+    case Interval_NS::Property::CARDINALITY_IS_:
       return (store_empty || store_singleton) && test_bit(bitset, cardinality_is_bit);
     default:
       return false;
@@ -190,7 +213,7 @@ protected:
 
 template <typename Info>
 inline I_Result
-adjust_boundary_info(Boundary::Type type, Info& info, Result r) {
+adjust_boundary_info(Boundary_NS::Type type, Info& info, Result r) {
   if (type == LOWER) {
     switch (r) {
     case V_NEG_OVERFLOW:
