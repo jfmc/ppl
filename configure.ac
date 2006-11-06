@@ -615,13 +615,25 @@ AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes)
 
 # Checks for systems for which the interface is enabled.
 
-# Java
-if test x${java_interface_enabled} = xyes
+# Set the optional Java SDK directory.
+AC_ARG_WITH(java,
+	AC_HELP_STRING([--with-java=dir],
+       [use dir as Java SDK root directory]),
+       [JAVA_HOME=$with_java])
+
+if test ! "x$JAVA_HOME" = x
 then
-  AC_CHECK_PROG(JAVAH, javah, javah)
-  AC_CHECK_PROG(JAVAC, javac, javac)
+    JAVAPREFIX="${JAVA_HOME}/bin"
 fi
-AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test x$JAVAC = xjavac)
+
+# Check for Java programs.
+AC_PROG_JAVA
+AC_PROG_JAVAC
+AC_PROG_JAR
+AC_PROG_JAVAH
+
+# All the Java programs are required to build the Java interface.
+AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test ! "x$JAVA" = "xno" &&  test ! "x$JAVAC" = "xno" && test ! "x$JAR" = "xno" && test ! "x$JAVAH" = "xno")
 
 # OCaml
 if test x${ocaml_interface_enabled} = xyes
