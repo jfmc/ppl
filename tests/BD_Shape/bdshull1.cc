@@ -234,6 +234,38 @@ test07() {
   return ok;
 }
 
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd1(2);
+  bd1.add_constraint(A <= 0);
+  bd1.add_constraint(B >= 0);
+  bd1.add_constraint(A - B <= 0);
+
+  TBD_Shape bd2(2);
+  bd2.add_constraint(A <= 0);
+  bd2.add_constraint(A - B <= 0);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  (void) bd1.minimized_constraints();
+
+  bd1.bds_hull_assign(bd2);
+
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(A <= 0);
+  known_result.add_constraint(A - B <= 0);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1, "*** bd1.bds_hull_assign_and_minimize(bd2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -244,4 +276,5 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN
