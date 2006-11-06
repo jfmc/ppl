@@ -535,11 +535,11 @@ convex_hull_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   if (maybe_check_empty(x))
     return combine(V_EQ, V_EQ);
   if (To_Info::store_integer) {
-    if (to.contains_only_integers()) {
-      if (!contains_only_integers(x))
-	to.info().set_interval_property(INTEGER, MAYBE_SINGLETON_INTEGER);
-      else
-	to.info().set_interval_property(INTEGER, NOT_SINGLETON_INTEGER);
+    Integer_Property::Value to_i = to.integer_property();
+    if (to_i >= ONLY_INTEGERS_TO_NORMALIZE) {
+      Integer_Property::Value x_i = integer_property(x);
+      if (x_i < to_i)
+	to.info().set_interval_property(INTEGER, x_i);
     }
   }
   if (to.info().get_interval_property(CARDINALITY_IS)) {
@@ -566,15 +566,13 @@ convex_hull_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const Fro
     return assign(to, x);
   To_Info to_info;
   if (To_Info::store_integer) {
-    if (contains_only_integers(x) && contains_only_integers(y)) {
-	if (info(x).get_interval_property(INTEGER, ONLY_INTEGERS_NORMALIZED)
-	    && info(y).get_interval_property(INTEGER, ONLY_INTEGERS_NORMALIZED))
-	  to_info.set_interval_property(INTEGER, ONLY_INTEGERS_NORMALIZED);
-	else
-	  to_info.set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
+    Integer_Property::Value x_i = integer_property(x);
+    if (x_i >= ONLY_INTEGERS_TO_NORMALIZE) {
+      Integer_Property::Value y_i = integer_property(y);
+      if (x_i < y_i)
+	x_i = y_i;
     }
-    else
-      to_info.set_interval_property(INTEGER, NOT_SINGLETON_INTEGER);
+    to_info.set_interval_property(INTEGER, x_i);
   }
   Result rl, ru;
   rl = min_assign(LOWER, to.lower(), to_info,
@@ -592,15 +590,17 @@ template <typename To_Boundary, typename To_Info,
 inline I_Result
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   if (To_Info::store_integer) {
-    Integer_Property::Value x_i = lazy_integer_property(x);
-    if (x_i == ONLY_INTEGERS_TO_NORMALIZE)
-      to.info().set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
-    else if (x_i == ONLY_INTEGERS_NORMALIZED) {
-      if (to.info().get_interval_property(INTEGER) < ONLY_INTEGERS_TO_NORMALIZE)
+    Integer_Property::Value to_i = to.lazy_integer_property();
+    if (to_i == ONLY_INTEGERS_NORMALIZED) {
+      if (lazy_integer_property(x) != ONLY_INTEGERS_NORMALIZED)
 	to.info().set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
     }
-    else if (to.info().get_interval_property(INTEGER) == ONLY_INTEGERS_NORMALIZED)
-      to.info().set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
+    else if (to_i != ONLY_INTEGERS_TO_NORMALIZE) {
+      if (lazy_integer_property(x) >= ONLY_INTEGERS_TO_NORMALIZE)
+	to.info().set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
+      else
+	to.info().set_interval_property(INTEGER, MAYBE_SINGLETON_INTEGER);
+    }
   }
   to.info().set_interval_property(CARDINALITY_IS, false);
   to.info().set_interval_property(CARDINALITY_0, false);
@@ -626,7 +626,7 @@ intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2
     else if (x_i >= ONLY_INTEGERS_TO_NORMALIZE || y_i >= ONLY_INTEGERS_TO_NORMALIZE)
       to.info().set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
     else
-      to_info.set_interval_property(INTEGER, MAYBE_SINGLETON_INTEGER);
+      to_info().set_interval_property(INTEGER, MAYBE_SINGLETON_INTEGER);
   }
   Result rl, ru;
   rl = max_assign(LOWER, to.lower(), to_info,
