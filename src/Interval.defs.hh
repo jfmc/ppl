@@ -632,16 +632,33 @@ contains(const Interval<Boundary, Info>& x, const T& y) {
     return true;
   if (x.is_empty())
     return false;
+  if (x.contains_only_integers()) {
+    if (!contains_only_integers(y))
+      return false;
+  }
   return le(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
-    && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y))
-    && (!x.contains_only_integers() || contains_only_integers(y));
+    && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y));
 }
 
 template <typename Boundary, typename Info,
 	  typename T>
 inline bool
 strictly_contains(const Interval<Boundary, Info>& x, const T& y) {
-  return contains(x, y) && x != y;
+  if (is_empty(y))
+    return !x.is_empty();
+  if (x.is_empty())
+    return false;
+  if (x.contains_only_integers()) {
+    if (!contains_only_integers(y))
+      return false;
+  }
+  else if (contains_only_integer(y))
+    return le(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
+      && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y));
+  return (lt(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
+	  && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y)))
+    || (le(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
+	&& gt(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y)));
 }
 
 template <typename To_Boundary, typename To_Info,
