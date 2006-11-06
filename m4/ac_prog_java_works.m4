@@ -130,7 +130,7 @@ if AC_TRY_COMMAND($JAVA $JAVAFLAGS $TEST) >/dev/null 2>&1; then
 else
   echo "configure: failed program was:" >&AC_FD_CC
   cat $JAVA_TEST >&AC_FD_CC
-  AC_MSG_ERROR(The Java VM $JAVA failed (see config.log, check the CLASSPATH?))
+  AC_MSG_WARN(The Java VM $JAVA failed (see config.log, check the CLASSPATH?))
 fi
 rm -fr $JAVA_TEST $CLASS_TEST Test.uue
 ])
