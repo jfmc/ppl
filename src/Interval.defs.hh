@@ -251,7 +251,7 @@ public:
       return I_L_EQ;
     }
     else if (info().test_interval_property(ONLY_INTEGERS))
-      return adjust_boundary_info(LOWER, info(), add_assign_r(lower(), Boundary(1, ROUND_NOT_NEEDED), ROUND_DOWN));
+      return adjust_boundary_info(LOWER, info(), add_assign_r(lower(), lower(), Boundary(1, ROUND_NOT_NEEDED), ROUND_DOWN));
     else
       return combine(I_L_GT, I_U_EQ);
   }
@@ -261,7 +261,7 @@ public:
       return I_U_EQ;
     }
     else if (info().test_interval_property(ONLY_INTEGERS))
-      return adjust_boundary_info(UPPER, info(), sub_assign_r(upper(), Boundary(1, ROUND_NOT_NEEDED), ROUND_UP));
+      return adjust_boundary_info(UPPER, info(), sub_assign_r(upper(), upper(), Boundary(1, ROUND_NOT_NEEDED), ROUND_UP));
     else
       return combine(I_L_EQ, I_U_LT);
   }
@@ -377,7 +377,7 @@ info(const T&) {
 }
 template <typename T>
 inline I_Result
-normalize_integer(const T& x) {
+normalize_integer(const T&) {
   return combine(I_L_EQ, I_U_EQ);
 }
 template <typename T>
