@@ -313,6 +313,11 @@ public:
 };
 
 template <typename Boundary, typename Info>
+inline I_Result
+normalize_integer(const Interval<Boundary, Info>& x) {
+  return x.normalize_integer();
+}
+template <typename Boundary, typename Info>
 inline bool
 contains_only_integers(const Interval<Boundary, Info>& x) {
   return x.contains_only_integers();
@@ -369,6 +374,11 @@ template <typename T>
 inline const Scalar_As_Interval_Info&
 info(const T&) {
   return *static_cast<Scalar_As_Interval_Info*>(0);
+}
+template <typename T>
+inline I_Result
+normalize_integer(const T& x) {
+  return combine(I_L_EQ, I_U_EQ);
 }
 template <typename T>
 inline bool
@@ -594,7 +604,7 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
       if (lt(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x)))
 	return combine(I_L_EQ, I_U_EQ);
       I_Result ru;
-      to.info().clear_bondary_properties(UPPER);
+      to.info().clear_boundary_properties(UPPER);
       ru = assign(UPPER, to.upper(), to.info(). UPPER, upper(x), info(x));
       ru = to.upper_set_open();
       // FIXME: boundary normalization for integer interval?
@@ -613,7 +623,7 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
       if (gt(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x)))
 	return combine(I_L_EQ, I_U_EQ);
       I_Result rl;
-      to.info().clear_bondary_properties(LOWER);
+      to.info().clear_boundary_properties(LOWER);
       rl = assign(LOWER, to.lower(), to.info(). LOWER, lower(x), info(x));
       rl = to.lower_set_open();
       // FIXME: boundary normalization for integer interval?
