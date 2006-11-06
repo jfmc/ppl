@@ -33,6 +33,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+enum I_Result {
+  I_EMPTY = 0,
+  I_L_EQ = V_EQ,
+  I_L_GT = V_GT,
+  I_L_GE = V_GE,
+  I_U_EQ = V_EQ << 6,
+  I_U_LT = V_LT << 6,
+  I_U_LE = V_LE << 6,
+  I_SINGULARITIES = 1 << 12
+};
+
+inline I_Result
+combine(Result l, Result u) {
+  return static_cast<I_Result>(l | (u << 6));
+}
+
 using namespace Boundary_NS;
 using namespace Interval_NS;
 
@@ -41,40 +57,6 @@ class Interval : private Info {
 private:
   Info& w_info() const {
     return const_cast<Interval&>(*this);
-  }
-  I_Result normalize_integer() const {
-    if (!info().test_interval_property(ONLY_INTEGERS) ||
-	info().test_interval_property(NOT_ONLY_INTEGERS))
-      return combine(I_L_EQ, I_U_EQ);
-    Interval& i = const_cast<Interval&>(*this);
-    I_Result rl = I_L_EQ;
-    if (!lower_is_unbounded()) {
-      if (is_integer(lower())) {
-	if (lower_is_open()) {
-	  i.info().set_boundary_property(LOWER, OPEN, false);
-	  rl = adjust_boundary_info(LOWER, i.info(), add_assign_r(i.lower(), lower(), Boundary(1, ROUND_NOT_NEEDED), ROUND_DOWN));
-	}
-      }
-      else {
-	i.info().set_boundary_property(LOWER, OPEN, false);
-	rl = adjust_boundary_info(LOWER, i.info(), ceil_assign_r(i.lower(), lower(), ROUND_DOWN));
-      }
-    }
-    I_Result ru = I_U_EQ;
-    if (!upper_is_unbounded()) {
-      if (is_integer(upper())) {
-	if (upper_is_open()) {
-	  i.info().set_boundary_property(UPPER, OPEN, false);
-	  ru = adjust_boundary_info(UPPER, i.info(), sub_assign_r(i.upper(), upper(), Boundary(1, ROUND_NOT_NEEDED), ROUND_UP));
-	}
-      }
-      else {
-	i.info().set_boundary_property(UPPER, OPEN, false);
-	ru = adjust_boundary_info(UPPER, i.info(), floor_assign_r(i.lower(), lower(), ROUND_UP));
-      }
-    }
-    i.info().set_interval_property(NOT_ONLY_INTEGERS);
-    return combine(rl, ru);
   }
   bool is_empty_() const {
     normalize_integer();
@@ -106,59 +88,57 @@ public:
 #endif
       return false;
     }
-    if (info().test_boundary_property(LOWER, UNBOUNDED) &&
+    if (info().get_boundary_property(LOWER, UNBOUNDED) &&
 	lower_is_open()) {
 #ifndef NDEBUG
       std::cerr << "The lower boundary is marked unbounded and open." << std::endl;
 #endif
       return false;
     }
-    if (info().test_boundary_property(UPPER, UNBOUNDED) &&
+    if (info().get_boundary_property(UPPER, UNBOUNDED) &&
 	upper_is_open()) {
 #ifndef NDEBUG
       std::cerr << "The upper boundary is marked unbounded and open." << std::endl;
 #endif
       return false;
     }
-    if (info().test_interval_property(CARDINALITY_0) &&
-	info().test_interval_property(CARDINALITY_IS) != is_empty_()) {
+    if (info().get_interval_property(CARDINALITY_0) &&
+	info().get_interval_property(CARDINALITY_IS) != is_empty_()) {
 #ifndef NDEBUG
       std::cerr << "The interval empty flag is incongruent with actual content." << std::endl;
 #endif
       return false;
     }
-    if (info().test_interval_property(CARDINALITY_1) &&
-	info().test_interval_property(CARDINALITY_IS) != is_singleton_()) {
+    if (info().get_interval_property(CARDINALITY_1) &&
+	info().get_interval_property(CARDINALITY_IS) != is_singleton_()) {
 #ifndef NDEBUG
       std::cerr << "The interval singleton flag is incongruent with actual content." << std::endl;
 #endif
       return false;
     }
-    if (info().test_interval_property(ONLY_INTEGERS)) {
-      if (info().test_interval_property(NOT_ONLY_INTEGERS)) {
-	if (!is_integer(lower())) {
+    if (info().get_interval_property(INTEGER) == ONLY_INTEGERS_NORMALIZED) {
+      if (!is_integer(lower())) {
 #ifndef NDEBUG
-	  std::cerr << "The interval is marked to contain integers only and to be normalized, but lower boundary is not an integer." << std::endl;
+	std::cerr << "The interval is marked to contain only integers and to be normalized, but lower boundary is not an integer." << std::endl;
 #endif
-	  return false;
-	}
-	if (!is_integer(upper())) {
+	return false;
+      }
+      if (!is_integer(upper())) {
 #ifndef NDEBUG
-	  std::cerr << "The interval is marked to contain integers only and to be normalized, but upper boundary is not an integer." << std::endl;
+	std::cerr << "The interval is marked to contain only integers and to be normalized, but upper boundary is not an integer." << std::endl;
 #endif
-	  return false;
-	}
+	return false;
       }
     }
-    else if (info().test_interval_property(NOT_ONLY_INTEGERS) &&
+    else if (info().get_interval_property(INTEGER) == NOT_SINGLETON_INTEGER &&
 	     is_singleton_integer()) {
 #ifndef NDEBUG
-      std::cerr << "The interval is marked to contain not only integer, but actual content is a singleton integer." << std::endl;
+      std::cerr << "The interval is marked to not be a singleton integer, but actual content is a singleton integer." << std::endl;
 #endif
       return false;
     }
-    if (info().test_interval_property(CARDINALITY_IS) &&
-	info().test_interval_property(CARDINALITY_0) == info().test_interval_property(CARDINALITY_1)) {
+    if (info().get_interval_property(CARDINALITY_IS) &&
+	info().get_interval_property(CARDINALITY_0) == info().get_interval_property(CARDINALITY_1)) {
 #ifndef NDEBUG
       std::cerr << "The interval is marked to know its cardinality, but this is unspecified or ambiguous." << std::endl;
 #endif
@@ -193,9 +173,9 @@ public:
     return I_EMPTY;
   }
   bool is_empty() const {
-    if (info().test_interval_property(CARDINALITY_IS))
-      return info().test_interval_property(CARDINALITY_0);
-    else if (info().test_interval_property(CARDINALITY_0))
+    if (info().get_interval_property(CARDINALITY_IS))
+      return info().get_interval_property(CARDINALITY_0);
+    else if (info().get_interval_property(CARDINALITY_0))
       return false;
     if (is_empty_()) {
       w_info().set_interval_property(CARDINALITY_IS);
@@ -209,9 +189,9 @@ public:
     }
   }
   bool is_singleton() const {
-    if (info().test_interval_property(CARDINALITY_IS))
-      return info().test_interval_property(CARDINALITY_1);
-    else if (info().test_interval_property(CARDINALITY_1))
+    if (info().get_interval_property(CARDINALITY_IS))
+      return info().get_interval_property(CARDINALITY_1);
+    else if (info().get_interval_property(CARDINALITY_1))
       return false;
     if (is_singleton_()) {
       w_info().set_interval_property(CARDINALITY_IS);
@@ -221,49 +201,100 @@ public:
     }
     else {
       w_info().set_interval_property(CARDINALITY_1);
+      if (info().get_interval_property(INTEGER) == MAYBE_SINGLETON_INTEGER)
+	w_info().set_interval_property(INTEGER, NOT_SINGLETON_INTEGER);
       return false;
     }
+  }
+  I_Result normalize_integer() const {
+    if (info().get_interval_property(INTEGER) != ONLY_INTEGERS_TO_NORMALIZE)
+      return combine(V_EQ, V_EQ);
+    Interval& i = const_cast<Interval&>(*this);
+    Result rl = V_EQ;
+    if (!lower_is_unbounded()) {
+      if (is_integer(lower())) {
+	if (lower_is_open()) {
+	  i.info().set_boundary_property(LOWER, OPEN, false);
+	  rl = adjust_boundary_info(LOWER, i.info(), add_assign_r(i.lower(), lower(), Boundary(1, ROUND_NOT_NEEDED), ROUND_DOWN));
+	}
+      }
+      else {
+	i.info().set_boundary_property(LOWER, OPEN, false);
+	rl = adjust_boundary_info(LOWER, i.info(), ceil_assign_r(i.lower(), lower(), ROUND_DOWN));
+      }
+    }
+    Result ru = V_EQ;
+    if (!upper_is_unbounded()) {
+      if (is_integer(upper())) {
+	if (upper_is_open()) {
+	  i.info().set_boundary_property(UPPER, OPEN, false);
+	  ru = adjust_boundary_info(UPPER, i.info(), sub_assign_r(i.upper(), upper(), Boundary(1, ROUND_NOT_NEEDED), ROUND_UP));
+	}
+      }
+      else {
+	i.info().set_boundary_property(UPPER, OPEN, false);
+	ru = adjust_boundary_info(UPPER, i.info(), floor_assign_r(i.lower(), lower(), ROUND_UP));
+      }
+    }
+    i.info().set_interval_property(INTEGER, ONLY_INTEGERS_NORMALIZED);
+    return combine(rl, ru);
+  }
+  Integer_Property::Value integer_property() const {
+    Integer_Property::Value v;
+    v = info().get_interval_property(INTEGER);
+    if (v == MAYBE_SINGLETON_INTEGER) {
+      if (is_singleton_integer())
+	v = ONLY_INTEGERS_NORMALIZED;
+      else
+	v = NOT_SINGLETON_INTEGER;
+      w_info().set_interval_property(INTEGER, v);
+    }
+    return v;
   }
   bool contains_only_integers() const {
-    if (info().test_interval_property(ONLY_INTEGERS))
-      return true;
-    if (info().test_interval_property(NOT_ONLY_INTEGERS))
-      return false;
-    if (is_singleton_integer()) {
-      w_info().set_interval_property(ONLY_INTEGERS);
-      w_info().set_interval_property(NOT_ONLY_INTEGERS);
-      return true;
-    }
-    else {
-      w_info().set_interval_property(NOT_ONLY_INTEGERS);
-      return false;
-    }
+    return integer_property() >= ONLY_INTEGERS_TO_NORMALIZE;
   }
   bool lower_is_open() const {
-    return info().test_boundary_property(LOWER, OPEN);
+    return info().get_boundary_property(LOWER, OPEN);
   }
   bool upper_is_open() const {
-    return info().test_boundary_property(UPPER, OPEN);
+    return info().get_boundary_property(UPPER, OPEN);
   }
-  I_Result lower_set_open(bool v = true) {
+  Result lower_set_open(bool v = true) {
     if (info().store_open) {
       info().set_boundary_property(LOWER, OPEN, v);
-      return I_L_EQ;
+      return V_EQ;
     }
-    else if (info().test_interval_property(ONLY_INTEGERS))
-      return adjust_boundary_info(LOWER, info(), add_assign_r(lower(), lower(), Boundary(1, ROUND_NOT_NEEDED), ROUND_DOWN));
-    else
-      return combine(I_L_GT, I_U_EQ);
+    else if (v) {
+      switch (info().get_interval_property(INTEGER)) {
+      case ONLY_INTEGERS_TO_NORMALIZE:
+	assert(false);
+	break;
+      case ONLY_INTEGERS_NORMALIZED:
+	return adjust_boundary_info(LOWER, info(), add_assign_r(lower(), lower(), Boundary(1, ROUND_NOT_NEEDED), ROUND_DOWN));
+      default:
+	break;
+      }
+    }
+    return V_EQ;
   }
-  I_Result upper_set_open(bool v = true) {
+  Result upper_set_open(bool v = true) {
     if (info().store_open) {
       info().set_boundary_property(UPPER, OPEN, v);
-      return I_U_EQ;
+      return V_EQ;
     }
-    else if (info().test_interval_property(ONLY_INTEGERS))
-      return adjust_boundary_info(UPPER, info(), sub_assign_r(upper(), upper(), Boundary(1, ROUND_NOT_NEEDED), ROUND_UP));
-    else
-      return combine(I_L_EQ, I_U_LT);
+    else if (v) {
+      switch (info().get_interval_property(INTEGER)) {
+      case ONLY_INTEGERS_TO_NORMALIZE:
+	assert(false);
+	break;
+      case ONLY_INTEGERS_NORMALIZED:
+	return adjust_boundary_info(UPPER, info(), sub_assign_r(upper(), upper(), Boundary(1, ROUND_NOT_NEEDED), ROUND_UP));
+      default:
+	break;
+      }
+    }
+    return V_EQ;
   }
   bool lower_is_unbounded() const {
     return Boundary_NS::is_unbounded(LOWER, lower(), info());
@@ -323,6 +354,11 @@ contains_only_integers(const Interval<Boundary, Info>& x) {
   return x.contains_only_integers();
 }
 template <typename Boundary, typename Info>
+inline Integer_Property::Value
+integer_property(const Interval<Boundary, Info>& x) {
+  return x.integer_property();
+}
+template <typename Boundary, typename Info>
 inline bool
 is_empty(const Interval<Boundary, Info>& x) {
   return x.is_empty();
@@ -378,7 +414,7 @@ info(const T&) {
 template <typename T>
 inline I_Result
 normalize_integer(const T&) {
-  return combine(I_L_EQ, I_U_EQ);
+  return combine(V_EQ, V_EQ);
 }
 template <typename T>
 inline bool
@@ -389,6 +425,11 @@ template <typename T>
 inline bool
 contains_only_integers(const T& x) {
   return is_integer(x);
+}
+template <typename T>
+inline Integer_Property::Value
+integer_property(const T& x) {
+  return is_integer(x) ? ONLY_INTEGERS_NORMALIZED : NOT_SINGLETON_INTEGER;
 }
 template <typename T>
 inline bool
@@ -408,13 +449,13 @@ maybe_check_empty(const T& x) {
 }
 
 template <typename T>
-inline bool
-check_integer(const T& x) {
+inline Integer_Property::Value
+lazy_integer_property(const T& x) {
   // TOTHINK: use the policy for x or for the result?
   if (info(x).check_integer_args)
-    return contains_only_integers(x);
+    return integer_property(x);
   else
-    return info(x).test_interval_property(ONLY_INTEGERS);
+    return info(x).get_interval_property(INTEGER);
 }
 
 }
@@ -457,10 +498,10 @@ assign(Interval<To_Boundary, To_Info>& to, const From1& l, const From2& u, bool 
   if (maybe_check_empty(l) || maybe_check_empty(u))
     return to.set_empty();
   To_Info to_info;
-  I_Result rl = assign(LOWER, to.lower(), to_info, LOWER, l, info(l));
-  I_Result ru = assign(UPPER, to.upper(), to_info, UPPER, u, info(u));
+  Result rl = assign(LOWER, to.lower(), to_info, LOWER, l, info(l));
+  Result ru = assign(UPPER, to.upper(), to_info, UPPER, u, info(u));
   if (integer)
-    to_info.set_interval_property(ONLY_INTEGERS);
+    to_info.set_interval_property(INTEGER,ONLY_INTEGERS_TO_NORMALIZE);
   to.info() = to_info;
   return combine(rl, ru);
 }
@@ -472,16 +513,12 @@ assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   if (maybe_check_empty(x))
     return to.set_empty();
   To_Info to_info;
-  I_Result rl = assign(LOWER, to.lower(), to_info,
-		       LOWER, lower(x), info(x));
-  I_Result ru = assign(UPPER, to.upper(), to_info,
-		       UPPER, upper(x), info(x));
-  if (To_Info::store_integer) {
-    if (check_integer(x))
-      to_info.set_interval_property(ONLY_INTEGERS);
-    if (info(x).test_interval_property(NOT_ONLY_INTEGERS))
-      to_info.set_interval_property(NOT_ONLY_INTEGERS);
-  }
+  Result rl = assign(LOWER, to.lower(), to_info,
+		     LOWER, lower(x), info(x));
+  Result ru = assign(UPPER, to.upper(), to_info,
+		     UPPER, upper(x), info(x));
+  if (To_Info::store_integer)
+    to_info.set_interval_property(INTEGER, lazy_integer_property(x));
   to.info() = to_info;
   return combine(rl, ru);
 }
@@ -490,25 +527,27 @@ template <typename To_Boundary, typename To_Info,
 	  typename From>
 inline I_Result
 convex_hull_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
+  // FIXME: needed only for not only/only integers mixing.
+  to.normalize_integer();
+  normalize_integer(x);
   if (maybe_check_empty(to))
     return assign(to, x);
   if (maybe_check_empty(x))
-    return combine(I_L_EQ, I_U_EQ);
+    return combine(V_EQ, V_EQ);
   if (To_Info::store_integer) {
-    if (info(x).test_interval_property(NOT_ONLY_INTEGERS)) {
-      to.info().set_interval_property(NOT_ONLY_INTEGERS);
-      to.info().set_interval_property(ONLY_INTEGERS, false);
+    if (to.contains_only_integers()) {
+      if (!contains_only_integers(x))
+	to.info().set_interval_property(INTEGER, MAYBE_SINGLETON_INTEGER);
+      else
+	to.info().set_interval_property(INTEGER, NOT_SINGLETON_INTEGER);
     }
-    else if (to.info().test_interval_property(ONLY_INTEGERS)
-	     && !check_integer(x))
-      to.info().set_interval_property(ONLY_INTEGERS, false);
   }
-  if (to.info().test_interval_property(CARDINALITY_IS)) {
+  if (to.info().get_interval_property(CARDINALITY_IS)) {
     to.info().set_interval_property(CARDINALITY_IS, false);
     to.info().set_interval_property(CARDINALITY_0, true);
     to.info().set_interval_property(CARDINALITY_1, false);
   }
-  I_Result rl, ru;
+  Result rl, ru;
   rl = min_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
   ru = max_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
   return combine(rl, ru);
@@ -518,21 +557,26 @@ template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
 inline I_Result
 convex_hull_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  // FIXME: needed only for not only/only integers mixing.
+  normalize_integer(x);
+  normalize_integer(y);
   if (maybe_check_empty(x))
     return assign(to, y);
   if (maybe_check_empty(y))
     return assign(to, x);
   To_Info to_info;
   if (To_Info::store_integer) {
-    if (check_integer(x)) {
-      if (check_integer(y))
-	to_info.set_interval_property(ONLY_INTEGERS);
+    if (contains_only_integers(x) && contains_only_integers(y)) {
+	if (info(x).get_interval_property(INTEGER, ONLY_INTEGERS_NORMALIZED)
+	    && info(y).get_interval_property(INTEGER, ONLY_INTEGERS_NORMALIZED))
+	  to_info.set_interval_property(INTEGER, ONLY_INTEGERS_NORMALIZED);
+	else
+	  to_info.set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
     }
-    else if (info(x).test_interval_property(NOT_ONLY_INTEGERS)
-	     || info(y).test_interval_property(NOT_ONLY_INTEGERS))
-      to_info.set_interval_property(NOT_ONLY_INTEGERS);
+    else
+      to_info.set_interval_property(INTEGER, NOT_SINGLETON_INTEGER);
   }
-  I_Result rl, ru;
+  Result rl, ru;
   rl = min_assign(LOWER, to.lower(), to_info,
 		  LOWER, lower(x), info(x),
 		  LOWER, lower(y), info(y));
@@ -548,17 +592,20 @@ template <typename To_Boundary, typename To_Info,
 inline I_Result
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   if (To_Info::store_integer) {
-    if (!to.info().test_interval_property(ONLY_INTEGERS)) {
-      if (check_integer(x))
-	to.info().set_interval_property(ONLY_INTEGERS);
-      if (!info(x).test_interval_property(NOT_ONLY_INTEGERS))
-	to.info().set_interval_property(NOT_ONLY_INTEGERS, false);
+    Integer_Property::Value x_i = lazy_integer_property(x);
+    if (x_i == ONLY_INTEGERS_TO_NORMALIZE)
+      to.info().set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
+    else if (x_i == ONLY_INTEGERS_NORMALIZED) {
+      if (to.info().get_interval_property(INTEGER) < ONLY_INTEGERS_TO_NORMALIZE)
+	to.info().set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
     }
+    else if (to.info().get_interval_property(INTEGER) == ONLY_INTEGERS_NORMALIZED)
+      to.info().set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
   }
   to.info().set_interval_property(CARDINALITY_IS, false);
   to.info().set_interval_property(CARDINALITY_0, false);
   to.info().set_interval_property(CARDINALITY_1, false);
-  I_Result rl, ru;
+  Result rl, ru;
   rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
   ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
   // FIXME: boundary normalization for integer interval?
@@ -572,13 +619,16 @@ inline I_Result
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   To_Info to_info;
   if (To_Info::store_integer) {
-    if (check_integer(x) || check_integer(y))
-      to_info.set_interval_property(ONLY_INTEGERS);
-    else if (info(x).test_interval_property(NOT_ONLY_INTEGERS)
-	     && info(y).test_interval_property(NOT_ONLY_INTEGERS))
-      to_info.set_interval_property(NOT_ONLY_INTEGERS);
+    Integer_Property::Value x_i = lazy_integer_property(x);
+    Integer_Property::Value y_i = lazy_integer_property(y);
+    if (x_i == ONLY_INTEGERS_NORMALIZED && y_i == ONLY_INTEGERS_NORMALIZED)
+      to.info().set_interval_property(INTEGER, ONLY_INTEGERS_NORMALIZED);
+    else if (x_i >= ONLY_INTEGERS_TO_NORMALIZE || y_i >= ONLY_INTEGERS_TO_NORMALIZE)
+      to.info().set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
+    else
+      to_info.set_interval_property(INTEGER, MAYBE_SINGLETON_INTEGER);
   }
-  I_Result rl, ru;
+  Result rl, ru;
   rl = max_assign(LOWER, to.lower(), to_info,
 		  LOWER, lower(x), info(x),
 		  LOWER, lower(y), info(y));
@@ -602,54 +652,54 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
   case LESS_THAN:
     {
       if (lt(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x)))
-	return combine(I_L_EQ, I_U_EQ);
-      I_Result ru;
+	return combine(V_EQ, V_EQ);
+      Result ru;
       to.info().clear_boundary_properties(UPPER);
       ru = assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
       ru = to.upper_set_open();
       // FIXME: boundary normalization for integer interval?
       // FIXME: check empty (policy based)?
-      return combine(I_L_EQ, ru);
+      return combine(V_EQ, ru);
     }
   case LESS_THAN_OR_EQUAL:
     {
-      I_Result ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
+      Result ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
       // FIXME: boundary normalization for integer interval?
       // FIXME: check empty (policy based)?
-      return combine(I_L_EQ, ru);
+      return combine(V_EQ, ru);
     }
   case GREATER_THAN:
     {
       if (gt(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x)))
-	return combine(I_L_EQ, I_U_EQ);
-      I_Result rl;
+	return combine(V_EQ, V_EQ);
+      Result rl;
       to.info().clear_boundary_properties(LOWER);
       rl = assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
       rl = to.lower_set_open();
       // FIXME: boundary normalization for integer interval?
       // FIXME: check empty (policy based)?
-      return combine(rl, I_U_EQ);
+      return combine(rl, V_EQ);
     }
   case GREATER_THAN_OR_EQUAL:
     {
-      I_Result rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
+      Result rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
       // FIXME: boundary normalization for integer interval?
       // FIXME: check empty (policy based)?
-      return combine(rl, I_U_EQ);
+      return combine(rl, V_EQ);
     }
   case EQUAL:
     return intersect_assign(to, x);
   case NOT_EQUAL:
     {
       if (!is_singleton(x))
-	return combine(I_L_EQ, I_U_EQ);
+	return combine(V_EQ, V_EQ);
       if (!to.lower_is_open() && to.lower() == lower(x))
 	to.lower_set_open();
       if (!to.upper_is_open() && to.upper() == lower(x))
 	to.upper_set_open();
       // FIXME: boundary normalization for integer interval?
       // FIXME: check empty (policy based)?
-      return combine(I_L_EQ, I_U_EQ);
+      return combine(V_EQ, V_EQ);
     }
   default:
     assert(false);
@@ -721,7 +771,7 @@ neg_assign(Interval<To_Boundary, To_Info>& to, const T& x) {
   if (maybe_check_empty(x))
     return to.set_empty();
   To_Info to_info;
-  I_Result rl, ru;
+  Result rl, ru;
   // TOTHINK: it's better to avoid the test and use to_lower unconditionally?
   if (same_object(to.lower(), lower(x))) {
     static To_Boundary to_lower;
@@ -732,12 +782,8 @@ neg_assign(Interval<To_Boundary, To_Info>& to, const T& x) {
     rl = neg_assign(LOWER, to.lower(), to_info, UPPER, upper(x), info(x));
     ru = neg_assign(UPPER, to.upper(), to_info, LOWER, lower(x), info(x));
   }
-  if (To_Info::store_integer) {
-    if (check_integer(x))
-      to_info.set_interval_property(ONLY_INTEGERS);
-    else if (info(x).test_interval_property(NOT_ONLY_INTEGERS))
-      to_info.set_interval_property(NOT_ONLY_INTEGERS);
-  }
+  if (To_Info::store_integer)
+    to_info.set_interval_property(INTEGER, lazy_integer_property(x));
   to.info() = to_info;
   return combine(rl, ru);
 }
@@ -749,14 +795,16 @@ add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (maybe_check_empty(x) || maybe_check_empty(y))
     return to.set_empty();
   To_Info to_info;
-  I_Result rl = add_assign(LOWER, to.lower(), to_info,
-			   LOWER, lower(x), info(x),
-			   LOWER, lower(y), info(y));
-  I_Result ru = add_assign(UPPER, to.upper(), to_info,
-			   UPPER, upper(x), info(x),
-			   UPPER, upper(y), info(y));
-  if (To_Info::store_integer && check_integer(x) && check_integer(y))
-    to_info.set_interval_property(ONLY_INTEGERS);
+  Result rl = add_assign(LOWER, to.lower(), to_info,
+			 LOWER, lower(x), info(x),
+			 LOWER, lower(y), info(y));
+  Result ru = add_assign(UPPER, to.upper(), to_info,
+			 UPPER, upper(x), info(x),
+			 UPPER, upper(y), info(y));
+  if (To_Info::store_integer
+      && lazy_integer_property(x) >= ONLY_INTEGERS_TO_NORMALIZE
+      && lazy_integer_property(y) >= ONLY_INTEGERS_TO_NORMALIZE)
+    to_info.set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
   to.info() = to_info;
   return combine(rl, ru);
 }
@@ -768,7 +816,7 @@ sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (maybe_check_empty(x) || maybe_check_empty(y))
     return to.set_empty();
   To_Info to_info;
-  I_Result rl, ru;
+  Result rl, ru;
   // TOTHINK: it's better to avoid the test and use to_lower unconditionally?
   if (same_object(to.lower(), lower(y))) {
     static To_Boundary to_lower;
@@ -788,8 +836,10 @@ sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		    UPPER, upper(x), info(x),
 		    LOWER, lower(y), info(y));
   }
-  if (To_Info::store_integer && check_integer(x) && check_integer(y))
-    to_info.set_interval_property(ONLY_INTEGERS);
+  if (To_Info::store_integer
+      && lazy_integer_property(x) >= ONLY_INTEGERS_TO_NORMALIZE
+      && lazy_integer_property(y) >= ONLY_INTEGERS_TO_NORMALIZE)
+    to_info.set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
   to.info() = to_info;
   return combine(rl, ru);
 }
@@ -801,14 +851,14 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
     return os << "[]";
   if (x.is_singleton())
     return os << x.lower();
-  if (x.info().test_boundary_property(LOWER, UNBOUNDED))
+  if (x.info().get_boundary_property(LOWER, UNBOUNDED))
     os << "(-inf";
   else {
     os << (x.lower_is_open() ? "(" : "[");
     os << x.lower();
   }
   os << (x.contains_only_integers() ? " .. " : ", ");
-  if (x.info().test_boundary_property(UPPER, UNBOUNDED))
+  if (x.info().get_boundary_property(UPPER, UNBOUNDED))
     os << "+inf)";
   else {
     os << x.upper();

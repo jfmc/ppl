@@ -8,13 +8,24 @@ namespace Parma_Polyhedra_Library {
 
 namespace Interval_NS {
 
+enum Integer_Property_Value {
+  MAYBE_SINGLETON_INTEGER = 0,
+  NOT_SINGLETON_INTEGER = 1,
+  ONLY_INTEGERS_TO_NORMALIZE = 2,
+  ONLY_INTEGERS_NORMALIZED = 3
+};
+
+struct Integer_Property {
+  typedef Integer_Property_Value Value;
+  static const Value default_value = MAYBE_SINGLETON_INTEGER;
+  static const Value unsupported_value = MAYBE_SINGLETON_INTEGER;
+};
+
+const Integer_Property& INTEGER = *(Integer_Property*)0;
+
+
 struct Property {
   enum Type {
-    ONLY_INTEGERS_,
-    // The interval doesn't contain only integers.
-    // NOTE: if this flag is set together with ONLY_INTEGERS it means
-    // that the interval contains only integers and boundaries are normalized
-    NOT_ONLY_INTEGERS_,
     CARDINALITY_0_,
     CARDINALITY_1_,
     CARDINALITY_IS_
@@ -28,11 +39,9 @@ struct Property {
   Type type;
 };
 
-static const Property ONLY_INTEGERS(Property::ONLY_INTEGERS_);
-static const Property NOT_ONLY_INTEGERS(Property::NOT_ONLY_INTEGERS_);
-static const Property CARDINALITY_0(Property::CARDINALITY_0_);
-static const Property CARDINALITY_1(Property::CARDINALITY_1_);
-static const Property CARDINALITY_IS(Property::CARDINALITY_IS_);
+const Property CARDINALITY_0(Property::CARDINALITY_0_);
+const Property CARDINALITY_1(Property::CARDINALITY_1_);
+const Property CARDINALITY_IS(Property::CARDINALITY_IS_);
 
 template <typename T>
 inline void
@@ -63,8 +72,21 @@ set_bit(T& bits, unsigned int bit, bool value) {
 
 template <typename T>
 inline bool
-test_bit(const T& bits, unsigned int bit) {
+get_bit(const T& bits, unsigned int bit) {
   return bits & (static_cast<T>(1) << bit);
+}
+
+template <typename T>
+inline void
+set_bits(T& bits, unsigned int start, unsigned int len, T value) {
+  bits &= ~(((static_cast<T>(1) << len) - 1) << start);
+  bits |= value << start;
+}
+
+template <typename T>
+inline T
+get_bits(T& bits, unsigned int start, unsigned int len) {
+  return (bits >> start) & ((static_cast<T>(1) << len) - 1);
 }
 
 }
@@ -92,14 +114,14 @@ public:
   void set_boundary_property(Boundary_NS::Type, const Property&, typename Property::Value = Property::default_value) {
   }
   template <typename Property>
-  typename Property::Value test_boundary_property(Boundary_NS::Type, const Property&) const {
+  typename Property::Value get_boundary_property(Boundary_NS::Type, const Property&) const {
     return Property::unsupported_value;
   }
   template <typename Property>
   void set_interval_property(const Property&, typename Property::Value = Property::default_value) {
   }
   template <typename Property>
-  typename Property::Value test_interval_property(const Property&) const {
+  typename Property::Value get_interval_property(const Property&) const {
     return Property::unsupported_value;
   }
 };
@@ -121,9 +143,8 @@ public:
   static const unsigned int lower_open_bit = lower_unbounded_bit + store_unbounded;
   static const unsigned int upper_unbounded_bit = lower_open_bit + store_open;
   static const unsigned int upper_open_bit = upper_unbounded_bit + store_unbounded;
-  static const unsigned int only_integers_bit = upper_open_bit + store_open;
-  static const unsigned int not_only_integers_bit = only_integers_bit + store_integer;
-  static const unsigned int cardinality_0_bit = not_only_integers_bit + store_integer;
+  static const unsigned int integer_bit = upper_open_bit + store_open;
+  static const unsigned int cardinality_0_bit = integer_bit + store_integer * 2;
   static const unsigned int cardinality_1_bit = cardinality_0_bit + store_empty;
   static const unsigned int cardinality_is_bit = cardinality_1_bit + store_singleton;
   static const unsigned int next_bit = cardinality_is_bit + (store_empty || store_singleton);
@@ -139,7 +160,7 @@ public:
     if (store_open)
       reset_bit(bitset, t == LOWER ? lower_open_bit : upper_open_bit);
   }
-  void set_boundary_property(Boundary_NS::Type t, Boundary_NS::Property p, bool value = true) {
+  void set_boundary_property(Boundary_NS::Type t, const Boundary_NS::Property& p, bool value = true) {
     switch (p.type) {
     case Boundary_NS::Property::UNBOUNDED_:
       if (store_unbounded)
@@ -153,28 +174,30 @@ public:
       break;
     }
   }
-  bool test_boundary_property(Boundary_NS::Type t, Boundary_NS::Property p) const {
+  bool get_boundary_property(Boundary_NS::Type t, const Boundary_NS::Property& p) const {
     switch (p.type) {
     case Boundary_NS::Property::UNBOUNDED_:
       return store_unbounded
-	&& test_bit(bitset, t == LOWER ? lower_unbounded_bit : upper_unbounded_bit);
+	&& get_bit(bitset, t == LOWER ? lower_unbounded_bit : upper_unbounded_bit);
     case Boundary_NS::Property::OPEN_:
       return store_open
-	&& test_bit(bitset, t == LOWER ? lower_open_bit : upper_open_bit);
+	&& get_bit(bitset, t == LOWER ? lower_open_bit : upper_open_bit);
     default:
       return false;
     }
   }
-  void set_interval_property(Interval_NS::Property p, bool value = true) {
+  void set_interval_property(const Integer_Property&, Integer_Property::Value value) {
+    if (store_integer)
+      set_bits(bitset, integer_bit, 2, static_cast<unsigned int>(value));
+  }
+  Integer_Property::Value get_interval_property(const Integer_Property&) const {
+    if (store_integer)
+      return static_cast<Integer_Property::Value>(get_bits(bitset, integer_bit, 2));
+    else
+      return Integer_Property::unsupported_value;
+  }
+  void set_interval_property(const Interval_NS::Property& p, bool value = true) {
     switch (p.type) {
-    case Interval_NS::Property::ONLY_INTEGERS_:
-      if (store_integer)
-	set_bit(bitset, only_integers_bit, value);
-      break;
-    case Interval_NS::Property::NOT_ONLY_INTEGERS_:
-      if (store_integer)
-	set_bit(bitset, not_only_integers_bit, value);
-      break;
     case Interval_NS::Property::CARDINALITY_0_:
       if (store_empty)
 	set_bit(bitset, cardinality_0_bit, value);
@@ -191,18 +214,14 @@ public:
       break;
     }
   }
-  bool test_interval_property(Interval_NS::Property p) const {
+  bool get_interval_property(Interval_NS::Property p) const {
     switch (p.type) {
-    case Interval_NS::Property::ONLY_INTEGERS_:
-      return store_integer && test_bit(bitset, only_integers_bit);
-    case Interval_NS::Property::NOT_ONLY_INTEGERS_:
-      return store_integer && test_bit(bitset, not_only_integers_bit);
     case Interval_NS::Property::CARDINALITY_0_:
-      return store_empty && test_bit(bitset, cardinality_0_bit);
+      return store_empty && get_bit(bitset, cardinality_0_bit);
     case Interval_NS::Property::CARDINALITY_1_:
-      return store_singleton && test_bit(bitset, cardinality_1_bit);
+      return store_singleton && get_bit(bitset, cardinality_1_bit);
     case Interval_NS::Property::CARDINALITY_IS_:
-      return (store_empty || store_singleton) && test_bit(bitset, cardinality_is_bit);
+      return (store_empty || store_singleton) && get_bit(bitset, cardinality_is_bit);
     default:
       return false;
     }
@@ -212,24 +231,23 @@ protected:
 };
 
 template <typename Info>
-inline I_Result
+inline Result
 adjust_boundary_info(Boundary_NS::Type type, Info& info, Result r) {
   if (type == LOWER) {
     switch (r) {
     case V_NEG_OVERFLOW:
       assert(Info::store_unbounded);
       info.set_boundary_property(type, UNBOUNDED);
-      return I_L_GT;
+      return V_GT;
     case V_GT:
       info.set_boundary_property(type, OPEN);
-      return I_L_GT;
+      /* Fall through */
     case V_GE:
-      return I_L_GE;
     case V_EQ:
-      return I_L_EQ;
+      return r;
     default:
       assert(false);
-      return I_EMPTY;
+      return VC_NAN;
     }
   }
   else {
@@ -237,17 +255,16 @@ adjust_boundary_info(Boundary_NS::Type type, Info& info, Result r) {
     case V_POS_OVERFLOW:
       assert(Info::store_unbounded);
       info.set_boundary_property(type, UNBOUNDED);
-      return I_U_LT;
+      return V_LT;
     case V_LT:
       info.set_boundary_property(type, OPEN);
-      return I_U_LT;
+      /* Fall through */
     case V_LE:
-      return I_U_LE;
     case V_EQ:
-      return I_U_EQ;
+      return r;
     default:
       assert(false);
-      return I_EMPTY;
+      return VC_NAN;
     }
   }
 }
