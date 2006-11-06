@@ -1249,7 +1249,10 @@ BD_Shape<T>::bds_hull_assign(const BD_Shape& y) {
 	dbm_ij = y_dbm_ij;
     }
   }
-  // The result is still closed.
+  // Shortest-path closure is maintained (if it was holding).
+  // TODO: see whether reduction can be (efficiently!) maintained too.
+  if (marked_shortest_path_reduced())
+    status.reset_shortest_path_reduced();
   assert(OK());
 }
 
