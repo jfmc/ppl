@@ -2413,7 +2413,7 @@ BD_Shape<T>::affine_image(const Variable var,
     // Add the upper bound constraint, if meaningful.
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
-      assign_r(dbm[0][v], pos_sum, ROUND_UP);
+      dbm[0][v] = pos_sum;
       // Deduce constraints of the form `v - u', where `u != v'.
       deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
     }
@@ -2422,7 +2422,7 @@ BD_Shape<T>::affine_image(const Variable var,
       if (pos_pinf_index != v
 	  && sc_expr.coefficient(Variable(pos_pinf_index-1)) == sc_den)
 	// Add the constraint `v - pos_pinf_index <= pos_sum'.
-	assign_r(dbm[pos_pinf_index][v], pos_sum, ROUND_UP);
+	dbm[pos_pinf_index][v] = pos_sum;
   }
 
   // Exploit the lower approximation, if possible.
@@ -2434,7 +2434,7 @@ BD_Shape<T>::affine_image(const Variable var,
     if (neg_pinf_count == 0) {
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
       DB_Row<N>& dbm_v = dbm[v];
-      assign_r(dbm_v[0], neg_sum, ROUND_UP);
+      dbm_v[0] = neg_sum;
       // Deduce constraints of the form `u - v', where `u != v'.
       deduce_u_minus_v_bounds(v, w, sc_expr, sc_den, neg_sum);
     }
@@ -2444,7 +2444,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	  && sc_expr.coefficient(Variable(neg_pinf_index-1)) == sc_den)
 	// Add the constraint `v - neg_pinf_index >= -neg_sum',
 	// i.e., `neg_pinf_index - v <= neg_sum'.
-	assign_r(dbm[v][neg_pinf_index], neg_sum, ROUND_UP);
+	dbm[v][neg_pinf_index] = neg_sum;
   }
 
   assert(OK());
@@ -2781,7 +2781,7 @@ BD_Shape<T>
     // Add the upper bound constraint, if meaningful.
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
-      assign_r(dbm[0][v], pos_sum, ROUND_UP);
+      dbm[0][v] = pos_sum;
       // Deduce constraints of the form `v - u', where `u != v'.
       deduce_v_minus_u_bounds(v, w, sc_expr, sc_den, pos_sum);
     }
@@ -2790,7 +2790,7 @@ BD_Shape<T>
       if (pos_pinf_index != v
 	  && sc_expr.coefficient(Variable(pos_pinf_index-1)) == sc_den)
 	// Add the constraint `v - pos_pinf_index <= pos_sum'.
-	assign_r(dbm[pos_pinf_index][v], pos_sum, ROUND_UP);
+	dbm[pos_pinf_index][v] = pos_sum;
   }
   assert(OK());
 }
