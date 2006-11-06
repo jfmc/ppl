@@ -605,7 +605,7 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
 	return combine(I_L_EQ, I_U_EQ);
       I_Result ru;
       to.info().clear_boundary_properties(UPPER);
-      ru = assign(UPPER, to.upper(), to.info(). UPPER, upper(x), info(x));
+      ru = assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
       ru = to.upper_set_open();
       // FIXME: boundary normalization for integer interval?
       // FIXME: check empty (policy based)?
@@ -624,7 +624,7 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
 	return combine(I_L_EQ, I_U_EQ);
       I_Result rl;
       to.info().clear_boundary_properties(LOWER);
-      rl = assign(LOWER, to.lower(), to.info(). LOWER, lower(x), info(x));
+      rl = assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
       rl = to.lower_set_open();
       // FIXME: boundary normalization for integer interval?
       // FIXME: check empty (policy based)?
