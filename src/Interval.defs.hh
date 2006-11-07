@@ -443,7 +443,7 @@ maybe_check_empty(const T& x) {
   if (info(x).check_empty_args)
     return is_empty(x);
   else {
-    assert(is_empty(x));
+    assert(!is_empty(x));
     return false;
   }
 }
