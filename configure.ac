@@ -33,7 +33,7 @@ AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
 
 # Determine the system type and set output variables to the names of
 # the canonical system types.
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_HOST
 
 # Use Automake.
 AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
@@ -76,9 +76,6 @@ AC_CONFIG_HEADER(config.h)
 
 ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
-
-# Check for host type.
-AC_CANONICAL_HOST
 
 AH_TOP([
 #ifndef PPL_ppl_config_h
