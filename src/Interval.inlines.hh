@@ -25,16 +25,25 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+template <typename Boundary, typename Info>
+inline void
+Interval<Boundary, Info>::swap(Interval<Boundary, Info>& y) {
+  std::swap(lower(), y.lower());
+  std::swap(upper(), y.upper());
+  std::swap(info(), y.info());
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
 
-// /*! \relates Parma_Polyhedra_Library::Interval */
-// inline void
-// swap(Parma_Polyhedra_Library::Interval& x,
-//      Parma_Polyhedra_Library::Interval& y) {
-//   x.swap(y);
-// }
+/*! \relates Parma_Polyhedra_Library::Interval */
+template <typename Boundary, typename Info>
+inline void
+swap(Parma_Polyhedra_Library::Interval<Boundary, Info>& x,
+     Parma_Polyhedra_Library::Interval<Boundary, Info>& y) {
+  x.swap(y);
+}
 
 } // namespace std
 

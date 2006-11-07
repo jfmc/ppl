@@ -149,6 +149,9 @@ public:
     return true;
   }
 
+  //! Swaps \p *this with \p y.
+  void swap(Interval& y);
+
   Info& info() {
     return *this;
   }
@@ -865,20 +868,6 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
     os << (x.upper_is_open() ? ")" : "]");
   }
   return os;
-}
-
-}
-
-namespace std {
-
-using namespace Parma_Polyhedra_Library;
-
-template <typename Boundary, typename Info>
-inline void
-swap(Interval<Boundary, Info>& x, Interval<Boundary, Info>& y) {
-  swap(x.lower(), y.lower());
-  swap(x.upper(), y.upper());
-  swap(x.info(), y.info());
 }
 
 }
