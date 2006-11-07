@@ -127,3 +127,96 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_add_1generator_1and_1minimi
   Generator g = build_generator(env, j_generator);
   return this_polyhedron->add_generator_and_minimize(g);
 }
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1constraints
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_constraints) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Constraint_System cs = build_ppl_constraint_system(env, j_constraints);
+  this_polyhedron->add_constraints(cs);
+}
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_add_1constraints_1and_1minimize
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_constraints) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Constraint_System cs = build_ppl_constraint_system(env, j_constraints);
+  return this_polyhedron->add_constraints_and_minimize(cs);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1generators
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_generators) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Generator_System gs = build_ppl_generator_system(env, j_generators);
+  this_polyhedron->add_generators(gs);
+}
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_add_1generators_1and_1minimize
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_generators) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Generator_System gs = build_ppl_generator_system(env, j_generators);
+  return this_polyhedron->add_generators_and_minimize(gs);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_intersection_1assign
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  jlong polyhedron_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(polyhedron_ptr);
+  this_polyhedron->intersection_assign(*polyhedron);
+}
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_intersection_1assign_1and_1minimize
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  jlong polyhedron_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(polyhedron_ptr);
+  return this_polyhedron->intersection_assign_and_minimize(*polyhedron);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_poly_1hull_1assign
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  jlong polyhedron_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(polyhedron_ptr);
+  this_polyhedron->poly_hull_assign(*polyhedron);
+}
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_poly_1hull_1assign_1and_1minimize
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  jlong polyhedron_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(polyhedron_ptr);
+  return this_polyhedron->poly_hull_assign_and_minimize(*polyhedron);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_poly_1difference_1assign
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  jlong polyhedron_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(polyhedron_ptr);
+  this_polyhedron->poly_difference_assign(*polyhedron);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_difference_1assign
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  jlong polyhedron_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(polyhedron_ptr);
+  this_polyhedron->difference_assign(*polyhedron);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_topological_1closure_1assign
+(JNIEnv* env, jobject j_this_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  this_polyhedron->topological_closure_assign();
+}

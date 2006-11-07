@@ -102,7 +102,7 @@ public class Polyhedron extends PPL_Object {
       Adds a copy of constraint \p c to the system of constraints
       of \p this (without minimizing the result).
 
-      \exception std::invalid_argument
+      \exception RuntimeErrorException
       Thrown if \p this and constraint \p c are topology-incompatible
       or dimension-incompatible.
     */
@@ -146,4 +146,131 @@ public class Polyhedron extends PPL_Object {
       \p g is not a point.
     */
     public native boolean add_generator_and_minimize(Generator g);
+
+    /*! \brief
+      Adds a copy of the constraints in \p cs to the system
+      of constraints of \p this (without minimizing the result).
+
+      \param cs
+      Contains the constraints that will be added to the system of
+      constraints of \p this.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p cs are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native void add_constraints(Constraint_System cs);
+
+    /*! \brief
+      Adds a copy of the constraints in \p cs to the system
+      of constraints of \p this, minimizing the result.
+
+      \return
+      <CODE>false</CODE> if and only if the result is empty.
+
+      \param cs
+      Contains the constraints that will be added to the system of
+      constraints of \p this.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p cs are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native boolean add_constraints_and_minimize(Constraint_System cs);
+
+    /*! \brief
+      Adds a copy of the generators in \p gs to the system
+      of generators of \p this (without minimizing the result).
+
+      \param gs
+      Contains the generators that will be added to the system of
+      generators of \p this.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p gs are topology-incompatible or
+      dimension-incompatible, or if \p this is empty and the system of
+      generators \p gs is not empty, but has no points.
+    */
+    public native void add_generators(Generator_System gs);
+
+   /*! \brief
+      Adds a copy of the generators in \p gs to the system
+      of generators of \p this, minimizing the result.
+
+      \return
+      <CODE>false</CODE> if and only if the result is empty.
+
+      \param gs
+      Contains the generators that will be added to the system of
+      generators of \p this.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p gs are topology-incompatible or
+      dimension-incompatible, or if \p this is empty and the the system
+      of generators \p gs is not empty, but has no points.
+    */
+    public native boolean add_generators_and_minimize(Generator_System gs);
+
+    /*! \brief
+      Assigns to \p this the intersection of \p this and \p y.
+      The result is not guaranteed to be minimized.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p y are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native void intersection_assign(Polyhedron p);
+
+    /*! \brief
+      Assigns to \p this the intersection of \p this and \p y,
+      minimizing the result.
+
+      \return
+      <CODE>false</CODE> if and only if the result is empty.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p y are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native boolean intersection_assign_and_minimize(Polyhedron p);
+
+    /*! \brief
+      Assigns to \p this the poly-hull of \p this and \p y.
+      The result is not guaranteed to be minimized.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p y are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native void poly_hull_assign(Polyhedron p);
+
+    /*! \brief
+      Assigns to \p this the poly-hull of \p this and \p y,
+      minimizing the result.
+
+      \return
+      <CODE>false</CODE> if and only if the result is empty.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p y are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native boolean poly_hull_assign_and_minimize(Polyhedron p);
+
+    /*! \brief
+      Assigns to \p this
+      the \ref Convex_Polyhedral_Difference "poly-difference"
+      of \p this and \p y. The result is not guaranteed to be minimized.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p y are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native void poly_difference_assign(Polyhedron p);
+
+    //! Same as poly_difference_assign(y).
+    public native void difference_assign(Polyhedron p);
+
+    //! Assigns to \p this its topological closure.
+    public native void topological_closure_assign();
 }
