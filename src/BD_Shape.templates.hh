@@ -616,7 +616,6 @@ BD_Shape<T>::contains_integer_point() const {
   return all_integers || !bds_z.is_empty();
 }
 
-
 template <typename T>
 void
 BD_Shape<T>
@@ -1464,9 +1463,9 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   if (marked_shortest_path_reduced())
     status.reset_shortest_path_reduced();
 
-  // For each variable to remove, we erase the corresponding column and
-  // row by shifting the other columns and rows, that are not removed,
-  // respectively left and above.
+  // For each variable to remove, we fill the corresponding column and
+  // row by shifting respectively left and above those
+  // columns and rows, that will not be removed.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
   dimension_type dst = *tbr + 1;
