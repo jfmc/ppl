@@ -12,7 +12,7 @@
 #
 # LAST MODIFICATION
 #
-#   2006-11-06
+#   2006-11-07
 #
 # COPYLEFT
 #
@@ -24,7 +24,6 @@
 #   the copyright notice and this notice are preserved.
 
 AC_DEFUN([AC_PROG_JAVAH],[
-AC_REQUIRE([AC_CANONICAL_SYSTEM])dnl
 AC_REQUIRE([AC_PROG_CPP])dnl
 if test "x$JAVAPREFIX" = x; then
         AC_CHECK_PROGS(JAVAH,javah, no)
