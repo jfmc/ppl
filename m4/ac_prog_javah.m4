@@ -42,6 +42,7 @@ changequote([, ])dnl
     CPPFLAGS="$ac_save_CPPFLAGS -I$ac_dir -I$ac_dir/$ac_machdep"
     AC_TRY_CPP([#include <jni.h>],
                ac_save_CPPFLAGS="$CPPFLAGS",
-               AC_MSG_WARN([unable to include <jni.h>]))
+               AC_MSG_WARN([unable to include <jni.h>])
+	       JAVAH=no)
     CPPFLAGS="$ac_save_CPPFLAGS"])
 fi])
