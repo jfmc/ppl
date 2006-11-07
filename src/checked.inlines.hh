@@ -236,6 +236,26 @@ sgn_generic(const Type& x) {
   return V_LT;
 }
 
+#if 1
+// Very temporary INEXACT kludge.
+template <typename Policy, typename Type1, typename Type2>
+inline bool
+lt(const Type1& x, const Type2& y) {
+  return x < y;
+}
+
+template <typename Policy, typename Type1, typename Type2>
+inline bool
+le(const Type1& x, const Type2& y) {
+  return x <= y;
+}
+
+template <typename Policy, typename Type1, typename Type2>
+inline bool
+eq(const Type1& x, const Type2& y) {
+  return x == y;
+}
+#else
 template <typename Policy, typename Type>
 inline bool
 lt(const Type& x, const Type& y) {
@@ -253,11 +273,12 @@ inline bool
 eq(const Type& x, const Type& y) {
   return x == y;
 }
+#endif
 
 template <typename Policy, typename Type1, typename Type2>
 inline Result
 cmp_generic(const Type1& x, const Type2& y) {
-  if (gt(x, y))
+  if (lt(y, x))
     return V_GT;
   if (lt(x, y))
     return V_LT;
