@@ -288,6 +288,50 @@ BD_Shape<T>::is_empty() const {
 
 template <typename T>
 inline bool
+BD_Shape<T>::bounds_from_above(const Linear_Expression& expr) const {
+  return bounds(expr, true);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::bounds_from_below(const Linear_Expression& expr) const {
+  return bounds(expr, false);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::maximize(const Linear_Expression& expr,
+		      Coefficient& sup_n, Coefficient& sup_d,
+		      bool& maximum) const {
+  return max_min(expr, true, sup_n, sup_d, maximum);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::maximize(const Linear_Expression& expr,
+		      Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+		      Generator& g) const {
+  return max_min(expr, true, sup_n, sup_d, maximum, g);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::minimize(const Linear_Expression& expr,
+		      Coefficient& inf_n, Coefficient& inf_d,
+		      bool& minimum) const {
+  return max_min(expr, false, inf_n, inf_d, minimum);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::minimize(const Linear_Expression& expr,
+		      Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+		      Generator& g) const {
+  return max_min(expr, false, inf_n, inf_d, minimum, g);
+}
+
+template <typename T>
+inline bool
 BD_Shape<T>::is_topologically_closed() const {
   return true;
 }

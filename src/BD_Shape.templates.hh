@@ -840,6 +840,200 @@ BD_Shape<T>::is_shortest_path_reduced() const {
 }
 
 template <typename T>
+bool
+BD_Shape<T>::bounds(const Linear_Expression& expr,
+		    const bool from_above) const {
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type expr_space_dim = expr.space_dimension();
+  const dimension_type space_dim = space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible((from_above
+				  ? "bounds_from_above(e)"
+				  : "bounds_from_below(e)"), "e", expr);
+
+  shortest_path_closure_assign();
+  // A zero-dimensional or empty BDS bounds everything.
+  if (space_dim == 0 || marked_empty())
+    return true;
+
+  // The constraint `c' is used to check if `expr' is a difference
+  // bounded and, in this case, to select the cell.
+  const Constraint& c = (from_above) ? expr <= 0 : expr >= 0;
+  const dimension_type c_space_dim = c.space_dimension();
+  dimension_type num_vars = 0;
+  dimension_type i = 0;
+  dimension_type j = 0;
+  TEMP_INTEGER(coeff);
+  // Checks if `expr' is a difference bounded.
+  if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
+    // TODO: Have to find a more efficient method.
+    if(!is_universe()) {
+      Optimization_Mode mode_bounds = (from_above) ? MAXIMIZATION
+	: MINIMIZATION;
+      MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
+      if (mip.solve() == OPTIMIZED_MIP_PROBLEM)
+	return true;
+    }
+    // Here`expr' is unbounded in `*this'.
+    return false;
+  }
+  else {
+    // Here the constraint is a bounded difference.
+    if (num_vars == 0)
+      // Dealing with a trivial constraint.
+      return true;
+
+    // Select the cell to be checked.
+    const N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
+    if (!is_plus_infinity(x))
+      return true;
+    else
+      return false;
+  }
+}
+
+template <typename T>
+bool
+BD_Shape<T>::max_min(const Linear_Expression& expr,
+		     const bool maximize,
+		     Coefficient& ext_n, Coefficient& ext_d,
+		     bool& included) const {
+  using Implementation::BD_Shapes::numer_denom;
+  using Implementation::BD_Shapes::div_round_up;
+
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type space_dim = space_dimension();
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible((maximize
+				  ? "maximize(e, ...)"
+				  : "minimize(e, ...)"), "e", expr);
+  // Deal with zero-dim BDS first.
+  if (space_dim == 0)
+    if (marked_empty())
+      return false;
+    else {
+      ext_n = expr.inhomogeneous_term();
+      ext_d = 1;
+      included = true;
+      return true;
+    }
+
+  shortest_path_closure_assign();
+  // For an empty BDS we simply return false.
+  if (marked_empty())
+    return false;
+
+  // The constraint `c' is used to check if `expr' is a difference
+  // bounded and, in this case, to select the cell.
+  const Constraint& c = (maximize) ? expr <= 0 : expr >= 0;
+  const dimension_type c_space_dim = c.space_dimension();
+  dimension_type num_vars = 0;
+  dimension_type i = 0;
+  dimension_type j = 0;
+  TEMP_INTEGER(coeff);
+  // Checks if `expr' is a difference bounded.
+  if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
+    // TODO: Have to find a more efficient method.
+    if (!is_universe()) {
+      Optimization_Mode mode_max_min = (maximize) ? MAXIMIZATION
+	: MINIMIZATION;
+      MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
+      if(mip.solve() == OPTIMIZED_MIP_PROBLEM) {
+	mip.optimal_value(ext_n, ext_d);
+	included = true;
+	return true;
+      }
+    }
+    // Here`expr' is unbounded in `*this'.
+    return false;
+  }
+  else {
+    // Here the `expr' is a bounded difference.
+    if (num_vars == 0) {
+      // Dealing with a trivial expression.
+      ext_n = expr.inhomogeneous_term();
+      ext_d = 1;
+      included = true;
+      return true;
+    }
+
+    // Select the cell to be checked.
+    const N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
+    if (!is_plus_infinity(x)) {
+      if (coeff < 0)
+	coeff = -coeff;
+      N d;
+      div_round_up(d, -c.inhomogeneous_term(), coeff);
+      add_assign_r(d, d, x, ROUND_UP);
+      if (maximize)
+	numer_denom(d, ext_n, ext_d);
+      else {
+	numer_denom(d, ext_n, ext_d);
+	ext_n = -ext_n;
+      }
+      included = true;
+      return true;
+    }
+    else
+      // The `expr' is unbounded.
+      return false;
+  }
+}
+
+template <typename T>
+bool
+BD_Shape<T>::max_min(const Linear_Expression& expr,
+		     const bool maximize,
+		     Coefficient& ext_n, Coefficient& ext_d,
+		     bool& included,
+		     Generator& g_point) const {
+  using Implementation::BD_Shapes::numer_denom;
+
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type space_dim = space_dimension();
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible((maximize
+				  ? "maximize(e, ...)"
+				  : "minimize(e, ...)"), "e", expr);
+  // Deal with zero-dim BDS first.
+  if (space_dim == 0)
+    if (marked_empty())
+      return false;
+    else {
+      ext_n = expr.inhomogeneous_term();
+      ext_d = 1;
+      included = true;
+      g_point = point();
+      return true;
+    }
+
+  shortest_path_closure_assign();
+  // For an empty BDS we simply return false.
+  if (marked_empty())
+    return false;
+
+  // TODO: Have to find a more efficient method.
+  if(!is_universe()) {
+    Optimization_Mode mode_max_min = (maximize) ? MAXIMIZATION
+      : MINIMIZATION;
+    MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
+    if(mip.solve() == OPTIMIZED_MIP_PROBLEM) {
+      g_point = mip.optimizing_point();
+      mip.evaluate_objective_function(g_point, ext_n, ext_d);
+      included = true;
+      return true;
+    }
+  }
+  // Here`expr' is unbounded in `*this'.
+  return false;
+}
+
+template <typename T>
 Poly_Con_Relation
 BD_Shape<T>::relation_with(const Constraint& c) const {
   using Implementation::BD_Shapes::div_round_up;

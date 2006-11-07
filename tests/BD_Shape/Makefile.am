@@ -53,6 +53,7 @@ bgp99extrapolation1 \
 bhmz05widening1 \
 bhz03widening1 \
 bounded1 \
+bounds1 \
 boundedaffineimage1 \
 boundedaffinepreimage1 \
 cc76narrowing1 \
@@ -80,6 +81,7 @@ limitedbhmz05extrapolation1 \
 limitedcc76extrapolation1 \
 limitedh79extrapolation1 \
 mapspacedims1 \
+max_min1 \
 maxspacedim1 \
 membytes1 \
 minconstraints1 \
@@ -156,6 +158,8 @@ bhz03widening1_SOURCES = bhz03widening1.cc
 
 bounded1_SOURCES = bounded1.cc
 
+bounds1_SOURCES = bounds1.cc
+
 boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 
 boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
@@ -210,6 +214,8 @@ limitedcc76extrapolation1_SOURCES = limitedcc76extrapolation1.cc
 limitedh79extrapolation1_SOURCES = limitedh79extrapolation1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
+
+max_min1_SOURCES = max_min1.cc
 
 maxspacedim1_SOURCES = maxspacedim1.cc
 
