@@ -45,6 +45,6 @@ ppl_java_C_Polyhedron.h:
 ppl_java_Polyhedron.h:
 	$(JAVAH) -classpath .. ppl_java.Polyhedron
 
-MOSTLYCLEANFILES =
+MOSTLYCLEANFILES = $(BUILT_SOURCES)
 
 endif BUILD_JAVA_INTERFACE
