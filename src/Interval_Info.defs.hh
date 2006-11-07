@@ -126,7 +126,6 @@ public:
   }
 };
 
-
 template <typename T, typename Policy>
 class Interval_Info_Bitset {
 public:
@@ -230,45 +229,22 @@ protected:
   T bitset;
 };
 
-template <typename Info>
-inline Result
-adjust_boundary_info(Boundary_NS::Type type, Info& info, Result r) {
-  if (type == LOWER) {
-    switch (r) {
-    case V_NEG_OVERFLOW:
-      assert(Info::store_unbounded);
-      info.set_boundary_property(type, UNBOUNDED);
-      return V_GT;
-    case V_GT:
-      info.set_boundary_property(type, OPEN);
-      /* Fall through */
-    case V_GE:
-    case V_EQ:
-      return r;
-    default:
-      assert(false);
-      return VC_NAN;
-    }
-  }
-  else {
-    switch (r) {
-    case V_POS_OVERFLOW:
-      assert(Info::store_unbounded);
-      info.set_boundary_property(type, UNBOUNDED);
-      return V_LT;
-    case V_LT:
-      info.set_boundary_property(type, OPEN);
-      /* Fall through */
-    case V_LE:
-    case V_EQ:
-      return r;
-    default:
-      assert(false);
-      return VC_NAN;
-    }
-  }
 }
 
+namespace std {
+
+using namespace Parma_Polyhedra_Library;
+
+template <typename Policy>
+inline void
+swap(Interval_Info_Null<Policy>&, Interval_Info_Null<Policy>&) {
+}
+
+template <typename T, typename Policy>
+inline void
+swap(Interval_Info_Bitset<T, Policy>& x, Interval_Info_Bitset<T, Policy>& y) {
+  std::swap(x.bitset, y.bitset);
+}
 
 }
 

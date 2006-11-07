@@ -869,6 +869,20 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
 
 }
 
+namespace std {
+
+using namespace Parma_Polyhedra_Library;
+
+template <typename Boundary, typename Info>
+inline void
+swap(Interval<Boundary, Info>& x, Interval<Boundary, Info>& y) {
+  swap(x.lower(), y.lower());
+  swap(x.upper(), y.upper());
+  swap(x.info(), y.info());
+}
+
+}
+
 #include "Interval.inlines.hh"
 
 #endif // !defined(PPL_Interval_defs_hh)

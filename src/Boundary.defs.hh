@@ -180,6 +180,45 @@ ge(Type from1_type, const From1& from1, const From1_Info& from1_info,
   return !lt(from1_type, from1, from1_info, from2_type, from2, from2_info);
 }
 
+template <typename Info>
+inline Result
+adjust_boundary_info(Boundary_NS::Type type, Info& info, Result r) {
+  if (type == LOWER) {
+    switch (r) {
+    case V_NEG_OVERFLOW:
+      assert(Info::store_unbounded);
+      info.set_boundary_property(type, UNBOUNDED);
+      return V_GT;
+    case V_GT:
+      info.set_boundary_property(type, OPEN);
+      /* Fall through */
+    case V_GE:
+    case V_EQ:
+      return r;
+    default:
+      assert(false);
+      return VC_NAN;
+    }
+  }
+  else {
+    switch (r) {
+    case V_POS_OVERFLOW:
+      assert(Info::store_unbounded);
+      info.set_boundary_property(type, UNBOUNDED);
+      return V_LT;
+    case V_LT:
+      info.set_boundary_property(type, OPEN);
+      /* Fall through */
+    case V_LE:
+    case V_EQ:
+      return r;
+    default:
+      assert(false);
+      return VC_NAN;
+    }
+  }
+}
+
 template <typename To, typename To_Info, typename From, typename From_Info>
 inline Result
 assign(Type to_type, To& to, To_Info& to_info,
