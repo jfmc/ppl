@@ -237,11 +237,29 @@ sgn_generic(const Type& x) {
 }
 
 template <typename Policy, typename Type>
+inline bool
+lt(const Type& x, const Type& y) {
+  return x < y;
+}
+
+template <typename Policy, typename Type>
+inline bool
+le(const Type& x, const Type& y) {
+  return x <= y;
+}
+
+template <typename Policy, typename Type>
+inline bool
+eq(const Type& x, const Type& y) {
+  return x == y;
+}
+
+template <typename Policy, typename Type1, typename Type2>
 inline Result
-cmp_generic(const Type& x, const Type& y) {
-  if (x > y)
+cmp_generic(const Type1& x, const Type2& y) {
+  if (gt(x, y))
     return V_GT;
-  if (x < y)
+  if (lt(x, y))
     return V_LT;
   return V_EQ;
 }

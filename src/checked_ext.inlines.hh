@@ -680,24 +680,14 @@ lt_ext(const Type1& x, const Type2& y) {
   if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
     return true;
  native:
-  return x < y;
+  return lt<Policy1>(x, y);
 }
 
 template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline bool
 gt_ext(const Type1& x, const Type2& y) {
-  if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
-    goto native;
-  if (CHECK_P(Policy1::check_nan_args, is_nan<Policy1>(x))
-      || CHECK_P(Policy2::check_nan_args, is_nan<Policy2>(y)))
-    return false;
-  if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
-    return false;
-  if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
-    return true;
- native:
-  return x > y;
+  return lt_ext<Policy1, Policy2>(y, x);
 }
 
 template <typename Policy1, typename Policy2,
@@ -714,24 +704,14 @@ le_ext(const Type1& x, const Type2& y) {
   if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
     return false;
  native:
-  return x <= y;
+  return le<Policy1>(x, y);
 }
 
 template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline bool
 ge_ext(const Type1& x, const Type2& y) {
-  if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
-    goto native;
-  if (CHECK_P(Policy1::check_nan_args, is_nan<Policy1>(x))
-      || CHECK_P(Policy2::check_nan_args, is_nan<Policy2>(y)))
-    return false;
-  if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
-    return true;
-  if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
-    return false;
- native:
-  return x >= y;
+  return le_ext<Policy1, Policy2>(y, x);
 }
 
 template <typename Policy1, typename Policy2,
@@ -748,24 +728,14 @@ eq_ext(const Type1& x, const Type2& y) {
   if (is_pinf<Policy1>(x))
     return is_pinf<Policy2>(y);
  native:
-  return x == y;
+  return eq<Policy1>(x, y);
 }
 
 template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline bool
 ne_ext(const Type1& x, const Type2& y) {
-  if (handle_ext_natively(Type1) && handle_ext_natively(Type2))
-    goto native;
-  if (CHECK_P(Policy1::check_nan_args, is_nan<Policy1>(x))
-      || CHECK_P(Policy2::check_nan_args, is_nan<Policy2>(y)))
-    return true;
-  if (is_minf<Policy1>(x))
-    return !is_minf<Policy2>(y);
-  if (is_pinf<Policy1>(x))
-    return !is_pinf<Policy2>(y);
- native:
-  return x != y;
+  return !eq_ext<Policy1, Policy2>(x, y);
 }
 
 template <typename Policy, typename Type>
