@@ -70,7 +70,7 @@ Box<Interval>::marked_empty() const {
 template <typename Interval>
 inline bool
 Box<Interval>::is_empty() const {
-  return marked_empty() || check_empty();
+  return empty_up_to_date ? empty : check_empty();
 }
 
 template <typename Interval>
