@@ -23,30 +23,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Rounding_Dir_inlines_hh
 #define PPL_Rounding_Dir_inlines_hh 1
 
-#include "Rounding_Dir.defs.hh"
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {
-
-/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
-inline Rounding_Dir
-inverse(Rounding_Dir dir) {
-  Rounding_Dir d = round_dir(dir);
-  switch (d) {
-  case ROUND_UP:
-    d = ROUND_DOWN;
-    break;
-  case ROUND_DOWN:
-    d = ROUND_UP;
-    break;
-  default:
-    assert(false);
-    /* Fall through */
-  case ROUND_IGNORE:
-    return dir;
-  }
-  return static_cast<Rounding_Dir>((dir & ~ROUND_DIR_MASK) | d);
-}
 
 inline Rounding_Dir
 round_dir(Rounding_Dir dir) {
@@ -94,6 +73,26 @@ round_fpu_dir(Rounding_Dir dir) {
     assert(0);
     return static_cast<fpu_rounding_direction_type>(FPU_UPWARD);
   }
+}
+
+/*! \relates Parma_Polyhedra_Library::Rounding_Dir */
+inline Rounding_Dir
+inverse(Rounding_Dir dir) {
+  Rounding_Dir d = round_dir(dir);
+  switch (d) {
+  case ROUND_UP:
+    d = ROUND_DOWN;
+    break;
+  case ROUND_DOWN:
+    d = ROUND_UP;
+    break;
+  default:
+    assert(false);
+    /* Fall through */
+  case ROUND_IGNORE:
+    return dir;
+  }
+  return static_cast<Rounding_Dir>((dir & ~ROUND_DIR_MASK) | d);
 }
 
 } // namespace Parma_Polyhedra_Library
