@@ -31,6 +31,10 @@ AC_PREREQ(2.59)
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
 
+# Determine the system type and set output variables to the names of
+# the canonical system types.
+AC_CANONICAL_SYSTEM
+
 # Use Automake.
 AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
 
