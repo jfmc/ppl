@@ -233,6 +233,58 @@ Box<Interval>::add_space_dimensions_and_project(const dimension_type m) {
 }
 
 template <typename Interval>
+inline void
+Box<Interval>::remove_space_dimensions(const Variables_Set& to_be_removed) {
+  // The removal of no dimensions from any box is a no-op.
+  // Note that this case also captures the only legal removal of
+  // space dimensions from a box in a zero-dimensional space.
+  if (to_be_removed.empty()) {
+    assert(OK());
+    return;
+  }
+
+  const dimension_type old_space_dim = space_dimension();
+
+  // Dimension-compatibility check.
+  const dimension_type tbr_space_dim = to_be_removed.space_dimension();
+  if (old_space_dim < tbr_space_dim)
+    throw_dimension_incompatible("remove_space_dimensions(vs)", tbr_space_dim);
+
+  const dimension_type new_space_dim = old_space_dim - to_be_removed.size();
+
+  // If the box is empty (this must be detected), then resizing is all
+  // what is needed.  If it is not empty and we are removing _all_ the
+  // dimensions then, again, resizing suffices.
+  if (is_empty() || new_space_dim == 0) {
+    seq.resize(new_space_dim);
+    assert(OK());
+    return;
+  }
+
+  // For each variable to be removed, we fill the corresponding interval
+  // by shifting left those intervals that will not be removed.
+  Variables_Set::const_iterator i = to_be_removed.begin();
+  Variables_Set::const_iterator tbr_end = to_be_removed.end();
+  dimension_type dst = i->id();
+  dimension_type src = dst + 1;
+  for (++i; i != tbr_end; ++i) {
+    dimension_type next = i->id();
+    // All intervals in between are moved to the left.
+    while (src < next)
+      seq[dst++].swap(seq[src++]);
+    ++src;
+  }
+  // Moving the remaining intervals.
+  while (src < old_space_dim)
+    seq[dst++].swap(seq[src++]);
+
+  assert(dst == new_space_dim);
+  seq.resize(new_space_dim);
+
+  assert(OK());
+}
+
+template <typename Interval>
 void
 Box<Interval>::remove_higher_space_dimensions(const dimension_type new_dim) {
   // Dimension-compatibility check: the variable having
@@ -428,32 +480,17 @@ template <typename Interval>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const Box<Interval>& box) {
   if (box.is_empty()) {
-    s << "empty";
+    s << "false";
     return s;
   }
-  const dimension_type dimension = box.space_dimension();
-  for (dimension_type k = 0; k < dimension; ++k) {
-    bool closed = false;
-    Coefficient n;
-    Coefficient d;
-    if (box.get_lower_bound(k, closed, n, d)) {
-      s << (closed ? "[" : "(")
-	<< n;
-      if (d != 1)
-	s << "/" << d;
+  for (dimension_type k = 0,
+	 space_dim = box.space_dimension(); k < space_dim; ) {
+    s << Variable(k) << " in " << box[k];
+    ++k;
+    if (k < space_dim)
       s << ", ";
-    }
     else
-      s << "(-inf, ";
-    if (box.get_upper_bound(k, closed, n, d)) {
-      s << n;
-      if (d != 1)
-	s << "/" << d;
-      s << (closed ? "]" : ")");
-    }
-    else
-      s << "+inf)";
-    s << "\n";
+      break;
   }
   return s;
 }

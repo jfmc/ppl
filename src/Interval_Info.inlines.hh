@@ -1,4 +1,4 @@
-/* Interval class implementation: inline functions.
+/* Interval_Info class implementation: inline functions.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,31 +20,42 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Interval_inlines_hh
-#define PPL_Interval_inlines_hh 1
+#ifndef PPL_Interval_Info_inlines_hh
+#define PPL_Interval_Info_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-template <typename Boundary, typename Info>
+template <typename Policy>
 inline void
-Interval<Boundary, Info>::swap(Interval<Boundary, Info>& y) {
-  std::swap(lower(), y.lower());
-  std::swap(upper(), y.upper());
-  std::swap(info(), y.info());
+Interval_Info_Null<Policy>::swap(Interval_Info_Null<Policy>& y) {
+}
+
+template <typename T, typename Policy>
+inline void
+Interval_Info_Bitset<T, Policy>::swap(Interval_Info_Bitset<T, Policy>& y) {
+  std::swap(bitset, y.bitset);
 }
 
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::Interval */
-template <typename Boundary, typename Info>
+/*! \relates Parma_Polyhedra_Library::Interval_Info */
+template <typename Policy>
 inline void
-swap(Parma_Polyhedra_Library::Interval<Boundary, Info>& x,
-     Parma_Polyhedra_Library::Interval<Boundary, Info>& y) {
+swap(Parma_Polyhedra_Library::Interval_Info_Null<Policy>& x,
+     Parma_Polyhedra_Library::Interval_Info_Null<Policy>& y) {
+  x.swap(y);
+}
+
+/*! \relates Parma_Polyhedra_Library::Interval_Info */
+template <typename T, typename Policy>
+inline void
+swap(Parma_Polyhedra_Library::Interval_Info_Bitset<T, Policy>& x,
+     Parma_Polyhedra_Library::Interval_Info_Bitset<T, Policy>& y) {
   x.swap(y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_Interval_inlines_hh)
+#endif // !defined(PPL_Interval_Info_inlines_hh)

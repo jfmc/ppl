@@ -110,6 +110,7 @@ public:
   }
   void clear_boundary_properties(Boundary_NS::Type) {
   }
+
   template <typename Property>
   void set_boundary_property(Boundary_NS::Type, const Property&, typename Property::Value = Property::default_value) {
   }
@@ -124,6 +125,9 @@ public:
   typename Property::Value get_interval_property(const Property&) const {
     return Property::unsupported_value;
   }
+
+  //! Swaps \p *this with \p y.
+  void swap(Interval_Info_Null& y);
 };
 
 template <typename T, typename Policy>
@@ -150,6 +154,7 @@ public:
   Interval_Info_Bitset() {
     init_bits(bitset);
   }
+
   void clear() {
     reset_bits(bitset);
   }
@@ -225,27 +230,16 @@ public:
       return false;
     }
   }
+
+  //! Swaps \p *this with \p y.
+  void swap(Interval_Info_Bitset& y);
+
 protected:
   T bitset;
 };
 
 }
 
-namespace std {
-
-using namespace Parma_Polyhedra_Library;
-
-template <typename Policy>
-inline void
-swap(Interval_Info_Null<Policy>&, Interval_Info_Null<Policy>&) {
-}
-
-template <typename T, typename Policy>
-inline void
-swap(Interval_Info_Bitset<T, Policy>& x, Interval_Info_Bitset<T, Policy>& y) {
-  std::swap(x.bitset, y.bitset);
-}
-
-}
+#include "Interval_Info.inlines.hh"
 
 #endif // !defined(PPL_Interval_Info_defs_hh)
