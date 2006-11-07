@@ -859,7 +859,7 @@ BD_Shape<T>::bounds(const Linear_Expression& expr,
 
   // The constraint `c' is used to check if `expr' is a difference
   // bounded and, in this case, to select the cell.
-  const Constraint& c = (from_above) ? expr <= 0 : expr >= 0;
+  const Constraint& c = from_above ? expr <= 0 : expr >= 0;
   const dimension_type c_space_dim = c.space_dimension();
   dimension_type num_vars = 0;
   dimension_type i = 0;
@@ -869,8 +869,8 @@ BD_Shape<T>::bounds(const Linear_Expression& expr,
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
     // TODO: Have to find a more efficient method.
     if(!is_universe()) {
-      Optimization_Mode mode_bounds = (from_above) ? MAXIMIZATION
-	: MINIMIZATION;
+      Optimization_Mode mode_bounds
+	= from_above ? MAXIMIZATION : MINIMIZATION;
       MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
       if (mip.solve() == OPTIMIZED_MIP_PROBLEM)
 	return true;
@@ -928,7 +928,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
 
   // The constraint `c' is used to check if `expr' is a difference
   // bounded and, in this case, to select the cell.
-  const Constraint& c = (maximize) ? expr <= 0 : expr >= 0;
+  const Constraint& c = maximize ? expr <= 0 : expr >= 0;
   const dimension_type c_space_dim = c.space_dimension();
   dimension_type num_vars = 0;
   dimension_type i = 0;
@@ -938,7 +938,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
     // TODO: Have to find a more efficient method.
     if (!is_universe()) {
-      Optimization_Mode mode_max_min = (maximize) ? MAXIMIZATION
+      Optimization_Mode mode_max_min = maximize ? MAXIMIZATION
 	: MINIMIZATION;
       MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
       if(mip.solve() == OPTIMIZED_MIP_PROBLEM) {
@@ -1019,8 +1019,8 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
 
   // TODO: Have to find a more efficient method.
   if(!is_universe()) {
-    Optimization_Mode mode_max_min = (maximize) ? MAXIMIZATION
-      : MINIMIZATION;
+    Optimization_Mode mode_max_min
+      = maximize ? MAXIMIZATION : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
     if(mip.solve() == OPTIMIZED_MIP_PROBLEM) {
       g_point = mip.optimizing_point();
