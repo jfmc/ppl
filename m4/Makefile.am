@@ -38,7 +38,6 @@ ac_cxx_flexible_arrays.m4 \
 ac_cxx_float_binary_format.m4 \
 ac_cxx_long_double_binary_format.m4 \
 ac_prog_java.m4 \
-ac_prog_java_works.m4 \
 ac_prog_javac.m4 \
 ac_prog_jar.m4 \
 ac_prog_javah.m4 \

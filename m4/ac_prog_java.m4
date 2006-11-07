@@ -1,3 +1,145 @@
+#### http://autoconf-archive.cryp.to/ac_prog_java_works.html
+#
+# SYNOPSIS
+#
+#   AC_PROG_JAVA_WORKS
+#
+# DESCRIPTION
+#
+#   Internal use ONLY.
+#
+#   Note: This is part of the set of autoconf M4 macros for Java
+#   programs. It is VERY IMPORTANT that you download the whole set,
+#   some macros depend on other. Unfortunately, the autoconf archive
+#   does not support the concept of set of macros, so I had to break it
+#   for submission. The general documentation, as well as the sample
+#   configure.in, is included in the AC_PROG_JAVA macro.
+#
+# LAST MODIFICATION
+#
+#   2006-11-07
+#
+# COPYLEFT
+#
+#   Copyright (c) 2000 Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
+#   Copyright (C) 2006 Roberto Bagnara <bagnara@cs.unipr.it>
+#
+#   This program is free software; you can redistribute it and/or
+#   modify it under the terms of the GNU General Public License as
+#   published by the Free Software Foundation; either version 2 of the
+#   License, or (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful, but
+#   WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+#   General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+#   02111-1307, USA.
+#
+#   As a special exception, the respective Autoconf Macro's copyright
+#   owner gives unlimited permission to copy, distribute and modify the
+#   configure scripts that are the output of Autoconf when processing
+#   the Macro. You need not follow the terms of the GNU General Public
+#   License when using or distributing such scripts, even though
+#   portions of the text of the Macro appear in them. The GNU General
+#   Public License (GPL) does govern all other use of the material that
+#   constitutes the Autoconf Macro.
+#
+#   This special exception to the GPL applies to versions of the
+#   Autoconf Macro released by the Autoconf Macro Archive. When you
+#   make and distribute a modified version of the Autoconf Macro, you
+#   may extend this special exception to the GPL to apply to your
+#   modified version as well.
+AC_DEFUN([AC_PROG_JAVA_WORKS], [
+AC_CHECK_PROG(uudecode, uudecode$EXEEXT, yes)
+if test x$uudecode = xyes; then
+AC_CACHE_CHECK([if uudecode can decode base 64 file], ac_cv_prog_uudecode_base64, [
+dnl /**
+dnl  * Test.java: used to test if java compiler works.
+dnl  */
+dnl public class Test
+dnl {
+dnl
+dnl public static void
+dnl main( String[] argv )
+dnl {
+dnl     System.exit (0);
+dnl }
+dnl
+dnl }
+cat << \EOF > Test.uue
+begin-base64 644 Test.class
+yv66vgADAC0AFQcAAgEABFRlc3QHAAQBABBqYXZhL2xhbmcvT2JqZWN0AQAE
+bWFpbgEAFihbTGphdmEvbGFuZy9TdHJpbmc7KVYBAARDb2RlAQAPTGluZU51
+bWJlclRhYmxlDAAKAAsBAARleGl0AQAEKEkpVgoADQAJBwAOAQAQamF2YS9s
+YW5nL1N5c3RlbQEABjxpbml0PgEAAygpVgwADwAQCgADABEBAApTb3VyY2VG
+aWxlAQAJVGVzdC5qYXZhACEAAQADAAAAAAACAAkABQAGAAEABwAAACEAAQAB
+AAAABQO4AAyxAAAAAQAIAAAACgACAAAACgAEAAsAAQAPABAAAQAHAAAAIQAB
+AAEAAAAFKrcAErEAAAABAAgAAAAKAAIAAAAEAAQABAABABMAAAACABQ=
+====
+EOF
+if uudecode$EXEEXT Test.uue; then
+        ac_cv_prog_uudecode_base64=yes
+else
+        echo "configure: __oline__: uudecode had trouble decoding base 64 file 'Test.uue'" >&AC_FD_CC
+        echo "configure: failed file was:" >&AC_FD_CC
+        cat Test.uue >&AC_FD_CC
+        ac_cv_prog_uudecode_base64=no
+fi
+rm -f Test.uue])
+fi
+if test x$ac_cv_prog_uudecode_base64 != xyes; then
+        rm -f Test.class
+        AC_MSG_WARN([I have to compile Test.class from scratch])
+        if test $ac_cv_javac_supports_enums = x; then
+                AC_PROG_JAVAC
+        fi
+fi
+AC_CACHE_CHECK(if $JAVA works, ac_cv_prog_java_works, [
+JAVA_TEST=Test.java
+CLASS_TEST=Test.class
+TEST=Test
+changequote(, )dnl
+cat << \EOF > $JAVA_TEST
+/* [#]line __oline__ "configure" */
+public class Test {
+public static void main (String args[]) {
+        System.exit (0);
+} }
+EOF
+changequote([, ])dnl
+if test x$ac_cv_prog_uudecode_base64 != xyes; then
+        if AC_TRY_COMMAND($JAVAC $JAVACFLAGS $JAVA_TEST) && test -s $CLASS_TEST; then
+                :
+        else
+          echo "configure: failed program was:" >&AC_FD_CC
+          cat $JAVA_TEST >&AC_FD_CC
+          AC_MSG_WARN(The Java compiler $JAVAC failed (see config.log, check the CLASSPATH?))
+        fi
+fi
+# if we don't have a Java compiler installed, it's useless to check if Java
+# works beacause a working javac is needed.
+if test x$ac_cv_javac_supports_enums = xno; then
+ ac_cv_prog_java_works=skipping
+else
+if AC_TRY_COMMAND($JAVA $JAVAFLAGS $TEST) >/dev/null 2>&1; then
+  ac_cv_prog_java_works=yes
+else
+  echo "configure: failed program was:" >&AC_FD_CC
+  cat $JAVA_TEST >&AC_FD_CC
+  AC_MSG_WARN(The Java VM $JAVA failed (see config.log, check the CLASSPATH?))
+  fi
+fi
+rm -fr $JAVA_TEST $CLASS_TEST Test.uue
+])
+AC_PROVIDE([$0])dnl
+]
+)
+
+
 ##### http://autoconf-archive.cryp.to/ac_prog_java.html
 #
 # SYNOPSIS
@@ -109,6 +251,7 @@
 #   make and distribute a modified version of the Autoconf Macro, you
 #   may extend this special exception to the GPL to apply to your
 #   modified version as well.
+
 
 AC_DEFUN([AC_PROG_JAVA],[
 AC_REQUIRE([AC_EXEEXT])dnl

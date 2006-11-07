@@ -1,3 +1,60 @@
+dnl A function to check whether the Java compiler supports enums.
+dnl Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl
+dnl This file is part of the Parma Polyhedra Library (PPL).
+dnl
+dnl The PPL is free software; you can redistribute it and/or modify it
+dnl under the terms of the GNU General Public License as published by the
+dnl Free Software Foundation; either version 2 of the License, or (at your
+dnl option) any later version.
+dnl
+dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
+dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+dnl for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software Foundation,
+dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+dnl
+dnl For the most up-to-date information see the Parma Polyhedra Library
+dnl site: http://www.cs.unipr.it/ppl/ .
+dnl
+
+AC_DEFUN([AC_JAVAC_SUPPORTS_ENUMS],[
+AC_CACHE_CHECK([whether$JAVAC supports enums], ac_cv_javac_supports_enums, [
+JAVA_TEST=Test.java
+CLASS_TEST=Test.class
+cat << \EOF > $JAVA_TEST
+/* [#]line __oline__ "configure" */
+public class Test {
+public enum Relation_Symbol {
+    /*! Less than. */
+    LESS_THAN,
+    /*! Less than or equal to. */
+    LESS_THAN_OR_EQUAL,
+    /*! Equal to. */
+    EQUAL,
+    /*! Greater than or equal to. */
+    GREATER_THAN_OR_EQUAL,
+    /*! Greater than. */
+    GREATER_THAN,
+ }
+}
+EOF
+if AC_TRY_COMMAND($JAVAC $JAVACFLAGS $JAVA_TEST) >/dev/null 2>&1; then
+  ac_cv_javac_supports_enums=yes
+else
+  echo "configure: failed program was:" >&AC_FD_CC
+  cat $JAVA_TEST >&AC_FD_CC
+  ac_cv_javac_supports_enums=no
+fi
+
+rm -f $JAVA_TEST $CLASS_TEST Test\$Relation_Symbol.class
+])
+AC_PROVIDE([$0])dnl
+])
+
 ##### http://autoconf-archive.cryp.to/ac_prog_javac.html
 #
 # SYNOPSIS
@@ -35,11 +92,11 @@
 #
 # LAST MODIFICATION
 #
-#   2006-11-06
+#   2006-11-07
 #
 # COPYLEFT
 #
-#   Copyright (C) 2000 Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
+#   Copyright (c) 2000 Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
 #   Copyright (C) 2006 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 #   This program is free software; you can redistribute it and/or
@@ -71,7 +128,6 @@
 #   make and distribute a modified version of the Autoconf Macro, you
 #   may extend this special exception to the GPL to apply to your
 #   modified version as well.
-
 AC_DEFUN([AC_PROG_JAVAC],[
 AC_REQUIRE([AC_EXEEXT])dnl
 if test "x$JAVAPREFIX" = x
@@ -82,7 +138,7 @@ else
 fi
 if test ! x$JAVAC = "xno"
 then
- 	AC_PROG_JAVAC_WORKS
+ 	AC_JAVAC_SUPPORTS_ENUMS
 fi
 AC_PROVIDE([$0])dnl
 ])
