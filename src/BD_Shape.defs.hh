@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
+#include "Congruence_System.types.hh"
 #include "Poly_Con_Relation.types.hh"
 #include "Poly_Gen_Relation.types.hh"
 #include "Polyhedron.types.hh"
@@ -440,6 +441,15 @@ public:
     Thrown if the system of constraints \p cs contains strict inequalities.
   */
   explicit BD_Shape(const Constraint_System& cs);
+
+  //! Builds a BDS from a system of congruences.
+  /*!
+    The BDS inherits the space dimension of \p cgs
+
+    \param cgs
+    A system of congruences: some elements may be safely ignored.
+  */
+  explicit BD_Shape(const Congruence_System& cgs);
 
   //! Builds a BDS from the system of generators \p gs.
   /*!

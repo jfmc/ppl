@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_BD_Shape_inlines_hh
 #define PPL_BD_Shape_inlines_hh 1
 
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 #include "C_Polyhedron.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"

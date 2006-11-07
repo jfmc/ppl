@@ -23,6 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Octagonal_Shape_templates_hh
 #define PPL_Octagonal_Shape_templates_hh 1
 
+#include "Generator_System.defs.hh"
+#include "Generator_System.inlines.hh"
+#include "Congruence_System.defs.hh"
+#include "Congruence_System.inlines.hh"
 #include <cassert>
 #include <vector>
 #include <deque>
@@ -192,6 +196,16 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
 
   // Extract easy-to-find bounds from constraints.
   *this = Octagonal_Shape(ph.constraints());
+}
+
+template <typename T>
+Octagonal_Shape<T>::Octagonal_Shape(const Congruence_System& cgs)
+  : matrix(cgs.space_dimension()),
+    space_dim(cgs.space_dimension()),
+    status() {
+  // TODO: handle those congruences that happen to be equalities
+  // and can be encoded as octagonal constraints.
+  return;
 }
 
 template <typename T>

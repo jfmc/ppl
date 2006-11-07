@@ -23,6 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_BD_Shape_templates_hh
 #define PPL_BD_Shape_templates_hh 1
 
+#include "Generator_System.defs.hh"
+#include "Generator_System.inlines.hh"
+#include "Congruence_System.defs.hh"
+#include "Congruence_System.inlines.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "MIP_Problem.defs.hh"
@@ -37,6 +41,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
+
+template <typename T>
+BD_Shape<T>::BD_Shape(const Congruence_System& cgs)
+  : dbm(cgs.space_dimension() + 1),
+    status(),
+    redundancy_dbm() {
+  // TODO: handle those congruences that happen to be equalities
+  // and can be encoded as bounded differences.
+  return;
+}
 
 template <typename T>
 BD_Shape<T>::BD_Shape(const Generator_System& gs)

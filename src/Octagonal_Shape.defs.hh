@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
+#include "Congruence_System.types.hh"
 #include "OR_Matrix.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
@@ -457,6 +458,15 @@ public:
     Thrown if the system of constraints \p cs contains strict inequalities.
   */
   explicit Octagonal_Shape(const Constraint_System& cs);
+
+  //! Builds an OS from a system of congruences.
+  /*!
+    The OS inherits the space dimension of \p cgs
+
+    \param cgs
+    A system of congruences: some elements may be safely ignored.
+  */
+  explicit Octagonal_Shape(const Congruence_System& cgs);
 
   //! Builds an OS from the system of generators \p gs.
   /*!
