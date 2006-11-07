@@ -2597,7 +2597,9 @@ exception_prolog(8, _) :-
 exception_prolog(9, [A, _, _]) :-
    clean_ppl_new_Polyhedron_from_generators(c,
                [point(A)], P),
-   must_catch(ppl_Polyhedron_get_bounding_box(P, a, _Box)).
+   must_catch(ppl_Polyhedron_get_bounding_box(P, a, _Box)),
+   !,
+   ppl_delete_Polyhedron(P).
 
 %% TEST: not_universe_or_empty
 exception_prolog(10, _) :-
@@ -2611,7 +2613,9 @@ exception_prolog(11, [A, B, _]) :-
   must_catch(
      ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x, A + 1)),
   must_catch(
-     ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x + y, A + 1)).
+     ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x + y, A + 1)),
+   !,
+   ppl_delete_Polyhedron(P).
 
 %% TEST: not_a_nil_terminated_list
 exception_prolog(12, [A, B, C]) :-
