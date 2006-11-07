@@ -98,4 +98,52 @@ public class Polyhedron extends PPL_Object {
     */
     public native boolean strictly_contains(Polyhedron p);
 
+    /*! \brief
+      Adds a copy of constraint \p c to the system of constraints
+      of \p this (without minimizing the result).
+
+      \exception std::invalid_argument
+      Thrown if \p this and constraint \p c are topology-incompatible
+      or dimension-incompatible.
+    */
+    public native void add_constraint(Constraint c);
+
+    /*! \brief
+      Adds a copy of constraint \p c to the system of constraints
+      of \p this, minimizing the result
+
+      \return
+      <CODE>false</CODE> if and only if the result is empty.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and constraint \p c are topology-incompatible
+      or dimension-incompatible.
+    */
+    public native boolean add_constraint_and_minimize(Constraint c);
+
+    /*! \brief
+      Adds a copy of generator \p g to the system of generators
+      of \p this (without minimizing the result).
+
+      \exception RuntimeErrorException
+      Thrown if \p this and generator \p g are topology-incompatible or
+      dimension-incompatible, or if \p this is an empty polyhedron and
+      \p g is not a point.
+    */
+    public native void add_generator(Generator g);
+
+    /*! \brief
+      Adds a copy of generator \p g to the system of generators
+      of \p this, minimizing the result.
+
+      \return
+      <CODE>false</CODE> if and only if the result is empty.
+
+
+      \exception RuntimeErrorException
+      Thrown if \p this and generator \p g are topology-incompatible or
+      dimension-incompatible, or if \p this is an empty polyhedron and
+      \p g is not a point.
+    */
+    public native boolean add_generator_and_minimize(Generator g);
 }

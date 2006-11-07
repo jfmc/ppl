@@ -95,3 +95,35 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_strictly_1contains
   Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(polyhedron_ptr);
   return this_polyhedron->strictly_contains(*polyhedron);
 }
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1constraint
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_constraint) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Constraint c = build_ppl_constraint(env, j_constraint);
+  this_polyhedron->add_constraint(c);
+}
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_add_1constraint_1and_1minimize
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_constraint) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Constraint c = build_ppl_constraint(env, j_constraint);
+  return this_polyhedron->add_constraint_and_minimize(c);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1generator
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_generator) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Generator g = build_generator(env, j_generator);
+  this_polyhedron->add_generator(g);
+}
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_add_1generator_1and_1minimize
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_generator) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Generator g = build_generator(env, j_generator);
+  return this_polyhedron->add_generator_and_minimize(g);
+}
