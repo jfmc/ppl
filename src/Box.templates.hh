@@ -331,42 +331,34 @@ Box<Interval>::add_constraint(const Constraint& c) {
     return;
   }
 
-#if 0
-  // Select the cell to be modified for the "<=" part of the constraint,
-  // and set `coeff' to the absolute value of itself.
-  N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
-  N& y = (coeff < 0) ? dbm[j][i] : dbm[i][j];
-  if (coeff < 0)
-    coeff = -coeff;
+  assert(c_num_vars == 1);
+  const Coefficient& d = c.coefficient(Variable(c_only_var-1));
+  const Coefficient& n = c.inhomogeneous_term();
+  // The constraint `c' is of the form
+  // `Variable(c_only_var) + n / d rel 0', where
+  // `rel' is either the relation `==', `>=', or `>'.
+  // For the purpose of refining intervals, this is
+  // (morally) turned into `Variable(c_only_var) rel -n/d'.
+  mpq_class q;
+  assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
+  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
+  q.canonicalize();
+  // Turn `n/d' into `-n/d'.
+  q = -q;
 
-  bool changed = false;
-  // Compute the bound for `x', rounding towards plus infinity.
-  N d;
-  div_round_up(d, c.inhomogeneous_term(), coeff);
-  if (x > d) {
-    x = d;
-    changed = true;
+  Interval& seq_c = seq[c_only_var-1];
+  const Constraint::Type c_type = c.type();
+  switch (c_type) {
+  case Constraint::EQUALITY:
+    refine(seq_c, EQUAL, q);
+    break;
+  case Constraint::NONSTRICT_INEQUALITY:
+    refine(seq_c, (d > 0) ? GREATER_THAN_OR_EQUAL : LESS_THAN_OR_EQUAL, q);
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    refine(seq_c, (d > 0) ? GREATER_THAN : LESS_THAN, q);
+    break;
   }
-
-  if (c.is_strict_inequality())
-    ;
-
-
-  if (c.is_equality()) {
-    // Also compute the bound for `y', rounding towards plus infinity.
-    div_round_up(d, -c.inhomogeneous_term(), coeff);
-    if (y > d) {
-      y = d;
-      changed = true;
-    }
-  }
-
-  // In general, adding a constraint does not preserve the shortest-path
-  // closure or reduction of the bounded difference shape.
-  if (changed && marked_shortest_path_closed())
-    status.reset_shortest_path_closed();
-#endif
-
   assert(OK());
 }
 
@@ -442,7 +434,7 @@ template <typename Interval>
 Constraint_System
 Box<Interval>::constraints() const {
   Constraint_System cs;
-  dimension_type space_dim = space_dimension();
+  const dimension_type space_dim = space_dimension();
   if (space_dim == 0) {
     if (is_empty())
       cs = Constraint_System::zero_dim_empty();
