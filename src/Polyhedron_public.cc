@@ -2326,6 +2326,10 @@ generalized_affine_image(const Variable var,
       && (relsym == LESS_THAN || relsym == GREATER_THAN))
     throw_invalid_argument("generalized_affine_image(v, r, e, d)",
 			   "r is a strict relation symbol");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_invalid_argument("generalized_affine_image(v, r, e, d)",
+			   "r is the disequality relation symbol");
 
   // First compute the affine image.
   affine_image(var, expr, denominator);
@@ -2380,8 +2384,8 @@ generalized_affine_image(const Variable var,
       clear_sat_g_up_to_date();
     }
     break;
-  case EQUAL:
-    // This case was already dealt with before.
+  default:
+    // The EQUAL and NOT_EQUAL cases have been already dealt with.
     throw std::runtime_error("PPL internal error");
   }
   assert(OK());
@@ -2415,6 +2419,10 @@ generalized_affine_preimage(const Variable var,
       && (relsym == LESS_THAN || relsym == GREATER_THAN))
     throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
 			   "r is a strict relation symbol");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
+			   "r is the disequality relation symbol");
 
   // Check whether the affine relation is indeed an affine function.
   if (relsym == EQUAL) {
@@ -2438,7 +2446,7 @@ generalized_affine_preimage(const Variable var,
     reversed_relsym = LESS_THAN;
     break;
   default:
-    // The EQUAL case has been already dealt with.
+    // The EQUAL and NOT_EQUAL cases have been already dealt with.
     throw std::runtime_error("PPL internal error");
     break;
   }
@@ -2478,8 +2486,8 @@ generalized_affine_preimage(const Variable var,
   case GREATER_THAN:
     add_constraint(denominator*var > expr);
     break;
-  case EQUAL:
-    // We already dealt with this case.
+  default:
+    // The EQUAL and NOT_EQUAL cases have been already dealt with.
     throw std::runtime_error("PPL internal error");
     break;
   }
@@ -2514,6 +2522,10 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       && (relsym == LESS_THAN || relsym == GREATER_THAN))
     throw_invalid_argument("generalized_affine_image(e1, r, e2)",
 			   "r is a strict relation symbol");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_invalid_argument("generalized_affine_image(e1, r, e2)",
+			   "r is the disequality relation symbol");
 
   // Any image of an empty polyhedron is empty.
   if (marked_empty())
@@ -2542,6 +2554,10 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       break;
     case GREATER_THAN:
       add_constraint(lhs > rhs);
+      break;
+    case NOT_EQUAL:
+      // The NOT_EQUAL case has been already dealt with.
+      throw std::runtime_error("PPL internal error");
       break;
     }
     return;
@@ -2592,6 +2608,10 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       case GREATER_THAN:
 	add_constraint_and_minimize(lhs > new_var);
 	break;
+      case NOT_EQUAL:
+	// The NOT_EQUAL case has been already dealt with.
+	throw std::runtime_error("PPL internal error");
+	break;
       }
     }
     // Remove the temporarily added dimension.
@@ -2628,6 +2648,10 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     case GREATER_THAN:
       add_constraint(lhs > rhs);
       break;
+    case NOT_EQUAL:
+      // The NOT_EQUAL case has been already dealt with.
+      throw std::runtime_error("PPL internal error");
+      break;
     }
   }
   assert(OK());
@@ -2656,6 +2680,10 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
       && (relsym == LESS_THAN || relsym == GREATER_THAN))
     throw_invalid_argument("generalized_affine_preimage(e1, r, e2)",
 			   "r is a strict relation symbol");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_invalid_argument("generalized_affine_preimage(e1, r, e2)",
+			   "r is the disequality relation symbol");
 
   // Any preimage of an empty polyhedron is empty.
   if (marked_empty())
@@ -2719,6 +2747,10 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
       case GREATER_THAN:
 	add_constraint_and_minimize(new_var > rhs);
 	break;
+      case NOT_EQUAL:
+	// The NOT_EQUAL case has been already dealt with.
+	throw std::runtime_error("PPL internal error");
+	break;
       }
     }
     // Remove the temporarily added dimension.
@@ -2745,6 +2777,10 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
       break;
     case GREATER_THAN:
       add_constraint(lhs > rhs);
+      break;
+    case NOT_EQUAL:
+      // The NOT_EQUAL case has been already dealt with.
+      throw std::runtime_error("PPL internal error");
       break;
     }
     // Any image of an empty polyhedron is empty.

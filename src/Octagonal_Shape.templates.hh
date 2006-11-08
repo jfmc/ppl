@@ -3242,6 +3242,11 @@ Octagonal_Shape<T>
     throw_generic("generalized_affine_image(v, r, e, d)",
   		  "r is a strict relation symbol and "
   		  "*this is an Octagonal_Shape");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_image(v, r, e, d)",
+  		  "r is the disequality relation symbol and "
+  		  "*this is an Octagonal_Shape");
 
   if (relsym == EQUAL) {
     // The relation symbol is "==":
@@ -3730,6 +3735,11 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     throw_generic("generalized_affine_image(e1, r, e2)",
 		  "r is a strict relation symbol and "
 		  "*this is an Octagonal_Shape");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_image(e1, r, e2)",
+  		  "r is the disequality relation symbol and "
+  		  "*this is an Octagonal_Shape");
 
   strong_closure_assign();
   // The image of an empty octagon is empty.
@@ -4218,6 +4228,11 @@ Octagonal_Shape<T>
     throw_generic("generalized_affine_preimage(v, r, e, d)",
   		  "r is a strict relation symbol and "
   		  "*this is an Octagonal_Shape");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_preimage(v, r, e, d)",
+  		  "r is the disequality relation symbol and "
+  		  "*this is an Octagonal_Shape");
 
   if (relsym == EQUAL) {
     // The relation symbol is "==":
@@ -4604,6 +4619,11 @@ Octagonal_Shape<T>
     throw_generic("generalized_affine_preimage(e1, r, e2)",
 		  "r is a strict relation symbol and "
 		  "*this is an Octagonal_Shape");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_preimage(e1, r, e2)",
+  		  "r is the disequality relation symbol and "
+  		  "*this is an Octagonal_Shape");
 
   strong_closure_assign();
   // The image of an empty octagon is empty.

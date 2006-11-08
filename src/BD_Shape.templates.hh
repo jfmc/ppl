@@ -2815,6 +2815,11 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     throw_generic("generalized_affine_image(v, r, e, d)",
   		  "r is a strict relation symbol and "
   		  "*this is a BD_Shape");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_image(v, r, e, d)",
+  		  "r is the disequality relation symbol and "
+  		  "*this is a BD_Shape");
 
   if (relsym == EQUAL) {
     // The relation symbol is "==":
@@ -3205,6 +3210,11 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     throw_generic("generalized_affine_image(e1, r, e2)",
 		  "r is a strict relation symbol and "
 		  "*this is a BD_Shape");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_image(e1, r, e2)",
+  		  "r is the disequality relation symbol and "
+  		  "*this is a BD_Shape");
 
   // The image of an empty BDS is empty.
   shortest_path_closure_assign();
@@ -3392,6 +3402,11 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_preimage(v, r, e, d)",
   		  "r is a strict relation symbol and "
+  		  "*this is a BD_Shape");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_preimage(v, r, e, d)",
+  		  "r is the disequality relation symbol and "
   		  "*this is a BD_Shape");
 
   if (relsym == EQUAL) {
@@ -3685,6 +3700,11 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
     throw_generic("generalized_affine_preimage(e1, r, e2)",
 		  "r is a strict relation symbol and "
 		  "*this is a BD_Shape");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_preimage(e1, r, e2)",
+  		  "r is the disequality relation symbol and "
+  		  "*this is a BD_Shape");
 
   // The preimage of an empty BDS is empty.
   shortest_path_closure_assign();
