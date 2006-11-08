@@ -942,10 +942,20 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
       coeff = -coeff;
     N d;
     if (!is_plus_infinity(m_i[j])) {
-      div_round_up(d, -term, coeff);
-      add_assign_r(d, d, m_i[j], ROUND_UP);
-      if (num_vars == 1)
-	div2exp_assign_r(d, d, 1, ROUND_UP);
+      const Coefficient& b = expr.inhomogeneous_term();
+      TEMP_INTEGER(minus_b);
+      neg_assign(minus_b, b);
+      const Coefficient& sc_b = maximize ? b : minus_b;
+      assign_r(d, sc_b, ROUND_UP);
+      N coeff_expr;
+      assign_r(coeff_expr, coeff, ROUND_UP);
+      if (num_vars == 1) {
+	N m_i_j;
+	div2exp_assign_r(m_i_j, m_i[j], 1, ROUND_UP);
+	add_mul_assign_r(d, coeff_expr, m_i_j, ROUND_UP);
+      }
+      else
+	add_mul_assign_r(d, coeff_expr, m_i[j], ROUND_UP);
       if (maximize)
 	numer_denom(d, ext_n, ext_d);
       else {
