@@ -147,18 +147,6 @@ SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, double)
 
 template <typename Policy, typename From>
 inline Result
-construct_mpq_long_double(mpq_class& to, const From& from, Rounding_Dir dir) {
-  // FIXME: this is an incredibly inefficient implementation!
-  new (&to) mpq_class;
-  std::stringstream ss;
-  output_float<Policy, long double>(ss, from, Numeric_Format(), dir);
-  return input_mpq(to, ss);
-}
-
-SPECIALIZE_CONSTRUCT(mpq_long_double, mpq_class, long double)
-
-template <typename Policy, typename From>
-inline Result
 assign_mpq_base(mpq_class& to, const From& from, Rounding_Dir) {
   to = from;
   return V_EQ;
