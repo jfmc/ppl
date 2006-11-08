@@ -23,6 +23,53 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_java_common.hh"
 using namespace Parma_Polyhedra_Library;
 
+Variable
+j_variable_to_ppl_variable(JNIEnv* env, const jobject& j_var) {
+  jclass j_variable_class = env->FindClass("ppl_java/Variable");
+  jfieldID varid_field_id = env->GetFieldID(j_variable_class,
+					  "varid",
+					  "I");
+  // Retrieve the value.
+  return Variable(env->GetIntField(j_var, varid_field_id));
+}
+
+Relation_Symbol
+j_relsym_to_ppl_relsym(JNIEnv* env, const jobject& j_relsym) {
+
+  jclass rel_sym_class = env->FindClass("ppl_java/Relation_Symbol");
+  jmethodID rel_sym_ordinal_id = env->GetMethodID(rel_sym_class, "ordinal",
+						  "()I");
+  jint rel_sym = env->CallIntMethod(j_relsym, rel_sym_ordinal_id);
+  switch (rel_sym) {
+  case 0: {
+    if (rel_sym == 0)
+      return LESS_THAN;
+  }
+  case 1: {
+    if (rel_sym == 1)
+      return LESS_THAN_OR_EQUAL;
+  }
+ case 2: {
+    if (rel_sym == 2)
+      return EQUAL;
+ }
+  case 3: {
+    if (rel_sym == 3)
+      return GREATER_THAN_OR_EQUAL;
+  }
+  case 4: {
+    if (rel_sym == 4)
+      return GREATER_THAN;
+  }
+  default:
+    ;
+  }
+  jclass newExcCls = env->FindClass("javax/management/RuntimeErrorException");
+  env->ThrowNew(newExcCls, "ppl.java: \n runtime error");
+  // We should not be here!
+  throw std::runtime_error("PPL Java interface internal error");
+}
+
 Coefficient
 j_coeff_to_ppl_coeff(JNIEnv* env, const jobject& j_coeff) {
   jclass j_coeff_class = env->GetObjectClass(j_coeff);
