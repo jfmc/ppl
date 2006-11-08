@@ -660,6 +660,142 @@ public:
   */
   bool contains_integer_point() const;
 
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p expr is
+    bounded from above in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds_from_above(const Linear_Expression& expr) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p expr is
+    bounded from below in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds_from_below(const Linear_Expression& expr) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from above in \p *this, in which case
+    the supremum value is computed.
+
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if and only if the supremum is also the maximum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d
+    and \p maximum are left untouched.
+  */
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from above in \p *this, in which case
+    the supremum value and a point where \p expr reaches it are computed.
+
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if and only if the supremum is also the maximum value;
+
+    \param point
+    When maximization succeeds, will be assigned the point or
+    closure point where \p expr reaches its supremum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
+    and \p point are left untouched.
+  */
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+		Generator& point) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from below in \p *this, in which case
+    the infimum value is computed.
+
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if and only if the infimum is also the minimum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d
+    and \p minimum are left untouched.
+  */
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from below in \p *this, in which case
+    the infimum value and a point where \p expr reaches it are computed.
+
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if and only if the infimum is also the minimum value;
+
+    \param point
+    When minimization succeeds, will be assigned a point or
+    closure point where \p expr reaches its infimum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
+    and \p point are left untouched.
+  */
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+		Generator& point) const;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -1562,6 +1698,91 @@ private:
 
   */
   void incremental_strong_closure_assign(Variable var) const;
+
+  //! Checks if and how \p expr is bounded in \p *this.
+  /*!
+    Returns <CODE>true</CODE> if and only if \p from_above is
+    <CODE>true</CODE> and \p expr is bounded from above in \p *this,
+    or \p from_above is <CODE>false</CODE> and \p expr is bounded
+    from below in \p *this.
+
+    \param expr
+    The linear expression to test;
+
+    \param from_above
+    <CODE>true</CODE> if and only if the boundedness of interest is
+    "from above".
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds(const Linear_Expression& expr, bool from_above) const;
+
+  //! Maximizes or minimizes \p expr subject to \p *this.
+  /*!
+    \param expr
+    The linear expression to be maximized or minimized subject to \p
+    *this;
+
+    \param maximize
+    <CODE>true</CODE> if maximization is what is wanted;
+
+    \param ext_n
+    The numerator of the extremum value;
+
+    \param ext_d
+    The denominator of the extremum value;
+
+    \param included
+    <CODE>true</CODE> if and only if the extremum of \p expr can
+    actually be reached in \p * this;
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded in the appropriate
+    direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d and
+    \p included are left untouched.
+  */
+  bool max_min(const Linear_Expression& expr,
+	       const bool maximize,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
+
+  //! Maximizes or minimizes \p expr subject to \p *this.
+  /*!
+    \param expr
+    The linear expression to be maximized or minimized subject to \p
+    *this;
+
+    \param maximize
+    <CODE>true</CODE> if maximization is what is wanted;
+
+    \param ext_n
+    The numerator of the extremum value;
+
+    \param ext_d
+    The denominator of the extremum value;
+
+    \param included
+    <CODE>true</CODE> if and only if the extremum of \p expr can
+    actually be reached in \p * this;
+
+    \param point
+    When maximization or minimization succeeds, will be assigned
+    a point or closure point where \p expr reaches the
+    corresponding extremum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded in the appropriate
+    direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
+    \p included and \p point are left untouched.
+  */
+  bool max_min(const Linear_Expression& expr,
+	       const bool maximize,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
+	       Generator& g_point) const;
 
 #if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&

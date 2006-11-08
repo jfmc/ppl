@@ -51,6 +51,7 @@ check_PROGRAMS = \
 	bounded1 \
 	boundedaffineimage1 \
 	boundedaffinepreimage1 \
+	bounds1 \
 	cc76extrapolation1 \
 	cc76narrowing1 \
 	chinainit \
@@ -74,6 +75,7 @@ check_PROGRAMS = \
 	limitedbhmz05extrapolation1 \
 	limitedcc76extrapolation1 \
 	mapspacedims1 \
+	max_min1 \
 	maxspacedim1 \
 	membytes1 \
 	minconstraints1 \
@@ -150,6 +152,8 @@ boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 
 boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
 
+bounds1_SOURCES = bounds1.cc
+
 cc76extrapolation1_SOURCES = cc76extrapolation1.cc
 
 cc76narrowing1_SOURCES = cc76narrowing1.cc
@@ -198,6 +202,8 @@ limitedcc76extrapolation1_SOURCES = limitedcc76extrapolation1.cc
 mapspacedims1_SOURCES = mapspacedims1.cc
 
 maxspacedim1_SOURCES = maxspacedim1.cc
+
+max_min1_SOURCES = max_min1.cc
 
 membytes1_SOURCES = membytes1.cc
 

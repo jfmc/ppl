@@ -815,6 +815,199 @@ Octagonal_Shape<T>::is_strongly_reduced() const {
 }
 
 template <typename T>
+bool
+Octagonal_Shape<T>::bounds(const Linear_Expression& expr,
+			   const bool from_above) const {
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible((from_above
+				  ? "bounds_from_above(e)"
+				  : "bounds_from_below(e)"), "e", expr);
+  strong_closure_assign();
+
+  // A zero-dimensional or empty octagon bounds everything.
+  if (space_dim == 0 || marked_empty())
+    return true;
+
+  // The constraint `c' is used to check if `expr' is an octagonal difference
+  // and, in this case, to select the cell.
+  const Constraint& c = (from_above) ? expr <= 0 : expr >= 0;
+  dimension_type num_vars = 0;
+  dimension_type i = 0;
+  dimension_type j = 0;
+  Coefficient coeff;
+  Coefficient term = c.inhomogeneous_term();
+  // We use MIP_Problems to handle constraints that are not
+  // octagonal difference.
+  if (!extract_octagonal_difference(c, c.space_dimension(), num_vars,
+				    i, j, coeff, term)) {
+    if (!is_universe()) {
+      Optimization_Mode mode_bounds =
+	(from_above) ? MAXIMIZATION : MINIMIZATION;
+      MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
+      if (mip.solve() == OPTIMIZED_MIP_PROBLEM)
+	return true;
+    }
+    // Here`expr' is unbounded in `*this'.
+    return false;
+  }
+  else {
+    // Here the constraint is an octagonal difference.
+    if (num_vars == 0)
+      return true;
+
+    // Select the cell to be checked.
+    typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin() + i;
+    typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
+    if (!is_plus_infinity(m_i[j]))
+      return true;
+    else
+      return false;
+  }
+}
+
+template <typename T>
+bool
+Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
+			    const bool maximize,
+			    Coefficient& ext_n, Coefficient& ext_d,
+			    bool& included) const {
+
+  using Implementation::BD_Shapes::div_round_up;
+  using Implementation::BD_Shapes::numer_denom;
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible((maximize
+				  ? "maximize(e, ...)"
+				  : "minimize(e, ...)"), "e", expr);
+  // Deal with zero-dim octagons first.
+  if (space_dim == 0)
+    if (marked_empty())
+      return false;
+    else {
+      ext_n = expr.inhomogeneous_term();
+      ext_d = 1;
+      included = true;
+      return true;
+    }
+
+  strong_closure_assign();
+  // For an empty OS we simply return false.
+  if (marked_empty())
+    return false;
+
+  // The constraint `c' is used to check if `expr' is an octagonal difference
+  // and, in this case, to select the cell.
+  const Constraint& c = (maximize) ? expr <= 0 : expr >= 0;
+  dimension_type num_vars = 0;
+  dimension_type i = 0;
+  dimension_type j = 0;
+  Coefficient coeff;
+  Coefficient term = c.inhomogeneous_term();
+  // We use MIP_Problems to handle constraints that are not
+  // octagonal difference.
+  if (!extract_octagonal_difference(c, c.space_dimension(), num_vars,
+				   i, j, coeff, term)) {
+    if (!is_universe()) {
+      Optimization_Mode max_min = (maximize) ? MAXIMIZATION : MINIMIZATION;
+      MIP_Problem mip(space_dim, constraints(), expr, max_min);
+      if (mip.solve() == OPTIMIZED_MIP_PROBLEM) {
+	mip.optimal_value(ext_n, ext_d);
+	included = true;
+	return true;
+      }
+    }
+
+    // Here`expr' is unbounded in `*this'.
+    return false;
+  }
+  else {
+    // Here the `expr' is a bounded difference.
+    if (num_vars == 0) {
+      ext_n = expr.inhomogeneous_term();
+      ext_d = 1;
+      included = true;
+      return true;
+    }
+
+    // Select the cell to be checked.
+    typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin() + i;
+    typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
+    // Set `coeff' to the absolute value of itself.
+    if (coeff < 0)
+      coeff = -coeff;
+    N d;
+    if (!is_plus_infinity(m_i[j])) {
+      div_round_up(d, -term, coeff);
+      add_assign_r(d, d, m_i[j], ROUND_UP);
+      if (num_vars == 1)
+	div2exp_assign_r(d, d, 1, ROUND_UP);
+      if (maximize)
+	numer_denom(d, ext_n, ext_d);
+      else {
+	numer_denom(d, ext_n, ext_d);
+	ext_n = -ext_n;
+      }
+      included = true;
+      return true;
+    }
+
+   // The `expr' is unbounded.
+   return false;
+  }
+}
+
+template <typename T>
+bool
+Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
+			    const bool maximize,
+			    Coefficient& ext_n, Coefficient& ext_d,
+			    bool& included, Generator& g_point) const {
+  using Implementation::BD_Shapes::numer_denom;
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible((maximize
+				  ? "maximize(e, ...)"
+				  : "minimize(e, ...)"), "e", expr);
+  // Deal with zero-dim octagons first.
+  if (space_dim == 0)
+    if (marked_empty())
+      return false;
+    else {
+      ext_n = expr.inhomogeneous_term();
+      ext_d = 1;
+      included = true;
+      g_point = point();
+      return true;
+    }
+
+  strong_closure_assign();
+  // For an empty OS we simply return false.
+  if (marked_empty())
+    return false;
+  if (!is_universe()) {
+    // We use MIP_Problems to handle constraints that are not
+    // octagonal difference.
+    Optimization_Mode max_min = (maximize) ? MAXIMIZATION : MINIMIZATION;
+    MIP_Problem mip(space_dim, constraints(), expr, max_min);
+    if (mip.solve() == OPTIMIZED_MIP_PROBLEM) {
+      g_point = mip.optimizing_point();
+      mip.evaluate_objective_function(g_point, ext_n, ext_d);
+      included = true;
+      return true;
+    }
+  }
+  // The `expr' is unbounded.
+  return false;
+}
+
+template <typename T>
 Poly_Con_Relation
 Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   using Implementation::BD_Shapes::div_round_up;
