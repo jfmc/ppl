@@ -157,7 +157,6 @@ public:
   */
   virtual bool contains_integer_point() const = 0;
 
-#if 0
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
     bounded from above in \p *this.
@@ -295,7 +294,6 @@ public:
   virtual bool minimize(const Linear_Expression& expr,
 			Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
 			Generator& point) const = 0;
-#endif
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -1338,6 +1336,33 @@ class WRAPPER_NAME : public Any_Pointset {				\
 			       Coefficient_traits::const_reference	\
 			       denominator = Coefficient_one()) {	\
     x.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);	\
+  }									\
+									\
+  bool bounds_from_above(const Linear_Expression& expr) const {		\
+    return x.bounds_from_above(expr);					\
+  }									\
+  bool bounds_from_below(const Linear_Expression& expr) const {		\
+    return x.bounds_from_below(expr);					\
+  }									\
+  bool maximize(const Linear_Expression& expr,				\
+		Coefficient& sup_n, Coefficient& sup_d,			\
+		bool& maximum) const {					\
+    return maximize(expr, sup_n, sup_d, maximum);			\
+  }									\
+  bool maximize(const Linear_Expression& expr,				\
+		Coefficient& sup_n, Coefficient& sup_d,			\
+		bool& maximum, Generator& point) const {		\
+    return maximize(expr, sup_n, sup_d, maximum, point);		\
+  }									\
+  bool minimize(const Linear_Expression& expr,				\
+		Coefficient& inf_n, Coefficient& inf_d,			\
+		bool& minimum) const {					\
+    return minimize(expr, inf_n, inf_d, minimum);			\
+  }									\
+  bool minimize(const Linear_Expression& expr,				\
+		Coefficient& inf_n, Coefficient& inf_d,			\
+		bool& minimum, Generator& point) const {		\
+    return minimize(expr, inf_n, inf_d, minimum, point);		\
   }									\
 									\
   memory_size_type total_memory_in_bytes() const {			\
