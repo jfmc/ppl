@@ -699,7 +699,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   dimension_type slack_index = tableau_num_columns - artificial_cols - 1;
   dimension_type artificial_index = slack_index;
 
- // The first column index of the tableau that contains an
+  // The first column index of the tableau that contains an
   // artificial variable. Encode with 0 the fact the there are not
   // artificial variables.
   const dimension_type begin_artificials = artificial_cols > 0
@@ -798,6 +798,8 @@ PPL::MIP_Problem::process_pending_constraints() {
       = input_obj_function.space_dimension();
     for (dimension_type i = input_obj_function_size; i-- > 0; )
       if (input_obj_function.coefficient(Variable(i)) > 0) {
+	// Ensure the right space dimension is obtained.
+	last_generator = point(0 * Variable(space_dimension()-1));
 	status = UNBOUNDED;
 	return true;
       }
