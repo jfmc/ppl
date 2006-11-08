@@ -54,7 +54,8 @@ ppl_interface_generator_predicate_check_pl.m4 \
 ppl_interface_generator_predicate_check_code.m4 \
 ppl_interface_generator_predicate_check_extra_code
 
-BUILT_SOURCES = ppl_predicate_check.pl
+BUILT_SOURCES = \
+ppl_predicate_check.pl
 
 interface_generator_dependencies = \
 ../../ppl_interface_instantiations.m4 \

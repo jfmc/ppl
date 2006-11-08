@@ -65,7 +65,9 @@ LIBPPL_C_LT_CURRENT =  1
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      1
 
-BUILT_SOURCES = ppl_c.h ppl_c.cc
+BUILT_SOURCES = \
+ppl_c.h \
+ppl_c.cc
 
 interface_generator_dependencies = \
 ../ppl_interface_instantiations.m4 \
@@ -88,7 +90,7 @@ AM_CPPFLAGS = \
 @extra_includes@
 
 lib_LTLIBRARIES = libppl_c.la
-libppl_c_la_SOURCES = ppl_c.cc
+nodist_libppl_c_la_SOURCES = ppl_c.cc
 libppl_c_la_LDFLAGS = \
 -version-info $(LIBPPL_C_LT_CURRENT):$(LIBPPL_C_LT_REVISION):$(LIBPPL_C_LT_AGE)
 

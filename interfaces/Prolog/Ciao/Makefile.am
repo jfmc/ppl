@@ -40,15 +40,8 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/Watchdog/src \
 @extra_includes@
 
-pkglib_LTLIBRARIES = libppl_ciao.la
-libppl_ciao_la_SOURCES = ppl_ciao.cc
-libppl_ciao_la_LIBADD = \
-$(top_builddir)/src/libppl.la \
-$(top_builddir)/Watchdog/src/libpwl.la \
-@extra_libraries@
-libppl_ciao_la_LDFLAGS = -module -avoid-version
-
-pkglib_DATA = ppl_ciao.po
+BUILT_SOURCES = \
+ppl_ciao.cc
 
 interface_generator_dependencies = \
 ../../ppl_interface_instantiations.m4 \
@@ -58,6 +51,16 @@ interface_generator_dependencies = \
 ../ppl_interface_generator_prolog_dat.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_ciao_pl.m4
+
+pkglib_LTLIBRARIES = libppl_ciao.la
+nodist_libppl_ciao_la_SOURCES = ppl_ciao.cc
+libppl_ciao_la_LIBADD = \
+$(top_builddir)/src/libppl.la \
+$(top_builddir)/Watchdog/src/libpwl.la \
+@extra_libraries@
+libppl_ciao_la_LDFLAGS = -module -avoid-version
+
+pkglib_DATA = ppl_ciao.po
 
 ppl_ciao.pl: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \

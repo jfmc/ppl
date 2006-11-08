@@ -44,7 +44,9 @@ expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a
 
 if BUILD_XSB_PROLOG_INTERFACE
 
-BUILT_SOURCES = ppl_xsb.H ppl_xsb.cc
+BUILT_SOURCES = \
+ppl_xsb.H \
+ppl_xsb.cc
 
 interface_generator_dependencies = \
 ../../ppl_interface_instantiations.m4 \
@@ -71,7 +73,7 @@ $(XSB_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 pkglib_LTLIBRARIES = ppl_xsb.la
-ppl_xsb_la_SOURCES = ppl_xsb.cc
+nodist_ppl_xsb_la_SOURCES = ppl_xsb.cc
 ppl_xsb_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/Watchdog/src/libpwl.la \

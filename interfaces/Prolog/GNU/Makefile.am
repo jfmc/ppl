@@ -41,7 +41,7 @@ bin_PROGRAMS = ppl_gprolog
 ppl_gprolog_SOURCES =
 
 pkglib_LTLIBRARIES = libppl_gprolog.la
-libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
+nodist_libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
 libppl_gprolog_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/Watchdog/src/libpwl.la \

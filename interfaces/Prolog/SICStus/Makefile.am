@@ -25,7 +25,6 @@ SICSTUS_CFLI_FILES = sicstus_cfli.h sicstus_cfli.ic sicstus_cfli.cc
 EXTRA_DIST = \
 ppl_interface_generator_sicstus_sd_cc.m4 \
 $(SICSTUS_CFLI_FILES) \
-ppl_sicstus_sd.cc \
 ppl_sicstus.pl \
 sp_clpq.pl \
 sp_pl_check.pl
@@ -39,7 +38,8 @@ AM_CPPFLAGS = \
 $(SICSTUS_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
-BUILT_SOURCES = ppl_sicstus_sd.cc
+BUILT_SOURCES = \
+ppl_sicstus_sd.cc
 
 interface_generator_dependencies = \
 ../../ppl_interface_instantiations.m4 \
@@ -79,7 +79,7 @@ pkglib_DATA = ppl_sicstus.pl
 endif !ENABLE_SHARED
 
 noinst_LTLIBRARIES = ppl_sicstus_sd.la
-ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
+nodist_ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
 ppl_sicstus_sd_la_LDFLAGS = -module -avoid-version
 
 ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/src/libpwl.la

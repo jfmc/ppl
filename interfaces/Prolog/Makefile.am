@@ -35,7 +35,8 @@ noinst_HEADERS = \
 exceptions.hh \
 track_allocation.hh
 
-BUILT_SOURCES = ppl_prolog.icc
+BUILT_SOURCES = \
+ppl_prolog.icc
 
 interface_generator_dependencies = \
 ../ppl_interface_instantiations.m4 \
