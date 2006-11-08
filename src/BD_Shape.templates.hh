@@ -867,14 +867,12 @@ BD_Shape<T>::bounds(const Linear_Expression& expr,
   TEMP_INTEGER(coeff);
   // Checks if `expr' is a difference bounded.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
-    // TODO: Have to find a more efficient method.
-    if(!is_universe()) {
-      Optimization_Mode mode_bounds
-	= from_above ? MAXIMIZATION : MINIMIZATION;
-      MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
-      if (mip.solve() == OPTIMIZED_MIP_PROBLEM)
-	return true;
-    }
+    Optimization_Mode mode_bounds
+      = from_above ? MAXIMIZATION : MINIMIZATION;
+    MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
+    if (mip.solve() == OPTIMIZED_MIP_PROBLEM)
+      return true;
+
     // Here`expr' is unbounded in `*this'.
     return false;
   }
@@ -936,17 +934,15 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
   TEMP_INTEGER(coeff);
   // Checks if `expr' is a difference bounded.
   if (!extract_bounded_difference(c, c_space_dim, num_vars, i, j, coeff)) {
-    // TODO: Have to find a more efficient method.
-    if (!is_universe()) {
-      Optimization_Mode mode_max_min = maximize ? MAXIMIZATION
-	: MINIMIZATION;
-      MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
-      if(mip.solve() == OPTIMIZED_MIP_PROBLEM) {
-	mip.optimal_value(ext_n, ext_d);
-	included = true;
-	return true;
-      }
+    Optimization_Mode mode_max_min = maximize ? MAXIMIZATION
+      : MINIMIZATION;
+    MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
+    if(mip.solve() == OPTIMIZED_MIP_PROBLEM) {
+      mip.optimal_value(ext_n, ext_d);
+      included = true;
+      return true;
     }
+
     // Here`expr' is unbounded in `*this'.
     return false;
   }
@@ -1021,17 +1017,14 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
   if (marked_empty())
     return false;
 
-  // TODO: Have to find a more efficient method.
-  if (!is_universe()) {
-    Optimization_Mode mode_max_min
-      = maximize ? MAXIMIZATION : MINIMIZATION;
-    MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
-    if(mip.solve() == OPTIMIZED_MIP_PROBLEM) {
-      g_point = mip.optimizing_point();
-      mip.evaluate_objective_function(g_point, ext_n, ext_d);
-      included = true;
-      return true;
-    }
+  Optimization_Mode mode_max_min
+    = maximize ? MAXIMIZATION : MINIMIZATION;
+  MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
+  if(mip.solve() == OPTIMIZED_MIP_PROBLEM) {
+    g_point = mip.optimizing_point();
+    mip.evaluate_objective_function(g_point, ext_n, ext_d);
+    included = true;
+    return true;
   }
   // Here`expr' is unbounded in `*this'.
   return false;
