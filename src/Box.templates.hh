@@ -227,7 +227,7 @@ Box<Interval>::add_space_dimensions_and_project(const dimension_type m) {
   const dimension_type old_space_dim = space_dimension();
   add_space_dimensions_and_embed(m);
   for (dimension_type k = m; k-- > 0; )
-      assign(seq[old_space_dim+k], 0);
+    assign(seq[old_space_dim+k], 0);
 
   assert(OK());
 }
