@@ -1,4 +1,5 @@
-/* Test C_Polyhedron Java class of the Parma Polyhedra Library Java interface.
+/* Test C_Polyhedron Java test class of the Parma Polyhedra Library Java
+   interface.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -83,41 +84,73 @@ public class C_Polyhedron_test1 {
 	C_Polyhedron poly3 = new C_Polyhedron(gs);
 
 	// Here some tests.
-	if(c_poly1.is_empty())
+	if (c_poly1.is_empty())
 	    System.out.println("c_poly1 is empty..");
 	else
 	    System.out.println("c_poly1 is not empty.");
-   	if(c_poly1.is_universe())
+   	if (c_poly1.is_universe())
 	    System.out.println("c_poly1 is universe.");
 	else
 	    System.out.println("c_poly1 is not universe.");
-	if(c_poly1.is_topologically_closed())
+	if (c_poly1.is_topologically_closed())
 	    System.out.println("c_poly1 is topologically closed.");
 	else
 	    System.out.println("c_poly1 is not topologically closed.");
-	if(c_poly1.is_bounded())
+	if (c_poly1.is_bounded())
 	    System.out.println("c_poly1 is bounded.");
 	else
 	    System.out.println("c_poly1 is not bounded.");
-	if(c_poly1.is_disjoint_from(c_poly2))
+	if (c_poly1.is_disjoint_from(c_poly2))
 	    System.out.println("c_poly1 is disjoint.");
 	else
 	    System.out.println("c_poly1 is not disjoint.");
-	if(c_poly1.bounds_from_above(le2))
+	if (c_poly1.bounds_from_above(le2))
 	    System.out.println("c_poly1 bounds from above le2.");
 	else
 	    System.out.println("c_poly1 not bounds from above le2.");
-        if(c_poly1.bounds_from_below(le2))
+        if (c_poly1.bounds_from_below(le2))
 	    System.out.println("c_poly1 bounds from below le2.");
 	else
 	    System.out.println("c_poly1 not bounds from below.");
-	if(c_poly1.contains(c_poly2))
+	if (c_poly1.contains(c_poly2))
 	    System.out.println("c_poly1 contains c_poly2.");
 	else
 	    System.out.println("c_poly1 not contains c_poly2.");
-	if(c_poly1.strictly_contains(c_poly2))
-	    System.out.println("poly strictly contains c_poly2.");
+	if (c_poly1.strictly_contains(c_poly2))
+	    System.out.println("c_poly1 strictly contains c_poly2.");
 	else
-	    System.out.println("poly not strictly contains c_poly2.");
+	    System.out.println("c_poly1 not strictly contains c_poly2.");
+        if (c_poly1.contains_integer_point())
+	    System.out.println("c_poly1 contains an integer point.");
+	else
+	    System.out.println("c_poly1 does not cointain an integer point.");
+	if (c_poly1.is_discrete())
+	    System.out.println("c_poly1 is discrete.");
+	else
+	    System.out.println("c_poly1 is not discrete.");
+	Linear_Expression le5 = new Linear_Expression_Variable(A);
+	le5.sum(new Linear_Expression_Variable(B));
+	le5.times(new Coefficient(100));
+	le5.sum(new Linear_Expression_Coefficient(new Coefficient(145)));
+	Constraint c5 = new Constraint(le1, le5,
+				       Relation_Symbol.GREATER_THAN_OR_EQUAL);
+        c_poly1.add_constraint(c5);
+
+        c_poly1.affine_image(A,le1, new Coefficient(5));
+        c_poly1.affine_preimage(A,le1, new Coefficient(5));
+        c_poly1.generalized_affine_image(le1, Relation_Symbol.EQUAL, le2);
+        c_poly1.generalized_affine_image(A, Relation_Symbol.EQUAL, le2,
+					 new Coefficient(6));
+        c_poly1.bounded_affine_image(B, le2, le3, new Coefficient(10));
+        c_poly1.bounded_affine_preimage(B, le2, le4, new Coefficient(30));
+        c_poly1.time_elapse_assign(c_poly2);
+        c_poly1.difference_assign(c_poly2);
+        c_poly1.topological_closure_assign();
+        c_poly1.poly_hull_assign(c_poly2);
+	if (c_poly1.poly_hull_assign_and_minimize(c_poly2))
+            System.out.println("c_poly1 is minimized.");
+	else
+	    System.out.println("c_poly1 is not minimized.");
+        c_poly1.intersection_assign(c_poly2);
     }
 }
