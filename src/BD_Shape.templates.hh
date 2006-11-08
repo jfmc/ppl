@@ -1022,7 +1022,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
     return false;
 
   // TODO: Have to find a more efficient method.
-  if (!is_plus_infinity(x)) {
+  if (!is_universe()) {
     Optimization_Mode mode_max_min
       = maximize ? MAXIMIZATION : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
