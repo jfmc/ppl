@@ -40,9 +40,6 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/Watchdog/src \
 @extra_includes@
 
-BUILT_SOURCES = \
-ppl_ciao.cc
-
 interface_generator_dependencies = \
 ../../ppl_interface_instantiations.m4 \
 ../../ppl_interface_generator_common.m4 \
@@ -53,7 +50,7 @@ interface_generator_dependencies = \
 ppl_interface_generator_ciao_pl.m4
 
 pkglib_LTLIBRARIES = libppl_ciao.la
-nodist_libppl_ciao_la_SOURCES = ppl_ciao.cc
+libppl_ciao_la_SOURCES = ppl_ciao.cc
 libppl_ciao_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/Watchdog/src/libpwl.la \
