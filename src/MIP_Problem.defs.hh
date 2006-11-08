@@ -97,7 +97,9 @@ public:
     Builds an MIP problem having space dimension \p dim
     from the sequence of constraints in the range
     \f$[\mathrm{first}, \mathrm{last})\f$,
-    the objective function \p obj and optimization mode \p mode.
+    the objective function \p obj and optimization mode \p mode;
+    those dimensions whose indices occur in \p int_vars are
+    constrained to take an integer value.
 
     \param dim
     The dimension of the vector space enclosing \p *this.
