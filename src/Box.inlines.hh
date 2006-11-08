@@ -33,6 +33,16 @@ template <typename Interval>
 inline
 Box<Interval>::Box(dimension_type num_dimensions, Degenerate_Element kind)
   : seq(num_dimensions), empty(kind == EMPTY), empty_up_to_date(true) {
+  // FIXME: temporary. To be removed as soon as the default
+  // constructor of Interval will do the right thing.
+  if (kind == UNIVERSE)
+    for (dimension_type i = num_dimensions; i-- > 0; ) {
+      Interval& seq_i = seq[i];
+      seq_i.lower_set_unbounded();
+      seq_i.upper_set_unbounded();
+    }
+  // END OF FIXME.
+  assert(OK());
 }
 
 template <typename Interval>
@@ -95,6 +105,14 @@ Box<Interval>::add_space_dimensions_and_embed(const dimension_type m) {
   // To embed an n-dimension space box in a (n+m)-dimension space,
   // we just add `m' new (universe) elements to the sequence.
   seq.insert(seq.end(), m, Interval());
+  // FIXME: temporary. To be removed as soon as the default
+  // constructor of Interval will do the right thing.
+  for (dimension_type sz = seq.size(), i = sz - m; i < sz; ++i) {
+    Interval& seq_i = seq[i];
+    seq_i.lower_set_unbounded();
+    seq_i.upper_set_unbounded();
+  }
+  // END OF FIXME.
   assert(OK());
 }
 
