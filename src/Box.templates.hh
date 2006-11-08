@@ -62,6 +62,12 @@ operator==(const Box<Interval>& x, const Box<Interval>& y) {
 template <typename Interval>
 bool
 Box<Interval>::OK() const {
+  if (empty_up_to_date) {
+    Box tmp = *this;
+    tmp.empty_up_to_date = false;
+    if (empty != tmp.check_empty())
+      return false;
+  }
   for (dimension_type k = seq.size(); k-- > 0; )
     if (!seq[k].OK())
       return false;
@@ -116,7 +122,18 @@ Box<Interval>::is_topologically_closed() const {
   if (is_empty())
     return true;
   for (dimension_type k = seq.size(); k-- > 0; )
-    if (!seq[k].topologicaly_closed())
+    if (!seq[k].topologically_closed())
+      return false;
+  return true;
+}
+
+template <typename Interval>
+bool
+Box<Interval>::is_discrete() const {
+  if (is_empty())
+    return true;
+  for (dimension_type k = seq.size(); k-- > 0; )
+    if (!seq[k].is_singleton())
       return false;
   return true;
 }
@@ -124,6 +141,8 @@ Box<Interval>::is_topologically_closed() const {
 template <typename Interval>
 bool
 Box<Interval>::is_bounded() const {
+  if (is_empty())
+    return true;
   for (dimension_type k = seq.size(); k-- > 0; )
     if (!seq[k].is_bounded())
       return false;
