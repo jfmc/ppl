@@ -965,15 +965,19 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
     if (!is_plus_infinity(x)) {
       if (coeff < 0)
 	coeff = -coeff;
+      // Compute the maximize/minimize of `expr'.
       N d;
-      div_round_up(d, -c.inhomogeneous_term(), coeff);
-      add_assign_r(d, d, x, ROUND_UP);
-      if (maximize)
-	numer_denom(d, ext_n, ext_d);
-      else {
-	numer_denom(d, ext_n, ext_d);
-	ext_n = -ext_n;
-      }
+      const Coefficient& b = expr.inhomogeneous_term();
+      TEMP_INTEGER(minus_b);
+      neg_assign(minus_b, b);
+      const Coefficient& sc_b = maximize ? b : minus_b;
+      assign_r(d, sc_b, ROUND_UP);
+      N coeff_expr;
+      assign_r(coeff_expr, coeff, ROUND_UP);
+      add_mul_assign_r(d, coeff_expr, x, ROUND_UP);
+      numer_denom(d, ext_n, ext_d);
+      if (!maximize)
+        ext_n = -ext_n;
       included = true;
       return true;
     }
@@ -1018,7 +1022,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
     return false;
 
   // TODO: Have to find a more efficient method.
-  if(!is_universe()) {
+  if (!is_plus_infinity(x)) {
     Optimization_Mode mode_max_min
       = maximize ? MAXIMIZATION : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
