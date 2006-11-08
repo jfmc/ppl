@@ -602,8 +602,8 @@ test16() {
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
-  DO_TEST(test03);
-  DO_TEST(test04);
+  DO_TEST_F8(test03);
+  DO_TEST_F8(test04);
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
