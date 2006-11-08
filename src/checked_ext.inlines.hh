@@ -738,6 +738,24 @@ ne_ext(const Type1& x, const Type2& y) {
   return !eq_ext<Policy1, Policy2>(x, y);
 }
 
+inline std::ostream&
+operator<<(std::ostream& os, const Not_A_Number&) {
+  os << "nan";
+  return os;
+}
+
+inline std::ostream&
+operator<<(std::ostream& os, const Minus_Infinity&) {
+  os << "-inf";
+  return os;
+}
+
+inline std::ostream&
+operator<<(std::ostream& os, const Plus_Infinity&) {
+  os << "+inf";
+  return os;
+}
+
 template <typename Policy, typename Type>
 inline Result
 output_ext(std::ostream& os, const Type& x,
@@ -745,15 +763,15 @@ output_ext(std::ostream& os, const Type& x,
   if (handle_ext_natively(Type))
     goto native;
   if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(x))) {
-    os << "nan";
+    os << NOT_A_NUMBER;
     return VC_NAN;
   }
   if (is_minf<Policy>(x)) {
-    os << "-inf";
+    os << MINUS_INFINITY;
     return V_EQ;
   }
   if (is_pinf<Policy>(x)) {
-    os << "+inf";
+    os << PLUS_INFINITY;
     return V_EQ;
   }
  native:
