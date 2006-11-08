@@ -99,7 +99,7 @@ is_unbounded(Type from_type, From& from, From_Info& from_info) {
 
 template <typename T, typename Info>
 inline void
-sign(Type type, T v, const Info& info) {
+sgn(Type type, T v, const Info& info) {
   if (info.get_boundary_property(type, UNBOUNDED))
     return type == LOWER ? -1 : 1;
   int sign = sgn(v);
