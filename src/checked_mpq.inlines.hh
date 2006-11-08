@@ -142,8 +142,22 @@ SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned char)
 SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned short)
 SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned int)
 SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, unsigned long)
-SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, float)
-SPECIALIZE_CONSTRUCT(mpq_base, mpq_class, double)
+
+template <typename Policy, typename From>
+inline Result
+construct_mpq_float(mpq_class& to, const From& from, Rounding_Dir dir) {
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(from)))
+    return set_special<Policy>(to, VC_NAN);
+  else if (is_minf<Policy>(from))
+    return construct<Policy>(to, MINUS_INFINITY, dir);
+  else if (is_pinf<Policy>(from))
+    return construct<Policy>(to, PLUS_INFINITY, dir);
+  new (&to) mpq_class(from);
+  return V_EQ;
+}
+
+SPECIALIZE_CONSTRUCT(mpq_float, mpq_class, float)
+SPECIALIZE_CONSTRUCT(mpq_float, mpq_class, double)
 
 template <typename Policy, typename From>
 inline Result
@@ -161,8 +175,22 @@ SPECIALIZE_ASSIGN(mpq_base, mpq_class, unsigned char)
 SPECIALIZE_ASSIGN(mpq_base, mpq_class, unsigned short)
 SPECIALIZE_ASSIGN(mpq_base, mpq_class, unsigned int)
 SPECIALIZE_ASSIGN(mpq_base, mpq_class, unsigned long)
-SPECIALIZE_ASSIGN(mpq_base, mpq_class, float)
-SPECIALIZE_ASSIGN(mpq_base, mpq_class, double)
+
+template <typename Policy, typename From>
+inline Result
+assign_mpq_float(mpq_class& to, const From& from, Rounding_Dir dir) {
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(from)))
+    return set_special<Policy>(to, VC_NAN);
+  else if (is_minf<Policy>(from))
+    return assign<Policy>(to, MINUS_INFINITY, dir);
+  else if (is_pinf<Policy>(from))
+    return assign<Policy>(to, PLUS_INFINITY, dir);
+  to = from;
+  return V_EQ;
+}
+
+SPECIALIZE_ASSIGN(mpq_float, mpq_class, float)
+SPECIALIZE_ASSIGN(mpq_float, mpq_class, double)
 
 template <typename Policy, typename From>
 inline Result
@@ -202,6 +230,12 @@ SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long long)
 template <typename Policy, typename From>
 inline Result
 assign_mpq_long_double(mpq_class& to, const From& from, Rounding_Dir dir) {
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(from)))
+    return set_special<Policy>(to, VC_NAN);
+  else if (is_minf<Policy>(from))
+    return assign<Policy>(to, MINUS_INFINITY, dir);
+  else if (is_pinf<Policy>(from))
+    return assign<Policy>(to, PLUS_INFINITY, dir);
   // FIXME: this is an incredibly inefficient implementation!
   std::stringstream ss;
   output_float<Policy, long double>(ss, from, Numeric_Format(), dir);

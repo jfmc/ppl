@@ -228,6 +228,12 @@ SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long long)
 template <typename Policy, typename From>
 inline Result
 assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
+  if (CHECK_P(Policy::check_nan_args, is_nan<Policy>(from)))
+    return set_special<Policy>(to, VC_NAN);
+  else if (is_minf<Policy>(from))
+    return assign<Policy>(to, MINUS_INFINITY, dir);
+  else if (is_pinf<Policy>(from))
+    return assign<Policy>(to, PLUS_INFINITY, dir);
   if (round_ignore(dir)) {
     to = from;
     return V_LGE;
