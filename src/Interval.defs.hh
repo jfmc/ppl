@@ -714,18 +714,38 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
   }
 }
 
+template <typename T1, typename T2>
+inline bool
+i_eq(const T1& x, const T2& y) {
+  if (is_empty(x))
+    return is_empty(y);
+  else if (is_empty(y))
+    return false;
+  return contains_only_integers(x) == contains_only_integers(y)
+    && eq(LOWER, lower(x), info(x), LOWER, lower(y), info(y))
+    && eq(UPPER, upper(x), info(x), UPPER, upper(y), info(y));
+}
+
+template <typename Boundary1, typename Info1,
+	  typename Boundary2, typename Info2>
+inline bool
+operator==(const Interval<Boundary1, Info1>& x,
+	   const Interval<Boundary2, Info2>& y) {
+  return i_eq(x, y);
+}
+template <typename T,
+	  typename Boundary, typename Info>
+inline bool
+operator==(const T& x, const Interval<Boundary, Info>& y) {
+  return i_eq(x, y);
+}
 template <typename Boundary, typename Info,
 	  typename T>
 inline bool
 operator==(const Interval<Boundary, Info>& x, const T& y) {
-  if (x.is_empty())
-    return is_empty(y);
-  else if (is_empty(y))
-    return false;
-  return x.contains_only_integers() == contains_only_integers(y)
-    && eq(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
-    && eq(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y));
+  return i_eq(x, y);
 }
+
 
 template <typename Boundary, typename Info,
 	  typename T>
