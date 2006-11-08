@@ -399,6 +399,8 @@ struct Scalar_As_Interval_Policy {
 
 typedef Interval_Info_Null<Scalar_As_Interval_Policy> Scalar_As_Interval_Info;
 
+static const Scalar_As_Interval_Info& SCALAR_INFO = *static_cast<Scalar_As_Interval_Info*>(0);
+
 template <typename T>
 inline const T&
 lower(const T& x) {
@@ -412,7 +414,7 @@ upper(const T& x) {
 template <typename T>
 inline const Scalar_As_Interval_Info&
 info(const T&) {
-  return *static_cast<Scalar_As_Interval_Info*>(0);
+  return SCALAR_INFO;
 }
 template <typename T>
 inline I_Result
@@ -434,11 +436,6 @@ inline Integer_Property::Value
 integer_property(const T& x) {
   return is_integer(x) ? ONLY_INTEGERS_NORMALIZED : NOT_SINGLETON_INTEGER;
 }
-template <typename T>
-inline bool
-is_singleton(const T& x) {
-  return !is_not_a_number(x);
-}
 
 template <typename T>
 inline bool
@@ -450,6 +447,13 @@ maybe_check_empty(const T& x) {
     return false;
   }
 }
+
+template <typename T>
+inline bool
+is_singleton(const T& x) {
+  return !maybe_check_empty(x);
+}
+
 
 template <typename T>
 inline Integer_Property::Value
@@ -734,6 +738,8 @@ template <typename Boundary, typename Info,
 	  typename T>
 inline bool
 contains(const Interval<Boundary, Info>& x, const T& y) {
+  normalize_integer(x);
+  normalize_integer(y);
   if (is_empty(y))
     return true;
   if (x.is_empty())
@@ -750,6 +756,8 @@ template <typename Boundary, typename Info,
 	  typename T>
 inline bool
 strictly_contains(const Interval<Boundary, Info>& x, const T& y) {
+  normalize_integer(x);
+  normalize_integer(y);
   if (is_empty(y))
     return !x.is_empty();
   if (x.is_empty())
@@ -795,6 +803,8 @@ template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
 inline I_Result
 add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  normalize_integer(x);
+  normalize_integer(y);
   if (maybe_check_empty(x) || maybe_check_empty(y))
     return to.set_empty();
   To_Info to_info;
@@ -816,6 +826,8 @@ template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
 inline I_Result
 sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  normalize_integer(x);
+  normalize_integer(y);
   if (maybe_check_empty(x) || maybe_check_empty(y))
     return to.set_empty();
   To_Info to_info;
@@ -839,6 +851,134 @@ sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		    UPPER, upper(x), info(x),
 		    LOWER, lower(y), info(y));
   }
+  if (To_Info::store_integer
+      && lazy_integer_property(x) >= ONLY_INTEGERS_TO_NORMALIZE
+      && lazy_integer_property(y) >= ONLY_INTEGERS_TO_NORMALIZE)
+    to_info.set_interval_property(INTEGER, ONLY_INTEGERS_TO_NORMALIZE);
+  to.info() = to_info;
+  return combine(rl, ru);
+}
+
+/**
++---+-----------+-----------------+-----------+
+| * |    -y-    |       -y+       |    +y+    |
++---+-----------+-----------------+-----------+
+|-x-|xu*yu,xl*yl|   xl*yu,xl*yl   |xl*yu,xu*yl|
++---+-----------+-----------------+-----------+
+|-x+|xu*yl,xl*yl|min(xl*yu,xu*yl),|xl*yu,xu*yu|
+|   |           |max(xl*yl,xu*yu) |           |
++---+-----------+-----------------+-----------+
+|+x+|xu*yl,xl*yu|   xu*yl,xu*yu   |xl*yl,xu*yu|
++---+-----------+-----------------+-----------+
+**/
+template <typename To_Boundary, typename To_Info,
+	  typename From1, typename From2>
+inline I_Result
+mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  normalize_integer(x);
+  normalize_integer(y);
+  if (maybe_check_empty(x) || maybe_check_empty(y))
+    return to.set_empty();
+  To_Info to_info;
+  Result rl, ru;
+  static To_Boundary to_lower;
+  if (ge(LOWER, lower(x), info(x), LOWER, 0, SCALAR_INFO)) {
+    if (ge(LOWER, lower(y), info(y), LOWER, 0, SCALAR_INFO)) {
+      rl = mul_assign(LOWER, to_lower, to_info,
+		      LOWER, lower(x), info(x),
+		      LOWER, lower(y), info(y));
+      ru = mul_assign(UPPER, to.upper(), to_info,
+		      UPPER, upper(x), info(x),
+		      UPPER, upper(y), info(y));
+    }
+    else if (le(UPPER, upper(y), info(y), UPPER, 0, SCALAR_INFO)) {
+      rl = mul_assign(LOWER, to_lower, to_info,
+		      UPPER, upper(x), info(x),
+		      LOWER, lower(y), info(y));
+      ru = mul_assign(UPPER, to.upper(), to_info,
+		      LOWER, lower(x), info(x),
+		      UPPER, upper(y), info(y));
+    }
+    else {
+      rl = mul_assign(LOWER, to_lower, to_info,
+		      UPPER, upper(x), info(x),
+		      LOWER, lower(y), info(y));
+      ru = mul_assign(UPPER, to.upper(), to_info,
+		      UPPER, upper(x), info(x),
+		      UPPER, upper(y), info(y));
+    }
+  }
+  else if (le(UPPER, upper(x), info(x), UPPER, 0, SCALAR_INFO)) {
+    if (ge(LOWER, lower(y), info(y), LOWER, 0, SCALAR_INFO)) {
+      rl = mul_assign(LOWER, to_lower, to_info,
+		      LOWER, lower(x), info(x),
+		      UPPER, upper(y), info(y));
+      ru = mul_assign(UPPER, to.upper(), to_info,
+		      UPPER, upper(x), info(x),
+		      LOWER, lower(y), info(y));
+    }
+    else if (le(UPPER, upper(y), info(y), UPPER, 0, SCALAR_INFO)) {
+      rl = mul_assign(LOWER, to_lower, to_info,
+		      UPPER, upper(x), info(x),
+		      UPPER, upper(y), info(y));
+      ru = mul_assign(UPPER, to.upper(), to_info,
+		      LOWER, lower(x), info(x),
+		      LOWER, lower(y), info(y));
+    }
+    else {
+      rl = mul_assign(LOWER, to_lower, to_info,
+		      LOWER, lower(x), info(x),
+		      UPPER, upper(y), info(y));
+      ru = mul_assign(UPPER, to.upper(), to_info,
+		      LOWER, lower(x), info(x),
+		      LOWER, lower(y), info(y));
+    }
+  }
+  else {
+    if (ge(LOWER, lower(y), info(y), LOWER, 0, SCALAR_INFO)) {
+      rl = mul_assign(LOWER, to_lower, to_info,
+		      LOWER, lower(x), info(x),
+		      UPPER, upper(y), info(y));
+      ru = mul_assign(UPPER, to.upper(), to_info,
+		      UPPER, upper(x), info(x),
+		      UPPER, upper(y), info(y));
+    }
+    else if (le(UPPER, upper(y), info(y), UPPER, 0, SCALAR_INFO)) {
+      rl = mul_assign(LOWER, to_lower, to_info,
+		      UPPER, upper(x), info(x),
+		      LOWER, lower(y), info(y));
+      ru = mul_assign(UPPER, to.upper(), to_info,
+		      LOWER, lower(x), info(x),
+		      LOWER, lower(y), info(y));
+      }
+    else {
+      static To_Boundary tmp;
+      To_Info tmp_info;
+      Result tmp_r;
+      tmp_r = mul_assign(LOWER, tmp, tmp_info,
+			 UPPER, upper(x), info(x),
+			 LOWER, lower(y), info(y));
+      rl = mul_assign(LOWER, to_lower, to_info,
+		      LOWER, lower(x), info(x),
+		      UPPER, upper(y), info(y));
+      if (gt(LOWER, to_lower, to_info, LOWER, tmp, tmp_info)) {
+	to_lower = tmp;
+	rl = tmp_r;
+      }
+      tmp_info.clear();
+      tmp_r = mul_assign(UPPER, tmp, tmp_info,
+			 UPPER, upper(x), info(x),
+			 UPPER, upper(y), info(y));
+      ru = mul_assign(UPPER, to.upper(), to_info,
+		      LOWER, lower(x), info(x),
+		      LOWER, lower(y), info(y));
+      if (lt(UPPER, to.upper(), to_info, UPPER, tmp, tmp_info)) {
+	to.upper() = tmp;
+	ru = tmp_r;
+      }
+    }
+  }
+  assign_or_swap(to.lower(), to_lower);
   if (To_Info::store_integer
       && lazy_integer_property(x) >= ONLY_INTEGERS_TO_NORMALIZE
       && lazy_integer_property(y) >= ONLY_INTEGERS_TO_NORMALIZE)
