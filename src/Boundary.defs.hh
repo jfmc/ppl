@@ -101,13 +101,11 @@ set_unbounded(Type to_type, To& to, To_Info& to_info) {
     else
       r = assign_r(to, PLUS_INFINITY, ROUND_NOT_NEEDED);
     assert(r == V_EQ);
-    if (to_info.store_open) {
-      to_info.set_boundary_property(to_type, OPEN);
-      return V_EQ;
-    }
-    else
+    if (!to_info.store_open)
       return to_type == LOWER ? V_GT : V_LT;
+    to_info.set_boundary_property(to_type, OPEN);
   }
+  return V_EQ;
 }
 
 template <typename From, typename From_Info>
