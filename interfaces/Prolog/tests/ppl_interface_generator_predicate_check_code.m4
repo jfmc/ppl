@@ -342,12 +342,13 @@ m4_define(`ppl_@CLASS@_get_disjuncts_code',
 `
 ppl_@CLASS@_get_disjuncts_2_test :-
   (
-   choose_test(TEST_DATA, 1),
+   TEST_DATA = test06,
    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
    (
      clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
      ppl_@CLASS@_get_disjuncts(PPS, [PS]),
-     ppl_@DISJUNCT@_OK(PS),
+     ppl_@CLASS@_OK(PPS),
+     ppl_@DISJUNCT@_space_dimension(PS, _N),
      (predicate_exists(ppl_new_@ALT_DISJUNCT@_from_@CONSTRAINER@s)
      ->
        (clean_ppl_new_@ALT_DISJUNCT@_from_@CONSTRAINER@s(RS, PS1),
@@ -473,6 +474,12 @@ ppl_@CLASS@_@SIMPLIFY@_1_test :-
      ;
        true
      ),
+     (predicate_exists(ppl_@CLASS@_geometrically_equals_@CLASS@)
+     ->
+       ppl_@CLASS@_geometrically_equals_@CLASS@(PS, PS1)
+     ;
+       true
+     ),
      ppl_delete_@CLASS@(PS)
    ->
     fail ; true)
@@ -546,22 +553,29 @@ ppl_@CLASS@_@MAXMIN@_with_point_6_test :-
      ->
        (ppl_@CLASS@_@MAXMIN@_with_point(PS, LE, N, D, B, G),
         B == Bexptd, N == Nexptd, D == Dexptd,
-        clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
-                                                             empty, PSG),
-        clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
-                                                             empty, PSGexptd),
-        (G = closure_point(V)
+        (predicate_exists(ppl_@CLASS@_add_@GENERATOR@)
         ->
-          (Gexptd = closure_point(Vexptd),
-           ppl_@CLASS@_add_@GENERATOR@(PSG, point(V)),
-           ppl_@CLASS@_add_@GENERATOR@(PSGexptd, point(Vexptd)))
+          clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+                                                             empty, PSG),
+          clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+                                                             empty, PSGexptd),
+          (G = closure_point(V)
+          ->
+            (Gexptd = closure_point(Vexptd),
+             ppl_@CLASS@_add_@GENERATOR@(PSG, point(V)),
+             ppl_@CLASS@_add_@GENERATOR@(PSGexptd, point(Vexptd)))
+          ;
+            (ppl_@CLASS@_add_@GENERATOR@(PSG, G),
+             ppl_@CLASS@_add_@GENERATOR@(PSGexptd, Gexptd))
+          ),
+          ppl_@CLASS@_equals_@CLASS@(PSG, PSGexptd),
+          ppl_delete_@CLASS@(PSG),
+          ppl_delete_@CLASS@(PSGexptd)
         ;
-          (ppl_@CLASS@_add_@GENERATOR@(PSG, G),
-           ppl_@CLASS@_add_@GENERATOR@(PSGexptd, Gexptd))
-        ),
-        ppl_@CLASS@_equals_@CLASS@(PSG, PSGexptd))
+          true
+        ))
      ;
-       \+ ppl_@CLASS@_@MAXMIN@_with_point(PS, LE, N, _, _, _)
+        \+ ppl_@CLASS@_@MAXMIN@_with_point(PS, LE, N, _, _, _)
      ),
      ppl_@CLASS@_OK(PS),
      ppl_delete_@CLASS@(PS)
@@ -602,13 +616,11 @@ ppl_@CLASS@_add_@ADD_REPRESENT@s_2_test :-
   (
    choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
    (
-     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS,
-                         Space_Dim),
-     ppl_build_test_data(TEST_DATA2, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS1,
-                         Space_Dim),
+     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
+     ppl_build_test_data(TEST_DATA2, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS1),
      ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
-     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
-     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
+     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS),
+     ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS1),
      ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
      ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS1),
      ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS1),
@@ -628,8 +640,8 @@ ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_2_test :-
   (
    choose_2_tests(TEST_DATA1, TEST_DATA2, Dim),
    (
-     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS, Dim),
-     ppl_build_test_data(TEST_DATA2, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS1, Dim),
+     ppl_build_test_data(TEST_DATA1, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
+     ppl_build_test_data(TEST_DATA2, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS1),
      ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS),
      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Dim, U_or_E, PS1),
@@ -1098,6 +1110,7 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_to
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_5_test :-
   (
    choose_2_tests(TEST_DATA1, TEST_DATA2, Dim),
+   Dim > 0,
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Dim),
@@ -1106,8 +1119,10 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_5_test
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS2, PS2_Copy),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1a),
      make_vars(Dim, [Var|_]),
-     ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens(PS1, PS2, [Var = 1], 1, T),
-     ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens(PS1a, PS2, [Var = 1], 0, T1),
+     ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens(
+                                                  PS1, PS2, [Var = 1], 1, T),
+     ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens(
+                                                  PS1a, PS2, [Var = 1], 0, T1),
      ppl_@CLASS@_wdn_exn_with_tokens_check_code(PS1, PS1a, PS1_Copy,
                                                 PS2, PS2_Copy, T, T1)
    ->
