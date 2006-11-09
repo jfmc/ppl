@@ -36,14 +36,15 @@ template <typename Other_Interval>
 inline
 Box<Interval>::Box(const Box<Other_Interval>& y)
   : seq(y.space_dimension()) {
+  Box& x = *this;
   if (y.marked_empty())
-    set_empty();
+    x.set_empty();
   else {
-    empty_up_to_date = false;
+    x.empty_up_to_date = false;
     for (dimension_type k = y.space_dimension(); k-- > 0; )
-      assign(seq[k], y.seq[k]);
+      assign(x.seq[k], y.seq[k]);
   }
-  assert(OK());
+  assert(x.OK());
 }
 
 template <typename Interval>
@@ -62,14 +63,15 @@ operator==(const Box<Interval>& x, const Box<Interval>& y) {
 template <typename Interval>
 bool
 Box<Interval>::OK() const {
-  if (empty_up_to_date && !empty) {
-    Box tmp = *this;
+  const Box& x = *this;
+  if (x.empty_up_to_date && !x.empty) {
+    Box tmp = x;
     tmp.empty_up_to_date = false;
     if (tmp.check_empty())
       return false;
   }
-  for (dimension_type k = seq.size(); k-- > 0; )
-    if (!seq[k].OK())
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    if (!x.seq[k].OK())
       return false;
   return true;
 }
@@ -77,17 +79,18 @@ Box<Interval>::OK() const {
 template <typename Interval>
 dimension_type
 Box<Interval>::affine_dimension() const {
-  dimension_type d = space_dimension();
+  const Box& x = *this;
+  dimension_type d = x.space_dimension();
   // A zero-space-dim box always has affine dimension zero.
   if (d == 0)
     return 0;
 
   // An empty box has affine dimension zero.
-  if (is_empty())
+  if (x.is_empty())
     return 0;
 
   for (dimension_type k = d; k-- > 0; )
-    if (seq[k].is_singleton())
+    if (x.seq[k].is_singleton())
       --d;
 
   return d;
@@ -96,22 +99,24 @@ Box<Interval>::affine_dimension() const {
 template <typename Interval>
 bool
 Box<Interval>::check_empty() const {
-  assert(!empty_up_to_date);
-  empty_up_to_date = true;
-  for (dimension_type k = seq.size(); k-- > 0; )
-    if (seq[k].is_empty()) {
-      empty = true;
+  const Box& x = *this;
+  assert(!x.empty_up_to_date);
+  x.empty_up_to_date = true;
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    if (x.seq[k].is_empty()) {
+      x.empty = true;
       return true;
     }
-  empty = false;
+  x.empty = false;
   return false;
 }
 
 template <typename Interval>
 bool
 Box<Interval>::is_universe() const {
-  for (dimension_type k = seq.size(); k-- > 0; )
-    if (!seq[k].is_universe())
+  const Box& x = *this;
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    if (!x.seq[k].is_universe())
       return false;
   return true;
 }
@@ -119,10 +124,11 @@ Box<Interval>::is_universe() const {
 template <typename Interval>
 bool
 Box<Interval>::is_topologically_closed() const {
-  if (is_empty())
+  const Box& x = *this;
+  if (x.is_empty())
     return true;
-  for (dimension_type k = seq.size(); k-- > 0; )
-    if (!seq[k].topologically_closed())
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    if (!x.seq[k].topologically_closed())
       return false;
   return true;
 }
@@ -130,10 +136,11 @@ Box<Interval>::is_topologically_closed() const {
 template <typename Interval>
 bool
 Box<Interval>::is_discrete() const {
-  if (is_empty())
+  const Box& x = *this;
+  if (x.is_empty())
     return true;
-  for (dimension_type k = seq.size(); k-- > 0; )
-    if (!seq[k].is_singleton())
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    if (!x.seq[k].is_singleton())
       return false;
   return true;
 }
@@ -141,10 +148,11 @@ Box<Interval>::is_discrete() const {
 template <typename Interval>
 bool
 Box<Interval>::is_bounded() const {
-  if (is_empty())
+  const Box& x = *this;
+  if (x.is_empty())
     return true;
-  for (dimension_type k = seq.size(); k-- > 0; )
-    if (!seq[k].is_bounded())
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    if (!x.seq[k].is_bounded())
       return false;
   return true;
 }
@@ -152,8 +160,9 @@ Box<Interval>::is_bounded() const {
 template <typename Interval>
 bool
 Box<Interval>::contains_integer_point() const {
-  for (dimension_type k = seq.size(); k-- > 0; )
-    if (!seq[k].contains_integer_point())
+  const Box& x = *this;
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    if (!x.seq[k].contains_integer_point())
       return false;
   return true;
 }
@@ -161,79 +170,76 @@ Box<Interval>::contains_integer_point() const {
 template <typename Interval>
 void
 Box<Interval>::intersection_assign(const Box& y) {
-  const dimension_type space_dim = space_dimension();
-
+  Box& x = *this;
   // Dimension-compatibility check.
-  if (space_dim != y.space_dimension())
-    throw_dimension_incompatible("intersection_assign(y)", y);
+  if (x.space_dimension() != y.space_dimension())
+    x.throw_dimension_incompatible("intersection_assign(y)", y);
 
   // If one of the two boxes is empty, the intersection is empty.
-  if (marked_empty())
+  if (x.marked_empty())
     return;
   if (y.marked_empty()) {
-    set_empty();
+    x.set_empty();
     return;
   }
 
-  for (dimension_type k = seq.size(); k-- > 0; )
-    intersect_assign(seq[k], y.seq[k]);
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    intersect_assign(x.seq[k], y.seq[k]);
 
-  assert(OK());
+  assert(x.OK());
 }
 
 template <typename Interval>
 void
 Box<Interval>::box_hull_assign(const Box& y) {
-  const dimension_type space_dim = space_dimension();
-
+  Box& x = *this;
   // Dimension-compatibility check.
-  if (space_dim != y.space_dimension())
-    throw_dimension_incompatible("box_hull_assign(y)", y);
+  if (x.space_dimension() != y.space_dimension())
+    x.throw_dimension_incompatible("box_hull_assign(y)", y);
 
   // The hull of a box with an empty box is equal to the first box.
   if (y.marked_empty())
     return;
-  if (marked_empty()) {
-    *this = y;
+  if (x.marked_empty()) {
+    x = y;
     return;
   }
 
-  for (dimension_type k = seq.size(); k-- > 0; )
-    convex_hull_assign(seq[k], y.seq[k]);
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    convex_hull_assign(x.seq[k], y.seq[k]);
 
-  assert(OK());
+  assert(x.OK());
 }
 
 template <typename Interval>
 void
 Box<Interval>::concatenate_assign(const Box& y) {
   Box& x = *this;
-
   const dimension_type x_space_dim = x.space_dimension();
   const dimension_type y_space_dim = y.space_dimension();
 
   // If `y' is an empty 0-dim space box let `*this' become empty.
   if (y_space_dim == 0 && y.marked_empty()) {
-    set_empty();
+    x.set_empty();
     return;
   }
 
   // If `x' is an empty 0-dim space box, then it is sufficient to adjust
   // the dimension of the vector space.
-  if (x_space_dim == 0 && marked_empty()) {
+  if (x_space_dim == 0 && x.marked_empty()) {
     x.seq.insert(x.seq.end(), y_space_dim, Interval());
-    assert(OK());
+    assert(x.OK());
     return;
   }
 
-  seq.reserve(x_space_dim + y_space_dim);
+  x.seq.reserve(x_space_dim + y_space_dim);
   std::copy(y.seq.begin(), y.seq.end(),
 	    std::back_insert_iterator<Sequence>(x.seq));
 
   if (x.marked_empty() && !y.marked_empty())
     x.empty_up_to_date = false;
 
-  assert(OK());
+  assert(x.OK());
 }
 
 template <typename Interval>
@@ -243,40 +249,43 @@ Box<Interval>::add_space_dimensions_and_project(const dimension_type m) {
   if (m == 0)
     return;
 
-  const dimension_type old_space_dim = space_dimension();
-  add_space_dimensions_and_embed(m);
+  Box& x = *this;
+  const dimension_type old_space_dim = x.space_dimension();
+  x.add_space_dimensions_and_embed(m);
   for (dimension_type k = m; k-- > 0; )
-    assign(seq[old_space_dim+k], 0);
+    assign(x.seq[old_space_dim+k], 0);
 
-  assert(OK());
+  assert(x.OK());
 }
 
 template <typename Interval>
 inline void
 Box<Interval>::remove_space_dimensions(const Variables_Set& to_be_removed) {
+  Box& x = *this;
   // The removal of no dimensions from any box is a no-op.
   // Note that this case also captures the only legal removal of
   // space dimensions from a box in a zero-dimensional space.
   if (to_be_removed.empty()) {
-    assert(OK());
+    assert(x.OK());
     return;
   }
 
-  const dimension_type old_space_dim = space_dimension();
+  const dimension_type old_space_dim = x.space_dimension();
 
   // Dimension-compatibility check.
   const dimension_type tbr_space_dim = to_be_removed.space_dimension();
   if (old_space_dim < tbr_space_dim)
-    throw_dimension_incompatible("remove_space_dimensions(vs)", tbr_space_dim);
+    x.throw_dimension_incompatible("remove_space_dimensions(vs)",
+				   tbr_space_dim);
 
   const dimension_type new_space_dim = old_space_dim - to_be_removed.size();
 
   // If the box is empty (this must be detected), then resizing is all
   // what is needed.  If it is not empty and we are removing _all_ the
   // dimensions then, again, resizing suffices.
-  if (is_empty() || new_space_dim == 0) {
-    seq.resize(new_space_dim);
-    assert(OK());
+  if (x.is_empty() || new_space_dim == 0) {
+    x.seq.resize(new_space_dim);
+    assert(x.OK());
     return;
   }
 
@@ -290,38 +299,40 @@ Box<Interval>::remove_space_dimensions(const Variables_Set& to_be_removed) {
     dimension_type next = i->id();
     // All intervals in between are moved to the left.
     while (src < next)
-      seq[dst++].swap(seq[src++]);
+      x.seq[dst++].swap(x.seq[src++]);
     ++src;
   }
   // Moving the remaining intervals.
   while (src < old_space_dim)
-    seq[dst++].swap(seq[src++]);
+    x.seq[dst++].swap(x.seq[src++]);
 
   assert(dst == new_space_dim);
-  seq.resize(new_space_dim);
+  x.seq.resize(new_space_dim);
 
-  assert(OK());
+  assert(x.OK());
 }
 
 template <typename Interval>
 void
 Box<Interval>::remove_higher_space_dimensions(const dimension_type new_dim) {
+  Box& x = *this;
   // Dimension-compatibility check: the variable having
   // maximum index is the one occurring last in the set.
-  if (new_dim > space_dimension())
-    throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
-				 new_dim);
+  const dimension_type old_dim = x.space_dimension();
+  if (new_dim > old_dim)
+    x.throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
+				   new_dim);
 
   // The removal of no dimensions from any box is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a zero-dim space box.
-  if (new_dim == space_dimension()) {
-    assert(OK());
+  if (new_dim == old_dim) {
+    assert(x.OK());
     return;
   }
 
-  seq.erase(seq.begin() + new_dim, seq.end());
-  assert(OK());
+  x.seq.erase(x.seq.begin() + new_dim, x.seq.end());
+  assert(x.OK());
 }
 
 template <typename Interval>
@@ -329,10 +340,11 @@ void
 Box<Interval>::add_constraint(const Constraint& c) {
   using Implementation::BD_Shapes::div_round_up;
 
+  Box& x = *this;
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
-  if (c_space_dim > space_dimension())
-    throw_dimension_incompatible("add_constraint(c)", c);
+  if (c_space_dim > x.space_dimension())
+    x.throw_dimension_incompatible("add_constraint(c)", c);
 
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
@@ -346,7 +358,7 @@ Box<Interval>::add_constraint(const Constraint& c) {
   if (c_num_vars == 0) {
     // Dealing with a trivial constraint.
     if (c.inhomogeneous_term() < 0)
-      set_empty();
+      x.set_empty();
     return;
   }
 
@@ -365,7 +377,7 @@ Box<Interval>::add_constraint(const Constraint& c) {
   // Turn `n/d' into `-n/d'.
   q = -q;
 
-  Interval& seq_c = seq[c_only_var-1];
+  Interval& seq_c = x.seq[c_only_var-1];
   const Constraint::Type c_type = c.type();
   switch (c_type) {
   case Constraint::EQUALITY:
@@ -378,16 +390,17 @@ Box<Interval>::add_constraint(const Constraint& c) {
     refine(seq_c, (d > 0) ? GREATER_THAN : LESS_THAN, q);
     break;
   }
-  assert(OK());
+  assert(x.OK());
 }
 
 template <typename Interval>
 void
 Box<Interval>::add_constraints(const Constraint_System& cs) {
+  Box& x = *this;
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
-    add_constraint(*i);
-  assert(OK());
+    x.add_constraint(*i);
+  assert(x.OK());
 }
 
 template <typename Interval>
@@ -511,8 +524,9 @@ template <typename Iterator>
 void
 Box<Interval>::CC76_widening_assign(const Box& y,
 				    Iterator first, Iterator last) {
-  for (dimension_type i = seq.size(); i-- > 0; ) {
-    Interval& x_seq_i = seq[i];
+  Box& x = *this;
+  for (dimension_type i = x.seq.size(); i-- > 0; ) {
+    Interval& x_seq_i = x.seq[i];
     const Interval& y_seq_i = y.seq[i];
 
     // Upper bound.
@@ -546,7 +560,7 @@ Box<Interval>::CC76_widening_assign(const Box& y,
 	x_lb = *--k;
     }
   }
-  assert(OK());
+  assert(x.OK());
 }
 
 template <typename Interval>
@@ -559,22 +573,24 @@ Box<Interval>::CC76_widening_assign(const Box& y) {
     typename Interval::boundary_type(1),
     typename Interval::boundary_type(2)
   };
-  CC76_widening_assign(y,
-		       stop_points,
-		       stop_points
-		       + sizeof(stop_points)/sizeof(stop_points[0]));
+  Box& x = *this;
+  x.CC76_widening_assign(y,
+			 stop_points,
+			 stop_points
+			 + sizeof(stop_points)/sizeof(stop_points[0]));
 }
 
 template <typename Interval>
 Constraint_System
 Box<Interval>::constraints() const {
+  const Box& x = *this;
   Constraint_System cs;
-  const dimension_type space_dim = space_dimension();
+  const dimension_type space_dim = x.space_dimension();
   if (space_dim == 0) {
-    if (is_empty())
+    if (x.is_empty())
       cs = Constraint_System::zero_dim_empty();
   }
-  else if (is_empty())
+  else if (x.is_empty())
     cs.insert(0*Variable(space_dim-1) <= -1);
   else {
     // KLUDGE: in the future `cs' will be constructed of the right dimension.
@@ -585,13 +601,13 @@ Box<Interval>::constraints() const {
       bool closed = false;
       Coefficient n;
       Coefficient d;
-      if (get_lower_bound(k, closed, n, d)) {
+      if (x.get_lower_bound(k, closed, n, d)) {
 	if (closed)
 	  cs.insert(d*Variable(k) >= n);
 	else
 	  cs.insert(d*Variable(k) > n);
       }
-      if (get_upper_bound(k, closed, n, d)) {
+      if (x.get_upper_bound(k, closed, n, d)) {
 	if (closed)
 	  cs.insert(d*Variable(k) <= n);
 	else
@@ -626,21 +642,23 @@ template <typename Interval>
 void
 Box<Interval>::throw_dimension_incompatible(const char* method,
 					    const Box& y) const {
+  const Box& x = *this;
   std::ostringstream s;
   s << "PPL::Box::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension()
+    << "this->space_dimension() == " << x.space_dimension()
     << ", y->space_dimension() == " << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
 template <typename Interval>
 void
-Box<Interval>::throw_dimension_incompatible(const char* method,
-					    dimension_type required_dim)
-  const {
+Box<Interval>
+::throw_dimension_incompatible(const char* method,
+			       dimension_type required_dim) const {
+  const Box& x = *this;
   std::ostringstream s;
   s << "PPL::Box::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension()
+    << "this->space_dimension() == " << x.space_dimension()
     << ", required dimension == " << required_dim << ".";
   throw std::invalid_argument(s.str());
 }
@@ -649,9 +667,10 @@ template <typename Interval>
 void
 Box<Interval>::throw_dimension_incompatible(const char* method,
 					    const Constraint& c) const {
+  const Box& x = *this;
   std::ostringstream s;
   s << "PPL::Box::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension()
+    << "this->space_dimension() == " << x.space_dimension()
     << ", c->space_dimension == " << c.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
@@ -660,9 +679,10 @@ template <typename Interval>
 void
 Box<Interval>::throw_dimension_incompatible(const char* method,
 					    const Generator& g) const {
+  const Box& x = *this;
   std::ostringstream s;
   s << "PPL::Box::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension()
+    << "this->space_dimension() == " << x.space_dimension()
     << ", g->space_dimension == " << g.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
@@ -692,9 +712,10 @@ void
 Box<Interval>::throw_dimension_incompatible(const char* method,
 					    const char* name_row,
 					    const Linear_Expression& y) const {
+  const Box& x = *this;
   std::ostringstream s;
   s << "PPL::Box::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension()
+    << "this->space_dimension() == " << x.space_dimension()
     << ", " << name_row << "->space_dimension() == "
     << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());

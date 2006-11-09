@@ -35,14 +35,15 @@ Box<Interval>::Box(dimension_type num_dimensions, Degenerate_Element kind)
   : seq(num_dimensions), empty(kind == EMPTY), empty_up_to_date(true) {
   // FIXME: temporary. To be removed as soon as the default
   // constructor of Interval will do the right thing.
+  Box& x = *this;
   if (kind == UNIVERSE)
     for (dimension_type i = num_dimensions; i-- > 0; ) {
-      Interval& seq_i = seq[i];
+      Interval& seq_i = x.seq[i];
       seq_i.lower_set_unbounded();
       seq_i.upper_set_unbounded();
     }
   // END OF FIXME.
-  assert(OK());
+  assert(this->OK());
 }
 
 template <typename Interval>
@@ -55,44 +56,51 @@ template <typename Interval>
 inline
 Box<Interval>::Box(const Constraint_System& cs)
   : seq(cs.space_dimension()), empty_up_to_date(false) {
-  add_constraints(cs);
+  Box& x = *this;
+  x.add_constraints(cs);
 }
 
 template <typename Interval>
 inline dimension_type
 Box<Interval>::space_dimension() const {
-  return seq.size();
+  const Box& x = *this;
+  return x.seq.size();
 }
 
 template <typename Interval>
 inline const Interval&
 Box<Interval>::operator[](const dimension_type k) const {
-  assert(k < seq.size());
-  return seq[k];
+  const Box& x = *this;
+  assert(k < x.seq.size());
+  return x.seq[k];
 }
 
 template <typename Interval>
 inline bool
 Box<Interval>::marked_empty() const {
-  return empty_up_to_date && empty;
+  const Box& x = *this;
+  return x.empty_up_to_date && x.empty;
 }
 
 template <typename Interval>
 inline bool
 Box<Interval>::is_empty() const {
-  return empty_up_to_date ? empty : check_empty();
+  const Box& x = *this;
+  return x.empty_up_to_date ? x.empty : x.check_empty();
 }
 
 template <typename Interval>
 inline void
 Box<Interval>::upper_bound_assign(const Box& y) {
-  box_hull_assign(y);
+  Box& x = *this;
+  x.box_hull_assign(y);
 }
 
 template <typename Interval>
 Constraint_System
 Box<Interval>::minimized_constraints() const {
-  return constraints();
+  const Box& x = *this;
+  return x.constraints();
 }
 
 template <typename Interval>
@@ -102,18 +110,19 @@ Box<Interval>::add_space_dimensions_and_embed(const dimension_type m) {
   if (m == 0)
     return;
 
+  Box& x = *this;
   // To embed an n-dimension space box in a (n+m)-dimension space,
   // we just add `m' new (universe) elements to the sequence.
-  seq.insert(seq.end(), m, Interval());
+  x.seq.insert(x.seq.end(), m, Interval());
   // FIXME: temporary. To be removed as soon as the default
   // constructor of Interval will do the right thing.
-  for (dimension_type sz = seq.size(), i = sz - m; i < sz; ++i) {
-    Interval& seq_i = seq[i];
+  for (dimension_type sz = x.seq.size(), i = sz - m; i < sz; ++i) {
+    Interval& seq_i = x.seq[i];
     seq_i.lower_set_unbounded();
     seq_i.upper_set_unbounded();
   }
   // END OF FIXME.
-  assert(OK());
+  assert(x.OK());
 }
 
 template <typename Interval>
@@ -126,8 +135,9 @@ template <typename Interval>
 inline bool
 Box<Interval>::get_lower_bound(const dimension_type k, bool& closed,
 			       Coefficient& n, Coefficient& d) const {
-  assert(k < seq.size());
-  const Interval& seq_k = seq[k];
+  const Box& x = *this;
+  assert(k < x.seq.size());
+  const Interval& seq_k = x.seq[k];
 
   if (seq_k.lower_is_unbounded())
     return false;
@@ -146,8 +156,9 @@ template <typename Interval>
 inline bool
 Box<Interval>::get_upper_bound(const dimension_type k, bool& closed,
 			       Coefficient& n, Coefficient& d) const {
-  assert(k < seq.size());
-  const Interval& seq_k = seq[k];
+  const Box& x = *this;
+  assert(k < x.seq.size());
+  const Interval& seq_k = x.seq[k];
 
   if (seq_k.upper_is_unbounded())
     return false;
@@ -165,7 +176,8 @@ Box<Interval>::get_upper_bound(const dimension_type k, bool& closed,
 template <typename Interval>
 inline void
 Box<Interval>::set_empty() {
-  empty = empty_up_to_date = true;
+  Box& x = *this;
+  x.empty = x.empty_up_to_date = true;
 }
 
 template <typename Interval>
@@ -173,15 +185,16 @@ inline void
 Box<Interval>::raise_lower_bound(const dimension_type k, const bool closed,
 				 Coefficient_traits::const_reference n,
 				 Coefficient_traits::const_reference d) {
-  assert(k < seq.size());
+  Box& x = *this;
+  assert(k < x.seq.size());
   assert(d != 0);
   mpq_class q;
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
-  if (refine(seq[k], (closed ? GREATER_THAN_OR_EQUAL : GREATER_THAN), q)
+  if (refine(x.seq[k], (closed ? GREATER_THAN_OR_EQUAL : GREATER_THAN), q)
       != (I_L_EQ | I_U_EQ))
-    empty_up_to_date = false;
+    x.empty_up_to_date = false;
 }
 
 template <typename Interval>
@@ -189,15 +202,16 @@ inline void
 Box<Interval>::lower_upper_bound(const dimension_type k, const bool closed,
 				 Coefficient_traits::const_reference n,
 				 Coefficient_traits::const_reference d) {
-  assert(k < seq.size());
+  Box& x = *this;
+  assert(k < x.seq.size());
   assert(d != 0);
   mpq_class q;
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
-  if (refine(seq[k], (closed ? LESS_THAN_OR_EQUAL : LESS_THAN), q)
+  if (refine(x.seq[k], (closed ? LESS_THAN_OR_EQUAL : LESS_THAN), q)
       != (I_L_EQ | I_U_EQ))
-    empty_up_to_date = false;
+    x.empty_up_to_date = false;
 }
 
 } // namespace Parma_Polyhedra_Library
