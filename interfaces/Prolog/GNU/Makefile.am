@@ -165,6 +165,9 @@ clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		./gp_clpq2 <$(SCRIPT_CLPQ2) >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
+DISTCLEANFILES = \
+ppl_gprolog.pl
+
 MOSTLYCLEANFILES = \
 gp_clpq gp_clpq2 \
 obtained_clpq obtained_clpq2 obtained_pchk \

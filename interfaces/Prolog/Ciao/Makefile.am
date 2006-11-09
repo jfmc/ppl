@@ -171,6 +171,9 @@ clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXP
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
+DISTCLEANFILES = \
+ppl_ciao.pl
+
 MOSTLYCLEANFILES = \
 *.itf *.po *.c *.so \
 ciao_clpq ciao_clpq2 ciao_pl_check \
