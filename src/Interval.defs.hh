@@ -879,6 +879,8 @@ sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   return combine(rl, ru);
 }
 
+static const signed char C_ZERO = 0;
+
 /**
 +---+-----------+-----------------+-----------+
 | * |    -y-    |       -y+       |    +y+    |
@@ -902,8 +904,8 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   To_Info to_info;
   Result rl, ru;
   static To_Boundary to_lower;
-  if (ge(LOWER, lower(x), info(x), LOWER, 0, SCALAR_INFO)) {
-    if (ge(LOWER, lower(y), info(y), LOWER, 0, SCALAR_INFO)) {
+  if (ge(LOWER, lower(x), info(x), LOWER, C_ZERO, SCALAR_INFO)) {
+    if (ge(LOWER, lower(y), info(y), LOWER, C_ZERO, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
 		      LOWER, lower(x), info(x),
 		      LOWER, lower(y), info(y));
@@ -911,7 +913,7 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		      UPPER, upper(x), info(x),
 		      UPPER, upper(y), info(y));
     }
-    else if (le(UPPER, upper(y), info(y), UPPER, 0, SCALAR_INFO)) {
+    else if (le(UPPER, upper(y), info(y), UPPER, C_ZERO, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
 		      UPPER, upper(x), info(x),
 		      LOWER, lower(y), info(y));
@@ -928,8 +930,8 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		      UPPER, upper(y), info(y));
     }
   }
-  else if (le(UPPER, upper(x), info(x), UPPER, 0, SCALAR_INFO)) {
-    if (ge(LOWER, lower(y), info(y), LOWER, 0, SCALAR_INFO)) {
+  else if (le(UPPER, upper(x), info(x), UPPER, C_ZERO, SCALAR_INFO)) {
+    if (ge(LOWER, lower(y), info(y), LOWER, C_ZERO, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
 		      LOWER, lower(x), info(x),
 		      UPPER, upper(y), info(y));
@@ -937,7 +939,7 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		      UPPER, upper(x), info(x),
 		      LOWER, lower(y), info(y));
     }
-    else if (le(UPPER, upper(y), info(y), UPPER, 0, SCALAR_INFO)) {
+    else if (le(UPPER, upper(y), info(y), UPPER, C_ZERO, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
 		      UPPER, upper(x), info(x),
 		      UPPER, upper(y), info(y));
@@ -955,7 +957,7 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
     }
   }
   else {
-    if (ge(LOWER, lower(y), info(y), LOWER, 0, SCALAR_INFO)) {
+    if (ge(LOWER, lower(y), info(y), LOWER, C_ZERO, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
 		      LOWER, lower(x), info(x),
 		      UPPER, upper(y), info(y));
@@ -963,7 +965,7 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		      UPPER, upper(x), info(x),
 		      UPPER, upper(y), info(y));
     }
-    else if (le(UPPER, upper(y), info(y), UPPER, 0, SCALAR_INFO)) {
+    else if (le(UPPER, upper(y), info(y), UPPER, C_ZERO, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
 		      UPPER, upper(x), info(x),
 		      LOWER, lower(y), info(y));
@@ -1006,6 +1008,50 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   to.info() = to_info;
   return combine(rl, ru);
 }
+
+#if 0
+/**
++---+-----------+-----------+
+| / |    -y-    |    +y+    |
++---+-----------+-----------+
+|-x-|xu/yl,xl/yu|xl/yl,xu/yu|
++---+-----------+-----------+
+|-x+|xu/yu,xl/yu|xl/yl,xu/yl|
++---+-----------+-----------+
+|+x+|xu/yu,xl/yl|xl/yu,xu/yl|
++---+-----------+-----------+
+**/
+template <typename To_Boundary, typename To_Info,
+	  typename From1, typename From2>
+inline I_Result
+div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+  normalize_integer(x);
+  normalize_integer(y);
+  if (maybe_check_empty(x) || maybe_check_empty(y))
+    return to.set_empty();
+  To_Info to_info;
+  Result rl, ru;
+  static To_Boundary to_lower;
+  if (ge(LOWER, lower(y), info(y), LOWER, C_ZERO, SCALAR_INFO)) {
+    if (ge(LOWER, lower(x), info(x), LOWER, C_ZERO, SCALAR_INFO)) {
+    }
+    else if (le(UPPER, upper(x), info(x), UPPER, C_ZERO, SCALAR_INFO)) {
+    }
+    else {
+    }
+  }
+  else if (le(UPPER, upper(y), info(y), UPPER, C_ZERO, SCALAR_INFO)) {
+    if (ge(LOWER, lower(x), info(x), LOWER, C_ZERO, SCALAR_INFO)) {
+    }
+    else if (le(UPPER, upper(x), info(x), UPPER, C_ZERO, SCALAR_INFO)) {
+    }
+    else {
+    }
+  }
+  else {
+  }
+}
+#endif
 
 template <typename Boundary, typename Info>
 inline std::ostream&
