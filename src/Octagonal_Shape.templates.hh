@@ -843,13 +843,12 @@ Octagonal_Shape<T>::bounds(const Linear_Expression& expr,
   // octagonal difference.
   if (!extract_octagonal_difference(c, c.space_dimension(), num_vars,
 				    i, j, coeff, term)) {
-    if (!is_universe()) {
-      Optimization_Mode mode_bounds =
-	(from_above) ? MAXIMIZATION : MINIMIZATION;
-      MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
-      if (mip.solve() == OPTIMIZED_MIP_PROBLEM)
-	return true;
-    }
+    Optimization_Mode mode_bounds =
+      (from_above) ? MAXIMIZATION : MINIMIZATION;
+    MIP_Problem mip(space_dim, constraints(), expr, mode_bounds);
+    if (mip.solve() == OPTIMIZED_MIP_PROBLEM)
+      return true;
+
     // Here`expr' is unbounded in `*this'.
     return false;
   }
@@ -912,14 +911,12 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
   // octagonal difference.
   if (!extract_octagonal_difference(c, c.space_dimension(), num_vars,
 				   i, j, coeff, term)) {
-    if (!is_universe()) {
-      Optimization_Mode max_min = (maximize) ? MAXIMIZATION : MINIMIZATION;
-      MIP_Problem mip(space_dim, constraints(), expr, max_min);
-      if (mip.solve() == OPTIMIZED_MIP_PROBLEM) {
-	mip.optimal_value(ext_n, ext_d);
-	included = true;
-	return true;
-      }
+    Optimization_Mode max_min = (maximize) ? MAXIMIZATION : MINIMIZATION;
+    MIP_Problem mip(space_dim, constraints(), expr, max_min);
+    if (mip.solve() == OPTIMIZED_MIP_PROBLEM) {
+      mip.optimal_value(ext_n, ext_d);
+      included = true;
+      return true;
     }
 
     // Here`expr' is unbounded in `*this'.
