@@ -391,6 +391,55 @@ Box<Interval>::add_constraints(const Constraint_System& cs) {
 }
 
 template <typename Interval>
+void
+Box<Interval>::affine_image(const Variable var,
+			    const Linear_Expression& expr,
+			    Coefficient_traits::const_reference denominator) {
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_generic("affine_image(v, e, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type space_dim = space_dimension();
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
+    throw_dimension_incompatible("affine_image(v, e, d)", "v", var);
+
+  if (is_empty())
+    return;
+
+  // CHECKME: is the following correct when the denominator is negative?
+  Interval expr_value;
+  assign(expr_value, expr.inhomogeneous_term());
+  Interval temp;
+  for (dimension_type i = expr_space_dim; i-- > 0; ) {
+    const Coefficient& coeff = expr.coefficient(Variable(i));
+    if (coeff != 0) {
+      assign(temp, coeff);
+      mul_assign(temp, temp, seq[i]);
+      add_assign(expr_value, expr_value, temp);
+    }
+  }
+#if 0
+  // FIXME: temporarily commented out.
+  // To be restored as soon as div_assign() is implemented.
+  if (denominator != 1) {
+    assign(temp, denominator);
+    div_assign(expr_value, expr_value, temp);
+  }
+#endif
+  std::swap(seq[var.id()], expr_value);
+
+  assert(OK());
+}
+
+template <typename Interval>
 template <typename Iterator>
 void
 Box<Interval>::CC76_widening_assign(const Box& y,
