@@ -797,7 +797,10 @@ PPL::MIP_Problem::process_pending_constraints() {
     const dimension_type input_obj_function_size
       = input_obj_function.space_dimension();
     for (dimension_type i = input_obj_function_size; i-- > 0; )
-      if (input_obj_function.coefficient(Variable(i)) > 0) {
+      if ((input_obj_function.coefficient(Variable(i)) > 0
+	   && opt_mode == MAXIMIZATION)
+	  || (input_obj_function.coefficient(Variable(i)) < 0
+	      && opt_mode == MINIMIZATION)) {
 	// Ensure the right space dimension is obtained.
 	last_generator = point(0 * Variable(space_dimension()-1));
 	status = UNBOUNDED;
