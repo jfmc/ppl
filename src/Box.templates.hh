@@ -426,7 +426,6 @@ Box<Interval>::affine_image(const Variable var,
   if (x.is_empty())
     return;
 
-  // CHECKME: is the following correct when the denominator is negative?
   Interval expr_value;
   assign(expr_value, expr.inhomogeneous_term());
   Interval temp;
@@ -438,14 +437,10 @@ Box<Interval>::affine_image(const Variable var,
       add_assign(expr_value, expr_value, temp);
     }
   }
-#if 0
-  // FIXME: temporarily commented out.
-  // To be restored as soon as div_assign() is implemented.
   if (denominator != 1) {
     assign(temp, denominator);
     div_assign(expr_value, expr_value, temp);
   }
-#endif
   std::swap(x.seq[var.id()], expr_value);
 
   assert(x.OK());
@@ -489,14 +484,10 @@ Box<Interval>::affine_preimage(const Variable var,
 	add_assign(expr_value, expr_value, temp);
       }
     }
-#if 0
-    // FIXME: temporarily commented out.
-    // To be restored as soon as div_assign() is implemented.
     if (denominator != 1) {
       assign(temp, denominator);
       div_assign(expr_value, expr_value, temp);
     }
-#endif
     Interval& x_seq_v = x.seq[var.id()];
     intersect_assign(temp, x_seq_v);
     if (temp.is_empty())
