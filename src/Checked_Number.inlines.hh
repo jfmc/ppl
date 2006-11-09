@@ -611,22 +611,6 @@ DEF_BINARY_OP_ASSIGN(operator %=, rem_assign_r)
 
 #undef DEF_BINARY_OP_ASSIGN
 
-#define DEF_BINARY_OP_TYPE(f, fun, Type) \
-template <typename T, typename Policy> \
-inline Checked_Number<T, Policy> \
-f(const Type x, const Checked_Number<T, Policy>& y) { \
-  Checked_Number<T, Policy> r(x); \
-  Policy::handle_result(fun(r, r, y, Policy::ROUND_DEFAULT_OPERATOR)); \
-  return r; \
-} \
-template <typename T, typename Policy> \
-inline Checked_Number<T, Policy> \
-f(const Checked_Number<T, Policy>& x, const Type y) { \
-  Checked_Number<T, Policy> r(y); \
-  Policy::handle_result(fun(r, x, r, Policy::ROUND_DEFAULT_OPERATOR)); \
-  return r; \
-}
-
 #define DEF_BINARY_OP(f, fun) \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
@@ -635,21 +619,20 @@ f(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   Policy::handle_result(fun(r, x, y, Policy::ROUND_DEFAULT_OPERATOR)); \
   return r; \
 } \
-DEF_BINARY_OP_TYPE(f, fun, signed char) \
-DEF_BINARY_OP_TYPE(f, fun, signed short) \
-DEF_BINARY_OP_TYPE(f, fun, signed int) \
-DEF_BINARY_OP_TYPE(f, fun, signed long) \
-DEF_BINARY_OP_TYPE(f, fun, signed long long) \
-DEF_BINARY_OP_TYPE(f, fun, unsigned char) \
-DEF_BINARY_OP_TYPE(f, fun, unsigned short) \
-DEF_BINARY_OP_TYPE(f, fun, unsigned int) \
-DEF_BINARY_OP_TYPE(f, fun, unsigned long) \
-DEF_BINARY_OP_TYPE(f, fun, unsigned long long) \
-COND(PPL_SUPPORTED_FLOAT, DEF_BINARY_OP_TYPE(f, fun, float)) \
-COND(PPL_SUPPORTED_DOUBLE, DEF_BINARY_OP_TYPE(f, fun, double)) \
-COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_BINARY_OP_TYPE(f, fun, long double)) \
-DEF_BINARY_OP_TYPE(f, fun, mpz_class&) \
-DEF_BINARY_OP_TYPE(f, fun, mpq_class&)
+template <typename Type, typename T, typename Policy>	\
+inline Checked_Number<T, Policy> \
+f(const Type& x, const Checked_Number<T, Policy>& y) { \
+  Checked_Number<T, Policy> r(x); \
+  Policy::handle_result(fun(r, r, y, Policy::ROUND_DEFAULT_OPERATOR)); \
+  return r; \
+} \
+template <typename T, typename Policy, typename Type>	\
+inline Checked_Number<T, Policy> \
+f(const Checked_Number<T, Policy>& x, const Type& y) { \
+  Checked_Number<T, Policy> r(y); \
+  Policy::handle_result(fun(r, x, r, Policy::ROUND_DEFAULT_OPERATOR)); \
+  return r; \
+}
 
 DEF_BINARY_OP(operator +, add_assign_r)
 DEF_BINARY_OP(operator -, sub_assign_r)
@@ -657,20 +640,7 @@ DEF_BINARY_OP(operator *, mul_assign_r)
 DEF_BINARY_OP(operator /, div_assign_r)
 DEF_BINARY_OP(operator %, rem_assign_r)
 
-#undef DEF_BINARY_OP_TYPE
 #undef DEF_BINARY_OP
-
-#define DEF_COMPARE_TYPE(f, fun, Type) \
-template <typename From, typename From_Policy> \
-inline bool \
-f(const Type x, const Checked_Number<From, From_Policy>& y) { \
-  return Checked::fun<Default_From_Policy, From_Policy>(x, y.raw_value()); \
-} \
-template <typename From, typename From_Policy> \
-inline bool \
-f(const Checked_Number<From, From_Policy>& x, const Type y) { \
-  return Checked::fun<From_Policy, Default_From_Policy>(x.raw_value(), y); \
-}
 
 #define DEF_COMPARE(f, fun) \
 template <typename T1, typename Policy1, \
@@ -680,22 +650,16 @@ f(const Checked_Number<T1, Policy1>& x, \
   const Checked_Number<T2, Policy2>& y) { \
   return Checked::fun<Policy1, Policy2>(x.raw_value(), y.raw_value()); \
 } \
-DEF_COMPARE_TYPE(f, fun, signed char) \
-DEF_COMPARE_TYPE(f, fun, signed short) \
-DEF_COMPARE_TYPE(f, fun, signed int) \
-DEF_COMPARE_TYPE(f, fun, signed long) \
-DEF_COMPARE_TYPE(f, fun, signed long long) \
-DEF_COMPARE_TYPE(f, fun, unsigned char) \
-DEF_COMPARE_TYPE(f, fun, unsigned short) \
-DEF_COMPARE_TYPE(f, fun, unsigned int) \
-DEF_COMPARE_TYPE(f, fun, unsigned long) \
-DEF_COMPARE_TYPE(f, fun, unsigned long long) \
-COND(PPL_SUPPORTED_FLOAT, DEF_COMPARE_TYPE(f, fun, float)) \
-COND(PPL_SUPPORTED_DOUBLE, DEF_COMPARE_TYPE(f, fun, double)) \
-COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_COMPARE_TYPE(f, fun, long double)) \
-DEF_COMPARE_TYPE(f, fun, mpz_class&) \
-DEF_COMPARE_TYPE(f, fun, mpq_class&)
-
+template <typename Type, typename From, typename From_Policy>	\
+inline bool \
+f(const Type& x, const Checked_Number<From, From_Policy>& y) { \
+  return Checked::fun<Default_From_Policy, From_Policy>(x, y.raw_value()); \
+} \
+template <typename From, typename From_Policy, typename Type>	\
+inline bool \
+f(const Checked_Number<From, From_Policy>& x, const Type& y) { \
+  return Checked::fun<From_Policy, Default_From_Policy>(x.raw_value(), y); \
+}
 
 DEF_COMPARE(operator ==, eq_ext)
 DEF_COMPARE(operator !=, ne_ext)
@@ -704,7 +668,6 @@ DEF_COMPARE(operator >, gt_ext)
 DEF_COMPARE(operator <=, le_ext)
 DEF_COMPARE(operator <, lt_ext)
 
-#undef DEF_COMPARE_TYPE
 #undef DEF_COMPARE
 
 /*! \relates Checked_Number */
