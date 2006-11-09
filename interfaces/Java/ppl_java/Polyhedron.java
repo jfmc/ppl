@@ -615,7 +615,6 @@ public class Polyhedron extends PPL_Object {
 					    Linear_Expression lb_expr,
 					    Linear_Expression ub_expr,
 					    Coefficient denominator);
-
     /*!
       \brief
       Assigns to \p this the preimage of \p this with respect to the
@@ -648,4 +647,149 @@ public class Polyhedron extends PPL_Object {
 					       Linear_Expression lb_expr,
 					       Linear_Expression ub_expr,
 					       Coefficient denominator);
+
+    //@} // Space Dimension Preserving Member Functions that May Modify [...]
+
+    //! \name Member Functions that May Modify the Dimension of the Vector Space
+    //@{
+
+    /*! \brief
+      Adds \p m new space dimensions and embeds the old polyhedron
+      in the new vector space.
+
+      \param m
+      The number of dimensions to add.
+
+      \exception std::length_error
+      Thrown if adding \p m new space dimensions would cause the
+      vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
+      The new space dimensions will be those having the highest indexes
+      in the new polyhedron, which is characterized by a system
+      of constraints in which the variables running through
+      the new dimensions are not constrained.
+      For instance, when starting from the polyhedron \f$\cP \sseq \Rset^2\f$
+      and adding a third space dimension, the result will be the polyhedron
+      \f[
+      \bigl\{\,
+      (x, y, z)^\transpose \in \Rset^3
+      \bigm|
+      (x, y)^\transpose \in \cP
+      \,\bigr\}.
+      \f]
+    */
+    public native void add_space_dimensions_and_embed(long m);
+
+    /*! \brief
+      Adds \p m new space dimensions to the polyhedron
+      and does not embed it in the new vector space.
+
+      \param m
+      The number of space dimensions to add.
+
+      \exception std::length_error
+      Thrown if adding \p m new space dimensions would cause the
+      vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
+      The new space dimensions will be those having the highest indexes
+      in the new polyhedron, which is characterized by a system
+      of constraints in which the variables running through
+      the new dimensions are all constrained to be equal to 0.
+      For instance, when starting from the polyhedron \f$\cP \sseq \Rset^2\f$
+      and adding a third space dimension, the result will be the polyhedron
+      \f[
+      \bigl\{\,
+      (x, y, 0)^\transpose \in \Rset^3
+      \bigm|
+      (x, y)^\transpose \in \cP
+      \,\bigr\}.
+      \f]
+    */
+
+    public native void add_space_dimensions_and_project(long m);
+    /*! \brief
+      Assigns to \p *this the \ref Concatenating_Polyhedra "concatenation"
+      of \p *this and \p y, taken in this order.
+
+      \exception std::invalid_argument
+      Thrown if \p *this and \p y are topology-incompatible.
+
+      \exception std::length_error
+      Thrown if the concatenation would cause the vector space
+      to exceed dimension <CODE>max_space_dimension()</CODE>.
+    */
+    public native void concatenate_assign(Polyhedron p);
+
+    //! Removes all the specified dimensions from the vector space.
+    /*!
+      \param to_be_removed
+      The set of Variable objects corresponding to the space dimensions
+      to be removed.
+
+      \exception std::invalid_argument
+      Thrown if \p *this is dimension-incompatible with one of the
+      Variable objects contained in \p to_be_removed.
+    */
+    public native void remove_space_dimensions(Variables_Set to_be_removed);
+
+    /*! \brief
+      Removes the higher dimensions of the vector space so that
+      the resulting space will have dimension \p new_dimension.
+
+      \exception std::invalid_argument
+      Thrown if \p new_dimensions is greater than the space dimension of
+      \p *this.
+    */
+    public native void remove_higher_space_dimensions(long
+						      new_dimension);
+
+    //! Creates \p m copies of the space dimension corresponding to \p var.
+    /*!
+      \param var
+      The variable corresponding to the space dimension to be replicated;
+
+      \param m
+      The number of replicas to be created.
+
+      \exception std::invalid_argument
+      Thrown if \p var does not correspond to a dimension of the vector space.
+
+      \exception std::length_error
+      Thrown if adding \p m new space dimensions would cause the
+      vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
+      If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+      and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+      then the \f$k\f$-th space dimension is
+      \ref expand_space_dimension "expanded" to \p m new space dimensions
+      \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
+    */
+    public native void expand_space_dimension(Variable var, long m);
+
+    //! Folds the space dimensions in \p to_be_folded into \p var.
+    /*!
+      \param to_be_folded
+      The set of Variable objects corresponding to the space dimensions
+      to be folded;
+
+      \param var
+      The variable corresponding to the space dimension that is the
+      destination of the folding operation.
+
+      \exception std::invalid_argument
+      Thrown if \p *this is dimension-incompatible with \p var or with
+      one of the Variable objects contained in \p to_be_folded.
+      Also thrown if \p var is contained in \p to_be_folded.
+
+      If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+      <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+      \p to_be_folded is a set of variables whose maximum space dimension
+      is also less than or equal to \f$n\f$, and \p var is not a member
+      of \p to_be_folded, then the space dimensions corresponding to
+      variables in \p to_be_folded are \ref fold_space_dimensions "folded"
+      into the \f$k\f$-th space dimension.
+    */
+    public native void fold_space_dimensions(Variables_Set to_be_folded,
+					     Variable var);
+
 }

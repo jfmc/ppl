@@ -23,6 +23,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <jni.h>
 #include <ppl.hh>
 
+
+// Converts a Java variables set  to a PPL variables set.
+Parma_Polyhedra_Library::Variables_Set
+j_variables_set_to_ppl_variables_set(JNIEnv* env,
+				     const jobject& variables_set);
+
 // Converts a Java relation symbol to a PPL relation_symbol.
 Parma_Polyhedra_Library::Relation_Symbol
 j_relsym_to_ppl_relsym(JNIEnv* env, const jobject& j_relsym);

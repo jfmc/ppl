@@ -333,3 +333,60 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_bounded_1affine_1preimage
   Coefficient c = j_coeff_to_ppl_coeff(env, j_coeff);
   this_polyhedron->bounded_affine_preimage(v, lhs, rhs, c);
 }
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1space_1dimensions_1and_1embed
+(JNIEnv* env, jobject j_this_polyhedron, jlong dim) {
+ jlong this_ptr = get_ptr(env, j_this_polyhedron);
+ Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+ this_polyhedron->add_space_dimensions_and_embed(dim);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1space_1dimensions_1and_1project
+(JNIEnv* env, jobject j_this_polyhedron, jlong dim) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  this_polyhedron->add_space_dimensions_and_project(dim);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_concatenate_1assign
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  jlong polyhedron_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(polyhedron_ptr);
+  this_polyhedron->poly_difference_assign(*polyhedron);
+}
+
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_remove_1space_1dimensions
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_v_set) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Variables_Set v_set = j_variables_set_to_ppl_variables_set(env, j_v_set);
+  this_polyhedron->remove_space_dimensions(v_set);
+}
+
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_remove_1higher_1space_1dimensions
+(JNIEnv* env, jobject j_this_polyhedron, jlong dim) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  this_polyhedron->remove_higher_space_dimensions(dim);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_expand_1space_1dimension
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_variable, jlong dim) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Variable v = j_variable_to_ppl_variable(env, j_variable);
+  this_polyhedron->expand_space_dimension(v, dim);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_fold_1space_1dimensions
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_v_set, jobject j_var) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Variables_Set v_set = j_variables_set_to_ppl_variables_set(env, j_v_set);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Variable v = j_variable_to_ppl_variable(env, j_var);
+  this_polyhedron->fold_space_dimensions(v_set, v);
+}

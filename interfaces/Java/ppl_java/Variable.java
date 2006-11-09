@@ -34,7 +34,7 @@ import javax.management.RuntimeErrorException;
   representing the index of the corresponding Cartesian axis
   (the first axis has index 0).
 */
-public class Variable {
+public class Variable implements Comparable<Variable> {
     //! The index of the Cartesian axis.
     private int varid;
 
@@ -57,4 +57,13 @@ public class Variable {
     public int id() {
 	return varid;
     }
+
+  /*! \brief
+    Returns a negative number if \p this comes first than \p v,
+    a zero if \p this equals \p v, a positive number if 
+   if \p this comes first than \p v.
+   */         
+    public int compareTo(Variable v) {
+        return varid - v.varid;
+        }
 }

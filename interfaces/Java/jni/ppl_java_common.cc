@@ -23,6 +23,39 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_java_common.hh"
 using namespace Parma_Polyhedra_Library;
 
+Variables_Set
+j_variables_set_to_ppl_variables_set(JNIEnv* env,
+				     const jobject& j_v_set) {
+  jclass variables_set_class = env->GetObjectClass(j_v_set);
+  jclass iterator_java_class = env->FindClass("java/util/Iterator");
+  Variables_Set v_set;
+  jmethodID iterator_method_id = env->GetMethodID(variables_set_class,
+						  "iterator",
+ 						  "()Ljava/util/Iterator;");
+  jobject j_iterator = env->CallObjectMethod(j_v_set, iterator_method_id);
+  jmethodID has_next_method_id = env->GetMethodID(iterator_java_class,
+  						  "hasNext",
+  						  "()Z");
+  jboolean has_next_value = env->CallBooleanMethod(j_iterator,
+						   has_next_method_id);
+  jmethodID next_method_id = env->GetMethodID(iterator_java_class,
+					      "next",
+					      "()Ljava/lang/Object;");
+
+  while (has_next_value) {
+    jobject j_variable = env->CallObjectMethod(j_iterator,
+					       next_method_id);
+    v_set.insert(j_variable_to_ppl_variable(env, j_variable));
+    has_next_value = env->CallBooleanMethod(j_iterator,
+					    has_next_method_id);
+  }
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+//   for (Variables_Set::const_iterator v_begin = v_set.begin(),
+// 	 v_end = v_set.end(); v_begin != v_end; ++v_begin)
+//     std::cerr << *v_begin;
+  return v_set;
+}
+
 Variable
 j_variable_to_ppl_variable(JNIEnv* env, const jobject& j_var) {
   jclass j_variable_class = env->FindClass("ppl_java/Variable");
@@ -301,7 +334,7 @@ build_ppl_constraint_system(JNIEnv* env, const jobject& j_iterable) {
     has_next_value = env->CallBooleanMethod(j_iterator,
 					    has_next_method_id);
   }
-  return cs;
+ return cs;
 }
 
 Generator_System
