@@ -49,10 +49,6 @@ j_variables_set_to_ppl_variables_set(JNIEnv* env,
     has_next_value = env->CallBooleanMethod(j_iterator,
 					    has_next_method_id);
   }
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-//   for (Variables_Set::const_iterator v_begin = v_set.begin(),
-// 	 v_end = v_set.end(); v_begin != v_end; ++v_begin)
-//     std::cerr << *v_begin;
   return v_set;
 }
 
