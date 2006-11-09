@@ -62,10 +62,10 @@ operator==(const Box<Interval>& x, const Box<Interval>& y) {
 template <typename Interval>
 bool
 Box<Interval>::OK() const {
-  if (empty_up_to_date) {
+  if (empty_up_to_date && !empty) {
     Box tmp = *this;
     tmp.empty_up_to_date = false;
-    if (empty != tmp.check_empty())
+    if (tmp.check_empty())
       return false;
   }
   for (dimension_type k = seq.size(); k-- > 0; )
@@ -395,23 +395,22 @@ void
 Box<Interval>::affine_image(const Variable var,
 			    const Linear_Expression& expr,
 			    Coefficient_traits::const_reference denominator) {
+  Box& x = *this;
   // The denominator cannot be zero.
   if (denominator == 0)
-    throw_generic("affine_image(v, e, d)", "d == 0");
+    x.throw_generic("affine_image(v, e, d)", "d == 0");
 
   // Dimension-compatibility checks.
-  // The dimension of `expr' should not be greater than the dimension
-  // of `*this'.
-  const dimension_type space_dim = space_dimension();
+  const dimension_type x_space_dim = x.space_dimension();
   const dimension_type expr_space_dim = expr.space_dimension();
-  if (space_dim < expr_space_dim)
-    throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
+  if (x_space_dim < expr_space_dim)
+    x.throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
-    throw_dimension_incompatible("affine_image(v, e, d)", "v", var);
+  if (x_space_dim < var_space_dim)
+    x.throw_dimension_incompatible("affine_image(v, e, d)", "v", var);
 
-  if (is_empty())
+  if (x.is_empty())
     return;
 
   // CHECKME: is the following correct when the denominator is negative?
@@ -422,7 +421,7 @@ Box<Interval>::affine_image(const Variable var,
     const Coefficient& coeff = expr.coefficient(Variable(i));
     if (coeff != 0) {
       assign(temp, coeff);
-      mul_assign(temp, temp, seq[i]);
+      mul_assign(temp, temp, x.seq[i]);
       add_assign(expr_value, expr_value, temp);
     }
   }
@@ -434,9 +433,77 @@ Box<Interval>::affine_image(const Variable var,
     div_assign(expr_value, expr_value, temp);
   }
 #endif
-  std::swap(seq[var.id()], expr_value);
+  std::swap(x.seq[var.id()], expr_value);
 
-  assert(OK());
+  assert(x.OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::affine_preimage(const Variable var,
+			       const Linear_Expression& expr,
+			       Coefficient_traits::const_reference
+			       denominator) {
+  Box& x = *this;
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    x.throw_generic("affine_preimage(v, e, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  const dimension_type x_space_dim = x.space_dimension();
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (x_space_dim < expr_space_dim)
+    x.throw_dimension_incompatible("affine_preimage(v, e, d)", "e", expr);
+  // `var' should be one of the dimensions of the polyhedron.
+  const dimension_type var_space_dim = var.space_dimension();
+  if (x_space_dim < var_space_dim)
+    x.throw_dimension_incompatible("affine_preimage(v, e, d)", "v", var);
+
+  if (x.is_empty())
+    return;
+
+  const Coefficient& expr_v = expr.coefficient(var);
+  const bool invertible = (expr_v != 0);
+  if (!invertible) {
+    Interval expr_value;
+    assign(expr_value, expr.inhomogeneous_term());
+    Interval temp;
+    for (dimension_type i = expr_space_dim; i-- > 0; ) {
+      const Coefficient& coeff = expr.coefficient(Variable(i));
+      if (coeff != 0) {
+	assign(temp, coeff);
+	mul_assign(temp, temp, x.seq[i]);
+	add_assign(expr_value, expr_value, temp);
+      }
+    }
+#if 0
+    // FIXME: temporarily commented out.
+    // To be restored as soon as div_assign() is implemented.
+    if (denominator != 1) {
+      assign(temp, denominator);
+      div_assign(expr_value, expr_value, temp);
+    }
+#endif
+    Interval& x_seq_v = x.seq[var.id()];
+    intersect_assign(temp, x_seq_v);
+    if (temp.is_empty())
+      x.set_empty();
+    else {
+      x_seq_v.upper_set_unbounded();
+      x_seq_v.lower_set_unbounded();
+    }
+  }
+  else {
+    // The affine transformation is invertible.
+    // CHECKME: for efficiency, would it be meaningful to avoid
+    // the computation of inverse by partially evaluating the call
+    // to affine_image?
+    Linear_Expression inverse;
+    inverse -= expr;
+    inverse += (expr_v + denominator) * var;
+    x.affine_image(var, inverse, expr_v);
+  }
+  assert(x.OK());
 }
 
 template <typename Interval>
