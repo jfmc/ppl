@@ -49,7 +49,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef ULLONG_MAX
 #if defined(ULONG_LONG_MAX)
 #define ULLONG_MAX ULONG_LONG_MAX
-#elif SIZEOF_UNSIGNED_LONG_LONG == 8
+#elif SIZEOF_LONG_LONG == 8
 #define ULLONG_MAX 0xffffffffffffffffULL
 #endif
 #endif
