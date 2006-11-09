@@ -6,6 +6,8 @@ Enhancements for PPL 0.10
   to efficiently assign small integer constants (like those in
   the range [-2, 2]) that are guaranteed not to cause any
   rounding or overflow problems.
+- Check all the Makefile.am's to make sure CLEANFILES, MOSTLYCLEANFILES
+  and DISTCLEANFILES are used in a sensible way.
 - Revise the documentation for all the congruences() and
   minimized_congruences() methods.
 - Add tests for ppl_Polyhedron_contains_integer_point/1 in pl_check.pl.

@@ -143,6 +143,9 @@ clpq2_test: yap_clpq2.pl ppl_yap.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EX
 			<script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
+DISTCLEANFILES = \
+ppl_yap.cc
+
 MOSTLYCLEANFILES = \
 script_clpq script_clpq2 script_pchk \
 obtained_clpq obtained_clpq2 obtained_pchk \

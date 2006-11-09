@@ -163,6 +163,9 @@ clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		./pl_clpq2 <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
 
+DISTCLEANFILES = \
+ppl_swiprolog.cc
+
 MOSTLYCLEANFILES = \
 pl_clpq pl_clpq2 \
 obtained_clpq obtained_clpq2 obtained_pchk \

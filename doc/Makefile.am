@@ -474,4 +474,9 @@ README.doc
 mostlyclean-local:
 	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) $(HTML_DIRS) *.aux *.log
 
-CLEANFILES = $(DIST_HTML_DOCS) $(DIST_PDF_DOCS) $(DIST_PS_DOCS)
+CLEANFILES = \
+$(DIST_HTML_DOCS) \
+$(DIST_PDF_DOCS) \
+$(DIST_PS_DOCS) \
+$(USER_HTML_DIR).tag \
+$(DEVREF_HTML_DIR).tag

@@ -96,4 +96,8 @@ libppl_c_la_LDFLAGS = \
 
 include_HEADERS = ppl_c_version.h
 
+DISTCLEANFILES = \
+ppl_c.h \
+ppl_c.cc
+
 endif BUILD_C_INTERFACE

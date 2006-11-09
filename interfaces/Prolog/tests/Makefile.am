@@ -72,3 +72,6 @@ ppl_predicate_check.pl: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I../.. -I$(srcdir) -I$(srcdir)/.. \
 	   -I$(srcdir)/../.. \
            $(srcdir)/ppl_interface_generator_predicate_check_pl.m4 > $@
+
+DISTCLEANFILES = \
+ppl_predicate_check.pl

@@ -38,3 +38,6 @@ EXTRA_DIST = \
 ppl_interface_generator_common.m4 \
 ppl_interface_generator_common_dat.m4 \
 ppl_interface_generator_copyright
+
+DISTCLEANFILES = \
+ppl_interface_instantiations.m4
