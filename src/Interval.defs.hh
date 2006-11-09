@@ -69,6 +69,37 @@ private:
   bool is_singleton_integer() const {
     return is_singleton() && is_integer(lower());
   }
+  I_Result normalize_integer_() const {
+    Interval& i = const_cast<Interval&>(*this);
+    Result rl = V_EQ;
+    if (!lower_is_unbounded()) {
+      if (is_integer(lower())) {
+	if (lower_is_open()) {
+	  i.info().set_boundary_property(LOWER, OPEN, false);
+	  rl = adjust_boundary_info(LOWER, i.info(), add_assign_r(i.lower(), lower(), Boundary(1, ROUND_NOT_NEEDED), ROUND_DOWN));
+	}
+      }
+      else {
+	i.info().set_boundary_property(LOWER, OPEN, false);
+	rl = adjust_boundary_info(LOWER, i.info(), ceil_assign_r(i.lower(), lower(), ROUND_DOWN));
+      }
+    }
+    Result ru = V_EQ;
+    if (!upper_is_unbounded()) {
+      if (is_integer(upper())) {
+	if (upper_is_open()) {
+	  i.info().set_boundary_property(UPPER, OPEN, false);
+	  ru = adjust_boundary_info(UPPER, i.info(), sub_assign_r(i.upper(), upper(), Boundary(1, ROUND_NOT_NEEDED), ROUND_UP));
+	}
+      }
+      else {
+	i.info().set_boundary_property(UPPER, OPEN, false);
+	ru = adjust_boundary_info(UPPER, i.info(), floor_assign_r(i.lower(), lower(), ROUND_UP));
+      }
+    }
+    i.info().set_interval_property(INTEGER, ONLY_INTEGERS_NORMALIZED);
+    return combine(rl, ru);
+  }
 
 public:
   typedef Boundary boundary_type;
@@ -82,11 +113,31 @@ public:
 #endif
       return false;
     }
+    if (is_plus_infinity(lower())) {
+      if (!info().handle_infinity) {
+	std::cerr << "The lower boundary is unexpectedly +inf." << std::endl;
+	return false;
+      }
+      if (info().get_boundary_property(LOWER, UNBOUNDED)) {
+	std::cerr << "The lower boundary is +inf open." << std::endl;
+	return false;
+      }
+    }
     if (is_not_a_number(upper())) {
 #ifndef NDEBUG
       std::cerr << "The upper boundary is not a number." << std::endl;
 #endif
       return false;
+    }
+    if (is_minus_infinity(upper())) {
+      if (!info().handle_infinity) {
+	std::cerr << "The upper boundary is unexpectedly -inf." << std::endl;
+	return false;
+      }
+      if (info().get_boundary_property(UPPER, UNBOUNDED)) {
+	std::cerr << "The upper boundary is +inf open." << std::endl;
+	return false;
+      }
     }
     if (info().get_boundary_property(LOWER, UNBOUNDED) &&
 	lower_is_open()) {
@@ -212,35 +263,8 @@ public:
   I_Result normalize_integer() const {
     if (info().get_interval_property(INTEGER) != ONLY_INTEGERS_TO_NORMALIZE)
       return combine(V_EQ, V_EQ);
-    Interval& i = const_cast<Interval&>(*this);
-    Result rl = V_EQ;
-    if (!lower_is_unbounded()) {
-      if (is_integer(lower())) {
-	if (lower_is_open()) {
-	  i.info().set_boundary_property(LOWER, OPEN, false);
-	  rl = adjust_boundary_info(LOWER, i.info(), add_assign_r(i.lower(), lower(), Boundary(1, ROUND_NOT_NEEDED), ROUND_DOWN));
-	}
-      }
-      else {
-	i.info().set_boundary_property(LOWER, OPEN, false);
-	rl = adjust_boundary_info(LOWER, i.info(), ceil_assign_r(i.lower(), lower(), ROUND_DOWN));
-      }
-    }
-    Result ru = V_EQ;
-    if (!upper_is_unbounded()) {
-      if (is_integer(upper())) {
-	if (upper_is_open()) {
-	  i.info().set_boundary_property(UPPER, OPEN, false);
-	  ru = adjust_boundary_info(UPPER, i.info(), sub_assign_r(i.upper(), upper(), Boundary(1, ROUND_NOT_NEEDED), ROUND_UP));
-	}
-      }
-      else {
-	i.info().set_boundary_property(UPPER, OPEN, false);
-	ru = adjust_boundary_info(UPPER, i.info(), floor_assign_r(i.lower(), lower(), ROUND_UP));
-      }
-    }
-    i.info().set_interval_property(INTEGER, ONLY_INTEGERS_NORMALIZED);
-    return combine(rl, ru);
+    else
+      return normalize_integer_();
   }
   Integer_Property::Value integer_property() const {
     Integer_Property::Value v;
@@ -305,10 +329,16 @@ public:
   bool upper_is_unbounded() const {
     return Boundary_NS::is_unbounded(UPPER, upper(), info());
   }
-  void lower_set_unbounded() {
+  Result lower_set_unbounded() {
+    info().set_interval_property(CARDINALITY_IS, false);
+    info().set_interval_property(CARDINALITY_0, true);
+    info().set_interval_property(CARDINALITY_1, false);
     return set_unbounded(LOWER, lower(), info());
   }
-  void upper_set_unbounded() {
+  Result upper_set_unbounded() {
+    info().set_interval_property(CARDINALITY_IS, false);
+    info().set_interval_property(CARDINALITY_0, true);
+    info().set_interval_property(CARDINALITY_1, false);
     return set_unbounded(UPPER, upper(), info());
   }
   bool is_unbounded() const {
@@ -1009,7 +1039,6 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   return combine(rl, ru);
 }
 
-#if 0
 /**
 +---+-----------+-----------+
 | / |    -y-    |    +y+    |
@@ -1034,24 +1063,67 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   static To_Boundary to_lower;
   if (ge(LOWER, lower(y), info(y), LOWER, C_ZERO, SCALAR_INFO)) {
     if (ge(LOWER, lower(x), info(x), LOWER, C_ZERO, SCALAR_INFO)) {
+      rl = div_assign(LOWER, to_lower, to_info,
+		      LOWER, lower(x), info(x),
+		      UPPER, upper(y), info(y));
+      ru = div_assign(UPPER, to.upper(), to_info,
+		      UPPER, upper(x), info(x),
+		      LOWER, lower(y), info(y));
     }
     else if (le(UPPER, upper(x), info(x), UPPER, C_ZERO, SCALAR_INFO)) {
+      rl = div_assign(LOWER, to_lower, to_info,
+		      LOWER, lower(x), info(x),
+		      LOWER, lower(y), info(y));
+      ru = div_assign(UPPER, to.upper(), to_info,
+		      UPPER, upper(x), info(x),
+		      UPPER, upper(y), info(y));
     }
     else {
+      rl = div_assign(LOWER, to_lower, to_info,
+		      LOWER, lower(x), info(x),
+		      LOWER, lower(y), info(y));
+      ru = div_assign(UPPER, to.upper(), to_info,
+		      UPPER, upper(x), info(x),
+		      LOWER, lower(y), info(y));
     }
   }
   else if (le(UPPER, upper(y), info(y), UPPER, C_ZERO, SCALAR_INFO)) {
     if (ge(LOWER, lower(x), info(x), LOWER, C_ZERO, SCALAR_INFO)) {
+      rl = div_assign(LOWER, to_lower, to_info,
+		      UPPER, upper(x), info(x),
+		      UPPER, upper(y), info(y));
+      ru = div_assign(UPPER, to.upper(), to_info,
+		      LOWER, lower(x), info(x),
+		      LOWER, lower(y), info(y));
     }
     else if (le(UPPER, upper(x), info(x), UPPER, C_ZERO, SCALAR_INFO)) {
+      rl = div_assign(LOWER, to_lower, to_info,
+		      UPPER, upper(x), info(x),
+		      LOWER, lower(y), info(y));
+      ru = div_assign(UPPER, to.upper(), to_info,
+		      LOWER, lower(x), info(x),
+		      UPPER, upper(y), info(y));
     }
     else {
+      rl = div_assign(LOWER, to_lower, to_info,
+		      UPPER, upper(x), info(x),
+		      UPPER, upper(y), info(y));
+      ru = div_assign(UPPER, to.upper(), to_info,
+		      LOWER, lower(x), info(x),
+		      UPPER, upper(y), info(y));
     }
   }
   else {
+    if (!contains_only_integers(y)) {
+      rl = set_unbounded(LOWER, to.lower(), to_info);
+      ru = set_unbounded(UPPER, to.upper(), to_info);
+      return static_cast<I_Result>(combine(rl, ru) | I_SINGULARITIES);
+    }
   }
+  assign_or_swap(to.lower(), to_lower);
+  to.info() = to_info;
+  return combine(rl, ru);
 }
-#endif
 
 template <typename Boundary, typename Info>
 inline std::ostream&
