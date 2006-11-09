@@ -216,6 +216,75 @@ test05() {
   return ok;
 }
 
+bool
+test06() {
+  Variable A(0);
+
+  TBD_Shape bd(1);
+  bd.add_constraint(A >= 0);
+
+  print_constraints(bd, "*** bd ***");
+
+  Coefficient num;
+  Coefficient den;
+  bool included;
+  Generator g(point());
+  Linear_Expression LE(A);
+  bool ok = !bd.maximize(LE, num, den, included, g);
+
+  if (!ok)
+    return false;
+
+  ok = bd.minimize(LE, num, den, included, g)
+    && num == 0 && den == 1 && included
+    && g.is_point()
+    && g.divisor() == 1;
+
+  nout << (included ? "minimum" : "infimum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << " @ ";
+  print_generator(g);
+  nout << endl;
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+
+  TBD_Shape bd(1);
+  bd.add_constraint(A <= 0);
+
+  print_constraints(bd, "*** bd ***");
+
+  Coefficient num;
+  Coefficient den;
+  bool included;
+  Generator g(point());
+  Linear_Expression LE(A);
+
+  bool ok = bd.maximize(LE, num, den, included, g)
+    && num == 0 && den == 1 && included
+    && g.is_point()
+    && g.divisor() == 1;
+
+  nout << (included ? "maximum" : "supremum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << " @ ";
+  print_generator(g);
+  nout << endl;
+
+  if (!ok)
+    return false;
+
+  ok = !bd.minimize(LE, num, den, included, g);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -224,4 +293,6 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN
