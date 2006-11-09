@@ -1934,12 +1934,13 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
     return;
   }
 
-  Polyhedron new_polyhedron(topology(), x.space_dim, EMPTY);
-
   // Being lazy here is only harmful.
   // `minimize()' will process any pending constraints or generators.
+  if (!y.minimize())
+    return;
   x.minimize();
-  y.minimize();
+
+  Polyhedron new_polyhedron(topology(), x.space_dim, EMPTY);
 
   const Constraint_System& y_cs = y.constraints();
   for (Constraint_System::const_iterator i = y_cs.begin(),
