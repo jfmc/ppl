@@ -74,7 +74,23 @@ maybe_check_plus_infinity(const T& v) {
 }
 
 template <typename To, typename To_Info>
-inline void
+inline Result
+set_minus_infinity(Type to_type, To& to, To_Info&) {
+  Result r = assign_r(to, MINUS_INFINITY, round_dir_nocheck(to_type));
+  assert(r != VC_PLUS_INFINITY);
+  return r;
+}
+
+template <typename To, typename To_Info>
+inline Result
+set_plus_infinity(Type to_type, To& to, To_Info&) {
+  Result r = assign_r(to, PLUS_INFINITY, round_dir_nocheck(to_type));
+  assert(r != VC_PLUS_INFINITY);
+  return r;
+}
+
+template <typename To, typename To_Info>
+inline Result
 set_unbounded(Type to_type, To& to, To_Info& to_info) {
   if (To_Info::store_unbounded)
     to_info.set_boundary_property(to_type, UNBOUNDED);
@@ -85,7 +101,12 @@ set_unbounded(Type to_type, To& to, To_Info& to_info) {
     else
       r = assign_r(to, PLUS_INFINITY, ROUND_NOT_NEEDED);
     assert(r == V_EQ);
-    to_info.set_boundary_property(to_type, OPEN);
+    if (to_info.store_open) {
+      to_info.set_boundary_property(to_type, OPEN);
+      return V_EQ;
+    }
+    else
+      return to_type == LOWER ? V_GT : V_LT;
   }
 }
 
@@ -224,8 +245,7 @@ inline Result
 assign(Type to_type, To& to, To_Info& to_info,
        Type from_type, const From& from, const From_Info& from_info) {
   if (from_info.get_boundary_property(from_type, UNBOUNDED)) {
-    set_unbounded(to_type, to, to_info);
-    return V_EQ;
+    return set_unbounded(to_type, to, to_info);
   }
   if (To_Info::store_open) {
     if (from_info.get_boundary_property(from_type, OPEN))
@@ -290,8 +310,7 @@ inline Result
 neg_assign(Type to_type, To& to, To_Info& to_info,
 	   Type from_type, const From& from, const From_Info& from_info) {
   if (from_info.get_boundary_property(from_type, UNBOUNDED)) {
-    set_unbounded(to_type, to, to_info);
-    return V_EQ;
+    return set_unbounded(to_type, to, to_info);
   }
   if (To_Info::store_open) {
     if (from_info.get_boundary_property(from_type, OPEN))
@@ -312,34 +331,29 @@ inline Result
 add_assign(Type to_type, To& to, To_Info& to_info,
 	   Type from1_type, const From1& from1, const From1_Info& from1_info,
 	   Type from2_type, const From2& from2, const From2_Info& from2_info) {
+  assert(from1_type == from2_type);
   if (from1_info.get_boundary_property(from1_type, UNBOUNDED)) {
-    if (!from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
-      if (maybe_check_minus_infinity<From2_Info>(from2))
-	goto minf;
-      if (maybe_check_plus_infinity<From2_Info>(from2))
-	goto pinf;
-    }
-    goto unbounded;
+    if (is_unbounded(from2_type, from2, from2_info))
+      goto unbounded;
+    else if (maybe_check_minus_infinity<From2_Info>(from2))
+      goto minf;
+    else if (maybe_check_plus_infinity<From2_Info>(from2))
+      goto pinf;
+    else
+      goto unbounded;
   }
   else if (from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
     if (maybe_check_minus_infinity<From1_Info>(from1)) {
     minf:
-      Result r = assign_r(to, MINUS_INFINITY, ROUND_NOT_NEEDED);
-      used(r);
-      assert(r == V_EQ);
-      return V_EQ;
+      return set_minus_infinity(to_type, to, to_info);
     }
     else if (maybe_check_plus_infinity<From1_Info>(from1)) {
     pinf:
-      Result r = assign_r(to, PLUS_INFINITY, ROUND_NOT_NEEDED);
-      used(r);
-      assert(r == V_EQ);
-      return V_EQ;
+      return set_plus_infinity(to_type, to, to_info);
     }
     else {
     unbounded:
-      set_unbounded(to_type, to, to_info);
-      return V_EQ;
+      return set_unbounded(to_type, to, to_info);
     }
   }
   // FIXME: missing singularities check
@@ -364,34 +378,29 @@ inline Result
 sub_assign(Type to_type, To& to, To_Info& to_info,
 	   Type from1_type, const From1& from1, const From1_Info& from1_info,
 	   Type from2_type, const From2& from2, const From2_Info& from2_info) {
+  assert(from1_type != from2_type);
   if (from1_info.get_boundary_property(from1_type, UNBOUNDED)) {
-    if (!from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
-      if (maybe_check_minus_infinity<From2_Info>(from2))
-	goto pinf;
-      if (maybe_check_plus_infinity<From2_Info>(from2))
+    if (is_unbounded(from2_type, from2, from2_info))
+      goto unbounded;
+    else if (maybe_check_minus_infinity<From2_Info>(from2))
+      goto pinf;
+    else if (maybe_check_plus_infinity<From2_Info>(from2))
 	goto minf;
-    }
-    goto unbounded;
+    else
+      goto unbounded;
   }
   else if (from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
     if (maybe_check_minus_infinity<From1_Info>(from1)) {
     minf:
-      Result r = assign_r(to, MINUS_INFINITY, ROUND_NOT_NEEDED);
-      used(r);
-      assert(r == V_EQ);
-      return V_EQ;
+      return set_minus_infinity(to_type, to, to_info);
     }
     else if (maybe_check_plus_infinity<From1_Info>(from1)) {
     pinf:
-      Result r = assign_r(to, PLUS_INFINITY, ROUND_NOT_NEEDED);
-      used(r);
-      assert(r == V_EQ);
-      return V_EQ;
+      return set_plus_infinity(to_type, to, to_info);
     }
     else {
     unbounded:
-      set_unbounded(to_type, to, to_info);
-      return V_EQ;
+      return set_unbounded(to_type, to, to_info);
     }
   }
   // FIXME: missing singularities check
@@ -417,21 +426,22 @@ mul_assign(Type to_type, To& to, To_Info& to_info,
 	   Type from1_type, const From1& from1, const From1_Info& from1_info,
 	   Type from2_type, const From2& from2, const From2_Info& from2_info) {
   if (from1_info.get_boundary_property(from1_type, UNBOUNDED)) {
-    if (!from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
-      if (maybe_check_minus_infinity<From2_Info>(from2)) {
-	if (from1_type == LOWER)
-	  goto pinf;
-	else
-	  goto minf;
-      }
-      if (maybe_check_plus_infinity<From2_Info>(from2)) {
-	if (from1_type == LOWER)
-	  goto minf;
-	else
-	  goto pinf;
-      }
+    if (is_unbounded(from2_type, from2, from2_info))
+      goto unbounded;
+    else if (maybe_check_minus_infinity<From2_Info>(from2)) {
+      if (from1_type == LOWER)
+	goto pinf;
+      else
+	goto minf;
     }
-    goto unbounded;
+    else if (maybe_check_plus_infinity<From2_Info>(from2)) {
+      if (from1_type == LOWER)
+	goto minf;
+      else
+	goto pinf;
+    }
+    else
+      goto unbounded;
   }
   else if (from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
     if (maybe_check_minus_infinity<From1_Info>(from1)) {
@@ -443,23 +453,16 @@ mul_assign(Type to_type, To& to, To_Info& to_info,
     else if (maybe_check_plus_infinity<From1_Info>(from1)) {
       if (from2_type == LOWER) {
       minf:
-	Result r = assign_r(to, MINUS_INFINITY, ROUND_NOT_NEEDED);
-	used(r);
-	assert(r == V_EQ);
-	return V_EQ;
+	return set_minus_infinity(to_type, to, to_info);
       }
       else {
       pinf:
-	Result r = assign_r(to, PLUS_INFINITY, ROUND_NOT_NEEDED);
-	used(r);
-	assert(r == V_EQ);
-	return V_EQ;
+	return set_plus_infinity(to_type, to, to_info);
       }
     }
     else {
     unbounded:
-      set_unbounded(to_type, to, to_info);
-      return V_EQ;
+      return set_unbounded(to_type, to, to_info);
     }
   }
   // FIXME: missing singularities check
@@ -485,14 +488,15 @@ div_assign(Type to_type, To& to, To_Info& to_info,
 	   Type from1_type, const From1& from1, const From1_Info& from1_info,
 	   Type from2_type, const From2& from2, const From2_Info& from2_info) {
   if (from1_info.get_boundary_property(from1_type, UNBOUNDED)) {
-    if (!from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
-      if (maybe_check_minus_infinity<From2_Info>(from2) ||
-	  maybe_check_plus_infinity<From2_Info>(from2)) {
-	assign_r(to, 0, ROUND_NOT_NEEDED);
-	return V_EQ;
-      }
+    if (is_unbounded(from2_type, from2, from2_info))
+      goto unbounded;
+    else if (maybe_check_minus_infinity<From2_Info>(from2) ||
+	     maybe_check_plus_infinity<From2_Info>(from2)) {
+      assign_r(to, 0, ROUND_NOT_NEEDED);
+      return V_EQ;
     }
-    goto unbounded;
+    else
+      goto unbounded;
   }
   else if (from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
     if (maybe_check_minus_infinity<From1_Info>(from1)) {
@@ -504,23 +508,16 @@ div_assign(Type to_type, To& to, To_Info& to_info,
     else if (maybe_check_plus_infinity<From1_Info>(from1)) {
       if (from2_type == LOWER) {
       minf:
-	Result r = assign_r(to, MINUS_INFINITY, ROUND_NOT_NEEDED);
-	used(r);
-	assert(r == V_EQ);
-	return V_EQ;
+	return set_minus_infinity(to_type, to, to_info);
       }
       else {
       pinf:
-	Result r = assign_r(to, PLUS_INFINITY, ROUND_NOT_NEEDED);
-	used(r);
-	assert(r == V_EQ);
-	return V_EQ;
+	return set_plus_infinity(to_type, to, to_info);
       }
     }
     else {
     unbounded:
-      set_unbounded(to_type, to, to_info);
-      return V_EQ;
+      return set_unbounded(to_type, to, to_info);
     }
   }
   // FIXME: missing singularities check
