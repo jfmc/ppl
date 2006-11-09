@@ -259,6 +259,38 @@ test12() {
   return ok;
 }
 
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagonal_Shape oct(3);
+
+  print_constraints(oct, "*** oct ***");
+
+  bool ok = !oct.bounds_from_above(A + B + C) &&
+    !oct.bounds_from_below(A + B + C);
+
+  return ok;
+}
+
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TOctagonal_Shape oct(3);
+
+  print_constraints(oct, "*** oct ***");
+
+  bool ok = !oct.bounds_from_above(-A - B - C) &&
+    !oct.bounds_from_below(-A - B - C);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -274,4 +306,6 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
 END_MAIN
