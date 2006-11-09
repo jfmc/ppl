@@ -141,10 +141,35 @@ test03() {
   return ok;
 }
 
+bool
+test04() {
+  Variable A(0);
+
+  C_Polyhedron ph1(1);
+
+  C_Polyhedron ph2(1);
+  ph2.add_constraint(A >= 1);
+  ph2.add_constraint(A <= 0);
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+
+  ph1.poly_difference_assign(ph2);
+
+  C_Polyhedron known_result(1);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
 END_MAIN
