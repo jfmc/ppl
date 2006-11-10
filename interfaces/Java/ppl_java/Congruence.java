@@ -37,23 +37,20 @@ package ppl_java;
 */
 public class Congruence {
 
-    // The modulus of the congruence.
+    //! The modulus of the congruence.
     protected Coefficient modulus;
 
+    //! The value of the left hand side of \p this.
+    Linear_Expression lhs;
+
+    //! The value of the right hand side of \p this.
+    Linear_Expression rhs;
+
     //! Returns the congruence \f$e1 = e2 \pmod{$mod}\f$.
-    public static Congruence_Linear_Expression create(Linear_Expression e1,
-						      Linear_Expression e2,
-						      Coefficient mod) {
-	return new Congruence_Linear_Expression(e1, e2, mod);
-    }
-
-    //! Returns a congruence from \p c, with \p m as the modulus.
-    public static Congruence_Constraint create(Constraint c, Coefficient mod) {
-	return new Congruence_Constraint(c, mod);
-    }
-
-    //! Multiplies \p k into the modulus of \p this.
-    public void modulus_times(Coefficient k) {
-	modulus = new Coefficient(modulus.getBigInteger().multiply(k.getBigInteger()));
+    public Congruence(Linear_Expression e1, Linear_Expression e2,
+		      Coefficient mod) {
+	modulus = new Coefficient(mod);
+	lhs = e1;
+	rhs = e2;
     }
 }

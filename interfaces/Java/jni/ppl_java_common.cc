@@ -25,10 +25,6 @@ using namespace Parma_Polyhedra_Library;
 
 Parma_Polyhedra_Library::Congruence
 build_ppl_congruence(JNIEnv* env, const jobject& j_congruence) {
-  jclass congruence_le_class
-    = env->FindClass("ppl_java/Congruence_Linear_Expression");
-  jclass congruence_constraint_class
-    = env->FindClass("ppl_java/Congruence_Constraint");
   jclass congruence_class
     = env->FindClass("ppl_java/Congruence");
   jclass current_class = env->GetObjectClass(j_congruence);
@@ -37,28 +33,12 @@ build_ppl_congruence(JNIEnv* env, const jobject& j_congruence) {
 					      "Lppl_java/Coefficient;");
   jobject j_modulus = env->GetObjectField(j_congruence, modulus_field_id);
   Coefficient ppl_modulus = j_coeff_to_ppl_coeff(env, j_modulus);
-  Linear_Expression(Variable(0) + ppl_modulus);
-  // Constraint
-  if (env->IsAssignableFrom(congruence_constraint_class, current_class)) {
-    jfieldID constraint_field_id
-      = env->GetFieldID(congruence_constraint_class,
-			"constr",
-			"Lppl_java/Constraint;");
-    jobject j_constr = env->GetObjectField(j_congruence,
-					   constraint_field_id);
-    Constraint c = build_ppl_constraint(env, j_constr);
-    Congruence cg =  c / ppl_modulus;
-    return cg;
-  }
-
-  // Linear_Expression
-  if (env->IsAssignableFrom(congruence_le_class, current_class)) {
-    jfieldID lhs_field_id
-      = env->GetFieldID(congruence_le_class,
+  jfieldID lhs_field_id
+      = env->GetFieldID(congruence_class,
  			"lhs",
  			"Lppl_java/Linear_Expression;");
     jfieldID rhs_field_id
-      = env->GetFieldID(congruence_le_class,
+      = env->GetFieldID(congruence_class,
  			"rhs",
  			"Lppl_java/Linear_Expression;");
     jobject j_lhs = env->GetObjectField(j_congruence, lhs_field_id);
@@ -66,12 +46,6 @@ build_ppl_congruence(JNIEnv* env, const jobject& j_congruence) {
     Linear_Expression lhs = build_linear_expression(env, j_lhs);
     Linear_Expression rhs = build_linear_expression(env, j_rhs);
     return (lhs %= rhs) / ppl_modulus;
-  }
-  jclass newExcCls = env->FindClass("javax/management/RuntimeErrorException");
-  env->ThrowNew(newExcCls, "ppl.java: \n runtime error");
-  // We should not be here!
-  throw std::runtime_error("PPL Java interface internal error");
-
 }
 
 // Converts a C++ bool to a Java boolean.
