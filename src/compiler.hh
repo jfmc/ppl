@@ -35,8 +35,20 @@ used(const T&) {
 
 template <typename T>
 inline void avoid_cse(const T& x) {
-  __asm__ __volatile__ ("" : "+m" (const_cast<T&>(x)));  
+  __asm__ __volatile__ ("" : "+m" (const_cast<T&>(x)));
 }
+
+#if 0
+#define const_bool(var, val) static const bool var = (val)
+#else
+#define const_bool(var, val) enum { var = (val) }
+#endif
+
+#if 0
+#define const_int(var, val) static const int var = (val)
+#else
+#define const_int(var, val) enum { var = (val) }
+#endif
 
 } // namespace Parma_Polyhedra_Library
 

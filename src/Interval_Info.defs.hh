@@ -97,15 +97,15 @@ using namespace Boundary_NS;
 template <typename Policy>
 class Interval_Info_Null {
 public:
-  static const bool handle_infinity = Policy::handle_infinity;
-  static const bool check_inexact = Policy::check_inexact;
-  static const bool check_empty_args = Policy::check_empty_args;
-  static const bool check_integer_args = Policy::check_integer_args;
-  static const bool store_unbounded = false;
-  static const bool store_open = false;
-  static const bool store_integer = false;
-  static const bool store_empty = false;
-  static const bool store_singleton = false;
+  const_bool(handle_infinity, Policy::handle_infinity);
+  const_bool(check_inexact, Policy::check_inexact);
+  const_bool(check_empty_args, Policy::check_empty_args);
+  const_bool(check_integer_args, Policy::check_integer_args);
+  const_bool(store_unbounded, false);
+  const_bool(store_open, false);
+  const_bool(store_integer, false);
+  const_bool(store_empty, false);
+  const_bool(store_singleton, false);
   void clear() {
   }
   void clear_boundary_properties(Boundary_NS::Type) {
@@ -133,24 +133,24 @@ public:
 template <typename T, typename Policy>
 class Interval_Info_Bitset {
 public:
-  static const bool handle_infinity = Policy::handle_infinity;
-  static const bool check_inexact = Policy::check_inexact;
-  static const bool check_empty_args = Policy::check_empty_args;
-  static const bool check_integer_args = Policy::check_integer_args;
-  static const bool store_unbounded = Policy::store_unbounded;
-  static const bool store_open = Policy::store_open;
-  static const bool store_integer = Policy::store_integer;
-  static const bool store_empty = Policy::store_empty;
-  static const bool store_singleton = Policy::store_singleton;
-  static const unsigned int lower_unbounded_bit = Policy::next_bit;
-  static const unsigned int lower_open_bit = lower_unbounded_bit + store_unbounded;
-  static const unsigned int upper_unbounded_bit = lower_open_bit + store_open;
-  static const unsigned int upper_open_bit = upper_unbounded_bit + store_unbounded;
-  static const unsigned int integer_bit = upper_open_bit + store_open;
-  static const unsigned int cardinality_0_bit = integer_bit + store_integer * 2;
-  static const unsigned int cardinality_1_bit = cardinality_0_bit + store_empty;
-  static const unsigned int cardinality_is_bit = cardinality_1_bit + store_singleton;
-  static const unsigned int next_bit = cardinality_is_bit + (store_empty || store_singleton);
+  const_bool(handle_infinity, Policy::handle_infinity);
+  const_bool(check_inexact, Policy::check_inexact);
+  const_bool(check_empty_args, Policy::check_empty_args);
+  const_bool(check_integer_args, Policy::check_integer_args);
+  const_bool(store_unbounded, Policy::store_unbounded);
+  const_bool(store_open, Policy::store_open);
+  const_bool(store_integer, Policy::store_integer);
+  const_bool(store_empty, Policy::store_empty);
+  const_bool(store_singleton, Policy::store_singleton);
+  const_int(lower_unbounded_bit, Policy::next_bit);
+  const_int(lower_open_bit, lower_unbounded_bit + store_unbounded);
+  const_int(upper_unbounded_bit, lower_open_bit + store_open);
+  const_int(upper_open_bit, upper_unbounded_bit + store_unbounded);
+  const_int(integer_bit, upper_open_bit + store_open);
+  const_int(cardinality_0_bit, integer_bit + store_integer * 2);
+  const_int(cardinality_1_bit, cardinality_0_bit + store_empty);
+  const_int(cardinality_is_bit, cardinality_1_bit + store_singleton);
+  const_int(next_bit, cardinality_is_bit + (store_empty || store_singleton));
   Interval_Info_Bitset() {
     init_bits(bitset);
   }
@@ -159,20 +159,26 @@ public:
     reset_bits(bitset);
   }
   void clear_boundary_properties(Boundary_NS::Type t) {
-    if (store_unbounded)
-      reset_bit(bitset, t == LOWER ? lower_unbounded_bit : upper_unbounded_bit);
-    if (store_open)
-      reset_bit(bitset, t == LOWER ? lower_open_bit : upper_open_bit);
+    set_boundary_property(t, UNBOUNDED, false);
+    set_boundary_property(t, OPEN, false);
   }
   void set_boundary_property(Boundary_NS::Type t, const Boundary_NS::Property& p, bool value = true) {
     switch (p.type) {
     case Boundary_NS::Property::UNBOUNDED_:
-      if (store_unbounded)
-	set_bit(bitset, t == LOWER ? lower_unbounded_bit : upper_unbounded_bit, value);
+      if (store_unbounded) {
+	if (t == LOWER)
+	  set_bit(bitset, lower_unbounded_bit, value);
+	else
+	  set_bit(bitset, upper_unbounded_bit, value);
+      }
       break;
     case Boundary_NS::Property::OPEN_:
-      if (store_open)
-	set_bit(bitset, t == LOWER ? lower_open_bit : upper_open_bit, value);
+      if (store_open) {
+	if (t == LOWER)
+	  set_bit(bitset, lower_open_bit, value);
+	else
+	  set_bit(bitset, upper_open_bit, value);
+      }
       break;
     default:
       break;
@@ -181,11 +187,19 @@ public:
   bool get_boundary_property(Boundary_NS::Type t, const Boundary_NS::Property& p) const {
     switch (p.type) {
     case Boundary_NS::Property::UNBOUNDED_:
-      return store_unbounded
-	&& get_bit(bitset, t == LOWER ? lower_unbounded_bit : upper_unbounded_bit);
+      if (!store_unbounded)
+	return false;
+      if (t == LOWER)
+	return get_bit(bitset, lower_unbounded_bit);
+      else
+	return get_bit(bitset, upper_unbounded_bit);
     case Boundary_NS::Property::OPEN_:
-      return store_open
-	&& get_bit(bitset, t == LOWER ? lower_open_bit : upper_open_bit);
+      if (!store_open)
+	return false;
+      if (t == LOWER)
+	return get_bit(bitset, lower_open_bit);
+      else
+	return get_bit(bitset, upper_open_bit);
     default:
       return false;
     }

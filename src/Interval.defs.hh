@@ -114,7 +114,7 @@ public:
       return false;
     }
     if (is_plus_infinity(lower())) {
-      if (!info().handle_infinity) {
+      if (Info::handle_infinity) {
 	std::cerr << "The lower boundary is unexpectedly +inf." << std::endl;
 	return false;
       }
@@ -130,7 +130,7 @@ public:
       return false;
     }
     if (is_minus_infinity(upper())) {
-      if (!info().handle_infinity) {
+      if (!Info::handle_infinity) {
 	std::cerr << "The upper boundary is unexpectedly -inf." << std::endl;
 	return false;
       }
@@ -288,7 +288,7 @@ public:
     return info().get_boundary_property(UPPER, OPEN);
   }
   Result lower_set_open(bool v = true) {
-    if (info().store_open) {
+    if (Info::store_open) {
       info().set_boundary_property(LOWER, OPEN, v);
       return V_EQ;
     }
@@ -306,7 +306,7 @@ public:
     return V_EQ;
   }
   Result upper_set_open(bool v = true) {
-    if (info().store_open) {
+    if (Info::store_open) {
       info().set_boundary_property(UPPER, OPEN, v);
       return V_EQ;
     }
@@ -421,10 +421,10 @@ info(const Interval<Boundary, Info>& x) {
 }
 
 struct Scalar_As_Interval_Policy {
-  static const bool handle_infinity = false;
-  static const bool check_inexact = false;
-  static const bool check_empty_args = false;
-  static const bool check_integer_args = true;
+  const_bool(handle_infinity, false);
+  const_bool(check_inexact, false);
+  const_bool(check_empty_args, false);
+  const_bool(check_integer_args, true);
 };
 
 typedef Interval_Info_Null<Scalar_As_Interval_Policy> Scalar_As_Interval_Info;
@@ -468,9 +468,19 @@ integer_property(const T& x) {
 }
 
 template <typename T>
+struct Info {
+  typedef Scalar_As_Interval_Info type;
+};
+
+template <typename Boundary, typename I>
+struct Info<Interval<Boundary, I> > {
+  typedef I type;
+};
+
+template <typename T>
 inline bool
 maybe_check_empty(const T& x) {
-  if (info(x).check_empty_args)
+  if (Info<T>::type::check_empty_args)
     return is_empty(x);
   else {
     assert(!is_empty(x));
@@ -489,7 +499,7 @@ template <typename T>
 inline Integer_Property::Value
 lazy_integer_property(const T& x) {
   // TOTHINK: use the policy for x or for the result?
-  if (info(x).check_integer_args)
+  if (Info<T>::type::check_integer_args)
     return integer_property(x);
   else
     return info(x).get_interval_property(INTEGER);

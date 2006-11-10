@@ -768,10 +768,10 @@ struct Larger;
 
 template <>
 struct Larger<signed char> {
-  static const bool use_for_neg = true;
-  static const bool use_for_add = true;
-  static const bool use_for_sub = true;
-  static const bool use_for_mul = true;
+  const_bool(use_for_neg, true);
+  const_bool(use_for_add, true);
+  const_bool(use_for_sub, true);
+  const_bool(use_for_mul, true);
   typedef int_fast16_t Type_For_Neg;
   typedef int_fast16_t  Type_For_Add;
   typedef int_fast16_t  Type_For_Sub;
@@ -780,10 +780,10 @@ struct Larger<signed char> {
 
 template <>
 struct Larger<unsigned char> {
-  static const bool use_for_neg = true;
-  static const bool use_for_add = true;
-  static const bool use_for_sub = true;
-  static const bool use_for_mul = true;
+  const_bool(use_for_neg, true);
+  const_bool(use_for_add, true);
+  const_bool(use_for_sub, true);
+  const_bool(use_for_mul, true);
   typedef int_fast16_t Type_For_Neg;
   typedef uint_fast16_t Type_For_Add;
   typedef int_fast16_t Type_For_Sub;
@@ -792,10 +792,10 @@ struct Larger<unsigned char> {
 
 template <>
 struct Larger<signed short> {
-  static const bool use_for_neg = true;
-  static const bool use_for_add = true;
-  static const bool use_for_sub = true;
-  static const bool use_for_mul = true;
+  const_bool(use_for_neg, true);
+  const_bool(use_for_add, true);
+  const_bool(use_for_sub, true);
+  const_bool(use_for_mul, true);
   typedef int_fast32_t Type_For_Neg;
   typedef int_fast32_t Type_For_Add;
   typedef int_fast32_t Type_For_Sub;
@@ -804,10 +804,10 @@ struct Larger<signed short> {
 
 template <>
 struct Larger<unsigned short> {
-  static const bool use_for_neg = true;
-  static const bool use_for_add = true;
-  static const bool use_for_sub = true;
-  static const bool use_for_mul = true;
+  const_bool(use_for_neg, true);
+  const_bool(use_for_add, true);
+  const_bool(use_for_sub, true);
+  const_bool(use_for_mul, true);
   typedef int_fast32_t Type_For_Neg;
   typedef uint_fast32_t Type_For_Add;
   typedef int_fast32_t Type_For_Sub;
@@ -816,10 +816,10 @@ struct Larger<unsigned short> {
 
 template <>
 struct Larger<signed int> {
-  static const bool use_for_neg = (LONG_BITS == 64);
-  static const bool use_for_add = (LONG_BITS == 64);
-  static const bool use_for_sub = (LONG_BITS == 64);
-  static const bool use_for_mul = true;
+  const_bool(use_for_neg, (LONG_BITS == 64));
+  const_bool(use_for_add, (LONG_BITS == 64));
+  const_bool(use_for_sub, (LONG_BITS == 64));
+  const_bool(use_for_mul, true);
   typedef int_fast64_t Type_For_Neg;
   typedef int_fast64_t Type_For_Add;
   typedef int_fast64_t Type_For_Sub;
@@ -828,10 +828,10 @@ struct Larger<signed int> {
 
 template <>
 struct Larger<unsigned int> {
-  static const bool use_for_neg = (LONG_BITS == 64);
-  static const bool use_for_add = (LONG_BITS == 64);
-  static const bool use_for_sub = (LONG_BITS == 64);
-  static const bool use_for_mul = true;
+  const_bool(use_for_neg, (LONG_BITS == 64));
+  const_bool(use_for_add, (LONG_BITS == 64));
+  const_bool(use_for_sub, (LONG_BITS == 64));
+  const_bool(use_for_mul, true);
   typedef int_fast64_t Type_For_Neg;
   typedef uint_fast64_t Type_For_Add;
   typedef int_fast64_t Type_For_Sub;
@@ -840,10 +840,10 @@ struct Larger<unsigned int> {
 
 template <>
 struct Larger<signed long> {
-  static const bool use_for_neg = false;
-  static const bool use_for_add = false;
-  static const bool use_for_sub = false;
-  static const bool use_for_mul = (LONG_BITS == 32);
+  const_bool(use_for_neg, false);
+  const_bool(use_for_add, false);
+  const_bool(use_for_sub, false);
+  const_bool(use_for_mul, (LONG_BITS == 32));
   typedef int_fast64_t Type_For_Neg;
   typedef int_fast64_t Type_For_Add;
   typedef int_fast64_t Type_For_Sub;
@@ -852,10 +852,10 @@ struct Larger<signed long> {
 
 template <>
 struct Larger<unsigned long> {
-  static const bool use_for_neg = false;
-  static const bool use_for_add = false;
-  static const bool use_for_sub = false;
-  static const bool use_for_mul = (LONG_BITS == 32);
+  const_bool(use_for_neg, false);
+  const_bool(use_for_add, false);
+  const_bool(use_for_sub, false);
+  const_bool(use_for_mul, (LONG_BITS == 32));
   typedef int_fast64_t Type_For_Neg;
   typedef uint_fast64_t Type_For_Add;
   typedef int_fast64_t Type_For_Sub;
@@ -864,10 +864,10 @@ struct Larger<unsigned long> {
 
 template <>
 struct Larger<signed long long> {
-  static const bool use_for_neg = false;
-  static const bool use_for_add = false;
-  static const bool use_for_sub = false;
-  static const bool use_for_mul = false;
+  const_bool(use_for_neg, false);
+  const_bool(use_for_add, false);
+  const_bool(use_for_sub, false);
+  const_bool(use_for_mul, false);
   typedef int_fast64_t Type_For_Neg;
   typedef int_fast64_t Type_For_Add;
   typedef int_fast64_t Type_For_Sub;
@@ -876,10 +876,10 @@ struct Larger<signed long long> {
 
 template <>
 struct Larger<unsigned long long> {
-  static const bool use_for_neg = false;
-  static const bool use_for_add = false;
-  static const bool use_for_sub = false;
-  static const bool use_for_mul = false;
+  const_bool(use_for_neg, false);
+  const_bool(use_for_add, false);
+  const_bool(use_for_sub, false);
+  const_bool(use_for_mul, false);
   typedef int_fast64_t Type_For_Neg;
   typedef uint_fast64_t Type_For_Add;
   typedef int_fast64_t Type_For_Sub;

@@ -32,16 +32,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 struct Rational_Box_Interval_Info_Policy {
-  static const bool store_unbounded = true;
-  static const bool store_open = true;
-  static const bool store_integer = false;
-  static const bool store_empty = true;
-  static const bool store_singleton = true;
-  static const unsigned int next_bit = 0;
-  static const bool handle_infinity = false;
-  static const bool check_inexact = false;
-  static const bool check_empty_args = false;
-  static const bool check_integer_args = false;
+  const_bool(store_unbounded, true);
+  const_bool(store_open, true);
+  const_bool(store_integer, false);
+  const_bool(store_empty, true);
+  const_bool(store_singleton, true);
+  const_int(next_bit, 0);
+  const_bool(handle_infinity, false);
+  const_bool(check_inexact, false);
+  const_bool(check_empty_args, false);
+  const_bool(check_integer_args, false);
 };
 
 typedef Interval_Info_Bitset<unsigned int, Rational_Box_Interval_Info_Policy>

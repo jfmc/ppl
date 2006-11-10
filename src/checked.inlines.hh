@@ -243,26 +243,26 @@ struct Safe_Comparison;
 
 template <typename T>
 struct Safe_Conversion<T, T> {
-  static const bool need_rounding = false;
+  const_bool(need_rounding, false);
 };
 
 template <typename T>
 struct Safe_Comparison<T, T> {
-  static const bool need_rounding = false;
+  const_bool(need_rounding, false);
 };
 
 #define safe_conversion(To, From) \
 template <> \
 struct Safe_Conversion<To, From> { \
-  static const bool need_rounding = false; \
+  const_bool(need_rounding, false); \
 }; \
 template <> \
 struct Safe_Comparison<To, From> { \
-  static const bool need_rounding = false; \
+  const_bool(need_rounding, false); \
 }; \
 template <> \
 struct Safe_Comparison<From, To> { \
-  static const bool need_rounding = false; \
+  const_bool(need_rounding, false); \
 }
 
 safe_conversion(signed short, signed char);

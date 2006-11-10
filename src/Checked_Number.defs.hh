@@ -33,43 +33,43 @@ namespace Parma_Polyhedra_Library {
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Checked_Number_Transparent_Policy {
   //! Checks for overflowed result.
-  static const int check_overflow = 0;
+  const_bool(check_overflow, false);
 
   //! Checks for attempts to add infinities with different sign.
-  static const int check_inf_add_inf = 0;
+  const_bool(check_inf_add_inf, false);
 
   //! Checks for attempts to subtract infinities with same sign.
-  static const int check_inf_sub_inf = 0;
+  const_bool(check_inf_sub_inf, false);
 
   //! Checks for attempts to multiply infinities by zero.
-  static const int check_inf_mul_zero = 0;
+  const_bool(check_inf_mul_zero, false);
 
   //! Checks for attempts to divide by zero.
-  static const int check_div_zero = 0;
+  const_bool(check_div_zero, false);
 
   //! Checks for attempts to divide infinities.
-  static const int check_inf_div_inf = 0;
+  const_bool(check_inf_div_inf, false);
 
   //! Checks for attempts to compute remainder of infinities.
-  static const int check_inf_mod = 0;
+  const_bool(check_inf_mod, false);
 
   //! Checks for attempts to take the square root of a negative number.
-  static const int check_sqrt_neg = 0;
+  const_bool(check_sqrt_neg, false);
 
   //! Handles not-a-number special value.
-  static const int handle_nan = 0;
+  const_bool(handle_nan, false);
 
   //! Handles infinity special values.
-  static const int handle_infinity = 0;
+  const_bool(handle_infinity, false);
 
   //! Representation is identical to primitive.
-  static const int convertible = 1;
+  const_bool(convertible, true);
 
   //! When nonzero, requests to check for FPU inexact result are honored.
-  static const int fpu_check_inexact = 0;
+  const_bool(fpu_check_inexact, false);
 
   //! Checks for NaN arguments
-  static const int check_nan_args = 0;
+  const_bool(check_nan_args, false);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
@@ -82,19 +82,19 @@ struct Checked_Number_Transparent_Policy {
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Checked_Number_Default_Policy {
-  static const int check_overflow = 1;
-  static const int check_inf_add_inf = 0;
-  static const int check_inf_sub_inf = 0;
-  static const int check_inf_mul_zero = 0;
-  static const int check_div_zero = 0;
-  static const int check_inf_div_inf = 0;
-  static const int check_inf_mod = 0;
-  static const int check_sqrt_neg = 0;
-  static const int handle_nan = 0;
-  static const int handle_infinity = 0;
-  static const int convertible = 1;
-  static const int fpu_check_inexact = 1;
-  static const int check_nan_args = 1;
+  const_bool(check_overflow, true);
+  const_bool(check_inf_add_inf, false);
+  const_bool(check_inf_sub_inf, false);
+  const_bool(check_inf_mul_zero, false);
+  const_bool(check_div_zero, false);
+  const_bool(check_inf_div_inf, false);
+  const_bool(check_inf_mod, false);
+  const_bool(check_sqrt_neg, false);
+  const_bool(handle_nan, false);
+  const_bool(handle_infinity, false);
+  const_bool(convertible, true);
+  const_bool(fpu_check_inexact, true);
+  const_bool(check_nan_args, true);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
@@ -107,21 +107,21 @@ struct Checked_Number_Default_Policy {
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Extended_Number_Policy {
-  static const int check_overflow = 1;
-  static const int check_inf_add_inf = 0;
-  static const int check_inf_sub_inf = 0;
-  static const int check_inf_mul_zero = 0;
-  static const int check_div_zero = 0;
-  static const int check_inf_div_inf = 0;
-  static const int check_inf_mod = 0;
-  static const int check_sqrt_neg = 0;
-  static const int handle_nan = 1;
-  static const int handle_infinity = 1;
+  const_bool(check_overflow, true);
+  const_bool(check_inf_add_inf, false);
+  const_bool(check_inf_sub_inf, false);
+  const_bool(check_inf_mul_zero, false);
+  const_bool(check_div_zero, false);
+  const_bool(check_inf_div_inf, false);
+  const_bool(check_inf_mod, false);
+  const_bool(check_sqrt_neg, false);
+  const_bool(handle_nan, true);
+  const_bool(handle_infinity, true);
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.
-  // static const int convertible = 0;
-  static const int fpu_check_inexact = 1;
-  static const int check_nan_args = 1;
+  // const_bool(convertible, false);
+  const_bool(fpu_check_inexact, true);
+  const_bool(check_nan_args, true);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
   static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Do not uncomment the following.
@@ -138,21 +138,21 @@ struct Extended_Number_Policy {
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct WRD_Extended_Number_Policy {
-  static const int check_overflow = 1;
-  static const int check_inf_add_inf = 0;
-  static const int check_inf_sub_inf = 0;
-  static const int check_inf_mul_zero = 0;
-  static const int check_div_zero = 0;
-  static const int check_inf_div_inf = 0;
-  static const int check_inf_mod = 0;
-  static const int check_sqrt_neg = 0;
-  static const int handle_nan = 1;
-  static const int handle_infinity = 1;
+  const_bool(check_overflow, true);
+  const_bool(check_inf_add_inf, false);
+  const_bool(check_inf_sub_inf, false);
+  const_bool(check_inf_mul_zero, false);
+  const_bool(check_div_zero, false);
+  const_bool(check_inf_div_inf, false);
+  const_bool(check_inf_mod, false);
+  const_bool(check_sqrt_neg, false);
+  const_bool(handle_nan, true);
+  const_bool(handle_infinity, true);
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.
-  // static const int convertible = 0;
-  static const int fpu_check_inexact = 1;
-  static const int check_nan_args = 0;
+  // const_bool(convertible, false);
+  const_bool(fpu_check_inexact, true);
+  const_bool(check_nan_args, false);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
   static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Do not uncomment the following.
