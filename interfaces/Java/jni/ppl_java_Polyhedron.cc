@@ -390,3 +390,113 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_fold_1space_1dimensions
   Variable v = j_variable_to_ppl_variable(env, j_var);
   this_polyhedron->fold_space_dimensions(v_set, v);
 }
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_maximize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Ljava_lang_Boolean_2
+(JNIEnv*, jobject, jobject,
+ jobject , jobject , jobject ) {
+  std::cerr << "implement me!" << std::endl;
+  //  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  //   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  //   Coefficient coeff_num = j_coeff_to_ppl_coeff(env, j_coeff_num);
+  //   Coefficient coeff_den = j_coeff_to_ppl_coeff(env, j_coeff_den);
+  //   Linear_Expression le = build_linear_expression(env, j_le);
+  //   bool b = j_boolean_to_bool(env, j_boolean);
+  //  if(this_polyhedron->maximize(le, coeff_num, coeff_den, b)) {
+  //  if(true) {
+  //    std::cerr << "i am maximizing" << std::endl;
+  //    j_coeff_num = j_coeff_den;
+  //   j_coeff_num = ppl_coeff_to_j_coeff(env, coeff_num);
+  //     j_coeff_den = ppl_coeff_to_j_coeff(env, coeff_den);
+  //    bool_to_j_boolean(env, b);
+  //    return true;
+  //  }
+  return false;
+}
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_maximize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Ljava_lang_Boolean_2Lppl_1java_Generator_2
+(JNIEnv*, jobject , jobject , jobject, jobject, jobject, jobject) {
+  std::cerr << "implement me" << std::endl;
+  return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_minimize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Ljava_lang_Boolean_2
+(JNIEnv* , jobject, jobject , jobject , jobject , jobject ) {
+  std::cerr << "implement me" << std::endl;
+  return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_minimize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Ljava_lang_Boolean_2Lppl_1java_Generator_2
+(JNIEnv* , jobject , jobject ,jobject , jobject , jobject , jobject ) {
+  std::cerr << "implement me" << std::endl;
+  return true;
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_BHRZ03_1widening_1assign
+(JNIEnv *, jobject, jobject, jobject) {
+    std::cerr << "implement me" << std::endl;
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_limited_1BHRZ03_1extrapolation_1assign
+    (JNIEnv *, jobject, jobject, jobject, jobject) {
+  std::cerr << "implement me" << std::endl;
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_bounded_1BHRZ03_1extrapolation_1assign
+(JNIEnv *, jobject, jobject, jobject, jobject) {
+  std::cerr << "implement me" << std::endl;
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_H79_1widening_1assign
+(JNIEnv *, jobject, jobject, jobject) {
+  std::cerr << "implement me" << std::endl;
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_widening_1assign
+(JNIEnv *, jobject, jobject, jobject) {
+  std::cerr << "implement me" << std::endl;
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_limited_1H79_1extrapolation_1assign
+(JNIEnv *, jobject, jobject, jobject, jobject) {
+  std::cerr << "implement me" << std::endl;
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_bounded_1H79_1extrapolation_1assign
+(JNIEnv *, jobject, jobject, jobject, jobject) {
+  std::cerr << "implement me" << std::endl;
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1grid_1generator
+  (JNIEnv *, jobject, jobject);
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_add_1grid_1generator_1and_1minimize
+  (JNIEnv *, jobject, jobject);
+
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1congruence
+(JNIEnv* env , jobject j_this_polyhedron, jobject j_congruence) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Congruence cg = build_ppl_congruence(env, j_congruence);
+  this_polyhedron->add_congruence(cg);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1congruences
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_congruences) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Congruence_System cgs = build_ppl_congruence_system(env, j_congruences);
+  this_polyhedron->add_congruences(cgs);
+}
+
+JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_congruences
+  (JNIEnv *, jobject);
+
+JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_minimized_1congruences
+  (JNIEnv *, jobject);
+
+JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_grid_1generators
+  (JNIEnv *, jobject);
+
+JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_minimized_1grid_1generators
+  (JNIEnv *, jobject);

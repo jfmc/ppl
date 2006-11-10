@@ -708,11 +708,11 @@ public class Polyhedron extends PPL_Object {
 
     public native void add_space_dimensions_and_project(long m);
     /*! \brief
-      Assigns to \p *this the \ref Concatenating_Polyhedra "concatenation"
-      of \p *this and \p y, taken in this order.
+      Assigns to \p this the \ref Concatenating_Polyhedra "concatenation"
+      of \p this and \p y, taken in this order.
 
-      \exception std::invalid_argument
-      Thrown if \p *this and \p y are topology-incompatible.
+      \exception RuntimeErrorException
+      Thrown if \p this and \p y are topology-incompatible.
 
       \exception std::length_error
       Thrown if the concatenation would cause the vector space
@@ -726,8 +726,8 @@ public class Polyhedron extends PPL_Object {
       The set of Variable objects corresponding to the space dimensions
       to be removed.
 
-      \exception std::invalid_argument
-      Thrown if \p *this is dimension-incompatible with one of the
+      \exception RuntimeErrorException
+      Thrown if \p this is dimension-incompatible with one of the
       Variable objects contained in \p to_be_removed.
     */
     public native void remove_space_dimensions(Variables_Set to_be_removed);
@@ -736,9 +736,9 @@ public class Polyhedron extends PPL_Object {
       Removes the higher dimensions of the vector space so that
       the resulting space will have dimension \p new_dimension.
 
-      \exception std::invalid_argument
+      \exception RuntimeErrorException
       Thrown if \p new_dimensions is greater than the space dimension of
-      \p *this.
+      \p this.
     */
     public native void remove_higher_space_dimensions(long
 						      new_dimension);
@@ -751,14 +751,14 @@ public class Polyhedron extends PPL_Object {
       \param m
       The number of replicas to be created.
 
-      \exception std::invalid_argument
+      \exception RuntimeErrorException
       Thrown if \p var does not correspond to a dimension of the vector space.
 
       \exception std::length_error
       Thrown if adding \p m new space dimensions would cause the
       vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
 
-      If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+      If \p this has space dimension \f$n\f$, with \f$n > 0\f$,
       and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
       then the \f$k\f$-th space dimension is
       \ref expand_space_dimension "expanded" to \p m new space dimensions
@@ -776,12 +776,12 @@ public class Polyhedron extends PPL_Object {
       The variable corresponding to the space dimension that is the
       destination of the folding operation.
 
-      \exception std::invalid_argument
-      Thrown if \p *this is dimension-incompatible with \p var or with
+      \exception RuntimeErrorException
+      Thrown if \p this is dimension-incompatible with \p var or with
       one of the Variable objects contained in \p to_be_folded.
       Also thrown if \p var is contained in \p to_be_folded.
 
-      If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+      If \p this has space dimension \f$n\f$, with \f$n > 0\f$,
       <CODE>var</CODE> has space dimension \f$k \leq n\f$,
       \p to_be_folded is a set of variables whose maximum space dimension
       is also less than or equal to \f$n\f$, and \p var is not a member
@@ -792,4 +792,309 @@ public class Polyhedron extends PPL_Object {
     public native void fold_space_dimensions(Variables_Set to_be_folded,
 					     Variable var);
 
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if \p this is not empty
+      and \p expr is bounded from above in \p this, in which case
+      the supremum value is computed.
+
+      \param expr
+      The linear expression to be maximized subject to \p this;
+
+      \param sup_n
+      The numerator of the supremum value;
+
+      \param sup_d
+      The denominator of the supremum value;
+
+      \param maximum
+      <CODE>true</CODE> if and only if the supremum is also the maximum value.
+
+      \exception RuntimeErrorException
+      Thrown if \p expr and \p this are dimension-incompatible.
+
+      If \p this is empty or \p expr is not bounded from above,
+      <CODE>false</CODE> is returned and \p sup_n, \p sup_d
+      and \p maximum are left untouched.
+    */
+    public native boolean maximize(Linear_Expression expr,
+				   Coefficient sup_n, Coefficient sup_d,
+				   Boolean maximum);
+
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if \p this is not empty
+      and \p expr is bounded from above in \p this, in which case
+      the supremum value and a point where \p expr reaches it are computed.
+
+      \param expr
+      The linear expression to be maximized subject to \p this;
+
+      \param sup_n
+      The numerator of the supremum value;
+
+      \param sup_d
+      The denominator of the supremum value;
+
+      \param maximum
+      <CODE>true</CODE> if and only if the supremum is also the maximum value;
+
+      \param point
+      When maximization succeeds, will be assigned the point or
+      closure point where \p expr reaches its supremum value.
+
+      \exception RuntimeErrorException
+      Thrown if \p expr and \p this are dimension-incompatible.
+
+      If \p this is empty or \p expr is not bounded from above,
+      <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
+      and \p point are left untouched.
+    */
+    public native boolean maximize(Linear_Expression expr,
+				   Coefficient sup_n, Coefficient sup_d,
+				   Boolean maximum,
+				   Generator point);
+
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if \p this is not empty
+      and \p expr is bounded from below in \p this, in which case
+      the infimum value is computed.
+
+      \param expr
+      The linear expression to be minimized subject to \p this;
+
+      \param inf_n
+      The numerator of the infimum value;
+
+      \param inf_d
+      The denominator of the infimum value;
+
+      \param minimum
+      <CODE>true</CODE> if and only if the infimum is also the minimum value.
+
+      \exception RuntimeErrorException
+      Thrown if \p expr and \p this are dimension-incompatible.
+
+      If \p this is empty or \p expr is not bounded from below,
+      <CODE>false</CODE> is returned and \p inf_n, \p inf_d
+      and \p minimum are left untouched.
+    */
+    public native boolean minimize(Linear_Expression expr,
+				    Coefficient inf_n, Coefficient inf_d,
+				    Boolean minimum);
+
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if \p this is not empty
+      and \p expr is bounded from below in \p this, in which case
+      the infimum value and a point where \p expr reaches it are computed.
+
+      \param expr
+      The linear expression to be minimized subject to \p this;
+
+      \param inf_n
+      The numerator of the infimum value;
+
+      \param inf_d
+      The denominator of the infimum value;
+
+      \param minimum
+      <CODE>true</CODE> if and only if the infimum is also the minimum value;
+
+      \param point
+      When minimization succeeds, will be assigned a point or
+      closure point where \p expr reaches its infimum value.
+
+      \exception RuntimeErrorException
+      Thrown if \p expr and \p this are dimension-incompatible.
+
+      If \p this is empty or \p expr is not bounded from below,
+      <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
+      and \p point are left untouched.
+    */
+    public native boolean minimize(Linear_Expression expr,
+				   Coefficient inf_n, Coefficient inf_d,
+				   Boolean minimum,
+				   Generator point);
+
+    /*! \brief
+      Assigns to \p this the result of computing the
+      \ref BHRZ03_widening "BHRZ03-widening" between \p this and \p y.
+
+      \param y
+      A polyhedron that <EM>must</EM> be contained in \p this;
+
+      \param tp
+      An optional pointer to an unsigned variable storing the number of
+      available tokens (to be used when applying the
+      \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p y are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native void BHRZ03_widening_assign(Polyhedron y, Integer tp);
+
+    /*! \brief
+      Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
+      computation by also enforcing those raints in \p cs that are
+      satisfied by all the points of \p this.
+
+      \param y
+      A polyhedron that <EM>must</EM> be contained in \p this;
+
+      \param cs
+      The system of raints used to improve the widened polyhedron;
+
+      \param tp
+      An optional pointer to an unsigned variable storing the number of
+      available tokens (to be used when applying the
+      \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+      \exception RuntimeErrorException
+      Thrown if \p this, \p y and \p cs are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native
+	void limited_BHRZ03_extrapolation_assign(Polyhedron y,
+						 Constraint_System cs,
+						 Integer tp);
+
+    /*! \brief
+      Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
+      computation by also enforcing those constraints in \p cs that are
+      satisfied by all the points of \p this, plus all the constraints
+      of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
+      \f$r \in \Qset\f$, that are satisfied by all the points of \p this.
+
+      \param y
+      A polyhedron that <EM>must</EM> be contained in \p this;
+
+      \param cs
+      The system of constraints used to improve the widened polyhedron;
+
+      \param tp
+      An optional pointer to an unsigned variable storing the number of
+      available tokens (to be used when applying the
+      \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+      \exception RuntimeErrorException
+      Thrown if \p this, \p y and \p cs are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native
+	void bounded_BHRZ03_extrapolation_assign(Polyhedron y,
+						 Constraint_System cs,
+						 Integer tp);
+    /*! \brief
+      Assigns to \p this the result of computing the
+      \ref H79_widening "H79-widening" between \p this and \p y.
+
+      \param y
+      A polyhedron that <EM>must</EM> be contained in \p this;
+
+      \param tp
+      An optional pointer to an unsigned variable storing the number of
+      available tokens (to be used when applying the
+      \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p y are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native void H79_widening_assign(Polyhedron y, Integer tp);
+
+    //! Same as H79_widening_assign(y, tp).
+    public native void widening_assign(Polyhedron y, Integer tp );
+
+    /*! \brief
+      Improves the result of the \ref H79_widening "H79-widening"
+      computation by also enforcing those constraints in \p cs that are
+      satisfied by all the points of \p this.
+
+      \param y
+      A polyhedron that <EM>must</EM> be contained in \p this;
+
+      \param cs
+      The system of constraints used to improve the widened polyhedron;
+
+      \param tp
+      An optional pointer to an unsigned variable storing the number of
+      available tokens (to be used when applying the
+      \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+      \exception RuntimeErrorException
+      Thrown if \p this, \p y and \p cs are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native void limited_H79_extrapolation_assign(Polyhedron y,
+							Constraint_System cs,
+							Integer tp);
+
+    /*! \brief
+      Improves the result of the \ref H79_widening "H79-widening"
+      computation by also enforcing those constraints in \p cs that are
+      satisfied by all the points of \p this, plus all the constraints
+      of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
+      \f$r \in \Qset\f$, that are satisfied by all the points of \p this.
+
+      \param y
+      A polyhedron that <EM>must</EM> be contained in \p this;
+
+      \param cs
+      The system of constraints used to improve the widened polyhedron;
+
+      \param tp
+      An optional pointer to an unsigned variable storing the number of
+      available tokens (to be used when applying the
+      \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+      \exception RuntimeErrorException
+      Thrown if \p this, \p y and \p cs are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native void bounded_H79_extrapolation_assign(Polyhedron y,
+							Constraint_System cs,
+							Integer tp);
+    //! Domain compatibility method.
+    public native void add_grid_generator(Grid_Generator g);
+
+    //! Returns <CODE>true</CODE> if \p this is empty else <CODE>false</CODE>.
+    public native boolean add_grid_generator_and_minimize(Grid_Generator g);
+
+    /*! \brief
+      Adds a copy of congruence \p cg to the system of congruences of \p
+      this (without minimizing the result).
+
+      \exception RuntimeErrorException
+      Thrown if \p this and congruence \p cg are topology-incompatible
+      or dimension-incompatible.
+    */
+    public native void add_congruence(Congruence cg);
+
+    /*! \brief
+      Adds to \p this constraints equivalent to the congruences in \p
+      cgs (without minimizing the result).
+
+      \param cgs
+      Contains the congruences that will be added to the system of
+      constraints of \p this.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p cgs are topology-incompatible or
+      dimension-incompatible.
+    */
+    public native void add_congruences(Congruence_System cgs);
+
+    //! Returns a system of congruences created from the constraints.
+    public native Congruence_System congruences();
+
+    /*! \brief
+      Returns a system of congruences created from the minimized
+      constraints.
+    */
+    public native Congruence_System minimized_congruences();
+
+    //! Returns a universe system of grid generators.
+    public native Grid_Generator_System grid_generators();
+
+    //! Returns a universe system of grid generators.
+    public native Grid_Generator_System minimized_grid_generators();
 }

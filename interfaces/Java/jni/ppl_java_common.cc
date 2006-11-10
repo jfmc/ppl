@@ -23,6 +23,81 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_java_common.hh"
 using namespace Parma_Polyhedra_Library;
 
+Parma_Polyhedra_Library::Congruence
+build_ppl_congruence(JNIEnv* env, const jobject& j_congruence) {
+  jclass congruence_le_class
+    = env->FindClass("ppl_java/Congruence_Linear_Expression");
+  jclass congruence_constraint_class
+    = env->FindClass("ppl_java/Congruence_Constraint");
+  jclass congruence_class
+    = env->FindClass("ppl_java/Congruence");
+  jclass current_class = env->GetObjectClass(j_congruence);
+  jfieldID modulus_field_id = env->GetFieldID(congruence_class,
+					      "modulus",
+					      "Lppl_java/Coefficient;");
+  jobject j_modulus = env->GetObjectField(j_congruence, modulus_field_id);
+  Coefficient ppl_modulus = j_coeff_to_ppl_coeff(env, j_modulus);
+  Linear_Expression(Variable(0) + ppl_modulus);
+  // Constraint
+  if (env->IsAssignableFrom(congruence_constraint_class, current_class)) {
+    jfieldID constraint_field_id
+      = env->GetFieldID(congruence_constraint_class,
+			"constr",
+			"Lppl_java/Constraint;");
+    jobject j_constr = env->GetObjectField(j_congruence,
+					   constraint_field_id);
+    Constraint c = build_ppl_constraint(env, j_constr);
+    Congruence cg =  c / ppl_modulus;
+    return cg;
+  }
+
+  // Linear_Expression
+  if (env->IsAssignableFrom(congruence_le_class, current_class)) {
+    jfieldID lhs_field_id
+      = env->GetFieldID(congruence_le_class,
+ 			"lhs",
+ 			"Lppl_java/Linear_Expression;");
+    jfieldID rhs_field_id
+      = env->GetFieldID(congruence_le_class,
+ 			"rhs",
+ 			"Lppl_java/Linear_Expression;");
+    jobject j_lhs = env->GetObjectField(j_congruence, lhs_field_id);
+    jobject j_rhs = env->GetObjectField(j_congruence, rhs_field_id);
+    Linear_Expression lhs = build_linear_expression(env, j_lhs);
+    Linear_Expression rhs = build_linear_expression(env, j_rhs);
+    return (lhs %= rhs) / ppl_modulus;
+  }
+  jclass newExcCls = env->FindClass("javax/management/RuntimeErrorException");
+  env->ThrowNew(newExcCls, "ppl.java: \n runtime error");
+  // We should not be here!
+  throw std::runtime_error("PPL Java interface internal error");
+
+}
+
+// Converts a C++ bool to a Java boolean.
+
+// jobject
+// bool_to_j_boolean(JNIEnv* env,
+// 		  const bool bool_value) {
+//  jclass boolean_java_class = env->FindClass("java/lang/Boolean");
+//  jmethodID getboolean_method_id = env->GetStaticMethodID(boolean_java_class,
+// 							 "valueOf", "(Z)java/lang/Boolean;");
+//  return env->CallStaticObjectMethod(boolean_java_class,
+// 				    getboolean_method_id,
+// 				    bool_value);
+//}
+
+// bool
+// j_boolean_to_bool(JNIEnv* env,
+// 		  const jobject& j_boolean) {
+//   jclass boolean_class = env->GetObjectClass(j_boolean);
+//   jmethodID booleanvalue_method_id = env->GetMethodID(boolean_class,
+// 						      "booleanValue",
+// 						      "()Z");
+//   return env->CallBooleanMethod(j_boolean, booleanvalue_method_id);
+
+// }
+
 Variables_Set
 j_variables_set_to_ppl_variables_set(JNIEnv* env,
 				     const jobject& j_v_set) {
@@ -359,4 +434,32 @@ build_ppl_generator_system(JNIEnv* env, const jobject& j_iterable) {
 					    has_next_method_id);
   }
   return gs;
+}
+
+Congruence_System
+build_ppl_congruence_system(JNIEnv* env, const jobject& j_iterable) {
+  jclass j_iterable_class = env->GetObjectClass(j_iterable);
+  jclass iterator_java_class = env->FindClass("java/util/Iterator");
+  Congruence_System cgs;
+  jmethodID iterator_method_id = env->GetMethodID(j_iterable_class,
+						  "iterator",
+ 						  "()Ljava/util/Iterator;");
+  jobject j_iterator = env->CallObjectMethod(j_iterable, iterator_method_id);
+  jmethodID has_next_method_id = env->GetMethodID(iterator_java_class,
+  						  "hasNext",
+  						  "()Z");
+  jboolean has_next_value = env->CallBooleanMethod(j_iterator,
+						   has_next_method_id);
+  jmethodID next_method_id = env->GetMethodID(iterator_java_class,
+					      "next",
+					      "()Ljava/lang/Object;");
+
+  while (has_next_value) {
+    jobject j_congruence = env->CallObjectMethod(j_iterator,
+						 next_method_id);
+    cgs.insert(build_ppl_congruence(env, j_congruence));
+    has_next_value = env->CallBooleanMethod(j_iterator,
+					    has_next_method_id);
+  }
+  return cgs;
 }

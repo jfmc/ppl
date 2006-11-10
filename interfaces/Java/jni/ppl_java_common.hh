@@ -24,7 +24,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ppl.hh>
 
 
-// Converts a Java variables set  to a PPL variables set.
+
+// // Converts a C++ bool to a Java boolean.
+// jobject
+// bool_to_j_boolean(JNIEnv* env,
+// 		  const bool bool_value);
+
+// // Converts a Java boolean set to a C++ bool.
+// bool
+// j_boolean_to_bool(JNIEnv* env,
+// 		  const jobject& j_boolean);
+
+// Converts a Java variables set to a PPL variables set.
 Parma_Polyhedra_Library::Variables_Set
 j_variables_set_to_ppl_variables_set(JNIEnv* env,
 				     const jobject& variables_set);
@@ -50,9 +61,13 @@ ppl_coeff_to_j_coeff(JNIEnv* env,
 Parma_Polyhedra_Library::Constraint
 build_ppl_constraint(JNIEnv* env, const jobject& j_constraint);
 
-// Builds a PPL linear expression  from a Java linear expression.
+// Builds a PPL linear expression from a Java linear expression.
 Parma_Polyhedra_Library::Linear_Expression
 build_linear_expression(JNIEnv* env, const jobject& j_le);
+
+// Builds a PPL congruence from a Java congruence.
+Parma_Polyhedra_Library::Congruence
+build_ppl_congruence(JNIEnv* env, const jobject& j_le);
 
 // Builds a PPL genearator from a Java generator.
 Parma_Polyhedra_Library::Generator
@@ -69,3 +84,7 @@ build_ppl_constraint_system(JNIEnv* env, const jobject& j_iterable);
 // Builds a PPL generator system from a Java generator system.
 Parma_Polyhedra_Library::Generator_System
 build_ppl_generator_system(JNIEnv* env, const jobject& j_iterable);
+
+// Builds a PPL congruence system from a Java congruence system.
+Parma_Polyhedra_Library::Congruence_System
+build_ppl_congruence_system(JNIEnv* env, const jobject& j_iterable);
