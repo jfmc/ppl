@@ -480,6 +480,7 @@ ppl_@CLASS@_@SIMPLIFY@_1_test :-
      ;
        true
      ),
+     ppl_delete_@CLASS@(PS1),
      ppl_delete_@CLASS@(PS)
    ->
     fail ; true)
@@ -671,6 +672,7 @@ ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_2_test :-
      ppl_@CLASS@_equals_@CLASS@(PS, PS1_min),
      ppl_@CLASS@_equals_@CLASS@(PS1, PS1_min),
      ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PS_min),
      ppl_delete_@CLASS@(PS1),
      ppl_delete_@CLASS@(PS1_min)
    ->
@@ -735,22 +737,29 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
-   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
-   ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
-   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS),
-   ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
-   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS1),
-   ((ppl_@CLASS@_is_empty(PS)
-     ; ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS))
+   (
+     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
+     ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
+     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+                                                          U_or_E, PS),
+     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
+     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+                                                        U_or_E, PS1),
+     (\+ ppl_@CLASS@_is_empty(PS)
+     ->
+       ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
+     ;
+       true
+     ),
+     ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PS1)
    ->
      fail ; true)
   ).
 
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, []) :-
   (
-   ppl_@CLASS@_equals_@CLASS@(PS, PS1),
-   ppl_delete_@CLASS@(PS),
-   ppl_delete_@CLASS@(PS1)
+   ppl_@CLASS@_equals_@CLASS@(PS, PS1)
   ).
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, [R | RS]) :-
   (
@@ -1206,21 +1215,23 @@ m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_2_test :-
   (
     (
-      ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(1, universe, PS),
+      clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(1, universe, PS),
       ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@(PS, 1),
       ppl_@CLASS@_OK(PS),
       ppl_@CLASS@_space_dimension(PS, 2),
       (@EMBEDPROJECT@ == and_embed
       ->
-        ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(2, universe, PS1)
+        clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(2, universe, PS1)
       ;
         make_vars(2, [Var0, Var1]),
-        ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(
+        clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(
                             [Var0 = Var0, Var1 = 0], PS1)
       ),
       ppl_@CLASS@_equals_@CLASS@(PS, PS1),
       ppl_@CLASS@_OK(PS1),
-      ppl_@CLASS@_OK(PS)
+      ppl_@CLASS@_OK(PS),
+      ppl_delete_@CLASS@(PS1),
+      ppl_delete_@CLASS@(PS)
    ->
     fail ; true)
   ).
