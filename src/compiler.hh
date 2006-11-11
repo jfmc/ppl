@@ -26,18 +26,54 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Used to avoid unused variable warnings from the compiler.
+/*! \brief
+  No-op function that allows to avoid unused variable warnings from
+  the compiler.
+*/
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 inline void
 used(const T&) {
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  No-op function that prevents the compiler to subject the argument to CSE.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 inline void avoid_cse(const T& x) {
   __asm__ __volatile__ ("" : "+m" (const_cast<T&>(x)));
 }
 
+template <bool>
+struct Compile_Time_Check;
+
+template <>
+struct Compile_Time_Check<true> {
+  typedef int is_true;
+};
+
+template <>
+struct Compile_Time_Check<false> {
+  typedef int is_false;
+};
+
+#define COMPILE_TIME_CHECK_FUNC(suf) compile_time_check_ ## suf
+#define COMPILE_TIME_CHECK_AUX(e, suf)					\
+  int COMPILE_TIME_CHECK_FUNC(suf)(int, Compile_Time_Check<(e)>::is_true)
+
+/*! \brief
+  Produces a compilation error if the compile-time constant \p e does
+  not evaluate to <CODE>true</CODE>
+*/
+#define COMPILE_TIME_CHECK(e) COMPILE_TIME_CHECK_AUX(e, __LINE__)
+
+/*
+  The const_bool and const_int macros allow to easily select a trick
+  that avoids linker errors when the PPL is compiled with optimization
+  levels lower than -O2.
+*/
 #if 0
 #define const_bool(var, val) static const bool var = (val)
 #else
