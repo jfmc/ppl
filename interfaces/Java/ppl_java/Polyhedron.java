@@ -1083,6 +1083,18 @@ public class Polyhedron extends PPL_Object {
     */
     public native void add_congruences(Congruence_System cgs);
 
+    //! Returns the system of constraints.
+    public native Constraint_System constraints();
+
+    //! Returns the system of constraints, with no redundant constraint.
+    public native Constraint_System minimized_constraints();
+
+    //! Returns the system of generators.
+    public native Generator_System generators();
+
+    //! Returns the system of generators, with no redundant generator.
+    public native Generator_System minimized_generators();
+
     //! Returns a system of congruences created from the constraints.
     public native Congruence_System congruences();
 

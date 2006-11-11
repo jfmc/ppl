@@ -489,11 +489,52 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1congruences
   this_polyhedron->add_congruences(cgs);
 }
 
+JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_constraints
+(JNIEnv* env, jobject j_this_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  return build_j_constraint_system(env, this_polyhedron->constraints());
+}
+
+JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_minimized_1constraints
+(JNIEnv* env, jobject j_this_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  return build_j_constraint_system(env,
+				   this_polyhedron->minimized_constraints());
+}
+
+JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_generators
+(JNIEnv* env, jobject j_this_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  return build_j_generator_system(env, this_polyhedron->generators());
+}
+
+JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_minimized_1generators
+(JNIEnv* env, jobject j_this_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  return build_j_generator_system(env,
+				  this_polyhedron->minimized_generators());
+}
+
 JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_congruences
-  (JNIEnv *, jobject);
+(JNIEnv* env, jobject j_this_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  return build_j_congruence_system(env, this_polyhedron->congruences());
+}
+
 
 JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_minimized_1congruences
-  (JNIEnv *, jobject);
+(JNIEnv* env, jobject j_this_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  return build_j_congruence_system(env,
+				   this_polyhedron->minimized_congruences());
+}
+
 
 JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_grid_1generators
   (JNIEnv *, jobject);

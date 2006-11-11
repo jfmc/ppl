@@ -23,11 +23,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_java_common.hh"
 using namespace Parma_Polyhedra_Library;
 
+
+// 	Prolog_term_ref addendum = Prolog_new_term_ref();
+// 	Prolog_construct_compound(addendum, a_asterisk,
+// 				  Coefficient_to_integer_term(coefficient),
+// 				  variable_term(varid));
+// 	Prolog_term_ref new_so_far = Prolog_new_term_ref();
+// 	Prolog_construct_compound(new_so_far, a_plus,
+// 				  so_far, addendum);
+// 	so_far = new_so_far;
+
 Parma_Polyhedra_Library::Congruence
 build_ppl_congruence(JNIEnv* env, const jobject& j_congruence) {
   jclass congruence_class
     = env->FindClass("ppl_java/Congruence");
-  jclass current_class = env->GetObjectClass(j_congruence);
   jfieldID modulus_field_id = env->GetFieldID(congruence_class,
 					      "modulus",
 					      "Lppl_java/Coefficient;");
@@ -436,4 +445,209 @@ build_ppl_congruence_system(JNIEnv* env, const jobject& j_iterable) {
 					    has_next_method_id);
   }
   return cgs;
+}
+
+jobject
+get_le_inhomogeneous_term(JNIEnv* env, const Coefficient& c) {
+  jclass j_le_coeff_class
+    = env->FindClass("ppl_java/Linear_Expression_Coefficient");
+  jobject j_coeff =  ppl_coeff_to_j_coeff(env, c);
+  jmethodID j_le_coeff_ctr_id
+    = env->GetMethodID(j_le_coeff_class,
+		       "<init>",
+		       "(Lppl_java/Coefficient;)V");
+  return env->NewObject(j_le_coeff_class, j_le_coeff_ctr_id,
+			j_coeff);
+}
+
+jobject
+build_j_constraint(JNIEnv* env, const Constraint& c) {
+  jclass j_constraint_class = env->FindClass("ppl_java/Constraint");
+  jclass j_rel_sym_class = env->FindClass("ppl_java/Relation_Symbol");
+  jmethodID j_constraint_ctr_id
+    = env->GetMethodID(j_constraint_class,
+		       "<init>",
+		       "(Lppl_java/Linear_Expression;"
+		       "Lppl_java/Linear_Expression;"
+		       "Lppl_java/Relation_Symbol;)V");
+  jfieldID rel_sym_eq_get_id
+    = env->GetStaticFieldID(j_rel_sym_class,
+			    "EQUAL",
+			    "Lppl_java/Relation_Symbol;");
+   jfieldID rel_sym_gt_get_id
+     = env->GetStaticFieldID(j_rel_sym_class,
+ 			    "GREATER_THAN",
+ 			    "Lppl_java/Relation_Symbol;");
+   jfieldID rel_sym_gtoeq_get_id
+     = env->GetStaticFieldID(j_rel_sym_class,
+ 			    "GREATER_THAN_OR_EQUAL",
+ 			    "Lppl_java/Relation_Symbol;");
+   jobject lhs = get_linear_expression(env, c);
+   jobject rhs = get_le_inhomogeneous_term(env, -c.inhomogeneous_term());
+   jobject relation;
+   switch (c.type()) {
+  case Constraint::EQUALITY: {
+    relation = env->GetStaticObjectField(j_rel_sym_class, rel_sym_eq_get_id);
+    break;
+  }
+  case Constraint::NONSTRICT_INEQUALITY:
+    relation = env->GetStaticObjectField(j_rel_sym_class, rel_sym_gtoeq_get_id);
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    relation = env->GetStaticObjectField(j_rel_sym_class, rel_sym_gt_get_id);
+    break;
+  default:
+      throw std::runtime_error("PPL Java interface internal error");
+  }
+   return env->NewObject(j_constraint_class,j_constraint_ctr_id,
+			 lhs, rhs,
+			 relation);
+}
+
+jobject
+build_j_congruence(JNIEnv* env, const Congruence& cg) {
+  jclass j_congruence_class = env->FindClass("ppl_java/Congruence");
+  jmethodID j_congruence_ctr_id
+    = env->GetMethodID(j_congruence_class,
+		       "<init>",
+		       "(Lppl_java/Linear_Expression;"
+		       "Lppl_java/Linear_Expression;"
+		       "Lppl_java/Coefficient;)V");
+
+  jobject j_modulus = ppl_coeff_to_j_coeff(env, cg.modulus());
+  jobject lhs = get_linear_expression(env, cg);
+  jobject rhs = get_le_inhomogeneous_term(env, -cg.inhomogeneous_term());
+  return env->NewObject(j_congruence_class, j_congruence_ctr_id,
+			lhs, rhs,
+			j_modulus);
+
+}
+
+jobject
+build_j_generator(JNIEnv* env, const Generator& g) {
+  jclass j_generator_class = env->FindClass("ppl_java/Generator");
+  jclass j_gen_type_class = env->FindClass("ppl_java/Generator_Type");
+  jmethodID line_ctr_id =
+    env->GetStaticMethodID(j_generator_class,
+			   "line",
+			   "(Lppl_java/Linear_Expression;)"
+			   "Lppl_java/Generator;");
+  jmethodID ray_ctr_id =
+    env->GetStaticMethodID(j_generator_class,
+			   "ray",
+			   "(Lppl_java/Linear_Expression;)"
+			   "Lppl_java/Generator;");
+ jmethodID point_ctr_id =
+    env->GetStaticMethodID(j_generator_class,
+			   "point",
+			   "(Lppl_java/Linear_Expression;"
+			   "Lppl_java/Coefficient;)"
+			   "Lppl_java/Generator;");
+ jmethodID closure_point_ctr_id =
+   env->GetStaticMethodID(j_generator_class,
+			  "closure_point",
+			  "(Lppl_java/Linear_Expression;"
+			  "Lppl_java/Coefficient;)"
+			  "Lppl_java/Generator;");
+
+ jfieldID gen_type_line_get_id
+    = env->GetStaticFieldID(j_gen_type_class,
+			    "LINE",
+			    "Lppl_java/Generator_Type;");
+   jfieldID gen_type_ray_get_id
+     = env->GetStaticFieldID(j_gen_type_class,
+ 			    "RAY",
+ 			    "Lppl_java/Generator_Type;");
+   jfieldID gen_type_point_get_id
+     = env->GetStaticFieldID(j_gen_type_class,
+ 			    "POINT",
+ 			    "Lppl_java/Generator_Type;");
+   jfieldID gen_type_closure_point_get_id
+     = env->GetStaticFieldID(j_gen_type_class,
+			     "CLOSURE_POINT",
+			     "Lppl_java/Generator_Type;");
+   jobject j_g_type;
+   jobject j_g_le = get_linear_expression(env, g);
+   jobject jcoeff = ppl_coeff_to_j_coeff(env, Coefficient(1));
+  switch (g.type()) {
+  case Generator::LINE:
+    j_g_type
+      = env->GetStaticObjectField(j_gen_type_class, gen_type_line_get_id);
+    return env->CallStaticObjectMethod(j_generator_class,
+				       line_ctr_id, j_g_le);
+    break;
+  case Generator::RAY:
+    j_g_type
+      = env->GetStaticObjectField(j_gen_type_class, gen_type_ray_get_id);
+    return env->CallStaticObjectMethod(j_generator_class,
+				       ray_ctr_id, j_g_le);
+    break;
+  case Generator::POINT:
+    {
+      j_g_type
+	= env->GetStaticObjectField(j_gen_type_class, gen_type_point_get_id);
+      const Coefficient& divisor = g.divisor();
+      j_g_le = get_linear_expression(env, g);
+      jcoeff = ppl_coeff_to_j_coeff(env, divisor);
+      return env->CallStaticObjectMethod(j_generator_class,
+					 point_ctr_id, j_g_le, jcoeff);
+    }
+  case Generator::CLOSURE_POINT:
+    {
+      j_g_type = env->GetStaticObjectField(j_gen_type_class,
+					  gen_type_closure_point_get_id);
+      const Coefficient& divisor = g.divisor();
+      j_g_le = get_linear_expression(env, g);
+      jcoeff = ppl_coeff_to_j_coeff(env, divisor);
+      return env->CallStaticObjectMethod(j_generator_class,
+					 closure_point_ctr_id, j_g_le, jcoeff);
+    }
+  default:
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+}
+
+jobject
+build_j_constraint_system(JNIEnv* env, const Constraint_System& cs) {
+  jclass j_cs_class = env->FindClass("ppl_java/Constraint_System");
+  jmethodID j_cs_ctr_id = env->GetMethodID(j_cs_class, "<init>", "()V");
+  jmethodID j_cs_add_id = env->GetMethodID(j_cs_class, "add",
+					   "(Ljava/lang/Object;)Z");
+   jobject j_cs = env->NewObject(j_cs_class, j_cs_ctr_id);
+   for (Constraint_System::const_iterator v_begin = cs.begin(),
+ 	 v_end = cs.end(); v_begin != v_end; ++v_begin) {
+     jobject j_constraint = build_j_constraint(env, *v_begin);
+     env->CallBooleanMethod(j_cs, j_cs_add_id, j_constraint);
+   }
+   return j_cs;
+}
+
+jobject
+build_j_generator_system(JNIEnv* env, const Generator_System& gs) {
+  jclass j_gs_class = env->FindClass("ppl_java/Generator_System");
+  jmethodID j_gs_ctr_id = env->GetMethodID(j_gs_class, "<init>", "()V");
+  jmethodID j_gs_add_id = env->GetMethodID(j_gs_class, "add",
+					   "(Ljava/lang/Object;)Z");
+   jobject j_gs = env->NewObject(j_gs_class, j_gs_ctr_id);
+   for (Generator_System::const_iterator v_begin = gs.begin(),
+ 	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
+     jobject j_generator = build_j_generator(env, *v_begin);
+     env->CallBooleanMethod(j_gs, j_gs_add_id, j_generator);
+   }
+   return j_gs;
+}
+
+jobject
+build_j_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
+   jclass j_cgs_class = env->FindClass("ppl_java/Congruence_System");
+   jmethodID j_cgs_ctr_id = env->GetMethodID(j_cgs_class, "<init>", "()V");
+   jmethodID j_cgs_add_id = env->GetMethodID(j_cgs_class, "add",
+ 					   "(Ljava/lang/Object;)Z");
+    jobject j_cgs = env->NewObject(j_cgs_class, j_cgs_ctr_id);
+    for (Congruence_System::const_iterator v_begin = cgs.begin(),
+  	 v_end = cgs.end(); v_begin != v_end; ++v_begin) {
+      jobject j_congruence = build_j_congruence(env,*v_begin);
+      env->CallBooleanMethod(j_cgs, j_cgs_add_id, j_congruence);
+    }
+    return j_cgs;
 }
