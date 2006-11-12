@@ -360,6 +360,7 @@ simplify.cc \
 Grid_conversion.cc \
 Grid_simplify.cc \
 globals.cc \
+mp_numeric_limits.cc \
 version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
