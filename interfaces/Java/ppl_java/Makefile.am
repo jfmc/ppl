@@ -36,6 +36,7 @@ Generator.java \
 Generator_System.java \
 Generator_Type.java \
 Grid_Generator.java \
+Grid_Generator_Type.java \
 Grid_Generator_System.java \
 Linear_Expression.java \
 Linear_Expression_Coefficient.java \

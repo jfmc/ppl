@@ -24,8 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace Parma_Polyhedra_Library;
 
 jobject
-ppl_poly_gen_relation_to_j_poly_gen_relation(JNIEnv* env,
-					     Poly_Gen_Relation& r) {
+build_java_poly_gen_relation(JNIEnv* env,
+			  Poly_Gen_Relation& r) {
   jclass j_poly_gen_relation_class
     = env->FindClass("ppl_java/Poly_Gen_Relation");
   jmethodID j_poly_gen_relation_ctr_id
@@ -43,8 +43,8 @@ ppl_poly_gen_relation_to_j_poly_gen_relation(JNIEnv* env,
 }
 
 jobject
-ppl_poly_con_relation_to_j_poly_con_relation(JNIEnv* env,
-					     Poly_Con_Relation& r) {
+build_ppl_poly_con_relation(JNIEnv* env,
+			    Poly_Con_Relation& r) {
   jclass j_poly_con_relation_class
     = env->FindClass("ppl_java/Poly_Con_Relation");
   jmethodID j_poly_con_relation_ctr_id
@@ -82,7 +82,7 @@ build_ppl_congruence(JNIEnv* env, const jobject& j_congruence) {
 					      "modulus",
 					      "Lppl_java/Coefficient;");
   jobject j_modulus = env->GetObjectField(j_congruence, modulus_field_id);
-  Coefficient ppl_modulus = j_coeff_to_ppl_coeff(env, j_modulus);
+  Coefficient ppl_modulus = build_ppl_coeff(env, j_modulus);
   jfieldID lhs_field_id
       = env->GetFieldID(congruence_class,
  			"lhs",
@@ -123,8 +123,8 @@ build_ppl_congruence(JNIEnv* env, const jobject& j_congruence) {
 // }
 
 Variables_Set
-j_variables_set_to_ppl_variables_set(JNIEnv* env,
-				     const jobject& j_v_set) {
+build_ppl_variables_set(JNIEnv* env,
+			const jobject& j_v_set) {
   jclass variables_set_class = env->GetObjectClass(j_v_set);
   jclass iterator_java_class = env->FindClass("java/util/Iterator");
   Variables_Set v_set;
@@ -144,7 +144,7 @@ j_variables_set_to_ppl_variables_set(JNIEnv* env,
   while (has_next_value) {
     jobject j_variable = env->CallObjectMethod(j_iterator,
 					       next_method_id);
-    v_set.insert(j_variable_to_ppl_variable(env, j_variable));
+    v_set.insert(build_ppl_variable(env, j_variable));
     has_next_value = env->CallBooleanMethod(j_iterator,
 					    has_next_method_id);
   }
@@ -152,7 +152,7 @@ j_variables_set_to_ppl_variables_set(JNIEnv* env,
 }
 
 Variable
-j_variable_to_ppl_variable(JNIEnv* env, const jobject& j_var) {
+build_ppl_variable(JNIEnv* env, const jobject& j_var) {
   jclass j_variable_class = env->FindClass("ppl_java/Variable");
   jfieldID varid_field_id = env->GetFieldID(j_variable_class,
 					  "varid",
@@ -162,8 +162,7 @@ j_variable_to_ppl_variable(JNIEnv* env, const jobject& j_var) {
 }
 
 Relation_Symbol
-j_relsym_to_ppl_relsym(JNIEnv* env, const jobject& j_relsym) {
-
+build_ppl_relsym(JNIEnv* env, const jobject& j_relsym) {
   jclass rel_sym_class = env->FindClass("ppl_java/Relation_Symbol");
   jmethodID rel_sym_ordinal_id = env->GetMethodID(rel_sym_class, "ordinal",
 						  "()I");
@@ -199,7 +198,7 @@ j_relsym_to_ppl_relsym(JNIEnv* env, const jobject& j_relsym) {
 }
 
 Coefficient
-j_coeff_to_ppl_coeff(JNIEnv* env, const jobject& j_coeff) {
+build_ppl_coeff(JNIEnv* env, const jobject& j_coeff) {
   jclass j_coeff_class = env->GetObjectClass(j_coeff);
   jfieldID fid = env->GetFieldID(j_coeff_class, "value",
 				 "Ljava/math/BigInteger;");
@@ -216,7 +215,7 @@ j_coeff_to_ppl_coeff(JNIEnv* env, const jobject& j_coeff) {
 
 // Converts a PPL coefficient to a Java coefficient.
 jobject
-ppl_coeff_to_j_coeff(JNIEnv* env, const Coefficient& ppl_coeff) {
+build_java_coeff(JNIEnv* env, const Coefficient& ppl_coeff) {
   std::ostringstream s;
   s << ppl_coeff;
   jclass j_coefficient_class = env->FindClass("ppl_java/Coefficient");
@@ -305,7 +304,7 @@ build_linear_expression(JNIEnv* env, const jobject& j_le) {
 					      "Lppl_java/Coefficient;");
     jobject ppl_coeff = env->GetObjectField(j_le, coeff_field_id);
 
-    return Linear_Expression(j_coeff_to_ppl_coeff(env, ppl_coeff));
+    return Linear_Expression(build_ppl_coeff(env, ppl_coeff));
   }
   // Sum
   if (env->IsAssignableFrom(le_sum_class, current_class)) {
@@ -342,7 +341,7 @@ build_linear_expression(JNIEnv* env, const jobject& j_le) {
 					      "coeff",
 					      "Lppl_java/Coefficient;");
     jobject ppl_coeff = env->GetObjectField(le_coeff_value, coeff_field_id);
-    return (j_coeff_to_ppl_coeff(env, ppl_coeff)
+    return (build_ppl_coeff(env, ppl_coeff)
 	    * build_linear_expression(env, le_value));
   }
   // Unary_Minus
@@ -357,7 +356,7 @@ build_linear_expression(JNIEnv* env, const jobject& j_le) {
 }
 
 Generator
-build_generator(JNIEnv* env, const jobject& j_generator) {
+build_ppl_generator(JNIEnv* env, const jobject& j_generator) {
   jclass generator_class = env->FindClass("ppl_java/Generator");
   jclass generator_type_class = env->FindClass("ppl_java/Generator_Type");
 
@@ -384,10 +383,49 @@ build_generator(JNIEnv* env, const jobject& j_generator) {
     return ray(build_linear_expression(env, j_le));
   case 2:
     return point(build_linear_expression(env, j_le),
-		 j_coeff_to_ppl_coeff(env, j_coeff));
+		 build_ppl_coeff(env, j_coeff));
   case 3:
     return closure_point(build_linear_expression(env, j_le),
-			 j_coeff_to_ppl_coeff(env, j_coeff));
+			 build_ppl_coeff(env, j_coeff));
+  default:
+    ;
+  }
+  jclass newExcCls = env->FindClass("javax/management/RuntimeErrorException");
+  env->ThrowNew(newExcCls, "ppl.java: \n runtime error");
+  // We should not be here!
+  throw std::runtime_error("PPL Java interface internal error");
+}
+
+Grid_Generator
+build_ppl_grid_generator(JNIEnv* env, const jobject& j_grid_generator) {
+  jclass grid_generator_class = env->FindClass("ppl_java/Grid_Generator");
+  jclass grid_generator_type_class = env->FindClass("ppl_java/Grid_Generator_Type");
+
+  jfieldID j_le_field = env->GetFieldID(grid_generator_class, "le",
+					"Lppl_java/Linear_Expression;");
+  jobject j_le = env->GetObjectField(j_grid_generator, j_le_field);
+  jfieldID j_coeff_field = env->GetFieldID(grid_generator_class, "coeff",
+					   "Lppl_java/Coefficient;");
+  jobject j_coeff = env->GetObjectField(j_grid_generator, j_coeff_field);
+
+  jfieldID grid_generator_type_field = env->GetFieldID(grid_generator_class, "gt",
+						  "Lppl_java/Grid_Generator_Type;");
+  jobject grid_generator_type = env->GetObjectField(j_grid_generator,
+					       grid_generator_type_field);
+  jmethodID grid_generator_type_ordinal_id = env->GetMethodID(grid_generator_type_class,
+							 "ordinal",
+							 "()I");
+  jint grid_generator_type_ordinal = env->CallIntMethod(grid_generator_type,
+						   grid_generator_type_ordinal_id);
+  switch (grid_generator_type_ordinal) {
+  case 0:
+    return grid_line(build_linear_expression(env, j_le));
+  case 1:
+    return parameter(build_linear_expression(env, j_le),
+		     build_ppl_coeff(env, j_coeff));
+  case 2:
+    return grid_point(build_linear_expression(env, j_le),
+		      build_ppl_coeff(env, j_coeff));
   default:
     ;
   }
@@ -403,6 +441,36 @@ get_ptr(JNIEnv* env, const jobject& ppl_object) {
   jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
   return  env->GetLongField(ppl_object, pointer_field);
 }
+
+
+Grid_Generator_System
+build_ppl_grid_generator_system(JNIEnv* env, const jobject& j_iterable) {
+  jclass j_iterable_class = env->GetObjectClass(j_iterable);
+  jclass iterator_java_class = env->FindClass("java/util/Iterator");
+  Grid_Generator_System ggs;
+  jmethodID iterator_method_id = env->GetMethodID(j_iterable_class,
+						  "iterator",
+ 						  "()Ljava/util/Iterator;");
+  jobject j_iterator = env->CallObjectMethod(j_iterable, iterator_method_id);
+  jmethodID has_next_method_id = env->GetMethodID(iterator_java_class,
+  						  "hasNext",
+  						  "()Z");
+  jboolean has_next_value = env->CallBooleanMethod(j_iterator,
+						   has_next_method_id);
+  jmethodID next_method_id = env->GetMethodID(iterator_java_class,
+					      "next",
+					      "()Ljava/lang/Object;");
+
+  while (has_next_value) {
+    jobject j_grid_generator = env->CallObjectMethod(j_iterator,
+						 next_method_id);
+    ggs.insert(build_ppl_grid_generator(env, j_grid_generator));
+    has_next_value = env->CallBooleanMethod(j_iterator,
+					    has_next_method_id);
+  }
+  return ggs;
+}
+
 
 Constraint_System
 build_ppl_constraint_system(JNIEnv* env, const jobject& j_iterable) {
@@ -453,7 +521,7 @@ build_ppl_generator_system(JNIEnv* env, const jobject& j_iterable) {
   while (has_next_value) {
     jobject j_constraint = env->CallObjectMethod(j_iterator,
 						 next_method_id);
-    gs.insert(build_generator(env, j_constraint));
+    gs.insert(build_ppl_generator(env, j_constraint));
     has_next_value = env->CallBooleanMethod(j_iterator,
 					    has_next_method_id);
   }
@@ -492,7 +560,7 @@ jobject
 get_le_inhomogeneous_term(JNIEnv* env, const Coefficient& c) {
   jclass j_le_coeff_class
     = env->FindClass("ppl_java/Linear_Expression_Coefficient");
-  jobject j_coeff =  ppl_coeff_to_j_coeff(env, c);
+  jobject j_coeff =  build_java_coeff(env, c);
   jmethodID j_le_coeff_ctr_id
     = env->GetMethodID(j_le_coeff_class,
 		       "<init>",
@@ -502,7 +570,7 @@ get_le_inhomogeneous_term(JNIEnv* env, const Coefficient& c) {
 }
 
 jobject
-build_j_constraint(JNIEnv* env, const Constraint& c) {
+build_java_constraint(JNIEnv* env, const Constraint& c) {
   jclass j_constraint_class = env->FindClass("ppl_java/Constraint");
   jclass j_rel_sym_class = env->FindClass("ppl_java/Relation_Symbol");
   jmethodID j_constraint_ctr_id
@@ -546,7 +614,7 @@ build_j_constraint(JNIEnv* env, const Constraint& c) {
 }
 
 jobject
-build_j_congruence(JNIEnv* env, const Congruence& cg) {
+build_java_congruence(JNIEnv* env, const Congruence& cg) {
   jclass j_congruence_class = env->FindClass("ppl_java/Congruence");
   jmethodID j_congruence_ctr_id
     = env->GetMethodID(j_congruence_class,
@@ -555,7 +623,7 @@ build_j_congruence(JNIEnv* env, const Congruence& cg) {
 		       "Lppl_java/Linear_Expression;"
 		       "Lppl_java/Coefficient;)V");
 
-  jobject j_modulus = ppl_coeff_to_j_coeff(env, cg.modulus());
+  jobject j_modulus = build_java_coeff(env, cg.modulus());
   jobject lhs = get_linear_expression(env, cg);
   jobject rhs = get_le_inhomogeneous_term(env, -cg.inhomogeneous_term());
   return env->NewObject(j_congruence_class, j_congruence_ctr_id,
@@ -565,7 +633,7 @@ build_j_congruence(JNIEnv* env, const Congruence& cg) {
 }
 
 jobject
-build_j_generator(JNIEnv* env, const Generator& g) {
+build_java_generator(JNIEnv* env, const Generator& g) {
   jclass j_generator_class = env->FindClass("ppl_java/Generator");
   jclass j_gen_type_class = env->FindClass("ppl_java/Generator_Type");
   jmethodID line_ctr_id =
@@ -609,7 +677,7 @@ build_j_generator(JNIEnv* env, const Generator& g) {
 			     "Lppl_java/Generator_Type;");
    jobject j_g_type;
    jobject j_g_le = get_linear_expression(env, g);
-   jobject jcoeff = ppl_coeff_to_j_coeff(env, Coefficient(1));
+   jobject jcoeff = build_java_coeff(env, Coefficient(1));
   switch (g.type()) {
   case Generator::LINE:
     j_g_type
@@ -629,7 +697,7 @@ build_j_generator(JNIEnv* env, const Generator& g) {
 	= env->GetStaticObjectField(j_gen_type_class, gen_type_point_get_id);
       const Coefficient& divisor = g.divisor();
       j_g_le = get_linear_expression(env, g);
-      jcoeff = ppl_coeff_to_j_coeff(env, divisor);
+      jcoeff = build_java_coeff(env, divisor);
       return env->CallStaticObjectMethod(j_generator_class,
 					 point_ctr_id, j_g_le, jcoeff);
     }
@@ -639,7 +707,7 @@ build_j_generator(JNIEnv* env, const Generator& g) {
 					  gen_type_closure_point_get_id);
       const Coefficient& divisor = g.divisor();
       j_g_le = get_linear_expression(env, g);
-      jcoeff = ppl_coeff_to_j_coeff(env, divisor);
+      jcoeff = build_java_coeff(env, divisor);
       return env->CallStaticObjectMethod(j_generator_class,
 					 closure_point_ctr_id, j_g_le, jcoeff);
     }
@@ -649,7 +717,7 @@ build_j_generator(JNIEnv* env, const Generator& g) {
 }
 
 jobject
-build_j_constraint_system(JNIEnv* env, const Constraint_System& cs) {
+build_java_constraint_system(JNIEnv* env, const Constraint_System& cs) {
   jclass j_cs_class = env->FindClass("ppl_java/Constraint_System");
   jmethodID j_cs_ctr_id = env->GetMethodID(j_cs_class, "<init>", "()V");
   jmethodID j_cs_add_id = env->GetMethodID(j_cs_class, "add",
@@ -657,14 +725,14 @@ build_j_constraint_system(JNIEnv* env, const Constraint_System& cs) {
    jobject j_cs = env->NewObject(j_cs_class, j_cs_ctr_id);
    for (Constraint_System::const_iterator v_begin = cs.begin(),
  	 v_end = cs.end(); v_begin != v_end; ++v_begin) {
-     jobject j_constraint = build_j_constraint(env, *v_begin);
+     jobject j_constraint = build_java_constraint(env, *v_begin);
      env->CallBooleanMethod(j_cs, j_cs_add_id, j_constraint);
    }
    return j_cs;
 }
 
 jobject
-build_j_generator_system(JNIEnv* env, const Generator_System& gs) {
+build_java_generator_system(JNIEnv* env, const Generator_System& gs) {
   jclass j_gs_class = env->FindClass("ppl_java/Generator_System");
   jmethodID j_gs_ctr_id = env->GetMethodID(j_gs_class, "<init>", "()V");
   jmethodID j_gs_add_id = env->GetMethodID(j_gs_class, "add",
@@ -672,14 +740,14 @@ build_j_generator_system(JNIEnv* env, const Generator_System& gs) {
    jobject j_gs = env->NewObject(j_gs_class, j_gs_ctr_id);
    for (Generator_System::const_iterator v_begin = gs.begin(),
  	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
-     jobject j_generator = build_j_generator(env, *v_begin);
+     jobject j_generator = build_java_generator(env, *v_begin);
      env->CallBooleanMethod(j_gs, j_gs_add_id, j_generator);
    }
    return j_gs;
 }
 
 jobject
-build_j_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
+build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
    jclass j_cgs_class = env->FindClass("ppl_java/Congruence_System");
    jmethodID j_cgs_ctr_id = env->GetMethodID(j_cgs_class, "<init>", "()V");
    jmethodID j_cgs_add_id = env->GetMethodID(j_cgs_class, "add",
@@ -687,7 +755,7 @@ build_j_congruence_system(JNIEnv* env, const Congruence_System& cgs) {
     jobject j_cgs = env->NewObject(j_cgs_class, j_cgs_ctr_id);
     for (Congruence_System::const_iterator v_begin = cgs.begin(),
   	 v_end = cgs.end(); v_begin != v_end; ++v_begin) {
-      jobject j_congruence = build_j_congruence(env,*v_begin);
+      jobject j_congruence = build_java_congruence(env,*v_begin);
       env->CallBooleanMethod(j_cgs, j_cgs_add_id, j_congruence);
     }
     return j_cgs;

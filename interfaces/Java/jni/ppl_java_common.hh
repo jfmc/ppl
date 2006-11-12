@@ -38,35 +38,34 @@ using namespace Parma_Polyhedra_Library;
 
 // Converts a PPL Poly_Gen_Relation to a Java Poly_Gen_Relation.
 jobject
-ppl_poly_gen_relation_to_j_poly_gen_relation(JNIEnv* env,
-					     Poly_Gen_Relation& pcr);
-
+build_java_poly_gen_relation(JNIEnv* env,
+			  Poly_Gen_Relation& pcr);
 
 // Converts a PPL Poly_Con_Relation to a Java Poly_Con_Relation.
 jobject
-ppl_poly_con_relation_to_j_poly_con_relation(JNIEnv* env,
-					     Poly_Con_Relation& pgr);
+build_ppl_poly_con_relation(JNIEnv* env,
+			    Poly_Con_Relation& pgr);
 
 // Converts a Java variables set to a PPL variables set.
 Parma_Polyhedra_Library::Variables_Set
-j_variables_set_to_ppl_variables_set(JNIEnv* env,
-				     const jobject& variables_set);
+build_ppl_variables_set(JNIEnv* env,
+			const jobject& variables_set);
 
 // Converts a Java relation symbol to a PPL relation_symbol.
 Parma_Polyhedra_Library::Relation_Symbol
-j_relsym_to_ppl_relsym(JNIEnv* env, const jobject& j_relsym);
+build_ppl_relsym(JNIEnv* env, const jobject& j_relsym);
 
 // Converts a Java variable to a PPL variable.
 Parma_Polyhedra_Library::Variable
-j_variable_to_ppl_variable(JNIEnv* env, const jobject& j_var);
+build_ppl_variable(JNIEnv* env, const jobject& j_var);
 
 // Converts a Java coefficient to a PPL coefficient.
 Parma_Polyhedra_Library::Coefficient
-j_coeff_to_ppl_coeff(JNIEnv* env, const jobject& j_coeff);
+build_ppl_coeff(JNIEnv* env, const jobject& j_coeff);
 
 // Converts a PPL coefficient to a Java coefficient.
 jobject
-ppl_coeff_to_j_coeff(JNIEnv* env,
+build_java_coeff(JNIEnv* env,
 		     const Parma_Polyhedra_Library::Coefficient& ppl_coeff);
 
 // Builds a PPL constraint from a Java constraint.
@@ -81,13 +80,22 @@ build_linear_expression(JNIEnv* env, const jobject& j_le);
 Parma_Polyhedra_Library::Congruence
 build_ppl_congruence(JNIEnv* env, const jobject& j_cg);
 
-// Builds a PPL genearator from a Java generator.
+// Builds a PPL generator from a Java generator.
 Parma_Polyhedra_Library::Generator
-build_generator(JNIEnv* env, const jobject& j_g);
+build_ppl_generator(JNIEnv* env, const jobject& j_g);
+
+// Builds a PPL grid generator from a Java grid generator.
+Parma_Polyhedra_Library::Grid_Generator
+build_ppl_grid_generator(JNIEnv* env, const jobject& j_g);
 
 // Get a pointer to the underlined C++ object from a Java object.
 jlong
 get_ptr(JNIEnv* env, const jobject& ppl_object);
+
+// Builds a PPL grid generator system from a Java grid generator system.
+Parma_Polyhedra_Library::Grid_Generator_System
+build_ppl_grid_generator_system(JNIEnv* env, const jobject& j_g);
+
 
 // Builds a PPL constraint system from a Java constraint system.
 Parma_Polyhedra_Library::Constraint_System
@@ -103,27 +111,27 @@ build_ppl_congruence_system(JNIEnv* env, const jobject& j_iterable);
 
 // Builds a Java constraint from a PPL constraint.
 jobject
-build_j_constraint(JNIEnv* env, const Constraint& c);
+build_java_constraint(JNIEnv* env, const Constraint& c);
 
 // Builds a Java congruence from a PPL congruence.
 jobject
-build_j_congruence(JNIEnv* env, const Congruence& cg);
+build_java_congruence(JNIEnv* env, const Congruence& cg);
 
 // Builds a Java generator from a PPL generator.
 jobject
-build_j_generator(JNIEnv* env, const Generator& cg);
+build_java_generator(JNIEnv* env, const Generator& cg);
 
 // Builds a Java constraint system from a PPL constraint system.
 jobject
-build_j_constraint_system(JNIEnv* env, const Constraint_System& cs);
+build_java_constraint_system(JNIEnv* env, const Constraint_System& cs);
 
 // Builds a Java generator system from a PPL generator system.
 jobject
-build_j_generator_system(JNIEnv* env, const Generator_System& gs);
+build_java_generator_system(JNIEnv* env, const Generator_System& gs);
 
 // Builds a Java congrunce system from a PPL congruence system.
 jobject
-build_j_congruence_system(JNIEnv* env, const Congruence_System& cgs);
+build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs);
 
 // Utility routine to take the inhomogeneous term from a constraint or a
 // congruence.
@@ -167,7 +175,7 @@ get_linear_expression(JNIEnv* env, const R& r) {
  	 && (coefficient = r.coefficient(Variable(varid))) == 0)
     ++varid;
   if (varid >= space_dimension) {
-    jobject j_coefficient_zero = ppl_coeff_to_j_coeff(env, Coefficient(0));
+    jobject j_coefficient_zero = build_java_coeff(env, Coefficient(0));
     jmethodID j_le_coeff_ctr_id
       = env->GetMethodID(j_le_coeff_class, "<init>",
 			 "(Lppl_java/Coefficient;)V");
@@ -175,14 +183,14 @@ get_linear_expression(JNIEnv* env, const R& r) {
 			  j_coefficient_zero);
   }
   else {
-    jobject j_coefficient = ppl_coeff_to_j_coeff(env, coefficient);
+    jobject j_coefficient = build_java_coeff(env, coefficient);
     jobject j_variable = env->NewObject(j_variable_class, j_variable_ctr_id,
-					 varid);
+					varid);
     jobject j_le_variable = env->NewObject(j_le_variable_class,
 					   j_le_variable_ctr_id,
 					   j_variable);
     j_le_term =  env->CallObjectMethod(j_le_variable,
-					j_le_times_id, j_coefficient);
+				       j_le_times_id, j_coefficient);
     while (true) {
       ++varid;
       while (varid < space_dimension
@@ -191,16 +199,16 @@ get_linear_expression(JNIEnv* env, const R& r) {
       if (varid >= space_dimension)
 	break;
       else {
- 	jobject j_coefficient = ppl_coeff_to_j_coeff(env, coefficient);
+ 	jobject j_coefficient = build_java_coeff(env, coefficient);
  	jobject j_variable = env->NewObject(j_variable_class,
-  					     j_variable_ctr_id,
-  					     varid);
+					    j_variable_ctr_id,
+					    varid);
   	jobject j_le_variable = env->NewObject(j_le_variable_class,
-  						j_le_variable_ctr_id,
-  						j_variable);
+					       j_le_variable_ctr_id,
+					       j_variable);
  	jobject j_le_term2 = env->CallObjectMethod(j_le_variable,
-						     j_le_times_id,
-						     j_coefficient);
+						   j_le_times_id,
+						   j_coefficient);
   	jmethodID j_le_sum_id
   	  = env->GetMethodID(j_le_class,
   			     "sum",

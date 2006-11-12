@@ -1,4 +1,4 @@
-/* Grid Generator_System Java class declaration and implementation.
+/* Grid_Generator_Type enum declaration.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,16 +20,16 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-
 package ppl_java;
 
-//! A system of grid generators.
 /*! \ingroup PPL_Java_interface
-    An object of the class Grid_Generator_System is a system of grid
-    generators, i.e., a multiset of objects of the class Grid_Generator.
+//! The grid generator type.
 */
-
-public class Grid_Generator_System extends java.util.Vector<Grid_Generator> {
-    public Grid_Generator_System() {
-    }
+public enum Grid_Generator_Type {
+    /*! The generator is a line. */
+    LINE,
+    /*! The generator is a parameter. */
+    PARAMETER,
+    /*! The generator is a point. */
+    POINT;
 }

@@ -48,38 +48,62 @@ package ppl_java;
 */
 public class C_Polyhedron extends Polyhedron {
 
-  //! Builds a C polyhedron recycling a system of constraints.
-  /*!
-    The polyhedron inherits the space dimension of the constraint system.
+    //! Builds a C polyhedron from a system of constraints.
+    /*!
+      The polyhedron inherits the space dimension of the constraint system.
 
-    \param cs
-    The system of constraints defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures may be
-    recycled to build the polyhedron.
+      \param cs
+      The system of constraints defining the polyhedron.
 
-    \exception RuntimeErrorException
-    Thrown if the system of constraints contains strict inequalities.
-  */
+      \exception RuntimeErrorException
+      Thrown if the system of constraints contains strict inequalities.
+    */
     public C_Polyhedron(Constraint_System cs) {
 	build_cpp_object(cs);
     }
 
-  //! Builds a C polyhedron recycling a system of generators.
-  /*!
-    The polyhedron inherits the space dimension of the generator system.
+    //! Builds a C polyhedron from a system of generators.
+    /*!
+      The polyhedron inherits the space dimension of the generator system.
 
-    \param gs
-    The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures may be
-    recycled to build the polyhedron.
+      \param gs
+      The system of generators defining the polyhedron.
 
-
-    \exception RuntimeErrorException
-    Thrown if the system of generators is not empty but has no points,
-    or if it contains closure points.
-  */
-    public C_Polyhedron(Generator_System gs) {
+      \exception RuntimeErrorException
+      Thrown if the system of generators is not empty but has no points,
+      or if it contains closure points.
+    */
+   public C_Polyhedron(Generator_System gs) {
 	build_cpp_object(gs);
+    }
+
+    //! Builds a C polyhedron from a system of grid generators.
+    /*!
+      The polyhedron inherits the space dimension of the generator system.
+
+      \param ggs
+      The system of grid generators defining the polyhedron.
+
+      FIXME: is the following correct?
+      \exception RuntimeErrorException
+      Thrown if the system of generators is not empty but has no points,
+      or if it contains closure points.
+    */
+    public C_Polyhedron(Grid_Generator_System ggs) {
+	build_cpp_object(ggs);
+    }
+
+    //! Builds a C polyhedron from a system of congruences.
+    /*!
+      The polyhedron inherits the space dimension of the congruence system.
+
+      \param cgs
+      The system of congruences defining the polyhedron.  It is not
+      declared <CODE>const</CODE> because its data-structures may be
+      recycled to build the polyhedron.
+    */
+    public C_Polyhedron(Congruence_System cgs) {
+	build_cpp_object(cgs);
     }
 
     //! Destroys the underlined C++ object.
@@ -89,5 +113,11 @@ public class C_Polyhedron extends Polyhedron {
     private native void build_cpp_object(Constraint_System cs);
 
     //! Builds the underlined C++ object.
-    private native void build_cpp_object(Generator_System cs);
+    private native void build_cpp_object(Generator_System gs);
+
+    //! Builds the underlined C++ object.
+    private native void build_cpp_object(Grid_Generator_System ggs);
+
+    //! Builds the underlined C++ object.
+    private native void build_cpp_object(Congruence_System cgs);
 }

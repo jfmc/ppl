@@ -116,7 +116,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1generator
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_generator) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  Generator g = build_generator(env, j_generator);
+  Generator g = build_ppl_generator(env, j_generator);
   this_polyhedron->add_generator(g);
 }
 
@@ -124,7 +124,7 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_add_1generator_1and_1minimi
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_generator) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  Generator g = build_generator(env, j_generator);
+  Generator g = build_ppl_generator(env, j_generator);
   return this_polyhedron->add_generator_and_minimize(g);
 }
 
@@ -249,9 +249,9 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_affine_1image
  jobject j_coeff) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  Variable v = j_variable_to_ppl_variable(env, j_var);
+  Variable v = build_ppl_variable(env, j_var);
   Linear_Expression le = build_linear_expression(env, j_le);
-  Coefficient c = j_coeff_to_ppl_coeff(env, j_coeff);
+  Coefficient c = build_ppl_coeff(env, j_coeff);
   this_polyhedron->affine_image(v, le, c);
 }
 
@@ -260,9 +260,9 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_affine_1preimage
  jobject j_coeff) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  Variable v = j_variable_to_ppl_variable(env, j_var);
+  Variable v = build_ppl_variable(env, j_var);
   Linear_Expression le = build_linear_expression(env, j_le);
-  Coefficient c = j_coeff_to_ppl_coeff(env, j_coeff);
+  Coefficient c = build_ppl_coeff(env, j_coeff);
   this_polyhedron->affine_preimage(v, le, c);
 }
 
@@ -271,10 +271,10 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_generalized_1affine_1image__Lpp
  jobject j_le , jobject j_coeff) {
  jlong this_ptr = get_ptr(env, j_this_polyhedron);
  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
- Variable v = j_variable_to_ppl_variable(env, j_variable);
- Relation_Symbol relsym = j_relsym_to_ppl_relsym(env, j_relsym);
+ Variable v = build_ppl_variable(env, j_variable);
+ Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
  Linear_Expression le = build_linear_expression(env, j_le);
- Coefficient c = j_coeff_to_ppl_coeff(env, j_coeff);
+ Coefficient c = build_ppl_coeff(env, j_coeff);
  this_polyhedron->generalized_affine_image(v, relsym, le, c);
 }
 
@@ -283,10 +283,10 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_generalized_1affine_1preimage__
  jobject j_le , jobject j_coeff) {
  jlong this_ptr = get_ptr(env, j_this_polyhedron);
  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
- Variable v = j_variable_to_ppl_variable(env, j_variable);
- Relation_Symbol relsym = j_relsym_to_ppl_relsym(env, j_relsym);
+ Variable v = build_ppl_variable(env, j_variable);
+ Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
  Linear_Expression le = build_linear_expression(env, j_le);
- Coefficient c = j_coeff_to_ppl_coeff(env, j_coeff);
+ Coefficient c = build_ppl_coeff(env, j_coeff);
  this_polyhedron->generalized_affine_preimage(v, relsym, le, c);
 }
 
@@ -297,7 +297,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_generalized_1affine_1image__Lpp
  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
  Linear_Expression lhs = build_linear_expression(env, j_le_lhs);
  Linear_Expression rhs = build_linear_expression(env, j_le_rhs);
- Relation_Symbol relsym = j_relsym_to_ppl_relsym(env, j_relsym);
+ Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
  this_polyhedron->generalized_affine_image(lhs, relsym, rhs);
 }
 
@@ -308,7 +308,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_generalized_1affine_1preimage__
  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
  Linear_Expression lhs = build_linear_expression(env, j_le_lhs);
  Linear_Expression rhs = build_linear_expression(env, j_le_rhs);
- Relation_Symbol relsym = j_relsym_to_ppl_relsym(env, j_relsym);
+ Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
  this_polyhedron->generalized_affine_preimage(lhs, relsym, rhs);
 }
 
@@ -316,10 +316,10 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_bounded_1affine_1image
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_variable, jobject j_le_lhs, jobject j_le_rhs, jobject j_coeff) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  Variable v = j_variable_to_ppl_variable(env, j_variable);
+  Variable v = build_ppl_variable(env, j_variable);
   Linear_Expression lhs = build_linear_expression(env, j_le_lhs);
   Linear_Expression rhs = build_linear_expression(env, j_le_rhs);
-  Coefficient c = j_coeff_to_ppl_coeff(env, j_coeff);
+  Coefficient c = build_ppl_coeff(env, j_coeff);
   this_polyhedron->bounded_affine_image(v, lhs, rhs, c);
 }
 
@@ -327,10 +327,10 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_bounded_1affine_1preimage
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_variable, jobject j_le_lhs, jobject j_le_rhs, jobject j_coeff) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  Variable v = j_variable_to_ppl_variable(env, j_variable);
+  Variable v = build_ppl_variable(env, j_variable);
   Linear_Expression lhs = build_linear_expression(env, j_le_lhs);
   Linear_Expression rhs = build_linear_expression(env, j_le_rhs);
-  Coefficient c = j_coeff_to_ppl_coeff(env, j_coeff);
+  Coefficient c = build_ppl_coeff(env, j_coeff);
   this_polyhedron->bounded_affine_preimage(v, lhs, rhs, c);
 }
 
@@ -362,7 +362,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_remove_1space_1dimensions
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_v_set) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  Variables_Set v_set = j_variables_set_to_ppl_variables_set(env, j_v_set);
+  Variables_Set v_set = build_ppl_variables_set(env, j_v_set);
   this_polyhedron->remove_space_dimensions(v_set);
 }
 
@@ -378,16 +378,16 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_expand_1space_1dimension
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_variable, jlong dim) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  Variable v = j_variable_to_ppl_variable(env, j_variable);
+  Variable v = build_ppl_variable(env, j_variable);
   this_polyhedron->expand_space_dimension(v, dim);
 }
 
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_fold_1space_1dimensions
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_v_set, jobject j_var) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
-  Variables_Set v_set = j_variables_set_to_ppl_variables_set(env, j_v_set);
+  Variables_Set v_set = build_ppl_variables_set(env, j_v_set);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  Variable v = j_variable_to_ppl_variable(env, j_var);
+  Variable v = build_ppl_variable(env, j_var);
   this_polyhedron->fold_space_dimensions(v_set, v);
 }
 
@@ -397,16 +397,16 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_maximize__Lppl_1java_Linear
   std::cerr << "implement me!" << std::endl;
   //  jlong this_ptr = get_ptr(env, j_this_polyhedron);
   //   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  //   Coefficient coeff_num = j_coeff_to_ppl_coeff(env, j_coeff_num);
-  //   Coefficient coeff_den = j_coeff_to_ppl_coeff(env, j_coeff_den);
+  //   Coefficient coeff_num = build_ppl_coeff(env, j_coeff_num);
+  //   Coefficient coeff_den = build_ppl_coeff(env, j_coeff_den);
   //   Linear_Expression le = build_linear_expression(env, j_le);
   //   bool b = j_boolean_to_bool(env, j_boolean);
   //  if(this_polyhedron->maximize(le, coeff_num, coeff_den, b)) {
   //  if(true) {
   //    std::cerr << "i am maximizing" << std::endl;
   //    j_coeff_num = j_coeff_den;
-  //   j_coeff_num = ppl_coeff_to_j_coeff(env, coeff_num);
-  //     j_coeff_den = ppl_coeff_to_j_coeff(env, coeff_den);
+  //   j_coeff_num = build_java_coeff(env, coeff_num);
+  //     j_coeff_den = build_java_coeff(env, coeff_den);
   //    bool_to_j_boolean(env, b);
   //    return true;
   //  }
@@ -467,10 +467,20 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_bounded_1H79_1extrapolation_1as
 }
 
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1grid_1generator
-  (JNIEnv *, jobject, jobject);
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_grid_generator) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Grid_Generator gg = build_ppl_grid_generator(env, j_grid_generator);
+  this_polyhedron->add_grid_generator(gg);
+}
 
 JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_add_1grid_1generator_1and_1minimize
-  (JNIEnv *, jobject, jobject);
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_grid_generator) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Grid_Generator gg = build_ppl_grid_generator(env, j_grid_generator);
+  return this_polyhedron->add_grid_generator_and_minimize(gg);
+}
 
 
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1congruence
@@ -493,14 +503,14 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_constraints
 (JNIEnv* env, jobject j_this_polyhedron) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  return build_j_constraint_system(env, this_polyhedron->constraints());
+  return build_java_constraint_system(env, this_polyhedron->constraints());
 }
 
 JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_minimized_1constraints
 (JNIEnv* env, jobject j_this_polyhedron) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  return build_j_constraint_system(env,
+  return build_java_constraint_system(env,
 				   this_polyhedron->minimized_constraints());
 }
 
@@ -508,14 +518,14 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_generators
 (JNIEnv* env, jobject j_this_polyhedron) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  return build_j_generator_system(env, this_polyhedron->generators());
+  return build_java_generator_system(env, this_polyhedron->generators());
 }
 
 JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_minimized_1generators
 (JNIEnv* env, jobject j_this_polyhedron) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  return build_j_generator_system(env,
+  return build_java_generator_system(env,
 				  this_polyhedron->minimized_generators());
 }
 
@@ -523,7 +533,7 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_congruences
 (JNIEnv* env, jobject j_this_polyhedron) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  return build_j_congruence_system(env, this_polyhedron->congruences());
+  return build_java_congruence_system(env, this_polyhedron->congruences());
 }
 
 
@@ -531,7 +541,7 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_minimized_1congruences
 (JNIEnv* env, jobject j_this_polyhedron) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  return build_j_congruence_system(env,
+  return build_java_congruence_system(env,
 				   this_polyhedron->minimized_congruences());
 }
 
@@ -548,14 +558,14 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_relation_1with__Lppl_1java_C
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
   Constraint c = build_ppl_constraint(env, j_constraint);
   Poly_Con_Relation pcr = this_polyhedron->relation_with(c);
-  return ppl_poly_con_relation_to_j_poly_con_relation(env, pcr);
+  return build_ppl_poly_con_relation(env, pcr);
 }
 
 JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_relation_1with__Lppl_1java_Generator_2
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_generator) {
  jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  Generator g = build_generator(env, j_generator);
+  Generator g = build_ppl_generator(env, j_generator);
   Poly_Gen_Relation pgr = this_polyhedron->relation_with(g);
-  return ppl_poly_gen_relation_to_j_poly_gen_relation(env, pgr);
+  return build_java_poly_gen_relation(env, pgr);
 }
