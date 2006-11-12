@@ -29,9 +29,24 @@ namespace Parma_Polyhedra_Library {
 
 namespace Boundary_NS {
 
+enum Integer_Property_Value {
+  MAYBE_SINGLETON_INTEGER = 0,
+  NOT_SINGLETON_INTEGER = 1,
+  ONLY_INTEGERS_TO_NORMALIZE = 2,
+  ONLY_INTEGERS_NORMALIZED = 3
+};
+
+struct Integer_Property {
+  typedef Integer_Property_Value Value;
+  static const Value default_value = MAYBE_SINGLETON_INTEGER;
+  static const Value unsupported_value = MAYBE_SINGLETON_INTEGER;
+};
+
+static const Integer_Property& INTEGER = *(Integer_Property*)0;
+
 struct Property {
   enum Type {
-    UNBOUNDED_,
+    SPECIAL_,
     OPEN_
   };
   typedef bool Value;
@@ -43,7 +58,7 @@ struct Property {
   Type type;
 };
 
-static const Property UNBOUNDED(Property::UNBOUNDED_);
+static const Property SPECIAL(Property::SPECIAL_);
 static const Property OPEN(Property::OPEN_);
 
 enum Type {
@@ -52,13 +67,11 @@ enum Type {
 };
 
 inline Rounding_Dir
-round_dir_nocheck(Type t) {
-  return static_cast<Rounding_Dir>(t);
-}
-
-inline Rounding_Dir
-round_dir_check(Type t) {
-  return static_cast<Rounding_Dir>(t | ROUND_FPU_CHECK_INEXACT);
+round_dir(Type t, bool check = false) {
+  if (check)
+    return static_cast<Rounding_Dir>(t | ROUND_FPU_CHECK_INEXACT);
+  else
+    return static_cast<Rounding_Dir>(t);
 }
 
 template <typename Policy, typename T>
@@ -73,146 +86,305 @@ maybe_check_plus_infinity(const T& v) {
   return Policy::handle_infinity && is_plus_infinity(v);
 }
 
-template <typename To, typename To_Info>
+template <typename T, typename Info>
 inline Result
-set_minus_infinity(Type to_type, To& to, To_Info&) {
-  Result r = assign_r(to, MINUS_INFINITY, round_dir_nocheck(to_type));
-  assert(r != VC_PLUS_INFINITY);
-  return r;
-}
-
-template <typename To, typename To_Info>
-inline Result
-set_plus_infinity(Type to_type, To& to, To_Info&) {
-  Result r = assign_r(to, PLUS_INFINITY, round_dir_nocheck(to_type));
-  assert(r != VC_PLUS_INFINITY);
-  return r;
-}
-
-template <typename To, typename To_Info>
-inline Result
-set_unbounded(Type to_type, To& to, To_Info& to_info) {
-  if (To_Info::store_unbounded)
-    to_info.set_boundary_property(to_type, UNBOUNDED);
-  else {
-    Result r;
-    if (to_type == LOWER)
-      r = assign_r(to, MINUS_INFINITY, ROUND_NOT_NEEDED);
-    else
-      r = assign_r(to, PLUS_INFINITY, ROUND_NOT_NEEDED);
-    assert(r == V_EQ);
-    if (!to_info.store_open)
-      return to_type == LOWER ? V_GT : V_LT;
-    to_info.set_boundary_property(to_type, OPEN);
-  }
+special_set_boundary_infinity(Type type, T&, Info& info) {
+  info.set_boundary_property(type, SPECIAL);
   return V_EQ;
 }
 
-template <typename From, typename From_Info>
+template <typename T, typename Info>
+inline Result
+special_set_minus_infinity(Type type, T& x, Info& info) {
+  if (type == LOWER)
+    return special_set_boundary_infinity(type, x, info);
+  else
+    return assign_r(x, MINUS_INFINITY, round_dir(type));
+}
+
+template <typename T, typename Info>
+inline Result
+special_set_plus_infinity(Type type, T& x, Info& info) {
+  if (type == UPPER)
+    return special_set_boundary_infinity(type, x, info);
+  else
+    return assign_r(x, PLUS_INFINITY, round_dir(type));
+}
+
+
+template <typename T, typename Info>
 inline bool
-is_unbounded(Type from_type, From& from, From_Info& from_info) {
-  return from_info.get_boundary_property(from_type, UNBOUNDED)
-    || (from_info.get_boundary_property(from_type, OPEN)
-	&& (from_type == LOWER ? is_minus_infinity(from) : is_plus_infinity(from)));
+special_is_boundary_infinity(Type, const T&, const Info&) {
+  return true;
+}
+
+template <typename T, typename Info>
+inline bool
+special_is_minus_infinity(Type type, const T&, const Info&) {
+  return type == LOWER;
+}
+
+template <typename T, typename Info>
+inline bool
+special_is_plus_infinity(Type type, const T&, const Info&) {
+  return type == LOWER;
+}
+
+template <typename T, typename Info>
+inline bool
+special_is_open(Type, const T&, const Info&) {
+  return Info::infinity_is_open;
+}
+
+template <typename T, typename Info>
+inline Result
+set_extremum(Type type, T& x, Info& info) {
+  if (Info::store_special)
+    return special_set_boundary_infinity(type, x, info);
+  else if (type == LOWER)
+    return assign_r(x, MINUS_INFINITY, ROUND_UP);
+  else
+    return assign_r(x, PLUS_INFINITY, ROUND_DOWN);
+}
+
+template <typename T, typename Info>
+inline Result
+set_minus_infinity(Type type, T& x, Info& info, bool open = false) {
+  if (type == UPPER)
+    assert(open == false);
+  else if (Info::infinity_is_open)
+    assert(open == true);
+  Result r;
+  if (Info::store_special)
+    r = special_set_minus_infinity(type, x, info);
+  else
+    r = assign_r(x, MINUS_INFINITY, round_dir(type));
+  assert(r != VC_MINUS_INFINITY);
+  if (!Info::infinity_is_open && (open || r != V_EQ))
+    info.set_boundary_property(type, OPEN);
+  return r;
+}
+
+template <typename T, typename Info>
+inline Result
+set_plus_infinity(Type type, T& x, Info& info, bool open = false) {
+  if (type == LOWER)
+    assert(open == false);
+  else if (Info::infinity_is_open)
+    assert(open == true);
+  Result r;
+  if (Info::store_special)
+    r = special_set_plus_infinity(type, x, info);
+  else
+    r = assign_r(x, PLUS_INFINITY, round_dir(type));
+  assert(r != VC_MINUS_INFINITY);
+  if (!Info::infinity_is_open && (open || r != V_EQ))
+    info.set_boundary_property(type, OPEN);
+  return r;
+}
+
+template <typename T, typename Info>
+inline Result
+set_open(Type type, T& x, Info& info) {
+  if (Info::store_open)
+    info.set_boundary_property(type, OPEN);
+  else
+    switch (info.get_interval_property(INTEGER)) {
+    case ONLY_INTEGERS_TO_NORMALIZE:
+      assert(false);
+      break;
+    case ONLY_INTEGERS_NORMALIZED:
+      // FIXME: check/no check?
+      if (type == LOWER)
+	return add_assign_r(x, x, T(1, ROUND_NOT_NEEDED), ROUND_DOWN);
+      else
+	return sub_assign_r(x, x, T(1, ROUND_NOT_NEEDED), ROUND_UP);
+    default:
+      break;
+    }
+  return V_EQ;
+}
+
+template <typename T, typename Info>
+inline bool
+is_minus_infinity(Type type, const T& x, const Info& info) {
+  if (Info::store_special)
+    return info.get_boundary_property(type, SPECIAL)
+      && special_is_minus_infinity(type, x, info);
+  else
+    return Parma_Polyhedra_Library::is_minus_infinity(x);
+}
+
+template <typename T, typename Info>
+inline bool
+is_plus_infinity(Type type, const T& x, const Info& info) {
+  if (Info::store_special)
+    return info.get_boundary_property(type, SPECIAL)
+      && special_is_plus_infinity(type, x, info);
+  else
+    return Parma_Polyhedra_Library::is_plus_infinity(x);
+}
+
+template <typename T, typename Info>
+inline bool
+is_any_infinity(Type type, const T& x, const Info& info) {
+  return is_minus_infinity(type, x, info)
+    || is_plus_infinity(type, x, info);
+}
+
+template <typename T, typename Info>
+inline bool
+is_boundary_infinity(Type type, const T& x, const Info& info) {
+  if (Info::store_special)
+    return info.get_boundary_property(type, SPECIAL)
+      && special_is_boundary_infinity(type, x, info);
+  else if (type == LOWER)
+    return is_minus_infinity(type, x, info);
+  else
+    return is_plus_infinity(type, x, info);
+}
+
+template <typename Info>
+inline bool
+infinity_is_open(Type type, const Info& info) {
+  if (Info::store_open)
+    return info.get_boundary_property(type, OPEN);
+  else
+    return Info::infinity_is_open;
+}
+
+template <typename T, typename Info>
+inline bool
+is_open(Type type, const T& x, const Info& info) {
+  if (Info::store_open)
+    return info.get_boundary_property(type, OPEN);
+  else
+    return Info::infinity_is_open
+      && is_boundary_infinity(type, x, info);
 }
 
 template <typename T, typename Info>
 inline void
-sgn(Type type, T v, const Info& info) {
-  if (info.get_boundary_property(type, UNBOUNDED))
+sgn(Type type, const T& x, const Info& info) {
+  if (info.get_boundary_property(type, SPECIAL))
     return type == LOWER ? -1 : 1;
-  int sign = sgn(v);
-  if (v == 0 && info.get_boundary_property(type, OPEN))
+  int sign = sgn(x);
+  if (x == 0 && info.get_boundary_property(type, OPEN))
     return type == LOWER ? -1 : 1;
   return sign;
 }
 
-template <typename From1, typename From1_Info, typename From2, typename From2_Info>
+template <typename T1, typename Info1, typename T2, typename Info2>
 inline bool
-eq(Type from1_type, const From1& from1, const From1_Info& from1_info,
-   Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  if (from1_info.get_boundary_property(from1_type, UNBOUNDED))
-    return from1_type == from2_type
-      && is_unbounded(from2_type, from2, from2_info);
-  else if (from2_info.get_boundary_property(from2_type, UNBOUNDED))
-    return from1_type == from2_type
-      && is_unbounded(from1_type, from1, from1_info);
-  if (from1_info.get_boundary_property(from1_type, OPEN)) {
-    if (from1_type != from2_type
-	|| !from2_info.get_boundary_property(from2_type, OPEN))
-	return false;
+eq(Type type1, const T1& x1, const Info1& info1,
+   Type type2, const T2& x2, const Info2& info2) {
+  if (type1 == type2) {
+    if (is_open(type1, x1, info1)
+	!= is_open(type2, x2, info2))
+      return false;
   }
-  else if (from2_info.get_boundary_property(from2_type, OPEN))
+  else if (is_open(type1, x1, info1)
+	   || is_open(type2, x2, info2))
     return false;
-  return from1 == from2;
+  if (info1.get_boundary_property(type1, SPECIAL)) {
+    if (type2 == LOWER)
+      return is_minus_infinity(type2, x2, info2);
+    else
+      return is_plus_infinity(type2, x2, info2);
+  }
+  else if (info2.get_boundary_property(type2, SPECIAL)) {
+    if (type1 == LOWER)
+      return is_minus_infinity(type1, x1, info1);
+    else
+      return is_plus_infinity(type1, x1, info1);
+  }
+  else
+    return x1 == x2;
 }
 
-template <typename From1, typename From1_Info, typename From2, typename From2_Info>
+template <typename T1, typename Info1, typename T2, typename Info2>
 inline bool
-lt(Type from1_type, const From1& from1, const From1_Info& from1_info,
-   Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  if (from1_info.get_boundary_property(from1_type, UNBOUNDED)) {
-    if (is_unbounded(from2_type, from2, from2_info))
-      return from1_type == LOWER && from2_type == UPPER;
-    else if (from1_type == LOWER)
-      return !maybe_check_minus_infinity<From2_Info>(from2);
+lt(Type type1, const T1& x1, const Info1& info1,
+   Type type2, const T2& x2, const Info2& info2) {
+  if (info1.get_boundary_property(type1, SPECIAL)) {
+    if (type1 == LOWER) {
+      if (is_open(type1, x1, info1))
+	return !is_minus_infinity(type2, x2, info2);
+      else
+	return is_open(type2, x2, info2)
+	  || !is_minus_infinity(type2, x2, info2);
+    }
     else
-      return maybe_check_plus_infinity<From2_Info>(from2);
+      return is_open(type1, x1, info1)
+	&& !is_open(type2, x2, info2)
+	&& is_plus_infinity(type2, x2, info2);
   }
-  else if (from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
-    if (is_unbounded(from1_type, from1, from1_info))
-      return from1_type == LOWER && from2_type == UPPER;
-    else if (from2_type == LOWER)
-      return maybe_check_minus_infinity<From1_Info>(from1);
+  else if (info2.get_boundary_property(type2, SPECIAL)) {
+    if (type2 == LOWER) {
+      return is_open(type2, x2, info2)
+	&& !is_open(type1, x1, info1)
+	&& is_minus_infinity(type1, x1, info1);
+    }
     else
-      return !maybe_check_plus_infinity<From1_Info>(from1);
+      return is_open(type2, x2, info2)
+	&& !is_open(type1, x1, info1)
+	&& is_plus_infinity(type1, x1, info1);
   }
-  else if (from1_info.get_boundary_property(from1_type, OPEN)) {
-    if (from1_type == UPPER && (from2_type == LOWER || !from2_info.get_boundary_property(from2_type, OPEN)))
+  else if (is_open(type1, x1, info1)) {
+    if (type1 == UPPER
+	&& (type2 == LOWER
+	    || !is_open(type2, x2, info2)))
       goto le;
   }
-  else if (from2_type == LOWER && from2_info.get_boundary_property(from2_type, OPEN)) {
+  else if (type2 == LOWER
+	   && is_open(type2, x2, info2)) {
   le:
-    return from1 <= from2;
+    return x1 <= x2;
   }
-  return from1 < from2;
+  return x1 < x2;
 }
 
-template <typename From1, typename From1_Info, typename From2, typename From2_Info>
+template <typename T1, typename Info1, typename T2, typename Info2>
 inline bool
-gt(Type from1_type, const From1& from1, const From1_Info& from1_info,
-   Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  return lt(from2_type, from2, from2_info, from1_type, from1, from1_info);
+gt(Type type1, const T1& x1, const Info1& info1,
+   Type type2, const T2& x2, const Info2& info2) {
+  return lt(type2, x2, info2, type1, x1, info1);
 }
 
-template <typename From1, typename From1_Info, typename From2, typename From2_Info>
+template <typename T1, typename Info1, typename T2, typename Info2>
 inline bool
-le(Type from1_type, const From1& from1, const From1_Info& from1_info,
-   Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  return !gt(from1_type, from1, from1_info, from2_type, from2, from2_info);
+le(Type type1, const T1& x1, const Info1& info1,
+   Type type2, const T2& x2, const Info2& info2) {
+  return !gt(type1, x1, info1, type2, x2, info2);
 }
 
-template <typename From1, typename From1_Info, typename From2, typename From2_Info>
+template <typename T1, typename Info1, typename T2, typename Info2>
 inline bool
-ge(Type from1_type, const From1& from1, const From1_Info& from1_info,
-   Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  return !lt(from1_type, from1, from1_info, from2_type, from2, from2_info);
+ge(Type type1, const T1& x1, const Info1& info1,
+   Type type2, const T2& x2, const Info2& info2) {
+  return !lt(type1, x1, info1, type2, x2, info2);
 }
 
-template <typename Info>
+template <typename T, typename Info>
 inline Result
-adjust_boundary_info(Boundary_NS::Type type, Info& info, Result r) {
+adjust_boundary(Boundary_NS::Type type, T& x, Info& info,
+		bool open, Result r) {
   if (type == LOWER) {
     switch (r) {
     case V_NEG_OVERFLOW:
-      assert(Info::store_unbounded);
-      info.set_boundary_property(type, UNBOUNDED);
-      return V_GT;
-    case V_GT:
-      info.set_boundary_property(type, OPEN);
+      open = true;
       /* Fall through */
+    case VC_MINUS_INFINITY:
+      return set_minus_infinity(type, x, info, open);
+    case V_GT:
+      set_open(type, x, info);
+      // FIXME: what to return?
+      return V_GT;
     case V_GE:
     case V_EQ:
+      if (open)
+	set_open(type, x, info);
+      // FIXME: what to return?
       return r;
     default:
       assert(false);
@@ -222,14 +394,19 @@ adjust_boundary_info(Boundary_NS::Type type, Info& info, Result r) {
   else {
     switch (r) {
     case V_POS_OVERFLOW:
-      assert(Info::store_unbounded);
-      info.set_boundary_property(type, UNBOUNDED);
-      return V_LT;
-    case V_LT:
-      info.set_boundary_property(type, OPEN);
+      open = true;
       /* Fall through */
+    case VC_PLUS_INFINITY:
+      return set_plus_infinity(type, x, info, open);
+    case V_LT:
+      set_open(type, x, info);
+      // FIXME: what to return?
+      return V_LT;
     case V_LE:
     case V_EQ:
+      if (open)
+	set_open(type, x, info);
+      // FIXME: what to return?
       return r;
     default:
       assert(false);
@@ -238,301 +415,196 @@ adjust_boundary_info(Boundary_NS::Type type, Info& info, Result r) {
   }
 }
 
-template <typename To, typename To_Info, typename From, typename From_Info>
+enum Operand { INF, INF0,
+	       ADD1 = INF, ADD2 = INF,
+	       SUB1 = INF, SUB2 = INF,
+	       MUL1 = INF0, MUL2 = INF0,
+	       DIV1 = INF0, DIV2 = INF };
+
+template <typename T, typename Info>
+inline bool
+is_invariant(Operand o, Type type, const T& x, const Info& info) {
+  switch (o) {
+  case INF0:
+    if (x == (signed char)0)
+      return true;
+    /* Fall through */
+  case INF:
+    return is_any_infinity(type, x, info);
+  default:
+    assert(false);
+    return false;
+  }
+}
+
+template <typename To, typename To_Info, typename T, typename Info>
 inline Result
 assign(Type to_type, To& to, To_Info& to_info,
-       Type from_type, const From& from, const From_Info& from_info) {
-  if (from_info.get_boundary_property(from_type, UNBOUNDED)) {
-    return set_unbounded(to_type, to, to_info);
+       Type type, const T& x, const Info& info) {
+  assert(to_type == type);
+  if (info.get_boundary_property(type, SPECIAL)) {
+    bool open = special_is_open(type, x, info);
+    if (special_is_minus_infinity(type, x, info))
+      return set_minus_infinity(to_type, to, to_info, open);
+    else if (special_is_plus_infinity(type, x, info))
+      return set_plus_infinity(to_type, to, to_info, open);
+    else {
+      assert(false);
+      return VC_NAN;
+    }
   }
-  if (To_Info::store_open) {
-    if (from_info.get_boundary_property(from_type, OPEN))
-      to_info.set_boundary_property(to_type, OPEN);
-    else
-      goto check_inexact;
-  }
-  if (To_Info::check_inexact) {
-  check_inexact:
-    return adjust_boundary_info(to_type, to_info, assign_r(to, from, round_dir_check(to_type)));
-  }
-  else
-    return adjust_boundary_info(to_type, to_info, assign_r(to, from, round_dir_nocheck(to_type)));
+  bool open = info.get_boundary_property(type, OPEN);
+  Rounding_Dir dir = round_dir(to_type, (To_Info::check_inexact
+					 || (To_Info::store_open && !open)));
+  return adjust_boundary(to_type, to, to_info, open,
+			 assign_r(to, x, dir));
 }
 
-template <typename To, typename To_Info, typename From, typename From_Info>
+template <typename To, typename To_Info, typename T, typename Info>
 inline Result
 min_assign(Type to_type, To& to, To_Info& to_info,
-	   Type from_type, const From& from, const From_Info& from_info) {
-  if (lt(from_type, from, from_info, to_type, to, to_info)) {
+	   Type type, const T& x, const Info& info) {
+  if (lt(type, x, info, to_type, to, to_info)) {
     to_info.clear_boundary_properties(to_type);
-    return assign(to_type, to, to_info, from_type, from, from_info);
+    return assign(to_type, to, to_info, type, x, info);
   }
   return V_EQ;
 }
 
-template <typename To, typename To_Info, typename From1, typename From1_Info, typename From2, typename From2_Info>
+template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
 min_assign(Type to_type, To& to, To_Info& to_info,
-	   Type from1_type, const From1& from1, const From1_Info& from1_info,
-	   Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  if (lt(from1_type, from1, from1_info, from2_type, from2, from2_info))
-    return assign(to_type, to, to_info, from1_type, from1, from1_info);
+	   Type type1, const T1& x1, const Info1& info1,
+	   Type type2, const T2& x2, const Info2& info2) {
+  if (lt(type1, x1, info1, type2, x2, info2))
+    return assign(to_type, to, to_info, type1, x1, info1);
   else
-    return assign(to_type, to, to_info, from2_type, from2, from2_info);
+    return assign(to_type, to, to_info, type2, x2, info2);
 }
 
-template <typename To, typename To_Info, typename From, typename From_Info>
+template <typename To, typename To_Info, typename T, typename Info>
 inline Result
 max_assign(Type to_type, To& to, To_Info& to_info,
-	   Type from_type, const From& from, const From_Info& from_info) {
-  if (gt(from_type, from, from_info, to_type, to, to_info)) {
+	   Type type, const T& x, const Info& info) {
+  if (gt(type, x, info, to_type, to, to_info)) {
     to_info.clear_boundary_properties(to_type);
-    return assign(to_type, to, to_info, from_type, from, from_info);
+    return assign(to_type, to, to_info, type, x, info);
   }
   return V_EQ;
 }
 
-template <typename To, typename To_Info, typename From1, typename From1_Info, typename From2, typename From2_Info>
+template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
 max_assign(Type to_type, To& to, To_Info& to_info,
-	   Type from1_type, const From1& from1, const From1_Info& from1_info,
-	   Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  if (gt(from1_type, from1, from1_info, from2_type, from2, from2_info))
-    return assign(to_type, to, to_info, from1_type, from1, from1_info);
+	   Type type1, const T1& x1, const Info1& info1,
+	   Type type2, const T2& x2, const Info2& info2) {
+  if (gt(type1, x1, info1, type2, x2, info2))
+    return assign(to_type, to, to_info, type1, x1, info1);
   else
-    return assign(to_type, to, to_info, from2_type, from2, from2_info);
+    return assign(to_type, to, to_info, type2, x2, info2);
 }
 
-template <typename To, typename To_Info, typename From, typename From_Info>
+template <typename To, typename To_Info, typename T, typename Info>
 inline Result
 neg_assign(Type to_type, To& to, To_Info& to_info,
-	   Type from_type, const From& from, const From_Info& from_info) {
-  if (from_info.get_boundary_property(from_type, UNBOUNDED)) {
-    return set_unbounded(to_type, to, to_info);
+	   Type type, const T& x, const Info& info) {
+  assert(to_type != type);
+  if (info.get_boundary_property(type, SPECIAL)) {
+    bool open = special_is_open(type, x, info);
+    if (special_is_minus_infinity(type, x, info))
+      return set_plus_infinity(to_type, to, to_info, open);
+    else if (special_is_plus_infinity(type, x, info))
+      return set_minus_infinity(to_type, to, to_info, open);
+    else {
+      assert(false);
+      return VC_NAN;
+    }
   }
-  if (To_Info::store_open) {
-    if (from_info.get_boundary_property(from_type, OPEN))
-      to_info.set_boundary_property(to_type, OPEN);
-    else
-      goto check_inexact;
-  }
-  if (To_Info::check_inexact) {
-  check_inexact:
-    return adjust_boundary_info(to_type, to_info, neg_assign_r(to, from, round_dir_check(to_type)));
-  }
-  else
-    return adjust_boundary_info(to_type, to_info, neg_assign_r(to, from, round_dir_nocheck(to_type)));
+  bool open = info.get_boundary_property(type, OPEN);
+  Rounding_Dir dir = round_dir(to_type, (To_Info::check_inexact
+					 || (To_Info::store_open && !open)));
+  return adjust_boundary(to_type, to, to_info, open,
+			 neg_assign_r(to, x, dir));
 }
 
-template <typename To, typename To_Info, typename From1, typename From1_Info, typename From2, typename From2_Info>
+template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
 add_assign(Type to_type, To& to, To_Info& to_info,
-	   Type from1_type, const From1& from1, const From1_Info& from1_info,
-	   Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  assert(from1_type == from2_type);
-  if (from1_info.get_boundary_property(from1_type, UNBOUNDED)) {
-    if (is_unbounded(from2_type, from2, from2_info))
-      goto unbounded;
-    else if (maybe_check_minus_infinity<From2_Info>(from2))
-      goto minf;
-    else if (maybe_check_plus_infinity<From2_Info>(from2))
-      goto pinf;
-    else
-      goto unbounded;
+	   Type type1, const T1& x1, const Info1& info1,
+	   Type type2, const T2& x2, const Info2& info2) {
+  assert(type1 == type2);
+#if 0
+  if (info1.get_boundary_property(type1, SPECIAL)) {
+    bool open1 = special_is_open(type1, x1, info1);
   }
-  else if (from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
-    if (maybe_check_minus_infinity<From1_Info>(from1)) {
-    minf:
-      return set_minus_infinity(to_type, to, to_info);
-    }
-    else if (maybe_check_plus_infinity<From1_Info>(from1)) {
-    pinf:
-      return set_plus_infinity(to_type, to, to_info);
-    }
-    else {
-    unbounded:
-      return set_unbounded(to_type, to, to_info);
-    }
+  else if (info2.get_boundary_property(type2, SPECIAL)) {
+    bool open2 = special_is_open(type2, x2, info2);
   }
+  // FIXME: missing special check
   // FIXME: missing singularities check
-  // FIXME: invariant open operand gives closed result
-  if (To_Info::store_open) {
-    if (from1_info.get_boundary_property(from1_type, OPEN) ||
-	from2_info.get_boundary_property(from2_type, OPEN))
-      to_info.set_boundary_property(to_type, OPEN);
-    else
-      goto check_inexact;
-  }
-  if (To_Info::check_inexact) {
-  check_inexact:
-    return adjust_boundary_info(to_type, to_info, add_assign_r(to, from1, from2, round_dir_check(to_type)));
-  }
-  else
-    return adjust_boundary_info(to_type, to_info, add_assign_r(to, from1, from2, round_dir_nocheck(to_type)));
+#endif
+  bool open = is_open(type1, x1, info1)
+    ? (is_open(type2, x2, info2) || !is_invariant(ADD2, type2, x2, info2))
+    : (is_open(type2, x2, info2) && !is_invariant(ADD1, type1, x1, info1));
+  Rounding_Dir dir = round_dir(to_type, (To_Info::check_inexact
+					 || (To_Info::store_open && !open)));
+  return adjust_boundary(to_type, to, to_info, open,
+			 add_assign_r(to, x1, x2, dir));
 }
 
-template <typename To, typename To_Info, typename From1, typename From1_Info, typename From2, typename From2_Info>
+template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
 sub_assign(Type to_type, To& to, To_Info& to_info,
-	   Type from1_type, const From1& from1, const From1_Info& from1_info,
-	   Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  assert(from1_type != from2_type);
-  if (from1_info.get_boundary_property(from1_type, UNBOUNDED)) {
-    if (is_unbounded(from2_type, from2, from2_info))
-      goto unbounded;
-    else if (maybe_check_minus_infinity<From2_Info>(from2))
-      goto pinf;
-    else if (maybe_check_plus_infinity<From2_Info>(from2))
-	goto minf;
-    else
-      goto unbounded;
-  }
-  else if (from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
-    if (maybe_check_minus_infinity<From1_Info>(from1)) {
-    minf:
-      return set_minus_infinity(to_type, to, to_info);
-    }
-    else if (maybe_check_plus_infinity<From1_Info>(from1)) {
-    pinf:
-      return set_plus_infinity(to_type, to, to_info);
-    }
-    else {
-    unbounded:
-      return set_unbounded(to_type, to, to_info);
-    }
-  }
+	   Type type1, const T1& x1, const Info1& info1,
+	   Type type2, const T2& x2, const Info2& info2) {
+  assert(type1 != type2);
+#if 0
+  // FIXME: missing special check
   // FIXME: missing singularities check
-  // FIXME: invariant open operand gives closed result
-  if (To_Info::store_open) {
-    if (from1_info.get_boundary_property(from1_type, OPEN) ||
-	from2_info.get_boundary_property(from2_type, OPEN))
-      to_info.set_boundary_property(to_type, OPEN);
-    else
-      goto check_inexact;
-  }
-  if (To_Info::check_inexact) {
-  check_inexact:
-    return adjust_boundary_info(to_type, to_info, sub_assign_r(to, from1, from2, round_dir_check(to_type)));
-  }
-  else
-    return adjust_boundary_info(to_type, to_info, sub_assign_r(to, from1, from2, round_dir_nocheck(to_type)));
+#endif
+  bool open = is_open(type1, x1, info1)
+    ? (is_open(type2, x2, info2) || !is_invariant(SUB2, type2, x2, info2))
+    : (is_open(type2, x2, info2) && !is_invariant(SUB1, type1, x1, info1));
+  Rounding_Dir dir = round_dir(to_type, (To_Info::check_inexact
+					 || (To_Info::store_open && !open)));
+  return adjust_boundary(to_type, to, to_info, open,
+			 sub_assign_r(to, x1, x2, dir));
 }
 
-template <typename To, typename To_Info, typename From1, typename From1_Info, typename From2, typename From2_Info>
+template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
 mul_assign(Type to_type, To& to, To_Info& to_info,
-	   Type from1_type, const From1& from1, const From1_Info& from1_info,
-	   Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  if (from1_info.get_boundary_property(from1_type, UNBOUNDED)) {
-    if (is_unbounded(from2_type, from2, from2_info))
-      goto unbounded;
-    else if (maybe_check_minus_infinity<From2_Info>(from2)) {
-      if (from1_type == LOWER)
-	goto pinf;
-      else
-	goto minf;
-    }
-    else if (maybe_check_plus_infinity<From2_Info>(from2)) {
-      if (from1_type == LOWER)
-	goto minf;
-      else
-	goto pinf;
-    }
-    else
-      goto unbounded;
-  }
-  else if (from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
-    if (maybe_check_minus_infinity<From1_Info>(from1)) {
-      if (from2_type == LOWER)
-	goto pinf;
-      else
-	goto minf;
-    }
-    else if (maybe_check_plus_infinity<From1_Info>(from1)) {
-      if (from2_type == LOWER) {
-      minf:
-	return set_minus_infinity(to_type, to, to_info);
-      }
-      else {
-      pinf:
-	return set_plus_infinity(to_type, to, to_info);
-      }
-    }
-    else {
-    unbounded:
-      return set_unbounded(to_type, to, to_info);
-    }
-  }
+	   Type type1, const T1& x1, const Info1& info1,
+	   Type type2, const T2& x2, const Info2& info2) {
+#if 0
+  // FIXME: missing special check
   // FIXME: missing singularities check
-  // FIXME: invariant open operand gives closed result
-  if (To_Info::store_open) {
-    if (from1_info.get_boundary_property(from1_type, OPEN) ||
-	from2_info.get_boundary_property(from2_type, OPEN))
-      to_info.set_boundary_property(to_type, OPEN);
-    else
-      goto check_inexact;
-  }
-  if (To_Info::check_inexact) {
-  check_inexact:
-    return adjust_boundary_info(to_type, to_info, mul_assign_r(to, from1, from2, round_dir_check(to_type)));
-  }
-  else
-    return adjust_boundary_info(to_type, to_info, mul_assign_r(to, from1, from2, round_dir_nocheck(to_type)));
+#endif
+  bool open = is_open(type1, x1, info1)
+    ? (is_open(type2, x2, info2) || !is_invariant(MUL2, type2, x2, info2))
+    : (is_open(type2, x2, info2) && !is_invariant(MUL1, type1, x1, info1));
+  Rounding_Dir dir = round_dir(to_type, (To_Info::check_inexact
+					 || (To_Info::store_open && !open)));
+  return adjust_boundary(to_type, to, to_info, open,
+			 mul_assign_r(to, x1, x2, dir));
 }
 
-template <typename To, typename To_Info, typename From1, typename From1_Info, typename From2, typename From2_Info>
+template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
 div_assign(Type to_type, To& to, To_Info& to_info,
-	   Type from1_type, const From1& from1, const From1_Info& from1_info,
-	   Type from2_type, const From2& from2, const From2_Info& from2_info) {
-  if (from1_info.get_boundary_property(from1_type, UNBOUNDED)) {
-    if (is_unbounded(from2_type, from2, from2_info))
-      goto unbounded;
-    else if (maybe_check_minus_infinity<From2_Info>(from2) ||
-	     maybe_check_plus_infinity<From2_Info>(from2)) {
-      assign_r(to, 0, ROUND_NOT_NEEDED);
-      return V_EQ;
-    }
-    else
-      goto unbounded;
-  }
-  else if (from2_info.get_boundary_property(from2_type, UNBOUNDED)) {
-    if (maybe_check_minus_infinity<From1_Info>(from1)) {
-      if (from2_type == LOWER)
-	goto pinf;
-      else
-	goto minf;
-    }
-    else if (maybe_check_plus_infinity<From1_Info>(from1)) {
-      if (from2_type == LOWER) {
-      minf:
-	return set_minus_infinity(to_type, to, to_info);
-      }
-      else {
-      pinf:
-	return set_plus_infinity(to_type, to, to_info);
-      }
-    }
-    else {
-    unbounded:
-      return set_unbounded(to_type, to, to_info);
-    }
-  }
+	   Type type1, const T1& x1, const Info1& info1,
+	   Type type2, const T2& x2, const Info2& info2) {
+#if 0
+  // FIXME: missing special check
   // FIXME: missing singularities check
-  // FIXME: invariant open operand gives closed result
-  if (To_Info::store_open) {
-    if (from1_info.get_boundary_property(from1_type, OPEN) ||
-	from2_info.get_boundary_property(from2_type, OPEN))
-      to_info.set_boundary_property(to_type, OPEN);
-    else
-      goto check_inexact;
-  }
-  if (To_Info::check_inexact) {
-  check_inexact:
-    return adjust_boundary_info(to_type, to_info, div_assign_r(to, from1, from2, round_dir_check(to_type)));
-  }
-  else
-    return adjust_boundary_info(to_type, to_info, div_assign_r(to, from1, from2, round_dir_nocheck(to_type)));
+#endif
+  bool open = is_open(type1, x1, info1)
+    ? (is_open(type2, x2, info2) || !is_invariant(DIV2, type2, x2, info2))
+    : (is_open(type2, x2, info2) && !is_invariant(DIV1, type1, x1, info1));
+  Rounding_Dir dir = round_dir(to_type, (To_Info::check_inexact
+					 || (To_Info::store_open && !open)));
+  return adjust_boundary(to_type, to, to_info, open,
+			 div_assign_r(to, x1, x2, dir));
 }
 
 }

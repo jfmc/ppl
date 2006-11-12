@@ -2,27 +2,13 @@
 #ifndef PPL_Interval_Info_defs_hh
 #define PPL_Interval_Info_defs_hh 1
 
+
 #include "Boundary.defs.hh"
+
 
 namespace Parma_Polyhedra_Library {
 
 namespace Interval_NS {
-
-enum Integer_Property_Value {
-  MAYBE_SINGLETON_INTEGER = 0,
-  NOT_SINGLETON_INTEGER = 1,
-  ONLY_INTEGERS_TO_NORMALIZE = 2,
-  ONLY_INTEGERS_NORMALIZED = 3
-};
-
-struct Integer_Property {
-  typedef Integer_Property_Value Value;
-  static const Value default_value = MAYBE_SINGLETON_INTEGER;
-  static const Value unsupported_value = MAYBE_SINGLETON_INTEGER;
-};
-
-static const Integer_Property& INTEGER = *(Integer_Property*)0;
-
 
 struct Property {
   enum Type {
@@ -97,15 +83,16 @@ using namespace Boundary_NS;
 template <typename Policy>
 class Interval_Info_Null {
 public:
-  const_bool(handle_infinity, Policy::handle_infinity);
-  const_bool(check_inexact, Policy::check_inexact);
-  const_bool(check_empty_args, Policy::check_empty_args);
-  const_bool(check_integer_args, Policy::check_integer_args);
-  const_bool(store_unbounded, false);
-  const_bool(store_open, false);
-  const_bool(store_integer, false);
-  const_bool(store_empty, false);
-  const_bool(store_singleton, false);
+  const_bool_nodef(handle_infinity, Policy::handle_infinity);
+  const_bool_nodef(check_inexact, Policy::check_inexact);
+  const_bool_nodef(check_empty_args, Policy::check_empty_args);
+  const_bool_nodef(check_integer_args, Policy::check_integer_args);
+  const_bool_nodef(infinity_is_open, Policy::infinity_is_open);
+  const_bool_nodef(store_special, false);
+  const_bool_nodef(store_open, false);
+  const_bool_nodef(store_integer, false);
+  const_bool_nodef(store_empty, false);
+  const_bool_nodef(store_singleton, false);
   void clear() {
   }
   void clear_boundary_properties(Boundary_NS::Type) {
@@ -133,24 +120,25 @@ public:
 template <typename T, typename Policy>
 class Interval_Info_Bitset {
 public:
-  const_bool(handle_infinity, Policy::handle_infinity);
-  const_bool(check_inexact, Policy::check_inexact);
-  const_bool(check_empty_args, Policy::check_empty_args);
-  const_bool(check_integer_args, Policy::check_integer_args);
-  const_bool(store_unbounded, Policy::store_unbounded);
-  const_bool(store_open, Policy::store_open);
-  const_bool(store_integer, Policy::store_integer);
-  const_bool(store_empty, Policy::store_empty);
-  const_bool(store_singleton, Policy::store_singleton);
-  const_int(lower_unbounded_bit, Policy::next_bit);
-  const_int(lower_open_bit, lower_unbounded_bit + store_unbounded);
-  const_int(upper_unbounded_bit, lower_open_bit + store_open);
-  const_int(upper_open_bit, upper_unbounded_bit + store_unbounded);
-  const_int(integer_bit, upper_open_bit + store_open);
-  const_int(cardinality_0_bit, integer_bit + store_integer * 2);
-  const_int(cardinality_1_bit, cardinality_0_bit + store_empty);
-  const_int(cardinality_is_bit, cardinality_1_bit + store_singleton);
-  const_int(next_bit, cardinality_is_bit + (store_empty || store_singleton));
+  const_bool_nodef(handle_infinity, Policy::handle_infinity);
+  const_bool_nodef(check_inexact, Policy::check_inexact);
+  const_bool_nodef(check_empty_args, Policy::check_empty_args);
+  const_bool_nodef(check_integer_args, Policy::check_integer_args);
+  const_bool_nodef(infinity_is_open, Policy::infinity_is_open);
+  const_bool_nodef(store_special, Policy::store_special);
+  const_bool_nodef(store_open, Policy::store_open);
+  const_bool_nodef(store_integer, Policy::store_integer);
+  const_bool_nodef(store_empty, Policy::store_empty);
+  const_bool_nodef(store_singleton, Policy::store_singleton);
+  const_int_nodef(lower_infinity_bit, Policy::next_bit);
+  const_int_nodef(lower_open_bit, lower_infinity_bit + store_special);
+  const_int_nodef(upper_infinity_bit, lower_open_bit + store_open);
+  const_int_nodef(upper_open_bit, upper_infinity_bit + store_special);
+  const_int_nodef(integer_bit, upper_open_bit + store_open);
+  const_int_nodef(cardinality_0_bit, integer_bit + store_integer * 2);
+  const_int_nodef(cardinality_1_bit, cardinality_0_bit + store_empty);
+  const_int_nodef(cardinality_is_bit, cardinality_1_bit + store_singleton);
+  const_int_nodef(next_bit, cardinality_is_bit + (store_empty || store_singleton));
   Interval_Info_Bitset() {
     init_bits(bitset);
   }
@@ -159,17 +147,17 @@ public:
     reset_bits(bitset);
   }
   void clear_boundary_properties(Boundary_NS::Type t) {
-    set_boundary_property(t, UNBOUNDED, false);
+    set_boundary_property(t, SPECIAL, false);
     set_boundary_property(t, OPEN, false);
   }
   void set_boundary_property(Boundary_NS::Type t, const Boundary_NS::Property& p, bool value = true) {
     switch (p.type) {
-    case Boundary_NS::Property::UNBOUNDED_:
-      if (store_unbounded) {
+    case Boundary_NS::Property::SPECIAL_:
+      if (store_special) {
 	if (t == LOWER)
-	  set_bit(bitset, lower_unbounded_bit, value);
+	  set_bit(bitset, lower_infinity_bit, value);
 	else
-	  set_bit(bitset, upper_unbounded_bit, value);
+	  set_bit(bitset, upper_infinity_bit, value);
       }
       break;
     case Boundary_NS::Property::OPEN_:
@@ -186,13 +174,13 @@ public:
   }
   bool get_boundary_property(Boundary_NS::Type t, const Boundary_NS::Property& p) const {
     switch (p.type) {
-    case Boundary_NS::Property::UNBOUNDED_:
-      if (!store_unbounded)
+    case Boundary_NS::Property::SPECIAL_:
+      if (!store_special)
 	return false;
       if (t == LOWER)
-	return get_bit(bitset, lower_unbounded_bit);
+	return get_bit(bitset, lower_infinity_bit);
       else
-	return get_bit(bitset, upper_unbounded_bit);
+	return get_bit(bitset, upper_infinity_bit);
     case Boundary_NS::Property::OPEN_:
       if (!store_open)
 	return false;

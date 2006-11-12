@@ -72,29 +72,33 @@ private:
   I_Result normalize_integer_() const {
     Interval& i = const_cast<Interval&>(*this);
     Result rl = V_EQ;
-    if (!lower_is_unbounded()) {
+    if (!info().get_boundary_property(LOWER, SPECIAL)) {
       if (is_integer(lower())) {
 	if (lower_is_open()) {
 	  i.info().set_boundary_property(LOWER, OPEN, false);
-	  rl = adjust_boundary_info(LOWER, i.info(), add_assign_r(i.lower(), lower(), Boundary(1, ROUND_NOT_NEEDED), ROUND_DOWN));
+	  rl = adjust_boundary(LOWER, i.lower(), i.info(), false,
+			       add_assign_r(i.lower(), lower(), Boundary(1, ROUND_NOT_NEEDED), ROUND_DOWN));
 	}
       }
       else {
 	i.info().set_boundary_property(LOWER, OPEN, false);
-	rl = adjust_boundary_info(LOWER, i.info(), ceil_assign_r(i.lower(), lower(), ROUND_DOWN));
+	rl = adjust_boundary(LOWER, i.lower(), i.info(), false,
+			     ceil_assign_r(i.lower(), lower(), ROUND_DOWN));
       }
     }
     Result ru = V_EQ;
-    if (!upper_is_unbounded()) {
+    if (!info().get_boundary_property(UPPER, SPECIAL)) {
       if (is_integer(upper())) {
 	if (upper_is_open()) {
 	  i.info().set_boundary_property(UPPER, OPEN, false);
-	  ru = adjust_boundary_info(UPPER, i.info(), sub_assign_r(i.upper(), upper(), Boundary(1, ROUND_NOT_NEEDED), ROUND_UP));
+	  ru = adjust_boundary(UPPER, i.upper(), i.info(), false,
+			       sub_assign_r(i.upper(), upper(), Boundary(1, ROUND_NOT_NEEDED), ROUND_UP));
 	}
       }
       else {
 	i.info().set_boundary_property(UPPER, OPEN, false);
-	ru = adjust_boundary_info(UPPER, i.info(), floor_assign_r(i.lower(), lower(), ROUND_UP));
+	ru = adjust_boundary(UPPER, i.upper(), i.info(), false,
+			     floor_assign_r(i.lower(), lower(), ROUND_UP));
       }
     }
     i.info().set_interval_property(INTEGER, ONLY_INTEGERS_NORMALIZED);
@@ -118,7 +122,7 @@ public:
 	std::cerr << "The lower boundary is unexpectedly +inf." << std::endl;
 	return false;
       }
-      if (info().get_boundary_property(LOWER, UNBOUNDED)) {
+      if (info().get_boundary_property(LOWER, OPEN)) {
 	std::cerr << "The lower boundary is +inf open." << std::endl;
 	return false;
       }
@@ -134,24 +138,10 @@ public:
 	std::cerr << "The upper boundary is unexpectedly -inf." << std::endl;
 	return false;
       }
-      if (info().get_boundary_property(UPPER, UNBOUNDED)) {
+      if (info().get_boundary_property(UPPER, OPEN)) {
 	std::cerr << "The upper boundary is +inf open." << std::endl;
 	return false;
       }
-    }
-    if (info().get_boundary_property(LOWER, UNBOUNDED) &&
-	lower_is_open()) {
-#ifndef NDEBUG
-      std::cerr << "The lower boundary is marked unbounded and open." << std::endl;
-#endif
-      return false;
-    }
-    if (info().get_boundary_property(UPPER, UNBOUNDED) &&
-	upper_is_open()) {
-#ifndef NDEBUG
-      std::cerr << "The upper boundary is marked unbounded and open." << std::endl;
-#endif
-      return false;
     }
     if (info().get_interval_property(CARDINALITY_0) &&
 	info().get_interval_property(CARDINALITY_IS) != is_empty_()) {
@@ -288,47 +278,21 @@ public:
     return info().get_boundary_property(UPPER, OPEN);
   }
   Result lower_set_open(bool v = true) {
-    if (Info::store_open) {
-      info().set_boundary_property(LOWER, OPEN, v);
-      return V_EQ;
-    }
-    else if (v) {
-      switch (info().get_interval_property(INTEGER)) {
-      case ONLY_INTEGERS_TO_NORMALIZE:
-	assert(false);
-	break;
-      case ONLY_INTEGERS_NORMALIZED:
-	return adjust_boundary_info(LOWER, info(), add_assign_r(lower(), lower(), Boundary(1, ROUND_NOT_NEEDED), ROUND_DOWN));
-      default:
-	break;
-      }
-    }
-    return V_EQ;
+    return set_open(LOWER, lower(), info(), v);
   }
   Result upper_set_open(bool v = true) {
-    if (Info::store_open) {
-      info().set_boundary_property(UPPER, OPEN, v);
-      return V_EQ;
-    }
-    else if (v) {
-      switch (info().get_interval_property(INTEGER)) {
-      case ONLY_INTEGERS_TO_NORMALIZE:
-	assert(false);
-	break;
-      case ONLY_INTEGERS_NORMALIZED:
-	return adjust_boundary_info(UPPER, info(), sub_assign_r(upper(), upper(), Boundary(1, ROUND_NOT_NEEDED), ROUND_UP));
-      default:
-	break;
-      }
-    }
-    return V_EQ;
+    return set_open(UPPER, upper(), info(), v);
   }
   bool lower_is_unbounded() const {
-    return Boundary_NS::is_unbounded(LOWER, lower(), info());
+    return Boundary_NS::is_minus_infinity(LOWER, lower(), info());
   }
   bool upper_is_unbounded() const {
-    return Boundary_NS::is_unbounded(UPPER, upper(), info());
+    return Boundary_NS::is_plus_infinity(UPPER, upper(), info());
   }
+  bool is_unbounded() const {
+    return lower_is_unbounded() || upper_is_unbounded();
+  }
+#if 0
   Result lower_set_unbounded() {
     info().set_interval_property(CARDINALITY_IS, false);
     info().set_interval_property(CARDINALITY_0, true);
@@ -341,14 +305,21 @@ public:
     info().set_interval_property(CARDINALITY_1, false);
     return set_unbounded(UPPER, upper(), info());
   }
-  bool is_unbounded() const {
-    return lower_is_unbounded() || upper_is_unbounded();
-  }
+#endif
   bool is_universe() const {
+    // FIXME: incorrect if infinity is missing?
     return lower_is_unbounded() && upper_is_unbounded()
       && !contains_only_integers();
   }
+  I_Result set_universe() {
+    info().clear();
+    info().set_interval_property(CARDINALITY_0, true);
+    Result rl = set_extreme(LOWER, lower(), info());
+    Result ru = set_extreme(UPPER, upper(), info());
+    return combine(rl, ru);
+  }
   bool is_topologically_closed() const {
+    // FIXME: review
     return is_empty() ||
       ((lower_is_unbounded() || !lower_is_open())
        && (upper_is_unbounded() || !upper_is_open()));
@@ -421,10 +392,11 @@ info(const Interval<Boundary, Info>& x) {
 }
 
 struct Scalar_As_Interval_Policy {
-  const_bool(handle_infinity, false);
-  const_bool(check_inexact, false);
-  const_bool(check_empty_args, false);
-  const_bool(check_integer_args, true);
+  const_bool_nodef(handle_infinity, false);
+  const_bool_nodef(check_inexact, false);
+  const_bool_nodef(check_empty_args, false);
+  const_bool_nodef(check_integer_args, true);
+  const_bool_nodef(infinity_is_open, false);
 };
 
 typedef Interval_Info_Null<Scalar_As_Interval_Policy> Scalar_As_Interval_Info;
@@ -1124,11 +1096,10 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
     }
   }
   else {
-    if (!contains_only_integers(y)) {
-      rl = set_unbounded(LOWER, to.lower(), to_info);
-      ru = set_unbounded(UPPER, to.upper(), to_info);
-      return static_cast<I_Result>(combine(rl, ru) | I_SINGULARITIES);
-    }
+#if 0
+    if (!contains_only_integers(y))
+      return to.set_unbounded();
+#endif
   }
   assign_or_swap(to.lower(), to_lower);
   to.info() = to_info;
@@ -1142,19 +1113,17 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
     return os << "[]";
   if (x.is_singleton())
     return os << x.lower();
-  if (x.info().get_boundary_property(LOWER, UNBOUNDED))
-    os << "(-inf";
-  else {
-    os << (x.lower_is_open() ? "(" : "[");
+  os << (x.lower_is_open() ? "(" : "[");
+  if (x.info().get_boundary_property(LOWER, SPECIAL))
+    os << "-inf";
+  else
     os << x.lower();
-  }
   os << (x.contains_only_integers() ? " .. " : ", ");
-  if (x.info().get_boundary_property(UPPER, UNBOUNDED))
-    os << "+inf)";
-  else {
+  if (x.info().get_boundary_property(UPPER, SPECIAL))
+    os << "+inf";
+  else
     os << x.upper();
-    os << (x.upper_is_open() ? ")" : "]");
-  }
+  os << (x.upper_is_open() ? ")" : "]");
   return os;
 }
 
