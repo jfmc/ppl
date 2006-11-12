@@ -130,10 +130,6 @@ struct Compile_Time_Check<false> {
     return name;							\
   }
 
-// FIXME: the following definitions should be removed asap.
-#define const_bool(name, value) const_bool_nodef(name, value)
-#define const_int(name, value) const_int_nodef(name, value)
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_compiler_hh)

@@ -37,19 +37,19 @@ namespace Checked {
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Check_Overflow_Policy {
-  const_bool(check_overflow, true);
-  const_bool(check_inf_add_inf, false);
-  const_bool(check_inf_sub_inf, false);
-  const_bool(check_inf_mul_zero, false);
-  const_bool(check_div_zero, false);
-  const_bool(check_inf_div_inf, false);
-  const_bool(check_inf_mod, false);
-  const_bool(check_sqrt_neg, false);
-  const_bool(handle_nan, false);
-  const_bool(handle_infinity, false);
-  const_bool(convertible, true);
-  const_bool(fpu_check_inexact, true);
-  const_bool(check_nan_args, true);
+  const_bool_nodef(check_overflow, true);
+  const_bool_nodef(check_inf_add_inf, false);
+  const_bool_nodef(check_inf_sub_inf, false);
+  const_bool_nodef(check_inf_mul_zero, false);
+  const_bool_nodef(check_div_zero, false);
+  const_bool_nodef(check_inf_div_inf, false);
+  const_bool_nodef(check_inf_mod, false);
+  const_bool_nodef(check_sqrt_neg, false);
+  const_bool_nodef(handle_nan, false);
+  const_bool_nodef(handle_infinity, false);
+  const_bool_nodef(convertible, true);
+  const_bool_nodef(fpu_check_inexact, true);
+  const_bool_nodef(check_nan_args, true);
 };
 
 // It is a pity that function partial specialization is not permitted
