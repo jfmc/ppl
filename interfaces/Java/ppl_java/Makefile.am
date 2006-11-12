@@ -27,12 +27,16 @@ if BUILD_JAVA_INTERFACE
 EXTRA_DIST = \
 C_Polyhedron.java \
 Coefficient.java \
+Congruence.java \
+Congruence_System.java \
 Constraint.java \
 Constraint_System.java \
 Constraint_System.java \
 Generator.java \
 Generator_System.java \
 Generator_Type.java \
+Grid_Generator.java \
+Grid_Generator_System.java \
 Linear_Expression.java \
 Linear_Expression_Coefficient.java \
 Linear_Expression_Difference.java \
@@ -41,9 +45,11 @@ Linear_Expression_Times.java \
 Linear_Expression_Unary_Minus.java \
 Linear_Expression_Variable.java \
 PPL_Object.java \
+Poly_Con_Relation.java \
 Polyhedron.java \
 Relation_Symbol.java \
-Variable.java
+Variable.java \
+Variables_Set.java
 
 noinst_JAVA = $(EXTRA_DIST)
 

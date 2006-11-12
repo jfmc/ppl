@@ -24,14 +24,37 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace Parma_Polyhedra_Library;
 
 
-// 	Prolog_term_ref addendum = Prolog_new_term_ref();
-// 	Prolog_construct_compound(addendum, a_asterisk,
-// 				  Coefficient_to_integer_term(coefficient),
-// 				  variable_term(varid));
-// 	Prolog_term_ref new_so_far = Prolog_new_term_ref();
-// 	Prolog_construct_compound(new_so_far, a_plus,
-// 				  so_far, addendum);
-// 	so_far = new_so_far;
+jobject
+ppl_poly_con_relation_to_j_poly_con_relation(JNIEnv* env,
+					     Poly_Con_Relation& r) {
+  jclass j_poly_con_relation_class
+    = env->FindClass("ppl_java/Poly_Con_Relation");
+  jmethodID j_poly_con_relation_ctr_id
+    = env->GetMethodID(j_poly_con_relation_class, "<init>", "(I)V");
+
+  jint j_value = 0;
+  while (r != Poly_Con_Relation::nothing()) {
+    if (r.implies(Poly_Con_Relation::is_disjoint())) {
+      j_value += 1;
+      r = r - Poly_Con_Relation::is_disjoint();
+    }
+    else if (r.implies(Poly_Con_Relation::strictly_intersects())) {
+      j_value += 2;
+      r = r - Poly_Con_Relation::strictly_intersects();
+    }
+    else if (r.implies(Poly_Con_Relation::is_included())) {
+      j_value += 4;
+      r = r - Poly_Con_Relation::is_included();
+    }
+    else if (r.implies(Poly_Con_Relation::saturates())) {
+      j_value += 8;
+      r = r - Poly_Con_Relation::saturates();
+    }
+  }
+  return env->NewObject(j_poly_con_relation_class,
+			j_poly_con_relation_ctr_id, j_value);
+}
+
 
 Parma_Polyhedra_Library::Congruence
 build_ppl_congruence(JNIEnv* env, const jobject& j_congruence) {

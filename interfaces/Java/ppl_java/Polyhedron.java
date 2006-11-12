@@ -1109,4 +1109,14 @@ public class Polyhedron extends PPL_Object {
 
     //! Returns a universe system of grid generators.
     public native Grid_Generator_System minimized_grid_generators();
+
+    /*! \brief
+      Returns the relations holding between the polyhedron \p this
+      and the object representing constraint \p c.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and constraint \p c are dimension-incompatible.
+    */
+    public native Poly_Con_Relation relation_with(Constraint c);
+
 }
