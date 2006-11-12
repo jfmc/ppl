@@ -63,28 +63,76 @@ struct Compile_Time_Check<false> {
 #define COMPILE_TIME_CHECK_AUX(e, suf)					\
   int COMPILE_TIME_CHECK_FUNC(suf)(int, Compile_Time_Check<(e)>::is_true)
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
   Produces a compilation error if the compile-time constant \p e does
   not evaluate to <CODE>true</CODE>
 */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define COMPILE_TIME_CHECK(e) COMPILE_TIME_CHECK_AUX(e, __LINE__)
 
-/*
-  The const_bool and const_int macros allow to easily select a trick
-  that avoids linker errors when the PPL is compiled with optimization
-  levels lower than -O2.
-*/
-#if 0
-#define const_bool(var, val) static const bool var = (val)
-#else
-#define const_bool(var, val) enum { var = (val) }
-#endif
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  Declares a per-class constant of type <CODE>bool</CODE>, called \p name
+  and with value \p value.
 
-#if 0
-#define const_int(var, val) static const int var = (val)
-#else
-#define const_int(var, val) enum { var = (val) }
-#endif
+  Differently from static constants, \p name needs not (and cannot)
+  be defined (for static constants, the need for a definition is mandated
+  by Section 9.4.2/4 of the C++ standard).
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#define const_bool_nodef(name, value) \
+  enum { name = (value) }
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  Declares a per-class constant of type <CODE>int</CODE>, called \p name
+  and with value \p value.
+
+  Differently from static constants, \p name needs not (and cannot)
+  be defined (for static constants, the need for a definition is mandated
+  by Section 9.4.2/4 of the C++ standard).
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#define const_int_nodef(name, value) \
+  enum { name = (value) }
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  Declares a per-class constant of type \p type, called \p name
+  and with value \p value.  The value of the constant is accessible
+  by means of the syntax <CODE>name()</CODE>.
+
+  Differently from static constants, \p name needs not (and cannot)
+  be defined (for static constants, the need for a definition is mandated
+  by Section 9.4.2/4 of the C++ standard).
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#define const_value_nodef(type, name, value)	\
+  static type name() {				\
+    return value;				\
+  }
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  Declares a per-class constant of type \p type, called \p name
+  and with value \p value.  A constant reference to the constant
+  is accessible by means of the syntax <CODE>name()</CODE>.
+
+  Differently from static constants, \p name needs not (and cannot)
+  be defined (for static constants, the need for a definition is mandated
+  by Section 9.4.2/4 of the C++ standard).
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#define const_ref_nodef(type, name, value)				\
+  static const type& name() {						\
+    static type name(value);						\
+    return name;							\
+  }
+
+// FIXME: the following definitions should be removed asap.
+#define const_bool(name, value) const_bool_nodef(name, value)
+#define const_int(name, value) const_int_nodef(name, value)
 
 } // namespace Parma_Polyhedra_Library
 
