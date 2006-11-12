@@ -76,9 +76,9 @@ struct Compile_Time_Check<false> {
   Declares a per-class constant of type <CODE>bool</CODE>, called \p name
   and with value \p value.
 
-  Differently from static constants, \p name needs not (and cannot)
-  be defined (for static constants, the need for a definition is mandated
-  by Section 9.4.2/4 of the C++ standard).
+  Differently from static constants, \p name needs not (and cannot) be
+  defined (for static constants, the need for a further definition is
+  mandated by Section 9.4.2/4 of the C++ standard).
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define const_bool_nodef(name, value) \
@@ -89,9 +89,9 @@ struct Compile_Time_Check<false> {
   Declares a per-class constant of type <CODE>int</CODE>, called \p name
   and with value \p value.
 
-  Differently from static constants, \p name needs not (and cannot)
-  be defined (for static constants, the need for a definition is mandated
-  by Section 9.4.2/4 of the C++ standard).
+  Differently from static constants, \p name needs not (and cannot) be
+  defined (for static constants, the need for a further definition is
+  mandated by Section 9.4.2/4 of the C++ standard).
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define const_int_nodef(name, value) \
@@ -103,9 +103,9 @@ struct Compile_Time_Check<false> {
   and with value \p value.  The value of the constant is accessible
   by means of the syntax <CODE>name()</CODE>.
 
-  Differently from static constants, \p name needs not (and cannot)
-  be defined (for static constants, the need for a definition is mandated
-  by Section 9.4.2/4 of the C++ standard).
+  Differently from static constants, \p name needs not (and cannot) be
+  defined (for static constants, the need for a further definition is
+  mandated by Section 9.4.2/4 of the C++ standard).
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define const_value_nodef(type, name, value)	\
@@ -119,9 +119,9 @@ struct Compile_Time_Check<false> {
   and with value \p value.  A constant reference to the constant
   is accessible by means of the syntax <CODE>name()</CODE>.
 
-  Differently from static constants, \p name needs not (and cannot)
-  be defined (for static constants, the need for a definition is mandated
-  by Section 9.4.2/4 of the C++ standard).
+  Differently from static constants, \p name needs not (and cannot) be
+  defined (for static constants, the need for a further definition is
+  mandated by Section 9.4.2/4 of the C++ standard).
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define const_ref_nodef(type, name, value)				\
