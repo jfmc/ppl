@@ -277,22 +277,21 @@ public:
   bool upper_is_open() const {
     return info().get_boundary_property(UPPER, OPEN);
   }
-  Result lower_set_open(bool v = true) {
-    return set_open(LOWER, lower(), info(), v);
+  Result lower_set_open() {
+    return set_open(LOWER, lower(), info());
   }
-  Result upper_set_open(bool v = true) {
-    return set_open(UPPER, upper(), info(), v);
+  Result upper_set_open() {
+    return set_open(UPPER, upper(), info());
   }
   bool lower_is_unbounded() const {
-    return Boundary_NS::is_minus_infinity(LOWER, lower(), info());
+    return Boundary_NS::is_unbounded(LOWER, lower(), info());
   }
   bool upper_is_unbounded() const {
-    return Boundary_NS::is_plus_infinity(UPPER, upper(), info());
+    return Boundary_NS::is_unbounded(UPPER, upper(), info());
   }
   bool is_unbounded() const {
     return lower_is_unbounded() || upper_is_unbounded();
   }
-#if 0
   Result lower_set_unbounded() {
     info().set_interval_property(CARDINALITY_IS, false);
     info().set_interval_property(CARDINALITY_0, true);
@@ -305,17 +304,15 @@ public:
     info().set_interval_property(CARDINALITY_1, false);
     return set_unbounded(UPPER, upper(), info());
   }
-#endif
   bool is_universe() const {
-    // FIXME: incorrect if infinity is missing?
     return lower_is_unbounded() && upper_is_unbounded()
       && !contains_only_integers();
   }
   I_Result set_universe() {
     info().clear();
     info().set_interval_property(CARDINALITY_0, true);
-    Result rl = set_extreme(LOWER, lower(), info());
-    Result ru = set_extreme(UPPER, upper(), info());
+    Result rl = set_unbounded(LOWER, lower(), info());
+    Result ru = set_unbounded(UPPER, upper(), info());
     return combine(rl, ru);
   }
   bool is_topologically_closed() const {

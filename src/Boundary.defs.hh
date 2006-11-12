@@ -88,7 +88,7 @@ maybe_check_plus_infinity(const T& v) {
 
 template <typename T, typename Info>
 inline Result
-special_set_boundary_infinity(Type type, T&, Info& info) {
+special_set_unbounded(Type type, T&, Info& info) {
   info.set_boundary_property(type, SPECIAL);
   return V_EQ;
 }
@@ -97,7 +97,7 @@ template <typename T, typename Info>
 inline Result
 special_set_minus_infinity(Type type, T& x, Info& info) {
   if (type == LOWER)
-    return special_set_boundary_infinity(type, x, info);
+    return special_set_unbounded(type, x, info);
   else
     return assign_r(x, MINUS_INFINITY, round_dir(type));
 }
@@ -106,7 +106,7 @@ template <typename T, typename Info>
 inline Result
 special_set_plus_infinity(Type type, T& x, Info& info) {
   if (type == UPPER)
-    return special_set_boundary_infinity(type, x, info);
+    return special_set_unbounded(type, x, info);
   else
     return assign_r(x, PLUS_INFINITY, round_dir(type));
 }
@@ -114,7 +114,7 @@ special_set_plus_infinity(Type type, T& x, Info& info) {
 
 template <typename T, typename Info>
 inline bool
-special_is_boundary_infinity(Type, const T&, const Info&) {
+special_is_unbounded(Type, const T&, const Info&) {
   return true;
 }
 
@@ -138,9 +138,9 @@ special_is_open(Type, const T&, const Info&) {
 
 template <typename T, typename Info>
 inline Result
-set_extremum(Type type, T& x, Info& info) {
+set_unbounded(Type type, T& x, Info& info) {
   if (Info::store_special)
-    return special_set_boundary_infinity(type, x, info);
+    return special_set_unbounded(type, x, info);
   else if (type == LOWER)
     return assign_r(x, MINUS_INFINITY, ROUND_UP);
   else
@@ -207,6 +207,19 @@ set_open(Type type, T& x, Info& info) {
 
 template <typename T, typename Info>
 inline bool
+is_unbounded(Type type, const T& x, const Info& info) {
+  if (Info::store_special)
+    return info.get_boundary_property(type, SPECIAL)
+      && special_is_unbounded(type, x, info);
+  else if (type == LOWER)
+    // FIXME:
+    return false;
+  else
+    return false;
+}
+
+template <typename T, typename Info>
+inline bool
 is_minus_infinity(Type type, const T& x, const Info& info) {
   if (Info::store_special)
     return info.get_boundary_property(type, SPECIAL)
@@ -237,7 +250,7 @@ inline bool
 is_boundary_infinity(Type type, const T& x, const Info& info) {
   if (Info::store_special)
     return info.get_boundary_property(type, SPECIAL)
-      && special_is_boundary_infinity(type, x, info);
+      && special_is_unbounded(type, x, info);
   else if (type == LOWER)
     return is_minus_infinity(type, x, info);
   else

@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 struct Rational_Box_Interval_Info_Policy {
-  const_bool_nodef(store_unbounded, true);
+  const_bool_nodef(store_special, true);
   const_bool_nodef(store_open, true);
   const_bool_nodef(store_integer, false);
   const_bool_nodef(store_empty, true);
@@ -42,6 +42,7 @@ struct Rational_Box_Interval_Info_Policy {
   const_bool_nodef(check_inexact, false);
   const_bool_nodef(check_empty_args, false);
   const_bool_nodef(check_integer_args, false);
+  const_bool_nodef(infinity_is_open, false);
 };
 
 typedef Interval_Info_Bitset<unsigned int, Rational_Box_Interval_Info_Policy>
