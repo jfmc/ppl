@@ -23,6 +23,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_java_common.hh"
 using namespace Parma_Polyhedra_Library;
 
+jobject
+ppl_poly_gen_relation_to_j_poly_gen_relation(JNIEnv* env,
+					     Poly_Gen_Relation& r) {
+  jclass j_poly_gen_relation_class
+    = env->FindClass("ppl_java/Poly_Gen_Relation");
+  jmethodID j_poly_gen_relation_ctr_id
+    = env->GetMethodID(j_poly_gen_relation_class, "<init>", "(I)V");
+
+  jint j_value = 0;
+  while (r != Poly_Gen_Relation::nothing()) {
+    if (r.implies(Poly_Gen_Relation::subsumes())) {
+      j_value += 1;
+      r = r - Poly_Gen_Relation::subsumes();
+    }
+  }
+  return env->NewObject(j_poly_gen_relation_class,
+			j_poly_gen_relation_ctr_id, j_value);
+}
 
 jobject
 ppl_poly_con_relation_to_j_poly_con_relation(JNIEnv* env,

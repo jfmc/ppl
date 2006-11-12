@@ -36,11 +36,16 @@ using namespace Parma_Polyhedra_Library;
 // 		  const jobject& j_boolean);
 
 
+// Converts a PPL Poly_Gen_Relation to a Java Poly_Gen_Relation.
+jobject
+ppl_poly_gen_relation_to_j_poly_gen_relation(JNIEnv* env,
+					     Poly_Gen_Relation& pcr);
+
 
 // Converts a PPL Poly_Con_Relation to a Java Poly_Con_Relation.
 jobject
 ppl_poly_con_relation_to_j_poly_con_relation(JNIEnv* env,
-					     Poly_Con_Relation& pcr);
+					     Poly_Con_Relation& pgr);
 
 // Converts a Java variables set to a PPL variables set.
 Parma_Polyhedra_Library::Variables_Set

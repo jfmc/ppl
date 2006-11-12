@@ -1119,4 +1119,13 @@ public class Polyhedron extends PPL_Object {
     */
     public native Poly_Con_Relation relation_with(Constraint c);
 
+    /*! \brief
+      Returns the relations holding between the polyhedron \p this
+      and the object representing the generator \p g.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and generator \p g are dimension-incompatible.
+    */
+    public native Poly_Gen_Relation relation_with(Generator g);
+
 }

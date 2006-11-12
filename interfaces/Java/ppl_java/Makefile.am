@@ -46,6 +46,7 @@ Linear_Expression_Unary_Minus.java \
 Linear_Expression_Variable.java \
 PPL_Object.java \
 Poly_Con_Relation.java \
+Poly_Gen_Relation.java \
 Polyhedron.java \
 Relation_Symbol.java \
 Variable.java \

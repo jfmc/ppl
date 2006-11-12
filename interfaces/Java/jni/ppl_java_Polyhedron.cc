@@ -542,11 +542,20 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_grid_1generators
 JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_minimized_1grid_1generators
   (JNIEnv *, jobject);
 
-JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_relation_1with
+JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_relation_1with__Lppl_1java_Constraint_2
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_constraint) {
  jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
   Constraint c = build_ppl_constraint(env, j_constraint);
   Poly_Con_Relation pcr = this_polyhedron->relation_with(c);
   return ppl_poly_con_relation_to_j_poly_con_relation(env, pcr);
+}
+
+JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_relation_1with__Lppl_1java_Generator_2
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_generator) {
+ jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Generator g = build_generator(env, j_generator);
+  Poly_Gen_Relation pgr = this_polyhedron->relation_with(g);
+  return ppl_poly_gen_relation_to_j_poly_gen_relation(env, pgr);
 }
