@@ -184,10 +184,10 @@ is_pinf_float(const T v) {
 }
 
 template <typename T>
-inline bool
+inline int
 is_inf_float(const T v) {
   Float<T> f(v);
-  return f.u.binary.is_inf() != 0;
+  return f.u.binary.is_inf();
 }
 
 template <typename Policy, typename T>
