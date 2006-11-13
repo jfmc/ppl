@@ -94,8 +94,10 @@ public:
   */
   explicit Pointset_Powerset(const Constraint_System& cs);
 
-  //! Creates a Pointset_Powerset with a single polyhedron
-  //! with the same information contents as \p cgs.
+  /*! \brief
+    Creates a Pointset_Powerset with a single polyhedron
+    with the same information contents as \p cgs.
+  */
   explicit Pointset_Powerset(const Congruence_System& cgs);
 
   //@} // Constructors and Destructor
