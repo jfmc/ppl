@@ -38,6 +38,15 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_is_1universe
   return c->is_universe();
 }
 
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_equals
+(JNIEnv* env , jobject j_this_polyhedron, jobject j_polyhedron ) {
+  jlong ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(ptr);
+  ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(ptr);
+  return (*this_polyhedron)==(*polyhedron);
+}
+
 JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_is_1topologically_1closed
 (JNIEnv* env, jobject j_polyhedron){
   jlong ptr = get_ptr(env, j_polyhedron);
@@ -391,25 +400,24 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_fold_1space_1dimensions
   this_polyhedron->fold_space_dimensions(v_set, v);
 }
 
-JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_maximize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Ljava_lang_Boolean_2
-(JNIEnv*, jobject, jobject,
- jobject , jobject , jobject ) {
-  std::cerr << "implement me!" << std::endl;
-  //  jlong this_ptr = get_ptr(env, j_this_polyhedron);
-  //   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
-  //   Coefficient coeff_num = build_ppl_coeff(env, j_coeff_num);
-  //   Coefficient coeff_den = build_ppl_coeff(env, j_coeff_den);
-  //   Linear_Expression le = build_linear_expression(env, j_le);
-  //   bool b = j_boolean_to_bool(env, j_boolean);
-  //  if(this_polyhedron->maximize(le, coeff_num, coeff_den, b)) {
-  //  if(true) {
-  //    std::cerr << "i am maximizing" << std::endl;
-  //    j_coeff_num = j_coeff_den;
-  //   j_coeff_num = build_java_coeff(env, coeff_num);
-  //     j_coeff_den = build_java_coeff(env, coeff_den);
-  //    bool_to_j_boolean(env, b);
-  //    return true;
-  //  }
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_maximize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Lppl_1java_By_1Reference_2
+(JNIEnv* env, jobject j_this_polyhedron , jobject j_le,
+ jobject j_coeff_num, jobject j_coeff_den, jobject j_ref_boolean) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Coefficient coeff_num = build_ppl_coeff(env, j_coeff_num);
+  Coefficient coeff_den = build_ppl_coeff(env, j_coeff_den);
+  Linear_Expression le = build_linear_expression(env, j_le);
+  bool b_value;
+  if(this_polyhedron->maximize(le, coeff_num, coeff_den, b_value)) {
+    jobject j_coeff_num_result = build_java_coeff(env, coeff_num);
+    jobject j_coeff_den_result = build_java_coeff(env, coeff_den);
+    set_coefficient(env, j_coeff_num, j_coeff_num_result);
+    set_coefficient(env, j_coeff_den, j_coeff_den_result);
+    jobject j_boolean = bool_to_j_boolean(env, b_value);
+    set_by_reference(env, j_ref_boolean, j_boolean);
+    return true;
+  }
   return false;
 }
 
@@ -419,10 +427,25 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_maximize__Lppl_1java_Linear
   return true;
 }
 
-JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_minimize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Ljava_lang_Boolean_2
-(JNIEnv* , jobject, jobject , jobject , jobject , jobject ) {
-  std::cerr << "implement me" << std::endl;
-  return true;
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_minimize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Lppl_1java_By_1Reference_2
+(JNIEnv* env, jobject j_this_polyhedron , jobject j_le,
+ jobject j_coeff_num, jobject j_coeff_den, jobject j_ref_boolean) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Coefficient coeff_num = build_ppl_coeff(env, j_coeff_num);
+  Coefficient coeff_den = build_ppl_coeff(env, j_coeff_den);
+  Linear_Expression le = build_linear_expression(env, j_le);
+  bool b_value;
+  if(this_polyhedron->minimize(le, coeff_num, coeff_den, b_value)) {
+    jobject j_coeff_num_result = build_java_coeff(env, coeff_num);
+    jobject j_coeff_den_result = build_java_coeff(env, coeff_den);
+    set_coefficient(env, j_coeff_num, j_coeff_num_result);
+    set_coefficient(env, j_coeff_den, j_coeff_den_result);
+    jobject j_boolean = bool_to_j_boolean(env, b_value);
+    set_by_reference(env, j_ref_boolean, j_boolean);
+    return true;
+  }
+  return false;
 }
 
 JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_minimize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Ljava_lang_Boolean_2Lppl_1java_Generator_2

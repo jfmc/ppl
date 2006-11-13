@@ -25,6 +25,7 @@ JAVAROOT = ../
 if BUILD_JAVA_INTERFACE
 
 EXTRA_DIST = \
+By_Reference.java \
 C_Polyhedron.java \
 Coefficient.java \
 Congruence.java \

@@ -100,16 +100,16 @@ build_ppl_congruence(JNIEnv* env, const jobject& j_congruence) {
 
 // Converts a C++ bool to a Java boolean.
 
-// jobject
-// bool_to_j_boolean(JNIEnv* env,
-// 		  const bool bool_value) {
-//  jclass boolean_java_class = env->FindClass("java/lang/Boolean");
-//  jmethodID getboolean_method_id = env->GetStaticMethodID(boolean_java_class,
-// 							 "valueOf", "(Z)java/lang/Boolean;");
-//  return env->CallStaticObjectMethod(boolean_java_class,
-// 				    getboolean_method_id,
-// 				    bool_value);
-//}
+jobject
+bool_to_j_boolean(JNIEnv* env,
+		  const bool bool_value) {
+ jclass boolean_java_class = env->FindClass("java/lang/Boolean");
+ jmethodID getboolean_method_id = env->GetStaticMethodID(boolean_java_class,
+							 "valueOf", "(Z)Ljava/lang/Boolean;");
+ return env->CallStaticObjectMethod(boolean_java_class,
+ 				    getboolean_method_id,
+ 				    bool_value);
+}
 
 // bool
 // j_boolean_to_bool(JNIEnv* env,
@@ -567,6 +567,23 @@ get_le_inhomogeneous_term(JNIEnv* env, const Coefficient& c) {
 		       "(Lppl_java/Coefficient;)V");
   return env->NewObject(j_le_coeff_class, j_le_coeff_ctr_id,
 			j_coeff);
+}
+
+void set_coefficient(JNIEnv* env, jobject& to_be_set,
+		     const jobject& c) {
+  jclass j_coeff_class = env->FindClass("ppl_java/Coefficient");
+  jmethodID j_coeff_set_id = env->GetMethodID(j_coeff_class, "set",
+					   "(Lppl_java/Coefficient;)V");
+  env->CallVoidMethod(to_be_set, j_coeff_set_id, c);
+}
+
+void set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
+		      const jobject& to_insert) {
+  jclass by_reference_class = env->FindClass("ppl_java/By_Reference");
+  jfieldID obj_field_id = env->GetFieldID(by_reference_class,
+					      "obj",
+					      "Ljava/lang/Object;");
+  env->SetObjectField(by_ref_to_be_set, obj_field_id, to_insert);
 }
 
 jobject

@@ -35,11 +35,19 @@ public class Polyhedron extends PPL_Object {
       an empty polyhedron.
     */
     public native boolean is_empty();
+
     /*! \brief
       Returns <CODE>true</CODE> if and only if \p this
       is a universe polyhedron.
     */
     public native boolean is_universe();
+
+
+    /*! \brief
+      Returns <CODE>true</CODE> if and only if
+      \p x and \p y are the same polyhedron.
+    */
+    public native boolean equals(Polyhedron p);
 
     /*! \brief
       Returns <CODE>true</CODE> if and only if \p this
@@ -818,7 +826,7 @@ public class Polyhedron extends PPL_Object {
     */
     public native boolean maximize(Linear_Expression expr,
 				   Coefficient sup_n, Coefficient sup_d,
-				   Boolean maximum);
+				   By_Reference<Boolean> maximum);
 
     /*! \brief
       Returns <CODE>true</CODE> if and only if \p this is not empty
@@ -878,8 +886,8 @@ public class Polyhedron extends PPL_Object {
       and \p minimum are left untouched.
     */
     public native boolean minimize(Linear_Expression expr,
-				    Coefficient inf_n, Coefficient inf_d,
-				    Boolean minimum);
+				   Coefficient inf_n, Coefficient inf_d,
+				   By_Reference<Boolean> minimum);
 
     /*! \brief
       Returns <CODE>true</CODE> if and only if \p this is not empty

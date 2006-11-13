@@ -26,9 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace Parma_Polyhedra_Library;
 
 // // Converts a C++ bool to a Java boolean.
-// jobject
-// bool_to_j_boolean(JNIEnv* env,
-// 		  const bool bool_value);
+jobject
+bool_to_j_boolean(JNIEnv* env,
+ 		  const bool bool_value);
 
 // // Converts a Java boolean set to a C++ bool.
 // bool
@@ -138,6 +138,11 @@ build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs);
 jobject
 get_le_inhomogeneous_term(JNIEnv* env, const Coefficient& c);
 
+void set_coefficient(JNIEnv* env, jobject& to_be_set,
+		     const jobject& c);
+
+void set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
+		      const jobject& to_insert);
 // Builds the Java linear expression starting from a congruence,
 // a constraint or a generator.
 // FIXME: left in the header file to allow g++ to build template code

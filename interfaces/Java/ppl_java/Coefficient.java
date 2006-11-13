@@ -68,4 +68,8 @@ public class Coefficient {
     public BigInteger getBigInteger() {
 	return value;
     }
+    
+    private void set(Coefficient c) {
+       value = c.getBigInteger();
+    }
 }
