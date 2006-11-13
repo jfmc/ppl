@@ -51,17 +51,11 @@ struct Compile_Time_Check;
 
 template <>
 struct Compile_Time_Check<true> {
-  typedef int is_true;
 };
 
-template <>
-struct Compile_Time_Check<false> {
-  typedef int is_false;
-};
-
-#define COMPILE_TIME_CHECK_FUNC(suf) compile_time_check_ ## suf
+#define COMPILE_TIME_CHECK_NAME(suf) compile_time_check_ ## suf
 #define COMPILE_TIME_CHECK_AUX(e, suf)					\
-  int COMPILE_TIME_CHECK_FUNC(suf)(int, Compile_Time_Check<(e)>::is_true)
+  enum { COMPILE_TIME_CHECK_NAME(suf) = sizeof(Parma_Polyhedra_Library::Compile_Time_Check<(bool)(e)>) }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
@@ -81,7 +75,7 @@ struct Compile_Time_Check<false> {
   mandated by Section 9.4.2/4 of the C++ standard).
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-#define const_bool_nodef(name, value) \
+#define const_bool_nodef(name, value)		\
   enum { name = (value) }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
