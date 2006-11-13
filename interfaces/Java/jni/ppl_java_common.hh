@@ -138,6 +138,9 @@ build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs);
 jobject
 get_le_inhomogeneous_term(JNIEnv* env, const Coefficient& c);
 
+void set_generator(JNIEnv* env, jobject& to_be_set,
+		   const jobject& gen);
+
 void set_coefficient(JNIEnv* env, jobject& to_be_set,
 		     const jobject& c);
 

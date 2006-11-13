@@ -421,10 +421,29 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_maximize__Lppl_1java_Linear
   return false;
 }
 
-JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_maximize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Ljava_lang_Boolean_2Lppl_1java_Generator_2
-(JNIEnv*, jobject , jobject , jobject, jobject, jobject, jobject) {
-  std::cerr << "implement me" << std::endl;
-  return true;
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_maximize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Lppl_1java_By_1Reference_2Lppl_1java_Generator_2
+(JNIEnv* env, jobject j_this_polyhedron , jobject j_le,
+ jobject j_coeff_num, jobject j_coeff_den, jobject j_ref_boolean,
+ jobject j_generator) {
+ jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Coefficient coeff_num = build_ppl_coeff(env, j_coeff_num);
+  Coefficient coeff_den = build_ppl_coeff(env, j_coeff_den);
+  Linear_Expression le = build_linear_expression(env, j_le);
+  bool b_value;
+  Generator g = point();
+  if(this_polyhedron->maximize(le, coeff_num, coeff_den, b_value, g)) {
+    jobject j_coeff_num_result = build_java_coeff(env, coeff_num);
+    jobject j_coeff_den_result = build_java_coeff(env, coeff_den);
+    jobject j_generator_result = build_java_generator(env, g);
+    set_coefficient(env, j_coeff_num, j_coeff_num_result);
+    set_coefficient(env, j_coeff_den, j_coeff_den_result);
+    jobject j_boolean = bool_to_j_boolean(env, b_value);
+    set_by_reference(env, j_ref_boolean, j_boolean);
+    set_generator(env, j_generator, j_generator_result);
+    return true;
+  }
+  return false;
 }
 
 JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_minimize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Lppl_1java_By_1Reference_2
@@ -448,10 +467,29 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_minimize__Lppl_1java_Linear
   return false;
 }
 
-JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_minimize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Ljava_lang_Boolean_2Lppl_1java_Generator_2
-(JNIEnv* , jobject , jobject ,jobject , jobject , jobject , jobject ) {
-  std::cerr << "implement me" << std::endl;
-  return true;
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_minimize__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Lppl_1java_By_1Reference_2Lppl_1java_Generator_2
+(JNIEnv* env, jobject j_this_polyhedron , jobject j_le,
+ jobject j_coeff_num, jobject j_coeff_den, jobject j_ref_boolean,
+ jobject j_generator) {
+ jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Coefficient coeff_num = build_ppl_coeff(env, j_coeff_num);
+  Coefficient coeff_den = build_ppl_coeff(env, j_coeff_den);
+  Linear_Expression le = build_linear_expression(env, j_le);
+  bool b_value;
+  Generator g = point();
+  if(this_polyhedron->minimize(le, coeff_num, coeff_den, b_value, g)) {
+    jobject j_coeff_num_result = build_java_coeff(env, coeff_num);
+    jobject j_coeff_den_result = build_java_coeff(env, coeff_den);
+    jobject j_generator_result = build_java_generator(env, g);
+    set_coefficient(env, j_coeff_num, j_coeff_num_result);
+    set_coefficient(env, j_coeff_den, j_coeff_den_result);
+    jobject j_boolean = bool_to_j_boolean(env, b_value);
+    set_by_reference(env, j_ref_boolean, j_boolean);
+    set_generator(env, j_generator, j_generator_result);
+    return true;
+  }
+  return false;
 }
 
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_BHRZ03_1widening_1assign

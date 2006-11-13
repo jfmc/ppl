@@ -125,4 +125,11 @@ public class Generator {
 				+ " closure point");
 	throw new RuntimeErrorException(cause);
     }
+    
+   //! Allows to copy the fields from \p g to \p this. For internal use.
+    private void set(Generator g) {
+     this.le = g.le;
+     this.gt = g.gt;
+    }
+    
 }

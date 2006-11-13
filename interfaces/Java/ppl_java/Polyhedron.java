@@ -858,7 +858,7 @@ public class Polyhedron extends PPL_Object {
     */
     public native boolean maximize(Linear_Expression expr,
 				   Coefficient sup_n, Coefficient sup_d,
-				   Boolean maximum,
+				   By_Reference<Boolean> maximum,
 				   Generator point);
 
     /*! \brief
@@ -919,7 +919,7 @@ public class Polyhedron extends PPL_Object {
     */
     public native boolean minimize(Linear_Expression expr,
 				   Coefficient inf_n, Coefficient inf_d,
-				   Boolean minimum,
+				   By_Reference<Boolean> minimum,
 				   Generator point);
 
     /*! \brief

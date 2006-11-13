@@ -569,6 +569,14 @@ get_le_inhomogeneous_term(JNIEnv* env, const Coefficient& c) {
 			j_coeff);
 }
 
+void set_generator(JNIEnv* env, jobject& to_be_set,
+		   const jobject& gen) {
+  jclass j_generator_class = env->FindClass("ppl_java/Generator");
+  jmethodID j_coeff_set_id = env->GetMethodID(j_generator_class, "set",
+					      "(Lppl_java/Generator;)V");
+  env->CallVoidMethod(to_be_set, j_coeff_set_id, gen);
+}
+
 void set_coefficient(JNIEnv* env, jobject& to_be_set,
 		     const jobject& c) {
   jclass j_coeff_class = env->FindClass("ppl_java/Coefficient");
