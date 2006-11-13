@@ -63,7 +63,7 @@ struct Compile_Time_Check<true> {
   not evaluate to <CODE>true</CODE>
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-#define COMPILE_TIME_CHECK(e) COMPILE_TIME_CHECK_AUX(e, __LINE__)
+#define COMPILE_TIME_CHECK(e, msg) COMPILE_TIME_CHECK_AUX(e, __LINE__)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief

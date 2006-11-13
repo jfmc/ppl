@@ -55,6 +55,8 @@ using namespace Interval_NS;
 template <typename Boundary, typename Info>
 class Interval : private Info {
 private:
+  COMPILE_TIME_CHECK(!Info::store_special || !std::numeric_limits<Boundary>::has_infinity, "store_special is senseless when boundary type may contains infinity");
+  COMPILE_TIME_CHECK(!Info::infinity_is_open || !Info::store_open, "infinity_is_open is senseless when boundary may be marked as open");
   Info& w_info() const {
     return const_cast<Interval&>(*this);
   }
@@ -118,7 +120,7 @@ public:
       return false;
     }
     if (is_plus_infinity(lower())) {
-      if (Info::handle_infinity) {
+      if (!Info::handle_infinity) {
 	std::cerr << "The lower boundary is unexpectedly +inf." << std::endl;
 	return false;
       }
