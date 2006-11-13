@@ -127,7 +127,7 @@ special_is_minus_infinity(Type type, const T&, const Info&) {
 template <typename T, typename Info>
 inline bool
 special_is_plus_infinity(Type type, const T&, const Info&) {
-  return type == LOWER;
+  return type == UPPER;
 }
 
 template <typename T, typename Info>
@@ -139,6 +139,9 @@ special_is_open(Type, const T&, const Info&) {
 template <typename T, typename Info>
 inline Result
 set_unbounded(Type type, T& x, Info& info) {
+  COMPILE_TIME_CHECK(Info::store_special
+		     || std::numeric_limits<T>::is_bounded
+		     || std::numeric_limits<T>::has_infinity);
   if (Info::store_special)
     return special_set_unbounded(type, x, info);
   else if (type == LOWER)
@@ -211,10 +214,18 @@ is_unbounded(Type type, const T& x, const Info& info) {
   if (Info::store_special)
     return info.get_boundary_property(type, SPECIAL)
       && special_is_unbounded(type, x, info);
-  else if (type == LOWER)
-    // FIXME:
-    return false;
-  else
+  else if (std::numeric_limits<T>::has_infinity) {
+    if (type == LOWER)
+      return is_minus_infinity(x);
+    else
+      return is_plus_infinity(x);
+  }
+  else if (std::numeric_limits<T>::is_bounded) {
+    if (type == LOWER)
+      return x == std::numeric_limits<T>::min();
+    else
+      return x == std::numeric_limits<T>::max();
+  } else
     return false;
 }
 
