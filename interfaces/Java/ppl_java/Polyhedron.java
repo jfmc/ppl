@@ -1083,6 +1083,16 @@ public class Polyhedron extends PPL_Object {
     */
     public native void add_congruences(Congruence_System cgs);
 
+    //! Returns the dimension of the vector space enclosing \p this.
+    public native long space_dimension();
+
+    /*! \brief
+      Returns \f$0\f$, if \p this is empty; otherwise, returns the
+      \ref Affine_Independence_and_Affine_Dimension "affine dimension"
+      of \p this.
+    */
+    public native long affine_dimension();
+
     //! Returns the system of constraints.
     public native Constraint_System constraints();
 

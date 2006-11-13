@@ -499,6 +499,21 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1congruences
   this_polyhedron->add_congruences(cgs);
 }
 
+JNIEXPORT jlong JNICALL Java_ppl_1java_Polyhedron_space_1dimension
+(JNIEnv* env, jobject j_this_polyhedron) {
+ jlong this_ptr = get_ptr(env, j_this_polyhedron);
+ Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+ return this_polyhedron->space_dimension();
+}
+
+JNIEXPORT jlong JNICALL Java_ppl_1java_Polyhedron_affine_1dimension
+(JNIEnv* env, jobject j_this_polyhedron) {
+ jlong this_ptr = get_ptr(env, j_this_polyhedron);
+ Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+ return this_polyhedron->affine_dimension();
+}
+
+
 JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_constraints
 (JNIEnv* env, jobject j_this_polyhedron) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
