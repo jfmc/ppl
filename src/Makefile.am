@@ -69,8 +69,7 @@ COPYING.cc \
 CREDITS.cc
 
 ppl_config_LDADD = \
-libppl.la \
-@extra_libraries@
+libppl.la
 
 if USE_NATIVE_INTEGERS
 
@@ -370,10 +369,9 @@ if NO_UNDEFINED
 
 NO_UNDEFINED_FLAG = -no-undefined
 
-libppl_la_LIBADD = @extra_libraries@
-
 endif NO_UNDEFINED
 
+libppl_la_LIBADD = @extra_libraries@
 libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
