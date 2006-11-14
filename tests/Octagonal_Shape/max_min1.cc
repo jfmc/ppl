@@ -597,6 +597,76 @@ test16() {
   return false;
 }
 
+bool
+test17() {
+  Variable A(0);
+
+  Octagonal_Shape<mpq_class> oct(1);
+  oct.add_constraint(5*A <= 2);
+  oct.add_constraint(5*A >= 1);
+
+  print_constraints(oct, "*** oct ***");
+
+  Coefficient num;
+  Coefficient den;
+  bool included;
+  bool ok = oct.maximize(3*A, num, den, included)
+    && num == 6 && den == 5 && included;
+
+  nout << (included ? "maximum" : "supremum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << endl;
+
+  if (!ok)
+    return false;
+
+  ok = oct.minimize(3*A, num, den, included)
+    && num == 3 && den == 5 && included;
+
+  nout << (included ? "minimum" : "infimum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << endl;
+
+  return ok;
+}
+
+bool
+test18() {
+  Variable A(0);
+
+  Octagonal_Shape<mpq_class> oct(1);
+  oct.add_constraint(5*A <= 2);
+  oct.add_constraint(3*A >= 1);
+
+  print_constraints(oct, "*** oct ***");
+
+  Coefficient num;
+  Coefficient den;
+  bool included;
+  bool ok = oct.maximize(-7*A, num, den, included)
+    && num == -7 && den == 3 && included;
+
+  nout << (included ? "maximum" : "supremum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << endl;
+
+  if (!ok)
+    return false;
+
+  ok = oct.minimize(-7*A, num, den, included)
+    && num == -14 && den == 5 && included;
+
+  nout << (included ? "minimum" : "infimum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << endl;
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -616,4 +686,6 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
 END_MAIN
