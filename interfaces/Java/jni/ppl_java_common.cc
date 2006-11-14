@@ -639,8 +639,8 @@ build_java_constraint(JNIEnv* env, const Constraint& c) {
     = env->GetMethodID(j_constraint_class,
 		       "<init>",
 		       "(Lppl_java/Linear_Expression;"
-		       "Lppl_java/Linear_Expression;"
-		       "Lppl_java/Relation_Symbol;)V");
+		       "Lppl_java/Relation_Symbol;"
+		       "Lppl_java/Linear_Expression;)V");
   jfieldID rel_sym_eq_get_id
     = env->GetStaticFieldID(j_rel_sym_class,
 			    "EQUAL",
@@ -671,8 +671,7 @@ build_java_constraint(JNIEnv* env, const Constraint& c) {
       throw std::runtime_error("PPL Java interface internal error");
   }
    return env->NewObject(j_constraint_class,j_constraint_ctr_id,
-			 lhs, rhs,
-			 relation);
+			 lhs, relation, rhs);
 }
 
 jobject

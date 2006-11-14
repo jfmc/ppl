@@ -44,8 +44,8 @@ public class Constraint {
       Builds a constraint from two linear expressions with a specified
       relation symbol.
     */
-    public Constraint(Linear_Expression le1, Linear_Expression le2,
-		      Relation_Symbol rel_sym) {
+    public Constraint(Linear_Expression le1, Relation_Symbol rel_sym,
+            Linear_Expression le2) {
 	lhs = le1;
 	rhs = le2;
 	kind = rel_sym;

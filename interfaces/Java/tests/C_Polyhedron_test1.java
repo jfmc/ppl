@@ -44,16 +44,18 @@ public class C_Polyhedron_test1 {
 	Linear_Expression le1 = new Linear_Expression_Variable(A);
 	Linear_Expression le2 = new Linear_Expression_Variable(C);
 	Linear_Expression le3 = new Linear_Expression_Coefficient(coeff1);
-	Linear_Expression le4 = le1.times(new Coefficient(156));
+	Linear_Expression le4 = le1.times(new Coefficient(3));
 	le2 = le2.sum(le4);
 
 	// Constraint declarations.
-	Constraint c1 = new Constraint(le2, le3, Relation_Symbol.EQUAL);
-	Constraint c2 = new Constraint(le2, le3, Relation_Symbol.EQUAL);
-	Constraint c3 = new Constraint(le2, le4,
-				       Relation_Symbol.GREATER_THAN_OR_EQUAL);
-	Constraint c4 = new Constraint(le2, le3,
-				       Relation_Symbol.GREATER_THAN_OR_EQUAL);
+	Constraint c1 = new Constraint(le2, Relation_Symbol.EQUAL, le3);
+	Constraint c2 = new Constraint(le2, Relation_Symbol.EQUAL, le3);
+	Constraint c3 = new Constraint(le2,
+				       Relation_Symbol.GREATER_THAN_OR_EQUAL,
+				       le4);
+	Constraint c4 = new Constraint(le2,
+				       Relation_Symbol.GREATER_THAN_OR_EQUAL,
+				       le3);
 
 	// Constraint_System declarations.
 	Constraint_System cs1 = new Constraint_System();
@@ -81,7 +83,7 @@ public class C_Polyhedron_test1 {
 	gs.add(g2);
 	gs.add(g3);
 	gs.add(g4);
-	C_Polyhedron poly3 = new C_Polyhedron(gs);
+       	C_Polyhedron poly3 = new C_Polyhedron(gs);
 
 	// Here some tests.
 	if (c_poly1.is_empty())
@@ -130,27 +132,28 @@ public class C_Polyhedron_test1 {
 	    System.out.println("c_poly1 is not discrete.");
 	Linear_Expression le5 = new Linear_Expression_Variable(A);
 	le5.sum(new Linear_Expression_Variable(B));
-	le5.times(new Coefficient(100));
-	le5.sum(new Linear_Expression_Coefficient(new Coefficient(145)));
-	Constraint c5 = new Constraint(le1, le5,
-				       Relation_Symbol.GREATER_THAN_OR_EQUAL);
-        c_poly1.add_constraint(c5);
-
-        c_poly1.affine_image(A,le1, new Coefficient(5));
-        c_poly1.affine_preimage(A,le1, new Coefficient(5));
-        c_poly1.generalized_affine_image(le1, Relation_Symbol.EQUAL, le2);
-        c_poly1.generalized_affine_image(A, Relation_Symbol.EQUAL, le2,
-					 new Coefficient(6));
-        c_poly1.bounded_affine_image(B, le2, le3, new Coefficient(10));
-        c_poly1.bounded_affine_preimage(B, le2, le4, new Coefficient(30));
-        c_poly1.time_elapse_assign(c_poly2);
-        c_poly1.difference_assign(c_poly2);
-        c_poly1.topological_closure_assign();
-        c_poly1.poly_hull_assign(c_poly2);
-	if (c_poly1.poly_hull_assign_and_minimize(c_poly2))
-            System.out.println("c_poly1 is minimized.");
-	else
-	    System.out.println("c_poly1 is not minimized.");
-        c_poly1.intersection_assign(c_poly2);
+	le5.sum(new Linear_Expression_Coefficient(new Coefficient(14)));
+	Constraint c5 = new Constraint(le1,
+				       Relation_Symbol.GREATER_THAN_OR_EQUAL,
+				       le5);
+	c_poly1.add_constraint(c5);
+ 	c_poly1.affine_image(A,le1, new Coefficient(5));
+ 	c_poly1.affine_preimage(A,le1, new Coefficient(5));
+	// These lines cause overflow if PPL is compiled with 8
+	// bit coefficients and assertions enabled.
+	// c_poly1.generalized_affine_image(le1, Relation_Symbol.EQUAL, le2);
+	// c_poly1.generalized_affine_image(A, Relation_Symbol.EQUAL, le2,
+	//			 new Coefficient(6));
+	c_poly1.bounded_affine_image(B, le2, le3, new Coefficient(10));
+	c_poly1.bounded_affine_preimage(B, le2, le4, new Coefficient(30));
+	c_poly1.time_elapse_assign(c_poly2);
+	c_poly1.difference_assign(c_poly2);
+	c_poly1.topological_closure_assign();
+	c_poly1.poly_hull_assign(c_poly2);
+ 	if (c_poly1.poly_hull_assign_and_minimize(c_poly2))
+	    System.out.println("c_poly1 is minimized.");
+ 	else
+ 	    System.out.println("c_poly1 is not minimized.");
+	c_poly1.intersection_assign(c_poly2);
     }
 }
