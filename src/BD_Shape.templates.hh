@@ -959,8 +959,6 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
     // Select the cell to be checked.
     const N& x = (coeff < 0) ? dbm[i][j] : dbm[j][i];
     if (!is_plus_infinity(x)) {
-      if (coeff < 0)
-	coeff = -coeff;
       // Compute the maximize/minimize of `expr'.
       N d;
       const Coefficient& b = expr.inhomogeneous_term();
@@ -968,8 +966,19 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
       neg_assign(minus_b, b);
       const Coefficient& sc_b = maximize ? b : minus_b;
       assign_r(d, sc_b, ROUND_UP);
+      // Set `coeff_expr' to the absolute value of coefficient of
+      // a variable in `expr'.
       N coeff_expr;
-      assign_r(coeff_expr, coeff, ROUND_UP);
+      const Coefficient& coeff_i = expr.coefficient(Variable(i-1));
+      const int sign_i = sgn(coeff_i);
+      if (sign_i > 0)
+	assign_r(coeff_expr, coeff_i, ROUND_UP);
+      else{
+	TEMP_INTEGER(minus_coeff_i);
+	neg_assign(minus_coeff_i, coeff_i);
+	assign_r(coeff_expr, minus_coeff_i, ROUND_UP);
+      }
+      // Approximating the maximum/minimum of `expr'.
       add_mul_assign_r(d, coeff_expr, x, ROUND_UP);
       numer_denom(d, ext_n, ext_d);
       if (!maximize)
@@ -977,9 +986,9 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
       included = true;
       return true;
     }
-    else
-      // The `expr' is unbounded.
-      return false;
+
+    // The `expr' is unbounded.
+    return false;
   }
 }
 
