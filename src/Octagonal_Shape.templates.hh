@@ -910,7 +910,7 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
   // We use MIP_Problems to handle constraints that are not
   // octagonal difference.
   if (!extract_octagonal_difference(c, c.space_dimension(), num_vars,
-				   i, j, coeff, term)) {
+				    i, j, coeff, term)) {
     Optimization_Mode max_min = (maximize) ? MAXIMIZATION : MINIMIZATION;
     MIP_Problem mip(space_dim, constraints(), expr, max_min);
     if (mip.solve() == OPTIMIZED_MIP_PROBLEM) {
@@ -934,9 +934,6 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
     // Select the cell to be checked.
     typename OR_Matrix<N>::const_row_iterator i_iter = matrix.row_begin() + i;
     typename OR_Matrix<N>::const_row_reference_type m_i = *i_iter;
-    // Set `coeff' to the absolute value of itself.
-    if (coeff < 0)
-      coeff = -coeff;
     N d;
     if (!is_plus_infinity(m_i[j])) {
       const Coefficient& b = expr.inhomogeneous_term();
@@ -944,8 +941,19 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
       neg_assign(minus_b, b);
       const Coefficient& sc_b = maximize ? b : minus_b;
       assign_r(d, sc_b, ROUND_UP);
+      // Set `coeff_expr' to the absolute value of coefficient of a variable
+      // of `expr'.
       N coeff_expr;
-      assign_r(coeff_expr, coeff, ROUND_UP);
+      const Coefficient& coeff_i = expr.coefficient(Variable(i/2));
+      const int sign_i = sgn(coeff_i);
+      if (sign_i > 0)
+	assign_r(coeff_expr, coeff_i, ROUND_UP);
+      else {
+	TEMP_INTEGER(minus_coeff_i);
+	neg_assign(minus_coeff_i, expr.coefficient(Variable(i/2)));
+	assign_r(coeff_expr, minus_coeff_i, ROUND_UP);
+      }
+      // Approximating the maximum/minimum of `expr'.
       if (num_vars == 1) {
 	N m_i_j;
 	div2exp_assign_r(m_i_j, m_i[j], 1, ROUND_UP);
@@ -953,18 +961,15 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
       }
       else
 	add_mul_assign_r(d, coeff_expr, m_i[j], ROUND_UP);
-      if (maximize)
-	numer_denom(d, ext_n, ext_d);
-      else {
-	numer_denom(d, ext_n, ext_d);
+      numer_denom(d, ext_n, ext_d);
+      if (!maximize)
 	ext_n = -ext_n;
-      }
       included = true;
       return true;
     }
 
-   // The `expr' is unbounded.
-   return false;
+    // The `expr' is unbounded.
+    return false;
   }
 }
 
