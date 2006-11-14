@@ -285,6 +285,81 @@ test07() {
   return ok;
 }
 
+bool
+test08() {
+  Variable A(0);
+
+  BD_Shape<mpq_class> bd(1);
+  bd.add_constraint(5*A <= 2);
+  bd.add_constraint(5*A >= 1);
+
+  print_constraints(bd, "*** bd ***");
+
+  Coefficient num;
+  Coefficient den;
+  bool included;
+  Linear_Expression LE(3*A);
+
+  bool ok = bd.maximize(LE, num, den, included)
+    && num == 6 && den == 5 && included;
+
+  nout << (included ? "maximum" : "supremum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << endl;
+
+  if (!ok)
+    return false;
+
+  ok = bd.minimize(LE, num, den, included)
+    && num == 3 && den == 5 && included;
+
+  nout << (included ? "minimum" : "infimum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << endl;
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable A(0);
+
+  BD_Shape<mpq_class> bd(1);
+  bd.add_constraint(5*A <= 2);
+  bd.add_constraint(3*A >= 1);
+
+  print_constraints(bd, "*** bd ***");
+
+  Coefficient num;
+  Coefficient den;
+  bool included;
+  Linear_Expression LE(-7*A);
+
+  bool ok = bd.maximize(LE, num, den, included)
+    && num == -7 && den == 3 && included;
+
+  nout << (included ? "maximum" : "supremum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << endl;
+
+  if (!ok)
+    return false;
+
+  ok = bd.minimize(LE, num, den, included)
+    && num == -14 && den == 5 && included;
+
+  nout << (included ? "minimum" : "infimum") << " = " << num;
+  if (den != 1)
+    nout << "/" << den;
+  nout << endl;
+
+  return ok;
+}
+
+
 } // namespace
 
 BEGIN_MAIN
@@ -295,4 +370,6 @@ BEGIN_MAIN
   DO_TEST(test05);
   DO_TEST(test06);
   DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
