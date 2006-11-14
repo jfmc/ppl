@@ -30,6 +30,12 @@ jobject
 bool_to_j_boolean(JNIEnv* env,
  		  const bool bool_value);
 
+jint
+j_integer_to_j_int(JNIEnv* env,  const jobject& j_integer);
+
+jobject
+j_int_to_j_integer(JNIEnv* env,  const jint&  jint_value);
+
 // // Converts a Java boolean set to a C++ bool.
 // bool
 // j_boolean_to_bool(JNIEnv* env,
@@ -146,6 +152,10 @@ void set_coefficient(JNIEnv* env, jobject& to_be_set,
 
 void set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
 		      const jobject& to_insert);
+
+jobject get_by_reference(JNIEnv* env, const jobject& by_ref_integer);
+
+jboolean is_null(JNIEnv* env, jobject obj);
 // Builds the Java linear expression starting from a congruence,
 // a constraint or a generator.
 // FIXME: left in the header file to allow g++ to build template code

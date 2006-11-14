@@ -111,6 +111,24 @@ bool_to_j_boolean(JNIEnv* env,
  				    bool_value);
 }
 
+jobject
+j_int_to_j_integer(JNIEnv* env,  const jint&  jint_value) {
+  jclass integer_java_class = env->FindClass("java/lang/Integer");
+ jmethodID get_integer_method_id = env->GetStaticMethodID(integer_java_class,
+							 "valueOf", "(I)Ljava/lang/Integer;");
+ return env->CallStaticObjectMethod(integer_java_class,
+ 				    get_integer_method_id,
+ 				    jint_value);
+}
+
+jint
+j_integer_to_j_int(JNIEnv* env,  const jobject& j_integer) {
+ jclass integer_java_class = env->FindClass("java/lang/Integer");
+ jmethodID get_int_method_id = env->GetMethodID(integer_java_class,
+						"intValue", "()I");
+ return env->CallIntMethod(j_integer, get_int_method_id);
+}
+
 // bool
 // j_boolean_to_bool(JNIEnv* env,
 // 		  const jobject& j_boolean) {
@@ -589,9 +607,28 @@ void set_by_reference(JNIEnv* env, jobject& by_ref_to_be_set,
 		      const jobject& to_insert) {
   jclass by_reference_class = env->FindClass("ppl_java/By_Reference");
   jfieldID obj_field_id = env->GetFieldID(by_reference_class,
-					      "obj",
-					      "Ljava/lang/Object;");
+					  "obj",
+					  "Ljava/lang/Object;");
   env->SetObjectField(by_ref_to_be_set, obj_field_id, to_insert);
+}
+
+jobject get_by_reference(JNIEnv* env, const jobject& by_ref_integer) {
+  jclass by_reference_class = env->FindClass("ppl_java/By_Reference");
+  jfieldID obj_field_id = env->GetFieldID(by_reference_class,
+					  "obj",
+					  "Ljava/lang/Object;");
+  return env->GetObjectField(by_ref_integer, obj_field_id);
+}
+
+
+jboolean is_null(JNIEnv* env, jobject obj) {
+  jclass by_reference_class = env->FindClass("ppl_java/By_Reference");
+  jmethodID j_reference_is_null_id
+   = env->GetStaticMethodID(by_reference_class,
+			    "is_null",
+			    "(Ljava/lang/Object;)Z");
+  return env->CallStaticBooleanMethod(by_reference_class,
+				      j_reference_is_null_id, obj);
 }
 
 jobject

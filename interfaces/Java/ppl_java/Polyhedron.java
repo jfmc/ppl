@@ -938,7 +938,7 @@ public class Polyhedron extends PPL_Object {
       Thrown if \p this and \p y are topology-incompatible or
       dimension-incompatible.
     */
-    public native void BHRZ03_widening_assign(Polyhedron y, Integer tp);
+    public native void BHRZ03_widening_assign(Polyhedron y, By_Reference<Integer> tp);
 
     /*! \brief
       Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
@@ -963,7 +963,7 @@ public class Polyhedron extends PPL_Object {
     public native
 	void limited_BHRZ03_extrapolation_assign(Polyhedron y,
 						 Constraint_System cs,
-						 Integer tp);
+						 By_Reference<Integer> tp);
 
     /*! \brief
       Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
@@ -990,7 +990,7 @@ public class Polyhedron extends PPL_Object {
     public native
 	void bounded_BHRZ03_extrapolation_assign(Polyhedron y,
 						 Constraint_System cs,
-						 Integer tp);
+						 By_Reference<Integer> tp);
     /*! \brief
       Assigns to \p this the result of computing the
       \ref H79_widening "H79-widening" between \p this and \p y.
@@ -1007,10 +1007,10 @@ public class Polyhedron extends PPL_Object {
       Thrown if \p this and \p y are topology-incompatible or
       dimension-incompatible.
     */
-    public native void H79_widening_assign(Polyhedron y, Integer tp);
+    public native void H79_widening_assign(Polyhedron y, By_Reference<Integer> tp);
 
     //! Same as H79_widening_assign(y, tp).
-    public native void widening_assign(Polyhedron y, Integer tp );
+    public native void widening_assign(Polyhedron y, By_Reference<Integer> tp );
 
     /*! \brief
       Improves the result of the \ref H79_widening "H79-widening"
@@ -1034,7 +1034,7 @@ public class Polyhedron extends PPL_Object {
     */
     public native void limited_H79_extrapolation_assign(Polyhedron y,
 							Constraint_System cs,
-							Integer tp);
+							By_Reference<Integer> tp);
 
     /*! \brief
       Improves the result of the \ref H79_widening "H79-widening"
@@ -1060,7 +1060,7 @@ public class Polyhedron extends PPL_Object {
     */
     public native void bounded_H79_extrapolation_assign(Polyhedron y,
 							Constraint_System cs,
-							Integer tp);
+							By_Reference<Integer> tp);
     //! Domain compatibility method.
     public native void add_grid_generator(Grid_Generator g);
 

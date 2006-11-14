@@ -493,38 +493,137 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_minimize__Lppl_1java_Linear
 }
 
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_BHRZ03_1widening_1assign
-(JNIEnv *, jobject, jobject, jobject) {
-    std::cerr << "implement me" << std::endl;
+(JNIEnv* env , jobject j_this_polyhedron , jobject j_polyhedron,
+ jobject j_by_ref_int) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  this_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  if (is_null(env, j_by_ref_int))
+    this_polyhedron->BHRZ03_widening_assign(*polyhedron);
+  else {
+    jobject j_integer = get_by_reference(env, j_by_ref_int);
+    unsigned int tokens = abs(j_integer_to_j_int(env, j_integer));
+    this_polyhedron->BHRZ03_widening_assign(*polyhedron, &tokens);
+    j_integer = j_int_to_j_integer(env, tokens);
+    set_by_reference(env, j_by_ref_int, j_integer);
+   }
 }
 
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_limited_1BHRZ03_1extrapolation_1assign
-    (JNIEnv *, jobject, jobject, jobject, jobject) {
-  std::cerr << "implement me" << std::endl;
+(JNIEnv* env , jobject j_this_polyhedron, jobject j_cs, jobject j_polyhedron,
+ jobject j_by_ref_int) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  this_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Constraint_System cs = build_ppl_constraint_system(env, j_cs);
+  if (is_null(env, j_by_ref_int))
+    this_polyhedron->limited_BHRZ03_extrapolation_assign(*polyhedron, cs);
+  else {
+    jobject j_integer = get_by_reference(env, j_by_ref_int);
+    unsigned int tokens = abs(j_integer_to_j_int(env, j_integer));
+    this_polyhedron->limited_BHRZ03_extrapolation_assign(*polyhedron, cs,
+							 &tokens);
+    j_integer = j_int_to_j_integer(env, tokens);
+    set_by_reference(env, j_by_ref_int, j_integer);
+   }
 }
 
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_bounded_1BHRZ03_1extrapolation_1assign
-(JNIEnv *, jobject, jobject, jobject, jobject) {
-  std::cerr << "implement me" << std::endl;
+(JNIEnv* env , jobject j_this_polyhedron, jobject j_cs, jobject j_polyhedron,
+ jobject j_by_ref_int) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  this_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Constraint_System cs = build_ppl_constraint_system(env, j_cs);
+  if (is_null(env, j_by_ref_int))
+    this_polyhedron->bounded_BHRZ03_extrapolation_assign(*polyhedron, cs);
+  else {
+    jobject j_integer = get_by_reference(env, j_by_ref_int);
+    unsigned int tokens = abs(j_integer_to_j_int(env, j_integer));
+    this_polyhedron->bounded_BHRZ03_extrapolation_assign(*polyhedron, cs,
+							 &tokens);
+    j_integer = j_int_to_j_integer(env, tokens);
+    set_by_reference(env, j_by_ref_int, j_integer);
+   }
 }
 
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_H79_1widening_1assign
-(JNIEnv *, jobject, jobject, jobject) {
-  std::cerr << "implement me" << std::endl;
+(JNIEnv* env , jobject j_this_polyhedron , jobject j_polyhedron,
+ jobject j_by_ref_int) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  this_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  if (is_null(env, j_by_ref_int))
+    this_polyhedron->H79_widening_assign(*polyhedron);
+  else {
+    jobject j_integer = get_by_reference(env, j_by_ref_int);
+    unsigned int tokens = abs(j_integer_to_j_int(env, j_integer));
+    this_polyhedron->H79_widening_assign(*polyhedron, &tokens);
+    j_integer = j_int_to_j_integer(env, tokens);
+    set_by_reference(env, j_by_ref_int, j_integer);
+   }
 }
 
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_widening_1assign
-(JNIEnv *, jobject, jobject, jobject) {
-  std::cerr << "implement me" << std::endl;
+(JNIEnv* env , jobject j_this_polyhedron , jobject j_polyhedron,
+ jobject j_by_ref_int) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  this_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  if (is_null(env, j_by_ref_int))
+    this_polyhedron->widening_assign(*polyhedron);
+  else {
+    jobject j_integer = get_by_reference(env, j_by_ref_int);
+    unsigned int tokens = abs(j_integer_to_j_int(env, j_integer));
+    this_polyhedron->widening_assign(*polyhedron, &tokens);
+    j_integer = j_int_to_j_integer(env, tokens);
+    set_by_reference(env, j_by_ref_int, j_integer);
+   }
 }
 
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_limited_1H79_1extrapolation_1assign
-(JNIEnv *, jobject, jobject, jobject, jobject) {
-  std::cerr << "implement me" << std::endl;
+(JNIEnv* env , jobject j_this_polyhedron, jobject j_cs, jobject j_polyhedron,
+ jobject j_by_ref_int) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  this_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Constraint_System cs = build_ppl_constraint_system(env, j_cs);
+  if (is_null(env, j_by_ref_int))
+    this_polyhedron->limited_H79_extrapolation_assign(*polyhedron, cs);
+  else {
+    jobject j_integer = get_by_reference(env, j_by_ref_int);
+    unsigned int tokens = abs(j_integer_to_j_int(env, j_integer));
+    this_polyhedron->limited_H79_extrapolation_assign(*polyhedron, cs,
+							 &tokens);
+    j_integer = j_int_to_j_integer(env, tokens);
+    set_by_reference(env, j_by_ref_int, j_integer);
+   }
 }
 
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_bounded_1H79_1extrapolation_1assign
-(JNIEnv *, jobject, jobject, jobject, jobject) {
-  std::cerr << "implement me" << std::endl;
+(JNIEnv* env , jobject j_this_polyhedron, jobject j_cs, jobject j_polyhedron,
+ jobject j_by_ref_int) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  this_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  Constraint_System cs = build_ppl_constraint_system(env, j_cs);
+  if (is_null(env, j_by_ref_int))
+    this_polyhedron->bounded_H79_extrapolation_assign(*polyhedron, cs);
+  else {
+    jobject j_integer = get_by_reference(env, j_by_ref_int);
+    unsigned int tokens = abs(j_integer_to_j_int(env, j_integer));
+    this_polyhedron->bounded_H79_extrapolation_assign(*polyhedron, cs,
+							 &tokens);
+    j_integer = j_int_to_j_integer(env, tokens);
+    set_by_reference(env, j_by_ref_int, j_integer);
+   }
 }
 
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_add_1grid_1generator
