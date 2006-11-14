@@ -91,6 +91,7 @@ AM_CPPFLAGS = \
 
 lib_LTLIBRARIES = libppl_c.la
 nodist_libppl_c_la_SOURCES = ppl_c.cc
+libppl_c_la_LIBADD = $(top_builddir)/src/libppl.la
 libppl_c_la_LDFLAGS = \
 -version-info $(LIBPPL_C_LT_CURRENT):$(LIBPPL_C_LT_REVISION):$(LIBPPL_C_LT_AGE)
 
