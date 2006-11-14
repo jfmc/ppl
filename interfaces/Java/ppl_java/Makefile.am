@@ -47,6 +47,7 @@ Linear_Expression_Times.java \
 Linear_Expression_Unary_Minus.java \
 Linear_Expression_Variable.java \
 PPL_Object.java \
+Partial_Function.java \
 Poly_Con_Relation.java \
 Poly_Gen_Relation.java \
 Polyhedron.java \

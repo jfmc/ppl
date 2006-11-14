@@ -751,6 +751,48 @@ public class Polyhedron extends PPL_Object {
     public native void remove_higher_space_dimensions(long
 						      new_dimension);
 
+    /*! \brief
+      Remaps the dimensions of the vector space according to
+      a \ref Mapping_the_Dimensions_of_the_Vector_Space "partial function".
+
+      \param pfunc
+      The partial function specifying the destiny of each space dimension.
+
+      The class must implement the interface Partial_Function,
+      so has to provide the following methods.
+      \code
+      bool has_empty_codomain() const
+      \endcode
+      returns <CODE>true</CODE> if and only if the represented partial
+      function has an empty codomain (i.e., it is always undefined).
+      The <CODE>has_empty_codomain()</CODE> method will always be called
+      before the methods below.  However, if
+      <CODE>has_empty_codomain()</CODE> returns <CODE>true</CODE>, none
+      of the functions below will be called.
+      \code
+      dimension_type max_in_codomain() const
+      \endcode
+      returns the maximum value that belongs to the codomain
+      of the partial function.
+      The <CODE>max_in_codomain()</CODE> method is called at most once.
+      \code
+      bool maps(dimension_type i, dimension_type& j) const
+      \endcode
+      Let \f$f\f$ be the represented function and \f$k\f$ be the value
+      of \p i.  If \f$f\f$ is defined in \f$k\f$, then \f$f(k)\f$ is
+      assigned to \p j and <CODE>true</CODE> is returned.
+      If \f$f\f$ is undefined in \f$k\f$, then <CODE>false</CODE> is
+      returned.
+      This method is called at most \f$n\f$ times, where \f$n\f$ is the
+      dimension of the vector space enclosing the polyhedron.
+
+      The result is undefined if \p pfunc does not encode a partial
+      function with the properties described in the
+      \ref Mapping_the_Dimensions_of_the_Vector_Space
+      "specification of the mapping operator".
+    */
+    public native void map_space_dimensions(Partial_Function pfunc);
+
     //! Creates \p m copies of the space dimension corresponding to \p var.
     /*!
       \param var

@@ -105,11 +105,32 @@ bool_to_j_boolean(JNIEnv* env,
 		  const bool bool_value) {
  jclass boolean_java_class = env->FindClass("java/lang/Boolean");
  jmethodID getboolean_method_id = env->GetStaticMethodID(boolean_java_class,
-							 "valueOf", "(Z)Ljava/lang/Boolean;");
+							 "valueOf",
+							 "(Z)Ljava/lang/Boolean;");
  return env->CallStaticObjectMethod(boolean_java_class,
  				    getboolean_method_id,
  				    bool_value);
 }
+
+jobject
+j_long_to_j_long_class(JNIEnv* env, const jint& jlong_value) {
+  jclass long_java_class = env->FindClass("java/lang/Long");
+  jmethodID get_long_method_id = env->GetStaticMethodID(long_java_class,
+							"valueOf",
+							"()Ljava/lang/Long;");
+  return env->CallStaticObjectMethod(long_java_class,
+				     get_long_method_id,
+				     jlong_value);
+}
+
+jlong
+j_long_class_to_j_long(JNIEnv* env,  const jobject& j_long) {
+ jclass long_java_class = env->FindClass("java/lang/Long");
+ jmethodID get_int_method_id = env->GetMethodID(long_java_class,
+						"intValue", "()J");
+ return env->CallIntMethod(j_long, get_int_method_id);
+}
+
 
 jobject
 j_int_to_j_integer(JNIEnv* env,  const jint&  jint_value) {

@@ -383,6 +383,14 @@ JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_remove_1higher_1space_1dimensio
   this_polyhedron->remove_higher_space_dimensions(dim);
 }
 
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_map_1space_1dimensions
+(JNIEnv* env , jobject j_this_polyhedron, jobject j_p_func) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  PFunc ppl_pfunc = PFunc(j_p_func, env);
+  this_polyhedron->map_space_dimensions(ppl_pfunc);
+}
+
 JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_expand_1space_1dimension
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_variable, jlong dim) {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);

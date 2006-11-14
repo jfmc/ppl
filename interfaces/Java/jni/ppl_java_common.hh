@@ -31,10 +31,16 @@ bool_to_j_boolean(JNIEnv* env,
  		  const bool bool_value);
 
 jint
-j_integer_to_j_int(JNIEnv* env,  const jobject& j_integer);
+j_integer_to_j_int(JNIEnv* env, const jobject& j_integer);
 
 jobject
-j_int_to_j_integer(JNIEnv* env,  const jint&  jint_value);
+j_int_to_j_integer(JNIEnv* env, const jint& jint_value);
+
+jlong
+j_long_class_to_j_long(JNIEnv* env, const jobject& j_long);
+
+jobject
+j_long_to_j_long_class(JNIEnv* env, const jint& jlong_value);
 
 // // Converts a Java boolean set to a C++ bool.
 // bool
@@ -238,3 +244,62 @@ get_linear_expression(JNIEnv* env, const R& r) {
   }
   return j_le_term;
 }
+
+
+class PFunc {
+private:
+  jobject j_p_func;
+  JNIEnv* env;
+public:
+
+  PFunc(jobject j_p_func, JNIEnv* env):
+  j_p_func(j_p_func),
+  env(env){
+  }
+
+  bool has_empty_codomain() const {
+    jclass j_partial_function_class
+      = env->FindClass("ppl_java/Partial_Function");
+    jmethodID j_has_empty_codomain_id
+      = env->GetMethodID(j_partial_function_class,
+			 "has_empty_codomain",
+			 "()Z");
+    return env->CallBooleanMethod(j_p_func, j_has_empty_codomain_id);
+  }
+
+  dimension_type max_in_codomain() const {
+    jclass j_partial_function_class
+      = env->FindClass("ppl_java/Partial_Function");
+    jmethodID j_max_in_codomain_id
+      = env->GetMethodID(j_partial_function_class,
+			 "max_in_codomain",
+			 "()J");
+    return env->CallLongMethod(j_p_func, j_max_in_codomain_id);
+  }
+
+  bool maps(dimension_type i, dimension_type& j) const {
+    jclass j_partial_function_class
+      = env->FindClass("ppl_java/Partial_Function");
+    jclass j_by_reference_class
+      = env->FindClass("ppl_java/By_Reference");
+    jmethodID j_by_reference_ctr_id = env->GetMethodID(j_by_reference_class,
+						       "<init>",
+						       "()V");
+    jobject new_by_ref = env->NewObject(j_by_reference_class,
+					j_by_reference_ctr_id);
+    jmethodID j_maps_id
+      = env->GetMethodID(j_partial_function_class,
+			 "maps",
+			 "(Ljava/lang/Long;Lppl_java/By_Reference;)Z");
+    if(env->CallBooleanMethod(j_p_func, j_maps_id,
+			      j_long_to_j_long_class(env, i),
+			      new_by_ref)) {
+      jobject long_value = get_by_reference(env, new_by_ref);
+      // FIXME: We must launch a proper exception if the coming value from Java
+      // is negative.
+      j = abs(j_long_class_to_j_long(env, long_value));
+      return true;
+    }
+    return false;
+  }
+};
