@@ -80,8 +80,8 @@ ppl_@CLASS@_get_covering_box/2 +grid,
 ppl_@CLASS@_@HAS_PROPERTY@/1 +simple,
 ppl_@CLASS@_@SIMPLIFY@/1 *nofail +simple_pps,
 ppl_@CLASS@_bounds_from_@ABOVEBELOW@/2 +simple -wr_shape,
-ppl_@CLASS@_@MAXMIN@/5 +simple -wr_shape,
-ppl_@CLASS@_@MAXMIN@_with_point/6 +simple -wr_shape,
+ppl_@CLASS@_@MAXMIN@/5 +simple,
+ppl_@CLASS@_@MAXMIN@_with_point/6 +simple,
 ppl_@CLASS@_@COMPARISON@_@CLASS@/2 +simple_pps,
 ppl_@CLASS@_equals_@CLASS@/2 +simple,
 ppl_@CLASS@_OK/1 +simple_pps,
@@ -108,9 +108,10 @@ ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign/2 +wr_shape,
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@/2 *nofail +simple_pps,
 ppl_@CLASS@_remove_space_dimensions/2 +simple_pps,
 ppl_@CLASS@_remove_higher_space_dimensions/2 *nofail +simple_pps,
-ppl_@CLASS@_expand_space_dimension/3 *nofail +simple -octagonal_shape,
-ppl_@CLASS@_fold_space_dimensions/3  +simple -octagonal_shape,
-ppl_@CLASS@_map_space_dimensions/2 +simple_pps
+ppl_@CLASS@_expand_space_dimension/3 *nofail +simple,
+ppl_@CLASS@_fold_space_dimensions/3  +simple,
+ppl_@CLASS@_map_space_dimensions/2 +simple_pps,
+ppl_@CLASS@_ascii_dump/1 +simple_pps
 ')`'dnl
 dnl
 m4_divert`'dnl

@@ -56,6 +56,10 @@ ppl_@CLASS@_comparison_check(strictly_contains, PS1, PS2, Result) :-
    )
   ).
 
+ppl_@CLASS@_comparison_check(geometrically_covers, _PS1, _PS2, _).
+
+ppl_@CLASS@_comparison_check(geometrically_equals, _PS1, _PS2, _).
+
 ')
 
 m4_define(`m4_add_wdn_exn_class_code', `dnl
@@ -252,9 +256,9 @@ ppl_@CLASS@_swap_2_test :-
       ppl_@CLASS@_is_empty(PS),
       ppl_@CLASS@_is_universe(PS1)
     ;
-      (predicate_exists(ppl_@CLASS@_geometrically_covers)
+      (predicate_exists(ppl_@CLASS@_geometrically_covers_@CLASS@)
       ->
-        ppl_@CLASS@_geometrically_covers(PS1, PS)
+        ppl_@CLASS@_geometrically_covers_@CLASS@(PS1, PS)
       ;
         true
       )
@@ -346,14 +350,15 @@ ppl_@CLASS@_get_disjuncts_2_test :-
    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
    (
      clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
-     ppl_@CLASS@_get_disjuncts(PPS, [PS]),
+     ppl_@CLASS@_get_disjuncts(PPS, Disj),
      ppl_@CLASS@_OK(PPS),
+     Disj = [PS|_Rest],
      ppl_@DISJUNCT@_space_dimension(PS, _N),
      (predicate_exists(ppl_new_@ALT_DISJUNCT@_from_@CONSTRAINER@s)
      ->
        (clean_ppl_new_@ALT_DISJUNCT@_from_@CONSTRAINER@s(RS, PS1),
         ppl_@DISJUNCT@_equals_@DISJUNCT@(PS, PS1),
-        ppl_delete_@CLASS@(PS1))
+        ppl_delete_@DISJUNCT@(PS1))
      ;
        true
      ),
@@ -462,7 +467,8 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `
 ppl_@CLASS@_@SIMPLIFY@_1_test :-
   (
-   choose_test(TEST_DATA, Space_Dim),
+   %% choose_test(TEST_DATA, Space_Dim),
+   choose_test(test04, Space_Dim),
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
@@ -560,11 +566,13 @@ ppl_@CLASS@_@MAXMIN@_with_point_6_test :-
                                                              empty, PSG),
           clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
                                                              empty, PSGexptd),
-          (G = closure_point(V)
+          (G =.. [closure_point|CP]
           ->
-            (Gexptd = closure_point(Vexptd),
-             ppl_@CLASS@_add_@GENERATOR@(PSG, point(V)),
-             ppl_@CLASS@_add_@GENERATOR@(PSGexptd, point(Vexptd)))
+            Gexptd =.. [closure_point|CPexptd],
+            G_Point =.. [point|CP],
+            Gexptd_Point =.. [point|CPexptd],
+            ppl_@CLASS@_add_@GENERATOR@(PSG, G_Point),
+            ppl_@CLASS@_add_@GENERATOR@(PSGexptd, Gexptd_Point)
           ;
             (ppl_@CLASS@_add_@GENERATOR@(PSG, G),
              ppl_@CLASS@_add_@GENERATOR@(PSGexptd, Gexptd))
@@ -594,12 +602,11 @@ ppl_@CLASS@_@COMPARISON@_@CLASS@_2_test :-
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
-     ppl_@CLASS@_comparison_check(@COMPARISON@, PS1, PS2, Result),
-     (Result == true
+     (ppl_@CLASS@_@COMPARISON@_@CLASS@(PS1, PS2)
      ->
-       ppl_@CLASS@_@COMPARISON@_@CLASS@(PS1, PS2)
+       ppl_@CLASS@_comparison_check(@COMPARISON@, PS1, PS2, true)
      ;
-       \+ ppl_@CLASS@_@COMPARISON@_@CLASS@(PS1, PS2)
+       ppl_@CLASS@_comparison_check(@COMPARISON@, PS1, PS2, false)
      ),
      ppl_@CLASS@_OK(PS1),
      ppl_@CLASS@_OK(PS2),
