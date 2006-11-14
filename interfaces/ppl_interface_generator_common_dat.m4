@@ -173,10 +173,12 @@ m4_define(`m4_init_cplusplus_names_aux', `dnl
 m4_define(m4_cplusplus_class`'$1, `$2')`'dnl
 m4_get_class_kind(`$1', `$2')`'dnl
 m4_get_class_body(`$1', `$2')`'dnl
-m4_ifelse(m4_class_kind`'$1, Direct_Product,
-  m4_parse_body_class(`$1'),
-       m4_class_kind`'$1, Open_Product,
-  m4_parse_body_class(`$1'))`'dnl
+m4_ifelse(m4_class_kind`'$1, Pointset_Powerset,
+              m4_get_disjunct_kind(`$1'),
+          m4_class_kind`'$1, Direct_Product,
+              m4_parse_body_class(`$1'),
+          m4_class_kind`'$1, Open_Product,
+              m4_parse_body_class(`$1'))`'dnl
 ')
 
 dnl m4_parse_body_class(Class_Counter)
@@ -221,6 +223,12 @@ m4_define(`m4_get_class_body',
     `m4_ifelse(`$2', `', ,
       `m4_ifelse(m4_index(`$2', <), -1, `',
         `m4_regexp(`$2', `[^ <]+[<]\(.*\w>?\)[ ]*[>]', `\1')')')')')
+
+m4_define(`m4_get_disjunct_kind',
+  `m4_define(m4_disjunct_kind`'$1,
+    `m4_ifelse(m4_class_body`'$1, `', ,
+      `m4_ifelse(m4_index(m4_class_body`'$1, <), -1, m4_class_body`'$1,
+        `m4_regexp(m4_class_body`'$1, `\([^ <]+\)[.]*', `\1')')')')')
 
 
 dnl m4_get_class_topology(Class)
@@ -346,6 +354,7 @@ cpp_class,
 friend,
 intopology,
 topology,
+cpp_disjunct,
 disjunct,
 build_represent,
 get_represent,
@@ -587,11 +596,23 @@ m4_ifelse($1,
 ')`'dnl
 ')
 
-m4_define(`m4_disjunct_replacement', `dnl
+m4_define(`m4_cpp_disjunct_replacement', `dnl
 m4_remove_topology(m4_class_body`'$1)`'dnl
 ')
 
-m4_define(`m4_disjunct_alt_replacement', m4_class_body`'$1)
+m4_define(`m4_cpp_disjunct_alt_replacement', m4_class_body`'$1)
+
+m4_define(`m4_disjunct_replacement', `dnl
+m4_remove_topology(m4_get_interface_class_name(m4_class_body`'$1))`'dnl
+')
+
+m4_define(`m4_disjunct_alt_replacement', `dnl
+m4_get_interface_class_name(m4_class_body`'$1)`'dnl
+')
+
+m4_define(`m4_body_class_kind', `dnl
+m4_define(`m4_counter', `$1')`'dnl
+m4_class_kind`'m4_get_class_counter(m4_class_body`'m4_counter)')
 
 dnl  The different kinds of objects that can build a class.
 m4_define(`m4_build_represent_replacement', `constraint, generator')
@@ -599,8 +620,7 @@ m4_define(`m4_Polyhedron_build_represent_replacement',
          `constraint, generator')
 m4_define(`m4_Grid_build_represent_replacement',
          `constraint, grid_generator, congruence')
-m4_define(`m4_Pointset_Powerset_build_represent_replacement',
-         `constraint, congruence')
+m4_define(`m4_Pointset_Powerset_build_represent_replacement', `constraint')
 
 dnl  The different kinds of alternative objects that can build
 dnl  the same class.
@@ -611,7 +631,7 @@ m4_define(`m4_Polyhedron_build_represent_alt_replacement',
 m4_define(`m4_Grid_build_represent_alt_replacement',
          `constraint, congruence, grid_generator')
 m4_define(`m4_Pointset_Powerset_build_represent_alt_replacement',
-         `constraint, congruence')
+         `constraint')
 
 dnl  The different kinds of objects that can have a relation with a class.
 m4_define(`m4_relation_represent_replacement', `constraint')
@@ -639,6 +659,8 @@ m4_define(`m4_Grid_get_represent_replacement',
 
 dnl  The unary "has_property" predicates
 m4_define(`m4_has_property_replacement', `is_empty, is_universe, is_bounded, contains_integer_point, is_topologically_closed')
+m4_define(`m4_Polyhedron_has_property_replacement',
+        `m4_has_property_replacement, is_discrete')
 m4_define(`m4_Grid_has_property_replacement',
         `m4_has_property_replacement, is_discrete')
 m4_define(`m4_Pointset_Powerset_has_property_replacement',`')
