@@ -194,6 +194,14 @@ struct From_Bounding_Box {
 struct From_Covering_Box {
 };
 
+//! A tag class.
+/*! \ingroup PPL_CXX_interface
+  Tag class to distinguish those constructors that recycle the data
+  structures of their arguments, instead of taking a copy.
+*/
+struct Recycle_Input {
+};
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
   If \f$g\f$ is the GCD of \p x and \p y, the values of \p x and \p y
