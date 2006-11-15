@@ -29,6 +29,5 @@ m4_divert`'dnl
 
 dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl
-}
 dnl
 dnl End of file generation.
