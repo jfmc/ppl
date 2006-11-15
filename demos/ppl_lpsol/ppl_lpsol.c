@@ -640,7 +640,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
 }
 
 static int
-solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
+solve_with_generators(ppl_Constraint_System_t ppl_cs,
 		      ppl_const_Linear_Expression_t ppl_objective_le,
 		      ppl_Coefficient_t optimum_n,
 		      ppl_Coefficient_t optimum_d,
@@ -651,8 +651,8 @@ solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
   int included;
   int ok;
 
-  /* Create the polyhedron. */
-  ppl_new_C_Polyhedron_from_Constraint_System(&ppl_ph, ppl_cs);
+  /* Create the polyhedron (recycling the data structures of ppl_cs). */
+  ppl_new_C_Polyhedron_recycle_Constraint_System(&ppl_ph, ppl_cs);
 
   if (print_timings) {
     fprintf(stderr, "Time to create a PPL polyhedron: ");
@@ -831,6 +831,9 @@ solve_with_simplex(ppl_const_Constraint_System_t cs,
 static void
 solve(char* file_name) {
   ppl_Constraint_System_t ppl_cs;
+#ifndef NDEBUG
+  ppl_Constraint_System_t ppl_cs_copy;
+#endif
   ppl_Generator_t optimum_location;
   ppl_Linear_Expression_t ppl_le;
   int dimension, row, num_rows, column, nz, i, j, type;
@@ -939,6 +942,10 @@ solve(char* file_name) {
     mpq_clear(rational_coefficient[i]);
   free(rational_coefficient);
   free(coefficient_index);
+
+#ifndef NDEBUG
+  ppl_new_Constraint_System_from_Constraint_System(&ppl_cs_copy, ppl_cs);
+#endif
 
   /*
     FIXME: here we could build the polyhedron and minimize it before
@@ -1055,7 +1062,8 @@ solve(char* file_name) {
     {
       ppl_Polyhedron_t ph;
       unsigned int relation;
-      ppl_new_C_Polyhedron_from_Constraint_System(&ph, ppl_cs);
+      ppl_new_C_Polyhedron_recycle_Constraint_System(&ph, ppl_cs_copy);
+      ppl_delete_Constraint_System(ppl_cs_copy);
       relation = ppl_Polyhedron_relation_with_Generator(ph, optimum_location);
       ppl_delete_Polyhedron(ph);
       assert(relation == PPL_POLY_GEN_RELATION_SUBSUMES);
