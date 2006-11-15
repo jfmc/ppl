@@ -33,6 +33,30 @@ JNIEXPORT void JNICALL Java_ppl_1java_C_1Polyhedron_build_1cpp_1object__Lppl_1ja
   env->SetLongField(j_c_polyhedron, pointer_field, (long long) c_ptr);
 }
 
+JNIEXPORT void JNICALL Java_ppl_1java_C_1Polyhedron_build_1cpp_1object__JLppl_1java_Degenerate_1Element_2
+(JNIEnv* env, jobject j_c_polyhedron, jlong j_dim,
+ jobject j_degenerate_element) {
+  jclass degenerate_element_class
+    = env->FindClass("ppl_java/Degenerate_Element");
+  jmethodID degenerate_element_ordinal_id
+    = env->GetMethodID(degenerate_element_class, "ordinal", "()I");
+  jint j_degenerate_element_int
+    = env->CallIntMethod(j_degenerate_element, degenerate_element_ordinal_id);
+
+  jclass j_c_polyhedron_class = env->GetObjectClass(j_c_polyhedron);
+  C_Polyhedron* c_ptr;
+  switch (j_degenerate_element_int) {
+  case 0:
+    c_ptr = new C_Polyhedron(j_dim, UNIVERSE);
+  case 1:
+    c_ptr = new C_Polyhedron(j_dim, EMPTY);
+  default:
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+  jfieldID pointer_field = env->GetFieldID(j_c_polyhedron_class, "ptr", "J");
+  env->SetLongField(j_c_polyhedron, pointer_field, (long long) c_ptr);
+}
+
 JNIEXPORT void JNICALL Java_ppl_1java_C_1Polyhedron_build_1cpp_1object__Lppl_1java_Generator_1System_2
 (JNIEnv* env, jobject j_c_polyhedron, jobject j_iterable) {
   jclass j_c_polyhedron_class = env->GetObjectClass(j_c_polyhedron);

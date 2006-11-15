@@ -48,6 +48,22 @@ package ppl_java;
 */
 public class C_Polyhedron extends Polyhedron {
 
+    //! Builds either the universe or the empty C polyhedron.
+    /*!
+      \param num_dimensions
+      The number of dimensions of the vector space enclosing the C polyhedron;
+
+      \param kind
+      Specifies whether a universe or an empty C polyhedron should be built.
+
+      \exception RunTimeException
+      Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
+    */
+    public C_Polyhedron(long num_dimensions,
+			Degenerate_Element kind) {
+	build_cpp_object(num_dimensions, kind);
+    }
+
     //! Builds a C polyhedron from a system of constraints.
     /*!
       The polyhedron inherits the space dimension of the constraint system.
@@ -110,7 +126,11 @@ public class C_Polyhedron extends Polyhedron {
     protected native void finalize();
 
     //! Builds the underlined C++ object.
-    private native void build_cpp_object(Constraint_System cs);
+    private native void build_cpp_object(Constraint_System cs); 
+    
+    //! Builds the underlined C++ object.
+    private native void build_cpp_object(long num_dimensions,
+                                         Degenerate_Element kind);
 
     //! Builds the underlined C++ object.
     private native void build_cpp_object(Generator_System gs);

@@ -51,6 +51,7 @@ Congruence_System.java \
 Constraint.java \
 Constraint_System.java \
 Constraint_System.java \
+Degenerate_Element.java \
 Generator.java \
 Generator_System.java \
 Generator_Type.java \
