@@ -403,10 +403,14 @@ protected:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the topology of \p cs is incompatible with \p topol.
   */
-  Polyhedron(Topology topol, Constraint_System& cs);
+  Polyhedron(Topology topol, Constraint_System& cs, Recycle_Input dummy);
 
   //! Builds a polyhedron from a system of generators.
   /*!
@@ -436,11 +440,15 @@ protected:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the topology of \p gs is incompatible with \p topol,
     or if the system of generators is not empty but has no points.
   */
-  Polyhedron(Topology topol, Generator_System& gs);
+  Polyhedron(Topology topol, Generator_System& gs, Recycle_Input dummy);
 
   //! Builds a polyhedron out of a generic, interval-based bounding box.
   /*!

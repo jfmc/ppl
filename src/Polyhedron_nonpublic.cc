@@ -133,7 +133,9 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
   assert(OK());
 }
 
-PPL::Polyhedron::Polyhedron(const Topology topol, Constraint_System& cs)
+PPL::Polyhedron::Polyhedron(const Topology topol,
+			    Constraint_System& cs,
+			    Recycle_Input)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -145,8 +147,8 @@ PPL::Polyhedron::Polyhedron(const Topology topol, Constraint_System& cs)
   const dimension_type cs_space_dim = cs.space_dimension();
   if (!cs.adjust_topology_and_space_dimension(topol, cs_space_dim))
     throw_topology_incompatible((topol == NECESSARILY_CLOSED)
-				? "C_Polyhedron(cs)"
-				: "NNC_Polyhedron(cs)", "cs", cs);
+				? "C_Polyhedron(cs, recycle)"
+				: "NNC_Polyhedron(cs, recycle)", "cs", cs);
 
   // Set the space dimension.
   space_dim = cs_space_dim;
@@ -242,7 +244,9 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
   assert(OK());
 }
 
-PPL::Polyhedron::Polyhedron(const Topology topol, Generator_System& gs)
+PPL::Polyhedron::Polyhedron(const Topology topol,
+			    Generator_System& gs,
+			    Recycle_Input)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -261,15 +265,15 @@ PPL::Polyhedron::Polyhedron(const Topology topol, Generator_System& gs)
   // Non-empty valid generator systems have a supporting point, at least.
   if (!gs.has_points())
     throw_invalid_generators((topol == NECESSARILY_CLOSED)
-			     ? "C_Polyhedron(gs)"
-			     : "NNC_Polyhedron(gs)", "gs");
+			     ? "C_Polyhedron(gs, recycle)"
+			     : "NNC_Polyhedron(gs, recycle)", "gs");
 
   const dimension_type gs_space_dim = gs.space_dimension();
   // Try to adapt `gs' to the required topology.
   if (!gs.adjust_topology_and_space_dimension(topol, gs_space_dim))
     throw_topology_incompatible((topol == NECESSARILY_CLOSED)
-				? "C_Polyhedron(gs)"
-				: "NNC_Polyhedron(gs)", "gs", gs);
+				? "C_Polyhedron(gs, recycle)"
+				: "NNC_Polyhedron(gs, recycle)", "gs", gs);
 
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
