@@ -7,6 +7,16 @@ m4_define(`m4_class_build_cpp_object_code',
 
 ')
 
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
+`dnl
+/*||| @TOPOLOGY@@CLASS@ */
+    public C_Polyhedron(long num_dimensions,
+			Degenerate_Element kind) {
+	build_cpp_object(num_dimensions, kind);
+    }
+
+')
+
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
 /*||| @TOPOLOGY@@CLASS@ */
@@ -20,6 +30,36 @@ m4_define(`ppl_delete_@CLASS@_code',
 `dnl
 /*||| @TOPOLOGY@@CLASS@ */
     protected native void finalize();
+
+')
+
+m4_define(`ppl_@CLASS@_swap', `')
+
+m4_define(`ppl_@CLASS@_@DIMENSION@',
+`dnl
+/*||| @CLASS@ */
+    public native long @DIMENSION@();
+
+')
+
+m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
+`dnl
+/*||| @CLASS@ */
+    public native @UGET_REPRESENT@_System @GET_REPRESENT@s();
+
+')
+
+m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
+`dnl
+/*||| @CLASS@ */
+    public native @UGET_REPRESENT@_System minimized_@GET_REPRESENT@s();
+
+')
+
+m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
+`dnl
+/*||| @CLASS@ */
+    public native Poly_Con_Relation relation_with(@URELATION_REPRESENT@ c);
 
 ')
 
@@ -44,12 +84,40 @@ m4_define(`ppl_@CLASS@_bounds_from_@ABOVEBELOW@_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_@MAXMIN@_code',
+`dnl
+/*||| @CLASS@ */
+    public native boolean @MAXMIN@(Linear_Expression expr,
+				   Coefficient sup_n, Coefficient sup_d,
+				   Boolean maximum);
+
+')
+
+m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
+`dnl
+/*||| @CLASS@ */
+    public native boolean @MAXMIN@(Linear_Expression expr,
+				   Coefficient sup_n, Coefficient sup_d,
+				   Boolean maximum,
+				   Generator point);
+
+')
+
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `dnl
 /*||| @CLASS@ */
     public native boolean @COMPARISON@(@CLASS@ y);
 
 ')
+
+m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
+`dnl
+/*||| @CLASS@ */
+    public native boolean equals(@CLASS@ p);
+
+')
+
+m4_define(`ppl_@CLASS@_OK', `')
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 `dnl
@@ -130,6 +198,23 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
+`dnl
+/*||| @CLASS@ */
+public native void @WIDEN@_widening_assign(@CLASS@ y, Integer tp);
+
+')
+
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
+`dnl
+/*||| @CLASS@ */
+    public native
+	void @LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(@CLASS@ y,
+						 @UCONSTRAINER@_System cs,
+						 Integer tp);
+
+')
+
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
 /*||| @CLASS@ */
@@ -167,62 +252,9 @@ m4_define(`ppl_@CLASS@_fold_space_dimensions_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_@MAXMIN@_code',
+m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 `dnl
 /*||| @CLASS@ */
-    public native boolean @MAXMIN@(Linear_Expression expr,
-				   Coefficient sup_n, Coefficient sup_d,
-				   Boolean maximum);
-
-')
-
-m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
-`dnl
-/*||| @CLASS@ */
-    public native boolean @MAXMIN@(Linear_Expression expr,
-				   Coefficient sup_n, Coefficient sup_d,
-				   Boolean maximum,
-				   Generator point);
-
-')
-
-
-m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
-`dnl
-/*||| @CLASS@ */
-public native void @WIDEN@_widening_assign(@CLASS@ y, Integer tp);
-
-')
-
-m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
-`dnl
-/*||| @CLASS@ */
-    public native
-	void @LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(@CLASS@ y,
-						 @UCONSTRAINER@_System cs,
-						 Integer tp);
-
-')
-
-m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
-`dnl
-/*||| @CLASS@ */
-    public native @UGET_REPRESENT@_System @GET_REPRESENT@s();
-
-')
-
-m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
-`dnl
-/*||| @CLASS@ */
-    public native @UGET_REPRESENT@_System minimized_@GET_REPRESENT@s();
-
-')
-
-
-m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
-`dnl
-/*||| @CLASS@ */
-    public native Poly_Con_Relation relation_with(@URELATION_REPRESENT@ c);
-
+    public native void map_space_dimensions(Partial_Function pfunc);
 
 ')
