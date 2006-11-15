@@ -131,7 +131,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s(Prolog_term_ref t_clist,
     check_nil_terminating(t_clist, where);
 
     @TOPOLOGY@@CPP_CLASS@* ph;
-    ph = new @TOPOLOGY@@CPP_CLASS@(cs);
+    ph = new @TOPOLOGY@@CPP_CLASS@(cs@RECYCLE@);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
