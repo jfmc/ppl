@@ -1369,8 +1369,7 @@ PPL::Grid::intersection_assign(const Grid& y) {
     x.clear_congruences_minimized();
   }
 
-  // `y' should still contain a point.
-  assert(x.OK() && y.OK(true));
+  assert(x.OK() && y.OK());
 }
 
 bool

@@ -307,6 +307,9 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   else
     x.update_generators();
 
+  if (x.marked_empty())
+    return;
+
   // Ensure that the `y' generators are in minimal form.
   if (y.generators_are_up_to_date()) {
     if (!y.generators_are_minimized()) {
