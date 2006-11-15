@@ -44,7 +44,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System_code',
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System
 (ppl_@CLASS@_t* pph, ppl_@UBUILD_REPRESENT@_System_t cs) try {
   @UBUILD_REPRESENT@_System& ccs = *to_nonconst(cs);
-  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(ccs));
+  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(ccs@RECYCLE@));
   return 0;
 }
 CATCH_ALL
