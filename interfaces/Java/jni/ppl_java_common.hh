@@ -25,7 +25,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library;
 
-// // Converts a C++ bool to a Java boolean.
+#define CATCH_ALL \
+  catch(const std::overflow_error& e) { \
+    handle_exception(env, e); \
+  } \
+  catch(const std::length_error& e) { \
+    handle_exception(env, e); \
+  } \
+  catch (const std::bad_alloc& e) { \
+    handle_exception(env, e); \
+  } \
+  catch (const std::exception& e) { \
+    handle_exception(env, e); \
+  } \
+  catch (...) { \
+    handle_exception(env); \
+  };
+
+void
+handle_exception(JNIEnv* env, const std::overflow_error& e);
+
+void
+handle_exception(JNIEnv* env, const std::length_error& e);
+
+void
+handle_exception(JNIEnv* env, const std::bad_alloc&);
+
+void
+handle_exception(JNIEnv* env, const std::exception& e);
+
+void
+handle_exception(JNIEnv* env);
+ // Converts a C++ bool to a Java boolean.
 jobject
 bool_to_j_boolean(JNIEnv* env,
  		  const bool bool_value);

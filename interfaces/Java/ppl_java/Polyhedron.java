@@ -1188,4 +1188,33 @@ public class Polyhedron extends PPL_Object {
     */
     public native Poly_Gen_Relation relation_with(Generator g);
 
-}
+    //! Checks if all the invariants are satisfied.
+    /*!
+      \return
+      <CODE>true</CODE> if and only if \p this satisfies all the
+      invariants and either \p check_not_empty is <CODE>false</CODE> or
+      \p this is not empty.
+
+      \param check_not_empty
+      <CODE>true</CODE> if and only if, in addition to checking the
+      invariants, \p this must be checked to be not empty.
+
+      The check is performed so as to intrude as little as possible.  If
+      the library has been compiled with run-time assertions enabled,
+      error messages are written on <CODE>std::cerr</CODE> in case
+      invariants are violated. This is useful for the purpose of
+      debugging the library.
+    */
+    public native boolean OK(boolean check_not_empty);
+
+    /*! \brief
+      Swaps \p this with polyhedron \p y.
+      (\p this and \p y can be dimension-incompatible.)
+
+      \exception RuntimeErrorException
+      Thrown if \p x and \p y are topology-incompatible.
+    */
+    public native void swap(Polyhedron y);
+
+    }
+

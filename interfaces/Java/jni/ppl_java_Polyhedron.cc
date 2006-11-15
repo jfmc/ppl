@@ -63,11 +63,15 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_is_1bounded
 
 JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_is_1disjoint_1from
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_polyhedron) {
+  try {
   jlong this_ptr = get_ptr(env, j_this_polyhedron);
   jlong polyhedron_ptr = get_ptr(env, j_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
   Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(polyhedron_ptr);
   return this_polyhedron->is_disjoint_from(*polyhedron);
+  }
+  CATCH_ALL;
+  return false;
 }
 
 JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_bounds_1from_1above
@@ -746,9 +750,25 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_relation_1with__Lppl_1java_C
 
 JNIEXPORT jobject JNICALL Java_ppl_1java_Polyhedron_relation_1with__Lppl_1java_Generator_2
 (JNIEnv* env, jobject j_this_polyhedron, jobject j_generator) {
- jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
   Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
   Generator g = build_ppl_generator(env, j_generator);
   Poly_Gen_Relation pgr = this_polyhedron->relation_with(g);
   return build_java_poly_gen_relation(env, pgr);
+}
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_OK
+(JNIEnv* env, jobject j_this_polyhedron, jboolean check_is_empty) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  return this_polyhedron->OK(check_is_empty);
+}
+
+JNIEXPORT void JNICALL Java_ppl_1java_Polyhedron_swap
+(JNIEnv* env, jobject j_this_polyhedron, jobject j_polyhedron) {
+  jlong this_ptr = get_ptr(env, j_this_polyhedron);
+  Polyhedron* this_polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  this_ptr = get_ptr(env, j_polyhedron);
+  Polyhedron* polyhedron = reinterpret_cast<Polyhedron*>(this_ptr);
+  this_polyhedron->swap(*polyhedron);
 }

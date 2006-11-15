@@ -23,6 +23,36 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_java_common.hh"
 using namespace Parma_Polyhedra_Library;
 
+void
+handle_exception(JNIEnv* env, const std::overflow_error& e) {
+  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
+  env->ThrowNew(newExcCls, e.what());
+}
+
+void
+handle_exception(JNIEnv* env, const std::length_error& e) {
+  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
+  env->ThrowNew(newExcCls, e.what());
+}
+
+void
+handle_exception(JNIEnv* env, const std::bad_alloc&) {
+  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
+  env->ThrowNew(newExcCls, "Out of memory");
+}
+
+void
+handle_exception(JNIEnv* env, const std::exception& e) {
+  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
+  env->ThrowNew(newExcCls, e.what());
+}
+
+void
+handle_exception(JNIEnv* env) {
+  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
+  env->ThrowNew(newExcCls, "PPL bug: unknown exception raised");
+}
+
 jobject
 build_java_poly_gen_relation(JNIEnv* env,
 			  Poly_Gen_Relation& r) {
@@ -230,7 +260,7 @@ build_ppl_relsym(JNIEnv* env, const jobject& j_relsym) {
   default:
     ;
   }
-  jclass newExcCls = env->FindClass("javax/management/RuntimeErrorException");
+  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
   env->ThrowNew(newExcCls, "ppl.java: \n runtime error");
   // We should not be here!
   throw std::runtime_error("PPL Java interface internal error");
@@ -299,7 +329,7 @@ build_ppl_constraint(JNIEnv* env, const jobject& j_constraint) {
   default:
     ;
   }
-  jclass newExcCls = env->FindClass("javax/management/RuntimeErrorException");
+  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
   env->ThrowNew(newExcCls, "ppl.java: \n runtime error");
   // We should not be here!
   throw std::runtime_error("PPL Java interface internal error");
@@ -429,7 +459,7 @@ build_ppl_generator(JNIEnv* env, const jobject& j_generator) {
   default:
     ;
   }
-  jclass newExcCls = env->FindClass("javax/management/RuntimeErrorException");
+  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
   env->ThrowNew(newExcCls, "ppl.java: \n runtime error");
   // We should not be here!
   throw std::runtime_error("PPL Java interface internal error");
@@ -468,7 +498,7 @@ build_ppl_grid_generator(JNIEnv* env, const jobject& j_grid_generator) {
   default:
     ;
   }
-  jclass newExcCls = env->FindClass("javax/management/RuntimeErrorException");
+  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
   env->ThrowNew(newExcCls, "ppl.java: \n runtime error");
   // We should not be here!
   throw std::runtime_error("PPL Java interface internal error");

@@ -48,8 +48,10 @@ JNIEXPORT void JNICALL Java_ppl_1java_C_1Polyhedron_build_1cpp_1object__JLppl_1j
   switch (j_degenerate_element_int) {
   case 0:
     c_ptr = new C_Polyhedron(j_dim, UNIVERSE);
+    break;
   case 1:
     c_ptr = new C_Polyhedron(j_dim, EMPTY);
+    break;
   default:
     throw std::runtime_error("PPL Java interface internal error");
   }
