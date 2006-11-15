@@ -24,7 +24,25 @@ JAVAROOT = ../
 
 if BUILD_JAVA_INTERFACE
 
-EXTRA_DIST = \
+interface_generator_files = \
+ppl_interface_generator_java_classes_java.m4 \
+ppl_interface_generator_java_classes_java_code.m4
+
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_java_dat.m4 \
+ppl_interface_generator_java_classes_java.m4 \
+ppl_interface_generator_java_classes_java_code.m4
+
+Polyhedron1.java: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. \
+		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
+		$(srcdir)/ppl_interface_generator_java_classes_java.m4 > $@
+
+java_classes = \
 By_Reference.java \
 C_Polyhedron.java \
 Coefficient.java \
@@ -55,6 +73,10 @@ Relation_Symbol.java \
 Variable.java \
 Variables_Set.java
 
-noinst_JAVA = $(EXTRA_DIST)
+EXTRA_DIST = \
+$(interface_generator_files) \
+$(java_classes)
+
+noinst_JAVA = $(java_classes)
 
 endif BUILD_JAVA_INTERFACE
