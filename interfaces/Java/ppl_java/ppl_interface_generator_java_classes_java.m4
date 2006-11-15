@@ -1,4 +1,4 @@
-m4_define(`dnl', `m4_dnl')
+m4_define(`dnl', `m4_dnl')`'dnl
 dnl This file is to generate CLASS.java.
 dnl
 dnl Include files defining macros that generate the non-fixed part.
@@ -39,7 +39,7 @@ m4_replace_all_patterns_in_string($1,
 ')
 
 m4_divert`'dnl
-
+dnl
 dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl
 dnl

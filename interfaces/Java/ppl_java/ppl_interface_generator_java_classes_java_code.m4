@@ -33,7 +33,12 @@ m4_define(`ppl_delete_@CLASS@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_swap', `')
+m4_define(`ppl_@CLASS@_swap',
+`dnl
+%<--%<--%<-- @TOPOLOGY@@CLASS@
+    public native void swap(Polyhedron y);
+
+')
 
 m4_define(`ppl_@CLASS@_@DIMENSION@',
 `dnl
@@ -117,7 +122,12 @@ m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_OK', `')
+m4_define(`ppl_@CLASS@_OK',
+`dnl
+%<--%<--%<-- @CLASS@
+    public native boolean OK(boolean check_not_empty);
+
+')
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 `dnl
