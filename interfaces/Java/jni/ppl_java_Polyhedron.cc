@@ -27,7 +27,7 @@ using namespace Parma_Polyhedra_Library;
 JNIEXPORT jboolean JNICALL Java_ppl_1java_Polyhedron_is_1empty
 (JNIEnv* env, jobject j_polyhedron) {
   jlong ptr = get_ptr(env, j_polyhedron);
-  Polyhedron* c  = reinterpret_cast<Polyhedron*>(ptr);
+  Polyhedron* c = reinterpret_cast<Polyhedron*>(ptr);
   return c->is_empty();
 }
 

@@ -28,7 +28,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_C_1Polyhedron_build_1cpp_1object__Lppl_1ja
 (JNIEnv* env, jobject j_c_polyhedron, jobject j_iterable) {
   jclass j_c_polyhedron_class = env->GetObjectClass(j_c_polyhedron);
   Constraint_System cs = build_ppl_constraint_system(env, j_iterable);
-  C_Polyhedron* c_ptr = new C_Polyhedron(cs);
+  C_Polyhedron* c_ptr = new C_Polyhedron(cs, Recycle_Input());
   jfieldID pointer_field = env->GetFieldID(j_c_polyhedron_class, "ptr", "J");
   env->SetLongField(j_c_polyhedron, pointer_field, (long long) c_ptr);
 }
@@ -61,7 +61,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_C_1Polyhedron_build_1cpp_1object__Lppl_1ja
 (JNIEnv* env, jobject j_c_polyhedron, jobject j_iterable) {
   jclass j_c_polyhedron_class = env->GetObjectClass(j_c_polyhedron);
   Generator_System gs = build_ppl_generator_system(env, j_iterable);
-  C_Polyhedron* c_ptr = new C_Polyhedron(gs);
+  C_Polyhedron* c_ptr = new C_Polyhedron(gs, Recycle_Input());
   jfieldID pointer_field = env->GetFieldID(j_c_polyhedron_class, "ptr", "J");
   env->SetLongField(j_c_polyhedron, pointer_field, (long long) c_ptr);
 }
@@ -70,7 +70,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_C_1Polyhedron_build_1cpp_1object__Lppl_1ja
 (JNIEnv* env, jobject  j_c_polyhedron, jobject j_ggs) {
   jclass j_c_polyhedron_class = env->GetObjectClass(j_c_polyhedron);
   Grid_Generator_System gs = build_ppl_grid_generator_system(env, j_ggs);
-  C_Polyhedron* c_ptr = new C_Polyhedron(gs);
+  C_Polyhedron* c_ptr = new C_Polyhedron(gs, Recycle_Input());
   jfieldID pointer_field = env->GetFieldID(j_c_polyhedron_class, "ptr", "J");
   env->SetLongField(j_c_polyhedron, pointer_field, (long long) c_ptr);
 }
@@ -79,7 +79,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_C_1Polyhedron_build_1cpp_1object__Lppl_1ja
 (JNIEnv* env, jobject  j_c_polyhedron, jobject j_cgs) {
   jclass j_c_polyhedron_class = env->GetObjectClass(j_c_polyhedron);
   Congruence_System cgs = build_ppl_congruence_system(env, j_cgs);
-  C_Polyhedron* c_ptr = new C_Polyhedron(cgs);
+  C_Polyhedron* c_ptr = new C_Polyhedron(cgs, Recycle_Input());
   jfieldID pointer_field = env->GetFieldID(j_c_polyhedron_class, "ptr", "J");
   env->SetLongField(j_c_polyhedron, pointer_field, (long long) c_ptr);
 }
