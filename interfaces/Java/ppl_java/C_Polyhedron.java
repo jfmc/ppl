@@ -122,6 +122,10 @@ public class C_Polyhedron extends Polyhedron {
 	build_cpp_object(cgs);
     }
 
+    //! Ordinary copy-constructor.
+    public C_Polyhedron(C_Polyhedron y) {
+        build_cpp_object(y);
+    }
     /*! \brief
       If the poly-hull of \p this and \p y is exact it is assigned
       to \p this and <CODE>true</CODE> is returned,
@@ -153,4 +157,7 @@ public class C_Polyhedron extends Polyhedron {
 
     //! Builds the underlined C++ object.
     private native void build_cpp_object(Congruence_System cgs);
+    
+       //! Builds the underlined C++ object.
+    private native void build_cpp_object(C_Polyhedron y);
 }

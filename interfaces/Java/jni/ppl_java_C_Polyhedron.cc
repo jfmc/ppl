@@ -86,6 +86,19 @@ JNIEXPORT void JNICALL Java_ppl_1java_C_1Polyhedron_build_1cpp_1object__Lppl_1ja
   env->SetLongField(j_c_polyhedron, pointer_field, (long long) c_ptr);
 }
 
+JNIEXPORT void JNICALL Java_ppl_1java_C_1Polyhedron_build_1cpp_1object__Lppl_1java_C_1Polyhedron_2
+(JNIEnv* env, jobject  j_this_c_polyhedron, jobject j_c_polyhedron)
+{
+ jclass j_c_polyhedron_class = env->GetObjectClass(j_c_polyhedron);
+ jlong ptr = get_ptr(env, j_c_polyhedron);
+ C_Polyhedron* c_polyhedron_ptr = reinterpret_cast<C_Polyhedron*>(ptr);
+ C_Polyhedron* c_this_polyhedron_ptr = new C_Polyhedron(*c_polyhedron_ptr);
+ jfieldID pointer_field = env->GetFieldID(j_c_polyhedron_class, "ptr", "J");
+ env->SetLongField(j_this_c_polyhedron, pointer_field,
+		   (long long) c_this_polyhedron_ptr);
+
+}
+
 JNIEXPORT jboolean JNICALL Java_ppl_1java_C_1Polyhedron_poly_1hull_1assign_1if_1exact
 (JNIEnv* env, jobject j_this_c_polyhedron, jobject j_c_polyhedron) {
   jlong ptr = get_ptr(env, j_this_c_polyhedron);
