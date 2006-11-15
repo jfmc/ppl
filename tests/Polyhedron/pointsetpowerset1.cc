@@ -430,12 +430,12 @@ test19() {
   c_ps.add_constraints(cs);
 
   Pointset_Powerset<C_Polyhedron> c_ps1(1);
+  cs.clear();
   cs.insert(x >= 8);
-  c_ps.add_constraints(cs);
+  c_ps1.add_constraints(cs);
 
   // c_ps.ascii_dump();
   // c_ps1.ascii_dump();
-
 
   bool ok = c_ps.geometrically_equals(c_ps1);
   bool ok1 = c_ps.geometrically_equals(c_ps1);
@@ -463,6 +463,6 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
-  DO_TEST_F(test18);
-  DO_TEST_F(test19);
+  DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN
