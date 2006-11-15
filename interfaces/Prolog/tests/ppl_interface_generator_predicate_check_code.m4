@@ -467,8 +467,9 @@ m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `
 ppl_@CLASS@_@SIMPLIFY@_1_test :-
   (
-   %% choose_test(TEST_DATA, Space_Dim),
-   choose_test(test04, Space_Dim),
+   choose_test(TEST_DATA, Space_Dim),
+   TEST_DATA = test04,
+   \+ TEST_DATA = test00, \+ TEST_DATA = test02,
    (
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS1, Space_Dim),
@@ -482,6 +483,8 @@ ppl_@CLASS@_@SIMPLIFY@_1_test :-
      ),
      (predicate_exists(ppl_@CLASS@_geometrically_equals_@CLASS@)
      ->
+       nl, ppl_@CLASS@_ascii_dump(PS),
+       nl, ppl_@CLASS@_ascii_dump(PS1),
        ppl_@CLASS@_geometrically_equals_@CLASS@(PS, PS1)
      ;
        true
