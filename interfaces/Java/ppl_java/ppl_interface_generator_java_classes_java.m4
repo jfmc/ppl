@@ -12,10 +12,23 @@ m4_divert(-1)dnl
 dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
+m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
+/*||| m4_this_class */
+public class m4_cplusplus_class$1 extends PPL_Object {`'dnl
+m4_ifelse(m4_this_class, Polyhedron,
+`
+
+/*||| C_`'m4_this_class */
+public class C_`'m4_cplusplus_class$1 extends PPL_Object {
+
+/*||| NNC_`'m4_this_class */
+public class NNC_`'m4_cplusplus_class$1 extends PPL_Object {
+')`'dnl
+m4_undefine(`m4_this_class')
+')
+
 /*||| m4_interface_class$1 */
 public class m4_cplusplus_class$1 extends PPL_Object {
-
-')
 
 dnl m4_post_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Postfix extra code for each class.
