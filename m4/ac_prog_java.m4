@@ -17,7 +17,7 @@
 #
 # LAST MODIFICATION
 #
-#   2006-11-07
+#   2006-11-15
 #
 # COPYLEFT
 #
@@ -93,7 +93,6 @@ rm -f Test.uue])
 fi
 if test x$ac_cv_prog_uudecode_base64 != xyes; then
         rm -f Test.class
-        AC_MSG_WARN([I have to compile Test.class from scratch])
         if test $ac_cv_javac_supports_enums = x; then
                 AC_PROG_JAVAC
         fi
