@@ -93,9 +93,9 @@ PPL::Grid::Grid(const Constraint_System& ccs)
   construct(cgs);
 }
 
-PPL::Grid::Grid(Constraint_System& cs)
+PPL::Grid::Grid(Constraint_System& cs, Recycle_Input)
  : con_sys(cs.space_dimension() > max_space_dimension()
-	   ? throw_space_dimension_overflow("Grid(cs)",
+	   ? throw_space_dimension_overflow("Grid(cs, recycle)",
 					    "the space dimension of cs "
 					    "exceeds the maximum allowed "
 					    "space dimension"), 0
