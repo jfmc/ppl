@@ -2,7 +2,7 @@ m4_define(`dnl', `m4_dnl')
 dnl This file is to generate CLASS.java.
 dnl
 dnl Include files defining macros that generate the non-fixed part.
-m4_include(`ppl_interface_generator_java_class_java_code.m4')dnl
+m4_include(`ppl_interface_generator_java_classes_java_code.m4')dnl
 m4_include(`ppl_interface_generator_common.m4')dnl
 m4_include(`ppl_interface_generator_common_dat.m4')dnl
 m4_include(`ppl_interface_generator_java_dat.m4')dnl
