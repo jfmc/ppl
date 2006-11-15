@@ -354,12 +354,13 @@ cpp_class,
 friend,
 intopology,
 topology,
-cpp_disjunct,
+cpp_disjunct
 disjunct,
 build_represent,
 get_represent,
 relation_represent,
 add_represent,
+recycle,
 dimension,
 generator,
 point,
@@ -656,6 +657,14 @@ m4_define(`m4_Polyhedron_get_represent_replacement',
          `constraint, generator, congruence')
 m4_define(`m4_Grid_get_represent_replacement',
          `congruence, grid_generator')
+
+dnl  The different kinds of objects that can be obtained from a
+dnl  class description.
+m4_define(`m4_recycle_replacement', `')
+m4_define(`m4_Polyhedron_recycle_replacement',
+         `@COMMA@ Recycle_Input()')
+m4_define(`m4_Grid_recycle_replacement',
+         `@COMMA@ Recycle_Input()')
 
 dnl  The unary "has_property" predicates
 m4_define(`m4_has_property_replacement', `is_empty, is_universe, is_bounded, contains_integer_point, is_topologically_closed')
