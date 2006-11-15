@@ -84,6 +84,24 @@ JNIEXPORT void JNICALL Java_ppl_1java_C_1Polyhedron_build_1cpp_1object__Lppl_1ja
   env->SetLongField(j_c_polyhedron, pointer_field, (long long) c_ptr);
 }
 
+JNIEXPORT jboolean JNICALL Java_ppl_1java_C_1Polyhedron_poly_1hull_1assign_1if_1exact
+(JNIEnv* env, jobject j_this_c_polyhedron, jobject j_c_polyhedron) {
+  jlong ptr = get_ptr(env, j_this_c_polyhedron);
+  C_Polyhedron* this_c_polyhedron  = reinterpret_cast<C_Polyhedron*>(ptr);
+  ptr = get_ptr(env, j_c_polyhedron);
+  C_Polyhedron* c_polyhedron = reinterpret_cast<C_Polyhedron*>(ptr);
+  return this_c_polyhedron->poly_hull_assign_if_exact(*c_polyhedron);
+}
+
+JNIEXPORT jboolean JNICALL Java_ppl_1java_C_1Polyhedron_upper_1bound_1assign_1if_1exact
+(JNIEnv* env, jobject j_this_c_polyhedron, jobject j_c_polyhedron) {
+  jlong ptr = get_ptr(env, j_this_c_polyhedron);
+  C_Polyhedron* this_c_polyhedron  = reinterpret_cast<C_Polyhedron*>(ptr);
+  ptr = get_ptr(env, j_c_polyhedron);
+  C_Polyhedron* c_polyhedron = reinterpret_cast<C_Polyhedron*>(ptr);
+  return this_c_polyhedron->upper_bound_assign_if_exact(*c_polyhedron);
+}
+
 JNIEXPORT void JNICALL Java_ppl_1java_C_1Polyhedron_finalize
 (JNIEnv* env, jobject j_c_polyhedron) {
   jlong this_ptr = get_ptr(env, j_c_polyhedron);

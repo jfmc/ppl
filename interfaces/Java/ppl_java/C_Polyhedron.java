@@ -122,12 +122,25 @@ public class C_Polyhedron extends Polyhedron {
 	build_cpp_object(cgs);
     }
 
+    /*! \brief
+      If the poly-hull of \p this and \p y is exact it is assigned
+      to \p this and <CODE>true</CODE> is returned,
+      otherwise <CODE>false</CODE> is returned.
+
+      \exception RuntimeErrorException
+      Thrown if \p this and \p y are dimension-incompatible.
+    */
+    public native boolean poly_hull_assign_if_exact(C_Polyhedron y);
+
+    //! Same as poly_hull_assign_if_exact(y).
+    public native boolean upper_bound_assign_if_exact(C_Polyhedron y);
+
     //! Destroys the underlined C++ object.
     protected native void finalize();
 
     //! Builds the underlined C++ object.
-    private native void build_cpp_object(Constraint_System cs); 
-    
+    private native void build_cpp_object(Constraint_System cs);
+
     //! Builds the underlined C++ object.
     private native void build_cpp_object(long num_dimensions,
                                          Degenerate_Element kind);
