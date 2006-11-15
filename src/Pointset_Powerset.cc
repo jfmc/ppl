@@ -68,6 +68,8 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
 bool
 PPL::check_containment(const NNC_Polyhedron& ph,
 		       const Pointset_Powerset<NNC_Polyhedron>& ps) {
+  if (ph.is_empty())
+    return true;
   Pointset_Powerset<NNC_Polyhedron> tmp(ph.space_dimension(), EMPTY);
   tmp.add_disjunct(ph);
   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator
