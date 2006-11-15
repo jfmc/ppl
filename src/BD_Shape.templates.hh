@@ -998,7 +998,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
 		     const bool maximize,
 		     Coefficient& ext_n, Coefficient& ext_d,
 		     bool& included,
-		     Generator& g_point) const {
+		     Generator& g) const {
   using Implementation::BD_Shapes::numer_denom;
 
   // The dimension of `expr' should not be greater than the dimension
@@ -1017,7 +1017,7 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
       ext_n = expr.inhomogeneous_term();
       ext_d = 1;
       included = true;
-      g_point = point();
+      g = point();
       return true;
     }
 
@@ -1030,8 +1030,8 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
     = maximize ? MAXIMIZATION : MINIMIZATION;
   MIP_Problem mip(space_dim, constraints(), expr, mode_max_min);
   if(mip.solve() == OPTIMIZED_MIP_PROBLEM) {
-    g_point = mip.optimizing_point();
-    mip.evaluate_objective_function(g_point, ext_n, ext_d);
+    g = mip.optimizing_point();
+    mip.evaluate_objective_function(g, ext_n, ext_d);
     included = true;
     return true;
   }

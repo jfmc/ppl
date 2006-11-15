@@ -676,7 +676,7 @@ public:
     \param maximum
     <CODE>true</CODE> if and only if the supremum is also the maximum value;
 
-    \param point
+    \param g
     When maximization succeeds, will be assigned the point or
     closure point where \p expr reaches its supremum value.
 
@@ -685,11 +685,11 @@ public:
 
     If \p *this is empty or \p expr is not bounded from above,
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
-    and \p point are left untouched.
+    and \p g are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& point) const;
+		Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -735,7 +735,7 @@ public:
     \param minimum
     <CODE>true</CODE> if and only if the infimum is also the minimum value;
 
-    \param point
+    \param g
     When minimization succeeds, will be assigned a point or
     closure point where \p expr reaches its infimum value.
 
@@ -744,11 +744,11 @@ public:
 
     If \p *this is empty or \p expr is not bounded from below,
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
-    and \p point are left untouched.
+    and \p g are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& point) const;
+		Generator& g) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
