@@ -16,18 +16,18 @@ m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
 %<--%<--%<-- m4_this_class`'.java
 package ppl_java;
 
-public class m4_cplusplus_class$1 extends PPL_Object {`'dnl
+public class m4_interface_class$1 extends PPL_Object {`'dnl
 m4_ifelse(m4_this_class, Polyhedron,
 `
 %<--%<--%<-- C_`'m4_this_class`'.java
 package ppl_java;
 
-public class C_`'m4_cplusplus_class$1 extends Polyhedron {
+public class C_`'m4_interface_class$1 extends Polyhedron {
 
 %<--%<--%<-- NNC_`'m4_this_class`'.java
 package ppl_java;
 
-public class NNC_`'m4_cplusplus_class$1 extends Polyhedron {
+public class NNC_`'m4_interface_class$1 extends Polyhedron {
 ')`'dnl
 m4_undefine(`m4_this_class')
 ')
