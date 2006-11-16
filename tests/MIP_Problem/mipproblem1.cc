@@ -1839,7 +1839,34 @@ test13() {
   return true;
 }
 
-} // namespace
+bool
+test14() {
+  MIP_Problem mip = MIP_Problem();
+  mip.solve();
+  Generator pg = mip.optimizing_point();
+  nout << "Optimizing point = ";
+  print_generator(pg);
+  Generator pg_kr = point();
+  if (pg != pg_kr)
+    return false;
+  return true;
+}
+bool
+
+test15() {
+  MIP_Problem mip = MIP_Problem();
+  mip.add_constraint(Linear_Expression::zero() <= 1);
+  mip.solve();
+  Generator pg = mip.optimizing_point();
+  Generator pg_kr = point();
+  if (pg != pg_kr)
+    return false;
+  mip.add_constraint(Linear_Expression::zero() >= 1);
+  return (!mip.is_satisfiable());
+}
+
+}
+// namespace
 
 BEGIN_MAIN
   DO_TEST_F64(test01);
@@ -1855,4 +1882,6 @@ BEGIN_MAIN
   DO_TEST(test11);
   DO_TEST(test12);
   DO_TEST_F64(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

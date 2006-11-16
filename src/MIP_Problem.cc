@@ -788,12 +788,18 @@ PPL::MIP_Problem::process_pending_constraints() {
     if (working_cost[base[i]] != 0)
       linear_combine(working_cost, tableau[i], base[i]);
 
+  // Deal with zero dimensional problems.
+  if (space_dimension() == 0) {
+    status = OPTIMIZED;
+    last_generator = point();
+    return true;
+  }
   // Deal with trivial cases.
   // If there is no constraint in the tableau, then the feasible region
   // is only delimited by non-negativity constraints. Therefore,
   // the problem is unbounded as soon as the cost function has
   // a variable with a positive coefficient.
-  if (tableau_num_rows == 0) {
+ if (tableau_num_rows == 0) {
     const dimension_type input_obj_function_size
       = input_obj_function.space_dimension();
     for (dimension_type i = input_obj_function_size; i-- > 0; )
