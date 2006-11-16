@@ -1,9 +1,24 @@
 m4_divert(-1)dnl
 
-m4_define(`m4_class_build_cpp_object_code',
+m4_define(`m4_class_build_cpp_object1_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
     private native void build_cpp_object(@UBUILD_REPRESENT@_System cs);
+
+')
+
+m4_define(`m4_class_build_cpp_object2_code',
+`dnl
+%<--%<--%<-- @TOPOLOGY@@CLASS@.java
+    private native void build_cpp_object(long num_dimensions,
+                                         Degenerate_Element kind);
+
+')
+
+m4_define(`m4_class_build_cpp_object3_code',
+`dnl
+%<--%<--%<-- @TOPOLOGY@@CLASS@.java
+    private native void build_cpp_object(@TOPOLOGY@@CLASS@ y);
 
 ')
 
@@ -45,13 +60,16 @@ m4_define(`ppl_delete_@CLASS@_code',
 m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    public native boolean @UB_EXACT@(@TOPOLOGY@@CLASS@ y);
+    public native boolean upper_bound_if_exact(@TOPOLOGY@@CLASS@ y);
+
+%<--%<--%<-- @TOPOLOGY@@CLASS@.java
+    public native boolean poly_hull_if_exact(@TOPOLOGY@@CLASS@ y);
 
 ')
 
 m4_define(`ppl_@CLASS@_swap_code',
 `dnl
-%<--%<--%<-- @TOPOLOGY@@CLASS@.java
+%<--%<--%<-- @CLASS@.java
     public native void swap(Polyhedron y);
 
 ')
