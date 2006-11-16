@@ -173,7 +173,7 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void add_@ADD_REPRESENT@_and_minimize(@UADD_REPRESENT@ c);
+    public native boolean add_@ADD_REPRESENT@_and_minimize(@UADD_REPRESENT@ c);
 
 ')
 
@@ -187,7 +187,7 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void add_@ADD_REPRESENT@s_and_minimize(@UADD_REPRESENT@ c);
+    public native boolean add_@ADD_REPRESENT@s_and_minimize(@UADD_REPRESENT@ c);
 
 ')
 

@@ -172,7 +172,7 @@ build_java_constraint_system(JNIEnv* env, const Constraint_System& cs);
 jobject
 build_java_generator_system(JNIEnv* env, const Generator_System& gs);
 
-// Builds a Java congrunce system from a PPL congruence system.
+// Builds a Java congruence system from a PPL congruence system.
 jobject
 build_java_congruence_system(JNIEnv* env, const Congruence_System& cgs);
 
