@@ -22,6 +22,8 @@
 
 JAVAROOT = ../
 
+required_instantiations_java_sources = @required_instantiations_java_sources@
+
 if BUILD_JAVA_INTERFACE
 
 interface_generator_files = \
@@ -37,24 +39,8 @@ interface_generator_dependencies = \
 ppl_interface_generator_java_classes_java.m4 \
 ppl_interface_generator_java_classes_java_code.m4
 
-# In general, several java sources will be built and the same process
-# will build all of them.  We assume that Polyhedron.java will always
-# be built, independently from all configuration options.
-
-BUILT_SOURCES = Polyhedron.java
-
-Polyhedron.java: $(interface_generator_dependencies) Makefile
-	m4 --prefix-builtin -I../.. \
-		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
-		$(srcdir)/ppl_interface_generator_java_classes_java.m4 \
-			> java_blob
-	$(top_srcdir)/utils/cm_cleaner.sh < java_blob
-	$(top_srcdir)/utils/cm_splitter.sh < java_blob
-	rm -f java_blob
-
-java_classes = \
+fixed_java_sources = \
 By_Reference.java \
-C_Polyhedron.java \
 Coefficient.java \
 Congruence.java \
 Congruence_System.java \
@@ -84,10 +70,37 @@ Relation_Symbol.java \
 Variable.java \
 Variables_Set.java
 
+all_java_sources = \
+$(fixed_java_sources) \
+$(required_instantiations_java_sources)
+
+java_classes.stamp: $(all_java_sources)
+        @if test -n "$?"; then \
+          echo '$(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) $(AM_JAVACFLAGS) $(JAVACFLAGS) $?' ; \
+          $(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) \
+            $(AM_JAVACFLAGS) $(JAVACFLAGS) $?; \
+        else :; fi
+        echo timestamp > java_classes.stamp
+
+# In general, several java sources will be built and the same process
+# will build all of them.  We assume that C_Polyhedron.java will always
+# be built, independently from all configuration options.
+BUILT_SOURCES = C_Polyhedron.java
+
+C_Polyhedron.java: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. \
+		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
+		$(srcdir)/ppl_interface_generator_java_classes_java.m4 \
+			> java_blob
+	$(top_srcdir)/utils/cm_cleaner.sh < java_blob
+	$(top_srcdir)/utils/cm_splitter.sh < java_blob
+	rm -f java_blob
+
 EXTRA_DIST = \
 $(interface_generator_files) \
-$(java_classes)
+$(fixed_java_sources)
 
-noinst_JAVA = $(java_classes)
+# This is to force Automake to generate the required Java infrastructure.
+noinst_JAVA = By_Reference.java
 
 endif BUILD_JAVA_INTERFACE

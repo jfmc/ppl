@@ -769,6 +769,7 @@ bool valid = ${instantiation}::valid_instantiation();
   done
   CPPFLAGS="$ac_save_CPPFLAGS"
   required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ,]]/_/g'`
+  required_instantiations_java_sources=`echo "${required_instantiations_canonical_names}" | sed -e 's/@/.java /g' -e 's/$/.java/g'`
   AC_MSG_RESULT([${required_instantiations}])
   ;;
 esac
@@ -878,6 +879,7 @@ AC_SUBST(debug_flag)
 AC_SUBST(coefficient_mnemonic)
 AC_SUBST(required_instantiations)
 AC_SUBST(required_instantiations_canonical_names)
+AC_SUBST(required_instantiations_java_sources)
 AC_SUBST(ocamlc_root)
 
 AC_CONFIG_FILES(Makefile
