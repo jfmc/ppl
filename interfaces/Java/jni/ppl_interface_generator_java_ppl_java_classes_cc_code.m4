@@ -149,7 +149,7 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_@1CLASS@_relation_1with__Lppl_1java_@1U
   @CLASS@* this_@LCLASS@ = reinterpret_cast<@CLASS@*>(this_ptr);
   @URELATION_REPRESENT@ c = build_ppl_@RELATION_REPRESENT@(env, j_@RELATION_REPRESENT@);
   Poly_@UALT_RELATION_REPRESENT@_Relation pcr = this_@LCLASS@->relation_with(c);
-  return build_ppl_poly_@ALT_RELATION_REPRESENT@_relation(env, pcr);
+  return build_java_poly_@ALT_RELATION_REPRESENT@_relation(env, pcr);
 }
 
 ')
