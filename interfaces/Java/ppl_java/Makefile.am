@@ -26,12 +26,7 @@ required_instantiations_java_sources = @required_instantiations_java_sources@
 
 if BUILD_JAVA_INTERFACE
 
-data_DATA = ppl_java.jar
-
-CLEANFILES = ppl_java.jar
-
-ppl_java.jar: java_classes.stamp
-	$(JAR) cf ppl_java.jar ppl_java/*.class
+all:	java_classes.stamp
 
 interface_generator_files = \
 ppl_interface_generator_java_classes_java.m4 \
