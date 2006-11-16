@@ -106,4 +106,9 @@ $(fixed_java_sources)
 # and all the class files.
 noinst_JAVA = Variable.java
 
+CLEANFILES = \
+$(required_instantiations_java_sources) \
+java_classes.stamp
+
+
 endif BUILD_JAVA_INTERFACE
