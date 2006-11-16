@@ -1,11 +1,3 @@
-m4_define(`m4_class_include_code',
-`dnl
-`#include "ppl_java_@CLASS@.h"
-#include "ppl_java_common.hh"
-using namespace Parma_Polyhedra_Library;'
-
-')
-
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
 %<--%<--%<-- ppl_java_@TOPOLOGY@@CLASS@.cc
@@ -77,7 +69,7 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_@1UB_EXACT@
   @TOPOLOGY@@CLASS@* this_@LTOPOLOGY@@LCLASS@ = reinterpret_cast<@TOPOLOGY@@CLASS@*>(ptr);
   ptr = get_ptr(env, j_@LTOPOLOGY@@LCLASS@);
   @TOPOLOGY@@CLASS@* @LTOPOLOGY@@LCLASS@ = reinterpret_cast<@TOPOLOGY@@CLASS@*>(ptr);
-  return this_@LTOPOLOGY@@LCLASS@->@UB_EXACT(*@LTOPOLOGY@@LCLASS@);
+  return this_@LTOPOLOGY@@LCLASS@->@UB_EXACT@(*@LTOPOLOGY@@LCLASS@);
 }
 
 ')

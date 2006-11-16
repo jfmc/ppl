@@ -19,7 +19,6 @@ package ppl_java;
 public class m4_cplusplus_class$1 extends PPL_Object {`'dnl
 m4_ifelse(m4_this_class, Polyhedron,
 `
-
 %<--%<--%<-- C_`'m4_this_class`'.java
 package ppl_java;
 
