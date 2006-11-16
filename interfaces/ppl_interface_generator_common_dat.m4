@@ -374,6 +374,7 @@ affimage,
 comparison,
 binop,
 binminop,
+ub_exact,
 widenexpn,
 widen,
 extrapolation,
@@ -658,8 +659,8 @@ m4_define(`m4_Polyhedron_get_represent_replacement',
 m4_define(`m4_Grid_get_represent_replacement',
          `congruence, grid_generator')
 
-dnl  The different kinds of objects that can be obtained from a
-dnl  class description.
+dnl  The recycling argument which is only needed for the Polyhedron
+dnl  or Grid class.
 m4_define(`m4_recycle_replacement', `')
 m4_define(`m4_Polyhedron_recycle_replacement',
          `@COMMA@ Recycle_Input()')
@@ -718,5 +719,12 @@ m4_define(`m4_Polyhedron_binminop_replacement',
          `m4_binminop_replacement, poly_hull_assign_and_minimize')
 m4_define(`m4_Grid_binminop_replacement',
          `m4_binminop_replacement, join_assign_and_minimize')
+
+dnl  The different kinds of "upper_bound_if_exact" binary operators.
+m4_define(`m4_ub_exact_replacement', `upper_bound_if_exact')
+m4_define(`m4_Polyhedron_ub_exact_replacement',
+         `m4_ub_exact_replacement, poly_hull_assign_if_exact')
+m4_define(`m4_Grid_ub_exact_replacement',
+         `m4_ub_exact_replacement, join_assign_if_exact')
 
 m4_divert`'

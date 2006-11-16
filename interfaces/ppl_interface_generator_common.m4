@@ -41,6 +41,13 @@ m4_define(`m4_capfirstletters',
          m4_regexp(`$1', `^\(\w\)\(\w*_\)\(\w\)\(\w*\)',
            `m4_upcase(`\1')`\2'm4_upcase(`\3')`\4''))')
 
+dnl m4_add_one_after_underscore(String)
+dnl
+dnl Adds a 1 after any underscore (needed for Java interface code)..
+dnl Example: m4_capfirstletter(`xyz_abc') ==> xyz_1abc
+m4_define(`m4_add_one_after_underscore', `m4_patsubst(`$1', `_', `_1')`'dnl
+')
+
 dnl m4_ifndef(Macro, Default Definition)
 dnl
 dnl If Macro is defined, use that definition;
@@ -115,11 +122,29 @@ dnl
 dnl m4_alt_replace is the replacement for alt_pattern
 m4_define(`m4_alt_replace', `m4_arg($2, m4_alt_replacements)')`'dnl
 dnl
-m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst($1,
+m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
+            m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
+            m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst($1,
+  m4_pattern_delimiter`'1U`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_capfirstletters(m4_replace))),
+  m4_pattern_delimiter`'1L`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_downcase(m4_replace))),
   m4_pattern_delimiter`'U`'PATTERN`'m4_pattern_delimiter,
     m4_capfirstletters(m4_replace)),
+  m4_pattern_delimiter`'L`'PATTERN`'m4_pattern_delimiter,
+    m4_downcase(m4_replace)),
+  m4_pattern_delimiter`'1`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_replace)),
+  m4_pattern_delimiter`'1UALT_`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_capfirstletters(m4_alt_replace))),
   m4_pattern_delimiter`'UALT_`'PATTERN`'m4_pattern_delimiter,
     m4_capfirstletters(m4_alt_replace)),
+  m4_pattern_delimiter`'1LALT_`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_downcase(m4_alt_replace))),
+  m4_pattern_delimiter`'LALT_`'PATTERN`'m4_pattern_delimiter,
+    m4_downcase(m4_alt_replace)),
+  m4_pattern_delimiter`'1ALT_`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_alt_replace)),
   m4_pattern_delimiter`'ALT_`'PATTERN`'m4_pattern_delimiter,
     m4_alt_replace),
   m4_pattern_delimiter`'PATTERN`'m4_pattern_delimiter,

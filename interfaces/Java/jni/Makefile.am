@@ -22,6 +22,24 @@
 
 if BUILD_JAVA_INTERFACE
 
+interface_generator_files = \
+ppl_interface_generator_java_ppl_java_classes_cc.m4 \
+ppl_interface_generator_java_ppl_java_classes_cc_code.m4
+
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_java_dat.m4 \
+ppl_interface_generator_java_ppl_java_classes_cc.m4 \
+ppl_interface_generator_java_ppl_java_classes_cc_code.m4
+
+ppl_java_Polyhedron1.cc: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. \
+	-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
+	$(srcdir)/ppl_interface_generator_java_ppl_java_classes_cc.m4 > $@
+
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
 
 lib_LTLIBRARIES = libppl_java.la
@@ -36,6 +54,9 @@ ppl_java_common.hh
 BUILT_SOURCES = \
 ppl_java_C_Polyhedron.h \
 ppl_java_Polyhedron.h
+
+EXTRA_DIST = \
+$(interface_generator_files)
 
 libppl_java_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
 
