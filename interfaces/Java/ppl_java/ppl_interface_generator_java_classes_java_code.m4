@@ -17,6 +17,15 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 
 ')
 
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+`dnl
+%<--%<--%<-- @TOPOLOGY@@CLASS@.java
+    public @TOPOLOGY@@CLASS@(@TOPOLOGY@@CLASS@ y) {
+        build_cpp_object(y);
+    }
+
+')
+
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
@@ -33,14 +42,21 @@ m4_define(`ppl_delete_@CLASS@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_swap',
+m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+`dnl
+%<--%<--%<-- @TOPOLOGY@@CLASS@.java
+    public native boolean @UB_EXACT@(@TOPOLOGY@@CLASS@ y);
+
+')
+
+m4_define(`ppl_@CLASS@_swap_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
     public native void swap(Polyhedron y);
 
 ')
 
-m4_define(`ppl_@CLASS@_@DIMENSION@',
+m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
     public native long @DIMENSION@();
@@ -122,7 +138,7 @@ m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
 
 ')
 
-m4_define(`ppl_@CLASS@_OK',
+m4_define(`ppl_@CLASS@_OK_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
     public native boolean OK(boolean check_not_empty);

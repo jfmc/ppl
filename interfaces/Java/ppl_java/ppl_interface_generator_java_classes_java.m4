@@ -36,6 +36,19 @@ m4_define(`m4_post_extra_class_code', `dnl
 m4_replace_all_patterns_in_string($1,
   m4_class_build_cpp_object_code,
   m4_pattern_list)`'dnl
+m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
+%<--%<--%<-- m4_this_class`'.java
+}`'dnl
+m4_ifelse(m4_this_class, Polyhedron,
+`
+
+%<--%<--%<-- C_`'m4_this_class`'.java
+}
+
+%<--%<--%<-- NNC_`'m4_this_class`'.java
+}
+')`'dnl
+m4_undefine(`m4_this_class')
 ')
 
 m4_divert`'dnl
