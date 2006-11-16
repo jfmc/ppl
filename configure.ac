@@ -770,6 +770,7 @@ bool valid = ${instantiation}::valid_instantiation();
   CPPFLAGS="$ac_save_CPPFLAGS"
   required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ,]]/_/g'`
   required_instantiations_java_sources=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' | sed -e 's/@/.java /g' -e 's/$/.java/g'`
+  required_instantiations_java_cxx_headers=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java.\1/g'`
   AC_MSG_RESULT([${required_instantiations}])
   ;;
 esac
@@ -880,6 +881,7 @@ AC_SUBST(coefficient_mnemonic)
 AC_SUBST(required_instantiations)
 AC_SUBST(required_instantiations_canonical_names)
 AC_SUBST(required_instantiations_java_sources)
+AC_SUBST(required_instantiations_java_cxx_headers)
 AC_SUBST(ocamlc_root)
 
 AC_CONFIG_FILES(Makefile

@@ -35,29 +35,19 @@ interface_generator_dependencies = \
 ppl_interface_generator_java_ppl_java_classes_cc.m4 \
 ppl_interface_generator_java_ppl_java_classes_cc_code.m4
 
-ppl_java_Polyhedron1.cc: $(interface_generator_dependencies) Makefile
-	m4 --prefix-builtin -I../.. \
-	-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
-	$(srcdir)/ppl_interface_generator_java_ppl_java_classes_cc.m4 > $@
-
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
 
 lib_LTLIBRARIES = libppl_java.la
 
 libppl_java_la_SOURCES = \
-ppl_java_C_Polyhedron.cc \
 ppl_java_common.hh \
-ppl_java_Polyhedron.cc \
-ppl_java_common.cc \
-ppl_java_common.hh
+ppl_java_common.cc
 
 
 # In general, several java sources will be built and the same process
 # will build all of them.  We assume that ppl_java_C_Polyhedron.cc will always
 # be built, independently from all configuration options.
 BUILT_SOURCES = \
-ppl_java_C_Polyhedron.h \
-ppl_java_Polyhedron.h \
 ppl_java_C_Polyhedron.cc
 
 ppl_java_C_Polyhedron.cc: $(interface_generator_dependencies) Makefile
@@ -74,12 +64,7 @@ $(interface_generator_files)
 
 libppl_java_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
 
-ppl_java_C_Polyhedron.h:
-	$(JAVAH) -classpath .. ppl_java.C_Polyhedron
-
-ppl_java_Polyhedron.h:
-	$(JAVAH) -classpath .. ppl_java.Polyhedron
-
-MOSTLYCLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = \
+$(BUILT_SOURCES)
 
 endif BUILD_JAVA_INTERFACE

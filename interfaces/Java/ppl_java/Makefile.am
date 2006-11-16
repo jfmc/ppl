@@ -22,11 +22,15 @@
 
 JAVAROOT = ../
 
-required_instantiations_java_sources = @required_instantiations_java_sources@
+required_instantiations_java_sources = \
+@required_instantiations_java_sources@
+
+required_instantiations_java_cxx_headers = \
+@required_instantiations_java_cxx_headers@
 
 if BUILD_JAVA_INTERFACE
 
-all:	java_classes.stamp
+all:	java_classes.stamp java_cxx_headers.stamp
 
 interface_generator_files = \
 ppl_interface_generator_java_classes_java.m4 \
@@ -84,6 +88,13 @@ java_classes.stamp: $(all_java_sources)
 	else :; fi
 	echo timestamp > java_classes.stamp
 
+java_cxx_headers.stamp: $(all_java_sources)
+	@if test -n "$?"; then \
+		echo '$(JAVAH) -classpath .. $(required_instantiations_java_cxx_headers)' ; \
+		$(JAVAH) -classpath .. $(required_instantiations_java_cxx_headers) ; \
+	else :; fi
+	echo timestamp > java_cxx_headers.stamp
+
 # In general, several java sources will be built and the same process
 # will build all of them.  We assume that C_Polyhedron.java will always
 # be built, independently from all configuration options.
@@ -108,7 +119,8 @@ noinst_JAVA = Variable.java
 
 CLEANFILES = \
 $(required_instantiations_java_sources) \
-java_classes.stamp
-
+$(required_instantiations_java_cxx_headers) \
+java_classes.stamp \
+java_cxx_headers.stamp
 
 endif BUILD_JAVA_INTERFACE
