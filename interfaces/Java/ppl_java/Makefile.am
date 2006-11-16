@@ -26,6 +26,13 @@ required_instantiations_java_sources = @required_instantiations_java_sources@
 
 if BUILD_JAVA_INTERFACE
 
+data_DATA = ppl_java.jar
+
+CLEANFILES = ppl_java.jar
+
+ppl_java.jar: java_classes.stamp
+	$(JAR) cf ppl_java.jar ppl_java/*.class
+
 interface_generator_files = \
 ppl_interface_generator_java_classes_java.m4 \
 ppl_interface_generator_java_classes_java_code.m4
@@ -100,7 +107,8 @@ EXTRA_DIST = \
 $(interface_generator_files) \
 $(fixed_java_sources)
 
-# This is to force Automake to generate the required Java infrastructure.
-noinst_JAVA = By_Reference.java
+# This is to force Automake to generate the required Java infrastructure
+# and all the class files.
+noinst_JAVA = Variable.java
 
 endif BUILD_JAVA_INTERFACE

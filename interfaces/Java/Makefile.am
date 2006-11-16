@@ -27,11 +27,4 @@ SUBDIRS = ppl_java jni tests
 EXTRA_DIST = \
 ppl_interface_generator_java_dat.m4
 
-data_DATA = ppl_java.jar
-
-CLEANFILES = ppl_java.jar
-
-ppl_java.jar: ppl_java/classnoinst.stamp
-	$(JAR) cf ppl_java.jar ppl_java/*.class
-
 endif BUILD_JAVA_INTERFACE
