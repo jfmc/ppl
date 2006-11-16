@@ -75,12 +75,12 @@ $(fixed_java_sources) \
 $(required_instantiations_java_sources)
 
 java_classes.stamp: $(all_java_sources)
-        @if test -n "$?"; then \
-          echo '$(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) $(AM_JAVACFLAGS) $(JAVACFLAGS) $?' ; \
-          $(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) \
-            $(AM_JAVACFLAGS) $(JAVACFLAGS) $?; \
-        else :; fi
-        echo timestamp > java_classes.stamp
+	@if test -n "$?"; then \
+		echo '$(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) $(AM_JAVACFLAGS) $(JAVACFLAGS) $?' ; \
+		$(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) \
+		$(AM_JAVACFLAGS) $(JAVACFLAGS) $?; \
+	else :; fi
+	echo timestamp > java_classes.stamp
 
 # In general, several java sources will be built and the same process
 # will build all of them.  We assume that C_Polyhedron.java will always
