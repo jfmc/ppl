@@ -35,6 +35,25 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JL
 
 ')
 
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+`dnl
+%<--%<--%<-- ppl_java_@TOPOLOGY@@CLASS@.cc
+JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lppl_1java_@1TOPOLOGY@@1CLASS@_2
+(JNIEnv* env, jobject  j_this_@LTOPOLOGY@@LCLASS@, jobject j_@LTOPOLOGY@@LCLASS@)
+{
+ jclass j_@LTOPOLOGY@@LCLASS@_class = env->GetObjectClass(j_@LTOPOLOGY@@LCLASS@);
+ jlong ptr = get_ptr(env, j_@LTOPOLOGY@@LCLASS@);
+ @TOPOLOGY@@CLASS@* @LTOPOLOGY@@LCLASS@_ptr = reinterpret_cast<@TOPOLOGY@@CLASS@*>(ptr);
+ @TOPOLOGY@@CLASS@* @LTOPOLOGY@_this_@LCLASS@_ptr = new @TOPOLOGY@@CLASS@(*@LTOPOLOGY@@LCLASS@_ptr);
+jfieldID pointer_field = env->GetFieldID(j_@LTOPOLOGY@@LCLASS@_class, "ptr", "J");
+env->SetLongField(j_this_@LTOPOLOGY@@LCLASS@, pointer_field,
+		   (long long) @LTOPOLOGY@_this_@LCLASS@_ptr);
+
+}
+
+')
+
+
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
 %<--%<--%<-- ppl_java_@TOPOLOGY@@CLASS@.cc
@@ -46,12 +65,6 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__Lp
   jfieldID pointer_field = env->GetFieldID(j_@LTOPOLOGY@@LCLASS@_class, "ptr", "J");
   env->SetLongField(j_@LTOPOLOGY@@LCLASS@, pointer_field, (long long) c_ptr);
 }
-
-')
-
-m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
-`')
-
 
 ')
 
@@ -81,7 +94,22 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_finalize
 
 ')
 
-m4_define(`ppl_@CLASS@_swap', `')
+m4_define(`ppl_@CLASS@_swap_code',
+`dnl
+%<--%<--%<-- ppl_java_@CLASS@.cc
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_swap
+(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_@LCLASS@) {
+  try {
+    jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+    @CLASS@* this_@LCLASS@ = reinterpret_cast<@CLASS@*>(this_ptr);
+    this_ptr = get_ptr(env, j_@LCLASS@);
+    @CLASS@* @LCLASS@ = reinterpret_cast<@CLASS@*>(this_ptr);
+    this_@LCLASS@->swap(*@LCLASS@);
+  }
+  CATCH_ALL;
+}
+
+')
 
 m4_define(`ppl_@CLASS@_@DIMENSION@',
 `dnl
@@ -255,7 +283,21 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_equals
 
 ')
 
-m4_define(`ppl_@CLASS@_OK', `')
+m4_define(`ppl_@CLASS@_OK_code',
+`dnl
+%<--%<--%<-- ppl_java_@CLASS@.cc
+JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_OK
+(JNIEnv* env, jobject j_this_@LCLASS@, jboolean check_is_empty) {
+  try {
+    jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+    @CLASS@* this_@LCLASS@ = reinterpret_cast<@CLASS@*>(this_ptr);
+    return this_@LCLASS@->OK(check_is_empty);
+  }
+  CATCH_ALL;
+  return false;
+}
+
+')
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 `dnl
