@@ -37,10 +37,20 @@ interface_generator_dependencies = \
 ppl_interface_generator_java_classes_java.m4 \
 ppl_interface_generator_java_classes_java_code.m4
 
-Polyhedron1.java: $(interface_generator_dependencies) Makefile
+# In general, several java sources will be built and the same process
+# will build all of them.  We assume that Polyhedron.java will always
+# be built, independently from all configuration options.
+
+BUILT_SOURCES = Polyhedron.java
+
+Polyhedron.java: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
-		$(srcdir)/ppl_interface_generator_java_classes_java.m4 > $@
+		$(srcdir)/ppl_interface_generator_java_classes_java.m4 \
+			> java_blob
+	$(top_srcdir)/utils/cm_cleaner.sh < java_blob
+	$(top_srcdir)/utils/cm_splitter.sh < java_blob
+	rm -f java_blob
 
 java_classes = \
 By_Reference.java \
