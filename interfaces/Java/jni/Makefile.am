@@ -35,29 +35,23 @@ interface_generator_dependencies = \
 ppl_interface_generator_java_ppl_java_classes_cc.m4 \
 ppl_interface_generator_java_ppl_java_classes_cc_code.m4
 
-AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
+AM_CPPFLAGS = -I$(top_builddir)/src -I../ppl_java -I$(top_srcdir)/src @extra_includes@
 
 lib_LTLIBRARIES = libppl_java.la
 
 libppl_java_la_SOURCES = \
 ppl_java_common.hh \
-ppl_java_common.cc
+ppl_java_common.cc \
+ppl_java_classes.cc
 
-
-# In general, several java sources will be built and the same process
-# will build all of them.  We assume that ppl_java_C_Polyhedron.cc will always
-# be built, independently from all configuration options.
 BUILT_SOURCES = \
-ppl_java_C_Polyhedron.cc
+ppl_java_classes.cc
 
-ppl_java_C_Polyhedron.cc: $(interface_generator_dependencies) Makefile
+ppl_java_classes.cc: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_ppl_java_classes_cc.m4 \
-			> cc_blob
-	$(top_srcdir)/utils/cm_cleaner.sh < cc_blob
-	$(top_srcdir)/utils/cm_splitter.sh < cc_blob
-	rm -f cc_blob
+			> $@
 
 EXTRA_DIST = \
 $(interface_generator_files)
