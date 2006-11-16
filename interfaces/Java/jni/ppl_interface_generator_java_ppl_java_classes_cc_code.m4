@@ -69,7 +69,7 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_@1UB_EXACT@
   @TOPOLOGY@@CLASS@* this_@LTOPOLOGY@@LCLASS@ = reinterpret_cast<@TOPOLOGY@@CLASS@*>(ptr);
   ptr = get_ptr(env, j_@LTOPOLOGY@@LCLASS@);
   @TOPOLOGY@@CLASS@* @LTOPOLOGY@@LCLASS@ = reinterpret_cast<@TOPOLOGY@@CLASS@*>(ptr);
-  return this_@LTOPOLOGY@@LCLASS@->@UB_EXACT@(*@LTOPOLOGY@@LCLASS@);
+  return this_@LTOPOLOGY@@LCLASS@->upper_bound_assign_if_exact(*@LTOPOLOGY@@LCLASS@);
 }
 
 ')
@@ -148,8 +148,8 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_@1CLASS@_relation_1with__Lppl_1java_@1U
  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
   @CLASS@* this_@LCLASS@ = reinterpret_cast<@CLASS@*>(this_ptr);
   @URELATION_REPRESENT@ c = build_ppl_@RELATION_REPRESENT@(env, j_@RELATION_REPRESENT@);
-  Poly_Con_Relation pcr = this_@LCLASS@->relation_with(c);
-  return build_ppl_poly_con_relation(env, pcr);
+  Poly_@UALT_RELATION_REPRESENT@_Relation pcr = this_@LCLASS@->relation_with(c);
+  return build_ppl_poly_@ALT_RELATION_REPRESENT@_relation(env, pcr);
 }
 
 ')
@@ -296,10 +296,13 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 %<--%<--%<-- ppl_java_@CLASS@.cc
 JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_add_1@1ADD_REPRESENT@
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_@ADD_REPRESENT@) {
-  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
-  @CLASS@* this_@LCLASS@ = reinterpret_cast<@CLASS@*>(this_ptr);
-  @UADD_REPRESENT@ c = build_ppl_@ADD_REPRESENT@(env, j_@ADD_REPRESENT@);
-  this_@LCLASS@->add_@ADD_REPRESENT@(c);
+  try {
+    jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+    @CLASS@* this_@LCLASS@ = reinterpret_cast<@CLASS@*>(this_ptr);
+    @UADD_REPRESENT@ c = build_ppl_@ADD_REPRESENT@(env, j_@ADD_REPRESENT@);
+    this_@LCLASS@->add_@ADD_REPRESENT@(c);
+  }
+  CATCH_ALL;
 }
 
 ')
@@ -309,10 +312,14 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 %<--%<--%<-- ppl_java_@CLASS@.cc
 JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_add_1@1ADD_REPRESENT@_1and_1minimize
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_@ADD_REPRESENT@) {
-  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
-  @CLASS@* this_@LCLASS@ = reinterpret_cast<@CLASS@*>(this_ptr);
-  @UADD_REPRESENT@ c = build_ppl_@ADD_REPRESENT@(env, j_@ADD_REPRESENT@);
-  return this_@LCLASS@->add_@ADD_REPRESENT@_and_minimize(c);
+  try {
+    jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+    @CLASS@* this_@LCLASS@ = reinterpret_cast<@CLASS@*>(this_ptr);
+    @UADD_REPRESENT@ c = build_ppl_@ADD_REPRESENT@(env, j_@ADD_REPRESENT@);
+    return this_@LCLASS@->add_@ADD_REPRESENT@_and_minimize(c);
+  }
+  CATCH_ALL;
+  return false;
 }
 
 ')
@@ -491,7 +498,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_add_1space_1dimensions_1and_1@1EM
 (JNIEnv* env, jobject j_this_@LCLASS@, jlong dim) {
  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
  @CLASS@* this_@LCLASS@ = reinterpret_cast<@CLASS@*>(this_ptr);
- this_@LCLASS@->add_space_dimensions_and_@EMBEDPROJECT@(dim);
+ this_@LCLASS@->add_space_dimensions_@EMBEDPROJECT@(dim);
 }
 
 ')
