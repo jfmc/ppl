@@ -82,11 +82,11 @@ j_long_to_j_long_class(JNIEnv* env, const jint& jlong_value);
 // Converts a PPL Poly_Gen_Relation to a Java Poly_Gen_Relation.
 jobject
 build_java_poly_gen_relation(JNIEnv* env,
-			  Poly_Gen_Relation& pcr);
+			     Poly_Gen_Relation& pcr);
 
 // Converts a PPL Poly_Con_Relation to a Java Poly_Con_Relation.
 jobject
-build_ppl_poly_con_relation(JNIEnv* env,
+build_java_poly_con_relation(JNIEnv* env,
 			    Poly_Con_Relation& pgr);
 
 // Converts a Java variables set to a PPL variables set.

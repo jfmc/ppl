@@ -73,7 +73,7 @@ build_java_poly_gen_relation(JNIEnv* env,
 }
 
 jobject
-build_ppl_poly_con_relation(JNIEnv* env,
+build_java_poly_con_relation(JNIEnv* env,
 			    Poly_Con_Relation& r) {
   jclass j_poly_con_relation_class
     = env->FindClass("ppl_java/Poly_Con_Relation");
