@@ -25,7 +25,7 @@ m4_define(`m4_class_build_cpp_object3_code',
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    public C_Polyhedron(long num_dimensions,
+    public @TOPOLOGY@@CLASS@(long num_dimensions,
 			Degenerate_Element kind) {
 	build_cpp_object(num_dimensions, kind);
     }
@@ -70,7 +70,7 @@ m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
 m4_define(`ppl_@CLASS@_swap_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void swap(Polyhedron y);
+    public native void swap(@CLASS@ y);
 
 ')
 
