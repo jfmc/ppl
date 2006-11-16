@@ -769,7 +769,7 @@ bool valid = ${instantiation}::valid_instantiation();
   done
   CPPFLAGS="$ac_save_CPPFLAGS"
   required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ,]]/_/g'`
-  required_instantiations_java_sources=`echo "${required_instantiations_canonical_names}" | sed -e 's/@/.java /g' -e 's/$/.java/g'`
+  required_instantiations_java_sources=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' | sed -e 's/@/.java /g' -e 's/$/.java/g'`
   AC_MSG_RESULT([${required_instantiations}])
   ;;
 esac
