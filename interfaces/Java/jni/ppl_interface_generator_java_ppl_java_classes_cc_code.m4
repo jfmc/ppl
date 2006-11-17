@@ -122,7 +122,7 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_@1CLASS@_@1GET_REPRESENT@s
   return build_java_@GET_REPRESENT@_system(env, this_@LCLASS@->@GET_REPRESENT@s());
   }
   CATCH_ALL;
-  jobject null;
+  jobject null = 0;
   return null;
 }
 
@@ -139,7 +139,7 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_@1CLASS@_minimized_1@UGET_REPRESENT@s
 				   this_@LCLASS@->minimized_@GET_REPRESENT@s());
   }
   CATCH_ALL;
-  jobject null;
+  jobject null = 0;
   return null;
 }
 
@@ -157,7 +157,7 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_@1CLASS@_relation_1with__Lppl_1java_@1U
   return build_java_poly_@ALT_RELATION_REPRESENT@_relation(env, pcr);
   }
   CATCH_ALL;
-  jobject null;
+  jobject null = 0;
   return null;
 }
 
