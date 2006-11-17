@@ -1546,6 +1546,8 @@ private:
   /*! \brief
     Adds to the Octagonal_Shape the constraint
     \f$\mathrm{var} \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$.
+
+    Note that the coefficient of \p var in \p expr is null.
   */
   void refine(const Variable var, const Relation_Symbol relsym,
 	      const Linear_Expression& expr,
