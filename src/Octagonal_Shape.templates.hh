@@ -2924,6 +2924,551 @@ Octagonal_Shape<T>
 
 template <typename T>
 void
+Octagonal_Shape<T>::refine(const Variable var,
+		    const Relation_Symbol relsym,
+		    const Linear_Expression& expr,
+		    Coefficient_traits::const_reference denominator) {
+  using Implementation::BD_Shapes::div_round_up;
+
+  assert(denominator != 0);
+  const dimension_type expr_space_dim = expr.space_dimension();
+  assert(space_dim >= expr_space_dim);
+  const dimension_type var_id = var.id();
+  assert(var_id <= space_dim);
+  assert(expr.coefficient(var) == 0);
+  assert(relsym != LESS_THAN && relsym != GREATER_THAN);
+
+  const Coefficient& b = expr.inhomogeneous_term();
+  // Number of non-zero coefficients in `expr': will be set to
+  // 0, 1, or 2, the latter value meaning any value greater than 1.
+  dimension_type t = 0;
+
+  // Variable index of the last non-zero coefficient in `expr', if any.
+  dimension_type w_id = 0;
+
+  // Get information about the number of non-zero coefficients in `expr'.
+  for (dimension_type i = expr_space_dim; i-- > 0; )
+    if (expr.coefficient(Variable(i)) != 0)
+      if (t++ == 1)
+	break;
+      else
+	w_id = i;
+
+  // Now we know the form of `expr':
+  // - If t == 0, then expr == b, with `b' a constant;
+  // - If t == 1, then expr == a*j + b, where `j != v';
+  // - If t == 2, the `expr' is of the general form.
+  typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
+  typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
+  typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
+  typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
+
+  const Row_Iterator m_begin = matrix.row_begin();
+  const dimension_type n_var = 2*var_id;
+  TEMP_INTEGER(minus_den);
+  neg_assign(minus_den, denominator);
+
+  // Since we are only able to record octagonal differences, we can
+  // precisely deal with the case of a single variable only if its
+  // coefficient (taking into account the denominator) is 1.
+  // If this is not the case, we fall back to the general case
+  // so as to over-approximate the constraint.
+  if (t == 1 && expr.coefficient(Variable(w_id)) != denominator
+      && expr.coefficient(Variable(w_id)) != minus_den)
+    t = 2;
+
+  if (t == 0) {
+    // Case 1: expr == b.
+    TEMP_INTEGER(two_b);
+    two_b = 2*b;
+    switch (relsym) {
+    case EQUAL:
+      // Add the constraint `var == b/denominator'.
+      add_octagonal_constraint(n_var+1, n_var, two_b, denominator);
+      add_octagonal_constraint(n_var, n_var+1, two_b, minus_den);
+      break;
+    case LESS_THAN_OR_EQUAL:
+      // Add the constraint `var <= b/denominator'.
+      add_octagonal_constraint(n_var+1, n_var, two_b, denominator);
+      break;
+    case GREATER_THAN_OR_EQUAL:
+      // Add the constraint `var >= b/denominator',
+      // i.e., `-var <= -b/denominator',
+      add_octagonal_constraint(n_var, n_var+1, two_b, minus_den);
+      break;
+    default:
+      // We already dealt with the other cases.
+      throw std::runtime_error("PPL internal error");
+      break;
+    }
+  }
+  else if (t == 1) {
+    // Value of the one and only non-zero coefficient in `expr'.
+    const Coefficient& w_coeff = expr.coefficient(Variable(w_id));
+    N d;
+    const dimension_type n_w = 2*w_id;
+    switch (relsym) {
+    case EQUAL:
+      if (w_coeff == denominator)
+	// Add the new constraint `var - w = b/denominator'.
+	if (var_id < w_id) {
+	  add_octagonal_constraint(n_w, n_var, b, denominator);
+	  add_octagonal_constraint(n_w+1, n_var+1, b, minus_den);
+	}
+	else {
+	  add_octagonal_constraint(n_var+1, n_w+1, b, denominator);
+	  add_octagonal_constraint(n_var, n_w, b, minus_den);
+	}
+      else
+	// Add the new constraint `var + w = b/denominator'.
+	if (var_id < w_id) {
+	  add_octagonal_constraint(n_w+1, n_var, b, denominator);
+	  add_octagonal_constraint(n_w, n_var+1, b, minus_den);
+	}
+	else {
+	  add_octagonal_constraint(n_var+1, n_w, b, denominator);
+	  add_octagonal_constraint(n_var, n_w+1, b, minus_den);
+	}
+      break;
+    case LESS_THAN_OR_EQUAL:
+      div_round_up(d, b, denominator);
+      // Note that: `w_id != v', so that `expr' is of the form
+      // w_coeff * w + b, with `w_id != v'.
+      if (w_coeff == denominator) {
+	// Add the new constraints `v - w <= b/denominator'.
+	if (var_id < w_id)
+	  add_octagonal_constraint(n_w, n_var, d);
+	else
+	  add_octagonal_constraint(n_var+1, n_w+1, d);
+      }
+      else if (w_coeff == minus_den) {
+	// Add the new constraints `v + w <= b/denominator'.
+	if (var_id < w_id)
+	  add_octagonal_constraint(n_w+1, n_var, d);
+	else
+	  add_octagonal_constraint(n_var+1, n_w, d);
+      }
+      break;
+
+    case GREATER_THAN_OR_EQUAL:
+      div_round_up(d, b, minus_den);
+      // Note that: `w_id != v', so that `expr' is of the form
+      // w_coeff * w + b, with `w_id != v'.
+      if (w_coeff == denominator) {
+    	// Add the new constraint `v - w >= b/denominator',
+    	// i.e.,  `-v + w <= -b/denominator'.
+	if (var_id < w_id)
+	  add_octagonal_constraint(n_w+1, n_var+1, d);
+	else
+	  add_octagonal_constraint(n_var, n_w, d);
+      }
+      else if (w_coeff == minus_den) {
+	// Add the new constraints `v + w >= b/denominator',
+	// i.e.,  `-v - w <= -b/denominator'.
+	if (var_id < w_id)
+	  add_octagonal_constraint(n_w, n_var+1, d);
+	else
+	  add_octagonal_constraint(n_var, n_w+1, d);
+      }
+      break;
+
+    default:
+      // We already dealt with the other cases.
+      throw std::runtime_error("PPL internal error");
+      break;
+    }
+  }
+  else {
+    // Here t == 2, so that
+    // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2.
+    const bool is_sc = (denominator > 0);
+    TEMP_INTEGER(minus_b);
+    neg_assign(minus_b, b);
+    const Coefficient& sc_b = is_sc ? b : minus_b;
+    const Coefficient& minus_sc_b = is_sc ? minus_b : b;
+    const Coefficient& sc_den = is_sc ? denominator : minus_den;
+    const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
+    // NOTE: here, for optimization purposes, `minus_expr' is only assigned
+    // when `denominator' is negative. Do not use it unless you are sure
+    // it has been correctly assigned.
+    Linear_Expression minus_expr;
+    if (!is_sc)
+      minus_expr = -expr;
+    const Linear_Expression& sc_expr = is_sc ? expr : minus_expr;
+
+    N sum;
+    // Index of variable that is unbounded in `this'.
+    // (The initialization is just to quiet a compiler warning.)
+    dimension_type pinf_index = 0;
+    // Number of unbounded variables found.
+    dimension_type pinf_count = 0;
+
+    switch (relsym) {
+    case EQUAL:
+      {
+	N neg_sum;
+	// Index of variable that is unbounded in `this'.
+	// (The initialization is just to quiet a compiler warning.)
+	dimension_type neg_pinf_index = 0;
+	// Number of unbounded variables found.
+	dimension_type neg_pinf_count = 0;
+
+	// Approximate the inhomogeneous term.
+	assign_r(sum, sc_b, ROUND_UP);
+	assign_r(neg_sum, minus_sc_b, ROUND_UP);
+
+	// Approximate the homogeneous part of `sc_expr'.
+	// Note: indices above `w' can be disregarded, as they all have
+	// a zero coefficient in `sc_expr'.
+	for (Row_iterator m_iter = m_begin, m_iter_end = m_iter + (2*w_id) + 2;
+	     m_iter != m_iter_end; ) {
+	  const dimension_type n_i = m_iter.index();
+	  const dimension_type id = n_i/2;
+	  Row_reference m_i = *m_iter;
+	  ++m_iter;
+	  Row_reference m_ci = *m_iter;
+	  ++m_iter;
+	  const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
+	  const int sign_i = sgn(sc_i);
+	  if (sign_i > 0) {
+	    N coeff_i;
+	    assign_r(coeff_i, sc_i, ROUND_UP);
+	    // Approximating `sc_expr'.
+	    if (pinf_count <= 1) {
+	      const N& double_approx_i = m_ci[n_i];
+	      if (!is_plus_infinity(double_approx_i)) {
+		N approx_i;
+		div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
+		add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
+	      }
+	      else {
+		++pinf_count;
+		pinf_index = id;
+	      }
+	    }
+	    // Approximating `-sc_expr'.
+	    if (neg_pinf_count <= 1) {
+	      const N& double_approx_minus_i = m_i[n_i+1];
+	      if (!is_plus_infinity(double_approx_minus_i)) {
+		N approx_minus_i;
+		div2exp_assign_r(approx_minus_i,
+				 double_approx_minus_i, 1, ROUND_UP);
+		add_mul_assign_r(neg_sum, coeff_i, approx_minus_i, ROUND_UP);
+	      }
+	      else {
+		++neg_pinf_count;
+		neg_pinf_index = id;
+	      }
+	    }
+	  }
+	  else if (sign_i < 0) {
+	    TEMP_INTEGER(minus_sc_i);
+	    neg_assign_r(minus_sc_i, sc_i, ROUND_NOT_NEEDED);
+	    N minus_coeff_i;
+	    assign_r(minus_coeff_i, minus_sc_i, ROUND_UP);
+	    // Approximating `sc_expr'.
+	    if (pinf_count <= 1) {
+	      const N& double_approx_minus_i = m_i[n_i+1];
+	      if (!is_plus_infinity(double_approx_minus_i)) {
+		N approx_minus_i;
+		div2exp_assign_r(approx_minus_i,
+				 double_approx_minus_i, 1, ROUND_UP);
+		add_mul_assign_r(sum,
+				 minus_coeff_i, approx_minus_i, ROUND_UP);
+	      }
+	      else {
+		++pinf_count;
+		pinf_index = id;
+	      }
+	    }
+	    // Approximating `-sc_expr'.
+	    if (neg_pinf_count <= 1) {
+	      const N& double_approx_i = m_ci[n_i];
+	      if (!is_plus_infinity(double_approx_i)) {
+		N approx_i;
+		div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
+		add_mul_assign_r(neg_sum, minus_coeff_i, approx_i, ROUND_UP);
+	      }
+	      else {
+		++neg_pinf_count;
+		neg_pinf_index = id;
+	      }
+	    }
+	  }
+	}
+	// Return immediately if no approximation could be computed.
+	if (pinf_count > 1 && neg_pinf_count > 1) {
+	  assert(OK());
+	  return;
+	}
+
+	// In the following, strong closure will be definitely lost.
+	status.reset_strongly_closed();
+
+	// Before computing quotients, the denominator should be approximated
+	// towards zero. Since `sc_den' is known to be positive, this amounts
+	// to rounding downwards, which is achieved as usual by rounding
+	//  upwards `minus_sc_den' and negating again the result.
+	N down_sc_den;
+	assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+	neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
+
+	// Exploit the upper approximation, if possible.
+	if (pinf_count <= 1) {
+	  // Compute quotient (if needed).
+	  if (down_sc_den != 1)
+	    div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+	  // Add the upper bound constraint, if meaningful.
+	  if (pinf_count == 0) {
+	    // Add the constraint `v <= sum'.
+	    N double_sum;
+	    mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+	    matrix[n_var+1][n_var] = double_sum;
+	    // Deduce constraints of the form `v +/- u', where `u != v'.
+	    deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
+	  }
+	  else
+	    // Here `pinf_count == 1'.
+	    if (pinf_index != var_id) {
+	      const Coefficient& ppi =
+		sc_expr.coefficient(Variable(pinf_index));
+	      if (ppi == sc_den)
+		// Add the constraint `v - pinf_index <= sum'.
+		if (var_id < pinf_index)
+		  matrix[2*pinf_index][n_var] = sum;
+		else
+		  matrix[n_var+1][2*pinf_index+1] = sum;
+	      else
+		if (ppi == minus_sc_den)
+		  // Add the constraint `v + pinf_index <= sum'.
+		  if (var_id < pinf_index)
+		    matrix[2*pinf_index+1][n_var] = sum;
+		  else
+		    matrix[n_var+1][2*pinf_index] = sum;
+	    }
+	}
+
+	// Exploit the lower approximation, if possible.
+	if (neg_pinf_count <= 1) {
+	  // Compute quotient (if needed).
+	  if (down_sc_den != 1)
+	    div_assign_r(neg_sum, neg_sum, down_sc_den, ROUND_UP);
+	  // Add the lower bound constraint, if meaningful.
+	  if (neg_pinf_count == 0) {
+	    // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
+	    N double_neg_sum = neg_sum;
+	    mul2exp_assign_r(double_neg_sum, neg_sum, 1, ROUND_IGNORE);
+	    matrix[n_var][n_var+1] = double_neg_sum;
+	    // Deduce constraints of the form `-v +/- u', where `u != v'.
+	    deduce_minus_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, neg_sum);
+	  }
+	  else
+	    // Here `neg_pinf_count == 1'.
+	    if (neg_pinf_index != var_id) {
+	      const Coefficient& npi =
+		sc_expr.coefficient(Variable(neg_pinf_index));
+	      if (npi == sc_den)
+		// Add the constraint `v - neg_pinf_index >= -neg_sum',
+		// i.e., `neg_pinf_index - v <= neg_sum'.
+		if (neg_pinf_index < var_id)
+		  matrix[n_var][2*neg_pinf_index] = neg_sum;
+		else
+		  matrix[2*neg_pinf_index+1][n_var+1] = neg_sum;
+	      else
+		if (npi == minus_sc_den)
+		  // Add the constraint `v + neg_pinf_index >= -neg_sum',
+		  // i.e., `-neg_pinf_index - v <= neg_sum'.
+		  if (neg_pinf_index < var_id)
+		    matrix[n_var][2*neg_pinf_index+1] = neg_sum;
+		  else
+		    matrix[2*neg_pinf_index][n_var+1] = neg_sum;
+	    }
+	}
+	break;
+      }
+
+    case LESS_THAN_OR_EQUAL:
+      {
+	// Compute an upper approximation for `expr' into `sum',
+	// taking into account the sign of `denominator'.
+
+	// Approximate the inhomogeneous term.
+	assign_r(sum, sc_b, ROUND_UP);
+
+	// Approximate the homogeneous part of `sc_expr'.
+	// Note: indices above `w_id' can be disregarded, as they all have
+	// a zero coefficient in `expr'.
+	for (Row_Iterator m_iter = m_begin, m_end = m_iter + (2*w_id) + 2;
+	     m_iter != m_end; ) {
+	  const dimension_type n_i = m_iter.index();
+	  const dimension_type id = n_i/2;
+	  Row_Reference m_i = *m_iter;
+	  ++m_iter;
+	  Row_Reference m_ci = *m_iter;
+	  ++m_iter;
+	  const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
+	  const int sign_i = sgn(sc_i);
+	  if (sign_i == 0)
+	    continue;
+	  // Choose carefully: we are approximating `sc_expr'.
+	  const N& double_approx_i = (sign_i > 0) ? m_ci[n_i] : m_i[n_i+1];
+	  if (is_plus_infinity(double_approx_i)) {
+	    if (++pinf_count > 1)
+	      break;
+	    pinf_index = id;
+	    continue;
+	  }
+	  N coeff_i;
+	  if (sign_i > 0)
+	    assign_r(coeff_i, sc_i, ROUND_UP);
+	  else {
+	    TEMP_INTEGER(minus_sc_i);
+	    neg_assign(minus_sc_i, sc_i);
+	    assign_r(coeff_i, minus_sc_i, ROUND_UP);
+	  }
+	  N approx_i;
+	  div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
+	  add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
+	}
+	// Divide by the (sign corrected) denominator (if needed).
+	if (sc_den != 1) {
+	  // Before computing the quotient, the denominator should be
+	  // approximated towards zero. Since `sc_den' is known to be
+	  // positive, this amounts to rounding downwards, which is achieved
+	  // by rounding upwards `minus_sc-den' and negating again the result.
+	  N down_sc_den;
+	  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+	  neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
+	  div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+	}
+
+	if (pinf_count == 0) {
+	  // Add the constraint `v <= sum'.
+	  N double_sum = sum;
+	  mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+	  add_octagonal_constraint(n_var+1, n_var, double_sum);
+	  // Deduce constraints of the form `v +/- u', where `u != v'.
+	  deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
+	}
+	else if (pinf_count == 1) {
+	  dimension_type pinf_ind = 2*pinf_index;
+	  if (expr.coefficient(Variable(pinf_index)) == denominator ) {
+	    // Add the constraint `v - pinf_index <= sum'.
+	    if (var_id < pinf_index)
+	      add_octagonal_constraint(pinf_ind, n_var, sum);
+	    else
+	      add_octagonal_constraint(n_var+1, pinf_ind+1, sum);
+	  }
+	  else {
+	    if (expr.coefficient(Variable(pinf_index)) == minus_den) {
+	      // Add the constraint `v + pinf_index <= sum'.
+	      if (var_id < pinf_index)
+		add_octagonal_constraint(pinf_ind+1, n_var, sum);
+	      else
+		add_octagonal_constraint(n_var+1, pinf_ind, sum);
+	    }
+	  }
+	}
+	break;
+      }
+
+    case GREATER_THAN_OR_EQUAL:
+      {
+	// Compute an upper approximation for `-sc_expr' into `sum'.
+	// Note: approximating `-sc_expr' from above and then negating the
+	// result is the same as approximating `sc_expr' from below.
+
+	// Approximate the inhomogeneous term.
+	assign_r(sum, minus_sc_b, ROUND_UP);
+
+	// Approximate the homogeneous part of `-sc_expr'.
+	for (Row_Iterator m_iter = m_begin, m_end = m_iter + (2*w_id) + 2;
+	     m_iter != m_end; ) {
+	  const dimension_type n_i = m_iter.index();
+	  const dimension_type id = n_i/2;
+	  Row_Reference m_i = *m_iter;
+	  ++m_iter;
+	  Row_Reference m_ci = *m_iter;
+	  ++m_iter;
+	  const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
+	  const int sign_i = sgn(sc_i);
+	  if (sign_i == 0)
+	    continue;
+	  // Choose carefully: we are approximating `-sc_expr'.
+	  const N& double_approx_i = (sign_i > 0) ? m_i[n_i+1] : m_ci[n_i];
+	  if (is_plus_infinity(double_approx_i)) {
+	    if (++pinf_count > 1)
+	      break;
+	    pinf_index = id;
+	    continue;
+	  }
+	  N coeff_i;
+	  if (sign_i > 0)
+	    assign_r(coeff_i, sc_i, ROUND_UP);
+	  else {
+	    TEMP_INTEGER(minus_sc_i);
+	    neg_assign(minus_sc_i, sc_i);
+	    assign_r(coeff_i, minus_sc_i, ROUND_UP);
+	  }
+	  N approx_i;
+	  div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
+	  add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
+	}
+
+	// Divide by the (sign corrected) denominator (if needed).
+	if (sc_den != 1) {
+	  // Before computing the quotient, the denominator should be
+	  // approximated towards zero. Since `sc_den' is known to be positive,
+	  // this amounts to rounding downwards, which is achieved by rounding
+	  // upwards `minus_sc_den' and negating again the result.
+	  N down_sc_den;
+	  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+	  neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
+	  div_assign_r(sum, sum, down_sc_den, ROUND_UP);
+	}
+
+	if (pinf_count == 0) {
+	  // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
+	  N double_sum = sum;
+	  mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
+	  add_octagonal_constraint(n_var, n_var+1, double_sum);
+	  // Deduce constraints of the form `-v +/- u', where `u != v'.
+	  deduce_minus_v_pm_u_bounds(var_id, pinf_index, sc_expr, sc_den, sum);
+	}
+	else if (pinf_count == 1) {
+	  dimension_type pinf_ind = 2*pinf_index;
+	  if (expr.coefficient(Variable(pinf_index)) == denominator) {
+	    // Add the constraint `v - pinf_index >= -sum',
+	    // i.e., `pinf_index - v <= sum'.
+	    if (pinf_index < var_id)
+	      add_octagonal_constraint(n_var, pinf_ind, sum);
+	    else
+	      add_octagonal_constraint(pinf_ind+1, n_var, sum);
+	  }
+	  else {
+	    if (expr.coefficient(Variable(pinf_index)) == minus_den) {
+	      // Add the constraint `v + pinf_index >= -sum',
+	      // i.e., `-pinf_index - v <= sum'.
+	      if (pinf_index < var_id)
+		add_octagonal_constraint(n_var, pinf_ind+1, sum);
+	      else
+		add_octagonal_constraint(pinf_ind, n_var+1, sum);
+	    }
+	  }
+	}
+	break;
+      }
+
+    default:
+      // We already dealt with the other cases.
+      throw std::runtime_error("PPL internal error");
+      break;
+    }
+  }
+}
+
+template <typename T>
+void
 Octagonal_Shape<T>::affine_image(const Variable var,
 				 const Linear_Expression& expr,
 				 Coefficient_traits::const_reference
@@ -4470,323 +5015,7 @@ Octagonal_Shape<T>
   // be easily computed by inverting the affine relation.
   // Shrink the Octagonal_Shape by adding the constraint induced
   // by the affine relation.
-  const Coefficient& b = expr.inhomogeneous_term();
-
-  // Number of non-zero coefficients in `expr': will be set to
-  // 0, 1, or 2, the latter value meaning any value greater than 1.
-  dimension_type t = 0;
-
-  // Variable index of the last non-zero coefficient in `expr', if any.
-  dimension_type w_id = 0;
-
-  // Get information about the number of non-zero coefficients in `expr'.
-  for (dimension_type i = expr_space_dim; i-- > 0; )
-    if (expr.coefficient(Variable(i)) != 0)
-      if (t++ == 1)
-	break;
-      else
-	w_id = i;
-
-  // Now we know the form of `expr':
-  // - If t == 0, then expr == b, with `b' a constant;
-  // - If t == 1, then expr == a*j + b, where `j != v';
-  // - If t == 2, the `expr' is of the general form.
-
-  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
-
-  const Row_Iterator m_begin = matrix.row_begin();
-  const dimension_type n_var = 2*var_id;
-  TEMP_INTEGER(minus_den);
-  neg_assign(minus_den, denominator);
-
-  // Since we are only able to record octagonal differences, we can
-  // precisely deal with the case of a single variable only if its
-  // coefficient (taking into account the denominator) is 1.
-  // If this is not the case, we fall back to the general case
-  // so as to over-approximate the constraint.
-  if (t == 1 && expr.coefficient(Variable(w_id)) != denominator
-      && expr.coefficient(Variable(w_id)) != minus_den)
-    t = 2;
-
-  if (t == 0) {
-    // Case 1: expr == b.
-    TEMP_INTEGER(two_b);
-    two_b = 2*b;
-    switch (relsym) {
-    case LESS_THAN_OR_EQUAL:
-      // Add the constraint `var <= b/denominator'.
-      add_octagonal_constraint(n_var+1, n_var, two_b, denominator);
-      break;
-    case GREATER_THAN_OR_EQUAL:
-      // Add the constraint `var >= b/denominator',
-      // i.e., `-var <= -b/denominator',
-      add_octagonal_constraint(n_var, n_var+1, two_b, minus_den);
-      break;
-    default:
-      // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
-      break;
-    }
-  }
-  else if (t == 1) {
-    // Value of the one and only non-zero coefficient in `expr'.
-    const Coefficient& w_coeff = expr.coefficient(Variable(w_id));
-    N d;
-    const dimension_type n_w = 2*w_id;
-    switch (relsym) {
-    case LESS_THAN_OR_EQUAL:
-      div_round_up(d, b, denominator);
-      // Note that: `w_id != v', so that `expr' is of the form
-      // w_coeff * w + b, with `w_id != v'.
-      if (w_coeff == denominator) {
-	// Add the new constraints `v - w <= b/denominator'.
-	if (var_id < w_id)
-	  add_octagonal_constraint(n_w, n_var, d);
-	else
-	  add_octagonal_constraint(n_var+1, n_w+1, d);
-      }
-      else if (w_coeff == minus_den) {
-	// Add the new constraints `v + w <= b/denominator'.
-	if (var_id < w_id)
-	  add_octagonal_constraint(n_w+1, n_var, d);
-	else
-	  add_octagonal_constraint(n_var+1, n_w, d);
-      }
-      break;
-
-    case GREATER_THAN_OR_EQUAL:
-      div_round_up(d, b, minus_den);
-      // Note that: `w_id != v', so that `expr' is of the form
-      // w_coeff * w + b, with `w_id != v'.
-      if (w_coeff == denominator) {
-    	// Add the new constraint `v - w >= b/denominator',
-    	// i.e.,  `-v + w <= -b/denominator'.
-	if (var_id < w_id)
-	  add_octagonal_constraint(n_w+1, n_var+1, d);
-	else
-	  add_octagonal_constraint(n_var, n_w, d);
-      }
-      else if (w_coeff == minus_den) {
-	// Add the new constraints `v + w >= b/denominator',
-	// i.e.,  `-v - w <= -b/denominator'.
-	if (var_id < w_id)
-	  add_octagonal_constraint(n_w, n_var+1, d);
-	else
-	  add_octagonal_constraint(n_var, n_w+1, d);
-      }
-      break;
-
-    default:
-      // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
-      break;
-    }
-  }
-  else {
-    // Here t == 2, so that
-    // expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2.
-    const bool is_sc = (denominator > 0);
-    TEMP_INTEGER(minus_b);
-    neg_assign(minus_b, b);
-    const Coefficient& sc_b = is_sc ? b : minus_b;
-    const Coefficient& minus_sc_b = is_sc ? minus_b : b;
-    const Coefficient& sc_den = is_sc ? denominator : minus_den;
-    const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
-    // NOTE: here, for optimization purposes, `minus_expr' is only assigned
-    // when `denominator' is negative. Do not use it unless you are sure
-    // it has been correctly assigned.
-    Linear_Expression minus_expr;
-    if (!is_sc)
-      minus_expr = -expr;
-    const Linear_Expression& sc_expr = is_sc ? expr : minus_expr;
-
-    N sum;
-    // Index of variable that is unbounded in `this'.
-    // (The initialization is just to quiet a compiler warning.)
-    dimension_type pinf_index = 0;
-    // Number of unbounded variables found.
-    dimension_type pinf_count = 0;
-
-    switch (relsym) {
-    case LESS_THAN_OR_EQUAL:
-      {
-	// Compute an upper approximation for `expr' into `sum',
-	// taking into account the sign of `denominator'.
-
-	// Approximate the inhomogeneous term.
-	assign_r(sum, sc_b, ROUND_UP);
-
-	// Approximate the homogeneous part of `sc_expr'.
-	// Note: indices above `w_id' can be disregarded, as they all have
-	// a zero coefficient in `expr'.
-	for (Row_Iterator m_iter = m_begin, m_end = m_iter + (2*w_id) + 2;
-	     m_iter != m_end; ) {
-	  const dimension_type n_i = m_iter.index();
-	  const dimension_type id = n_i/2;
-	  Row_Reference m_i = *m_iter;
-	  ++m_iter;
-	  Row_Reference m_ci = *m_iter;
-	  ++m_iter;
-	  const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
-	  const int sign_i = sgn(sc_i);
-	  if (sign_i == 0)
-	    continue;
-	  // Choose carefully: we are approximating `sc_expr'.
-	  const N& double_approx_i = (sign_i > 0) ? m_ci[n_i] : m_i[n_i+1];
-	  if (is_plus_infinity(double_approx_i)) {
-	    if (++pinf_count > 1)
-	      break;
-	    pinf_index = id;
-	    continue;
-	  }
-	  N coeff_i;
-	  if (sign_i > 0)
-	    assign_r(coeff_i, sc_i, ROUND_UP);
-	  else {
-	    TEMP_INTEGER(minus_sc_i);
-	    neg_assign(minus_sc_i, sc_i);
-	    assign_r(coeff_i, minus_sc_i, ROUND_UP);
-	  }
-	  N approx_i;
-	  div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
-	  add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
-	}
-	// Divide by the (sign corrected) denominator (if needed).
-	if (sc_den != 1) {
-	  // Before computing the quotient, the denominator should be
-	  // approximated towards zero. Since `sc_den' is known to be
-	  // positive, this amounts to rounding downwards, which is achieved
-	  // by rounding upwards `minus_sc-den' and negating again the result.
-	  N down_sc_den;
-	  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-	  neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-	  div_assign_r(sum, sum, down_sc_den, ROUND_UP);
-	}
-
-	if (pinf_count == 0) {
-	  // Add the constraint `v <= sum'.
-	  N double_sum = sum;
-	  mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
-	  add_octagonal_constraint(n_var+1, n_var, double_sum);
-	  // Deduce constraints of the form `v +/- u', where `u != v'.
-	  deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_den, sum);
-	}
-	else if (pinf_count == 1) {
-	  dimension_type pinf_ind = 2*pinf_index;
-	  if (expr.coefficient(Variable(pinf_index)) == denominator ) {
-	    // Add the constraint `v - pinf_index <= sum'.
-	    if (var_id < pinf_index)
-	      add_octagonal_constraint(pinf_ind, n_var, sum);
-	    else
-	      add_octagonal_constraint(n_var+1, pinf_ind+1, sum);
-	  }
-	  else {
-	    if (expr.coefficient(Variable(pinf_index)) == minus_den) {
-	      // Add the constraint `v + pinf_index <= sum'.
-	      if (var_id < pinf_index)
-		add_octagonal_constraint(pinf_ind+1, n_var, sum);
-	      else
-		add_octagonal_constraint(n_var+1, pinf_ind, sum);
-	    }
-	  }
-	}
-	break;
-      }
-
-    case GREATER_THAN_OR_EQUAL:
-      {
-	// Compute an upper approximation for `-sc_expr' into `sum'.
-	// Note: approximating `-sc_expr' from above and then negating the
-	// result is the same as approximating `sc_expr' from below.
-
-	// Approximate the inhomogeneous term.
-	assign_r(sum, minus_sc_b, ROUND_UP);
-
-	// Approximate the homogeneous part of `-sc_expr'.
-	for (Row_Iterator m_iter = m_begin, m_end = m_iter + (2*w_id) + 2;
-	     m_iter != m_end; ) {
-	  const dimension_type n_i = m_iter.index();
-	  const dimension_type id = n_i/2;
-	  Row_Reference m_i = *m_iter;
-	  ++m_iter;
-	  Row_Reference m_ci = *m_iter;
-	  ++m_iter;
-	  const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
-	  const int sign_i = sgn(sc_i);
-	  if (sign_i == 0)
-	    continue;
-	  // Choose carefully: we are approximating `-sc_expr'.
-	  const N& double_approx_i = (sign_i > 0) ? m_i[n_i+1] : m_ci[n_i];
-	  if (is_plus_infinity(double_approx_i)) {
-	    if (++pinf_count > 1)
-	      break;
-	    pinf_index = id;
-	    continue;
-	  }
-	  N coeff_i;
-	  if (sign_i > 0)
-	    assign_r(coeff_i, sc_i, ROUND_UP);
-	  else {
-	    TEMP_INTEGER(minus_sc_i);
-	    neg_assign(minus_sc_i, sc_i);
-	    assign_r(coeff_i, minus_sc_i, ROUND_UP);
-	  }
-	  N approx_i;
-	  div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
-	  add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
-	}
-
-	// Divide by the (sign corrected) denominator (if needed).
-	if (sc_den != 1) {
-	  // Before computing the quotient, the denominator should be
-	  // approximated towards zero. Since `sc_den' is known to be positive,
-	  // this amounts to rounding downwards, which is achieved by rounding
-	  // upwards `minus_sc_den' and negating again the result.
-	  N down_sc_den;
-	  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-	  neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-	  div_assign_r(sum, sum, down_sc_den, ROUND_UP);
-	}
-
-	if (pinf_count == 0) {
-	  // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
-	  N double_sum = sum;
-	  mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
-	  add_octagonal_constraint(n_var, n_var+1, double_sum);
-	  // Deduce constraints of the form `-v +/- u', where `u != v'.
-	  deduce_minus_v_pm_u_bounds(var_id, pinf_index, sc_expr, sc_den, sum);
-	}
-	else if (pinf_count == 1) {
-	  dimension_type pinf_ind = 2*pinf_index;
-	  if (expr.coefficient(Variable(pinf_index)) == denominator) {
-	    // Add the constraint `v - pinf_index >= -sum',
-	    // i.e., `pinf_index - v <= sum'.
-	    if (pinf_index < var_id)
-	      add_octagonal_constraint(n_var, pinf_ind, sum);
-	    else
-	      add_octagonal_constraint(pinf_ind+1, n_var, sum);
-	  }
-	  else {
-	    if (expr.coefficient(Variable(pinf_index)) == minus_den) {
-	      // Add the constraint `v + pinf_index >= -sum',
-	      // i.e., `-pinf_index - v <= sum'.
-	      if (pinf_index < var_id)
-		add_octagonal_constraint(n_var, pinf_ind+1, sum);
-	      else
-		add_octagonal_constraint(pinf_ind, n_var+1, sum);
-	    }
-	  }
-	}
-	break;
-      }
-
-    default:
-      // We already dealt with the other cases.
-      throw std::runtime_error("PPL internal error");
-      break;
-    }
-  }
+  refine(var, relsym, expr, denominator);
 
   // If the shrunk OS is empty, its preimage is empty too; ...
   if (is_empty())
@@ -4998,230 +5227,40 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
   if (marked_empty())
     return;
 
-  const Coefficient& expr_v = lb_expr.coefficient(var);
-  if (expr_v != 0) {
-    // Here `var' occurs in `lb_expr'.
-    // To ease the computation, we add an additional dimension.
-    const Variable new_var = Variable(space_dim);
-    add_space_dimensions_and_embed(1);
-    const Linear_Expression lb_inverse
-      = lb_expr - (expr_v + denominator)*var;
-    TEMP_INTEGER(inverse_den);
-    neg_assign(inverse_den, expr_v);
-    affine_image(new_var, lb_inverse, inverse_den);
-    strong_closure_assign();
-    assert(!marked_empty());
+  if (ub_expr.coefficient(var) == 0) {
+    refine(var, LESS_THAN_OR_EQUAL, ub_expr, denominator);
+    generalized_affine_preimage(var, GREATER_THAN_OR_EQUAL,
+				lb_expr, denominator);
+    return;
+  }
+  if (lb_expr.coefficient(var) == 0) {
+    refine(var, GREATER_THAN_OR_EQUAL, lb_expr, denominator);
     generalized_affine_preimage(var, LESS_THAN_OR_EQUAL,
 				ub_expr, denominator);
-    if (sgn(denominator) == sgn(inverse_den))
-      add_constraint_and_minimize(var >= new_var) ;
-    else
-      add_constraint_and_minimize(var <= new_var);
-    // Remove the temporarily added dimension.
-    remove_higher_space_dimensions(space_dim-1);
     return;
   }
 
-  // Here `lb_var_coefficient == 0', so that the preimage cannot
-  // be easily computed by inverting the affine relation.
-  // Shrink the Octagonal_Shape by adding the constraint induced
-  // by the affine relation.
-  const Coefficient& b = lb_expr.inhomogeneous_term();
-
-  // Number of non-zero coefficients in `lb_expr': will be set to
-  // 0, 1, or 2, the latter value meaning any value greater than 1.
-  dimension_type t = 0;
-
-  // Variable index of the last non-zero coefficient in `lb_expr', if any.
-  dimension_type w_id = 0;
-
-  // Get information about the number of non-zero coefficients in `lb_expr'.
-  for (dimension_type i = lb_space_dim; i-- > 0; )
-    if (lb_expr.coefficient(Variable(i)) != 0)
-      if (t++ == 1)
-	break;
-      else
-	w_id = i;
-
-  // Now we know the form of `lb_expr':
-  // - If t == 0, then lb_expr == b, with `b' a constant;
-  // - If t == 1, then lb_expr == a*j + b, where `j != v' or  `j == v';
-  // - If t == 2, the `lb_expr' is of the general form.
-
-  typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
-  typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
-
-  const Row_Iterator m_begin = matrix.row_begin();
-  const dimension_type n_var = 2*var_id;
-  TEMP_INTEGER(minus_den);
-  neg_assign(minus_den, denominator);
-
-  // Since we are only able to record octagonal differences, we can
-  // precisely deal with the case of a single variable only if its
-  // coefficient (taking into account the denominator) is 1.
-  // If this is not the case, we fall back to the general case
-  // so as to over-approximate the constraint.
-  if (t == 1 && lb_expr.coefficient(Variable(w_id)) != denominator
-      && lb_expr.coefficient(Variable(w_id)) != minus_den)
-    t = 2;
-
-  if (t == 0) {
-    // Case 1: expr == b.
-    TEMP_INTEGER(two_b);
-    two_b = 2*b;
-    // Add the constraint `var >= b/denominator',
-    // i.e., `-var <= -b/denominator',
-    add_octagonal_constraint(n_var, n_var+1, two_b, minus_den);
-
-    generalized_affine_preimage(var, LESS_THAN_OR_EQUAL, ub_expr,
-				denominator);
-    return;
-  }
-  else if (t == 1) {
-    // Value of the one and only non-zero coefficient in `expr'.
-    const Coefficient& w_coeff = lb_expr.coefficient(Variable(w_id));
-    N d;
-    const dimension_type n_w = 2*w_id;
-    div_round_up(d, b, minus_den);
-    // Note that: `w_id != v', so that `expr' is of the form
-    // w_coeff * w + b, with `w_id != v'.
-    if (w_coeff == denominator) {
-      // Add the new constraint `v - w >= b/denominator',
-      // i.e.,  `-v + w <= -b/denominator'.
-      if (var_id < w_id)
-	add_octagonal_constraint(n_w+1, n_var+1, d);
-      else
-	add_octagonal_constraint(n_var, n_w, d);
-    }
-    else if (w_coeff == minus_den) {
-      // Add the new constraints `v + w >= b/denominator',
-      // i.e.,  `-v - w <= -b/denominator'.
-      if (var_id < w_id)
-	add_octagonal_constraint(n_w, n_var+1, d);
-      else
-	add_octagonal_constraint(n_var, n_w+1, d);
-    }
-    // Apply the affine upper bound.
-    generalized_affine_preimage(var,
-				LESS_THAN_OR_EQUAL,
-				ub_expr,
-				denominator);
-    return;
-  }
-  else {
-    // Here t == 2, so that
-    // lb_expr == a_1*x_1 + a_2*x_2 + ... + a_n*x_n + b, where n >= 2.
-    const bool is_sc = (denominator > 0);
-    TEMP_INTEGER(minus_b);
-    neg_assign(minus_b, b);
-    const Coefficient& minus_sc_b = is_sc ? minus_b : b;
-    const Coefficient& sc_den = is_sc ? denominator : minus_den;
-    const Coefficient& minus_sc_den = is_sc ? minus_den : denominator;
-    // NOTE: here, for optimization purposes, `minus_expr' is only assigned
-    // when `denominator' is negative. Do not use it unless you are sure
-    // it has been correctly assigned.
-    Linear_Expression minus_expr;
-    if (!is_sc)
-      minus_expr = -lb_expr;
-    const Linear_Expression& sc_expr = is_sc ? lb_expr : minus_expr;
-
-    N sum;
-    // Index of variable that is unbounded in `this'.
-    // (The initialization is just to quiet a compiler warning.)
-    dimension_type pinf_index = 0;
-    // Number of unbounded variables found.
-    dimension_type pinf_count = 0;
-
-    {
-      // Compute an upper approximation for `-sc_expr' into `sum'.
-      // Note: approximating `-sc_expr' from above and then negating the
-      // result is the same as approximating `sc_expr' from below.
-
-      // Approximate the inhomogeneous term.
-      assign_r(sum, minus_sc_b, ROUND_UP);
-
-      // Approximate the homogeneous part of `-sc_expr'.
-      for (Row_Iterator m_iter = m_begin, m_end = m_iter + (2*w_id) + 2;
-	   m_iter != m_end; ) {
-	const dimension_type n_i = m_iter.index();
-	const dimension_type id = n_i/2;
-	Row_Reference m_i = *m_iter;
-	++m_iter;
-	Row_Reference m_ci = *m_iter;
-	++m_iter;
-	const Coefficient& sc_i = sc_expr.coefficient(Variable(id));
-	const int sign_i = sgn(sc_i);
-	if (sign_i == 0)
-	  continue;
-	// Choose carefully: we are approximating `-sc_expr'.
-	const N& double_approx_i = (sign_i > 0) ? m_i[n_i+1] : m_ci[n_i];
-	if (is_plus_infinity(double_approx_i)) {
-	  if (++pinf_count > 1)
-	    break;
-	  pinf_index = id;
-	  continue;
-	}
-	N coeff_i;
-	if (sign_i > 0)
-	  assign_r(coeff_i, sc_i, ROUND_UP);
-	else {
-	  TEMP_INTEGER(minus_sc_i);
-	  neg_assign(minus_sc_i, sc_i);
-	  assign_r(coeff_i, minus_sc_i, ROUND_UP);
-	}
-	N approx_i;
-	div2exp_assign_r(approx_i, double_approx_i, 1, ROUND_UP);
-	add_mul_assign_r(sum, coeff_i, approx_i, ROUND_UP);
-      }
-
-      // Divide by the (sign corrected) denominator (if needed).
-      if (sc_den != 1) {
-	// Before computing the quotient, the denominator should be
-	// approximated towards zero. Since `sc_den' is known to be positive,
-	// this amounts to rounding downwards, which is achieved by rounding
-	// upwards `minus_sc_den' and negating again the result.
-	N down_sc_den;
-	assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-	neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-	div_assign_r(sum, sum, down_sc_den, ROUND_UP);
-      }
-
-      if (pinf_count == 0) {
-	// Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
-	N double_sum = sum;
-	mul2exp_assign_r(double_sum, sum, 1, ROUND_IGNORE);
-	add_octagonal_constraint(n_var, n_var+1, double_sum);
-	// Deduce constraints of the form `-v +/- u', where `u != v'.
-	deduce_minus_v_pm_u_bounds(var_id, pinf_index, sc_expr, sc_den, sum);
-      }
-      else if (pinf_count == 1) {
-	dimension_type pinf_ind = 2*pinf_index;
-	if (lb_expr.coefficient(Variable(pinf_index)) == denominator) {
-	  // Add the constraint `v - pinf_index >= -sum',
-	  // i.e., `pinf_index - v <= sum'.
-	  if (pinf_index < var_id)
-	    add_octagonal_constraint(n_var, pinf_ind, sum);
-	  else
-	    add_octagonal_constraint(pinf_ind+1, n_var, sum);
-	}
-	else {
-	  if (lb_expr.coefficient(Variable(pinf_index)) == minus_den) {
-	    // Add the constraint `v + pinf_index >= -sum',
-	    // i.e., `-pinf_index - v <= sum'.
-	    if (pinf_index < var_id)
-	      add_octagonal_constraint(n_var, pinf_ind+1, sum);
-	    else
-	      add_octagonal_constraint(pinf_ind, n_var+1, sum);
-	  }
-	}
-      }
-    }
-    // Apply the affine upper bound.
-    generalized_affine_preimage(var,
-    				LESS_THAN_OR_EQUAL,
-    				ub_expr,
-    				denominator);
-  }
+  const Coefficient& expr_v = lb_expr.coefficient(var);
+  // Here `var' occurs in `lb_expr' and `ub_expr'.
+  // To ease the computation, we add an additional dimension.
+  const Variable new_var = Variable(space_dim);
+  add_space_dimensions_and_embed(1);
+  const Linear_Expression lb_inverse
+    = lb_expr - (expr_v + denominator)*var;
+  TEMP_INTEGER(inverse_den);
+  neg_assign(inverse_den, expr_v);
+  affine_image(new_var, lb_inverse, inverse_den);
+  strong_closure_assign();
+  assert(!marked_empty());
+  generalized_affine_preimage(var, LESS_THAN_OR_EQUAL,
+			      ub_expr, denominator);
+  if (sgn(denominator) == sgn(inverse_den))
+    add_constraint_and_minimize(var >= new_var) ;
+  else
+    add_constraint_and_minimize(var <= new_var);
+  // Remove the temporarily added dimension.
+  remove_higher_space_dimensions(space_dim-1);
+  return;
 }
 
 template <typename T>

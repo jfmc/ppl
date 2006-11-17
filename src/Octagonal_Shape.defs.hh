@@ -1543,6 +1543,15 @@ private:
 				Coefficient_traits::const_reference num,
 				Coefficient_traits::const_reference den);
 
+  /*! \brief
+    Adds to the Octagonal_Shape the constraint
+    \f$\mathrm{var} \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$.
+  */
+  void refine(const Variable var, const Relation_Symbol relsym,
+	      const Linear_Expression& expr,
+	      Coefficient_traits::const_reference denominator
+	      = Coefficient_one());
+
   //! Removes all the constraints on variable \p v_id.
   void forget_all_octagonal_constraints(dimension_type v_id);
 
