@@ -432,9 +432,9 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1AFFIMAGE@
 
 ')
 
-m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
+m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `dnl
-JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_generalized_1affine_1preimage__Lppl_1java_Linear_1Expression_2Lppl_1java_Relation_1Symbol_2Lppl_1java_Linear_1Expression_2
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_generalized_1@1AFFIMAGE@__Lppl_1java_Linear_1Expression_2Lppl_1java_Relation_1Symbol_2Lppl_1java_Linear_1Expression_2
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_le_lhs, jobject j_relsym,
  jobject j_le_rhs) {
   try {
@@ -443,7 +443,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_generalized_1affine_1preimage__Lp
  Linear_Expression lhs = build_linear_expression(env, j_le_lhs);
  Linear_Expression rhs = build_linear_expression(env, j_le_rhs);
  Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
- this_@LCLASS@->generalized_affine_preimage(lhs, relsym, rhs);
+ this_@LCLASS@->generalized_@AFFIMAGE@(lhs, relsym, rhs);
   }
   CATCH_ALL;
 }
@@ -469,7 +469,46 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_generalized_1@1AFFIMAGE@__Lppl_1j
 
 ')
 
-m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
+m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
+`dnl
+JNIEXPORT void JNICALL Java_ppl_1java_1Grid_generalized_1@1AFFIMAGE@__Lppl_1java_Linear_1Expression_2Lppl_1java_Relation_1Symbol_2Lppl_1java_Linear_1Expression_2
+(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_le_lhs, jobject j_relsym,
+ jobject j_le_rhs, jobject j_modulus) {
+  try {
+ jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+ @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+ Linear_Expression lhs = build_linear_expression(env, j_le_lhs);
+ Linear_Expression rhs = build_linear_expression(env, j_le_rhs);
+ Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
+ Coefficient modulus = build_ppl_coeff(env, j_modulus);
+ this_@LCLASS@->generalized_@AFFIMAGE@(lhs, relsym, rhs, modulus);
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
+`dnl
+JNIEXPORT void JNICALL Java_ppl_1java_1Grid_generalized_1@1AFFIMAGE@__Lppl_1java_Variable_2Lppl_1java_Relation_1Symbol_2Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2
+(JNIEnv* env, jobject j_this_@LCLASS@, jobject j_variable, jobject j_relsym,
+ jobject j_le , jobject j_coeff, jobject j_modulus) {
+  try {
+ jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+ @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+ Variable v = build_ppl_variable(env, j_variable);
+ Relation_Symbol relsym = build_ppl_relsym(env, j_relsym);
+ Linear_Expression le = build_linear_expression(env, j_le);
+ Coefficient c = build_ppl_coeff(env, j_coeff);
+ Coefficient modulus = build_ppl_coeff(env, j_modulus);
+ this_@LCLASS@->generalized_@AFFIMAGE@(v, relsym, le, c, modulus);
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code',
 `dnl
 JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_bounded_1@1AFFIMAGE@
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_variable, jobject j_le_lhs, jobject j_le_rhs, jobject j_coeff) {
