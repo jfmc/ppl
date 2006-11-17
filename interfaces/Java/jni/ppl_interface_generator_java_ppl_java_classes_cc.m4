@@ -14,6 +14,11 @@ dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
 `#'include "ppl_java_`'m4_this_class`'.h"
+m4_ifelse(m4_this_class, Polyhedron,
+`#'include "ppl_java_C_Polyhedron.h"
+`#'include "ppl_java_NNC_Polyhedron.h"
+)`'dnl
+m4_undefine(`m4_this_class')
 using namespace Parma_Polyhedra_Library;
 ')
 
