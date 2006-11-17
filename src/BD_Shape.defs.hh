@@ -1657,7 +1657,7 @@ private:
     <CODE>true</CODE> if and only if the extremum of \p expr can
     actually be reached in \p * this;
 
-    \param point
+    \param g
     When maximization or minimization succeeds, will be assigned
     a point or closure point where \p expr reaches the
     corresponding extremum value.
@@ -1667,12 +1667,12 @@ private:
 
     If \p *this is empty or \p expr is not bounded in the appropriate
     direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
-    \p included and \p point are left untouched.
+    \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
 	       const bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
-	       Generator& point) const;
+	       Generator& g) const;
 
   //! Maximizes or minimizes \p expr subject to \p *this.
   /*!

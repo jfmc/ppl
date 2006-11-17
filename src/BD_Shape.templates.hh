@@ -2348,7 +2348,7 @@ BD_Shape<T>::refine(const Variable var,
 		    const Linear_Expression& expr,
 		    Coefficient_traits::const_reference denominator) {
   using Implementation::BD_Shapes::div_round_up;
-  // Problem: assertions or exceptions?
+
   assert(denominator != 0);
   const dimension_type space_dim = space_dimension();
   const dimension_type expr_space_dim = expr.space_dimension();
