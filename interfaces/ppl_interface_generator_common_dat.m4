@@ -354,7 +354,7 @@ cpp_class,
 friend,
 intopology,
 topology,
-cpp_disjunct
+cpp_disjunct,
 disjunct,
 build_represent,
 get_represent,
