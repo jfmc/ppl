@@ -131,6 +131,11 @@ build_ppl_generator(JNIEnv* env, const jobject& j_g);
 Parma_Polyhedra_Library::Grid_Generator
 build_ppl_grid_generator(JNIEnv* env, const jobject& j_g);
 
+// FIXME: implement me.
+// Builds a PPL grid generator from a Java grid generator.
+jobject
+build_java_grid_generator(JNIEnv* env, const Grid_Generator& grid_g);
+
 // Get a pointer to the underlined C++ object from a Java object.
 jlong
 get_ptr(JNIEnv* env, const jobject& ppl_object);
@@ -168,6 +173,12 @@ build_java_generator(JNIEnv* env, const Generator& cg);
 jobject
 build_java_constraint_system(JNIEnv* env, const Constraint_System& cs);
 
+// FIXME: implement me
+// Builds a PPL grid generator from a Java grid generator.
+jobject
+build_java_grid_generator_system(JNIEnv* env,
+				  const Grid_Generator_System& grid_g_system);
+
 // Builds a Java generator system from a PPL generator system.
 jobject
 build_java_generator_system(JNIEnv* env, const Generator_System& gs);
@@ -183,6 +194,9 @@ get_le_inhomogeneous_term(JNIEnv* env, const Coefficient& c);
 
 void set_generator(JNIEnv* env, jobject& to_be_set,
 		   const jobject& gen);
+// FIXME: implement me.
+void set_grid_generator(JNIEnv* env, jobject& to_be_set,
+			const jobject& g_gen);
 
 void set_coefficient(JNIEnv* env, jobject& to_be_set,
 		     const jobject& c);
