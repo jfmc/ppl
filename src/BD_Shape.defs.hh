@@ -1711,6 +1711,15 @@ private:
 			  Coefficient_traits::const_reference num,
 			  Coefficient_traits::const_reference den);
 
+  /*! \brief
+    Adds to the BDS the constraint
+    \f$\mathrm{var} \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$.
+  */
+  void refine(const Variable var, const Relation_Symbol relsym,
+	      const Linear_Expression& expr,
+	      Coefficient_traits::const_reference denominator
+	      = Coefficient_one());
+
   //! Removes all the constraints on row/column \p v.
   void forget_all_dbm_constraints(dimension_type v);
   //! Removes all binary constraints on row/column \p v.
