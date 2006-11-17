@@ -250,7 +250,7 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1MAXMIN@__Lppl_1java_Linear_
   Coefficient coeff_den = build_ppl_coeff(env, j_coeff_den);
   Linear_Expression le = build_linear_expression(env, j_le);
   bool b_value;
-  @UGENERATOR@ g = point();
+  @UGENERATOR@ g = @POINT@();
   if(this_@LCLASS@->@MAXMIN@(le, coeff_num, coeff_den, b_value, g)) {
     jobject j_coeff_num_result = build_java_coeff(env, coeff_num);
     jobject j_coeff_den_result = build_java_coeff(env, coeff_den);
