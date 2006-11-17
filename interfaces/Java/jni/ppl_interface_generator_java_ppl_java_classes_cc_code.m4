@@ -180,7 +180,7 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1HAS_PROPERTY@
 
 m4_define(`ppl_@CLASS@_@SIMPLIFY@_code',
 `dnl
-JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@SIMPLIFY@
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1SIMPLIFY@
 (JNIEnv* env, jobject j_this_@LCLASS@) {
   try {
   jlong this_ptr = get_ptr(env, j_this_@LCLASS@);

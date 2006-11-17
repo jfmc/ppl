@@ -646,6 +646,14 @@ void set_generator(JNIEnv* env, jobject& to_be_set,
   env->CallVoidMethod(to_be_set, j_coeff_set_id, gen);
 }
 
+void set_grid_generator(JNIEnv* env, jobject& to_be_set,
+			 const jobject& gen) {
+  jclass j_generator_class = env->FindClass("ppl_java/Grid_Generator");
+  jmethodID j_coeff_set_id = env->GetMethodID(j_generator_class, "set",
+					      "(Lppl_java/Grid_Generator;)V");
+  env->CallVoidMethod(to_be_set, j_coeff_set_id, gen);
+}
+
 void set_coefficient(JNIEnv* env, jobject& to_be_set,
 		     const jobject& c) {
   jclass j_coeff_class = env->FindClass("ppl_java/Coefficient");
@@ -829,6 +837,71 @@ build_java_generator(JNIEnv* env, const Generator& g) {
 }
 
 jobject
+build_java_grid_generator(JNIEnv* env, const Grid_Generator& g) {
+  jclass j_grid_generator_class = env->FindClass("ppl_java/Grid_Generator");
+  jclass j_gen_type_class = env->FindClass("ppl_java/Grid_Generator_Type");
+  jmethodID line_ctr_id =
+    env->GetStaticMethodID(j_grid_generator_class,
+			   "grid_line",
+			   "(Lppl_java/Linear_Expression;)"
+			   "Lppl_java/Grid_Generator;");
+  jmethodID parameter_ctr_id =
+    env->GetStaticMethodID(j_grid_generator_class,
+			   "parameter",
+			   "(Lppl_java/Linear_Expression;"
+			   "Lppl_java/Coefficient;)"
+			   "Lppl_java/Grid_Generator;");
+  jmethodID point_ctr_id =
+    env->GetStaticMethodID(j_grid_generator_class,
+			   "grid_point",
+			   "(Lppl_java/Linear_Expression;"
+			   "Lppl_java/Coefficient;)"
+			   "Lppl_java/Grid_Generator;");
+
+  jfieldID gen_type_line_get_id
+    = env->GetStaticFieldID(j_gen_type_class,
+			    "LINE",
+			    "Lppl_java/Grid_Generator_Type;");
+  jfieldID gen_type_parameter_get_id
+    = env->GetStaticFieldID(j_gen_type_class,
+ 			    "PARAMETER",
+ 			    "Lppl_java/Grid_Generator_Type;");
+  jfieldID gen_type_point_get_id
+    = env->GetStaticFieldID(j_gen_type_class,
+ 			    "POINT",
+ 			    "Lppl_java/Grid_Generator_Type;");
+  jobject j_g_type;
+  jobject j_g_le = get_linear_expression(env, g);
+  jobject jcoeff = build_java_coeff(env, Coefficient(1));
+  switch (g.type()) {
+  case Grid_Generator::LINE:
+    j_g_type
+      = env->GetStaticObjectField(j_gen_type_class, gen_type_line_get_id);
+    return env->CallStaticObjectMethod(j_grid_generator_class,
+				       line_ctr_id, j_g_le);
+    break;
+  case Grid_Generator::PARAMETER:
+    j_g_type
+      = env->GetStaticObjectField(j_gen_type_class, gen_type_parameter_get_id);
+    return env->CallStaticObjectMethod(j_grid_generator_class,
+				       parameter_ctr_id, j_g_le);
+    break;
+  case Grid_Generator::POINT:
+    {
+      j_g_type
+	= env->GetStaticObjectField(j_gen_type_class, gen_type_point_get_id);
+      const Coefficient& divisor = g.divisor();
+      j_g_le = get_linear_expression(env, g);
+      jcoeff = build_java_coeff(env, divisor);
+      return env->CallStaticObjectMethod(j_grid_generator_class,
+					 point_ctr_id, j_g_le, jcoeff);
+    }
+  default:
+    throw std::runtime_error("PPL Java interface internal error");
+  }
+}
+
+jobject
 build_java_constraint_system(JNIEnv* env, const Constraint_System& cs) {
   jclass j_cs_class = env->FindClass("ppl_java/Constraint_System");
   jmethodID j_cs_ctr_id = env->GetMethodID(j_cs_class, "<init>", "()V");
@@ -853,6 +926,22 @@ build_java_generator_system(JNIEnv* env, const Generator_System& gs) {
    for (Generator_System::const_iterator v_begin = gs.begin(),
  	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
      jobject j_generator = build_java_generator(env, *v_begin);
+     env->CallBooleanMethod(j_gs, j_gs_add_id, j_generator);
+   }
+   return j_gs;
+}
+
+jobject
+build_java_grid_generator_system(JNIEnv* env,
+				 const Grid_Generator_System& gs) {
+  jclass j_gs_class = env->FindClass("ppl_java/Grid_Generator_System");
+  jmethodID j_gs_ctr_id = env->GetMethodID(j_gs_class, "<init>", "()V");
+  jmethodID j_gs_add_id = env->GetMethodID(j_gs_class, "add",
+					   "(Ljava/lang/Object;)Z");
+   jobject j_gs = env->NewObject(j_gs_class, j_gs_ctr_id);
+   for (Grid_Generator_System::const_iterator v_begin = gs.begin(),
+ 	 v_end = gs.end(); v_begin != v_end; ++v_begin) {
+     jobject j_generator = build_java_grid_generator(env, *v_begin);
      env->CallBooleanMethod(j_gs, j_gs_add_id, j_generator);
    }
    return j_gs;

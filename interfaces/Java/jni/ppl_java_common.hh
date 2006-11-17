@@ -131,8 +131,7 @@ build_ppl_generator(JNIEnv* env, const jobject& j_g);
 Parma_Polyhedra_Library::Grid_Generator
 build_ppl_grid_generator(JNIEnv* env, const jobject& j_g);
 
-// FIXME: implement me.
-// Builds a PPL grid generator from a Java grid generator.
+// Builds a Java grid generator from a PPL grid generator.
 jobject
 build_java_grid_generator(JNIEnv* env, const Grid_Generator& grid_g);
 
