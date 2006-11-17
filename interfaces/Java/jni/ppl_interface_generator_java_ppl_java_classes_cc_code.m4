@@ -409,6 +409,7 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1BINMINOP@
   return this_@LCLASS@->@BINMINOP@(*@LCLASS@);
   }
   CATCH_ALL;
+  return false;
 }
 
 ')
