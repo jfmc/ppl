@@ -39,6 +39,23 @@ term_to_@CLASS@_handle(Prolog_term_ref t_ph, const char* where) {
 
 ')
 
+m4_define(`m4_term_to_iterator_handle_code', `dnl
+namespace {
+
+@CPP_CLASS@::const_iterator*
+term_to_iterator_handle(Prolog_term_ref t_ph, const char* where) {
+  if (Prolog_is_address(t_ph)) {
+    void* p;
+    if (Prolog_get_address(t_ph, &p))
+      return static_cast<@CPP_CLASS@::const_iterator*>(p);
+  }
+  throw ppl_handle_mismatch(t_ph, where);
+}
+
+} // namespace
+
+')
+
 m4_define(`m4_term_to_topology_Polyhedron_handle_code', `dnl
 namespace {
 
