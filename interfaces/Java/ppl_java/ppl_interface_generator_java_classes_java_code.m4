@@ -159,7 +159,7 @@ m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
 m4_define(`ppl_@CLASS@_OK_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native boolean OK(boolean check_not_empty);
+    public native boolean OK();
 
 ')
 

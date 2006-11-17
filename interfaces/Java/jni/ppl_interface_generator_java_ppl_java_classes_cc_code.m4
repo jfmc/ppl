@@ -307,11 +307,11 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_equals
 m4_define(`ppl_@CLASS@_OK_code',
 `dnl
 JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_OK
-(JNIEnv* env, jobject j_this_@LCLASS@, jboolean check_is_empty) {
+(JNIEnv* env, jobject j_this_@LCLASS@) {
   try {
     jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
     @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-    return this_@LCLASS@->OK(check_is_empty);
+    return this_@LCLASS@->OK();
   }
   CATCH_ALL;
   return false;
