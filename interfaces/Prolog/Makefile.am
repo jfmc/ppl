@@ -26,8 +26,8 @@ interface_generator_files = \
 ppl_interface_generator_prolog_dat.m4 \
 ppl_interface_generator_prolog_icc.m4 \
 ppl_interface_generator_prolog_systems.m4 \
-ppl_interface_generator_prolog_icc_code.m4 \
-ppl_interface_generator_prolog_icc_preamble
+ppl_interface_generator_prolog_icc_code.m4
+
 
 EXTRA_DIST = $(interface_generator_files)
 
@@ -45,8 +45,7 @@ interface_generator_dependencies = \
 ../ppl_interface_generator_copyright \
 ppl_interface_generator_prolog_dat.m4 \
 ppl_interface_generator_prolog_icc.m4 \
-ppl_interface_generator_prolog_icc_code.m4 \
-ppl_interface_generator_prolog_icc_preamble
+ppl_interface_generator_prolog_icc_code.m4
 
 ppl_prolog.icc: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \

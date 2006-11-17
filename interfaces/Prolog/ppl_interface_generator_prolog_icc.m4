@@ -8,29 +8,12 @@ m4_include(`ppl_interface_generator_prolog_dat.m4')dnl
 dnl
 m4_divert(-1)dnl
 
-dnl m4_add_term_to_class_handle_code(Class, CPP_Class)
-dnl
-dnl Adds the code to convert a term to a Class handle.
-m4_define(`m4_add_term_to_class_handle_code', `dnl
-m4_replace_all_patterns_in_string($1,
-  m4_term_to_class_handle_code,
-  m4_pattern_list)`'dnl
-m4_ifelse(m4_cplusplus_class$1, Polyhedron, `dnl
-m4_replace_all_patterns_in_string($1,
-  m4_term_to_topology_Polyhedron_handle_code,
-  m4_pattern_list)`'dnl
-')`'dnl
-')
-
 dnl m4_pre_all_classes_code
 dnl
 dnl Definition for converting a term to a class handle code for all
 dnl classes must be placed before all the generated code so that one class
 dnl can be copied from another.
-m4_define(`m4_pre_all_classes_code', `dnl
-m4_forloop(m4_ind, 1, m4_num_classes,
-  `m4_add_term_to_class_handle_code(m4_ind)')`'dnl
-')
+m4_define(`m4_pre_all_classes_code', `')
 
 dnl m4_add_bop_assign_code(Class, CPP_Class)
 dnl
@@ -41,24 +24,15 @@ m4_replace_all_patterns_in_string($1,
   m4_pattern_list)`'dnl
 ')
 
-m4_define(`m4_add_term_to_iterator_handle_code', `dnl
-m4_ifelse(m4_echo_unquoted(m4_class_kind`'$1), `Pointset_Powerset',
-  m4_replace_all_patterns_in_string($1,
-    m4_term_to_iterator_handle_code,
-    m4_pattern_list))`'dnl
-')
-
 dnl m4_pre_extra_class_code(Class_Counter)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
-m4_add_term_to_iterator_handle_code($1)`'dnl
 m4_add_bop_assign_code($1)`'dnl
 ')
 
 m4_divert`'dnl
-dnl
-dnl Output the fixed preamble.
-m4_include(`ppl_interface_generator_prolog_icc_preamble')
+dnl.
+`#'include "ppl_prolog_common.icc"
 dnl
 dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl

@@ -1646,21 +1646,6 @@ term_to_complexity_class(Prolog_term_ref t, const char* where) {
 
 } // namespace
 
-namespace {
-
-MIP_Problem*
-term_to_MIP_Problem_handle(Prolog_term_ref t_mip, const char* where) {
-  if (Prolog_is_address(t_mip)) {
-    void* mip;
-    if (Prolog_get_address(t_mip, &mip))
-      return static_cast<MIP_Problem*>(mip);
-  }
-  throw ppl_handle_mismatch(t_mip, where);
-}
-
-} // namespace
-
-
 extern "C" Prolog_foreign_return_type
 ppl_new_MIP_Problem_from_space_dimension
 (Prolog_term_ref t_nd, Prolog_term_ref t_mip) {
@@ -1723,7 +1708,7 @@ ppl_new_MIP_Problem_from_MIP_Problem(Prolog_term_ref t_mip_source,
   try {
     const MIP_Problem* mip_source
       = static_cast<const MIP_Problem*>
-      (term_to_MIP_Problem_handle(t_mip_source, where));
+      (term_to_handle<MIP_Problem>(t_mip_source, where));
     CHECK(mip_source);
     MIP_Problem* mip = new MIP_Problem(*mip_source);
     Prolog_term_ref tmp = Prolog_new_term_ref();
@@ -1742,8 +1727,8 @@ extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   static const char* where = "ppl_MIP_Problem_swap/2";
   try {
-    MIP_Problem* lhs = term_to_MIP_Problem_handle(t_lhs, where);
-    MIP_Problem* rhs = term_to_MIP_Problem_handle(t_rhs, where);
+    MIP_Problem* lhs = term_to_handle<MIP_Problem>(t_lhs, where);
+    MIP_Problem* rhs = term_to_handle<MIP_Problem>(t_rhs, where);
     CHECK(lhs);
     CHECK(rhs);
     lhs->swap(*rhs);
@@ -1756,7 +1741,7 @@ extern "C" Prolog_foreign_return_type
 ppl_delete_MIP_Problem(Prolog_term_ref t_mip) {
   static const char* where = "ppl_delete_MIP_Problem/1";
   try {
-    const MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     UNREGISTER(mip);
     delete mip;
     return PROLOG_SUCCESS;
@@ -1768,7 +1753,7 @@ extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_space_dimension(Prolog_term_ref t_mip, Prolog_term_ref t_sd) {
   static const char* where = "ppl_MIP_Problem_space_dimension/2";
   try {
-    const MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     if (unify_ulong(t_sd, mip->space_dimension()))
       return PROLOG_SUCCESS;
@@ -1781,7 +1766,7 @@ ppl_MIP_Problem_integer_space_dimensions(Prolog_term_ref t_mip,
 					 Prolog_term_ref t_vlist) {
   static const char* where = "ppl_MIP_Problem_integer_space_dimensions/2";
   try {
-    const MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -1803,7 +1788,7 @@ ppl_MIP_Problem_constraints(Prolog_term_ref t_mip,
 			    Prolog_term_ref t_clist) {
   static const char* where = "ppl_MIP_Problem_constraints/2";
   try {
-    const MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
 
     Prolog_term_ref tail = Prolog_new_term_ref();
@@ -1823,7 +1808,7 @@ ppl_MIP_Problem_objective_function(Prolog_term_ref t_mip,
 				   Prolog_term_ref t_le_expr) {
   static const char* where = "ppl_MIP_Problem_objective_function/2";
   try {
-    const MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
 
     const Linear_Expression& le = mip->objective_function();
@@ -1840,7 +1825,7 @@ ppl_MIP_Problem_optimization_mode(Prolog_term_ref t_mip,
 				  Prolog_term_ref t_opt) {
   static const char* where = "ppl_MIP_Problem_optimization_mode/2";
   try {
-    MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
 
     Optimization_Mode mode = mip->optimization_mode();
@@ -1857,7 +1842,7 @@ extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_clear(Prolog_term_ref t_mip) {
   static const char* where = "ppl_MIP_Problem_clear/1";
   try {
-    MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     mip->clear();
     return PROLOG_SUCCESS;
@@ -1871,7 +1856,7 @@ ppl_MIP_Problem_add_space_dimensions_and_embed
   static const char* where
     = "ppl_MIP_Problem_add_space_dimensions_and_embed/2";
   try {
-    MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     dimension_type d = term_to_unsigned<dimension_type>(t_nnd, where);
     mip->add_space_dimensions_and_embed(d);
@@ -1886,7 +1871,7 @@ ppl_MIP_Problem_add_to_integer_space_dimensions(Prolog_term_ref t_mip,
   static const char* where
     = "ppl_MIP_Problem_add_to_integer_space_dimensions/2";
   try {
-    MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     Variables_Set i_vars;
     Prolog_term_ref v = Prolog_new_term_ref();
@@ -1909,7 +1894,7 @@ extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_add_constraint(Prolog_term_ref t_mip, Prolog_term_ref t_c) {
   static const char* where = "ppl_MIP_Problem_add_constraint/2";
   try {
-    MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     mip->add_constraint(build_constraint(t_c, where));
     return PROLOG_SUCCESS;
@@ -1922,7 +1907,7 @@ ppl_MIP_Problem_add_constraints(Prolog_term_ref t_mip,
 				Prolog_term_ref t_clist) {
   static const char* where = "ppl_MIP_Problem_add_constraints/2";
   try {
-    MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     Constraint_System cs;
     Prolog_term_ref c = Prolog_new_term_ref();
@@ -1946,7 +1931,7 @@ ppl_MIP_Problem_set_objective_function(Prolog_term_ref t_mip,
 				       Prolog_term_ref t_le_expr) {
   static const char* where = "ppl_MIP_Problem_set_objective_function/2";
   try {
-    MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     mip->set_objective_function(build_linear_expression(t_le_expr, where));
     return PROLOG_SUCCESS;
@@ -1959,7 +1944,7 @@ ppl_MIP_Problem_set_optimization_mode(Prolog_term_ref t_mip,
 				      Prolog_term_ref t_opt) {
   static const char* where = "ppl_MIP_Problem_set_optimization_mode/2";
   try {
-    MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
 
     Prolog_atom opt = term_to_optimization_mode(t_opt, where);
@@ -1974,7 +1959,7 @@ extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_is_satisfiable(Prolog_term_ref t_mip) {
   static const char* where = "ppl_MIP_Problem_is_satisfiable/1";
   try {
-    const MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     if (mip->is_satisfiable())
       return PROLOG_SUCCESS;
@@ -1986,7 +1971,7 @@ extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_solve(Prolog_term_ref t_mip, Prolog_term_ref t_status) {
   static const char* where = "ppl_MIP_Problem_solve/2";
   try {
-    const MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
 
     Prolog_atom a;
@@ -2016,7 +2001,7 @@ ppl_MIP_Problem_feasible_point(Prolog_term_ref t_mip,
 			       Prolog_term_ref t_g) {
   static const char* where = "ppl_MIP_Problem_feasible_point/2";
   try {
-    const MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     const Generator& g = mip->feasible_point();
     if (Prolog_unify(t_g, generator_term(g)))
@@ -2030,7 +2015,7 @@ ppl_MIP_Problem_optimizing_point(Prolog_term_ref t_mip,
 				 Prolog_term_ref t_g) {
   static const char* where = "ppl_MIP_Problem_optimizing_point/2";
   try {
-    const MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     const Generator& g = mip->optimizing_point();
     if (Prolog_unify(t_g, generator_term(g)))
@@ -2045,7 +2030,7 @@ ppl_MIP_Problem_optimal_value(Prolog_term_ref t_mip,
 			      Prolog_term_ref t_d) {
   static const char* where = "ppl_MIP_Problem_optimal_value/3";
   try {
-    const MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     Coefficient n;
     Coefficient d;
@@ -2064,7 +2049,7 @@ ppl_MIP_Problem_evaluate_objective_function(Prolog_term_ref t_mip,
 					    Prolog_term_ref t_d) {
   static const char* where = "ppl_MIP_Problem_evaluate_objective_function/4";
   try {
-    const MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     Coefficient n;
     Coefficient d;
@@ -2080,7 +2065,7 @@ extern "C" Prolog_foreign_return_type
 ppl_MIP_Problem_OK(Prolog_term_ref t_mip) {
   static const char* where = "ppl_MIP_Problem_OK/1";
   try {
-    const MIP_Problem* mip = term_to_MIP_Problem_handle(t_mip, where);
+    const MIP_Problem* mip = term_to_handle<MIP_Problem>(t_mip, where);
     CHECK(mip);
     if (mip->OK())
       return PROLOG_SUCCESS;
