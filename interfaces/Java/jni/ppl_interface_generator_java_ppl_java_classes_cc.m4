@@ -14,7 +14,6 @@ dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
 `#'include "ppl_java_`'m4_this_class`'.h"
-`#'include "ppl_java_common.hh"
 using namespace Parma_Polyhedra_Library;
 ')
 
@@ -23,6 +22,7 @@ dnl Postfix extra code for each class.
 m4_define(`m4_post_extra_class_code', `')
 
 m4_divert`'dnl
+`#'include "ppl_java_common.hh"
 dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl
 dnl
