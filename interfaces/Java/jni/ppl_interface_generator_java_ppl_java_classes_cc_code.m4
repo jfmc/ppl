@@ -98,7 +98,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_swap
 
 ')
 
-m4_define(`ppl_@CLASS@_@DIMENSION@',
+m4_define(`ppl_@CLASS@_@DIMENSION@_code',
 `dnl
 JNIEXPORT jlong JNICALL Java_ppl_1java_@1CLASS@_@1DIMENSION@
 (JNIEnv* env, jobject j_this_@LCLASS@) {
@@ -131,7 +131,7 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_@1CLASS@_@1GET_REPRESENT@s
 
 m4_define(`ppl_@CLASS@_get_minimized_@GET_REPRESENT@s_code',
 `dnl
-JNIEXPORT jobject JNICALL Java_ppl_1java_@1CLASS@_minimized_1@UGET_REPRESENT@s
+JNIEXPORT jobject JNICALL Java_ppl_1java_@1CLASS@_minimized_1@GET_REPRESENT@s
 (JNIEnv* env, jobject j_this_@LCLASS@) {
   try {
   jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
