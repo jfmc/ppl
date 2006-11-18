@@ -110,6 +110,15 @@ DB_Row_Impl_Handler<T>::Impl::copy_construct_coefficients(const Impl& y) {
 }
 
 template <typename T>
+memory_size_type
+DB_Row_Impl_Handler<T>::Impl::external_memory_in_bytes() const {
+  memory_size_type n = 0;
+  for (dimension_type i = size(); i-- > 0; )
+    n += Parma_Polyhedra_Library::external_memory_in_bytes(vec_[i]);
+  return n;
+}
+
+template <typename T>
 bool
 DB_Row<T>::OK(const dimension_type row_size,
 	      const dimension_type

@@ -24,18 +24,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "files.hh"
 #include <fstream>
 
-using std::fstream;
-using std::ios_base;
-
 namespace {
 
-const char* data_file = "matrix1.dat";
-
-void
-ascii_dump_load() {
+bool
+test01() {
   Variable A(0);
   Variable B(1);
   Random_Number_Generator r;
+  const char* data_file = "matrix1.dat";
 
   for (dimension_type num_rows = 0; num_rows <= 3; ++num_rows)
     for (dimension_type num_cols = 0; num_cols <= 3; ++num_cols) {
@@ -44,12 +40,12 @@ ascii_dump_load() {
 	for (dimension_type col = 0; col < num_cols; ++col)
 	  r.get(m1[row][col], 0);
 
-      fstream f;
-      open(f, data_file, ios_base::out);
+      std::fstream f;
+      open(f, data_file, std::ios_base::out);
       m1.ascii_dump(f);
       close(f);
 
-      open(f, data_file, ios_base::in);
+      open(f, data_file, std::ios_base::in);
       Matrix m2;
       m2.ascii_load(f);
       close(f);
@@ -62,19 +58,14 @@ ascii_dump_load() {
 	nout << "m2.ascii_dump() gives" << endl;
 	m2.ascii_dump(nout);
 
-	exit(1);
+	return false;
       }
     }
+  return true;
 }
 
 } // namespace
 
-int
-main() TRY {
-  set_handlers();
-
-  ascii_dump_load();
-
-  return 0;
-}
-CATCH
+BEGIN_MAIN
+  DO_TEST(test01);
+END_MAIN

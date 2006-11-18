@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator_System.types.hh"
 #include "Generator_System.defs.hh"
 #include "Grid_Generator.types.hh"
-#include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -177,19 +177,23 @@ void swap(Parma_Polyhedra_Library::Grid_Generator_System& x,
 class Parma_Polyhedra_Library::Grid_Generator_System
   : private Generator_System {
 public:
-  // FIXME: Add wrappers of any other public Generator_System methods.
-
   //! Default constructor: builds an empty system of generators.
   Grid_Generator_System();
 
-  //! Ordinary copy-constructor.
-  Grid_Generator_System(const Grid_Generator_System& gs);
+  //! Builds the singleton system containing only generator \p g.
+  explicit Grid_Generator_System(const Grid_Generator& g);
 
   //! Builds an empty system of generators of dimension \p dim.
   explicit Grid_Generator_System(dimension_type dim);
 
-  //! Builds the singleton system containing only generator \p g.
-  explicit Grid_Generator_System(const Grid_Generator& g);
+  //! Ordinary copy-constructor.
+  Grid_Generator_System(const Grid_Generator_System& gs);
+
+  //! Destructor.
+  ~Grid_Generator_System();
+
+  //! Assignment operator.
+  Grid_Generator_System& operator=(const Grid_Generator_System& y);
 
   //! Returns the maximum space dimension a Grid_Generator_System can handle.
   static dimension_type max_space_dimension();
@@ -224,6 +228,12 @@ public:
     number of space dimensions if needed.
   */
   void recycling_insert(Grid_Generator_System& gs);
+
+  /*! \brief
+    Returns the singleton system containing only
+    Grid_Generator::zero_dim_point().
+  */
+  static const Grid_Generator_System& zero_dim_univ();
 
   //! An iterator over a system of grid generators
   /*! \ingroup PPL_CXX_interface
@@ -307,14 +317,76 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
-  //! Swaps \p *this with \p y.
-  void swap(Grid_Generator_System& y);
+  //! Returns the number of generators in the system.
+  dimension_type num_generators() const;
+
+  //! Returns the number of parameters in the system.
+  dimension_type num_parameters() const;
+
+  //! Returns the number of lines in the system.
+  dimension_type num_lines() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this contains one or
+    more points.
+  */
+  bool has_points() const;
+
+  //! Returns <CODE>true</CODE> if \p *this is identical to \p y.
+  bool is_equal_to(const Grid_Generator_System y) const;
+
+  //! Checks if all the invariants are satisfied.
+  /*!
+    Returns <CODE>true</CODE> if and only if \p *this is a valid
+    Linear_System and each row in the system is a valid Grid_Generator.
+  */
+  bool OK() const;
+
+  PPL_OUTPUT_DECLARATIONS
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+
+    Resizes the matrix of generators using the numbers of rows and columns
+    read from \p s, then initializes the coordinates of each generator
+    and its type reading the contents from \p s.
+  */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool ascii_load(std::istream& s);
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
 
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
-  //! Returns the total size in bytes of the memory occupied by \p *this.
-  memory_size_type total_memory_in_bytes() const;
+  //! Swaps \p *this with \p y.
+  void swap(Grid_Generator_System& y);
+
+private:
+  friend class Grid;
+
+  friend bool
+  Parma_Polyhedra_Library::operator==(const Grid_Generator_System& x,
+				      const Grid_Generator_System& y);
+
+  //! Sets the sortedness flag of the system to \p b.
+  void set_sorted(bool b);
+
+  //! Sets the index to indicate that the system has no pending rows.
+  void unset_pending_rows();
+
+  //! Sets the index of the first pending row to \p i.
+  void set_index_first_pending_row(dimension_type i);
+
+  //! Returns the \p k- th generator of the system.
+  Grid_Generator& operator[](dimension_type k);
+
+  //! Returns a constant reference to the \p k- th generator of the system.
+  const Grid_Generator& operator[](dimension_type k) const;
 
   //! Assigns to a given variable an affine expression.
   /*!
@@ -349,52 +421,6 @@ public:
 		    const Linear_Expression& expr,
 		    Coefficient_traits::const_reference denominator);
 
-  //! Returns the number of generators in the system.
-  dimension_type num_generators() const;
-
-  //! Returns the number of parameters in the system.
-  dimension_type num_parameters() const;
-
-  //! Returns the number of lines in the system.
-  dimension_type num_lines() const;
-
-  /*! \brief
-    Returns <CODE>true</CODE> if and only if \p *this contains one or
-    more points.
-  */
-  bool has_points() const;
-
-  //! Returns <CODE>true</CODE> if \p *this is identical to \p y.
-  bool is_equal_to(const Grid_Generator_System y) const;
-
-  //! Returns the \p k- th generator of the system.
-  Grid_Generator& operator[](dimension_type k);
-
-  //! Returns a constant reference to the \p k- th generator of the system.
-  const Grid_Generator& operator[](dimension_type k) const;
-
-  PPL_OUTPUT_DECLARATIONS
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    Loads from \p s an ASCII representation (as produced by \ref
-    ascii_dump) and sets \p *this accordingly.  Returns
-    <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-
-    Resizes the matrix of generators using the numbers of rows and columns
-    read from \p s, then initializes the coordinates of each generator
-    and its type reading the contents from \p s.
-  */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool ascii_load(std::istream& s);
-
-  //! Checks if all the invariants are satisfied.
-  /*!
-    Returns <CODE>true</CODE> if and only if \p *this is a valid
-    Linear_System and each row in the system is a valid Grid_Generator.
-  */
-  bool OK() const;
-
   /*! \brief
     Adds \p dims rows and \p dims columns of zeroes to the matrix,
     initializing the added rows as in the universe system.
@@ -413,9 +439,9 @@ public:
 
   //! Removes all the specified dimensions from the generator system.
   /*!
-    \exception std::invalid_argument
-    Thrown if the highest space dimension of the variables in \p
-    to_be_removed is higher than the space dimension of \p *this.
+    The space dimension of the variable with the highest space
+    dimension in \p to_be_removed must be at most the space dimension
+    of \p this.
   */
   void remove_space_dimensions(const Variables_Set& to_be_removed);
 
@@ -423,43 +449,25 @@ public:
     Removes the higher dimensions of the system so that the resulting
     system will have dimension \p new_dimension.
 
-    \exception std::invalid_argument
-    Thrown if the \p new_dimension is higher than the space dimension
+    The value of \p new_dimension must be at most the space dimension
     of \p *this.
   */
-  void remove_higher_space_dimensions(dimension_type new_dimension);
-
-private:
-  friend bool operator==(const Grid_Generator_System& x,
-			 const Grid_Generator_System& y);
-  // FIXME: The following friend declaration grants Grid::conversion
-  //        access to Matrix (for the Grid::reduce_reduced call) and
-  //        Matrix::resize_no_copy, and the following methods.
-  friend class Grid;
-
-  //! Sets the sortedness flag of the system to \p b.
-  void set_sorted(bool b);
-
-  //! Sets the index to indicate that the system has no pending rows.
-  void unset_pending_rows();
-
-  //! Sets the index of the first pending row to \p i.
-  void set_index_first_pending_row(dimension_type i);
+  void remove_higher_space_dimensions(const dimension_type new_dimension);
 
   //! Resizes the system without worrying about the old contents.
   /*!
-    \param new_n_rows
+    \param new_num_rows
     The number of rows of the resized system;
 
-    \param new_n_columns
+    \param new_num_columns
     The number of columns of the resized system.
 
     The system is expanded to the specified dimensions avoiding
     reallocation whenever possible.
     The contents of the original system is lost.
   */
-  void resize_no_copy(dimension_type new_n_rows,
-		      dimension_type new_n_columns);
+  void resize_no_copy(dimension_type new_num_rows,
+		      dimension_type new_num_columns);
 
   /*! \brief
     Returns the number of columns of the matrix (i.e., the size of the

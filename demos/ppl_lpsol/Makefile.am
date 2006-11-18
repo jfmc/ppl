@@ -48,7 +48,6 @@ dummy.cc
 ppl_lpsol_LDADD = \
 -lglpk \
 $(top_builddir)/interfaces/C/libppl_c.la \
-$(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
@@ -57,6 +56,19 @@ if ASSERTIONS_ENABLED
 
 TOUGH_EXAMPLES_FOR_ENUM_IF_ASSERTIONS_ENABLED = \
 afiro.mps
+
+TOUGH_EXAMPLES_FOR_SIMPLEX_IF_ASSERTIONS_ENABLED = \
+opt1217.mps \
+rout.mps
+
+TOUGH_EXAMPLES_FOR_BB_SATISFIABILTY_IF_ASSERTIONS_ENABLED = \
+mas74.mps \
+mas76.mps \
+modglob.mps \
+noswot.mps \
+opt1217.mps \
+pk1.mps \
+rout.mps
 
 EXPECTED = expected_$(COEFFICIENT_MNEMONIC)_a
 
@@ -75,8 +87,19 @@ adlittle.mps \
 blend.mps \
 boeing1.mps \
 boeing2.mps \
+egout.mps \
 kb2.mps \
-mip.mps \
+lseu.mps \
+markshare1.mps \
+markshare2.mps \
+mas74.mps \
+mas76.mps \
+modglob.mps \
+noswot.mps \
+opt1217.mps \
+p0033.mps \
+pk1.mps \
+rout.mps \
 sc105.mps \
 sc50a.mps \
 sc50b.mps \
@@ -84,7 +107,46 @@ ship08l.mps \
 $(TOUGH_EXAMPLES_FOR_ENUM_IF_ASSERTIONS_ENABLED)
 
 TOUGH_EXAMPLES_FOR_SIMPLEX = \
+ship08l.mps\
+$(TOUGH_EXAMPLES_FOR_SIMPLEX_IF_ASSERTIONS_ENABLED)
+
+TOUGH_EXAMPLES_FOR_BB_SATISFIABILITY = \
+$(TOUGH_EXAMPLES_FOR_BB_SATISFIABILTY_IF_ASSERTIONS_ENABLED)
+
+#FIXME: ex11.mps must be removed from this list.
+TOUGH_EXAMPLES_FOR_BB_OPTIMALITY = \
+egout.mps \
+lseu.mps \
+markshare1.mps \
+markshare2.mps \
+mas74.mps \
+mas76.mps \
+modglob.mps \
+noswot.mps \
+opt1217.mps \
+pk1.mps \
+rout.mps
+
+LP_PROBLEMS = \
+adlittle.mps \
+afiro.mps \
+bgprtr.mps \
+blend.mps \
+boeing1.mps \
+boeing2.mps \
+kb2.mps \
+sample.mps \
+sc105.mps \
+sc50a.mps \
+sc50b.mps \
 ship08l.mps
+
+DO_NOT_CHECK_PROBLEMS = \
+ex11.mps \
+ex12.mps \
+mas74.mps \
+mas76.mps \
+modglob.mps
 
 if HOST_OS_CYGWIN
 
@@ -125,22 +187,26 @@ endif !HOST_OS_CYGWIN
 
 check-local: ppl_lpsol
 	echo $(ECHO_N) "$(ECHO_C)" >obtained
-	echo $(TOUGH_EXAMPLES_FOR_ENUM) >tough_examples
+	echo $(LP_PROBLEMS) >lp_problems
+	echo $(DO_NOT_CHECK_PROBLEMS) >do_not_check_problems
 	LANG=C; \
-	for path in $(srcdir)/examples/*.mps; \
+	echo $(TOUGH_EXAMPLES_FOR_BB_SATISFIABILITY) >tough_examples
+	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
+	  grep $$file lp_problems >/dev/null 2>&1 && continue; \
+	  grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
 	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
-	  for m in -m -M; \
-	  do \
-	    echo "*** ppl_lpsol -e $$m -oobtained $$file" >>obtained; \
-	    ./ppl_lpsol -e $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
-	  done \
+	  echo "*** ppl_lpsol -s -n $$m -oobtained $$file" >>obtained; \
+	  ./ppl_lpsol -s -n $(CHECK_OPTION) -oobtained $$path >/dev/null; \
 	done
-	echo $(TOUGH_EXAMPLES_FOR_SIMPLEX) >tough_examples
-	for path in $(srcdir)/examples/*.mps; \
+	echo $(LP_PROBLEMS) >lp_problems
+	echo $(TOUGH_EXAMPLES_FOR_BB_OPTIMALITY) >tough_examples
+	-for path in $(srcdir)/examples/*.mps; \
 	do \
 	  file=`basename $$path`; \
+	  grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	  grep $$file lp_problems >/dev/null 2>&1 && continue; \
 	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
 	  for m in -m -M; \
 	  do \
@@ -148,13 +214,54 @@ check-local: ppl_lpsol
 	    ./ppl_lpsol -s $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
+	echo $(TOUGH_EXAMPLES_FOR_SIMPLEX) >tough_examples
+	-for path in $(srcdir)/examples/*.mps; \
+	do \
+	  file=`basename $$path`; \
+	 grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	 grep $$file tough_examples >/dev/null 2>&1 && continue; \
+	 for m in -m -M; \
+	 do \
+	    echo "*** ppl_lpsol -r -s $$m -oobtained $$file" >>obtained; \
+	    ./ppl_lpsol -r -s $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
+	  done \
+	done
+	echo $(TOUGH_EXAMPLES_FOR_ENUM) >tough_examples
+	-for path in $(srcdir)/examples/*.mps; \
+	do \
+	  file=`basename $$path`; \
+	  grep $$file do_not_check_problems >/dev/null 2>&1 && continue; \
+	  grep $$file tough_examples >/dev/null 2>&1 && continue; \
+	  echo "*** ppl_lpsol -e -r $$m -oobtained $$file" >>obtained; \
+	  ./ppl_lpsol -e -r $(CHECK_OPTION) $$m -oobtained $$path >/dev/null; \
+	done
+	echo "*** ppl_lpsol -r -s -m -oobtained mas74.mps" >>obtained
+	-./ppl_lpsol -r -s -m $(CHECK_OPTION) $(srcdir)/examples/mas74.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas74.mps" >>obtained
+	-./ppl_lpsol -r -s -M -c0.000123 $(srcdir)/examples/mas74.mps $$m -oobtained >/dev/null
+	echo "*** ppl_lpsol -n -s -oobtained mas74.mps" >>obtained
+	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/mas74.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -r -s -m -oobtained mas76.mps" >>obtained
+	-./ppl_lpsol -r -s -m $(CHECK_OPTION) $(srcdir)/examples/mas76.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -r -s -M -c0.000123 -oobtained mas76.mps" >>obtained
+	-./ppl_lpsol -r -s -M -c0.000123 $(srcdir)/examples/mas76.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -n -s -oobtained mas76.mps" >>obtained
+	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/mas76.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -r -s -m -c0.0000002 -oobtained modglob.mps" >>obtained
+	-./ppl_lpsol -r -s -m -c0.0000002 $(srcdir)/examples/modglob.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -r -s -M -c0.000003 -oobtained modglob.mps" >>obtained
+	-./ppl_lpsol -r -s -M -c0.000003 $(srcdir)/examples/modglob.mps -oobtained >/dev/null
+	echo "*** ppl_lpsol -n -s -oobtained modglob.mps" >>obtained
+	-./ppl_lpsol -n -s $(CHECK_OPTION) $(srcdir)/examples/modglob.mps -oobtained >/dev/null
 	$(DIFF_COMMAND)
 
 MOSTLYCLEANFILES = \
+do_not_check_problems \
 tough_examples \
 obtained \
 expected_optima \
-obtained_optima
+obtained_optima \
+lp_problems
 
 endif HAVE_GLPK
 endif BUILD_C_INTERFACE

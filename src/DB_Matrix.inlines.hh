@@ -52,6 +52,12 @@ DB_Matrix<T>::max_num_columns() {
 }
 
 template <typename T>
+inline memory_size_type
+DB_Matrix<T>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+template <typename T>
 inline
 DB_Matrix<T>::const_iterator::const_iterator()
   : i(Iter()) {

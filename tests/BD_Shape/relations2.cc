@@ -408,19 +408,19 @@ test20() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::relation_with(c):
     // it is illegal to use a constraint with three
     // dimensions.
     Poly_Con_Relation rel = bd.relation_with(A - C - B <= 2);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

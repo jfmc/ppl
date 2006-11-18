@@ -64,7 +64,7 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
 
 PPL::Grid_Generator
 PPL::Grid_Generator::grid_point(const Linear_Expression& e,
-			   Coefficient_traits::const_reference d) {
+				Coefficient_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::grid_point(e, d):\n"
 				"d == 0.");
@@ -129,10 +129,68 @@ PPL::Grid_Generator::coefficient_swap(Grid_Generator& y) {
 }
 
 void
+PPL::Grid_Generator::ascii_dump(std::ostream& s) const {
+  const Grid_Generator& x = *this;
+  const dimension_type x_size = x.size();
+  s << "size " << x_size << " ";
+  for (dimension_type i = 0; i < x_size; ++i)
+    s << x[i] << ' ';
+  switch (x.type()) {
+  case Generator::LINE:
+    s << "L";
+    break;
+  case Generator::RAY:
+    s << "Q";
+    break;
+  case Generator::POINT:
+    s << "P";
+    break;
+  }
+  s << "\n";
+}
+
+PPL_OUTPUT_DEFINITIONS(Grid_Generator)
+
+bool
+PPL::Grid_Generator::ascii_load(std::istream& s) {
+  std::string str;
+  if (!(s >> str) || str != "size")
+    return false;
+  dimension_type new_size;
+  if (!(s >> new_size))
+    return false;
+
+  Row& x = *this;
+  const dimension_type old_size = x.size();
+  if (new_size < old_size)
+    x.shrink(new_size);
+  else if (new_size > old_size) {
+    Row y(new_size, Row::Flags());
+    x.swap(y);
+  }
+
+  for (dimension_type col = 0; col < new_size; ++col)
+    if (!(s >> x[col]))
+      return false;
+
+  if (!(s >> str))
+    return false;
+  if (str == "L")
+    set_is_line();
+  else if (str == "P" || str == "Q")
+    set_is_ray_or_point();
+  else
+    return false;
+
+  return true;
+}
+
+void
 PPL::Grid_Generator::set_is_parameter() {
   if (is_line())
     set_is_parameter_or_point();
-  else {
+  else if (!is_line_or_parameter()) {
+    // The generator is a point.
     Generator::operator[](size() - 1) = Generator::operator[](0);
     Generator::operator[](0) = 0;
   }
@@ -149,20 +207,20 @@ PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
   if (x_type != y.type())
     return false;
 
-  Grid_Generator tem(*this);
-  Grid_Generator tem_y(y);
+  Grid_Generator tmp = *this;
+  Grid_Generator tmp_y = y;
   dimension_type& last = x_space_dim;
   ++last;
   if (x_type == POINT || x_type == LINE) {
-    tem[last] = 0;
-    tem_y[last] = 0;
+    tmp[last] = 0;
+    tmp_y[last] = 0;
   }
   // Normalize the copies, including the divisor column.
-  tem.Row::normalize();
-  tem_y.Row::normalize();
+  tmp.Row::normalize();
+  tmp_y.Row::normalize();
   // Check for equality.
   while (last-- > 0)
-    if (tem[last] != tem_y[last])
+    if (tmp[last] != tmp_y[last])
       return false;
   return true;
 }
@@ -195,7 +253,7 @@ PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
 				  "d == 0.");
 
     TEMP_INTEGER(factor);
-    factor = d / divisor();
+    exact_div_assign(factor, d, divisor());
     set_divisor(d);
     assert(factor > 0);
     if (factor > 1)
@@ -209,7 +267,7 @@ std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
   bool need_divisor = false;
   bool extra_parentheses = false;
-  const int num_variables = g.space_dimension();
+  const dimension_type num_variables = g.space_dimension();
   Grid_Generator::Type t = g.type();
   switch (t) {
   case Grid_Generator::LINE:
@@ -225,8 +283,8 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
     if (g[0] > 1) {
     any_point:
       need_divisor = true;
-      int num_non_zero_coefficients = 0;
-      for (int v = 0; v < num_variables; ++v)
+      dimension_type num_non_zero_coefficients = 0;
+      for (dimension_type v = 0; v < num_variables; ++v)
 	if (g[v+1] != 0)
 	  if (++num_non_zero_coefficients > 1) {
 	    extra_parentheses = true;
@@ -237,9 +295,10 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g) {
     break;
   }
 
+  TEMP_INTEGER(gv);
   bool first = true;
-  for (int v = 0; v < num_variables; ++v) {
-    Coefficient gv = g[v+1];
+  for (dimension_type v = 0; v < num_variables; ++v) {
+    gv = g[v+1];
     if (gv != 0) {
       if (!first) {
 	if (gv > 0)
@@ -293,7 +352,7 @@ bool
 PPL::Grid_Generator::OK() const {
   if (!is_necessarily_closed()) {
 #ifndef NDEBUG
-    std::cerr << "Grid_Generator Generator should be necessarily closed."
+    std::cerr << "Grid_Generator should be necessarily closed."
 	      << std::endl;
 #endif
     return false;
@@ -345,5 +404,3 @@ PPL::Grid_Generator::OK() const {
   // All tests passed.
   return true;
 }
-
-PPL_OUTPUT_DEFINITIONS(Grid_Generator)

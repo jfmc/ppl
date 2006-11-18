@@ -83,7 +83,7 @@ public:
   //! Builds the variable corresponding to the Cartesian axis of index \p i.
   /*!
     \exception std::length_error
-    Thrown if the <CODE>i+1</CODE> exceeds
+    Thrown if <CODE>i+1</CODE> exceeds
     <CODE>Variable::max_space_dimension()</CODE>.
   */
   explicit Variable(dimension_type i);
@@ -144,13 +144,5 @@ private:
 };
 
 #include "Variable.inlines.hh"
-
-namespace Parma_Polyhedra_Library {
-
-//! An std::set containing variables in increasing order of dimension index.
-/*! \ingroup PPL_CXX_interface */
-typedef std::set<Variable, Variable::Compare> Variables_Set;
-
-} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Variable_defs_hh)

@@ -128,20 +128,20 @@ test05() {
   bd.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::affine_preimage(v, expr, d): it is illegal
-    // to apply to a expression with the denominator
+    // to apply it to a expression with the denominator
     // equal to zero.
     Coefficient d = 0;
     bd.affine_preimage(x, x + 1, d);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -154,19 +154,19 @@ test06() {
   bd.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::affine_preimage(v, expr, d): it is illegal
     // to apply it to an expression whose space dimension is
-    // greather than the space dimension of the BDS.
+    // greater than the space dimension of the BDS.
     bd.affine_preimage(y, z);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

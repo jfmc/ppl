@@ -106,12 +106,69 @@ test04() {
     bd1.contains(bd2);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
+}
+
+bool
+test05() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Constraint_System cs;
+  cs.insert(D >= 0);
+  cs.insert(C >= 0);
+  cs.insert(B <= 0);
+  cs.insert(A >= 0);
+
+  TBD_Shape bd1(cs);
+
+  print_constraints(bd1, "*** bd1 ***");
+
+  TBD_Shape bd2(cs);
+  bd2.add_constraint(A - B >= 0);
+
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool contained = bd1.contains(bd2);
+
+  nout << "*** bd1.contains(bd2) ***" << endl;
+  nout << (contained ? "true" : "false") << endl;
+
+  return contained;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd1(3);
+  bd1.add_constraint(C <= 0);
+  bd1.add_constraint(B - C <= 1);
+
+  print_constraints(bd1, "*** bd1 ***");
+
+  TBD_Shape bd2(3);
+  bd2.add_constraint(A == 0);
+  bd2.add_constraint(C <= 0);
+  bd2.add_constraint(B - C <= 2);
+
+  print_constraints(bd2, "*** bd2 ***");
+
+  bool contained = bd1.contains(bd2);
+
+  nout << "*** bd1.contains(bd2) ***" << endl;
+  nout << (!contained ? "true" : "false") << endl;
+
+  return !contained;
 }
 
 } // namespace
@@ -121,4 +178,6 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN

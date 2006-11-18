@@ -154,7 +154,7 @@ PPL::Grid::Status::ascii_load(std::istream& s) {
   else
     reset_sat_g_up_to_date();
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK());
   return true;
 }

@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "globals.types.hh"
 #include "Variable.defs.hh"
+#include "Variables_Set.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
@@ -33,7 +34,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.inlines.hh"
 #include "Congruence_System.defs.hh"
 #include "Congruence_System.inlines.hh"
-#include "Saturation_Matrix.defs.hh"
+#include "Grid_Generator_System.defs.hh"
+#include "Grid_Generator_System.inlines.hh"
+#include "Bit_Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Congruence.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
@@ -397,13 +400,17 @@ protected:
 
     \param cs
     The system of constraints defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
 
     \exception std::invalid_argument
     Thrown if the topology of \p cs is incompatible with \p topol.
   */
-  Polyhedron(Topology topol, Constraint_System& cs);
+  Polyhedron(Topology topol, Constraint_System& cs, Recycle_Input dummy);
 
   //! Builds a polyhedron from a system of generators.
   /*!
@@ -430,14 +437,18 @@ protected:
 
     \param gs
     The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
 
     \exception std::invalid_argument
     Thrown if the topology of \p gs is incompatible with \p topol,
     or if the system of generators is not empty but has no points.
   */
-  Polyhedron(Topology topol, Generator_System& gs);
+  Polyhedron(Topology topol, Generator_System& gs, Recycle_Input dummy);
 
   //! Builds a polyhedron out of a generic, interval-based bounding box.
   /*!
@@ -465,7 +476,7 @@ protected:
     methods below.  However, if <CODE>is_empty()</CODE> returns
     <CODE>true</CODE>, none of the functions below will be called.
     \code
-      bool get_lower_bound(dimension_type k, bool closed,
+      bool get_lower_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
@@ -481,7 +492,7 @@ protected:
     have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
     the unique representation for zero.
     \code
-      bool get_upper_bound(dimension_type k, bool closed,
+      bool get_upper_bound(dimension_type k, bool& closed,
                            Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
@@ -529,6 +540,21 @@ public:
   //! Returns the system of generators, with no redundant generator.
   const Generator_System& minimized_generators() const;
 
+  //! Returns a system of congruences created from the constraints.
+  Congruence_System congruences() const;
+
+  /*! \brief
+    Returns a system of congruences created from the minimized
+    constraints.
+  */
+  Congruence_System minimized_congruences() const;
+
+  //! Returns a universe system of grid generators.
+  Grid_Generator_System grid_generators() const;
+
+  //! Returns a universe system of grid generators.
+  Grid_Generator_System minimized_grid_generators() const;
+
   /*! \brief
     Returns the relations holding between the polyhedron \p *this
     and the constraint \p c.
@@ -573,11 +599,20 @@ public:
   */
   bool is_disjoint_from(const Polyhedron& y) const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this is discrete.
+  bool is_discrete() const;
+
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this
     is a bounded polyhedron.
   */
   bool is_bounded() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains at least one integer point.
+  */
+  bool contains_integer_point() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
@@ -641,7 +676,7 @@ public:
     \param maximum
     <CODE>true</CODE> if and only if the supremum is also the maximum value;
 
-    \param point
+    \param g
     When maximization succeeds, will be assigned the point or
     closure point where \p expr reaches its supremum value.
 
@@ -650,11 +685,11 @@ public:
 
     If \p *this is empty or \p expr is not bounded from above,
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
-    and \p point are left untouched.
+    and \p g are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& point) const;
+		Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -700,7 +735,7 @@ public:
     \param minimum
     <CODE>true</CODE> if and only if the infimum is also the minimum value;
 
-    \param point
+    \param g
     When minimization succeeds, will be assigned a point or
     closure point where \p expr reaches its infimum value.
 
@@ -709,11 +744,11 @@ public:
 
     If \p *this is empty or \p expr is not bounded from below,
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
-    and \p point are left untouched.
+    and \p g are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& point) const;
+		Generator& g) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -872,6 +907,12 @@ public:
   */
   bool add_generator_and_minimize(const Generator& g);
 
+  //! Domain compatibility method.
+  void add_grid_generator(const Grid_Generator& g) const;
+
+  //! Returns <CODE>true</CODE> if \p *this is empty else <CODE>false</CODE>.
+  bool add_grid_generator_and_minimize(const Grid_Generator& g) const;
+
   /*! \brief
     Adds a copy of congruence \p cg to the system of congruences of \p
     *this (without minimizing the result).
@@ -901,8 +942,8 @@ public:
     of \p *this (without minimizing the result).
 
     \param cs
-    The constraint system that will be recycled, adding its
-    constraints to the system of constraints of \p *this.
+    The constraint system to be added to \p *this.  The constraints in
+    \p cs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are topology-incompatible or
@@ -939,8 +980,8 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param cs
-    The constraint system that will be recycled, adding its
-    constraints to the system of constraints of \p *this.
+    The constraint system to be added to \p *this.  The constraints in
+    \p cs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are topology-incompatible or
@@ -972,8 +1013,8 @@ public:
     of \p *this (without minimizing the result).
 
     \param gs
-    The generator system that will be recycled, adding its generators
-    to the system of generators of \p *this.
+    The generator system to be added to \p *this.  The generators in
+    \p gs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are topology-incompatible or
@@ -1012,8 +1053,8 @@ public:
     <CODE>false</CODE> if and only if the result is empty.
 
     \param gs
-    The generator system that will be recycled, adding its generators
-    to the system of generators of \p *this.
+    The generator system to be added to \p *this.  The generators in
+    \p gs may be recycled.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p gs are topology-incompatible or
@@ -1565,6 +1606,9 @@ public:
   */
   void H79_widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
+  //! Same as H79_widening_assign(y, tp).
+  void widening_assign(const Polyhedron& y, unsigned* tp = 0);
+
   /*! \brief
     Improves the result of the \ref H79_widening "H79-widening"
     computation by also enforcing those constraints in \p cs that are
@@ -1825,7 +1869,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -1847,10 +1891,10 @@ private:
   Generator_System gen_sys;
 
   //! The saturation matrix having constraints on its columns.
-  Saturation_Matrix sat_c;
+  Bit_Matrix sat_c;
 
   //! The saturation matrix having generators on its columns.
-  Saturation_Matrix sat_g;
+  Bit_Matrix sat_g;
 
 #define PPL_IN_Polyhedron_CLASS
 #include "Ph_Status.idefs.hh"
@@ -2254,7 +2298,7 @@ private:
     <CODE>true</CODE> if and only if the extremum of \p expr can
     actually be reached in \p * this;
 
-    \param point
+    \param g
     When maximization or minimization succeeds, will be assigned
     a point or closure point where \p expr reaches the
     corresponding extremum value.
@@ -2264,12 +2308,12 @@ private:
 
     If \p *this is empty or \p expr is not bounded in the appropriate
     direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
-    \p included and \p point are left untouched.
+    \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
 	       const bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
-	       Generator& point) const;
+	       Generator& g) const;
 
   //! \name Widening- and Extrapolation-Related Functions
   //@{
@@ -2333,8 +2377,8 @@ private:
   */
   static void add_space_dimensions(Linear_System& mat1,
 				   Linear_System& mat2,
-				   Saturation_Matrix& sat1,
-				   Saturation_Matrix& sat2,
+				   Bit_Matrix& sat1,
+				   Bit_Matrix& sat2,
 				   dimension_type add_dim);
 
   //! \name Minimization-Related Static Member Functions
@@ -2345,7 +2389,7 @@ private:
   static bool minimize(bool con_to_gen,
 		       Linear_System& source,
 		       Linear_System& dest,
-		       Saturation_Matrix& sat);
+		       Bit_Matrix& sat);
 
   /*! \brief
     Adds given constraints and builds minimized corresponding generators
@@ -2355,7 +2399,7 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Linear_System& source1,
 			       Linear_System& dest,
-			       Saturation_Matrix& sat,
+			       Bit_Matrix& sat,
 			       const Linear_System& source2);
 
   /*! \brief
@@ -2366,14 +2410,14 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Linear_System& source,
 			       Linear_System& dest,
-			       Saturation_Matrix& sat);
+			       Bit_Matrix& sat);
 
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
   static dimension_type conversion(Linear_System& source,
 				   dimension_type start,
 				   Linear_System& dest,
-				   Saturation_Matrix& sat,
+				   Bit_Matrix& sat,
 				   dimension_type num_lines_or_equalities);
 
   /*! \brief
@@ -2381,7 +2425,7 @@ private:
     <CODE>conversion()</CODE>.
   */
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Linear_System& mat, Saturation_Matrix& sat);
+  static int simplify(Linear_System& mat, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 

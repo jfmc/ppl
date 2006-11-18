@@ -31,7 +31,7 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface
   This is done so that the library's input/output operators
   do not interfere with those the user might want to define.
-  In fact, it is highly unlikely that any pre-defined I/O
+  In fact, it is highly unlikely that any predefined I/O
   operator will suit the needs of a client application.
   On the other hand, those applications for which the PPL
   I/O operator are enough can easily obtain access to them.

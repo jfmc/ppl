@@ -47,14 +47,6 @@ Current contributors:
                         widening operators for weakly relational
                         domains.  She is still working on this.
 
-  David Merchat         [5] (University of Parma) is helping us with
-                        the generation of the library's documentation
-                        using Doxygen.
-
-  Matthew Mundell       [6] (University of Leeds) is working on the
-                        implementation of rational grids.  He also
-                        helps on other implementation issues.
-
   Andrea Pescetti       (University of Parma) is helping with the
                         library's documentation.  Andrea was also one
                         of the four students with which the PPL
@@ -64,7 +56,7 @@ Current contributors:
                         implementation of bounded differences
                         and octagons.
 
-  Alessandro Zaccagnini [7] (University of Parma) has helped with
+  Alessandro Zaccagnini [5] (University of Parma) has helped with
                         the efficient implementation of GCD and LCM
                         for checked numbers.  He is now working on the
                         definitions of interval arithmetic operations.
@@ -99,6 +91,14 @@ Past contributors:
   Maximiliano Marchesi  (University of Parma) helped to improve the
                         documentation for bounded differences.
 
+  David Merchat         (formerly at the University of Parma) helped us
+                        with the generation of the library's documentation
+                        using Doxygen.
+
+  Matthew Mundell       [6] (formerly at the University of Leeds) worked
+                        on the implementation of rational grids.  He has
+                        also helped on other implementation issues.
+
   Angela Stazzone       (former student of the University of Parma)
                         worked on the library's documentation.
 
@@ -128,36 +128,36 @@ The following people have given important help to the project:
                         and/or refresh the notions needed for
                         developing the PPL library.
 
-  Marco Comini          [8] (University of Udine) allowed us to use his
+  Marco Comini          [7] (University of Udine) allowed us to use his
                         Mac OS X machine to work on portability to
                         that platform.
 
-  Bruno Haible          [9] (ILOG) made it possible (by writing the
+  Bruno Haible          [8] (ILOG) made it possible (by writing the
                         AC_LIB_LINKFLAGS macro and explaining how
                         to use it) to allow the use of versions of the
                         GMP library installed into nonstandard places.
 
-  Bertrand Jeannet      [10] (IRISA) wrote the New Polka library [11]
+  Bertrand Jeannet      [9] (IRISA) wrote the New Polka library [10]
                         and made it available.
 
   Herve' Le Verge       (r.i.p.) wrote and published an implementation
-                        [12] of the Chernikova's algorithm [13] that
+                        [11] of the Chernikova's algorithm [12] that
                         has set the stage for subsequent
                         implementation work, including our own.
 
-  Francesco Logozzo     [14] (Ecole Polytechnique) helped us straighten
+  Francesco Logozzo     [13] (Ecole Polytechnique) helped us straighten
                         out some portability issues on Cygwin.
 
-  Costantino Medori     [15] (University of Parma) helped us on the
+  Costantino Medori     [14] (University of Parma) helped us on the
                         mathematical aspects of the development.
 
-  Fred Mesnard          [16] (University of La Reunion), the main author
-                        of cTI [17], has worked with us at one of the
+  Fred Mesnard          [15] (University of La Reunion), the main author
+                        of cTI [16], has worked with us at one of the
                         first applications of the PPL: the "cTI"
                         data-flow analyzer, which performs a linear
                         size relation analysis using a domain of
                         convex polyhedra.  The China data-flow
-                        analyzer [18] uses the Parma Polyhedra Library
+                        analyzer [17] uses the Parma Polyhedra Library
                         to perform the same analysis.  We have been
                         running China against an old version of cTI
                         that did not use the PPL, using them to
@@ -174,26 +174,26 @@ organizations:
      ``Pure and Applied Mathematics'';
 
   2. MURST project ``Automatic Program Certification by Abstract
-     Interpretation'' [19];
+     Interpretation'' [18];
 
   3. MURST project ``Abstract Interpretation, Type Systems and
      Control-Flow Analysis''.
 
   4. MURST project ``Automatic Aggregate- and Number-Reasoning for
      Computing: from Decision Algorithms to Constraint Programming
-     with Multisets, Sets, and Maps'' [20].
+     with Multisets, Sets, and Maps'' [19].
 
   5. MURST project ``Constraint Based Verification of Reactive
-     Systems'' [21].
+     Systems'' [20].
 
   6. MURST project ``AIDA - Abstract Interpretation: Design and
-     Applications'' [22].
+     Applications'' [21].
 
   7. Royal Society Joint project 2004/R1-EU (UK-Italy)
      ``Automatic Detection of Unstable Numerical Computations''.
 
   8. EPSRC (UK) project EP/C520726/1
-     ``Numerical Domains for Software Analysis'' [23].
+     ``Numerical Domains for Software Analysis'' [22].
 
 --------
 
@@ -201,22 +201,21 @@ organizations:
  [2] http://www.comp.leeds.ac.uk/hill/
  [3] http://www.cs.unipr.it/~zaffanella/
  [4] http://www.comp.leeds.ac.uk/katyd/
- [5] http://www.cs.unipr.it/~merchat/
+ [5] http://www.math.unipr.it/~zaccagni/
  [6] http://www.mundell.ukfsn.org/
- [7] http://www.math.unipr.it/~zaccagni/
- [8] http://www.dimi.uniud.it/~comini/
- [9] http://www.haible.de/bruno/
-[10] http://www.irisa.fr/prive/Bertrand.Jeannet/
-[11] http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html
-[12] http://www.cs.unipr.it/ppl/Documentation/chernikova.c
-[13] http://www.cs.unipr.it/ppl/Documentation/bibliography#LeVerge92
-[14] http://www.enseignement.polytechnique.fr/profs/informatique/Francesco.Logozzo/
-[15] http://www.math.unipr.it/~medori/
-[16] http://www.univ-reunion.fr/~fred/
-[17] http://www.cs.unipr.it/cTI/
-[18] http://www.cs.unipr.it/China/
-[19] http://theory.sci.univr.it/p40/
-[20] http://www.cs.unipr.it/Projects/COFIN01
-[21] http://www.disi.unige.it/person/DelzannoG/cover/
-[22] http://www.cs.unipr.it/Projects/AIDA/
-[23] http://www.comp.leeds.ac.uk/hill/linda/
+ [7] http://www.dimi.uniud.it/~comini/
+ [8] http://www.haible.de/bruno/
+ [9] http://www.irisa.fr/prive/Bertrand.Jeannet/
+[10] http://www.irisa.fr/prive/Bertrand.Jeannet/newpolka.html
+[11] http://www.cs.unipr.it/ppl/Documentation/chernikova.c
+[12] http://www.cs.unipr.it/ppl/Documentation/bibliography#LeVerge92
+[13] http://www.enseignement.polytechnique.fr/profs/informatique/Francesco.Logozzo/
+[14] http://www.math.unipr.it/~medori/
+[15] http://www.univ-reunion.fr/~fred/
+[16] http://www.cs.unipr.it/cTI/
+[17] http://www.cs.unipr.it/China/
+[18] http://theory.sci.univr.it/p40/
+[19] http://www.cs.unipr.it/Projects/COFIN01
+[20] http://www.disi.unige.it/person/DelzannoG/cover/
+[21] http://www.cs.unipr.it/Projects/AIDA/
+[22] http://www.comp.leeds.ac.uk/hill/linda/

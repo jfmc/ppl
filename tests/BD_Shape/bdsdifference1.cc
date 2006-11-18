@@ -250,18 +250,18 @@ test08() {
   TBD_Shape bd2(5);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::bds_difference_assign(bd2): it is impossible to apply
-    // this function to two polyhedra of different dimensions.
+    // this method to two polyhedra of different dimensions.
     bd1.bds_difference_assign(bd2);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

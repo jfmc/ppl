@@ -80,6 +80,7 @@ test01() {
   print_constraints(icosahedron, "*** icosahedron ***");
   print_constraints(column, "*** column ***");
   print_constraints(computed_result, "*** computed_result ***");
+  print_constraints(known_result, "*** known_result ***");
 
   return ok;
 }
@@ -500,7 +501,7 @@ test13() {
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST_F8A(test01);
+  DO_TEST(test01);
   DO_TEST_F8A(test02);
   DO_TEST(test03);
   DO_TEST(test04);

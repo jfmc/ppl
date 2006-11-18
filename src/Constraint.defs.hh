@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Polyhedron.types.hh"
+#include "Congruence.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -240,7 +241,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
     cout << "Constraint c1 is not an inequality." << endl;
   else {
     Linear_Expression e;
-    for (int i = c1.space_dimension() - 1; i >= 0; i--)
+    for (dimension_type i = c1.space_dimension(); i-- > 0; )
       e += c1.coefficient(Variable(i)) * Variable(i);
     e += c1.inhomogeneous_term();
     Constraint c2 = c1.is_strict_inequality() ? (e <= 0) : (e < 0);
@@ -260,6 +261,13 @@ class Parma_Polyhedra_Library::Constraint : private Linear_Row {
 public:
   //! Ordinary copy-constructor.
   Constraint(const Constraint& c);
+
+  //! Copy-constructs from equality congruence \p cg.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p cg is a proper congruence.
+  */
+  explicit Constraint(const Congruence& cg);
 
   //! Destructor.
   ~Constraint();
@@ -380,7 +388,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif
@@ -413,6 +421,16 @@ private:
     stealing the coefficients from \p e.
   */
   Constraint(Linear_Expression& e, Type type, Topology topology);
+
+  //! Constructs from a congruence, with specified size and capacity.
+  Constraint(const Congruence& cg, dimension_type sz, dimension_type capacity);
+
+  /*! \brief
+    Throws a <CODE>std::invalid_argument</CODE> exception containing
+    error message \p message.
+  */
+  void
+  throw_invalid_argument(const char* method, const char* message) const;
 
   /*! \brief
     Throws a <CODE>std::invalid_argument</CODE> exception

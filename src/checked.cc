@@ -195,7 +195,7 @@ parse_number_part(std::istream& is, number_struct& num) {
       goto fractional;
     case FRACTIONAL:
       if (get_digit(c, num.base) >= 0) {
-	exponent_offset--;
+	--exponent_offset;
 	if (c != '0' || !num.mantissa.empty())
 	  num.mantissa += (char) c;
 	empty_mantissa = false;
@@ -247,7 +247,7 @@ parse_number_part(std::istream& is, number_struct& num) {
     unsigned int n = num.mantissa.size();
     while (n > 0 && num.mantissa[n - 1] == '0') {
       --n;
-      exponent_offset++;
+      ++exponent_offset;
     }
     num.mantissa.erase(n);
     bool neg;

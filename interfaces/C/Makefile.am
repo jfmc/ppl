@@ -20,13 +20,22 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-EXTRA_DIST = ppl_c.h.in ppl_c.cc
+interface_generator_files = \
+ppl_interface_generator_c_dat.m4 \
+ppl_interface_generator_c_h.m4 \
+ppl_interface_generator_c_h_code.m4 \
+ppl_interface_generator_c_h_preamble \
+ppl_interface_generator_c_cc.m4 \
+ppl_interface_generator_c_cc_code.m4 \
+ppl_interface_generator_c_cc_preamble
+
+EXTRA_DIST = $(interface_generator_files)
 
 if BUILD_C_INTERFACE
 
 # Libtool -version-info for libppl_c.la.
 #
-#  1. Start with version information of `0:0:0' for each libtool library.
+#  1. Start with version information of `0:0:0' for each Libtool library.
 #
 #  2. Update the version information only immediately before a public
 #     release of your software.  More frequent updates are unnecessary,
@@ -56,15 +65,42 @@ LIBPPL_C_LT_CURRENT =  1
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      1
 
+BUILT_SOURCES = \
+ppl_c.h \
+ppl_c.cc
+
+interface_generator_dependencies = \
+../ppl_interface_instantiations.m4 \
+../ppl_interface_generator_common.m4 \
+../ppl_interface_generator_common_dat.m4 \
+../ppl_interface_generator_copyright \
+$(interface_generator_files)
+
+ppl_c.h: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_c_h.m4 > $@
+
+ppl_c.cc: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_c_cc.m4 > $@
+
 AM_CPPFLAGS = \
+-I$(top_builddir)/interfaces/C \
 -I$(top_builddir)/src \
 @extra_includes@
 
 lib_LTLIBRARIES = libppl_c.la
-libppl_c_la_SOURCES = ppl_c.cc
+nodist_libppl_c_la_SOURCES = ppl_c.cc
+libppl_c_la_LIBADD = \
+$(top_builddir)/src/libppl.la \
+@extra_libraries@
 libppl_c_la_LDFLAGS = \
 -version-info $(LIBPPL_C_LT_CURRENT):$(LIBPPL_C_LT_REVISION):$(LIBPPL_C_LT_AGE)
 
-include_HEADERS = ppl_c.h
+include_HEADERS = ppl_c_version.h
+
+DISTCLEANFILES = \
+ppl_c.h \
+ppl_c.cc
 
 endif BUILD_C_INTERFACE

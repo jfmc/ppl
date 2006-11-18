@@ -195,6 +195,16 @@ Linear_Expression::swap(Linear_Expression& y) {
   Linear_Row::swap(y);
 }
 
+inline void
+Linear_Expression::ascii_dump(std::ostream& s) const {
+  Linear_Row::ascii_dump(s);
+}
+
+inline bool
+Linear_Expression::ascii_load(std::istream& s) {
+  return Linear_Row::ascii_load(s);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 

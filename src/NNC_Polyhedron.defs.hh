@@ -75,10 +75,14 @@ public:
 
     \param cs
     The system of constraints defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
   */
-  explicit NNC_Polyhedron(Constraint_System& cs);
+  NNC_Polyhedron(Constraint_System& cs, Recycle_Input dummy);
 
   //! Builds an NNC polyhedron from a system of generators.
   /*!
@@ -98,13 +102,17 @@ public:
 
     \param gs
     The system of generators defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
 
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  explicit NNC_Polyhedron(Generator_System& gs);
+  NNC_Polyhedron(Generator_System& gs, Recycle_Input dummy);
 
   //! Builds an NNC polyhedron from a system of congruences.
   /*!
@@ -112,7 +120,7 @@ public:
 
     \param cgs
     The system of congruences defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
   */
   explicit NNC_Polyhedron(const Congruence_System& cgs);
@@ -124,10 +132,44 @@ public:
 
     \param cgs
     The system of congruences defining the polyhedron.  It is not
-    declared <CODE>const</CODE> because its data-structures will be
+    declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
   */
-  explicit NNC_Polyhedron(Congruence_System& cgs);
+  NNC_Polyhedron(Congruence_System& cgs, Recycle_Input dummy);
+
+  //! Builds an NNC polyhedron from a system of grid generators.
+  /*!
+    The polyhedron inherits the space dimension of the generator system.
+
+    \param ggs
+    The system of generators defining the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+  */
+  explicit NNC_Polyhedron(const Grid_Generator_System& ggs);
+
+  //! Builds an NNC polyhedron recycling a system of grid generators.
+  /*!
+    The polyhedron inherits the space dimension of the generator system.
+
+    \param ggs
+    The system of generators defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures may be
+    recycled to build the polyhedron.
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+  */
+  NNC_Polyhedron(Grid_Generator_System& ggs, Recycle_Input dummy);
 
   //! Builds an NNC polyhedron from the C polyhedron \p y.
   explicit NNC_Polyhedron(const C_Polyhedron& y);

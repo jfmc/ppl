@@ -185,9 +185,9 @@ test07() {
   bd.add_constraint(B <= 7);
 
   print_constraints(bd, "*** bd ***");
- 
+
   dimension_type affine_dim = bd.affine_dimension();
- 
+
   nout << endl
        << "The affine dimension of a system of `bd' "
        << endl
@@ -276,6 +276,17 @@ test10() {
   return ok;
 }
 
+bool
+test11() {
+  TBD_Shape bd(0, UNIVERSE);
+
+  const dimension_type affine_dim = bd.affine_dimension();
+
+  print_constraints(bd, "*** bd ***");
+
+  return (affine_dim == 0);
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -289,6 +300,7 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN
 
 

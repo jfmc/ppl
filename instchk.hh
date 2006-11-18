@@ -28,6 +28,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <inttypes.h>
 #endif
 
+#include "gmpxx.h"
+
 namespace Parma_Polyhedra_Library {
 
 class Polyhedron {
@@ -35,7 +37,17 @@ public:
   static bool valid_instantiation() {
     return true;
   }
-  static bool valid_Polyhedra_Powerset_argument() {
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+};
+
+class Grid {
+public:
+  static bool valid_instantiation() {
+    return true;
+  }
+  static bool valid_Pointset_Powerset_argument() {
     return true;
   }
 };
@@ -46,7 +58,13 @@ valid_BD_Shape_argument(void);
 
 template <>
 bool
-valid_BD_Shape_argument<char>() {
+valid_BD_Shape_argument<signed char>() {
+  return true;
+}
+
+template <>
+bool
+valid_BD_Shape_argument<short>() {
   return true;
 }
 
@@ -58,7 +76,25 @@ valid_BD_Shape_argument<int>() {
 
 template <>
 bool
-valid_BD_Shape_argument<int8_t>() {
+valid_BD_Shape_argument<long>() {
+  return true;
+}
+
+template <>
+bool
+valid_BD_Shape_argument<long long>() {
+  return true;
+}
+
+template <>
+bool
+valid_BD_Shape_argument<mpz_class>() {
+  return true;
+}
+
+template <>
+bool
+valid_BD_Shape_argument<mpq_class>() {
   return true;
 }
 
@@ -68,13 +104,27 @@ public:
   static bool valid_instantiation() {
     return valid_BD_Shape_argument<T>();
   }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
+};
+
+template <typename T>
+class Octagonal_Shape {
+public:
+  static bool valid_instantiation() {
+    return valid_BD_Shape_argument<T>();
+  }
+  static bool valid_Pointset_Powerset_argument() {
+    return true;
+  }
 };
 
 template <typename PH>
-class Polyhedra_Powerset {
+class Pointset_Powerset {
 public:
   static bool valid_instantiation() {
-    return PH::valid_Polyhedra_Powerset_argument();
+    return PH::valid_Pointset_Powerset_argument();
   }
 };
 

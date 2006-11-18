@@ -105,9 +105,9 @@ gcd_exact_noabs(To& to, const From& x, const From& y) {
   To ny = y;
   To rm;
   while (ny != 0) {
-    /* The following is derived from the assumption that x % y
-       is always representable. This is true for both native integers
-       and iec559 floating point numbers */
+    // The following is derived from the assumption that x % y
+    // is always representable. This is true for both native integers
+    // and IEC 559 floating point numbers.
     rem<Policy>(rm, nx, ny, ROUND_NOT_NEEDED);
     nx = ny;
     ny = rm;
@@ -158,10 +158,10 @@ gcdext_exact(To1& to, const From1& x, const From2& y, To2& s, To3& t,
   if (r != V_EQ)
     return r;
 
-  // If COPY_GMP is defined then s is favoured when the absolute
+  // If COPY_GMP is defined then s is favored when the absolute
   // values of the given numbers are equal.  For instance if x and y
   // are both 5 then s will be 1 and t will be 0, instead of the other
-  // way round.  This is to match the behaviour of GMP.
+  // way round.  This is to match the behavior of GMP.
 #define COPY_GMP
 #ifdef COPY_GMP
   if (to == ay)
@@ -219,9 +219,9 @@ lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
     return r;
   To gcd;
   gcd_exact_noabs<Policy>(gcd, nx, ny);
-  /* The following is derived from the assumption that x / gcd(x, y)
-     is always representable. This is true for both native integers
-     and iec559 floating point numbers */
+  // The following is derived from the assumption that x / gcd(x, y)
+  // is always representable. This is true for both native integers
+  // and IEC 559 floating point numbers.
   div<Policy>(to, nx, gcd, ROUND_NOT_NEEDED);
   return mul<Policy>(to, to, ny, dir);
 }

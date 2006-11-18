@@ -44,9 +44,9 @@ test01() {
   gr.affine_preimage(A, 2*A, 5);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A, 3));
-  known_gr.add_generator(grid_point(B, 2));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A, 3));
+  known_gr.add_grid_generator(grid_point(B, 2));
 
   bool ok = (gr == known_gr);
 
@@ -63,15 +63,15 @@ test02() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(-2*A, 3));
+  gr.add_grid_generator(grid_point(-2*A, 3));
 
   gr.affine_preimage(A, B + 2, -3);
 
   print_generators(gr, "*** gr ***");
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_line(A));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_line(A));
 
   bool ok = (gr == known_gr);
 
@@ -112,14 +112,14 @@ test04() {
   Variable B(1);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(5*A + 4*B, 7));
+  gr.add_grid_generator(grid_point(5*A + 4*B, 7));
 
   print_generators(gr, "*** gr ***");
 
   gr.affine_preimage(B, A - B, -1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(5*A + 9*B, 7));
+  known_gr.add_grid_generator(grid_point(5*A + 9*B, 7));
 
   bool ok = (gr == known_gr);
 
@@ -146,7 +146,7 @@ test05() {
   gr.affine_preimage(B, A - B, -1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(5*A + 9*B, 7));
+  known_gr.add_grid_generator(grid_point(5*A + 9*B, 7));
 
   bool ok = (gr == known_gr);
 
@@ -297,11 +297,11 @@ test11() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Expression of a greater space dimension than the grid.
@@ -321,11 +321,11 @@ test12() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Variable of a greater space dimension than the grid.
@@ -345,11 +345,11 @@ test13() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

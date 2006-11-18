@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Grid.defs.hh"
+#include "Variables_Set.defs.hh"
 #include <cassert>
 
 #define BE_LAZY 1
@@ -38,13 +39,13 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
   assert(cgs.num_columns() - 1 == gs.space_dimension() + 1);
   assert(dims > 0);
 
-  dimension_type tem = cgs.num_columns() - 1;
+  const dimension_type old_modulus_index = cgs.num_columns() - 1;
   cgs.add_zero_columns(dims);
   // Move the moduli.
-  cgs.swap_columns(tem, tem + dims);
+  cgs.swap_columns(old_modulus_index, old_modulus_index + dims);
 
   if (congruences_are_minimized() || generators_are_minimized())
-    dim_kinds.resize(tem + dims, CON_VIRTUAL /* a.k.a. LINE */);
+    dim_kinds.resize(old_modulus_index + dims, CON_VIRTUAL /* a.k.a. LINE */);
 
   gs.add_universe_rows_and_columns(dims);
 }
@@ -267,10 +268,8 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // Dimension-compatibility check: the variable having maximum space
-  // dimension is the one occurring last in the set.
-  const dimension_type
-    min_space_dim = to_be_removed.rbegin()->space_dimension();
+  // Dimension-compatibility check.
+  const dimension_type min_space_dim = to_be_removed.space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
@@ -292,9 +291,6 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
-  // FIXME: Can this operate on the congruence system if only the
-  //        congruence system is up to date?
-
   gen_sys.remove_space_dimensions(to_be_removed);
 
   clear_congruences_up_to_date();
@@ -307,7 +303,7 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& to_be_removed) {
 }
 
 void
-PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
+PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
   // Dimension-compatibility check.
   if (new_dimension > space_dim)
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
@@ -321,8 +317,7 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
     return;
   }
 
-  if (marked_empty()
-      || (!generators_are_up_to_date() && !update_generators())) {
+  if (is_empty()) {
     // Removing dimensions from the empty grid just updates the space
     // dimension.
     space_dim = new_dimension;
@@ -338,20 +333,57 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
     return;
   }
 
-  gen_sys.remove_higher_space_dimensions(new_dimension);
-
-#if 0
-  // FIXME: Perhaps add something like remove_rows_and_columns(dims)
-  //        to Grid_Generator_System for this.
-  if (generators_are_minimized()) {
-    gen_sys.erase_to_end(new_dimension + 1);
-    dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
+  // Favor the generators, as is done by is_empty().
+  if (generators_are_up_to_date()) {
+    gen_sys.remove_higher_space_dimensions(new_dimension);
+    if (generators_are_minimized()) {
+      // Count the actual number of rows that are now redundant.
+      dimension_type num_redundant = 0;
+      const dimension_type num_old_gs = space_dim - new_dimension;
+      for (dimension_type row = 0; row < num_old_gs; ++row)
+	dim_kinds[row] == GEN_VIRTUAL || ++num_redundant;
+      if (num_redundant > 0) {
+	// Chop zero rows from end of system, to keep minimal form.
+	gen_sys.erase_to_end(gen_sys.num_generators() - num_redundant);
+	gen_sys.unset_pending_rows();
+      }
+      dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
+      // TODO: Consider if it is worth also preserving the congruences
+      //       if they are also in minimal form.
+    }
+    clear_congruences_up_to_date();
+    // Extend the zero dim false congruence system to the appropriate
+    // dimension and then swap it with `con_sys'.
+    Congruence_System cgs(Congruence::zero_dim_false());
+    // Extra 2 columns for inhomogeneous term and modulus.
+    cgs.increase_space_dimension(new_dimension + 2);
+    con_sys.swap(cgs);
   }
-#else
-  clear_generators_minimized();
-#endif
-
-  clear_congruences_up_to_date();
+  else {
+    assert(congruences_are_minimized());
+    con_sys.remove_higher_space_dimensions(new_dimension);
+    // Count the actual number of rows that are now redundant.
+    dimension_type num_redundant = 0;
+    for (dimension_type row = space_dim; row > new_dimension; --row)
+      dim_kinds[row] == CON_VIRTUAL || ++num_redundant;
+    if (num_redundant > 0) {
+      dimension_type rows = con_sys.num_rows();
+      // Shuffle the remaining rows upwards.
+      for (dimension_type low = 0, high = num_redundant;
+	   high < rows;
+	   ++high, ++low)
+	std::swap(con_sys[low], con_sys[high]);
+      // Chop newly redundant rows from end of system, to keep minimal
+      // form.
+      con_sys.erase_to_end(rows - num_redundant);
+    }
+    dim_kinds.erase(dim_kinds.begin() + new_dimension + 1, dim_kinds.end());
+    clear_generators_up_to_date();
+    // Replace gen_sys with an empty system of the right dimension.
+    // Extra 2 columns for inhomogeneous term and modulus.
+    Grid_Generator_System gs(new_dimension + 2);
+    gen_sys.swap(gs);
+  }
 
   // Update the space dimension.
   space_dim = new_dimension;
@@ -361,7 +393,7 @@ PPL::Grid::remove_higher_space_dimensions(dimension_type new_dimension) {
 
 void
 PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
-  // FIXME: this implementation is _really_ an executable specification.
+  // TODO: this implementation is _really_ an executable specification.
 
   // `var' must be one of the dimensions of the vector space.
   if (var.space_dimension() > space_dim)
@@ -412,7 +444,7 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
 void
 PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
 				 Variable var) {
-  // FIXME: this implementation is _really_ an executable specification.
+  // TODO: this implementation is _really_ an executable specification.
 
   // `var' should be one of the dimensions of the grid.
   if (var.space_dimension() > space_dim)
@@ -423,20 +455,20 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
     return;
 
   // All variables in `to_be_folded' must be dimensions of the grid.
-  if (to_be_folded.rbegin()->space_dimension() > space_dim)
+  if (to_be_folded.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
-				 "*tbf.rbegin()",
-				 *to_be_folded.rbegin());
+				 "tbf.space_dimension()",
+				 to_be_folded.space_dimension());
 
-  // Moreover, `var' must not occur in `to_be_folded'.
-  if (to_be_folded.find(var) != to_be_folded.end())
+  // Moreover, `var.id()' must not occur in `to_be_folded'.
+  if (to_be_folded.find(var.id()) != to_be_folded.end())
     throw_invalid_argument("fold_space_dimensions(tbf, v)",
 			   "v should not occur in tbf");
 
   for (Variables_Set::const_iterator i = to_be_folded.begin(),
 	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
     Grid copy = *this;
-    copy.affine_image(var, Linear_Expression(*i));
+    copy.affine_image(var, Linear_Expression(Variable(*i)));
     join_assign(copy);
   }
   remove_space_dimensions(to_be_folded);

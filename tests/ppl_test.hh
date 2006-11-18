@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl.hh"
 #include "print.hh"
+#include "FCAIBVP.defs.hh"
 #include "Partial_Function.defs.hh"
 #include "Random_Number_Generator.defs.hh"
 #include <stdexcept>
@@ -121,7 +122,9 @@ catch (const std::exception& e) {					\
 #if COEFFICIENT_BITS == 0
 
 #define DO_TEST_F64(test) DO_TEST(test)
+#define DO_TEST_F64A(test) DO_TEST(test)
 #define DO_TEST_F32(test) DO_TEST(test)
+#define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
@@ -129,28 +132,64 @@ catch (const std::exception& e) {					\
 
 #elif COEFFICIENT_BITS == 64
 
+#ifdef NDEBUG
+
 #define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST(test)
 #define DO_TEST_F32(test) DO_TEST(test)
+#define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
+
+#else
+
+#define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
+#define DO_TEST_F32(test) DO_TEST(test)
+#define DO_TEST_F32A(test) DO_TEST(test)
+#define DO_TEST_F16(test) DO_TEST(test)
+#define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8(test) DO_TEST(test)
+#define DO_TEST_F8A(test) DO_TEST(test)
+
+#endif // !defined(NDEBUG)
 
 #elif COEFFICIENT_BITS == 32
 
+#ifdef NDEBUG
+
 #define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
 #define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
+
+#else
+
+#define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
+#define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F32A(test) DO_TEST_F(test)
+#define DO_TEST_F16(test) DO_TEST(test)
+#define DO_TEST_F16A(test) DO_TEST(test)
+#define DO_TEST_F8(test) DO_TEST(test)
+#define DO_TEST_F8A(test) DO_TEST(test)
+
+#endif // !defined(NDEBUG)
 
 #elif COEFFICIENT_BITS == 16
 
 #ifdef NDEBUG
 
 #define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
 #define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F32A(test) DO_TEST_F(test)
 #define DO_TEST_F16(test) DO_TEST_F(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
@@ -159,7 +198,9 @@ catch (const std::exception& e) {					\
 #else
 
 #define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
 #define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F32A(test) DO_TEST_F(test)
 #define DO_TEST_F16(test) DO_TEST_F(test)
 #define DO_TEST_F16A(test) DO_TEST_F(test)
 #define DO_TEST_F8(test) DO_TEST(test)
@@ -172,7 +213,9 @@ catch (const std::exception& e) {					\
 #ifdef NDEBUG
 
 #define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
 #define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F32A(test) DO_TEST_F(test)
 #define DO_TEST_F16(test) DO_TEST_F(test)
 #define DO_TEST_F16A(test) DO_TEST_F(test)
 #define DO_TEST_F8(test) DO_TEST_F(test)
@@ -181,7 +224,9 @@ catch (const std::exception& e) {					\
 #else
 
 #define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64A(test) DO_TEST_F(test)
 #define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F32A(test) DO_TEST_F(test)
 #define DO_TEST_F16(test) DO_TEST_F(test)
 #define DO_TEST_F16A(test) DO_TEST_F(test)
 #define DO_TEST_F8(test) DO_TEST_F(test)
@@ -407,18 +452,8 @@ check_result(const Octagonal_Shape<T>& computed_result,
     : check_result_i(computed_result, known_result, 0, 0, 0);
 }
 
-//! Compare copies of \p a and \p b.
-/*!
-  Comparing temporary copies ensures that the underlying
-  representation of \p a and \p b stays the same.
-*/
-template <typename T>
-inline bool
-copy_compare(const T& a, const T& b) {
-  const T tem_a = a;
-  const T tem_b = b;
-  return tem_a == tem_b;
-}
+//! Return true if and only if x equals y.
+bool operator==(const Bounding_Box& x, const Bounding_Box& y);
 
 } // namespace Parma_Polyhedra_Library
 

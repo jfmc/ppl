@@ -56,20 +56,22 @@ Congruence::~Congruence() {
 }
 
 inline Congruence
-Congruence::create(const Linear_Expression& e, Coefficient_traits::const_reference n) {
+Congruence::create(const Linear_Expression& e,
+		   Coefficient_traits::const_reference n) {
   // Ensure that diff has capacity for the modulus.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
-  Congruence cg(diff, 1, false);
+  Congruence cg(diff, 1);
   return cg;
 }
 
 inline Congruence
-Congruence::create(Coefficient_traits::const_reference n, const Linear_Expression& e) {
+Congruence::create(Coefficient_traits::const_reference n,
+		   const Linear_Expression& e) {
   // Ensure that diff has capacity for the modulus.
   Linear_Expression diff(e, e.space_dimension() + 2);
   diff -= n;
-  Congruence cg(diff, 1, false);
+  Congruence cg(diff, 1);
   return cg;
 }
 
@@ -83,12 +85,6 @@ operator%=(const Linear_Expression& e1, const Linear_Expression& e2) {
 inline Congruence
 operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   return Congruence::create(e, n);
-}
-
-/*! \relates Parma_Polyhedra_Library::Congruence */
-inline Congruence
-operator%=(Coefficient_traits::const_reference n, const Linear_Expression& e) {
-  return Congruence::create(n, e);
 }
 
 /*! \relates Parma_Polyhedra_Library::Congruence */
@@ -107,7 +103,7 @@ Congruence::zero_dim_integrality() {
 inline const Congruence&
 Congruence::zero_dim_false() {
   static const Congruence
-    zdf((Linear_Expression::zero() %= Coefficient_one()) / 0);
+    zdf((Linear_Expression::zero() %= Coefficient(-1)) / 0);
   return zdf;
 }
 
@@ -179,12 +175,6 @@ Congruence::modulus() const {
   return (*this)[size()-1];
 }
 
-inline Coefficient&
-Congruence::modulus() {
-  assert(size() > 0);
-  return (*this)[size()-1];
-}
-
 inline bool
 Congruence::is_proper_congruence() const {
   return modulus() > 0;
@@ -203,7 +193,7 @@ Congruence::is_equal_at_dimension(dimension_type dim,
 
 inline void
 Congruence::set_is_equality() {
-  modulus() = 0;
+  (*this)[size()-1] = 0;
 }
 
 inline void
@@ -224,15 +214,10 @@ Congruence::total_memory_in_bytes() const {
 
 inline
 Congruence::Congruence(Linear_Expression& le,
-		       Coefficient_traits::const_reference m,
-		       bool capacity) {
+		       Coefficient_traits::const_reference m) {
   Row::swap(static_cast<Row&>(le));
-  if (capacity)
-    Row::expand_within_capacity(size()+1);
-  if (m >= 0)
-    (*this)[size()-1] = m;
-  else
-    (*this)[size()-1] = -m;
+  assert(m >= 0);
+  (*this)[size()-1] = m;
 }
 
 inline void

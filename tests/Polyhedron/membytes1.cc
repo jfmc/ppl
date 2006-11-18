@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
+namespace test01_namespace {
+
 void
 add_constraint(C_Polyhedron& ph, const Constraint& c) {
   const memory_size_type ph_memory_before = ph.total_memory_in_bytes();
@@ -61,11 +63,11 @@ minimize(C_Polyhedron& ph) {
        << endl;
 }
 
-} // namespace
+} // namespace test01_namespace
 
-int
-main() TRY {
-  set_handlers();
+bool
+test01() {
+  using namespace test01_namespace;
 
   Variable x(0);
   Variable y(1);
@@ -213,6 +215,77 @@ main() TRY {
   nout << "Sum of sizes of contained generators = " << gs_elements_size
        << endl << endl;
 
-  return 0;
+  return true;
 }
-CATCH
+
+bool test02() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  C_Polyhedron ph(3);
+  ph.add_constraint(4*x - 2*y - z + 14 >= 0);
+  ph.add_constraint(4*x + 2*y - z + 2 >= 0);
+  ph.add_constraint(x + y - 1 >= 0);
+  ph.add_constraint(x + y + 2*z - 5 >= 0);
+
+  const memory_size_type ph_total_size = ph.total_memory_in_bytes();
+  const memory_size_type ph_external_size = ph.external_memory_in_bytes();
+
+  Determinate<C_Polyhedron> dph(ph);
+
+  const memory_size_type dph_total_size = dph.total_memory_in_bytes();
+  const memory_size_type dph_external_size = dph.external_memory_in_bytes();
+
+  nout << "ph.total_memory_in_bytes() = " << ph_total_size
+       << endl
+       << "ph.external_memory_in_bytes() = " << ph_external_size
+       << endl
+       << "dph.total_memory_in_bytes() = " << dph_total_size
+       << endl
+       << "dph.external_memory_in_bytes() = " << dph_external_size
+       << endl;
+
+  Pointset_Powerset<C_Polyhedron> pph(ph);
+
+  C_Polyhedron qh(3);
+  qh.add_constraint(x >= 0);
+  qh.add_constraint(y >= 0);
+  qh.add_constraint(z >= 0);
+  qh.add_constraint(x <= 1);
+  qh.add_constraint(y <= 1);
+  qh.add_constraint(z <= 1);
+  Pointset_Powerset<C_Polyhedron> pqh(qh);
+
+  Pointset_Powerset<C_Polyhedron> prh = pqh;
+  prh.poly_difference_assign(pph);
+
+  const memory_size_type pph_total_size = pph.total_memory_in_bytes();
+  const memory_size_type pph_external_size = pph.external_memory_in_bytes();
+  const memory_size_type pqh_total_size = pqh.total_memory_in_bytes();
+  const memory_size_type pqh_external_size = pqh.external_memory_in_bytes();
+  const memory_size_type prh_total_size = prh.total_memory_in_bytes();
+  const memory_size_type prh_external_size = prh.external_memory_in_bytes();
+
+  nout << "pph.total_memory_in_bytes() = " << pph_total_size
+       << endl
+       << "pph.external_memory_in_bytes() = " << pph_external_size
+       << endl
+       << "pqh.total_memory_in_bytes() = " << pqh_total_size
+       << endl
+       << "pqh.external_memory_in_bytes() = " << pqh_external_size
+       << endl
+       << "prh.total_memory_in_bytes() = " << prh_total_size
+       << endl
+       << "prh.external_memory_in_bytes() = " << prh_external_size
+       << endl;
+
+  return true;
+}
+
+} // namespace
+
+BEGIN_MAIN
+  DO_TEST_F8(test01);
+  DO_TEST_F8A(test02);
+END_MAIN

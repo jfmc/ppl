@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_BD_Shape_inlines_hh
 #define PPL_BD_Shape_inlines_hh 1
 
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 #include "C_Polyhedron.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
@@ -34,6 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 namespace Implementation {
+
 namespace BD_Shapes {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -94,7 +97,33 @@ max_assign(N& x, const N& y) {
     x = y;
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x is an even number.
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T, typename Policy>
+inline bool
+is_even(const Checked_Number<T, Policy>& x) {
+  Checked_Number<T, Policy> half_x;
+  return div2exp_assign_r(half_x, x, 1, ROUND_DIRECT) == V_EQ
+    && is_integer(half_x);
+}
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \f$x = -y\f$.
+/*! \relates Parma_Polyhedra_Library::BD_Shape */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T, typename Policy>
+inline bool
+is_additive_inverse(const Checked_Number<T, Policy>& x,
+		    const Checked_Number<T, Policy>& y) {
+  Checked_Number<T, Policy> negated_x;
+  return neg_assign_r(negated_x, x, ROUND_DIRECT) == V_EQ
+    && negated_x == y;
+}
+
 } // namespace BD_Shapes
+
 } // namespace Implementation
 
 
@@ -150,8 +179,8 @@ BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
     if (num_dimensions > 0)
       // A (non zero-dim) universe BDS is closed.
       status.set_shortest_path_closed();
+    assert(OK());
   }
-  assert(OK());
 }
 
 template <typename T>
@@ -186,7 +215,7 @@ template <typename T>
 inline void
 BD_Shape<T>::add_constraints(const Constraint_System& cs) {
   for (Constraint_System::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i)
+	 cs_end = cs.end(); i != cs_end; ++i)
     add_constraint(*i);
   assert(OK());
 }
@@ -200,6 +229,18 @@ BD_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
 }
 
 template <typename T>
+inline void
+BD_Shape<T>::add_recycled_constraints(Constraint_System& cs) {
+  add_constraints(cs);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::add_recycled_constraints_and_minimize(Constraint_System& cs) {
+  return add_constraints_and_minimize(cs);
+}
+
+template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const Constraint_System& cs)
   : dbm(cs.space_dimension() + 1), status(), redundancy_dbm() {
@@ -207,35 +248,6 @@ BD_Shape<T>::BD_Shape(const Constraint_System& cs)
     // A (non zero-dim) universe BDS is shortest-path closed.
     status.set_shortest_path_closed();
   add_constraints(cs);
-  assert(OK());
-}
-
-template <typename T>
-inline dimension_type
-BD_Shape<T>::affine_dimension() const {
-  const dimension_type space_dim = space_dimension();
-
-  // Shortest-path closure is necessary to detect emptiness
-  // and all (possibly implicit) equalities.
-  shortest_path_closure_assign();
-  if (marked_empty())
-    return 0;
-
-  // The vector `predecessor' is used to represent equivalence classes:
-  // `predecessor[i] == i' if and only if `i' is the leader of its
-  // equivalence class (i.e., the minimum index in the class);
-  std::vector<dimension_type> predecessor;
-  compute_predecessors(predecessor);
-
-  // Due to the fictitious variable `0', the affine dimension is one
-  // less the number of equivalence classes.
-  dimension_type affine_dim = 0;
-  // Note: disregard the first equivalence class.
-  for (dimension_type i = 1; i <= space_dim; ++i)
-    if (predecessor[i] == i)
-      ++affine_dim;
-
-  return affine_dim;
 }
 
 template <typename T>
@@ -272,6 +284,69 @@ inline bool
 BD_Shape<T>::is_empty() const {
   shortest_path_closure_assign();
   return marked_empty();
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::bounds_from_above(const Linear_Expression& expr) const {
+  return bounds(expr, true);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::bounds_from_below(const Linear_Expression& expr) const {
+  return bounds(expr, false);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::maximize(const Linear_Expression& expr,
+		      Coefficient& sup_n, Coefficient& sup_d,
+		      bool& maximum) const {
+  return max_min(expr, true, sup_n, sup_d, maximum);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::maximize(const Linear_Expression& expr,
+		      Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+		      Generator& g) const {
+  return max_min(expr, true, sup_n, sup_d, maximum, g);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::minimize(const Linear_Expression& expr,
+		      Coefficient& inf_n, Coefficient& inf_d,
+		      bool& minimum) const {
+  return max_min(expr, false, inf_n, inf_d, minimum);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::minimize(const Linear_Expression& expr,
+		      Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+		      Generator& g) const {
+  return max_min(expr, false, inf_n, inf_d, minimum, g);
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::is_topologically_closed() const {
+  return true;
+}
+
+template <typename T>
+inline bool
+BD_Shape<T>::is_discrete() const {
+  return affine_dimension() == 0;
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::topological_closure_assign() {
+  // Nothing to be done.
+  return;
 }
 
 /*! \relates BD_Shape */
@@ -517,7 +592,6 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
     if (marked_shortest_path_closed())
       status.reset_shortest_path_closed();
   }
-  assert(OK());
 }
 
 template <typename T>
@@ -675,25 +749,9 @@ BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
 }
 
 template <typename T>
-inline void
-BD_Shape<T>::forget_all_dbm_constraints(const dimension_type v) {
-  assert(0 < v && v <= dbm.num_rows());
-  DB_Row<N>& dbm_v = dbm[v];
-  for (dimension_type i = dbm.num_rows(); i-- > 0; ) {
-    dbm_v[i] = PLUS_INFINITY;
-    dbm[i][v] = PLUS_INFINITY;
-  }
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::forget_binary_dbm_constraints(const dimension_type v) {
-  assert(0 < v && v <= dbm.num_rows());
-  DB_Row<N>& dbm_v = dbm[v];
-  for (dimension_type i = dbm.num_rows()-1; i > 0; --i) {
-    dbm_v[i] = PLUS_INFINITY;
-    dbm[i][v] = PLUS_INFINITY;
-  }
+inline memory_size_type
+BD_Shape<T>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 } // namespace Parma_Polyhedra_Library

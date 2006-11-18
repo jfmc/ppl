@@ -28,6 +28,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
+Grid_Generator::Grid_Generator(const Grid_Generator& g)
+  : Generator(g) {
+}
+
+inline
+Grid_Generator::~Grid_Generator() {
+}
+
+inline
 Grid_Generator::Grid_Generator(Generator g)
   : Generator(Generator::point()) {
   Generator::swap(g);
@@ -36,6 +45,11 @@ Grid_Generator::Grid_Generator(Generator g)
 inline dimension_type
 Grid_Generator::size() const {
   return Generator::size();
+}
+
+inline dimension_type
+Grid_Generator::max_space_dimension() {
+  return Generator::max_space_dimension() - 1;
 }
 
 inline Coefficient&
@@ -164,6 +178,12 @@ Grid_Generator::external_memory_in_bytes() const {
   return Generator::external_memory_in_bytes();
 }
 
+inline const Grid_Generator&
+Grid_Generator::zero_dim_point() {
+  static const Grid_Generator zdp = grid_point();
+  return zdp;
+}
+
 inline void
 Grid_Generator::strong_normalize() {
   Generator::strong_normalize();
@@ -172,16 +192,6 @@ Grid_Generator::strong_normalize() {
 inline void
 Grid_Generator::swap(Grid_Generator& y) {
   Generator::swap(y);
-}
-
-inline void
-Grid_Generator::ascii_dump(std::ostream& s) const {
-  Generator::ascii_dump(s);
-}
-
-inline bool
-Grid_Generator::ascii_load(std::istream& s) {
-  return Generator::ascii_load(s);
 }
 
 /*! \relates Grid_Generator */

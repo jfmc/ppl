@@ -36,8 +36,23 @@ neg_assign(GMP_Integer& x, const GMP_Integer& y) {
 }
 
 inline void
+abs_assign(GMP_Integer& x) {
+  mpz_abs(x.get_mpz_t(), x.get_mpz_t());
+}
+
+inline void
+abs_assign(GMP_Integer& x, const GMP_Integer& y) {
+  mpz_abs(x.get_mpz_t(), y.get_mpz_t());
+}
+
+inline void
 gcd_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
   mpz_gcd(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
+}
+
+inline void
+rem_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
+  mpz_tdiv_r(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
 }
 
 inline void

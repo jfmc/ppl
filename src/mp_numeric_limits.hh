@@ -1,6 +1,6 @@
-/* Specializations of std::numeric_limits for multi-precision types.
-   This will become obsolete when GMP and MPFR will provide the
-   specializations by themselves.
+/* Specializations of std::numeric_limits for multi-precision types:
+   declarations.  This will become obsolete when GMP and MPFR will
+   provide the specializations by themselves.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -59,7 +59,7 @@ public:
   static const bool is_bounded = false;
   static const bool is_modulo = false;
   static const bool traps = false;
-  static const bool tinyness_before = false;
+  static const bool tininess_before = false;
   static const float_round_style round_style = round_toward_zero;
 
   static Type min() {
@@ -120,7 +120,7 @@ public:
   static const bool is_bounded = false;
   static const bool is_modulo = false;
   static const bool traps = false;
-  static const bool tinyness_before = false;
+  static const bool tininess_before = false;
   static const float_round_style round_style = round_toward_zero;
 
   static Type min() {

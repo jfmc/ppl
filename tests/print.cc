@@ -114,7 +114,7 @@ print_generators(const Polyhedron& ph,
 void
 print_generators(const Grid& gr,
 		 const std::string& intro, std::ostream& s) {
-  print_generators(gr.generators(), intro, s);
+  print_generators(gr.grid_generators(), intro, s);
 }
 
 void

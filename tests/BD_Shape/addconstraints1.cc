@@ -58,19 +58,19 @@ test02() {
   TBD_Shape bd1(2);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::add_constraint: it is illegal
     // to add a strict inequality.
     bd1.add_constraint(x <= 0);
     bd1.add_constraint(y < 0);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -82,67 +82,66 @@ test03() {
   TBD_Shape bd1(2);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::add_constraint: it is illegal
     // to add a constraint with bigger dimension.
     bd1.add_constraint(x <= 0);
     bd1.add_constraint(y - x + z >= 0);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
 test04() {
   Variable x(0);
   Variable y(1);
-  Variable z(2);
 
-  TBD_Shape bd1(3);
+  TBD_Shape bd(1);
 
   try {
-    // This is an invalid use of function
-    // BD_Shape::add_constraint: it is illegal
-    // to add a constraint with three dimension.
-    bd1.add_constraint(x <= 0);
-    bd1.add_constraint(y - x + z >= 0);
+    // This is an invalid use of the method
+    // BD_Shape::add_constraints_and_minimize(cs): it is illegal to
+    // add a system of constraints that is not dimensional incompatible
+    // with the polyhedron.
+    Constraint_System cs;
+    cs.insert(x - y >= 0);
+    bd.add_constraints_and_minimize(cs);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
 test05() {
-  Variable x(0);
   Variable y(1);
-  // Variable z(2);
 
-  TBD_Shape bd1(3);
+  TBD_Shape bd(1);
 
   try {
-    // This is an invalid use of function
-    // BD_Shape::add_constraint: it is illegal
-    // to add a constraint with two different coefficients.
-    bd1.add_constraint(x <= 0);
-    bd1.add_constraint(2*y - 3*x <= 0);
+    // This is an invalid use of the method
+    // BD_Shape::add_constraint(c): it is illegal to insert a
+    // constraints that contains a variable that is not in the space
+    // of the polyhedron.
+    bd.add_constraint(y >= 0);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -153,54 +152,7 @@ test06() {
   TBD_Shape bd(1);
 
   try {
-    // This is an invalid use of the function
-    // BD_Shape::add_constraints_and_minimize(cs): it is illegal to
-    // add a system of constraints that is not dimensional incompatible
-    // with the polyhedron.
-    Constraint_System cs;
-    cs.insert(x - y >= 0);
-    bd.add_constraints_and_minimize(cs);
-  }
-  catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
-  }
-  catch (...) {
-    return false;
-  }
-  return true;
-}
-
-bool
-test07() {
-  Variable y(1);
-
-  TBD_Shape bd(1);
-
-  try {
-    // This is an invalid use of the function
-    // RBD_Shape::add_constraint(c): it is illegal to insert a
-    // constraints that contains a variable that is not in the space
-    // of the polyhedron.
-    bd.add_constraint(y >= 0);
-  }
-  catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
-  }
-  catch (...) {
-    return false;
-  }
-  return true;
-}
-
-bool
-test08() {
-  Variable x(0);
-  Variable y(1);
-
-  TBD_Shape bd(1);
-
-  try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::add_constraints(cs): it is illegal to add a system
     // of constraints that is dimensional incompatible with the
     // polyhedron.
@@ -209,12 +161,12 @@ test08() {
     bd.add_constraints(cs);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace
@@ -226,6 +178,4 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST(test07);
-  DO_TEST(test08);
 END_MAIN

@@ -137,7 +137,7 @@ test05() {
   Variable A(0);
   Variable B(1);
 
-  BD_Shape<mpq_class> bd(2);
+  TBD_Shape bd(2);
   bd.add_constraint(B - A <= 2);
   bd.add_constraint(B <= 5);
 
@@ -148,11 +148,436 @@ test05() {
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B <= 5);
 
-  bool ok = (bd == known_result);
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd,
 		    "*** bd.generalized_affine_preimage(A, "
 		    "GREATER_THAN_OR_EQUAL, B + 3) ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Linear_Expression e1(A);
+  Linear_Expression e2(B + 3);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(B - A <= 2);
+  bd.add_constraint(B <= 5);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, GREATER_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(B <= 5);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(A, "
+		    "GREATER_THAN_OR_EQUAL, B + 3) ***");
+
+  return ok;
+}
+
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Linear_Expression e1(A - B);
+  Linear_Expression e2(B + C + 2);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(B - A <= 2);
+  bd.add_constraint(C <= 5);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, GREATER_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(C <= 5);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(A - B, "
+		    "GREATER_THAN_OR_EQUAL, B + C + 2) ***");
+
+  return ok;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Linear_Expression e1(A - B);
+  Linear_Expression e2(2);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(B - A <= 2);
+  bd.add_constraint(C <= 5);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, GREATER_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(C <= 5);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(A - B, "
+		    "GREATER_THAN_OR_EQUAL, 2) ***");
+
+  return ok;
+}
+
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Linear_Expression e1(A - B);
+  Linear_Expression e2(C + 2);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(B - A <= 2);
+  bd.add_constraint(C <= 5);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, GREATER_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(C <= 5);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(A - B, "
+		    "GREATER_THAN_OR_EQUAL, C + 2) ***");
+
+  return ok;
+}
+
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Linear_Expression e1(0);
+  Linear_Expression e2(1);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(A <= 2);
+  bd.add_constraint(A - B <= 2);
+  bd.add_constraint(C <= 5);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, GREATER_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(3, EMPTY);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(0, "
+		    "GREATER_THAN_OR_EQUAL, 1) ***");
+
+  return ok;
+}
+
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Linear_Expression e1(B + C);
+  Linear_Expression e2(3);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(A <= 2);
+  bd.add_constraint(A - B <= 2);
+  bd.add_constraint(C <= 5);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, GREATER_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(A <= 2);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(B + C, "
+		    "GREATER_THAN_OR_EQUAL, 3) ***");
+
+  return ok;
+}
+
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Linear_Expression e1(B + C);
+  Linear_Expression e2(B + C);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(A <= 2);
+  bd.add_constraint(B <= 2);
+  bd.add_constraint(B - C <= 3);
+  bd.add_constraint(C <= 5);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, GREATER_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(A <= 2);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(B + C, "
+		    "GREATER_THAN_OR_EQUAL, B + C) ***");
+
+  return ok;
+}
+
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+  Linear_Expression e1(B - A);
+  Linear_Expression e2(A);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(B <= 5);
+  bd.add_constraint(A >= 2);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, GREATER_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(A <= 3);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(B - A, "
+		    "GREATER_THAN_OR_EQUAL, A) ***");
+
+  return ok;
+}
+
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+  Linear_Expression e1(B - A);
+  Linear_Expression e2(2*A);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(B <= 5);
+  bd.add_constraint(A >= 2);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(3);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(B - A, "
+		    "EQUAL, 2*A) ***");
+
+  return ok;
+}
+
+bool
+test15() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Linear_Expression e1(A - B);
+  Linear_Expression e2(B - C);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(B <= 5);
+  bd.add_constraint(A >= 2);
+  bd.add_constraint(C >= -2);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, LESS_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(C >= -2);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(A - B, "
+		    "LESS_THAN_OR_EQUAL, B - C) ***");
+
+  return ok;
+}
+
+bool
+test16() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Linear_Expression e1(C);
+  Linear_Expression e2(A + B);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(B <= 5);
+  bd.add_constraint(A <= 2);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, LESS_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(B <= 5);
+  known_result.add_constraint(A <= 2);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(C, "
+		    "LESS_THAN_OR_EQUAL, A + B) ***");
+
+  return ok;
+}
+
+bool
+test17() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Linear_Expression e1(C);
+  Linear_Expression e2(A + 2*B + C);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(B <= 1);
+  bd.add_constraint(A <= 2);
+  bd.add_constraint(C <= 2);
+  bd.add_constraint(A - B <= 0);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(3);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(B <= 1);
+  known_result.add_constraint(A - B <= 0);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(C, "
+		    "EQUAL, A + 2*B + C) ***");
+
+  return ok;
+}
+
+bool
+test18() {
+  Variable A(0);
+  Variable B(1);
+  Linear_Expression e1(A - B);
+  Linear_Expression e2(10);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(B <= 1);
+  bd.add_constraint(A >= 2);
+  bd.add_constraint(A - B >= 11);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, LESS_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(2, EMPTY);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(A - B, "
+		    "LESS_THAN_OR_EQUAL, 10) ***");
+
+  return ok;
+}
+
+bool
+test19() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Linear_Expression e1(2*A - 2*C);
+  Linear_Expression e2(6);
+
+  TBD_Shape bd(4);
+  bd.add_constraint(D - A <= 1);
+  bd.add_constraint(C - B <= 2);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, LESS_THAN_OR_EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(4);
+  known_result.add_constraint(D - B <= 6);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(2*A - 2*C, "
+		    "LESS_THAN_OR_EQUAL, 6) ***");
+
+  return ok;
+}
+
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Linear_Expression e1(4*A - 2*B + 3*C);
+  Linear_Expression e2(1 + C);
+
+  TBD_Shape bd(4);
+  bd.add_constraint(D - A <= 1);
+  bd.add_constraint(C - B <= 2);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.generalized_affine_preimage(e1, EQUAL, e2);
+
+  BD_Shape<mpq_class> known_result(4);
+
+  bool ok = (BD_Shape<mpq_class>(bd) == known_result);
+
+  print_constraints(bd,
+		    "*** bd.generalized_affine_preimage(4*A - 2*B + 3*C, "
+		    "EQUAL, 1 + C) ***");
 
   return ok;
 }
@@ -167,4 +592,19 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
+  DO_TEST(test20);
 END_MAIN

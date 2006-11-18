@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_System.defs.hh"
 #include "Coefficient.defs.hh"
 #include "Row.defs.hh"
-#include "Saturation_Matrix.defs.hh"
+#include "Bit_Matrix.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include <algorithm>
 #include <iostream>
@@ -173,7 +173,7 @@ PPL::Linear_System::ascii_load(std::istream& s) {
     if (!x[row].ascii_load(s))
       return false;
 
-  // Check for well-formedness.
+  // Check invariants.
   assert(OK(true));
   return true;
 }
@@ -340,7 +340,7 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
   std::vector<Row>::iterator new_last = swapping_unique(first, last);
   // Finally, remove duplicates.
   rows.erase(new_last, last);
-  // NOTE: we cannot check for well-formedness of the system here,
+  // NOTE: we cannot check all invariants of the system here,
   // because the caller still has to update `index_first_pending'.
 }
 
@@ -498,7 +498,7 @@ PPL::operator==(const Linear_System& x, const Linear_System& y) {
 }
 
 void
-PPL::Linear_System::sort_and_remove_with_sat(Saturation_Matrix& sat) {
+PPL::Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat) {
   Linear_System& sys = *this;
   // We can only sort the non-pending part of the system.
   assert(sys.first_pending_row() == sat.num_rows());
@@ -508,11 +508,11 @@ PPL::Linear_System::sort_and_remove_with_sat(Saturation_Matrix& sat) {
   }
 
   // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
-  With_Saturation_Matrix_iterator first(sys.rows.begin(), sat.rows.begin());
-  With_Saturation_Matrix_iterator last = first + sat.num_rows();
+  With_Bit_Matrix_iterator first(sys.rows.begin(), sat.rows.begin());
+  With_Bit_Matrix_iterator last = first + sat.num_rows();
   swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates in `sys' to the end (keeping `sat' consistent).
-  With_Saturation_Matrix_iterator new_last = swapping_unique(first, last);
+  With_Bit_Matrix_iterator new_last = swapping_unique(first, last);
 
   const dimension_type num_duplicates = last - new_last;
   const dimension_type new_first_pending_row
@@ -605,7 +605,7 @@ PPL::Linear_System
   const dimension_type ncols = x.num_columns();
   // Trying to keep sortedness.
   bool still_sorted = x.is_sorted();
-  // This deque of booleans will be used to flag those rows that,
+  // This deque of Booleans will be used to flag those rows that,
   // before exiting, need to be re-checked for sortedness.
   std::deque<bool> check_for_sortedness;
   if (still_sorted)
@@ -703,7 +703,7 @@ PPL::Linear_System::simplify() {
       }
       ++n_lines_or_equalities;
     }
-  // Apply Gaussian's elimination to the subsystem of lines/equalities.
+  // Apply Gaussian elimination to the subsystem of lines/equalities.
   const dimension_type rank = x.gauss(n_lines_or_equalities);
   // Eliminate any redundant line/equality that has been detected.
   if (rank < n_lines_or_equalities) {

@@ -434,19 +434,19 @@ test11() {
   TBD_Shape bd2(2);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::CC76_extrapolation_assign(bd): it is
-    // illegal to apply this function to two polyhedra that are not
+    // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
     bd2.CC76_extrapolation_assign(bd1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -455,19 +455,19 @@ test12() {
   TBD_Shape bd2(10);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::CC76_widening_assign(bd2): it is illegal to apply
-    // this function to two polyhedra that are not dimensional
+    // this method to two polyhedra that are not dimensional
     // compatible.
     bd2.CC76_extrapolation_assign(bd1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

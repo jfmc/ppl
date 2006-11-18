@@ -90,18 +90,18 @@ test04() {
   Variable C(2);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(A + 2*B));
-  gr.add_generator(grid_point());
-  print_generators(gr, "***  ***");
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(A + 2*B));
+  gr.add_grid_generator(grid_point());
+  print_generators(gr, "*** gr ***");
 
   gr.expand_space_dimension(A, 1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_point(A + 2*B));
-  known_gr.add_generator(grid_point(C));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_point(A + 2*B));
+  known_gr.add_grid_generator(grid_point(C));
 
   bool ok = (gr == known_gr);
   print_congruences(gr, "*** gr.expand_space_dimension(A, 1) ***");
@@ -197,11 +197,11 @@ test08() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Add more dimensions than are available.
@@ -216,11 +216,11 @@ test09() {
   }
   catch (const std::length_error& e) {
     nout << "length_error: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

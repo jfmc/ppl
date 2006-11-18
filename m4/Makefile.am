@@ -26,6 +26,7 @@ m4data_DATA = ppl.m4
 
 # M4 macro files for internal use.
 m4macros = \
+ac_check_classpath.m4 \
 ac_check_fpu_control.m4 \
 ac_check_gmp.m4 \
 ac_check_sicstus_prolog.m4 \
@@ -36,6 +37,10 @@ ac_cxx_double_binary_format.m4 \
 ac_cxx_flexible_arrays.m4 \
 ac_cxx_float_binary_format.m4 \
 ac_cxx_long_double_binary_format.m4 \
+ac_prog_java.m4 \
+ac_prog_javac.m4 \
+ac_prog_jar.m4 \
+ac_prog_javah.m4 \
 lib-ld.m4 \
 lib-link.m4 \
 lib-prefix.m4

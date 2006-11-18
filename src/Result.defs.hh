@@ -107,9 +107,11 @@ enum Result {
   V_UNORD_COMP = 60
 };
 
-bool is_special(Result r);
+//! Extracts the class part of \p r (normal, minus/plus infinity or nan).
 Result classify(Result r);
-Result sign(Result r);
+
+//! Returns <CODE>true</CODE> if and only if the class or \p r is not normal.
+bool is_special(Result r);
 
 } // namespace Parma_Polyhedra_Library
 

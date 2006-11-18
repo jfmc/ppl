@@ -274,18 +274,18 @@ test09() {
   TBD_Shape bd2(3);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::intersection_assign_and_minimize(bd2): it is illegal
-    // to apply this function to two polyhedra of different dimensions.
+    // to apply this method to two polyhedra of different dimensions.
     bd1.intersection_assign_and_minimize(bd2);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -294,18 +294,56 @@ test10() {
   TBD_Shape bd2(15);
 
   try {
-    // This is an invalid use of function
+    // This is an invalid use of method
     // BD_Shape::intersection_assign(bd2): it is illegal
-    // to apply this function to two polyhedra of different dimensions.
+    // to apply this method to two polyhedra of different dimensions.
     bd1.intersection_assign(bd2);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
+}
+
+bool
+test11() {
+  TBD_Shape bd1(3, EMPTY);
+  TBD_Shape bd2(3);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bd1.intersection_assign(bd2);
+
+  BD_Shape<mpq_class> known_result(3, EMPTY);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
+
+  return ok;
+}
+
+bool
+test12() {
+  TBD_Shape bd1(3);
+  TBD_Shape bd2(3, EMPTY);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  bd1.intersection_assign(bd2);
+
+  BD_Shape<mpq_class> known_result(3, EMPTY);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result) ;
+
+  print_constraints(bd1, "*** bd1.intersection_assign(bd2) ***");
+
+  return ok;
 }
 
 } // namespace
@@ -321,4 +359,6 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN

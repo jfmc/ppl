@@ -32,7 +32,7 @@ http://www.cs.unipr.it/Software/ . */
 /*!
   Each pending watchdog event is characterized by a deadline (a positive
   time interval), an associated handler that will be invoked upon event
-  expiration, and a boolean flag that indicates whether the event has already
+  expiration, and a Boolean flag that indicates whether the event has already
   expired or not.
 */
 class Parma_Watchdog_Library::Pending_Element : public Doubly_Linked_Object {

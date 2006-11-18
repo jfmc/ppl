@@ -194,6 +194,14 @@ struct From_Bounding_Box {
 struct From_Covering_Box {
 };
 
+//! A tag class.
+/*! \ingroup PPL_CXX_interface
+  Tag class to distinguish those constructors that recycle the data
+  structures of their arguments, instead of taking a copy.
+*/
+struct Recycle_Input {
+};
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
   If \f$g\f$ is the GCD of \p x and \p y, the values of \p x and \p y
@@ -269,6 +277,26 @@ T low_bits_mask(unsigned n);
   template <typename type_symbol>					\
   void									\
   class_prefix::print() const {						\
+    using namespace IO_Operators;					\
+    std::cerr << *this;							\
+  }
+
+// FIXME: The class_prefix has changed from
+//        PPL_OUTPUT_TEMPLATE_DEFINITIONS, to work around `,'.
+//        Perhaps PPL_OUTPUT_TEMPLATE_DEFINITIONS should be changed to
+//        match this.
+#define PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(type_symbol1,		\
+						type_symbol2,		\
+						class_prefix)		\
+  template <typename type_symbol1, typename type_symbol2>		\
+  void									\
+  class_prefix<type_symbol1, type_symbol2>::ascii_dump() const {	\
+    ascii_dump(std::cerr);						\
+  }									\
+									\
+  template <typename type_symbol1, typename type_symbol2>		\
+  void									\
+  class_prefix<type_symbol1, type_symbol2>::print() const {		\
     using namespace IO_Operators;					\
     std::cerr << *this;							\
   }

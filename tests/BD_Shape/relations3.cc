@@ -34,19 +34,19 @@ test01() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::relation_with(c):
     // it is illegal to use a constraint that is
     // dimensional incompatible with the BDS.
     Poly_Con_Relation rel = bd.relation_with(C - B <= 2);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -59,19 +59,19 @@ test02() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::relation_with(c):
     // it is illegal to use a constraint that is
     // not a bounded difference.
     Poly_Con_Relation rel = bd.relation_with(A - 2*B <= 2);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -84,19 +84,188 @@ test03() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::relation_with(c):
     // it is illegal to use a generator that is
     // dimensional incompatible with the BDS.
     Poly_Gen_Relation rel = bd.relation_with(ray(C));
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
+}
+
+bool
+test04() {
+  Variable A(0);
+
+  TBD_Shape bd(1);
+  bd.add_constraint(A == -1);
+
+  Poly_Con_Relation rel = bd.relation_with(A == 0);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A == 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
+bool
+test05() {
+  Variable A(0);
+
+  TBD_Shape bd(1);
+  bd.add_constraint(A == -1);
+
+  Poly_Con_Relation rel = bd.relation_with(A >= 0);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A >= 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
+bool
+test06() {
+  Variable A(0);
+
+  TBD_Shape bd(1);
+  bd.add_constraint(A == -1);
+
+  Poly_Con_Relation rel = bd.relation_with(A <= -2);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A <= -2) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
+bool
+test07() {
+  Variable A(0);
+
+  TBD_Shape bd(1);
+  bd.add_constraint(A == -1);
+
+  Poly_Con_Relation rel = bd.relation_with(A == -1);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A == -1) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_included() &&
+    Poly_Con_Relation::saturates();
+
+  return rel == known_result;
+}
+
+bool
+test08() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A - B == -1);
+
+  Poly_Con_Relation rel = bd.relation_with(A - B == 0);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A == 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
+bool
+test09() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A - B == -1);
+
+  Poly_Con_Relation rel = bd.relation_with(A - B >= 0);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A >= 0) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A - B == -1);
+
+  Poly_Con_Relation rel = bd.relation_with(A - B <= -2);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A <= -2) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
+}
+
+bool
+test11() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A - B == -1);
+
+  Poly_Con_Relation rel = bd.relation_with(A - B == -1);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A == -1) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_included() &&
+    Poly_Con_Relation::saturates();
+
+  return rel == known_result;
+}
+
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A - B == -1);
+
+  Poly_Con_Relation rel = bd.relation_with(A - B == -2);
+
+  print_constraints(bd, "--- bd ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(A == -1) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
+
+  return rel == known_result;
 }
 
 } // namespace
@@ -105,4 +274,13 @@ BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
+  DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
+  DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN

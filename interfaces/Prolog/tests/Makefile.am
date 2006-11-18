@@ -39,6 +39,7 @@ clpq.pl script_clpq \
 clpq2.pl script_clpq2 script_clpq2_int8 \
 $(CLPQ_TESTS) \
 pl_check.pl \
+pl_grid_check.pl \
 expected_clpq_mpz expected_clpq2_mpz expected_pchk_mpz \
 expected_clpq_int8 expected_clpq2_int8 expected_pchk_int8 \
 expected_clpq_int16 expected_clpq2_int16 expected_pchk_int16 \
@@ -48,4 +49,29 @@ expected_clpq_mpz_a expected_clpq2_mpz_a expected_pchk_mpz_a \
 expected_clpq_int8_a expected_clpq2_int8_a expected_pchk_int8_a \
 expected_clpq_int16_a expected_clpq2_int16_a expected_pchk_int16_a \
 expected_clpq_int32_a expected_clpq2_int32_a expected_pchk_int32_a \
-expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a
+expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a \
+ppl_interface_generator_predicate_check_pl.m4 \
+ppl_interface_generator_predicate_check_code.m4 \
+ppl_interface_generator_predicate_check_extra_code
+
+BUILT_SOURCES = \
+ppl_predicate_check.pl
+
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_predicate_check_pl.m4 \
+ppl_interface_generator_predicate_check_code.m4 \
+ppl_interface_generator_predicate_check_extra_code
+
+ppl_predicate_check.pl: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir) -I$(srcdir)/.. \
+	   -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_predicate_check_pl.m4 > $@
+
+DISTCLEANFILES = \
+ppl_predicate_check.pl

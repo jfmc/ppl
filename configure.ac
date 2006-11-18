@@ -23,13 +23,17 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre1],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre4],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
+
+# Determine the system type and set output variables to the names of
+# the canonical system types.
+AC_CANONICAL_HOST
 
 # Use Automake.
 AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
@@ -72,9 +76,6 @@ AC_CONFIG_HEADER(config.h)
 
 ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
-
-# Check for host type.
-AC_CANONICAL_HOST
 
 AH_TOP([
 #ifndef PPL_ppl_config_h
@@ -546,7 +547,7 @@ AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
 AC_CONFIG_SUBDIRS(Watchdog)
 
 # This is the list of available interfaces: lowercase and blank-separated.
-available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog"
+available_interfaces="cxx c ciao_prolog gnu_prolog sicstus_prolog swi_prolog xsb_prolog yap_prolog ocaml java"
 
 # This is the list of interfaces that are enabled by default.
 #default_interfaces="cxx c swi_prolog"
@@ -613,7 +614,39 @@ esac
 # Set an Automake conditional to build or not to build the C interface.
 AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes)
 
-# Checks for Prolog systems for which the interface is enabled.
+# Checks for systems for which the interface is enabled.
+
+# Set the optional Java SDK directory.
+AC_ARG_WITH(java,
+	AC_HELP_STRING([--with-java=dir],
+       [use dir as Java SDK root directory]),
+       [JAVA_HOME=$with_java])
+
+if test ! "x$JAVA_HOME" = x
+then
+    JAVAPREFIX="${JAVA_HOME}/bin"
+fi
+
+# Check for Java programs. Order here is important: check first
+# for the compiler.
+AC_PROG_JAVAC
+AC_PROG_JAVA
+AC_PROG_JAR
+AC_PROG_JAVAH
+
+# All the Java programs are required to build the Java interface.
+AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test ! "x$JAVA" = "xno" &&  test ! "x$ac_cv_javac_supports_enums" = "xno" && test ! "x$JAR" = "xno" && test ! "x$JAVAH" = "xno")
+
+# OCaml
+if test x${ocaml_interface_enabled} = xyes
+then
+  AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
+  if test x"$OCAMLC" = xocamlc
+  then
+    ocamlc_root=`ocamlc -where`
+  fi
+fi
+AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc)
 
 # Ciao Prolog
 if test x${ciao_prolog_interface_enabled} = xyes
@@ -675,53 +708,72 @@ then
 fi
 AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE, test x$YAP_PROLOG = xyap)
 
-# # This is the list of interfaces that are enabled by default.
-# # Different instantiations are separated by a '@' character.
-# default_instantiations="Polyhedron @ BD_Shape<int8_t>"
-# 
-# enableval=not_specified
-# AC_MSG_CHECKING([which instantiations are enabled])
-# AC_ARG_ENABLE(instantiations,
-#   AC_HELP_STRING([--enable-instantiations],
-#     [enable instantiations for the non-C++ interfaces]))
-# case x"${enableval}" in
-# xyes | x)
-#   AC_MSG_ERROR([--enable-instantiations needs at least one argument])
-#   ;;
-# xno | xnone)
-#   enabled_instantiations=
-#   AC_MSG_RESULT(none)
-#   ;;
-# *)
-#   if test x"${enableval}" = xnot_specified
-#   then
-#     enableval=${default_instantiations}
-#   fi
-#   # Make the list blank-separated.
-#   required_instantiations=`echo "${enableval}" | sed -e 's/[[ 	]][[ 	]]*//g' -e 's/@/ /g' -e 's/[[ 	]][[ 	]]*/ /g'`
-#   # Check the specified instantiations for validity.
-#   ac_save_CPPFLAGS="$CPPFLAGS"
-#   CPPFLAGS="$CPPFLAGS -I${srcdir}"
-#   for instantiation in ${required_instantiations}
-#   do
-#     AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-# #include "instchk.hh"
-# 
-# using namespace Parma_Polyhedra_Library;
-# 
-# bool valid = ${instantiation}::valid_instantiation();
-# ]])],
-#       valid_instantiation=yes,
-#       valid_instantiation=no)
-#     if test x${valid_instantiation} != xyes
-#     then
-#       AC_MSG_ERROR([invalid instantiation ${instantiation}])
-#     fi
-#   done
-#   CPPFLAGS="$ac_save_CPPFLAGS"
-#   AC_MSG_RESULT([${required_instantiations}])
-#   ;;
-# esac
+# Test if *any* Prolog system has to be built.
+if test x${CIAO_PROLOG} = xciao \
+|| test x${GNU_PROLOG} = xgprolog \
+|| test x${have_sicstus_prolog} = xyes \
+|| test x${have_swi_prolog} = xyes \
+|| test x${have_xsb_prolog} = xyes \
+|| test x${YAP_PROLOG} = xyap
+then
+  SOME_PROLOG=yes
+fi
+AM_CONDITIONAL(BUILD_SOME_PROLOG_INTERFACES, test x$SOME_PROLOG = xyes)
+
+# This is the list of interfaces that are enabled by default.
+# Different instantiations are separated by a '@' character.
+default_instantiations="Polyhedron @ Grid @ BD_Shape<int8_t>"
+
+enableval=not_specified
+AC_MSG_CHECKING([which instantiations are enabled])
+AC_ARG_ENABLE(instantiations,
+  AC_HELP_STRING([--enable-instantiations],
+    [enable instantiations for the non-C++ interfaces]))
+case x"${enableval}" in
+xyes | x)
+  AC_MSG_ERROR([--enable-instantiations needs at least one argument])
+  ;;
+xno | xnone)
+  enabled_instantiations=
+  AC_MSG_RESULT(none)
+  ;;
+*)
+  if test x"${enableval}" = xnot_specified
+  then
+    enableval=${default_instantiations}
+  fi
+  # Avoid extra blanks.
+  required_instantiations=`echo "${enableval}" | sed -e 's/[[	 ]][[	 ]]*/ /g' -e 's/[[ ]]*\([[@<>,]]\)[[ ]]*/\1/g' -e 's/>>/> >/g' -e 's/^[[ ]]//g' -e 's/[[ ]]$//g'`
+  # Check the specified instantiations for validity.
+  ac_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS -I${srcdir}"
+  old_IFS="${IFS}"
+  IFS=@
+  set -- ${required_instantiations}
+  IFS="${old_IFS}"
+  for instantiation
+  do
+    AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include "instchk.hh"
+
+using namespace Parma_Polyhedra_Library;
+
+bool valid = ${instantiation}::valid_instantiation();
+]])],
+      valid_instantiation=yes,
+      valid_instantiation=no)
+    if test x${valid_instantiation} != xyes
+    then
+      AC_MSG_ERROR([invalid instantiation ${instantiation}])
+    fi
+  done
+  CPPFLAGS="$ac_save_CPPFLAGS"
+  required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ,]]/_/g'`
+  required_instantiations_java_sources=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' | sed -e 's/@/.java /g' -e 's/$/.java/g'`
+  required_instantiations_java_cxx_headers=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java.\1/g'`
+  AC_MSG_RESULT([${required_instantiations}])
+  ;;
+esac
 
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
@@ -826,6 +878,11 @@ AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
 AC_SUBST(coefficient_mnemonic)
+AC_SUBST(required_instantiations)
+AC_SUBST(required_instantiations_canonical_names)
+AC_SUBST(required_instantiations_java_sources)
+AC_SUBST(required_instantiations_java_cxx_headers)
+AC_SUBST(ocamlc_root)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
@@ -836,10 +893,12 @@ AC_CONFIG_FILES(Makefile
                 src/version.hh
                 src/ppl-config.cc
                 tests/Makefile
+                tests/Ask_Tell/Makefile
                 tests/BD_Shape/Makefile
-                tests/Octagon/Makefile
-                tests/Polyhedron/Makefile
                 tests/Grid/Makefile
+                tests/MIP_Problem/Makefile
+                tests/Octagonal_Shape/Makefile
+                tests/Polyhedron/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile
@@ -852,9 +911,22 @@ AC_CONFIG_FILES(Makefile
                 doc/devref.doxyconf-latex
                 doc/user.doxyconf-html
                 doc/devref.doxyconf-html
+                doc/user-c-interface.doxyconf-latex
+                doc/devref-c-interface.doxyconf-latex
+                doc/user-c-interface.doxyconf-html
+                doc/devref-c-interface.doxyconf-html
+                doc/user-prolog-interface.doxyconf-latex
+                doc/devref-prolog-interface.doxyconf-latex
+                doc/user-prolog-interface.doxyconf-html
+                doc/devref-prolog-interface.doxyconf-html
                 interfaces/Makefile
                 interfaces/C/Makefile
-                interfaces/C/ppl_c.h
+                interfaces/C/ppl_c_version.h
+               	interfaces/Java/Makefile
+		interfaces/Java/jni/Makefile
+		interfaces/Java/tests/Makefile
+                interfaces/Java/ppl_java/Makefile
+		interfaces/OCaml/Makefile
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile

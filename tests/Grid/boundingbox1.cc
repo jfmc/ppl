@@ -38,7 +38,7 @@ test01() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr(box, From_Bounding_Box() ***");
+		    "*** gr(box, From_Bounding_Box() ***");
 
   return ok;
 }
@@ -60,7 +60,7 @@ test02() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr(box, From_Bounding_Box() ***");
+		    "*** gr(box, From_Bounding_Box() ***");
 
   return ok;
 }
@@ -80,12 +80,12 @@ test03() {
   Grid gr(box, From_Bounding_Box());
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(-2*A - 30*B, 3));
+  known_gr.add_grid_generator(grid_point(-2*A - 30*B, 3));
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr(box, From_Bounding_Box() ***");
+		    "*** gr(box, From_Bounding_Box() ***");
 
   return ok;
 }
@@ -104,14 +104,14 @@ test04() {
   Grid gr(box, From_Bounding_Box());
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point(3*C));
-  known_gr.add_generator(grid_line(A));
-  known_gr.add_generator(grid_line(B));
+  known_gr.add_grid_generator(grid_point(3*C));
+  known_gr.add_grid_generator(grid_line(A));
+  known_gr.add_grid_generator(grid_line(B));
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr(box, From_Bounding_Box() ***");
+		    "*** gr(box, From_Bounding_Box() ***");
 
   return ok;
 }
@@ -128,7 +128,7 @@ test05() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr(box, From_Bounding_Box()) ***");
+		    "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }
@@ -146,7 +146,7 @@ test06() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr(box, From_Bounding_Box()) ***");
+		    "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }
@@ -171,7 +171,7 @@ test07() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr(box, From_Bounding_Box()) ***");
+		    "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }
@@ -185,59 +185,65 @@ test08() {
   box.raise_lower_bound(1, true, 0, 1);
   box.lower_upper_bound(1, true, 1, 1);
 
-  try {
-    Grid gr(box, From_Bounding_Box());
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-  }
-  catch (...) {
-    return false;
-  }
-  return true;
+  Grid gr(box, From_Bounding_Box());
+
+  Grid known_gr(2);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+		    "*** gr(box, From_Bounding_Box()) ***");
+
+  return ok;
 }
 
 // Simple box with divisor and an interval bounded only from below.
 bool
 test09() {
+  Variable B(1);
+
   Bounding_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
-  box.raise_lower_bound(1, true, 0, 1);
+  box.raise_lower_bound(1, true, 1, 2);
   box.lower_upper_bound(1, true, 1, 2);
 
-  try {
-    Grid gr(box, From_Bounding_Box());
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-  }
-  catch (...) {
-    return false;
-  }
-  return true;
+  Grid gr(box, From_Bounding_Box());
+
+  Grid known_gr(2);
+  known_gr.add_congruence(2*B == 1);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+		    "*** gr(box, From_Bounding_Box()) ***");
+
+  return ok;
 }
 
 // Box with a dimension bounded only from above.
 bool
 test10() {
+  Variable B(1);
+
   Bounding_Box box(2);
   box.lower_upper_bound(0, true, 3, 7);
-  box.raise_lower_bound(1, true, 0, 1);
+  box.raise_lower_bound(1, true, 1, 2);
   box.lower_upper_bound(1, true, 1, 2);
 
-  try {
-    Grid gr(box, From_Bounding_Box());
-  }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-  }
-  catch (...) {
-    return false;
-  }
-  return true;
+  Grid gr(box, From_Bounding_Box());
+
+  Grid known_gr(2);
+  known_gr.add_congruence(2*B == 1);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+		    "*** gr(box, From_Bounding_Box()) ***");
+
+  return ok;
 }
 
-// An otherwise valid box having a dimension with an open bound, where
+// A box having a dimension with an open bound, where
 // the open bound makes the box empty.
 bool
 test11() {
@@ -247,16 +253,16 @@ test11() {
   box.raise_lower_bound(1, false, 1, 2);
   box.lower_upper_bound(1, true, 1, 2);
 
-  try {
-    Grid gr(box, From_Bounding_Box());
-   }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-  }
-  catch (...) {
-    return false;
-  }
-  return true;
+  Grid gr(box, From_Bounding_Box());
+
+  Grid known_gr(2, EMPTY);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+		    "*** gr(box, From_Bounding_Box()) ***");
+
+  return ok;
 }
 
 // Zero-dimensional empty box.
@@ -272,7 +278,67 @@ test12() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr(box, From_Bounding_Box()) ***");
+		    "*** gr(box, From_Bounding_Box()) ***");
+
+  return ok;
+}
+
+// A box from a higher dimension.
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+  Variable F(5);
+
+  Bounding_Box box(6);
+  box.raise_lower_bound(0, true, -2, 3);
+  box.lower_upper_bound(0, true, -2, 3);
+  box.raise_lower_bound(1, true, -11, 4);
+  box.lower_upper_bound(1, true, -11, 4);
+  box.lower_upper_bound(3, true, 18, 3);
+  box.raise_lower_bound(3, true, 18, 3);
+  box.raise_lower_bound(4, true, 15, 7);
+  box.lower_upper_bound(4, true, 15, 7);
+  box.raise_lower_bound(5, true, -15, 7);
+  box.lower_upper_bound(5, true, -15, 7);
+
+  Grid gr(box, From_Bounding_Box());
+
+  Grid known_gr(6, EMPTY);
+  known_gr.add_grid_generator(grid_point(-56*A - 231*B + 504*D + 180*E - 180*F, 84));
+  known_gr.add_grid_generator(grid_line(C));
+
+  bool ok = (gr == known_gr);
+
+  print_generators(gr, "*** gr(box, From_Bounding_Box()) ***");
+
+  return ok;
+}
+
+// A box having a dimension with an open bound, where
+// the open bound does not make the box empty.
+bool
+test14() {
+  Variable A(0);
+
+  Bounding_Box box(2);
+  box.raise_lower_bound(0, true, 3, 7);
+  box.lower_upper_bound(0, true, 3, 7);
+  box.raise_lower_bound(1, false, 1, 2);
+  box.lower_upper_bound(1, true, 1, 1);
+
+  Grid gr(box, From_Bounding_Box());
+
+  Grid known_gr(2);
+  known_gr.add_congruence(7*A == 3);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+		    "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }
@@ -292,4 +358,6 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST_F8(test13);
+  DO_TEST(test14);
 END_MAIN

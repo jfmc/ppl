@@ -354,18 +354,18 @@ test13() {
   bd.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to use a strict relation symbol.
     bd.generalized_affine_image(x, LESS_THAN, x + 1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -377,18 +377,18 @@ test14() {
   bd.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to use a strict relation symbol.
     bd.generalized_affine_image(x, GREATER_THAN, x + 1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -400,20 +400,20 @@ test15() {
   bd.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
-    // to apply to a expression with the denominator
+    // to apply it to a expression with the denominator
     // equal to zero.
     Coefficient d = 0;
     bd.generalized_affine_image(x, LESS_THAN_OR_EQUAL, x + 1, d);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -426,19 +426,19 @@ test16() {
   bd.add_constraint(x >= y);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply it to an expression whose space dimension is
-    // greather than the BDS's space dimension.
+    // greater than the BDS's space dimension.
     bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, z);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -451,7 +451,7 @@ test17() {
   bd.add_constraint(A >= 0);
 
   try {
-    // This is an incorrect use of the function
+    // This is an incorrect use of the method
     // BD_Shape::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the BDS.
@@ -459,12 +459,12 @@ test17() {
     bd.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 bool
@@ -477,19 +477,19 @@ test18() {
   bd.add_constraint(A >= 1);
 
   try {
-    // This is an incorrect use of function
+    // This is an incorrect use of method
     // BD_Shape::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the BDS.
     bd.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

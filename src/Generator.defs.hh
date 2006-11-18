@@ -217,7 +217,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   if (g1.is_point()) {
     cout << "Point g1: " << g1 << endl;
     Linear_Expression e;
-    for (int i = g1.space_dimension() - 1; i >= 0; i--)
+    for (dimension_type i = g1.space_dimension(); i-- > 0; )
       e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
     Generator g2 = closure_point(e, g1.divisor());
     cout << "Closure point g2: " << g2 << endl;
@@ -374,7 +374,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
 #endif

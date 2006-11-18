@@ -52,12 +52,13 @@ PPL::C_Polyhedron::C_Polyhedron(const Congruence_System& cgs)
   add_congruences(cgs);
 }
 
-PPL::C_Polyhedron::C_Polyhedron(Congruence_System& cgs)
+PPL::C_Polyhedron::C_Polyhedron(Congruence_System& cgs, Recycle_Input)
   : Polyhedron(NECESSARILY_CLOSED,
 	       cgs.space_dimension() <= max_space_dimension()
 	       ? cgs.space_dimension()
 	       : (throw_space_dimension_overflow(NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(cgs)",
+						 "NNC_Polyhedron"
+						 "(cgs, recycle)",
 						 "the space dimension of cgs "
 						 "exceeds the maximum allowed "
 						 "space dimension"), 0),

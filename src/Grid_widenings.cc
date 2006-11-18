@@ -79,8 +79,8 @@ PPL::Grid::congruence_widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
-  // As noted in definitions.dox, stable behaviour is only guaranteed
-  // if y is contained in or equal to x.
+  // Stable behavior is only guaranteed if y is contained in or equal
+  // to x.
 #ifndef NDEBUG
   {
     // Assume y is contained in or equal to x.
@@ -157,8 +157,8 @@ PPL::Grid::congruence_widening_assign(const Grid& const_y, unsigned* tp) {
 
 void
 PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
-					const Congruence_System& cgs,
-					unsigned* tp) {
+						   const Congruence_System& cgs,
+						   unsigned* tp) {
   Grid& x = *this;
 
   // Check dimension compatibility.
@@ -171,7 +171,7 @@ PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
     throw_dimension_incompatible("limited_extrapolation_assign(y, cgs)",
 				 "cgs", cgs);
 
-  dimension_type cgs_num_rows = cgs.num_rows();
+  const dimension_type cgs_num_rows = cgs.num_rows();
   // If `cgs' is empty (of rows), fall back to ordinary widening.
   if (cgs_num_rows == 0) {
     x.widening_assign(y, tp);
@@ -227,7 +227,7 @@ PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
 
 void
 PPL::Grid::select_wider_generators(const Grid& y,
-				    Grid_Generator_System& ggs_selected) const {
+				   Grid_Generator_System& ggs_selected) const {
   // Private method: the caller must ensure the following conditions
   // (beside the inclusion `y <= x').
   assert(space_dim == y.space_dim);
@@ -253,7 +253,7 @@ PPL::Grid::select_wider_generators(const Grid& y,
 	  ggs_selected.insert(gg);
         else {
           Linear_Expression e;
-          for (int i = gg.space_dimension() - 1; i >= 0; i--)
+          for (dimension_type i = gg.space_dimension(); i-- > 0; )
             e += gg.coefficient(Variable(i)) * Variable(i);
           ggs_selected.insert(grid_line(e));
 	}
@@ -281,8 +281,8 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("generator_widening_assign(y)", "y", y);
 
-  // As noted in definitions.dox, stable behaviour is only guaranteed
-  // if y is contained in or equal to x.
+  // Stable behavior is only guaranteed if y is contained in or equal
+  // to x.
 #ifndef NDEBUG
   {
     // Assume y is contained in or equal to x.
@@ -306,6 +306,9 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   }
   else
     x.update_generators();
+
+  if (x.marked_empty())
+    return;
 
   // Ensure that the `y' generators are in minimal form.
   if (y.generators_are_up_to_date()) {
@@ -336,7 +339,7 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   // A strict subset of the parameters was selected.
 
   Grid result(x.space_dim, EMPTY);
-  result.add_recycled_generators(ggs);
+  result.add_recycled_grid_generators(ggs);
 
   // Check whether we are using the widening-with-tokens technique
   // and there are still tokens available.
@@ -356,8 +359,8 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
 
 void
 PPL::Grid::limited_generator_extrapolation_assign(const Grid& y,
-					const Congruence_System& cgs,
-					unsigned* tp) {
+						  const Congruence_System& cgs,
+						  unsigned* tp) {
   Grid& x = *this;
 
   // Check dimension compatibility.
@@ -370,7 +373,7 @@ PPL::Grid::limited_generator_extrapolation_assign(const Grid& y,
     throw_dimension_incompatible("limited_extrapolation_assign(y, cgs)",
 				 "cgs", cgs);
 
-  dimension_type cgs_num_rows = cgs.num_rows();
+  const dimension_type cgs_num_rows = cgs.num_rows();
   // If `cgs' is empty (of rows), fall back to ordinary widening.
   if (cgs_num_rows == 0) {
     x.generator_widening_assign(y, tp);
@@ -432,8 +435,8 @@ PPL::Grid::widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("widening_assign(y)", "y", y);
 
-  // As noted in definitions.dox, stable behaviour is only guaranteed
-  // if y is contained in or equal to x.
+  // Stable behavior is only guaranteed if y is contained in or equal
+  // to x.
 #ifndef NDEBUG
   {
     // Assume y is contained in or equal to x.
@@ -476,7 +479,7 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
     throw_dimension_incompatible("limited_extrapolation_assign(y, cgs)",
 				 "cgs", cgs);
 
-  dimension_type cgs_num_rows = cgs.num_rows();
+  const dimension_type cgs_num_rows = cgs.num_rows();
   // If `cgs' is empty (of rows), fall back to ordinary widening.
   if (cgs_num_rows == 0) {
     x.widening_assign(y, tp);

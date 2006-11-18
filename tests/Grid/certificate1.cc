@@ -40,8 +40,8 @@ test01() {
   Grid_Certificate grc1(gr1);
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point(3*B + A));
-  gr2.add_generator(grid_point(3*B + A + C));
+  gr2.add_grid_generator(grid_point(3*B + A));
+  gr2.add_grid_generator(grid_point(3*B + A + C));
 
   Grid_Certificate grc2(gr2);
 
@@ -68,8 +68,8 @@ test02() {
   Grid_Certificate grc1(gr1);
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point(3*B + A));
-  gr2.add_generator(grid_point(3*B + A + C));
+  gr2.add_grid_generator(grid_point(3*B + A));
+  gr2.add_grid_generator(grid_point(3*B + A + C));
 
   bool ok = grc1.compare(gr2) == -1;
 
@@ -93,9 +93,9 @@ test03() {
   Grid_Certificate grc1(gr1);
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point(3*B));
-  gr2.add_generator(grid_line(A - C));
-  gr2.add_generator(grid_point(3*B + A));
+  gr2.add_grid_generator(grid_point(3*B));
+  gr2.add_grid_generator(grid_line(A - C));
+  gr2.add_grid_generator(grid_point(3*B + A));
 
   Grid_Certificate grc2(gr2);
 
@@ -116,8 +116,8 @@ test04() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point(3*B + A));
-  gr1.add_generator(grid_point(3*B + A + C));
+  gr1.add_grid_generator(grid_point(3*B + A));
+  gr1.add_grid_generator(grid_point(3*B + A + C));
 
   Grid_Certificate grc1(gr1);
 
@@ -177,7 +177,7 @@ test06() {
 
   Grid_Certificate grc2(gr2);
 
-  bool ok (grc1.compare(grc2) == 0);
+  bool ok = (grc1.compare(grc2) == 0);
 
   print_congruences(gr1, "*** gr1 ***");
   print_congruences(gr2, "*** gr2 ***");
@@ -200,12 +200,12 @@ test07() {
   Grid_Certificate grc1(gr1);
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point(3*B + A + C));
-  gr2.add_generator_and_minimize(grid_point(3*B + A));
+  gr2.add_grid_generator(grid_point(3*B + A + C));
+  gr2.add_grid_generator_and_minimize(grid_point(3*B + A));
 
   // Ensure up to date congruences and minimized generators.
   gr2.affine_image(A, 1*A);
-  gr2.minimized_generators();
+  gr2.minimized_grid_generators();
 
   bool ok = (grc1.compare(gr2) == -1);
 

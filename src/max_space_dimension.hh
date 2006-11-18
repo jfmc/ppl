@@ -26,7 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
-#include "Polyhedra_Powerset.defs.hh"
+#include "Grid.defs.hh"
+#include "BD_Shape.defs.hh"
+#include "Octagonal_Shape.defs.hh"
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
@@ -34,13 +36,31 @@ namespace Parma_Polyhedra_Library {
 //! Returns the maximum space dimension this library can handle.
 inline dimension_type
 max_space_dimension() {
-  using std::min;
-  return
-    min(Polyhedron::max_space_dimension(),
-	min(Polyhedra_Powerset<C_Polyhedron>::max_space_dimension(),
-	    Polyhedra_Powerset<NNC_Polyhedron>::max_space_dimension()
-	    )
-	);
+  // Note: we assume that the powerset and the ask-and-tell construction
+  // do not limit the space dimension more than their parameters.
+  static bool computed = false;
+  static dimension_type d = not_a_dimension();
+  if (!computed) {
+    dimension_type d = Variable::max_space_dimension();
+    d = std::min(d, C_Polyhedron::max_space_dimension());
+    d = std::min(d, NNC_Polyhedron::max_space_dimension());
+    d = std::min(d, Grid::max_space_dimension());
+    d = std::min(d, BD_Shape<int8_t>::max_space_dimension());
+    d = std::min(d, BD_Shape<int16_t>::max_space_dimension());
+    d = std::min(d, BD_Shape<int32_t>::max_space_dimension());
+    d = std::min(d, BD_Shape<int64_t>::max_space_dimension());
+    d = std::min(d, BD_Shape<float>::max_space_dimension());
+    d = std::min(d, BD_Shape<double>::max_space_dimension());
+    d = std::min(d, BD_Shape<long double>::max_space_dimension());
+    d = std::min(d, Octagonal_Shape<int8_t>::max_space_dimension());
+    d = std::min(d, Octagonal_Shape<int16_t>::max_space_dimension());
+    d = std::min(d, Octagonal_Shape<int32_t>::max_space_dimension());
+    d = std::min(d, Octagonal_Shape<int64_t>::max_space_dimension());
+    d = std::min(d, Octagonal_Shape<float>::max_space_dimension());
+    d = std::min(d, Octagonal_Shape<double>::max_space_dimension());
+    d = std::min(d, Octagonal_Shape<long double>::max_space_dimension());
+  }
+  return d;
 }
 
 } // namespace Parma_Polyhedra_Library

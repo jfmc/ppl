@@ -21,11 +21,10 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-
 #include "Grid_Generator_System.defs.hh"
 #include "Grid_Generator_System.inlines.hh"
 #include "Scalar_Products.defs.hh"
-
+#include "Variables_Set.defs.hh"
 #include <cassert>
 #include <iostream>
 
@@ -35,19 +34,19 @@ void
 PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
   const dimension_type old_num_rows = num_rows();
   const dimension_type gs_num_rows = gs.num_rows();
-  const dimension_type old_num_cols = num_columns();
-  const dimension_type gs_num_cols = gs.num_columns();
-  if (old_num_cols >= gs_num_cols)
+  const dimension_type old_num_columns = num_columns();
+  const dimension_type gs_num_columns = gs.num_columns();
+  if (old_num_columns >= gs_num_columns)
     add_zero_rows(gs_num_rows,
 		  Linear_Row::Flags(NECESSARILY_CLOSED,
 				    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   else {
     add_zero_rows_and_columns(gs_num_rows,
-			      gs_num_cols - old_num_cols,
+			      gs_num_columns - old_num_columns,
 			      Linear_Row::Flags(NECESSARILY_CLOSED,
 						Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
     // Swap the parameter divisor column into the new last column.
-    swap_columns(old_num_cols - 1, num_columns() - 1);
+    swap_columns(old_num_columns - 1, num_columns() - 1);
   }
   set_index_first_pending_row(old_num_rows + gs_num_rows);
   // Swap one coefficient at a time into the newly added rows, instead
@@ -60,19 +59,19 @@ PPL::Grid_Generator_System::recycling_insert(Grid_Generator_System& gs) {
 void
 PPL::Grid_Generator_System::recycling_insert(Grid_Generator& g) {
   dimension_type old_num_rows = num_rows();
-  const dimension_type old_num_cols = num_columns();
-  const dimension_type g_num_cols = g.size();
-  if (old_num_cols >= g_num_cols)
+  const dimension_type old_num_columns = num_columns();
+  const dimension_type g_num_columns = g.size();
+  if (old_num_columns >= g_num_columns)
     add_zero_rows(1,
 		  Linear_Row::Flags(NECESSARILY_CLOSED,
 				    Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   else {
     add_zero_rows_and_columns(1,
-			      g_num_cols - old_num_cols,
+			      g_num_columns - old_num_columns,
 			      Linear_Row::Flags(NECESSARILY_CLOSED,
 						Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
     // Swap the parameter divisor column into the new last column.
-    swap_columns(old_num_cols - 1, num_columns() - 1);
+    swap_columns(old_num_columns - 1, num_columns() - 1);
   }
   set_index_first_pending_row(old_num_rows + 1);
   // Swap one coefficient at a time into the newly added rows, instead
@@ -172,13 +171,13 @@ PPL::Grid_Generator_System
   assert(expr.space_dimension() <= x.space_dimension());
   assert(denominator > 0);
 
-  const dimension_type n_columns = x.num_columns();
-  const dimension_type n_rows = x.num_rows();
+  const dimension_type num_columns = x.num_columns();
+  const dimension_type num_rows = x.num_rows();
 
   // Compute the numerator of the affine transformation and assign it
   // to the column of `*this' indexed by `v'.
   TEMP_INTEGER(numerator);
-  for (dimension_type i = n_rows; i-- > 0; ) {
+  for (dimension_type i = num_rows; i-- > 0; ) {
     Grid_Generator& row = x[i];
     Scalar_Products::assign(numerator, expr, row);
     std::swap(numerator, row[v]);
@@ -188,9 +187,9 @@ PPL::Grid_Generator_System
     // Since we want integer elements in the matrix,
     // we multiply by `denominator' all the columns of `*this'
     // having an index different from `v'.
-    for (dimension_type i = n_rows; i-- > 0; ) {
+    for (dimension_type i = num_rows; i-- > 0; ) {
       Grid_Generator& row = x[i];
-      for (dimension_type j = n_columns; j-- > 0; )
+      for (dimension_type j = num_columns; j-- > 0; )
 	if (j != v)
 	  row[j] *= denominator;
     }
@@ -206,82 +205,36 @@ PPL_OUTPUT_DEFINITIONS(Grid_Generator_System)
 
 void
 PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
-  const dimension_type rows = num_rows();
-  const dimension_type columns = num_columns();
-  s << rows << " x " << columns << '\n';
-  for (dimension_type i = 0; i < rows; ++i) {
-    const Generator& g = operator[](i);
-    for (dimension_type j = 0; j < columns; ++j)
-      s << g[j] << ' ';
-    switch (g.type()) {
-    case Generator::LINE:
-      s << "L";
-      break;
-    case Generator::RAY:
-      s << "Q";
-      break;
-    case Generator::POINT:
-      s << "P";
-      break;
-    case Generator::CLOSURE_POINT:
-      assert(false);
-      break;
-    }
-    s << "\n";
-  }
+  const dimension_type num_rows = this->num_rows();
+  s << num_rows << " x " << num_columns() << '\n';
+  for (dimension_type i = 0; i < num_rows; ++i)
+    operator[](i).ascii_dump(s);
 }
 
 bool
 PPL::Grid_Generator_System::ascii_load(std::istream& s) {
-  std::string str;
-
-  dimension_type nrows;
-  dimension_type ncols;
-  if (!(s >> nrows))
+  dimension_type num_rows;
+  dimension_type num_columns;
+  if (!(s >> num_rows))
     return false;
+  std::string str;
   if (!(s >> str))
     return false;
-  if (!(s >> ncols))
+  if (!(s >> num_columns))
       return false;
-  resize_no_copy(nrows, ncols);
+  resize_no_copy(num_rows, num_columns);
 
-  set_index_first_pending_row(nrows);
+  set_sorted(false);
+  set_index_first_pending_row(num_rows);
 
   Grid_Generator_System& x = *this;
-  for (dimension_type i = 0; i < x.num_rows(); ++i) {
-    for (dimension_type j = 0; j < x.num_columns(); ++j)
-      if (!(s >> const_cast<Coefficient&>(x[i][j])))
-	return false;
-
-    if (!(s >> str))
+  for (dimension_type i = 0; i < num_rows; ++i)
+    if (!x[i].ascii_load(s))
       return false;
-    if (str == "L")
-      x[i].set_is_line();
-    else
-      x[i].set_is_ray_or_point();
 
-    // Checking for equality of actual and declared types.
-    switch (x[i].type()) {
-    case Grid_Generator::LINE:
-      if (str == "L")
-	continue;
-      break;
-    case Grid_Generator::PARAMETER:
-      if (str == "Q")
-	continue;
-      break;
-    case Grid_Generator::POINT:
-      if (str == "P")
-	continue;
-      break;
-    }
-    // Reaching this point means that the input was illegal.
-    return false;
-  }
-
-  // Checking for well-formedness.
-
+  // Check invariants.
   assert(OK());
+
   return true;
 }
 
@@ -347,74 +300,51 @@ PPL::Grid_Generator_System
   // Swap the parameter divisor column into the new last column.
   swap_columns(col, col + dims);
   // Set the diagonal element of each added rows.
-  dimension_type rows = num_rows();
-  for (dimension_type row = rows - dims; row < rows; ++row, ++col)
+  dimension_type num_rows = this->num_rows();
+  for (dimension_type row = num_rows - dims; row < num_rows; ++row, ++col)
     const_cast<Coefficient&>(operator[](row)[col]) = 1;
 }
 
 void
 PPL::Grid_Generator_System
 ::remove_space_dimensions(const Variables_Set& to_be_removed) {
+  // Dimension-compatibility assertion.
+  assert(space_dimension() >= to_be_removed.space_dimension());
+
   // The removal of no dimensions from any system is a no-op.  This
   // case also captures the only legal removal of dimensions from a
   // 0-dim system.
   if (to_be_removed.empty())
     return;
 
-  // Dimension-compatibility check: the variable having maximum space
-  // dimension is the one occurring last in the set.
-  const dimension_type
-    min_space_dim = to_be_removed.rbegin()->space_dimension();
-  if (space_dimension() < min_space_dim) {
-    std::ostringstream s;
-    s << "PPL::Grid_Generator_System::remove_space_dimensions(vs):\n"
-      << "this->space_dimension() == " << space_dimension()
-      << ", required space dimension == " << min_space_dim << ".";
-    throw std::invalid_argument(s.str());
-  }
-
   // For each variable to be removed, replace the corresponding column
   // by shifting left the columns to the right that will be kept.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst_col = tbr->space_dimension();
+  dimension_type dst_col = *tbr+1;
   dimension_type src_col = dst_col + 1;
   for (++tbr; tbr != tbr_end; ++tbr) {
-    dimension_type tbr_col = tbr->space_dimension();
+    const dimension_type tbr_col = *tbr+1;
     // Move all columns in between to the left.
     while (src_col < tbr_col)
-      // FIXME: consider whether Linear_System must have a swap_columns()
-      // method.  If the answer is "no", remove this Matrix:: qualification.
       Matrix::swap_columns(dst_col++, src_col++);
     ++src_col;
   }
   // Move any remaining columns.
-  const dimension_type num_cols = num_columns();
-  while (src_col < num_cols)
-    // FIXME: consider whether Linear_System must have a swap_columns()
-    // method.  If the answer is "no", remove this Matrix:: qualification.
+  const dimension_type num_columns = this->num_columns();
+  while (src_col < num_columns)
     Matrix::swap_columns(dst_col++, src_col++);
 
   // The number of remaining columns is `dst_col'.
-  Matrix::remove_trailing_columns(num_cols - dst_col);
-
-
-
-  remove_invalid_lines_and_rays();
+  Matrix::remove_trailing_columns(num_columns - dst_col);
 }
 
 void
 PPL::Grid_Generator_System
-::remove_higher_space_dimensions(dimension_type new_dimension) {
+::remove_higher_space_dimensions(const dimension_type new_dimension) {
   dimension_type space_dim = space_dimension();
-  // Dimension-compatibility check.
-  if (new_dimension > space_dim) {
-    std::ostringstream s;
-    s << "PPL::Grid_Generator_System::remove_higher_space_dimensions(n):\n"
-      << "this->space_dimension() == " << space_dim
-      << ", required space dimension == " << new_dimension << ".";
-    throw std::invalid_argument(s.str());
-  }
+
+  assert(new_dimension <= space_dim);
 
   // The removal of no dimensions from any system is a no-op.  Note
   // that this case also captures the only legal removal of dimensions
@@ -426,6 +356,5 @@ PPL::Grid_Generator_System
   // become the last column.
   swap_columns(new_dimension + 1, space_dim + 1);
   Matrix::remove_trailing_columns(space_dim - new_dimension);
-  remove_invalid_lines_and_rays();
   assert(OK());
 }

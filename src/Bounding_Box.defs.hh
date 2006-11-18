@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Coefficient.defs.hh"
 #include "Interval.defs.hh"
 #include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -179,7 +180,7 @@ private:
   */
   std::vector<Interval> vec;
   /*! \brief
-    A boolean flag indicating emptiness of the bounding box.
+    A Boolean flag indicating emptiness of the bounding box.
     Only meaningful when \p empty_up_to_date is <CODE>true</CODE>.
   */
   mutable bool empty;

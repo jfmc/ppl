@@ -25,20 +25,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Grid_Generator.defs.hh"
 #include "Grid_Generator_System.defs.hh"
+#include "Grid_Generator_System.inlines.hh"
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {
 
 inline dimension_type
 Grid::max_space_dimension() {
-  using std::min;
   // One dimension is reserved to have a value of type dimension_type
   // that does not represent a legal dimension.
-  return min(std::numeric_limits<dimension_type>::max() - 1,
-	     min(Congruence_System::max_space_dimension(),
-		 Grid_Generator_System::max_space_dimension()
-		 )
-	     );
+  return std::min(std::numeric_limits<dimension_type>::max() - 1,
+		  std::min(Congruence_System::max_space_dimension(),
+			   Grid_Generator_System::max_space_dimension()
+			   )
+		  );
 }
 
 inline void
@@ -47,47 +47,121 @@ Grid::set_congruences_up_to_date() {
 }
 
 inline
-Grid::Grid(const Congruence_System& ccgs) {
-  if (ccgs.space_dimension() > max_space_dimension())
-    throw_space_dimension_overflow("Grid(ccgs)",
-				   "the space dimension of ccgs "
-				   "exceeds the maximum allowed "
-				   "space dimension");
-  construct(ccgs);
+Grid::Grid(dimension_type num_dimensions,
+	   const Degenerate_Element kind)
+  : con_sys(),
+    gen_sys(num_dimensions > max_space_dimension()
+	    ? (throw_space_dimension_overflow("Grid(n, k)",
+					      "n exceeds the maximum "
+					      "allowed space dimension"),
+	       0)
+	    : num_dimensions) {
+  construct(num_dimensions, kind);
+  assert(OK());
 }
 
 inline
-Grid::Grid(Congruence_System& cgs) {
-  if (cgs.space_dimension() > max_space_dimension())
-    throw_space_dimension_overflow("Grid(cgs)",
-				   "the space dimension of cgs "
-				   "exceeds the maximum allowed "
-				   "space dimension");
+Grid::Grid(const Congruence_System& cgs)
+  : con_sys(cgs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(cgs)",
+					     "the space dimension of cgs "
+					     "exceeds the maximum allowed "
+					     "space dimension"), 0
+	    : cgs.space_dimension()),
+    gen_sys(cgs.space_dimension()) {
+  Congruence_System cgs_copy(cgs);
+  construct(cgs_copy);
+}
+
+inline
+Grid::Grid(Congruence_System& cgs, Recycle_Input)
+  : con_sys(cgs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(cgs, recycle)",
+					     "the space dimension of cgs "
+					     "exceeds the maximum allowed "
+					     "space dimension"), 0
+	    : cgs.space_dimension()),
+    gen_sys(cgs.space_dimension()) {
   construct(cgs);
 }
 
 inline
-Grid::Grid(const Grid_Generator_System& gs) {
-  if (gs.space_dimension() > max_space_dimension())
-    throw_space_dimension_overflow("Grid(gs)",
-				   "the space dimension of gs "
-				   "exceeds the maximum allowed "
-				   "space dimension");
-  construct(gs);
+Grid::Grid(const Grid_Generator_System& ggs)
+  : con_sys(ggs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(ggs)",
+					     "the space dimension of ggs "
+					     "exceeds the maximum allowed "
+					     "space dimension"), 0
+	    : ggs.space_dimension()),
+    gen_sys(ggs.space_dimension()) {
+  Grid_Generator_System ggs_copy(ggs);
+  construct(ggs_copy);
 }
 
 inline
-Grid::Grid(Grid_Generator_System& gs) {
-  if (gs.space_dimension() > max_space_dimension())
-    throw_space_dimension_overflow("Grid(gs)",
-				   "the space dimension of gs "
-				   "exceeds the maximum allowed "
-				   "space dimension");
-  construct(gs);
+Grid::Grid(Grid_Generator_System& ggs, Recycle_Input)
+  : con_sys(ggs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(ggs, recycle)",
+					     "the space dimension of ggs "
+					     "exceeds the maximum allowed "
+					     "space dimension"), 0
+	    : ggs.space_dimension()),
+    gen_sys(ggs.space_dimension()) {
+  construct(ggs);
+}
+
+inline
+Grid::Grid(const Generator_System& gs)
+  : con_sys(),
+    gen_sys(gs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(gs)",
+					     "n exceeds the maximum "
+					     "allowed space dimension"), 0
+	    : gs.space_dimension()) {
+  construct(gs.space_dimension(), UNIVERSE);
+}
+
+inline
+Grid::Grid(Generator_System& gs, Recycle_Input)
+  : con_sys(),
+    gen_sys(gs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(gs, recycle)",
+					     "n exceeds the maximum "
+					     "allowed space dimension"), 0
+	    : gs.space_dimension()) {
+  construct(gs.space_dimension(), UNIVERSE);
 }
 
 inline
 Grid::~Grid() {
+}
+
+inline Generator_System
+Grid::generators() const {
+  Generator_System gs;
+  // Trivially true point.
+  gs.insert(point());
+  // A line for each dimension.
+  dimension_type dim = space_dimension();
+  while (dim--)
+    gs.insert(line(Variable(dim)));
+  return gs;
+}
+
+inline Generator_System
+Grid::minimized_generators() const {
+  return generators();
+}
+
+inline void
+Grid::add_generator(const Generator& g) const {
+  used(g);
+}
+
+inline bool
+Grid::add_generator_and_minimize(const Generator& g) const {
+  used(g);
+  return !is_empty();
 }
 
 inline memory_size_type
@@ -100,9 +174,24 @@ Grid::space_dimension() const {
   return space_dim;
 }
 
+inline Constraint_System
+Grid::constraints() const {
+  return Constraint_System(congruences());;
+}
+
+inline Constraint_System
+Grid::minimized_constraints() const {
+  return Constraint_System(minimized_congruences());;
+}
+
 inline void
 Grid::upper_bound_assign(const Grid& y) {
   join_assign(y);
+}
+
+inline void
+Grid::upper_bound_assign_and_minimize(const Grid& y) {
+  join_assign_and_minimize(y);
 }
 
 inline bool
@@ -240,6 +329,13 @@ Grid::minimize(const Linear_Expression& expr,
 	       Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
 	       Grid_Generator& point) const {
   return max_min(expr, "minimize(e, ...)", inf_n, inf_d, minimum, &point);
+}
+
+inline void
+Grid::normalize_divisors(Grid_Generator_System& sys) {
+  TEMP_INTEGER(divisor);
+  divisor = 1;
+  normalize_divisors(sys, divisor);
 }
 
 /*! \relates Grid */

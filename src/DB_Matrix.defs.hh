@@ -52,7 +52,7 @@ operator<<(std::ostream& s, const DB_Matrix<T>& c);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for the square matrices.
 /*! \ingroup PPL_CXX_interface
-  The templatic class DB_Matrix<T> allows for the representation of
+  The template class DB_Matrix<T> allows for the representation of
   a square matrix of T objects.
   Each DB_Matrix<T> object can be viewed as a multiset of DB_Row<T>.
 */
@@ -212,11 +212,17 @@ public:
   PPL_OUTPUT_DECLARATIONS
 
   /*! \brief
-    Loads from \p s an ASCII representation (as produced by \ref ascii_dump)
-    and sets \p *this accordingly.  Returns <CODE>true</CODE>
-    if successful, <CODE>false</CODE> otherwise.
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
   bool ascii_load(std::istream& s);
+
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

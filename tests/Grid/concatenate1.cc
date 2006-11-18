@@ -180,8 +180,8 @@ test05() {
 
   Congruence_System known_cgs;
   known_cgs.insert((A == 1) / 0);
-  known_cgs.insert((C %= 0) / 1);
   known_cgs.insert((B == 0) / 0);
+  known_cgs.insert((C %= 0) / 1);
   known_cgs.insert((D == 0) / 0);
   known_cgs.insert((E %= 0) / 1);
 
@@ -317,11 +317,11 @@ test11() {
   }
   catch (const std::length_error& e) {
     nout << "max_space_dimension_exceeded: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

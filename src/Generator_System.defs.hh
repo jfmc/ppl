@@ -327,7 +327,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*! \brief
     Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
 
     Resizes the matrix of generators using the numbers of rows and columns
@@ -486,7 +486,7 @@ private:
   void remove_invalid_lines_and_rays();
 
   /*! \brief
-    Applies Gaussian's elimination and back-substitution so as
+    Applies Gaussian elimination and back-substitution so as
     to provide a partial simplification of the system of generators.
 
     It is assumed that the system has no pending generators.

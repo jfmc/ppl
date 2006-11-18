@@ -313,19 +313,19 @@ test09() {
   TBD_Shape bd2(10);
 
   try {
-    // This is an invalid use of the function
+    // This is an invalid use of the method
     // BD_Shape::BHMZ05_widening_assign(bd1): it is illegal to apply
-    // this function to two polyhedra that are not dimensional
+    // the method to two polyhedra that are not dimensional
     // compatible.
     bd2.BHMZ05_widening_assign(bd1);
   }
   catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << e.what() << endl;
+    nout << "std::invalid_argument: " << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 } // namespace

@@ -54,15 +54,16 @@ NNC_Polyhedron::NNC_Polyhedron(const Constraint_System& cs)
 }
 
 inline
-NNC_Polyhedron::NNC_Polyhedron(Constraint_System& cs)
+NNC_Polyhedron::NNC_Polyhedron(Constraint_System& cs, Recycle_Input)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
 	       cs.space_dimension() <= max_space_dimension()
 	       ? cs
 	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(cs)",
+						 "NNC_Polyhedron(cs, recycle)",
 						 "the space dimension of cs "
 						 "exceeds the maximum allowed "
-						 "space dimension"), cs)) {
+						 "space dimension"), cs),
+	       Recycle_Input()) {
 }
 
 inline
@@ -78,15 +79,43 @@ NNC_Polyhedron::NNC_Polyhedron(const Generator_System& gs)
 }
 
 inline
-NNC_Polyhedron::NNC_Polyhedron(Generator_System& gs)
+NNC_Polyhedron::NNC_Polyhedron(Generator_System& gs, Recycle_Input)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
 	       gs.space_dimension() <= max_space_dimension()
 	       ? gs
 	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
-						 "NNC_Polyhedron(gs)",
+						 "NNC_Polyhedron(gs, recycle)",
 						 "the space dimension of gs "
 						 "exceeds the maximum allowed "
-						 "space dimension"), gs)) {
+						 "space dimension"), gs),
+	       Recycle_Input()) {
+}
+
+inline
+NNC_Polyhedron::NNC_Polyhedron(const Grid_Generator_System& gs)
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       gs.space_dimension() <= max_space_dimension()
+	       ? gs.space_dimension()
+	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+						 "NNC_Polyhedron(ggs)",
+						 "the space dimension of ggs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
+}
+
+inline
+NNC_Polyhedron::NNC_Polyhedron(Grid_Generator_System& ggs, Recycle_Input)
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       ggs.space_dimension() <= max_space_dimension()
+	       ? ggs.space_dimension()
+	       : (throw_space_dimension_overflow(NOT_NECESSARILY_CLOSED,
+						 "NNC_Polyhedron"
+						 "(ggs, recycle)",
+						 "the space dimension of ggs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), 0),
+	       UNIVERSE) {
 }
 
 template <typename Box>

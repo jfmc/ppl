@@ -20,6 +20,36 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = Ciao GNU SICStus SWI XSB YAP tests
+SUBDIRS = . tests Ciao GNU SICStus SWI XSB YAP
 
-noinst_HEADERS = ppl_prolog.icc exceptions.hh track_allocation.hh
+interface_generator_files = \
+ppl_interface_generator_prolog_dat.m4 \
+ppl_interface_generator_prolog_icc.m4 \
+ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_prolog_icc_code.m4
+
+
+EXTRA_DIST = $(interface_generator_files)
+
+noinst_HEADERS = \
+exceptions.hh \
+track_allocation.hh
+
+BUILT_SOURCES = \
+ppl_prolog.icc
+
+interface_generator_dependencies = \
+../ppl_interface_instantiations.m4 \
+../ppl_interface_generator_common.m4 \
+../ppl_interface_generator_common_dat.m4 \
+../ppl_interface_generator_copyright \
+ppl_interface_generator_prolog_dat.m4 \
+ppl_interface_generator_prolog_icc.m4 \
+ppl_interface_generator_prolog_icc_code.m4
+
+ppl_prolog.icc: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_prolog_icc.m4 > $@
+
+DISTCLEANFILES = \
+ppl_prolog.icc

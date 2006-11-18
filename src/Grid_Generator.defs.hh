@@ -203,7 +203,7 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
   if (g1.is_point()) {
     cout << "Grid point g1: " << g1 << endl;
     Linear_Expression e;
-    for (int i = g1.space_dimension() - 1; i >= 0; i--)
+    for (dimension_type i = g1.space_dimension(); i-- > 0; )
       e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
     Grid_Generator g2 = parameter(e, g1.divisor());
     cout << "Parameter g2: " << g2 << endl;
@@ -226,7 +226,54 @@ void swap(Parma_Polyhedra_Library::Grid_Generator& x,
 */
 class Parma_Polyhedra_Library::Grid_Generator : private Generator {
 public:
-  // FIXME: Add wrappers of any other public Generator methods.
+  //! Returns the line of direction \p e.
+  /*!
+    \exception std::invalid_argument
+    Thrown if the homogeneous part of \p e represents the origin of
+    the vector space.
+  */
+  static Grid_Generator grid_line(const Linear_Expression& e);
+
+  //! Returns the parameter of direction \p e and size \p e/d.
+  /*!
+    Both \p e and \p d are optional arguments, with default values
+    Linear_Expression::zero() and Coefficient_one(), respectively.
+
+    \exception std::invalid_argument
+    Thrown if \p d is zero.
+  */
+  static Grid_Generator parameter(const Linear_Expression& e
+				  = Linear_Expression::zero(),
+				  Coefficient_traits::const_reference d
+				  = Coefficient_one());
+
+  //! Returns the point at \p e / \p d.
+  /*!
+    Both \p e and \p d are optional arguments, with default values
+    Linear_Expression::zero() and Coefficient_one(), respectively.
+
+    \exception std::invalid_argument
+    Thrown if \p d is zero.
+  */
+  static Grid_Generator grid_point(const Linear_Expression& e
+				   = Linear_Expression::zero(),
+				   Coefficient_traits::const_reference d
+				   = Coefficient_one());
+
+  //! Ordinary copy-constructor.
+  Grid_Generator(const Grid_Generator& g);
+
+  //! Destructor.
+  ~Grid_Generator();
+
+  //! Assignment operator.
+  Grid_Generator& operator=(const Grid_Generator& g);
+
+  //! Assignment operator.
+  Grid_Generator& operator=(const Generator& g);
+
+  //! Returns the maximum space dimension a Grid_Generator can handle.
+  static dimension_type max_space_dimension();
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
@@ -265,46 +312,6 @@ public:
   */
   bool is_parameter_or_point() const;
 
-  //! Returns the line of direction \p e.
-  /*!
-    \exception std::invalid_argument
-    Thrown if the homogeneous part of \p e represents the origin of
-    the vector space.
-  */
-  static Grid_Generator grid_line(const Linear_Expression& e);
-
-  //! Returns the parameter of direction \p e and size \p e/d.
-  /*!
-    Both \p e and \p d are optional arguments, with default values
-    Linear_Expression::zero() and Coefficient_one(), respectively.
-
-    \exception std::invalid_argument
-    Thrown if \p d is zero.
-  */
-  static Grid_Generator parameter(const Linear_Expression& e
-				  = Linear_Expression::zero(),
-				  Coefficient_traits::const_reference d
-				  = Coefficient_one());
-
-  //! Returns the point at \p e / \p d.
-  /*!
-    Both \p e and \p d are optional arguments, with default values
-    Linear_Expression::zero() and Coefficient_one(), respectively.
-
-    \exception std::invalid_argument
-    Thrown if \p d is zero.
-  */
-  static Grid_Generator grid_point(const Linear_Expression& e
-			      = Linear_Expression::zero(),
-			      Coefficient_traits::const_reference d
-			      = Coefficient_one());
-
-  //! Assignment operator.
-  Grid_Generator& operator=(const Grid_Generator& g);
-
-  //! Assignment operator.
-  Grid_Generator& operator=(const Generator& g);
-
   //! Returns the coefficient of \p v in \p *this.
   /*!
     \exception std::invalid_argument
@@ -319,6 +326,9 @@ public:
     Thrown if \p *this is a line.
   */
   Coefficient_traits::const_reference divisor() const;
+
+  //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
+  static const Grid_Generator& zero_dim_point();
 
   /*! \brief
     Returns a lower bound to the total size in bytes of the memory
@@ -353,14 +363,16 @@ public:
   */
   bool all_homogeneous_terms_are_zero() const;
 
-  /*! \brief
-    Scales \p *this to be represented with a divisor of \p d (if
-    \*this is a parameter or point).
+  PPL_OUTPUT_DECLARATIONS
 
-    \exception std::invalid_argument
-    Thrown if \p d is zero.
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-  void scale_to_divisor(Coefficient_traits::const_reference d);
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -372,24 +384,24 @@ public:
     Swaps \p *this with \p y, leaving \p *this with the original
     capacity.
 
-    All up to and including the last element of the smaller of \p
-    *this and \p y are swapped.  The parameter divisor element of \p y
-    is swapped with the divisor element of \p *this.
+    All elements up to and including the last element of the smaller
+    of \p *this and \p y are swapped.  The parameter divisor element
+    of \p y is swapped with the divisor element of \p *this.
   */
   void coefficient_swap(Grid_Generator& y);
 
-  PPL_OUTPUT_DECLARATIONS
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \brief
-    Loads from \p s an ASCII representation (as produced by
-    \ref ascii_dump) and sets \p *this accordingly.
-    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-  */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool ascii_load(std::istream& s);
-
 private:
+  /*! \brief
+    Scales \p *this to be represented with a divisor of \p d (if
+    \*this is a parameter or point).
+
+    It is assumed that \p d is a multiple of the current divisor.
+
+    \exception std::invalid_argument
+    Thrown if \p d is zero.
+  */
+  void scale_to_divisor(Coefficient_traits::const_reference d);
+
   /*! \brief
     Constructs from polyhedron generator \p g, stealing the underlying
     data structures from \p g.
@@ -448,7 +460,8 @@ private:
   friend std::ostream&
   IO_Operators::operator<<(std::ostream& s, const Grid_Generator& g);
   // FIXME: The following friend declaration is for operator[] and
-  //        divisor() access in Grid::conversion and Grid::simplify.
+  //        divisor() access in Grid::conversion, Grid::simplify,
+  //        Grid::relation_with(c) and Grid::Grid(box, *).
   friend class Grid;
 
   friend class Grid_Generator_System;
@@ -456,6 +469,7 @@ private:
   friend class Congruence_System;
   friend class Scalar_Products;
   friend class Topology_Adjusted_Scalar_Product_Sign;
+  friend class Linear_Expression;
 };
 
 
@@ -508,5 +522,6 @@ std::ostream& operator<<(std::ostream& s, const Grid_Generator::Type& t);
 } // namespace Parma_Polyhedra_Library
 
 #include "Grid_Generator.inlines.hh"
+#include "Grid_Generator_System.inlines.hh"
 
 #endif // !defined(PPL_Grid_Generator_defs_hh)

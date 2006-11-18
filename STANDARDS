@@ -38,9 +38,9 @@ algorithm should be specialized to use the swap method.
 Limiting the visibility of variables, functions, macros and so forth
 --------------------------------------------------------------------
 
-Avoid using the keyword "static" to specify that global variables or
+Avoid using the keyword `static' to specify that global variables or
 functions should be visible only inside the current translation unit;
-use the anonymous namespace, instead. The keyword "static" should
+use the anonymous namespace, instead. The keyword `static' should
 only appear inside class definitions or function bodies. As an example,
 
 static const char* s = "Not accessible by other translation units";
@@ -74,13 +74,13 @@ its impact as much as possible by naming objects in a conspicuous way
 and by limiting as much as possible the scope of declarations.
 This means
 
-- all C and C++ macros should have names prefixed by "PPL_";
+- all C and C++ macros should have names prefixed by `PPL_';
   those that are not meant to be directly accessible by the user should
   be #undef'ed as soon as possible in the source file they are defined in;
 - all functions and types declared by the C interface should have
-  names prefixed by "ppl_";
+  names prefixed by `ppl_';
 - all Prolog predicates declared by the Prolog interfaces should have
-  names prefixed by "ppl_".
+  names prefixed by `ppl_'.
 
 
 Macros
@@ -100,7 +100,7 @@ Trailing whitespace
 -------------------
 
 Always avoid trailing whitespace.
-If you use emacs, then all the trailing whitespace in the current
+If you use Emacs, then all the trailing whitespace in the current
 buffer can be removed by using the command
 
   M-x delete-trailing-whitespace
@@ -157,7 +157,7 @@ non-empty lines here start at column 0;
 
 } // namespace Parma_Polyhedra_Library
 
-If you use emacs, you may want to put the following two lines in your
+If you use Emacs, you may want to put the following two lines in your
 .emacs:
 
 ;; Disable indentation when in namespace blocks.
@@ -202,14 +202,14 @@ Source code should be organized so as to ensure that:
   - each file is of manageable size.
 
 As a rule of thumb, each type (class, struct, class template, etc.)
-named "Xtype" that is relevant on its own for the user or the
+named `Xtype' that is relevant on its own for the user or the
 developer of the library should be provided with a set of source files
-whose filenames start with "Xtype". The source files for such a type
+whose filenames start with `Xtype'. The source files for such a type
 should be named and populated as follows:
 
 a) Xtype.types.hh
 Contains the forward declarations of type names (in particular, the
-one for "Xtype") and other useful typedef's.
+one for `Xtype') and other useful typedef's.
 
 b) Xtype.defs.hh
 Contains the definition of the type, together with the declaration of
@@ -321,7 +321,7 @@ Standards for Documenting the Project with Doxygen
    (but that are useful for the developers) should be surrounded by
 
      #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-	//! ... doxygen comments ...
+	//! ... Doxygen comments ...
      #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
    so that they will only appear in the developer's reference.
@@ -360,7 +360,7 @@ Standards for Documenting the Project with Doxygen
    Typically, this will be the only kind of Doxygen command
    occurring in *.inlines.hh and *.cc source files.
 
-   If Classname is a templatic class, the arguments of the template
+   If Classname is a template class, the arguments of the template
    (as well as the angle brackets) should be omitted.
    The namespace qualification of the class can be omitted, provided
    the comment block is included in the namespace scope.
@@ -425,11 +425,15 @@ o  The test functions should be written
             // ... test code ...
         }
 
-   where the 10 in "test10" indicates that it is the 10th test function
+   where the 10 in `test10' indicates that it is the 10th test function
    in the program.
 
 o  The test functions should return true if the test succeeds and false
    if it fails.
+
+o  If a test requires auxiliary functions and/or classes, put them
+   in a namespace named, e.g., `test10_namespace', which in turn is
+   within the anonymous namespace.
 
 o  Following all the test functions, include:
 

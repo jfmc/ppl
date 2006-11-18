@@ -132,8 +132,8 @@ test06() {
   Variable B(1);
 
   Grid gr1(3);
-  gr1.add_generator(grid_point(10*B));
-  gr1.add_generator(grid_point(10*A + 10*B));
+  gr1.add_grid_generator(grid_point(10*B));
+  gr1.add_grid_generator(grid_point(10*A + 10*B));
 
   Grid known_gr = gr1;
 
@@ -199,6 +199,9 @@ test08() {
   return ok;
 }
 
+#if 0
+// Congruence_System::concatenate is now private.
+
 // Concatenate two 1D universe (empty) congruence systems
 // to give a 2D universe.
 bool
@@ -227,6 +230,7 @@ test09() {
 
   return ok;
 }
+#endif
 
 // add congruence systems to a congruence system with smaller space
 // dimension.
@@ -410,6 +414,9 @@ test17() {
   return ok;
 }
 
+#if 0
+// Congruence_System::concatenate is now private.
+
 // Concatenate two 1D universe congruence systems each with
 // a single trivial congruence to give a 2D universe.
 bool
@@ -437,6 +444,7 @@ test18() {
 
   return ok;
 }
+#endif
 
 } // namespace
 
@@ -449,7 +457,7 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
-  DO_TEST(test09);
+  //DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
@@ -458,5 +466,5 @@ BEGIN_MAIN
   DO_TEST(test15);
   DO_TEST(test16);
   DO_TEST(test17);
-  DO_TEST(test18);
+  //DO_TEST(test18);
 END_MAIN

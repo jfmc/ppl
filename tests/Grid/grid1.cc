@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// add_generator_and_minimize, one variable.
+// add_grid_generator_and_minimize, one variable.
 bool
 test01() {
   Variable A(0);
@@ -35,7 +35,7 @@ test01() {
   Grid gr(gs);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generator_and_minimize(grid_point(2*A));
+  gr.add_grid_generator_and_minimize(grid_point(2*A));
 
   Congruence_System known_cgs;
   known_cgs.insert(A %= 0);
@@ -45,12 +45,12 @@ test01() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-     "*** gr.add_generator_and_minimize(grid_point(2*A)) ***");
+     "*** gr.add_grid_generator_and_minimize(grid_point(2*A)) ***");
 
   return ok;
 }
 
-// add_generator_and_minimize, two variables.
+// add_grid_generator_and_minimize, two variables.
 bool
 test02() {
   Variable A(0);
@@ -63,7 +63,7 @@ test02() {
   print_generators(gr, "*** gr ***");
 
   Grid_Generator g(grid_point(A + 2*B));
-  gr.add_generator_and_minimize(g);
+  gr.add_grid_generator_and_minimize(g);
 
   Congruence_System known_cgs;
   known_cgs.insert( 0*A + 0*B %= -1);
@@ -75,12 +75,12 @@ test02() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-     "*** gr.add_generator_and_minimize(g) ***");
+     "*** gr.add_grid_generator_and_minimize(g) ***");
 
   return ok;
 }
 
-// add_generators_and_minimize
+// add_grid_generators_and_minimize
 bool
 test03() {
   Variable A(0);
@@ -94,7 +94,7 @@ test03() {
   Grid gr(2, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Grid_Generator_System known_gs;
   known_gs.insert(grid_line(0*A +   B));
@@ -106,12 +106,11 @@ test03() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-     "*** gr.add_generators_and_minimize(gs) ***");
+     "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// test from Chiara conversion_test.cc
 bool
 test04() {
   Variable A(0);
@@ -127,7 +126,7 @@ test04() {
   Grid gr(3, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Congruence_System known_cgs;
   known_cgs.insert(( 0*A + 0*B + 0*C %= -2) / 2);
@@ -139,12 +138,11 @@ test04() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-     "*** gr.add_generators_and_minimize(gs) ***");
+     "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// test1 from Chiara conversion_test.cc.
 bool
 test05() {
   Variable A(0);
@@ -159,7 +157,7 @@ test05() {
   Grid gr(3, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Congruence_System known_cgs;
   known_cgs.insert(0*A + 0*B + 0*C %= -1);
@@ -170,12 +168,11 @@ test05() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-     "*** gr.add_generators_and_minimize(gs) ***");
+     "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// test2 from Chiara conversion_test.cc.
 bool
 test06() {
   Variable A(0);
@@ -191,7 +188,7 @@ test06() {
   Grid gr(3, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Congruence_System known_cgs;
   known_cgs.insert((  0*A + 0*B + 0*C %=  15) / 15);
@@ -203,12 +200,11 @@ test06() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-     "*** gr.add_generators_and_minimize(gs) ***");
+     "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// test3 from Chiara conversion_test.cc.
 bool
 test07() {
   Variable A(0);
@@ -223,7 +219,7 @@ test07() {
   Grid gr(3, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Congruence_System known_cgs;
   known_cgs.insert(( 0*A + 0*B + 0*C %= -10) / 10);
@@ -234,12 +230,11 @@ test07() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// param_test1 from Chiara Convert_Test.cc.
 bool
 test08() {
   Variable A(0);
@@ -255,7 +250,7 @@ test08() {
   Grid gr(3, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Congruence_System known_cgs;
   known_cgs.insert(A %= 0);
@@ -266,12 +261,11 @@ test08() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// param_test2 from Chiara Convert_Test.cc.
 bool
 test09() {
   Variable A(0);
@@ -285,7 +279,7 @@ test09() {
   Grid gr(3, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Congruence_System known_cgs;
   known_cgs.insert((A %= 1) / 0);
@@ -296,12 +290,11 @@ test09() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// param_test3 from Chiara Convert_Test.cc.
 bool
 test10() {
   Variable A(0);
@@ -316,7 +309,7 @@ test10() {
   Grid gr(3, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Congruence_System known_cgs;
   known_cgs.insert((A %=  1) / 0);
@@ -327,12 +320,11 @@ test10() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// param_test5 from Chiara Convert_Test.cc.
 bool
 test11() {
   Variable A(0);
@@ -347,7 +339,7 @@ test11() {
   Grid gr(3, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Congruence_System known_cgs;
   known_cgs.insert(( 0*A + 0*B + 0*C %= -1) / 1);
@@ -357,12 +349,11 @@ test11() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// param_test6 from Chiara Convert_Test.cc.
 bool
 test12() {
   Variable A(0);
@@ -377,7 +368,7 @@ test12() {
   Grid gr(3, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Congruence_System known_cgs;
   known_cgs.insert((-4*A + 6*B + 0*C %= 1) / 0);
@@ -386,7 +377,7 @@ test12() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
@@ -419,9 +410,6 @@ test14() {
   return ok;
 }
 
-// Bigger values (param_test7a from Chiara Convert_Test.cc) -- in
-// grid1_64.cc.
-// Test reduce_line_with_line (param_test9 from Chiara Convert_Test.cc).
 bool
 test15() {
   Variable A(0);
@@ -436,7 +424,7 @@ test15() {
   Grid gr(3, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Congruence_System known_cgs;
   known_cgs.insert((4*A + 0*B + 0*C %= -1) / 0);
@@ -446,13 +434,11 @@ test15() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// Grids from a water monitor example (from param_test10 from Chiara
-// Convert_test.cc).
 bool
 test16() {
   Variable A(0);
@@ -470,7 +456,7 @@ test16() {
   Grid gr(3, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Congruence_System known_cgs;
   known_cgs.insert((C %= 0) / 0);
@@ -482,12 +468,11 @@ test16() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
 
-// param_test11 from Chiara Convert_Test.cc.
 bool
 test17() {
   Variable A(0);
@@ -503,7 +488,7 @@ test17() {
   Grid gr(3, EMPTY);
   print_generators(gr, "*** gr ***");
 
-  gr.add_generators_and_minimize(gs);
+  gr.add_grid_generators_and_minimize(gs);
 
   Congruence_System known_cgs;
   known_cgs.insert((-9*A + 6*B + 0*C %= 0) / 2);
@@ -513,7 +498,7 @@ test17() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr.add_generators_and_minimize(gs) ***");
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
 
   return ok;
 }
@@ -560,6 +545,270 @@ test20() {
   return ok;
 }
 
+// Using large values for the coordinates
+bool
+test21() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point(-9933*A + 2000*B + 3953*C, 9113));
+  gs.insert(grid_point(    0*A +    0*B + 8888*C, 7302));
+  gs.insert(grid_point(   29*A +   23*B + 1111*C, 1010));
+  gs.insert(grid_point( 2394*A + 7273*B +    0*C,   30));
+
+  Grid gr(3, EMPTY);
+  print_generators(gr, "*** gr ***");
+
+  gr.add_grid_generators_and_minimize(gs);
+
+  Congruence_System known_cgs;
+
+  // Create coefficients with string constructors as they're too big
+  // for the long type.
+
+  // 37315344498526  0  0  0  congruence, modulus = 37315344498526
+  // 0  343455281759218112380  0  0  congruence, modulus = 37315344498526
+  // 0  -133815138923073144612  223892066991156  0  congruence, modulus = 37315344498526
+  // -22220  -31385495955559489171  93798931757298  18255  congruence, modulus = 37315344498526
+
+  Coefficient* tem1 = new Coefficient("37315344498526");
+  known_cgs.insert((     0*A +     0*B +     0*C %= -*tem1) / *tem1);
+
+  Coefficient* tem2 = new Coefficient("343455281759218112380");
+  known_cgs.insert(( *tem2*A +     0*B +     0*C %= 0) / *tem1);
+  delete tem2;
+
+  tem2 = new Coefficient("-133815138923073144612");
+  Coefficient* tem3 = new Coefficient("223892066991156");
+  known_cgs.insert(( *tem2*A + *tem3*B +     0*C %= 0) / *tem1);
+  delete tem2; delete tem3;
+
+  tem2 = new Coefficient("-31385495955559489171");
+  tem3 = new Coefficient("93798931757298");
+  known_cgs.insert(( *tem2*A + *tem3*B + 18255*C %= 22220) / *tem1);
+  delete tem1; delete tem2; delete tem3;
+
+
+  Grid known_gr(known_cgs);
+
+  bool ok = (gr == known_gr);
+
+  //print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
+
+  return ok;
+}
+
+// Using large values for the coefficients.
+bool
+test22() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point(-93*A +   0*B +  39*C, 113));
+  gs.insert(grid_line( 29*A +  23*B + 111*C));
+  gs.insert(grid_point(117*A + 200*B +  88*C, 33));
+
+  Grid gr(3, EMPTY);
+  print_generators(gr, "*** gr ***");
+
+  gr.add_grid_generators_and_minimize(gs);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((       0*A +       0*B +      0*C %=  280730) / 280730);
+  known_cgs.insert((  -85767*A +  108141*B +      0*C %=   70587) / 280730);
+  known_cgs.insert((-2309489*A + 1557137*B + 280730*C %= 1997619) / 0);
+
+  Grid known_gr(known_cgs);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
+
+  return ok;
+}
+
+bool
+test23() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point( 3*A +   B + 0*C, 4));
+  gs.insert(grid_point(11*A + 2*B + 0*C, 4));
+  gs.insert(grid_point( 3*A + 6*B + 0*C, 4));
+  gs.insert(grid_point( 3*A +   B + 2*C, 4));
+
+  Grid gr(3, EMPTY);
+  print_generators(gr, "*** gr ***");
+
+  gr.add_grid_generators_and_minimize(gs);
+
+  Congruence_System known_cgs;
+  known_cgs.insert(( 0*A +  0*B +  0*C %= -40) / 40);
+  known_cgs.insert((20*A +  0*B +  0*C %=  15) / 40);
+  known_cgs.insert((-4*A + 32*B +  0*C %=   5) / 40);
+  known_cgs.insert(( 0*A +  0*B + 80*C %=   0) / 40);
+
+  Grid known_gr(known_cgs);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
+
+  return ok;
+}
+
+bool
+test24() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point( 3*A +   B + 0*C, 4));
+  gs.insert(grid_point(11*A + 2*B + 0*C, 4));
+  gs.insert(grid_point( 3*A + 6*B + 0*C, 4));
+  gs.insert(grid_point( 3*A +   B + 2*C, 4));
+
+  Grid gr(3, EMPTY);
+  print_generators(gr, "*** gr ***");
+
+  gr.add_grid_generators_and_minimize(gs);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((20*A +  0*B        %= 15) / 40);
+  known_cgs.insert((-4*A + 32*B        %=  5) / 40);
+  known_cgs.insert((              80*C %=  0) / 40);
+
+  Grid known_gr(known_cgs);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
+
+  return ok;
+}
+
+// add_grid_generators_and_minimize, with more rows than columns.
+bool
+test25() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point(3*A + 7*B - 2*C + 3*D));
+  gs.insert(grid_point(0*A + 0*B +   C +   D));
+  gs.insert(grid_point(3*A + 4*B + 2*C + 0*D));
+  gs.insert(grid_point(3*A + 2*B +   C + 2*D));
+  gs.insert(grid_point(9*A + 0*B + 4*C +   D));
+
+  Grid gr(4, EMPTY);
+  print_generators(gr, "*** gr ***");
+
+  gr.add_grid_generators_and_minimize(gs);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((  9*A +   0*B +  0*C + 0*D %=   0) / 27);
+  known_cgs.insert((-18*A +  27*B +  0*C + 0*D %=   0) / 27);
+  known_cgs.insert((-90*A + 135*B + 27*C + 0*D %=  27) / 27);
+  known_cgs.insert((-17*A +  25*B +  6*C +   D %=   7) / 27);
+
+  Grid known_gr(known_cgs);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
+
+  return ok;
+}
+
+// Example from Muller-Olm and Seidl SAS 2005 paper
+bool
+test26() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point(2*A + 0*B));
+  gs.insert(grid_point(30*A + 36*B));
+  gs.insert(grid_point(450*A + 564*B));
+
+  Grid gr(2, EMPTY);
+  print_generators(gr, "*** gr ***");
+
+  gr.add_grid_generators_and_minimize(gs);
+
+  Congruence_System known_cgs;
+  known_cgs.insert((A %= 2) / 28);
+  known_cgs.insert((B %= 0) / 12);
+
+  Grid known_gr(known_cgs);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr, "*** gr.add_grid_generators_and_minimize(gs) ***");
+
+  return ok;
+}
+
+// A generator system with only a line.
+bool
+test27() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator_System gs;
+  gs.insert(grid_line(0*A + 2*B + 0*C));
+
+  try {
+    Grid gr(gs);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+// A generator system containing a parameter.
+bool
+test28() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Grid_Generator_System gs;
+  gs.insert(grid_point(0*C));
+  gs.insert(grid_line(A));
+  gs.insert(grid_line(B));
+  gs.insert(parameter(-C));
+
+  Grid gr(gs);
+
+  Grid known_gr(3);
+  known_gr.add_congruence(C %= 0);
+
+  bool ok = (gr == known_gr);
+
+  print_generators(gr, "*** gr(gs) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -583,4 +832,12 @@ BEGIN_MAIN
   DO_TEST(test18);
   DO_TEST(test19);
   DO_TEST(test20);
+  DO_TEST_F64(test21);
+  DO_TEST_F32(test22);
+  DO_TEST_F8(test23);
+  DO_TEST_F8(test24);
+  DO_TEST_F8(test25);
+  DO_TEST_F8(test26);
+  DO_TEST(test27);
+  DO_TEST(test28);
 END_MAIN

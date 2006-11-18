@@ -235,7 +235,8 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
       if (!s || r == V_CVT_STR_UNK)
 	return false;
     }
-  // Check for well-formedness.
+
+  // Check invariants.
   assert(OK());
   return true;
 }
@@ -253,6 +254,15 @@ operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
     if (x[i] != y[i])
       return false;
   return true;
+}
+
+template <typename T>
+memory_size_type
+DB_Matrix<T>::external_memory_in_bytes() const {
+  memory_size_type n = rows.capacity() * sizeof(DB_Row<T>);
+  for (dimension_type i = num_rows(); i-- > 0; )
+    n += rows[i].external_memory_in_bytes(row_capacity);
+  return n;
 }
 
 template <typename T>

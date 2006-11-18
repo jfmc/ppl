@@ -1,4 +1,4 @@
-/* ia32 floating point unit related functions.
+/* IA-32 floating point unit related functions.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -69,7 +69,8 @@ fpu_get_control() {
 }
 
 inline void
-fpu_set_control(unsigned short cw) {
+fpu_set_control(int c) {
+  unsigned short cw = (unsigned short) c;
   __asm__ __volatile__ ("fldcw %0" : : "m" (cw));
 }
 
@@ -85,7 +86,7 @@ fpu_clear_status(unsigned short bits) {
   /* There is no fldsw instruction */
   ia32_fenv_t env;
   __asm__ ("fnstenv %0" : "=m" (env));
-  env.status_word &= ~bits;
+  env.status_word = (unsigned short) (env.status_word & ~bits);
   __asm__ ("fldenv %0" : : "m" (env));
 }
 

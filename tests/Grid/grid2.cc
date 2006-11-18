@@ -157,7 +157,6 @@ test05() {
   return ok;
 }
 
-// cong_test0 from Chiara Convert_Test.cc.
 bool
 test06() {
   Variable A(0);
@@ -188,7 +187,6 @@ test06() {
   return ok;
 }
 
-// cong_test1 from Chiara Convert_Test.cc.
 bool
 test07() {
   Variable A(0);
@@ -219,7 +217,7 @@ test07() {
   return ok;
 }
 
-// Adding a false equality (cong_test2 from Chiara Convert_Test.cc).
+// Adding a false equality.
 bool
 test08() {
   Variable A(0);
@@ -241,7 +239,6 @@ test08() {
   return ok;
  }
 
-// cong_test3 from Chiara Convert_Test.cc.
 bool
 test09() {
   Variable A(0);
@@ -272,9 +269,6 @@ test09() {
   return ok;
 }
 
-// cong_test4 from Chiara Convert_Test.cc -- in grid3.cc.
-
-// cong_test5 from Chiara Convert_Test.cc.
 bool
 test10() {
   Variable A(0);
@@ -307,7 +301,6 @@ test10() {
   return ok;
 }
 
-// cong_test6 from Chiara Convert_Test.cc.
 bool
 test11() {
   Variable A(0);
@@ -338,7 +331,6 @@ test11() {
   return ok;
 }
 
-// cong_test7 from Chiara Convert_Test.cc.
 bool
 test12() {
   Variable A(0);
@@ -366,7 +358,6 @@ test12() {
   return ok;
 }
 
-// cong_test8 from Chiara Convert_Test.cc.
 bool
 test13() {
   Variable A(0);
@@ -529,6 +520,91 @@ test19() {
   return ok;
 }
 
+bool
+test20() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs;
+  cgs.insert((3*A             %= -2) / 3);
+  cgs.insert((5*A + 9*B +   C %= -1) / 3);
+  cgs.insert((        B + 3*C %= -2) / 3);
+  cgs.insert((      2*B + 3*C %= -2) / 3);
+
+  Grid gr(3);
+
+  gr.add_congruences_and_minimize(cgs);
+
+  Grid_Generator_System known_gs;
+  known_gs.insert(grid_point(-2*A + 0*B +  7*C, 3));
+  known_gs.insert(grid_point( 1*A + 0*B +    C, 3));
+  known_gs.insert(grid_point(-2*A + 9*B +  7*C, 3));
+  known_gs.insert(grid_point(-2*A + 0*B + 16*C, 3));
+
+  Grid known_gr(known_gs);
+
+  bool ok = (gr == known_gr);
+
+  print_generators(gr, "*** gr.add_congruences_and_minimize(cgs) ***");
+
+  return ok;
+}
+
+// OK(true) and OK(false) test.
+bool
+test21() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Congruence_System cgs;
+  cgs.insert((3*A %= 2) / 3);
+
+  Grid gr(3);
+
+  gr.add_congruences_and_minimize(cgs);
+
+  bool ok = (gr.OK(true) && gr.OK(false));
+  print_generators(gr, "*** gr.add_congruences_and_minimize(cgs) ***");
+
+  Grid gr1(1, EMPTY);
+
+  if (ok)
+    ok = (gr1.OK(false));
+  print_generators(gr1, "*** gr1(1, EMPTY) ***");
+
+  Grid gr2(0);
+
+  if (ok)
+    ok = (gr2.OK(true) && gr2.OK(false));
+  print_generators(gr2, "*** gr2(0) ***");
+
+  return ok;
+}
+
+// Non-zero dimension universe when there are two congruences.
+// This showed a bug in Grid_simplify which is now corrected.
+bool
+test22() {
+  Variable A(0);
+  Variable B(1);;
+
+  Congruence_System cgs1(0*A == 0);
+  cgs1.insert(0*B == 0);
+  print_congruences(cgs1, "*** cgs1 ***");
+
+  Grid gr(cgs1);
+  print_congruences(gr, "*** gr(cgs1) ***");
+
+  Grid known_gr(2);
+  print_congruences(known_gr, "*** known_gr ***");
+
+  bool ok = (gr == known_gr);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -551,4 +627,7 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+  DO_TEST_F8(test20);
+  DO_TEST(test21);
+  DO_TEST(test22);
 END_MAIN

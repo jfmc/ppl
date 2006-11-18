@@ -45,7 +45,7 @@ test01() {
   Test_Congruence b((A %= 5 - 3*C - 2*B) / 7);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -66,7 +66,7 @@ test02() {
   Test_Congruence b((A %= -5 - 3*C - 2*B) / 7);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -87,7 +87,7 @@ test03() {
   Test_Congruence b((16*A + 2*B %= - 64 - 8*C) / 4);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -108,7 +108,7 @@ test04() {
   Test_Congruence b((- A %= - 2*B + 5 - 3*C) / 7);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -132,7 +132,7 @@ test05() {
   Test_Congruence b(A + 4*B %= 5 - 3*C);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -153,7 +153,7 @@ test06() {
   Test_Congruence b((3*A + 24*B %= -19 - 3*C) / 0);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -174,7 +174,7 @@ test07() {
   Test_Congruence b((A + 4*B == 17 - 3*C) / 3);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -195,7 +195,7 @@ test08() {
   Test_Congruence b(A + 4*B == 17 - 3*C);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -218,7 +218,7 @@ test09() {
   b /= 3;
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -298,7 +298,7 @@ test11() {
   Test_Congruence b((A + 4*B %= -1 - 3*C) / -3);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -321,7 +321,7 @@ test12() {
   Test_Congruence b((-A + 4*B %= - 3*C - 17*D - 2*E - 4) / -3);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -339,7 +339,7 @@ test13() {
   Test_Congruence b(le %= 0);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -347,20 +347,20 @@ test13() {
   return ok;
 }
 
-// Only an inhomogeneous term on left hand side.
+// Linear expressions on both sides.
 static bool
 test14() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
 
-  Test_Congruence a((-5 %= A + 2*B + 3*C) / 7);
+  Test_Congruence a((A - 5 %= 2*B + 3*C) / 7);
   a.strong_normalize();
 
-  Test_Congruence b((A %= -5 - 3*C - 2*B) / 7);
+  Test_Congruence b((-A %= -5 - 3*C - 2*B) / 7);
   b.strong_normalize();
 
-  bool ok (a == b);
+  bool ok = (a == b);
 
   print_congruence(a, "*** a ***");
   print_congruence(b, "*** b ***");
@@ -368,25 +368,43 @@ test14() {
   return ok;
 }
 
-// Space dimension exception.
+// Try construct congruence from inequality constraint.
 static bool
 test15() {
   Variable A(0);
-  Variable B(1);
   Variable C(2);
 
-  Grid gr(2);
-
   try {
-    gr.add_congruence(A + C %= 0);
+    Congruence cg(A + C > 0);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
+}
+
+// Try access the coefficient of a space dimension higher than that of
+// a congruence.
+static bool
+test16() {
+  Variable A(0);
+  Variable C(2);
+
+  Congruence cg(A + C %= 0);
+
+  try {
+    cg.coefficient(Variable(3));
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
 }
 
 } // namespace
@@ -407,4 +425,5 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN

@@ -35,7 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     vector space \f$\Rset^0 = \{\cdot\}\f$;
   - <EM>empty</EM>: the polyhedron is the empty set;
   - <EM>strongly closed</EM>: the Octagonal_Shape object is strongly
-    closed, so that all the constraints are as tigher as possible.
+    closed, so that all the constraints are as tight as possible.
 
   Not all the conjunctions of these elementary assertions constitute
   a legal Status.  In fact:
@@ -71,9 +71,9 @@ public:
   void ascii_dump(std::ostream& s) const;
 
   //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  //! Loads from \p s an ASCII representation (as produced by
+  //! ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   bool ascii_load(std::istream& s);
 
 private:

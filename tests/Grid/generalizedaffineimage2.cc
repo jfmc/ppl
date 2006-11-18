@@ -39,11 +39,11 @@ test01() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(1*B, Linear_Expression::zero(), 0);
+  gr.generalized_affine_image(1*B, EQUAL, Linear_Expression::zero(), 0);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
 
   bool ok = (gr == known_gr);
 
@@ -65,12 +65,12 @@ test02() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(2*B, Linear_Expression::zero());
+  gr.generalized_affine_image(2*B, EQUAL, Linear_Expression::zero(), 1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_point(B, 2));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_point(B, 2));
 
   bool ok = (gr == known_gr);
 
@@ -92,12 +92,12 @@ test03() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(1*B, A + 1);
+  gr.generalized_affine_image(1*B, EQUAL, A + 1, 1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A - B));
-  known_gr.add_generator(grid_point(B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A - B));
+  known_gr.add_grid_generator(grid_point(B));
 
   bool ok = (gr == known_gr);
 
@@ -119,12 +119,12 @@ test04() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(2*B, A + 1);
+  gr.generalized_affine_image(2*B, EQUAL, A + 1, 1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_point(B, 2));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_point(B, 2));
 
   bool ok = (gr == known_gr);
 
@@ -146,12 +146,12 @@ test05() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(2*B, A + 1, 3);
+  gr.generalized_affine_image(2*B, EQUAL, A + 1, 3);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(B, 2));
-  known_gr.add_generator(grid_point(A + B));
-  known_gr.add_generator(grid_point(2*B));
+  known_gr.add_grid_generator(grid_point(B, 2));
+  known_gr.add_grid_generator(grid_point(A + B));
+  known_gr.add_grid_generator(grid_point(2*B));
 
   bool ok = (gr == known_gr);
 
@@ -173,12 +173,12 @@ test06() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(2*B, A + 1, 3);
+  gr.generalized_affine_image(2*B, EQUAL, A + 1, 3);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(B, 2));
-  known_gr.add_generator(grid_point(A + B));
-  known_gr.add_generator(grid_point(2*B));
+  known_gr.add_grid_generator(grid_point(B, 2));
+  known_gr.add_grid_generator(grid_point(A + B));
+  known_gr.add_grid_generator(grid_point(2*B));
 
   bool ok = (gr == known_gr);
 
@@ -200,12 +200,12 @@ test07() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(-2*B, A + 2);
+  gr.generalized_affine_image(-2*B, EQUAL, A + 2, 1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(-B, 2));
-  known_gr.add_generator(grid_point(2*A + -3*B, 2));
-  known_gr.add_generator(grid_point(-B));
+  known_gr.add_grid_generator(grid_point(-B, 2));
+  known_gr.add_grid_generator(grid_point(2*A + -3*B, 2));
+  known_gr.add_grid_generator(grid_point(-B));
 
   bool ok = (gr == known_gr);
 
@@ -227,12 +227,12 @@ test08() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(1*B, A + 2, -7);
+  gr.generalized_affine_image(1*B, EQUAL, A + 2, -7);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point(2*B));
-  known_gr.add_generator(grid_point(A + 3*B));
-  known_gr.add_generator(grid_point(9*B));
+  known_gr.add_grid_generator(grid_point(2*B));
+  known_gr.add_grid_generator(grid_point(A + 3*B));
+  known_gr.add_grid_generator(grid_point(9*B));
 
   bool ok = (gr == known_gr);
 
@@ -255,14 +255,14 @@ test09() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(1*A, A - C + 2, 5);
+  gr.generalized_affine_image(1*A, EQUAL, A - C + 2, 5);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point(2*A));
-  known_gr.add_generator(grid_point(2*A + 3*B));
-  known_gr.add_generator(grid_line(A + C));
-  known_gr.add_generator(grid_point(4*A));  // Original modulus.
-  known_gr.add_generator(grid_point(7*A));  // Transformation modulus.
+  known_gr.add_grid_generator(grid_point(2*A));
+  known_gr.add_grid_generator(grid_point(2*A + 3*B));
+  known_gr.add_grid_generator(grid_line(A + C));
+  known_gr.add_grid_generator(grid_point(4*A));  // Original modulus.
+  known_gr.add_grid_generator(grid_point(7*A));  // Transformation modulus.
 
   bool ok = (gr == known_gr);
 
@@ -285,7 +285,7 @@ test10() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(1*A, A - C + 2, 0);
+  gr.generalized_affine_image(1*A, EQUAL, A - C + 2, 0);
 
   Grid known_gr = Grid(3);
   known_gr.add_congruence((B %= 0) / 3);
@@ -312,7 +312,7 @@ test11() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(4*A, A - 2*C + 3, 7);
+  gr.generalized_affine_image(4*A, EQUAL, A - 2*C + 3, 7);
 
   Grid known_gr(5, EMPTY);
 
@@ -335,7 +335,7 @@ test12() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(1*A, A + 2);
+  gr.generalized_affine_image(1*A, EQUAL, A + 2, 1);
 
   Grid known_gr(1, EMPTY);
 
@@ -356,7 +356,7 @@ test13() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(1*A, A + 2);
+  gr.generalized_affine_image(1*A, EQUAL, A + 2, 1);
 
   Grid known_gr(1);
 
@@ -379,18 +379,18 @@ test14() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(Linear_Expression::zero(),
-			      Linear_Expression(1));
+  gr.generalized_affine_image(Linear_Expression::zero(), EQUAL,
+			      Linear_Expression(1), 1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_line(B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_line(B));
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_image(Linear_Expression::zero(), Linear_Expression(1)) ***");
+    "*** gr.generalized_affine_image(Linear_Expression::zero(), EQUAL, Linear_Expression(1), 1) ***");
 
   return ok;
 }
@@ -406,17 +406,17 @@ test15() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(Linear_Expression::zero(), A - B, 5);
+  gr.generalized_affine_image(Linear_Expression::zero(), EQUAL, A - B, 5);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A + B));
-  known_gr.add_generator(grid_point(5*A));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A + B));
+  known_gr.add_grid_generator(grid_point(5*A));
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-   "*** gr.generalized_affine_image(Linear_Expression::zero(), A - B, 5) ***");
+   "*** gr.generalized_affine_image(Linear_Expression::zero(), EQUAL, A - B, 5) ***");
 
   return ok;
 }
@@ -434,18 +434,18 @@ test16() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(A - B, C);
+  gr.generalized_affine_image(A - B, EQUAL, C, 1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_line(A + B));
-  known_gr.add_generator(grid_point(B));
-  known_gr.add_generator(grid_point(3*C));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_line(A + B));
+  known_gr.add_grid_generator(grid_point(B));
+  known_gr.add_grid_generator(grid_point(3*C));
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_image(A - B, C) ***");
+        "*** gr.generalized_affine_image(A - B, EQUAL, C, 1) ***");
 
   return ok;
 }
@@ -461,14 +461,14 @@ test17() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(A - B, A, 0);
+  gr.generalized_affine_image(A - B, EQUAL, A);
 
   Grid known_gr(2);
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_image(A - B, A, 0) ***");
+        "*** gr.generalized_affine_image(A - B, EQUAL, A) ***");
 
   return ok;
 }
@@ -485,17 +485,17 @@ test18() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(A + 2*B, A - B, 3);
+  gr.generalized_affine_image(A + 2*B, EQUAL, A - B, 3);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(B, 2));
-  known_gr.add_generator(grid_line(2*A - B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(B, 2));
+  known_gr.add_grid_generator(grid_line(2*A - B));
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_image(A + 2*B, A - B, 3) ***");
+        "*** gr.generalized_affine_image(A + 2*B, EQUAL, A - B, 3) ***");
 
   return ok;
 }
@@ -514,7 +514,7 @@ test19() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_image(A - C, B + 3, 0);
+  gr.generalized_affine_image(A - C, EQUAL, B + 3, 0);
 
   Grid known_gr(3);
   known_gr.add_congruence(A - C == B + 3);
@@ -522,7 +522,7 @@ test19() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_image(A - C, B + 3, 0) ***");
+        "*** gr.generalized_affine_image(A - C, EQUAL, B + 3, 0) ***");
 
   return ok;
 }

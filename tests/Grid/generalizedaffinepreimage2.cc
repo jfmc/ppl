@@ -35,18 +35,18 @@ test01() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_preimage(Linear_Expression::zero(),
-				 Linear_Expression(1));
+  gr.generalized_affine_preimage(Linear_Expression::zero(), EQUAL,
+				 Linear_Expression(1), 1);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_line(B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_line(B));
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_preimage(Linear_Expression::zero(), Linear_Expression(1)) ***");
+    "*** gr.generalized_affine_preimage(Linear_Expression::zero(), EQUAL, Linear_Expression(1), 1) ***");
 
   return ok;
 }
@@ -62,17 +62,17 @@ test02() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_preimage(Linear_Expression::zero(), A - B, 5);
+  gr.generalized_affine_preimage(Linear_Expression::zero(), EQUAL, A - B, 5);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A + B));
-  known_gr.add_generator(grid_point(5*A));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A + B));
+  known_gr.add_grid_generator(grid_point(5*A));
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_preimage(Linear_Expression::zero(), A - B, 5) ***");
+    "*** gr.generalized_affine_preimage(Linear_Expression::zero(), EQUAL, A - B, 5) ***");
 
   return ok;
 }
@@ -90,13 +90,13 @@ test03() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_preimage(A - B, C);
+  gr.generalized_affine_preimage(A - B, EQUAL, C, 1);
 
   Grid known_gr(3, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_line(A));
-  known_gr.add_generator(grid_line(B));
-  known_gr.add_generator(grid_point(3*C));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_line(A));
+  known_gr.add_grid_generator(grid_line(B));
+  known_gr.add_grid_generator(grid_point(3*C));
 
   bool ok = (gr == known_gr);
 
@@ -117,7 +117,7 @@ test04() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_preimage(A - B, A, 0);
+  gr.generalized_affine_preimage(A - B, EQUAL, A, 0);
 
   Grid known_gr(2);
   known_gr.add_congruence(A == 0);
@@ -125,7 +125,7 @@ test04() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A - B, A, 0) ***");
+        "*** gr.generalized_affine_preimage(A - B, EQUAL, A, 0) ***");
 
   return ok;
 }
@@ -142,12 +142,12 @@ test05() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_preimage(A + 2*B, A - B, 3);
+  gr.generalized_affine_preimage(A + 2*B, EQUAL, A - B, 3);
 
   Grid known_gr(2, EMPTY);
-  known_gr.add_generator(grid_point());
-  known_gr.add_generator(grid_point(A));
-  known_gr.add_generator(grid_line(A + B));
+  known_gr.add_grid_generator(grid_point());
+  known_gr.add_grid_generator(grid_point(A));
+  known_gr.add_grid_generator(grid_line(A + B));
 
   bool ok = (gr == known_gr);
 
@@ -157,45 +157,9 @@ test05() {
   return ok;
 }
 
-// Test0 similar to the test in
-// ppl/test0s/Polyhedron/generalizedaffinepreimage4.cc
-bool
-test06() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-
-  Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(A + B));
-  gr.add_generator(grid_point(2*A));
-  gr.add_generator(grid_point(2*A + 2*B));
-  gr.add_generator(grid_point(3*A + B));
-
-  Grid known_gr(gr);
-
-  print_congruences(gr, "*** gr ***");
-
-  gr.generalized_affine_preimage(B, B+2, 1, 5);
-
-// A longer way of computing the generalized affine preimage below.
-  known_gr.add_space_dimensions_and_embed(1);
-  known_gr.add_congruence((B %= C+2) / 5);
-  Variables_Set vset;
-  vset.insert(B);
-  known_gr.remove_space_dimensions(vset);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A + 2*B, A - B, 3) ***");
-
-  return ok;
-}
-
-
 // Expressions having common variables.
 bool
-test07() {
+test06() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -206,14 +170,39 @@ test07() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_preimage(A - B + C, 2*A - B - C, 5);
+  gr.generalized_affine_preimage(A - B + C, EQUAL, 2*A - B - C, 5);
 
   Grid known_gr(3);
 
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A - B + C, 2*A - B - C, 5) ***");
+   "*** gr.generalized_affine_preimage(A - B + C, EQUAL, 2*A - B - C, 5) ***");
+
+  return ok;
+}
+
+// Expressions having common variables, where
+// generalized_affine_preimage must minimize the grid.
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  Grid gr(2);
+  gr.add_congruence(A - B == 0);
+
+  print_congruences(gr, "*** gr ***");
+
+  gr.generalized_affine_preimage(A - B, EQUAL, 2*A - 2*B, 5);
+
+  Grid known_gr(2);
+  known_gr.add_congruence((2*A - 2*B %= 0) / 5);
+
+  bool ok = (gr == known_gr);
+
+  print_congruences(gr,
+        "*** gr.generalized_affine_preimage(A - B, EQUAL, 2*A - 2*B, 5) ***");
 
   return ok;
 }
@@ -230,32 +219,7 @@ test08() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_preimage(A - B, 2*A - 2*B, 5);
-
-  Grid known_gr(2);
-  known_gr.add_congruence((2*A - 2*B %= 0) / 5);
-
-  bool ok = (gr == known_gr);
-
-  print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A - B, 2*A - 2*B, 5) ***");
-
-  return ok;
-}
-
-// Expressions having common variables, where
-// generalized_affine_preimage must minimize the grid.
-bool
-test09() {
-  Variable A(0);
-  Variable B(1);
-
-  Grid gr(2);
-  gr.add_congruence(A - B == 0);
-
-  print_congruences(gr, "*** gr ***");
-
-  gr.generalized_affine_preimage(2*A - 2*B, A - B, 5);
+  gr.generalized_affine_preimage(2*A - 2*B, EQUAL, A - B, 5);
 
   Grid known_gr(2);
   known_gr.add_congruence((A - B %= 0) / 5);
@@ -263,7 +227,7 @@ test09() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(2*A - 2*B, A - B, 5) ***");
+        "*** gr.generalized_affine_preimage(2*A - 2*B, EQUAL, A - B, 5) ***");
 
   return ok;
 }
@@ -271,7 +235,7 @@ test09() {
 // Right hand side expression of greater space dimension than the
 // grid.
 bool
-test10() {
+test09() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -281,20 +245,20 @@ test10() {
   gr.add_congruence(C %= -2);
 
   try {
-    gr.generalized_affine_preimage(B + C, D + 2);
+    gr.generalized_affine_preimage(B + C, EQUAL, D + 2, 1);
  }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Left hand side expression of space dimension greater than the grid.
 bool
-test11() {
+test10() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -304,20 +268,20 @@ test11() {
   gr.add_congruence((C == -2) / 0);
 
   try {
-    gr.generalized_affine_preimage(A + D, A + 2);
+    gr.generalized_affine_preimage(A + D, EQUAL, A + 2);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // Expressions having common variables, with a negative modulus.
 bool
-test12() {
+test11() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -328,7 +292,7 @@ test12() {
 
   print_congruences(gr, "*** gr ***");
 
-  gr.generalized_affine_preimage(A - B, C, -5);
+  gr.generalized_affine_preimage(A - B, EQUAL, C, -5);
 
   Grid known_gr(3);
   known_gr.add_congruence((C %= 0) / 15);
@@ -336,7 +300,7 @@ test12() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A - B, C, -5) ***");
+        "*** gr.generalized_affine_preimage(A - B, EQUAL, C, -5) ***");
 
   return ok;
 }
@@ -355,5 +319,4 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
-  DO_TEST(test12);
 END_MAIN

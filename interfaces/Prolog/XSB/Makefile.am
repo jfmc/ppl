@@ -22,9 +22,12 @@
 
 abs_srcdir = @abs_srcdir@
 
+XSB_CFLI_FILES = xsb_cfli.hh
+
 EXTRA_DIST = \
-ppl_xsb.cc \
-ppl_xsb.H \
+ppl_interface_generator_xsb_cc.m4 \
+ppl_interface_generator_xsb_H.m4 \
+$(XSB_CFLI_FILES) \
 xsb_clpq.P \
 xsb_clpq2.P \
 xsb_pl_check.P \
@@ -41,14 +44,36 @@ expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a
 
 if BUILD_XSB_PROLOG_INTERFACE
 
+BUILT_SOURCES = \
+ppl_xsb.H \
+ppl_xsb.cc
+
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4
+
+ppl_xsb.H: $(interface_generator_dependencies) ppl_interface_generator_xsb_H.m4 Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_xsb_H.m4 > $@
+
+ppl_xsb.cc: $(interface_generator_dependencies) ppl_interface_generator_xsb_cc.m4 Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_xsb_cc.m4 > $@
+
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces/Prolog \
+-I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 -I$(top_builddir)/Watchdog/src \
 $(XSB_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
 pkglib_LTLIBRARIES = ppl_xsb.la
-ppl_xsb_la_SOURCES = ppl_xsb.cc
+nodist_ppl_xsb_la_SOURCES = ppl_xsb.cc
 ppl_xsb_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/Watchdog/src/libpwl.la \
@@ -58,21 +83,16 @@ ppl_xsb_la_LDFLAGS = -module -avoid-version
 pkglib_DATA = ppl_xsb.xwam
 
 ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc ppl_xsb.la Makefile
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ppl_xsb.H . ; \
-	fi
-	cp -f $(srcdir)/ppl_xsb.cc ppl_xsb.c
+	cp -f ppl_xsb.cc ppl_xsb.c
 	echo "consult(ppl_xsb," \
 	  "[cc('$(CXX)'), cc_opts('$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) " \
-	    "$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)')])." \
+	    "$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) " \
+	    "-L../../../src/.libs -L../../../Watchdog/src/.libs')])." \
 		| $(LIBTOOL) --mode=execute \
 			-dlopen ../../../src/libppl.la \
 			-dlopen ../../../Watchdog/src/libpwl.la \
 			xsb
 	rm -f ppl_xsb.c
-	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ppl_xsb.H; \
-	fi
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
@@ -109,7 +129,7 @@ EXPECTED_PCHK = $(srcdir)/expected_pchk_$(COEFFICIENT_MNEMONIC)
 
 endif !ASSERTIONS_ENABLED
 
-check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clpq2.P ../tests/clpq2.pl ../tests/script_clpq2 pl_check_test 
+check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/script_clpq xsb_clpq2.P ../tests/clpq2.pl ../tests/script_clpq2 pl_check_test
 	LANG=C; \
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	if [ $(abs_srcdir) != `pwd` ]; then \
@@ -162,6 +182,10 @@ pl_check_test: ppl_xsb.la ppl_xsb.xwam xsb_pl_check.P ../tests/pl_check.pl
 	  rm -f xsb_pl_check.P; \
 	fi
 	diff -u --ignore-all-space $(EXPECTED_PCHK) obtained_pchk
+
+DISTCLEANFILES = \
+ppl_xsb.H \
+ppl_xsb.cc
 
 MOSTLYCLEANFILES = \
 ppl_xsb.xwam ppl_xsb.so \

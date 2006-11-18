@@ -20,11 +20,19 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog.pl gp_clpq.pl gnu_pl_check.pl
+GPROLOG_CFLI_FILES = gprolog_cfli.hh
+
+EXTRA_DIST = \
+ppl_interface_generator_gprolog_pl.m4 \
+$(GPROLOG_CFLI_FILES) \
+ppl_gprolog_sd.cc \
+gp_clpq.pl \
+gnu_pl_check.pl
 
 if BUILD_GNU_PROLOG_INTERFACE
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 -I$(top_builddir)/Watchdog/src \
 @extra_includes@
@@ -33,12 +41,25 @@ bin_PROGRAMS = ppl_gprolog
 ppl_gprolog_SOURCES =
 
 pkglib_LTLIBRARIES = libppl_gprolog.la
-libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
+nodist_libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
 libppl_gprolog_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/Watchdog/src/libpwl.la \
 @extra_libraries@
 libppl_gprolog_la_LDFLAGS = -module -avoid-version
+
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_gprolog_pl.m4
+
+ppl_gprolog.pl: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_gprolog_pl.m4 > $@
 
 pkglib_DATA = ppl_gprolog.pl
 
@@ -54,18 +75,18 @@ endif !ENABLE_SHARED
 
 ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 	gplc --c-compiler $(CXX) -o $@ \
-		$(srcdir)/ppl_gprolog.pl $(LIBPPL_GPROLOG) \
+		ppl_gprolog.pl $(LIBPPL_GPROLOG) \
 		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
 
 gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq.pl
 	gplc --c-compiler $(CXX) -o $@ \
-		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
+		ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../tests/clpq.pl $(LIBPPL_GPROLOG) \
 		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
 
 gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq2.pl
 	gplc --c-compiler $(CXX) -o $@ \
-		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
+		ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../tests/clpq2.pl $(LIBPPL_GPROLOG) \
 		-L '$(AM_CXXFLAGS) $(CXXFLAGS) -L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/src/.libs -lpwl -lgmpxx -lgmp'
 
@@ -143,6 +164,9 @@ clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		-dlopen libppl_gprolog.la \
 		./gp_clpq2 <$(SCRIPT_CLPQ2) >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
+
+DISTCLEANFILES = \
+ppl_gprolog.pl
 
 MOSTLYCLEANFILES = \
 gp_clpq gp_clpq2 \

@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// Grids the same, gr defined by generatorss and known_gr by congruences.
+// Grids the same, gr defined by generators and known_gr by congruences.
 bool
 test01() {
   Variable A(0);
@@ -165,15 +165,15 @@ test06() {
   Variable A(0);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point());
+  gr1.add_grid_generator(grid_point());
 
-  gr1.minimized_generators();
+  gr1.minimized_grid_generators();
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point());
-  gr2.add_generator(grid_line(A));
+  gr2.add_grid_generator(grid_point());
+  gr2.add_grid_generator(grid_line(A));
 
-  gr2.minimized_generators();
+  gr2.minimized_grid_generators();
 
   bool ok = (gr1 != gr2);
   print_congruences(gr1, "*** gr1 ***");
@@ -190,16 +190,16 @@ test07() {
   Variable B(1);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(parameter(B));
+  gr1.add_grid_generator(grid_point());
+  gr1.add_grid_generator(parameter(B));
 
-  gr1.minimized_generators();
+  gr1.minimized_grid_generators();
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point());
-  gr2.add_generator(grid_line(A));
+  gr2.add_grid_generator(grid_point());
+  gr2.add_grid_generator(grid_line(A));
 
-  gr2.minimized_generators();
+  gr2.minimized_grid_generators();
 
   bool ok = (gr1 != gr2);
   print_congruences(gr1, "*** gr1 ***");
@@ -217,20 +217,20 @@ test08() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(parameter(A));
-  gr1.add_generator(parameter(B));
-  gr1.add_generator(parameter(C));
+  gr1.add_grid_generator(grid_point());
+  gr1.add_grid_generator(parameter(A));
+  gr1.add_grid_generator(parameter(B));
+  gr1.add_grid_generator(parameter(C));
 
-  gr1.minimized_generators();
+  gr1.minimized_grid_generators();
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point());
-  gr2.add_generator(parameter(2*A));
-  gr2.add_generator(parameter(2*B));
-  gr2.add_generator(parameter(2*C));
+  gr2.add_grid_generator(grid_point());
+  gr2.add_grid_generator(parameter(2*A));
+  gr2.add_grid_generator(parameter(2*B));
+  gr2.add_grid_generator(parameter(2*C));
 
-  gr2.minimized_generators();
+  gr2.minimized_grid_generators();
 
   bool ok = (gr1 != gr2);
   print_congruences(gr1, "*** gr1 ***");
@@ -248,20 +248,20 @@ test09() {
   Variable C(2);
 
   Grid gr1(3, EMPTY);
-  gr1.add_generator(grid_point());
-  gr1.add_generator(parameter(A));
-  gr1.add_generator(parameter(B));
-  gr1.add_generator(parameter(C));
+  gr1.add_grid_generator(grid_point());
+  gr1.add_grid_generator(parameter(A));
+  gr1.add_grid_generator(parameter(B));
+  gr1.add_grid_generator(parameter(C));
 
-  gr1.minimized_generators();
+  gr1.minimized_grid_generators();
 
   Grid gr2(3, EMPTY);
-  gr2.add_generator(grid_point());
-  gr2.add_generator(parameter(A));
-  gr2.add_generator(parameter(B));
-  gr2.add_generator(parameter(C));
+  gr2.add_grid_generator(grid_point());
+  gr2.add_grid_generator(parameter(A));
+  gr2.add_grid_generator(parameter(B));
+  gr2.add_grid_generator(parameter(C));
 
-  gr2.minimized_generators();
+  gr2.minimized_grid_generators();
 
   bool ok = (gr1 == gr2);
   print_congruences(gr1, "*** gr1 ***");

@@ -239,7 +239,7 @@ test08() {
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
-  gr2.add_generators(gs2);
+  gr2.add_grid_generators(gs2);
   print_generators(gr2, "*** gr2 ***");
 
   gr1.intersection_assign(gr2);
@@ -262,7 +262,7 @@ test08() {
 bool
 test09() {
   Grid gr1(1, EMPTY);
-  gr1.add_generator(grid_point());
+  gr1.add_grid_generator(grid_point());
 
   Grid gr2(3);
 
@@ -271,11 +271,11 @@ test09() {
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
+    return true;
   }
   catch (...) {
-    return false;
   }
-  return true;
+  return false;
 }
 
 // intersection_assign_and_minimize: Simple grids, one dimension.
@@ -459,7 +459,7 @@ test16() {
   print_generators(gr1, "*** gr1 ***");
 
   Grid gr2(3, EMPTY);
-  gr2.add_generators(gs2);
+  gr2.add_grid_generators(gs2);
   print_generators(gr2, "*** gr2 ***");
 
   gr1.intersection_assign_and_minimize(gr2);
@@ -474,6 +474,25 @@ test16() {
   bool ok = (gr1 == known_gr);
 
   print_generators(gr1, "*** gr1.intersection_assign_and_minimize(gr2) ***");
+
+  return ok;
+}
+
+// Both empty and both not in minimal form.
+bool
+test17() {
+  Variable A(0);
+  Grid gr1(1);
+  gr1.add_congruence((A %= 1) / 2);
+  gr1.add_congruence((A %= 0) / 2);
+
+  Grid gr2(1);
+  gr2.add_congruence((A %= 1) / 2);
+  gr2.add_congruence((A %= 0) / 2);
+
+  bool ok = (!gr1.intersection_assign_and_minimize(gr2));
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
   return ok;
 }
@@ -497,4 +516,5 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN

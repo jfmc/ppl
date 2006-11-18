@@ -21,3 +21,53 @@
 # site: http://www.cs.unipr.it/ppl/ .
 
 abs_srcdir = @abs_srcdir@
+
+if BUILD_OCAML_INTERFACE
+
+OCAMLC_FLAGS = -I +gmp
+OCAMLC_ROOT = @ocamlc_root@
+
+%.cmi: $(srcdir)/%.mli
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $< . ; \
+	fi
+	ocamlc -g -c $(OCAMLC_FLAGS) `basename $<`
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f `basename $<`; \
+	fi
+
+%.cmo: $(srcdir)/%.ml
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $< . ; \
+	fi
+	ocamlc -g -c $(OCAMLC_FLAGS) `basename $<`
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f `basename $<`; \
+	fi
+
+noinst_LIBRARIES = libppl_ocaml.a
+libppl_ocaml_a_SOURCES = \
+ppl_ocaml.cc
+
+AM_CPPFLAGS = -I$(OCAMLC_ROOT) -I$(top_srcdir)/src -I$(top_builddir)/src @extra_includes@
+
+noinst_PROGRAM = test1
+
+test1$(EXEEXT): ppl_ocaml.cmi libppl_ocaml.a test1.cmo
+	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS) gmp.cma -ccopt -g test1.cmo -cclib -L. -cclib -lppl_ocaml -cclib -L../../src/.libs -cclib -lppl -cclib -lmlgmp -cclib -lgmpxx -cclib -lgmp
+
+EXTRA_DIST=
+
+#mostlyclean-local:
+#	rm -rf $(ALL_TARGETS) 
+
+CLEANFILES = \
+ppl_ocaml.cmi \
+test1.cmi \
+test1.cmo
+
+else # !HAVE_OCAML_COMPILER
+
+EXTRA_DIST =
+
+endif

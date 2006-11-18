@@ -26,46 +26,6 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 
-bool
-operator==(const Bounding_Box& x, const Bounding_Box& y) {
-  dimension_type dimension = x.space_dimension();
-  if (dimension != y.space_dimension())
-    return false;
-
-  if (x.is_empty() && y.is_empty())
-    return true;
-
-  if (x.is_empty() || y.is_empty())
-    return false;
-
-  TEMP_INTEGER(n_x);
-  TEMP_INTEGER(n_y);
-  TEMP_INTEGER(d_x);
-  TEMP_INTEGER(d_y);
-
-  for (dimension_type i = dimension; i-- > 0; ) {
-    bool tem;
-    bool x_closed = x.get_lower_bound(i, tem, n_x, d_x);
-    bool y_closed = y.get_lower_bound(i, tem, n_y, d_y);
-    if (x_closed == y_closed) {
-      if (x_closed && (n_x != n_y || d_x != d_y))
-	return false;
-    }
-    else
-      return false;
-    x_closed = x.get_upper_bound(i, tem, n_x, d_x);
-    y_closed = y.get_upper_bound(i, tem, n_y, d_y);
-    if (x_closed == y_closed) {
-      if (x_closed && (n_x != n_y || d_x != d_y))
-	return false;
-    }
-    else
-      return false;
-  }
-
-  return true;
-}
-
 // Minimized rectilinear grid.
 bool
 test01() {
@@ -81,9 +41,9 @@ test01() {
   Bounding_Box known_box(box);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(B));
-  gr.add_generator(grid_point(3*A + B));
-  gr.add_generator(grid_point(3*A + 3*B));
+  gr.add_grid_generator(grid_point(B));
+  gr.add_grid_generator(grid_point(3*A + B));
+  gr.add_grid_generator(grid_point(3*A + 3*B));
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
@@ -111,9 +71,9 @@ test02() {
   Bounding_Box known_box(box);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point(  A +   B));
-  gr.add_generator(grid_point(2*A + 3*B));
-  gr.add_generator(grid_point(  A + 4*B));
+  gr.add_grid_generator(grid_point(  A +   B));
+  gr.add_grid_generator(grid_point(2*A + 3*B));
+  gr.add_grid_generator(grid_point(  A + 4*B));
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
@@ -139,9 +99,9 @@ test03() {
   box.lower_upper_bound(1, true, 2, 2);
 
   Grid gr(2, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(2*A));
-  gr.add_generator(grid_point(  A + 2*B, 2));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(2*A));
+  gr.add_grid_generator(grid_point(  A + 2*B, 2));
 
   Bounding_Box known_box(box);
 
@@ -165,9 +125,9 @@ test04() {
   Bounding_Box box(3);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_line(A + 2*B));
-  gr.add_generator(grid_point(C, 2));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_line(A + 2*B));
+  gr.add_grid_generator(grid_point(C, 2));
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
@@ -214,7 +174,7 @@ test06() {
   Bounding_Box box1(3);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point(16*A + 6*B - 6*C, 7));
+  gr.add_grid_generator(grid_point(16*A + 6*B - 6*C, 7));
 
   gr.shrink_bounding_box(box1);
   nout << "*** box1 ***" << endl << box1 << endl;
@@ -283,10 +243,10 @@ test08() {
   Bounding_Box box(3);
 
   Grid gr(3, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A + B));
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(2*A));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A + B));
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(2*A));
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
@@ -332,28 +292,35 @@ test09() {
   return ok;
 }
 
-// An otherwise valid box having a dimension with an open bound, where
-// the open bound makes the box empty.
+// A box having a dimension with an open bound.
 bool
 test10() {
+  Variable A(0);
+
   Bounding_Box box(2);
-  box.raise_lower_bound(0, true, 3, 7);
-  box.lower_upper_bound(0, true, 3, 7);
-  box.raise_lower_bound(1, false, 1, 2);
+  box.raise_lower_bound(0, true, -3, 7);
+  box.lower_upper_bound(0, false, 3, 7);
+  box.raise_lower_bound(1, false, 1, 3);
   box.lower_upper_bound(1, true, 1, 2);
 
-  Grid gr(3);
+  Grid gr(2);
+  gr.add_congruence((A == 0));
 
-  try {
-    gr.shrink_bounding_box(box);
-    }
-  catch (const std::invalid_argument& e) {
-    nout << "invalid_argument: " << e.what() << endl;
-  }
-  catch (...) {
-    return false;
-  }
-  return true;
+  gr.shrink_bounding_box(box);
+  nout << "*** box ***" << endl << box << endl;
+
+  Bounding_Box known_box(2);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 0, 1);
+  known_box.raise_lower_bound(1, false, 1, 3);
+  known_box.lower_upper_bound(1, true, 1, 2);
+
+  bool ok = (box == known_box);
+
+  print_congruences(gr,
+      "*** gr.shrink_bounding_box(box) ***");
+
+  return ok;
 }
 
 // An empty grid defined by congruences.
@@ -402,10 +369,10 @@ test12() {
   Bounding_Box box1(4);
 
   Grid gr(4, EMPTY);
-  gr.add_generator(grid_point());
-  gr.add_generator(grid_point(A));
-  gr.add_generator(grid_point(C));
-  gr.add_generator(grid_point(D));
+  gr.add_grid_generator(grid_point());
+  gr.add_grid_generator(grid_point(A));
+  gr.add_grid_generator(grid_point(C));
+  gr.add_grid_generator(grid_point(D));
 
   print_generators(gr, "*** gr ***");
 
@@ -437,9 +404,9 @@ test13() {
   Bounding_Box box(4);
 
   Grid gr(4, EMPTY);
-  gr.add_generator(grid_point(  A + 2*B + 4*C, 4));
-  gr.add_generator(grid_point(2*A + 2*B + 4*C, 4));
-  gr.add_generator(grid_point(  A + 2*B + 4*C + D, 4));
+  gr.add_grid_generator(grid_point(  A + 2*B + 4*C, 4));
+  gr.add_grid_generator(grid_point(2*A + 2*B + 4*C, 4));
+  gr.add_grid_generator(grid_point(  A + 2*B + 4*C + D, 4));
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
@@ -499,6 +466,55 @@ test15() {
   return ok;
 }
 
+// A box having a dimension with an open bound, where
+// the open bound makes the box empty.
+bool
+test16() {
+  Bounding_Box box(3);
+  box.raise_lower_bound(0, true, 3, 7);
+  box.lower_upper_bound(0, true, 3, 7);
+  box.raise_lower_bound(1, false, 1, 2);
+  box.lower_upper_bound(1, true, 1, 2);
+
+  Grid gr(3);
+
+  gr.shrink_bounding_box(box);
+  nout << "*** box ***" << endl << box << endl;
+
+  Bounding_Box known_box(3);
+  known_box.set_empty();
+
+  bool ok = (box == known_box);
+
+  print_congruences(gr,
+      "*** gr.shrink_bounding_box(box) ***");
+
+  return ok;
+}
+
+// A box having a different number of dimensions to that of the grid.
+bool
+test17() {
+  Bounding_Box box(2);
+  box.raise_lower_bound(0, true, 3, 7);
+  box.lower_upper_bound(0, true, 3, 7);
+  box.raise_lower_bound(1, false, 1, 2);
+  box.lower_upper_bound(1, true, 1, 2);
+
+  Grid gr(3);
+
+  try {
+    gr.shrink_bounding_box(box);
+  }
+  catch (const std::invalid_argument& e) {
+    nout << "invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -517,4 +533,6 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN

@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Octagonal_Shape_inlines_hh
 #define PPL_Octagonal_Shape_inlines_hh 1
 
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 #include "C_Polyhedron.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
@@ -116,7 +118,6 @@ Octagonal_Shape<T>::Octagonal_Shape(const Constraint_System& cs)
     // A (non zero-dim) universe octagon is strong closed.
     status.set_strongly_closed();
   add_constraints(cs);
-  assert(OK());
 }
 
 template <typename T>
@@ -149,9 +150,74 @@ Octagonal_Shape<T>::space_dimension() const {
 
 template <typename T>
 inline bool
+Octagonal_Shape<T>::is_discrete() const {
+  return affine_dimension() == 0;
+}
+
+template <typename T>
+inline bool
 Octagonal_Shape<T>::is_empty() const {
   strong_closure_assign();
   return marked_empty();
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>::bounds_from_above(const Linear_Expression& expr) const {
+  return bounds(expr, true);
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>::bounds_from_below(const Linear_Expression& expr) const {
+  return bounds(expr, false);
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>::maximize(const Linear_Expression& expr,
+			     Coefficient& sup_n, Coefficient& sup_d,
+			     bool& maximum) const {
+  return max_min(expr, true, sup_n, sup_d, maximum);
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>::maximize(const Linear_Expression& expr,
+			     Coefficient& sup_n, Coefficient& sup_d,
+			     bool& maximum,
+			     Generator& g) const {
+  return max_min(expr, true, sup_n, sup_d, maximum, g);
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>::minimize(const Linear_Expression& expr,
+			     Coefficient& inf_n, Coefficient& inf_d,
+			     bool& minimum) const {
+  return max_min(expr, false, inf_n, inf_d, minimum);
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>::minimize(const Linear_Expression& expr,
+			     Coefficient& inf_n, Coefficient& inf_d,
+			     bool& minimum,
+			     Generator& g) const {
+  return max_min(expr, false, inf_n, inf_d, minimum, g);
+}
+
+template <typename T>
+inline bool
+Octagonal_Shape<T>::is_topologically_closed() const {
+  return true;
+}
+
+template <typename T>
+inline void
+Octagonal_Shape<T>::topological_closure_assign() {
+  // Nothing to be done.
+  return;
 }
 
 /*! \relates Octagonal_Shape */
@@ -233,7 +299,6 @@ Octagonal_Shape<T>
     if (marked_strongly_closed())
       status.reset_strongly_closed();
   }
-  assert(OK());
 }
 
 template <typename T>
@@ -254,59 +319,6 @@ Octagonal_Shape<T>
   N k;
   div_round_up(k, num, den);
   add_octagonal_constraint(i, j, k);
-}
-
-template <typename T>
-inline void
-Octagonal_Shape<T>
-::forget_all_octagonal_constraints(const dimension_type v_id) {
-  assert(v_id < space_dim);
-  const dimension_type n_v = 2*v_id;
-  typename OR_Matrix<N>::row_iterator m_iter = matrix.row_begin() + n_v;
-  typename OR_Matrix<N>::row_reference_type r_v = *m_iter;
-  typename OR_Matrix<N>::row_reference_type r_cv = *(++m_iter);
-  for (dimension_type h = m_iter.row_size(); h-- > 0; ) {
-    r_v[h] = PLUS_INFINITY;
-    r_cv[h] = PLUS_INFINITY;
-  }
-  ++m_iter;
-  for (typename OR_Matrix<N>::row_iterator m_end = matrix.row_end();
-       m_iter != m_end; ++m_iter) {
-    typename OR_Matrix<N>::row_reference_type r = *m_iter;
-    r[n_v] = PLUS_INFINITY;
-    r[n_v+1] = PLUS_INFINITY;
-  }
-}
-
-template <typename T>
-inline void
-Octagonal_Shape<T>
-::forget_binary_octagonal_constraints(const dimension_type v_id) {
-  assert(v_id < space_dim);
-  const dimension_type n_v = 2*v_id;
-  typename OR_Matrix<N>::row_iterator m_iter = matrix.row_begin() + n_v;
-  typename OR_Matrix<N>::row_reference_type r_v = *m_iter;
-  typename OR_Matrix<N>::row_reference_type r_cv = *(++m_iter);
-  for (dimension_type k = n_v; k-- > 0; ) {
-    r_v[k] = PLUS_INFINITY;
-    r_cv[k] = PLUS_INFINITY;
-  }
-  ++m_iter;
-  for (typename OR_Matrix<N>::row_iterator m_end = matrix.row_end();
-       m_iter != m_end; ++m_iter) {
-    typename OR_Matrix<N>::row_reference_type r = *m_iter;
-    r[n_v] = PLUS_INFINITY;
-    r[n_v+1] = PLUS_INFINITY;
-  }
-}
-
-template <typename T>
-inline void
-Octagonal_Shape<T>::add_constraints(const Constraint_System& cs) {
-  Constraint_System::const_iterator i_end = cs.end();
-  for (Constraint_System::const_iterator i = cs.begin(); i != i_end; ++i)
-    add_constraint(*i);
-  assert(OK());
 }
 
 template <typename T>
@@ -383,26 +395,6 @@ Octagonal_Shape<T>::time_elapse_assign(const Octagonal_Shape& y) {
   Octagonal_Shape<T> x(px);
   swap(x);
   assert(OK());
-}
-
-template <typename T>
-inline bool
-Octagonal_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
-  bool was_closed = marked_strongly_closed();
-  add_constraint(c);
-  // If the OS was strongly closed and we add a single constraint,
-  // it is convenient to use the incremental strong-closure algorithm,
-  // as we known that the constraint has affected two variables at most.
-  // (The cost is O(n^2) instead of O(n^3).)
-  if (was_closed)
-    for (dimension_type i = c.space_dimension(); i-- > 0;)
-      if (c.coefficient(Variable(i)) != 0) {
-	incremental_strong_closure_assign(Variable(i));
-	break;
-      }
-  else
-    strong_closure_assign();
-  return !(marked_empty());
 }
 
 template <typename T>
@@ -635,6 +627,12 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			   const Octagonal_Shape<T>& y,
 			   const Rounding_Dir dir) {
   return l_infinity_distance_assign<To, To, T>(r, x, y, dir);
+}
+
+template <typename T>
+inline memory_size_type
+Octagonal_Shape<T>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 } // namespace Parma_Polyhedra_Library

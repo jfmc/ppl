@@ -38,26 +38,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator_System.types.hh"
 #include "Polyhedron.types.hh"
 #include "Grid.types.hh"
-#include "LP_Problem.types.hh"
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
 // Put them in the namespace here to declare them friend later.
-
-//! Returns the congruence \p e1 = \p e2 \p \pmod{1}.
-/*! \relates Congruence */
-Congruence
-operator%=(const Linear_Expression& e1, const Linear_Expression& e2);
-
-//! Returns the congruence \p e = \p n \p \pmod{1}.
-/*! \relates Congruence */
-Congruence
-operator%=(const Linear_Expression& e, Coefficient_traits::const_reference n);
-
-//! Returns the congruence \f$n = e \pmod{1}\f$.
-/*! \relates Congruence */
-Congruence
-operator%=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns the linear expression \p e1 + \p e2.
 /*! \relates Linear_Expression */
@@ -301,6 +285,17 @@ public:
   */
   explicit Linear_Expression(const Generator& g);
 
+  /*! \brief
+    Builds the linear expression corresponding to grid generator \p g
+    (for points, parameters and lines the divisor is not copied).
+
+    Given the grid generator
+    \f$g = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$
+    this builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i\f$.
+    The inhomogeneous term of the linear expression is always 0.
+  */
+  explicit Linear_Expression(const Grid_Generator& g);
+
   //! Builds the linear expression corresponding to congruence \p cg.
   /*!
     Given the congruence
@@ -333,6 +328,17 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  PPL_OUTPUT_DECLARATIONS
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+#endif
+  bool ascii_load(std::istream& s);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -349,7 +355,6 @@ private:
   // FIXME: the following friend declaration should be avoided.
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid;
-  friend class Parma_Polyhedra_Library::LP_Problem;
 
   // FIXME: the following friend declaration is only to grant access to
   // Constraint_System::affine_preimage().
@@ -432,8 +437,8 @@ private:
 				      Coefficient_traits::const_reference n);
 
   friend std::ostream&
-  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const Linear_Expression& e);
+  Parma_Polyhedra_Library::IO_Operators
+  ::operator<<(std::ostream& s, const Linear_Expression& e);
 };
 
 #include "Linear_Expression.inlines.hh"

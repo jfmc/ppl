@@ -26,20 +26,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <sicstus/sicstus.h>
 
 #ifdef __GNUC__
-# define PCFLI_EXTERN_INLINE  extern __inline__
-# define PCFLI_INLINE_PROTOTYPES  1
+# define PCFLI_EXTERN_INLINE extern __inline__
+# define PCFLI_INLINE_PROTOTYPES 1
 #endif
 
-#if defined (__cplusplus) && ! defined (PCFLI_EXTERN_INLINE)
-# define PCFLI_EXTERN_INLINE  inline
+#if defined(__cplusplus) && !defined(PCFLI_EXTERN_INLINE)
+# define PCFLI_EXTERN_INLINE inline
 #endif
 
 #ifdef PCFLI_EXTERN_INLINE
 # ifndef PCFLI_INLINE_PROTOTYPES
-#  define PCFLI_INLINE_PROTOTYPES  0
+#  define PCFLI_INLINE_PROTOTYPES 0
 # endif
 #else
-# define PCFLI_INLINE_PROTOTYPES  1
+# define PCFLI_INLINE_PROTOTYPES 1
 #endif
 
 /* Temporary. */
@@ -52,9 +52,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 typedef SP_term_ref Prolog_term_ref;
 typedef SP_atom Prolog_atom;
 typedef int Prolog_foreign_return_type;
+
 static const Prolog_foreign_return_type PROLOG_SUCCESS = SP_SUCCESS;
 static const Prolog_foreign_return_type PROLOG_FAILURE = SP_FAILURE;
-
 
 #if PCFLI_INLINE_PROTOTYPES
 

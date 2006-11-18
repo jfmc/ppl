@@ -20,4 +20,24 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-SUBDIRS = C Prolog
+SUBDIRS = C OCaml Prolog
+
+REQUIRED_INSTANTIATIONS = \
+@required_instantiations@
+
+REQUIRED_INSTANTIATIONS_CANONICAL_NAMES = \
+@required_instantiations_canonical_names@
+
+BUILT_SOURCES = ppl_interface_instantiations.m4
+
+ppl_interface_instantiations.m4: Makefile
+	echo "m4_define(\`m4_interface_classes_names', \`$(REQUIRED_INSTANTIATIONS_CANONICAL_NAMES)')" > $@
+	echo "m4_define(\`m4_cplusplus_classes_names', \`$(REQUIRED_INSTANTIATIONS)')" >> $@
+
+EXTRA_DIST = \
+ppl_interface_generator_common.m4 \
+ppl_interface_generator_common_dat.m4 \
+ppl_interface_generator_copyright
+
+DISTCLEANFILES = \
+ppl_interface_instantiations.m4

@@ -20,12 +20,39 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-EXTRA_DIST = ppl_yap.pl yap_clpq.pl yap_clpq2.pl yap_pl_check.pl
+YAP_CFLI_FILES = yap_cfli.hh
+
+EXTRA_DIST = \
+ppl_interface_generator_yap_cc.m4 \
+$(YAP_CFLI_FILES) \
+ppl_yap.pl \
+yap_clpq.pl \
+yap_clpq2.pl \
+yap_pl_check.pl
 
 if BUILD_YAP_PROLOG_INTERFACE
+
+BUILT_SOURCES = \
+ppl_yap.cc
+
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_yap_cc.m4
+
+ppl_yap.cc: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
+           $(srcdir)/ppl_interface_generator_yap_cc.m4 > $@
+
 if ENABLE_SHARED
 
 AM_CPPFLAGS = \
+-I$(top_srcdir)/interfaces/Prolog \
+-I$(top_buildir)/interfaces/Prolog \
 -I$(top_builddir)/src \
 -I$(top_builddir)/Watchdog/src \
 @extra_includes@
@@ -37,7 +64,7 @@ NO_UNDEFINED_FLAG = -no-undefined
 endif NO_UNDEFINED
 
 pkglib_LTLIBRARIES = ppl_yap.la
-ppl_yap_la_SOURCES = ppl_yap.cc
+nodist_ppl_yap_la_SOURCES = ppl_yap.cc
 ppl_yap_la_LIBADD = \
 -lYap \
 $(top_builddir)/src/libppl.la \
@@ -115,6 +142,9 @@ clpq2_test: yap_clpq2.pl ppl_yap.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EX
 		yap -l $(srcdir)/yap_clpq2.pl \
 			<script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
+
+DISTCLEANFILES = \
+ppl_yap.cc
 
 MOSTLYCLEANFILES = \
 script_clpq script_clpq2 script_pchk \
