@@ -50,8 +50,7 @@ template <bool>
 struct Compile_Time_Check;
 
 template <>
-struct Compile_Time_Check<true> {
-};
+struct Compile_Time_Check<true> { };
 
 #define COMPILE_TIME_CHECK_NAME(suf) compile_time_check_ ## suf
 #define COMPILE_TIME_CHECK_AUX(e, suf)					\
@@ -64,6 +63,51 @@ struct Compile_Time_Check<true> {
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define COMPILE_TIME_CHECK(e, msg) COMPILE_TIME_CHECK_AUX(e, __LINE__)
+
+struct True { enum { value = true }; };
+
+struct False { enum { value = false }; };
+
+template <typename T1, typename T2>
+struct Is_Same : public False { };
+
+template <typename T>
+struct Is_Same<T, T> : public True { };
+
+#define IS_SAME(T1, T2) (Parma_Polyhedra_Library::Is_Same<T1, T2>::value)
+
+template <typename Base, typename Derived>
+struct Is_Same_Or_Derived {
+  struct any {
+    template <typename T> any(T&);
+  };
+  static char func(const Base&);
+  static double func(const any);
+  static Derived& obj();
+  enum { value = sizeof(func(obj())) == sizeof(char)};
+};
+
+#define IS_SAME_OR_DERIVED(Base, Derived) \
+  (Parma_Polyhedra_Library::Is_Same_Or_Derived<Base, Derived>::value)
+
+template <typename T, typename Tag>
+struct Type_Has_Tag : public False {};
+
+#define INIT_TYPE_TAG(Tag) struct Tag
+
+#define SET_TYPE_TAG(args, Type, Tag) \
+  template args	struct Type_Has_Tag<Type, Tag> : public True { }
+
+#define TYPE_HAS_TAG(Type, Tag) \
+  (Parma_Polyhedra_Library::Type_Has_Tag<Type, Tag>::value)
+
+template <bool, typename T>
+struct Enable_If { };
+
+template <class T>
+struct Enable_If<true, T> {
+  typedef T Type;
+};
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
