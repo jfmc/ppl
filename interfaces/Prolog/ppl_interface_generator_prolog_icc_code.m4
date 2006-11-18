@@ -320,15 +320,68 @@ ppl_@CLASS@_get_disjuncts(Prolog_term_ref t_pps,
 
 ')
 
-m4_define(`ppl_@CLASS@_get_iterator_code',
+m4_define(`ppl_@CLASS@_get_disjunct_codeXXX',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_get_iterator(Prolog_term_ref t_it) {
-  static const char* where = "ppl_@CLASS@_get_iterator/2";
+ppl_@CLASS@_get_disjunct(Prolog_term_ref t_pps,
+			 Prolog_term_ref t_it,
+			 Prolog_term_ref t_disj) {
+  static const char* where = "ppl_@CLASS@_get_disjuncts/2";
   try {
+    const @CPP_CLASS@* pps = term_to_handle<@CPP_CLASS@ >(t_pps, where);
+    CHECK(pps);
 
-    @CPP_CLASS@::const_iterator i;
+    const @CPP_CLASS@::const_iterator* it
+         = term_to_handle<@CPP_CLASS@::const_iterator >(t_it, where);
+
+    Prolog_term_ref t_d = Prolog_new_term_ref();
+    Prolog_put_address(t_d,
+                         const_cast<@CPP_DISJUNCT@* >(
+                           static_cast<const @CPP_DISJUNCT@* >(
+                              &(it->element()))));
+    }
+
+
+    if (Prolog_unify(t_disj, t_d))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_begin_iterator_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_begin_iterator(Prolog_term_ref t_pps,
+			  Prolog_term_ref t_it) {
+  static const char* where = "ppl_@CLASS@_begin_iterator/2";
+  try {
+    const @CPP_CLASS@* pps = term_to_handle<@CPP_CLASS@ >(t_pps, where);
+    CHECK(pps);
+
+    @CPP_CLASS@::const_iterator i = pps->begin();
     Prolog_term_ref t_i = Prolog_new_term_ref();
-    Prolog_put_address(t_i, i);
+    Prolog_put_address(t_i, &i);
+
+    if (Prolog_unify(t_it, t_i))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_end_iterator_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_end_iterator(Prolog_term_ref t_pps,
+			  Prolog_term_ref t_it) {
+  static const char* where = "ppl_@CLASS@_end_iterator/2";
+  try {
+    const @CPP_CLASS@* pps = term_to_handle<@CPP_CLASS@ >(t_pps, where);
+    CHECK(pps);
+
+    @CPP_CLASS@::const_iterator i = pps->end();
+    Prolog_term_ref t_i = Prolog_new_term_ref();
+    Prolog_put_address(t_i, &i);
 
     if (Prolog_unify(t_it, t_i))
       return PROLOG_SUCCESS;
