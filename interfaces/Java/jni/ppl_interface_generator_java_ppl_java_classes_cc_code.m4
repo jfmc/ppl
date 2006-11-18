@@ -3,6 +3,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JLppl_1java_Degenerate_1Element_2
 (JNIEnv* env, jobject j_@LTOPOLOGY@@LCLASS@, jlong j_dim,
  jobject j_degenerate_element) {
+  dimension_type ppl_dim = jlong_to_unsigned<dimension_type>(j_dim);
   jclass degenerate_element_class
     = env->FindClass("ppl_java/Degenerate_Element");
   jmethodID degenerate_element_ordinal_id
@@ -14,9 +15,9 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JL
   @TOPOLOGY@@CPP_CLASS@* c_ptr;
   switch (j_degenerate_element_int) {
   case 0:
-    c_ptr = new @TOPOLOGY@@CPP_CLASS@(j_dim, UNIVERSE);
+    c_ptr = new @TOPOLOGY@@CPP_CLASS@(ppl_dim, UNIVERSE);
   case 1:
-    c_ptr = new @TOPOLOGY@@CPP_CLASS@(j_dim, EMPTY);
+    c_ptr = new @TOPOLOGY@@CPP_CLASS@(ppl_dim, EMPTY);
   default:
     throw std::runtime_error("PPL Java interface internal error");
   }
@@ -580,12 +581,13 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1LIMITEDBOUNDED@_1@1WIDENEXPN@_1
 
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
-JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_add_1space_1dimensions_1and_1@1EMBEDPROJECT@
+JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_add_1space_1dimensions_1@1EMBEDPROJECT@
 (JNIEnv* env, jobject j_this_@LCLASS@, jlong dim) {
   try {
+dimension_type ppl_dim = jlong_to_unsigned<dimension_type>(dim);
  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
- this_@LCLASS@->add_space_dimensions_@EMBEDPROJECT@(dim);
+ this_@LCLASS@->add_space_dimensions_@EMBEDPROJECT@(ppl_dim);
   }
   CATCH_ALL;
 }
@@ -612,9 +614,10 @@ m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_remove_1higher_1space_1dimensions
 (JNIEnv* env, jobject j_this_@LCLASS@, jlong dim) {
   try {
+  dimension_type ppl_dim = jlong_to_unsigned<dimension_type>(dim);
   jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
-  this_@LCLASS@->remove_higher_space_dimensions(dim);
+  this_@LCLASS@->remove_higher_space_dimensions(ppl_dim);
   }
   CATCH_ALL;
 }
@@ -626,10 +629,11 @@ m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_expand_1space_1dimension
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_variable, jlong dim) {
   try {
+  dimension_type ppl_dim = jlong_to_unsigned<dimension_type>(dim);
   jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
   Variable v = build_ppl_variable(env, j_variable);
-  this_@LCLASS@->expand_space_dimension(v, dim);
+  this_@LCLASS@->expand_space_dimension(v, ppl_dim);
   }
   CATCH_ALL;
 }

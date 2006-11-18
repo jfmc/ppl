@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <jni.h>
 #include <ppl.hh>
 
+
 using namespace Parma_Polyhedra_Library;
 
 #define CATCH_ALL \
@@ -42,6 +43,7 @@ using namespace Parma_Polyhedra_Library;
     handle_exception(env); \
   };
 
+
 void
 handle_exception(JNIEnv* env, const std::overflow_error& e);
 
@@ -56,6 +58,21 @@ handle_exception(JNIEnv* env, const std::exception& e);
 
 void
 handle_exception(JNIEnv* env);
+
+template <typename U>
+U
+jlong_to_unsigned(const jlong& value) {
+
+  U d = 0;
+   if (value < 0)
+     throw std::invalid_argument("not an unsigned integer.");
+   else if (value > std::numeric_limits<U>::max())
+     throw std::invalid_argument("unsigned integer out of range.");
+   else
+       d = value;
+   return d;
+}
+
  // Converts a C++ bool to a Java boolean.
 jobject
 bool_to_j_boolean(JNIEnv* env,
