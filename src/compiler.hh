@@ -109,6 +109,8 @@ struct Enable_If<true, T> {
   typedef T Type;
 };
 
+#define ENABLE_IF(cond, type) typename Parma_Polyhedra_Library::Enable_If<cond, type>::Type
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
   Declares a per-class constant of type <CODE>bool</CODE>, called \p name
