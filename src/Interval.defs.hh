@@ -52,8 +52,11 @@ combine(Result l, Result u) {
 using namespace Boundary_NS;
 using namespace Interval_NS;
 
+struct Interval_ {
+};
+
 template <typename Boundary, typename Info>
-class Interval : private Info {
+class Interval : public Interval_, private Info {
 private:
   COMPILE_TIME_CHECK(!Info::store_special || !std::numeric_limits<Boundary>::has_infinity, "store_special is senseless when boundary type may contains infinity");
   COMPILE_TIME_CHECK(!Info::infinity_is_open || !Info::store_open, "infinity_is_open is senseless when boundary may be marked as open");
@@ -393,7 +396,6 @@ info(const Interval<Boundary, Info>& x) {
 struct Scalar_As_Interval_Policy {
   const_bool_nodef(handle_infinity, false);
   const_bool_nodef(check_inexact, false);
-  const_bool_nodef(check_empty_args, false);
   const_bool_nodef(check_integer_args, true);
   const_bool_nodef(infinity_is_open, false);
 };
@@ -403,74 +405,52 @@ typedef Interval_Info_Null<Scalar_As_Interval_Policy> Scalar_As_Interval_Info;
 static const Scalar_As_Interval_Info& SCALAR_INFO = *static_cast<Scalar_As_Interval_Info*>(0);
 
 template <typename T>
-inline const T&
+inline ENABLE_IF(!IS_SAME_OR_DERIVED(Interval_, T), const T&)
 lower(const T& x) {
   return x;
 }
 template <typename T>
-inline const T&
+inline ENABLE_IF(!IS_SAME_OR_DERIVED(Interval_, T), const T&)
 upper(const T& x) {
   return x;
 }
 template <typename T>
-inline const Scalar_As_Interval_Info&
+inline ENABLE_IF(!IS_SAME_OR_DERIVED(Interval_, T), const Scalar_As_Interval_Info&)
 info(const T&) {
   return SCALAR_INFO;
 }
 template <typename T>
-inline I_Result
+inline ENABLE_IF(!IS_SAME_OR_DERIVED(Interval_, T), I_Result)
 normalize_integer(const T&) {
   return combine(V_EQ, V_EQ);
 }
 template <typename T>
-inline bool
+inline ENABLE_IF(!IS_SAME_OR_DERIVED(Interval_, T), bool)
 is_empty(const T& x) {
   return is_not_a_number(x);
 }
 template <typename T>
-inline bool
+inline ENABLE_IF(!IS_SAME_OR_DERIVED(Interval_, T), bool)
 contains_only_integers(const T& x) {
   return is_integer(x);
 }
 template <typename T>
-inline Integer_Property::Value
+inline ENABLE_IF(!IS_SAME_OR_DERIVED(Interval_, T), Integer_Property::Value)
 integer_property(const T& x) {
   return is_integer(x) ? ONLY_INTEGERS_NORMALIZED : NOT_SINGLETON_INTEGER;
 }
 
 template <typename T>
-struct Info {
-  typedef Scalar_As_Interval_Info type;
-};
-
-template <typename Boundary, typename I>
-struct Info<Interval<Boundary, I> > {
-  typedef I type;
-};
-
-template <typename T>
-inline bool
-maybe_check_empty(const T& x) {
-  if (Info<T>::type::check_empty_args)
-    return is_empty(x);
-  else {
-    assert(!is_empty(x));
-    return false;
-  }
-}
-
-template <typename T>
-inline bool
+inline ENABLE_IF(!IS_SAME_OR_DERIVED(Interval_, T), bool)
 is_singleton(const T& x) {
-  return !maybe_check_empty(x);
+  return !is_empty(x);
 }
-
 
 template <typename T>
 inline Integer_Property::Value
 lazy_integer_property(const T& x) {
   // TOTHINK: use the policy for x or for the result?
-  if (Info<T>::type::check_integer_args)
+  if (info(x).check_integer_args)
     return integer_property(x);
   else
     return info(x).get_interval_property(INTEGER);
@@ -513,7 +493,7 @@ template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
 inline I_Result
 assign(Interval<To_Boundary, To_Info>& to, const From1& l, const From2& u, bool integer = false) {
-  if (maybe_check_empty(l) || maybe_check_empty(u))
+  if (is_empty(l) || is_empty(u))
     return to.set_empty();
   To_Info to_info;
   Result rl = assign(LOWER, to.lower(), to_info, LOWER, l, info(l));
@@ -528,7 +508,7 @@ template <typename To_Boundary, typename To_Info,
 	  typename From>
 inline I_Result
 assign(Interval<To_Boundary, To_Info>& to, const From& x) {
-  if (maybe_check_empty(x))
+  if (is_empty(x))
     return to.set_empty();
   To_Info to_info;
   Result rl = assign(LOWER, to.lower(), to_info,
@@ -548,9 +528,9 @@ convex_hull_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   // FIXME: needed only for not only/only integers mixing.
   to.normalize_integer();
   normalize_integer(x);
-  if (maybe_check_empty(to))
+  if (is_empty(to))
     return assign(to, x);
-  if (maybe_check_empty(x))
+  if (is_empty(x))
     return combine(V_EQ, V_EQ);
   if (To_Info::store_integer) {
     Integer_Property::Value to_i = to.integer_property();
@@ -578,9 +558,9 @@ convex_hull_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const Fro
   // FIXME: needed only for not only/only integers mixing.
   normalize_integer(x);
   normalize_integer(y);
-  if (maybe_check_empty(x))
+  if (is_empty(x))
     return assign(to, y);
-  if (maybe_check_empty(y))
+  if (is_empty(y))
     return assign(to, x);
   To_Info to_info;
   if (To_Info::store_integer) {
@@ -664,7 +644,7 @@ template <typename To_Boundary, typename To_Info,
 inline I_Result
 refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
   normalize_integer(x);
-  if (maybe_check_empty(x))
+  if (is_empty(x))
     return to.set_empty();
   switch (rel) {
   case LESS_THAN:
@@ -810,7 +790,7 @@ template <typename To_Boundary, typename To_Info,
 	  typename T>
 inline I_Result
 neg_assign(Interval<To_Boundary, To_Info>& to, const T& x) {
-  if (maybe_check_empty(x))
+  if (is_empty(x))
     return to.set_empty();
   To_Info to_info;
   Result rl, ru;
@@ -836,7 +816,7 @@ inline I_Result
 add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   normalize_integer(x);
   normalize_integer(y);
-  if (maybe_check_empty(x) || maybe_check_empty(y))
+  if (is_empty(x) || is_empty(y))
     return to.set_empty();
   To_Info to_info;
   Result rl = add_assign(LOWER, to.lower(), to_info,
@@ -859,7 +839,7 @@ inline I_Result
 sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   normalize_integer(x);
   normalize_integer(y);
-  if (maybe_check_empty(x) || maybe_check_empty(y))
+  if (is_empty(x) || is_empty(y))
     return to.set_empty();
   To_Info to_info;
   Result rl, ru;
@@ -910,7 +890,7 @@ inline I_Result
 mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   normalize_integer(x);
   normalize_integer(y);
-  if (maybe_check_empty(x) || maybe_check_empty(y))
+  if (is_empty(x) || is_empty(y))
     return to.set_empty();
   To_Info to_info;
   Result rl, ru;
@@ -1037,7 +1017,7 @@ inline I_Result
 div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   normalize_integer(x);
   normalize_integer(y);
-  if (maybe_check_empty(x) || maybe_check_empty(y))
+  if (is_empty(x) || is_empty(y))
     return to.set_empty();
   To_Info to_info;
   Result rl, ru;

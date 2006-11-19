@@ -40,7 +40,6 @@ struct Rational_Box_Interval_Info_Policy {
   const_int_nodef(next_bit, 0);
   const_bool_nodef(handle_infinity, false);
   const_bool_nodef(check_inexact, false);
-  const_bool_nodef(check_empty_args, false);
   const_bool_nodef(check_integer_args, false);
   const_bool_nodef(infinity_is_open, false);
 };

@@ -85,7 +85,6 @@ class Interval_Info_Null {
 public:
   const_bool_nodef(handle_infinity, Policy::handle_infinity);
   const_bool_nodef(check_inexact, Policy::check_inexact);
-  const_bool_nodef(check_empty_args, Policy::check_empty_args);
   const_bool_nodef(check_integer_args, Policy::check_integer_args);
   const_bool_nodef(infinity_is_open, Policy::infinity_is_open);
   const_bool_nodef(store_special, false);
@@ -122,7 +121,6 @@ class Interval_Info_Bitset {
 public:
   const_bool_nodef(handle_infinity, Policy::handle_infinity);
   const_bool_nodef(check_inexact, Policy::check_inexact);
-  const_bool_nodef(check_empty_args, Policy::check_empty_args);
   const_bool_nodef(check_integer_args, Policy::check_integer_args);
   const_bool_nodef(infinity_is_open, Policy::infinity_is_open);
   const_bool_nodef(store_special, Policy::store_special);
