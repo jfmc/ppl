@@ -29,40 +29,41 @@ namespace Parma_Polyhedra_Library {
 namespace Checked {
 
 template <typename Policy, typename Type>
-struct FUNCTION_CLASS(construct)<Policy, Type, Type> {
+struct FUNCTION_CLASS(construct)<Policy, Policy, Type, Type> {
   static inline Result function(Type& to, const Type& from, Rounding_Dir) {
     new (&to) Type(from);
     return V_EQ;
   }
 };
 
-template <typename Policy, typename To, typename From>
+template <typename To_Policy, typename From_Policy, typename To, typename From>
 struct FUNCTION_CLASS(construct) {
   static inline Result function(To& to, const From& from, Rounding_Dir dir) {
     new (&to) To();
-    return assign<Policy>(to, from, dir);
+    return assign<To_Policy, From_Policy>(to, from, dir);
   }
 };
 
-template <typename Policy, typename Type>
-struct FUNCTION_CLASS(assign)<Policy, Type, Type> {
+template <typename To_Policy, typename From_Policy, typename Type>
+struct FUNCTION_CLASS(assign)<To_Policy, From_Policy, Type, Type> {
   static inline Result function(Type& to, const Type& from, Rounding_Dir) {
+    // FIXME: it's safe when policies are different?
     to = from;
     return V_EQ;
   }
 };
 
-template <typename Policy, typename Type>
+template <typename To_Policy, typename From_Policy, typename Type>
 inline void
 copy_generic(Type& to, const Type& from) {
   to = from;
 }
 
-template <typename Policy, typename To, typename From>
+template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 abs_generic(To& to, const From& from, Rounding_Dir dir) {
   if (from < 0)
-    return neg<Policy>(to, from, dir);
+    return neg<To_Policy, From_Policy>(to, from, dir);
   to = from;
   return V_EQ;
 }
@@ -98,7 +99,8 @@ sub(Result r1, Result r2) {
   return add(r1, neg(r2));
 }
 
-template <typename Policy, typename To, typename From>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From>
 inline void
 gcd_exact_noabs(To& to, const From& x, const From& y) {
   To nx = x;
@@ -108,22 +110,25 @@ gcd_exact_noabs(To& to, const From& x, const From& y) {
     // The following is derived from the assumption that x % y
     // is always representable. This is true for both native integers
     // and IEC 559 floating point numbers.
-    rem<Policy>(rm, nx, ny, ROUND_NOT_NEEDED);
+    rem<To_Policy, From1_Policy, From2_Policy>(rm, nx, ny, ROUND_NOT_NEEDED);
     nx = ny;
     ny = rm;
   }
   to = nx;
 }
 
-template <typename Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
 inline Result
 gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
-  gcd_exact_noabs<Policy>(to, x, y);
-  return abs<Policy>(to, to, dir);
+  gcd_exact_noabs<To_Policy, From1_Policy, From2_Policy>(to, x, y);
+  return abs<To_Policy, To_Policy>(to, to, dir);
 }
 
-template <typename Policy, typename To1,
-	  typename From1, typename From2, typename To2, typename To3>
+template <typename To1_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To2_Policy, typename To3_Policy,
+	  typename To1, typename From1, typename From2,
+	  typename To2, typename To3>
 inline Result
 gcdext_exact(To1& to, const From1& x, const From2& y, To2& s, To3& t,
 	     Rounding_Dir dir) {
@@ -139,7 +144,7 @@ gcdext_exact(To1& to, const From1& x, const From2& y, To2& s, To3& t,
       else
 	s = 1;
       t = 0;
-      return abs<Policy>(to, x, dir);
+      return abs<To1_Policy, From1_Policy>(to, x, dir);
     }
   }
 
@@ -149,12 +154,12 @@ gcdext_exact(To1& to, const From1& x, const From2& y, To2& s, To3& t,
   bool negative_y = y < 0;
 
   Result r;
-  r = abs<Policy>(to, x, dir);
+  r = abs<To1_Policy, From1_Policy>(to, x, dir);
   if (r != V_EQ)
     return r;
 
   From2 ay;
-  r = abs<Policy>(ay, y, dir);
+  r = abs<To1_Policy, From2_Policy>(ay, y, dir);
   if (r != V_EQ)
     return r;
 
@@ -193,16 +198,17 @@ gcdext_exact(To1& to, const From1& x, const From2& y, To2& s, To3& t,
  sign_check:
 #endif
   if (negative_x) {
-    r = neg<Policy>(s, s, dir);
+    r = neg<To2_Policy, To2_Policy>(s, s, dir);
     if (r != V_EQ)
       return r;
   }
   if (negative_y)
-    return neg<Policy>(t, t, dir);
+    return neg<To3_Policy, To3_Policy>(t, t, dir);
   return V_EQ;
 }
 
-template <typename Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy,
+	  typename To, typename From1, typename From2>
 inline Result
 lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (x == 0 || y == 0) {
@@ -211,19 +217,19 @@ lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   }
   To nx, ny;
   Result r;
-  r = abs<Policy>(nx, x, dir);
+  r = abs<From1_Policy, From1_Policy>(nx, x, dir);
   if (r != V_EQ)
     return r;
-  r = abs<Policy>(ny, y, dir);
+  r = abs<From2_Policy, From2_Policy>(ny, y, dir);
   if (r != V_EQ)
     return r;
   To gcd;
-  gcd_exact_noabs<Policy>(gcd, nx, ny);
+  gcd_exact_noabs<To_Policy, From1_Policy, From2_Policy>(gcd, nx, ny);
   // The following is derived from the assumption that x / gcd(x, y)
   // is always representable. This is true for both native integers
   // and IEC 559 floating point numbers.
-  div<Policy>(to, nx, gcd, ROUND_NOT_NEEDED);
-  return mul<Policy>(to, to, ny, dir);
+  div<To_Policy, From1_Policy, To_Policy>(to, nx, gcd, ROUND_NOT_NEEDED);
+  return mul<To_Policy, To_Policy, From2_Policy>(to, to, ny, dir);
 }
 
 template <typename Policy, typename Type>
@@ -415,7 +421,8 @@ safe_conversion(mpq_class, float);
 safe_conversion(mpq_class, double);
 //safe_conversion(mpq_class, long double);
 
-template <typename Policy, typename Type1, typename Type2>
+template <typename Policy1, typename Policy2,
+	  typename Type1, typename Type2>
 inline bool
 lt(const Type1& x, const Type2& y) {
   if (Safe_Comparison<Type1, Type2>::need_rounding)
@@ -423,7 +430,8 @@ lt(const Type1& x, const Type2& y) {
   return x < y;
 }
 
-template <typename Policy, typename Type1, typename Type2>
+template <typename Policy1, typename Policy2,
+	  typename Type1, typename Type2>
 inline bool
 le(const Type1& x, const Type2& y) {
   if (Safe_Comparison<Type1, Type2>::need_rounding)
@@ -431,7 +439,8 @@ le(const Type1& x, const Type2& y) {
   return x <= y;
 }
 
-template <typename Policy, typename Type1, typename Type2>
+template <typename Policy1, typename Policy2,
+	  typename Type1, typename Type2>
 inline bool
 eq(const Type1& x, const Type2& y) {
   if (Safe_Comparison<Type1, Type2>::need_rounding)
@@ -439,7 +448,8 @@ eq(const Type1& x, const Type2& y) {
   return x == y;
 }
 
-template <typename Policy, typename Type1, typename Type2>
+template <typename Policy1, typename Policy2,
+	  typename Type1, typename Type2>
 inline Result
 cmp_generic(const Type1& x, const Type2& y) {
   if (lt(y, x))
@@ -455,11 +465,11 @@ input_generic(Type& to, std::istream& is, Rounding_Dir dir) {
   mpq_class q;
   Result r = input_mpq(q, is);
   if (r == VC_MINUS_INFINITY)
-    return assign<Policy>(to, MINUS_INFINITY, dir);
+    return assign<Policy, void>(to, MINUS_INFINITY, dir);
   if (r == VC_PLUS_INFINITY)
-    return assign<Policy>(to, PLUS_INFINITY, dir);
+    return assign<Policy, void>(to, PLUS_INFINITY, dir);
   if (r == V_EQ)
-    return assign<Policy>(to, q, dir);
+    return assign<Policy, void>(to, q, dir);
   return set_special<Policy>(to, r);
 }
 

@@ -87,7 +87,7 @@ template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Checked_Number& y) {
   // TODO: avoid default construction of value member
-  Checked::copy<Policy>(v, y.raw_value());
+  Checked::copy<Policy, Policy>(v, y.raw_value());
 }
 
 template <typename T, typename Policy>
@@ -189,7 +189,7 @@ Checked_Number<T, Policy>::Checked_Number(const Not_A_Number& x,
 					  Rounding_Dir dir) {
   // TODO: avoid default construction of value member
   Policy
-    ::handle_result(check_result(Checked::assign<Policy>(v,
+    ::handle_result(check_result(Checked::assign<Policy, void>(v,
 							 x,
 							 rounding_dir(dir)),
 				 dir));
@@ -201,7 +201,7 @@ Checked_Number<T, Policy>::Checked_Number(const Not_A_Number& x) {
   // TODO: avoid default construction of value member
   Rounding_Dir dir = ROUND_IGNORE;
   Policy
-    ::handle_result(check_result(Checked::assign<Policy>(v,
+    ::handle_result(check_result(Checked::assign<Policy, void>(v,
 							 x,
 							 rounding_dir(dir)),
 				 dir));
@@ -213,7 +213,7 @@ Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity& x,
 					  Rounding_Dir dir) {
   // TODO: avoid default construction of value member
   Policy
-    ::handle_result(check_result(Checked::assign<Policy>(v,
+    ::handle_result(check_result(Checked::assign<Policy, void>(v,
 							 x,
 							 rounding_dir(dir)),
 				 dir));
@@ -225,7 +225,7 @@ Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity& x) {
   // TODO: avoid default construction of value member
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR_INF;
   Policy
-    ::handle_result(check_result(Checked::assign<Policy>(v,
+    ::handle_result(check_result(Checked::assign<Policy, void>(v,
 							 x,
 							 rounding_dir(dir)),
 				 dir));
@@ -237,7 +237,7 @@ Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x,
 					  Rounding_Dir dir) {
   // TODO: avoid default construction of value member
   Policy
-    ::handle_result(check_result(Checked::assign<Policy>(v,
+    ::handle_result(check_result(Checked::assign<Policy, void>(v,
 							 x,
 							 rounding_dir(dir)),
 				 dir));
@@ -249,7 +249,7 @@ Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x) {
   // TODO: avoid default construction of value member
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR_INF;
   Policy
-    ::handle_result(check_result(Checked::assign<Policy>(v,
+    ::handle_result(check_result(Checked::assign<Policy, void>(v,
 							 x,
 							 rounding_dir(dir)),
 				 dir));
@@ -365,7 +365,7 @@ template <typename To>
 inline Result
 assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir) {
   return check_result(Checked::assign<typename Native_Checked_To_Wrapper<To>
-		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
+		      ::Policy, void>(Native_Checked_To_Wrapper<To>::raw_value(to),
 				x,
 				rounding_dir(dir)),
 		      dir);
@@ -376,7 +376,7 @@ template <typename To>
 inline Result
 assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir) {
   return check_result(Checked::assign<typename Native_Checked_To_Wrapper<To>
-		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
+		      ::Policy, void>(Native_Checked_To_Wrapper<To>::raw_value(to),
 				x,
 				rounding_dir(dir)),
 		      dir);
@@ -387,7 +387,7 @@ template <typename To>
 inline Result
 assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir) {
   return check_result(Checked::assign<typename Native_Checked_To_Wrapper<To>
-		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
+		      ::Policy, void>(Native_Checked_To_Wrapper<To>::raw_value(to),
 				x,
 				rounding_dir(dir)),
 		      dir);
@@ -422,6 +422,7 @@ FUNC1(construct, construct_ext)
 FUNC1(assign_r, assign_ext)
 FUNC1(floor_assign_r, floor_ext)
 FUNC1(ceil_assign_r, ceil_ext)
+FUNC1(trunc_assign_r, trunc_ext)
 FUNC1(neg_assign_r, neg_ext)
 FUNC1(abs_assign_r, abs_ext)
 FUNC1(sqrt_assign_r, sqrt_ext)
@@ -531,7 +532,7 @@ DEF_INCREMENT(operator --, sub_assign_r)
 template <typename T, typename Policy>
 inline Checked_Number<T, Policy>&
 Checked_Number<T, Policy>::operator=(const Checked_Number<T, Policy>& y) {
-  Checked::copy<Policy>(v, y.raw_value());
+  Checked::copy<Policy, Policy>(v, y.raw_value());
   return *this;
 }
 template <typename T, typename Policy>
@@ -724,6 +725,9 @@ DEF_ASSIGN_FUN2_2(floor_assign, floor_assign_r)
 
 DEF_ASSIGN_FUN2_1(ceil_assign, ceil_assign_r)
 DEF_ASSIGN_FUN2_2(ceil_assign, ceil_assign_r)
+
+DEF_ASSIGN_FUN2_1(trunc_assign, trunc_assign_r)
+DEF_ASSIGN_FUN2_2(trunc_assign, trunc_assign_r)
 
 DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
 DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)

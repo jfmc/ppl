@@ -71,8 +71,8 @@ struct Checked_Number_Transparent_Policy {
   //! When nonzero, requests to check for FPU inexact result are honored.
   const_bool_nodef(fpu_check_inexact, false);
 
-  //! Checks for NaN arguments
-  const_bool_nodef(check_nan_args, false);
+  //! Return VC_NAN on NaN result also for native extended.
+  const_bool_nodef(check_nan_result, false);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
@@ -98,7 +98,7 @@ struct Checked_Number_Default_Policy {
   const_bool_nodef(force_integer, false);
   const_bool_nodef(convertible, true);
   const_bool_nodef(fpu_check_inexact, true);
-  const_bool_nodef(check_nan_args, true);
+  const_bool_nodef(check_nan_result, true);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
@@ -126,7 +126,7 @@ struct Extended_Number_Policy {
   // The compile time error on conversions is the expected behavior.
   // const_bool_nodef(convertible, false);
   const_bool_nodef(fpu_check_inexact, true);
-  const_bool_nodef(check_nan_args, true);
+  const_bool_nodef(check_nan_result, true);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
   static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Do not uncomment the following.
@@ -158,7 +158,7 @@ struct WRD_Extended_Number_Policy {
   // The compile time error on conversions is the expected behavior.
   // const_bool_nodef(convertible, false);
   const_bool_nodef(fpu_check_inexact, true);
-  const_bool_nodef(check_nan_args, false);
+  const_bool_nodef(check_nan_result, false);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
   static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Do not uncomment the following.
@@ -533,6 +533,7 @@ Result name(To& to, const From& x, Rounding_Dir dir);
 FUNC1(assign_r)
 FUNC1(floor_assign_r)
 FUNC1(ceil_assign_r)
+FUNC1(trunc_assign_r)
 FUNC1(neg_assign_r)
 FUNC1(abs_assign_r)
 FUNC1(sqrt_assign_r)
@@ -646,6 +647,18 @@ ceil_assign(Checked_Number<T, Policy>& x);
 template <typename T, typename Policy>
 void
 ceil_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
+
+//! Round \p x to the nearest integer not larger in absolute value.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+trunc_assign(Checked_Number<T, Policy>& x);
+
+//! Assigns to \p x the value of \p y rounded to the nearest integer not larger in absolute value.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+trunc_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 //! Assigns to \p x its negation.
 /*! \relates Checked_Number */
