@@ -59,9 +59,9 @@ handle_exception(JNIEnv* env, const std::exception& e);
 void
 handle_exception(JNIEnv* env);
 
-template <typename U>
+template <typename U, typename V>
 U
-jlong_to_unsigned(const jlong& value) {
+jtype_to_unsigned(const V& value) {
 
   U d = 0;
    if (value < 0)

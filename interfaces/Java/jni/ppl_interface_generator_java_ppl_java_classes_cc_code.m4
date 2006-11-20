@@ -3,7 +3,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JLppl_1java_Degenerate_1Element_2
 (JNIEnv* env, jobject j_@LTOPOLOGY@@LCLASS@, jlong j_dim,
  jobject j_degenerate_element) {
-  dimension_type ppl_dim = jlong_to_unsigned<dimension_type>(j_dim);
+  dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(j_dim);
   jclass degenerate_element_class
     = env->FindClass("ppl_java/Degenerate_Element");
   jmethodID degenerate_element_ordinal_id
@@ -541,7 +541,9 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1WIDEN@_1widening_1assign
     this_@LCLASS@->@WIDEN@_widening_assign(*@LCLASS@);
   else {
     jobject j_integer = get_by_reference(env, j_by_ref_int);
-    unsigned int tokens = abs(j_integer_to_j_int(env, j_integer));
+    unsigned int tokens =
+	 jtype_to_unsigned<unsigned int> (j_integer_to_j_int(env,
+					   j_integer));
     this_@LCLASS@->@WIDEN@_widening_assign(*@LCLASS@, &tokens);
     j_integer = j_int_to_j_integer(env, tokens);
     set_by_reference(env, j_by_ref_int, j_integer);
@@ -567,7 +569,9 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_@1LIMITEDBOUNDED@_1@1WIDENEXPN@_1
     this_@LCLASS@->@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(*@LCLASS@, cs);
   else {
     jobject j_integer = get_by_reference(env, j_by_ref_int);
-    unsigned int tokens = abs(j_integer_to_j_int(env, j_integer));
+    unsigned int tokens =
+	 jtype_to_unsigned<unsigned int> (j_integer_to_j_int(env,
+					   j_integer));
     this_@LCLASS@->@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(*@LCLASS@, cs,
 							 &tokens);
     j_integer = j_int_to_j_integer(env, tokens);
@@ -584,7 +588,7 @@ m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_add_1space_1dimensions_1@1EMBEDPROJECT@
 (JNIEnv* env, jobject j_this_@LCLASS@, jlong dim) {
   try {
-dimension_type ppl_dim = jlong_to_unsigned<dimension_type>(dim);
+dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(dim);
  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
  this_@LCLASS@->add_space_dimensions_@EMBEDPROJECT@(ppl_dim);
@@ -614,7 +618,7 @@ m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_remove_1higher_1space_1dimensions
 (JNIEnv* env, jobject j_this_@LCLASS@, jlong dim) {
   try {
-  dimension_type ppl_dim = jlong_to_unsigned<dimension_type>(dim);
+  dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(dim);
   jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
   this_@LCLASS@->remove_higher_space_dimensions(ppl_dim);
@@ -629,7 +633,7 @@ m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_expand_1space_1dimension
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_variable, jlong dim) {
   try {
-  dimension_type ppl_dim = jlong_to_unsigned<dimension_type>(dim);
+  dimension_type ppl_dim = jtype_to_unsigned<dimension_type>(dim);
   jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
   @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
   Variable v = build_ppl_variable(env, j_variable);
