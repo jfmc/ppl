@@ -278,7 +278,7 @@ m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
     public native
 	void @LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(@CLASS@ y,
 						 @UCONSTRAINER@_System cs,
-						 Integer tp);
+						 By_Reference<Integer> tp);
 
 ')
 
