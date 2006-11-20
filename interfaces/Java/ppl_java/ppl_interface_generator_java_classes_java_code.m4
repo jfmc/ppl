@@ -268,7 +268,8 @@ m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-public native void @WIDEN@_widening_assign(@CLASS@ y, Integer tp);
+public native void @WIDEN@_widening_assign(@CLASS@ y,
+                                By_Reference<Integer> tp);
 
 ')
 
