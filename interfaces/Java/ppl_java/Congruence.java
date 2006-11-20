@@ -50,7 +50,7 @@ public class Congruence {
     public Congruence(Linear_Expression e1, Linear_Expression e2,
 		      Coefficient mod) {
 	modulus = new Coefficient(mod);
-	lhs = e1;
-	rhs = e2;
+	lhs = e1.clone();
+	rhs = e2.clone();
     }
 }

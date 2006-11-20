@@ -27,7 +27,7 @@ package ppl_java;
  */
 public class Linear_Expression_Sum
     extends Linear_Expression
-      {
+{
 
     //! The value of the left hand side of \p this.
     protected Linear_Expression lhs;
@@ -35,10 +35,10 @@ public class Linear_Expression_Sum
     //! The value of the right hand side of \p this.
     protected Linear_Expression rhs;
 
-    //! Builds an object that represents the sum of \p x and \p y.
+    //! Builds an object that represents the sum of the copy of \p x and \p y.
     public Linear_Expression_Sum(Linear_Expression x, Linear_Expression y) {
-        lhs = x;
-        rhs = y;
+        lhs = x.clone();
+        rhs = y.clone();
     }
 
     //! Returns the left hand side of \p this.
@@ -49,5 +49,10 @@ public class Linear_Expression_Sum
     //! Returns the right hand side of \p this.
     public Linear_Expression right_hand_side() {
 	return rhs;
+    }
+
+     //! Builds a copy of this.
+    public Linear_Expression_Sum clone() {
+	return new Linear_Expression_Sum(lhs.clone(), rhs.clone());
     }
 }

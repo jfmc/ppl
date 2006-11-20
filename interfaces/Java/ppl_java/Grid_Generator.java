@@ -50,8 +50,8 @@ public class Grid_Generator {
     private Grid_Generator_Type gt;
     private Grid_Generator(Linear_Expression e, Coefficient c,
 			   Grid_Generator_Type generator_type) {
-	le = e;
-	coeff = c;
+	le = e.clone();
+	coeff = new Coefficient(c);
 	gt = generator_type;
     }
 

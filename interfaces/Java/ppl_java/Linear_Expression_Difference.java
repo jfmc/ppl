@@ -34,11 +34,14 @@ public class Linear_Expression_Difference
     //! The value of the right hand side of \p this.
     protected Linear_Expression rhs;
 
-    //! Builds an object that represents the difference of \p x and \p y.
+    /*! \brief
+      Builds an object that represents the difference of the copy \p x and
+      \p y.
+    */
     public Linear_Expression_Difference(Linear_Expression x,
 					Linear_Expression y) {
-        lhs = x;
-        rhs = y;
+        lhs = x.clone();
+        rhs = y.clone();
     }
 
     //! Returns the left hand side of \p this.
@@ -49,5 +52,10 @@ public class Linear_Expression_Difference
     //! Returns the left hand side of \p this.
     public Linear_Expression right_hand_side() {
 	return rhs;
+    }
+
+    //! Builds a copy of this.
+    public Linear_Expression_Difference clone() {
+	return new Linear_Expression_Difference(lhs.clone(), rhs.clone());
     }
 }

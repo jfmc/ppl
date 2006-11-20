@@ -31,13 +31,19 @@ public class Linear_Expression_Coefficient
     //! The coefficient representing the linear expression.
     protected Coefficient coeff;
 
-    //! Builds the object corresponding to the coefficient \c.
+    //! Builds the object corresponding to a copy of the coefficient \c.
     public Linear_Expression_Coefficient(Coefficient c) {
-	coeff = c;
+	coeff = new Coefficient(c);
     }
 
     //! Returns coefficient representing the linear expression.
     public Coefficient argument() {
 	return coeff;
     }
+
+    //! Builds a copy of this.
+    public Linear_Expression_Coefficient clone() {
+	return new Linear_Expression_Coefficient(new Coefficient(coeff));
+    }
 }
+

@@ -52,7 +52,7 @@ public class Generator {
       \p e.
     */
     private Generator(Linear_Expression e, Generator_Type g_type) {
-	le = e;
+	le = e.clone();
         gt = g_type;
     }
 

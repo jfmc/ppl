@@ -46,8 +46,8 @@ public class Constraint {
     */
     public Constraint(Linear_Expression le1, Relation_Symbol rel_sym,
             Linear_Expression le2) {
-	lhs = le1;
-	rhs = le2;
+	lhs = le1.clone();
+	rhs = le2.clone();
 	kind = rel_sym;
     }
 

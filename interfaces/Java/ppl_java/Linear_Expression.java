@@ -29,7 +29,7 @@ package ppl_java;
   Linear_Expression_Difference, Linear_Expression_Unary_Minus.
 */
 
-public class Linear_Expression {
+public abstract class Linear_Expression implements Cloneable {
 
     //! Returns the sum of \p this and \p y.
     public Linear_Expression sum(Linear_Expression y) {
@@ -49,4 +49,6 @@ public class Linear_Expression {
     public Linear_Expression unary_minus() {
 	return new Linear_Expression_Unary_Minus(this);
     }
+    //! Returns a copy of the linear expression.
+    public abstract Linear_Expression clone();
 }

@@ -34,9 +34,10 @@ public class Linear_Expression_Times
     //! The value of the left hand side of \p this.
     protected Linear_Expression rhs;
 
+    //! Builds an object cloning the input arguments.
     public Linear_Expression_Times(Linear_Expression l, Coefficient c) {
-	lhs = new Linear_Expression_Coefficient(c);
-	rhs = l;
+	lhs = new Linear_Expression_Coefficient(new Coefficient(c));
+	rhs = l.clone();
     }
 
     //! Returns the left hand side of \p this.
@@ -47,5 +48,12 @@ public class Linear_Expression_Times
     //! Returns the right hand side of \p this.
     public Linear_Expression right_hand_side() {
 	return rhs;
+    }
+
+    //! Builds a copy of this.
+    public Linear_Expression_Times clone() {
+
+	return new Linear_Expression_Times(rhs.clone(),
+					   new Coefficient(lhs.argument()));
     }
 }

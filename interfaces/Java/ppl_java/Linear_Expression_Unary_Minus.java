@@ -31,14 +31,19 @@ public class Linear_Expression_Unary_Minus
     //! The value that \p this negates.
     protected Linear_Expression arg;
 
-    //! Builds an object that represents the negation of \p x.
+    //! Builds an object that represents the negation of the copy \p x.
     public Linear_Expression_Unary_Minus(Linear_Expression x) {
-	arg = x;
+	arg = x.clone();
     }
 
     //! Returns the value that \p this negates.
     public Linear_Expression argument() {
 	return arg;
     }
+    
+    public Linear_Expression_Unary_Minus clone() {
+     return new Linear_Expression_Unary_Minus(arg.clone());   
+    }
+    
 }
 

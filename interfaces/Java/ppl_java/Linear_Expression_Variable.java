@@ -30,13 +30,19 @@ extends Linear_Expression {
 
     protected Variable arg;
 
-    //! Builds the object associated to \p v.
+    //! Builds the object associated to the copy of \p v.
     public Linear_Expression_Variable(Variable v) {
-	arg = v;
+	arg = new Variable(v.id());
     }
 
     //! Returns the variable representing the linear expression.
     public Variable argument() {
         return arg;
     }
+
+    //! Builds a copy of this.
+    public Linear_Expression_Variable clone() {
+	return new Linear_Expression_Variable(new Variable(arg.id()));
+    }
 }
+
