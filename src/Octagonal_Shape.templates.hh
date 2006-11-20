@@ -1343,6 +1343,17 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
   return Poly_Gen_Relation::subsumes();
 }
 
+#ifndef ALTERNATE_OS_STRONG_CLOSURE_ASSIGN
+#define ALTERNATE_OS_STRONG_CLOSURE_ASSIGN 0
+#endif
+
+#if ALTERNATE_OS_STRONG_CLOSURE_ASSIGN == 1
+#include "Octagonal_Shape_strong_closure1.hh"
+#elif ALTERNATE_OS_STRONG_CLOSURE_ASSIGN == 2
+#include "Octagonal_Shape_strong_closure2.hh"
+#elif ALTERNATE_OS_STRONG_CLOSURE_ASSIGN == 4
+#include "Octagonal_Shape_strong_closure4.hh"
+#else
 template <typename T>
 void
 Octagonal_Shape<T>::strong_closure_assign() const {
@@ -1484,6 +1495,7 @@ Octagonal_Shape<T>::strong_closure_assign() const {
   // The octagon is not empty and it is now strongly closed.
   x.status.set_strongly_closed();
 }
+#endif
 
 template <typename T>
 void
@@ -1535,6 +1547,31 @@ Octagonal_Shape<T>::tight_coherence_would_make_empty() const {
   return false;
 }
 
+#ifndef ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN
+#define ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN 0
+#endif
+
+#if ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN == 1
+#include "Octagonal_Shape_incremental_strong_closure1.hh"
+#elif ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN == 2
+#include "Octagonal_Shape_incremental_strong_closure2.hh"
+#elif ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN == 3
+#include "Octagonal_Shape_incremental_strong_closure3.hh"
+#elif ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN == 4
+#include "Octagonal_Shape_incremental_strong_closure4.hh"
+#elif ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN == 5
+#include "Octagonal_Shape_incremental_strong_closure5.hh"
+#elif ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN == 6
+#include "Octagonal_Shape_incremental_strong_closure6.hh"
+#elif ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN == 7
+#include "Octagonal_Shape_incremental_strong_closure7.hh"
+#elif ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN == 8
+#include "Octagonal_Shape_incremental_strong_closure8.hh"
+#elif ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN == 9
+#include "Octagonal_Shape_incremental_strong_closure9.hh"
+#elif ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN == 10
+#include "Octagonal_Shape_incremental_strong_closure10.hh"
+#else
 template <typename T>
 void
 Octagonal_Shape<T>
@@ -1681,6 +1718,7 @@ Octagonal_Shape<T>
   // The octagon is not empty and it is now strongly closed.
   x.status.set_strongly_closed();
 }
+#endif
 
 template <typename T>
 void
