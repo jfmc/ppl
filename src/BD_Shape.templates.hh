@@ -2350,11 +2350,10 @@ BD_Shape<T>::refine(const Variable var,
   using Implementation::BD_Shapes::div_round_up;
 
   assert(denominator != 0);
-  const dimension_type space_dim = space_dimension();
   const dimension_type expr_space_dim = expr.space_dimension();
-  assert(space_dim >= expr_space_dim);
+  assert(space_dimension() >= expr_space_dim);
   const dimension_type v = var.id() + 1;
-  assert(v <= space_dim);
+  assert(v <= space_dimension());
   assert(expr.coefficient(var) == 0);
   assert(relsym != LESS_THAN && relsym != GREATER_THAN);
 
