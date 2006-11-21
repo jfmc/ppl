@@ -50,9 +50,9 @@ expected_clpq_int8_a expected_clpq2_int8_a expected_pchk_int8_a \
 expected_clpq_int16_a expected_clpq2_int16_a expected_pchk_int16_a \
 expected_clpq_int32_a expected_clpq2_int32_a expected_pchk_int32_a \
 expected_clpq_int64_a expected_clpq2_int64_a expected_pchk_int64_a \
+ppl_predicate_check_common.pl \
 ppl_interface_generator_predicate_check_pl.m4 \
-ppl_interface_generator_predicate_check_code.m4 \
-ppl_interface_generator_predicate_check_extra_code
+ppl_interface_generator_predicate_check_code.m4
 
 BUILT_SOURCES = \
 ppl_predicate_check.pl
@@ -65,8 +65,7 @@ interface_generator_dependencies = \
 ../ppl_interface_generator_prolog_dat.m4 \
 ../ppl_interface_generator_prolog_systems.m4 \
 ppl_interface_generator_predicate_check_pl.m4 \
-ppl_interface_generator_predicate_check_code.m4 \
-ppl_interface_generator_predicate_check_extra_code
+ppl_interface_generator_predicate_check_code.m4
 
 ppl_predicate_check.pl: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I../.. -I$(srcdir) -I$(srcdir)/.. \

@@ -249,7 +249,7 @@ ppl_@CLASS@_swap_2_test :-
   (
    (
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(3, universe, PS),
-    clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(2, empty, PS1),
+    clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(3, empty, PS1),
     ppl_@CLASS@_swap(PS, PS1),
     (predicate_exists(ppl_@CLASS@_is_empty)
     ->
