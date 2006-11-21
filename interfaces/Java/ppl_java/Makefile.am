@@ -45,7 +45,13 @@ interface_generator_dependencies = \
 ppl_interface_generator_java_classes_java.m4 \
 ppl_interface_generator_java_classes_java_code.m4
 
+fixed_java_cxx_headers = \
+ppl_java.Parma_Polyhedra_Library \
+ppl_java.MIP_Problem
+
+
 fixed_java_sources = \
+$(native_java_sources) \
 By_Reference.java \
 Coefficient.java \
 Congruence.java \
@@ -67,7 +73,11 @@ Linear_Expression_Sum.java \
 Linear_Expression_Times.java \
 Linear_Expression_Unary_Minus.java \
 Linear_Expression_Variable.java \
+MIP_Problem.java \
+MIP_Problem_Status.java \
 PPL_Object.java \
+Optimization_Mode.java \
+Parma_Polyhedra_Library.java \
 Partial_Function.java \
 Poly_Con_Relation.java \
 Poly_Gen_Relation.java \
@@ -90,8 +100,8 @@ java_classes.stamp: $(all_java_sources)
 
 java_cxx_headers.stamp: $(all_java_sources)
 	@if test -n "$?"; then \
-		echo '$(JAVAH) -classpath .. $(required_instantiations_java_cxx_headers)' ; \
-		$(JAVAH) -classpath .. $(required_instantiations_java_cxx_headers) ; \
+		echo '$(JAVAH) -classpath ..  $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers)' ; \
+		$(JAVAH) -classpath .. $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers) ; \
 	else :; fi
 	echo timestamp > java_cxx_headers.stamp
 

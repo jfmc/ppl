@@ -42,7 +42,8 @@ lib_LTLIBRARIES = libppl_java.la
 libppl_java_la_SOURCES = \
 ppl_java_common.hh \
 ppl_java_common.cc \
-ppl_java_classes.cc
+ppl_java_classes.cc \
+ppl_java_globals.cc
 
 BUILT_SOURCES = \
 ppl_java_classes.cc

@@ -111,13 +111,34 @@ Parma_Polyhedra_Library::Variables_Set
 build_ppl_variables_set(JNIEnv* env,
 			const jobject& variables_set);
 
+// Converts a Java variables set to a PPL variables set.
+jobject
+build_java_variables_set(JNIEnv* env,
+			 const Variables_Set& variables_set);
+
 // Converts a Java relation symbol to a PPL relation_symbol.
 Parma_Polyhedra_Library::Relation_Symbol
 build_ppl_relsym(JNIEnv* env, const jobject& j_relsym);
 
+// Converts a Java optimization mode to a PPL optimization mode.
+Parma_Polyhedra_Library::Optimization_Mode
+build_ppl_optimization_mode(JNIEnv* env, const jobject& j_opt_mode);
+
+// Converts a PPL optimization mode to a Java optimization mode.
+jobject
+build_java_optimization_mode(JNIEnv* env, const Optimization_Mode& opt_mode);
+
+jobject
+build_java_mip_status(JNIEnv* env, const MIP_Problem_Status& mip_status);
+
 // Converts a Java variable to a PPL variable.
 Parma_Polyhedra_Library::Variable
 build_ppl_variable(JNIEnv* env, const jobject& j_var);
+
+
+// Converts a Java variable to a PPL variable.
+jobject
+build_java_variable(JNIEnv* env, const Variable& var);
 
 // Converts a Java coefficient to a PPL coefficient.
 Parma_Polyhedra_Library::Coefficient

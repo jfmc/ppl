@@ -157,7 +157,7 @@ public class C_Polyhedron extends Polyhedron {
 
     //! Builds the underlined C++ object.
     private native void build_cpp_object(Congruence_System cgs);
-    
-       //! Builds the underlined C++ object.
+
+    //! Builds the underlined C++ object.
     private native void build_cpp_object(C_Polyhedron y);
 }

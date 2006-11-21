@@ -129,14 +129,14 @@ build_ppl_congruence(JNIEnv* env, const jobject& j_congruence) {
 }
 
 // Converts a C++ bool to a Java boolean.
-
 jobject
 bool_to_j_boolean(JNIEnv* env,
 		  const bool bool_value) {
  jclass boolean_java_class = env->FindClass("java/lang/Boolean");
- jmethodID getboolean_method_id = env->GetStaticMethodID(boolean_java_class,
-							 "valueOf",
-							 "(Z)Ljava/lang/Boolean;");
+ jmethodID getboolean_method_id
+   = env->GetStaticMethodID(boolean_java_class,
+			    "valueOf",
+			    "(Z)Ljava/lang/Boolean;");
  return env->CallStaticObjectMethod(boolean_java_class,
  				    getboolean_method_id,
  				    bool_value);
@@ -165,8 +165,10 @@ j_long_class_to_j_long(JNIEnv* env,  const jobject& j_long) {
 jobject
 j_int_to_j_integer(JNIEnv* env,  const jint&  jint_value) {
   jclass integer_java_class = env->FindClass("java/lang/Integer");
- jmethodID get_integer_method_id = env->GetStaticMethodID(integer_java_class,
-							 "valueOf", "(I)Ljava/lang/Integer;");
+  jmethodID get_integer_method_id
+    = env->GetStaticMethodID(integer_java_class,
+			     "valueOf",
+			     "(I)Ljava/lang/Integer;");
  return env->CallStaticObjectMethod(integer_java_class,
  				    get_integer_method_id,
  				    jint_value);
@@ -220,6 +222,23 @@ build_ppl_variables_set(JNIEnv* env,
   return v_set;
 }
 
+jobject
+build_java_variables_set(JNIEnv* env,
+			 const Variables_Set& v_set) {
+  jclass j_vs_class = env->FindClass("ppl_java/Variables_Set");
+  jmethodID j_vs_ctr_id = env->GetMethodID(j_vs_class, "<init>", "()V");
+  jmethodID j_vs_add_id = env->GetMethodID(j_vs_class, "add",
+					   "(Ljava/lang/Object;)Z");
+  jobject j_vs = env->NewObject(j_vs_class, j_vs_ctr_id);
+  for (Variables_Set::const_iterator v_begin = v_set.begin(),
+	 v_end = v_set.end(); v_begin != v_end; ++v_begin) {
+    Variable var(*v_begin);
+    jobject j_variable = build_java_variable(env, var);
+    env->CallBooleanMethod(j_vs, j_vs_add_id, j_variable);
+  }
+  return j_vs;
+}
+
 Variable
 build_ppl_variable(JNIEnv* env, const jobject& j_var) {
   jclass j_variable_class = env->FindClass("ppl_java/Variable");
@@ -228,6 +247,15 @@ build_ppl_variable(JNIEnv* env, const jobject& j_var) {
 					  "I");
   // Retrieve the value.
   return Variable(env->GetIntField(j_var, varid_field_id));
+}
+
+jobject
+build_java_variable(JNIEnv* env, const Variable& var) {
+  jclass variable_class = env->FindClass("ppl_java/Variable");
+  jmethodID j_variable_ctr_id = env->GetMethodID(variable_class, "<init>",
+						 "(I)V");
+  return env->NewObject(variable_class, j_variable_ctr_id,
+ 			var.id());
 }
 
 Relation_Symbol
@@ -260,11 +288,104 @@ build_ppl_relsym(JNIEnv* env, const jobject& j_relsym) {
   default:
     ;
   }
-  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
-  env->ThrowNew(newExcCls, "ppl.java: \n runtime error");
   // We should not be here!
   throw std::runtime_error("PPL Java interface internal error");
 }
+
+
+Optimization_Mode
+build_ppl_optimization_mode(JNIEnv* env, const jobject& j_opt_mode) {
+  jclass opt_mode_class = env->FindClass("ppl_java/Optimization_Mode");
+  jmethodID opt_mode_ordinal_id = env->GetMethodID(opt_mode_class, "ordinal",
+						  "()I");
+  jint opt_mode = env->CallIntMethod(j_opt_mode, opt_mode_ordinal_id);
+  switch (opt_mode) {
+  case 0: {
+    if (opt_mode == 0)
+      return MINIMIZATION;
+  }
+  case 1: {
+    if (opt_mode == 1)
+      return MAXIMIZATION;
+  }
+  default:
+    ;
+  }
+  throw std::runtime_error("PPL Java interface internal error");
+}
+
+jobject
+build_java_optimization_mode(JNIEnv* env, const Optimization_Mode& opt_mode) {
+ jclass j_optimization_mode_class
+   = env->FindClass("ppl_java/Optimization_Mode");
+ jfieldID optimization_mode_min_get_id
+   = env->GetStaticFieldID(j_optimization_mode_class,
+			   "MINIMIZATION",
+			   "Lppl_java/Optimization_Mode;");
+ jfieldID optimization_mode_max_get_id
+   = env->GetStaticFieldID(j_optimization_mode_class,
+			   "MAXIMIZATION",
+ 			   "Lppl_java/Optimization_Mode;");
+ switch (opt_mode) {
+  case MINIMIZATION:
+    {
+  return env->GetStaticObjectField(j_optimization_mode_class,
+				      optimization_mode_min_get_id);
+  break;
+    }
+  case MAXIMIZATION:
+    {
+    return  env->GetStaticObjectField(j_optimization_mode_class,
+				      optimization_mode_max_get_id);
+    break;
+    }
+ default:
+   throw std::runtime_error("PPL Java interface internal error");
+ }
+}
+
+jobject
+build_java_mip_status(JNIEnv* env, const MIP_Problem_Status& mip_status) {
+ jclass j_mip_status_class
+   = env->FindClass("ppl_java/MIP_Problem_Status");
+ jfieldID mip_status_unfeasible_get_id
+   = env->GetStaticFieldID(j_mip_status_class,
+			   "UNFEASIBLE_MIP_PROBLEM",
+			   "Lppl_java/MIP_Problem_Status;");
+ jfieldID mip_status_unbounded_get_id
+   = env->GetStaticFieldID(j_mip_status_class,
+			   "UNBOUNDED_MIP_PROBLEM",
+ 			   "Lppl_java/MIP_Problem_Status;");
+ jfieldID mip_status_optimized_get_id
+   = env->GetStaticFieldID(j_mip_status_class,
+			   "OPTIMIZED_MIP_PROBLEM",
+ 			   "Lppl_java/MIP_Problem_Status;");
+
+switch (mip_status) {
+  case UNFEASIBLE_MIP_PROBLEM:
+    {
+  return env->GetStaticObjectField(j_mip_status_class,
+				   mip_status_unfeasible_get_id);
+  break;
+    }
+  case UNBOUNDED_MIP_PROBLEM:
+    {
+    return  env->GetStaticObjectField(j_mip_status_class,
+				      mip_status_unbounded_get_id);
+    break;
+    }
+ case OPTIMIZED_MIP_PROBLEM:
+    {
+    return  env->GetStaticObjectField(j_mip_status_class,
+				      mip_status_optimized_get_id);
+    break;
+    }
+
+ default:
+   throw std::runtime_error("PPL Java interface internal error");
+ }
+}
+
 
 Coefficient
 build_ppl_coeff(JNIEnv* env, const jobject& j_coeff) {
@@ -783,22 +904,22 @@ build_java_generator(JNIEnv* env, const Generator& g) {
     = env->GetStaticFieldID(j_gen_type_class,
 			    "LINE",
 			    "Lppl_java/Generator_Type;");
-   jfieldID gen_type_ray_get_id
-     = env->GetStaticFieldID(j_gen_type_class,
- 			    "RAY",
- 			    "Lppl_java/Generator_Type;");
-   jfieldID gen_type_point_get_id
-     = env->GetStaticFieldID(j_gen_type_class,
- 			    "POINT",
- 			    "Lppl_java/Generator_Type;");
-   jfieldID gen_type_closure_point_get_id
-     = env->GetStaticFieldID(j_gen_type_class,
-			     "CLOSURE_POINT",
-			     "Lppl_java/Generator_Type;");
-   jobject j_g_type;
-   jobject j_g_le = get_linear_expression(env, g);
-   jobject jcoeff = build_java_coeff(env, Coefficient(1));
-  switch (g.type()) {
+ jfieldID gen_type_ray_get_id
+   = env->GetStaticFieldID(j_gen_type_class,
+			   "RAY",
+			   "Lppl_java/Generator_Type;");
+ jfieldID gen_type_point_get_id
+   = env->GetStaticFieldID(j_gen_type_class,
+			   "POINT",
+			   "Lppl_java/Generator_Type;");
+ jfieldID gen_type_closure_point_get_id
+   = env->GetStaticFieldID(j_gen_type_class,
+			   "CLOSURE_POINT",
+			   "Lppl_java/Generator_Type;");
+ jobject j_g_type;
+ jobject j_g_le = get_linear_expression(env, g);
+ jobject jcoeff = build_java_coeff(env, Coefficient(1));
+ switch (g.type()) {
   case Generator::LINE:
     j_g_type
       = env->GetStaticObjectField(j_gen_type_class, gen_type_line_get_id);
