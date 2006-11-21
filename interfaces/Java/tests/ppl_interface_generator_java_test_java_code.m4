@@ -22,4 +22,11 @@ m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code', `
              "@HAS_PROPERTY@ is false for @LTOPOLOGY@@LCLASS@1.");
 
 ')
+
+m4_define(`ppl_@CLASS@_@DIMENSION@_code', `
+           System.out.print("@DIMENSION@ of @LTOPOLOGY@@LCLASS@1 = ");
+           System.out.println(@LTOPOLOGY@@LCLASS@1.@DIMENSION@());
+
+')
+
 m4_divert`'dnl
