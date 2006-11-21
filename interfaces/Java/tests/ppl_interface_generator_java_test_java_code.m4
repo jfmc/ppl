@@ -10,7 +10,7 @@ m4_define(`m4_run_class_test_code',
 
 m4_define(`m4_new_class_element_code',
 `
- @TOPOLOGY@@CLASS@ @LTOPOLOGY@@LCLASS@1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
+@LTOPOLOGY@@LCLASS@1 = new @TOPOLOGY@@CLASS@(@CONSTRAINER@s1);
 ')
 
 m4_define(`ppl_@CLASS@_@HAS_PROPERTY@_code', `
