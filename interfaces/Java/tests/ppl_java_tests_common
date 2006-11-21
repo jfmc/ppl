@@ -38,13 +38,13 @@
 				       le3);
 
 	// Constraint_System declarations.
-	Constraint_System constraints1 = new Constraint_System();
+	constraints1 = new Constraint_System();
 	constraints1.add(c1);
 	constraints1.add(c2);
-	Congruence_System congruences1 = new Congruence_System();
+	congruences1 = new Congruence_System();
 	congruences1.add(cg1);
 	congruences1.add(cg2);
-	Constraint_System constraints2 = new Constraint_System();
+	constraints2 = new Constraint_System();
 	constraints2.add(c3);
 	constraints2.add(c4);
 
@@ -74,7 +74,7 @@
                 = Grid_Generator.grid_point(le1, new Coefficient(4));
 
 	// Grid_Generator_System declaration.
-	Grid_Generator_System grid_generators1 = new Grid_Generator_System();
+	grid_generators1 = new Grid_Generator_System();
 	grid_generators1.add(gg1);
 	grid_generators1.add(gg2);
 	grid_generators1.add(gg3);

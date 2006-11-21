@@ -24,15 +24,41 @@ JAVAROOT = .
 
 if BUILD_JAVA_INTERFACE
 
+interface_generator_files = \
+ppl_interface_generator_java_test_java.m4 \
+ppl_interface_generator_java_test_java_code.m4
+
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_java_dat.m4 \
+ppl_interface_generator_java_test_java.m4 \
+ppl_interface_generator_java_test_java_code.m4 \
+ppl_java_tests_common
+
 EXTRA_DIST = \
+ppl_java_generated_tests.java \
 C_Polyhedron_test1.java
 
+BUILT_SOURCES =  \
+ppl_java_generated_tests.java
 
 noinst_JAVA = $(EXTRA_DIST)
 CLASSPATH = ..
 JAVACFLAGS = -classpath $(CLASSPATH)
 
+ppl_java_generated_tests.java: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. \
+		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
+		$(srcdir)/ppl_interface_generator_java_test_java.m4 \
+			> $@
 
 check-local:
 	 $(JAVA) -classpath .:../ -Djava.library.path=../jni/.libs C_Polyhedron_test1
+
+CLEANFILES = \
+$(BUILT_SOURCES)
+
 endif BUILD_JAVA_INTERFACE
