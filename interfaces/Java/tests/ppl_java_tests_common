@@ -5,7 +5,13 @@
     Constraint_System constraints2;
     Generator_System generators1;
     Grid_Generator_System grid_generators1;
-
+    Constraint constraint1;
+    Generator generator1;
+    Grid_Generator grid_generator1;
+    Congruence congruence1;
+    Variable var;
+    Linear_Expression le;
+    Coefficient coeff;
     // This ones builds Constraint_System and so on, and is common for
     // all the tests.
     public void initialize() {
@@ -13,22 +19,26 @@
 	Variable A = new Variable(0);
 	Variable B = new Variable(1);
 	Variable C = new Variable(2);
+	var = C;
 
 	// Coefficient declaration.
 	Coefficient coeff0 = new Coefficient("0");
 	Coefficient coeff1 = new Coefficient("5");
-
+	coeff = coeff1;
 	// Linear_Expression declarations.
 	Linear_Expression le1 = new Linear_Expression_Variable(A);
 	Linear_Expression le2 = new Linear_Expression_Variable(C);
 	Linear_Expression le3 = new Linear_Expression_Coefficient(coeff1);
 	Linear_Expression le4 = le1.times(new Coefficient(3));
 	le2 = le2.sum(le4);
+	le = le1;
 
 	// Constraint declarations.
 	Constraint c1 = new Constraint(le2, Relation_Symbol.EQUAL, le3);
+	constraint1 = c1;
 	Constraint c2 = new Constraint(le2, Relation_Symbol.EQUAL, le3);
 	Congruence cg1 = new Congruence(le2, le3, coeff0);
+	congruence1 = cg1;
 	Congruence cg2 = new Congruence(le2, le3, coeff0);
 	Constraint c3 = new Constraint(le2,
 				       Relation_Symbol.GREATER_THAN_OR_EQUAL,
@@ -52,12 +62,13 @@
 
 	// Generator declarations.
 	Generator g1 = Generator.point(le2, new Coefficient(1));
+	generator1 = g1;
 	Generator g2 = Generator.point(le2, new Coefficient(2));
         Generator g3 = Generator.point(le2, new Coefficient(3));
 	Generator g4 = Generator.point(le1, new Coefficient(4));
 
         // Generator_System declaration.
-        Generator_System generators1 = new Generator_System();
+        generators1 = new Generator_System();
         generators1.add(g1);
         generators1.add(g2);
         generators1.add(g3);
@@ -66,6 +77,7 @@
 	// Grid_Generator declarations.
 	Grid_Generator gg1
                 = Grid_Generator.grid_point(le2, new Coefficient(1));
+	grid_generator1 = gg1;
 	Grid_Generator gg2
                 = Grid_Generator.grid_point(le2, new Coefficient(2));
         Grid_Generator gg3

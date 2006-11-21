@@ -60,10 +60,10 @@ m4_define(`ppl_delete_@CLASS@_code',
 m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    public native boolean upper_bound_if_exact(@TOPOLOGY@@CLASS@ y);
+    public native boolean upper_bound_assign_if_exact(@TOPOLOGY@@CLASS@ y);
 
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    public native boolean poly_hull_if_exact(@TOPOLOGY@@CLASS@ y);
+    public native boolean poly_hull_assign_if_exact(@TOPOLOGY@@CLASS@ y);
 
 ')
 
@@ -180,14 +180,14 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void add_@ADD_REPRESENT@s(@UADD_REPRESENT@ c);
+    public native void add_@ADD_REPRESENT@s(@UADD_REPRESENT@_System c);
 
 ')
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native boolean add_@ADD_REPRESENT@s_and_minimize(@UADD_REPRESENT@ c);
+    public native boolean add_@ADD_REPRESENT@s_and_minimize(@UADD_REPRESENT@_System c);
 
 ')
 

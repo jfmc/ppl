@@ -491,7 +491,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_1Grid_generalized_1@1AFFIMAGE@__Lppl_1java
 
 m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
 `dnl
-JNIEXPORT void JNICALL Java_ppl_1java_1Grid_generalized_1@1AFFIMAGE@__Lppl_1java_Variable_2Lppl_1java_Relation_1Symbol_2Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2
+JNIEXPORT void JNICALL Java_ppl_1java_Grid_generalized_1@1AFFIMAGE@__Lppl_1java_Variable_2Lppl_1java_Relation_1Symbol_2Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2
 (JNIEnv* env, jobject j_this_@LCLASS@, jobject j_variable, jobject j_relsym,
  jobject j_le , jobject j_coeff, jobject j_modulus) {
   try {
