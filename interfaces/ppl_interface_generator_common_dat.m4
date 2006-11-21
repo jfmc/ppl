@@ -728,7 +728,7 @@ m4_define(`m4_Grid_binminop_replacement',
          `m4_binminop_replacement, join_assign_and_minimize')
 
 dnl  The different kinds of "upper_bound_if_exact" binary operators.
-m4_define(`m4_ub_exact_replacement', `upper_bound_if_exact')
+m4_define(`m4_ub_exact_replacement', `upper_bound_assign_if_exact')
 m4_define(`m4_Polyhedron_ub_exact_replacement',
          `m4_ub_exact_replacement, poly_hull_assign_if_exact')
 m4_define(`m4_Grid_ub_exact_replacement',
