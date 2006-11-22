@@ -1701,7 +1701,7 @@ public:
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
     indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
+    of zero.
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are

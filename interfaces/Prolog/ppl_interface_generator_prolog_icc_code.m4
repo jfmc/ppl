@@ -992,7 +992,7 @@ m4_define(`ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_code',
 `extern "C" Prolog_foreign_return_type
 ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs
 (Prolog_term_ref t_ph,
- Prolog_term_ref t_r, Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
+ Prolog_term_ref t_lhs, Prolog_term_ref t_r, Prolog_term_ref t_rhs,
  Prolog_term_ref t_m) {
  static const char* where = "ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs/5";
   try {

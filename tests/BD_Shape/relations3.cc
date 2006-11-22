@@ -296,7 +296,7 @@ test14() {
   Variable A(0);
 
   TBD_Shape bd(1);
-  bd.add_constraint(A == 1);  bd.add_constraint(A >= 1);
+  bd.add_constraint(A == 1);
 
   Generator g = point();
   Poly_Gen_Relation rel = bd.relation_with(g);

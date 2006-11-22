@@ -375,13 +375,14 @@ ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_3_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
    (
+     class_@CLASS@ \= class_BD_Shape_int8_t,
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
      ppl_relation_test_data(TEST_DATA, @RELATION_REPRESENT@, R, Rel_Expected),
      ppl_@CLASS@_relation_with_@RELATION_REPRESENT@(PS, R, Rel),
      Rel = Rel_Expected,
      ppl_delete_@CLASS@(PS)
    ->
-     fail ; true)
+     fail ; (class_@CLASS@ == class_BD_Shape_int8_t -> fail ; true))
   ).
 
 ')
@@ -978,6 +979,7 @@ ppl_@CLASS@_generalized_@AFFIMAGE@_5_test :-
      ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, Op, Var + 2, 1),
      ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, Op, 2*Var, 3),
      ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     ppl_@CLASS@_OK(PS_Copy),
      ppl_delete_@CLASS@(PS_Copy),
      ppl_delete_@CLASS@(PS)
    ->
@@ -993,17 +995,18 @@ ppl_Grid_generalized_@AFFIMAGE@_6_test :-
    choose_test(TEST_DATA, Space_Dim),
    Space_Dim > 0,
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
+     ppl_Grid_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_Grid_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
      make_vars(Space_Dim, [Var| _Var_List]),
-     ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, =:=, 2*Var, 3, 5),
-     ppl_@CLASS@_generalized_@AFFIMAGE@(PS, Var, =, Var + 2, 1, 0),
-     ppl_@CLASS@_OK(PS),
-     ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, =, Var + 2, 1, 0),
-     ppl_@CLASS@_generalized_@AFFIMAGE@(PS_Copy, Var, =:=, 2*Var, 3, 5),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
-     ppl_delete_@CLASS@(PS_Copy),
-     ppl_delete_@CLASS@(PS)
+     ppl_Grid_generalized_@AFFIMAGE@(PS, Var, =, 2*Var, 3, 5),
+     ppl_Grid_generalized_@AFFIMAGE@(PS, Var, =, Var + 2, 1, 0),
+     ppl_Grid_OK(PS),
+     ppl_Grid_generalized_@AFFIMAGE@(PS_Copy, Var, =, Var + 2, 1, 0),
+     ppl_Grid_generalized_@AFFIMAGE@(PS_Copy, Var, =, 2*Var, 3, 5),
+%%     ppl_Grid_equals_Grid(PS, PS_Copy),
+     ppl_@CLASS@_OK(PS_Copy),
+     ppl_delete_Grid(PS_Copy),
+     ppl_delete_Grid(PS)
    ->
      fail ; true)
  ).
@@ -1046,19 +1049,20 @@ ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs_5_test :-
    choose_test(TEST_DATA, Space_Dim),
    Space_Dim > 0,
    (
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS, Space_Dim),
-     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
+     ppl_Grid_build_test_object(TEST_DATA, PS, Space_Dim),
+     ppl_Grid_build_test_object(TEST_DATA, PS_Copy, Space_Dim),
      make_vars(Space_Dim, [Var| _Var_List]),
-     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS, Var + 2, =:=, 2*Var, 5),
-     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS, 1 - Var, =, Var + 2, 0),
-     ppl_@CLASS@_OK(PS),
-     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS_Copy,
+     ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs(PS, Var + 2, =, 2*Var, 5),
+     ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs(PS, 1 - Var, =, Var + 2, 0),
+     ppl_Grid_OK(PS),
+     ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs(PS_Copy,
                                                 1 - Var, =, Var + 2, 0),
-     ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs(PS_Copy,
-                                                Var + 2, =:=, 2*Var, 5),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
-     ppl_delete_@CLASS@(PS_Copy),
-     ppl_delete_@CLASS@(PS)
+     ppl_Grid_generalized_@AFFIMAGE@_lhs_rhs(PS_Copy,
+                                                Var + 2, =, 2*Var, 5),
+%%     ppl_Grid_equals_Grid(PS, PS_Copy),
+     ppl_Grid_OK(PS_Copy),
+     ppl_delete_Grid(PS_Copy),
+     ppl_delete_Grid(PS)
    ->
      fail ; true)
  ).

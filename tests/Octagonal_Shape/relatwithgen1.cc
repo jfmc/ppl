@@ -453,7 +453,7 @@ test21() {
   Variable A(0);
 
   TOctagonal_Shape oct(1);
-  oct.add_constraint(A == 1);  oct.add_constraint(A >= 1);
+  oct.add_constraint(A == 1); 
 
   Generator g = point();
   Poly_Gen_Relation rel = oct.relation_with(g);

@@ -99,6 +99,7 @@ dnl -----------------------------------------------------------------
 m4_divert(-1)`'dnl
 m4_include(`ppl_interface_generator_prolog_systems.m4')dnl
 m4_define(`m4_start1', 0)`'dnl
+m4_pushdef(`m4_check_test_usability', keep)dnl
 m4_pushdef(`m4_extension', `dnl
 m4_ifdef(`$1_code',
          `m4_ifelse(m4_check_test_usability($1, $5), keep,
@@ -115,6 +116,7 @@ dnl Main calls to macros to generate code for divert(1)
 dnl -----------------------------------------------------------------
 m4_patsubst(m4_all_code, COMMA, `,')`'dnl
 m4_popdef(`m4_extension')`'dnl
+dnl  m4_popdef(`m4_check_test_usability')dnl
 m4_undivert(1)`'dnl
 m4_divert`'dnl
 dnl
