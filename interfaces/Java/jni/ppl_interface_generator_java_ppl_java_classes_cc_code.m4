@@ -66,7 +66,7 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_@1UB_EXACT@
   @TOPOLOGY@@CPP_CLASS@* this_@LTOPOLOGY@@LCLASS@ = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(ptr);
   ptr = get_ptr(env, j_@LTOPOLOGY@@LCLASS@);
   @TOPOLOGY@@CPP_CLASS@* @LTOPOLOGY@@LCLASS@ = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(ptr);
-  return this_@LTOPOLOGY@@LCLASS@->upper_bound_assign_if_exact(*@LTOPOLOGY@@LCLASS@);
+  return this_@LTOPOLOGY@@LCLASS@->@UB_EXACT@(*@LTOPOLOGY@@LCLASS@);
 }
 
 ')
@@ -240,7 +240,7 @@ JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1MAXMIN@__Lppl_1java_Linear_
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
 `dnl
-JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1MAXMIN@__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Lppl_1java_By_1Reference_2Lppl_1java_@UGENERATOR@_2
+JNIEXPORT jboolean JNICALL Java_ppl_1java_@1CLASS@_@1MAXMIN@__Lppl_1java_Linear_1Expression_2Lppl_1java_Coefficient_2Lppl_1java_Coefficient_2Lppl_1java_By_1Reference_2Lppl_1java_@1UGENERATOR@_2
 (JNIEnv* env, jobject j_this_@LCLASS@ , jobject j_le,
  jobject j_coeff_num, jobject j_coeff_den, jobject j_ref_boolean,
  jobject j_@GENERATOR@) {

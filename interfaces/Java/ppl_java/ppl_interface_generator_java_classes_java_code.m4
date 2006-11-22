@@ -60,10 +60,7 @@ m4_define(`ppl_delete_@CLASS@_code',
 m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
 `dnl
 %<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    public native boolean upper_bound_assign_if_exact(@TOPOLOGY@@CLASS@ y);
-
-%<--%<--%<-- @TOPOLOGY@@CLASS@.java
-    public native boolean poly_hull_assign_if_exact(@TOPOLOGY@@CLASS@ y);
+    public native boolean @UB_EXACT@(@TOPOLOGY@@CLASS@ y);
 
 ')
 
@@ -128,7 +125,7 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 %<--%<--%<-- @CLASS@.java
     public native boolean @MAXMIN@(Linear_Expression expr,
 				   Coefficient sup_n, Coefficient sup_d,
-				   Boolean maximum);
+				   By_Reference<Boolean> maximum);
 
 ')
 
@@ -137,8 +134,8 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code',
 %<--%<--%<-- @CLASS@.java
     public native boolean @MAXMIN@(Linear_Expression expr,
 				   Coefficient sup_n, Coefficient sup_d,
-				   Boolean maximum,
-				   Generator point);
+				   By_Reference<Boolean> maximum,
+				   @UGENERATOR@ point);
 
 ')
 

@@ -11,7 +11,9 @@
     Congruence congruence1;
     Variable var;
     Linear_Expression le;
-    Coefficient coeff;
+    By_Reference<Boolean> bool_by_ref1;
+    Coefficient coeff0;
+    Coefficient coeff1;
     // This ones builds Constraint_System and so on, and is common for
     // all the tests.
     public void initialize() {
@@ -22,9 +24,9 @@
 	var = C;
 
 	// Coefficient declaration.
-	Coefficient coeff0 = new Coefficient("0");
-	Coefficient coeff1 = new Coefficient("5");
-	coeff = coeff1;
+	coeff0 = new Coefficient("0");
+	coeff1 = new Coefficient("5");
+
 	// Linear_Expression declarations.
 	Linear_Expression le1 = new Linear_Expression_Variable(A);
 	Linear_Expression le2 = new Linear_Expression_Variable(C);
@@ -34,9 +36,10 @@
 	le = le1;
 
 	// Constraint declarations.
-	Constraint c1 = new Constraint(le2, Relation_Symbol.EQUAL, le3);
+	Constraint c1 = new Constraint(new Linear_Expression_Coefficient(coeff1) , Relation_Symbol.GREATER_THAN_OR_EQUAL, new Linear_Expression_Coefficient(coeff0));
 	constraint1 = c1;
 	Constraint c2 = new Constraint(le2, Relation_Symbol.EQUAL, le3);
+
 	Congruence cg1 = new Congruence(le2, le3, coeff0);
 	congruence1 = cg1;
 	Congruence cg2 = new Congruence(le2, le3, coeff0);
@@ -91,5 +94,5 @@
 	grid_generators1.add(gg2);
 	grid_generators1.add(gg3);
 	grid_generators1.add(gg4);
-
+        bool_by_ref1 = new By_Reference<Boolean>(true);
 }
