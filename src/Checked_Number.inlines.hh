@@ -55,8 +55,9 @@ check_result(Result r, Rounding_Dir dir) {
 }
 
 
+template <typename T>
 inline void
-Checked_Number_Transparent_Policy::handle_result(Result) {
+Checked_Number_Transparent_Policy<T>::handle_result(Result) {
 }
 
 inline void
@@ -125,7 +126,7 @@ template <typename T, typename Policy> \
 inline \
 Checked_Number<T, Policy>::Checked_Number(const type x, Rounding_Dir dir) { \
   Policy::handle_result							\
-    (check_result(Checked::assign_ext<Policy, Default_From_Policy>	\
+    (check_result(Checked::assign_ext<Policy, Checked_Number_Transparent_Policy<type> >	\
 		  (v, x, rounding_dir(dir)),				\
 		  dir));						\
 }									\
@@ -134,7 +135,7 @@ inline									\
 Checked_Number<T, Policy>::Checked_Number(const type x) {		\
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;			\
   Policy::handle_result							\
-    (check_result(Checked::assign_ext<Policy, Default_From_Policy>	\
+    (check_result(Checked::assign_ext<Policy, Checked_Number_Transparent_Policy<type> >	\
 		  (v, x, rounding_dir(dir)),				\
 		  dir));						\
 }
@@ -654,12 +655,12 @@ f(const Checked_Number<T1, Policy1>& x, \
 template <typename Type, typename From, typename From_Policy>	\
 inline bool \
 f(const Type& x, const Checked_Number<From, From_Policy>& y) { \
-  return Checked::fun<Default_From_Policy, From_Policy>(x, y.raw_value()); \
+  return Checked::fun<Checked_Number_Transparent_Policy<Type>, From_Policy>(x, y.raw_value()); \
 } \
 template <typename From, typename From_Policy, typename Type>	\
 inline bool \
 f(const Checked_Number<From, From_Policy>& x, const Type& y) { \
-  return Checked::fun<From_Policy, Default_From_Policy>(x.raw_value(), y); \
+  return Checked::fun<From_Policy, Checked_Number_Transparent_Policy<Type> >(x.raw_value(), y); \
 }
 
 DEF_COMPARE(operator ==, eq_ext)

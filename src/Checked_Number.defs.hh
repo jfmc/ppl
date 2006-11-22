@@ -31,6 +31,7 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T>
 struct Checked_Number_Transparent_Policy {
   //! Checks for overflowed result.
   const_bool_nodef(check_overflow, false);
@@ -57,10 +58,10 @@ struct Checked_Number_Transparent_Policy {
   const_bool_nodef(check_sqrt_neg, false);
 
   //! Handles not-a-number special value.
-  const_bool_nodef(may_be_nan, false);
+  const_bool_nodef(has_nan, std::numeric_limits<T>::has_quiet_NaN);
 
   //! Handles infinity special values.
-  const_bool_nodef(may_be_infinity, false);
+  const_bool_nodef(has_infinity, std::numeric_limits<T>::has_infinity);
 
   //! Store only integer values.
   const_bool_nodef(force_integer, false);
@@ -93,8 +94,8 @@ struct Checked_Number_Default_Policy {
   const_bool_nodef(check_inf_div_inf, false);
   const_bool_nodef(check_inf_mod, false);
   const_bool_nodef(check_sqrt_neg, false);
-  const_bool_nodef(may_be_nan, false);
-  const_bool_nodef(may_be_infinity, false);
+  const_bool_nodef(has_nan, false);
+  const_bool_nodef(has_infinity, false);
   const_bool_nodef(force_integer, false);
   const_bool_nodef(convertible, true);
   const_bool_nodef(fpu_check_inexact, true);
@@ -119,8 +120,8 @@ struct Extended_Number_Policy {
   const_bool_nodef(check_inf_div_inf, false);
   const_bool_nodef(check_inf_mod, false);
   const_bool_nodef(check_sqrt_neg, false);
-  const_bool_nodef(may_be_nan, true);
-  const_bool_nodef(may_be_infinity, true);
+  const_bool_nodef(has_nan, true);
+  const_bool_nodef(has_infinity, true);
   const_bool_nodef(force_integer, false);
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.
@@ -151,8 +152,8 @@ struct WRD_Extended_Number_Policy {
   const_bool_nodef(check_inf_div_inf, false);
   const_bool_nodef(check_inf_mod, false);
   const_bool_nodef(check_sqrt_neg, false);
-  const_bool_nodef(may_be_nan, true);
-  const_bool_nodef(may_be_infinity, true);
+  const_bool_nodef(has_nan, true);
+  const_bool_nodef(has_infinity, true);
   const_bool_nodef(force_integer, false);
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.
@@ -172,11 +173,10 @@ struct WRD_Extended_Number_Policy {
 };
 
 typedef Checked::Check_Overflow_Policy Default_To_Policy;
-typedef Checked_Number_Transparent_Policy Default_From_Policy;
 
 template <typename T>
 struct Native_Checked_From_Wrapper {
-  typedef Default_From_Policy Policy;
+  typedef Checked_Number_Transparent_Policy<T> Policy;
   static const T& raw_value(const T& v) {
     return v;
   }

@@ -143,10 +143,10 @@ template <typename Policy, typename T>
 inline Result
 classify_float(const T v, bool nan, bool inf, bool sign) {
   Float<T> f(v);
-  if ((nan || sign) && CHECK_P(Policy::may_be_nan, f.u.binary.is_nan()))
+  if ((nan || sign) && CHECK_P(Policy::has_nan, f.u.binary.is_nan()))
     return VC_NAN;
   if (inf) {
-    int i = CHECK_P(Policy::may_be_infinity, f.u.binary.is_inf());
+    int i = CHECK_P(Policy::has_infinity, f.u.binary.is_inf());
     if (i < 0)
       return VC_MINUS_INFINITY;
     if (i > 0)
@@ -166,14 +166,14 @@ template <typename Policy, typename T>
 inline bool
 is_nan_float(const T v) {
   Float<T> f(v);
-  return CHECK_P(Policy::may_be_nan, f.u.binary.is_nan());
+  return CHECK_P(Policy::has_nan, f.u.binary.is_nan());
 }
 
 template <typename Policy, typename T>
 inline int
 is_inf_float(const T v) {
   Float<T> f(v);
-  return CHECK_P(Policy::may_be_infinity, f.u.binary.is_inf());
+  return CHECK_P(Policy::has_infinity, f.u.binary.is_inf());
 }
 template <typename Policy, typename T>
 inline bool
@@ -191,7 +191,7 @@ is_pinf_float(const T v) {
 template <typename Policy, typename T>
 inline bool
 is_int_float(const T v) {
-  return rint(v) == v;
+  return Policy::force_integer || rint(v) == v;
 }
 
 template <typename Policy, typename T>
@@ -579,8 +579,8 @@ rem_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 struct Float_2exp {
-  const_bool_nodef(may_be_nan, false);
-  const_bool_nodef(may_be_infinity, false);
+  const_bool_nodef(has_nan, false);
+  const_bool_nodef(has_infinity, false);
   const_bool_nodef(force_integer, true);
 };
 
@@ -927,7 +927,7 @@ template <typename To_Policy, typename From_Policy, typename To>
 inline Result
 assign_float_minf(To& to, const Minus_Infinity&, Rounding_Dir) {
   to = -HUGE_VAL;
-  if (To_Policy::may_be_infinity)
+  if (To_Policy::has_infinity)
     return V_EQ;
   else
     return VC_MINUS_INFINITY;
@@ -937,7 +937,7 @@ template <typename To_Policy, typename From_Policy, typename To>
 inline Result
 assign_float_pinf(To& to, const Plus_Infinity&, Rounding_Dir) {
   to = HUGE_VAL;
-  if (To_Policy::may_be_infinity)
+  if (To_Policy::has_infinity)
     return V_EQ;
   else
     return VC_PLUS_INFINITY;
@@ -947,7 +947,7 @@ template <typename To_Policy, typename From_Policy, typename To>
 inline Result
 assign_float_nan(To& to, const Not_A_Number&, Rounding_Dir) {
   to = NAN;
-  if (To_Policy::may_be_nan)
+  if (To_Policy::has_nan)
     return V_EQ;
   else
     return VC_NAN;

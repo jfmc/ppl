@@ -45,8 +45,8 @@ struct Check_Overflow_Policy {
   const_bool_nodef(check_inf_div_inf, false);
   const_bool_nodef(check_inf_mod, false);
   const_bool_nodef(check_sqrt_neg, false);
-  const_bool_nodef(may_be_nan, false);
-  const_bool_nodef(may_be_infinity, false);
+  const_bool_nodef(has_nan, false);
+  const_bool_nodef(has_infinity, false);
   const_bool_nodef(force_integer, false);
   const_bool_nodef(convertible, true);
   const_bool_nodef(fpu_check_inexact, true);

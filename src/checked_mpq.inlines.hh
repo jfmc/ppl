@@ -34,14 +34,14 @@ namespace Checked {
 template <typename Policy>
 inline Result
 classify_mpq(const mpq_class& v, bool nan, bool inf, bool sign) {
-  if ((Policy::may_be_nan || Policy::may_be_infinity)
+  if ((Policy::has_nan || Policy::has_infinity)
       && ::sgn(v.get_den()) == 0) {
     int s = ::sgn(v.get_num());
-    if (Policy::may_be_nan && (nan || sign) && s == 0)
+    if (Policy::has_nan && (nan || sign) && s == 0)
       return VC_NAN;
     if (!inf && !sign)
       return VC_NORMAL;
-    if (Policy::may_be_infinity) {
+    if (Policy::has_infinity) {
       if (s < 0)
 	return inf ? VC_MINUS_INFINITY : V_LT;
       if (s > 0)
@@ -58,7 +58,7 @@ SPECIALIZE_CLASSIFY(classify_mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_nan_mpq(const mpq_class& v) {
-  return Policy::may_be_nan
+  return Policy::has_nan
     && ::sgn(v.get_den()) == 0
     && ::sgn(v.get_num()) == 0;
 }
@@ -68,7 +68,7 @@ SPECIALIZE_IS_NAN(is_nan_mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_minf_mpq(const mpq_class& v) {
-  return Policy::may_be_infinity
+  return Policy::has_infinity
     && ::sgn(v.get_den()) == 0
     && ::sgn(v.get_num()) < 0;
 }
@@ -78,7 +78,7 @@ SPECIALIZE_IS_MINF(is_minf_mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_pinf_mpq(const mpq_class& v) {
-  return Policy::may_be_infinity
+  return Policy::has_infinity
     && ::sgn(v.get_den()) == 0
     && ::sgn(v.get_num()) > 0;
 }
@@ -88,9 +88,9 @@ SPECIALIZE_IS_PINF(is_pinf_mpq, mpq_class)
 template <typename Policy>
 inline bool
 is_int_mpq(const mpq_class& v) {
-  if ((Policy::may_be_infinity || Policy::may_be_nan)
+  if ((Policy::has_infinity || Policy::has_nan)
       && ::sgn(v.get_den()) == 0)
-    return !(Policy::may_be_nan && ::sgn(v.get_num()) == 0);
+    return !(Policy::has_nan && ::sgn(v.get_num()) == 0);
   else
     return v.get_den() == 1;
 }
@@ -101,11 +101,11 @@ template <typename Policy>
 inline Result
 set_special_mpq(mpq_class& v, Result r) {
   Result c = classify(r);
-  if (Policy::may_be_nan && c == VC_NAN) {
+  if (Policy::has_nan && c == VC_NAN) {
     v.get_num() = 0;
     v.get_den() = 0;
   }
-  else if (Policy::may_be_infinity) {
+  else if (Policy::has_infinity) {
     switch (c) {
     case VC_MINUS_INFINITY:
       v.get_num() = -1;
