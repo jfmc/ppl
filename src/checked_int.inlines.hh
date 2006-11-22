@@ -941,27 +941,6 @@ neg_unsigned_int(Type& to, const Type from, Rounding_Dir dir) {
   return V_EQ;
 }
 
-template <typename To_Policy, typename From_Policy, typename Type>
-inline Result
-floor_int(Type& to, const Type from, Rounding_Dir) {
-  to = from;
-  return V_EQ;
-}
-
-template <typename To_Policy, typename From_Policy, typename Type>
-inline Result
-ceil_int(Type& to, const Type from, Rounding_Dir) {
-  to = from;
-  return V_EQ;
-}
-
-template <typename To_Policy, typename From_Policy, typename Type>
-inline Result
-trunc_int(Type& to, const Type from, Rounding_Dir) {
-  to = from;
-  return V_EQ;
-}
-
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 add_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
@@ -1350,38 +1329,38 @@ output_int(std::ostream& os, Type& from, const Numeric_Format&, Rounding_Dir) {
   return V_EQ;
 }
 
-SPECIALIZE_FLOOR(floor_int, signed char, signed char)
-SPECIALIZE_FLOOR(floor_int, signed short, signed short)
-SPECIALIZE_FLOOR(floor_int, signed int, signed int)
-SPECIALIZE_FLOOR(floor_int, signed long, signed long)
-SPECIALIZE_FLOOR(floor_int, signed long long, signed long long)
-SPECIALIZE_FLOOR(floor_int, unsigned char, unsigned char)
-SPECIALIZE_FLOOR(floor_int, unsigned short, unsigned short)
-SPECIALIZE_FLOOR(floor_int, unsigned int, unsigned int)
-SPECIALIZE_FLOOR(floor_int, unsigned long, unsigned long)
-SPECIALIZE_FLOOR(floor_int, unsigned long long, unsigned long long)
+SPECIALIZE_FLOOR(assign_signed_int_signed_int, signed char, signed char)
+SPECIALIZE_FLOOR(assign_signed_int_signed_int, signed short, signed short)
+SPECIALIZE_FLOOR(assign_signed_int_signed_int, signed int, signed int)
+SPECIALIZE_FLOOR(assign_signed_int_signed_int, signed long, signed long)
+SPECIALIZE_FLOOR(assign_signed_int_signed_int, signed long long, signed long long)
+SPECIALIZE_FLOOR(assign_unsigned_int_unsigned_int, unsigned char, unsigned char)
+SPECIALIZE_FLOOR(assign_unsigned_int_unsigned_int, unsigned short, unsigned short)
+SPECIALIZE_FLOOR(assign_unsigned_int_unsigned_int, unsigned int, unsigned int)
+SPECIALIZE_FLOOR(assign_unsigned_int_unsigned_int, unsigned long, unsigned long)
+SPECIALIZE_FLOOR(assign_unsigned_int_unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_CEIL(ceil_int, signed char, signed char)
-SPECIALIZE_CEIL(ceil_int, signed short, signed short)
-SPECIALIZE_CEIL(ceil_int, signed int, signed int)
-SPECIALIZE_CEIL(ceil_int, signed long, signed long)
-SPECIALIZE_CEIL(ceil_int, signed long long, signed long long)
-SPECIALIZE_CEIL(ceil_int, unsigned char, unsigned char)
-SPECIALIZE_CEIL(ceil_int, unsigned short, unsigned short)
-SPECIALIZE_CEIL(ceil_int, unsigned int, unsigned int)
-SPECIALIZE_CEIL(ceil_int, unsigned long, unsigned long)
-SPECIALIZE_CEIL(ceil_int, unsigned long long, unsigned long long)
+SPECIALIZE_CEIL(assign_signed_int_signed_int, signed char, signed char)
+SPECIALIZE_CEIL(assign_signed_int_signed_int, signed short, signed short)
+SPECIALIZE_CEIL(assign_signed_int_signed_int, signed int, signed int)
+SPECIALIZE_CEIL(assign_signed_int_signed_int, signed long, signed long)
+SPECIALIZE_CEIL(assign_signed_int_signed_int, signed long long, signed long long)
+SPECIALIZE_CEIL(assign_unsigned_int_unsigned_int, unsigned char, unsigned char)
+SPECIALIZE_CEIL(assign_unsigned_int_unsigned_int, unsigned short, unsigned short)
+SPECIALIZE_CEIL(assign_unsigned_int_unsigned_int, unsigned int, unsigned int)
+SPECIALIZE_CEIL(assign_unsigned_int_unsigned_int, unsigned long, unsigned long)
+SPECIALIZE_CEIL(assign_unsigned_int_unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_TRUNC(trunc_int, signed char, signed char)
-SPECIALIZE_TRUNC(trunc_int, signed short, signed short)
-SPECIALIZE_TRUNC(trunc_int, signed int, signed int)
-SPECIALIZE_TRUNC(trunc_int, signed long, signed long)
-SPECIALIZE_TRUNC(trunc_int, signed long long, signed long long)
-SPECIALIZE_TRUNC(trunc_int, unsigned char, unsigned char)
-SPECIALIZE_TRUNC(trunc_int, unsigned short, unsigned short)
-SPECIALIZE_TRUNC(trunc_int, unsigned int, unsigned int)
-SPECIALIZE_TRUNC(trunc_int, unsigned long, unsigned long)
-SPECIALIZE_TRUNC(trunc_int, unsigned long long, unsigned long long)
+SPECIALIZE_TRUNC(assign_signed_int_signed_int, signed char, signed char)
+SPECIALIZE_TRUNC(assign_signed_int_signed_int, signed short, signed short)
+SPECIALIZE_TRUNC(assign_signed_int_signed_int, signed int, signed int)
+SPECIALIZE_TRUNC(assign_signed_int_signed_int, signed long, signed long)
+SPECIALIZE_TRUNC(assign_signed_int_signed_int, signed long long, signed long long)
+SPECIALIZE_TRUNC(assign_unsigned_int_unsigned_int, unsigned char, unsigned char)
+SPECIALIZE_TRUNC(assign_unsigned_int_unsigned_int, unsigned short, unsigned short)
+SPECIALIZE_TRUNC(assign_unsigned_int_unsigned_int, unsigned int, unsigned int)
+SPECIALIZE_TRUNC(assign_unsigned_int_unsigned_int, unsigned long, unsigned long)
+SPECIALIZE_TRUNC(assign_unsigned_int_unsigned_int, unsigned long long, unsigned long long)
 
 SPECIALIZE_NEG(neg_signed_int, signed char, signed char)
 SPECIALIZE_NEG(neg_signed_int, signed short, signed short)

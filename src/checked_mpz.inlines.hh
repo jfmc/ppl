@@ -181,23 +181,15 @@ SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned short)
 SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned int)
 SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned long)
 
-SPECIALIZE_ASSIGN(assign_same, mpz_class, mpz_class)
-
-template <typename To_Policy, typename From_Policy, typename From>
-inline Result
-assign_mpz_base(mpz_class& to, const From from, Rounding_Dir) {
-    to = static_cast<signed long>(from);
-    return V_EQ;
-}
-
-SPECIALIZE_ASSIGN(assign_mpz_base, mpz_class, signed char)
-SPECIALIZE_ASSIGN(assign_mpz_base, mpz_class, signed short)
-SPECIALIZE_ASSIGN(assign_mpz_base, mpz_class, signed int)
-SPECIALIZE_ASSIGN(assign_mpz_base, mpz_class, signed long)
-SPECIALIZE_ASSIGN(assign_mpz_base, mpz_class, unsigned char)
-SPECIALIZE_ASSIGN(assign_mpz_base, mpz_class, unsigned short)
-SPECIALIZE_ASSIGN(assign_mpz_base, mpz_class, unsigned int)
-SPECIALIZE_ASSIGN(assign_mpz_base, mpz_class, unsigned long)
+SPECIALIZE_ASSIGN(assign_exact, mpz_class, mpz_class)
+SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed char)
+SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed short)
+SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed int)
+SPECIALIZE_ASSIGN(assign_exact, mpz_class, signed long)
+SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned char)
+SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned short)
+SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned int)
+SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned long)
 
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
@@ -316,32 +308,9 @@ SPECIALIZE_ASSIGN(assign_mp_minf, mpq_class, Minus_Infinity)
 SPECIALIZE_ASSIGN(assign_mp_pinf, mpq_class, Plus_Infinity)
 SPECIALIZE_ASSIGN(assign_mp_nan, mpq_class, Not_A_Number)
 
-template <typename To_Policy, typename From_Policy>
-inline Result
-floor_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir) {
-  to = from;
-  return V_EQ;
-}
-
-SPECIALIZE_FLOOR(floor_mpz, mpz_class, mpz_class)
-
-template <typename To_Policy, typename From_Policy>
-inline Result
-ceil_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir) {
-  to = from;
-  return V_EQ;
-}
-
-SPECIALIZE_CEIL(ceil_mpz, mpz_class, mpz_class)
-
-template <typename To_Policy, typename From_Policy>
-inline Result
-trunc_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir) {
-  to = from;
-  return V_EQ;
-}
-
-SPECIALIZE_TRUNC(trunc_mpz, mpz_class, mpz_class)
+SPECIALIZE_FLOOR(assign_exact, mpz_class, mpz_class)
+SPECIALIZE_CEIL(assign_exact, mpz_class, mpz_class)
+SPECIALIZE_TRUNC(assign_exact, mpz_class, mpz_class)
 
 template <typename To_Policy, typename From_Policy>
 inline Result

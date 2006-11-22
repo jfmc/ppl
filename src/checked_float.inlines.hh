@@ -663,13 +663,6 @@ cmp_float(const Type x, const Type y) {
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
-assign_float_int_exact(To& to, const From from, Rounding_Dir) {
-  to = from;
-  return V_EQ;
-}
-
-template <typename To_Policy, typename From_Policy, typename To, typename From>
-inline Result
 assign_float_int_inexact(To& to, const From from, Rounding_Dir dir) {
   prepare_inexact<To_Policy>(dir);
   if (fpu_direct_rounding(dir))
@@ -690,7 +683,7 @@ assign_float_int(To& to, const From from, Rounding_Dir dir) {
   if (sizeof(From) * 8 > Float<To>::Binary::MANTISSA_BITS)
     return assign_float_int_inexact<To_Policy, From_Policy>(to, from, dir);
   else
-    return assign_float_int_exact<To_Policy, From_Policy>(to, from, dir);
+    return assign_exact<To_Policy, From_Policy>(to, from, dir);
 }
 
 template <typename Policy, typename T>
