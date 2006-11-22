@@ -181,6 +181,8 @@ SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned short)
 SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned int)
 SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned long)
 
+SPECIALIZE_ASSIGN(assign_same, mpz_class, mpz_class)
+
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 assign_mpz_base(mpz_class& to, const From from, Rounding_Dir) {

@@ -45,16 +45,14 @@ struct FUNCTION_CLASS(construct) {
 };
 
 template <typename To_Policy, typename From_Policy, typename Type>
-struct FUNCTION_CLASS(assign)<To_Policy, From_Policy, Type, Type> {
-  static inline Result function(Type& to, const Type& from, Rounding_Dir) {
-    // FIXME: it's safe when policies are different?
-    to = from;
-    return V_EQ;
-  }
-};
+inline Result
+assign_same(Type& to, const Type& from, Rounding_Dir) {
+  to = from;
+  return V_EQ;
+}
 
 template <typename To_Policy, typename From_Policy, typename Type>
-inline void
+inline ENABLE_IF(IS_SAME(To_Policy, From_Policy), void)
 copy_generic(Type& to, const Type& from) {
   to = from;
 }

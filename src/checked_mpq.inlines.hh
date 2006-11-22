@@ -159,6 +159,8 @@ construct_mpq_float(mpq_class& to, const From& from, Rounding_Dir dir) {
 SPECIALIZE_CONSTRUCT(construct_mpq_float, mpq_class, float)
 SPECIALIZE_CONSTRUCT(construct_mpq_float, mpq_class, double)
 
+SPECIALIZE_ASSIGN(assign_same, mpq_class, mpq_class)
+
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 assign_mpq_base(mpq_class& to, const From& from, Rounding_Dir) {
