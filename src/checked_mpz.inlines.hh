@@ -69,15 +69,15 @@ set_mp_size(mpz_class &v, mp_size_field_t size) {
 template <typename Policy>
 inline Result
 classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
-  if (Policy::handle_nan || Policy::handle_infinity) {
+  if (Policy::may_be_nan || Policy::may_be_infinity) {
     mp_size_field_t s = get_mp_size(v);
-    if (Policy::handle_nan
+    if (Policy::may_be_nan
 	&& (nan || sign)
 	&& s == Limits<mp_size_field_t>::min + 1)
       return VC_NAN;
     if (!inf && !sign)
       return VC_NORMAL;
-    if (Policy::handle_infinity) {
+    if (Policy::may_be_infinity) {
       if (s == Limits<mp_size_field_t>::min)
 	return inf ? VC_MINUS_INFINITY : V_LT;
       if (s == Limits<mp_size_field_t>::max)
@@ -94,7 +94,7 @@ SPECIALIZE_CLASSIFY(classify_mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_nan_mpz(const mpz_class& v) {
-  return Policy::handle_nan
+  return Policy::may_be_nan
     && get_mp_size(v) == Limits<mp_size_field_t>::min + 1;
 }
 
@@ -103,7 +103,7 @@ SPECIALIZE_IS_NAN(is_nan_mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_minf_mpz(const mpz_class& v) {
-  return Policy::handle_infinity
+  return Policy::may_be_infinity
     && get_mp_size(v) == Limits<mp_size_field_t>::min;
 }
 
@@ -112,7 +112,7 @@ SPECIALIZE_IS_MINF(is_minf_mpz, mpz_class)
 template <typename Policy>
 inline bool
 is_pinf_mpz(const mpz_class& v) {
-  return Policy::handle_infinity
+  return Policy::may_be_infinity
     && get_mp_size(v) == Limits<mp_size_field_t>::max;
 }
 
@@ -130,9 +130,9 @@ template <typename Policy>
 inline Result
 set_special_mpz(mpz_class& v, Result r) {
   Result c = classify(r);
-  if (Policy::handle_nan && c == VC_NAN)
+  if (Policy::may_be_nan && c == VC_NAN)
     set_mp_size(v, Limits<mp_size_field_t>::min + 1);
-  else if (Policy::handle_infinity) {
+  else if (Policy::may_be_infinity) {
     switch (c) {
     case VC_MINUS_INFINITY:
       set_mp_size(v, Limits<mp_size_field_t>::min);
@@ -153,9 +153,9 @@ template <typename To_Policy, typename From_Policy>
 inline void
 copy_mpz(mpz_class& to, const mpz_class& from) {
   if (is_nan_mpz<From_Policy>(from))
-    assert(To_Policy::handle_nan);
+    assert(To_Policy::may_be_nan);
   else if (is_minf_mpz<From_Policy>(from) || is_pinf_mpz<From_Policy>(from))
-    assert(To_Policy::handle_infinity);
+    assert(To_Policy::may_be_infinity);
   else {
     to = from;
     return;
@@ -282,7 +282,7 @@ SPECIALIZE_ASSIGN(assign_mpz_mpq, mpz_class, mpq_class)
 template <typename To_Policy, typename From_Policy, typename To>
 inline Result
 assign_mp_minf(To& to, const Minus_Infinity&, Rounding_Dir) {
-  if (To_Policy::handle_infinity) {
+  if (To_Policy::may_be_infinity) {
     set_special<To_Policy>(to, VC_MINUS_INFINITY);
     return V_EQ;
   }
@@ -292,7 +292,7 @@ assign_mp_minf(To& to, const Minus_Infinity&, Rounding_Dir) {
 template <typename To_Policy, typename From_Policy, typename To>
 inline Result
 assign_mp_pinf(To& to, const Plus_Infinity&, Rounding_Dir) {
-  if (To_Policy::handle_infinity) {
+  if (To_Policy::may_be_infinity) {
     set_special<To_Policy>(to, VC_PLUS_INFINITY);
     return V_EQ;
   }
@@ -302,7 +302,7 @@ assign_mp_pinf(To& to, const Plus_Infinity&, Rounding_Dir) {
 template <typename To_Policy, typename From_Policy, typename To>
 inline Result
 assign_mp_nan(To& to, const Not_A_Number&, Rounding_Dir) {
-  if (To_Policy::handle_nan) {
+  if (To_Policy::may_be_nan) {
     set_special<To_Policy>(to, VC_NAN);
     return V_EQ;
   }

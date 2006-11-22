@@ -57,10 +57,10 @@ struct Checked_Number_Transparent_Policy {
   const_bool_nodef(check_sqrt_neg, false);
 
   //! Handles not-a-number special value.
-  const_bool_nodef(handle_nan, false);
+  const_bool_nodef(may_be_nan, false);
 
   //! Handles infinity special values.
-  const_bool_nodef(handle_infinity, false);
+  const_bool_nodef(may_be_infinity, false);
 
   //! Store only integer values.
   const_bool_nodef(force_integer, false);
@@ -93,8 +93,8 @@ struct Checked_Number_Default_Policy {
   const_bool_nodef(check_inf_div_inf, false);
   const_bool_nodef(check_inf_mod, false);
   const_bool_nodef(check_sqrt_neg, false);
-  const_bool_nodef(handle_nan, false);
-  const_bool_nodef(handle_infinity, false);
+  const_bool_nodef(may_be_nan, false);
+  const_bool_nodef(may_be_infinity, false);
   const_bool_nodef(force_integer, false);
   const_bool_nodef(convertible, true);
   const_bool_nodef(fpu_check_inexact, true);
@@ -119,8 +119,8 @@ struct Extended_Number_Policy {
   const_bool_nodef(check_inf_div_inf, false);
   const_bool_nodef(check_inf_mod, false);
   const_bool_nodef(check_sqrt_neg, false);
-  const_bool_nodef(handle_nan, true);
-  const_bool_nodef(handle_infinity, true);
+  const_bool_nodef(may_be_nan, true);
+  const_bool_nodef(may_be_infinity, true);
   const_bool_nodef(force_integer, false);
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.
@@ -151,8 +151,8 @@ struct WRD_Extended_Number_Policy {
   const_bool_nodef(check_inf_div_inf, false);
   const_bool_nodef(check_inf_mod, false);
   const_bool_nodef(check_sqrt_neg, false);
-  const_bool_nodef(handle_nan, true);
-  const_bool_nodef(handle_infinity, true);
+  const_bool_nodef(may_be_nan, true);
+  const_bool_nodef(may_be_infinity, true);
   const_bool_nodef(force_integer, false);
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.

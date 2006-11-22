@@ -46,7 +46,7 @@ template <typename Policy, typename Type>
 inline bool
 ext_to_handle(const Type& x) {
   return !handle_ext_natively(x)
-    && (Policy::handle_infinity || Policy::handle_nan);
+    && (Policy::may_be_infinity || Policy::may_be_nan);
 }
 
 template <typename Policy, typename Type>

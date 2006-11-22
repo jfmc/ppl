@@ -30,18 +30,18 @@ namespace {
 using namespace Checked;
 
 struct Test_Extended_Number_Policy {
-  static const int check_overflow = 1;
-  static const int check_inf_add_inf = 0;
-  static const int check_inf_sub_inf = 0;
-  static const int check_inf_mul_zero = 0;
-  static const int check_div_zero = 0;
-  static const int check_inf_div_inf = 0;
-  static const int check_inf_mod = 0;
-  static const int check_sqrt_neg = 0;
-  static const int handle_nan = 1;
-  static const int handle_infinity = 1;
-  static const int fpu_check_inexact = 0;
-  static const int check_nan_args = 1;
+  const_bool_nodef(check_overflow, true);
+  const_bool_nodef(check_inf_add_inf, false);
+  const_bool_nodef(check_inf_sub_inf, false);
+  const_bool_nodef(check_inf_mul_zero, false);
+  const_bool_nodef(check_div_zero, false);
+  const_bool_nodef(check_inf_div_inf, false);
+  const_bool_nodef(check_inf_mod, false);
+  const_bool_nodef(check_sqrt_neg, false);
+  const_bool_nodef(may_be_nan, true);
+  const_bool_nodef(may_be_infinity, true);
+  const_bool_nodef(fpu_check_inexact, false);
+  const_bool_nodef(check_nan_result, true);
   static const Rounding_Dir ROUND_DEFAULT = ROUND_UP;
   static void handle_result(Result r);
 };

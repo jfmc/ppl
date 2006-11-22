@@ -80,15 +80,15 @@ struct Extended_Int {
 				      ? Limits<Type>::max - 1
 				      : Limits<Type>::min);
   static const Type not_a_number = (Limits<Type>::min >= 0
-				    ? Limits<Type>::max - Policy::handle_infinity * 2
-				    : Limits<Type>::min + Policy::handle_infinity);
+				    ? Limits<Type>::max - Policy::may_be_infinity * 2
+				    : Limits<Type>::min + Policy::may_be_infinity);
   static const Type min = (Limits<Type>::min
 			   + (Limits<Type>::min >= 0 ? 0
-			      : (Policy::handle_infinity + Policy::handle_nan)));
+			      : (Policy::may_be_infinity + Policy::may_be_nan)));
   static const Type max = (Limits<Type>::max
 			   - (Limits<Type>::min >= 0
-			      ? (2 * Policy::handle_infinity + Policy::handle_nan)
-			      : Policy::handle_infinity));
+			      ? (2 * Policy::may_be_infinity + Policy::may_be_nan)
+			      : Policy::may_be_infinity));
 };
 
 template <typename Policy, typename To>
@@ -99,7 +99,7 @@ set_neg_overflow_int(To& to, Rounding_Dir dir) {
     return V_LT;
   }
   else {
-    if (Policy::handle_infinity) {
+    if (Policy::may_be_infinity) {
       to = Extended_Int<Policy, To>::minus_infinity;
       return V_GT;
     }
@@ -115,7 +115,7 @@ set_pos_overflow_int(To& to, Rounding_Dir dir) {
     return V_GT;
   }
   else {
-    if (Policy::handle_infinity) {
+    if (Policy::may_be_infinity) {
       to = Extended_Int<Policy, To>::plus_infinity;
       return V_LT;
     }
@@ -148,7 +148,7 @@ inline Result
 round_lt_int(To& to, Rounding_Dir dir) {
   if (round_down(dir)) {
     if (to == Extended_Int<Policy, To>::min) {
-      if (Policy::handle_infinity) {
+      if (Policy::may_be_infinity) {
 	to = Extended_Int<Policy, To>::minus_infinity;
 	return V_GT;
       }
@@ -167,7 +167,7 @@ inline Result
 round_gt_int(To& to, Rounding_Dir dir) {
   if (round_up(dir)) {
     if (to == Extended_Int<Policy, To>::max) {
-      if (Policy::handle_infinity) {
+      if (Policy::may_be_infinity) {
 	to = Extended_Int<Policy, To>::plus_infinity;
 	return V_LT;
       }
@@ -195,13 +195,13 @@ SPECIALIZE_COPY(copy_generic, unsigned long long)
 template <typename Policy, typename Type>
 inline Result
 classify_int(const Type v, bool nan, bool inf, bool sign) {
-  if (Policy::handle_nan
+  if (Policy::may_be_nan
       && (nan || sign)
       && v == Extended_Int<Policy, Type>::not_a_number)
     return VC_NAN;
   if (!inf & !sign)
     return VC_NORMAL;
-  if (Policy::handle_infinity) {
+  if (Policy::may_be_infinity) {
     if (v == Extended_Int<Policy, Type>::minus_infinity)
       return inf ? VC_MINUS_INFINITY : V_LT;
     if (v == Extended_Int<Policy, Type>::plus_infinity)
@@ -231,7 +231,7 @@ SPECIALIZE_CLASSIFY(classify_int, unsigned long long)
 template <typename Policy, typename Type>
 inline bool
 is_nan_int(const Type v) {
-  return Policy::handle_nan && v == Extended_Int<Policy, Type>::not_a_number;
+  return Policy::may_be_nan && v == Extended_Int<Policy, Type>::not_a_number;
 }
 
 SPECIALIZE_IS_NAN(is_nan_int, signed char)
@@ -248,7 +248,7 @@ SPECIALIZE_IS_NAN(is_nan_int, unsigned long long)
 template <typename Policy, typename Type>
 inline bool
 is_minf_int(const Type v) {
-  return Policy::handle_infinity
+  return Policy::may_be_infinity
     && v == Extended_Int<Policy, Type>::minus_infinity;
 }
 
@@ -266,7 +266,7 @@ SPECIALIZE_IS_MINF(is_minf_int, unsigned long long)
 template <typename Policy, typename Type>
 inline bool
 is_pinf_int(const Type v) {
-  return Policy::handle_infinity
+  return Policy::may_be_infinity
     && v == Extended_Int<Policy, Type>::plus_infinity;
 }
 
@@ -302,9 +302,9 @@ template <typename Policy, typename Type>
 inline Result
 set_special_int(Type& v, Result r) {
   Result t = classify(r);
-  if (Policy::handle_nan && t == VC_NAN)
+  if (Policy::may_be_nan && t == VC_NAN)
     v = Extended_Int<Policy, Type>::not_a_number;
-  else if (Policy::handle_infinity) {
+  else if (Policy::may_be_infinity) {
     switch (t) {
     case VC_MINUS_INFINITY:
       v = Extended_Int<Policy, Type>::minus_infinity;
@@ -656,7 +656,7 @@ SPECIALIZE_ASSIGN(assign_int_mpq, unsigned long long, mpq_class)
 template <typename To_Policy, typename From_Policy, typename To>
 inline Result
 assign_int_minf(To& to, const Minus_Infinity&, Rounding_Dir dir) {
-  if (To_Policy::handle_infinity) {
+  if (To_Policy::may_be_infinity) {
     to = Extended_Int<To_Policy, To>::minus_infinity;
     return V_EQ;
   }
@@ -670,7 +670,7 @@ assign_int_minf(To& to, const Minus_Infinity&, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename To>
 inline Result
 assign_int_pinf(To& to, const Plus_Infinity&, Rounding_Dir dir) {
-  if (To_Policy::handle_infinity) {
+  if (To_Policy::may_be_infinity) {
     to = Extended_Int<To_Policy, To>::plus_infinity;
     return V_EQ;
   }
@@ -684,7 +684,7 @@ assign_int_pinf(To& to, const Plus_Infinity&, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename To>
 inline Result
 assign_int_nan(To& to, const Not_A_Number&, Rounding_Dir) {
-  if (To_Policy::handle_nan) {
+  if (To_Policy::may_be_nan) {
     to = Extended_Int<To_Policy, To>::not_a_number;
     return V_EQ;
   }
