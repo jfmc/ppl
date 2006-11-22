@@ -117,6 +117,9 @@ public class MIP_Problem extends PPL_Object {
     //! Returns the optimization mode.
     public native Optimization_Mode optimization_mode();
 
+    //! Returns the constraints .
+    public native Constraint_System constraints();
+
     //! Resets \p this to be equal to the trivial MIP problem.
     /*!
       The space dimension is reset to \f$0\f$.

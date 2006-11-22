@@ -16,8 +16,10 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JL
   switch (j_degenerate_element_int) {
   case 0:
     c_ptr = new @TOPOLOGY@@CPP_CLASS@(ppl_dim, UNIVERSE);
-  case 1:
+    break;
+ case 1:
     c_ptr = new @TOPOLOGY@@CPP_CLASS@(ppl_dim, EMPTY);
+    break;
   default:
     throw std::runtime_error("PPL Java interface internal error");
   }

@@ -134,6 +134,29 @@ JNIEXPORT jobject JNICALL Java_ppl_1java_MIP_1Problem_optimization_1mode
   return null;
 }
 
+JNIEXPORT jobject JNICALL Java_ppl_1java_MIP_1Problem_constraints
+(JNIEnv* env , jobject j_this_mip_problem) {
+  try {
+    jclass j_cs_class = env->FindClass("ppl_java/Constraint_System");
+    jmethodID j_cs_ctr_id = env->GetMethodID(j_cs_class, "<init>", "()V");
+    jmethodID j_cs_add_id = env->GetMethodID(j_cs_class, "add",
+					     "(Ljava/lang/Object;)Z");
+    jobject j_cs = env->NewObject(j_cs_class, j_cs_ctr_id);
+    jlong ptr = get_ptr(env, j_this_mip_problem);
+    MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+    for (MIP_Problem::const_iterator cs_it = mip->constraints_begin(),
+	   cs_end = mip->constraints_end(); cs_it != cs_end; ++cs_it) {
+      jobject j_constraint = build_java_constraint(env, *cs_it);
+      env->CallBooleanMethod(j_cs, j_cs_add_id, j_constraint);
+    }
+    return j_cs;
+  }
+  CATCH_ALL;
+  jobject null = 0;
+  return null;
+}
+
+
 JNIEXPORT void JNICALL Java_ppl_1java_MIP_1Problem_clear
 (JNIEnv* env , jobject j_this_mip_problem) {
   try {
