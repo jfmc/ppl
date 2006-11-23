@@ -301,7 +301,7 @@ ppl_@CLASS@_begin_iterator(Prolog_term_ref t_pps,
 
     @CPP_CLASS@::iterator* i = new @CPP_CLASS@::iterator(pps->begin());
     Prolog_term_ref t_i = Prolog_new_term_ref();
-    Prolog_put_address(t_i, &i);
+    Prolog_put_address(t_i, i);
 
     if (Prolog_unify(t_it, t_i)) {
       REGISTER(i);
@@ -326,7 +326,7 @@ ppl_@CLASS@_end_iterator(Prolog_term_ref t_pps,
 
     @CPP_CLASS@::iterator* i = new @CPP_CLASS@::iterator(pps->end());
     Prolog_term_ref t_i = Prolog_new_term_ref();
-    Prolog_put_address(t_i, &i);
+    Prolog_put_address(t_i, i);
 
     if (Prolog_unify(t_it, t_i)) {
       REGISTER(i);
@@ -398,9 +398,9 @@ ppl_@CLASS@_get_disjunct(Prolog_term_ref t_it,
          = term_to_handle<@CPP_CLASS@::iterator >(t_it, where);
     CHECK(it);
 
-    const @ALT_CPP_DISJUNCT@& disj = (*it)->element();
+    const @ALT_CPP_DISJUNCT@* disj = &((*it)->element());
     Prolog_term_ref t_d = Prolog_new_term_ref();
-    Prolog_put_address(t_d, const_cast<@ALT_CPP_DISJUNCT@*>(&disj));
+    Prolog_put_address(t_d, const_cast<@ALT_CPP_DISJUNCT@*>(disj));
 
     if (Prolog_unify(t_disj, t_d))
       return PROLOG_SUCCESS;
