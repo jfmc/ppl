@@ -85,8 +85,6 @@ Relation_Symbol.java \
 Variable.java \
 Variables_Set.java
 
-ppl_java_CLASSES = $(fixed_java_sources:.java=.class)
-
 all_java_sources = \
 $(fixed_java_sources) \
 $(required_instantiations_java_sources)
