@@ -701,6 +701,18 @@ Coefficient_to_integer_term(const PPL::Coefficient& n) {
   return t;
 }
 
+bool
+unify_long(Prolog_term_ref t, long l) {
+  Prolog_term_ref t_l = Prolog_new_term_ref();
+  return Prolog_put_long(t_l, l) && Prolog_unify(t, t_l);
+}
+
+bool
+unify_ulong(Prolog_term_ref t, unsigned long l) {
+  Prolog_term_ref t_l = Prolog_new_term_ref();
+  return Prolog_put_ulong(t_l, l) && Prolog_unify(t, t_l);
+}
+
 Linear_Expression
 build_linear_expression(Prolog_term_ref t, const char* where) {
   if (Prolog_is_integer(t))
@@ -1013,23 +1025,22 @@ get_homogeneous_expression(const R& r) {
   return so_far;
 }
 
-template <typename R>
 Prolog_term_ref
-get_linear_expression(const R& r) {
-  if (r.inhomogeneous_term() == 0)
-    return get_homogeneous_expression(r);
-  else
-    if (r.space_dimension() == 0)
-      return Coefficient_to_integer_term(r.inhomogeneous_term());
+get_linear_expression(const Linear_Expression& le) {
+  Prolog_term_ref t_homo = get_homogeneous_expression(le);
+  if (le.inhomogeneous_term() == 0)
+    return t_homo;
+  else {
+    Prolog_term_ref t_in
+      = Coefficient_to_integer_term(le.inhomogeneous_term());
+    if (unify_long(t_homo, 0))
+      return t_in;
     else {
-      Prolog_term_ref t;
-      Prolog_construct_compound
-	(t,
-	 a_plus,
-	 get_homogeneous_expression(r),
-	 Coefficient_to_integer_term(r.inhomogeneous_term()));
-      return t;
+      Prolog_term_ref t_le = Prolog_new_term_ref();
+      Prolog_construct_compound(t_le, a_plus, t_homo, t_in);
+      return t_le;
     }
+  }
 }
 
 Prolog_term_ref
@@ -1197,18 +1208,6 @@ term_to_optimization_mode(Prolog_term_ref t, const char* where) {
 }
 
 bool Prolog_interface_initialized = false;
-
-bool
-unify_long(Prolog_term_ref t, long l) {
-  Prolog_term_ref t_l = Prolog_new_term_ref();
-  return Prolog_put_long(t_l, l) && Prolog_unify(t, t_l);
-}
-
-bool
-unify_ulong(Prolog_term_ref t, unsigned long l) {
-  Prolog_term_ref t_l = Prolog_new_term_ref();
-  return Prolog_put_ulong(t_l, l) && Prolog_unify(t, t_l);
-}
 
 void
 check_nil_terminating(Prolog_term_ref t, const char* where) {
