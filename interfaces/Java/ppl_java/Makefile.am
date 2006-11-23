@@ -85,6 +85,8 @@ Relation_Symbol.java \
 Variable.java \
 Variables_Set.java
 
+ppl_java_CLASSES = $(fixed_java_sources:.java=.class)
+
 all_java_sources = \
 $(fixed_java_sources) \
 $(required_instantiations_java_sources)
@@ -97,7 +99,7 @@ java_classes.stamp: $(all_java_sources)
 	else :; fi
 	echo timestamp > java_classes.stamp
 
-java_cxx_headers.stamp: $(all_java_sources)
+java_cxx_headers.stamp: java_classes.stamp
 	@if test -n "$?"; then \
 		echo '$(JAVAH) -classpath ..  $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers)' ; \
 		$(JAVAH) -classpath .. $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers) ; \
@@ -109,7 +111,7 @@ java_cxx_headers.stamp: $(all_java_sources)
 # be built, independently from all configuration options.
 BUILT_SOURCES = C_Polyhedron.java
 
-C_Polyhedron.java: $(interface_generator_dependencies) Makefile
+source_generation: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_classes_java.m4 \
@@ -117,6 +119,8 @@ C_Polyhedron.java: $(interface_generator_dependencies) Makefile
 	$(top_srcdir)/utils/cm_cleaner.sh < java_blob
 	$(top_srcdir)/utils/cm_splitter.sh < java_blob
 	rm -f java_blob
+
+$(required_instantiations_java_sources): source_generation
 
 EXTRA_DIST = \
 $(interface_generator_files) \
