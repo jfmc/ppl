@@ -2210,8 +2210,8 @@ mip_get :-
   make_vars(3, [A, B, C]),
 
   ppl_new_MIP_Problem(3, [], A + 3, min, MIP0),
-%%  ppl_MIP_Problem_objective_function(MIP0, Obj0),
-%%  compare_lin_expressions(Obj0, A + 3),
+  ppl_MIP_Problem_objective_function(MIP0, Obj0),
+  compare_lin_expressions(Obj0, A + 3),
 
   ppl_new_MIP_Problem(3, [], 3, min, MIP1),
   ppl_MIP_Problem_objective_function(MIP1, Obj1),
