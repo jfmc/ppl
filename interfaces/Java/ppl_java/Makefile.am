@@ -109,7 +109,7 @@ java_cxx_headers.stamp: java_classes.stamp
 # be built, independently from all configuration options.
 BUILT_SOURCES = C_Polyhedron.java
 
-source_generation: $(interface_generator_dependencies) Makefile
+source_generation.stamp: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I../.. \
 		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
 		$(srcdir)/ppl_interface_generator_java_classes_java.m4 \
@@ -117,8 +117,9 @@ source_generation: $(interface_generator_dependencies) Makefile
 	$(top_srcdir)/utils/cm_cleaner.sh < java_blob
 	$(top_srcdir)/utils/cm_splitter.sh < java_blob
 	rm -f java_blob
+	echo timestamp > source_generation.stamp
 
-$(required_instantiations_java_sources): source_generation
+$(required_instantiations_java_sources): source_generation.stamp
 
 EXTRA_DIST = \
 $(interface_generator_files) \
@@ -132,6 +133,6 @@ CLEANFILES = \
 $(required_instantiations_java_sources) \
 $(required_instantiations_java_cxx_headers) \
 java_classes.stamp \
-java_cxx_headers.stamp
-
+java_cxx_headers.stamp \
+source_generation.stamp
 endif BUILD_JAVA_INTERFACE
