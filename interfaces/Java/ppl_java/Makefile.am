@@ -51,7 +51,6 @@ ppl_java.MIP_Problem
 
 
 fixed_java_sources = \
-$(native_java_sources) \
 By_Reference.java \
 Coefficient.java \
 Congruence.java \
