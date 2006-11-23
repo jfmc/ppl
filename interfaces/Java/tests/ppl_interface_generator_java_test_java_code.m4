@@ -37,12 +37,22 @@ m4_define(`ppl_@CLASS@_@DIMENSION@_code', `
 ')
 
 m4_define(`ppl_@CLASS@_@BINOP@_code',`
+try{
  @LTOPOLOGY@@LCLASS@1.@BINOP@(@LTOPOLOGY@@LCLASS@1);
+}
+catch (java.lang.RuntimeException e) {
+System.out.println(" @LTOPOLOGY@@LCLASS@1.@BINOP@(@LTOPOLOGY@@LCLASS@1):exception catched");
+}
 
 ')
 
 m4_define(`ppl_@CLASS@_@BINMINOP@_code',`
+try{
  @LTOPOLOGY@@LCLASS@1.@BINMINOP@(@LTOPOLOGY@@LCLASS@1);
+}
+catch (java.lang.RuntimeException e) {
+System.out.println("@LTOPOLOGY@@LCLASS@1.@BINMINOP@(@LTOPOLOGY@@LCLASS@1):exception catched");
+}
 
 ')
 
@@ -67,27 +77,53 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code', `
 ')
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code', `
+try {
 @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@_and_minimize(@ADD_REPRESENT@1);
+}
+catch (java.lang.RuntimeException e) {
+System.out.println("@LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@_and_minimize(@ADD_REPRESENT@1):exception catched");
+}
 
 ')
 
  m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code', `
+
+try {
  @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@s(@ADD_REPRESENT@s1);
+}
+catch (java.lang.RuntimeException e) {
+System.out.println(" @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@s(@ADD_REPRESENT@s1):exception catched");
+}
 
  ')
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code', `
+try {
  @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@s_and_minimize(@ADD_REPRESENT@s1);
-
+}
+catch (java.lang.RuntimeException e) {
+System.out.println("@LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@s_and_minimize(@ADD_REPRESENT@s1):exception catched");
+}
  ')
 
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code', `
+try{
  @LTOPOLOGY@@LCLASS@1.@AFFIMAGE@(var, le, coeff1);
+}
+catch (java.lang.RuntimeException e) {
+System.out.println("@LTOPOLOGY@@LCLASS@1.@AFFIMAGE@(var, le, coeff1):exception catched");
+}
+
 
 ')
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code', `
+try {
  @LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@(le, Relation_Symbol.EQUAL , le);
+}
+catch (java.lang.RuntimeException e) {
+System.out.println("@LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@:exception catched");
+}
 
 ')
 
@@ -114,7 +150,12 @@ m4_define(`ppl_@CLASS@_OK_code', `
 
 
 m4_define(`ppl_@CLASS@_bounded_@AFFIMAGE@_code', `
+try{
 @LTOPOLOGY@@LCLASS@1.bounded_@AFFIMAGE@(var, le, le, coeff1);
+}
+catch (java.lang.RuntimeException e) {
+System.out.println("@LTOPOLOGY@@LCLASS@1.bounded_@AFFIMAGE@:exception catched");
+}
 
 ')
 
