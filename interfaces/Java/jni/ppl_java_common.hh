@@ -340,35 +340,40 @@ public:
   }
 
   bool has_empty_codomain() const {
+    return false;
     jclass j_partial_function_class
-      = env->FindClass("ppl_java/Partial_Function");
-    jmethodID j_has_empty_codomain_id
-      = env->GetMethodID(j_partial_function_class,
-			 "has_empty_codomain",
-			 "()Z");
-    return env->CallBooleanMethod(j_p_func, j_has_empty_codomain_id);
+       = env->FindClass("ppl_java/Partial_Function");
+     jmethodID j_has_empty_codomain_id
+       = env->GetMethodID(j_partial_function_class,
+ 			 "has_empty_codomain",
+ 			 "()Z");
+     return env->CallBooleanMethod(j_p_func, j_has_empty_codomain_id);
   }
 
   dimension_type max_in_codomain() const {
-    jclass j_partial_function_class
-      = env->FindClass("ppl_java/Partial_Function");
-    jmethodID j_max_in_codomain_id
-      = env->GetMethodID(j_partial_function_class,
-			 "max_in_codomain",
-			 "()J");
-    return env->CallLongMethod(j_p_func, j_max_in_codomain_id);
+     jclass j_partial_function_class
+       = env->FindClass("ppl_java/Partial_Function");
+     jmethodID j_max_in_codomain_id
+       = env->GetMethodID(j_partial_function_class,
+ 			 "max_in_codomain",
+ 			 "()J");
+     jlong value = env->CallLongMethod(j_p_func, j_max_in_codomain_id);
+     return jtype_to_unsigned<dimension_type> (value);
   }
 
   bool maps(dimension_type i, dimension_type& j) const {
     jclass j_partial_function_class
-      = env->FindClass("ppl_java/Partial_Function");
+       = env->FindClass("ppl_java/Partial_Function");
     jclass j_by_reference_class
       = env->FindClass("ppl_java/By_Reference");
-    jmethodID j_by_reference_ctr_id = env->GetMethodID(j_by_reference_class,
-						       "<init>",
-						       "()V");
+    jmethodID j_by_reference_ctr_id
+      = env->GetMethodID(j_by_reference_class,
+			 "<init>",
+			 "(Ljava/lang/Object;)V");
+    jobject coeff =  j_long_to_j_long_class(env, 0);
     jobject new_by_ref = env->NewObject(j_by_reference_class,
-					j_by_reference_ctr_id);
+  					j_by_reference_ctr_id,
+  					coeff);
     jmethodID j_maps_id
       = env->GetMethodID(j_partial_function_class,
 			 "maps",
@@ -377,9 +382,8 @@ public:
 			      j_long_to_j_long_class(env, i),
 			      new_by_ref)) {
       jobject long_value = get_by_reference(env, new_by_ref);
-      // FIXME: We must launch a proper exception if the coming value from Java
-      // is negative.
-      j = abs(j_long_class_to_j_long(env, long_value));
+      j = jtype_to_unsigned<dimension_type>(j_long_class_to_j_long(env,
+								   long_value));
       return true;
     }
     return false;
