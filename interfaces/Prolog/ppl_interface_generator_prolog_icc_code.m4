@@ -290,36 +290,6 @@ ppl_@CLASS@_get_minimized_@GET_REPRESENT@s(Prolog_term_ref t_ph,
 
 ')
 
-m4_define(`ppl_@CLASS@_get_disjuncts_code',
-`extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_get_disjuncts(Prolog_term_ref t_pps,
-			  Prolog_term_ref t_dlist) {
-  static const char* where = "ppl_@CLASS@_get_disjuncts/2";
-  try {
-    const @CPP_CLASS@* pps = term_to_handle<@CPP_CLASS@ >(t_pps, where);
-    CHECK(pps);
-
-    Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
-    for (@CPP_CLASS@::const_iterator i = pps->begin(),
-           pps_end = pps->end(); i != pps_end; ++i) {
-      Prolog_term_ref t_d = Prolog_new_term_ref();
-      Prolog_put_address(t_d,
-                         const_cast<@CPP_DISJUNCT@*>(
-                           static_cast<const @CPP_DISJUNCT@*>(
-                              &(i->element()))));
-      Prolog_construct_cons(tail, t_d, tail);
-    }
-
-
-    if (Prolog_unify(t_dlist, tail))
-      return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-}
-
-')
-
 m4_define(`ppl_@CLASS@_begin_iterator_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_begin_iterator(Prolog_term_ref t_pps,
@@ -422,15 +392,15 @@ m4_define(`ppl_@CLASS@_get_disjunct_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_get_disjunct(Prolog_term_ref t_it,
 			 Prolog_term_ref t_disj) {
-  static const char* where = "ppl_@CLASS@_get_disjuncts/2";
+  static const char* where = "ppl_@CLASS@_get_disjunct/2";
   try {
     const @CPP_CLASS@::iterator* it
          = term_to_handle<@CPP_CLASS@::iterator >(t_it, where);
     CHECK(it);
 
-    const @ALT_CPP_DISJUNCT@* disj = (*it)->element();
+    const @ALT_CPP_DISJUNCT@& disj = (*it)->element();
     Prolog_term_ref t_d = Prolog_new_term_ref();
-    Prolog_put_address(t_d, const_cast<@ALT_CPP_DISJUNCT@*>(disj));
+    Prolog_put_address(t_d, const_cast<@ALT_CPP_DISJUNCT@*>(&disj));
 
     if (Prolog_unify(t_disj, t_d))
       return PROLOG_SUCCESS;
