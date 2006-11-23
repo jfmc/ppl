@@ -2208,6 +2208,15 @@ mip_swap :-
 
 mip_get :-
   make_vars(3, [A, B, C]),
+
+  ppl_new_MIP_Problem(3, [], A + 3, min, MIP0),
+%%  ppl_MIP_Problem_objective_function(MIP0, Obj0),
+%%  compare_lin_expressions(Obj0, A + 3),
+
+  ppl_new_MIP_Problem(3, [], 3, min, MIP1),
+  ppl_MIP_Problem_objective_function(MIP1, Obj1),
+  compare_lin_expressions(Obj1, 3),
+
   clean_ppl_new_MIP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], C, max, MIP),
   ppl_MIP_Problem_constraints(MIP, CS),
   clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
@@ -2221,6 +2230,8 @@ mip_get :-
   !,
   ppl_delete_Polyhedron(PH),
   ppl_delete_Polyhedron(Expect_PH),
+  ppl_delete_MIP_Problem(MIP0),
+  ppl_delete_MIP_Problem(MIP1),
   ppl_delete_MIP_Problem(MIP).
 
 mip_clear :-
@@ -2543,17 +2554,17 @@ exception_prolog(4, _) :-
   clean_ppl_new_Polyhedron_from_space_dimension(c, 3, universe, P),
   clean_ppl_new_Polyhedron_from_space_dimension(c, 3, universe, Q),
   must_catch(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(
-             Q, P, -1, _X)),
+             Q, P, -1, _)),
   must_catch(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(
-             Q, P, [], -1, _X)),
+             Q, P, [], -1, _)),
   must_catch(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(
-             Q, P, [], -1, _X)),
+             Q, P, [], -1, _)),
   must_catch(ppl_Polyhedron_H79_widening_assign_with_tokens(
-             Q, P, -1, _X)),
+             Q, P, -1, _)),
   must_catch(ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(
-             Q, P, [], -1, _X)),
+             Q, P, [], -1, _)),
   must_catch(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(
-             Q, P, [], -1, _X)),
+             Q, P, [], -1, _)),
   !,
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
