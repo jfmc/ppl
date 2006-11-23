@@ -184,7 +184,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_2_test :-
     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@,
                         @ALT_BUILD_REPRESENT@s, RS1a),
     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@ALT_BUILD_REPRESENT@s(RS1a, PS1a),
-    ppl_@CLASS@_equals_@CLASS@(PS1, PS1a),
+%%    ppl_@CLASS@_equals_@CLASS@(PS1, PS1a),
     ppl_delete_@CLASS@(PS1),
     ppl_delete_@CLASS@(PS1a)
     ->
@@ -362,6 +362,34 @@ ppl_@CLASS@_get_disjuncts_2_test :-
      ;
        true
      ),
+     ppl_delete_@CLASS@(PPS)
+   ->
+     fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_get_disjunct_code',
+`
+ppl_@CLASS@_get_disjunct_2_test :-
+  (
+   TEST_DATA = test06,
+   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
+   (
+     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
+     ppl_@CLASS@_begin_iterator(PPS, It),
+     ppl_@CLASS@_get_disjunct(It, PS),
+     ppl_@CLASS@_OK(PPS),
+     ppl_@DISJUNCT@_space_dimension(PS, 1),
+     (predicate_exists(ppl_new_@ALT_DISJUNCT@_from_@CONSTRAINER@s)
+     ->
+       (clean_ppl_new_@ALT_DISJUNCT@_from_@CONSTRAINER@s(RS, PS1),
+        ppl_@DISJUNCT@_equals_@DISJUNCT@(PS, PS1),
+        ppl_delete_@DISJUNCT@(PS1))
+     ;
+       true
+     ),
+     ppl_@CLASS@_delete_iterator(It),
      ppl_delete_@CLASS@(PPS)
    ->
      fail ; true)
@@ -626,6 +654,91 @@ ppl_@CLASS@_@COMPARISON@_@CLASS@_2_test :-
 
 ')
 
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
+`
+:- discontiguous(ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1/3).
+
+ppl_@CLASS@_add_@ADD_REPRESENT@_2_test :-
+  (
+   choose_test(TEST_DATA, Space_Dim),
+   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
+   ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
+   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS),
+   ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
+   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS1),
+   (ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, RS)
+   ->
+     fail ; true)
+  ).
+
+ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, []) :-
+  (
+   (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+      ->
+     ppl_@CLASS@_equals_@CLASS@(PS, PS1)
+   ;
+     true
+   ),
+   ppl_delete_@CLASS@(PS),
+   ppl_delete_@CLASS@(PS1)
+  ).
+ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, [R | RS]) :-
+  (
+     ppl_@CLASS@_add_@ADD_REPRESENT@(PS1, R),
+     ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, RS)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
+`
+:- discontiguous(ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1/3).
+
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test :-
+  (
+   choose_test(TEST_DATA, Space_Dim),
+   (
+     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
+     ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
+     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+                                                          U_or_E, PS),
+     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
+     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
+                                                        U_or_E, PS1),
+     (predicate_exists(ppl_@CLASS@_is_empty)
+     ->
+       (\+ ppl_@CLASS@_is_empty(PS)
+       ->
+         ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
+       ;
+         true
+       )
+     ;
+       true
+     ),
+     ppl_delete_@CLASS@(PS),
+     ppl_delete_@CLASS@(PS1)
+   ->
+     fail ; true)
+  ).
+
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, []) :-
+  (
+   (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+   ->
+     ppl_@CLASS@_equals_@CLASS@(PS, PS1)
+   ;
+     true
+   )
+  ).
+ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, [R | RS]) :-
+  (
+   ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize(PS1, R),
+   ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
+  ).
+
+')
+
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `
 ppl_@CLASS@_add_@ADD_REPRESENT@s_2_test :-
@@ -641,7 +754,12 @@ ppl_@CLASS@_add_@ADD_REPRESENT@s_2_test :-
      ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS1),
      ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS1),
      ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS1),
+     (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+     ->
+       ppl_@CLASS@_equals_@CLASS@(PS, PS1)
+     ;
+       true
+     ),
      ppl_delete_@CLASS@(PS),
      ppl_delete_@CLASS@(PS1)
    ->
@@ -666,63 +784,47 @@ ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_2_test :-
      ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
      ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS1),
      ppl_@CLASS@_add_@ADD_REPRESENT@s(PS_min, RS),
-     (ppl_@CLASS@_is_empty(PS)
+     (predicate_exists(ppl_@CLASS@_is_empty)
      ->
-       \+ ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS_min, RS1),
-       ppl_@CLASS@_add_@ADD_REPRESENT@s(PS_min, RS1)
+       (ppl_@CLASS@_is_empty(PS)
+       ->
+         \+ ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS_min, RS1),
+         ppl_@CLASS@_add_@ADD_REPRESENT@s(PS_min, RS1)
+       ;
+         ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS_min, RS1)
+       )
      ;
-       ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS_min, RS1)
+       true
      ),
      ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS1),
      ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1, RS),
      ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1_min, RS1),
-     (ppl_@CLASS@_is_empty(PS1)
+     (predicate_exists(ppl_@CLASS@_is_empty)
      ->
-       \+ ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS1_min, RS),
-       ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1_min, RS)
+       (ppl_@CLASS@_is_empty(PS1)
+       ->
+         \+ ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS1_min, RS),
+         ppl_@CLASS@_add_@ADD_REPRESENT@s(PS1_min, RS)
+       ;
+         ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS1_min, RS)
+       )
      ;
-       ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize(PS1_min, RS)
+       true
      ),
-     ppl_@CLASS@_equals_@CLASS@(PS_min, PS1_min),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS1_min),
-     ppl_@CLASS@_equals_@CLASS@(PS1, PS1_min),
+     (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+     ->
+       ppl_@CLASS@_equals_@CLASS@(PS_min, PS1_min),
+       ppl_@CLASS@_equals_@CLASS@(PS, PS1_min),
+       ppl_@CLASS@_equals_@CLASS@(PS1, PS1_min)
+     ;
+       true
+     ),
      ppl_delete_@CLASS@(PS),
      ppl_delete_@CLASS@(PS_min),
      ppl_delete_@CLASS@(PS1),
      ppl_delete_@CLASS@(PS1_min)
    ->
      fail ; true)
-  ).
-
-')
-
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
-`
-:- discontiguous(ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1/3).
-
-ppl_@CLASS@_add_@ADD_REPRESENT@_2_test :-
-  (
-   choose_test(TEST_DATA, Space_Dim),
-   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
-   ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
-   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS),
-   ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
-   ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim, U_or_E, PS1),
-   (ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, RS)
-   ->
-     fail ; true)
-  ).
-
-ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, []) :-
-  (
-   ppl_@CLASS@_equals_@CLASS@(PS, PS1),
-   ppl_delete_@CLASS@(PS),
-   ppl_delete_@CLASS@(PS1)
-  ).
-ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, [R | RS]) :-
-  (
-     ppl_@CLASS@_add_@ADD_REPRESENT@(PS1, R),
-     ppl_@CLASS@_add_@ADD_REPRESENT@_2_test1(PS, PS1, RS)
   ).
 
 ')
@@ -745,45 +847,6 @@ ppl_@CLASS@_add_disjunct_2_test :-
 
 ')
 
-m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
-`
-:- discontiguous(ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1/3).
-
-ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test :-
-  (
-   choose_test(TEST_DATA, Space_Dim),
-   (
-     ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @ADD_REPRESENT@s, RS),
-     ppl_initial_test_system(@ADD_REPRESENT@, U_or_E),
-     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
-                                                          U_or_E, PS),
-     ppl_@CLASS@_add_@ADD_REPRESENT@s(PS, RS),
-     clean_ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Space_Dim,
-                                                        U_or_E, PS1),
-     (\+ ppl_@CLASS@_is_empty(PS)
-     ->
-       ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
-     ;
-       true
-     ),
-     ppl_delete_@CLASS@(PS),
-     ppl_delete_@CLASS@(PS1)
-   ->
-     fail ; true)
-  ).
-
-ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, []) :-
-  (
-   ppl_@CLASS@_equals_@CLASS@(PS, PS1)
-  ).
-ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, [R | RS]) :-
-  (
-   ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize(PS1, R),
-   ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_2_test1(PS, PS1, RS)
-  ).
-
-')
-
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `
 ppl_@CLASS@_@BINOP@_2_test :-
@@ -795,43 +858,48 @@ ppl_@CLASS@_@BINOP@_2_test :-
      ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a, Space_Dim),
      ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
      ppl_@CLASS@_@BINOP@(PS1_Copy, PS2),
-     ppl_@CLASS@_equals_@CLASS@(PS2, PS2a),
-     (@BINOP@ == intersection_assign
+     (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
      ->
-       ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy),
-       ppl_@CLASS@_contains_@CLASS@(PS2, PS1_Copy)
-     ;
-       (@BINOP@ == difference_assign ; @BINOP@ == poly_difference_assign
+       ppl_@CLASS@_equals_@CLASS@(PS2, PS2a),
+       (@BINOP@ == intersection_assign
        ->
-         ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy)
+         ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy),
+         ppl_@CLASS@_contains_@CLASS@(PS2, PS1_Copy)
        ;
-         (@BINOP@ == time_elapse_assign
+         (@BINOP@ == difference_assign ; @BINOP@ == poly_difference_assign
          ->
-           (\+ ppl_@CLASS@_is_empty(PS2)
-           ->
-             ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1)
-           ;
-             ppl_@CLASS@_is_empty(PS1_Copy)
-           )
+           ppl_@CLASS@_contains_@CLASS@(PS1, PS1_Copy)
          ;
-           (@BINOP@ == concatenate_assign
+          (@BINOP@ == time_elapse_assign
            ->
-             ppl_@CLASS@_space_dimension(PS1, Dim1),
-             ppl_@CLASS@_space_dimension(PS2, Dim2),
-             Dim_Conc is Dim1 + Dim2,
-             ppl_@CLASS@_space_dimension(PS1_Copy, Dim_Conc)
+             (\+ ppl_@CLASS@_is_empty(PS2)
+             ->
+               ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1)
+             ;
+               ppl_@CLASS@_is_empty(PS1_Copy)
+             )
            ;
-             member(@BINOP@,
+             (@BINOP@ == concatenate_assign
+              ->
+               ppl_@CLASS@_space_dimension(PS1, Dim1),
+               ppl_@CLASS@_space_dimension(PS2, Dim2),
+               Dim_Conc is Dim1 + Dim2,
+               ppl_@CLASS@_space_dimension(PS1_Copy, Dim_Conc)
+             ;
+               member(@BINOP@,
                            [upper_bound_assign,
                             poly_hull_assign,
                             join_assign,
                             bds_hull_assign,
                             oct_hull_assign]),
-             ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
-             ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS2)
+               ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
+               ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS2)
+             )
            )
          )
        )
+     ;
+       true
      ),
      ppl_@CLASS@_OK(PS1),
      ppl_@CLASS@_OK(PS1_Copy),
@@ -903,8 +971,7 @@ ppl_@CLASS@_@BINMINOP@_2_test :-
 ')
 
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code',
-`
-ppl_@CLASS@_@AFFIMAGE@_4_test :-
+`ppl_@CLASS@_@AFFIMAGE@_4_test :-
   (
    choose_test(TEST_DATA, Space_Dim),
    Space_Dim > 0,
@@ -1245,11 +1312,16 @@ ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_2_test :-
         clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(
                             [Var0 = Var0, Var1 = 0], PS1)
       ),
-      ppl_@CLASS@_equals_@CLASS@(PS, PS1),
-      ppl_@CLASS@_OK(PS1),
-      ppl_@CLASS@_OK(PS),
-      ppl_delete_@CLASS@(PS1),
-      ppl_delete_@CLASS@(PS)
+      (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+      ->
+        ppl_@CLASS@_equals_@CLASS@(PS, PS1),
+        ppl_@CLASS@_OK(PS1),
+        ppl_@CLASS@_OK(PS),
+        ppl_delete_@CLASS@(PS1),
+        ppl_delete_@CLASS@(PS)
+      ;
+        true
+      )
    ->
     fail ; true)
   ).
@@ -1270,7 +1342,12 @@ ppl_@CLASS@_remove_higher_space_dimensions_2_test :-
      Dim1 is Dim + 1,
      ppl_@CLASS@_remove_higher_space_dimensions(PS, Dim),
      ppl_@CLASS@_space_dimension(PS, Dim),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+     ->
+       ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy)
+     ;
+       true
+     ),
      ppl_@CLASS@_remove_higher_space_dimensions(PS, 0),
      ppl_@CLASS@_space_dimension(PS, 0),
      ppl_@CLASS@_OK(PS),
@@ -1297,7 +1374,12 @@ ppl_@CLASS@_remove_space_dimensions_2_test :-
      make_vars(Dim1, Var_List),
      append(_, [Var], Var_List),
      ppl_@CLASS@_remove_space_dimensions(PS, [Var]),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+     ->
+       ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy)
+     ;
+       true
+     ),
      ppl_@CLASS@_OK(PS),
      ppl_delete_@CLASS@(PS),
      ppl_delete_@CLASS@(PS_Copy)
@@ -1385,7 +1467,12 @@ ppl_@CLASS@_map_space_dimensions_2_test :-
      ppl_@CLASS@_map_space_dimensions(PS, Var_Map_List1),
      ppl_@CLASS@_map_space_dimensions(PS, Var_Map_List1),
      ppl_@CLASS@_space_dimension(PS, Dim1),
-     ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy),
+     (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+     ->
+       ppl_@CLASS@_equals_@CLASS@(PS, PS_Copy)
+     ;
+       true
+     ),
      ppl_@CLASS@_OK(PS),
      ppl_delete_@CLASS@(PS),
      ppl_delete_@CLASS@(PSa),
