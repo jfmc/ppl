@@ -63,9 +63,6 @@ struct Checked_Number_Transparent_Policy {
   //! Handles infinity special values.
   const_bool_nodef(has_infinity, std::numeric_limits<T>::has_infinity);
 
-  //! Store only integer values.
-  const_bool_nodef(force_integer, false);
-
   //! Representation is identical to primitive.
   const_bool_nodef(convertible, true);
 
@@ -96,7 +93,6 @@ struct Checked_Number_Default_Policy {
   const_bool_nodef(check_sqrt_neg, false);
   const_bool_nodef(has_nan, false);
   const_bool_nodef(has_infinity, false);
-  const_bool_nodef(force_integer, false);
   const_bool_nodef(convertible, true);
   const_bool_nodef(fpu_check_inexact, true);
   const_bool_nodef(check_nan_result, true);
@@ -122,7 +118,6 @@ struct Extended_Number_Policy {
   const_bool_nodef(check_sqrt_neg, false);
   const_bool_nodef(has_nan, true);
   const_bool_nodef(has_infinity, true);
-  const_bool_nodef(force_integer, false);
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.
   // const_bool_nodef(convertible, false);
@@ -154,7 +149,6 @@ struct WRD_Extended_Number_Policy {
   const_bool_nodef(check_sqrt_neg, false);
   const_bool_nodef(has_nan, true);
   const_bool_nodef(has_infinity, true);
-  const_bool_nodef(force_integer, false);
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.
   // const_bool_nodef(convertible, false);

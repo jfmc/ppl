@@ -84,8 +84,6 @@ PPL_SPECIALIZE_LIMITS_INT(unsigned long long)
 template <typename Policy>						\
 struct numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
   : public numeric_limits<T> {						\
-public:									\
-  static const bool is_integer = Policy::force_integer;			\
 };
 
 #if PPL_SUPPORTED_FLOAT

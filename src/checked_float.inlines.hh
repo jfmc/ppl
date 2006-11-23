@@ -41,13 +41,6 @@ fma(float x, float y, float z) {
 #endif
 }
 
-#if HAVE_DECL_RINTF
-inline float
-rint(float x) {
-  return ::rintf(x);
-}
-#endif
-
 inline double
 fma(double x, double y, double z) {
 #if HAVE_DECL_FMA && !defined(__alpha)
@@ -57,11 +50,6 @@ fma(double x, double y, double z) {
 #endif
 }
 
-inline double
-rint(double x) {
-  return ::rint(x);
-}
-
 inline long double
 fma(long double x, long double y, long double z) {
 #if HAVE_DECL_FMAL && !defined(__alpha)
@@ -69,6 +57,18 @@ fma(long double x, long double y, long double z) {
 #else
   return x*y + z;
 #endif
+}
+
+#if HAVE_DECL_RINTF
+inline float
+rint(float x) {
+  return ::rintf(x);
+}
+#endif
+
+inline double
+rint(double x) {
+  return ::rint(x);
 }
 
 #if HAVE_DECL_RINTL
@@ -191,7 +191,7 @@ is_pinf_float(const T v) {
 template <typename Policy, typename T>
 inline bool
 is_int_float(const T v) {
-  return Policy::force_integer || rint(v) == v;
+  return rint(v) == v;
 }
 
 template <typename Policy, typename T>
@@ -272,25 +272,6 @@ round_gt_float(To& to, Rounding_Dir dir) {
 }
 
 
-template <typename Policy, typename To>
-inline Result
-force_integer(To& to, Rounding_Dir dir, Result r) {
-  To& tmp = to;
-  if (fpu_direct_rounding(dir))
-    to = -limit_precision(rint(-to));
-  else if (fpu_inverse_rounding(dir))
-    to = rint(to);
-  else
-    assert(false);
-  if (r == V_LT)
-    return tmp == to ? r : V_LE;
-  else if (r == V_GT)
-    return tmp == to ? r : V_GE;
-  else
-    return r;
-}
-
-
 template <typename Policy>
 inline void
 prepare_inexact(Rounding_Dir dir) {
@@ -327,15 +308,11 @@ result_relation(Rounding_Dir dir) {
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
-assign_float_float_exact(To& to, const From from, Rounding_Dir dir) {
+assign_float_float_exact(To& to, const From from, Rounding_Dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
   to = from;
-  Result r = V_EQ;
-  if (To_Policy::force_integer && !From_Policy::force_integer)
-    return force_integer<To_Policy>(to, dir, r);
-  else
-    return r;
+  return V_EQ;
 }
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
@@ -355,11 +332,7 @@ assign_float_float_inexact(To& to, const From from, Rounding_Dir dir) {
     avoid_cse(to);
     fpu_restore_rounding_direction(old);
   }
-  Result r = result_relation<To_Policy>(dir);
-  if (To_Policy::force_integer && !From_Policy::force_integer)
-    return force_integer<To_Policy>(to, dir, r);
-  else
-    return r;
+  return result_relation<To_Policy>(dir);
 }
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
@@ -422,15 +395,11 @@ trunc_float(Type& to, const Type from, Rounding_Dir dir) {
 
 template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
-neg_float(Type& to, const Type from, Rounding_Dir dir) {
+neg_float(Type& to, const Type from, Rounding_Dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
   to = -from;
-  Result r = V_EQ;
-  if (To_Policy::force_integer && !From_Policy::force_integer)
-    return force_integer<To_Policy>(to, dir, r);
-  else
-    return r;
+  return V_EQ;
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -455,13 +424,7 @@ add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   }
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
     return VC_NAN;
-  Result r = result_relation<To_Policy>(dir);
-  if (To_Policy::force_integer
-      && (!From1_Policy::force_integer
-	  || !From2_Policy::force_integer))
-    return force_integer<To_Policy>(to, dir, r);
-  else
-    return r;
+  return result_relation<To_Policy>(dir);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -486,13 +449,7 @@ sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   }
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
     return VC_NAN;
-  Result r = result_relation<To_Policy>(dir);
-  if (To_Policy::force_integer
-      && (!From1_Policy::force_integer
-	  || !From2_Policy::force_integer))
-    return force_integer<To_Policy>(to, dir, r);
-  else
-    return r;
+  return result_relation<To_Policy>(dir);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -518,13 +475,7 @@ mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   }
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
     return VC_NAN;
-  Result r = result_relation<To_Policy>(dir);
-  if (To_Policy::force_integer
-      && (!From1_Policy::force_integer
-	  || !From2_Policy::force_integer))
-    return force_integer<To_Policy>(to, dir, r);
-  else
-    return r;
+  return result_relation<To_Policy>(dir);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -551,11 +502,7 @@ div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   }
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
     return VC_NAN;
-  Result r = result_relation<To_Policy>(dir);
-  if (To_Policy::force_integer)
-    return force_integer<To_Policy>(to, dir, r);
-  else
-    return r;
+  return result_relation<To_Policy>(dir);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -569,19 +516,12 @@ rem_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   to = std::fmod(x, y);
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
     return VC_NAN;
-  Result r = V_EQ;
-  if (To_Policy::force_integer
-      && (!From1_Policy::force_integer
-	  || !From2_Policy::force_integer))
-    return force_integer<To_Policy>(to, dir, r);
-  else
-    return r;
+  return V_EQ;
 }
 
 struct Float_2exp {
   const_bool_nodef(has_nan, false);
   const_bool_nodef(has_infinity, false);
-  const_bool_nodef(force_integer, true);
 };
 
 template <typename To_Policy, typename From_Policy, typename Type>
@@ -608,15 +548,11 @@ div2exp_float(Type& to, const Type x, int exp, Rounding_Dir dir) {
 
 template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
-abs_float(Type& to, const Type from, Rounding_Dir dir) {
+abs_float(Type& to, const Type from, Rounding_Dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
-  to = from < 0 ? -from : from;
-  Result r = V_EQ;
-  if (To_Policy::force_integer && !From_Policy::force_integer)
-    return force_integer<To_Policy>(to, dir, r);
-  else
-    return r;
+  to = ::abs(from);
+  return V_EQ;
 }
 
 template <typename To_Policy, typename From_Policy, typename Type>
@@ -636,11 +572,7 @@ sqrt_float(Type& to, const Type from, Rounding_Dir dir) {
     avoid_cse(to);
     fpu_restore_rounding_direction(old);
   }
-  Result r = result_relation<To_Policy>(dir);
-  if (To_Policy::force_integer)
-    return force_integer<To_Policy>(to, dir, r);
-  else
-    return r;
+  return result_relation<To_Policy>(dir);
 }
 
 template <typename Policy, typename Type>
@@ -827,7 +759,6 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
   to = f.value();
   if (inexact)
     goto inexact;
-  // FIXME: force_integer
   return V_EQ;
 }
 
@@ -855,13 +786,7 @@ add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   }
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
     return VC_NAN;
-  Result r = result_relation<To_Policy>(dir);
-  if (To_Policy::force_integer
-      && (!From1_Policy::force_integer
-	  || !From2_Policy::force_integer))
-    return force_integer<To_Policy>(to, dir, r);
-  else
-    return r;
+  return result_relation<To_Policy>(dir);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
@@ -887,13 +812,7 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   }
   if (To_Policy::check_nan_result && is_nan<To_Policy>(to))
     return VC_NAN;
-  Result r = result_relation<To_Policy>(dir);
-  if (To_Policy::force_integer
-      && (!From1_Policy::force_integer
-	  || !From2_Policy::force_integer))
-    return force_integer<To_Policy>(to, dir, r);
-  else
-    return r;
+  return result_relation<To_Policy>(dir);
 }
 
 template <typename Policy, typename Type>
