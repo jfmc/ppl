@@ -1150,6 +1150,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 template <typename T>
 Poly_Gen_Relation
 BD_Shape<T>::relation_with(const Generator& g) const {
+  using Implementation::BD_Shapes::numer_denom;
   using Implementation::BD_Shapes::is_additive_inverse;
   const dimension_type space_dim = space_dimension();
   const dimension_type g_space_dim = g.space_dimension();
@@ -1158,6 +1159,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
   if (space_dim < g_space_dim)
     throw_dimension_incompatible("relation_with(g)", g);
 
+  shortest_path_closure_assign();
   // The empty BDS cannot subsume a generator.
   if (marked_empty())
     return Poly_Gen_Relation::nothing();
@@ -1168,6 +1170,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
     return Poly_Gen_Relation::subsumes();
 
   const bool is_line = g.is_line();
+  const bool is_line_or_ray = g.is_line_or_ray();
 
   // The relation between the BDS and the given generator is obtained
   // checking if the generator satisfies all the constraints in the BDS.
@@ -1177,98 +1180,78 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 
   // We find in `*this' all the constraints.
   for (dimension_type i = 0; i <= space_dim; ++i) {
+    const Coefficient& g_coeff_y = (i > g_space_dim || i == 0)
+      ? Coefficient(0) : g.coefficient(Variable(i-1));
+    const DB_Row<N>& dbm_i = dbm[i];
     for (dimension_type j = i + 1; j <= space_dim; ++j) {
-      const Variable x(j - 1);
-      const bool x_dimension_incompatible = x.space_dimension() > g_space_dim;
-      const N& dbm_ij = dbm[i][j];
+      const Coefficient& g_coeff_x = (j > g_space_dim)
+	? Coefficient(0) : g.coefficient(Variable(j-1));
+      const N& dbm_ij = dbm_i[j];
       const N& dbm_ji = dbm[j][i];
-      const bool is_equality = is_additive_inverse(dbm_ji, dbm_ij);
-      const bool dbm_ij_is_infinity = is_plus_infinity(dbm_ij);
-      const bool dbm_ji_is_infinity = is_plus_infinity(dbm_ji);
-      if (i != 0) {
-	const Variable y(i - 1);
-	const bool y_dimension_incompatible
-	  = y.space_dimension() > g_space_dim;
-	const bool is_trivial_zero
-	  = (x_dimension_incompatible && g.coefficient(y) == 0)
-	  || (y_dimension_incompatible && g.coefficient(x) == 0)
-	  || (x_dimension_incompatible && y_dimension_incompatible);
-	if (is_equality) {
-	  // We have one equality constraint.
-	  // The constraint has form ax - ay = b.
-	  // The scalar product has the form
-	  // 'a * y_i - a * x_j'
-	  // where y_i = g.coefficient(y) and x_j = g.coefficient(x).
-	  // It is not zero when both the coefficients of the
-	  // variables x and y are not zero or when these coefficients
- 	  if (!is_trivial_zero && g.coefficient(x) != g.coefficient(y))
-	    return Poly_Gen_Relation::nothing();
-	}
-	else
-	  // We have the binary inequality constraints.
-	  if (!dbm_ij_is_infinity) {
-	  // The constraint has form ax - ay <= b.
-	  // The scalar product has the form
-	  // 'a * y_i - a * x_j'
-	    if (is_line
-		&& !is_trivial_zero
-		&& g.coefficient(x) != g.coefficient(y))
-	      return Poly_Gen_Relation::nothing();
-	    else
-	      if (g.coefficient(y) < g.coefficient(x))
-		return Poly_Gen_Relation::nothing();
-	  }
-	  else if (!dbm_ji_is_infinity) {
-	    // The constraint has form ay - ax <= b.
-	    // The scalar product has the form
-	    // 'a * x_j - a* y_i'.
-	    if (is_line
-		&& !is_trivial_zero
-		&& g.coefficient(x) != g.coefficient(y))
-	      return Poly_Gen_Relation::nothing();
-	    else if (g.coefficient(x) < g.coefficient(y))
-	      return Poly_Gen_Relation::nothing();
-	  }
+      if (is_additive_inverse(dbm_ji, dbm_ij)) {
+	// We have one equality constraint: den*x - den*y = num.
+	// Compute the scalar product.
+	TEMP_INTEGER(den);
+	TEMP_INTEGER(num);
+	numer_denom(dbm_ij, num, den);
+	Coefficient product = 0;
+	add_mul_assign(product, den, g_coeff_y);
+	add_mul_assign(product, -den, g_coeff_x);
+	if (!is_line_or_ray)
+	  add_mul_assign(product, num, g.divisor());
+	if (product != 0)
+	  return Poly_Gen_Relation::nothing();
       }
       else {
-	// Here i == 0.
-	if (is_equality) {
-	  // The constraint has form ax = b.
-	  // To satisfy the constraint it's necessary that the scalar product
-	  // is not zero.It happens when the coefficient of the variable 'x'
-	  // in the generator is not zero, because the scalar
-	  // product has the form:
-	  // 'a * x_i' where x_i = g.coefficient(x)..
-	  if (!x_dimension_incompatible && g.coefficient(x) != 0)
-	    return Poly_Gen_Relation::nothing();
+	// We have 0, 1 or 2 binary inequality constraint/s.
+	if (!is_plus_infinity(dbm_ij)) {
+	  // We have the binary inequality constraint: den*x - den*y <= num.
+	  // Compute the scalar product.
+	  TEMP_INTEGER(den);
+	  TEMP_INTEGER(num);
+	  numer_denom(dbm_ij, num, den);
+	  Coefficient product = 0;
+	  add_mul_assign(product, den, g_coeff_y);
+	  add_mul_assign(product, -den, g_coeff_x);
+	  if (!is_line_or_ray)
+	    add_mul_assign(product, num, g.divisor());
+	  if (is_line) {
+	    if (product != 0)
+	      // Lines must saturate all constraints.
+	      return Poly_Gen_Relation::nothing();
+	  }
+	  else
+	    // `g' is either a ray, a point or a closure point.
+	    if (product < 0)
+	      return Poly_Gen_Relation::nothing();
 	}
-	else
-	  // We have the unary inequality constraints.
-	  if (!dbm_ij_is_infinity) {
-	    // The constraint has form ax <= b.
-	    // The scalar product has the form:
-	    // '-a * x_i' where x_i = g.coefficient(x).
-	    if (is_line
-		&& !x_dimension_incompatible
-		&& g.coefficient(x) != 0)
-	      return Poly_Gen_Relation::nothing();
-	    else if (g.coefficient(x) > 0)
-	      return Poly_Gen_Relation::nothing();
-	  }
-	  else if (!dbm_ji_is_infinity) {
-	    // The constraint has form -ax <= b.
-	    // The scalar product has the form:
-	    // 'a * x_i' where x_i = g.coefficient(x).
-	    if (is_line
-		&& !x_dimension_incompatible
-		&& g.coefficient(x) != 0)
-	      return Poly_Gen_Relation::nothing();
-	    else if (g.coefficient(x) < 0)
+
+	if (!is_plus_infinity(dbm_ji)) {
+	  // We have the binary inequality constraint: den*y - den*x <= b.
+	  // Compute the scalar product.
+	  TEMP_INTEGER(den);
+	  TEMP_INTEGER(num);
+	  numer_denom(dbm_ji, num, den);
+	  Coefficient product = 0;
+	  add_mul_assign(product, den, g_coeff_x);
+	  add_mul_assign(product, -den, g_coeff_y);
+	  if (!is_line_or_ray)
+	    add_mul_assign(product, num, g.divisor());
+	  if (is_line) {
+	    if (product != 0)
+	      // Lines must saturate all constraints.
 	      return Poly_Gen_Relation::nothing();
 	  }
+	  else
+	    // `g' is either a ray, a point or a closure point.
+	    if (product < 0)
+	      return Poly_Gen_Relation::nothing();
+	}
       }
     }
   }
+
+  // The generator satisfies all the constraints.
   return Poly_Gen_Relation::subsumes();
 }
 
