@@ -40,6 +40,7 @@ ppl_java_tests_common
 
 EXTRA_DIST = \
 ppl_java_generated_tests.java \
+Test_Partial_Function.java \
 C_Polyhedron_test1.java
 
 BUILT_SOURCES =  \
@@ -57,6 +58,7 @@ ppl_java_generated_tests.java: $(interface_generator_dependencies) Makefile
 
 check-local:
 	 $(JAVA) -classpath .:../ -Djava.library.path=../jni/.libs ppl_java_generated_tests
+	 $(JAVA) -classpath .:../ -Djava.library.path=../jni/.libs C_Polyhedron_test1
 
 CLEANFILES = \
 $(BUILT_SOURCES)
