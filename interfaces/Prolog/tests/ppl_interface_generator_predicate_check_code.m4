@@ -351,15 +351,11 @@ ppl_@CLASS@_size_2_test :-
    (
      clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
      ppl_@CLASS@_size(PPS, S),
-     (ppl_property_test_data(TEST_DATA, _, _, is_empty)
-     ->
-       S =< 1
-     ;
-       S == 1,
-       ppl_@CLASS@_begin_iterator(PPS, It_begin),
-       ppl_@CLASS@_drop_disjunct(PPS, It_begin),
-       ppl_@CLASS@_size(PPS, 0)
-   ),
+     S == 1,
+     ppl_@CLASS@_begin_iterator(PPS, It),
+     ppl_@CLASS@_drop_disjunct(PPS, It),
+     ppl_@CLASS@_size(PPS, 0),
+     ppl_@CLASS@_delete_iterator(It),
      ppl_delete_@CLASS@(PPS)
    ->
      fail ; true)
@@ -375,16 +371,68 @@ ppl_@CLASS@_begin_iterator_2_test :-
    ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
    (
      clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
+     ppl_@CLASS@_begin_iterator(PPS, It_begin),
+     ppl_@CLASS@_end_iterator(PPS, It_end),
+     ppl_@CLASS@_OK(PPS),
+     ppl_@CLASS@_delete_iterator(It_begin),
+     ppl_@CLASS@_delete_iterator(It_end),
+     ppl_delete_@CLASS@(PPS)
+   ->
+     fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`
+ppl_@CLASS@_iterator_equals_iterator_2_test :-
+  (
+   choose_test(TEST_DATA, _Space_Dim),
+   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
+   (
+     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
      ppl_@CLASS@_begin_iterator(PPS, It),
      ppl_@CLASS@_begin_iterator(PPS, It_begin),
-     ppl_@CLASS@_iterator_equals_iterator(It, It_begin),
-     ppl_@CLASS@_end_iterator(PPS, It_end),
-     ppl_@CLASS@_increment_iterator(It),
-     ppl_@CLASS@_decrement_iterator(It),
      ppl_@CLASS@_iterator_equals_iterator(It, It_begin),
      ppl_@CLASS@_OK(PPS),
      ppl_@CLASS@_delete_iterator(It),
      ppl_@CLASS@_delete_iterator(It_begin),
+     ppl_delete_@CLASS@(PPS)
+   ->
+     fail ; true)
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_increment_iterator_code',
+`
+ppl_@CLASS@_increment_iterator_1_test :-
+  (
+   choose_test(TEST_DATA, _Space_Dim),
+   ppl_build_test_data(TEST_DATA, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
+   (
+     clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
+     ppl_@CLASS@_begin_iterator(PPS, Itb),
+     ppl_@CLASS@_begin_iterator(PPS, It_begin),
+     ppl_@CLASS@_size(PPS, S),
+     (S > 0
+     ->
+       ppl_@CLASS@_increment_iterator(Itb),
+       ppl_@CLASS@_decrement_iterator(Itb)
+     ),
+     ppl_@CLASS@_iterator_equals_iterator(Itb, It_begin),
+     ppl_@CLASS@_end_iterator(PPS, Ite),
+     ppl_@CLASS@_end_iterator(PPS, It_end),
+     (S > 0
+     ->
+       ppl_@CLASS@_decrement_iterator(Ite),
+       ppl_@CLASS@_increment_iterator(Ite)
+     ),
+     ppl_@CLASS@_iterator_equals_iterator(Ite, It_end),
+     ppl_@CLASS@_OK(PPS),
+     ppl_@CLASS@_delete_iterator(Itb),
+     ppl_@CLASS@_delete_iterator(It_begin),
+     ppl_@CLASS@_delete_iterator(Ite),
      ppl_@CLASS@_delete_iterator(It_end),
      ppl_delete_@CLASS@(PPS)
    ->
@@ -404,9 +452,17 @@ ppl_@CLASS@_drop_disjunct_2_test :-
      clean_ppl_new_@TOPOLOGY@@CLASS@_from_@CONSTRAINER@s(RS, PPS),
      clean_ppl_new_@ALT_DISJUNCT@_from_@CONSTRAINER@s(RS1, PS),
      ppl_@CLASS@_add_disjunct(PPS, PS),
+     ppl_@CLASS@_size(PPS, S),
+     S > 1,
      ppl_@CLASS@_begin_iterator(PPS, It),
      ppl_@CLASS@_increment_iterator(It),
      ppl_@CLASS@_drop_disjunct(PPS, It),
+     S1 is S - 1,
+     ppl_@CLASS@_size(PPS, S1),
+     ppl_@CLASS@_decrement_iterator(It),
+     ppl_@CLASS@_drop_disjunct(PPS, It),
+     S2 is S1 - 1,
+     ppl_@CLASS@_size(PPS, S2),
      ppl_@CLASS@_OK(PPS),
      ppl_@CLASS@_delete_iterator(It),
      ppl_delete_@CLASS@(PPS),
