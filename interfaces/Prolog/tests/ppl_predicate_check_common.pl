@@ -98,18 +98,22 @@ write_error(Predicate_name) :-
 
 %%%%%%%%%%%% test data selection       %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+all_tests(0, [test00, test02]).
+all_tests(1, [test01, test03, test04, test05, test06, test07]).
+
 choose_test(TEST_DATA, Dim) :-
-   member(TEST_DATA, [test00, test01, test02, test03,
-                      test04, test05, test06, test07, test08
-                     ]),
+   all_tests(_, Tests),
+   member(TEST_DATA, Tests),
    ppl_dimension_test_data(TEST_DATA, space_dimension, Dim).
 
 choose_2_tests(TEST_DATA1, TEST_DATA2, Dim) :-
+   all_tests(0, Tests0),
+   all_tests(1, Tests1),
    (
-   (member(TEST_DATA1, [test00, test02]),
-   member(TEST_DATA2, [test00, test02])) ;
-   (member(TEST_DATA1, [test01, test03, test04, test05, test06, test07]),
-   member(TEST_DATA2, [test01, test03, test04, test05, test06, test07]))
+     (member(TEST_DATA1, Tests0),
+      member(TEST_DATA2, Tests0)) ;
+     (member(TEST_DATA1, Tests1),
+      member(TEST_DATA2, Tests1))
    ),
    ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
    ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim).

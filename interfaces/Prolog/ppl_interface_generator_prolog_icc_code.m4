@@ -1,27 +1,5 @@
 m4_divert(-1)dnl
 
-m4_define(`m4_class_exception_handler_code',
-`void
-handle_exception(const not_a_@CLASS@_handle& e) {
-  Prolog_term_ref found = Prolog_new_term_ref();
-  Prolog_construct_compound(found, a_found, e.term());
-
-  Prolog_term_ref expected = Prolog_new_term_ref();
-  Prolog_construct_compound(expected, a_expected,
-                            Prolog_atom_term_from_string("@CLASS@_handle"));
-
-  Prolog_term_ref where = Prolog_new_term_ref();
-  Prolog_construct_compound(where, a_where,
-                            Prolog_atom_term_from_string(e.where()"));
-
-  Prolog_term_ref exception_term = Prolog_new_term_ref();
-  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
-                            found, expected, where);
-  Prolog_raise_exception(exception_term);
-}
-
-')
-
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `extern "C" Prolog_foreign_return_type
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(Prolog_term_ref t_nd,
@@ -446,7 +424,7 @@ ppl_@CLASS@_drop_disjunct(Prolog_term_ref t_pps,
     CHECK(it);
 
     @CPP_CLASS@::iterator& i = *it;
-    i = pps->drop_disjunct(i);
+    pps->drop_disjunct(i);
 
     return PROLOG_SUCCESS;
   }
