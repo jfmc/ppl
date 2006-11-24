@@ -37,7 +37,6 @@ public class C_Polyhedron_test1 {
 	partial_function.insert(0, 2);
 	partial_function.insert(2, 0);
 	partial_function.insert(1, 1);
-	long ss =  partial_function.max_in_codomain();
 	Variable A = new Variable(0);
 	Variable B = new Variable(1);
 	Variable C = new Variable(2);
