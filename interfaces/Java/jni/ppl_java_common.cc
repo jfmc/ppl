@@ -143,7 +143,7 @@ bool_to_j_boolean(JNIEnv* env,
 }
 
 jobject
-j_long_to_j_long_class(JNIEnv* env, const jint& jlong_value) {
+j_long_to_j_long_class(JNIEnv* env, const jlong& jlong_value) {
   jclass long_java_class = env->FindClass("java/lang/Long");
   jmethodID get_long_method_id =
     env->GetStaticMethodID(long_java_class,

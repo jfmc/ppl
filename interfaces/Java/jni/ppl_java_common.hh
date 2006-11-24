@@ -88,7 +88,7 @@ jlong
 j_long_class_to_j_long(JNIEnv* env, const jobject& j_long);
 
 jobject
-j_long_to_j_long_class(JNIEnv* env, const jint& jlong_value);
+j_long_to_j_long_class(JNIEnv* env, const jlong& jlong_value);
 
 // // Converts a Java boolean set to a C++ bool.
 // bool
@@ -340,7 +340,6 @@ public:
   }
 
   bool has_empty_codomain() const {
-    return false;
     jclass j_partial_function_class
        = env->FindClass("ppl_java/Partial_Function");
      jmethodID j_has_empty_codomain_id
@@ -370,7 +369,7 @@ public:
       = env->GetMethodID(j_by_reference_class,
 			 "<init>",
 			 "(Ljava/lang/Object;)V");
-    jobject coeff =  j_long_to_j_long_class(env, 0);
+    jobject coeff = j_long_to_j_long_class(env, 0);
     jobject new_by_ref = env->NewObject(j_by_reference_class,
   					j_by_reference_ctr_id,
   					coeff);
