@@ -69,7 +69,12 @@ m4_replace_all_patterns_in_string($1,
   m4_pattern_list)`'dnl
 ')`'dnl
 m4_pushdef(`m4_post_extra_class_code', `dnl
-	return true;
+}
+catch (java.lang.RuntimeException e) {
+System.out.println("*Overflow detected*::exception catched");
+}
+return true;
+
     }
 
 ')`'dnl
