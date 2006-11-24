@@ -36,6 +36,15 @@ using namespace Parma_Polyhedra_Library;
   catch (const std::bad_alloc& e) { \
     handle_exception(env, e); \
   } \
+  catch (const std::domain_error& e) { \
+    handle_exception(env, e); \
+  } \
+ catch (const std::invalid_argument& e) { \
+    handle_exception(env, e); \
+  } \
+ catch(const std::logic_error& e) { \
+    handle_exception(env, e); \
+  } \
   catch (const std::exception& e) { \
     handle_exception(env, e); \
   } \
@@ -43,6 +52,15 @@ using namespace Parma_Polyhedra_Library;
     handle_exception(env); \
   };
 
+
+void
+handle_exception(JNIEnv* env, const std::logic_error& e);
+
+void
+handle_exception(JNIEnv* env, const std::invalid_argument& e);
+
+void
+handle_exception(JNIEnv* env, const std::domain_error& e);
 
 void
 handle_exception(JNIEnv* env, const std::overflow_error& e);

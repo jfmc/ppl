@@ -70,7 +70,7 @@ m4_replace_all_patterns_in_string($1,
 ')`'dnl
 m4_pushdef(`m4_post_extra_class_code', `dnl
 }
-catch (java.lang.RuntimeException e) {
+catch (ppl_java.Overflow_Error_Exception e) {
 System.out.println("*Overflow detected*::exception catched");
 }
 return true;

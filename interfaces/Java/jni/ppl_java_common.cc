@@ -25,13 +25,30 @@ using namespace Parma_Polyhedra_Library;
 
 void
 handle_exception(JNIEnv* env, const std::overflow_error& e) {
-  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
+  jclass newExcCls = env->FindClass("ppl_java/Overflow_Error_Exception");
+  env->ThrowNew(newExcCls, e.what());
+}
+void
+handle_exception(JNIEnv* env, const std::invalid_argument& e) {
+  jclass newExcCls = env->FindClass("ppl_java/Invalid_Argument_Exception");
+  env->ThrowNew(newExcCls, e.what());
+}
+
+void
+handle_exception(JNIEnv* env, const std::logic_error& e) {
+  jclass newExcCls = env->FindClass("ppl_java/Logic_Error_Exception");
   env->ThrowNew(newExcCls, e.what());
 }
 
 void
 handle_exception(JNIEnv* env, const std::length_error& e) {
-  jclass newExcCls = env->FindClass("java/lang/RuntimeException");
+  jclass newExcCls = env->FindClass("ppl_java/Lenght_Error_Exception");
+  env->ThrowNew(newExcCls, e.what());
+}
+
+void
+handle_exception(JNIEnv* env, const std::domain_error& e) {
+  jclass newExcCls = env->FindClass("ppl_java/Domain_Error_Exception");
   env->ThrowNew(newExcCls, e.what());
 }
 
