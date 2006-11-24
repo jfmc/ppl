@@ -372,6 +372,28 @@ ppl_@CLASS@_increment_iterator(Prolog_term_ref t_it) {
 
 ')
 
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_iterator_equals_iterator(Prolog_term_ref t_it1,
+			  Prolog_term_ref t_it2) {
+  static const char* where = "ppl_@CLASS@_iterator_equals_iterator/2";
+  try {
+    @CPP_CLASS@::iterator* it1
+         = term_to_handle<@CPP_CLASS@::iterator >(t_it1, where);
+    CHECK(it1);
+    @CPP_CLASS@::iterator* it2
+         = term_to_handle<@CPP_CLASS@::iterator >(t_it2, where);
+    CHECK(it2);
+    if (*it1 == *it2)
+      return PROLOG_SUCCESS;
+    else
+      return PROLOG_FAILURE;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_decrement_iterator_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_decrement_iterator(Prolog_term_ref t_it) {
@@ -427,6 +449,23 @@ ppl_@CLASS@_drop_disjunct(Prolog_term_ref t_pps,
     i = pps->drop_disjunct(i);
 
     return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_size_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_size(Prolog_term_ref t_pps,
+		 Prolog_term_ref t_s) {
+  static const char* where = "ppl_@CLASS@_size/2";
+  try {
+    @CPP_CLASS@* pps = term_to_handle<@CPP_CLASS@ >(t_pps, where);
+    CHECK(pps);
+
+    if (unify_ulong(t_s, pps->size()))
+      return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
