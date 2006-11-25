@@ -514,6 +514,7 @@ ppl_@CLASS@_get_disjunct_2_test :-
      ppl_@CLASS@_get_disjunct_2_test2(PPS, It, It_end, Space_Dim),
      ppl_@CLASS@_OK(PPS),
      ppl_@CLASS@_delete_iterator(It),
+     ppl_@CLASS@_delete_iterator(It_end),
      ppl_delete_@CLASS@(PPS)
    ->
      fail ; true)
@@ -525,6 +526,7 @@ ppl_@CLASS@_get_disjunct_2_test1(PPS, [Test|Tests]) :-
    ppl_build_test_data(Test, t_@TOPOLOGY@, @CONSTRAINER@s, RS),
    clean_ppl_new_@ALT_DISJUNCT@_from_@CONSTRAINER@s(RS, PS),
    ppl_@CLASS@_add_disjunct(PPS, PS),
+   ppl_delete_@DISJUNCT@(PS),
    ppl_@CLASS@_get_disjunct_2_test1(PPS, Tests),
    !
   ).
@@ -1465,12 +1467,13 @@ ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_2_test :-
       ->
         ppl_@CLASS@_equals_@CLASS@(PS, PS1),
         ppl_@CLASS@_OK(PS1),
-        ppl_@CLASS@_OK(PS),
-        ppl_delete_@CLASS@(PS1),
-        ppl_delete_@CLASS@(PS)
+        ppl_@CLASS@_OK(PS)
       ;
         true
-      )
+      ),
+      ppl_delete_@CLASS@(PS1),
+      ppl_delete_@CLASS@(PS)
+
    ->
     fail ; true)
   ).
