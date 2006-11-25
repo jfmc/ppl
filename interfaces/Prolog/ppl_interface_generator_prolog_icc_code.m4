@@ -398,12 +398,15 @@ ppl_@CLASS@_get_disjunct(Prolog_term_ref t_it,
          = term_to_handle<@CPP_CLASS@::iterator >(t_it, where);
     CHECK(it);
 
-    const @ALT_CPP_DISJUNCT@* disj = &((*it)->element());
+    @ALT_CPP_DISJUNCT@* disj
+	= const_cast<@ALT_CPP_DISJUNCT@*>(&((*it)->element()));
     Prolog_term_ref t_d = Prolog_new_term_ref();
-    Prolog_put_address(t_d, const_cast<@ALT_CPP_DISJUNCT@*>(disj));
+    Prolog_put_address(t_d, disj);
 
-    if (Prolog_unify(t_disj, t_d))
+    if (Prolog_unify(t_disj, t_d)) {
+      WEAK_REGISTER(disj);
       return PROLOG_SUCCESS;
+    }
   }
   CATCH_ALL;
 }
