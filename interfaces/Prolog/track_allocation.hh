@@ -36,16 +36,54 @@ namespace Parma_Polyhedra_Library {
 
 class Poly_Tracker {
 public:
+  //! Construct an allocation tracker with no registered objects.
+  Poly_Tracker();
+
+  /*! \brief
+    Register an object whose deletion is under the Prolog programmer
+    responsibility.
+  */
   void insert(const void* pp);
+
+  /*! \brief
+    Register an object whose deletion is under the PPL library
+    responsibility.
+  */
+  void weak_insert(const void* pp);
+
+  //! Check whether the object was correctly registered.
   void check(const void* pp) const;
+
+  /*! \brief
+    Unregister an object whose deletion is under the Prolog programmer
+    responsibility.
+  */
   void remove(const void* pp);
 
-  Poly_Tracker();
+  /*! \brief
+    Destroy the allocation tracker: an error message will be output
+    if there still are registered objects whose deletion was under
+    the Prolog programmer responsibility.
+  */
   ~Poly_Tracker();
 
 private:
+  //! The type for recording a set of pointers to PPL library objects.
   typedef std::set<const void*, std::less<const void*> > Set;
+
+  /*! \brief
+    A set of pointers to objects whose deallocation is under the
+    rensponsibility of the Prolog programmer: they should be deallocated
+    before the termination of the program.
+  */
   Set s;
+
+  /*! \brief
+    A set of pointers to objects whose deallocation is under the
+    rensponsibility of the PPL library: they should not be deallocated
+    by the Prolog programmer.
+  */
+  Set weak_s;
 };
 
 inline
@@ -73,8 +111,14 @@ Poly_Tracker::insert(const void* pp) {
 }
 
 inline void
+Poly_Tracker::weak_insert(const void* pp) {
+  weak_s.insert(pp);
+}
+
+inline void
 Poly_Tracker::check(const void* pp) const {
-  if (s.find(pp) == s.end()) {
+  if (s.find(pp) == s.end()
+      && weak_s.find(pp) == weak_s.end()) {
     std::cerr
       << "Poly_Tracker: attempt to access a nonexistent polyhedron."
       << std::endl;
@@ -106,12 +150,14 @@ poly_tracker() {
 
 
 #define REGISTER(x) Parma_Polyhedra_Library::poly_tracker().insert(x)
+#define WEAK_REGISTER(x) Parma_Polyhedra_Library::poly_tracker().weak_insert(x)
 #define UNREGISTER(x) Parma_Polyhedra_Library::poly_tracker().remove(x)
 #define CHECK(x) Parma_Polyhedra_Library::poly_tracker().check(x)
 
 #else
 
 #define REGISTER(x)
+#define WEAK_REGISTER(x)
 #define UNREGISTER(x)
 #define CHECK(x)
 
