@@ -24,14 +24,137 @@ type linear_generator =
   | Point of linear_expression * Z.t
   | Closure_Point of linear_expression * Z.t
 
+type linear_congruence =linear_expression * linear_expression * Z.t
+
 type constraint_system = linear_constraint list
 
 type generator_system = linear_generator list
+
+type congruence_system = linear_congruence list
 
 type polyhedron
 
 external ppl_new_C_Polyhedron_from_space_dimension:
   int -> polyhedron = "ppl_new_C_Polyhedron_from_space_dimension"
+
+external ppl_new_C_Polyhedron_from_constraint_system:
+  constraint_system -> polyhedron = "ppl_new_C_Polyhedron_from_constraint_system"
+external ppl_new_C_Polyhedron_from_generator_system:
+  generator_system -> polyhedron = "ppl_new_C_Polyhedron_from_generator_system"
+
+external ppl_new_C_Polyhedron_from_congruence_system:
+  congruence_system -> polyhedron = "ppl_new_C_Polyhedron_from_congruence_system"
+external ppl_Polyhedron_space_dimension:
+  polyhedron -> int = "ppl_Polyhedron_space_dimension"
+
+external ppl_Polyhedron_affine_dimension:
+  polyhedron -> int = "ppl_Polyhedron_affine_dimension"
+
+external ppl_Polyhedron_is_empty:
+  polyhedron -> bool = "ppl_Polyhedron_is_empty"
+
+external ppl_Polyhedron_is_universe:
+  polyhedron -> bool = "ppl_Polyhedron_is_universe"
+
+external ppl_Polyhedron_contains_interger_point:
+  polyhedron -> bool = "ppl_Polyhedron_contains_integer_point"
+
+external ppl_Polyhedron_is_topologically_closed:
+  polyhedron -> bool = "ppl_Polyhedron_is_topologically_closed"
+
+external ppl_Polyhedron_is_bounded:
+  polyhedron -> bool = "ppl_Polyhedron_is_bounded"
+
+external ppl_Polyhedron_bounds_from_above:
+  polyhedron -> linear_expression -> bool = "ppl_Polyhedron_bounds_from_above"
+
+external ppl_Polyhedron_bounds_from_below:
+  polyhedron -> linear_expression -> bool = "ppl_Polyhedron_bounds_from_below"
+
+external ppl_Polyhedron_add_constraint:
+  polyhedron -> linear_constraint -> unit = "ppl_Polyhedron_add_constraint"
+
+external ppl_Polyhedron_add_constraint_and_minimize:
+  polyhedron -> linear_constraint -> unit
+      = "ppl_Polyhedron_add_constraint_and_minimize"
+
+external ppl_Polyhedron_add_constraints:
+  polyhedron -> constraint_system -> unit = "ppl_Polyhedron_add_constraints"
+
+external ppl_Polyhedron_add_constraints_and_minimize:
+  polyhedron -> constraint_system -> unit
+      = "ppl_Polyhedron_add_constraints_and_minimize"
+
+external ppl_Polyhedron_add_generator:
+  polyhedron -> linear_generator -> unit = "ppl_Polyhedron_add_generator"
+
+external ppl_Polyhedron_add_generator_and_minimize:
+  polyhedron -> linear_generator -> unit
+      = "ppl_Polyhedron_add_generator_and_minimize"
+
+external ppl_Polyhedron_add_generators:
+  polyhedron -> generator_system -> unit = "ppl_Polyhedron_add_generators"
+
+external ppl_Polyhedron_add_generators_and_minimize:
+  polyhedron -> generator_system -> unit
+      = "ppl_Polyhedron_add_generators_and_minimize"
+
+external ppl_Polyhedron_add_congruences:
+  polyhedron -> congruence_system -> unit
+      = "ppl_Polyhedron_add_congruences"
+
+external ppl_Polyhedron_is_disjoint_from:
+  polyhedron -> polyhedron -> bool
+      = "ppl_Polyhedron_is_disjoint_from"
+
+external ppl_Polyhedron_contains:
+  polyhedron -> polyhedron -> bool
+      = "ppl_Polyhedron_contains"
+
+external ppl_Polyhedron_intersection_assign_and_minimize:
+   polyhedron -> polyhedron -> bool
+       = "ppl_Polyhedron_intersection_assign_and_minimize"
+
+external ppl_Polyhedron_intersection_assign:
+   polyhedron -> polyhedron -> unit
+       = "ppl_Polyhedron_intersection_assign"
+
+external ppl_Polyhedron_poly_hull_assign_and_minimize:
+    polyhedron -> polyhedron -> bool
+	= "ppl_Polyhedron_poly_hull_assign_and_minimize"
+
+external ppl_Polyhedron_poly_hull_assign:
+    polyhedron -> polyhedron -> unit
+	= "ppl_Polyhedron_poly_hull_assign"
+
+external ppl_Polyhedron_upper_bound_assign:
+    polyhedron -> polyhedron -> unit
+	= "ppl_Polyhedron_upper_bound_assign"
+
+external ppl_Polyhedron_poly_difference_assign:
+    polyhedron -> polyhedron -> unit
+	= "ppl_Polyhedron_poly_difference_assign"
+
+external ppl_Polyhedron_difference_assign:
+    polyhedron -> polyhedron -> unit
+	= "ppl_Polyhedron_difference_assign"
+
+external ppl_Polyhedron_time_elapse_assign:
+    polyhedron -> polyhedron -> unit
+	= "ppl_Polyhedron_time_elapse_assign"
+
+external ppl_Polyhedron_concatenate_assign:
+    polyhedron -> polyhedron -> unit
+	= "ppl_Polyhedron_concatenate_assign"
+
+external ppl_Polyhedron_add_space_dimensions_and_embed:
+  polyhedron -> int -> unit = "ppl_Polyhedron_add_space_dimensions_and_embed"
+
+external ppl_Polyhedron_add_space_dimensions_and_project:
+  polyhedron -> int -> unit = "ppl_Polyhedron_add_space_dimensions_and_project"
+
+external ppl_Polyhedron_remove_higher_space_dimensions:
+  polyhedron -> int -> unit = "ppl_Polyhedron_remove_higher_space_dimensions"
 
 external ppl_Polyhedron_space_dimension:
   polyhedron -> int = "ppl_Polyhedron_space_dimension"

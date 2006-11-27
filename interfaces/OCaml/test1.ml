@@ -129,7 +129,16 @@ for i = 6 downto 0 do
 done;;
 print_newline();;
 
-at_exit Gc.full_major;;
+let cs = [e3 >=/ e1; e1 >=/ e2; e1 <=/ e2 -/ n] ;;
+let gs1 = [Point (e2, (Z.from_int 1))] ;;
 
+let cong = (e2, e2 , (Z.from_int 1));;
+let cgs = [e3, e2 , (Z.from_int 20)];;
+let ph = ppl_new_C_Polyhedron_from_congruence_system(cgs);;
+let result =  ppl_Polyhedron_bounds_from_above ph e2;;
+ppl_Polyhedron_add_constraint ph (e2 >=/ e2);;
+let ph2 = ppl_new_C_Polyhedron_from_constraint_system(cs);;
+ppl_Polyhedron_concatenate_assign ph ph2;
+at_exit Gc.full_major;;
 print_string "Bye!\n"
 

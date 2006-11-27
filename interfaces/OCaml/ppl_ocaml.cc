@@ -140,6 +140,16 @@ build_Constraint(value c) {
   }
 }
 
+Congruence
+build_Congruence(value c) {
+  value e1 = Field(c, 0);
+  value e2 = Field(c, 1);
+  mpz_class z((__mpz_struct*) Data_custom_val(Field(c, 2)));
+  Linear_Expression lhs = build_Linear_Expression(e1);
+  Linear_Expression rhs = build_Linear_Expression(e2);
+  return ((lhs %= rhs) / z);
+}
+
 Generator
 build_Generator(value g) {
   switch (Tag_val(g)) {
@@ -186,6 +196,16 @@ build_Generator_System(value gl) {
   return gs;
 }
 
+Congruence_System
+build_Congruence_System(value cgl) {
+  Congruence_System cgs;
+  while (cgl != Val_int(0)) {
+    cgs.insert(build_Congruence(Field(cgl, 0)));
+    cgl = Field(cgl, 1);
+  }
+  return cgs;
+}
+
 //! Give access to the embedded Polyhedron* in \p v.
 inline Polyhedron*&
 p_Polyhedron_val(value v) {
@@ -229,6 +249,34 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
+ppl_new_C_Polyhedron_from_constraint_system(value cl) try {
+  CAMLparam1(cl);
+  Constraint_System cs = build_Constraint_System(cl);
+  Generator_System gs;
+  CAMLreturn(val_p_Polyhedron(*new C_Polyhedron(cs)));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_new_C_Polyhedron_from_generator_system(value gl) try {
+  CAMLparam1(gl);
+  Generator_System gs = build_Generator_System(gl);
+  CAMLreturn(val_p_Polyhedron(*new C_Polyhedron(gs)));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_new_C_Polyhedron_from_congruence_system(value gl) try {
+  CAMLparam1(gl);
+  Congruence_System gs = build_Congruence_System(gl);
+  CAMLreturn(val_p_Polyhedron(*new C_Polyhedron(gs)));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
 ppl_Polyhedron_space_dimension(value ph) try {
   CAMLparam1(ph);
   const Polyhedron& pph = *p_Polyhedron_val(ph);
@@ -236,6 +284,348 @@ ppl_Polyhedron_space_dimension(value ph) try {
   if (d > INT_MAX)
     abort();
   CAMLreturn(Val_int(d));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_affine_dimension(value ph) try {
+  CAMLparam1(ph);
+  const Polyhedron& pph = *p_Polyhedron_val(ph);
+  dimension_type d = pph.affine_dimension();
+  if (d > INT_MAX)
+    abort();
+  CAMLreturn(Val_int(d));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_is_empty(value ph) try {
+  CAMLparam1(ph);
+  const Polyhedron& pph = *p_Polyhedron_val(ph);
+  CAMLreturn(Val_bool(pph.is_empty()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_is_universe(value ph) try {
+  CAMLparam1(ph);
+  const Polyhedron& pph = *p_Polyhedron_val(ph);
+  CAMLreturn(Val_bool(pph.is_universe()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_contains_integer_point(value ph) try {
+  CAMLparam1(ph);
+  const Polyhedron& pph = *p_Polyhedron_val(ph);
+  CAMLreturn(Val_bool(pph.contains_integer_point()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_is_topologically_closed(value ph) try {
+  CAMLparam1(ph);
+  const Polyhedron& pph = *p_Polyhedron_val(ph);
+  CAMLreturn(Val_bool(pph.is_topologically_closed()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_is_bounded(value ph) try {
+  CAMLparam1(ph);
+  const Polyhedron& pph = *p_Polyhedron_val(ph);
+  CAMLreturn(Val_bool(pph.is_bounded()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_bounds_from_below(value ph, value le) try {
+  CAMLparam2(ph, le);
+  const Polyhedron& pph = *p_Polyhedron_val(ph);
+  Linear_Expression ple = build_Linear_Expression(le);
+  CAMLreturn(Val_bool(pph.bounds_from_below(ple)));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_bounds_from_above(value ph, value le) try {
+  CAMLparam2(ph, le);
+  const Polyhedron& pph = *p_Polyhedron_val(ph);
+  Linear_Expression ple = build_Linear_Expression(le);
+  CAMLreturn(Val_bool(pph.bounds_from_above(ple)));
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_add_constraint(value ph, value c) try {
+  CAMLparam2(ph, c);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  Constraint pc = build_Constraint(c);
+  pph.add_constraint(pc);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_add_constraint_and_minimize(value ph, value c) try {
+  CAMLparam2(ph, c);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  Constraint pc = build_Constraint(c);
+  CAMLreturn(Val_bool(pph.add_constraint_and_minimize(pc)));
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_add_constraints(value ph, value cs) try {
+  CAMLparam2(ph, cs);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  Constraint_System pcs = build_Constraint_System(cs);
+  pph.add_constraints(pcs);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_add_constraints_and_minimize(value ph, value cs) try {
+  CAMLparam2(ph, cs);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  Constraint_System pcs = build_Constraint_System(cs);
+  CAMLreturn(Val_bool(pph.add_constraints_and_minimize(pcs)));
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_add_generator(value ph, value c) try {
+  CAMLparam2(ph, c);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  Generator pc = build_Generator(c);
+  pph.add_generator(pc);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_add_generator_and_minimize(value ph, value c) try {
+  CAMLparam2(ph, c);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  Generator pc = build_Generator(c);
+  CAMLreturn(Val_bool(pph.add_generator_and_minimize(pc)));
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_add_generators(value ph, value cs) try {
+  CAMLparam2(ph, cs);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  Generator_System pcs = build_Generator_System(cs);
+  pph.add_generators(pcs);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_add_generators_and_minimize(value ph, value cs) try {
+  CAMLparam2(ph, cs);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  Generator_System pcs = build_Generator_System(cs);
+  CAMLreturn(Val_bool(pph.add_generators_and_minimize(pcs)));
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_add_congruences(value ph, value c) try {
+  CAMLparam2(ph, c);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  Congruence_System pc = build_Congruence_System(c);
+  pph.add_congruences(pc);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_is_disjoint_from(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  CAMLreturn(Val_bool(pph1.is_disjoint_from(pph2)));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_contains(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  CAMLreturn(Val_bool(pph1.contains(pph2)));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_strictly_contains(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  CAMLreturn(Val_bool(pph1.strictly_contains(pph2)));
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_intersection_assign(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  pph1.intersection_assign(pph2);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_intersection_assign_and_minimize(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  CAMLreturn(Val_bool(pph1.intersection_assign_and_minimize(pph2)));
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_poly_hull_assign(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  pph1.poly_hull_assign(pph2);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_poly_hull_assign_and_minimize(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  CAMLreturn(Val_bool(pph1.poly_hull_assign_and_minimize(pph2)));
+}
+CATCH_ALL
+
+
+extern "C"
+void
+ppl_Polyhedron_upper_bound_assign(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  pph1.upper_bound_assign(pph2);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_poly_difference_assign(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  pph1.poly_difference_assign(pph2);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_difference_assign(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  pph1.difference_assign(pph2);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_time_elapse_assign(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  pph1.time_elapse_assign(pph2);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_concatenate_assign(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  pph1.concatenate_assign(pph2);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_ppl_Polyhedron_add_space_dimensions_and_embed(value ph,
+							     value d) try {
+  CAMLparam2(ph, d);
+  int dd = Int_val(d);
+  if (dd < 0)
+    abort();
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  pph.add_space_dimensions_and_embed(dd);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_ppl_Polyhedron_add_space_dimensions_and_project(value ph,
+							       value d) try {
+  CAMLparam2(ph, d);
+  int dd = Int_val(d);
+  if (dd < 0)
+    abort();
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  pph.add_space_dimensions_and_project(dd);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_ppl_Polyhedron_remove_higher_space_dimensions(value ph,
+							     value d) try {
+  CAMLparam2(ph, d);
+  int dd = Int_val(d);
+  if (dd < 0)
+    abort();
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  pph.remove_higher_space_dimensions(dd);
+  CAMLreturn0;
 }
 CATCH_ALL
 
