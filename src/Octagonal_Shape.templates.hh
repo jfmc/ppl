@@ -411,6 +411,8 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
 
   if (num_vars == 0) {
     // Dealing with a trivial constraint.
+    if (c.is_equality() && c.inhomogeneous_term() != 0)
+      set_empty();
     if (c.inhomogeneous_term() < 0)
       status.set_empty();
     return;
@@ -1170,6 +1172,7 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
 template <typename T>
 Poly_Gen_Relation
 Octagonal_Shape<T>::relation_with(const Generator& g) const {
+  using Implementation::BD_Shapes::numer_denom;
   using Implementation::BD_Shapes::is_additive_inverse;
 
   const dimension_type g_space_dim = g.space_dimension();
@@ -1177,6 +1180,10 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
   // Dimension-compatibility check.
   if (space_dim < g_space_dim)
     throw_dimension_incompatible("relation_with(g)", g);
+
+  // The closure needs to make explicit the implicit constraints and if the
+  // octagon is empty.
+  strong_closure_assign();
 
   // The empty octagon cannot subsume a generator.
   if (marked_empty())
@@ -1188,6 +1195,7 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
     return Poly_Gen_Relation::subsumes();
 
   const bool is_line = g.is_line();
+  const bool is_line_or_ray = g.is_line_or_ray();
 
   // The relation between the octagon and the given generator is obtained
   // checking if the generator satisfies all the constraints in the octagon.
@@ -1210,15 +1218,24 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
     const N& m_ii_i = m_ii[i];
     // We have the unary constraints.
     const Variable x(i/2);
-    const bool dimension_incompatible = x.space_dimension() > g_space_dim;
+    const Coefficient& g_coeff_x = (x.space_dimension() > g_space_dim)
+      ? Coefficient(0) : g.coefficient(x);
     if (is_additive_inverse(m_i_ii, m_ii_i)) {
       // The constraint has form ax = b.
       // To satisfy the constraint it's necessary that the scalar product
-      // is not zero.It happens when the coefficient of the variable 'x'
-      // in the generator is not zero, because the scalar
-      // product has the form:
-      // 'a * x_i' where x_i = g.coefficient(x).
-      if (!dimension_incompatible && g.coefficient(x) != 0)
+      // is not zero. The scalar product has the form:
+      // 'den * g_coeff_x - num * g.divisor()'.
+      TEMP_INTEGER(num);
+      TEMP_INTEGER(den);
+      numer_denom(m_ii_i, num, den);
+      Coefficient product = 0;
+      den *= 2;
+      add_mul_assign(product, den, g_coeff_x);
+      // Note that if the generator `g' is a line or a ray,
+      // its divisor is zero.
+      if (!is_line_or_ray)
+	add_mul_assign(product, -num, g.divisor());
+      if (product != 0)
 	return Poly_Gen_Relation::nothing();
     }
     // We have 0, 1 or 2 inequality constraints.
@@ -1226,31 +1243,47 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
       if (!is_plus_infinity(m_i_ii)) {
 	// The constraint has form -ax <= b.
 	// If the generator is a line it's necessary to check if
-	// the scalar product is not zero.
-	if (is_line && (!dimension_incompatible && g.coefficient(x) != 0))
+	// the scalar product is not zero, if it is positive otherwise.
+	TEMP_INTEGER(den);
+	TEMP_INTEGER(num);
+	numer_denom(m_i_ii, num, den);
+	Coefficient product = 0;
+	den *= 2;
+	add_mul_assign(product, -den, g_coeff_x);
+	// Note that if the generator `g' is a line or a ray,
+	// its divisor is zero.
+	if (!is_line_or_ray)
+	  add_mul_assign(product, -num, g.divisor());
+	if (is_line && product != 0)
 	  return Poly_Gen_Relation::nothing();
 	else
 	  // If the generator is not a line it's necessary to check
-	  // that the scalar product sign is not negative and
-	  // it happens when the coefficient of the variable 'x'
-	  // in the generator is not negative, because the scalar
+	  // that the scalar product sign is not positive and the scalar
 	  // product has the form:
-	  // 'a * x_i' where x_i = g.coefficient(x).
-	  if (g.coefficient(x) < 0)
+	  // '-den * g.coeff_x - num * g.divisor()'.
+	  if (product > 0)
 	    return Poly_Gen_Relation::nothing();
       }
       if (!is_plus_infinity(m_ii_i)) {
 	// The constraint has form ax <= b.
-	if (is_line && (!dimension_incompatible && g.coefficient(x) != 0))
+	TEMP_INTEGER(den);
+	TEMP_INTEGER(num);
+	numer_denom(m_ii_i, num, den);
+	Coefficient product = 0;
+	den *= 2;
+	add_mul_assign(product, den, g_coeff_x);
+ 	// Note that if the generator `g' is a line or a ray,
+	// its divisor is zero.
+	if (!is_line_or_ray)
+	  add_mul_assign(product, -num , g.divisor());
+	if (is_line && product != 0)
 	  return Poly_Gen_Relation::nothing();
 	else
 	  // If the generator is not a line it's necessary to check
-	  // that the scalar product sign is not negative and
-	  // it happens when the coefficient of the variable 'x'
-	  // in the generator is not positive, because the scalar
+	  // that the scalar product sign is not positive and the scalar
 	  // product has the form:
-	  // '-a * x_i' where x_i = g.coefficient(x).
-	  if (g.coefficient(x) > 0)
+	  // 'den * g_coeff_x - num * g.divisor()'.
+	  if (product > 0)
 	    return Poly_Gen_Relation::nothing();
       }
     }
@@ -1268,74 +1301,141 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
       const N& m_i_jj = m_i[j+1];
       const Variable x(j/2);
       const Variable y(i/2);
-      const bool x_dimension_incompatible = x.space_dimension() > g_space_dim;
-      const bool y_dimension_incompatible = y.space_dimension() > g_space_dim;
-      const bool is_trivial_zero = (x_dimension_incompatible
-				    && g.coefficient(y) == 0)
-	|| (y_dimension_incompatible && g.coefficient(x) == 0)
-	|| (x_dimension_incompatible && y_dimension_incompatible);
+      const Coefficient& g_coeff_x = (x.space_dimension() > g_space_dim)
+	? Coefficient(0) : g.coefficient(x);
+      const Coefficient& g_coeff_y = (y.space_dimension() > g_space_dim)
+	? Coefficient(0) : g.coefficient(y);
 
       // FIXME! Find better names.
       const bool is_binary_equality = is_additive_inverse(m_ii_jj, m_i_j);
       const bool is_a_binary_equality = is_additive_inverse(m_i_jj, m_ii_j);
-      Coefficient g_coefficient_y;
-      if (is_binary_equality || is_a_binary_equality) {
+      if (is_binary_equality) {
+	TEMP_INTEGER(den);
+	TEMP_INTEGER(num);
+	Coefficient product = 0;
+	// The constraint has form ax - ay = b.
 	// The scalar product has the form
-	// 'a * y_i - a * x_j' (or  'a * x_j + a * y_i')
-	// where y_i is equal to g.coefficient(y) or -g.coefficient(y)
-	// and x_j = g.coefficient(x).
-	// It is not zero when both the coefficients of the
-	// variables x and y are not zero or when these coefficients
-	// are not equals.
-	if (is_a_binary_equality)
-	  // The constraint has form ax + ay = b.
-	  g_coefficient_y = -g.coefficient(y);
-	else
-	  // The constraint has form ax - ay = b.
- 	  g_coefficient_y = g.coefficient(y);
-	if (!is_trivial_zero && g.coefficient(x) != g_coefficient_y)
- 	  return Poly_Gen_Relation::nothing();
+	// 'den * coeff_x - den * coeff_y - num * g.divisor()'.
+	// To satisfy the constraint it's necessary that the scalar product
+	// is not zero.
+	numer_denom(m_i_j, num, den);
+	add_mul_assign(product, den, g_coeff_x);
+	add_mul_assign(product, -den, g_coeff_y);
+	// Note that if the generator `g' is a line or a ray,
+	// its divisor is zero.
+	if (!is_line_or_ray)
+	  add_mul_assign(product, -num, g.divisor());
+	if (product != 0)
+	  return Poly_Gen_Relation::nothing();
       }
-      else
-	if (!is_plus_infinity(m_i_j) || !is_plus_infinity(m_ii_j)) {
-	  if (!is_plus_infinity(m_ii_j))
-	    // The constraint has form ax + ay <= b.
-	    g_coefficient_y = -g.coefficient(y);
-	  else
-	    // The constraint has form ax - ay <= b.
-	    g_coefficient_y = g.coefficient(y);
+      else {
+	if (!is_plus_infinity(m_i_j)) {
+	  TEMP_INTEGER(den);
+	  TEMP_INTEGER(num);
+	  Coefficient product = 0;
+	  // The constraint has form ax - ay <= b.
 	  // The scalar product has the form
-	  // '-a * x_j + a* y_i' (or '-a * x_j - a * y_i').
-	  if (is_line
-	      && !is_trivial_zero
-	      && g.coefficient(x) != g_coefficient_y)
+	  // 'den * coeff_x - den * coeff_y - num * g.divisor()'.
+	  // If the generator is not a line it's necessary to check
+	  // that the scalar product sign is not positive.
+	  numer_denom(m_i_j, num, den);
+	  add_mul_assign(product, den, g_coeff_x);
+	  add_mul_assign(product, -den, g_coeff_y);
+	  // Note that if the generator `g' is a line or a ray,
+	  // its divisor is zero.
+	  if (!is_line_or_ray)
+	    add_mul_assign(product, -num, g.divisor());
+	  if (is_line && product != 0)
 	    return Poly_Gen_Relation::nothing();
-	  // The product scalar sign is not negative when the
-	  // coefficient of the variable y is strictly smaller
-	  // than the coefficient of the variable x in the generator.
-	  else if (g_coefficient_y < g.coefficient(x))
+	  else if (product > 0)
 	    return Poly_Gen_Relation::nothing();
 	}
-	else
-	  if (!is_plus_infinity(m_ii_jj) || !is_plus_infinity(m_i_jj)) {
-	    if (!is_plus_infinity(m_i_jj))
-	      // The constraint has form -ax - ay <= b.
-	      g_coefficient_y = -g.coefficient(y);
-	    else
-	      // The constraint has form ay - ax <= b.
-	      g_coefficient_y = g.coefficient(y);
-	    // The scalar product has the form
-	    // 'a * x_j - a* y_i' (or 'a * x_j + a* y_i').
-	    if (is_line
-		&& !is_trivial_zero
-		&& g.coefficient(x) != g_coefficient_y)
-	      return Poly_Gen_Relation::nothing();
-	    // The product scalar sign is not negative when the
-	    // coefficient of the variable x is strictly smaller
-	    // than the coefficient of the variable y in the generator.
-	    else if (g.coefficient(x) < g_coefficient_y)
-	      return Poly_Gen_Relation::nothing();
-	  }
+	if (!is_plus_infinity(m_ii_jj)) {
+	  TEMP_INTEGER(den);
+	  TEMP_INTEGER(num);
+	  Coefficient product = 0;
+	  // The constraint has form -ax + ay <= b.
+	  // The scalar product has the form
+	  // '-den * coeff_x + den * coeff_y - num * g.divisor()'.
+	  // If the generator is not a line it's necessary to check
+	  // that the scalar product sign is not positive.
+	  numer_denom(m_ii_jj, num, den);
+	  add_mul_assign(product, -den, g_coeff_x);
+	  add_mul_assign(product, den, g_coeff_y);
+	  // Note that if the generator `g' is a line or a ray,
+	  // its divisor is zero.
+	  if (!is_line_or_ray)
+	    add_mul_assign(product, -num, g.divisor());
+	  if (is_line && product != 0)
+	    return Poly_Gen_Relation::nothing();
+	  else if (product > 0)
+	    return Poly_Gen_Relation::nothing();
+	}
+      }
+
+      if (is_a_binary_equality) {
+	TEMP_INTEGER(den);
+	TEMP_INTEGER(num);
+	Coefficient product = 0;
+	// The constraint has form ax + ay = b.
+	// The scalar product has the form
+	// 'den * coeff_x + den * coeff_y - num * g.divisor()'.
+	// To satisfy the constraint it's necessary that the scalar product
+	// is not zero.
+	numer_denom(m_ii_j, num, den);
+	add_mul_assign(product, den, g_coeff_x);
+	add_mul_assign(product, den, g_coeff_y);
+	// Note that if the generator `g' is a line or a ray,
+	// its divisor is zero.
+	if (!is_line_or_ray)
+	  add_mul_assign(product, -num, g.divisor());
+	if (product != 0)
+	  return Poly_Gen_Relation::nothing();
+      }
+      else {
+	if (!is_plus_infinity(m_i_jj)) {
+	  TEMP_INTEGER(den);
+	  TEMP_INTEGER(num);
+	  Coefficient product = 0;
+	  // The constraint has form -ax - ay <= b.
+	  // The scalar product has the form
+	  // '-den * coeff_x - den * coeff_y - num * g.divisor()'.
+	  // If the generator is not a line it's necessary to check
+	  // that the scalar product sign is not positive.
+	  numer_denom(m_i_jj, num, den);
+	  add_mul_assign(product, -den, g_coeff_x);
+	  add_mul_assign(product, -den, g_coeff_y);
+	  // Note that if the generator `g' is a line or a ray,
+	  // its divisor is zero.
+	  if (!is_line_or_ray)
+	    add_mul_assign(product, -num, g.divisor());
+	  if (is_line && product != 0)
+	    return Poly_Gen_Relation::nothing();
+	  else if (product > 0)
+	    return Poly_Gen_Relation::nothing();
+	}
+	if (!is_plus_infinity(m_ii_j)) {
+	  TEMP_INTEGER(den);
+	  TEMP_INTEGER(num);
+	  Coefficient product = 0;
+	  // The constraint has form ax + ay <= b.
+	  // The scalar product has the form
+	  // 'den * coeff_x + den * coeff_y - num * g.divisor()'.
+	  // If the generator is not a line it's necessary to check
+	  // that the scalar product sign is not positive.
+	  numer_denom(m_ii_j, num, den);
+	  add_mul_assign(product, den, g_coeff_x);
+	  add_mul_assign(product, den, g_coeff_y);
+	  // Note that if the generator `g' is a line or a ray,
+	  // its divisor is zero.
+	  if (!is_line_or_ray)
+	    add_mul_assign(product, -num, g.divisor());
+	  if (is_line && product != 0)
+	    return Poly_Gen_Relation::nothing();
+	  else if (product > 0)
+	    return Poly_Gen_Relation::nothing();
+	}
+      }
     }
   }
   // If this point is reached the constraint 'g' satisfies
