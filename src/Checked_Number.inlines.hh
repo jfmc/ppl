@@ -257,28 +257,28 @@ Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x) {
 }
 
 template <typename T>
-inline bool
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_minus_infinity(const T& x) {
   return Checked::is_minf<typename Native_Checked_From_Wrapper<T>
     ::Policy>(Native_Checked_From_Wrapper<T>::raw_value(x));
 }
 
 template <typename T>
-inline bool
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_plus_infinity(const T& x) {
   return Checked::is_pinf<typename Native_Checked_From_Wrapper<T>
     ::Policy>(Native_Checked_From_Wrapper<T>::raw_value(x));
 }
 
 template <typename T>
-inline bool
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_not_a_number(const T& x) {
   return Checked::is_nan<typename Native_Checked_From_Wrapper<T>
     ::Policy>(Native_Checked_From_Wrapper<T>::raw_value(x));
 }
 
 template <typename T>
-inline bool
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_integer(const T& x) {
   return Checked::is_int<typename Native_Checked_From_Wrapper<T>
     ::Policy>(Native_Checked_From_Wrapper<T>::raw_value(x));
@@ -363,7 +363,7 @@ external_memory_in_bytes(const Checked_Number<T, Policy>& x) {
 
 /*! \relates Checked_Number */
 template <typename To>
-inline Result
+inline typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
 assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir) {
   return check_result(Checked::assign<typename Native_Checked_To_Wrapper<To>
 		      ::Policy, void>(Native_Checked_To_Wrapper<To>::raw_value(to),
@@ -374,7 +374,7 @@ assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir) {
 
 /*! \relates Checked_Number */
 template <typename To>
-inline Result
+inline typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
 assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir) {
   return check_result(Checked::assign<typename Native_Checked_To_Wrapper<To>
 		      ::Policy, void>(Native_Checked_To_Wrapper<To>::raw_value(to),
@@ -385,7 +385,7 @@ assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir) {
 
 /*! \relates Checked_Number */
 template <typename To>
-inline Result
+inline typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
 assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir) {
   return check_result(Checked::assign<typename Native_Checked_To_Wrapper<To>
 		      ::Policy, void>(Native_Checked_To_Wrapper<To>::raw_value(to),
@@ -396,7 +396,7 @@ assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir) {
 
 /*! \relates Checked_Number */
 template <typename To>
-inline Result
+inline typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
 assign_r(To& to, const char* x, Rounding_Dir dir) {
   std::istringstream s(x);
   return check_result(Checked::input<typename Native_Checked_To_Wrapper<To>
@@ -408,7 +408,7 @@ assign_r(To& to, const char* x, Rounding_Dir dir) {
 
 #define FUNC1(name, func) \
 template <typename To, typename From>					\
-inline Result								\
+inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From>::value, Result>::type \
 name(To& to, const From& x, Rounding_Dir dir) {				\
   return								\
     check_result(Checked::func<typename Native_Checked_To_Wrapper<To>	\
@@ -432,7 +432,7 @@ FUNC1(sqrt_assign_r, sqrt_ext)
 
 #define FUNC1(name, func) \
 template <typename To, typename From>					\
-inline Result								\
+inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From>::value, Result>::type \
 name(To& to, const From& x, int exp, Rounding_Dir dir) {		\
   return								\
     check_result(Checked::func<typename Native_Checked_To_Wrapper<To>	\
@@ -452,7 +452,7 @@ FUNC1(div2exp_assign_r, div2exp_ext)
 
 #define FUNC2(name, func) \
 template <typename To, typename From1, typename From2>			\
-inline Result								\
+inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value, Result>::type \
 name(To& to, const From1& x, const From2& y, Rounding_Dir dir) {	\
   return								\
     check_result(Checked::func<typename Native_Checked_To_Wrapper<To>	\
@@ -485,7 +485,7 @@ template <typename To1,							\
           typename From2,						\
           typename To2,							\
 	  typename To3>							\
-inline Result								\
+inline typename Enable_If<Is_Native_Or_Checked<To1>::value && Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value && Is_Native_Or_Checked<To2>::value && Is_Native_Or_Checked<To3>::value, Result>::type \
 name(To1& to, const From1& x, const From2& y, To2& s, To3& t,		\
      Rounding_Dir dir) {						\
   return								\

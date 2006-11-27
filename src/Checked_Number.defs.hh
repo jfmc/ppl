@@ -168,8 +168,11 @@ struct WRD_Extended_Number_Policy {
 
 typedef Checked::Check_Overflow_Policy Default_To_Policy;
 
+template <typename T, typename Enable = void>
+struct Native_Checked_From_Wrapper;
+
 template <typename T>
-struct Native_Checked_From_Wrapper {
+struct Native_Checked_From_Wrapper<T, typename Enable_If<Checked_Supports<T>::value, void>::type> {
   typedef Checked_Number_Transparent_Policy<T> Policy;
   static const T& raw_value(const T& v) {
     return v;
@@ -184,8 +187,11 @@ struct Native_Checked_From_Wrapper<Checked_Number<T, P> > {
   }
 };
 
+template <typename T, typename Enable = void>
+struct Native_Checked_To_Wrapper;
+
 template <typename T>
-struct Native_Checked_To_Wrapper {
+struct Native_Checked_To_Wrapper<T, typename Enable_If<Checked_Supports<T>::value, void>::type> {
   typedef Default_To_Policy Policy;
   static T& raw_value(T& v) {
     return v;
@@ -502,27 +508,40 @@ private:
   T v;
 };
 
-template <typename T, typename Policy>
-bool is_not_a_number(const Checked_Number<T, Policy>& x);
-template <typename T, typename Policy>
-bool is_minus_infinity(const Checked_Number<T, Policy>& x);
-template <typename T, typename Policy>
-bool is_plus_infinity(const Checked_Number<T, Policy>& x);
+template <typename T, typename Enable = void>
+struct Is_Native_Or_Checked;
+
+template <typename T, typename P>
+struct Is_Native_Or_Checked<Checked_Number<T, P> > : public True {
+};
+
+template <typename T>
+struct Is_Native_Or_Checked<T, typename Enable_If<Checked_Supports<T>::value, void>::type > : public True {
+};
+
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_not_a_number(const T& x);
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_minus_infinity(const T& x);
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_plus_infinity(const T& x);
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_integer(const T& x);
 
 template <typename To>
-Result assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir);
 template <typename To>
-Result assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir);
 template <typename To>
-Result assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir);
 template <typename To>
-Result assign_r(To& to, const char* x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const char* x, Rounding_Dir dir);
 template <typename To, typename To_Policy>
-Result assign_r(To& to, char* x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, char* x, Rounding_Dir dir);
 
 #define FUNC1(name) \
 template <typename To, typename From> \
-Result name(To& to, const From& x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From>::value, Result>::type name(To& to, const From& x, Rounding_Dir dir);
 
 FUNC1(assign_r)
 FUNC1(floor_assign_r)
@@ -536,7 +555,7 @@ FUNC1(sqrt_assign_r)
 
 #define FUNC1(name) \
 template <typename To, typename From> \
-Result name(To& to, const From& x, int exp, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From>::value, Result>::type name(To& to, const From& x, int exp, Rounding_Dir dir);
 
 FUNC1(mul2exp_assign_r)
 FUNC1(div2exp_assign_r)
@@ -545,7 +564,7 @@ FUNC1(div2exp_assign_r)
 
 #define FUNC2(name) \
 template <typename To, typename From1, typename From2> \
-Result name(To& to, const From1& x, const From2& y, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value, Result>::type name(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 FUNC2(add_assign_r)
 FUNC2(sub_assign_r)
@@ -562,7 +581,7 @@ FUNC2(sub_mul_assign_r)
 #define FUNC4(name) \
 template <typename To1, typename From1, typename From2,		\
 	  typename To2, typename To3>				\
-Result name(To1& to, const From1& x, const From2& y,		\
+typename Enable_If<Is_Native_Or_Checked<To1>::value && Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value && Is_Native_Or_Checked<To2>::value && Is_Native_Or_Checked<To3>::value, Result>::type name(To1& to, const From1& x, const From2& y,		\
 	    To2& s, To3& t, Rounding_Dir dir);
 
 FUNC4(gcdext_assign_r)
@@ -571,18 +590,6 @@ FUNC4(gcdext_assign_r)
 
 //! \name Accessor Functions
 //@{
-
-//! Returns a const reference to the underlying native integer value.
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-const T&
-raw_value(const Checked_Number<T, Policy>& x);
-
-//! Returns a reference to the underlying native integer value.
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-T&
-raw_value(Checked_Number<T, Policy>& x);
 
 //@} // Accessor Functions
 
