@@ -74,8 +74,6 @@ struct Is_Same : public False { };
 template <typename T>
 struct Is_Same<T, T> : public True { };
 
-#define IS_SAME(T1, T2) (Parma_Polyhedra_Library::Is_Same<T1, T2>::value)
-
 template <typename Base, typename Derived>
 struct Is_Same_Or_Derived {
   struct any {
@@ -87,29 +85,25 @@ struct Is_Same_Or_Derived {
   enum { value = sizeof(func(obj())) == sizeof(char)};
 };
 
-#define IS_SAME_OR_DERIVED(Base, Derived) \
-  (Parma_Polyhedra_Library::Is_Same_Or_Derived<Base, Derived>::value)
 
 template <typename T, typename Tag>
 struct Type_Has_Tag : public False {};
 
+#if 0
 #define INIT_TYPE_TAG(Tag) struct Tag
 
-#define SET_TYPE_TAG(args, Type, Tag) \
+#define SET_TYPE_TAG(args, Type, Tag)					\
   template args	struct Type_Has_Tag<Type, Tag> : public True { }
-
-#define TYPE_HAS_TAG(Type, Tag) \
-  (Parma_Polyhedra_Library::Type_Has_Tag<Type, Tag>::value)
+*/
+#endif
 
 template <bool, typename T>
 struct Enable_If { };
 
 template <class T>
 struct Enable_If<true, T> {
-  typedef T Type;
+  typedef T type;
 };
-
-#define ENABLE_IF(cond, type) typename Parma_Polyhedra_Library::Enable_If<cond, type>::Type
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
