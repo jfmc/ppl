@@ -238,6 +238,22 @@ public:
     Result ru = set_unbounded(UPPER, upper(), info());
     return combine(rl, ru);
   }
+  I_Result lower_set_unbounded() {
+    info().set_interval_property(CARDINALITY_IS, false);
+    info().set_interval_property(CARDINALITY_0, false);
+    info().set_interval_property(CARDINALITY_1, false);
+    info().clear_boundary_properties(LOWER);
+    Result rl = set_unbounded(LOWER, lower(), info());
+    return combine(rl, V_EQ);
+  }
+  I_Result upper_set_unbounded() {
+    info().set_interval_property(CARDINALITY_IS, false);
+    info().set_interval_property(CARDINALITY_0, false);
+    info().set_interval_property(CARDINALITY_1, false);
+    info().clear_boundary_properties(UPPER);
+    Result ru = set_unbounded(UPPER, upper(), info());
+    return combine(V_EQ, ru);
+  }
   bool is_topologically_closed() const {
     // FIXME: review
     return is_empty() ||
