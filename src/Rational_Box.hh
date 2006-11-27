@@ -34,18 +34,18 @@ namespace Parma_Polyhedra_Library {
 struct Rational_Box_Interval_Info_Policy {
   const_bool_nodef(store_special, true);
   const_bool_nodef(store_open, true);
-  const_bool_nodef(store_integer, false);
-  const_bool_nodef(store_empty, true);
-  const_bool_nodef(store_singleton, true);
+  const_bool_nodef(cache_empty, true);
+  const_bool_nodef(cache_singleton, true);
+  const_bool_nodef(cache_normalized, false);
   const_int_nodef(next_bit, 0);
-  const_bool_nodef(handle_infinity, false);
+  const_bool_nodef(may_be_empty, false);
+  const_bool_nodef(may_be_infinity, false);
+  const_bool_nodef(check_empty_result, false);
   const_bool_nodef(check_inexact, false);
-  const_bool_nodef(check_integer_args, false);
   const_bool_nodef(infinity_is_open, false);
 };
 
-typedef Interval_Info_Bitset<unsigned int, Rational_Box_Interval_Info_Policy>
-Rational_Box_Interval_Info;
+typedef Interval_No_Restrictions<Interval_Info_Bitset<unsigned int, Rational_Box_Interval_Info_Policy> > Rational_Box_Interval_Info;
 
 typedef Box<Interval<mpq_class, Rational_Box_Interval_Info> > Rational_Box;
 
