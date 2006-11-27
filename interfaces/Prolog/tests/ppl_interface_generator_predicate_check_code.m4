@@ -990,8 +990,9 @@ ppl_@CLASS@_add_disjunct_2_test :-
      ppl_@ALT_DISJUNCT@_build_test_object(TEST_DATA2, PS2, Space_Dim),
      ppl_@CLASS@_add_disjunct(PPS1, PS2),
      ppl_@CLASS@_OK(PPS1),
-     ppl_delete_@CLASS@(PPS1),
-     ppl_delete_Polyhedron(PS2)
+     ppl_@DISJUNCT@_OK(PS2),
+     ppl_delete_@DISJUNCT@(PS2),
+     ppl_delete_@CLASS@(PPS1)
    ->
      fail ; true)
   ).
