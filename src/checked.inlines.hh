@@ -227,7 +227,7 @@ assign_exact(To& to, const From& from, Rounding_Dir) {
 }
 
 template <typename To_Policy, typename From_Policy, typename Type>
-inline ENABLE_IF(IS_SAME(To_Policy, From_Policy), void)
+inline typename Enable_If<Is_Same<To_Policy, From_Policy>::value, void>::type
 copy_generic(Type& to, const Type& from) {
   to = from;
 }
@@ -417,21 +417,21 @@ sgn_generic(const Type& x) {
 
 template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
-inline ENABLE_IF((Safe_Comparison<Type1, Type2>::value), bool)
+inline typename Enable_If<(Safe_Comparison<Type1, Type2>::value), bool>::type
 lt(const Type1& x, const Type2& y) {
   return x < y;
 }
 
 template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
-inline ENABLE_IF((Safe_Comparison<Type1, Type2>::value), bool)
+inline typename Enable_If<(Safe_Comparison<Type1, Type2>::value), bool>::type
 le(const Type1& x, const Type2& y) {
   return x <= y;
 }
 
 template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
-inline ENABLE_IF((Safe_Comparison<Type1, Type2>::value), bool)
+inline typename Enable_If<(Safe_Comparison<Type1, Type2>::value), bool>::type
 eq(const Type1& x, const Type2& y) {
   return x == y;
 }

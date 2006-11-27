@@ -30,6 +30,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#if PPL_SUPPORTED_FLOAT
+template <> struct Checked_Supports<float> : public True { };
+#endif
+#if PPL_SUPPORTED_DOUBLE
+template <> struct Checked_Supports<double> : public True { };
+#endif
+#if PPL_SUPPORTED_LONG_DOUBLE
+template <> struct Checked_Supports<long double> : public True { };
+#endif
+
 namespace Checked {
 
 inline float

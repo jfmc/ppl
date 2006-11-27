@@ -47,6 +47,17 @@ strtoull(const char* nptr, char** endptr, int base);
 
 namespace Parma_Polyhedra_Library {
 
+template <> struct Checked_Supports<signed char> : public True { };
+template <> struct Checked_Supports<signed short> : public True { };
+template <> struct Checked_Supports<signed int> : public True { };
+template <> struct Checked_Supports<signed long> : public True { };
+template <> struct Checked_Supports<signed long long> : public True { };
+template <> struct Checked_Supports<unsigned char> : public True { };
+template <> struct Checked_Supports<unsigned short> : public True { };
+template <> struct Checked_Supports<unsigned int> : public True { };
+template <> struct Checked_Supports<unsigned long> : public True { };
+template <> struct Checked_Supports<unsigned long long> : public True { };
+
 namespace Checked {
 
 #ifndef HAVE_INT_FAST16_T
@@ -772,10 +783,10 @@ struct Larger<signed char> {
   const_bool_nodef(use_for_add, true);
   const_bool_nodef(use_for_sub, true);
   const_bool_nodef(use_for_mul, true);
-  typedef int_fast16_t Type_For_Neg;
-  typedef int_fast16_t  Type_For_Add;
-  typedef int_fast16_t  Type_For_Sub;
-  typedef int_fast16_t  Type_For_Mul;
+  typedef int_fast16_t type_for_neg;
+  typedef int_fast16_t type_for_add;
+  typedef int_fast16_t type_for_sub;
+  typedef int_fast16_t type_for_mul;
 };
 
 template <>
@@ -784,10 +795,10 @@ struct Larger<unsigned char> {
   const_bool_nodef(use_for_add, true);
   const_bool_nodef(use_for_sub, true);
   const_bool_nodef(use_for_mul, true);
-  typedef int_fast16_t Type_For_Neg;
-  typedef uint_fast16_t Type_For_Add;
-  typedef int_fast16_t Type_For_Sub;
-  typedef uint_fast16_t Type_For_Mul;
+  typedef int_fast16_t type_for_neg;
+  typedef uint_fast16_t type_for_add;
+  typedef int_fast16_t type_for_sub;
+  typedef uint_fast16_t type_for_mul;
 };
 
 template <>
@@ -796,10 +807,10 @@ struct Larger<signed short> {
   const_bool_nodef(use_for_add, true);
   const_bool_nodef(use_for_sub, true);
   const_bool_nodef(use_for_mul, true);
-  typedef int_fast32_t Type_For_Neg;
-  typedef int_fast32_t Type_For_Add;
-  typedef int_fast32_t Type_For_Sub;
-  typedef int_fast32_t Type_For_Mul;
+  typedef int_fast32_t type_for_neg;
+  typedef int_fast32_t type_for_add;
+  typedef int_fast32_t type_for_sub;
+  typedef int_fast32_t type_for_mul;
 };
 
 template <>
@@ -808,10 +819,10 @@ struct Larger<unsigned short> {
   const_bool_nodef(use_for_add, true);
   const_bool_nodef(use_for_sub, true);
   const_bool_nodef(use_for_mul, true);
-  typedef int_fast32_t Type_For_Neg;
-  typedef uint_fast32_t Type_For_Add;
-  typedef int_fast32_t Type_For_Sub;
-  typedef uint_fast32_t Type_For_Mul;
+  typedef int_fast32_t type_for_neg;
+  typedef uint_fast32_t type_for_add;
+  typedef int_fast32_t type_for_sub;
+  typedef uint_fast32_t type_for_mul;
 };
 
 template <>
@@ -820,10 +831,10 @@ struct Larger<signed int> {
   const_bool_nodef(use_for_add, (LONG_BITS == 64));
   const_bool_nodef(use_for_sub, (LONG_BITS == 64));
   const_bool_nodef(use_for_mul, true);
-  typedef int_fast64_t Type_For_Neg;
-  typedef int_fast64_t Type_For_Add;
-  typedef int_fast64_t Type_For_Sub;
-  typedef int_fast64_t Type_For_Mul;
+  typedef int_fast64_t type_for_neg;
+  typedef int_fast64_t type_for_add;
+  typedef int_fast64_t type_for_sub;
+  typedef int_fast64_t type_for_mul;
 };
 
 template <>
@@ -832,10 +843,10 @@ struct Larger<unsigned int> {
   const_bool_nodef(use_for_add, (LONG_BITS == 64));
   const_bool_nodef(use_for_sub, (LONG_BITS == 64));
   const_bool_nodef(use_for_mul, true);
-  typedef int_fast64_t Type_For_Neg;
-  typedef uint_fast64_t Type_For_Add;
-  typedef int_fast64_t Type_For_Sub;
-  typedef uint_fast64_t Type_For_Mul;
+  typedef int_fast64_t type_for_neg;
+  typedef uint_fast64_t type_for_add;
+  typedef int_fast64_t type_for_sub;
+  typedef uint_fast64_t type_for_mul;
 };
 
 template <>
@@ -844,10 +855,10 @@ struct Larger<signed long> {
   const_bool_nodef(use_for_add, false);
   const_bool_nodef(use_for_sub, false);
   const_bool_nodef(use_for_mul, (LONG_BITS == 32));
-  typedef int_fast64_t Type_For_Neg;
-  typedef int_fast64_t Type_For_Add;
-  typedef int_fast64_t Type_For_Sub;
-  typedef int_fast64_t Type_For_Mul;
+  typedef int_fast64_t type_for_neg;
+  typedef int_fast64_t type_for_add;
+  typedef int_fast64_t type_for_sub;
+  typedef int_fast64_t type_for_mul;
 };
 
 template <>
@@ -856,10 +867,10 @@ struct Larger<unsigned long> {
   const_bool_nodef(use_for_add, false);
   const_bool_nodef(use_for_sub, false);
   const_bool_nodef(use_for_mul, (LONG_BITS == 32));
-  typedef int_fast64_t Type_For_Neg;
-  typedef uint_fast64_t Type_For_Add;
-  typedef int_fast64_t Type_For_Sub;
-  typedef uint_fast64_t Type_For_Mul;
+  typedef int_fast64_t type_for_neg;
+  typedef uint_fast64_t type_for_add;
+  typedef int_fast64_t type_for_sub;
+  typedef uint_fast64_t type_for_mul;
 };
 
 template <>
@@ -868,10 +879,10 @@ struct Larger<signed long long> {
   const_bool_nodef(use_for_add, false);
   const_bool_nodef(use_for_sub, false);
   const_bool_nodef(use_for_mul, false);
-  typedef int_fast64_t Type_For_Neg;
-  typedef int_fast64_t Type_For_Add;
-  typedef int_fast64_t Type_For_Sub;
-  typedef int_fast64_t Type_For_Mul;
+  typedef int_fast64_t type_for_neg;
+  typedef int_fast64_t type_for_add;
+  typedef int_fast64_t type_for_sub;
+  typedef int_fast64_t type_for_mul;
 };
 
 template <>
@@ -880,16 +891,16 @@ struct Larger<unsigned long long> {
   const_bool_nodef(use_for_add, false);
   const_bool_nodef(use_for_sub, false);
   const_bool_nodef(use_for_mul, false);
-  typedef int_fast64_t Type_For_Neg;
-  typedef uint_fast64_t Type_For_Add;
-  typedef int_fast64_t Type_For_Sub;
-  typedef uint_fast64_t Type_For_Mul;
+  typedef int_fast64_t type_for_neg;
+  typedef uint_fast64_t type_for_add;
+  typedef int_fast64_t type_for_sub;
+  typedef uint_fast64_t type_for_mul;
 };
 
 template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 neg_int_larger(Type& to, const Type x, Rounding_Dir dir) {
-  typename Larger<Type>::Type_For_Neg l = x;
+  typename Larger<Type>::type_for_neg l = x;
   l = -l;
   return assign<To_Policy, void>(to, l, dir);
 }
@@ -897,7 +908,7 @@ neg_int_larger(Type& to, const Type x, Rounding_Dir dir) {
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 add_int_larger(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  typename Larger<Type>::Type_For_Add l = x;
+  typename Larger<Type>::type_for_add l = x;
   l += y;
   return assign<To_Policy, void>(to, l, dir);
 }
@@ -905,7 +916,7 @@ add_int_larger(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 sub_int_larger(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  typename Larger<Type>::Type_For_Sub l = x;
+  typename Larger<Type>::type_for_sub l = x;
   l -= y;
   return assign<To_Policy, void>(to, l, dir);
 }
@@ -913,7 +924,7 @@ sub_int_larger(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
 inline Result
 mul_int_larger(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  typename Larger<Type>::Type_For_Mul l = x;
+  typename Larger<Type>::type_for_mul l = x;
   l *= y;
   return assign<To_Policy, void>(to, l, dir);
 }

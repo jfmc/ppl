@@ -389,8 +389,11 @@ extern Minus_Infinity MINUS_INFINITY;
 extern Plus_Infinity PLUS_INFINITY;
 extern Not_A_Number NOT_A_NUMBER;
 
-} // namespace Parma_Polyhedra_Library
+template <typename T>
+struct Checked_Supports : public False {
+};
 
+} // namespace Parma_Polyhedra_Library
 
 #define CHECK_P(cond, check) ((cond) ? (check) : (assert(!(check)), false))
 
