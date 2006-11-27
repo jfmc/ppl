@@ -82,27 +82,27 @@ public:
   explicit Pointset_Powerset(const PH& ph);
 
   /*! \brief
-    Copy-constructor allowing a source powerset with elements of a
-    different polyhedron kind.
+    Conversion constructor: the type <CODE>QH</CODE> of the disjuncts
+    in the source powerset is different from <CODE>PH</CODE>.
   */
   template <typename QH>
   explicit Pointset_Powerset(const Pointset_Powerset<QH>& y);
 
   /*! \brief
-    Creates a Pointset_Powerset with a single polyhedron
-    with the same information contents as \p cs.
+    Creates a Pointset_Powerset with a single disjunct approximating
+    the system of constraints \p cs.
   */
   explicit Pointset_Powerset(const Constraint_System& cs);
 
   /*! \brief
-    Creates a Pointset_Powerset with a single polyhedron
-    with the same information contents as \p cgs.
+    Creates a Pointset_Powerset with a single disjunct approximating
+    the system of congruences \p cgs.
   */
   explicit Pointset_Powerset(const Congruence_System& cgs);
 
   //@} // Constructors and Destructor
 
-  //! \name Member Functions that Do Not Modify the Powerset of Polyhedra
+  //! \name Member Functions that Do Not Modify the Pointset_Powerset
   //@{
 
   //! Returns the dimension of the vector space enclosing \p *this.
@@ -114,8 +114,7 @@ public:
     a point (of some element) of \p *this.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p y are dimension-incompatible.
 
     \warning
     This may be <EM>really</EM> expensive!
@@ -128,8 +127,7 @@ public:
     contain the same set of points.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p y are dimension-incompatible.
 
     \warning
     This may be <EM>really</EM> expensive!
@@ -151,9 +149,9 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  //@} // Member Functions that Do Not Modify the Powerset
+  //@} // Member Functions that Do Not Modify the Pointset_Powerset
 
-  //! \name Space Dimension Preserving Member Functions that May Modify the Powerset of Polyhedra
+  //! \name Space Dimension Preserving Member Functions that May Modify the Pointset_Powerset
   //@{
 
   //! Adds to \p *this the disjunct \p ph.
@@ -211,10 +209,10 @@ public:
 
   /*! \brief
     Assign to \p *this the result of (recursively) merging together
-    the pairs of polyhedra whose poly-hull is the same as their
+    the pairs of disjuncts whose upper-bound is the same as their
     set-theoretical union.
 
-    On exit, for all the pairs \f$\cP\f$, \f$\cQ\f$ of different polyhedra
+    On exit, for all the pairs \f$\cP\f$, \f$\cQ\f$ of different disjuncts
     in \p *this, we have \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
   */
   void pairwise_reduce();
@@ -226,8 +224,7 @@ public:
     and the cardinality threshold \p max_disjuncts.
 
     \param y
-    A finite powerset of polyhedra.
-    It <EM>must</EM> definitely entail \p *this;
+    A powerset that <EM>must</EM> definitely entail \p *this;
 
     \param wf
     The widening function to be used on polyhedra objects. It is obtained
@@ -242,8 +239,7 @@ public:
     some of the disjuncts in \p *this are collapsed (i.e., joined together).
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p y are dimension-incompatible.
 
     For a description of the extrapolation operator,
     see \ref BGP99 "[BGP99]" and \ref BHZ03b "[BHZ03b]".
@@ -260,19 +256,18 @@ public:
     certified by the convergence certificate \p Cert.
 
     \param y
-    The finite powerset of polyhedra computed in the previous iteration step.
+    The finite powerset computed in the previous iteration step.
     It <EM>must</EM> definitely entail \p *this;
 
     \param wf
-    The widening function to be used on polyhedra objects.
+    The widening function to be used on disjuncts.
     It is obtained from the corresponding widening method by using
     the helper function widen_fun_ref. Legal values are, e.g.,
     <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
     <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>.
 
     \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
+    Thrown if \p *this and \p y are dimension-incompatible.
 
     \warning
     In order to obtain a proper widening operator, the template parameter
@@ -297,8 +292,8 @@ public:
   Pointset_Powerset& operator=(const Pointset_Powerset& y);
 
   /*! \brief
-    Assignment operator allowing a source powerset with elements of a
-    different polyhedron kind
+    Conversion assignment: the type <CODE>QH</CODE> of the disjuncts
+    in the source powerset is different from <CODE>PH</CODE>
     (\p *this and \p y can be dimension-incompatible).
   */
   template <typename QH>
@@ -309,37 +304,32 @@ public:
 
   /*! \brief
     Adds \p m new dimensions to the vector space containing \p *this
-    and embeds each polyhedron in \p *this in the new space.
+    and embeds each disjunct in \p *this in the new space.
   */
   void add_space_dimensions_and_embed(dimension_type m);
 
   /*! \brief
     Adds \p m new dimensions to the vector space containing \p *this
-    without embedding the polyhedra in \p *this in the new space.
+    without embedding the disjuncts in \p *this in the new space.
   */
   void add_space_dimensions_and_project(dimension_type m);
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
-    The result is obtained by intersecting each polyhedron in \p *this
-    with each polyhedron in \p y and collecting all these intersections.
+    The result is obtained by intersecting each disjunct in \p *this
+    with each disjunct in \p y and collecting all these intersections.
   */
   void intersection_assign(const Pointset_Powerset& y);
 
   //! Assigns to \p *this the difference of \p *this and \p y.
-  /*!
-    The result is obtained by computing the
-    \ref Convex_Polyhedral_Difference "poly-difference" of each polyhedron
-    in \p *this with each polyhedron in \p y and collecting all these
-    differences.
-  */
+  // FIXME: document the intended semantics.
   void poly_difference_assign(const Pointset_Powerset& y);
 
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
     The result is obtained by computing the pairwise
-    \ref Concatenating_Polyhedra "concatenation" of each polyhedron
-    in \p *this with each polyhedron in \p y.
+    \ref Concatenating_Polyhedra "concatenation" of each disjunct
+    in \p *this with each disjunct in \p y.
   */
   void concatenate_assign(const Pointset_Powerset& y);
 
@@ -348,8 +338,8 @@ public:
     \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
 
     The result is obtained by computing the pairwise
-    \ref Time_Elapse_Operator "time elapse" of each polyhedron
-    in \p *this with each polyhedron in \p y.
+    \ref Time_Elapse_Operator "time elapse" of each disjunct
+    in \p *this with each disjunct in \p y.
   */
   void time_elapse_assign(const Pointset_Powerset& y);
 
@@ -420,13 +410,13 @@ private:
   template <typename Widening>
   void BGP99_heuristics_assign(const Pointset_Powerset& y, Widening wf);
 
-  //! Records in \p cert_ms the certificates for this set of polyhedra.
+  //! Records in \p cert_ms the certificates for this set of disjuncts.
   template <typename Cert>
   void collect_certificates(std::map<Cert, size_type,
-		                     typename Cert::Compare>& cert_ms) const;
+			             typename Cert::Compare>& cert_ms) const;
 
   /*! \brief
-    Returns <CODE>true</CODE> if and only if the current set of polyhedra
+    Returns <CODE>true</CODE> if and only if the current set of dijsuncts
     is stabilizing with respect to the multiset of certificates \p y_cert_ms.
   */
   template <typename Cert>
@@ -457,9 +447,9 @@ namespace Parma_Polyhedra_Library {
   - <CODE>r.first</CODE> is the intersection of \p p and \p q;
   - <CODE>r.second</CODE> has the property that all its elements are
     pairwise disjoint and disjoint from \p p;
-  - the union of <CODE>r.first</CODE> with all the elements of
-    <CODE>r.second</CODE> gives \p q (i.e., <CODE>r</CODE> is the
-    representation of a partition of \p q).
+  - the set-theoretical union of <CODE>r.first</CODE> with all the
+    elements of <CODE>r.second</CODE> gives \p q (i.e., <CODE>r</CODE>
+    is the representation of a partition of \p q).
 
   \if Include_Implementation_Details
 
@@ -523,8 +513,18 @@ Pointset_Powerset<NNC_Polyhedron>
 ::poly_difference_assign(const Pointset_Powerset& y);
 
 template <>
+void
+Pointset_Powerset<Grid>
+::poly_difference_assign(const Pointset_Powerset& y);
+
+template <>
 bool
 Pointset_Powerset<NNC_Polyhedron>
+::geometrically_covers(const Pointset_Powerset& y) const;
+
+template <>
+bool
+Pointset_Powerset<Grid>
 ::geometrically_covers(const Pointset_Powerset& y) const;
 
 } // namespace Parma_Polyhedra_Library
