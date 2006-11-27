@@ -88,11 +88,11 @@ public:
   void normalize() const {
   }
   template <typename T>
-  bool is_restricted(const T&) {
+  bool is_restricted(const T&) const {
     return false;
   }
   template <typename T>
-  Result restrict(T, Result) {
+  Result restrict(T&, Result) const {
     return V_EQ;
   }
 };
@@ -168,11 +168,11 @@ public:
   void normalize() const {
   }
   template <typename T>
-  bool is_restricted(const T& x) {
+  bool is_restricted(const T& x) const {
     return is_integer(x);
   }
   template <typename T>
-  Result restrict(T, Result) {
+  Result restrict(T&, Result) const {
     return V_EQ;
   }
 };

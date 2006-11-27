@@ -80,14 +80,14 @@ private:
       if (info().get_boundary_property(LOWER, OPEN)) {
 	r = info().restrict(lower(), V_GT);
 	if (r != V_GT)
-	  info().set_boundary_property(LOWER, OPEN, false);
+	  w_info().set_boundary_property(LOWER, OPEN, false);
       }
       else {
 	r = info().restrict(lower(), V_GE);
 	if (r == V_GT)
-	  info().set_boundary_property(LOWER, OPEN);
+	  w_info().set_boundary_property(LOWER, OPEN);
       }
-      info().set_boundary_property(LOWER, NORMALIZED);
+      w_info().set_boundary_property(LOWER, NORMALIZED);
     }
     return r;
   }
@@ -100,14 +100,14 @@ private:
       if (info().get_boundary_property(UPPER, OPEN)) {
 	r = info().restrict(upper(), V_LT);
 	if (r != V_LT)
-	  info().set_boundary_property(UPPER, OPEN, false);
+	  w_info().set_boundary_property(UPPER, OPEN, false);
       }
       else {
 	r = info().restrict(upper(), V_LE);
 	if (r == V_LT)
-	  info().set_boundary_property(UPPER, OPEN);
+	  w_info().set_boundary_property(UPPER, OPEN);
       }
-      info().set_boundary_property(UPPER, NORMALIZED);
+      w_info().set_boundary_property(UPPER, NORMALIZED);
     }
     return r;
   }
