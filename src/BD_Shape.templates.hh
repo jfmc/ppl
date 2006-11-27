@@ -344,6 +344,8 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
 
   if (num_vars == 0) {
     // Dealing with a trivial constraint.
+    if (c.is_equality() && c.inhomogeneous_term() != 0)
+      set_empty();
     if (c.inhomogeneous_term() < 0)
       set_empty();
     return;
