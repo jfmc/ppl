@@ -87,7 +87,7 @@ PPL::check_containment(const NNC_Polyhedron& ph,
       return true;
     else {
       Pointset_Powerset<NNC_Polyhedron> new_disjuncts(ph.space_dimension(),
-						       EMPTY);
+						      EMPTY);
       for (Pointset_Powerset<NNC_Polyhedron>::iterator
 	     j = tmp.begin(); j != tmp.end(); ) {
 	const NNC_Polyhedron& pj = j->element();
@@ -103,5 +103,20 @@ PPL::check_containment(const NNC_Polyhedron& ph,
       tmp.upper_bound_assign(new_disjuncts);
     }
   }
+  return false;
+}
+
+template <>
+void
+PPL::Pointset_Powerset<PPL::Grid>
+::poly_difference_assign(const Pointset_Powerset& y) {
+  assert(false);
+}
+
+template <>
+bool
+PPL::Pointset_Powerset<PPL::Grid>
+::geometrically_covers(const Pointset_Powerset& y) const {
+  assert(false);
   return false;
 }
