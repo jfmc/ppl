@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 #include "Pointset_Powerset.defs.hh"
+#include "Grid.defs.hh"
 #include <utility>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -106,11 +107,120 @@ PPL::check_containment(const NNC_Polyhedron& ph,
   return false;
 }
 
+
+namespace {
+
+#if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Uses the congruence \p c to approximately partition the grid \p qq.
+/*! \relates Parma_Polyhedra_Library::Pointset_Powerset
+  On exit, the intersection of \p qq and congruence \p c is stored
+  in \p qq, whereas a finite set of grids that approximate
+  the intersection of \p qq with the negation of \p c
+  is added, as a set of new disjuncts, to the powerset \p r.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+bool
+approximate_partition_aux(const PPL::Congruence& c,
+			  PPL::Grid& qq,
+			  PPL::Pointset_Powerset<PPL::Grid>& r) {
+  using namespace PPL;
+  const Coefficient& c_modulus = c.modulus();
+  Grid qq_copy(qq);
+
+  if (!qq.add_congruence_and_minimize(c)) {
+    r.add_disjunct(qq_copy);
+    return true;
+  }
+
+  Congruence_System cgs = qq.congruences();
+  Congruence_System cgs_copy = qq_copy.minimized_congruences();
+  // When c is an equality, not satisfied by Grid qq
+  // then add qq to the set r.
+  if (c_modulus == 0) {
+    if (cgs.num_equalities() != cgs_copy.num_equalities()) {
+      r.add_disjunct(qq_copy);
+      return false;
+    }
+    return true;
+  }
+
+  // When c is a proper congruence but, in qq, this direction has
+  // no congruence, then add qq to the set r.
+  if (cgs.num_proper_congruences() != cgs_copy.num_proper_congruences()) {
+    r.add_disjunct(qq_copy);
+    return false;
+  }
+
+  // When  c is a proper congruence and qq also is discrete
+  // in this direction, then we can find the exact partition
+  // and add this to r.
+  const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
+  Linear_Expression le(c);
+  le -= c_inhomogeneous_term;
+  TEMP_INTEGER(n);
+  rem_assign(n, c_inhomogeneous_term, c_modulus);
+  TEMP_INTEGER(i);
+  for (i = c_modulus; i-- > 0; )
+    if (i != n) {
+      Grid qqq(qq_copy);
+      if (qqq.add_congruence_and_minimize((le+i %= 0) / c_modulus))
+	r.add_disjunct(qqq);
+    }
+  return true;
+}
+
+#if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Uses the Grid \p q to approximately partition the grid \p p.
+/*! \relates Parma_Polyhedra_Library::Pointset_Powerset
+  On exit, the intersection of \p q and congruence \p p is stored
+  in \p qq, whereas a finite set of grids that approximate
+  the intersection of \p q with the complement of \p p
+  is added, as a set of new disjuncts, to the powerset \p r.
+  The pair (qq, r) is returned. A Boolean flag indicates
+  whether or not this partition is exact.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+std::pair<PPL::Grid, PPL::Pointset_Powerset<PPL::Grid> >
+approximate_partition(const PPL::Grid& p, const PPL::Grid& q,
+                                          bool exact = true) {
+  using namespace PPL;
+  Pointset_Powerset<Grid> r(p.space_dimension(), EMPTY);
+  Grid qq = q;
+  const Congruence_System& pcs = p.congruences();
+  for (Congruence_System::const_iterator i = pcs.begin(),
+	 pcs_end = pcs.end(); i != pcs_end; ++i)
+    exact &= approximate_partition_aux(*i, qq, r);
+  return std::pair<Grid, Pointset_Powerset<Grid> >(qq, r);
+}
+
+} // namespace
+
+
 template <>
 void
 PPL::Pointset_Powerset<PPL::Grid>
 ::poly_difference_assign(const Pointset_Powerset& y) {
-  assert(false);
+  Pointset_Powerset& x = *this;
+  // Ensure omega-reduction.
+  x.omega_reduce();
+  y.omega_reduce();
+  Sequence new_sequence = x.sequence;
+  for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
+    const Grid& py = yi->element();
+    Sequence tmp_sequence;
+    for (Sequence_const_iterator nsi = new_sequence.begin(),
+	   ns_end = new_sequence.end(); nsi != ns_end; ++nsi) {
+      std::pair<Grid, Pointset_Powerset<Grid> > partition
+	= approximate_partition(py, nsi->element());
+      const Pointset_Powerset<Grid>& residues = partition.second;
+      // Append the contents of `residues' to `tmp_sequence'.
+      std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
+    }
+    std::swap(tmp_sequence, new_sequence);
+  }
+  std::swap(x.sequence, new_sequence);
+  x.reduced = false;
+  assert(x.OK());
 }
 
 template <>

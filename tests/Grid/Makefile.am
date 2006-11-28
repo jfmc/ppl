@@ -92,6 +92,7 @@ mingenerators1 \
 mincongruences1 \
 outputoperator1 outputoperator2 outputoperator3 \
 partition1 \
+powerset1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
 timeelapse1 \
@@ -225,6 +226,8 @@ outputoperator2_SOURCES = outputoperator2.cc
 outputoperator3_SOURCES = outputoperator3.cc
 
 partition1_SOURCES = partition1.cc
+
+powerset1_SOURCES = powerset1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
