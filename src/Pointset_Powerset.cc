@@ -135,7 +135,8 @@ approximate_partition_aux(const PPL::Congruence& c,
   Congruence_System cgs = qq.congruences();
   Congruence_System cgs_copy = qq_copy.minimized_congruences();
   // When c is an equality, not satisfied by Grid qq
-  // then add qq to the set r.
+  // then add qq to the set r. There is no finite
+  // partition in this case.
   if (c_modulus == 0) {
     if (cgs.num_equalities() != cgs_copy.num_equalities()) {
       r.add_disjunct(qq_copy);
@@ -145,15 +146,16 @@ approximate_partition_aux(const PPL::Congruence& c,
   }
 
   // When c is a proper congruence but, in qq, this direction has
-  // no congruence, then add qq to the set r.
+  // no congruence, then add qq to the set r. There is no finite
+  // partition in this case.
   if (cgs.num_proper_congruences() != cgs_copy.num_proper_congruences()) {
     r.add_disjunct(qq_copy);
     return false;
   }
 
   // When  c is a proper congruence and qq also is discrete
-  // in this direction, then we can find the exact partition
-  // and add this to r.
+  // in this direction, then there is a finite partition and that
+  // is added to r.
   const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
   Linear_Expression le(c);
   le -= c_inhomogeneous_term;
@@ -172,16 +174,17 @@ approximate_partition_aux(const PPL::Congruence& c,
 } // namespace
 
 std::pair<PPL::Grid, PPL::Pointset_Powerset<PPL::Grid> >
-PPL::approximate_partition(const Grid& p, const Grid& q, bool& exact) {
+PPL::approximate_partition(const Grid& p, const Grid& q,
+                                  bool& finite_partition) {
   using namespace PPL;
-  exact = true;
+  finite_partition = true;
   Pointset_Powerset<Grid> r(p.space_dimension(), EMPTY);
   Grid qq = q;
   const Congruence_System& pcs = p.congruences();
   for (Congruence_System::const_iterator i = pcs.begin(),
 	 pcs_end = pcs.end(); i != pcs_end; ++i)
     if (!approximate_partition_aux(*i, qq, r))
-      exact = false;
+      finite_partition = false;
   return std::make_pair(qq, r);
 }
 
@@ -214,11 +217,20 @@ PPL::check_containment(const Grid& ph,
 	if (pj.is_disjoint_from(pi))
 	  ++j;
 	else {
-          bool exact;
+          bool finite_partition;
 	  std::pair<Grid, Pointset_Powerset<Grid> >
-	    partition = approximate_partition(pi, pj, exact);
-          if (exact)
-	    new_disjuncts.upper_bound_assign(partition.second);
+	    partition = approximate_partition(pi, pj, finite_partition);
+
+          // If there is a finite partition, then we add the new
+          // disjuncts to the temporary set of disjuncts and drop pj.
+          // If there is no finite partition, then by the
+          // specification of approximate_partition(), we can
+          // ignore checking the remaining temporary disjuncts as they
+          // will all have the same lines and equalities and therefore
+          // also not have a finite partition wrt pi.
+          if (!finite_partition)
+            break;
+	  new_disjuncts.upper_bound_assign(partition.second);
 	  j = tmp.drop_disjunct(j);
 	}
       }
@@ -242,9 +254,9 @@ PPL::Pointset_Powerset<PPL::Grid>
     Sequence tmp_sequence;
     for (Sequence_const_iterator nsi = new_sequence.begin(),
 	   ns_end = new_sequence.end(); nsi != ns_end; ++nsi) {
-      bool exact;
+      bool finite_partition;
       std::pair<Grid, Pointset_Powerset<Grid> > partition
-	= approximate_partition(py, nsi->element(), exact);
+	= approximate_partition(py, nsi->element(), finite_partition);
       const Pointset_Powerset<Grid>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));

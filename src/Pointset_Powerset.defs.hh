@@ -481,11 +481,11 @@ check_containment(const NNC_Polyhedron& ph,
   the intersection of \p q with the complement of \p p
   is added, as a set of new disjuncts, to the powerset \p r.
   The pair (qq, r) is returned. A Boolean flag indicates
-  whether or not this partition is exact.
+  whether or not this is a partition.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 std::pair<Grid, Pointset_Powerset<Grid> >
-approximate_partition(const Grid& p, const Grid& q, bool& exact);
+approximate_partition(const Grid& p, const Grid& q, bool& finite_partition);
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if the union of

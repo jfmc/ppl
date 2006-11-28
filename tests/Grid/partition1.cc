@@ -22,46 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Partitions the grid \p qq according to the congruence \p c.
-/*! \relates Parma_Polyhedra_Library::Pointset_Powerset
-  On exit, the intersection of \p qq and congruence \p c is stored
-  in \p qq, whereas the intersection of \p qq with the negation of \p c
-  is added, as a set of new disjuncts, to the powerset \p r.
-*/
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void
-partition_aux(const Congruence& c,
-	      Grid& qq,
-	      Pointset_Powerset<Grid>& r) {
-  const Coefficient& c_modulus = c.modulus();
-  const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
-  Linear_Expression le(c);
-  le -= c_inhomogeneous_term;
-  TEMP_INTEGER(n);
-  rem_assign(n, c_inhomogeneous_term, c_modulus);
-  TEMP_INTEGER(i);
-  for (i = c_modulus; i-- > 0; )
-    if (i != n) {
-      Grid qqq(qq);
-      if (qqq.add_congruence_and_minimize((le+i %= 0) / c_modulus))
-	r.add_disjunct(qqq);
-    }
-  qq.add_congruence(c);
-}
-
-/*! \relates Pointset_Powerset */
-std::pair<Grid, Pointset_Powerset<Grid> >
-partition(const Grid& p, const Grid& q) {
-  Pointset_Powerset<Grid> r(p.space_dimension(), EMPTY);
-  Grid qq = q;
-  const Congruence_System& pcs = p.congruences();
-  for (Congruence_System::const_iterator i = pcs.begin(),
-	 pcs_end = pcs.end(); i != pcs_end; ++i)
-    partition_aux(*i, qq, r);
-  return std::pair<Grid, Pointset_Powerset<Grid> >(qq, r);
-}
-
 bool
 test01() {
   Variable x(0);
@@ -78,8 +38,10 @@ test01() {
 
   nout << "q = " << q << endl;
 
+  bool finite_partition;
+
   std::pair<Grid, Pointset_Powerset<Grid> >
-    result = partition(p, q);
+    result = approximate_partition(p, q, finite_partition);
 
   nout << "*** q partition ***" << endl;
   nout << "  === p inters q === " << endl << "  " << result.first << endl;
@@ -90,7 +52,10 @@ test01() {
     return false;
 #endif
 
-  result = partition(q, p);
+  if (!finite_partition)
+    return false;
+
+  result = approximate_partition(q, p, finite_partition);
 
   nout << "*** p partition ***" << endl;
   nout << "  === q inters p === " << endl << "  " << result.first << endl;
@@ -100,7 +65,7 @@ test01() {
   return aux_test03(q, p, result);
 #endif
 
-  return true;
+  return finite_partition;
 }
 
 BEGIN_MAIN
