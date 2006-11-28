@@ -193,6 +193,14 @@ Pointset_Powerset<PH>
 
 template <>
 inline bool
+Pointset_Powerset<Grid>
+::geometrically_equals(const Pointset_Powerset& y) const {
+  const Pointset_Powerset& x = *this;
+  return x.geometrically_covers(y) && y.geometrically_covers(x);
+}
+
+template <>
+inline bool
 Pointset_Powerset<NNC_Polyhedron>
 ::geometrically_equals(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;

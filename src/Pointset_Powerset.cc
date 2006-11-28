@@ -193,6 +193,51 @@ approximate_partition(const PPL::Grid& p, const PPL::Grid& q,
   return std::pair<Grid, Pointset_Powerset<Grid> >(qq, r);
 }
 
+bool
+grid_check_containment(const PPL::Grid& ph,
+			    const PPL::Pointset_Powerset<PPL::Grid>& ps) {
+  using namespace PPL;
+  if (ph.is_empty())
+    return true;
+  Pointset_Powerset<Grid> tmp(ph.space_dimension(), EMPTY);
+  tmp.add_disjunct(ph);
+  for (Pointset_Powerset<Grid>::const_iterator
+	 i = ps.begin(), ps_end = ps.end(); i != ps_end; ++i) {
+    const Grid& pi = i->element();
+    for (Pointset_Powerset<Grid>::iterator
+	   j = tmp.begin(); j != tmp.end(); ) {
+      const Grid& pj = j->element();
+      if (pi.contains(pj))
+	j = tmp.drop_disjunct(j);
+      else
+	++j;
+    }
+    if (tmp.empty())
+      return true;
+    else {
+      Pointset_Powerset<Grid> new_disjuncts(ph.space_dimension(),
+						      EMPTY);
+      for (Pointset_Powerset<Grid>::iterator
+	     j = tmp.begin(); j != tmp.end(); ) {
+	const Grid& pj = j->element();
+	if (pj.is_disjoint_from(pi))
+	  ++j;
+	else {
+          bool exact = true;
+	  std::pair<Grid, Pointset_Powerset<Grid> >
+	    partition = approximate_partition(pi, pj, exact);
+          if (exact)
+	    new_disjuncts.upper_bound_assign(partition.second);
+	  j = tmp.drop_disjunct(j);
+	}
+      }
+      tmp.upper_bound_assign(new_disjuncts);
+    }
+  }
+  return false;
+}
+
+
 } // namespace
 
 
@@ -227,6 +272,9 @@ template <>
 bool
 PPL::Pointset_Powerset<PPL::Grid>
 ::geometrically_covers(const Pointset_Powerset& y) const {
-  assert(false);
-  return false;
+  const Pointset_Powerset& x = *this;
+  for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi)
+    if (!grid_check_containment(yi->element(), x))
+      return false;
+  return true;
 }
