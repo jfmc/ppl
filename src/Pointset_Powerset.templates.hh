@@ -682,7 +682,7 @@ linear_partition(const PH& p, const PH& q) {
     else
       linear_partition_aux(c, qq, r);
   }
-  return std::pair<PH, Pointset_Powerset<NNC_Polyhedron> >(qq, r);
+  return std::make_pair(qq, r);
 }
 
 } // namespace Parma_Polyhedra_Library
