@@ -169,34 +169,25 @@ approximate_partition_aux(const PPL::Congruence& c,
   return true;
 }
 
-#if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Uses the Grid \p q to approximately partition the grid \p p.
-/*! \relates Parma_Polyhedra_Library::Pointset_Powerset
-  On exit, the intersection of \p q and congruence \p p is stored
-  in \p qq, whereas a finite set of grids that approximate
-  the intersection of \p q with the complement of \p p
-  is added, as a set of new disjuncts, to the powerset \p r.
-  The pair (qq, r) is returned. A Boolean flag indicates
-  whether or not this partition is exact.
-*/
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+} // namespace
+
 std::pair<PPL::Grid, PPL::Pointset_Powerset<PPL::Grid> >
-approximate_partition(const PPL::Grid& p, const PPL::Grid& q,
-                                          bool exact = true) {
+PPL::approximate_partition(const Grid& p, const Grid& q, bool& exact) {
   using namespace PPL;
+  exact = true;
   Pointset_Powerset<Grid> r(p.space_dimension(), EMPTY);
   Grid qq = q;
   const Congruence_System& pcs = p.congruences();
   for (Congruence_System::const_iterator i = pcs.begin(),
 	 pcs_end = pcs.end(); i != pcs_end; ++i)
-    exact &= approximate_partition_aux(*i, qq, r);
-  return std::pair<Grid, Pointset_Powerset<Grid> >(qq, r);
+    if (!approximate_partition_aux(*i, qq, r))
+      exact = false;
+  return std::make_pair(qq, r);
 }
 
 bool
-grid_check_containment(const PPL::Grid& ph,
-			    const PPL::Pointset_Powerset<PPL::Grid>& ps) {
-  using namespace PPL;
+PPL::check_containment(const Grid& ph,
+		       const Pointset_Powerset<Grid>& ps) {
   if (ph.is_empty())
     return true;
   Pointset_Powerset<Grid> tmp(ph.space_dimension(), EMPTY);
@@ -223,7 +214,7 @@ grid_check_containment(const PPL::Grid& ph,
 	if (pj.is_disjoint_from(pi))
 	  ++j;
 	else {
-          bool exact = true;
+          bool exact;
 	  std::pair<Grid, Pointset_Powerset<Grid> >
 	    partition = approximate_partition(pi, pj, exact);
           if (exact)
@@ -236,10 +227,6 @@ grid_check_containment(const PPL::Grid& ph,
   }
   return false;
 }
-
-
-} // namespace
-
 
 template <>
 void
@@ -255,8 +242,9 @@ PPL::Pointset_Powerset<PPL::Grid>
     Sequence tmp_sequence;
     for (Sequence_const_iterator nsi = new_sequence.begin(),
 	   ns_end = new_sequence.end(); nsi != ns_end; ++nsi) {
+      bool exact;
       std::pair<Grid, Pointset_Powerset<Grid> > partition
-	= approximate_partition(py, nsi->element());
+	= approximate_partition(py, nsi->element(), exact);
       const Pointset_Powerset<Grid>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
@@ -274,7 +262,7 @@ PPL::Pointset_Powerset<PPL::Grid>
 ::geometrically_covers(const Pointset_Powerset& y) const {
   const Pointset_Powerset& x = *this;
   for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi)
-    if (!grid_check_containment(yi->element(), x))
+    if (!check_containment(yi->element(), x))
       return false;
   return true;
 }

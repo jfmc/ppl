@@ -472,6 +472,31 @@ bool
 check_containment(const NNC_Polyhedron& ph,
 		  const Pointset_Powerset<NNC_Polyhedron>& ps);
 
+
+#if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Uses the Grid \p q to approximately partition the grid \p p.
+/*! \relates Parma_Polyhedra_Library::Pointset_Powerset
+  On exit, the intersection of \p q and congruence \p p is stored
+  in \p qq, whereas a finite set of grids that approximate
+  the intersection of \p q with the complement of \p p
+  is added, as a set of new disjuncts, to the powerset \p r.
+  The pair (qq, r) is returned. A Boolean flag indicates
+  whether or not this partition is exact.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+std::pair<Grid, Pointset_Powerset<Grid> >
+approximate_partition(const Grid& p, const Grid& q, bool& exact);
+
+/*! \brief
+  Returns <CODE>true</CODE> if and only if the union of
+  the grids \p ps contains the grid \p g.
+
+  \relates Pointset_Powerset
+*/
+bool
+check_containment(const Grid& ph,
+		  const Pointset_Powerset<Grid>& ps);
+
 /*! \brief
   Returns <CODE>true</CODE> if and only if the union of
   the objects in \p ps contains \p ph.
