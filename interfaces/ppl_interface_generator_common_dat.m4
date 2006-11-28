@@ -717,7 +717,11 @@ m4_define(`m4_BD_Shape_binop_replacement',
 m4_define(`m4_Octagonal_Shape_binop_replacement',
          `m4_binop_replacement, oct_hull_assign')
 m4_define(`m4_Pointset_Powerset_binop_replacement',
-          `m4_ifelse(`m4_body_class_kind($1)', Polyhedron,
+          `m4_ifelse(
+          `m4_body_class_kind($1)', Polyhedron,
+          `intersection_assign, poly_difference_assign, concatenate_assign,
+           time_elapse_assign',
+          `m4_body_class_kind($1)', Grid,
           `intersection_assign, poly_difference_assign, concatenate_assign,
            time_elapse_assign',
           `intersection_assign, concatenate_assign,
