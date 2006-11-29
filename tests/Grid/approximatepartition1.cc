@@ -1,4 +1,4 @@
-/* Test Pointset_Powerset<Grid>.
+/* Test approximate_partition().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,46 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-#if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Partitions the grid \p qq according to the congruence \p c.
-/*! \relates Parma_Polyhedra_Library::Pointset_Powerset
-  On exit, the intersection of \p qq and congruence \p c is stored
-  in \p qq, whereas the intersection of \p qq with the negation of \p c
-  is added, as a set of new disjuncts, to the powerset \p r.
-*/
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void
-partition_aux(const Congruence& c,
-	      Grid& qq,
-	      Pointset_Powerset<Grid>& r) {
-  const Coefficient& c_modulus = c.modulus();
-  const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
-  Linear_Expression le(c);
-  le -= c_inhomogeneous_term;
-  TEMP_INTEGER(n);
-  rem_assign(n, c_inhomogeneous_term, c_modulus);
-  TEMP_INTEGER(i);
-  for (i = c_modulus; i-- > 0; )
-    if (i != n) {
-      Grid qqq(qq);
-      if (qqq.add_congruence_and_minimize((le+i %= 0) / c_modulus))
-	r.add_disjunct(qqq);
-    }
-  qq.add_congruence(c);
-}
-
-/*! \relates Pointset_Powerset */
-std::pair<Grid, Pointset_Powerset<Grid> >
-partition(const Grid& p, const Grid& q) {
-  Pointset_Powerset<Grid> r(p.space_dimension(), EMPTY);
-  Grid qq = q;
-  const Congruence_System& pcs = p.congruences();
-  for (Congruence_System::const_iterator i = pcs.begin(),
-	 pcs_end = pcs.end(); i != pcs_end; ++i)
-    partition_aux(*i, qq, r);
-  return std::pair<Grid, Pointset_Powerset<Grid> >(qq, r);
-}
-
 bool
 test01() {
   Variable x(0);
@@ -78,8 +38,10 @@ test01() {
 
   nout << "q = " << q << endl;
 
+  bool finite_partition;
+
   std::pair<Grid, Pointset_Powerset<Grid> >
-    result = partition(p, q);
+    result = approximate_partition(p, q, finite_partition);
 
   nout << "*** q partition ***" << endl;
   nout << "  === p inters q === " << endl << "  " << result.first << endl;
@@ -90,7 +52,10 @@ test01() {
     return false;
 #endif
 
-  result = partition(q, p);
+  if (!finite_partition)
+    return false;
+
+  result = approximate_partition(q, p, finite_partition);
 
   nout << "*** p partition ***" << endl;
   nout << "  === q inters p === " << endl << "  " << result.first << endl;
@@ -100,9 +65,46 @@ test01() {
   return aux_test03(q, p, result);
 #endif
 
-  return true;
+  return finite_partition;
+}
+
+bool
+test02() {
+  Variable x(0);
+  Variable y(1);
+
+  Grid p(2);
+  p.add_congruence(x %= 0);
+
+  print_congruences(p, "*** p ***");
+
+  Grid q(2);
+  q.add_congruence((x %= 0) / 2);
+  q.add_congruence((y %= 0) / 1);
+
+  print_congruences(q, "*** q ***");
+
+  bool finite_partition;
+
+  std::pair<Grid, Pointset_Powerset<Grid> >
+    result = approximate_partition(q, p, finite_partition);
+
+  print_congruences(result.first,
+		    "*** result.first ***");
+
+  print_congruences(result.second,
+		    "*** result.second ***");
+
+  if (finite_partition)
+    return false;
+
+  Grid known_gr(p);
+
+  Pointset_Powerset<Grid>::iterator i = (result.second).begin();
+  return (i->element() == known_gr);
 }
 
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN

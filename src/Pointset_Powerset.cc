@@ -114,8 +114,8 @@ namespace {
 //! Uses the congruence \p c to approximately partition the grid \p qq.
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset
   On exit, the intersection of \p qq and congruence \p c is stored
-  in \p qq, whereas a finite set of grids that approximate
-  the intersection of \p qq with the negation of \p c
+  in \p qq, whereas a finite set of grids whose set-theoretic union
+  contains the intersection of \p qq with the negation of \p c
   is added, as a set of new disjuncts, to the powerset \p r.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -183,8 +183,11 @@ PPL::approximate_partition(const Grid& p, const Grid& q,
   const Congruence_System& pcs = p.congruences();
   for (Congruence_System::const_iterator i = pcs.begin(),
 	 pcs_end = pcs.end(); i != pcs_end; ++i)
-    if (!approximate_partition_aux(*i, qq, r))
+    if (!approximate_partition_aux(*i, qq, r)) {
       finite_partition = false;
+      Pointset_Powerset<Grid> s(q);
+      return std::make_pair(qq, s);
+    }
   return std::make_pair(qq, r);
 }
 

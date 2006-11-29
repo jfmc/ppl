@@ -473,17 +473,24 @@ check_containment(const NNC_Polyhedron& ph,
 		  const Pointset_Powerset<NNC_Polyhedron>& ps);
 
 
-#if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Uses the Grid \p q to approximately partition the grid \p p.
+//! Uses the grid \p q to partition the grid \p p if the partition is finite.
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset
-  On exit, the intersection of \p q and congruence \p p is stored
-  in \p qq, whereas a finite set of grids that approximate
-  the intersection of \p q with the complement of \p p
-  is added, as a set of new disjuncts, to the powerset \p r.
-  The pair (qq, r) is returned. A Boolean flag indicates
-  whether or not this is a partition.
+  Let \p p and \p q be two grids.
+  The function returns an object <CODE>r</CODE> of type
+  <CODE>std::pair\<PH, Pointset_Powerset\<Grid\> \></CODE>
+  such that
+  - <CODE>r.first</CODE> is the intersection of \p p and \p q;
+  - If there is a finite partition of \p q wrt \p p
+    the Boolean <CODE>finite_partition</CODE> is set to true and
+    <CODE>r.second</CODE> has the property that all its elements are
+    pairwise disjoint and disjoint from \p p and the set-theoretical
+    union of <CODE>r.first</CODE> with all the elements of
+    <CODE>r.second</CODE> gives \p q (i.e., <CODE>r</CODE>
+    is the representation of a partition of \p q).
+  - Otherwise the Boolean <CODE>finite_partition</CODE> is set to false
+    and the singleton set that contains \p q is stored in
+    <CODE>r.second</CODE>r.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 std::pair<Grid, Pointset_Powerset<Grid> >
 approximate_partition(const Grid& p, const Grid& q, bool& finite_partition);
 
