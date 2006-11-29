@@ -344,7 +344,10 @@ SPECIALIZE_SET_SPECIAL(set_special_int, unsigned long long)
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_signed_int_signed_int(To& to, const From from, Rounding_Dir dir) {
-  if (sizeof(To) <= sizeof(From)) {
+  if (sizeof(To) < sizeof(From)
+      || (sizeof(To) == sizeof(From)
+	  && (Extended_Int<To_Policy, To>::min > Extended_Int<From_Policy, From>::min
+	      || Extended_Int<To_Policy, To>::max < Extended_Int<From_Policy, From>::max))) {
     if (CHECK_P(To_Policy::check_overflow,
 		from < static_cast<From>(Extended_Int<To_Policy, To>::min)))
       return set_neg_overflow_int<To_Policy>(to, dir);
@@ -385,7 +388,9 @@ assign_unsigned_int_signed_int(To& to, const From from, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_unsigned_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
-  if (sizeof(To) <= sizeof(From)) {
+  if (sizeof(To) < sizeof(From)
+      || (sizeof(To) == sizeof(From)
+	  && Extended_Int<To_Policy, To>::max < Extended_Int<From_Policy, From>::max)) {
     if (CHECK_P(To_Policy::check_overflow,
 		from > static_cast<From>(Extended_Int<To_Policy, To>::max)))
       return set_pos_overflow_int<To_Policy>(to, dir);
@@ -902,7 +907,7 @@ inline Result
 neg_int_larger(Type& to, const Type x, Rounding_Dir dir) {
   typename Larger<Type>::type_for_neg l = x;
   l = -l;
-  return assign<To_Policy, void>(to, l, dir);
+  return assign<To_Policy, To_Policy>(to, l, dir);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
@@ -910,7 +915,7 @@ inline Result
 add_int_larger(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   typename Larger<Type>::type_for_add l = x;
   l += y;
-  return assign<To_Policy, void>(to, l, dir);
+  return assign<To_Policy, To_Policy>(to, l, dir);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
@@ -918,7 +923,7 @@ inline Result
 sub_int_larger(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   typename Larger<Type>::type_for_sub l = x;
   l -= y;
-  return assign<To_Policy, void>(to, l, dir);
+  return assign<To_Policy, To_Policy>(to, l, dir);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename Type>
@@ -926,7 +931,7 @@ inline Result
 mul_int_larger(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   typename Larger<Type>::type_for_mul l = x;
   l *= y;
-  return assign<To_Policy, void>(to, l, dir);
+  return assign<To_Policy, To_Policy>(to, l, dir);
 }
 
 template <typename To_Policy, typename From_Policy, typename Type>
@@ -1477,11 +1482,11 @@ SPECIALIZE_ABS(abs_generic, signed short, signed short)
 SPECIALIZE_ABS(abs_generic, signed int, signed int)
 SPECIALIZE_ABS(abs_generic, signed long, signed long)
 SPECIALIZE_ABS(abs_generic, signed long long, signed long long)
-SPECIALIZE_ABS(abs_generic, unsigned char, unsigned char)
-SPECIALIZE_ABS(abs_generic, unsigned short, unsigned short)
-SPECIALIZE_ABS(abs_generic, unsigned int, unsigned int)
-SPECIALIZE_ABS(abs_generic, unsigned long, unsigned long)
-SPECIALIZE_ABS(abs_generic, unsigned long long, unsigned long long)
+SPECIALIZE_ABS(assign_unsigned_int_unsigned_int, unsigned char, unsigned char)
+SPECIALIZE_ABS(assign_unsigned_int_unsigned_int, unsigned short, unsigned short)
+SPECIALIZE_ABS(assign_unsigned_int_unsigned_int, unsigned int, unsigned int)
+SPECIALIZE_ABS(assign_unsigned_int_unsigned_int, unsigned long, unsigned long)
+SPECIALIZE_ABS(assign_unsigned_int_unsigned_int, unsigned long long, unsigned long long)
 
 SPECIALIZE_GCD(gcd_exact, signed char, signed char, signed char)
 SPECIALIZE_GCD(gcd_exact, signed short, signed short, signed short)

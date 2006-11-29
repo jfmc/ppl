@@ -149,7 +149,7 @@ public:
       return T_MAYBE;
   }
   Ternary is_singleton_cached() const {
-    if (info().get_interval_property(CARDINALITY_0))
+    if (info().get_interval_property(CARDINALITY_1))
       return info().get_interval_property(CARDINALITY_IS) ? T_YES : T_NO;
     else if (info().get_interval_property(CARDINALITY_IS))
       return T_NO;
@@ -172,8 +172,10 @@ public:
       return true;
     case T_MAYBE:
       bool r = is_empty_nocache();
-      if (r)
+      if (r) {
 	w_info().set_interval_property(CARDINALITY_IS, r);
+	w_info().set_interval_property(CARDINALITY_1, false);
+      }
       w_info().set_interval_property(CARDINALITY_0);
       return r;
     }
@@ -188,8 +190,10 @@ public:
       return true;
     case T_MAYBE:
       bool r = is_singleton_nocache();
-      if (r)
+      if (r) {
 	w_info().set_interval_property(CARDINALITY_IS, r);
+	w_info().set_interval_property(CARDINALITY_0, false);
+      }
       w_info().set_interval_property(CARDINALITY_1);
       return r;
     }
@@ -202,8 +206,8 @@ public:
     info().normalize();
     return combine(rl, ru);
   }
-  bool has_restrictions() const {
-    return info().has_restrictions();
+  bool has_restriction() const {
+    return info().has_restriction();
   }
   bool lower_is_open() const {
     return is_open(LOWER, lower(), info());
@@ -228,7 +232,7 @@ public:
   }
   bool is_universe() const {
     return lower_is_unbounded() && upper_is_unbounded()
-      && !has_restrictions();
+      && !has_restriction();
   }
   I_Result set_universe() {
     info().clear();
@@ -281,6 +285,27 @@ public:
   }
 
   bool OK() const {
+    if (!Info::may_be_empty && is_empty()) {
+#ifndef NDEBUG
+	std::cerr << "The interval is unexpectedly empty." << std::endl;
+#endif
+	return false;
+    }
+
+    if (is_open(LOWER, lower(), info())) {
+      if (is_plus_infinity(LOWER, lower(), info())) {
+#ifndef NDEBUG
+	std::cerr << "The lower boundary is +inf open." << std::endl;
+#endif
+      }
+    }
+    else if (is_minus_infinity(LOWER, lower(), info())
+	     || is_plus_infinity(LOWER, lower(), info())) {
+#ifndef NDEBUG
+      std::cerr << "The lower boundary is unexpectedly infinity." << std::endl;
+#endif
+      return false;
+    }
     if (!info().get_boundary_property(LOWER, SPECIAL)) {
       if (is_not_a_number(lower())) {
 #ifndef NDEBUG
@@ -288,16 +313,7 @@ public:
 #endif
 	return false;
       }
-      if (is_plus_infinity(lower())) {
-	if (!Info::may_be_infinity) {
-	  std::cerr << "The lower boundary is unexpectedly +inf." << std::endl;
-	  return false;
-	}
-	if (info().get_boundary_property(LOWER, OPEN)) {
-	  std::cerr << "The lower boundary is +inf open." << std::endl;
-	  return false;
-	}
-      }
+#if 0
       if (info().get_boundary_property(LOWER, NORMALIZED)
 	  && !info().is_restricted(lower())) {
 #ifndef NDEBUG
@@ -305,8 +321,23 @@ public:
 #endif
 	return false;
       }
+#endif
     }
 
+    if (is_open(UPPER, upper(), info())) {
+      if (is_minus_infinity(UPPER, upper(), info())) {
+#ifndef NDEBUG
+	std::cerr << "The upper boundary is -inf open." << std::endl;
+#endif
+      }
+    }
+    else if (is_minus_infinity(UPPER, upper(), info())
+	     || is_plus_infinity(UPPER, upper(), info())) {
+#ifndef NDEBUG
+      std::cerr << "The upper boundary is unexpectedly infinity." << std::endl;
+#endif
+      return false;
+    }
     if (!info().get_boundary_property(UPPER, SPECIAL)) {
       if (is_not_a_number(upper())) {
 #ifndef NDEBUG
@@ -314,16 +345,7 @@ public:
 #endif
 	return false;
       }
-      if (is_minus_infinity(upper())) {
-	if (!Info::may_be_infinity) {
-	  std::cerr << "The upper boundary is unexpectedly -inf." << std::endl;
-	  return false;
-	}
-	if (info().get_boundary_property(UPPER, OPEN)) {
-	  std::cerr << "The upper boundary is +inf open." << std::endl;
-	  return false;
-	}
-      }
+#if 0
       if (info().get_boundary_property(UPPER, NORMALIZED)
 	  && !info().is_restricted(upper())) {
 #ifndef NDEBUG
@@ -331,36 +353,45 @@ public:
 #endif
 	return false;
       }
+#endif
     }
 
     Ternary t;
 
     t = is_empty_cached();
-    if (t == T_YES && !is_empty_nocache()) {
+    if (t == T_YES) {
+      if (!is_empty_nocache()) {
 #ifndef NDEBUG
-      std::cerr << "The interval is marked to be empty but actually it is not empty." << std::endl;
+	std::cerr << "The interval is marked to be empty but actually it is not empty." << std::endl;
 #endif
-      return false;
+	return false;
+      }
     }
-    if (t == T_NO && is_empty_nocache()) {
+    else if (t == T_NO) {
+      if (is_empty_nocache()) {
 #ifndef NDEBUG
-      std::cerr << "The interval is marked to be not empty but actually it is empty." << std::endl;
+	std::cerr << "The interval is marked to be not empty but actually it is empty." << std::endl;
 #endif
-      return false;
+	return false;
+      }
     }
 
     t = is_singleton_cached();
-    if (t == T_YES && !is_singleton_nocache()) {
+    if (t == T_YES) {
+      if (!is_singleton_nocache()) {
 #ifndef NDEBUG
-      std::cerr << "The interval is marked to be singleton but actually it is not singleton." << std::endl;
+	std::cerr << "The interval is marked to be singleton but actually it is not singleton." << std::endl;
 #endif
-      return false;
+	return false;
+      }
     }
-    if (t == T_NO && is_singleton_nocache()) {
+    else if (t == T_NO) {
+      if (is_singleton_nocache()) {
 #ifndef NDEBUG
-      std::cerr << "The interval is marked to be not singleton but actually it is singleton." << std::endl;
+	std::cerr << "The interval is marked to be not singleton but actually it is singleton." << std::endl;
 #endif
-      return false;
+	return false;
+      }
     }
 
     if (info().get_interval_property(CARDINALITY_IS) &&
@@ -411,7 +442,7 @@ info(const Interval<Boundary, Info>& x) {
 
 struct Scalar_As_Interval_Policy {
   const_bool_nodef(may_be_empty, true);
-  const_bool_nodef(may_be_infinity, true);
+  const_bool_nodef(may_contain_infinity, true);
   const_bool_nodef(check_empty_result, false);
   const_bool_nodef(check_inexact, false);
   const_bool_nodef(infinity_is_open, false);
@@ -472,15 +503,9 @@ is_not_a_number(const char*) {
 }
 
 template <typename T>
-inline typename Enable_If<Is_Same_Or_Derived<Interval_No_Restrictions_Base, typename T::info_type>::value, bool>::type
-is_integer(const T& x) {
-  return x.is_singleton() && is_integer(x.lower());
-}
-
-template <typename T>
-inline typename Enable_If<Is_Same_Or_Derived<Interval_Integer_Base, typename T::info_type>::value, bool>::type
-is_integer(const T& x) {
-  return x.info().get_integer();
+inline bool
+is_singleton_integer(const T& x) {
+  return is_singleton(x) && is_integer(lower(x));
 }
 
 template <typename T1, typename T2>
@@ -538,7 +563,7 @@ operator==(const T1& x, const T2& y) {
     return check_empty_arg(y);
   else if (check_empty_arg(y))
     return false;
-  return eq_restrictions(x, y)
+  return eq_restriction(x, y)
     && eq(LOWER, lower(x), info(x), LOWER, lower(y), info(y))
     && eq(UPPER, upper(x), info(x), UPPER, upper(y), info(y));
 }
@@ -551,7 +576,7 @@ contains(const Interval<Boundary, Info>& x, const T& y) {
     return true;
   if (check_empty_arg(x))
     return false;
-  if (!contains_restrictions(x, y))
+  if (!contains_restriction(x, y))
       return false;
   return le(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
     && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y));
@@ -565,9 +590,9 @@ strictly_contains(const Interval<Boundary, Info>& x, const T& y) {
     return !check_empty_arg(x);
   if (check_empty_arg(x))
     return false;
-  if (!contains_restrictions(x, y))
+  if (!contains_restriction(x, y))
       return false;
-  else if (!eq_restrictions(x, y))
+  else if (!eq_restriction(x, y))
     return le(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
       && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y));
   return (lt(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
@@ -593,7 +618,7 @@ assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   if (check_empty_arg(x))
     return to.set_empty();
   To_Info to_info;
-  assign_restrictions(to_info, x);
+  assign_restriction(to_info, x);
   Result rl = assign(LOWER, to.lower(), to_info,
 		     LOWER, lower(x), info(x));
   Result ru = assign(UPPER, to.upper(), to_info,
@@ -605,15 +630,15 @@ assign(Interval<To_Boundary, To_Info>& to, const From& x) {
 template <typename To_Boundary, typename To_Info,
 	  typename From>
 inline I_Result
-convex_hull_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
+join_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   if (check_empty_arg(to))
     return assign(to, x);
   if (check_empty_arg(x))
     return combine(V_EQ, V_EQ);
+  join_restriction(to.info(), to, x);
   to.info().set_interval_property(CARDINALITY_IS, false);
   to.info().set_interval_property(CARDINALITY_0);
   to.info().set_interval_property(CARDINALITY_1, false);
-  convex_hull_restrictions(to.info(), to, x);
   Result rl, ru;
   rl = min_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
   ru = max_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
@@ -623,14 +648,14 @@ convex_hull_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
 template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
 inline I_Result
-convex_hull_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
+join_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x))
     return assign(to, y);
   if (check_empty_arg(y))
     return assign(to, x);
   To_Info to_info;
+  join_restriction(to_info, x, y);
   to_info.set_interval_property(CARDINALITY_0);
-  convex_hull_restrictions(to_info, x, y);
   Result rl, ru;
   rl = min_assign(LOWER, to.lower(), to_info,
 		  LOWER, lower(x), info(x),
@@ -646,11 +671,11 @@ template <typename To_Boundary, typename To_Info,
 	  typename From>
 inline I_Result
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
+  intersect_restriction(to.info(), to, x);
   // FIXME: more accurate?
   to.info().set_interval_property(CARDINALITY_IS, false);
   to.info().set_interval_property(CARDINALITY_0, false);
   to.info().set_interval_property(CARDINALITY_1, false);
-  intersect_restrictions(to.info(), to, x);
   Result rl, ru;
   rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
   ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
@@ -662,11 +687,11 @@ template <typename To_Boundary, typename To_Info,
 inline I_Result
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   To_Info to_info;
+  intersect_restriction(to_info, x, y);
   // FIXME: more accurate?
-  to.info().set_interval_property(CARDINALITY_IS, false);
-  to.info().set_interval_property(CARDINALITY_0, false);
-  to.info().set_interval_property(CARDINALITY_1, false);
-  intersect_restrictions(to_info, x, y);
+  to_info().set_interval_property(CARDINALITY_IS, false);
+  to_info().set_interval_property(CARDINALITY_0, false);
+  to_info().set_interval_property(CARDINALITY_1, false);
   Result rl, ru;
   rl = max_assign(LOWER, to.lower(), to_info,
 		  LOWER, lower(x), info(x),
@@ -753,7 +778,7 @@ neg_assign(Interval<To_Boundary, To_Info>& to, const T& x) {
   if (check_empty_arg(x))
     return to.set_empty();
   To_Info to_info;
-  neg_restrictions(to_info, x);
+  neg_restriction(to_info, x);
   Result rl, ru;
   static To_Boundary to_lower;
   rl = neg_assign(LOWER, to_lower, to_info, UPPER, upper(x), info(x));
@@ -770,7 +795,7 @@ add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
   To_Info to_info;
-  add_restrictions(to_info, x, y);
+  add_restriction(to_info, x, y);
   Result rl = add_assign(LOWER, to.lower(), to_info,
 			 LOWER, lower(x), info(x),
 			 LOWER, lower(y), info(y));
@@ -788,7 +813,7 @@ sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
   To_Info to_info;
-  sub_restrictions(to_info, x, y);
+  sub_restriction(to_info, x, y);
   Result rl, ru;
   static To_Boundary to_lower;
   rl = sub_assign(LOWER, to_lower, to_info,
@@ -823,7 +848,7 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
   To_Info to_info;
-  mul_restrictions(to_info, x, y);
+  mul_restriction(to_info, x, y);
   Result rl, ru;
   static To_Boundary to_lower;
   if (ge(LOWER, lower(x), info(x), LOWER, C_ZERO, SCALAR_INFO)) {
@@ -945,7 +970,7 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
   To_Info to_info;
-  div_restrictions(to_info, x, y);
+  div_restriction(to_info, x, y);
   Result rl, ru;
   static To_Boundary to_lower;
   if (ge(LOWER, lower(y), info(y), LOWER, C_ZERO, SCALAR_INFO)) {
@@ -1029,7 +1054,7 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
   else
     os << x.upper();
   os << (x.upper_is_open() ? ")" : "]");
-  output_restrictions(os, x.info());
+  output_restriction(os, x.info());
   return os;
 }
 

@@ -54,7 +54,7 @@ enum Boundary_Type {
 };
 
 inline Rounding_Dir
-round_dir(Boundary_Type t, bool check = false) {
+round_dir_check(Boundary_Type t, bool check = false) {
   if (check)
     return static_cast<Rounding_Dir>(t | ROUND_FPU_CHECK_INEXACT);
   else
@@ -74,7 +74,7 @@ special_set_minus_infinity(Boundary_Type type, T& x, Info& info) {
   if (type == LOWER)
     return special_set_unbounded(type, x, info);
   else
-    return assign_r(x, MINUS_INFINITY, round_dir(type));
+    return assign_r(x, MINUS_INFINITY, round_dir_check(type));
 }
 
 template <typename T, typename Info>
@@ -83,7 +83,7 @@ special_set_plus_infinity(Boundary_Type type, T& x, Info& info) {
   if (type == UPPER)
     return special_set_unbounded(type, x, info);
   else
-    return assign_r(x, PLUS_INFINITY, round_dir(type));
+    return assign_r(x, PLUS_INFINITY, round_dir_check(type));
 }
 
 
@@ -160,7 +160,7 @@ set_minus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
   if (Info::store_special)
     r = special_set_minus_infinity(type, x, info);
   else
-    r = assign_r(x, MINUS_INFINITY, round_dir(type));
+    r = assign_r(x, MINUS_INFINITY, round_dir_check(type));
   assert(r != VC_MINUS_INFINITY);
   if (!Info::infinity_is_open && (open || r != V_EQ))
     info.set_boundary_property(type, OPEN);
@@ -181,21 +181,11 @@ set_plus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
   if (Info::store_special)
     r = special_set_plus_infinity(type, x, info);
   else
-    r = assign_r(x, PLUS_INFINITY, round_dir(type));
+    r = assign_r(x, PLUS_INFINITY, round_dir_check(type));
   assert(r != VC_MINUS_INFINITY);
   if (!Info::infinity_is_open && (open || r != V_EQ))
     info.set_boundary_property(type, OPEN);
   return r;
-}
-
-template <typename T, typename Info>
-inline Result
-restrict(Boundary_Type type, T& x, Info& info) {
-  // FIXME: check/no check?
-  if (type == LOWER)
-    return add_assign_r(x, x, T(1, ROUND_NOT_NEEDED), ROUND_DOWN);
-  else
-    return sub_assign_r(x, x, T(1, ROUND_NOT_NEEDED), ROUND_UP);
 }
 
 template <typename T, typename Info>
@@ -481,8 +471,8 @@ assign(Boundary_Type to_type, To& to, To_Info& to_info,
   }
   shrink = shrink || normal_is_open(type, x, info);
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open || to_info.has_restrictions())));
-  Result r = assign_r(to, x, round_dir(to_type, check));
+		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
+  Result r = assign_r(to, x, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
 }
 
@@ -549,8 +539,8 @@ neg_assign(Boundary_Type to_type, To& to, To_Info& to_info,
   }
   shrink = normal_is_open(type, x, info);
   bool check = (To_Info::check_inexact
-		|| (!shrink && (To_Info::store_open || to_info.has_restrictions())));
-  Result r = neg_assign_r(to, x, round_dir(to_type, check));
+		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
+  Result r = neg_assign_r(to, x, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
 }
 
@@ -577,8 +567,8 @@ add_assign(Boundary_Type to_type, To& to, To_Info& to_info,
        && !is_invariant(ADD1, type1, x1, info1));
   bool check = (To_Info::check_inexact
 		|| (!shrink && (To_Info::store_open
-				|| to_info.has_restrictions())));
-  Result r = add_assign_r(to, x1, x2, round_dir(to_type, check));
+				|| to_info.has_restriction())));
+  Result r = add_assign_r(to, x1, x2, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
 }
 
@@ -599,8 +589,8 @@ sub_assign(Boundary_Type to_type, To& to, To_Info& to_info,
        && !is_invariant(SUB1, type1, x1, info1));
   bool check = (To_Info::check_inexact
 		|| (!shrink && (To_Info::store_open
-				|| to_info.has_restrictions())));
-  Result r = sub_assign_r(to, x1, x2, round_dir(to_type, check));
+				|| to_info.has_restriction())));
+  Result r = sub_assign_r(to, x1, x2, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
 }
 
@@ -620,8 +610,8 @@ mul_assign(Boundary_Type to_type, To& to, To_Info& to_info,
        && !is_invariant(MUL1, type1, x1, info1));
   bool check = (To_Info::check_inexact
 		|| (!shrink && (To_Info::store_open
-				|| to_info.has_restrictions())));
-  Result r = mul_assign_r(to, x1, x2, round_dir(to_type, check));
+				|| to_info.has_restriction())));
+  Result r = mul_assign_r(to, x1, x2, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
 }
 
@@ -641,8 +631,8 @@ div_assign(Boundary_Type to_type, To& to, To_Info& to_info,
        && !is_invariant(DIV1, type1, x1, info1));
   bool check = (To_Info::check_inexact
 		|| (!shrink && (To_Info::store_open
-				|| to_info.has_restrictions())));
-  Result r = div_assign_r(to, x1, x2, round_dir(to_type, check));
+				|| to_info.has_restriction())));
+  Result r = div_assign_r(to, x1, x2, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
 }
 

@@ -518,7 +518,7 @@ div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename Type>
 inline Result
-rem_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
+rem_float(Type& to, const Type x, const Type y, Rounding_Dir) {
   if (To_Policy::check_inf_mod && is_inf_float<From1_Policy>(x))
     return set_special<To_Policy>(to, V_INF_MOD);
   if (To_Policy::check_div_zero && y == 0)
@@ -561,7 +561,7 @@ inline Result
 abs_float(Type& to, const Type from, Rounding_Dir) {
   if (To_Policy::check_nan_result && is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
-  to = ::abs(from);
+  to = std::abs(from);
   return V_EQ;
 }
 

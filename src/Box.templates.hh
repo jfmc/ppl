@@ -206,7 +206,7 @@ Box<Interval>::box_hull_assign(const Box& y) {
   }
 
   for (dimension_type k = x.seq.size(); k-- > 0; )
-    convex_hull_assign(x.seq[k], y.seq[k]);
+    join_assign(x.seq[k], y.seq[k]);
 
   assert(x.OK());
 }
