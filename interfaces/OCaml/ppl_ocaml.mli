@@ -162,8 +162,20 @@ external ppl_Polyhedron_space_dimension:
 external ppl_Polyhedron_constraints:
    polyhedron -> constraint_system = "ppl_Polyhedron_constraints"
 
+external ppl_Polyhedron_minimized_constraints:
+   polyhedron -> constraint_system = "ppl_Polyhedron_minimized_constraints"
+
 external ppl_Polyhedron_generators:
    polyhedron -> generator_system = "ppl_Polyhedron_generators"
+
+external ppl_Polyhedron_minimized_generators:
+   polyhedron -> generator_system = "ppl_Polyhedron_minimized_generators"
+
+external ppl_Polyhedron_congruences:
+   polyhedron -> congruence_system = "ppl_Polyhedron_congruences"
+
+external ppl_Polyhedron_minimized_congruences:
+   polyhedron -> congruence_system = "ppl_Polyhedron_minimized_congruences"
 
 external test_linear_expression:
   linear_expression -> unit = "test_linear_expression"

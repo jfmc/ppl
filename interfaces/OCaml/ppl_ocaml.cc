@@ -280,6 +280,46 @@ build_caml_constraint(const Constraint& ppl_constraint) {
 }
 
 value
+build_caml_congruence(const Congruence& ppl_congruence) {
+    value caml_congruence = caml_alloc(3,0);
+    Field(caml_congruence, 0) = get_linear_expression(ppl_congruence);
+    Field(caml_congruence, 1) = get_inhomogeneous_term(ppl_congruence);
+    const Coefficient& modulus = ppl_congruence.modulus();
+    value coeff_mpz = alloc_mpz();
+    mpz_init_set(*mpz_val(coeff_mpz), raw_value(modulus).get_mpz_t());
+    Field(caml_congruence, 2) = coeff_mpz;
+    return caml_congruence;
+}
+
+value
+build_caml_congruence_system(const Congruence_System& ppl_cgs) {
+  // This code builds a list of constraints starting from bottom to
+  // top. A list on OCaml must be built like a sequence of Cons and Tail.
+  // The first element is the Nil list (the Val_int(0)).
+  value caml_cgs_tail = Val_int(0);
+  bool tail_built = false;
+  for (Congruence_System::const_iterator v_begin = ppl_cgs.begin(),
+  	 v_end = ppl_cgs.end(); v_begin != v_end; ++v_begin) {
+    if (!tail_built) {
+      tail_built = true;
+      caml_cgs_tail = caml_alloc_tuple(2);
+      Field(caml_cgs_tail, 1) = Val_int(0);
+    }
+    Field(caml_cgs_tail, 0) = build_caml_congruence(*v_begin);
+    Congruence_System::const_iterator itr = v_begin;
+    ++itr;
+    // If we have a `next` element, make space to store it in the next
+    // cycle.
+    if (itr != v_end) {
+      value new_tail = caml_alloc_tuple(2);
+      Field(new_tail, 1) = caml_cgs_tail;
+      caml_cgs_tail = new_tail;
+    }
+  }
+  return caml_cgs_tail;
+}
+
+value
 build_caml_constraint_system(const Constraint_System& ppl_cs) {
   // This code builds a list of constraints starting from bottom to
   // top. A list on OCaml must be built like a sequence of Cons and Tail.
@@ -425,8 +465,6 @@ val_p_Polyhedron(const Polyhedron& ph) {
   p_Polyhedron_val(v) = const_cast<Polyhedron*>(&ph);
   return(v);
 }
-
-
 
 extern "C"
 CAMLprim value
@@ -818,24 +856,62 @@ ppl_Polyhedron_ppl_Polyhedron_remove_higher_space_dimensions(value ph,
   Polyhedron& pph = *p_Polyhedron_val(ph);
   pph.remove_higher_space_dimensions(dd);
   CAMLreturn0;
-							     }
+}
 CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_Polyhedron_constraints(value ph) {
+ppl_Polyhedron_constraints(value ph) try {
   CAMLparam1(ph);
   Polyhedron& pph = *p_Polyhedron_val(ph);
   CAMLreturn(build_caml_constraint_system(pph.constraints()));
 }
+CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_Polyhedron_generators(value ph) {
+ppl_Polyhedron_minimized_constraints(value ph) try {
+  CAMLparam1(ph);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  CAMLreturn(build_caml_constraint_system(pph.minimized_constraints()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_generators(value ph) try {
   CAMLparam1(ph);
   Polyhedron& pph = *p_Polyhedron_val(ph);
   CAMLreturn(build_caml_generator_system(pph.generators()));
 }
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_minimized_generators(value ph) try {
+  CAMLparam1(ph);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  CAMLreturn(build_caml_generator_system(pph.minimized_generators()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_congruences(value ph) try {
+  CAMLparam1(ph);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  CAMLreturn(build_caml_congruence_system(pph.congruences()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_minimized_congruences(value ph) try {
+  CAMLparam1(ph);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  CAMLreturn(build_caml_congruence_system(pph.minimized_congruences()));
+}
+CATCH_ALL
 
 extern "C"
 CAMLprim void

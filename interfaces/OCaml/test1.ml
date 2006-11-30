@@ -78,6 +78,16 @@ let rec print_generators = function
       print_string "den: ";
       print_int(Z.to_int c);
       print_newline();;
+
+let print_congruence = function x,y,z ->
+   print_linear_expression x;
+  print_string " %= ";
+  print_linear_expression y;
+  print_string " mod ";
+  print_int(Z.to_int z);
+  print_newline();;
+
+
 (* Build linear expressions the hard way. *)
 
 print_string "Build linear expressions manually:\n" ;;
@@ -182,8 +192,8 @@ let ph = ppl_new_C_Polyhedron_from_congruence_system(cgs);;
 let result =  ppl_Polyhedron_bounds_from_above ph e2;;
 ppl_Polyhedron_add_constraint ph (e2 >=/ e2);;
 let ph2 = ppl_new_C_Polyhedron_from_generator_system(gs1);;
-(* ppl_Polyhedron_concatenate_assign ph ph2;; *)
- let constr = ppl_Polyhedron_generators ph in
- List.iter print_generators constr;;
+ppl_Polyhedron_concatenate_assign ph ph2;;
+let constr = ppl_Polyhedron_congruences ph in
+List.iter print_congruence constr;;
 at_exit Gc.full_major;;
 print_string "Bye!\n"
