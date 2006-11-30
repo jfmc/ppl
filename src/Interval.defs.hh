@@ -563,8 +563,7 @@ operator==(const T1& x, const T2& y) {
     return check_empty_arg(y);
   else if (check_empty_arg(y))
     return false;
-  //  return eq_restrictions(info(x), info(y))
-  return eq_restriction(x, y)
+  return eq_restrictions(info(x), info(y))
     && eq(LOWER, lower(x), info(x), LOWER, lower(y), info(y))
     && eq(UPPER, upper(x), info(x), UPPER, upper(y), info(y));
 }
