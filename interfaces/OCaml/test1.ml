@@ -195,5 +195,10 @@ let ph2 = ppl_new_C_Polyhedron_from_generator_system(gs1);;
 ppl_Polyhedron_concatenate_assign ph ph2;;
 let constr = ppl_Polyhedron_congruences ph in
 List.iter print_congruence constr;;
+ppl_Polyhedron_bounded_affine_preimage ph 1 e1 e2 (Z.from_int 10);;
+ppl_Polyhedron_bounded_affine_preimage ph 1 e1 e2 (Z.from_int 10);;
+ppl_Polyhedron_affine_image ph 1 e1 (Z.from_int 10);;
+limited_BHRZ03_extrapolation_assign ph ph cs 10;
+bounded_BHRZ03_extrapolation_assign ph ph cs 10;
 at_exit Gc.full_major;;
 print_string "Bye!\n"

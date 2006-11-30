@@ -177,6 +177,34 @@ external ppl_Polyhedron_congruences:
 external ppl_Polyhedron_minimized_congruences:
    polyhedron -> congruence_system = "ppl_Polyhedron_minimized_congruences"
 
+external ppl_Polyhedron_affine_image:
+  polyhedron -> int -> linear_expression -> Z.t -> unit
+      = "ppl_Polyhedron_affine_image"
+
+external ppl_Polyhedron_affine_preimage:
+  polyhedron -> int -> linear_expression -> Z.t -> unit
+      = "ppl_Polyhedron_affine_preimage"
+
+external ppl_Polyhedron_bounded_affine_image:
+  polyhedron -> int -> linear_expression -> linear_expression
+      -> Z.t -> unit = "ppl_Polyhedron_bounded_affine_image"
+
+external ppl_Polyhedron_bounded_affine_preimage:
+  polyhedron -> int -> linear_expression -> linear_expression
+      -> Z.t -> unit = "ppl_Polyhedron_bounded_affine_preimage"
+
+external ppl_Polyhedron_BHRZ03_widening_assign:
+ polyhedron -> polyhedron -> int -> int
+     = "ppl_Polyhedron_BHRZ03_widening_assign"
+
+external limited_BHRZ03_extrapolation_assign:
+ polyhedron -> polyhedron -> constraint_system -> int -> int
+     = "limited_BHRZ03_extrapolation_assign"
+
+external bounded_BHRZ03_extrapolation_assign:
+ polyhedron -> polyhedron -> constraint_system -> int -> int
+     = "bounded_BHRZ03_extrapolation_assign"
+
 external test_linear_expression:
   linear_expression -> unit = "test_linear_expression"
 

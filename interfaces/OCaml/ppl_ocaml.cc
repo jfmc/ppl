@@ -80,8 +80,20 @@ static inline value alloc_mpz(void) {
   return caml_alloc_custom(&_mlgmp_custom_z, sizeof(mpz_t), 0, 1);
 }
 
+Variable
+build_ppl_Variable(value caml_var) {
+  return Variable(Long_val(caml_var));
+}
+
+Coefficient
+build_ppl_Coefficient(value coeff) {
+   mpz_class z((__mpz_struct*) Data_custom_val(coeff));
+   return Coefficient(z);
+}
+
 Linear_Expression
 build_ppl_Linear_Expression(value e) {
+  std::cerr << Tag_val(e);
   switch (Tag_val(e)) {
   case 0:
     // Variable
@@ -224,7 +236,7 @@ build_caml_generator(const Generator& ppl_generator) {
   }
   case Generator::POINT:  {
     // Allocates two blocks (the linear expression and the divisor)
-    // of tag 2 (Point).xs
+    // of tag 2 (Point).
     value caml_generator = caml_alloc(2,2);
     Field(caml_generator, 0) = get_linear_expression(ppl_generator);
     const Coefficient& divisor = ppl_generator.divisor();
@@ -910,6 +922,105 @@ ppl_Polyhedron_minimized_congruences(value ph) try {
   CAMLparam1(ph);
   Polyhedron& pph = *p_Polyhedron_val(ph);
   CAMLreturn(build_caml_congruence_system(pph.minimized_congruences()));
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_bounded_affine_image(value ph, value var, value lb_expr,
+				    value ub_expr, value coeff) try {
+  CAMLparam5(ph, var, lb_expr, ub_expr, coeff);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  pph.bounded_affine_image(build_ppl_Variable(var),
+			   build_ppl_Linear_Expression(lb_expr),
+ 			   build_ppl_Linear_Expression(ub_expr),
+ 			   build_ppl_Coefficient(coeff));
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_bounded_affine_preimage(value ph, value var, value lb_expr,
+				       value ub_expr, value coeff) try {
+  CAMLparam5(ph, var, lb_expr, ub_expr, coeff);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  pph.bounded_affine_preimage(build_ppl_Variable(var),
+			      build_ppl_Linear_Expression(lb_expr),
+			      build_ppl_Linear_Expression(ub_expr),
+			      build_ppl_Coefficient(coeff));
+  CAMLreturn0;
+				    }
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_affine_image(value ph, value var, value expr,
+			    value coeff) try {
+  CAMLparam4(ph, var, expr, coeff);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  build_ppl_Linear_Expression(expr);
+  pph.affine_image(build_ppl_Variable(var),
+		   build_ppl_Linear_Expression(expr),
+		   build_ppl_Coefficient(coeff));
+  CAMLreturn0;
+			    }
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_affine_preimage(value ph, value var, value expr,
+			       value coeff) try {
+  CAMLparam4(ph, var, expr, coeff);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  build_ppl_Linear_Expression(expr);
+  pph.affine_preimage(build_ppl_Variable(var),
+		      build_ppl_Linear_Expression(expr),
+		      build_ppl_Coefficient(coeff));
+  CAMLreturn0;
+			       }
+CATCH_ALL
+
+extern "C"
+CAMLprim value ppl_Polyhedron_BHRZ03_widening_assign(value ph1, value ph2,
+						     value integer) try {
+  CAMLparam3(ph1, ph2, integer);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  // FIXME: ensure that the input parameter is positive.
+  unsigned int cpp_int = Val_int(integer);
+  pph1.BHRZ03_widening_assign(pph2, &cpp_int);
+  CAMLreturn(Int_val(cpp_int));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value limited_BHRZ03_extrapolation_assign(value ph1, value ph2,
+						   value caml_cs,
+						   value integer) try {
+  CAMLparam4(ph1, ph2, caml_cs, integer);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
+  // FIXME: ensure that the input parameter is positive.
+  unsigned int cpp_int = Val_int(integer);
+  pph1.limited_BHRZ03_extrapolation_assign(pph2, ppl_cs, &cpp_int);
+  CAMLreturn(Int_val(cpp_int));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value bounded_BHRZ03_extrapolation_assign(value ph1, value ph2,
+						   value caml_cs,
+						   value integer) try {
+  CAMLparam4(ph1, ph2, caml_cs, integer);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
+  // FIXME: ensure that the input parameter is positive.
+  unsigned int cpp_int = Val_int(integer);
+  pph1.bounded_BHRZ03_extrapolation_assign(pph2, ppl_cs, &cpp_int);
+  CAMLreturn(Int_val(cpp_int));
 }
 CATCH_ALL
 
