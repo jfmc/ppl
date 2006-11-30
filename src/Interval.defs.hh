@@ -488,7 +488,7 @@ is_empty_lazy(const T& x) {
     return T_MAYBE;
 }
 
-}
+} // Interval_NS
 
 inline bool
 is_integer(const char*) {
@@ -582,7 +582,7 @@ contains(const Interval<Boundary, Info>& x, const T& y) {
     return true;
   if (check_empty_arg(x))
     return false;
-  if (!contains_restriction(x, y))
+  if (!contains_restriction(x.info(), y.info()))
       return false;
   return le(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
     && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y));
