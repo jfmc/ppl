@@ -2,7 +2,7 @@ open Ppl_ocaml
 open Printf
 open Gmp
 
-let rec print_linear_expression  = function
+let rec print_linear_expression = function
     Variable v ->
       print_string "V(";
       print_int v;
@@ -34,6 +34,50 @@ let rec print_linear_expression  = function
       print_string ")";
 ;;
 
+let rec print_constraints = function
+    Less_Than (le1, le2) ->
+      print_linear_expression le1;
+      print_string " < ";
+      print_linear_expression le2;
+  | Less_Than_Or_Equal (le1, le2) ->
+      print_linear_expression le1;
+      print_string " <= ";
+      print_linear_expression le2;
+  | Equal (le1, le2) ->
+      print_linear_expression le1;
+      print_string " == ";
+      print_linear_expression le2;
+  | Greater_Than (le1, le2) ->
+      print_linear_expression le1;
+      print_string " > ";
+      print_linear_expression le2;
+  | Greater_Than_Or_Equal (le1, le2) ->
+      print_linear_expression le1;
+      print_string " >= ";
+      print_linear_expression le2;
+;;
+
+let rec print_generators = function
+    Ray (le1) ->
+      print_string "Ray: ";
+      print_linear_expression le1;
+      print_newline();
+  |  Line (le1) ->
+      print_string "Line: ";
+      print_linear_expression le1;
+      print_newline();
+  | Point (le1, c) ->
+      print_string "Point: ";
+      print_linear_expression le1;
+      print_string "den: ";
+      print_int(Z.to_int c);
+      print_newline();
+| Closure_Point (le1, c) ->
+      print_string "Closure_Point: ";
+      print_linear_expression le1;
+      print_string "den: ";
+      print_int(Z.to_int c);
+      print_newline();;
 (* Build linear expressions the hard way. *)
 
 print_string "Build linear expressions manually:\n" ;;
@@ -130,15 +174,16 @@ done;;
 print_newline();;
 
 let cs = [e3 >=/ e1; e1 >=/ e2; e1 <=/ e2 -/ n] ;;
-let gs1 = [Point (e2, (Z.from_int 1))] ;;
+let gs1 = [Point (e2, (Z.from_int 1)); Point (e1, (Z.from_int 2))] ;;
 
 let cong = (e2, e2 , (Z.from_int 1));;
 let cgs = [e3, e2 , (Z.from_int 20)];;
 let ph = ppl_new_C_Polyhedron_from_congruence_system(cgs);;
 let result =  ppl_Polyhedron_bounds_from_above ph e2;;
 ppl_Polyhedron_add_constraint ph (e2 >=/ e2);;
-let ph2 = ppl_new_C_Polyhedron_from_constraint_system(cs);;
-ppl_Polyhedron_concatenate_assign ph ph2;
+let ph2 = ppl_new_C_Polyhedron_from_generator_system(gs1);;
+(* ppl_Polyhedron_concatenate_assign ph ph2;; *)
+ let constr = ppl_Polyhedron_generators ph in
+ List.iter print_generators constr;;
 at_exit Gc.full_major;;
 print_string "Bye!\n"
-

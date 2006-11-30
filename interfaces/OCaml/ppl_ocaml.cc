@@ -81,7 +81,7 @@ static inline value alloc_mpz(void) {
 }
 
 Linear_Expression
-build_Linear_Expression(value e) {
+build_ppl_Linear_Expression(value e) {
   switch (Tag_val(e)) {
   case 0:
     // Variable
@@ -93,22 +93,22 @@ build_Linear_Expression(value e) {
   }
   case 2:
     // Unary_Plus
-    return build_Linear_Expression(Field(e, 0));
+    return build_ppl_Linear_Expression(Field(e, 0));
   case 3:
     // Unary_Minus
-    return -build_Linear_Expression(Field(e, 0));
+    return -build_ppl_Linear_Expression(Field(e, 0));
   case 4:
     // Plus
-    return build_Linear_Expression(Field(e, 0))
-      + build_Linear_Expression(Field(e, 1));
+    return build_ppl_Linear_Expression(Field(e, 0))
+      + build_ppl_Linear_Expression(Field(e, 1));
   case 5:
     // Minus
-    return build_Linear_Expression(Field(e, 0))
-      - build_Linear_Expression(Field(e, 1));
+    return build_ppl_Linear_Expression(Field(e, 0))
+      - build_ppl_Linear_Expression(Field(e, 1));
   case 6: {
     // Times
     mpz_class z((__mpz_struct*) Data_custom_val(Field(e, 0)));
-    return Coefficient(z) * build_Linear_Expression(Field(e, 1));
+    return Coefficient(z) * build_ppl_Linear_Expression(Field(e, 1));
   }
   default:
     caml_invalid_argument("Error building PPL::Linear_Expression");
@@ -116,59 +116,249 @@ build_Linear_Expression(value e) {
 }
 
 Constraint
-build_Constraint(value c) {
+build_ppl_Constraint(value c) {
   value e1 = Field(c, 0);
   value e2 = Field(c, 1);
   switch (Tag_val(c)) {
   case 0:
     // Less_Than
-    return build_Linear_Expression(e1) < build_Linear_Expression(e2);
+    return build_ppl_Linear_Expression(e1) < build_ppl_Linear_Expression(e2);
   case 1:
     // Less_Than_Or_Equal
-    return build_Linear_Expression(e1) <= build_Linear_Expression(e2);
+    return build_ppl_Linear_Expression(e1) <= build_ppl_Linear_Expression(e2);
   case 2:
     // Equal
-    return build_Linear_Expression(e1) == build_Linear_Expression(e2);
+    return build_ppl_Linear_Expression(e1) == build_ppl_Linear_Expression(e2);
   case 3:
     // Greater_Than
-    return build_Linear_Expression(e1) > build_Linear_Expression(e2);
+    return build_ppl_Linear_Expression(e1) > build_ppl_Linear_Expression(e2);
   case 4:
     // Greater_Than_Or_Equal
-    return build_Linear_Expression(e1) >= build_Linear_Expression(e2);
+    return build_ppl_Linear_Expression(e1) >= build_ppl_Linear_Expression(e2);
   default:
     caml_invalid_argument("Error building PPL::Constraint");
   }
 }
 
+template <typename R>
+CAMLprim value
+get_inhomogeneous_term(const R& r) {
+  Coefficient coeff = -r.inhomogeneous_term();
+  value coeff_term = caml_alloc(1,1);
+  value coeff_mpz = alloc_mpz();
+  mpz_init_set(*mpz_val(coeff_mpz), raw_value(coeff).get_mpz_t());
+  Field(coeff_term, 0) = coeff_mpz;
+  return coeff_term;
+}
+
+// Takes from constraints, generators... the embedded linear
+// expression.
+template <typename R>
+CAMLprim value
+get_linear_expression(const R& r) {
+  dimension_type space_dimension = r.space_dimension();
+  dimension_type varid = 0;
+  Coefficient coeff;
+  while (varid < space_dimension
+	 && (coeff = r.coefficient(Variable(varid))) == 0)
+    ++varid;
+  if (varid >= space_dimension) {
+    value zero_term = caml_alloc(1,1);
+    value zero_mpz = alloc_mpz();
+    mpz_init_set_ui(*mpz_val(zero_mpz), 0);
+    Field(zero_term, 0) = zero_mpz;
+    return zero_term;
+  }
+  else {
+    value term1 = caml_alloc(2,6);
+    value ml_coeff1 =  alloc_mpz();
+    Coefficient tmp = r.coefficient(Variable(varid));
+    mpz_init_set(*mpz_val(ml_coeff1), raw_value(tmp).get_mpz_t());
+    Field(term1, 0) = ml_coeff1;
+    value ml_le_var1 = caml_alloc(1,0);
+    Field(ml_le_var1, 0) = Val_int(varid);
+    Field(term1, 1) = ml_le_var1;
+    while (true) {
+      ++varid;
+      value sum;
+      while (varid < space_dimension
+	     && (coeff = r.coefficient(Variable(varid))) == 0)
+	++varid;
+      if (varid >= space_dimension)
+	return term1;
+      else {
+	sum = caml_alloc(2,4);
+	value term2 = caml_alloc(2,6);
+	value ml_coeff2 = alloc_mpz();
+	mpz_init_set_ui(*mpz_val(ml_coeff2), 10);
+	Field(term2, 0) = ml_coeff2;
+	Coefficient tmp = r.coefficient(Variable(varid));
+	mpz_init_set(*mpz_val(ml_coeff2), raw_value(tmp).get_mpz_t());
+	value ml_le_var2 = caml_alloc(1,0);
+	Field(ml_le_var2, 0) = Val_int(varid);
+	Field(term2, 1) = ml_le_var2;
+	Field(sum, 0) = term1;
+	Field(sum, 1) = term2;
+	term1 = sum;
+      }
+    }
+  }
+}
+
+value
+build_caml_generator(const Generator& ppl_generator) {
+  switch (ppl_generator.type()) {
+  case Generator::LINE: {
+    // Store the linear expression. (1,0) stands for
+    // allocate one block (the linear expression) with Tag 0 (a line here).
+    value caml_generator = caml_alloc(1,0);
+    Field(caml_generator, 0) = get_linear_expression(ppl_generator);
+    return caml_generator;
+    break;
+  }
+  case Generator::RAY: {
+    value caml_generator = caml_alloc(1,1);
+    Field(caml_generator, 0) = get_linear_expression(ppl_generator);
+    return caml_generator;
+    break;
+  }
+  case Generator::POINT:  {
+    // Allocates two blocks (the linear expression and the divisor)
+    // of tag 2 (Point).xs
+    value caml_generator = caml_alloc(2,2);
+    Field(caml_generator, 0) = get_linear_expression(ppl_generator);
+    const Coefficient& divisor = ppl_generator.divisor();
+    value coeff_mpz = alloc_mpz();
+    mpz_init_set(*mpz_val(coeff_mpz), raw_value(divisor).get_mpz_t());
+    Field(caml_generator, 1) = coeff_mpz;
+    return caml_generator;
+    break;
+  }
+  case Generator::CLOSURE_POINT:  {
+    value caml_generator = caml_alloc(2,3);
+    Field(caml_generator, 0) = get_linear_expression(ppl_generator);
+    const Coefficient& divisor = ppl_generator.divisor();
+    value coeff_mpz = alloc_mpz();
+    mpz_init_set(*mpz_val(coeff_mpz), raw_value(divisor).get_mpz_t());
+    Field(caml_generator, 1) = coeff_mpz;
+    return caml_generator;
+    break;
+  }
+  default:
+    throw std::runtime_error("PPL OCaml interface internal error");
+  }
+}
+
+
+value
+build_caml_constraint(const Constraint& ppl_constraint) {
+  switch (ppl_constraint.type()) {
+  case Constraint::EQUALITY: {
+    value caml_constraint = caml_alloc(2,2);
+    Field(caml_constraint, 0) = get_linear_expression(ppl_constraint);
+    Field(caml_constraint, 1) = get_inhomogeneous_term(ppl_constraint);
+    return caml_constraint;
+    break;
+  }
+  case Constraint::STRICT_INEQUALITY: {
+    value caml_constraint = caml_alloc(2,3);
+    Field(caml_constraint, 0) = get_linear_expression(ppl_constraint);
+    Field(caml_constraint, 1) = get_inhomogeneous_term(ppl_constraint);
+    return caml_constraint;
+    break;
+  }
+  case Constraint::NONSTRICT_INEQUALITY:  {
+    value caml_constraint = caml_alloc(2,4);
+    Field(caml_constraint, 0) = get_linear_expression(ppl_constraint);
+    Field(caml_constraint, 1) = get_inhomogeneous_term(ppl_constraint);
+    return caml_constraint;
+    break;
+  }
+  default:
+    throw std::runtime_error("PPL OCaml interface internal error");
+  }
+}
+
+value
+build_caml_constraint_system(const Constraint_System& ppl_cs) {
+  // This code builds a list of constraints starting from bottom to
+  // top. A list on OCaml must be built like a sequence of Cons and Tail.
+  // The first element is the Nil list (the Val_int(0)).
+  value caml_cs_tail = Val_int(0);
+  bool tail_built = false;
+  for (Constraint_System::const_iterator v_begin = ppl_cs.begin(),
+  	 v_end = ppl_cs.end(); v_begin != v_end; ++v_begin) {
+    if (!tail_built) {
+      tail_built = true;
+      caml_cs_tail = caml_alloc_tuple(2);
+      Field(caml_cs_tail, 1) = Val_int(0);
+    }
+    Field(caml_cs_tail, 0) = build_caml_constraint(*v_begin);
+    Constraint_System::const_iterator itr = v_begin;
+    ++itr;
+    // If we have a `next` element, make space to store it in the next
+    // cycle.
+    if (itr != v_end) {
+      value new_tail = caml_alloc_tuple(2);
+      Field(new_tail, 1) = caml_cs_tail;
+      caml_cs_tail = new_tail;
+    }
+  }
+  return caml_cs_tail;
+}
+
+value
+build_caml_generator_system(const Generator_System& ppl_gs) {
+  value caml_gs_tail = Val_int(0);
+  bool tail_built = false;
+  for (Generator_System::const_iterator v_begin = ppl_gs.begin(),
+  	 v_end = ppl_gs.end(); v_begin != v_end; ++v_begin) {
+    if (!tail_built) {
+      tail_built = true;
+      caml_gs_tail = caml_alloc_tuple(2);
+      Field(caml_gs_tail, 1) = Val_int(0);
+    }
+    Field(caml_gs_tail, 0) = build_caml_generator(*v_begin);
+    Generator_System::const_iterator itr = v_begin;
+    ++itr;
+    if (itr != v_end) {
+      value new_tail = caml_alloc_tuple(2);
+      Field(new_tail, 1) = caml_gs_tail;
+      caml_gs_tail = new_tail;
+    }
+  }
+  return caml_gs_tail;
+}
+
 Congruence
-build_Congruence(value c) {
+build_ppl_Congruence(value c) {
   value e1 = Field(c, 0);
   value e2 = Field(c, 1);
   mpz_class z((__mpz_struct*) Data_custom_val(Field(c, 2)));
-  Linear_Expression lhs = build_Linear_Expression(e1);
-  Linear_Expression rhs = build_Linear_Expression(e2);
+  Linear_Expression lhs = build_ppl_Linear_Expression(e1);
+  Linear_Expression rhs = build_ppl_Linear_Expression(e2);
   return ((lhs %= rhs) / z);
 }
 
 Generator
-build_Generator(value g) {
+build_ppl_Generator(value g) {
   switch (Tag_val(g)) {
   case 0:
     // Line
-    return Generator::line(build_Linear_Expression(Field(g, 0)));
+    return Generator::line(build_ppl_Linear_Expression(Field(g, 0)));
   case 1:
     // Ray
-    return Generator::ray(build_Linear_Expression(Field(g, 0)));
+    return Generator::ray(build_ppl_Linear_Expression(Field(g, 0)));
   case 2: {
     // Point
     mpz_class z((__mpz_struct*) Data_custom_val(Field(g, 1)));
-    return Generator::point(build_Linear_Expression(Field(g, 0)),
+    return Generator::point(build_ppl_Linear_Expression(Field(g, 0)),
 			    Coefficient(z));
   }
   case 3: {
     // Closure_point
     mpz_class z((__mpz_struct*) Data_custom_val(Field(g, 1)));
-    return Generator::closure_point(build_Linear_Expression(Field(g, 0)),
+    return Generator::closure_point(build_ppl_Linear_Expression(Field(g, 0)),
 				    Coefficient(z));
   }
   default:
@@ -177,30 +367,30 @@ build_Generator(value g) {
 }
 
 Constraint_System
-build_Constraint_System(value cl) {
+build_ppl_Constraint_System(value cl) {
   Constraint_System cs;
   while (cl != Val_int(0)) {
-    cs.insert(build_Constraint(Field(cl, 0)));
+    cs.insert(build_ppl_Constraint(Field(cl, 0)));
     cl = Field(cl, 1);
   }
   return cs;
 }
 
 Generator_System
-build_Generator_System(value gl) {
+build_ppl_Generator_System(value gl) {
   Generator_System gs;
   while (gl != Val_int(0)) {
-    gs.insert(build_Generator(Field(gl, 0)));
+    gs.insert(build_ppl_Generator(Field(gl, 0)));
     gl = Field(gl, 1);
   }
   return gs;
 }
 
 Congruence_System
-build_Congruence_System(value cgl) {
+build_ppl_Congruence_System(value cgl) {
   Congruence_System cgs;
   while (cgl != Val_int(0)) {
-    cgs.insert(build_Congruence(Field(cgl, 0)));
+    cgs.insert(build_ppl_Congruence(Field(cgl, 0)));
     cgl = Field(cgl, 1);
   }
   return cgs;
@@ -236,6 +426,8 @@ val_p_Polyhedron(const Polyhedron& ph) {
   return(v);
 }
 
+
+
 extern "C"
 CAMLprim value
 ppl_new_C_Polyhedron_from_space_dimension(value d) try {
@@ -251,7 +443,7 @@ extern "C"
 CAMLprim value
 ppl_new_C_Polyhedron_from_constraint_system(value cl) try {
   CAMLparam1(cl);
-  Constraint_System cs = build_Constraint_System(cl);
+  Constraint_System cs = build_ppl_Constraint_System(cl);
   Generator_System gs;
   CAMLreturn(val_p_Polyhedron(*new C_Polyhedron(cs)));
 }
@@ -261,7 +453,7 @@ extern "C"
 CAMLprim value
 ppl_new_C_Polyhedron_from_generator_system(value gl) try {
   CAMLparam1(gl);
-  Generator_System gs = build_Generator_System(gl);
+  Generator_System gs = build_ppl_Generator_System(gl);
   CAMLreturn(val_p_Polyhedron(*new C_Polyhedron(gs)));
 }
 CATCH_ALL
@@ -270,7 +462,7 @@ extern "C"
 CAMLprim value
 ppl_new_C_Polyhedron_from_congruence_system(value gl) try {
   CAMLparam1(gl);
-  Congruence_System gs = build_Congruence_System(gl);
+  Congruence_System gs = build_ppl_Congruence_System(gl);
   CAMLreturn(val_p_Polyhedron(*new C_Polyhedron(gs)));
 }
 CATCH_ALL
@@ -349,7 +541,7 @@ CAMLprim value
 ppl_Polyhedron_bounds_from_below(value ph, value le) try {
   CAMLparam2(ph, le);
   const Polyhedron& pph = *p_Polyhedron_val(ph);
-  Linear_Expression ple = build_Linear_Expression(le);
+  Linear_Expression ple = build_ppl_Linear_Expression(le);
   CAMLreturn(Val_bool(pph.bounds_from_below(ple)));
 }
 CATCH_ALL
@@ -359,7 +551,7 @@ CAMLprim value
 ppl_Polyhedron_bounds_from_above(value ph, value le) try {
   CAMLparam2(ph, le);
   const Polyhedron& pph = *p_Polyhedron_val(ph);
-  Linear_Expression ple = build_Linear_Expression(le);
+  Linear_Expression ple = build_ppl_Linear_Expression(le);
   CAMLreturn(Val_bool(pph.bounds_from_above(ple)));
 }
 CATCH_ALL
@@ -369,7 +561,7 @@ void
 ppl_Polyhedron_add_constraint(value ph, value c) try {
   CAMLparam2(ph, c);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  Constraint pc = build_Constraint(c);
+  Constraint pc = build_ppl_Constraint(c);
   pph.add_constraint(pc);
   CAMLreturn0;
 }
@@ -380,7 +572,7 @@ CAMLprim value
 ppl_Polyhedron_add_constraint_and_minimize(value ph, value c) try {
   CAMLparam2(ph, c);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  Constraint pc = build_Constraint(c);
+  Constraint pc = build_ppl_Constraint(c);
   CAMLreturn(Val_bool(pph.add_constraint_and_minimize(pc)));
 }
 CATCH_ALL
@@ -390,7 +582,7 @@ void
 ppl_Polyhedron_add_constraints(value ph, value cs) try {
   CAMLparam2(ph, cs);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  Constraint_System pcs = build_Constraint_System(cs);
+  Constraint_System pcs = build_ppl_Constraint_System(cs);
   pph.add_constraints(pcs);
   CAMLreturn0;
 }
@@ -401,7 +593,7 @@ CAMLprim value
 ppl_Polyhedron_add_constraints_and_minimize(value ph, value cs) try {
   CAMLparam2(ph, cs);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  Constraint_System pcs = build_Constraint_System(cs);
+  Constraint_System pcs = build_ppl_Constraint_System(cs);
   CAMLreturn(Val_bool(pph.add_constraints_and_minimize(pcs)));
 }
 CATCH_ALL
@@ -411,7 +603,7 @@ void
 ppl_Polyhedron_add_generator(value ph, value c) try {
   CAMLparam2(ph, c);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  Generator pc = build_Generator(c);
+  Generator pc = build_ppl_Generator(c);
   pph.add_generator(pc);
   CAMLreturn0;
 }
@@ -422,7 +614,7 @@ CAMLprim value
 ppl_Polyhedron_add_generator_and_minimize(value ph, value c) try {
   CAMLparam2(ph, c);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  Generator pc = build_Generator(c);
+  Generator pc = build_ppl_Generator(c);
   CAMLreturn(Val_bool(pph.add_generator_and_minimize(pc)));
 }
 CATCH_ALL
@@ -432,7 +624,7 @@ void
 ppl_Polyhedron_add_generators(value ph, value cs) try {
   CAMLparam2(ph, cs);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  Generator_System pcs = build_Generator_System(cs);
+  Generator_System pcs = build_ppl_Generator_System(cs);
   pph.add_generators(pcs);
   CAMLreturn0;
 }
@@ -443,7 +635,7 @@ CAMLprim value
 ppl_Polyhedron_add_generators_and_minimize(value ph, value cs) try {
   CAMLparam2(ph, cs);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  Generator_System pcs = build_Generator_System(cs);
+  Generator_System pcs = build_ppl_Generator_System(cs);
   CAMLreturn(Val_bool(pph.add_generators_and_minimize(pcs)));
 }
 CATCH_ALL
@@ -453,7 +645,7 @@ void
 ppl_Polyhedron_add_congruences(value ph, value c) try {
   CAMLparam2(ph, c);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  Congruence_System pc = build_Congruence_System(c);
+  Congruence_System pc = build_ppl_Congruence_System(c);
   pph.add_congruences(pc);
   CAMLreturn0;
 }
@@ -598,7 +790,7 @@ ppl_Polyhedron_ppl_Polyhedron_add_space_dimensions_and_embed(value ph,
   Polyhedron& pph = *p_Polyhedron_val(ph);
   pph.add_space_dimensions_and_embed(dd);
   CAMLreturn0;
-}
+							     }
 CATCH_ALL
 
 extern "C"
@@ -612,7 +804,7 @@ ppl_Polyhedron_ppl_Polyhedron_add_space_dimensions_and_project(value ph,
   Polyhedron& pph = *p_Polyhedron_val(ph);
   pph.add_space_dimensions_and_project(dd);
   CAMLreturn0;
-}
+							       }
 CATCH_ALL
 
 extern "C"
@@ -626,14 +818,30 @@ ppl_Polyhedron_ppl_Polyhedron_remove_higher_space_dimensions(value ph,
   Polyhedron& pph = *p_Polyhedron_val(ph);
   pph.remove_higher_space_dimensions(dd);
   CAMLreturn0;
-}
+							     }
 CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_constraints(value ph) {
+  CAMLparam1(ph);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  CAMLreturn(build_caml_constraint_system(pph.constraints()));
+}
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_generators(value ph) {
+  CAMLparam1(ph);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  CAMLreturn(build_caml_generator_system(pph.generators()));
+}
 
 extern "C"
 CAMLprim void
 test_linear_expression(value ocaml_le) {
   CAMLparam1(ocaml_le);
-  Linear_Expression cxx_le = build_Linear_Expression(ocaml_le);
+  Linear_Expression cxx_le = build_ppl_Linear_Expression(ocaml_le);
   std::cout << cxx_le << std::endl;
   CAMLreturn0;
 }
@@ -642,7 +850,7 @@ extern "C"
 CAMLprim void
 test_linear_constraint(value ocaml_c) {
   CAMLparam1(ocaml_c);
-  Constraint cxx_c = build_Constraint(ocaml_c);
+  Constraint cxx_c = build_ppl_Constraint(ocaml_c);
   std::cout << cxx_c << std::endl;
   CAMLreturn0;
 }
@@ -651,7 +859,7 @@ extern "C"
 CAMLprim void
 test_constraint_system(value cl) {
   CAMLparam1(cl);
-  Constraint_System cs = build_Constraint_System(cl);
+  Constraint_System cs = build_ppl_Constraint_System(cl);
   std::cout << cs << std::endl;
   CAMLreturn0;
 }
@@ -660,7 +868,7 @@ extern "C"
 CAMLprim void
 test_linear_generator(value ocaml_g) {
   CAMLparam1(ocaml_g);
-  Generator cxx_g = build_Generator(ocaml_g);
+  Generator cxx_g = build_ppl_Generator(ocaml_g);
   std::cout << cxx_g << std::endl;
   CAMLreturn0;
 }
@@ -669,7 +877,7 @@ extern "C"
 CAMLprim void
 test_generator_system(value gl) {
   CAMLparam1(gl);
-  Generator_System gs = build_Generator_System(gl);
+  Generator_System gs = build_ppl_Generator_System(gl);
   std::cout << gs << std::endl;
   CAMLreturn0;
 }

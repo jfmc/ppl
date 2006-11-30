@@ -24,7 +24,7 @@ type linear_generator =
   | Point of linear_expression * Z.t
   | Closure_Point of linear_expression * Z.t
 
-type linear_congruence =linear_expression * linear_expression * Z.t
+type linear_congruence = linear_expression * linear_expression * Z.t
 
 type constraint_system = linear_constraint list
 
@@ -158,6 +158,12 @@ external ppl_Polyhedron_remove_higher_space_dimensions:
 
 external ppl_Polyhedron_space_dimension:
   polyhedron -> int = "ppl_Polyhedron_space_dimension"
+
+external ppl_Polyhedron_constraints:
+   polyhedron -> constraint_system = "ppl_Polyhedron_constraints"
+
+external ppl_Polyhedron_generators:
+   polyhedron -> generator_system = "ppl_Polyhedron_generators"
 
 external test_linear_expression:
   linear_expression -> unit = "test_linear_expression"
