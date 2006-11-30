@@ -45,7 +45,7 @@ struct Rational_Box_Interval_Info_Policy {
   const_bool_nodef(infinity_is_open, false);
 };
 
-typedef Interval_No_Restrictions<Interval_Info_Bitset<unsigned int, Rational_Box_Interval_Info_Policy> > Rational_Box_Interval_Info;
+typedef Interval_Restriction_None<Interval_Info_Bitset<unsigned int, Rational_Box_Interval_Info_Policy> > Rational_Box_Interval_Info;
 
 typedef Box<Interval<mpq_class, Rational_Box_Interval_Info> > Rational_Box;
 
