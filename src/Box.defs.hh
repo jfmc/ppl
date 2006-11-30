@@ -157,6 +157,11 @@ public:
   bool contains_integer_point() const;
 
   /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this contains \p y.
+  */
+  bool contains(const Box&) const;
+
+  /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this satisfies
     all its invariants.
   */

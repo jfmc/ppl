@@ -62,6 +62,24 @@ operator==(const Box<Interval>& x, const Box<Interval>& y) {
 
 template <typename Interval>
 bool
+Box<Interval>::contains(const Box<Interval>& y) const {
+  Box& x = *this;
+  // Dimension-compatibility check.
+  if (x.space_dimension() != y.space_dimension())
+    x.throw_dimension_incompatible("contains(y)", y);
+
+  // If `y' is empty, then `x' contains `y'.
+  if (y.is_empty())
+    return true;
+
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    if (!contains(x.seq[k], y.seq[k]))
+      return false;
+  return true;
+}
+
+template <typename Interval>
+bool
 Box<Interval>::OK() const {
   const Box& x = *this;
   if (x.empty_up_to_date && !x.empty) {
