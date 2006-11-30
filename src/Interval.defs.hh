@@ -563,9 +563,16 @@ operator==(const T1& x, const T2& y) {
     return check_empty_arg(y);
   else if (check_empty_arg(y))
     return false;
+  //  return eq_restrictions(info(x), info(y))
   return eq_restriction(x, y)
     && eq(LOWER, lower(x), info(x), LOWER, lower(y), info(y))
     && eq(UPPER, upper(x), info(x), UPPER, upper(y), info(y));
+}
+
+template <typename T1, typename T2>
+inline typename Enable_If<Is_Same_Or_Derived<Interval_, T1>::value || Is_Same_Or_Derived<Interval_, T2>::value, bool>::type
+operator!=(const T1& x, const T2& y) {
+  return !(x == y);
 }
 
 template <typename Boundary, typename Info,
