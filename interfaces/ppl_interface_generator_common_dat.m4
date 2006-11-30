@@ -230,7 +230,6 @@ m4_define(`m4_get_disjunct_kind',
       `m4_ifelse(m4_index(m4_class_body`'$1, <), -1, m4_class_body`'$1,
         `m4_regexp(m4_class_body`'$1, `\([^ <]+\)[.]*', `\1')')')')')
 
-
 dnl m4_get_class_topology(Class)
 dnl
 dnl expands to the empty string unless the class is
@@ -375,6 +374,7 @@ comparison,
 binop,
 binminop,
 ub_exact,
+disjunct_widen,
 widenexpn,
 widen,
 extrapolation,
@@ -612,9 +612,11 @@ m4_define(`m4_disjunct_alt_replacement', `dnl
 m4_get_interface_class_name(m4_class_body`'$1)`'dnl
 ')
 
-m4_define(`m4_body_class_kind', `dnl
-m4_define(`m4_counter', `$1')`'dnl
-m4_class_kind`'m4_get_class_counter(m4_class_body`'m4_counter)')
+m4_define(`m4_disjunct_widen_replacement',
+  `m4_echo_unquoted(m4_`'m4_disjunct_kind$1`'_widen_replacement)')
+
+m4_define(`m4_disjunct_widen_alt_replacement',
+  `m4_echo_unquoted(m4_`'m4_disjunct_kind$1`'_widen_alt_replacement)')
 
 dnl  The different kinds of objects that can build a class.
 m4_define(`m4_build_represent_replacement', `constraint, generator')

@@ -1188,15 +1188,24 @@ ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign
 
 ')
 
-dnl FIXME: Polyhedra_Powerset widening = TODO
-m4_define(`ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign_code',
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
 `extern "C" Prolog_foreign_return_type
-ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign
-(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
-  static const char* where = "ppl_@CLASS@_@WIDENEXP@_@BODYWIDENEXP@_widening_assign/2";
-  return widening_assign(t_lhs, t_rhs,
-                         &@CPP_CLASS@::@WIDENEXP@_widening_assign,
-                         &@CPP_BODY@::@BODYWIDENEXP@_widening_assign);
+
+ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(
+                     Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  static const char* where = "ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2";
+  try {
+    const @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    CHECK(lhs);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    CHECK(rhs);
+
+    lhs->.BHZ03_widening_assign<@ALT_DISJUNCT_WIDEN@_Certificate>
+      (*rhs,
+       widen_fun_ref(&@ALT_CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
 }
 
 ')
