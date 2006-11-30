@@ -263,7 +263,7 @@ public:
     static V n;
     static V div;
     r = assign_r(div, divisor, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
-    assert(r == EQ);
+    assert(r == V_EQ);
     int s;
     r = rem_assign_r(n, x, div, ROUND_NOT_NEEDED);
     assert(r == V_EQ);
