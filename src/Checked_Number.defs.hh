@@ -809,9 +809,9 @@ operator<(const Checked_Number<T1, Policy1>& x,
 
   \relates Checked_Number
 */
-template <typename T, typename Policy>
-int
-sgn(const Checked_Number<T, Policy>& x);
+template <typename From>
+inline typename Enable_If<Is_Native_Or_Checked<From>::value, int>::type \
+sgn(const From& x);
 
 /*! \brief
   Returns a negative, zero or positive value depending on whether
@@ -819,11 +819,9 @@ sgn(const Checked_Number<T, Policy>& x);
 
   \relates Checked_Number
 */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-int
-cmp(const Checked_Number<T1, Policy1>& x,
-    const Checked_Number<T2, Policy2>& y);
+template <typename From1, typename From2>
+inline typename Enable_If<Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value, int>::type
+cmp(const From1& x, const From2& y);
 
 //@} // Relational Operators and Comparison Functions
 
