@@ -267,6 +267,17 @@ namespace Parma_Polyhedra_Library {
 typedef long double long_double;
 
 struct Test_Box_Interval_Info_Policy {
+  // CHECKME!!!!!
+  const_bool_nodef(may_be_empty, true);
+  const_bool_nodef(may_be_infinity, true);
+  const_bool_nodef(check_empty_result, false);
+  const_bool_nodef(check_inexact, false);
+  const_bool_nodef(infinity_is_open, false);
+  const_bool_nodef(store_special, false);
+  const_bool_nodef(cache_normalized, false);
+  const_bool_nodef(cache_empty, false);
+  const_bool_nodef(cache_singleton, false);
+
   static const bool store_unbounded = true;
   static const bool store_open = true;
   static const bool store_integer = false;
@@ -274,7 +285,7 @@ struct Test_Box_Interval_Info_Policy {
   static const bool store_singleton = true;
   static const unsigned int next_bit = 0;
   static const bool handle_infinity = false;
-  static const bool check_inexact = false;
+  //  static const bool check_inexact = false;
   static const bool check_empty_args = false;
   static const bool check_integer_args = false;
 };
