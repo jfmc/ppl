@@ -380,7 +380,9 @@ sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
   const unsigned long k = rational_sqrt_precision_parameter;
   mpz_class& to_num = to.get_num();
   mul2exp<To_Policy, From_Policy>(to_num, from.get_num(), 2*k, dir);
-  Result rdiv = div<To_Policy, To_Policy>(to_num, to_num, from.get_den(), dir);
+  Result rdiv
+    = div<To_Policy, To_Policy, To_Policy>(to_num,
+					   to_num, from.get_den(), dir);
   Result rsqrt = sqrt<To_Policy, To_Policy>(to_num, to_num, dir);
   mpz_class& to_den = to.get_den();
   to_den = 1;
