@@ -1249,12 +1249,12 @@ Octagonal_Shape<T>::strong_closure_assign() const {
   // negative value in the main diagonal.
   for (Row_Iterator i = m_begin; i != m_end; ++i) {
     N& x_i_i = (*i)[i.index()];
-    if (x_i_i < 0) {
+    if (sgn(x_i_i) < 0) {
       x.status.set_empty();
       return;
     }
     else {
-      assert(x_i_i == 0);
+      assert(sgn(x_i_i) == 0);
       // Restore PLUS_INFINITY on the main diagonal.
       x_i_i = PLUS_INFINITY;
     }
@@ -1446,13 +1446,13 @@ Octagonal_Shape<T>
   // negative value on the main diagonal.
   for (Row_Iterator i = m_begin; i != m_end; ++i) {
     N& x_i_i = (*i)[i.index()];
-    if (x_i_i < 0) {
+    if (sgn(x_i_i) < 0) {
       x.status.set_empty();
       return;
     }
     else {
       // Restore PLUS_INFINITY on the main diagonal.
-      assert(x_i_i == 0);
+      assert(sgn(x_i_i) == 0);
       x_i_i = PLUS_INFINITY;
     }
   }
@@ -5334,7 +5334,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
 	  first = false;
 	else
 	  s << ", ";
-	if (x_i_j >= 0)
+	if (sgn(x_i_j) >= 0)
 	  s << v_j << " - " << v_i << " == " << x_i_j;
 	else
 	  s << v_i << " - " << v_j << " == " << x_ii_jj;
@@ -5346,7 +5346,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
 	    first = false;
 	  else
 	    s << ", ";
-	  if (x_i_j >= 0)
+	  if (sgn(x_i_j) >= 0)
 	    s << v_j << " - " << v_i << " <= " << x_i_j;
 	  else {
 	    neg_assign_r(negation, x_i_j, ROUND_DOWN);
@@ -5358,7 +5358,7 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
 	    first = false;
 	  else
 	    s << ", ";
-	  if (x_ii_jj >= 0)
+	  if (sgn(x_ii_jj) >= 0)
 	    s << v_i << " - " << v_j << " <= " << x_ii_jj;
 	  else {
 	    neg_assign_r(negation, x_ii_jj, ROUND_DOWN);

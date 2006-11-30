@@ -1103,12 +1103,12 @@ BD_Shape<T>::shortest_path_closure_assign() const {
   // negative value on the main diagonal of `dbm'.
   for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
     N& x_dbm_hh = x.dbm[h][h];
-    if (x_dbm_hh < 0) {
+    if (sgn(x_dbm_hh) < 0) {
       x.status.set_empty();
       return;
     }
     else {
-      assert(x_dbm_hh == 0);
+      assert(sgn(x_dbm_hh) == 0);
       // Restore PLUS_INFINITY on the main diagonal.
       x_dbm_hh = PLUS_INFINITY;
     }
@@ -4120,7 +4120,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	    }
 	    else {
 	      // We have got a equality constraint with two Variables.
-	      if (c_i_j >= 0) {
+	      if (sgn(c_i_j) >= 0) {
 		s << Variable(j - 1);
 		s << " - ";
 		s << Variable(i - 1);
@@ -4150,7 +4150,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	      }
 	      else {
 		// We have got a constraint with two Variables.
-		if (c_j_i >= 0) {
+		if (sgn(c_j_i) >= 0) {
 		  s << Variable(i - 1);
 		  s << " - ";
 		  s << Variable(j - 1);
@@ -4178,7 +4178,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	      }
 	      else {
 		// We have got a constraint with two Variables.
-		if (c_i_j >= 0) {
+		if (sgn(c_i_j) >= 0) {
 		  s << Variable(j - 1);
 		  s << " - ";
 		  s << Variable(i - 1);
