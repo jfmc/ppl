@@ -173,12 +173,13 @@ m4_define(`m4_init_cplusplus_names_aux', `dnl
 m4_define(m4_cplusplus_class`'$1, `$2')`'dnl
 m4_get_class_kind(`$1', `$2')`'dnl
 m4_get_class_body(`$1', `$2')`'dnl
-m4_ifelse(m4_class_kind`'$1, Pointset_Powerset,
-              m4_get_disjunct_kind(`$1'),
-          m4_class_kind`'$1, Direct_Product,
+dnl
+dnl FIXME: This code is untested.
+m4_ifelse(m4_class_kind`'$1, Direct_Product,
               m4_parse_body_class(`$1'),
           m4_class_kind`'$1, Open_Product,
               m4_parse_body_class(`$1'))`'dnl
+dnl
 ')
 
 dnl m4_parse_body_class(Class_Counter)
@@ -223,14 +224,6 @@ m4_define(`m4_get_class_body',
     `m4_ifelse(`$2', `', ,
       `m4_ifelse(m4_index(`$2', <), -1, `',
         `m4_regexp(`$2', `[^ <]+[<]\(.*\w>?\)[ ]*[>]', `\1')')')')')
-
-m4_define(`m4_get_disjunct_kind',
-  `m4_define(`m4_disj', m4_class_body`'$1)`'dnl
-m4_define(m4_disjunct_kind`'$1,
-    `m4_ifelse(m4_disj, `', ,
-      `m4_ifelse(m4_index(m4_disj, <), -1, m4_class_body`'$1,
-        `m4_regexp(m4_disj, `\([^ <]+\)[.]*', `\1')')')')
-m4_undefine(`m4_disj')')
 
 dnl m4_get_class_topology(Class)
 dnl
