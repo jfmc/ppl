@@ -112,6 +112,8 @@ dnl m4_replacements.
 dnl Additional codes help provide the right form of the replacmement:
 dnl - alt_ means that the alternative replacement in m4_alt_replacements
 dnl must be used if one exists.
+dnl - when the alt_replace is NONE, then the code is replaced by the
+dnl   the empty string.
 dnl - U means that the alt_actual string must be capitalised at start
 dnl   of word and after "_".
 m4_define(`m4_expand_pattern_by_one_replacement', `dnl
@@ -122,6 +124,7 @@ dnl
 dnl m4_alt_replace is the replacement for alt_pattern
 m4_define(`m4_alt_replace', `m4_arg($2, m4_alt_replacements)')`'dnl
 dnl
+m4_ifelse(m4_alt_replace, NONE, `',
 m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
             m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
             m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst($1,
@@ -149,6 +152,7 @@ m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
     m4_alt_replace),
   m4_pattern_delimiter`'PATTERN`'m4_pattern_delimiter,
     m4_replace)`'dnl
+)`'dnl
 dnl
 m4_undefine(`m4_replace')`'dnl
 m4_undefine(`m4_alt_replace')`'dnl

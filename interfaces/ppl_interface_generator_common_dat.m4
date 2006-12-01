@@ -225,10 +225,12 @@ m4_define(`m4_get_class_body',
         `m4_regexp(`$2', `[^ <]+[<]\(.*\w>?\)[ ]*[>]', `\1')')')')')
 
 m4_define(`m4_get_disjunct_kind',
-  `m4_define(m4_disjunct_kind`'$1,
-    `m4_ifelse(m4_class_body`'$1, `', ,
-      `m4_ifelse(m4_index(m4_class_body`'$1, <), -1, m4_class_body`'$1,
-        `m4_regexp(m4_class_body`'$1, `\([^ <]+\)[.]*', `\1')')')')')
+  `m4_define(`m4_disj', m4_class_body`'$1)`'dnl
+m4_define(m4_disjunct_kind`'$1,
+    `m4_ifelse(m4_disj, `', ,
+      `m4_ifelse(m4_index(m4_disj, <), -1, m4_class_body`'$1,
+        `m4_regexp(m4_disj, `\([^ <]+\)[.]*', `\1')')')')
+m4_undefine(`m4_disj')')
 
 dnl m4_get_class_topology(Class)
 dnl
@@ -521,6 +523,8 @@ m4_define(`m4_Octagonal_Shape_widen_replacement', `BHMZ05')
 m4_define(`m4_Pointset_Powerset_widen_replacement', `BHZ03')
 dnl The alt_replacement defines the certificates for the widenings
 m4_define(`m4_Polyhedron_widen_alt_replacement', `BHRZ03, H79')
+m4_define(`m4_BD_Shape_widen_alt_replacement', `NONE, H79')
+m4_define(`m4_Octagonal_Shape_widen_alt_replacement', `NONE')
 m4_define(`m4_Grid_widen_alt_replacement', `Grid, Grid')
 
 dnl The extrapolation operators.
@@ -608,15 +612,23 @@ m4_define(`m4_disjunct_replacement', `dnl
 m4_remove_topology(m4_get_interface_class_name(m4_class_body`'$1))`'dnl
 ')
 
+m4_define(`m4_disjunct_kind',
+  `m4_define(`m4_disj', m4_class_body`'$1)`'dnl
+    m4_ifelse(m4_disj, `', ,
+      `m4_ifelse(m4_index(m4_disj, <), -1, m4_disj,
+        `m4_regexp(m4_disj, `\([^ <]+\)[.]*', `\1')')')`'dnl
+m4_undefine(`m4_disj')`'dnl
+')
+
 m4_define(`m4_disjunct_alt_replacement', `dnl
 m4_get_interface_class_name(m4_class_body`'$1)`'dnl
 ')
 
 m4_define(`m4_disjunct_widen_replacement',
-  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_disjunct_kind$1)`'_widen_replacement)')
+  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_disjunct_kind($1))`'_widen_replacement)')
 
 m4_define(`m4_disjunct_widen_alt_replacement',
-  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_disjunct_kind$1)`'_widen_alt_replacement)')
+  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_disjunct_kind($1))`'_widen_alt_replacement)')
 
 dnl  The different kinds of objects that can build a class.
 m4_define(`m4_build_represent_replacement', `constraint, generator')
