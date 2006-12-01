@@ -1188,6 +1188,34 @@ ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign
 
 ')
 
+
+dnl FIXME: This code is redundant as there is no options for tokens
+dnl        in the current C++ code.
+m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_with_tokens_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_with_tokens(
+(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
+ Prolog_term_ref t_ti, Prolog_term_ref t_to) {
+  static const char* where = "ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_with_tokens/4";
+  try {
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    CHECK(lhs);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    CHECK(rhs);
+
+    unsigned t = term_to_unsigned<unsigned>(t_ti, where);
+    lhs->BHZ03_widening_assign<@ALT_DISJUNCT_WIDEN@_Certificate>
+      (*rhs,
+       widen_fun_ref(&@ALT_CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign),
+       &t);
+    if (unify_long(t_to, t))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign_code',
 `extern "C" Prolog_foreign_return_type
 
@@ -1203,6 +1231,30 @@ ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(
     lhs->BHZ03_widening_assign<@ALT_DISJUNCT_WIDEN@_Certificate>
       (*rhs,
        widen_fun_ref(&@ALT_CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign_code',
+`extern "C" Prolog_foreign_return_type
+
+ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign(
+                     Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
+                     Prolog_term_ref t_d) {
+  static const char* where = "ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3";
+  try {
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    CHECK(lhs);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    CHECK(rhs);
+
+    lhs->BGP99_extrapolation_assign
+      (*rhs,
+       widen_fun_ref(&@ALT_CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign),
+       term_to_unsigned<unsigned>(t_d, where));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
