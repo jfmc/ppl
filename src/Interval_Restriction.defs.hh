@@ -107,6 +107,10 @@ public:
   bool has_restriction() const {
     return get_integer();
   }
+  void clear() {
+    set_integer(false);
+    Base::clear();
+  }
   void normalize() const {
   }
   template <typename T>
@@ -254,15 +258,20 @@ public:
   bool has_restriction() const {
     return divisor != 0;
   }
+  void clear() {
+    remainder = 0;
+    divisor = 0;
+    Base::clear();
+  }
   void normalize() const {
   }
   template <typename V>
   Result restrict(V& x, Result r) const {
     if (!has_restriction())
       return V_EQ;
-    static V n;
-    static V div;
-    r = assign_r(div, divisor, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
+    DIRTY_TEMP(V, n);
+    DIRTY_TEMP(V, div);
+    r = assign_r(div, divisor, ROUND_CHECK);
     assert(r == V_EQ);
     int s;
     r = rem_assign_r(n, x, div, ROUND_NOT_NEEDED);
@@ -310,10 +319,18 @@ public:
       return V_EQ;
     }
   }
+  void assign_or_swap(Interval_Restriction_Integer_Modulo& x) {
+    Parma_Polyhedra_Library::assign_or_swap(remainder, x.remainder);
+    Parma_Polyhedra_Library::assign_or_swap(divisor, x.divisor);
+  }
   typedef T modulo_type;
   T remainder;
   T divisor;
 };
+
+template <typename T, typename Base>
+struct Slow_Copy<Interval_Restriction_Integer_Modulo<T, Base> > : public Bool<Slow_Copy<T>::value> {};
+
 
 template <typename From, typename Base>
 struct Restriction_Integer<From, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_Integer_Modulo_Base, typename From::info_type>::value, void>::type> {
@@ -400,7 +417,7 @@ contains_restriction(const T1& x, const T2& y) {
     return false;
   if (x.divisor == y.divisor)
     return x.remainder == y.remainder;
-  static typename T1::modulo_type v;
+  DIRTY_TEMP(typename T1::modulo_type, v);
   Result r;
   r = rem_assign_r(v, y.divisor, x.divisor, ROUND_NOT_NEEDED);
   assert(r == V_EQ);
@@ -409,6 +426,20 @@ contains_restriction(const T1& x, const T2& y) {
   r = rem_assign_r(v, y.remainder, x.divisor, ROUND_NOT_NEEDED);
   assert(r == V_EQ);
   return v == x.remainder;
+}
+
+template <typename T, typename Base>
+inline void
+set_unrestricted(Interval_Restriction_Integer_Modulo<T, Base>& to) {
+  to.remainder = 0;
+  to.divisor = 0;
+}
+
+template <typename T, typename Base>
+inline void
+set_integer(Interval_Restriction_Integer_Modulo<T, Base>& to) {
+  to.remainder = 0;
+  to.divisor = 1;
 }
 
 template <typename T, typename Base, typename From>
@@ -423,42 +454,38 @@ inline void
 join_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
   typedef Restriction_Integer_Modulo<From1, T, Base> Rx;
   const typename Rx::type& rx = Rx::get(x);
-  if (rx.divisor == 0) {
-  unrestricted:
-    to.remainder = 0;
-    to.divisor = 0;
-    return;
-  }
+  if (rx.divisor == 0)
+    return set_unrestricted(to);
   typedef Restriction_Integer_Modulo<From2, T, Base> Ry;
   const typename Ry::type& ry = Ry::get(y);
   if (ry.divisor == 0)
-    goto unrestricted;
+    return set_unrestricted(to);
   else if (rx.divisor == 1 && ry.divisor == 1
       && is_singleton(x) && is_singleton(y)) {
-    static typename Boundary_Value<From1>::type a;
-    static typename Boundary_Value<From2>::type b;
+    DIRTY_TEMP(typename Boundary_Value<From1>::type, a);
+    DIRTY_TEMP(typename Boundary_Value<From2>::type, b);
     Result r;
-    r = abs_assign_r(a, lower(x), ROUND_DIRECT);
+    r = abs_assign_r(a, lower(x), ROUND_CHECK);
     if (r != V_EQ)
-      goto integer;
-    r = abs_assign_r(b, lower(y), ROUND_DIRECT);
+      return set_integer(to);
+    r = abs_assign_r(b, lower(y), ROUND_CHECK);
     if (r != V_EQ)
-      goto integer;
+      return set_integer(to);
     if (a > b)
-      r = sub_assign_r(a, a, b, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
+      r = sub_assign_r(a, a, b, ROUND_CHECK);
     else
-      r = sub_assign_r(a, b, a, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
+      r = sub_assign_r(a, b, a, ROUND_CHECK);
     if (r != V_EQ)
-      goto integer;
-    r = assign_r(to.divisor, a, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
+      return set_integer(to);
+    r = assign_r(to.divisor, a, ROUND_CHECK);
     if (r != V_EQ)
-      goto integer;
-    r = rem_assign_r(b, b, a, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
+      return set_integer(to);
+    r = rem_assign_r(b, b, a, ROUND_CHECK);
     if (r != V_EQ)
-      goto integer;
-    r = assign_r(to.remainder, b, static_cast<Rounding_Dir>(ROUND_DIRECT | ROUND_FPU_CHECK_INEXACT));
+      return set_integer(to);
+    r = assign_r(to.remainder, b, ROUND_CHECK);
     if (r != V_EQ)
-      goto integer;
+      return set_integer(to);
   }
   else if (contains_restriction(rx, ry)) {
     to.remainder = rx.remainder;
@@ -466,13 +493,10 @@ join_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& 
   }
   else if (contains_restriction(ry, rx)) {
     to.remainder = ry.remainder;
-    to.divisor = rx.divisor;
+    to.divisor = ry.divisor;
   }
-  else {
-  integer:
-    to.remainder = 0;
-    to.divisor = 1;
-  }
+  else
+    set_integer(to);
 }
 
 template <typename T, typename Base, typename From1, typename From2>
@@ -480,20 +504,23 @@ inline void
 intersect_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
   typedef Restriction_Integer_Modulo<From1, T, Base> Rx;
   const typename Rx::type& rx = Rx::get(x);
-  if (rx.divisor == 0)
-    return assign_restriction(to, y);
   typedef Restriction_Integer_Modulo<From2, T, Base> Ry;
   const typename Ry::type& ry = Ry::get(y);
-  if (ry.divisor == 0)
-    return assign_restriction(to, x);
-  static T d;
-  Result r;
-  r = lcm_assign_r(d, rx.divisor, ry.divisor, ROUND_DIRECT);
-  if (r != V_EQ) {
-    to.remainder = 0;
-    to.divisor = 1;
+  if (rx.divisor == 0) {
+    to.remainder = ry.remainder;
+    to.divisor = ry.divisor;
     return;
   }
+  if (ry.divisor == 0) {
+    to.remainder = rx.remainder;
+    to.divisor = rx.divisor;
+    return;
+  }
+  DIRTY_TEMP(T, d);
+  Result r;
+  r = lcm_assign_r(d, rx.divisor, ry.divisor, ROUND_DIRECT);
+  if (r != V_EQ)
+    return set_integer(to);
   to.divisor = d;
   // FIXME: to be completed
 }
@@ -501,8 +528,7 @@ intersect_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const Fr
 template <typename T, typename Base, typename From>
 inline void
 neg_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From& x) {
-  to.remainder = Restriction_Integer_Modulo<From, T, Base>::get(x).remainder;
-  to.divisor = Restriction_Integer_Modulo<From, T, Base>::get(x).divisor;
+  assign_restriction(to, x);
 }
 
 template <typename T>
@@ -529,25 +555,62 @@ addmod(T& to, const T& x, const T& y, const T& to_m, const T& y_m) {
   assert(r == V_EQ);
 }
 
+template <typename M, typename T>
+inline bool
+assign_rem(M& rem, const T& n, const M& div) {
+  DIRTY_TEMP(T, divisor);
+  DIRTY_TEMP(T, remainder);
+  Result r;
+  r = assign_r(divisor, div, ROUND_CHECK);
+  if (r != V_EQ)
+    return false;
+  r = rem_assign_r(remainder, n, divisor, ROUND_CHECK);
+  if (r != V_EQ)
+    return false;
+  if (sgn(remainder) < 0) {
+    r = add_assign_r(remainder, remainder, divisor, ROUND_CHECK);
+    if (r != V_EQ)
+      return false;
+  }
+  r = assign_r(rem, remainder, ROUND_CHECK);
+  return r == V_EQ;
+}
+
+
 template <typename T, typename Base, typename From1, typename From2>
 inline void
 add_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
   typedef Restriction_Integer_Modulo<From1, T, Base> Rx;
   const typename Rx::type& rx = Rx::get(x);
-  if (rx.divisor == 0) {
-  unrestricted:
-    to.remainder = 0;
-    to.divisor = 0;
-    return;
-  }
+  if (rx.divisor == 0)
+    return set_unrestricted(to);
   typedef Restriction_Integer_Modulo<From2, T, Base> Ry;
   const typename Ry::type& ry = Ry::get(y);
   if (ry.divisor == 0)
-    goto unrestricted;
+    return set_unrestricted(to);
   Result r;
-  r = gcd_assign_r(to.divisor, rx.divisor, ry.divisor, ROUND_NOT_NEEDED);
-  assert(r == V_EQ);
-  addmod(to.remainder, rx.remainder, ry.remainder, to.divisor, ry.divisor);
+  DIRTY_TEMP(T, rem);
+  if (is_singleton(x)) {
+    if (is_singleton(y))
+      return set_integer(to);
+    if (!assign_rem(rem, lower(x), ry.divisor))
+      return set_integer(to);
+    r = assign_r(to.divisor, ry.divisor, ROUND_NOT_NEEDED);
+    assert(r == V_EQ);
+    addmod(to.remainder, rem, ry.remainder, to.divisor, ry.divisor);
+  }
+  else if (is_singleton(y)) {
+    if (!assign_rem(rem, lower(y), rx.divisor))
+      return set_integer(to);
+    r = assign_r(to.divisor, rx.divisor, ROUND_NOT_NEEDED);
+    assert(r == V_EQ);
+    addmod(to.remainder, rx.remainder, rem, to.divisor, to.divisor);
+  }
+  else {
+    r = gcd_assign_r(to.divisor, rx.divisor, ry.divisor, ROUND_NOT_NEEDED);
+    assert(r == V_EQ);
+    addmod(to.remainder, rx.remainder, ry.remainder, to.divisor, ry.divisor);
+  }
 }
 
 template <typename T>
@@ -584,9 +647,28 @@ sub_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
   if (ry.divisor == 0)
     goto unrestricted;
   Result r;
-  r = gcd_assign_r(to.divisor, rx.divisor, ry.divisor, ROUND_NOT_NEEDED);
-  assert(r == V_EQ);
-  submod(to.remainder, rx.remainder, ry.remainder, to.divisor, ry.divisor);
+  DIRTY_TEMP(T, rem);
+  if (is_singleton(x)) {
+    if (is_singleton(y))
+      return set_integer(to);
+    if (!assign_rem(rem, lower(x), ry.divisor))
+      return set_integer(to);
+    r = assign_r(to.divisor, ry.divisor, ROUND_NOT_NEEDED);
+    assert(r == V_EQ);
+    submod(to.remainder, rem, ry.remainder, to.divisor, ry.divisor);
+  }
+  else if (is_singleton(y)) {
+    if (!assign_rem(rem, lower(y), rx.divisor))
+      return set_integer(to);
+    r = assign_r(to.divisor, rx.divisor, ROUND_NOT_NEEDED);
+    assert(r == V_EQ);
+    submod(to.remainder, rx.remainder, rem, to.divisor, to.divisor);
+  }
+  else {
+    r = gcd_assign_r(to.divisor, rx.divisor, ry.divisor, ROUND_NOT_NEEDED);
+    assert(r == V_EQ);
+    submod(to.remainder, rx.remainder, ry.remainder, to.divisor, ry.divisor);
+  }
 }
 
 template <typename T>
@@ -594,7 +676,8 @@ inline void
 mulmod(T& to, const T& x, const T& y, const T& to_m) {
   Result r;
   if (std::numeric_limits<T>::is_bounded) {
-    static mpz_class a, b;
+    DIRTY_TEMP(mpz_class, a);
+    DIRTY_TEMP(mpz_class, b);
     r = assign_r(a, x, ROUND_NOT_NEEDED);
     assert(r == V_EQ);
     r = assign_r(b, y, ROUND_NOT_NEEDED);
@@ -633,14 +716,53 @@ mul_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
   if (ry.divisor == 0)
     goto unrestricted;
   Result r;
-  r = gcd_assign_r(to.divisor, rx.divisor, ry.divisor, ROUND_NOT_NEEDED);
-  assert(r == V_EQ);
-  mulmod(to.remainder, rx.remainder, ry.remainder, to.divisor);
+  DIRTY_TEMP(T, mul);
+  if (is_singleton(x)) {
+    if (is_singleton(y))
+      return set_integer(to);
+    DIRTY_TEMP(typename Boundary_Value<From1>::type, n);
+    r = abs_assign_r(n, lower(x), ROUND_CHECK);
+    if (r != V_EQ)
+      return set_integer(to);
+    r = assign_r(mul, n, ROUND_CHECK);
+    if (r != V_EQ)
+      return set_integer(to);
+    r = mul_assign_r(to.remainder, mul, ry.remainder, ROUND_NOT_NEEDED);
+    if (r != V_EQ)
+      return set_integer(to);
+    r = mul_assign_r(to.divisor, mul, ry.divisor, ROUND_NOT_NEEDED);
+    if (r != V_EQ)
+      return set_integer(to);
+  }
+  else if (is_singleton(y)) {
+    DIRTY_TEMP(typename Boundary_Value<From2>::type, n);
+    r = abs_assign_r(n, lower(y), ROUND_CHECK);
+    if (r != V_EQ)
+      return set_integer(to);
+    r = assign_r(mul, n, ROUND_CHECK);
+    if (r != V_EQ)
+      return set_integer(to);
+    r = mul_assign_r(to.remainder, rx.remainder, mul, ROUND_NOT_NEEDED);
+    if (r != V_EQ)
+      return set_integer(to);
+    r = mul_assign_r(to.divisor, rx.divisor, mul, ROUND_NOT_NEEDED);
+    if (r != V_EQ)
+      return set_integer(to);
+  }
+  else {
+    r = gcd_assign_r(to.divisor, rx.divisor, ry.divisor, ROUND_NOT_NEEDED);
+    assert(r == V_EQ);
+    mulmod(to.remainder, rx.remainder, ry.remainder, to.divisor);
+  }
 }
 
 template <typename T, typename Base, typename From1, typename From2>
 inline void
-div_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1&, const From2&) {
+div_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
+  if (is_singleton(y)) {
+    if (is_singleton(x)) {
+    }
+  }
   to.remainder = 0;
   to.divisor = 0;
 }

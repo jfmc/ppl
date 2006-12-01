@@ -64,9 +64,11 @@ struct Compile_Time_Check<true> { };
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define COMPILE_TIME_CHECK(e, msg) COMPILE_TIME_CHECK_AUX(e, __LINE__)
 
-struct True { enum { value = true }; };
+template <bool n>
+struct Bool { enum { value = n }; };
 
-struct False { enum { value = false }; };
+struct True : public Bool<true> { };
+struct False : public Bool<false> { };
 
 template <typename T1, typename T2>
 struct Is_Same : public False { };
@@ -85,17 +87,6 @@ struct Is_Same_Or_Derived {
   enum { value = sizeof(func(obj())) == sizeof(char)};
 };
 
-
-template <typename T, typename Tag>
-struct Type_Has_Tag : public False {};
-
-#if 0
-#define INIT_TYPE_TAG(Tag) struct Tag
-
-#define SET_TYPE_TAG(args, Type, Tag)					\
-  template args	struct Type_Has_Tag<Type, Tag> : public True { }
-*/
-#endif
 
 template <bool, typename T>
 struct Enable_If { };

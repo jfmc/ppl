@@ -521,22 +521,6 @@ same_object(const T& x, const T& y) {
 }
 
 template <typename T>
-inline void
-assign_or_swap(T& to, const T& from) {
-  to = from;
-}
-template <typename T>
-inline void
-assign_or_swap(mpz_class& to, mpz_class& from) {
-  std::swap(to, from);
-}
-template <typename T>
-inline void
-assign_or_swap(mpq_class& to, mpq_class& from) {
-  std::swap(to, from);
-}
-
-template <typename T>
 inline bool
 check_empty_arg(const T& x) {
   if (info(x).may_be_empty)
@@ -623,13 +607,14 @@ inline I_Result
 assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   if (check_empty_arg(x))
     return to.set_empty();
-  To_Info to_info;
+  DIRTY_TEMP(To_Info, to_info);
+  to_info.clear();
   assign_restriction(to_info, x);
   Result rl = assign(LOWER, to.lower(), to_info,
 		     LOWER, lower(x), info(x));
   Result ru = assign(UPPER, to.upper(), to_info,
 		     UPPER, upper(x), info(x));
-  to.info() = to_info;
+  assign_or_swap(to.info(), to_info);
   return combine(rl, ru);
 }
 
@@ -659,7 +644,8 @@ join_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) 
     return assign(to, y);
   if (check_empty_arg(y))
     return assign(to, x);
-  To_Info to_info;
+  DIRTY_TEMP(To_Info, to_info);
+  to_info.clear();
   join_restriction(to_info, x, y);
   to_info.set_interval_property(CARDINALITY_0);
   Result rl, ru;
@@ -669,7 +655,7 @@ join_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) 
   ru = max_assign(UPPER, to.upper(), to_info,
 		  UPPER, upper(x), info(x),
 		  UPPER, upper(y), info(y));
-  to.info() = to_info;
+  assign_or_swap(to.info(), to_info);
   return combine(rl, ru);
 }
 
@@ -692,7 +678,8 @@ template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
 inline I_Result
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
-  To_Info to_info;
+  DIRTY_TEMP(To_Info, to_info);
+  to_info.clear();
   intersect_restriction(to_info, x, y);
   // FIXME: more accurate?
   to_info().set_interval_property(CARDINALITY_IS, false);
@@ -705,7 +692,7 @@ intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2
   ru = min_assign(UPPER, to.upper(), to_info,
 		  UPPER, upper(x), info(x),
 		  UPPER, upper(y), info(y));
-  to.info() = to_info;
+  assign_or_swap(to.info(), to_info);
   return check_empty_result(to, combine(rl, ru));
 }
 
@@ -783,14 +770,15 @@ inline I_Result
 neg_assign(Interval<To_Boundary, To_Info>& to, const T& x) {
   if (check_empty_arg(x))
     return to.set_empty();
-  To_Info to_info;
+  DIRTY_TEMP(To_Info, to_info);
+  to_info.clear();
   neg_restriction(to_info, x);
   Result rl, ru;
-  static To_Boundary to_lower;
+  DIRTY_TEMP(To_Boundary, to_lower);
   rl = neg_assign(LOWER, to_lower, to_info, UPPER, upper(x), info(x));
   ru = neg_assign(UPPER, to.upper(), to_info, LOWER, lower(x), info(x));
   assign_or_swap(to.lower(), to_lower);
-  to.info() = to_info;
+  assign_or_swap(to.info(), to_info);
   return combine(rl, ru);
 }
 
@@ -800,7 +788,8 @@ inline I_Result
 add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
-  To_Info to_info;
+  DIRTY_TEMP(To_Info, to_info);
+  to_info.clear();
   add_restriction(to_info, x, y);
   Result rl = add_assign(LOWER, to.lower(), to_info,
 			 LOWER, lower(x), info(x),
@@ -808,7 +797,7 @@ add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   Result ru = add_assign(UPPER, to.upper(), to_info,
 			 UPPER, upper(x), info(x),
 			 UPPER, upper(y), info(y));
-  to.info() = to_info;
+  assign_or_swap(to.info(), to_info);
   return combine(rl, ru);
 }
 
@@ -818,10 +807,11 @@ inline I_Result
 sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
-  To_Info to_info;
+  DIRTY_TEMP(To_Info, to_info);
+  to_info.clear();
   sub_restriction(to_info, x, y);
   Result rl, ru;
-  static To_Boundary to_lower;
+  DIRTY_TEMP(To_Boundary, to_lower);
   rl = sub_assign(LOWER, to_lower, to_info,
 		  LOWER, lower(x), info(x),
 		  UPPER, upper(y), info(y));
@@ -829,7 +819,7 @@ sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		  UPPER, upper(x), info(x),
 		  LOWER, lower(y), info(y));
   assign_or_swap(to.lower(), to_lower);
-  to.info() = to_info;
+  assign_or_swap(to.info(), to_info);
   return combine(rl, ru);
 }
 
@@ -853,10 +843,11 @@ inline I_Result
 mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
-  To_Info to_info;
+  DIRTY_TEMP(To_Info, to_info);
+  to_info.clear();
   mul_restriction(to_info, x, y);
   Result rl, ru;
-  static To_Boundary to_lower;
+  DIRTY_TEMP(To_Boundary, to_lower);
   if (ge(LOWER, lower(x), info(x), LOWER, C_ZERO, SCALAR_INFO)) {
     if (ge(LOWER, lower(y), info(y), LOWER, C_ZERO, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
@@ -927,8 +918,9 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		      LOWER, lower(y), info(y));
       }
     else {
-      static To_Boundary tmp;
-      To_Info tmp_info;
+      DIRTY_TEMP(To_Boundary, tmp);
+      DIRTY_TEMP(To_Info, tmp_info);
+      tmp_info.clear();
       Result tmp_r;
       tmp_r = mul_assign(LOWER, tmp, tmp_info,
 			 UPPER, upper(x), info(x),
@@ -954,7 +946,7 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
     }
   }
   assign_or_swap(to.lower(), to_lower);
-  to.info() = to_info;
+  assign_or_swap(to.info(), to_info);
   return combine(rl, ru);
 }
 
@@ -975,10 +967,11 @@ inline I_Result
 div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
-  To_Info to_info;
+  DIRTY_TEMP(To_Info, to_info);
+  to_info.clear();
   div_restriction(to_info, x, y);
   Result rl, ru;
-  static To_Boundary to_lower;
+  DIRTY_TEMP(To_Boundary, to_lower);
   if (ge(LOWER, lower(y), info(y), LOWER, C_ZERO, SCALAR_INFO)) {
     if (ge(LOWER, lower(x), info(x), LOWER, C_ZERO, SCALAR_INFO)) {
       rl = div_assign(LOWER, to_lower, to_info,
@@ -1038,7 +1031,7 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 #endif
   }
   assign_or_swap(to.lower(), to_lower);
-  to.info() = to_info;
+  assign_or_swap(to.info(), to_info);
   return combine(rl, ru);
 }
 

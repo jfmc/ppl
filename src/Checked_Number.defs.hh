@@ -508,6 +508,9 @@ private:
   T v;
 };
 
+template <typename T, typename P>
+struct Slow_Copy<Checked_Number<T, P> > : public Bool<Slow_Copy<T>::value> {};
+
 template <typename T, typename Enable = void>
 struct Is_Native_Or_Checked;
 
