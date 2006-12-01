@@ -119,6 +119,9 @@ public:
 
   typedef Interval_NS::Property Property;
 
+  Interval() {
+  }
+
   //! Swaps \p *this with \p y.
   void swap(Interval& y);
 

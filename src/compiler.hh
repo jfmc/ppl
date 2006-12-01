@@ -54,7 +54,7 @@ struct Compile_Time_Check<true> { };
 
 #define COMPILE_TIME_CHECK_NAME(suf) compile_time_check_ ## suf
 #define COMPILE_TIME_CHECK_AUX(e, suf)					\
-  enum { COMPILE_TIME_CHECK_NAME(suf) = sizeof(Parma_Polyhedra_Library::Compile_Time_Check<(bool)(e)>) }
+  enum { COMPILE_TIME_CHECK_NAME(suf) = sizeof(Parma_Polyhedra_Library::Compile_Time_Check<static_cast<bool>(e)>) }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief

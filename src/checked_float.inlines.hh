@@ -673,7 +673,7 @@ assign_float_mpz(T& to, const mpz_class& _from, Rounding_Dir dir)
     return V_EQ;
   }
   size_t exponent = mpz_sizeinbase(from, 2) - 1;
-  if (exponent > (size_t) Float<T>::Binary::EXPONENT_MAX) {
+  if (exponent > static_cast<size_t>(Float<T>::Binary::EXPONENT_MAX)) {
     if (sign < 0)
       return set_neg_overflow_float<To_Policy>(to, dir);
     else
@@ -722,7 +722,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
     else
       return round_gt_float<To_Policy>(to, dir);
   }
-  if (exponent > (signed int) Float<T>::Binary::EXPONENT_MAX + 1) {
+  if (exponent > static_cast<signed int>(Float<T>::Binary::EXPONENT_MAX + 1)) {
   overflow:
     if (sign < 0)
       return set_neg_overflow_float<To_Policy>(to, dir);
@@ -755,7 +755,7 @@ assign_float_mpq(T& to, const mpq_class& from, Rounding_Dir dir)
   }
   else
     --exponent;
-  if (exponent > (signed int)Float<T>::Binary::EXPONENT_MAX) {
+  if (exponent > static_cast<signed int>(Float<T>::Binary::EXPONENT_MAX)) {
     mpz_clear(mantissa);
     goto overflow;
   }

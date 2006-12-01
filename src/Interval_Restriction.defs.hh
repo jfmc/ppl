@@ -87,6 +87,9 @@ output_restriction(std::ostream&, const Interval_Restriction_None_Base&) {
 template <typename Base>
 class Interval_Restriction_None : public Interval_Restriction_None_Base,
 				 public Base {
+public:
+  Interval_Restriction_None() {
+  };
 };
 
 class Interval_Restriction_Integer_Base {
@@ -95,6 +98,8 @@ class Interval_Restriction_Integer_Base {
 template <typename Base>
 class Interval_Restriction_Integer : public Interval_Restriction_Integer_Base, public Base {
 public:
+  Interval_Restriction_Integer() {
+  }
   void set_integer(bool v = true) {
     return set_bit(Base::bitset, integer_bit, v);
   }
@@ -120,13 +125,13 @@ public:
     switch (r) {
     case V_GT:
       if (is_integer(x))
-	return add_assign_r(x, x, (T)1, ROUND_DOWN);
+	return add_assign_r(x, x, static_cast<T>(1), ROUND_DOWN);
       /* Fall through */
     case V_GE:
       return ceil_assign_r(x, x, ROUND_DOWN);
     case V_LT:
       if (is_integer(x))
-	sub_assign_r(x, x, (T)1, ROUND_UP);
+	sub_assign_r(x, x, static_cast<T>(1), ROUND_UP);
       /* Fall through */
     case V_LE:
       return floor_assign_r(x, x, ROUND_UP);
@@ -255,6 +260,8 @@ template <typename T, typename Base>
 class Interval_Restriction_Integer_Modulo : public Interval_Restriction_Integer_Modulo_Base, public Base {
 public:
   COMPILE_TIME_CHECK(std::numeric_limits<T>::is_exact, "Type for modulo values must be exact.");
+  Interval_Restriction_Integer_Modulo() {
+  }
   bool has_restriction() const {
     return divisor != 0;
   }

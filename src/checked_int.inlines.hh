@@ -1334,7 +1334,7 @@ template <typename Policy, typename Type>
 inline Result
 output_char(std::ostream& os, Type& from,
 	    const Numeric_Format&, Rounding_Dir) {
-  os << (int) from;
+  os << static_cast<int>(from);
   return V_EQ;
 }
 

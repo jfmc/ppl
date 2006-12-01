@@ -70,7 +70,7 @@ fpu_get_control() {
 
 inline void
 fpu_set_control(int c) {
-  unsigned short cw = (unsigned short) c;
+  unsigned short cw = static_cast<unsigned short>(c);
   __asm__ __volatile__ ("fldcw %0" : : "m" (cw) : "memory");
 }
 
@@ -86,7 +86,7 @@ fpu_clear_status(unsigned short bits) {
   /* There is no fldsw instruction */
   ia32_fenv_t env;
   __asm__ __volatile__ ("fnstenv %0" : "=m" (env));
-  env.status_word = (unsigned short) (env.status_word & ~bits);
+  env.status_word = static_cast<unsigned short>(env.status_word & ~bits);
   __asm__ __volatile__ ("fldenv %0" : : "m" (env) : "memory");
 }
 

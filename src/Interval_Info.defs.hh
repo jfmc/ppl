@@ -52,12 +52,6 @@ const Property CARDINALITY_IS(Property::CARDINALITY_IS_);
 
 template <typename T>
 inline void
-init_bits(T& bits) {
-  bits = 0;
-}
-
-template <typename T>
-inline void
 reset_bits(T& bits) {
   bits = 0;
 }
@@ -163,7 +157,6 @@ public:
   const_int_nodef(cardinality_1_bit, cardinality_0_bit + cache_empty);
   const_int_nodef(next_bit, cardinality_1_bit + cache_singleton);
   Interval_Info_Bitset() {
-    init_bits(bitset);
   }
 
   void clear() {

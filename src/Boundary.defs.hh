@@ -445,7 +445,7 @@ inline bool
 is_invariant(Operand o, Boundary_Type type, const T& x, const Info& info) {
   switch (o) {
   case INF0:
-    if (x == (signed char)0)
+    if (x == static_cast<signed char>(0))
       return true;
     /* Fall through */
   case INF:
