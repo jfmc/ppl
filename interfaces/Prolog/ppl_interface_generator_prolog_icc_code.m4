@@ -1195,12 +1195,12 @@ ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign(
                      Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   static const char* where = "ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2";
   try {
-    const @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
     CHECK(lhs);
     const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
     CHECK(rhs);
 
-    lhs->.BHZ03_widening_assign<@ALT_DISJUNCT_WIDEN@_Certificate>
+    lhs->BHZ03_widening_assign<@ALT_DISJUNCT_WIDEN@_Certificate>
       (*rhs,
        widen_fun_ref(&@ALT_CPP_DISJUNCT@::@DISJUNCT_WIDEN@_widening_assign));
     return PROLOG_SUCCESS;
