@@ -85,19 +85,21 @@ build_ppl_Variable(value caml_var) {
   return Variable(Long_val(caml_var));
 }
 
-value
-build_caml_coefficient(mpz_class ppl_coeff) {
-  value ml_coeff = alloc_mpz();
-  mpz_init_set(*mpz_val(ml_coeff), ppl_coeff.get_mpz_t());
-  return ml_coeff;
+// FIXME: This should be placed in a more convenient place inside
+// the library.
+//! Reinterpret an mpz_t as mpz_class.
+mpz_class&
+reinterpret_mpz_class(mpz_t n) {
+  return reinterpret_cast<mpz_class&>(*n);
 }
 
-extern "C"
 value
-build_caml_coefficient(const unsigned int coeff) {
- value ml_coeff1 = alloc_mpz();
- mpz_init_set_ui(*mpz_val(ml_coeff1), coeff);
- return ml_coeff1;
+build_caml_coefficient(const Coefficient& ppl_coeff) {
+  value ml_coeff = alloc_mpz();
+  mpz_init(*mpz_val(ml_coeff));
+  assign_r(reinterpret_mpz_class(*mpz_val(ml_coeff)), ppl_coeff,
+ 	   ROUND_NOT_NEEDED);
+  return ml_coeff;
 }
 
 Coefficient
@@ -172,7 +174,7 @@ CAMLprim value
 get_inhomogeneous_term(const R& r) {
   Coefficient coeff = -r.inhomogeneous_term();
   value coeff_term = caml_alloc(1,1);
-  Field(coeff_term, 0) = build_caml_coefficient(raw_value(coeff));
+  Field(coeff_term, 0) = build_caml_coefficient(coeff);
   return coeff_term;
 }
 
@@ -197,7 +199,7 @@ get_linear_expression(const R& r) {
   else {
     value term1 = caml_alloc(2,6);
     Coefficient ppl_coeff = r.coefficient(Variable(varid));
-    Field(term1, 0) = build_caml_coefficient(raw_value(ppl_coeff));
+    Field(term1, 0) = build_caml_coefficient(ppl_coeff);
     value ml_le_var1 = caml_alloc(1,0);
     Field(ml_le_var1, 0) = Val_int(varid);
     Field(term1, 1) = ml_le_var1;
@@ -213,7 +215,7 @@ get_linear_expression(const R& r) {
 	sum = caml_alloc(2,4);
 	value term2 = caml_alloc(2,6);
 	Coefficient ppl_coeff = r.coefficient(Variable(varid));
-	Field(term2, 0) = build_caml_coefficient(raw_value(ppl_coeff));
+	Field(term2, 0) = build_caml_coefficient(ppl_coeff);
 	value ml_le_var2 = caml_alloc(1,0);
 	Field(ml_le_var2, 0) = Val_int(varid);
 	Field(term2, 1) = ml_le_var2;
@@ -248,7 +250,7 @@ build_caml_generator(const Generator& ppl_generator) {
     value caml_generator = caml_alloc(2,2);
     Field(caml_generator, 0) = get_linear_expression(ppl_generator);
     const Coefficient& divisor = ppl_generator.divisor();
-    Field(caml_generator, 1) = build_caml_coefficient(raw_value(divisor));
+    Field(caml_generator, 1) = build_caml_coefficient(divisor);
     return caml_generator;
     break;
   }
@@ -256,7 +258,7 @@ build_caml_generator(const Generator& ppl_generator) {
     value caml_generator = caml_alloc(2,3);
     Field(caml_generator, 0) = get_linear_expression(ppl_generator);
     const Coefficient& divisor = ppl_generator.divisor();
-    Field(caml_generator, 1) =  build_caml_coefficient(raw_value(divisor));
+    Field(caml_generator, 1) =  build_caml_coefficient(divisor);
     return caml_generator;
     break;
   }
@@ -301,7 +303,7 @@ build_caml_congruence(const Congruence& ppl_congruence) {
     Field(caml_congruence, 0) = get_linear_expression(ppl_congruence);
     Field(caml_congruence, 1) = get_inhomogeneous_term(ppl_congruence);
     const Coefficient& modulus = ppl_congruence.modulus();
-    Field(caml_congruence, 2) = build_caml_coefficient(raw_value(modulus));
+    Field(caml_congruence, 2) = build_caml_coefficient(modulus);
     return caml_congruence;
 }
 
