@@ -9,6 +9,8 @@ template <typename T> struct Slow_Copy : public False { };
 
 }
 
+#if 0
+// FIXME: to uncomment as soon as possible
 namespace std {
 using namespace Parma_Polyhedra_Library;
 template <typename T>
@@ -20,6 +22,7 @@ swap(T&, T&) {
   // A swap specialization for this type is missing and needed.
 }
 }
+#endif
 
 namespace Parma_Polyhedra_Library {
 
@@ -59,6 +62,8 @@ private:
   T item_;
   Temp_Item* next;
   static Temp_Item* list;
+  Temp_Item(const Temp_Item&);
+  Temp_Item& operator=(const Temp_Item&);
 public:
   Temp_Item()
     : item_() {
@@ -106,6 +111,8 @@ struct Null_Holder {
 private:
   T item_;
 public:
+  Null_Holder() {
+  }
   T item() {
     return item_;
   }
