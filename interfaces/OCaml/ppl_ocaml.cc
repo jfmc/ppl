@@ -85,6 +85,21 @@ build_ppl_Variable(value caml_var) {
   return Variable(Long_val(caml_var));
 }
 
+value
+build_caml_coefficient(mpz_class ppl_coeff) {
+  value ml_coeff = alloc_mpz();
+  mpz_init_set(*mpz_val(ml_coeff), ppl_coeff.get_mpz_t());
+  return ml_coeff;
+}
+
+extern "C"
+value
+build_caml_coefficient(const unsigned int coeff) {
+ value ml_coeff1 = alloc_mpz();
+ mpz_init_set_ui(*mpz_val(ml_coeff1), coeff);
+ return ml_coeff1;
+}
+
 Coefficient
 build_ppl_Coefficient(value coeff) {
    mpz_class z((__mpz_struct*) Data_custom_val(coeff));
@@ -93,7 +108,6 @@ build_ppl_Coefficient(value coeff) {
 
 Linear_Expression
 build_ppl_Linear_Expression(value e) {
-  std::cerr << Tag_val(e);
   switch (Tag_val(e)) {
   case 0:
     // Variable
@@ -152,14 +166,13 @@ build_ppl_Constraint(value c) {
   }
 }
 
+
 template <typename R>
 CAMLprim value
 get_inhomogeneous_term(const R& r) {
   Coefficient coeff = -r.inhomogeneous_term();
   value coeff_term = caml_alloc(1,1);
-  value coeff_mpz = alloc_mpz();
-  mpz_init_set(*mpz_val(coeff_mpz), raw_value(coeff).get_mpz_t());
-  Field(coeff_term, 0) = coeff_mpz;
+  Field(coeff_term, 0) = build_caml_coefficient(raw_value(coeff));
   return coeff_term;
 }
 
@@ -183,10 +196,8 @@ get_linear_expression(const R& r) {
   }
   else {
     value term1 = caml_alloc(2,6);
-    value ml_coeff1 =  alloc_mpz();
-    Coefficient tmp = r.coefficient(Variable(varid));
-    mpz_init_set(*mpz_val(ml_coeff1), raw_value(tmp).get_mpz_t());
-    Field(term1, 0) = ml_coeff1;
+    Coefficient ppl_coeff = r.coefficient(Variable(varid));
+    Field(term1, 0) = build_caml_coefficient(raw_value(ppl_coeff));
     value ml_le_var1 = caml_alloc(1,0);
     Field(ml_le_var1, 0) = Val_int(varid);
     Field(term1, 1) = ml_le_var1;
@@ -201,11 +212,8 @@ get_linear_expression(const R& r) {
       else {
 	sum = caml_alloc(2,4);
 	value term2 = caml_alloc(2,6);
-	value ml_coeff2 = alloc_mpz();
-	mpz_init_set_ui(*mpz_val(ml_coeff2), 10);
-	Field(term2, 0) = ml_coeff2;
-	Coefficient tmp = r.coefficient(Variable(varid));
-	mpz_init_set(*mpz_val(ml_coeff2), raw_value(tmp).get_mpz_t());
+	Coefficient ppl_coeff = r.coefficient(Variable(varid));
+	Field(term2, 0) = build_caml_coefficient(raw_value(ppl_coeff));
 	value ml_le_var2 = caml_alloc(1,0);
 	Field(ml_le_var2, 0) = Val_int(varid);
 	Field(term2, 1) = ml_le_var2;
@@ -240,9 +248,7 @@ build_caml_generator(const Generator& ppl_generator) {
     value caml_generator = caml_alloc(2,2);
     Field(caml_generator, 0) = get_linear_expression(ppl_generator);
     const Coefficient& divisor = ppl_generator.divisor();
-    value coeff_mpz = alloc_mpz();
-    mpz_init_set(*mpz_val(coeff_mpz), raw_value(divisor).get_mpz_t());
-    Field(caml_generator, 1) = coeff_mpz;
+    Field(caml_generator, 1) = build_caml_coefficient(raw_value(divisor));
     return caml_generator;
     break;
   }
@@ -250,9 +256,7 @@ build_caml_generator(const Generator& ppl_generator) {
     value caml_generator = caml_alloc(2,3);
     Field(caml_generator, 0) = get_linear_expression(ppl_generator);
     const Coefficient& divisor = ppl_generator.divisor();
-    value coeff_mpz = alloc_mpz();
-    mpz_init_set(*mpz_val(coeff_mpz), raw_value(divisor).get_mpz_t());
-    Field(caml_generator, 1) = coeff_mpz;
+    Field(caml_generator, 1) =  build_caml_coefficient(raw_value(divisor));
     return caml_generator;
     break;
   }
@@ -297,9 +301,7 @@ build_caml_congruence(const Congruence& ppl_congruence) {
     Field(caml_congruence, 0) = get_linear_expression(ppl_congruence);
     Field(caml_congruence, 1) = get_inhomogeneous_term(ppl_congruence);
     const Coefficient& modulus = ppl_congruence.modulus();
-    value coeff_mpz = alloc_mpz();
-    mpz_init_set(*mpz_val(coeff_mpz), raw_value(modulus).get_mpz_t());
-    Field(caml_congruence, 2) = coeff_mpz;
+    Field(caml_congruence, 2) = build_caml_coefficient(raw_value(modulus));
     return caml_congruence;
 }
 
