@@ -3023,19 +3023,19 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // In the following, strong closure will be definitely lost.
   status.reset_strongly_closed();
 
-  // Before computing quotients, the denominator should be approximated
-  // towards zero. Since `sc_den' is known to be positive, this amounts to
-  // rounding downwards, which is achieved as usual by rounding upwards
-  // `minus_sc_den' and negating again the result.
-  N down_sc_den;
-  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-  neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-
   // Exploit the upper approximation, if possible.
   if (pos_pinf_count <= 1) {
     // Compute quotient (if needed).
-    if (down_sc_den != 1)
+    if (sc_den != 1) {
+      // Before computing quotients, the denominator should be approximated
+      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // rounding downwards, which is achieved as usual by rounding upwards
+      // `minus_sc_den' and negating again the result.
+      N down_sc_den;
+      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(pos_sum, pos_sum, down_sc_den, ROUND_UP);
+    }
     // Add the upper bound constraint, if meaningful.
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
@@ -3068,8 +3068,16 @@ Octagonal_Shape<T>::affine_image(const Variable var,
   // Exploit the lower approximation, if possible.
   if (neg_pinf_count <= 1) {
     // Compute quotient (if needed).
-    if (down_sc_den != 1)
+    if (sc_den != 1) {
+      // Before computing quotients, the denominator should be approximated
+      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // rounding downwards, which is achieved as usual by rounding upwards
+      // `minus_sc_den' and negating again the result.
+      N down_sc_den;
+      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(neg_sum, neg_sum, down_sc_den, ROUND_UP);
+    }
     // Add the lower bound constraint, if meaningful.
     if (neg_pinf_count == 0) {
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
@@ -4147,19 +4155,19 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
   // In the following, strong closure will be definitely lost.
   status.reset_strongly_closed();
 
-  // Before computing quotients, the denominator should be approximated
-  // towards zero. Since `sc_den' is known to be positive, this amounts to
-  // rounding downwards, which is achieved as usual by rounding upwards
-  // `minus_sc_den' and negating again the result.
-  N down_sc_den;
-  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-  neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-
   // Exploit the lower approximation, if possible.
   if (neg_pinf_count <= 1) {
     // Compute quotient (if needed).
-    if (down_sc_den != 1)
+    if (sc_den != 1) {
+      // Before computing quotients, the denominator should be approximated
+      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // rounding downwards, which is achieved as usual by rounding upwards
+      // `minus_sc_den' and negating again the result.
+      N down_sc_den;
+      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(neg_sum, neg_sum, down_sc_den, ROUND_UP);
+    }
     // Add the lower bound constraint, if meaningful.
     if (neg_pinf_count == 0) {
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
