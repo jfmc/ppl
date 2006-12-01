@@ -124,7 +124,8 @@ dnl
 dnl m4_alt_replace is the replacement for alt_pattern
 m4_define(`m4_alt_replace', `m4_arg($2, m4_alt_replacements)')`'dnl
 dnl
-m4_ifelse(m4_alt_replace, NONE, `',
+m4_ifelse(m4_replace, NONE, `',
+          m4_alt_replace, NONE, `',
 m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
             m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
             m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst($1,

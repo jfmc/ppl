@@ -1262,6 +1262,30 @@ ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign(
 
 ')
 
+m4_define(`ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign_code',
+`extern "C" Prolog_foreign_return_type
+
+ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign(
+                     Prolog_term_ref t_lhs, Prolog_term_ref t_rhs,
+                     Prolog_term_ref t_d) {
+  static const char* where = "ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign/3";
+  try {
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    CHECK(lhs);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    CHECK(rhs);
+
+    lhs->BGP99_extrapolation_assign
+      (*rhs,
+       widen_fun_ref(&@ALT_CPP_DISJUNCT@::@DISJUNCT_EXTRAPOLATION@_extrapolation_assign),
+       term_to_unsigned<unsigned>(t_d, where));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens
