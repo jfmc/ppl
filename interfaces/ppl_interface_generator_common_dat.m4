@@ -613,10 +613,10 @@ m4_get_interface_class_name(m4_class_body`'$1)`'dnl
 ')
 
 m4_define(`m4_disjunct_widen_replacement',
-  `m4_echo_unquoted(m4_`'m4_disjunct_kind$1`'_widen_replacement)')
+  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_disjunct_kind$1)`'_widen_replacement)')
 
 m4_define(`m4_disjunct_widen_alt_replacement',
-  `m4_echo_unquoted(m4_`'m4_disjunct_kind$1`'_widen_alt_replacement)')
+  `m4_echo_unquoted(m4_`'m4_remove_topology(m4_disjunct_kind$1)`'_widen_alt_replacement)')
 
 dnl  The different kinds of objects that can build a class.
 m4_define(`m4_build_represent_replacement', `constraint, generator')
