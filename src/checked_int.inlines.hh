@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_int_inlines_hh
 #define PPL_checked_int_inlines_hh 1
 
-#include "Limits.hh"
+#include "C_Integer.hh"
 #include <cerrno>
 #include <cstdlib>
 #include <climits>
@@ -86,18 +86,18 @@ typedef uint64_t uint_fast64_t;
 
 template <typename Policy, typename Type>
 struct Extended_Int {
-  static const Type plus_infinity = Limits<Type>::max;
-  static const Type minus_infinity = (Limits<Type>::min >= 0
-				      ? Limits<Type>::max - 1
-				      : Limits<Type>::min);
-  static const Type not_a_number = (Limits<Type>::min >= 0
-				    ? Limits<Type>::max - Policy::has_infinity * 2
-				    : Limits<Type>::min + Policy::has_infinity);
-  static const Type min = (Limits<Type>::min
-			   + (Limits<Type>::min >= 0 ? 0
+  static const Type plus_infinity = C_Integer<Type>::max;
+  static const Type minus_infinity = (C_Integer<Type>::min >= 0
+				      ? C_Integer<Type>::max - 1
+				      : C_Integer<Type>::min);
+  static const Type not_a_number = (C_Integer<Type>::min >= 0
+				    ? C_Integer<Type>::max - Policy::has_infinity * 2
+				    : C_Integer<Type>::min + Policy::has_infinity);
+  static const Type min = (C_Integer<Type>::min
+			   + (C_Integer<Type>::min >= 0 ? 0
 			      : (Policy::has_infinity + Policy::has_nan)));
-  static const Type max = (Limits<Type>::max
-			   - (Limits<Type>::min >= 0
+  static const Type max = (C_Integer<Type>::max
+			   - (C_Integer<Type>::min >= 0
 			      ? (2 * Policy::has_infinity + Policy::has_nan)
 			      : Policy::has_infinity));
 };
@@ -550,9 +550,9 @@ assign_signed_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
     }
     if (from.fits_slong_p()) {
       signed long v = from.get_si();
-      if (v < Limits<To>::min)
+      if (v < C_Integer<To>::min)
 	return set_neg_overflow_int<To_Policy>(to, dir);
-      if (v > Limits<To>::max)
+      if (v > C_Integer<To>::max)
 	return set_pos_overflow_int<To_Policy>(to, dir);
       to = v;
       return V_EQ;
@@ -599,7 +599,7 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from, Rounding_Dir dir) {
     }
     if (from.fits_ulong_p()) {
       unsigned long v = from.get_ui();
-      if (v > Limits<To>::max)
+      if (v > C_Integer<To>::max)
 	return set_pos_overflow_int<To_Policy>(to, dir);
       to = v;
       return V_EQ;
@@ -1155,7 +1155,7 @@ div2exp_signed_int(Type& to, const Type x, int exp, Rounding_Dir dir) {
       return V_EQ;
   }
   if (static_cast<unsigned int>(exp) >= sizeof(Type) * 8 - 1) {
-    if (x == Limits<Type>::min) {
+    if (x == C_Integer<Type>::min) {
       to = -1;
       return V_EQ;
     }

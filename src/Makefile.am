@@ -154,7 +154,7 @@ Octagonal_Shape.types.hh \
 fpu.types.hh \
 Float.defs.hh \
 Float.inlines.hh \
-Limits.hh \
+C_Integer.hh \
 fpu.defs.hh \
 fpu-c99.inlines.hh \
 fpu-ia32.inlines.hh \

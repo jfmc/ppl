@@ -22,6 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.types.hh"
 #include "meta_programming.hh"
+#include "C_Integer.hh"
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {
@@ -400,36 +401,17 @@ sgn_generic(const Type& x) {
   return V_LT;
 }
 
-template <typename T>
-struct Int : public False { };
-
-#define INT(t)					\
-  template <>					\
-  struct Int<signed t> : public True {		\
-    enum { is_signed = true };			\
-  };						\
-  template <>					\
-  struct Int<unsigned t> : public True {	\
-    enum { is_signed = false };			\
-  }
-
-INT(char);
-INT(short);
-INT(int);
-INT(long);
-INT(long long);
-
 template <typename T1, typename T2, typename Enable = void>
 struct Safe_Int_Comparison : public False {
 };
 
 template <typename T1, typename T2>
-struct Safe_Int_Comparison<T1, T2, typename Enable_If<(Int<T1>::value && Int<T2>::value), void>::type>
-  : public Bool<(Int<T1>::is_signed
-		 ? (Int<T2>::is_signed
+struct Safe_Int_Comparison<T1, T2, typename Enable_If<(C_Integer<T1>::value && C_Integer<T2>::value), void>::type>
+  : public Bool<(C_Integer<T1>::is_signed
+		 ? (C_Integer<T2>::is_signed
 		    || sizeof(T2) < sizeof(T1)
 		    || sizeof(T2) < sizeof(int))
-		 : (!Int<T2>::is_signed
+		 : (!C_Integer<T2>::is_signed
 		    || sizeof(T1) < sizeof(T2)
 		    || sizeof(T1) < sizeof(int)))> {
 };
@@ -459,48 +441,48 @@ eq(const T1& x, const T2& y) {
 
 template <typename S, typename U>
 inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
-			   && Int<U>::value
-			   && Int<S>::is_signed), bool>::type
+			   && C_Integer<U>::value
+			   && C_Integer<S>::is_signed), bool>::type
 lt(const S& x, const U& y) {
   return x < 0 || x < y;
 }
 
 template <typename U, typename S>
 inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
-			   && Int<U>::value
-			   && Int<S>::is_signed), bool>::type
+			   && C_Integer<U>::value
+			   && C_Integer<S>::is_signed), bool>::type
 lt(const U& x, const S& y) {
   return y >= 0 && x < y;
 }
 
 template <typename S, typename U>
 inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
-			   && Int<U>::value
-			   && Int<S>::is_signed), bool>::type
+			   && C_Integer<U>::value
+			   && C_Integer<S>::is_signed), bool>::type
 le(const S& x, const U& y) {
   return x < 0 || x <= y;
 }
 
 template <typename U, typename S>
 inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
-			   && Int<U>::value
-			   && Int<S>::is_signed), bool>::type
+			   && C_Integer<U>::value
+			   && C_Integer<S>::is_signed), bool>::type
 le(const U& x, const S& y) {
   return y >= 0 && x <= y;
 }
 
 template <typename S, typename U>
 inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
-			   && Int<U>::value
-			   && Int<S>::is_signed), bool>::type
+			   && C_Integer<U>::value
+			   && C_Integer<S>::is_signed), bool>::type
 eq(const S& x, const U& y) {
   return x >= 0 && x == y;
 }
 
 template <typename U, typename S>
 inline typename Enable_If<(!Safe_Int_Comparison<S, U>::value
-			   && Int<U>::value
-			   && Int<S>::is_signed), bool>::type
+			   && C_Integer<U>::value
+			   && C_Integer<S>::is_signed), bool>::type
 eq(const U& x, const S& y) {
   return y >= 0 && x == y;
 }
@@ -508,7 +490,7 @@ eq(const U& x, const S& y) {
 template <typename T1, typename T2>
 inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 			   && !Safe_Conversion<T2, T1>::value
-			   && (!Int<T1>::value || !Int<T2>::value)), bool>::type
+			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 eq(const T1& x, const T2& y) {
   DIRTY_TEMP(T1, tmp);
   Result r = assign_r(tmp, y, ROUND_CHECK);
@@ -518,7 +500,7 @@ eq(const T1& x, const T2& y) {
 template <typename T1, typename T2>
 inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 			   && !Safe_Conversion<T2, T1>::value
-			   && (!Int<T1>::value || !Int<T2>::value)), bool>::type
+			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 lt(const T1& x, const T2& y) {
   DIRTY_TEMP(T1, tmp);
   Result r = assign_r(tmp, y, ROUND_UP);
@@ -538,7 +520,7 @@ lt(const T1& x, const T2& y) {
 template <typename T1, typename T2>
 inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 			   && !Safe_Conversion<T2, T1>::value
-			   && (!Int<T1>::value || !Int<T2>::value)), bool>::type
+			   && (!C_Integer<T1>::value || !C_Integer<T2>::value)), bool>::type
 le(const T1& x, const T2& y) {
   DIRTY_TEMP(T1, tmp);
   Result r = assign_r(tmp, y, static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));

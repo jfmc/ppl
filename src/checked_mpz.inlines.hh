@@ -78,14 +78,14 @@ classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
     mp_size_field_t s = get_mp_size(v);
     if (Policy::has_nan
 	&& (nan || sign)
-	&& s == Limits<mp_size_field_t>::min + 1)
+	&& s == C_Integer<mp_size_field_t>::min + 1)
       return VC_NAN;
     if (!inf && !sign)
       return VC_NORMAL;
     if (Policy::has_infinity) {
-      if (s == Limits<mp_size_field_t>::min)
+      if (s == C_Integer<mp_size_field_t>::min)
 	return inf ? VC_MINUS_INFINITY : V_LT;
-      if (s == Limits<mp_size_field_t>::max)
+      if (s == C_Integer<mp_size_field_t>::max)
 	return inf ? VC_PLUS_INFINITY : V_GT;
     }
   }
@@ -100,7 +100,7 @@ template <typename Policy>
 inline bool
 is_nan_mpz(const mpz_class& v) {
   return Policy::has_nan
-    && get_mp_size(v) == Limits<mp_size_field_t>::min + 1;
+    && get_mp_size(v) == C_Integer<mp_size_field_t>::min + 1;
 }
 
 SPECIALIZE_IS_NAN(is_nan_mpz, mpz_class)
@@ -109,7 +109,7 @@ template <typename Policy>
 inline bool
 is_minf_mpz(const mpz_class& v) {
   return Policy::has_infinity
-    && get_mp_size(v) == Limits<mp_size_field_t>::min;
+    && get_mp_size(v) == C_Integer<mp_size_field_t>::min;
 }
 
 SPECIALIZE_IS_MINF(is_minf_mpz, mpz_class)
@@ -118,7 +118,7 @@ template <typename Policy>
 inline bool
 is_pinf_mpz(const mpz_class& v) {
   return Policy::has_infinity
-    && get_mp_size(v) == Limits<mp_size_field_t>::max;
+    && get_mp_size(v) == C_Integer<mp_size_field_t>::max;
 }
 
 SPECIALIZE_IS_PINF(is_pinf_mpz, mpz_class)
@@ -136,14 +136,14 @@ inline Result
 set_special_mpz(mpz_class& v, Result r) {
   Result c = classify(r);
   if (Policy::has_nan && c == VC_NAN)
-    set_mp_size(v, Limits<mp_size_field_t>::min + 1);
+    set_mp_size(v, C_Integer<mp_size_field_t>::min + 1);
   else if (Policy::has_infinity) {
     switch (c) {
     case VC_MINUS_INFINITY:
-      set_mp_size(v, Limits<mp_size_field_t>::min);
+      set_mp_size(v, C_Integer<mp_size_field_t>::min);
       break;
     case VC_PLUS_INFINITY:
-      set_mp_size(v, Limits<mp_size_field_t>::max);
+      set_mp_size(v, C_Integer<mp_size_field_t>::max);
       break;
     default:
       break;

@@ -25,6 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.types.hh"
 #include "Coefficient.defs.hh"
+#include "C_Integer.hh"
+#include "meta_programming.hh"
 #include <exception>
 
 namespace Parma_Polyhedra_Library {
@@ -306,6 +308,90 @@ T low_bits_mask(unsigned n);
     std::cerr << "No user level output operator defined "		\
 	      << "for " PPL_XSTR(class_prefix) << "." << std::endl;	\
   }
+
+template <typename T, long long v, typename Enable = void>
+struct Fit : public False {
+};
+
+template <typename T, long long v>
+struct Fit<T, v, typename Enable_If<C_Integer<T>::value>::type>  {
+  enum {
+    value = (v >= static_cast<long long>(C_Integer<T>::min)
+             && v <= static_cast<long long>(C_Integer<T>::max))
+  };
+};
+
+template <typename T, long long v, bool prefer_signed>
+struct Smaller_Fit {
+  enum {
+    value = (Fit<T, v>::value
+	     && !Fit<typename C_Integer<T>::smaller_signed_type, v>::value
+	     && !Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value
+	     && ((bool)C_Integer<T>::is_signed == (bool)prefer_signed
+		 || !Fit<typename C_Integer<T>::other_type, v>::value))
+  };
+};
+
+
+template <long long v, bool prefer_signed = true, typename Enable = void>
+struct Constant {
+  static const long long value = v;
+};
+
+template <long long v, bool prefer_signed>
+struct Constant<v, prefer_signed,
+		typename Enable_If<(Smaller_Fit<signed char, v,
+				             prefer_signed>::value)>::type> {
+  static const signed char value = v;
+};
+
+template <long long v, bool prefer_signed>
+struct Constant<v, prefer_signed,
+		typename Enable_If<(Smaller_Fit<unsigned char, v,
+				             prefer_signed>::value)>::type> {
+  static const unsigned char value = v;
+};
+
+template <long long v, bool prefer_signed>
+struct Constant<v, prefer_signed,
+		typename Enable_If<(Smaller_Fit<signed short, v,
+				             prefer_signed>::value)>::type> {
+  static const signed short value = v;
+};
+
+template <long long v, bool prefer_signed>
+struct Constant<v, prefer_signed,
+		typename Enable_If<(Smaller_Fit<unsigned short, v,
+				             prefer_signed>::value)>::type> {
+  static const unsigned short value = v;
+};
+template <long long v, bool prefer_signed>
+struct Constant<v, prefer_signed,
+		typename Enable_If<(Smaller_Fit<signed int, v,
+				             prefer_signed>::value)>::type> {
+  static const signed int value = v;
+};
+
+template <long long v, bool prefer_signed>
+struct Constant<v, prefer_signed,
+		typename Enable_If<(Smaller_Fit<unsigned int, v,
+				             prefer_signed>::value)>::type> {
+  static const unsigned int value = v;
+};
+
+template <long long v, bool prefer_signed>
+struct Constant<v, prefer_signed,
+		typename Enable_If<(Smaller_Fit<signed long, v,
+				             prefer_signed>::value)>::type> {
+  static const signed long value = v;
+};
+
+template <long long v, bool prefer_signed>
+struct Constant<v, prefer_signed,
+		typename Enable_If<(Smaller_Fit<unsigned long, v,
+				             prefer_signed>::value)>::type> {
+  static const unsigned long value = v;
+};
 
 } // namespace Parma_Polyhedra_Library
 
