@@ -103,6 +103,8 @@ endif
 INCLUDE_FILES = \
 namespaces.hh \
 compiler.hh \
+mp_std_bits.defs.hh \
+mp_std_bits.inlines.hh \
 Coefficient_traits_template.hh \
 Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
@@ -172,7 +174,6 @@ checked_mpq.inlines.hh \
 checked_ext.inlines.hh \
 Checked_Number.defs.hh \
 Checked_Number.inlines.hh \
-mp_numeric_limits.hh \
 checked_numeric_limits.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \

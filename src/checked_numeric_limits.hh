@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Checked_Number.defs.hh"
 #include "checked_int.inlines.hh"
-#include "mp_numeric_limits.hh"
 #include <limits>
 
 namespace std {

@@ -117,11 +117,4 @@ total_memory_in_bytes(const GMP_Integer& x) {
 
 } // namespace Parma_Polyhedra_Library
 
-/*! \relates Parma_Polyhedra_Library::GMP_Integer */
-inline void
-std::swap(Parma_Polyhedra_Library::GMP_Integer& x,
-	  Parma_Polyhedra_Library::GMP_Integer& y) {
-  mpz_swap(x.get_mpz_t(), y.get_mpz_t());
-}
-
 #endif // !defined(PPL_GMP_Integer_inlines_hh)

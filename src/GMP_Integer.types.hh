@@ -14,6 +14,7 @@ PURPOSE. */
 
 #include "Coefficient_traits_template.hh"
 #include <gmpxx.h>
+#include "mp_std_bits.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

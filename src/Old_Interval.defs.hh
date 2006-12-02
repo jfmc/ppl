@@ -26,8 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Old_Interval.types.hh"
 #include "Coefficient.defs.hh"
 #include "Checked_Number.defs.hh"
-#include <gmpxx.h>
 #include <iosfwd>
+#include <gmpxx.h>
+#include "mp_std_bits.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <iostream>
 #include <gmpxx.h>
+#include "mp_std_bits.defs.hh"
 #include "Temp.defs.hh"
 #include "Rounding_Dir.defs.hh"
 #include "Numeric_Format.defs.hh"

@@ -27,14 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <climits>
 #include <stdexcept>
 
-namespace std {
-inline void
-swap(mpq_class& x, mpq_class& y) {
-  swap(x.get_num(), y.get_num());
-  swap(x.get_den(), y.get_den());
-}
-}
-
 namespace Parma_Polyhedra_Library {
 
 template <> struct Checked_Supports<mpq_class> : public True { };
