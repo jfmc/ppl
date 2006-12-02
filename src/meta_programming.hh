@@ -84,15 +84,36 @@ namespace Parma_Polyhedra_Library {
     return name;							\
   }
 
-template <bool>
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  A class that is only defined if \p b evaluates to <CODE>true</CODE>.
+
+  This is the non-specialized case, so the class is declared but not defined.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <bool b>
 struct Compile_Time_Check;
 
-template <>
-struct Compile_Time_Check<true> { };
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  A class that is only defined if \p b evaluates to <CODE>true</CODE>.
 
-#define COMPILE_TIME_CHECK_NAME(suf) compile_time_check_ ## suf
-#define COMPILE_TIME_CHECK_AUX(e, suf)					\
-  enum { COMPILE_TIME_CHECK_NAME(suf) = sizeof(Parma_Polyhedra_Library::Compile_Time_Check<static_cast<bool>(e)>) }
+  This is the specialized case with \p b equal to <CODE>true</CODE>,
+  so the class is declared and (trivially) defined.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <>
+struct Compile_Time_Check<true> {
+};
+
+#define COMPILE_TIME_CHECK_NAME(suffix) compile_time_check_ ## suffix
+#define COMPILE_TIME_CHECK_AUX(e, suffix)				\
+  enum {								\
+    /* If e evaluates to false, then the sizeof cannot be compiled. */  \
+    COMPILE_TIME_CHECK_NAME(suffix)					\
+    = sizeof(Parma_Polyhedra_Library::					\
+	     Compile_Time_Check<static_cast<bool>(e)>)			\
+  }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
