@@ -97,7 +97,9 @@ public:
     Builds an MIP problem having space dimension \p dim
     from the sequence of constraints in the range
     \f$[\mathrm{first}, \mathrm{last})\f$,
-    the objective function \p obj and optimization mode \p mode.
+    the objective function \p obj and optimization mode \p mode;
+    those dimensions whose indices occur in \p int_vars are
+    constrained to take an integer value.
 
     \param dim
     The dimension of the vector space enclosing \p *this.
@@ -109,7 +111,7 @@ public:
     A past-the-end input iterator to the sequence of constraints.
 
     \param int_vars
-    The set of variables that are constrained to take integer values.
+    The set of variables' indexes that are constrained to take integer values.
 
     \param obj
     The objective function (optional argument with default value \f$0\f$).
@@ -217,7 +219,8 @@ MIP_Problem(dimension_type dim,
   dimension_type space_dimension() const;
 
   /*! \brief
-    Returns a set containing all the variables constrained to be integral.
+    Returns a set containing all the variables' indexes constrained
+    to be integral.
   */
   const Variables_Set& integer_space_dimensions() const;
 
@@ -273,10 +276,11 @@ public:
   void add_space_dimensions_and_embed(dimension_type m);
 
   /*! \brief
-    Sets the variables in set \p i_vars to be integer space dimensions.
+    Sets the variables whose indexes are in set \p i_vars to be
+    integer space dimensions.
 
     \exception std::invalid_argument
-    Thrown if some variable is \p i_vars does not correspond to
+    Thrown if some index in \p i_vars does not correspond to
     a space dimension in \p *this.
   */
   void add_to_integer_space_dimensions(const Variables_Set& i_vars);
@@ -468,7 +472,7 @@ private:
   Generator last_generator;
 
   /*! \brief
-    A set containing all the variables that are constrained
+    A set containing all the indexes of variables that are constrained
     to have an integer value.
   */
   Variables_Set i_variables;
@@ -684,8 +688,7 @@ private:
     The problem that has to be solved.
 
     \param i_vars
-    A set containing all the variables that are constrained to have an integer
-    value.
+    The variables that are constrained to take an integer value.
   */
   static MIP_Problem_Status solve_mip(bool& have_incumbent_solution,
 				      mpq_class& incumbent_solution_value,
@@ -707,8 +710,7 @@ private:
     This will encode the feasible point, only if <CODE>true</CODE> is returned.
 
     \param i_vars
-    This encodes all the variables that are constrained to have an
-    integer value.
+    The variables that are constrained to take an integer value.
   */
   static bool is_mip_satisfiable(MIP_Problem& mip, Generator& p,
 				 const Variables_Set& i_vars);
@@ -719,6 +721,9 @@ private:
 
     \param mip
     The MIP problem.
+
+    \param i_vars
+    The variables that are constrained to take an integer value.
 
     \param branching_index
     If <CODE>false</CODE> is returned, this will encode the variable index on

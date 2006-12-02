@@ -1,0 +1,98 @@
+
+    // Common stuff. We can add other object if we need them later.
+    Constraint_System constraints1;
+    Congruence_System congruences1;
+    Constraint_System constraints2;
+    Generator_System generators1;
+    Grid_Generator_System grid_generators1;
+    Constraint constraint1;
+    Generator generator1;
+    Grid_Generator grid_generator1;
+    Congruence congruence1;
+    Variable var;
+    Linear_Expression le;
+    By_Reference<Boolean> bool_by_ref1;
+    Coefficient coeff0;
+    Coefficient coeff1;
+    // This ones builds Constraint_System and so on, and is common for
+    // all the tests.
+    public void initialize() {
+	// Variable declarations.
+	Variable A = new Variable(0);
+	Variable B = new Variable(1);
+	Variable C = new Variable(2);
+	var = C;
+
+	// Coefficient declaration.
+	coeff0 = new Coefficient("0");
+	coeff1 = new Coefficient("5");
+
+	// Linear_Expression declarations.
+	Linear_Expression le1 = new Linear_Expression_Variable(A);
+	Linear_Expression le2 = new Linear_Expression_Variable(C);
+	Linear_Expression le3 = new Linear_Expression_Coefficient(coeff1);
+	Linear_Expression le4 = le1.times(new Coefficient(3));
+	le2 = le2.sum(le4);
+	le = le1;
+
+	// Constraint declarations.
+	Constraint c1 = new Constraint(new Linear_Expression_Coefficient(coeff1) , Relation_Symbol.GREATER_THAN_OR_EQUAL, new Linear_Expression_Coefficient(coeff0));
+	constraint1 = c1;
+	Constraint c2 = new Constraint(le2, Relation_Symbol.EQUAL, le3);
+
+	Congruence cg1 = new Congruence(le2, le3, coeff0);
+	congruence1 = cg1;
+	Congruence cg2 = new Congruence(le2, le3, coeff0);
+	Constraint c3 = new Constraint(le2,
+				       Relation_Symbol.GREATER_THAN_OR_EQUAL,
+				       le4);
+	Constraint c4 = new Constraint(le2,
+				       Relation_Symbol.GREATER_THAN_OR_EQUAL,
+				       le3);
+
+	// Constraint_System declarations.
+	constraints1 = new Constraint_System();
+	constraints1.add(c1);
+	constraints1.add(c2);
+	congruences1 = new Congruence_System();
+	congruences1.add(cg1);
+	congruences1.add(cg2);
+	constraints2 = new Constraint_System();
+	constraints2.add(c3);
+	constraints2.add(c4);
+
+	le2 = le2.times(new Coefficient("10"));
+
+	// Generator declarations.
+	Generator g1 = Generator.point(le2, new Coefficient(1));
+	generator1 = g1;
+	Generator g2 = Generator.point(le2, new Coefficient(2));
+        Generator g3 = Generator.point(le2, new Coefficient(3));
+	Generator g4 = Generator.point(le1, new Coefficient(4));
+
+        // Generator_System declaration.
+        generators1 = new Generator_System();
+        generators1.add(g1);
+        generators1.add(g2);
+        generators1.add(g3);
+        generators1.add(g4);
+
+	// Grid_Generator declarations.
+	Grid_Generator gg1
+                = Grid_Generator.grid_point(le2, new Coefficient(1));
+	grid_generator1 = gg1;
+	Grid_Generator gg2
+                = Grid_Generator.grid_point(le2, new Coefficient(2));
+        Grid_Generator gg3
+                = Grid_Generator.grid_point(le2, new Coefficient(3));
+	Grid_Generator gg4
+                = Grid_Generator.grid_point(le1, new Coefficient(4));
+
+	// Grid_Generator_System declaration.
+	grid_generators1 = new Grid_Generator_System();
+	grid_generators1.add(gg1);
+	grid_generators1.add(gg2);
+	grid_generators1.add(gg3);
+	grid_generators1.add(gg4);
+        bool_by_ref1 = new By_Reference<Boolean>(true);
+}

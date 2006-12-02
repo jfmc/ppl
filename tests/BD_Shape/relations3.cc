@@ -268,6 +268,70 @@ test12() {
   return rel == known_result;
 }
 
+bool
+test13() {
+  // A 1D empty BDS that is not in minimal form and the point is the origin.
+  Variable A(0);
+
+  TBD_Shape bd(1);
+  bd.add_constraint(A <= 0);
+  bd.add_constraint(A >= 1);
+
+  Generator g = point();
+  Poly_Gen_Relation rel = bd.relation_with(g);
+
+  print_constraints(bd, "--- bd ---");
+  print_generator(g, "--- g ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(v()) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test14() {
+  // A single point does not subsume another (different) point.
+  Variable A(0);
+
+  TBD_Shape bd(1);
+  bd.add_constraint(A == 1);
+
+  Generator g = point();
+  Poly_Gen_Relation rel = bd.relation_with(g);
+
+  print_constraints(bd, "--- bd ---");
+  print_generator(g, "--- g ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(v()) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test15() {
+  // A single point does not subsume another (different) point.
+  Variable A(0);
+
+  C_Polyhedron bd(1);
+  bd.add_constraint(A == 1);
+
+  Generator g = point(3*A, 2);
+  Poly_Gen_Relation rel = bd.relation_with(g);
+
+  print_constraints(bd, "--- bd ---");
+  print_generator(g, "--- g ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(v()) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -283,4 +347,7 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

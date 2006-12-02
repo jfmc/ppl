@@ -41,6 +41,13 @@ m4_define(`m4_capfirstletters',
          m4_regexp(`$1', `^\(\w\)\(\w*_\)\(\w\)\(\w*\)',
            `m4_upcase(`\1')`\2'm4_upcase(`\3')`\4''))')
 
+dnl m4_add_one_after_underscore(String)
+dnl
+dnl Adds a 1 after any underscore (needed for Java interface code)..
+dnl Example: m4_capfirstletter(`xyz_abc') ==> xyz_1abc
+m4_define(`m4_add_one_after_underscore', `m4_patsubst(`$1', `_', `_1')`'dnl
+')
+
 dnl m4_ifndef(Macro, Default Definition)
 dnl
 dnl If Macro is defined, use that definition;
@@ -105,6 +112,8 @@ dnl m4_replacements.
 dnl Additional codes help provide the right form of the replacmement:
 dnl - alt_ means that the alternative replacement in m4_alt_replacements
 dnl must be used if one exists.
+dnl - when the alt_replace is NONE, then the code is replaced by the
+dnl   the empty string.
 dnl - U means that the alt_actual string must be capitalised at start
 dnl   of word and after "_".
 m4_define(`m4_expand_pattern_by_one_replacement', `dnl
@@ -115,15 +124,36 @@ dnl
 dnl m4_alt_replace is the replacement for alt_pattern
 m4_define(`m4_alt_replace', `m4_arg($2, m4_alt_replacements)')`'dnl
 dnl
-m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst($1,
+m4_ifelse(m4_replace, NONE, `',
+          m4_alt_replace, NONE, `',
+m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
+            m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst(
+            m4_patsubst(m4_patsubst(m4_patsubst(m4_patsubst($1,
+  m4_pattern_delimiter`'1U`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_capfirstletters(m4_replace))),
+  m4_pattern_delimiter`'1L`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_downcase(m4_replace))),
   m4_pattern_delimiter`'U`'PATTERN`'m4_pattern_delimiter,
     m4_capfirstletters(m4_replace)),
+  m4_pattern_delimiter`'L`'PATTERN`'m4_pattern_delimiter,
+    m4_downcase(m4_replace)),
+  m4_pattern_delimiter`'1`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_replace)),
+  m4_pattern_delimiter`'1UALT_`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_capfirstletters(m4_alt_replace))),
   m4_pattern_delimiter`'UALT_`'PATTERN`'m4_pattern_delimiter,
     m4_capfirstletters(m4_alt_replace)),
+  m4_pattern_delimiter`'1LALT_`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_downcase(m4_alt_replace))),
+  m4_pattern_delimiter`'LALT_`'PATTERN`'m4_pattern_delimiter,
+    m4_downcase(m4_alt_replace)),
+  m4_pattern_delimiter`'1ALT_`'PATTERN`'m4_pattern_delimiter,
+    m4_add_one_after_underscore(m4_alt_replace)),
   m4_pattern_delimiter`'ALT_`'PATTERN`'m4_pattern_delimiter,
     m4_alt_replace),
   m4_pattern_delimiter`'PATTERN`'m4_pattern_delimiter,
     m4_replace)`'dnl
+)`'dnl
 dnl
 m4_undefine(`m4_replace')`'dnl
 m4_undefine(`m4_alt_replace')`'dnl
@@ -236,11 +266,12 @@ m4_define(`m4_extension', `m4_ifdef(`$1_code', `m4_indir(`$1_code')',
   `m4_default_code($1)')`'dnl
 ')
 
-dnl m4_get_schematic_code(Procedure_Spec, Start_Flag)
+dnl m4_get_schematic_code(Procedure_Spec, Start_Flag, Class_Kind)
 dnl
 dnl Procedure_Spec - The schematic procedure name, complete with any flags;
 dnl Start_Flag     - 0 suppresses any separator.
 dnl                  (Needed for expanding Prolog lists of atoms etc.).
+dnl Class_Kind     - The current class kind;
 dnl Procedure_Spec has the flags removed and expanded to
 dnl the extended code.
 m4_define(`m4_get_schematic_code', `dnl
@@ -250,7 +281,7 @@ m4_patsubst(`$1',
 
 dnl m4_replace_procedure_spec_by_code(Class_Number, Procedure_Spec)
 dnl
-dnl Class_Number   - The current class index.
+dnl Class_Number   - The current class counter.
 dnl Procedure_Spec - The schematic procedure name, complete with any flags;
 dnl The procedure specification is replaced with the code and then
 dnl the patterns in the code are replaced by the required replacements.
@@ -262,14 +293,14 @@ m4_undefine(`m4_replace_procedure_spec_by_code')
 m4_define(`m4_replace_procedure_spec_by_code', `dnl
 m4_patsubst(`$2', `\(.*\)', `dnl
 m4_replace_all_patterns_in_string($1,
-  m4_get_schematic_code(\1, 1, m4_class_kind$1),
+  m4_get_schematic_code(\1, 1, $1),
     m4_pattern_list)')`'dnl
 ')
 
 dnl m4_replace_all_procedure_specs_by_code(Class_Number,
 dnl                            Procedure_Spec1, Procedure_Spec2, ...)
 dnl
-dnl Class_Number    - The current class index.
+dnl Class_Number    - The current class counter.
 dnl Procedure_Spec1 - A schematic procedure name;
 dnl ...
 dnl Procedure_Speck - A schematic procedure name
@@ -292,9 +323,9 @@ dnl ====== procedure specification.                                     =
 dnl =====================================================================
 
 dnl m4_keep_or_throw_for_one_group(
-dnl     Class_Kind, Procedure_Spec, +_or_-, Group)
+dnl     Class__Counter, Procedure_Spec, +_or_-, Group)
 dnl
-dnl Class_Kind      - The current class kind;
+dnl Class_Counter   - The current class counter;
 dnl Procedure_Spec  - A schematic procedure name with flags still attached;
 dnl +_or_-          - + or -;
 dnl Group           - A group name.
@@ -304,14 +335,14 @@ dnl if it is, it checks if +Group or -Group
 dnl (depending if +_or_- is + or -) is included in the Procedure_Spec;
 dnl if it is, then it expands to 1, otherwise, expands to 0.
 m4_define(`m4_keep_or_throw_for_one_group', `dnl
-m4_ifelse(m4_arg_counter($1, m4_$4_group), `', 0,
+m4_ifelse(m4_arg_counter(m4_class_kind$1, m4_$4_group), `', 0,
   `m4_ifelse(m4_index($2, $3$4), -1, 0, 1)')`'dnl
 ')
 
 dnl m4_keep_or_throw(
-dnl     Class_Kind, Procedure_Spec, +_or_-, Group1, Group2, ...)
+dnl     Class_Counter, Procedure_Spec, +_or_-, Group1, Group2, ...)
 dnl
-dnl Class_Kind      - The current class kind;
+dnl Class_Counter   - The current class counter;
 dnl Procedure_Spec  - A schematic procedure name with flags still attached;
 dnl +_or_-          - + or -;
 dnl Group1          - A group name;
@@ -325,9 +356,9 @@ m4_ifelse($#, 0, 0, $#, 1, 0, $#, 2, 0, $#, 3, 0,
                        m4_shift(m4_shift(m4_shift(m4_shift($@))))))')`'dnl
 ')
 
-dnl m4_filter_one_procedure(Class_Kind, Procedure_Spec)
-dnl
-dnl Class_Kind      - The current class kind;
+dnl m4_filter_one_procedure(Class_Counter, Procedure_Spec)
+ dnl
+dnl Class_Counter   - The current class counter;
 dnl Procedure_Spec  - A schematic procedure name with flags still attached;
 dnl Keeps just those procedures that are wanted for the given class kind.
 dnl It first checks if there is a group in Procedure_Spec, whose
@@ -344,10 +375,10 @@ m4_ifelse(m4_keep_or_throw($1, m4_proc_info_string, -, m4_group_names), 1, 0,
 m4_undefine(m4_proc_info_string)`'dnl
 ')
 
-dnl m4_filter_all_procedures(Class_Kind, keep_or_throw_flag,
+dnl m4_filter_all_procedures(Class_Counter, keep_or_throw_flag,
 dnl                         Procedure_Spec1, ProcedureSpec2, ...)
 dnl
-dnl Class_Kind      - The current class kind;
+dnl Class_Counter   - The current class kind;
 dnl keep_or_throw_flag
 dnl                 - has value 1 or 0;
 dnl Procedure_Spec1 - A schematic procedure name with flags still attached;
@@ -373,40 +404,42 @@ m4_filter_all_procedures($1, $2, m4_shift(m4_shift(m4_shift($@))))`'dnl
 ')
 
 dnl =====================================================================
-dnl ====== The final set of macros process the classes, one at a time.  =
+dnl ====== The next set of macros process a single class.   =============
 dnl =====================================================================
 
-dnl m4_pre_extra_class_code(Class_Counter, Class_Kind)
-dnl m4_post_extra_class_code(Class_Counter, Class_Kind)
+dnl m4_pre_extra_class_code(Class_Counter)
+dnl m4_post_extra_class_code(Class_Counter)
 dnl
 dnl Class_Counter   - The index for the current class;
-dnl Class_Kind      - The current class kind;
 dnl Default (empty) definitions for pre- and post- code for each class.
 dnl These should be redefined as needed.
 m4_define(`m4_pre_extra_class_code', `')
 m4_define(`m4_post_extra_class_code', `')
 
-dnl m4_one_class_code(Class_Counter, Class_Kind)
+dnl m4_one_class_code(Class_Counter)
 dnl
 dnl Class_Counter   - The index for the current class;
-dnl Class_Kind      - The current class kind;
 dnl First, any necessary prefix code for the procedures in
 dnl that class is added.
 dnl Then, the main procedure input list is filtered according to
-dnl the class kind and the +/- codes included with the procedure.
+dnl the current class kind and the +/- codes included with the procedure.
 dnl Each procedure that is not filtered away is checked to see if
 dnl there is a macro with "_code" extension that defines the code.
 dnl Then a macro sets the class and other schematic components.
 dnl Finally, any necessary postfix code for the procedures in
 dnl that class is added.
 m4_define(`m4_one_class_code', `dnl
-m4_pre_extra_class_code($1, $2)`'dnl
+m4_pre_extra_class_code($1)`'dnl
 m4_define(`m4_filtered_proc_list',
-       `m4_filter_all_procedures($2, 1, m4_procedure_list)')`'dnl
+       `m4_filter_all_procedures($1, 1, m4_procedure_list)')`'dnl
 m4_replace_all_procedure_specs_by_code($1, m4_filtered_proc_list)`'dnl
 m4_undefine(`m4_filtered_proc_list')`'dnl
-m4_post_extra_class_code($1, $2)`'dnl
+m4_post_extra_class_code($1)`'dnl
 ')
+
+dnl =====================================================================
+dnl === The final set of macros process all the classes, one at a time. =
+dnl =====================================================================
 
 dnl m4_all_classes_code(Class_Counter)
 dnl
@@ -416,7 +449,7 @@ dnl The actual code for each class is generated by m4_one_class_code.
 dnl The generated code then has the pattern "@COMMA@" replaced by ",".
 m4_define(`m4_all_classes_code', `dnl
 m4_ifdef(m4_interface_class`'$1,
-  `m4_patsubst(m4_one_class_code($1, m4_class_kind$1), @COMMA@, `,')`'dnl
+  `m4_patsubst(m4_one_class_code($1), @COMMA@, `,')`'dnl
 m4_all_classes_code(m4_incr($1))')`'dnl
 ')
 

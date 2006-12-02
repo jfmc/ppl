@@ -425,6 +425,49 @@ test19() {
   return rel == known_result;
 }
 
+bool
+test20() {
+  // A 1D empty shape that is not in minimal form and the point is the origin.
+  Variable A(0);
+
+  TOctagonal_Shape oct(1);
+  oct.add_constraint(A <= 0);
+  oct.add_constraint(A >= 1);
+
+  Generator g = point();
+  Poly_Gen_Relation rel = oct.relation_with(g);
+
+  print_constraints(oct, "--- oct ---");
+  print_generator(g, "--- g ---");
+  using namespace IO_Operators;
+  nout << "oct.relation_with(v()) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test21() {
+  // A single point does not subsume another (different) point.
+  Variable A(0);
+
+  TOctagonal_Shape oct(1);
+  oct.add_constraint(A == 1);
+
+  Generator g = point();
+  Poly_Gen_Relation rel = oct.relation_with(g);
+
+  print_constraints(oct, "--- oct ---");
+  print_generator(g, "--- g ---");
+  using namespace IO_Operators;
+  nout << "oct.relation_with(v()) == " << rel << endl;
+
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -447,4 +490,6 @@ BEGIN_MAIN
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
+  DO_TEST(test20);
+  DO_TEST(test21);
 END_MAIN

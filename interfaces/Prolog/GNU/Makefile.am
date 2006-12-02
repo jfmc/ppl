@@ -41,7 +41,7 @@ bin_PROGRAMS = ppl_gprolog
 ppl_gprolog_SOURCES =
 
 pkglib_LTLIBRARIES = libppl_gprolog.la
-libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
+nodist_libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
 libppl_gprolog_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/Watchdog/src/libpwl.la \
@@ -164,6 +164,9 @@ clpq2_test: gp_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		-dlopen libppl_gprolog.la \
 		./gp_clpq2 <$(SCRIPT_CLPQ2) >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
+
+DISTCLEANFILES = \
+ppl_gprolog.pl
 
 MOSTLYCLEANFILES = \
 gp_clpq gp_clpq2 \

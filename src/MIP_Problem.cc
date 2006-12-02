@@ -349,21 +349,18 @@ PPL::MIP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
 }
 
 void
-PPL::MIP_Problem::add_to_integer_space_dimensions(const Variables_Set&
-						  i_vars) {
-  dimension_type i_vars_original_size = i_variables.size();
-  for (Variables_Set::const_iterator i_vars_it = i_vars.begin(),
-	 i_vars_end = i_vars.end(); i_vars_it != i_vars_end; ++i_vars_it) {
-    if (i_vars_it->id() > external_space_dim)
-      throw std::invalid_argument("PPL::MIP_Problem::"
-				  "add_to_integer_space_dimension(i_vars):\n"
-				  "*this and i_vars are dimension"
-				  "incompatible.");
-    i_variables.insert(*i_vars_it);
-  }
-  // If a new integral variable is inserted, set the internal status to
+PPL::MIP_Problem
+::add_to_integer_space_dimensions(const Variables_Set& i_vars) {
+  if (i_vars.space_dimension() > external_space_dim)
+    throw std::invalid_argument("PPL::MIP_Problem::"
+				"add_to_integer_space_dimension(i_vars):\n"
+				"*this and i_vars are dimension"
+				"incompatible.");
+  const dimension_type original_size = i_variables.size();
+  i_variables.insert(i_vars.begin(), i_vars.end());
+  // If a new integral variable was inserted, set the internal status to
   // PARTIALLY_SATISFIABLE.
-  if (i_variables.size() != i_vars_original_size && status != UNSATISFIABLE)
+  if (i_variables.size() != original_size && status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
 }
 
@@ -702,7 +699,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   dimension_type slack_index = tableau_num_columns - artificial_cols - 1;
   dimension_type artificial_index = slack_index;
 
- // The first column index of the tableau that contains an
+  // The first column index of the tableau that contains an
   // artificial variable. Encode with 0 the fact the there are not
   // artificial variables.
   const dimension_type begin_artificials = artificial_cols > 0
@@ -791,19 +788,38 @@ PPL::MIP_Problem::process_pending_constraints() {
     if (working_cost[base[i]] != 0)
       linear_combine(working_cost, tableau[i], base[i]);
 
+  // Deal with zero dimensional problems.
+  if (space_dimension() == 0) {
+    status = OPTIMIZED;
+    last_generator = point();
+    return true;
+  }
   // Deal with trivial cases.
   // If there is no constraint in the tableau, then the feasible region
   // is only delimited by non-negativity constraints. Therefore,
   // the problem is unbounded as soon as the cost function has
   // a variable with a positive coefficient.
-  if (tableau_num_rows == 0) {
+ if (tableau_num_rows == 0) {
     const dimension_type input_obj_function_size
       = input_obj_function.space_dimension();
     for (dimension_type i = input_obj_function_size; i-- > 0; )
-      if (input_obj_function.coefficient(Variable(i)) > 0) {
+      // If a the value of a variable in the objective function is
+      // different from zero, the final status is unbounded.
+      // In the first part the variable is constrained to be greater or equal
+      // than zero.
+      if ((((input_obj_function.coefficient(Variable(i)) > 0
+	     && opt_mode == MAXIMIZATION)
+	    || (input_obj_function.coefficient(Variable(i)) < 0
+		&& opt_mode == MINIMIZATION)) && mapping[i].second == 0)
+	  // In the following case the variable is unconstrained.
+	  || (input_obj_function.coefficient(Variable(i)) != 0
+	      && mapping[i].second != 0)) {
+	// Ensure the right space dimension is obtained.
+	last_generator = point(0 * Variable(space_dimension()-1));
 	status = UNBOUNDED;
 	return true;
       }
+
     // The problem is neither trivially unfeasible nor trivially unbounded.
     // The tableau was successful computed and the caller has to figure
     // out which case applies.
@@ -1518,9 +1534,9 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   dimension_type nonint_dim;
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
-    gcd_assign(gcd, p.coefficient(*v_begin), p_divisor);
+    gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
     if (gcd != p_divisor) {
-      nonint_dim = v_begin->id();
+      nonint_dim = *v_begin;
       found_satisfiable_generator = false;
       break;
     }
@@ -1559,10 +1575,10 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
   assign_r(tmp_coeff1, tmp_rational, ROUND_DOWN);
   assign_r(tmp_coeff2, tmp_rational, ROUND_UP);
   {
-  MIP_Problem lp_aux = lp;
-  lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
-  solve_mip(have_incumbent_solution, incumbent_solution_value,
-	    incumbent_solution_point, lp_aux, i_vars);
+    MIP_Problem lp_aux = lp;
+    lp_aux.add_constraint(Variable(nonint_dim) <= tmp_coeff1);
+    solve_mip(have_incumbent_solution, incumbent_solution_value,
+	      incumbent_solution_point, lp_aux, i_vars);
   }
   // TODO: change this when we will be able to remove constraints.
   lp.add_constraint(Variable(nonint_dim) >= tmp_coeff2);
@@ -1584,7 +1600,9 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
   TEMP_INTEGER(gcd);
   for (Variables_Set::const_iterator v_it = i_vars.begin(),
 	 v_end = i_vars.end(); v_it != v_end; ++v_it) {
-    gcd_assign(gcd, last_generator.coefficient(*v_it), last_generator_divisor);
+    gcd_assign(gcd,
+	       last_generator.coefficient(Variable(*v_it)),
+	       last_generator_divisor);
     if (gcd != last_generator_divisor)
       candidate_variables.insert(*v_it);
   }
@@ -1612,12 +1630,12 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
     current_num_appearances = 0;
     for (dimension_type i = input_cs_num_rows; i-- > 0; )
       if (satisfiable_constraints[i]
-	  && v_it->space_dimension() <= input_cs[i].space_dimension()
-	  && input_cs[i].coefficient(*v_it) != 0)
+	  && *v_it < input_cs[i].space_dimension()
+	  && input_cs[i].coefficient(Variable(*v_it)) != 0)
 	++current_num_appearances;
     if (current_num_appearances >= winning_num_appearances) {
       winning_num_appearances = current_num_appearances;
-      branching_index = v_it->id();
+      branching_index = *v_it;
     }
   }
   return false;
@@ -1646,9 +1664,9 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& lp, Generator& p,
   TEMP_INTEGER(gcd);
   for (Variables_Set::const_iterator v_begin = i_vars.begin(),
 	 v_end = i_vars.end(); v_begin != v_end; ++v_begin) {
-    gcd_assign(gcd, p.coefficient(*v_begin), p_divisor);
+    gcd_assign(gcd, p.coefficient(Variable(*v_begin)), p_divisor);
     if (gcd != p_divisor) {
-      nonint_dim = v_begin->id();
+      nonint_dim = *v_begin;
       found_satisfiable_generator = false;
       break;
     }
@@ -1757,7 +1775,7 @@ PPL::MIP_Problem::OK() const {
       TEMP_INTEGER(gcd);
       for (Variables_Set::const_iterator v_it = i_variables.begin(),
 	     v_end = i_variables.end(); v_it != v_end; ++v_it) {
-	gcd_assign(gcd, last_generator.coefficient(*v_it),
+	gcd_assign(gcd, last_generator.coefficient(Variable(*v_it)),
 		   last_generator.divisor());
 	if (gcd != last_generator.divisor())
 	  return false;

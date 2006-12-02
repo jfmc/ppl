@@ -29,13 +29,13 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Variables_Set::Variables_Set(const Variable& v, const Variable& w)
   : Base() {
   for (dimension_type d = v.id(), last = w.id(); d <= last; ++d)
-    insert(Variable(d));
+    insert(d);
 }
 
 bool
 PPL::Variables_Set::OK() const {
   for (const_iterator i = begin(), set_end = end(); i != set_end; ++i)
-    if (!i->OK())
+    if (!Variable(*i).OK())
       return false;
   return true;
 }
@@ -46,7 +46,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Variables_Set& vs) {
   s << '{';
   for (Variables_Set::const_iterator i = vs.begin(),
 	 vs_end = vs.end(); i != vs_end; ) {
-    s << ' ' << *i++;
+    s << ' ' << Variable(*i++);
     if (i != vs_end)
       s << ',';
   }

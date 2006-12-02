@@ -338,9 +338,10 @@ test11() {
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(4*A >= -7);
+  known_result.add_constraint(4*A <= 9);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B <= 4);
-  known_result.add_constraint(4*(A + B) >= -7);
+  known_result.add_constraint(4*(A + B) <= 13);
   known_result.add_constraint(4*(B - A) <= 23);
 
   oct.bounded_affine_preimage(A, 4*A + 3*B - 5, 4*A + 3*B - 5);
@@ -352,6 +353,199 @@ test11() {
 		    "4*A + 3*B - 5) ***");
 
   return ok;
+}
+
+bool
+test12() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A >= 0);
+  oct.add_constraint(A <= 4);
+  oct.add_constraint(B >= 0);
+  oct.add_constraint(B <= 4);
+  oct.add_constraint(A - B <= 2);
+  oct.add_constraint(A - B >= -2);
+
+  print_constraints(oct, "*** oct ***");
+
+  Octagonal_Shape<mpq_class> known_result(oct);
+
+  oct.bounded_affine_preimage(A, A, A);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
+
+  print_constraints(oct,
+		    "*** oct.bounded_affine_preimage(A, A, A) ***");
+
+  return ok;
+}
+
+bool
+test13() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A >= 0);
+  oct.add_constraint(A <= 4);
+  oct.add_constraint(B >= 0);
+  oct.add_constraint(B <= 4);
+  oct.add_constraint(A - B <= 2);
+  oct.add_constraint(A - B >= -2);
+
+  print_constraints(oct, "*** oct ***");
+
+  Octagonal_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(2*A >= 1);
+  known_result.add_constraint(4*A <= 9);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(4*B <= 11);
+  known_result.add_constraint(4*(A + B) <= 13);
+
+  oct.bounded_affine_preimage(A, 4*A + 3*B - 5, 2*A - 5*B - 1);
+
+  bool ok = check_result(oct, known_result);
+
+  print_constraints(oct,
+		    "*** oct.bounded_affine_preimage(A, 4*A + 3*B - 5, "
+		    "2*A - 5*B - 1) ***");
+
+  return ok;
+}
+
+bool
+test14() {
+  Variable A(0);
+  Variable B(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(A >= 0);
+  oct.add_constraint(A <= 4);
+  oct.add_constraint(B >= 0);
+  oct.add_constraint(B <= 4);
+  oct.add_constraint(A - B <= 2);
+  oct.add_constraint(A - B >= -2);
+
+  print_constraints(oct, "*** oct ***");
+
+  Octagonal_Shape<mpq_class> known_result(2);
+  known_result.add_constraint(4*A >= -15);
+  known_result.add_constraint(2*A <= 21);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(B <= 4);
+  known_result.add_constraint(4*(A + B) >= -3);
+  known_result.add_constraint(2*(A - B) <= 13);
+
+  oct.bounded_affine_preimage(A, 4*A + 3*B - 5, 2*A - 5*B - 1, -2);
+
+  bool ok = check_result(oct, known_result);
+
+  print_constraints(oct,
+		    "*** oct.bounded_affine_preimage(A, 4*A + 3*B - 5, "
+		    "2*A - 5*B - 1, -2) ***");
+
+  return ok;
+}
+
+bool
+test15() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(x >= y);
+
+  try {
+    // This is an incorrect use of the method
+    // Octagonal_Shape::bounded_affine_preimage(v, lb_expr, ub_expr, d):
+    // it is illegal to apply this method to an expression having a
+    // space dimension greater than the OS's space dimension.
+    oct.bounded_affine_preimage(y, x, z);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test16() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(x >= y);
+
+  try {
+    // This is an incorrect use of the method
+    // Octagonal_Shape::bounded_affine_preimage(v, lb_expr, ub_expr, d):
+    // it is illegal to apply this method to an expression having a
+    // space dimension greater than the OS's space dimension.
+    oct.bounded_affine_preimage(y, z, x);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test17() {
+  Variable x(0);
+  Variable y(1);
+
+  TOctagonal_Shape oct(2);
+  oct.add_constraint(x >= y);
+
+  try {
+    // This is an incorrect use of the method
+    // Octagonal_Shape::bounded_affine_preimage(v, lb_expr, ub_expr, d):
+    // it is illegal to apply this method to an expression with the denominator
+    // equal to zero.
+    Coefficient d = 0;
+    oct.bounded_affine_preimage(x, Linear_Expression(0), x + 1, d);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test18() {
+  Variable x(0);
+  Variable y(1);
+
+  TOctagonal_Shape oct(1);
+  oct.add_constraint(x >= 1);
+
+  try {
+    // This is an invalid use of the method
+    // Octagonal_Shape::bounded_affine_preimage(v, lb_expr, ub_epxr, d):
+    // it is illegal to apply this method to a variable
+    // that is not in the space of the octagon.
+    oct.bounded_affine_preimage(y, x + 1, Linear_Expression(8));
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
 }
 
 } // namespace
@@ -368,4 +562,11 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
+  DO_TEST(test13);
+  DO_TEST(test14);
+  DO_TEST(test15);
+  DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
 END_MAIN

@@ -29,8 +29,7 @@ prolog_system('SICStus').
 
 main :-
     ensure_loaded('pl_check.pl'),
-    set_prolog_flag(language, iso),	% FIXME: this is not ISO Prolog
-    nofileerrors,
+    set_prolog_flag(fileerrors, off),
     (check_all ->
 	write('OK')
     ;

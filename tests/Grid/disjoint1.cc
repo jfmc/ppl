@@ -218,6 +218,25 @@ test10() {
   return false;
 }
 
+// Both empty and both not in minimal form.
+bool
+test11() {
+  Variable A(0);
+  Grid gr1(1);
+  gr1.add_congruence((A %= 1) / 2);
+  gr1.add_congruence((A %= 0) / 2);
+
+  Grid gr2(1);
+  gr2.add_congruence((A %= 1) / 2);
+  gr2.add_congruence((A %= 0) / 2);
+
+  bool ok = (gr1.is_disjoint_from(gr2));
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -231,4 +250,5 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN

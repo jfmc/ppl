@@ -114,6 +114,24 @@ test04() {
   return ok;
 }
 
+bool
+test05() {
+
+  TBD_Shape bd1(0);
+  bd1.add_constraint(Linear_Expression(1) == 0);
+
+  TBD_Shape bd2(0, EMPTY);
+
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+
+  BD_Shape<mpq_class> known_result(bd2);
+
+  bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -121,4 +139,5 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
 END_MAIN

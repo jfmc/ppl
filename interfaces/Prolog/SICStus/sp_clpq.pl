@@ -30,6 +30,5 @@ eat_eol :-
 
 main(CLPQ) :-
     ensure_loaded(CLPQ),
-    set_prolog_flag(language, iso),	% FIXME: this is not ISO Prolog
-    nofileerrors,			% FIXME: this is not ISO Prolog
+    set_prolog_flag(fileerrors, off),
     common_main.

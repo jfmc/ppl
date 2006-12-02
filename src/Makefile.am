@@ -69,8 +69,7 @@ COPYING.cc \
 CREDITS.cc
 
 ppl_config_LDADD = \
-libppl.la \
-@extra_libraries@
+libppl.la
 
 if USE_NATIVE_INTEGERS
 
@@ -128,8 +127,8 @@ Variable.types.hh \
 Variables_Set.types.hh \
 Linear_Expression.types.hh \
 Linear_System.types.hh \
-Saturation_Row.types.hh \
-Saturation_Matrix.types.hh \
+Bit_Row.types.hh \
+Bit_Matrix.types.hh \
 Constraint_System.types.hh \
 Generator_System.types.hh \
 Grid_Generator_System.types.hh \
@@ -208,12 +207,12 @@ Linear_Row.defs.hh \
 Linear_Row.inlines.hh \
 Matrix.defs.hh \
 Matrix.inlines.hh \
-Saturation_Row.defs.hh \
-Saturation_Row.inlines.hh \
+Bit_Row.defs.hh \
+Bit_Row.inlines.hh \
 Linear_System.defs.hh \
 Linear_System.inlines.hh \
-Saturation_Matrix.defs.hh \
-Saturation_Matrix.inlines.hh \
+Bit_Matrix.defs.hh \
+Bit_Matrix.inlines.hh \
 Constraint_System.defs.hh \
 Generator_System.defs.hh \
 Grid_Generator_System.defs.hh \
@@ -358,8 +357,8 @@ Pointset_Powerset.cc \
 Pointset_Ask_Tell.cc \
 Row.cc \
 Linear_Row.cc \
-Saturation_Matrix.cc \
-Saturation_Row.cc \
+Bit_Matrix.cc \
+Bit_Row.cc \
 Ph_Status.cc \
 Grid_Status.cc \
 Variable.cc \
@@ -370,6 +369,7 @@ simplify.cc \
 Grid_conversion.cc \
 Grid_simplify.cc \
 globals.cc \
+mp_std_bits.cc \
 version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
@@ -379,10 +379,9 @@ if NO_UNDEFINED
 
 NO_UNDEFINED_FLAG = -no-undefined
 
-libppl_la_LIBADD = @extra_libraries@
-
 endif NO_UNDEFINED
 
+libppl_la_LIBADD = @extra_libraries@
 libppl_la_LDFLAGS = \
 $(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)

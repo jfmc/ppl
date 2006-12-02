@@ -51,6 +51,7 @@ check_PROGRAMS = \
 	bounded1 \
 	boundedaffineimage1 \
 	boundedaffinepreimage1 \
+	bounds1 \
 	cc76extrapolation1 \
 	cc76narrowing1 \
 	chinainit \
@@ -62,6 +63,7 @@ check_PROGRAMS = \
 	disjoint1 \
 	empty1 \
 	expandspacedim1 \
+	foldspacedims1 \
 	fromgensys1 \
 	frompolyhedron1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
@@ -73,7 +75,8 @@ check_PROGRAMS = \
 	limitedbhmz05extrapolation1 \
 	limitedcc76extrapolation1 \
 	mapspacedims1 \
-	maxspacedim \
+	max_min1 max_min2 \
+	maxspacedim1 \
 	membytes1 \
 	minconstraints1 \
 	octdifference1 \
@@ -154,6 +157,8 @@ boundedaffineimage1_SOURCES = boundedaffineimage1.cc
 
 boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
 
+bounds1_SOURCES = bounds1.cc
+
 cc76extrapolation1_SOURCES = cc76extrapolation1.cc
 
 cc76narrowing1_SOURCES = cc76narrowing1.cc
@@ -175,6 +180,8 @@ disjoint1_SOURCES = disjoint1.cc
 empty1_SOURCES = empty1.cc
 
 expandspacedim1_SOURCES = expandspacedim1.cc
+
+foldspacedims1_SOURCES = foldspacedims1.cc
 
 fromgensys1_SOURCES = fromgensys1.cc
 
@@ -199,7 +206,10 @@ limitedcc76extrapolation1_SOURCES = limitedcc76extrapolation1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
-maxspacedim_SOURCES = maxspacedim.cc
+maxspacedim1_SOURCES = maxspacedim1.cc
+
+max_min1_SOURCES = max_min1.cc
+max_min2_SOURCES = max_min2.cc
 
 membytes1_SOURCES = membytes1.cc
 

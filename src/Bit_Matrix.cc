@@ -1,4 +1,4 @@
-/* Saturation_Matrix class implementation (non-inline functions).
+/* Bit_Matrix class implementation (non-inline functions).
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "Saturation_Matrix.defs.hh"
+#include "Bit_Matrix.defs.hh"
 #include "globals.defs.hh"
 #include <iostream>
 #include <string>
@@ -31,8 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Saturation_Matrix&
-PPL::Saturation_Matrix::operator=(const Saturation_Matrix& y){
+PPL::Bit_Matrix&
+PPL::Bit_Matrix::operator=(const Bit_Matrix& y){
   rows = y.rows;
   row_size = y.row_size;
   assert(OK());
@@ -40,12 +40,12 @@ PPL::Saturation_Matrix::operator=(const Saturation_Matrix& y){
 }
 
 void
-PPL::Saturation_Matrix::sort_rows() {
-  typedef std::vector<Saturation_Row>::iterator Iter;
+PPL::Bit_Matrix::sort_rows() {
+  typedef std::vector<Bit_Row>::iterator Iter;
   // Sorting without removing duplicates.
   Iter first = rows.begin();
   Iter last = rows.end();
-  swapping_sort(first, last, Saturation_Row_Less_Than());
+  swapping_sort(first, last, Bit_Row_Less_Than());
   // Moving all the duplicate elements at the end of the vector.
   Iter new_last = swapping_unique(first, last);
   // Removing duplicates.
@@ -54,13 +54,13 @@ PPL::Saturation_Matrix::sort_rows() {
 }
 
 void
-PPL::Saturation_Matrix::add_row(const Saturation_Row& row) {
+PPL::Bit_Matrix::add_row(const Bit_Row& row) {
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
-    std::vector<Saturation_Row> new_rows;
+    std::vector<Bit_Row> new_rows;
     new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
-    new_rows.insert(new_rows.end(), new_rows_size, Saturation_Row());
+    new_rows.insert(new_rows.end(), new_rows_size, Bit_Row());
     // Put the new row in place.
     dimension_type i = new_rows_size-1;
     new_rows[i] = row;
@@ -77,11 +77,11 @@ PPL::Saturation_Matrix::add_row(const Saturation_Row& row) {
 }
 
 void
-PPL::Saturation_Matrix::transpose() {
-  const Saturation_Matrix& x = *this;
+PPL::Bit_Matrix::transpose() {
+  const Bit_Matrix& x = *this;
   const dimension_type nrows = num_rows();
   const dimension_type ncols = num_columns();
-  Saturation_Matrix tmp(ncols, nrows);
+  Bit_Matrix tmp(ncols, nrows);
   for (dimension_type i = nrows; i-- > 0; )
     for (unsigned long j = x[i].last(); j != ULONG_MAX; j = x[i].prev(j))
       tmp[j].set(i);
@@ -90,10 +90,10 @@ PPL::Saturation_Matrix::transpose() {
 }
 
 void
-PPL::Saturation_Matrix::transpose_assign(const Saturation_Matrix& y) {
+PPL::Bit_Matrix::transpose_assign(const Bit_Matrix& y) {
   const dimension_type y_nrows = y.num_rows();
   const dimension_type y_ncols = y.num_columns();
-  Saturation_Matrix tmp(y_ncols, y_nrows);
+  Bit_Matrix tmp(y_ncols, y_nrows);
   for (dimension_type i = y_nrows; i-- > 0; )
     for (unsigned long j = y[i].last(); j != ULONG_MAX; j = y[i].prev(j))
       tmp[j].set(i);
@@ -102,14 +102,14 @@ PPL::Saturation_Matrix::transpose_assign(const Saturation_Matrix& y) {
 }
 
 void
-PPL::Saturation_Matrix::resize(dimension_type new_n_rows,
+PPL::Bit_Matrix::resize(dimension_type new_n_rows,
 		       dimension_type new_n_columns) {
   assert(OK());
   const dimension_type old_num_rows = num_rows();
   if (new_n_columns < row_size) {
     const dimension_type num_preserved_rows
       = std::min(old_num_rows, new_n_rows);
-    Saturation_Matrix& x = *this;
+    Bit_Matrix& x = *this;
     for (dimension_type i = num_preserved_rows; i-- > 0; )
       x[i].clear_from(new_n_columns);
   }
@@ -117,9 +117,9 @@ PPL::Saturation_Matrix::resize(dimension_type new_n_rows,
   if (new_n_rows > old_num_rows) {
     if (rows.capacity() < new_n_rows) {
       // Reallocation will take place.
-      std::vector<Saturation_Row> new_rows;
+      std::vector<Bit_Row> new_rows;
       new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
-      new_rows.insert(new_rows.end(), new_n_rows, Saturation_Row());
+      new_rows.insert(new_rows.end(), new_n_rows, Bit_Row());
       // Steal the old rows.
       for (dimension_type i = old_num_rows; i-- > 0; )
 	new_rows[i].swap(rows[i]);
@@ -128,7 +128,7 @@ PPL::Saturation_Matrix::resize(dimension_type new_n_rows,
     }
     else
       // Reallocation will NOT take place.
-      rows.insert(rows.end(), new_n_rows - old_num_rows, Saturation_Row());
+      rows.insert(rows.end(), new_n_rows - old_num_rows, Bit_Row());
   }
   else if (new_n_rows < old_num_rows)
     // Drop some rows.
@@ -138,8 +138,8 @@ PPL::Saturation_Matrix::resize(dimension_type new_n_rows,
 }
 
 void
-PPL::Saturation_Matrix::ascii_dump(std::ostream& s) const {
-  const Saturation_Matrix& x = *this;
+PPL::Bit_Matrix::ascii_dump(std::ostream& s) const {
+  const Bit_Matrix& x = *this;
   const char separator = ' ';
   s << num_rows() << separator << 'x' << separator
     << num_columns() << "\n";
@@ -150,11 +150,11 @@ PPL::Saturation_Matrix::ascii_dump(std::ostream& s) const {
   }
 }
 
-PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Saturation_Matrix)
+PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Bit_Matrix)
 
 bool
-PPL::Saturation_Matrix::ascii_load(std::istream& s) {
-  Saturation_Matrix& x = *this;
+PPL::Bit_Matrix::ascii_load(std::istream& s) {
+  Bit_Matrix& x = *this;
   dimension_type nrows;
   dimension_type ncols;
   std::string str;
@@ -183,7 +183,7 @@ PPL::Saturation_Matrix::ascii_load(std::istream& s) {
 }
 
 PPL::memory_size_type
-PPL::Saturation_Matrix::external_memory_in_bytes() const {
+PPL::Bit_Matrix::external_memory_in_bytes() const {
   memory_size_type n = rows.capacity() * sizeof(Row);
   for (dimension_type i = num_rows(); i-- > 0; )
     n += rows[i].external_memory_in_bytes();
@@ -191,20 +191,20 @@ PPL::Saturation_Matrix::external_memory_in_bytes() const {
 }
 
 bool
-PPL::Saturation_Matrix::OK() const {
+PPL::Bit_Matrix::OK() const {
 #ifndef NDEBUG
   using std::endl;
   using std::cerr;
 #endif
 
-  const Saturation_Matrix& x = *this;
+  const Bit_Matrix& x = *this;
   for (dimension_type i = num_rows(); i-- > 1; ) {
-    const Saturation_Row& row = x[i];
+    const Bit_Row& row = x[i];
     if (!row.OK())
       return false;
     else if (row.last() != ULONG_MAX && row.last() >= row_size) {
 #ifndef NDEBUG
-      cerr << "Saturation_Matrix[" << i << "] is a row with too many bits!"
+      cerr << "Bit_Matrix[" << i << "] is a row with too many bits!"
 	   << endl
 	   << "(row_size == " << row_size
 	   << ", row.last() == " << row.last() << ")"
@@ -218,11 +218,25 @@ PPL::Saturation_Matrix::OK() const {
 
 #ifndef NDEBUG
 bool
-PPL::Saturation_Matrix::check_sorted() const {
-  const Saturation_Matrix& x = *this;
+PPL::Bit_Matrix::check_sorted() const {
+  const Bit_Matrix& x = *this;
   for (dimension_type i = num_rows(); i-- > 1; )
     if (compare(x[i-1], x[i]) > 0)
       return false;
   return true;
 }
 #endif
+
+/*! \relates Parma_Polyhedra_Library::Bit_Matrix */
+bool
+PPL::operator==(const Bit_Matrix& x, const Bit_Matrix& y) {
+  const dimension_type x_num_rows = x.num_rows();
+  if (x_num_rows != y.num_rows()
+      || x.num_columns() != y.num_columns())
+    return false;
+  for (dimension_type i = x_num_rows; i-- > 0; )
+    if (x[i] != y[i])
+      return false;
+  return true;
+}
+

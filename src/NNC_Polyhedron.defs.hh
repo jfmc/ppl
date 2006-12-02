@@ -77,8 +77,12 @@ public:
     The system of constraints defining the polyhedron.  It is not
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
   */
-  explicit NNC_Polyhedron(Constraint_System& cs);
+  NNC_Polyhedron(Constraint_System& cs, Recycle_Input dummy);
 
   //! Builds an NNC polyhedron from a system of generators.
   /*!
@@ -101,10 +105,14 @@ public:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  explicit NNC_Polyhedron(Generator_System& gs);
+  NNC_Polyhedron(Generator_System& gs, Recycle_Input dummy);
 
   //! Builds an NNC polyhedron from a system of congruences.
   /*!
@@ -126,8 +134,12 @@ public:
     The system of congruences defining the polyhedron.  It is not
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
   */
-  explicit NNC_Polyhedron(Congruence_System& cgs);
+  NNC_Polyhedron(Congruence_System& cgs, Recycle_Input dummy);
 
   //! Builds an NNC polyhedron from a system of grid generators.
   /*!
@@ -150,10 +162,14 @@ public:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  explicit NNC_Polyhedron(Grid_Generator_System& ggs);
+  NNC_Polyhedron(Grid_Generator_System& ggs, Recycle_Input dummy);
 
   //! Builds an NNC polyhedron from the C polyhedron \p y.
   explicit NNC_Polyhedron(const C_Polyhedron& y);

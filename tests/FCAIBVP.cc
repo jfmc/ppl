@@ -32,7 +32,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const FCAIBVP& x) {
   s << "{";
   for (FCAIBVP::Set::const_iterator i = x.set.begin(),
 	 x_end = x.set.end(); i != x_end; ) {
-    const Variable& v = *i++;
+    const Variable& v = Variable(*i++);
 #if 0 // Old compilers may not understand the following.
     using IO_Operators::operator<<;
     s << v;

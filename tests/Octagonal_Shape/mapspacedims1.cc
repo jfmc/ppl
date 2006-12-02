@@ -191,7 +191,7 @@ test06() {
   bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);
 
   print_constraints(oc1, "*** oc1.map_space_dimensions(function) ***");
-  
+
   return ok;
 }
 
@@ -238,7 +238,7 @@ test08() {
   print_constraints(oc1, "*** oc1 ***");
 
   Octagonal_Shape<mpq_class> known_result(3, EMPTY);
- 
+
   oc1.map_space_dimensions(function);
 
   bool ok = (Octagonal_Shape<mpq_class>(oc1) == known_result);

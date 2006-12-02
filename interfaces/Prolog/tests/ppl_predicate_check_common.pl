@@ -75,21 +75,48 @@ make_vars(Dim, Var_List) :-
   make_var_list(0, Dim, Var_List).
 make_var_list(Dim, Dim, []) :- !.
 make_var_list(I, Dim, ['$VAR'(I)|Var_List]) :-
+  I < Dim,
   (I1 is I + 1,
   make_var_list(I1, Dim, Var_List)).
 
-%%%%%%%%%%%% predicates for success and errors.  %%%%%%%%%%%%%%%%%
+make_map_vars(Dim, Var_Map_List) :-
+  make_map_var_list(0, Dim, Var_Map_List).
+make_map_var_list(Dim, Dim, []) :- !.
+make_map_var_list(I, Dim, ['$VAR'(I)-'$VAR'(I)|Var_Map_List]) :-
+  I < Dim,
+  (I1 is I + 1,
+  make_map_var_list(I1, Dim, Var_Map_List)).
 
-:- dynamic(test_failure).
+%%%%%%%%%%%% predicates for success and errors.  %%%%%%%%%%%%%%%%%
 
 write_success(Predicate_name) :-
   display_message([test, for, Predicate_name, 'succeeded.']).
 
 write_error(Predicate_name) :-
-  assertz(test_failure(Predicate_name)),
   write_all([test, for, Predicate_name, 'failed.']).
 
-%%%%%%%%%%%% predicates for test data %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%% test data selection       %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+all_tests(0, [test00, test02]).
+all_tests(1, [test01, test03, test04, test05, test06, test07]).
+
+choose_test(TEST_DATA, Dim) :-
+   all_tests(_, Tests),
+   member(TEST_DATA, Tests),
+   ppl_dimension_test_data(TEST_DATA, space_dimension, Dim).
+
+choose_2_tests(TEST_DATA1, TEST_DATA2, Dim) :-
+   all_tests(0, Tests0),
+   all_tests(1, Tests1),
+   (
+     (member(TEST_DATA1, Tests0),
+      member(TEST_DATA2, Tests0)) ;
+     (member(TEST_DATA1, Tests1),
+      member(TEST_DATA2, Tests1))
+   ),
+   ppl_dimension_test_data(TEST_DATA1, space_dimension, Dim),
+   ppl_dimension_test_data(TEST_DATA2, space_dimension, Dim).
 
 :- discontiguous(ppl_build_test_data/4).
 :- discontiguous(ppl_dimension_test_data/3).
@@ -106,6 +133,9 @@ ppl_initial_test_system(grid_generator, empty).
 predicate_exists(Predicate) :-
   all_class_dependent_predicates(List_of_Predicates),
   member(Predicate, List_of_Predicates).
+
+
+%%%%%%%%%%%% predicates for test data %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 /* Test data for test test00 (an empty object in 0 dimensions) */
 
@@ -144,15 +174,11 @@ ppl_maxmin_test_data(test00, _Topology, _, _, 0, _, _, _, _, false).
 ppl_build_test_data(test01, _Topology, constraints, CS) :-
   (make_vars(1, [A]),
    CS = [A >= 1, A =< 0]).
-ppl_build_test_data(test01, _Topology, generators, GS) :-
-  (make_vars(1, [A]),
-   GS = [line(A)]).
+ppl_build_test_data(test01, _Topology, generators, []).
 ppl_build_test_data(test01, _Topology, congruences, CS) :-
   (make_vars(1, [A]),
    CS = [(A =:= 1) / 2, (A =:= 0) / 2]).
-ppl_build_test_data(test01, _Topology, grid_generators, GS) :-
-  (make_vars(1, [A]),
-   GS = [grid_line(A)]).
+ppl_build_test_data(test01, _Topology, grid_generators, []).
 
 ppl_dimension_test_data(test01, space_dimension, 1).
 ppl_dimension_test_data(test01, affine_dimension, 0).
@@ -323,7 +349,8 @@ ppl_maxmin_test_data(test05, _Topology, congruence, _, A, -1, 1, true,
              grid_point(-1*A), true) :-
    make_vars(1, [A]).
 
-/* Test data for test test06 (an unbounded non-universe object in 1 dimension) */
+/* Test data for test test06,
+            a non-universe object in 1 dimensionwith no upper bound */
 
 ppl_build_test_data(test06, T, constraints, CS) :-
   (\+ T == t_NNC_,
@@ -370,17 +397,148 @@ ppl_bounds_test_data(test06, constraint, A, below, true) :-
 ppl_bounds_test_data(test06, congruence, A, below, false) :-
   make_vars(1, [A]).
 
-ppl_maxmin_test_data(test06, t_C_, constraint, maximize, A, _, _, _, _, false) :-
-   make_vars(1, [A]).
-ppl_maxmin_test_data(test06, t_C_, constraint, minimize, A, 0, 1, true,
+ppl_maxmin_test_data(test06, T, constraint, maximize, A, _, _, _, _, false) :-
+   (T = t_ ; T = t_C_), make_vars(1, [A]).
+
+ppl_maxmin_test_data(test06, T, constraint, minimize, A, 0, 1, true,
                      point(0), true) :-
-   make_vars(1, [A]).
-ppl_maxmin_test_data(test06, t_NNC_, constraint, maximize, A, _, _, _, _, false) :-
+   (T = t_ ; T = t_C_), make_vars(1, [A]).
+ppl_maxmin_test_data(test06, t_NNC_, constraint, maximize, A, _, _, _,
+                     _, false) :-
    make_vars(1, [A]).
 ppl_maxmin_test_data(test06, t_NNC_, constraint, minimize, A, 0, 1, false,
                      closure_point(0), true) :-
    make_vars(1, [A]).
 ppl_maxmin_test_data(test06, _, congruence, _, A, _, _, _, _, false) :-
+   make_vars(1, [A]).
+
+/* Test data for test test07,
+    a non-universe object in 1 dimension with no lower bound */
+
+ppl_build_test_data(test07, T, constraints, CS) :-
+  (\+ T == t_NNC_,
+   make_vars(1, [A]),
+   CS = [A =< 0]).
+ppl_build_test_data(test07, T, generators, GS) :-
+  (\+ T == t_NNC_,
+   make_vars(1, [A]),
+   GS = [point(0*A), ray(-1*A)]).
+ppl_build_test_data(test07, t_NNC_, constraints, CS) :-
+  (make_vars(1, [A]),
+   CS = [A < 0]).
+ppl_build_test_data(test07, t_NNC_, generators, GS) :-
+  (make_vars(1, [A]),
+   GS = [point(A), closure_point(0*A), ray(-1*A)]).
+ppl_build_test_data(test07, _Topology, congruences, CS) :-
+  (make_vars(1, [A]),
+   CS = [(A =:= 0) / 2]).
+ppl_build_test_data(test07, _Topology, grid_generators, GS) :-
+  (make_vars(1, [A]),
+   GS = [grid_point(0*A), parameter(-2*A)]).
+
+ppl_dimension_test_data(test07, _, 1).
+
+ppl_relation_test_data(test07, constraint, A >= -3, [strictly_intersects]) :-
+  make_vars(1, [A]).
+ppl_relation_test_data(test07, generator, point(-3*A, 2), [subsumes]) :-
+  make_vars(1, [A]).
+ppl_relation_test_data(test07, congruence, (2*A =:= 1) / 3,
+                                              [strictly_intersects]) :-
+  make_vars(1, [A]).
+ppl_relation_test_data(test07, grid_generator, grid_point(6*A), [subsumes]) :-
+  make_vars(1, [A]).
+
+ppl_property_test_data(test07, T, _, is_topologically_closed) :-
+  \+ T == t_NNC_.
+ppl_property_test_data(test07, _, _, contains_integer_point).
+ppl_property_test_data(test07, _, congruence, is_discrete).
+
+ppl_bounds_test_data(test07, _, A, below, false) :-
+  make_vars(1, [A]).
+ppl_bounds_test_data(test07, constraint, A, above, true) :-
+  make_vars(1, [A]).
+ppl_bounds_test_data(test07, congruence, A, above, false) :-
+  make_vars(1, [A]).
+
+ppl_maxmin_test_data(test07, T, constraint, minimize, A, _, _, _, _, false) :-
+   (T = t_ ; T = t_C_), make_vars(1, [A]).
+
+ppl_maxmin_test_data(test07, T, constraint, maximize, A, 0, 1, true,
+                     point(0), true) :-
+   (T = t_ ; T = t_C_), make_vars(1, [A]).
+ppl_maxmin_test_data(test07, t_NNC_, constraint, minimize, A, _, _, _,
+                     _, false) :-
+   make_vars(1, [A]).
+ppl_maxmin_test_data(test07, t_NNC_, constraint, maximize, A, 0, 1, false,
+                     closure_point(0), true) :-
+   make_vars(1, [A]).
+ppl_maxmin_test_data(test07, _, congruence, _, A, _, _, _, _, false) :-
+   make_vars(1, [A]).
+
+/* Test data for test test08,
+    a non-universe bounded object in 1 dimension */
+
+ppl_build_test_data(test08, T, constraints, CS) :-
+  (\+ T == t_NNC_,
+   make_vars(1, [A]),
+   CS = [2*A >= 3, A =< 5]).
+ppl_build_test_data(test08, T, generators, GS) :-
+  (\+ T == t_NNC_,
+   make_vars(1, [A]),
+   GS = [point(3*A, 2), point(5*A)]).
+ppl_build_test_data(test08, t_NNC_, constraints, CS) :-
+  (make_vars(1, [A]),
+   CS = [2*A > 3, A < 5]).
+ppl_build_test_data(test08, t_NNC_, generators, GS) :-
+  (make_vars(1, [A]),
+   GS = [point(2*A), closure_point(3*A, 2), closure_point(5*A)]).
+ppl_build_test_data(test08, _Topology, congruences, CS) :-
+  (make_vars(1, [A]),
+   CS = [(2*A =:= 3) / 7]).
+ppl_build_test_data(test08, _Topology, grid_generators, GS) :-
+  (make_vars(1, [A]),
+   GS = [grid_point(3*A, 2), parameter(7*A, 2)]).
+
+ppl_dimension_test_data(test08, _, 1).
+
+ppl_relation_test_data(test08, constraint, A >= 3, [strictly_intersects]) :-
+  make_vars(1, [A]).
+ppl_relation_test_data(test08, generator, point(5*A, 2), [subsumes]) :-
+  make_vars(1, [A]).
+ppl_relation_test_data(test08, congruence, (2*A =:= 1) / 3,
+                                              [strictly_intersects]) :-
+  make_vars(1, [A]).
+ppl_relation_test_data(test08, grid_generator, grid_point(5*A), [subsumes]) :-
+  make_vars(1, [A]).
+
+ppl_property_test_data(test08, T, _, is_topologically_closed) :-
+  \+ T == t_NNC_.
+ppl_property_test_data(test08, _, _, contains_integer_point).
+ppl_property_test_data(test08, _, congruence, is_discrete).
+
+ppl_bounds_test_data(test08, constraint, A, above, true) :-
+  make_vars(1, [A]).
+ppl_bounds_test_data(test08, congruence, A, above, false) :-
+  make_vars(1, [A]).
+ppl_bounds_test_data(test08, constraint, A, below, true) :-
+  make_vars(1, [A]).
+ppl_bounds_test_data(test08, congruence, A, below, false) :-
+  make_vars(1, [A]).
+
+ppl_maxmin_test_data(test08, T, constraint, minimize, A, 3, 2, true,
+                     point(3*A, 2), true) :-
+   (T = t_ ; T = t_C_), make_vars(1, [A]).
+
+ppl_maxmin_test_data(test08, T, constraint, maximize, A, 5, 1, true,
+                     point(5*A), true) :-
+   (T = t_ ; T = t_C_), make_vars(1, [A]).
+ppl_maxmin_test_data(test08, t_NNC_, constraint, minimize, A, 3, 2, false,
+                     closure_point(3*A, 2), true) :-
+   make_vars(1, [A]).
+ppl_maxmin_test_data(test08, t_NNC_, constraint, maximize, A, 5, 1, false,
+                     closure_point(5*A), true) :-
+   make_vars(1, [A]).
+ppl_maxmin_test_data(test08, _, congruence, _, A, _, _, _, _, false) :-
    make_vars(1, [A]).
 
 /* boxes  */
@@ -396,6 +554,8 @@ ppl_build_test_data(test03, _Topology, box, [i(o(minf), o(pinf))]).
 ppl_build_test_data(test04, _Topology, box, [i(c(1), c(1))]).
 ppl_build_test_data(test05, _Topology, box, [i(c(-1), c(-1))]).
 ppl_build_test_data(test06, _Topology, box, [i(c(0), o(pinf))]).
+ppl_build_test_data(test07, _Topology, box, [i(o(minf), c(0))]).
+ppl_build_test_data(test08, _Topology, box, [i(c(3/2), c(5))]).
 ppl_build_test_data(test10, _Topology, box,
                                [i(c(1/2), o(pinf)), i(o(minf), c(-1/2))]).
 ppl_build_test_data(test11, _Topology, box, [i(c(-4), c(1)), i(c(-1), c(1))]).

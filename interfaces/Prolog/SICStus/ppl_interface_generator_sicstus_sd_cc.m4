@@ -58,11 +58,19 @@ Prolog_get_Coefficient(Prolog_term_ref t, PPL::Coefficient& n) {
   if (SP_get_integer(t, &v) == SP_SUCCESS)
     n = v;
   else {
+#if SICSTUS_MAJOR_VERSION == 3
     char* s;
     if (SP_get_number_chars(t, &s) == SP_SUCCESS)
       n = PPL::Coefficient(s);
     else
       return SP_FAILURE;
+#else
+    const char* s;
+    if (SP_get_number_codes(t, &s) == SP_SUCCESS)
+      n = PPL::Coefficient(s);
+    else
+      return SP_FAILURE;
+#endif
   }
   return SP_SUCCESS;
 }
@@ -75,7 +83,11 @@ Prolog_put_Coefficient(Prolog_term_ref t, const PPL::Coefficient& n) {
   else {
     std::ostringstream s;
     s << n;
+#if SICSTUS_MAJOR_VERSION == 3
     return SP_put_number_chars(t, s.str().c_str());
+#else
+    return SP_put_number_codes(t, s.str().c_str());
+#endif
   }
 }
 

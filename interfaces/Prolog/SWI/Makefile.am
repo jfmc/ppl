@@ -40,7 +40,8 @@ AM_CPPFLAGS = \
 $(SWI_PROLOG_INCLUDE_OPTIONS) \
 @extra_includes@
 
-BUILT_SOURCES = ppl_swiprolog.cc
+BUILT_SOURCES = \
+ppl_swiprolog.cc
 
 interface_generator_dependencies = \
 ../../ppl_interface_instantiations.m4 \
@@ -56,7 +57,7 @@ ppl_swiprolog.cc: $(interface_generator_dependencies) Makefile
            $(srcdir)/ppl_interface_generator_swiprolog_cc.m4 > $@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la
-libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
+nodist_libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
 libppl_swiprolog_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/Watchdog/src/libpwl.la \
@@ -161,6 +162,9 @@ clpq2_test: pl_clpq2 ../tests/script_clpq2 $(EXPECTED_CLPQ2)
 		-dlopen ../../../Watchdog/src/libpwl.la \
 		./pl_clpq2 <$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
+
+DISTCLEANFILES = \
+ppl_swiprolog.cc
 
 MOSTLYCLEANFILES = \
 pl_clpq pl_clpq2 \

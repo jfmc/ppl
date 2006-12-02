@@ -460,15 +460,15 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& to_be_folded,
 				 "tbf.space_dimension()",
 				 to_be_folded.space_dimension());
 
-  // Moreover, `var' must not occur in `to_be_folded'.
-  if (to_be_folded.find(var) != to_be_folded.end())
+  // Moreover, `var.id()' must not occur in `to_be_folded'.
+  if (to_be_folded.find(var.id()) != to_be_folded.end())
     throw_invalid_argument("fold_space_dimensions(tbf, v)",
 			   "v should not occur in tbf");
 
   for (Variables_Set::const_iterator i = to_be_folded.begin(),
 	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
     Grid copy = *this;
-    copy.affine_image(var, Linear_Expression(*i));
+    copy.affine_image(var, Linear_Expression(Variable(*i)));
     join_assign(copy);
   }
   remove_space_dimensions(to_be_folded);

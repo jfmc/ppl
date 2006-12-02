@@ -24,8 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
-#include "Saturation_Row.defs.hh"
-#include "Saturation_Matrix.defs.hh"
+#include "Bit_Row.defs.hh"
+#include "Bit_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "Scalar_Products.defs.hh"
 #include <cstddef>
@@ -350,7 +350,7 @@ PPL::dimension_type
 PPL::Polyhedron::conversion(Linear_System& source,
 			    const dimension_type start,
 			    Linear_System& dest,
-			    Saturation_Matrix& sat,
+			    Bit_Matrix& sat,
 			    dimension_type num_lines_or_equalities) {
   dimension_type source_num_rows = source.num_rows();
   dimension_type dest_num_rows = dest.num_rows();
@@ -549,7 +549,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
       // does not saturate the constraint `source_k'.  Therefore, if
       // the constraint is an inequality, we set to 1 the
       // corresponding element of `sat' ...
-      Saturation_Row& sat_nle = sat[num_lines_or_equalities];
+      Bit_Row& sat_nle = sat[num_lines_or_equalities];
       if (source_k.is_ray_or_point_or_inequality())
 	sat_nle.set(k);
       // ... otherwise, the constraint is an equality which is
@@ -668,7 +668,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	      // If there exist another generator that saturates
 	      // all the constraints saturated by both `dest[i]' and
 	      // `dest[j]', then they are NOT adjacent.
-	      Saturation_Row new_satrow;
+	      Bit_Row new_satrow;
 	      assert(sat[i].last() == ULONG_MAX || sat[i].last() < k);
 	      assert(sat[j].last() == ULONG_MAX || sat[j].last() < k);
 	      // Being the union of `sat[i]' and `sat[j]',

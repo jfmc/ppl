@@ -92,10 +92,14 @@ public:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the system of constraints contains strict inequalities.
   */
-  explicit C_Polyhedron(Constraint_System& cs);
+  C_Polyhedron(Constraint_System& cs, Recycle_Input dummy);
 
   //! Builds a C polyhedron from a system of generators.
   /*!
@@ -119,11 +123,15 @@ public:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points,
     or if it contains closure points.
   */
-  explicit C_Polyhedron(Generator_System& gs);
+  C_Polyhedron(Generator_System& gs, Recycle_Input dummy);
 
   //! Builds a C polyhedron from a system of congruences.
   /*!
@@ -145,8 +153,12 @@ public:
     The system of congruences defining the polyhedron.  It is not
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
   */
-  explicit C_Polyhedron(Congruence_System& cgs);
+  C_Polyhedron(Congruence_System& cgs, Recycle_Input dummy);
 
   //! Builds a C polyhedron from a system of grid generators.
   /*!
@@ -171,12 +183,16 @@ public:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     FIXME: is the following correct?
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points,
     or if it contains closure points.
   */
-  explicit C_Polyhedron(Grid_Generator_System& ggs);
+  C_Polyhedron(Grid_Generator_System& ggs, Recycle_Input dummy);
 
   /*! \brief
     Builds a C polyhedron representing the topological closure

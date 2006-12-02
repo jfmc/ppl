@@ -262,26 +262,26 @@ PPL_PROTO((ppl_@CLASS@_t ph,
 
 ')
 
-m4_define(`ppl_@CLASS@_@WIDENEXP@_widening_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
 `int
-ppl_@CLASS@_@WIDENEXP@_widening_assign_with_tokens
+ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
            unsigned* tp));
 
 ')
 
-m4_define(`ppl_@CLASS@_@WIDENEXP@_widening_assign_code',
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `int
-ppl_@CLASS@_@WIDENEXP@_widening_assign
+ppl_@CLASS@_@WIDEN@_widening_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y));
 
 ')
 
-m4_define(`ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `int
-ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_with_tokens
+ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
            ppl_const_Constraint_System_t cs,
@@ -289,18 +289,18 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
-m4_define(`ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_code',
 `int
-ppl_@CLASS@_limited_@WIDENEXP@_extrapolation_assign
+ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
            ppl_const_Constraint_System_t cs));
 
 ')
 
-m4_define(`ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `int
-ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_with_tokens
+ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_with_tokens
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
            ppl_const_Constraint_System_t cs,
@@ -308,9 +308,9 @@ PPL_PROTO((ppl_@CLASS@_t x,
 
 ')
 
-m4_define(`ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_code',
 `int
-ppl_@CLASS@_bounded_@WIDENEXP@_extrapolation_assign
+ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign
 PPL_PROTO((ppl_@CLASS@_t x,
            ppl_const_@CLASS@_t y,
            ppl_const_Constraint_System_t cs));

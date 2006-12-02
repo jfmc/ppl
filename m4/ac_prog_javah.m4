@@ -1,0 +1,48 @@
+##### http://autoconf-archive.cryp.to/ac_prog_javah.html
+#
+# SYNOPSIS
+#
+#   AC_PROG_JAVAH
+#
+# DESCRIPTION
+#
+#   AC_PROG_JAVAH tests the availability of the javah header generator
+#   and looks for the jni.h header file. If available, JAVAH is set to
+#   the full path of javah and CPPFLAGS is updated accordingly.
+#
+# LAST MODIFICATION
+#
+#   2006-11-07
+#
+# COPYLEFT
+#
+#   Copyright (C) 2002 Luc Maisonobe <luc@spaceroots.org>
+#   Copyright (C) 2006 Roberto Bagnara <bagnara@cs.unipr.it>
+#
+#   Copying and distribution of this file, with or without
+#   modification, are permitted in any medium without royalty provided
+#   the copyright notice and this notice are preserved.
+
+AC_DEFUN([AC_PROG_JAVAH],[
+AC_REQUIRE([AC_CANONICAL_HOST])dnl
+AC_REQUIRE([AC_PROG_CPP])dnl
+if test "x$JAVAPREFIX" = x; then
+        AC_CHECK_PROGS(JAVAH,javah, no)
+else
+	AC_PATH_PROGS(JAVAH,javah, no, $JAVAPREFIX)
+fi
+
+if test x"`eval 'echo $ac_cv_path_JAVAH'`" != xno ; then
+  AC_TRY_CPP([#include <jni.h>],,[
+    ac_save_CPPFLAGS="$CPPFLAGS"
+changequote(, )dnl
+    ac_dir=`echo $ac_cv_path_JAVAH | sed 's,\(.*\)/[^/]*/[^/]*$,\1/include,'`
+    ac_machdep=`echo $build_os | sed 's,[-0-9].*,,' | sed 's,cygwin,win32,'`
+changequote([, ])dnl
+    CPPFLAGS="$ac_save_CPPFLAGS -I$ac_dir -I$ac_dir/$ac_machdep"
+    AC_TRY_CPP([#include <jni.h>],
+               ac_save_CPPFLAGS="$CPPFLAGS",
+               AC_MSG_WARN([unable to include <jni.h>])
+	       JAVAH=no)
+    CPPFLAGS="$ac_save_CPPFLAGS"])
+fi])

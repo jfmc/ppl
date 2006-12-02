@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
+#include "Congruence_System.types.hh"
 #include "Poly_Con_Relation.types.hh"
 #include "Poly_Gen_Relation.types.hh"
 #include "Polyhedron.types.hh"
@@ -38,11 +39,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "DB_Matrix.defs.hh"
 #include "DB_Row.defs.hh"
 #include "Checked_Number.defs.hh"
+#include "Bit_Matrix.defs.hh"
 #include <cstddef>
 #include <iosfwd>
 #include <vector>
-#include <deque>
-
 
 namespace Parma_Polyhedra_Library {
 
@@ -442,6 +442,15 @@ public:
   */
   explicit BD_Shape(const Constraint_System& cs);
 
+  //! Builds a BDS from a system of congruences.
+  /*!
+    The BDS inherits the space dimension of \p cgs
+
+    \param cgs
+    A system of congruences: some elements may be safely ignored.
+  */
+  explicit BD_Shape(const Congruence_System& cgs);
+
   //! Builds a BDS from the system of generators \p gs.
   /*!
     Builds the smallest BDS containing the polyhedron defined by \p gs.
@@ -497,6 +506,142 @@ public:
 
   //! Returns a minimized system of constraints defining \p *this.
   Constraint_System minimized_constraints() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p expr is
+    bounded from above in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds_from_above(const Linear_Expression& expr) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p expr is
+    bounded from below in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds_from_below(const Linear_Expression& expr) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from above in \p *this, in which case
+    the supremum value is computed.
+
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if and only if the supremum is also the maximum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d
+    and \p maximum are left untouched.
+  */
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from above in \p *this, in which case
+    the supremum value and a point where \p expr reaches it are computed.
+
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if and only if the supremum is also the maximum value;
+
+    \param g
+    When maximization succeeds, will be assigned the point or
+    closure point where \p expr reaches its supremum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
+    and \p g are left untouched.
+  */
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+		Generator& g) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from below in \p *this, in which case
+    the infimum value is computed.
+
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if and only if the infimum is also the minimum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d
+    and \p minimum are left untouched.
+  */
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from below in \p *this, in which case
+    the infimum value and a point where \p expr reaches it are computed.
+
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if and only if the infimum is also the minimum value;
+
+    \param g
+    When minimization succeeds, will be assigned a point or
+    closure point where \p expr reaches its infimum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
+    and \p g are left untouched.
+  */
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+		Generator& g) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -1255,27 +1400,12 @@ public:
   void add_space_dimensions_and_project(dimension_type m);
 
   /*! \brief
-    Seeing a BDS as a set of tuples (its points),
-    assigns to \p *this all the tuples that can be obtained by concatenating,
-    in the order given, a tuple of \p *this with a tuple of \p y.
+    Assigns to \p *this the \ref Concatenating_Polyhedra "concatenation"
+    of \p *this and \p y, taken in this order.
 
-    Let \f$B \sseq \Rset^n\f$ and \f$D \sseq \Rset^m\f$ be the BDSs
-    corresponding, on entry, to \p *this and \p y, respectively.
-    Upon successful completion, \p *this will represent the BDS
-    \f$R \sseq \Rset^{n+m}\f$ such that
-    \f[
-      R \defeq
-          \Bigl\{\,
-            (x_1, \ldots, x_n, y_1, \ldots, y_m)^\transpose
-          \Bigm|
-            (x_1, \ldots, x_n)^\transpose \in B,
-            (y_1, \ldots, y_m)^\transpose \in D
-          \,\Bigl\}.
-    \f]
-    Another way of seeing it is as follows: first increases the space
-    dimension of \p *this by adding \p y.space_dimension() new
-    dimensions; then adds to the system of constraints of \p *this a
-    renamed-apart version of the constraints of \p y.
+    \exception std::length_error
+    Thrown if the concatenation would cause the vector space
+    to exceed dimension <CODE>max_space_dimension()</CODE>.
   */
   void concatenate_assign(const BD_Shape& y);
 
@@ -1438,15 +1568,15 @@ private:
   //! The status flags to keep track of the internal state.
   Status status;
 
-  //! A matrix of Booleans indicating which constraints are redundant.
-  std::vector<std::deque<bool> > redundancy_dbm;
+  //! A matrix indicating which constraints are redundant.
+  Bit_Matrix redundancy_dbm;
 
   //! Returns <CODE>true</CODE> if the BDS is known to be empty.
   /*!
     The return value <CODE>false</CODE> does not necessarily
     implies that \p *this is non-empty.
   */
-  bool marked_empty()const;
+  bool marked_empty() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if the system of bounded differences
@@ -1455,7 +1585,7 @@ private:
     The return value <CODE>false</CODE> does not necessarily
     implies that <CODE>this->dbm</CODE> is not shortest-path closed.
   */
-  bool marked_shortest_path_closed()const;
+  bool marked_shortest_path_closed() const;
 
   /*! \brief
     Returns <CODE>true</CODE> if the system of bounded differences
@@ -1464,7 +1594,7 @@ private:
     The return value <CODE>false</CODE> does not necessarily
     implies that <CODE>this->dbm</CODE> is not shortest-path reduced.
   */
-  bool marked_shortest_path_reduced()const;
+  bool marked_shortest_path_reduced() const;
 
   //! Turns \p *this into an empty BDS.
   void set_empty();
@@ -1489,12 +1619,108 @@ private:
   */
   bool is_shortest_path_reduced() const;
 
+  //! Checks if and how \p expr is bounded in \p *this.
+  /*!
+    Returns <CODE>true</CODE> if and only if \p from_above is
+    <CODE>true</CODE> and \p expr is bounded from above in \p *this,
+    or \p from_above is <CODE>false</CODE> and \p expr is bounded
+    from below in \p *this.
+
+    \param expr
+    The linear expression to test;
+
+    \param from_above
+    <CODE>true</CODE> if and only if the boundedness of interest is
+    "from above".
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds(const Linear_Expression& expr, bool from_above) const;
+
+  //! Maximizes or minimizes \p expr subject to \p *this.
+  /*!
+    \param expr
+    The linear expression to be maximized or minimized subject to \p
+    *this;
+
+    \param maximize
+    <CODE>true</CODE> if maximization is what is wanted;
+
+    \param ext_n
+    The numerator of the extremum value;
+
+    \param ext_d
+    The denominator of the extremum value;
+
+    \param included
+    <CODE>true</CODE> if and only if the extremum of \p expr can
+    actually be reached in \p * this;
+
+    \param g
+    When maximization or minimization succeeds, will be assigned
+    a point or closure point where \p expr reaches the
+    corresponding extremum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded in the appropriate
+    direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
+    \p included and \p g are left untouched.
+  */
+  bool max_min(const Linear_Expression& expr,
+	       const bool maximize,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
+	       Generator& g) const;
+
+  //! Maximizes or minimizes \p expr subject to \p *this.
+  /*!
+    \param expr
+    The linear expression to be maximized or minimized subject to \p
+    *this;
+
+    \param maximize
+    <CODE>true</CODE> if maximization is what is wanted;
+
+    \param ext_n
+    The numerator of the extremum value;
+
+    \param ext_d
+    The denominator of the extremum value;
+
+    \param included
+    <CODE>true</CODE> if and only if the extremum of \p expr can
+    actually be reached in \p * this;
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded in the appropriate
+    direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
+    \p included and \p point are left untouched.
+  */
+  bool max_min(const Linear_Expression& expr,
+	       const bool maximize,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
+
   //! Adds the constraint <CODE>dbm[i][j] \<= k</CODE>.
   void add_dbm_constraint(dimension_type i, dimension_type j, N k);
   //! Adds the constraint <CODE>dbm[i][j] \<= num/den</CODE>.
   void add_dbm_constraint(dimension_type i, dimension_type j,
 			  Coefficient_traits::const_reference num,
 			  Coefficient_traits::const_reference den);
+
+  /*! \brief
+    Adds to the BDS the constraint
+    \f$\mathrm{var} \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$.
+
+    Note that the coefficient of \p var in \p expr is null.
+  */
+  void refine(const Variable var, const Relation_Symbol relsym,
+	      const Linear_Expression& expr,
+	      Coefficient_traits::const_reference denominator
+	      = Coefficient_one());
 
   //! Removes all the constraints on row/column \p v.
   void forget_all_dbm_constraints(dimension_type v);

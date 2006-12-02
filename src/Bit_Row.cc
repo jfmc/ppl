@@ -1,4 +1,4 @@
-/* Saturation_Row class implementation (non-inline functions).
+/* Bit_Row class implementation (non-inline functions).
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,7 +22,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "Saturation_Row.defs.hh"
+#include "Bit_Row.defs.hh"
 #include <cassert>
 #include <climits>
 
@@ -32,7 +32,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 #if !HAVE_DECL_FFS || SIZEOF_MP_LIMB_T != SIZEOF_INT
 unsigned int
-PPL::Saturation_Row::first_one(mp_limb_t w) {
+PPL::Bit_Row::first_one(mp_limb_t w) {
   unsigned int r = 0;
   w = w & -w;
 #if SIZEOF_MP_LIMB_T == 8
@@ -41,7 +41,7 @@ PPL::Saturation_Row::first_one(mp_limb_t w) {
     r += 32;
   }
 #elif SIZEOF_MP_LIMB_T != 4
-#error "Size of mp_limb_t not supported by Saturation_Row::first_one(mp_limb_t w)."
+#error "Size of mp_limb_t not supported by Bit_Row::first_one(mp_limb_t w)."
 #endif
   if ((w & 0xffff) == 0) {
     w >>= 16;
@@ -62,7 +62,7 @@ PPL::Saturation_Row::first_one(mp_limb_t w) {
 #endif // !HAVE_DECL_FFS || SIZEOF_MP_LIMB_T != SIZEOF_INT
 
 unsigned int
-PPL::Saturation_Row::last_one(mp_limb_t w) {
+PPL::Bit_Row::last_one(mp_limb_t w) {
   unsigned int r = 0;
 #if SIZEOF_MP_LIMB_T == 8
   if (w & 0xffffffff00000000) {
@@ -70,7 +70,7 @@ PPL::Saturation_Row::last_one(mp_limb_t w) {
     r += 32;
   }
 #elif SIZEOF_MP_LIMB_T != 4
-#error "Size of mp_limb_t not supported by Saturation_Row::last_one(mp_limb_t w)."
+#error "Size of mp_limb_t not supported by Bit_Row::last_one(mp_limb_t w)."
 #endif
   if (w & 0xffff0000) {
     w >>= 16;
@@ -94,7 +94,7 @@ PPL::Saturation_Row::last_one(mp_limb_t w) {
 }
 
 unsigned long
-PPL::Saturation_Row::first() const {
+PPL::Bit_Row::first() const {
   const mp_size_t vec_size = vec->_mp_size;
   assert(vec_size >= 0);
   mp_size_t li = 0;
@@ -108,7 +108,7 @@ PPL::Saturation_Row::first() const {
 }
 
 unsigned long
-PPL::Saturation_Row::next(unsigned long position) const {
+PPL::Bit_Row::next(unsigned long position) const {
   ++position;
 
   // The alternative implementation using the mpz_scan1() function
@@ -143,7 +143,7 @@ PPL::Saturation_Row::next(unsigned long position) const {
 }
 
 unsigned long
-PPL::Saturation_Row::last() const {
+PPL::Bit_Row::last() const {
   mp_size_t li = vec->_mp_size;
   assert(li >= 0);
   if (li == 0)
@@ -156,7 +156,7 @@ PPL::Saturation_Row::last() const {
 }
 
 unsigned long
-PPL::Saturation_Row::prev(unsigned long position) const {
+PPL::Bit_Row::prev(unsigned long position) const {
   if (position == 0)
     return ULONG_MAX;
 
@@ -196,7 +196,7 @@ PPL::Saturation_Row::prev(unsigned long position) const {
 }
 
 bool
-PPL::Saturation_Row::operator[](const unsigned long k) const {
+PPL::Bit_Row::operator[](const unsigned long k) const {
   const mp_size_t vec_size = vec->_mp_size;
   assert(vec_size >= 0);
 
@@ -208,9 +208,9 @@ PPL::Saturation_Row::operator[](const unsigned long k) const {
   return (limb >> (k % GMP_NUMB_BITS)) & 1;
 }
 
-/*! \relates Parma_Polyhedra_Library::Saturation_Row */
+/*! \relates Parma_Polyhedra_Library::Bit_Row */
 int
-PPL::compare(const Saturation_Row& x, const Saturation_Row& y) {
+PPL::compare(const Bit_Row& x, const Bit_Row& y) {
   const mp_size_t x_size = x.vec->_mp_size;
   assert(x_size >= 0);
   const mp_size_t y_size = y.vec->_mp_size;
@@ -235,9 +235,9 @@ PPL::compare(const Saturation_Row& x, const Saturation_Row& y) {
   return x_size == y_size ? 0 : (x_size > y_size ? 1 : -1);
 }
 
-/*! \relates Parma_Polyhedra_Library::Saturation_Row */
+/*! \relates Parma_Polyhedra_Library::Bit_Row */
 bool
-PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y) {
+PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y) {
   mp_size_t x_size = x.vec->_mp_size;
   assert(x_size >= 0);
   mp_size_t y_size = y.vec->_mp_size;
@@ -256,9 +256,9 @@ PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y) {
   return true;
 }
 
-/*! \relates Parma_Polyhedra_Library::Saturation_Row */
+/*! \relates Parma_Polyhedra_Library::Bit_Row */
 bool
-PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y,
+PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
 		     bool& strict_subset) {
   mp_size_t x_size = x.vec->_mp_size;
   assert(x_size >= 0);
@@ -283,9 +283,9 @@ PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y,
   return true;
 }
 
-/*! \relates Parma_Polyhedra_Library::Saturation_Row */
+/*! \relates Parma_Polyhedra_Library::Bit_Row */
 bool
-PPL::strict_subset(const Saturation_Row& x, const Saturation_Row& y) {
+PPL::strict_subset(const Bit_Row& x, const Bit_Row& y) {
   mp_size_t x_size = x.vec->_mp_size;
   assert(x_size >= 0);
   mp_size_t y_size = y.vec->_mp_size;
@@ -309,9 +309,9 @@ PPL::strict_subset(const Saturation_Row& x, const Saturation_Row& y) {
   return different;
 }
 
-/*! \relates Saturation_Row */
+/*! \relates Bit_Row */
 bool
-PPL::operator==(const Saturation_Row& x, const Saturation_Row& y) {
+PPL::operator==(const Bit_Row& x, const Bit_Row& y) {
   const mp_size_t x_vec_size = x.vec->_mp_size;
   assert(x_vec_size >= 0);
   const mp_size_t y_vec_size = y.vec->_mp_size;
@@ -323,9 +323,9 @@ PPL::operator==(const Saturation_Row& x, const Saturation_Row& y) {
   return mpn_cmp(x.vec->_mp_d, y.vec->_mp_d, x_vec_size) == 0;
 }
 
-/*! \relates Saturation_Row */
+/*! \relates Bit_Row */
 bool
-PPL::operator!=(const Saturation_Row& x, const Saturation_Row& y) {
+PPL::operator!=(const Bit_Row& x, const Bit_Row& y) {
   const mp_size_t x_vec_size = x.vec->_mp_size;
   assert(x_vec_size >= 0);
   const mp_size_t y_vec_size = y.vec->_mp_size;
@@ -338,7 +338,7 @@ PPL::operator!=(const Saturation_Row& x, const Saturation_Row& y) {
 }
 
 bool
-PPL::Saturation_Row::OK() const {
+PPL::Bit_Row::OK() const {
   const mp_size_t vec_size = vec->_mp_size;
   const mp_size_t vec_alloc = vec->_mp_alloc;
   return vec_size >= 0

@@ -67,7 +67,7 @@ struct Checked_Number_Transparent_Policy {
   //! Representation is identical to primitive.
   const_bool_nodef(convertible, true);
 
-  //! When nonzero, requests to check for FPU inexact result are honored.
+  //! When true, requests to check for FPU inexact result are honored.
   const_bool_nodef(fpu_check_inexact, false);
 
   //! Return VC_NAN on NaN result also for native extended.

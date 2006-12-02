@@ -1,4 +1,4 @@
-/* Declarations of specializations of std:: objexts for
+/* Declarations of specializations of std:: objects for
    multi-precision types.  This will become obsolete when GMP and MPFR
    will provide the specializations by themselves.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>

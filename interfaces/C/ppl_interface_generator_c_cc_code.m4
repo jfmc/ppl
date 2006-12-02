@@ -44,7 +44,7 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System_code',
 ppl_new_@TOPOLOGY@@CLASS@_recycle_@UBUILD_REPRESENT@_System
 (ppl_@CLASS@_t* pph, ppl_@UBUILD_REPRESENT@_System_t cs) try {
   @UBUILD_REPRESENT@_System& ccs = *to_nonconst(cs);
-  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(ccs));
+  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(ccs@RECYCLE@));
   return 0;
 }
 CATCH_ALL
@@ -477,9 +477,9 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `int
-ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens
+ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_const_@UCONSTRAINER@_System_t cs,
@@ -487,30 +487,30 @@ ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
   const @UCONSTRAINER@_System& ccs = *to_const(cs);
-  xx.limited_@EXTRAPOLATION@_extrapolation_assign(yy, ccs, tp);
+  xx.limited_@WIDENEXPN@_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_code',
 `int
-ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign
+ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_const_@UCONSTRAINER@_System_t cs) try {
   return
-    ppl_@CLASS@_limited_@EXTRAPOLATION@_extrapolation_assign_with_tokens
+    ppl_@CLASS@_limited_@WIDENEXPN@_extrapolation_assign_with_tokens
       (x, y, cs, 0);
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
+m4_define(`ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `int
-ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens
+ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_with_tokens
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_const_@UCONSTRAINER@_System_t cs,
@@ -518,21 +518,21 @@ ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens
   @CPP_CLASS@& xx = *to_nonconst(x);
   const @CPP_CLASS@& yy = *to_const(y);
   const @UCONSTRAINER@_System& ccs = *to_const(cs);
-  xx.bounded_@EXTRAPOLATION@_extrapolation_assign(yy, ccs, tp);
+  xx.bounded_@WIDENEXPN@_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
 CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_code',
 `int
-ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign
+ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign
 (ppl_@CLASS@_t x,
  ppl_const_@CLASS@_t y,
  ppl_const_@UCONSTRAINER@_System_t cs) try {
   return
-    ppl_@CLASS@_bounded_@EXTRAPOLATION@_extrapolation_assign_with_tokens
+    ppl_@CLASS@_bounded_@WIDENEXPN@_extrapolation_assign_with_tokens
       (x, y, cs, 0);
 }
 CATCH_ALL
@@ -561,7 +561,7 @@ ppl_@CLASS@_remove_space_dimensions
   @CPP_CLASS@& pph = *to_nonconst(ph);
   Variables_Set to_be_removed;
   for (ppl_dimension_type i = n; i-- > 0; )
-    to_be_removed.insert(Variable(ds[i]));
+    to_be_removed.insert(ds[i]);
   pph.remove_space_dimensions(to_be_removed);
   return 0;
 }
@@ -621,7 +621,7 @@ ppl_@CLASS@_fold_space_dimensions
   @CPP_CLASS@& pph = *to_nonconst(ph);
   Variables_Set to_be_folded;
   for (ppl_dimension_type i = n; i-- > 0; )
-    to_be_folded.insert(Variable(ds[i]));
+    to_be_folded.insert(ds[i]);
   pph.fold_space_dimensions(to_be_folded, Variable(d));
   return 0;
 }

@@ -310,14 +310,14 @@ Box<Interval>::remove_space_dimensions(const Variables_Set& to_be_removed) {
 
   // For each variable to be removed, we fill the corresponding interval
   // by shifting left those intervals that will not be removed.
-  Variables_Set::const_iterator i = to_be_removed.begin();
+  Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst = i->id();
+  dimension_type dst = *tbr + 1;
   dimension_type src = dst + 1;
-  for (++i; i != tbr_end; ++i) {
-    dimension_type next = i->id();
+  for (++tbr; tbr != tbr_end; ++tbr) {
+    dimension_type tbr_next = *tbr + 1;
     // All intervals in between are moved to the left.
-    while (src < next)
+    while (src < tbr_next)
       x.seq[dst++].swap(x.seq[src++]);
     ++src;
   }

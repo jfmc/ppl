@@ -2002,7 +2002,7 @@ ppl_MIP_Problem_integer_space_dimensions(ppl_const_MIP_Problem_t mip,
   ppl_dimension_type* ds_i = ds;
   for (Variables_Set::const_iterator v_iter = vars.begin(),
 	 v_end = vars.end(); v_iter != v_end; ++v_iter, ++ds_i)
-    *ds_i = v_iter->id();
+    *ds_i = *v_iter;
   return 0;
 }
 CATCH_ALL
@@ -2070,7 +2070,7 @@ ppl_MIP_Problem_add_to_integer_space_dimensions(ppl_MIP_Problem_t mip,
   MIP_Problem& mmip = *to_nonconst(mip);
   Variables_Set to_be_set;
   for (ppl_dimension_type i = n; i-- > 0; )
-    to_be_set.insert(Variable(ds[i]));
+    to_be_set.insert(ds[i]);
   mmip.add_to_integer_space_dimensions(to_be_set);
   return 0;
 }

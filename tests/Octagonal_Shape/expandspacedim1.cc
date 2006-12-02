@@ -231,6 +231,53 @@ test08() {
   return ok;
 }
 
+bool
+test09() {
+  Variable x(0);
+  Variable y(1);
+
+  TOctagonal_Shape oct(1);
+  oct.add_constraint(x >= 1);
+
+  try {
+    // This is an invalid use of the method
+    // Octagonal_Shape::expand_space_dimension(v, m):
+    // it is illegal to apply this method to a variable
+    // that is not in the space of the octagon.
+    oct.expand_space_dimension(y, 2);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
+bool
+test10() {
+  Variable x(0);
+
+  TOctagonal_Shape oct(1);
+  oct.add_constraint(x >= 1);
+
+  try {
+    // This is an invalid use of the method
+    // Octagonal_Shape::expand_space_dimension(v, m):
+    // it is illegal to apply this method when the maximum allowed space
+    // dimension would be exceeded.
+    oct.expand_space_dimension(x, 40000);
+  }
+  catch (std::invalid_argument& e) {
+    nout << "std::invalid_argument: " << e.what() << endl;
+    return true;
+  }
+  catch (...) {
+  }
+  return false;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -242,4 +289,6 @@ BEGIN_MAIN
   DO_TEST(test06);
   DO_TEST(test07);
   DO_TEST(test08);
+  DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN

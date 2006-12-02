@@ -2208,6 +2208,15 @@ mip_swap :-
 
 mip_get :-
   make_vars(3, [A, B, C]),
+
+  ppl_new_MIP_Problem(3, [], A + 3, min, MIP0),
+  ppl_MIP_Problem_objective_function(MIP0, Obj0),
+  compare_lin_expressions(Obj0, A + 3),
+
+  ppl_new_MIP_Problem(3, [], 3, min, MIP1),
+  ppl_MIP_Problem_objective_function(MIP1, Obj1),
+  compare_lin_expressions(Obj1, 3),
+
   clean_ppl_new_MIP_Problem(3, [A >= -1, B >= 5, C >= 0, C =< 3], C, max, MIP),
   ppl_MIP_Problem_constraints(MIP, CS),
   clean_ppl_new_Polyhedron_from_constraints(c, CS, PH),
@@ -2221,6 +2230,8 @@ mip_get :-
   !,
   ppl_delete_Polyhedron(PH),
   ppl_delete_Polyhedron(Expect_PH),
+  ppl_delete_MIP_Problem(MIP0),
+  ppl_delete_MIP_Problem(MIP1),
   ppl_delete_MIP_Problem(MIP).
 
 mip_clear :-
@@ -2543,17 +2554,17 @@ exception_prolog(4, _) :-
   clean_ppl_new_Polyhedron_from_space_dimension(c, 3, universe, P),
   clean_ppl_new_Polyhedron_from_space_dimension(c, 3, universe, Q),
   must_catch(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(
-             Q, P, -1, _X)),
+             Q, P, -1, _)),
   must_catch(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(
-             Q, P, [], -1, _X)),
+             Q, P, [], -1, _)),
   must_catch(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(
-             Q, P, [], -1, _X)),
+             Q, P, [], -1, _)),
   must_catch(ppl_Polyhedron_H79_widening_assign_with_tokens(
-             Q, P, -1, _X)),
+             Q, P, -1, _)),
   must_catch(ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(
-             Q, P, [], -1, _X)),
+             Q, P, [], -1, _)),
   must_catch(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(
-             Q, P, [], -1, _X)),
+             Q, P, [], -1, _)),
   !,
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
@@ -2597,7 +2608,9 @@ exception_prolog(8, _) :-
 exception_prolog(9, [A, _, _]) :-
    clean_ppl_new_Polyhedron_from_generators(c,
                [point(A)], P),
-   must_catch(ppl_Polyhedron_get_bounding_box(P, a, _Box)).
+   must_catch(ppl_Polyhedron_get_bounding_box(P, a, _Box)),
+   !,
+   ppl_delete_Polyhedron(P).
 
 %% TEST: not_universe_or_empty
 exception_prolog(10, _) :-
@@ -2611,7 +2624,9 @@ exception_prolog(11, [A, B, _]) :-
   must_catch(
      ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x, A + 1)),
   must_catch(
-     ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x + y, A + 1)).
+     ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x + y, A + 1)),
+   !,
+   ppl_delete_Polyhedron(P).
 
 %% TEST: not_a_nil_terminated_list
 exception_prolog(12, [A, B, C]) :-

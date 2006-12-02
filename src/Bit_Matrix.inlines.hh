@@ -1,4 +1,4 @@
-/* Saturation_Matrix class implementation: inline functions.
+/* Bit_Matrix class implementation: inline functions.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,8 +20,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Saturation_Matrix_inlines_hh
-#define PPL_Saturation_Matrix_inlines_hh 1
+#ifndef PPL_Bit_Matrix_inlines_hh
+#define PPL_Bit_Matrix_inlines_hh 1
 
 #include <algorithm>
 #include <cassert>
@@ -29,35 +29,35 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Saturation_Matrix::Saturation_Matrix()
+Bit_Matrix::Bit_Matrix()
   : rows(),
     row_size(0) {
 }
 
 inline dimension_type
-Saturation_Matrix::max_num_rows() {
-  return std::vector<Saturation_Row>().max_size();
+Bit_Matrix::max_num_rows() {
+  return std::vector<Bit_Row>().max_size();
 }
 
 inline
-Saturation_Matrix::Saturation_Matrix(const dimension_type n_rows,
-		     const dimension_type n_columns)
+Bit_Matrix::Bit_Matrix(const dimension_type n_rows,
+		       const dimension_type n_columns)
   : rows(n_rows),
     row_size(n_columns) {
 }
 
 inline
-Saturation_Matrix::Saturation_Matrix(const Saturation_Matrix& y)
+Bit_Matrix::Bit_Matrix(const Bit_Matrix& y)
   : rows(y.rows),
     row_size(y.row_size) {
 }
 
 inline
-Saturation_Matrix::~Saturation_Matrix() {
+Bit_Matrix::~Bit_Matrix() {
 }
 
 inline void
-Saturation_Matrix::rows_erase_to_end(const dimension_type first_to_erase) {
+Bit_Matrix::rows_erase_to_end(const dimension_type first_to_erase) {
   // The first row to be erased cannot be greater
   // than the actual number of the rows of the matrix.
   assert(first_to_erase <= rows.size());
@@ -67,7 +67,7 @@ Saturation_Matrix::rows_erase_to_end(const dimension_type first_to_erase) {
 }
 
 inline void
-Saturation_Matrix::columns_erase_to_end(const dimension_type first_to_erase) {
+Bit_Matrix::columns_erase_to_end(const dimension_type first_to_erase) {
   // The first column to be erased cannot be greater
   // than the actual number of the columns of the matrix.
   assert(first_to_erase <= row_size);
@@ -76,56 +76,62 @@ Saturation_Matrix::columns_erase_to_end(const dimension_type first_to_erase) {
 }
 
 inline void
-Saturation_Matrix::swap(Saturation_Matrix& y) {
+Bit_Matrix::swap(Bit_Matrix& y) {
   std::swap(row_size, y.row_size);
   std::swap(rows, y.rows);
 }
 
-inline Saturation_Row&
-Saturation_Matrix::operator[](const dimension_type k) {
+inline Bit_Row&
+Bit_Matrix::operator[](const dimension_type k) {
   assert(k < rows.size());
   return rows[k];
 }
 
-inline const Saturation_Row&
-Saturation_Matrix::operator[](const dimension_type k) const {
+inline const Bit_Row&
+Bit_Matrix::operator[](const dimension_type k) const {
   assert(k < rows.size());
   return rows[k];
 }
 
 inline dimension_type
-Saturation_Matrix::num_columns() const {
+Bit_Matrix::num_columns() const {
   return row_size;
 }
 
 inline dimension_type
-Saturation_Matrix::num_rows() const {
+Bit_Matrix::num_rows() const {
   return rows.size();
 }
 
 inline void
-Saturation_Matrix::clear() {
+Bit_Matrix::clear() {
   // Clear `rows' and minimize its capacity.
-  std::vector<Saturation_Row>().swap(rows);
+  std::vector<Bit_Row>().swap(rows);
   row_size = 0;
 }
 
 inline memory_size_type
-Saturation_Matrix::total_memory_in_bytes() const {
+Bit_Matrix::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
 inline bool
-Saturation_Matrix::Saturation_Row_Less_Than::
-operator()(const Saturation_Row& x, const Saturation_Row& y) const {
+Bit_Matrix::Bit_Row_Less_Than::
+operator()(const Bit_Row& x, const Bit_Row& y) const {
   return compare(x, y) < 0;
 }
 
 inline bool
-Saturation_Matrix::sorted_contains(const Saturation_Row& row) const {
+Bit_Matrix::sorted_contains(const Bit_Row& row) const {
   assert(check_sorted());
   return std::binary_search(rows.begin(), rows.end(), row,
-			    Saturation_Row_Less_Than());
+			    Bit_Row_Less_Than());
+}
+
+/*! \relates Bit_Matrix */
+inline bool
+operator!=(const Bit_Matrix& x, const Bit_Matrix& y) {
+  return !(x == y);
 }
 
 } // namespace Parma_Polyhedra_Library
@@ -133,13 +139,13 @@ Saturation_Matrix::sorted_contains(const Saturation_Row& row) const {
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::Saturation_Matrix */
+/*! \relates Parma_Polyhedra_Library::Bit_Matrix */
 inline void
-swap(Parma_Polyhedra_Library::Saturation_Matrix& x,
-     Parma_Polyhedra_Library::Saturation_Matrix& y) {
+swap(Parma_Polyhedra_Library::Bit_Matrix& x,
+     Parma_Polyhedra_Library::Bit_Matrix& y) {
   x.swap(y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_Saturation_Matrix_inlines_hh)
+#endif // !defined(PPL_Bit_Matrix_inlines_hh)

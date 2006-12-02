@@ -24,8 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
-#include "Saturation_Row.defs.hh"
-#include "Saturation_Matrix.defs.hh"
+#include "Bit_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -79,7 +78,7 @@ namespace PPL = Parma_Polyhedra_Library;
   where \f$\lambda_1, \lambda_2\f$ can be any real number.
 */
 int
-PPL::Polyhedron::simplify(Linear_System& sys, Saturation_Matrix& sat) {
+PPL::Polyhedron::simplify(Linear_System& sys, Bit_Matrix& sat) {
   // This method is only applied to a well-formed system `sys'.
   assert(sys.OK(true));
 

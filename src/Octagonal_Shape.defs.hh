@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.types.hh"
+#include "Congruence_System.types.hh"
 #include "OR_Matrix.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
@@ -458,6 +459,15 @@ public:
   */
   explicit Octagonal_Shape(const Constraint_System& cs);
 
+  //! Builds an OS from a system of congruences.
+  /*!
+    The OS inherits the space dimension of \p cgs
+
+    \param cgs
+    A system of congruences: some elements may be safely ignored.
+  */
+  explicit Octagonal_Shape(const Congruence_System& cgs);
+
   //! Builds an OS from the system of generators \p gs.
   /*!
     Builds the smallest OS containing the polyhedron defined by \p gs.
@@ -649,6 +659,142 @@ public:
     contains (at least) an integer point.
   */
   bool contains_integer_point() const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p expr is
+    bounded from above in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds_from_above(const Linear_Expression& expr) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p expr is
+    bounded from below in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds_from_below(const Linear_Expression& expr) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from above in \p *this, in which case
+    the supremum value is computed.
+
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if and only if the supremum is also the maximum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d
+    and \p maximum are left untouched.
+  */
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from above in \p *this, in which case
+    the supremum value and a point where \p expr reaches it are computed.
+
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if and only if the supremum is also the maximum value;
+
+    \param g
+    When maximization succeeds, will be assigned the point or
+    closure point where \p expr reaches its supremum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
+    and \p g are left untouched.
+  */
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+		Generator& g) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from below in \p *this, in which case
+    the infimum value is computed.
+
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if and only if the infimum is also the minimum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d
+    and \p minimum are left untouched.
+  */
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this is not empty
+    and \p expr is bounded from below in \p *this, in which case
+    the infimum value and a point where \p expr reaches it are computed.
+
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if and only if the infimum is also the minimum value;
+
+    \param g
+    When minimization succeeds, will be assigned a point or
+    closure point where \p expr reaches its infimum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
+    and \p g are left untouched.
+  */
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+		Generator& g) const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -1183,28 +1329,12 @@ public:
   void add_space_dimensions_and_project(dimension_type m);
 
   /*! \brief
-    Seeing an OS as a set of tuples (its points), assigns
-    to \p *this all the tuples that can be obtained by concatenating,
-    in the order given, a tuple of \p *this with a tuple of \p y.
+    Assigns to \p *this the \ref Concatenating_Polyhedra "concatenation"
+    of \p *this and \p y, taken in this order.
 
-    Let \f$O \sseq \Rset^n\f$ and \f$P \sseq \Rset^m\f$ be the OSs
-    represented, on entry, by \p *this and \p y, respectively.
-    Upon successful completion, \p *this will represent the OS
-    \f$R \sseq \Rset^{n+m}\f$ such that
-    \f[
-      R
-        \defeq
-          \Bigl\{\,
-            (x_1, \ldots, x_n, y_1, \ldots, y_m)^\transpose
-          \Bigm|
-            (x_1, \ldots, x_n)^\transpose \in O,
-            (y_1, \ldots, y_m)^\transpose \in P
-          \,\Bigl\}.
-    \f]
-    Another way of seeing it is as follows: first increases the space
-    dimension of \p *this by adding \p y.space_dimension() new
-    dimensions; then adds to the system of constraints of \p *this a
-    renamed-apart version of the constraints of \p y.
+    \exception std::length_error
+    Thrown if the concatenation would cause the vector space
+    to exceed dimension <CODE>max_space_dimension()</CODE>.
   */
   void concatenate_assign(const Octagonal_Shape& y);
 
@@ -1290,6 +1420,31 @@ public:
     \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
   */
   void expand_space_dimension(Variable var, dimension_type m);
+
+  //! Folds the space dimensions in \p to_be_folded into \p var.
+  /*!
+    \param to_be_folded
+    The set of Variable objects corresponding to the space dimensions
+    to be folded;
+
+    \param var
+    The variable corresponding to the space dimension that is the
+    destination of the folding operation.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p var or with
+    one of the Variable objects contained in \p to_be_folded.
+    Also thrown if \p var is contained in \p to_be_folded.
+
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
+    <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    \p to_be_folded is a set of variables whose maximum space dimension
+    is also less than or equal to \f$n\f$, and \p var is not a member
+    of \p to_be_folded, then the space dimensions corresponding to
+    variables in \p to_be_folded are \ref fold_space_dimensions "folded"
+    into the \f$k\f$-th space dimension.
+  */
+  void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
@@ -1387,6 +1542,17 @@ private:
 				const dimension_type j,
 				Coefficient_traits::const_reference num,
 				Coefficient_traits::const_reference den);
+
+  /*! \brief
+    Adds to the Octagonal_Shape the constraint
+    \f$\mathrm{var} \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$.
+
+    Note that the coefficient of \p var in \p expr is null.
+  */
+  void refine(const Variable var, const Relation_Symbol relsym,
+	      const Linear_Expression& expr,
+	      Coefficient_traits::const_reference denominator
+	      = Coefficient_one());
 
   //! Removes all the constraints on variable \p v_id.
   void forget_all_octagonal_constraints(dimension_type v_id);
@@ -1527,6 +1693,91 @@ private:
 
   */
   void incremental_strong_closure_assign(Variable var) const;
+
+  //! Checks if and how \p expr is bounded in \p *this.
+  /*!
+    Returns <CODE>true</CODE> if and only if \p from_above is
+    <CODE>true</CODE> and \p expr is bounded from above in \p *this,
+    or \p from_above is <CODE>false</CODE> and \p expr is bounded
+    from below in \p *this.
+
+    \param expr
+    The linear expression to test;
+
+    \param from_above
+    <CODE>true</CODE> if and only if the boundedness of interest is
+    "from above".
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+  */
+  bool bounds(const Linear_Expression& expr, bool from_above) const;
+
+  //! Maximizes or minimizes \p expr subject to \p *this.
+  /*!
+    \param expr
+    The linear expression to be maximized or minimized subject to \p
+    *this;
+
+    \param maximize
+    <CODE>true</CODE> if maximization is what is wanted;
+
+    \param ext_n
+    The numerator of the extremum value;
+
+    \param ext_d
+    The denominator of the extremum value;
+
+    \param included
+    <CODE>true</CODE> if and only if the extremum of \p expr can
+    actually be reached in \p * this;
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded in the appropriate
+    direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d and
+    \p included are left untouched.
+  */
+  bool max_min(const Linear_Expression& expr,
+	       const bool maximize,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included) const;
+
+  //! Maximizes or minimizes \p expr subject to \p *this.
+  /*!
+    \param expr
+    The linear expression to be maximized or minimized subject to \p
+    *this;
+
+    \param maximize
+    <CODE>true</CODE> if maximization is what is wanted;
+
+    \param ext_n
+    The numerator of the extremum value;
+
+    \param ext_d
+    The denominator of the extremum value;
+
+    \param included
+    <CODE>true</CODE> if and only if the extremum of \p expr can
+    actually be reached in \p * this;
+
+    \param g
+    When maximization or minimization succeeds, will be assigned
+    a point or closure point where \p expr reaches the
+    corresponding extremum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded in the appropriate
+    direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
+    \p included and \p g are left untouched.
+  */
+  bool max_min(const Linear_Expression& expr,
+	       const bool maximize,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
+	       Generator& g) const;
 
 #if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
   friend std::ostream&

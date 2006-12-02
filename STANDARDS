@@ -18,6 +18,11 @@ compound name.  By all means, avoid baStudlyCaps: write
 available_widening_tokens (if it is a variable) or
 Available_Widening_Tokens (if it is a class or enum); never write
 availableWideningTokens or AvailableWideningTokens.
+In general, we use:
+
+  lower_case for variables, methods, functions, typedefs;
+  UPPER_CASE for macros and enum values;
+  Mixed_Case for class names and template parameter names.
 
 
 Pre and post increment and decrement operators

@@ -801,7 +801,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       gs_without_pending.erase_to_end(gen_sys.first_pending_row());
       gs_without_pending.unset_pending_rows();
       Generator_System copy_of_gen_sys = gs_without_pending;
-      Saturation_Matrix new_sat_c;
+      Bit_Matrix new_sat_c;
       minimize(false, copy_of_gen_sys, new_con_sys, new_sat_c);
       const dimension_type copy_num_lines = copy_of_gen_sys.num_lines();
       if (gs_without_pending.num_rows() != copy_of_gen_sys.num_rows()
@@ -910,7 +910,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     bool empty = false;
     if (check_not_empty || constraints_are_minimized()) {
       Generator_System new_gen_sys(topology());
-      Saturation_Matrix new_sat_g;
+      Bit_Matrix new_sat_g;
       empty = minimize(true, copy_of_con_sys, new_gen_sys, new_sat_g);
     }
 
@@ -967,7 +967,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   if (sat_c_is_up_to_date())
     for (dimension_type i = sat_c.num_rows(); i-- > 0; ) {
       const Generator tmp_gen = gen_sys[i];
-      const Saturation_Row tmp_sat = sat_c[i];
+      const Bit_Row tmp_sat = sat_c[i];
       for (dimension_type j = sat_c.num_columns(); j-- > 0; )
 	if (Scalar_Products::sign(con_sys[j], tmp_gen) != tmp_sat[j]) {
 #ifndef NDEBUG
@@ -981,7 +981,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   if (sat_g_is_up_to_date())
     for (dimension_type i = sat_g.num_rows(); i-- > 0; ) {
       const Constraint tmp_con = con_sys[i];
-      const Saturation_Row tmp_sat = sat_g[i];
+      const Bit_Row tmp_sat = sat_g[i];
       for (dimension_type j = sat_g.num_columns(); j-- > 0; )
 	if (Scalar_Products::sign(tmp_con, gen_sys[j]) != tmp_sat[j]) {
 #ifndef NDEBUG
@@ -1934,12 +1934,13 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
     return;
   }
 
-  Polyhedron new_polyhedron(topology(), x.space_dim, EMPTY);
-
   // Being lazy here is only harmful.
   // `minimize()' will process any pending constraints or generators.
+  if (!y.minimize())
+    return;
   x.minimize();
-  y.minimize();
+
+  Polyhedron new_polyhedron(topology(), x.space_dim, EMPTY);
 
   const Constraint_System& y_cs = y.constraints();
   for (Constraint_System::const_iterator i = y_cs.begin(),

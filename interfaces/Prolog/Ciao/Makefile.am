@@ -40,6 +40,15 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/Watchdog/src \
 @extra_includes@
 
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_prolog_dat.m4 \
+../ppl_interface_generator_prolog_systems.m4 \
+ppl_interface_generator_ciao_pl.m4
+
 pkglib_LTLIBRARIES = libppl_ciao.la
 libppl_ciao_la_SOURCES = ppl_ciao.cc
 libppl_ciao_la_LIBADD = \
@@ -49,15 +58,6 @@ $(top_builddir)/Watchdog/src/libpwl.la \
 libppl_ciao_la_LDFLAGS = -module -avoid-version
 
 pkglib_DATA = ppl_ciao.po
-
-interface_generator_dependencies = \
-../../ppl_interface_instantiations.m4 \
-../../ppl_interface_generator_common.m4 \
-../../ppl_interface_generator_common_dat.m4 \
-../../ppl_interface_generator_copyright \
-../ppl_interface_generator_prolog_dat.m4 \
-../ppl_interface_generator_prolog_systems.m4 \
-ppl_interface_generator_ciao_pl.m4
 
 ppl_ciao.pl: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I../.. -I$(srcdir)/.. -I$(srcdir)/../.. \
@@ -170,6 +170,9 @@ clpq2_test: ciao_clpq2$(EXEEXT) .libs/libppl_ciao.so ../tests/script_clpq2 $(EXP
 		./ciao_clpq2 \
 			<$(srcdir)/../tests/script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
+
+DISTCLEANFILES = \
+ppl_ciao.pl
 
 MOSTLYCLEANFILES = \
 *.itf *.po *.c *.so \

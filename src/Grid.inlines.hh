@@ -61,21 +61,22 @@ Grid::Grid(dimension_type num_dimensions,
 }
 
 inline
-Grid::Grid(const Congruence_System& ccgs)
-  : con_sys(ccgs.space_dimension() > max_space_dimension()
-	    ? throw_space_dimension_overflow("Grid(ccgs)",
-					     "the space dimension of ccgs "
+Grid::Grid(const Congruence_System& cgs)
+  : con_sys(cgs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(cgs)",
+					     "the space dimension of cgs "
 					     "exceeds the maximum allowed "
 					     "space dimension"), 0
-	    : ccgs.space_dimension()),
-    gen_sys(ccgs.space_dimension()) {
-  construct(ccgs);
+	    : cgs.space_dimension()),
+    gen_sys(cgs.space_dimension()) {
+  Congruence_System cgs_copy(cgs);
+  construct(cgs_copy);
 }
 
 inline
-Grid::Grid(Congruence_System& cgs)
+Grid::Grid(Congruence_System& cgs, Recycle_Input)
   : con_sys(cgs.space_dimension() > max_space_dimension()
-	    ? throw_space_dimension_overflow("Grid(cgs)",
+	    ? throw_space_dimension_overflow("Grid(cgs, recycle)",
 					     "the space dimension of cgs "
 					     "exceeds the maximum allowed "
 					     "space dimension"), 0
@@ -85,27 +86,28 @@ Grid::Grid(Congruence_System& cgs)
 }
 
 inline
-Grid::Grid(const Grid_Generator_System& gs)
-  : con_sys(gs.space_dimension() > max_space_dimension()
+Grid::Grid(const Grid_Generator_System& ggs)
+  : con_sys(ggs.space_dimension() > max_space_dimension()
 	    ? throw_space_dimension_overflow("Grid(ggs)",
-					     "the space dimension of gs "
+					     "the space dimension of ggs "
 					     "exceeds the maximum allowed "
 					     "space dimension"), 0
-	    : gs.space_dimension()),
-    gen_sys(gs.space_dimension()) {
-  construct(gs);
+	    : ggs.space_dimension()),
+    gen_sys(ggs.space_dimension()) {
+  Grid_Generator_System ggs_copy(ggs);
+  construct(ggs_copy);
 }
 
 inline
-Grid::Grid(Grid_Generator_System& gs)
-  : con_sys(gs.space_dimension() > max_space_dimension()
-	    ? throw_space_dimension_overflow("Grid(ggs)",
-					     "the space dimension of gs "
+Grid::Grid(Grid_Generator_System& ggs, Recycle_Input)
+  : con_sys(ggs.space_dimension() > max_space_dimension()
+	    ? throw_space_dimension_overflow("Grid(ggs, recycle)",
+					     "the space dimension of ggs "
 					     "exceeds the maximum allowed "
 					     "space dimension"), 0
-	    : gs.space_dimension()),
-    gen_sys(gs.space_dimension()) {
-  construct(gs);
+	    : ggs.space_dimension()),
+    gen_sys(ggs.space_dimension()) {
+  construct(ggs);
 }
 
 inline
@@ -120,10 +122,10 @@ Grid::Grid(const Generator_System& gs)
 }
 
 inline
-Grid::Grid(Generator_System& gs)
+Grid::Grid(Generator_System& gs, Recycle_Input)
   : con_sys(),
     gen_sys(gs.space_dimension() > max_space_dimension()
-	    ? throw_space_dimension_overflow("Grid(gs)",
+	    ? throw_space_dimension_overflow("Grid(gs, recycle)",
 					     "n exceeds the maximum "
 					     "allowed space dimension"), 0
 	    : gs.space_dimension()) {

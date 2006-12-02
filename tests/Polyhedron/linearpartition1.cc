@@ -28,17 +28,17 @@ bool
 aux_test01(const C_Polyhedron& p,
 	   const C_Polyhedron& q,
 	   const std::pair<C_Polyhedron,
-	   Powerset<Determinate<NNC_Polyhedron> > >& partition) {
+	   Pointset_Powerset<NNC_Polyhedron> >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
   if (!q.contains(r))
     return false;
-  const Powerset<Determinate<NNC_Polyhedron> >& s = partition.second;
+  const Pointset_Powerset<NNC_Polyhedron>& s = partition.second;
   NNC_Polyhedron the_union(r);
   // These are the NNC versions of `p' and `q'.
   NNC_Polyhedron nnc_p(p);
   NNC_Polyhedron nnc_q(q);
-  typedef Powerset<Determinate<NNC_Polyhedron> >::const_iterator iter;
+  typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
     const NNC_Polyhedron& a = i->element();
     // All elements of `s' must be disjoint from `p'.
@@ -78,7 +78,7 @@ test01() {
 
   nout << "q = " << q << endl;
 
-  std::pair<C_Polyhedron, Powerset<Determinate<NNC_Polyhedron> > >
+  std::pair<C_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
     result = linear_partition(p, q);
 
   nout << "*** q partition ***" << endl;
@@ -101,17 +101,17 @@ bool
 aux_test02(const C_Polyhedron& p,
 	   const C_Polyhedron& q,
 	   const std::pair<C_Polyhedron,
-	   Powerset<Determinate<NNC_Polyhedron> > >& partition) {
+	   Pointset_Powerset<NNC_Polyhedron> >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
   if (!q.contains(r))
     return false;
-  const Powerset<Determinate<NNC_Polyhedron> >& s = partition.second;
+  const Pointset_Powerset<NNC_Polyhedron>& s = partition.second;
   NNC_Polyhedron the_union(r);
   // These are the NNC versions of `p' and `q'.
   NNC_Polyhedron nnc_p(p);
   NNC_Polyhedron nnc_q(q);
-  typedef Powerset<Determinate<NNC_Polyhedron> >::const_iterator iter;
+  typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
     const NNC_Polyhedron& a = i->element();
     // All elements of `s' must be disjoint from `p'.
@@ -151,7 +151,7 @@ test02() {
 
   nout << "q = " << q << endl;
 
-  std::pair<C_Polyhedron, Powerset<Determinate<NNC_Polyhedron> > >
+  std::pair<C_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
     result = linear_partition(p, q);
 
   nout << "*** q partition ***" << endl;
@@ -174,17 +174,17 @@ bool
 aux_test03(const C_Polyhedron& p,
 	   const C_Polyhedron& q,
 	   const std::pair<C_Polyhedron,
-	   Powerset<Determinate<NNC_Polyhedron> > >& partition) {
+	   Pointset_Powerset<NNC_Polyhedron> >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
   if (!q.contains(r))
     return false;
-  const Powerset<Determinate<NNC_Polyhedron> >& s = partition.second;
+  const Pointset_Powerset<NNC_Polyhedron>& s = partition.second;
   NNC_Polyhedron the_union(r);
   // These are the NNC versions of `p' and `q'.
   NNC_Polyhedron nnc_p(p);
   NNC_Polyhedron nnc_q(q);
-  typedef Powerset<Determinate<NNC_Polyhedron> >::const_iterator iter;
+  typedef Pointset_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
     const NNC_Polyhedron& a = i->element();
     // All elements of `s' must be disjoint from `p'.
@@ -225,7 +225,7 @@ test03() {
 
   nout << "q = " << q << endl;
 
-  std::pair<C_Polyhedron, Powerset<Determinate<NNC_Polyhedron> > >
+  std::pair<C_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
     result = linear_partition(p, q);
 
   nout << "*** q partition ***" << endl;

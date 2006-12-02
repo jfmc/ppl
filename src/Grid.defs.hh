@@ -389,11 +389,15 @@ public:
     The system of congruences defining the grid.  Its data-structures
     may be recycled to build the grid.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
     dimension.
   */
-  explicit Grid(Congruence_System& cgs);
+  Grid(Congruence_System& cgs, Recycle_Input dummy);
 
   //! Builds a grid, copying a system of constraints.
   /*!
@@ -416,11 +420,15 @@ public:
     The system of constraints defining the grid.  Its data-structures
     may be recycled to build the grid.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space
     dimension.
   */
-  explicit Grid(Constraint_System& cs);
+  Grid(Constraint_System& cs, Recycle_Input dummy);
 
   //! Builds a grid, copying a system of grid generators.
   /*!
@@ -446,13 +454,17 @@ public:
     The system of generators defining the grid.  Its data-structures
     may be recycled to build the grid.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
   */
-  explicit Grid(Grid_Generator_System& gs);
+  Grid(Grid_Generator_System& gs, Recycle_Input dummy);
 
   //! Builds a grid, copying a system of generators.
   /*!
@@ -478,13 +490,17 @@ public:
     The system of generators defining the grid.  Its data-structures
     may be recycled to build the grid.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
 
     \exception std::length_error
     Thrown if \p num_dimensions exceeds the maximum allowed space dimension.
   */
-  explicit Grid(Generator_System& gs);
+  Grid(Generator_System& gs, Recycle_Input dummy);
 
   //! Builds a grid out of a generic, interval-based bounding box.
   /*!
@@ -1685,7 +1701,7 @@ public:
     \param modulus
     The modulus of the congruence lhs %= rhs.  A modulus of zero
     indicates lhs == rhs.  Optional argument with an automatic value
-    of one.
+    of zero.
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
@@ -2246,27 +2262,20 @@ private:
     The grid inherits the space dimension of the congruence system.
 
     \param cgs
-    The system of congruences defining the grid.
+    The system of congruences defining the grid. Its data-structures
+    may be recycled to build the grid.
   */
-  void construct(const Congruence_System& cgs);
+  void construct(Congruence_System& cgs);
 
   //! Builds a grid from a system of grid generators.
   /*!
     The grid inherits the space dimension of the generator system.
 
-    \param gs
-    The system of grid generators defining the grid;
+    \param ggs
+    The system of grid generators defining the grid.  Its data-structures
+    may be recycled to build the grid.
   */
-  void construct(const Grid_Generator_System& gs);
-
-  //! Builds a grid from a system of generators.
-  /*!
-    The grid inherits the space dimension of the generator system.
-
-    \param gs
-    The system of generators defining the grid;
-  */
-  void construct(const Generator_System& gs);
+  void construct(Grid_Generator_System& ggs);
 
   //! \name Private Verifiers: Verify if Individual Flags are Set
   //@{

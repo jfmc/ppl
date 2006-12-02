@@ -36,7 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence_System.inlines.hh"
 #include "Grid_Generator_System.defs.hh"
 #include "Grid_Generator_System.inlines.hh"
-#include "Saturation_Matrix.defs.hh"
+#include "Bit_Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Congruence.defs.hh"
 #include "Poly_Con_Relation.defs.hh"
@@ -403,10 +403,14 @@ protected:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the topology of \p cs is incompatible with \p topol.
   */
-  Polyhedron(Topology topol, Constraint_System& cs);
+  Polyhedron(Topology topol, Constraint_System& cs, Recycle_Input dummy);
 
   //! Builds a polyhedron from a system of generators.
   /*!
@@ -436,11 +440,15 @@ protected:
     declared <CODE>const</CODE> because its data-structures may be
     recycled to build the polyhedron.
 
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
     \exception std::invalid_argument
     Thrown if the topology of \p gs is incompatible with \p topol,
     or if the system of generators is not empty but has no points.
   */
-  Polyhedron(Topology topol, Generator_System& gs);
+  Polyhedron(Topology topol, Generator_System& gs, Recycle_Input dummy);
 
   //! Builds a polyhedron out of a generic, interval-based bounding box.
   /*!
@@ -668,7 +676,7 @@ public:
     \param maximum
     <CODE>true</CODE> if and only if the supremum is also the maximum value;
 
-    \param point
+    \param g
     When maximization succeeds, will be assigned the point or
     closure point where \p expr reaches its supremum value.
 
@@ -677,11 +685,11 @@ public:
 
     If \p *this is empty or \p expr is not bounded from above,
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
-    and \p point are left untouched.
+    and \p g are left untouched.
   */
   bool maximize(const Linear_Expression& expr,
 		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& point) const;
+		Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -727,7 +735,7 @@ public:
     \param minimum
     <CODE>true</CODE> if and only if the infimum is also the minimum value;
 
-    \param point
+    \param g
     When minimization succeeds, will be assigned a point or
     closure point where \p expr reaches its infimum value.
 
@@ -736,11 +744,11 @@ public:
 
     If \p *this is empty or \p expr is not bounded from below,
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
-    and \p point are left untouched.
+    and \p g are left untouched.
   */
   bool minimize(const Linear_Expression& expr,
 		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& point) const;
+		Generator& g) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -1883,10 +1891,10 @@ private:
   Generator_System gen_sys;
 
   //! The saturation matrix having constraints on its columns.
-  Saturation_Matrix sat_c;
+  Bit_Matrix sat_c;
 
   //! The saturation matrix having generators on its columns.
-  Saturation_Matrix sat_g;
+  Bit_Matrix sat_g;
 
 #define PPL_IN_Polyhedron_CLASS
 #include "Ph_Status.idefs.hh"
@@ -2290,7 +2298,7 @@ private:
     <CODE>true</CODE> if and only if the extremum of \p expr can
     actually be reached in \p * this;
 
-    \param point
+    \param g
     When maximization or minimization succeeds, will be assigned
     a point or closure point where \p expr reaches the
     corresponding extremum value.
@@ -2300,12 +2308,12 @@ private:
 
     If \p *this is empty or \p expr is not bounded in the appropriate
     direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
-    \p included and \p point are left untouched.
+    \p included and \p g are left untouched.
   */
   bool max_min(const Linear_Expression& expr,
 	       const bool maximize,
 	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
-	       Generator& point) const;
+	       Generator& g) const;
 
   //! \name Widening- and Extrapolation-Related Functions
   //@{
@@ -2369,8 +2377,8 @@ private:
   */
   static void add_space_dimensions(Linear_System& mat1,
 				   Linear_System& mat2,
-				   Saturation_Matrix& sat1,
-				   Saturation_Matrix& sat2,
+				   Bit_Matrix& sat1,
+				   Bit_Matrix& sat2,
 				   dimension_type add_dim);
 
   //! \name Minimization-Related Static Member Functions
@@ -2381,7 +2389,7 @@ private:
   static bool minimize(bool con_to_gen,
 		       Linear_System& source,
 		       Linear_System& dest,
-		       Saturation_Matrix& sat);
+		       Bit_Matrix& sat);
 
   /*! \brief
     Adds given constraints and builds minimized corresponding generators
@@ -2391,7 +2399,7 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Linear_System& source1,
 			       Linear_System& dest,
-			       Saturation_Matrix& sat,
+			       Bit_Matrix& sat,
 			       const Linear_System& source2);
 
   /*! \brief
@@ -2402,14 +2410,14 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Linear_System& source,
 			       Linear_System& dest,
-			       Saturation_Matrix& sat);
+			       Bit_Matrix& sat);
 
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
   static dimension_type conversion(Linear_System& source,
 				   dimension_type start,
 				   Linear_System& dest,
-				   Saturation_Matrix& sat,
+				   Bit_Matrix& sat,
 				   dimension_type num_lines_or_equalities);
 
   /*! \brief
@@ -2417,7 +2425,7 @@ private:
     <CODE>conversion()</CODE>.
   */
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Linear_System& mat, Saturation_Matrix& sat);
+  static int simplify(Linear_System& mat, Bit_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 

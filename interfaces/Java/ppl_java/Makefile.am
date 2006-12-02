@@ -20,23 +20,124 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+JAVAROOT = ../
+
+required_instantiations_java_sources = \
+@required_instantiations_java_sources@
+
+required_instantiations_java_cxx_headers = \
+@required_instantiations_java_cxx_headers@
+
 if BUILD_JAVA_INTERFACE
 
-ppl_java_version = 1:0:0
+all:	java_classes.stamp java_cxx_headers.stamp
 
-ppl_javadir = $(prefix)/lib/java/classes/ppl
+interface_generator_files = \
+ppl_interface_generator_java_classes_java.m4 \
+ppl_interface_generator_java_classes_java_code.m4
 
-ppl_java_JAVA = \
+interface_generator_dependencies = \
+../../ppl_interface_instantiations.m4 \
+../../ppl_interface_generator_common.m4 \
+../../ppl_interface_generator_common_dat.m4 \
+../../ppl_interface_generator_copyright \
+../ppl_interface_generator_java_dat.m4 \
+ppl_interface_generator_java_classes_java.m4 \
+ppl_interface_generator_java_classes_java_code.m4
+
+fixed_java_cxx_headers = \
+ppl_java.Parma_Polyhedra_Library \
+ppl_java.MIP_Problem
+
+
+fixed_java_sources = \
+By_Reference.java \
 Coefficient.java \
-Variable.java
+Congruence.java \
+Congruence_System.java \
+Constraint.java \
+Constraint_System.java \
+Constraint_System.java \
+Degenerate_Element.java \
+Domain_Error_Exception.java \
+Generator.java \
+Generator_System.java \
+Generator_Type.java \
+Grid_Generator.java \
+Grid_Generator_System.java \
+Grid_Generator_Type.java \
+Invalid_Argument_Exception.java \
+Lenght_Error_Exception.java \
+Linear_Expression.java \
+Linear_Expression_Coefficient.java \
+Linear_Expression_Difference.java \
+Linear_Expression_Sum.java \
+Linear_Expression_Times.java \
+Linear_Expression_Unary_Minus.java \
+Linear_Expression_Variable.java \
+Logic_Error_Exception.java \
+MIP_Problem.java \
+MIP_Problem_Status.java \
+Optimization_Mode.java \
+Overflow_Error_Exception.java \
+PPL_Object.java \
+Parma_Polyhedra_Library.java \
+Partial_Function.java \
+Poly_Con_Relation.java \
+Poly_Gen_Relation.java \
+Polyhedron.java \
+Relation_Symbol.java \
+Variable.java \
+Variables_Set.java
 
-ppl_java_CLASSES = $(ppl_java_JAVA:.java=.class)
+all_java_sources = \
+$(fixed_java_sources) \
+$(required_instantiations_java_sources)
 
-all:	$(ppl_java_CLASSES)
+java_classes.stamp: $(all_java_sources)
+	@if test -n "$?"; then \
+		echo '$(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) $(AM_JAVACFLAGS) $(JAVACFLAGS) $?' ; \
+		$(CLASSPATH_ENV) $(JAVAC) -d $(JAVAROOT) \
+		$(AM_JAVACFLAGS) $(JAVACFLAGS) $?; \
+	else :; fi
+	echo timestamp > java_classes.stamp
 
-Coefficient.class: Coefficient.java
-	$(JAVAC) -d $(top_builddir)/interfaces/Java $(srcdir)/Coefficient.java
-Variable.class: Variable.java
-	$(JAVAC) -d $(top_builddir)/interfaces/Java $(srcdir)/Variable.java
+java_cxx_headers.stamp: java_classes.stamp
+	@if test -n "$?"; then \
+		echo '$(JAVAH) -classpath ..  $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers)' ; \
+		$(JAVAH) -classpath .. $(fixed_java_cxx_headers) $(required_instantiations_java_cxx_headers) ; \
+	else :; fi
+	echo timestamp > java_cxx_headers.stamp
 
+# In general, several java sources will be built and the same process
+# will build all of them.  We assume that C_Polyhedron.java will always
+# be built, independently from all configuration options.
+BUILT_SOURCES = C_Polyhedron.java
+
+source_generation.stamp: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I../.. \
+		-I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. \
+		$(srcdir)/ppl_interface_generator_java_classes_java.m4 \
+			> java_blob
+	$(top_srcdir)/utils/cm_cleaner.sh < java_blob
+	$(top_srcdir)/utils/cm_splitter.sh < java_blob
+	rm -f java_blob
+	echo timestamp > source_generation.stamp
+
+$(required_instantiations_java_sources): source_generation.stamp
+
+EXTRA_DIST = \
+$(interface_generator_files) \
+$(fixed_java_sources)
+
+# This is to force Automake to generate the required Java infrastructure
+# and all the class files.
+noinst_JAVA = Variable.java
+
+CLEANFILES = \
+$(required_instantiations_java_sources) \
+$(required_instantiations_java_cxx_headers) \
+java_classes.stamp \
+java_cxx_headers.stamp \
+source_generation.stamp
 endif BUILD_JAVA_INTERFACE

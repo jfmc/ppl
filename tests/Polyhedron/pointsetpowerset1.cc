@@ -360,6 +360,89 @@ test16() {
   return ok && ok1 && ok2;
 }
 
+bool
+test17() {
+  Variable x(0);
+  Variable y(1);
+  Pointset_Powerset<C_Polyhedron> c_ps(2, EMPTY);
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(x <= 2);
+  C_Polyhedron ph(2);
+  ph.add_constraints(cs);
+  c_ps.add_disjunct(ph);
+
+  Constraint_System cs1;
+  cs1.insert(y >= 3);
+  cs1.insert(y <= 5);
+  C_Polyhedron ph1(2);
+  ph1.add_constraints(cs1);
+  c_ps.add_disjunct(ph1);
+
+  Pointset_Powerset<C_Polyhedron>::const_iterator i = c_ps.begin();
+  C_Polyhedron phi = i -> element();
+  i++;
+  C_Polyhedron phi1 = i -> element();
+
+  bool ok = phi.OK() && phi == ph;
+
+  print_constraints(ph, "*** ph ***");
+  print_constraints(phi, "*** phi ***");
+
+  bool ok1 = phi1.OK() && phi1 == ph1;
+
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(phi1, "*** phi1 ***");
+
+  phi.poly_hull_assign(phi1);
+  print_constraints(phi, "*** phi ***");
+
+  return ok && ok1;
+}
+
+bool
+test18() {
+  Variable x(0);
+  Pointset_Powerset<C_Polyhedron> c_ps(1);
+  Constraint_System cs;
+  cs.insert(x >= 5);
+  cs.insert(x <= 3);
+  c_ps.add_constraints(cs);
+
+  Pointset_Powerset<C_Polyhedron> c_ps1(1, EMPTY);
+
+  // c_ps.ascii_dump();
+  // c_ps1.ascii_dump();
+
+  bool ok = c_ps.geometrically_equals(c_ps1);
+  bool ok1 = c_ps.geometrically_equals(c_ps1);
+
+  return ok && ok1;
+}
+
+bool
+test19() {
+  Variable x(0);
+  Pointset_Powerset<C_Polyhedron> c_ps(1);
+  Constraint_System cs;
+  cs.insert(x >= 5);
+  cs.insert(x >= 8);
+  c_ps.add_constraints(cs);
+
+  Pointset_Powerset<C_Polyhedron> c_ps1(1);
+  cs.clear();
+  cs.insert(x >= 8);
+  c_ps1.add_constraints(cs);
+
+  // c_ps.ascii_dump();
+  // c_ps1.ascii_dump();
+
+  bool ok = c_ps.geometrically_equals(c_ps1);
+  bool ok1 = c_ps.geometrically_equals(c_ps1);
+
+  return ok && ok1;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -379,4 +462,7 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
+  DO_TEST(test18);
+  DO_TEST(test19);
 END_MAIN

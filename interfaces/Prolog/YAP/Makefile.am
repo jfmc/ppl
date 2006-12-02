@@ -32,7 +32,8 @@ yap_pl_check.pl
 
 if BUILD_YAP_PROLOG_INTERFACE
 
-BUILT_SOURCES = ppl_yap.cc
+BUILT_SOURCES = \
+ppl_yap.cc
 
 interface_generator_dependencies = \
 ../../ppl_interface_instantiations.m4 \
@@ -63,7 +64,7 @@ NO_UNDEFINED_FLAG = -no-undefined
 endif NO_UNDEFINED
 
 pkglib_LTLIBRARIES = ppl_yap.la
-ppl_yap_la_SOURCES = ppl_yap.cc
+nodist_ppl_yap_la_SOURCES = ppl_yap.cc
 ppl_yap_la_LIBADD = \
 -lYap \
 $(top_builddir)/src/libppl.la \
@@ -141,6 +142,9 @@ clpq2_test: yap_clpq2.pl ppl_yap.pl ../tests/clpq2.pl ../tests/script_clpq2 $(EX
 		yap -l $(srcdir)/yap_clpq2.pl \
 			<script_clpq2 >obtained_clpq2
 	diff -u --ignore-all-space $(EXPECTED_CLPQ2) obtained_clpq2
+
+DISTCLEANFILES = \
+ppl_yap.cc
 
 MOSTLYCLEANFILES = \
 script_clpq script_clpq2 script_pchk \

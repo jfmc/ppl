@@ -865,7 +865,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 
   if (rep == H) {
 #if defined(USE_PPL)
-    ph = PPL::C_Polyhedron(cs);
+    ph = PPL::C_Polyhedron(cs, PPL::Recycle_Input());
 #elif defined(USE_POLKA)
     ph = poly_universe(space_dim);
     ph = poly_add_constraints_lazy(ph, mat);
@@ -881,7 +881,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   }
   else {
 #if defined(USE_PPL)
-    ph = PPL::C_Polyhedron(gs);
+    ph = PPL::C_Polyhedron(gs, PPL::Recycle_Input());
 #elif defined(USE_POLKA)
     ph = poly_of_frames(mat);
 #elif defined(USE_POLYLIB)

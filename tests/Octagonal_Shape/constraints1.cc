@@ -286,6 +286,24 @@ test11() {
   return ok;
 }
 
+bool
+test12() {
+
+  TOctagonal_Shape oct1(0);
+  oct1.add_constraint(Linear_Expression(1) == 0);
+
+  TOctagonal_Shape oct2(0, EMPTY);
+
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
+
+  Octagonal_Shape<mpq_class> known_result(oct2);
+
+  bool ok = (Octagonal_Shape<mpq_class>(oct1) == known_result);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -300,5 +318,6 @@ BEGIN_MAIN
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
+  DO_TEST(test12);
 END_MAIN
 

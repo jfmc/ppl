@@ -23,13 +23,17 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.10pre2],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.10pre4],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
+
+# Determine the system type and set output variables to the names of
+# the canonical system types.
+AC_CANONICAL_HOST
 
 # Use Automake.
 AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
@@ -72,9 +76,6 @@ AC_CONFIG_HEADER(config.h)
 
 ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
-
-# Check for host type.
-AC_CANONICAL_HOST
 
 AH_TOP([
 #ifndef PPL_ppl_config_h
@@ -614,13 +615,26 @@ AM_CONDITIONAL(BUILD_C_INTERFACE, test x${c_interface_enabled} = xyes)
 
 # Checks for systems for which the interface is enabled.
 
-# Java
-if test x${java_interface_enabled} = xyes
+# Set the optional Java SDK directory.
+AC_ARG_WITH(java,
+	AC_HELP_STRING([--with-java=dir],
+       [use dir as Java SDK root directory]),
+       [JAVA_HOME=$with_java])
+
+if test ! "x$JAVA_HOME" = x
 then
-  AC_CHECK_PROG(JAVAH, javah, javah)
-  AC_CHECK_PROG(JAVAC, javac, javac)
+    JAVAPREFIX="${JAVA_HOME}/bin"
 fi
-AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test x$JAVAC = xjavac)
+
+# Check for Java programs. Order here is important: check first
+# for the compiler.
+AC_PROG_JAVAC
+AC_PROG_JAVA
+AC_PROG_JAR
+AC_PROG_JAVAH
+
+# All the Java programs are required to build the Java interface.
+AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test ! "x$JAVA" = "xno" &&  test ! "x$ac_cv_javac_supports_enums" = "xno" && test ! "x$JAR" = "xno" && test ! "x$JAVAH" = "xno")
 
 # OCaml
 if test x${ocaml_interface_enabled} = xyes
@@ -728,7 +742,7 @@ xno | xnone)
     enableval=${default_instantiations}
   fi
   # Avoid extra blanks.
-  required_instantiations=`echo "${enableval}" | sed -e 's/[[ 	]][[ 	]]*//g' -e 's/long\([[a-z]]\)/long \1/g' -e 's/signed\([[a-z]]\)/signed \1/g' -e 's/\([[a-z]]\)int/\1 int/g' -e 's/>>/> >/g'`
+  required_instantiations=`echo "${enableval}" | sed -e 's/[[	 ]][[	 ]]*/ /g' -e 's/[[ ]]*\([[@<>,]]\)[[ ]]*/\1/g' -e 's/>>/> >/g' -e 's/^[[ ]]//g' -e 's/[[ ]]$//g'`
   # Check the specified instantiations for validity.
   ac_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS -I${srcdir}"
@@ -753,7 +767,9 @@ bool valid = ${instantiation}::valid_instantiation();
     fi
   done
   CPPFLAGS="$ac_save_CPPFLAGS"
-  required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ]]/_/g'`
+  required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ,]]/_/g'`
+  required_instantiations_java_sources=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' | sed -e 's/@/.java /g' -e 's/$/.java/g'`
+  required_instantiations_java_cxx_headers=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java.\1/g'`
   AC_MSG_RESULT([${required_instantiations}])
   ;;
 esac
@@ -863,6 +879,8 @@ AC_SUBST(debug_flag)
 AC_SUBST(coefficient_mnemonic)
 AC_SUBST(required_instantiations)
 AC_SUBST(required_instantiations_canonical_names)
+AC_SUBST(required_instantiations_java_sources)
+AC_SUBST(required_instantiations_java_cxx_headers)
 AC_SUBST(ocamlc_root)
 
 AC_CONFIG_FILES(Makefile
@@ -904,9 +922,11 @@ AC_CONFIG_FILES(Makefile
                 interfaces/Makefile
                 interfaces/C/Makefile
                 interfaces/C/ppl_c_version.h
-                interfaces/Java/Makefile
+               	interfaces/Java/Makefile
+		interfaces/Java/jni/Makefile
+		interfaces/Java/tests/Makefile
                 interfaces/Java/ppl_java/Makefile
-                interfaces/OCaml/Makefile
+		interfaces/OCaml/Makefile
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile

@@ -478,6 +478,25 @@ test16() {
   return ok;
 }
 
+// Both empty and both not in minimal form.
+bool
+test17() {
+  Variable A(0);
+  Grid gr1(1);
+  gr1.add_congruence((A %= 1) / 2);
+  gr1.add_congruence((A %= 0) / 2);
+
+  Grid gr2(1);
+  gr2.add_congruence((A %= 1) / 2);
+  gr2.add_congruence((A %= 0) / 2);
+
+  bool ok = (!gr1.intersection_assign_and_minimize(gr2));
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2 ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -497,4 +516,5 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN

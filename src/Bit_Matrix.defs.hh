@@ -1,4 +1,4 @@
-/* Saturation_Matrix class declaration.
+/* Bit_Matrix class declaration.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,58 +20,44 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Saturation_Matrix_defs_hh
-#define PPL_Saturation_Matrix_defs_hh 1
+#ifndef PPL_Bit_Matrix_defs_hh
+#define PPL_Bit_Matrix_defs_hh 1
 
-#include "Saturation_Matrix.types.hh"
+#include "Bit_Matrix.types.hh"
 #include "Linear_System.defs.hh"
-#include "Saturation_Row.defs.hh"
+#include "Bit_Row.defs.hh"
 #include <vector>
 #include <iosfwd>
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A saturation matrix.
-/*! \ingroup PPL_CXX_interface
-  A saturation matrix is used to encode the relation between the
-  generators and the constraints of a polyhedron: if a generator
-  saturates a constraint the corresponding element of the saturation
-  matrix is \f$0\f$, otherwise (i.e., if the generator satisfies but
-  does not saturate the constraint) the corresponding element is \f$1\f$.
-  \note
-  since the constraints and generators are taken from the same polyhedron
-  description, it cannot be the case that a generator <EM>violates</EM>
-  a constraint.
-*/
+//! A matrix of bits.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-
-class Parma_Polyhedra_Library::Saturation_Matrix {
+class Parma_Polyhedra_Library::Bit_Matrix {
 public:
   //! Default constructor.
-  Saturation_Matrix();
+  Bit_Matrix();
 
-  /*! \brief
-    Construct a saturation matrix with \p n_rows rows
-    and \p n_columns columns.
-  */
-  Saturation_Matrix(dimension_type n_rows, dimension_type n_columns);
+  //! Construct a bit matrix with \p n_rows rows and \p n_columns columns.
+  Bit_Matrix(dimension_type n_rows, dimension_type n_columns);
 
   //! Copy-constructor.
-  Saturation_Matrix(const Saturation_Matrix& y);
+  Bit_Matrix(const Bit_Matrix& y);
 
   //! Destructor.
-  ~Saturation_Matrix();
+  ~Bit_Matrix();
 
   //! Assignment operator.
-  Saturation_Matrix& operator=(const Saturation_Matrix& y);
+  Bit_Matrix& operator=(const Bit_Matrix& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Saturation_Matrix& y);
+  void swap(Bit_Matrix& y);
 
   //! Subscript operator.
-  Saturation_Row& operator[](dimension_type k);
+  Bit_Row& operator[](dimension_type k);
 
   //! Constant subscript operator.
-  const Saturation_Row& operator[](dimension_type k) const;
+  const Bit_Row& operator[](dimension_type k) const;
 
   //! Clears the matrix deallocating all its rows.
   void clear();
@@ -80,9 +66,9 @@ public:
   void transpose();
 
   //! Makes \p *this a transposed copy of \p y.
-  void transpose_assign(const Saturation_Matrix& y);
+  void transpose_assign(const Bit_Matrix& y);
 
-  //! Returns the maximum number of rows of a Saturation_Matrix.
+  //! Returns the maximum number of rows of a Bit_Matrix.
   static dimension_type max_num_rows();
 
   //! Returns the number of columns of \p *this.
@@ -102,13 +88,13 @@ public:
     \param row
     The row that will be searched for in the matrix.
 
-    Given a sorted saturation matrix (this ensures better efficiency),
+    Given a sorted bit matrix (this ensures better efficiency),
     tells whether it contains the given row.
   */
-  bool sorted_contains(const Saturation_Row& row) const;
+  bool sorted_contains(const Bit_Row& row) const;
 
   //! Adds \p row to \p *this.
-  void add_row(const Saturation_Row& row);
+  void add_row(const Bit_Row& row);
 
   //! Erases the rows from the \p first_to_erase -th to the last one.
   void rows_erase_to_end(dimension_type first_to_erase);
@@ -144,34 +130,50 @@ public:
 
 private:
   //! Contains the rows of the matrix.
-  std::vector<Saturation_Row> rows;
+  std::vector<Bit_Row> rows;
 
   //! Size of the initialized part of each row.
   dimension_type row_size;
 
   //! Ordering predicate (used when implementing the sort algorithm).
   /*! \ingroup PPL_CXX_interface */
-  struct Saturation_Row_Less_Than {
-    bool operator()(const Saturation_Row& x, const Saturation_Row& y) const;
+  struct Bit_Row_Less_Than {
+    bool operator()(const Bit_Row& x, const Bit_Row& y) const;
   };
 
   friend
   void Parma_Polyhedra_Library::
-  Linear_System::sort_and_remove_with_sat(Saturation_Matrix& sat);
+  Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat);
 
 };
+
+namespace Parma_Polyhedra_Library {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
+/*! \relates Bit_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+bool operator==(const Bit_Matrix& x, const Bit_Matrix& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are not equal.
+/*! \relates Bit_Matrix */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+bool operator!=(const Bit_Matrix& x, const Bit_Matrix& y);
+
+} // namespace Parma_Polyhedra_Library
 
 namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Saturation_Matrix */
+/*! \relates Parma_Polyhedra_Library::Bit_Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void swap(Parma_Polyhedra_Library::Saturation_Matrix& x,
-	  Parma_Polyhedra_Library::Saturation_Matrix& y);
+void swap(Parma_Polyhedra_Library::Bit_Matrix& x,
+	  Parma_Polyhedra_Library::Bit_Matrix& y);
 
 } // namespace std
 
-#include "Saturation_Matrix.inlines.hh"
+#include "Bit_Matrix.inlines.hh"
 
-#endif // !defined(PPL_Saturation_Matrix_defs_hh)
+#endif // !defined(PPL_Bit_Matrix_defs_hh)

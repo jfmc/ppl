@@ -157,7 +157,6 @@ public:
   */
   virtual bool contains_integer_point() const = 0;
 
-#if 0
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
     bounded from above in \p *this.
@@ -165,7 +164,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
-  bool bounds_from_above(const Linear_Expression& expr) const;
+  virtual bool bounds_from_above(const Linear_Expression& expr) const = 0;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
@@ -174,7 +173,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
-  bool bounds_from_below(const Linear_Expression& expr) const;
+  virtual bool bounds_from_below(const Linear_Expression& expr) const = 0;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -200,8 +199,9 @@ public:
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d
     and \p maximum are left untouched.
   */
-  bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
+  virtual bool
+  maximize(const Linear_Expression& expr,
+	   Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const = 0;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -231,9 +231,9 @@ public:
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
     and \p point are left untouched.
   */
-  bool maximize(const Linear_Expression& expr,
-		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
-		Generator& point) const;
+  virtual bool maximize(const Linear_Expression& expr,
+			Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
+			Generator& point) const = 0;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -259,8 +259,9 @@ public:
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d
     and \p minimum are left untouched.
   */
-  bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
+  virtual bool
+  minimize(const Linear_Expression& expr,
+	   Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const = 0;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -290,10 +291,9 @@ public:
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
     and \p point are left untouched.
   */
-  bool minimize(const Linear_Expression& expr,
-		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
-		Generator& point) const;
-#endif
+  virtual bool minimize(const Linear_Expression& expr,
+			Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
+			Generator& point) const = 0;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -844,7 +844,6 @@ public:
 			    Coefficient_traits::const_reference denominator
 			    = Coefficient_one()) = 0;
 
-#if 0
   /*!
     \brief
     Assigns to \p *this the preimage of \p *this with respect to the
@@ -877,7 +876,6 @@ public:
 			       const Linear_Expression& ub_expr,
 			       Coefficient_traits::const_reference denominator
 			       = Coefficient_one()) = 0;
-#endif
 
   /*! \brief
     Assigns to \p *this the result of computing the
@@ -1325,19 +1323,6 @@ class WRAPPER_NAME : public Any_Pointset {				\
     x.generalized_affine_preimage(lhs, relsym, rhs);			\
   }									\
 									\
-  memory_size_type total_memory_in_bytes() const {			\
-    return x.total_memory_in_bytes();					\
-  }									\
-  memory_size_type external_memory_in_bytes() const {			\
-    return x.total_memory_in_bytes();					\
-  }									\
-									\
-  bool OK() const {							\
-    return x.OK();							\
-  }									\
-};
-
-#if 0
   void bounded_affine_image(Variable var,				\
 			    const Linear_Expression& lb_expr,		\
 			    const Linear_Expression& ub_expr,		\
@@ -1351,8 +1336,46 @@ class WRAPPER_NAME : public Any_Pointset {				\
 			       Coefficient_traits::const_reference	\
 			       denominator = Coefficient_one()) {	\
     x.bounded_affine_preimage(var, lb_expr, ub_expr, denominator);	\
-  }
-#endif
+  }									\
+									\
+  bool bounds_from_above(const Linear_Expression& expr) const {		\
+    return x.bounds_from_above(expr);					\
+  }									\
+  bool bounds_from_below(const Linear_Expression& expr) const {		\
+    return x.bounds_from_below(expr);					\
+  }									\
+  bool maximize(const Linear_Expression& expr,				\
+		Coefficient& sup_n, Coefficient& sup_d,			\
+		bool& maximum) const {					\
+    return maximize(expr, sup_n, sup_d, maximum);			\
+  }									\
+  bool maximize(const Linear_Expression& expr,				\
+		Coefficient& sup_n, Coefficient& sup_d,			\
+		bool& maximum, Generator& point) const {		\
+    return maximize(expr, sup_n, sup_d, maximum, point);		\
+  }									\
+  bool minimize(const Linear_Expression& expr,				\
+		Coefficient& inf_n, Coefficient& inf_d,			\
+		bool& minimum) const {					\
+    return minimize(expr, inf_n, inf_d, minimum);			\
+  }									\
+  bool minimize(const Linear_Expression& expr,				\
+		Coefficient& inf_n, Coefficient& inf_d,			\
+		bool& minimum, Generator& point) const {		\
+    return minimize(expr, inf_n, inf_d, minimum, point);		\
+  }									\
+									\
+  memory_size_type total_memory_in_bytes() const {			\
+    return x.total_memory_in_bytes();					\
+  }									\
+  memory_size_type external_memory_in_bytes() const {			\
+    return x.total_memory_in_bytes();					\
+  }									\
+									\
+  bool OK() const {							\
+    return x.OK();							\
+  }									\
+};
 
 namespace Parma_Polyhedra_Library {
 
@@ -1365,6 +1388,7 @@ PPL_ANY_POINTSET_WRAPPER_CLASS(template <typename T>, Octagonal_Shape_Pointset, 
 
 //C_Polyhedron_Pointset a(C_Polyhedron(3));
 //Octagonal_Shape_Pointset<double> b(C_Polyhedron(3));
+//BD_Shape_Pointset<double> c(C_Polyhedron(3));
 
 } // namespace Parma_Polyhedra_Library
 

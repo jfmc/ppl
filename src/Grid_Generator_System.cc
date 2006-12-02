@@ -308,9 +308,8 @@ PPL::Grid_Generator_System
 void
 PPL::Grid_Generator_System
 ::remove_space_dimensions(const Variables_Set& to_be_removed) {
-  // Dimension-compatibility assertion: the variable having maximum
-  // space dimension is the one occurring last in the set.
-  assert(space_dimension() >= to_be_removed.rbegin()->space_dimension());
+  // Dimension-compatibility assertion.
+  assert(space_dimension() >= to_be_removed.space_dimension());
 
   // The removal of no dimensions from any system is a no-op.  This
   // case also captures the only legal removal of dimensions from a
@@ -322,10 +321,10 @@ PPL::Grid_Generator_System
   // by shifting left the columns to the right that will be kept.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst_col = tbr->space_dimension();
+  dimension_type dst_col = *tbr+1;
   dimension_type src_col = dst_col + 1;
   for (++tbr; tbr != tbr_end; ++tbr) {
-    dimension_type tbr_col = tbr->space_dimension();
+    const dimension_type tbr_col = *tbr+1;
     // Move all columns in between to the left.
     while (src_col < tbr_col)
       Matrix::swap_columns(dst_col++, src_col++);

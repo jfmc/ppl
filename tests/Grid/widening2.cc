@@ -453,6 +453,30 @@ test14() {
   return false;
 }
 
+bool
+test15() {
+  Variable A(0);
+  Grid gr1(1);
+  gr1.add_congruence((A %= 1) / 2);
+  gr1.add_congruence((A %= 0) / 2);
+
+  print_congruences(gr1, "*** gr1 ***");
+
+  Grid gr2(1);
+  gr2.add_congruence((A %= 1) / 2);
+  gr2.add_congruence((A %= 0) / 2);
+
+  print_congruences(gr2, "*** gr2 ***");
+
+  gr2.generator_widening_assign(gr1);
+  bool ok = (gr1 == gr2);
+
+  print_congruences(gr1, "*** gr1 ***");
+  print_congruences(gr2, "*** gr2.generator_widening_assign ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -470,4 +494,5 @@ BEGIN_MAIN
   DO_TEST_F8(test12);
   DO_TEST_F8(test13);
   DO_TEST(test14);
+  DO_TEST(test15);
 END_MAIN

@@ -1,4 +1,4 @@
-/* Saturation_Row class declaration.
+/* Bit_Row class declaration.
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,10 +20,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Saturation_Row_defs_hh
-#define PPL_Saturation_Row_defs_hh 1
+#ifndef PPL_Bit_Row_defs_hh
+#define PPL_Bit_Row_defs_hh 1
 
-#include "Saturation_Row.types.hh"
+#include "Bit_Row.types.hh"
 #include "globals.types.hh"
 #include <iosfwd>
 #include <gmp.h>
@@ -35,19 +35,19 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
-/*! \relates Saturation_Row */
+/*! \relates Bit_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool operator==(const Saturation_Row& x, const Saturation_Row& y);
+bool operator==(const Bit_Row& x, const Bit_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are not equal.
-/*! \relates Saturation_Row */
+/*! \relates Bit_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool operator!=(const Saturation_Row& x, const Saturation_Row& y);
+bool operator!=(const Bit_Row& x, const Bit_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
-/*! \relates Saturation_Row
+/*! \relates Bit_Row
   Compares \p x with \p y starting from the least significant bits.
   The ordering is total and has the following property: if \p x and \p y
   are two rows seen as sets of naturals, if \p x is a strict subset
@@ -59,78 +59,68 @@ bool operator!=(const Saturation_Row& x, const Saturation_Row& y);
   -  1 if \p x comes after \p y in the ordering.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-int compare(const Saturation_Row& x, const Saturation_Row& y);
+int compare(const Bit_Row& x, const Bit_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic inclusion test.
-/*! \relates Saturation_Row */
+/*! \relates Bit_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool subset_or_equal(const Saturation_Row& x, const Saturation_Row& y);
+bool subset_or_equal(const Bit_Row& x, const Bit_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
   Set-theoretic inclusion test: sets \p strict_subset to a Boolean
   indicating whether the inclusion is strict or not.
 
-  \relates Saturation_Row
+  \relates Bit_Row
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool subset_or_equal(const Saturation_Row& x, const Saturation_Row& y,
+bool subset_or_equal(const Bit_Row& x, const Bit_Row& y,
 		     bool& strict_subset);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic strict inclusion test.
-/*! \relates Saturation_Row */
+/*! \relates Bit_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool strict_subset(const Saturation_Row& x, const Saturation_Row& y);
+bool strict_subset(const Bit_Row& x, const Bit_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic union.
-/*! \relates Saturation_Row */
+/*! \relates Bit_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void set_union(const Saturation_Row& x,
-	       const Saturation_Row& y,
-	       Saturation_Row& z);
+void set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
 
 } // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A row of a saturation matrix.
-/*! \ingroup PPL_CXX_interface
-  An object of this class represents a single row of a saturation matrix.
-  The saturation row corresponds to a constraint and a system of generators
-  (resp., a generator and a system of constraints) and records whether or
-  not the constraint is saturated by each one of the generators (resp.,
-  the generator saturates each one of the constraints).
-
-  The saturation relation is encoded by using a bitset, so that the
-  constraint is saturated by the \f$i\f$-th generator in the system
-  (resp., the generator saturates the \f$i\f$-th constraint in the system)
-  if and only if the \f$i\f$-th bit is not set.
-*/
+//! A row in a matrix of bits.
+/*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-class Parma_Polyhedra_Library::Saturation_Row {
+class Parma_Polyhedra_Library::Bit_Row {
 public:
   //! Default constructor.
-  Saturation_Row();
+  Bit_Row();
 
   //! Copy-constructor.
-  Saturation_Row(const Saturation_Row& y);
+  Bit_Row(const Bit_Row& y);
 
   //! Destructor.
-  ~Saturation_Row();
+  ~Bit_Row();
 
   //! Assignment operator.
-  Saturation_Row& operator=(const Saturation_Row& y);
+  Bit_Row& operator=(const Bit_Row& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Saturation_Row& y);
+  void swap(Bit_Row& y);
 
   //! Returns the truth value corresponding to the bit in position \p k.
   bool operator[](unsigned long k) const;
 
   //! Sets the bit in position \p k.
   void set(unsigned long k);
+
+  //! Sets bits up to position \p k (excluded).
+  void set_until(unsigned long k);
 
   //! Clears the bit in position \p k.
   void clear(unsigned long k);
@@ -142,34 +132,27 @@ public:
   void clear();
 
   friend int
-  Parma_Polyhedra_Library::compare(const Saturation_Row& x,
-				   const Saturation_Row& y);
+  Parma_Polyhedra_Library::compare(const Bit_Row& x, const Bit_Row& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const Saturation_Row& x,
-				      const Saturation_Row& y);
+  Parma_Polyhedra_Library::operator==(const Bit_Row& x, const Bit_Row& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator!=(const Saturation_Row& x,
-				      const Saturation_Row& y);
+  Parma_Polyhedra_Library::operator!=(const Bit_Row& x, const Bit_Row& y);
 
   friend bool
-  Parma_Polyhedra_Library::subset_or_equal(const Saturation_Row& x,
-					   const Saturation_Row& y);
+  Parma_Polyhedra_Library::subset_or_equal(const Bit_Row& x, const Bit_Row& y);
 
   friend bool
-  Parma_Polyhedra_Library::subset_or_equal(const Saturation_Row& x,
-					   const Saturation_Row& y,
+  Parma_Polyhedra_Library::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
 					   bool& strict_subset);
 
   friend bool
-  Parma_Polyhedra_Library::strict_subset(const Saturation_Row& x,
-					 const Saturation_Row& y);
+  Parma_Polyhedra_Library::strict_subset(const Bit_Row& x, const Bit_Row& y);
 
   friend void
-  Parma_Polyhedra_Library::set_union(const Saturation_Row& x,
-				     const Saturation_Row& y,
-				     Saturation_Row& z);
+  Parma_Polyhedra_Library::set_union(const Bit_Row& x, const Bit_Row& y,
+				     Bit_Row& z);
 
   //! Returns the index of the first set bit or ULONG_MAX if no bit is set.
   unsigned long first() const;
@@ -219,21 +202,21 @@ namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Saturation_Row */
+/*! \relates Parma_Polyhedra_Library::Bit_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void swap(Parma_Polyhedra_Library::Saturation_Row& x,
-	  Parma_Polyhedra_Library::Saturation_Row& y);
+void swap(Parma_Polyhedra_Library::Bit_Row& x,
+	  Parma_Polyhedra_Library::Bit_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Saturation_Row */
+/*! \relates Parma_Polyhedra_Library::Bit_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void
-iter_swap(std::vector<Parma_Polyhedra_Library::Saturation_Row>::iterator x,
-	  std::vector<Parma_Polyhedra_Library::Saturation_Row>::iterator y);
+iter_swap(std::vector<Parma_Polyhedra_Library::Bit_Row>::iterator x,
+	  std::vector<Parma_Polyhedra_Library::Bit_Row>::iterator y);
 
 } // namespace std
 
-#include "Saturation_Row.inlines.hh"
+#include "Bit_Row.inlines.hh"
 
-#endif // !defined(PPL_Saturation_Row_defs_hh)
+#endif // !defined(PPL_Bit_Row_defs_hh)

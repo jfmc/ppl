@@ -9,13 +9,13 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_Saturation_Matrix_types_hh
-#define PPL_Saturation_Matrix_types_hh 1
+#ifndef PPL_Bit_Matrix_types_hh
+#define PPL_Bit_Matrix_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-class Saturation_Matrix;
+class Bit_Matrix;
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Saturation_Matrix_types_hh)
+#endif // !defined(PPL_Bit_Matrix_types_hh)
