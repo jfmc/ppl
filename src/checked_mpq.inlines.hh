@@ -401,7 +401,7 @@ input_mpq(mpq_class& to, std::istream& is, Rounding_Dir dir) {
   switch (classify(r)) {
   case VC_MINUS_INFINITY:
     return assign<Policy, void>(to, MINUS_INFINITY, dir);
-  case VC_MINUS_INFINITY:
+  case VC_PLUS_INFINITY:
     return assign<Policy, void>(to, PLUS_INFINITY, dir);
   case VC_NAN:
     return set_special<Policy>(to, r);
