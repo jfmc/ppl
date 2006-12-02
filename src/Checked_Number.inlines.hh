@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Checked_Number_inlines_hh
 #define PPL_Checked_Number_inlines_hh 1
 
+#include "meta_programming.hh"
 #include <stdexcept>
 #include <sstream>
 

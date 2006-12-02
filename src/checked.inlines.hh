@@ -21,6 +21,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.types.hh"
+#include "meta_programming.hh"
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {

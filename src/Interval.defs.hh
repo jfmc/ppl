@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Interval_defs_hh 1
 
 #include "globals.types.hh"
+#include "meta_programming.hh"
 #include "Interval.types.hh"
 #include "Interval_Info.defs.hh"
 #include <iosfwd>
