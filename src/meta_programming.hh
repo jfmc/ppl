@@ -224,7 +224,7 @@ struct Is_Same_Or_Derived {
   is not present.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-template <bool b, typename T>
+template <bool b, typename T = void>
 struct Enable_If {
 };
 
@@ -235,6 +235,22 @@ struct Enable_If {
 
   This is the specialization in which the <CODE>type</CODE> member
   is present.
+
+  \note
+  Let <CODE>T</CODE>, <CODE>T1</CODE> and <CODE>T2</CODE> be any type
+  expressions and suppose we have some template function
+  <CODE>T f(T1, T2)</CODE>.  If we want to declare a specialization
+  that is enabled only if some compile-time checkable condition holds,
+  we simply declare the specialization by
+  \code
+  template ...
+  typename Enable_If<condition, T>::type
+  foo(T1 x, T2 y);
+  \endcode
+  For all the instantiations of the template parameters that cause
+  <CODE>condition</CODE> to evaluate to <CODE>false</CODE>,
+  the <CODE>Enable_If<condition, T>::type</CODE> member will not be defined.
+  Hence, for that instantiations, the specialization will not be eligible.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
