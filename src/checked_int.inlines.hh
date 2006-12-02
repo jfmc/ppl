@@ -47,16 +47,16 @@ strtoull(const char* nptr, char** endptr, int base);
 
 namespace Parma_Polyhedra_Library {
 
-template <> struct Checked_Supports<signed char> : public True { };
-template <> struct Checked_Supports<signed short> : public True { };
-template <> struct Checked_Supports<signed int> : public True { };
-template <> struct Checked_Supports<signed long> : public True { };
-template <> struct Checked_Supports<signed long long> : public True { };
-template <> struct Checked_Supports<unsigned char> : public True { };
-template <> struct Checked_Supports<unsigned short> : public True { };
-template <> struct Checked_Supports<unsigned int> : public True { };
-template <> struct Checked_Supports<unsigned long> : public True { };
-template <> struct Checked_Supports<unsigned long long> : public True { };
+template <> struct Is_Native<signed char> : public True { };
+template <> struct Is_Native<signed short> : public True { };
+template <> struct Is_Native<signed int> : public True { };
+template <> struct Is_Native<signed long> : public True { };
+template <> struct Is_Native<signed long long> : public True { };
+template <> struct Is_Native<unsigned char> : public True { };
+template <> struct Is_Native<unsigned short> : public True { };
+template <> struct Is_Native<unsigned int> : public True { };
+template <> struct Is_Native<unsigned long> : public True { };
+template <> struct Is_Native<unsigned long long> : public True { };
 
 namespace Checked {
 

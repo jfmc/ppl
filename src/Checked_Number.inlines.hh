@@ -645,23 +645,18 @@ DEF_BINARY_OP(operator %, rem_assign_r)
 
 #undef DEF_BINARY_OP
 
-#define DEF_COMPARE(f, fun) \
-template <typename T1, typename Policy1, \
-          typename T2, typename Policy2> \
-inline bool \
-f(const Checked_Number<T1, Policy1>& x, \
-  const Checked_Number<T2, Policy2>& y) { \
-  return Checked::fun<Policy1, Policy2>(x.raw_value(), y.raw_value()); \
-} \
-template <typename Type, typename From, typename From_Policy>	\
-inline bool \
-f(const Type& x, const Checked_Number<From, From_Policy>& y) { \
-  return Checked::fun<Checked_Number_Transparent_Policy<Type>, From_Policy>(x, y.raw_value()); \
-} \
-template <typename From, typename From_Policy, typename Type>	\
-inline bool \
-f(const Checked_Number<From, From_Policy>& x, const Type& y) { \
-  return Checked::fun<From_Policy, Checked_Number_Transparent_Policy<Type> >(x.raw_value(), y); \
+#define DEF_COMPARE(f, fun)						\
+template <typename T1, typename T2>					\
+inline typename Enable_If<((Is_Checked<T1>::value			\
+			    && Is_Native_Or_Checked<T2>::value)		\
+			   || (Is_Checked<T2>::value			\
+			       && Is_Native_Or_Checked<T1>::value)),	\
+                          bool>::type					\
+f(const T1& x, const T2& y) {						\
+  return Checked::fun<typename Native_Checked_From_Wrapper<T1>::Policy,	\
+    		      typename Native_Checked_From_Wrapper<T2>::Policy>	\
+    (Native_Checked_From_Wrapper<T1>::raw_value(x),			\
+     Native_Checked_From_Wrapper<T2>::raw_value(y));			\
 }
 
 DEF_COMPARE(operator ==, eq_ext)

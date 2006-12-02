@@ -392,7 +392,7 @@ extern Plus_Infinity PLUS_INFINITY;
 extern Not_A_Number NOT_A_NUMBER;
 
 template <typename T>
-struct Checked_Supports : public False {
+struct Is_Native : public False {
 };
 
 } // namespace Parma_Polyhedra_Library
