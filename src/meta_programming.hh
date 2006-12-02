@@ -215,10 +215,28 @@ struct Is_Same_Or_Derived {
   };
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  A class that provides a type member called <CODE>type</CODE> equivalent
+  to \p T if and only if \p b is <CODE>true</CODE>.
 
-template <bool, typename T>
-struct Enable_If { };
+  This is the non-specialized case, in which the <CODE>type</CODE> member
+  is not present.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <bool b, typename T>
+struct Enable_If {
+};
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  A class that provides a type member called <CODE>type</CODE> equivalent
+  to \p T if and only if \p b is <CODE>true</CODE>.
+
+  This is the specialization in which the <CODE>type</CODE> member
+  is present.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
 struct Enable_If<true, T> {
   typedef T type;
