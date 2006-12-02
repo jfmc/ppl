@@ -284,24 +284,19 @@ build_ppl_relsym(JNIEnv* env, const jobject& j_relsym) {
   jint rel_sym = env->CallIntMethod(j_relsym, rel_sym_ordinal_id);
   switch (rel_sym) {
   case 0: {
-    if (rel_sym == 0)
-      return LESS_THAN;
+    return LESS_THAN;
   }
   case 1: {
-    if (rel_sym == 1)
-      return LESS_THAN_OR_EQUAL;
+    return LESS_THAN_OR_EQUAL;
   }
  case 2: {
-    if (rel_sym == 2)
-      return EQUAL;
+   return EQUAL;
  }
   case 3: {
-    if (rel_sym == 3)
-      return GREATER_THAN_OR_EQUAL;
+    return GREATER_THAN_OR_EQUAL;
   }
   case 4: {
-    if (rel_sym == 4)
-      return GREATER_THAN;
+    return GREATER_THAN;
   }
   default:
     ;

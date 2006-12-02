@@ -198,7 +198,13 @@ List.iter print_congruence constr;;
 ppl_Polyhedron_bounded_affine_preimage ph 1 e1 e2 (Z.from_int 10);;
 ppl_Polyhedron_bounded_affine_preimage ph 1 e1 e2 (Z.from_int 10);;
 ppl_Polyhedron_affine_image ph 1 e1 (Z.from_int 10);;
-let a = limited_BHRZ03_extrapolation_assign ph ph cs 10;;
-let b = bounded_BHRZ03_extrapolation_assign ph ph cs 10;;
+let a = ppl_Polyhedron_limited_BHRZ03_extrapolation_assign ph ph cs 10;;
+let b = ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign ph ph cs 10;;
+let b = ppl_Polyhedron_bounded_H79_extrapolation_assign ph ph cs 10;;
+let b = ppl_Polyhedron_H79_widening_assign ph ph 10;;
+let b = ppl_Polyhedron_OK ph;;
+ppl_Polyhedron_generalized_affine_preimage ph e1 Equal_RS e1;;
+ppl_Polyhedron_generalized_affine_image ph 1 Equal_RS e2 (Z.from_int 10);;
+
 at_exit Gc.full_major;;
 print_string "Bye!\n"

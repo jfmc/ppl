@@ -32,6 +32,10 @@ type generator_system = linear_generator list
 
 type congruence_system = linear_congruence list
 
+(* Declared temporarily in this way to avoid name clashes. *)
+type relation_symbol = Less_Than_RS | Less_Than_Or_Equal_RS | Equal_RS
+                       | Greater_Than_RS | Greater_Than_Or_Equal_RS
+
 type polyhedron
 
 external ppl_new_C_Polyhedron_from_space_dimension:
@@ -185,6 +189,26 @@ external ppl_Polyhedron_affine_preimage:
   polyhedron -> int -> linear_expression -> Z.t -> unit
       = "ppl_Polyhedron_affine_preimage"
 
+external ppl_Polyhedron_generalized_affine_image:
+  polyhedron -> linear_expression -> relation_symbol -> linear_expression
+    -> unit
+      = "ppl_Polyhedron_generalized_affine_image1"
+
+external ppl_Polyhedron_generalized_affine_image:
+  polyhedron -> int -> relation_symbol -> linear_expression
+      -> Z.t -> unit
+      = "ppl_Polyhedron_generalized_affine_image2"
+
+external ppl_Polyhedron_generalized_affine_preimage:
+  polyhedron -> int -> relation_symbol -> linear_expression
+      -> Z.t -> unit
+      = "ppl_Polyhedron_generalized_affine_preimage2"
+
+external ppl_Polyhedron_generalized_affine_preimage:
+  polyhedron -> linear_expression -> relation_symbol -> linear_expression
+    -> unit
+      = "ppl_Polyhedron_generalized_affine_preimage1"
+
 external ppl_Polyhedron_bounded_affine_image:
   polyhedron -> int -> linear_expression -> linear_expression
       -> Z.t -> unit = "ppl_Polyhedron_bounded_affine_image"
@@ -197,13 +221,28 @@ external ppl_Polyhedron_BHRZ03_widening_assign:
  polyhedron -> polyhedron -> int -> int
      = "ppl_Polyhedron_BHRZ03_widening_assign"
 
-external limited_BHRZ03_extrapolation_assign:
+external ppl_Polyhedron_limited_BHRZ03_extrapolation_assign:
  polyhedron -> polyhedron -> constraint_system -> int -> int
-     = "limited_BHRZ03_extrapolation_assign"
+     = "ppl_Polyhedron_limited_BHRZ03_extrapolation_assign"
 
-external bounded_BHRZ03_extrapolation_assign:
+external ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign:
  polyhedron -> polyhedron -> constraint_system -> int -> int
-     = "bounded_BHRZ03_extrapolation_assign"
+     = "ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign"
+
+external ppl_Polyhedron_limited_H79_extrapolation_assign:
+ polyhedron -> polyhedron -> constraint_system -> int -> int
+     = "ppl_Polyhedron_limited_H79_extrapolation_assign"
+
+external ppl_Polyhedron_bounded_H79_extrapolation_assign:
+ polyhedron -> polyhedron -> constraint_system -> int -> int
+     = "ppl_Polyhedron_bounded_H79_extrapolation_assign"
+
+external ppl_Polyhedron_H79_widening_assign:
+ polyhedron -> polyhedron -> int -> int
+     = "ppl_Polyhedron_H79_widening_assign"
+
+external ppl_Polyhedron_OK:
+ polyhedron -> bool = "ppl_Polyhedron_OK"
 
 external test_linear_expression:
   linear_expression -> unit = "test_linear_expression"

@@ -143,6 +143,31 @@ build_ppl_Linear_Expression(value e) {
   }
 }
 
+Relation_Symbol
+build_ppl_relsym(value caml_relsym) {
+  switch (Int_val(caml_relsym)) {
+  case 0: {
+    return LESS_THAN;
+  }
+  case 1: {
+    return LESS_THAN_OR_EQUAL;
+  }
+ case 2: {
+   return EQUAL;
+ }
+  case 3: {
+    return GREATER_THAN_OR_EQUAL;
+  }
+  case 4: {
+    return GREATER_THAN;
+  }
+ default:
+    ;
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL Caml interface internal error");
+  }
+
 Constraint
 build_ppl_Constraint(value c) {
   value e1 = Field(c, 0);
@@ -977,13 +1002,71 @@ ppl_Polyhedron_affine_preimage(value ph, value var, value expr,
 			       value coeff) try {
   CAMLparam4(ph, var, expr, coeff);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  build_ppl_Linear_Expression(expr);
   pph.affine_preimage(build_ppl_Variable(var),
 		      build_ppl_Linear_Expression(expr),
 		      build_ppl_Coefficient(coeff));
   CAMLreturn0;
-			       }
+ }
 CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_generalized_affine_image1(value ph, value le1, value rel_sym,
+					 value le2) try {
+  CAMLparam4(ph, le1, rel_sym, le2);
+  build_ppl_relsym(rel_sym);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  pph.generalized_affine_image(build_ppl_Linear_Expression(le1),
+			       build_ppl_relsym(rel_sym),
+			       build_ppl_Linear_Expression(le2));
+  CAMLreturn0;
+ }
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_generalized_affine_image2(value ph, value int_val,
+					 value rel_sym,
+					 value le, value caml_coeff) try {
+  CAMLparam5(ph, int_val, rel_sym, le, caml_coeff);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  pph.generalized_affine_image(build_ppl_Variable(int_val),
+			       build_ppl_relsym(rel_sym),
+			       build_ppl_Linear_Expression(le),
+			       build_ppl_Coefficient(caml_coeff));
+  CAMLreturn0;
+ }
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_generalized_affine_preimage1(value ph, value le1, value rel_sym,
+					    value le2) try {
+  CAMLparam4(ph, le1, rel_sym, le2);
+  build_ppl_relsym(rel_sym);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  pph.generalized_affine_preimage(build_ppl_Linear_Expression(le1),
+				  build_ppl_relsym(rel_sym),
+				  build_ppl_Linear_Expression(le2));
+  CAMLreturn0;
+ }
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_generalized_affine_preimage2(value ph, value int_val,
+					 value rel_sym,
+					 value le, value caml_coeff) try {
+  CAMLparam5(ph, int_val, rel_sym, le, caml_coeff);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  pph.generalized_affine_preimage(build_ppl_Variable(int_val),
+			       build_ppl_relsym(rel_sym),
+			       build_ppl_Linear_Expression(le),
+			       build_ppl_Coefficient(caml_coeff));
+  CAMLreturn0;
+ }
+CATCH_ALL
+
 
 extern "C"
 CAMLprim value ppl_Polyhedron_BHRZ03_widening_assign(value ph1, value ph2,
@@ -999,7 +1082,9 @@ CAMLprim value ppl_Polyhedron_BHRZ03_widening_assign(value ph1, value ph2,
 CATCH_ALL
 
 extern "C"
-CAMLprim value limited_BHRZ03_extrapolation_assign(value ph1, value ph2,
+CAMLprim value
+ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(value ph1,
+						   value ph2,
 						   value caml_cs,
 						   value integer) try {
   CAMLparam4(ph1, ph2, caml_cs, integer);
@@ -1014,9 +1099,10 @@ CAMLprim value limited_BHRZ03_extrapolation_assign(value ph1, value ph2,
 CATCH_ALL
 
 extern "C"
-CAMLprim value bounded_BHRZ03_extrapolation_assign(value ph1, value ph2,
-						   value caml_cs,
-						   value integer) try {
+CAMLprim value
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(value ph1, value ph2,
+				    value caml_cs,
+				    value integer) try {
   CAMLparam4(ph1, ph2, caml_cs, integer);
   Polyhedron& pph1 = *p_Polyhedron_val(ph1);
   Polyhedron& pph2 = *p_Polyhedron_val(ph2);
@@ -1027,6 +1113,61 @@ CAMLprim value bounded_BHRZ03_extrapolation_assign(value ph1, value ph2,
   CAMLreturn(Int_val(cpp_int));
 }
 CATCH_ALL
+
+extern "C"
+CAMLprim value ppl_Polyhedron_H79_widening_assign(value ph1, value ph2,
+						  value integer) try {
+  CAMLparam3(ph1, ph2, integer);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  // FIXME: ensure that the input parameter is positive.
+  unsigned int cpp_int = Val_int(integer);
+  pph1.H79_widening_assign(pph2, &cpp_int);
+  CAMLreturn(Int_val(cpp_int));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_limited_H79_extrapolation_assign(value ph1, value ph2,
+						value caml_cs,
+						value integer) try {
+  CAMLparam4(ph1, ph2, caml_cs, integer);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
+  // FIXME: ensure that the input parameter is positive.
+  unsigned int cpp_int = Val_int(integer);
+  pph1.limited_H79_extrapolation_assign(pph2, ppl_cs, &cpp_int);
+  CAMLreturn(Int_val(cpp_int));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_bounded_H79_extrapolation_assign(value ph1, value ph2,
+						value caml_cs,
+						value integer) try {
+  CAMLparam4(ph1, ph2, caml_cs, integer);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
+  // FIXME: ensure that the input parameter is positive.
+  unsigned int cpp_int = Val_int(integer);
+  pph1.bounded_H79_extrapolation_assign(pph2, ppl_cs, &cpp_int);
+  CAMLreturn(Int_val(cpp_int));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_OK(value ph) try {
+  CAMLparam1(ph);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  CAMLreturn(Bool_val(pph.OK()));
+}
+CATCH_ALL
+
 
 extern "C"
 CAMLprim void
