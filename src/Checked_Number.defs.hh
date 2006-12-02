@@ -207,6 +207,16 @@ struct Native_Checked_To_Wrapper<Checked_Number<T, P> > {
   }
 };
 
+template <typename T>
+struct Is_Checked : public False { };
+
+template <typename T, typename P>
+struct Is_Checked<Checked_Number<T, P> > : public True { };
+
+template <typename T>
+struct Is_Native_Or_Checked : Bool<(Is_Native<T>::value
+				    || Is_Checked<T>::value)> { };
+
 //! A wrapper for numeric types implementing a given policy.
 /*! \ingroup PPL_CXX_interface
   The wrapper and related functions implement an interface which is common
@@ -418,11 +428,10 @@ public:
   Checked_Number& operator+=(const T& y);
 
   //! Add and assign operator.
-  template <typename From, typename From_Policy>
-  Checked_Number& operator+=(const Checked_Number<From, From_Policy>& y);
-
   template <typename From>
-  Checked_Number& operator+=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>&>::type
+  operator+=(const From& y);
 
   //! Subtract and assign operator.
   template <typename From_Policy>
@@ -432,12 +441,10 @@ public:
   Checked_Number& operator-=(const T& y);
 
   //! Subtract and assign operator.
-  template <typename From, typename From_Policy>
-  Checked_Number& operator-=(const Checked_Number<From, From_Policy>& y);
-
-  //! Subtract and assign operator.
   template <typename From>
-  Checked_Number& operator-=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>&>::type
+  operator-=(const From& y);
 
   //! Multiply and assign operator.
   template <typename From_Policy>
@@ -445,14 +452,12 @@ public:
 
   //! Multiply and assign operator.
   Checked_Number& operator*=(const T& y);
-  template <typename From, typename From_Policy>
-
-  //! Multiply and assign operator.
-  Checked_Number& operator*=(const Checked_Number<From, From_Policy>& y);
 
   //! Multiply and assign operator.
   template <typename From>
-  Checked_Number& operator*=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>&>::type
+  operator*=(const From& y);
 
   //! Divide and assign operator.
   template <typename From_Policy>
@@ -462,12 +467,10 @@ public:
   Checked_Number& operator/=(const T& y);
 
   //! Divide and assign operator.
-  template <typename From, typename From_Policy>
-  Checked_Number& operator/=(const Checked_Number<From, From_Policy>& y);
-
-  //! Divide and assign operator.
   template <typename From>
-  Checked_Number& operator/=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>&>::type
+  operator/=(const From& y);
 
   //! Compute remainder and assign operator.
   template <typename From_Policy>
@@ -477,12 +480,10 @@ public:
   Checked_Number& operator%=(const T& y);
 
   //! Compute remainder and assign operator.
-  template <typename From, typename From_Policy>
-  Checked_Number& operator%=(const Checked_Number<From, From_Policy>& y);
-
-  //! Compute remainder and assign operator.
   template <typename From>
-  Checked_Number& operator%=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>& >::type
+  operator%=(const From& y);
 
   //@} // Assignment Operators
 
@@ -511,16 +512,6 @@ private:
 
 template <typename T, typename P>
 struct Slow_Copy<Checked_Number<T, P> > : public Bool<Slow_Copy<T>::value> {};
-
-template <typename T>
-struct Is_Checked : public False { };
-
-template <typename T, typename P>
-struct Is_Checked<Checked_Number<T, P> > : public True { };
-
-template <typename T>
-struct Is_Native_Or_Checked : Bool<(Is_Native<T>::value
-				    || Is_Checked<T>::value)> { };
 
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_not_a_number(const T& x);

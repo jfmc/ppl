@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Checked_Number_inlines_hh
 #define PPL_Checked_Number_inlines_hh 1
 
-#include "meta_programming.hh"
 #include <stdexcept>
 #include <sstream>
 
@@ -588,17 +587,8 @@ Checked_Number<T, Policy>::f(const T& y) { \
   return *this; \
 } \
 template <typename T, typename Policy> \
-template <typename From, typename From_Policy> \
-inline Checked_Number<T, Policy>& \
-Checked_Number<T, Policy>::f(const Checked_Number<From, From_Policy>& y) { \
-  Checked_Number<T, Policy> cy(y); \
-  Policy::handle_result(fun(*this, *this, cy, \
-			    Policy::ROUND_DEFAULT_OPERATOR)); \
-  return *this; \
-} \
-template <typename T, typename Policy> \
 template <typename From> \
-inline Checked_Number<T, Policy>& \
+inline typename Enable_If<Is_Native_Or_Checked<From>::value, Checked_Number<T, Policy>& >::type \
 Checked_Number<T, Policy>::f(const From& y) { \
   Checked_Number<T, Policy> cy(y); \
   Policy::handle_result(fun(*this, *this, cy, \
@@ -623,14 +613,14 @@ f(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   return r; \
 } \
 template <typename Type, typename T, typename Policy>	\
-inline Checked_Number<T, Policy> \
+inline typename Enable_If<Is_Native<Type>::value, Checked_Number<T, Policy> >::type \
 f(const Type& x, const Checked_Number<T, Policy>& y) { \
   Checked_Number<T, Policy> r(x); \
   Policy::handle_result(fun(r, r, y, Policy::ROUND_DEFAULT_OPERATOR)); \
   return r; \
 } \
 template <typename T, typename Policy, typename Type>	\
-inline Checked_Number<T, Policy> \
+inline typename Enable_If<Is_Native<Type>::value, Checked_Number<T, Policy> >::type \
 f(const Checked_Number<T, Policy>& x, const Type& y) { \
   Checked_Number<T, Policy> r(y); \
   Policy::handle_result(fun(r, x, r, Policy::ROUND_DEFAULT_OPERATOR)); \
