@@ -219,7 +219,7 @@ struct Is_Same_Or_Derived {
 template <bool, typename T>
 struct Enable_If { };
 
-template <class T>
+template <typename T>
 struct Enable_If<true, T> {
   typedef T type;
 };
