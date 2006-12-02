@@ -935,7 +935,7 @@ ppl_Polyhedron_bounded_affine_image(value ph, value var, value lb_expr,
 				    value ub_expr, value coeff) try {
   CAMLparam5(ph, var, lb_expr, ub_expr, coeff);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  pph.bounded_affine_image(build_ppl_Variable(var),
+  pph.bounded_affine_image(build_ppl_Variable(Val_int(var)),
 			   build_ppl_Linear_Expression(lb_expr),
  			   build_ppl_Linear_Expression(ub_expr),
  			   build_ppl_Coefficient(coeff));
@@ -949,7 +949,7 @@ ppl_Polyhedron_bounded_affine_preimage(value ph, value var, value lb_expr,
 				       value ub_expr, value coeff) try {
   CAMLparam5(ph, var, lb_expr, ub_expr, coeff);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  pph.bounded_affine_preimage(build_ppl_Variable(var),
+  pph.bounded_affine_preimage(build_ppl_Variable(Val_int(var)),
 			      build_ppl_Linear_Expression(lb_expr),
 			      build_ppl_Linear_Expression(ub_expr),
 			      build_ppl_Coefficient(coeff));
