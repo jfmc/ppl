@@ -23,7 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Interval_defs_hh
 #define PPL_Interval_defs_hh 1
 
-#include "globals.types.hh"
+#include "globals.defs.hh"
 #include "meta_programming.hh"
 #include "Interval.types.hh"
 #include "Interval_Info.defs.hh"
@@ -545,7 +545,11 @@ check_empty_result(const Interval<Boundary, Info>& x, I_Result r) {
 }
 
 template <typename T1, typename T2>
-inline typename Enable_If<Is_Same_Or_Derived<Interval_, T1>::value || Is_Same_Or_Derived<Interval_, T2>::value, bool>::type
+inline typename Enable_If<((Is_Same_Or_Derived<Interval_, T1>::value
+			    && Is_Native_Or_Checked<T2>::value)
+			   || (Is_Same_Or_Derived<Interval_, T2>::value
+			       && Is_Native_Or_Checked<T1>::value)),
+			  bool>::type
 operator==(const T1& x, const T2& y) {
   if (check_empty_arg(x))
     return check_empty_arg(y);
@@ -557,7 +561,11 @@ operator==(const T1& x, const T2& y) {
 }
 
 template <typename T1, typename T2>
-inline typename Enable_If<Is_Same_Or_Derived<Interval_, T1>::value || Is_Same_Or_Derived<Interval_, T2>::value, bool>::type
+inline typename Enable_If<((Is_Same_Or_Derived<Interval_, T1>::value
+			    && Is_Native_Or_Checked<T2>::value)
+			   || (Is_Same_Or_Derived<Interval_, T2>::value
+			       && Is_Native_Or_Checked<T1>::value)),
+			  bool>::type
 operator!=(const T1& x, const T2& y) {
   return !(x == y);
 }
@@ -827,8 +835,6 @@ sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   return combine(rl, ru);
 }
 
-static const signed char C_ZERO = 0;
-
 /**
 +---+-----------+-----------------+-----------+
 | * |    -y-    |       -y+       |    +y+    |
@@ -852,8 +858,8 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   mul_restriction(to_info, x, y);
   Result rl, ru;
   DIRTY_TEMP(To_Boundary, to_lower);
-  if (ge(LOWER, lower(x), info(x), LOWER, C_ZERO, SCALAR_INFO)) {
-    if (ge(LOWER, lower(y), info(y), LOWER, C_ZERO, SCALAR_INFO)) {
+  if (ge(LOWER, lower(x), info(x), LOWER, Constant<0>::value, SCALAR_INFO)) {
+    if (ge(LOWER, lower(y), info(y), LOWER, Constant<0>::value, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
 		      LOWER, lower(x), info(x),
 		      LOWER, lower(y), info(y));
@@ -861,7 +867,7 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		      UPPER, upper(x), info(x),
 		      UPPER, upper(y), info(y));
     }
-    else if (le(UPPER, upper(y), info(y), UPPER, C_ZERO, SCALAR_INFO)) {
+    else if (le(UPPER, upper(y), info(y), UPPER, Constant<0>::value, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
 		      UPPER, upper(x), info(x),
 		      LOWER, lower(y), info(y));
@@ -878,8 +884,8 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		      UPPER, upper(y), info(y));
     }
   }
-  else if (le(UPPER, upper(x), info(x), UPPER, C_ZERO, SCALAR_INFO)) {
-    if (ge(LOWER, lower(y), info(y), LOWER, C_ZERO, SCALAR_INFO)) {
+  else if (le(UPPER, upper(x), info(x), UPPER, Constant<0>::value, SCALAR_INFO)) {
+    if (ge(LOWER, lower(y), info(y), LOWER, Constant<0>::value, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
 		      LOWER, lower(x), info(x),
 		      UPPER, upper(y), info(y));
@@ -887,7 +893,7 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		      UPPER, upper(x), info(x),
 		      LOWER, lower(y), info(y));
     }
-    else if (le(UPPER, upper(y), info(y), UPPER, C_ZERO, SCALAR_INFO)) {
+    else if (le(UPPER, upper(y), info(y), UPPER, Constant<0>::value, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
 		      UPPER, upper(x), info(x),
 		      UPPER, upper(y), info(y));
@@ -905,7 +911,7 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
     }
   }
   else {
-    if (ge(LOWER, lower(y), info(y), LOWER, C_ZERO, SCALAR_INFO)) {
+    if (ge(LOWER, lower(y), info(y), LOWER, Constant<0>::value, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
 		      LOWER, lower(x), info(x),
 		      UPPER, upper(y), info(y));
@@ -913,7 +919,7 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		      UPPER, upper(x), info(x),
 		      UPPER, upper(y), info(y));
     }
-    else if (le(UPPER, upper(y), info(y), UPPER, C_ZERO, SCALAR_INFO)) {
+    else if (le(UPPER, upper(y), info(y), UPPER, Constant<0>::value, SCALAR_INFO)) {
       rl = mul_assign(LOWER, to_lower, to_info,
 		      UPPER, upper(x), info(x),
 		      LOWER, lower(y), info(y));
@@ -976,8 +982,8 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   div_restriction(to_info, x, y);
   Result rl, ru;
   DIRTY_TEMP(To_Boundary, to_lower);
-  if (ge(LOWER, lower(y), info(y), LOWER, C_ZERO, SCALAR_INFO)) {
-    if (ge(LOWER, lower(x), info(x), LOWER, C_ZERO, SCALAR_INFO)) {
+  if (ge(LOWER, lower(y), info(y), LOWER, Constant<0>::value, SCALAR_INFO)) {
+    if (ge(LOWER, lower(x), info(x), LOWER, Constant<0>::value, SCALAR_INFO)) {
       rl = div_assign(LOWER, to_lower, to_info,
 		      LOWER, lower(x), info(x),
 		      UPPER, upper(y), info(y));
@@ -985,7 +991,7 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		      UPPER, upper(x), info(x),
 		      LOWER, lower(y), info(y));
     }
-    else if (le(UPPER, upper(x), info(x), UPPER, C_ZERO, SCALAR_INFO)) {
+    else if (le(UPPER, upper(x), info(x), UPPER, Constant<0>::value, SCALAR_INFO)) {
       rl = div_assign(LOWER, to_lower, to_info,
 		      LOWER, lower(x), info(x),
 		      LOWER, lower(y), info(y));
@@ -1002,8 +1008,8 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		      LOWER, lower(y), info(y));
     }
   }
-  else if (le(UPPER, upper(y), info(y), UPPER, C_ZERO, SCALAR_INFO)) {
-    if (ge(LOWER, lower(x), info(x), LOWER, C_ZERO, SCALAR_INFO)) {
+  else if (le(UPPER, upper(y), info(y), UPPER, Constant<0>::value, SCALAR_INFO)) {
+    if (ge(LOWER, lower(x), info(x), LOWER, Constant<0>::value, SCALAR_INFO)) {
       rl = div_assign(LOWER, to_lower, to_info,
 		      UPPER, upper(x), info(x),
 		      UPPER, upper(y), info(y));
@@ -1011,7 +1017,7 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		      LOWER, lower(x), info(x),
 		      LOWER, lower(y), info(y));
     }
-    else if (le(UPPER, upper(x), info(x), UPPER, C_ZERO, SCALAR_INFO)) {
+    else if (le(UPPER, upper(x), info(x), UPPER, Constant<0>::value, SCALAR_INFO)) {
       rl = div_assign(LOWER, to_lower, to_info,
 		      UPPER, upper(x), info(x),
 		      LOWER, lower(y), info(y));
