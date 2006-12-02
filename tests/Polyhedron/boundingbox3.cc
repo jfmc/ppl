@@ -116,10 +116,10 @@ test03() {
   ph.add_constraint(y > 0);
   ph.add_constraint(y < 0);
 
-  Bounding_Box pbox(2);
+  Rational_Box pbox(2);
   ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
-  Bounding_Box nbox(2);
+  Rational_Box nbox(2);
   ph.shrink_bounding_box(nbox);
 
   NNC_Polyhedron known_ph(2, EMPTY);
@@ -136,7 +136,7 @@ test03() {
 // An unbounded box in 4D but bounded in 2D with strict inequalities.
 bool
 test04() {
-  Bounding_Box box(4);
+  Rational_Box box(4);
   box.raise_lower_bound(1, false, -2, 3);
   box.lower_upper_bound(1, true, 4, 1);
   box.raise_lower_bound(2, false, -10, 1);
@@ -166,7 +166,7 @@ test04() {
 // causing upper and lower bounds of the box to be open.
 bool
 test05() {
-  Bounding_Box box(4);
+  Rational_Box box(4);
   box.raise_lower_bound(1, true, -2, 3);
   box.lower_upper_bound(1, false, 4, 1);
   box.raise_lower_bound(2, false, -10, 1);
@@ -192,7 +192,7 @@ test05() {
 // An empty box in 2D.
 bool
 test06() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.set_empty();
 
   NNC_Polyhedron ph(box, From_Bounding_Box());

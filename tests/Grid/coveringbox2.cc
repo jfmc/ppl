@@ -35,7 +35,7 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point(B));
@@ -44,7 +44,7 @@ test01() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 3, 1);
   known_box.raise_lower_bound(1, true, 1, 1);
@@ -57,7 +57,7 @@ test01() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -74,7 +74,7 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point(  A +   B));
@@ -83,7 +83,7 @@ test02() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 1, 1);
   known_box.raise_lower_bound(1, true, 0, 1);
@@ -96,7 +96,7 @@ test02() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -113,7 +113,7 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point());
@@ -122,7 +122,7 @@ test03() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 2);
   known_box.lower_upper_bound(0, true, 1, 2);
   known_box.raise_lower_bound(1, true, 0, 2);
@@ -135,7 +135,7 @@ test03() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -156,7 +156,7 @@ test04() {
   Variable B(1);
   Variable C(2);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point());
@@ -165,7 +165,7 @@ test04() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 0, 1);
   known_box.raise_lower_bound(1, true, 0, 1);
@@ -180,7 +180,7 @@ test04() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -194,13 +194,13 @@ test04() {
 // Universe grid.
 bool
 test05() {
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM);
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 0, 1);
   known_box.raise_lower_bound(1, true, 0, 1);
@@ -215,7 +215,7 @@ test05() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -233,14 +233,14 @@ test06() {
   Variable B(1);
   Variable C(2);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point(16*A + 6*B - 6*C, 7));
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 16, 7);
   known_box.raise_lower_bound(1, true, 6, 7);
   known_box.raise_lower_bound(2, true, -6, 7);
@@ -252,7 +252,7 @@ test06() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -266,7 +266,7 @@ test06() {
 // Empty grid.
 bool
 test07() {
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
   // Set bounds, to check that get_covering_box clears them.
   box1.raise_lower_bound(0, true, 16, 7);
   box1.raise_lower_bound(1, true, 6, 7);
@@ -276,7 +276,7 @@ test07() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.set_empty();
 
   bool ok = (box1 == known_box);
@@ -287,7 +287,7 @@ test07() {
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
 
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     // Set bounds, to check that get_covering_box clears them.
     box2.raise_lower_bound(0, true, 1, 3);
     box2.raise_lower_bound(1, true, 2, 2);
@@ -310,7 +310,7 @@ test08() {
   Variable B(1);
   Variable C(2);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point());
@@ -321,7 +321,7 @@ test08() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 1, 1);
   known_box.raise_lower_bound(1, true, 0, 1);
@@ -336,7 +336,7 @@ test08() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -354,7 +354,7 @@ test09() {
   Variable B(1);
   Variable C(2);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM);
   gr.add_congruence((A + 2*B %= 0) / 2);
@@ -362,7 +362,7 @@ test09() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 5, 1);
   known_box.raise_lower_bound(1, true, 0, 1);
@@ -377,7 +377,7 @@ test09() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -395,7 +395,7 @@ test10() {
   Variable B(1);
   Variable C(2);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point());
@@ -405,7 +405,7 @@ test10() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 1, 1);
   known_box.raise_lower_bound(1, true, 0, 1);
@@ -420,7 +420,7 @@ test10() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -444,7 +444,7 @@ test11() {
   Variable C(2);
   Variable D(3);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point());
@@ -455,7 +455,7 @@ test11() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 1, 1);
   known_box.raise_lower_bound(1, true, 0, 1);
@@ -473,7 +473,7 @@ test11() {
   if (ok) {
 
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -493,7 +493,7 @@ test12() {
   Variable C(2);
   Variable D(3);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point());
@@ -503,7 +503,7 @@ test12() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 1, 1);
   known_box.raise_lower_bound(1, true, 0, 1);
@@ -519,7 +519,7 @@ test12() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -535,7 +535,7 @@ bool
 test13() {
   Variable A(0);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
   // Set bounds, to check that get_covering_box clears them.
   box1.raise_lower_bound(0, true, 1, 7);
   box1.raise_lower_bound(1, true, 2, 7);
@@ -547,7 +547,7 @@ test13() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.set_empty();
 
   bool ok = (box1 == known_box);
@@ -558,7 +558,7 @@ test13() {
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
 
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     // Set bounds, to check that get_covering_box clears them.
     box2.raise_lower_bound(0, true, 3, 7);
     box2.raise_lower_bound(1, true, 1, 7);
@@ -583,14 +583,14 @@ test14() {
   Variable B(1);
   Variable C(2);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point(16*A + 14*B - 7*C, 7));
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 16, 7);
   known_box.raise_lower_bound(1, true, 2, 1);
   known_box.raise_lower_bound(2, true, -1, 1);
@@ -603,7 +603,7 @@ test14() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -623,7 +623,7 @@ test15() {
   Variable B(1);
   Variable C(2);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point());
@@ -633,7 +633,7 @@ test15() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 1, 6);
   known_box.raise_lower_bound(1, true, 0, 1);
@@ -649,7 +649,7 @@ test15() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -666,13 +666,13 @@ test15() {
 // Zero dimension empty grid.
 bool
 test16() {
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.set_empty();
 
   bool ok = (box1 == known_box);
@@ -682,7 +682,7 @@ test16() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -696,13 +696,13 @@ test16() {
 // Zero dimension universe grid.
 bool
 test17() {
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM);
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
 
   bool ok = (box1 == known_box);
 
@@ -711,7 +711,7 @@ test17() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -732,7 +732,7 @@ test18() {
   Variable A(0);
   Variable B(1);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point(B));
@@ -741,7 +741,7 @@ test18() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 3, 1);
   known_box.raise_lower_bound(1, true, 1, 1);
@@ -754,7 +754,7 @@ test18() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);
@@ -775,7 +775,7 @@ test19() {
   Variable B(1);
   Variable C(2);
 
-  Bounding_Box box1(SPACE_DIM);
+  Rational_Box box1(SPACE_DIM);
 
   Grid gr(SPACE_DIM, EMPTY);
   gr.add_grid_generator(grid_point(A));
@@ -786,7 +786,7 @@ test19() {
 
   gr.get_covering_box(box1);
 
-  Bounding_Box known_box(SPACE_DIM);
+  Rational_Box known_box(SPACE_DIM);
   known_box.raise_lower_bound(0, true, 1, 1);
   known_box.lower_upper_bound(0, true, 4, 1);
   known_box.raise_lower_bound(1, true, 0, 1);
@@ -802,7 +802,7 @@ test19() {
 
   if (ok) {
     Grid tem_gr(box1, From_Covering_Box());
-    Bounding_Box box2(SPACE_DIM);
+    Rational_Box box2(SPACE_DIM);
     tem_gr.get_covering_box(box2);
 
     ok = (box2 == known_box);

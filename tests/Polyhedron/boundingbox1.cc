@@ -369,7 +369,7 @@ test11() {
 // The box is the xy plane.
 bool
 test12() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
 
   C_Polyhedron ph(box, From_Bounding_Box());
 
@@ -384,7 +384,7 @@ test12() {
 // This box is the closed +ve quadrant.
 bool
 test13() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.raise_lower_bound(1, true, 0, 1);
 
@@ -406,7 +406,7 @@ test13() {
 // A bounded box in 2D.
 bool
 test14() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, -2, 3);
   box.lower_upper_bound(0, true, 4, 1);
   box.raise_lower_bound(1, true, -10, 1);
@@ -432,7 +432,7 @@ test14() {
 // An unbounded closed box in 4D but bounded in 2D.
 bool
 test15() {
-  Bounding_Box box(4);
+  Rational_Box box(4);
   box.raise_lower_bound(1, true, -2, 3);
   box.lower_upper_bound(1, true, 4, 1);
   box.raise_lower_bound(2, true, -10, 1);
@@ -461,7 +461,7 @@ test15() {
 // A zero-dimensional box.
 bool
 test16() {
-  Bounding_Box box(0);
+  Rational_Box box(0);
 
   C_Polyhedron ph(box, From_Bounding_Box());
 
@@ -476,7 +476,7 @@ test16() {
 // An empty closed box in 2D.
 bool
 test17() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.set_empty();
 
   C_Polyhedron ph(box, From_Bounding_Box());
@@ -493,7 +493,7 @@ test17() {
 // A single point.
 bool
 test18() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 2, 1);
   box.lower_upper_bound(0, true, 2, 1);
   box.raise_lower_bound(1, true, 4, 1);
@@ -517,7 +517,7 @@ test18() {
 // A closed unit square.
 bool
 test19() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.lower_upper_bound(0, true, 1, 1);
   box.raise_lower_bound(1, true, 0, 1);
@@ -546,7 +546,7 @@ test19() {
 // from the corresponding box.
 bool
 test20() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.lower_upper_bound(0, true, 1, 2);
   box.raise_lower_bound(1, true, 0, 1);
