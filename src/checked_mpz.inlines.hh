@@ -252,6 +252,27 @@ assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
 SPECIALIZE_ASSIGN(assign_mpz_float, mpz_class, float)
 SPECIALIZE_ASSIGN(assign_mpz_float, mpz_class, double)
 
+template <typename To_Policy, typename From_Policy, typename From>
+inline Result
+assign_mpz_long_double(mpz_class& to, const From& from, Rounding_Dir dir) {
+  if (is_nan<From_Policy>(from))
+    return set_special<To_Policy>(to, VC_NAN);
+  else if (is_minf<From_Policy>(from))
+    return assign<To_Policy, void>(to, MINUS_INFINITY, dir);
+  else if (is_pinf<From_Policy>(from))
+    return assign<To_Policy, void>(to, PLUS_INFINITY, dir);
+  // FIXME: this is an incredibly inefficient implementation!
+  std::stringstream ss;
+  output<From_Policy>(ss, from, Numeric_Format(), dir);
+  mpq_class tmp;
+  // Result r = input_mpq(tmp, static_cast<std::istream&>(ss));
+  Result r = input_mpq(tmp, ss);
+  assert(r == V_EQ);
+  return assign<To_Policy, From_Policy>(to, tmp, dir);
+}
+
+SPECIALIZE_ASSIGN(assign_mpz_long_double, mpz_class, long double)
+
 template <typename To_Policy, typename From_Policy>
 inline Result
 assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {

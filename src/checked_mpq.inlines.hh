@@ -398,11 +398,16 @@ template <typename Policy>
 inline Result
 input_mpq(mpq_class& to, std::istream& is, Rounding_Dir dir) {
   Result r = input_mpq(to, is);
-  if (r == VC_MINUS_INFINITY)
+  switch (classify(r)) {
+  case VC_MINUS_INFINITY:
     return assign<Policy, void>(to, MINUS_INFINITY, dir);
-  if (r == VC_PLUS_INFINITY)
+  case VC_MINUS_INFINITY:
     return assign<Policy, void>(to, PLUS_INFINITY, dir);
-  return set_special<Policy>(to, r);
+  case VC_NAN:
+    return set_special<Policy>(to, r);
+  default:
+    return r;
+  }
 }
 
 SPECIALIZE_INPUT(input_mpq, mpq_class)
@@ -430,8 +435,8 @@ assign_mpq_long_double(mpq_class& to, const From& from, Rounding_Dir dir) {
     return assign<To_Policy, void>(to, PLUS_INFINITY, dir);
   // FIXME: this is an incredibly inefficient implementation!
   std::stringstream ss;
-  output_float<From_Policy, long double>(ss, from, Numeric_Format(), dir);
-  return input_mpq<To_Policy>(to, ss, dir);
+  output<From_Policy>(ss, from, Numeric_Format(), dir);
+  return input_mpq(to, ss);
 }
 
 SPECIALIZE_ASSIGN(assign_mpq_long_double, mpq_class, long double)
