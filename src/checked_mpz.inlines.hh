@@ -23,6 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_mpz_inlines_hh
 #define PPL_checked_mpz_inlines_hh 1
 
+#include <sstream>
+
 namespace Parma_Polyhedra_Library {
 
 template <> struct Checked_Supports<mpz_class> : public True { };
