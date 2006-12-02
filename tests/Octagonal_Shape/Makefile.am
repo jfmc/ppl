@@ -95,7 +95,8 @@ TESTS = run_tests.stamp
 
 run_tests.stamp: run_tests
 	+$(srcdir)/run_tests
-	echo timestamp > run_tests.stamp
+	echo "true" >run_tests.stamp
+	chmod +x run_tests.stamp
 
 XFAIL_TESTS =
 
