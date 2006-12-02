@@ -520,15 +520,15 @@ inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 			   && (!Int<T1>::value || !Int<T2>::value)), bool>::type
 lt(const T1& x, const T2& y) {
   DIRTY_TEMP(T1, tmp);
-  Result r = assign_r(tmp, y, static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));
+  Result r = assign_r(tmp, y, ROUND_UP);
   switch (r) {
   case V_POS_OVERFLOW:
   case VC_PLUS_INFINITY:
     return true;
   case V_EQ:
-    return x < tmp;
   case V_LT:
-    return x <= tmp;
+  case V_LE:
+    return x < tmp;
   default:
     return false;
   }
@@ -540,15 +540,15 @@ inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 			   && (!Int<T1>::value || !Int<T2>::value)), bool>::type
 le(const T1& x, const T2& y) {
   DIRTY_TEMP(T1, tmp);
-  Result r = assign_r(tmp, y, ROUND_UP);
+  Result r = assign_r(tmp, y, static_cast<Rounding_Dir>(ROUND_UP | ROUND_FPU_CHECK_INEXACT));
   switch (r) {
   case V_POS_OVERFLOW:
   case VC_PLUS_INFINITY:
     return true;
   case V_EQ:
-  case V_LT:
-  case V_LE:
     return x <= tmp;
+  case V_LT:
+    return x < tmp;
   default:
     return false;
   }
