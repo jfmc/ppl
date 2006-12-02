@@ -119,15 +119,62 @@ template <typename T>
 struct Is_Same<T, T> : public True {
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  A class holding a constant called <CODE>value</CODE> that evaluates
+  to <CODE>true</CODE> if and only if \p Base is the same type as \p Derived
+  or \p Derived is a class derived from \p Base.
+
+  \note
+  Care must be taken to use this predicate with template classes.
+  Suppose we have
+  \code
+  template <typename T> struct B;
+  template <typename T> struct D : public B<T>;
+  \endcode
+  Of course, we cannot test if, for some type variable <CODE>U</CODE>,
+  we have <CODE>Is_Same_Or_Derived<B<U>, Type>::value == true</CODE>.
+  But we can do as follows:
+  \code
+  struct B_Base {
+  };
+
+  template <typename T> struct B : public B_Base;
+  \endcode
+  This enables us to enquire
+  <CODE>Is_Same_Or_Derived<B_Base, Type>::value</CODE>.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename Base, typename Derived>
 struct Is_Same_Or_Derived {
-  struct any {
-    template <typename T> any(T&);
+  //! A class that is constructible from just anything.
+  struct Any {
+    //! The universal constructor.
+    template <typename T>
+    Any(const T&);
   };
+
+  //! Overloading with \p Base.
   static char func(const Base&);
-  static double func(const any);
-  static Derived& obj();
-  enum { value = (sizeof(func(obj())) == sizeof(char))};
+
+  //! Overloading with \p Any.
+  static double func(Any);
+
+  //! A function obtaining a const reference to a \p Derived object.
+  static const Derived& derived_object();
+
+  COMPILE_TIME_CHECK(sizeof(char) != sizeof(double),
+		     "architecture with sizeof(char) == sizeof(double) (!?)");
+
+  enum {
+    /*!
+      Assuming <CODE>sizeof(char) != sizeof(double)</CODE>, the C++
+      overload resolution mechanism guarantees that \p value evaluates
+      to <CODE>true</CODE> if and only if \p Base is the same type
+      as \p Derived or \p Derived is a class derived from \p Base.
+    */
+    value = (sizeof(func(derived_object())) == sizeof(char))
+  };
 };
 
 
