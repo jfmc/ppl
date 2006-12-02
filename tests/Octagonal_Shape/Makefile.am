@@ -89,7 +89,7 @@ check_PROGRAMS = \
 # This will be overridden by the `run_tests' script.
 TEST_CPPFLAGS=-DOCTAGONAL_SHAPE_INSTANCE=mpq_class
 
-dist_check_SCRIPTS = run_tests
+dist_check_SCRIPTS = +run_tests
 
 TESTS = $(dist_check_SCRIPTS)
 
