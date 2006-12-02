@@ -64,17 +64,60 @@ struct Compile_Time_Check<true> { };
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define COMPILE_TIME_CHECK(e, msg) COMPILE_TIME_CHECK_AUX(e, __LINE__)
 
-template <bool n>
-struct Bool { enum { value = n }; };
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  A class holding a constant called <CODE>value</CODE> that evaluates
+  to \p b.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <bool b>
+struct Bool {
+  enum {
+    value = b
+  };
+};
 
-struct True : public Bool<true> { };
-struct False : public Bool<false> { };
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  A class holding a constant called <CODE>value</CODE> that evaluates
+  to <CODE>true</CODE>.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+struct True : public Bool<true> {
+};
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  A class holding a constant called <CODE>value</CODE> that evaluates
+  to <CODE>false</CODE>.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+struct False : public Bool<false> {
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  A class holding a constant called <CODE>value</CODE> that evaluates
+  to <CODE>true</CODE> if and only if \p T1 is the same type as \p T2.
+
+  This is the non-specialized case, in which \p T1 and \p T2 can be different.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T1, typename T2>
-struct Is_Same : public False { };
+struct Is_Same : public False {
+};
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  A class holding a constant called <CODE>value</CODE> that evaluates
+  to <CODE>true</CODE> if and only if \p T1 is the same type as \p T2.
+
+  This is the specialization in which \p T1 and \p T2 are equal.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
-struct Is_Same<T, T> : public True { };
+struct Is_Same<T, T> : public True {
+};
 
 template <typename Base, typename Derived>
 struct Is_Same_Or_Derived {
@@ -84,7 +127,7 @@ struct Is_Same_Or_Derived {
   static char func(const Base&);
   static double func(const any);
   static Derived& obj();
-  enum { value = sizeof(func(obj())) == sizeof(char)};
+  enum { value = (sizeof(func(obj())) == sizeof(char))};
 };
 
 

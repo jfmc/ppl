@@ -35,7 +35,11 @@ template <typename T, typename Enable = void>
 struct Has_Assign_Or_Swap : public False { };
 
 template <typename T>
-struct Has_Assign_Or_Swap<T, typename Enable_If_Is<void (T::*)(T& x), &T::assign_or_swap>::type> : public True { };
+struct Has_Assign_Or_Swap<T,
+			  typename Enable_If_Is<void (T::*)(T& x),
+						&T::assign_or_swap>::type>
+  : public True {
+};
 
 
 template <typename T>
@@ -45,13 +49,15 @@ assign_or_swap(T& to, T& from) {
 }
 
 template <typename T>
-inline typename Enable_If<!Has_Assign_Or_Swap<T>::value && !Slow_Copy<T>::value, void>::type
+inline typename Enable_If<!Has_Assign_Or_Swap<T>::value
+                          && !Slow_Copy<T>::value, void>::type
 assign_or_swap(T& to, T& from) {
   to = from;
 }
 
 template <typename T>
-inline typename Enable_If<!Has_Assign_Or_Swap<T>::value && Slow_Copy<T>::value, void>::type
+inline typename Enable_If<!Has_Assign_Or_Swap<T>::value
+                          && Slow_Copy<T>::value, void>::type
 assign_or_swap(T& to, T& from) {
   std::swap(to, from);
 }
@@ -64,6 +70,7 @@ private:
   static Temp_Item* list;
   Temp_Item(const Temp_Item&);
   Temp_Item& operator=(const Temp_Item&);
+
 public:
   Temp_Item()
     : item_() {
