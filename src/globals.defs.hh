@@ -329,77 +329,40 @@ struct Fit<T, v, typename Enable_If<C_Integer<T>::value>::type>  {
   };
 };
 
+template <typename T, long long v>
+struct TConstant {
+  static const T value = v;
+};
+
+
+template <typename T, long long v>
+const T TConstant<T, v>::value;
+
+template <typename T, long long v, bool prefer_signed = true,
+	  typename Enable = void>
+struct Constant_ : public TConstant<T, v> {
+};
+
 template <typename T, long long v, bool prefer_signed>
-struct Smaller_Fit {
-  enum {
-    value = (Fit<T, v>::value
-	     && !Fit<typename C_Integer<T>::smaller_signed_type, v>::value
-	     && !Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value
-	     && ((bool)C_Integer<T>::is_signed == (bool)prefer_signed
-		 || !Fit<typename C_Integer<T>::other_type, v>::value))
-  };
+struct Constant_<T, v, prefer_signed,
+		 typename Enable_If<(Fit<typename C_Integer<T>::smaller_signed_type, v>::value
+				     && (prefer_signed ||
+					 !Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value))>::type>
+  : public Constant_<typename C_Integer<T>::smaller_signed_type, v, prefer_signed> {
 };
 
-
-template <long long v, bool prefer_signed = true, typename Enable = void>
-struct Constant {
-  static const long long value = v;
+template <typename T, long long v, bool prefer_signed>
+struct Constant_<T, v, prefer_signed,
+		 typename Enable_If<(Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value
+				     && (!prefer_signed ||
+					 !Fit<typename C_Integer<T>::smaller_signed_type, v>::value))>::type>
+  : public Constant_<typename C_Integer<T>::smaller_unsigned_type, v, prefer_signed> {
 };
 
-template <long long v, bool prefer_signed>
-struct Constant<v, prefer_signed,
-		typename Enable_If<(Smaller_Fit<signed char, v,
-				             prefer_signed>::value)>::type> {
-  static const signed char value = v;
+template <long long v, bool prefer_signed = true>
+struct Constant : public Constant_<long long, v, prefer_signed> {
 };
 
-template <long long v, bool prefer_signed>
-struct Constant<v, prefer_signed,
-		typename Enable_If<(Smaller_Fit<unsigned char, v,
-				             prefer_signed>::value)>::type> {
-  static const unsigned char value = v;
-};
-
-template <long long v, bool prefer_signed>
-struct Constant<v, prefer_signed,
-		typename Enable_If<(Smaller_Fit<signed short, v,
-				             prefer_signed>::value)>::type> {
-  static const signed short value = v;
-};
-
-template <long long v, bool prefer_signed>
-struct Constant<v, prefer_signed,
-		typename Enable_If<(Smaller_Fit<unsigned short, v,
-				             prefer_signed>::value)>::type> {
-  static const unsigned short value = v;
-};
-template <long long v, bool prefer_signed>
-struct Constant<v, prefer_signed,
-		typename Enable_If<(Smaller_Fit<signed int, v,
-				             prefer_signed>::value)>::type> {
-  static const signed int value = v;
-};
-
-template <long long v, bool prefer_signed>
-struct Constant<v, prefer_signed,
-		typename Enable_If<(Smaller_Fit<unsigned int, v,
-				             prefer_signed>::value)>::type> {
-  static const unsigned int value = v;
-};
-
-template <long long v, bool prefer_signed>
-struct Constant<v, prefer_signed,
-		typename Enable_If<(Smaller_Fit<signed long, v,
-				             prefer_signed>::value)>::type> {
-  static const signed long value = v;
-};
-
-template <long long v, bool prefer_signed>
-struct Constant<v, prefer_signed,
-		typename Enable_If<(Smaller_Fit<unsigned long, v,
-				             prefer_signed>::value)>::type> {
-  static const unsigned long value = v;
-};
 
 } // namespace Parma_Polyhedra_Library
 
