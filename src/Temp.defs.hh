@@ -38,9 +38,9 @@ swap(T&, T&) {
   // A swap specialization for this type is missing and needed.
 }
 
-template <typename T, T>
+template <typename Type, Type, typename T = void>
 struct Enable_If_Is {
-  typedef void type;
+  typedef T type;
 };
 
 template <typename T, typename Enable = void>
