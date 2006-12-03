@@ -160,9 +160,9 @@ template <typename T, typename Enable = void>
 struct Dirty_Temp;
 
 template <typename T>
-struct Dirty_Temp<T, typename Enable_If<Slow_Copy<T>::value, void>::type> : public Temp_List<T> { };
+struct Dirty_Temp<T, typename Enable_If<Slow_Copy<T>::value>::type> : public Temp_List<T> { };
 template <typename T>
-struct Dirty_Temp<T, typename Enable_If<!Slow_Copy<T>::value, void>::type> : public Temp_Local<T> { };
+struct Dirty_Temp<T, typename Enable_If<!Slow_Copy<T>::value>::type> : public Temp_Local<T> { };
 
 
 #define DIRTY_TEMP(T, id)						\

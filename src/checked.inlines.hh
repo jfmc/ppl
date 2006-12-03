@@ -406,7 +406,7 @@ struct Safe_Int_Comparison : public False {
 };
 
 template <typename T1, typename T2>
-struct Safe_Int_Comparison<T1, T2, typename Enable_If<(C_Integer<T1>::value && C_Integer<T2>::value), void>::type>
+struct Safe_Int_Comparison<T1, T2, typename Enable_If<(C_Integer<T1>::value && C_Integer<T2>::value)>::type>
   : public Bool<(C_Integer<T1>::is_signed
 		 ? (C_Integer<T2>::is_signed
 		    || sizeof(T2) < sizeof(T1)

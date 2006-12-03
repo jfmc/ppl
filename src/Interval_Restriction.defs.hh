@@ -35,7 +35,7 @@ struct Boundary_Value {
 };
 
 template <typename T>
-struct Boundary_Value<T, typename Enable_If<Is_Same_Or_Derived<Interval_, T>::value, void>::type > {
+struct Boundary_Value<T, typename Enable_If<Is_Same_Or_Derived<Interval_, T>::value>::type > {
   typedef typename T::boundary_type type;
 };
 
@@ -181,7 +181,7 @@ template <typename From, typename Base, typename Enable = void>
 struct Restriction_Integer;
 
 template <typename From, typename Base>
-struct Restriction_Integer<From, Base, typename Enable_If<Is_Native_Or_Checked<From>::value, void>::type> {
+struct Restriction_Integer<From, Base, typename Enable_If<Is_Native_Or_Checked<From>::value>::type> {
   typedef Simple_Restriction_Integer type;
   static type get(const From& x) {
     return Simple_Restriction_Integer(is_integer(x));
@@ -189,7 +189,7 @@ struct Restriction_Integer<From, Base, typename Enable_If<Is_Native_Or_Checked<F
 };
 
 template <typename From, typename Base>
-struct Restriction_Integer<From, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_None_Base, typename From::info_type>::value, void>::type> {
+struct Restriction_Integer<From, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_None_Base, typename From::info_type>::value>::type> {
   typedef Simple_Restriction_Integer type;
   static type get(const From& x) {
     return Simple_Restriction_Integer(x.is_singleton() && is_integer(x.lower()));
@@ -197,7 +197,7 @@ struct Restriction_Integer<From, Base, typename Enable_If<Is_Same_Or_Derived<Int
 };
 
 template <typename From, typename Base>
-struct Restriction_Integer<From, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_Integer_Base, typename From::info_type>::value, void>::type> {
+struct Restriction_Integer<From, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_Integer_Base, typename From::info_type>::value>::type> {
   typedef Interval_Restriction_Integer<Base> type;
   static const type& get(const From& x) {
     return x.info();
@@ -363,7 +363,7 @@ struct Slow_Copy<Interval_Restriction_Integer_Modulo<T, Base> > : public Bool<Sl
 
 
 template <typename From, typename Base>
-struct Restriction_Integer<From, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_Integer_Modulo_Base, typename From::info_type>::value, void>::type> {
+struct Restriction_Integer<From, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_Integer_Modulo_Base, typename From::info_type>::value>::type> {
   typedef Simple_Restriction_Integer type;
   static type get(const From& x) {
     return Simple_Restriction_Integer(x.info().divisor != 0);
@@ -385,7 +385,7 @@ template <typename From, typename T, typename Base, typename Enable = void>
 struct Restriction_Integer_Modulo;
 
 template <typename From, typename T, typename Base>
-struct Restriction_Integer_Modulo<From, T, Base, typename Enable_If<Is_Native_Or_Checked<From>::value, void>::type> {
+struct Restriction_Integer_Modulo<From, T, Base, typename Enable_If<Is_Native_Or_Checked<From>::value>::type> {
   typedef Simple_Restriction_Integer_Modulo<T> type;
   static const type& get(const From& x) {
     static const type integer(0, 1);
@@ -398,7 +398,7 @@ struct Restriction_Integer_Modulo<From, T, Base, typename Enable_If<Is_Native_Or
 };
 
 template <typename From, typename T, typename Base>
-struct Restriction_Integer_Modulo<From, T, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_None_Base, typename From::info_type>::value, void>::type> {
+struct Restriction_Integer_Modulo<From, T, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_None_Base, typename From::info_type>::value>::type> {
   typedef Simple_Restriction_Integer_Modulo<T> type;
   static const type& get(const From& x) {
     static const type integer(0, 1);
@@ -411,7 +411,7 @@ struct Restriction_Integer_Modulo<From, T, Base, typename Enable_If<Is_Same_Or_D
 };
 
 template <typename From, typename T, typename Base>
-struct Restriction_Integer_Modulo<From, T, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_Integer_Base, typename From::info_type>::value, void>::type> {
+struct Restriction_Integer_Modulo<From, T, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_Integer_Base, typename From::info_type>::value>::type> {
   typedef Simple_Restriction_Integer_Modulo<T> type;
   static const type& get(const From& x) {
     static const type integer(0, 1);
@@ -424,7 +424,7 @@ struct Restriction_Integer_Modulo<From, T, Base, typename Enable_If<Is_Same_Or_D
 };
 
 template <typename From, typename T, typename Base>
-struct Restriction_Integer_Modulo<From, T, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_Integer_Modulo_Base, typename From::info_type>::value, void>::type> {
+struct Restriction_Integer_Modulo<From, T, Base, typename Enable_If<Is_Same_Or_Derived<Interval_Restriction_Integer_Modulo_Base, typename From::info_type>::value>::type> {
   typedef Interval_Restriction_Integer_Modulo<T, Base> type;
   static const type& get(const From& x) {
     return x.info();

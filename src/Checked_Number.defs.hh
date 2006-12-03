@@ -173,7 +173,7 @@ template <typename T, typename Enable = void>
 struct Native_Checked_From_Wrapper;
 
 template <typename T>
-struct Native_Checked_From_Wrapper<T, typename Enable_If<Is_Native<T>::value, void>::type> {
+struct Native_Checked_From_Wrapper<T, typename Enable_If<Is_Native<T>::value>::type> {
   typedef Checked_Number_Transparent_Policy<T> Policy;
   static const T& raw_value(const T& v) {
     return v;
@@ -192,7 +192,7 @@ template <typename T, typename Enable = void>
 struct Native_Checked_To_Wrapper;
 
 template <typename T>
-struct Native_Checked_To_Wrapper<T, typename Enable_If<Is_Native<T>::value, void>::type> {
+struct Native_Checked_To_Wrapper<T, typename Enable_If<Is_Native<T>::value>::type> {
   typedef Default_To_Policy Policy;
   static T& raw_value(T& v) {
     return v;
