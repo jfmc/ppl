@@ -901,6 +901,24 @@ ppl_Polyhedron_ppl_Polyhedron_remove_higher_space_dimensions(value ph,
 CATCH_ALL
 
 extern "C"
+void
+ppl_Polyhedron_ppl_Polyhedron_expand_space_dimension(value ph,
+						     value var_index,
+						     value m) try {
+  CAMLparam3(ph, var_index, m);
+  int c_var_index = Int_val(var_index);
+  if (c_var_index < 0)
+    abort();
+  int c_m = Int_val(m);
+  if (c_m < 0)
+    abort();
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  pph.expand_space_dimension(build_ppl_Variable(c_var_index), c_m);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
 CAMLprim value
 ppl_Polyhedron_constraints(value ph) try {
   CAMLparam1(ph);
@@ -1158,6 +1176,47 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign(value ph1, value ph2,
   CAMLreturn(Int_val(cpp_int));
 }
 CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_maximize(value ph, value caml_le) try {
+  CAMLparam2(ph, caml_le);
+  Coefficient num, den = 0;
+  bool is_supremum = false;
+  Generator g = point();
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  bool ppl_return_value = pph.maximize(build_ppl_Linear_Expression(caml_le),
+				      num, den, is_supremum, g);
+  value caml_return_value = caml_alloc(5,0);
+  Field(caml_return_value, 0) = Val_bool(ppl_return_value);
+  Field(caml_return_value, 1) = build_caml_coefficient(num);
+  Field(caml_return_value, 2) = build_caml_coefficient(den);
+  Field(caml_return_value, 3) = Val_bool(is_supremum);
+  Field(caml_return_value, 4) = build_caml_generator(g);
+  CAMLreturn(caml_return_value);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_minimize(value ph, value caml_le) try {
+  CAMLparam2(ph, caml_le);
+  Coefficient num, den = 0;
+  bool is_supremum = false;
+  Generator g = point();
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  bool ppl_return_value = pph.minimize(build_ppl_Linear_Expression(caml_le),
+				      num, den, is_supremum, g);
+  value caml_return_value = caml_alloc(5,0);
+  Field(caml_return_value, 0) = Val_bool(ppl_return_value);
+  Field(caml_return_value, 1) = build_caml_coefficient(num);
+  Field(caml_return_value, 2) = build_caml_coefficient(den);
+  Field(caml_return_value, 3) = Val_bool(is_supremum);
+  Field(caml_return_value, 4) = build_caml_generator(g);
+  CAMLreturn(caml_return_value);
+}
+CATCH_ALL
+
 
 extern "C"
 CAMLprim value

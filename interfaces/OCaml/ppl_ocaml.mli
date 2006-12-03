@@ -160,6 +160,9 @@ external ppl_Polyhedron_add_space_dimensions_and_project:
 external ppl_Polyhedron_remove_higher_space_dimensions:
   polyhedron -> int -> unit = "ppl_Polyhedron_remove_higher_space_dimensions"
 
+external ppl_Polyhedron_remove_higher_space_dimensions:
+  polyhedron -> int -> unit = "ppl_Polyhedron_remove_higher_space_dimensions"
+
 external ppl_Polyhedron_space_dimension:
   polyhedron -> int = "ppl_Polyhedron_space_dimension"
 
@@ -243,6 +246,15 @@ external ppl_Polyhedron_H79_widening_assign:
 
 external ppl_Polyhedron_OK:
  polyhedron -> bool = "ppl_Polyhedron_OK"
+
+external ppl_Polyhedron_maximize:
+ polyhedron -> linear_expression -> bool * Z.t * Z.t * bool * linear_generator
+     = "ppl_Polyhedron_maximize"
+
+external ppl_Polyhedron_minimize:
+ polyhedron -> linear_expression -> bool * Z.t * Z.t * bool * linear_generator
+     = "ppl_Polyhedron_minimize"
+
 
 external test_linear_expression:
   linear_expression -> unit = "test_linear_expression"

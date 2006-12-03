@@ -57,7 +57,7 @@ let rec print_constraints = function
       print_linear_expression le2;
 ;;
 
-let rec print_generators = function
+let rec print_generator = function
     Ray (le1) ->
       print_string "Ray: ";
       print_linear_expression le1;
@@ -205,6 +205,16 @@ let b = ppl_Polyhedron_H79_widening_assign ph ph 10;;
 let b = ppl_Polyhedron_OK ph;;
 ppl_Polyhedron_generalized_affine_preimage ph e1 Equal_RS e1;;
 ppl_Polyhedron_generalized_affine_image ph 1 Equal_RS e2 (Z.from_int 10);;
-
+let is_bounded, num, den, is_supremum, gen = ppl_Polyhedron_minimize ph e3;;
+print_newline();
+print_string "Testing minimization";
+print_newline();
+print_string "Value ";
+print_int(Z.to_int num);
+print_string "/";
+print_int(Z.to_int den);
+print_string (string_of_bool is_bounded);
+print_string (string_of_bool is_supremum);
+print_generator(gen);
 at_exit Gc.full_major;;
 print_string "Bye!\n"
