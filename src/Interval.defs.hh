@@ -303,8 +303,9 @@ public:
 #endif
       }
     }
-    else if (is_minus_infinity(LOWER, lower(), info())
-	     || is_plus_infinity(LOWER, lower(), info())) {
+    else if (!Info::may_contain_infinity
+	     && (is_minus_infinity(LOWER, lower(), info())
+		 || is_plus_infinity(LOWER, lower(), info()))) {
 #ifndef NDEBUG
       std::cerr << "The lower boundary is unexpectedly infinity." << std::endl;
 #endif
@@ -335,8 +336,9 @@ public:
 #endif
       }
     }
-    else if (is_minus_infinity(UPPER, upper(), info())
-	     || is_plus_infinity(UPPER, upper(), info())) {
+    else if (!Info::may_contain_infinity
+	     && (is_minus_infinity(UPPER, upper(), info())
+		 || is_plus_infinity(UPPER, upper(), info()))) {
 #ifndef NDEBUG
       std::cerr << "The upper boundary is unexpectedly infinity." << std::endl;
 #endif
