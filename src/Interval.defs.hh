@@ -62,7 +62,6 @@ template <typename Boundary, typename Info>
 class Interval : public Interval_, private Info {
 private:
   COMPILE_TIME_CHECK(!Info::store_special || !std::numeric_limits<Boundary>::has_infinity, "store_special is senseless when boundary type may contains infinity");
-  COMPILE_TIME_CHECK(!Info::infinity_is_open || !Info::store_open, "infinity_is_open is senseless when boundary may be marked as open");
   Info& w_info() const {
     return const_cast<Interval&>(*this);
   }
@@ -451,7 +450,6 @@ struct Scalar_As_Interval_Policy {
   const_bool_nodef(may_contain_infinity, true);
   const_bool_nodef(check_empty_result, false);
   const_bool_nodef(check_inexact, false);
-  const_bool_nodef(infinity_is_open, false);
 };
 
 typedef Interval_Info_Null<Scalar_As_Interval_Policy> Scalar_As_Interval_Info;

@@ -42,7 +42,6 @@ struct Rational_Box_Interval_Info_Policy {
   const_bool_nodef(may_contain_infinity, false);
   const_bool_nodef(check_empty_result, false);
   const_bool_nodef(check_inexact, false);
-  const_bool_nodef(infinity_is_open, true);
 };
 
 typedef Interval_Restriction_None<Interval_Info_Bitset<unsigned int, Rational_Box_Interval_Info_Policy> > Rational_Box_Interval_Info;

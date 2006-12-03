@@ -108,7 +108,7 @@ special_is_plus_infinity(Boundary_Type type, const T&, const Info&) {
 template <typename T, typename Info>
 inline bool
 special_is_open(Boundary_Type, const T&, const Info&) {
-  return Info::infinity_is_open;
+  return !Info::may_contain_infinity;
 }
 
 template <typename T, typename Info>
@@ -117,7 +117,7 @@ normal_is_open(Boundary_Type type, const T& x, const Info& info) {
   if (Info::store_open)
     return info.get_boundary_property(type, OPEN);
   else
-    return !Info::store_special && Info::infinity_is_open
+    return !Info::store_special && !Info::may_contain_infinity
       && normal_is_boundary_infinity(type, x, info);
 }
 
@@ -127,7 +127,7 @@ is_open(Boundary_Type type, const T& x, const Info& info) {
   if (Info::store_open)
     return info.get_boundary_property(type, OPEN);
   else
-    return Info::infinity_is_open
+    return !Info::may_contain_infinity
       && is_boundary_infinity(type, x, info);
 }
 
@@ -138,12 +138,16 @@ set_unbounded(Boundary_Type type, T& x, Info& info) {
 		     || std::numeric_limits<T>::is_bounded
 		     || std::numeric_limits<T>::has_infinity,
 		     "Unbounded is not representable");
+  Result r;
   if (Info::store_special)
-    return special_set_unbounded(type, x, info);
+    r = special_set_unbounded(type, x, info);
   else if (type == LOWER)
-    return assign_r(x, MINUS_INFINITY, ROUND_UP);
+    r = assign_r(x, MINUS_INFINITY, ROUND_UP);
   else
-    return assign_r(x, PLUS_INFINITY, ROUND_DOWN);
+    r = assign_r(x, PLUS_INFINITY, ROUND_DOWN);
+  if (r == V_EQ && !Info::may_contain_infinity)
+    info.set_boundary_property(type, OPEN);
+  return r;
 }
 
 template <typename T, typename Info>
@@ -154,17 +158,17 @@ set_minus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
 		     || std::numeric_limits<T>::has_infinity,
 		     "Minus infinity is not representable");
   */
-  if (type == UPPER)
-    assert(open == false);
-  else if (Info::infinity_is_open)
-    assert(open == true);
+  if (open)
+    assert(type == LOWER);
+  else
+    assert(Info::may_contain_infinity);
   Result r;
   if (Info::store_special)
     r = special_set_minus_infinity(type, x, info);
   else
     r = assign_r(x, MINUS_INFINITY, round_dir_check(type));
   assert(r != VC_MINUS_INFINITY);
-  if (!Info::infinity_is_open && (open || r != V_EQ))
+  if (open || r != V_EQ)
     info.set_boundary_property(type, OPEN);
   return r;
 }
@@ -177,17 +181,17 @@ set_plus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
 		     || std::numeric_limits<T>::has_infinity,
 		     "Minus infinity is not representable");
   */
-  if (type == LOWER)
-    assert(open == false);
-  else if (Info::infinity_is_open)
-    assert(open == true);
+  if (open)
+    assert(type == UPPER);
+  else
+    assert(Info::may_contain_infinity);
   Result r;
   if (Info::store_special)
     r = special_set_plus_infinity(type, x, info);
   else
     r = assign_r(x, PLUS_INFINITY, round_dir_check(type));
   assert(r != VC_MINUS_INFINITY);
-  if (!Info::infinity_is_open && (open || r != V_EQ))
+  if (open || r != V_EQ)
     info.set_boundary_property(type, OPEN);
   return r;
 }
@@ -281,7 +285,7 @@ infinity_is_open(Boundary_Type type, const Info& info) {
   if (Info::store_open)
     return info.get_boundary_property(type, OPEN);
   else
-    return Info::infinity_is_open;
+    return !Info::may_contain_infinity;
 }
 
 template <typename T, typename Info>

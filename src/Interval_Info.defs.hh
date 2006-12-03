@@ -103,7 +103,6 @@ public:
   const_bool_nodef(may_contain_infinity, Policy::may_contain_infinity);
   const_bool_nodef(check_empty_result, Policy::check_empty_result);
   const_bool_nodef(check_inexact, Policy::check_inexact);
-  const_bool_nodef(infinity_is_open, Policy::infinity_is_open);
   const_bool_nodef(store_special, false);
   const_bool_nodef(store_open, false);
   const_bool_nodef(cache_normalized, false);
@@ -140,7 +139,6 @@ public:
   const_bool_nodef(may_contain_infinity, Policy::may_contain_infinity);
   const_bool_nodef(check_empty_result, Policy::check_empty_result);
   const_bool_nodef(check_inexact, Policy::check_inexact);
-  const_bool_nodef(infinity_is_open, Policy::infinity_is_open);
   const_bool_nodef(store_special, Policy::store_special);
   const_bool_nodef(store_open, Policy::store_open);
   const_bool_nodef(cache_normalized, Policy::cache_normalized);
