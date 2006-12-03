@@ -845,6 +845,7 @@ not_a_number() {
 template <typename T, typename Policy>
 inline void
 swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y) {
+  using std::swap;
   swap(x.raw_value(), y.raw_value());
 }
 

@@ -71,7 +71,7 @@ template <typename T>
 inline typename Enable_If<!Has_Assign_Or_Swap<T>::value
                           && Slow_Copy<T>::value, void>::type
 assign_or_swap(T& to, T& from) {
-  using namespace std;
+  using std::swap;
   swap(to, from);
 }
 
