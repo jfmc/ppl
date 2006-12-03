@@ -31,9 +31,8 @@ template <typename T> struct Slow_Copy : public False { };
 
 }
 
-#if 0
+#if 1
 // FIXME: to uncomment as soon as possible
-namespace std {
 using namespace Parma_Polyhedra_Library;
 template <typename T>
 inline typename Enable_If<Slow_Copy<T>::value, void>::type
@@ -42,7 +41,6 @@ swap(T&, T&) {
   // This is intentionally written to generate ambiguous overloading
   // or compile time check error.
   // A swap specialization for this type is missing and needed.
-}
 }
 #endif
 
@@ -81,7 +79,8 @@ template <typename T>
 inline typename Enable_If<!Has_Assign_Or_Swap<T>::value
                           && Slow_Copy<T>::value, void>::type
 assign_or_swap(T& to, T& from) {
-  std::swap(to, from);
+  using namespace std;
+  swap(to, from);
 }
 
 template <typename T>

@@ -995,18 +995,12 @@ template <typename T>
 T
 not_a_number();
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-using namespace Parma_Polyhedra_Library;
-
 //! Swaps \p *this with \p y.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 void swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y);
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #include "Checked_Number.inlines.hh"
 #include "checked_numeric_limits.hh"

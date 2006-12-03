@@ -28,8 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gmpxx.h>
 #include <limits>
 
-namespace std {
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specialization of <CODE>std::swap</CODE>.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -39,6 +37,8 @@ void swap(mpz_class& x, mpz_class& y);
 //! Specialization of <CODE>std::swap</CODE>.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void swap(mpq_class& x, mpq_class& y);
+
+namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specialization of std::numeric_limits.

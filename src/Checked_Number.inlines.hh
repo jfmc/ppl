@@ -841,19 +841,13 @@ not_a_number() {
   return NOT_A_NUMBER;
 }
 
-} // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-using namespace Parma_Polyhedra_Library;
-
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline void
 swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y) {
-  std::swap(x.raw_value(), y.raw_value());
+  swap(x.raw_value(), y.raw_value());
 }
 
-}
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Checked_Number_inlines_hh)
