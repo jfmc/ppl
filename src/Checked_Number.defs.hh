@@ -995,7 +995,7 @@ template <typename T>
 T
 not_a_number();
 
-//! Swaps \p *this with \p y.
+//! Swaps \p x with \p y.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 void swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y);

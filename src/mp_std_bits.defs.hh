@@ -29,12 +29,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <limits>
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specialization of <CODE>std::swap</CODE>.
+//! Swaps \p x with \p y.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void swap(mpz_class& x, mpz_class& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specialization of <CODE>std::swap</CODE>.
+//! Swaps \p x with \p y.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void swap(mpq_class& x, mpq_class& y);
 

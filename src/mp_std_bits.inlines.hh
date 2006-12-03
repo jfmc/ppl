@@ -25,8 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_mp_std_bits_inlines_hh
 #define PPL_mp_std_bits_inlines_hh 1
 
-namespace std {
-
 inline void
 swap(mpz_class& x, mpz_class& y) {
   mpz_swap(x.get_mpz_t(), y.get_mpz_t());
@@ -36,7 +34,5 @@ inline void
 swap(mpq_class& x, mpq_class& y) {
   mpq_swap(x.get_mpq_t(), y.get_mpq_t());
 }
-
-} // namespace std
 
 #endif // !defined(PPL_mp_std_bits_inlines_hh)
