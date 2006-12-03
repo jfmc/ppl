@@ -29,11 +29,6 @@ namespace Parma_Polyhedra_Library {
 
 template <typename T> struct Slow_Copy : public False { };
 
-}
-
-#if 1
-// FIXME: to uncomment as soon as possible
-using namespace Parma_Polyhedra_Library;
 template <typename T>
 inline typename Enable_If<Slow_Copy<T>::value, void>::type
 swap(T&, T&) {
@@ -42,9 +37,6 @@ swap(T&, T&) {
   // or compile time check error.
   // A swap specialization for this type is missing and needed.
 }
-#endif
-
-namespace Parma_Polyhedra_Library {
 
 template <typename T, T>
 struct Enable_If_Is {
