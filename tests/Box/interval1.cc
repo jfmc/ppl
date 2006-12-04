@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_test.hh"
 #include <complex>
 #include <cmath>
+#include <cstdio>
 
 namespace {
 
@@ -68,7 +69,7 @@ polynomial_evaluate(const std::vector<Float_Interval>& P,
 		    const std::complex<Float_Interval>& x,
 		    std::complex<Float_Interval>& P_x) {
   // Note: the coefficient of the leading term is implicitly 1.
-  P_x = std::complex<Float_Interval>(Float_Interval(1.0));
+  P_x = std::complex<Float_Interval>(Float_Interval(1.0), Float_Interval(0.0));
   for (int i = P.size(); i >= 1; --i)
     P_x += P_x*x + P[i-1];
 }
@@ -93,7 +94,7 @@ solve(const std::vector<Float_Interval>& P,
     for (int i = 0; i < degree; ++i) {
       std::complex<Float_Interval> P_x_i;
       polynomial_evaluate(P, x[i], P_x_i);
-      std::complex<Float_Interval> d(1.0);
+      std::complex<Float_Interval> d(Float_Interval(1.0), Float_Interval(0,0));
       for (int j = 0; j < degree; ++j)
 	if (i != j)
 	  d *= (x[i] - x[j]);
