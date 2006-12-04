@@ -125,6 +125,11 @@ public:
   Interval() {
   }
 
+  Interval(const Boundary& n)
+    : lower_(n), upper_(n) {
+    // FIXME: what if n is special?
+  }
+
   //! Swaps \p *this with \p y.
   void swap(Interval& y);
 
