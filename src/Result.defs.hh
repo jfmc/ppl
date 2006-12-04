@@ -29,8 +29,6 @@ namespace Parma_Polyhedra_Library {
 /*! \ingroup PPL_CXX_interface */
 enum Result {
 
-  VC_MASK = 48,
-
   //! \hideinitializer Ordinary result class.
   VC_NORMAL = 0,
 
@@ -104,7 +102,9 @@ enum Result {
   V_UNKNOWN_POS_OVERFLOW = 59,
 
   //! \hideinitializer Unordered comparison.
-  V_UNORD_COMP = 60
+  V_UNORD_COMP = 60,
+
+  VC_MASK = 48
 };
 
 //! Extracts the class part of \p r (normal, minus/plus infinity or nan).

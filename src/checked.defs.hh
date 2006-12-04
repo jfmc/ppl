@@ -34,25 +34,6 @@ namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A policy checking for overflows.
-/*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-struct Check_Overflow_Policy {
-  const_bool_nodef(check_overflow, true);
-  const_bool_nodef(check_inf_add_inf, false);
-  const_bool_nodef(check_inf_sub_inf, false);
-  const_bool_nodef(check_inf_mul_zero, false);
-  const_bool_nodef(check_div_zero, false);
-  const_bool_nodef(check_inf_div_inf, false);
-  const_bool_nodef(check_inf_mod, false);
-  const_bool_nodef(check_sqrt_neg, false);
-  const_bool_nodef(has_nan, false);
-  const_bool_nodef(has_infinity, false);
-  const_bool_nodef(convertible, true);
-  const_bool_nodef(fpu_check_inexact, true);
-  const_bool_nodef(check_nan_result, true);
-};
 
 // It is a pity that function partial specialization is not permitted
 // by C++.  To (partly) overcome this limitation, we use class

@@ -167,7 +167,26 @@ struct WRD_Extended_Number_Policy {
   static void handle_result(Result r);
 };
 
-typedef Checked::Check_Overflow_Policy Default_To_Policy;
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A policy checking for overflows.
+/*! \ingroup PPL_CXX_interface */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T>
+struct Check_Overflow_Policy {
+  const_bool_nodef(check_overflow, true);
+  const_bool_nodef(check_inf_add_inf, false);
+  const_bool_nodef(check_inf_sub_inf, false);
+  const_bool_nodef(check_inf_mul_zero, false);
+  const_bool_nodef(check_div_zero, false);
+  const_bool_nodef(check_inf_div_inf, false);
+  const_bool_nodef(check_inf_mod, false);
+  const_bool_nodef(check_sqrt_neg, false);
+  const_bool_nodef(has_nan, std::numeric_limits<T>::has_quiet_NaN);
+  const_bool_nodef(has_infinity, std::numeric_limits<T>::has_infinity);
+  const_bool_nodef(convertible, true);
+  const_bool_nodef(fpu_check_inexact, true);
+  const_bool_nodef(check_nan_result, true);
+};
 
 template <typename T, typename Enable = void>
 struct Native_Checked_From_Wrapper;
@@ -193,7 +212,7 @@ struct Native_Checked_To_Wrapper;
 
 template <typename T>
 struct Native_Checked_To_Wrapper<T, typename Enable_If<Is_Native<T>::value>::type> {
-  typedef Default_To_Policy Policy;
+  typedef Check_Overflow_Policy<T> Policy;
   static T& raw_value(T& v) {
     return v;
   }
