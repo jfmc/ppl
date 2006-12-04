@@ -32,15 +32,16 @@ test01() {
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
 
-  print_constraints(ph, "*** ph ***");
-  nbox.print(nout, "*** nbox ***");
-
   BBox known_box(ph.space_dimension());
   known_box.set_empty();
 
+  bool ok (nbox == known_box);
+
+  print_constraints(ph, "*** ph ***");
+  nbox.print(nout, "*** nbox ***");
   known_box.print(nout, "*** known_box ***");
 
-  return nbox == known_box;
+  return ok;
 }
 
 } // namespace
