@@ -26,21 +26,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace {
 
 struct Floating_Point_Real_Interval_Info_Policy {
-  const_bool(store_unbounded, false);
-  const_bool(store_open, true);
-  const_bool(store_integer, false);
-  const_bool(store_empty, true);
-  const_bool(store_singleton, false);
-  const_int(next_bit, 0);
-  const_bool(handle_infinity, false);
-  const_bool(check_inexact, false);
-  const_bool(check_empty_args, false);
-  const_bool(check_integer_args, false);
+  const_bool_nodef(store_special, false);
+  const_bool_nodef(store_open, true);
+  const_bool_nodef(cache_empty, true);
+  const_bool_nodef(cache_singleton, true);
+  const_bool_nodef(cache_normalized, false);
+  const_int_nodef(next_bit, 0);
+  const_bool_nodef(may_be_empty, false);
+  const_bool_nodef(may_contain_infinity, false);
+  const_bool_nodef(check_empty_result, false);
+  const_bool_nodef(check_inexact, false);
 };
 
-typedef Interval_Info_Bitset<unsigned int,
-			     Floating_Point_Real_Interval_Info_Policy>
-Floating_Point_Real_Interval_Info;
+typedef Interval_Restriction_None<Interval_Info_Bitset<unsigned int, Floating_Point_Real_Interval_Info_Policy> > Floating_Point_Real_Interval_Info;
 
 typedef Interval<double, Floating_Point_Real_Interval_Info> Float_Interval;
 
