@@ -1082,8 +1082,12 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
     }
   }
   else {
-    // FIXME: restrictions
-    return to.set_unbounded();
+    if (x == Constant<0>::value)
+      return static_cast<I_Result>(to.set_empty() | I_SINGULARITIES);
+    else {
+      // FIXME: restrictions
+      return static_cast<I_Result>(to.set_universe() | I_SINGULARITIES);
+    }
   }
   assign_or_swap(to.lower(), to_lower);
   assign_or_swap(to.info(), to_info);
