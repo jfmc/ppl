@@ -440,10 +440,15 @@ public:
     \param y
     A bounding box that <EM>must</EM> be contained in \p *this.
 
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
     \exception std::invalid_argument
     Thrown if \p *this and \p y are dimension-incompatible.
   */
-  void CC76_widening_assign(const Box& y);
+  void CC76_widening_assign(const Box& y, unsigned* tp = 0);
 
   /*! \brief
     Assigns to \p *this the result of computing the

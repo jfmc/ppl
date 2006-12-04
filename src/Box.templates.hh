@@ -575,7 +575,7 @@ Box<Interval>::CC76_widening_assign(const Box& y,
 
 template <typename Interval>
 void
-Box<Interval>::CC76_widening_assign(const Box& y) {
+Box<Interval>::CC76_widening_assign(const Box& y, unsigned* tp) {
   static typename Interval::boundary_type stop_points[] = {
     typename Interval::boundary_type(-2),
     typename Interval::boundary_type(-1),
@@ -583,7 +583,17 @@ Box<Interval>::CC76_widening_assign(const Box& y) {
     typename Interval::boundary_type(1),
     typename Interval::boundary_type(2)
   };
+
   Box& x = *this;
+  // If there are tokens available, work on a temporary copy.
+  if (tp != 0 && *tp > 0) {
+    Box<Interval> x_tmp(x);
+    x_tmp.CC76_widening_assign(y, 0);
+    // If the widening was not precise, use one of the available tokens.
+    if (!x.contains(x_tmp))
+      --(*tp);
+    return;
+  }
   x.CC76_widening_assign(y,
 			 stop_points,
 			 stop_points
