@@ -171,7 +171,7 @@ Box<Interval>::is_bounded() const {
   if (x.is_empty())
     return true;
   for (dimension_type k = x.seq.size(); k-- > 0; )
-    if (!x.seq[k].is_bounded())
+    if (x.seq[k].is_unbounded())
       return false;
   return true;
 }
