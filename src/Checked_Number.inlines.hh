@@ -782,14 +782,15 @@ cmp(const From1& x, const From2& y) {
 }
 
 /*! \relates Checked_Number */
-template <typename T, typename Policy>
-inline Result
-output(std::ostream& os, const Checked_Number<T, Policy>& x,
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
+output(std::ostream& os, const T& x,
        const Numeric_Format& fmt, Rounding_Dir dir) {
-  return check_result(Checked::output_ext<Policy>(os,
-						  x.raw_value(),
-						  fmt,
-						  rounding_dir(dir)),
+  return check_result(Checked::output_ext<typename Native_Checked_From_Wrapper<T>::Policy>
+		      (os,
+		       Native_Checked_From_Wrapper<T>::raw_value(x),
+		       fmt,
+		       rounding_dir(dir)),
 		      dir);
 }
 
@@ -802,12 +803,13 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
 }
 
 /*! \relates Checked_Number */
-template <typename T, typename Policy>
-inline Result
-input(Checked_Number<T, Policy>& x, std::istream& is, Rounding_Dir dir) {
-  return check_result(Checked::input_ext<Policy>(x.raw_value(),
-						 is,
-						 rounding_dir(dir)),
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
+input(T& x, std::istream& is, Rounding_Dir dir) {
+  return check_result(Checked::input_ext<typename Native_Checked_To_Wrapper<T>::Policy>
+		      (Native_Checked_From_Wrapper<T>::raw_value(x),
+		       is,
+		       rounding_dir(dir)),
 		      dir);
 }
 

@@ -835,10 +835,10 @@ cmp(const From1& x, const From2& y);
 //@{
 
 /*! \relates Checked_Number */
-template <typename T, typename Policy>
-Result
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
 output(std::ostream& os,
-       const Checked_Number<T, Policy>& x,
+       const T& x,
        const Numeric_Format& fmt,
        Rounding_Dir dir);
 
@@ -969,9 +969,9 @@ digits  : DIGIT						;
 							;
 \endcode
 */
-template <typename T, typename Policy>
-Result
-input(std::istream& is, Checked_Number<T, Policy>& x, Rounding_Dir dir);
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
+input(T& x, std::istream& is, Rounding_Dir dir);
 
 //! Input operator.
 /*! \relates Checked_Number */
