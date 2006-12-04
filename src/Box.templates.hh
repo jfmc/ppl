@@ -54,6 +54,12 @@ operator==(const Box<Interval>& x, const Box<Interval>& y) {
   if (x_space_dim != y.space_dimension())
     return false;
 
+  if (x.is_empty())
+    return y.is_empty();
+
+  if (y.is_empty())
+    return x.is_empty();
+
   for (dimension_type k = x_space_dim; k-- > 0; )
     if (x.seq[k] != y.seq[k])
       return false;
