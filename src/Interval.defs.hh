@@ -101,6 +101,7 @@ private:
       }
       w_info().set_boundary_property(LOWER, NORMALIZED);
     }
+    assert(OK());
     return r;
   }
   Result normalize_upper() const {
@@ -121,6 +122,7 @@ private:
       }
       w_info().set_boundary_property(UPPER, NORMALIZED);
     }
+    assert(OK());
     return r;
   }
 
@@ -214,6 +216,7 @@ public:
     info().clear();
     info().set_interval_property(CARDINALITY_IS);
     info().set_interval_property(CARDINALITY_0);
+    assert(OK());
     return I_EMPTY;
   }
   bool is_empty() const {
@@ -256,6 +259,7 @@ public:
     Result rl = normalize_lower();
     Result ru = normalize_upper();
     info().normalize();
+    assert(OK());
     return combine(rl, ru);
   }
   bool has_restriction() const {
@@ -292,6 +296,7 @@ public:
     info().set_interval_property(CARDINALITY_1, true);
     Result rl = set_unbounded(LOWER, lower(), info());
     Result ru = set_unbounded(UPPER, upper(), info());
+    assert(OK());
     return combine(rl, ru);
   }
   I_Result lower_set_unbounded() {
@@ -300,6 +305,7 @@ public:
     info().set_interval_property(CARDINALITY_1, false);
     info().clear_boundary_properties(LOWER);
     Result rl = set_unbounded(LOWER, lower(), info());
+    assert(OK());
     return combine(rl, V_EQ);
   }
   I_Result upper_set_unbounded() {
@@ -308,6 +314,7 @@ public:
     info().set_interval_property(CARDINALITY_1, false);
     info().clear_boundary_properties(UPPER);
     Result ru = set_unbounded(UPPER, upper(), info());
+    assert(OK());
     return combine(V_EQ, ru);
   }
   bool is_topologically_closed() const {
@@ -668,6 +675,7 @@ assign(Interval<To_Boundary, To_Info>& to, const From1& l, const From2& u) {
   to.info().clear();
   Result rl = assign(LOWER, to.lower(), to.info(), LOWER, l, info(l));
   Result ru = assign(UPPER, to.upper(), to.info(), UPPER, u, info(u));
+  assert(to.OK());
   return check_empty_result(to, combine(rl, ru));
 }
 
@@ -685,6 +693,7 @@ assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   Result ru = assign(UPPER, to.upper(), to_info,
 		     UPPER, upper(x), info(x));
   assign_or_swap(to.info(), to_info);
+  assert(to.OK());
   return combine(rl, ru);
 }
 
@@ -703,6 +712,7 @@ join_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   Result rl, ru;
   rl = min_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
   ru = max_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
+  assert(to.OK());
   return combine(rl, ru);
 }
 
@@ -726,6 +736,7 @@ join_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) 
 		  UPPER, upper(x), info(x),
 		  UPPER, upper(y), info(y));
   assign_or_swap(to.info(), to_info);
+  assert(to.OK());
   return combine(rl, ru);
 }
 
@@ -741,6 +752,7 @@ intersect_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   Result rl, ru;
   rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
   ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
+  assert(to.OK());
   return check_empty_result(to, combine(rl, ru));
 }
 
@@ -763,6 +775,7 @@ intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2
 		  UPPER, upper(x), info(x),
 		  UPPER, upper(y), info(y));
   assign_or_swap(to.info(), to_info);
+  assert(to.OK());
   return check_empty_result(to, combine(rl, ru));
 }
 
@@ -849,6 +862,7 @@ neg_assign(Interval<To_Boundary, To_Info>& to, const T& x) {
   ru = neg_assign(UPPER, to.upper(), to_info, LOWER, lower(x), info(x));
   assign_or_swap(to.lower(), to_lower);
   assign_or_swap(to.info(), to_info);
+  assert(to.OK());
   return combine(rl, ru);
 }
 
@@ -868,6 +882,7 @@ add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 			 UPPER, upper(x), info(x),
 			 UPPER, upper(y), info(y));
   assign_or_swap(to.info(), to_info);
+  assert(to.OK());
   return combine(rl, ru);
 }
 
@@ -890,6 +905,7 @@ sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 		  LOWER, lower(y), info(y));
   assign_or_swap(to.lower(), to_lower);
   assign_or_swap(to.info(), to_info);
+  assert(to.OK());
   return combine(rl, ru);
 }
 
@@ -1015,6 +1031,7 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   }
   assign_or_swap(to.lower(), to_lower);
   assign_or_swap(to.info(), to_info);
+  assert(to.OK());
   return combine(rl, ru);
 }
 
@@ -1104,6 +1121,7 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   }
   assign_or_swap(to.lower(), to_lower);
   assign_or_swap(to.info(), to_info);
+  assert(to.OK());
   return combine(rl, ru);
 }
 
