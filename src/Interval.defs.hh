@@ -1232,8 +1232,10 @@ inline std::ostream&
 operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
   if (check_empty_arg(x))
     return os << "[]";
-  if (x.is_singleton())
+  if (x.is_singleton()) {
     output(os, x.lower(), Numeric_Format(), ROUND_NOT_NEEDED);
+    return os;
+  }
   os << (x.lower_is_open() ? "(" : "[");
   if (x.info().get_boundary_property(LOWER, SPECIAL))
     os << "-inf";
