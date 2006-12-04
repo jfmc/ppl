@@ -135,7 +135,7 @@ public:
   }
 
   template <typename T>
-  Interval(const T& x, typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type = false) {
+  explicit Interval(const T& x, typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type = false) {
     assign(*this, x);
   }
 
