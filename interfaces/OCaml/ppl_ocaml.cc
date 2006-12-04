@@ -548,6 +548,71 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
+ppl_Polyhedron_poly_con_relation(value ph, value c) try {
+  CAMLparam2(ph, c);
+  const Polyhedron& pph = *p_Polyhedron_val(ph);
+  Constraint ppl_c = build_ppl_Constraint(c);
+  Poly_Con_Relation r = pph.relation_with(ppl_c);
+  value result = Val_int(0);
+  value cons;
+  while (r != Poly_Con_Relation::nothing()) {
+    if (r.implies(Poly_Con_Relation::is_disjoint())) {
+      cons = caml_alloc_tuple(2);
+      Field(cons, 0) = Val_int(0);
+      Field(cons, 1) = result;
+      result = cons;
+      r = r - Poly_Con_Relation::is_disjoint();
+    }
+    else if (r.implies(Poly_Con_Relation::strictly_intersects())) {
+      cons = caml_alloc_tuple(2);
+      Field(cons, 0) = Val_int(1);
+      Field(cons, 1) = result;
+      result = cons;
+      r = r - Poly_Con_Relation::strictly_intersects();
+    }
+    else if (r.implies(Poly_Con_Relation::is_included())) {
+      cons = caml_alloc_tuple(2);
+      Field(cons, 0) = Val_int(2);
+      Field(cons, 1) = result;
+      result = cons;
+      r = r - Poly_Con_Relation::is_included();
+    }
+    else if (r.implies(Poly_Con_Relation::saturates())) {
+      cons = caml_alloc_tuple(2);
+      Field(cons, 0) = Val_int(3);
+      Field(cons, 1) = result;
+      result = cons;
+      r = r - Poly_Con_Relation::saturates();
+    }
+  }
+  CAMLreturn(result);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_Polyhedron_poly_gen_relation(value ph, value g) try {
+  CAMLparam2(ph, g);
+  const Polyhedron& pph = *p_Polyhedron_val(ph);
+  Generator ppl_g = build_ppl_Generator(g);
+  Poly_Gen_Relation r = pph.relation_with(ppl_g);
+  value result = Val_int(0);
+  value cons;
+  while (r != Poly_Gen_Relation::nothing()) {
+    if (r.implies(Poly_Gen_Relation::subsumes())) {
+      cons = caml_alloc_tuple(2);
+      Field(cons, 0) = Val_int(0);
+      Field(cons, 1) = result;
+      result = cons;
+      r = r - Poly_Gen_Relation::subsumes();
+    }
+  }
+  CAMLreturn(result);
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
 ppl_Polyhedron_space_dimension(value ph) try {
   CAMLparam1(ph);
   const Polyhedron& pph = *p_Polyhedron_val(ph);

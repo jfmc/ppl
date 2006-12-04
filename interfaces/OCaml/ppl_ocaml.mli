@@ -24,6 +24,16 @@ type linear_generator =
   | Point of linear_expression * Z.t
   | Closure_Point of linear_expression * Z.t
 
+type relation_with_generator =
+    Subsumes
+
+type relation_with_constraint =
+    Is_Disjoint
+  | Strictly_Intersects
+  | Is_Included
+  | Saturates
+
+
 type linear_congruence = linear_expression * linear_expression * Z.t
 
 type constraint_system = linear_constraint list
@@ -48,6 +58,14 @@ external ppl_new_C_Polyhedron_from_generator_system:
 
 external ppl_new_C_Polyhedron_from_congruence_system:
   congruence_system -> polyhedron = "ppl_new_C_Polyhedron_from_congruence_system"
+external ppl_Polyhedron_poly_con_relation:
+      polyhedron -> linear_constraint -> relation_with_constraint list
+	  = "ppl_Polyhedron_poly_con_relation"
+
+external ppl_Polyhedron_poly_gen_relation:
+      polyhedron -> linear_generator -> relation_with_generator list
+	  = "ppl_Polyhedron_poly_gen_relation"
+
 external ppl_Polyhedron_space_dimension:
   polyhedron -> int = "ppl_Polyhedron_space_dimension"
 
