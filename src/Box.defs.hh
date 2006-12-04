@@ -652,6 +652,8 @@ public:
   */
   void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
 
+  void swap(Box& y);
+
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
   /*! \brief

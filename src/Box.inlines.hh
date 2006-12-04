@@ -61,6 +61,15 @@ Box<Interval>::Box(const Constraint_System& cs)
 }
 
 template <typename Interval>
+inline void
+Box<Interval>::swap(Box& y) {
+  Box& x = *this;
+  std::swap(x.seq, y.seq);
+  std::swap(x.empty, y.empty);
+  std::swap(x.empty_up_to_date, y.empty_up_to_date);
+}
+
+template <typename Interval>
 inline dimension_type
 Box<Interval>::space_dimension() const {
   const Box& x = *this;

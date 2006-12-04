@@ -355,6 +355,40 @@ Box<Interval>::remove_higher_space_dimensions(const dimension_type new_dim) {
 }
 
 template <typename Interval>
+template <typename Partial_Function>
+void
+Box<Interval>::map_space_dimensions(const Partial_Function& pfunc) {
+  Box& x = *this;
+  const dimension_type space_dim = x.space_dimension();
+  if (space_dim == 0)
+    return;
+
+  if (pfunc.has_empty_codomain()) {
+    // All dimensions vanish: the Box becomes zero_dimensional.
+    x.remove_higher_space_dimensions(0);
+    return;
+  }
+
+  const dimension_type new_space_dim = pfunc.max_in_codomain() + 1;
+  // If the Box is empty, then simply adjust the space dimension.
+  if (x.is_empty()) {
+    x.remove_higher_space_dimensions(new_space_dim);
+    return;
+  }
+
+  // We create a new Box with the new space dimension.
+  Box<Interval> new_x(new_space_dim);
+  // Map the intervals, exchanging the indexes.
+  for (dimension_type i = 0; i < space_dim; ++i) {
+    dimension_type new_i;
+    if (pfunc.maps(i, new_i))
+      x.seq[i].swap(new_x.seq[new_i]);
+  }
+  x.swap(new_x);
+  assert(x.OK());
+}
+
+template <typename Interval>
 void
 Box<Interval>::add_constraint(const Constraint& c) {
   using Implementation::BD_Shapes::div_round_up;
