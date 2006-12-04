@@ -22,6 +22,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <complex>
+#include <cmath>
 
 namespace {
 
@@ -50,7 +52,7 @@ test01() {
   assign(two, 2);
   Float_Interval y;
 
-  while (true) {
+  for (int i = 0; i <= 100; ++i) {
     nout << "x = " << x << endl;
     // Compute x = (x+(2/x))/2.
     div_assign(y, two, x);
@@ -61,8 +63,64 @@ test01() {
   return true;
 }
 
+void
+polynomial_evaluate(const std::vector<Float_Interval>& P,
+		    const std::complex<Float_Interval>& x,
+		    std::complex<Float_Interval>& P_x) {
+  // Note: the coefficient of the leading term is implicitly 1.
+  P_x = std::complex<Float_Interval>(Float_Interval(1.0));
+  for (int i = P.size(); i >= 1; --i)
+    P_x += P_x*x + P[i-1];
+}
+
+void
+solve(const std::vector<Float_Interval>& P,
+      std::vector<std::complex<Float_Interval> >& roots) {
+  const int degree = P.size();
+  if (degree < 1)
+    throw std::invalid_argument("the polynomial must have degree at least 1");
+
+  // Initial estimates are given by roots of unity.
+  std::vector<std::complex<Float_Interval> >x(5);
+  double theta = 2*M_PI/degree;
+  for (int i = 0; i < degree; ++i)
+    x[i] = std::complex<Float_Interval>(Float_Interval(cos(i*theta)),
+					Float_Interval(sin(i*theta)));
+
+  while (true) {
+    for (int i = 0; i < degree; ++i)
+      nout << "x[" << i << "] = " << x[i] << endl;
+    for (int i = 0; i < degree; ++i) {
+      std::complex<Float_Interval> P_x_i;
+      polynomial_evaluate(P, x[i], P_x_i);
+      std::complex<Float_Interval> d(1.0);
+      for (int j = 0; j < degree; ++j)
+	if (i != j)
+	  d *= (x[i] - x[j]);
+      x[i] -= P_x_i;
+      x[i] /= d;
+    }
+  }
+  roots.resize(degree+1);
+  for (int i = 0; i < degree; ++i)
+    roots[i] = x[i];
+}
+
+
+bool test02() {
+  std::vector<Float_Interval> P(4);
+  // x^4+5*x^3+7*x^2+134*x+1
+  P[3] = 5;
+  P[2] = 7;
+  P[1] = 134;
+  P[0] = 1;
+  std::vector<std::complex<Float_Interval> > roots;
+  solve(P, roots);
+  return true;
+}
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
+  //DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN
