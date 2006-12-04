@@ -331,31 +331,7 @@ template <typename T1, typename Info1, typename T2, typename Info2>
 inline bool
 lt(Boundary_Type type1, const T1& x1, const Info1& info1,
    Boundary_Type type2, const T2& x2, const Info2& info2) {
-  if (info1.get_boundary_property(type1, SPECIAL)) {
-    if (type1 == LOWER) {
-      if (is_open(type1, x1, info1))
-	return !is_minus_infinity(type2, x2, info2);
-      else
-	return is_open(type2, x2, info2)
-	  || !is_minus_infinity(type2, x2, info2);
-    }
-    else
-      return is_open(type1, x1, info1)
-	&& !is_open(type2, x2, info2)
-	&& is_plus_infinity(type2, x2, info2);
-  }
-  else if (info2.get_boundary_property(type2, SPECIAL)) {
-    if (type2 == LOWER) {
-      return is_open(type2, x2, info2)
-	&& !is_open(type1, x1, info1)
-	&& is_minus_infinity(type1, x1, info1);
-    }
-    else
-      return is_open(type2, x2, info2)
-	&& !is_open(type1, x1, info1)
-	&& is_plus_infinity(type1, x1, info1);
-  }
-  else if (is_open(type1, x1, info1)) {
+  if (is_open(type1, x1, info1)) {
     if (type1 == UPPER
 	&& (type2 == LOWER
 	    || !is_open(type2, x2, info2)))
@@ -364,9 +340,19 @@ lt(Boundary_Type type1, const T1& x1, const Info1& info1,
   else if (type2 == LOWER
 	   && is_open(type2, x2, info2)) {
   le:
-    return x1 <= x2;
+    if (info1.get_boundary_property(type1, SPECIAL))
+      return type1 == LOWER || is_plus_infinity(type2, x2, info2);
+    else if (info2.get_boundary_property(type2, SPECIAL))
+      return type2 == UPPER || is_minus_infinity(type2, x2, info2);
+    else
+      return x1 <= x2;
   }
-  return x1 < x2;
+  if (info1.get_boundary_property(type1, SPECIAL))
+    return type1 == LOWER && !is_minus_infinity(type2, x2, info2);
+  else if (info2.get_boundary_property(type2, SPECIAL))
+    return type2 == UPPER && !is_plus_infinity(type1, x1, info1);
+  else
+    return x1 < x2;
 }
 
 template <typename T1, typename Info1, typename T2, typename Info2>
