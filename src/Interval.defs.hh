@@ -101,7 +101,6 @@ private:
       }
       w_info().set_boundary_property(LOWER, NORMALIZED);
     }
-    assert(OK());
     return r;
   }
   Result normalize_upper() const {
@@ -122,7 +121,6 @@ private:
       }
       w_info().set_boundary_property(UPPER, NORMALIZED);
     }
-    assert(OK());
     return r;
   }
 
@@ -255,15 +253,23 @@ public:
     assert(false);
     return false;
   }
-  I_Result normalize() const {
-    Result rl = normalize_lower();
-    Result ru = normalize_upper();
-    info().normalize();
-    assert(OK());
-    return combine(rl, ru);
-  }
   bool has_restriction() const {
     return info().has_restriction();
+  }
+  I_Result normalize() const {
+    if (has_restriction()) {
+      Result rl = normalize_lower();
+      Result ru = normalize_upper();
+      // FIXME: this invalidation is not needed if interval is unchanged
+      w_info().set_interval_property(CARDINALITY_IS, false);
+      w_info().set_interval_property(CARDINALITY_0, false);
+      w_info().set_interval_property(CARDINALITY_1, false);
+      info().normalize();
+      assert(OK());
+      return combine(rl, ru);
+    }
+    else
+      return combine(V_EQ, V_EQ);
   }
   bool lower_is_open() const {
     return is_open(LOWER, lower(), info());
