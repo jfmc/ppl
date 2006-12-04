@@ -554,8 +554,8 @@ Box<Interval>::CC76_widening_assign(const Box& y,
     }
 
     // Lower bound.
-    typename Interval::boundary_type& x_lb = x_seq_i.upper();
-    const typename Interval::boundary_type& y_lb = y_seq_i.upper();
+    typename Interval::boundary_type& x_lb = x_seq_i.lower();
+    const typename Interval::boundary_type& y_lb = y_seq_i.lower();
     assert(y_lb >= x_lb);
     if (y_lb > x_lb) {
       Iterator k = std::lower_bound(first, last, x_lb);
