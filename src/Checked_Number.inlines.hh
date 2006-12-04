@@ -807,7 +807,7 @@ template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
 input(T& x, std::istream& is, Rounding_Dir dir) {
   return check_result(Checked::input_ext<typename Native_Checked_To_Wrapper<T>::Policy>
-		      (Native_Checked_From_Wrapper<T>::raw_value(x),
+		      (Native_Checked_To_Wrapper<T>::raw_value(x),
 		       is,
 		       rounding_dir(dir)),
 		      dir);
