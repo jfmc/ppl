@@ -47,8 +47,8 @@ public:
   void normalize() const {
   }
   template <typename T>
-  Result restrict(T&, Result) const {
-    return V_EQ;
+  Result restrict(T&, Result dir) const {
+    return dir;
   }
 };
 
@@ -138,10 +138,10 @@ public:
   void normalize() const {
   }
   template <typename T>
-  Result restrict(T& x, Result r) const {
+  Result restrict(T& x, Result dir) const {
     if (!has_restriction())
-      return V_EQ;
-    switch (r) {
+      return dir;
+    switch (dir) {
     case V_GT:
       if (is_integer(x))
 	return add_assign_r(x, x, static_cast<T>(1), ROUND_DOWN);
@@ -156,7 +156,7 @@ public:
       return floor_assign_r(x, x, ROUND_UP);
     default:
       assert(false);
-      return V_EQ;
+      return dir;
     }
   }
 };
@@ -294,18 +294,19 @@ public:
   void normalize() const {
   }
   template <typename V>
-  Result restrict(V& x, Result r) const {
+  Result restrict(V& x, Result dir) const {
     if (!has_restriction())
-      return V_EQ;
+      return dir;
     DIRTY_TEMP(V, n);
     DIRTY_TEMP(V, div);
+    Result r;
     r = assign_r(div, divisor, ROUND_CHECK);
     assert(r == V_EQ);
     int s;
     r = rem_assign_r(n, x, div, ROUND_NOT_NEEDED);
     assert(r == V_EQ);
     s = sgn(n);
-    switch (r) {
+    switch (dir) {
     case V_GT:
       if (s >= 0) {
 	r = sub_assign_r(n, div, n, ROUND_NOT_NEEDED);
@@ -344,7 +345,7 @@ public:
 	return V_EQ;
     default:
       assert(false);
-      return V_EQ;
+      return dir;
     }
   }
   void assign_or_swap(Interval_Restriction_Integer_Modulo& x) {
