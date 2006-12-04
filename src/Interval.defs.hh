@@ -419,6 +419,16 @@ private:
   Boundary upper_;
 };
 
+template <typename T, typename Enable = void>
+struct Is_Singleton_Or_Interval : public False {};
+
+template <typename T>
+struct Is_Singleton_Or_Interval<T, typename Enable_If<Is_Same_Or_Derived<Interval_, T>::value>::type> : public True {};
+
+template <typename T>
+struct Is_Singleton_Or_Interval<T, typename Enable_If<Is_Native_Or_Checked<T>::value>::type> : public True {};
+
+
 template <typename Boundary, typename Info>
 inline bool
 is_empty(const Interval<Boundary, Info>& x) {
@@ -460,34 +470,34 @@ typedef Interval_Info_Null<Scalar_As_Interval_Policy> Scalar_As_Interval_Info;
 static const Scalar_As_Interval_Info& SCALAR_INFO = *static_cast<Scalar_As_Interval_Info*>(0);
 
 template <typename T>
-inline typename Enable_If<!Is_Same_Or_Derived<Interval_, T>::value, const T&>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, const T&>::type
 lower(const T& x) {
   return x;
 }
 template <typename T>
-inline typename Enable_If<!Is_Same_Or_Derived<Interval_, T>::value, const T&>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, const T&>::type
 upper(const T& x) {
   return x;
 }
 template <typename T>
-inline typename Enable_If<!Is_Same_Or_Derived<Interval_, T>::value, const Scalar_As_Interval_Info&>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, const Scalar_As_Interval_Info&>::type
 info(const T&) {
   return SCALAR_INFO;
 }
 template <typename T>
-inline typename Enable_If<!Is_Same_Or_Derived<Interval_, T>::value, bool>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_empty(const T& x) {
   return is_not_a_number(x);
 }
 
 template <typename T>
-inline typename Enable_If<!Is_Same_Or_Derived<Interval_, T>::value, bool>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_singleton(const T& x) {
   return !is_empty(x);
 }
 
 template <typename T>
-inline Ternary
+inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, Ternary>::type
 is_empty_lazy(const T& x) {
   if (info(x).get_interval_property(CARDINALITY_0))
     return info(x).get_interval_property(CARDINALITY_IS) ? T_YES : T_NO;
@@ -510,7 +520,7 @@ is_not_a_number(const char*) {
 }
 
 template <typename T>
-inline bool
+inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
 is_singleton_integer(const T& x) {
   return is_singleton(x) && is_integer(lower(x));
 }
@@ -528,7 +538,7 @@ same_object(const T& x, const T& y) {
 }
 
 template <typename T>
-inline bool
+inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
 check_empty_arg(const T& x) {
   if (info(x).may_be_empty)
     return is_empty(x);
@@ -548,10 +558,10 @@ check_empty_result(const Interval<Boundary, Info>& x, I_Result r) {
 }
 
 template <typename T1, typename T2>
-inline typename Enable_If<((Is_Same_Or_Derived<Interval_, T1>::value
-			    && Is_Native_Or_Checked<T2>::value)
-			   || (Is_Same_Or_Derived<Interval_, T2>::value
-			       && Is_Native_Or_Checked<T1>::value)),
+inline typename Enable_If<((Is_Singleton_Or_Interval<T1>::value
+			    || Is_Singleton_Or_Interval<T2>::value)
+			   && (Is_Same_Or_Derived<Interval_, T1>::value
+			       || Is_Same_Or_Derived<Interval_, T2>::value)),
 			  bool>::type
 operator==(const T1& x, const T2& y) {
   if (check_empty_arg(x))
@@ -564,10 +574,10 @@ operator==(const T1& x, const T2& y) {
 }
 
 template <typename T1, typename T2>
-inline typename Enable_If<((Is_Same_Or_Derived<Interval_, T1>::value
-			    && Is_Native_Or_Checked<T2>::value)
-			   || (Is_Same_Or_Derived<Interval_, T2>::value
-			       && Is_Native_Or_Checked<T1>::value)),
+inline typename Enable_If<((Is_Singleton_Or_Interval<T1>::value
+			    || Is_Singleton_Or_Interval<T2>::value)
+			   && (Is_Same_Or_Derived<Interval_, T1>::value
+			       || Is_Same_Or_Derived<Interval_, T2>::value)),
 			  bool>::type
 operator!=(const T1& x, const T2& y) {
   return !(x == y);
