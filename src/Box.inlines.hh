@@ -192,8 +192,10 @@ Box<Interval>::raise_lower_bound(const dimension_type k, const bool closed,
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
-  if (refine(x.seq[k], (closed ? GREATER_THAN_OR_EQUAL : GREATER_THAN), q)
-      != (I_L_EQ | I_U_EQ))
+  I_Result r = refine(x.seq[k], (closed ? GREATER_THAN_OR_EQUAL : GREATER_THAN), q);
+  if (r == I_EMPTY)
+    set_empty();
+  else if (r & I_MAYBE_EMPTY)
     x.empty_up_to_date = false;
 }
 
@@ -209,8 +211,10 @@ Box<Interval>::lower_upper_bound(const dimension_type k, const bool closed,
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
-  if (refine(x.seq[k], (closed ? LESS_THAN_OR_EQUAL : LESS_THAN), q)
-      != (I_L_EQ | I_U_EQ))
+  I_Result r = refine(x.seq[k], (closed ? LESS_THAN_OR_EQUAL : LESS_THAN), q);
+  if (r == I_EMPTY)
+    set_empty();
+  else if (r & I_MAYBE_EMPTY)
     x.empty_up_to_date = false;
 }
 
