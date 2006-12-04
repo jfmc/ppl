@@ -72,14 +72,15 @@ test01() {
   known_result.add_disjunct(box2);
   known_result.add_disjunct(box5);
 
-  box_set1.BGP99_extrapolation_assign
-    (box_set2, widen_fun_ref(&TBox::H79_widening_assign), 3);
+  typedef void (TBox::*Widening_Member)(const TBox&, unsigned*);
+  Widening_Member wm = &TBox::CC76_widening_assign;
+  box_set1.BGP99_extrapolation_assign(box_set2, widen_fun_ref(wm), 3);
 
   bool ok = box_set1.geometrically_equals(known_result);
 
   nout
     << "*** box_set1.BGP99_extrapolation_assign"
-    << "(box_set2, widen_fun_ref(&H79_widening_assign), 3) ***"
+    << "(box_set2, widen_fun_ref(&CC76_widening_assign), 3) ***"
     << endl
     << box_set1 << endl;
 
