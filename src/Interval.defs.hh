@@ -143,27 +143,32 @@ public:
   typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
   operator=(const T& x) {
     assign(*this, x);
+    return *this;
   }
 
   template <typename T>
   typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
   operator+=(const T& x) {
     add_assign(*this, *this, x);
+    return *this;
   }
   template <typename T>
   typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
   operator-=(const T& x) {
     sub_assign(*this, *this, x);
+    return *this;
   }
   template <typename T>
   typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
   operator*=(const T& x) {
     mul_assign(*this, *this, x);
+    return *this;
   }
   template <typename T>
   typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
   operator/=(const T& x) {
     div_assign(*this, *this, x);
+    return *this;
   }
 
   //! Swaps \p *this with \p y.
