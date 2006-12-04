@@ -61,10 +61,12 @@ test01() {
        << "Q = " << Q << endl;
 
   PSet old_P = P;
-  P.BHZ03_widening_assign<H79_Certificate>
-    (Q, widen_fun_ref(&TBox::H79_widening_assign));
+  typedef void (TBox::*Widening_Member)(const TBox&, unsigned*);
+  Widening_Member wm = &TBox::CC76_widening_assign;
+  // FIXME: provide a widening certificate for CC76.
+  P.BHZ03_widening_assign<H79_Certificate>(Q, widen_fun_ref(wm));
 
-  nout << "P.BHZ03(Q, H79)" << " = " << P << endl;
+  nout << "P.BHZ03(Q, CC76)" << " = " << P << endl;
 
   return P.geometrically_covers(old_P) && P.geometrically_covers(Q);
 }
