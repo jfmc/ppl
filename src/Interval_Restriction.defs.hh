@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-struct Interval_;
+struct Interval_Base;
 
 template <typename T, typename Enable = void>
 struct Boundary_Value {
@@ -35,7 +35,7 @@ struct Boundary_Value {
 };
 
 template <typename T>
-struct Boundary_Value<T, typename Enable_If<Is_Same_Or_Derived<Interval_, T>::value>::type > {
+struct Boundary_Value<T, typename Enable_If<Is_Same_Or_Derived<Interval_Base, T>::value>::type > {
   typedef typename T::boundary_type type;
 };
 

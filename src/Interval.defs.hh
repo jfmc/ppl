@@ -58,11 +58,20 @@ combine(Result l, Result u) {
 using namespace Boundary_NS;
 using namespace Interval_NS;
 
-struct Interval_ {
+struct Interval_Base {
 };
 
+template <typename T, typename Enable = void>
+struct Is_Singleton_Or_Interval : public False {};
+
+template <typename T>
+struct Is_Singleton_Or_Interval<T, typename Enable_If<Is_Same_Or_Derived<Interval_Base, T>::value>::type> : public True {};
+
+template <typename T>
+struct Is_Singleton_Or_Interval<T, typename Enable_If<Is_Native_Or_Checked<T>::value>::type> : public True {};
+
 template <typename Boundary, typename Info>
-class Interval : public Interval_, private Info {
+class Interval : public Interval_Base, private Info {
 private:
   COMPILE_TIME_CHECK(!Info::store_special || !std::numeric_limits<Boundary>::has_infinity, "store_special is senseless when boundary type may contains infinity");
   Info& w_info() const {
@@ -125,9 +134,36 @@ public:
   Interval() {
   }
 
-  Interval(const Boundary& n)
-    : lower_(n), upper_(n) {
-    // FIXME: what if n is special?
+  template <typename T>
+  Interval(const T& x, typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type = false) {
+    assign(*this, x);
+  }
+
+  template <typename T>
+  typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
+  operator=(const T& x) {
+    assign(*this, x);
+  }
+
+  template <typename T>
+  typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
+  operator+=(const T& x) {
+    add_assign(*this, *this, x);
+  }
+  template <typename T>
+  typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
+  operator-=(const T& x) {
+    sub_assign(*this, *this, x);
+  }
+  template <typename T>
+  typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
+  operator*=(const T& x) {
+    mul_assign(*this, *this, x);
+  }
+  template <typename T>
+  typename Enable_If<Is_Singleton_Or_Interval<T>::value, Interval&>::type
+  operator/=(const T& x) {
+    div_assign(*this, *this, x);
   }
 
   //! Swaps \p *this with \p y.
@@ -424,15 +460,6 @@ private:
   Boundary upper_;
 };
 
-template <typename T, typename Enable = void>
-struct Is_Singleton_Or_Interval : public False {};
-
-template <typename T>
-struct Is_Singleton_Or_Interval<T, typename Enable_If<Is_Same_Or_Derived<Interval_, T>::value>::type> : public True {};
-
-template <typename T>
-struct Is_Singleton_Or_Interval<T, typename Enable_If<Is_Native_Or_Checked<T>::value>::type> : public True {};
-
 
 template <typename Boundary, typename Info>
 inline bool
@@ -565,8 +592,8 @@ check_empty_result(const Interval<Boundary, Info>& x, I_Result r) {
 template <typename T1, typename T2>
 inline typename Enable_If<((Is_Singleton_Or_Interval<T1>::value
 			    || Is_Singleton_Or_Interval<T2>::value)
-			   && (Is_Same_Or_Derived<Interval_, T1>::value
-			       || Is_Same_Or_Derived<Interval_, T2>::value)),
+			   && (Is_Same_Or_Derived<Interval_Base, T1>::value
+			       || Is_Same_Or_Derived<Interval_Base, T2>::value)),
 			  bool>::type
 operator==(const T1& x, const T2& y) {
   if (check_empty_arg(x))
@@ -581,8 +608,8 @@ operator==(const T1& x, const T2& y) {
 template <typename T1, typename T2>
 inline typename Enable_If<((Is_Singleton_Or_Interval<T1>::value
 			    || Is_Singleton_Or_Interval<T2>::value)
-			   && (Is_Same_Or_Derived<Interval_, T1>::value
-			       || Is_Same_Or_Derived<Interval_, T2>::value)),
+			   && (Is_Same_Or_Derived<Interval_Base, T1>::value
+			       || Is_Same_Or_Derived<Interval_Base, T2>::value)),
 			  bool>::type
 operator!=(const T1& x, const T2& y) {
   return !(x == y);
@@ -1061,6 +1088,102 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   assign_or_swap(to.lower(), to_lower);
   assign_or_swap(to.info(), to_info);
   return combine(rl, ru);
+}
+
+template <typename B, typename Info, typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+operator+(const Interval<B, Info>& x, const T& y) {
+  Interval<B, Info> z;
+  add_assign(z, x, y);
+  return z;
+}
+
+template <typename B, typename Info, typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+operator+(const T& x, const Interval<B, Info>& y) {
+  Interval<B, Info> z;
+  add_assign(z, x, y);
+  return z;
+}
+
+template <typename B, typename Info>
+Interval<B, Info>&
+operator+(const Interval<B, Info>& x, const Interval<B, Info>& y) {
+  Interval<B, Info> z;
+  add_assign(z, x, y);
+  return z;
+}
+
+template <typename B, typename Info, typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+operator-(const Interval<B, Info>& x, const T& y) {
+  Interval<B, Info> z;
+  sub_assign(z, x, y);
+  return z;
+}
+
+template <typename B, typename Info, typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+operator-(const T& x, const Interval<B, Info>& y) {
+  Interval<B, Info> z;
+  sub_assign(z, x, y);
+  return z;
+}
+
+template <typename B, typename Info>
+Interval<B, Info>&
+operator-(const Interval<B, Info>& x, const Interval<B, Info>& y) {
+  Interval<B, Info> z;
+  sub_assign(z, x, y);
+  return z;
+}
+
+template <typename B, typename Info, typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+operator*(const Interval<B, Info>& x, const T& y) {
+  Interval<B, Info> z;
+  mul_assign(z, x, y);
+  return z;
+}
+
+template <typename B, typename Info, typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+operator*(const T& x, const Interval<B, Info>& y) {
+  Interval<B, Info> z;
+  mul_assign(z, x, y);
+  return z;
+}
+
+template <typename B, typename Info>
+Interval<B, Info>&
+operator*(const Interval<B, Info>& x, const Interval<B, Info>& y) {
+  Interval<B, Info> z;
+  mul_assign(z, x, y);
+  return z;
+}
+
+template <typename B, typename Info, typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+operator/(const Interval<B, Info>& x, const T& y) {
+  Interval<B, Info> z;
+  div_assign(z, x, y);
+  return z;
+}
+
+template <typename B, typename Info, typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+operator/(const T& x, const Interval<B, Info>& y) {
+  Interval<B, Info> z;
+  div_assign(z, x, y);
+  return z;
+}
+
+template <typename B, typename Info>
+Interval<B, Info>&
+operator/(const Interval<B, Info>& x, const Interval<B, Info>& y) {
+  Interval<B, Info> z;
+  div_assign(z, x, y);
+  return z;
 }
 
 template <typename Boundary, typename Info>
