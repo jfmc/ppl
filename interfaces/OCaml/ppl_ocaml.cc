@@ -1227,6 +1227,17 @@ ppl_Polyhedron_OK(value ph) try {
 }
 CATCH_ALL
 
+extern "C"
+void
+ppl_Polyhedron_swap(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  Polyhedron& pph1 = *p_Polyhedron_val(ph1);
+  Polyhedron& pph2 = *p_Polyhedron_val(ph2);
+  pph1.swap(pph2);
+  CAMLreturn0;
+}
+CATCH_ALL
+
 
 extern "C"
 CAMLprim void

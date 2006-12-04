@@ -216,5 +216,6 @@ print_int(Z.to_int den);
 print_string (string_of_bool is_bounded);
 print_string (string_of_bool is_supremum);
 print_generator(gen);
+ppl_Polyhedron_swap ph ph2;
 at_exit Gc.full_major;;
 print_string "Bye!\n"

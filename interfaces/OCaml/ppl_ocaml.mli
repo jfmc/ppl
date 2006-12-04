@@ -244,9 +244,6 @@ external ppl_Polyhedron_H79_widening_assign:
  polyhedron -> polyhedron -> int -> int
      = "ppl_Polyhedron_H79_widening_assign"
 
-external ppl_Polyhedron_OK:
- polyhedron -> bool = "ppl_Polyhedron_OK"
-
 external ppl_Polyhedron_maximize:
  polyhedron -> linear_expression -> bool * Z.t * Z.t * bool * linear_generator
      = "ppl_Polyhedron_maximize"
@@ -254,6 +251,12 @@ external ppl_Polyhedron_maximize:
 external ppl_Polyhedron_minimize:
  polyhedron -> linear_expression -> bool * Z.t * Z.t * bool * linear_generator
      = "ppl_Polyhedron_minimize"
+
+external ppl_Polyhedron_OK:
+ polyhedron -> bool = "ppl_Polyhedron_OK"
+
+external ppl_Polyhedron_swap:
+polyhedron -> polyhedron -> unit = "ppl_Polyhedron_swap"
 
 
 external test_linear_expression:
