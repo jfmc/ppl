@@ -194,13 +194,29 @@ test05() {
   return !empty;
 }
 
+bool
+test06() {
+  TBox box(2);
+  box.raise_lower_bound(0, true, 3, 7);
+  box.lower_upper_bound(0, true, 3, 7);
+  box.raise_lower_bound(1, false, 1, 2);
+  box.lower_upper_bound(1, true, 1, 2);
+
+  bool ok = box.is_empty();
+
+  print_constraints(box, "*** box ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
-  DO_TEST(test02);
-  DO_TEST(test03);
-  DO_TEST(test04);
-  DO_TEST(test05);
+  //DO_TEST(test01);
+  //DO_TEST(test02);
+  //DO_TEST(test03);
+  //DO_TEST(test04);
+  //DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN
 
