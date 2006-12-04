@@ -740,6 +740,17 @@ public:
   //! Returns a minimized system of constraints defining \p *this.
   Constraint_System minimized_constraints() const;
 
+  PPL_OUTPUT_DECLARATIONS
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool ascii_load(std::istream& s);
+
 private:
   template <typename Other_Interval>
   friend class Parma_Polyhedra_Library::Box;

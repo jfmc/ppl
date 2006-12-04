@@ -650,6 +650,62 @@ IO_Operators::operator<<(std::ostream& s, const Box<Interval>& box) {
 
 template <typename Interval>
 void
+Box<Interval>::ascii_dump(std::ostream& s) const {
+  const Box& x = *this;
+  const char separator = ' ';
+  s << "empty" << separator << x.empty;
+  s << separator;
+  s << "empty_up_to_date" << separator << x.empty_up_to_date;
+  s << separator;
+  const dimension_type space_dim = x.space_dimension();
+  s << "space_dim" << separator << space_dim;
+  s << "\n";
+  for (dimension_type i = 0; i < space_dim;  ++i)
+    x.seq[i].ascii_dump(s);
+}
+
+PPL_OUTPUT_TEMPLATE_DEFINITIONS(Interval, Box<Interval>)
+
+template <typename Interval>
+bool
+Box<Interval>::ascii_load(std::istream& s) {
+  Box& x = *this;
+  std::string str;
+
+  bool flag;
+  if (!(s >> str) || str != "empty")
+    return false;
+  if (!(s >> flag))
+    return false;
+  x.empty = flag;
+  if (!(s >> str) || str != "empty_up_to_date")
+    return false;
+  if (!(s >> flag))
+    return false;
+  x.empty_up_to_date = flag;
+
+  dimension_type space_dim;
+  if (!(s >> str) || str != "space_dim")
+    return false;
+  if (!(s >> space_dim))
+    return false;
+
+  seq.clear();
+  Interval seq_i;
+  for (dimension_type i = 0; i < space_dim;  ++i) {
+    if (seq_i.ascii_load(s))
+      seq.push_back(seq_i);
+    else
+      return false;
+  }
+
+  // Check invariants.
+  assert(OK());
+  return true;
+}
+
+template <typename Interval>
+void
 Box<Interval>::throw_dimension_incompatible(const char* method,
 					    const Box& y) const {
   const Box& x = *this;

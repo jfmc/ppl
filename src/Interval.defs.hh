@@ -336,6 +336,14 @@ public:
     return u >= l;
   }
 
+  void ascii_dump(std::ostream& s) const {
+    // WRITE ME.
+  }
+  bool ascii_load(std::istream& s) {
+    // WRITE ME.
+    return false;
+  }
+
   bool OK() const {
     if (!Info::may_be_empty && is_empty()) {
 #ifndef NDEBUG
