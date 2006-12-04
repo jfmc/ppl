@@ -186,6 +186,7 @@ distances.inlines.hh \
 Boundary.defs.hh \
 Interval_Info.defs.hh \
 Interval_Info.inlines.hh \
+Interval_Restriction.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 Old_Interval.defs.hh \
