@@ -1059,12 +1059,12 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
   if (x.info().get_boundary_property(LOWER, SPECIAL))
     os << "-inf";
   else
-    os << x.lower();
+    output(os, x.lower(), Numeric_Format(), ROUND_NOT_NEEDED);
   os << ", ";
   if (x.info().get_boundary_property(UPPER, SPECIAL))
     os << "+inf";
   else
-    os << x.upper();
+    output(os, x.upper(), Numeric_Format(), ROUND_NOT_NEEDED);
   os << (x.upper_is_open() ? ")" : "]");
   output_restriction(os, x.info());
   return os;
