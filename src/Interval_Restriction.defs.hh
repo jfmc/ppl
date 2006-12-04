@@ -135,10 +135,6 @@ public:
   bool has_restriction() const {
     return get_integer();
   }
-  void clear() {
-    set_integer(false);
-    Base::clear();
-  }
   void normalize() const {
   }
   template <typename T>
@@ -284,6 +280,8 @@ class Interval_Restriction_Integer_Modulo : public Interval_Restriction_Integer_
 public:
   COMPILE_TIME_CHECK(std::numeric_limits<T>::is_exact, "Type for modulo values must be exact.");
   Interval_Restriction_Integer_Modulo() {
+    // FIXME: we'd have speed benefits with uninitialized info? (Dirty_Temp)
+    clear();
   }
   bool has_restriction() const {
     return divisor != 0;
