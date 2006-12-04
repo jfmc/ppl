@@ -261,9 +261,7 @@ public:
       Result rl = normalize_lower();
       Result ru = normalize_upper();
       // FIXME: this invalidation is not needed if interval is unchanged
-      w_info().set_interval_property(CARDINALITY_IS, false);
-      w_info().set_interval_property(CARDINALITY_0, false);
-      w_info().set_interval_property(CARDINALITY_1, false);
+      invalidate_cardinality_cache();
       info().normalize();
       assert(OK());
       return combine(rl, ru);
@@ -296,6 +294,11 @@ public:
     return lower_is_unbounded() && upper_is_unbounded()
       && !has_restriction();
   }
+  void invalidate_cardinality_cache() const {
+    w_info().set_interval_property(CARDINALITY_IS, false);
+    w_info().set_interval_property(CARDINALITY_0, false);
+    w_info().set_interval_property(CARDINALITY_1, false);
+  }
   I_Result set_universe() {
     info().clear();
     info().set_interval_property(CARDINALITY_0, true);
@@ -306,20 +309,16 @@ public:
     return combine(rl, ru);
   }
   I_Result lower_set_unbounded() {
-    info().set_interval_property(CARDINALITY_IS, false);
-    info().set_interval_property(CARDINALITY_0, false);
-    info().set_interval_property(CARDINALITY_1, false);
     info().clear_boundary_properties(LOWER);
     Result rl = set_unbounded(LOWER, lower(), info());
+    invalidate_cardinality_cache();
     assert(OK());
     return combine(rl, V_EQ);
   }
   I_Result upper_set_unbounded() {
-    info().set_interval_property(CARDINALITY_IS, false);
-    info().set_interval_property(CARDINALITY_0, false);
-    info().set_interval_property(CARDINALITY_1, false);
     info().clear_boundary_properties(UPPER);
     Result ru = set_unbounded(UPPER, upper(), info());
+    invalidate_cardinality_cache();
     assert(OK());
     return combine(V_EQ, ru);
   }
@@ -752,9 +751,7 @@ inline I_Result
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   intersect_restriction(to.info(), to, x);
   // FIXME: more accurate?
-  to.info().set_interval_property(CARDINALITY_IS, false);
-  to.info().set_interval_property(CARDINALITY_0, false);
-  to.info().set_interval_property(CARDINALITY_1, false);
+  to.invalidate_cardinality_cache();
   Result rl, ru;
   rl = max_assign(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x));
   ru = min_assign(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x));
@@ -769,10 +766,6 @@ intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   intersect_restriction(to_info, x, y);
-  // FIXME: more accurate?
-  to_info().set_interval_property(CARDINALITY_IS, false);
-  to_info().set_interval_property(CARDINALITY_0, false);
-  to_info().set_interval_property(CARDINALITY_1, false);
   Result rl, ru;
   rl = max_assign(LOWER, to.lower(), to_info,
 		  LOWER, lower(x), info(x),
@@ -799,6 +792,7 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
       to.info().clear_boundary_properties(UPPER);
       Result ru = assign(UPPER, to.upper(), to.info(),
 			 UPPER, upper(x), info(x), true);
+      to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(V_EQ, ru));
     }
@@ -809,6 +803,7 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
       to.info().clear_boundary_properties(UPPER);
       Result ru = assign(UPPER, to.upper(), to.info(),
 			 UPPER, upper(x), info(x));
+      to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(V_EQ, ru));
     }
@@ -819,6 +814,7 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
       to.info().clear_boundary_properties(LOWER);
       Result rl = assign(LOWER, to.lower(), to.info(),
 			 LOWER, lower(x), info(x), true);
+      to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(rl, V_EQ));
     }
@@ -829,6 +825,7 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
       to.info().clear_boundary_properties(LOWER);
       Result rl = assign(LOWER, to.lower(), to.info(),
 			 LOWER, lower(x), info(x));
+      to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(rl, V_EQ));
     }
@@ -844,6 +841,7 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
 	to.lower_shrink();
       if (eq(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x)))
 	to.upper_shrink();
+      to.invalidate_cardinality_cache();
       to.normalize();
       return check_empty_result(to, combine(V_EQ, V_EQ));
     }
