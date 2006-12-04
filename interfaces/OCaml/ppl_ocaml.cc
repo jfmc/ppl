@@ -337,27 +337,15 @@ build_caml_congruence_system(const Congruence_System& ppl_cgs) {
   // This code builds a list of constraints starting from bottom to
   // top. A list on OCaml must be built like a sequence of Cons and Tail.
   // The first element is the Nil list (the Val_int(0)).
-  value caml_cgs_tail = Val_int(0);
-  bool tail_built = false;
+  value result = Val_int(0);
   for (Congruence_System::const_iterator v_begin = ppl_cgs.begin(),
   	 v_end = ppl_cgs.end(); v_begin != v_end; ++v_begin) {
-    if (!tail_built) {
-      tail_built = true;
-      caml_cgs_tail = caml_alloc_tuple(2);
-      Field(caml_cgs_tail, 1) = Val_int(0);
-    }
-    Field(caml_cgs_tail, 0) = build_caml_congruence(*v_begin);
-    Congruence_System::const_iterator itr = v_begin;
-    ++itr;
-    // If we have a `next` element, make space to store it in the next
-    // cycle.
-    if (itr != v_end) {
-      value new_tail = caml_alloc_tuple(2);
-      Field(new_tail, 1) = caml_cgs_tail;
-      caml_cgs_tail = new_tail;
-    }
+    value new_tail = caml_alloc_tuple(2);
+    Field(new_tail, 0) = build_caml_congruence(*v_begin);
+    Field(new_tail, 1) = result;
+    result = new_tail;
   }
-  return caml_cgs_tail;
+  return result;
 }
 
 value
@@ -365,50 +353,28 @@ build_caml_constraint_system(const Constraint_System& ppl_cs) {
   // This code builds a list of constraints starting from bottom to
   // top. A list on OCaml must be built like a sequence of Cons and Tail.
   // The first element is the Nil list (the Val_int(0)).
-  value caml_cs_tail = Val_int(0);
-  bool tail_built = false;
+  value result = Val_int(0);
   for (Constraint_System::const_iterator v_begin = ppl_cs.begin(),
   	 v_end = ppl_cs.end(); v_begin != v_end; ++v_begin) {
-    if (!tail_built) {
-      tail_built = true;
-      caml_cs_tail = caml_alloc_tuple(2);
-      Field(caml_cs_tail, 1) = Val_int(0);
-    }
-    Field(caml_cs_tail, 0) = build_caml_constraint(*v_begin);
-    Constraint_System::const_iterator itr = v_begin;
-    ++itr;
-    // If we have a `next` element, make space to store it in the next
-    // cycle.
-    if (itr != v_end) {
-      value new_tail = caml_alloc_tuple(2);
-      Field(new_tail, 1) = caml_cs_tail;
-      caml_cs_tail = new_tail;
-    }
+    value new_tail = caml_alloc_tuple(2);
+    Field(new_tail, 0) = build_caml_constraint(*v_begin);
+    Field(new_tail, 1) = result;
+    result = new_tail;
   }
-  return caml_cs_tail;
+  return result;
 }
 
 value
 build_caml_generator_system(const Generator_System& ppl_gs) {
-  value caml_gs_tail = Val_int(0);
-  bool tail_built = false;
+  value result = Val_int(0);
   for (Generator_System::const_iterator v_begin = ppl_gs.begin(),
   	 v_end = ppl_gs.end(); v_begin != v_end; ++v_begin) {
-    if (!tail_built) {
-      tail_built = true;
-      caml_gs_tail = caml_alloc_tuple(2);
-      Field(caml_gs_tail, 1) = Val_int(0);
-    }
-    Field(caml_gs_tail, 0) = build_caml_generator(*v_begin);
-    Generator_System::const_iterator itr = v_begin;
-    ++itr;
-    if (itr != v_end) {
-      value new_tail = caml_alloc_tuple(2);
-      Field(new_tail, 1) = caml_gs_tail;
-      caml_gs_tail = new_tail;
-    }
+    value new_tail = caml_alloc_tuple(2);
+    Field(new_tail, 0) = build_caml_generator(*v_begin);
+    Field(new_tail, 1) = result;
+    result = new_tail;
   }
-  return caml_gs_tail;
+  return result;
 }
 
 Congruence
