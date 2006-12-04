@@ -36,13 +36,16 @@ namespace Parma_Polyhedra_Library {
 
 enum I_Result {
   I_EMPTY = 0,
+  /*
   I_L_EQ = V_EQ,
   I_L_GT = V_GT,
   I_L_GE = V_GE,
   I_U_EQ = V_EQ << 6,
   I_U_LT = V_LT << 6,
   I_U_LE = V_LE << 6,
-  I_SINGULARITIES = 1 << 12
+  */
+  I_MAYBE_EMPTY = 1 << 12,
+  I_SINGULARITIES = 1 << 13
 };
 
 enum Ternary { T_YES, T_NO, T_MAYBE };
@@ -541,7 +544,7 @@ check_empty_result(const Interval<Boundary, Info>& x, I_Result r) {
   if (Info::check_empty_result && is_empty(x))
     return I_EMPTY;
   else
-    return r;
+    return static_cast<I_Result>(r | I_MAYBE_EMPTY);
 }
 
 template <typename T1, typename T2>
