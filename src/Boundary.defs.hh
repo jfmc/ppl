@@ -343,7 +343,7 @@ lt(Boundary_Type type1, const T1& x1, const Info1& info1,
     if (info1.get_boundary_property(type1, SPECIAL))
       return type1 == LOWER || is_plus_infinity(type2, x2, info2);
     else if (info2.get_boundary_property(type2, SPECIAL))
-      return type2 == UPPER || is_minus_infinity(type2, x2, info2);
+      return type2 == UPPER || is_minus_infinity(type1, x1, info1);
     else
       return x1 <= x2;
   }
