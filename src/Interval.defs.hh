@@ -497,7 +497,7 @@ struct Scalar_As_Interval_Policy {
   const_bool_nodef(check_inexact, false);
 };
 
-typedef Interval_Info_Null<Scalar_As_Interval_Policy> Scalar_As_Interval_Info;
+typedef Interval_Restriction_None<Interval_Info_Null<Scalar_As_Interval_Policy> > Scalar_As_Interval_Info;
 
 static const Scalar_As_Interval_Info& SCALAR_INFO = *static_cast<Scalar_As_Interval_Info*>(0);
 
