@@ -1022,6 +1022,8 @@ inline I_Result
 div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
+  if (y == Constant<0>::value)
+    return static_cast<I_Result>(I_EMPTY | I_SINGULARITIES);
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   div_restriction(to_info, x, y);
@@ -1080,10 +1082,8 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
     }
   }
   else {
-#if 0
-    if (!contains_only_integers(y))
-      return to.set_unbounded();
-#endif
+    // FIXME: restrictions
+    return to.set_unbounded();
   }
   assign_or_swap(to.lower(), to_lower);
   assign_or_swap(to.info(), to_info);
@@ -1091,7 +1091,7 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 }
 
 template <typename B, typename Info, typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
 operator+(const Interval<B, Info>& x, const T& y) {
   Interval<B, Info> z;
   add_assign(z, x, y);
@@ -1099,7 +1099,7 @@ operator+(const Interval<B, Info>& x, const T& y) {
 }
 
 template <typename B, typename Info, typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
 operator+(const T& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   add_assign(z, x, y);
@@ -1107,7 +1107,7 @@ operator+(const T& x, const Interval<B, Info>& y) {
 }
 
 template <typename B, typename Info>
-Interval<B, Info>&
+inline Interval<B, Info>
 operator+(const Interval<B, Info>& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   add_assign(z, x, y);
@@ -1115,7 +1115,7 @@ operator+(const Interval<B, Info>& x, const Interval<B, Info>& y) {
 }
 
 template <typename B, typename Info, typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
 operator-(const Interval<B, Info>& x, const T& y) {
   Interval<B, Info> z;
   sub_assign(z, x, y);
@@ -1123,7 +1123,7 @@ operator-(const Interval<B, Info>& x, const T& y) {
 }
 
 template <typename B, typename Info, typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
 operator-(const T& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   sub_assign(z, x, y);
@@ -1131,7 +1131,7 @@ operator-(const T& x, const Interval<B, Info>& y) {
 }
 
 template <typename B, typename Info>
-Interval<B, Info>&
+inline Interval<B, Info>
 operator-(const Interval<B, Info>& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   sub_assign(z, x, y);
@@ -1139,7 +1139,7 @@ operator-(const Interval<B, Info>& x, const Interval<B, Info>& y) {
 }
 
 template <typename B, typename Info, typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
 operator*(const Interval<B, Info>& x, const T& y) {
   Interval<B, Info> z;
   mul_assign(z, x, y);
@@ -1147,7 +1147,7 @@ operator*(const Interval<B, Info>& x, const T& y) {
 }
 
 template <typename B, typename Info, typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
 operator*(const T& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   mul_assign(z, x, y);
@@ -1155,7 +1155,7 @@ operator*(const T& x, const Interval<B, Info>& y) {
 }
 
 template <typename B, typename Info>
-Interval<B, Info>&
+inline Interval<B, Info>
 operator*(const Interval<B, Info>& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   mul_assign(z, x, y);
@@ -1163,7 +1163,7 @@ operator*(const Interval<B, Info>& x, const Interval<B, Info>& y) {
 }
 
 template <typename B, typename Info, typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
 operator/(const Interval<B, Info>& x, const T& y) {
   Interval<B, Info> z;
   div_assign(z, x, y);
@@ -1171,7 +1171,7 @@ operator/(const Interval<B, Info>& x, const T& y) {
 }
 
 template <typename B, typename Info, typename T>
-typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info>&>::type
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, Interval<B, Info> >::type
 operator/(const T& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   div_assign(z, x, y);
@@ -1179,7 +1179,7 @@ operator/(const T& x, const Interval<B, Info>& y) {
 }
 
 template <typename B, typename Info>
-Interval<B, Info>&
+inline Interval<B, Info>
 operator/(const Interval<B, Info>& x, const Interval<B, Info>& y) {
   Interval<B, Info> z;
   div_assign(z, x, y);
