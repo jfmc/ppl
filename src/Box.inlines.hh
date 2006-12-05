@@ -57,6 +57,14 @@ inline
 Box<Interval>::Box(const Constraint_System& cs)
   : seq(cs.space_dimension()), empty_up_to_date(false) {
   Box& x = *this;
+  // FIXME: temporary. To be removed as soon as the default
+  // constructor of Interval will do the right thing.
+  for (dimension_type i = x.seq.size(); i-- > 0; ) {
+    Interval& seq_i = x.seq[i];
+    seq_i.lower_set_unbounded();
+    seq_i.upper_set_unbounded();
+  }
+  // END OF FIXME.
   x.add_constraints(cs);
 }
 
