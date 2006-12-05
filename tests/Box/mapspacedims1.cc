@@ -142,7 +142,6 @@ test05() {
   box1.map_space_dimensions(function);
 
   Rational_Box known_result(1);
-  known_result.add_constraint(x <= 4);
 
   bool ok = (Rational_Box(box1) == known_result);
 
@@ -175,9 +174,6 @@ test06() {
   box1.map_space_dimensions(function);
 
   Rational_Box known_result(2);
-  known_result.add_constraint(x <= 2);
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(y - x <= 7);
 
   bool ok = (Rational_Box(box1) == known_result);
 
