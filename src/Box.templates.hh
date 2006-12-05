@@ -48,6 +48,116 @@ Box<Interval>::Box(const Box<Other_Interval>& y)
 }
 
 template <typename Interval>
+Box<Interval>::Box(const Generator_System& gs)
+  : seq(gs.space_dimension()), empty(false), empty_up_to_date(true) {
+  const Generator_System::const_iterator gs_begin = gs.begin();
+  const Generator_System::const_iterator gs_end = gs.end();
+  if (gs_begin == gs_end) {
+    // An empty generator system defines the empty box.
+    set_empty();
+    return;
+  }
+
+  const dimension_type space_dim = space_dimension();
+  mpq_class q;
+
+  bool point_seen = false;
+  // Going through all the points.
+  for (Generator_System::const_iterator
+	 gs_i = gs_begin; gs_i != gs_end; ++gs_i) {
+    const Generator& g = *gs_i;
+    if (g.is_point()) {
+      const Coefficient& d = g.divisor();
+      if (point_seen) {
+	// This is not the first point: `seq' already contains valid values.
+	for (dimension_type i = space_dim; i-- > 0; ) {
+	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
+	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
+	  q.canonicalize();
+	  join_assign(seq[i], q);
+	}
+      }
+      else {
+	// This is the first point seen: initialize `seq'.
+	point_seen = true;
+	for (dimension_type i = space_dim; i-- > 0; ) {
+	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
+	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
+	  q.canonicalize();
+	  assign(seq[i], q);
+	}
+      }
+    }
+  }
+
+  if (!point_seen)
+    // The generator system is not empty, but contains no points.
+    throw std::invalid_argument("PPL::Box<Interval>::Box(gs):\n"
+				"the non-empty generator system gs "
+				"contains no points.");
+
+  // Going through all the lines, rays and closure points.
+  Interval q_interval;
+  for (Generator_System::const_iterator gs_i = gs_begin;
+       gs_i != gs_end; ++gs_i) {
+    const Generator& g = *gs_i;
+    switch (g.type()) {
+    case Generator::LINE:
+      for (dimension_type i = space_dim; i-- > 0; )
+	if (g.coefficient(Variable(i)) != 0)
+	  seq[i].set_universe();
+      break;
+    case Generator::RAY:
+      for (dimension_type i = space_dim; i-- > 0; )
+	switch (sgn(g.coefficient(Variable(i)))) {
+	case 1:
+	  seq[i].upper_set_unbounded();
+	  break;
+	case -1:
+	  seq[i].lower_set_unbounded();
+	  break;
+	default:
+	  break;
+	}
+      break;
+    case Generator::CLOSURE_POINT:
+      {
+	const Coefficient& d = g.divisor();
+	for (dimension_type i = space_dim; i-- > 0; ) {
+	  assign_r(q.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
+	  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
+	  q.canonicalize();
+	  Interval& seq_i = seq[i];
+	  if (!seq_i.upper_is_unbounded()) {
+	    const typename Interval::boundary_type& upper_i = seq_i.upper();
+	    q_interval.set_universe();
+	    refine(q_interval, LESS_THAN, q);
+	    if (upper_i < upper(q_interval)) {
+	      refine(q_interval, GREATER_THAN_OR_EQUAL, upper_i);
+	      join_assign(seq_i, q_interval);
+	    }
+	  }
+	  if (!seq_i.lower_is_unbounded()) {
+	    const typename Interval::boundary_type& lower_i = seq_i.lower();
+	    q_interval.set_universe();
+	    refine(q_interval, GREATER_THAN, q);
+	    if (lower_i > lower(q_interval)) {
+	      refine(q_interval, LESS_THAN_OR_EQUAL, lower_i);
+	      join_assign(seq_i, q_interval);
+	    }
+	  }
+	}
+      }
+      break;
+    default:
+      // Points already dealt with.
+      break;
+    }
+  }
+  assert(OK());
+}
+
+template <typename Interval>
 bool
 operator==(const Box<Interval>& x, const Box<Interval>& y) {
   const dimension_type x_space_dim = x.space_dimension();
