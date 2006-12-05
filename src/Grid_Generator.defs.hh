@@ -522,6 +522,5 @@ std::ostream& operator<<(std::ostream& s, const Grid_Generator::Type& t);
 } // namespace Parma_Polyhedra_Library
 
 #include "Grid_Generator.inlines.hh"
-#include "Grid_Generator_System.inlines.hh"
 
 #endif // !defined(PPL_Grid_Generator_defs_hh)

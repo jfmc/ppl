@@ -214,8 +214,8 @@ Constraint.inlines.hh \
 Constraint_System.inlines.hh \
 Generator.defs.hh \
 Generator.inlines.hh \
-Grid_Generator.inlines.hh \
 Grid_Generator.defs.hh \
+Grid_Generator.inlines.hh \
 Congruence.defs.hh \
 Congruence.inlines.hh \
 Generator_System.inlines.hh \

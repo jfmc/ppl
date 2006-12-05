@@ -23,8 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Congruence_inlines_hh
 #define PPL_Congruence_inlines_hh 1
 
-#include "Constraint.defs.hh"
 #include "Linear_Expression.defs.hh"
+#include "Constraint.defs.hh"
 
 #include <sstream>
 

@@ -23,8 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Grid_Generator_inlines_hh
 #define PPL_Grid_Generator_inlines_hh 1
 
-#include "Grid_Generator.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 inline
