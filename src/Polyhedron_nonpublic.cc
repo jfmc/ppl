@@ -601,13 +601,13 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
 
   TEMP_INTEGER(sp);
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
-    const Generator& g = gen_sys[i];
-    Scalar_Products::homogeneous_assign(sp, expr, g);
+    const Generator& gen_sys_i = gen_sys[i];
+    Scalar_Products::homogeneous_assign(sp, expr, gen_sys_i);
     // Lines and rays in `*this' can cause `expr' to be unbounded.
-    if (g.is_line_or_ray()) {
+    if (gen_sys_i.is_line_or_ray()) {
       const int sp_sign = sgn(sp);
       if (sp_sign != 0
-	  && (g.is_line()
+	  && (gen_sys_i.is_line()
 	      || (maximize && sp_sign > 0)
 	      || (!maximize && sp_sign < 0)))
 	// `expr' is unbounded in `*this'.
