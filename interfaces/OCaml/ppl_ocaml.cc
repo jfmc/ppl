@@ -1248,6 +1248,45 @@ ppl_Polyhedron_minimize(value ph, value caml_le) try {
 }
 CATCH_ALL
 
+extern "C"
+void
+ppl_Polyhedron_remove_space_dimensions(value ph, value caml_vset) try {
+  CAMLparam1(ph);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  Variables_Set ppl_vset;
+  if (Int_val(caml_vset) == 0)
+    CAMLreturn0;
+  while (true) {
+    ppl_vset.insert(Int_val(Field(caml_vset, 0)));
+    if (Int_val(Field(caml_vset, 1)) == 0)
+      break;
+    caml_vset = Field(caml_vset, 1);
+  }
+  pph.remove_space_dimensions(ppl_vset);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_Polyhedron_fold_space_dimensions(value ph, value caml_vset, value caml_dim)
+  try {
+  CAMLparam1(ph);
+  dimension_type ppl_dim = Int_val(caml_dim);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  Variables_Set ppl_vset;
+  if (Int_val(caml_vset) == 0)
+    CAMLreturn0;
+  while (true) {
+    ppl_vset.insert(Int_val(Field(caml_vset, 0)));
+    if (Int_val(Field(caml_vset, 1)) == 0)
+      break;
+    caml_vset = Field(caml_vset, 1);
+  }
+  pph.fold_space_dimensions(ppl_vset, Variable(ppl_dim));
+  CAMLreturn0;
+}
+CATCH_ALL
 
 extern "C"
 CAMLprim value
