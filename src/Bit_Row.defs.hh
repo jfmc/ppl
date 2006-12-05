@@ -131,20 +131,28 @@ public:
   //! Clears all the bits of the row.
   void clear();
 
-  friend int compare(const Bit_Row& x, const Bit_Row& y);
+  friend int
+  Parma_Polyhedra_Library::compare(const Bit_Row& x, const Bit_Row& y);
 
-  friend bool operator==(const Bit_Row& x, const Bit_Row& y);
+  friend bool
+  Parma_Polyhedra_Library::operator==(const Bit_Row& x, const Bit_Row& y);
 
-  friend bool operator!=(const Bit_Row& x, const Bit_Row& y);
+  friend bool
+  Parma_Polyhedra_Library::operator!=(const Bit_Row& x, const Bit_Row& y);
 
-  friend bool subset_or_equal(const Bit_Row& x, const Bit_Row& y);
+  friend bool
+  Parma_Polyhedra_Library::subset_or_equal(const Bit_Row& x, const Bit_Row& y);
 
-  friend bool subset_or_equal(const Bit_Row& x, const Bit_Row& y,
-			      bool& strict_subset);
+  friend bool
+  Parma_Polyhedra_Library::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
+					   bool& strict_subset);
 
-  friend bool strict_subset(const Bit_Row& x, const Bit_Row& y);
+  friend bool
+  Parma_Polyhedra_Library::strict_subset(const Bit_Row& x, const Bit_Row& y);
 
-  friend void set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
+  friend void
+  Parma_Polyhedra_Library::set_union(const Bit_Row& x, const Bit_Row& y,
+				     Bit_Row& z);
 
   //! Returns the index of the first set bit or ULONG_MAX if no bit is set.
   unsigned long first() const;
