@@ -239,6 +239,7 @@ get_linear_expression(const R& r) {
       else {
 	sum = caml_alloc(2,4);
 	value term2 = caml_alloc(2,6);
+	// FIXME: this hides the declaration of ppl_coeff above.
 	Coefficient ppl_coeff = r.coefficient(Variable(varid));
 	Field(term2, 0) = build_caml_coefficient(ppl_coeff);
 	value ml_le_var2 = caml_alloc(1,0);
@@ -261,13 +262,11 @@ build_caml_generator(const Generator& ppl_generator) {
     value caml_generator = caml_alloc(1,0);
     Field(caml_generator, 0) = get_linear_expression(ppl_generator);
     return caml_generator;
-    break;
   }
   case Generator::RAY: {
     value caml_generator = caml_alloc(1,1);
     Field(caml_generator, 0) = get_linear_expression(ppl_generator);
     return caml_generator;
-    break;
   }
   case Generator::POINT:  {
     // Allocates two blocks (the linear expression and the divisor)
@@ -277,7 +276,6 @@ build_caml_generator(const Generator& ppl_generator) {
     const Coefficient& divisor = ppl_generator.divisor();
     Field(caml_generator, 1) = build_caml_coefficient(divisor);
     return caml_generator;
-    break;
   }
   case Generator::CLOSURE_POINT:  {
     value caml_generator = caml_alloc(2,3);
@@ -285,7 +283,6 @@ build_caml_generator(const Generator& ppl_generator) {
     const Coefficient& divisor = ppl_generator.divisor();
     Field(caml_generator, 1) =  build_caml_coefficient(divisor);
     return caml_generator;
-    break;
   }
   default:
     throw std::runtime_error("PPL OCaml interface internal error");
@@ -301,21 +298,18 @@ build_caml_constraint(const Constraint& ppl_constraint) {
     Field(caml_constraint, 0) = get_linear_expression(ppl_constraint);
     Field(caml_constraint, 1) = get_inhomogeneous_term(ppl_constraint);
     return caml_constraint;
-    break;
   }
   case Constraint::STRICT_INEQUALITY: {
     value caml_constraint = caml_alloc(2,3);
     Field(caml_constraint, 0) = get_linear_expression(ppl_constraint);
     Field(caml_constraint, 1) = get_inhomogeneous_term(ppl_constraint);
     return caml_constraint;
-    break;
   }
   case Constraint::NONSTRICT_INEQUALITY:  {
     value caml_constraint = caml_alloc(2,4);
     Field(caml_constraint, 0) = get_linear_expression(ppl_constraint);
     Field(caml_constraint, 1) = get_inhomogeneous_term(ppl_constraint);
     return caml_constraint;
-    break;
   }
   default:
     throw std::runtime_error("PPL OCaml interface internal error");
