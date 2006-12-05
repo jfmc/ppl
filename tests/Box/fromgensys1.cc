@@ -100,9 +100,6 @@ test04() {
   known_result.add_constraint(C <= 4);
   known_result.add_constraint(D >= 4);
   known_result.add_constraint(D <= 5);
-  known_result.add_constraint(A == B-1);
-  known_result.add_constraint(C == D-1);
-  known_result.add_constraint(C <= A+2);
 
   bool ok = (Rational_Box(box) == known_result);
 
@@ -128,14 +125,42 @@ test05() {
   TBox box(ph.generators());
 
   Rational_Box known_result(4);
+  known_result.add_constraint(A >= 24);
+  known_result.add_constraint(A <= 60);
+  known_result.add_constraint(B >= 24);
+  known_result.add_constraint(B <= 60);
+  known_result.add_constraint(C >= 12);
   known_result.add_constraint(C <= 30);
   known_result.add_constraint(D >= 4);
   known_result.add_constraint(D <= 10);
-  known_result.add_constraint(B - A <= 0);
-  known_result.add_constraint(A - D <= 50);
-  known_result.add_constraint(B - C >= 12);
-  known_result.add_constraint(C - D <= 23);
-  known_result.add_constraint(C - D >= 8);
+
+
+  bool ok = (Rational_Box(box) == known_result);
+
+  print_constraints(box, "*** box ***");
+
+  return ok;
+}
+
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  NNC_Polyhedron ph(4);
+  ph.add_constraint(A == 7);
+  ph.add_constraint(B < 3);
+  ph.add_constraint(B >= 0);
+  ph.add_constraint(C < 7);
+
+  TBox box(ph.generators());
+
+  Rational_Box known_result(4);
+  known_result.add_constraint(A == 7);
+  known_result.add_constraint(B < 3);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(C < 7);
 
   bool ok = (Rational_Box(box) == known_result);
 
@@ -152,4 +177,5 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN
