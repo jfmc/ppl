@@ -109,6 +109,22 @@ public:
   */
   explicit Box(const Constraint_System& cs);
 
+  //! Builds a box recycling a system of constraints \p cs.
+  /*!
+    The box inherits the space dimension of \p cs.
+
+    \param cs
+    A system of constraints: constraints that are not
+    \ref Boxes "interval constraints"
+    are ignored (even though they may have contributed
+    to the space dimension).
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+  */
+  Box(const Constraint_System& cs, Recycle_Input dummy);
+
   //! Builds a box from the system of generators \p gs.
   /*!
     Builds the smallest box containing the polyhedron defined by \p gs.
@@ -118,6 +134,20 @@ public:
     Thrown if the system of generators is not empty but has no points.
   */
   explicit Box(const Generator_System& gs);
+
+  //! Builds a box recycling the system of generators \p gs.
+  /*!
+    Builds the smallest box containing the polyhedron defined by \p gs.
+    The box inherits the space dimension of \p gs.
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one
+    from the other constructors.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
+  */
+  Box(const Generator_System& gs, Recycle_Input dummy);
 
   //! \name Member Functions that Do Not Modify the Box
   //@{

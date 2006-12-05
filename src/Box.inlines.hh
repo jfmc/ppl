@@ -37,11 +37,8 @@ Box<Interval>::Box(dimension_type num_dimensions, Degenerate_Element kind)
   // constructor of Interval will do the right thing.
   Box& x = *this;
   if (kind == UNIVERSE)
-    for (dimension_type i = num_dimensions; i-- > 0; ) {
-      Interval& seq_i = x.seq[i];
-      seq_i.lower_set_unbounded();
-      seq_i.upper_set_unbounded();
-    }
+    for (dimension_type i = num_dimensions; i-- > 0; )
+      x.seq[i].set_universe();
   // END OF FIXME.
   assert(this->OK());
 }
@@ -59,11 +56,8 @@ Box<Interval>::Box(const Constraint_System& cs)
   Box& x = *this;
   // FIXME: temporary. To be removed as soon as the default
   // constructor of Interval will do the right thing.
-  for (dimension_type i = x.seq.size(); i-- > 0; ) {
-    Interval& seq_i = x.seq[i];
-    seq_i.lower_set_unbounded();
-    seq_i.upper_set_unbounded();
-  }
+  for (dimension_type i = x.seq.size(); i-- > 0; )
+    x.seq[i].set_universe();
   // END OF FIXME.
   x.add_constraints(cs);
 }
@@ -75,6 +69,22 @@ Box<Interval>::swap(Box& y) {
   std::swap(x.seq, y.seq);
   std::swap(x.empty, y.empty);
   std::swap(x.empty_up_to_date, y.empty_up_to_date);
+}
+
+template <typename Interval>
+inline
+Box<Interval>::Box(const Constraint_System& cs, Recycle_Input) {
+  // Recycling is useless: just delegate.
+  Box<Interval> tmp(cs);
+  this->swap(tmp);
+}
+
+template <typename Interval>
+inline
+Box<Interval>::Box(const Generator_System& gs, Recycle_Input) {
+  // Recycling is useless: just delegate.
+  Box<Interval> tmp(gs);
+  this->swap(tmp);
 }
 
 template <typename Interval>
@@ -133,11 +143,8 @@ Box<Interval>::add_space_dimensions_and_embed(const dimension_type m) {
   x.seq.insert(x.seq.end(), m, Interval());
   // FIXME: temporary. To be removed as soon as the default
   // constructor of Interval will do the right thing.
-  for (dimension_type sz = x.seq.size(), i = sz - m; i < sz; ++i) {
-    Interval& seq_i = x.seq[i];
-    seq_i.lower_set_unbounded();
-    seq_i.upper_set_unbounded();
-  }
+  for (dimension_type sz = x.seq.size(), i = sz - m; i < sz; ++i)
+    x.seq[i].set_universe();
   // END OF FIXME.
   assert(x.OK());
 }
