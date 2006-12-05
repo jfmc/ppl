@@ -239,8 +239,7 @@ get_linear_expression(const R& r) {
       else {
 	sum = caml_alloc(2,4);
 	value term2 = caml_alloc(2,6);
-	// FIXME: this hides the declaration of ppl_coeff above.
-	Coefficient ppl_coeff = r.coefficient(Variable(varid));
+	ppl_coeff = r.coefficient(Variable(varid));
 	Field(term2, 0) = build_caml_coefficient(ppl_coeff);
 	value ml_le_var2 = caml_alloc(1,0);
 	Field(ml_le_var2, 0) = Val_int(varid);
