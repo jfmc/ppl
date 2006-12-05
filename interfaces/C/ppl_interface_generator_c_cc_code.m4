@@ -232,7 +232,6 @@ ppl_@CLASS@_@COMPARISON@_@CLASS@
   const @CPP_CLASS@& xx = *to_const(x);
   const @CPP_CLASS@& yy = *to_const(y);
   return xx.@COMPARISON@(yy) ? 1 : 0;
-  return xx.@COMPARISON@(yy) ? 1 : 0;
 }
 CATCH_ALL
 
