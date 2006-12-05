@@ -23,7 +23,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@CLASS@
   *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(phh));
   return 0;
 }
-CATCH_ALL;
+CATCH_ALL
 
 ')
 
