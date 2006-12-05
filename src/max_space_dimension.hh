@@ -41,7 +41,7 @@ max_space_dimension() {
   static bool computed = false;
   static dimension_type d = not_a_dimension();
   if (!computed) {
-    dimension_type d = Variable::max_space_dimension();
+    d = Variable::max_space_dimension();
     d = std::min(d, C_Polyhedron::max_space_dimension());
     d = std::min(d, NNC_Polyhedron::max_space_dimension());
     d = std::min(d, Grid::max_space_dimension());
@@ -59,6 +59,7 @@ max_space_dimension() {
     d = std::min(d, Octagonal_Shape<float>::max_space_dimension());
     d = std::min(d, Octagonal_Shape<double>::max_space_dimension());
     d = std::min(d, Octagonal_Shape<long double>::max_space_dimension());
+    computed = true;
   }
   return d;
 }
