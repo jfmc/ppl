@@ -746,6 +746,8 @@ eq_ext(const Type1& x, const Type2& y) {
     return is_minf<Policy2>(y);
   if (is_pinf<Policy1>(x))
     return is_pinf<Policy2>(y);
+  else if (is_minf<Policy2>(y) || is_pinf<Policy2>(y))
+    return false;
  native:
   return eq<Policy1, Policy2>(x, y);
 }

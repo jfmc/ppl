@@ -1056,7 +1056,7 @@ inline I_Result
 div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
-  if (y == Constant<0>::value)
+  if (is_singleton(y) && lower(y) == Constant<0>::value)
     return static_cast<I_Result>(I_EMPTY | I_SINGULARITIES);
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
@@ -1116,12 +1116,8 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
     }
   }
   else {
-    if (x == Constant<0>::value)
-      return static_cast<I_Result>(to.set_empty() | I_SINGULARITIES);
-    else {
-      // FIXME: restrictions
-      return static_cast<I_Result>(to.set_universe() | I_SINGULARITIES);
-    }
+    // FIXME: restrictions
+    return static_cast<I_Result>(to.set_universe() | I_SINGULARITIES);
   }
   assign_or_swap(to.lower(), to_lower);
   assign_or_swap(to.info(), to_info);
