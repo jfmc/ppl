@@ -233,8 +233,8 @@ template <typename T, typename P>
 struct Is_Checked<Checked_Number<T, P> > : public True { };
 
 template <typename T>
-struct Is_Native_Or_Checked : Bool<(Is_Native<T>::value
-				    || Is_Checked<T>::value)> { };
+struct Is_Native_Or_Checked : public Bool<(Is_Native<T>::value
+					   || Is_Checked<T>::value)> { };
 
 //! A wrapper for numeric types implementing a given policy.
 /*! \ingroup PPL_CXX_interface
