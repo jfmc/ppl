@@ -357,12 +357,14 @@ public:
   }
 
   bool OK() const {
+#if 0
     if (!Info::may_be_empty && is_empty()) {
 #ifndef NDEBUG
 	std::cerr << "The interval is unexpectedly empty." << std::endl;
 #endif
 	return false;
     }
+#endif
 
     if (is_open(LOWER, lower(), info())) {
       if (is_plus_infinity(LOWER, lower(), info())) {
