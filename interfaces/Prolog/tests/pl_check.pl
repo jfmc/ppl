@@ -1916,12 +1916,12 @@ get_bounding_box:-
   get_bounding_box(c, [B >= 0, 4*A =< 2],
                      [i(o(minf), c(1/2)), i(c(0), o(pinf))]),
   get_bounding_box(c, [], [i(o(minf), o(pinf)), i(o(minf), o(pinf))]),
-  get_bounding_box(c, [1=0], [empty, empty]),
+  get_bounding_box(c, [1=0], [empty]),
   get_bounding_box(c, [A =< 4, B =< 4, 3*A + B >= 2],
                      [i(c(-2/3), c(4)), i(c(-10), c(4))]),
   get_bounding_box(nnc, [B > 0, 4*A =< 2],
                      [i(o(minf), c(1/2)), i(o(0), o(pinf))]),
-  get_bounding_box(nnc,[A > 1, B > 1, A < 1, B < 1], [empty, empty]),
+  get_bounding_box(nnc,[A > 1, B > 1, A < 1, B < 1], [empty]),
   get_bounding_box(nnc, [A =< 4, B =< 4, 3*A + B > 2],
                      [i(o(-2/3), c(4)), i(o(-10), c(4))]).
 
@@ -1935,9 +1935,16 @@ get_bounding_box(T, CS, Box) :-
   clean_ppl_new_Polyhedron_from_bounding_box(T, Box, P1),
   clean_ppl_new_Polyhedron_from_bounding_box(T, Box1, P2),
   clean_ppl_new_Polyhedron_from_bounding_box(T, Box2, P3),
-  ppl_Polyhedron_contains_Polyhedron(P1, P),
-  ppl_Polyhedron_contains_Polyhedron(P2, P1),
-  ppl_Polyhedron_contains_Polyhedron(P3, P1),
+  (Box \= [empty]
+  ->
+    ppl_Polyhedron_contains_Polyhedron(P1, P),
+    ppl_Polyhedron_contains_Polyhedron(P2, P1),
+    ppl_Polyhedron_contains_Polyhedron(P3, P1)
+   ;
+    ppl_Polyhedron_is_empty(P1),
+    ppl_Polyhedron_is_empty(P2),
+    ppl_Polyhedron_is_empty(P3)
+  ),
   !,
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1),
