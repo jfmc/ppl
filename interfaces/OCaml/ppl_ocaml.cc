@@ -45,6 +45,56 @@ extern "C" {
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+class PFunc {
+ private:
+   std::set<dimension_type> codomain;
+   std::vector<dimension_type> vec;
+
+ public:
+   PFunc() {
+   }
+
+  bool has_empty_codomain() const {
+    return codomain.empty();
+   }
+
+  dimension_type max_in_codomain() const {
+    if (codomain.empty())
+      throw std::runtime_error("PFunc::max_in_codomain()");
+    return *codomain.rbegin();
+  }
+
+  bool maps(dimension_type i, dimension_type& j) const {
+    if (i >= vec.size())
+      return false;
+    dimension_type vec_i = vec[i];
+    if (vec_i == not_a_dimension())
+      return false;
+    j = vec_i;
+    return true;
+  }
+
+  bool insert(dimension_type i, dimension_type j) {
+    std::pair<std::set<dimension_type>::iterator, bool> s
+      = codomain.insert(j);
+    if (!s.second)
+      // *this is not injective!
+      return false;
+    if (i > vec.size())
+      vec.insert(vec.end(), i - vec.size(), not_a_dimension());
+    if (i == vec.size()) {
+      vec.insert(vec.end(), j);
+      return true;
+    }
+    dimension_type& vec_i = vec[i];
+    if (vec_i != not_a_dimension())
+      // Already mapped: *this is not a function!
+      return false;
+    vec_i = j;
+    return true;
+  }
+};
+
 #define CATCH_ALL							\
   catch(std::bad_alloc&) {						\
     caml_raise_out_of_memory();						\
@@ -1301,6 +1351,23 @@ ppl_Polyhedron_swap(value ph1, value ph2) try {
 }
 CATCH_ALL
 
+extern "C"
+void
+ppl_Polyhedron_map_space_dimensions(value ph, value caml_mapped_dims) try {
+  CAMLparam2(ph, caml_mapped_dims);
+  Polyhedron& pph = *p_Polyhedron_val(ph);
+  PFunc pfunc;
+  while (caml_mapped_dims != Val_int(0)) {
+    Int_val(Field(Field(caml_mapped_dims, 0),0));
+    pfunc.insert(Int_val(Field(Field(caml_mapped_dims, 0),0)),
+		 Int_val(Field(Field(caml_mapped_dims, 0),1)));
+    caml_mapped_dims = Field(caml_mapped_dims, 1);
+  }
+  pph.map_space_dimensions(pfunc);
+  CAMLreturn0;
+}
+CATCH_ALL
+
 
 extern "C"
 CAMLprim void
@@ -1346,6 +1413,8 @@ test_generator_system(value gl) {
   std::cout << gs << std::endl;
   CAMLreturn0;
 }
+
+
 
 #if 0
 void

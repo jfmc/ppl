@@ -210,6 +210,8 @@ let dimensions_to_remove = [3;0];;
 ppl_Polyhedron_remove_space_dimensions ph dimensions_to_remove;;
 let dimensions_to_fold = [1];;
 ppl_Polyhedron_fold_space_dimensions ph dimensions_to_fold 0;;
+let dimensions_to_map = [(1,2);(2,1)];;
+ppl_Polyhedron_map_space_dimensions ph dimensions_to_map;;
 print_newline();
 print_string "Testing minimization";
 print_newline();

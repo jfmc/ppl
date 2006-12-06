@@ -281,6 +281,9 @@ external ppl_Polyhedron_fold_space_dimensions:
 external ppl_Polyhedron_OK:
  polyhedron -> bool = "ppl_Polyhedron_OK"
 
+external ppl_Polyhedron_map_space_dimensions:
+ polyhedron -> (int*int) list -> unit = "ppl_Polyhedron_map_space_dimensions"
+
 external ppl_Polyhedron_swap:
 polyhedron -> polyhedron -> unit = "ppl_Polyhedron_swap"
 
