@@ -223,7 +223,7 @@ Box<Interval>::raise_lower_bound(const dimension_type k, const bool closed,
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
-  I_Result r = refine(x.seq[k], (closed ? GREATER_THAN_OR_EQUAL : GREATER_THAN), q);
+  I_Result r = refine_existential(x.seq[k], (closed ? GREATER_THAN_OR_EQUAL : GREATER_THAN), q);
   // FIXME: r is a mask I_EMPTY may be or'ed with I_SINGULARITIES
   if (r == I_EMPTY)
     x.set_empty();
@@ -243,7 +243,7 @@ Box<Interval>::lower_upper_bound(const dimension_type k, const bool closed,
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
   q.canonicalize();
-  I_Result r = refine(x.seq[k], (closed ? LESS_THAN_OR_EQUAL : LESS_THAN), q);
+  I_Result r = refine_existential(x.seq[k], (closed ? LESS_THAN_OR_EQUAL : LESS_THAN), q);
   // FIXME: r is a mask I_EMPTY may be or'ed with I_SINGULARITIES
   if (r == I_EMPTY)
     x.set_empty();

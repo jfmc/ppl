@@ -133,18 +133,18 @@ Box<Interval>::Box(const Generator_System& gs)
 	  if (!seq_i.upper_is_unbounded()) {
 	    const typename Interval::boundary_type& upper_i = seq_i.upper();
 	    q_interval.set_universe();
-	    refine(q_interval, LESS_THAN, q);
+	    refine_existential(q_interval, LESS_THAN, q);
 	    if (upper_i < upper(q_interval)) {
-	      refine(q_interval, GREATER_THAN_OR_EQUAL, upper_i);
+	      refine_existential(q_interval, GREATER_THAN_OR_EQUAL, upper_i);
 	      join_assign(seq_i, q_interval);
 	    }
 	  }
 	  if (!seq_i.lower_is_unbounded()) {
 	    const typename Interval::boundary_type& lower_i = seq_i.lower();
 	    q_interval.set_universe();
-	    refine(q_interval, GREATER_THAN, q);
+	    refine_existential(q_interval, GREATER_THAN, q);
 	    if (lower_i > lower(q_interval)) {
-	      refine(q_interval, LESS_THAN_OR_EQUAL, lower_i);
+	      refine_existential(q_interval, LESS_THAN_OR_EQUAL, lower_i);
 	      join_assign(seq_i, q_interval);
 	    }
 	  }
@@ -603,15 +603,15 @@ Box<Interval>::add_constraint(const Constraint& c) {
   const Constraint::Type c_type = c.type();
   switch (c_type) {
   case Constraint::EQUALITY:
-    refine(seq_c, EQUAL, q);
+    refine_existential(seq_c, EQUAL, q);
     break;
   case Constraint::NONSTRICT_INEQUALITY:
-    refine(seq_c, (d > 0) ? GREATER_THAN_OR_EQUAL : LESS_THAN_OR_EQUAL, q);
+    refine_existential(seq_c, (d > 0) ? GREATER_THAN_OR_EQUAL : LESS_THAN_OR_EQUAL, q);
     // FIXME: this assertion fails due to a bug in refine.
     assert(seq_c.OK());
     break;
   case Constraint::STRICT_INEQUALITY:
-    refine(seq_c, (d > 0) ? GREATER_THAN : LESS_THAN, q);
+    refine_existential(seq_c, (d > 0) ? GREATER_THAN : LESS_THAN, q);
     break;
   }
   // FIXME: do check the value returned by `refine' and

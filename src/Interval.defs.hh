@@ -642,7 +642,7 @@ operator!=(const T1& x, const T2& y) {
 
 template <typename Boundary, typename Info,
 	  typename T>
-inline bool
+inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
 contains(const Interval<Boundary, Info>& x, const T& y) {
   if (check_empty_arg(y))
     return true;
@@ -656,7 +656,7 @@ contains(const Interval<Boundary, Info>& x, const T& y) {
 
 template <typename Boundary, typename Info,
 	  typename T>
-inline bool
+inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
 strictly_contains(const Interval<Boundary, Info>& x, const T& y) {
   if (check_empty_arg(y))
     return !check_empty_arg(x);
@@ -686,7 +686,7 @@ assign(Interval<To_Boundary, To_Info>& to, const From1& l, const From2& u) {
 
 template <typename To_Boundary, typename To_Info,
 	  typename From>
-inline I_Result
+inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
 assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   if (check_empty_arg(x))
     return to.set_empty();
@@ -704,7 +704,7 @@ assign(Interval<To_Boundary, To_Info>& to, const From& x) {
 
 template <typename To_Boundary, typename To_Info,
 	  typename From>
-inline I_Result
+inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
 join_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   if (check_empty_arg(to))
     return assign(to, x);
@@ -723,7 +723,8 @@ join_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
 
 template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
-inline I_Result
+inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
+			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
 join_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x))
     return assign(to, y);
@@ -747,7 +748,7 @@ join_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) 
 
 template <typename To_Boundary, typename To_Info,
 	  typename From>
-inline I_Result
+inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
   intersect_restriction(to.info(), to, x);
   // FIXME: more accurate?
@@ -761,7 +762,8 @@ intersect_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
 
 template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
-inline I_Result
+inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
+			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
@@ -778,10 +780,19 @@ intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2
   return check_empty_result(to, combine(rl, ru));
 }
 
+/*! \brief
+  Refines \p to so that it satisfies the existential relation \p rel with \p x.
+
+  The \p to interval is restricted so that, upon successful exit,
+  for each element \f$ a \f$ of \p to there exists at least one element
+  \f$ b \f$ of \p x such that \f$ a \mathrel{\mathtt{rel}} b \f$.
+  \return
+  ???
+*/
 template <typename To_Boundary, typename To_Info,
 	  typename From>
-inline I_Result
-refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
+inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+refine_existential(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
   if (check_empty_arg(x))
     return to.set_empty();
   switch (rel) {
@@ -833,10 +844,92 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
     return intersect_assign(to, x);
   case NOT_EQUAL:
     {
-      if (check_empty_arg(to))
-	return I_EMPTY;
       if (!is_singleton(x))
 	return combine(V_EQ, V_EQ);
+      if (check_empty_arg(to))
+	return I_EMPTY;
+      if (eq(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x)))
+	to.lower_shrink();
+      if (eq(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x)))
+	to.upper_shrink();
+      to.invalidate_cardinality_cache();
+      to.normalize();
+      return check_empty_result(to, combine(V_EQ, V_EQ));
+    }
+  default:
+    assert(false);
+    return I_EMPTY;
+  }
+}
+
+/*! \brief
+  Refines \p to so that it satisfies the universal relation \p rel with \p x.
+
+  The \p to interval is restricted so that, upon successful exit,
+  each element \f$ a \f$ of \p to is such that, for each element
+  \f$ b \f$ of \p x, \f$ a \mathrel{\mathtt{rel}} b \f$.
+  \return
+  ???
+*/
+template <typename To_Boundary, typename To_Info,
+	  typename From>
+inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
+refine_universal(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
+  if (check_empty_arg(x))
+    return to.set_empty();
+  switch (rel) {
+  case LESS_THAN:
+    {
+      if (lt(UPPER, to.upper(), to.info(), LOWER, lower(x), info(x)))
+	return combine(V_EQ, V_EQ);
+      to.info().clear_boundary_properties(UPPER);
+      Result ru = assign(UPPER, to.upper(), to.info(),
+			 LOWER, lower(x), info(x), true);
+      to.invalidate_cardinality_cache();
+      to.normalize();
+      return check_empty_result(to, combine(V_EQ, ru));
+    }
+  case LESS_THAN_OR_EQUAL:
+    {
+      if (le(UPPER, to.upper(), to.info(), LOWER, lower(x), info(x)))
+	return combine(V_EQ, V_EQ);
+      to.info().clear_boundary_properties(UPPER);
+      Result ru = assign(UPPER, to.upper(), to.info(),
+			 LOWER, lower(x), info(x));
+      to.invalidate_cardinality_cache();
+      to.normalize();
+      return check_empty_result(to, combine(V_EQ, ru));
+    }
+  case GREATER_THAN:
+    {
+      if (gt(LOWER, to.lower(), to.info(), UPPER, upper(x), info(x)))
+	return combine(V_EQ, V_EQ);
+      to.info().clear_boundary_properties(LOWER);
+      Result rl = assign(LOWER, to.lower(), to.info(),
+			 UPPER, upper(x), info(x), true);
+      to.invalidate_cardinality_cache();
+      to.normalize();
+      return check_empty_result(to, combine(rl, V_EQ));
+    }
+  case GREATER_THAN_OR_EQUAL:
+    {
+      if (ge(LOWER, to.lower(), to.info(), UPPER, upper(x), info(x)))
+	return combine(V_EQ, V_EQ);
+      to.info().clear_boundary_properties(LOWER);
+      Result rl = assign(LOWER, to.lower(), to.info(),
+			 UPPER, upper(x), info(x));
+      to.invalidate_cardinality_cache();
+      to.normalize();
+      return check_empty_result(to, combine(rl, V_EQ));
+    }
+  case EQUAL:
+    return intersect_assign(to, x);
+  case NOT_EQUAL:
+    {
+      if (!is_singleton(x))
+	return to.set_empty();
+      if (check_empty_arg(to))
+	return I_EMPTY;
       if (eq(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x)))
 	to.lower_shrink();
       if (eq(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x)))
@@ -853,7 +946,7 @@ refine(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
 
 template <typename To_Boundary, typename To_Info,
 	  typename T>
-inline I_Result
+inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, I_Result>::type
 neg_assign(Interval<To_Boundary, To_Info>& to, const T& x) {
   if (check_empty_arg(x))
     return to.set_empty();
@@ -872,7 +965,8 @@ neg_assign(Interval<To_Boundary, To_Info>& to, const T& x) {
 
 template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
-inline I_Result
+inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
+			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
 add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
@@ -892,7 +986,8 @@ add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 
 template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
-inline I_Result
+inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
+			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
 sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
@@ -927,7 +1022,8 @@ sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 **/
 template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
-inline I_Result
+inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
+			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
 mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
@@ -1052,7 +1148,8 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 **/
 template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
-inline I_Result
+inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
+			   || Is_Singleton_Or_Interval<From2>::value), I_Result>::type
 div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
