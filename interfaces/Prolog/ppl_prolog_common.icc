@@ -1638,7 +1638,7 @@ interval_term(const Rational_Box::interval_type& i) {
     const Prolog_atom& u_oc = i.upper_is_open() ? a_o : a_c;
     Prolog_term_ref u_b = Prolog_new_term_ref();
     if (i.upper_is_unbounded())
-      Prolog_put_atom(u_b, a_minf);
+      Prolog_put_atom(u_b, a_pinf);
     else
       Prolog_put_term(u_b, rational_term(i.upper()));
     Prolog_term_ref u_t = Prolog_new_term_ref();

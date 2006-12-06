@@ -3165,8 +3165,8 @@ group_predicates(new_polyhedron_from_polyhedron,
 group_predicates(new_polyhedron_from_representations,
   [ppl_new_C_Polyhedron_from_constraints/2,
    ppl_new_NNC_Polyhedron_from_constraints/2,
-   ppl_new_C_Polyhedron_from_genenerators/2,
-   ppl_new_NNC_Polyhedron_from_genenerators/2,
+   ppl_new_C_Polyhedron_from_generators/2,
+   ppl_new_NNC_Polyhedron_from_generators/2,
    ppl_new_C_Polyhedron_from_bounding_box/2,
    ppl_new_NNC_Polyhedron_from_bounding_box/2
   ]).
