@@ -205,6 +205,13 @@ Box<Interval>::set_empty() {
 }
 
 template <typename Interval>
+void
+Box<Interval>::difference_assign(const Box& y) {
+  Box& x = *this;
+  x.box_difference_assign(y);
+}
+
+template <typename Interval>
 inline void
 Box<Interval>::raise_lower_bound(const dimension_type k, const bool closed,
 				 Coefficient_traits::const_reference n,
@@ -219,7 +226,7 @@ Box<Interval>::raise_lower_bound(const dimension_type k, const bool closed,
   I_Result r = refine(x.seq[k], (closed ? GREATER_THAN_OR_EQUAL : GREATER_THAN), q);
   // FIXME: r is a mask I_EMPTY may be or'ed with I_SINGULARITIES
   if (r == I_EMPTY)
-    set_empty();
+    x.set_empty();
   else if (r & I_MAYBE_EMPTY)
     x.empty_up_to_date = false;
 }
@@ -239,7 +246,7 @@ Box<Interval>::lower_upper_bound(const dimension_type k, const bool closed,
   I_Result r = refine(x.seq[k], (closed ? LESS_THAN_OR_EQUAL : LESS_THAN), q);
   // FIXME: r is a mask I_EMPTY may be or'ed with I_SINGULARITIES
   if (r == I_EMPTY)
-    set_empty();
+    x.set_empty();
   else if (r & I_MAYBE_EMPTY)
     x.empty_up_to_date = false;
 }

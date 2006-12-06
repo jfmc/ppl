@@ -29,6 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 // This is only to access Implementation::BD_Shapes::div_round_up.
 #include "BD_Shape.defs.hh"
 
+#include <iostream>
+
 namespace Parma_Polyhedra_Library {
 
 template <typename Interval>
@@ -202,8 +204,13 @@ Box<Interval>::OK() const {
   if (x.empty_up_to_date && !x.empty) {
     Box tmp = x;
     tmp.empty_up_to_date = false;
-    if (tmp.check_empty())
+    if (tmp.check_empty()) {
+#ifndef NDEBUG
+      std::cerr << "The box is empty, but it is marked as non-empty."
+		<< std::endl;
+#endif // NDEBUG
       return false;
+    }
   }
   for (dimension_type k = x.seq.size(); k-- > 0; )
     if (!x.seq[k].OK())
@@ -375,6 +382,52 @@ Box<Interval>::concatenate_assign(const Box& y) {
     x.empty_up_to_date = false;
 
   assert(x.OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::box_difference_assign(const Box& y) {
+  const dimension_type space_dim = space_dimension();
+  // Dimension-compatibility check.
+  if (space_dim != y.space_dimension())
+    throw_dimension_incompatible("box_difference_assign(y)", y);
+
+  Box new_box(space_dim, EMPTY);
+
+  Box& x = *this;
+  if (x.is_empty() || y.is_empty())
+    return;
+
+  // If `x' is zero-dimensional, then at this point both `x' and `y'
+  // are th euniverse box, so that their difference is empty.
+  if (space_dim == 0) {
+    x.set_empty();
+    return;
+  }
+
+  dimension_type index_non_contained = space_dim;
+  dimension_type number_non_contained = 0;
+  for (dimension_type i = space_dim; i-- > 0; )
+    if (!Parma_Polyhedra_Library::contains(y.seq[i], x.seq[i]))
+      if (++number_non_contained == 1)
+	index_non_contained = i;
+      else
+	break;
+
+  switch (number_non_contained) {
+  case 0:
+    // `y' covers `x': the difference is empty.
+    x.set_empty();
+    break;
+  case 1:
+//     Parma_Polyhedra_Library::difference_assign(x.seq[index_non_contained],
+// 					       y.seq[index_non_contained]);
+    break;
+  default:
+    // Nothing to do: the difference is `x'.
+    break;
+  }
+  assert(OK());
 }
 
 template <typename Interval>
@@ -554,11 +607,16 @@ Box<Interval>::add_constraint(const Constraint& c) {
     break;
   case Constraint::NONSTRICT_INEQUALITY:
     refine(seq_c, (d > 0) ? GREATER_THAN_OR_EQUAL : LESS_THAN_OR_EQUAL, q);
+    // FIXME: this assertion fails due to a bug in refine.
+    assert(seq_c.OK());
     break;
   case Constraint::STRICT_INEQUALITY:
     refine(seq_c, (d > 0) ? GREATER_THAN : LESS_THAN, q);
     break;
   }
+  // FIXME: do check the value returned by `refine' and
+  // set `empty' and `empty_up_to_date' as appropriate.
+  x.empty_up_to_date = false;
   assert(x.OK());
 }
 

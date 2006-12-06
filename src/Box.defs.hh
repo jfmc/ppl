@@ -246,6 +246,17 @@ public:
   void upper_bound_assign(const Box& y);
 
   /*! \brief
+    Assigns to \p *this the difference of \p *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  void box_difference_assign(const Box& y);
+
+  //! Same as box_difference_assign.
+  void difference_assign(const Box& y);
+
+  /*! \brief
     Assigns to \p *this the
     \ref Single_Update_Affine_Functions "affine image"
     of \p *this under the function mapping variable \p var to the
