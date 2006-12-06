@@ -274,7 +274,8 @@ assign_mp_minf(To& to, const Minus_Infinity&, Rounding_Dir) {
     set_special<Policy>(to, VC_MINUS_INFINITY);
     return V_EQ;
   }
-  return VC_MINUS_INFINITY;
+  else
+    return VC_MINUS_INFINITY;
 }
 
 template <typename Policy, typename To>
@@ -284,7 +285,8 @@ assign_mp_pinf(To& to, const Plus_Infinity&, Rounding_Dir) {
     set_special<Policy>(to, VC_PLUS_INFINITY);
     return V_EQ;
   }
-  return VC_PLUS_INFINITY;
+  else
+    return VC_PLUS_INFINITY;
 }
 
 template <typename Policy, typename To>
