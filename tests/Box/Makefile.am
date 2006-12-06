@@ -137,10 +137,6 @@ affinepreimage1_SOURCES = affinepreimage1.cc
 
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 
-boxdifference1_SOURCES = boxdifference1.cc
-
-boxhull1_SOURCES = boxhull1.cc
-
 bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
@@ -148,6 +144,10 @@ bhz03widening1_SOURCES = bhz03widening1.cc
 bounded1_SOURCES = bounded1.cc
 
 boundedaffineimage1_SOURCES = boundedaffineimage1.cc
+
+boxdifference1_SOURCES = boxdifference1.cc
+
+boxhull1_SOURCES = boxhull1.cc
 
 cc76widening1_SOURCES = cc76widening1.cc
 
