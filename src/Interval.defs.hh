@@ -526,7 +526,7 @@ struct Scalar_As_Interval_Policy {
 
 typedef Interval_Restriction_None<Interval_Info_Null<Scalar_As_Interval_Policy> > Scalar_As_Interval_Info;
 
-static const Scalar_As_Interval_Info& SCALAR_INFO = *static_cast<Scalar_As_Interval_Info*>(0);
+const Scalar_As_Interval_Info SCALAR_INFO;
 
 template <typename T>
 inline typename Enable_If<Is_Native_Or_Checked<T>::value, const T&>::type

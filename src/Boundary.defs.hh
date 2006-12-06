@@ -221,9 +221,9 @@ is_unbounded(Boundary_Type type, const T& x, const Info& info) {
       && special_is_boundary_infinity(type, x, info);
   else if (std::numeric_limits<T>::has_infinity) {
     if (type == LOWER)
-      return is_minus_infinity(x);
+      return Parma_Polyhedra_Library::is_minus_infinity(x);
     else
-      return is_plus_infinity(x);
+      return Parma_Polyhedra_Library::is_plus_infinity(x);
   }
   else if (std::numeric_limits<T>::is_bounded) {
     if (type == LOWER)
