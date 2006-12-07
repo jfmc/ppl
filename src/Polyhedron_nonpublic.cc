@@ -615,14 +615,14 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
     }
     else {
       // We have a point or a closure point.
-      assert(g.is_point() || g.is_closure_point());
+      assert(gen_sys_i.is_point() || gen_sys_i.is_closure_point());
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
       mpq_class candidate;
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
-      assign_r(candidate.get_den(), g[0], ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), gen_sys_i[0], ROUND_NOT_NEEDED);
       candidate.canonicalize();
-      const bool g_is_point = g.is_point();
+      const bool g_is_point = gen_sys_i.is_point();
       if (first_candidate
 	  || (maximize
 	      && (candidate > extremum
