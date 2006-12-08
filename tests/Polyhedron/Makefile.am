@@ -107,6 +107,7 @@ powerset1 \
 randphull1 randphull2 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
+serialize1 \
 smm1 \
 timeelapse1 timeelapse2 \
 topclosed1 \
