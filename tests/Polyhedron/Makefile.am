@@ -41,6 +41,7 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
+hybrid \
 addcongruence1 \
 addcongruences1 \
 addconstraint1 \
@@ -182,6 +183,8 @@ nnc_writepolyhedron1
 #
 # Sources for the tests
 #
+
+hybrid_SOURCES = hybrid.cc
 
 addcongruence1_SOURCES = addcongruence1.cc
 
