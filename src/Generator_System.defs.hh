@@ -350,6 +350,7 @@ private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend class Parma_Polyhedra_Library::Grid_Generator_System;
+  friend class Serializer;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,

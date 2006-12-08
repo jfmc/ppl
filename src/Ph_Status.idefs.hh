@@ -177,6 +177,8 @@ private:
 
   //! Reset the bits in \p mask.
   void reset(flags_t mask);
+
+  friend class Serializer;
 };
 
 #endif // !defined(PPL_Status_defs_hh)

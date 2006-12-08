@@ -102,6 +102,7 @@ endif
 INCLUDE_FILES = \
 namespaces.hh \
 compiler.hh \
+Serializer.types.hh \
 Coefficient_traits_template.hh \
 Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
@@ -297,7 +298,9 @@ Any_Pointset.types.hh \
 Any_Pointset.defs.hh \
 Any_Pointset.inlines.hh \
 max_space_dimension.hh \
-algorithms.hh
+algorithms.hh \
+Serializer.defs.hh \
+Serializer.inlines.hh
 
 NESTED_INCLUDE_FILES = \
 Ph_Status.idefs.hh \
@@ -306,6 +309,7 @@ BDS_Status.idefs.hh \
 Og_Status.idefs.hh
 
 libppl_la_SOURCES = \
+Serializer.cc \
 Bounding_Box.cc \
 checked.cc \
 Checked_Number.cc \

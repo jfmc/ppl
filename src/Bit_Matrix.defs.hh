@@ -145,6 +145,7 @@ private:
   void Parma_Polyhedra_Library::
   Linear_System::sort_and_remove_with_sat(Bit_Matrix& sat);
 
+  friend class Serializer;
 };
 
 namespace Parma_Polyhedra_Library {

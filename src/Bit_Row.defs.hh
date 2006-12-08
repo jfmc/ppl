@@ -196,6 +196,8 @@ private:
 
   //! Assuming \p w is nonzero, returns the index of the last set bit in \p w.
   static unsigned int last_one(mp_limb_t w);
+
+  friend class Serializer;
 };
 
 namespace std {

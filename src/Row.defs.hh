@@ -147,6 +147,7 @@ public:
     base_type bits;
 
     friend class Row;
+    friend class Serializer;
   };
 
   //! Pre-constructs a row: construction must be completed by construct().
@@ -339,6 +340,7 @@ private:
   //! Returns the capacity of the row (only available during debugging).
   dimension_type capacity() const;
 #endif // EXTRA_ROW_DEBUG
+ friend class Serializer;
 };
 
 namespace Parma_Polyhedra_Library {
@@ -474,6 +476,7 @@ public:
   memory_size_type external_memory_in_bytes() const;
 
 private:
+
   //! The number of coefficients in the row.
   dimension_type size_;
 
@@ -495,6 +498,8 @@ private:
 
   //! Private and unimplemented: assignment is not allowed.
   Impl& operator=(const Impl&);
+
+  friend class Serializer;
 };
 
 #include "Row.inlines.hh"

@@ -112,6 +112,30 @@ AC_ARG_WITH(cxx,
     [use XXX as the C++ compiler]),
   CXX=$with_cxx)
 
+# Zlib library
+
+AC_CHECK_ZLIB
+
+if test x"$have_zlib" = xyes
+then
+  AC_DEFINE(HAVE_ZLIB_H, 1, [Define to 1 if you have the <zlib.h> header file.])
+fi
+
+extra_includes="${extra_includes} ${zlib_includes_option}"
+extra_libraries="${extra_libraries} ${zlib_library_option}"
+
+# Bzip2 library
+
+AC_CHECK_BZ2LIB
+
+if test x"$have_bz2lib" = xyes
+then
+  AC_DEFINE(HAVE_BZLIB_H, 1, [Define to 1 if you have the <bzlib.h> header file.])
+fi
+
+extra_includes="${extra_includes} ${bz2lib_includes_option}"
+extra_libraries="${extra_libraries} ${bz2lib_library_option}"
+
 # Compilation flags
 
 COMP_FLAGS=""

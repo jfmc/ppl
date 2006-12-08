@@ -393,6 +393,7 @@ private:
   struct Row_Less_Than {
     bool operator()(const Row& x, const Row& y) const;
   };
+  friend class Serializer;
 };
 
 namespace std {
