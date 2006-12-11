@@ -117,8 +117,9 @@
             and E. Zaffanella",
   Title = "Grids: A Domain for Analyzing the Distribution of Numerical Values",
   Year = 2006,
-  Note = "Submitted for publication.  Available at
-         \url{http://www.comp.leeds.ac.uk/hill/Papers/papers.html}.",
+  Note = "Accepted for publication and presented at the
+          International Symposium on Logic-based Program Synthesis and
+          Transformation."
   Abstract = "This paper explores the abstract domain of grids,
           a domain that is able to represent sets of equally spaced
           points and hyperplanes over an n-dimensional vector space.
@@ -130,6 +131,7 @@
           operations exploit well-known techniques from linear algebra
           as well as a dual representation that allows, among other
           things, for a concise and efficient implementation."
+  URL = "http://www.comp.leeds.ac.uk/hill/Papers/papers.html"
 }
 
 @Misc{BagnaraDHMZ06b,
@@ -1146,6 +1148,65 @@
   URL = "http://www-cad.eecs.berkeley.edu/HomePages/tah/Publications/abstract-interpretation_strategies_for_hybrid_automata.html"
 }
 
+@Article{AlurCHHHNOSY95,
+  Author = "R. Alur and C. Courcoubetis and N. Halbwachs and
+            T. A. Henzinger and P.-H. Ho and X Nicollin and
+            A. Olivero and J. Sifakis and S. Yovine",
+  Title = "The Algorithmic Analysis of Hybrid Systems",
+  Journal = "Theoretical Computer Science",
+  Volume = 138,
+  Pages = "3--34",
+  Publisher = "Elsevier Science B.V.",
+  Address = "(North-Holland), Amsterdam",
+  Year = 1995,
+  Abstract = "We present a general framework for the formal
+  specification and algorithmic analysis of hybrid systems. A hybrid
+  system consists of a discrete program with an analog environment. We
+  model hybrid systems as finite automata equipped with variables that
+  evolve continuously with time according to dynamical laws. For
+  verification purposes, we restrict ourselves to linear hybrid
+  systems, where all variables follow piecewise-linear
+  trajectories. We provide decidability and undecidability results for
+  classes of linear hybrid systems, and we show that standard
+  program-analysis techniques can be adapted to linear hybrid
+  systems. In particular, we consider symbolic model-checking and
+  minimization procedures that are based on the reachability analysis
+  of an infinite state space. The procedures iteratively compute state
+  sets that are definable as unions of convex polyhedra in
+  multidimensional real space. We also present approximation
+  techniques for dealing with systems for which the iterative
+  procedures do not converge.",
+  URL = "http://mtc.epfl.ch/~tah/Publications/the_algorithmic_analysis_of_hybrid_systems.html"
+}
+
+@InProceedings{AlurCHH93,
+  Author = "R. Alur and C. Courcoubetis and T. A. Henzinger and P.-H. Ho",
+  Title = "Hybrid Automata: An Algorithmic Approach to the
+           Specification and Verification of Hybrid Systems",
+  Booktitle = "Hybrid Systems I",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 736,
+  Year = 1993,
+  Pages = "209--229",
+  Abstract = "We introduce the framework of hybrid automata as a model
+  and specification language for hybrid systems. Hybrid automata can
+  be viewed as a generalization of timed automata, in which the
+  behavior of variables is governed in each state by a set of
+  differential equations. We show that many of the examples considered
+  in the workshop can be defined by hybrid automata. While the
+  reachability problem is undecidable even for very restricted classes
+  of hybrid automata, we present two semidecision procedures for
+  verifying safety properties of piecewise-linear hybrid automata, in
+  which all variables change at constant rates. The two procedures are
+  based, respectively, on minimizing and computing fixpoints on
+  generally infinite state spaces. We show that if the procedures
+  terminate, then they give correct answers. We then demonstrate that
+  for many of the typical workshop examples, the procedures do
+  terminate and thus provide an automatic way for verifying their
+  properties.",
+  URL = "http://mtc.epfl.ch/~tah/Publications/hybrid_automata.html"
+}
+
 @InProceedings{HenzingerPW01,
   Author = "T. A. Henzinger and J. Preussig and H. Wong-Toi",
   Title = "Some Lessons from the {\sc HyTech} Experience",
@@ -1170,6 +1231,32 @@
               these extensions, and conclude with some desiderata for
               verification tools for hybrid systems.",
   URL = "http://www-cad.eecs.berkeley.edu/HomePages/tah/Publications/some_lessons_from_the_hytech_experience.html"
+}
+
+@InProceedings{Henzinger96,
+  Author = "T. A. Henzinger",
+  Title = "The Theory of Hybrid Automata",
+  Booktitle = "Proceedings of the 11th Annual Symposium on
+                 Logic in Computer Science (LICS)",
+  Publisher = "IEEE Computer Society Press",
+  Pages = "278-292",
+  Year = 1996,
+  Abstract = "Hybrid automata, which combine discrete transition
+  graphs with continuous dynamical systems, are mathematical models
+  for digital systems that interact with analog environments. Hybrid
+  automata can be viewed as infinite-state transition systems, and
+  this view gives insights into the structure of hybrid state
+  spaces. For example, for certain interesting classes of hybrid
+  automata, language equivalence, mutual similarity, or bisimilarity
+  induce finite quotients of infinite state spaces. These results can
+  be exploited by analysis techniques for finite-state systems.
+
+  We summarize several recent results about hybrid automata. Our goal
+  is to demonstrate that concepts from the theory of discrete concurrent
+  systems can give insights into partly continuous systems, and that
+  methods for the verification of finite-state systems can be used to
+  analyze certain systems with uncountable state spaces.",
+  URL = "http://mtc.epfl.ch/~tah/Publications/the_theory_of_hybrid_automata.html"
 }
 
 @TechReport{HuelsbergenHL90,
