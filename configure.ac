@@ -641,12 +641,23 @@ AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test ! "x$JAVA" = "xno" &&  test ! "x$ac_cv
 if test x${ocaml_interface_enabled} = xyes
 then
   AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
+  ocamlgmp="no"
   if test x"$OCAMLC" = xocamlc
   then
-    ocamlc_root=`ocamlc -where`
+     ocamlc_root=`ocamlc -where`
+     # checking for OCaml GMP
+     AC_MSG_CHECKING(for Caml-GMP module gmp.cma)
+     if test -f ${ocamlc_root}/gmp/gmp.cma -a -f ${ocamlc_root}/gmp/libmlgmp.a;
+     then
+         AC_MSG_RESULT(yes)
+	 ocamlgmp="yes"
+     else
+         AC_MSG_RESULT(no)
+	 ocamlgmp="no"
+     fi
   fi
 fi
-AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc)
+AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc && test x$ocamlgmp = xyes)
 
 # Ciao Prolog
 if test x${ciao_prolog_interface_enabled} = xyes

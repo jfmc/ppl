@@ -53,8 +53,8 @@ AM_CPPFLAGS = -I$(OCAMLC_ROOT) -I$(top_srcdir)/src -I$(top_builddir)/src @extra_
 
 noinst_PROGRAM = test1
 
-test1$(EXEEXT): ppl_ocaml.cmi libppl_ocaml.a test1.cmo
-	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS) gmp.cma -ccopt -g test1.cmo -cclib -L. -cclib -lppl_ocaml -cclib -L../../src/.libs -cclib -lppl -cclib -lmlgmp -cclib -lgmpxx -cclib -lgmp
+test1$(EXEEXT): ppl_ocaml.cmi ppl_ocaml.cmo libppl_ocaml.a test1.cmo
+	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS) gmp.cma  ppl_ocaml.cmo -ccopt -g test1.cmo -cclib -L. -cclib -lppl_ocaml -cclib -L../../src/.libs -cclib -lppl -cclib -lmlgmp -cclib -lgmpxx -cclib -lgmp
 
 EXTRA_DIST=
 
@@ -63,6 +63,7 @@ EXTRA_DIST=
 
 CLEANFILES = \
 ppl_ocaml.cmi \
+ppl_ocaml.cmo \
 test1.cmi \
 test1.cmo
 
