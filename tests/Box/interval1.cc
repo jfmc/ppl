@@ -64,42 +64,50 @@ test01() {
   return true;
 }
 
+//typedef double number_type;
+typedef Float_Interval number_type;
+
 void
-polynomial_evaluate(const std::vector<Float_Interval>& P,
-		    const std::complex<Float_Interval>& x,
-		    std::complex<Float_Interval>& P_x) {
+polynomial_evaluate(const std::vector<number_type>& P,
+		    const std::complex<number_type>& x,
+		    std::complex<number_type>& P_x) {
   // Note: the coefficient of the leading term is implicitly 1.
-  P_x = std::complex<Float_Interval>(Float_Interval(1.0), Float_Interval(0.0));
+  P_x = std::complex<number_type>(number_type(1.0), number_type(0.0));
   for (int i = P.size(); i >= 1; --i)
-    P_x += P_x*x + P[i-1];
+    P_x = P_x*x + P[i-1];
 }
 
 void
-solve(const std::vector<Float_Interval>& P,
-      std::vector<std::complex<Float_Interval> >& roots) {
+solve(const std::vector<number_type>& P,
+      std::vector<std::complex<number_type> >& roots) {
   const int degree = P.size();
   if (degree < 1)
     throw std::invalid_argument("the polynomial must have degree at least 1");
 
   // Initial estimates are given by roots of unity.
-  std::vector<std::complex<Float_Interval> >x(5);
+  std::vector<std::complex<number_type> >x(5);
   double theta = 2*M_PI/degree;
   for (int i = 0; i < degree; ++i)
-    x[i] = std::complex<Float_Interval>(Float_Interval(cos(i*theta)),
-					Float_Interval(sin(i*theta)));
+    x[i] = std::complex<number_type>(number_type(cos(i*theta)),
+					number_type(sin(i*theta)));
 
   while (true) {
     for (int i = 0; i < degree; ++i)
       nout << "x[" << i << "] = " << x[i] << endl;
     for (int i = 0; i < degree; ++i) {
-      std::complex<Float_Interval> P_x_i;
+      std::complex<number_type> P_x_i;
       polynomial_evaluate(P, x[i], P_x_i);
-      std::complex<Float_Interval> d(Float_Interval(1.0), Float_Interval(0,0));
+      std::complex<number_type> d(number_type(1.0), number_type(0.0));
       for (int j = 0; j < degree; ++j)
 	if (i != j)
 	  d *= (x[i] - x[j]);
+#if 0
       x[i] -= P_x_i;
       x[i] /= d;
+#else
+      P_x_i /= d;
+      x[i] -= P_x_i;
+#endif
     }
   }
   roots.resize(degree+1);
@@ -109,19 +117,48 @@ solve(const std::vector<Float_Interval>& P,
 
 
 bool test02() {
-  std::vector<Float_Interval> P(4);
-  // x^4+5*x^3+7*x^2+134*x+1
+  std::vector<number_type> P(4);
+  // x^4 + 5*x^3 + 7*x^2 + 134*x + 1
   P[3] = 5;
   P[2] = 7;
   P[1] = 134;
   P[0] = 1;
-  std::vector<std::complex<Float_Interval> > roots;
+  std::vector<std::complex<number_type> > roots;
   solve(P, roots);
   return true;
 }
+
+bool test03() {
+  std::vector<number_type> P(2);
+  // x^2 - 1
+  P[1] = 0;
+  P[0] = -1;
+  std::vector<std::complex<number_type> > roots;
+  solve(P, roots);
+  return true;
+}
+
+bool test04() {
+  std::vector<number_type> P(2);
+  // x^2 - 1
+  P[1] = 0;
+  P[0] = -1;
+  for (double d = 0.0; d <= 10.0; d += 1.0) {
+    std::complex<number_type> P_x_i;
+    polynomial_evaluate(P,
+			std::complex<number_type>(number_type(d),
+						  number_type(0.0)),
+			P_x_i);
+    nout << d << " " << P_x_i << endl;
+  }
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
   //DO_TEST(test01);
-  DO_TEST(test02);
+  //DO_TEST(test02);
+  DO_TEST(test03);
+  //DO_TEST(test04);
 END_MAIN
