@@ -1,3 +1,5 @@
+include Ppl_ocaml_globals
+
 exception Error of string
 let _ = Callback.register_exception "PPL_arithmetic_overflow" (Error "any string")
 let _ = Callback.register_exception "PPL_internal_error" (Error "any string")

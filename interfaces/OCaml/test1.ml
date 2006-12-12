@@ -188,6 +188,8 @@ let gs1 = [Point (e2, (Z.from_int 1)); Point (e1, (Z.from_int 2))] ;;
 
 let cong = (e2, e2 , (Z.from_int 1));;
 let cgs = [e3, e2 , (Z.from_int 20)];;
+let ph =  ppl_new_MIP_Problem_from_space_dimension 10;;
+let i = ppl_MIP_Problem_space_dimension ph;;
 let ph = ppl_new_C_Polyhedron_from_congruence_system(cgs);;
 let result =  ppl_Polyhedron_bounds_from_above ph e2;;
 ppl_Polyhedron_add_constraint ph (e2 >=/ e2);;

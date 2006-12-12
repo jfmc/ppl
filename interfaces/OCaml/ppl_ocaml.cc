@@ -1369,6 +1369,61 @@ ppl_Polyhedron_map_space_dimensions(value ph, value caml_mapped_dims) try {
 CATCH_ALL
 
 
+//! Give access to the embedded MIP_Problem* in \p v.
+inline MIP_Problem*&
+p_MIP_Problem_val(value v) {
+  return *reinterpret_cast<MIP_Problem**>(Data_custom_val(v));
+}
+
+void
+custom_MIP_Problem_finalize(value v) {
+  std::cerr << "About to delete a polyhedron " << *p_MIP_Problem_val(v)
+	    << std::endl;
+  delete p_MIP_Problem_val(v);
+}
+
+static struct custom_operations MIP_Problem_custom_operations = {
+  "it.unipr.cs.ppl" "." PPL_VERSION "." "MIP_Problem",
+  custom_MIP_Problem_finalize,
+  custom_compare_default,
+  custom_hash_default,
+  custom_serialize_default,
+  custom_deserialize_default
+};
+
+inline value
+val_p_MIP_Problem(const MIP_Problem& ph) {
+  value v = caml_alloc_custom(&MIP_Problem_custom_operations,
+			      sizeof(MIP_Problem*), 0, 1);
+  p_MIP_Problem_val(v) = const_cast<MIP_Problem*>(&ph);
+  return(v);
+}
+
+extern "C"
+CAMLprim value
+ppl_new_MIP_Problem_from_space_dimension(value d) try {
+  CAMLparam1(d);
+  std::cerr << "Allocated a new MIP_Problem" << std::endl;
+  int dd = Int_val(d);
+  if (dd < 0)
+    abort();
+  CAMLreturn(val_p_MIP_Problem(*new MIP_Problem(dd)));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_space_dimension(value ph) try {
+  CAMLparam1(ph);
+  const MIP_Problem& pph = *p_MIP_Problem_val(ph);
+  dimension_type d = pph.space_dimension();
+  if (d > INT_MAX)
+    abort();
+  CAMLreturn(Val_int(d));
+}
+CATCH_ALL
+
+
 extern "C"
 CAMLprim void
 test_linear_expression(value ocaml_le) {
