@@ -69,40 +69,9 @@ special_set_boundary_infinity(Boundary_Type type, T&, Info& info) {
 }
 
 template <typename T, typename Info>
-inline Result
-special_set_minus_infinity(Boundary_Type type, T& x, Info& info) {
-  if (type == LOWER)
-    return special_set_boundary_infinity(type, x, info);
-  else
-    return assign_r(x, MINUS_INFINITY, round_dir_check(type));
-}
-
-template <typename T, typename Info>
-inline Result
-special_set_plus_infinity(Boundary_Type type, T& x, Info& info) {
-  if (type == UPPER)
-    return special_set_boundary_infinity(type, x, info);
-  else
-    return assign_r(x, PLUS_INFINITY, round_dir_check(type));
-}
-
-
-template <typename T, typename Info>
 inline bool
 special_is_boundary_infinity(Boundary_Type, const T&, const Info&) {
   return true;
-}
-
-template <typename T, typename Info>
-inline bool
-special_is_minus_infinity(Boundary_Type type, const T&, const Info&) {
-  return type == LOWER;
-}
-
-template <typename T, typename Info>
-inline bool
-special_is_plus_infinity(Boundary_Type type, const T&, const Info&) {
-  return type == UPPER;
 }
 
 template <typename T, typename Info>
@@ -163,8 +132,10 @@ set_minus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
   else
     assert(Info::may_contain_infinity);
   Result r;
-  if (Info::store_special)
-    r = special_set_minus_infinity(type, x, info);
+  if (Info::store_special) {
+    assert(type == LOWER);
+    r = special_set_boundary_infinity(type, x, info);
+  }
   else
     r = assign_r(x, MINUS_INFINITY, round_dir_check(type));
   assert(r != VC_MINUS_INFINITY);
@@ -186,12 +157,31 @@ set_plus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
   else
     assert(Info::may_contain_infinity);
   Result r;
-  if (Info::store_special)
-    r = special_set_plus_infinity(type, x, info);
+  if (Info::store_special) {
+    assert(type == UPPER);
+    r = special_set_boundary_infinity(type, x, info);
+  }
   else
     r = assign_r(x, PLUS_INFINITY, round_dir_check(type));
   assert(r != VC_MINUS_INFINITY);
   if (open || r != V_EQ)
+    info.set_boundary_property(type, OPEN);
+  return r;
+}
+
+template <typename T, typename Info>
+inline Result
+set_boundary_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
+  assert(open || Info::may_contain_infinity);
+  Result r;
+  if (Info::store_special)
+    r = special_set_boundary_infinity(type, x, info);
+  else if (type == LOWER)
+    r = assign_r(x, MINUS_INFINITY, round_dir_check(type));
+  else
+    r = assign_r(x, PLUS_INFINITY, round_dir_check(type));
+  assert(r == V_EQ);
+  if (open)
     info.set_boundary_property(type, OPEN);
   return r;
 }
@@ -236,47 +226,50 @@ is_unbounded(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T, typename Info>
 inline bool
-is_minus_infinity(Boundary_Type type, const T& x, const Info& info) {
-  if (Info::store_special)
-    return info.get_boundary_property(type, SPECIAL)
-      && special_is_minus_infinity(type, x, info);
+normal_is_boundary_infinity(Boundary_Type type, const T& x, const Info&) {
+  if (type == LOWER)
+    return Parma_Polyhedra_Library::is_minus_infinity(x);
+  else
+    return Parma_Polyhedra_Library::is_plus_infinity(x);
+}
+
+template <typename T, typename Info>
+inline bool
+normal_is_reverse_infinity(Boundary_Type type, const T& x, const Info&) {
+  if (!Info::may_contain_infinity)
+    return false;
+  if (type == LOWER)
+    return Parma_Polyhedra_Library::is_plus_infinity(x);
   else
     return Parma_Polyhedra_Library::is_minus_infinity(x);
 }
 
 template <typename T, typename Info>
 inline bool
-is_plus_infinity(Boundary_Type type, const T& x, const Info& info) {
-  if (Info::store_special)
-    return info.get_boundary_property(type, SPECIAL)
-      && special_is_plus_infinity(type, x, info);
-  else
-    return Parma_Polyhedra_Library::is_plus_infinity(x);
-}
-
-template <typename T, typename Info>
-inline int
-is_infinity(Boundary_Type type, const T& x, const Info& info) {
-  if (Info::store_special) {
-    if (!info.get_boundary_property(type, SPECIAL))
-      return 0;
-    return special_is_minus_infinity(type, x, info) ? -1 : 1;
+is_minus_infinity(Boundary_Type type, const T& x, const Info& info) {
+  if (type == LOWER) {
+    if (Info::store_special)
+      return info.get_boundary_property(type, SPECIAL)
+	&& special_is_boundary_infinity(type, x, info);
+    else
+      return normal_is_boundary_infinity(type, x, info);
   }
-  else if (Parma_Polyhedra_Library::is_minus_infinity(x))
-    return -1;
-  else if (Parma_Polyhedra_Library::is_plus_infinity(x))
-    return 1;
   else
-    return 0;
+    return !Info::store_special && normal_is_reverse_infinity(type, x, info);
 }
 
 template <typename T, typename Info>
 inline bool
-normal_is_boundary_infinity(Boundary_Type type, const T& x, const Info& info) {
-  if (type == LOWER)
-    return is_minus_infinity(type, x, info);
+is_plus_infinity(Boundary_Type type, const T& x, const Info& info) {
+  if (type == UPPER) {
+    if (Info::store_special)
+      return info.get_boundary_property(type, SPECIAL)
+	&& special_is_boundary_infinity(type, x, info);
+    else
+      return normal_is_boundary_infinity(type, x, info);
+  }
   else
-    return is_plus_infinity(type, x, info);
+    return !Info::store_special && normal_is_reverse_infinity(type, x, info);
 }
 
 template <typename T, typename Info>
@@ -289,26 +282,57 @@ is_boundary_infinity(Boundary_Type type, const T& x, const Info& info) {
     return normal_is_boundary_infinity(type, x, info);
 }
 
-template <typename Info>
+template <typename T, typename Info>
 inline bool
-infinity_is_open(Boundary_Type type, const Info& info) {
-  if (Info::store_open)
-    return info.get_boundary_property(type, OPEN);
-  else
-    return !Info::may_contain_infinity;
+is_reverse_infinity(Boundary_Type type, const T& x, const Info& info) {
+  return !Info::store_special
+    && normal_is_reverse_infinity(type, x, info);
 }
 
 template <typename T, typename Info>
-inline void
+inline int
+is_infinity(Boundary_Type type, const T& x, const Info& info) {
+  if (is_boundary_infinity(type, x, info))
+    return type == LOWER ? -1 : 1;
+  else if (is_reverse_infinity(type, x, info))
+    return type == UPPER ? -1 : 1;
+  else
+    return 0;
+}
+
+template <typename T, typename Info>
+inline bool
+is_boundary_infinity_closed(Boundary_Type type, const T& x, const Info& info) {
+  return Info::may_contain_infinity
+    && !info.get_boundary_property(type, OPEN)
+    && is_boundary_infinity(type, x, info);
+}
+
+template <typename Info>
+inline bool
+boundary_infinity_is_open(Boundary_Type type, const Info& info) {
+  return !Info::may_contain_infinity ||
+    info.get_boundary_property(type, OPEN);
+}
+
+template <typename T, typename Info>
+inline int
+sgn_b(Boundary_Type type, const T& x, const Info& info) {
+  if (info.get_boundary_property(type, SPECIAL) &&
+      special_is_boundary_infinity(type, x, info))
+    return type == LOWER ? -1 : 1;
+  else
+    return sgn(x);
+}
+
+template <typename T, typename Info>
+inline int
 sgn(Boundary_Type type, const T& x, const Info& info) {
-  if (is_minus_infinity(type, x, info))
-    return -1;
-  else if (is_plus_infinity(type, x, info))
-    return 1;
-  int sign = sgn(x);
+  int sign = sgn_b(type, x, info);
   if (x == 0 && info.get_boundary_property(type, OPEN))
     return type == LOWER ? -1 : 1;
-  return sign;
+  else
+    return sign;
 }
 
 template <typename T1, typename Info1, typename T2, typename Info2>
@@ -441,44 +465,16 @@ adjust_boundary(Boundary_Type type, T& x, Info& info,
   }
 }
 
-enum Operand { INF, INF0,
-	       ADD1 = INF, ADD2 = INF,
-	       SUB1 = INF, SUB2 = INF,
-	       MUL1 = INF0, MUL2 = INF0,
-	       DIV1 = INF0, DIV2 = INF };
-
-template <typename T, typename Info>
-inline bool
-is_invariant(Operand o, Boundary_Type type, const T& x, const Info& info) {
-  switch (o) {
-  case INF0:
-    if (x == Constant<0>::value)
-      return true;
-    /* Fall through */
-  case INF:
-    return is_infinity(type, x, info);
-  default:
-    assert(false);
-    return false;
-  }
-}
-
 template <typename To, typename To_Info, typename T, typename Info>
 inline Result
 assign(Boundary_Type to_type, To& to, To_Info& to_info,
        Boundary_Type type, const T& x, const Info& info,
        bool shrink = false) {
   assert(to_type == type);
-  if (info.get_boundary_property(type, SPECIAL)) {
+  if (info.get_boundary_property(type, SPECIAL)
+      && special_is_boundary_infinity(type, x, info)) {
     shrink = shrink || special_is_open(type, x, info);
-    if (special_is_minus_infinity(type, x, info))
-      return set_minus_infinity(to_type, to, to_info, shrink);
-    else if (special_is_plus_infinity(type, x, info))
-      return set_plus_infinity(to_type, to, to_info, shrink);
-    else {
-      assert(false);
-      return VC_NAN;
-    }
+    return set_boundary_infinity(to_type, to, to_info);
   }
   shrink = shrink || normal_is_open(type, x, info);
   bool check = (To_Info::check_inexact
@@ -537,16 +533,10 @@ neg_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type, const T& x, const Info& info) {
   assert(to_type != type);
   bool shrink;
-  if (info.get_boundary_property(type, SPECIAL)) {
+  if (info.get_boundary_property(type, SPECIAL)
+      && special_is_boundary_infinity(type, x, info)) {
     shrink = special_is_open(type, x, info);
-    if (special_is_minus_infinity(type, x, info))
-      return set_plus_infinity(to_type, to, to_info, shrink);
-    else if (special_is_plus_infinity(type, x, info))
-      return set_minus_infinity(to_type, to, to_info, shrink);
-    else {
-      assert(false);
-      return VC_NAN;
-    }
+    return set_boundary_infinity(to_type, to, to_info, shrink);
   }
   shrink = normal_is_open(type, x, info);
   bool check = (To_Info::check_inexact
@@ -561,24 +551,23 @@ add_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type1, const T1& x1, const Info1& info1,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
   assert(type1 == type2);
-#if 0
-  if (info1.get_boundary_property(type1, SPECIAL)) {
-    bool open1 = special_is_open(type1, x1, info1);
+  bool shrink;
+  if (is_boundary_infinity(type1, x1, info1)) {
+    shrink = boundary_infinity_is_open(type1, info1) &&
+      !is_boundary_infinity_closed(type2, x2, info2);
+    return set_boundary_infinity(to_type, to, to_info, shrink);
   }
-  else if (info2.get_boundary_property(type2, SPECIAL)) {
-    bool open2 = special_is_open(type2, x2, info2);
+  else if (is_boundary_infinity(type2, x2, info2)) {
+    shrink = boundary_infinity_is_open(type2, info2) &&
+      !is_boundary_infinity_closed(type1, x1, info1);
+    return set_boundary_infinity(to_type, to, to_info, shrink);
   }
-  // FIXME: missing special check
-  // FIXME: missing singularities check
-#endif
-  bool shrink = normal_is_open(type1, x1, info1)
-    ? (normal_is_open(type2, x2, info2)
-       || !is_invariant(ADD2, type2, x2, info2))
-    : (normal_is_open(type2, x2, info2)
-       && !is_invariant(ADD1, type1, x1, info1));
+  shrink = normal_is_open(type1, x1, info1)
+    || normal_is_open(type2, x2, info2);
   bool check = (To_Info::check_inexact
 		|| (!shrink && (To_Info::store_open
 				|| to_info.has_restriction())));
+  // FIXME: extended handling is not needed
   Result r = add_assign_r(to, x1, x2, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
 }
@@ -589,18 +578,23 @@ sub_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type1, const T1& x1, const Info1& info1,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
   assert(type1 != type2);
-#if 0
-  // FIXME: missing special check
-  // FIXME: missing singularities check
-#endif
-  bool shrink = normal_is_open(type1, x1, info1)
-    ? (normal_is_open(type2, x2, info2)
-       || !is_invariant(SUB2, type2, x2, info2))
-    : (normal_is_open(type2, x2, info2)
-       && !is_invariant(SUB1, type1, x1, info1));
+  bool shrink;
+  if (is_boundary_infinity(type1, x1, info1)) {
+    shrink = boundary_infinity_is_open(type1, info1) &&
+      !is_boundary_infinity_closed(type2, x2, info2);
+    return set_boundary_infinity(to_type, to, to_info, shrink);
+  }
+  else if (is_boundary_infinity(type2, x2, info2)) {
+    shrink = boundary_infinity_is_open(type2, info2) &&
+      !is_boundary_infinity_closed(type1, x1, info1);
+    return set_boundary_infinity(to_type, to, to_info, shrink);
+  }
+  shrink = normal_is_open(type1, x1, info1)
+    || normal_is_open(type2, x2, info2);
   bool check = (To_Info::check_inexact
 		|| (!shrink && (To_Info::store_open
 				|| to_info.has_restriction())));
+  // FIXME: extended handling is not needed
   Result r = sub_assign_r(to, x1, x2, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
 }
@@ -610,19 +604,48 @@ inline Result
 mul_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type1, const T1& x1, const Info1& info1,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
-#if 0
-  // FIXME: missing special check
-  // FIXME: missing singularities check
-#endif
-  bool shrink = normal_is_open(type1, x1, info1)
-    ? (normal_is_open(type2, x2, info2)
-       || !is_invariant(MUL2, type2, x2, info2))
-    : (normal_is_open(type2, x2, info2)
-       && !is_invariant(MUL1, type1, x1, info1));
+  bool shrink;
+  if (is_boundary_infinity(type1, x1, info1)) {
+    shrink = boundary_infinity_is_open(type1, info1) &&
+      !is_boundary_infinity_closed(type2, x2, info2);
+    return set_boundary_infinity(to_type, to, to_info, shrink);
+  }
+  else if (is_boundary_infinity(type2, x2, info2)) {
+    shrink = boundary_infinity_is_open(type2, info2) &&
+      !is_boundary_infinity_closed(type1, x1, info1);
+    return set_boundary_infinity(to_type, to, to_info, shrink);
+  }
+  shrink = normal_is_open(type1, x1, info1)
+    || normal_is_open(type2, x2, info2);
   bool check = (To_Info::check_inexact
 		|| (!shrink && (To_Info::store_open
 				|| to_info.has_restriction())));
+  // FIXME: extended handling is not needed
   Result r = mul_assign_r(to, x1, x2, round_dir_check(to_type, check));
+  return adjust_boundary(to_type, to, to_info, shrink, r);
+}
+
+template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
+inline Result
+mul_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
+	     Boundary_Type type1, const T1& x1, const Info1& info1, int x1s,
+	     Boundary_Type type2, const T2& x2, const Info2& info2, int x2s) {
+  bool shrink;
+  if (x1s == 0) {
+    if (info1.get_boundary_property(type1, OPEN))
+      shrink = x2s != 0 || info2.get_boundary_property(type2, OPEN);
+    else
+      shrink = false;
+  }
+  else if (x2s == 0)
+    shrink = info2.get_boundary_property(type2, OPEN);
+  else
+    return mul_assign(to_type, to, to_info,
+		      type1, x1, info1,
+		      type2, x2, info2);
+  bool check = (To_Info::check_inexact
+		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
+  Result r = assign_r(to, Constant<0>::value, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
 }
 
@@ -633,13 +656,9 @@ div_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
 #if 0
   // FIXME: missing special check
-  // FIXME: missing singularities check
 #endif
   bool shrink = normal_is_open(type1, x1, info1)
-    ? (normal_is_open(type2, x2, info2)
-       || !is_invariant(DIV2, type2, x2, info2))
-    : (normal_is_open(type2, x2, info2)
-       && !is_invariant(DIV1, type1, x1, info1));
+    || normal_is_open(type2, x2, info2);
   bool check = (To_Info::check_inexact
 		|| (!shrink && (To_Info::store_open
 				|| to_info.has_restriction())));
