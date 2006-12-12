@@ -101,13 +101,8 @@ solve(const std::vector<number_type>& P,
       for (int j = 0; j < degree; ++j)
 	if (i != j)
 	  d *= (x[i] - x[j]);
-#if 0
-      x[i] -= P_x_i;
-      x[i] /= d;
-#else
       P_x_i /= d;
       x[i] -= P_x_i;
-#endif
     }
   }
   roots.resize(degree+1);
