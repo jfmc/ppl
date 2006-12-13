@@ -691,7 +691,7 @@ contains(const Interval<Boundary, Info>& x, const T& y) {
     return true;
   if (check_empty_arg(x))
     return false;
-  if (!contains_restriction(x.info(), y.info()))
+  if (!contains_restriction(x.info(), info(y)))
       return false;
   return le(LOWER, x.lower(), x.info(), LOWER, lower(y), info(y))
     && ge(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y));
