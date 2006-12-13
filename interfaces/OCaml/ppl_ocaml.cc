@@ -1327,15 +1327,6 @@ void
 ppl_Polyhedron_remove_space_dimensions(value ph, value caml_vset) try {
   CAMLparam2(ph, caml_vset);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-//   Variables_Set ppl_vset;
-//   if (Int_val(caml_vset) == 0)
-//     CAMLreturn0;
-//   while (true) {
-//     ppl_vset.insert(Int_val(Field(caml_vset, 0)));
-//     if (Int_val(Field(caml_vset, 1)) == 0)
-//       break;
-//     caml_vset = Field(caml_vset, 1);
-//   }
   pph.remove_space_dimensions(build_ppl_Variables_Set(caml_vset));
   CAMLreturn0;
 }
