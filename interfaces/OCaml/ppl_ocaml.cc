@@ -218,6 +218,37 @@ build_ppl_relsym(value caml_relsym) {
   throw std::runtime_error("PPL Caml interface internal error");
   }
 
+Optimization_Mode
+build_ppl_opt_mode(value caml_opt_mode) {
+  switch (Int_val(caml_opt_mode)) {
+  case 0: {
+    return MINIMIZATION;
+  }
+  case 1: {
+    return MAXIMIZATION;
+  }
+ default:
+    ;
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL Caml interface internal error");
+  }
+
+
+Variables_Set
+build_ppl_Variables_Set(value caml_vset) {
+ Variables_Set ppl_vset;
+  if (Int_val(caml_vset) == 0)
+    return ppl_vset;
+  while (true) {
+    ppl_vset.insert(Int_val(Field(caml_vset, 0)));
+    if (Int_val(Field(caml_vset, 1)) == 0)
+      break;
+    caml_vset = Field(caml_vset, 1);
+  }
+  return ppl_vset;
+}
+
 Constraint
 build_ppl_Constraint(value c) {
   value e1 = Field(c, 0);
@@ -1294,18 +1325,18 @@ CATCH_ALL
 extern "C"
 void
 ppl_Polyhedron_remove_space_dimensions(value ph, value caml_vset) try {
-  CAMLparam1(ph);
+  CAMLparam2(ph, caml_vset);
   Polyhedron& pph = *p_Polyhedron_val(ph);
-  Variables_Set ppl_vset;
-  if (Int_val(caml_vset) == 0)
-    CAMLreturn0;
-  while (true) {
-    ppl_vset.insert(Int_val(Field(caml_vset, 0)));
-    if (Int_val(Field(caml_vset, 1)) == 0)
-      break;
-    caml_vset = Field(caml_vset, 1);
-  }
-  pph.remove_space_dimensions(ppl_vset);
+//   Variables_Set ppl_vset;
+//   if (Int_val(caml_vset) == 0)
+//     CAMLreturn0;
+//   while (true) {
+//     ppl_vset.insert(Int_val(Field(caml_vset, 0)));
+//     if (Int_val(Field(caml_vset, 1)) == 0)
+//       break;
+//     caml_vset = Field(caml_vset, 1);
+//   }
+  pph.remove_space_dimensions(build_ppl_Variables_Set(caml_vset));
   CAMLreturn0;
 }
 CATCH_ALL
@@ -1410,6 +1441,23 @@ ppl_new_MIP_Problem_from_space_dimension(value d) try {
   CAMLreturn(val_p_MIP_Problem(*new MIP_Problem(dd)));
 }
 CATCH_ALL
+extern "C"
+CAMLprim value
+ppl_new_MIP_Problem(value d, value caml_cs, value caml_cost,
+		    value caml_opt_mode) try {
+  CAMLparam4(d, caml_cs, caml_cost, caml_opt_mode);
+  std::cerr << "Allocated a new MIP_Problem" << std::endl;
+  int dd = Int_val(d);
+  if (dd < 0)
+    abort();
+  Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
+  Linear_Expression ppl_cost = build_ppl_Linear_Expression(caml_cost);
+  Optimization_Mode ppl_opt_mode = build_ppl_opt_mode(caml_opt_mode);
+  CAMLreturn(val_p_MIP_Problem(*new MIP_Problem(dd, ppl_cs, ppl_cost,
+						ppl_opt_mode)));
+}
+CATCH_ALL
+
 
 extern "C"
 CAMLprim value
@@ -1423,6 +1471,216 @@ ppl_MIP_Problem_space_dimension(value ph) try {
 }
 CATCH_ALL
 
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_constraints(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  const MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  Constraint_System cs;
+  for (MIP_Problem::const_iterator cs_it = ppl_mip.constraints_begin(),
+	 cs_end = ppl_mip.constraints_end(); cs_it != cs_end; ++cs_it) {
+    cs.insert(*cs_it);
+  }
+  CAMLreturn(build_caml_constraint_system(cs));
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_MIP_Problem_add_space_dimensions_and_embed(value caml_mip, value dim) try {
+  CAMLparam2(caml_mip, dim);
+  dimension_type ppl_dim = Int_val(dim);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  ppl_mip.add_space_dimensions_and_embed(ppl_dim);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_MIP_Problem_add_to_integer_space_dimensions(value caml_mip,
+						value caml_ivars) try {
+  CAMLparam2(caml_mip, caml_ivars);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  ppl_mip.add_to_integer_space_dimensions(build_ppl_Variables_Set(caml_ivars));
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_MIP_Problem_add_constraint(value caml_mip,
+			       value caml_constraint) try {
+  CAMLparam2(caml_mip, caml_constraint);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  ppl_mip.add_constraint(build_ppl_Constraint(caml_constraint));
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_MIP_Problem_add_constraints(value caml_mip,
+			       value caml_constraints) try {
+  CAMLparam2(caml_mip, caml_constraints);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  ppl_mip.add_constraints(build_ppl_Constraint_System(caml_constraints));
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_MIP_Problem_set_objective_function(value caml_mip,
+				       value caml_cost) try {
+  CAMLparam2(caml_mip, caml_cost);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  ppl_mip.set_objective_function(build_ppl_Linear_Expression(caml_cost));
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_is_satisfiable(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  CAMLreturn(ppl_mip.is_satisfiable());
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_solve(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  MIP_Problem_Status mip_status = ppl_mip.solve();
+  switch (mip_status) {
+  case UNFEASIBLE_MIP_PROBLEM:
+    CAMLreturn(Val_int(0));
+  case UNBOUNDED_MIP_PROBLEM:
+    CAMLreturn(Val_int(1));
+  case OPTIMIZED_MIP_PROBLEM:
+    CAMLreturn(Val_int(2));
+  default:
+    ;
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL Caml interface internal error");
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_optimization_mode(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  Optimization_Mode opt_mode = ppl_mip.optimization_mode();
+  switch (opt_mode) {
+  case MINIMIZATION:
+    CAMLreturn(Val_int(0));
+  case MAXIMIZATION:
+    CAMLreturn(Val_int(1));
+  default:
+    ;
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL Caml interface internal error");
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_feasible_point(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  CAMLreturn(build_caml_generator(ppl_mip.feasible_point()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_optimizing_point(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  CAMLreturn(build_caml_generator(ppl_mip.optimizing_point()));
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_optimal_value(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  Coefficient num;
+  Coefficient den;
+  ppl_mip.optimal_value(num, den);
+  value caml_return_value = caml_alloc(2,0);
+  Field(caml_return_value, 0) = build_caml_coefficient(num);
+  Field(caml_return_value, 1) = build_caml_coefficient(den);
+  CAMLreturn(caml_return_value);
+
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_evaluate_objective_function(value caml_mip,
+					    value caml_generator) try {
+  CAMLparam2(caml_mip, caml_generator);
+  Generator g = build_ppl_Generator(caml_generator);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  Coefficient num;
+  Coefficient den;
+  ppl_mip.evaluate_objective_function(g, num, den);
+  value caml_return_value = caml_alloc(2,0);
+  Field(caml_return_value, 0) = build_caml_coefficient(num);
+  Field(caml_return_value, 1) = build_caml_coefficient(den);
+  CAMLreturn(caml_return_value);
+
+}
+CATCH_ALL
+
+extern "C"
+CAMLprim value
+ppl_MIP_Problem_OK(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  CAMLreturn(ppl_mip.OK());
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_MIP_Problem_clear(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  ppl_mip.clear();
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_MIP_Problem_set_optimization_mode(value caml_mip, value caml_opt_mode) try{
+  CAMLparam2(caml_mip, caml_opt_mode);
+  Optimization_Mode ppl_opt_mode= build_ppl_opt_mode(caml_opt_mode);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  ppl_mip.set_optimization_mode(ppl_opt_mode);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+extern "C"
+void
+ppl_MIP_Problem_swap(value caml_mip1, value caml_mip2) try{
+  CAMLparam2(caml_mip1, caml_mip2);
+  MIP_Problem& ppl_mip1 = *p_MIP_Problem_val(caml_mip1);
+  MIP_Problem& ppl_mip2 = *p_MIP_Problem_val(caml_mip2);
+  ppl_mip1.swap(ppl_mip2);
+  CAMLreturn0;
+}
+CATCH_ALL
 
 extern "C"
 CAMLprim void

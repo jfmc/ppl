@@ -69,70 +69,70 @@ val ppl_Polyhedron_poly_gen_relation:
       polyhedron -> linear_generator -> relation_with_generator list
 
 val ppl_Polyhedron_space_dimension:
-  polyhedron -> int
+    polyhedron -> int
 
 val ppl_Polyhedron_affine_dimension:
-  polyhedron -> int
+    polyhedron -> int
 
 val ppl_Polyhedron_is_empty:
-  polyhedron -> bool
+    polyhedron -> bool
 
 val ppl_Polyhedron_is_universe:
-  polyhedron -> bool
+    polyhedron -> bool
 
 val ppl_Polyhedron_contains_interger_point:
-  polyhedron -> bool
+    polyhedron -> bool
 
 val ppl_Polyhedron_is_topologically_closed:
-  polyhedron -> bool
+    polyhedron -> bool
 
 val ppl_Polyhedron_is_bounded:
-  polyhedron -> bool
+    polyhedron -> bool
 
 val ppl_Polyhedron_bounds_from_above:
-  polyhedron -> linear_expression -> bool
+    polyhedron -> linear_expression -> bool
 
 val ppl_Polyhedron_bounds_from_below:
-  polyhedron -> linear_expression -> bool
+    polyhedron -> linear_expression -> bool
 
 val ppl_Polyhedron_add_constraint:
-  polyhedron -> linear_constraint -> unit
+    polyhedron -> linear_constraint -> unit
 
 val ppl_Polyhedron_add_constraint_and_minimize:
-  polyhedron -> linear_constraint -> unit
+    polyhedron -> linear_constraint -> unit
 
 val ppl_Polyhedron_add_constraints:
-  polyhedron -> constraint_system -> unit
+    polyhedron -> constraint_system -> unit
 
 val ppl_Polyhedron_add_constraints_and_minimize:
-  polyhedron -> constraint_system -> unit
+    polyhedron -> constraint_system -> unit
 
 val ppl_Polyhedron_add_generator:
-  polyhedron -> linear_generator -> unit
+    polyhedron -> linear_generator -> unit
 
 val ppl_Polyhedron_add_generator_and_minimize:
-  polyhedron -> linear_generator -> unit
+    polyhedron -> linear_generator -> unit
 
 val ppl_Polyhedron_add_generators:
-  polyhedron -> generator_system -> unit
+    polyhedron -> generator_system -> unit
 
 val ppl_Polyhedron_add_generators_and_minimize:
-  polyhedron -> generator_system -> unit
+    polyhedron -> generator_system -> unit
 
 val ppl_Polyhedron_add_congruences:
-  polyhedron -> congruence_system -> unit
+    polyhedron -> congruence_system -> unit
 
 val ppl_Polyhedron_is_disjoint_from:
-  polyhedron -> polyhedron -> bool
+    polyhedron -> polyhedron -> bool
 
 val ppl_Polyhedron_contains:
-  polyhedron -> polyhedron -> bool
+    polyhedron -> polyhedron -> bool
 
 val ppl_Polyhedron_intersection_assign_and_minimize:
-   polyhedron -> polyhedron -> bool
+    polyhedron -> polyhedron -> bool
 
 val ppl_Polyhedron_intersection_assign:
-   polyhedron -> polyhedron -> unit
+    polyhedron -> polyhedron -> unit
 
 val ppl_Polyhedron_poly_hull_assign_and_minimize:
     polyhedron -> polyhedron -> bool
@@ -156,91 +156,91 @@ val ppl_Polyhedron_concatenate_assign:
     polyhedron -> polyhedron -> unit
 
 val ppl_Polyhedron_add_space_dimensions_and_embed:
-  polyhedron -> int -> unit
+    polyhedron -> int -> unit
 
 val ppl_Polyhedron_add_space_dimensions_and_project:
-  polyhedron -> int -> unit
+    polyhedron -> int -> unit
 
 val ppl_Polyhedron_remove_higher_space_dimensions:
-  polyhedron -> int -> unit
+    polyhedron -> int -> unit
 
 val ppl_Polyhedron_remove_higher_space_dimensions:
-  polyhedron -> int -> unit
+    polyhedron -> int -> unit
 
 val ppl_Polyhedron_space_dimension:
-  polyhedron -> int
+    polyhedron -> int
 
 val ppl_Polyhedron_constraints:
-   polyhedron -> constraint_system
+    polyhedron -> constraint_system
 
 val ppl_Polyhedron_minimized_constraints:
-   polyhedron -> constraint_system
+    polyhedron -> constraint_system
 
 val ppl_Polyhedron_generators:
-   polyhedron -> generator_system
+    polyhedron -> generator_system
 
 val ppl_Polyhedron_minimized_generators:
-   polyhedron -> generator_system
+    polyhedron -> generator_system
 
 val ppl_Polyhedron_congruences:
-   polyhedron -> congruence_system
+    polyhedron -> congruence_system
 
 val ppl_Polyhedron_minimized_congruences:
-   polyhedron -> congruence_system
+    polyhedron -> congruence_system
 
 val ppl_Polyhedron_affine_image:
-  polyhedron -> int -> linear_expression -> Z.t -> unit
+    polyhedron -> int -> linear_expression -> Z.t -> unit
 
 val ppl_Polyhedron_affine_preimage:
-  polyhedron -> int -> linear_expression -> Z.t -> unit
+    polyhedron -> int -> linear_expression -> Z.t -> unit
 
 val ppl_Polyhedron_generalized_affine_image:
-  polyhedron -> linear_expression -> relation_symbol -> linear_expression
+    polyhedron -> linear_expression -> relation_symbol -> linear_expression
     -> unit
 
 val ppl_Polyhedron_generalized_affine_image:
-  polyhedron -> int -> relation_symbol -> linear_expression
+    polyhedron -> int -> relation_symbol -> linear_expression
       -> Z.t -> unit
 
 val ppl_Polyhedron_generalized_affine_preimage1:
-  polyhedron -> int -> relation_symbol -> linear_expression
+    polyhedron -> int -> relation_symbol -> linear_expression
       -> Z.t -> unit
 
 val ppl_Polyhedron_generalized_affine_preimage2:
-  polyhedron -> linear_expression -> relation_symbol -> linear_expression
+    polyhedron -> linear_expression -> relation_symbol -> linear_expression
     -> unit
 
 val ppl_Polyhedron_bounded_affine_image:
-  polyhedron -> int -> linear_expression -> linear_expression
+    polyhedron -> int -> linear_expression -> linear_expression
       -> Z.t -> unit
 
 val ppl_Polyhedron_bounded_affine_preimage:
-  polyhedron -> int -> linear_expression -> linear_expression
+    polyhedron -> int -> linear_expression -> linear_expression
       -> Z.t -> unit
 
 val ppl_Polyhedron_BHRZ03_widening_assign:
- polyhedron -> polyhedron -> int -> int
+    polyhedron -> polyhedron -> int -> int
 
 val ppl_Polyhedron_limited_BHRZ03_extrapolation_assign:
- polyhedron -> polyhedron -> constraint_system -> int -> int
+    polyhedron -> polyhedron -> constraint_system -> int -> int
 
 val ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign:
- polyhedron -> polyhedron -> constraint_system -> int -> int
+    polyhedron -> polyhedron -> constraint_system -> int -> int
 
 val ppl_Polyhedron_limited_H79_extrapolation_assign:
- polyhedron -> polyhedron -> constraint_system -> int -> int
+    polyhedron -> polyhedron -> constraint_system -> int -> int
 
 val ppl_Polyhedron_bounded_H79_extrapolation_assign:
- polyhedron -> polyhedron -> constraint_system -> int -> int
+    polyhedron -> polyhedron -> constraint_system -> int -> int
 
 val ppl_Polyhedron_H79_widening_assign:
- polyhedron -> polyhedron -> int -> int
+    polyhedron -> polyhedron -> int -> int
 
 val ppl_Polyhedron_maximize:
- polyhedron -> linear_expression -> bool * Z.t * Z.t * bool * linear_generator
+    polyhedron -> linear_expression -> bool * Z.t * Z.t * bool * linear_generator
 
 val ppl_Polyhedron_minimize:
- polyhedron -> linear_expression -> bool * Z.t * Z.t * bool * linear_generator
+    polyhedron -> linear_expression -> bool * Z.t * Z.t * bool * linear_generator
 
 val ppl_Polyhedron_remove_space_dimensions:
      polyhedron -> int list -> unit
@@ -249,25 +249,25 @@ val ppl_Polyhedron_fold_space_dimensions:
      polyhedron -> int list -> int -> unit
 
 val ppl_Polyhedron_OK:
- polyhedron -> bool
+    polyhedron -> bool
 
 val ppl_Polyhedron_map_space_dimensions:
- polyhedron -> (int*int) list -> unit
+    polyhedron -> (int*int) list -> unit
 
 val ppl_Polyhedron_swap:
-polyhedron -> polyhedron -> unit
+    polyhedron -> polyhedron -> unit
 
 val test_linear_expression:
-  linear_expression -> unit
+    linear_expression -> unit
 
 val test_linear_constraint:
-  linear_constraint -> unit
+    linear_constraint -> unit
 
 val test_linear_generator:
-  linear_generator -> unit
+    linear_generator -> unit
 
 val test_constraint_system:
-  constraint_system -> unit
+    constraint_system -> unit
 
 val test_generator_system:
-  generator_system -> unit
+    generator_system -> unit
