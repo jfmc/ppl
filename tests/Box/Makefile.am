@@ -73,7 +73,7 @@ generalizedaffineimage1 \
 generalizedaffinepreimage1 \
 geomcovers1 \
 intersection1 \
-interval1 \
+interval1 interval2 \
 mapspacedims1 \
 maxspacedim1 \
 membytes1 \
@@ -188,6 +188,7 @@ geomcovers1_SOURCES = geomcovers1.cc
 intersection1_SOURCES = intersection1.cc
 
 interval1_SOURCES = interval1.cc
+interval2_SOURCES = interval2.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
