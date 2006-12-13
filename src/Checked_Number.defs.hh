@@ -539,6 +539,8 @@ typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_minus_infinity
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_plus_infinity(const T& x);
 template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, int>::type is_infinity(const T& x);
+template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_integer(const T& x);
 
 template <typename To>

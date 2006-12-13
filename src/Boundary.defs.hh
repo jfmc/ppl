@@ -604,6 +604,7 @@ inline Result
 mul_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type1, const T1& x1, const Info1& info1,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
+  assert(x1 != Constant<0>::value && x2 != Constant<0>::value);
   bool shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
     shrink = boundary_infinity_is_open(type1, info1) &&
@@ -625,24 +626,9 @@ mul_assign(Boundary_Type to_type, To& to, To_Info& to_info,
   return adjust_boundary(to_type, to, to_info, shrink, r);
 }
 
-template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
+template <typename To, typename To_Info>
 inline Result
-mul_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
-	     Boundary_Type type1, const T1& x1, const Info1& info1, int x1s,
-	     Boundary_Type type2, const T2& x2, const Info2& info2, int x2s) {
-  bool shrink;
-  if (x1s == 0) {
-    if (info1.get_boundary_property(type1, OPEN))
-      shrink = x2s != 0 || info2.get_boundary_property(type2, OPEN);
-    else
-      shrink = false;
-  }
-  else if (x2s == 0)
-    shrink = info2.get_boundary_property(type2, OPEN);
-  else
-    return mul_assign(to_type, to, to_info,
-		      type1, x1, info1,
-		      type2, x2, info2);
+set_zero(Boundary_Type to_type, To& to, To_Info& to_info, bool shrink) {
   bool check = (To_Info::check_inexact
 		|| (!shrink && (To_Info::store_open || to_info.has_restriction())));
   Result r = assign_r(to, Constant<0>::value, round_dir_check(to_type, check));
@@ -651,19 +637,70 @@ mul_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
+mul_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
+	     Boundary_Type type1, const T1& x1, const Info1& info1, int x1s,
+	     Boundary_Type type2, const T2& x2, const Info2& info2, int x2s) {
+  bool shrink;
+  if (x1s != 0) {
+    if (x2s != 0)
+      return mul_assign(to_type, to, to_info,
+			type1, x1, info1,
+			type2, x2, info2);
+    else
+      shrink = info2.get_boundary_property(type2, OPEN);
+  }
+  else {
+    shrink = info1.get_boundary_property(type1, OPEN)
+      && (x2s != 0 || info2.get_boundary_property(type2, OPEN));
+  }
+  return set_zero(to_type, to, to_info, shrink);
+}
+
+template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
+inline Result
 div_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type1, const T1& x1, const Info1& info1,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
-#if 0
-  // FIXME: missing special check
-#endif
-  bool shrink = normal_is_open(type1, x1, info1)
+  assert(x1 != Constant<0>::value && x2 != Constant<0>::value);
+  bool shrink;
+  if (is_boundary_infinity(type1, x1, info1)) {
+    shrink = boundary_infinity_is_open(type1, info1);
+    return set_boundary_infinity(to_type, to, to_info, shrink);
+  }
+  else if (is_boundary_infinity(type2, x2, info2)) {
+    shrink = boundary_infinity_is_open(type2, info2);
+    return set_zero(to_type, to, to_info, shrink);
+  }
+  shrink = normal_is_open(type1, x1, info1)
     || normal_is_open(type2, x2, info2);
   bool check = (To_Info::check_inexact
 		|| (!shrink && (To_Info::store_open
 				|| to_info.has_restriction())));
+  // FIXME: extended handling is not needed
   Result r = div_assign_r(to, x1, x2, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
+}
+
+
+template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
+inline Result
+div_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
+	     Boundary_Type type1, const T1& x1, const Info1& info1, int x1s,
+	     Boundary_Type type2, const T2& x2, const Info2& info2, int x2s) {
+  bool shrink;
+  if (x1s != 0) {
+    if (x2s != 0)
+      return div_assign(to_type, to, to_info,
+			type1, x1, info1,
+			type2, x2, info2);
+    else
+      return set_boundary_infinity(to_type, to, to_info, true);
+  }
+  else {
+    shrink = info1.get_boundary_property(type1, OPEN)
+      && !is_boundary_infinity_closed(type2, x2, info2);
+    return set_zero(to_type, to, to_info, shrink);
+  }
 }
 
 }

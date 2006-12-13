@@ -1093,24 +1093,30 @@ inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
 mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   if (check_empty_arg(x) || check_empty_arg(y))
     return to.set_empty();
+  int xls = sgn_b(LOWER, lower(x), info(x));
+  int xus = xls > 0 ? 1 : sgn_b(UPPER, upper(x), info(x));
+  int yls = sgn_b(LOWER, lower(y), info(y));
+  int yus = yls > 0 ? 1 : sgn_b(UPPER, upper(y), info(y));
   int inf = is_infinity(x);
-  int sl, su;
+  int ls, us;
   if (inf) {
-    sl = sgn(LOWER, lower(y), info(y));
-    su = sgn(UPPER, upper(y), info(y));
+    ls = yls;
+    us = yus;
     goto inf;
   }
   else {
     inf = is_infinity(y);
     if (inf) {
-      sl = sgn(LOWER, lower(x), info(x));
-      su = sgn(UPPER, upper(x), info(x));
+      ls = xls;
+      us = xus;
     inf:
-      if (sl == 0 && su == 0)
+      if (ls == 0 && us == 0)
 	return to.set_empty();
-      if (sl == -su)
+      if (ls == -us)
 	return to.set_infinities();
-      else if (inf < 0)
+      if (ls < 0 || us < 0)
+	inf = -inf;
+      if (inf < 0)
 	return to.set_minus_infinity();
       else
 	return to.set_plus_infinity();
@@ -1123,10 +1129,6 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   Result rl, ru;
   DIRTY_TEMP(To_Boundary, to_lower);
 
-  int xls = sgn_b(LOWER, lower(x), info(x));
-  int xus = xls > 0 ? 1 : sgn_b(UPPER, upper(x), info(x));
-  int yls = sgn_b(LOWER, lower(y), info(y));
-  int yus = yls > 0 ? 1 : sgn_b(UPPER, upper(y), info(y));
   if (xls >= 0) {
     if (yls >= 0) {
       // 0 <= xl <= xu, 0 <= yl <= yu
@@ -1259,8 +1261,22 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   int yus = yls > 0 ? 1 : sgn_b(UPPER, upper(y), info(y));
   if (yls == 0 && yus == 0)
     return to.set_empty();
+  int inf = is_infinity(x);
+  if (inf) {
+    if (is_infinity(y))
+      return to.set_empty();
+    if (yls == -yus)
+      return to.set_infinities();
+    if (yls < 0 || yus < 0)
+      inf = -inf;
+    if (inf < 0)
+      return to.set_minus_infinity();
+    else
+      return to.set_plus_infinity();
+  }
   int xls = sgn_b(LOWER, lower(x), info(x));
   int xus = xls > 0 ? 1 : sgn_b(UPPER, upper(x), info(x));
+
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   div_restriction(to_info, x, y);
@@ -1268,54 +1284,54 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   DIRTY_TEMP(To_Boundary, to_lower);
   if (yls >= 0) {
     if (xls >= 0) {
-      rl = div_assign(LOWER, to_lower, to_info,
-		      LOWER, lower(x), info(x),
-		      UPPER, upper(y), info(y));
-      ru = div_assign(UPPER, to.upper(), to_info,
-		      UPPER, upper(x), info(x),
-		      LOWER, lower(y), info(y));
+      rl = div_assign_z(LOWER, to_lower, to_info,
+			LOWER, lower(x), info(x), xls,
+			UPPER, upper(y), info(y), yus);
+      ru = div_assign_z(UPPER, to.upper(), to_info,
+			UPPER, upper(x), info(x), xus,
+			LOWER, lower(y), info(y), yls);
     }
     else if (xus <= 0) {
-      rl = div_assign(LOWER, to_lower, to_info,
-		      LOWER, lower(x), info(x),
-		      LOWER, lower(y), info(y));
-      ru = div_assign(UPPER, to.upper(), to_info,
-		      UPPER, upper(x), info(x),
-		      UPPER, upper(y), info(y));
+      rl = div_assign_z(LOWER, to_lower, to_info,
+			LOWER, lower(x), info(x), xls,
+			LOWER, lower(y), info(y), yls);
+      ru = div_assign_z(UPPER, to.upper(), to_info,
+			UPPER, upper(x), info(x), xus,
+			UPPER, upper(y), info(y), yus);
     }
     else {
-      rl = div_assign(LOWER, to_lower, to_info,
-		      LOWER, lower(x), info(x),
-		      LOWER, lower(y), info(y));
-      ru = div_assign(UPPER, to.upper(), to_info,
-		      UPPER, upper(x), info(x),
-		      LOWER, lower(y), info(y));
+      rl = div_assign_z(LOWER, to_lower, to_info,
+			LOWER, lower(x), info(x), xls,
+			LOWER, lower(y), info(y), yls);
+      ru = div_assign_z(UPPER, to.upper(), to_info,
+			UPPER, upper(x), info(x), xus,
+			LOWER, lower(y), info(y), yls);
     }
   }
   else if (yus <= 0) {
     if (xls >= 0) {
-      rl = div_assign(LOWER, to_lower, to_info,
-		      UPPER, upper(x), info(x),
-		      UPPER, upper(y), info(y));
-      ru = div_assign(UPPER, to.upper(), to_info,
-		      LOWER, lower(x), info(x),
-		      LOWER, lower(y), info(y));
+      rl = div_assign_z(LOWER, to_lower, to_info,
+			UPPER, upper(x), info(x), xus,
+			UPPER, upper(y), info(y), yus);
+      ru = div_assign_z(UPPER, to.upper(), to_info,
+			LOWER, lower(x), info(x), xls,
+			LOWER, lower(y), info(y), yls);
     }
     else if (xus <= 0) {
-      rl = div_assign(LOWER, to_lower, to_info,
-		      UPPER, upper(x), info(x),
-		      LOWER, lower(y), info(y));
-      ru = div_assign(UPPER, to.upper(), to_info,
-		      LOWER, lower(x), info(x),
-		      UPPER, upper(y), info(y));
+      rl = div_assign_z(LOWER, to_lower, to_info,
+			UPPER, upper(x), info(x), xus,
+			LOWER, lower(y), info(y), yls);
+      ru = div_assign_z(UPPER, to.upper(), to_info,
+			LOWER, lower(x), info(x), xls,
+			UPPER, upper(y), info(y), yus);
     }
     else {
-      rl = div_assign(LOWER, to_lower, to_info,
-		      UPPER, upper(x), info(x),
-		      UPPER, upper(y), info(y));
-      ru = div_assign(UPPER, to.upper(), to_info,
-		      LOWER, lower(x), info(x),
-		      UPPER, upper(y), info(y));
+      rl = div_assign_z(LOWER, to_lower, to_info,
+			UPPER, upper(x), info(x), xus,
+			UPPER, upper(y), info(y), yus);
+      ru = div_assign_z(UPPER, to.upper(), to_info,
+			LOWER, lower(x), info(x), xls,
+			UPPER, upper(y), info(y), yus);
     }
   }
   else {

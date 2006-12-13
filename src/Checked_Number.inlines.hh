@@ -271,6 +271,12 @@ is_plus_infinity(const T& x) {
 }
 
 template <typename T>
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, int>::type
+is_infinity(const T& x) {
+  return is_minus_infinity(x) ? -1 : is_plus_infinity(x) ? 1 : 0;
+}
+
+template <typename T>
 inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_not_a_number(const T& x) {
   return Checked::is_nan<typename Native_Checked_From_Wrapper<T>
