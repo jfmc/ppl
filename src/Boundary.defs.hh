@@ -693,8 +693,10 @@ div_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
       return div_assign(to_type, to, to_info,
 			type1, x1, info1,
 			type2, x2, info2);
-    else
+    else {
+      // FIXME: restrictions
       return set_boundary_infinity(to_type, to, to_info, true);
+    }
   }
   else {
     shrink = info1.get_boundary_property(type1, OPEN)
