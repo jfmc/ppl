@@ -65,4 +65,7 @@ public class Constraint {
     public Relation_Symbol kind() {
 	return kind;
     }
+
+    //! Returns a string representation of \p this.
+    public native String toString();
 }

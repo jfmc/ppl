@@ -46,11 +46,17 @@ ppl_interface_generator_java_classes_java.m4 \
 ppl_interface_generator_java_classes_java_code.m4
 
 fixed_java_cxx_headers = \
-ppl_java.Parma_Polyhedra_Library \
+ppl_java.Congruence \
+ppl_java.Congruence_System \
+ppl_java.Constraint \
+ppl_java.Constraint_System \
+ppl_java.Generator \
+ppl_java.Generator_System \
+ppl_java.Grid_Generator \
+ppl_java.Grid_Generator_System \
 ppl_java.Linear_Expression \
-ppl_java.MIP_Problem
-
-
+ppl_java.MIP_Problem \
+ppl_java.Parma_Polyhedra_Library
 
 fixed_java_sources = \
 By_Reference.java \

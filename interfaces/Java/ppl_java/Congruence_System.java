@@ -30,4 +30,7 @@ package ppl_java;
 public class Congruence_System extends java.util.Vector<Congruence> {
     public Congruence_System() {
     }
+    
+    //! Returns a string representation of \p this
+    public native String toString();
 }

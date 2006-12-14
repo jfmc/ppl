@@ -676,3 +676,20 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1CLASS@_map_1space_1dimensions
 }
 
 ')
+
+m4_define(`ppl_@CLASS@_string_code',
+`dnl
+JNIEXPORT jstring JNICALL Java_ppl_1java_@1CLASS@_toString
+(JNIEnv* env , jobject j_this_@LCLASS@) {
+  try {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  jlong this_ptr = get_ptr(env, j_this_@LCLASS@);
+  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+  std::ostringstream s;
+  s << *this_@LCLASS@;
+  return env->NewStringUTF(s.str().c_str());
+  }
+  CATCH_ALL;
+  return 0;
+}
+')

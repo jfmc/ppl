@@ -244,6 +244,9 @@ public class MIP_Problem extends PPL_Object {
     */
     public native void optimal_value(Coefficient num, Coefficient den);
 
+    //! Returns a string representation of \p this.
+    public native String toString();
+
     //! Checks if all the invariants are satisfied.
     public native boolean OK();
 

@@ -57,7 +57,7 @@ m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code', `
 
 ')
 
- m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code', `
+m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code', `
  	  @LTOPOLOGY@@LCLASS@1.relation_with(@RELATION_REPRESENT@1);
 
  ')
@@ -139,4 +139,10 @@ m4_define(`ppl_@CLASS@_@MAXMIN@_with_point_code', `
 @LTOPOLOGY@@LCLASS@1.@MAXMIN@(le, coeff0, coeff1, bool_by_ref1, @GENERATOR@1);
 
 ');
+
+m4_define(`ppl_@CLASS@_string_code', `
+System.out.println(@LTOPOLOGY@@LCLASS@1.toString());
+
+');
+
 m4_divert`'dnl

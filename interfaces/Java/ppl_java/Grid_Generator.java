@@ -91,5 +91,8 @@ public class Grid_Generator {
 					    Coefficient c) {
 	return new Grid_Generator(e, c, Grid_Generator_Type.POINT);
     }
+
+    //! Returns a string representation of \p this.
+    public native String toString();
 }
 

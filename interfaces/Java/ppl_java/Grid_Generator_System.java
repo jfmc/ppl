@@ -32,4 +32,7 @@ package ppl_java;
 public class Grid_Generator_System extends java.util.Vector<Grid_Generator> {
     public Grid_Generator_System() {
     }
+
+  //! Returns a representation of \p this
+  public native String toString();
 }

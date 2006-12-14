@@ -33,4 +33,7 @@ public class Generator_System extends java.util.Vector<Generator> {
     //! Default constructor: builds an empty system of generators.
     public Generator_System() {
     }
+
+    //! Returns a representation of \p this
+    public native String toString();
 }

@@ -53,4 +53,7 @@ public class Congruence {
 	lhs = e1.clone();
 	rhs = e2.clone();
     }
+
+    //! Returns a string representation of \p this.
+    public native String toString();
 }

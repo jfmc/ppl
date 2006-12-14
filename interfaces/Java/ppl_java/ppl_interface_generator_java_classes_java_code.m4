@@ -323,3 +323,10 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_code',
     public native void map_space_dimensions(Partial_Function pfunc);
 
 ')
+
+m4_define(`ppl_@CLASS@_string_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native String toString();
+
+')
