@@ -23,6 +23,7 @@
 #include "ppl_java_Parma_Polyhedra_Library.h"
 #include "ppl_java_common.hh"
 #include "ppl_java_MIP_Problem.h"
+#include "ppl_java_Linear_Expression.h"
 
 JNIEXPORT jint JNICALL Java_ppl_1java_Parma_1Polyhedra_1Library_version_1major
 (JNIEnv *, jclass) {
@@ -355,3 +356,11 @@ JNIEXPORT void JNICALL Java_ppl_1java_MIP_1Problem_build_1cpp_1object__JLppl_1ja
   CATCH_ALL;
 }
 
+JNIEXPORT jstring JNICALL Java_ppl_1java_Linear_1Expression_toString
+(JNIEnv* env, jobject le) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  Linear_Expression ppl_le =  build_linear_expression(env, le);
+  s << ppl_le;
+  return env->NewStringUTF(s.str().c_str());
+}

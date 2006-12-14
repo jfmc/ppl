@@ -34,7 +34,8 @@
 	Linear_Expression le4 = le1.times(new Coefficient(3));
 	le2 = le2.sum(le4);
 	le = le1;
-
+	System.out.print("Printing a linear expression: ");
+        System.out.println(le2.toString());
 	// Constraint declarations.
 	Constraint c1 = new Constraint(new Linear_Expression_Coefficient(coeff1) , Relation_Symbol.GREATER_THAN_OR_EQUAL, new Linear_Expression_Coefficient(coeff0));
 	constraint1 = c1;

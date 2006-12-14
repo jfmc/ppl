@@ -47,7 +47,9 @@ ppl_interface_generator_java_classes_java_code.m4
 
 fixed_java_cxx_headers = \
 ppl_java.Parma_Polyhedra_Library \
+ppl_java.Linear_Expression \
 ppl_java.MIP_Problem
+
 
 
 fixed_java_sources = \

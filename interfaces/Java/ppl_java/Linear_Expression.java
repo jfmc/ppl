@@ -51,4 +51,7 @@ public abstract class Linear_Expression implements Cloneable {
     }
     //! Returns a copy of the linear expression.
     public abstract Linear_Expression clone();
+    
+    //! Return the string the represents \p this.
+    public native String toString();
 }
