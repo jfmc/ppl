@@ -1915,6 +1915,9 @@ PPL::MIP_Problem::ascii_dump(std::ostream& s) const {
   for (dimension_type i = 1; i < mapping_size; ++i)
     s << "\n"<< i << " -> " << mapping[i].first << " -> " << mapping[i].second
       << ' ';
+
+  s << "\n\ninteger_variables";
+  i_variables.ascii_dump(s);
 }
 
 PPL_OUTPUT_DEFINITIONS(MIP_Problem)
@@ -2073,6 +2076,12 @@ if (!(s >> internal_space_dim))
     mapping.push_back(std::make_pair(first_value, second_value));
   }
 
+  if (!(s >> str) || str != "integer_variables")
+    return false;
+
+  if (!i_variables.ascii_load(s))
+    return false;
+
   assert(OK());
   return true;
 }
@@ -2080,7 +2089,7 @@ if (!(s >> internal_space_dim))
 /*! \relates Parma_Polyhedra_Library::MIP_Problem */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const MIP_Problem& lp) {
-  s << "Constraints:\n";
+  s << "Constraints:";
   for (MIP_Problem::const_iterator i = lp.constraints_begin(),
 	 i_end = lp.constraints_end(); i != i_end; ++i)
     s << "\n" << *i;
@@ -2090,5 +2099,6 @@ PPL::IO_Operators::operator<<(std::ostream& s, const MIP_Problem& lp) {
     << (lp.optimization_mode() == MAXIMIZATION
 	? "MAXIMIZATION"
 	: "MINIMIZATION");
-  return s;
+  s << "\nInteger variables: " << lp.integer_space_dimensions();
+ return s;
 }
