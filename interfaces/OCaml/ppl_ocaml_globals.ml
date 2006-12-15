@@ -13,14 +13,12 @@ external ppl_new_MIP_Problem:
 external ppl_MIP_Problem_space_dimension:
   mip_problem -> int = "ppl_MIP_Problem_space_dimension"
 
-
 external ppl_MIP_Problem_constraints:
   mip_problem -> constraint_system = "ppl_MIP_Problem_constraints"
 
 external ppl_MIP_Problem_add_space_dimensions_and_embed:
   mip_problem -> int -> unit
       = "ppl_MIP_Problem_add_space_dimensions_and_embed"
-
 
 external ppl_MIP_Problem_add_to_integer_space_dimensions:
   mip_problem -> int list -> unit
@@ -57,6 +55,10 @@ external ppl_MIP_Problem_feasible_point:
 external ppl_MIP_Problem_optimizing_point:
   mip_problem -> linear_generator
       = "ppl_MIP_Problem_optimizing_point"
+
+external ppl_MIP_Problem_objective_function:
+  mip_problem -> linear_expression
+      = "ppl_MIP_Problem_objective_function"
 
 external ppl_MIP_Problem_optimal_value:
   mip_problem -> Z.t * Z.t

@@ -1642,6 +1642,26 @@ ppl_MIP_Problem_OK(value caml_mip) try {
 CATCH_ALL
 
 extern "C"
+CAMLprim value
+ppl_MIP_Problem_objective_function
+(value caml_mip) try {
+  CAMLparam1(caml_mip);
+  MIP_Problem& ppl_mip = *p_MIP_Problem_val(caml_mip);
+  Coefficient inhomogeneous_term
+      = ppl_mip.objective_function().inhomogeneous_term();
+  value homogeneous_term = get_linear_expression(ppl_mip.objective_function());
+  value inhom_term
+    = build_caml_coefficient(ppl_mip.objective_function().inhomogeneous_term());
+  value sum = caml_alloc(2,4);
+  value coeff = caml_alloc(1,1);
+  Field(coeff, 0) = inhom_term;
+  Field(sum, 0) = homogeneous_term;
+  Field(sum, 1) = coeff;
+  CAMLreturn(sum);
+}
+CATCH_ALL
+
+extern "C"
 void
 ppl_MIP_Problem_clear(value caml_mip) try {
   CAMLparam1(caml_mip);
