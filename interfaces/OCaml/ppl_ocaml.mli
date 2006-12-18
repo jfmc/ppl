@@ -53,19 +53,19 @@ type polyhedron
 val ppl_new_C_Polyhedron_from_space_dimension:
   int -> polyhedron
 
-val ppl_new_C_Polyhedron_from_constraint_system:
+val ppl_new_C_Polyhedron_from_constraints:
   constraint_system -> polyhedron
 
-val ppl_new_C_Polyhedron_from_generator_system:
+val ppl_new_C_Polyhedron_from_generators:
   generator_system -> polyhedron
 
-val ppl_new_C_Polyhedron_from_congruence_system:
+val ppl_new_C_Polyhedron_from_congruences:
   congruence_system -> polyhedron
 
-val ppl_Polyhedron_poly_con_relation:
+val ppl_Polyhedron_relation_with_constraint:
       polyhedron -> linear_constraint -> relation_with_constraint list
 
-val ppl_Polyhedron_poly_gen_relation:
+val ppl_Polyhedron_relation_with_generator:
       polyhedron -> linear_generator -> relation_with_generator list
 
 val ppl_Polyhedron_space_dimension:
@@ -170,22 +170,22 @@ val ppl_Polyhedron_remove_higher_space_dimensions:
 val ppl_Polyhedron_space_dimension:
     polyhedron -> int
 
-val ppl_Polyhedron_constraints:
+val ppl_Polyhedron_get_constraints:
     polyhedron -> constraint_system
 
-val ppl_Polyhedron_minimized_constraints:
+val ppl_Polyhedron_get_minimized_constraints:
     polyhedron -> constraint_system
 
-val ppl_Polyhedron_generators:
+val ppl_Polyhedron_get_generators:
     polyhedron -> generator_system
 
-val ppl_Polyhedron_minimized_generators:
+val ppl_Polyhedron_get_minimized_generators:
     polyhedron -> generator_system
 
-val ppl_Polyhedron_congruences:
+val ppl_Polyhedron_get_congruences:
     polyhedron -> congruence_system
 
-val ppl_Polyhedron_minimized_congruences:
+val ppl_Polyhedron_get_minimized_congruences:
     polyhedron -> congruence_system
 
 val ppl_Polyhedron_affine_image:

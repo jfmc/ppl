@@ -560,7 +560,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_new_C_Polyhedron_from_constraint_system(value cl) try {
+ppl_new_C_Polyhedron_from_constraints(value cl) try {
   CAMLparam1(cl);
   Constraint_System cs = build_ppl_Constraint_System(cl);
   Generator_System gs;
@@ -570,7 +570,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_new_C_Polyhedron_from_generator_system(value gl) try {
+ppl_new_C_Polyhedron_from_generators(value gl) try {
   CAMLparam1(gl);
   Generator_System gs = build_ppl_Generator_System(gl);
   CAMLreturn(val_p_Polyhedron(*new C_Polyhedron(gs)));
@@ -579,7 +579,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_new_C_Polyhedron_from_congruence_system(value gl) try {
+ppl_new_C_Polyhedron_from_congruences(value gl) try {
   CAMLparam1(gl);
   Congruence_System gs = build_ppl_Congruence_System(gl);
   CAMLreturn(val_p_Polyhedron(*new C_Polyhedron(gs)));
@@ -588,7 +588,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_Polyhedron_poly_con_relation(value ph, value c) try {
+ppl_Polyhedron_relation_with_constraint(value ph, value c) try {
   CAMLparam2(ph, c);
   const Polyhedron& pph = *p_Polyhedron_val(ph);
   Constraint ppl_c = build_ppl_Constraint(c);
@@ -631,7 +631,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_Polyhedron_poly_gen_relation(value ph, value g) try {
+ppl_Polyhedron_relation_with_generator(value ph, value g) try {
   CAMLparam2(ph, g);
   const Polyhedron& pph = *p_Polyhedron_val(ph);
   Generator ppl_g = build_ppl_Generator(g);
@@ -1025,7 +1025,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_Polyhedron_constraints(value ph) try {
+ppl_Polyhedron_get_constraints(value ph) try {
   CAMLparam1(ph);
   Polyhedron& pph = *p_Polyhedron_val(ph);
   CAMLreturn(build_caml_constraint_system(pph.constraints()));
@@ -1034,7 +1034,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_Polyhedron_minimized_constraints(value ph) try {
+ppl_Polyhedron_get_minimized_constraints(value ph) try {
   CAMLparam1(ph);
   Polyhedron& pph = *p_Polyhedron_val(ph);
   CAMLreturn(build_caml_constraint_system(pph.minimized_constraints()));
@@ -1043,7 +1043,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_Polyhedron_generators(value ph) try {
+ppl_Polyhedron_get_generators(value ph) try {
   CAMLparam1(ph);
   Polyhedron& pph = *p_Polyhedron_val(ph);
   CAMLreturn(build_caml_generator_system(pph.generators()));
@@ -1052,7 +1052,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_Polyhedron_minimized_generators(value ph) try {
+ppl_Polyhedron_get_minimized_generators(value ph) try {
   CAMLparam1(ph);
   Polyhedron& pph = *p_Polyhedron_val(ph);
   CAMLreturn(build_caml_generator_system(pph.minimized_generators()));
@@ -1061,7 +1061,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_Polyhedron_congruences(value ph) try {
+ppl_Polyhedron_get_congruences(value ph) try {
   CAMLparam1(ph);
   Polyhedron& pph = *p_Polyhedron_val(ph);
   CAMLreturn(build_caml_congruence_system(pph.congruences()));
@@ -1070,7 +1070,7 @@ CATCH_ALL
 
 extern "C"
 CAMLprim value
-ppl_Polyhedron_minimized_congruences(value ph) try {
+ppl_Polyhedron_get_minimized_congruences(value ph) try {
   CAMLparam1(ph);
   Polyhedron& pph = *p_Polyhedron_val(ph);
   CAMLreturn(build_caml_congruence_system(pph.minimized_congruences()));

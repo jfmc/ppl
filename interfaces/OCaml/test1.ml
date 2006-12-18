@@ -196,12 +196,12 @@ let i = ppl_MIP_Problem_space_dimension ph;;
 print_int i;;
 let i = ppl_MIP_Problem_constraints ph;;
 print_newline();;
-let ph = ppl_new_C_Polyhedron_from_congruence_system(cgs);;
+let ph = ppl_new_C_Polyhedron_from_congruences(cgs);;
 let result =  ppl_Polyhedron_bounds_from_above ph e2;;
 ppl_Polyhedron_add_constraint ph (e2 >=/ e2);;
-let ph2 = ppl_new_C_Polyhedron_from_generator_system(gs1);;
+let ph2 = ppl_new_C_Polyhedron_from_generators(gs1);;
 ppl_Polyhedron_concatenate_assign ph ph2;;
-let constr = ppl_Polyhedron_congruences ph in
+let constr = ppl_Polyhedron_get_congruences ph in
 List.iter print_congruence constr;;
 ppl_Polyhedron_bounded_affine_preimage ph 1 e1 e2 (Z.from_int 10);;
 ppl_Polyhedron_bounded_affine_preimage ph 1 e1 e2 (Z.from_int 10);;

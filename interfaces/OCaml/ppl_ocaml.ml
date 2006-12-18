@@ -13,20 +13,21 @@ type polyhedron
 external ppl_new_C_Polyhedron_from_space_dimension:
   int -> polyhedron = "ppl_new_C_Polyhedron_from_space_dimension"
 
-external ppl_new_C_Polyhedron_from_constraint_system:
-  constraint_system -> polyhedron = "ppl_new_C_Polyhedron_from_constraint_system"
-external ppl_new_C_Polyhedron_from_generator_system:
-  generator_system -> polyhedron = "ppl_new_C_Polyhedron_from_generator_system"
+external ppl_new_C_Polyhedron_from_constraints:
+  constraint_system -> polyhedron = "ppl_new_C_Polyhedron_from_constraints"
+external ppl_new_C_Polyhedron_from_generators:
+  generator_system -> polyhedron = "ppl_new_C_Polyhedron_from_generators"
 
-external ppl_new_C_Polyhedron_from_congruence_system:
-  congruence_system -> polyhedron = "ppl_new_C_Polyhedron_from_congruence_system"
-external ppl_Polyhedron_poly_con_relation:
+external ppl_new_C_Polyhedron_from_congruences:
+  congruence_system -> polyhedron = "ppl_new_C_Polyhedron_from_congruences"
+
+external ppl_Polyhedron_relation_with_constraint:
       polyhedron -> linear_constraint -> relation_with_constraint list
-	  = "ppl_Polyhedron_poly_con_relation"
+	  = "ppl_Polyhedron_relation_with_constraint"
 
-external ppl_Polyhedron_poly_gen_relation:
+external ppl_Polyhedron_relation_with_generator:
       polyhedron -> linear_generator -> relation_with_generator list
-	  = "ppl_Polyhedron_poly_gen_relation"
+	  = "ppl_Polyhedron_relation_with_generator"
 
 external ppl_Polyhedron_space_dimension:
   polyhedron -> int = "ppl_Polyhedron_space_dimension"
@@ -146,23 +147,23 @@ external ppl_Polyhedron_remove_higher_space_dimensions:
 external ppl_Polyhedron_space_dimension:
   polyhedron -> int = "ppl_Polyhedron_space_dimension"
 
-external ppl_Polyhedron_constraints:
-   polyhedron -> constraint_system = "ppl_Polyhedron_constraints"
+external ppl_Polyhedron_get_constraints:
+   polyhedron -> constraint_system = "ppl_Polyhedron_get_constraints"
 
-external ppl_Polyhedron_minimized_constraints:
-   polyhedron -> constraint_system = "ppl_Polyhedron_minimized_constraints"
+external ppl_Polyhedron_get_minimized_constraints:
+   polyhedron -> constraint_system = "ppl_Polyhedron_get_minimized_constraints"
 
-external ppl_Polyhedron_generators:
-   polyhedron -> generator_system = "ppl_Polyhedron_generators"
+external ppl_Polyhedron_get_generators:
+   polyhedron -> generator_system = "ppl_Polyhedron_get_generators"
 
-external ppl_Polyhedron_minimized_generators:
-   polyhedron -> generator_system = "ppl_Polyhedron_minimized_generators"
+external ppl_Polyhedron_get_minimized_generators:
+   polyhedron -> generator_system = "ppl_Polyhedron_get_minimized_generators"
 
-external ppl_Polyhedron_congruences:
-   polyhedron -> congruence_system = "ppl_Polyhedron_congruences"
+external ppl_Polyhedron_get_congruences:
+   polyhedron -> congruence_system = "ppl_Polyhedron_get_congruences"
 
-external ppl_Polyhedron_minimized_congruences:
-   polyhedron -> congruence_system = "ppl_Polyhedron_minimized_congruences"
+external ppl_Polyhedron_get_minimized_congruences:
+   polyhedron -> congruence_system = "ppl_Polyhedron_get_minimized_congruences"
 
 external ppl_Polyhedron_affine_image:
   polyhedron -> int -> linear_expression -> Z.t -> unit

@@ -24,6 +24,29 @@ abs_srcdir = @abs_srcdir@
 
 if BUILD_OCAML_INTERFACE
 
+interface_generator_files = \
+ppl_interface_generator_ocaml_dat.m4 \
+ppl_interface_generator_ocaml_ml.m4 \
+ppl_interface_generator_ocaml_ml_code.m4
+
+EXTRA_DIST = $(interface_generator_files)
+
+BUILT_SOURCES = \
+ppl_ocaml.ml
+
+interface_generator_dependencies = \
+../ppl_interface_instantiations.m4 \
+../ppl_interface_generator_common.m4 \
+../ppl_interface_generator_common_dat.m4 \
+../ppl_interface_generator_copyright \
+ppl_interface_generator_ocaml_dat.m4 \
+ppl_interface_generator_ocaml_ml.m4 \
+ppl_interface_generator_ocaml_ml_code.m4
+
+ppl_ocaml.ml: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_ocaml_ml.m4 > $@
+
 OCAMLC_FLAGS = -I +gmp
 OCAMLC_ROOT = @ocamlc_root@
 
@@ -55,8 +78,6 @@ noinst_PROGRAM = test1
 
 test1$(EXEEXT):  ppl_ocaml_types.cmo ppl_ocaml.cmi ppl_ocaml_globals.cmo ppl_ocaml.cmo libppl_ocaml.a test1.cmo
 	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS) gmp.cma  ppl_ocaml.cmo -ccopt -g test1.cmo -cclib -L. -cclib -lppl_ocaml -cclib -L../../src/.libs -cclib -lppl -cclib -lmlgmp -cclib -lgmpxx -cclib -lgmp
-
-EXTRA_DIST=
 
 #mostlyclean-local:
 #	rm -rf $(ALL_TARGETS)
