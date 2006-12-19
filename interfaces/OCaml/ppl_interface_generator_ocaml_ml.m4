@@ -24,6 +24,7 @@ type m4_downcase(m4_interface_class$1)`'dnl
 ')
 
 m4_divert`'dnl
+dnl
 
 include Ppl_ocaml_globals
 include Ppl_ocaml_types
@@ -39,18 +40,3 @@ dnl
 dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl
 dnl
-
-external test_linear_expression:
-  linear_expression -> unit = "test_linear_expression"
-
-external test_linear_constraint:
-  linear_constraint -> unit = "test_linear_constraint"
-
-external test_linear_generator:
-  linear_generator -> unit = "test_linear_generator"
-
-external test_constraint_system:
-  constraint_system -> unit = "test_constraint_system"
-
-external test_generator_system:
-  generator_system -> unit = "test_generator_system"

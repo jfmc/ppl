@@ -83,3 +83,18 @@ external ppl_MIP_Problem_set_optimization_mode:
 external ppl_MIP_Problem_swap:
   mip_problem -> mip_problem -> unit
       = "ppl_MIP_Problem_swap"
+
+external test_linear_expression:
+  linear_expression -> unit = "test_linear_expression"
+
+external test_linear_constraint:
+  linear_constraint -> unit = "test_linear_constraint"
+
+external test_linear_generator:
+  linear_generator -> unit = "test_linear_generator"
+
+external test_constraint_system:
+  constraint_system -> unit = "test_constraint_system"
+
+external test_generator_system:
+  generator_system -> unit = "test_generator_system"
