@@ -76,7 +76,35 @@ public class C_Polyhedron_test1 {
 	C_Polyhedron known_result = new C_Polyhedron(known_gs);
 	return known_result.equals(poly1);
     }
+
+    public static boolean test02() {
+	Variable X = new Variable(0);
+	Variable Y = new Variable(1);
+	Variable Z = new Variable(2);
+	NNC_Polyhedron ph = new NNC_Polyhedron(3, Degenerate_Element.UNIVERSE);
+	Linear_Expression le_X = new Linear_Expression_Variable(X);
+	Linear_Expression le_Y = new Linear_Expression_Variable(Y);
+	Linear_Expression le_Z = new Linear_Expression_Variable(Z);
+	Linear_Expression le_2Y = le_Y.times(new Coefficient(2));
+	Linear_Expression le_5Z = le_Z.times(new Coefficient(5));
+	Linear_Expression le_7
+	    = new Linear_Expression_Coefficient(new Coefficient(7));
+	Linear_Expression le_5
+	    = new Linear_Expression_Coefficient(new Coefficient(5));
+	Linear_Expression lhs1 = le_X.sum(le_2Y.sum(le_5Z));
+	NNC_Polyhedron ph1 = new NNC_Polyhedron(3,
+						Degenerate_Element.UNIVERSE);
+	ph1.add_constraint(new Constraint(lhs1,
+					 Relation_Symbol.GREATER_THAN_OR_EQUAL,
+					 le_7));
+	ph1.add_constraint(new Constraint(le_X, Relation_Symbol.LESS_THAN,
+					  le_5Z));
+	System.out.println(ph1.constraints().toString());
+	return true;
+    }
+
     public static void main(String[] args) {
 	test01();
+	test02();
     }
 }
