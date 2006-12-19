@@ -370,6 +370,11 @@ build_caml_generator(const Generator& ppl_generator) {
 
 
 value
+build_caml_grid_generator(const Grid_Generator& ppl_generator) {
+  // FIXME: implement me.
+}
+
+value
 build_caml_constraint(const Constraint& ppl_constraint) {
   switch (ppl_constraint.type()) {
   case Constraint::EQUALITY: {
@@ -448,6 +453,11 @@ build_caml_generator_system(const Generator_System& ppl_gs) {
     result = new_tail;
   }
   return result;
+}
+
+value
+build_caml_grid_generator_system(const Grid_Generator_System& ppl_gs) {
+  // FIXME: implement me.
 }
 
 value
@@ -540,6 +550,11 @@ build_ppl_Generator(value g) {
   }
 }
 
+Grid_Generator
+build_ppl_Grid_Generator(value g) {
+  // FIXME: Implement me.
+}
+
 Constraint_System
 build_ppl_Constraint_System(value cl) {
   Constraint_System cs;
@@ -568,6 +583,11 @@ build_ppl_Congruence_System(value cgl) {
     cgl = Field(cgl, 1);
   }
   return cgs;
+}
+
+Grid_Generator_System
+build_ppl_Grid_Generator_System(value gl) {
+  // FIXME: implement me.
 }
 
 //! Give access to the embedded MIP_Problem* in \p v.

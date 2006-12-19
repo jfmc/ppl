@@ -26,7 +26,7 @@ static struct custom_operations @CLASS@_custom_operations = {
 inline value
 val_p_@CLASS@(const @CPP_CLASS@& ph) {
   value v = caml_alloc_custom(&@CLASS@_custom_operations,
-			      sizeof(@CLASS@*), 0, 1);
+			      sizeof(@CPP_CLASS@*), 0, 1);
   p_@CLASS@_val(v) = const_cast<@CPP_CLASS@*>(&ph);
   return(v);
 }
@@ -465,7 +465,7 @@ ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(value ph1,
   CAMLparam4(ph1, ph2, caml_cs, integer);
   @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
-  Constraint_System ppl_cs = build_ppl_Constraint_System(caml_cs);
+  @UCONSTRAINER@_System ppl_cs = build_ppl_@UCONSTRAINER@_System(caml_cs);
   // FIXME: ensure that the input parameter is positive.
   unsigned int cpp_int = Val_int(integer);
   pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs, &cpp_int);
@@ -483,7 +483,7 @@ ppl_@CLASS@_@MAXMIN@(value ph, value caml_le) try {
   CAMLparam2(ph, caml_le);
   Coefficient num@COMMA@ den = 0;
   bool is_supremum = false;
-  Generator g = point();
+  @UGENERATOR@ g = @POINT@();
   @CPP_CLASS@& pph = *p_@CLASS@_val(ph);
   bool ppl_return_value = pph.@MAXMIN@(build_ppl_Linear_Expression(caml_le),
 				      num, den, is_supremum, g);
@@ -492,7 +492,7 @@ ppl_@CLASS@_@MAXMIN@(value ph, value caml_le) try {
   Field(caml_return_value, 1) = build_caml_coefficient(num);
   Field(caml_return_value, 2) = build_caml_coefficient(den);
   Field(caml_return_value, 3) = Val_bool(is_supremum);
-  Field(caml_return_value, 4) = build_caml_generator(g);
+  Field(caml_return_value, 4) = build_caml_@GENERATOR@(g);
   CAMLreturn(caml_return_value);
 }
 CATCH_ALL
