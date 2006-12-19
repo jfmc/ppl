@@ -594,7 +594,8 @@ build_ppl_Grid_Generator(value g) {
    case 1: {
      // Parameter
      mpz_class z((__mpz_struct*) Data_custom_val(Field(g, 1)));
-     return parameter(build_ppl_Linear_Expression(Field(g, 0)));
+     return parameter(build_ppl_Linear_Expression(Field(g, 0)),
+		      Coefficient(z));
    }
    case 2: {
      // Point
