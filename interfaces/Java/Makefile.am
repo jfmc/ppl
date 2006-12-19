@@ -27,7 +27,8 @@ SUBDIRS = ppl_java jni tests
 EXTRA_DIST = \
 ppl_interface_generator_java_dat.m4
 
-data_DATA = ppl_java.jar
+jardir = $(prefix)/lib/ppl
+jar_DATA = ppl_java.jar
 
 CLEANFILES = ppl_java.jar
 
