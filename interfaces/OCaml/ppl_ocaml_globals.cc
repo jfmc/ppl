@@ -370,8 +370,35 @@ build_caml_generator(const Generator& ppl_generator) {
 
 
 value
-build_caml_grid_generator(const Grid_Generator& ppl_generator) {
-  // FIXME: implement me.
+build_caml_grid_generator(const Grid_Generator& ppl_grid_generator) {
+  switch (ppl_grid_generator.type()) {
+  case Grid_Generator::LINE: {
+    // Store the linear expression. (1,0) stands for
+    // allocate one block (the linear expression) with Tag 0 (a line here).
+    value caml_generator = caml_alloc(1,0);
+    Field(caml_generator, 0) = get_linear_expression(ppl_grid_generator);
+    return caml_generator;
+  }
+  case Grid_Generator::PARAMETER: {
+    value caml_generator = caml_alloc(2,1);
+    Field(caml_generator, 0) = get_linear_expression(ppl_grid_generator);
+    const Coefficient& divisor = ppl_grid_generator.divisor();
+    Field(caml_generator, 1) = build_caml_coefficient(divisor);
+    return caml_generator;
+  }
+  case Grid_Generator::POINT:  {
+    // Allocates two blocks (the linear expression and the divisor)
+    // of tag 2 (Point).
+    value caml_generator = caml_alloc(2,2);
+    Field(caml_generator, 0) = get_linear_expression(ppl_grid_generator);
+    const Coefficient& divisor = ppl_grid_generator.divisor();
+    Field(caml_generator, 1) = build_caml_coefficient(divisor);
+    return caml_generator;
+  }
+
+  default:
+    throw std::runtime_error("PPL OCaml interface internal error");
+  }
 }
 
 value
@@ -457,7 +484,15 @@ build_caml_generator_system(const Generator_System& ppl_gs) {
 
 value
 build_caml_grid_generator_system(const Grid_Generator_System& ppl_gs) {
-  // FIXME: implement me.
+  value result = Val_int(0);
+  for (Grid_Generator_System::const_iterator v_begin = ppl_gs.begin(),
+  	 v_end = ppl_gs.end(); v_begin != v_end; ++v_begin) {
+    value new_tail = caml_alloc_tuple(2);
+    Field(new_tail, 0) = build_caml_grid_generator(*v_begin);
+    Field(new_tail, 1) = result;
+    result = new_tail;
+  }
+  return result;
 }
 
 value
@@ -552,9 +587,25 @@ build_ppl_Generator(value g) {
 
 Grid_Generator
 build_ppl_Grid_Generator(value g) {
-  // FIXME: Implement me.
+  switch (Tag_val(g)) {
+   case 0:
+     // Line
+     return grid_line(build_ppl_Linear_Expression(Field(g, 0)));
+   case 1: {
+     // Parameter
+     mpz_class z((__mpz_struct*) Data_custom_val(Field(g, 1)));
+     return parameter(build_ppl_Linear_Expression(Field(g, 0)));
+   }
+   case 2: {
+     // Point
+     mpz_class z((__mpz_struct*) Data_custom_val(Field(g, 1)));
+     return grid_point(build_ppl_Linear_Expression(Field(g, 0)),
+		       Coefficient(z));
+   }
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL Caml interface internal error");
 }
-
 Constraint_System
 build_ppl_Constraint_System(value cl) {
   Constraint_System cs;
@@ -586,8 +637,13 @@ build_ppl_Congruence_System(value cgl) {
 }
 
 Grid_Generator_System
-build_ppl_Grid_Generator_System(value gl) {
-  // FIXME: implement me.
+build_ppl_Grid_Generator_System(value caml_ggs) {
+  Grid_Generator_System ggs;
+  while (caml_ggs != Val_int(0)) {
+    ggs.insert(build_ppl_Grid_Generator(Field(caml_ggs, 0)));
+    caml_ggs = Field(caml_ggs, 1);
+  }
+  return ggs;
 }
 
 //! Give access to the embedded MIP_Problem* in \p v.
