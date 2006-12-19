@@ -27,12 +27,15 @@ if BUILD_OCAML_INTERFACE
 interface_generator_files = \
 ppl_interface_generator_ocaml_dat.m4 \
 ppl_interface_generator_ocaml_ml.m4 \
-ppl_interface_generator_ocaml_ml_code.m4
+ppl_interface_generator_ocaml_ml_code.m4 \
+ppl_interface_generator_ocaml_cc.m4 \
+ppl_interface_generator_ocaml_cc_code.m4
 
 EXTRA_DIST = $(interface_generator_files)
 
 BUILT_SOURCES = \
-ppl_ocaml.ml
+ppl_ocaml.ml \
+ppl_ocaml.cc
 
 interface_generator_dependencies = \
 ../ppl_interface_instantiations.m4 \
@@ -41,11 +44,17 @@ interface_generator_dependencies = \
 ../ppl_interface_generator_copyright \
 ppl_interface_generator_ocaml_dat.m4 \
 ppl_interface_generator_ocaml_ml.m4 \
-ppl_interface_generator_ocaml_ml_code.m4
+ppl_interface_generator_ocaml_ml_code.m4 \
+ppl_interface_generator_ocaml_cc.m4 \
+ppl_interface_generator_ocaml_cc_code.m4
 
 ppl_ocaml.ml: $(interface_generator_dependencies) Makefile
 	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
            $(srcdir)/ppl_interface_generator_ocaml_ml.m4 > $@
+
+ppl_ocaml.cc: $(interface_generator_dependencies) Makefile
+	m4 --prefix-builtin -I.. -I$(srcdir) -I$(srcdir)/.. \
+           $(srcdir)/ppl_interface_generator_ocaml_cc.m4 > $@
 
 OCAMLC_FLAGS = -I +gmp
 OCAMLC_ROOT = @ocamlc_root@
@@ -89,6 +98,8 @@ ppl_ocaml_globals.cmi \
 ppl_ocaml_globals.cmo \
 ppl_ocaml.cmi \
 ppl_ocaml.cmo \
+ppl_ocaml.ml \
+ppl_ocaml.cc \
 test1.cmi \
 test1.cmo
 

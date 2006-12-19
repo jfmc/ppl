@@ -196,7 +196,7 @@ let i = ppl_MIP_Problem_space_dimension ph;;
 print_int i;;
 let i = ppl_MIP_Problem_constraints ph;;
 print_newline();;
-let ph = ppl_new_C_Polyhedron_from_congruences(cgs);;
+let ph = ppl_new_C_Polyhedron_from_constraints(cs);;
 let result =  ppl_Polyhedron_bounds_from_above ph e2;;
 ppl_Polyhedron_add_constraint ph (e2 >=/ e2);;
 let ph2 = ppl_new_C_Polyhedron_from_generators(gs1);;
@@ -219,7 +219,7 @@ ppl_Polyhedron_remove_space_dimensions ph dimensions_to_remove;;
 let dimensions_to_fold = [1];;
 ppl_Polyhedron_fold_space_dimensions ph dimensions_to_fold 0;;
 let dimensions_to_map = [(1,2);(2,1)];;
-ppl_Polyhedron_map_space_dimensions ph dimensions_to_map;;
+(* ppl_Polyhedron_map_space_dimensions ph dimensions_to_map;; *)
 print_newline();
 print_string "Testing minimization";
 print_newline();

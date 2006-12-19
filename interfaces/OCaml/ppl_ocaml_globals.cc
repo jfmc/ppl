@@ -450,6 +450,60 @@ build_caml_generator_system(const Generator_System& ppl_gs) {
   return result;
 }
 
+value
+build_ocaml_poly_gen_relation(Poly_Gen_Relation& r) {
+  value result = Val_int(0);
+  value cons;
+  while (r != Poly_Gen_Relation::nothing()) {
+    if (r.implies(Poly_Gen_Relation::subsumes())) {
+      cons = caml_alloc_tuple(2);
+      Field(cons, 0) = Val_int(0);
+      Field(cons, 1) = result;
+      result = cons;
+      r = r - Poly_Gen_Relation::subsumes();
+    }
+  }
+  return result;
+}
+
+value
+build_ocaml_poly_con_relation(Poly_Con_Relation& r) {
+  value result = Val_int(0);
+  value cons;
+  while (r != Poly_Con_Relation::nothing()) {
+    if (r.implies(Poly_Con_Relation::is_disjoint())) {
+      cons = caml_alloc_tuple(2);
+      Field(cons, 0) = Val_int(0);
+      Field(cons, 1) = result;
+      result = cons;
+      r = r - Poly_Con_Relation::is_disjoint();
+    }
+    else if (r.implies(Poly_Con_Relation::strictly_intersects())) {
+      cons = caml_alloc_tuple(2);
+      Field(cons, 0) = Val_int(1);
+      Field(cons, 1) = result;
+      result = cons;
+      r = r - Poly_Con_Relation::strictly_intersects();
+    }
+    else if (r.implies(Poly_Con_Relation::is_included())) {
+      cons = caml_alloc_tuple(2);
+      Field(cons, 0) = Val_int(2);
+      Field(cons, 1) = result;
+      result = cons;
+      r = r - Poly_Con_Relation::is_included();
+    }
+    else if (r.implies(Poly_Con_Relation::saturates())) {
+      cons = caml_alloc_tuple(2);
+      Field(cons, 0) = Val_int(3);
+      Field(cons, 1) = result;
+      result = cons;
+      r = r - Poly_Con_Relation::saturates();
+    }
+  }
+  return result;
+}
+
+
 Congruence
 build_ppl_Congruence(value c) {
   value e1 = Field(c, 0);
