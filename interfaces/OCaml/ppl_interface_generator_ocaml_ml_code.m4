@@ -11,13 +11,12 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
 external ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s:
   @BUILD_REPRESENT@_system -> @LCLASS@ = "ppl_new_C_@CLASS@_from_@BUILD_REPRESENT@s"
-
 ')
 
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `dnl
 external ppl_@CLASS@_relation_with_@RELATION_REPRESENT@:
-      @LCLASS@ -> linear_constraint -> relation_with_@RELATION_REPRESENT@ list
+      @LCLASS@ -> linear_@RELATION_REPRESENT@ -> poly_@ALT_RELATION_REPRESENT@_relation list
 	  = "ppl_@CLASS@_relation_with_@RELATION_REPRESENT@"
 
 ')

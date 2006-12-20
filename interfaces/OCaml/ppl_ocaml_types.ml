@@ -27,13 +27,13 @@ type linear_grid_generator =
   | Grid_Parameter of linear_expression * Z.t
   | Grid_Point of linear_expression * Z.t
 
-type relation_with_generator =
+type poly_gen_relation =
     Subsumes
 
-type relation_with_grid_generator =
-    Subsumes
+(* type relation_with_grid_generator = *)
+(*     Subsumes *)
 
-type relation_with_constraint =
+type poly_con_relation =
     Is_Disjoint
   | Strictly_Intersects
   | Is_Included

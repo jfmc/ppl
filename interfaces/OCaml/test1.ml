@@ -212,7 +212,7 @@ let b = ppl_Polyhedron_bounded_H79_extrapolation_assign ph ph cs 10;;
 let b = ppl_Polyhedron_H79_widening_assign ph ph 10;;
 let b = ppl_Polyhedron_OK ph;;
 ppl_Polyhedron_generalized_affine_preimage ph e1 Equal_RS e1;;
-ppl_Polyhedron_generalized_affine_image ph 1 Equal_RS e2 (Z.from_int 10);;
+(* ppl_Polyhedron_generalized_affine_image ph 1 Equal_RS e2 (Z.from_int 10);; *)
 let is_bounded, num, den, is_supremum, gen = ppl_Polyhedron_minimize ph e3;;
 let dimensions_to_remove = [3;0];;
 ppl_Polyhedron_remove_space_dimensions ph dimensions_to_remove;;
