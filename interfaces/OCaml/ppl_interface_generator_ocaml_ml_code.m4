@@ -167,7 +167,7 @@ external ppl_@CLASS@_@AFFIMAGE@:
 
 m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 `dnl
-external ppl_@CLASS@_generalized_@AFFIMAGE@:
+external ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs:
   @LCLASS@ -> linear_expression -> relation_symbol -> linear_expression
     -> unit
       = "ppl_@CLASS@_generalized_@AFFIMAGE@1"
