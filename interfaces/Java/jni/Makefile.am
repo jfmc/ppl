@@ -35,7 +35,7 @@ interface_generator_dependencies = \
 ppl_interface_generator_java_ppl_java_classes_cc.m4 \
 ppl_interface_generator_java_ppl_java_classes_cc_code.m4
 
-AM_CPPFLAGS = -I$(top_builddir)/src -I../ppl_java -I$(top_srcdir)/src @extra_includes@
+AM_CPPFLAGS = -I$(top_builddir)/src -I../ppl_java -I$(top_srcdir)/src @extra_includes@ @JNIFLAGS@
 
 lib_LTLIBRARIES = libppl_java.la
 
