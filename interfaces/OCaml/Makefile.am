@@ -71,13 +71,14 @@ OCAMLC_ROOT = @ocamlc_root@
 %.cmo: $(srcdir)/%.ml
 	if [ -a `basename $<` ]; then \
 	ocamlc -g -c $(OCAMLC_FLAGS) `basename $<`; \
-	fi
+	else \
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $< . ; \
-	fi
-	ocamlc -g -c $(OCAMLC_FLAGS) `basename $<`
+	fi; \
+	ocamlc -g -c $(OCAMLC_FLAGS) `basename $<`; \
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f `basename $<`; \
+	fi \
 	fi
 
 noinst_LIBRARIES = libppl_ocaml.a
