@@ -10,7 +10,7 @@ external ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension:
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s_code',
 `dnl
 external ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s:
-  constraint_system -> @LCLASS@ = "ppl_new_C_@CLASS@_from_@BUILD_REPRESENT@s"
+  @BUILD_REPRESENT@_system -> @LCLASS@ = "ppl_new_C_@CLASS@_from_@BUILD_REPRESENT@s"
 
 ')
 

@@ -22,7 +22,7 @@ type linear_generator =
   | Point of linear_expression * Z.t
   | Closure_Point of linear_expression * Z.t
 
-type grid_generator =
+type linear_grid_generator =
     Grid_Line of linear_expression
   | Grid_Parameter of linear_expression * Z.t
   | Grid_Point of linear_expression * Z.t
@@ -39,13 +39,18 @@ type relation_with_constraint =
   | Is_Included
   | Saturates
 
+type relation_with_congruence =
+    Is_Disjoint
+  | Strictly_Intersects
+  | Is_Included
+
 type linear_congruence = linear_expression * linear_expression * Z.t
 
 type constraint_system = linear_constraint list
 
 type generator_system = linear_generator list
 
-type grid_generator_system = grid_generator list
+type grid_generator_system = linear_grid_generator list
 
 type congruence_system = linear_congruence list
 
