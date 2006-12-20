@@ -111,6 +111,13 @@ ppl_ocaml.cc \
 test1.cmi \
 test1.cmo
 
+ocamldir = $(ocamlc_root)/ppl
+
+ocaml_DATA = \
+ppl_ocaml.cmo \
+ppl_ocaml.mli \
+libppl_ocaml.a
+
 else # !HAVE_OCAML_COMPILER
 
 EXTRA_DIST =
