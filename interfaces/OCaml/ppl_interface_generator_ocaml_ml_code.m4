@@ -62,7 +62,8 @@ external ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize:
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code',
 `dnl
 external ppl_@CLASS@_add_@ADD_REPRESENT@s:
-  @LCLASS@ -> @ADD_REPRESENT@_system -> unit = "ppl_@CLASS@_add_@ADD_REPRESENT@s"
+  @LCLASS@ -> @ADD_REPRESENT@_system -> unit
+      = "ppl_@CLASS@_add_@ADD_REPRESENT@s"
 
 ')
 
@@ -76,9 +77,17 @@ external ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize:
 
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `dnl
-external ppl_@CLASS@_is_disjoint_from:
+external ppl_@CLASS@_@COMPARISON@_@CLASS@:
   @LCLASS@ -> @LCLASS@ -> bool
-      = "ppl_@CLASS@_is_disjoint_from"
+      = "ppl_@CLASS@_@COMPARISON@_@CLASS@"
+
+')
+
+m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
+`dnl
+external ppl_@CLASS@_equals_@CLASS@:
+  @LCLASS@ -> @LCLASS@ -> bool
+      = "ppl_@CLASS@_equals_@CLASS@"
 
 ')
 

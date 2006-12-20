@@ -191,6 +191,20 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_@CLASS@_equals_@CLASS@(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  @CPP_CLASS@& pph1 = *p_@CLASS@_val(ph1);
+  @CPP_CLASS@& pph2 = *p_@CLASS@_val(ph2);
+  CAMLreturn(Val_bool(pph1 == pph2));
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_@BINOP@_code',
 `dnl
 extern "C"

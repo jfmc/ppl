@@ -21,6 +21,8 @@ dnl m4_pre_extra_class_code(Class_Counter)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 type m4_downcase(m4_interface_class$1)`'dnl
+
+
 ')
 
 m4_divert`'dnl

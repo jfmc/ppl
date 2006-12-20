@@ -30,6 +30,9 @@ type grid_generator =
 type relation_with_generator =
     Subsumes
 
+type relation_with_grid_generator =
+    Subsumes
+
 type relation_with_constraint =
     Is_Disjoint
   | Strictly_Intersects
