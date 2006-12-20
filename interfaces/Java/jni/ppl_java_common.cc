@@ -1008,18 +1008,23 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& g) {
   jobject j_g_le = get_linear_expression(env, g);
   jobject jcoeff = build_java_coeff(env, Coefficient(1));
   switch (g.type()) {
-  case Grid_Generator::LINE:
+  case Grid_Generator::LINE: {
     j_g_type
       = env->GetStaticObjectField(j_gen_type_class, gen_type_line_get_id);
     return env->CallStaticObjectMethod(j_grid_generator_class,
 				       line_ctr_id, j_g_le);
     break;
-  case Grid_Generator::PARAMETER:
+  }
+  case Grid_Generator::PARAMETER: {
     j_g_type
       = env->GetStaticObjectField(j_gen_type_class, gen_type_parameter_get_id);
+      const Coefficient& divisor = g.divisor();
+      j_g_le = get_linear_expression(env, g);
+      jcoeff = build_java_coeff(env, divisor);
     return env->CallStaticObjectMethod(j_grid_generator_class,
-				       parameter_ctr_id, j_g_le);
+				       parameter_ctr_id, j_g_le, jcoeff);
     break;
+  }
   case Grid_Generator::POINT:
     {
       j_g_type
