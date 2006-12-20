@@ -69,6 +69,9 @@ OCAMLC_ROOT = @ocamlc_root@
 	fi
 
 %.cmo: $(srcdir)/%.ml
+	if [ -a `basename $<` ]; then \
+	ocamlc -g -c $(OCAMLC_FLAGS) `basename $<`; \
+	fi
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $< . ; \
 	fi
@@ -85,7 +88,11 @@ AM_CPPFLAGS = -I$(OCAMLC_ROOT) -I$(top_srcdir)/src -I$(top_builddir)/src @extra_
 
 noinst_PROGRAM = test1
 
-test1$(EXEEXT):  ppl_ocaml_types.cmo ppl_ocaml.cmi ppl_ocaml_globals.cmo ppl_ocaml.cmo libppl_ocaml.a test1.cmo
+# Force to create the interface when a `make' is given.
+# FIXME: this is a temporary patch.
+all: ppl_ocaml_types.cmo ppl_ocaml.cmi ppl_ocaml_globals.cmo ppl_ocaml.cmo libppl_ocaml.a test1.cmo
+
+test1$(EXEEXT):  all
 	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS) gmp.cma  ppl_ocaml.cmo -ccopt -g test1.cmo -cclib -L. -cclib -lppl_ocaml -cclib -L../../src/.libs -cclib -lppl -cclib -lmlgmp -cclib -lgmpxx -cclib -lgmp
 
 #mostlyclean-local:
