@@ -243,6 +243,48 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_2_test :-
 
 ')
 
+m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+`
+ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_2_test :-
+  (
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a, Space_Dim),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     (ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@(PS1_Copy, PS2) ->
+       (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+       ->
+         ppl_@CLASS@_equals_@CLASS@(PS2, PS2a),
+         ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
+         ppl_@CLASS@_upper_bound_assign(PS2a, PS1),
+         ppl_@CLASS@_contains_@CLASS@(PS2a, PS1_Copy)
+       ;
+         true
+       )
+     ;
+       (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+       ->
+         ppl_@CLASS@_equals_@CLASS@(PS1_Copy, PS1),
+         ppl_@CLASS@_equals_@CLASS@(PS2a, PS2)
+       ;
+         true
+       )
+     ),
+     ppl_@CLASS@_OK(PS1),
+     ppl_@CLASS@_OK(PS1_Copy),
+     ppl_@CLASS@_OK(PS2),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS1_Copy),
+     ppl_delete_@CLASS@(PS2),
+     ppl_delete_@CLASS@(PS2a)
+   ->
+     fail ; true)
+ ).
+
+')
+
 m4_define(`ppl_@CLASS@_swap_code',
 `
 ppl_@CLASS@_swap_2_test :-

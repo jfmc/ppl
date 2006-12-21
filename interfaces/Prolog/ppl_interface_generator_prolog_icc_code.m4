@@ -954,6 +954,21 @@ ppl_@CLASS@_@BINOP@
 }
 
 ')
+Prolog_foreign_return_type
+bop_assign(Prolog_term_ref t_lhs,
+           Prolog_term_ref t_rhs,
+           void (@CPP_CLASS@::* bop_assign)(const @CPP_CLASS@&),
+           const char* where) {
+  try {
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    CHECK(lhs);
+    CHECK(rhs);
+    (lhs->*bop_assign)(*rhs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
 
 m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 `extern "C" Prolog_foreign_return_type
@@ -962,6 +977,20 @@ ppl_@CLASS@_@BINMINOP@
   static const char* where = "ppl_@CLASS@_@BINMINOP@";
   return bop_assign_and_minimize(t_lhs, t_rhs,
                                  &@CPP_CLASS@::@BINMINOP@, where);
+}
+
+')
+
+m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@
+(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  static const char* where = "ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@";
+  @TOPOLOGY@@CPP_CLASS@* lhs = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_lhs, where);
+  const @TOPOLOGY@@CPP_CLASS@* rhs = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_rhs, where);
+  CHECK(lhs);
+  CHECK(rhs);
+  return lhs->@UB_EXACT@(*rhs);
 }
 
 ')
