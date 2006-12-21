@@ -82,6 +82,7 @@ OCAMLC_ROOT = @ocamlc_root@
 	fi
 
 noinst_LIBRARIES = libppl_ocaml.a
+
 libppl_ocaml_a_SOURCES = \
 ppl_ocaml.cc
 
@@ -89,34 +90,47 @@ AM_CPPFLAGS = -I$(OCAMLC_ROOT) -I$(top_srcdir)/src -I$(top_builddir)/src @extra_
 
 noinst_PROGRAM = test1
 
+ppl_ocaml.cma: ppl_ocaml.cmo
+	 ocamlc -a -custom ppl_ocaml.cmo -I . $(OCAMLC_FLAGS) -cclib -lppl_ocaml   -cclib -lppl -o ppl_ocaml.cma
+
+
 # Force to create the interface when a `make' is given.
 # FIXME: this is a temporary patch.
-all: ppl_ocaml_types.cmo ppl_ocaml.cmi ppl_ocaml_globals.cmo ppl_ocaml.cmo libppl_ocaml.a test1.cmo
+all: ppl_ocaml_types.cmo ppl_ocaml.cmi ppl_ocaml_globals.cmo ppl_ocaml.cmo libppl_ocaml.a test1.cmo ppl_ocaml.cma
+
 
 test1$(EXEEXT):  all
-	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS) gmp.cma  ppl_ocaml.cmo -ccopt -g test1.cmo -cclib -L. -cclib -lppl_ocaml -cclib -L../../src/.libs -cclib -lppl -cclib -lmlgmp -cclib -lgmpxx -cclib -lgmp
+	ocamlc -o $@ -cc g++ -g -custom $(OCAMLC_FLAGS)  ppl_ocaml.cma gmp.cma -ccopt -g test1.cmo
 
 #mostlyclean-local:
 #	rm -rf $(ALL_TARGETS)
 
-CLEANFILES = \
+
+ocamldir = $(ocamlc_root)/ppl
+
+ocaml_DATA = \
 ppl_ocaml_types.cmi \
 ppl_ocaml_types.cmo \
 ppl_ocaml_globals.cmi \
 ppl_ocaml_globals.cmo \
 ppl_ocaml.cmi \
 ppl_ocaml.cmo \
+ppl_ocaml.cma \
+ppl_ocaml.mli \
+libppl_ocaml.a
+
+CLEANFILES = \
+ppl_ocaml_types.cmi \
+ppl_ocaml_types.cmo \
+ppl_ocaml_globals.cmi \
+ppl_ocaml_globals.cmo \
+ppl_ocaml.cma \
+ppl_ocaml.cmi \
+ppl_ocaml.cmo \
 ppl_ocaml.ml \
 ppl_ocaml.cc \
 test1.cmi \
 test1.cmo
-
-ocamldir = $(ocamlc_root)/ppl
-
-ocaml_DATA = \
-ppl_ocaml.cmo \
-ppl_ocaml.mli \
-libppl_ocaml.a
 
 else # !HAVE_OCAML_COMPILER
 
