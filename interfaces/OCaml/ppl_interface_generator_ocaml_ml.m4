@@ -20,8 +20,10 @@ m4_define(`m4_pre_all_classes_code', `')
 dnl m4_pre_extra_class_code(Class_Counter)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
-type m4_downcase(m4_interface_class$1)`'dnl
-
+m4_ifelse(m4_interface_class$1, Polyhedron,
+type c_`'m4_downcase(m4_interface_class$1)
+type nnc_`'m4_downcase(m4_interface_class$1),
+type m4_downcase(m4_interface_class$1))
 
 ')
 
@@ -37,8 +39,6 @@ let _ = Callback.register_exception "PPL_arithmetic_overflow" (Error "any string
 let _ = Callback.register_exception "PPL_internal_error" (Error "any string")
 let _ = Callback.register_exception "PPL_unknown_standard_exception" (Error "any string")
 let _ = Callback.register_exception "PPL_unexpected_error" (Error "any string")
-type c_polyhedron
-type nnc_polyhedron
 dnl
 dnl Generate the non-fixed part of the file.
 m4_all_code`'dnl
