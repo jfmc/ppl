@@ -175,11 +175,11 @@ print_string "Build and print a PPL::Generator_System:\n" ;;
 
 test_generator_system [(Ray e3); (Line e1); (Closure_Point (e2, (Z.from_int 5)))] ;;
 
-(* Build some PPL::Polyhedron. *)
+(* Build some PPL::C_Polyhedron. *)
 
 for i = 6 downto 0 do
   let ph = ppl_new_C_Polyhedron_from_space_dimension(i)
-  in let dimension =  ppl_Polyhedron_space_dimension(ph)
+  in let dimension =  ppl_C_Polyhedron_space_dimension(ph)
   in printf "dimension %d\n" dimension
 done;;
 print_newline();;
@@ -197,34 +197,34 @@ print_int i;;
 let i = ppl_MIP_Problem_constraints ph;;
 print_newline();;
 let ph = ppl_new_C_Polyhedron_from_constraints(cs);;
-let result =  ppl_Polyhedron_bounds_from_above ph e2;;
-ppl_Polyhedron_add_constraint ph (e2 >=/ e2);;
+let result =  ppl_C_Polyhedron_bounds_from_above ph e2;;
+ppl_C_Polyhedron_add_constraint ph (e2 >=/ e2);;
 let ph2 = ppl_new_C_Polyhedron_from_generators(gs1);;
-let b = ppl_Polyhedron_is_disjoint_from_Polyhedron ph ph2;;
-ppl_Polyhedron_concatenate_assign ph ph2;;
-let constr = ppl_Polyhedron_get_congruences ph in
+let b = ppl_C_Polyhedron_is_disjoint_from_C_Polyhedron ph ph2;;
+ppl_C_Polyhedron_concatenate_assign ph ph2;;
+let constr = ppl_C_Polyhedron_get_congruences ph in
 List.iter print_congruence constr;;
-ppl_Polyhedron_bounded_affine_preimage ph 1 e1 e2 (Z.from_int 10);;
-ppl_Polyhedron_bounded_affine_preimage ph 1 e1 e2 (Z.from_int 10);;
-ppl_Polyhedron_affine_image ph 1 e1 (Z.from_int 10);;
-let a = ppl_Polyhedron_limited_BHRZ03_extrapolation_assign ph ph cs 10;;
-let b = ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign ph ph cs 10;;
-let b = ppl_Polyhedron_bounded_H79_extrapolation_assign ph ph cs 10;;
-let b = ppl_Polyhedron_H79_widening_assign ph ph 10;;
-let b = ppl_Polyhedron_OK ph;;
-ppl_Polyhedron_generalized_affine_preimage_lhs_rhs ph e1 Equal_RS e1;;
-ppl_Polyhedron_generalized_affine_image ph 1 Equal_RS e2 (Z.from_int 10);;
-let is_bounded, num, den, is_supremum, gen = ppl_Polyhedron_minimize ph e3;;
+ppl_C_Polyhedron_bounded_affine_preimage ph 1 e1 e2 (Z.from_int 10);;
+ppl_C_Polyhedron_bounded_affine_preimage ph 1 e1 e2 (Z.from_int 10);;
+ppl_C_Polyhedron_affine_image ph 1 e1 (Z.from_int 10);;
+let a = ppl_C_Polyhedron_limited_BHRZ03_extrapolation_assign ph ph cs 10;;
+let b = ppl_C_Polyhedron_bounded_BHRZ03_extrapolation_assign ph ph cs 10;;
+let b = ppl_C_Polyhedron_bounded_H79_extrapolation_assign ph ph cs 10;;
+let b = ppl_C_Polyhedron_H79_widening_assign ph ph 10;;
+let b = ppl_C_Polyhedron_OK ph;;
+ppl_C_Polyhedron_generalized_affine_preimage_lhs_rhs ph e1 Equal_RS e1;;
+ppl_C_Polyhedron_generalized_affine_image ph 1 Equal_RS e2 (Z.from_int 10);;
+let is_bounded, num, den, is_supremum, gen = ppl_C_Polyhedron_minimize ph e3;;
 let dimensions_to_remove = [3;0];;
-ppl_Polyhedron_remove_space_dimensions ph dimensions_to_remove;;
+ppl_C_Polyhedron_remove_space_dimensions ph dimensions_to_remove;;
 let dimensions_to_fold = [1];;
-ppl_Polyhedron_fold_space_dimensions ph dimensions_to_fold 0;;
+ppl_C_Polyhedron_fold_space_dimensions ph dimensions_to_fold 0;;
 let dimensions_to_map = [(1,2);(2,1)];;
-let i = ppl_Polyhedron_space_dimension ph;;
+let i = ppl_C_Polyhedron_space_dimension ph;;
 print_string "Space dimension is: ";
 print_int i;;
 print_string "\n";;
-(* ppl_Polyhedron_map_space_dimensions ph dimensions_to_map;; *)
+(* ppl_C_Polyhedron_map_space_dimensions ph dimensions_to_map;; *)
 print_newline();
 print_string "Testing minimization";
 print_newline();
@@ -239,6 +239,6 @@ print_string (string_of_bool is_supremum);
 print_newline();
 print_generator(gen);
 print_newline();
-ppl_Polyhedron_swap ph ph2;
+ppl_C_Polyhedron_swap ph ph2;
 at_exit Gc.full_major;;
 print_string "Bye!\n"
