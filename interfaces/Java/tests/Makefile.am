@@ -47,7 +47,7 @@ BUILT_SOURCES =  \
 ppl_java_generated_tests.java
 
 noinst_JAVA = $(EXTRA_DIST)
-CLASSPATH = ../ppl_java.jar:.
+CLASSPATH = ..:.
 JAVACFLAGS = -classpath $(CLASSPATH)
 
 ppl_java_generated_tests.java: $(interface_generator_dependencies) Makefile
