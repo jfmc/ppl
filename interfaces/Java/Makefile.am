@@ -22,7 +22,7 @@
 
 if BUILD_JAVA_INTERFACE
 
-SUBDIRS = ppl_java jni tests
+SUBDIRS = ppl_java jni . tests
 
 EXTRA_DIST = \
 ppl_interface_generator_java_dat.m4
