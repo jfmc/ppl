@@ -59,7 +59,7 @@ ppl_ocaml.cc: $(interface_generator_dependencies) Makefile
 OCAMLC_FLAGS = -I +gmp
 OCAMLC_ROOT = @ocamlc_root@
 
-%.cmi: $(srcdir)/%.mli
+%.cmi: %.mli
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $< . ; \
 	fi
@@ -68,7 +68,7 @@ OCAMLC_ROOT = @ocamlc_root@
 	  rm -f `basename $<`; \
 	fi
 
-%.cmo: $(srcdir)/%.ml
+%.cmo: %.ml
 	if [ -a `basename $<` ]; then \
 	ocamlc -g -c $(OCAMLC_FLAGS) `basename $<`; \
 	else \
