@@ -252,6 +252,20 @@ CATCH_ALL
 
 ')
 
+m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_remove_space_dimensions(value ph, value caml_vset) try {
+  CAMLparam2(ph, caml_vset);
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  pph.remove_space_dimensions(build_ppl_Variables_Set(caml_vset));
+  CAMLreturn0;
+}
+CATCH_ALL
+
+')
+
 m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `dnl
 extern "C"
@@ -264,42 +278,6 @@ ppl_@TOPOLOGY@@CLASS@_ppl_@TOPOLOGY@@CLASS@_remove_higher_space_dimensions(value
     abort();
   @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
   pph.remove_higher_space_dimensions(dd);
-  CAMLreturn0;
-}
-CATCH_ALL
-
-')
-
-m4_define(`ppl_@CLASS@_expand_space_dimensions_code',
-`dnl
-extern "C"
-void
-ppl_@TOPOLOGY@@CLASS@_ppl_@TOPOLOGY@@CLASS@_expand_space_dimension(value ph,
-						     value var_index,
-						     value m) try {
-  CAMLparam3(ph, var_index, m);
-  int c_var_index = Int_val(var_index);
-  if (c_var_index < 0)
-    abort();
-  int c_m = Int_val(m);
-  if (c_m < 0)
-    abort();
-  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
-  pph.expand_space_dimension(build_ppl_Variable(c_var_index), c_m);
-  CAMLreturn0;
-}
-CATCH_ALL
-
-')
-
-m4_define(`ppl_@CLASS@_remove_space_dimensions_code',
-`dnl
-extern "C"
-void
-ppl_@TOPOLOGY@@CLASS@_remove_space_dimensions(value ph, value caml_vset) try {
-  CAMLparam2(ph, caml_vset);
-  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
-  pph.remove_space_dimensions(build_ppl_Variables_Set(caml_vset));
   CAMLreturn0;
 }
 CATCH_ALL
@@ -331,6 +309,7 @@ CATCH_ALL
 
 ')
 
+
 m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 `dnl
 extern "C"
@@ -351,6 +330,30 @@ ppl_@TOPOLOGY@@CLASS@_map_space_dimensions(value ph, value caml_mapped_dims) try
 CATCH_ALL
 
 ')
+
+
+m4_define(`ppl_@CLASS@_expand_space_dimension_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_ppl_@TOPOLOGY@@CLASS@_expand_space_dimension(value ph,
+						     value var_index,
+						     value m) try {
+  CAMLparam3(ph, var_index, m);
+  int c_var_index = Int_val(var_index);
+  if (c_var_index < 0)
+    abort();
+  int c_m = Int_val(m);
+  if (c_m < 0)
+    abort();
+  @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
+  pph.expand_space_dimension(build_ppl_Variable(c_var_index), c_m);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+')
+
 
 m4_define(`ppl_@CLASS@_get_@GET_REPRESENT@s_code',
 `dnl
@@ -540,3 +543,46 @@ ppl_@TOPOLOGY@@CLASS@_swap(value ph1, value ph2) try {
 CATCH_ALL
 
 ')
+
+m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@(value ph) try {
+  CAMLparam1(ph);
+  @INTOPOLOGY@@CPP_CLASS@& pph = *p_@INTOPOLOGY@@FRIEND@_val(ph);
+  CAMLreturn(val_p_@TOPOLOGY@@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(pph)));
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+`dnl
+extern "C"
+CAMLprim value
+ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  @TOPOLOGY@@CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);
+  const @TOPOLOGY@@CPP_CLASS@& pph2 = *p_@TOPOLOGY@@CLASS@_val(ph2);
+  CAMLreturn(Val_bool(pph1.@UB_EXACT@(pph2)));
+}
+CATCH_ALL
+
+')
+
+
+ m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  @TOPOLOGY@@CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);
+  const @TOPOLOGY@@CPP_CLASS@& pph2 = *p_@TOPOLOGY@@CLASS@_val(ph2);
+  pph1.@EXTRAPOLATION@_narrowing_assign(pph2);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+ ')
