@@ -77,6 +77,16 @@ handle_exception(JNIEnv* env, const std::exception& e);
 void
 handle_exception(JNIEnv* env);
 
+/*! \brief
+  Converts a Java native number to an unsigned C++ number.
+
+  \param value
+  The Java native number of type V to be converted.
+
+  \exception std::invalid_argument
+  Thrown if the Java number is negative or if exceeds the maximum
+  value that type U allows to store.
+*/
 template <typename U, typename V>
 U
 jtype_to_unsigned(const V& value) {
