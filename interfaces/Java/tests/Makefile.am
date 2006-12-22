@@ -47,7 +47,7 @@ BUILT_SOURCES =  \
 ppl_java_generated_tests.java
 
 noinst_JAVA = $(EXTRA_DIST)
-CLASSPATH = ..:.
+CLASSPATH = ../ppl_java.jar:.
 JAVACFLAGS = -classpath $(CLASSPATH)
 
 ppl_java_generated_tests.java: $(interface_generator_dependencies) Makefile
@@ -57,8 +57,8 @@ ppl_java_generated_tests.java: $(interface_generator_dependencies) Makefile
 			> $@
 
 check-local:
-	 $(JAVA) -classpath .:.. -Djava.library.path=../jni/.libs ppl_java_generated_tests
-	 $(JAVA) -classpath .:.. -Djava.library.path=../jni/.libs C_Polyhedron_test1
+	 $(JAVA) -classpath .:../ppl_java.jar -Djava.library.path=../jni/.libs ppl_java_generated_tests
+	 $(JAVA) -classpath .:../ppl_java.jar -Djava.library.path=../jni/.libs C_Polyhedron_test1
 
 CLEANFILES = \
 $(BUILT_SOURCES)
