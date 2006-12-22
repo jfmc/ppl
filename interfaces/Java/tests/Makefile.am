@@ -50,7 +50,7 @@ EXTRA_DIST = \
 Test_Partial_Function.java \
 C_Polyhedron_test1.java
 
-CLASSPATH = ..:.
+CLASSPATH = ../ppl_java.jar:.
 JAVACFLAGS = -classpath $(CLASSPATH)
 
 ppl_java_generated_tests.java: $(interface_generator_dependencies) Makefile
