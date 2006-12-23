@@ -85,7 +85,7 @@ m4_define(`ppl_@CLASS@_equals_@CLASS@_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_equals_@TOPOLOGY@@CLASS@:
   @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
-      = "ppl_@LTOPOLOGY@@CLASS@_equals_@LTOPOLOGY@@CLASS@"
+      = "ppl_@TOPOLOGY@@CLASS@_equals_@TOPOLOGY@@CLASS@"
 
 ')
 
@@ -108,8 +108,8 @@ external ppl_@TOPOLOGY@@CLASS@_@BINMINOP@:
 
 m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
-external ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_and_@EMBEDPROJECT@:
-  @LTOPOLOGY@@LCLASS@ -> int -> unit = "ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_and_@EMBEDPROJECT@"
+external ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_@EMBEDPROJECT@:
+  @LTOPOLOGY@@LCLASS@ -> int -> unit = "ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_@EMBEDPROJECT@"
 
 ')
 

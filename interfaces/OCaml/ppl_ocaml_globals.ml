@@ -32,9 +32,9 @@ external ppl_MIP_Problem_add_constraints:
   mip_problem -> constraint_system -> unit
       = "ppl_MIP_Problem_add_constraints"
 
-external ppl_MIP_Problem_set_objetive_function:
+external ppl_MIP_Problem_set_objective_function:
   mip_problem -> linear_expression -> unit
-      = "ppl_MIP_Problem_set_objetive_function"
+      = "ppl_MIP_Problem_set_objective_function"
 
 external ppl_MIP_Problem_is_satisfiable:
   mip_problem -> bool

@@ -238,7 +238,7 @@ m4_define(`ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@_code',
 `dnl
 extern "C"
 void
-ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_and_embed(value ph,
+ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_@EMBEDPROJECT@(value ph,
 							     value d) try {
   CAMLparam2(ph, d);
   int dd = Int_val(d);
@@ -270,7 +270,7 @@ m4_define(`ppl_@CLASS@_remove_higher_space_dimensions_code',
 `dnl
 extern "C"
 void
-ppl_@TOPOLOGY@@CLASS@_ppl_@TOPOLOGY@@CLASS@_remove_higher_space_dimensions(value ph,
+ppl_@TOPOLOGY@@CLASS@_remove_higher_space_dimensions(value ph,
 							     value d) try {
   CAMLparam2(ph, d);
   int dd = Int_val(d);
@@ -336,7 +336,7 @@ m4_define(`ppl_@CLASS@_expand_space_dimension_code',
 `dnl
 extern "C"
 void
-ppl_@TOPOLOGY@@CLASS@_ppl_@TOPOLOGY@@CLASS@_expand_space_dimension(value ph,
+ppl_@TOPOLOGY@@CLASS@_expand_space_dimension(value ph,
 						     value var_index,
 						     value m) try {
   CAMLparam3(ph, var_index, m);
@@ -576,7 +576,7 @@ CATCH_ALL
 `dnl
 extern "C"
 void
-ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@(value ph1, value ph2) try {
+ppl@TOPOLOGY@_@CLASS@_@EXTRAPOLATION@_narrowing_assign(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @TOPOLOGY@@CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);
   const @TOPOLOGY@@CPP_CLASS@& pph2 = *p_@TOPOLOGY@@CLASS@_val(ph2);
