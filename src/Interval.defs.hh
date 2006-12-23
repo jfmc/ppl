@@ -70,6 +70,10 @@ struct Is_Singleton_Or_Interval<T, typename Enable_If<Is_Same_Or_Derived<Interva
 template <typename T>
 struct Is_Singleton_Or_Interval<T, typename Enable_If<Is_Native_Or_Checked<T>::value>::type> : public True {};
 
+//! A generic, not necessarily closed, possibly restricted interval.
+/*! \ingroup PPL_CXX_interface
+  FIXME: to be written.
+*/
 template <typename Boundary, typename Info>
 class Interval : public Interval_Base, private Info {
 private:
@@ -824,11 +828,18 @@ intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2
 }
 
 /*! \brief
-  Refines \p to so that it satisfies the existential relation \p rel with \p x.
+  Refines \p to according to the existential relation \p rel with \p x.
 
-  The \p to interval is restricted so that, upon successful exit,
-  for each element \f$ a \f$ of \p to there exists at least one element
-  \f$ b \f$ of \p x such that \f$ a \mathrel{\mathtt{rel}} b \f$.
+  \relates Interval
+  The \p to interval is restricted to become, upon successful exit,
+  the smallest interval of its type that contains the set
+  \f[
+    \{\,
+      a \in \mathtt{to}
+    \mid
+      \exists b \in \mathtt{x} \st a \mathrel{\mathtt{rel}} b
+    \,\}.
+  \f]
   \return
   ???
 */
@@ -908,9 +919,16 @@ refine_existential(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, cons
 /*! \brief
   Refines \p to so that it satisfies the universal relation \p rel with \p x.
 
-  The \p to interval is restricted so that, upon successful exit,
-  each element \f$ a \f$ of \p to is such that, for each element
-  \f$ b \f$ of \p x, \f$ a \mathrel{\mathtt{rel}} b \f$.
+  \relates Interval
+  The \p to interval is restricted to become, upon successful exit,
+  the smallest interval of its type that contains the set
+  \f[
+    \{\,
+      a \in \mathtt{to}
+    \mid
+      \forall b \in \mathtt{x} \itc a \mathrel{\mathtt{rel}} b
+    \,\}.
+  \f]
   \return
   ???
 */
