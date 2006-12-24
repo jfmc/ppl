@@ -22,7 +22,7 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 dnl
 
 AC_DEFUN([AC_JAVAC_SUPPORTS_ENUMS],[
-AC_CACHE_CHECK([whether$JAVAC supports enums], ac_cv_javac_supports_enums, [
+AC_CACHE_CHECK([whether $JAVAC supports enums], ac_cv_javac_supports_enums, [
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
