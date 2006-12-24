@@ -202,8 +202,16 @@ external ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@:
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 external ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign:
- @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> int -> int
+ @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit
      = "ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign"
+
+')
+
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign_with_tokens:
+ @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> int -> int
+     = "ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign_with_tokens"
 
 ')
 
@@ -214,6 +222,23 @@ external ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign
      = "ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign"
 
 ')
+
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
+ @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> unit
+     = "ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign"
+
+')
+
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
+`dnl
+external ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens:
+ @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> int -> int
+     = "ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens"
+
+')
+
 
 m4_define(`ppl_@CLASS@_@MAXMIN@_code',
 `dnl

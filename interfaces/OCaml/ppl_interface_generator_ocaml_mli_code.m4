@@ -184,14 +184,28 @@ val ppl_@TOPOLOGY@@CLASS@_generalized_@AFFIMAGE@:
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign:
+ @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign_with_tokens:
  @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> int -> int
+
+')
+
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
+`dnl
+val ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens:
+ @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> int -> int
 
 ')
 
 m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign:
- @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> int -> int
+ @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> constraint_system -> unit
 
 ')
 
@@ -230,23 +244,6 @@ val ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
 @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
 
 ')
-
-
-#  m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens_code',
-#  `dnl
-#  val ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens:
-#  @LTOPOLOGY@@LCLASS@ -> int -> int
-
-#  ')
-
-
-#  m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_code',
-#  `dnl
-#  val ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign:
-#  @LTOPOLOGY@@LCLASS@ -> unit
-
-#  ')
-
  m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
  `dnl
  val ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign:

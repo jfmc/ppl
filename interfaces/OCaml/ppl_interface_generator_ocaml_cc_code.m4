@@ -457,7 +457,24 @@ CATCH_ALL
 m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_code',
 `dnl
 extern "C"
-CAMLprim value ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign(value ph1, value ph2,
+void
+ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign(value ph1, value ph2) try {
+  CAMLparam2(ph1, ph2);
+  @CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);
+  @CPP_CLASS@& pph2 = *p_@TOPOLOGY@@CLASS@_val(ph2);
+  // FIXME: ensure that the input parameter is positive.
+  pph1.@WIDEN@_widening_assign(pph2);
+  CAMLreturn0;
+}
+CATCH_ALL
+
+')
+
+
+m4_define(`ppl_@CLASS@_@WIDEN@_widening_assign_with_tokens_code',
+`dnl
+extern "C"
+CAMLprim value ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign_with_tokens(value ph1, value ph2,
 						     value integer) try {
   CAMLparam3(ph1, ph2, integer);
   @CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);
@@ -471,11 +488,11 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens_code',
 `dnl
 extern "C"
 CAMLprim value
-ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(value ph1,
+ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tokens(value ph1,
 						   value ph2,
 						   value caml_cs,
 						   value integer) try {
@@ -487,6 +504,24 @@ ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(value ph
   unsigned int cpp_int = Val_int(integer);
   pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs, &cpp_int);
   CAMLreturn(Int_val(cpp_int));
+}
+CATCH_ALL
+
+')
+
+m4_define(`ppl_@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_code',
+`dnl
+extern "C"
+void
+ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(value ph1,
+						   value ph2,
+						   value caml_cs) try {
+  CAMLparam3(ph1, ph2, caml_cs);
+  @CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);
+  @CPP_CLASS@& pph2 = *p_@TOPOLOGY@@CLASS@_val(ph2);
+  @UCONSTRAINER@_System ppl_cs = build_ppl_@UCONSTRAINER@_System(caml_cs);
+  pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs);
+  CAMLreturn0;
 }
 CATCH_ALL
 
