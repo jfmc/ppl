@@ -57,6 +57,11 @@ m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code', `
 
 ')
 
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code', `
+@LTOPOLOGY@@LCLASS@1.@EXTRAPOLATION@_narrowing_assign(@LTOPOLOGY@@LCLASS@1);
+
+')
+
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code', `
  	  @LTOPOLOGY@@LCLASS@1.relation_with(@RELATION_REPRESENT@1);
 
@@ -69,6 +74,7 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code', `
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code', `
 @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@_and_minimize(@ADD_REPRESENT@1);
+
 ')
 
  m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_code', `
@@ -79,11 +85,11 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code', `
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@s_and_minimize_code', `
  @LTOPOLOGY@@LCLASS@1.add_@ADD_REPRESENT@s_and_minimize(@ADD_REPRESENT@s1);
- ')
+
+')
 
 m4_define(`ppl_@CLASS@_@AFFIMAGE@_code', `
  @LTOPOLOGY@@LCLASS@1.@AFFIMAGE@(var, le, coeff1);
-
 
 ')
 
@@ -95,11 +101,11 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code', `
  m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code', `
  @LTOPOLOGY@@LCLASS@1.@UB_EXACT@(@LTOPOLOGY@@LCLASS@1);
 
- ')
+')
 
 m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code', `
 @LTOPOLOGY@@LCLASS@1.generalized_@AFFIMAGE@(var, Relation_Symbol.EQUAL,
-					    le, coeff1, coeff1);
+						    le, coeff1, coeff1);
 
 ')
 
