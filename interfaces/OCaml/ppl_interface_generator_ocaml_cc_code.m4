@@ -40,8 +40,7 @@ CAMLprim value
 ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(value d) try {
   CAMLparam1(d);
   int dd = Int_val(d);
-  if (dd < 0)
-    abort();
+  check_int_is_unsigned(dd);
   CAMLreturn(val_p_@TOPOLOGY@@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(dd)));
 }
 CATCH_ALL
@@ -242,8 +241,7 @@ ppl_@TOPOLOGY@@CLASS@_add_space_dimensions_@EMBEDPROJECT@(value ph,
 							     value d) try {
   CAMLparam2(ph, d);
   int dd = Int_val(d);
-  if (dd < 0)
-    abort();
+  check_int_is_unsigned(dd);
   @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
   pph.add_space_dimensions_and_embed(dd);
   CAMLreturn0;
@@ -274,8 +272,7 @@ ppl_@TOPOLOGY@@CLASS@_remove_higher_space_dimensions(value ph,
 							     value d) try {
   CAMLparam2(ph, d);
   int dd = Int_val(d);
-  if (dd < 0)
-    abort();
+  check_int_is_unsigned(dd);
   @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
   pph.remove_higher_space_dimensions(dd);
   CAMLreturn0;
@@ -320,8 +317,10 @@ ppl_@TOPOLOGY@@CLASS@_map_space_dimensions(value ph, value caml_mapped_dims) try
   PFunc pfunc;
   while (caml_mapped_dims != Val_int(0)) {
     Int_val(Field(Field(caml_mapped_dims, 0),0));
-    pfunc.insert(Int_val(Field(Field(caml_mapped_dims, 0),0)),
-		 Int_val(Field(Field(caml_mapped_dims, 0),1)));
+    int domain_value = Int_val(Field(Field(caml_mapped_dims, 0),0));
+    int codomain_value = Int_val(Field(Field(caml_mapped_dims, 0),1));
+    pfunc.insert(domain_value,
+		 codomain_value);
     caml_mapped_dims = Field(caml_mapped_dims, 1);
   }
   pph.map_space_dimensions(pfunc);
@@ -340,14 +339,10 @@ ppl_@TOPOLOGY@@CLASS@_expand_space_dimension(value ph,
 						     value var_index,
 						     value m) try {
   CAMLparam3(ph, var_index, m);
-  int c_var_index = Int_val(var_index);
-  if (c_var_index < 0)
-    abort();
   int c_m = Int_val(m);
-  if (c_m < 0)
-    abort();
+  check_int_is_unsigned(c_m);
   @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
-  pph.expand_space_dimension(build_ppl_Variable(c_var_index), c_m);
+  pph.expand_space_dimension(build_ppl_Variable(var_index), c_m);
   CAMLreturn0;
 }
 CATCH_ALL
@@ -389,7 +384,7 @@ ppl_@TOPOLOGY@@CLASS@_bounded_@AFFIMAGE@(value ph, value var, value lb_expr,
 				    value ub_expr, value coeff) try {
   CAMLparam5(ph, var, lb_expr, ub_expr, coeff);
   @CPP_CLASS@& pph = *p_@TOPOLOGY@@CLASS@_val(ph);
-  pph.bounded_@AFFIMAGE@(build_ppl_Variable(Val_int(var)),
+  pph.bounded_@AFFIMAGE@(build_ppl_Variable(var),
 			   build_ppl_Linear_Expression(lb_expr),
  			   build_ppl_Linear_Expression(ub_expr),
  			   build_ppl_Coefficient(coeff));
@@ -462,7 +457,6 @@ ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign(value ph1, value ph2) try {
   CAMLparam2(ph1, ph2);
   @CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@TOPOLOGY@@CLASS@_val(ph2);
-  // FIXME: ensure that the input parameter is positive.
   pph1.@WIDEN@_widening_assign(pph2);
   CAMLreturn0;
 }
@@ -479,10 +473,11 @@ CAMLprim value ppl_@TOPOLOGY@@CLASS@_@WIDEN@_widening_assign_with_tokens(value p
   CAMLparam3(ph1, ph2, integer);
   @CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@TOPOLOGY@@CLASS@_val(ph2);
-  // FIXME: ensure that the input parameter is positive.
-  unsigned int cpp_int = Val_int(integer);
-  pph1.@WIDEN@_widening_assign(pph2, &cpp_int);
-  CAMLreturn(Int_val(cpp_int));
+  int cpp_int = Val_int(integer);
+  check_int_is_unsigned(cpp_int);
+  unsigned int unsigned_value = cpp_int;
+  pph1.@WIDEN@_widening_assign(pph2, &unsigned_value);
+  CAMLreturn(Int_val(unsigned_value));
 }
 CATCH_ALL
 
@@ -500,10 +495,12 @@ ppl_@TOPOLOGY@@CLASS@_@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign_with_tok
   @CPP_CLASS@& pph1 = *p_@TOPOLOGY@@CLASS@_val(ph1);
   @CPP_CLASS@& pph2 = *p_@TOPOLOGY@@CLASS@_val(ph2);
   @UCONSTRAINER@_System ppl_cs = build_ppl_@UCONSTRAINER@_System(caml_cs);
-  // FIXME: ensure that the input parameter is positive.
-  unsigned int cpp_int = Val_int(integer);
-  pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs, &cpp_int);
-  CAMLreturn(Int_val(cpp_int));
+  int cpp_int = Val_int(integer);
+  check_int_is_unsigned(cpp_int);
+  unsigned int unsigned_value = cpp_int;
+  pph1.@LIMITEDBOUNDED@_@WIDENEXPN@_extrapolation_assign(pph2, ppl_cs,
+							 &unsigned_value);
+  CAMLreturn(Int_val(unsigned_value));
 }
 CATCH_ALL
 

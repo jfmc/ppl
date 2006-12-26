@@ -117,6 +117,11 @@ class PFunc {
     caml_raise_constant(*caml_named_value("PPL_unexpected_error"));	\
   }
 
+void check_int_is_unsigned(int dd) {
+  if (dd < 0)
+    caml_raise_with_string(*caml_named_value("PPL_not_an_unsigned_exception"),
+			   "negative number given, should be unsigned" );
+}
 
 // Function for the management of mpz_t integers.
 extern "C" struct custom_operations _mlgmp_custom_z;
@@ -131,7 +136,9 @@ static inline value alloc_mpz(void) {
 
 Variable
 build_ppl_Variable(value caml_var) {
-  return Variable(Long_val(caml_var));
+  long ppl_var_index = Int_val(caml_var);
+  check_int_is_unsigned(ppl_var_index);
+  return Variable(ppl_var_index);
 }
 
 // FIXME: This should be placed in a more convenient place inside

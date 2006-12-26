@@ -65,7 +65,8 @@ ppl_@CLASS@_remove_space_dimensions/2 +simple_pps,
 ppl_@CLASS@_remove_higher_space_dimensions/2 +simple_pps,
 ppl_@CLASS@_expand_space_dimension/3 +simple,
 ppl_@CLASS@_fold_space_dimensions/3  +simple,
-ppl_@CLASS@_map_space_dimensions/2 +simple_pps
+ppl_@CLASS@_map_space_dimensions/2 +simple_pps,
+ppl_@CLASS@_begin_iterator/2 +pointset_powerset
 ')`'dnl
 dnl
 m4_divert`'dnl
