@@ -585,7 +585,7 @@ extern "C"
 CAMLprim value
 ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@(value ph) try {
   CAMLparam1(ph);
-  @INTOPOLOGY@@CPP_CLASS@& pph = *p_@INTOPOLOGY@@FRIEND@_val(ph);
+  @INTOPOLOGY@@ALT_FRIEND@& pph = *p_@INTOPOLOGY@@FRIEND@_val(ph);
   CAMLreturn(val_p_@TOPOLOGY@@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(pph)));
 }
 CATCH_ALL
@@ -621,3 +621,17 @@ ppl@TOPOLOGY@_@CLASS@_@EXTRAPOLATION@_narrowing_assign(value ph1, value ph2) try
 CATCH_ALL
 
  ')
+
+# m4_define(`ppl_@CLASS@_begin_iterator_code',
+# `
+# extern "C"
+# CAMLprim value
+# ppl_@CLASS@_begin_iterator(value t_pps) try {
+#   CAMLparam1(t_pps);
+#   @CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(t_pps);
+#   @CPP_CLASS@::iterator* i = new @CPP_CLASS@::iterator(pps.begin());
+#  CAMLreturn(Bool_val(pps.OK()));
+# }
+# CATCH_ALL
+
+# ')
