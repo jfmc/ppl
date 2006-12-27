@@ -226,6 +226,27 @@ print_string "Space dimension is: ";
 print_int i;;
 print_string "\n";;
 ppl_C_Polyhedron_map_space_dimensions ph dimensions_to_map;;
+(* Pointset_Powersed_Grid is not enabled by default, the following code is *)
+(* commented *)
+(* let pps = ppl_new_Pointset_Powerset_Grid_from_space_dimension 3;; *)
+(* let space_dim = ppl_Pointset_Powerset_Grid_space_dimension pps;; *)
+(* ppl_Pointset_Powerset_Grid_add_constraints  pps cs;; *)
+(* let caml_grid_it = ppl_Pointset_Powerset_Grid_begin_iterator pps;; *)
+(* let grid1 =  ppl_Pointset_Powerset_Grid_iterator_get_disjunct caml_grid_it;; *)
+(* let space_dim = ppl_Grid_space_dimension grid1;; *)
+(* let grid2 = ppl_new_Grid_from_space_dimension 3;; *)
+(* ppl_Pointset_Powerset_Grid_add_disjunct pps grid2;; *)
+(* let space_dim = ppl_Pointset_Powerset_Grid_space_dimension pps;; *)
+(* let caml_grid_it1 = ppl_Pointset_Powerset_Grid_end_iterator pps;; *)
+(* let caml_grid_it2 = ppl_Pointset_Powerset_Grid_end_iterator pps;; *)
+(* ppl_Pointset_Powerset_Grid_iterator_decrement caml_grid_it1;; *)
+(* ppl_Pointset_Powerset_Grid_drop_disjunct pps caml_grid_it1;; *)
+(* ppl_Pointset_Powerset_Grid_iterator_equals_iterator caml_grid_it1 caml_grid_it1;; *)
+(* print_int space_dim;; *)
+(* print_newline();; *)
+(* print_string "PPS size : ";; *)
+(* let size = ppl_Pointset_Powerset_Grid_size pps;; *)
+(* print_int size;; *)
 print_newline();
 print_string "Testing minimization";
 print_newline();

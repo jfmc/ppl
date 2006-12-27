@@ -619,16 +619,169 @@ CATCH_ALL
 
  ')
 
-# m4_define(`ppl_@CLASS@_begin_iterator_code',
-# `
-# extern "C"
-# CAMLprim value
-# ppl_@CLASS@_begin_iterator(value t_pps) try {
-#   CAMLparam1(t_pps);
-#   @CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(t_pps);
-#   @CPP_CLASS@::iterator* i = new @CPP_CLASS@::iterator(pps.begin());
-#  CAMLreturn(Bool_val(pps.OK()));
-# }
-# CATCH_ALL
+m4_define(`ppl_@CLASS@_type_constructor_code',
+`dnl
+//! Give access to the embedded @CLASS@* in \p v.
+inline @TOPOLOGY@@CPP_CLASS@::iterator*&
+p_@TOPOLOGY@@CLASS@_iterator_val(value v) {
+  return *reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator**>(Data_custom_val(v));
+}
 
-# ')
+void
+custom_@TOPOLOGY@@CLASS@_iterator_finalize(value v) {
+  std::cerr << "About to delete a polyhedron " << *p_@TOPOLOGY@@CLASS@_val(v)
+	    << std::endl;
+  delete p_@TOPOLOGY@@CLASS@_iterator_val(v);
+}
+
+static struct custom_operations @TOPOLOGY@@CLASS@_iterator_custom_operations = {
+  "it.unipr.cs.ppl" "." PPL_VERSION "." "@TOPOLOGY@@CLASS@_iterator"@COMMA@
+  custom_@TOPOLOGY@@CLASS@_iterator_finalize@COMMA@
+  custom_compare_default@COMMA@
+  custom_hash_default@COMMA@
+  custom_serialize_default@COMMA@
+  custom_deserialize_default
+};
+
+inline value
+val_p_@TOPOLOGY@@CLASS@_iterator(const @TOPOLOGY@@CPP_CLASS@::iterator& ph) {
+  value v = caml_alloc_custom(&@TOPOLOGY@@CLASS@_iterator_custom_operations,
+			      sizeof(@TOPOLOGY@@CPP_CLASS@::iterator*), 0, 1);
+  p_@TOPOLOGY@@CLASS@_iterator_val(v) = const_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(&ph);
+  return(v);
+}
+
+')
+
+m4_define(`ppl_@CLASS@_begin_iterator_code',
+ `
+ extern "C"
+ CAMLprim value
+ ppl_@CLASS@_begin_iterator(value t_pps) try {
+   CAMLparam1(t_pps);
+   @CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(t_pps);
+  CAMLreturn(val_p_@TOPOLOGY@@CLASS@_iterator(*new @TOPOLOGY@@CPP_CLASS@::iterator(pps.begin())));
+
+ }
+ CATCH_ALL
+
+ ')
+
+m4_define(`ppl_@CLASS@_end_iterator_code',
+ `
+ extern "C"
+ CAMLprim value
+ ppl_@CLASS@_end_iterator(value t_pps) try {
+   CAMLparam1(t_pps);
+   @CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(t_pps);
+  CAMLreturn(val_p_@TOPOLOGY@@CLASS@_iterator(*new @TOPOLOGY@@CPP_CLASS@::iterator(pps.end())));
+
+ }
+ CATCH_ALL
+
+ ')
+
+
+m4_define(`ppl_@CLASS@_get_disjunct_code',
+`
+ extern "C"
+ CAMLprim value
+ppl_@CLASS@_iterator_get_disjunct(value caml_it) {
+   CAMLparam1(caml_it);
+   @CPP_CLASS@::iterator& cpp_it  = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_it);
+   @ALT_CPP_DISJUNCT@ disjunct = cpp_it->element();
+  CAMLreturn(val_p_@ALT_CPP_DISJUNCT@(disjunct));
+
+}
+
+')
+
+ m4_define(`ppl_@CLASS@_add_disjunct_code',
+ `
+ extern "C"
+void
+ ppl_@CLASS@_add_disjunct(value t_pps, value caml_item_to_add) try {
+   CAMLparam2(t_pps, caml_item_to_add);
+   @CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(t_pps);
+   @ALT_CPP_DISJUNCT@& item = *p_@ALT_CPP_DISJUNCT@_val(caml_item_to_add);
+   pps.add_disjunct(item);
+CAMLreturn0;
+ }
+ CATCH_ALL
+
+ ')
+
+m4_define(`ppl_@CLASS@_drop_disjunct_code',
+`
+ extern "C"
+void
+ ppl_@CLASS@_drop_disjunct(value t_pps, value caml_item_to_drop) try {
+   CAMLparam2(t_pps, caml_item_to_drop);
+   @CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(t_pps);
+   @CPP_CLASS@::iterator& itr = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_item_to_drop);
+ pps.drop_disjunct(itr);
+CAMLreturn0;
+ }
+ CATCH_ALL
+
+ ')
+
+m4_define(`ppl_@CLASS@_decrement_iterator_code',
+`
+ extern "C"
+void
+ ppl_@CLASS@_iterator_decrement(value caml_itr) try {
+   CAMLparam1(caml_itr);
+   @CPP_CLASS@::iterator& itr = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_itr);
+    --itr;
+   CAMLreturn0;
+ }
+ CATCH_ALL
+
+ ')
+
+m4_define(`ppl_@CLASS@_increment_iterator_code',
+`
+ extern "C"
+void
+ ppl_@CLASS@_iterator_increment(value caml_itr) try {
+   CAMLparam1(caml_itr);
+   @CPP_CLASS@::iterator& itr = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_itr);
+  ++itr;
+CAMLreturn0;
+ }
+ CATCH_ALL
+
+ ')
+
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`
+ extern "C"
+CAMLprim value
+ ppl_@CLASS@_iterator_equals_iterator(value caml_itr1, value caml_itr2) try {
+   CAMLparam2(caml_itr1, caml_itr2);
+  @CPP_CLASS@::iterator& itr1 = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_itr1);
+  @CPP_CLASS@::iterator& itr2 = *p_@TOPOLOGY@@CLASS@_iterator_val(caml_itr2);
+ if (itr1 == itr2)
+   CAMLreturn(Val_bool(true));
+ else
+   CAMLreturn(Val_bool(false));
+ }
+ CATCH_ALL
+
+ ')
+
+m4_define(`ppl_@CLASS@_size_code',
+`
+ extern "C"
+CAMLprim value
+ ppl_@CLASS@_size(value caml_pps) try {
+CAMLparam1(caml_pps);
+@CPP_CLASS@& pps = *p_@TOPOLOGY@@CLASS@_val(caml_pps);
+ CAMLreturn(Val_int(pps.size()));
+ }
+ CATCH_ALL
+
+ ')
+
+m4_divert(-1)dnl

@@ -306,6 +306,89 @@ external ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
 
  ')
 
+ m4_define(`ppl_@CLASS@_type_constructor_code',
+ `dnl
+ type @LCLASS@_iterator
+
+ ')
+
+ m4_define(`ppl_@CLASS@_begin_iterator_code',
+ `
+ external ppl_@CLASS@_begin_iterator:
+ @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@_iterator =
+"ppl_@CLASS@_begin_iterator"
+
+')
+
+m4_define(`ppl_@CLASS@_end_iterator_code',
+ `
+ external ppl_@CLASS@_end_iterator:
+ @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@_iterator =
+"ppl_@CLASS@_end_iterator"
+
+')
+
+m4_define(`ppl_@CLASS@_get_disjunct_code',
+ `
+ external ppl_@CLASS@_iterator_get_disjunct:
+ @LTOPOLOGY@@LCLASS@_iterator  ->  @LALT_CPP_DISJUNCT@ =
+ "ppl_@CLASS@_iterator_get_disjunct"
+
+
+')
+
+m4_define(`ppl_@CLASS@_add_disjunct_code',
+ `
+ external ppl_@CLASS@_add_disjunct:
+ @LTOPOLOGY@@LCLASS@  ->  @LALT_CPP_DISJUNCT@ -> unit =
+ "ppl_@CLASS@_add_disjunct"
+
+
+')
+
+m4_define(`ppl_@CLASS@_drop_disjunct_code',
+ `
+ external ppl_@CLASS@_drop_disjunct:
+ @LTOPOLOGY@@LCLASS@  ->  @LTOPOLOGY@@LCLASS@_iterator -> unit =
+ "ppl_@CLASS@_drop_disjunct"
+
+
+')
+
+m4_define(`ppl_@CLASS@_size_code',
+ `
+ external ppl_@CLASS@_size:
+ @LTOPOLOGY@@LCLASS@  -> int =
+ "ppl_@CLASS@_size"
+
+')
+
+m4_define(`ppl_@CLASS@_decrement_iterator_code',
+ `
+ external ppl_@CLASS@_iterator_decrement:
+ @LTOPOLOGY@@LCLASS@_iterator -> unit =
+ "ppl_@CLASS@_iterator_decrement"
+
+
+')
+
+
+m4_define(`ppl_@CLASS@_increment_iterator_code',
+ `
+ external ppl_@CLASS@_iterator_increment:
+ @LTOPOLOGY@@LCLASS@_iterator -> unit =
+ "ppl_@CLASS@_iterator_increment"
+
+
+')
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+ `
+external ppl_@CLASS@_iterator_equals_iterator:
+ @LTOPOLOGY@@LCLASS@_iterator ->  @LTOPOLOGY@@LCLASS@_iterator -> bool =
+"ppl_@CLASS@_iterator_equals_iterator"
+
+')
+
 # m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_code',
 # `dnl
 # external ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@:

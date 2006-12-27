@@ -244,9 +244,79 @@ val ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@:
 @LTOPOLOGY@@LCLASS@ -> @LTOPOLOGY@@LCLASS@ -> bool
 
 ')
+
  m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
  `dnl
  val ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign:
  @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@ -> unit
 
  ')
+
+ m4_define(`ppl_@CLASS@_type_constructor_code',
+ `dnl
+ type @LCLASS@_iterator
+
+ ')
+
+ m4_define(`ppl_@CLASS@_begin_iterator_code',
+ `
+ val ppl_@CLASS@_begin_iterator:
+ @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@_iterator
+
+')
+
+ m4_define(`ppl_@CLASS@_end_iterator_code',
+ `
+ val ppl_@CLASS@_end_iterator:
+ @LTOPOLOGY@@LCLASS@  -> @LTOPOLOGY@@LCLASS@_iterator
+
+')
+
+
+m4_define(`ppl_@CLASS@_get_disjunct_code',
+ `
+ val ppl_@CLASS@_iterator_get_disjunct:
+ @LTOPOLOGY@@LCLASS@_iterator  ->  @LALT_CPP_DISJUNCT@
+
+')
+
+m4_define(`ppl_@CLASS@_add_disjunct_code',
+ `
+ val ppl_@CLASS@_add_disjunct:
+ @LTOPOLOGY@@LCLASS@  ->  @LALT_CPP_DISJUNCT@ -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_drop_disjunct_code',
+ `
+ val ppl_@CLASS@_drop_disjunct:
+ @LTOPOLOGY@@LCLASS@  ->  @LTOPOLOGY@@LCLASS@_iterator -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+ `
+ val ppl_@CLASS@_iterator_equals_iterator:
+ @LTOPOLOGY@@LCLASS@_iterator ->  @LTOPOLOGY@@LCLASS@_iterator -> bool
+
+')
+
+m4_define(`ppl_@CLASS@_decrement_iterator_code',
+ `
+ val ppl_@CLASS@_iterator_decrement:
+  @LTOPOLOGY@@LCLASS@_iterator -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_increment_iterator_code',
+ `
+ val ppl_@CLASS@_iterator_increment:
+  @LTOPOLOGY@@LCLASS@_iterator -> unit
+
+')
+
+m4_define(`ppl_@CLASS@_size_code',
+ `
+ val ppl_@CLASS@_size:
+ @LTOPOLOGY@@LCLASS@  -> int
+')
