@@ -93,7 +93,7 @@ rm -f Test.uue])
 fi
 if test x$ac_cv_prog_uudecode_base64 != xyes; then
         rm -f Test.class
-        if test $ac_cv_javac_supports_enums = x; then
+        if test x$ac_cv_javac_supports_enums = x; then
                 AC_PROG_JAVAC
         fi
 fi
