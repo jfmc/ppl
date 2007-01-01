@@ -1,5 +1,5 @@
 dnl A function to check whether the Java compiler supports enums.
-dnl Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -19,7 +19,6 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-dnl
 
 AC_DEFUN([AC_JAVAC_SUPPORTS_ENUMS],[
 AC_CACHE_CHECK([whether $JAVAC supports enums], ac_cv_javac_supports_enums, [
@@ -96,8 +95,8 @@ AC_PROVIDE([$0])dnl
 #
 # COPYLEFT
 #
-#   Copyright (c) 2000 Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
-#   Copyright (C) 2006 Roberto Bagnara <bagnara@cs.unipr.it>
+#   Copyright (c) 2000      Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
+#   Copyright (C) 2006-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 #   This program is free software; you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License as

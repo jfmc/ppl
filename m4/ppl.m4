@@ -1,6 +1,6 @@
 dnl A function to test for the existence and usability of particular
 dnl versions of the PPL, defining macros containing the required paths.
-dnl Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl Copyright (C) 1997 Owen Taylor
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -21,7 +21,6 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-dnl
 
 dnl AM_PATH_PPL([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for PPL, and define PPL_CPPFLAGS, PPL_LDFLAGS, ... what else?
