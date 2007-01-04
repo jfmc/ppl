@@ -1,3 +1,4 @@
+m4_define(`dnl', `m4_dnl')
 dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -20,7 +21,6 @@ dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
 m4_divert(-1)
-m4_define(`dnl', `m4_dnl')
 dnl This file contains the schematic tests for the Prolog interface predicates.
 dnl
 m4_define(`m4_add_topology_class_code', `dnl

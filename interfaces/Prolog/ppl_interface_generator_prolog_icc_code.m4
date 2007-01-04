@@ -1,4 +1,3 @@
-dnl A function to check for the existence and usability of GMP.
 dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).

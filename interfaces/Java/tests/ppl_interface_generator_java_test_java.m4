@@ -1,3 +1,4 @@
+m4_define(`dnl', `m4_dnl')`'dnl
 dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -19,7 +20,6 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_define(`dnl', `m4_dnl')`'dnl
 dnl
 dnl ==================================================================
 dnl Common files are included here

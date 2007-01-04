@@ -1,3 +1,4 @@
+m4_define(`dnl', `m4_dnl')
 dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -19,7 +20,6 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
-m4_define(`dnl', `m4_dnl')
 dnl This file generates ppl_ciao.pl.
 /* Ciao Prolog interface: Ciao Prolog part.
 m4_include(`ppl_interface_generator_copyright')
