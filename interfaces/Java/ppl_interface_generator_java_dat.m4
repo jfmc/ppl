@@ -86,7 +86,16 @@ ppl_@CLASS@_remove_space_dimensions/2 +simple_pps,
 ppl_@CLASS@_remove_higher_space_dimensions/2 +simple_pps,
 ppl_@CLASS@_expand_space_dimension/3 +simple,
 ppl_@CLASS@_fold_space_dimensions/3  +simple,
-ppl_@CLASS@_map_space_dimensions/2 +simple_pps
+ppl_@CLASS@_map_space_dimensions/2 +simple_pps,
+ppl_@CLASS@_begin_iterator/2 +pointset_powerset,
+ppl_@CLASS@_end_iterator/2 +pointset_powerset,
+ppl_@CLASS@_get_disjunct/2 +pointset_powerset
+ppl_@CLASS@_iterator_equals_iterator/2 +pointset_powerset
+ppl_@CLASS@_increment_iterator/1 +pointset_powerset,
+ppl_@CLASS@_decrement_iterator/1 +pointset_powerset,
+ppl_@CLASS@_size/1 +pointset_powerset,
+ppl_@CLASS@_drop_disjunct/2 +pointset_powerset
+
 ')`'dnl
 dnl
 m4_divert`'dnl

@@ -58,6 +58,19 @@ ppl_java.Linear_Expression \
 ppl_java.MIP_Problem \
 ppl_java.Parma_Polyhedra_Library
 
+fixed_java_cxx_headers_sources = \
+ppl_java_Congruence.h \
+ppl_java_Congruence_System.h \
+ppl_java_Constraint.h \
+ppl_java_Constraint_System.h \
+ppl_java_Generator.h \
+ppl_java_Generator_System.h \
+ppl_java_Grid_Generator.h \
+ppl_java_Grid_Generator_System.h \
+ppl_java_Linear_Expression.h \
+ppl_java_MIP_Problem.h \
+ppl_java_Parma_Polyhedra_Library.h
+
 fixed_java_sources = \
 By_Reference.java \
 Coefficient.java \
@@ -144,7 +157,8 @@ noinst_JAVA = Variable.java
 
 CLEANFILES = \
 $(required_instantiations_java_sources) \
-$(required_instantiations_java_cxx_headers) \
+$(required_instantiations_java_cxx_headers_sources) \
+$(fixed_java_cxx_headers_sources) \
 java_classes.stamp \
 java_cxx_headers.stamp \
 source_generation.stamp

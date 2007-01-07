@@ -359,3 +359,64 @@ m4_define(`ppl_@CLASS@_string_code',
     public native String toString();
 
 ')
+
+m4_define(`ppl_@CLASS@_begin_iterator_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void begin_iterator();
+
+')
+
+m4_define(`ppl_@CLASS@_end_iterator_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void end_iterator();
+
+')
+
+m4_define(`ppl_@CLASS@_get_disjunct_code',
+`dnl
+%<--%<--%<-- @CLASS@_Iterator.java
+dnl This declaration should be placed in the common class prefix generation.
+package ppl_java;
+public class @CLASS@_Iterator {
+  public native void get_disjunct();
+
+')
+
+m4_define(`ppl_@CLASS@_drop_disjunct_code',
+`dnl
+%<--%<--%<-- @CLASS@_Iterator.java
+  public native void drop_disjunct();
+
+} dnl This bracket should be placed in the common postfix generation.
+
+')
+
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`dnl
+%<--%<--%<-- @CLASS@_Iterator.java
+  public native boolean equals();
+
+')
+
+m4_define(`ppl_@CLASS@_increment_iterator_code',
+`dnl
+%<--%<--%<-- @CLASS@_Iterator.java
+  public native void next();
+
+')
+
+m4_define(`ppl_@CLASS@_decrement_iterator_code',
+`dnl
+%<--%<--%<-- @CLASS@_Iterator.java
+  public native void prev();
+
+')
+
+m4_define(`ppl_@CLASS@_size_code',
+`dnl
+%<--%<--%<-- @CLASS@_Iterator.java
+  public native long size();
+
+')
