@@ -645,6 +645,31 @@ get_ptr(JNIEnv* env, const jobject& ppl_object) {
   return  env->GetLongField(ppl_object, pointer_field);
 }
 
+void
+set_ptr(JNIEnv* env, const jobject& ppl_object, const long long address) {
+  jclass ppl_object_class = env->GetObjectClass(ppl_object);
+  jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
+  env->SetLongField(ppl_object, pointer_field, address);
+}
+
+void
+set_is_a_reference(JNIEnv* env, const jobject& ppl_object, const bool reference) {
+  jclass ppl_object_class = env->GetObjectClass(ppl_object);
+  jfieldID is_a_reference_field = env->GetFieldID(ppl_object_class,
+						 "is_a_reference","Z");
+ env->SetBooleanField(ppl_object, is_a_reference_field, reference);
+
+}
+
+bool
+is_a_reference(JNIEnv* env, const jobject& ppl_object) {
+  jclass ppl_object_class = env->GetObjectClass(ppl_object);
+  jfieldID is_a_reference_field = env->GetFieldID(ppl_object_class,
+						 "is_a_reference","Z");
+  return env->GetBooleanField(ppl_object, is_a_reference_field);
+
+}
+
 
 Grid_Generator_System
 build_ppl_grid_generator_system(JNIEnv* env, const jobject& j_iterable) {

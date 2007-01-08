@@ -118,10 +118,17 @@ j_long_class_to_j_long(JNIEnv* env, const jobject& j_long);
 jobject
 j_long_to_j_long_class(JNIEnv* env, const jlong& jlong_value);
 
-// // Converts a Java boolean set to a C++ bool.
-// bool
-// j_boolean_to_bool(JNIEnv* env,
-// 		  const jobject& j_boolean);
+// Sets a Java object to be (or not) deleted after the automatic
+// call to `finalize()'. For example, object that are taken from iterators
+// should not be deleted.
+void
+set_is_a_reference(JNIEnv* env, const jobject& ppl_object,
+		   const bool reference);
+
+// Returns a <CODE>true</CODE> if and only if the Java object
+// is a reference to a C++ object, <CODE>false</CODE> otherwise.
+bool
+is_a_reference(JNIEnv* env, const jobject& ppl_object);
 
 
 // Converts a PPL Poly_Gen_Relation to a Java Poly_Gen_Relation.
@@ -204,6 +211,10 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& grid_g);
 // Get a pointer to the underlined C++ object from a Java object.
 jlong
 get_ptr(JNIEnv* env, const jobject& ppl_object);
+
+// Get a pointer to the underlined C++ object from a Java object.
+void
+set_ptr(JNIEnv* env, const jobject& ppl_object, const long long address);
 
 // Builds a PPL grid generator system from a Java grid generator system.
 Parma_Polyhedra_Library::Grid_Generator_System

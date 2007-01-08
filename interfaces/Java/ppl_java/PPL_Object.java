@@ -27,9 +27,16 @@ public class PPL_Object {
 
     //! Stores the value of the C++ pointer.
     long ptr;
-
+ 
+    /* A flag used to know if the underlined C++ object should be deleted
+       or not. For example, objects that are taken from iterators should not
+       be deleted.
+    */
+     boolean is_a_reference;
+    
     //! Builds an object that points to `null'.
     protected PPL_Object() {
 	ptr = 0;
+        is_a_reference = false;
     }
 }

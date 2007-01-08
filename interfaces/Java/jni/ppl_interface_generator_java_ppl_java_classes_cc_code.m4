@@ -19,6 +19,105 @@ dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 
+m4_define(`ppl_@CLASS@_begin_iterator_code',
+`dnl
+`#'include "ppl_java_@CLASS@_Iterator.h"
+JNIEXPORT jobject JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_begin_1iterator
+  (JNIEnv* env, jobject j_this_powerset) {
+ jlong powerset_ptr = get_ptr(env, j_this_powerset);
+ @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(powerset_ptr);
+jclass j_it_class = env->FindClass("ppl_java/@TOPOLOGY@@CLASS@_Iterator");
+jmethodID j_it_ctr_id = env->GetMethodID(j_it_class, "<init>", "()V");
+jobject j_it = env->NewObject(j_it_class, j_it_ctr_id);
+@TOPOLOGY@@CPP_CLASS@::iterator* ppl_it = new @TOPOLOGY@@CPP_CLASS@::iterator(this_@LCLASS@->begin());
+set_ptr(env, j_it, (long long) ppl_it);
+return j_it;
+}
+')
+
+m4_define(`ppl_@CLASS@_end_iterator_code',
+`dnl
+JNIEXPORT jobject JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_end_1iterator
+  (JNIEnv* env, jobject j_this_powerset) {
+ jlong powerset_ptr = get_ptr(env, j_this_powerset);
+ @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(powerset_ptr);
+jclass j_it_class = env->FindClass("ppl_java/@TOPOLOGY@@CLASS@_Iterator");
+jmethodID j_it_ctr_id = env->GetMethodID(j_it_class, "<init>", "()V");
+jobject j_it = env->NewObject(j_it_class, j_it_ctr_id);
+@TOPOLOGY@@CPP_CLASS@::iterator* ppl_it = new @TOPOLOGY@@CPP_CLASS@::iterator(this_@LCLASS@->end());
+set_ptr(env, j_it, (long long) ppl_it);
+return j_it;
+}
+')
+
+m4_define(`ppl_@CLASS@_increment_iterator_code',
+`dnl
+JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_next
+(JNIEnv* env, jobject j_it) {
+ jlong ptr = get_ptr(env, j_it);
+ @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
+++(*@LTOPOLOGY@@LCLASS@_itr_ptr);
+}
+')
+
+m4_define(`ppl_@CLASS@_decrement_iterator_code',
+`dnl
+JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_prev
+(JNIEnv* env, jobject j_it) {
+ jlong ptr = get_ptr(env, j_it);
+ @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
+--(*@LTOPOLOGY@@LCLASS@_itr_ptr);
+}
+')
+
+m4_define(`ppl_@CLASS@_get_disjunct_code',
+`dnl
+JNIEXPORT jobject JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_get_1disjunct
+(JNIEnv* env, jobject j_it) {
+ jlong ptr = get_ptr(env, j_it);
+ @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
+jclass j_class = env->FindClass("ppl_java/@ALT_CPP_DISJUNCT@");
+jmethodID j_ctr_id = env->GetMethodID(j_class, "<init>", "()V");
+jobject j_obj = env->NewObject(j_class, j_ctr_id);
+  set_ptr(env, j_obj, (long long) &((*@LTOPOLOGY@@LCLASS@_itr_ptr)->element()));set_is_a_reference(env, j_obj, true);
+return j_obj;
+}
+')
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',`
+dnl
+JNIEXPORT jboolean JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_1Iterator_equals
+(JNIEnv* env, jobject j_this_it, jobject j_it) {
+jlong ptr = get_ptr(env, j_this_it);
+ @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_this_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
+ptr = get_ptr(env, j_it);
+ @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
+return *@LTOPOLOGY@@LCLASS@_itr_ptr == *@LTOPOLOGY@@LCLASS@_this_itr_ptr;
+}
+')
+
+m4_define(`ppl_@CLASS@_size_code',
+`JNIEXPORT jlong JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_size
+(JNIEnv* env, jobject j_pps) {
+  jlong this_ptr = get_ptr(env, j_pps);
+  @CPP_CLASS@* this_@LCLASS@ = reinterpret_cast<@CPP_CLASS@*>(this_ptr);
+  return this_@LCLASS@->size();
+}
+
+')
+
+m4_define(`ppl_@CLASS@_drop_disjunct_code',
+`dnl
+JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_drop_1disjunct
+(JNIEnv* env, jobject j_pps, jobject j_it) {
+ jlong ptr = get_ptr(env, j_it);
+ @TOPOLOGY@@CPP_CLASS@::iterator* @LTOPOLOGY@@LCLASS@_itr_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@::iterator*>(ptr);
+ ptr = get_ptr(env, j_pps);
+ @TOPOLOGY@@CPP_CLASS@* @LTOPOLOGY@@LCLASS@_ptr = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(ptr);
+@LTOPOLOGY@@LCLASS@_ptr->drop_disjunct(*@LTOPOLOGY@@LCLASS@_itr_ptr);
+}
+')
+
+
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
 JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_build_1cpp_1object__JLppl_1java_Degenerate_1Element_2
@@ -100,6 +199,7 @@ JNIEXPORT void JNICALL Java_ppl_1java_@1TOPOLOGY@@1CLASS@_finalize
 (JNIEnv* env, jobject j_@LTOPOLOGY@@LCLASS@) {
   jlong this_ptr = get_ptr(env, j_@LTOPOLOGY@@LCLASS@);
   @CPP_CLASS@* str  = reinterpret_cast<@TOPOLOGY@@CPP_CLASS@*>(this_ptr);
+ if (!is_a_reference(env, j_@LTOPOLOGY@@LCLASS@))
   delete str;
 }
 

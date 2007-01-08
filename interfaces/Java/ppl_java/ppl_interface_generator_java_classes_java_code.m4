@@ -51,6 +51,9 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 	build_cpp_object(num_dimensions, kind);
     }
 
+    private @TOPOLOGY@@CLASS@() {
+    }
+
 ')
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@_code',
@@ -363,40 +366,42 @@ m4_define(`ppl_@CLASS@_string_code',
 m4_define(`ppl_@CLASS@_begin_iterator_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void begin_iterator();
+    public native @CLASS@_Iterator begin_iterator();
 
 ')
 
 m4_define(`ppl_@CLASS@_end_iterator_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
-    public native void end_iterator();
+    public native @CLASS@_Iterator end_iterator();
 
 ')
 
 m4_define(`ppl_@CLASS@_get_disjunct_code',
 `dnl
 %<--%<--%<-- @CLASS@_Iterator.java
-dnl This declaration should be placed in the common class prefix generation.
+dnl These declarations should be placed in the common class prefix generation.
 package ppl_java;
-public class @CLASS@_Iterator {
-  public native void get_disjunct();
+public class @CLASS@_Iterator extends PPL_Object {
+  private @CLASS@_Iterator() {};
+
+  private native void build_ppl_object(@CLASS@ obj);
+
+  public native @ALT_CPP_DISJUNCT@ get_disjunct();
 
 ')
 
 m4_define(`ppl_@CLASS@_drop_disjunct_code',
 `dnl
-%<--%<--%<-- @CLASS@_Iterator.java
-  public native void drop_disjunct();
-
-} dnl This bracket should be placed in the common postfix generation.
+%<--%<--%<-- @CLASS@.java
+  public native void drop_disjunct(@CLASS@_Iterator itr);
 
 ')
 
 m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
 `dnl
 %<--%<--%<-- @CLASS@_Iterator.java
-  public native boolean equals();
+  public native boolean equals(@CLASS@_Iterator itr);
 
 ')
 
@@ -412,11 +417,13 @@ m4_define(`ppl_@CLASS@_decrement_iterator_code',
 %<--%<--%<-- @CLASS@_Iterator.java
   public native void prev();
 
+} dnl This bracket should be placed in the common postfix generation.
+
 ')
 
 m4_define(`ppl_@CLASS@_size_code',
 `dnl
-%<--%<--%<-- @CLASS@_Iterator.java
+%<--%<--%<-- @CLASS@.java
   public native long size();
 
 ')
