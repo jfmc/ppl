@@ -383,6 +383,35 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
 
 template <typename T>
 void
+BD_Shape<T>::add_constraints(const Constraint_System& cs) {
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i)
+    add_constraint(*i);
+  assert(OK());
+}
+
+template <typename T>
+bool
+BD_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
+  bool was_closed = marked_shortest_path_closed();
+  add_constraint(c);
+  // If the BDS was shortest-path closed and we add a single constraint,
+  // it is convenient to use the incremental shortest-path-closure algorithm,
+  // as we known that the constraint has affected two variables at most.
+  // (The cost is O(n^2) instead of O(n^3).)
+  if (was_closed)
+    for (dimension_type i = c.space_dimension(); i-- > 0;)
+      if (c.coefficient(Variable(i)) != 0) {
+	incremental_shortest_path_closure_assign(Variable(i));
+	break;
+      }
+  else
+    shortest_path_closure_assign();
+  return !marked_empty();
+}
+
+template <typename T>
+void
 BD_Shape<T>::concatenate_assign(const BD_Shape& y) {
   BD_Shape& x = *this;
 
@@ -1301,14 +1330,14 @@ BD_Shape<T>::shortest_path_closure_assign() const {
     for (dimension_type i = num_dimensions + 1; i-- > 0; ) {
       DB_Row<N>& x_dbm_i = x.dbm[i];
       const N& x_dbm_i_k = x_dbm_i[k];
-      if (!is_plus_infinity(x_dbm_i_k))
+      //      if (!is_plus_infinity(x_dbm_i_k))
 	for (dimension_type j = num_dimensions + 1; j-- > 0; ) {
 	  const N& x_dbm_k_j = x_dbm_k[j];
-	  if (!is_plus_infinity(x_dbm_k_j)) {
+	  //	  if (!is_plus_infinity(x_dbm_k_j)) {
 	    // Rounding upward for correctness.
 	    add_assign_r(sum, x_dbm_i_k, x_dbm_k_j, ROUND_UP);
 	    min_assign(x_dbm_i[j], sum);
-	  }
+	    //	  }
 	}
     }
   }
@@ -1325,6 +1354,142 @@ BD_Shape<T>::shortest_path_closure_assign() const {
       assert(x_dbm_hh == 0);
       // Restore PLUS_INFINITY on the main diagonal.
       x_dbm_hh = PLUS_INFINITY;
+    }
+  }
+
+  // The BDS is not empty and it is now shortest-path closed.
+  x.status.set_shortest_path_closed();
+}
+
+template <typename T>
+inline void
+BD_Shape<T>::incremental_shortest_path_closure_assign(const Variable var)
+  const {
+  using Implementation::BD_Shapes::min_assign;
+
+  const dimension_type num_dimensions = space_dimension();
+
+  // `var' should be one of the dimensions of the systems
+  // of bounded differences.
+  dimension_type num_var = var.id() + 1;
+  if (num_var > num_dimensions)
+    throw_dimension_incompatible("incremental_shortest_path_closure_assign(v)",
+				 var.id());
+  // Do something only if necessary.
+  if (marked_empty() || marked_shortest_path_closed())
+    return;
+
+  // Zero-dimensional BDSs are necessarily shortest-path closed.
+  if (num_dimensions == 0)
+    return;
+
+  // Even though the BDS will not change, its internal representation
+  // is going to be modified by the Floyd-Warshall algorithm for the
+  // incremental closure.
+  BD_Shape& x = const_cast<BD_Shape<T>&>(*this);
+
+  // Fill the main diagonal with zeros.
+  for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
+    assert(is_plus_infinity(x.dbm[h][h]));
+    assign_r(x.dbm[h][h], 0, ROUND_NOT_NEEDED);
+  }
+
+  dimension_type count = 0;
+  dimension_type min_count = 0;
+  dimension_type add_count = 0;
+
+  DB_Row<N>& m_v = x.dbm[num_var];
+  // Step 1: Modify all constraints on variable `var'. Infact,
+  // the constraints on variable v are changed, but it is possible
+  // that these constraints aren't tightest anymore.
+  // The rule that we use is the following: for each variable i,
+  // for each  variable j (`v' is the variable `var'):
+  // m_j_v = min(m_j_v,
+  //             m_j_i + m_i_v);
+  // and
+  // m_v_j = min(m_v_j,
+  //             m_v_i + m_i_j).
+  N sum;
+  for (dimension_type i = num_dimensions + 1; i-- > 0; ) {
+    const DB_Row<N>& m_i = x.dbm[i];
+    const N& m_i_v = m_i[num_var];
+    const N& m_v_i = m_v[i];
+    for (dimension_type j = num_dimensions + 1; j-- > 0; ) {
+      DB_Row<N>& m_j = x.dbm[j];
+      if (!is_plus_infinity(m_i_v)) {
+	  const N& m_j_i = m_j[i];
+	  // If the cells `m_i_v' or `m_j_i' are PLUS_INFINITY, it is
+	  // obvious that the minimum is the first argument `m_j_v'.
+	  if (!is_plus_infinity(m_j_i)) {
+	    add_assign_r(sum, m_j_i, m_i_v, ROUND_UP);
+	    min_assign(m_j[num_var], sum);
+
+	    ++min_count;
+	    ++add_count;
+
+	  }
+      }
+      if (!is_plus_infinity(m_v_i)) {
+	const N& m_i_j = m_i[j];
+	// If the cells `m_v_i' or `m_i_j' are PLUS_INFINITY, it is
+	// obvious that the minimum is the first argument `m_v_j'.
+	if (!is_plus_infinity(m_i_j)) {
+	  add_assign_r(sum, m_v_i, m_i_j, ROUND_UP);
+	  min_assign(m_v[j], sum);
+
+	  ++min_count;
+	  ++add_count;
+
+	}
+      }
+    }
+  }
+
+  // Step 2: Now modify all others constraints, that dipende by constraints
+  // on variable `var'.
+  // The rule that we use is the following: for each variable i,
+  // for each  variable j (`v' is the variable `var'):
+  // m_i_j = min(m_i_j,
+  //             m_i_v + m_v_j).
+  for (dimension_type i = num_dimensions + 1; i-- > 0; ) {
+    DB_Row<N>& m_i = x.dbm[i];
+    const N& m_i_v = m_i[num_var];
+    // If the cells `m_i_v' is PLUS_INFINITY, it is
+    // obvious that the minimum is the first argument `m_i_j'.
+    if (!is_plus_infinity(m_i_v))
+      for (dimension_type j = num_dimensions + 1; j-- > 0; ) {
+	const N& m_v_j = m_v[j];
+	// If the cells `m_v_j' is PLUS_INFINITY, it is
+	// obvious that the minimum is the first argument `m_i_j'.
+	if (!is_plus_infinity(m_v_j)) {
+	  add_assign_r(sum, m_i_v, m_v_j, ROUND_UP);
+	  min_assign(m_i[j], sum);
+
+	  ++min_count;
+	  ++add_count;
+
+	}
+      }
+  }
+
+
+  std::cout << "Il numero di minimi e': " << min_count << std::endl;
+  std::cout << "Il numero di addizioni e': " << add_count << std::endl;
+  count = min_count + add_count;
+  std::cout << "Il numero totale di operazioni e': " << count << std::endl;
+
+  // Check for emptyness: the BDS is empty if and only if there is a
+  // negative value on the main diagonal of `dbm'.
+  for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
+    N& m_h_h = x.dbm[h][h];
+    if (m_h_h < 0) {
+      x.status.set_empty();
+      return;
+    }
+    else {
+      assert(m_h_h == 0);
+      // Restore PLUS_INFINITY on the main diagonal.
+      m_h_h = PLUS_INFINITY;
     }
   }
 
@@ -2851,6 +3016,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	    N& dbm_0v = dbm[0][v];
 	    add_assign_r(dbm_0v, dbm_0v, d, ROUND_UP);
 	  }
+	  incremental_shortest_path_closure_assign(var);
 	}
       }
       else {
@@ -2887,6 +3053,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	    status.reset_shortest_path_closed();
 	  }
 	}
+	incremental_shortest_path_closure_assign(var);
       }
       assert(OK());
       return;
@@ -3058,6 +3225,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	dbm[v][neg_pinf_index] = neg_sum;
   }
 
+  incremental_shortest_path_closure_assign(var);
   assert(OK());
 }
 
@@ -3871,6 +4039,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     throw std::runtime_error("PPL internal error");
     break;
   }
+  incremental_shortest_path_closure_assign(var);
   assert(OK());
 }
 

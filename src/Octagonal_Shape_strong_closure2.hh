@@ -24,7 +24,7 @@ void
 Octagonal_Shape<T>::strong_closure_assign() const {
   // This closure algorithm is the classical Floyd-Warshall algorithm with
   // the optimization of the inner loop.
-.
+
   using Implementation::BD_Shapes::min_assign;
 
   // Do something only if necessary (zero-dim implies strong closure).

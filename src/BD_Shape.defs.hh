@@ -1605,6 +1605,17 @@ private:
   //! Assigns to <CODE>this->dbm</CODE> its shortest-path closure.
   void shortest_path_closure_assign() const;
 
+  //! Puts in \p *this all implicit constraints and computes the tighter ones.
+  /*!
+    \param var
+    The variable of the altered constraints.
+
+    The bds `*this' was shortest-path closed except for the constraint on
+    variable `var'. This operation costs only \f$O(n^2)\f$.
+
+  */
+  void incremental_shortest_path_closure_assign(Variable var) const;
+
   /*! \brief
     Assigns to <CODE>this->dbm</CODE> its shortest-path closure and
     records into <CODE>this->redundancy_dbm</CODE> which of the entries

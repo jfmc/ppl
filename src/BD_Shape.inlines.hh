@@ -205,23 +205,6 @@ BD_Shape<T>::BD_Shape(const BD_Shape<U>& y)
 
 template <typename T>
 inline bool
-BD_Shape<T>::add_constraint_and_minimize(const Constraint& c) {
-  add_constraint(c);
-  shortest_path_closure_assign();
-  return !marked_empty();
-}
-
-template <typename T>
-inline void
-BD_Shape<T>::add_constraints(const Constraint_System& cs) {
-  for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i)
-    add_constraint(*i);
-  assert(OK());
-}
-
-template <typename T>
-inline bool
 BD_Shape<T>::add_constraints_and_minimize(const Constraint_System& cs) {
   add_constraints(cs);
   shortest_path_closure_assign();

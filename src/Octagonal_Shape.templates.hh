@@ -36,6 +36,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <algorithm>
 
+#include "script_flags.hh"
+
 // FIXME: this is only to get access to
 // Implementation::BD_Shapes::div_round_up(),
 // Implementation::BD_Shapes::numer_denom(),
@@ -1343,9 +1345,9 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
   return Poly_Gen_Relation::subsumes();
 }
 
-#ifndef ALTERNATE_OS_STRONG_CLOSURE_ASSIGN
-#define ALTERNATE_OS_STRONG_CLOSURE_ASSIGN 0
-#endif
+//#ifndef ALTERNATE_OS_STRONG_CLOSURE_ASSIGN
+//#define ALTERNATE_OS_STRONG_CLOSURE_ASSIGN 1
+//#endif
 
 #if ALTERNATE_OS_STRONG_CLOSURE_ASSIGN == 1
 #include "Octagonal_Shape_strong_closure1.hh"
@@ -1547,9 +1549,9 @@ Octagonal_Shape<T>::tight_coherence_would_make_empty() const {
   return false;
 }
 
-#ifndef ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN
-#define ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN 0
-#endif
+// #ifndef ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN
+// #define ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN 0
+// #endif
 
 #if ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN == 1
 #include "Octagonal_Shape_incremental_strong_closure1.hh"

@@ -54,6 +54,10 @@ Octagonal_Shape<T>
     assign_r((*i)[i.index()], 0, ROUND_NOT_NEEDED);
   }
 
+  dimension_type count = 0;
+  dimension_type min_count = 0;
+  dimension_type add_count = 0;
+
   // Using the incremental Floyd-Warshall algorithm.
   // Step 1: Improve all constraints on variable `var'.
   const dimension_type v = 2*var.id();
@@ -107,6 +111,9 @@ Octagonal_Shape<T>
 	N& x_ci_cv = x_ci[cv];
 	min_assign(x_ci_cv, sum);
 
+	min_count+=4;
+	add_count+=4;
+
       }
       else {
 	add_assign_r(sum, x_i_k, x_k_v, ROUND_UP);
@@ -125,6 +132,8 @@ Octagonal_Shape<T>
 	N& x_ci_cv = x_v[i];
 	min_assign(x_ci_cv, sum);
 
+	min_count+=4;
+	add_count+=4;
       }
     }
 
@@ -155,6 +164,8 @@ Octagonal_Shape<T>
 	add_assign_r(sum, x_cv_k, x_k_ci, ROUND_UP);
 	min_assign(x_cv_ci, sum);
 
+	min_count+=4;
+	add_count+=4;
       }
       else {
 	N& x_v_i = x_ci[cv];
@@ -172,6 +183,9 @@ Octagonal_Shape<T>
 	N& x_cv_ci = x_i[v];
 	add_assign_r(sum, x_cv_k, x_k_ci, ROUND_UP);
 	min_assign(x_cv_ci, sum);
+
+	min_count+=4;
+	add_count+=4;
       }
     }
   }
@@ -231,8 +245,15 @@ Octagonal_Shape<T>
       add_assign_r(sum, x_ci_cv, x_cv_cj, ROUND_UP);
       min_assign(x_ci_cj, sum);
 
+      min_count+=8;
+      add_count+=8;
     }
   }
+
+  std::cout << "Il numero di minimi e': " << min_count << std::endl;
+  std::cout << "Il numero di addizioni e': " << add_count << std::endl;
+  count = min_count + add_count;
+  std::cout << "Il numero totale di operazioni e': " << count << std::endl;
 
   // Check for emptyness: the octagon is empty if and only if there is a
   // negative value on the main diagonal.

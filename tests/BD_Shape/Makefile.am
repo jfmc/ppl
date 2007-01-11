@@ -76,6 +76,7 @@ generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generalizedaffinepreimage3 \
 geomcovers1 \
 h79widening1 \
+incremental1 \
 intersection1 \
 limitedbhmz05extrapolation1 \
 limitedcc76extrapolation1 \
@@ -204,6 +205,8 @@ generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
 geomcovers1_SOURCES = geomcovers1.cc
 
 h79widening1_SOURCES = h79widening1.cc
+
+incremental1_SOURCES = incremental1.cc
 
 intersection1_SOURCES = intersection1.cc
 
