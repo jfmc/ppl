@@ -34,23 +34,36 @@ dnl m4_pre_extra_class_code(Class, CPP_Class, Class_Kind)
 dnl Prefix extra code for each class.
 m4_define(`m4_pre_extra_class_code', `dnl
 m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
+m4_define(`m4_this_class_kind', `m4_class_kind$1')`'dnl
 %<--%<--%<-- m4_this_class`'.java
 package ppl_java;
 
-public class m4_interface_class$1 extends PPL_Object {`'dnl
+public class m4_this_class extends PPL_Object {`'dnl
 m4_ifelse(m4_this_class, Polyhedron,
 `
 %<--%<--%<-- C_`'m4_this_class`'.java
 package ppl_java;
 
-public class C_`'m4_interface_class$1 extends Polyhedron {
+public class C_`'m4_this_class extends Polyhedron {
 
 %<--%<--%<-- NNC_`'m4_this_class`'.java
 package ppl_java;
 
-public class NNC_`'m4_interface_class$1 extends Polyhedron {
+public class NNC_`'m4_this_class extends Polyhedron {
+',
+m4_this_class_kind, Pointset_Powerset,
+`
+%<--%<--%<-- m4_this_class`'_Iterator.java
+package ppl_java;
+
+public class m4_this_class`'_Iterator extends PPL_Object {
+
+  private m4_this_class`'_Iterator() {};
+
+  private native void build_ppl_object(m4_this_class obj);
 ')`'dnl
-m4_undefine(`m4_this_class')
+m4_undefine(`m4_this_class')`'dnl
+m4_undefine(`m4_this_class_kind')
 ')
 
 %<--%<--%<-- m4_interface_class$1`'.java
@@ -69,6 +82,7 @@ m4_replace_all_patterns_in_string($1,
   m4_class_build_cpp_object3_code,
   m4_pattern_list)`'dnl
 m4_define(`m4_this_class', `m4_interface_class$1')`'dnl
+m4_define(`m4_this_class_kind', `m4_class_kind$1')
 %<--%<--%<-- m4_this_class`'.java
 }`'dnl
 m4_ifelse(m4_this_class, Polyhedron,
@@ -79,8 +93,14 @@ m4_ifelse(m4_this_class, Polyhedron,
 
 %<--%<--%<-- NNC_`'m4_this_class`'.java
 }
+',
+m4_this_class_kind, Pointset_Powerset,
+`
+%<--%<--%<-- m4_this_class`'_Iterator.java
+}`'dnl
 ')`'dnl
-m4_undefine(`m4_this_class')
+m4_undefine(`m4_this_class')`'dnl
+m4_undefine(`m4_this_class_kind')
 ')
 
 m4_divert`'dnl

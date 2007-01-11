@@ -380,13 +380,6 @@ m4_define(`ppl_@CLASS@_end_iterator_code',
 m4_define(`ppl_@CLASS@_get_disjunct_code',
 `dnl
 %<--%<--%<-- @CLASS@_Iterator.java
-dnl These declarations should be placed in the common class prefix generation.
-package ppl_java;
-public class @CLASS@_Iterator extends PPL_Object {
-  private @CLASS@_Iterator() {};
-
-  private native void build_ppl_object(@CLASS@ obj);
-
   public native @ALT_CPP_DISJUNCT@ get_disjunct();
 
 ')
@@ -416,8 +409,6 @@ m4_define(`ppl_@CLASS@_decrement_iterator_code',
 `dnl
 %<--%<--%<-- @CLASS@_Iterator.java
   public native void prev();
-
-} dnl This bracket should be placed in the common postfix generation.
 
 ')
 
