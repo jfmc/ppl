@@ -58,11 +58,12 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
 extern "C"
 CAMLprim value
-ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(value d) try {
-  CAMLparam1(d);
+ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension(value d, value caml_de) try {
+  CAMLparam2(d, caml_de);
   int dd = Int_val(d);
   check_int_is_unsigned(dd);
-  CAMLreturn(val_p_@TOPOLOGY@@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(dd)));
+  Degenerate_Element ppl_de = build_ppl_degenerate_element(caml_de);
+  CAMLreturn(val_p_@TOPOLOGY@@CLASS@(*new @TOPOLOGY@@CPP_CLASS@(dd, ppl_de)));
 }
 CATCH_ALL
 

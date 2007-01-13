@@ -22,6 +22,10 @@ site: http://www.cs.unipr.it/ppl/ . *)
 
 open Gmp
 
+type degenerate_element =
+    Universe
+  | Empty
+
 type linear_expression =
     Variable of int
   | Coefficient of Z.t

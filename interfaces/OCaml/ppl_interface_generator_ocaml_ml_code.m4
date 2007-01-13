@@ -24,7 +24,7 @@ m4_divert(-1)dnl
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
 `dnl
 external ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension:
-  int -> @LTOPOLOGY@@LCLASS@ = "ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension"
+  int -> degenerate_element -> @LTOPOLOGY@@LCLASS@ = "ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension"
 
 ')
 

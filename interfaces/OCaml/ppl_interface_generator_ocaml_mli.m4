@@ -54,6 +54,10 @@ dnl
 
 open Gmp
 
+type degenerate_element =
+    Universe
+  | Empty
+
 type linear_expression =
     Variable of int
   | Coefficient of Z.t

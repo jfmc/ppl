@@ -240,6 +240,22 @@ build_ppl_opt_mode(value caml_opt_mode) {
   throw std::runtime_error("PPL Caml interface internal error");
   }
 
+Degenerate_Element
+build_ppl_degenerate_element(value caml_degenerate_element) {
+  switch (Int_val(caml_degenerate_element)) {
+  case 0: {
+    return UNIVERSE;
+  }
+  case 1: {
+    return EMPTY;
+  }
+ default:
+    ;
+  }
+  // We should not be here!
+  throw std::runtime_error("PPL Caml interface internal error");
+  }
+
 
 Variables_Set
 build_ppl_Variables_Set(value caml_vset) {

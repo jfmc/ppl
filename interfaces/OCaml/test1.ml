@@ -200,7 +200,7 @@ test_generator_system [(Ray e3); (Line e1); (Closure_Point (e2, (Z.from_int 5)))
 (* Build some PPL::C_Polyhedron. *)
 
 for i = 6 downto 0 do
-  let ph = ppl_new_C_Polyhedron_from_space_dimension(i)
+  let ph = ppl_new_C_Polyhedron_from_space_dimension i Empty
   in let dimension =  ppl_C_Polyhedron_space_dimension(ph)
   in printf "dimension %d\n" dimension
 done;;
