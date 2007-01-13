@@ -343,20 +343,65 @@
               Programmpunkt statisch die Beziehungen, die zwischen den
               Programmvariablen gelten, bestimmen k\"onnen. Die
               intraprozeduralen Analyse, beruhend auf einem Modell von
-              Cousot [CH78] interpretiert lineare Zuweisungen und
-              Bedingungen und betrachtet die nicht linearen Konstrukte
-              mit Hilfe von nicht linearen Zuweisungen. Mit dieser
-              Abstraktion versucht man lineare Gleichheits- und
+              Cousot [P.~Cousot and N.~Halbwachs. Automatic discovery
+              of linear restraints among variables of a program.
+              Conference Record of the 5th Annunal ACM Symposium on
+              Principles of Programming Languages, pages 84--96, 1978]
+              interpretiert lineare Zuweisungen und Bedingungen und
+              betrachtet die nicht linearen Konstrukte mit Hilfe von
+              nicht linearen Zuweisungen. Mit dieser Abstraktion
+              versucht man lineare Gleichheits- und
               Ungleichheitsbeziehungen zwischen den Programmvariablen
               in Form von Polyedern rauszufinden. Da man nicht nur
               eine Funktion, sondern ganze Programme als Zusammenspiel
               mehrerer Funktionen, analysieren m\"ochte, ist eine
-              interprozedurale Analyse n\"otig [MOS04]. Diese soll mit
-              den Mitteln der linearen Algebra die affinen
-              Beziehungen, welche zwischen den Programmvariablen an
-              einem bestimmten Programmpunkt gelten, erkennen. Die
-              Behandlung von Prozeduraufrufen steht dabei im
-              Vordergrund.}"
+              interprozedurale Analyse n\"otig [M.~Mueller-Olm and
+              H.~Seidl.  Precise Interprocedural Analysis through
+              Linear Algebra. POPL, 2004]. Diese soll mit den Mitteln
+              der linearen Algebra die affinen Beziehungen, welche
+              zwischen den Programmvariablen an einem bestimmten
+              Programmpunkt gelten, erkennen. Die Behandlung von
+              Prozeduraufrufen steht dabei im Vordergrund.}"
+}
+
+@MastersThesis{FrankM02th,
+  Author = "S. Frank and P. R. Mai",
+  Title = "Strategies for Cooperating Constraint Solvers",
+  Type = "Diploma thesis",
+  School = "Technische {Universit\"at} Berlin",
+  Address = "Berlin, Germany",
+  Month = jul,
+  Year = 2002,
+  Abstract = "Cooperative constraint solving has been investigated by
+              several different research groups and individuals as it
+              provides a comfortable mechanism to attack multi-domain
+              constraint problems. The theoretical framework of
+              Hofstedt [P.~Hofstedt. Cooperation and Coordination of
+              Constraint Solvers. PhD thesis, Technische
+              {Universit\"at} Dresden, March 2001. Shaker Verlag,
+              Aachen] provided the basis for the prototypical
+              implementation described in [E.~Godehardt and
+              D.~Seifert.  Kooperation und Koordination von Constraint
+              Solvern --- Implementierung eines Prototyps. Master's
+              thesis, Technische {Universit\"at} Berlin, January
+              2001]. Taking aboard the lessons learned in the
+              prototype, we introduce a revised implementation of the
+              framework, to serve as a flexible basis for the
+              conception and evaluation of advanced strategies for
+              solver cooperation. Several additional enhancements and
+              optimisations over the preceding implementation or the
+              underlying theoretical framework are described, proving
+              the correctness of those changes where necessary. Using
+              the newly implemented framework, we propose and
+              benchmark a set of new cooperation strategies,
+              iteratively refining them to the point where we can
+              offer a set of generally useful (i.e. non-problem
+              specific) strategies. Finally we introduce a strategy
+              language, that allows the user to define
+              problem-specific strategies, either from scratch or
+              derived from other strategies, and demonstrate the
+              effectiveness of the language on a well-known example
+              problem."
 }
 
 @Inproceedings{Frehse04,
