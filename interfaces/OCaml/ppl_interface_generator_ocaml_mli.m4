@@ -88,9 +88,6 @@ type linear_grid_generator =
 type poly_gen_relation =
     Subsumes
 
-(* type relation_with_grid_generator = *)
-(*     Subsumes *)
-
 type poly_con_relation =
     Is_Disjoint
   | Strictly_Intersects

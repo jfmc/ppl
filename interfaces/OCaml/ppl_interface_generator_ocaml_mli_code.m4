@@ -66,6 +66,7 @@ m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_code',
 `dnl
 val ppl_@TOPOLOGY@@CLASS@_add_@ADD_REPRESENT@:
   @LTOPOLOGY@@LCLASS@ -> linear_@ADD_REPRESENT@ -> unit
+
 ')
 
 m4_define(`ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize_code',
