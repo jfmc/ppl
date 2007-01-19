@@ -474,6 +474,69 @@ ppl_@CLASS@_size(Prolog_term_ref t_pps,
 
 ')
 
+extern "C" Prolog_foreign_return_type
+ppl_Pointset_Powerset_C_Polyhedron_linear_partition(Prolog_term_ref t_ph,
+			 Prolog_term_ref t_qh,
+			 Prolog_term_ref t_inters,
+			 Prolog_term_ref t_pset) {
+  static const char* where = "ppl_Pointset_Powerset_C_Polyhedron_linear_partition/4";
+  try {
+    const C_Polyhedron* ph =
+        term_to_handle<C_Polyhedron >(t_ph, where);
+    CHECK(ph);
+    const C_Polyhedron* qh =
+        term_to_handle<C_Polyhedron >(t_qh, where);
+    CHECK(qh);
+
+    std::pair<C_Polyhedron, Pointset_Powerset<NNC_Polyhedron > > r =
+      linear_partition(*ph, *qh);
+
+    Prolog_term_ref t_r_first = Prolog_new_term_ref();
+    Prolog_term_ref t_r_second = Prolog_new_term_ref();
+    Prolog_put_address(t_r_first, &(r.first));
+    Prolog_put_address(t_r_second, &(r.second));
+
+    if (Prolog_unify(t_inters, t_r_first)
+         && Prolog_unify(t_pset, t_r_second)) {
+      return PROLOG_SUCCESS;
+    }
+  }
+  CATCH_ALL;
+}
+
+m4_define(`ppl_@CLASS@_@PARTITION@_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_@PARTITION@(Prolog_term_ref t_ph,
+			 Prolog_term_ref t_qh,
+			 Prolog_term_ref t_inters,
+			 Prolog_term_ref t_pset) {
+  static const char* where = "ppl_@CLASS@_@PARTITION@/4";
+  try {
+    const @ALT_CPP_DISJUNCT@* ph =
+        term_to_handle<@ALT_CPP_DISJUNCT@>(t_ph, where);
+    CHECK(ph);
+    const @ALT_CPP_DISJUNCT@* qh =
+        term_to_handle<@ALT_CPP_DISJUNCT@>(t_qh, where);
+    CHECK(qh);
+
+    std::pair<@ALT_CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
+      @PARTITION@(*ph, *qh);
+
+    Prolog_term_ref t_r_first = Prolog_new_term_ref();
+    Prolog_term_ref t_r_second = Prolog_new_term_ref();
+    Prolog_put_address(t_r_first, &(r.first));
+    Prolog_put_address(t_r_second, &(r.second));
+
+    if (Prolog_unify(t_inters, t_r_first)
+         && Prolog_unify(t_pset, t_r_second)) {
+      return PROLOG_SUCCESS;
+    }
+  }
+  CATCH_ALL;
+}
+
+')
+
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `extern "C" Prolog_foreign_return_type
 ppl_@CLASS@_relation_with_@RELATION_REPRESENT@(Prolog_term_ref t_ph,

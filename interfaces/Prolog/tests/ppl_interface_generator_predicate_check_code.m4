@@ -611,6 +611,28 @@ ppl_@CLASS@_get_disjunct_2_test2(PPS, It, It_end, Space_Dim) :-
 
 ')
 
+m4_define(`ppl_@CLASS@_@PARTITION@_code',
+`
+ppl_@CLASS@_@PARTITION@_4_test :-
+  (
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@CLASS@_@PARTITION@(PS1, PS2, PS3, PPS),
+     (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
+       ppl_@DISJUNCT@_contains_@DISJUNCT@(PS1, PS3),
+       ppl_@DISJUNCT@_contains_@DISJUNCT@(PS2, PS3)
+     ;
+       true
+     ),
+     ppl_@CLASS@_OK(PPS)
+   ->
+     fail ; (class_@CLASS@ == class_BD_Shape_int8_t -> fail ; true))
+  ).
+
+')
+
 m4_define(`ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_code',
 `
 ppl_@CLASS@_relation_with_@RELATION_REPRESENT@_3_test :-

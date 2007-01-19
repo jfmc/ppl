@@ -145,6 +145,7 @@ ppl_@CLASS@_expand_space_dimension/3 *nofail +simple,
 ppl_@CLASS@_fold_space_dimensions/3  +simple,
 ppl_@CLASS@_map_space_dimensions/2 +simple_pps,
 ppl_@CLASS@_ascii_dump/1 +simple_pps
+ppl_@CLASS@_@PARTITION@/4 -simple +pointset_powerset
 ')`'dnl
 dnl
 m4_divert`'dnl
