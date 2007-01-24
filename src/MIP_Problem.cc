@@ -384,17 +384,16 @@ PPL::MIP_Problem::merge_split_variables(dimension_type var_index,
     // In the following case the negative side of the split variable is
     // in base: this means that the constraint will be nonfeasible.
     if (base[i] == mapping[var_index].second) {
-      // CHECKME: I do not know if is possible that the positive and the
-      // negative part of a split variable can be together in base: it
-      // seems that this case is not possible. The algorithm i have written
+      // CHECKME: I do not know if is possible that the positive and
+      // the negative part of a split variable can be together in
+      // base: it seems that this case is not possible. The algorithm
       // requires that condition.
-      // This code is run only for testing purposes.
+#ifndef NDEBUG
       for (dimension_type j = 0; j < tableau_nrows; ++j) {
- 	dimension_type test;
-	// Avoid a compiler warning.
-	test = 0;
-	assert(!is_in_base(mapping[var_index].first, test));
+ 	dimension_type dummy = 0;
+	assert(!is_in_base(mapping[var_index].first, dummy));
       }
+#endif
       // We set base[i] to zero to keep track that that the constraint is not
       // feasible by `last_generator'.
       base[i] = 0;
