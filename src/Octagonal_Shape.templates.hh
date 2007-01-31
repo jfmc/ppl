@@ -1515,16 +1515,13 @@ Octagonal_Shape<T>::strong_coherence_assign() {
     const dimension_type i = i_iter.index();
     const N& x_i_ci = x_i[coherent_index(i)];
     // Avoid to do unnecessary sums.
-    if (!is_plus_infinity(x_i_ci))
-      for (dimension_type j = 0, rs_i = i_iter.row_size(); j < rs_i; ++j)
-	if (i != j) {
-	  const N& x_cj_j = matrix[coherent_index(j)][j];
-	  if (!is_plus_infinity(x_cj_j)) {
-	    add_assign_r(semi_sum, x_i_ci, x_cj_j, ROUND_UP);
-	    div2exp_assign_r(semi_sum, semi_sum, 1, ROUND_UP);
-	    min_assign(x_i[j], semi_sum);
-	  }
-	}
+    for (dimension_type j = 0, rs_i = i_iter.row_size(); j < rs_i; ++j)
+      if (i != j) {
+	const N& x_cj_j = matrix[coherent_index(j)][j];
+	add_assign_r(semi_sum, x_i_ci, x_cj_j, ROUND_UP);
+	div2exp_assign_r(semi_sum, semi_sum, 1, ROUND_UP);
+	min_assign(x_i[j], semi_sum);
+      }
   }
 }
 
