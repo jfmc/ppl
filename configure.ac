@@ -469,6 +469,9 @@ AC_CXX_LONG_DOUBLE_BINARY_FORMAT
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
+# Check whether the C++ compiler has the remainder bug
+AC_CXX_HAS_REMAINDER_BUG
+
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
 
@@ -486,7 +489,6 @@ extra_libraries="${extra_libraries} -lm"
 # GMP library
 
 AC_CHECK_GMP
-
 if test x"$have_gmp" = xno
 then
   AC_MSG_ERROR([Cannot find GMP version 4.1.3 or higher.
