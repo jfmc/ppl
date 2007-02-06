@@ -32,22 +32,16 @@ bug1() {
 
   Octagonal_Shape<float> oc(3);
   oc.add_constraint(A <= -1);
-  oc.add_constraint(B <= 0);
-  oc.add_constraint(C >= 0);
 
   print_constraints(oc, "*** oc ***");
 
-  oc.affine_preimage(A, 3*A + C - 1, 2);
+  oc.affine_preimage(A, 3*A, 2);
 
   Octagonal_Shape<mpq_class> mpq_known_result(3);
-  mpq_known_result.add_constraint(3*A <= -1);
-  mpq_known_result.add_constraint(B <= 0);
-  mpq_known_result.add_constraint(C >= 0);
+  mpq_known_result.add_constraint(3*A <= -2);
 
   Octagonal_Shape<float> float_known_result(3);
-  float_known_result.add_constraint(3*A <= -1);
-  float_known_result.add_constraint(B <= 0);
-  float_known_result.add_constraint(C >= 0);
+  float_known_result.add_constraint(3*A <= -2);
 
   bool ok = check_result(float_known_result, mpq_known_result,
 			 "9.54e-8", "9.54e-8", "9.54e-8");
@@ -57,7 +51,7 @@ bug1() {
   ok = check_result(oc, mpq_known_result,
 		    "9.54e-8", "9.54e-8", "9.54e-8");
 
-  print_constraints(oc, "*** oc.affine_preimage(A, 3*A + C - 1, 2) ***");
+  print_constraints(oc, "*** oc.affine_preimage(A, 3*A, 2) ***");
 
   return ok;
 }
