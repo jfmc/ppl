@@ -624,12 +624,19 @@ AC_ARG_WITH(java,
        [use dir as Java SDK root directory]),
        [JAVA_HOME=$with_java])
 
-# On Darwin the JDK, if present, is installed in /Library/Java/Home/.
 case "${host_os}" in
+# On Darwin the JDK, if present, is installed in /Library/Java/Home .
 darwin*)
   if test "x$JAVA_HOME" = x
   then
-    JAVA_HOME="/Library/Java/Home/"
+    JAVA_HOME="/Library/Java/Home"
+  fi
+  ;;
+# On Fedora Core systems the JDK is usually in /usr/java/default .
+linux*)
+  if test "x$JAVA_HOME" = x
+  then
+    JAVA_HOME="/usr/java/default"
   fi
   ;;
 *)
