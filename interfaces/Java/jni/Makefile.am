@@ -20,6 +20,8 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+
+
 if BUILD_JAVA_INTERFACE
 
 interface_generator_files = \
@@ -39,6 +41,10 @@ AM_CPPFLAGS = -I$(top_builddir)/src -I../ppl_java -I$(top_srcdir)/src @extra_inc
 
 lib_LTLIBRARIES = libppl_java.la
 
+if HOST_OS_DARWIN
+libppl_java_la_LDFLAGS=-shrext .jnilib
+endif HOST_OS_DARWIN
+ 
 libppl_java_la_SOURCES = \
 ppl_java_common.hh \
 ppl_java_common.cc \
