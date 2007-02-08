@@ -60,8 +60,12 @@ ppl_java_generated_tests.java: $(interface_generator_dependencies) Makefile
 			> $@
 
 check-local:
-	 $(JAVA) -classpath .:../ppl_java.jar -Djava.library.path=../jni/.libs ppl_java_generated_tests
-	 $(JAVA) -classpath .:../ppl_java.jar -Djava.library.path=../jni/.libs C_Polyhedron_test1
+	$(LIBTOOL) --mode=execute \
+                -dlopen ../../../src/libppl.la \
+	$(JAVA) -classpath .:../ppl_java.jar -Djava.library.path=../jni/.libs ppl_java_generated_tests
+	$(LIBTOOL) --mode=execute \
+             -dlopen ../../../src/libppl.la \
+	$(JAVA) -classpath .:../ppl_java.jar -Djava.library.path=../jni/.libs C_Polyhedron_test1
 
 CLEANFILES = \
 $(BUILT_SOURCES)

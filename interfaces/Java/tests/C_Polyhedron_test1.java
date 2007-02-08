@@ -27,8 +27,25 @@ import java.util.Vector;
 import ppl_java.*;
 
 public class C_Polyhedron_test1 {
-  static {
-	System.loadLibrary("ppl_java");
+    static {
+    try {
+        System.loadLibrary("ppl_java");
+    }
+
+   catch (UnsatisfiedLinkError  e) {
+  System.out.println("Unable to load the library, checking for Darwin...");
+ }
+
+    try {
+String userDir = System.getProperty("user.dir");
+System.out.println(userDir);
+System.load(userDir + "/../jni/.libs/libppl_java.dylib");
+    }
+
+  catch (UnsatisfiedLinkError  e) {
+ System.out.println("Unable to load the PPL Java bindings, forcing termination");
+System.exit(-1);
+}
     }
 
     // This code tests the method `map_space_dimension(pfunc)'.

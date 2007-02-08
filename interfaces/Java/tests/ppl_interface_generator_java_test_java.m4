@@ -40,9 +40,27 @@ import java.util.Vector;
 import ppl_java.*;
 
 public class ppl_java_generated_tests {
-  static {
+static {
+    try {
         System.loadLibrary("ppl_java");
     }
+
+   catch (UnsatisfiedLinkError  e) {
+  System.out.println("Unable to load the library, checking for Darwin...");
+ }
+
+    try {
+String userDir = System.getProperty("user.dir");
+System.out.println(userDir);
+System.load(userDir + "/../jni/.libs/libppl_java.dylib");
+    }
+
+  catch (UnsatisfiedLinkError  e) {
+ System.out.println("Unable to load the PPL Java bindings, forcing termination");
+System.exit(-1);
+}
+}
+
 m4_include(`ppl_java_tests_common')`'dnl
     public static void main(String[] args) {
 	ppl_java_generated_tests test1 = new ppl_java_generated_tests();
