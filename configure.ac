@@ -624,6 +624,12 @@ AC_ARG_WITH(java,
        [use dir as Java SDK root directory]),
        [JAVA_HOME=$with_java])
 
+# On MacOSX the JDK, if present, is installed in /Library/Java/Home/.
+if test "x$JAVA_HOME" = x && test "x$build_vendor" = "xapple"
+then
+   JAVA_HOME="/Library/Java/Home/"
+fi
+
 if test ! "x$JAVA_HOME" = x
 then
     JAVAPREFIX="${JAVA_HOME}/bin"
