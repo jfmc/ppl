@@ -624,15 +624,21 @@ AC_ARG_WITH(java,
        [use dir as Java SDK root directory]),
        [JAVA_HOME=$with_java])
 
-# On MacOSX the JDK, if present, is installed in /Library/Java/Home/.
-if test "x$JAVA_HOME" = x && test "x$build_vendor" = "xapple"
-then
-   JAVA_HOME="/Library/Java/Home/"
-fi
+# On Darwin the JDK, if present, is installed in /Library/Java/Home/.
+case "${host_os}" in
+darwin*)
+  if test "x$JAVA_HOME" = x
+  then
+    JAVA_HOME="/Library/Java/Home/"
+  fi
+  ;;
+*)
+  ;;
+esac
 
 if test ! "x$JAVA_HOME" = x
 then
-    JAVAPREFIX="${JAVA_HOME}/bin"
+  JAVAPREFIX="${JAVA_HOME}/bin"
 fi
 
 # Check for Java programs. Order here is important: check first
