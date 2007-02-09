@@ -39,8 +39,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define FPU_ROUNDING_MASK 0xc00
 
 #define PPL_FPU_CONTROL_DEFAULT_BASE 0x37f
+#define PPL_SSE_CONTROL_DEFAULT_BASE 0x1f80
+
 // This MUST be congruent with the definition of ROUND_DIRECT
 #define PPL_FPU_CONTROL_DEFAULT (PPL_FPU_CONTROL_DEFAULT_BASE | FPU_UPWARD)
+#define PPL_SSE_CONTROL_DEFAULT (PPL_SSE_CONTROL_DEFAULT_BASE | (FPU_UPWARD << 3))
+
+#define SUPPORTS_SSE 1
+
 
 namespace Parma_Polyhedra_Library {
 
@@ -71,8 +77,15 @@ fpu_get_control() {
 inline void
 fpu_set_control(int c) {
   unsigned short cw = static_cast<unsigned short>(c);
-  __asm__ __volatile__ ("fldcw %0" : : "m" (cw) : "memory");
+  __asm__ __volatile__ ("fldcw %0" : : "m" (*&cw) : "memory");
 }
+
+#if SUPPORTS_SSE
+inline void
+sse_set_control(unsigned int cw) {
+  __asm__ __volatile__ ("ldmxcsr %0" : : "m" (*&cw) : "memory");
+}
+#endif
 
 inline int
 fpu_get_status() {
@@ -103,11 +116,17 @@ fpu_get_rounding_direction() {
 inline void
 fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT_BASE | dir);
+#if SUPPORTS_SSE
+  sse_set_control(PPL_SSE_CONTROL_DEFAULT_BASE | (dir << 3));
+#endif
 }
 
 inline fpu_rounding_control_word_type
 fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT_BASE | dir);
+#if SUPPORTS_SSE
+  sse_set_control(PPL_SSE_CONTROL_DEFAULT_BASE | (dir << 3));
+#endif
   return static_cast<fpu_rounding_control_word_type>(0);
 }
 
@@ -125,6 +144,9 @@ fpu_save_rounding_direction_reset_inexact(fpu_rounding_direction_type dir) {
 inline void
 fpu_restore_rounding_direction(fpu_rounding_control_word_type) {
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT);
+#if SUPPORTS_SSE
+  sse_set_control(PPL_SSE_CONTROL_DEFAULT);
+#endif
 }
 
 inline int
