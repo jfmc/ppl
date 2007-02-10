@@ -1,23 +1,17 @@
-%define name	ppl
-%define version @VERSION@
-%define release 1
-%define builddir $RPM_BUILD_DIR/%{name}-%{version}
-
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-Vendor:		ppl-devel@cs.unipr.it
-Packager:	%{packager}
+Name:		ppl
+Version:	@VERSION@
+Release:	2
 URL:		http://www.cs.unipr.it/ppl/
-Source:         ftp://ftp.cs.unipr.it/pub/ppl/releases/%{version}/%{name}-%{version}.tar.gz
+Source:		ftp://ftp.cs.unipr.it/pub/ppl/releases/%{version}/%{name}-%{version}.tar.gz
 #Patch:
 Group:		Development/Libraries
-License:	GPL v2
+License:	GPL
 #Icon:
-Requires:	gmp >= 4.1.3, gcc-c++ >= 4.0.2
+#Requires:
+BuildRequires:	gmp-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}
-Prefix:		/usr
-Summary:	The Parma Polyhedra Library: a C++ library for numerical abstractions.
+#Prefix:	/usr
+Summary:	The Parma Polyhedra Library: a C++ library for numerical abstractions
 %description
 The Parma Polyhedra Library (PPL) is a C++ library for the
 manipulation of (not necessarily closed) convex polyhedra and other
@@ -38,7 +32,7 @@ This package adds C support to the Parma Polyhedra Library (PPL).
 Install this package if you want to access the PPL via C.
 
 %package gprolog
-Summary:	The GNU Prolog interface of the Parma Polyhedra Library.
+Summary:	The GNU Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
 Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}
 %description gprolog
@@ -46,7 +40,7 @@ This package adds GNU Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in GNU Prolog programs.
 
 %package sicstus
-Summary:	The SICStus Prolog interface of the Parma Polyhedra Library.
+Summary:	The SICStus Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
 Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}
 %description sicstus
@@ -54,7 +48,7 @@ This package adds SICStus Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in SICStus Prolog programs.
 
 %package swi
-Summary:	The SWI Prolog interface of the Parma Polyhedra Library.
+Summary:	The SWI Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
 Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}
 %description swi
@@ -62,7 +56,7 @@ This package adds SWI Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in SWI Prolog programs.
 
 %package yap
-Summary:	The YAP Prolog interface of the Parma Polyhedra Library.
+Summary:	The YAP Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
 Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}
 %description yap
@@ -70,7 +64,7 @@ This package adds YAP Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in YAP Prolog programs.
 
 %package pwl
-Summary:	The Parma Watchdog Library: a C++ library for watchdog timers.
+Summary:	The Parma Watchdog Library: a C++ library for watchdog timers
 Group:		Development/Libraries
 Requires:	gcc-c++ >= 4.0.2
 %description pwl
@@ -81,30 +75,16 @@ The PWL is currently distributed with the Parma Polyhedra Library (PPL),
 but is totally independent from it.
 
 %prep
-%setup -n %{name}-%{version}
+%setup -q
 #%patch -p1
 
 %build
-CXXFLAGS="$RPM_OPT_FLAGS" ./configure --enable-shared \
-    --prefix=%{_prefix} --bindir=%{_bindir} --mandir=%{_mandir} \
-    --localstatedir=%{_localstatedir} --libdir=%{_libdir} \
-    --datadir=%{_datadir} --includedir=%{_includedir} \
-    --sysconfdir=%{_sysconfdir}
+%configure --enable-shared
 make
 
 %install
-if [ -d $RPM_BUILD_ROOT ]
-then
-	rm -rf $RPM_BUILD_ROOT
-fi
-mkdir -p $RPM_BUILD_ROOT
-make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
-    mandir=$RPM_BUILD_ROOT%{_mandir} libdir=$RPM_BUILD_ROOT%{_libdir} \
-    localstatedir=$RPM_BUILD_ROOT%{_localstatedir} \
-    datadir=$RPM_BUILD_ROOT%{_datadir} \
-    includedir=$RPM_BUILD_ROOT%{_includedir} \
-    sysconfdir=$RPM_BUILD_ROOT%{_sysconfdir} install
-
+rm -rf $RPM_BUILD_ROOT
+make DESTDIR=$RPM_BUILD_ROOT install
 
 %files
 %defattr(-,root,root)
@@ -169,33 +149,35 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 %{_libdir}/libpwl.a
 %{_libdir}/libpwl.la
 
-%post
-/sbin/ldconfig
-
-%postun
-/sbin/ldconfig
-
-%post c
-/sbin/ldconfig
-
-%postun c
-/sbin/ldconfig
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+%post c -p /sbin/ldconfig
+%postun c -p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-
-
 * Sat Feb 10 2007 Roberto Bagnara <bagnara@cs.unipr.it>
-- Added the `%changelog' section.
+- Added the `%%changelog' section.
+- `Release' set to 2.
+- `Packager' and `Vendor' tags removed.
+- `Summary' fields are no longer ended with a dot.
+- The value of the `License' tag is now `GPL'.
+- Removed unused definition of `builddir'.
+- The `Name', `Version' and `Release' tags are now directly defined.
+- Commented out the efinitions of the `Require' and `Prefix' tags.
+- Set the `BuildRequires' tag to `gmp-devel'.
+- Exploit the features of `%%setup', `%%configure', `%%install',
+  `%%post' and `%%postun'.
+- Mixed use of spaces and tabs avoided.
 
 * Mon Jan 16 2006 Roberto Bagnara <bagnara@cs.unipr.it>
 - Install gzipped man pages.
 - The `Copyright' tag is no longer supported: use `License' instead.
 
 * Wed Jan 11 2006 Roberto Bagnara <bagnara@cs.unipr.it>
-- Include ppl-config in `%{_bindir}' and the man pages in `%{_mandir}/man1'.
+- Include ppl-config in `%%{_bindir}' and the man pages in `%%{_mandir}/man1'.
 
 * Tue Jan 10 2006 Roberto Bagnara <bagnara@cs.unipr.it>
 - Require gcc-c++ to be at least 4.0.2.
@@ -214,7 +196,7 @@ rm -rf $RPM_BUILD_ROOT
 - The file doc/README has been renamed README.doc so as not to conflict
   with the library's main README file.
 - Require gcc-c++ to be exactly version 3.4.1.
-- Summary updated to reflect the fact that the library now provides
+- `Summary' updated to reflect the fact that the library now provides
   numerical abstractions other than convex polyhedra.
 
 * Wed Aug 18 2004 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -237,21 +219,21 @@ rm -rf $RPM_BUILD_ROOT
 - Require gmp 4.1 or later version.
 
 * Sun Jun 30 2002 Roberto Bagnara <bagnara@cs.unipr.it>
-- Mention not necessarily closed convex polyhedra in the main `%description'.
+- Mention not necessarily closed convex polyhedra in the main `%%description'.
 
 * Tue Jun 25 2002 Roberto Bagnara <bagnara@cs.unipr.it>
-- `%files' section for gprolog package fixed.
+- `%%files' section for gprolog package fixed.
 
 * Mon Jun 24 2002 Roberto Bagnara <bagnara@cs.unipr.it>
-- `%files' section fixed for the yap package.
-- The `%files' sections of each package are now complete.
+- `%%files' section fixed for the yap package.
+- The `%%files' sections of each package are now complete.
 
 * Wed Jun 12 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 - Added file list for package gprolog.
 - Updated file list for package swi.
 
 * Thu Jun 06 2002 Roberto Bagnara <bagnara@cs.unipr.it>
-- The `swi' package has now its `%files' section.
+- The `swi' package has now its `%%files' section.
 
 * Wed Jun 05 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 - We will build several RPM packages out of our source tree.
