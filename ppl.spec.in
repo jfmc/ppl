@@ -42,13 +42,13 @@ Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}
 This package adds GNU Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in GNU Prolog programs.
 
-%package sicstus
-Summary:	The SICStus Prolog interface of the Parma Polyhedra Library
-Group:		Development/Libraries
-Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}
-%description sicstus
-This package adds SICStus Prolog support to the Parma Polyhedra Library (PPL).
-Install this package if you want to use the library in SICStus Prolog programs.
+# %package sicstus
+# Summary:	The SICStus Prolog interface of the Parma Polyhedra Library
+# Group:		Development/Libraries
+# Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}
+# %description sicstus
+# This package adds SICStus Prolog support to the Parma Polyhedra Library (PPL).
+# Install this package if you want to use the library in SICStus Prolog programs.
 
 %package swi
 Summary:	The SWI Prolog interface of the Parma Polyhedra Library
@@ -69,13 +69,20 @@ Install this package if you want to use the library in YAP Prolog programs.
 %package pwl
 Summary:	The Parma Watchdog Library: a C++ library for watchdog timers
 Group:		Development/Libraries
-Requires:	gcc-c++ >= 4.0.2
 %description pwl
-This package contains the Parma Watchdog Library (PWL).
-The library provides support for multiple, concurrent watchdog timers
-on systems providing setitimer(2).
-The PWL is currently distributed with the Parma Polyhedra Library (PPL),
-but is totally independent from it.
+The Parma Watchdog Library (PWL) provides support for multiple,
+concurrent watchdog timers on systems providing setitimer(2).  This
+package provides all what is necessary to run applications using the
+PWL.  The PWL is currently distributed with the Parma Polyhedra
+Library, but is totally independent from it.
+
+%package pwl-devel
+Summary:	Development tools for the Parma Watchdog Library
+Group:		Development/Libraries
+Requires:	pwl = %{version}-%{release}
+%description pwl-devel
+The header files, documentation and static libraries for developing
+applications using the Parma Watchdog Library.
 
 %prep
 %setup -q
@@ -92,8 +99,8 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %files
 %defattr(-,root,root)
 %doc BUGS COPYING CREDITS ChangeLog NEWS README
-%{_libdir}/libppl.so*
-%{_libdir}/libppl_c.so*
+%{_libdir}/libppl.so.*
+%{_libdir}/libppl_c.so.*
 %{_bindir}/ppl-config
 %{_mandir}/man1/ppl-config.1.gz
 %{_bindir}/ppl_lcdd
@@ -107,7 +114,9 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %doc README.configure doc/README.doc doc/*.pdf* doc/*.ps.gz doc/*.txt
 %{_includedir}/ppl.hh
 %{_includedir}/ppl_c.h
+%{_libdir}/libppl.so
 %{_libdir}/libppl.a
+%{_libdir}/libppl_c.so
 %{_libdir}/libppl_c.a
 
 %files gprolog
@@ -117,14 +126,14 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_libdir}/ppl/libppl_gprolog.a
 %{_libdir}/ppl/libppl_gprolog.so
 
-%files sicstus
-%defattr(-,root,root)
-# Uncomment the following line if you want to create an RPM containing
-# a version of SICStus statically linked with the PPL.
-#%{_bindir}/ppl_sicstus
-%{_libdir}/ppl/ppl_sicstus.s.o
-%{_libdir}/ppl/ppl_sicstus.so
-%{_libdir}/ppl/ppl_sicstus.pl
+# %files sicstus
+# %defattr(-,root,root)
+# # Uncomment the following line if you want to create an RPM containing
+# # a version of SICStus statically linked with the PPL.
+# #%{_bindir}/ppl_sicstus
+# %{_libdir}/ppl/ppl_sicstus.s.o
+# %{_libdir}/ppl/ppl_sicstus.so
+# %{_libdir}/ppl/ppl_sicstus.pl
 
 %files swi
 %defattr(-,root,root)
@@ -140,14 +149,20 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 %files pwl
 %defattr(-,root,root)
-%doc Watchdog/README
-%{_includedir}/pwl.hh
+%doc Watchdog/BUGS Watchdog/COPYING Watchdog/CREDITS Watchdog/ChangeLog Watchdog/NEWS Watchdog/README
 %{_libdir}/libpwl.so.*
+
+%files pwl-devel
+%defattr(-,root,root)
+#%doc
+%{_includedir}/pwl.hh
 %{_libdir}/libpwl.so
 %{_libdir}/libpwl.a
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
+%post pwl -p /sbin/ldconfig
+%postun pwl -p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
