@@ -183,3 +183,95 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%changelog
+
+
+* Sat Feb 10 2007 Roberto Bagnara <bagnara@cs.unipr.it>
+- Added the `%changelog' section.
+
+* Mon Jan 16 2006 Roberto Bagnara <bagnara@cs.unipr.it>
+- Install gzipped man pages.
+- The `Copyright' tag is no longer supported: use `License' instead.
+
+* Wed Jan 11 2006 Roberto Bagnara <bagnara@cs.unipr.it>
+- Include ppl-config in `%{_bindir}' and the man pages in `%{_mandir}/man1'.
+
+* Tue Jan 10 2006 Roberto Bagnara <bagnara@cs.unipr.it>
+- Require gcc-c++ to be at least 4.0.2.
+- Distribute also ppl_lpsol.
+
+* Tue Mar 01 2005 Roberto Bagnara <bagnara@cs.unipr.it>
+- Wrong dependency fixed.
+
+* Mon Feb 28 2005 Roberto Bagnara <bagnara@cs.unipr.it>
+- URL for the source fixed.
+
+* Fri Dec 24 2004 Roberto Bagnara <bagnara@cs.unipr.it>
+- Sentence fixed.
+
+* Thu Dec 23 2004 Roberto Bagnara <bagnara@cs.unipr.it>
+- The file doc/README has been renamed README.doc so as not to conflict
+  with the library's main README file.
+- Require gcc-c++ to be exactly version 3.4.1.
+- Summary updated to reflect the fact that the library now provides
+  numerical abstractions other than convex polyhedra.
+
+* Wed Aug 18 2004 Roberto Bagnara <bagnara@cs.unipr.it>
+- Distribute more documentation.
+
+* Mon Aug 16 2004 Roberto Bagnara <bagnara@cs.unipr.it>
+- Added the `ppl_lcdd' program to the main package.
+- Require gcc-c++ to be exactly version 3.4.1.
+- We require gmp at least 4.1.3.
+
+* Wed Jul 30 2003 Roberto Bagnara <bagnara@cs.unipr.it>
+- Build an RPM package also for the PWL.
+- The Prolog interfaces depend on the PWL.
+
+* Tue Mar 04 2003 Roberto Bagnara <bagnara@cs.unipr.it>
+- We require gmp at least 4.1.2.
+
+* Fri Oct 04 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+- Require gcc-c++ 3.2 or later version.
+- Require gmp 4.1 or later version.
+
+* Sun Jun 30 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+- Mention not necessarily closed convex polyhedra in the main `%description'.
+
+* Tue Jun 25 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+- `%files' section for gprolog package fixed.
+
+* Mon Jun 24 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+- `%files' section fixed for the yap package.
+- The `%files' sections of each package are now complete.
+
+* Wed Jun 12 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+- Added file list for package gprolog.
+- Updated file list for package swi.
+
+* Thu Jun 06 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+- The `swi' package has now its `%files' section.
+
+* Wed Jun 05 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+- We will build several RPM packages out of our source tree.
+
+* Mon Mar 04 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+- Require gcc-c++ 3.0.4 or later version.
+- Require gmp 4.0.1 or later version.
+
+* Sun Jan 27 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+- The move to libtool is complete: we can now build and distribute
+  (with, e.g., RPM) static and dynamic versions of the library.
+
+* Tue Oct 16 2001 Roberto Bagnara <bagnara@cs.unipr.it>
+- Changed `Summary'.
+- Changed `Packager' in view of PGP signatures.
+- Changed `Group' to `Development/Libraries'.
+- Require gcc-c++ 2.96-85 or later version.
+
+* Mon Oct 15 2001 Roberto Bagnara <bagnara@cs.unipr.it>
+- Now we build a relocatable package.
+
+* Mon Oct 15 2001 Roberto Bagnara <bagnara@cs.unipr.it>
+- A first cut at a working RPM spec file.
