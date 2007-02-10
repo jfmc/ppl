@@ -11,25 +11,28 @@ License:	GPL
 BuildRequires:	gmp-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}
 #Prefix:	/usr
-Summary:	The Parma Polyhedra Library: a C++ library for numerical abstractions
+Summary:	The Parma Polyhedra Library: a library of numerical abstractions
 %description
-The Parma Polyhedra Library (PPL) is a C++ library for the
-manipulation of (not necessarily closed) convex polyhedra and other
-numerical abstractions.  The applications of convex polyhedra include
-program analysis, optimized compilation, integer and combinatorial
+The Parma Polyhedra Library (PPL) is a library for the manipulation of
+(not necessarily closed) convex polyhedra and other numerical
+abstractions.  The applications of convex polyhedra include program
+analysis, optimized compilation, integer and combinatorial
 optimization and statistical data-editing.  The Parma Polyhedra
-Library is user friendly (you write `x + 2*y + 5*z <= 7' when you mean
-it), fully dynamic (available virtual memory is the only limitation to
-the dimension of anything), written in standard C++, exception-safe,
-rather efficient, thoroughly documented, and free software.
+Library comes with several user friendly interfaces, is fully dynamic
+(available virtual memory is the only limitation to the dimension of
+anything), written in accordance to all the applicable standards,
+exception-safe, rather efficient, thoroughly documented, and free
+software.  This package provides all what is necessary to run
+applications using the PPL through its C and C++ interfaces.
 
-%package c
-Summary:	The C interface of the Parma Polyhedra Library
+%package devel
+Summary:	Development tools for the Parma Polyhedra Library C and C++ interfaces
 Group:		Development/Libraries
 Requires:	ppl = %{version}-%{release}
-%description c
-This package adds C support to the Parma Polyhedra Library (PPL).
-Install this package if you want to access the PPL via C.
+%description devel
+The header files, documentation and static libraries for developing
+applications using the Parma Polyhedra Library through its C and C++
+interfaces.
 
 %package gprolog
 Summary:	The GNU Prolog interface of the Parma Polyhedra Library
@@ -79,7 +82,7 @@ but is totally independent from it.
 #%patch -p1
 
 %build
-%configure --enable-shared
+%configure --enable-shared --disable-rpath
 make
 
 %install
@@ -88,33 +91,30 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 %files
 %defattr(-,root,root)
-%doc BUGS COPYING CREDITS ChangeLog NEWS README README.configure doc/README.doc doc/*.pdf* doc/*.ps.gz doc/*.txt
-%{_includedir}/ppl.hh
+%doc BUGS COPYING CREDITS ChangeLog NEWS README
+%{_libdir}/libppl.so*
+%{_libdir}/libppl_c.so*
 %{_bindir}/ppl-config
+%{_mandir}/man1/ppl-config.1.gz
 %{_bindir}/ppl_lcdd
 %{_bindir}/ppl_lpsol
-%{_libdir}/libppl.so.*
-%{_libdir}/libppl.so
-%{_libdir}/libppl.a
-%{_libdir}/libppl.la
-%{_mandir}/man1/ppl-config.1.gz
 %{_mandir}/man1/ppl_lcdd.1.gz
 %{_mandir}/man1/ppl_lpsol.1.gz
 
 
-%files c
+%files devel
 %defattr(-,root,root)
+%doc README.configure doc/README.doc doc/*.pdf* doc/*.ps.gz doc/*.txt
+%{_includedir}/ppl.hh
 %{_includedir}/ppl_c.h
+%{_libdir}/libppl.a
 %{_libdir}/libppl_c.a
-%{_libdir}/libppl_c.la
-%{_libdir}/libppl_c.so*
 
 %files gprolog
 %defattr(-,root,root)
 %{_bindir}/ppl_gprolog
 %{_libdir}/ppl/ppl_gprolog.pl
 %{_libdir}/ppl/libppl_gprolog.a
-%{_libdir}/ppl/libppl_gprolog.la
 %{_libdir}/ppl/libppl_gprolog.so
 
 %files sicstus
@@ -130,13 +130,11 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %defattr(-,root,root)
 %{_bindir}/ppl_pl
 %{_libdir}/ppl/libppl_swiprolog.a
-%{_libdir}/ppl/libppl_swiprolog.la
 %{_libdir}/ppl/libppl_swiprolog.so
 
 %files yap
 %defattr(-,root,root)
 %{_libdir}/ppl/ppl_yap.a
-%{_libdir}/ppl/ppl_yap.la
 %{_libdir}/ppl/ppl_yap.pl
 %{_libdir}/ppl/ppl_yap.so
 
@@ -147,18 +145,15 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_libdir}/libpwl.so.*
 %{_libdir}/libpwl.so
 %{_libdir}/libpwl.a
-%{_libdir}/libpwl.la
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
-%post c -p /sbin/ldconfig
-%postun c -p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Sat Feb 10 2007 Roberto Bagnara <bagnara@cs.unipr.it>
+* Sat Feb 10 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-2
 - Added the `%%changelog' section.
 - `Release' set to 2.
 - `Packager' and `Vendor' tags removed.
@@ -171,6 +166,10 @@ rm -rf $RPM_BUILD_ROOT
 - Exploit the features of `%%setup', `%%configure', `%%install',
   `%%post' and `%%postun'.
 - Mixed use of spaces and tabs avoided.
+- Do configure with the --disable-rpath option so as to avoid
+  hardcoding the path to search libraries.
+- Do not include libtool archive files.
+- Packages reorganized.
 
 * Mon Jan 16 2006 Roberto Bagnara <bagnara@cs.unipr.it>
 - Install gzipped man pages.
