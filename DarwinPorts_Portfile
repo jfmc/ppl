@@ -1,10 +1,10 @@
-# $Id: DarwinPorts_Portfile,v 1.1.2.1 2007/02/10 19:57:07 cimino Exp $
+# $Id: DarwinPorts_Portfile,v 1.1.2.2 2007/02/11 13:26:07 cimino Exp $
 PortSystem        1.0
 name              ppl
 version           0.9
 categories        devel math
 maintainers       ppl-devel@cs.unipr.it
-description       a modern C++ library providing numerical abstractions
+description       A modern C++ library providing numerical abstractions
 long_description  The Parma Polyhedra Library (PPL) is a modern C++ library \
 		  providing numerical abstractions especially targeted at \
 		  applications in the field of analysis and verification of \
@@ -25,11 +25,11 @@ depends_lib       port:gmp port:gmp-cxx-wrappers port:glpk
 default_variants +test
 
 variant swi-prolog {
-depends_lib-append port:swi-prolog-devel
+depends_lib-append port:swi-prolog
 }
 
 variant yap {
-depends_lib-append port:yap-devel
+depends_lib-append port:yap
 }
 
 variant gprolog {
