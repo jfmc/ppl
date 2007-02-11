@@ -1,4 +1,4 @@
-# $Id: DarwinPorts_Portfile,v 1.1.2.2 2007/02/11 13:26:07 cimino Exp $
+# $Id: DarwinPorts_Portfile,v 1.1.2.3 2007/02/11 20:09:01 cimino Exp $
 PortSystem        1.0
 name              ppl
 version           0.9
@@ -22,19 +22,6 @@ homepage          http://www.cs.unipr.it/ppl/
 master_sites      ftp://ftp.cs.unipr.it/pub/ppl/releases/0.9/
 checksums	  md5 4096c2927b36fbf7c5329a53b035bc33
 depends_lib       port:gmp port:gmp-cxx-wrappers port:glpk
-default_variants +test
-
-variant swi-prolog {
-depends_lib-append port:swi-prolog
-}
-
-variant yap {
-depends_lib-append port:yap
-}
-
-variant gprolog {
-depends_lib-append port:gprolog
-}
 
 variant test	{ test.run	yes
 		  test.cmd	make
