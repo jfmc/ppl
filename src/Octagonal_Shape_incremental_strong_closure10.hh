@@ -106,7 +106,7 @@ Octagonal_Shape<T>
     const dimension_type max_rs_i = std::max(rs_k, rs_v);
 
     for (dimension_type i = 0; i < min_rs_i; ++i) {
-      const dimension_type ci = coherent_index(i);
+      //      const dimension_type ci = coherent_index(i);
 
       const N& x_k_i = x_k[i];
       const N& x_ck_i = x_ck[i];
@@ -119,7 +119,7 @@ Octagonal_Shape<T>
 
       N& x_cv_i = x_cv[i];
       add_assign_r(sum1, x_cv_k, x_k_i, ROUND_UP);
-      add_assign_r(sum1, x_cv_ck, x_ck_i, ROUND_UP);
+      add_assign_r(sum2, x_cv_ck, x_ck_i, ROUND_UP);
       min_assign(sum1, sum2);
       min_assign(x_cv_i, sum1);
 
@@ -251,60 +251,70 @@ Octagonal_Shape<T>
       N& x_i_v = (v < rs_i) ? x_i[v] : x_cv[ci];
       N& x_i_cv = (cv < rs_i) ? x_i[cv] : x_v[ci];
 
-      const N& x_k_i = (i < rs_k) ? x_k[i] : x_ci[ck];
-
       const dimension_type min_rs_k = std::min(rs_i, rs_v);
       const dimension_type max_rs_k = std::max(rs_i, rs_v);
 
-      if (k < min_rs_k) {
-	const N& x_v_k = x_v[k];
-	const N& x_cv_k = x_cv[k];
+      if (ck < min_rs_k) {
 	const N& x_i_k = x_i[k];
+	const N& x_i_ck = x_i[ck];
 
 	add_assign_r(sum1, x_i_k, x_k_v, ROUND_UP);
+	add_assign_r(sum2, x_i_ck, x_ck_v, ROUND_UP);
+	min_assign(sum1, sum2);
 	min_assign(x_i_v, sum1);
 
 	add_assign_r(sum1, x_i_k, x_k_cv, ROUND_UP);
+	add_assign_r(sum2, x_i_ck, x_ck_cv, ROUND_UP);
+	min_assign(sum1, sum2);
 	min_assign(x_i_cv, sum1);
 
       }
       if (rs_i == min_rs_k) {
-	if (k >= rs_i && k < rs_v) {
-	  const N& x_v_k = x_v[k];
-	  const N& x_cv_k = x_cv[k];
+	if (ck >= rs_i && ck < rs_v) {
 	  const N& x_i_k = x_ck[ci];
+	  const N& x_i_ck = x_k[ci];
 
 	  add_assign_r(sum1, x_i_k, x_k_v, ROUND_UP);
+	  add_assign_r(sum2, x_i_ck, x_ck_v, ROUND_UP);
+	  min_assign(sum1, sum2);
 	  min_assign(x_i_v, sum1);
 
 	  add_assign_r(sum1, x_i_k, x_k_cv, ROUND_UP);
+	  add_assign_r(sum2, x_i_ck, x_ck_cv, ROUND_UP);
+	  min_assign(sum1, sum2);
 	  min_assign(x_i_cv, sum1);
 
 	}
       }
       else {
-	if (k >= rs_v && k < rs_i) {
-	  const N& x_v_k = x_ck[cv];
-	  const N& x_cv_k = x_ck[v];
+	if (ck >= rs_v && ck < rs_i) {
 	  const N& x_i_k = x_i[k];
+	  const N& x_i_ck = x_i[ck];
 
 	  add_assign_r(sum1, x_i_k, x_k_v, ROUND_UP);
+	  add_assign_r(sum2, x_i_ck, x_ck_v, ROUND_UP);
+	  min_assign(sum1, sum2);
 	  min_assign(x_i_v, sum1);
 
 	  add_assign_r(sum1, x_i_k, x_k_cv, ROUND_UP);
+	  add_assign_r(sum2, x_i_ck, x_ck_cv, ROUND_UP);
+	  min_assign(sum1, sum2);
 	  min_assign(x_i_cv, sum1);
 
 	}
       }
-      if (k >= max_rs_k && k < n_rows) {
-	const N& x_v_k = x_ck[cv];
-	const N& x_cv_k = x_ck[v];
+      if (ck >= max_rs_k && ck < n_rows) {
 	const N& x_i_k = x_ck[ci];
+	const N& x_i_ck = x_k[ci];
 
 	add_assign_r(sum1, x_i_k, x_k_v, ROUND_UP);
+	add_assign_r(sum2, x_i_ck, x_ck_v, ROUND_UP);
+	min_assign(sum1, sum2);
 	min_assign(x_i_v, sum1);
 
 	add_assign_r(sum1, x_i_k, x_k_cv, ROUND_UP);
+	add_assign_r(sum2, x_i_ck, x_ck_cv, ROUND_UP);
+	min_assign(sum1, sum2);
 	min_assign(x_i_cv, sum1);
 
       }
