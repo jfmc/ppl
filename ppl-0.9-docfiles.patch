@@ -1,0 +1,126 @@
+*** ppl-0.9/doc/Makefile.am	2006-02-27 19:00:04.000000000 +0100
+--- ppl-0.9-patched/doc/Makefile.am	2007-02-17 17:26:52.000000000 +0100
+*************** install-txt:
+*** 191,196 ****
+--- 191,199 ----
+  	for file in BUGS COPYING CREDITS ChangeLog NEWS README README.configure ; do \
+  	  $(INSTALL_DATA) $(srcdir)/../$$file $(DESTDIR)$(txtdir)/$$file; \
+  	done
++ 	$(INSTALL_DATA) $(srcdir)/../interfaces/Prolog/GNU/README.gprolog $(DESTDIR)$(txtdir)/README.gprolog
++ 	$(INSTALL_DATA) $(srcdir)/../interfaces/Prolog/SWI/README.swiprolog $(DESTDIR)$(txtdir)/README.swiprolog
++ 	$(INSTALL_DATA) $(srcdir)/../interfaces/Prolog/YAP/README.yap $(DESTDIR)$(txtdir)/README.yap
+  
+  installdirs-txt:
+  	$(mkinstalldirs) $(DESTDIR)$(txtdir)
+*** ppl-0.9/doc/Makefile.in	2007-02-10 21:33:02.000000000 +0100
+--- ppl-0.9-patched/doc/Makefile.in	2007-02-17 17:26:48.000000000 +0100
+*************** install-txt:
+*** 712,717 ****
+--- 712,720 ----
+  	for file in BUGS COPYING CREDITS ChangeLog NEWS README README.configure ; do \
+  	  $(INSTALL_DATA) $(srcdir)/../$$file $(DESTDIR)$(txtdir)/$$file; \
+  	done
++ 	$(INSTALL_DATA) $(srcdir)/../interfaces/Prolog/GNU/README.gprolog $(DESTDIR)$(txtdir)/README.gprolog
++ 	$(INSTALL_DATA) $(srcdir)/../interfaces/Prolog/SWI/README.swiprolog $(DESTDIR)$(txtdir)/README.swiprolog
++ 	$(INSTALL_DATA) $(srcdir)/../interfaces/Prolog/YAP/README.yap $(DESTDIR)$(txtdir)/README.yap
+  
+  installdirs-txt:
+  	$(mkinstalldirs) $(DESTDIR)$(txtdir)
+*** ppl-0.9/interfaces/Prolog/GNU/README.gprolog	1970-01-01 01:00:00.000000000 +0100
+--- ppl-0.9-patched/interfaces/Prolog/GNU/README.gprolog	2007-02-17 17:23:33.000000000 +0100
+***************
+*** 0 ****
+--- 1,38 ----
++ The GNU Prolog interface to the PPL is available both as a ``PPL
++ enhanced'' GNU Prolog interpreter and as a library that can be linked
++ to GNU Prolog programs.  Only GNU Prolog version 1.2.19 and later
++ versions are supported.
++ 
++ So that it can be used with the GNU Prolog PPL interface (and, for
++ that matter, with any foreign code), the GNU Prolog installation must
++ be configured with the `--disable-regs' option.
++ 
++ 
++ The `ppl_gprolog' Executable
++ ----------------------------
++ 
++ If an appropriate version of GNU Prolog is installed on the machine on
++ which you compiled the library, the command `make install' will
++ install the executable `ppl_gprolog' in the directory `prefix/bin'.
++ The `ppl_gprolog' executable is simply the GNU Prolog interpreter with
++ the Parma Polyhedra Library linked in.  The only thing you should do
++ to use the library is to call `ppl_initialize/0' before any other PPL
++ predicate and to call `ppl_finalize/0' when you are done with the
++ library.
++ 
++ 
++ Linking the Library To GNU Prolog Programs
++ ------------------------------------------
++ 
++ In order to allow linking GNU Prolog programs to the PPL, the
++ following files are installed in the directory `prefix/lib/ppl':
++ `ppl_gprolog.pl' contains the required foreign declarations;
++ `libppl_gprolog.*' contain the executable code for the GNU Prolog
++ interface in various formats (static library, shared library, libtool
++ library).  If your GNU Prolog program is constituted by, say,
++ `source1.pl' and `source2.pl' and you want to create the executable
++ `myprog', your compilation command may look like
++ 
++     gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
++       -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib \
++       -lppl -lgmpxx -lgmp -lstdc++'
+*** ppl-0.9/interfaces/Prolog/SWI/README.swiprolog	1970-01-01 01:00:00.000000000 +0100
+--- ppl-0.9-patched/interfaces/Prolog/SWI/README.swiprolog	2007-02-17 17:23:19.000000000 +0100
+***************
+*** 0 ****
+--- 1,35 ----
++ The SWI-Prolog interface to the PPL is available both as a statically
++ linked module or as a dynamically linked one.  Only SWI-Prolog version
++ 5.6.0 and later versions are supported.
++ 
++ 
++ The `ppl_pl' Executable
++ -----------------------
++ 
++ If an appropriate version of SWI-Prolog is installed on the machine on
++ which you compiled the library, the command `make install' will
++ install the executable `ppl_pl' in the directory `prefix/bin'.
++ The `ppl_pl' executable is simply the SWI-Prolog shell with the Parma
++ Polyhedra Library statically linked: from within `ppl_pl' all the
++ services of the library are available without further action.
++ 
++ 
++ Loading the SWI-Prolog Interface Dynamically
++ --------------------------------------------
++ 
++ In order to dynamically load the library from SWI-Prolog you should
++ simply load `prefix/lib/ppl/ppl_swiprolog.pl'.  This will invoke
++ `ppl_initialize/0' and `ppl_finalize/0' automatically.  Alternatively,
++ you can load the library directly with
++ 
++     :- load_foreign_library('prefix/lib/ppl/libppl_swiprolog').
++ 
++ This will call `ppl_initialize/0' automatically.  Analogously,
++ 
++     :- unload_foreign_library('prefix/lib/ppl/libppl_swiprolog').
++ 
++ will, as part of the unload process, invoke `ppl_finalize/0'.
++ 
++ Notice that, for dynamic linking to work, you should have configured
++ the library with the `--enable-shared' option (on most platforms this
++ is the default).
+*** ppl-0.9/interfaces/Prolog/YAP/README.yap	1970-01-01 01:00:00.000000000 +0100
+--- ppl-0.9-patched/interfaces/Prolog/YAP/README.yap	2007-02-17 17:23:42.000000000 +0100
+***************
+*** 0 ****
+--- 1,10 ----
++ The YAP Prolog interface to the PPL is available as a dynamically
++ linked module.  Only YAP version 5.1.1 and following are supported.
++ 
++ In order to dynamically load the library from YAP you should simply
++ load `prefix/lib/ppl/ppl_yap.pl'.  This will invoke `ppl_initialize/0'
++ automatically; it is the programmer's responsibility to call
++ `ppl_finalize/0' when the PPL library is no longer needed.  Notice
++ that, for dynamic linking to work, you should have configured the
++ library with the `--enable-shared' option (on most platforms this is
++ the default).
