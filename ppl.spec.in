@@ -37,9 +37,9 @@ applications using the Parma Polyhedra Library through its C and C++
 interfaces.
 
 %package utils
-Summary:        Utilities using the Parma Polyhedra Library
-Group:          Development/Libraries
-Requires:       ppl = %{version}-%{release}
+Summary:	Utilities using the Parma Polyhedra Library
+Group:		Development/Libraries
+Requires:	ppl = %{version}-%{release}
 BuildRequires:	glpk-devel >= 4.13
 %description utils
 This package contains the (mixed integer) linear programming solver ppl_lpsol
@@ -129,7 +129,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 %files gprolog-devel
 %defattr(-,root,root)
-%doc README.gprolog
+%doc interfaces/Prolog/GNU/README.gprolog
 %{_bindir}/ppl_gprolog
 %{_libdir}/ppl/ppl_gprolog.pl
 %{_libdir}/ppl/libppl_gprolog.a
@@ -137,14 +137,14 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 %files swiprolog-devel
 %defattr(-,root,root)
-%doc README.swiprolog
+%doc interfaces/Prolog/SWI/README.swiprolog
 %{_bindir}/ppl_pl
 %{_libdir}/ppl/libppl_swiprolog.a
 %{_libdir}/ppl/libppl_swiprolog.so
 
 %files yap-devel
 %defattr(-,root,root)
-%doc README.yap
+%doc interfaces/Prolog/YAP/README.yap
 %{_libdir}/ppl/ppl_yap.a
 %{_libdir}/ppl/ppl_yap.pl
 %{_libdir}/ppl/ppl_yap.so
@@ -156,7 +156,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 %files pwl-devel
 %defattr(-,root,root)
-#%doc
+%doc Watchdog/README.doc
 %{_includedir}/pwl.hh
 %{_libdir}/libpwl.so
 %{_libdir}/libpwl.a
@@ -170,7 +170,11 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Sat Feb 17 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-2
+* Sun Feb 18 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-2
+- %doc tags corrected for the Prolog interfaces.
+- Tabs used consistently instead of spaces.
+
+* Sat Feb 17 2007 Roberto Bagnara <bagnara@cs.unipr.it>
 - Make `swiprolog-devel' depend on `pl' (at leat 5.6); documentation added.
 - The `yap' package has been renamed `yap-devel' and completed.
 - The `gprolog' package has been renamed `gprolog-devel' and completed.
@@ -179,7 +183,7 @@ rm -rf $RPM_BUILD_ROOT
 - Modified the configuration command so that the `glpk-devel' include files
   are found.
 
-* Sun Feb 11 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-2
+* Sun Feb 11 2007 Roberto Bagnara <bagnara@cs.unipr.it>
 - The `%%_libdir/ppl' is no longer orphaned.
 - Use `make %%{?_smp_mflags}' for building.
 - The `swi' package has been renamed `swiprolog-devel'.
