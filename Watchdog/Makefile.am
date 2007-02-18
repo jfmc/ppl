@@ -20,7 +20,7 @@
 # For the most up-to-date information see the CS@Parma software
 # site: http://www.cs.unipr.it/Software/ . */
 
-SUBDIRS = utils src
+SUBDIRS = utils src doc
 
 dist_noinst_SCRIPTS = \
 configure

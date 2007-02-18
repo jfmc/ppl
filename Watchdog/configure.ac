@@ -295,5 +295,10 @@ AC_SUBST(debug_flag)
 
 AC_CONFIG_FILES(Makefile
                 src/Makefile
+                doc/Makefile
+                doc/user.doxyconf-latex
+                doc/devref.doxyconf-latex
+                doc/user.doxyconf-html
+                doc/devref.doxyconf-html
                 utils/Makefile)
 AC_OUTPUT
