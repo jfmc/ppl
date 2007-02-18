@@ -11,9 +11,6 @@ be configured with the `--disable-regs' option.
 The `ppl_gprolog' Executable
 ----------------------------
 
-If an appropriate version of GNU Prolog is installed on the machine on
-which you compiled the library, the command `make install' will
-install the executable `ppl_gprolog' in the directory `prefix/bin'.
 The `ppl_gprolog' executable is simply the GNU Prolog interpreter with
 the Parma Polyhedra Library linked in.  The only thing you should do
 to use the library is to call `ppl_initialize/0' before any other PPL
@@ -25,14 +22,15 @@ Linking the Library To GNU Prolog Programs
 ------------------------------------------
 
 In order to allow linking GNU Prolog programs to the PPL, the
-following files are installed in the directory `prefix/lib/ppl':
-`ppl_gprolog.pl' contains the required foreign declarations;
-`libppl_gprolog.*' contain the executable code for the GNU Prolog
-interface in various formats (static library, shared library, libtool
-library).  If your GNU Prolog program is constituted by, say,
-`source1.pl' and `source2.pl' and you want to create the executable
-`myprog', your compilation command may look like
+following files are installed in the directory `<prefix>/lib/ppl',
+where <prefix> is the root of your installation (`/usr' or
+`/usr/local' in most cases): `ppl_gprolog.pl' contains the required
+foreign declarations; `libppl_gprolog.*' contain the executable code
+for the GNU Prolog interface in various formats (static library,
+shared library, libtool library).  If your GNU Prolog program is
+constituted by, say, `source1.pl' and `source2.pl' and you want to
+create the executable `myprog', your compilation command may look like
 
-    gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
-      -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib \
+    gplc -o myprog <prefix>/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
+      -L '-L<prefix>/lib/ppl -lppl_gprolog -L<prefix>/lib \
       -lppl -lgmpxx -lgmp -lstdc++'
