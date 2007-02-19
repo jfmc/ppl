@@ -48,12 +48,6 @@ fpu_reset_inexact() {
 			 " cannot control the FPU");
 }
 
-inline int
-fpu_save_rounding_direction_reset_inexact(int dir) {
-  throw std::logic_error("PPL::fpu_save_rounding_direction_reset_inexact():"
-			 " cannot control the FPU");
-}
-
 inline void
 fpu_restore_rounding_direction(int dir) {
   throw std::logic_error("PPL::fpu_restore_rounding_direction():"

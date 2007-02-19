@@ -52,12 +52,6 @@ fpu_reset_inexact() {
   fpsetmask(except);
 }
 
-inline fpu_rounding_control_word_type
-fpu_save_rounding_direction_reset_inexact(fpu_rounding_direction_type dir) {
-  fpu_reset_inexact();
-  return fpu_save_rounding_direction((fp_rnd) dir);
-}
-
 inline void
 fpu_restore_rounding_direction(fpu_rounding_control_word_type w) {
   fpsetround((fp_rnd) w);
