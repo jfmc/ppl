@@ -1,6 +1,6 @@
 Name:		ppl
 Version:	@VERSION@
-Release:	2%{?dist}
+Release:	3%{?dist}
 
 Summary:	The Parma Polyhedra Library: a library of numerical abstractions
 Group:		Development/Libraries
@@ -173,14 +173,14 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Thu Feb 22 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-2
+* Thu Feb 22 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-3
 - Dependencies for YAP fixed.
 - Make sure the header files of GNU Prolog and YAP are found.
 
-* Wed Feb 21 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-2
+* Wed Feb 21 2007 Roberto Bagnara <bagnara@cs.unipr.it>
 - Added missing dependencies.
 
-* Sun Feb 18 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-2
+* Sun Feb 18 2007 Roberto Bagnara <bagnara@cs.unipr.it>
 - %doc tags corrected for the Prolog interfaces.
 - Tabs used consistently instead of spaces.
 
@@ -193,7 +193,7 @@ rm -rf $RPM_BUILD_ROOT
 - Modified the configuration command so that the `glpk-devel' include files
   are found.
 
-* Sun Feb 11 2007 Roberto Bagnara <bagnara@cs.unipr.it>
+* Sun Feb 11 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-2
 - The `%%_libdir/ppl' is no longer orphaned.
 - Use `make %%{?_smp_mflags}' for building.
 - The `swi' package has been renamed `swiprolog-devel'.
@@ -216,7 +216,7 @@ rm -rf $RPM_BUILD_ROOT
 - Do not include libtool archive files.
 - Packages reorganized.
 
-* Mon Jan 16 2006 Roberto Bagnara <bagnara@cs.unipr.it>
+* Mon Jan 16 2006 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-1
 - Install gzipped man pages.
 - The `Copyright' tag is no longer supported: use `License' instead.
 
