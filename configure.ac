@@ -294,6 +294,42 @@ no)
 esac
 
 enableval=no
+AC_MSG_CHECKING([whether to use SSE instructions])
+AC_ARG_ENABLE(sse,
+  AC_HELP_STRING([--enable-sse],
+    [use SSE instructions]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  OPT_FLAGS="$OPT_FLAGS -msse -mfpmath=sse"
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-sse, needs yes or no])
+  ;;
+esac
+
+enableval=no
+AC_MSG_CHECKING([whether to use SSE2 instructions])
+AC_ARG_ENABLE(sse2,
+  AC_HELP_STRING([--enable-sse2],
+    [use SSE2 instructions]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  OPT_FLAGS="$OPT_FLAGS -msse2 -mfpmath=sse"
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-sse2, needs yes or no])
+  ;;
+esac
+
+enableval=no
 AC_MSG_CHECKING([whether to use precompiled headers])
 AC_ARG_ENABLE(pch,
   AC_HELP_STRING([--enable-pch],
