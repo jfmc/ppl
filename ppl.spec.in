@@ -48,6 +48,7 @@ and the program ppl_lcdd for vertex/facet enumeration of convex polyhedra.
 %package gprolog-devel
 Summary:	The GNU Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
+BuildRequires:	gprolog >= 1.2.19
 Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}, gprolog >= 1.2.19
 %description gprolog-devel
 This package adds GNU Prolog support to the Parma Polyhedra Library (PPL).
@@ -56,6 +57,7 @@ Install this package if you want to use the library in GNU Prolog programs.
 %package swiprolog-devel
 Summary:	The SWI-Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
+BuildRequires:	pl >= 5.6.0
 Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}, pl >= 5.6.0
 %description swiprolog-devel
 This package adds SWI-Prolog support to the Parma Polyhedra Library.
@@ -64,7 +66,8 @@ Install this package if you want to use the library in SWI Prolog programs.
 %package yap-devel
 Summary:	The YAP Prolog interface of the Parma Polyhedra Library
 Group:		Development/Libraries
-Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}
+BuildRequires:	yap >= 5.1.1
+Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}, yap >= 5.1.1
 %description yap-devel
 This package adds YAP Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in YAP Prolog programs.
@@ -170,6 +173,9 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Wed Feb 22 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-2
+- Added missing dependencies.
+
 * Sun Feb 18 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-2
 - %doc tags corrected for the Prolog interfaces.
 - Tabs used consistently instead of spaces.
