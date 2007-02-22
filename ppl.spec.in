@@ -181,7 +181,7 @@ rm -rf $RPM_BUILD_ROOT
 - Added missing dependencies.
 
 * Sun Feb 18 2007 Roberto Bagnara <bagnara@cs.unipr.it>
-- %doc tags corrected for the Prolog interfaces.
+- `%%doc' tags corrected for the Prolog interfaces.
 - Tabs used consistently instead of spaces.
 
 * Sat Feb 17 2007 Roberto Bagnara <bagnara@cs.unipr.it>
