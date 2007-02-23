@@ -1,6 +1,6 @@
 Name:		ppl
 Version:	@VERSION@
-Release:	3%{?dist}
+Release:	4%{?dist}
 
 Summary:	The Parma Polyhedra Library: a library of numerical abstractions
 Group:		Development/Libraries
@@ -72,6 +72,15 @@ Requires:	ppl = %{version}-%{release}, ppl-pwl = %{version}-%{release}, yap >= 5
 This package adds YAP Prolog support to the Parma Polyhedra Library (PPL).
 Install this package if you want to use the library in YAP Prolog programs.
 
+%package docs
+Summary:	Documentation for the Parma Polyhedra Library
+Group:		Documentation
+Requires:	ppl = %{version}-%{release}
+%description docs
+This package contains all the documentations required by programmers
+using the Parma Polyhedra Library (PPL).
+Install this package if you want to program with the PPL.
+
 %package pwl
 Summary:	The Parma Watchdog Library: a C++ library for watchdog timers
 Group:		Development/Libraries
@@ -90,6 +99,7 @@ Requires:	ppl-pwl = %{version}-%{release}
 The header files, documentation and static libraries for developing
 applications using the Parma Watchdog Library.
 
+
 %prep
 %setup -q
 %patch -p1
@@ -104,7 +114,13 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 %files
 %defattr(-,root,root)
-%doc BUGS COPYING CREDITS ChangeLog NEWS README
+%doc /usr/share/doc/ppl/BUGS
+%doc /usr/share/doc/ppl/COPYING
+%doc /usr/share/doc/ppl/CREDITS
+%doc /usr/share/doc/ppl/ChangeLog
+%doc /usr/share/doc/ppl/NEWS
+%doc /usr/share/doc/ppl/README
+%doc /usr/share/doc/ppl/gpl.*
 %{_libdir}/libppl.so.*
 %{_libdir}/libppl_c.so.*
 
@@ -112,7 +128,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 %files devel
 %defattr(-,root,root)
-%doc README.configure doc/README.doc doc/*.pdf* doc/*.ps.gz doc/*.txt
+%doc /usr/share/doc/ppl/README.configure
 %{_includedir}/ppl.hh
 %{_includedir}/ppl_c.h
 %{_libdir}/libppl.so
@@ -144,6 +160,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_bindir}/ppl_pl
 %{_libdir}/ppl/libppl_swiprolog.a
 %{_libdir}/ppl/libppl_swiprolog.so
+%{_libdir}/ppl/ppl_swiprolog.pl
 
 %files yap-devel
 %defattr(-,root,root)
@@ -151,6 +168,14 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_libdir}/ppl/ppl_yap.a
 %{_libdir}/ppl/ppl_yap.pl
 %{_libdir}/ppl/ppl_yap.so
+
+%files docs
+%defattr(-,root,root)
+%doc /usr/share/doc/ppl/README.doc
+%doc /usr/share/doc/ppl/ppl-user-0.9-html/*
+%doc /usr/share/doc/ppl/fdl.*
+%doc /usr/share/doc/ppl/ppl-user-0.9.pdf
+%doc /usr/share/doc/ppl/ppl-user-0.9.ps.gz
 
 %files pwl
 %defattr(-,root,root)
@@ -173,6 +198,9 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Fri Feb 23 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-4
+- The user manual (in various formats) is now in the `docs' package.
+
 * Thu Feb 22 2007 Roberto Bagnara <bagnara@cs.unipr.it> 0.9-3
 - Dependencies for YAP fixed.
 - Make sure the header files of GNU Prolog and YAP are found.
