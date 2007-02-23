@@ -6,6 +6,10 @@ Enhancements for PPL 0.10
   LESS_THAN_OR_EQUAL to LESS_OR_EQUAL and GREATER_THAN_OR_EQUAL
   to GREATER_OR_EQUAL (any case, any similarly-named object,
   in any interface).
+- In the SWI-Prolog documentation, the command to dynamically
+  load the library has to be modified so as to specify the `.so'
+  extension: this is required under Mac OS X and seems not to
+  do any harm under GNU/Linux.
 - Add a "quick assign" function to checked numbers that allows
   to efficiently assign small integer constants (like those in
   the range [-2, 2]) that are guaranteed not to cause any
