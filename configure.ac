@@ -293,39 +293,43 @@ no)
   ;;
 esac
 
-enableval=no
-AC_MSG_CHECKING([whether to use SSE instructions])
-AC_ARG_ENABLE(sse,
-  AC_HELP_STRING([--enable-sse],
-    [use SSE instructions]))
+enableval=default
+AC_MSG_CHECKING([whether to select specific floating point arithmetics])
+AC_ARG_ENABLE(fpmath,
+  AC_HELP_STRING([--enable-fpmath],
+    [select floating point arithmetics]))
 case "${enableval}" in
-yes)
-  AC_MSG_RESULT(yes)
+sse)
+  AC_MSG_RESULT(sse)
   OPT_FLAGS="$OPT_FLAGS -msse -mfpmath=sse"
+  arch=yes
   ;;
-no)
-  AC_MSG_RESULT(no)
-  ;;
-*)
-  AC_MSG_ERROR([bad value ${enableval} for --enable-sse, needs yes or no])
-  ;;
-esac
-
-enableval=no
-AC_MSG_CHECKING([whether to use SSE2 instructions])
-AC_ARG_ENABLE(sse2,
-  AC_HELP_STRING([--enable-sse2],
-    [use SSE2 instructions]))
-case "${enableval}" in
-yes)
-  AC_MSG_RESULT(yes)
+sse2)
+  AC_MSG_RESULT(sse2)
   OPT_FLAGS="$OPT_FLAGS -msse2 -mfpmath=sse"
+  arch=yes
+  ;;
+387)
+  AC_MSG_RESULT(387)
+  OPT_FLAGS="$OPT_FLAGS -mno-sse -mno-sse2 -mfpmath=387"
+  arch=yes
+  ;;
+sse+387)
+  AC_MSG_RESULT(sse+387)
+  OPT_FLAGS="$OPT_FLAGS -msse -mfpmath=sse,387"
+  ;;
+sse2+387)
+  AC_MSG_RESULT(sse2+387)
+  OPT_FLAGS="$OPT_FLAGS -msse2 -mfpmath=sse,387"
+  ;;
+default)
+  AC_MSG_RESULT(default)
   ;;
 no)
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT(default)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} for --enable-sse2, needs yes or no])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-optimization, needs sse, sse2, 387, sse+387, sse2+387, default or no])
   ;;
 esac
 
