@@ -91,7 +91,7 @@ pl_clpq2_SOURCES = pl_clpq.cc
 # and if Libtool and plld can interoperate.
 ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o | libppl_swiprolog.la
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) \
-		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " ","` \
+		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
@@ -99,7 +99,7 @@ ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o | libppl_swiprolog.la
 
 pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl | libppl_swiprolog.la
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) \
-		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " ","` \
+		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
@@ -107,7 +107,7 @@ pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl | libppl
 
 pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq2.pl | libppl_swiprolog.la
 	plld -cc $(CC) -c++ $(CXX) -ld $(CXX) \
-		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " ","` \
+		-ld-options`echo '' $(AM_CXXFLAGS) $(CXXFLAGS) | tr " " "/"` \
 		-o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/src/.libs -lpwl \
