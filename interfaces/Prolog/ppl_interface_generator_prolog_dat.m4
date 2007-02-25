@@ -1,5 +1,26 @@
-m4_divert(-1)
 m4_define(`dnl', `m4_dnl')
+dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl
+dnl This file is part of the Parma Polyhedra Library (PPL).
+dnl
+dnl The PPL is free software; you can redistribute it and/or modify it
+dnl under the terms of the GNU General Public License as published by the
+dnl Free Software Foundation; either version 2 of the License, or (at your
+dnl option) any later version.
+dnl
+dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
+dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+dnl for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software Foundation,
+dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+dnl
+dnl For the most up-to-date information see the Parma Polyhedra Library
+dnl site: http://www.cs.unipr.it/ppl/ .
+
+m4_divert(-1)
 dnl
 dnl Include the language independent `dat' information.
 m4_include(`ppl_interface_generator_common_dat.m4')`'dnl
@@ -69,6 +90,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension/3 +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_@INTOPOLOGY@@FRIEND@/2 +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BUILD_REPRESENT@s/2 +simple_pps,
 ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@/2 +simple -wr_shape,
+ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@/2 +polyhedron,
 ppl_@CLASS@_swap/2 *nofail +simple_pps,
 ppl_@CLASS@_@DIMENSION@/2 +simple_pps,
 ppl_@CLASS@_get_@GET_REPRESENT@s/2 +simple,
@@ -114,8 +136,8 @@ ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign_with_tokens/4 +wr_shape,
 ppl_@CLASS@_@EXTRAPOLATION@_extrapolation_assign/2 *nofail +wr_shape,
 ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign/2 +wr_shape,
 ppl_@CLASS@_BHZ03_@ALT_DISJUNCT_WIDEN@_@DISJUNCT_WIDEN@_widening_assign/2 +pointset_powerset,
-ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/2 +pointset_powerset,
-ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign/2 -pointset_powerset,
+ppl_@CLASS@_BGP99_@DISJUNCT_WIDEN@_extrapolation_assign/3 +pointset_powerset,
+ppl_@CLASS@_BGP99_@DISJUNCT_EXTRAPOLATION@_extrapolation_assign/3 -pointset_powerset,
 ppl_@CLASS@_add_space_dimensions_@EMBEDPROJECT@/2 *nofail +simple_pps,
 ppl_@CLASS@_remove_space_dimensions/2 +simple_pps,
 ppl_@CLASS@_remove_higher_space_dimensions/2 *nofail +simple_pps,
@@ -123,6 +145,7 @@ ppl_@CLASS@_expand_space_dimension/3 *nofail +simple,
 ppl_@CLASS@_fold_space_dimensions/3  +simple,
 ppl_@CLASS@_map_space_dimensions/2 +simple_pps,
 ppl_@CLASS@_ascii_dump/1 +simple_pps
+ppl_@CLASS@_@PARTITION@/4 -simple +pointset_powerset
 ')`'dnl
 dnl
 m4_divert`'dnl

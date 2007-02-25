@@ -1,5 +1,26 @@
-m4_divert(-1)
 m4_define(`dnl', `m4_dnl')
+dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl
+dnl This file is part of the Parma Polyhedra Library (PPL).
+dnl
+dnl The PPL is free software; you can redistribute it and/or modify it
+dnl under the terms of the GNU General Public License as published by the
+dnl Free Software Foundation; either version 2 of the License, or (at your
+dnl option) any later version.
+dnl
+dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
+dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+dnl for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software Foundation,
+dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+dnl
+dnl For the most up-to-date information see the Parma Polyhedra Library
+dnl site: http://www.cs.unipr.it/ppl/ .
+
+m4_divert(-1)
 dnl This file contains the schematic tests for the Prolog interface predicates.
 dnl
 m4_define(`m4_add_topology_class_code', `dnl
@@ -240,6 +261,48 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@_2_test :-
    ->
     fail ; true)
   ).
+
+')
+
+m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+`
+ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_2_test :-
+  (
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2a, Space_Dim),
+     ppl_new_@TOPOLOGY@@CLASS@_from_@TOPOLOGY@@CLASS@(PS1, PS1_Copy),
+     (ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@(PS1_Copy, PS2) ->
+       (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+       ->
+         ppl_@CLASS@_equals_@CLASS@(PS2, PS2a),
+         ppl_@CLASS@_contains_@CLASS@(PS1_Copy, PS1),
+         ppl_@CLASS@_upper_bound_assign(PS2a, PS1),
+         ppl_@CLASS@_contains_@CLASS@(PS2a, PS1_Copy)
+       ;
+         true
+       )
+     ;
+       (predicate_exists(ppl_@CLASS@_equals_@CLASS@)
+       ->
+         ppl_@CLASS@_equals_@CLASS@(PS1_Copy, PS1),
+         ppl_@CLASS@_equals_@CLASS@(PS2a, PS2)
+       ;
+         true
+       )
+     ),
+     ppl_@CLASS@_OK(PS1),
+     ppl_@CLASS@_OK(PS1_Copy),
+     ppl_@CLASS@_OK(PS2),
+     ppl_delete_@CLASS@(PS1),
+     ppl_delete_@CLASS@(PS1_Copy),
+     ppl_delete_@CLASS@(PS2),
+     ppl_delete_@CLASS@(PS2a)
+   ->
+     fail ; true)
+ ).
 
 ')
 
@@ -544,6 +607,28 @@ ppl_@CLASS@_get_disjunct_2_test2(PPS, It, It_end, Space_Dim) :-
      D = Space_Dim,
      ppl_@CLASS@_get_disjunct_2_test2(PPS, It, It_end, Space_Dim)
    )
+  ).
+
+')
+
+m4_define(`ppl_@CLASS@_@PARTITION@_code',
+`
+ppl_@CLASS@_@PARTITION@_4_test :-
+  (
+   choose_2_tests(TEST_DATA1, TEST_DATA2, Space_Dim),
+   (
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA1, PS1, Space_Dim),
+     ppl_@TOPOLOGY@@CLASS@_build_test_object(TEST_DATA2, PS2, Space_Dim),
+     ppl_@CLASS@_@PARTITION@(PS1, PS2, PS3, PPS),
+     (predicate_exists(ppl_@CLASS@_contains_@CLASS@)
+       ppl_@DISJUNCT@_contains_@DISJUNCT@(PS1, PS3),
+       ppl_@DISJUNCT@_contains_@DISJUNCT@(PS2, PS3)
+     ;
+       true
+     ),
+     ppl_@CLASS@_OK(PPS)
+   ->
+     fail ; (class_@CLASS@ == class_BD_Shape_int8_t -> fail ; true))
   ).
 
 ')

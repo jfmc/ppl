@@ -1,5 +1,5 @@
 /* Congruence_System class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -319,8 +319,8 @@ PPL::Congruence_System::has_a_free_dimension() const {
 	  // Check that there are free_dims dimensions marked free
 	  // in free_dim.
 	  dimension_type count = 0;
-	  for (dimension_type dim = space_dim; dim-- > 0; )
-	    count += free_dim[dim];
+	  for (dimension_type i = space_dim; i-- > 0; )
+	    count += free_dim[i];
 	  assert(count == free_dims);
 #endif
 	  return true;

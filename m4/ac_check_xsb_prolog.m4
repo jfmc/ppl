@@ -1,5 +1,5 @@
 dnl A function to check for the existence and usability of XSB Prolog.
-dnl Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -19,7 +19,7 @@ dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
-dnl
+
 AC_DEFUN([AC_CHECK_XSB_PROLOG],
 [
 AC_PATH_PROG(xsb_prolog, xsb)

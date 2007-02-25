@@ -1,6 +1,6 @@
 /* Polyhedron class implementation
    (non-inline private or protected functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -601,13 +601,13 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
 
   TEMP_INTEGER(sp);
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
-    const Generator& g = gen_sys[i];
-    Scalar_Products::homogeneous_assign(sp, expr, g);
+    const Generator& gen_sys_i = gen_sys[i];
+    Scalar_Products::homogeneous_assign(sp, expr, gen_sys_i);
     // Lines and rays in `*this' can cause `expr' to be unbounded.
-    if (g.is_line_or_ray()) {
+    if (gen_sys_i.is_line_or_ray()) {
       const int sp_sign = sgn(sp);
       if (sp_sign != 0
-	  && (g.is_line()
+	  && (gen_sys_i.is_line()
 	      || (maximize && sp_sign > 0)
 	      || (!maximize && sp_sign < 0)))
 	// `expr' is unbounded in `*this'.
@@ -615,14 +615,14 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
     }
     else {
       // We have a point or a closure point.
-      assert(g.is_point() || g.is_closure_point());
+      assert(gen_sys_i.is_point() || gen_sys_i.is_closure_point());
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
       mpq_class candidate;
       assign_r(candidate.get_num(), sp, ROUND_NOT_NEEDED);
-      assign_r(candidate.get_den(), g[0], ROUND_NOT_NEEDED);
+      assign_r(candidate.get_den(), gen_sys_i[0], ROUND_NOT_NEEDED);
       candidate.canonicalize();
-      const bool g_is_point = g.is_point();
+      const bool g_is_point = gen_sys_i.is_point();
       if (first_candidate
 	  || (maximize
 	      && (candidate > extremum

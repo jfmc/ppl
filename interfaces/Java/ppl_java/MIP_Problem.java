@@ -1,5 +1,5 @@
 /* MIP_Problem Java class declaration and implementation.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -243,6 +243,9 @@ public class MIP_Problem extends PPL_Object {
       if the MIP problem is unbounded or not satisfiable.
     */
     public native void optimal_value(Coefficient num, Coefficient den);
+
+    //! Returns a string representation of \p this.
+    public native String toString();
 
     //! Checks if all the invariants are satisfied.
     public native boolean OK();

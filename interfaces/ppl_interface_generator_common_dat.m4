@@ -1,6 +1,27 @@
+m4_define(`dnl', `m4_dnl')
+dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl
+dnl This file is part of the Parma Polyhedra Library (PPL).
+dnl
+dnl The PPL is free software; you can redistribute it and/or modify it
+dnl under the terms of the GNU General Public License as published by the
+dnl Free Software Foundation; either version 2 of the License, or (at your
+dnl option) any later version.
+dnl
+dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
+dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+dnl for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software Foundation,
+dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+dnl
+dnl For the most up-to-date information see the Parma Polyhedra Library
+dnl site: http://www.cs.unipr.it/ppl/ .
+
 m4_divert(-1)
 
-m4_define(`dnl', `m4_dnl')
 dnl Classes to be implemented and C++ versions of these classes.
 m4_include(ppl_interface_instantiations.m4)
 
@@ -354,6 +375,8 @@ build_represent,
 get_represent,
 relation_represent,
 add_represent,
+partition,
+superclass,
 recycle,
 dimension,
 generator,
@@ -688,6 +711,25 @@ m4_define(`m4_Polyhedron_recycle_replacement',
 m4_define(`m4_Grid_recycle_replacement',
          `@COMMA@ Recycle_Input()')
 
+dnl  The "superclass" is the most general class for the disjunct kind.
+dnl  For grids it is Grid and for all the other
+dnl  simple classes, it is NNC_Polyhedron.
+m4_define(`m4_superclass_replacement', `NONE')
+m4_define(`m4_Pointset_Powerset_superclass_replacement',
+          `m4_ifelse(
+          m4_echo_unquoted(m4_disjunct_kind($1)),
+          `Grid', `Grid', `NNC_Polyhedron')')
+
+dnl  The "partition" which is currently only available for the Polyhedron
+dnl  and Grid Pointset_Powerset classes.
+m4_define(`m4_partition_replacement', `NONE')
+m4_define(`m4_Pointset_Powerset_partition_replacement',
+          `m4_ifelse(
+          m4_echo_unquoted(m4_remove_topology(m4_disjunct_kind($1))),
+          `Polyhedron', `linear_partition',
+          m4_echo_unquoted(m4_remove_topology(m4_disjunct_kind($1))),
+          `Grid', `approximate_partition')')
+
 dnl  The unary "has_property" predicates
 m4_define(`m4_has_property_replacement', `is_empty, is_universe, is_bounded, contains_integer_point, is_topologically_closed')
 m4_define(`m4_Polyhedron_has_property_replacement',
@@ -732,7 +774,7 @@ m4_define(`m4_Octagonal_Shape_binop_replacement',
          `m4_binop_replacement, oct_hull_assign')
 m4_define(`m4_Pointset_Powerset_binop_replacement',
           `m4_ifelse(
-          `m4_body_class_kind($1)', Polyhedron,
+          m4_echo_unquoted(m4_remove_topology(m4_disjunct_kind($1))), Polyhedron,
           `intersection_assign, poly_difference_assign, concatenate_assign,
            time_elapse_assign',
           `m4_body_class_kind($1)', Grid,

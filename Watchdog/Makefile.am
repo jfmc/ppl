@@ -1,5 +1,5 @@
 # Automake source file for the Parma Watchdog Library.
-# Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2002-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
@@ -20,7 +20,7 @@
 # For the most up-to-date information see the CS@Parma software
 # site: http://www.cs.unipr.it/Software/ . */
 
-SUBDIRS = utils src
+SUBDIRS = utils src doc
 
 dist_noinst_SCRIPTS = \
 configure

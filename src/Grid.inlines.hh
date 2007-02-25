@@ -1,5 +1,5 @@
 /* Grid class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -136,6 +136,11 @@ inline
 Grid::~Grid() {
 }
 
+inline dimension_type
+Grid::space_dimension() const {
+  return space_dim;
+}
+
 inline Generator_System
 Grid::generators() const {
   Generator_System gs;
@@ -167,11 +172,6 @@ Grid::add_generator_and_minimize(const Generator& g) const {
 inline memory_size_type
 Grid::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
-}
-
-inline dimension_type
-Grid::space_dimension() const {
-  return space_dim;
 }
 
 inline Constraint_System

@@ -1,5 +1,5 @@
 /* Grid_Generator class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -522,6 +522,5 @@ std::ostream& operator<<(std::ostream& s, const Grid_Generator::Type& t);
 } // namespace Parma_Polyhedra_Library
 
 #include "Grid_Generator.inlines.hh"
-#include "Grid_Generator_System.inlines.hh"
 
 #endif // !defined(PPL_Grid_Generator_defs_hh)

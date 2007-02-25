@@ -1,5 +1,5 @@
 # Autoconf source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -526,6 +526,9 @@ AC_CXX_LONG_DOUBLE_BINARY_FORMAT
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
+# Check whether the C++ compiler has the remainder bug
+AC_CXX_HAS_REMAINDER_BUG
+
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
 
@@ -543,7 +546,6 @@ extra_libraries="${extra_libraries} -lm"
 # GMP library
 
 AC_CHECK_GMP
-
 if test x"$have_gmp" = xno
 then
   AC_MSG_ERROR([Cannot find GMP version 4.1.3 or higher.
@@ -679,9 +681,28 @@ AC_ARG_WITH(java,
        [use dir as Java SDK root directory]),
        [JAVA_HOME=$with_java])
 
+case "${host_os}" in
+# On Darwin the JDK, if present, is installed in /Library/Java/Home .
+darwin*)
+  if test "x$JAVA_HOME" = x
+  then
+    JAVA_HOME="/Library/Java/Home"
+  fi
+  ;;
+# On Fedora Core systems the JDK is usually in /usr/java/default .
+linux*)
+  if test "x$JAVA_HOME" = x
+  then
+    JAVA_HOME="/usr/java/default"
+  fi
+  ;;
+*)
+  ;;
+esac
+
 if test ! "x$JAVA_HOME" = x
 then
-    JAVAPREFIX="${JAVA_HOME}/bin"
+  JAVAPREFIX="${JAVA_HOME}/bin"
 fi
 
 # Check for Java programs. Order here is important: check first
@@ -698,12 +719,23 @@ AM_CONDITIONAL(BUILD_JAVA_INTERFACE, test ! "x$JAVA" = "xno" &&  test ! "x$ac_cv
 if test x${ocaml_interface_enabled} = xyes
 then
   AC_CHECK_PROG(OCAMLC, ocamlc, ocamlc)
+  ocamlgmp="no"
   if test x"$OCAMLC" = xocamlc
   then
-    ocamlc_root=`ocamlc -where`
+     ocamlc_root=`ocamlc -where`
+     # checking for OCaml GMP
+     AC_MSG_CHECKING(for Caml-GMP module gmp.cma)
+     if test -f ${ocamlc_root}/gmp/gmp.cma -a -f ${ocamlc_root}/gmp/libmlgmp.a;
+     then
+         AC_MSG_RESULT(yes)
+	 ocamlgmp="yes"
+     else
+         AC_MSG_RESULT(no)
+	 ocamlgmp="no"
+     fi
   fi
 fi
-AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc)
+AM_CONDITIONAL(BUILD_OCAML_INTERFACE, test x$OCAMLC = xocamlc && test x$ocamlgmp = xyes)
 
 # Ciao Prolog
 if test x${ciao_prolog_interface_enabled} = xyes
@@ -826,12 +858,13 @@ bool valid = ${instantiation}::valid_instantiation();
   done
   CPPFLAGS="$ac_save_CPPFLAGS"
   required_instantiations_canonical_names=`echo "${required_instantiations}" | sed -e 's/> //g' -e 's/>//g' -e 's/[[< ,]]/_/g'`
-  required_instantiations_java_sources=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' | sed -e 's/@/.java /g' -e 's/$/.java/g'`
+  required_instantiations_java_sources=`echo "${required_instantiations_canonical_names}" | sed -e 's/^Polyhedron/Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Polyhedron/@Polyhedron@C_Polyhedron@NNC_Polyhedron/g' -e 's/@Pointset_Powerset_Polyhedron/@Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' -e 's/^Pointset_Powerset_Polyhedron/Pointset_Powerset_C_Polyhedron@Pointset_Powerset_NNC_Polyhedron/g' | sed -e 's/Pointset_Powerset_[[a-zA-Z_]]*/&@&_Iterator/g' | sed -e 's/@/.java /g' -e 's/$/.java/g'`
   required_instantiations_java_cxx_headers=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java.\1/g'`
+  required_instantiations_java_cxx_headers_sources=`echo "${required_instantiations_java_sources}" | sed -e 's/\([[^. ]]*\).java/ppl_java_\1.h/g'`
   AC_MSG_RESULT([${required_instantiations}])
   ;;
 esac
-
+#sed -e 's/Pointset_Powerset_[a-zA-Z_]*/&@&_Iterator/g
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
 # make debugging harder and the build process takes too long.
@@ -939,6 +972,7 @@ AC_SUBST(required_instantiations)
 AC_SUBST(required_instantiations_canonical_names)
 AC_SUBST(required_instantiations_java_sources)
 AC_SUBST(required_instantiations_java_cxx_headers)
+AC_SUBST(required_instantiations_java_cxx_headers_sources)
 AC_SUBST(ocamlc_root)
 
 AC_CONFIG_FILES(Makefile

@@ -1,5 +1,5 @@
 /* Grid Generator_System Java class declaration and implementation.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -32,4 +32,7 @@ package ppl_java;
 public class Grid_Generator_System extends java.util.Vector<Grid_Generator> {
     public Grid_Generator_System() {
     }
+
+  //! Returns a representation of \p this
+  public native String toString();
 }

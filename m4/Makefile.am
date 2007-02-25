@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -37,9 +37,10 @@ ac_cxx_double_binary_format.m4 \
 ac_cxx_flexible_arrays.m4 \
 ac_cxx_float_binary_format.m4 \
 ac_cxx_long_double_binary_format.m4 \
+ac_cxx_remainder_bug.m4 \
+ac_prog_jar.m4 \
 ac_prog_java.m4 \
 ac_prog_javac.m4 \
-ac_prog_jar.m4 \
 ac_prog_javah.m4 \
 lib-ld.m4 \
 lib-link.m4 \

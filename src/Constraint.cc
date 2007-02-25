@@ -1,5 +1,5 @@
 /* Constraint class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,8 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Constraint.defs.hh"
-
 #include "Variable.defs.hh"
+#include "Congruence.defs.hh"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -56,6 +56,42 @@ PPL::Constraint::construct_epsilon_geq_zero() {
   Linear_Expression e = Variable(0);
   Constraint c(e, NONSTRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
   return c;
+}
+
+PPL::Constraint::Constraint(const Congruence& cg)
+  : Linear_Row(cg.is_equality()
+	       // Extra columns for inhomogeneous term and epsilon
+	       // coefficient.
+	       ? cg.space_dimension() + 2
+	       : (throw_invalid_argument("Constraint(cg)",
+					 "congruence cg must be an equality."),
+		  0),
+	       compute_capacity(cg.space_dimension() + 2, Row::max_size()),
+	       Flags(NOT_NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+  // Copy coefficients.
+  assert(cg.space_dimension() > 0);
+  dimension_type i = cg.space_dimension();
+  operator[](i) = cg[i];
+  while (i-- > 0)
+    operator[](i) = cg[i];
+  // Enforce normalization.
+  strong_normalize();
+}
+
+PPL::Constraint::Constraint(const Congruence& cg,
+		       dimension_type sz,
+		       dimension_type capacity)
+  : Linear_Row(cg.is_equality()
+	       ? sz
+	       : (throw_invalid_argument("Constraint(cg, sz, c)",
+					 "congruence cg must be an equality."),
+		  0),
+	       capacity,
+	       Flags(NOT_NECESSARILY_CLOSED, LINE_OR_EQUALITY)) {
+  // Copy coefficients.
+  assert(sz > 0);
+  while (sz-- > 0)
+    operator[](sz) = cg[sz];
 }
 
 bool

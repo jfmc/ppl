@@ -1,5 +1,5 @@
 /* SWI Prolog Common Foreign Language Interface.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,6 +23,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PCFLI_swi_cfli_hh
 #define PCFLI_swi_cfli_hh 1
 
+/* Do this before any inclusion, so as to make sure
+   __STDC_LIMIT_MACROS has the right effect on <stdint.h>.  */
+#if !defined(__STDC_LIMIT_MACROS)
+#define __STDC_LIMIT_MACROS
+#endif
+
 /* Include gmp.h before SWI-Prolog.h.  This is required in order to
    get access to interface functions dealing with GMP numbers and
    SWI-Prolog terms.  */
@@ -30,10 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <SWI-Prolog.h>
 #include <cassert>
 #include <climits>
-
-#if !defined(__STDC_LIMIT_MACROS)
-#define __STDC_LIMIT_MACROS
-#endif
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>

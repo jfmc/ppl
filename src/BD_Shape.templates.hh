@@ -1,5 +1,5 @@
 /* BD_Shape class implementation: non-inline template functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -2368,7 +2368,7 @@ BD_Shape<T>::refine(const Variable var,
   // - If t == 0, then expr == b, with `b' a constant;
   // - If t == 1, then expr == a*w + b, where `w != v' and `a == denominator';
   // - If t == 2, the `expr' is of the general form.
-  DB_Row<N>& dbm_0 = dbm[0];
+  const DB_Row<N>& dbm_0 = dbm[0];
   TEMP_INTEGER(minus_den);
   neg_assign(minus_den, denominator);
 
@@ -2475,7 +2475,6 @@ BD_Shape<T>::refine(const Variable var,
       // Approximate the homogeneous part of `sc_expr'.
       // Note: indices above `w' can be disregarded, as they all have
       // a zero coefficient in `expr'.
-      const DB_Row<N>& dbm_0 = dbm[0];
       for (dimension_type i = w; i > 0; --i) {
 	const Coefficient& sc_i = sc_expr.coefficient(Variable(i-1));
 	const int sign_i = sgn(sc_i);

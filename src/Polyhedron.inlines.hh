@@ -1,5 +1,5 @@
 /* Polyhedron class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -69,32 +69,6 @@ Polyhedron::is_necessarily_closed() const {
 inline dimension_type
 Polyhedron::space_dimension() const {
   return space_dim;
-}
-
-inline Congruence_System
-Polyhedron::congruences() const {
-  return Congruence_System(constraints());
-}
-
-inline Congruence_System
-Polyhedron::minimized_congruences() const {
-  return Congruence_System(minimized_constraints());
-}
-
-inline Grid_Generator_System
-Polyhedron::minimized_grid_generators() const {
-  return grid_generators();
-}
-
-inline void
-Polyhedron::add_grid_generator(const Grid_Generator& g) const {
-  used(g);
-}
-
-inline bool
-Polyhedron::add_grid_generator_and_minimize(const Grid_Generator& g) const {
-  used(g);
-  return !is_empty();
 }
 
 inline void
@@ -194,6 +168,18 @@ Polyhedron::can_have_something_pending() const {
   return constraints_are_minimized()
     && generators_are_minimized()
     && (sat_c_is_up_to_date() || sat_g_is_up_to_date());
+}
+
+inline bool
+Polyhedron::is_empty() const {
+  if (marked_empty())
+    return true;
+  // Try a fast-fail test: if generators are up-to-date and
+  // there are no pending constraints, then the generator system
+  // (since it is well formed) contains a point.
+  if (generators_are_up_to_date() && !has_pending_constraints())
+    return false;
+  return !minimize();
 }
 
 inline void
@@ -311,18 +297,6 @@ Polyhedron::process_pending() const {
 }
 
 inline bool
-Polyhedron::is_empty() const {
-  if (marked_empty())
-    return true;
-  // Try a fast-fail test: if generators are up-to-date and
-  // there are no pending constraints, then the generator system
-  // (since it is well formed) contains a point.
-  if (generators_are_up_to_date() && !has_pending_constraints())
-    return false;
-  return !minimize();
-}
-
-inline bool
 Polyhedron::bounds_from_above(const Linear_Expression& expr) const {
   return bounds(expr, true);
 }
@@ -360,6 +334,32 @@ Polyhedron::minimize(const Linear_Expression& expr,
 		     Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
 		     Generator& g) const {
   return max_min(expr, false, inf_n, inf_d, minimum, g);
+}
+
+inline Congruence_System
+Polyhedron::congruences() const {
+  return Congruence_System(constraints());
+}
+
+inline Congruence_System
+Polyhedron::minimized_congruences() const {
+  return Congruence_System(minimized_constraints());
+}
+
+inline Grid_Generator_System
+Polyhedron::minimized_grid_generators() const {
+  return grid_generators();
+}
+
+inline void
+Polyhedron::add_grid_generator(const Grid_Generator& g) const {
+  used(g);
+}
+
+inline bool
+Polyhedron::add_grid_generator_and_minimize(const Grid_Generator& g) const {
+  used(g);
+  return !is_empty();
 }
 
 /*! \relates Polyhedron */

@@ -1,5 +1,5 @@
 /* PPL Java interface fixed routines implementation.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
    This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,6 +23,15 @@
 #include "ppl_java_Parma_Polyhedra_Library.h"
 #include "ppl_java_common.hh"
 #include "ppl_java_MIP_Problem.h"
+#include "ppl_java_Linear_Expression.h"
+#include "ppl_java_Constraint.h"
+#include "ppl_java_Constraint_System.h"
+#include "ppl_java_Congruence.h"
+#include "ppl_java_Congruence_System.h"
+#include "ppl_java_Generator.h"
+#include "ppl_java_Generator_System.h"
+#include "ppl_java_Grid_Generator.h"
+#include "ppl_java_Grid_Generator_System.h"
 
 JNIEXPORT jint JNICALL Java_ppl_1java_Parma_1Polyhedra_1Library_version_1major
 (JNIEnv *, jclass) {
@@ -353,5 +362,96 @@ JNIEXPORT void JNICALL Java_ppl_1java_MIP_1Problem_build_1cpp_1object__JLppl_1ja
     env->SetLongField(j_this_mip_problem, pointer_field, (long long) mip_ptr);
   }
   CATCH_ALL;
+}
+
+JNIEXPORT jstring JNICALL Java_ppl_1java_MIP_1Problem_toString
+(JNIEnv* env, jobject j_this_mip_problem) {
+ using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  jlong ptr = get_ptr(env, j_this_mip_problem);
+  MIP_Problem* mip = reinterpret_cast<MIP_Problem*>(ptr);
+  s << mip;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL Java_ppl_1java_Linear_1Expression_toString
+(JNIEnv* env, jobject le) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  Linear_Expression ppl_le = build_linear_expression(env, le);
+  s << ppl_le;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL Java_ppl_1java_Generator_toString
+(JNIEnv* env, jobject g) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  Generator ppl_g = build_ppl_generator(env, g);
+  s << ppl_g;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL Java_ppl_1java_Constraint_toString
+(JNIEnv* env, jobject c) {
+ using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  Constraint ppl_c = build_ppl_constraint(env, c);
+  s << ppl_c;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL  Java_ppl_1java_Grid_1Generator_toString
+(JNIEnv* env, jobject g) {
+ using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  Grid_Generator ppl_g = build_ppl_grid_generator(env, g);
+  s << ppl_g;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL Java_ppl_1java_Congruence_toString
+(JNIEnv* env, jobject g) {
+ using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  Congruence ppl_g = build_ppl_congruence(env, g);
+  s << ppl_g;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL Java_ppl_1java_Grid_1Generator_1System_toString
+(JNIEnv* env, jobject ggs) {
+ using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  Grid_Generator_System ppl_ggs = build_ppl_grid_generator_system(env, ggs);
+  s << ppl_ggs;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL Java_ppl_1java_Generator_1System_toString
+(JNIEnv* env, jobject gs) {
+ using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  Generator_System ppl_gs = build_ppl_generator_system(env, gs);
+  s << ppl_gs;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL Java_ppl_1java_Constraint_1System_toString
+(JNIEnv* env, jobject cs) {
+ using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  Constraint_System ppl_cs = build_ppl_constraint_system(env, cs);
+  s << ppl_cs;
+  return env->NewStringUTF(s.str().c_str());
+}
+
+JNIEXPORT jstring JNICALL Java_ppl_1java_Congruence_1System_toString
+(JNIEnv* env, jobject cgs) {
+ using namespace Parma_Polyhedra_Library::IO_Operators;
+  std::ostringstream s;
+  Congruence_System ppl_cgs = build_ppl_congruence_system(env, cgs);
+  s << ppl_cgs;
+  return env->NewStringUTF(s.str().c_str());
 }
 

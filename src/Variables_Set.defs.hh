@@ -1,5 +1,5 @@
 /* Variables_Set class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -81,6 +81,16 @@ public:
   // other `insert' method of std::set.
   using Base::insert;
 
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  /*! \brief
+    Loads from \p s an ASCII representation (as produced by
+    ascii_dump(std::ostream&) const) and sets \p *this accordingly.
+    Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
+  */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool ascii_load(std::istream& s);
+
   //! Returns the total size in bytes of the memory occupied by \p *this.
   memory_size_type total_memory_in_bytes() const;
 
@@ -89,6 +99,8 @@ public:
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
+
+  PPL_OUTPUT_DECLARATIONS
 };
 
 #include "Variables_Set.inlines.hh"

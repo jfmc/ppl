@@ -1,3 +1,24 @@
+dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl
+dnl This file is part of the Parma Polyhedra Library (PPL).
+dnl
+dnl The PPL is free software; you can redistribute it and/or modify it
+dnl under the terms of the GNU General Public License as published by the
+dnl Free Software Foundation; either version 2 of the License, or (at your
+dnl option) any later version.
+dnl
+dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
+dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+dnl for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software Foundation,
+dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+dnl
+dnl For the most up-to-date information see the Parma Polyhedra Library
+dnl site: http://www.cs.unipr.it/ppl/ .
+
 m4_divert(-1)dnl
 
 m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
@@ -447,6 +468,69 @@ ppl_@CLASS@_size(Prolog_term_ref t_pps,
 
     if (unify_ulong(t_s, pps->size()))
       return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+')
+
+extern "C" Prolog_foreign_return_type
+ppl_Pointset_Powerset_C_Polyhedron_linear_partition(Prolog_term_ref t_ph,
+			 Prolog_term_ref t_qh,
+			 Prolog_term_ref t_inters,
+			 Prolog_term_ref t_pset) {
+  static const char* where = "ppl_Pointset_Powerset_C_Polyhedron_linear_partition/4";
+  try {
+    const C_Polyhedron* ph =
+        term_to_handle<C_Polyhedron >(t_ph, where);
+    CHECK(ph);
+    const C_Polyhedron* qh =
+        term_to_handle<C_Polyhedron >(t_qh, where);
+    CHECK(qh);
+
+    std::pair<C_Polyhedron, Pointset_Powerset<NNC_Polyhedron > > r =
+      linear_partition(*ph, *qh);
+
+    Prolog_term_ref t_r_first = Prolog_new_term_ref();
+    Prolog_term_ref t_r_second = Prolog_new_term_ref();
+    Prolog_put_address(t_r_first, &(r.first));
+    Prolog_put_address(t_r_second, &(r.second));
+
+    if (Prolog_unify(t_inters, t_r_first)
+         && Prolog_unify(t_pset, t_r_second)) {
+      return PROLOG_SUCCESS;
+    }
+  }
+  CATCH_ALL;
+}
+
+m4_define(`ppl_@CLASS@_@PARTITION@_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@CLASS@_@PARTITION@(Prolog_term_ref t_ph,
+			 Prolog_term_ref t_qh,
+			 Prolog_term_ref t_inters,
+			 Prolog_term_ref t_pset) {
+  static const char* where = "ppl_@CLASS@_@PARTITION@/4";
+  try {
+    const @ALT_CPP_DISJUNCT@* ph =
+        term_to_handle<@ALT_CPP_DISJUNCT@>(t_ph, where);
+    CHECK(ph);
+    const @ALT_CPP_DISJUNCT@* qh =
+        term_to_handle<@ALT_CPP_DISJUNCT@>(t_qh, where);
+    CHECK(qh);
+
+    std::pair<@ALT_CPP_DISJUNCT@@COMMA@ Pointset_Powerset<@SUPERCLASS@> > r =
+      @PARTITION@(*ph, *qh);
+
+    Prolog_term_ref t_r_first = Prolog_new_term_ref();
+    Prolog_term_ref t_r_second = Prolog_new_term_ref();
+    Prolog_put_address(t_r_first, &(r.first));
+    Prolog_put_address(t_r_second, &(r.second));
+
+    if (Prolog_unify(t_inters, t_r_first)
+         && Prolog_unify(t_pset, t_r_second)) {
+      return PROLOG_SUCCESS;
+    }
   }
   CATCH_ALL;
 }
@@ -960,6 +1044,21 @@ ppl_@CLASS@_@BINOP@
 }
 
 ')
+Prolog_foreign_return_type
+bop_assign(Prolog_term_ref t_lhs,
+           Prolog_term_ref t_rhs,
+           void (@CPP_CLASS@::* bop_assign)(const @CPP_CLASS@&),
+           const char* where) {
+  try {
+    @CPP_CLASS@* lhs = term_to_handle<@CPP_CLASS@ >(t_lhs, where);
+    const @CPP_CLASS@* rhs = term_to_handle<@CPP_CLASS@ >(t_rhs, where);
+    CHECK(lhs);
+    CHECK(rhs);
+    (lhs->*bop_assign)(*rhs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
 
 m4_define(`ppl_@CLASS@_@BINMINOP@_code',
 `extern "C" Prolog_foreign_return_type
@@ -968,6 +1067,20 @@ ppl_@CLASS@_@BINMINOP@
   static const char* where = "ppl_@CLASS@_@BINMINOP@";
   return bop_assign_and_minimize(t_lhs, t_rhs,
                                  &@CPP_CLASS@::@BINMINOP@, where);
+}
+
+')
+
+m4_define(`ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@_code',
+`extern "C" Prolog_foreign_return_type
+ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@
+(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  static const char* where = "ppl_@TOPOLOGY@@CLASS@_@UB_EXACT@";
+  @TOPOLOGY@@CPP_CLASS@* lhs = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_lhs, where);
+  const @TOPOLOGY@@CPP_CLASS@* rhs = term_to_handle<@TOPOLOGY@@CPP_CLASS@ >(t_rhs, where);
+  CHECK(lhs);
+  CHECK(rhs);
+  return lhs->@UB_EXACT@(*rhs);
 }
 
 ')

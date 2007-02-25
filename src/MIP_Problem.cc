@@ -1,5 +1,5 @@
 /* MIP_Problem class implementation: non-inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -384,17 +384,16 @@ PPL::MIP_Problem::merge_split_variables(dimension_type var_index,
     // In the following case the negative side of the split variable is
     // in base: this means that the constraint will be nonfeasible.
     if (base[i] == mapping[var_index].second) {
-      // CHECKME: I do not know if is possible that the positive and the
-      // negative part of a split variable can be together in base: it
-      // seems that this case is not possible. The algorithm i have written
+      // CHECKME: I do not know if is possible that the positive and
+      // the negative part of a split variable can be together in
+      // base: it seems that this case is not possible. The algorithm
       // requires that condition.
-      // This code is run only for testing purposes.
+#ifndef NDEBUG
       for (dimension_type j = 0; j < tableau_nrows; ++j) {
- 	dimension_type test;
-	// Avoid a compiler warning.
-	test = 0;
-	assert(!is_in_base(mapping[var_index].first, test));
+ 	dimension_type dummy = 0;
+	assert(!is_in_base(mapping[var_index].first, dummy));
       }
+#endif
       // We set base[i] to zero to keep track that that the constraint is not
       // feasible by `last_generator'.
       base[i] = 0;
@@ -1915,6 +1914,9 @@ PPL::MIP_Problem::ascii_dump(std::ostream& s) const {
   for (dimension_type i = 1; i < mapping_size; ++i)
     s << "\n"<< i << " -> " << mapping[i].first << " -> " << mapping[i].second
       << ' ';
+
+  s << "\n\ninteger_variables";
+  i_variables.ascii_dump(s);
 }
 
 PPL_OUTPUT_DEFINITIONS(MIP_Problem)
@@ -2073,6 +2075,12 @@ if (!(s >> internal_space_dim))
     mapping.push_back(std::make_pair(first_value, second_value));
   }
 
+  if (!(s >> str) || str != "integer_variables")
+    return false;
+
+  if (!i_variables.ascii_load(s))
+    return false;
+
   assert(OK());
   return true;
 }
@@ -2080,7 +2088,7 @@ if (!(s >> internal_space_dim))
 /*! \relates Parma_Polyhedra_Library::MIP_Problem */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const MIP_Problem& lp) {
-  s << "Constraints:\n";
+  s << "Constraints:";
   for (MIP_Problem::const_iterator i = lp.constraints_begin(),
 	 i_end = lp.constraints_end(); i != i_end; ++i)
     s << "\n" << *i;
@@ -2090,5 +2098,6 @@ PPL::IO_Operators::operator<<(std::ostream& s, const MIP_Problem& lp) {
     << (lp.optimization_mode() == MAXIMIZATION
 	? "MAXIMIZATION"
 	: "MINIMIZATION");
-  return s;
+  s << "\nInteger variables: " << lp.integer_space_dimensions();
+ return s;
 }

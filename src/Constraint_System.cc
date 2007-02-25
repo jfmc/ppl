@@ -1,5 +1,5 @@
 /* Constraint_System class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -26,6 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.inlines.hh"
 #include "Generator.defs.hh"
 #include "Scalar_Products.defs.hh"
+#include "Congruence_System.defs.hh"
+#include "Congruence_System.inlines.hh"
 #include <cassert>
 #include <string>
 #include <vector>

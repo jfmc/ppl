@@ -1,3 +1,24 @@
+dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl
+dnl This file is part of the Parma Polyhedra Library (PPL).
+dnl
+dnl The PPL is free software; you can redistribute it and/or modify it
+dnl under the terms of the GNU General Public License as published by the
+dnl Free Software Foundation; either version 2 of the License, or (at your
+dnl option) any later version.
+dnl
+dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
+dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+dnl for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software Foundation,
+dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+dnl
+dnl For the most up-to-date information see the Parma Polyhedra Library
+dnl site: http://www.cs.unipr.it/ppl/ .
+
 m4_divert(-1)dnl
 
 m4_define(`m4_class_build_cpp_object1_code',
@@ -28,6 +49,9 @@ m4_define(`ppl_new_@TOPOLOGY@@CLASS@_from_space_dimension_code',
     public @TOPOLOGY@@CLASS@(long num_dimensions,
 			Degenerate_Element kind) {
 	build_cpp_object(num_dimensions, kind);
+    }
+
+    private @TOPOLOGY@@CLASS@() {
     }
 
 ')
@@ -240,6 +264,14 @@ m4_define(`ppl_@CLASS@_generalized_@AFFIMAGE@_lhs_rhs_code',
 
 ')
 
+m4_define(`ppl_@CLASS@_@EXTRAPOLATION@_narrowing_assign_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native void
+    @EXTRAPOLATION@_narrowing_assign(@TOPOLOGY@@CLASS@ arg);
+
+')
+
 m4_define(`ppl_Grid_generalized_@AFFIMAGE@_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
@@ -321,5 +353,68 @@ m4_define(`ppl_@CLASS@_map_space_dimensions_code',
 `dnl
 %<--%<--%<-- @CLASS@.java
     public native void map_space_dimensions(Partial_Function pfunc);
+
+')
+
+m4_define(`ppl_@CLASS@_string_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native String toString();
+
+')
+
+m4_define(`ppl_@CLASS@_begin_iterator_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native @CLASS@_Iterator begin_iterator();
+
+')
+
+m4_define(`ppl_@CLASS@_end_iterator_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+    public native @CLASS@_Iterator end_iterator();
+
+')
+
+m4_define(`ppl_@CLASS@_get_disjunct_code',
+`dnl
+%<--%<--%<-- @CLASS@_Iterator.java
+  public native @ALT_CPP_DISJUNCT@ get_disjunct();
+
+')
+
+m4_define(`ppl_@CLASS@_drop_disjunct_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+  public native void drop_disjunct(@CLASS@_Iterator itr);
+
+')
+
+m4_define(`ppl_@CLASS@_iterator_equals_iterator_code',
+`dnl
+%<--%<--%<-- @CLASS@_Iterator.java
+  public native boolean equals(@CLASS@_Iterator itr);
+
+')
+
+m4_define(`ppl_@CLASS@_increment_iterator_code',
+`dnl
+%<--%<--%<-- @CLASS@_Iterator.java
+  public native void next();
+
+')
+
+m4_define(`ppl_@CLASS@_decrement_iterator_code',
+`dnl
+%<--%<--%<-- @CLASS@_Iterator.java
+  public native void prev();
+
+')
+
+m4_define(`ppl_@CLASS@_size_code',
+`dnl
+%<--%<--%<-- @CLASS@.java
+  public native long size();
 
 ')

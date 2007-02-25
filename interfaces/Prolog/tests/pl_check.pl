@@ -1,5 +1,5 @@
 /* Various tests on the Prolog interface.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -1793,7 +1793,8 @@ rel_gens(T, GS, [A, _, _]) :-
 %  tests ppl_Polyhedron_is_universe/1,
 %        ppl_Polyhedron_is_empty/1,
 %        ppl_Polyhedron_is_bounded/1,
-%        ppl_Polyhedron_is_topologically_closed/1.
+%        ppl_Polyhedron_is_topologically_closed/1,
+%        ppl_Polyhedron_contains_integer_point/2.
 checks :-
   checks(c), checks(nnc).
 
@@ -1805,15 +1806,22 @@ checks(T) :-
   ppl_Polyhedron_is_empty(P1),
   \+ppl_Polyhedron_is_universe(P1),
   \+ppl_Polyhedron_is_empty(P),
+  \+ppl_Polyhedron_contains_integer_point(P1),
+  ppl_Polyhedron_contains_integer_point(P),
+  ppl_Polyhedron_add_generators(P1, [point(A + B + C, 2)]),
+  \+ppl_Polyhedron_contains_integer_point(P1),
   ppl_Polyhedron_add_generators(P1, [point(A + B + C)]),
   ppl_Polyhedron_is_bounded(P1),
+  ppl_Polyhedron_contains_integer_point(P1),
   ppl_Polyhedron_add_generators(P1, [ray(A + B + C)]),
   \+ ppl_Polyhedron_is_bounded(P1),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B =< 3, A =< 2]),
+  ppl_Polyhedron_contains_integer_point(P),
   ppl_Polyhedron_is_topologically_closed(P),
    (T = nnc ->
      (ppl_Polyhedron_add_constraints(P, [A > 1, B =< 3, A =< 2]),
       \+ ppl_Polyhedron_is_topologically_closed(P),
+      ppl_Polyhedron_contains_integer_point(P),
       ppl_Polyhedron_add_constraints(P, [A > 2]),
       ppl_Polyhedron_is_topologically_closed(P))
    ; true
@@ -3253,6 +3261,10 @@ group_predicates(check_polyhedron,
   [ppl_Polyhedron_relation_with_constraint/3,
    ppl_Polyhedron_relation_with_generator/3,
    ppl_Polyhedron_is_topologically_closed/1,
+   ppl_Polyhedron_is_universe,
+   ppl_Polyhedron_is_empty,
+   ppl_Polyhedron_is_bounded,
+   ppl_Polyhedron_contains_integer_point,
    ppl_Polyhedron_contains_Polyhedron/2,
    ppl_Polyhedron_strictly_contains_Polyhedron/2,
    ppl_Polyhedron_is_disjoint_from_Polyhedron/2,

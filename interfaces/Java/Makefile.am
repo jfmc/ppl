@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -22,12 +22,13 @@
 
 if BUILD_JAVA_INTERFACE
 
-SUBDIRS = ppl_java jni tests
+SUBDIRS = ppl_java jni . tests
 
 EXTRA_DIST = \
 ppl_interface_generator_java_dat.m4
 
-data_DATA = ppl_java.jar
+jardir = $(prefix)/lib/ppl
+jar_DATA = ppl_java.jar
 
 CLEANFILES = ppl_java.jar
 

@@ -1,5 +1,5 @@
 /* Variables_Set class implementation (non-inline functions).
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -52,4 +52,39 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Variables_Set& vs) {
   }
   s << " }";
   return s;
+}
+
+void
+PPL::Variables_Set::ascii_dump(std::ostream& s) const {
+  dimension_type variables_set_size = size();
+  s << "\nvariables( " << variables_set_size << " )\n";
+  for (Variables_Set::const_iterator i = begin(),
+	 i_end = end(); i != i_end; ++i)
+    s << *i << " ";
+}
+
+PPL_OUTPUT_DEFINITIONS(Variables_Set)
+
+bool
+PPL::Variables_Set::ascii_load(std::istream& s) {
+  clear();
+  std::string str;
+ if (!(s >> str) || str != "variables(")
+    return false;
+
+  dimension_type size;
+
+  if (!(s >> size))
+    return false;
+
+  if (!(s >> str) || str != ")")
+    return false;
+
+  dimension_type variable_value;
+  for (dimension_type i = 0; i < size; ++i) {
+    if (!(s >> variable_value))
+      return false;
+    insert(variable_value);
+  }
+  return true;
 }

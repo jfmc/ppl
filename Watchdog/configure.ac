@@ -1,5 +1,5 @@
 # Autoconf source file for the Parma Watchdog Library.
-# Copyright (C) 2002-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2002-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Watchdog Library (PWL).
 #
@@ -295,5 +295,10 @@ AC_SUBST(debug_flag)
 
 AC_CONFIG_FILES(Makefile
                 src/Makefile
+                doc/Makefile
+                doc/user.doxyconf-latex
+                doc/devref.doxyconf-latex
+                doc/user.doxyconf-html
+                doc/devref.doxyconf-html
                 utils/Makefile)
 AC_OUTPUT

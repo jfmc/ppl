@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -38,7 +38,7 @@ ppl_interface_generator_java_test_java.m4 \
 ppl_interface_generator_java_test_java_code.m4 \
 ppl_java_tests_common
 
-EXTRA_DIST = \
+check_JAVA = \
 ppl_java_generated_tests.java \
 Test_Partial_Function.java \
 C_Polyhedron_test1.java
@@ -46,8 +46,11 @@ C_Polyhedron_test1.java
 BUILT_SOURCES =  \
 ppl_java_generated_tests.java
 
-noinst_JAVA = $(EXTRA_DIST)
-CLASSPATH = ..
+EXTRA_DIST = \
+Test_Partial_Function.java \
+C_Polyhedron_test1.java
+
+CLASSPATH = ../ppl_java.jar:.
 JAVACFLAGS = -classpath $(CLASSPATH)
 
 ppl_java_generated_tests.java: $(interface_generator_dependencies) Makefile
@@ -57,8 +60,12 @@ ppl_java_generated_tests.java: $(interface_generator_dependencies) Makefile
 			> $@
 
 check-local:
-	 $(JAVA) -classpath .:../ -Djava.library.path=../jni/.libs ppl_java_generated_tests
-	 $(JAVA) -classpath .:../ -Djava.library.path=../jni/.libs C_Polyhedron_test1
+	$(LIBTOOL) --mode=execute \
+                -dlopen ../../../src/libppl.la \
+	$(JAVA) -classpath .:../ppl_java.jar -Djava.library.path=../jni/.libs ppl_java_generated_tests
+	$(LIBTOOL) --mode=execute \
+             -dlopen ../../../src/libppl.la \
+	$(JAVA) -classpath .:../ppl_java.jar -Djava.library.path=../jni/.libs C_Polyhedron_test1
 
 CLEANFILES = \
 $(BUILT_SOURCES)

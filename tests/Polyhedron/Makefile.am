@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -41,6 +41,7 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 ORIGINAL_TESTS = \
+hybrid \
 addcongruence1 \
 addcongruences1 \
 addconstraint1 \
@@ -182,6 +183,8 @@ nnc_writepolyhedron1
 #
 # Sources for the tests
 #
+
+hybrid_SOURCES = hybrid.cc
 
 addcongruence1_SOURCES = addcongruence1.cc
 

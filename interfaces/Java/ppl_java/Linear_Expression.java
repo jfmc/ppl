@@ -1,5 +1,5 @@
 /* Linear_Expression Java declaration and implementation.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -51,4 +51,7 @@ public abstract class Linear_Expression implements Cloneable {
     }
     //! Returns a copy of the linear expression.
     public abstract Linear_Expression clone();
+    
+    //! Return the string the represents \p this.
+    public native String toString();
 }

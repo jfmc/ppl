@@ -1,5 +1,5 @@
 /* PPL Java interface common routines implementation.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -645,6 +645,31 @@ get_ptr(JNIEnv* env, const jobject& ppl_object) {
   return  env->GetLongField(ppl_object, pointer_field);
 }
 
+void
+set_ptr(JNIEnv* env, const jobject& ppl_object, const long long address) {
+  jclass ppl_object_class = env->GetObjectClass(ppl_object);
+  jfieldID pointer_field = env->GetFieldID(ppl_object_class, "ptr","J");
+  env->SetLongField(ppl_object, pointer_field, address);
+}
+
+void
+set_is_a_reference(JNIEnv* env, const jobject& ppl_object, const bool reference) {
+  jclass ppl_object_class = env->GetObjectClass(ppl_object);
+  jfieldID is_a_reference_field = env->GetFieldID(ppl_object_class,
+						 "is_a_reference","Z");
+ env->SetBooleanField(ppl_object, is_a_reference_field, reference);
+
+}
+
+bool
+is_a_reference(JNIEnv* env, const jobject& ppl_object) {
+  jclass ppl_object_class = env->GetObjectClass(ppl_object);
+  jfieldID is_a_reference_field = env->GetFieldID(ppl_object_class,
+						 "is_a_reference","Z");
+  return env->GetBooleanField(ppl_object, is_a_reference_field);
+
+}
+
 
 Grid_Generator_System
 build_ppl_grid_generator_system(JNIEnv* env, const jobject& j_iterable) {
@@ -1008,18 +1033,23 @@ build_java_grid_generator(JNIEnv* env, const Grid_Generator& g) {
   jobject j_g_le = get_linear_expression(env, g);
   jobject jcoeff = build_java_coeff(env, Coefficient(1));
   switch (g.type()) {
-  case Grid_Generator::LINE:
+  case Grid_Generator::LINE: {
     j_g_type
       = env->GetStaticObjectField(j_gen_type_class, gen_type_line_get_id);
     return env->CallStaticObjectMethod(j_grid_generator_class,
 				       line_ctr_id, j_g_le);
     break;
-  case Grid_Generator::PARAMETER:
+  }
+  case Grid_Generator::PARAMETER: {
     j_g_type
       = env->GetStaticObjectField(j_gen_type_class, gen_type_parameter_get_id);
+      const Coefficient& divisor = g.divisor();
+      j_g_le = get_linear_expression(env, g);
+      jcoeff = build_java_coeff(env, divisor);
     return env->CallStaticObjectMethod(j_grid_generator_class,
-				       parameter_ctr_id, j_g_le);
+				       parameter_ctr_id, j_g_le, jcoeff);
     break;
+  }
   case Grid_Generator::POINT:
     {
       j_g_type

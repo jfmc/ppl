@@ -34,13 +34,15 @@
 	Linear_Expression le4 = le1.times(new Coefficient(3));
 	le2 = le2.sum(le4);
 	le = le1;
-
+	System.out.print("Printing a linear expression: ");
+        System.out.println(le2.toString());
 	// Constraint declarations.
 	Constraint c1 = new Constraint(new Linear_Expression_Coefficient(coeff1) , Relation_Symbol.GREATER_THAN_OR_EQUAL, new Linear_Expression_Coefficient(coeff0));
 	constraint1 = c1;
 	Constraint c2 = new Constraint(le2, Relation_Symbol.EQUAL, le3);
-
 	Congruence cg1 = new Congruence(le2, le3, coeff0);
+	System.out.print("Printing a congruence: ");
+        System.out.println(cg1.toString());
 	congruence1 = cg1;
 	Congruence cg2 = new Congruence(le2, le3, coeff0);
 	Constraint c3 = new Constraint(le2,
@@ -49,14 +51,20 @@
 	Constraint c4 = new Constraint(le2,
 				       Relation_Symbol.GREATER_THAN_OR_EQUAL,
 				       le3);
+	System.out.print("Printing a constraint: ");
+	System.out.println(c4.toString());
 
 	// Constraint_System declarations.
 	constraints1 = new Constraint_System();
 	constraints1.add(c1);
 	constraints1.add(c2);
+	System.out.print("Printing a constraint system :");
+	System.out.println(constraints1.toString());
 	congruences1 = new Congruence_System();
 	congruences1.add(cg1);
 	congruences1.add(cg2);
+	System.out.println("Printing a congruence system: ");
+	System.out.println(congruences1.toString());
 	constraints2 = new Constraint_System();
 	constraints2.add(c3);
 	constraints2.add(c4);
@@ -65,6 +73,8 @@
 
 	// Generator declarations.
 	Generator g1 = Generator.point(le2, new Coefficient(1));
+	System.out.println("Printing a generator:");
+	System.out.println(g1.toString());
 	generator1 = g1;
 	Generator g2 = Generator.point(le2, new Coefficient(2));
         Generator g3 = Generator.point(le2, new Coefficient(3));
@@ -76,6 +86,8 @@
         generators1.add(g2);
         generators1.add(g3);
         generators1.add(g4);
+	System.out.println("Printing a generator system: ");
+	System.out.println(generators1.toString());
 
 	// Grid_Generator declarations.
 	Grid_Generator gg1

@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -46,9 +46,30 @@ ppl_interface_generator_java_classes_java.m4 \
 ppl_interface_generator_java_classes_java_code.m4
 
 fixed_java_cxx_headers = \
-ppl_java.Parma_Polyhedra_Library \
-ppl_java.MIP_Problem
+ppl_java.Congruence \
+ppl_java.Congruence_System \
+ppl_java.Constraint \
+ppl_java.Constraint_System \
+ppl_java.Generator \
+ppl_java.Generator_System \
+ppl_java.Grid_Generator \
+ppl_java.Grid_Generator_System \
+ppl_java.Linear_Expression \
+ppl_java.MIP_Problem \
+ppl_java.Parma_Polyhedra_Library
 
+fixed_java_cxx_headers_sources = \
+ppl_java_Congruence.h \
+ppl_java_Congruence_System.h \
+ppl_java_Constraint.h \
+ppl_java_Constraint_System.h \
+ppl_java_Generator.h \
+ppl_java_Generator_System.h \
+ppl_java_Grid_Generator.h \
+ppl_java_Grid_Generator_System.h \
+ppl_java_Linear_Expression.h \
+ppl_java_MIP_Problem.h \
+ppl_java_Parma_Polyhedra_Library.h
 
 fixed_java_sources = \
 By_Reference.java \
@@ -136,7 +157,8 @@ noinst_JAVA = Variable.java
 
 CLEANFILES = \
 $(required_instantiations_java_sources) \
-$(required_instantiations_java_cxx_headers) \
+$(required_instantiations_java_cxx_headers_sources) \
+$(fixed_java_cxx_headers_sources) \
 java_classes.stamp \
 java_cxx_headers.stamp \
 source_generation.stamp

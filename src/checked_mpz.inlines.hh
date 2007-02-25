@@ -1,5 +1,5 @@
 /* Specialized "checked" functions for GMP's mpz_class numbers.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -303,7 +303,8 @@ assign_mp_minf(To& to, const Minus_Infinity&, Rounding_Dir) {
     set_special<To_Policy>(to, VC_MINUS_INFINITY);
     return V_EQ;
   }
-  return VC_MINUS_INFINITY;
+  else
+    return VC_MINUS_INFINITY;
 }
 
 template <typename To_Policy, typename From_Policy, typename To>
@@ -313,7 +314,8 @@ assign_mp_pinf(To& to, const Plus_Infinity&, Rounding_Dir) {
     set_special<To_Policy>(to, VC_PLUS_INFINITY);
     return V_EQ;
   }
-  return VC_PLUS_INFINITY;
+  else
+    return VC_PLUS_INFINITY;
 }
 
 template <typename To_Policy, typename From_Policy, typename To>

@@ -1,5 +1,5 @@
 # Automake source file for the Parma Polyhedra Library.
-# Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+# Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 #
 # This file is part of the Parma Polyhedra Library (PPL).
 #
@@ -20,6 +20,8 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+
+
 if BUILD_JAVA_INTERFACE
 
 interface_generator_files = \
@@ -35,10 +37,14 @@ interface_generator_dependencies = \
 ppl_interface_generator_java_ppl_java_classes_cc.m4 \
 ppl_interface_generator_java_ppl_java_classes_cc_code.m4
 
-AM_CPPFLAGS = -I$(top_builddir)/src -I../ppl_java -I$(top_srcdir)/src @extra_includes@
+AM_CPPFLAGS = -I$(top_builddir)/src -I../ppl_java -I$(top_srcdir)/src @extra_includes@ @JNIFLAGS@
 
 lib_LTLIBRARIES = libppl_java.la
 
+if HOST_OS_DARWIN
+libppl_java_la_LDFLAGS=-shrext .jnilib
+endif HOST_OS_DARWIN
+ 
 libppl_java_la_SOURCES = \
 ppl_java_common.hh \
 ppl_java_common.cc \

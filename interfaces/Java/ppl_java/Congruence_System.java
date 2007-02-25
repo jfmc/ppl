@@ -1,5 +1,5 @@
 /* Congruence_System Java class declaration and implementation.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -30,4 +30,7 @@ package ppl_java;
 public class Congruence_System extends java.util.Vector<Congruence> {
     public Congruence_System() {
     }
+    
+    //! Returns a string representation of \p this
+    public native String toString();
 }

@@ -1,5 +1,5 @@
 /* Grid class implementation: inline functions.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -570,9 +570,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       break;
   assert(i != old_gensys_end);
   const Coefficient& system_divisor = i->divisor();
-  for (Grid_Generator_System::const_iterator i = old_gensys.begin();
-       i != old_gensys_end;
-       ++i) {
+  for (i = old_gensys.begin(); i != old_gensys_end; ++i) {
     const Grid_Generator& old_g = *i;
     Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;

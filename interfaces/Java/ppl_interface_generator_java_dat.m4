@@ -1,5 +1,26 @@
-m4_divert(-1)
 m4_define(`dnl', `m4_dnl')
+dnl Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl
+dnl This file is part of the Parma Polyhedra Library (PPL).
+dnl
+dnl The PPL is free software; you can redistribute it and/or modify it
+dnl under the terms of the GNU General Public License as published by the
+dnl Free Software Foundation; either version 2 of the License, or (at your
+dnl option) any later version.
+dnl
+dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
+dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+dnl for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software Foundation,
+dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
+dnl
+dnl For the most up-to-date information see the Parma Polyhedra Library
+dnl site: http://www.cs.unipr.it/ppl/ .
+
+m4_divert(-1)
 dnl
 dnl m4_procedure_list
 dnl This class using patterns wherever possible.
@@ -39,6 +60,7 @@ ppl_@CLASS@_@MAXMIN@_with_point/6 +simple,
 ppl_@CLASS@_@COMPARISON@_@CLASS@/2 +simple_pps,
 ppl_@CLASS@_equals_@CLASS@/2 +simple,
 ppl_@CLASS@_OK/1 +simple_pps,
+ppl_@CLASS@_string/1 +simple_pps,
 ppl_@CLASS@_add_disjunct/2 +pointset_powerset,
 ppl_@CLASS@_add_@ADD_REPRESENT@/2 +simple_pps,
 ppl_@CLASS@_add_@ADD_REPRESENT@_and_minimize/2 +simple_pps,
@@ -64,7 +86,16 @@ ppl_@CLASS@_remove_space_dimensions/2 +simple_pps,
 ppl_@CLASS@_remove_higher_space_dimensions/2 +simple_pps,
 ppl_@CLASS@_expand_space_dimension/3 +simple,
 ppl_@CLASS@_fold_space_dimensions/3  +simple,
-ppl_@CLASS@_map_space_dimensions/2 +simple_pps
+ppl_@CLASS@_map_space_dimensions/2 +simple_pps,
+ppl_@CLASS@_begin_iterator/2 +pointset_powerset,
+ppl_@CLASS@_end_iterator/2 +pointset_powerset,
+ppl_@CLASS@_get_disjunct/2 +pointset_powerset
+ppl_@CLASS@_iterator_equals_iterator/2 +pointset_powerset
+ppl_@CLASS@_increment_iterator/1 +pointset_powerset,
+ppl_@CLASS@_decrement_iterator/1 +pointset_powerset,
+ppl_@CLASS@_size/1 +pointset_powerset,
+ppl_@CLASS@_drop_disjunct/2 +pointset_powerset
+
 ')`'dnl
 dnl
 m4_divert`'dnl
