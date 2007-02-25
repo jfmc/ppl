@@ -294,6 +294,8 @@ no)
 esac
 
 enableval=default
+fpmath_may_use_387=yes
+fpmath_may_use_sse=yes
 AC_MSG_CHECKING([whether to select specific floating point arithmetics])
 AC_ARG_ENABLE(fpmath,
   AC_HELP_STRING([--enable-fpmath],
@@ -302,21 +304,29 @@ case "${enableval}" in
 sse)
   AC_MSG_RESULT(sse)
   OPT_FLAGS="$OPT_FLAGS -msse -mfpmath=sse"
-  arch=yes
+  # The SSE instruction set only supports single precision arithmetics:
+  # double and extended precision arithmetics is still done using 387.
   ;;
 sse2)
   AC_MSG_RESULT(sse2)
   OPT_FLAGS="$OPT_FLAGS -msse2 -mfpmath=sse"
-  arch=yes
+  # SSE2 still does not support extended precision arithmetics.
   ;;
 387)
   AC_MSG_RESULT(387)
   OPT_FLAGS="$OPT_FLAGS -mno-sse -mno-sse2 -mfpmath=387"
-  arch=yes
+  # Note that the -mno-sse* and -mfpmath options are only guaranteed
+  # to work with GCC.
+  if test x"$GCC" = xyes
+  then
+    fpmath_may_use_sse=no
+  fi
   ;;
 sse+387)
   AC_MSG_RESULT(sse+387)
   OPT_FLAGS="$OPT_FLAGS -msse -mfpmath=sse,387"
+  fpmath_may_use_387=yes
+  fpmath_may_use_sse=yes
   ;;
 sse2+387)
   AC_MSG_RESULT(sse2+387)
@@ -332,6 +342,16 @@ no)
   AC_MSG_ERROR([bad value ${enableval} for --enable-optimization, needs sse, sse2, 387, sse+387, sse2+387, default or no])
   ;;
 esac
+
+if test x"$fpmath_may_use_387" = xyes
+then
+  AC_DEFINE(PPL_FPMATH_MAY_USE_387, 1, [Defined if floating point arithmetics may use the 387 unit.])
+fi
+
+if test x"$fpmath_may_use_sse" = xyes
+then
+  AC_DEFINE(PPL_FPMATH_MAY_USE_SSE, 1, [Defined if floating point arithmetics may use the SSE instruction set.])
+fi
 
 enableval=no
 AC_MSG_CHECKING([whether to use precompiled headers])

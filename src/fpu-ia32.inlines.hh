@@ -22,21 +22,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "compiler.hh"
 
-#define FPU_INVALID      0x01
-#define FPU_DIVBYZERO    0x04
-#define FPU_OVERFLOW     0x08
-#define FPU_UNDERFLOW    0x10
-#define FPU_INEXACT      0x20
+#define FPU_INVALID       0x01
+#define FPU_DIVBYZERO     0x04
+#define FPU_OVERFLOW      0x08
+#define FPU_UNDERFLOW     0x10
+#define FPU_INEXACT       0x20
 
 #define FPU_ALL_EXCEPT \
   (FPU_INEXACT | FPU_DIVBYZERO | FPU_UNDERFLOW | FPU_OVERFLOW | FPU_INVALID)
 
-#define FPU_TONEAREST    0
-#define FPU_DOWNWARD     0x400
-#define FPU_UPWARD       0x800
-#define FPU_TOWARDZERO   0xc00
+#define FPU_TONEAREST     0
+#define FPU_DOWNWARD      0x400
+#define FPU_UPWARD        0x800
+#define FPU_TOWARDZERO    0xc00
 
 #define FPU_ROUNDING_MASK 0xc00
+
+#define SSE_INEXACT       0x20
 
 #define PPL_FPU_CONTROL_DEFAULT_BASE 0x37f
 #define PPL_SSE_CONTROL_DEFAULT_BASE 0x1f80
@@ -44,11 +46,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 // This MUST be congruent with the definition of ROUND_DIRECT
 #define PPL_FPU_CONTROL_DEFAULT (PPL_FPU_CONTROL_DEFAULT_BASE | FPU_UPWARD)
 #define PPL_SSE_CONTROL_DEFAULT (PPL_SSE_CONTROL_DEFAULT_BASE | (FPU_UPWARD << 3))
-
-#define SSE_INEXACT	0x20
-
-#define FPU_USED 1
-#define SSE_USED 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -103,7 +100,7 @@ fpu_clear_exceptions() {
   __asm__ __volatile__ ("fnclex" : /* No outputs.  */ : : "memory");
 }
 
-#if SSE_USED
+#if PPL_FPMATH_MAY_USE_SSE
 inline void
 sse_set_control(unsigned int cw) {
   __asm__ __volatile__ ("ldmxcsr %0" : : "m" (*&cw) : "memory");
@@ -124,20 +121,20 @@ fpu_get_rounding_direction() {
 
 inline void
 fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
-#if FPU_USED
+#if PPL_FPMATH_MAY_USE_387
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT_BASE | dir);
 #endif
-#if SSE_USED
+#if PPL_FPMATH_MAY_USE_SSE
   sse_set_control(PPL_SSE_CONTROL_DEFAULT_BASE | (dir << 3));
 #endif
 }
 
 inline fpu_rounding_control_word_type
 fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
-#if FPU_USED
+#if PPL_FPMATH_MAY_USE_387
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT_BASE | dir);
 #endif
-#if SSE_USED
+#if PPL_FPMATH_MAY_USE_SSE
   sse_set_control(PPL_SSE_CONTROL_DEFAULT_BASE | (dir << 3));
 #endif
   return static_cast<fpu_rounding_control_word_type>(0);
@@ -145,10 +142,10 @@ fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
 
 inline void
 fpu_reset_inexact() {
-#if FPU_USED
+#if PPL_FPMATH_MAY_USE_387
   fpu_clear_exceptions();
 #endif
-#if SSE_USED
+#if PPL_FPMATH_MAY_USE_SSE
   /* WARNING: On entry to this function current rounding mode
      have to be the default one. */
   sse_set_control(PPL_SSE_CONTROL_DEFAULT);
@@ -157,21 +154,21 @@ fpu_reset_inexact() {
 
 inline void
 fpu_restore_rounding_direction(fpu_rounding_control_word_type) {
-#if FPU_USED
+#if PPL_FPMATH_MAY_USE_387
   fpu_set_control(PPL_FPU_CONTROL_DEFAULT);
 #endif
-#if SSE_USED
+#if PPL_FPMATH_MAY_USE_SSE
   sse_set_control(PPL_SSE_CONTROL_DEFAULT);
 #endif
 }
 
 inline int
 fpu_check_inexact() {
-#if FPU_USED
+#if PPL_FPMATH_MAY_USE_387
   if (fpu_get_status() & FPU_INEXACT)
     return 1;
 #endif
-#if SSE_USED
+#if PPL_FPMATH_MAY_USE_SSE
   if (sse_get_control() & SSE_INEXACT)
     return 1;
 #endif
