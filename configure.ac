@@ -325,8 +325,6 @@ sse2)
 sse+387)
   AC_MSG_RESULT(sse+387)
   OPT_FLAGS="$OPT_FLAGS -msse -mfpmath=sse,387"
-  fpmath_may_use_387=yes
-  fpmath_may_use_sse=yes
   ;;
 sse2+387)
   AC_MSG_RESULT(sse2+387)
@@ -339,7 +337,7 @@ no)
   AC_MSG_RESULT(default)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} for --enable-optimization, needs sse, sse2, 387, sse+387, sse2+387, default or no])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-fpmath, needs sse, sse2, 387, sse+387, sse2+387, default or no])
   ;;
 esac
 
