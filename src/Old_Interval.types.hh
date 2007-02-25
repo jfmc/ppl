@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is free software; as a special exception the author gives
 unlimited permission to copy and/or distribute it, with or without
@@ -9,13 +9,16 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_Bounding_Box_types_hh
-#define PPL_Bounding_Box_types_hh 1
+#ifndef PPL_Old_Interval_types_hh
+#define PPL_Old_Interval_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-class Bounding_Box;
+class Old_Boundary;
+class LBoundary;
+class UBoundary;
+class Old_Interval;
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Bounding_Box_types_hh)
+#endif // !defined(PPL_Old_Interval_types_hh)

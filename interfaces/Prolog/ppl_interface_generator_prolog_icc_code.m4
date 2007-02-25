@@ -132,8 +132,8 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
     // Check the list is properly terminated.
     check_nil_terminating(t_l, where);
 
-    Bounding_Box bbox(dimension);
-    // Set bbox to reflect its Prolog representation.
+    Rational_Box box(dimension);
+    // Set box to reflect its Prolog representation.
     for (dimension_type i = 0; i < dimension; ++i) {
       Prolog_get_cons(t_bb, t_interval, t_bb);
       // An interval is either the atom empty or of the form
@@ -141,7 +141,7 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
       if (Prolog_is_atom(t_interval)) {
         Prolog_atom name;
         if (Prolog_get_atom_name(t_interval, &name) && name == a_empty) {
-          bbox.set_empty();
+          box.set_empty();
           continue;
         }
         else
@@ -165,21 +165,21 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
 
       // Get and raise the lower bound.
       Prolog_get_arg(1, t_interval, t_bound);
-      if (!term_to_boundary(t_bound, LOWER, finite, closed, n, d))
+      if (!term_to_boundary(t_bound, LOWER_BOUNDARY, finite, closed, n, d))
         return PROLOG_FAILURE;
       if (finite)
-        bbox.raise_lower_bound(i, closed, n, d);
+        box.raise_lower_bound(i, closed, n, d);
 
       // Get and lower the upper bound.
       Prolog_get_arg(2, t_interval, t_bound);
-      if (!term_to_boundary(t_bound, UPPER, finite, closed, n, d))
+      if (!term_to_boundary(t_bound, UPPER_BOUNDARY, finite, closed, n, d))
         return PROLOG_FAILURE;
       if (finite)
-        bbox.lower_upper_bound(i, closed, n, d);
+        box.lower_upper_bound(i, closed, n, d);
     }
 
     @TOPOLOGY@@CPP_CLASS@* ph;
-    ph = new @TOPOLOGY@@CPP_CLASS@(bbox, From_`'@UBOX@());
+    ph = new @TOPOLOGY@@CPP_CLASS@(box, From_`'@UBOX@());
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -655,12 +655,12 @@ ppl_@CLASS@_get_covering_box(Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
     CHECK(ph);
 
     dimension_type dimension = ph->space_dimension();
-    Bounding_Box bbox(dimension);
-    ph->get_covering_box(bbox);
+    Rational_Box box(dimension);
+    ph->get_covering_box(box);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     for (dimension_type i = dimension; i-- > 0; )
-      Prolog_construct_cons(tail, interval_term(bbox[i]), tail);
+      Prolog_construct_cons(tail, interval_term(box[i]), tail);
     if (Prolog_unify(t_bb, tail))
       return PROLOG_SUCCESS;
   }
@@ -689,12 +689,18 @@ ppl_@CLASS@_get_bounding_box(Prolog_term_ref t_ph,
       cc = ANY_COMPLEXITY;
 
     dimension_type dimension = ph->space_dimension();
-    Bounding_Box bbox(dimension);
-    ph->shrink_bounding_box(bbox, cc);
+    Rational_Box box(dimension);
+    ph->shrink_bounding_box(box, cc);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    for (dimension_type i = dimension; i-- > 0; )
-      Prolog_construct_cons(tail, interval_term(bbox[i]), tail);
+    if (box.is_empty()) {
+      Prolog_term_ref t_empty = Prolog_new_term_ref();
+      Prolog_put_atom(t_empty, a_empty);
+      Prolog_construct_cons(tail, t_empty, tail);
+    }
+    else
+      for (dimension_type i = dimension; i-- > 0; )
+        Prolog_construct_cons(tail, interval_term(box[i]), tail);
     if (Prolog_unify(t_bb, tail))
       return PROLOG_SUCCESS;
   }

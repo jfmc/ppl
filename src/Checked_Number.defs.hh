@@ -25,51 +25,53 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Checked_Number.types.hh"
 #include "checked.defs.hh"
+#include "meta_programming.hh"
 
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T>
 struct Checked_Number_Transparent_Policy {
   //! Checks for overflowed result.
-  static const int check_overflow = 0;
+  const_bool_nodef(check_overflow, false);
 
   //! Checks for attempts to add infinities with different sign.
-  static const int check_inf_add_inf = 0;
+  const_bool_nodef(check_inf_add_inf, false);
 
   //! Checks for attempts to subtract infinities with same sign.
-  static const int check_inf_sub_inf = 0;
+  const_bool_nodef(check_inf_sub_inf, false);
 
   //! Checks for attempts to multiply infinities by zero.
-  static const int check_inf_mul_zero = 0;
+  const_bool_nodef(check_inf_mul_zero, false);
 
   //! Checks for attempts to divide by zero.
-  static const int check_div_zero = 0;
+  const_bool_nodef(check_div_zero, false);
 
   //! Checks for attempts to divide infinities.
-  static const int check_inf_div_inf = 0;
+  const_bool_nodef(check_inf_div_inf, false);
 
   //! Checks for attempts to compute remainder of infinities.
-  static const int check_inf_mod = 0;
+  const_bool_nodef(check_inf_mod, false);
 
   //! Checks for attempts to take the square root of a negative number.
-  static const int check_sqrt_neg = 0;
+  const_bool_nodef(check_sqrt_neg, false);
 
   //! Handles not-a-number special value.
-  static const int handle_nan = 0;
+  const_bool_nodef(has_nan, std::numeric_limits<T>::has_quiet_NaN);
 
   //! Handles infinity special values.
-  static const int handle_infinity = 0;
+  const_bool_nodef(has_infinity, std::numeric_limits<T>::has_infinity);
 
   //! Representation is identical to primitive.
-  static const int convertible = 1;
+  const_bool_nodef(convertible, true);
 
-  //! When nonzero, requests to check for FPU inexact result are honored.
-  static const int fpu_check_inexact = 0;
+  //! When true, requests to check for FPU inexact result are honored.
+  const_bool_nodef(fpu_check_inexact, false);
 
-  //! Checks for NaN arguments
-  static const int check_nan_args = 0;
+  //! Return VC_NAN on NaN result also for native extended.
+  const_bool_nodef(check_nan_result, false);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
@@ -82,19 +84,19 @@ struct Checked_Number_Transparent_Policy {
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Checked_Number_Default_Policy {
-  static const int check_overflow = 1;
-  static const int check_inf_add_inf = 0;
-  static const int check_inf_sub_inf = 0;
-  static const int check_inf_mul_zero = 0;
-  static const int check_div_zero = 0;
-  static const int check_inf_div_inf = 0;
-  static const int check_inf_mod = 0;
-  static const int check_sqrt_neg = 0;
-  static const int handle_nan = 0;
-  static const int handle_infinity = 0;
-  static const int convertible = 1;
-  static const int fpu_check_inexact = 0;
-  static const int check_nan_args = 1;
+  const_bool_nodef(check_overflow, true);
+  const_bool_nodef(check_inf_add_inf, false);
+  const_bool_nodef(check_inf_sub_inf, false);
+  const_bool_nodef(check_inf_mul_zero, false);
+  const_bool_nodef(check_div_zero, false);
+  const_bool_nodef(check_inf_div_inf, false);
+  const_bool_nodef(check_inf_mod, false);
+  const_bool_nodef(check_sqrt_neg, false);
+  const_bool_nodef(has_nan, false);
+  const_bool_nodef(has_infinity, false);
+  const_bool_nodef(convertible, true);
+  const_bool_nodef(fpu_check_inexact, true);
+  const_bool_nodef(check_nan_result, true);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_OPERATOR = ROUND_NATIVE;
   static const Rounding_Dir ROUND_DEFAULT_FUNCTION = ROUND_NATIVE;
@@ -107,25 +109,21 @@ struct Checked_Number_Default_Policy {
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Extended_Number_Policy {
-  static const int check_overflow = 1;
-  static const int check_inf_add_inf = 0;
-  static const int check_inf_sub_inf = 0;
-  static const int check_inf_mul_zero = 0;
-  static const int check_div_zero = 0;
-  static const int check_inf_div_inf = 0;
-  static const int check_inf_mod = 0;
-  static const int check_sqrt_neg = 0;
-  static const int handle_nan = 1;
-  static const int handle_infinity = 1;
+  const_bool_nodef(check_overflow, true);
+  const_bool_nodef(check_inf_add_inf, false);
+  const_bool_nodef(check_inf_sub_inf, false);
+  const_bool_nodef(check_inf_mul_zero, false);
+  const_bool_nodef(check_div_zero, false);
+  const_bool_nodef(check_inf_div_inf, false);
+  const_bool_nodef(check_inf_mod, false);
+  const_bool_nodef(check_sqrt_neg, false);
+  const_bool_nodef(has_nan, true);
+  const_bool_nodef(has_infinity, true);
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.
-  // static const int convertible = 0;
-#ifdef DEBUG_ROUND_NOT_NEEDED
-  static const int fpu_check_inexact = 1;
-#else
-  static const int fpu_check_inexact = 0;
-#endif
-  static const int check_nan_args = 1;
+  // const_bool_nodef(convertible, false);
+  const_bool_nodef(fpu_check_inexact, true);
+  const_bool_nodef(check_nan_result, true);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
   static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Do not uncomment the following.
@@ -142,25 +140,21 @@ struct Extended_Number_Policy {
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct WRD_Extended_Number_Policy {
-  static const int check_overflow = 1;
-  static const int check_inf_add_inf = 0;
-  static const int check_inf_sub_inf = 0;
-  static const int check_inf_mul_zero = 0;
-  static const int check_div_zero = 0;
-  static const int check_inf_div_inf = 0;
-  static const int check_inf_mod = 0;
-  static const int check_sqrt_neg = 0;
-  static const int handle_nan = 1;
-  static const int handle_infinity = 1;
+  const_bool_nodef(check_overflow, true);
+  const_bool_nodef(check_inf_add_inf, false);
+  const_bool_nodef(check_inf_sub_inf, false);
+  const_bool_nodef(check_inf_mul_zero, false);
+  const_bool_nodef(check_div_zero, false);
+  const_bool_nodef(check_inf_div_inf, false);
+  const_bool_nodef(check_inf_mod, false);
+  const_bool_nodef(check_sqrt_neg, false);
+  const_bool_nodef(has_nan, true);
+  const_bool_nodef(has_infinity, true);
   // Do not uncomment the following.
   // The compile time error on conversions is the expected behavior.
-  // static const int convertible = 0;
-#ifdef DEBUG_ROUND_NOT_NEEDED
-  static const int fpu_check_inexact = 1;
-#else
-  static const int fpu_check_inexact = 0;
-#endif
-  static const int check_nan_args = 0;
+  // const_bool_nodef(convertible, false);
+  const_bool_nodef(fpu_check_inexact, true);
+  const_bool_nodef(check_nan_result, false);
   static const Rounding_Dir ROUND_DEFAULT_CONSTRUCTOR_INF = ROUND_NOT_NEEDED;
   static const Rounding_Dir ROUND_DEFAULT_ASSIGN_INF = ROUND_NOT_NEEDED;
   // Do not uncomment the following.
@@ -173,12 +167,33 @@ struct WRD_Extended_Number_Policy {
   static void handle_result(Result r);
 };
 
-typedef Checked::Check_Overflow_Policy Default_To_Policy;
-typedef Checked_Number_Transparent_Policy Default_From_Policy;
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A policy checking for overflows.
+/*! \ingroup PPL_CXX_interface */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T>
+struct Check_Overflow_Policy {
+  const_bool_nodef(check_overflow, true);
+  const_bool_nodef(check_inf_add_inf, false);
+  const_bool_nodef(check_inf_sub_inf, false);
+  const_bool_nodef(check_inf_mul_zero, false);
+  const_bool_nodef(check_div_zero, false);
+  const_bool_nodef(check_inf_div_inf, false);
+  const_bool_nodef(check_inf_mod, false);
+  const_bool_nodef(check_sqrt_neg, false);
+  const_bool_nodef(has_nan, std::numeric_limits<T>::has_quiet_NaN);
+  const_bool_nodef(has_infinity, std::numeric_limits<T>::has_infinity);
+  const_bool_nodef(convertible, true);
+  const_bool_nodef(fpu_check_inexact, true);
+  const_bool_nodef(check_nan_result, true);
+};
+
+template <typename T, typename Enable = void>
+struct Native_Checked_From_Wrapper;
 
 template <typename T>
-struct Native_Checked_From_Wrapper {
-  typedef Default_From_Policy Policy;
+struct Native_Checked_From_Wrapper<T, typename Enable_If<Is_Native<T>::value>::type> {
+  typedef Checked_Number_Transparent_Policy<T> Policy;
   static const T& raw_value(const T& v) {
     return v;
   }
@@ -192,9 +207,12 @@ struct Native_Checked_From_Wrapper<Checked_Number<T, P> > {
   }
 };
 
+template <typename T, typename Enable = void>
+struct Native_Checked_To_Wrapper;
+
 template <typename T>
-struct Native_Checked_To_Wrapper {
-  typedef Default_To_Policy Policy;
+struct Native_Checked_To_Wrapper<T, typename Enable_If<Is_Native<T>::value>::type> {
+  typedef Check_Overflow_Policy<T> Policy;
   static T& raw_value(T& v) {
     return v;
   }
@@ -207,6 +225,16 @@ struct Native_Checked_To_Wrapper<Checked_Number<T, P> > {
     return v.raw_value();
   }
 };
+
+template <typename T>
+struct Is_Checked : public False { };
+
+template <typename T, typename P>
+struct Is_Checked<Checked_Number<T, P> > : public True { };
+
+template <typename T>
+struct Is_Native_Or_Checked : public Bool<(Is_Native<T>::value
+					   || Is_Checked<T>::value)> { };
 
 //! A wrapper for numeric types implementing a given policy.
 /*! \ingroup PPL_CXX_interface
@@ -419,11 +447,10 @@ public:
   Checked_Number& operator+=(const T& y);
 
   //! Add and assign operator.
-  template <typename From, typename From_Policy>
-  Checked_Number& operator+=(const Checked_Number<From, From_Policy>& y);
-
   template <typename From>
-  Checked_Number& operator+=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>&>::type
+  operator+=(const From& y);
 
   //! Subtract and assign operator.
   template <typename From_Policy>
@@ -433,12 +460,10 @@ public:
   Checked_Number& operator-=(const T& y);
 
   //! Subtract and assign operator.
-  template <typename From, typename From_Policy>
-  Checked_Number& operator-=(const Checked_Number<From, From_Policy>& y);
-
-  //! Subtract and assign operator.
   template <typename From>
-  Checked_Number& operator-=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>&>::type
+  operator-=(const From& y);
 
   //! Multiply and assign operator.
   template <typename From_Policy>
@@ -446,14 +471,12 @@ public:
 
   //! Multiply and assign operator.
   Checked_Number& operator*=(const T& y);
-  template <typename From, typename From_Policy>
-
-  //! Multiply and assign operator.
-  Checked_Number& operator*=(const Checked_Number<From, From_Policy>& y);
 
   //! Multiply and assign operator.
   template <typename From>
-  Checked_Number& operator*=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>&>::type
+  operator*=(const From& y);
 
   //! Divide and assign operator.
   template <typename From_Policy>
@@ -463,12 +486,10 @@ public:
   Checked_Number& operator/=(const T& y);
 
   //! Divide and assign operator.
-  template <typename From, typename From_Policy>
-  Checked_Number& operator/=(const Checked_Number<From, From_Policy>& y);
-
-  //! Divide and assign operator.
   template <typename From>
-  Checked_Number& operator/=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>&>::type
+  operator/=(const From& y);
 
   //! Compute remainder and assign operator.
   template <typename From_Policy>
@@ -478,12 +499,10 @@ public:
   Checked_Number& operator%=(const T& y);
 
   //! Compute remainder and assign operator.
-  template <typename From, typename From_Policy>
-  Checked_Number& operator%=(const Checked_Number<From, From_Policy>& y);
-
-  //! Compute remainder and assign operator.
   template <typename From>
-  Checked_Number& operator%=(const From& y);
+  typename Enable_If<Is_Native_Or_Checked<From>::value,
+		     Checked_Number<T, Policy>& >::type
+  operator%=(const From& y);
 
   //@} // Assignment Operators
 
@@ -510,29 +529,39 @@ private:
   T v;
 };
 
-template <typename T, typename Policy>
-bool is_not_a_number(const Checked_Number<T, Policy>& x);
-template <typename T, typename Policy>
-bool is_minus_infinity(const Checked_Number<T, Policy>& x);
-template <typename T, typename Policy>
-bool is_plus_infinity(const Checked_Number<T, Policy>& x);
+template <typename T, typename P>
+struct Slow_Copy<Checked_Number<T, P> > : public Bool<Slow_Copy<T>::value> {};
+
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_not_a_number(const T& x);
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_minus_infinity(const T& x);
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_plus_infinity(const T& x);
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, int>::type is_infinity(const T& x);
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type is_integer(const T& x);
 
 template <typename To>
-Result assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir);
 template <typename To>
-Result assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir);
 template <typename To>
-Result assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir);
 template <typename To>
-Result assign_r(To& to, const char* x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, const char* x, Rounding_Dir dir);
 template <typename To, typename To_Policy>
-Result assign_r(To& to, char* x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type assign_r(To& to, char* x, Rounding_Dir dir);
 
 #define FUNC1(name) \
 template <typename To, typename From> \
-Result name(To& to, const From& x, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From>::value, Result>::type name(To& to, const From& x, Rounding_Dir dir);
 
 FUNC1(assign_r)
+FUNC1(floor_assign_r)
+FUNC1(ceil_assign_r)
+FUNC1(trunc_assign_r)
 FUNC1(neg_assign_r)
 FUNC1(abs_assign_r)
 FUNC1(sqrt_assign_r)
@@ -541,7 +570,7 @@ FUNC1(sqrt_assign_r)
 
 #define FUNC1(name) \
 template <typename To, typename From> \
-Result name(To& to, const From& x, int exp, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From>::value, Result>::type name(To& to, const From& x, int exp, Rounding_Dir dir);
 
 FUNC1(mul2exp_assign_r)
 FUNC1(div2exp_assign_r)
@@ -550,7 +579,7 @@ FUNC1(div2exp_assign_r)
 
 #define FUNC2(name) \
 template <typename To, typename From1, typename From2> \
-Result name(To& to, const From1& x, const From2& y, Rounding_Dir dir);
+typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value, Result>::type name(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 FUNC2(add_assign_r)
 FUNC2(sub_assign_r)
@@ -567,32 +596,15 @@ FUNC2(sub_mul_assign_r)
 #define FUNC4(name) \
 template <typename To1, typename From1, typename From2,		\
 	  typename To2, typename To3>				\
-Result name(To1& to, const From1& x, const From2& y,		\
+typename Enable_If<Is_Native_Or_Checked<To1>::value && Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value && Is_Native_Or_Checked<To2>::value && Is_Native_Or_Checked<To3>::value, Result>::type name(To1& to, const From1& x, const From2& y,		\
 	    To2& s, To3& t, Rounding_Dir dir);
 
 FUNC4(gcdext_assign_r)
 
 #undef FUNC4
 
-//! Swaps \p *this with \p y.
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-void swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y);
-
 //! \name Accessor Functions
 //@{
-
-//! Returns a const reference to the underlying native integer value.
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-const T&
-raw_value(const Checked_Number<T, Policy>& x);
-
-//! Returns a reference to the underlying native integer value.
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-T&
-raw_value(Checked_Number<T, Policy>& x);
 
 //@} // Accessor Functions
 
@@ -627,6 +639,42 @@ operator+(const Checked_Number<T, Policy>& x);
 template <typename T, typename Policy>
 Checked_Number<T, Policy>
 operator-(const Checked_Number<T, Policy>& x);
+
+//! Assigns to \p x largest integral value not greater than \p x.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+floor_assign(Checked_Number<T, Policy>& x);
+
+//! Assigns to \p x largest integral value not greater than \p y.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+floor_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
+
+//! Assigns to \p x smallest integral value not less than \p x.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+ceil_assign(Checked_Number<T, Policy>& x);
+
+//! Assigns to \p x smallest integral value not less than \p y.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+ceil_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
+
+//! Round \p x to the nearest integer not larger in absolute value.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+trunc_assign(Checked_Number<T, Policy>& x);
+
+//! Assigns to \p x the value of \p y rounded to the nearest integer not larger in absolute value.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void
+trunc_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y);
 
 //! Assigns to \p x its negation.
 /*! \relates Checked_Number */
@@ -724,51 +772,63 @@ void sqrt_assign(Checked_Number<T, Policy>& x,
 
 //! Equality operator.
 /*! \relates Checked_Number */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-bool
-operator==(const Checked_Number<T1, Policy1>& x,
-	   const Checked_Number<T2, Policy2>& y);
+template <typename T1, typename T2>
+inline typename Enable_If<((Is_Checked<T1>::value
+			    && Is_Native_Or_Checked<T2>::value)
+			   || (Is_Checked<T2>::value
+			       && Is_Native_Or_Checked<T1>::value)),
+                          bool>::type
+operator==(const T1& x, const T2& y);
 
 //! Disequality operator.
 /*! \relates Checked_Number */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-bool
-operator!=(const Checked_Number<T1, Policy1>& x,
-	   const Checked_Number<T2, Policy2>& y);
+template <typename T1, typename T2>
+inline typename Enable_If<((Is_Checked<T1>::value
+			    && Is_Native_Or_Checked<T2>::value)
+			   || (Is_Checked<T2>::value
+			       && Is_Native_Or_Checked<T1>::value)),
+                          bool>::type
+operator!=(const T1& x, const T2& y);
 
 //! Greater than or equal to operator.
 /*! \relates Checked_Number */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-bool
-operator>=(const Checked_Number<T1, Policy1>& x,
-	   const Checked_Number<T2, Policy2>& y);
+template <typename T1, typename T2>
+inline typename Enable_If<((Is_Checked<T1>::value
+			    && Is_Native_Or_Checked<T2>::value)
+			   || (Is_Checked<T2>::value
+			       && Is_Native_Or_Checked<T1>::value)),
+                          bool>::type
+operator>=(const T1& x, const T2& y);
 
 //! Greater than operator.
 /*! \relates Checked_Number */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-bool
-operator>(const Checked_Number<T1, Policy1>& x,
-	  const Checked_Number<T2, Policy2>& y);
+template <typename T1, typename T2>
+inline typename Enable_If<((Is_Checked<T1>::value
+			    && Is_Native_Or_Checked<T2>::value)
+			   || (Is_Checked<T2>::value
+			       && Is_Native_Or_Checked<T1>::value)),
+                          bool>::type
+operator>(const T1& x, const T2& y);
 
 //! Less than or equal to operator.
 /*! \relates Checked_Number */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-bool
-operator<=(const Checked_Number<T1, Policy1>& x,
-	   const Checked_Number<T2, Policy2>& y);
+template <typename T1, typename T2>
+inline typename Enable_If<((Is_Checked<T1>::value
+			    && Is_Native_Or_Checked<T2>::value)
+			   || (Is_Checked<T2>::value
+			       && Is_Native_Or_Checked<T1>::value)),
+                          bool>::type
+operator<=(const T1& x, const T2& y);
 
 //! Less than operator.
 /*! \relates Checked_Number */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-bool
-operator<(const Checked_Number<T1, Policy1>& x,
-	  const Checked_Number<T2, Policy2>& y);
+template <typename T1, typename T2>
+inline typename Enable_If<((Is_Checked<T1>::value
+			    && Is_Native_Or_Checked<T2>::value)
+			   || (Is_Checked<T2>::value
+			       && Is_Native_Or_Checked<T1>::value)),
+                          bool>::type
+operator<(const T1& x, const T2& y);
 
 /*! \brief
   Returns \f$-1\f$, \f$0\f$ or \f$1\f$ depending on whether the value
@@ -776,9 +836,9 @@ operator<(const Checked_Number<T1, Policy1>& x,
 
   \relates Checked_Number
 */
-template <typename T, typename Policy>
-int
-sgn(const Checked_Number<T, Policy>& x);
+template <typename From>
+inline typename Enable_If<Is_Native_Or_Checked<From>::value, int>::type \
+sgn(const From& x);
 
 /*! \brief
   Returns a negative, zero or positive value depending on whether
@@ -786,11 +846,9 @@ sgn(const Checked_Number<T, Policy>& x);
 
   \relates Checked_Number
 */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-int
-cmp(const Checked_Number<T1, Policy1>& x,
-    const Checked_Number<T2, Policy2>& y);
+template <typename From1, typename From2>
+inline typename Enable_If<Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value, int>::type
+cmp(const From1& x, const From2& y);
 
 //@} // Relational Operators and Comparison Functions
 
@@ -798,10 +856,10 @@ cmp(const Checked_Number<T1, Policy1>& x,
 //@{
 
 /*! \relates Checked_Number */
-template <typename T, typename Policy>
-Result
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
 output(std::ostream& os,
-       const Checked_Number<T, Policy>& x,
+       const T& x,
        const Numeric_Format& fmt,
        Rounding_Dir dir);
 
@@ -932,9 +990,9 @@ digits  : DIGIT						;
 							;
 \endcode
 */
-template <typename T, typename Policy>
-Result
-input(std::istream& is, Checked_Number<T, Policy>& x, Rounding_Dir dir);
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
+input(T& x, std::istream& is, Rounding_Dir dir);
 
 //! Input operator.
 /*! \relates Checked_Number */
@@ -957,6 +1015,11 @@ minus_infinity();
 template <typename T>
 T
 not_a_number();
+
+//! Swaps \p x with \p y.
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+void swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y);
 
 } // namespace Parma_Polyhedra_Library
 

@@ -1302,12 +1302,12 @@ BD_Shape<T>::shortest_path_closure_assign() const {
   // negative value on the main diagonal of `dbm'.
   for (dimension_type h = num_dimensions + 1; h-- > 0; ) {
     N& x_dbm_hh = x.dbm[h][h];
-    if (x_dbm_hh < 0) {
+    if (sgn(x_dbm_hh) < 0) {
       x.status.set_empty();
       return;
     }
     else {
-      assert(x_dbm_hh == 0);
+      assert(sgn(x_dbm_hh) == 0);
       // Restore PLUS_INFINITY on the main diagonal.
       x_dbm_hh = PLUS_INFINITY;
     }
@@ -2991,19 +2991,19 @@ BD_Shape<T>::affine_image(const Variable var,
   // In the following, shortest-path closure will be definitely lost.
   status.reset_shortest_path_closed();
 
-  // Before computing quotients, the denominator should be approximated
-  // towards zero. Since `sc_den' is known to be positive, this amounts to
-  // rounding downwards, which is achieved as usual by rounding upwards
-  // `minus_sc_den' and negating again the result.
-  N down_sc_den;
-  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-  neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-
   // Exploit the upper approximation, if possible.
   if (pos_pinf_count <= 1) {
     // Compute quotient (if needed).
-    if (down_sc_den != 1)
+    if (sc_den != 1) {
+      // Before computing quotients, the denominator should be approximated
+      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // rounding downwards, which is achieved as usual by rounding upwards
+      // `minus_sc_den' and negating again the result.
+      N down_sc_den;
+      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(pos_sum, pos_sum, down_sc_den, ROUND_UP);
+    }
     // Add the upper bound constraint, if meaningful.
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
@@ -3022,8 +3022,16 @@ BD_Shape<T>::affine_image(const Variable var,
   // Exploit the lower approximation, if possible.
   if (neg_pinf_count <= 1) {
     // Compute quotient (if needed).
-    if (down_sc_den != 1)
+    if (sc_den != 1) {
+      // Before computing quotients, the denominator should be approximated
+      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // rounding downwards, which is achieved as usual by rounding upwards
+      // `minus_sc_den' and negating again the result.
+      N down_sc_den;
+      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(neg_sum, neg_sum, down_sc_den, ROUND_UP);
+    }
     // Add the lower bound constraint, if meaningful.
     if (neg_pinf_count == 0) {
       // Add the constraint `v >= -neg_sum', i.e., `-v <= neg_sum'.
@@ -3359,19 +3367,19 @@ BD_Shape<T>
   // In the following, shortest-path closure will be definitely lost.
   status.reset_shortest_path_closed();
 
-  // Before computing quotients, the denominator should be approximated
-  // towards zero. Since `sc_den' is known to be positive, this amounts to
-  // rounding downwards, which is achieved as usual by rounding upwards
-  // `minus_sc_den' and negating again the result.
-  N down_sc_den;
-  assign_r(down_sc_den, minus_sc_den, ROUND_UP);
-  neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
-
   // Exploit the upper approximation, if possible.
   if (pos_pinf_count <= 1) {
     // Compute quotient (if needed).
-    if (down_sc_den != 1)
+    if (sc_den != 1) {
+      // Before computing quotients, the denominator should be approximated
+      // towards zero. Since `sc_den' is known to be positive, this amounts to
+      // rounding downwards, which is achieved as usual by rounding upwards
+      // `minus_sc_den' and negating again the result.
+      N down_sc_den;
+      assign_r(down_sc_den, minus_sc_den, ROUND_UP);
+      neg_assign_r(down_sc_den, down_sc_den, ROUND_UP);
       div_assign_r(pos_sum, pos_sum, down_sc_den, ROUND_UP);
+    }
     // Add the upper bound constraint, if meaningful.
     if (pos_pinf_count == 0) {
       // Add the constraint `v <= pos_sum'.
@@ -3492,6 +3500,11 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_image(v, r, e, d)",
   		  "r is a strict relation symbol and "
+  		  "*this is a BD_Shape");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_image(v, r, e, d)",
+  		  "r is the disequality relation symbol and "
   		  "*this is a BD_Shape");
 
   if (relsym == EQUAL) {
@@ -3883,6 +3896,11 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     throw_generic("generalized_affine_image(e1, r, e2)",
 		  "r is a strict relation symbol and "
 		  "*this is a BD_Shape");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_image(e1, r, e2)",
+  		  "r is the disequality relation symbol and "
+  		  "*this is a BD_Shape");
 
   // The image of an empty BDS is empty.
   shortest_path_closure_assign();
@@ -4071,6 +4089,11 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
     throw_generic("generalized_affine_preimage(v, r, e, d)",
   		  "r is a strict relation symbol and "
   		  "*this is a BD_Shape");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_preimage(v, r, e, d)",
+  		  "r is the disequality relation symbol and "
+  		  "*this is a BD_Shape");
 
   if (relsym == EQUAL) {
     // The relation symbol is "==":
@@ -4139,6 +4162,11 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
     throw_generic("generalized_affine_preimage(e1, r, e2)",
 		  "r is a strict relation symbol and "
 		  "*this is a BD_Shape");
+  // The relation symbol cannot be a disequality.
+  if (relsym == NOT_EQUAL)
+    throw_generic("generalized_affine_preimage(e1, r, e2)",
+  		  "r is the disequality relation symbol and "
+  		  "*this is a BD_Shape");
 
   // The preimage of an empty BDS is empty.
   shortest_path_closure_assign();
@@ -4556,7 +4584,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	    }
 	    else {
 	      // We have got a equality constraint with two Variables.
-	      if (c_i_j >= 0) {
+	      if (sgn(c_i_j) >= 0) {
 		s << Variable(j - 1);
 		s << " - ";
 		s << Variable(i - 1);
@@ -4586,7 +4614,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	      }
 	      else {
 		// We have got a constraint with two Variables.
-		if (c_j_i >= 0) {
+		if (sgn(c_j_i) >= 0) {
 		  s << Variable(i - 1);
 		  s << " - ";
 		  s << Variable(j - 1);
@@ -4614,7 +4642,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	      }
 	      else {
 		// We have got a constraint with two Variables.
-		if (c_i_j >= 0) {
+		if (sgn(c_i_j) >= 0) {
 		  s << Variable(j - 1);
 		  s << " - ";
 		  s << Variable(i - 1);

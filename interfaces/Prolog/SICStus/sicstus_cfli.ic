@@ -52,11 +52,11 @@ static int
 Prolog_put_big_ulong(Prolog_term_ref t, unsigned long ul) {
   static unsigned char uc_buffer[sizeof(unsigned long) + 1];
   static unsigned n;
-#if SIZEOF_LONG_LONG > SIZEOF_UNSIGNED_LONG
+#if SIZEOF_LONG_LONG > SIZEOF_LONG
   static long long ll_buffer;
 #endif
 
-#if SIZEOF_LONG_LONG > SIZEOF_UNSIGNED_LONG
+#if SIZEOF_LONG_LONG > SIZEOF_LONG
   ll_buffer = ul;
   if (SP_put_integer_bytes(t, &ll_buffer, sizeof(ll_buffer), 1))
     return 1;

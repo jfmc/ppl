@@ -14,9 +14,7 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-class Boundary;
-class LBoundary;
-class UBoundary;
+template <typename Boundary, typename Info>
 class Interval;
 
 } // namespace Parma_Polyhedra_Library

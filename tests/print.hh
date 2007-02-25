@@ -93,6 +93,17 @@ print_constraints(const Parma_Polyhedra_Library::Polyhedron& ph,
 		  const std::string& intro = "",
 		  std::ostream& s = nout);
 
+template <typename Interval>
+void
+print_constraints(const Parma_Polyhedra_Library::Box<Interval>& box,
+		  const std::string& intro = "",
+		  std::ostream& s = nout) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (!intro.empty())
+    s << intro << std::endl;
+  s << box << std::endl;
+}
+
 template <typename T>
 void
 print_constraints(const Parma_Polyhedra_Library::BD_Shape<T>& bd,

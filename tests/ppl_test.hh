@@ -266,6 +266,49 @@ namespace Parma_Polyhedra_Library {
 //! Utility typedef to allow a macro argument to denote the long double type.
 typedef long double long_double;
 
+#if 1 // TEMPORARY
+
+typedef Rational_Box_Interval_Info_Policy Test_Box_Interval_Info_Policy;
+typedef Rational_Box_Interval_Info Test_Box_Interval_Info;
+
+#else // TEMPORARILY COMMENTED OUT.
+
+struct Test_Box_Interval_Info_Policy {
+  // CHECKME!!!!!
+  const_bool_nodef(may_be_empty, true);
+  const_bool_nodef(may_be_infinity, true);
+  const_bool_nodef(check_empty_result, false);
+  const_bool_nodef(check_inexact, false);
+  const_bool_nodef(infinity_is_open, false);
+  const_bool_nodef(store_special, false);
+  const_bool_nodef(cache_normalized, false);
+  const_bool_nodef(cache_empty, false);
+  const_bool_nodef(cache_singleton, false);
+
+  static const bool store_unbounded = true;
+  static const bool store_open = true;
+  static const bool store_integer = false;
+  static const bool store_empty = true;
+  static const bool store_singleton = true;
+  static const unsigned int next_bit = 0;
+  static const bool handle_infinity = false;
+  //  static const bool check_inexact = false;
+  static const bool check_empty_args = false;
+  static const bool check_integer_args = false;
+};
+
+typedef Interval_Info_Bitset<unsigned int, Test_Box_Interval_Info_Policy>
+Test_Box_Interval_Info;
+
+#endif // TEMPORARY
+
+
+typedef Box<Interval<mpq_class, Test_Box_Interval_Info> > Test_Box;
+
+//! The incarnation of BD_Shape under test.
+//typedef Box<BOX_INSTANCE> TBox;
+typedef Test_Box TBox;
+
 //! The incarnation of BD_Shape under test.
 typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
 
@@ -452,8 +495,16 @@ check_result(const Octagonal_Shape<T>& computed_result,
     : check_result_i(computed_result, known_result, 0, 0, 0);
 }
 
-//! Return true if and only if x equals y.
-bool operator==(const Bounding_Box& x, const Bounding_Box& y);
+// FIXME: stub definition always returning true.
+template <typename T>
+bool
+check_result(const Box<T>& computed_result,
+	     const Rational_Box& known_result,
+	     const char* max_r_d_s = 0,
+	     const char* max_e_d_s = 0,
+	     const char* max_l_d_s = 0) {
+  return true;
+}
 
 } // namespace Parma_Polyhedra_Library
 

@@ -25,6 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.types.hh"
 #include "Coefficient.defs.hh"
+#include "C_Integer.hh"
+#include "meta_programming.hh"
 #include <exception>
 
 namespace Parma_Polyhedra_Library {
@@ -314,6 +316,53 @@ T low_bits_mask(unsigned n);
     std::cerr << "No user level output operator defined "		\
 	      << "for " PPL_XSTR(class_prefix) << "." << std::endl;	\
   }
+
+template <typename T, long long v, typename Enable = void>
+struct Fit : public False {
+};
+
+template <typename T, long long v>
+struct Fit<T, v, typename Enable_If<C_Integer<T>::value>::type>  {
+  enum {
+    value = (v >= static_cast<long long>(C_Integer<T>::min)
+             && v <= static_cast<long long>(C_Integer<T>::max))
+  };
+};
+
+template <typename T, long long v>
+struct TConstant {
+  static const T value = v;
+};
+
+
+template <typename T, long long v>
+const T TConstant<T, v>::value;
+
+template <typename T, long long v, bool prefer_signed = true,
+	  typename Enable = void>
+struct Constant_ : public TConstant<T, v> {
+};
+
+template <typename T, long long v, bool prefer_signed>
+struct Constant_<T, v, prefer_signed,
+		 typename Enable_If<(Fit<typename C_Integer<T>::smaller_signed_type, v>::value
+				     && (prefer_signed ||
+					 !Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value))>::type>
+  : public Constant_<typename C_Integer<T>::smaller_signed_type, v, prefer_signed> {
+};
+
+template <typename T, long long v, bool prefer_signed>
+struct Constant_<T, v, prefer_signed,
+		 typename Enable_If<(Fit<typename C_Integer<T>::smaller_unsigned_type, v>::value
+				     && (!prefer_signed ||
+					 !Fit<typename C_Integer<T>::smaller_signed_type, v>::value))>::type>
+  : public Constant_<typename C_Integer<T>::smaller_unsigned_type, v, prefer_signed> {
+};
+
+template <long long v, bool prefer_signed = true>
+struct Constant : public Constant_<long long, v, prefer_signed> {
+};
+
 
 } // namespace Parma_Polyhedra_Library
 

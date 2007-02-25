@@ -54,7 +54,7 @@ PPL::Init::Init() {
     Variable::set_output_function(Variable::default_output_function);
 #if PPL_CAN_CONTROL_FPU
     old_rounding_direction = fpu_get_rounding_direction();
-    fpu_set_rounding_direction(ROUND_DIRECT);
+    fpu_set_rounding_direction(round_fpu_dir(ROUND_DIRECT));
 #endif
     // FIXME: is 3200 a magic number?
     set_rational_sqrt_precision_parameter(3200);

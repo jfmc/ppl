@@ -212,7 +212,7 @@ bool
 test09() {
   Variable B(1);
 
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(1, true, 2, 3);
   box.lower_upper_bound(1, true, 2, 3);
 
@@ -241,7 +241,7 @@ bool
 test10() {
   Variable B(1);
 
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.lower_upper_bound(0, true, 0, 1);
   box.raise_lower_bound(1, true, 2, 3);
@@ -986,7 +986,7 @@ bool
 test49() {
   Variable A(0);
 
-  Bounding_Box box(1);
+  Rational_Box box(1);
   box.raise_lower_bound(0, true, 2, 3);
   box.lower_upper_bound(0, true, 6, 1);
 
@@ -997,7 +997,7 @@ test49() {
 
   dp.shrink_bounding_box(box);
 
-  Bounding_Box known_box(1);
+  Rational_Box known_box(1);
   known_box.raise_lower_bound(0, true, 2, 1);
   known_box.lower_upper_bound(0, true, 4, 1);
 
@@ -1011,7 +1011,7 @@ bool
 test50() {
   Variable A(0);
 
-  Bounding_Box box(1);
+  Rational_Box box(1);
   box.raise_lower_bound(0, true, 2, 3);
   box.lower_upper_bound(0, true, 6, 1);
 
@@ -1022,7 +1022,7 @@ test50() {
 
   dp.shrink_bounding_box(box);
 
-  Bounding_Box known_box(1);
+  Rational_Box known_box(1);
   known_box.raise_lower_bound(0, true, 3, 1);
   known_box.lower_upper_bound(0, true, 3, 1);
 
@@ -1039,14 +1039,14 @@ bool
 test51() {
   Variable A(0);
 
-  Bounding_Box box(1);
+  Rational_Box box(1);
 
   Product dp(1);
   dp.add_congruence((A %= 0) / 3);
 
   dp.get_covering_box(box);
 
-  Bounding_Box known_box(1);
+  Rational_Box known_box(1);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 3, 1);
 
@@ -1060,7 +1060,7 @@ bool
 test52() {
   Variable B(1);
 
-  Bounding_Box box(1);
+  Rational_Box box(1);
 
   Product dp(2);
   dp.add_constraint(B < 3);
@@ -1068,7 +1068,7 @@ test52() {
 
   dp.get_covering_box(box);
 
-  Bounding_Box known_box(1);
+  Rational_Box known_box(1);
   known_box.raise_lower_bound(1, true, 0 /* FIX */, 1);
   known_box.lower_upper_bound(1, true, 0 /* FIX */, 1);
 
@@ -1083,7 +1083,7 @@ test53() {
   Variable A(0);
   Variable B(1);
 
-  Bounding_Box box(2);
+  Rational_Box box(2);
 
   Product dp(2);
   dp.add_constraint(B <= 0);
@@ -1092,7 +1092,7 @@ test53() {
 
   dp.get_covering_box(box);
 
-  Bounding_Box known_box(2);
+  Rational_Box known_box(2);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 1, 1);
 

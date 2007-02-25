@@ -1,7 +1,7 @@
-/* Specializations of std::numeric_limits for multi-precision types:
-   declarations.  This will become obsolete when GMP and MPFR will
-   provide the specializations by themselves.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Declarations of specializations of std:: objects for
+   multi-precision types.  This will become obsolete when GMP and MPFR
+   will provide the specializations by themselves.
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -22,11 +22,21 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_mp_numeric_limits_hh
-#define PPL_mp_numeric_limits_hh 1
+#ifndef PPL_mp_std_bits_defs_hh
+#define PPL_mp_std_bits_defs_hh 1
 
 #include <gmpxx.h>
 #include <limits>
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps \p x with \p y.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void swap(mpz_class& x, mpz_class& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Swaps \p x with \p y.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void swap(mpq_class& x, mpq_class& y);
 
 namespace std {
 
@@ -154,4 +164,6 @@ public:
 
 } // namespace std
 
-#endif // !defined(PPL_mp_numeric_limits_hh)
+#include "mp_std_bits.inlines.hh"
+
+#endif // !defined(PPL_mp_std_bits_defs_hh)

@@ -102,6 +102,8 @@ endif
 INCLUDE_FILES = \
 namespaces.hh \
 compiler.hh \
+mp_std_bits.defs.hh \
+mp_std_bits.inlines.hh \
 Coefficient_traits_template.hh \
 Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
@@ -109,8 +111,10 @@ Coefficient.types.hh \
 globals.types.hh \
 iterator_to_const.types.hh \
 distances.types.hh \
+Interval_Info.types.hh \
 Interval.types.hh \
-Bounding_Box.types.hh \
+Old_Interval.types.hh \
+Box.types.hh \
 Constraint.types.hh \
 Generator.types.hh \
 Grid_Generator.types.hh \
@@ -149,7 +153,7 @@ Octagonal_Shape.types.hh \
 fpu.types.hh \
 Float.defs.hh \
 Float.inlines.hh \
-Limits.hh \
+C_Integer.hh \
 fpu.defs.hh \
 fpu-c99.inlines.hh \
 fpu-ia32.inlines.hh \
@@ -169,7 +173,6 @@ checked_mpq.inlines.hh \
 checked_ext.inlines.hh \
 Checked_Number.defs.hh \
 Checked_Number.inlines.hh \
-mp_numeric_limits.hh \
 checked_numeric_limits.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \
@@ -180,10 +183,18 @@ iterator_to_const.defs.hh \
 iterator_to_const.inlines.hh \
 distances.defs.hh \
 distances.inlines.hh \
+Boundary.defs.hh \
+Interval_Info.defs.hh \
+Interval_Info.inlines.hh \
+Interval_Restriction.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
-Bounding_Box.defs.hh \
-Bounding_Box.inlines.hh \
+Old_Interval.defs.hh \
+Old_Interval.inlines.hh \
+Box.defs.hh \
+Box.inlines.hh \
+Box.templates.hh \
+Rational_Box.hh \
 Variable.defs.hh \
 Variable.inlines.hh \
 Variables_Set.defs.hh \
@@ -306,7 +317,7 @@ BDS_Status.idefs.hh \
 Og_Status.idefs.hh
 
 libppl_la_SOURCES = \
-Bounding_Box.cc \
+Box.cc \
 checked.cc \
 Checked_Number.cc \
 Float.cc \
@@ -320,7 +331,7 @@ Generator.cc \
 Grid_Generator.cc \
 Init.cc \
 Coefficient.cc \
-Interval.cc \
+Old_Interval.cc \
 Linear_Expression.cc \
 Linear_System.cc \
 Matrix.cc \
@@ -359,7 +370,7 @@ simplify.cc \
 Grid_conversion.cc \
 Grid_simplify.cc \
 globals.cc \
-mp_numeric_limits.cc \
+mp_std_bits.cc \
 version.cc \
 $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \

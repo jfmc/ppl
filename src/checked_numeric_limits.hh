@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Checked_Number.defs.hh"
 #include "checked_int.inlines.hh"
-#include "mp_numeric_limits.hh"
 #include <limits>
 
 namespace std {
@@ -39,8 +38,8 @@ class numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
   typedef Parma_Polyhedra_Library::Checked_Number<T, Policy> Type;	\
 									\
  public:								\
-  static const bool has_infinity = Policy::handle_infinity;		\
-  static const bool has_quiet_NaN =  Policy::handle_nan;		\
+  static const bool has_infinity = Policy::has_infinity;		\
+  static const bool has_quiet_NaN =  Policy::has_nan;		\
 									\
   static Type min() {							\
     return Parma_Polyhedra_Library::Checked::Extended_Int<Policy, T>::min; \
@@ -52,14 +51,14 @@ class numeric_limits<Parma_Polyhedra_Library::Checked_Number<T, Policy> > \
 									\
   static Type infinity() {						\
     return								\
-      Policy::handle_infinity						\
+      Policy::has_infinity						\
       ? Parma_Polyhedra_Library::PLUS_INFINITY				\
       : static_cast<Type>(0);						\
   }									\
 									\
   static Type quiet_NaN() {						\
     return								\
-      Policy::handle_nan						\
+      Policy::has_nan						\
       ? Parma_Polyhedra_Library::NOT_A_NUMBER				\
       : static_cast<Type>(0);						\
   }									\
@@ -109,19 +108,19 @@ private:
   typedef Parma_Polyhedra_Library::Checked_Number<mpz_class, Policy> Type;
 
 public:
-  static const bool has_infinity = Policy::handle_infinity;
-  static const bool has_quiet_NaN =  Policy::handle_nan;
+  static const bool has_infinity = Policy::has_infinity;
+  static const bool has_quiet_NaN =  Policy::has_nan;
 
   static Type infinity() {
     return
-      Policy::handle_infinity
+      Policy::has_infinity
       ? Parma_Polyhedra_Library::PLUS_INFINITY
       : static_cast<Type>(0);
   }
 
   static Type quiet_NaN() {
     return
-      Policy::handle_nan
+      Policy::has_nan
       ? Parma_Polyhedra_Library::NOT_A_NUMBER
       : static_cast<Type>(0);
   }
@@ -138,19 +137,19 @@ private:
   typedef Parma_Polyhedra_Library::Checked_Number<mpq_class, Policy> Type;
 
 public:
-  static const bool has_infinity = Policy::handle_infinity;
-  static const bool has_quiet_NaN =  Policy::handle_nan;
+  static const bool has_infinity = Policy::has_infinity;
+  static const bool has_quiet_NaN =  Policy::has_nan;
 
   static Type infinity() {
     return
-      Policy::handle_infinity
+      Policy::has_infinity
       ? Parma_Polyhedra_Library::PLUS_INFINITY
       : static_cast<Type>(0);
   }
 
   static Type quiet_NaN() {
     return
-      Policy::handle_nan
+      Policy::has_nan
       ? Parma_Polyhedra_Library::NOT_A_NUMBER
       : static_cast<Type>(0);
   }

@@ -189,10 +189,7 @@ struct float_ieee754_quad {
 /*! \ingroup PPL_CXX_interface */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename T>
-class Float {
-public:
-  static const bool fpu_related = false;
-};
+class Float;
 
 #if PPL_SUPPORTED_FLOAT
 template <>
@@ -206,7 +203,6 @@ public:
   Float();
   Float(float v);
   float value();
-  static const bool fpu_related = true;
 };
 #endif
 
@@ -222,7 +218,6 @@ public:
   Float();
   Float(double v);
   double value();
-  static const bool fpu_related = true;
 };
 #endif
 
@@ -238,7 +233,6 @@ public:
   Float();
   Float(long double v);
   long double value();
-  static const bool fpu_related = true;
 };
 #endif
 

@@ -32,13 +32,13 @@ test01() {
   Variable A(0);
   Variable B(1);
 
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.lower_upper_bound(0, true, 3, 1);
   box.raise_lower_bound(1, true, 1, 1);
   box.lower_upper_bound(1, true, 3, 1);
 
-  Bounding_Box known_box(box);
+  Rational_Box known_box(box);
 
   Grid gr(2, EMPTY);
   gr.add_grid_generator(grid_point(B));
@@ -62,13 +62,13 @@ test02() {
   Variable A(0);
   Variable B(1);
 
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 3, 2);
   box.lower_upper_bound(0, true, 4, 2);
   box.raise_lower_bound(1, true, 7, 1);
   box.lower_upper_bound(1, true, 8, 1);
 
-  Bounding_Box known_box(box);
+  Rational_Box known_box(box);
 
   Grid gr(2, EMPTY);
   gr.add_grid_generator(grid_point(  A +   B));
@@ -92,7 +92,7 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 0, 2);
   box.lower_upper_bound(0, true, 1, 2);
   box.raise_lower_bound(1, true, 0, 2);
@@ -103,7 +103,7 @@ test03() {
   gr.add_grid_generator(grid_point(2*A));
   gr.add_grid_generator(grid_point(  A + 2*B, 2));
 
-  Bounding_Box known_box(box);
+  Rational_Box known_box(box);
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
@@ -122,7 +122,7 @@ test04() {
   Variable B(1);
   Variable C(2);
 
-  Bounding_Box box(3);
+  Rational_Box box(3);
 
   Grid gr(3, EMPTY);
   gr.add_grid_generator(grid_point());
@@ -132,7 +132,7 @@ test04() {
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
 
-  Bounding_Box known_box(3);
+  Rational_Box known_box(3);
 
   bool ok = (box == known_box);
 
@@ -145,13 +145,13 @@ test04() {
 // Universe grid.
 bool
 test05() {
-  Bounding_Box box(3);
+  Rational_Box box(3);
   box.raise_lower_bound(0, true, 0, 1);
   box.lower_upper_bound(0, true, 0, 1);
 
   Grid gr(3);
 
-  Bounding_Box known_box(box);
+  Rational_Box known_box(box);
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
@@ -171,7 +171,7 @@ test06() {
   Variable B(1);
   Variable C(2);
 
-  Bounding_Box box1(3);
+  Rational_Box box1(3);
 
   Grid gr(3, EMPTY);
   gr.add_grid_generator(grid_point(16*A + 6*B - 6*C, 7));
@@ -179,7 +179,7 @@ test06() {
   gr.shrink_bounding_box(box1);
   nout << "*** box1 ***" << endl << box1 << endl;
 
-  Bounding_Box known_box(3);
+  Rational_Box known_box(3);
   known_box.raise_lower_bound(0, true, 16, 7);
   known_box.lower_upper_bound(0, true, 16, 7);
   known_box.raise_lower_bound(1, true, 6, 7);
@@ -190,7 +190,7 @@ test06() {
   bool ok = (box1 == known_box);
   if (ok) {
     Grid tem_gr(box1, From_Bounding_Box());
-    Bounding_Box box2(3);
+    Rational_Box box2(3);
 
     tem_gr.shrink_bounding_box(box2);
     nout << "*** box2 ***" << endl << box2 << endl;
@@ -207,20 +207,20 @@ test06() {
 // Empty grid.
 bool
 test07() {
-  Bounding_Box box1(3);
+  Rational_Box box1(3);
 
   Grid gr(3, EMPTY);
 
   gr.shrink_bounding_box(box1);
   nout << "*** box1 ***" << endl << box1 << endl;
 
-  Bounding_Box known_box(3);
+  Rational_Box known_box(3);
   known_box.set_empty();
 
   bool ok = (box1 == known_box);
   if (ok) {
     Grid tem_gr(box1, From_Bounding_Box());
-    Bounding_Box box2(3);
+    Rational_Box box2(3);
 
     tem_gr.shrink_bounding_box(box2);
     nout << "*** box2 ***" << endl << box2 << endl;
@@ -240,7 +240,7 @@ test08() {
   Variable A(0);
   Variable B(1);
 
-  Bounding_Box box(3);
+  Rational_Box box(3);
 
   Grid gr(3, EMPTY);
   gr.add_grid_generator(grid_point());
@@ -251,7 +251,7 @@ test08() {
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
 
-  Bounding_Box known_box(3);
+  Rational_Box known_box(3);
   known_box.lower_upper_bound(2, true, 0, 1);
   known_box.raise_lower_bound(2, true, 0, 1);
 
@@ -270,7 +270,7 @@ test09() {
   Variable B(1);
   Variable C(2);
 
-  Bounding_Box box(3);
+  Rational_Box box(3);
 
   Grid gr(3);
   gr.add_congruence((A + 2*C %= 0) / 2);
@@ -280,7 +280,7 @@ test09() {
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
 
-  Bounding_Box known_box(3);
+  Rational_Box known_box(3);
   known_box.raise_lower_bound(1, true, 3, 2);
   known_box.lower_upper_bound(1, true, 3, 2);
 
@@ -297,7 +297,7 @@ bool
 test10() {
   Variable A(0);
 
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, -3, 7);
   box.lower_upper_bound(0, false, 3, 7);
   box.raise_lower_bound(1, false, 1, 3);
@@ -309,7 +309,7 @@ test10() {
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
 
-  Bounding_Box known_box(2);
+  Rational_Box known_box(2);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.lower_upper_bound(0, true, 0, 1);
   known_box.raise_lower_bound(1, false, 1, 3);
@@ -328,7 +328,7 @@ bool
 test11() {
   Variable A(0);
 
-  Bounding_Box box1(3);
+  Rational_Box box1(3);
 
   Grid gr(3);
   gr.add_congruence((A %= 0) / 2);
@@ -337,13 +337,13 @@ test11() {
   gr.shrink_bounding_box(box1);
   nout << "*** box1 ***" << endl << box1 << endl;
 
-  Bounding_Box known_box(3);
+  Rational_Box known_box(3);
   known_box.set_empty();
 
   bool ok = (box1 == known_box);
   if (ok) {
     Grid tem_gr(box1, From_Bounding_Box());
-    Bounding_Box box2(3);
+    Rational_Box box2(3);
 
     tem_gr.shrink_bounding_box(box2);
     nout << "*** box2 ***" << endl << box2 << endl;
@@ -366,7 +366,7 @@ test12() {
   Variable C(2);
   Variable D(3);
 
-  Bounding_Box box1(4);
+  Rational_Box box1(4);
 
   Grid gr(4, EMPTY);
   gr.add_grid_generator(grid_point());
@@ -379,7 +379,7 @@ test12() {
   gr.shrink_bounding_box(box1);
   nout << "*** box1 ***" << endl << box1 << endl;
 
-  Bounding_Box known_box(4);
+  Rational_Box known_box(4);
   known_box.lower_upper_bound(1, true, 0, 1);
   known_box.raise_lower_bound(1, true, 0, 1);
 
@@ -401,7 +401,7 @@ test13() {
   Variable C(2);
   Variable D(3);
 
-  Bounding_Box box(4);
+  Rational_Box box(4);
 
   Grid gr(4, EMPTY);
   gr.add_grid_generator(grid_point(  A + 2*B + 4*C, 4));
@@ -411,7 +411,7 @@ test13() {
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
 
-  Bounding_Box known_box(4);
+  Rational_Box known_box(4);
   known_box.lower_upper_bound(1, true, 1, 2);
   known_box.raise_lower_bound(1, true, 1, 2);
   known_box.lower_upper_bound(2, true, 1, 1);
@@ -428,14 +428,14 @@ test13() {
 // Zero dimension empty grid.
 bool
 test14() {
-  Bounding_Box box(0);
+  Rational_Box box(0);
 
   Grid gr(0, EMPTY);
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
 
-  Bounding_Box known_box(0);
+  Rational_Box known_box(0);
   known_box.set_empty();
 
   bool ok = (box == known_box);
@@ -449,14 +449,14 @@ test14() {
 // Zero dimension universe grid.
 bool
 test15() {
-  Bounding_Box box(0);
+  Rational_Box box(0);
 
   Grid gr(0);
 
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
 
-  Bounding_Box known_box(0);
+  Rational_Box known_box(0);
 
   bool ok = (box == known_box);
 
@@ -470,7 +470,7 @@ test15() {
 // the open bound makes the box empty.
 bool
 test16() {
-  Bounding_Box box(3);
+  Rational_Box box(3);
   box.raise_lower_bound(0, true, 3, 7);
   box.lower_upper_bound(0, true, 3, 7);
   box.raise_lower_bound(1, false, 1, 2);
@@ -481,7 +481,7 @@ test16() {
   gr.shrink_bounding_box(box);
   nout << "*** box ***" << endl << box << endl;
 
-  Bounding_Box known_box(3);
+  Rational_Box known_box(3);
   known_box.set_empty();
 
   bool ok = (box == known_box);
@@ -495,7 +495,7 @@ test16() {
 // A box having a different number of dimensions to that of the grid.
 bool
 test17() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 3, 7);
   box.lower_upper_bound(0, true, 3, 7);
   box.raise_lower_bound(1, false, 1, 2);

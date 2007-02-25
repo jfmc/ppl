@@ -32,7 +32,7 @@ namespace Parma_Polyhedra_Library {
 
 inline fpu_rounding_direction_type
 fpu_get_rounding_direction() {
-  return fpgetround();
+  return static_cast<fpu_rounding_direction_type>(fpgetround());
 }
 
 inline void
@@ -42,7 +42,7 @@ fpu_set_rounding_direction(fpu_rounding_direction_type dir) {
 
 inline fpu_rounding_control_word_type
 fpu_save_rounding_direction(fpu_rounding_direction_type dir) {
-  return fpsetround((fp_rnd) dir);
+  return static_cast<fpu_rounding_control_word_type>(fpsetround((fp_rnd) dir));
 }
 
 inline void
@@ -50,12 +50,6 @@ fpu_reset_inexact() {
   fp_except except = fpgetmask();
   except &= ~FP_X_IMP;
   fpsetmask(except);
-}
-
-inline fpu_rounding_control_word_type
-fpu_save_rounding_direction_reset_inexact(fpu_rounding_direction_type dir) {
-  fpu_reset_inexact();
-  return fpu_save_rounding_direction((fp_rnd) dir);
 }
 
 inline void

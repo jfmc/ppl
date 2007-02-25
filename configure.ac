@@ -293,6 +293,64 @@ no)
   ;;
 esac
 
+enableval=default
+fpmath_may_use_387=yes
+fpmath_may_use_sse=yes
+AC_MSG_CHECKING([whether to select specific floating point arithmetics])
+AC_ARG_ENABLE(fpmath,
+  AC_HELP_STRING([--enable-fpmath],
+    [select floating point arithmetics]))
+case "${enableval}" in
+sse)
+  AC_MSG_RESULT(sse)
+  OPT_FLAGS="$OPT_FLAGS -msse -mfpmath=sse"
+  # The SSE instruction set only supports single precision arithmetics:
+  # double and extended precision arithmetics is still done using 387.
+  ;;
+sse2)
+  AC_MSG_RESULT(sse2)
+  OPT_FLAGS="$OPT_FLAGS -msse2 -mfpmath=sse"
+  # SSE2 still does not support extended precision arithmetics.
+  ;;
+387)
+  AC_MSG_RESULT(387)
+  OPT_FLAGS="$OPT_FLAGS -mno-sse -mno-sse2 -mfpmath=387"
+  # Note that the -mno-sse* and -mfpmath options are only guaranteed
+  # to work with GCC.
+  if test x"$GCC" = xyes
+  then
+    fpmath_may_use_sse=no
+  fi
+  ;;
+sse+387)
+  AC_MSG_RESULT(sse+387)
+  OPT_FLAGS="$OPT_FLAGS -msse -mfpmath=sse,387"
+  ;;
+sse2+387)
+  AC_MSG_RESULT(sse2+387)
+  OPT_FLAGS="$OPT_FLAGS -msse2 -mfpmath=sse,387"
+  ;;
+default)
+  AC_MSG_RESULT(default)
+  ;;
+no)
+  AC_MSG_RESULT(default)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-fpmath, needs sse, sse2, 387, sse+387, sse2+387, default or no])
+  ;;
+esac
+
+if test x"$fpmath_may_use_387" = xyes
+then
+  AC_DEFINE(PPL_FPMATH_MAY_USE_387, 1, [Defined if floating point arithmetics may use the 387 unit.])
+fi
+
+if test x"$fpmath_may_use_sse" = xyes
+then
+  AC_DEFINE(PPL_FPMATH_MAY_USE_SSE, 1, [Defined if floating point arithmetics may use the SSE instruction set.])
+fi
+
 enableval=no
 AC_MSG_CHECKING([whether to use precompiled headers])
 AC_ARG_ENABLE(pch,
@@ -440,12 +498,11 @@ AC_C_INLINE
 AC_C_BIGENDIAN
 
 # Checks for C type sizes.
+AC_CHECK_SIZEOF(char)
+AC_CHECK_SIZEOF(short)
 AC_CHECK_SIZEOF(int)
 AC_CHECK_SIZEOF(long)
 AC_CHECK_SIZEOF(long long)
-AC_CHECK_SIZEOF(unsigned)
-AC_CHECK_SIZEOF(unsigned long)
-AC_CHECK_SIZEOF(unsigned long long)
 AC_CHECK_SIZEOF(size_t)
 AC_CHECK_SIZEOF(float)
 AC_CHECK_SIZEOF(double)
@@ -929,6 +986,7 @@ AC_CONFIG_FILES(Makefile
                 tests/Makefile
                 tests/Ask_Tell/Makefile
                 tests/BD_Shape/Makefile
+                tests/Box/Makefile
                 tests/Grid/Makefile
                 tests/MIP_Problem/Makefile
                 tests/Octagonal_Shape/Makefile

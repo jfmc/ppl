@@ -134,16 +134,6 @@ int cmp(const GMP_Integer& x, const GMP_Integer& y);
 
 } // namespace Parma_Polyhedra_Library
 
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::GMP_Integer */
-void swap(Parma_Polyhedra_Library::GMP_Integer& x,
-	  Parma_Polyhedra_Library::GMP_Integer& y);
-
-} // namespace std
-
 #include "GMP_Integer.inlines.hh"
 
 #endif // !defined(PPL_GMP_Integer_defs_hh)

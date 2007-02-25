@@ -23,105 +23,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Interval_inlines_hh
 #define PPL_Interval_inlines_hh 1
 
-#include <cassert>
-#include "Checked_Number.defs.hh"
-#include "checked_mpz.inlines.hh"
-
 namespace Parma_Polyhedra_Library {
 
-inline
-Boundary::Boundary(const ERational& v, Flag f)
-  : value(v), flag(f) {
-}
-
-inline bool
-Boundary::is_closed() const {
-  return flag == ZERO;
-}
-
-inline const ERational&
-Boundary::bound() const {
-  return value;
-}
-
-inline ERational&
-Boundary::bound() {
-  return value;
-}
-
-inline
-LBoundary::LBoundary(const ERational& v, Open_Closed f)
-  : Boundary(v, f == CLOSED ? ZERO : POS) {
-}
-
-inline
-UBoundary::UBoundary(const ERational& v, Open_Closed f)
-  : Boundary(v, f == CLOSED ? ZERO : NEG) {
-}
-
-/*! \relates Boundary */
-inline bool
-operator<(const Boundary& x, const Boundary& y) {
-  return x.value < y.value ||
-    (x.value == y.value && x.flag < y.flag);
-}
-
-/*! \relates Boundary */
-inline bool
-operator>(const Boundary& x, const Boundary& y) {
-  return y < x;
-}
-
-inline
-Interval::Interval()
-  : lower(ERational(MINUS_INFINITY), LBoundary::OPEN),
-    upper(ERational(PLUS_INFINITY), UBoundary::OPEN) {
-}
-
-inline bool
-Interval::is_empty() const {
-  return lower > upper;
-}
-
-inline const LBoundary&
-Interval::lower_bound() const {
-  return lower;
-}
-
-inline LBoundary&
-Interval::lower_bound() {
-  return lower;
-}
-
-inline const UBoundary&
-Interval::upper_bound() const {
-  return upper;
-}
-
-inline UBoundary&
-Interval::upper_bound() {
-  return upper;
-}
-
+template <typename Boundary, typename Info>
 inline void
-Interval::raise_lower_bound(LBoundary new_lower) {
-  if (new_lower > lower)
-    lower = new_lower;
-}
-
-inline void
-Interval::lower_upper_bound(UBoundary new_upper) {
-  if (new_upper < upper)
-    upper = new_upper;
-}
-
-inline void
-Interval::set_empty() {
-  lower = LBoundary(ERational(PLUS_INFINITY), LBoundary::OPEN);
-  upper = UBoundary(ERational(MINUS_INFINITY), UBoundary::OPEN);
-  assert(is_empty());
+Interval<Boundary, Info>::swap(Interval<Boundary, Info>& y) {
+  std::swap(lower(), y.lower());
+  std::swap(upper(), y.upper());
+  std::swap(info(), y.info());
 }
 
 } // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::Interval */
+template <typename Boundary, typename Info>
+inline void
+swap(Parma_Polyhedra_Library::Interval<Boundary, Info>& x,
+     Parma_Polyhedra_Library::Interval<Boundary, Info>& y) {
+  x.swap(y);
+}
+
+} // namespace std
 
 #endif // !defined(PPL_Interval_inlines_hh)

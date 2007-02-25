@@ -32,7 +32,7 @@ inline Rounding_Dir
 rounding_dir(Rounding_Dir dir) {
   if (dir == ROUND_NOT_NEEDED) {
 #ifdef DEBUG_ROUND_NOT_NEEDED
-    return ROUND_DIRECT;
+    return ROUND_DIRECT & ROUND_FPU_CHECK_INEXACT;
 #else
     return ROUND_IGNORE;
 #endif
@@ -55,8 +55,9 @@ check_result(Result r, Rounding_Dir dir) {
 }
 
 
+template <typename T>
 inline void
-Checked_Number_Transparent_Policy::handle_result(Result) {
+Checked_Number_Transparent_Policy<T>::handle_result(Result) {
 }
 
 inline void
@@ -87,7 +88,7 @@ template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::Checked_Number(const Checked_Number& y) {
   // TODO: avoid default construction of value member
-  Checked::copy<Policy>(v, y.raw_value());
+  Checked::copy<Policy, Policy>(v, y.raw_value());
 }
 
 template <typename T, typename Policy>
@@ -125,7 +126,7 @@ template <typename T, typename Policy> \
 inline \
 Checked_Number<T, Policy>::Checked_Number(const type x, Rounding_Dir dir) { \
   Policy::handle_result							\
-    (check_result(Checked::assign_ext<Policy, Default_From_Policy>	\
+    (check_result(Checked::assign_ext<Policy, Checked_Number_Transparent_Policy<type> >	\
 		  (v, x, rounding_dir(dir)),				\
 		  dir));						\
 }									\
@@ -134,7 +135,7 @@ inline									\
 Checked_Number<T, Policy>::Checked_Number(const type x) {		\
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;			\
   Policy::handle_result							\
-    (check_result(Checked::assign_ext<Policy, Default_From_Policy>	\
+    (check_result(Checked::assign_ext<Policy, Checked_Number_Transparent_Policy<type> >	\
 		  (v, x, rounding_dir(dir)),				\
 		  dir));						\
 }
@@ -189,7 +190,7 @@ Checked_Number<T, Policy>::Checked_Number(const Not_A_Number& x,
 					  Rounding_Dir dir) {
   // TODO: avoid default construction of value member
   Policy
-    ::handle_result(check_result(Checked::assign<Policy>(v,
+    ::handle_result(check_result(Checked::assign<Policy, void>(v,
 							 x,
 							 rounding_dir(dir)),
 				 dir));
@@ -201,7 +202,7 @@ Checked_Number<T, Policy>::Checked_Number(const Not_A_Number& x) {
   // TODO: avoid default construction of value member
   Rounding_Dir dir = ROUND_IGNORE;
   Policy
-    ::handle_result(check_result(Checked::assign<Policy>(v,
+    ::handle_result(check_result(Checked::assign<Policy, void>(v,
 							 x,
 							 rounding_dir(dir)),
 				 dir));
@@ -213,7 +214,7 @@ Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity& x,
 					  Rounding_Dir dir) {
   // TODO: avoid default construction of value member
   Policy
-    ::handle_result(check_result(Checked::assign<Policy>(v,
+    ::handle_result(check_result(Checked::assign<Policy, void>(v,
 							 x,
 							 rounding_dir(dir)),
 				 dir));
@@ -225,7 +226,7 @@ Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity& x) {
   // TODO: avoid default construction of value member
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR_INF;
   Policy
-    ::handle_result(check_result(Checked::assign<Policy>(v,
+    ::handle_result(check_result(Checked::assign<Policy, void>(v,
 							 x,
 							 rounding_dir(dir)),
 				 dir));
@@ -237,7 +238,7 @@ Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x,
 					  Rounding_Dir dir) {
   // TODO: avoid default construction of value member
   Policy
-    ::handle_result(check_result(Checked::assign<Policy>(v,
+    ::handle_result(check_result(Checked::assign<Policy, void>(v,
 							 x,
 							 rounding_dir(dir)),
 				 dir));
@@ -249,35 +250,41 @@ Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity& x) {
   // TODO: avoid default construction of value member
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR_INF;
   Policy
-    ::handle_result(check_result(Checked::assign<Policy>(v,
+    ::handle_result(check_result(Checked::assign<Policy, void>(v,
 							 x,
 							 rounding_dir(dir)),
 				 dir));
 }
 
 template <typename T>
-inline bool
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_minus_infinity(const T& x) {
   return Checked::is_minf<typename Native_Checked_From_Wrapper<T>
     ::Policy>(Native_Checked_From_Wrapper<T>::raw_value(x));
 }
 
 template <typename T>
-inline bool
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_plus_infinity(const T& x) {
   return Checked::is_pinf<typename Native_Checked_From_Wrapper<T>
     ::Policy>(Native_Checked_From_Wrapper<T>::raw_value(x));
 }
 
 template <typename T>
-inline bool
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, int>::type
+is_infinity(const T& x) {
+  return is_minus_infinity(x) ? -1 : is_plus_infinity(x) ? 1 : 0;
+}
+
+template <typename T>
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_not_a_number(const T& x) {
   return Checked::is_nan<typename Native_Checked_From_Wrapper<T>
     ::Policy>(Native_Checked_From_Wrapper<T>::raw_value(x));
 }
 
 template <typename T>
-inline bool
+inline typename Enable_If<Is_Native_Or_Checked<T>::value, bool>::type
 is_integer(const T& x) {
   return Checked::is_int<typename Native_Checked_From_Wrapper<T>
     ::Policy>(Native_Checked_From_Wrapper<T>::raw_value(x));
@@ -362,10 +369,10 @@ external_memory_in_bytes(const Checked_Number<T, Policy>& x) {
 
 /*! \relates Checked_Number */
 template <typename To>
-inline Result
+inline typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
 assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir) {
   return check_result(Checked::assign<typename Native_Checked_To_Wrapper<To>
-		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
+		      ::Policy, void>(Native_Checked_To_Wrapper<To>::raw_value(to),
 				x,
 				rounding_dir(dir)),
 		      dir);
@@ -373,10 +380,10 @@ assign_r(To& to, const Minus_Infinity& x, Rounding_Dir dir) {
 
 /*! \relates Checked_Number */
 template <typename To>
-inline Result
+inline typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
 assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir) {
   return check_result(Checked::assign<typename Native_Checked_To_Wrapper<To>
-		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
+		      ::Policy, void>(Native_Checked_To_Wrapper<To>::raw_value(to),
 				x,
 				rounding_dir(dir)),
 		      dir);
@@ -384,10 +391,10 @@ assign_r(To& to, const Plus_Infinity& x, Rounding_Dir dir) {
 
 /*! \relates Checked_Number */
 template <typename To>
-inline Result
+inline typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
 assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir) {
   return check_result(Checked::assign<typename Native_Checked_To_Wrapper<To>
-		      ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
+		      ::Policy, void>(Native_Checked_To_Wrapper<To>::raw_value(to),
 				x,
 				rounding_dir(dir)),
 		      dir);
@@ -395,7 +402,7 @@ assign_r(To& to, const Not_A_Number& x, Rounding_Dir dir) {
 
 /*! \relates Checked_Number */
 template <typename To>
-inline Result
+inline typename Enable_If<Is_Native_Or_Checked<To>::value, Result>::type
 assign_r(To& to, const char* x, Rounding_Dir dir) {
   std::istringstream s(x);
   return check_result(Checked::input<typename Native_Checked_To_Wrapper<To>
@@ -407,7 +414,7 @@ assign_r(To& to, const char* x, Rounding_Dir dir) {
 
 #define FUNC1(name, func) \
 template <typename To, typename From>					\
-inline Result								\
+inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From>::value, Result>::type \
 name(To& to, const From& x, Rounding_Dir dir) {				\
   return								\
     check_result(Checked::func<typename Native_Checked_To_Wrapper<To>	\
@@ -420,6 +427,9 @@ name(To& to, const From& x, Rounding_Dir dir) {				\
 
 FUNC1(construct, construct_ext)
 FUNC1(assign_r, assign_ext)
+FUNC1(floor_assign_r, floor_ext)
+FUNC1(ceil_assign_r, ceil_ext)
+FUNC1(trunc_assign_r, trunc_ext)
 FUNC1(neg_assign_r, neg_ext)
 FUNC1(abs_assign_r, abs_ext)
 FUNC1(sqrt_assign_r, sqrt_ext)
@@ -428,7 +438,7 @@ FUNC1(sqrt_assign_r, sqrt_ext)
 
 #define FUNC1(name, func) \
 template <typename To, typename From>					\
-inline Result								\
+inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From>::value, Result>::type \
 name(To& to, const From& x, int exp, Rounding_Dir dir) {		\
   return								\
     check_result(Checked::func<typename Native_Checked_To_Wrapper<To>	\
@@ -448,7 +458,7 @@ FUNC1(div2exp_assign_r, div2exp_ext)
 
 #define FUNC2(name, func) \
 template <typename To, typename From1, typename From2>			\
-inline Result								\
+inline typename Enable_If<Is_Native_Or_Checked<To>::value && Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value, Result>::type \
 name(To& to, const From1& x, const From2& y, Rounding_Dir dir) {	\
   return								\
     check_result(Checked::func<typename Native_Checked_To_Wrapper<To>	\
@@ -481,7 +491,7 @@ template <typename To1,							\
           typename From2,						\
           typename To2,							\
 	  typename To3>							\
-inline Result								\
+inline typename Enable_If<Is_Native_Or_Checked<To1>::value && Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value && Is_Native_Or_Checked<To2>::value && Is_Native_Or_Checked<To3>::value, Result>::type \
 name(To1& to, const From1& x, const From2& y, To2& s, To3& t,		\
      Rounding_Dir dir) {						\
   return								\
@@ -526,17 +536,10 @@ DEF_INCREMENT(operator --, sub_assign_r)
 
 #undef DEF_INCREMENT
 
-/*! \relates Checked_Number */
-template <typename T, typename Policy>
-inline void
-swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y) {
-  std::swap(x.raw_value(), y.raw_value());
-}
-
 template <typename T, typename Policy>
 inline Checked_Number<T, Policy>&
 Checked_Number<T, Policy>::operator=(const Checked_Number<T, Policy>& y) {
-  Checked::copy<Policy>(v, y.raw_value());
+  Checked::copy<Policy, Policy>(v, y.raw_value());
   return *this;
 }
 template <typename T, typename Policy>
@@ -590,17 +593,8 @@ Checked_Number<T, Policy>::f(const T& y) { \
   return *this; \
 } \
 template <typename T, typename Policy> \
-template <typename From, typename From_Policy> \
-inline Checked_Number<T, Policy>& \
-Checked_Number<T, Policy>::f(const Checked_Number<From, From_Policy>& y) { \
-  Checked_Number<T, Policy> cy(y); \
-  Policy::handle_result(fun(*this, *this, cy, \
-			    Policy::ROUND_DEFAULT_OPERATOR)); \
-  return *this; \
-} \
-template <typename T, typename Policy> \
 template <typename From> \
-inline Checked_Number<T, Policy>& \
+inline typename Enable_If<Is_Native_Or_Checked<From>::value, Checked_Number<T, Policy>& >::type \
 Checked_Number<T, Policy>::f(const From& y) { \
   Checked_Number<T, Policy> cy(y); \
   Policy::handle_result(fun(*this, *this, cy, \
@@ -616,22 +610,6 @@ DEF_BINARY_OP_ASSIGN(operator %=, rem_assign_r)
 
 #undef DEF_BINARY_OP_ASSIGN
 
-#define DEF_BINARY_OP_TYPE(f, fun, Type) \
-template <typename T, typename Policy> \
-inline Checked_Number<T, Policy> \
-f(const Type x, const Checked_Number<T, Policy>& y) { \
-  Checked_Number<T, Policy> r(x); \
-  Policy::handle_result(fun(r, r, y, Policy::ROUND_DEFAULT_OPERATOR)); \
-  return r; \
-} \
-template <typename T, typename Policy> \
-inline Checked_Number<T, Policy> \
-f(const Checked_Number<T, Policy>& x, const Type y) { \
-  Checked_Number<T, Policy> r(y); \
-  Policy::handle_result(fun(r, x, r, Policy::ROUND_DEFAULT_OPERATOR)); \
-  return r; \
-}
-
 #define DEF_BINARY_OP(f, fun) \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
@@ -640,21 +618,20 @@ f(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   Policy::handle_result(fun(r, x, y, Policy::ROUND_DEFAULT_OPERATOR)); \
   return r; \
 } \
-DEF_BINARY_OP_TYPE(f, fun, signed char) \
-DEF_BINARY_OP_TYPE(f, fun, signed short) \
-DEF_BINARY_OP_TYPE(f, fun, signed int) \
-DEF_BINARY_OP_TYPE(f, fun, signed long) \
-DEF_BINARY_OP_TYPE(f, fun, signed long long) \
-DEF_BINARY_OP_TYPE(f, fun, unsigned char) \
-DEF_BINARY_OP_TYPE(f, fun, unsigned short) \
-DEF_BINARY_OP_TYPE(f, fun, unsigned int) \
-DEF_BINARY_OP_TYPE(f, fun, unsigned long) \
-DEF_BINARY_OP_TYPE(f, fun, unsigned long long) \
-COND(PPL_SUPPORTED_FLOAT, DEF_BINARY_OP_TYPE(f, fun, float)) \
-COND(PPL_SUPPORTED_DOUBLE, DEF_BINARY_OP_TYPE(f, fun, double)) \
-COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_BINARY_OP_TYPE(f, fun, long double)) \
-DEF_BINARY_OP_TYPE(f, fun, mpz_class&) \
-DEF_BINARY_OP_TYPE(f, fun, mpq_class&)
+template <typename Type, typename T, typename Policy>	\
+inline typename Enable_If<Is_Native<Type>::value, Checked_Number<T, Policy> >::type \
+f(const Type& x, const Checked_Number<T, Policy>& y) { \
+  Checked_Number<T, Policy> r(x); \
+  Policy::handle_result(fun(r, r, y, Policy::ROUND_DEFAULT_OPERATOR)); \
+  return r; \
+} \
+template <typename T, typename Policy, typename Type>	\
+inline typename Enable_If<Is_Native<Type>::value, Checked_Number<T, Policy> >::type \
+f(const Checked_Number<T, Policy>& x, const Type& y) { \
+  Checked_Number<T, Policy> r(y); \
+  Policy::handle_result(fun(r, x, r, Policy::ROUND_DEFAULT_OPERATOR)); \
+  return r; \
+}
 
 DEF_BINARY_OP(operator +, add_assign_r)
 DEF_BINARY_OP(operator -, sub_assign_r)
@@ -662,45 +639,21 @@ DEF_BINARY_OP(operator *, mul_assign_r)
 DEF_BINARY_OP(operator /, div_assign_r)
 DEF_BINARY_OP(operator %, rem_assign_r)
 
-#undef DEF_BINARY_OP_TYPE
 #undef DEF_BINARY_OP
 
-#define DEF_COMPARE_TYPE(f, fun, Type) \
-template <typename From, typename From_Policy> \
-inline bool \
-f(const Type x, const Checked_Number<From, From_Policy>& y) { \
-  return Checked::fun<Default_From_Policy, From_Policy>(x, y.raw_value()); \
-} \
-template <typename From, typename From_Policy> \
-inline bool \
-f(const Checked_Number<From, From_Policy>& x, const Type y) { \
-  return Checked::fun<From_Policy, Default_From_Policy>(x.raw_value(), y); \
+#define DEF_COMPARE(f, fun)						\
+template <typename T1, typename T2>					\
+inline typename Enable_If<((Is_Checked<T1>::value			\
+			    && Is_Native_Or_Checked<T2>::value)		\
+			   || (Is_Checked<T2>::value			\
+			       && Is_Native_Or_Checked<T1>::value)),	\
+                          bool>::type					\
+f(const T1& x, const T2& y) {						\
+  return Checked::fun<typename Native_Checked_From_Wrapper<T1>::Policy,	\
+    		      typename Native_Checked_From_Wrapper<T2>::Policy>	\
+    (Native_Checked_From_Wrapper<T1>::raw_value(x),			\
+     Native_Checked_From_Wrapper<T2>::raw_value(y));			\
 }
-
-#define DEF_COMPARE(f, fun) \
-template <typename T1, typename Policy1, \
-          typename T2, typename Policy2> \
-inline bool \
-f(const Checked_Number<T1, Policy1>& x, \
-  const Checked_Number<T2, Policy2>& y) { \
-  return Checked::fun<Policy1, Policy2>(x.raw_value(), y.raw_value()); \
-} \
-DEF_COMPARE_TYPE(f, fun, signed char) \
-DEF_COMPARE_TYPE(f, fun, signed short) \
-DEF_COMPARE_TYPE(f, fun, signed int) \
-DEF_COMPARE_TYPE(f, fun, signed long) \
-DEF_COMPARE_TYPE(f, fun, signed long long) \
-DEF_COMPARE_TYPE(f, fun, unsigned char) \
-DEF_COMPARE_TYPE(f, fun, unsigned short) \
-DEF_COMPARE_TYPE(f, fun, unsigned int) \
-DEF_COMPARE_TYPE(f, fun, unsigned long) \
-DEF_COMPARE_TYPE(f, fun, unsigned long long) \
-COND(PPL_SUPPORTED_FLOAT, DEF_COMPARE_TYPE(f, fun, float)) \
-COND(PPL_SUPPORTED_DOUBLE, DEF_COMPARE_TYPE(f, fun, double)) \
-COND(PPL_SUPPORTED_LONG_DOUBLE, DEF_COMPARE_TYPE(f, fun, long double)) \
-DEF_COMPARE_TYPE(f, fun, mpz_class&) \
-DEF_COMPARE_TYPE(f, fun, mpq_class&)
-
 
 DEF_COMPARE(operator ==, eq_ext)
 DEF_COMPARE(operator !=, ne_ext)
@@ -709,7 +662,6 @@ DEF_COMPARE(operator >, gt_ext)
 DEF_COMPARE(operator <=, le_ext)
 DEF_COMPARE(operator <, lt_ext)
 
-#undef DEF_COMPARE_TYPE
 #undef DEF_COMPARE
 
 /*! \relates Checked_Number */
@@ -761,6 +713,15 @@ f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y,	\
 
 DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt_assign_r)
 
+DEF_ASSIGN_FUN2_1(floor_assign, floor_assign_r)
+DEF_ASSIGN_FUN2_2(floor_assign, floor_assign_r)
+
+DEF_ASSIGN_FUN2_1(ceil_assign, ceil_assign_r)
+DEF_ASSIGN_FUN2_2(ceil_assign, ceil_assign_r)
+
+DEF_ASSIGN_FUN2_1(trunc_assign, trunc_assign_r)
+DEF_ASSIGN_FUN2_2(trunc_assign, trunc_assign_r)
+
 DEF_ASSIGN_FUN2_1(neg_assign, neg_assign_r)
 DEF_ASSIGN_FUN2_2(neg_assign, neg_assign_r)
 
@@ -793,10 +754,10 @@ exact_div_assign(Checked_Number<T, Policy>& x,
 }
 
 /*! \relates Checked_Number */
-template <typename T, typename Policy>
-inline int
-sgn(const Checked_Number<T, Policy>& x) {
-  Result r = Checked::sgn_ext<Policy>(x.raw_value());
+template <typename From>
+inline typename Enable_If<Is_Native_Or_Checked<From>::value, int>::type
+sgn(const From& x) {
+  Result r = Checked::sgn_ext<typename Native_Checked_From_Wrapper<From>::Policy>(Native_Checked_From_Wrapper<From>::raw_value(x));
   switch (r) {
   case V_LT:
     return -1;
@@ -810,12 +771,10 @@ sgn(const Checked_Number<T, Policy>& x) {
 }
 
 /*! \relates Checked_Number */
-template <typename T1, typename Policy1,
-	  typename T2, typename Policy2>
-inline int
-cmp(const Checked_Number<T1, Policy1>& x,
-    const Checked_Number<T2, Policy2>& y) {
-  Result r = Checked::cmp_ext<Policy1, Policy2>(x.raw_value(), y.raw_value());
+template <typename From1, typename From2>
+inline typename Enable_If<Is_Native_Or_Checked<From1>::value && Is_Native_Or_Checked<From2>::value, int>::type
+cmp(const From1& x, const From2& y) {
+  Result r = Checked::cmp_ext<typename Native_Checked_From_Wrapper<From1>::Policy, typename Native_Checked_From_Wrapper<From2>::Policy>(Native_Checked_From_Wrapper<From1>::raw_value(x), Native_Checked_From_Wrapper<From2>::raw_value(y));
   switch (r) {
   case V_LT:
     return -1;
@@ -829,14 +788,15 @@ cmp(const Checked_Number<T1, Policy1>& x,
 }
 
 /*! \relates Checked_Number */
-template <typename T, typename Policy>
-inline Result
-output(std::ostream& os, const Checked_Number<T, Policy>& x,
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
+output(std::ostream& os, const T& x,
        const Numeric_Format& fmt, Rounding_Dir dir) {
-  return check_result(Checked::output_ext<Policy>(os,
-						  x.raw_value(),
-						  fmt,
-						  rounding_dir(dir)),
+  return check_result(Checked::output_ext<typename Native_Checked_From_Wrapper<T>::Policy>
+		      (os,
+		       Native_Checked_From_Wrapper<T>::raw_value(x),
+		       fmt,
+		       rounding_dir(dir)),
 		      dir);
 }
 
@@ -849,12 +809,13 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
 }
 
 /*! \relates Checked_Number */
-template <typename T, typename Policy>
-inline Result
-input(Checked_Number<T, Policy>& x, std::istream& is, Rounding_Dir dir) {
-  return check_result(Checked::input_ext<Policy>(x.raw_value(),
-						 is,
-						 rounding_dir(dir)),
+template <typename T>
+typename Enable_If<Is_Native_Or_Checked<T>::value, Result>::type
+input(T& x, std::istream& is, Rounding_Dir dir) {
+  return check_result(Checked::input_ext<typename Native_Checked_To_Wrapper<T>::Policy>
+		      (Native_Checked_To_Wrapper<T>::raw_value(x),
+		       is,
+		       rounding_dir(dir)),
 		      dir);
 }
 
@@ -886,6 +847,14 @@ template <typename T>
 inline T
 not_a_number() {
   return NOT_A_NUMBER;
+}
+
+/*! \relates Checked_Number */
+template <typename T, typename Policy>
+inline void
+swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y) {
+  using std::swap;
+  swap(x.raw_value(), y.raw_value());
 }
 
 } // namespace Parma_Polyhedra_Library

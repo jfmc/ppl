@@ -23,8 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Polyhedron_templates_hh
 #define PPL_Polyhedron_templates_hh 1
 
-#include "Interval.defs.hh"
 #include "Generator.defs.hh"
+#include "Old_Interval.defs.hh"
 #include "MIP_Problem.defs.hh"
 #include <algorithm>
 #include <deque>

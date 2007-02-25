@@ -1,7 +1,7 @@
-/* Specializations of std::numeric_limits for multi-precision types:
-   definitions.  This will become obsolete when GMP and MPFR will
-   provide the specializations by themselves.
-   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Definitions of specializations of std::numeric_limits objects for
+   multi-precision types.  This will become obsolete when GMP and MPFR
+   will provide the specializations by themselves.
+   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -23,7 +23,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-#include "mp_numeric_limits.hh"
+#include "mp_std_bits.defs.hh"
 
 const bool std::numeric_limits<mpz_class>::is_specialized;
 const int std::numeric_limits<mpz_class>::digits;

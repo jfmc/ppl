@@ -29,7 +29,7 @@ namespace {
 // Universe box.
 bool
 test01() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
 
   Grid gr(box, From_Bounding_Box());
 
@@ -48,7 +48,7 @@ bool
 test02() {
   Variable B(1);
 
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(1, true, 2, 3);
   box.lower_upper_bound(1, true, 2, 3);
 
@@ -71,7 +71,7 @@ test03() {
   Variable A(0);
   Variable B(1);
 
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, -2, 3);
   box.lower_upper_bound(0, true, -2, 3);
   box.raise_lower_bound(1, true, -10, 1);
@@ -97,7 +97,7 @@ test04() {
   Variable B(1);
   Variable C(2);
 
-  Bounding_Box box(3);
+  Rational_Box box(3);
   box.raise_lower_bound(2, true, 15, 5);
   box.lower_upper_bound(2, true, 15, 5);
 
@@ -119,7 +119,7 @@ test04() {
 // Zero-dimensional box.
 bool
 test05() {
-  Bounding_Box box(0);
+  Rational_Box box(0);
 
   Grid gr(box, From_Bounding_Box());
 
@@ -136,7 +136,7 @@ test05() {
 // Empty box in 2D.
 bool
 test06() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.set_empty();
 
   Grid gr(box, From_Bounding_Box());
@@ -159,7 +159,7 @@ test07() {
   Variable C(2);
   Variable D(3);
 
-  Bounding_Box box(4);
+  Rational_Box box(4);
   box.raise_lower_bound(3, true, 4, 1);
   box.lower_upper_bound(3, true, 4, 1);
 
@@ -179,7 +179,7 @@ test07() {
 // Unit square.
 bool
 test08() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.lower_upper_bound(0, true, 1, 1);
   box.raise_lower_bound(1, true, 0, 1);
@@ -202,7 +202,7 @@ bool
 test09() {
   Variable B(1);
 
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.raise_lower_bound(1, true, 1, 2);
   box.lower_upper_bound(1, true, 1, 2);
@@ -225,7 +225,7 @@ bool
 test10() {
   Variable B(1);
 
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.lower_upper_bound(0, true, 3, 7);
   box.raise_lower_bound(1, true, 1, 2);
   box.lower_upper_bound(1, true, 1, 2);
@@ -247,7 +247,7 @@ test10() {
 // the open bound makes the box empty.
 bool
 test11() {
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 3, 7);
   box.lower_upper_bound(0, true, 3, 7);
   box.raise_lower_bound(1, false, 1, 2);
@@ -268,7 +268,7 @@ test11() {
 // Zero-dimensional empty box.
 bool
 test12() {
-  Bounding_Box box(0);
+  Rational_Box box(0);
   box.set_empty();
 
   Grid gr(box, From_Bounding_Box());
@@ -293,7 +293,7 @@ test13() {
   Variable E(4);
   Variable F(5);
 
-  Bounding_Box box(6);
+  Rational_Box box(6);
   box.raise_lower_bound(0, true, -2, 3);
   box.lower_upper_bound(0, true, -2, 3);
   box.raise_lower_bound(1, true, -11, 4);
@@ -324,7 +324,7 @@ bool
 test14() {
   Variable A(0);
 
-  Bounding_Box box(2);
+  Rational_Box box(2);
   box.raise_lower_bound(0, true, 3, 7);
   box.lower_upper_bound(0, true, 3, 7);
   box.raise_lower_bound(1, false, 1, 2);

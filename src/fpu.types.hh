@@ -18,8 +18,8 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-typedef int fpu_rounding_direction_type;
-typedef int fpu_rounding_control_word_type;
+enum fpu_rounding_direction_type {};
+enum fpu_rounding_control_word_type {};
 
 } // namespace Parma_Polyhedra_Library
 

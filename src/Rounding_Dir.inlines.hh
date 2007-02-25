@@ -23,25 +23,76 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Rounding_Dir_inlines_hh
 #define PPL_Rounding_Dir_inlines_hh 1
 
-#include "Rounding_Dir.defs.hh"
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {
 
+inline Rounding_Dir
+round_dir(Rounding_Dir dir) {
+  return static_cast<Rounding_Dir>(dir & ROUND_DIR_MASK);
+}
+
+inline bool
+round_down(Rounding_Dir dir) {
+  return round_dir(dir) == ROUND_DOWN;
+}
+
+inline bool
+round_up(Rounding_Dir dir) {
+  return round_dir(dir) == ROUND_UP;
+}
+
+inline bool
+round_ignore(Rounding_Dir dir) {
+  return round_dir(dir) == ROUND_IGNORE;
+}
+
+inline bool
+round_direct(Rounding_Dir dir) {
+  return round_dir(dir) == ROUND_DIRECT;
+}
+
+inline bool
+round_inverse(Rounding_Dir dir) {
+  return round_dir(dir) == ROUND_INVERSE;
+}
+
+inline bool
+round_fpu_check_inexact(Rounding_Dir dir) {
+  return dir & ROUND_FPU_CHECK_INEXACT;
+}
+
+inline fpu_rounding_direction_type
+round_fpu_dir(Rounding_Dir dir) {
+  switch (round_dir(dir)) {
+  case ROUND_UP:
+    return static_cast<fpu_rounding_direction_type>(FPU_UPWARD);
+  case ROUND_DOWN:
+    return static_cast<fpu_rounding_direction_type>(FPU_DOWNWARD);
+  default:
+    assert(0);
+    return static_cast<fpu_rounding_direction_type>(FPU_UPWARD);
+  }
+}
+
 /*! \relates Parma_Polyhedra_Library::Rounding_Dir */
 inline Rounding_Dir
 inverse(Rounding_Dir dir) {
-  switch (dir) {
+  Rounding_Dir d = round_dir(dir);
+  switch (d) {
   case ROUND_UP:
-    return ROUND_DOWN;
+    d = ROUND_DOWN;
+    break;
   case ROUND_DOWN:
-    return ROUND_UP;
-  case ROUND_IGNORE:
-    return ROUND_IGNORE;
+    d = ROUND_UP;
+    break;
   default:
     assert(false);
-    return ROUND_IGNORE;
+    /* Fall through */
+  case ROUND_IGNORE:
+    return dir;
   }
+  return static_cast<Rounding_Dir>((dir & ~ROUND_DIR_MASK) | d);
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -95,7 +95,12 @@ TEST_CPPFLAGS=-DOCTAGONAL_SHAPE_INSTANCE=mpq_class
 
 dist_check_SCRIPTS = run_tests
 
-TESTS = $(dist_check_SCRIPTS)
+TESTS = run_tests.stamp
+
+run_tests.stamp: run_tests
+	+$(srcdir)/run_tests
+	echo "true" >run_tests.stamp
+	chmod +x run_tests.stamp
 
 XFAIL_TESTS =
 
