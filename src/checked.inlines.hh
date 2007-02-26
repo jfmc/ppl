@@ -540,21 +540,21 @@ le(const T1& x, const T2& y) {
 template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline bool
-lt(const Type1& x, const Type2& y) {
+lt_p(const Type1& x, const Type2& y) {
   return lt(x, y);
 }
 
 template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline bool
-le(const Type1& x, const Type2& y) {
+le_p(const Type1& x, const Type2& y) {
   return le(x, y);
 }
 
 template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline bool
-eq(const Type1& x, const Type2& y) {
+eq_p(const Type1& x, const Type2& y) {
   return eq(x, y);
 }
 

@@ -701,7 +701,7 @@ lt_ext(const Type1& x, const Type2& y) {
   if (is_minf<Policy1>(x) || is_pinf<Policy2>(y))
     return true;
  native:
-  return lt<Policy1, Policy2>(x, y);
+  return lt_p<Policy1, Policy2>(x, y);
 }
 
 template <typename Policy1, typename Policy2,
@@ -724,7 +724,7 @@ le_ext(const Type1& x, const Type2& y) {
   if (is_pinf<Policy1>(x) || is_minf<Policy2>(y))
     return false;
  native:
-  return le<Policy1, Policy2>(x, y);
+  return le_p<Policy1, Policy2>(x, y);
 }
 
 template <typename Policy1, typename Policy2,
@@ -749,7 +749,7 @@ eq_ext(const Type1& x, const Type2& y) {
   else if (is_minf<Policy2>(y) || is_pinf<Policy2>(y))
     return false;
  native:
-  return eq<Policy1, Policy2>(x, y);
+  return eq_p<Policy1, Policy2>(x, y);
 }
 
 template <typename Policy1, typename Policy2,
