@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedron_templates_hh 1
 
 #include "Generator.defs.hh"
-#include "Old_Interval.defs.hh"
+#include "Rational_Box.hh"
 #include "MIP_Problem.defs.hh"
 #include <algorithm>
 #include <deque>
@@ -168,16 +168,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   if (space_dim == 0)
     return;
 
-  // The following vectors will store the lower and upper bound
-  // for each dimension.
-  // Lower bounds are initialized to open plus infinity.
-  std::vector<LBoundary>
-    lower_bound(space_dim,
-		LBoundary(ERational(PLUS_INFINITY), LBoundary::OPEN));
-  // Upper bounds are initialized to open minus infinity.
-  std::vector<UBoundary>
-    upper_bound(space_dim,
-		UBoundary(ERational(MINUS_INFINITY), UBoundary::OPEN));
+  Rational_Box internal_box(space_dim, UNIVERSE);
 
   if (!reduce_complexity && has_something_pending())
     process_pending();
@@ -235,12 +226,11 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	q.canonicalize();
 	// Turn `n/d' into `-n/d'.
 	q = -q;
-	const ERational r(q, ROUND_NOT_NEEDED);
+	//const ERational r(q, ROUND_NOT_NEEDED);
 	const Constraint::Type c_type = c.type();
 	switch (c_type) {
 	case Constraint::EQUALITY:
-	  lower_bound[varid] = LBoundary(r, LBoundary::CLOSED);
-	  upper_bound[varid] = UBoundary(r, UBoundary::CLOSED);
+	  refine_existential(internal_box[varid], EQUAL, q);
 	  break;
 	case Constraint::NONSTRICT_INEQUALITY:
 	case Constraint::STRICT_INEQUALITY:
