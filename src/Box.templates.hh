@@ -25,10 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
-
-// This is only to access Implementation::BD_Shapes::div_round_up.
-#include "BD_Shape.defs.hh"
-
+#include "Generator_System.defs.hh"
+#include "Generator_System.inlines.hh"
+#include "Variables_Set.defs.hh"
 #include <iostream>
 
 namespace Parma_Polyhedra_Library {
@@ -560,8 +559,6 @@ Box<Interval>::map_space_dimensions(const Partial_Function& pfunc) {
 template <typename Interval>
 void
 Box<Interval>::add_constraint(const Constraint& c) {
-  using Implementation::BD_Shapes::div_round_up;
-
   Box& x = *this;
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.

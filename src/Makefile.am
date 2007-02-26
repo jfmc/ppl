@@ -113,7 +113,6 @@ iterator_to_const.types.hh \
 distances.types.hh \
 Interval_Info.types.hh \
 Interval.types.hh \
-Old_Interval.types.hh \
 Box.types.hh \
 Constraint.types.hh \
 Generator.types.hh \
@@ -189,8 +188,6 @@ Interval_Info.inlines.hh \
 Interval_Restriction.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
-Old_Interval.defs.hh \
-Old_Interval.inlines.hh \
 Box.defs.hh \
 Box.inlines.hh \
 Box.templates.hh \
@@ -331,7 +328,6 @@ Generator.cc \
 Grid_Generator.cc \
 Init.cc \
 Coefficient.cc \
-Old_Interval.cc \
 Linear_Expression.cc \
 Linear_System.cc \
 Matrix.cc \

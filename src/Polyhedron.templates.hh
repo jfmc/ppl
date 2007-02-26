@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedron_templates_hh 1
 
 #include "Generator.defs.hh"
-#include "Old_Interval.defs.hh"
+#include "Rational_Box.hh"
 #include "MIP_Problem.defs.hh"
 #include <algorithm>
 #include <deque>
@@ -168,16 +168,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   if (space_dim == 0)
     return;
 
-  // The following vectors will store the lower and upper bound
-  // for each dimension.
-  // Lower bounds are initialized to open plus infinity.
-  std::vector<LBoundary>
-    lower_bound(space_dim,
-		LBoundary(ERational(PLUS_INFINITY), LBoundary::OPEN));
-  // Upper bounds are initialized to open minus infinity.
-  std::vector<UBoundary>
-    upper_bound(space_dim,
-		UBoundary(ERational(MINUS_INFINITY), UBoundary::OPEN));
+  Rational_Box* internal_box_p = 0;
 
   if (!reduce_complexity && has_something_pending())
     process_pending();
@@ -185,8 +176,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   // TODO: use simplex to derive variable bounds, if the complexity
   // is SIMPLEX_COMPLEXITY.
 
-  if (reduce_complexity &&
-       (!generators_are_up_to_date() || has_pending_constraints())) {
+  if (reduce_complexity
+      && (!generators_are_up_to_date() || has_pending_constraints())) {
     // Extract easy-to-find bounds from constraints.
     assert(constraints_are_up_to_date());
 
@@ -199,165 +190,35 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     if (has_pending_constraints() || !constraints_are_minimized())
       cs.simplify();
 
-    const Constraint_System::const_iterator cs_begin = cs.begin();
-    const Constraint_System::const_iterator cs_end = cs.end();
-
-    for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i) {
-      dimension_type varid = space_dim;
-      const Constraint& c = *i;
-      // After `simplify()' some constraints may have become inconsistent.
-      if (c.is_inconsistent()) {
-	box.set_empty();
-	return;
-      }
-      for (dimension_type j = space_dim; j-- > 0; ) {
-	// We look for constraints of the form `Variable(j) == k',
-	// `Variable(j) >= k', and `Variable(j) > k'.
-	if (c.coefficient(Variable(j)) != 0)
-	  if (varid != space_dim) {
-	    varid = space_dim;
-	    break;
-	  }
-	  else
-	    varid = j;
-      }
-      if (varid != space_dim) {
-	const Coefficient& d = c.coefficient(Variable(varid));
-	const Coefficient& n = c.inhomogeneous_term();
-	// The constraint `c' is of the form
-	// `Variable(varid) + n / d rel 0', where
-	// `rel' is either the relation `==', `>=', or `>'.
-	// For the purpose of shrinking intervals, this is
-	// (morally) turned into `Variable(varid) rel -n/d'.
-	mpq_class q;
-	assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
-	assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-	q.canonicalize();
-	// Turn `n/d' into `-n/d'.
-	q = -q;
-	const ERational r(q, ROUND_NOT_NEEDED);
-	const Constraint::Type c_type = c.type();
-	switch (c_type) {
-	case Constraint::EQUALITY:
-	  lower_bound[varid] = LBoundary(r, LBoundary::CLOSED);
-	  upper_bound[varid] = UBoundary(r, UBoundary::CLOSED);
-	  break;
-	case Constraint::NONSTRICT_INEQUALITY:
-	case Constraint::STRICT_INEQUALITY:
-	  if (d > 0)
-	  // If `d' is strictly positive, we have a constraint of the
-	  // form `Variable(varid) >= k' or `Variable(varid) > k'.
-	    lower_bound[varid]
-	      = LBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY
-			      ? LBoundary::CLOSED
-			      : LBoundary::OPEN));
-	  else {
-	    // Otherwise, we are sure that `d' is strictly negative
-	    // and, in this case, we have a constraint of the form
-	    // `Variable(varid) <= k' or `Variable(varid) < k'.
-	    assert(d < 0);
-	    upper_bound[varid]
-	      = UBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY
-			      ? UBoundary::CLOSED
-			      : UBoundary::OPEN));
-	  }
-	  break;
-	}
-      }
-    }
+    internal_box_p = new Rational_Box(cs);
   }
   else {
     // We are in the case where either the generators are up-to-date
     // or reduced complexity is not required.
-    // Get the generators for *this.
 
     // We have not to copy `gen_sys', because in this case
     // we only read the generators.
     const Generator_System& gs = gen_sys;
 
-    // We first need to identify those axes that are unbounded below
-    // and/or above.
-    for (Generator_System::const_iterator i = gs.begin(),
-	   gs_end = gs.end(); i != gs_end; ++i) {
-      // Note: using an iterator, we read also the pending part of the matrix.
-      const Generator& g = *i;
-      Generator::Type g_type = g.type();
-      switch (g_type) {
-      case Generator::LINE:
-	// Any axes `j' in which the coefficient is non-zero is unbounded
-	// both below and above.
-	for (dimension_type j = space_dim; j-- > 0; )
-	  if (g.coefficient(Variable(j)) != 0) {
-	    lower_bound[j] = LBoundary(ERational(MINUS_INFINITY),
-				       LBoundary::OPEN);
-	    upper_bound[j] = UBoundary(ERational(PLUS_INFINITY),
-				       UBoundary::OPEN);
-	  }
-	break;
-      case Generator::RAY:
-	// Axes in which the coefficient is negative are unbounded below.
-	// Axes in which the coefficient is positive are unbounded above.
-	for (dimension_type j = space_dim; j-- > 0; ) {
-	  int sign = sgn(g.coefficient(Variable(j)));
-	  if (sign < 0)
-	    lower_bound[j] = LBoundary(ERational(MINUS_INFINITY),
-				       LBoundary::OPEN);
-	  else if (sign > 0)
-	    upper_bound[j] = UBoundary(ERational(PLUS_INFINITY),
-				       UBoundary::OPEN);
-	}
-	break;
-      case Generator::POINT:
-      case Generator::CLOSURE_POINT:
-	{
-	  const Coefficient& d = g.divisor();
-	  for (dimension_type j = space_dim; j-- > 0; ) {
-	    const Coefficient& n = g.coefficient(Variable(j));
-	    mpq_class q;
-	    assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
-	    assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-	    q.canonicalize();
-	    const ERational r(q, ROUND_NOT_NEEDED);
-	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
-			    ? LBoundary::OPEN
-			    : LBoundary::CLOSED));
-	    if (lb < lower_bound[j])
-	      lower_bound[j] = lb;
-	    UBoundary ub(r, (g_type == Generator::CLOSURE_POINT
-			     ? UBoundary::OPEN
-			     : UBoundary::CLOSED));
-	    if (ub > upper_bound[j])
-	      upper_bound[j] = ub;
-	  }
-	}
-	break;
-      }
-    }
+    internal_box_p = new Rational_Box(gs);
   }
+
+  assert(internal_box_p != 0);
+  Rational_Box& internal_box = *internal_box_p;
 
   TEMP_INTEGER(n);
   TEMP_INTEGER(d);
 
   // Now shrink the bounded axes.
   for (dimension_type j = space_dim; j-- > 0; ) {
-    // Lower bound.
-    const LBoundary& lb = lower_bound[j];
-    const ERational& lr = lb.bound();
-    if (!is_plus_infinity(lr) && !is_minus_infinity(lr)) {
-      n = raw_value(lr).get_num();
-      d = raw_value(lr).get_den();
-      box.raise_lower_bound(j, lb.is_closed(), n, d);
-    }
-
-    // Upper bound.
-    const UBoundary& ub = upper_bound[j];
-    const ERational& ur = ub.bound();
-    if (!is_plus_infinity(ur) && !is_minus_infinity(ur)) {
-      n = raw_value(ur).get_num();
-      d = raw_value(ur).get_den();
-      box.lower_upper_bound(j, ub.is_closed(), n, d);
-    }
+    bool closed;
+    if (internal_box.get_lower_bound(j, closed, n, d))
+      box.raise_lower_bound(j, closed, n, d);
+    if (internal_box.get_upper_bound(j, closed, n, d))
+      box.lower_upper_bound(j, closed, n, d);
   }
+
+  delete internal_box_p;
 }
 
 template <typename Partial_Function>

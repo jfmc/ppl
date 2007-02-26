@@ -36,20 +36,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <algorithm>
 
-// FIXME: this is only to get access to
-// Implementation::BD_Shapes::div_round_up(),
-// Implementation::BD_Shapes::numer_denom(),
-// Implementation::BD_Shapes::is_additive_inverse().
-// Implementation::BD_Shapes::min_assign().
-#include "BD_Shape.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
 Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
                                     const Complexity_Class complexity)
   : matrix(0), space_dim(0), status() {
-  using Implementation::BD_Shapes::div_round_up;
   const dimension_type num_dimensions = ph.space_dimension();
 
   if (ph.marked_empty()) {
@@ -213,9 +205,6 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
   : matrix(gs.space_dimension()),
     space_dim(gs.space_dimension()),
     status() {
-  using Implementation::BD_Shapes::max_assign;
-  using Implementation::BD_Shapes::div_round_up;
-
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
   if (gs_begin == gs_end) {
@@ -389,8 +378,6 @@ Octagonal_Shape<T>::Octagonal_Shape(const Generator_System& gs)
 template <typename T>
 void
 Octagonal_Shape<T>::add_constraint(const Constraint& c) {
-  using Implementation::BD_Shapes::div_round_up;
-
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
   if (c_space_dim > space_dim)
@@ -875,9 +862,6 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
 			    const bool maximize,
 			    Coefficient& ext_n, Coefficient& ext_d,
 			    bool& included) const {
-
-  using Implementation::BD_Shapes::div_round_up;
-  using Implementation::BD_Shapes::numer_denom;
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
   const dimension_type expr_space_dim = expr.space_dimension();
@@ -981,7 +965,6 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
 			    const bool maximize,
 			    Coefficient& ext_n, Coefficient& ext_d,
 			    bool& included, Generator& g) const {
-  using Implementation::BD_Shapes::numer_denom;
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
   const dimension_type expr_space_dim = expr.space_dimension();
@@ -1024,8 +1007,6 @@ Octagonal_Shape<T>::max_min(const Linear_Expression& expr,
 template <typename T>
 Poly_Con_Relation
 Octagonal_Shape<T>::relation_with(const Constraint& c) const {
-  using Implementation::BD_Shapes::div_round_up;
-
   dimension_type c_space_dim = c.space_dimension();
 
   // Dimension-compatibility check.
@@ -1172,9 +1153,6 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
 template <typename T>
 Poly_Gen_Relation
 Octagonal_Shape<T>::relation_with(const Generator& g) const {
-  using Implementation::BD_Shapes::numer_denom;
-  using Implementation::BD_Shapes::is_additive_inverse;
-
   const dimension_type g_space_dim = g.space_dimension();
 
   // Dimension-compatibility check.
@@ -1446,8 +1424,6 @@ Octagonal_Shape<T>::relation_with(const Generator& g) const {
 template <typename T>
 void
 Octagonal_Shape<T>::strong_closure_assign() const {
-  using Implementation::BD_Shapes::min_assign;
-
   // Do something only if necessary (zero-dim implies strong closure).
   if (marked_empty() || marked_strongly_closed() || space_dim == 0)
     return;
@@ -1593,7 +1569,6 @@ Octagonal_Shape<T>::strong_coherence_assign() {
   // where ci = i + 1, if i is even number or
   //       ci = i - 1, if i is odd.
   // Ditto for cj.
-  using Implementation::BD_Shapes::min_assign;
   N semi_sum;
   for (typename OR_Matrix<N>::row_iterator i_iter = matrix.row_begin(),
 	 i_end = matrix.row_end(); i_iter != i_end; ++i_iter) {
@@ -1617,8 +1592,6 @@ Octagonal_Shape<T>::strong_coherence_assign() {
 template <typename T>
 bool
 Octagonal_Shape<T>::tight_coherence_would_make_empty() const {
-  using Implementation::BD_Shapes::is_additive_inverse;
-  using Implementation::BD_Shapes::is_even;
   assert(std::numeric_limits<N>::is_integer);
   assert(marked_strongly_closed());
   const dimension_type space_dim = space_dimension();
@@ -1639,8 +1612,6 @@ template <typename T>
 void
 Octagonal_Shape<T>
 ::incremental_strong_closure_assign(const Variable var) const {
-  using Implementation::BD_Shapes::min_assign;
-
   // `var' should be one of the dimensions of the octagon.
   if (var.id() >= space_dim)
     throw_dimension_incompatible("incremental_strong_closure_assign(v)",
@@ -1805,7 +1776,6 @@ Octagonal_Shape<T>
     for (dimension_type j = 0; j < i; ++j) {
     //for (dimension_type j = i; j-- > 0; ) {
       dimension_type cj = coherent_index(j);
-      using Implementation::BD_Shapes::is_additive_inverse;
       if (is_additive_inverse(m_ci[cj], m_i[j]))
         // Choose as successor the variable having the greatest index.
         successor[j] = i;
@@ -1837,7 +1807,6 @@ Octagonal_Shape<T>
       (i%2) ? *(i_iter-1) : *(i_iter+1);
     for (dimension_type j = 0; j < i; ++j) {
       dimension_type cj = coherent_index(j);
-      using Implementation::BD_Shapes::is_additive_inverse;
       if (is_additive_inverse(m_ci[cj], m_i[j]))
         // Choose as leader the variable having the smaller index.
 	leaders[i] = leaders[j];
@@ -2045,7 +2014,6 @@ Octagonal_Shape<T>::oct_hull_assign(const Octagonal_Shape& y) {
   }
 
   // The oct-hull is obtained by computing maxima.
-  using Implementation::BD_Shapes::max_assign;
   typename OR_Matrix<N>::const_element_iterator j = y.matrix.element_begin();
   for (typename OR_Matrix<N>::element_iterator i = matrix.element_begin(),
 	 matrix_element_end = matrix.element_end();
@@ -2458,8 +2426,6 @@ void
 Octagonal_Shape<T>
 ::get_limiting_octagon(const Constraint_System& cs,
 		       Octagonal_Shape& limiting_octagon) const {
-  using Implementation::BD_Shapes::div_round_up;
-
   const dimension_type cs_space_dim = cs.space_dimension();
   // Private method: the caller has to ensure the following.
   assert(cs_space_dim <= space_dim);
@@ -3028,8 +2994,6 @@ Octagonal_Shape<T>::refine(const Variable var,
 		    const Relation_Symbol relsym,
 		    const Linear_Expression& expr,
 		    Coefficient_traits::const_reference denominator) {
-  using Implementation::BD_Shapes::div_round_up;
-
   assert(denominator != 0);
   const dimension_type expr_space_dim = expr.space_dimension();
   assert(space_dim >= expr_space_dim);
@@ -3583,8 +3547,6 @@ Octagonal_Shape<T>::affine_image(const Variable var,
 				 const Linear_Expression& expr,
 				 Coefficient_traits::const_reference
 				 denominator) {
-  using Implementation::BD_Shapes::div_round_up;
-
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("affine_image(v, e, d)", "d == 0");
@@ -4099,8 +4061,6 @@ Octagonal_Shape<T>
 			   const Relation_Symbol relsym,
 			   const Linear_Expression&  expr ,
 			   Coefficient_traits::const_reference denominator) {
-  using Implementation::BD_Shapes::div_round_up;
-
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("generalized_affine_image(v, r, e, d)", "d == 0");
@@ -4784,7 +4744,6 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
 					 const Linear_Expression& ub_expr,
 					 Coefficient_traits::const_reference
 					 denominator) {
-  using Implementation::BD_Shapes::div_round_up;
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("bounded_affine_image(v, lb, ub, d)", "d == 0");
@@ -5075,8 +5034,6 @@ Octagonal_Shape<T>
 			      const Linear_Expression& expr,
 			      Coefficient_traits::const_reference
 			      denominator) {
-  using Implementation::BD_Shapes::div_round_up;
-
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("generalized_affine_preimage(v, r, e, d)", "d == 0");
@@ -5318,7 +5275,6 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
 					    const Linear_Expression& ub_expr,
 					    Coefficient_traits::const_reference
 					    denominator) {
-  using Implementation::BD_Shapes::div_round_up;
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
@@ -5418,9 +5374,6 @@ Octagonal_Shape<T>::shrink_bounding_box(Box& box, Complexity_Class ) const {
 template <typename T>
 Constraint_System
 Octagonal_Shape<T>::constraints() const {
-  using Implementation::BD_Shapes::numer_denom;
-  using Implementation::BD_Shapes::is_additive_inverse;
-
   Constraint_System cs;
   if (space_dim == 0) {
     if (marked_empty())
@@ -5595,8 +5548,6 @@ template <typename T>
 void
 Octagonal_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
 					  Variable var) {
-  using Implementation::BD_Shapes::max_assign;
-
   // `var' should be one of the dimensions of the octagon.
   if (var.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)", "v", var);
@@ -5696,7 +5647,6 @@ IO_Operators::operator<<(std::ostream& s, const Octagonal_Shape<T>& x) {
     return s;
   }
 
-  using Implementation::BD_Shapes::is_additive_inverse;
   typedef typename Octagonal_Shape<T>::coefficient_type N;
   typedef typename OR_Matrix<N>::const_row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::const_row_reference_type Row_Reference;
