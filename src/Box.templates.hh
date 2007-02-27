@@ -503,10 +503,10 @@ Box<Interval>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // by shifting left those intervals that will not be removed.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst = *tbr + 1;
+  dimension_type dst = *tbr;
   dimension_type src = dst + 1;
   for (++tbr; tbr != tbr_end; ++tbr) {
-    dimension_type tbr_next = *tbr + 1;
+    const dimension_type tbr_next = *tbr;
     // All intervals in between are moved to the left.
     while (src < tbr_next)
       x.seq[dst++].swap(x.seq[src++]);
@@ -577,6 +577,41 @@ Box<Interval>::map_space_dimensions(const Partial_Function& pfunc) {
   }
   x.swap(new_x);
   assert(x.OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::fold_space_dimensions(const Variables_Set& to_be_folded,
+				     const Variable var) {
+  const dimension_type space_dim = space_dimension();
+  // `var' should be one of the dimensions of the Box.
+  if (var.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(tbf, v)", "v", var);
+
+  // The folding of no dimensions is a no-op.
+  if (to_be_folded.empty())
+    return;
+
+  // All variables in `to_be_folded' should be dimensions of the Box.
+  if (to_be_folded.space_dimension() > space_dim)
+    throw_dimension_incompatible("fold_space_dimensions(tbf, ...)",
+				 to_be_folded.space_dimension());
+
+  // Moreover, `var.id()' should not occur in `to_be_folded'.
+  if (to_be_folded.find(var.id()) != to_be_folded.end())
+    throw_generic("fold_space_dimensions(tbf, v)",
+		  "v should not occur in tbf");
+
+  // Note: the check for emptiness is needed for correctness.
+  if (!is_empty()) {
+    // Join the interval corresponding to variable `var' with the intervals
+    // corresponding to the variables in `to_be_folded'.
+    Interval& seq_v = seq[var.id()];
+    for (Variables_Set::const_iterator i = to_be_folded.begin(),
+	   tbf_end = to_be_folded.end(); i != tbf_end; ++i)
+      join_assign(seq_v, seq[*i]);
+  }
+  remove_space_dimensions(to_be_folded);
 }
 
 template <typename Interval>
@@ -764,6 +799,9 @@ template <typename Iterator>
 void
 Box<Interval>::CC76_widening_assign(const Box& y,
 				    Iterator first, Iterator last) {
+  if (y.is_empty())
+    return;
+
   Box& x = *this;
   for (dimension_type i = x.seq.size(); i-- > 0; ) {
     Interval& x_seq_i = x.seq[i];
