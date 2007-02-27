@@ -95,6 +95,14 @@ Box<Interval>::space_dimension() const {
 }
 
 template <typename Interval>
+inline dimension_type
+Box<Interval>::max_space_dimension() {
+  // One dimension is reserved to have a value of type dimension_type
+  // that does not represent a legal dimension.
+  return Sequence().max_size() - 1;
+}
+
+template <typename Interval>
 inline const Interval&
 Box<Interval>::operator[](const dimension_type k) const {
   const Box& x = *this;
@@ -153,6 +161,29 @@ Box<Interval>::add_space_dimensions_and_embed(const dimension_type m) {
   for (dimension_type sz = x.seq.size(), i = sz - m; i < sz; ++i)
     x.seq[i].set_universe();
   // END OF FIXME.
+  assert(x.OK());
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::expand_space_dimension(const Variable var,
+				      const dimension_type m) {
+  Box& x = *this;
+  const dimension_type space_dim = x.space_dimension();
+  // `var' should be one of the dimensions of the vector space.
+  if (var.space_dimension() > space_dim)
+    throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
+
+  // The space dimension of the resulting Box should not
+  // overflow the maximum allowed space dimension.
+  if (m > max_space_dimension() - space_dim)
+    throw_generic("expand_dimension(v, m)",
+		  "adding m new space dimensions exceeds "
+		  "the maximum allowed space dimension");
+
+  // To expand the space dimension corresponding to variable `var',
+  // we append to the box `m' copies of the corresponding interval.
+  x.seq.insert(x.seq.end(), m, x.seq[var.id()]);
   assert(x.OK());
 }
 
