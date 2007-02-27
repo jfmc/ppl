@@ -190,11 +190,35 @@ Box<Interval>::contains(const Box<Interval>& y) const {
   if (y.is_empty())
     return true;
 
+  // If `x' is empty, then `x' cannot contain `y'.
+  if (x.is_empty())
+    return false;
+
   for (dimension_type k = x.seq.size(); k-- > 0; )
     // FIXME: fix this name qualification issue.
     if (!Parma_Polyhedra_Library::contains(x.seq[k], y.seq[k]))
       return false;
   return true;
+}
+
+template <typename Interval>
+bool
+Box<Interval>::is_disjoint_from(const Box<Interval>& y) const {
+  const Box& x = *this;
+  // Dimension-compatibility check.
+  if (x.space_dimension() != y.space_dimension())
+    x.throw_dimension_incompatible("is_disjoint_from(y)", y);
+
+  // If any of `x' or `y' is marked empty, then they are disjoint.
+  // Note: no need to use `is_empty', as the following loop is anyway correct.
+  if (x.marked_empty() || y.marked_empty())
+    return true;
+
+  for (dimension_type k = x.seq.size(); k-- > 0; )
+    // FIXME: fix this name qualification issue.
+    if (Parma_Polyhedra_Library::is_disjoint_from(x.seq[k], y.seq[k]))
+      return true;
+  return false;
 }
 
 template <typename Interval>
@@ -392,14 +416,12 @@ Box<Interval>::box_difference_assign(const Box& y) {
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("box_difference_assign(y)", y);
 
-  Box new_box(space_dim, EMPTY);
-
   Box& x = *this;
   if (x.is_empty() || y.is_empty())
     return;
 
   // If `x' is zero-dimensional, then at this point both `x' and `y'
-  // are th euniverse box, so that their difference is empty.
+  // are the universe box, so that their difference is empty.
   if (space_dim == 0) {
     x.set_empty();
     return;
