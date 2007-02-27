@@ -158,6 +158,11 @@ const_iterator(const Linear_System::const_iterator& iter,
   : i(iter), csp(&csys) {
 }
 
+inline bool
+Constraint_System::empty() const {
+  return Linear_System::empty();
+}
+
 inline Constraint_System::const_iterator
 Constraint_System::begin() const {
   const_iterator i(Linear_System::begin(), *this);

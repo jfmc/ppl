@@ -36,6 +36,10 @@ o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
    since it can be applied to non-polyhedral abstractions, such as
    the one offered by the Grid class.
 
+o  The new methods `bool Constraint_System::empty()' const and
+   `bool Generator_System::empty() const' return true if and only if
+   the constraint (resp., generator) system has no constraints
+   (resp., generators).
 
 Bugfixes
 ========
