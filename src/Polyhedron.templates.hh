@@ -122,89 +122,7 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
 template <typename Box>
 void
 Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
-  bool reduce_complexity = (complexity != ANY_COMPLEXITY);
-  if (!reduce_complexity
-      || (!has_something_pending() && constraints_are_minimized())) {
-    // If the constraint system is minimized, the test `is_universe()'
-    // is not exponential.
-    if (is_universe())
-      return;
-  }
-  if (reduce_complexity) {
-    if (marked_empty()
-	|| (generators_are_up_to_date() && gen_sys.num_rows() == 0)) {
-      box.set_empty();
-      return;
-    }
-    else if (constraints_are_up_to_date()) {
-      // See if there is at least one inconsistent constraint in `con_sys'.
-      for (Constraint_System::const_iterator i = con_sys.begin(),
-	     cs_end = con_sys.end(); i != cs_end; ++i)
-	if (i->is_inconsistent()) {
-	  box.set_empty();
-	  return;
-	}
-      // If `complexity' allows it, use the MIP_Problem solver to determine
-      // whether or not the polyhedron is empty.
-      if (complexity == SIMPLEX_COMPLEXITY
-	  // TODO: find a workaround for NNC polyhedra.
-	  && is_necessarily_closed()) {
-	MIP_Problem lp(con_sys.space_dimension(), con_sys);
-	if (!lp.is_satisfiable()) {
-	  box.set_empty();
-	  return;
-	}
-      }
-    }
-  }
-  else
-    // The flag `reduce_complexity' is `false'.
-    // Note that the test `is_empty()' is exponential in the worst case.
-    if (is_empty()) {
-      box.set_empty();
-      return;
-    }
-
-  if (space_dim == 0)
-    return;
-
-  Rational_Box* internal_box_p = 0;
-
-  if (!reduce_complexity && has_something_pending())
-    process_pending();
-
-  // TODO: use simplex to derive variable bounds, if the complexity
-  // is SIMPLEX_COMPLEXITY.
-
-  if (reduce_complexity
-      && (!generators_are_up_to_date() || has_pending_constraints())) {
-    // Extract easy-to-find bounds from constraints.
-    assert(constraints_are_up_to_date());
-
-    // We must copy `con_sys' to a temporary matrix,
-    // as we need to simplify all of the matrix
-    // (not just the non-pending part of it).
-    Constraint_System cs(con_sys);
-    if (cs.num_pending_rows() > 0)
-      cs.unset_pending_rows();
-    if (has_pending_constraints() || !constraints_are_minimized())
-      cs.simplify();
-
-    internal_box_p = new Rational_Box(cs);
-  }
-  else {
-    // We are in the case where either the generators are up-to-date
-    // or reduced complexity is not required.
-
-    // We have not to copy `gen_sys', because in this case
-    // we only read the generators.
-    const Generator_System& gs = gen_sys;
-
-    internal_box_p = new Rational_Box(gs);
-  }
-
-  assert(internal_box_p != 0);
-  Rational_Box& internal_box = *internal_box_p;
+  Rational_Box internal_box(*this, complexity);
 
   TEMP_INTEGER(n);
   TEMP_INTEGER(d);
@@ -217,8 +135,6 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     if (internal_box.get_upper_bound(j, closed, n, d))
       box.lower_upper_bound(j, closed, n, d);
   }
-
-  delete internal_box_p;
 }
 
 template <typename Partial_Function>

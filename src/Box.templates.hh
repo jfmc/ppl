@@ -23,11 +23,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Box_templates_hh
 #define PPL_Box_templates_hh 1
 
+#include "Variables_Set.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
 #include "Generator_System.defs.hh"
 #include "Generator_System.inlines.hh"
-#include "Variables_Set.defs.hh"
+#include "Polyhedron.defs.hh"
+#include "MIP_Problem.defs.hh"
 #include <iostream>
 
 namespace Parma_Polyhedra_Library {
@@ -156,6 +158,82 @@ Box<Interval>::Box(const Generator_System& gs)
     }
   }
   assert(OK());
+}
+
+template <typename Interval>
+Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
+  : seq(ph.space_dimension()), empty(false), empty_up_to_date(true) {
+  dimension_type space_dim = ph.space_dimension();
+  bool reduce_complexity = (complexity != ANY_COMPLEXITY);
+  if (!reduce_complexity
+      || (!ph.has_something_pending() && ph.constraints_are_minimized())) {
+    // If the constraint system is minimized, the test `is_universe()'
+    // is not exponential.
+    if (ph.is_universe()) {
+      for (dimension_type i = space_dim; i-- > 0; )
+	seq[i].set_universe();
+      return;
+    }
+  }
+  if (reduce_complexity) {
+    if (ph.marked_empty()
+	|| (ph.generators_are_up_to_date() && ph.gen_sys.empty())) {
+      set_empty();
+      return;
+    }
+    else if (ph.constraints_are_up_to_date()) {
+      // See if there is at least one inconsistent constraint in `con_sys'.
+      for (Constraint_System::const_iterator i = ph.con_sys.begin(),
+	     cs_end = ph.con_sys.end(); i != cs_end; ++i)
+	if (i->is_inconsistent()) {
+	  set_empty();
+	  return;
+	}
+      // If `complexity' allows it, use the MIP_Problem solver to determine
+      // whether or not the polyhedron is empty.
+      if (complexity == SIMPLEX_COMPLEXITY
+	  // TODO: find a workaround for NNC polyhedra.
+	  && ph.is_necessarily_closed()) {
+	MIP_Problem lp(space_dim, ph.con_sys);
+	if (!lp.is_satisfiable()) {
+	  set_empty();
+	  return;
+	}
+      }
+    }
+  }
+  else
+    // The flag `reduce_complexity' is false.
+    // Note that the test `is_empty()' is exponential in the worst case.
+    if (ph.is_empty()) {
+      set_empty();
+      return;
+    }
+
+  if (space_dim == 0)
+    return;
+
+  if (!reduce_complexity && ph.has_something_pending())
+    ph.process_pending();
+
+  // TODO: use simplex to derive variable bounds, if the complexity
+  // is SIMPLEX_COMPLEXITY.
+
+  if (reduce_complexity
+      && (!ph.generators_are_up_to_date() || ph.has_pending_constraints())) {
+    // Extract easy-to-find bounds from constraints.
+    assert(ph.constraints_are_up_to_date());
+
+    // Swap in a box built from the simplified constraints of `ph'.
+    Box tmp(ph.simplified_constraints(), Recycle_Input());
+    swap(tmp);
+  }
+  else {
+    // We are in the case where either the generators are up-to-date
+    // or reduced complexity is not required.
+    Box tmp(ph.gen_sys);
+    swap(tmp);
+  }
 }
 
 template <typename Interval>
