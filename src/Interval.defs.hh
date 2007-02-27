@@ -720,6 +720,19 @@ strictly_contains(const Interval<Boundary, Info>& x, const T& y) {
 	&& gt(UPPER, x.upper(), x.info(), UPPER, upper(y), info(y)));
 }
 
+template <typename Boundary, typename Info,
+	  typename T>
+inline typename Enable_If<Is_Singleton_Or_Interval<T>::value, bool>::type
+is_disjoint_from(const Interval<Boundary, Info>& x, const T& y) {
+  if (check_empty_arg(x) || check_empty_arg(y))
+    return true;
+//   CHECKME.
+//   if (!contains_restriction(x.info(), info(y)))
+//       return false;
+  return gt(LOWER, x.lower(), x.info(), UPPER, upper(y), info(y))
+    || lt(UPPER, x.upper(), x.info(), LOWER, lower(y), info(y));
+}
+
 template <typename To_Boundary, typename To_Info,
 	  typename From1, typename From2>
 inline I_Result
