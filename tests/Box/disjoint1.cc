@@ -74,8 +74,6 @@ test03() {
 
   Constraint_System cs1;
   cs1.insert(x1 >= -4);
-  cs1.insert(x2 - x1 <= 0);
-  cs1.insert(x1 - x2 <= -5);
 
   TBox box1(2);
   box1.add_constraints(cs1);
@@ -95,7 +93,7 @@ test03() {
 
   bool disjoint = box1.is_disjoint_from(box2);
 
-  return disjoint;
+  return !disjoint;
 }
 
 bool
