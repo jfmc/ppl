@@ -163,17 +163,18 @@ Box<Interval>::Box(const Generator_System& gs)
 template <typename Interval>
 Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
   : seq(ph.space_dimension()), empty(false), empty_up_to_date(true) {
-
   // We do not need to bother about `complexity' if:
   // a) the polyhedron is already marked empty; or ...
   if (ph.marked_empty()) {
     set_empty();
     return;
   }
+
   // b) the polyhedron is zero-dimensional; or ...
   const dimension_type space_dim = ph.space_dimension();
   if (space_dim == 0)
     return;
+
   // c) the polyhedron is already described by a generator system.
   if (ph.generators_are_up_to_date() && !ph.has_pending_constraints()) {
     Box tmp(ph.generators());
@@ -189,7 +190,6 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
     Box tmp(ph.simplified_constraints(), Recycle_Input());
     swap(tmp);
   }
-
   else if (complexity == SIMPLEX_COMPLEXITY) {
     MIP_Problem lp(space_dim);
     const Constraint_System& ph_cs = ph.constraints();

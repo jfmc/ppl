@@ -123,17 +123,18 @@ template <typename Box>
 void
 Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   Rational_Box internal_box(*this, complexity);
-
-  TEMP_INTEGER(n);
-  TEMP_INTEGER(d);
-
-  // Now shrink the bounded axes.
-  for (dimension_type j = space_dim; j-- > 0; ) {
-    bool closed;
-    if (internal_box.get_lower_bound(j, closed, n, d))
-      box.raise_lower_bound(j, closed, n, d);
-    if (internal_box.get_upper_bound(j, closed, n, d))
-      box.lower_upper_bound(j, closed, n, d);
+  if (internal_box.is_empty())
+    box.set_empty();
+  else {
+    TEMP_INTEGER(n);
+    TEMP_INTEGER(d);
+    for (dimension_type j = space_dim; j-- > 0; ) {
+      bool closed;
+      if (internal_box.get_lower_bound(j, closed, n, d))
+	box.raise_lower_bound(j, closed, n, d);
+      if (internal_box.get_upper_bound(j, closed, n, d))
+	box.lower_upper_bound(j, closed, n, d);
+    }
   }
 }
 
