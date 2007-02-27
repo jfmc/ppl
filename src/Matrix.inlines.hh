@@ -96,6 +96,11 @@ Matrix::const_iterator::operator!=(const const_iterator& y) const {
   return !operator==(y);
 }
 
+inline bool
+Matrix::empty() const {
+  return rows.empty();
+}
+
 inline Matrix::const_iterator
 Matrix::begin() const {
   return const_iterator(rows.begin());
