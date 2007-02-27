@@ -154,6 +154,11 @@ const_iterator(const Linear_System::const_iterator& iter,
   : i(iter), gsp(&gsys) {
 }
 
+inline bool
+Generator_System::empty() const {
+  return Linear_System::empty();
+}
+
 inline Generator_System::const_iterator
 Generator_System::begin() const {
   const_iterator i(Linear_System::begin(), *this);

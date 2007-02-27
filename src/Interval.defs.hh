@@ -752,7 +752,8 @@ assign(Interval<To_Boundary, To_Info>& to, const From& x) {
     return to.set_empty();
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  assign_restriction(to_info, x);
+  if (!assign_restriction(to_info, x))
+    return to.set_empty();
   Result rl = assign(LOWER, to.lower(), to_info,
 		     LOWER, lower(x), info(x));
   Result ru = assign(UPPER, to.upper(), to_info,
@@ -770,7 +771,8 @@ join_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
     return assign(to, x);
   if (check_empty_arg(x))
     return combine(V_EQ, V_EQ);
-  join_restriction(to.info(), to, x);
+  if (!join_restriction(to.info(), to, x))
+    return to.set_empty();
   to.info().set_interval_property(CARDINALITY_IS, false);
   to.info().set_interval_property(CARDINALITY_0);
   to.info().set_interval_property(CARDINALITY_1, false);
@@ -792,7 +794,8 @@ join_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) 
     return assign(to, x);
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  join_restriction(to_info, x, y);
+  if (!join_restriction(to_info, x, y))
+    return to.set_empty();
   to_info.set_interval_property(CARDINALITY_0);
   Result rl, ru;
   rl = min_assign(LOWER, to.lower(), to_info,
@@ -810,7 +813,8 @@ template <typename To_Boundary, typename To_Info,
 	  typename From>
 inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From& x) {
-  intersect_restriction(to.info(), to, x);
+  if (!intersect_restriction(to.info(), to, x))
+    return to.set_empty();
   // FIXME: more accurate?
   to.invalidate_cardinality_cache();
   Result rl, ru;
@@ -827,7 +831,8 @@ inline typename Enable_If<(Is_Singleton_Or_Interval<From1>::value
 intersect_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  intersect_restriction(to_info, x, y);
+  if (!intersect_restriction(to_info, x, y))
+    return to.set_empty();
   Result rl, ru;
   rl = max_assign(LOWER, to.lower(), to_info,
 		  LOWER, lower(x), info(x),
@@ -950,7 +955,7 @@ template <typename To_Boundary, typename To_Info,
 inline typename Enable_If<Is_Singleton_Or_Interval<From>::value, I_Result>::type
 refine_universal(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const From& x) {
   if (check_empty_arg(x))
-    return to.set_empty();
+    return combine(V_EQ, V_EQ);
   switch (rel) {
   case LESS_THAN:
     {
@@ -997,11 +1002,11 @@ refine_universal(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const 
       return check_empty_result(to, combine(rl, V_EQ));
     }
   case EQUAL:
+    if (!is_singleton(x))
+      return to.set_empty();
     return intersect_assign(to, x);
   case NOT_EQUAL:
     {
-      if (!is_singleton(x))
-	return to.set_empty();
       if (check_empty_arg(to))
 	return I_EMPTY;
       if (eq(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x)))
@@ -1026,7 +1031,8 @@ neg_assign(Interval<To_Boundary, To_Info>& to, const T& x) {
     return to.set_empty();
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  neg_restriction(to_info, x);
+  if (!neg_restriction(to_info, x))
+    return to.set_empty();
   Result rl, ru;
   DIRTY_TEMP(To_Boundary, to_lower);
   rl = neg_assign(LOWER, to_lower, to_info, UPPER, upper(x), info(x));
@@ -1057,7 +1063,8 @@ add_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
     return to.set_plus_infinity();
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  add_restriction(to_info, x, y);
+  if (!add_restriction(to_info, x, y))
+    return to.set_empty();
   Result rl = add_assign(LOWER, to.lower(), to_info,
 			 LOWER, lower(x), info(x),
 			 LOWER, lower(y), info(y));
@@ -1090,7 +1097,8 @@ sub_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  sub_restriction(to_info, x, y);
+  if (!sub_restriction(to_info, x, y))
+    return to.set_empty();
   Result rl, ru;
   DIRTY_TEMP(To_Boundary, to_lower);
   rl = sub_assign(LOWER, to_lower, to_info,
@@ -1156,7 +1164,8 @@ mul_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  mul_restriction(to_info, x, y);
+  if (!mul_restriction(to_info, x, y))
+    return to.set_empty();
   Result rl, ru;
   DIRTY_TEMP(To_Boundary, to_lower);
 
@@ -1310,7 +1319,8 @@ div_assign(Interval<To_Boundary, To_Info>& to, const From1& x, const From2& y) {
 
   DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
-  div_restriction(to_info, x, y);
+  if (!div_restriction(to_info, x, y))
+    return to.set_empty();
   Result rl, ru;
   DIRTY_TEMP(To_Boundary, to_lower);
   if (yls >= 0) {

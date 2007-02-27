@@ -55,9 +55,6 @@ BD_Shape<T>::BD_Shape(const Congruence_System& cgs)
 template <typename T>
 BD_Shape<T>::BD_Shape(const Generator_System& gs)
   : dbm(gs.space_dimension() + 1), status(), redundancy_dbm() {
-  using Implementation::BD_Shapes::max_assign;
-  using Implementation::BD_Shapes::div_round_up;
-
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
   if (gs_begin == gs_end) {
@@ -177,7 +174,6 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 template <typename T>
 BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   : dbm(), status(), redundancy_dbm() {
-  using Implementation::BD_Shapes::div_round_up;
   const dimension_type num_dimensions = ph.space_dimension();
 
   if (ph.marked_empty()) {
@@ -324,8 +320,6 @@ BD_Shape<T>::affine_dimension() const {
 template <typename T>
 void
 BD_Shape<T>::add_constraint(const Constraint& c) {
-  using Implementation::BD_Shapes::div_round_up;
-
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
   if (c_space_dim > space_dimension())
@@ -622,7 +616,6 @@ template <typename T>
 void
 BD_Shape<T>
 ::compute_predecessors(std::vector<dimension_type>& predecessor) const {
-  using Implementation::BD_Shapes::is_additive_inverse;
   assert(!marked_empty() && marked_shortest_path_closed());
   assert(predecessor.size() == 0);
   // Variables are ordered according to their index.
@@ -672,7 +665,6 @@ BD_Shape<T>::compute_leaders(std::vector<dimension_type>& leaders) const {
 template <typename T>
 bool
 BD_Shape<T>::is_shortest_path_reduced() const {
-  using Implementation::BD_Shapes::is_additive_inverse;
   // If the BDS is empty, it is also reduced.
   if (marked_empty())
     return true;
@@ -899,9 +891,6 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
 		     const bool maximize,
 		     Coefficient& ext_n, Coefficient& ext_d,
 		     bool& included) const {
-  using Implementation::BD_Shapes::numer_denom;
-  using Implementation::BD_Shapes::div_round_up;
-
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
   const dimension_type space_dim = space_dimension();
@@ -1001,8 +990,6 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
 		     Coefficient& ext_n, Coefficient& ext_d,
 		     bool& included,
 		     Generator& g) const {
-  using Implementation::BD_Shapes::numer_denom;
-
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
   const dimension_type space_dim = space_dimension();
@@ -1044,8 +1031,6 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
 template <typename T>
 Poly_Con_Relation
 BD_Shape<T>::relation_with(const Constraint& c) const {
-  using Implementation::BD_Shapes::div_round_up;
-
   const dimension_type c_space_dim = c.space_dimension();
   const dimension_type space_dim = space_dimension();
 
@@ -1152,8 +1137,6 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 template <typename T>
 Poly_Gen_Relation
 BD_Shape<T>::relation_with(const Generator& g) const {
-  using Implementation::BD_Shapes::numer_denom;
-  using Implementation::BD_Shapes::is_additive_inverse;
   const dimension_type space_dim = space_dimension();
   const dimension_type g_space_dim = g.space_dimension();
 
@@ -1260,8 +1243,6 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 template <typename T>
 void
 BD_Shape<T>::shortest_path_closure_assign() const {
-  using Implementation::BD_Shapes::min_assign;
-
   // Do something only if necessary.
   if (marked_empty() || marked_shortest_path_closed())
     return;
@@ -1908,8 +1889,6 @@ template <typename T>
 void
 BD_Shape<T>::get_limiting_shape(const Constraint_System& cs,
 				BD_Shape& limiting_shape) const {
-  using Implementation::BD_Shapes::div_round_up;
-
   const dimension_type cs_space_dim = cs.space_dimension();
   // Private method: the caller has to ensure the following.
   assert(cs_space_dim <= space_dimension());
@@ -2332,8 +2311,6 @@ BD_Shape<T>::refine(const Variable var,
 		    const Relation_Symbol relsym,
 		    const Linear_Expression& expr,
 		    Coefficient_traits::const_reference denominator) {
-  using Implementation::BD_Shapes::div_round_up;
-
   assert(denominator != 0);
   const dimension_type expr_space_dim = expr.space_dimension();
   assert(space_dimension() >= expr_space_dim);
@@ -2724,8 +2701,6 @@ void
 BD_Shape<T>::affine_image(const Variable var,
 			  const Linear_Expression& expr,
 			  Coefficient_traits::const_reference denominator) {
-  using Implementation::BD_Shapes::div_round_up;
-
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("affine_image(v, e, d)", "d == 0");
@@ -3160,8 +3135,6 @@ BD_Shape<T>
 		       const Linear_Expression& lb_expr,
 		       const Linear_Expression& ub_expr,
 		       Coefficient_traits::const_reference denominator) {
-  using Implementation::BD_Shapes::div_round_up;
-
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("bounded_affine_image(v, lb, ub, d)", "d == 0");
@@ -3404,7 +3377,6 @@ BD_Shape<T>
 			  const Linear_Expression& lb_expr,
 			  const Linear_Expression& ub_expr,
 			  Coefficient_traits::const_reference denominator) {
-  using Implementation::BD_Shapes::div_round_up;
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
@@ -3475,8 +3447,6 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 				      const Linear_Expression& expr,
 				      Coefficient_traits::const_reference
 				      denominator) {
-  using Implementation::BD_Shapes::div_round_up;
-
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("generalized_affine_image(v, r, e, d)", "d == 0");
@@ -4063,8 +4033,6 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
 					 const Linear_Expression& expr,
 					 Coefficient_traits::const_reference
 					 denominator) {
-  using Implementation::BD_Shapes::div_round_up;
-
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("generalized_affine_preimage(v, r, e, d)", "d == 0");
@@ -4302,9 +4270,6 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
 template <typename T>
 Constraint_System
 BD_Shape<T>::constraints() const {
-  using Implementation::BD_Shapes::numer_denom;
-  using Implementation::BD_Shapes::is_additive_inverse;
-
   Constraint_System cs;
   const dimension_type space_dim = space_dimension();
   if (space_dim == 0) {
@@ -4380,8 +4345,6 @@ BD_Shape<T>::constraints() const {
 template <typename T>
 Constraint_System
 BD_Shape<T>::minimized_constraints() const {
-  using Implementation::BD_Shapes::numer_denom;
-
   shortest_path_reduction_assign();
   Constraint_System cs;
   const dimension_type space_dim = space_dimension();
@@ -4509,8 +4472,6 @@ template <typename T>
 void
 BD_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
 				   Variable var) {
-  using Implementation::BD_Shapes::max_assign;
-
   const dimension_type space_dim = space_dimension();
   // `var' should be one of the dimensions of the BDS.
   if (var.space_dimension() > space_dim)
@@ -4556,7 +4517,6 @@ BD_Shape<T>::fold_space_dimensions(const Variables_Set& to_be_folded,
 template <typename T>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
-  using Implementation::BD_Shapes::is_additive_inverse;
   typedef typename BD_Shape<T>::coefficient_type N;
   if (c.is_universe())
     s << "true";

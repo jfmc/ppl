@@ -32,10 +32,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <algorithm>
 
-// FIXME: this is only to get access to
-// Implementation::BD_Shapes::div_round_up().
-#include "BD_Shape.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 // FIXME: find the appropriate place for this.
@@ -308,7 +304,6 @@ Octagonal_Shape<T>
 			   const dimension_type j,
 			   Coefficient_traits::const_reference num,
 			   Coefficient_traits::const_reference den) {
-  using Implementation::BD_Shapes::div_round_up;
 #ifndef NDEBUG
   // Private method: the caller has to ensure the following.
   assert(i < 2*space_dim && j < 2*space_dim && i != j);

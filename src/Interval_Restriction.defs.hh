@@ -1,5 +1,5 @@
 /* Interval_Restriction class declaration.
-   Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -64,43 +64,57 @@ contains_restriction(const Interval_Restriction_None_Base&, const T&) {
 }
 
 template <typename T>
-inline void
+inline bool
 assign_restriction(Interval_Restriction_None_Base&, const T&) {
+  return true;
 }
 
 template <typename T1, typename T2>
-inline void
+inline bool
 join_restriction(Interval_Restriction_None_Base&, const T1&, const T2&) {
+  return true;
 }
 
 template <typename T1, typename T2>
-inline void
+inline bool
 intersect_restriction(Interval_Restriction_None_Base&, const T1&, const T2&) {
+  return true;
+}
+
+template <typename T1, typename T2>
+inline bool
+diff_restriction(Interval_Restriction_None_Base&, const T1&, const T2&) {
+  return true;
 }
 
 template <typename T>
-inline void
+inline bool
 neg_restriction(Interval_Restriction_None_Base&, const T&) {
+  return true;
 }
 
 template <typename T1, typename T2>
-inline void
+inline bool
 add_restriction(Interval_Restriction_None_Base&, const T1&, const T2&) {
+  return true;
 }
 
 template <typename T1, typename T2>
-inline void
+inline bool
 sub_restriction(Interval_Restriction_None_Base&, const T1&, const T2&) {
+  return true;
 }
 
 template <typename T1, typename T2>
-inline void
+inline bool
 mul_restriction(Interval_Restriction_None_Base&, const T1&, const T2&) {
+  return true;
 }
 
 template <typename T1, typename T2>
-inline void
+inline bool
 div_restriction(Interval_Restriction_None_Base&, const T1&, const T2&) {
+  return true;
 }
 
 inline void
@@ -213,56 +227,71 @@ contains_restriction(const T1& x, const T2& y) {
 }
 
 template <typename Base, typename From>
-inline void
+inline bool
 assign_restriction(Interval_Restriction_Integer<Base>& to, const From& x) {
   to.set_integer(Restriction_Integer<From, Base>::get(x).get_integer());
+  return true;
 }
 
 template <typename Base, typename From1, typename From2>
-inline void
+inline bool
 join_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, const From2& y) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer()
 		 && Restriction_Integer<From2, Base>::get(y).get_integer());
+  return true;
 }
 
 template <typename Base, typename From1, typename From2>
-inline void
+inline bool
 intersect_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, const From2& y) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer()
 		 || Restriction_Integer<From2, Base>::get(y).get_integer());
+  return true;
+}
+
+template <typename Base, typename From1, typename From2>
+inline bool
+diff_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, const From2& y) {
+  to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer());
+  return true;
 }
 
 template <typename Base, typename From>
-inline void
+inline bool
 neg_restriction(Interval_Restriction_Integer<Base>& to, const From& x) {
   to.set_integer(Restriction_Integer<From, Base>::get(x).get_integer());
+  return true;
 }
 
 template <typename Base, typename From1, typename From2>
-inline void
+inline bool
 add_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, const From2& y) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer()
 		 && Restriction_Integer<From2, Base>::get(y).get_integer());
+  return true;
 }
 
 template <typename Base, typename From1, typename From2>
-inline void
+inline bool
 sub_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, const From2& y) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer()
 		 && Restriction_Integer<From2, Base>::get(y).get_integer());
+  return true;
 }
 
 template <typename Base, typename From1, typename From2>
-inline void
+inline bool
 mul_restriction(Interval_Restriction_Integer<Base>& to, const From1& x, const From2& y) {
   to.set_integer(Restriction_Integer<From1, Base>::get(x).get_integer()
 		 && Restriction_Integer<From2, Base>::get(y).get_integer());
+  return true;
 }
 
 template <typename Base, typename From1, typename From2>
-inline void
+inline bool
 div_restriction(Interval_Restriction_Integer<Base>& to, const From1&, const From2&) {
   to.set_integer(false);
+  return true;
 }
 
 template <typename Base>
@@ -458,28 +487,31 @@ contains_restriction(const T1& x, const T2& y) {
 }
 
 template <typename T, typename Base>
-inline void
+inline bool
 set_unrestricted(Interval_Restriction_Integer_Modulo<T, Base>& to) {
   to.remainder = 0;
   to.divisor = 0;
+  return true;
 }
 
 template <typename T, typename Base>
-inline void
+inline bool
 set_integer(Interval_Restriction_Integer_Modulo<T, Base>& to) {
   to.remainder = 0;
   to.divisor = 1;
+  return true;
 }
 
 template <typename T, typename Base, typename From>
-inline void
+inline bool
 assign_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From& x) {
   to.remainder = Restriction_Integer_Modulo<From, T, Base>::get(x).remainder;
   to.divisor = Restriction_Integer_Modulo<From, T, Base>::get(x).divisor;
+  return true;
 }
 
 template <typename T, typename Base, typename From1, typename From2>
-inline void
+inline bool
 join_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
   typedef Restriction_Integer_Modulo<From1, T, Base> Rx;
   const typename Rx::type& rx = Rx::get(x);
@@ -525,11 +557,12 @@ join_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& 
     to.divisor = ry.divisor;
   }
   else
-    set_integer(to);
+    return set_integer(to);
+  return true;
 }
 
 template <typename T, typename Base, typename From1, typename From2>
-inline void
+inline bool
 intersect_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
   typedef Restriction_Integer_Modulo<From1, T, Base> Rx;
   const typename Rx::type& rx = Rx::get(x);
@@ -538,26 +571,46 @@ intersect_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const Fr
   if (rx.divisor == 0) {
     to.remainder = ry.remainder;
     to.divisor = ry.divisor;
-    return;
+    return true;
   }
   if (ry.divisor == 0) {
     to.remainder = rx.remainder;
     to.divisor = rx.divisor;
-    return;
+    return true;
   }
-  DIRTY_TEMP(T, d);
+  DIRTY_TEMP(T, g);
   Result r;
-  r = lcm_assign_r(d, rx.divisor, ry.divisor, ROUND_DIRECT);
+  r = gcd_assign_r(g, rx.divisor, ry.divisor, ROUND_DIRECT);
   if (r != V_EQ)
     return set_integer(to);
-  to.divisor = d;
+  DIRTY_TEMP(T, d);
+  if (rx.remainder > ry.remainder)
+    r = sub_assign_r(d, rx.remainder, ry.remainder, ROUND_DIRECT);
+  else
+    r = sub_assign_r(d, ry.remainder, rx.remainder, ROUND_DIRECT);
+  if (r != V_EQ)
+    return set_integer(to);
+  r = div_assign_r(d, d, g, ROUND_DIRECT);
+  if (r != V_EQ)
+    return false;
+  r = lcm_assign_r(to.divisor, rx.divisor, ry.divisor, ROUND_DIRECT);
+  if (r != V_EQ)
+    return set_integer(to);
   // FIXME: to be completed
+  return true;
+}
+
+template <typename T, typename Base, typename From1, typename From2>
+inline bool
+diff_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
+  // FIXME: to be written
+  return true;
 }
 
 template <typename T, typename Base, typename From>
-inline void
+inline bool
 neg_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From& x) {
-  assign_restriction(to, x);
+  return assign_restriction(to, x);
 }
 
 template <typename T>
@@ -607,7 +660,7 @@ assign_rem(M& rem, const T& n, const M& div) {
 
 
 template <typename T, typename Base, typename From1, typename From2>
-inline void
+inline bool
 add_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
   typedef Restriction_Integer_Modulo<From1, T, Base> Rx;
   const typename Rx::type& rx = Rx::get(x);
@@ -640,6 +693,7 @@ add_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
     assert(r == V_EQ);
     addmod(to.remainder, rx.remainder, ry.remainder, to.divisor, ry.divisor);
   }
+  return true;
 }
 
 template <typename T>
@@ -661,20 +715,16 @@ submod(T& to, const T& x, const T& y, const T& to_m, const T& y_m) {
 }
 
 template <typename T, typename Base, typename From1, typename From2>
-inline void
+inline bool
 sub_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
   typedef Restriction_Integer_Modulo<From1, T, Base> Rx;
   const typename Rx::type& rx = Rx::get(x);
-  if (rx.divisor == 0) {
-  unrestricted:
-    to.remainder = 0;
-    to.divisor = 0;
-    return;
-  }
+  if (rx.divisor == 0)
+    return set_unrestricted(to);
   typedef Restriction_Integer_Modulo<From2, T, Base> Ry;
   const typename Ry::type& ry = Ry::get(y);
   if (ry.divisor == 0)
-    goto unrestricted;
+    return set_unrestricted(to);
   Result r;
   DIRTY_TEMP(T, rem);
   if (is_singleton(x)) {
@@ -698,6 +748,7 @@ sub_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
     assert(r == V_EQ);
     submod(to.remainder, rx.remainder, ry.remainder, to.divisor, ry.divisor);
   }
+  return true;
 }
 
 template <typename T>
@@ -730,20 +781,16 @@ mulmod(T& to, const T& x, const T& y, const T& to_m) {
 
 
 template <typename T, typename Base, typename From1, typename From2>
-inline void
+inline bool
 mul_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
   typedef Restriction_Integer_Modulo<From1, T, Base> Rx;
   const typename Rx::type& rx = Rx::get(x);
-  if (rx.divisor == 0) {
-  unrestricted:
-    to.remainder = 0;
-    to.divisor = 0;
-    return;
-  }
+  if (rx.divisor == 0)
+    return set_unrestricted(to);
   typedef Restriction_Integer_Modulo<From2, T, Base> Ry;
   const typename Ry::type& ry = Ry::get(y);
   if (ry.divisor == 0)
-    goto unrestricted;
+    return set_unrestricted(to);
   Result r;
   DIRTY_TEMP(T, mul);
   if (is_singleton(x)) {
@@ -783,17 +830,18 @@ mul_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x
     assert(r == V_EQ);
     mulmod(to.remainder, rx.remainder, ry.remainder, to.divisor);
   }
+  return true;
 }
 
 template <typename T, typename Base, typename From1, typename From2>
-inline void
+inline bool
 div_restriction(Interval_Restriction_Integer_Modulo<T, Base>& to, const From1& x, const From2& y) {
   if (is_singleton(y)) {
     if (is_singleton(x)) {
+      // FIXME: to be written
     }
   }
-  to.remainder = 0;
-  to.divisor = 0;
+  return set_unrestricted(to);
 }
 
 template <typename T, typename Base>

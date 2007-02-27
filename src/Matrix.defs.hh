@@ -140,6 +140,9 @@ public:
     bool operator!=(const const_iterator& y) const;
   };
 
+  //! Returns <CODE>true</CODE> if and only if \p *this has no rows.
+  bool empty() const;
+
   /*! \brief
     Returns the const_iterator pointing to the first row, if \p *this is
     not empty; otherwise, returns the past-the-end const_iterator.

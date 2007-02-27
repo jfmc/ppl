@@ -363,6 +363,51 @@ template <long long v, bool prefer_signed = true>
 struct Constant : public Constant_<long long, v, prefer_signed> {
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Extract the numerator and denominator components of \p from.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T, typename Policy>
+inline void
+numer_denom(const Checked_Number<T, Policy>& from,
+	    Coefficient& num, Coefficient& den);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Divides \p x by \p y into \p to, rounding the result towards plus infinity.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T, typename Policy>
+inline void
+div_round_up(Checked_Number<T, Policy>& to,
+	     Coefficient_traits::const_reference x,
+	     Coefficient_traits::const_reference y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Assigns to \p x the minimum between \p x and \p y.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename N>
+inline void
+min_assign(N& x, const N& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Assigns to \p x the maximum between \p x and \p y.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename N>
+inline void
+max_assign(N& x, const N& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x is an even number.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T, typename Policy>
+inline bool
+is_even(const Checked_Number<T, Policy>& x);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \f$x = -y\f$.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename T, typename Policy>
+inline bool
+is_additive_inverse(const Checked_Number<T, Policy>& x,
+		    const Checked_Number<T, Policy>& y);
 
 } // namespace Parma_Polyhedra_Library
 

@@ -27,13 +27,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.types.hh"
 #include "Interval.defs.hh"
 #include "Coefficient.defs.hh"
+#include "Variable.types.hh"
+#include "Variables_Set.types.hh"
 #include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
 #include "Constraint_System.types.hh"
 #include "Generator.types.hh"
 #include "Generator_System.types.hh"
-#include "Variable.types.hh"
-#include "Variables_Set.types.hh"
+#include "Polyhedron.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -151,6 +152,16 @@ public:
     Thrown if the system of generators is not empty but has no points.
   */
   Box(const Generator_System& gs, Recycle_Input dummy);
+
+  //! Builds a box from the polyhedron \p ph.
+  /*!
+    Builds a box containing \p ph using algorithms whose complexity
+    does not exceed the one specified by \p complexity.  If
+    \p complexity is \p ANY_COMPLEXITY, then the built box is the
+    smallest one containing \p ph.
+  */
+  explicit Box(const Polyhedron& ph,
+	       Complexity_Class complexity = ANY_COMPLEXITY);
 
   //! \name Member Functions that Do Not Modify the Box
   //@{
