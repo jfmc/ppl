@@ -45,7 +45,6 @@ test01() {
   known_result.add_constraint(11*A <= 61);
   known_result.add_constraint(2*B <= 5);
   known_result.add_constraint(5*B >= -18);
-  known_result.add_constraint(11*A - 11*B <= 64);
 
   bool ok = (box1 == box2
 	     && check_result(box1, known_result,
