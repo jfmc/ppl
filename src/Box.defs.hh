@@ -79,6 +79,9 @@ public:
   //! The type of intervals used to implement the box.
   typedef Interval interval_type;
 
+  //! Returns the maximum space dimension that a Box can handle.
+  static dimension_type max_space_dimension();
+
   //! Builds a universe or empty box of the specified space dimension.
   /*!
     \param num_dimensions
