@@ -117,6 +117,13 @@ Box<Interval>::is_empty() const {
 }
 
 template <typename Interval>
+bool
+Box<Interval>::strictly_contains(const Box<Interval>& y) const {
+  const Box& x = *this;
+  return x.contains(y) && !y.contains(x);
+}
+
+template <typename Interval>
 inline void
 Box<Interval>::upper_bound_assign(const Box& y) {
   Box& x = *this;
