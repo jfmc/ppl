@@ -43,6 +43,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "BHRZ03_Certificate.types.hh"
 #include "H79_Certificate.types.hh"
+#include "Box.types.hh"
 #include "BD_Shape.types.hh"
 #include "Octagonal_Shape.types.hh"
 #include <vector>
@@ -2246,6 +2247,9 @@ private:
   */
   bool strongly_minimize_generators() const;
 
+  //! If constraints are up-to-date, obtain a simplified copy of them.
+  Constraint_System simplified_constraints() const;
+
   //@} // Weak and Strong Minimization of Descriptions
 
   enum Three_Valued_Boolean {
@@ -2429,6 +2433,7 @@ private:
 
   //@} // Minimization-Related Static Member Functions
 
+  template <typename Interval> friend class Parma_Polyhedra_Library::Box;
   template <typename T> friend class Parma_Polyhedra_Library::BD_Shape;
   template <typename T> friend class Parma_Polyhedra_Library::Octagonal_Shape;
   friend class Parma_Polyhedra_Library::BHRZ03_Certificate;

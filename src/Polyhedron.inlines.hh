@@ -336,6 +336,17 @@ Polyhedron::minimize(const Linear_Expression& expr,
   return max_min(expr, false, inf_n, inf_d, minimum, g);
 }
 
+inline Constraint_System
+Polyhedron::simplified_constraints() const {
+  assert(constraints_are_up_to_date());
+  Constraint_System cs(con_sys);
+  if (cs.num_pending_rows() > 0)
+    cs.unset_pending_rows();
+  if (has_pending_constraints() || !constraints_are_minimized())
+    cs.simplify();
+  return cs;
+}
+
 inline Congruence_System
 Polyhedron::congruences() const {
   return Congruence_System(constraints());
