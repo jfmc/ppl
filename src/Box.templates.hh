@@ -770,34 +770,38 @@ Box<Interval>::CC76_widening_assign(const Box& y,
     const Interval& y_seq_i = y.seq[i];
 
     // Upper bound.
-    typename Interval::boundary_type& x_ub = x_seq_i.upper();
-    const typename Interval::boundary_type& y_ub = y_seq_i.upper();
-    assert(y_ub <= x_ub);
-    if (y_ub < x_ub) {
-      Iterator k = std::lower_bound(first, last, x_ub);
-      if (k != last) {
-	if (x_ub < *k)
-	  x_ub = *k;
+    if (!x_seq_i.upper_is_unbounded()) {
+      typename Interval::boundary_type& x_ub = x_seq_i.upper();
+      const typename Interval::boundary_type& y_ub = y_seq_i.upper();
+      assert(!y_seq_i.upper_is_unbounded() && y_ub <= x_ub);
+      if (y_ub < x_ub) {
+	Iterator k = std::lower_bound(first, last, x_ub);
+	if (k != last) {
+	  if (x_ub < *k)
+	    x_ub = *k;
+	}
+	else
+	  x_seq_i.upper_set_unbounded();
       }
-      else
-	x_seq_i.upper_set_unbounded();
     }
 
     // Lower bound.
-    typename Interval::boundary_type& x_lb = x_seq_i.lower();
-    const typename Interval::boundary_type& y_lb = y_seq_i.lower();
-    assert(y_lb >= x_lb);
-    if (y_lb > x_lb) {
-      Iterator k = std::lower_bound(first, last, x_lb);
-      if (k != last) {
-	if (x_lb < *k)
-	  if (k != first)
-	    x_lb = *--k;
-	  else
-	    x_seq_i.lower_set_unbounded();
+    if (!x_seq_i.lower_is_unbounded()) {
+      typename Interval::boundary_type& x_lb = x_seq_i.lower();
+      const typename Interval::boundary_type& y_lb = y_seq_i.lower();
+      assert(!y_seq_i.lower_is_unbounded() && y_lb >= x_lb);
+      if (y_lb > x_lb) {
+	Iterator k = std::lower_bound(first, last, x_lb);
+	if (k != last) {
+	  if (x_lb < *k)
+	    if (k != first)
+	      x_lb = *--k;
+	    else
+	      x_seq_i.lower_set_unbounded();
+	}
+	else
+	  x_lb = *--k;
       }
-      else
-	x_lb = *--k;
     }
   }
   assert(x.OK());
