@@ -1,4 +1,4 @@
-/* Test Box::H79_widening_assign().
+/* Test Box::CC76_widening_assign().
    Copyright (C) 2001-2006 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -43,14 +43,14 @@ test01() {
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  box1.H79_widening_assign(box2);
+  box1.CC76_widening_assign(box2);
 
   Rational_Box known_result(2);
   known_result.add_constraint(x - y <= 2);
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** box1.CC76_extrapolation_assign(box2) ***");
+  print_constraints(box1, "*** box1.CC76_widening_assign(box2) ***");
 
   return ok;
 }
