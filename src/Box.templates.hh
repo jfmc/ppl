@@ -163,76 +163,97 @@ Box<Interval>::Box(const Generator_System& gs)
 template <typename Interval>
 Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
   : seq(ph.space_dimension()), empty(false), empty_up_to_date(true) {
-  dimension_type space_dim = ph.space_dimension();
-  bool reduce_complexity = (complexity != ANY_COMPLEXITY);
-  if (!reduce_complexity
-      || (!ph.has_something_pending() && ph.constraints_are_minimized())) {
-    // If the constraint system is minimized, the test `is_universe()'
-    // is not exponential.
-    if (ph.is_universe()) {
-      for (dimension_type i = space_dim; i-- > 0; )
-	seq[i].set_universe();
-      return;
-    }
-  }
-  if (reduce_complexity) {
-    if (ph.marked_empty()
-	|| (ph.generators_are_up_to_date() && ph.gen_sys.empty())) {
-      set_empty();
-      return;
-    }
-    else if (ph.constraints_are_up_to_date()) {
-      // See if there is at least one inconsistent constraint in `con_sys'.
-      for (Constraint_System::const_iterator i = ph.con_sys.begin(),
-	     cs_end = ph.con_sys.end(); i != cs_end; ++i)
-	if (i->is_inconsistent()) {
-	  set_empty();
-	  return;
-	}
-      // If `complexity' allows it, use the MIP_Problem solver to determine
-      // whether or not the polyhedron is empty.
-      if (complexity == SIMPLEX_COMPLEXITY
-	  // TODO: find a workaround for NNC polyhedra.
-	  && ph.is_necessarily_closed()) {
-	MIP_Problem lp(space_dim, ph.con_sys);
-	if (!lp.is_satisfiable()) {
-	  set_empty();
-	  return;
-	}
-      }
-    }
-  }
-  else
-    // The flag `reduce_complexity' is false.
-    // Note that the test `is_empty()' is exponential in the worst case.
-    if (ph.is_empty()) {
-      set_empty();
-      return;
-    }
 
+  // We do not need to bother about `complexity' if:
+  // a) the polyhedron is already marked empty; or ...
+  if (ph.marked_empty()) {
+    set_empty();
+    return;
+  }
+  // b) the polyhedron is zero-dimensional; or ...
+  const dimension_type space_dim = ph.space_dimension();
   if (space_dim == 0)
     return;
+  // c) the polyhedron is already described by a generator system.
+  if (ph.generators_are_up_to_date() && !ph.has_pending_constraints()) {
+    Box tmp(ph.generators());
+    swap(tmp);
+    return;
+  }
 
-  if (!reduce_complexity && ph.has_something_pending())
-    ph.process_pending();
+  // Here generators are not up-to-date or there are pending constraints.
+  assert(ph.constraints_are_up_to_date());
 
-  // TODO: use simplex to derive variable bounds, if the complexity
-  // is SIMPLEX_COMPLEXITY.
-
-  if (reduce_complexity
-      && (!ph.generators_are_up_to_date() || ph.has_pending_constraints())) {
+  if (complexity == POLYNOMIAL_COMPLEXITY) {
     // Extract easy-to-find bounds from constraints.
-    assert(ph.constraints_are_up_to_date());
-
-    // Swap in a box built from the simplified constraints of `ph'.
     Box tmp(ph.simplified_constraints(), Recycle_Input());
     swap(tmp);
   }
+
+  else if (complexity == SIMPLEX_COMPLEXITY) {
+    MIP_Problem lp(space_dim);
+    const Constraint_System& ph_cs = ph.constraints();
+    if (!ph_cs.has_strict_inequalities())
+      lp.add_constraints(ph_cs);
+    else
+      // Adding to `lp' a topologically closed version of `ph_cs'.
+      for (Constraint_System::const_iterator i = ph_cs.begin(),
+	     ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i) {
+	const Constraint& c = *i;
+	if (c.is_strict_inequality())
+	  lp.add_constraint(Linear_Expression(c) >= 0);
+	else
+	  lp.add_constraint(c);
+      }
+    // Check for unsatisfiability.
+    if (!lp.is_satisfiable()) {
+      set_empty();
+      return;
+    }
+    // Get all the bounds for the space dimensions.
+    Generator g(point());
+    TEMP_INTEGER(num);
+    TEMP_INTEGER(den);
+    mpq_class bound;
+    for (dimension_type i = space_dim; i-- > 0; ) {
+      Interval& seq_i = seq[i];
+      lp.set_objective_function(Variable(i));
+      // Evaluate upper bound.
+      lp.set_optimization_mode(MAXIMIZATION);
+      if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
+	g = lp.optimizing_point();
+	lp.evaluate_objective_function(g, num, den);
+	assign_r(bound.get_num(), num, ROUND_NOT_NEEDED);
+	assign_r(bound.get_den(), den, ROUND_NOT_NEEDED);
+	seq_i.upper_set_unbounded();
+	refine_existential(seq_i, LESS_THAN_OR_EQUAL, bound);
+      }
+      else
+	seq_i.upper_set_unbounded();
+      // Evaluate optimal lower bound.
+      lp.set_optimization_mode(MINIMIZATION);
+      if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
+	g = lp.optimizing_point();
+	lp.evaluate_objective_function(g, num, den);
+	assign_r(bound.get_num(), num, ROUND_NOT_NEEDED);
+	assign_r(bound.get_den(), den, ROUND_NOT_NEEDED);
+	// FIXME: how to directly set the lower bound?
+	seq_i.lower_set_unbounded();
+	refine_existential(seq_i, GREATER_THAN_OR_EQUAL, bound);
+      }
+      else
+	seq_i.lower_set_unbounded();
+    }
+  }
+
   else {
-    // We are in the case where either the generators are up-to-date
-    // or reduced complexity is not required.
-    Box tmp(ph.gen_sys);
-    swap(tmp);
+    assert(complexity == ANY_COMPLEXITY);
+    if (ph.is_empty())
+      set_empty();
+    else {
+      Box tmp(ph.generators());
+      swap(tmp);
+    }
   }
 }
 
