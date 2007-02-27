@@ -34,9 +34,7 @@ test01() {
   Variable x6(5);
 
   TBox box1(6);
-  box1.add_constraint(x2 - x3 <= 0);
   box1.add_constraint(x3 <= 2);
-  box1.add_constraint(x6 - x5 <= 2);
   box1.add_constraint(x5 <= 3);
 
   print_constraints(box1, "*** box1 ***");
@@ -49,8 +47,6 @@ test01() {
   box1.remove_space_dimensions(to_be_removed);
 
   Rational_Box known_result(4);
-  known_result.add_constraint(x2 <= 2);
-  known_result.add_constraint(x4 <= 5);
 
   bool ok = (Rational_Box(box1) == known_result);
 
@@ -71,12 +67,9 @@ test02() {
   Variable x8(7);
 
   TBox box1(8);
-  box1.add_constraint(x7 - x3 <= 0);
   box1.add_constraint(x1 <= 2);
-  box1.add_constraint(x4 - x8 <= 2);
   box1.add_constraint(x5 <= 7);
   box1.add_constraint(x2 <= 10);
-  box1.add_constraint(x6 - x8 <= 4);
 
   print_constraints(box1, "*** box1 ***");
 
@@ -112,11 +105,9 @@ test03() {
   Variable x4(3);
 
   TBox box1(4);
-  box1.add_constraint(x1 - x2 <=1);
-  box1.add_constraint(x2 - x3 <= -2);
-  box1.add_constraint(x3 - x1 <= 0);
   box1.add_constraint(x2 >= 5);
   box1.add_constraint(x4 >= 3);
+  box1.add_constraint(x4 <= 0);
 
   print_constraints(box1, "*** box1 ***");
 
@@ -166,10 +157,8 @@ test05() {
   Variable x4(3);
 
   TBox box(4);
-  box.add_constraint(x1 - x2 <=1);
-  box.add_constraint(x2 - x3 <= -2);
-  box.add_constraint(x3 - x1 <= 0);
   box.add_constraint(x2 >= 5);
+  box.add_constraint(x2 <= 0);
   box.add_constraint(x4 >= 3);
 
   print_constraints(box, "*** box ***");
@@ -194,21 +183,14 @@ test06() {
   Variable x5(4);
 
   TBox box(5);
-  box.add_constraint(x1 - x2 <=1);
-  box.add_constraint(x2 - x3 <= 2);
-  box.add_constraint(x3 - x1 <= 0);
   box.add_constraint(x2 >= 5);
   box.add_constraint(x4 >= 3);
-  box.add_constraint(x5 - x3 == 2);
 
   print_constraints(box, "*** box ***");
 
   box.remove_higher_space_dimensions(3);
 
   Rational_Box known_result(3);
-  known_result.add_constraint(x1 - x2 <=1);
-  known_result.add_constraint(x2 - x3 <= 2);
-  known_result.add_constraint(x3 - x1 <= 0);
   known_result.add_constraint(x2 >= 5);
 
   bool ok = (Rational_Box(box) == known_result);
@@ -225,9 +207,6 @@ test07() {
   Variable x3(2);
 
   TBox box(3);
-  box.add_constraint(x1 - x2 <=1);
-  box.add_constraint(x2 - x3 <= 2);
-  box.add_constraint(x3 - x1 <= 0);
   box.add_constraint(x2 >= 5);
 
   print_constraints(box, "*** box ***");

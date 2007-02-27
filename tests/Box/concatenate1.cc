@@ -134,7 +134,7 @@ test04() {
   TBox box1(3);
   box1.add_constraint(A >= 0);
   box1.add_constraint(B >= 0);
-  box1.add_constraint_and_minimize(C >= 0);
+  box1.add_constraint(C >= 0);
 
   TBox box2(2);
   box2.add_constraint(A >= 0);
@@ -142,7 +142,7 @@ test04() {
   box2.add_constraint(B >= 0);
   box2.add_constraint(B <= 2);
   box2.add_constraint(A - B <= 0);
-  box2.add_constraint_and_minimize(B - A <= 1);
+  box2.add_constraint(B - A <= 1);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");

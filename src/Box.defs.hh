@@ -80,6 +80,9 @@ public:
   //! The type of intervals used to implement the box.
   typedef Interval interval_type;
 
+  //! Returns the maximum space dimension that a Box can handle.
+  static dimension_type max_space_dimension();
+
   //! Builds a universe or empty box of the specified space dimension.
   /*!
     \param num_dimensions
@@ -199,8 +202,27 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this contains \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are dimension-incompatible.
   */
   bool contains(const Box&) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this strictly contains \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are dimension-incompatible.
+  */
+  bool strictly_contains(const Box&) const;
+
+  /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
+
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are dimension-incompatible.
+  */
+  bool is_disjoint_from(const Box& y) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this satisfies

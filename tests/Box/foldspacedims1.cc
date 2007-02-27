@@ -209,11 +209,8 @@ test07() {
   TBox box1(4);
   box1.add_constraint(A >= 0);
   box1.add_constraint(B == 0);
-  box1.add_constraint(A - B <= 2);
   box1.add_constraint(C >= 0);
-  box1.add_constraint(C - B <= 2);
   box1.add_constraint(D >= 0);
-  box1.add_constraint(D - B <= 2);
 
   print_constraints(box1, "*** box1 ***");
 
@@ -226,9 +223,7 @@ test07() {
 
   TBox known_result(2);
   known_result.add_constraint(A >= 0);
-  known_result.add_constraint(A <= 2);
   known_result.add_constraint(B >= 0);
-  known_result.add_constraint(B <= 2);
 
   bool ok = (box1 == known_result);
 

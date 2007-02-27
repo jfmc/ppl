@@ -31,20 +31,18 @@ test01() {
   Variable z(2);
 
   TBox box1(3);
-  box1.add_constraint(x - y <= 1);
+  box1.add_constraint(x <= 1);
+  box1.add_constraint(x >= 7);
 
   // The Box is empty, because it has got a negative cycle.
   TBox box2(3);
-  box2.add_constraint(x - y <= 2);
-  box2.add_constraint(y - z <= 2);
-  box2.add_constraint(z - x <= -5);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  bool ok = box1.contains(box2);
+  bool ok = !box1.contains(box2);
 
-  nout << "*** box1.contains(box2) ***"
+  nout << "*** !box1.contains(box2) ***"
        << endl
        << (ok ? "true" : "false")
        << endl;
@@ -152,23 +150,21 @@ test06() {
 
   TBox box1(3);
   box1.add_constraint(C <= 0);
-  box1.add_constraint(B - C <= 1);
 
   print_constraints(box1, "*** box1 ***");
 
   TBox box2(3);
   box2.add_constraint(A == 0);
   box2.add_constraint(C <= 0);
-  box2.add_constraint(B - C <= 2);
 
   print_constraints(box2, "*** box2 ***");
 
-  bool contained = box1.contains(box2);
+  bool ok = box1.contains(box2);
 
   nout << "*** box1.contains(box2) ***" << endl;
-  nout << (!contained ? "true" : "false") << endl;
+  nout << (ok ? "true" : "false") << endl;
 
-  return !contained;
+  return ok;
 }
 
 } // namespace
