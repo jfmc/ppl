@@ -31,14 +31,10 @@ test01() {
 
   TBox box1(2);
   box1.add_constraint(x <= 1);
-  box1.add_constraint(x - y <= 2);
-  box1.add_constraint(y - x <= 7);
 
   TBox box2(2);
-  box2.add_constraint(x - y <= 2);
   box2.add_constraint(-x <= 3);
   box2.add_constraint(x <= 0);
-  box2.add_constraint(y - x <= 2);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -46,7 +42,7 @@ test01() {
   box1.CC76_widening_assign(box2);
 
   Rational_Box known_result(2);
-  known_result.add_constraint(x - y <= 2);
+  known_result.add_constraint(x <= 1);
 
   bool ok = (Rational_Box(box1) == known_result);
 
