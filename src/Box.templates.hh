@@ -278,6 +278,186 @@ operator==(const Box<Interval>& x, const Box<Interval>& y) {
 
 template <typename Interval>
 bool
+Box<Interval>::bounds(const Linear_Expression& expr,
+		      const bool from_above) const {
+  // `expr' should be dimension-compatible with `*this'.
+  const dimension_type expr_space_dim = expr.space_dimension();
+  const dimension_type space_dim = space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible((from_above
+				  ? "bounds_from_above(e)"
+				  : "bounds_from_below(e)"), "e", expr);
+  // A zero-dimensional or empty Box bounds everything.
+  if (space_dim == 0 || is_empty())
+    return true;
+
+  const int from_above_sign = from_above ? 1 : -1;
+  for (dimension_type i = expr_space_dim; i-- > 0; )
+    switch (sgn(expr.coefficient(Variable(i))) * from_above_sign) {
+    case 1:
+      if (seq[i].upper_is_unbounded())
+	return false;
+      break;
+    case 0:
+      // Nothing to do.
+      break;
+    case -1:
+      if (seq[i].lower_is_unbounded())
+	return false;
+      break;
+    }
+  return true;
+}
+
+template <typename Interval>
+bool
+Box<Interval>::max_min(const Linear_Expression& expr,
+		       const bool maximize,
+		       Coefficient& ext_n, Coefficient& ext_d,
+		       bool& included) const {
+  // `expr' should be dimension-compatible with `*this'.
+  const dimension_type space_dim = space_dimension();
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible((maximize
+				  ? "maximize(e, ...)"
+				  : "minimize(e, ...)"), "e", expr);
+  // Deal with zero-dim Box first.
+  if (space_dim == 0)
+    if (marked_empty())
+      return false;
+    else {
+      ext_n = expr.inhomogeneous_term();
+      ext_d = 1;
+      included = true;
+      return true;
+    }
+
+  // For an empty Box we simply return false.
+  if (is_empty())
+    return false;
+
+  mpq_class result = expr.inhomogeneous_term();
+  bool is_included = true;
+  const int maximize_sign = maximize ? 1 : -1;
+  mpq_class bound_i;
+  for (dimension_type i = expr_space_dim; i-- > 0; ) {
+    const Interval& seq_i = seq[i];
+    const Coefficient& expr_i = expr.coefficient(Variable(i));
+    switch (sgn(expr_i) * maximize_sign) {
+    case 1:
+      if (seq_i.upper_is_unbounded())
+	return false;
+      bound_i = seq_i.upper();
+      bound_i *= expr_i;
+      result += bound_i;
+      if (seq_i.upper_is_open())
+	is_included = false;
+      break;
+    case 0:
+      // Nothing to do.
+      break;
+    case -1:
+      if (seq_i.lower_is_unbounded())
+	return false;
+      bound_i = seq_i.lower();
+      bound_i *= expr_i;
+      result += bound_i;
+      if (seq_i.lower_is_open())
+	is_included = false;
+      break;
+    }
+  }
+  // Extract output info.
+  result.canonicalize();
+  ext_n = result.get_num();
+  ext_d = result.get_den();
+  included = is_included;
+  return true;
+}
+
+template <typename Interval>
+bool
+Box<Interval>::max_min(const Linear_Expression& expr,
+		       const bool maximize,
+		       Coefficient& ext_n, Coefficient& ext_d,
+		       bool& included,
+		       Generator& g) const {
+  if (!max_min(expr, maximize, ext_n, ext_d, included))
+    return false;
+
+  // Compute generator `g'.
+  Linear_Expression g_expr;
+  TEMP_INTEGER(g_divisor);
+  g_divisor = 1;
+  const int maximize_sign = maximize ? 1 : -1;
+  mpq_class g_coord;
+  TEMP_INTEGER(g_coord_num);
+  TEMP_INTEGER(g_coord_den);
+  TEMP_INTEGER(lcm);
+  TEMP_INTEGER(factor);
+  for (dimension_type i = space_dimension(); i-- > 0; ) {
+    const Interval& seq_i = seq[i];
+    switch (sgn(expr.coefficient(Variable(i))) * maximize_sign) {
+    case 1:
+      g_coord = seq_i.upper();
+      break;
+    case 0:
+      // If 0 belongs to the interval, choose it
+      // (and directly proceed to the next iteration).
+      // FIXME: name qualification issue.
+      if (Parma_Polyhedra_Library::contains(seq_i, 0))
+	continue;
+      if (!seq_i.lower_is_unbounded())
+	if (seq_i.lower_is_open())
+	  if (!seq_i.upper_is_unbounded())
+	    if (seq_i.upper_is_open()) {
+	      // Bounded and open interval: compute middle point.
+	      g_coord = seq_i.lower();
+	      g_coord += seq_i.upper();
+	      g_coord /= 2;
+	    }
+	    else
+	      // The upper bound is in the interval.
+	      g_coord = seq_i.upper();
+	  else {
+	    // Lower is open, upper is unbounded.
+	    g_coord = seq_i.lower();
+	    ++g_coord;
+	  }
+	else
+	  // The lower bound is in the interval.
+	  g_coord = seq_i.lower();
+      else {
+	// Lower is unbounded, hence upper is bounded
+	// (since we know that 0 does not belong to the interval).
+	assert(!seq_i.upper_is_unbounded());
+	g_coord = seq_i.upper();
+	if (seq_i.upper_is_open())
+	  --g_coord;
+      }
+      break;
+    case -1:
+      g_coord = seq_i.lower();
+      break;
+    }
+    // Add g_coord * Variable(i) to the generator.
+    g_coord_num = g_coord.get_num();
+    g_coord_den = g_coord.get_den();
+    lcm_assign(lcm, g_divisor, g_coord_den);
+    exact_div_assign(factor, lcm, g_divisor);
+    g_expr *= factor;
+    exact_div_assign(factor, lcm, g_coord_den);
+    g_coord_num *= factor;
+    g_expr += g_coord_num * Variable(i);
+    g_divisor = lcm;
+  }
+  g = Generator::point(g_expr, g_divisor);
+  return true;
+}
+
+template <typename Interval>
+bool
 Box<Interval>::contains(const Box<Interval>& y) const {
   const Box& x = *this;
   // Dimension-compatibility check.
