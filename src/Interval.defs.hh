@@ -879,7 +879,7 @@ refine_existential(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, cons
       to.normalize();
       return check_empty_result(to, combine(V_EQ, ru));
     }
-  case LESS_THAN_OR_EQUAL:
+  case LESS_OR_EQUAL:
     {
       if (le(UPPER, to.upper(), to.info(), UPPER, upper(x), info(x)))
 	return combine(V_EQ, V_EQ);
@@ -901,7 +901,7 @@ refine_existential(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, cons
       to.normalize();
       return check_empty_result(to, combine(rl, V_EQ));
     }
-  case GREATER_THAN_OR_EQUAL:
+  case GREATER_OR_EQUAL:
     {
       if (ge(LOWER, to.lower(), to.info(), LOWER, lower(x), info(x)))
 	return combine(V_EQ, V_EQ);
@@ -968,7 +968,7 @@ refine_universal(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const 
       to.normalize();
       return check_empty_result(to, combine(V_EQ, ru));
     }
-  case LESS_THAN_OR_EQUAL:
+  case LESS_OR_EQUAL:
     {
       if (le(UPPER, to.upper(), to.info(), LOWER, lower(x), info(x)))
 	return combine(V_EQ, V_EQ);
@@ -990,7 +990,7 @@ refine_universal(Interval<To_Boundary, To_Info>& to, Relation_Symbol rel, const 
       to.normalize();
       return check_empty_result(to, combine(rl, V_EQ));
     }
-  case GREATER_THAN_OR_EQUAL:
+  case GREATER_OR_EQUAL:
     {
       if (ge(LOWER, to.lower(), to.info(), UPPER, upper(x), info(x)))
 	return combine(V_EQ, V_EQ);

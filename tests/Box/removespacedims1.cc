@@ -50,7 +50,7 @@ test01() {
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** box1.remove_space_dimensions({x3,x5}) ***");
+  print_constraints(box1, "*** box1.remove_space_dimensions({x3, x5}) ***");
 
   return ok;
 }
@@ -92,7 +92,7 @@ test02() {
 
   print_constraints(box1,
 		    "*** box1.remove_space_dimensions"
-		    "({x1,x2,x3,x4,x5,x6,x7,x8}) ***");
+		    "({x1, x2, x3, x4, x5, x6, x7, x8}) ***");
 
   return ok;
 }
@@ -122,7 +122,8 @@ test03() {
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** box1.remove_space_dimensions({x1,x3,x4}) ***");
+  print_constraints(box1,
+		    "*** box1.remove_space_dimensions({x1, x3, x4}) ***");
 
   return ok;
 }

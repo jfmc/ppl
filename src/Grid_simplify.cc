@@ -415,7 +415,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // Clip any zero rows from the end of the matrix.
   if (num_rows > pivot_index) {
 #ifndef NDEBUG
-    const bool ret = rows_are_zero<Grid_Generator_System,Grid_Generator>
+    const bool ret = rows_are_zero<Grid_Generator_System, Grid_Generator>
       (sys,
        // index of first
        pivot_index,
@@ -593,7 +593,7 @@ Grid::simplify(Congruence_System& sys, Dimension_Kinds& dim_kinds) {
   // Clip any zero rows from the end of the matrix.
   if (num_rows > 1 && num_rows > reduced_num_rows) {
 #ifndef NDEBUG
-    const bool ret = rows_are_zero<Congruence_System,Congruence>
+    const bool ret = rows_are_zero<Congruence_System, Congruence>
       (sys,
        // index of first
        reduced_num_rows,

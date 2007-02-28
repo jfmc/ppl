@@ -220,9 +220,8 @@ test07() {
 
   oct.bounded_affine_image(A, Linear_Expression(3), B+5);
 
-  oct1.generalized_affine_image(A, GREATER_THAN_OR_EQUAL,
-				Linear_Expression(3));
-  oct2.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B+5);
+  oct1.generalized_affine_image(A, GREATER_OR_EQUAL, Linear_Expression(3));
+  oct2.generalized_affine_image(A, LESS_OR_EQUAL, B+5);
   oct1.intersection_assign(oct2);
 
   bool ok = (oct == oct1);

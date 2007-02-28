@@ -3051,11 +3051,11 @@ Octagonal_Shape<T>::refine(const Variable var,
       add_octagonal_constraint(n_var+1, n_var, two_b, denominator);
       add_octagonal_constraint(n_var, n_var+1, two_b, minus_den);
       break;
-    case LESS_THAN_OR_EQUAL:
+    case LESS_OR_EQUAL:
       // Add the constraint `var <= b/denominator'.
       add_octagonal_constraint(n_var+1, n_var, two_b, denominator);
       break;
-    case GREATER_THAN_OR_EQUAL:
+    case GREATER_OR_EQUAL:
       // Add the constraint `var >= b/denominator',
       // i.e., `-var <= -b/denominator',
       add_octagonal_constraint(n_var, n_var+1, two_b, minus_den);
@@ -3094,7 +3094,7 @@ Octagonal_Shape<T>::refine(const Variable var,
 	  add_octagonal_constraint(n_var, n_w+1, b, minus_den);
 	}
       break;
-    case LESS_THAN_OR_EQUAL:
+    case LESS_OR_EQUAL:
       div_round_up(d, b, denominator);
       // Note that: `w_id != v', so that `expr' is of the form
       // w_coeff * w + b, with `w_id != v'.
@@ -3114,7 +3114,7 @@ Octagonal_Shape<T>::refine(const Variable var,
       }
       break;
 
-    case GREATER_THAN_OR_EQUAL:
+    case GREATER_OR_EQUAL:
       div_round_up(d, b, minus_den);
       // Note that: `w_id != v', so that `expr' is of the form
       // w_coeff * w + b, with `w_id != v'.
@@ -3361,7 +3361,7 @@ Octagonal_Shape<T>::refine(const Variable var,
 	break;
       }
 
-    case LESS_THAN_OR_EQUAL:
+    case LESS_OR_EQUAL:
       {
 	// Compute an upper approximation for `expr' into `sum',
 	// taking into account the sign of `denominator'.
@@ -3446,7 +3446,7 @@ Octagonal_Shape<T>::refine(const Variable var,
 	break;
       }
 
-    case GREATER_THAN_OR_EQUAL:
+    case GREATER_OR_EQUAL:
       {
 	// Compute an upper approximation for `-sc_expr' into `sum'.
 	// Note: approximating `-sc_expr' from above and then negating the
@@ -4142,11 +4142,11 @@ Octagonal_Shape<T>
     // Strong closure is lost.
     status.reset_strongly_closed();
     switch (relsym) {
-    case LESS_THAN_OR_EQUAL:
+    case LESS_OR_EQUAL:
       // Add the constraint `var <= b/denominator'.
       add_octagonal_constraint(n_var+1, n_var, two_b, denominator);
       break;
-    case GREATER_THAN_OR_EQUAL:
+    case GREATER_OR_EQUAL:
       // Add the constraint `var >= n/denominator',
       // i.e., `-var <= -b/denominator'.
       add_octagonal_constraint(n_var, n_var+1, two_b, minus_den);
@@ -4166,7 +4166,7 @@ Octagonal_Shape<T>
     if (w_coeff == denominator || w_coeff == minus_den) {
       // Case 2: expr == w_coeff*w + b, with w_coeff == +/- denominator.
       switch (relsym) {
-      case LESS_THAN_OR_EQUAL:
+      case LESS_OR_EQUAL:
 	{
 	  N d;
 	  div_round_up(d, b, denominator);
@@ -4234,7 +4234,7 @@ Octagonal_Shape<T>
 	  break;
 	}
 
-      case GREATER_THAN_OR_EQUAL:
+      case GREATER_OR_EQUAL:
 	{
 	  N d;
 	  div_round_up(d, b, minus_den);
@@ -4347,7 +4347,7 @@ Octagonal_Shape<T>
   dimension_type pinf_count = 0;
 
   switch (relsym) {
-  case LESS_THAN_OR_EQUAL:
+  case LESS_OR_EQUAL:
     {
       // Compute an upper approximation for `sc_expr' into `sum'.
 
@@ -4441,7 +4441,7 @@ Octagonal_Shape<T>
       break;
     }
 
-  case GREATER_THAN_OR_EQUAL:
+  case GREATER_OR_EQUAL:
     {
       // Compute an upper approximation for `-sc_expr' into `sum'.
       // Note: approximating `-sc_expr' from above and then negating the
@@ -4605,13 +4605,13 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // TODO: if it is not an octagonal difference, should we compute
     // approximations for this constraint?
     switch (relsym) {
-    case LESS_THAN_OR_EQUAL:
+    case LESS_OR_EQUAL:
       add_constraint(lhs <= rhs);
       break;
     case EQUAL:
       add_constraint(lhs == rhs);
       break;
-    case GREATER_THAN_OR_EQUAL:
+    case GREATER_OR_EQUAL:
       add_constraint(lhs >= rhs);
       break;
     default:
@@ -4630,10 +4630,10 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     const Coefficient& den = lhs.coefficient(v);
     Relation_Symbol new_relsym = relsym;
     if (den < 0)
-      if (relsym == LESS_THAN_OR_EQUAL)
-	new_relsym = GREATER_THAN_OR_EQUAL;
-      else if (relsym == GREATER_THAN_OR_EQUAL)
-	new_relsym = LESS_THAN_OR_EQUAL;
+      if (relsym == LESS_OR_EQUAL)
+	new_relsym = GREATER_OR_EQUAL;
+      else if (relsym == GREATER_OR_EQUAL)
+	new_relsym = LESS_OR_EQUAL;
     Linear_Expression expr = rhs - b_lhs;
     generalized_affine_image(v, new_relsym, expr, den);
   }
@@ -4661,13 +4661,13 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // TODO: if the following constraint is NOT an octagonal difference,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
-      case LESS_THAN_OR_EQUAL:
+      case LESS_OR_EQUAL:
 	add_constraint(lhs <= rhs);
 	break;
       case EQUAL:
 	add_constraint(lhs == rhs);
 	break;
-      case GREATER_THAN_OR_EQUAL:
+      case GREATER_OR_EQUAL:
 	add_constraint(lhs >= rhs);
 	break;
       default:
@@ -4714,13 +4714,13 @@ Octagonal_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // Thus, the method add_constraint() will simply ignore it.
       // Should we compute approximations for this constraint?
       switch (relsym) {
-      case LESS_THAN_OR_EQUAL:
+      case LESS_OR_EQUAL:
 	add_constraint(lhs <= new_var);
 	break;
       case EQUAL:
 	add_constraint(lhs == new_var);
 	break;
-      case GREATER_THAN_OR_EQUAL:
+      case GREATER_OR_EQUAL:
 	add_constraint(lhs >= new_var);
 	break;
       default:
@@ -4809,7 +4809,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
   if (t == 0) {
     // Case 1: lb_expr == b.
     generalized_affine_image(var,
-			     LESS_THAN_OR_EQUAL,
+			     LESS_OR_EQUAL,
 			     ub_expr,
 			     denominator);
     TEMP_INTEGER(two_b);
@@ -4838,7 +4838,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
 	assert(!marked_empty());
 	// Apply the affine upper bound.
 	generalized_affine_image(var,
-				 LESS_THAN_OR_EQUAL,
+				 LESS_OR_EQUAL,
 				 ub_expr,
 				 denominator);
 	// Now apply the affine lower bound, as recorded in `new_var'
@@ -4850,7 +4850,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
       else {
 	// Apply the affine upper bound.
 	generalized_affine_image(var,
-				 LESS_THAN_OR_EQUAL,
+				 LESS_OR_EQUAL,
 				 ub_expr,
 				 denominator);
 	// Here `w != var', so that `lb_expr' is of the form
@@ -4966,7 +4966,7 @@ Octagonal_Shape<T>::bounded_affine_image(const Variable var,
 
   // Apply the affine upper bound.
   generalized_affine_image(var,
-			   LESS_THAN_OR_EQUAL,
+			   LESS_OR_EQUAL,
 			   ub_expr,
 			   denominator);
 
@@ -5074,8 +5074,8 @@ Octagonal_Shape<T>
   // computed as the image of its inverse relation.
   const Coefficient& expr_v = expr.coefficient(var);
   if (expr_v != 0) {
-    const Relation_Symbol reversed_relsym = (relsym == LESS_THAN_OR_EQUAL)
-      ? GREATER_THAN_OR_EQUAL : LESS_THAN_OR_EQUAL;
+    const Relation_Symbol reversed_relsym = (relsym == LESS_OR_EQUAL)
+      ? GREATER_OR_EQUAL : LESS_OR_EQUAL;
     const Linear_Expression inverse
       = expr - (expr_v + denominator)*var;
     TEMP_INTEGER(inverse_den);
@@ -5166,10 +5166,10 @@ Octagonal_Shape<T>
     const Coefficient& den = lhs.coefficient(v);
     Relation_Symbol new_relsym = relsym;
     if (den < 0)
-      if (relsym == LESS_THAN_OR_EQUAL)
-	new_relsym = GREATER_THAN_OR_EQUAL;
-      else if (relsym == GREATER_THAN_OR_EQUAL)
-	new_relsym = LESS_THAN_OR_EQUAL;
+      if (relsym == LESS_OR_EQUAL)
+	new_relsym = GREATER_OR_EQUAL;
+      else if (relsym == GREATER_OR_EQUAL)
+	new_relsym = LESS_OR_EQUAL;
     Linear_Expression expr = rhs - b_lhs;
     generalized_affine_preimage(v, new_relsym, expr, den);
   }
@@ -5193,13 +5193,13 @@ Octagonal_Shape<T>
       // TODO: if the following constraint is NOT an octagonal difference,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
-      case LESS_THAN_OR_EQUAL:
+      case LESS_OR_EQUAL:
 	add_constraint(lhs <= rhs);
 	break;
       case EQUAL:
 	add_constraint(lhs == rhs);
 	break;
-      case GREATER_THAN_OR_EQUAL:
+      case GREATER_OR_EQUAL:
 	add_constraint(lhs >= rhs);
 	break;
       default:
@@ -5247,13 +5247,13 @@ Octagonal_Shape<T>
       // Else the following constraints are NOT octagonal differences,
       // so the method add_constraint() will ignore them.
       switch (relsym) {
-      case LESS_THAN_OR_EQUAL:
+      case LESS_OR_EQUAL:
 	add_constraint(new_var <= rhs);
 	break;
       case EQUAL:
 	add_constraint(new_var == rhs);
 	break;
-      case GREATER_THAN_OR_EQUAL:
+      case GREATER_OR_EQUAL:
 	add_constraint(new_var >= rhs);
 	break;
       default:
@@ -5302,14 +5302,14 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
     return;
 
   if (ub_expr.coefficient(var) == 0) {
-    refine(var, LESS_THAN_OR_EQUAL, ub_expr, denominator);
-    generalized_affine_preimage(var, GREATER_THAN_OR_EQUAL,
+    refine(var, LESS_OR_EQUAL, ub_expr, denominator);
+    generalized_affine_preimage(var, GREATER_OR_EQUAL,
 				lb_expr, denominator);
     return;
   }
   if (lb_expr.coefficient(var) == 0) {
-    refine(var, GREATER_THAN_OR_EQUAL, lb_expr, denominator);
-    generalized_affine_preimage(var, LESS_THAN_OR_EQUAL,
+    refine(var, GREATER_OR_EQUAL, lb_expr, denominator);
+    generalized_affine_preimage(var, LESS_OR_EQUAL,
 				ub_expr, denominator);
     return;
   }
@@ -5326,7 +5326,7 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
   affine_image(new_var, lb_inverse, inverse_den);
   strong_closure_assign();
   assert(!marked_empty());
-  generalized_affine_preimage(var, LESS_THAN_OR_EQUAL,
+  generalized_affine_preimage(var, LESS_OR_EQUAL,
 			      ub_expr, denominator);
   if (sgn(denominator) == sgn(inverse_den))
     add_constraint_and_minimize(var >= new_var) ;

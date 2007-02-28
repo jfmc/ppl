@@ -69,10 +69,10 @@ type linear_expression =
 
 type linear_constraint =
     Less_Than of linear_expression * linear_expression
-  | Less_Than_Or_Equal of linear_expression * linear_expression
+  | Less_Or_Equal of linear_expression * linear_expression
   | Equal of linear_expression * linear_expression
   | Greater_Than of linear_expression * linear_expression
-  | Greater_Than_Or_Equal of linear_expression * linear_expression
+  | Greater_Or_Equal of linear_expression * linear_expression
 
 type linear_generator =
     Line of linear_expression
@@ -110,8 +110,8 @@ type grid_generator_system = linear_grid_generator list
 type congruence_system = linear_congruence list
 
 (* Declared temporarily in this way to avoid name clashes. *)
-type relation_symbol = Less_Than_RS | Less_Than_Or_Equal_RS | Equal_RS
-                       | Greater_Than_RS | Greater_Than_Or_Equal_RS
+type relation_symbol = Less_Than_RS | Less_Or_Equal_RS | Equal_RS
+                       | Greater_Than_RS | Greater_Or_Equal_RS
 
 type optimization_mode = Minimization | Maximization
 

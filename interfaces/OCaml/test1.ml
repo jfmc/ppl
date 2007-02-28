@@ -61,7 +61,7 @@ let rec print_constraints = function
       print_linear_expression le1;
       print_string " < ";
       print_linear_expression le2;
-  | Less_Than_Or_Equal (le1, le2) ->
+  | Less_Or_Equal (le1, le2) ->
       print_linear_expression le1;
       print_string " <= ";
       print_linear_expression le2;
@@ -73,7 +73,7 @@ let rec print_constraints = function
       print_linear_expression le1;
       print_string " > ";
       print_linear_expression le2;
-  | Greater_Than_Or_Equal (le1, le2) ->
+  | Greater_Or_Equal (le1, le2) ->
       print_linear_expression le1;
       print_string " >= ";
       print_linear_expression le2;
@@ -141,8 +141,8 @@ let linear_expression_times c e = Times (c, e) ;;
 let linear_constraint_eq e1 e2 = Equal (e1, e2) ;;
 let linear_constraint_lt e1 e2 = Less_Than (e1, e2) ;;
 let linear_constraint_gt e1 e2 = Greater_Than (e1, e2) ;;
-let linear_constraint_le e1 e2 = Less_Than_Or_Equal (e1, e2) ;;
-let linear_constraint_ge e1 e2 = Greater_Than_Or_Equal (e1, e2) ;;
+let linear_constraint_le e1 e2 = Less_Or_Equal (e1, e2) ;;
+let linear_constraint_ge e1 e2 = Greater_Or_Equal (e1, e2) ;;
 
 let ( +/ ) = linear_expression_plus
 let ( -/ ) = linear_expression_minus

@@ -102,7 +102,7 @@ static {
 	NNC_Polyhedron ph1 = new NNC_Polyhedron(3,
 						Degenerate_Element.UNIVERSE);
 	ph1.add_constraint(new Constraint(lhs1,
-					 Relation_Symbol.GREATER_THAN_OR_EQUAL,
+					 Relation_Symbol.GREATER_OR_EQUAL,
 					 le_7));
 	ph1.add_constraint(new Constraint(le_X, Relation_Symbol.LESS_THAN,
 					  le_5Z));

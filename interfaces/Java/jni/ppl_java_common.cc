@@ -287,13 +287,13 @@ build_ppl_relsym(JNIEnv* env, const jobject& j_relsym) {
     return LESS_THAN;
   }
   case 1: {
-    return LESS_THAN_OR_EQUAL;
+    return LESS_OR_EQUAL;
   }
  case 2: {
    return EQUAL;
  }
   case 3: {
-    return GREATER_THAN_OR_EQUAL;
+    return GREATER_OR_EQUAL;
   }
   case 4: {
     return GREATER_THAN;
@@ -869,7 +869,7 @@ build_java_constraint(JNIEnv* env, const Constraint& c) {
  			    "Lppl_java/Relation_Symbol;");
    jfieldID rel_sym_gtoeq_get_id
      = env->GetStaticFieldID(j_rel_sym_class,
- 			    "GREATER_THAN_OR_EQUAL",
+ 			    "GREATER_OR_EQUAL",
  			    "Lppl_java/Relation_Symbol;");
    jobject lhs = get_linear_expression(env, c);
    jobject rhs = get_le_inhomogeneous_term(env, -c.inhomogeneous_term());

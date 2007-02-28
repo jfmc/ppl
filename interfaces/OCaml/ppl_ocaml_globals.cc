@@ -206,13 +206,13 @@ build_ppl_relsym(value caml_relsym) {
     return LESS_THAN;
   }
   case 1: {
-    return LESS_THAN_OR_EQUAL;
+    return LESS_OR_EQUAL;
   }
  case 2: {
    return EQUAL;
  }
   case 3: {
-    return GREATER_THAN_OR_EQUAL;
+    return GREATER_OR_EQUAL;
   }
   case 4: {
     return GREATER_THAN;
@@ -280,7 +280,7 @@ build_ppl_Constraint(value c) {
     // Less_Than
     return build_ppl_Linear_Expression(e1) < build_ppl_Linear_Expression(e2);
   case 1:
-    // Less_Than_Or_Equal
+    // Less_Or_Equal
     return build_ppl_Linear_Expression(e1) <= build_ppl_Linear_Expression(e2);
   case 2:
     // Equal
@@ -289,7 +289,7 @@ build_ppl_Constraint(value c) {
     // Greater_Than
     return build_ppl_Linear_Expression(e1) > build_ppl_Linear_Expression(e2);
   case 4:
-    // Greater_Than_Or_Equal
+    // Greater_Or_Equal
     return build_ppl_Linear_Expression(e1) >= build_ppl_Linear_Expression(e2);
   default:
     caml_invalid_argument("Error building PPL::Constraint");

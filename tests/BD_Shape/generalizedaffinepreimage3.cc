@@ -77,7 +77,7 @@ test02() {
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the BDS.
 
-    bd.generalized_affine_preimage(A + B, GREATER_THAN_OR_EQUAL, B + C);
+    bd.generalized_affine_preimage(A + B, GREATER_OR_EQUAL, B + C);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -102,7 +102,7 @@ test03() {
     // BD_Shape::generalized_affine_preimage(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the BDS.
-    bd.generalized_affine_preimage(B + C, LESS_THAN_OR_EQUAL, A + 1);
+    bd.generalized_affine_preimage(B + C, LESS_OR_EQUAL, A + 1);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

@@ -37,7 +37,7 @@ test01() {
 
   print_constraints(ph, "--- ph ---");
 
-  ph.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, A+2);
+  ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, A+2);
 
   C_Polyhedron known_result(2, UNIVERSE);
   known_result.add_constraint(0 <= A);
@@ -47,7 +47,7 @@ test01() {
 
   print_generators(ph, "--- ph after "
 		   "ph.generalized_affine_preimage"
-		   "(B, GREATER_THAN_OR_EQUAL, A+2) ---");
+		   "(B, GREATER_OR_EQUAL, A+2) ---");
 
   return ok;
 }
@@ -65,7 +65,7 @@ test02() {
 
   print_constraints(ph, "--- ph ---");
 
-  ph.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, A+2, -2);
+  ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, A+2, -2);
 
   C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point());
@@ -76,7 +76,7 @@ test02() {
 
   print_generators(ph, "--- ph after "
 		   "ph.generalized_affine_preimage"
-                   "(B, GREATER_THAN_OR_EQUAL, A+2, -2) ---");
+                   "(B, GREATER_OR_EQUAL, A+2, -2) ---");
 
   return ok;
 }
@@ -103,13 +103,13 @@ test03() {
   vset.insert(B);
   known_result.remove_space_dimensions(vset);
 
-  ph.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, A-B+2, -3);
+  ph.generalized_affine_preimage(B, LESS_OR_EQUAL, A-B+2, -3);
 
   bool ok = (ph == known_result);
 
   print_generators(ph, "--- ph after "
 		   "ph.generalized_affine_preimage"
-		   "(B, LESS_THAN_OR_EQUAL, A-B+2, -3) ---");
+		   "(B, LESS_OR_EQUAL, A-B+2, -3) ---");
 
   return ok;
 }

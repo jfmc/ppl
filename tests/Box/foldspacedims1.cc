@@ -158,7 +158,7 @@ test05() {
 
   bool ok = (box1 == known_result);
 
-  print_constraints(box1, "***  After folding {A,B} into C ***");
+  print_constraints(box1, "*** After folding {A, B} into C ***");
 
   return ok;
 }
@@ -194,7 +194,7 @@ test06() {
 
   bool ok = (box1 == known_result);
 
-  print_constraints(box1, "***  After folding {C,D} into A ***");
+  print_constraints(box1, "*** After folding {C, D} into A ***");
 
   return ok;
 }
@@ -227,7 +227,7 @@ test07() {
 
   bool ok = (box1 == known_result);
 
-  print_constraints(box1, "***  After folding {B,D} into C ***");
+  print_constraints(box1, "*** After folding {B, D} into C ***");
 
   return ok;
 }
@@ -257,7 +257,7 @@ test08() {
 
   bool ok = (box1 == known_result);
 
-  print_constraints(box1, "***  After folding {B,D} into C ***");
+  print_constraints(box1, "*** After folding {B, D} into C ***");
 
   return ok;
 }

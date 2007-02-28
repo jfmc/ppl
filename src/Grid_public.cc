@@ -335,9 +335,9 @@ PPL::Grid::relation_with(const Congruence& cg) const {
 	}
 	else {
 	  // A previously considered point p failed to satisfy cg such that
-	  // `point_sp' = `scalar_prod(p,cg)'
+	  // `point_sp' = `scalar_prod(p, cg)'
 	  // so, if we consider the parameter g-p instead of g, we have
-	  // scalar_prod(g-p, cg) = scalar_prod(g,cg) - scalar_prod(p,cg)
+	  // scalar_prod(g-p, cg) = scalar_prod(g, cg) - scalar_prod(p, cg)
 	  //                      = sp - point_sp
 	  sp -= point_sp;
 
@@ -2136,7 +2136,7 @@ bounded_affine_image(const Variable var,
   // In all other cases, generalized_affine_preimage() must
   // just add a line in the direction of var.
   generalized_affine_image(var,
-			   LESS_THAN_OR_EQUAL,
+			   LESS_OR_EQUAL,
 			   ub_expr,
 			   denominator);
 
@@ -2179,7 +2179,7 @@ bounded_affine_preimage(const Variable var,
   // In all other cases, generalized_affine_preimage() must
   // just add a line in the direction of var.
   generalized_affine_preimage(var,
-			      LESS_THAN_OR_EQUAL,
+			      LESS_OR_EQUAL,
 			      ub_expr,
 			      denominator);
 

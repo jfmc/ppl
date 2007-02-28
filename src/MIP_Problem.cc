@@ -2059,7 +2059,7 @@ if (!(s >> internal_space_dim))
   // The first `mapping' index is never used, so we initialize
   // it pushing back a dummy value.
   if (tableau.num_columns() != 0)
-    mapping.push_back(std::make_pair(0,0));
+    mapping.push_back(std::make_pair(0, 0));
 
   for (dimension_type i = 1; i < mapping_size; ++i) {
     if (!(s >> index))

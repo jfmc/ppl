@@ -558,8 +558,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_Linear_Expression_add_to_inhomogeneous(ppl_le, ppl_coeff);
-    ppl_new_Constraint(&ppl_c, ppl_le,
-		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
+    ppl_new_Constraint(&ppl_c, ppl_le, PPL_CONSTRAINT_TYPE_GREATER_OR_EQUAL);
     if (verbose) {
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
@@ -575,7 +574,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_Linear_Expression_add_to_inhomogeneous(ppl_le, ppl_coeff);
     ppl_new_Constraint(&ppl_c, ppl_le,
-		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
+		       PPL_CONSTRAINT_TYPE_LESS_OR_EQUAL);
     if (verbose) {
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
@@ -592,8 +591,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_Linear_Expression_add_to_inhomogeneous(ppl_le, ppl_coeff);
-    ppl_new_Constraint(&ppl_c, ppl_le,
-		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
+    ppl_new_Constraint(&ppl_c, ppl_le, PPL_CONSTRAINT_TYPE_GREATER_OR_EQUAL);
     if (verbose) {
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
@@ -606,8 +604,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_Linear_Expression_add_to_inhomogeneous(ppl_le2, ppl_coeff);
-    ppl_new_Constraint(&ppl_c, ppl_le2,
-		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
+    ppl_new_Constraint(&ppl_c, ppl_le2, PPL_CONSTRAINT_TYPE_LESS_OR_EQUAL);
     ppl_delete_Linear_Expression(ppl_le2);
     if (verbose) {
       ppl_io_fprint_Constraint(output_file, ppl_c);

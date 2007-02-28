@@ -36,7 +36,7 @@ test01() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL,
+  box.generalized_affine_preimage(B, GREATER_OR_EQUAL,
 				 Linear_Expression(-1));
 
   Rational_Box known_result(2);
@@ -46,7 +46,7 @@ test01() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, -1) ***");
+		    "GREATER_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -62,7 +62,7 @@ test02() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, Linear_Expression(-1));
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, Linear_Expression(-1));
 
   Rational_Box known_result(2, EMPTY);
 
@@ -70,7 +70,7 @@ test02() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -1) ***");
+		    "LESS_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -86,7 +86,7 @@ test03() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -B+1);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -B+1);
 
   Rational_Box known_result(2);
   known_result.add_constraint(4*A == 1);
@@ -96,7 +96,7 @@ test03() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -B+1) ***");
+		    "LESS_OR_EQUAL, -B+1) ***");
 
   return ok;
 }
@@ -112,7 +112,7 @@ test04() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, B+1);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, B+1);
 
   Rational_Box known_result(2);
   known_result.add_constraint(4*A == 1);
@@ -122,7 +122,7 @@ test04() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, B+1) ***");
+		    "LESS_OR_EQUAL, B+1) ***");
 
   return ok;
 }
@@ -138,7 +138,7 @@ test05() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 2*B+1);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, 2*B+1);
 
   Rational_Box known_result(2);
   known_result.add_constraint(7*A == 1);
@@ -148,7 +148,7 @@ test05() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, 2*B+1) ***");
+		    "LESS_OR_EQUAL, 2*B+1) ***");
 
   return ok;
 }
@@ -164,7 +164,7 @@ test06() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -2*B+1);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -2*B+1);
 
   Rational_Box known_result(2);
   known_result.add_constraint(5*A == 1);
@@ -174,7 +174,7 @@ test06() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -2*B+1) ***");
+		    "LESS_OR_EQUAL, -2*B+1) ***");
 
   return ok;
 }
@@ -190,7 +190,7 @@ test07() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 3*A-2*B+1);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, 3*A-2*B+1);
 
   Rational_Box known_result(2);
   known_result.add_constraint(3*A == 1);
@@ -200,7 +200,7 @@ test07() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, 3*A-2*B+1) ***");
+		    "LESS_OR_EQUAL, 3*A-2*B+1) ***");
 
   return ok;
 }
@@ -216,7 +216,7 @@ test08() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+1);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+1);
 
   Rational_Box known_result(2);
   known_result.add_constraint(3*A == 1);
@@ -226,7 +226,7 @@ test08() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B+1) ***");
+		    "LESS_OR_EQUAL, -3*A-2*B+1) ***");
 
   return ok;
 }
@@ -244,7 +244,7 @@ test09() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, 2);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2);
 
   Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -257,7 +257,7 @@ test09() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
+		    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
 
   return ok;
 }
@@ -282,7 +282,7 @@ test10() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, 3);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3);
 
   Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -296,7 +296,7 @@ test10() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
+		    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
 
   return ok;
 }
@@ -314,7 +314,7 @@ test11() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2);
 
   Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -324,7 +324,7 @@ test11() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
+		    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
   return ok;
 }
@@ -343,7 +343,7 @@ test12() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, -3);
+  box.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3);
 
   Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -357,7 +357,7 @@ test12() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
+		    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }
@@ -375,7 +375,7 @@ test13() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2);
+  box.generalized_affine_preimage(B, GREATER_OR_EQUAL, -3*A-2*B+7*C+1, -2);
 
   Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -388,7 +388,7 @@ test13() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
+		    "GREATER_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
   return ok;
 }
@@ -407,7 +407,7 @@ test14() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3);
+  box.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3);
 
   Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -421,7 +421,7 @@ test14() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
+		    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }
@@ -440,7 +440,7 @@ test15() {
 
   print_constraints(box, "*** box ***");
 
-  box.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3);
+  box.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3);
 
   Rational_Box known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -451,7 +451,7 @@ test15() {
 
   print_constraints(box,
 		    "*** box.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
+		    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }

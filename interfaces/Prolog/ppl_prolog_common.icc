@@ -229,7 +229,7 @@ handle_exception(const Prolog_unsigned_out_of_range& e) {
   Prolog_put_ulong(max, e.max());
   Prolog_construct_compound(max,
 			    Prolog_atom_from_string("unsigned_integer"
-						    "_less_than_or_equal_to"),
+						    "_less_or_equal"),
 			    max);
   Prolog_term_ref expected = Prolog_new_term_ref();
   Prolog_construct_compound(expected, a_expected, max);
@@ -1588,11 +1588,11 @@ term_to_relation_symbol(Prolog_term_ref t_r, const char* where) {
   if (ra == a_less_than)
     r = LESS_THAN;
   else if (ra == a_equal_less_than)
-    r = LESS_THAN_OR_EQUAL;
+    r = LESS_OR_EQUAL;
   else if (ra == a_equal)
     r = EQUAL;
   else if (ra == a_greater_than_equal)
-    r = GREATER_THAN_OR_EQUAL;
+    r = GREATER_OR_EQUAL;
   else {
     assert(ra == a_greater_than);
     r = GREATER_THAN;

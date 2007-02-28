@@ -44,8 +44,8 @@ test01() {
 
   ph.bounded_affine_image(A, 7-B, B+3);
 
-  kr1.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, 7-B);
-  kr2.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B+3);
+  kr1.generalized_affine_image(A, GREATER_OR_EQUAL, 7-B);
+  kr2.generalized_affine_image(A, LESS_OR_EQUAL, B+3);
   kr1.intersection_assign(kr2);
 
   bool ok = (ph == kr1);
@@ -76,8 +76,8 @@ test02() {
 
   ph.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3);
 
-  kr1.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, 7-3*A+2*B);
-  kr2.generalized_affine_image(A, LESS_THAN_OR_EQUAL, B+5*A-3);
+  kr1.generalized_affine_image(A, GREATER_OR_EQUAL, 7-3*A+2*B);
+  kr2.generalized_affine_image(A, LESS_OR_EQUAL, B+5*A-3);
   kr1.intersection_assign(kr2);
 
   bool ok = (ph == kr1);

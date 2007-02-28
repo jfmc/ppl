@@ -2357,11 +2357,11 @@ BD_Shape<T>::refine(const Variable var,
       add_dbm_constraint(0, v, b, denominator);
       add_dbm_constraint(v, 0, b, minus_den);
       break;
-    case LESS_THAN_OR_EQUAL:
+    case LESS_OR_EQUAL:
       // Add the constraint `var <= b/denominator'.
       add_dbm_constraint(0, v, b, denominator);
       break;
-    case GREATER_THAN_OR_EQUAL:
+    case GREATER_OR_EQUAL:
       // Add the constraint `var >= b/denominator',
       // i.e., `-var <= -b/denominator',
       add_dbm_constraint(v, 0, b, minus_den);
@@ -2388,12 +2388,12 @@ BD_Shape<T>::refine(const Variable var,
       div_round_up(d, -b, denominator);
       add_dbm_constraint(v, w, d);
       break;
-    case LESS_THAN_OR_EQUAL:
+    case LESS_OR_EQUAL:
       // Add the new constraint `v - w <= b/denominator'.
       div_round_up(d, b, denominator);
       add_dbm_constraint(w, v, d);
       break;
-    case GREATER_THAN_OR_EQUAL:
+    case GREATER_OR_EQUAL:
       // Add the new constraint `v - w >= b/denominator',
       // i.e., `w - v <= -b/denominator'.
       div_round_up(d, -b, denominator);
@@ -2570,7 +2570,7 @@ BD_Shape<T>::refine(const Variable var,
     }
     break;
 
-  case LESS_THAN_OR_EQUAL:
+  case LESS_OR_EQUAL:
     // Compute an upper approximation for `expr' into `sum',
     // taking into account the sign of `denominator'.
 
@@ -2628,7 +2628,7 @@ BD_Shape<T>::refine(const Variable var,
 	add_dbm_constraint(pinf_index, v, sum);
       break;
 
-  case GREATER_THAN_OR_EQUAL:
+  case GREATER_OR_EQUAL:
     // Compute an upper approximation for `-sc_expr' into `sum'.
     // Note: approximating `-sc_expr' from above and then negating the
     // result is the same as approximating `sc_expr' from below.
@@ -3189,7 +3189,7 @@ BD_Shape<T>
   if (t == 0) {
     // Case 1: ub_expr == b.
     generalized_affine_image(var,
-			     GREATER_THAN_OR_EQUAL,
+			     GREATER_OR_EQUAL,
 			     lb_expr,
 			     denominator);
     // Add the constraint `var <= b/denominator'.
@@ -3215,7 +3215,7 @@ BD_Shape<T>
 	assert(!marked_empty());
 	// Apply the affine lower bound.
 	generalized_affine_image(var,
-				 GREATER_THAN_OR_EQUAL,
+				 GREATER_OR_EQUAL,
 				 lb_expr,
 				 denominator);
 	// Now apply the affine upper bound, as recorded in `new_var'.
@@ -3229,7 +3229,7 @@ BD_Shape<T>
 	// +/-denominator * w + b.
 	// Apply the affine lower bound.
 	generalized_affine_image(var,
-				 GREATER_THAN_OR_EQUAL,
+				 GREATER_OR_EQUAL,
 				 lb_expr,
 				 denominator);
 	if (a == denominator) {
@@ -3329,7 +3329,7 @@ BD_Shape<T>
   }
   // Apply the affine lower bound.
   generalized_affine_image(var,
-			   GREATER_THAN_OR_EQUAL,
+			   GREATER_OR_EQUAL,
 			   lb_expr,
 			   denominator);
   // Return immediately if no approximation could be computed.
@@ -3405,14 +3405,14 @@ BD_Shape<T>
     return;
 
   if (ub_expr.coefficient(var) == 0) {
-    refine(var, LESS_THAN_OR_EQUAL, ub_expr, denominator);
-    generalized_affine_preimage(var, GREATER_THAN_OR_EQUAL,
+    refine(var, LESS_OR_EQUAL, ub_expr, denominator);
+    generalized_affine_preimage(var, GREATER_OR_EQUAL,
 				lb_expr, denominator);
     return;
   }
   if (lb_expr.coefficient(var) == 0) {
-    refine(var, GREATER_THAN_OR_EQUAL, lb_expr, denominator);
-    generalized_affine_preimage(var, LESS_THAN_OR_EQUAL,
+    refine(var, GREATER_OR_EQUAL, lb_expr, denominator);
+    generalized_affine_preimage(var, LESS_OR_EQUAL,
 				ub_expr, denominator);
     return;
   }
@@ -3429,7 +3429,7 @@ BD_Shape<T>
   affine_image(new_var, lb_inverse, lb_inverse_den);
   shortest_path_closure_assign();
   assert(!marked_empty());
-  generalized_affine_preimage(var, LESS_THAN_OR_EQUAL,
+  generalized_affine_preimage(var, LESS_OR_EQUAL,
 			      ub_expr, denominator);
   if (sgn(denominator) == sgn(lb_inverse_den))
     add_constraint_and_minimize(var >= new_var);
@@ -3522,11 +3522,11 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
     // Both shortest-path closure and reduction are lost.
     status.reset_shortest_path_closed();
     switch (relsym) {
-    case LESS_THAN_OR_EQUAL:
+    case LESS_OR_EQUAL:
       // Add the constraint `var <= b/denominator'.
       add_dbm_constraint(0, v, b, denominator);
       break;
-    case GREATER_THAN_OR_EQUAL:
+    case GREATER_OR_EQUAL:
       // Add the constraint `var >= b/denominator',
       // i.e., `-var <= -b/denominator',
       add_dbm_constraint(v, 0, b, minus_den);
@@ -3547,7 +3547,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
       // Case 2: expr == a*w + b, with a == +/- denominator.
       N d;
       switch (relsym) {
-      case LESS_THAN_OR_EQUAL:
+      case LESS_OR_EQUAL:
 	div_round_up(d, b, denominator);
 	if (w == v) {
 	  // `expr' is of the form: a*v + b.
@@ -3600,7 +3600,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	}
 	break;
 
-      case GREATER_THAN_OR_EQUAL:
+      case GREATER_OR_EQUAL:
 	div_round_up(d, b, minus_den);
 	if (w == v) {
 	  // `expr' is of the form: a*w + b.
@@ -3695,7 +3695,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
   dimension_type pinf_count = 0;
 
   switch (relsym) {
-  case LESS_THAN_OR_EQUAL:
+  case LESS_OR_EQUAL:
     // Compute an upper approximation for `sc_expr' into `sum'.
 
     // Approximate the inhomogeneous term.
@@ -3763,7 +3763,7 @@ BD_Shape<T>::generalized_affine_image(const Variable var,
 	add_dbm_constraint(pinf_index, v, sum);
     break;
 
-  case GREATER_THAN_OR_EQUAL:
+  case GREATER_OR_EQUAL:
     // Compute an upper approximation for `-sc_expr' into `sum'.
     // Note: approximating `-sc_expr' from above and then negating the
     // result is the same as approximating `sc_expr' from below.
@@ -3901,13 +3901,13 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     // TODO: if it is not a bounded difference, should we compute
     // approximations for this constraint?
     switch (relsym) {
-    case LESS_THAN_OR_EQUAL:
+    case LESS_OR_EQUAL:
       add_constraint(lhs <= rhs);
       break;
     case EQUAL:
       add_constraint(lhs == rhs);
       break;
-    case GREATER_THAN_OR_EQUAL:
+    case GREATER_OR_EQUAL:
       add_constraint(lhs >= rhs);
       break;
     default:
@@ -3925,10 +3925,10 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     const Coefficient& den = lhs.coefficient(v);
     Relation_Symbol new_relsym = relsym;
     if (den < 0)
-      if (relsym == LESS_THAN_OR_EQUAL)
-	new_relsym = GREATER_THAN_OR_EQUAL;
-      else if (relsym == GREATER_THAN_OR_EQUAL)
-	new_relsym = LESS_THAN_OR_EQUAL;
+      if (relsym == LESS_OR_EQUAL)
+	new_relsym = GREATER_OR_EQUAL;
+      else if (relsym == GREATER_OR_EQUAL)
+	new_relsym = LESS_OR_EQUAL;
     Linear_Expression expr = rhs - b_lhs;
     generalized_affine_image(v, new_relsym, expr, den);
   }
@@ -3954,13 +3954,13 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // TODO: if the following constraint is NOT a bounded difference,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
-      case LESS_THAN_OR_EQUAL:
+      case LESS_OR_EQUAL:
 	add_constraint(lhs <= rhs);
 	break;
       case EQUAL:
 	add_constraint(lhs == rhs);
 	break;
-      case GREATER_THAN_OR_EQUAL:
+      case GREATER_OR_EQUAL:
 	add_constraint(lhs >= rhs);
 	break;
       default:
@@ -4003,13 +4003,13 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       // Thus, the method add_constraint() will simply ignore it.
       // Should we compute approximations for this constraint?
       switch (relsym) {
-      case LESS_THAN_OR_EQUAL:
+      case LESS_OR_EQUAL:
 	add_constraint(lhs <= new_var);
 	break;
       case EQUAL:
 	add_constraint(lhs == new_var);
 	break;
-      case GREATER_THAN_OR_EQUAL:
+      case GREATER_OR_EQUAL:
 	add_constraint(lhs >= new_var);
 	break;
       default:
@@ -4079,8 +4079,8 @@ BD_Shape<T>::generalized_affine_preimage(const Variable var,
   // computed as the image of its inverse relation.
   const Coefficient& expr_v = expr.coefficient(var);
   if (expr_v != 0) {
-    const Relation_Symbol reversed_relsym = (relsym == LESS_THAN_OR_EQUAL)
-      ? GREATER_THAN_OR_EQUAL : LESS_THAN_OR_EQUAL;
+    const Relation_Symbol reversed_relsym = (relsym == LESS_OR_EQUAL)
+      ? GREATER_OR_EQUAL : LESS_OR_EQUAL;
     const Linear_Expression inverse
       = expr - (expr_v + denominator)*var;
     TEMP_INTEGER(inverse_den);
@@ -4171,10 +4171,10 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
     const Coefficient& den = lhs.coefficient(v);
     Relation_Symbol new_relsym = relsym;
     if (den < 0)
-      if (relsym == LESS_THAN_OR_EQUAL)
-	new_relsym = GREATER_THAN_OR_EQUAL;
-      else if (relsym == GREATER_THAN_OR_EQUAL)
-	new_relsym = LESS_THAN_OR_EQUAL;
+      if (relsym == LESS_OR_EQUAL)
+	new_relsym = GREATER_OR_EQUAL;
+      else if (relsym == GREATER_OR_EQUAL)
+	new_relsym = LESS_OR_EQUAL;
     Linear_Expression expr = rhs - b_lhs;
     generalized_affine_preimage(v, new_relsym, expr, den);
   }
@@ -4198,13 +4198,13 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       // TODO: if the following constraint is NOT a bounded difference,
       // it will be simply ignored. Should we compute approximations for it?
       switch (relsym) {
-      case LESS_THAN_OR_EQUAL:
+      case LESS_OR_EQUAL:
 	add_constraint(lhs <= rhs);
 	break;
       case EQUAL:
 	add_constraint(lhs == rhs);
 	break;
-      case GREATER_THAN_OR_EQUAL:
+      case GREATER_OR_EQUAL:
 	add_constraint(lhs >= rhs);
 	break;
       default:
@@ -4245,13 +4245,13 @@ BD_Shape<T>::generalized_affine_preimage(const Linear_Expression& lhs,
       // will ignore it, 'cause the constraint is NOT a bounded
       // difference.
       switch (relsym) {
-      case LESS_THAN_OR_EQUAL:
+      case LESS_OR_EQUAL:
 	add_constraint(new_var <= rhs);
 	break;
       case EQUAL:
 	add_constraint(new_var == rhs);
 	break;
-      case GREATER_THAN_OR_EQUAL:
+      case GREATER_OR_EQUAL:
 	add_constraint(new_var >= rhs);
 	break;
       default:

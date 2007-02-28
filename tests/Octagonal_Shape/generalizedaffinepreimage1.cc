@@ -36,8 +36,7 @@ test01() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL,
-				  Linear_Expression(-1));
+  oct.generalized_affine_preimage(B, GREATER_OR_EQUAL, Linear_Expression(-1));
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(2*A == 1);
@@ -46,7 +45,7 @@ test01() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, -1) ***");
+		    "GREATER_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -62,8 +61,7 @@ test02() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL,
-				  Linear_Expression(-1));
+  oct.generalized_affine_preimage(B, LESS_OR_EQUAL, Linear_Expression(-1));
 
   Octagonal_Shape<mpq_class> known_result(2, EMPTY);
 
@@ -71,7 +69,7 @@ test02() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -1) ***");
+		    "LESS_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -91,13 +89,13 @@ test03() {
   known_result.add_constraint(4*A == 1);
   known_result.add_constraint(-B >= 4);
 
-  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -B+1);
+  oct.generalized_affine_preimage(B, LESS_OR_EQUAL, -B+1);
 
   bool ok = check_result(oct, known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -B+1) ***");
+		    "LESS_OR_EQUAL, -B+1) ***");
 
   return ok;
 }
@@ -113,7 +111,7 @@ test04() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, B+1);
+  oct.generalized_affine_preimage(B, LESS_OR_EQUAL, B+1);
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(4*A == 1);
@@ -123,7 +121,7 @@ test04() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, B+1) ***");
+		    "LESS_OR_EQUAL, B+1) ***");
 
   return ok;
 }
@@ -139,7 +137,7 @@ test05() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 2*B+1);
+  oct.generalized_affine_preimage(B, LESS_OR_EQUAL, 2*B+1);
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(7*A == 1);
@@ -149,7 +147,7 @@ test05() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, 2*B+1) ***");
+		    "LESS_OR_EQUAL, 2*B+1) ***");
 
   return ok;
 }
@@ -165,7 +163,7 @@ test06() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -2*B+1);
+  oct.generalized_affine_preimage(B, LESS_OR_EQUAL, -2*B+1);
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(5*A == 1);
@@ -175,7 +173,7 @@ test06() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -2*B+1) ***");
+		    "LESS_OR_EQUAL, -2*B+1) ***");
 
   return ok;
 }
@@ -191,7 +189,7 @@ test07() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, 3*A-2*B+1);
+  oct.generalized_affine_preimage(B, LESS_OR_EQUAL, 3*A-2*B+1);
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(3*A == 1);
@@ -201,7 +199,7 @@ test07() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, 3*A-2*B+1) ***");
+		    "LESS_OR_EQUAL, 3*A-2*B+1) ***");
 
   return ok;
 }
@@ -217,7 +215,7 @@ test08() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+1);
+  oct.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+1);
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(3*A == 1);
@@ -227,7 +225,7 @@ test08() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B+1) ***");
+		    "LESS_OR_EQUAL, -3*A-2*B+1) ***");
 
   return ok;
 }
@@ -245,7 +243,7 @@ test09() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, 2);
+  oct.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2);
 
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -258,7 +256,7 @@ test09() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
+		    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, 2) ***");
 
   return ok;
 }
@@ -293,13 +291,13 @@ test10() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, 3);
+  oct.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3);
 
   bool ok = check_result(oct, known_result, "7.39e-5", "4.07e-5", "2.55e-5");
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
+		    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, 3) ***");
 
   return ok;
 }
@@ -317,7 +315,7 @@ test11() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2);
+  oct.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2);
 
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -327,7 +325,7 @@ test11() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
+		    "LESS_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
   return ok;
 }
@@ -346,7 +344,7 @@ test12() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, -3);
+  oct.generalized_affine_preimage(B, LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3);
 
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -360,7 +358,7 @@ test12() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "LESS_THAN_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
+		    "LESS_OR_EQUAL, -3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }
@@ -378,8 +376,7 @@ test13() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL,
-				  -3*A-2*B+7*C+1, -2);
+  oct.generalized_affine_preimage(B, GREATER_OR_EQUAL, -3*A-2*B+7*C+1, -2);
 
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -392,7 +389,7 @@ test13() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
+		    "GREATER_OR_EQUAL, -3*A-2*B+7*C+1, -2) ***");
 
   return ok;
 }
@@ -421,13 +418,13 @@ test14() {
   known_result.add_constraint(3*C <= 7);
   known_result.add_constraint(5*C >= 7);
 
-  oct.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3);
+  oct.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3);
 
   bool ok = check_result(oct, known_result, "7.39e-6", "4.07e-6", "2.55e-6");
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
+		    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }
@@ -446,7 +443,7 @@ test15() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3);
+  oct.generalized_affine_preimage(B, GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3);
 
   Octagonal_Shape<mpq_class> known_result(3);
   known_result.add_constraint(3*A == 1);
@@ -457,7 +454,7 @@ test15() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
+		    "GREATER_OR_EQUAL, 3*A-2*B-7*C+1, -3) ***");
 
   return ok;
 }
@@ -506,14 +503,13 @@ test17() {
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(2*A == 1);
 
-  oct.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL,
-				  Linear_Expression(-1));
+  oct.generalized_affine_preimage(B, GREATER_OR_EQUAL, Linear_Expression(-1));
 
   bool ok = (Octagonal_Shape<mpq_class>(oct) == known_result);
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(B, "
-		    "GREATER_THAN_OR_EQUAL, -1) ***");
+		    "GREATER_OR_EQUAL, -1) ***");
 
   return ok;
 }
@@ -556,7 +552,7 @@ test19() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(A, LESS_THAN_OR_EQUAL, B, 5);
+  oct.generalized_affine_preimage(A, LESS_OR_EQUAL, B, 5);
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B <= 3);
@@ -565,7 +561,7 @@ test19() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(A, "
-		    "LESS_THAN_OR_EQUAL, B, 5) ***");
+		    "LESS_OR_EQUAL, B, 5) ***");
 
   return ok;
 }
@@ -581,7 +577,7 @@ test20() {
 
   print_constraints(oct, "*** oct ***");
 
-  oct.generalized_affine_preimage(A, LESS_THAN_OR_EQUAL, B + 3, 2);
+  oct.generalized_affine_preimage(A, LESS_OR_EQUAL, B + 3, 2);
 
   Octagonal_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B <= 5);
@@ -590,7 +586,7 @@ test20() {
 
   print_constraints(oct,
 		    "*** oct.generalized_affine_preimage(A, "
-		    "LESS_THAN_OR_EQUAL, B + 3, 2) ***");
+		    "LESS_OR_EQUAL, B + 3, 2) ***");
 
   return ok;
 }

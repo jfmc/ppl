@@ -972,7 +972,7 @@ test38() {
     // applying the function with a linear expression with the denominator
     // equal to zero.
     Coefficient d = 0;
-    ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, B + 2, d);
+    ph.generalized_affine_image(B, GREATER_OR_EQUAL, B + 2, d);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -995,7 +995,7 @@ test39() {
     // This is an incorrect use of function
     // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal to
     // use a variable in the expression that does not appear in the polyhedron.
-    ph.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, B);
+    ph.generalized_affine_image(A, GREATER_OR_EQUAL, B);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -1019,7 +1019,7 @@ test40() {
     // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal to
     // apply this function to a variable that is not in the space of
     // the polyhedron.
-    ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL, A + 1);
+    ph.generalized_affine_image(B, LESS_OR_EQUAL, A + 1);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -1044,7 +1044,7 @@ test41() {
     // C_Polyhedron::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the polyhedron.
-    ph.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
+    ph.generalized_affine_image(A + B, GREATER_OR_EQUAL, B + C);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;
@@ -1069,7 +1069,7 @@ test42() {
     // C_Polyhedron::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the polyhedron.
-    ph.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
+    ph.generalized_affine_image(B + C, LESS_OR_EQUAL, A + 1);
   }
   catch (std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl << endl;

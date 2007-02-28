@@ -31,11 +31,11 @@ public enum Relation_Symbol {
     /*! Less than. */
     LESS_THAN,
     /*! Less than or equal to. */
-    LESS_THAN_OR_EQUAL,
+    LESS_OR_EQUAL,
     /*! Equal to. */
     EQUAL,
     /*! Greater than or equal to. */
-    GREATER_THAN_OR_EQUAL,
+    GREATER_OR_EQUAL,
     /*! Greater than. */
     GREATER_THAN,
  }

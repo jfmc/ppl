@@ -136,7 +136,7 @@ Box<Interval>::Box(const Generator_System& gs)
 	    q_interval.set_universe();
 	    refine_existential(q_interval, LESS_THAN, q);
 	    if (upper_i < upper(q_interval)) {
-	      refine_existential(q_interval, GREATER_THAN_OR_EQUAL, upper_i);
+	      refine_existential(q_interval, GREATER_OR_EQUAL, upper_i);
 	      join_assign(seq_i, q_interval);
 	    }
 	  }
@@ -145,7 +145,7 @@ Box<Interval>::Box(const Generator_System& gs)
 	    q_interval.set_universe();
 	    refine_existential(q_interval, GREATER_THAN, q);
 	    if (lower_i > lower(q_interval)) {
-	      refine_existential(q_interval, LESS_THAN_OR_EQUAL, lower_i);
+	      refine_existential(q_interval, LESS_OR_EQUAL, lower_i);
 	      join_assign(seq_i, q_interval);
 	    }
 	  }
@@ -226,7 +226,7 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
 	assign_r(bound.get_num(), num, ROUND_NOT_NEEDED);
 	assign_r(bound.get_den(), den, ROUND_NOT_NEEDED);
 	seq_i.upper_set_unbounded();
-	refine_existential(seq_i, LESS_THAN_OR_EQUAL, bound);
+	refine_existential(seq_i, LESS_OR_EQUAL, bound);
       }
       else
 	seq_i.upper_set_unbounded();
@@ -239,7 +239,7 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
 	assign_r(bound.get_den(), den, ROUND_NOT_NEEDED);
 	// FIXME: how to directly set the lower bound?
 	seq_i.lower_set_unbounded();
-	refine_existential(seq_i, GREATER_THAN_OR_EQUAL, bound);
+	refine_existential(seq_i, GREATER_OR_EQUAL, bound);
       }
       else
 	seq_i.lower_set_unbounded();
@@ -939,7 +939,7 @@ Box<Interval>::add_constraint(const Constraint& c) {
     refine_existential(seq_c, EQUAL, q);
     break;
   case Constraint::NONSTRICT_INEQUALITY:
-    refine_existential(seq_c, (d > 0) ? GREATER_THAN_OR_EQUAL : LESS_THAN_OR_EQUAL, q);
+    refine_existential(seq_c, (d > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL, q);
     // FIXME: this assertion fails due to a bug in refine.
     assert(seq_c.OK());
     break;

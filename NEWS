@@ -47,6 +47,10 @@ o  The new methods
   it has no constraints, generators, congruences or grid-generators,
   respectively).
 
+o  All identifiers containing the strings `less_than_or_equal' or
+   `greater_than_or_equal', any case, have been renamed so as to contain
+   `less_or_equal' or `greater_or_equal', respectively.
+
 
 Bugfixes
 ========

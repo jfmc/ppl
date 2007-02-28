@@ -68,7 +68,7 @@ test01() {
   return ok;
 }
 
-// Product(dims,type)
+// Product(dims, type)
 bool
 test02() {
   Product dp1(3);
@@ -1514,7 +1514,7 @@ test70() {
   dp.add_constraint(A <= B);
   dp.add_congruence(A %= B);
 
-  dp.generalized_affine_preimage(B, GREATER_THAN_OR_EQUAL, A+2);
+  dp.generalized_affine_preimage(B, GREATER_OR_EQUAL, A+2);
 
   Product known_dp(3);
   known_dp.add_constraint(0 <= A);
@@ -1572,9 +1572,7 @@ test72() {
   dp.add_constraint(B >= 0);
   dp.add_constraint(A - B >= 1);
 
-  dp.generalized_affine_image(Linear_Expression(2),
-			      LESS_THAN_OR_EQUAL,
-			      A + B);
+  dp.generalized_affine_image(Linear_Expression(2), LESS_OR_EQUAL, A + B);
 
   Product known_dp(3);
   known_dp.add_congruence(A %= 0);
@@ -1632,7 +1630,7 @@ test74() {
   dp.add_constraints(cs);
   dp.add_congruence(A %= B);
 
-  dp.generalized_affine_preimage(1*B, GREATER_THAN_OR_EQUAL, A+2);
+  dp.generalized_affine_preimage(1*B, GREATER_OR_EQUAL, A+2);
 
   Product known_dp(3);
   known_dp.add_constraint(0 <= A);

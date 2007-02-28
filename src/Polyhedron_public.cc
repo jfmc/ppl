@@ -2179,7 +2179,7 @@ bounded_affine_image(const Variable var,
   if (lb_expr.coefficient(var) == 0) {
     // Here `var' may only occur in `ub_expr'.
     generalized_affine_image(var,
-			     LESS_THAN_OR_EQUAL,
+			     LESS_OR_EQUAL,
 			     ub_expr,
 			     denominator);
     if (denominator > 0)
@@ -2190,7 +2190,7 @@ bounded_affine_image(const Variable var,
   else if (ub_expr.coefficient(var) == 0) {
     // Here `var' only occurs in `lb_expr'.
     generalized_affine_image(var,
-			     GREATER_THAN_OR_EQUAL,
+			     GREATER_OR_EQUAL,
 			     lb_expr,
 			     denominator);
     if (denominator > 0)
@@ -2208,7 +2208,7 @@ bounded_affine_image(const Variable var,
     add_constraint_and_minimize(denominator*new_var == ub_expr);
     // Apply the affine lower bound.
     generalized_affine_image(var,
-			     GREATER_THAN_OR_EQUAL,
+			     GREATER_OR_EQUAL,
 			     lb_expr,
 			     denominator);
     // Now apply the affine upper bound, as recorded in `new_var'
@@ -2345,10 +2345,10 @@ generalized_affine_image(const Variable var,
     return;
 
   switch (relsym) {
-  case LESS_THAN_OR_EQUAL:
+  case LESS_OR_EQUAL:
     add_generator(ray(-var));
     break;
-  case GREATER_THAN_OR_EQUAL:
+  case GREATER_OR_EQUAL:
     add_generator(ray(var));
     break;
   case LESS_THAN:
@@ -2437,11 +2437,11 @@ generalized_affine_preimage(const Variable var,
   case LESS_THAN:
     reversed_relsym = GREATER_THAN;
     break;
-  case LESS_THAN_OR_EQUAL:
-    reversed_relsym = GREATER_THAN_OR_EQUAL;
+  case LESS_OR_EQUAL:
+    reversed_relsym = GREATER_OR_EQUAL;
     break;
-  case GREATER_THAN_OR_EQUAL:
-    reversed_relsym = LESS_THAN_OR_EQUAL;
+  case GREATER_OR_EQUAL:
+    reversed_relsym = LESS_OR_EQUAL;
     break;
   case GREATER_THAN:
     reversed_relsym = LESS_THAN;
@@ -2478,10 +2478,10 @@ generalized_affine_preimage(const Variable var,
   case LESS_THAN:
     add_constraint(denominator*var < expr);
     break;
-  case LESS_THAN_OR_EQUAL:
+  case LESS_OR_EQUAL:
     add_constraint(denominator*var <= expr);
     break;
-  case GREATER_THAN_OR_EQUAL:
+  case GREATER_OR_EQUAL:
     add_constraint(denominator*var >= expr);
     break;
   case GREATER_THAN:
@@ -2544,13 +2544,13 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     case LESS_THAN:
       add_constraint(lhs < rhs);
       break;
-    case LESS_THAN_OR_EQUAL:
+    case LESS_OR_EQUAL:
       add_constraint(lhs <= rhs);
       break;
     case EQUAL:
       add_constraint(lhs == rhs);
       break;
-    case GREATER_THAN_OR_EQUAL:
+    case GREATER_OR_EQUAL:
       add_constraint(lhs >= rhs);
       break;
     case GREATER_THAN:
@@ -2597,13 +2597,13 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
       case LESS_THAN:
 	add_constraint_and_minimize(lhs < new_var);
 	break;
-      case LESS_THAN_OR_EQUAL:
+      case LESS_OR_EQUAL:
 	add_constraint_and_minimize(lhs <= new_var);
 	break;
       case EQUAL:
 	add_constraint_and_minimize(lhs == new_var);
 	break;
-      case GREATER_THAN_OR_EQUAL:
+      case GREATER_OR_EQUAL:
 	add_constraint_and_minimize(lhs >= new_var);
 	break;
       case GREATER_THAN:
@@ -2637,13 +2637,13 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     case LESS_THAN:
       add_constraint(lhs < rhs);
       break;
-    case LESS_THAN_OR_EQUAL:
+    case LESS_OR_EQUAL:
       add_constraint(lhs <= rhs);
       break;
     case EQUAL:
       add_constraint(lhs == rhs);
       break;
-    case GREATER_THAN_OR_EQUAL:
+    case GREATER_OR_EQUAL:
       add_constraint(lhs >= rhs);
       break;
     case GREATER_THAN:
@@ -2736,13 +2736,13 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
       case LESS_THAN:
 	add_constraint_and_minimize(new_var < rhs);
 	break;
-      case LESS_THAN_OR_EQUAL:
+      case LESS_OR_EQUAL:
 	add_constraint_and_minimize(new_var <= rhs);
 	break;
       case EQUAL:
 	add_constraint_and_minimize(new_var == rhs);
 	break;
-      case GREATER_THAN_OR_EQUAL:
+      case GREATER_OR_EQUAL:
 	add_constraint_and_minimize(new_var >= rhs);
 	break;
       case GREATER_THAN:
@@ -2767,13 +2767,13 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
     case LESS_THAN:
       add_constraint(lhs < rhs);
       break;
-    case LESS_THAN_OR_EQUAL:
+    case LESS_OR_EQUAL:
       add_constraint(lhs <= rhs);
       break;
     case EQUAL:
       add_constraint(lhs == rhs);
       break;
-    case GREATER_THAN_OR_EQUAL:
+    case GREATER_OR_EQUAL:
       add_constraint(lhs >= rhs);
       break;
     case GREATER_THAN:

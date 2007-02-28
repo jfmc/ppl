@@ -290,7 +290,7 @@ test11() {
 
 // add_grid_generators -- add to a grid where the generator system of the
 // grid starts with a parameter (test point finding loop in
-// Grid::normalize_divisors(gs,gs)).
+// Grid::normalize_divisors(gs, gs)).
 bool
 test12() {
   Variable A(0);

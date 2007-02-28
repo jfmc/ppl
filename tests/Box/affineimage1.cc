@@ -327,7 +327,7 @@ test12() {
 
   try {
     // This is an incorrect use of method
-    // Box::affine_image(v, expr,d): it is illegal to apply
+    // Box::affine_image(v, expr, d): it is illegal to apply
     // the method to a linear expression with the denominator equal to
     // zero.
     Coefficient d = 0;
@@ -406,7 +406,7 @@ test15() {
 
   try {
     // This is an incorrect use of method
-    // Box::affine_image(v, expr,d): it is illegal to apply
+    // Box::affine_image(v, expr, d): it is illegal to apply
     // the method to a linear expression with the denominator equal to
     // zero.
     Coefficient d = 0;

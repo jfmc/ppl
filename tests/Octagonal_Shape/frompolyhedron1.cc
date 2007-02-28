@@ -219,7 +219,7 @@ test08() {
   TOctagonal_Shape oct1(ph, SIMPLEX_COMPLEXITY);
   TOctagonal_Shape oct2(ph, ANY_COMPLEXITY);
 
-  Octagonal_Shape<mpq_class> known_result(2,EMPTY);
+  Octagonal_Shape<mpq_class> known_result(2, EMPTY);
 
   bool ok = (oct1 == oct2
 	     && Octagonal_Shape<mpq_class>(oct1) == known_result);

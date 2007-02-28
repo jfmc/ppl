@@ -34,8 +34,7 @@ test01() {
   gr.add_congruence(A %= 0);
   gr.add_congruence((B %= 0) / 2);
 
-  gr.generalized_affine_image(B, LESS_THAN_OR_EQUAL,
-                Linear_Expression::zero());
+  gr.generalized_affine_image(B, LESS_OR_EQUAL, Linear_Expression::zero());
 
   Grid known_gr(2, EMPTY);
   known_gr.add_grid_generator(grid_point());
@@ -45,7 +44,7 @@ test01() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_image(B, LESS_THAN_OR_EQUAL, Linear_Expression::zero()) ***");
+		    "*** gr.generalized_affine_image(B, LESS_OR_EQUAL, Linear_Expression::zero()) ***");
 
   return ok;
 }
@@ -62,14 +61,14 @@ test02() {
 
   print_generators(gr, "*** gr ***");
 
-  gr.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, A - 2*C + 3, 4);
+  gr.generalized_affine_image(A, GREATER_OR_EQUAL, A - 2*C + 3, 4);
 
   Grid known_gr(5, EMPTY);
 
   bool ok = (gr == known_gr);
 
   print_generators(gr,
-    "*** gr.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, A - 2*C + 3, 4) ***");
+    "*** gr.generalized_affine_image(A, GREATER_OR_EQUAL, A - 2*C + 3, 4) ***");
 
   return ok;
 }
@@ -109,7 +108,7 @@ test04() {
   gr.add_congruence((A ==  0) / 0);
 
   try {
-    gr.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, A + 2, 0);
+    gr.generalized_affine_image(B, GREATER_OR_EQUAL, A + 2, 0);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -133,7 +132,7 @@ test05() {
   gr.add_congruence((A ==  0) / 0);
 
   try {
-    gr.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, D + 2, 1);
+    gr.generalized_affine_image(B, GREATER_OR_EQUAL, D + 2, 1);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -157,7 +156,7 @@ test06() {
   gr.add_congruence((A ==  0) / 0);
 
   try {
-    gr.generalized_affine_image(D, GREATER_THAN_OR_EQUAL, A + 2, 1);
+    gr.generalized_affine_image(D, GREATER_OR_EQUAL, A + 2, 1);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -180,7 +179,7 @@ test07() {
   gr.add_congruence((A ==  0) / 0);
 
   try {
-    gr.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, A + 2, 1, 1);
+    gr.generalized_affine_image(A, GREATER_OR_EQUAL, A + 2, 1, 1);
   }
   catch (const std::invalid_argument& e) {
     nout << "invalid_argument: " << e.what() << endl;
@@ -306,7 +305,7 @@ test12() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_image(A,GREATER_THAN , A + 2, 1, 1) ***");
+		    "*** gr.generalized_affine_image(A, GREATER_THAN , A + 2, 1, 1) ***");
 
   return ok;
 }

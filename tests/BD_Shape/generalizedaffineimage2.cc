@@ -36,7 +36,7 @@ test01() {
 
   print_constraints(bd, "*** bd ***");
 
-  bd.generalized_affine_image(y, LESS_THAN_OR_EQUAL, -y + 1);
+  bd.generalized_affine_image(y, LESS_OR_EQUAL, -y + 1);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x <= 4);
@@ -46,7 +46,7 @@ test01() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(y, "
-                        "LESS_THAN_OR_EQUAL, -y + 1) ***");
+                        "LESS_OR_EQUAL, -y + 1) ***");
 
   return ok;
 }
@@ -63,7 +63,7 @@ test02() {
 
   print_constraints(bd, "*** bd ***");
 
-  bd.generalized_affine_image(x, GREATER_THAN_OR_EQUAL, -x - 3);
+  bd.generalized_affine_image(x, GREATER_OR_EQUAL, -x - 3);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(x >= -7);
@@ -72,7 +72,7 @@ test02() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(x, "
-		        "GREATER_THAN_OR_EQUAL, -x - 3) ***");
+		        "GREATER_OR_EQUAL, -x - 3) ***");
 
   return ok;
 }
@@ -88,7 +88,7 @@ test03() {
 
   print_constraints(bd, "*** bd ***");
 
-  bd.generalized_affine_image(B, LESS_THAN_OR_EQUAL, 3*B + 1, 2);
+  bd.generalized_affine_image(B, LESS_OR_EQUAL, 3*B + 1, 2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A >= 0);
@@ -97,7 +97,7 @@ test03() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(B, "
-		        "LESS_THAN_OR_EQUAL, 3*B + 1, 2) ***");
+		        "LESS_OR_EQUAL, 3*B + 1, 2) ***");
 
   return ok;
 }
@@ -113,7 +113,7 @@ test04() {
 
   print_constraints(bd, "*** bd ***");
 
-  bd.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, B - 2);
+  bd.generalized_affine_image(B, GREATER_OR_EQUAL, B - 2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(A == 0);
@@ -122,7 +122,7 @@ test04() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(B, "
-		        "GREATER_THAN_OR_EQUAL, B - 2) ***");
+		        "GREATER_OR_EQUAL, B - 2) ***");
 
   return ok;
 }
@@ -138,7 +138,7 @@ test05() {
 
   print_constraints(bd, "*** bd ***");
 
-  bd.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, 2*A + 3, 2);
+  bd.generalized_affine_image(A, GREATER_OR_EQUAL, 2*A + 3, 2);
 
   BD_Shape<mpq_class> known_result(2);
   known_result.add_constraint(B <= 1);
@@ -147,7 +147,7 @@ test05() {
   bool ok = check_result(bd, known_result, "7.63e-17", "3.82e-17", "1.91e-17");
 
   print_constraints(bd, "*** bd.generalized_affine_image(A, "
-		        "GREATER_THAN_OR_EQUAL, 2*A + 3, 2) ***");
+		        "GREATER_OR_EQUAL, 2*A + 3, 2) ***");
 
   return ok;
 }
@@ -165,7 +165,7 @@ test06() {
 
   print_constraints(bd, "*** bd ***");
 
-  bd.generalized_affine_image(C, LESS_THAN_OR_EQUAL, 2*C + 1, 5);
+  bd.generalized_affine_image(C, LESS_OR_EQUAL, 2*C + 1, 5);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A - B == 0);
@@ -176,7 +176,7 @@ test06() {
   bool ok = check_result(bd, known_result, "9.54e-8", "9.54e-8", "9.54e-8");
 
   print_constraints(bd, "*** bd.generalized_affine_image(C, "
-                        "LESS_THAN_OR_EQUAL, 2*C + 1, 5) ***");
+                        "LESS_OR_EQUAL, 2*C + 1, 5) ***");
 
   return ok;
 }
@@ -221,7 +221,7 @@ test08() {
 
   print_constraints(bd, "*** bd ***");
 
-  bd.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, -B - 2, 3);
+  bd.generalized_affine_image(B, GREATER_OR_EQUAL, -B - 2, 3);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(B >= -1);
@@ -231,7 +231,7 @@ test08() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(B, "
-                        "GREATER_THAN_OR_EQUAL, -B - 2, 3) ***");
+                        "GREATER_OR_EQUAL, -B - 2, 3) ***");
 
   return ok;
 }
@@ -249,7 +249,7 @@ test09() {
 
   print_constraints(bd, "*** bd ***");
 
-  bd.generalized_affine_image(B, LESS_THAN_OR_EQUAL, 4*A -2*C + 3, -3);
+  bd.generalized_affine_image(B, LESS_OR_EQUAL, 4*A -2*C + 3, -3);
 
   BD_Shape<mpq_class> known_result(3);
   known_result.add_constraint(A <= 1);
@@ -258,7 +258,7 @@ test09() {
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
   print_constraints(bd, "*** bd.generalized_affine_image(B, "
-                        "LESS_THAN_OR_EQUAL, 4*A - 2*C + 3, -3) ***");
+                        "LESS_OR_EQUAL, 4*A - 2*C + 3, -3) ***");
 
   return ok;
 }
@@ -340,7 +340,8 @@ test12() {
 
   bool ok = (BD_Shape<mpq_class>(bd) == known_result);
 
-  print_constraints(bd, "*** bd.generalized_affine_image(B-3,EQUAL, B+1) ***");
+  print_constraints(bd,
+		    "*** bd.generalized_affine_image(B-3, EQUAL, B+1) ***");
 
   return ok;
 }
@@ -405,7 +406,7 @@ test15() {
     // to apply it to a expression with the denominator
     // equal to zero.
     Coefficient d = 0;
-    bd.generalized_affine_image(x, LESS_THAN_OR_EQUAL, x + 1, d);
+    bd.generalized_affine_image(x, LESS_OR_EQUAL, x + 1, d);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -430,7 +431,7 @@ test16() {
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply it to an expression whose space dimension is
     // greater than the BDS's space dimension.
-    bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, z);
+    bd.generalized_affine_image(y, GREATER_OR_EQUAL, z);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -456,7 +457,7 @@ test17() {
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the BDS.
 
-    bd.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
+    bd.generalized_affine_image(A + B, GREATER_OR_EQUAL, B + C);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -481,7 +482,7 @@ test18() {
     // BD_Shape::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the BDS.
-    bd.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
+    bd.generalized_affine_image(B + C, LESS_OR_EQUAL, A + 1);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

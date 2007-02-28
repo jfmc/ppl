@@ -2,10 +2,6 @@
 Enhancements for PPL 0.10
 =========================
 
-- AFTER THE `altnum' BRANCH HAS BEEN MERGED TO THE TRUNK: rename
-  LESS_THAN_OR_EQUAL to LESS_OR_EQUAL and GREATER_THAN_OR_EQUAL
-  to GREATER_OR_EQUAL (any case, any similarly-named object,
-  in any interface).
 - In the SWI-Prolog documentation, the command to dynamically
   load the library has to be modified so as to specify the `.so'
   extension: this is required under Mac OS X and seems not to
