@@ -147,7 +147,6 @@ affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
-affinepreimage2_SOURCES = affinepreimage2.cc
 
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 
