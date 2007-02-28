@@ -410,6 +410,28 @@ test15() {
   return ok;
 }
 
+bool
+test16() {
+  Variable A(0);
+
+  BD_Shape<float> bd(1);
+  bd.add_constraint(A <= -1);
+
+  print_constraints(bd, "*** bd ***");
+
+  bd.affine_image(A, 2*A, 3);
+
+  BD_Shape<mpq_class> mpq_known_result(1);
+  mpq_known_result.add_constraint(3*A <= -2);
+
+  bool ok = check_result(bd, mpq_known_result,
+			 "9.54e-8", "9.54e-8", "9.54e-8");
+
+  print_constraints(bd, "*** bd.affine_image(A, 2*A, 3) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -428,4 +450,5 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
