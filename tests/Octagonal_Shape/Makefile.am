@@ -86,8 +86,7 @@ check_PROGRAMS = \
 	removespacedims1 \
 	timeelapse1 \
 	universe1 \
-	writeoctagon1 \
-	bug1
+	writeoctagon1
 
 
 # This will be overridden by the `run_tests' script.
@@ -232,8 +231,6 @@ timeelapse1_SOURCES = timeelapse1.cc
 universe1_SOURCES = universe1.cc
 
 writeoctagon1_SOURCES = writeoctagon1.cc
-
-bug1_SOURCES = bug1.cc
 
 
 MOSTLYCLEANFILES = \

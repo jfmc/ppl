@@ -253,6 +253,30 @@ test09() {
   return ok;
 }
 
+bool
+test10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Octagonal_Shape<float> oc(3);
+  oc.add_constraint(A <= -1);
+
+  print_constraints(oc, "*** oc ***");
+
+  oc.affine_preimage(A, 3*A, 2);
+
+  Octagonal_Shape<mpq_class> mpq_known_result(3);
+  mpq_known_result.add_constraint(3*A <= -2);
+
+  bool ok = check_result(oc, mpq_known_result,
+			 "9.54e-8", "9.54e-8", "9.54e-8");
+
+  print_constraints(oc, "*** oc.affine_preimage(A, 3*A, 2) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -265,4 +289,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN
