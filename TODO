@@ -39,7 +39,6 @@ Enhancements for PPL 0.10
 - Provide a generic implementation for the `widening with tokens'.
 - Direct_Product: Check that all comments and code are consistent with
   intended semantics.
-- Finish converting the tests to the new standards.
 
 Enhancements for PPL 0.10 or later versions
 ==========================================

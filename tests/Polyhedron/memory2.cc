@@ -196,12 +196,12 @@ test3() {
 
 } // namespace
 
-#define IGNORE_OVERFLOWS(fun) \
-try { \
-  fun; \
-} \
-catch (const std::overflow_error&) { \
-}
+#define IGNORE_OVERFLOWS(fun)			\
+  try {						\
+    fun;					\
+  }						\
+  catch (const std::overflow_error&) {		\
+  }
 
 int
 main() TRY {
