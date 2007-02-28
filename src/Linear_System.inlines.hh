@@ -158,14 +158,14 @@ Linear_System::resize_no_copy(const dimension_type new_n_rows,
 inline void
 Linear_System::set_necessarily_closed() {
   row_topology = NECESSARILY_CLOSED;
-  if (num_rows() > 0)
+  if (!empty())
     set_rows_topology();
 }
 
 inline void
 Linear_System::set_not_necessarily_closed() {
   row_topology = NOT_NECESSARILY_CLOSED;
-  if (num_rows() > 0)
+  if (!empty())
     set_rows_topology();
 }
 

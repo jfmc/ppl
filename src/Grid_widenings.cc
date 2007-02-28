@@ -300,7 +300,7 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   if (x.generators_are_up_to_date()) {
     if (!x.generators_are_minimized()) {
       simplify(x.gen_sys, x.dim_kinds);
-      assert(x.gen_sys.num_generators() > 0);
+      assert(!x.gen_sys.empty());
       x.set_generators_minimized();
     }
   }
@@ -314,14 +314,14 @@ PPL::Grid::generator_widening_assign(const Grid& const_y, unsigned* tp) {
   if (y.generators_are_up_to_date()) {
     if (!y.generators_are_minimized()) {
       simplify(y.gen_sys, y.dim_kinds);
-      assert(y.gen_sys.num_generators() > 0);
+      assert(!y.gen_sys.empty());
       y.set_generators_minimized();
     }
   }
   else
     y.update_generators();
 
-  if (gen_sys.num_generators() > y.gen_sys.num_generators())
+  if (gen_sys.num_rows() > y.gen_sys.num_rows())
     return;
 
   if (gen_sys.num_lines() > y.gen_sys.num_lines())

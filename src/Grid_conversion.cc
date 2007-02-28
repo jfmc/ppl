@@ -74,7 +74,7 @@ bool
 Grid::upper_triangular(const Grid_Generator_System& sys,
 		       const Dimension_Kinds& dim_kinds) {
   dimension_type num_columns = sys.space_dimension() + 1;
-  dimension_type row = sys.num_generators();
+  dimension_type row = sys.num_rows();
 
   // Check for easy square fail case.
   if (row > num_columns)
@@ -168,7 +168,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   TEMP_INTEGER(diagonal_lcm);
   diagonal_lcm = 1;
   const dimension_type dims = source.space_dimension() + 1;
-  dimension_type source_index = source.num_generators();
+  dimension_type source_index = source.num_rows();
   for (dimension_type dim = dims; dim-- > 0; )
     if (dim_kinds[dim] == GEN_VIRTUAL)
       // Virtual generators map to equalities.
@@ -198,7 +198,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // the diagonal elements to the inverse ratio of the `source'
   // diagonal elements.
   dimension_type dest_index = 0;
-  source_index = source.num_generators();
+  source_index = source.num_rows();
   for (dimension_type dim = dims; dim-- > 0; ) {
     if (dim_kinds[dim] == LINE)
       --source_index;
@@ -234,7 +234,7 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // reverse of the order in `source', so the rows are iterated from
   // last to first (index 0) in `source' and from first to last in
   // `dest'.
-  source_index = source.num_generators();
+  source_index = source.num_rows();
   dest_index = 0;
   TEMP_INTEGER(multiplier);
 
@@ -461,7 +461,7 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // Ensure that the parameter divisors are the same as the divisor of
   // the point.
   const Coefficient& system_divisor = dest[0][0];
-  for (dimension_type row = dest.num_generators() - 1, dim = dims;
+  for (dimension_type row = dest.num_rows() - 1, dim = dims;
        dim-- > 1; )
     switch (dim_kinds[dim]) {
     case PARAMETER:

@@ -150,7 +150,7 @@ Grid_Generator_System::total_memory_in_bytes() const {
 }
 
 inline dimension_type
-Grid_Generator_System::num_generators() const {
+Grid_Generator_System::num_rows() const {
   return Generator_System::num_rows();
 }
 
@@ -220,6 +220,11 @@ inline bool
 Grid_Generator_System
 ::const_iterator::operator!=(const const_iterator& y) const {
   return Generator_System::const_iterator::operator!=(y);
+}
+
+inline bool
+Grid_Generator_System::empty() const {
+  return Generator_System::empty();
 }
 
 inline Grid_Generator_System::const_iterator

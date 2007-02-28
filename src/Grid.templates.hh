@@ -259,10 +259,10 @@ Grid::shrink_bounding_box(Box& box, Complexity_Class) const {
     return;
   }
 
-  assert(gen_sys.num_generators() > 0);
+  assert(!gen_sys.empty());
 
   dimension_type num_dims = gen_sys.num_columns() - 2 /* parameter divisor */;
-  dimension_type num_rows = gen_sys.num_generators();
+  dimension_type num_rows = gen_sys.num_rows();
 
   // Create a vector to record which dimensions are bounded.
   std::vector<bool> bounded_interval(num_dims, true);
@@ -333,10 +333,10 @@ Grid::get_covering_box(Box& box) const {
     return;
   }
 
-  assert(gen_sys.num_generators() > 0);
+  assert(!gen_sys.empty());
 
   dimension_type num_dims = gen_sys.num_columns() - 2 /* parameter divisor */;
-  dimension_type num_rows = gen_sys.num_generators();
+  dimension_type num_rows = gen_sys.num_rows();
 
   TEMP_INTEGER(gcd);
   TEMP_INTEGER(bound);
@@ -543,7 +543,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
 
   const Grid_Generator_System& old_gensys = grid_generators();
 
-  if (old_gensys.num_generators() == 0) {
+  if (old_gensys.empty()) {
     // The grid is empty.
     Grid new_grid(new_space_dimension, EMPTY);
     std::swap(*this, new_grid);

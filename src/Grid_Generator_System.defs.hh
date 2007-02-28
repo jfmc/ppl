@@ -307,6 +307,9 @@ public:
     const_iterator(const Generator_System::const_iterator& y);
   };
 
+  //! Returns <CODE>true</CODE> if and only if \p *this has no generators.
+  bool empty() const;
+
   /*! \brief
     Returns the const_iterator pointing to the first generator, if \p
     *this is not empty; otherwise, returns the past-the-end
@@ -317,8 +320,8 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
-  //! Returns the number of generators in the system.
-  dimension_type num_generators() const;
+  //! Returns the number of rows (generators) in the system.
+  dimension_type num_rows() const;
 
   //! Returns the number of parameters in the system.
   dimension_type num_parameters() const;

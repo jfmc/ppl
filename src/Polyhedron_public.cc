@@ -52,7 +52,7 @@ PPL::Polyhedron::constraints() const {
   if (marked_empty()) {
     // We want `con_sys' to only contain the unsatisfiable constraint
     // of the appropriate dimension.
-    if (con_sys.num_rows() == 0) {
+    if (con_sys.empty()) {
       // The 0-dim unsatisfiable constraint is extended to
       // the appropriate dimension and then stored in `con_sys'.
       Constraint_System unsat_cs = Constraint_System::zero_dim_empty();
@@ -69,8 +69,8 @@ PPL::Polyhedron::constraints() const {
   }
 
   if (space_dim == 0) {
-    // zero-dimensional universe.
-    assert(con_sys.num_columns() == 0 && con_sys.num_rows() == 0);
+    // Zero-dimensional universe.
+    assert(con_sys.empty() && con_sys.num_columns() == 0);
     return con_sys;
   }
 
@@ -106,7 +106,7 @@ PPL::Polyhedron::minimized_constraints() const {
 const PPL::Generator_System&
 PPL::Polyhedron::generators() const {
   if (marked_empty()) {
-    assert(gen_sys.num_rows() == 0);
+    assert(gen_sys.empty());
     // We want `gen_sys' to have the appropriate space dimension,
     // even though it is an empty generator system.
     if (gen_sys.space_dimension() != space_dim) {
@@ -118,7 +118,7 @@ PPL::Polyhedron::generators() const {
   }
 
   if (space_dim == 0) {
-    assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
+    assert(gen_sys.empty() && gen_sys.num_columns() == 0);
     return Generator_System::zero_dim_univ();
   }
 
@@ -128,7 +128,7 @@ PPL::Polyhedron::generators() const {
   if ((has_pending_constraints() && !process_pending_constraints())
       || (!generators_are_up_to_date() && !update_generators())) {
     // We have just discovered that `*this' is empty.
-    assert(gen_sys.num_rows() == 0);
+    assert(gen_sys.empty());
     // We want `gen_sys' to have the appropriate space dimension,
     // even though it is an empty generator system.
     if (gen_sys.space_dimension() != space_dim) {
@@ -604,7 +604,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
       goto bomb;
     }
-    if (con_sys.num_rows() == 0)
+    if (con_sys.empty())
       return true;
     else {
       if (con_sys.space_dimension() != space_dim) {
@@ -648,7 +648,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
       goto bomb;
     }
-    if (con_sys.num_rows() != 0 || gen_sys.num_rows() != 0) {
+    if (!con_sys.empty() || !gen_sys.empty()) {
 #ifndef NDEBUG
       cerr << "Zero-dimensional polyhedron with a non-empty"
 	   << endl
@@ -751,7 +751,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 
     // A non-empty system of generators describing a polyhedron
     // is valid if and only if it contains a point.
-    if (gen_sys.num_rows() > 0 && !gen_sys.has_points()) {
+    if (!gen_sys.empty() && !gen_sys.has_points()) {
 #ifndef NDEBUG
       cerr << "Non-empty generator system declared up-to-date "
 	   << "has no points!"
@@ -1282,7 +1282,7 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
     throw_dimension_incompatible("add_recycled_constraints(cs)", "cs", cs);
 
   // Adding no constraints is a no-op.
-  if (cs.num_rows() == 0)
+  if (cs.empty())
     return;
 
   if (space_dim == 0) {
@@ -1371,7 +1371,7 @@ PPL::Polyhedron::add_recycled_constraints_and_minimize(Constraint_System& cs) {
 				 "cs", cs);
 
   // Adding no constraints: just minimize.
-  if (cs.num_rows() == 0)
+  if (cs.empty())
     return minimize();
 
   // Dealing with zero-dimensional space polyhedra first.
@@ -1442,7 +1442,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
     throw_dimension_incompatible("add_recycled_generators(gs)", "gs", gs);
 
   // Adding no generators is a no-op.
-  if (gs.num_rows() == 0)
+  if (gs.empty())
     return;
 
   // Adding valid generators to a zero-dimensional polyhedron
@@ -1544,7 +1544,7 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(Generator_System& gs) {
 				 "gs", gs);
 
   // Adding no generators is equivalent to just requiring minimization.
-  if (gs.num_rows() == 0)
+  if (gs.empty())
     return minimize();
 
   // Adding valid generators to a zero-dimensional polyhedron

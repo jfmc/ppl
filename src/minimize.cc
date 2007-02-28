@@ -77,7 +77,7 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   // the positive constraint. It also cannot be an empty generator system,
   // since this function is always called starting from a non-empty
   // polyhedron.
-  assert(source.num_rows() > 0);
+  assert(!source.empty());
 
   // Sort the source system, if necessary.
   if (!source.is_sorted())
@@ -236,7 +236,7 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
 				  Bit_Matrix& sat,
 				  const Linear_System& source2) {
   // `source1' and `source2' cannot be empty.
-  assert(source1.num_rows() > 0 && source2.num_rows() > 0);
+  assert(!source1.empty() && !source2.empty());
   // `source1' and `source2' must have the same number of columns
   // to be merged.
   assert(source1.num_columns() == source2.num_columns());

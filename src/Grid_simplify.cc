@@ -240,7 +240,7 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
     neg_assign(reduced_row_col);
   }
 #endif
-  for (dimension_type index = sys.num_generators(); index-- > 0; ) {
+  for (dimension_type index = sys.num_rows(); index-- > 0; ) {
     Grid_Generator& gen = sys[index];
     if (gen.is_parameter_or_point())
       for (dimension_type col = num_columns; col-- > 0; )
@@ -324,7 +324,7 @@ Grid::rows_are_zero(M& system, dimension_type first,
 
 void
 Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
-  assert(sys.num_generators() > 0);
+  assert(!sys.empty());
   // For reduce_pc_with_pc.
   assert(sys.num_columns() > 0);
 
@@ -337,7 +337,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   if (dim_kinds.size() != num_columns)
     dim_kinds.resize(num_columns);
 
-  const dimension_type num_rows = sys.num_generators();
+  const dimension_type num_rows = sys.num_rows();
 
   // For each dimension `dim' move or construct a row into position
   // `pivot_index' such that the row has zero in all elements
@@ -420,7 +420,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
        // index of first
        pivot_index,
        // index of last
-       sys.num_generators() - 1,
+       sys.num_rows() - 1,
        // row size
        sys.num_columns() - 1);
     assert(ret == true);
@@ -433,7 +433,7 @@ Grid::simplify(Grid_Generator_System& sys, Dimension_Kinds& dim_kinds) {
   // Ensure that the parameter divisors are the same as the system
   // divisor.
   const Coefficient& system_divisor = sys[0][0];
-  for (dimension_type row = sys.num_generators() - 1,
+  for (dimension_type row = sys.num_rows() - 1,
 	 dim = sys.num_columns() - 2;
        dim > 0; --dim)
     switch (dim_kinds[dim]) {
