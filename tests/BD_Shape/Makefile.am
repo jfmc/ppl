@@ -45,7 +45,7 @@ addconstraints1 \
 addspacedims1 \
 affinedimension1 \
 affineimage1 affineimage2 \
-affinepreimage1 affinepreimage2 \
+affinepreimage1 \
 ascii_dump_load1 \
 bdsdifference1 \
 bdshull1 \
