@@ -359,11 +359,8 @@ void
 PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 						  const Constraint_System& cs,
 						  unsigned* tp) {
-  const dimension_type space_dim = space_dimension();
-  Rational_Box x_box(space_dim);
-  Rational_Box y_box(space_dim);
-  shrink_bounding_box(x_box, ANY_COMPLEXITY);
-  y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
+  Rational_Box x_box(*this, ANY_COMPLEXITY);
+  Rational_Box y_box(y, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
   limited_H79_extrapolation_assign(y, cs, tp);
   // TODO: see if some copies can be avoided.
@@ -848,11 +845,8 @@ PPL::Polyhedron
 ::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
 				      const Constraint_System& cs,
 				      unsigned* tp) {
-  const dimension_type space_dim = space_dimension();
-  Rational_Box x_box(space_dim);
-  Rational_Box y_box(space_dim);
-  shrink_bounding_box(x_box, ANY_COMPLEXITY);
-  y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
+  Rational_Box x_box(*this, ANY_COMPLEXITY);
+  Rational_Box y_box(y, ANY_COMPLEXITY);
   x_box.CC76_widening_assign(y_box);
   limited_BHRZ03_extrapolation_assign(y, cs, tp);
   // TODO: see if some copies can be avoided.
