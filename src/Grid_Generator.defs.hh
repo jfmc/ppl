@@ -28,6 +28,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Grid_Generator_System.defs.hh"
 #include "Generator.defs.hh"
 #include "Grid.types.hh"
+// FIXME: this inclusion must be removed along with the friend declaration
+//        befriending class Box.
+#include "Box.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -463,6 +466,13 @@ private:
   //        divisor() access in Grid::conversion, Grid::simplify,
   //        Grid::relation_with(c) and Grid::Grid(box, *).
   friend class Grid;
+
+
+  // FIXME: The following friend declaration is for the use of operator[]
+  //        in Box<Interval>::Box(const Grid&, Complexity_Class),
+  //        and should be removed as soon as the computation there is moved
+  //        to the Grid class.
+  template <typename Interval> friend class Parma_Polyhedra_Library::Box;
 
   friend class Grid_Generator_System;
   friend class Grid_Generator_System::const_iterator;

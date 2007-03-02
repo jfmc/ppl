@@ -219,32 +219,6 @@ CATCH_ALL
 
 ')
 
-m4_define(`ppl_@CLASS@_shrink_@BOX@_code',
-`int
-ppl_@CLASS@_shrink_@BOX@
-(ppl_const_@CLASS@_t ph,
- unsigned int complexity,
- void (*set_empty)(void),
- void (*raise_lower_bound)(ppl_dimension_type k, int closed,
-			   ppl_const_Coefficient_t n,
-			   ppl_const_Coefficient_t d),
- void (*lower_upper_bound)(ppl_dimension_type k, int closed,
-			   ppl_const_Coefficient_t n,
-			   ppl_const_Coefficient_t d)) try {
-  if (complexity != POLYNOMIAL_COMPLEXITY
-      && complexity != SIMPLEX_COMPLEXITY
-      && complexity != ANY_COMPLEXITY)
-    return PPL_ERROR_INVALID_ARGUMENT;
-
-  const @CPP_CLASS@& pph = *to_const(ph);
-  C_Shrink_Box csbox(set_empty, raise_lower_bound, lower_upper_bound);
-  pph.shrink_@BOX@(csbox, Complexity_Class(complexity));
-  return 0;
-}
-CATCH_ALL
-
-')
-
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `int
 ppl_@CLASS@_@COMPARISON@_@CLASS@

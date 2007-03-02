@@ -1,4 +1,4 @@
-/* Test Grid::shrink_bounding_box(Box&).
+/* Test Box::Box(const Grid&, Complexity_Class).
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,7 +22,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
 
 namespace {
 

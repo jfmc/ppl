@@ -62,7 +62,6 @@ boundedaffineimage1 \
 boundedaffinepreimage1 \
 boundedbhrz03extrapolation1 \
 boundedh79extrapolation1 \
-boundingbox1 boundingbox2 boundingbox3 \
 bounds1 \
 cnncconversion1 \
 concatenate1 \
@@ -140,7 +139,6 @@ nnc_boundedaffineimage1 \
 nnc_boundedaffinepreimage1 \
 nnc_boundedbhrz03extrapolation1 \
 nnc_boundedh79extrapolation1 \
-nnc_boundingbox1 nnc_boundingbox2 \
 nnc_bounds1 \
 nnc_concatenate1 \
 nnc_congruences1 \
@@ -235,10 +233,6 @@ boundedaffinepreimage1_SOURCES = boundedaffinepreimage1.cc
 boundedbhrz03extrapolation1_SOURCES = boundedbhrz03extrapolation1.cc
 
 boundedh79extrapolation1_SOURCES = boundedh79extrapolation1.cc
-
-boundingbox1_SOURCES = boundingbox1.cc
-boundingbox2_SOURCES = boundingbox2.cc
-boundingbox3_SOURCES = boundingbox3.cc
 
 bounds1_SOURCES = bounds1.cc
 
@@ -443,11 +437,6 @@ nnc_boundedvhrz03extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_boundedh79extrapolation1_SOURCES = boundedh79extrapolation1.cc
 nnc_boundedh79extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-
-nnc_boundingbox1_SOURCES = boundingbox1.cc
-nnc_boundingbox1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_boundingbox2_SOURCES = boundingbox2.cc
-nnc_boundingbox2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounds1_SOURCES = bounds1.cc
 nnc_bounds1_CXXFLAGS = $(DERIVED_CXXFLAGS)

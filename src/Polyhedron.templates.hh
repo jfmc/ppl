@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedron_templates_hh 1
 
 #include "Generator.defs.hh"
-#include "Rational_Box.hh"
 #include "MIP_Problem.defs.hh"
 #include <algorithm>
 #include <deque>
@@ -117,25 +116,6 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   // Constraints are up-to-date.
   set_constraints_up_to_date();
   assert(OK());
-}
-
-template <typename Box>
-void
-Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
-  Rational_Box internal_box(*this, complexity);
-  if (internal_box.is_empty())
-    box.set_empty();
-  else {
-    TEMP_INTEGER(n);
-    TEMP_INTEGER(d);
-    for (dimension_type j = space_dim; j-- > 0; ) {
-      bool closed;
-      if (internal_box.get_lower_bound(j, closed, n, d))
-	box.raise_lower_bound(j, closed, n, d);
-      if (internal_box.get_upper_bound(j, closed, n, d))
-	box.lower_upper_bound(j, closed, n, d);
-    }
-  }
 }
 
 template <typename Partial_Function>

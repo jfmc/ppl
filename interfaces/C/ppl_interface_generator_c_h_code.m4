@@ -134,21 +134,6 @@ PPL_PROTO((ppl_const_@CLASS@_t ph,
 
 ')
 
-m4_define(`ppl_@CLASS@_shrink_@BOX@_code',
-`int
-ppl_@CLASS@_shrink_@BOX@
-PPL_PROTO((ppl_const_@CLASS@_t ph,
-           unsigned int complexity,
-           void (*set_empty)(void),
-           void (*raise_lower_bound)(ppl_dimension_type k, int closed,
-                                     ppl_const_Coefficient_t n,
-                                     ppl_const_Coefficient_t d),
-           void (*lower_upper_bound)(ppl_dimension_type k, int closed,
-                                     ppl_const_Coefficient_t n,
-                                     ppl_const_Coefficient_t d)));
-
-')
-
 m4_define(`ppl_@CLASS@_@COMPARISON@_@CLASS@_code',
 `int
 ppl_@CLASS@_@COMPARISON@_@CLASS@

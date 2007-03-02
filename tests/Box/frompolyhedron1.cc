@@ -1,4 +1,4 @@
-/* Test Box::Box(const C_Polyhedron&).
+/* Test Box::Box(const C_Polyhedron&, Complexity_Class).
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

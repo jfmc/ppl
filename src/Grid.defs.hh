@@ -41,6 +41,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "Grid_Certificate.types.hh"
+#include "Box.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -2177,6 +2178,8 @@ public:
 						  const Grid& y);
 
   friend class Parma_Polyhedra_Library::Grid_Certificate;
+
+  template <typename Interval> friend class Parma_Polyhedra_Library::Box;
 
   //! \name Miscellaneous Member Functions
   //@{

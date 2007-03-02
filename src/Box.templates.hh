@@ -29,6 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.defs.hh"
 #include "Generator_System.inlines.hh"
 #include "Polyhedron.defs.hh"
+#include "Grid.defs.hh"
+#include "BD_Shape.defs.hh"
 #include "MIP_Problem.defs.hh"
 #include <iostream>
 
@@ -161,6 +163,49 @@ Box<Interval>::Box(const Generator_System& gs)
 }
 
 template <typename Interval>
+template <typename T>
+Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
+  : seq(bds.space_dimension()), empty(false), empty_up_to_date(true) {
+  // Expose all the interval constraints.
+  bds.shortest_path_closure_assign();
+  if (bds.marked_empty()) {
+    set_empty();
+    return;
+  }
+
+  const dimension_type space_dim = space_dimension();
+  if (space_dim == 0)
+    return;
+
+  mpq_class bound;
+  const DB_Row<typename BD_Shape<T>::coefficient_type>& dbm_0 = bds.dbm[0];
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    Interval& seq_i = seq[i];
+
+    // Set the upper bound.
+    if (!is_plus_infinity(dbm_0[i+1])) {
+      assign_r(bound, dbm_0[i+1], ROUND_NOT_NEEDED);
+      // FIXME: how to directly set the upper bound?
+      seq_i.upper_set_unbounded();
+      refine_existential(seq_i, LESS_OR_EQUAL, bound);
+    }
+    else
+      seq_i.upper_set_unbounded();
+
+    // Set the lower bound.
+    if (!is_plus_infinity(bds.dbm[i+1][0])) {
+      assign_r(bound, bds.dbm[i+1][0], ROUND_NOT_NEEDED);
+      neg_assign_r(bound, bound, ROUND_NOT_NEEDED);
+      // FIXME: how to directly set the lower bound?
+      seq_i.lower_set_unbounded();
+      refine_existential(seq_i, GREATER_OR_EQUAL, bound);
+    }
+    else
+      seq_i.lower_set_unbounded();
+  }
+}
+
+template <typename Interval>
 Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
   : seq(ph.space_dimension()), empty(false), empty_up_to_date(true) {
   // We do not need to bother about `complexity' if:
@@ -225,6 +270,7 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
 	lp.evaluate_objective_function(g, num, den);
 	assign_r(bound.get_num(), num, ROUND_NOT_NEEDED);
 	assign_r(bound.get_den(), den, ROUND_NOT_NEEDED);
+	// FIXME: how to directly set the upper bound?
 	seq_i.upper_set_unbounded();
 	refine_existential(seq_i, LESS_OR_EQUAL, bound);
       }
@@ -254,6 +300,81 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
       Box tmp(ph.generators());
       swap(tmp);
     }
+  }
+}
+
+template <typename Interval>
+Box<Interval>::Box(const Grid& gr, Complexity_Class)
+  : seq(gr.space_dimension()), empty(false), empty_up_to_date(true) {
+  if (gr.marked_empty()) {
+    set_empty();
+    return;
+  }
+
+  dimension_type space_dim = gr.space_dimension();
+    return;
+
+  if (space_dim == 0)
+    return;
+
+  if (!gr.generators_are_up_to_date() && !gr.update_generators()) {
+    // Updating found the grid empty.
+    set_empty();
+    return;
+  }
+
+  assert(!gr.gen_sys.empty());
+
+  // Create a vector to record which dimensions are bounded.
+  std::vector<bool> bounded_interval(space_dim, true);
+
+  const Grid_Generator *first_point = 0;
+  // Clear the bound flag in `bounded_interval' for all dimensions in
+  // which a line or sequence of points extends away from a single
+  // value in the dimension.
+  // FIXME: this computation should be provided by the Grid class.
+  // FIXME: remove the declaration making Box a friend of Grid_Generator
+  //        when this is done.
+  for (Grid_Generator_System::const_iterator gs_i = gr.gen_sys.begin(),
+	 gs_end = gr.gen_sys.end(); gs_i != gs_end; ++gs_i) {
+    Grid_Generator& g = const_cast<Grid_Generator&>(*gs_i);
+    if (g.is_point()) {
+      if (first_point == 0) {
+	first_point = &g;
+	continue;
+      }
+      const Grid_Generator& point = *first_point;
+      // Convert the point `g' to a parameter.
+      for (dimension_type dim = space_dim; dim-- > 0; )
+	g[dim] -= point[dim];
+      g.set_divisor(point.divisor());
+    }
+    for (dimension_type col = space_dim; col > 0; )
+      if (g[col--] != 0)
+	bounded_interval[col] = false;
+  }
+
+  // For each dimension that is bounded by the grid, set both bounds
+  // of the interval to the value of the associated coefficient in a
+  // generator point.
+  assert(first_point != 0);
+  const Grid_Generator& point = *first_point;
+  mpq_class bound;
+  const Coefficient& divisor = point.divisor();
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    Interval& seq_i = seq[i];
+    if (bounded_interval[i]) {
+      assign_r(bound.get_num(), point[i+1], ROUND_NOT_NEEDED);
+      assign_r(bound.get_den(), divisor, ROUND_NOT_NEEDED);
+      assert(!mpz_divisible_p(bound.get_num().get_mpz_t(),
+			      bound.get_den().get_mpz_t()));
+      bound.canonicalize();
+      // FIXME: how to directly set boundaries?
+      seq_i.set_universe();
+      refine_existential(seq_i, EQUAL, bound);
+    }
+    else
+      seq_i.set_universe();
   }
 }
 

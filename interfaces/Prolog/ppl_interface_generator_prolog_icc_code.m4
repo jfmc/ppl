@@ -688,9 +688,7 @@ ppl_@CLASS@_get_bounding_box(Prolog_term_ref t_ph,
     else
       cc = ANY_COMPLEXITY;
 
-    dimension_type dimension = ph->space_dimension();
-    Rational_Box box(dimension);
-    ph->shrink_bounding_box(box, cc);
+    Rational_Box box(*ph, cc);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     if (box.is_empty()) {
@@ -699,7 +697,7 @@ ppl_@CLASS@_get_bounding_box(Prolog_term_ref t_ph,
       Prolog_construct_cons(tail, t_empty, tail);
     }
     else
-      for (dimension_type i = dimension; i-- > 0; )
+      for (dimension_type i = ph->space_dimension(); i-- > 0; )
         Prolog_construct_cons(tail, interval_term(box[i]), tail);
     if (Prolog_unify(t_bb, tail))
       return PROLOG_SUCCESS;

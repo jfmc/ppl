@@ -981,56 +981,6 @@ test48() {
   return ok;
 }
 
-// shrink_bounding_box(box)
-bool
-test49() {
-  Variable A(0);
-
-  Rational_Box box(1);
-  box.raise_lower_bound(0, true, 2, 3);
-  box.lower_upper_bound(0, true, 6, 1);
-
-  Product dp(1);
-  dp.add_constraint(A <= 4);
-  dp.add_constraint(A >= 2);
-  dp.add_congruence(A %= 0);
-
-  dp.shrink_bounding_box(box);
-
-  Rational_Box known_box(1);
-  known_box.raise_lower_bound(0, true, 2, 1);
-  known_box.lower_upper_bound(0, true, 4, 1);
-
-  bool ok = (box == known_box);
-
-  return ok;
-}
-
-// shrink_bounding_box(box), shrink to intersection.
-bool
-test50() {
-  Variable A(0);
-
-  Rational_Box box(1);
-  box.raise_lower_bound(0, true, 2, 3);
-  box.lower_upper_bound(0, true, 6, 1);
-
-  Product dp(1);
-  dp.add_constraint(A <= 4);
-  dp.add_constraint(A >= 2);
-  dp.add_congruence((A %= 0) / 3);
-
-  dp.shrink_bounding_box(box);
-
-  Rational_Box known_box(1);
-  known_box.raise_lower_bound(0, true, 3, 1);
-  known_box.lower_upper_bound(0, true, 3, 1);
-
-  bool ok = !/*FIX*/ (box == known_box);
-
-  return ok;
-}
-
 // FIXME: Waiting for covering box methods, details in
 //        Direct_Product.defs.hh.
 #if 0
@@ -1830,8 +1780,6 @@ BEGIN_MAIN
   DO_TEST_NNC(test46);
   DO_TEST(test47);
   DO_TEST_NNC(test48);
-  DO_TEST(test49);
-  DO_TEST(test50);
 #if 0
   DO_TEST(test51);
   //DO_TEST(test52);

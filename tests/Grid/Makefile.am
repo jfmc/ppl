@@ -54,7 +54,7 @@ asciidumpload1 asciidumpload2 asciidumpload3 asciidumpload4 asciidumpload5 \
 asciidumpload6 asciidumpload7 \
 bhz03widening1 \
 bounded1 \
-boundingbox1 boundingbox2 \
+boundingbox1 \
 bounds1 \
 boundedaffineimage1 \
 boundedaffinepreimage1 \
@@ -142,7 +142,6 @@ bhz03widening1_SOURCES = bhz03widening1.cc
 bounded1_SOURCES = bounded1.cc
 
 boundingbox1_SOURCES = boundingbox1.cc
-boundingbox2_SOURCES = boundingbox2.cc
 
 bounds1_SOURCES = bounds1.cc
 

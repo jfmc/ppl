@@ -34,7 +34,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.types.hh"
 #include "Generator.types.hh"
 #include "Generator_System.types.hh"
+#include "BD_Shape.types.hh"
 #include "Polyhedron.types.hh"
+#include "Grid.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -156,6 +158,15 @@ public:
   */
   Box(const Generator_System& gs, Recycle_Input dummy);
 
+  //! Builds a box from the BDS \p bds.
+  /*!
+    Builds the smallest box containing \p ph using a polynomial algorithm.
+    The \p complexity argument is ignored.
+  */
+  template <typename T>
+  explicit Box(const BD_Shape<T>& bds,
+	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
+
   //! Builds a box from the polyhedron \p ph.
   /*!
     Builds a box containing \p ph using algorithms whose complexity
@@ -165,6 +176,14 @@ public:
   */
   explicit Box(const Polyhedron& ph,
 	       Complexity_Class complexity = ANY_COMPLEXITY);
+
+  //! Builds a box from the grid \p gr.
+  /*!
+    Builds the smallest box containing \p gr using a polynomial algorithm.
+    The \p complexity argument is ignored.
+  */
+  explicit Box(const Grid& ph,
+	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
 
   /*! \brief
     Swaps \p *this with \p y
