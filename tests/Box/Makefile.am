@@ -57,9 +57,7 @@ $(top_builddir)/src/libppl.la \
 #affineimage1
 #affinepreimage1
 #ascii_dump_load1
-#boxhull1
 #discrete1
-#equality1
 #expandspacedim1
 #interval1 interval2
 #maxspacedim1 \
@@ -68,8 +66,9 @@ $(top_builddir)/src/libppl.la \
 check_PROGRAMS = \
 affinedimension1 \
 addspacedims1 \
-boxdifference1 \
 bounded1 \
+boxdifference1 \
+boxhull1 \
 cc76widening \
 concatenate1 \
 constraints1 \
@@ -77,6 +76,7 @@ contains1 \
 containsintegerpoint1 \
 disjoint1 \
 empty1 \
+equality1 \
 foldspacedims1 \
 fromgensys1 \
 frompolyhedron1 \
@@ -151,7 +151,7 @@ bounded1_SOURCES = bounded1.cc
 
 boxdifference1_SOURCES = boxdifference1.cc
 
-#boxhull1_SOURCES = boxhull1.cc
+boxhull1_SOURCES = boxhull1.cc
 
 cc76widening_SOURCES = cc76widening.cc
 
@@ -173,7 +173,7 @@ disjoint1_SOURCES = disjoint1.cc
 
 empty1_SOURCES = empty1.cc
 
-#equality1_SOURCES = equality1.cc
+equality1_SOURCES = equality1.cc
 
 #expandspacedim1_SOURCES = expandspacedim1.cc
 

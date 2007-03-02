@@ -33,11 +33,9 @@ test01() {
   TBox box1(3);
   TBox box2(2);
 
-  box1.add_constraint(x <= 3);
-  box1.add_constraint(x - y <= 4);
+  box1.add_constraint(x == 3);
 
-  box2.add_constraint(x - y <= 5);
-  box2.add_constraint(-y <= -2);
+  box2.add_constraint(x == 3);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
@@ -82,17 +80,18 @@ test04() {
   Variable B(1);
 
   TBox box1(2);
-  box1.add_constraint(A - B <= 1);
-  box1.add_constraint(B - A <= -2);
+  box1.add_constraint(A >= 7);
+  box1.add_constraint(B <= -2);
+  box1.add_constraint(A >= 9);
 
   TBox box2(2);
-  box2.add_constraint(A - B <= 1);
-  box2.add_constraint(B - A <= 2);
+  box2.add_constraint(A >= 9);
+  box2.add_constraint(B <= -2);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  bool known_result = false;
+  bool known_result = true;
   bool ok = ((box1 == box2) == known_result);
 
   return ok;
@@ -104,17 +103,17 @@ test05() {
   Variable B(1);
 
   TBox box1(2);
-  box1.add_constraint(A - B <= 1);
-  box1.add_constraint(B - A <= 2);
+  box1.add_constraint(A <= 1);
+  box1.add_constraint(A >= 7);
 
   TBox box2(2);
-  box2.add_constraint(A - B <= 1);
-  box2.add_constraint(B - A <= -2);
+  box2.add_constraint(B <= 5);
+  box2.add_constraint(B >= 10);
 
   print_constraints(box1, "*** box1 ***");
   print_constraints(box2, "*** box2 ***");
 
-  bool known_result = false;
+  bool known_result = true;
   bool ok = ((box1 == box2) == known_result);
 
   return ok;
