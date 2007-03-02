@@ -61,29 +61,29 @@ $(top_builddir)/src/libppl.la \
 #affineimage1
 #affinepreimage1
 #ascii_dump_load1
+#boxhull1
+#discrete1
+#equality1
+#expandspacedim1
+#interval1 interval2
+#max_min1
+#minconstraints1
 
 check_PROGRAMS = \
 addspacedims1 \
 boxdifference1 \
-boxhull1 \
 bounded1 \
 cc76widening \
 concatenate1 \
 constraints1 \
 contains1 \
-discrete1 \
 disjoint1 \
 empty1 \
-equality1 \
-expandspacedim1 \
 foldspacedims1 \
 fromgensys1 \
 frompolyhedron1 \
 geomcovers1 \
-interval1 interval2 \
 mapspacedims1 \
-max_min1 \
-minconstraints1 \
 removespacedims1 \
 universe1 \
 writebox1
@@ -151,7 +151,7 @@ bounded1_SOURCES = bounded1.cc
 
 boxdifference1_SOURCES = boxdifference1.cc
 
-boxhull1_SOURCES = boxhull1.cc
+#boxhull1_SOURCES = boxhull1.cc
 
 cc76widening_SOURCES = cc76widening.cc
 
@@ -167,15 +167,15 @@ contains1_SOURCES = contains1.cc
 
 #containsintegerpoint1_SOURCES = containsintegerpoint1.cc
 
-discrete1_SOURCES = discrete1.cc
+#discrete1_SOURCES = discrete1.cc
 
 disjoint1_SOURCES = disjoint1.cc
 
 empty1_SOURCES = empty1.cc
 
-equality1_SOURCES = equality1.cc
+#equality1_SOURCES = equality1.cc
 
-expandspacedim1_SOURCES = expandspacedim1.cc
+#expandspacedim1_SOURCES = expandspacedim1.cc
 
 foldspacedims1_SOURCES = foldspacedims1.cc
 
@@ -191,18 +191,18 @@ geomcovers1_SOURCES = geomcovers1.cc
 
 #intersection1_SOURCES = intersection1.cc
 
-interval1_SOURCES = interval1.cc
-interval2_SOURCES = interval2.cc
+#interval1_SOURCES = interval1.cc
+#interval2_SOURCES = interval2.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
 #maxspacedim1_SOURCES = maxspacedim1.cc
 
-max_min1_SOURCES = max_min1.cc
+#max_min1_SOURCES = max_min1.cc
 
 #membytes1_SOURCES = membytes1.cc
 
-minconstraints1_SOURCES = minconstraints1.cc
+#minconstraints1_SOURCES = minconstraints1.cc
 
 #relations1_SOURCES = relations1.cc
 
