@@ -1593,54 +1593,6 @@ ppl_Polyhedron_relation_with_Generator PPL_PROTO((ppl_const_Polyhedron_t ph,
 						  ppl_const_Generator_t g));
 
 /*! \brief
-  Use \p ph to shrink a generic, interval-based bounding box.
-  The bounding box is abstractly provided by means of the parameters.
-
-  \param ph
-  The polyhedron that is used to shrink the bounding box;
-
-  \param complexity
-  The code of the complexity class of the algorithm to be used.
-  Must be one of PPL_COMPLEXITY_CLASS_POLYNOMIAL,
-  PPL_COMPLEXITY_CLASS_SIMPLEX, or PPL_COMPLEXITY_CLASS_ANY;
-
-  \param set_empty
-  A pointer to a void function with no arguments that causes the bounding
-  box to become empty, i.e., to represent the empty set;
-
-  \param raise_lower_bound
-  A pointer to a void function with arguments
-  <CODE>(ppl_dimension_type k, int closed,
-         ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
-  that intersects the interval corresponding to the <CODE>k</CODE>-th
-  space dimension with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is non-zero,
-  with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is zero.
-  The fraction \f$n/d\f$ is in canonical form, that is, \f$n\f$
-  and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
-  being the unique representation for zero;
-
-  \param lower_upper_bound
-  a pointer to a void function with argument
-  <CODE>(ppl_dimension_type k, int closed,
-         ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
-  that intersects the interval corresponding to the <CODE>k</CODE>-th
-  space dimension with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is non-zero,
-  with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE> is zero.
-  The fraction \f$n/d\f$ is in canonical form.
-*/
-int
-ppl_Polyhedron_shrink_bounding_box
-PPL_PROTO((ppl_const_Polyhedron_t ph,
-	   unsigned int complexity,
-	   void (*set_empty)(void),
-	   void (*raise_lower_bound)(ppl_dimension_type k, int closed,
-				     ppl_const_Coefficient_t n,
-				     ppl_const_Coefficient_t d),
-	   void (*lower_upper_bound)(ppl_dimension_type k, int closed,
-				     ppl_const_Coefficient_t n,
-				     ppl_const_Coefficient_t d)));
-
-/*! \brief
   Returns a positive integer if \p ph is empty; returns 0 if \p ph is
   not empty.
 */
