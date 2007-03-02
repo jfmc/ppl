@@ -371,6 +371,8 @@ public:
   bool contains_integer_point() const {
     if (is_empty())
       return false;
+    if (is_unbounded())
+      return true;
     Boundary l;
     if (lower_is_open()) {
       add_assign_r(l, lower(), Boundary(1), ROUND_DOWN);
