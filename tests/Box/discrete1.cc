@@ -32,14 +32,13 @@ test01() {
   TBox box(3);
 
   box.add_constraint(x <= 2);
-  box.add_constraint(x - y == 3);
   box.add_constraint(y <= 2);
 
   print_constraints(box, "*** box ***");
 
-  bool ok = box.is_discrete();
+  bool ok = !box.is_discrete();
 
-  return !ok;
+  return ok;
 }
 
 bool
@@ -53,37 +52,28 @@ test02() {
   TBox box(5);
 
   box.add_constraint(A <= 5);
-  box.add_constraint(A - B == 3);
+  box.add_constraint(A == 3);
+  box.add_constraint(B == 0);
   box.add_constraint(C <= 2);
-  box.add_constraint(E - D == 2);
+  box.add_constraint(D == -7);
+  box.add_constraint(E == 1);
 
   print_constraints(box, "*** box ***");
 
-  bool ok = box.is_discrete();
+  bool ok = !box.is_discrete();
 
-  return !ok;
+  return ok;
 }
 
 bool
 test03() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-  Variable E(4);
-
-  TBox box(5);
-
-  box.add_constraint(A == 5);
-  box.add_constraint(A - B == 3);
-  box.add_constraint(C <= 2);
-  box.add_constraint(E - D == 2);
+  TBox box(0);
 
   print_constraints(box, "*** box ***");
 
   bool ok = box.is_discrete();
 
-  return !ok;
+  return ok;
 }
 
 bool
@@ -93,8 +83,9 @@ test04() {
 
   TBox box(2);
   box.add_constraint(A <= 3);
-  box.add_constraint(B - A <= -5);
-  box.add_constraint(-B <= 2);
+  box.add_constraint(B <= -5);
+  box.add_constraint(A >= 3);
+  box.add_constraint(B >= -5);
 
   print_constraints(box, "*** box ***");
 
@@ -120,9 +111,9 @@ test06() {
 
   print_constraints(box, "*** box ***");
 
-  bool ok = box.is_discrete();
+  bool ok = !box.is_discrete();
 
-  return !ok;
+  return ok;
 }
 
 bool
@@ -187,11 +178,11 @@ test10() {
   TBox box(7);
   box.add_constraint(A <= 1);
   box.add_constraint(B == 2);
-  box.add_constraint(B - A <= -6);
+  box.add_constraint(A >= 6);
 
   print_constraints(box, "*** box ***");
 
-   bool ok = box.is_discrete();
+  bool ok = box.is_discrete();
 
   return ok;
 }
