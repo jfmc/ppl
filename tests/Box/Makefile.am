@@ -47,7 +47,6 @@ $(top_builddir)/src/libppl.la \
 #boundedaffineimage1
 #cc76narrowing1
 #closure1
-#containsintegerpoint1
 #generalizedaffineimage1
 #generalizedaffinepreimage1
 #intersection1
@@ -77,6 +76,7 @@ cc76widening \
 concatenate1 \
 constraints1 \
 contains1 \
+containsintegerpoint1 \
 disjoint1 \
 empty1 \
 foldspacedims1 \
@@ -165,7 +165,7 @@ constraints1_SOURCES = constraints1.cc
 
 contains1_SOURCES = contains1.cc
 
-#containsintegerpoint1_SOURCES = containsintegerpoint1.cc
+containsintegerpoint1_SOURCES = containsintegerpoint1.cc
 
 #discrete1_SOURCES = discrete1.cc
 

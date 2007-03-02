@@ -28,7 +28,6 @@ bool
 test01() {
   Variable x(0);
   Variable y(1);
-  Variable z(2);
 
   Constraint_System cs;
   cs.insert(x >= 0);
@@ -46,24 +45,16 @@ test01() {
   nout << "box.contains_integer_point() == "
        << (contains ? "true" : "false") << endl;
 
-  typedef TBox::interval_type::boundary_type BT;
-  if (std::numeric_limits<BT>::is_integer)
-    return contains;
-  else
-    return !contains;
+  return !contains;
 }
 
 bool
 test02() {
   Variable x(0);
-  Variable y(1);
-  Variable z(2);
 
   Constraint_System cs;
   cs.insert(x > 0);
   cs.insert(x < 1);
-  cs.insert(3*y <= 2);
-  cs.insert(3*y >= -1);
 
   TBox box(3);
   box.add_constraints(cs);
@@ -123,11 +114,106 @@ test04() {
   return !contains;
 }
 
+bool
+test05() {
+  Variable x(0);
+
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(2*x < 1);
+
+  TBox box(1);
+  box.add_constraints(cs);
+
+  print_constraints(box, "*** box ***");
+
+  bool contains = box.contains_integer_point();
+
+  nout << "box.contains_integer_point() == "
+       << (contains ? "true" : "false") << endl;
+
+  return contains;
+}
+
+bool
+test06() {
+  Variable x(0);
+
+  Constraint_System cs;
+  cs.insert(x >= 0);
+  cs.insert(x <= -7);
+
+  TBox box(1);
+  box.add_constraints(cs);
+
+  print_constraints(box, "*** box ***");
+
+  bool contains = box.contains_integer_point();
+
+  nout << "box.contains_integer_point() == "
+       << (contains ? "true" : "false") << endl;
+
+  return !contains;
+}
+
+bool
+test07() {
+  TBox box(1);
+
+  print_constraints(box, "*** box ***");
+
+  bool contains = box.contains_integer_point();
+
+  nout << "box.contains_integer_point() == "
+       << (contains ? "true" : "false") << endl;
+
+  return contains;
+}
+
+bool
+test08() {
+  Variable x(0);
+
+  TBox box(1);
+  box.add_constraint(x >= 6);
+
+  print_constraints(box, "*** box ***");
+
+  bool contains = box.contains_integer_point();
+
+  nout << "box.contains_integer_point() == "
+       << (contains ? "true" : "false") << endl;
+
+  return contains;
+}
+
+bool
+test09() {
+  Variable x(0);
+
+  TBox box(1);
+  box.add_constraint(x > 6);
+
+  print_constraints(box, "*** box ***");
+
+  bool contains = box.contains_integer_point();
+
+  nout << "box.contains_integer_point() == "
+       << (contains ? "true" : "false") << endl;
+
+  return contains;
+}
+
 } // namespace
 
 BEGIN_MAIN
-//   DO_TEST(test01);
-//   DO_TEST(test02);
-//   DO_TEST(test03);
+  DO_TEST(test01);
+  DO_TEST(test02);
+  DO_TEST(test03);
   DO_TEST(test04);
+  DO_TEST(test05);
+  DO_TEST(test06);
+  DO_TEST(test07);
+  DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
