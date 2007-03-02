@@ -474,7 +474,7 @@ assign(Boundary_Type to_type, To& to, To_Info& to_info,
   if (info.get_boundary_property(type, SPECIAL)
       && special_is_boundary_infinity(type, x, info)) {
     shrink = shrink || special_is_open(type, x, info);
-    return set_boundary_infinity(to_type, to, to_info);
+    return set_boundary_infinity(to_type, to, to_info, shrink);
   }
   shrink = shrink || normal_is_open(type, x, info);
   bool check = (To_Info::check_inexact
