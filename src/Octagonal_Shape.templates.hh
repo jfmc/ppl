@@ -5338,40 +5338,6 @@ Octagonal_Shape<T>::bounded_affine_preimage(const Variable var,
 }
 
 template <typename T>
-template <typename Box>
-void
-Octagonal_Shape<T>::shrink_bounding_box(Box& box, Complexity_Class ) const {
-  strong_closure_assign();
-  if (marked_empty()) {
-    box.set_empty();
-    return;
-  }
-  const dimension_type space_dim = space_dimension();
-  if (space_dim == 0)
-    return;
-  mpq_class q;
-  for (dimension_type i = space_dim; i-- > 0; ) {
-    const dimension_type ii = 2*i;
-    const dimension_type cii = ii + 1;
-    // Checking the lower bound.
-    const N& twice_lb = matrix[ii][cii];
-    if (!is_plus_infinity(twice_lb)) {
-      assign_r(q, twice_lb, ROUND_NOT_NEEDED);
-      neg_assign_r(q, q, ROUND_NOT_NEEDED);
-      div2exp_assign_r(q, q, 1, ROUND_NOT_NEEDED);
-      box.raise_lower_bound(i, true, q.get_num(), q.get_den());
-    }
-    // Checking the upper bound.
-    const N& twice_ub = matrix[cii][ii];
-    if (!is_plus_infinity(twice_ub)) {
-      assign_r(q, twice_ub, ROUND_NOT_NEEDED);
-      div2exp_assign_r(q, q, 1, ROUND_NOT_NEEDED);
-      box.lower_upper_bound(i, true, q.get_num(), q.get_den());
-    }
-  }
-}
-
-template <typename T>
 Constraint_System
 Octagonal_Shape<T>::constraints() const {
   Constraint_System cs;

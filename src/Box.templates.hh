@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 #include "Grid.defs.hh"
 #include "BD_Shape.defs.hh"
+#include "Octagonal_Shape.defs.hh"
 #include "MIP_Problem.defs.hh"
 #include <iostream>
 
@@ -194,6 +195,56 @@ Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
       neg_assign_r(bound, bound, ROUND_NOT_NEEDED);
       refine_existential(seq_i, GREATER_OR_EQUAL, bound);
     }
+  }
+}
+
+template <typename Interval>
+template <typename T>
+Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
+  : seq(oct.space_dimension()), empty(false), empty_up_to_date(true) {
+  // Expose all the interval constraints.
+  oct.strong_closure_assign();
+  if (oct.marked_empty()) {
+    set_empty();
+    return;
+  }
+
+  const dimension_type space_dim = space_dimension();
+  if (space_dim == 0)
+    return;
+
+  mpq_class bound;
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    Interval& seq_i = seq[i];
+    const dimension_type ii = 2*i;
+    const dimension_type cii = ii + 1;
+
+    // Set the upper bound.
+    const typename Octagonal_Shape<T>::coefficient_type& twice_ub
+      = oct.matrix[cii][ii];
+    if (!is_plus_infinity(twice_ub)) {
+      assign_r(bound, twice_ub, ROUND_NOT_NEEDED);
+      div2exp_assign_r(bound, bound, 1, ROUND_NOT_NEEDED);
+      // FIXME: how to directly set the upper bound?
+      seq_i.upper_set_unbounded();
+      refine_existential(seq_i, LESS_OR_EQUAL, bound);
+    }
+    else
+      seq_i.upper_set_unbounded();
+
+    // Set the lower bound.
+    const typename Octagonal_Shape<T>::coefficient_type& twice_lb
+      = oct.matrix[ii][cii];
+    if (!is_plus_infinity(twice_lb)) {
+      assign_r(bound, twice_lb, ROUND_NOT_NEEDED);
+      neg_assign_r(bound, bound, ROUND_NOT_NEEDED);
+      div2exp_assign_r(bound, bound, 1, ROUND_NOT_NEEDED);
+      // FIXME: how to directly set the lower bound?
+      seq_i.lower_set_unbounded();
+      refine_existential(seq_i, GREATER_OR_EQUAL, bound);
+    }
+    else
+      seq_i.lower_set_unbounded();
   }
 }
 

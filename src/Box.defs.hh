@@ -35,6 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Generator_System.types.hh"
 #include "BD_Shape.types.hh"
+#include "Octagonal_Shape.types.hh"
 #include "Polyhedron.types.hh"
 #include "Grid.types.hh"
 #include <vector>
@@ -44,15 +45,15 @@ namespace Parma_Polyhedra_Library {
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are the same box.
 /*! \relates Box
-  Note that \p x and \p y may be dimension-incompatible shapes:
+  Note that \p x and \p y may be dimension-incompatible boxes:
   in this case, the value <CODE>false</CODE> is returned.
 */
 template <typename Interval>
 bool operator==(const Box<Interval>& x, const Box<Interval>& y);
 
-//! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same BDS.
-/*! \relates BD_Shape
-  Note that \p x and \p y may be dimension-incompatible shapes:
+//! Returns <CODE>true</CODE> if and only if \p x and \p y aren't the same box.
+/*! \relates Box
+  Note that \p x and \p y may be dimension-incompatible boxes:
   in this case, the value <CODE>true</CODE> is returned.
 */
 template <typename Interval>
@@ -160,11 +161,20 @@ public:
 
   //! Builds a box from the BDS \p bds.
   /*!
-    Builds the smallest box containing \p ph using a polynomial algorithm.
+    Builds the smallest box containing \p bds using a polynomial algorithm.
     The \p complexity argument is ignored.
   */
   template <typename T>
   explicit Box(const BD_Shape<T>& bds,
+	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
+
+  //! Builds a box from the octagonal shape \p oct.
+  /*!
+    Builds the smallest box containing \p oct using a polynomial algorithm.
+    The \p complexity argument is ignored.
+  */
+  template <typename T>
+  explicit Box(const Octagonal_Shape<T>& oct,
 	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
 
   //! Builds a box from the polyhedron \p ph.
