@@ -1,4 +1,4 @@
-/* Test Box::add_constraints_and_minimize().
+/* Test Box::add_constraints().
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -34,9 +34,9 @@ test01() {
   cs.insert(B == 5);
 
   TBox box1(2);
-  box1.add_constraints_and_minimize(cs);
+  box1.add_constraints(cs);
 
-  print_constraints(box1, "*** box1.add_constraints_and_minimize(cs) ***");
+  print_constraints(box1, "*** box1.add_constraints(cs) ***");
 
   Rational_Box known_result(2);
   known_result.add_constraint(A >= 0);
@@ -52,29 +52,6 @@ test01() {
 
 bool
 test02() {
-  Variable x(0);
-  Variable y(1);
-
-  TBox box1(2);
-
-  try {
-    // This is an invalid use of method
-    // Box::add_constraint: it is illegal
-    // to add a strict inequality.
-    box1.add_constraint(x <= 0);
-    box1.add_constraint(y < 0);
-  }
-  catch (std::invalid_argument& e) {
-    nout << "std::invalid_argument: " << endl;
-    return true;
-  }
-  catch (...) {
-  }
-  return false;
-}
-
-bool
-test03() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -98,7 +75,7 @@ test03() {
 }
 
 bool
-test04() {
+test03() {
   Variable x(0);
   Variable y(1);
 
@@ -106,12 +83,12 @@ test04() {
 
   try {
     // This is an invalid use of the method
-    // Box::add_constraints_and_minimize(cs): it is illegal to
+    // Box::add_constraints(cs): it is illegal to
     // add a system of constraints that is not dimensional incompatible
     // with the polyhedron.
     Constraint_System cs;
     cs.insert(x - y >= 0);
-    box.add_constraints_and_minimize(cs);
+    box.add_constraints(cs);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -123,7 +100,7 @@ test04() {
 }
 
 bool
-test05() {
+test04() {
   Variable y(1);
 
   TBox box(1);
@@ -145,7 +122,7 @@ test05() {
 }
 
 bool
-test06() {
+test05() {
   Variable x(0);
   Variable y(1);
 
@@ -177,5 +154,4 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
-  DO_TEST(test06);
 END_MAIN

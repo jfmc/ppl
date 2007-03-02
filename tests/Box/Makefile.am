@@ -41,7 +41,6 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 # Tests that do not compile yet.
-#addconstraints1
 #bgp99extrapolation1
 #bhz03widening1
 #boundedaffineimage1
@@ -61,8 +60,9 @@ $(top_builddir)/src/libppl.la \
 #maxspacedim1
 
 check_PROGRAMS = \
-affinedimension1 \
+addconstraints1 \
 addspacedims1 \
+affinedimension1 \
 bounded1 \
 boxdifference1 \
 boxhull1 \
@@ -130,7 +130,7 @@ print_INSTANCES:
 # Sources for the tests
 #
 
-#addconstraints1_SOURCES = addconstraints1.cc
+addconstraints1_SOURCES = addconstraints1.cc
 
 addspacedims1_SOURCES = addspacedims1.cc
 
@@ -154,9 +154,9 @@ boxdifference1_SOURCES = boxdifference1.cc
 
 boxhull1_SOURCES = boxhull1.cc
 
-cc76widening_SOURCES = cc76widening.cc
-
 #cc76narrowing1_SOURCES = cc76narrowing1.cc
+
+cc76widening_SOURCES = cc76widening.cc
 
 #closure1_SOURCES = closure1.cc
 
