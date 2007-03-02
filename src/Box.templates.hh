@@ -306,13 +306,14 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
 template <typename Interval>
 Box<Interval>::Box(const Grid& gr, Complexity_Class)
   : seq(gr.space_dimension()), empty(false), empty_up_to_date(true) {
+  // FIXME: here we are not taking advantage of intervals with restrictions!
+
   if (gr.marked_empty()) {
     set_empty();
     return;
   }
 
   dimension_type space_dim = gr.space_dimension();
-    return;
 
   if (space_dim == 0)
     return;
@@ -366,8 +367,6 @@ Box<Interval>::Box(const Grid& gr, Complexity_Class)
     if (bounded_interval[i]) {
       assign_r(bound.get_num(), point[i+1], ROUND_NOT_NEEDED);
       assign_r(bound.get_den(), divisor, ROUND_NOT_NEEDED);
-      assert(!mpz_divisible_p(bound.get_num().get_mpz_t(),
-			      bound.get_den().get_mpz_t()));
       bound.canonicalize();
       // FIXME: how to directly set boundaries?
       seq_i.set_universe();
