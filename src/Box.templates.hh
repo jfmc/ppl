@@ -726,6 +726,8 @@ template <typename Interval>
 bool
 Box<Interval>::contains_integer_point() const {
   const Box& x = *this;
+  if (x.marked_empty())
+    return false;
   for (dimension_type k = x.seq.size(); k-- > 0; )
     if (!x.seq[k].contains_integer_point())
       return false;
