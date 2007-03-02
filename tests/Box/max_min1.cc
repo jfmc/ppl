@@ -602,8 +602,6 @@ test17() {
   box.add_constraint(A <= 5);
   box.add_constraint(B <= 3);
   box.add_constraint(B >= -5);
-  box.add_constraint(A - B <= 6);
-  box.add_constraint(B - A <= 2);
 
   print_constraints(box, "*** box ***");
 
@@ -611,7 +609,7 @@ test17() {
   Coefficient den;
   bool included;
   bool ok = box.maximize(A - B - 2, num, den, included)
-    && num == 4 && den == 1 && included;
+    && num == 8 && den == 1 && included;
 
   nout << (included ? "maximum" : "supremum") << " = " << num;
   if (den != 1)
@@ -642,8 +640,6 @@ test18() {
   box.add_constraint(A <= 5);
   box.add_constraint(B <= 3);
   box.add_constraint(B >= -5);
-  box.add_constraint(A - B <= 6);
-  box.add_constraint(B - A <= 2);
 
   print_constraints(box, "*** box ***");
 
@@ -651,7 +647,7 @@ test18() {
   Coefficient den;
   bool included;
   bool ok = box.maximize(A - B + 2, num, den, included)
-    && num == 8 && den == 1 && included;
+    && num == 12 && den == 1 && included;
 
   nout << (included ? "maximum" : "supremum") << " = " << num;
   if (den != 1)

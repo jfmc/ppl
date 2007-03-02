@@ -50,7 +50,6 @@ $(top_builddir)/src/libppl.la \
 #generalizedaffineimage1
 #generalizedaffinepreimage1
 #intersection1
-#maxspacedim1
 #membytes1
 #relations1
 #timeelapse1
@@ -64,7 +63,7 @@ $(top_builddir)/src/libppl.la \
 #equality1
 #expandspacedim1
 #interval1 interval2
-#max_min1
+#maxspacedim1 \
 #minconstraints1
 
 check_PROGRAMS = \
@@ -84,6 +83,7 @@ fromgensys1 \
 frompolyhedron1 \
 geomcovers1 \
 mapspacedims1 \
+max_min1 \
 removespacedims1 \
 universe1 \
 writebox1
@@ -198,7 +198,7 @@ mapspacedims1_SOURCES = mapspacedims1.cc
 
 #maxspacedim1_SOURCES = maxspacedim1.cc
 
-#max_min1_SOURCES = max_min1.cc
+max_min1_SOURCES = max_min1.cc
 
 #membytes1_SOURCES = membytes1.cc
 
