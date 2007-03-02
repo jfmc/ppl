@@ -181,27 +181,19 @@ Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
   const DB_Row<typename BD_Shape<T>::coefficient_type>& dbm_0 = bds.dbm[0];
   for (dimension_type i = space_dim; i-- > 0; ) {
     Interval& seq_i = seq[i];
-
     // Set the upper bound.
+    seq_i.upper_set_unbounded();
     if (!is_plus_infinity(dbm_0[i+1])) {
       assign_r(bound, dbm_0[i+1], ROUND_NOT_NEEDED);
-      // FIXME: how to directly set the upper bound?
-      seq_i.upper_set_unbounded();
       refine_existential(seq_i, LESS_OR_EQUAL, bound);
     }
-    else
-      seq_i.upper_set_unbounded();
-
     // Set the lower bound.
+    seq_i.lower_set_unbounded();
     if (!is_plus_infinity(bds.dbm[i+1][0])) {
       assign_r(bound, bds.dbm[i+1][0], ROUND_NOT_NEEDED);
       neg_assign_r(bound, bound, ROUND_NOT_NEEDED);
-      // FIXME: how to directly set the lower bound?
-      seq_i.lower_set_unbounded();
       refine_existential(seq_i, GREATER_OR_EQUAL, bound);
     }
-    else
-      seq_i.lower_set_unbounded();
   }
 }
 
@@ -264,31 +256,25 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
       Interval& seq_i = seq[i];
       lp.set_objective_function(Variable(i));
       // Evaluate upper bound.
+      seq_i.upper_set_unbounded();
       lp.set_optimization_mode(MAXIMIZATION);
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, num, den);
 	assign_r(bound.get_num(), num, ROUND_NOT_NEEDED);
 	assign_r(bound.get_den(), den, ROUND_NOT_NEEDED);
-	// FIXME: how to directly set the upper bound?
-	seq_i.upper_set_unbounded();
 	refine_existential(seq_i, LESS_OR_EQUAL, bound);
       }
-      else
-	seq_i.upper_set_unbounded();
       // Evaluate optimal lower bound.
+      seq_i.lower_set_unbounded();
       lp.set_optimization_mode(MINIMIZATION);
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, num, den);
 	assign_r(bound.get_num(), num, ROUND_NOT_NEEDED);
 	assign_r(bound.get_den(), den, ROUND_NOT_NEEDED);
-	// FIXME: how to directly set the lower bound?
-	seq_i.lower_set_unbounded();
 	refine_existential(seq_i, GREATER_OR_EQUAL, bound);
       }
-      else
-	seq_i.lower_set_unbounded();
     }
   }
 
@@ -364,16 +350,13 @@ Box<Interval>::Box(const Grid& gr, Complexity_Class)
   const Coefficient& divisor = point.divisor();
   for (dimension_type i = space_dim; i-- > 0; ) {
     Interval& seq_i = seq[i];
+    seq_i.set_universe();
     if (bounded_interval[i]) {
       assign_r(bound.get_num(), point[i+1], ROUND_NOT_NEEDED);
       assign_r(bound.get_den(), divisor, ROUND_NOT_NEEDED);
       bound.canonicalize();
-      // FIXME: how to directly set boundaries?
-      seq_i.set_universe();
       refine_existential(seq_i, EQUAL, bound);
     }
-    else
-      seq_i.set_universe();
   }
 }
 
@@ -457,20 +440,21 @@ Box<Interval>::max_min(const Linear_Expression& expr,
   if (is_empty())
     return false;
 
-  mpq_class result = expr.inhomogeneous_term();
+  mpq_class result;
+  assign_r(result, expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
   bool is_included = true;
   const int maximize_sign = maximize ? 1 : -1;
   mpq_class bound_i;
+  mpq_class expr_i;
   for (dimension_type i = expr_space_dim; i-- > 0; ) {
     const Interval& seq_i = seq[i];
-    const Coefficient& expr_i = expr.coefficient(Variable(i));
+    assign_r(expr_i, expr.coefficient(Variable(i)), ROUND_NOT_NEEDED);
     switch (sgn(expr_i) * maximize_sign) {
     case 1:
       if (seq_i.upper_is_unbounded())
 	return false;
-      bound_i = seq_i.upper();
-      bound_i *= expr_i;
-      result += bound_i;
+      assign_r(bound_i, seq_i.upper(), ROUND_NOT_NEEDED);
+      add_mul_assign_r(result, bound_i, expr_i, ROUND_NOT_NEEDED);
       if (seq_i.upper_is_open())
 	is_included = false;
       break;
@@ -480,9 +464,8 @@ Box<Interval>::max_min(const Linear_Expression& expr,
     case -1:
       if (seq_i.lower_is_unbounded())
 	return false;
-      bound_i = seq_i.lower();
-      bound_i *= expr_i;
-      result += bound_i;
+      assign_r(bound_i, seq_i.lower(), ROUND_NOT_NEEDED);
+      add_mul_assign_r(result, bound_i, expr_i, ROUND_NOT_NEEDED);
       if (seq_i.lower_is_open())
 	is_included = false;
       break;
