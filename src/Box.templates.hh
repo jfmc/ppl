@@ -1023,6 +1023,10 @@ Box<Interval>::add_constraint(const Constraint& c) {
   if (c_space_dim > x.space_dimension())
     x.throw_dimension_incompatible("add_constraint(c)", c);
 
+  // If the box is already empty, there is nothing left to do.
+  if (x.marked_empty())
+    return;
+
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
   TEMP_INTEGER(c_coeff);
@@ -1342,6 +1346,7 @@ Box<Interval>::ascii_dump(std::ostream& s) const {
   s << "\n";
   for (dimension_type i = 0; i < space_dim;  ++i)
     x.seq[i].ascii_dump(s);
+  s << "\n";
 }
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(Interval, Box<Interval>)

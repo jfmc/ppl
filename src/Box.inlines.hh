@@ -40,7 +40,7 @@ Box<Interval>::Box(dimension_type num_dimensions, Degenerate_Element kind)
     for (dimension_type i = num_dimensions; i-- > 0; )
       x.seq[i].set_universe();
   // END OF FIXME.
-  assert(this->OK());
+  assert(x.OK());
 }
 
 template <typename Interval>
