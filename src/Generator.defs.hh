@@ -319,7 +319,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Returns <CODE>true</CODE> if and only if \p *this is a line or a ray.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool is_line_or_ray() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is a point.

@@ -173,7 +173,7 @@ public:
     On return from this method, the representation of \p *this
     is not shared by different Determinate objects.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   void mutate();
 
   //! Assignment operator.
@@ -198,7 +198,7 @@ public:
     For instance, such a function object is obtained by
     <CODE>std::mem_fun_ref(&C_Polyhedron::intersection_assign)</CODE>.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   template <typename Binary_Operator_Assign>
   class Binary_Operator_Assign_Lifter {
   public:
@@ -219,7 +219,7 @@ public:
     Helper function returning a Binary_Operator_Assign_Lifter object,
     also allowing for the deduction of template arguments.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   template <typename Binary_Operator_Assign>
   static Binary_Operator_Assign_Lifter<Binary_Operator_Assign>
   lift_op_assign(Binary_Operator_Assign op_assign);

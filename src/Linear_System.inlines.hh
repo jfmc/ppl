@@ -379,7 +379,7 @@ namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 inline void
 iter_swap(Parma_Polyhedra_Library
 	  ::Linear_System::With_Bit_Matrix_iterator x,

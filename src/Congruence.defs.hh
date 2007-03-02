@@ -336,7 +336,7 @@ public:
     Loads from \p s an ASCII representation of the internal
     representation of \p *this.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Checks if all the invariants are satisfied.

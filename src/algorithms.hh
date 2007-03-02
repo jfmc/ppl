@@ -38,14 +38,14 @@ namespace Parma_Polyhedra_Library {
 
   \relates Polyhedron
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename PH>
 bool
 poly_hull_assign_if_exact(PH& p, const PH& q);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Polyhedron */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename PH>
 bool
 poly_hull_assign_if_exact(PH& p, const PH& q) {

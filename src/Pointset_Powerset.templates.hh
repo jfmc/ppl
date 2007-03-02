@@ -643,7 +643,7 @@ namespace Pointset_Powersets {
   in \p qq, whereas the intersection of \p qq with the negation of \p c
   is added as a new disjunct of the powerset \p r.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename PH>
 void
 linear_partition_aux(const Constraint& c,

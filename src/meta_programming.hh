@@ -34,7 +34,7 @@ namespace Parma_Polyhedra_Library {
   defined (for static constants, the need for a further definition is
   mandated by Section 9.4.2/4 of the C++ standard).
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_bool_nodef(name, value)		\
   enum { name = (value) }
 
@@ -47,7 +47,7 @@ namespace Parma_Polyhedra_Library {
   defined (for static constants, the need for a further definition is
   mandated by Section 9.4.2/4 of the C++ standard).
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_int_nodef(name, value) \
   enum { name = (value) }
 
@@ -61,7 +61,7 @@ namespace Parma_Polyhedra_Library {
   defined (for static constants, the need for a further definition is
   mandated by Section 9.4.2/4 of the C++ standard).
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_value_nodef(type, name, value)	\
   static type name() {				\
     return value;				\
@@ -77,7 +77,7 @@ namespace Parma_Polyhedra_Library {
   defined (for static constants, the need for a further definition is
   mandated by Section 9.4.2/4 of the C++ standard).
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_ref_nodef(type, name, value)				\
   static const type& name() {						\
     static type name(value);						\
@@ -90,7 +90,7 @@ namespace Parma_Polyhedra_Library {
 
   This is the non-specialized case, so the class is declared but not defined.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <bool b>
 struct Compile_Time_Check;
 
@@ -101,7 +101,7 @@ struct Compile_Time_Check;
   This is the specialized case with \p b equal to <CODE>true</CODE>,
   so the class is declared and (trivially) defined.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <>
 struct Compile_Time_Check<true> {
 };
@@ -120,7 +120,7 @@ struct Compile_Time_Check<true> {
   Produces a compilation error if the compile-time constant \p e does
   not evaluate to <CODE>true</CODE>
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define COMPILE_TIME_CHECK(e, msg) COMPILE_TIME_CHECK_AUX(e, __LINE__)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -128,7 +128,7 @@ struct Compile_Time_Check<true> {
   A class holding a constant called <CODE>value</CODE> that evaluates
   to \p b.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <bool b>
 struct Bool {
   enum {
@@ -141,7 +141,7 @@ struct Bool {
   A class holding a constant called <CODE>value</CODE> that evaluates
   to <CODE>true</CODE>.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 struct True : public Bool<true> {
 };
 
@@ -150,7 +150,7 @@ struct True : public Bool<true> {
   A class holding a constant called <CODE>value</CODE> that evaluates
   to <CODE>false</CODE>.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 struct False : public Bool<false> {
 };
 
@@ -161,7 +161,7 @@ struct False : public Bool<false> {
 
   This is the non-specialized case, in which \p T1 and \p T2 can be different.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T1, typename T2>
 struct Is_Same : public False {
 };
@@ -173,7 +173,7 @@ struct Is_Same : public False {
 
   This is the specialization in which \p T1 and \p T2 are equal.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 struct Is_Same<T, T> : public True {
 };
@@ -203,7 +203,7 @@ struct Is_Same<T, T> : public True {
   This enables us to enquire
   <CODE>Is_Same_Or_Derived<B_Base, Type>::value</CODE>.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Base, typename Derived>
 struct Is_Same_Or_Derived {
   //! A class that is constructible from just anything.
@@ -244,7 +244,7 @@ struct Is_Same_Or_Derived {
   This is the non-specialized case, in which the <CODE>type</CODE> member
   is not present.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <bool b, typename T = void>
 struct Enable_If {
 };
@@ -273,7 +273,7 @@ struct Enable_If {
   the <CODE>Enable_If<condition, T>::type</CODE> member will not be defined.
   Hence, for that instantiations, the specialization will not be eligible.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 struct Enable_If<true, T> {
   typedef T type;

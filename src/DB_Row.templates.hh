@@ -122,7 +122,7 @@ template <typename T>
 bool
 DB_Row<T>::OK(const dimension_type row_size,
 	      const dimension_type
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
 	      row_capacity
 #endif
 	      ) const {
@@ -134,7 +134,7 @@ DB_Row<T>::OK(const dimension_type row_size,
   const DB_Row<T>& x = *this;
   bool is_broken = false;
 
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
 # if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (x.capacity_ == 0) {
     cerr << "Illegal row capacity: is 0, should be at least 1"
@@ -152,7 +152,7 @@ DB_Row<T>::OK(const dimension_type row_size,
 	 << endl;
     is_broken = true;
   }
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_DB_ROW_EXTRA_DEBUG
 
   if (x.size() != row_size) {
 #ifndef NDEBUG
@@ -163,7 +163,7 @@ DB_Row<T>::OK(const dimension_type row_size,
     is_broken = true;
   }
 
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   if (x.capacity_ < x.size()) {
 #ifndef NDEBUG
     cerr << "DB_Row is completely broken: capacity is " << x.capacity_
@@ -172,7 +172,7 @@ DB_Row<T>::OK(const dimension_type row_size,
 #endif
     is_broken = true;
   }
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_DB_ROW_EXTRA_DEBUG
 
   for (dimension_type i = x.size(); i-- > 0; ) {
     const T& element = x[i];

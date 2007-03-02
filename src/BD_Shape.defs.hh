@@ -276,7 +276,7 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   then it will be set to the value of the first non-zero coefficient
   in \p c.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool extract_bounded_difference(const Constraint& c,
 				const dimension_type c_space_dim,
 				dimension_type& c_num_vars,
@@ -287,7 +287,7 @@ bool extract_bounded_difference(const Constraint& c,
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Extracts leader indices from the predecessor relation.
 /*! \relates BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void compute_leader_indices(const std::vector<dimension_type>& predecessor,
 			    std::vector<dimension_type>& indices);
 
@@ -1460,7 +1460,7 @@ public:
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.

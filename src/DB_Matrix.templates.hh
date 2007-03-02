@@ -243,7 +243,7 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 bool
 operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
@@ -297,7 +297,7 @@ DB_Matrix<T>::OK() const {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */  //FIXME!!
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const DB_Matrix<T>& c) {

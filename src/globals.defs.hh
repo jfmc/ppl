@@ -39,7 +39,7 @@ not_a_dimension();
 //! A node of the list of available coefficients.
 /*! \ingroup PPL_CXX_interface */
 // FIXME: rewrite the comment.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Coefficient_free_list_element {
 private:
   Coefficient i;
@@ -121,7 +121,7 @@ Temp_Coefficient_Holder temp_Coefficient_holder_ ## id = (id)
   for our vector-like data structures. In all cases, the speculative
   allocation will not exceed \p maximum_size.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 dimension_type
 compute_capacity(dimension_type requested_size,
 		 dimension_type maximum_size);
@@ -243,7 +243,7 @@ T low_bits_mask(unsigned n);
   void ascii_dump() const;					\
   void ascii_dump(std::ostream& s) const;			\
   void print() const;
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 #define PPL_OUTPUT_DEFINITIONS(class_name)			\
   void								\
@@ -365,7 +365,7 @@ struct Constant : public Constant_<long long, v, prefer_signed> {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Extract the numerator and denominator components of \p from.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Policy>
 inline void
 numer_denom(const Checked_Number<T, Policy>& from,
@@ -373,7 +373,7 @@ numer_denom(const Checked_Number<T, Policy>& from,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Divides \p x by \p y into \p to, rounding the result towards plus infinity.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Policy>
 inline void
 div_round_up(Checked_Number<T, Policy>& to,
@@ -382,28 +382,28 @@ div_round_up(Checked_Number<T, Policy>& to,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Assigns to \p x the minimum between \p x and \p y.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename N>
 inline void
 min_assign(N& x, const N& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Assigns to \p x the maximum between \p x and \p y.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename N>
 inline void
 max_assign(N& x, const N& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x is an even number.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Policy>
 inline bool
 is_even(const Checked_Number<T, Policy>& x);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \f$x = -y\f$.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T, typename Policy>
 inline bool
 is_additive_inverse(const Checked_Number<T, Policy>& x,

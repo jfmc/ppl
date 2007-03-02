@@ -181,7 +181,7 @@ Row::flags() {
   return impl->flags();
 }
 
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
 inline dimension_type
 Row::capacity() const {
   return capacity_;
@@ -191,7 +191,7 @@ Row::capacity() const {
 inline
 Row_Impl_Handler::Row_Impl_Handler()
   : impl(0) {
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   capacity_ = 0;
 #endif
 }
@@ -220,7 +220,7 @@ Row::allocate(
 #endif
   assert(impl == 0);
   impl = new (capacity) Impl(f);
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   assert(capacity_ == 0);
   capacity_ = capacity;
 #endif
@@ -229,7 +229,7 @@ Row::allocate(
 inline void
 Row::expand_within_capacity(const dimension_type new_size) {
   assert(impl);
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   assert(new_size <= capacity_);
 #endif
   impl->expand_within_capacity(new_size);
@@ -238,7 +238,7 @@ Row::expand_within_capacity(const dimension_type new_size) {
 inline void
 Row::copy_construct_coefficients(const Row& y) {
   assert(impl && y.impl);
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   assert(y.size() <= capacity_);
 #endif
   impl->copy_construct_coefficients(*(y.impl));
@@ -316,7 +316,7 @@ Row::shrink(const dimension_type new_size) {
 inline void
 Row::swap(Row& y) {
   std::swap(impl, y.impl);
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   std::swap(capacity_, y.capacity_);
 #endif
 }
@@ -324,7 +324,7 @@ Row::swap(Row& y) {
 inline void
 Row::assign(Row& y) {
   impl = y.impl;
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   capacity_ = y.capacity_;
 #endif
 }
@@ -363,7 +363,7 @@ Row::total_memory_in_bytes(dimension_type capacity) const {
 
 inline memory_size_type
 Row::external_memory_in_bytes() const {
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   return impl->total_memory_in_bytes(capacity_);
 #else
   return impl->total_memory_in_bytes();

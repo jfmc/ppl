@@ -166,7 +166,7 @@ DB_Matrix<T>::num_rows() const {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline bool
 operator!=(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
@@ -201,7 +201,7 @@ DB_Matrix<T>::operator=(const DB_Matrix& y) {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Specialization, typename Temp, typename To, typename T>
 inline bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -255,7 +255,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -276,7 +276,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -296,7 +296,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -320,7 +320,7 @@ namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline void
 swap(Parma_Polyhedra_Library::DB_Matrix<T>& x,

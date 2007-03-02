@@ -195,7 +195,7 @@ enableval=no
 AC_MSG_CHECKING([whether to enable even more run-time assertions])
 AC_ARG_ENABLE(more-assertions,
   AC_HELP_STRING([--enable-more-assertions],
-    [check even more run-time assertions]))
+    [break the ABI to check even more run-time assertions]))
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
@@ -212,7 +212,7 @@ enable_more_assertions=${enableval}
 if test x"$enable_more_assertions" = xyes
 then
   enable_assertions=yes
-  AC_DEFINE(EXTRA_ROW_DEBUG, 1, [Enable more assertions when defined.])
+  AC_DEFINE(PPL_ABI_BREAKING_EXTRA_DEBUG, 1, [ABI-breaking extra assertions are enabled when this is defined.])
 fi
 
 if test x"$enable_assertions" = xno

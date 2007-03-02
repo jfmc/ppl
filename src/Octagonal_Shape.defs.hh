@@ -283,7 +283,7 @@ bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   then it will be set to the right value of the inhomogeneous term
   of \p c.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool extract_octagonal_difference(const Constraint& c,
 				  const dimension_type c_space_dim,
 				  dimension_type& c_num_vars,
@@ -295,7 +295,7 @@ bool extract_octagonal_difference(const Constraint& c,
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns the index coherent to \p i.
 /*! \relates Octagonal_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 dimension_type coherent_index(dimension_type i);
 
 } // namespace Parma_Polyhedra_Library
@@ -1387,7 +1387,7 @@ public:
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
   //! Returns the total size in bytes of the memory occupied by \p *this.

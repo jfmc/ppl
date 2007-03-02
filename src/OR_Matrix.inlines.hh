@@ -46,7 +46,7 @@ OR_Matrix<T>::row_size(const dimension_type k) {
   return (k+2) & ~dimension_type(1);
 }
 
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 
 template <typename T>
 template <typename U>
@@ -55,14 +55,14 @@ OR_Matrix<T>::Pseudo_Row<U>::size() const {
   return size_;
 }
 
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_OR_MATRIX_EXTRA_DEBUG
 
 template <typename T>
 template <typename U>
 inline
 OR_Matrix<T>::Pseudo_Row<U>::Pseudo_Row()
   : first(0)
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
   , size_(0)
 #endif
 {
@@ -73,12 +73,12 @@ template <typename T>
 template <typename U>
 inline
 OR_Matrix<T>::Pseudo_Row<U>::Pseudo_Row(U& y
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 		, dimension_type s
 #endif
 		)
   : first(&y)
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
   , size_(s)
 #endif
 {
@@ -90,7 +90,7 @@ template <typename V>
 inline
 OR_Matrix<T>::Pseudo_Row<U>::Pseudo_Row(const Pseudo_Row<V>& y)
   : first(y.first)
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
     , size_(y.size_)
 #endif
 {
@@ -101,7 +101,7 @@ template <typename U>
 inline OR_Matrix<T>::Pseudo_Row<U>&
 OR_Matrix<T>::Pseudo_Row<U>::operator=(const Pseudo_Row& y) {
   first = y.first;
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
   size_ = y.size_;
 #endif
   return *this;
@@ -117,7 +117,7 @@ template <typename T>
 template <typename U>
 inline U&
 OR_Matrix<T>::Pseudo_Row<U>::operator[](const dimension_type k) const {
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
   assert(k < size_);
 #endif
   return *(first + k);
@@ -144,7 +144,7 @@ template <typename U>
 inline
 OR_Matrix<T>::any_row_iterator<U>::any_row_iterator(U& base)
   :  value(base
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 	   , OR_Matrix<T>::row_size(0)
 #endif
 	   ),
@@ -196,7 +196,7 @@ OR_Matrix<T>::any_row_iterator<U>::operator++() {
   dimension_type increment = e;
   if (e % 2) {
     ++increment;
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
     value.size_ += 2;
 #endif
   }
@@ -222,7 +222,7 @@ OR_Matrix<T>::any_row_iterator<U>::operator--() {
   --e;
   if (e % 2) {
     ++decrement;
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
     value.size_ -= 2;
 #endif
   }
@@ -250,7 +250,7 @@ OR_Matrix<T>::any_row_iterator<U>::operator+=(difference_type m) {
   e += m;
   i += increment;
   value.first += increment;
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
   // FIXME!!!
   value.size_ = OR_Matrix::row_size(e);
 #endif
@@ -453,7 +453,7 @@ template <typename T>
 inline typename OR_Matrix<T>::row_reference_type
 OR_Matrix<T>::operator[](dimension_type k) {
   return row_reference_type(vec[row_first_element_index(k)]
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 			    , row_size(k)
 #endif
 			    );
@@ -463,7 +463,7 @@ template <typename T>
 inline typename OR_Matrix<T>::const_row_reference_type
 OR_Matrix<T>::operator[](dimension_type k) const {
   return const_row_reference_type(vec[row_first_element_index(k)]
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 				  , row_size(k)
 #endif
 				  );
@@ -489,7 +489,7 @@ OR_Matrix<T>::clear() {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline bool
 operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y) {
@@ -498,7 +498,7 @@ operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y) {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline bool
 operator!=(const OR_Matrix<T>& x, const OR_Matrix<T>& y) {
@@ -581,7 +581,7 @@ OR_Matrix<T>::resize_no_copy(const dimension_type new_dim) {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Specialization, typename Temp, typename To, typename T>
 inline bool
 l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -634,7 +634,7 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -654,7 +654,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
@@ -674,7 +674,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 inline bool
 l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,

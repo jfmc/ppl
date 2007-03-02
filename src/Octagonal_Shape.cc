@@ -28,7 +28,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::Octagonal_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
 PPL::extract_octagonal_difference(const Constraint& c,
 				  const dimension_type c_space_dim,

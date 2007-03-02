@@ -70,7 +70,7 @@ public:
     Returns <CODE>true</CODE> if and only if the certificate for grid
     \p gr is strictly smaller than \p *this.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool is_stabilizing(const Grid& gr) const;
 
   //! A total ordering on Grid certificates.
@@ -86,7 +86,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Check if gathered information is meaningful.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool OK() const;
 
 private:

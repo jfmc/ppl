@@ -49,7 +49,7 @@ site: http://www.cs.unipr.it/ppl/ . */
    - a Boolean flag that, when <CODE>true</CODE>, ensures that the
      non-pending prefix of the sequence of rows is sorted.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 class Parma_Polyhedra_Library::Linear_System : public Matrix {
 public:
@@ -84,7 +84,7 @@ public:
     copies pending rows as pending from the one that transforms
     pending rows into non-pending ones.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   struct With_Pending {
   };
 
@@ -400,7 +400,7 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Linear_System */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Linear_System& x,
 	  Parma_Polyhedra_Library::Linear_System& y);
 
@@ -411,13 +411,13 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates Linear_System */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator==(const Linear_System& x, const Linear_System& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates Linear_System */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Linear_System& x, const Linear_System& y);
 
 } // namespace Parma_Polyhedra_Library
@@ -430,7 +430,7 @@ bool operator!=(const Linear_System& x, const Linear_System& y);
   Bit_Row objects.  Access to values is always done on the Row
   objects, but iterator movements and swaps are done on both components.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator {
 public:
   typedef std::vector<Row>::iterator Iter1;
@@ -502,7 +502,7 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::iter_swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Linear_System::With_Bit_Matrix_iterator */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void
 iter_swap(Parma_Polyhedra_Library
 	  ::Linear_System::With_Bit_Matrix_iterator x,

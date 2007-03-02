@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A matrix of bits.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Bit_Matrix {
 public:
   //! Default constructor.
@@ -152,13 +152,13 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 /*! \relates Bit_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator==(const Bit_Matrix& x, const Bit_Matrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are not equal.
 /*! \relates Bit_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Bit_Matrix& x, const Bit_Matrix& y);
 
 } // namespace Parma_Polyhedra_Library
@@ -168,7 +168,7 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Bit_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Bit_Matrix& x,
 	  Parma_Polyhedra_Library::Bit_Matrix& y);
 

@@ -214,7 +214,7 @@ PPL::Row::OK() const {
 #endif
 
   bool is_broken = false;
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
 # if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity_ == 0) {
     cerr << "Illegal row capacity: is 0, should be at least 1"
@@ -231,7 +231,7 @@ PPL::Row::OK() const {
 	 << endl;
     is_broken = true;
   }
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_ROW_EXTRA_DEBUG
   if (size() > max_size()) {
 #ifndef NDEBUG
     cerr << "Row size exceeds the maximum allowed size:"
@@ -242,7 +242,7 @@ PPL::Row::OK() const {
 #endif
     is_broken = true;
   }
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   if (capacity_ < size()) {
 #ifndef NDEBUG
     cerr << "Row is completely broken: capacity is " << capacity_
@@ -251,14 +251,14 @@ PPL::Row::OK() const {
 #endif
     is_broken = true;
   }
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_ROW_EXTRA_DEBUG
   return !is_broken;
 }
 
 bool
 PPL::Row::OK(const dimension_type row_size,
 	     const dimension_type
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
 	     row_capacity
 #endif
 	     ) const {
@@ -269,7 +269,7 @@ PPL::Row::OK(const dimension_type row_size,
 
   bool is_broken = !OK();
 
-#if EXTRA_ROW_DEBUG
+#if PPL_ROW_EXTRA_DEBUG
   // Check the declared capacity.
 # if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity_ == 1 && row_capacity == 0)
@@ -283,7 +283,7 @@ PPL::Row::OK(const dimension_type row_size,
 	 << endl;
     is_broken = true;
   }
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_ROW_EXTRA_DEBUG
 
   // Check the declared size.
   if (size() != row_size) {

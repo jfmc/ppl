@@ -118,7 +118,7 @@ namespace {
   contains the intersection of \p qq with the negation of \p c
   is added, as a set of new disjuncts, to the powerset \p r.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
 approximate_partition_aux(const PPL::Congruence& c,
 			  PPL::Grid& qq,

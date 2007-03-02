@@ -42,7 +42,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   we collect enough information to decide which is the better
   implementation alternative.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define BE_LAZY 1
 
 namespace PPL = Parma_Polyhedra_Library;

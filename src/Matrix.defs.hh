@@ -40,7 +40,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   to the number of columns of the matrix), are also bound to have the
   same capacity.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 class Parma_Polyhedra_Library::Matrix {
 public:
@@ -86,7 +86,7 @@ public:
     A const_iterator is used to provide read-only access
     to each row contained in a Matrix object.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   class const_iterator {
   private:
     typedef std::vector<Row>::const_iterator Iter;
@@ -331,7 +331,7 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Specializes <CODE>std::swap</CODE>.
   /*! \relates Parma_Polyhedra_Library::Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Matrix& x,
 	  Parma_Polyhedra_Library::Matrix& y);
 
@@ -343,13 +343,13 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator==(const Matrix& x, const Matrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Matrix& x, const Matrix& y);
 
 } // namespace Parma_Polyhedra_Library

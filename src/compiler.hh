@@ -30,7 +30,7 @@ namespace Parma_Polyhedra_Library {
   No-op function that allows to avoid unused variable warnings from
   the compiler.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline void
 used(const T&) {
@@ -40,7 +40,7 @@ used(const T&) {
 /*! \brief
   No-op function that prevents the compiler to subject the argument to CSE.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 inline void avoid_cse(const T& x) {
   __asm__ __volatile__ ("" : "+m" (const_cast<T&>(x)));

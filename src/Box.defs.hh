@@ -1003,7 +1003,7 @@ public:
     ascii_dump(std::ostream&) const) and sets \p *this accordingly.
     Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool ascii_load(std::istream& s);
 
 private:
@@ -1183,7 +1183,7 @@ namespace Parma_Polyhedra_Library {
   If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
   then it will be set to the value of the only non-zero coefficient in \p c.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool extract_interval_constraint(const Constraint& c,
 				 const dimension_type c_space_dim,
 				 dimension_type& c_num_vars,

@@ -27,7 +27,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
 PPL::extract_interval_constraint(const Constraint& c,
 				 const dimension_type c_space_dim,

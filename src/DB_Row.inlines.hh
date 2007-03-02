@@ -115,7 +115,7 @@ template <typename T>
 inline
 DB_Row_Impl_Handler<T>::DB_Row_Impl_Handler()
   : impl(0) {
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   capacity_ = 0;
 #endif
 }
@@ -152,13 +152,13 @@ DB_Row<T>::size() const {
   return this->impl->size();
 }
 
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
 template <typename T>
 inline dimension_type
 DB_Row<T>::capacity() const {
   return this->capacity_;
 }
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_DB_ROW_EXTRA_DEBUG
 
 template <typename T>
 inline
@@ -181,7 +181,7 @@ DB_Row<T>::allocate(
 #endif
   assert(x.impl == 0);
   x.impl = new (capacity) typename DB_Row_Impl_Handler<T>::Impl();
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   assert(x.capacity_ == 0);
   x.capacity_ = capacity;
 #endif
@@ -192,7 +192,7 @@ inline void
 DB_Row<T>::expand_within_capacity(const dimension_type new_size) {
   DB_Row<T>& x = *this;
   assert(x.impl);
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   assert(new_size <= x.capacity_);
 #endif
   x.impl->expand_within_capacity(new_size);
@@ -203,7 +203,7 @@ inline void
 DB_Row<T>::copy_construct_coefficients(const DB_Row& y) {
   DB_Row<T>& x = *this;
   assert(x.impl && y.impl);
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   assert(y.size() <= x.capacity_);
 #endif
   x.impl->copy_construct_coefficients(*(y.impl));
@@ -302,7 +302,7 @@ inline void
 DB_Row<T>::swap(DB_Row& y) {
   DB_Row<T>& x = *this;
   std::swap(x.impl, y.impl);
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   std::swap(x.capacity_, y.capacity_);
 #endif
 }
@@ -312,7 +312,7 @@ inline void
 DB_Row<T>::assign(DB_Row& y) {
   DB_Row<T>& x = *this;
   x.impl = y.impl;
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   x.capacity_ = y.capacity_;
 #endif
 }
@@ -387,7 +387,7 @@ template <typename T>
 inline memory_size_type
 DB_Row<T>::external_memory_in_bytes() const {
   const DB_Row<T>& x = *this;
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   return x.impl->total_memory_in_bytes(x.capacity_);
 #else
   return x.impl->total_memory_in_bytes();

@@ -44,7 +44,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   For any developers' need, suitable friend declarations allow for
   accessing the low-level iterators on the sequence of objects.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Container>
 class Parma_Polyhedra_Library::iterator_to_const {
 private:
@@ -118,7 +118,7 @@ public:
   on a read-only sequence of objects, ensures interoperability
   with template class iterator_to_const.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Container>
 class Parma_Polyhedra_Library::const_iterator_to_const {
 private:
@@ -195,7 +195,7 @@ namespace Parma_Polyhedra_Library {
 
   \relates const_iterator_to_const
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Container>
 bool
 operator==(const iterator_to_const<Container>& x,
@@ -208,7 +208,7 @@ operator==(const iterator_to_const<Container>& x,
 
   \relates const_iterator_to_const
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Container>
 bool
 operator!=(const iterator_to_const<Container>& x,

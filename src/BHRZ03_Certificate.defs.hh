@@ -73,7 +73,7 @@ public:
     Returns <CODE>true</CODE> if and only if the certificate for
     polyhedron \p ph is strictly smaller than \p *this.
   */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool is_stabilizing(const Polyhedron& ph) const;
 
   //! A total ordering on BHRZ03 certificates.
@@ -89,7 +89,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Check if gathered information is meaningful.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   bool OK() const;
 
 private:

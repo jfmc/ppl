@@ -62,7 +62,7 @@ Ptr_Iterator<P> operator+(typename Ptr_Iterator<P>::difference_type m,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A class to define STL const and non-const iterators from pointer types.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename P>
 class Parma_Polyhedra_Library::Implementation::Ptr_Iterator
   : public std::iterator<typename std::iterator_traits<P>::iterator_category,

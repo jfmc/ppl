@@ -29,17 +29,21 @@ site: http://www.cs.unipr.it/ppl/ .*/
 #include <cstddef>
 #include <vector>
 
-#ifndef EXTRA_ROW_DEBUG
+#ifndef PPL_DB_ROW_EXTRA_DEBUG
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief
-  When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each instance
+  When PPL_DB_ROW_EXTRA_DEBUG evaluates to <CODE>true</CODE>, each instance
   of the class DB_Row carries its own capacity; this enables extra
   consistency checks to be performed.
   \ingroup PPL_CXX_interface
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-#define EXTRA_ROW_DEBUG 0
-#endif
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+#define PPL_DB_ROW_EXTRA_DEBUG 1
+#else // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
+#define PPL_DB_ROW_EXTRA_DEBUG 0
+#endif // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
+#endif // !defined(PPL_DB_ROW_EXTRA_DEBUG)
 
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -48,7 +52,7 @@ site: http://www.cs.unipr.it/ppl/ .*/
   Exception-safety is the only responsibility of this class: it has
   to ensure that its \p impl member is correctly deallocated.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 class Parma_Polyhedra_Library::DB_Row_Impl_Handler {
 public:
@@ -63,10 +67,10 @@ public:
   //! A pointer to the actual implementation.
   Impl* impl;
 
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   //! The capacity of \p impl (only available during debugging).
   dimension_type capacity_;
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_DB_ROW_EXTRA_DEBUG
 
 private:
   //! Private and unimplemented: copy construction is not allowed.
@@ -110,7 +114,7 @@ private:
   returns <CODE>true</CODE> if and only if \p *this satisfies all
   its invariants.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 class Parma_Polyhedra_Library::DB_Row : private DB_Row_Impl_Handler<T> {
 public:
@@ -294,10 +298,10 @@ private:
   //! Exception-safe copy construction mechanism for coefficients.
   void copy_construct_coefficients(const DB_Row& y);
 
-#if EXTRA_ROW_DEBUG
+#if PPL_DB_ROW_EXTRA_DEBUG
   //! Returns the capacity of the row (only available during debugging).
   dimension_type capacity() const;
-#endif // defined(EXTRA_ROW_DEBUG)
+#endif // PPL_DB_ROW_EXTRA_DEBUG
 };
 
 namespace Parma_Polyhedra_Library {
@@ -305,7 +309,7 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \name Classical comparison operators.
 //@{
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 /*! \relates DB_Row */
 template <typename T>
 bool operator==(const DB_Row<T>& x, const DB_Row<T>& y);
@@ -315,7 +319,7 @@ template <typename T>
 bool operator!=(const DB_Row<T>& x, const DB_Row<T>& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //@}
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 } // namespace Parma_Polyhedra_Library
 
@@ -327,7 +331,7 @@ bool operator!=(const DB_Row<T>& x, const DB_Row<T>& y);
   DB_Row objects and, in particular, of the corresponding memory
   allocation functions.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 class Parma_Polyhedra_Library::DB_Row_Impl_Handler<T>::Impl {
 public:
@@ -447,7 +451,7 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::DB_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 void swap(Parma_Polyhedra_Library::DB_Row<T>& x,
 	  Parma_Polyhedra_Library::DB_Row<T>& y);
@@ -455,7 +459,7 @@ void swap(Parma_Polyhedra_Library::DB_Row<T>& x,
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::iter_swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::DB_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 void iter_swap(typename std::vector<Parma_Polyhedra_Library::DB_Row<T> >
 	       ::iterator x,

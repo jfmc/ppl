@@ -39,7 +39,7 @@ namespace IO_Operators {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 std::ostream&
 operator<<(std::ostream& s, const DB_Matrix<T>& c);
@@ -56,7 +56,7 @@ operator<<(std::ostream& s, const DB_Matrix<T>& c);
   a square matrix of T objects.
   Each DB_Matrix<T> object can be viewed as a multiset of DB_Row<T>.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 class Parma_Polyhedra_Library::DB_Matrix {
 public:
@@ -91,7 +91,7 @@ public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A read-only iterator over the rows of the matrix.
   /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
   class const_iterator {
   private:
     typedef typename std::vector<DB_Row<T> >::const_iterator Iter;
@@ -233,7 +233,7 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 void swap(Parma_Polyhedra_Library::DB_Matrix<T>& x,
 	  Parma_Polyhedra_Library::DB_Matrix<T>& y);
@@ -246,14 +246,14 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 bool operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates DB_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 bool operator!=(const DB_Matrix<T>& x, const DB_Matrix<T>& y);
 
@@ -269,7 +269,7 @@ bool operator!=(const DB_Matrix<T>& x, const DB_Matrix<T>& y);
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const DB_Matrix<T>& x,
@@ -291,7 +291,7 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const DB_Matrix<T>& x,
@@ -313,7 +313,7 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const DB_Matrix<T>& x,

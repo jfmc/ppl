@@ -36,13 +36,13 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
 /*! \relates Bit_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator==(const Bit_Row& x, const Bit_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are not equal.
 /*! \relates Bit_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool operator!=(const Bit_Row& x, const Bit_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -58,13 +58,13 @@ bool operator!=(const Bit_Row& x, const Bit_Row& y);
   -  0 if \p x and \p y are equal;
   -  1 if \p x comes after \p y in the ordering.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 int compare(const Bit_Row& x, const Bit_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic inclusion test.
 /*! \relates Bit_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool subset_or_equal(const Bit_Row& x, const Bit_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -74,20 +74,20 @@ bool subset_or_equal(const Bit_Row& x, const Bit_Row& y);
 
   \relates Bit_Row
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool subset_or_equal(const Bit_Row& x, const Bit_Row& y,
 		     bool& strict_subset);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic strict inclusion test.
 /*! \relates Bit_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool strict_subset(const Bit_Row& x, const Bit_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic union.
 /*! \relates Bit_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
 
 } // namespace Parma_Polyhedra_Library
@@ -95,7 +95,7 @@ void set_union(const Bit_Row& x, const Bit_Row& y, Bit_Row& z);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A row in a matrix of bits.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 class Parma_Polyhedra_Library::Bit_Row {
 public:
   //! Default constructor.
@@ -203,14 +203,14 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Bit_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void swap(Parma_Polyhedra_Library::Bit_Row& x,
 	  Parma_Polyhedra_Library::Bit_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::iter_swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Bit_Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void
 iter_swap(std::vector<Parma_Polyhedra_Library::Bit_Row>::iterator x,
 	  std::vector<Parma_Polyhedra_Library::Bit_Row>::iterator y);

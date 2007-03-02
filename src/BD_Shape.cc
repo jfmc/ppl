@@ -27,7 +27,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool
 PPL::extract_bounded_difference(const Constraint& c,
 				const dimension_type c_space_dim,
@@ -80,7 +80,7 @@ PPL::extract_bounded_difference(const Constraint& c,
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 void
 PPL::compute_leader_indices(const std::vector<dimension_type>& predecessor,
 			    std::vector<dimension_type>& indices) {

@@ -38,7 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   only one of them will initialize and properly finalize
   the library.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 class Parma_Polyhedra_Library::Init {
 private:

@@ -31,7 +31,7 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 struct Checked_Number_Transparent_Policy {
   //! Checks for overflowed result.
@@ -82,7 +82,7 @@ struct Checked_Number_Transparent_Policy {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 struct Checked_Number_Default_Policy {
   const_bool_nodef(check_overflow, true);
   const_bool_nodef(check_inf_add_inf, false);
@@ -107,7 +107,7 @@ struct Checked_Number_Default_Policy {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 struct Extended_Number_Policy {
   const_bool_nodef(check_overflow, true);
   const_bool_nodef(check_inf_add_inf, false);
@@ -138,7 +138,7 @@ struct Extended_Number_Policy {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 struct WRD_Extended_Number_Policy {
   const_bool_nodef(check_overflow, true);
   const_bool_nodef(check_inf_add_inf, false);
@@ -170,7 +170,7 @@ struct WRD_Extended_Number_Policy {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A policy checking for overflows.
 /*! \ingroup PPL_CXX_interface */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 struct Check_Overflow_Policy {
   const_bool_nodef(check_overflow, true);

@@ -99,7 +99,7 @@ PPL_SPECIALIZE_LIMITS_FLOAT(long double)
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Partial specialization of std::numeric_limits.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Policy>
 class
 numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpz_class, Policy> >
@@ -128,7 +128,7 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Partial specialization of std::numeric_limits.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Policy>
 class
 numeric_limits<Parma_Polyhedra_Library::Checked_Number<mpq_class, Policy> >

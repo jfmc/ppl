@@ -32,16 +32,28 @@ site: http://www.cs.unipr.it/ppl/ .  */
 #include <cstddef>
 #include <iosfwd>
 
-#ifndef EXTRA_ROW_DEBUG
-#define EXTRA_ROW_DEBUG 1
-#endif
+#ifndef PPL_OR_MATRIX_EXTRA_DEBUG
+#ifdef PPL_ABI_BREAKING_EXTRA_DEBUG
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \brief
+  When PPL_OR_MATRIX_EXTRA_DEBUG evaluates to <CODE>true</CODE>, each
+  instance of the class OR_Matrix::Pseudo_Row carries its own size;
+  this enables extra consistency checks to be performed.
+  \ingroup PPL_CXX_interface
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+#define PPL_OR_MATRIX_EXTRA_DEBUG 1
+#else // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
+#define PPL_OR_MATRIX_EXTRA_DEBUG 0
+#endif // !defined(PPL_ABI_BREAKING_EXTRA_DEBUG)
+#endif // !defined(PPL_OR_MATRIX_EXTRA_DEBUG)
 
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 bool operator==(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
 
@@ -50,7 +62,7 @@ namespace IO_Operators {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 std::ostream&
 operator<<(std::ostream& s, const OR_Matrix<T>& m);
@@ -88,7 +100,7 @@ operator<<(std::ostream& s, const OR_Matrix<T>& m);
   It provides row_iterators for the access to the rows
   and element_iterators for the access to the elements.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 
 template <typename T>
 class Parma_Polyhedra_Library::OR_Matrix {
@@ -123,22 +135,22 @@ private:
     //! Default constructor: creates a past-the-end object.
     Pseudo_Row();
 
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 
     //! Private constructor for a Pseudo_Row with size \p s beginning at \p y.
     Pseudo_Row(U& y, dimension_type s);
 
-#else // !EXTRA_ROW_DEBUG
+#else // !PPL_OR_MATRIX_EXTRA_DEBUG
 
     //! Private constructor for a Pseudo_Row beginning at \p y.
     explicit Pseudo_Row(U& y);
 
-#endif // !EXTRA_ROW_DEBUG
+#endif // !PPL_OR_MATRIX_EXTRA_DEBUG
 
     //! Assignment operator.
     Pseudo_Row& operator=(const Pseudo_Row& y);
 
-#if EXTRA_ROW_DEBUG
+#if PPL_OR_MATRIX_EXTRA_DEBUG
 
     //! The size of the row.
     dimension_type size_;
@@ -146,7 +158,7 @@ private:
     //! Returns the size of the row.
     dimension_type size() const;
 
-#endif // EXTRA_ROW_DEBUG
+#endif // PPL_OR_MATRIX_EXTRA_DEBUG
 
     template <typename V> friend class Pseudo_Row;
     template <typename V> friend class any_row_iterator;
@@ -480,7 +492,7 @@ namespace std {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 void swap(Parma_Polyhedra_Library::OR_Matrix<T>& x,
 	  Parma_Polyhedra_Library::OR_Matrix<T>& y);
@@ -493,7 +505,7 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 /*! \relates OR_Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename T>
 bool operator!=(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
 
@@ -509,7 +521,7 @@ bool operator!=(const OR_Matrix<T>& x, const OR_Matrix<T>& y);
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const OR_Matrix<T>& x,
@@ -531,7 +543,7 @@ bool rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 			       const OR_Matrix<T>& x,
@@ -553,7 +565,7 @@ bool euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   All computations are performed using the temporary variables
   \p tmp0, \p tmp1 and \p tmp2.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 template <typename Temp, typename To, typename T>
 bool l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
 				 const OR_Matrix<T>& x,
