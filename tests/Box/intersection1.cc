@@ -254,7 +254,7 @@ test08() {
 
   Rational_Box known_result(box2);
 
-  box1.intersection_assign_and_minimize(box2);
+  box1.intersection_assign(box2);
 
   bool ok = (Rational_Box(box1) == known_result);
 
@@ -275,9 +275,9 @@ test09() {
 
   try {
     // This is an invalid use of method
-    // Box::intersection_assign_and_minimize(box2): it is illegal
-    // to apply this method to two polyhedra of different dimensions.
-    box1.intersection_assign_and_minimize(box2);
+    // Box::intersection_assign(box2): it is illegal
+    // to apply this method to two shapes having different dimensions.
+    box1.intersection_assign(box2);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -296,7 +296,7 @@ test10() {
   try {
     // This is an invalid use of method
     // Box::intersection_assign(box2): it is illegal
-    // to apply this method to two polyhedra of different dimensions.
+    // to apply this method to two shapes having different dimensions.
     box1.intersection_assign(box2);
   }
   catch (std::invalid_argument& e) {

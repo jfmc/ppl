@@ -49,7 +49,6 @@ $(top_builddir)/src/libppl.la \
 #closure1
 #generalizedaffineimage1
 #generalizedaffinepreimage1
-#intersection1
 #membytes1
 #relations1
 #timeelapse1
@@ -82,6 +81,7 @@ foldspacedims1 \
 fromgensys1 \
 frompolyhedron1 \
 geomcovers1 \
+intersection1 \
 mapspacedims1 \
 max_min1 \
 removespacedims1 \
@@ -189,7 +189,7 @@ frompolyhedron1_SOURCES = frompolyhedron1.cc
 
 geomcovers1_SOURCES = geomcovers1.cc
 
-#intersection1_SOURCES = intersection1.cc
+intersection1_SOURCES = intersection1.cc
 
 #interval1_SOURCES = interval1.cc
 #interval2_SOURCES = interval2.cc
