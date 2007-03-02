@@ -98,7 +98,6 @@ test04() {
 
   TBox box1(2, EMPTY);
   box1.add_constraint(B >= 0);
-  box1.add_constraint(A - B <= 2);
 
   print_constraints(box1, "*** box1 ***");
 
