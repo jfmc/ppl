@@ -1281,10 +1281,10 @@ Box<Interval>::constraints() const {
   Constraint_System cs;
   const dimension_type space_dim = x.space_dimension();
   if (space_dim == 0) {
-    if (x.is_empty())
+    if (x.marked_empty())
       cs = Constraint_System::zero_dim_empty();
   }
-  else if (x.is_empty())
+  else if (x.marked_empty())
     cs.insert(0*Variable(space_dim-1) <= -1);
   else {
     // KLUDGE: in the future `cs' will be constructed of the right dimension.
@@ -1298,6 +1298,51 @@ Box<Interval>::constraints() const {
       if (x.get_lower_bound(k, closed, n, d)) {
 	if (closed)
 	  cs.insert(d*Variable(k) >= n);
+	else
+	  cs.insert(d*Variable(k) > n);
+      }
+      if (x.get_upper_bound(k, closed, n, d)) {
+	if (closed)
+	  cs.insert(d*Variable(k) <= n);
+	else
+	  cs.insert(d*Variable(k) < n);
+      }
+    }
+  }
+  return cs;
+}
+
+template <typename Interval>
+Constraint_System
+Box<Interval>::minimized_constraints() const {
+  const Box& x = *this;
+  Constraint_System cs;
+  const dimension_type space_dim = x.space_dimension();
+  if (space_dim == 0) {
+    if (x.marked_empty())
+      cs = Constraint_System::zero_dim_empty();
+  }
+  // Make sure emptyness is detected.
+  else if (x.is_empty())
+    cs.insert(0*Variable(space_dim-1) <= -1);
+  else {
+    // KLUDGE: in the future `cs' will be constructed of the right dimension.
+    // For the time being, we force the dimension with the following line.
+    cs.insert(0*Variable(space_dim-1) <= 0);
+
+    for (dimension_type k = 0; k < space_dim; ++k) {
+      bool closed = false;
+      Coefficient n;
+      Coefficient d;
+      if (x.get_lower_bound(k, closed, n, d)) {
+	if (closed)
+	  // Make sure equality constraints are detected.
+	  if (x.seq[k].is_singleton()) {
+	    cs.insert(d*Variable(k) == n);
+	    continue;
+	  }
+	  else
+	    cs.insert(d*Variable(k) >= n);
 	else
 	  cs.insert(d*Variable(k) > n);
       }

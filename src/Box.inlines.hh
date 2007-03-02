@@ -183,13 +183,6 @@ Box<Interval>::upper_bound_assign(const Box& y) {
 }
 
 template <typename Interval>
-Constraint_System
-Box<Interval>::minimized_constraints() const {
-  const Box& x = *this;
-  return x.constraints();
-}
-
-template <typename Interval>
 inline void
 Box<Interval>::add_space_dimensions_and_embed(const dimension_type m) {
   // Adding no dimensions is a no-op.
