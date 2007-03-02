@@ -53,7 +53,7 @@ Box<Interval>::Box(const Constraint_System& cs)
   : seq(cs.space_dimension()), empty_up_to_date(false) {
   for (dimension_type i = cs.space_dimension(); i-- > 0; )
     seq[i].set_universe();
-  add_constraints(cs);
+  add_constraints_no_check(cs);
 }
 
 template <typename Interval>
@@ -1028,13 +1028,13 @@ Box<Interval>::map_space_dimensions(const Partial_Function& pfunc) {
     return;
 
   if (pfunc.has_empty_codomain()) {
-    // All dimensions vanish: the Box becomes zero_dimensional.
+    // All dimensions vanish: the box becomes zero_dimensional.
     remove_higher_space_dimensions(0);
     return;
   }
 
   const dimension_type new_space_dim = pfunc.max_in_codomain() + 1;
-  // If the Box is empty, then simply adjust the space dimension.
+  // If the box is empty, then simply adjust the space dimension.
   if (is_empty()) {
     remove_higher_space_dimensions(new_space_dim);
     return;
@@ -1057,7 +1057,7 @@ void
 Box<Interval>::fold_space_dimensions(const Variables_Set& to_be_folded,
 				     const Variable var) {
   const dimension_type space_dim = space_dimension();
-  // `var' should be one of the dimensions of the Box.
+  // `var' should be one of the dimensions of the box.
   if (var.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)", "v", var);
 
@@ -1065,7 +1065,7 @@ Box<Interval>::fold_space_dimensions(const Variables_Set& to_be_folded,
   if (to_be_folded.empty())
     return;
 
-  // All variables in `to_be_folded' should be dimensions of the Box.
+  // All variables in `to_be_folded' should be dimensions of the box.
   if (to_be_folded.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, ...)",
 				 to_be_folded.space_dimension());
@@ -1089,15 +1089,9 @@ Box<Interval>::fold_space_dimensions(const Variables_Set& to_be_folded,
 
 template <typename Interval>
 void
-Box<Interval>::add_constraint(const Constraint& c) {
+Box<Interval>::add_constraint_no_check(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
-  // Dimension-compatibility check.
-  if (c_space_dim > space_dimension())
-    throw_dimension_incompatible("add_constraint(c)", c);
-
-  // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
-    return;
+  assert(c_space_dim <= space_dimension());
 
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
@@ -1153,11 +1147,37 @@ Box<Interval>::add_constraint(const Constraint& c) {
 
 template <typename Interval>
 void
-Box<Interval>::add_constraints(const Constraint_System& cs) {
+Box<Interval>::add_constraint(const Constraint& c) {
+  const dimension_type c_space_dim = c.space_dimension();
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dimension())
+    throw_dimension_incompatible("add_constraint(c)", c);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  add_constraint_no_check(c);
+}
+
+template <typename Interval>
+void
+Box<Interval>::add_constraints_no_check(const Constraint_System& cs) {
+  assert(cs.space_dimension() <= space_dimension());
   for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
-    add_constraint(*i);
+    add_constraint_no_check(*i);
   assert(OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::add_constraints(const Constraint_System& cs) {
+  // Dimension-compatibility check.
+  if (cs.space_dimension() > space_dimension())
+    throw_dimension_incompatible("add_constraints(cs)", cs);
+
+  add_constraints_no_check(cs);
 }
 
 template <typename Interval>
@@ -1383,7 +1403,6 @@ Box<Interval>::constraints() const {
 template <typename Interval>
 Constraint_System
 Box<Interval>::minimized_constraints() const {
-  const Box& x = *this;
   Constraint_System cs;
   const dimension_type space_dim = space_dimension();
   if (space_dim == 0) {
@@ -1531,6 +1550,18 @@ Box<Interval>::throw_dimension_incompatible(const char* method,
   s << "PPL::Box::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
     << ", c->space_dimension == " << c.space_dimension() << ".";
+  throw std::invalid_argument(s.str());
+}
+
+template <typename Interval>
+void
+Box<Interval>
+::throw_dimension_incompatible(const char* method,
+			       const Constraint_System& cs) const {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":" << std::endl
+    << "this->space_dimension() == " << space_dimension()
+    << ", cs->space_dimension == " << cs.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 

@@ -1052,6 +1052,26 @@ private:
   */
   bool check_empty() const;
 
+  /*! \brief
+    Use the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added. If it is not an interval constraint, it
+    will be simply ignored.  If it is dimension-incompatible with \p *this,
+    the behavior is undefined.
+  */
+  void add_constraint_no_check(const Constraint& c);
+
+  /*! \brief
+    Use the constraints in \p cs to refine \p *this.
+
+    \param  cs
+    The constraints to be added. Constraints that are not interval
+    constraints will be simply ignored.  If it is
+    dimension-incompatible with \p *this, the behavior is undefined.
+  */
+  void add_constraints_no_check(const Constraint_System& cs);
+
   //! Checks if and how \p expr is bounded in \p *this.
   /*!
     Returns <CODE>true</CODE> if and only if \p from_above is
@@ -1145,6 +1165,9 @@ private:
 
   void throw_dimension_incompatible(const char* method,
 				    const Constraint& c) const;
+
+  void throw_dimension_incompatible(const char* method,
+				    const Constraint_System& cs) const;
 
   void throw_dimension_incompatible(const char* method,
 				    const Generator& g) const;
