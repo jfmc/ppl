@@ -316,7 +316,7 @@ test15() {
   // A single point does not subsume another (different) point.
   Variable A(0);
 
-  C_Polyhedron bd(1);
+  TBD_Shape bd(1);
   bd.add_constraint(A == 1);
 
   Generator g = point(3*A, 2);
@@ -328,6 +328,28 @@ test15() {
   nout << "bd.relation_with(v()) == " << rel << endl;
 
   Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+
+  return rel == known_result;
+}
+
+bool
+test16() {
+  // A single point does not subsume another (different) point.
+  Variable A(0);
+
+  BD_Shape<mpz_class> bd(1);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(A <= 1);
+
+  Constraint c(2*A == 1);
+  Poly_Con_Relation rel = bd.relation_with(c);
+
+  print_constraints(bd, "--- bd ---");
+  print_constraint(c, "--- c ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(c) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
 
   return rel == known_result;
 }
@@ -350,4 +372,5 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
+  DO_TEST(test16);
 END_MAIN
