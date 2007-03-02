@@ -380,11 +380,11 @@ public:
       ceil_assign_r(l, lower(), ROUND_DOWN);
     Boundary u;
     if (upper_is_open()) {
-      sub_assign_r(l, upper(), Boundary(1), ROUND_UP);
-      ceil_assign_r(l, l, ROUND_UP);
+      sub_assign_r(u, upper(), Boundary(1), ROUND_UP);
+      ceil_assign_r(u, u, ROUND_UP);
     }
     else
-      floor_assign_r(l, upper(), ROUND_UP);
+      floor_assign_r(u, upper(), ROUND_UP);
     return u >= l;
   }
 
