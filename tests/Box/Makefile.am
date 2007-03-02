@@ -59,8 +59,7 @@ $(top_builddir)/src/libppl.la \
 #ascii_dump_load1
 #discrete1
 #interval1 interval2
-#maxspacedim1 \
-#minconstraints1
+#maxspacedim1
 
 check_PROGRAMS = \
 affinedimension1 \
@@ -85,6 +84,7 @@ geomcovers1 \
 intersection1 \
 mapspacedims1 \
 max_min1 \
+minconstraints1 \
 removespacedims1 \
 universe1 \
 writebox1
@@ -205,7 +205,7 @@ max_min1_SOURCES = max_min1.cc
 
 #membytes1_SOURCES = membytes1.cc
 
-#minconstraints1_SOURCES = minconstraints1.cc
+minconstraints1_SOURCES = minconstraints1.cc
 
 #relations1_SOURCES = relations1.cc
 

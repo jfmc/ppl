@@ -32,7 +32,7 @@ test01() {
   TBox box(2);
   box.add_constraint(A >= 1);
   box.add_constraint(B >= 0);
-  box.add_constraint(A - B >= -2);
+  box.add_constraint(B <= 3);
   box.add_constraint(A >= -3);
   box.add_constraint(A <= 1);
 
