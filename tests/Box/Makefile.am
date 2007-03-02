@@ -57,7 +57,6 @@ $(top_builddir)/src/libppl.la \
 #timeelapse1
 
 # Tests that do not succeed yet (maybe even known result is wrong).
-#affinedimension1
 #affineimage1
 #affinepreimage1
 #ascii_dump_load1
@@ -70,6 +69,7 @@ $(top_builddir)/src/libppl.la \
 #minconstraints1
 
 check_PROGRAMS = \
+affinedimension1 \
 addspacedims1 \
 boxdifference1 \
 bounded1 \
@@ -133,7 +133,7 @@ print_INSTANCES:
 
 addspacedims1_SOURCES = addspacedims1.cc
 
-#affinedimension1_SOURCES = affinedimension1.cc
+affinedimension1_SOURCES = affinedimension1.cc
 
 #affineimage1_SOURCES = affineimage1.cc
 

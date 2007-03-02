@@ -32,7 +32,6 @@ test01() {
   TBox box(3);
 
   box.add_constraint(x <= 2);
-  box.add_constraint(x - y == 3);
   box.add_constraint(y <= 2);
 
   print_constraints(box, "*** box ***");
@@ -44,7 +43,7 @@ test01() {
        << affine_dim
        << endl;
 
-  bool ok = (affine_dim == 2);
+  bool ok = (affine_dim == 3);
 
   return ok;
 }
@@ -60,9 +59,7 @@ test02() {
   TBox box(5);
 
   box.add_constraint(A <= 5);
-  box.add_constraint(A - B == 3);
   box.add_constraint(C <= 2);
-  box.add_constraint(E - D == 2);
 
   print_constraints(box, "*** box ***");
 
@@ -73,7 +70,7 @@ test02() {
        << affine_dim
        << endl;
 
-  bool ok = (affine_dim == 3);
+  bool ok = (affine_dim == 5);
 
   return ok;
 }
@@ -89,9 +86,7 @@ test03() {
   TBox box(5);
 
   box.add_constraint(A == 5);
-  box.add_constraint(A - B == 3);
   box.add_constraint(C <= 2);
-  box.add_constraint(E - D == 2);
 
   print_constraints(box, "*** box ***");
 
@@ -102,7 +97,7 @@ test03() {
        << affine_dim
        << endl;
 
-  bool ok = (affine_dim == 2);
+  bool ok = (affine_dim == 4);
 
   return ok;
 }
@@ -114,8 +109,8 @@ test04() {
 
   TBox box(2);
   box.add_constraint(A <= 3);
-  box.add_constraint(B - A <= -5);
   box.add_constraint(-B <= 2);
+  box.add_constraint(B <= -2);
 
   print_constraints(box, "*** box ***");
 
@@ -126,7 +121,7 @@ test04() {
        << affine_dim
        << endl;
 
-  bool ok = (affine_dim == 0);
+  bool ok = (affine_dim == 1);
 
   return ok;
 }
@@ -171,12 +166,16 @@ bool
 test07() {
   Variable A(0);
   Variable B(1);
+  Variable C(2);
   Variable D(3);
 
   TBox box(4);
   box.add_constraint(A <= 1);
-  box.add_constraint(A - D == 8);
-  box.add_constraint(B <= 7);
+  box.add_constraint(A >= 1);
+  box.add_constraint(B == 0);
+  box.add_constraint(C == 7);
+  box.add_constraint(D <= 9);
+  box.add_constraint(-D <= -9);
 
   print_constraints(box, "*** box ***");
 
@@ -187,7 +186,7 @@ test07() {
        << affine_dim
        << endl;
 
-  bool ok = (affine_dim == 3);
+  bool ok = (affine_dim == 0);
 
   return ok;
 }
@@ -202,7 +201,6 @@ test08() {
   TBox box(5);
   box.add_constraint(A == 1);
   box.add_constraint(E == 1);
-  box.add_constraint(A - D == 8);
   box.add_constraint(B <= 7);
 
   print_constraints(box, "*** box ***");
@@ -214,7 +212,7 @@ test08() {
        << affine_dim
        << endl;
 
-  bool ok = (affine_dim == 2);
+  bool ok = (affine_dim == 3);
 
   return ok;
 }
@@ -247,10 +245,7 @@ test10() {
   Variable A(0);
   Variable B(1);
 
-  TBox box(7);
-  box.add_constraint(A <= 1);
-  box.add_constraint(B == 2);
-  box.add_constraint(B - A <= -6);
+  TBox box(7, EMPTY);
 
   print_constraints(box, "*** box ***");
 
