@@ -234,14 +234,32 @@ test07() {
   return ok;
 }
 
+bool
+test08() {
+  Variable x1(0);
+
+  TBox box1(1);
+  box1.add_constraint(x1 <= 5);
+
+  TBox box2(1);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  box1.box_hull_assign(box2);
+
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
-  DO_TEST(test01);
-  DO_TEST(test02);
-  DO_TEST(test03);
-  DO_TEST(test04);
-  DO_TEST(test05);
-  DO_TEST(test06);
-  DO_TEST(test07);
+//   DO_TEST(test01);
+//   DO_TEST(test02);
+//   DO_TEST(test03);
+//   DO_TEST(test04);
+//   DO_TEST(test05);
+//   DO_TEST(test06);
+//   DO_TEST(test07);
+  DO_TEST(test08);
 END_MAIN
