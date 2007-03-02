@@ -40,8 +40,7 @@ test01() {
   dimension_type affine_dim = box.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `box' "
-       << endl
+       << "The affine dimension of `box' is "
        << affine_dim
        << endl;
 
@@ -70,8 +69,7 @@ test02() {
   dimension_type affine_dim = box.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `box' "
-       << endl
+       << "The affine dimension is "
        << affine_dim
        << endl;
 
@@ -100,8 +98,7 @@ test03() {
   dimension_type affine_dim = box.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `box' "
-       << endl
+       << "The affine dimension is "
        << affine_dim
        << endl;
 
@@ -125,8 +122,7 @@ test04() {
   dimension_type affine_dim = box.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `box' "
-       << endl
+       << "The affine dimension is "
        << affine_dim
        << endl;
 
@@ -144,8 +140,7 @@ test05() {
   dimension_type affine_dim = box.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `box' "
-       << endl
+       << "The affine dimension is "
        << affine_dim
        << endl;
 
@@ -163,8 +158,7 @@ test06() {
   dimension_type affine_dim = box.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `box' "
-       << endl
+       << "The affine dimension is "
        << affine_dim
        << endl;
 
@@ -189,8 +183,7 @@ test07() {
   dimension_type affine_dim = box.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `box' "
-       << endl
+       << "The affine dimension is "
        << affine_dim
        << endl;
 
@@ -217,8 +210,7 @@ test08() {
   dimension_type affine_dim = box.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `box' "
-       << endl
+       << "The affine dimension is "
        << affine_dim
        << endl;
 
@@ -241,8 +233,7 @@ test09() {
   dimension_type affine_dim = box.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `box' "
-       << endl
+       << "The affine dimension is "
        << affine_dim
        << endl;
 
@@ -266,8 +257,7 @@ test10() {
   dimension_type affine_dim = box.affine_dimension();
 
   nout << endl
-       << "The affine dimension of a system of `box' "
-       << endl
+       << "The affine dimension is "
        << affine_dim
        << endl;
 
