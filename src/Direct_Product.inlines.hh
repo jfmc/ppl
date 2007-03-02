@@ -572,14 +572,6 @@ Direct_Product<D1, D2>::strictly_contains(const Direct_Product& y) const {
   return d1.strictly_contains(y.d1) && d2.strictly_contains(y.d2);
 }
 
-template <typename D1, typename D2>
-template <typename Box>
-inline void
-Direct_Product<D1, D2>::shrink_bounding_box(Box& box) const {
-  d1.shrink_bounding_box(box);
-  d2.shrink_bounding_box(box);
-}
-
 #if 0
 template <typename D1, typename D2>
 template <typename Box>

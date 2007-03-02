@@ -305,7 +305,7 @@ Test_Box_Interval_Info;
 
 typedef Box<Interval<mpq_class, Test_Box_Interval_Info> > Test_Box;
 
-//! The incarnation of BD_Shape under test.
+//! The incarnation of Box under test.
 //typedef Box<BOX_INSTANCE> TBox;
 typedef Test_Box TBox;
 

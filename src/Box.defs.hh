@@ -38,6 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Octagonal_Shape.types.hh"
 #include "Polyhedron.types.hh"
 #include "Grid.types.hh"
+#include "Direct_Product.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -159,7 +160,7 @@ public:
   */
   Box(const Generator_System& gs, Recycle_Input dummy);
 
-  //! Builds a box from the BDS \p bds.
+  //! Builds a box containing the BDS \p bds.
   /*!
     Builds the smallest box containing \p bds using a polynomial algorithm.
     The \p complexity argument is ignored.
@@ -168,7 +169,7 @@ public:
   explicit Box(const BD_Shape<T>& bds,
 	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
 
-  //! Builds a box from the octagonal shape \p oct.
+  //! Builds a box containing the octagonal shape \p oct.
   /*!
     Builds the smallest box containing \p oct using a polynomial algorithm.
     The \p complexity argument is ignored.
@@ -177,7 +178,7 @@ public:
   explicit Box(const Octagonal_Shape<T>& oct,
 	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
 
-  //! Builds a box from the polyhedron \p ph.
+  //! Builds a box containing the polyhedron \p ph.
   /*!
     Builds a box containing \p ph using algorithms whose complexity
     does not exceed the one specified by \p complexity.  If
@@ -187,13 +188,22 @@ public:
   explicit Box(const Polyhedron& ph,
 	       Complexity_Class complexity = ANY_COMPLEXITY);
 
-  //! Builds a box from the grid \p gr.
+  //! Builds a box containing the grid \p gr.
   /*!
     Builds the smallest box containing \p gr using a polynomial algorithm.
     The \p complexity argument is ignored.
   */
   explicit Box(const Grid& ph,
 	       Complexity_Class complexity = POLYNOMIAL_COMPLEXITY);
+
+  //! Builds a box containing the direct product \p dp.
+  /*!
+    Builds a box containing \p ph using algorithms whose complexity
+    does not exceed the one specified by \p complexity.
+  */
+  template <typename D1, typename D2>
+  explicit Box(const Direct_Product<D1, D2>& dp,
+	       Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
     Swaps \p *this with \p y

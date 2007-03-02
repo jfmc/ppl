@@ -33,7 +33,7 @@ test01() {
   box.raise_lower_bound(0, true, 2, 3);
   box.lower_upper_bound(0, true, 6, 1);
 
-  Product dp(1);
+  Direct_Product<Grid, NNC_Polyhedron> dp(1);
   dp.add_constraint(A <= 4);
   dp.add_constraint(A >= 2);
   dp.add_congruence(A %= 0);
@@ -58,7 +58,7 @@ test02() {
   box.raise_lower_bound(0, true, 2, 3);
   box.lower_upper_bound(0, true, 6, 1);
 
-  Product dp(1);
+  Direct_Product<Grid, NNC_Polyhedron> dp(1);
   dp.add_constraint(A <= 4);
   dp.add_constraint(A >= 2);
   dp.add_congruence((A %= 0) / 3);
