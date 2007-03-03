@@ -253,6 +253,10 @@ using std::endl;
 #define C_Polyhedron NNC_Polyhedron
 #endif
 
+#ifndef BOX_INSTANCE
+#define BOX_INSTANCE rt_r_oc
+#endif
+
 #ifndef BD_SHAPE_INSTANCE
 #define BD_SHAPE_INSTANCE mpq_class
 #endif
