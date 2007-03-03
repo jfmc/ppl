@@ -3,6 +3,7 @@ Enhancements for PPL 0.10
 =========================
 
 - Update the examples in README.configure.
+- Fix the dependency problems in interfaces/OCaml/Makefile.am.
 - Using meta_programming.hh it is possible to define all the swap functions
   "automatically".  Consider whether it is worth doing it.
 - In the SWI-Prolog documentation, the command to dynamically
