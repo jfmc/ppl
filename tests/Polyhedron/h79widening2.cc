@@ -51,7 +51,7 @@ test01() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After H79_widening_assign ***");
+  print_constraints(ph, "*** after H79_widening_assign ***");
 
   return ok;
 }

@@ -44,7 +44,7 @@ test01() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "*** After folding {A} into B ***");
+  print_generators(ph1, "*** after folding {A} into B ***");
 
   return ok;
 }
@@ -69,7 +69,7 @@ test02() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After folding {A} into B ***");
+  print_constraints(ph1, "*** after folding {A} into B ***");
 
   return ok;
 }
@@ -98,7 +98,7 @@ test03() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After folding {} into B ***");
+  print_constraints(ph1, "*** after folding {} into B ***");
 
   return ok;
 }
@@ -129,7 +129,7 @@ test04() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "***  After folding {A} into B ***");
+  print_constraints(ph1, "*** after folding {A} into B ***");
 
   return ok;
 }
@@ -169,7 +169,7 @@ test05() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "***  After folding {C} into B ***");
+  print_generators(ph1, "*** after folding {C} into B ***");
 
   return ok;
 }
@@ -203,7 +203,7 @@ test06() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "***  After folding {A,B} into C ***");
+  print_constraints(ph1, "*** after folding {A,B} into C ***");
 
   return ok;
 }
@@ -236,7 +236,7 @@ test07() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "***  After folding {C} into B ***");
+  print_generators(ph1, "*** after folding {C} into B ***");
 
   return ok;
 }
@@ -272,7 +272,7 @@ test08() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "***  After folding {C,D} into A ***");
+  print_constraints(ph1, "*** after folding {C,D} into A ***");
 
   return ok;
 }
@@ -311,7 +311,7 @@ test09() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "***  After folding {B,D} into C ***");
+  print_constraints(ph1, "*** after folding {B,D} into C ***");
 
   return ok;
 }

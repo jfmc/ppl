@@ -49,7 +49,7 @@ test01() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.add_constraints_and_minimize(cs) ***");
+  print_constraints(ph1, "*** after ph1.add_constraints_and_minimize(cs) ***");
 
   return ok;
 }

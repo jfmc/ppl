@@ -37,7 +37,7 @@ test01() {
   ph.add_constraint(A - B <= 2);
   ph.add_constraint(A - B >= -2);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   C_Polyhedron kr1 = ph;
   C_Polyhedron kr2 = ph;
@@ -51,7 +51,7 @@ test01() {
   bool ok = (ph == kr1);
 
   print_generators(ph,
-		   "--- ph.bounded_affine_image(A, 7-B, B+3) ---");
+		   "*** ph.bounded_affine_image(A, 7-B, B+3) ***");
 
   return ok;
 }
@@ -69,7 +69,7 @@ test02() {
   ph.add_constraint(A - B <= 2);
   ph.add_constraint(A - B >= -2);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   C_Polyhedron kr1 = ph;
   C_Polyhedron kr2 = ph;
@@ -83,7 +83,7 @@ test02() {
   bool ok = (ph == kr1);
 
   print_generators(ph,
-		   "--- ph.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3) ---");
+		   "*** ph.bounded_affine_image(A, 7-3*A+2*B, B+5*A-3) ***");
 
   return ok;
 }
@@ -98,7 +98,7 @@ test03() {
   ph.add_constraint(A <= 4);
   ph.add_constraint(A == B);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   ph.bounded_affine_image(A, A+5, B);
 
@@ -106,7 +106,7 @@ test03() {
 
   bool ok = (ph == kr1);
 
-  print_generators(ph, "--- ph.bounded_affine_image(A, A+5, B) ---");
+  print_generators(ph, "*** ph.bounded_affine_image(A, A+5, B) ***");
 
   return ok;
 }

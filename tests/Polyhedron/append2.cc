@@ -100,7 +100,7 @@ fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
 
     current.poly_hull_assign_and_minimize(previous);
 
-    print_constraints(current, "*** after poly_hull_assign_and_minimize***");
+    print_constraints(current, "*** after poly_hull_assign_and_minimize ***");
 
   } while (current != previous);
   finish = current;

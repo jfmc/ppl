@@ -35,7 +35,7 @@ test01() {
   ph.add_constraint(B <= 5);
   ph.add_constraint(A <= B);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, A+2);
 
@@ -45,9 +45,9 @@ test01() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after "
+  print_generators(ph, "*** ph after "
 		   "ph.generalized_affine_preimage"
-		   "(B, GREATER_OR_EQUAL, A+2) ---");
+		   "(B, GREATER_OR_EQUAL, A+2) ***");
 
   return ok;
 }
@@ -63,7 +63,7 @@ test02() {
   ph.add_constraint(B <= 5);
   ph.add_constraint(A <= B);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   ph.generalized_affine_preimage(B, GREATER_OR_EQUAL, A+2, -2);
 
@@ -74,9 +74,9 @@ test02() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after "
+  print_generators(ph, "*** ph after "
 		   "ph.generalized_affine_preimage"
-                   "(B, GREATER_OR_EQUAL, A+2, -2) ---");
+                   "(B, GREATER_OR_EQUAL, A+2, -2) ***");
 
   return ok;
 }
@@ -92,7 +92,7 @@ test03() {
   ph.add_constraint(3*B >= 1);
   ph.add_constraint(2*A >= B);
 
-  print_generators(ph, "--- ph ---");
+  print_generators(ph, "*** ph ***");
 
   // A longer way of computing the generalized affine preimage below.
   C_Polyhedron known_result(ph);
@@ -107,9 +107,9 @@ test03() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after "
+  print_generators(ph, "*** ph after "
 		   "ph.generalized_affine_preimage"
-		   "(B, LESS_OR_EQUAL, A-B+2, -3) ---");
+		   "(B, LESS_OR_EQUAL, A-B+2, -3) ***");
 
   return ok;
 }

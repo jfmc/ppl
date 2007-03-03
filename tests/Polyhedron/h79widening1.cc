@@ -33,7 +33,7 @@ aux_test01(C_Polyhedron& ph1, const C_Polyhedron& ph2,
 
   ph1.H79_widening_assign(ph2);
 
-  print_generators(ph1, "*** After H79_widening_assign ***");
+  print_generators(ph1, "*** after H79_widening_assign ***");
 
   return ph1 == known_result;
 }
@@ -94,7 +94,7 @@ test02() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After H79_widening_assign ***");
+  print_constraints(ph1, "*** after H79_widening_assign ***");
 
   return ok;
 }
@@ -126,7 +126,7 @@ test03() {
 
   bool ok = (ph2 == known_result);
 
-  print_constraints(ph2, "*** After ph2.H79_widening_assign(ph1) ***");
+  print_constraints(ph2, "*** after ph2.H79_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -146,7 +146,7 @@ test04() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.H79_widening_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.H79_widening_assign(ph2) ***");
 
   return ok;
 }
@@ -177,7 +177,7 @@ test05() {
 
   bool ok = (ph2 == known_result);
 
-  print_constraints(ph2, "*** After ph2.H79_widening_assign(ph1) ***");
+  print_constraints(ph2, "*** after ph2.H79_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -203,7 +203,7 @@ test06() {
 
   bool ok = ph1.is_universe();
 
-  print_constraints(ph1, "*** After H79_widening_assign ***");
+  print_constraints(ph1, "*** after H79_widening_assign ***");
 
   return ok;
 }
@@ -236,7 +236,7 @@ test07() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After H79_widening_assign ***");
+  print_constraints(ph1, "*** after H79_widening_assign ***");
 
   return ok;
 }

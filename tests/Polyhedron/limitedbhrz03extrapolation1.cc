@@ -57,7 +57,7 @@ test01() {
 
   bool ok = (ph2 == known_result) ? true : false;
 
-  print_constraints(ph2, "*** After ph2.limited_BHRZ03_widening(ph1, cs)***");
+  print_constraints(ph2, "*** after ph2.limited_BHRZ03_widening(ph1, cs) ***");
 
   return ok;
 }

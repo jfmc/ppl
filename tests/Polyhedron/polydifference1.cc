@@ -66,7 +66,7 @@ test01() {
 
   bool ok = (computed_result == known_result);
 
-  print_generators(computed_result, "*** After poly_difference_assign ***");
+  print_generators(computed_result, "*** after poly_difference_assign ***");
   print_generators(known_result, "*** known_result ***");
 
   return ok;
@@ -88,7 +88,7 @@ test02() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -118,7 +118,7 @@ test03() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -142,8 +142,7 @@ test04() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1,
-		    "**After ph1.poly_difference_assign(ph2)**");
+  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -166,7 +165,7 @@ test05() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -189,7 +188,7 @@ test06() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.poly_difference_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.poly_difference_assign(ph2) ***");
 
   return ok;
 }

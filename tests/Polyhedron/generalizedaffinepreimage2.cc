@@ -35,7 +35,7 @@ test01() {
   ph.add_generator(closure_point(2*A + 2*B));
   ph.add_generator(closure_point(3*A + B));
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   // A longer way of computing the generalized affine preimage below.
   NNC_Polyhedron known_result(ph);
@@ -50,8 +50,8 @@ test01() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph after "
-		   "ph.generalized_affine_preimage(B, LESS_THAN, B+2) ---");
+  print_generators(ph, "*** ph after "
+		   "ph.generalized_affine_preimage(B, LESS_THAN, B+2) ***");
 
   return ok;
 }

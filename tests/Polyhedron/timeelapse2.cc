@@ -41,8 +41,8 @@ test01() {
   ph2.add_constraint(x < 4);
   ph2.add_constraint(y == 3);
 
-  print_constraints(ph1, "**** ph1 ****");
-  print_constraints(ph2, "**** ph2 ****");
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
 
   ph1.time_elapse_assign(ph2);
 
@@ -57,7 +57,7 @@ test01() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
+  print_generators(ph1, "*** ph1_time_elapse_assign(ph2) ***");
 
   return ok;
 }
@@ -78,14 +78,14 @@ test02() {
   gs.insert(point(x + y));
   NNC_Polyhedron ph2(gs);
 
-  print_constraints(ph1, "**** ph1 ****");
-  print_generators(ph2, "**** ph2 ****");
+  print_constraints(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
 
   ph1.time_elapse_assign(ph2);
 
   bool ok = (ph1 == ph);
 
-  print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
+  print_generators(ph1, "*** ph1_time_elapse_assign(ph2) ***");
 
  return ok;
 }
@@ -103,8 +103,8 @@ test03() {
   ph2.add_constraint(x > 3);
   ph2.add_constraint(y > 2);
 
-  print_constraints(ph1, "**** ph1 ****");
-  print_constraints(ph2, "**** ph2 ****");
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
 
   ph1.time_elapse_assign(ph2);
 
@@ -118,7 +118,7 @@ test03() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
+  print_generators(ph1, "*** ph1_time_elapse_assign(ph2) ***");
 
   return ok;
 }

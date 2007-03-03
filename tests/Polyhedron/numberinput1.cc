@@ -71,16 +71,16 @@ aux_test(std::string input_string,
 	     && residual == expected_residual
 	     && output == expected_output);
 
-  nout << "input = " << input_string
+  nout << "input = \"" << input_string << "\""
        << endl
        << "expected result = " << expected_result
        << ", actual result = " << result
        << endl
-       << "expected value = " << expected_output
-       << ", actual value = " << output
+       << "expected value = \"" << expected_output << "\""
+       << ", actual value = \"" << output << "\""
        << endl
-       << "expected residual = " << expected_residual
-       << ", actual residual = " << residual
+       << "expected residual = \"" << expected_residual << "\""
+       << ", actual residual = \"" << residual << "\""
        << endl;
 
   return ok;

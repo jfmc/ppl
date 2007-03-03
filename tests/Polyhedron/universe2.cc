@@ -36,10 +36,10 @@ test01() {
   Constraint_System cs;
   NNC_Polyhedron ph4(cs);
 
-  print_constraints(ph1, "--- ph1 ---");
-  print_constraints(ph2, "--- ph2 ---");
-  print_constraints(ph3, "--- ph3 ---");
-  print_constraints(ph4, "--- ph4 ---");
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+  print_constraints(ph3, "*** ph3 ***");
+  print_constraints(ph4, "*** ph4 ***");
 
   bool universe1 = ph1.is_universe();
 

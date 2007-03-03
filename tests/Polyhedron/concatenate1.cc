@@ -68,14 +68,14 @@ test02() {
 
   C_Polyhedron ph(2, EMPTY);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   Constraint_System cs;
   cs.insert(x >= y);
   cs.insert(x >= 2);
   C_Polyhedron qh(cs);
 
-  print_constraints(qh, "--- qh ---");
+  print_constraints(qh, "*** qh ***");
 
   ph.concatenate_assign(qh);
 
@@ -83,7 +83,7 @@ test02() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "--- After concatenate_assign(qh) ---");
+  print_constraints(ph, "*** after concatenate_assign(qh) ***");
 
   return ok;
 }
@@ -95,20 +95,20 @@ test03() {
 
   C_Polyhedron ph;
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   Constraint_System cs;
   cs.insert(x - 3 >= y);
   cs.insert(y >= 0);
   C_Polyhedron qh(cs);
 
-  print_constraints(qh, "--- qh ---");
+  print_constraints(qh, "*** qh ***");
 
   ph.concatenate_assign(qh);
 
   bool ok = (ph == qh);
 
-  print_constraints(ph, "--- After concatenate_assign(qh) ---");
+  print_constraints(ph, "*** after concatenate_assign(qh) ***");
 
   return ok;
 }
@@ -148,7 +148,7 @@ test04() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After concatenate_assign(ph2) ***");
+  print_constraints(ph1, "*** after concatenate_assign(ph2) ***");
 
   return ok;
 }
@@ -173,7 +173,7 @@ test05() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.concatenate_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.concatenate_assign(ph2) ***");
 
   return ok;
 }
@@ -202,7 +202,7 @@ test06() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.concatenate_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.concatenate_assign(ph2) ***");
 
   return ok;
 }
@@ -232,7 +232,7 @@ test07() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "*** After ph1.concatenate_assign(ph2) ***");
+  print_generators(ph1, "*** after ph1.concatenate_assign(ph2) ***");
 
   return ok;
 }
@@ -264,7 +264,7 @@ test08() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.concatenate_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.concatenate_assign(ph2) ***");
 
   return ok;
 }

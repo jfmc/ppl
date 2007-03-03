@@ -51,7 +51,7 @@ test01() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -83,7 +83,7 @@ test02() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -115,7 +115,7 @@ test03() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -147,7 +147,7 @@ test04() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -179,7 +179,7 @@ test05() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -211,7 +211,7 @@ test06() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }
@@ -243,7 +243,7 @@ test07() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.BHRZ03_widening_assign(ph1) ***");
+  print_generators(ph2, "*** after ph2.BHRZ03_widening_assign(ph1) ***");
 
   return ok;
 }

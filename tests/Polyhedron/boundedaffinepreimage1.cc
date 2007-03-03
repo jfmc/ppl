@@ -37,7 +37,7 @@ test01() {
   ph.add_constraint(A - B <= 2);
   ph.add_constraint(A - B >= -2);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   // A longer way of computing the bounded affine preimage below.
   C_Polyhedron known_result(ph);
@@ -52,7 +52,7 @@ test01() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph.bounded_affine_preimage(B, 7-A, A+3) ---");
+  print_generators(ph, "*** ph.bounded_affine_preimage(B, 7-A, A+3) ***");
 
   return ok;
 }
@@ -70,7 +70,7 @@ test02() {
   ph.add_constraint(A - B <= 2);
   ph.add_constraint(A - B >= -2);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   // A longer way of computing the bounded affine preimage below.
   C_Polyhedron known_result(ph);
@@ -86,8 +86,8 @@ test02() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- "
-		   "ph.bounded_affine_preimage(B, 7-3*A+2*B, B+5*A-3) ---");
+  print_generators(ph, "*** "
+		   "ph.bounded_affine_preimage(B, 7-3*A+2*B, B+5*A-3) ***");
 
   return ok;
 }
@@ -102,7 +102,7 @@ test03() {
   ph.add_constraint(A <= 4);
   ph.add_constraint(A == B);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   ph.bounded_affine_preimage(A, B+5, A-3);
 
@@ -110,7 +110,7 @@ test03() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "--- ph.bounded_affine_preimage(A, B+5, A-3) ---");
+  print_generators(ph, "*** ph.bounded_affine_preimage(A, B+5, A-3) ***");
 
   return ok;
 }

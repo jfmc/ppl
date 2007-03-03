@@ -49,7 +49,7 @@ test01() {
   bool ok = (ph == known_result);
 
   print_generators(ph,
-		    "*** After ph.add_generator_and_minimize(ray(A)) ***");
+		    "*** after ph.add_generator_and_minimize(ray(A)) ***");
 
   return ok;
 }

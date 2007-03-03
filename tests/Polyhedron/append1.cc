@@ -90,7 +90,7 @@ test01() {
 
     current.poly_hull_assign_and_minimize(previous);
 
-    print_constraints(current, "*** after poly_hull_assign_and_minimize***");
+    print_constraints(current, "*** after poly_hull_assign_and_minimize ***");
 
   } while (current != previous);
 

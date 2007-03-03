@@ -82,8 +82,8 @@ test01() {
     result = linear_partition(p, q);
 
   nout << "*** q partition ***" << endl;
-  nout << "  === p inters q === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ p inters q +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
   if (!aux_test01(p, q, result))
     return false;
@@ -91,8 +91,8 @@ test01() {
   result = linear_partition(q, p);
 
   nout << "*** p partition ***" << endl;
-  nout << "  === q inters p === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ q inters p +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
   return aux_test01(q, p, result);
 }
@@ -155,8 +155,8 @@ test02() {
     result = linear_partition(p, q);
 
   nout << "*** q partition ***" << endl;
-  nout << "  === p inters q === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ p inters q +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
   if (!aux_test01(p, q, result))
     return false;
@@ -164,8 +164,8 @@ test02() {
   result = linear_partition(q, p);
 
   nout << "*** p partition ***" << endl;
-  nout << "  === q inters p === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ q inters p +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
   return aux_test02(q, p, result);
 }
@@ -229,8 +229,8 @@ test03() {
     result = linear_partition(p, q);
 
   nout << "*** q partition ***" << endl;
-  nout << "  === p inters q === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ p inters q +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
   if (!aux_test03(p, q, result))
     return false;
@@ -238,8 +238,8 @@ test03() {
   result = linear_partition(q, p);
 
   nout << "*** p partition ***" << endl;
-  nout << "  === q inters p === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ q inters p +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
   return aux_test03(q, p, result);
 }

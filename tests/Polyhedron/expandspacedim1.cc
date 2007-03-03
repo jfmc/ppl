@@ -39,7 +39,7 @@ test01() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.expand_space_dimension(A, 1) ***");
+  print_constraints(ph1, "*** after ph1.expand_space_dimension(A, 1) ***");
 
   return ok;
 }
@@ -60,7 +60,7 @@ test02() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.expand_space_dimension(B, 1) ***");
+  print_constraints(ph1, "*** after ph1.expand_space_dimension(B, 1) ***");
 
   return ok;
 }
@@ -88,7 +88,7 @@ test03() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.expand_space_dimension(A, 0) ***");
+  print_constraints(ph1, "*** after ph1.expand_space_dimension(A, 0) ***");
 
   return ok;
 }
@@ -118,7 +118,7 @@ test04() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "***  After ph1.expand_space_dimension(A, 1) ***");
+  print_generators(ph1, "*** after ph1.expand_space_dimension(A, 1) ***");
 
   return ok;
 }
@@ -146,7 +146,7 @@ test05() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.expand_space_dimension(A, 1) ***");
+  print_constraints(ph1, "*** after ph1.expand_space_dimension(A, 1) ***");
 
   return ok;
 }
@@ -177,7 +177,7 @@ test06() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.expand_space_dimension(A, 2) ***");
+  print_constraints(ph1, "*** after ph1.expand_space_dimension(A, 2) ***");
 
   return ok;
 }
@@ -214,7 +214,7 @@ test07() {
   bool ok = (ph1 == known_result);
 
   print_constraints(ph1,
-		    "***  After ph1.expand_space_dimension(A, 1);"
+		    "*** after ph1.expand_space_dimension(A, 1);"
 		    " ph1.expand_space_dimension(C, 1) ***");
 
   return ok;
@@ -249,7 +249,7 @@ test08() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "***  After ph1.expand_space_dimension(A, 2) ***");
+  print_generators(ph1, "*** after ph1.expand_space_dimension(A, 2) ***");
 
   return ok;
 }

@@ -57,8 +57,8 @@ test01() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After add_space_dimensions_and_project ***");
-  print_generators(ph, "*** After add_space_dimensions_and_project ***");
+  print_constraints(ph, "*** after add_space_dimensions_and_project ***");
+  print_generators(ph, "*** after add_space_dimensions_and_project ***");
 
   return ok;
 }
@@ -146,8 +146,8 @@ test04() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.add_space_dimensions_and_embed(1) ***");
-  print_generators(ph, "*** After ph.add_space_dimensions_and_embed(1) ***");
+  print_constraints(ph, "*** after ph.add_space_dimensions_and_embed(1) ***");
+  print_generators(ph, "*** after ph.add_space_dimensions_and_embed(1) ***");
 
   return ok;
 }
@@ -209,8 +209,8 @@ test06() {
   bool ok = (ph1 == known_result);
 
   print_constraints(ph1,
-		    "*** After ph1.add_space_dimensions_and_embed(1) ***");
-  print_generators(ph1, "*** After ph1.add_space_dimensions_and_embed(1) ***");
+		    "*** after ph1.add_space_dimensions_and_embed(1) ***");
+  print_generators(ph1, "*** after ph1.add_space_dimensions_and_embed(1) ***");
 
   return ok;
 }

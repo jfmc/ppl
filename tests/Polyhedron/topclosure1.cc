@@ -47,8 +47,8 @@ test01() {
 
   bool ok = (ph1 == ph2);
 
-  print_constraints(ph1, "*** After ph1.topological_closure_assign() ***");
-  print_generators(ph2, "*** After ph2.topological_closure_assign() ***");
+  print_constraints(ph1, "*** after ph1.topological_closure_assign() ***");
+  print_generators(ph2, "*** after ph2.topological_closure_assign() ***");
 
   return ok;
 }
@@ -69,8 +69,8 @@ test02() {
 
   bool ok = (ph1 == known_result1 && ph2 == known_result2);
 
-  print_constraints(ph1, "*** After ph1.topological_closure_assign() ***");
-  print_constraints(ph2, "*** After ph2.topological_closure_assign() ***");
+  print_constraints(ph1, "*** after ph1.topological_closure_assign() ***");
+  print_constraints(ph2, "*** after ph2.topological_closure_assign() ***");
 
   return ok;
 }
@@ -92,7 +92,7 @@ test03() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.topological_closure_assign() ***");
+  print_constraints(ph, "*** after ph.topological_closure_assign() ***");
 
   return ok;
 }
@@ -117,7 +117,7 @@ test04() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.topological_closure_assign() ***");
+  print_constraints(ph, "*** after ph.topological_closure_assign() ***");
 
   return ok;
 }
@@ -144,7 +144,7 @@ test05() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.topological_closure_assign() ***");
+  print_constraints(ph, "*** after ph.topological_closure_assign() ***");
 
   return ok;
 }

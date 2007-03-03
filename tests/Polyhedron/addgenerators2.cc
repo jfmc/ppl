@@ -65,7 +65,7 @@ test01() {
   bool ok = (ph == known_result
 	     && closed_ph == closed_known_result);
 
-  print_generators(ph, "*** After add_generators_and_minimize(gs) ***");
+  print_generators(ph, "*** after add_generators_and_minimize(gs) ***");
   print_generators(closed_ph, "*** closed_ph ***");
 
   return ok;

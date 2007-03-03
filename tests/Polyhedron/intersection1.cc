@@ -202,7 +202,7 @@ test03() {
 
   bool ok = (computed_result == known_result);
 
-  print_constraints(computed_result, "*** After intersection_assign ***");
+  print_constraints(computed_result, "*** after intersection_assign ***");
 
   return ok;
 }
@@ -234,8 +234,8 @@ test04() {
 	     && computed_result2 == known_result);
 
   print_constraints(computed_result1,
-		    "*** After intersection_assign_and_minimize ***");
-  print_constraints(computed_result2, "*** After intersection_assign ***");
+		    "*** after intersection_assign_and_minimize ***");
+  print_constraints(computed_result2, "*** after intersection_assign ***");
 
   return ok;
 }
@@ -264,7 +264,7 @@ test05() {
 
   bool ok = (known_result == ph1);
 
-  print_constraints(ph1, "*** After intersection_assign_and_minimize ***");
+  print_constraints(ph1, "*** after intersection_assign_and_minimize ***");
 
   return ok;
 }
@@ -301,7 +301,7 @@ test06() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After intersection_assign ***");
+  print_constraints(ph1, "*** after intersection_assign ***");
 
   return ok;
 }
@@ -317,7 +317,7 @@ aux_test07(C_Polyhedron& ph1,
 
   ph1.intersection_assign_and_minimize(ph2);
 
-  print_generators(ph1, "*** After intersection_assign ***");
+  print_generators(ph1, "*** after intersection_assign ***");
 
   return ph1 == known_result;
 }
@@ -366,7 +366,7 @@ test08() {
   bool ok = (ph1 == known_result);
 
   print_constraints(ph1,
-		    "*** After ph1.intersection_assign_and_minimize(ph2) ***");
+		    "*** after ph1.intersection_assign_and_minimize(ph2) ***");
 
   return ok;
 }
@@ -387,7 +387,7 @@ test09() {
   bool ok = (ph1 == known_result);
 
   print_constraints(ph1,
-		    "*** After ph1.intersection_assign_and_minimize(ph2) ***");
+		    "*** after ph1.intersection_assign_and_minimize(ph2) ***");
 
   return ok;
 }
@@ -410,7 +410,7 @@ test10() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.intersection_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.intersection_assign(ph2) ***");
 
   return ok;
 }
@@ -429,7 +429,7 @@ test11() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.intersection_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.intersection_assign(ph2) ***");
 
   return ok;
 }
@@ -457,9 +457,9 @@ test12() {
 
   bool ok = (ph1 == copy_ph1);
 
-  print_constraints(ph1, "*** After intersection_assign ***");
+  print_constraints(ph1, "*** after intersection_assign ***");
   print_constraints(copy_ph1,
-		    "*** After intersection_assign_and_minimize ***");
+		    "*** after intersection_assign_and_minimize ***");
 
   return ok;
 }
@@ -491,9 +491,9 @@ test13() {
 
   bool ok = (ph1 == copy_ph1);
 
-  print_constraints(ph1, "*** After intersection_assign ***");
+  print_constraints(ph1, "*** after intersection_assign ***");
   print_constraints(copy_ph1,
-		    "*** After intersection_assign_and_minimize ***");
+		    "*** after intersection_assign_and_minimize ***");
 
   return ok;
 }

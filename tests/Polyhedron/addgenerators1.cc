@@ -97,7 +97,7 @@ test03() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After add_generators ***");
+  print_generators(ph, "*** after add_generators ***");
 
   return ok;
 }
@@ -127,7 +127,7 @@ test04() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After add_generators ***");
+  print_generators(ph, "*** after add_generators ***");
 
   return ok;
 }
@@ -147,7 +147,7 @@ test05() {
   gs.insert(ray(x + y));
   gs.insert(point());
 
-  print_generators(gs, "--- gs ---");
+  print_generators(gs, "*** gs ***");
 
   ph.add_generators_and_minimize(gs);
 
@@ -158,7 +158,7 @@ test05() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After add_generators_and_minimize ***");
+  print_generators(ph, "*** after add_generators_and_minimize ***");
 
   return ok;
 }
@@ -180,7 +180,7 @@ test06() {
   gs2.insert(ray(x));
   gs2.insert(point());
 
-  print_generators(gs2, "--- gs2 ---");
+  print_generators(gs2, "*** gs2 ***");
 
   ph.add_generators(gs2);
 
@@ -191,7 +191,7 @@ test06() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After add_generators ***");
+  print_generators(ph, "*** after add_generators ***");
 
   return ok;
 }
@@ -212,7 +212,7 @@ test07() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After ph .add_generators_and_minimize(gs)***");
+  print_generators(ph, "*** after ph .add_generators_and_minimize(gs) ***");
 
   return ok;
 }
@@ -234,7 +234,7 @@ test08() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After ph.add_generators(gs); ***");
+  print_generators(ph, "*** after ph.add_generators(gs); ***");
 
   return ok;
 }
@@ -258,9 +258,9 @@ test09() {
 
   bool ok = (ph == copy_ph);
 
-  print_generators(ph, "*** After ph.add_generators(gs1) ***");
+  print_generators(ph, "*** after ph.add_generators(gs1) ***");
   print_generators(ph,
-		   "*** After copy_ph.add_generators_and_minimize(gs2) ***");
+		   "*** after copy_ph.add_generators_and_minimize(gs2) ***");
 
   return ok;
 }
@@ -293,9 +293,9 @@ test10() {
 
   bool ok = (ph1 == copy_ph1);
 
-  print_generators(ph1, "*** After add_generators_assign ***");
+  print_generators(ph1, "*** after add_generators_assign ***");
   print_generators(copy_ph1,
-		   "*** After add_generators_and_minimize ***");
+		   "*** after add_generators_and_minimize ***");
 
   return ok;
 }

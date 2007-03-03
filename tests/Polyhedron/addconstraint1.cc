@@ -66,7 +66,7 @@ test02() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.add_constraint(A == B) ***");
+  print_constraints(ph, "*** after ph.add_constraint(A == B) ***");
 
   return ok;
 }
@@ -93,7 +93,7 @@ test03() {
   bool ok = (ph == known_result);
 
   print_constraints(ph,
-		    "*** After ph.add_constraint_and_minimize(B >= 1) ***");
+		    "*** after ph.add_constraint_and_minimize(B >= 1) ***");
   return ok;
 }
 

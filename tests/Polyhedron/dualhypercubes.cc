@@ -159,9 +159,9 @@ computation(std::vector<NNC_Polyhedron>& ph, bool enhanced) {
   // Print dimensions of arguments
   // (being careful to override library laziness).
   vnout << "Computing intersection of ph[0] and ph[1]:" << endl;
-  vnout << "===  ph[0] generators ===" << endl;
+  vnout << "*** ph[0] generators ***" << endl;
   ph[0].generators().ascii_dump(vnout);
-  vnout << "===  ph[1] generators ===" << endl;
+  vnout << "*** ph[1] generators ***" << endl;
   ph[1].generators().ascii_dump(vnout);
 
   if (enhanced) {
@@ -169,12 +169,12 @@ computation(std::vector<NNC_Polyhedron>& ph, bool enhanced) {
     ph[1].minimized_constraints();
 
     // Print dimensions of arguments.
-    vnout << "After the computation of smf for constraints" << endl;
+    vnout << "after the computation of smf for constraints" << endl;
   }
 
-  vnout << "===  ph[0] constraints ===" << endl;
+  vnout << "*** ph[0] constraints ***" << endl;
   ph[0].constraints().ascii_dump(vnout);
-  vnout << "===  ph[1] constraints ===" << endl;
+  vnout << "*** ph[1] constraints ***" << endl;
   ph[1].constraints().ascii_dump(vnout);
   vnout << endl;
 
@@ -185,9 +185,9 @@ computation(std::vector<NNC_Polyhedron>& ph, bool enhanced) {
   // Print dimensions of arguments
   // (being careful to override library laziness).
   vnout << "Computing intersection of ph[2] and ph[3]:" << endl;
-  vnout << "===  ph[2] generators ===" << endl;
+  vnout << "*** ph[2] generators ***" << endl;
   ph[2].generators().ascii_dump(vnout);
-  vnout << "===  ph[3] generators ===" << endl;
+  vnout << "*** ph[3] generators ***" << endl;
   ph[3].generators().ascii_dump(vnout);
 
   if (enhanced) {
@@ -195,11 +195,11 @@ computation(std::vector<NNC_Polyhedron>& ph, bool enhanced) {
     ph[3].minimized_constraints();
 
     // Print dimensions of arguments.
-    vnout << "After the computation of smf for constraints" << endl;
+    vnout << "after the computation of smf for constraints" << endl;
   }
-  vnout << "===  ph[2] constraints ===" << endl;
+  vnout << "*** ph[2] constraints ***" << endl;
   ph[2].constraints().ascii_dump(vnout);
-  vnout << "===  ph[3] constraints ===" << endl;
+  vnout << "*** ph[3] constraints ***" << endl;
   ph[3].constraints().ascii_dump(vnout);
   vnout << endl;
 
@@ -212,14 +212,14 @@ computation(std::vector<NNC_Polyhedron>& ph, bool enhanced) {
     ph[2].minimized_generators();
 
     // Print dimensions of arguments.
-    vnout << "After the computation of smf for generators" << endl;
+    vnout << "after the computation of smf for generators" << endl;
   }
 
   // Print dimensions of arguments
   // (being careful to override library laziness).
-  vnout << "===  ph[0] generators ===" << endl;
+  vnout << "*** ph[0] generators ***" << endl;
   ph[0].generators().ascii_dump(vnout);
-  vnout << "===  ph[2] generators ===" << endl;
+  vnout << "*** ph[2] generators ***" << endl;
   ph[2].generators().ascii_dump(vnout);
   vnout << endl;
 
@@ -232,7 +232,7 @@ computation(std::vector<NNC_Polyhedron>& ph, bool enhanced) {
 
   // How many constraints and generators obtained?
   vnout << "Final result (wmf)" << endl;
-  vnout << "===  ph[0] constraints ===" << endl;
+  vnout << "*** ph[0] constraints ***" << endl;
   ph[0].constraints().ascii_dump(vnout);
   vnout << endl;
 
@@ -244,7 +244,7 @@ computation(std::vector<NNC_Polyhedron>& ph, bool enhanced) {
 
   // How many constraints and generators obtained?
   vnout << "Final result (smf cons)" << endl;
-  vnout << "===  ph[0] constraints ===" << endl;
+  vnout << "*** ph[0] constraints ***" << endl;
   ph[0].constraints().ascii_dump(vnout);
 }
 

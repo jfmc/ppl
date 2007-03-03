@@ -156,7 +156,7 @@ test04() {
 
   bool ok = (ph == known_result);
 
-  print_generators(ph, "*** After remove_higher_space_dimensions(2) ***");
+  print_generators(ph, "*** after remove_higher_space_dimensions(2) ***");
 
   return ok;
 }
@@ -165,7 +165,7 @@ bool
 test05() {
   C_Polyhedron ph(4, EMPTY);
 
-  print_constraints(ph, "--- ph ---");
+  print_constraints(ph, "*** ph ***");
 
   ph.remove_higher_space_dimensions(0);
 
@@ -173,7 +173,7 @@ test05() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "--- ph after remove_higher_space_dimensions(0)---");
+  print_constraints(ph, "*** ph after remove_higher_space_dimensions(0) ***");
 
   return ok;
 }
@@ -232,7 +232,7 @@ test07() {
   bool ok = (ph == known_result);
 
   print_constraints(ph,
-		    "*** After ph.remove_space_dimensions(to_be_removed) ***");
+		    "*** after ph.remove_space_dimensions(to_be_removed) ***");
 
   return ok;
 }
@@ -252,7 +252,7 @@ test08() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.remove_higher_space_dimensions(2) ***");
+  print_constraints(ph, "*** after ph.remove_higher_space_dimensions(2) ***");
 
   return ok;
 }
@@ -274,7 +274,7 @@ test09() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.remove_higher_space_dimensions(1) ***");
+  print_constraints(ph, "*** after ph.remove_higher_space_dimensions(1) ***");
 
   return ok;
 }

@@ -51,7 +51,7 @@ test01() {
 
   bool ok = (known_result == ph);
 
-  print_constraints(ph, "*** After add_congruences ***");
+  print_constraints(ph, "*** after add_congruences ***");
 
   return ok;
 }
@@ -76,7 +76,7 @@ test02() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.add_congruences(cgs) ***");
+  print_constraints(ph1, "*** after ph1.add_congruences(cgs) ***");
 
   return ok;
 }
@@ -127,7 +127,7 @@ test04() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.add_congruences(cgs) ***");
+  print_constraints(ph, "*** after ph.add_congruences(cgs) ***");
 
   return ok;
 }
@@ -149,7 +149,7 @@ bool test05() {
 
   bool ok = (known_result == ph);
 
-  print_constraints(ph, "*** After add_constraints ***");
+  print_constraints(ph, "*** after add_constraints ***");
 
   return ok;
 }

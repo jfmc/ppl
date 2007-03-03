@@ -39,7 +39,7 @@ test01() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.map_space_dimensions(function) ***");
+  print_constraints(ph1, "*** after ph1.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -59,7 +59,7 @@ test02() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.map_space_dimensions(function) ***");
+  print_constraints(ph1, "*** after ph1.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -95,7 +95,7 @@ test03() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
+  print_generators(ph1, "*** after ph1.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -130,7 +130,7 @@ test04() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
+  print_generators(ph1, "*** after ph1.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -162,7 +162,7 @@ test05() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
+  print_generators(ph1, "*** after ph1.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -192,7 +192,7 @@ test06() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
+  print_generators(ph1, "*** after ph1.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -229,7 +229,7 @@ test07() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
+  print_generators(ph1, "*** after ph1.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -263,7 +263,7 @@ test08() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "*** After ph1.map_space_dimensions(function) ***");
+  print_generators(ph1, "*** after ph1.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -285,7 +285,7 @@ test09() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.map_space_dimensions(function) ***");
+  print_constraints(ph1, "*** after ph1.map_space_dimensions(function) ***");
 
   return ok;
 }
@@ -388,7 +388,7 @@ test11() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.map_space_dimensions(rotate_right) ***");
+  print_constraints(ph, "*** after ph.map_space_dimensions(rotate_right) ***");
 
   return ok;
 }
@@ -415,7 +415,7 @@ test12() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After ph.map_space_dimensions(rotate_right) ***");
+  print_constraints(ph, "*** after ph.map_space_dimensions(rotate_right) ***");
 
   return ok;
 }

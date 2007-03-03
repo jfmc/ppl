@@ -54,7 +54,7 @@ test01() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.expand_space_dimension(B, 2) ***");
+  print_constraints(ph1, "*** after ph1.expand_space_dimension(B, 2) ***");
 
   return ok;
 }
@@ -89,7 +89,7 @@ test02() {
 
   bool ok = (ph1 == known_result);
 
-  print_generators(ph1, "***  After ph1.expand_space_dimension(A, 2) ***");
+  print_generators(ph1, "*** after ph1.expand_space_dimension(A, 2) ***");
 
   return ok;
 }

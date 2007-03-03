@@ -92,8 +92,8 @@ test02() {
 	     && computed_result2 == known_result);
 
   print_generators(computed_result1,
-		   "*** After poly_hull_assign_and_minimize ***");
-  print_generators(computed_result2, "*** After poly_hull_assign ***");
+		   "*** after poly_hull_assign_and_minimize ***");
+  print_generators(computed_result2, "*** after poly_hull_assign ***");
 
   return ok;
 }
@@ -120,7 +120,7 @@ test03() {
 
   ph1.poly_hull_assign(ph2);
 
-  print_generators(ph1, "*** After poly_hull_assign ***");
+  print_generators(ph1, "*** after poly_hull_assign ***");
 
   C_Polyhedron known_result(2, EMPTY);
   known_result.add_generator(point());
@@ -142,7 +142,7 @@ aux_test04(C_Polyhedron& ph1, const C_Polyhedron& ph2,
 
   ph1.poly_hull_assign_and_minimize(ph2);
 
-  print_generators(ph1, "*** After poly_hull_assign ***");
+  print_generators(ph1, "*** after poly_hull_assign ***");
 
   return ph1 == known_result;
 }
@@ -194,7 +194,7 @@ test05() {
   bool ok = (ph1 == known_result);
 
   print_generators(ph1,
-		   "*** After ph1.poly_hull_assign_and_minimize(ph2) ***");
+		   "*** after ph1.poly_hull_assign_and_minimize(ph2) ***");
 
   return ok;
 }
@@ -214,7 +214,7 @@ test06() {
   bool ok = (ph1 == known_result);
 
   print_generators(ph1,
-		   "*** After ph1.poly_hull_assign_and_minimize(ph2) ***");
+		   "*** after ph1.poly_hull_assign_and_minimize(ph2) ***");
 
   return ok;
 }
@@ -250,7 +250,7 @@ test07() {
   bool ok = (ph1 == known_result);
 
   print_generators(ph1,
-		   "*** After ph1.poly_hull_assign_and_minimize(ph2) ***");
+		   "*** after ph1.poly_hull_assign_and_minimize(ph2) ***");
 
   return ok;
 }
@@ -273,7 +273,7 @@ test08() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.poly_hull_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.poly_hull_assign(ph2) ***");
 
   return ok;
 }
@@ -292,7 +292,7 @@ test09() {
 
   bool ok = (ph1 == known_result);
 
-  print_constraints(ph1, "*** After ph1.poly_hull_assign(ph2) ***");
+  print_constraints(ph1, "*** after ph1.poly_hull_assign(ph2) ***");
 
   return ok;
 }
@@ -320,9 +320,9 @@ test10() {
 
   bool ok = (ph1 == copy_ph1);
 
-  print_generators(ph1, "*** After poly_hull_assign ***");
+  print_generators(ph1, "*** after poly_hull_assign ***");
   print_generators(copy_ph1,
-		    "*** After poly_hull_assign_and_minimize ***");
+		    "*** after poly_hull_assign_and_minimize ***");
 
   return ok;
 }
@@ -354,9 +354,9 @@ test11() {
 
   bool ok = (ph1 == copy_ph1);
 
-  print_generators(ph1, "*** After poly_hull_assign ***");
+  print_generators(ph1, "*** after poly_hull_assign ***");
   print_generators(copy_ph1,
-		    "*** After poly_hull_assign_and_minimize ***");
+		    "*** after poly_hull_assign_and_minimize ***");
 
   return ok;
 }

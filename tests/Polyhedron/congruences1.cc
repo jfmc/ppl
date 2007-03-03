@@ -41,7 +41,7 @@ bool test01() {
 
   bool ok = (ph == known_result);
 
-  print_constraints(ph, "*** After add_congruences ***");
+  print_constraints(ph, "*** after add_congruences ***");
 
   return ok;
 }

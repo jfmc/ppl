@@ -52,7 +52,7 @@ test01() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2add_generator(*i) ***");
+  print_generators(ph2, "*** after ph2add_generator(*i) ***");
 
   return ok;
 }
@@ -83,7 +83,7 @@ test02() {
 
   bool ok = (ph2 == known_result);
 
-  print_generators(ph2, "*** After ph2.add_generator(*i) ***");
+  print_generators(ph2, "*** after ph2.add_generator(*i) ***");
 
   return ok;
 }

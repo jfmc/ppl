@@ -61,7 +61,7 @@ test01() {
   bool ok = (ph2 == known_result);
 
   print_constraints(ph2,
-		    "*** After ph2.bounded_H79_extrapolation_assign(ph1, cs) "
+		    "*** after ph2.bounded_H79_extrapolation_assign(ph1, cs) "
 		    "***");
 
   return ok;
