@@ -1,4 +1,4 @@
-/* Test Box::Box(const Polyhedron&, Complexity_Class).
+/* Test NNC_Polyhedron::shrink_bounding_box().
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,342 +24,209 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// A non-bounded closed polyhedron consisting of the line x = y.
-// The bounding box is the xy plane - the universal polyhedron.
+#if 0
+// An unbounded NNC polyhedron in 4D but bounded in 2D
+// with strict inequality and closure points at the lower bound.
 bool
 test01() {
-  Variable x(0);
-  Variable y(1);
-  C_Polyhedron ph(2);
-  ph.add_constraint(x - y >= 0);
+  Variable x(1);
+  Variable y(2);
+  Variable z(3);
 
-  TBox pbox(ph, POLYNOMIAL_COMPLEXITY);
+  NNC_Polyhedron ph(4);
+  ph.add_constraint(3 * x + y > 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
+  ph.add_constraint(z >= 5);
 
-  TBox nbox(ph);
+  BBox pbox(ph.space_dimension());
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
-  TBox known_box(2, UNIVERSE);
+  BBox nbox(ph.space_dimension());
+  ph.shrink_bounding_box(nbox);
 
-  bool ok = (nbox == known_box && pbox == known_box);
+  BBox known_nbox(4);
+  known_nbox.raise_lower_bound(1, false, -2, 3);
+  known_nbox.lower_upper_bound(1, true, 4, 1);
+  known_nbox.raise_lower_bound(2, false, -10, 1);
+  known_nbox.lower_upper_bound(2, true, 4, 1);
+  known_nbox.raise_lower_bound(3, true, 5, 1);
 
-  print_constraints(ph, "*** ph ***");
-  print_constraints(nbox, "*** nbox ***");
-  print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_box, "*** known_box ***");
+  BBox known_pbox(4);
+  known_pbox.lower_upper_bound(1, true, 4, 1);
+  known_pbox.lower_upper_bound(2, true, 4, 1);
+  known_pbox.raise_lower_bound(3, true, 5, 1);
+
+  bool ok = (nbox == known_nbox && pbox == known_pbox && nbox <= pbox);
+
+  print_constraints(ph, "*** test01 ph ***");
+  nbox.print(nout, "*** test01 nbox ***");
+  pbox.print(nout, "*** test01 pbox ***");
+
+  known_nbox.print(nout, "*** test9 known_nbox ***");
+  known_pbox.print(nout, "*** test9 known_pbox ***");
 
   return ok;
 }
 
-// A non-bounded closed polyhedron  in 2D consisting of a wedge bounded
-// by y >= 0 and x >= y.
-// The resulting bounding box depends on the complexity class.
+// A bounded NNC polyhedron with strict inequalities
+// causing upper and lower bounds of the box to be open.
 bool
 test02() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(2);
-  ph.add_constraint(x >= y);
-  ph.add_constraint(y >= 0);
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(3 * x + y >= 2);
+  ph.add_constraint(x < 4);
+  ph.add_constraint(y <= 4);
 
-  TBox pbox(ph, POLYNOMIAL_COMPLEXITY);
+  BBox pbox(ph.space_dimension());
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
-  TBox nbox(ph);
+  BBox nbox(ph.space_dimension());
+  ph.shrink_bounding_box(nbox);
 
-  TBox known_nbox(2);
-  known_nbox.add_constraint(x >= 0);
-  known_nbox.add_constraint(y >= 0);
+  BBox known_nbox(2);
+  known_nbox.raise_lower_bound(0, true, -2, 3);
+  known_nbox.lower_upper_bound(0, false, 4, 1);
+  known_nbox.raise_lower_bound(1, false, -10, 1);
+  known_nbox.lower_upper_bound(1, true, 4, 1);
 
-  TBox known_pbox(2);
-  known_pbox.add_constraint(y >= 0);
+  BBox known_pbox(2);
+  known_pbox.lower_upper_bound(0, false, 4, 1);
+  known_pbox.lower_upper_bound(1, true, 4, 1);
 
-  bool ok = (nbox == known_nbox && pbox == known_pbox && pbox.contains(nbox));
+  bool ok = (nbox == known_nbox && pbox == known_pbox && nbox <= pbox);
 
-  print_constraints(ph, "*** ph ***");
-  print_constraints(nbox, "*** nbox ***");
-  print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_nbox, "*** known_nbox ***");
-  print_constraints(known_pbox, "*** known_pbox ***");
+  print_constraints(ph, "*** test02 ph ***");
+  nbox.print(nout, "*** test02 nbox ***");
+  pbox.print(nout, "*** test02 pbox ***");
+
+  known_nbox.print(nout, "*** test02 known_nbox ***");
+  known_pbox.print(nout, "*** test02 known_pbox ***");
 
   return ok;
 }
 
-// A bounded non-rectangular closed polyhedron in 2D.
+// An empty polyhedron in 2D defined using strict constraints.
 bool
 test03() {
   Variable x(0);
   Variable y(1);
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(x > 0);
+  ph.add_constraint(x < 0);
+  ph.add_constraint(y > 0);
+  ph.add_constraint(y < 0);
 
-  C_Polyhedron ph(2);
-  ph.add_constraint(3*x + y >= 2);
-  ph.add_constraint(x <= 4);
-  ph.add_constraint(y <= 4);
+  Rational_Box pbox(2);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
-  TBox pbox(ph, POLYNOMIAL_COMPLEXITY);
+  Rational_Box nbox(2);
+  ph.shrink_bounding_box(nbox);
 
-  TBox nbox(ph);
+  NNC_Polyhedron known_ph(2, EMPTY);
+  NNC_Polyhedron known_pph(pbox, From_Bounding_Box());
+  NNC_Polyhedron known_nph(nbox, From_Bounding_Box());
 
-  TBox known_nbox(2);
-  known_nbox.add_constraint(3*x >= -2);
-  known_nbox.add_constraint(x <= 4);
-  known_nbox.add_constraint(y >= -10);
-  known_nbox.add_constraint(y <= 4);
+  bool ok = (ph == known_ph && ph == known_nph && ph == known_ph);
 
-  TBox known_pbox(2);
-  known_pbox.add_constraint(x <= 4);
-  known_pbox.add_constraint(y <= 4);
-
-  bool ok = (nbox == known_nbox && pbox == known_pbox && pbox.contains(nbox));
-
-  print_constraints(ph, "*** ph ***");
-  print_constraints(nbox, "*** nbox ***");
-  print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_nbox, "*** known_nbox ***");
-  print_constraints(known_pbox, "*** known_pbox ***");
+  print_generators(ph, "*** test03 ph ***");
+  print_generators(known_pph, "*** test03 known_pph ***");
+  print_generators(known_nph, "*** test03 known_nph ***");
 
   return ok;
 }
 
-// An unbounded closed polyhedron in 4D but bounded in 2D.
+// An unbounded box in 4D but bounded in 2D with strict inequalities.
 bool
 test04() {
+  Rational_Box box(4);
+  box.raise_lower_bound(1, false, -2, 3);
+  box.lower_upper_bound(1, true, 4, 1);
+  box.raise_lower_bound(2, false, -10, 1);
+  box.lower_upper_bound(2, true, 12, 3);
+  box.raise_lower_bound(3, true, 15, 3);
+
+  NNC_Polyhedron ph(box, From_Bounding_Box());
+
   Variable x(1);
   Variable y(2);
   Variable z(3);
 
-  C_Polyhedron ph(4);
-  ph.add_constraint(3*x + y >= 2);
-  ph.add_constraint(x <= 4);
-  ph.add_constraint(y <= 4);
-  ph.add_constraint(z >= 5);
+  NNC_Polyhedron known_ph(box.space_dimension());
+  known_ph.add_constraint(3*x > -2);
+  known_ph.add_constraint(x <= 4);
+  known_ph.add_constraint(y <= 4);
+  known_ph.add_constraint(y > -10);
+  known_ph.add_constraint(z >= 5);
 
-  TBox pbox(ph, POLYNOMIAL_COMPLEXITY);
+  bool ok = (ph == known_ph);
 
-  TBox nbox(ph);
-
-  TBox known_nbox(4);
-  known_nbox.add_constraint(3*x >= -2);
-  known_nbox.add_constraint(x <= 4);
-  known_nbox.add_constraint(y >= -10);
-  known_nbox.add_constraint(3*y <= 12);
-  known_nbox.add_constraint(3*z >= 15);
-
-  TBox known_pbox(4);
-  known_pbox.add_constraint(x <= 4);
-  known_pbox.add_constraint(y <= 4);
-  known_pbox.add_constraint(z >= 5);
-
-  bool ok = (nbox == known_nbox && pbox == known_pbox && pbox.contains(nbox));
-
-  print_constraints(ph, "*** ph ***");
-  print_constraints(nbox, "*** nbox ***");
-  print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_nbox, "*** known_nbox ***");
-  print_constraints(known_pbox, "*** known_pbox ***");
+  print_generators(ph, "*** test04 ph ***");
+  print_generators(known_ph, "*** test04 known_ph ***");
 
   return ok;
 }
 
-// This is the universal, 2-dimensional closed polyhedron.
+// A bounded NNC polyhedron with strict inequalities
+// causing upper and lower bounds of the box to be open.
 bool
 test05() {
-  C_Polyhedron ph(2);
+  Rational_Box box(4);
+  box.raise_lower_bound(1, true, -2, 3);
+  box.lower_upper_bound(1, false, 4, 1);
+  box.raise_lower_bound(2, false, -10, 1);
+  box.lower_upper_bound(2, true, 12, 3);
 
-  TBox pbox(ph, POLYNOMIAL_COMPLEXITY);
+  NNC_Polyhedron ph(box, From_Bounding_Box());
 
-  TBox nbox(ph);
+  Variable x(1);
+  Variable y(2);
 
-  TBox known_box(2, UNIVERSE);
+  NNC_Polyhedron known_ph(box.space_dimension());
+  known_ph.add_constraint(3*x >= -2);
+  known_ph.add_constraint(x < 4);
+  known_ph.add_constraint(y <= 4);
+  known_ph.add_constraint(y > -10);
 
-  bool ok = (nbox == known_box && pbox == known_box);
+  bool ok = (ph == known_ph);
 
-  print_constraints(ph, "*** ph ***");
-  print_constraints(nbox, "*** nbox ***");
-  print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_box, "*** known_box ***");
+  print_generators(ph, "*** test05 ph ***");
+  print_generators(known_ph, "*** test05 known_ph ***");
 
   return ok;
 }
 
-// A zero-dimensional closed polyhedron.
+// An empty box in 2D.
 bool
 test06() {
-  C_Polyhedron ph;
+  Rational_Box box(2);
+  box.set_empty();
 
-  TBox pbox(ph, POLYNOMIAL_COMPLEXITY);
+  NNC_Polyhedron ph(box, From_Bounding_Box());
 
-  TBox nbox(ph);
+  NNC_Polyhedron known_ph(2, EMPTY);
 
-  TBox known_box(0);
+  bool ok = (ph == known_ph);
 
-  bool ok = (nbox == known_box && pbox == known_box);
-
-  print_constraints(ph, "*** ph ***");
-  print_constraints(nbox, "*** nbox ***");
-  print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_box, "*** known_box ***");
+  print_constraints(ph, "*** test06 ph ***");
+  print_constraints(known_ph, "*** test06 known_ph ***");
 
   return ok;
 }
-
-// An empty closed polyhedron in 2D.
-bool
-test07() {
-  C_Polyhedron ph(2, EMPTY);
-
-  TBox pbox(ph, POLYNOMIAL_COMPLEXITY);
-
-  TBox nbox(ph);
-
-  TBox known_box(ph.space_dimension(), EMPTY);
-
-  bool ok = (nbox == known_box && pbox == known_box);
-
-  print_constraints(ph, "*** ph ***");
-  print_constraints(nbox, "*** nbox ***");
-  print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_box, "*** known_box ***");
-
-  return ok;
-}
-
-// A bounded polyhedron that is a single point.
-bool
-test08() {
-  Variable x(0);
-  Variable y(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(x == 2);
-  ph.add_constraint(y == 4);
-
-  TBox pbox(ph, POLYNOMIAL_COMPLEXITY);
-
-  TBox nbox(ph);
-
-  TBox known_box(2);
-  known_box.add_constraint(x == 2);
-  known_box.add_constraint(y == 4);
-
-  bool ok = (nbox == known_box && pbox == known_box);
-
-  print_constraints(ph, "*** ph ***");
-  print_constraints(nbox, "*** nbox ***");
-  print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_box, "*** known_box ***");
-
-  return ok;
-}
-
-// A unit square closed polyhedron.
-bool
-test09() {
-  Variable x(0);
-  Variable y(1);
-
-  Constraint_System cs;
-  cs.insert(x >= 0);
-  cs.insert(x <= 1);
-  cs.insert(y >= 0);
-  cs.insert(y <= 1);
-
-  C_Polyhedron ph(cs);
-
-  TBox pbox(ph, POLYNOMIAL_COMPLEXITY);
-
-  TBox nbox(ph);
-
-  TBox known_box(2);
-  known_box.add_constraint(x >= 0);
-  known_box.add_constraint(x <= 1);
-  known_box.add_constraint(y >= 0);
-  known_box.add_constraint(y <= 1);
-
-  bool ok = (nbox == known_box && pbox == known_box);
-
-  print_constraints(ph, "*** ph ***");
-  print_constraints(nbox, "*** nbox ***");
-  print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_box, "*** known_box ***");
-
-  return ok;
-}
-
-// A bounded rectangular closed polyhedron;
-bool
-test10() {
-  Variable x(0);
-  Variable y(1);
-
-  C_Polyhedron ph(2);
-  ph.generators();
-  ph.add_constraint(x >= 1);
-  ph.add_constraint(x <= 3);
-  ph.add_constraint(y <= 3);
-  ph.add_constraint(y >= 1);
-
-  TBox pbox(ph, POLYNOMIAL_COMPLEXITY);
-
-  TBox nbox(ph);
-
-  TBox known_box(2);
-  known_box.add_constraint(x >= 1);
-  known_box.add_constraint(x <= 3);
-  known_box.add_constraint(y <= 3);
-  known_box.add_constraint(y >= 1);
-
-  bool ok = (nbox == known_box && pbox == known_box);
-
-  print_constraints(ph, "*** ph ***");
-  print_constraints(nbox, "*** nbox ***");
-  print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_box, "*** known_box ***");
-
-  return ok;
-}
-
-// A bounded polyhedron having redundant constraints.
-bool
-test11() {
-  Variable x(0);
-  Variable y(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(x == 3);
-  ph.add_constraint(y == 1);
-  ph.add_constraint(x + y == 4);
-  ph.add_constraint(x - y == 2);
-  ph.add_constraint(3*x + y == 10);
-  ph.add_constraint(x >= 0);
-  ph.add_constraint(y <= 5);
-  ph.add_constraint(x + 2*y >= 5);
-
-  TBox pbox(ph, POLYNOMIAL_COMPLEXITY);
-
-  TBox known_box(2);
-  known_box.add_constraint(x == 3);
-  known_box.add_constraint(y == 1);
-
-  bool ok = (pbox == known_box);
-
-  print_constraints(ph, "*** ph ***");
-  print_constraints(pbox, "*** pbox ***");
-  print_constraints(known_box, "*** known_box ***");
-
-  return ok;
-}
+#endif
 
 } // namespace
 
 BEGIN_MAIN
+#if 0
   DO_TEST(test01);
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST(test05);
+  DO_TEST_F8A(test05);
   DO_TEST(test06);
-  DO_TEST(test07);
-  DO_TEST(test08);
-  DO_TEST(test09);
-  DO_TEST(test10);
-  DO_TEST(test11);
+#endif
 END_MAIN
