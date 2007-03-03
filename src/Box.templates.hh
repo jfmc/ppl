@@ -43,9 +43,9 @@ template <typename Interval>
 inline
 Box<Interval>::Box(dimension_type num_dimensions, Degenerate_Element kind)
   : seq(num_dimensions), empty(kind == EMPTY), empty_up_to_date(true) {
-  if (kind == UNIVERSE)
-    for (dimension_type i = num_dimensions; i-- > 0; )
-      seq[i].set_universe();
+  // FIXME: use UNIVERSE when initializing `seq'.
+  for (dimension_type i = num_dimensions; i-- > 0; )
+    seq[i].set_universe();
   assert(OK());
 }
 
@@ -53,6 +53,7 @@ template <typename Interval>
 inline
 Box<Interval>::Box(const Constraint_System& cs)
   : seq(cs.space_dimension()), empty_up_to_date(false) {
+  // FIXME: use UNIVERSE when initializing `seq'.
   for (dimension_type i = cs.space_dimension(); i-- > 0; )
     seq[i].set_universe();
   add_constraints_no_check(cs);
@@ -64,8 +65,12 @@ inline
 Box<Interval>::Box(const Box<Other_Interval>& y)
   : seq(y.space_dimension()) {
   Box& x = *this;
-  if (y.marked_empty())
+  if (y.marked_empty()) {
+    // FIXME: use UNIVERSE when initializing `seq'.
+    for (dimension_type i = space_dimension(); i-- > 0; )
+      seq[i].set_universe();
     x.set_empty();
+  }
   else {
     x.empty_up_to_date = false;
     for (dimension_type k = y.space_dimension(); k-- > 0; )
@@ -77,6 +82,10 @@ Box<Interval>::Box(const Box<Other_Interval>& y)
 template <typename Interval>
 Box<Interval>::Box(const Generator_System& gs)
   : seq(gs.space_dimension()), empty(false), empty_up_to_date(true) {
+  // FIXME: use UNIVERSE when initializing `seq'.
+  for (dimension_type i = space_dimension(); i-- > 0; )
+    seq[i].set_universe();
+
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
   if (gs_begin == gs_end) {
@@ -188,6 +197,10 @@ template <typename Interval>
 template <typename T>
 Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
   : seq(bds.space_dimension()), empty(false), empty_up_to_date(true) {
+  // FIXME: use UNIVERSE when initializing `seq'.
+  for (dimension_type i = space_dimension(); i-- > 0; )
+    seq[i].set_universe();
+
   // Expose all the interval constraints.
   bds.shortest_path_closure_assign();
   if (bds.marked_empty()) {
@@ -223,6 +236,10 @@ template <typename Interval>
 template <typename T>
 Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
   : seq(oct.space_dimension()), empty(false), empty_up_to_date(true) {
+  // FIXME: use UNIVERSE when initializing `seq'.
+  for (dimension_type i = space_dimension(); i-- > 0; )
+    seq[i].set_universe();
+
   // Expose all the interval constraints.
   oct.strong_closure_assign();
   if (oct.marked_empty()) {
@@ -272,6 +289,9 @@ Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
 template <typename Interval>
 Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
   : seq(ph.space_dimension()), empty(false), empty_up_to_date(true) {
+  // FIXME: use UNIVERSE when initializing `seq'.
+  for (dimension_type i = space_dimension(); i-- > 0; )
+    seq[i].set_universe();
   // We do not need to bother about `complexity' if:
   // a) the polyhedron is already marked empty; or ...
   if (ph.marked_empty()) {
@@ -364,6 +384,10 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
 template <typename Interval>
 Box<Interval>::Box(const Grid& gr, Complexity_Class)
   : seq(gr.space_dimension()), empty(false), empty_up_to_date(true) {
+  // FIXME: use UNIVERSE when initializing `seq'.
+  for (dimension_type i = space_dimension(); i-- > 0; )
+    seq[i].set_universe();
+
   // FIXME: here we are not taking advantage of intervals with restrictions!
 
   if (gr.marked_empty()) {
@@ -437,6 +461,7 @@ template <typename D1, typename D2>
 Box<Interval>::Box(const Direct_Product<D1, D2>& dp,
 		   Complexity_Class complexity)
   : seq(dp.space_dimension()), empty(false), empty_up_to_date(true) {
+  // FIXME: use UNIVERSE when initializing `seq'.
   for (dimension_type i = dp.space_dimension(); i-- > 0; )
     seq[i].set_universe();
   {
