@@ -29,24 +29,24 @@ test01() {
   TBD_Shape bd1(2, EMPTY);
   TBD_Shape bd2(2);
 
-  print_constraints(bd1, "**** bd1 ****");
-  print_constraints(bd2, "**** bd2 ****");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
   bd1.time_elapse_assign(bd2);
 
   TBD_Shape bd3(2);
   TBD_Shape bd4(2, EMPTY);
 
-  print_constraints(bd3, "**** bd3 ****");
-  print_constraints(bd4, "**** bd4 ****");
+  print_constraints(bd3, "*** bd3 ***");
+  print_constraints(bd4, "*** bd4 ***");
 
   bd3.time_elapse_assign(bd4);
 
   bool ok = (bd1.is_empty()
 		&& bd3.is_empty());
 
-  print_constraints(bd1, "**** bd1_time_elapse_assign(bd2) ****");
-  print_constraints(bd3, "**** bd3_time_elapse_assign(bd4) ****");
+  print_constraints(bd1, "*** bd1_time_elapse_assign(bd2) ***");
+  print_constraints(bd3, "*** bd3_time_elapse_assign(bd4) ***");
 
   return ok;
 }
@@ -66,8 +66,8 @@ test02() {
   bd2.add_constraint(x <= 4);
   bd2.add_constraint(y == 3);
 
-  print_constraints(bd1, "**** bd1 ****");
-  print_constraints(bd2, "**** bd2 ****");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
   bd1.time_elapse_assign(bd2);
 
@@ -77,7 +77,7 @@ test02() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "**** bd1_time_elapse_assign(bd2) ****");
+  print_constraints(bd1, "*** bd1_time_elapse_assign(bd2) ***");
 
   return ok;
 }
@@ -96,8 +96,8 @@ test03() {
   TBD_Shape bd2(2);
   bd2.add_constraint(y == 5);
 
-  print_constraints(bd1, "**** bd1 ****");
-  print_constraints(bd2, "**** bd2 ****");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
   bd1.time_elapse_assign(bd2);
 
@@ -106,7 +106,7 @@ test03() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "**** bd1_time_elapse_assign(bd2) ****");
+  print_constraints(bd1, "*** bd1_time_elapse_assign(bd2) ***");
 
   return ok;
 }
@@ -124,8 +124,8 @@ test04() {
   bd2.add_constraint(x <= 2);
   bd2.add_constraint(y <= 3);
 
-  print_constraints(bd1, "**** bd1 ****");
-  print_constraints(bd2, "**** bd2 ****");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
   bd1.time_elapse_assign(bd2);
 
@@ -133,7 +133,7 @@ test04() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "**** bd1_time_elapse_assign(bd2) ****");
+  print_constraints(bd1, "*** bd1_time_elapse_assign(bd2) ***");
 
   return ok;
 }
@@ -158,8 +158,8 @@ test05() {
   bd2.add_constraint(y >= -1);
   bd2.add_constraint(z >= 2);
 
-  print_constraints(bd1, "**** bd1 ****");
-  print_constraints(bd2, "**** bd2 ****");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
   bd1.time_elapse_assign(bd2);
 
@@ -167,7 +167,7 @@ test05() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "**** bd1.time_elapse_assign(bd2) ****");
+  print_constraints(bd1, "*** bd1.time_elapse_assign(bd2) ***");
 
   return ok;
 }

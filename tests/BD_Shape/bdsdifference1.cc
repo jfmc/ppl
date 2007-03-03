@@ -49,7 +49,7 @@ test01() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "*** After bd1.bds_difference_assign(ph2) ***");
+  print_constraints(bd1, "*** after bd1.bds_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -70,7 +70,7 @@ test02() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
+  print_constraints(bd1, "*** after bd1.bds_difference_assign(bd2) ***");
 
   return ok;
 }
@@ -106,7 +106,7 @@ test03() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
+  print_constraints(bd1, "*** after bd1.bds_difference_assign(bd2) ***");
 
   return ok;
 }
@@ -137,7 +137,7 @@ test04() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
+  print_constraints(bd1, "*** after bd1.bds_difference_assign(bd2) ***");
 
   return ok;
 }
@@ -168,7 +168,7 @@ test05() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
+  print_constraints(bd1, "*** after bd1.bds_difference_assign(bd2) ***");
 
   return ok;
 }
@@ -203,7 +203,7 @@ test06() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
+  print_constraints(bd1, "*** after bd1.bds_difference_assign(bd2) ***");
 
   return ok;
 }
@@ -238,7 +238,7 @@ test07() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "*** After bd1.bds_difference_assign(bd2) ***");
+  print_constraints(bd1, "*** after bd1.bds_difference_assign(bd2) ***");
   print_constraints(known_result, "*** known_result ***");
 
   return ok;

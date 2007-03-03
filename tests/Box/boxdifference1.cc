@@ -50,7 +50,7 @@ test01() {
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** After box1.box_difference_assign(ph2) ***");
+  print_constraints(box1, "*** after box1.box_difference_assign(ph2) ***");
 
   return ok;
 }
@@ -71,7 +71,7 @@ test02() {
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** After box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
 
   return ok;
 }
@@ -107,7 +107,7 @@ test03() {
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** After box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
 
   return ok;
 }
@@ -138,7 +138,7 @@ test04() {
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** After box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
 
   return ok;
 }
@@ -169,7 +169,7 @@ test05() {
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** After box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
 
   return ok;
 }
@@ -204,7 +204,7 @@ test06() {
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** After box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
 
   return ok;
 }
@@ -239,7 +239,7 @@ test07() {
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** After box1.box_difference_assign(box2) ***");
+  print_constraints(box1, "*** after box1.box_difference_assign(box2) ***");
   print_constraints(known_result, "*** known_result ***");
 
   return ok;

@@ -39,14 +39,14 @@ test01() {
   cs2.insert(y >= 5);
   TOctagonal_Shape oct2(cs2);
 
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(x >= 20);
   cs.insert(y >= 3);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -68,12 +68,12 @@ test02() {
   TOctagonal_Shape oct1(0);
   TOctagonal_Shape oct2(0);
 
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -99,14 +99,14 @@ test03() {
   oct2.add_constraint(A == -2);
   oct2.add_constraint(B == 3);
 
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A <= 0);
   cs.insert(A - B <= 6);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -132,14 +132,14 @@ test04() {
   TOctagonal_Shape oct2(2);
   oct2.add_constraint(A == -2);
 
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A <= 0);
   cs.insert(A - B <= 6);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -167,13 +167,13 @@ test05() {
   oct2.add_constraint(A <= -2);
   oct2.add_constraint(B >= 4);
 
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A <= 5);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -202,14 +202,14 @@ test06() {
   oct2.add_constraint(A <= -2);
   oct2.add_constraint(B >= 4);
 
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A >= 0);
   cs.insert(A + B <= 6);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -237,14 +237,14 @@ test07() {
   oct2.add_constraint(A <= -2);
   oct2.add_constraint(B >= 4);
 
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A >= 0);
   cs.insert(A - B <= 6);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -275,14 +275,14 @@ test08() {
   oct2.add_constraint(A >= 3);
   oct2.add_constraint(B >= 4);
 
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A >= 0);
   cs.insert(A - B <= 6);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -310,14 +310,14 @@ test09() {
   oct2.add_constraint(A >= 3);
   oct2.add_constraint(B >= 4);
 
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A >= 0);
   cs.insert(A - B <= 6);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -350,7 +350,7 @@ test10() {
   oct2.add_constraint(C - D == 5);
   oct2.add_constraint(B <= 5);
 
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
@@ -358,7 +358,7 @@ test10() {
   cs.insert(C - D == 5);
   cs.insert(A - B <= 6);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -388,14 +388,14 @@ test11() {
   oct2.add_constraint(A >= 3);
   oct2.add_constraint(B >= 4);
 
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A >= 0);
   cs.insert(A - 2*B <= 6);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -424,13 +424,13 @@ test12() {
   oct2.add_constraint(A <= 1);
   oct2.add_constraint(B == -1);
   oct2.add_constraint(A >= 4);
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A <= 2);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -460,13 +460,13 @@ test13() {
   oct2.add_constraint(A <= 3);
   oct2.add_constraint(A >= 5);
 
-  print_constraints(oct1, "*** oct1 ****");
+  print_constraints(oct1, "*** oct1 ***");
   print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(C <= 2);
 
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   oct1.limited_CC76_extrapolation_assign(oct2, cs);
 
@@ -588,8 +588,8 @@ test17() {
   TOctagonal_Shape oct1(3, EMPTY);
   TOctagonal_Shape oct2(3, EMPTY);
 
-  print_constraints(oct1, "*** oct1 ****");
-  print_constraints(oct2, "*** oct2 ****");
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A + B <= 0);
@@ -616,8 +616,8 @@ test18() {
 
   TOctagonal_Shape oct2(3, EMPTY);
 
-  print_constraints(oct1, "*** oct1 ****");
-  print_constraints(oct2, "*** oct2 ****");
+  print_constraints(oct1, "*** oct1 ***");
+  print_constraints(oct2, "*** oct2 ***");
 
   Constraint_System cs;
   cs.insert(A - B <= 2);

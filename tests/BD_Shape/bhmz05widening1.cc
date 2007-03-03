@@ -69,7 +69,7 @@ test02() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "*** After bd1.BHMZ05_widening_assign(bd2) ***");
+  print_constraints(bd1, "*** after bd1.BHMZ05_widening_assign(bd2) ***");
 
   return ok;
 }
@@ -292,8 +292,8 @@ test08() {
 
   TBD_Shape bd2(cs2);
 
-  print_constraints(bd1, "*** bd1 ****");
-  print_constraints(bd2, "*** bd2 ****");
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
 
   BD_Shape<mpq_class> known_result(bd2);
 

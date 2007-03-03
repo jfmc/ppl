@@ -344,7 +344,7 @@ test10() {
 
   print_constraints(bd1, "*** bd1 ***");
   print_constraints(bd2, "*** bd2 ***");
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 
   bd1.limited_CC76_extrapolation_assign(bd2, cs);
 

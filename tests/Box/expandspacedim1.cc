@@ -38,7 +38,7 @@ test01() {
 
   bool ok = (box1 == known_result);
 
-  print_constraints(box1, "*** After box1.expand_space_dimension(A, 1) ***");
+  print_constraints(box1, "*** after box1.expand_space_dimension(A, 1) ***");
 
   return ok;
 }
@@ -200,7 +200,7 @@ test07() {
   bool ok = (box1 == known_result);
 
   print_constraints(box1,
-		    "***  box1.expand_space_dimension(A, 1);"
+		    "*** box1.expand_space_dimension(A, 1);"
 		    " box1.expand_space_dimension(C, 1) ***");
 
   return ok;

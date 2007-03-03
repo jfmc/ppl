@@ -35,7 +35,7 @@ test01() {
 
   TBD_Shape bd1(cs1);
 
-  print_constraints(bd1, "*** bd1 ****");
+  print_constraints(bd1, "*** bd1 ***");
 
   Constraint_System cs2;
   cs2.insert(x == 0);
@@ -43,7 +43,7 @@ test01() {
 
   TBD_Shape bd2(cs2);
 
-  print_constraints(bd2, "*** bd2 ****");
+  print_constraints(bd2, "*** bd2 ***");
 
   Constraint_System cs;
   cs.insert(x >= 20);
@@ -58,7 +58,7 @@ test01() {
 
   bool ok = (BD_Shape<mpq_class>(bd1) == known_result);
 
-  print_constraints(bd1, "*** bd1.limited_H79_extrapolation_assign(bd2) ****");
+  print_constraints(bd1, "*** bd1.limited_H79_extrapolation_assign(bd2) ***");
 
   return ok;
 }

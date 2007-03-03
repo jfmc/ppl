@@ -201,7 +201,7 @@ test07() {
   bool ok = (bd1 == known_result);
 
   print_constraints(bd1,
-		    "***  bd1.expand_space_dimension(A, 1);"
+		    "*** bd1.expand_space_dimension(A, 1);"
 		    " bd1.expand_space_dimension(C, 1) ***");
 
   return ok;
