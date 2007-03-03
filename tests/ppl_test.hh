@@ -266,48 +266,48 @@ namespace Parma_Polyhedra_Library {
 //! Utility typedef to allow a macro argument to denote the long double type.
 typedef long double long_double;
 
-#if 1 // TEMPORARY
-
-typedef Rational_Box_Interval_Info_Policy Test_Box_Interval_Info_Policy;
-typedef Rational_Box_Interval_Info Test_Box_Interval_Info;
-
-#else // TEMPORARILY COMMENTED OUT.
-
-struct Test_Box_Interval_Info_Policy {
-  // CHECKME!!!!!
+struct Floating_Real_Open_Interval_Info_Policy {
+  const_bool_nodef(store_special, false);
+  const_bool_nodef(store_open, true);
+  const_bool_nodef(cache_empty, true);
+  const_bool_nodef(cache_singleton, true);
+  const_bool_nodef(cache_normalized, false);
+  const_int_nodef(next_bit, 0);
   const_bool_nodef(may_be_empty, true);
-  const_bool_nodef(may_be_infinity, true);
+  const_bool_nodef(may_contain_infinity, false);
   const_bool_nodef(check_empty_result, false);
   const_bool_nodef(check_inexact, false);
-  const_bool_nodef(infinity_is_open, false);
-  const_bool_nodef(store_special, false);
-  const_bool_nodef(cache_normalized, false);
-  const_bool_nodef(cache_empty, false);
-  const_bool_nodef(cache_singleton, false);
-
-  static const bool store_unbounded = true;
-  static const bool store_open = true;
-  static const bool store_integer = false;
-  static const bool store_empty = true;
-  static const bool store_singleton = true;
-  static const unsigned int next_bit = 0;
-  static const bool handle_infinity = false;
-  //  static const bool check_inexact = false;
-  static const bool check_empty_args = false;
-  static const bool check_integer_args = false;
 };
 
-typedef Interval_Info_Bitset<unsigned int, Test_Box_Interval_Info_Policy>
-Test_Box_Interval_Info;
+typedef Interval_Restriction_None
+<Interval_Info_Bitset<unsigned int, Floating_Real_Open_Interval_Info_Policy> >
+Floating_Real_Open_Interval_Info;
 
-#endif // TEMPORARY
+typedef Interval<float, Floating_Real_Open_Interval_Info> fl_r_oc;
+typedef Interval<double, Floating_Real_Open_Interval_Info> db_r_oc;
+typedef Interval<long double, Floating_Real_Open_Interval_Info> ld_r_oc;
 
+struct Rational_Real_Open_Interval_Info_Policy {
+  const_bool_nodef(store_special, true);
+  const_bool_nodef(store_open, true);
+  const_bool_nodef(cache_empty, true);
+  const_bool_nodef(cache_singleton, true);
+  const_bool_nodef(cache_normalized, false);
+  const_int_nodef(next_bit, 0);
+  const_bool_nodef(may_be_empty, false);
+  const_bool_nodef(may_contain_infinity, false);
+  const_bool_nodef(check_empty_result, false);
+  const_bool_nodef(check_inexact, false);
+};
 
-typedef Box<Interval<mpq_class, Test_Box_Interval_Info> > Test_Box;
+typedef Interval_Restriction_None
+<Interval_Info_Bitset<unsigned int, Rational_Real_Open_Interval_Info_Policy> >
+Rational_Real_Open_Interval_Info;
+
+typedef Interval<mpq_class, Rational_Real_Open_Interval_Info> rt_r_oc;
 
 //! The incarnation of Box under test.
-//typedef Box<BOX_INSTANCE> TBox;
-typedef Test_Box TBox;
+typedef Box<BOX_INSTANCE> TBox;
 
 //! The incarnation of BD_Shape under test.
 typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;

@@ -90,7 +90,7 @@ universe1 \
 writebox1
 
 # This will be overridden by the `run_tests' script.
-TEST_CPPFLAGS=-DBOX_INSTANCE=mpq_class
+TEST_CPPFLAGS=-DBOX_INSTANCE=rt_r_oc
 
 dist_check_SCRIPTS = run_tests
 
@@ -99,26 +99,21 @@ TESTS = $(dist_check_SCRIPTS)
 XFAIL_TESTS =
 
 if SUPPORTED_FLOAT
-FLOAT_INSTANCE=float
+FLOAT_INSTANCES=fl_r_oc
 endif
 if SUPPORTED_DOUBLE
-DOUBLE_INSTANCE=double
+DOUBLE_INSTANCES=db_r_oc
 endif
 if SUPPORTED_LONG_DOUBLE
-LONG_DOUBLE_INSTANCE=long_double
+LONG_DOUBLE_INSTANCES=ld_r_oc
 endif
 
-# NOTE: mpq_class must be the first in the list.
+# NOTE: rt_r_oc must be the first in the list.
 INSTANCES = \
-mpq_class \
-$(FLOAT_INSTANCE) \
-$(DOUBLE_INSTANCE) \
-$(LONG_DOUBLE_INSTANCE) \
-mpz_class \
-int8_t \
-int16_t \
-int32_t \
-int64_t
+rt_r_oc \
+$(FLOAT_INSTANCES) \
+$(DOUBLE_INSTANCES) \
+$(LONG_DOUBLE_INSTANCES)
 
 print_check_PROGRAMS:
 	echo $(check_PROGRAMS)
