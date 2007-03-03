@@ -61,7 +61,7 @@ $(top_builddir)/src/libppl.la \
 
 #max_min1
 
-check_PROGRAMS = \
+ORIGINAL_TESTS = \
 addconstraints1 \
 addspacedims1 \
 affinedimension1 \
@@ -90,6 +90,11 @@ minconstraints1 \
 removespacedims1 \
 universe1 \
 writebox1
+
+DERIVED_TESTS = \
+nnc_frompolyhedron1
+
+ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS)
 
 # This will be overridden by the `run_tests' script.
 TEST_CPPFLAGS=-DBOX_INSTANCE=rt_r_oc
@@ -215,6 +220,16 @@ universe1_SOURCES = universe1.cc
 
 writebox1_SOURCES = writebox1.cc
 
+#
+# Sources and compilation flags for the derived check programs
+#
+
+DERIVED_CXXFLAGS = -DDERIVED_TEST $(AM_CXXFLAGS)
+
+nnc_frompolyhedron1_SOURCES = frompolyhedron1.cc
+nnc_frompolyhedron1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+check_PROGRAMS = $(ALL_TESTS)
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
