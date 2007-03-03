@@ -1113,6 +1113,8 @@ Box<Interval>::check_empty() const {
 template <typename Interval>
 bool
 Box<Interval>::is_universe() const {
+  if (marked_empty())
+    return false;
   for (dimension_type k = seq.size(); k-- > 0; )
     if (!seq[k].is_universe())
       return false;
