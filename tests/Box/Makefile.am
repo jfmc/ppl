@@ -58,8 +58,6 @@ $(top_builddir)/src/libppl.la \
 #interval1 interval2
 #maxspacedim1
 
-#max_min1
-
 ORIGINAL_TESTS = \
 addconstraints1 \
 addspacedims1 \
@@ -85,6 +83,7 @@ frompolyhedron2 \
 geomcovers1 \
 intersection1 \
 mapspacedims1 \
+max_min1 \
 minconstraints1 \
 relations1 relations2 \
 removespacedims1 \
@@ -209,7 +208,7 @@ mapspacedims1_SOURCES = mapspacedims1.cc
 
 #maxspacedim1_SOURCES = maxspacedim1.cc
 
-#max_min1_SOURCES = max_min1.cc
+max_min1_SOURCES = max_min1.cc
 
 #membytes1_SOURCES = membytes1.cc
 
