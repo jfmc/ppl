@@ -56,8 +56,26 @@ test01() {
   return ok;
 }
 
+bool
+test02() {
+  C_Polyhedron ph(1, EMPTY);
+
+  TBox box(ph);
+
+  TBox known_box(1, EMPTY);
+
+  bool ok (box == known_box);
+
+  print_constraints(ph, "*** ph ***");
+  print_constraints(box, "*** box ***");
+  print_constraints(known_box, "*** known_box ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST_F8(test01);
+  DO_TEST(test02);
 END_MAIN
