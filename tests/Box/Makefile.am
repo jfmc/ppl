@@ -59,6 +59,8 @@ $(top_builddir)/src/libppl.la \
 #interval1 interval2
 #maxspacedim1
 
+#max_min1
+
 check_PROGRAMS = \
 addconstraints1 \
 addspacedims1 \
@@ -80,10 +82,10 @@ foldspacedims1 \
 fromgensys1 \
 fromgrid1 \
 frompolyhedron1 \
+frompolyhedron2 \
 geomcovers1 \
 intersection1 \
 mapspacedims1 \
-max_min1 \
 minconstraints1 \
 removespacedims1 \
 universe1 \
@@ -180,6 +182,7 @@ fromgensys1_SOURCES = fromgensys1.cc
 fromgrid1_SOURCES = fromgrid1.cc
 
 frompolyhedron1_SOURCES = frompolyhedron1.cc
+frompolyhedron2_SOURCES = frompolyhedron2.cc
 
 #generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 
@@ -196,7 +199,7 @@ mapspacedims1_SOURCES = mapspacedims1.cc
 
 #maxspacedim1_SOURCES = maxspacedim1.cc
 
-max_min1_SOURCES = max_min1.cc
+#max_min1_SOURCES = max_min1.cc
 
 #membytes1_SOURCES = membytes1.cc
 
