@@ -76,7 +76,7 @@ equals1 \
 exceptions1 exceptions2  exceptions3 \
 expandspacedim1 expandspacedim2 \
 foldspacedims1 foldspacedims2 \
-frombox1 \
+frombox1 frombox2 \
 generalizedaffineimage1 generalizedaffineimage2 \
 generalizedaffinepreimage1 generalizedaffinepreimage2 \
 generators1 \
@@ -271,6 +271,7 @@ foldspacedims1_SOURCES = foldspacedims1.cc
 foldspacedims2_SOURCES = foldspacedims2.cc
 
 frombox1_SOURCES = frombox1.cc
+frombox2_SOURCES = frombox2.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
