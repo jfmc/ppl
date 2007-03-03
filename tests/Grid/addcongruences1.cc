@@ -274,7 +274,7 @@ test10() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
+		    "*** gr.add_recycled_congruences_and_minimize(cgs) ***");
 
   return ok;
 }
@@ -372,13 +372,13 @@ test14() {
   cgs.insert((A %= 0) / 7);
 
   gr1.add_recycled_congruences_and_minimize(cgs);
-  print_generators(gr1, "gr1: ");
-  print_congruences(gr1, "gr1: ");
+  print_generators(gr1, "*** gr1 ***");
+  print_congruences(gr1, "*** gr1 ***");
 
   Grid gr2(2);
   gr2.add_congruence((A %= 0) / 7);
-  print_generators(gr2, "gr2: ");
-  print_congruences(gr2, "gr2: ");
+  print_generators(gr2, "*** gr2 ***");
+  print_congruences(gr2, "*** gr2 ***");
 
   Grid known_gr = gr2;
 

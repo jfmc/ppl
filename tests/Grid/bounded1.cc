@@ -31,8 +31,7 @@ test01() {
 
   bool ok = (gr.is_bounded());
 
-  print_congruences(gr,
-        "*** gr ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -44,8 +43,7 @@ test02() {
 
   bool ok = (gr.is_bounded());
 
-  print_congruences(gr,
-        "*** gr ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -57,8 +55,7 @@ test03() {
 
   bool ok = (gr.is_bounded());
 
-  print_congruences(gr,
-        "*** gr ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -351,8 +348,7 @@ test12() {
 
   bool ok = (gr.is_bounded());
 
-  print_congruences(gr,
-        "*** gr ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -371,8 +367,7 @@ test13() {
 
   bool ok = (!gr.is_bounded());
 
-  print_congruences(gr,
-        "*** gr ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }

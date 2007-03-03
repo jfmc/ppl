@@ -190,7 +190,7 @@ test06() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_recycled_congruences_and_minimize(cs) ***");
+		    "*** gr.add_recycled_congruences_and_minimize(cs) ***");
 
   return ok;
 }
@@ -278,7 +278,7 @@ test09() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_recycled_constraints_and_minimize(cs) ***");
+		    "*** gr.add_recycled_constraints_and_minimize(cs) ***");
 
   return ok;
 }

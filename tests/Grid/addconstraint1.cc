@@ -71,7 +71,7 @@ test02() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-      "*** gr.add_constraint(*ph.constraints().begin()) ***");
+		    "*** gr.add_constraint(*ph.constraints().begin()) ***");
 
   return ok;
 }
@@ -185,8 +185,7 @@ test07() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-      "*** gr.add_congruence_and_minimize(C > 4*A) ***");
+  print_congruences(gr, "*** gr.add_congruence_and_minimize(C > 4*A) ***");
 
   return ok;
 }

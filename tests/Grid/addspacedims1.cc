@@ -45,8 +45,7 @@ test01() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "***  ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -64,8 +63,7 @@ test02() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(3) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(3) ***");
 
   return ok;
 }
@@ -83,8 +81,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(4) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(4) ***");
 
   return ok;
 }
@@ -116,8 +113,7 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(2) ***");
 
   return ok;
 }
@@ -149,8 +145,7 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(2) ***");
 
   return ok;
 }
@@ -185,8 +180,7 @@ test07() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(13) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(13) ***");
 
   return ok;
 }
@@ -210,8 +204,7 @@ test08() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(2) ***");
 
   return ok;
 }
@@ -241,8 +234,7 @@ test09() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_embed(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_embed(2) ***");
 
   return ok;
 }
@@ -273,8 +265,7 @@ test10() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(2) ***");
 
   return ok;
 }
@@ -292,8 +283,7 @@ test11() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(3) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(3) ***");
 
   return ok;
 }
@@ -322,8 +312,7 @@ test12() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(4) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(4) ***");
 
   return ok;
 }
@@ -348,8 +337,7 @@ test13() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "***  ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -384,8 +372,7 @@ test14() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(2) ***");
 
   return ok;
 }
@@ -424,8 +411,7 @@ test15() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(2) ***");
 
   return ok;
 }
@@ -460,8 +446,7 @@ test17() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(13) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(13) ***");
 
   return ok;
 }
@@ -488,8 +473,7 @@ test18() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(2) ***");
 
   return ok;
 }
@@ -520,8 +504,7 @@ test19() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.add_space_dimensions_and_project(2) ***");
+  print_congruences(gr, "*** gr.add_space_dimensions_and_project(2) ***");
 
   return ok;
 }

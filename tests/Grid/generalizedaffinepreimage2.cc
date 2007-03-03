@@ -46,7 +46,7 @@ test01() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_preimage(Linear_Expression::zero(), EQUAL, Linear_Expression(1), 1) ***");
+		    "*** gr.generalized_affine_preimage(Linear_Expression::zero(), EQUAL, Linear_Expression(1), 1) ***");
 
   return ok;
 }
@@ -72,7 +72,7 @@ test02() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_preimage(Linear_Expression::zero(), EQUAL, A - B, 5) ***");
+		    "*** gr.generalized_affine_preimage(Linear_Expression::zero(), EQUAL, A - B, 5) ***");
 
   return ok;
 }
@@ -100,8 +100,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "***  ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -125,7 +124,7 @@ test04() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A - B, EQUAL, A, 0) ***");
+		    "*** gr.generalized_affine_preimage(A - B, EQUAL, A, 0) ***");
 
   return ok;
 }
@@ -151,8 +150,7 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "***  ***");
+  print_congruences(gr, "*** gr ***");
 
   return ok;
 }
@@ -177,7 +175,7 @@ test06() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-   "*** gr.generalized_affine_preimage(A - B + C, EQUAL, 2*A - B - C, 5) ***");
+		    "*** gr.generalized_affine_preimage(A - B + C, EQUAL, 2*A - B - C, 5) ***");
 
   return ok;
 }
@@ -202,7 +200,7 @@ test07() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A - B, EQUAL, 2*A - 2*B, 5) ***");
+		    "*** gr.generalized_affine_preimage(A - B, EQUAL, 2*A - 2*B, 5) ***");
 
   return ok;
 }
@@ -227,7 +225,7 @@ test08() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(2*A - 2*B, EQUAL, A - B, 5) ***");
+		    "*** gr.generalized_affine_preimage(2*A - 2*B, EQUAL, A - B, 5) ***");
 
   return ok;
 }
@@ -300,7 +298,7 @@ test11() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-        "*** gr.generalized_affine_preimage(A - B, EQUAL, C, -5) ***");
+		    "*** gr.generalized_affine_preimage(A - B, EQUAL, C, -5) ***");
 
   return ok;
 }

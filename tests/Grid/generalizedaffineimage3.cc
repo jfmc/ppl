@@ -68,7 +68,7 @@ test02() {
   bool ok = (gr == known_gr);
 
   print_generators(gr,
-    "*** gr.generalized_affine_image(A, GREATER_OR_EQUAL, A - 2*C + 3, 4) ***");
+		   "*** gr.generalized_affine_image(A, GREATER_OR_EQUAL, A - 2*C + 3, 4) ***");
 
   return ok;
 }
@@ -91,7 +91,7 @@ test03() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_image(A, LESS_THAN, A + 2, 1, 0) ***");
+		    "*** gr.generalized_affine_image(A, LESS_THAN, A + 2, 1, 0) ***");
 
   return ok;
 }
@@ -210,8 +210,7 @@ test08() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
- "*** gr.generalized_affine_image(A - B + C, GREATER_THAN, 2*A - B - C) ***"
-                   );
+		    "*** gr.generalized_affine_image(A - B + C, GREATER_THAN, 2*A - B - C) ***");
 
   return ok;
 }
@@ -237,7 +236,7 @@ test09() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_image(A - B, GREATER_THAN, 2*A - 2*B, 0) ***");
+		    "*** gr.generalized_affine_image(A - B, GREATER_THAN, 2*A - 2*B, 0) ***");
 
   return ok;
 }
@@ -352,7 +351,7 @@ test14() {
   bool ok = (gr == known_gr);
 
   print_congruences(gr,
-    "*** gr.generalized_affine_image(A, LESS_THAN, A + 2) ***");
+		    "*** gr.generalized_affine_image(A, LESS_THAN, A + 2) ***");
 
   return ok;
 }

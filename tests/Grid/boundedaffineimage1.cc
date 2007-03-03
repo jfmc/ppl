@@ -46,8 +46,7 @@ test01() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.bounded_affine_image(A, 7-B, B+3) ***");
+  print_congruences(gr, "*** gr.bounded_affine_image(A, 7-B, B+3) ***");
 
   return ok;
 }
@@ -72,8 +71,7 @@ test02() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.bounded_affine_image(A, 7-B, B+3) ***");
+  print_congruences(gr, "*** gr.bounded_affine_image(A, 7-B, B+3) ***");
 
   return ok;
 }

@@ -255,8 +255,7 @@ test08() {
 
   nout << "tokens: before " << TOKENS << ", after " << tokens << endl;
 
-  print_congruences(gr2,
-     "*** gr2.limited_generator_extrapolation_assign(gr1, cgs, &tokens) ***");
+  print_congruences(gr2, "*** gr2.limited_generator_extrapolation_assign(gr1, cgs, &tokens) ***");
 
   return ok;
 }
@@ -291,8 +290,7 @@ test09() {
 
   nout << "tokens: before " << TOKENS << ", after " << tokens << endl;
 
-  print_congruences(gr2,
-     "*** gr2.limited_generator_extrapolation_assign(gr1, cgs, &tokens) ***");
+  print_congruences(gr2, "*** gr2.limited_generator_extrapolation_assign(gr1, cgs, &tokens) ***");
 
   return ok;
 }

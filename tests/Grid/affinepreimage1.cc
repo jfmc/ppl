@@ -48,8 +48,7 @@ test01() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(B, A + 2, 1) ***");
+  print_generators(gr, "*** gr.affine_preimage(B, A + 2, 1) ***");
 
   return ok;
 }
@@ -75,8 +74,7 @@ test02() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, A + B + 1) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, A + B + 1) ***");
 
   return ok;
 }
@@ -102,8 +100,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, A + 1, 2) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, A + 1, 2) ***");
 
   return ok;
 }
@@ -129,8 +126,7 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, A + 1, 3) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, A + 1, 3) ***");
 
   return ok;
 }
@@ -159,8 +155,7 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(A, A + 1, 3) ***");
+  print_generators(gr, "*** gr.affine_preimage(A, A + 1, 3) ***");
 
   return ok;
 }
@@ -188,8 +183,7 @@ test06() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, A + 1, 3) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, A + 1, 3) ***");
 
   return ok;
 }
@@ -217,8 +211,7 @@ test07() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(A, 3*A + 2*B + 4) ***");
+  print_generators(gr, "*** gr.affine_preimage(A, 3*A + 2*B + 4) ***");
 
   return ok;
 }
@@ -245,8 +238,7 @@ test08() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, 3*A + 2*B + 4) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, 3*A + 2*B + 4) ***");
 
   return ok;
 }
@@ -271,8 +263,7 @@ test09() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(A, 2*A) ***");
+  print_generators(gr, "*** gr.affine_preimage(A, 2*A) ***");
 
   return ok;
 }
@@ -296,8 +287,7 @@ test10() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, 2*A) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, 2*A) ***");
 
   return ok;
 }
@@ -326,8 +316,7 @@ test11() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_preimage(A, 3*A + 2*B + 1) ***");
+  print_generators(gr, "*** gr.affine_preimage(A, 3*A + 2*B + 1) ***");
 
   return ok;
 }
@@ -359,8 +348,7 @@ test12() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, 3*A + 2*B + 1) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, 3*A + 2*B + 1) ***");
 
   return ok;
 }
@@ -388,8 +376,7 @@ test13() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "***  ***");
+  print_generators(gr, "*** gr ***");
 
   return ok;
 }
@@ -417,8 +404,7 @@ test14() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_preimage(A, B) ***");
+  print_congruences(gr, "*** gr.affine_preimage(A, B) ***");
 
   return ok;
 }

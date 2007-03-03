@@ -82,8 +82,8 @@ test01() {
     result = partition(p, q);
 
   nout << "*** q partition ***" << endl;
-  nout << "  === p inters q === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ p inters q +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
 #if 0
   if (!aux_test03(p, q, result))
@@ -93,8 +93,8 @@ test01() {
   result = partition(q, p);
 
   nout << "*** p partition ***" << endl;
-  nout << "  === q inters p === " << endl << "  " << result.first << endl;
-  nout << "  ===    rest    === " << endl << "  " << result.second << endl;
+  nout << "  +++ q inters p +++" << endl << "  " << result.first << endl;
+  nout << "  +++    rest    +++" << endl << "  " << result.second << endl;
 
 #if 0
   return aux_test03(q, p, result);

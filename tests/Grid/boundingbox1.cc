@@ -37,8 +37,7 @@ test01() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box() ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box() ***");
 
   return ok;
 }
@@ -59,8 +58,7 @@ test02() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box() ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box() ***");
 
   return ok;
 }
@@ -84,8 +82,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box() ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box() ***");
 
   return ok;
 }
@@ -110,8 +107,7 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box() ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box() ***");
 
   return ok;
 }
@@ -127,8 +123,7 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }
@@ -145,8 +140,7 @@ test06() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }
@@ -170,8 +164,7 @@ test07() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }
@@ -191,8 +184,7 @@ test08() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }
@@ -214,8 +206,7 @@ test09() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }
@@ -237,8 +228,7 @@ test10() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }
@@ -259,8 +249,7 @@ test11() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }
@@ -277,8 +266,7 @@ test12() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }
@@ -337,8 +325,7 @@ test14() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
 
   return ok;
 }

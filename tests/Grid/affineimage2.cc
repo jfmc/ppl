@@ -50,8 +50,7 @@ test01() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_image(A, 2*A, 5) ***");
+  print_generators(gr, "*** gr.affine_image(A, 2*A, 5) ***");
 
   return ok;
 }
@@ -74,8 +73,7 @@ test02() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-        "*** gr.affine_image(A, B + 2, -3) ***");
+  print_generators(gr, "*** gr.affine_image(A, B + 2, -3) ***");
 
   return ok;
 }
@@ -96,8 +94,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, 2*A + B + 1) ***");
+  print_congruences(gr, "*** gr.affine_image(A, 2*A + B + 1) ***");
 
   return ok;
 }
@@ -123,8 +120,7 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, A + 3) ***");
+  print_congruences(gr, "*** gr.affine_image(A, A + 3) ***");
 
   return ok;
 }
@@ -150,8 +146,7 @@ test05() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, A + B) ***");
+  print_congruences(gr, "*** gr.affine_image(A, A + B) ***");
 
   return ok;
 }
@@ -177,8 +172,7 @@ test06() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.affine_image(A, B) ***");
+  print_congruences(gr, "*** gr.affine_image(A, B) ***");
 
   return ok;
 }
@@ -283,8 +277,7 @@ test10() {
 
   gr.join_assign(gr1); // join of gr0 and gr1
 
-  print_congruences(gr,
-        "*** gr.join_assign(gr1) ***");
+  print_congruences(gr, "*** gr.join_assign(gr1) ***");
 
   gr.join_assign(gr2); // join of gr0, gr1 and gr2
 
@@ -295,8 +288,7 @@ test10() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-        "*** gr.join_assign(gr2) ***");
+  print_congruences(gr, "*** gr.join_assign(gr2) ***");
 
   return ok;
 }

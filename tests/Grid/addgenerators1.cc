@@ -88,8 +88,7 @@ test03() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_recycled_grid_generators(gs) ***");
+  print_congruences(gr, "*** gr.add_recycled_grid_generators(gs) ***");
 
   return ok;
 }
@@ -110,8 +109,7 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr,
-		    "*** gr.add_recycled_grid_generators(gs) ***");
+  print_congruences(gr, "*** gr.add_recycled_grid_generators(gs) ***");
 
   return ok;
 }
@@ -315,8 +313,7 @@ test12() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-		   "*** gr.add_grid_generators(gs) ***");
+  print_generators(gr, "*** gr.add_grid_generators(gs) ***");
 
   return ok;
 }
@@ -337,8 +334,7 @@ test13() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr,
-		   "*** gr.add_grid_generators(gs) ***");
+  print_generators(gr, "*** gr.add_grid_generators(gs) ***");
 
   return ok;
 }
