@@ -28,6 +28,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint_System.inlines.hh"
 #include "Generator_System.defs.hh"
 #include "Generator_System.inlines.hh"
+#include "Poly_Con_Relation.defs.hh"
+#include "Poly_Gen_Relation.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "Grid.defs.hh"
 #include "BD_Shape.defs.hh"
@@ -513,6 +515,332 @@ Box<Interval>::bounds(const Linear_Expression& expr,
     }
   return true;
 }
+
+template <typename Interval>
+Poly_Con_Relation
+Box<Interval>::relation_with(const Constraint& c) const {
+  const dimension_type c_space_dim = c.space_dimension();
+  const dimension_type space_dim = space_dimension();
+
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dim)
+    throw_dimension_incompatible("relation_with(c)", c);
+
+  dimension_type c_num_vars = 0;
+  dimension_type c_only_var = 0;
+  TEMP_INTEGER(c_coeff);
+  // Constraints that are not interval constraints are illegal.
+  // FIXME: the semantics of this method is counter-intuitive.
+  // See also the checkme's below.
+  if (!extract_interval_constraint(c, c_space_dim,
+				   c_num_vars, c_only_var, c_coeff))
+    throw_constraint_incompatible("relation_with(c)");
+
+  if (is_empty())
+    return Poly_Con_Relation::saturates()
+      && Poly_Con_Relation::is_included()
+      && Poly_Con_Relation::is_disjoint();
+
+  if (space_dim == 0) {
+    if ((c.is_equality() && c.inhomogeneous_term() != 0)
+	|| (c.is_inequality() && c.inhomogeneous_term() < 0))
+      return Poly_Con_Relation::is_disjoint();
+    else if (c.is_strict_inequality() && c.inhomogeneous_term() == 0)
+      // The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
+      // thus, the zero-dimensional point also saturates it.
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_disjoint();
+    else if (c.is_equality() || c.inhomogeneous_term() == 0)
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_included();
+    else
+      // The zero-dimensional point saturates
+      // neither the positivity constraint 1 >= 0,
+      // nor the strict positivity constraint 1 > 0.
+      return Poly_Con_Relation::is_included();
+  }
+
+  if (c_num_vars == 0) {
+    // Dealing with a trivial constraint.
+    switch (sgn(c.inhomogeneous_term())) {
+    case -1:
+      return Poly_Con_Relation::is_disjoint();
+    case 0:
+      if (c.is_strict_inequality())
+	return Poly_Con_Relation::saturates()
+	  && Poly_Con_Relation::is_disjoint();
+      else
+	return Poly_Con_Relation::saturates()
+	  && Poly_Con_Relation::is_included();
+    case 1:
+      return Poly_Con_Relation::is_included();
+    }
+  }
+
+  // Here constraint `c' is a non-trivial interval constraint
+  // and the box is not empty.
+  const Interval& seq_var = seq[c_only_var-1];
+  if (seq_var.is_universe())
+    return Poly_Con_Relation::strictly_intersects();
+
+  // CHECKME: shouldn't it be the other way round?
+  bool c_is_lower_bound = (c_coeff < 0);
+  mpq_class c_bound;
+  assign_r(c_bound.get_num(), c.inhomogeneous_term(), ROUND_NOT_NEEDED);
+  assign_r(c_bound.get_den(), c_coeff, ROUND_NOT_NEEDED);
+  c_bound.canonicalize();
+  // CHECKME: shouldn't we negate it?
+  // neg_assign_r(c_bound, c_bound, ROUND_NOT_NEEDED);
+
+  mpq_class bound_diff;
+  if (c.is_equality()) {
+    if (seq_var.lower_is_unbounded()) {
+      assert(!seq_var.upper_is_unbounded());
+      assign_r(bound_diff, seq_var.upper(), ROUND_NOT_NEEDED);
+      sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+      switch (sgn(bound_diff)) {
+      case 1:
+	return Poly_Con_Relation::strictly_intersects();
+      case 0:
+	return seq_var.upper_is_open()
+	  ? Poly_Con_Relation::is_disjoint()
+	  : Poly_Con_Relation::strictly_intersects();
+      case -1:
+	return Poly_Con_Relation::is_disjoint();
+      }
+    }
+    else {
+      assign_r(bound_diff, seq_var.lower(), ROUND_NOT_NEEDED);
+      sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+      switch (sgn(bound_diff)) {
+      case 1:
+	return Poly_Con_Relation::is_disjoint();
+      case 0:
+	if (seq_var.lower_is_open())
+	  return Poly_Con_Relation::is_disjoint();
+	else {
+	  Poly_Con_Relation result = Poly_Con_Relation::is_included();
+	  if (seq_var.is_singleton())
+	    result = result && Poly_Con_Relation::saturates();
+	  return result;
+	}
+      case -1:
+	if (seq_var.upper_is_unbounded())
+	  return Poly_Con_Relation::is_included();
+	else {
+	  assign_r(bound_diff, seq_var.upper(), ROUND_NOT_NEEDED);
+	  sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+	  switch (sgn(bound_diff)) {
+	  case 1:
+	    return Poly_Con_Relation::strictly_intersects();
+	  case 0:
+	    if (seq_var.upper_is_open())
+	      return Poly_Con_Relation::is_disjoint();
+	    else
+	      return Poly_Con_Relation::strictly_intersects();
+	  case -1:
+	    return Poly_Con_Relation::is_disjoint();
+	  }
+	}
+      }
+    }
+  }
+
+  assert(!c.is_equality());
+  if (c_is_lower_bound) {
+    if (seq_var.lower_is_unbounded()) {
+      assert(!seq_var.upper_is_unbounded());
+      assign_r(bound_diff, seq_var.upper(), ROUND_NOT_NEEDED);
+      sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+      switch (sgn(bound_diff)) {
+      case 1:
+	return Poly_Con_Relation::strictly_intersects();
+      case 0:
+	if (c.is_strict_inequality() || seq_var.upper_is_open())
+	  return Poly_Con_Relation::is_disjoint();
+	else
+	  return Poly_Con_Relation::strictly_intersects();
+      case -1:
+	return Poly_Con_Relation::is_disjoint();
+      }
+    }
+    else {
+      assign_r(bound_diff, seq_var.lower(), ROUND_NOT_NEEDED);
+      sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+      switch (sgn(bound_diff)) {
+      case 1:
+	return Poly_Con_Relation::is_included();
+      case 0:
+	if (c.is_nonstrict_inequality() || seq_var.lower_is_open()) {
+	  Poly_Con_Relation result = Poly_Con_Relation::is_included();
+	  if (seq_var.is_singleton())
+	    result = result && Poly_Con_Relation::saturates();
+	  return result;
+	}
+	else {
+	  assert(c.is_strict_inequality() && !seq_var.lower_is_open());
+	  if (seq_var.is_singleton())
+	    return Poly_Con_Relation::is_disjoint()
+	      && Poly_Con_Relation::saturates();
+	  else
+	    return Poly_Con_Relation::strictly_intersects();
+	}
+	break;
+      case -1:
+	if (seq_var.upper_is_unbounded())
+	  return Poly_Con_Relation::strictly_intersects();
+	else {
+	  assign_r(bound_diff, seq_var.upper(), ROUND_NOT_NEEDED);
+	  sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+	  switch (sgn(bound_diff)) {
+	  case 1:
+	    return Poly_Con_Relation::strictly_intersects();
+	  case 0:
+	    if (c.is_strict_inequality() || seq_var.upper_is_open())
+	      return Poly_Con_Relation::is_disjoint();
+	    else
+	      return Poly_Con_Relation::strictly_intersects();
+	  case -1:
+	    return Poly_Con_Relation::is_disjoint();
+	  }
+	}
+      }
+    }
+  }
+  else {
+    // `c' is an upper bound.
+    if (seq_var.upper_is_unbounded())
+      return Poly_Con_Relation::strictly_intersects();
+    else {
+      assign_r(bound_diff, seq_var.upper(), ROUND_NOT_NEEDED);
+      sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+      switch (sgn(bound_diff)) {
+      case -1:
+	return Poly_Con_Relation::is_included();
+      case 0:
+	if (c.is_nonstrict_inequality() || seq_var.upper_is_open()) {
+	  Poly_Con_Relation result = Poly_Con_Relation::is_included();
+	  if (seq_var.is_singleton())
+	    result = result && Poly_Con_Relation::saturates();
+	  return result;
+	}
+	else {
+	  assert(c.is_strict_inequality() && !seq_var.upper_is_open());
+	  if (seq_var.is_singleton())
+	    return Poly_Con_Relation::is_disjoint()
+	      && Poly_Con_Relation::saturates();
+	  else
+	    return Poly_Con_Relation::strictly_intersects();
+	}
+	break;
+      case 1:
+	if (seq_var.lower_is_unbounded())
+	  return Poly_Con_Relation::strictly_intersects();
+	else {
+	  assign_r(bound_diff, seq_var.lower(), ROUND_NOT_NEEDED);
+	  sub_assign_r(bound_diff, bound_diff, c_bound, ROUND_NOT_NEEDED);
+	  switch (sgn(bound_diff)) {
+	  case -1:
+	    return Poly_Con_Relation::strictly_intersects();
+	  case 0:
+	    if (c.is_strict_inequality() || seq_var.lower_is_open())
+	      return Poly_Con_Relation::is_disjoint();
+	    else
+	      return Poly_Con_Relation::strictly_intersects();
+	  case 1:
+	    return Poly_Con_Relation::is_disjoint();
+	  }
+	}
+      }
+    }
+  }
+  // Quiet a compiler warning: this program point is unreachable.
+  throw std::runtime_error("PPL internal error");
+}
+
+template <typename Interval>
+Poly_Gen_Relation
+Box<Interval>::relation_with(const Generator& g) const {
+  const dimension_type space_dim = space_dimension();
+  const dimension_type g_space_dim = g.space_dimension();
+
+  // Dimension-compatibility check.
+  if (space_dim < g_space_dim)
+    throw_dimension_incompatible("relation_with(g)", g);
+
+  // The empty box cannot subsume a generator.
+  if (is_empty())
+    return Poly_Gen_Relation::nothing();
+
+  // A universe box in a zero-dimensional space subsumes
+  // all the generators of a zero-dimensional space.
+  if (space_dim == 0)
+    return Poly_Gen_Relation::subsumes();
+
+  if (g.is_line_or_ray()) {
+    if (g.is_line()) {
+      for (dimension_type i = g_space_dim; i-- > 0; )
+	if (g.coefficient(Variable(i)) != 0 && !seq[i].is_universe())
+	  return Poly_Gen_Relation::nothing();
+      return Poly_Gen_Relation::subsumes();
+    }
+    else {
+      assert(g.is_ray());
+      for (dimension_type i = g_space_dim; i-- > 0; )
+	switch (sgn(g.coefficient(Variable(i)))) {
+	case 1:
+	  if (!seq[i].upper_is_unbounded())
+	    return Poly_Gen_Relation::nothing();
+	  break;
+	case 0:
+	  break;
+	case -1:
+	  if (!seq[i].lower_is_unbounded())
+	    return Poly_Gen_Relation::nothing();
+	  break;
+	}
+      return Poly_Gen_Relation::subsumes();
+    }
+  }
+
+  // Here `g' is a point or closure point.
+  const Coefficient& g_divisor = g.divisor();
+  mpq_class g_coord;
+  mpq_class bound;
+  for (dimension_type i = g_space_dim; i-- > 0; ) {
+    const Interval& seq_i = seq[i];
+    if (seq_i.is_universe())
+      continue;
+    assign_r(g_coord.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
+    assign_r(g_coord.get_den(), g_divisor, ROUND_NOT_NEEDED);
+    // Check lower bound.
+    if (!seq_i.lower_is_unbounded()) {
+      assign_r(bound, seq_i.lower(), ROUND_NOT_NEEDED);
+      if (g_coord <= bound) {
+	if (seq_i.lower_is_open()) {
+	  if (g.is_point() || g_coord != bound)
+	    return Poly_Gen_Relation::nothing();
+	}
+	else if (g_coord != bound)
+	  return Poly_Gen_Relation::nothing();
+      }
+    }
+    // Check upper bound.
+    if (!seq_i.upper_is_unbounded()) {
+      assign_r(bound, seq_i.upper(), ROUND_NOT_NEEDED);
+      if (g_coord >= bound) {
+	if (seq_i.upper_is_open()) {
+	  if (g.is_point() || g_coord != bound)
+	    return Poly_Gen_Relation::nothing();
+	}
+	else if (g_coord != bound)
+	  return Poly_Gen_Relation::nothing();
+      }
+    }
+  }
+  return Poly_Gen_Relation::subsumes();
+}
+
 
 template <typename Interval>
 bool
@@ -1113,10 +1441,10 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
   const Coefficient& d = c.coefficient(Variable(c_only_var-1));
   const Coefficient& n = c.inhomogeneous_term();
   // The constraint `c' is of the form
-  // `Variable(c_only_var) + n / d rel 0', where
+  // `Variable(c_only_var-1) + n / d rel 0', where
   // `rel' is either the relation `==', `>=', or `>'.
   // For the purpose of refining intervals, this is
-  // (morally) turned into `Variable(c_only_var) rel -n/d'.
+  // (morally) turned into `Variable(c_only_var-1) rel -n/d'.
   mpq_class q;
   assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
   assign_r(q.get_den(), d, ROUND_NOT_NEEDED);

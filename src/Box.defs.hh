@@ -36,6 +36,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator_System.types.hh"
 #include "BD_Shape.types.hh"
 #include "Octagonal_Shape.types.hh"
+#include "Poly_Con_Relation.types.hh"
+#include "Poly_Gen_Relation.types.hh"
 #include "Polyhedron.types.hh"
 #include "Grid.types.hh"
 #include "Direct_Product.types.hh"
@@ -249,6 +251,21 @@ public:
     contains at least one integer point.
   */
   bool contains_integer_point() const;
+
+  //! Returns the relations holding between \p *this and the constraint \p c.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible
+    or if \p c is not a box constraint.
+  */
+  Poly_Con_Relation relation_with(const Constraint& c) const;
+
+  //! Returns the relations holding between \p *this and the generator \p g.
+  /*!
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible.
+  */
+  Poly_Gen_Relation relation_with(const Generator& g) const;
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p expr is
@@ -1188,7 +1205,7 @@ private:
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Decodes the constraint \p c as a bounded difference.
+//! Decodes the constraint \p c as an interval constraint.
 /*! \relates Box
   \return
   <CODE>true</CODE> if the constraint \p c is an
