@@ -49,7 +49,6 @@ $(top_builddir)/src/libppl.la \
 #generalizedaffineimage1
 #generalizedaffinepreimage1
 #membytes1
-#relations1
 #timeelapse1
 
 # Tests that do not succeed yet (maybe even known result is wrong).
@@ -87,6 +86,7 @@ geomcovers1 \
 intersection1 \
 mapspacedims1 \
 minconstraints1 \
+relations1 relations2 \
 removespacedims1 \
 universe1 \
 writebox1
@@ -215,7 +215,8 @@ mapspacedims1_SOURCES = mapspacedims1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 
-#relations1_SOURCES = relations1.cc
+relations1_SOURCES = relations1.cc
+relations2_SOURCES = relations2.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 
