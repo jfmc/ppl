@@ -445,5 +445,5 @@ test02() {
 
 BEGIN_MAIN
   DO_TEST(test01);
-  DO_TEST(test02);
+  DO_TEST_F16(test02);
 END_MAIN
