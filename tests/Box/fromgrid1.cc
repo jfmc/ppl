@@ -175,7 +175,7 @@ test06() {
   print_constraints(known_box, "*** known_box ***");
 
   if (ok) {
-    Grid gr2(box1, From_Bounding_Box());
+    Grid gr2(box1);
 
     print_congruences(gr2, "*** gr2 before ***");
 
@@ -209,7 +209,7 @@ test07() {
   print_constraints(known_box, "*** known_box ***");
 
   if (ok) {
-    Grid gr2(box1, From_Bounding_Box());
+    Grid gr2(box1);
 
     print_congruences(gr2, "*** gr2 before ***");
 
@@ -308,7 +308,7 @@ test10() {
   print_constraints(known_box, "*** known_box ***");
 
   if (ok) {
-    Grid gr2(box1, From_Bounding_Box());
+    Grid gr2(box1);
 
     print_congruences(gr2, "*** gr2 before ***");
 
@@ -346,7 +346,7 @@ test11() {
   print_constraints(known_box, "*** known_box ***");
 
   if (ok) {
-    Grid gr2(box1, From_Bounding_Box());
+    Grid gr2(box1);
 
     print_congruences(gr2, "*** gr2 before ***");
 

@@ -118,9 +118,9 @@ NNC_Polyhedron::NNC_Polyhedron(Grid_Generator_System& ggs, Recycle_Input)
 	       UNIVERSE) {
 }
 
-template <typename Box>
+template <typename Interval>
 inline
-NNC_Polyhedron::NNC_Polyhedron(const Box& box, From_Bounding_Box)
+NNC_Polyhedron::NNC_Polyhedron(const Box<Interval>& box)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
 	       box.space_dimension() <= max_space_dimension()
 	       ? box

@@ -183,14 +183,6 @@ maybe_abandon();
 
 //! A tag class.
 /*! \ingroup PPL_CXX_interface
-  Tag class to differentiate the C_Polyhedron and NNC_Polyhedron
-  constructors that build a polyhedron out of a bounding box.
-*/
-struct From_Bounding_Box {
-};
-
-//! A tag class.
-/*! \ingroup PPL_CXX_interface
   Tag class to make the Grid covering box constructor unique.
 */
 struct From_Covering_Box {

@@ -88,21 +88,11 @@ Direct_Product<D1, D2>::Direct_Product(Generator_System& gs) {
 }
 
 template <typename D1, typename D2>
-template <typename Box>
+template <typename Interval>
 inline
-Direct_Product<D1, D2>::Direct_Product(const Box& box,
-				       From_Bounding_Box dummy)
-  : d1(box, dummy), d2(box, dummy) {
+Direct_Product<D1, D2>::Direct_Product(const Box<Interval>& box)
+  : d1(box), d2(box) {
 }
-
-#if 0
-template <typename D1, typename D2>
-template <typename Box>
-inline
-Direct_Product<D1, D2>::Direct_Product(const Box& box,
-				       From_Covering_Box dummy) {
-}
-#endif
 
 template <typename D1, typename D2>
 inline
@@ -706,24 +696,12 @@ Open_Product<D1, D2, R>::Open_Product(Generator_System& gs)
 }
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
-template <typename Box>
+template <typename Interval>
 inline
-Open_Product<D1, D2, R>::Open_Product(const Box& box,
-				      From_Bounding_Box dummy)
-  : Direct_Product<D1, D2>(box, dummy) {
+Open_Product<D1, D2, R>::Open_Product(const Box<Interval>& box)
+  : Direct_Product<D1, D2>(box) {
   clear_reduced_flag();
 }
-
-#if 0
-template <typename D1, typename D2, bool R(D1&, D2&)>
-template <typename Box>
-inline
-Open_Product<D1, D2, R>::Open_Product(const Box& box,
-				      From_Covering_Box dummy)
-  : Direct_Product<D1, D2>(box, dummy) {
-  clear_reduced_flag();
-}
-#endif
 
 template <typename D1, typename D2, bool R(D1&, D2&)>
 inline

@@ -36,6 +36,15 @@ o  Box ...
 
 o  shrink_bounding_box has gone ...
 
+o  As all PPL semantics objects can now be constructed from boxes,
+   the constructors
+
+     template <typename Box> C_Polyhedron(const Box&, From_Bounding_Box),
+     template <typename Box> NNC_Polyhedron(const Box&, From_Bounding_Box),
+     template <typename Box> Grid(const Box&, From_Bounding_Box)
+
+   have been removed.
+
 o  The class Polyhedra_Powerset has been renamed Pointset_Powerset,
    since it can be applied to non-polyhedral abstractions, such as
    the one offered by the Grid class.

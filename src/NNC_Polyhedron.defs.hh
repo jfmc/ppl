@@ -174,26 +174,17 @@ public:
   //! Builds an NNC polyhedron from the C polyhedron \p y.
   explicit NNC_Polyhedron(const C_Polyhedron& y);
 
-  //! Builds an NNC polyhedron out of a generic, interval-based bounding box.
+  //! Builds an NNC polyhedron out of a box.
   /*!
-    For a description of the methods that should be provided by
-    the template class Box, see the documentation of the protected method:
-      template \<typename Box\>
-      Polyhedron::Polyhedron(Topology topol, const Box& box);
-
     \param box
     The bounding box representing the polyhedron to be built;
-
-    \param dummy
-    A dummy tag to syntactically differentiate this one from the other
-    constructors.
 
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum allowed
     space dimension.
   */
-  template <typename Box>
-  NNC_Polyhedron(const Box& box, From_Bounding_Box dummy);
+  template <typename Interval>
+  explicit NNC_Polyhedron(const Box<Interval>& box);
 
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);

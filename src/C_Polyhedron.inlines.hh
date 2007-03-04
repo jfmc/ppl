@@ -120,9 +120,9 @@ C_Polyhedron::C_Polyhedron(Grid_Generator_System& ggs, Recycle_Input)
   // FIXME: is this implementation complete?
 }
 
-template <typename Box>
+template <typename Interval>
 inline
-C_Polyhedron::C_Polyhedron(const Box& box, From_Bounding_Box)
+C_Polyhedron::C_Polyhedron(const Box<Interval>& box)
   : Polyhedron(NECESSARILY_CLOSED,
 	       box.space_dimension() <= max_space_dimension()
 	       ? box

@@ -1,5 +1,5 @@
-/* Test C_Polyhedron(const Box&, From_Bounding_Box)
-   and NNC_Polyhedron(const Box&, From_Bounding_Box).
+/* Test C_Polyhedron::C_Polyhedron(const Box<Interval>&)
+   and NNC_Polyhedron::NNC_Polyhedron(const Box<Interval>&).
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -37,7 +37,7 @@ test01() {
   box.add_constraint(2*x <= 1);
   box.add_constraint(y >= 0);
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  C_Polyhedron ph(box);
 
 
   C_Polyhedron known_ph(box.space_dimension());
@@ -58,7 +58,7 @@ bool
 test02() {
   Rational_Box box(2);
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  C_Polyhedron ph(box);
 
   C_Polyhedron known_ph(box.space_dimension());
 
@@ -80,7 +80,7 @@ test03() {
   box.add_constraint(x >= 0);
   box.add_constraint(y >= 0);
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  C_Polyhedron ph(box);
 
   C_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(x >= 0);
@@ -107,7 +107,7 @@ test04() {
   box.add_constraint(y >= -10);
   box.add_constraint(3*y <= 12);
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  C_Polyhedron ph(box);
 
   C_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(3*x >= -2);
@@ -137,7 +137,7 @@ test05() {
   box.add_constraint(3*y <= 12);
   box.add_constraint(3*z >= 15);
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  C_Polyhedron ph(box);
 
   C_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(3*x >= -2);
@@ -159,7 +159,7 @@ bool
 test06() {
   Rational_Box box(0);
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  C_Polyhedron ph(box);
 
   C_Polyhedron known_ph;
 
@@ -177,7 +177,7 @@ test07() {
   Rational_Box box(2);
   box.set_empty();
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  C_Polyhedron ph(box);
 
   C_Polyhedron known_ph(2, EMPTY);
 
@@ -199,7 +199,7 @@ test08() {
   box.add_constraint(x == 2);
   box.add_constraint(y == 4);
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  C_Polyhedron ph(box);
 
   C_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(x == 2);
@@ -225,7 +225,7 @@ test09() {
   box.add_constraint(y >= 0);
   box.add_constraint(y <= 1);
 
-  C_Polyhedron ph(box, From_Bounding_Box());
+  C_Polyhedron ph(box);
 
   Constraint_System known_cs;
   known_cs.insert(x >= 0);

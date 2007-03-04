@@ -216,7 +216,7 @@ test09() {
   box.raise_lower_bound(1, true, 2, 3);
   box.lower_upper_bound(1, true, 2, 3);
 
-  Product dp(box, From_Bounding_Box());
+  Product dp(box);
 
   Grid known_gr(2);
   known_gr.add_congruence(3*B == 2);

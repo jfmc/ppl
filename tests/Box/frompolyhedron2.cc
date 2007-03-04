@@ -120,8 +120,8 @@ test03() {
   Rational_Box nbox(ph);
 
   NNC_Polyhedron known_ph(2, EMPTY);
-  NNC_Polyhedron known_pph(pbox, From_Bounding_Box());
-  NNC_Polyhedron known_nph(nbox, From_Bounding_Box());
+  NNC_Polyhedron known_pph(pbox);
+  NNC_Polyhedron known_nph(nbox);
 
   bool ok = (ph == known_ph && ph == known_nph && ph == known_ph);
 

@@ -84,9 +84,29 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@
  int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d)) try {
-  C_Build_Box cbbox(space_dimension, is_empty,
-		    get_lower_bound, get_upper_bound);
-  *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(cbbox, From_Bounding_Box()));
+  dimension_type space_dim = space_dimension();
+  if (is_empty())
+    *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(space_dim, EMPTY));
+  else {
+    *pph = to_nonconst(new @TOPOLOGY@@CPP_CLASS@(space_dim, UNIVERSE));
+    bool closed;
+    TEMP_INTEGER(n);
+    TEMP_INTEGER(d);
+    for (dimension_type k = space_dim; k-- > 0; ) {
+      if (get_lower_bound(k, closed, to_nonconst(&n), to_nonconst(&d))) {
+        if (closed)
+          to_nonconst(*pph)->add_constraint(d*Variable(k) >= n);
+        else
+          to_nonconst(*pph)->add_constraint(d*Variable(k) > n);
+      }
+      if (get_upper_bound(k, closed, to_nonconst(&n), to_nonconst(&d))) {
+        if (closed)
+          to_nonconst(*pph)->add_constraint(d*Variable(k) <= n);
+        else
+          to_nonconst(*pph)->add_constraint(d*Variable(k) < n);
+      }
+    }
+  }
   return 0;
 }
 CATCH_ALL

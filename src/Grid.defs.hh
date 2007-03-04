@@ -503,7 +503,7 @@ public:
   */
   Grid(Generator_System& gs, Recycle_Input dummy);
 
-  //! Builds a grid out of a generic, interval-based bounding box.
+  //! Builds a grid out of a box.
   /*!
     The grid inherits the space dimension of the generator system.
     The built grid is the most precise grid that includes the box.
@@ -511,56 +511,12 @@ public:
     \param box
     The bounding box representing the grid to be built.
 
-    \param dummy
-    A dummy tag to make this constructor syntactically unique.
-
     \exception std::length_error
     Thrown if the space dimension of \p box exceeds the maximum
     allowed space dimension.
-
-    The template class Box must provide the following methods.
-    \code
-      dimension_type space_dimension() const
-    \endcode
-    returns the dimension of the vector space enclosing the grid
-    represented by the bounding box.
-    \code
-      bool is_empty() const
-    \endcode
-    returns <CODE>true</CODE> if and only if the bounding box
-    describes the empty set.
-    \code
-      bool get_lower_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from below, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the lower boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.  The fraction
-    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
-    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
-    the unique representation for zero.
-    \code
-      bool get_upper_bound(dimension_type k, bool& closed,
-                           Coefficient& n, Coefficient& d) const
-    \endcode
-    Let \f$I\f$ be the interval corresponding to the <CODE>k</CODE>-th
-    space dimension.  If \f$I\f$ is not bounded from above, simply return
-    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
-    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
-    is set to <CODE>true</CODE> if the upper boundary of \f$I\f$
-    is closed and is set to <CODE>false</CODE> otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
   */
-  template <typename Box>
-  Grid(const Box& box, From_Bounding_Box dummy);
+  template <typename Interval>
+  Grid(const Box<Interval>& box);
 
   //! Builds a grid out of a generic, interval-based covering box.
   /*!

@@ -1,4 +1,4 @@
-/* Test Grid::Grid(Box&, From_Bounding_Box).
+/* Test Grid::Grid(const Box<Interval>&).
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -31,13 +31,13 @@ bool
 test01() {
   Rational_Box box(2);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(2);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box() ***");
+  print_congruences(gr, "*** gr(box ***");
 
   return ok;
 }
@@ -50,14 +50,14 @@ test02() {
   Rational_Box box(2);
   box.add_constraint(3*B == 2);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(2);
   known_gr.add_congruence(3*B == 2);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box() ***");
+  print_congruences(gr, "*** gr(box ***");
 
   return ok;
 }
@@ -72,14 +72,14 @@ test03() {
   box.add_constraint(3*A == -2);
   box.add_constraint(B == -10);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(2, EMPTY);
   known_gr.add_grid_generator(grid_point(-2*A - 30*B, 3));
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box() ***");
+  print_congruences(gr, "*** gr(box ***");
 
   return ok;
 }
@@ -94,7 +94,7 @@ test04() {
   Rational_Box box(3);
   box.add_constraint(5*C == 15);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(3, EMPTY);
   known_gr.add_grid_generator(grid_point(3*C));
@@ -103,7 +103,7 @@ test04() {
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box() ***");
+  print_congruences(gr, "*** gr(box ***");
 
   return ok;
 }
@@ -113,13 +113,13 @@ bool
 test05() {
   Rational_Box box(0);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr;
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box) ***");
 
   return ok;
 }
@@ -130,13 +130,13 @@ test06() {
   Rational_Box box(2);
   box.set_empty();
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(2, EMPTY);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box) ***");
 
   return ok;
 }
@@ -152,14 +152,14 @@ test07() {
   Rational_Box box(4);
   box.add_constraint(D == 4);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(4);
   known_gr.add_constraint(D == 4);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box) ***");
 
   return ok;
 }
@@ -176,13 +176,13 @@ test08() {
   box.add_constraint(B >= 0);
   box.add_constraint(B <= 1);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(2);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box) ***");
 
   return ok;
 }
@@ -197,14 +197,14 @@ test09() {
   box.add_constraint(A >= 0);
   box.add_constraint(2*B == 1);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(2);
   known_gr.add_congruence(2*B == 1);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box) ***");
 
   return ok;
 }
@@ -219,14 +219,14 @@ test10() {
   box.add_constraint(7*A <= 3);
   box.add_constraint(2*B == 1);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(2);
   known_gr.add_congruence(2*B == 1);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box) ***");
 
   return ok;
 }
@@ -243,13 +243,13 @@ test11() {
   box.add_constraint(2*B > 1);
   box.add_constraint(2*B <= 0);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(2, EMPTY);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box) ***");
 
   return ok;
 }
@@ -260,13 +260,13 @@ test12() {
   Rational_Box box(0);
   box.set_empty();
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(0, EMPTY);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box) ***");
 
   return ok;
 }
@@ -288,7 +288,7 @@ test13() {
   box.add_constraint(7*E == 15);
   box.add_constraint(7*F == -15);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(6, EMPTY);
   known_gr.add_grid_generator(grid_point(-56*A - 231*B + 504*D + 180*E - 180*F, 84));
@@ -296,7 +296,7 @@ test13() {
 
   bool ok = (gr == known_gr);
 
-  print_generators(gr, "*** gr(box, From_Bounding_Box()) ***");
+  print_generators(gr, "*** gr(box) ***");
 
   return ok;
 }
@@ -313,14 +313,14 @@ test14() {
   box.add_constraint(2*B > 1);
   box.add_constraint(B >= 1);
 
-  Grid gr(box, From_Bounding_Box());
+  Grid gr(box);
 
   Grid known_gr(2);
   known_gr.add_congruence(7*A == 3);
 
   bool ok = (gr == known_gr);
 
-  print_congruences(gr, "*** gr(box, From_Bounding_Box()) ***");
+  print_congruences(gr, "*** gr(box) ***");
 
   return ok;
 }

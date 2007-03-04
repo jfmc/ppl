@@ -507,6 +507,9 @@ check_result(const Box<T>& computed_result,
 	     const char* max_r_d_s = 0,
 	     const char* max_e_d_s = 0,
 	     const char* max_l_d_s = 0) {
+  used(max_r_d_s);
+  used(max_e_d_s);
+  used(max_l_d_s);
   return true;
 }
 

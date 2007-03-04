@@ -1762,53 +1762,6 @@ CATCH_ALL
 
 namespace {
 
-class C_Build_Box {
-private:
-  ppl_dimension_type (*s_d)(void);
-  int (*i_e)(void);
-  int (*g_l_b)(ppl_dimension_type k, int closed,
-	       ppl_Coefficient_t n,
-	       ppl_Coefficient_t d);
-  int (*g_u_b)(ppl_dimension_type k, int closed,
-	       ppl_Coefficient_t n,
-	       ppl_Coefficient_t d);
-
-public:
-  C_Build_Box(ppl_dimension_type (*sd)(void),
-	      int (*ie)(void),
-	      int (*glb)(ppl_dimension_type k, int closed,
-			 ppl_Coefficient_t n,
-			 ppl_Coefficient_t d),
-	      int (*gub)(ppl_dimension_type k, int closed,
-			 ppl_Coefficient_t n,
-			 ppl_Coefficient_t d))
-    : s_d(sd), i_e(ie), g_l_b(glb), g_u_b(gub) {
-  }
-
-  ppl_dimension_type space_dimension() const {
-    return s_d();
-  }
-
-  bool is_empty(void) const {
-    return i_e() != 0;
-  }
-
-  bool get_lower_bound(ppl_dimension_type k, bool closed,
-		       Coefficient& n, Coefficient& d) const {
-    return g_l_b(k, closed, to_nonconst(&n), to_nonconst(&d)) != 0;
-  }
-
-  bool get_upper_bound(ppl_dimension_type k, bool closed,
-		       Coefficient& n, Coefficient& d) const {
-    return g_u_b(k, closed, to_nonconst(&n), to_nonconst(&d)) != 0;
-  }
-};
-
-} // namespace
-
-
-namespace {
-
 class PIFunc {
 private:
   //! Holds the vector implementing the map.
@@ -1887,46 +1840,6 @@ relation_symbol(enum ppl_enum_Constraint_Type t) {
     return static_cast<Relation_Symbol>(t);
   }
 }
-
-} // namespace
-
-namespace {
-
-class C_Shrink_Box {
-private:
-  void (*s_e)(void);
-  void (*r_l_b)(ppl_dimension_type k, int closed,
-		ppl_const_Coefficient_t n,
-		ppl_const_Coefficient_t d);
-  void (*l_u_b)(ppl_dimension_type k, int closed,
-		ppl_const_Coefficient_t n,
-		ppl_const_Coefficient_t d);
-
-public:
-  C_Shrink_Box(void (*se)(void),
-	       void (*rlb)(ppl_dimension_type k, int closed,
-			   ppl_const_Coefficient_t n,
-			   ppl_const_Coefficient_t d),
-	       void (*lub)(ppl_dimension_type k, int closed,
-			   ppl_const_Coefficient_t n,
-			   ppl_const_Coefficient_t d))
-    : s_e(se), r_l_b(rlb), l_u_b(lub) {
-  }
-
-  void set_empty() {
-    s_e();
-  }
-
-  void raise_lower_bound(ppl_dimension_type k, bool closed,
-			 const Coefficient& n, const Coefficient& d) {
-    r_l_b(k, closed, to_const(&n), to_const(&d));
-  }
-
-  void lower_upper_bound(ppl_dimension_type k, bool closed,
-			 const Coefficient& n, const Coefficient& d) {
-    l_u_b(k, closed, to_const(&n), to_const(&d));
-  }
-};
 
 } // namespace
 

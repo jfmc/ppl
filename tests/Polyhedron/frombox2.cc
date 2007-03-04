@@ -1,4 +1,4 @@
-/* Test NNC_Polyhedron(const Box&, From_Bounding_Box).
+/* Test NNC_Polyhedron::NNC_Polyhedron(const Box<Interval>&).
    Copyright (C) 2001-2007 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -38,7 +38,7 @@ test01() {
   box.add_constraint(3*y <= 12);
   box.add_constraint(3*z >= 15);
 
-  NNC_Polyhedron ph(box, From_Bounding_Box());
+  NNC_Polyhedron ph(box);
 
   NNC_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(3*x > -2);
@@ -68,7 +68,7 @@ test02() {
   box.add_constraint(y > -10);
   box.add_constraint(3*y <= 12);
 
-  NNC_Polyhedron ph(box, From_Bounding_Box());
+  NNC_Polyhedron ph(box);
 
   NNC_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(3*x >= -2);
@@ -90,7 +90,7 @@ test03() {
   Rational_Box box(2);
   box.set_empty();
 
-  NNC_Polyhedron ph(box, From_Bounding_Box());
+  NNC_Polyhedron ph(box);
 
   NNC_Polyhedron known_ph(2, EMPTY);
 
