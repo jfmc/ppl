@@ -664,6 +664,27 @@ DEF_COMPARE(operator <, lt_ext)
 
 #undef DEF_COMPARE
 
+#define DEF_COMPARE(f, fun)						\
+template <typename T1, typename T2>					\
+inline typename Enable_If<(Is_Native_Or_Checked<T1>::value		\
+			   && Is_Native_Or_Checked<T2>::value),		\
+                          bool>::type					\
+f(const T1& x, const T2& y) {						\
+  return Checked::fun<typename Native_Checked_From_Wrapper<T1>::Policy,	\
+    		      typename Native_Checked_From_Wrapper<T2>::Policy>	\
+    (Native_Checked_From_Wrapper<T1>::raw_value(x),			\
+     Native_Checked_From_Wrapper<T2>::raw_value(y));			\
+}
+
+DEF_COMPARE(equal, eq_ext)
+DEF_COMPARE(not_equal, ne_ext)
+DEF_COMPARE(greater_or_equal, ge_ext)
+DEF_COMPARE(greater_than, gt_ext)
+DEF_COMPARE(less_or_equal, le_ext)
+DEF_COMPARE(less_than, lt_ext)
+
+#undef DEF_COMPARE
+
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline Checked_Number<T, Policy>

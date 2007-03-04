@@ -355,7 +355,7 @@ eq(Boundary_Type type1, const T1& x1, const Info1& info1,
 	   is_plus_infinity(type2, x2, info2))
     return false;
   else
-    return x1 == x2;
+    return equal(x1, x2);
 }
 
 template <typename T1, typename Info1, typename T2, typename Info2>
@@ -378,7 +378,7 @@ lt(Boundary_Type type1, const T1& x1, const Info1& info1,
 	|| is_minus_infinity(type2, x2, info2))
       return false;
     else
-      return x1 <= x2;
+      return less_or_equal(x1, x2);
   }
   if (is_plus_infinity(type1, x1, info1)
       || is_minus_infinity(type2, x2, info2))
@@ -387,7 +387,7 @@ lt(Boundary_Type type1, const T1& x1, const Info1& info1,
       || is_plus_infinity(type2, x2, info2))
     return true;
   else
-    return x1 < x2;
+    return less_than(x1, x2);
 }
 
 template <typename T1, typename Info1, typename T2, typename Info2>

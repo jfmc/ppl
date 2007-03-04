@@ -780,6 +780,11 @@ inline typename Enable_If<((Is_Checked<T1>::value
                           bool>::type
 operator==(const T1& x, const T2& y);
 
+template <typename T1, typename T2>
+inline typename Enable_If<(Is_Native_Or_Checked<T1>::value
+			   && Is_Native_Or_Checked<T2>::value), bool>::type
+equal(const T1& x, const T2& y);
+
 //! Disequality operator.
 /*! \relates Checked_Number */
 template <typename T1, typename T2>
@@ -789,6 +794,11 @@ inline typename Enable_If<((Is_Checked<T1>::value
 			       && Is_Native_Or_Checked<T1>::value)),
                           bool>::type
 operator!=(const T1& x, const T2& y);
+
+template <typename T1, typename T2>
+inline typename Enable_If<(Is_Native_Or_Checked<T1>::value
+			   && Is_Native_Or_Checked<T2>::value), bool>::type
+not_equal(const T1& x, const T2& y);
 
 //! Greater than or equal to operator.
 /*! \relates Checked_Number */
@@ -800,6 +810,11 @@ inline typename Enable_If<((Is_Checked<T1>::value
                           bool>::type
 operator>=(const T1& x, const T2& y);
 
+template <typename T1, typename T2>
+inline typename Enable_If<(Is_Native_Or_Checked<T1>::value
+			   && Is_Native_Or_Checked<T2>::value), bool>::type
+greater_or_equal(const T1& x, const T2& y);
+
 //! Greater than operator.
 /*! \relates Checked_Number */
 template <typename T1, typename T2>
@@ -809,6 +824,11 @@ inline typename Enable_If<((Is_Checked<T1>::value
 			       && Is_Native_Or_Checked<T1>::value)),
                           bool>::type
 operator>(const T1& x, const T2& y);
+
+template <typename T1, typename T2>
+inline typename Enable_If<(Is_Native_Or_Checked<T1>::value
+			   && Is_Native_Or_Checked<T2>::value), bool>::type
+greater_than(const T1& x, const T2& y);
 
 //! Less than or equal to operator.
 /*! \relates Checked_Number */
@@ -820,6 +840,11 @@ inline typename Enable_If<((Is_Checked<T1>::value
                           bool>::type
 operator<=(const T1& x, const T2& y);
 
+template <typename T1, typename T2>
+inline typename Enable_If<(Is_Native_Or_Checked<T1>::value
+			   && Is_Native_Or_Checked<T2>::value), bool>::type
+less_or_equal(const T1& x, const T2& y);
+
 //! Less than operator.
 /*! \relates Checked_Number */
 template <typename T1, typename T2>
@@ -829,6 +854,11 @@ inline typename Enable_If<((Is_Checked<T1>::value
 			       && Is_Native_Or_Checked<T1>::value)),
                           bool>::type
 operator<(const T1& x, const T2& y);
+
+template <typename T1, typename T2>
+inline typename Enable_If<(Is_Native_Or_Checked<T1>::value
+			   && Is_Native_Or_Checked<T2>::value), bool>::type
+less_than(const T1& x, const T2& y);
 
 /*! \brief
   Returns \f$-1\f$, \f$0\f$ or \f$1\f$ depending on whether the value
