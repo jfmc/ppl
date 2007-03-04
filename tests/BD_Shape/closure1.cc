@@ -441,9 +441,117 @@ test02() {
   return ok;
 }
 
+bool
+test03() {
+  // This test shows that the Floyd-Warshall algorithm does not compute
+  // the shortest path closure when using a floating point datatype.
+  // In particular, here it is shown that even two applications of FW
+  // are not enough to obtain idempotency.
+  typedef BD_Shape<float> BDS;
+  typedef BDS::coefficient_type Float;
+
+  Float f_1, f_2, f_3, f_5, f_7;
+  Float f_1_2, f_1_3, f_1_5, f_1_7;
+  assign_r(f_1, (float) 1.0, ROUND_UP);
+  assign_r(f_2, (float) 2.0, ROUND_DOWN);
+  assign_r(f_3, (float) 3.0, ROUND_DOWN);
+  assign_r(f_5, (float) 5.0, ROUND_DOWN);
+  assign_r(f_7, (float) 7.0, ROUND_DOWN);
+  div_assign_r(f_1_2, f_1, f_2, ROUND_UP);
+  div_assign_r(f_1_3, f_1, f_3, ROUND_UP);
+  div_assign_r(f_1_5, f_1, f_5, ROUND_UP);
+  div_assign_r(f_1_7, f_1, f_7, ROUND_UP);
+
+  nout << "*** Floating point up approx ***\n";
+  nout << "1/2 = " << f_1_2 << "\n";
+  nout << "1/3 = " << f_1_3 << "\n";
+  nout << "1/5 = " << f_1_5 << "\n";
+  nout << "1/7 = " << f_1_7 << "\n";
+
+  mpq_class q_1_2, q_1_3, q_1_5, q_1_7;
+  assign_r(q_1_2, f_1_2, ROUND_NOT_NEEDED);
+  assign_r(q_1_3, f_1_3, ROUND_NOT_NEEDED);
+  assign_r(q_1_5, f_1_5, ROUND_NOT_NEEDED);
+  assign_r(q_1_7, f_1_7, ROUND_NOT_NEEDED);
+
+  nout << "\n*** Corresponding mpq_class values ***\n";
+  nout << "1/2 = " << q_1_2 << "\n";
+  nout << "1/3 = " << q_1_3 << "\n";
+  nout << "1/5 = " << q_1_5 << "\n";
+  nout << "1/7 = " << q_1_7 << "\n\n";
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+  Variable E(4);
+  Variable F(5);
+  Variable G(6);
+  Variable H(7);
+  Variable I(8);
+  Variable J(9);
+
+  Constraint_System cs;
+  Coefficient numer, denom;
+
+  numer = q_1_3.get_num();
+  denom = q_1_3.get_den();
+  cs.insert(denom*B - denom*A <= -numer);
+  cs.insert(denom*C - denom*B <= numer);
+  cs.insert(denom*G - denom*F <= -numer);
+  cs.insert(denom*H - denom*G <= numer);
+
+  numer = q_1_2.get_num();
+  denom = q_1_2.get_den();
+  cs.insert(denom*D - denom*C <= numer);
+
+  numer = q_1_5.get_num();
+  denom = q_1_5.get_den();
+  cs.insert(denom*J - denom*I <= numer);
+  cs.insert(denom*E - denom*D <= numer);
+  cs.insert(denom*I - denom*H <= numer);
+
+  numer = q_1_7.get_num();
+  denom = q_1_7.get_den();
+  cs.insert(denom*F - denom*E <= -numer);
+
+  BDS bd1(10);
+  bd1.add_constraints(cs);
+  print_constraints(bd1.constraints(), "*** BEFORE FIRST Floyd-Warshall ***");
+  nout << "\n";
+
+  // Force application of Floyd-Warshall.
+  bd1.is_empty();
+
+  print_constraints(bd1.constraints(), "*** AFTER FIRST Floyd-Warshall ***");
+  nout << "\n";
+
+  // Copy constraints (so that the BDS is marked as not closed)
+  // and then force again application of Floyd-Warshall.
+  BDS bd2(bd1.constraints());
+  bd2.is_empty();
+
+  print_constraints(bd2.constraints(), "*** AFTER SECOND Floyd-Warshall ***");
+  nout << "\n";
+
+  // Copy constraints (so that the BDS is marked as not closed)
+  // and then force once again application of Floyd-Warshall.
+  BDS bd3(bd2.constraints());
+  bd3.is_empty();
+
+  print_constraints(bd2.constraints(), "*** AFTER THIRD Floyd-Warshall ***");
+  nout << "\n";
+
+  bool ok = bd1.contains(bd2) && bd2.contains(bd3)
+    && !bd2.contains(bd1) && !bd3.contains(bd2);
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST_F16(test02);
+  DO_TEST(test03);
 END_MAIN
