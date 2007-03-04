@@ -651,56 +651,6 @@ public:
   */
   bool strictly_contains(const Direct_Product& y) const;
 
-  //! Writes the covering box for \p *this into \p box.
-  /*!
-    \param box
-    The Box into which the covering box is written.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p box are dimension-incompatible.
-
-    The template class Box must provide the following methods
-    \code
-      Box(dimension_type space_dimension)
-    \endcode
-    Creates a universe box of space_dimension dimensions.
-    \code
-      dimension_type space_dimension() const
-    \endcode
-    returns the dimension of the vector space enclosing the pair
-    represented by the covering box.
-    \code
-      set_empty()
-    \endcode
-    Causes the box to become empty, i.e., to represent the empty set.
-    \code
-      raise_lower_bound(dimension_type k, bool closed,
-                        Coefficient_traits::const_reference n,
-                        Coefficient_traits::const_reference d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension with \f$[n/d, +\infty)\f$.  <CODE>closed</CODE> is
-    always passed as <CODE>true</CODE>.
-    \code
-      lower_upper_bound(dimension_type k, bool closed,
-                        Coefficient_traits::const_reference n,
-                        Coefficient_traits::const_reference d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension with \f$(-\infty, n/d]\f$.  <CODE>closed</CODE> is
-    always passed as <CODE>true</CODE>.
-
-    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
-    will be called at most once for each possible value for <CODE>k</CODE>
-    and for all such calls the fraction \f$n/d\f$ will be in canonical form,
-    that is, \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$
-    is positive, \f$0/1\f$ being the unique representation for zero.
-    The same guarantee is offered for the function
-    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
-  */
-  template <typename Box>
-  void get_covering_box(Box& box) const;
-
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
