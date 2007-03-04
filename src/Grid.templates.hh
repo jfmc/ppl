@@ -287,8 +287,7 @@ Grid::get_covering_box(Box& box) const {
 	  if (!interval_emptiness[dim] && gen[dim+1] != 0) {
 	    // Empty interval, set both bounds for associated
       	    // dimension to zero.
-	    new_box.lower_upper_bound(dim, true, 0, 1);
-	    new_box.raise_lower_bound(dim, true, 0, 1);
+            new_box.add_constraint(Variable(dim) == 0);
 	    interval_emptiness[dim] = true;
 	  }
 	continue;
@@ -348,7 +347,7 @@ Grid::get_covering_box(Box& box) const {
 	exact_div_assign(bound, bound, gcd);
 	exact_div_assign(gcd, divisor, gcd);
 	// `gcd' now holds the reduced divisor.
-	new_box.lower_upper_bound(dim, true, bound, gcd);
+        new_box.add_constraint(gcd*Variable(dim) <= bound);
       }
 
       // Reduce the bound fraction first.
@@ -356,7 +355,7 @@ Grid::get_covering_box(Box& box) const {
       exact_div_assign(lower_bound, lower_bound, gcd);
       exact_div_assign(gcd, divisor, gcd);
       // `gcd' now holds the reduced divisor.
-      new_box.raise_lower_bound(dim, true, lower_bound, gcd);
+      new_box.add_constraint(gcd*Variable(dim) >= lower_bound);
     }
   }
   else {
@@ -369,7 +368,7 @@ Grid::get_covering_box(Box& box) const {
       exact_div_assign(bound, point[dim+1], gcd);
       exact_div_assign(gcd, divisor, gcd);
       // `gcd' now holds the reduced divisor.
-      new_box.raise_lower_bound(dim, true, bound, gcd);
+      new_box.add_constraint(gcd*Variable(dim) >= bound);
     }
   }
 
