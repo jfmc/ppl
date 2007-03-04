@@ -219,7 +219,7 @@ remove_space_dimensions(const Variables_Set& to_be_removed) {
 template <typename PH>
 void
 Pointset_Powerset<PH>::remove_higher_space_dimensions(dimension_type
-						       new_dimension) {
+						      new_dimension) {
   Pointset_Powerset& x = *this;
   if (new_dimension < x.space_dim) {
     for (Sequence_iterator si = x.sequence.begin(),
@@ -252,6 +252,24 @@ Pointset_Powerset<PH>::map_space_dimensions(const Partial_Function& pfunc) {
 	   s_end = x.sequence.end(); si != s_end; ++si)
       si->element().map_space_dimensions(pfunc);
     x.space_dim = s_begin->element().space_dimension();
+    x.reduced = false;
+  }
+  assert(x.OK());
+}
+
+template <typename PH>
+void
+Pointset_Powerset<PH>::affine_image(Variable var,
+				    const Linear_Expression& expr,
+				    Coefficient_traits::const_reference
+				    denominator) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si) {
+    si->element().affine_image(var, expr, denominator);
+    // Note that the underlying domain can apply conservative approximation:
+    // that is why it would not be correct to make the loss of reduction
+    // conditional on `var' and `expr'.
     x.reduced = false;
   }
   assert(x.OK());

@@ -325,6 +325,32 @@ public:
   // FIXME: document the intended semantics.
   void poly_difference_assign(const Pointset_Powerset& y);
 
+  /*! \brief
+    Assigns to \p *this the
+    \ref Single_Update_Affine_Functions "affine image"
+    of \p *this under the function mapping variable \p var to the
+    affine expression specified by \p expr and \p denominator.
+
+    \param var
+    The variable to which the affine expression is assigned;
+
+    \param expr
+    The numerator of the affine expression;
+
+    \param denominator
+    The denominator of the affine expression (optional argument with
+    default value 1).
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this are
+    dimension-incompatible or if \p var is not a space dimension of
+    \p *this.
+  */
+  void affine_image(Variable var,
+		    const Linear_Expression& expr,
+		    Coefficient_traits::const_reference denominator
+		      = Coefficient_one());
+
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
     The result is obtained by computing the pairwise

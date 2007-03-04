@@ -2,6 +2,8 @@
 Enhancements for PPL 0.10
 =========================
 
+- Pointset_Powerset lacks many methods: affine_image() has just been added,
+  but all the others should follow.
 - Update the examples in README.configure.
 - Fix the dependency problems in interfaces/OCaml/Makefile.am.
 - Using meta_programming.hh it is possible to define all the swap functions
