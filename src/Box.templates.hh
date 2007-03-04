@@ -958,7 +958,7 @@ Box<Interval>::max_min(const Linear_Expression& expr,
     const Interval& seq_i = seq[i];
     switch (sgn(expr.coefficient(Variable(i))) * maximize_sign) {
     case 1:
-      g_coord = seq_i.upper();
+      assign_r(g_coord, seq_i.upper(), ROUND_NOT_NEEDED);
       break;
     case 0:
       // If 0 belongs to the interval, choose it
@@ -971,32 +971,34 @@ Box<Interval>::max_min(const Linear_Expression& expr,
 	  if (!seq_i.upper_is_unbounded())
 	    if (seq_i.upper_is_open()) {
 	      // Bounded and open interval: compute middle point.
-	      g_coord = seq_i.lower();
-	      g_coord += seq_i.upper();
+	      assign_r(g_coord, seq_i.lower(), ROUND_NOT_NEEDED);
+	      mpq_class q_seq_i_upper;
+	      assign_r(q_seq_i_upper, seq_i.upper(), ROUND_NOT_NEEDED);
+	      g_coord += q_seq_i_upper;
 	      g_coord /= 2;
 	    }
 	    else
 	      // The upper bound is in the interval.
-	      g_coord = seq_i.upper();
+	      assign_r(g_coord, seq_i.upper(), ROUND_NOT_NEEDED);
 	  else {
 	    // Lower is open, upper is unbounded.
-	    g_coord = seq_i.lower();
+	    assign_r(g_coord, seq_i.lower(), ROUND_NOT_NEEDED);
 	    ++g_coord;
 	  }
 	else
 	  // The lower bound is in the interval.
-	  g_coord = seq_i.lower();
+	  assign_r(g_coord, seq_i.lower(), ROUND_NOT_NEEDED);
       else {
 	// Lower is unbounded, hence upper is bounded
 	// (since we know that 0 does not belong to the interval).
 	assert(!seq_i.upper_is_unbounded());
-	g_coord = seq_i.upper();
+	assign_r(g_coord, seq_i.upper(), ROUND_NOT_NEEDED);
 	if (seq_i.upper_is_open())
 	  --g_coord;
       }
       break;
     case -1:
-      g_coord = seq_i.lower();
+      assign_r(g_coord, seq_i.lower(), ROUND_NOT_NEEDED);
       break;
     }
     // Add g_coord * Variable(i) to the generator.
