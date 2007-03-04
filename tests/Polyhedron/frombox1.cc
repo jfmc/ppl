@@ -29,15 +29,16 @@ namespace {
 // from the corresponding box.
 bool
 test01() {
+  Variable x(0);
+  Variable y(1);
+
   Rational_Box box(2);
-  box.raise_lower_bound(0, true, 0, 1);
-  box.lower_upper_bound(0, true, 1, 2);
-  box.raise_lower_bound(1, true, 0, 1);
+  box.add_constraint(x >= 0);
+  box.add_constraint(2*x <= 1);
+  box.add_constraint(y >= 0);
 
   C_Polyhedron ph(box, From_Bounding_Box());
 
-  Variable x(0);
-  Variable y(1);
 
   C_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(x >= 0);
@@ -96,16 +97,17 @@ test03() {
 // A bounded box in 2D.
 bool
 test04() {
-  Rational_Box box(2);
-  box.raise_lower_bound(0, true, -2, 3);
-  box.lower_upper_bound(0, true, 4, 1);
-  box.raise_lower_bound(1, true, -10, 1);
-  box.lower_upper_bound(1, true, 12, 3);
-
-  C_Polyhedron ph(box, From_Bounding_Box());
-
   Variable x(0);
   Variable y(1);
+
+
+  Rational_Box box(2);
+  box.add_constraint(3*x >= -2);
+  box.add_constraint(x <= 4);
+  box.add_constraint(y >= -10);
+  box.add_constraint(3*y <= 12);
+
+  C_Polyhedron ph(box, From_Bounding_Box());
 
   C_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(3*x >= -2);
@@ -124,18 +126,18 @@ test04() {
 // An unbounded closed box in 4D but bounded in 2D.
 bool
 test05() {
-  Rational_Box box(4);
-  box.raise_lower_bound(1, true, -2, 3);
-  box.lower_upper_bound(1, true, 4, 1);
-  box.raise_lower_bound(2, true, -10, 1);
-  box.lower_upper_bound(2, true, 12, 3);
-  box.raise_lower_bound(3, true, 15, 3);
-
-  C_Polyhedron ph(box, From_Bounding_Box());
-
   Variable x(1);
   Variable y(2);
   Variable z(3);
+
+  Rational_Box box(4);
+  box.add_constraint(3*x >= -2);
+  box.add_constraint(x <= 4);
+  box.add_constraint(y >= -10);
+  box.add_constraint(3*y <= 12);
+  box.add_constraint(3*z >= 15);
+
+  C_Polyhedron ph(box, From_Bounding_Box());
 
   C_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(3*x >= -2);
@@ -190,16 +192,14 @@ test07() {
 // A single point.
 bool
 test08() {
-  Rational_Box box(2);
-  box.raise_lower_bound(0, true, 2, 1);
-  box.lower_upper_bound(0, true, 2, 1);
-  box.raise_lower_bound(1, true, 4, 1);
-  box.lower_upper_bound(1, true, 4, 1);
-
-  C_Polyhedron ph(box, From_Bounding_Box());
-
   Variable x(0);
   Variable y(1);
+
+  Rational_Box box(2);
+  box.add_constraint(x == 2);
+  box.add_constraint(y == 4);
+
+  C_Polyhedron ph(box, From_Bounding_Box());
 
   C_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(x == 2);
@@ -216,16 +216,16 @@ test08() {
 // A closed unit square.
 bool
 test09() {
-  Rational_Box box(2);
-  box.raise_lower_bound(0, true, 0, 1);
-  box.lower_upper_bound(0, true, 1, 1);
-  box.raise_lower_bound(1, true, 0, 1);
-  box.lower_upper_bound(1, true, 1, 1);
-
-  C_Polyhedron ph(box, From_Bounding_Box());
-
   Variable x(0);
   Variable y(1);
+
+  Rational_Box box(2);
+  box.add_constraint(x >= 0);
+  box.add_constraint(x <= 1);
+  box.add_constraint(y >= 0);
+  box.add_constraint(y <= 1);
+
+  C_Polyhedron ph(box, From_Bounding_Box());
 
   Constraint_System known_cs;
   known_cs.insert(x >= 0);
