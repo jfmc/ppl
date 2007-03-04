@@ -574,11 +574,6 @@ m4_define(`m4_Polyhedron_limitedbounded_replacement', `limited, bounded')
 
 dnl The shape classes have bounding boxes while the grid classes also
 dnl have covering boxes.
-# m4_define(`m4_box_replacement', `bounding_box')
-# m4_define(`m4_Grid_box_replacement', `m4_box_replacement, covering_box')
-# m4_define(`m4_Grid_box_alt_replacement', `shrink_bounding_box, get_covering_box')
-# m4_define(`m4_Grid_box_bounding_box_alt_replacement', `shrink_bounding_box')
-# m4_define(`m4_Grid_box_covering_box_alt_replacement', `get_covering_box')
 m4_define(`m4_box_replacement', `bounding_box')
 m4_define(`m4_Grid_box_replacement', `m4_box_replacement, covering_box')
 
