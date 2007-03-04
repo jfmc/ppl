@@ -168,18 +168,20 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
       if (!term_to_boundary(t_bound, LOWER_BOUNDARY, finite, closed, n, d))
         return PROLOG_FAILURE;
       if (finite)
-        box.raise_lower_bound(i, closed, n, d);
+        box.add_constraint(d*Variable(i) >= n);
+        // box.raise_lower_bound(i, closed, n, d);
 
       // Get and lower the upper bound.
       Prolog_get_arg(2, t_interval, t_bound);
       if (!term_to_boundary(t_bound, UPPER_BOUNDARY, finite, closed, n, d))
         return PROLOG_FAILURE;
       if (finite)
-        box.lower_upper_bound(i, closed, n, d);
+        box.add_constraint(d*Variable(i) <= n);
+        // box.lower_upper_bound(i, closed, n, d);
     }
 
     @TOPOLOGY@@CPP_CLASS@* ph;
-    ph = new @TOPOLOGY@@CPP_CLASS@(box, From_`'@UBOX@());
+    ph = new @TOPOLOGY@@CPP_CLASS@(box);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
