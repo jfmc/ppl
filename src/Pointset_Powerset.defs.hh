@@ -42,19 +42,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 //! The powerset construction instantiated on PPL polyhedra.
 /*! \ingroup PPL_CXX_interface */
-template <typename PH>
+template <typename PS>
 class Parma_Polyhedra_Library::Pointset_Powerset
   : public Parma_Polyhedra_Library::Powerset
-<Parma_Polyhedra_Library::Determinate<PH> > {
+<Parma_Polyhedra_Library::Determinate<PS> > {
 public:
-  typedef PH element_type;
+  typedef PS element_type;
 
 private:
-  typedef Determinate<PH> CS;
+  typedef Determinate<PS> CS;
   typedef Powerset<CS> Base;
 
 public:
-  //! Returns the maximum space dimension a Pointset_Powerset<PH> can handle.
+  //! Returns the maximum space dimension a Pointset_Powerset<PS> can handle.
   static dimension_type max_space_dimension();
 
   //! \name Constructors
@@ -79,11 +79,11 @@ public:
     If \p ph is nonempty, builds a powerset containing only \p ph.
     Builds the empty powerset otherwise.
   */
-  explicit Pointset_Powerset(const PH& ph);
+  explicit Pointset_Powerset(const PS& ph);
 
   /*! \brief
     Conversion constructor: the type <CODE>QH</CODE> of the disjuncts
-    in the source powerset is different from <CODE>PH</CODE>.
+    in the source powerset is different from <CODE>PS</CODE>.
   */
   template <typename QH>
   explicit Pointset_Powerset(const Pointset_Powerset<QH>& y);
@@ -159,7 +159,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p ph are dimension-incompatible.
   */
-  void add_disjunct(const PH& ph);
+  void add_disjunct(const PS& ph);
 
   //! Intersects \p *this with constraint \p c.
   /*!
@@ -293,7 +293,7 @@ public:
 
   /*! \brief
     Conversion assignment: the type <CODE>QH</CODE> of the disjuncts
-    in the source powerset is different from <CODE>PH</CODE>
+    in the source powerset is different from <CODE>PS</CODE>
     (\p *this and \p y can be dimension-incompatible).
   */
   template <typename QH>
@@ -468,7 +468,7 @@ namespace Parma_Polyhedra_Library {
 /*! \relates Pointset_Powerset
   Let \p p and \p q be two polyhedra.
   The function returns an object <CODE>r</CODE> of type
-  <CODE>std::pair\<PH, Pointset_Powerset\<NNC_Polyhedron\> \></CODE>
+  <CODE>std::pair\<PS, Pointset_Powerset\<NNC_Polyhedron\> \></CODE>
   such that
   - <CODE>r.first</CODE> is the intersection of \p p and \p q;
   - <CODE>r.second</CODE> has the property that all its elements are
@@ -484,9 +484,9 @@ namespace Parma_Polyhedra_Library {
   this paper</A> for more information about the implementation.
   \endif
 */
-template <typename PH>
-std::pair<PH, Pointset_Powerset<NNC_Polyhedron> >
-linear_partition(const PH& p, const PH& q);
+template <typename PS>
+std::pair<PS, Pointset_Powerset<NNC_Polyhedron> >
+linear_partition(const PS& p, const PS& q);
 
 /*! \brief
   Returns <CODE>true</CODE> if and only if the union of
@@ -503,7 +503,7 @@ check_containment(const NNC_Polyhedron& ph,
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset
   Let \p p and \p q be two grids.
   The function returns an object <CODE>r</CODE> of type
-  <CODE>std::pair\<PH, Pointset_Powerset\<Grid\> \></CODE>
+  <CODE>std::pair\<PS, Pointset_Powerset\<Grid\> \></CODE>
   such that
   - <CODE>r.first</CODE> is the intersection of \p p and \p q;
   - If there is a finite partition of \p q wrt \p p
@@ -536,13 +536,13 @@ check_containment(const Grid& ph,
 
   \relates Pointset_Powerset
   \note
-  It is assumed that the template parameter PH can be converted
+  It is assumed that the template parameter PS can be converted
   without precision loss into an NNC_Polyhedron; otherwise,
   an incorrect result might be obtained.
 */
-template <typename PH>
+template <typename PS>
 bool
-check_containment(const PH& ph, const Pointset_Powerset<PH>& ps);
+check_containment(const PS& ph, const Pointset_Powerset<PS>& ps);
 
 // CHECKME: according to the Intel compiler, the declaration of the
 // following specialization (of the class template parameter) should come
@@ -592,9 +592,9 @@ namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
 /*! \relates Parma_Polyhedra_Library::Pointset_Powerset */
-template <typename PH>
-void swap(Parma_Polyhedra_Library::Pointset_Powerset<PH>& x,
-	  Parma_Polyhedra_Library::Pointset_Powerset<PH>& y);
+template <typename PS>
+void swap(Parma_Polyhedra_Library::Pointset_Powerset<PS>& x,
+	  Parma_Polyhedra_Library::Pointset_Powerset<PS>& y);
 
 } // namespace std
 

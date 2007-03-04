@@ -14,7 +14,7 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename PH>
+template <typename PS>
 class Determinate;
 
 } // namespace Parma_Polyhedra_Library
