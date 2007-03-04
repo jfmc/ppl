@@ -346,6 +346,35 @@ test12() {
   return ok;
 }
 
+bool
+test13() {
+  Variable x(0);
+
+  TBox box1(1);
+  box1.add_constraint(x > 0);
+  box1.add_constraint(x <= 1);
+
+  TBox box2(1);
+  box2.add_constraint(x == 0);
+
+  print_constraints(box1, "*** box1 ***");
+  print_constraints(box2, "*** box2 ***");
+
+  if (box1.is_empty())
+    return false;
+
+  box1.intersection_assign(box2);
+
+  TBox known_result(1, EMPTY);
+
+  bool ok = (known_result == box1) ;
+
+  print_constraints(box1, "*** box1.intersection_assign(box2) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -361,4 +390,5 @@ BEGIN_MAIN
   DO_TEST(test10);
   DO_TEST(test11);
   DO_TEST(test12);
+  DO_TEST(test13);
 END_MAIN

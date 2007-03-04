@@ -1169,8 +1169,10 @@ template <typename Interval>
 void
 Box<Interval>::intersection_assign(const Box& y) {
   Box& x = *this;
+  const dimension_type space_dim = space_dimension();
+
   // Dimension-compatibility check.
-  if (x.space_dimension() != y.space_dimension())
+  if (space_dim != y.space_dimension())
     x.throw_dimension_incompatible("intersection_assign(y)", y);
 
   // If one of the two boxes is empty, the intersection is empty.
@@ -1181,7 +1183,16 @@ Box<Interval>::intersection_assign(const Box& y) {
     return;
   }
 
-  for (dimension_type k = x.seq.size(); k-- > 0; )
+  // If both boxes are zero-dimensional, then at this point they are
+  // necessarily non-empty, so that their intersection is non-empty too.
+  if (space_dim == 0)
+    return;
+
+  // FIXME: here we may conditionally exploit a capability of the
+  // underlying Interval to eagerly detect empty results.
+  empty_up_to_date = false;
+
+  for (dimension_type k = space_dim; k-- > 0; )
     intersect_assign(x.seq[k], y.seq[k]);
 
   assert(x.OK());
@@ -1191,6 +1202,7 @@ template <typename Interval>
 void
 Box<Interval>::box_hull_assign(const Box& y) {
   Box& x = *this;
+
   // Dimension-compatibility check.
   if (x.space_dimension() != y.space_dimension())
     x.throw_dimension_incompatible("box_hull_assign(y)", y);
@@ -1244,6 +1256,7 @@ template <typename Interval>
 void
 Box<Interval>::box_difference_assign(const Box& y) {
   const dimension_type space_dim = space_dimension();
+
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("box_difference_assign(y)", y);
