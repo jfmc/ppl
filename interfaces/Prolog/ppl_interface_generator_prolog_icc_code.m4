@@ -169,7 +169,6 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
         return PROLOG_FAILURE;
       if (finite)
         box.add_constraint(d*Variable(i) >= n);
-        // box.raise_lower_bound(i, closed, n, d);
 
       // Get and lower the upper bound.
       Prolog_get_arg(2, t_interval, t_bound);
@@ -177,7 +176,6 @@ ppl_new_@TOPOLOGY@@CLASS@_from_@BOX@(Prolog_term_ref t_bb,
         return PROLOG_FAILURE;
       if (finite)
         box.add_constraint(d*Variable(i) <= n);
-        // box.lower_upper_bound(i, closed, n, d);
     }
 
     @TOPOLOGY@@CPP_CLASS@* ph;
