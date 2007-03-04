@@ -123,9 +123,9 @@ endif
 # NOTE: rt_r_oc must be the first in the list.
 INSTANCES = \
 rt_r_oc \
-$(FLOAT_INSTANCES) \
-$(DOUBLE_INSTANCES)
-#$(LONG_DOUBLE_INSTANCES)
+$(LONG_DOUBLE_INSTANCES) \
+$(DOUBLE_INSTANCES) \
+$(FLOAT_INSTANCES)
 
 print_check_PROGRAMS:
 	echo $(check_PROGRAMS)
