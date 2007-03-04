@@ -27,18 +27,18 @@ namespace {
 // An unbounded box in 4D but bounded in 2D with strict inequalities.
 bool
 test01() {
-  Rational_Box box(4);
-  box.raise_lower_bound(1, false, -2, 3);
-  box.lower_upper_bound(1, true, 4, 1);
-  box.raise_lower_bound(2, false, -10, 1);
-  box.lower_upper_bound(2, true, 12, 3);
-  box.raise_lower_bound(3, true, 15, 3);
-
-  NNC_Polyhedron ph(box, From_Bounding_Box());
-
   Variable x(1);
   Variable y(2);
   Variable z(3);
+
+  Rational_Box box(4);
+  box.add_constraint(3*x > -2);
+  box.add_constraint(x <= 4);
+  box.add_constraint(y > -10);
+  box.add_constraint(3*y <= 12);
+  box.add_constraint(3*z >= 15);
+
+  NNC_Polyhedron ph(box, From_Bounding_Box());
 
   NNC_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(3*x > -2);
@@ -59,16 +59,16 @@ test01() {
 // causing upper and lower bounds of the box to be open.
 bool
 test02() {
-  Rational_Box box(4);
-  box.raise_lower_bound(1, true, -2, 3);
-  box.lower_upper_bound(1, false, 4, 1);
-  box.raise_lower_bound(2, false, -10, 1);
-  box.lower_upper_bound(2, true, 12, 3);
-
-  NNC_Polyhedron ph(box, From_Bounding_Box());
-
   Variable x(1);
   Variable y(2);
+
+  Rational_Box box(4);
+  box.add_constraint(3*x >= -2);
+  box.add_constraint(x < 4);
+  box.add_constraint(y > -10);
+  box.add_constraint(3*y <= 12);
+
+  NNC_Polyhedron ph(box, From_Bounding_Box());
 
   NNC_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(3*x >= -2);
