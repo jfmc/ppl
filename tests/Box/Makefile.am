@@ -85,6 +85,7 @@ intersection1 \
 mapspacedims1 \
 max_min1 \
 minconstraints1 \
+pointsetpowerset1 \
 relations1 relations2 \
 removespacedims1 \
 universe1 \
@@ -123,8 +124,8 @@ endif
 INSTANCES = \
 rt_r_oc \
 $(FLOAT_INSTANCES) \
-$(DOUBLE_INSTANCES) \
-$(LONG_DOUBLE_INSTANCES)
+$(DOUBLE_INSTANCES)
+#$(LONG_DOUBLE_INSTANCES)
 
 print_check_PROGRAMS:
 	echo $(check_PROGRAMS)
@@ -213,6 +214,8 @@ max_min1_SOURCES = max_min1.cc
 #membytes1_SOURCES = membytes1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
+
+pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
