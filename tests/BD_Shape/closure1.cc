@@ -338,8 +338,6 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
   }
 }
 
-} // namespace
-
 #define DISTANCE(To, Temp)			       \
   do { \
     Checked_Number<To, Extended_Number_Policy> distance; \
@@ -354,7 +352,8 @@ add_edges(BD_Shape<T>& bd, const Edge* edges, unsigned n) {
          << endl; \
   } while (0)
 
-bool test01() {
+bool
+test01() {
   BD_Shape<mpq_class> qbd1(126);
   add_edges(qbd1, hawaii, sizeof(hawaii)/sizeof(Edge));
 
@@ -374,6 +373,77 @@ bool test01() {
   return true;
 }
 
+bool
+test02() {
+  // This test shows that the Floyd-Warshall algorithm does not compute
+  // the shortest path closure when using a floating point datatype.
+  // In particular, here it is shown that FW is not idempotent.
+  typedef BD_Shape<float> BDS;
+  typedef BDS::coefficient_type Float;
+
+  Float f_1, f_2, f_3, f_1_2, f_1_3;
+  assign_r(f_1, (float) 1.0, ROUND_UP);
+  assign_r(f_2, (float) 2.0, ROUND_DOWN);
+  assign_r(f_3, (float) 3.0, ROUND_DOWN);
+  div_assign_r(f_1_2, f_1, f_2, ROUND_UP);
+  div_assign_r(f_1_3, f_1, f_3, ROUND_UP);
+
+  nout << "*** Floating point up approx ***\n";
+  nout << "1/2 = " << f_1_2 << "\n";
+  nout << "1/3 = " << f_1_3 << "\n";
+
+  mpq_class q_1_2, q_1_3;
+  assign_r(q_1_2, f_1_2, ROUND_NOT_NEEDED);
+  assign_r(q_1_3, f_1_3, ROUND_NOT_NEEDED);
+
+  nout << "\n*** Corresponding mpq_class values ***\n";
+  nout << "up(1/2) = " << q_1_2 << "\n";
+  nout << "up(1/3) = " << q_1_3 << "\n\n";
+
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+  Variable D(3);
+
+  BDS bd1(4);
+  Constraint_System cs;
+  Coefficient numer, denom;
+
+  numer = q_1_3.get_num();
+  denom = q_1_3.get_den();
+  cs.insert(denom*A - denom*B >= numer);
+  cs.insert(denom*B - denom*C >= -numer);
+
+  numer = q_1_2.get_num();
+  denom = q_1_2.get_den();
+  cs.insert(denom*C - denom*D >= -numer);
+
+  bd1.add_constraints(cs);
+
+  print_constraints(bd1.constraints(), "*** BEFORE FIRST Floyd-Warshall ***");
+  nout << "\n";
+
+  // Force application of Floyd-Warshall.
+  bd1.is_empty();
+
+  print_constraints(bd1.constraints(), "*** AFTER FIRST Floyd-Warshall ***");
+  nout << "\n";
+
+  // Copy constraints (so that the BDS is marked as not closed)
+  // and then force again application of Floyd-Warshall.
+  BDS bd2(bd1.constraints());
+  bd2.is_empty();
+
+  print_constraints(bd2.constraints(), "*** AFTER SECOND Floyd-Warshall ***");
+
+  bool ok = bd1.contains(bd2) && !bd2.contains(bd1);
+
+  return ok;
+}
+
+} // namespace
+
 BEGIN_MAIN
   DO_TEST(test01);
+  DO_TEST(test02);
 END_MAIN
