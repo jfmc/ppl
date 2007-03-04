@@ -43,16 +43,16 @@ test01() {
   TBox nbox(ph);
 
   TBox known_nbox(4);
-  known_nbox.raise_lower_bound(1, false, -2, 3);
-  known_nbox.lower_upper_bound(1, true, 4, 1);
-  known_nbox.raise_lower_bound(2, false, -10, 1);
-  known_nbox.lower_upper_bound(2, true, 4, 1);
-  known_nbox.raise_lower_bound(3, true, 5, 1);
+  known_nbox.add_constraint(3*x > -2);
+  known_nbox.add_constraint(x <= 4);
+  known_nbox.add_constraint(y > -10);
+  known_nbox.add_constraint(y <= 4);
+  known_nbox.add_constraint(z >= 5);
 
   TBox known_pbox(4);
-  known_pbox.lower_upper_bound(1, true, 4, 1);
-  known_pbox.lower_upper_bound(2, true, 4, 1);
-  known_pbox.raise_lower_bound(3, true, 5, 1);
+  known_pbox.add_constraint(x <= 4);
+  known_pbox.add_constraint(y <= 4);
+  known_pbox.add_constraint(z >= 5);
 
   bool ok = (nbox == known_nbox && pbox == known_pbox && pbox.contains(nbox));
 
@@ -60,8 +60,8 @@ test01() {
   print_constraints(nbox, "*** nbox ***");
   print_constraints(pbox, "*** pbox ***");
 
-  print_constraints(known_nbox, "*** test9 known_nbox ***");
-  print_constraints(known_pbox, "*** test9 known_pbox ***");
+  print_constraints(known_nbox, "*** known_nbox ***");
+  print_constraints(known_pbox, "*** known_pbox ***");
 
   return ok;
 }

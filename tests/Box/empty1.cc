@@ -196,11 +196,14 @@ test05() {
 
 bool
 test06() {
+  Variable x(0);
+  Variable y(1);
+
   TBox box(2);
-  box.raise_lower_bound(0, true, 3, 7);
-  box.lower_upper_bound(0, true, 3, 7);
-  box.raise_lower_bound(1, false, 1, 2);
-  box.lower_upper_bound(1, true, 1, 2);
+  box.add_constraint(3*x >= 7);
+  box.add_constraint(3*x <= 7);
+  box.add_constraint(2*y > 1);
+  box.add_constraint(2*y <= 1);
 
   bool ok = box.is_empty();
 

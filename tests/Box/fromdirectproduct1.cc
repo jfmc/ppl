@@ -30,8 +30,8 @@ test01() {
   Variable A(0);
 
   Rational_Box box(1);
-  box.raise_lower_bound(0, true, 2, 3);
-  box.lower_upper_bound(0, true, 6, 1);
+  box.add_constraint(3*A >= 2);
+  box.add_constraint(A <= 6);
 
   Direct_Product<Grid, NNC_Polyhedron> dp(1);
   dp.add_constraint(A <= 4);
@@ -41,8 +41,8 @@ test01() {
   dp.shrink_bounding_box(box);
 
   Rational_Box known_box(1);
-  known_box.raise_lower_bound(0, true, 2, 1);
-  known_box.lower_upper_bound(0, true, 4, 1);
+  known_box.add_constraint(A >= 2);
+  known_box.add_constraint(A <= 4);
 
   bool ok = (box == known_box);
 
@@ -55,8 +55,8 @@ test02() {
   Variable A(0);
 
   Rational_Box box(1);
-  box.raise_lower_bound(0, true, 2, 3);
-  box.lower_upper_bound(0, true, 6, 1);
+  box.add_constraint(3*A >= 2);
+  box.add_constraint(A <= 6);
 
   Direct_Product<Grid, NNC_Polyhedron> dp(1);
   dp.add_constraint(A <= 4);
@@ -66,8 +66,7 @@ test02() {
   dp.shrink_bounding_box(box);
 
   Rational_Box known_box(1);
-  known_box.raise_lower_bound(0, true, 3, 1);
-  known_box.lower_upper_bound(0, true, 3, 1);
+  known_box.add_constraint(A == 3);
 
   bool ok = !/*FIX*/ (box == known_box);
 

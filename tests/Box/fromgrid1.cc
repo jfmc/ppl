@@ -230,6 +230,7 @@ bool
 test08() {
   Variable A(0);
   Variable B(1);
+  Variable C(2);
 
   Grid gr(3, EMPTY);
   gr.add_grid_generator(grid_point());
@@ -242,8 +243,7 @@ test08() {
   Rational_Box box(gr);
 
   Rational_Box known_box(3);
-  known_box.lower_upper_bound(2, true, 0, 1);
-  known_box.raise_lower_bound(2, true, 0, 1);
+  known_box.add_constraint(C == 0);
 
   bool ok = (box == known_box);
 
@@ -271,8 +271,7 @@ test09() {
   Rational_Box box(gr);
 
   Rational_Box known_box(3);
-  known_box.raise_lower_bound(1, true, 3, 2);
-  known_box.lower_upper_bound(1, true, 3, 2);
+  known_box.add_constraint(2*B == 3);
 
   bool ok = (box == known_box);
 
@@ -414,10 +413,8 @@ test13() {
   Rational_Box box(gr);
 
   Rational_Box known_box(4, UNIVERSE);
-  known_box.lower_upper_bound(1, true, 1, 2);
-  known_box.raise_lower_bound(1, true, 1, 2);
-  known_box.lower_upper_bound(2, true, 1, 1);
-  known_box.raise_lower_bound(2, true, 1, 1);
+  known_box.add_constraint(2*B == 1);
+  known_box.add_constraint(C == 1);
 
   bool ok = (box == known_box);
 
