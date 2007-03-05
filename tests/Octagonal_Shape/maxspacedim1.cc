@@ -26,53 +26,54 @@ namespace {
 
 bool
 test01() {
-  Octagonal_Shape<mpq_class> oc1(1);
-  Octagonal_Shape<long> oc2(1);
-  Octagonal_Shape<int> oc3(1);
-  Octagonal_Shape<signed char> oc4(1);
-
-  dimension_type max_spacedim1 = oc1.max_space_dimension();
-  dimension_type max_spacedim2 = oc2.max_space_dimension();
-  dimension_type max_spacedim3 = oc3.max_space_dimension();
-  dimension_type max_spacedim4 = oc4.max_space_dimension();
-
-  nout << endl
-       << "The maximum space-dimension of an octagon of Rational is: "
+  nout << Octagonal_Shape<signed char>::max_space_dimension() << " (signed char)"
        << endl
-       << max_spacedim1
+       << Octagonal_Shape<short>::max_space_dimension() << " (short)"
+       << endl
+       << Octagonal_Shape<int>::max_space_dimension() << " (int)"
+       << endl
+       << Octagonal_Shape<long>::max_space_dimension() << " (long)"
+       << endl
+       << Octagonal_Shape<long long>::max_space_dimension() << " (long long)"
+       << endl
+       << Octagonal_Shape<float>::max_space_dimension() << " (float)"
+       << endl
+       << Octagonal_Shape<double>::max_space_dimension() << " (double)"
+       << endl
+       << Octagonal_Shape<long double>::max_space_dimension() << " (long double)"
+       << endl
+       << Octagonal_Shape<mpz_class>::max_space_dimension() << " (mpz_class)"
+       << endl
+       << Octagonal_Shape<mpq_class>::max_space_dimension() << " (mpq_class)"
        << endl;
 
-  nout << endl
-       << "The maximum space-dimension of an octagon of long is: "
-       << endl
-       << max_spacedim2
-       << endl;
+  if (Octagonal_Shape<signed char>::max_space_dimension()
+      < Octagonal_Shape<short>::max_space_dimension())
+    return false;
 
-  nout << endl
-       << "The maximum space-dimension of an octagon of int is: "
-       << endl
-       << max_spacedim3
-       << endl;
+  if (Octagonal_Shape<short>::max_space_dimension()
+      < Octagonal_Shape<int>::max_space_dimension())
+    return false;
 
-  nout << endl
-       << "The maximum space-dimension of an octagon of signed char is:"
-       << endl
-       << max_spacedim4
-       << endl;
+  if (Octagonal_Shape<int>::max_space_dimension()
+      < Octagonal_Shape<long>::max_space_dimension())
+    return false;
 
-  if (max_spacedim1 < max_spacedim2) {
+  if (Octagonal_Shape<long>::max_space_dimension()
+      < Octagonal_Shape<long long>::max_space_dimension())
+    return false;
 
-    print_constraints(oc1, "*** oc1 ***");
-    print_constraints(oc2, "*** oc2 ***");
+  if (Octagonal_Shape<float>::max_space_dimension()
+      < Octagonal_Shape<double>::max_space_dimension())
+    return false;
 
-  }
+  if (Octagonal_Shape<double>::max_space_dimension()
+      < Octagonal_Shape<long double>::max_space_dimension())
+    return false;
 
-  if (max_spacedim3 < max_spacedim4) {
-
-    print_constraints(oc3, "*** oc3 ***");
-    print_constraints(oc4, "*** oc4 ***");
-
-  }
+  if (2*Octagonal_Shape<mpz_class>::max_space_dimension()
+      < Octagonal_Shape<mpq_class>::max_space_dimension())
+    return false;
 
   return true;
 }

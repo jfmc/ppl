@@ -26,62 +26,55 @@ namespace {
 
 bool
 test01() {
-  BD_Shape<mpq_class> bd1(1);
-  BD_Shape<long> bd2(1);
-  BD_Shape<int> bd3(1);
-  BD_Shape<signed char> bd4(1);
-
-  dimension_type max_spacedim1 = bd1.max_space_dimension();
-  dimension_type max_spacedim2 = bd2.max_space_dimension();
-  dimension_type max_spacedim3 = bd3.max_space_dimension();
-  dimension_type max_spacedim4 = bd4.max_space_dimension();
-
-  nout << endl
-       << "The maximum space-dimension of a system of bounded differences "
+  nout << BD_Shape<signed char>::max_space_dimension() << " (signed char)"
        << endl
-       << "of Rational is: "
+       << BD_Shape<short>::max_space_dimension() << " (short)"
        << endl
-       << max_spacedim1
+       << BD_Shape<int>::max_space_dimension() << " (int)"
+       << endl
+       << BD_Shape<long>::max_space_dimension() << " (long)"
+       << endl
+       << BD_Shape<long long>::max_space_dimension() << " (long long)"
+       << endl
+       << BD_Shape<float>::max_space_dimension() << " (float)"
+       << endl
+       << BD_Shape<double>::max_space_dimension() << " (double)"
+       << endl
+       << BD_Shape<long double>::max_space_dimension() << " (long double)"
+       << endl
+       << BD_Shape<mpz_class>::max_space_dimension() << " (mpz_class)"
+       << endl
+       << BD_Shape<mpq_class>::max_space_dimension() << " (mpq_class)"
        << endl;
 
-  nout << endl
-       << "The maximum space-dimension of a system of bounded differences "
-       << endl
-       << "of long: "
-       << endl
-       << max_spacedim2
-       << endl;
+  if (BD_Shape<signed char>::max_space_dimension()
+      < BD_Shape<short>::max_space_dimension())
+    return false;
 
-  nout << endl
-       << "The maximum space-dimension of a system of bounded differences "
-       << endl
-       << "of int: "
-       << endl
-       << max_spacedim3
-       << endl;
+  if (BD_Shape<short>::max_space_dimension()
+      < BD_Shape<int>::max_space_dimension())
+    return false;
 
-  nout << endl
-       << "The maximum space-dimension of a system of bounded differences "
-       << endl
-       << "of signed char"
-       << endl
-       << max_spacedim4
-       << endl;
+  if (BD_Shape<int>::max_space_dimension()
+      < BD_Shape<long>::max_space_dimension())
+    return false;
 
-  if (max_spacedim1 < max_spacedim2) {
+  if (BD_Shape<long>::max_space_dimension()
+      < BD_Shape<long long>::max_space_dimension())
+    return false;
 
-    print_constraints(bd1, "*** bd1 ***");
-    print_constraints(bd2, "*** bd2 ***");
+  if (BD_Shape<float>::max_space_dimension()
+      < BD_Shape<double>::max_space_dimension())
+    return false;
 
-  }
+  if (BD_Shape<double>::max_space_dimension()
+      < BD_Shape<long double>::max_space_dimension())
+    return false;
 
-  if (max_spacedim3 < max_spacedim4) {
+  if (2*BD_Shape<mpz_class>::max_space_dimension()
+      < BD_Shape<mpq_class>::max_space_dimension())
+    return false;
 
-    print_constraints(bd3, "*** bd3 ***");
-    print_constraints(bd4, "*** bd4 ***");
-
-  }
-  // FIXME!!!
   return true;
 }
 
