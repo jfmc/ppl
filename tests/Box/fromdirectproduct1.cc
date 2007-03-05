@@ -24,21 +24,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace {
 
-// shrink_bounding_box(box)
 bool
 test01() {
   Variable A(0);
 
-  Rational_Box box(1);
-  box.add_constraint(3*A >= 2);
-  box.add_constraint(A <= 6);
-
-  Direct_Product<Grid, NNC_Polyhedron> dp(1);
+  Direct_Product<Grid, C_Polyhedron> dp(1);
   dp.add_constraint(A <= 4);
   dp.add_constraint(A >= 2);
-  dp.add_congruence(A %= 0);
+  dp.add_congruence((A %= 1) / 5);
 
-  dp.shrink_bounding_box(box);
+  print_congruences(dp.domain1(), "*** dp.domain1() ***");
+  print_constraints(dp.domain2(), "*** dp.domain2() ***");
+
+  Rational_Box box(dp);
 
   Rational_Box known_box(1);
   known_box.add_constraint(A >= 2);
@@ -46,29 +44,38 @@ test01() {
 
   bool ok = (box == known_box);
 
+  print_constraints(box, "*** box ***");
+  print_constraints(known_box, "*** known_box ***");
+
   return ok;
 }
 
-// shrink_bounding_box(box), shrink to intersection.
 bool
 test02() {
   Variable A(0);
 
-  Rational_Box box(1);
-  box.add_constraint(3*A >= 2);
-  box.add_constraint(A <= 6);
-
-  Direct_Product<Grid, NNC_Polyhedron> dp(1);
+  Direct_Product<Grid, C_Polyhedron> dp(1);
   dp.add_constraint(A <= 4);
   dp.add_constraint(A >= 2);
   dp.add_congruence((A %= 0) / 3);
 
-  dp.shrink_bounding_box(box);
+  print_congruences(dp.domain1(), "*** dp.domain1() ***");
+  print_constraints(dp.domain2(), "*** dp.domain2() ***");
+
+  Rational_Box box(dp);
+  box.add_constraint(3*A >= 2);
+  box.add_constraint(A <= 6);
 
   Rational_Box known_box(1);
-  known_box.add_constraint(A == 3);
+  // FIXME: how can this expected from the direct product?
+  // known_box.add_constraint(A == 3);
+  known_box.add_constraint(A >= 2);
+  known_box.add_constraint(A <= 4);
 
-  bool ok = !/*FIX*/ (box == known_box);
+  bool ok = (box == known_box);
+
+  print_constraints(box, "*** box ***");
+  print_constraints(known_box, "*** known_box ***");
 
   return ok;
 }
