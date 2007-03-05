@@ -281,48 +281,6 @@ Box<Interval>::difference_assign(const Box& y) {
   x.box_difference_assign(y);
 }
 
-template <typename Interval>
-inline void
-Box<Interval>::raise_lower_bound(const dimension_type k, const bool closed,
-				 Coefficient_traits::const_reference n,
-				 Coefficient_traits::const_reference d) {
-  assert(k < seq.size());
-  assert(d != 0);
-  mpq_class q;
-  assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
-  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-  q.canonicalize();
-  I_Result r = refine_existential(seq[k],
-				  (closed ? GREATER_OR_EQUAL : GREATER_THAN),
-				  q);
-  // FIXME: r is a mask I_EMPTY may be or'ed with I_SINGULARITIES
-  if (r == I_EMPTY)
-    set_empty();
-  else if (r & I_MAYBE_EMPTY)
-    empty_up_to_date = false;
-}
-
-template <typename Interval>
-inline void
-Box<Interval>::lower_upper_bound(const dimension_type k, const bool closed,
-				 Coefficient_traits::const_reference n,
-				 Coefficient_traits::const_reference d) {
-  assert(k < seq.size());
-  assert(d != 0);
-  mpq_class q;
-  assign_r(q.get_num(), n, ROUND_NOT_NEEDED);
-  assign_r(q.get_den(), d, ROUND_NOT_NEEDED);
-  q.canonicalize();
-  I_Result r = refine_existential(seq[k],
-				  (closed ? LESS_OR_EQUAL : LESS_THAN),
-				  q);
-  // FIXME: r is a mask I_EMPTY may be or'ed with I_SINGULARITIES
-  if (r == I_EMPTY)
-    set_empty();
-  else if (r & I_MAYBE_EMPTY)
-    empty_up_to_date = false;
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Box_inlines_hh)

@@ -1008,37 +1008,6 @@ public:
   //! Causes the box to become empty, i.e., to represent the empty set.
   void set_empty();
 
-  /*! \brief
-    Raises the lower bound of the interval corresponding
-    to the <CODE>k</CODE>-th space dimension.
-
-    Intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension
-    with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
-    An undefined behavior is obtained if \p k is greater than or equal to
-    the space dimension of \p *this or if \p d is equal to zero.
-  */
-  void raise_lower_bound(dimension_type k, bool closed,
-			 Coefficient_traits::const_reference n,
-			 Coefficient_traits::const_reference d);
-
-  /*! \brief
-    Lowers the upper bound of the interval corresponding
-    to the <CODE>k</CODE>-th space dimension.
-
-    Intersects the interval corresponding to the <CODE>k</CODE>-th
-    space dimension
-    with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
-    is <CODE>false</CODE>.
-    An undefined behavior is obtained if \p k is greater than or equal to
-    the space dimension of \p *this or if \p d is equal to zero.
-  */
-  void lower_upper_bound(dimension_type k, bool closed,
-			 Coefficient_traits::const_reference n,
-			 Coefficient_traits::const_reference d);
-
   //! Returns a system of constraints defining \p *this.
   Constraint_System constraints() const;
 
