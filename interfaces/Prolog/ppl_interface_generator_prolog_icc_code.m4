@@ -660,7 +660,9 @@ ppl_@CLASS@_get_covering_box(Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
     for (dimension_type i = dimension; i-- > 0; )
-      Prolog_construct_cons(tail, interval_term(box[i]), tail);
+      Prolog_construct_cons(tail,
+                            interval_term(box.get_interval(Variable(i))),
+                            tail);
     if (Prolog_unify(t_bb, tail))
       return PROLOG_SUCCESS;
   }
@@ -698,7 +700,9 @@ ppl_@CLASS@_get_bounding_box(Prolog_term_ref t_ph,
     }
     else
       for (dimension_type i = ph->space_dimension(); i-- > 0; )
-        Prolog_construct_cons(tail, interval_term(box[i]), tail);
+        Prolog_construct_cons(tail,
+                              interval_term(box.get_interval(Variable(i))),
+                              tail);
     if (Prolog_unify(t_bb, tail))
       return PROLOG_SUCCESS;
   }
