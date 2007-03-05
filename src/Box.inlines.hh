@@ -152,6 +152,20 @@ Box<Interval>::upper_bound_assign(const Box& y) {
 }
 
 template <typename Interval>
+inline bool
+Box<Interval>::box_hull_assign_if_exact(const Box&) {
+  // TODO: this must be properly implemented.
+  return false;
+}
+
+template <typename Interval>
+inline bool
+Box<Interval>::upper_bound_assign_if_exact(const Box& y) {
+  Box& x = *this;
+  return x.box_hull_assign_if_exact(y);
+}
+
+template <typename Interval>
 inline void
 Box<Interval>::expand_space_dimension(const Variable var,
 				      const dimension_type m) {
