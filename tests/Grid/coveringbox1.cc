@@ -51,8 +51,8 @@ test02() {
   Variable B(1);
 
   Rational_Box box(SPACE_DIM);
-  box.raise_lower_bound(0, true, 0, 1);
-  box.raise_lower_bound(1, true, 0, 1);
+  box.add_constraint(A >= 0);
+  box.add_constraint(B >= 0);
 
   Grid gr(box, From_Covering_Box());
 
@@ -74,10 +74,10 @@ test03() {
   Variable B(1);
 
   Rational_Box box(SPACE_DIM);
-  box.raise_lower_bound(0, true, -2, 3);
-  box.lower_upper_bound(0, true, 4, 1);
-  box.raise_lower_bound(1, true, -10, 1);
-  box.lower_upper_bound(1, true, 12, 3);
+  box.add_constraint(3*A >= -2);
+  box.add_constraint(A <= 4);
+  box.add_constraint(B >= -10);
+  box.add_constraint(3*B <= 12);
 
   Grid gr(box, From_Covering_Box());
 
@@ -100,11 +100,11 @@ test04() {
   Variable C(2);
 
   Rational_Box box(3);
-  box.raise_lower_bound(0, true, -2, 3);
-  box.lower_upper_bound(0, true, 4, 1);
-  box.raise_lower_bound(1, true, -10, 1);
-  box.lower_upper_bound(1, true, 12, 3);
-  box.raise_lower_bound(2, true, 15, 3);
+  box.add_constraint(3*A >= -2);
+  box.add_constraint(A <= 4);
+  box.add_constraint(B >= -10);
+  box.add_constraint(3*B <= 12);
+  box.add_constraint(3*C >= 15);
 
   Grid gr(box, From_Covering_Box());
 
@@ -156,11 +156,12 @@ test06() {
 // A box which is a point.
 bool
 test07() {
+  Variable A(0);
+  Variable B(1);
+
   Rational_Box box(2);
-  box.raise_lower_bound(0, true, 2, 1);
-  box.lower_upper_bound(0, true, 2, 1);
-  box.raise_lower_bound(1, true, 4, 1);
-  box.lower_upper_bound(1, true, 4, 1);
+  box.add_constraint(A == 2);
+  box.add_constraint(B == 4);
 
   Grid gr(box, From_Covering_Box());
 
@@ -180,10 +181,10 @@ test08() {
   Variable B(1);
 
   Rational_Box box(2);
-  box.raise_lower_bound(0, true, 0, 1);
-  box.lower_upper_bound(0, true, 1, 1);
-  box.raise_lower_bound(1, true, 0, 1);
-  box.lower_upper_bound(1, true, 1, 1);
+  box.add_constraint(A >= 0);
+  box.add_constraint(B >= 0);
+  box.add_constraint(A <= 1);
+  box.add_constraint(B <= 1);
 
   Grid gr(box, From_Covering_Box());
 
@@ -207,9 +208,9 @@ test09() {
   Variable B(1);
 
   Rational_Box box(2);
-  box.raise_lower_bound(0, true, 0, 1);
-  box.raise_lower_bound(1, true, 0, 1);
-  box.lower_upper_bound(1, true, 1, 2);
+  box.add_constraint(A >= 0);
+  box.add_constraint(B >= 0);
+  box.add_constraint(2*B <= 1);
 
   Grid gr(box, From_Covering_Box());
 
@@ -231,9 +232,9 @@ test10() {
   Variable B(1);
 
   Rational_Box box(2);
-  box.lower_upper_bound(0, true, 3, 7);
-  box.raise_lower_bound(1, true, 0, 1);
-  box.lower_upper_bound(1, true, 1, 2);
+  box.add_constraint(7*A <= 3);
+  box.add_constraint(B >= 0);
+  box.add_constraint(2*B <= 1);
 
   Grid gr(box, From_Covering_Box());
 
@@ -252,11 +253,14 @@ test10() {
 // makes the box empty.
 bool
 test11() {
+  Variable A(0);
+  Variable B(1);
+
   Rational_Box box(2);
-  box.raise_lower_bound(1, true, 0, 1);
-  box.lower_upper_bound(0, true, 3, 7);
-  box.raise_lower_bound(1, false, 1, 2);
-  box.lower_upper_bound(1, true, 1, 2);
+  box.add_constraint(7*A <= 3);
+  box.add_constraint(B >= 0);
+  box.add_constraint(2*B < 1);
+  box.add_constraint(2*B >= 1);
 
   try {
     Grid gr(box, From_Covering_Box());
@@ -298,15 +302,15 @@ test13() {
   Variable F(5);
 
   Rational_Box box(6);
-  box.raise_lower_bound(0, true, -2, 3);
-  box.lower_upper_bound(0, true, 5, 1);
-  box.raise_lower_bound(1, true, -11, 4);
-  box.lower_upper_bound(1, true, 12, 3);
-  box.raise_lower_bound(2, true, 15, 3);
-  box.lower_upper_bound(3, true, 18, 3);
-  box.raise_lower_bound(4, true, 15, 7);
-  box.raise_lower_bound(5, true, -15, 7);
-  box.lower_upper_bound(5, true, 15, 7);
+  box.add_constraint(3*A >= -2);
+  box.add_constraint(A <= 5);
+  box.add_constraint(4*B >= -11);
+  box.add_constraint(3*B <= 12);
+  box.add_constraint(3*C >= 15);
+  box.add_constraint(3*D <= 18);
+  box.add_constraint(7*E >= 15);
+  box.add_constraint(7*F >= -15);
+  box.add_constraint(7*F <= 15);
 
   Grid gr(box, From_Covering_Box());
 

@@ -213,8 +213,7 @@ test09() {
   Variable B(1);
 
   Rational_Box box(2);
-  box.raise_lower_bound(1, true, 2, 3);
-  box.lower_upper_bound(1, true, 2, 3);
+  box.add_constraint(3*B == 2);
 
   Product dp(box);
 
@@ -242,10 +241,9 @@ test10() {
   Variable B(1);
 
   Rational_Box box(2);
-  box.raise_lower_bound(0, true, 0, 1);
-  box.lower_upper_bound(0, true, 0, 1);
-  box.raise_lower_bound(1, true, 2, 3);
-  box.lower_upper_bound(1, true, 3, 3);
+  box.add_constraint(A == 0);
+  box.add_constraint(3*B >= 2);
+  box.add_constraint(3*B <= 3);
 
   Product dp(box, From_Covering_Box());
 
@@ -997,8 +995,8 @@ test51() {
   dp.get_covering_box(box);
 
   Rational_Box known_box(1);
-  known_box.raise_lower_bound(0, true, 0, 1);
-  known_box.lower_upper_bound(0, true, 3, 1);
+  known_box.add_constraint(A >= 0);
+  known_box.add_constraint(A <= 3);
 
   bool ok = (box == known_box);
 
@@ -1019,8 +1017,7 @@ test52() {
   dp.get_covering_box(box);
 
   Rational_Box known_box(1);
-  known_box.raise_lower_bound(1, true, 0 /* FIX */, 1);
-  known_box.lower_upper_bound(1, true, 0 /* FIX */, 1);
+  known_box.add_constraint(B == 0 /* FIX */);
 
   bool ok = (box == known_box);
 
@@ -1043,8 +1040,8 @@ test53() {
   dp.get_covering_box(box);
 
   Rational_Box known_box(2);
-  known_box.raise_lower_bound(0, true, 0, 1);
-  known_box.lower_upper_bound(0, true, 1, 1);
+  known_box.add_constraint(A >= 0);
+  known_box.add_constraint(A <= 1);
 
   bool ok = !/* FIX */ (box == known_box);
 
