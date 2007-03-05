@@ -945,10 +945,20 @@ public:
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
   /*! \brief
-    Returns a reference the interval that bounds
-    the box on the <CODE>k</CODE>-th space dimension.
+    Returns a reference the interval that bounds \p var.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
   */
-  const Interval& operator[](dimension_type k) const;
+  const Interval& get_interval(Variable var) const;
+
+  /*! \brief
+    Returns a reference the interval that bounds \p var.
+
+    \exception std::invalid_argument
+    Thrown if \p var is not a space dimension of \p *this.
+  */
+  void set_interval(Variable var, const Interval& i);
 
   /*! \brief
     If the <CODE>k</CODE>-th space dimension is unbounded below, returns
@@ -1054,6 +1064,18 @@ private:
   Parma_Polyhedra_Library::operator==<Interval>(const Box<Interval>& x,
 						const Box<Interval>& y);
 
+#if !defined(__GNUC__) || __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3)
+  friend std::ostream&
+  Parma_Polyhedra_Library
+  ::IO_Operators::operator<<<>(std::ostream& s, const Box<Interval>& box);
+#else
+  // This is too lax than wanted.
+  template <typename U>
+  friend std::ostream&
+  Parma_Polyhedra_Library
+  ::IO_Operators::operator<<(std::ostream& s, const Box<U>& box);
+#endif
+
   //! The type of sequence used to implement the box.
   typedef std::vector<Interval> Sequence;
 
@@ -1081,6 +1103,12 @@ private:
     returns <CODE>true</CODE> if and only if it is so.
   */
   bool check_empty() const;
+
+   /*! \brief
+     Returns a reference the interval that bounds
+     the box on the <CODE>k</CODE>-th space dimension.
+   */
+  const Interval& operator[](dimension_type k) const;
 
   /*! \brief
     Use the constraint \p c to refine \p *this.

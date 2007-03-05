@@ -82,6 +82,41 @@ Box<Interval>::operator[](const dimension_type k) const {
 }
 
 template <typename Interval>
+inline const Interval&
+Box<Interval>::get_interval(const Variable var) const {
+  if (space_dimension() < var.space_dimension())
+    throw_dimension_incompatible("get_interval(v)", "v", var);
+
+  if (is_empty()) {
+    // FIXME: when we will have the right Interval constructors, this
+    // must be simplified.
+    static Interval empty_interval;
+    empty_interval.set_empty();
+    return empty_interval;
+  }
+
+  return seq[var.id()];
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::set_interval(const Variable var, const Interval& i) {
+  const dimension_type space_dim = space_dimension();
+  if (space_dim < var.space_dimension())
+    throw_dimension_incompatible("set_interval(v, i)", "v", var);
+
+  if (is_empty() && space_dim >= 2)
+    // If the box is empty, and has dimension >= 2, setting only one
+    // interval will not make it non-empty.
+    return;
+
+  seq[var.id()] = i;
+  empty_up_to_date = false;
+
+  assert(OK());
+}
+
+template <typename Interval>
 inline bool
 Box<Interval>::marked_empty() const {
   return empty_up_to_date && empty;
