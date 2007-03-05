@@ -562,15 +562,6 @@ Direct_Product<D1, D2>::strictly_contains(const Direct_Product& y) const {
   return d1.strictly_contains(y.d1) && d2.strictly_contains(y.d2);
 }
 
-#if 0
-template <typename D1, typename D2>
-template <typename Box>
-inline void
-Direct_Product<D1, D2>::get_covering_box(Box& box) const {
-  used(box);
-}
-#endif
-
 // FIXME: Improve this name.
 PPL_OUTPUT_2_PARAM_TEMPLATE_DEFINITIONS(D1, D2, Direct_Product)
 

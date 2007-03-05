@@ -233,15 +233,15 @@ Grid::Grid(const Box& box, From_Covering_Box dummy)
   assert(OK());
 }
 
-template <typename Box>
+template <typename Interval>
 void
-Grid::get_covering_box(Box& box) const {
+Grid::get_covering_box(Box<Interval>& box) const {
   // Dimension-compatibility check.
   if (space_dim > box.space_dimension())
     throw_dimension_incompatible("get_covering_box(box)", "box",
 				 box.space_dimension());
 
-  Box new_box(box.space_dimension());
+  Box<Interval> new_box(box.space_dimension());
 
   if (marked_empty()) {
     box = new_box;
@@ -369,7 +369,7 @@ Grid::get_covering_box(Box& box) const {
     }
   }
 
-  box = new_box;
+  box.swap(new_box);
 }
 
 template <typename Partial_Function>

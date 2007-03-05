@@ -909,8 +909,8 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p box are dimension-incompatible.
   */
-  template <typename Box>
-  void get_covering_box(Box& box) const;
+  template <typename Interval>
+  void get_covering_box(Box<Interval>& box) const;
 
   //! Checks if all the invariants are satisfied.
   /*!
