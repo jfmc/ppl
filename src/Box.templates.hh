@@ -1571,11 +1571,13 @@ Box<Interval>::refine_no_check(const Constraint& c) {
     return;
 
   dimension_type space_dim = space_dimension();
+  Interval k[space_dim];
   Interval p[space_dim];
   for (dimension_type i = space_dim; i-- > 0; ) {
+    k[i] = c.coefficient(Variable(i));
     Interval& p_i = p[i];
     p_i = seq[i];
-    mul_assign(p_i, p_i, c.coefficient(Variable(i)));
+    mul_assign(p_i, p_i, k[i]);
   }
   const Coefficient& inhomogeneous_term = c.inhomogeneous_term();
   for (dimension_type i = space_dim; i-- > 0; ) {
@@ -1589,7 +1591,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
 	continue;
       add_assign(q, q, p[j]);
     }
-    div_assign(q, q, coefficient_i);
+    div_assign(q, q, k[i]);
     neg_assign(q, q);
     Relation_Symbol rel;
     switch (c.type()) {
