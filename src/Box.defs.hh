@@ -725,6 +725,15 @@ public:
 
   /*! \brief
     Assigns to \p *this the result of computing the
+    \ref Time_Elapse_Operator "time-elapse" between \p *this and \p y.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+  */
+  void time_elapse_assign(const Box& y);
+
+  /*! \brief
+    Assigns to \p *this the result of computing the
     \ref CC76_extrapolation "CC76-widening" between \p *this and \p y.
 
     \param y

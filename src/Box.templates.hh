@@ -1300,6 +1300,44 @@ Box<Interval>::box_difference_assign(const Box& y) {
 }
 
 template <typename Interval>
+void
+Box<Interval>::time_elapse_assign(const Box& y) {
+  Box& x = *this;
+  const dimension_type x_space_dim = x.space_dimension();
+
+  // Dimension-compatibility check.
+  if (x_space_dim != y.space_dimension())
+    x.throw_dimension_incompatible("time_elapse_assign(y)", y);
+
+  // Dealing with the zero-dimensional case.
+  if (x_space_dim == 0) {
+    if (y.marked_empty())
+      x.set_empty();
+    return;
+  }
+
+  // If either one of `x' or `y' is empty, the result is empty too.
+  // Note: if possible, avoid cost of checking for emptiness.
+  if (x.marked_empty() || y.marked_empty()
+      || x.is_empty() || y.is_empty()) {
+    x.set_empty();
+    return;
+  }
+
+  for (dimension_type i = x_space_dim; i-- > 0; ) {
+    Interval& x_seq_i = x.seq[i];
+    const Interval& y_seq_i = y.seq[i];
+    if (!x_seq_i.lower_is_unbounded())
+      if (y_seq_i.lower_is_unbounded() || y_seq_i.lower() < 0)
+	x_seq_i.lower_set_unbounded();
+    if (!x_seq_i.upper_is_unbounded())
+      if (y_seq_i.upper_is_unbounded() || y_seq_i.upper() > 0)
+	x_seq_i.upper_set_unbounded();
+  }
+  assert(x.OK());
+}
+
+template <typename Interval>
 inline void
 Box<Interval>::add_space_dimensions_and_project(const dimension_type m) {
   // Adding no dimensions is a no-op.
