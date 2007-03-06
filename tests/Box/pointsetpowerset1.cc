@@ -51,44 +51,61 @@ test02() {
   ps1.add_disjunct(TBox(cs));
 
   Pointset_Powerset<TBox> ps2(ps1);
-  //ps2.affine_image(x, 2*x+1, 2);
-  ps2.omega_reduce();
-  ps2.affine_image(x, Linear_Expression(0), 2);
+  ps2.affine_image(x, 2*x+1, 2);
 
   print_constraints(ps1, "*** ps1 ***");
   print_constraints(ps2, "*** ps2 ***");
 
   ps1.intersection_assign(ps2);
 
-  print_constraints(ps1, "*** ps1.intersect_assign(ps2) ***");
+  Pointset_Powerset<TBox> known_result(1, EMPTY);
+  TBox box(1);
+  box.add_constraint(2*x >= 1);
+  box.add_constraint(2*x <= 2);
+  known_result.add_disjunct(box);
 
-  return ps1.OK() && ps2.OK();
+  bool ok = (ps1 == known_result);
+
+  print_constraints(ps1, "*** ps1.intersect_assign(ps2) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
 }
 
-#if 0
 bool
 test03() {
   Variable x(0);
-  Constraint_System cs;
-  Pointset_Powerset<C_Polyhedron> c_ps(1, EMPTY);
 
+  Pointset_Powerset<TBox> ps(1, EMPTY);
+  Constraint_System cs;
   cs.clear();
   cs.insert(x >= 0);
-  cs.insert(x <= 2);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  cs.insert(x < 2);
+  ps.add_disjunct(TBox(cs));
 
   cs.clear();
   cs.insert(x >= 1);
   cs.insert(x <= 3);
-  c_ps.add_disjunct(C_Polyhedron(cs));
+  ps.add_disjunct(TBox(cs));
 
-  c_ps.add_constraint(x == 1);
+  print_constraints(ps, "*** ps ***");
 
-  Pointset_Powerset<TBox> nnc_ps(c_ps);
+  ps.add_constraint(x == 1);
 
-  return nnc_ps.OK();
+  Pointset_Powerset<TBox> known_result(1, EMPTY);
+  TBox box(1);
+  box.add_constraint(x == 1);
+  known_result.add_disjunct(box);
+
+  bool ok = (ps == known_result);
+
+  print_constraints(ps, "*** ps.add_constraint(x == 1) ***");
+  print_constraints(known_result, "*** known_result ***");
+
+  return ok;
 }
 
+#if 0
 bool
 test04() {
   Variable x(0);
@@ -458,13 +475,40 @@ test19() {
 }
 #endif
 
+bool
+test20() {
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  Pointset_Powerset<TBox> ps(3, EMPTY);
+  for (int i = -10; i <= 9; ++i) {
+    TBox box(3, UNIVERSE);
+    box.add_constraint(i <= x);
+    box.add_constraint(x <= i+1);
+    const TBox::interval_type& ix = box.get_interval(x);
+    TBox::interval_type iy = ix*ix;
+    box.set_interval(y, iy);
+    ps.add_disjunct(box);
+  }
+
+  print_constraints(ps, "*** ps ***");
+
+  ps.affine_image(z, y+2*x+1, 2);
+  ps.add_constraint(z == y);
+
+  print_constraints(ps, "*** ps ***");
+
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
   DO_TEST(test01);
   DO_TEST(test02);
-#if 0
   DO_TEST(test03);
+#if 0
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
@@ -482,4 +526,5 @@ BEGIN_MAIN
   DO_TEST(test18);
   DO_TEST(test19);
 #endif
+  DO_TEST(test20);
 END_MAIN
