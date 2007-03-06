@@ -652,9 +652,7 @@ ascii_dump_load2.dat \
 ascii_dump_load3.dat \
 matrix1.dat \
 linearsystem1.dat \
-writeconsys1.dat \
 writegensys1.dat \
 writepolyhedron1.dat \
 writepolyhedron2.dat \
-writerelation1.dat \
 writevariable1.dat
