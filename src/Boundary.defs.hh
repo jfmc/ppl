@@ -604,7 +604,6 @@ inline Result
 mul_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type1, const T1& x1, const Info1& info1,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
-  assert(x1 != Constant<0>::value && x2 != Constant<0>::value);
   bool shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
     shrink = boundary_infinity_is_open(type1, info1) &&
@@ -621,6 +620,7 @@ mul_assign(Boundary_Type to_type, To& to, To_Info& to_info,
   bool check = (To_Info::check_inexact
 		|| (!shrink && (To_Info::store_open
 				|| to_info.has_restriction())));
+  assert(x1 != Constant<0>::value && x2 != Constant<0>::value);
   // FIXME: extended handling is not needed
   Result r = mul_assign_r(to, x1, x2, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
@@ -661,7 +661,6 @@ inline Result
 div_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 	   Boundary_Type type1, const T1& x1, const Info1& info1,
 	   Boundary_Type type2, const T2& x2, const Info2& info2) {
-  assert(x1 != Constant<0>::value && x2 != Constant<0>::value);
   bool shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
     shrink = boundary_infinity_is_open(type1, info1);
@@ -676,6 +675,7 @@ div_assign(Boundary_Type to_type, To& to, To_Info& to_info,
   bool check = (To_Info::check_inexact
 		|| (!shrink && (To_Info::store_open
 				|| to_info.has_restriction())));
+  assert(x1 != Constant<0>::value && x2 != Constant<0>::value);
   // FIXME: extended handling is not needed
   Result r = div_assign_r(to, x1, x2, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, shrink, r);
