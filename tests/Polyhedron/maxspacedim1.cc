@@ -81,6 +81,9 @@ test01() {
   test01_DO_CONSTR_WRD(Pointset_Ask_Tell, BD_Shape);
   test01_DO_CONSTR_WRD(Pointset_Ask_Tell, Octagonal_Shape);
 
+  nout << "Parma_Polyhedra_Library::max_space_dimension() = "
+       << max_space_dimension() << endl;
+
   // FIXME: we are not testing very much.
   return true;
 }
