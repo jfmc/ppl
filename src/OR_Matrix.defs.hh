@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ .  */
 #include <iosfwd>
 
 #ifndef EXTRA_ROW_DEBUG
-#define EXTRA_ROW_DEBUG 1
+#define EXTRA_ROW_DEBUG 0
 #endif
 
 namespace Parma_Polyhedra_Library {
