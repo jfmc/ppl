@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
 #include "Grid.defs.hh"
+#include "Rational_Box.hh"
 #include "BD_Shape.defs.hh"
 #include "Octagonal_Shape.defs.hh"
 #include <algorithm>
@@ -45,6 +46,8 @@ max_space_dimension() {
     d = std::min(d, C_Polyhedron::max_space_dimension());
     d = std::min(d, NNC_Polyhedron::max_space_dimension());
     d = std::min(d, Grid::max_space_dimension());
+    // FIXME: what about all other boxes?
+    d = std::min(d, Rational_Box::max_space_dimension());
     d = std::min(d, BD_Shape<int8_t>::max_space_dimension());
     d = std::min(d, BD_Shape<int16_t>::max_space_dimension());
     d = std::min(d, BD_Shape<int32_t>::max_space_dimension());
@@ -52,6 +55,8 @@ max_space_dimension() {
     d = std::min(d, BD_Shape<float>::max_space_dimension());
     d = std::min(d, BD_Shape<double>::max_space_dimension());
     d = std::min(d, BD_Shape<long double>::max_space_dimension());
+    d = std::min(d, BD_Shape<mpz_class>::max_space_dimension());
+    d = std::min(d, BD_Shape<mpq_class>::max_space_dimension());
     d = std::min(d, Octagonal_Shape<int8_t>::max_space_dimension());
     d = std::min(d, Octagonal_Shape<int16_t>::max_space_dimension());
     d = std::min(d, Octagonal_Shape<int32_t>::max_space_dimension());
@@ -59,6 +64,8 @@ max_space_dimension() {
     d = std::min(d, Octagonal_Shape<float>::max_space_dimension());
     d = std::min(d, Octagonal_Shape<double>::max_space_dimension());
     d = std::min(d, Octagonal_Shape<long double>::max_space_dimension());
+    d = std::min(d, Octagonal_Shape<mpz_class>::max_space_dimension());
+    d = std::min(d, Octagonal_Shape<mpq_class>::max_space_dimension());
     computed = true;
   }
   return d;
