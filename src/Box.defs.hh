@@ -440,6 +440,7 @@ public:
 
   /*! \brief
     Use the constraint \p c to refine \p *this.
+    FIXME: this is not true.
 
     \param c
     The constraint to be added. If it is not an interval constraint, it
@@ -451,16 +452,39 @@ public:
   void add_constraint(const Constraint& c);
 
   /*! \brief
+     Use the constraints in \p cs to refine \p *this.
+     FIXME: this is not true.
+
+     \param  cs
+     The constraints to be added. Constraints that are not interval
+     constraints will be simply ignored.
+
+     \exception std::invalid_argument
+     Thrown if \p *this and \p cs are dimension-incompatible.
+  */
+  void add_constraints(const Constraint_System& cs);
+
+  /*! \brief
+    Use the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be used for refinement.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are dimension-incompatible.
+  */
+  void refine(const Constraint& c);
+
+  /*! \brief
     Use the constraints in \p cs to refine \p *this.
 
     \param  cs
-    The constraints to be added. Constraints that are not interval
-    constraints will be simply ignored.
+    The constraints to be used for refinement.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p cs are dimension-incompatible.
   */
-  void add_constraints(const Constraint_System& cs);
+  void refine(const Constraint_System& cs);
 
   //! Assigns to \p *this the intersection of \p *this and \p y.
   /*!
@@ -1090,6 +1114,7 @@ private:
 
   /*! \brief
     Use the constraint \p c to refine \p *this.
+    FIXME: this is not true.
 
     \param c
     The constraint to be added. If it is not an interval constraint, it
@@ -1100,6 +1125,7 @@ private:
 
   /*! \brief
     Use the constraints in \p cs to refine \p *this.
+    FIXME: this is not true.
 
     \param  cs
     The constraints to be added. Constraints that are not interval
@@ -1107,6 +1133,28 @@ private:
     dimension-incompatible with \p *this, the behavior is undefined.
   */
   void add_constraints_no_check(const Constraint_System& cs);
+
+  /*! \brief
+    Use the constraint \p c to refine \p *this.
+
+    \param c
+    The constraint to be added. If it is dimension-incompatible with
+    \p *this, the behavior is undefined.
+
+    FIXME: mention the possibility of non-termination.
+  */
+  void refine_no_check(const Constraint& c);
+
+  /*! \brief
+    Use the constraints in \p cs to refine \p *this.
+
+    \param  cs
+    The constraints to be added. If it is dimension-incompatible with
+    \p *this, the behavior is undefined.
+
+    FIXME: mention the possibility of non-termination.
+  */
+  void refine_no_check(const Constraint_System& cs);
 
   //! Checks if and how \p expr is bounded in \p *this.
   /*!

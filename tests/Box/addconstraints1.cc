@@ -146,6 +146,41 @@ test05() {
   return false;
 }
 
+#if 0
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B == 5);
+
+  TBox box(2);
+  box.add_constraint(A >= 0);
+
+  print_constraints(box, "*** box.add_constraints(A >= 0) ***");
+
+  box.refine(B >= A);
+
+  print_constraints(box, "*** box.add_constraints(B >= A) ***");
+
+#if 0
+  Rational_Box known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B == 5);
+  known_result.add_constraint(B - A <= 5);
+
+  bool ok = (Rational_Box(box1) == known_result);
+
+  print_constraints(known_result, "*** known_result ***");
+#endif
+  bool ok = true;
+
+  return ok;
+}
+#endif
+
 } // namespace
 
 BEGIN_MAIN

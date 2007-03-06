@@ -275,10 +275,60 @@ Box<Interval>::set_empty() {
 }
 
 template <typename Interval>
-void
+inline void
 Box<Interval>::difference_assign(const Box& y) {
   Box& x = *this;
   x.box_difference_assign(y);
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::add_constraint(const Constraint& c) {
+  const dimension_type c_space_dim = c.space_dimension();
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dimension())
+    throw_dimension_incompatible("add_constraint(c)", c);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  add_constraint_no_check(c);
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::add_constraints(const Constraint_System& cs) {
+  // Dimension-compatibility check.
+  if (cs.space_dimension() > space_dimension())
+    throw_dimension_incompatible("add_constraints(cs)", cs);
+
+  add_constraints_no_check(cs);
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::refine(const Constraint& c) {
+  const dimension_type c_space_dim = c.space_dimension();
+  // Dimension-compatibility check.
+  if (c_space_dim > space_dimension())
+    throw_dimension_incompatible("add_constraint(c)", c);
+
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
+  refine_no_check(c);
+}
+
+template <typename Interval>
+inline void
+Box<Interval>::refine(const Constraint_System& cs) {
+  // Dimension-compatibility check.
+  if (cs.space_dimension() > space_dimension())
+    throw_dimension_incompatible("add_constraints(cs)", cs);
+
+  refine_no_check(cs);
 }
 
 } // namespace Parma_Polyhedra_Library

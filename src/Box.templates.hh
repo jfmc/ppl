@@ -1555,21 +1555,6 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
 
 template <typename Interval>
 void
-Box<Interval>::add_constraint(const Constraint& c) {
-  const dimension_type c_space_dim = c.space_dimension();
-  // Dimension-compatibility check.
-  if (c_space_dim > space_dimension())
-    throw_dimension_incompatible("add_constraint(c)", c);
-
-  // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
-    return;
-
-  add_constraint_no_check(c);
-}
-
-template <typename Interval>
-void
 Box<Interval>::add_constraints_no_check(const Constraint_System& cs) {
   assert(cs.space_dimension() <= space_dimension());
   for (Constraint_System::const_iterator i = cs.begin(),
@@ -1580,12 +1565,56 @@ Box<Interval>::add_constraints_no_check(const Constraint_System& cs) {
 
 template <typename Interval>
 void
-Box<Interval>::add_constraints(const Constraint_System& cs) {
-  // Dimension-compatibility check.
-  if (cs.space_dimension() > space_dimension())
-    throw_dimension_incompatible("add_constraints(cs)", cs);
+Box<Interval>::refine_no_check(const Constraint& c) {
+  assert(c.space_dimension() <= space_dimension());
+  if (is_empty())
+    return;
 
-  add_constraints_no_check(cs);
+  dimension_type space_dim = space_dimension();
+  Interval p[space_dim];
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    Interval& p_i = p[i];
+    p_i = seq[i];
+    mul_assign(p_i, p_i, c.coefficient(Variable(i)));
+  }
+  const Coefficient& inhomogeneous_term = c.inhomogeneous_term();
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    const Coefficient& coefficient_i = c.coefficient(Variable(i));
+    int sgn_coefficient_i = sgn(coefficient_i);
+    if (sgn_coefficient_i == 0)
+      continue;
+    Interval q(inhomogeneous_term);
+    for (dimension_type j = space_dim; j-- > 0; ) {
+      if (i == j)
+	continue;
+      add_assign(q, q, p[j]);
+    }
+    div_assign(q, q, coefficient_i);
+    neg_assign(q, q);
+    Relation_Symbol rel;
+    switch (c.type()) {
+    case Constraint::EQUALITY:
+      rel = EQUAL;
+      break;
+    case Constraint::NONSTRICT_INEQUALITY:
+      rel = (sgn_coefficient_i > 0) ? GREATER_OR_EQUAL : LESS_OR_EQUAL;
+      break;
+    case Constraint::STRICT_INEQUALITY:
+      rel = (sgn_coefficient_i > 0) ? GREATER_THAN : LESS_THAN;
+      break;
+    }
+    refine_existential(seq[i], rel, q);
+    // FIXME: could/should we exploit the return value of refine_existential,
+    //        in case it is available?
+    // FIMXE: should we instead be lazy and do not even bother about
+    //        the possibility the interval becomes empty apart from setting
+    //        empty_up_to_date = false?
+    if (seq[i].is_empty()) {
+      set_empty();
+      break;
+    }
+  }
+  assert(OK());
 }
 
 template <typename Interval>
