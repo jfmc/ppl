@@ -49,7 +49,6 @@ $(top_builddir)/src/libppl.la \
 #generalizedaffineimage1
 #generalizedaffinepreimage1
 #membytes1
-#timeelapse1
 
 # Tests that do not succeed yet (maybe even known result is wrong).
 #affineimage1
@@ -89,6 +88,7 @@ minconstraints1 \
 pointsetpowerset1 \
 relations1 relations2 \
 removespacedims1 \
+timeelapse1 \
 universe1 \
 writebox1
 
@@ -225,7 +225,7 @@ relations2_SOURCES = relations2.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 
-#timeelapse1_SOURCES = timeelapse1.cc
+timeelapse1_SOURCES = timeelapse1.cc
 
 universe1_SOURCES = universe1.cc
 
