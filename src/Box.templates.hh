@@ -1570,23 +1570,22 @@ Box<Interval>::refine_no_check(const Constraint& c) {
   if (is_empty())
     return;
 
-  dimension_type space_dim = space_dimension();
-  Interval k[space_dim];
-  Interval p[space_dim];
-  for (dimension_type i = space_dim; i-- > 0; ) {
+  dimension_type c_space_dim = c.space_dimension();
+  Interval k[c_space_dim];
+  Interval p[c_space_dim];
+  for (dimension_type i = c_space_dim; i-- > 0; ) {
     k[i] = c.coefficient(Variable(i));
     Interval& p_i = p[i];
     p_i = seq[i];
     mul_assign(p_i, p_i, k[i]);
   }
   const Coefficient& inhomogeneous_term = c.inhomogeneous_term();
-  for (dimension_type i = space_dim; i-- > 0; ) {
-    const Coefficient& coefficient_i = c.coefficient(Variable(i));
-    int sgn_coefficient_i = sgn(coefficient_i);
+  for (dimension_type i = c_space_dim; i-- > 0; ) {
+    int sgn_coefficient_i = sgn(c.coefficient(Variable(i)));
     if (sgn_coefficient_i == 0)
       continue;
     Interval q(inhomogeneous_term);
-    for (dimension_type j = space_dim; j-- > 0; ) {
+    for (dimension_type j = c_space_dim; j-- > 0; ) {
       if (i == j)
 	continue;
       add_assign(q, q, p[j]);
