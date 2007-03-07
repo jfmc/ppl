@@ -1295,17 +1295,12 @@ namespace Parma_Polyhedra_Library {
   If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
   then it will be set to the index of the only variable having
   a non-zero coefficient in \p c.
-
-  \param c_coeff
-  If <CODE>true</CODE> is returned and if \p c_num_vars is not set to 0,
-  then it will be set to the value of the only non-zero coefficient in \p c.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 bool extract_interval_constraint(const Constraint& c,
 				 const dimension_type c_space_dim,
 				 dimension_type& c_num_vars,
-				 dimension_type& c_only_var,
-				 Coefficient& c_coeff);
+				 dimension_type& c_only_var);
 
 } // namespace Parma_Polyhedra_Library
 

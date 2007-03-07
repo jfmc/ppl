@@ -32,8 +32,7 @@ bool
 PPL::extract_interval_constraint(const Constraint& c,
 				 const dimension_type c_space_dim,
 				 dimension_type& c_num_vars,
-				 dimension_type& c_only_var,
-				 Coefficient& c_coeff) {
+				 dimension_type& c_only_var) {
   // Check for preconditions.
   assert(c.space_dimension() == c_space_dim);
   assert(c_num_vars == 0 && c_only_var == 0);
@@ -41,15 +40,11 @@ PPL::extract_interval_constraint(const Constraint& c,
   for (dimension_type i = c_space_dim; i-- > 0; )
     if (c.coefficient(Variable(i)) != 0)
       if (c_num_vars == 0) {
-	c_only_var = i+1;
+	c_only_var = i;
 	++c_num_vars;
       }
       else
 	// Constraint `c' is not an interval constraint.
 	return false;
-
-  if (c_num_vars != 0)
-    c_coeff = -c.coefficient(Variable(c_only_var-1));
-
   return true;
 }

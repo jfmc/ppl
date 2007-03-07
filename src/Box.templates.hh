@@ -553,12 +553,8 @@ Box<Interval>::relation_with(const Constraint& c) const {
 
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
-  TEMP_INTEGER(c_coeff);
   // Constraints that are not interval constraints are illegal.
-  // FIXME: the semantics of this method is counter-intuitive.
-  // See also the checkme's below.
-  if (!extract_interval_constraint(c, c_space_dim,
-				   c_num_vars, c_only_var, c_coeff))
+  if (!extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var))
     throw_constraint_incompatible("relation_with(c)");
 
   if (is_empty())
@@ -604,18 +600,18 @@ Box<Interval>::relation_with(const Constraint& c) const {
 
   // Here constraint `c' is a non-trivial interval constraint
   // and the box is not empty.
-  const Interval& seq_var = seq[c_only_var-1];
+  assert(c_num_vars == 1);
+  const Interval& seq_var = seq[c_only_var];
   if (seq_var.is_universe())
     return Poly_Con_Relation::strictly_intersects();
 
-  // CHECKME: shouldn't it be the other way round?
-  bool c_is_lower_bound = (c_coeff < 0);
   mpq_class c_bound;
   assign_r(c_bound.get_num(), c.inhomogeneous_term(), ROUND_NOT_NEEDED);
-  assign_r(c_bound.get_den(), c_coeff, ROUND_NOT_NEEDED);
+  const Coefficient& d = c.coefficient(Variable(c_only_var));
+  assign_r(c_bound.get_den(), d, ROUND_NOT_NEEDED);
   c_bound.canonicalize();
-  // CHECKME: shouldn't we negate it?
-  // neg_assign_r(c_bound, c_bound, ROUND_NOT_NEEDED);
+  neg_assign_r(c_bound, c_bound, ROUND_NOT_NEEDED);
+  const bool c_is_lower_bound = (d > 0);
 
   mpq_class bound_diff;
   if (c.is_equality()) {
@@ -1503,11 +1499,8 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
 
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
-  TEMP_INTEGER(c_coeff);
-
   // Constraints that are not interval constraints are ignored.
-  if (!extract_interval_constraint(c, c_space_dim,
-				   c_num_vars, c_only_var, c_coeff))
+  if (!extract_interval_constraint(c, c_space_dim, c_num_vars, c_only_var))
     return;
 
   if (c_num_vars == 0) {
@@ -1518,7 +1511,7 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
   }
 
   assert(c_num_vars == 1);
-  const Coefficient& d = c.coefficient(Variable(c_only_var-1));
+  const Coefficient& d = c.coefficient(Variable(c_only_var));
   const Coefficient& n = c.inhomogeneous_term();
   // The constraint `c' is of the form
   // `Variable(c_only_var-1) + n / d rel 0', where
@@ -1532,7 +1525,7 @@ Box<Interval>::add_constraint_no_check(const Constraint& c) {
   // Turn `n/d' into `-n/d'.
   q = -q;
 
-  Interval& seq_c = seq[c_only_var-1];
+  Interval& seq_c = seq[c_only_var];
   const Constraint::Type c_type = c.type();
   switch (c_type) {
   case Constraint::EQUALITY:
