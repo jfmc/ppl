@@ -517,6 +517,21 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
 }
 
 template <typename T>
+inline void
+BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
+  // Dimension-compatibility check.
+  if (space_dimension() != y.space_dimension())
+    throw_dimension_incompatible("time_elapse_assign(y)", y);
+  // See the polyhedra documentation.
+  C_Polyhedron px(constraints());
+  C_Polyhedron py(y.constraints());
+  px.time_elapse_assign(py);
+  BD_Shape<T> x(px);
+  swap(x);
+  assert(OK());
+}
+
+template <typename T>
 inline bool
 BD_Shape<T>::strictly_contains(const BD_Shape& y) const {
   const BD_Shape<T>& x = *this;

@@ -1783,69 +1783,6 @@ BD_Shape<T>::intersection_assign(const BD_Shape& y) {
 }
 
 template <typename T>
-void
-BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
-  BD_Shape& x = *this;
-  const dimension_type x_space_dim = x.space_dimension();
-  // Dimension-compatibility check.
-  if (x_space_dim != y.space_dimension())
-    x.throw_dimension_incompatible("time_elapse_assign(y)", y);
-
-  // Dealing with the zero-dimensional case.
-  if (x_space_dim == 0) {
-    if (y.marked_empty())
-      x.set_empty();
-    return;
-  }
-
-  // If either one of `x' or `y' is empty, the result is empty too.
-  // Note: if possible, avoid cost of checking for emptiness.
-  if (x.marked_empty() || y.marked_empty()
-      || x.is_empty() || y.is_empty()) {
-    x.set_empty();
-    return;
-  }
-
-  assert(x.marked_shortest_path_closed() && y.marked_shortest_path_closed());
-  bool changed = false;
-  const DB_Row<N>& y_dbm_0 = y.dbm[0];
-  for (dimension_type vi = x_space_dim; vi-- > 0; ) {
-    // The negation of the lower bound for Variable(vi) in `y'.
-    const N& y_minus_lb_vi = y.dbm[vi+1][0];
-    // The upper bound for Variable(vi) in `y'.
-    const N& y_ub_vi = y_dbm_0[vi+1];
-
-    if (y_minus_lb_vi > 0 || y_ub_vi < 0) {
-      // Variable(vi) can be negative in `y', so that
-      // Variable(vi) can decrease indefinitely in `x'.
-      DB_Row<N>& x_dbm_vi = x.dbm[vi+1];
-      for (dimension_type j = x_space_dim + 1; j-- > 0; ) {
-	N& x_dbm_vi_j = x_dbm_vi[j];
-	if (!is_plus_infinity(x_dbm_vi_j)) {
-	  x_dbm_vi_j = PLUS_INFINITY;
-	  changed = true;
-	}
-      }
-    }
-
-    if (y_minus_lb_vi < 0 || y_ub_vi > 0)
-      // Variable(vi) can be positive in `y', so that
-      // Variable(vi) can increase indefinitely in `x'.
-      for (dimension_type j = x_space_dim + 1; j-- > 0; ) {
-	N& x_dbm_j_vi = x.dbm[j][vi+1];
-	if (!is_plus_infinity(x_dbm_j_vi)) {
-	  x_dbm_j_vi = PLUS_INFINITY;
-	  changed = true;
-	}
-      }
-  }
-
-  if (changed)
-    x.status.reset_shortest_path_closed();
-  assert(x.OK());
-}
-
-template <typename T>
 template <typename Iterator>
 void
 BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
