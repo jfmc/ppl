@@ -642,21 +642,6 @@ BD_Shape<T>::limited_H79_extrapolation_assign(const BD_Shape& y,
 }
 
 template <typename T>
-inline void
-BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
-  // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
-    throw_dimension_incompatible("time_elapse_assign(y)", y);
-  // See the documentation for polyhedra.
-  C_Polyhedron px(constraints());
-  C_Polyhedron py(y.constraints());
-  px.time_elapse_assign(py);
-  BD_Shape x(px);
-  swap(x);
-  assert(OK());
-}
-
-template <typename T>
 inline memory_size_type
 BD_Shape<T>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
