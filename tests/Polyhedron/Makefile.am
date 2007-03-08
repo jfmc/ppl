@@ -27,8 +27,6 @@ TESTS_ENVIRONMENT = $(CHECKER)
 
 AM_CPPFLAGS = \
 -I$(top_builddir)/src \
--I$(top_builddir)/Watchdog \
--I$(top_builddir)/Watchdog/src \
 -I$(top_srcdir)/utils \
 -I$(top_srcdir)/tests \
 @extra_includes@ \
@@ -573,6 +571,10 @@ if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = watchdog1
 
 watchdog1_SOURCES = $(watchdog1_SRCS)
+watchdog1_CPPFLAGS = \
+$(AM_CPPFLAGS) \
+-I$(top_builddir)/Watchdog \
+-I$(top_builddir)/Watchdog/src
 watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
 
 endif BUILD_WATCHDOG_LIBRARY
