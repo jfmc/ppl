@@ -423,9 +423,6 @@ public:
   //! Returns the maximum space dimension that an OS can handle.
   static dimension_type max_space_dimension();
 
-  //! Returns the number of infinities in the matrix.
-  dimension_type count_inf() const;
-
   //! \name Constructors, Assignment, Swap and Destructor
   //@{
 

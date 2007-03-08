@@ -50,19 +50,6 @@ namespace Parma_Polyhedra_Library {
 #define COUNT 0
 
 template <typename T>
-dimension_type
-Octagonal_Shape<T>::count_inf() const {
-  dimension_type count = 0;
-  // `*this' contains `y' if and only if every element of `*this'
-  // is greater than or equal to the correspondent one of `y'.
-  for (typename OR_Matrix<N>::const_element_iterator
-	 i = matrix.element_begin(), matrix_element_end = matrix.element_end(); i != matrix_element_end; ++i) 
-    if (is_plus_infinity(*i))
-      ++count;
-  return count;
-}
-
-template <typename T>
 Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
                                     const Complexity_Class complexity)
   : matrix(0), space_dim(0), status() {
