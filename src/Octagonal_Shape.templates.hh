@@ -47,6 +47,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#define COUNT 0
+
 template <typename T>
 Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
                                     const Complexity_Class complexity)
@@ -1393,6 +1395,12 @@ Octagonal_Shape<T>::strong_closure_assign() const {
   //   ch = h + 1, if h is an even number;
   //   ch = h - 1, if h is an odd number.
 
+#if COUNT
+  dimension_type counter = 0;
+  dimension_type add_counter = 0;
+  dimension_type min_counter = 0;
+#endif
+
   typename OR_Matrix<N>::element_iterator iter_ij;
   std::vector<N> vec_k(n_rows);
   std::vector<N> vec_ck(n_rows);
@@ -1472,10 +1480,24 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 	  // Exiting the second iteration: loop index control.
 	  ++j;
 	  ++iter_ij;
+
+#if COUNT
+	min_counter+=4;
+	add_counter+=4;
+#endif
+
 	}
       }
     }
   }
+
+#if COUNT
+  std::cout << "Il numero di minimi e': " << min_counter << std::endl;
+  std::cout << "Il numero di addizioni e': " << add_counter << std::endl;
+  counter = min_counter + add_counter;
+  std::cout << "Il numero totale di operazioni per  la chiusura forte e': "
+	    << counter << std::endl;
+#endif
 
   // Check for emptiness: the octagon is empty if and only if there is a
   // negative value in the main diagonal.
@@ -1507,6 +1529,13 @@ Octagonal_Shape<T>::strong_coherence_assign() {
   // where ci = i + 1, if i is even number or
   //       ci = i - 1, if i is odd.
   // Ditto for cj.
+
+#if COUNT
+  dimension_type counter = 0;
+  dimension_type add_counter = 0;
+  dimension_type min_counter = 0;
+#endif
+
   using Implementation::BD_Shapes::min_assign;
   N semi_sum;
   for (typename OR_Matrix<N>::row_iterator i_iter = matrix.row_begin(),
@@ -1521,8 +1550,23 @@ Octagonal_Shape<T>::strong_coherence_assign() {
 	add_assign_r(semi_sum, x_i_ci, x_cj_j, ROUND_UP);
 	div2exp_assign_r(semi_sum, semi_sum, 1, ROUND_UP);
 	min_assign(x_i[j], semi_sum);
+
+#if COUNT
+	++min_counter;
+	++add_counter;
+#endif
+
       }
   }
+
+#if COUNT
+  std::cout << "Il numero di minimi e': " << min_counter << std::endl;
+  std::cout << "Il numero di addizioni e': " << add_counter << std::endl;
+  counter = min_counter + add_counter;
+  std::cout << "Il numero totale di operazioni per la coerenza forte e': "
+	    << counter << std::endl;
+#endif
+
 }
 
 template <typename T>
@@ -1604,6 +1648,12 @@ Octagonal_Shape<T>
     assign_r((*i)[i.index()], 0, ROUND_NOT_NEEDED);
   }
 
+#if COUNT
+  dimension_type counter = 0;
+  dimension_type add_counter = 0;
+  dimension_type min_counter = 0;
+#endif
+
   // Using the incremental Floyd-Warshall algorithm.
   // Step 1: Improve all constraints on variable `var'.
   const dimension_type v = 2*var.id();
@@ -1636,12 +1686,22 @@ Octagonal_Shape<T>
 	  add_assign_r(sum, x_i_k, x_k_v, ROUND_UP);
 	  N& x_i_v = (v < rs_i) ? x_i[v] : x_cv[ci];
 	  min_assign(x_i_v, sum);
+
+#if COUNT
+	++min_counter;
+	++add_counter;
+#endif
 	}
 	const N& x_k_cv = (cv < rs_k) ? x_k[cv] : x_v[ck];
 	if (!is_plus_infinity(x_k_cv)) {
 	  add_assign_r(sum, x_i_k, x_k_cv, ROUND_UP);
 	  N& x_i_cv = (cv < rs_i) ? x_i[cv] : x_v[ci];
 	  min_assign(x_i_cv, sum);
+
+#if COUNT
+	++min_counter;
+	++add_counter;
+#endif
 	}
       }
       const N& x_k_i = (i < rs_k) ? x_k[i] : x_ci[ck];
@@ -1651,12 +1711,22 @@ Octagonal_Shape<T>
 	  N& x_v_i = (i < rs_v) ? x_v[i] : x_ci[cv];
 	  add_assign_r(sum, x_v_k, x_k_i, ROUND_UP);
 	  min_assign(x_v_i, sum);
+
+#if COUNT
+	++min_counter;
+	++add_counter;
+#endif
 	}
 	const N& x_cv_k = (k < rs_v) ? x_cv[k] : x_ck[v];
 	if (!is_plus_infinity(x_cv_k)) {
 	  N& x_cv_i = (i < rs_v) ? x_cv[i] : x_ci[v];
 	  add_assign_r(sum, x_cv_k, x_k_i, ROUND_UP);
 	  min_assign(x_cv_i, sum);
+
+#if COUNT
+	++min_counter;
+	++add_counter;
+#endif
 	}
       }
 
@@ -1684,6 +1754,11 @@ Octagonal_Shape<T>
 	if (!is_plus_infinity(x_v_j)) {
 	  add_assign_r(sum, x_i_v, x_v_j, ROUND_UP);
 	  min_assign(x_i_j, sum);
+
+#if COUNT
+	++min_counter;
+	++add_counter;
+#endif
 	}
       }
       const N& x_i_cv = (cv < rs_i) ? x_i[cv] : x_v[ci];
@@ -1692,10 +1767,23 @@ Octagonal_Shape<T>
 	if (!is_plus_infinity(x_cv_j)) {
 	  add_assign_r(sum, x_i_cv, x_cv_j, ROUND_UP);
 	  min_assign(x_i_j, sum);
+
+#if COUNT
+	++min_counter;
+	++add_counter;
+#endif
 	}
       }
     }
   }
+
+#if COUNT
+  std::cout << "Il numero di minimi e': " << min_counter << std::endl;
+  std::cout << "Il numero di addizioni e': " << add_counter << std::endl;
+  counter = min_counter + add_counter;
+  std::cout << "Il numero totale di operazioni per la chiusura"
+	    << " incrementale e': " << counter << std::endl;
+#endif
 
   // Check for emptiness: the octagon is empty if and only if there is a
   // negative value on the main diagonal.

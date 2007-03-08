@@ -47,6 +47,12 @@ Octagonal_Shape<T>::strong_closure_assign() const {
     assign_r((*i)[i.index()], 0, ROUND_NOT_NEEDED);
   }
 
+#if COUNT
+  dimension_type count = 0;
+  dimension_type min_count = 0;
+  dimension_type add_count = 0;
+#endif
+
   // This algorithm is given by two steps: the first one is a simple
   // adaptation of the `shortest-path closure' using the Floyd-Warshall
   // algorithm; the second one is the `strong-coherence' algorithm.
@@ -92,6 +98,12 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 	add_assign_r(sum2, x_k_ci, x_ck_j, ROUND_UP);
 	min_assign(sum1, sum2);
 	min_assign(x_i[j], sum1);
+
+#if COUNT
+	min_count+=2;
+	add_count+=2;
+#endif
+
       }
     }
     // Second case: i >= rs_k.
@@ -114,6 +126,12 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 	add_assign_r(sum2, x_i_ck, x_ck_j, ROUND_UP);
 	min_assign(sum1, sum2);
 	min_assign(x_i[j], sum1);
+
+#if COUNT
+	min_count+=2;
+	add_count+=2;
+#endif
+
       }
 
       // And j >= rs_k.
@@ -132,9 +150,23 @@ Octagonal_Shape<T>::strong_closure_assign() const {
 	add_assign_r(sum2, x_i_ck, x_cj_k, ROUND_UP);
 	min_assign(sum1, sum2);
 	min_assign(x_i[j], sum1);
+
+#if COUNT
+	min_count+=2;
+	add_count+=2;
+#endif
+
       }
     }
   }
+
+#if COUNT
+  std::cout << "Il numero di minimi e': " << min_count << std::endl;
+  std::cout << "Il numero di addizioni e': " << add_count << std::endl;
+  count = min_count + add_count;
+  std::cout << "Il numero totale di operazioni per la chiusura forte e': "
+	    << count << std::endl;
+#endif
 
   // Check for emptyness: the octagon is empty if and only if there is a
   // negative value in the main diagonal.
