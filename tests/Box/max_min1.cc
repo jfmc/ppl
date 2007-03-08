@@ -242,10 +242,10 @@ test07() {
   Generator g(point());
   Linear_Expression LE(12*A);
   bool ok = box.maximize(LE, num, den, included, g)
-    // FIXME: check the result for floating point computations.
-    //    && num == 4 && den == 1 && included
-    && g.is_point()
-    && g.divisor() != 1;
+      // FIXME: check the result for floating point computations.
+      //    && num == 4 && den == 1 && included
+      && g.is_point()
+      && g.divisor() != 1;
 
   nout << (included ? "maximum" : "supremum") << " = " << num;
   if (den != 1)
@@ -278,6 +278,7 @@ test08() {
   bool included;
   Generator g(point());
   Linear_Expression LE(12*A);
+
   bool ok = box.maximize(LE, num, den, included, g);
 
   if (!ok)
@@ -755,8 +756,8 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST(test07);
-  DO_TEST(test08);
+  DO_TEST_MAY_OVERFLOW_WITH_FLOAT(test07);
+  DO_TEST_MAY_OVERFLOW_WITH_FLOAT(test08);
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
