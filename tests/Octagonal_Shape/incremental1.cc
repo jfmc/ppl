@@ -9,7 +9,7 @@ using namespace std;
 
 // dim = 400 per i double; dim = 200 per gli mpz_class;
 // dim = 100 per gli mpq_class.
-const int max = 1000;
+const int max_rand = 1000;
 dimension_type dim = 100;
 unsigned int num_iterations = 20;
 unsigned int default_inst = 0;
@@ -32,7 +32,8 @@ void set_defaults(int type) {
   case 1: { 
     dim = 100;
     num_iterations = 20;
-    //   strcat(fname,"mpq_class");
+    strcat(fname,".mpq_class.");
+    strcat(fname,percentage_argv);
     break;
   }
   }
@@ -54,41 +55,31 @@ my_rand(int max) {
 template <typename INST>
 void
 generate_dat_file(const double p) {
-  std::cout << "Generating DAT file with percentage " << p << " ... ";
+//   std::cout << "Generating DAT file with percentage " << p << " ... ";
   Octagonal_Shape<INST> oct(dim, UNIVERSE);
 
-#if 1
-  // Percentage controlling generation of plus infinities.
-  // const double p = percentage / 100;
-  //  const double p = 0.9;
-  //  const double p = 0.7;
-  //  const double p = 0.5;
-  //  const double p = 0.3;
-  //  const double p = 0.1;
+  // p is the percentage controlling generation of plus infinities.
+  // Note that the resulting matrix percentage is p*p.
   for (dimension_type i = 0; i < dim; ++i) {
     Variable x(i);
     for (dimension_type j = 0; j < dim; ++j) {
       Variable y(j);
       if (!generate_inf(p))
-	oct.add_constraint( x + y <= my_rand(max));
+	oct.add_constraint( x + y <= my_rand(max_rand));
       if (!generate_inf(p))
-	oct.add_constraint( x - y <= my_rand(max));
+	oct.add_constraint( x - y <= my_rand(max_rand));
       if (!generate_inf(p))
-        oct.add_constraint(-x + y <= my_rand(max));
+        oct.add_constraint(-x + y <= my_rand(max_rand));
       if (!generate_inf(p))
-        oct.add_constraint(-x - y <= my_rand(max));
+        oct.add_constraint(-x - y <= my_rand(max_rand));
     }
   }
-#else
-  for (dimension_type i = 0; i < dim; ++i)
-    oct.add_constraint(Variable(i) == i);
-#endif
 
   fstream f;
   open(f, fname, ios_base::out);
   oct.ascii_dump(f);
   close(f);
-  std::cout << " done.\n\n";
+//   std::cout << " done.\n\n";
  }
 
 
@@ -102,38 +93,25 @@ incremental_strong_closure() {
   oct.ascii_load(f);
   close(f);
 
-#if 1
-  std::cout << "Clock started ... ";
   start_clock();
   bool empty = oct.is_empty();
-  std::cout << "Stopping clock for strong closure: " << std::endl;;
   std::cout << "Strong: ";
   print_clock(std::cout);
   std::cout << std::endl;
   if (oct.is_empty())
     std::cerr << "Oct is empty." << std::endl;
-#endif
 
-  std::cout << "Clock started ... ";
   start_clock();
   // Le iterazioni sono 80 per i double, 30 per gli mpz_class,
   // 20 per gli mpq_class.
   for (dimension_type i = 0; i < num_iterations; ++i)
     oct.add_constraint_and_minimize(Variable(dim - i - 5) <= 0);
-
-  std::cout << "Stopping clock for incremental closure: " << std::endl;
   std::cout << "Incremental: ";
   print_clock(std::cout);
   std::cout << std::endl;
 
   if (oct.is_empty())
     std::cout << "Oct is empty." << std::endl;
-
-#if 0
-  open(f, "closure1-out.dat", ios_base::out);
-  oct.ascii_dump(f);
-  close(f);
-#endif
 
   return 0;
 }
@@ -172,39 +150,7 @@ main(int argc, char* argv[]) {
     }
     
     }
-    // generate_dat_file<double>(percentage);
-    //       generate_dat_file<mpq_class>(percentage);
-    //  generate_dat_file<mpz_class>(percentage);
   }
-
-#if 0
-  std::cout << "\nTesting int16_t:\n";
-  incremental_strong_closure<int16_t>();
-
-  std::cout << "\nTesting int32_t:\n";
-  incremental_strong_closure<int32_t>();
-
-  std::cout << "\nTesting int64_t:\n";
-  incremental_strong_closure<int64_t>();
-
-  std::cout << "\nTesting double:\n";
-  incremental_strong_closure<double>();
-
-  std::cout << "\nTesting mpz_class:\n";
-  incremental_strong_closure<mpz_class>();
-
-  std::cout << "\nTesting float:\n";
-  incremental_strong_closure<float>();
-
-  std::cout << "\nTesting long double:\n";
-  incremental_strong_closure<long double>();
-#endif
-
-  //  std::cerr << "Test parameters:" << std::endl
-  //	    << ALTERNATE_OS_STRONG_CLOSURE_ASSIGN << ":" 
-  //	    << ALTERNATE_OS_INCREMENTAL_STRONG_CLOSURE_ASSIGN << ":"
-  //	    << percentage_argv << ":";
-  //  // Numeric type is printed later.
 
   switch(default_inst) {
   case 0: {
@@ -219,7 +165,6 @@ main(int argc, char* argv[]) {
   }
     
   }
-
 
   return 0;
 }
