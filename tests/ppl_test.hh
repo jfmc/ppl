@@ -58,6 +58,7 @@ int						\
 main() try {					\
   set_handlers();				\
   bool succeeded = false;			\
+  bool overflow = false;			\
   std::list<std::string> failed_tests;
 
 #define END_MAIN							\
@@ -88,11 +89,13 @@ catch (const std::exception& e) {					\
 
 #define RUN_TEST(test)							\
   try {									\
+    overflow = false;							\
     succeeded = test();							\
   }									\
   catch (const std::overflow_error& e) {				\
     nout << "arithmetic overflow (" << e.what() << ")"			\
 	 << std::endl;							\
+    overflow = true;							\
     succeeded = false;							\
   }									\
   catch (const std::exception& e) {					\
@@ -119,6 +122,19 @@ catch (const std::exception& e) {					\
   if (succeeded)			 \
     failed_tests.push_back(#test);
 
+#define DO_TEST_OVERFLOW(test)		 \
+  ANNOUNCE_TEST(test);			 \
+  RUN_TEST(test);			 \
+  if (succeeded || !overflow)		 \
+    failed_tests.push_back(#test);
+
+#define DO_TEST_MAY_OVERFLOW_WITH_FLOAT(test)	\
+  ANNOUNCE_TEST(test);				\
+  RUN_TEST(test);				\
+  if (!succeeded)				\
+    if (!overflow || all_instances_are_exact())	\
+      failed_tests.push_back(#test);
+
 #if COEFFICIENT_BITS == 0
 
 #define DO_TEST_F64(test) DO_TEST(test)
@@ -134,7 +150,7 @@ catch (const std::exception& e) {					\
 
 #ifdef NDEBUG
 
-#define DO_TEST_F64(test) DO_TEST_F(test)
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F64A(test) DO_TEST(test)
 #define DO_TEST_F32(test) DO_TEST(test)
 #define DO_TEST_F32A(test) DO_TEST(test)
@@ -145,8 +161,8 @@ catch (const std::exception& e) {					\
 
 #else
 
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F64A(test) DO_TEST_F(test)
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F32(test) DO_TEST(test)
 #define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
@@ -160,9 +176,9 @@ catch (const std::exception& e) {					\
 
 #ifdef NDEBUG
 
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F64A(test) DO_TEST_F(test)
-#define DO_TEST_F32(test) DO_TEST_F(test)
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F32A(test) DO_TEST(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
@@ -171,10 +187,10 @@ catch (const std::exception& e) {					\
 
 #else
 
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F64A(test) DO_TEST_F(test)
-#define DO_TEST_F32(test) DO_TEST_F(test)
-#define DO_TEST_F32A(test) DO_TEST_F(test)
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F16(test) DO_TEST(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
@@ -186,23 +202,23 @@ catch (const std::exception& e) {					\
 
 #ifdef NDEBUG
 
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F64A(test) DO_TEST_F(test)
-#define DO_TEST_F32(test) DO_TEST_F(test)
-#define DO_TEST_F32A(test) DO_TEST_F(test)
-#define DO_TEST_F16(test) DO_TEST_F(test)
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F16A(test) DO_TEST(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
 #else
 
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F64A(test) DO_TEST_F(test)
-#define DO_TEST_F32(test) DO_TEST_F(test)
-#define DO_TEST_F32A(test) DO_TEST_F(test)
-#define DO_TEST_F16(test) DO_TEST_F(test)
-#define DO_TEST_F16A(test) DO_TEST_F(test)
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8(test) DO_TEST(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
@@ -212,25 +228,25 @@ catch (const std::exception& e) {					\
 
 #ifdef NDEBUG
 
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F64A(test) DO_TEST_F(test)
-#define DO_TEST_F32(test) DO_TEST_F(test)
-#define DO_TEST_F32A(test) DO_TEST_F(test)
-#define DO_TEST_F16(test) DO_TEST_F(test)
-#define DO_TEST_F16A(test) DO_TEST_F(test)
-#define DO_TEST_F8(test) DO_TEST_F(test)
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8(test) DO_TEST_OVERFLOW(test)
 #define DO_TEST_F8A(test) DO_TEST(test)
 
 #else
 
-#define DO_TEST_F64(test) DO_TEST_F(test)
-#define DO_TEST_F64A(test) DO_TEST_F(test)
-#define DO_TEST_F32(test) DO_TEST_F(test)
-#define DO_TEST_F32A(test) DO_TEST_F(test)
-#define DO_TEST_F16(test) DO_TEST_F(test)
-#define DO_TEST_F16A(test) DO_TEST_F(test)
-#define DO_TEST_F8(test) DO_TEST_F(test)
-#define DO_TEST_F8A(test) DO_TEST_F(test)
+#define DO_TEST_F64(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F64A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F32A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F16A(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8(test) DO_TEST_OVERFLOW(test)
+#define DO_TEST_F8A(test) DO_TEST_OVERFLOW(test)
 
 #endif // !defined(NDEBUG)
 
@@ -318,6 +334,16 @@ typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
 
 //! The incarnation of Octagonal_Shape under test.
 typedef Octagonal_Shape<OCTAGONAL_SHAPE_INSTANCE> TOctagonal_Shape;
+
+// CHECKME: here we rely on the fact that the `make check' will set
+// at most one of the instances to a floating point datatype and the
+// others will be set to an exact datatype.
+inline bool
+all_instances_are_exact() {
+  return std::numeric_limits<TBox::interval_type::boundary_type>::is_exact
+    && std::numeric_limits<TBD_Shape::base_type>::is_exact
+    && std::numeric_limits<TOctagonal_Shape::base_type>::is_exact;
+}
 
 bool
 check_distance(const Checked_Number<mpq_class, Extended_Number_Policy>& d,
