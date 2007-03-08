@@ -43,6 +43,9 @@ Enhancements for PPL 0.10
 Enhancements for PPL 0.10 or later versions
 ==========================================
 
+- Consider whether or not our interface for method time_elapse_assign()
+  is the one needed by users: in particular, see if it should take as
+  an argument a generator system, instead of an abstract element.
 - In the OK() methods, instead of having all those #ifndef NDEBUG,
   it is probably worthwhile to use a suitable defined `barf' stream
   that does the right thing.
