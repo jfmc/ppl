@@ -9,6 +9,7 @@ using namespace std;
 
 // dim = 400 per i double; dim = 200 per gli mpz_class;
 // dim = 100 per gli mpq_class.
+const int max = 1000;
 dimension_type dim = 100;
 unsigned int num_iterations = 20;
 unsigned int default_inst = 0;
@@ -43,6 +44,12 @@ generate_inf(double p) {
   return q < p;
 }
 
+int
+my_rand(int max) {
+  double q = rand() / static_cast<double>(RAND_MAX);
+  return ceil(q * max);
+}
+
 
 template <typename INST>
 void
@@ -63,13 +70,13 @@ generate_dat_file(const double p) {
     for (dimension_type j = 0; j < dim; ++j) {
       Variable y(j);
       if (!generate_inf(p))
-	oct.add_constraint( x + y <= rand());
+	oct.add_constraint( x + y <= my_rand(max));
       if (!generate_inf(p))
-	oct.add_constraint( x - y <= rand());
+	oct.add_constraint( x - y <= my_rand(max));
       if (!generate_inf(p))
-        oct.add_constraint(-x + y <= rand());
+        oct.add_constraint(-x + y <= my_rand(max));
       if (!generate_inf(p))
-        oct.add_constraint(-x - y <= rand());
+        oct.add_constraint(-x - y <= my_rand(max));
     }
   }
 #else
