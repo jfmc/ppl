@@ -492,7 +492,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename Type>
 inline Result
 div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (To_Policy::check_inf_div_inf 
+  if (To_Policy::check_inf_div_inf
       && is_inf_float<From1_Policy>(x) && is_inf_float<From2_Policy>(y))
     return set_special<To_Policy>(to, V_INF_DIV_INF);
   if (To_Policy::check_div_zero && y == 0)
