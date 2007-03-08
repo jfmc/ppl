@@ -54,6 +54,12 @@ Octagonal_Shape<T>
     assign_r((*i)[i.index()], 0, ROUND_NOT_NEEDED);
   }
 
+#if COUNT
+  dimension_type count = 0;
+  dimension_type min_count = 0;
+  dimension_type add_count = 0;
+#endif
+
   // Using the incremental Floyd-Warshall algorithm.
   // Step 1: Improve all constraints on variable `var'.
   const dimension_type v = 2*var.id();
@@ -64,7 +70,7 @@ Octagonal_Shape<T>
   Row_Reference x_cv = *cv_iter;
   const dimension_type rs_v = v_iter.row_size();
   const dimension_type n_rows = x.matrix.num_rows();
-  N sum;
+  N sum1, sum2;
   Row_Reference x_k, x_ck, x_i, x_ci;
 
   // Modified original version.
@@ -78,6 +84,10 @@ Octagonal_Shape<T>
     const N& x_k_cv = (cv < rs_k) ? x_k[cv] : x_v[ck];
     const N& x_v_k = (k < rs_v) ? x_v[k] : x_ck[cv];
     const N& x_cv_k = (k < rs_v) ? x_cv[k] : x_ck[v];
+    const N& x_ck_v = (v < rs_k) ? x_ck[v] : x_cv[k];
+    const N& x_ck_cv = (cv < rs_k) ? x_ck[cv] : x_v[k];
+    const N& x_v_ck = (k < rs_v) ? x_v[ck] : x_k[cv];
+    const N& x_cv_ck = (k < rs_v) ? x_cv[ck] : x_k[v];
 
     for (Row_Iterator i_iter = m_begin; i_iter != m_end; i_iter += 2) {
       const dimension_type i = i_iter.index();
@@ -90,38 +100,63 @@ Octagonal_Shape<T>
       const N& x_ci_k = (k < rs_i) ? x_ci[k] : x_ck[i];
       const N& x_k_i = (i < rs_k) ? x_k[i] : x_ci[ck];
       const N& x_k_ci = (ci < rs_k) ? x_k[ci] : x_i[ck];
+      const N& x_i_ck = (k < rs_i) ? x_i[ck] : x_k[ci];
+      const N& x_ci_ck = (k < rs_i) ? x_ci[ck] : x_k[i];
+      const N& x_ck_i = (i < rs_k) ? x_ck[i] : x_ci[k];
+      const N& x_ck_ci = (ci < rs_k) ? x_ck[ci] : x_i[k];
 
-      add_assign_r(sum, x_i_k, x_k_v, ROUND_UP);
+      add_assign_r(sum1, x_i_k, x_k_v, ROUND_UP);
+      add_assign_r(sum2, x_i_ck, x_ck_v, ROUND_UP);
+      min_assign(sum1, sum2);
       N& x_i_v = (v < rs_i) ? x_i[v] : x_cv[ci];
-      min_assign(x_i_v, sum);
+      min_assign(x_i_v, sum1);
 
-      add_assign_r(sum, x_ci_k, x_k_v, ROUND_UP);
+      add_assign_r(sum1, x_ci_k, x_k_v, ROUND_UP);
+      add_assign_r(sum2, x_ci_ck, x_ck_v, ROUND_UP);
+      min_assign(sum1, sum2);
       N& x_ci_v = (v < rs_i) ? x_ci[v] : x_cv[i];
-      min_assign(x_ci_v, sum);
+      min_assign(x_ci_v, sum1);
 
-      add_assign_r(sum, x_i_k, x_k_cv, ROUND_UP);
+      add_assign_r(sum1, x_i_k, x_k_cv, ROUND_UP);
+      add_assign_r(sum2, x_i_ck, x_ck_cv, ROUND_UP);
+      min_assign(sum1, sum2);
       N& x_i_cv = (cv < rs_i) ? x_i[cv] : x_v[ci];
-      min_assign(x_i_cv, sum);
+      min_assign(x_i_cv, sum1);
 
-      add_assign_r(sum, x_ci_k, x_k_cv, ROUND_UP);
+      add_assign_r(sum1, x_ci_k, x_k_cv, ROUND_UP);
+      add_assign_r(sum2, x_ci_ck, x_ck_cv, ROUND_UP);
+      min_assign(sum1, sum2);
       N& x_ci_cv = (cv < rs_i) ? x_ci[cv] : x_v[i];
-      min_assign(x_ci_cv, sum);
+      min_assign(x_ci_cv, sum1);
 
       N& x_v_i = (i < rs_v) ? x_v[i] : x_ci[cv];
-      add_assign_r(sum, x_v_k, x_k_i, ROUND_UP);
-      min_assign(x_v_i, sum);
+      add_assign_r(sum1, x_v_k, x_k_i, ROUND_UP);
+      add_assign_r(sum2, x_v_ck, x_ck_i, ROUND_UP);
+      min_assign(sum1, sum2);
+      min_assign(x_v_i, sum1);
 
       N& x_v_ci = (ci < rs_v) ? x_v[ci] : x_i[cv];
-      add_assign_r(sum, x_v_k, x_k_ci, ROUND_UP);
-      min_assign(x_v_ci, sum);
+      add_assign_r(sum1, x_v_k, x_k_ci, ROUND_UP);
+      add_assign_r(sum2, x_v_ck, x_ck_ci, ROUND_UP);
+      min_assign(sum1, sum2);
+      min_assign(x_v_ci, sum1);
 
       N& x_cv_i = (i < rs_v) ? x_cv[i] : x_ci[v];
-      add_assign_r(sum, x_cv_k, x_k_i, ROUND_UP);
-      min_assign(x_cv_i, sum);
+      add_assign_r(sum1, x_cv_k, x_k_i, ROUND_UP);
+      add_assign_r(sum2, x_cv_ck, x_ck_i, ROUND_UP);
+      min_assign(sum1, sum2);
+      min_assign(x_cv_i, sum1);
 
       N& x_cv_ci = (ci < rs_v) ? x_cv[ci] : x_i[v];
-      add_assign_r(sum, x_cv_k, x_k_ci, ROUND_UP);
-      min_assign(x_cv_ci, sum);
+      add_assign_r(sum1, x_cv_k, x_k_ci, ROUND_UP);
+      add_assign_r(sum2, x_cv_ck, x_ck_ci, ROUND_UP);
+      min_assign(sum1, sum2);
+      min_assign(x_cv_ci, sum1);
+
+#if COUNT
+      min_count+=32;
+      add_count+=32;
+#endif
 
    }
   }
@@ -144,16 +179,29 @@ Octagonal_Shape<T>
       Row_Reference x_cj = *(m_begin+cj);
       N& x_i_j = (j < rs_i) ? x_i[j] : x_cj[ci];
       const N& x_v_j = (j < rs_v) ? x_v[j] : x_cj[cv];
-      add_assign_r(sum, x_i_v, x_v_j, ROUND_UP);
-      min_assign(x_i_j, sum);
+      add_assign_r(sum1, x_i_v, x_v_j, ROUND_UP);
+      min_assign(x_i_j, sum1);
       const N& x_i_cv = (cv < rs_i) ? x_i[cv] : x_v[ci];
       const N& x_cv_j = (j < rs_v) ? x_cv[j] : x_cj[v];
-      add_assign_r(sum, x_i_cv, x_cv_j, ROUND_UP);
-      min_assign(x_i_j, sum);
+      add_assign_r(sum1, x_i_cv, x_cv_j, ROUND_UP);
+      min_assign(x_i_j, sum1);
+
+#if COUNT
+      min_count+=4;
+      add_count+=4;
+#endif
 
     }
   }
- 
+
+#if COUNT
+  std::cout << "Il numero di minimi e': " << min_count << std::endl;
+  std::cout << "Il numero di addizioni e': " << add_count << std::endl;
+  count = min_count + add_count;
+  std::cout << "Il numero totale di operazioni per la chiusura "
+	    << "incrementale e': " << count << std::endl;
+#endif
+
   // Check for emptyness: the octagon is empty if and only if there is a
   // negative value on the main diagonal.
   for (Row_Iterator i = m_begin; i != m_end; ++i) {
