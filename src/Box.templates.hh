@@ -1560,8 +1560,6 @@ template <typename Interval>
 void
 Box<Interval>::refine_no_check(const Constraint& c) {
   assert(c.space_dimension() <= space_dimension());
-  if (is_empty())
-    return;
 
   dimension_type c_space_dim = c.space_dimension();
   Interval k[c_space_dim];
@@ -1609,6 +1607,27 @@ Box<Interval>::refine_no_check(const Constraint& c) {
     }
   }
   assert(OK());
+}
+
+template <typename Interval>
+void
+Box<Interval>::refine_no_check(const Constraint_System& cs) {
+  assert(cs.space_dimension() <= space_dimension());
+
+  bool changed;
+  do {
+    Sequence copy(seq);
+    for (Constraint_System::const_iterator i = cs.begin(),
+	   cs_end = cs.end(); i != cs_end; ++i)
+      refine_no_check(*i);
+
+    // Check if the client has requested abandoning all expensive
+    // computations.  If so, the exception specified by the client
+    // is thrown now.
+    maybe_abandon();
+
+    changed = (copy != seq);
+  } while (changed);
 }
 
 template <typename Interval>

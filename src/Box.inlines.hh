@@ -328,6 +328,10 @@ Box<Interval>::refine(const Constraint_System& cs) {
   if (cs.space_dimension() > space_dimension())
     throw_dimension_incompatible("add_constraints(cs)", cs);
 
+  // If the box is already empty, there is nothing left to do.
+  if (marked_empty())
+    return;
+
   refine_no_check(cs);
 }
 

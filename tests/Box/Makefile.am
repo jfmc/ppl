@@ -87,6 +87,7 @@ max_min1 \
 minconstraints1 \
 pointsetpowerset1 \
 relations1 relations2 \
+refine1 \
 removespacedims1 \
 timeelapse1 \
 universe1 \
@@ -95,7 +96,7 @@ writebox1
 DERIVED_TESTS = \
 nnc_frompolyhedron1
 
-ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS)
+ALL_TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
 # This will be overridden by the `run_tests' script.
 TEST_CPPFLAGS=-DBOX_INSTANCE=rt_r_oc
@@ -223,6 +224,8 @@ pointsetpowerset1_SOURCES = pointsetpowerset1.cc
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 
+refine1_SOURCES = refine1.cc
+
 removespacedims1_SOURCES = removespacedims1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
@@ -230,6 +233,20 @@ timeelapse1_SOURCES = timeelapse1.cc
 universe1_SOURCES = universe1.cc
 
 writebox1_SOURCES = writebox1.cc
+
+refine2_SRCS = refine2.cc
+
+if BUILD_WATCHDOG_LIBRARY
+WATCHDOG_TESTS = refine2
+
+refine2_SOURCES = $(refine2_SRCS)
+refine2_CPPFLAGS = \
+$(AM_CPPFLAGS) \
+-I$(top_builddir)/Watchdog \
+-I$(top_builddir)/Watchdog/src
+refine2_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
+
+endif BUILD_WATCHDOG_LIBRARY
 
 #
 # Sources and compilation flags for the derived check programs
@@ -241,6 +258,8 @@ nnc_frompolyhedron1_SOURCES = frompolyhedron1.cc
 nnc_frompolyhedron1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 check_PROGRAMS = $(ALL_TESTS)
+
+EXTRA_DIST = $(refine2_SRCS)
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat

@@ -146,57 +146,6 @@ test05() {
   return false;
 }
 
-#if 1
-bool
-test06() {
-  Variable A(0);
-  Variable B(1);
-
-  Constraint_System cs;
-  cs.insert(A >= 0);
-  cs.insert(B == 5);
-
-  TBox box(2);
-  box.add_constraint(A >= 0);
-
-  print_constraints(box, "*** box.refine(A >= 0) ***");
-
-  box.refine(B >= A);
-
-  print_constraints(box, "*** box.refine(B >= A) ***");
-
-  box.refine(11*A < 127);
-
-  print_constraints(box, "*** box.refine(11*A < 127) ***");
-
-  box.refine(7*A - 15*B > 8);
-
-  print_constraints(box, "*** box.refine(7*A - 15*B > 8) ***");
-
-  box.refine(3*B > 2*A);
-
-  print_constraints(box, "*** box.refine(3*B > 2*A) ***");
-
-  box.refine(A == B);
-
-  print_constraints(box, "*** box.refine(A == B) ***");
-
-#if 0
-  Rational_Box known_result(2);
-  known_result.add_constraint(A >= 0);
-  known_result.add_constraint(B == 5);
-  known_result.add_constraint(B - A <= 5);
-
-  bool ok = (Rational_Box(box1) == known_result);
-
-  print_constraints(known_result, "*** known_result ***");
-#endif
-  bool ok = true;
-
-  return ok;
-}
-#endif
-
 } // namespace
 
 BEGIN_MAIN
@@ -205,5 +154,4 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
-  DO_TEST(test06);
 END_MAIN
