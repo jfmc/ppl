@@ -108,6 +108,7 @@ test01() {
 
     print_constraints(known_result, "*** known_result ***");
 #endif
+    ok = true;
   }
 
   print_constraints(box, "*** box.refine(cs) ***");
