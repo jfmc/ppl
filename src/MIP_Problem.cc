@@ -1442,6 +1442,10 @@ PPL::MIP_Problem
 
 bool
 PPL::MIP_Problem::is_lp_satisfiable() const {
+  // Check if the client has requested abandoning all exponential
+  // computations. If so, the exception specified by the client
+  // is thrown now.
+  maybe_abandon();
 #if PPL_NOISY_SIMPLEX
   num_iterations = 0;
 #endif
