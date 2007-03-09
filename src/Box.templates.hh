@@ -1814,6 +1814,53 @@ Box<Interval>::CC76_widening_assign(const Box& y, unsigned* tp) {
 }
 
 template <typename Interval>
+void
+Box<Interval>::CC76_narrowing_assign(const Box& y) {
+  const dimension_type space_dim = space_dimension();
+
+  // Dimension-compatibility check.
+  if (space_dim != y.space_dimension())
+    throw_dimension_incompatible("CC76_narrowing_assign(y)", y);
+
+#ifndef NDEBUG
+  {
+    // We assume that `*this' is contained in or equal to `y'.
+    const Box x_copy = *this;
+    const Box y_copy = y;
+    assert(y_copy.contains(x_copy));
+  }
+#endif
+
+  // If both boxes are zero-dimensional,
+  // since `y' contains `*this', we simply return `*this'.
+  if (space_dim == 0)
+    return;
+
+  // If `y' is empty, since `y' contains `this', `*this' is empty too.
+  if (y.is_empty())
+    return;
+  // If `*this' is empty, we return.
+  if (is_empty())
+    return;
+
+  // Replace each constraint in `*this' by the corresponding constraint
+  // in `y' if the corresponding inhomogeneous terms are both finite.
+  for (dimension_type i = space_dim; i-- > 0; ) {
+    Interval& x_i = seq[i];
+    const Interval& y_i = y.seq[i];
+    if (!x_i.lower_is_unbounded()
+	&& !y_i.lower_is_unbounded()
+	&& x_i.lower() != y_i.lower())
+      x_i.lower() = y_i.lower();
+    if (!x_i.upper_is_unbounded()
+	&& !y_i.upper_is_unbounded()
+	&& x_i.upper() != y_i.upper())
+      x_i.upper() = y_i.upper();
+  }
+  assert(OK());
+}
+
+template <typename Interval>
 Constraint_System
 Box<Interval>::constraints() const {
   Constraint_System cs;

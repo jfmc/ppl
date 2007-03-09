@@ -977,6 +977,27 @@ public:
   void CC76_widening_assign(const Box& y,
 			    Iterator first, Iterator last);
 
+  /*! \brief
+    Assigns to \p *this the result of restoring in \p y the constraints
+    of \p *this that were lost by
+    \ref CC76_extrapolation "CC76-extrapolation" applications.
+
+    \param y
+    A Box that <EM>must</EM> contain \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are dimension-incompatible.
+
+    \note
+    As was the case for widening operators, the argument \p y is meant to
+    denote the value computed in the previous iteration step, whereas
+    \p *this denotes the value computed in the current iteration step
+    (in the <EM>decreasing</EM> iteration sequence). Hence, the call
+    <CODE>x.CC76_narrowing_assign(y)</CODE> will assign to \p x
+    the result of the computation \f$\mathtt{y} \Delta \mathtt{x}\f$.
+  */
+  void CC76_narrowing_assign(const Box& y);
+
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
 
   //! \name Member Functions that May Modify the Dimension of the Vector Space
