@@ -53,7 +53,6 @@ $(top_builddir)/src/libppl.la \
 # Tests that do not succeed yet (maybe even known result is wrong).
 #ascii_dump_load1
 #interval1 interval2
-#maxspacedim1
 
 ORIGINAL_TESTS = \
 addconstraints1 \
@@ -84,6 +83,7 @@ geomcovers1 \
 intersection1 \
 mapspacedims1 \
 max_min1 \
+maxspacedim1 \
 minconstraints1 \
 pointsetpowerset1 \
 relations1 relations2 \
@@ -211,9 +211,9 @@ intersection1_SOURCES = intersection1.cc
 
 mapspacedims1_SOURCES = mapspacedims1.cc
 
-#maxspacedim1_SOURCES = maxspacedim1.cc
-
 max_min1_SOURCES = max_min1.cc
+
+maxspacedim1_SOURCES = maxspacedim1.cc
 
 #membytes1_SOURCES = membytes1.cc
 

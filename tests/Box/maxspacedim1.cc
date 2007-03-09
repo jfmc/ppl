@@ -26,62 +26,28 @@ namespace {
 
 bool
 test01() {
-  Rational_Box box1(1);
-  Box<long> box2(1);
-  Box<int> box3(1);
-  Box<signed char> box4(1);
-
-  dimension_type max_spacedim1 = box1.max_space_dimension();
-  dimension_type max_spacedim2 = box2.max_space_dimension();
-  dimension_type max_spacedim3 = box3.max_space_dimension();
-  dimension_type max_spacedim4 = box4.max_space_dimension();
-
-  nout << endl
-       << "The maximum space-dimension of a system of bounded differences "
+  nout << Box<fl_r_oc>::max_space_dimension() << " (fl_r_oc)"
        << endl
-       << "of Rational is: "
+       << Box<db_r_oc>::max_space_dimension() << " (db_r_oc)"
        << endl
-       << max_spacedim1
+       << Box<ld_r_oc>::max_space_dimension() << " (ld_r_oc)"
+       << endl
+       << Box<rt_r_oc>::max_space_dimension() << " (rt_r_oc)"
        << endl;
 
-  nout << endl
-       << "The maximum space-dimension of a system of bounded differences "
-       << endl
-       << "of long: "
-       << endl
-       << max_spacedim2
-       << endl;
+  if (Box<fl_r_oc>::max_space_dimension()
+      < Box<db_r_oc>::max_space_dimension())
+    return false;
 
-  nout << endl
-       << "The maximum space-dimension of a system of bounded differences "
-       << endl
-       << "of int: "
-       << endl
-       << max_spacedim3
-       << endl;
+  if (Box<db_r_oc>::max_space_dimension()
+      < Box<ld_r_oc>::max_space_dimension())
+    return false;
 
-  nout << endl
-       << "The maximum space-dimension of a system of bounded differences "
-       << endl
-       << "of signed char"
-       << endl
-       << max_spacedim4
-       << endl;
+  // CHECKME: is this a valid assertion?
+  if (Box<ld_r_oc>::max_space_dimension()
+      < Box<rt_r_oc>::max_space_dimension())
+    return false;
 
-  if (max_spacedim1 < max_spacedim2) {
-
-    print_constraints(box1, "*** box1 ***");
-    print_constraints(box2, "*** box2 ***");
-
-  }
-
-  if (max_spacedim3 < max_spacedim4) {
-
-    print_constraints(box3, "*** box3 ***");
-    print_constraints(box4, "*** box4 ***");
-
-  }
-  // FIXME!!!
   return true;
 }
 
