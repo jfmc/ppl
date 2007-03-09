@@ -391,15 +391,7 @@ public:
   }
 
   void ascii_dump(std::ostream& s) const {
-    // CHECK ME.
-    if (lower_is_unbounded())
-      s << "(-inf, ";
-    else
-      s << (lower_is_open() ? "(" : "[") << lower() << ", ";
-    if (upper_is_unbounded())
-      s << "+inf)";
-    else
-      s << upper() << (upper_is_open() ? ")" : "]");
+    s << *this << std::endl;
   }
   bool ascii_load(std::istream& s) {
     // WRITE ME.
