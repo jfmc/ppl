@@ -26,232 +26,227 @@ namespace {
 
 bool
 test01() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
   TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  box1.add_constraint(A <= 2);
+  box1.add_constraint(B <= 4);
 
   print_constraints(box1, "*** box1 ***");
 
-  box1.affine_image(x, y);
+  box1.affine_image(A, B);
 
   Rational_Box known_result(3);
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(x - y == 0);
+  known_result.add_constraint(A <= 4);
+  known_result.add_constraint(B <= 4);
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** box1.affine_image(x, y) ***");
+  print_constraints(box1, "*** box1.affine_image(A, B) ***");
 
   return ok;
 }
 
 bool
 test02() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
   TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  box1.add_constraint(A <= 2);
+  box1.add_constraint(A - B <= 3);
+  box1.add_constraint(B <= 2);
 
   print_constraints(box1, "*** box1 ***");
 
-  box1.affine_image(x, x + 4);
+  box1.affine_image(A, A + 4);
 
   Rational_Box known_result(3);
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(x - y <= 7);
-  known_result.add_constraint(x <= 6);
+  known_result.add_constraint(B <= 2);
+  known_result.add_constraint(A - B <= 7);
+  known_result.add_constraint(A <= 6);
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** box1.affine_image(x, x + 4) ***");
+  print_constraints(box1, "*** box1.affine_image(A, A + 4) ***");
 
   return ok;
 }
 
 bool
 test03() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
   TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  box1.add_constraint(A <= 2);
+  box1.add_constraint(A - B <= 3);
+  box1.add_constraint(B <= 2);
 
   print_constraints(box1, "*** box1 ***");
 
-  box1.affine_image(x, Linear_Expression(4));
+  box1.affine_image(A, Linear_Expression(4));
 
   Rational_Box known_result(3);
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(x == 4);
+  known_result.add_constraint(B <= 2);
+  known_result.add_constraint(A == 4);
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** box1.affine_image(x, 4) ***");
+  print_constraints(box1, "*** box1.affine_image(A, 4) ***");
 
   return ok;
 }
 
 bool
 test04() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
   TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  box1.add_constraint(A <= 2);
+  box1.add_constraint(A - B <= 3);
+  box1.add_constraint(B <= 2);
 
   print_constraints(box1, "*** box1 ***");
 
   Rational_Box known_result(box1);
 
-  box1.affine_image(x, x);
+  box1.affine_image(A, A);
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** box1.affine_image(x, x) ***");
+  print_constraints(box1, "*** box1.affine_image(A, A) ***");
 
   return ok;
 }
 
 bool
 test05() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
   TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  box1.add_constraint(A <= 2);
+  box1.add_constraint(A - B <= 3);
+  box1.add_constraint(B <= 2);
 
   print_constraints(box1, "*** box1 ***");
 
-  box1.affine_image(x, 2*x - 2, 2);
+  box1.affine_image(A, 2*A - 2, 2);
 
   Rational_Box known_result(3);
-  known_result.add_constraint(x <= 1);
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(x - y <= 2);
+  known_result.add_constraint(A <= 1);
+  known_result.add_constraint(B <= 2);
+  known_result.add_constraint(A - B <= 2);
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** box1.affine_image(x, 2*x - 2, 2) ***");
+  print_constraints(box1, "*** box1.affine_image(A, 2*A - 2, 2) ***");
 
   return ok;
 }
 
 bool
 test06() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
   TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  box1.add_constraint(A <= 2);
+  box1.add_constraint(B <= 4);
 
   print_constraints(box1, "*** box1 ***");
 
-  box1.affine_image(y, 2*x, 2);
+  box1.affine_image(B, 2*A, 2);
 
   Rational_Box known_result(3);
-  known_result.add_constraint(x <= 2);
-  known_result.add_constraint(y - x == 0);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(B <= 2);
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** box1.affine_image(y, 2*x, 2) ***");
+  print_constraints(box1, "*** box1.affine_image(B, 2*A, 2) ***");
 
   return ok;
 }
 
 bool
 test07() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
   TBox box1(3);
-  box1.add_constraint(x <= 2);
-  box1.add_constraint(x - y <= 3);
-  box1.add_constraint(y <= 2);
+  box1.add_constraint(A <= 2);
+  box1.add_constraint(B <= 4);
 
   print_constraints(box1, "*** box1 ***");
 
-  box1.affine_image(y, 3*x + 3, 3);
+  box1.affine_image(B, 3*A + 3, 3);
 
   Rational_Box known_result(3);
-  known_result.add_constraint(x <= 2);
-  known_result.add_constraint(y - x == 1);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(B <= 3);
 
   bool ok = (Rational_Box(box1) == known_result);
 
-  print_constraints(box1, "*** box1.affine_image(y, 3*x + 3, 3) ***");
+  print_constraints(box1, "*** box1.affine_image(B, 3*A + 3, 3) ***");
 
   return ok;
 }
 
 bool
 test08() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
   TBox box(2);
-  box.add_constraint(x <= 1);
-  box.add_constraint(x >= 0);
-  box.add_constraint(y <= 2);
-  box.add_constraint(y >= -1);
+  box.add_constraint(A <= 1);
+  box.add_constraint(A >= 0);
+  box.add_constraint(B <= 2);
+  box.add_constraint(B >= -1);
 
   print_constraints(box, "*** box ***");
 
-  box.affine_image(x, -2*x - 3*y + 1, -5);
+  box.affine_image(A, -2*A - 3*B + 1, -5);
 
   Rational_Box known_result(2);
-  known_result.add_constraint(5*x >= -4);
-  known_result.add_constraint(5*x <= 7);
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(y >= -1);
-  known_result.add_constraint(y - x <= 1);
-  known_result.add_constraint(5*x - 5*y <= 3);
+  known_result.add_constraint(5*A >= -4);
+  known_result.add_constraint(5*A <= 7);
+  known_result.add_constraint(B <= 2);
+  known_result.add_constraint(B >= -1);
 
   bool ok = check_result(box, known_result, "3.70e-7", "2.10e-7", "1.44e-7");
 
-  print_constraints(box, "*** box.affine_image(x, -2*x - 3*y + 1, -5) ***");
+  print_constraints(box, "*** box.affine_image(A, -2*A - 3*B + 1, -5) ***");
 
   return ok;
 }
 
 bool
 test09() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
   TBox box(3);
-  box.add_constraint(x <= 1);
-  box.add_constraint(y <= 2);
-  box.add_constraint(z >= 3);
+  box.add_constraint(A <= 1);
+  box.add_constraint(B <= 2);
+  box.add_constraint(C >= 3);
 
   print_constraints(box, "*** box ***");
 
-  box.affine_image(z, x + 2*y -3*z + 2, 4);
+  box.affine_image(C, A + 2*B -3*C + 2, 4);
 
   Rational_Box known_result(3);
-  known_result.add_constraint(x <= 1);
-  known_result.add_constraint(y <= 2);
-  known_result.add_constraint(2*z <= -1);
+  known_result.add_constraint(A <= 1);
+  known_result.add_constraint(B <= 2);
+  known_result.add_constraint(2*C <= -1);
 
   bool ok = check_result(box, known_result);
 
-  print_constraints(box, "*** box.affine_image(z, x + 2*y -3*z + 2, 4) ***");
+  print_constraints(box, "*** box.affine_image(C, A + 2*B -3*C + 2, 4) ***");
 
   return ok;
 }
@@ -291,39 +286,39 @@ test10() {
 
 bool
 test11() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
   TBox box(3);
-  box.add_constraint(x <= 1);
-  box.add_constraint(y <= 2);
+  box.add_constraint(A <= 1);
+  box.add_constraint(B <= 2);
 
   print_constraints(box, "*** box ***");
 
-  box.affine_image(x, 2*y + z + 2, 4);
+  box.affine_image(A, 2*B + C + 2, 4);
 
   Rational_Box known_result(3);
-  known_result.add_constraint(y <= 2);
+  known_result.add_constraint(B <= 2);
 
   bool ok = (Rational_Box(box) == known_result);
 
-  print_constraints(box, "*** box.affine_image(x, 2*y + z + 2, 4) ***");
+  print_constraints(box, "*** box.affine_image(A, 2*B + C + 2, 4) ***");
 
   return ok;
 }
 
 bool
 test12() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
   TBox box(2);
-  box.add_constraint(x - y >= 0);
-  box.add_constraint(x >= 0);
-  box.add_constraint(x <= 2);
+  box.add_constraint(A - B >= 0);
+  box.add_constraint(A >= 0);
+  box.add_constraint(A <= 2);
 
-  Linear_Expression coeff1 = x + 1;
+  Linear_Expression coeff1 = A + 1;
 
   try {
     // This is an incorrect use of method
@@ -331,7 +326,7 @@ test12() {
     // the method to a linear expression with the denominator equal to
     // zero.
     Coefficient d = 0;
-    box.affine_image(x, coeff1, d);
+    box.affine_image(A, coeff1, d);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -344,18 +339,18 @@ test12() {
 
 bool
 test13() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
   TBox box(1);
-  box.add_constraint(x >= 1);
+  box.add_constraint(A >= 1);
 
   try {
     // This is an invalid used of the method
     // Box::affine_image(v, expr, d): it is illegal to
     // apply this method to a variable that is not in the space of
     // the polyhedron.
-    box.affine_image(y, x + 1);
+    box.affine_image(B, A + 1);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -368,20 +363,20 @@ test13() {
 
 bool
 test14() {
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
   TBox box(2);
-  box.add_constraint(x >= 1);
-  box.add_constraint(y >= 1);
+  box.add_constraint(A >= 1);
+  box.add_constraint(B >= 1);
 
   try {
     // This is an invalid used of the method
     // Box::affine_image(v, expr, d): it is illegal to
     // use a variable in the expression that does not appear in the
     // space of the polyhedron.
-    box.affine_image(y, x + z + 1);
+    box.affine_image(B, A + C + 1);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;
@@ -394,15 +389,15 @@ test14() {
 
 bool
 test15() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
   TBox box(2);
-  box.add_constraint(x - y >= 0);
-  box.add_constraint(x >= 0);
-  box.add_constraint(x <= 2);
+  box.add_constraint(A - B >= 0);
+  box.add_constraint(A >= 0);
+  box.add_constraint(A <= 2);
 
-  Linear_Expression coeff1 = 2*x + 1;
+  Linear_Expression coeff1 = 2*A + 1;
 
   try {
     // This is an incorrect use of method
@@ -410,7 +405,7 @@ test15() {
     // the method to a linear expression with the denominator equal to
     // zero.
     Coefficient d = 0;
-    box.affine_image(x, coeff1, d);
+    box.affine_image(A, coeff1, d);
   }
   catch (std::invalid_argument& e) {
     nout << "std::invalid_argument: " << endl;

@@ -51,7 +51,6 @@ $(top_builddir)/src/libppl.la \
 #membytes1
 
 # Tests that do not succeed yet (maybe even known result is wrong).
-#affineimage1
 #affinepreimage1
 #ascii_dump_load1
 #interval1 interval2
@@ -61,6 +60,7 @@ ORIGINAL_TESTS = \
 addconstraints1 \
 addspacedims1 \
 affinedimension1 \
+affineimage1 \
 bounded1 \
 boxdifference1 \
 boxhull1 \
@@ -145,7 +145,7 @@ addspacedims1_SOURCES = addspacedims1.cc
 
 affinedimension1_SOURCES = affinedimension1.cc
 
-#affineimage1_SOURCES = affineimage1.cc
+affineimage1_SOURCES = affineimage1.cc
 
 #affinepreimage1_SOURCES = affinepreimage1.cc
 
