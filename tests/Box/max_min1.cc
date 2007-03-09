@@ -756,8 +756,8 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST_MAY_OVERFLOW_WITH_FLOAT(test07);
-  DO_TEST_MAY_OVERFLOW_WITH_FLOAT(test08);
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test07, TBox);
+  DO_TEST_MAY_OVERFLOW_IF_INEXACT(test08, TBox);
   DO_TEST(test09);
   DO_TEST(test10);
   DO_TEST(test11);
@@ -765,7 +765,7 @@ BEGIN_MAIN
   DO_TEST(test13);
   DO_TEST(test14);
   DO_TEST(test15);
-  DO_TEST(test16);;
+  DO_TEST(test16);
   DO_TEST(test17);
   DO_TEST(test18);
   DO_TEST(test19);
