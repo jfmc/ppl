@@ -356,6 +356,9 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
 class Parma_Polyhedra_Library::Polyhedron {
 public:
+  //! The numeric type of coefficients.
+  typedef Coefficient coefficient_type;
+
   //! Returns the maximum space dimension all kinds of Polyhedron can handle.
   static dimension_type max_space_dimension();
 

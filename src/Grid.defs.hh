@@ -351,6 +351,9 @@ bool operator!=(const Grid& x, const Grid& y);
 
 class Parma_Polyhedra_Library::Grid {
 public:
+  //! The numeric type of coefficients.
+  typedef Coefficient coefficient_type;
+
   //! Returns the maximum space dimension all kinds of Grid can handle.
   static dimension_type max_space_dimension();
 

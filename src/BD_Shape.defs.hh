@@ -396,7 +396,7 @@ private:
 
 public:
   //! The numeric base type upon which bounded differences are built.
-  typedef T base_type;
+  typedef T coefficient_type_base;
 
   /*! \brief
     The (extended) numeric type of the inhomogeneous term of the
