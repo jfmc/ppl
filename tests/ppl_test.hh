@@ -128,11 +128,11 @@ catch (const std::exception& e) {					\
   if (succeeded || !overflow)		 \
     failed_tests.push_back(#test);
 
-#define DO_TEST_MAY_OVERFLOW_WITH_FLOAT(test)	\
-  ANNOUNCE_TEST(test);				\
-  RUN_TEST(test);				\
-  if (!succeeded)				\
-    if (!overflow || all_instances_are_exact())	\
+#define DO_TEST_MAY_OVERFLOW_IF_INEXACT(test, shape)			\
+  ANNOUNCE_TEST(test);							\
+  RUN_TEST(test);							\
+  if (!succeeded)							\
+    if (!overflow || has_exact_coefficient_type(shape(0, EMPTY)))	\
       failed_tests.push_back(#test);
 
 #if COEFFICIENT_BITS == 0
@@ -335,14 +335,16 @@ typedef BD_Shape<BD_SHAPE_INSTANCE> TBD_Shape;
 //! The incarnation of Octagonal_Shape under test.
 typedef Octagonal_Shape<OCTAGONAL_SHAPE_INSTANCE> TOctagonal_Shape;
 
-// CHECKME: here we rely on the fact that the `make check' will set
-// at most one of the instances to a floating point datatype and the
-// others will be set to an exact datatype.
+template <typename Shape>
 inline bool
-all_instances_are_exact() {
-  return std::numeric_limits<TBox::interval_type::boundary_type>::is_exact
-    && std::numeric_limits<TBD_Shape::base_type>::is_exact
-    && std::numeric_limits<TOctagonal_Shape::base_type>::is_exact;
+has_exact_coefficient_type(const Shape&) {
+  return std::numeric_limits<typename Shape::coefficient_type>::is_exact;
+}
+
+template <typename Interval>
+inline bool
+has_exact_coefficient_type(const Box<Interval>&) {
+  return std::numeric_limits<typename Interval::boundary_type>::is_exact;
 }
 
 bool
@@ -525,18 +527,93 @@ check_result(const Octagonal_Shape<T>& computed_result,
     : check_result_i(computed_result, known_result, 0, 0, 0);
 }
 
-// FIXME: stub definition always returning true.
-template <typename T>
+
+template <typename Interval>
 bool
-check_result(const Box<T>& computed_result,
+check_result_i(const Box<Interval>& computed_result,
+	       const Rational_Box& known_result,
+	       const char* max_r_d_s,
+	       const char* max_e_d_s,
+	       const char* max_l_d_s) {
+  using namespace IO_Operators;
+  Rational_Box q_computed_result(computed_result);
+  // Handle in a more efficient way the case where equality is expected.
+  if (max_r_d_s == 0 && max_e_d_s == 0 && max_l_d_s == 0) {
+    if (q_computed_result != known_result) {
+      nout << "Equality does not hold:"
+	   << "\ncomputed result is\n"
+	   << q_computed_result
+	   << "\nknown result is\n"
+	   << known_result
+	   << endl;
+      return false;
+    }
+    else
+      return true;
+  }
+
+  if (!q_computed_result.contains(known_result)) {
+    nout << "Containment does not hold:"
+	 << "\ncomputed result is\n"
+	 << q_computed_result
+	 << "\nknown result is\n"
+	 << known_result
+	 << endl;
+    return false;
+  }
+
+  Checked_Number<mpq_class, Extended_Number_Policy> r_d;
+  rectilinear_distance_assign(r_d, known_result, q_computed_result, ROUND_UP);
+  Checked_Number<mpq_class, Extended_Number_Policy> e_d;
+  euclidean_distance_assign(e_d, known_result, q_computed_result, ROUND_UP);
+  Checked_Number<mpq_class, Extended_Number_Policy> l_d;
+  l_infinity_distance_assign(l_d, known_result, q_computed_result, ROUND_UP);
+  bool ok_r = check_distance(r_d, max_r_d_s, "rectilinear");
+  bool ok_e = check_distance(e_d, max_e_d_s, "euclidean");
+  bool ok_l = check_distance(l_d, max_l_d_s, "l_infinity");
+  bool ok = ok_r && ok_e && ok_l;
+  if (!ok) {
+    nout << "Computed result is\n"
+	 << q_computed_result
+	 << "\nknown result is\n"
+	 << known_result
+	 << endl;
+  }
+  return ok;
+}
+
+template <typename Interval>
+bool
+check_result(const Box<Interval>& computed_result,
 	     const Rational_Box& known_result,
-	     const char* max_r_d_s = 0,
-	     const char* max_e_d_s = 0,
-	     const char* max_l_d_s = 0) {
-  used(max_r_d_s);
-  used(max_e_d_s);
-  used(max_l_d_s);
-  return true;
+	     const char* max_r_d_s,
+	     const char* max_e_d_s,
+	     const char* max_l_d_s) {
+  return std::numeric_limits<typename Interval::boundary_type>::is_integer
+    ? check_result_i(computed_result, known_result,
+		     "+inf", "+inf", "+inf")
+    : check_result_i(computed_result, known_result,
+		     max_r_d_s, max_e_d_s, max_l_d_s);
+}
+
+template <>
+inline bool
+check_result(const Rational_Box& computed_result,
+	     const Rational_Box& known_result,
+	     const char*,
+	     const char*,
+	     const char*) {
+  return check_result_i(computed_result, known_result,
+			0, 0, 0);
+}
+
+template <typename Interval>
+bool
+check_result(const Box<Interval>& computed_result,
+	     const Rational_Box& known_result) {
+  return std::numeric_limits<typename Interval::boundary_type>::is_integer
+    ? check_result_i(computed_result, known_result, "+inf", "+inf", "+inf")
+    : check_result_i(computed_result, known_result, 0, 0, 0);
 }
 
 } // namespace Parma_Polyhedra_Library
