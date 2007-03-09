@@ -1102,6 +1102,10 @@ PPL::MIP_Problem
 #if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 bool
 PPL::MIP_Problem::compute_simplex() {
+  // Check if the client has requested abandoning all exponential
+  // computations. If so, the exception specified by the client
+  // is thrown now.
+  maybe_abandon();
   const unsigned long allowed_non_increasing_loops = 200;
   unsigned long non_increased_times = 0;
   bool call_textbook = false;
@@ -1442,10 +1446,6 @@ PPL::MIP_Problem
 
 bool
 PPL::MIP_Problem::is_lp_satisfiable() const {
-  // Check if the client has requested abandoning all exponential
-  // computations. If so, the exception specified by the client
-  // is thrown now.
-  maybe_abandon();
 #if PPL_NOISY_SIMPLEX
   num_iterations = 0;
 #endif
