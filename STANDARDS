@@ -426,7 +426,7 @@ o  The test functions should be written
 
         // Comment describing the test...
         bool
-          test10() {
+        test10() {
             // ... test code ...
         }
 
@@ -449,6 +449,26 @@ o  Following all the test functions, include:
         END_MAIN
 
    where every test function in the program is included in the list.
+
+o  If any of the tests is known to fail due to an overflow when the
+   library is configured to use some of the bounded-precision checked
+   integers, then the corresponding test function should be called,
+   e.g., as follows
+
+          DO_TEST_F32(test07);
+
+   where the subscript "_F32" means that the overflow is expected for
+   all checked integers having 32 bits at most (i.e., 64 bits checked
+   integers are not expected to overflow). As an alternative,
+
+          DO_TEST_F32A(test07);
+
+   means that the overflow is expected, as before, for all checked
+   integers having less than 32 bits but in the case of 32 bits checked
+   integers the overflow occurs only if assertions are enabled.
+   Hence, the possible subscripts for DO_TEST are:
+
+          _F8A, _F8, _F16A, _F16, _F32A, _F32, _F64A, _F64.
 
 o  Normally, test code should produce no output at all (independently from
    whether the test succeeded or failed). Output is only meant to help
