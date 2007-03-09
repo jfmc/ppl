@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Boundary.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
+#include "distances.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -333,6 +334,117 @@ Box<Interval>::refine(const Constraint_System& cs) {
     return;
 
   refine_no_check(cs);
+}
+
+/*! \relates Box */
+template <typename Temp, typename To, typename Interval>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const Box<Interval>& x,
+			    const Box<Interval>& y,
+			    const Rounding_Dir dir,
+			    Temp& tmp0,
+			    Temp& tmp1,
+			    Temp& tmp2) {
+  return l_m_distance_assign<Rectilinear_Distance_Specialization<Temp> >
+    (r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Box */
+template <typename Temp, typename To, typename Interval>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const Box<Interval>& x,
+			    const Box<Interval>& y,
+			    const Rounding_Dir dir) {
+  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  return rectilinear_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Box */
+template <typename To, typename Interval>
+inline bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const Box<Interval>& x,
+			    const Box<Interval>& y,
+			    const Rounding_Dir dir) {
+  return rectilinear_distance_assign<To, To, Interval>(r, x, y, dir);
+}
+
+/*! \relates Box */
+template <typename Temp, typename To, typename Interval>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const Box<Interval>& x,
+			  const Box<Interval>& y,
+			  const Rounding_Dir dir,
+			  Temp& tmp0,
+			  Temp& tmp1,
+			  Temp& tmp2) {
+  return l_m_distance_assign<Euclidean_Distance_Specialization<Temp> >
+    (r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Box */
+template <typename Temp, typename To, typename Interval>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const Box<Interval>& x,
+			  const Box<Interval>& y,
+			  const Rounding_Dir dir) {
+  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  return euclidean_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Box */
+template <typename To, typename Interval>
+inline bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const Box<Interval>& x,
+			  const Box<Interval>& y,
+			  const Rounding_Dir dir) {
+  return euclidean_distance_assign<To, To, Interval>(r, x, y, dir);
+}
+
+/*! \relates Box */
+template <typename Temp, typename To, typename Interval>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const Box<Interval>& x,
+			   const Box<Interval>& y,
+			   const Rounding_Dir dir,
+			   Temp& tmp0,
+			   Temp& tmp1,
+			   Temp& tmp2) {
+  return l_m_distance_assign<L_Infinity_Distance_Specialization<Temp> >
+    (r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Box */
+template <typename Temp, typename To, typename Interval>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const Box<Interval>& x,
+			   const Box<Interval>& y,
+			   const Rounding_Dir dir) {
+  static Checked_Number<Temp, Extended_Number_Policy> tmp0;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp1;
+  static Checked_Number<Temp, Extended_Number_Policy> tmp2;
+  return l_infinity_distance_assign(r, x, y, dir, tmp0, tmp1, tmp2);
+}
+
+/*! \relates Box */
+template <typename To, typename Interval>
+inline bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const Box<Interval>& x,
+			   const Box<Interval>& y,
+			   const Rounding_Dir dir) {
+  return l_infinity_distance_assign<To, To, Interval>(r, x, y, dir);
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -2068,6 +2068,103 @@ Box<Interval>::throw_generic(const char* method, const char* reason) {
   throw std::invalid_argument(s.str());
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Box */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename Specialization,
+	  typename Temp, typename To, typename Interval>
+bool
+l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+		    const Box<Interval>& x, const Box<Interval>& y,
+		    const Rounding_Dir dir,
+		    Temp& tmp0, Temp& tmp1, Temp& tmp2) {
+  const dimension_type x_space_dim = x.space_dimension();
+  // Dimension-compatibility check.
+  if (x_space_dim != y.space_dimension())
+    return false;
+
+  // Zero-dim boxes are equal if and only if they are both empty or universe.
+  if (x_space_dim == 0) {
+    if (x.marked_empty() == y.marked_empty())
+      assign_r(r, 0, ROUND_NOT_NEEDED);
+    else
+      r = PLUS_INFINITY;
+    return true;
+  }
+
+  // The distance computation requires a check for emptiness.
+  (void) x.is_empty();
+  (void) y.is_empty();
+  // If one of two boxes is empty, then they are equal if and only if
+  // the other box is empty too.
+  if (x.marked_empty() || y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
+      assign_r(r, 0, ROUND_NOT_NEEDED);
+      return true;
+    }
+    else
+      goto pinf;
+
+  assign_r(tmp0, 0, ROUND_NOT_NEEDED);
+  for (dimension_type i = x_space_dim; i-- > 0; ) {
+    const Interval& x_i = x.seq[i];
+    const Interval& y_i = y.seq[i];
+    // Dealing with the lower bounds.
+    if (x_i.lower_is_unbounded())
+      if (y_i.lower_is_unbounded())
+	continue;
+      else
+	goto pinf;
+    else if (y_i.lower_is_unbounded())
+      goto pinf;
+    else {
+      const Temp* tmp1p;
+      const Temp* tmp2p;
+      if (x_i.lower() > y_i.lower()) {
+	maybe_assign(tmp1p, tmp1, x_i.lower(), dir);
+	maybe_assign(tmp2p, tmp2, y_i.lower(), inverse(dir));
+      }
+      else {
+	maybe_assign(tmp1p, tmp1, y_i.lower(), dir);
+	maybe_assign(tmp2p, tmp2, x_i.lower(), inverse(dir));
+      }
+      sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
+      assert(sgn(tmp1) >= 0);
+      Specialization::combine(tmp0, tmp1, dir);
+    }
+    // Dealing with the lower bounds.
+    if (x_i.upper_is_unbounded())
+      if (y_i.upper_is_unbounded())
+	continue;
+      else
+	goto pinf;
+    else if (y_i.upper_is_unbounded())
+      goto pinf;
+    else {
+      const Temp* tmp1p;
+      const Temp* tmp2p;
+      if (x_i.upper() > y_i.upper()) {
+	maybe_assign(tmp1p, tmp1, x_i.upper(), dir);
+	maybe_assign(tmp2p, tmp2, y_i.upper(), inverse(dir));
+      }
+      else {
+	maybe_assign(tmp1p, tmp1, y_i.upper(), dir);
+	maybe_assign(tmp2p, tmp2, x_i.upper(), inverse(dir));
+      }
+      sub_assign_r(tmp1, *tmp1p, *tmp2p, dir);
+      assert(sgn(tmp1) >= 0);
+      Specialization::combine(tmp0, tmp1, dir);
+    }
+  }
+  Specialization::finalize(tmp0, dir);
+  assign_r(r, tmp0, dir);
+  return true;
+
+ pinf:
+  r = PLUS_INFINITY;
+  return true;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Box_templates_hh)
