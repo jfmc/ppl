@@ -31,13 +31,13 @@ test01() {
 
   TBox box1(3);
   box1.add_constraint(x <= 1);
-  box1.add_constraint(y - x <= 7);
-  box1.add_constraint(x - y <= 6);
+  box1.add_constraint(y <= 7);
+  box1.add_constraint(-y <= 6);
 
   TBox box2(3);
   box2.add_constraint(-x <= 3);
-  box2.add_constraint(y - x <= 2);
-  box2.add_constraint(x - y <= 5);
+  box2.add_constraint(y <= 2);
+  box2.add_constraint(-y <= 5);
   box2.add_constraint(x <= 0);
 
   print_constraints(box1, "*** box1 ***");
@@ -47,11 +47,9 @@ test01() {
 
   Rational_Box known_result(3);
   known_result.add_constraint(x <= 1);
-  known_result.add_constraint(y - x <= 7);
   known_result.add_constraint(-x <= 3);
-  known_result.add_constraint(x - y <= 6);
-  known_result.add_constraint(-y <= 8);
-  known_result.add_constraint(y <= 8);
+  known_result.add_constraint(-y <= 6);
+  known_result.add_constraint(y <= 7);
 
   bool ok = (Rational_Box(box2) == known_result);
 
@@ -73,7 +71,6 @@ test02() {
   box2.add_constraint(-y <= 3);
   box2.add_constraint(-x <= 2);
   box2.add_constraint(x <= 3);
-  box2.add_constraint(y - x <= 4);
   box2.add_constraint(z <= 0);
 
   print_constraints(box1, "*** box1 ***");
@@ -84,13 +81,8 @@ test02() {
   Rational_Box known_result(4);
   known_result.add_constraint(z <= 1);
   known_result.add_constraint(-y <= 3);
-  known_result.add_constraint(y <= 7);
   known_result.add_constraint(-x <= 2);
   known_result.add_constraint(x <= 3);
-  known_result.add_constraint(y - x <= 4);
-  known_result.add_constraint(x - y <= 6);
-  known_result.add_constraint(z - y <= 3);
-  known_result.add_constraint(z - x <= 2);
 
   bool ok = (Rational_Box(box2) == known_result);
 

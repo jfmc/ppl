@@ -42,7 +42,6 @@ $(top_builddir)/src/libppl.la \
 
 # Tests that do not compile yet.
 #boundedaffineimage1
-#cc76narrowing1
 #closure1
 #generalizedaffineimage1
 #generalizedaffinepreimage1
@@ -63,6 +62,7 @@ bhz03widening1 \
 bounded1 \
 boxdifference1 \
 boxhull1 \
+cc76narrowing1 \
 cc76widening \
 concatenate1 \
 constraints1 \
@@ -163,7 +163,7 @@ boxdifference1_SOURCES = boxdifference1.cc
 
 boxhull1_SOURCES = boxhull1.cc
 
-#cc76narrowing1_SOURCES = cc76narrowing1.cc
+cc76narrowing1_SOURCES = cc76narrowing1.cc
 
 cc76widening_SOURCES = cc76widening.cc
 
