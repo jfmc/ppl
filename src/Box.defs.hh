@@ -71,6 +71,190 @@ std::ostream& operator<<(std::ostream& s, const Box<Interval>& box);
 
 } // namespace IO_Operators
 
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates Box
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+*/
+template <typename To, typename Interval>
+bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const Box<Interval>& x,
+			    const Box<Interval>& y,
+			    const Rounding_Dir dir);
+
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates Box
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+*/
+template <typename Temp, typename To, typename Interval>
+bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const Box<Interval>& x,
+			    const Box<Interval>& y,
+			    const Rounding_Dir dir);
+
+//! Computes the rectilinear (or Manhattan) distance between \p x and \p y.
+/*! \relates Box
+  If the rectilinear distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename Interval>
+bool
+rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			    const Box<Interval>& x,
+			    const Box<Interval>& y,
+			    const Rounding_Dir dir,
+			    Temp& tmp0,
+			    Temp& tmp1,
+			    Temp& tmp2);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates Box
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+*/
+template <typename To, typename Interval>
+bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const Box<Interval>& x,
+			  const Box<Interval>& y,
+			  const Rounding_Dir dir);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates Box
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+*/
+template <typename Temp, typename To, typename Interval>
+bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const Box<Interval>& x,
+			  const Box<Interval>& y,
+			  const Rounding_Dir dir);
+
+//! Computes the euclidean distance between \p x and \p y.
+/*! \relates Box
+  If the euclidean distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename Interval>
+bool
+euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			  const Box<Interval>& x,
+			  const Box<Interval>& y,
+			  const Rounding_Dir dir,
+			  Temp& tmp0,
+			  Temp& tmp1,
+			  Temp& tmp2);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates Box
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<To, Extended_Number_Policy>.
+*/
+template <typename To, typename Interval>
+bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const Box<Interval>& x,
+			   const Box<Interval>& y,
+			   const Rounding_Dir dir);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates Box
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using variables of type
+  Checked_Number<Temp, Extended_Number_Policy>.
+*/
+template <typename Temp, typename To, typename Interval>
+bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const Box<Interval>& x,
+			   const Box<Interval>& y,
+			   const Rounding_Dir dir);
+
+//! Computes the \f$L_\infty\f$ distance between \p x and \p y.
+/*! \relates Box
+  If the \f$L_\infty\f$ distance between \p x and \p y is defined,
+  stores an approximation of it into \p r and returns <CODE>true</CODE>;
+  returns <CODE>false</CODE> otherwise.
+
+  The direction of the approximation is specified by \p dir.
+
+  All computations are performed using the temporary variables
+  \p tmp0, \p tmp1 and \p tmp2.
+*/
+template <typename Temp, typename To, typename Interval>
+bool
+l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+			   const Box<Interval>& x,
+			   const Box<Interval>& y,
+			   const Rounding_Dir dir,
+			   Temp& tmp0,
+			   Temp& tmp1,
+			   Temp& tmp2);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Box
+  Helper function for computing distances.
+*/
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+template <typename Specialization,
+	  typename Temp, typename To, typename Interval>
+bool
+l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+		    const Box<Interval>& x, const Box<Interval>& y,
+		    const Rounding_Dir dir,
+		    Temp& tmp0, Temp& tmp1, Temp& tmp2);
+
 } // namespace Parma_Polyhedra_Library
 
 //! A not necessarily closed, iso-oriented hyperrectangle.
@@ -405,7 +589,7 @@ public:
 
   /*! \brief
     Returns <CODE>true</CODE> if and only if \p *this contains \p y.
-    
+
     \exception std::invalid_argument
     Thrown if \p x and \p y are dimension-incompatible.
   */
@@ -1077,6 +1261,12 @@ private:
   Parma_Polyhedra_Library
   ::IO_Operators::operator<<(std::ostream& s, const Box<U>& box);
 #endif
+
+  template <typename Specialization, typename Temp, typename To, typename I>
+  friend bool Parma_Polyhedra_Library::l_m_distance_assign
+  (Checked_Number<To, Extended_Number_Policy>& r,
+   const Box<I>& x, const Box<I>& y, const Rounding_Dir dir,
+   Temp& tmp0, Temp& tmp1, Temp& tmp2);
 
   //! The type of sequence used to implement the box.
   typedef std::vector<Interval> Sequence;
