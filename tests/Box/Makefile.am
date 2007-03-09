@@ -41,8 +41,6 @@ $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 # Tests that do not compile yet.
-#bgp99extrapolation1
-#bhz03widening1
 #boundedaffineimage1
 #cc76narrowing1
 #closure1
@@ -60,6 +58,8 @@ addspacedims1 \
 affinedimension1 \
 affineimage1 \
 affinepreimage1 \
+bgp99extrapolation1 \
+bhz03widening1 \
 bounded1 \
 boxdifference1 \
 boxhull1 \
@@ -151,9 +151,9 @@ affinepreimage1_SOURCES = affinepreimage1.cc
 
 #ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 
-#bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
+bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
 
-#bhz03widening1_SOURCES = bhz03widening1.cc
+bhz03widening1_SOURCES = bhz03widening1.cc
 
 bounded1_SOURCES = bounded1.cc
 
