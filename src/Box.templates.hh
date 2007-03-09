@@ -1965,16 +1965,15 @@ template <typename Interval>
 void
 Box<Interval>::ascii_dump(std::ostream& s) const {
   const char separator = ' ';
-  s << "empty" << separator << empty;
+  s << "empty" << separator << (empty ? '1' : '0');
   s << separator;
-  s << "empty_up_to_date" << separator << empty_up_to_date;
+  s << "empty_up_to_date" << separator << (empty_up_to_date ? '1' : '0');
   s << separator;
   const dimension_type space_dim = space_dimension();
   s << "space_dim" << separator << space_dim;
   s << "\n";
   for (dimension_type i = 0; i < space_dim;  ++i)
     seq[i].ascii_dump(s);
-  s << "\n";
 }
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(Interval, Box<Interval>)
