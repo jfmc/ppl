@@ -63,7 +63,9 @@ template <typename Interval>
 template <typename Other_Interval>
 inline
 Box<Interval>::Box(const Box<Other_Interval>& y)
-  : seq(y.space_dimension()) {
+  : seq(y.space_dimension()),
+    empty(y.empty),
+    empty_up_to_date(y.empty_up_to_date) {
   Box& x = *this;
   if (y.marked_empty()) {
     // FIXME: use UNIVERSE when initializing `seq'.
