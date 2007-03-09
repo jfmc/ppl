@@ -262,8 +262,8 @@ test08() {
 
 bool
 test09() {
-  typedef TOctagonal_Shape::base_type bt;
-  bt stop_points[] = { bt(-2), bt(-1), bt(0), bt(1), bt(2) };
+  typedef TOctagonal_Shape::coefficient_type_base ctb;
+  ctb stop_points[] = { ctb(-2), ctb(-1), ctb(0), ctb(1), ctb(2) };
 
   Variable x(0);
   Variable y(1);
