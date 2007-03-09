@@ -43,7 +43,8 @@ $(top_builddir)/src/libppl.la \
 TESTS = \
 ascii_dump_load1 \
 exceptions1 \
-mipproblem1
+mipproblem1 \
+mipproblem2
 
 #
 # Sources for the tests
@@ -55,6 +56,19 @@ exceptions1_SOURCES = exceptions1.cc
 
 mipproblem1_SOURCES = mipproblem1.cc
 
+mipproblem2_SRCS = mipproblem2.cc
+
+if BUILD_WATCHDOG_LIBRARY
+WATCHDOG_TESTS = mipproblem2
+
+mipproblem2_SOURCES = $(mipproblem2_SRCS)
+mipproblem2_CPPFLAGS = \
+$(AM_CPPFLAGS) \
+-I$(top_builddir)/Watchdog \
+-I$(top_builddir)/Watchdog/src
+mipproblem2_LDADD = $(LDADD) $(top_builddir)/Watchdog/src/libpwl.la
+
+endif BUILD_WATCHDOG_LIBRARY
 
 XFAIL_ALWAYS =
 
@@ -112,6 +126,8 @@ endif !USE_INT64
 XFAIL_TESTS = $(XFAIL_SET)
 
 check_PROGRAMS = $(TESTS) $(BUGS)
+
+EXTRA_DIST = $(mipproblem2_SRCS)
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat
