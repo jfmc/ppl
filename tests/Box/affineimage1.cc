@@ -217,7 +217,7 @@ test08() {
   known_result.add_constraint(B <= 2);
   known_result.add_constraint(B >= -1);
 
-  bool ok = check_result(box, known_result, "3.70e-7", "2.10e-7", "1.44e-7");
+  bool ok = check_result(box, known_result, "1.08e-7", "9.62e-8", "9.54e-8");
 
   print_constraints(box, "*** box.affine_image(A, -2*A - 3*B + 1, -5) ***");
 
