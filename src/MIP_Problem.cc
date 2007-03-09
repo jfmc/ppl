@@ -1102,10 +1102,6 @@ PPL::MIP_Problem
 #if PPL_SIMPLEX_USE_STEEPEST_EDGE_FLOATING_POINT
 bool
 PPL::MIP_Problem::compute_simplex() {
-  // Check if the client has requested abandoning all exponential
-  // computations. If so, the exception specified by the client
-  // is thrown now.
-  maybe_abandon();
   const unsigned long allowed_non_increasing_loops = 200;
   unsigned long non_increased_times = 0;
   bool call_textbook = false;
@@ -1134,6 +1130,11 @@ PPL::MIP_Problem::compute_simplex() {
     // If no exiting index was computed, the problem is unbounded.
     if (exiting_base_index == tableau_num_rows)
       return false;
+
+    // Check if the client has requested abandoning all expensive
+    // computations. If so, the exception specified by the client
+    // is thrown now.
+    maybe_abandon();
 
     // We have not reached the optimality or unbounded condition:
     // compute the new base and the corresponding vertex of the
@@ -1200,6 +1201,11 @@ PPL::MIP_Problem::compute_simplex() {
     // If no exiting index was computed, the problem is unbounded.
     if (exiting_base_index == tableau_num_rows)
       return false;
+
+    // Check if the client has requested abandoning all expensive
+    // computations. If so, the exception specified by the client
+    // is thrown now.
+    maybe_abandon();
 
     // We have not reached the optimality or unbounded condition:
     // compute the new base and the corresponding vertex of the
