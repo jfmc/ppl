@@ -87,7 +87,7 @@ maxspacedim1 \
 minconstraints1 \
 pointsetpowerset1 \
 relations1 relations2 \
-refine1 \
+refine1 refine3 \
 removespacedims1 \
 timeelapse1 \
 universe1 \
@@ -225,6 +225,7 @@ relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 
 refine1_SOURCES = refine1.cc
+refine3_SOURCES = refine3.cc
 
 removespacedims1_SOURCES = removespacedims1.cc
 
