@@ -55,17 +55,15 @@ test01() {
 
   print_constraints(box, "*** box.refine(A == B) ***");
 
-#if 0
   Rational_Box known_result(2);
-  known_result.add_constraint(A >= 0);
-  known_result.add_constraint(B == 5);
-  known_result.add_constraint(B - A <= 5);
+  known_result.add_constraint(7*A > 8);
+  known_result.add_constraint(55*A < 267);
+  known_result.add_constraint(7*B > 8);
+  known_result.add_constraint(55*B < 267);
 
-  bool ok = (Rational_Box(box1) == known_result);
+  bool ok = check_result(box, known_result, "2.33e-6", "1.55e-6", "1.10e-6");
 
   print_constraints(known_result, "*** known_result ***");
-#endif
-  bool ok = true;
 
   return ok;
 }
@@ -88,19 +86,9 @@ test02() {
   TBox box(2);
   box.refine(cs);
 
+  bool ok = box.is_empty();
+
   print_constraints(box, "*** box.refine(cs) ***");
-
-#if 0
-  Rational_Box known_result(2);
-  known_result.add_constraint(A >= 0);
-  known_result.add_constraint(B == 5);
-  known_result.add_constraint(B - A <= 5);
-
-  bool ok = (Rational_Box(box1) == known_result);
-
-  print_constraints(known_result, "*** known_result ***");
-#endif
-  bool ok = true;
 
   return ok;
 }
