@@ -394,8 +394,8 @@ public:
     s << *this << std::endl;
   }
   bool ascii_load(std::istream& s) {
-    // WRITE ME.
-    return false;
+    s >> *this;
+    return s;
   }
 
   bool OK() const {
@@ -1505,6 +1505,137 @@ operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
   os << (x.upper_is_open() ? ")" : "]");
   output_restriction(os, x.info());
   return os;
+}
+
+template <typename Boundary, typename Info>
+inline std::istream&
+operator>>(std::istream& is, Interval<Boundary, Info>& x) {
+  // Eat leading white space.
+  int c;
+  do {
+    c = is.get();
+  } while (isspace(c));
+
+  // Get the opening parenthesis and handle the empty interval case.
+  bool lower_open = false;
+  if (c == '(')
+    lower_open = true;
+  else if (c == '[') {
+    c = is.get();
+    if (c == ']') {
+      // Empty interval.
+      x.set_empty();
+      return is;
+    }
+    else
+      is.unget();
+  }
+  else {
+    is.unget();
+    is.setstate(std::ios_base::failbit);
+    return is;
+  }
+
+  // Get the lower bound.
+  Boundary lower_bound;
+  Result lower_r  = input(lower_bound, is, ROUND_DOWN);
+  if (lower_r == V_CVT_STR_UNK || lower_r == VC_NAN) {
+    is.setstate(std::ios_base::failbit);
+    return is;
+  }
+
+  // Match the comma separating the lower and upper bounds.
+  do {
+    c = is.get();
+  } while (isspace(c));
+  if (c != ',') {
+    is.unget();
+    is.setstate(std::ios_base::failbit);
+    return is;
+  }
+
+  // Get the upper bound.
+  Boundary upper_bound;
+  Result upper_r = input(upper_bound, is, ROUND_UP);
+  if (upper_r == V_CVT_STR_UNK || upper_r == VC_NAN) {
+    is.setstate(std::ios_base::failbit);
+    return is;
+  }
+
+  // Get the closing parenthesis.
+  do {
+    c = is.get();
+  } while (isspace(c));
+  bool upper_open = false;
+  if (c == ')')
+    upper_open = true;
+  else if (c != ']') {
+    is.unget();
+    is.setstate(std::ios_base::failbit);
+    return is;
+  }
+
+  // Buld interval.
+  bool lower_unbounded = false;
+  bool upper_unbounded = false;
+  switch (lower_r) {
+  case V_EQ:
+    break;
+  case V_LE:
+    lower_open = true;
+    break;
+  case VC_MINUS_INFINITY:
+  case V_NEG_OVERFLOW:
+    lower_unbounded = true;
+    break;
+  case VC_PLUS_INFINITY:
+  case V_POS_OVERFLOW:
+    if (upper_r == VC_PLUS_INFINITY || upper_r == V_POS_OVERFLOW)
+      x.set_universe();
+    else
+      x.set_empty();
+    return is;
+  default:
+    assert(false);
+  }
+  switch (upper_r) {
+  case V_EQ:
+    break;
+  case V_GE:
+    upper_open = true;
+    break;
+  case VC_MINUS_INFINITY:
+  case V_NEG_OVERFLOW:
+    if (lower_r == VC_MINUS_INFINITY || lower_r == V_NEG_OVERFLOW)
+      x.set_universe();
+    else
+      x.set_empty();
+    return is;
+  case VC_PLUS_INFINITY:
+  case V_POS_OVERFLOW:
+    upper_unbounded = true;
+    break;
+  default:
+    assert(false);
+  }
+
+  if (!lower_unbounded
+      && !upper_unbounded
+      && (lower_bound > upper_bound
+	  || (lower_open && lower_bound == upper_bound)))
+    x.set_empty();
+  else {
+    x.set_universe();
+    if (!lower_unbounded)
+      refine_existential(x,
+			 (lower_open ? GREATER_THAN : GREATER_OR_EQUAL),
+			 lower_bound);
+    if (!upper_unbounded)
+      refine_existential(x,
+			 (upper_open ? LESS_THAN : LESS_OR_EQUAL),
+			 upper_bound);
+  }
+  return is;
 }
 
 }
