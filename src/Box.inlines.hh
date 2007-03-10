@@ -37,6 +37,15 @@ Box<Interval>::Box(const Box& y)
 }
 
 template <typename Interval>
+inline Box<Interval>&
+Box<Interval>::operator=(const Box& y) {
+  seq = y.seq;
+  empty = y.empty;
+  empty_up_to_date = y.empty_up_to_date;
+  return *this;
+}
+
+template <typename Interval>
 inline void
 Box<Interval>::swap(Box& y) {
   Box& x = *this;

@@ -392,6 +392,12 @@ public:
 	       Complexity_Class complexity = ANY_COMPLEXITY);
 
   /*! \brief
+    The assignment operator
+    (\p *this and \p y can be dimension-incompatible).
+  */
+  Box& operator=(const Box& y);
+
+  /*! \brief
     Swaps \p *this with \p y
     (\p *this and \p y can be dimension-incompatible).
   */
