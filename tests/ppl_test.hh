@@ -559,6 +559,17 @@ check_result_i(const Box<Interval>& computed_result,
 	 << "\nknown result is\n"
 	 << known_result
 	 << endl;
+    nout << "Individual dimensions where containment does not hold"
+	 << "\n(Variable: computed-result known-result):\n";
+    for (dimension_type i = 0; i < computed_result.space_dimension(); ++i) {
+      if (!contains(q_computed_result.get_interval(Variable(i)),
+		    known_result.get_interval(Variable(i))))
+	nout << Variable(i) << ": "
+	     << q_computed_result.get_interval(Variable(i))
+	     << ' '
+	     << known_result.get_interval(Variable(i))
+	     << endl;
+    }
     return false;
   }
 
