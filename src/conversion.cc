@@ -413,7 +413,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	// The generator does not saturate the constraint.
 	break;
 #if REACTIVE_ABANDONING
-      // Check if the client has requested abandoning all exponential
+      // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
       maybe_abandon();
@@ -806,7 +806,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
       }
     }
 #if !REACTIVE_ABANDONING
-    // Check if the client has requested abandoning all exponential
+    // Check if the client has requested abandoning all expensive
     // computations.  If so, the exception specified by the client
     // is thrown now.
     maybe_abandon();
