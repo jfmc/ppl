@@ -212,7 +212,7 @@ install-txt:
 	for file in $(srcdir)/*.txt $(srcdir)/README.doc; do \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(txtdir)/`basename $$file`; \
 	done
-	for file in BUGS COPYING CREDITS ChangeLog NEWS README README.configure ; do \
+	for file in BUGS COPYING CREDITS ChangeLog NEWS README; do \
 	  $(INSTALL_DATA) $(srcdir)/../$$file $(DESTDIR)$(txtdir)/$$file; \
 	done
 
