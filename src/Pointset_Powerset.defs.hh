@@ -135,6 +135,12 @@ public:
   bool geometrically_equals(const Pointset_Powerset& y) const;
 
   /*! \brief
+    Returns <CODE>true</CODE> if and only if \p *this
+    contains at least one integer point.
+  */
+  bool contains_integer_point() const;
+
+  /*! \brief
     Returns a lower bound to the total size in bytes of the memory
     occupied by \p *this.
   */

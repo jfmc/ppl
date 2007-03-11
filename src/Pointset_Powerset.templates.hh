@@ -276,6 +276,17 @@ Pointset_Powerset<PS>::affine_image(Variable var,
 }
 
 template <typename PS>
+bool
+Pointset_Powerset<PS>::contains_integer_point() const {
+  const Pointset_Powerset& x = *this;
+  for (Sequence_const_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    if (si->element().contains_integer_point())
+      return true;
+  return false;
+}
+
+template <typename PS>
 void
 Pointset_Powerset<PS>::pairwise_reduce() {
   Pointset_Powerset& x = *this;
