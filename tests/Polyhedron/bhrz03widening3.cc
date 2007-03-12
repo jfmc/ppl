@@ -591,6 +591,38 @@ test09() {
 
   return ok;
 }
+bool
+test10() {
+
+  Variable A(0);
+  Variable B(1);
+
+  Constraint_System cs;
+  cs.insert(-A - 225*B >= -234);
+  cs.insert(-A >= -9);
+  cs.insert(A >= -9);
+  cs.insert(A + 180*B >= 171);
+  cs.insert(11*A + 180*B >= 81);
+  NNC_Polyhedron ph(cs);
+
+  Constraint_System cs1;
+  cs1.insert(-A >= -9);
+  cs1.insert(101*A + 1800*B > 729);
+  cs1.insert(-A - 200*B >= -209);
+  cs1.insert(A >= -9);
+  cs1.insert(A + 1800*B >= 1629);
+  cs1.insert(1019*A + 1800*B >= -8829);
+  NNC_Polyhedron ph1(cs1);
+
+  print_constraints(ph, "*** ph ***");
+  print_constraints(ph1, "*** ph ***");
+
+  ph1.BHRZ03_widening_assign(ph);
+  print_constraints(ph1, "*** ph1 after widening ***");
+
+  // This should be set to check the result of the widening.
+  return true;
+}
 
 } // namespace
 
@@ -604,4 +636,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST_F8(test08);
   DO_TEST(test09);
+  DO_TEST_F(test10);
 END_MAIN
