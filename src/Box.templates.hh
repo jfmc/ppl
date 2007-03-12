@@ -1654,22 +1654,22 @@ Box<Interval>::affine_image(const Variable var,
   if (is_empty())
     return;
 
-  Interval expr_value;
+  Tmp_Interval_Type expr_value, temp0, temp1;
   assign(expr_value, expr.inhomogeneous_term());
-  Interval temp;
   for (dimension_type i = expr_space_dim; i-- > 0; ) {
     const Coefficient& coeff = expr.coefficient(Variable(i));
     if (coeff != 0) {
-      assign(temp, coeff);
-      mul_assign(temp, temp, seq[i]);
-      add_assign(expr_value, expr_value, temp);
+      assign(temp0, coeff);
+      assign(temp1, seq[i]);
+      mul_assign(temp0, temp0, temp1);
+      add_assign(expr_value, expr_value, temp0);
     }
   }
   if (denominator != 1) {
-    assign(temp, denominator);
-    div_assign(expr_value, expr_value, temp);
+    assign(temp0, denominator);
+    div_assign(expr_value, expr_value, temp0);
   }
-  std::swap(seq[var.id()], expr_value);
+  assign(seq[var.id()], expr_value);
 
   assert(OK());
 }
@@ -1700,29 +1700,27 @@ Box<Interval>::affine_preimage(const Variable var,
   const Coefficient& expr_v = expr.coefficient(var);
   const bool invertible = (expr_v != 0);
   if (!invertible) {
-    Interval expr_value;
+    Tmp_Interval_Type expr_value, temp0, temp1;
     assign(expr_value, expr.inhomogeneous_term());
-    Interval temp;
     for (dimension_type i = expr_space_dim; i-- > 0; ) {
       const Coefficient& coeff = expr.coefficient(Variable(i));
       if (coeff != 0) {
-	assign(temp, coeff);
-	mul_assign(temp, temp, seq[i]);
-	add_assign(expr_value, expr_value, temp);
+	assign(temp0, coeff);
+	assign(temp1, seq[i]);
+	mul_assign(temp0, temp0, temp1);
+	add_assign(expr_value, expr_value, temp0);
       }
     }
     if (denominator != 1) {
-      assign(temp, denominator);
-      div_assign(expr_value, expr_value, temp);
+      assign(temp0, denominator);
+      div_assign(expr_value, expr_value, temp0);
     }
     Interval& x_seq_v = seq[var.id()];
-    intersect_assign(temp, x_seq_v);
-    if (temp.is_empty())
+    intersect_assign(expr_value, x_seq_v);
+    if (expr_value.is_empty())
       set_empty();
-    else {
-      x_seq_v.upper_set_unbounded();
-      x_seq_v.lower_set_unbounded();
-    }
+    else
+      x_seq_v.set_universe();
   }
   else {
     // The affine transformation is invertible.
