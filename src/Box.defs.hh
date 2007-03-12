@@ -1298,6 +1298,12 @@ private:
   //! The type of sequence used to implement the box.
   typedef std::vector<Interval> Sequence;
 
+  /*! \brief
+    The type of intervals used by inner computations when trying to limit
+    the cumulative effect of approximation errors.
+  */
+  typedef Interval Tmp_Interval_Type;
+
   //! A sequence of intervals, one for each dimension of the vector space.
   Sequence seq;
 
