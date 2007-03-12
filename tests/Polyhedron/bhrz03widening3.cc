@@ -591,28 +591,25 @@ test09() {
 
   return ok;
 }
+
 bool
 test10() {
-
   Variable A(0);
   Variable B(1);
 
-  Constraint_System cs;
-  cs.insert(-A - 225*B >= -234);
-  cs.insert(-A >= -9);
-  cs.insert(A >= -9);
-  cs.insert(A + 180*B >= 171);
-  cs.insert(11*A + 180*B >= 81);
-  NNC_Polyhedron ph(cs);
+  Generator_System gs;
+  gs.insert(point());
+  gs.insert(point(B));
+  gs.insert(point(A + B));
+  gs.insert(point(A + 2*B));
+  NNC_Polyhedron ph(gs);
 
-  Constraint_System cs1;
-  cs1.insert(-A >= -9);
-  cs1.insert(101*A + 1800*B > 729);
-  cs1.insert(-A - 200*B >= -209);
-  cs1.insert(A >= -9);
-  cs1.insert(A + 1800*B >= 1629);
-  cs1.insert(1019*A + 1800*B >= -8829);
-  NNC_Polyhedron ph1(cs1);
+  gs.clear();
+  gs.insert(point());
+  gs.insert(point(B));
+  gs.insert(closure_point(A));
+  gs.insert(point(A + 3*B));
+  NNC_Polyhedron ph1(gs);
 
   print_constraints(ph, "*** ph ***");
   print_constraints(ph1, "*** ph ***");
