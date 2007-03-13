@@ -151,6 +151,17 @@ Pointset_Powerset<PS>::add_constraint_and_minimize(const Constraint& c) {
 
 template <typename PS>
 void
+Pointset_Powerset<PS>::refine(const Constraint& c) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().refine(c);
+  x.reduced = false;
+  assert(x.OK());
+}
+
+template <typename PS>
+void
 Pointset_Powerset<PS>::add_constraints(const Constraint_System& cs) {
   Pointset_Powerset& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
@@ -175,6 +186,17 @@ add_constraints_and_minimize(const Constraint_System& cs) {
     }
   assert(x.OK());
   return !x.empty();
+}
+
+template <typename PS>
+void
+Pointset_Powerset<PS>::refine(const Constraint_System& cs) {
+  Pointset_Powerset& x = *this;
+  for (Sequence_iterator si = x.sequence.begin(),
+	 s_end = x.sequence.end(); si != s_end; ++si)
+    si->element().refine(cs);
+  x.reduced = false;
+  assert(x.OK());
 }
 
 template <typename PS>

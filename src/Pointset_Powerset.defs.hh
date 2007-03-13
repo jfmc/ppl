@@ -175,6 +175,9 @@ public:
   */
   void add_constraint(const Constraint& c);
 
+  // FIXME: documentation to be written.
+  void refine(const Constraint& c);
+
   //! Intersects \p *this with the constraint \p c, minimizing the result.
   /*!
     \return
@@ -196,6 +199,9 @@ public:
     dimension-incompatible.
   */
   void add_constraints(const Constraint_System& cs);
+
+  // FIXME: documentation to be written.
+  void refine(const Constraint_System& cs);
 
   /*! \brief
     Intersects \p *this with the constraints in \p cs,
