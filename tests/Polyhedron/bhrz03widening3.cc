@@ -600,25 +600,34 @@ test10() {
   Generator_System gs;
   gs.insert(point());
   gs.insert(point(B));
-  gs.insert(point(A + B));
   gs.insert(point(A + 2*B));
+  gs.insert(point(A + B));
   NNC_Polyhedron ph(gs);
 
   gs.clear();
   gs.insert(point());
   gs.insert(point(B));
+  gs.insert(point(A + 2*B));
   gs.insert(closure_point(A));
-  gs.insert(point(A + 3*B));
   NNC_Polyhedron ph1(gs);
 
   print_constraints(ph, "*** ph ***");
-  print_constraints(ph1, "*** ph ***");
+  print_constraints(ph1, "*** ph1 ***");
 
   ph1.BHRZ03_widening_assign(ph);
-  print_constraints(ph1, "*** ph1 after widening ***");
 
-  // This should be set to check the result of the widening.
-  return true;
+  gs.clear();
+  gs.insert(point());
+  gs.insert(point(B));
+  gs.insert(point(A + 2*B));
+  gs.insert(ray(-B));
+  NNC_Polyhedron known_result(gs);
+
+  bool ok = (ph1 == known_result);
+
+  print_constraints(ph1, "*** ph1.BHRZ03_widening_assin(ph) ***");
+
+  return ok;
 }
 
 } // namespace
@@ -633,5 +642,5 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST_F8(test08);
   DO_TEST(test09);
-  DO_TEST_F(test10);
+  DO_TEST(test10);
 END_MAIN
