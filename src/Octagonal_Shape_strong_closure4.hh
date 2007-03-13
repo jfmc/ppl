@@ -37,7 +37,6 @@ Octagonal_Shape<T>::strong_closure_assign() const {
   typedef typename OR_Matrix<N>::row_iterator Row_Iterator;
   typedef typename OR_Matrix<N>::row_reference_type Row_Reference;
   // Avoid recomputations.
-  const dimension_type n_rows = x.matrix.num_rows();
   const Row_Iterator m_begin = x.matrix.row_begin();
   const Row_Iterator m_end = x.matrix.row_end();
 
