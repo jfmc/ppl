@@ -984,6 +984,30 @@ public:
 			    Iterator first, Iterator last);
 
   /*! \brief
+    Improves the result of the \ref CC76_extrapolation "CC76-extrapolation"
+    computation by also enforcing those constraints in \p cs that are
+    satisfied by all the points of \p *this.
+
+    \param y
+    A box that <EM>must</EM> be contained in \p *this.
+
+    \param cs
+    The system of constraints used to improve the widened box.
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref Widening_with_Tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this, \p y and \p cs are dimension-incompatible or
+    if \p cs contains a strict inequality.
+  */
+  void limited_CC76_extrapolation_assign(const Box& y,
+					 const Constraint_System& cs,
+					 unsigned* tp = 0);
+
+  /*! \brief
     Assigns to \p *this the result of restoring in \p y the constraints
     of \p *this that were lost by
     \ref CC76_extrapolation "CC76-extrapolation" applications.
