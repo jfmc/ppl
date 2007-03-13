@@ -108,7 +108,7 @@ test04() {
 
   Poly_Con_Relation rel = bd.relation_with(A == 0);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(A == 0) == " << rel << endl;
 
@@ -126,7 +126,7 @@ test05() {
 
   Poly_Con_Relation rel = bd.relation_with(A >= 0);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(A >= 0) == " << rel << endl;
 
@@ -144,7 +144,7 @@ test06() {
 
   Poly_Con_Relation rel = bd.relation_with(A <= -2);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(A <= -2) == " << rel << endl;
 
@@ -162,7 +162,7 @@ test07() {
 
   Poly_Con_Relation rel = bd.relation_with(A == -1);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(A == -1) == " << rel << endl;
 
@@ -182,7 +182,7 @@ test08() {
 
   Poly_Con_Relation rel = bd.relation_with(A - B == 0);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(A == 0) == " << rel << endl;
 
@@ -201,7 +201,7 @@ test09() {
 
   Poly_Con_Relation rel = bd.relation_with(A - B >= 0);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(A >= 0) == " << rel << endl;
 
@@ -220,7 +220,7 @@ test10() {
 
   Poly_Con_Relation rel = bd.relation_with(A - B <= -2);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(A <= -2) == " << rel << endl;
 
@@ -239,7 +239,7 @@ test11() {
 
   Poly_Con_Relation rel = bd.relation_with(A - B == -1);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(A == -1) == " << rel << endl;
 
@@ -259,7 +259,7 @@ test12() {
 
   Poly_Con_Relation rel = bd.relation_with(A - B == -2);
 
-  print_constraints(bd, "--- bd ---");
+  print_constraints(bd, "*** bd ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(A == -1) == " << rel << endl;
 
@@ -280,8 +280,8 @@ test13() {
   Generator g = point();
   Poly_Gen_Relation rel = bd.relation_with(g);
 
-  print_constraints(bd, "--- bd ---");
-  print_generator(g, "--- g ---");
+  print_constraints(bd, "*** bd ***");
+  print_generator(g, "*** g ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(v()) == " << rel << endl;
 
@@ -301,8 +301,8 @@ test14() {
   Generator g = point();
   Poly_Gen_Relation rel = bd.relation_with(g);
 
-  print_constraints(bd, "--- bd ---");
-  print_generator(g, "--- g ---");
+  print_constraints(bd, "*** bd ***");
+  print_generator(g, "*** g ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(v()) == " << rel << endl;
 
@@ -322,8 +322,8 @@ test15() {
   Generator g = point(3*A, 2);
   Poly_Gen_Relation rel = bd.relation_with(g);
 
-  print_constraints(bd, "--- bd ---");
-  print_generator(g, "--- g ---");
+  print_constraints(bd, "*** bd ***");
+  print_generator(g, "*** g ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(v()) == " << rel << endl;
 
@@ -344,8 +344,8 @@ test16() {
   Constraint c(2*A == 1);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-  print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
+  print_constraints(bd, "*** bd ***");
+  print_constraint(c, "*** c ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 
@@ -365,8 +365,8 @@ test17() {
   Constraint c(Linear_Expression(1) == 0);
   Poly_Con_Relation rel = bd.relation_with(c);
 
-  print_constraints(bd, "--- bd ---");
-  print_constraint(c, "--- c ---");
+  print_constraints(bd, "*** bd ***");
+  print_constraint(c, "*** c ***");
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 

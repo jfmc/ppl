@@ -31,11 +31,11 @@ test01() {
 
   TOctagonal_Shape oct(2, EMPTY);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Generator g = point(x);
 
-  print_generator(g, "--- g ---");
+  print_generator(g, "*** g ***");
 
   Poly_Gen_Relation rel = oct.relation_with(g);
 
@@ -50,11 +50,11 @@ test01() {
 bool
 test02() {
   TOctagonal_Shape oct;
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Generator g = point();
 
-  print_generator(g, "--- g ---");
+  print_generator(g, "*** g ***");
 
   Poly_Gen_Relation rel = oct.relation_with(g);
 
@@ -73,7 +73,7 @@ test03() {
   TOctagonal_Shape oct(2);
   oct.add_constraint(A == 0);
 
-  print_constraints(oct, "--- oct ---");
+  print_constraints(oct, "*** oct ***");
 
   Poly_Gen_Relation rel = oct.relation_with(point(2*A));
 
@@ -437,8 +437,8 @@ test20() {
   Generator g = point();
   Poly_Gen_Relation rel = oct.relation_with(g);
 
-  print_constraints(oct, "--- oct ---");
-  print_generator(g, "--- g ---");
+  print_constraints(oct, "*** oct ***");
+  print_generator(g, "*** g ***");
   using namespace IO_Operators;
   nout << "oct.relation_with(v()) == " << rel << endl;
 
@@ -458,8 +458,8 @@ test21() {
   Generator g = point();
   Poly_Gen_Relation rel = oct.relation_with(g);
 
-  print_constraints(oct, "--- oct ---");
-  print_generator(g, "--- g ---");
+  print_constraints(oct, "*** oct ***");
+  print_generator(g, "*** g ***");
   using namespace IO_Operators;
   nout << "oct.relation_with(v()) == " << rel << endl;
 
