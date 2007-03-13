@@ -71,7 +71,7 @@ check_PROGRAMS = \
 	generalizedaffineimage5 \
 	generalizedaffinepreimage1 generalizedaffinepreimage2 \
 	generalizedaffinepreimage3 generalizedaffinepreimage4 \
-	incremental1 \
+	incremental1 incremental2 \
 	intersection1 \
 	limitedbhmz05extrapolation1 \
 	limitedcc76extrapolation1 \
@@ -86,6 +86,8 @@ check_PROGRAMS = \
 	relatwithgen1 \
 	removespacedims1 \
 	timeelapse1 \
+	universal_incremental \
+	universal_strong \
 	universe1 \
 	writeoctagon1
 
@@ -195,6 +197,7 @@ generalizedaffinepreimage3_SOURCES = generalizedaffinepreimage3.cc
 generalizedaffinepreimage4_SOURCES = generalizedaffinepreimage4.cc
 
 incremental1_SOURCES = incremental1.cc
+incremental2_SOURCES = incremental2.cc
 
 intersection1_SOURCES = intersection1.cc
 
@@ -225,6 +228,10 @@ relatwithgen1_SOURCES = relatwithgen1.cc
 removespacedims1_SOURCES = removespacedims1.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
+
+universal_incremental_SOURCES = universal_incremental.cc
+
+universal_strong_SOURCES = universal_strong.cc
 
 universe1_SOURCES = universe1.cc
 
