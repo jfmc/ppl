@@ -1085,7 +1085,10 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 	return Poly_Con_Relation::saturates()
 	  && Poly_Con_Relation::is_included();
     case 1:
-      return Poly_Con_Relation::is_included();
+      if (c.is_equality())
+        return Poly_Con_Relation::is_disjoint();
+      else
+	return Poly_Con_Relation::is_included();
     }
   }
 
@@ -1095,43 +1098,89 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
   const N& y = (coeff < 0) ? dbm[j][i] : dbm[i][j];
   if (coeff < 0)
     coeff = -coeff;
-  N d;
-  div_round_up(d, c.inhomogeneous_term(), coeff);
-  N d1;
-  div_round_up(d1, -c.inhomogeneous_term(), coeff);
+  TEMP_INTEGER(c_term);
+  c_term = c.inhomogeneous_term();
+  TEMP_INTEGER(minus_c_term);
+  minus_c_term = -c.inhomogeneous_term();
+  // Deduce the relation/s of the constraint `c' of the form
+  // `coeff*v - coeff*u </<=/== c_term'
+  // with the respectively constraints in `*this'
+  // `-y <= v - u <= x'.
+  // Let be `d == c_term/coeff' and `d1 == -c_term/coeff'.
+  Coefficient numer, denom;
+  // The variables mpq_class are used to be precise when
+  // the bds is defined by integer constraints.
+  mpq_class q_x, q_y, d, d1, c_den, q_den;
+  assign_r(c_den, coeff, ROUND_NOT_NEEDED);
+  assign_r(d, c_term, ROUND_NOT_NEEDED);
+  div_assign_r(d, d, c_den, ROUND_NOT_NEEDED);
+  assign_r(d1, minus_c_term, ROUND_NOT_NEEDED);
+  div_assign_r(d1, d1, c_den, ROUND_NOT_NEEDED);
 
-  switch (c.type()) {
-  case Constraint::EQUALITY:
-    if (d == x && d1 == y)
-      return Poly_Con_Relation::saturates()
-	&& Poly_Con_Relation::is_included();
-    else if (d1 > y || d > x)
-      return Poly_Con_Relation::is_disjoint();
-    else
-      return Poly_Con_Relation::strictly_intersects();
-  case Constraint::NONSTRICT_INEQUALITY:
-    if (d >= x && d1 >= y)
-      return Poly_Con_Relation::saturates()
-	&& Poly_Con_Relation::is_included();
-    else if (d >= x)
-      return Poly_Con_Relation::is_included();
-    else if (d < x && d1 > y)
-      return Poly_Con_Relation::is_disjoint();
-    else
-      return Poly_Con_Relation::strictly_intersects();
-  case Constraint::STRICT_INEQUALITY:
-    if (d >= x && d1 >= y)
-      return Poly_Con_Relation::saturates()
-	&& Poly_Con_Relation::is_disjoint();
-    else if (d > x)
-      return Poly_Con_Relation::is_included();
-    else if (d <= x && d1 >= y)
-      return Poly_Con_Relation::is_disjoint();
-    else
-      return Poly_Con_Relation::strictly_intersects();
+  if (is_plus_infinity(x)) {
+    if (!is_plus_infinity(y)) {
+      // `*this' is in the following form:
+      // `-y <= v - u'.
+      // In this case `*this' is disjoint from `c' if
+      // `-y > d' (`-y >= d' if c is a strict equality), i.e. if
+      // `y < d1' (`y <= d1' if c is a strict equality).
+      numer_denom(y, numer, denom);
+      assign_r(q_den, denom, ROUND_NOT_NEEDED);
+      assign_r(q_y, numer, ROUND_NOT_NEEDED);
+      div_assign_r(q_y, q_y, q_den, ROUND_NOT_NEEDED);
+      if (q_y < d1)
+        return Poly_Con_Relation::is_disjoint();
+      if (q_y == d1 && c.is_strict_inequality())
+        return Poly_Con_Relation::is_disjoint();
+    }
+
+    // In all other cases `*this' intersects `c'.
+    return Poly_Con_Relation::strictly_intersects();
   }
-  // Quiet a compiler warning: this program point is unreachable.
-  throw std::runtime_error("PPL internal error");
+
+  // Here `x' is not plus-infinity.
+  numer_denom(x, numer, denom);
+  assign_r(q_den, denom, ROUND_NOT_NEEDED);
+  assign_r(q_x, numer, ROUND_NOT_NEEDED);
+  div_assign_r(q_x, q_x, q_den, ROUND_NOT_NEEDED);
+
+  if (!is_plus_infinity(y)) {
+    numer_denom(y, numer, denom);
+    assign_r(q_den, denom, ROUND_NOT_NEEDED);
+    assign_r(q_y, numer, ROUND_NOT_NEEDED);
+    div_assign_r(q_y, q_y, q_den, ROUND_NOT_NEEDED);
+    if (q_x == d && q_y == d1) {
+      if (c.is_strict_inequality())
+        return Poly_Con_Relation::saturates()
+	  && Poly_Con_Relation::is_disjoint();
+      else
+        return Poly_Con_Relation::saturates()
+	  && Poly_Con_Relation::is_included();
+    }
+    // `*this' is disjoint from `c' when
+    // `-y > d' (`-y >= d' if c is a strict equality), i.e. if
+    // `y < d1' (`y <= d1' if c is a strict equality).
+    if (q_y < d1)
+      return Poly_Con_Relation::is_disjoint();
+    if (q_y == d1 && c.is_strict_inequality())
+      return Poly_Con_Relation::is_disjoint();
+  }
+
+  // Here `y' can be also plus-infinity.
+  // If `c' is an equality, `*this' is disjoint from `c' if
+  // `x < d'.
+  if (d > q_x) {
+    if (c.is_equality())
+      return Poly_Con_Relation::is_disjoint();
+    else
+      return Poly_Con_Relation::is_included();
+  }
+
+  if (d == q_x && c.is_nonstrict_inequality())
+    return Poly_Con_Relation::is_included();
+
+  // In all other cases `*this' intersects `c'.
+  return Poly_Con_Relation::strictly_intersects();
 }
 
 template <typename T>
