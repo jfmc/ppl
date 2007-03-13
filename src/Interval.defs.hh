@@ -1638,7 +1638,69 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   return is;
 }
 
-}
+/*! \brief
+  Helper class to select the appropriate numerical type to perform
+  boundary computations so as to reduce the chances of overflow without
+  incurring too much overhead.
+*/
+template <typename Interval_Boundary_Type> struct Select_Temp_Boundary_Type;
+
+template <typename Interval_Boundary_Type>
+struct Select_Temp_Boundary_Type {
+  typedef Interval_Boundary_Type type;
+};
+
+template <>
+struct Select_Temp_Boundary_Type<float> {
+  typedef double type;
+};
+
+template <>
+struct Select_Temp_Boundary_Type<signed char> {
+  typedef signed long long type;
+};
+
+template <>
+struct Select_Temp_Boundary_Type<unsigned char> {
+  typedef signed long long type;
+};
+
+template <>
+struct Select_Temp_Boundary_Type<signed short> {
+  typedef signed long long type;
+};
+
+template <>
+struct Select_Temp_Boundary_Type<unsigned short> {
+  typedef signed long long type;
+};
+
+template <>
+struct Select_Temp_Boundary_Type<signed int> {
+  typedef signed long long type;
+};
+
+template <>
+struct Select_Temp_Boundary_Type<unsigned int> {
+  typedef signed long long type;
+};
+
+template <>
+struct Select_Temp_Boundary_Type<signed long> {
+  typedef signed long long type;
+};
+
+template <>
+struct Select_Temp_Boundary_Type<unsigned long> {
+  typedef signed long long type;
+};
+
+template <>
+struct Select_Temp_Boundary_Type<unsigned long long> {
+  typedef signed long long type;
+};
+
+} // namespace Parma_Polyhedra_Library
 
 #include "Interval.inlines.hh"
 
