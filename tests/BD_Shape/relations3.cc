@@ -349,7 +349,28 @@ test16() {
   using namespace IO_Operators;
   nout << "bd.relation_with(c) == " << rel << endl;
 
-  Poly_Con_Relation known_result = Poly_Con_Relation::is_included();
+  Poly_Con_Relation known_result = Poly_Con_Relation::strictly_intersects();
+
+  return rel == known_result;
+}
+
+bool
+test17() {
+  Variable A(0);
+
+  TBD_Shape bd(1);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(A <= 1);
+
+  Constraint c(Linear_Expression(1) == 0);
+  Poly_Con_Relation rel = bd.relation_with(c);
+
+  print_constraints(bd, "--- bd ---");
+  print_constraint(c, "--- c ---");
+  using namespace IO_Operators;
+  nout << "bd.relation_with(c) == " << rel << endl;
+
+  Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();
 
   return rel == known_result;
 }
@@ -373,4 +394,5 @@ BEGIN_MAIN
   DO_TEST(test14);
   DO_TEST(test15);
   DO_TEST(test16);
+  DO_TEST(test17);
 END_MAIN
