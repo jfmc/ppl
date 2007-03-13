@@ -80,6 +80,14 @@ PPL::Polyhedron
 	 && y.constraints_are_minimized()
 	 && y.generators_are_up_to_date());
 
+  // FIXME: this is a workaround for NNC polyhedra.
+  if (!y.is_necessarily_closed()) {
+    // Force strong minimization of constraints.
+    y.strongly_minimize_constraints();
+    // Recompute generators (without compromising constraint minimization).
+    y.update_generators();
+  }
+
   // Obtain a sorted copy of `y.sat_g'.
   if (!y.sat_g_is_up_to_date())
     y.update_sat_g();
@@ -115,7 +123,7 @@ PPL::Polyhedron
   // it will not appear in the resulting constraint system,
   // because `tmp_sat_g' is built starting from a minimized polyhedron.
 
-  // The size of `buffer' will reach sat.num_columns() bit.
+  // The size of `buffer' will reach sat.num_columns() bits.
   Bit_Row buffer;
   // Note: the loop index `i' goes upward to avoid reversing
   // the ordering of the chosen constraints.
@@ -128,7 +136,10 @@ PPL::Polyhedron
     for (dimension_type j = y.gen_sys.num_rows(); j-- > 0; ) {
       const int sp_sgn = Scalar_Products::sign(ci, y.gen_sys[j]);
       // We are assuming that `y <= x'.
-      assert(sp_sgn >= 0);
+      assert(sp_sgn >= 0
+	     || (!is_necessarily_closed()
+		 && ci.is_strict_inequality()
+		 && y.gen_sys[j].is_point()));
       if (sp_sgn > 0)
 	buffer.set(j);
     }
@@ -669,28 +680,12 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   if (x.space_dim == 0 || x.marked_empty() || y.marked_empty())
     return;
 
+  // `y.con_sys' and `y.gen_sys' should be in minimal form.
+  if (!y.minimize())
+    // `y' is empty: the result is `x'.
+    return;
   // `x.con_sys' and `x.gen_sys' should be in minimal form.
   x.minimize();
-
-  // `y.con_sys' and `y.gen_sys' should be in minimal form.
-  if (y.is_necessarily_closed()) {
-    if (!y.minimize())
-      // `y' is empty: the result is `x'.
-      return;
-  }
-  else {
-    // Dealing with a NNC polyhedron.
-    // To obtain a correct reasoning when comparing
-    // the constraints of `x' with the generators of `y',
-    // we enforce the inclusion relation holding between
-    // the two NNC polyhedra `x' and `y' (i.e., `y <= x')
-    // to also hold for the corresponding eps-representations:
-    // this is obtained by intersecting the two eps-representations.
-    Polyhedron& yy = const_cast<Polyhedron&>(y);
-    if (!yy.intersection_assign_and_minimize(x))
-      // `y' is empty: the result is `x'.
-      return;
-  }
 
   // Compute certificate info for polyhedron `y'.
   BHRZ03_Certificate y_cert(y);
@@ -751,7 +746,6 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
 #ifndef NDEBUG
   // The H79 widening is always stabilizing.
-  x.minimize();
   assert(y_cert.is_stabilizing(x));
 #endif
 }
