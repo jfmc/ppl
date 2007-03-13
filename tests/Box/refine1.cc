@@ -31,7 +31,7 @@ test01() {
   Variable B(1);
 
   TBox box(2);
-  box.add_constraint(A >= 0);
+  box.refine(A >= 0);
 
   print_constraints(box, "*** box.refine(A >= 0) ***");
 
