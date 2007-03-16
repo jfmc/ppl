@@ -1291,8 +1291,8 @@ public:
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
   /*! \brief
-    Remaps the dimensions of the vector space
-    according to a \ref map_space_dimensions "partial function".
+    Remaps the dimensions of the vector space according to
+    a \ref Mapping_the_Dimensions_of_the_Vector_Space "partial function".
 
     \param pfunc
     The partial function specifying the destiny of each dimension.
@@ -1324,7 +1324,7 @@ public:
 
     The result is undefined if \p pfunc does not encode a partial
     function with the properties described in the
-    \ref map_space_dimensions "specification of the mapping operator".
+    \ref Mapping_the_Dimensions_of_the_Vector_Space "specification of the mapping operator".
   */
   template <typename Partial_Function>
   void map_space_dimensions(const Partial_Function& pfunc);
