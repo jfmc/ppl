@@ -501,8 +501,6 @@ test06() {
 
   box.refine(A - 2*B >= 0);
 
-  print_constraints(box, "*** box.refine(A - 2*B >= 0) ***");
-
   Rational_Box known_result(2);
   known_result.add_constraint(A >= -4);
   known_result.add_constraint(B >= -2);
@@ -510,6 +508,7 @@ test06() {
 
   bool ok = (Rational_Box(box) == known_result);
 
+  print_constraints(box, "*** box.refine(A - 2*B >= 0) ***");
   print_constraints(known_result, "*** known_result ***");
 
   return ok;
@@ -520,19 +519,22 @@ test07() {
   Variable A(0);
 
   Constraint_System cs;
-  //  cs.insert(A >= 0);
 
   TBox box(1);
-  box.add_constraints(cs);
   print_constraints(box, "*** box ***");
 
   Constraint c(A == 1);
   print_constraint(c, "*** c ***");
 
   box.refine(c);
-  bool ok = !box.is_empty();
 
-  print_constraints(box, "*** box.refine(A == 1) ***");
+  Rational_Box known_result(1);
+  known_result.add_constraint(A == 1);
+
+  bool ok = (Rational_Box(box) == known_result);
+
+  print_constraints(box, "*** box.refine(c) ***");
+  print_constraints(known_result, "*** known_result ***");
 
   return ok;
 }
