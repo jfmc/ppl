@@ -488,6 +488,26 @@ test05() {
   return ok;
 }
 
+bool
+test06() {
+  Variable A(0);
+  Variable B(1);
+
+  TBox box(2);
+  box.add_constraint(B >= -2);
+  box.add_constraint(B <= 4);
+
+  print_constraints(box, "*** box ***");
+
+  box.refine(A - 2*B >= 0);
+
+  print_constraints(box, "*** box.refine(A - 2*B >= 0) ***");
+
+  bool ok = box.is_empty();
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -496,4 +516,5 @@ BEGIN_MAIN
   DO_TEST(test03);
   DO_TEST(test04);
   DO_TEST(test05);
+  DO_TEST(test06);
 END_MAIN
