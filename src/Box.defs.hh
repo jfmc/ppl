@@ -1389,6 +1389,153 @@ private:
     \p *this, the behavior is undefined.
 
     FIXME: mention the possibility of non-termination.
+
+    \if Include_Implementation_Details
+
+    For any expression \f$e\f$, we denote by
+    \f$\left\uparrow e \right\uparrow\f$ (resp., \f$\left\downarrow e
+    \right\downarrow\f$) the result of any computation that is
+    guaranteed to yield an upper (resp., lower) approximation of
+    \f$e\f$.  So there exists \f$\epsilon \in \Rset\f$ with
+    \f$\epsilon \geq 0\f$ such that
+    \f$\left\uparrow e \right\uparrow = e + \epsilon\f$.
+    If \f$\epsilon = 0\f$ we say that the computation of
+    \f$\left\uparrow e \right\uparrow\f$ is <EM>exact</EM>;
+    we say it is <EM>inexact</EM> otherwise.
+    Similarly for \f$\left\downarrow e \right\downarrow\f$.
+
+    Consider a constraint of the general form
+    \f[
+      z + \sum_{i \in I}{a_ix_i} \relsym 0,
+    \f]
+    where \f$z \in \Zset\f$, \f$I\f$ is a set of indices,
+    \f$a_i \in \Zset\f$ with \f$a_i \neq 0\f$ for each \f$i \in I\f$, and
+    \f$\mathord{\relsym} \in \{ \mathord{\geq}, \mathord{>}, \mathord{=} \}\f$.
+    The set \f$I\f$ is subdivided into the disjoint sets \f$P\f$ and \f$N\f$
+    such that, for each \f$i \in I\f$, \f$a_i > 0\f$ if \f$i \in P\f$ and
+    \f$a_i < 0\f$ if \f$i \in N\f$.
+    Suppose that, for each \f$i \in P \union N\f$ a variation interval
+    \f$\chi_i \sseq \Rset\f$ is known for \f$x_i\f$ and that the infimum
+    and the supremum of \f$\chi_i\f$ are denoted, respectively,
+    by \f$\chi_i^\mathrm{l}\f$ and \f$\chi_i^\mathrm{u}\f$, where
+    \f$\chi_i^\mathrm{l}, \chi_i^\mathrm{u} \in \Rset \union \{ -\infty, +\infty \}\f$.
+
+    For each \f$k \in P\f$, we have
+    \f[
+      x_k
+        \relsym
+          \frac{1}{a_k}
+            \Biggl(
+              - z
+              - \sum_{i \in N}{a_ix_i}
+              - \sum_{\genfrac{}{}{0pt}{}
+                              {\scriptstyle i \in P}
+                              {\scriptstyle i \neq k}}{a_ix_i}
+            \Biggr).
+    \f]
+    Thus, if \f$\chi_i^\mathrm{l} \in \Rset\f$ for each \f$i \in N\f$ and
+    \f$\chi_i^\mathrm{u} \in \Rset\f$ for each \f$i \in P \setdiff \{ k \}\f$,
+    we have
+    \f[
+      x_k
+        \geq
+          \Biggl\downarrow
+          \frac{1}{a_k}
+            \Biggl(
+              - z
+              - \sum_{i \in N}{a_i\chi_i^\mathrm{l}}
+              - \sum_{\genfrac{}{}{0pt}{}
+                              {\scriptstyle i \in P}
+                              {\scriptstyle i \neq k}}{a_i\chi_i^\mathrm{u}}
+            \Biggr)
+          \Biggr\downarrow
+    \f]
+    and, if \f$\mathord{\relsym} \in \{ \mathord{=} \}\f$,
+    \f$\chi_i^\mathrm{u} \in \Rset\f$ for each \f$i \in N\f$ and
+    \f$\chi_i^\mathrm{l} \in \Rset\f$ for each \f$P \setdiff \{ k \}\f$,
+    \f[
+      x_k
+        \leq
+          \Biggl\uparrow
+          \frac{1}{a_k}
+            \Biggl(
+              - z
+              - \sum_{i \in N}{a_i\chi_i^\mathrm{u}}
+              - \sum_{\genfrac{}{}{0pt}{}
+                              {\scriptstyle i \in P}
+                              {\scriptstyle i \neq k}}{a_i\chi_i^\mathrm{l}}
+            \Biggr)
+          \Biggl\uparrow.
+    \f]
+    In the first inequality, the relation is strict if
+    \f$\mathord{\relsym} \in \{ \mathord{>} \}\f$, or if
+    \f$\chi_i^\mathrm{l} \notin \chi_i\f$ for some \f$i \in N\f$, or if
+    \f$\chi_i^\mathrm{u} \notin \chi_i\f$ for some
+    \f$i \in P \setdiff \{ k \}\f$, or if the computation is inexact.
+    In the second inequality, the relation is strict if
+    \f$\chi_i^\mathrm{u} \notin \chi_i\f$ for some \f$i \in N\f$, or if
+    \f$\chi_i^\mathrm{l} \notin \chi_i\f$ for some
+    \f$i \in P \setdiff \{ k \}\f$, or if the computation is inexact.
+
+    For each \f$k \in N\f$, we have
+    \f[
+      \frac{1}{a_k}
+        \Biggl(
+          - z
+          - \sum_{\genfrac{}{}{0pt}{}
+                          {\scriptstyle i \in N}
+                          {\scriptstyle i \neq k}}{a_ix_i}
+          - \sum_{i \in P}{a_ix_i}
+        \Biggr)
+          \relsym
+            x_k.
+    \f]
+    Thus, if
+    \f$\chi_i^\mathrm{l} \in \Rset\f$
+    for each \f$i \in N \setdiff \{ k \}\f$ and
+    \f$\chi_i^\mathrm{u} \in \Rset\f$ for each \f$i \in P\f$,
+    we have
+    \f[
+      \Biggl\uparrow
+      \frac{1}{a_k}
+        \Biggl(
+          - z
+          - \sum_{\genfrac{}{}{0pt}{}
+                          {\scriptstyle i \in N}
+                          {\scriptstyle i \neq k}}{a_i\chi_i^\mathrm{l}}
+          - \sum_{i \in P}{a_i\chi_i^\mathrm{u}}
+        \Biggr)
+      \Biggl\uparrow
+        \geq
+          x_k
+    \f]
+    and, if \f$\mathord{\relsym} \in \{ \mathord{=} \}\f$,
+    \f$\chi_i^\mathrm{u} \in \Rset\f$ for each \f$i \in N \setdiff \{ k \}\f$
+    and \f$\chi_i^\mathrm{l} \in \Rset\f$ for each \f$i \in P\f$,
+    \f[
+      \Biggl\downarrow
+      \frac{1}{a_k}
+        \Biggl(
+          - z
+          - \sum_{\genfrac{}{}{0pt}{}
+                          {\scriptstyle i \in N}
+                          {\scriptstyle i \neq k}}{a_i\chi_i^\mathrm{u}}
+          - \sum_{i \in P}{a_i\chi_i^\mathrm{l}}
+        \Biggr)
+      \Biggl\downarrow
+        \leq
+          x_k.
+    \f]
+    In the first inequality, the relation is strict if
+    \f$\mathord{\relsym} \in \{ \mathord{>} \}\f$, or if
+    \f$\chi_i^\mathrm{u} \notin \chi_i\f$ for some \f$i \in P\f$, or if
+    \f$\chi_i^\mathrm{l} \notin \chi_i\f$ for some
+    \f$i \in N \setdiff \{ k \}\f$, or if the computation is inexact.
+    In the second inequality, the relation is strict if
+    \f$\chi_i^\mathrm{l} \notin \chi_i\f$ for some \f$i \in P\f$, or if
+    \f$\chi_i^\mathrm{u} \notin \chi_i\f$ for some
+    \f$i \in N \setdiff \{ k \}\f$, or if the computation is inexact.
+    \endif
   */
   void refine_no_check(const Constraint& c);
 
