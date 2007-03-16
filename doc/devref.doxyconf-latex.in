@@ -92,7 +92,6 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Coefficient.defs.hh \
                          @srcdir@/../src/Coefficient.inlines.hh \
                          @srcdir@/../src/Coefficient.cc \
-                         @srcdir@/../src/Limits.hh \
                          @srcdir@/../src/checked.defs.hh \
                          @srcdir@/../src/checked.inlines.hh \
                          @srcdir@/../src/checked_float.inlines.hh \
@@ -219,11 +218,6 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Interval.types.hh \
                          @srcdir@/../src/Interval.defs.hh \
                          @srcdir@/../src/Interval.inlines.hh \
-                         @srcdir@/../src/Interval.cc \
-                         @srcdir@/../src/Bounding_Box.types.hh \
-                         @srcdir@/../src/Bounding_Box.defs.hh \
-                         @srcdir@/../src/Bounding_Box.inlines.hh \
-                         @srcdir@/../src/Bounding_Box.cc \
                          @srcdir@/../src/C_Polyhedron.types.hh \
                          @srcdir@/../src/C_Polyhedron.defs.hh \
                          @srcdir@/../src/C_Polyhedron.inlines.hh \
@@ -271,6 +265,11 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Pointset_Ask_Tell.templates.hh \
                          @srcdir@/../src/Pointset_Ask_Tell.cc \
                          @srcdir@/../src/algorithms.hh \
+                         @srcdir@/../src/Box.types.hh \
+                         @srcdir@/../src/Box.defs.hh \
+                         @srcdir@/../src/Box.inlines.hh \
+                         @srcdir@/../src/Box.templates.hh \
+                         @srcdir@/../src/Box.cc \
                          @srcdir@/../src/DB_Row.types.hh \
                          @srcdir@/../src/DB_Row.defs.hh \
                          @srcdir@/../src/DB_Row.inlines.hh \
