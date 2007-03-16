@@ -515,6 +515,28 @@ test06() {
   return ok;
 }
 
+bool
+test07() {
+  Variable A(0);
+
+  Constraint_System cs;
+  //  cs.insert(A >= 0);
+
+  TBox box(1);
+  box.add_constraints(cs);
+  print_constraints(box, "*** box ***");
+
+  Constraint c(A == 1);
+  print_constraint(c, "*** c ***");
+
+  box.refine(c);
+  bool ok = !box.is_empty();
+
+  print_constraints(box, "*** box.refine(A == 1) ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -524,4 +546,5 @@ BEGIN_MAIN
   DO_TEST(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN
