@@ -300,10 +300,7 @@ test02() {
   cs.ascii_load(ss);
   print_constraints(cs, "*** cs ***");
 
-  //Rational_Box known_result(cs.space_dimension());
-  C_Polyhedron ph(cs);
-  Rational_Box known_result(ph, SIMPLEX_COMPLEXITY);
-
+  Rational_Box known_result(cs.space_dimension());
   ss.str("empty 0 empty_up_to_date 1 space_dim 79\n"
 	 "[0, 10314880348817334512601175099915806371166908797205087714999656461/4472327120746785297653956552193407232008520545204266972149396275]\n"
 	 "[0, 13845204640026631030889305159390169337029989311711657705741484032/5852044125547558797457743823140996705204670473363875812631956685]\n"
@@ -440,5 +437,5 @@ test02() {
 
 BEGIN_MAIN
   DO_TEST(test01);
-//DO_TEST_F64(test02);
+  DO_TEST_F64(test02);
 END_MAIN
