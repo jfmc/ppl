@@ -1683,7 +1683,6 @@ Box<Interval>::refine_no_check(const Constraint& c) {
       r = neg_assign_r(t_bound, t_bound, ROUND_UP);
       if (refine_no_check_check_result(r, open))
 	goto next_k;
-      t_bound = 0;
       for (dimension_type i = c_space_dim; i-- > 0; ) {
 	if (i == k)
 	  continue;
