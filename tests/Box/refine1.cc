@@ -503,7 +503,14 @@ test06() {
 
   print_constraints(box, "*** box.refine(A - 2*B >= 0) ***");
 
-  bool ok = box.is_empty();
+  Rational_Box known_result(2);
+  known_result.add_constraint(A >= -4);
+  known_result.add_constraint(B >= -2);
+  known_result.add_constraint(B <= 4);
+
+  bool ok = (Rational_Box(box) == known_result);
+
+  print_constraints(known_result, "*** known_result ***");
 
   return ok;
 }
