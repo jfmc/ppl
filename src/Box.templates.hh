@@ -231,8 +231,6 @@ template <typename Interval>
 template <typename T>
 Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
   : seq(oct.space_dimension()), empty(false), empty_up_to_date(true) {
-  for (dimension_type i = space_dimension(); i-- > 0; )
-    seq[i].assign(UNIVERSE);
 
   // Expose all the interval constraints.
   oct.strong_closure_assign();
@@ -245,7 +243,7 @@ Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
   if (space_dim == 0)
     return;
 
-  mpq_class bound;
+  DIRTY_TEMP(mpq_class, bound);
   for (dimension_type i = space_dim; i-- > 0; ) {
     Interval& seq_i = seq[i];
     const dimension_type ii = 2*i;
@@ -257,12 +255,10 @@ Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
     if (!is_plus_infinity(twice_ub)) {
       assign_r(bound, twice_ub, ROUND_NOT_NEEDED);
       div2exp_assign_r(bound, bound, 1, ROUND_NOT_NEEDED);
-      // FIXME: how to directly set the upper bound?
-      seq_i.upper_set(UNBOUNDED);
-      refine_existential(seq_i, LESS_OR_EQUAL, bound);
+      seq_i.upper_set_uninit(bound);
     }
     else
-      seq_i.upper_set(UNBOUNDED);
+      seq_i.upper_set_uninit(UNBOUNDED);
 
     // Set the lower bound.
     const typename Octagonal_Shape<T>::coefficient_type& twice_lb
@@ -271,12 +267,11 @@ Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
       assign_r(bound, twice_lb, ROUND_NOT_NEEDED);
       neg_assign_r(bound, bound, ROUND_NOT_NEEDED);
       div2exp_assign_r(bound, bound, 1, ROUND_NOT_NEEDED);
-      // FIXME: how to directly set the lower bound?
-      seq_i.lower_set(UNBOUNDED);
-      refine_existential(seq_i, GREATER_OR_EQUAL, bound);
+      seq_i.lower_set_uninit(bound);
     }
     else
-      seq_i.lower_set(UNBOUNDED);
+      seq_i.lower_set_uninit(UNBOUNDED);
+    seq_i.complete_init();
   }
 }
 
@@ -354,6 +349,7 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
       }
       else
 	seq_i.lower_set_uninit(UNBOUNDED);
+      seq_i.complete_init();
     }
   }
 
