@@ -83,8 +83,7 @@ Box<Interval>::Box(const Box<Other_Interval>& y)
 template <typename Interval>
 Box<Interval>::Box(const Generator_System& gs)
   : seq(gs.space_dimension()), empty(false), empty_up_to_date(true) {
-  for (dimension_type i = space_dimension(); i-- > 0; )
-    seq[i].assign(UNIVERSE);
+  // FIXME: what if gs.space_dimension() exceeds the maximum space dimension?
 
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
@@ -96,7 +95,6 @@ Box<Interval>::Box(const Generator_System& gs)
 
   const dimension_type space_dim = space_dimension();
   mpq_class q;
-
   bool point_seen = false;
   // Going through all the points.
   for (Generator_System::const_iterator
@@ -157,6 +155,7 @@ Box<Interval>::Box(const Generator_System& gs)
 	}
       break;
     case Generator::CLOSURE_POINT:
+      // FIXME: this can probably be improved.
       {
 	const Coefficient& d = g.divisor();
 	for (dimension_type i = space_dim; i-- > 0; ) {
