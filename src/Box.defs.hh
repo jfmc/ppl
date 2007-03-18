@@ -1654,6 +1654,9 @@ private:
 				    const char* name_row,
 				    const Linear_Expression& y) const;
 
+  static void throw_space_dimension_overflow(const char* method,
+					     const char* reason);
+
   static void throw_constraint_incompatible(const char* method);
 
   static void throw_expression_too_complex(const char* method,

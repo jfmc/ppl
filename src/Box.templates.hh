@@ -42,9 +42,18 @@ namespace Parma_Polyhedra_Library {
 template <typename Interval>
 inline
 Box<Interval>::Box(dimension_type num_dimensions, Degenerate_Element kind)
-  : seq(num_dimensions), empty(kind == EMPTY), empty_up_to_date(true) {
-  for (dimension_type i = num_dimensions; i-- > 0; )
-    seq[i].assign(UNIVERSE);
+  : seq(num_dimensions <= max_space_dimension()
+	? num_dimensions
+	: (throw_space_dimension_overflow("Box(n, k)",
+					  "n exceeds the maximum "
+					  "allowed space dimension"),
+	   num_dimensions)),
+	empty(kind == EMPTY), empty_up_to_date(true) {
+  // In a box that is marked empty the intervals are completely
+  // meaningless: we exploit this by avoiding their initializion.
+  if (kind == UNIVERSE)
+    for (dimension_type i = num_dimensions; i-- > 0; )
+      seq[i].assign(UNIVERSE);
   assert(OK());
 }
 
@@ -195,9 +204,6 @@ template <typename Interval>
 template <typename T>
 Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
   : seq(bds.space_dimension()), empty(false), empty_up_to_date(true) {
-  for (dimension_type i = space_dimension(); i-- > 0; )
-    seq[i].assign(UNIVERSE);
-
   // Expose all the interval constraints.
   bds.shortest_path_closure_assign();
   if (bds.marked_empty()) {
@@ -209,23 +215,23 @@ Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
   if (space_dim == 0)
     return;
 
-  mpq_class bound;
   const DB_Row<typename BD_Shape<T>::coefficient_type>& dbm_0 = bds.dbm[0];
   for (dimension_type i = space_dim; i-- > 0; ) {
     Interval& seq_i = seq[i];
     // Set the upper bound.
-    seq_i.upper_set(UNBOUNDED);
-    if (!is_plus_infinity(dbm_0[i+1])) {
-      assign_r(bound, dbm_0[i+1], ROUND_NOT_NEEDED);
-      refine_existential(seq_i, LESS_OR_EQUAL, bound);
-    }
+    if (is_plus_infinity(dbm_0[i+1]))
+      seq_i.upper_set_uninit(UNBOUNDED);
+    else
+      seq_i.upper_set_uninit(dbm_0[i+1]);
+
     // Set the lower bound.
-    seq_i.lower_set(UNBOUNDED);
-    if (!is_plus_infinity(bds.dbm[i+1][0])) {
-      assign_r(bound, bds.dbm[i+1][0], ROUND_NOT_NEEDED);
-      neg_assign_r(bound, bound, ROUND_NOT_NEEDED);
-      refine_existential(seq_i, GREATER_OR_EQUAL, bound);
-    }
+    if (is_plus_infinity(bds.dbm[i+1][0]))
+      seq_i.lower_set(UNBOUNDED);
+    else
+      seq_i.lower_set_uninit(bds.dbm[i+1][0]);
+
+    // Complete the interval initialization.
+    seq_i.complete_init();
   }
 }
 
@@ -1062,9 +1068,14 @@ Box<Interval>::OK() const {
       return false;
     }
   }
-  for (dimension_type k = seq.size(); k-- > 0; )
-    if (!seq[k].OK())
-      return false;
+
+  // A box that is not marked empty must have meaningful intervals.
+  if (!empty_up_to_date || !empty) {
+    for (dimension_type k = seq.size(); k-- > 0; )
+      if (!seq[k].OK())
+	return false;
+  }
+
   return true;
 }
 
@@ -2267,19 +2278,20 @@ Box<Interval>::minimized_constraints() const {
 template <typename Interval>
 std::ostream&
 IO_Operators::operator<<(std::ostream& s, const Box<Interval>& box) {
-  if (box.is_empty()) {
+  if (box.is_empty())
     s << "false";
-    return s;
-  }
-  for (dimension_type k = 0,
-	 space_dim = box.space_dimension(); k < space_dim; ) {
-    s << Variable(k) << " in " << box[k];
-    ++k;
-    if (k < space_dim)
-      s << ", ";
-    else
-      break;
-  }
+  else if (box.is_universe())
+    s << "true";
+  else
+    for (dimension_type k = 0,
+	   space_dim = box.space_dimension(); k < space_dim; ) {
+      s << Variable(k) << " in " << box[k];
+      ++k;
+      if (k < space_dim)
+	s << ", ";
+      else
+	break;
+    }
   return s;
 }
 
@@ -2434,6 +2446,16 @@ Box<Interval>::throw_generic(const char* method, const char* reason) {
   s << "PPL::Box::" << method << ":" << std::endl
     << reason;
   throw std::invalid_argument(s.str());
+}
+
+template <typename Interval>
+void
+Box<Interval>::throw_space_dimension_overflow(const char* method,
+					      const char* reason) {
+  std::ostringstream s;
+  s << "PPL::Box::" << method << ":" << std::endl
+    << reason;
+  throw std::length_error(s.str());
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

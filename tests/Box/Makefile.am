@@ -79,6 +79,7 @@ fromgensys1 \
 fromgrid1 \
 frompolyhedron1 \
 frompolyhedron2 \
+fromspacedim1 \
 geomcovers1 \
 intersection1 \
 mapspacedims1 \
@@ -197,6 +198,8 @@ fromgrid1_SOURCES = fromgrid1.cc
 
 frompolyhedron1_SOURCES = frompolyhedron1.cc
 frompolyhedron2_SOURCES = frompolyhedron2.cc
+
+fromspacedim1_SOURCES = fromspacedim1.cc
 
 #generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 
