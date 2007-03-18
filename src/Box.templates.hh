@@ -1606,6 +1606,9 @@ Box<Interval>::refine_no_check(const Constraint& c) {
       continue;
     if (sgn_a_k > 0) {
       open = (c_type == Constraint::STRICT_INEQUALITY) ? T_YES : T_NO;
+      if (open == T_NO)
+	// FIXME: reset the inexact flag here.
+	;
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_UP);
       if (refine_no_check_check_result(r, open))
 	goto maybe_refine_upper_1;
@@ -1671,6 +1674,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
       if (c_type != Constraint::EQUALITY)
 	continue;
       open = T_NO;
+      // FIXME: reset the inexact flag here.
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_DOWN);
       if (refine_no_check_check_result(r, open))
 	goto next_k;
@@ -1736,6 +1740,9 @@ Box<Interval>::refine_no_check(const Constraint& c) {
     else {
       assert(sgn_a_k < 0);
       open = (c_type == Constraint::STRICT_INEQUALITY) ? T_YES : T_NO;
+      if (open == T_NO)
+	// FIXME: reset the inexact flag here.
+	;
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_UP);
       if (refine_no_check_check_result(r, open))
 	goto maybe_refine_upper_2;
@@ -1801,6 +1808,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
       if (c_type != Constraint::EQUALITY)
 	continue;
       open = T_NO;
+      // FIXME: reset the inexact flag here.
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_DOWN);
       if (refine_no_check_check_result(r, open))
 	goto next_k;
