@@ -456,7 +456,7 @@ Box<Interval>::Box(const Grid& gr, Complexity_Class)
       assign_r(bound.get_num(), point[i+1], ROUND_NOT_NEEDED);
       assign_r(bound.get_den(), divisor, ROUND_NOT_NEEDED);
       bound.canonicalize();
-      seq_i.assign(bound);
+      assign(seq_i, bound);
     }
     else
       seq_i.assign(UNIVERSE);
