@@ -1569,7 +1569,7 @@ refine_no_check_check_result(Result r, Ternary& open) {
     return false;
   case V_LE:
   case V_GE:
-    if (open != T_YES)
+    if (open == T_NO)
       open = T_MAYBE;
     return false;
   case V_EQ:
