@@ -60,7 +60,13 @@ Box<Interval>::Box(dimension_type num_dimensions, Degenerate_Element kind)
 template <typename Interval>
 inline
 Box<Interval>::Box(const Constraint_System& cs)
-  : seq(cs.space_dimension()), empty_up_to_date(false) {
+  : seq(cs.space_dimension() <= max_space_dimension()
+	? cs.space_dimension()
+	: (throw_space_dimension_overflow("Box(cs)",
+					  "cs exceeds the maximum "
+					  "allowed space dimension"),
+	   cs.space_dimension())),
+    empty_up_to_date(false) {
   // FIXME: check whether we can avoid the double initialization.
   for (dimension_type i = cs.space_dimension(); i-- > 0; )
     seq[i].assign(UNIVERSE);
@@ -82,9 +88,14 @@ Box<Interval>::Box(const Box<Other_Interval>& y)
 
 template <typename Interval>
 Box<Interval>::Box(const Generator_System& gs)
-  : seq(gs.space_dimension()), empty(false), empty_up_to_date(true) {
-  // FIXME: what if gs.space_dimension() exceeds the maximum space dimension?
-
+  : seq(gs.space_dimension() <= max_space_dimension()
+	? gs.space_dimension()
+	: (throw_space_dimension_overflow("Box(gs)",
+					  "gs exceeds the maximum "
+					  "allowed space dimension"),
+	   gs.space_dimension())),
+    empty(false),
+    empty_up_to_date(true) {
   const Generator_System::const_iterator gs_begin = gs.begin();
   const Generator_System::const_iterator gs_end = gs.end();
   if (gs_begin == gs_end) {
@@ -195,7 +206,14 @@ Box<Interval>::Box(const Generator_System& gs)
 template <typename Interval>
 template <typename T>
 Box<Interval>::Box(const BD_Shape<T>& bds, Complexity_Class)
-  : seq(bds.space_dimension()), empty(false), empty_up_to_date(true) {
+  : seq(bds.space_dimension() <= max_space_dimension()
+	? bds.space_dimension()
+	: (throw_space_dimension_overflow("Box(bds)",
+					  "bds exceeds the maximum "
+					  "allowed space dimension"),
+	   bds.space_dimension())),
+    empty(false),
+    empty_up_to_date(true) {
   // Expose all the interval constraints.
   bds.shortest_path_closure_assign();
   if (bds.marked_empty()) {
@@ -277,7 +295,14 @@ Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
 
 template <typename Interval>
 Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
-  : seq(ph.space_dimension()), empty(false), empty_up_to_date(true) {
+  : seq(ph.space_dimension() <= max_space_dimension()
+	? ph.space_dimension()
+	: (throw_space_dimension_overflow("Box(ph)",
+					  "ph exceeds the maximum "
+					  "allowed space dimension"),
+	   ph.space_dimension())),
+    empty(false),
+    empty_up_to_date(true) {
   // We do not need to bother about `complexity' if:
   // a) the polyhedron is already marked empty; or ...
   if (ph.marked_empty()) {
@@ -352,7 +377,6 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
       seq_i.complete_init();
     }
   }
-
   else {
     assert(complexity == ANY_COMPLEXITY);
     if (ph.is_empty())
@@ -442,7 +466,14 @@ template <typename Interval>
 template <typename D1, typename D2>
 Box<Interval>::Box(const Direct_Product<D1, D2>& dp,
 		   Complexity_Class complexity)
-  : seq(dp.space_dimension()), empty(false), empty_up_to_date(true) {
+  : seq(dp.space_dimension() <= max_space_dimension()
+	? dp.space_dimension()
+	: (throw_space_dimension_overflow("Box(dp)",
+					  "dp exceeds the maximum "
+					  "allowed space dimension"),
+	   dp.space_dimension())),
+    empty(false),
+    empty_up_to_date(true) {
   for (dimension_type i = dp.space_dimension(); i-- > 0; )
     seq[i].assign(UNIVERSE);
   {
