@@ -283,8 +283,6 @@ Box<Interval>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
 template <typename Interval>
 Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
   : seq(ph.space_dimension()), empty(false), empty_up_to_date(true) {
-  for (dimension_type i = space_dimension(); i-- > 0; )
-    seq[i].assign(UNIVERSE);
   // We do not need to bother about `complexity' if:
   // a) the polyhedron is already marked empty; or ...
   if (ph.marked_empty()) {
@@ -334,32 +332,28 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
     }
     // Get all the bounds for the space dimensions.
     Generator g(point());
-    TEMP_INTEGER(num);
-    TEMP_INTEGER(den);
-    mpq_class bound;
+    DIRTY_TEMP(mpq_class, bound);
     for (dimension_type i = space_dim; i-- > 0; ) {
       Interval& seq_i = seq[i];
       lp.set_objective_function(Variable(i));
       // Evaluate upper bound.
-      seq_i.upper_set(UNBOUNDED);
       lp.set_optimization_mode(MAXIMIZATION);
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
-	lp.evaluate_objective_function(g, num, den);
-	assign_r(bound.get_num(), num, ROUND_NOT_NEEDED);
-	assign_r(bound.get_den(), den, ROUND_NOT_NEEDED);
-	refine_existential(seq_i, LESS_OR_EQUAL, bound);
+	lp.evaluate_objective_function(g, bound.get_num(), bound.get_den());
+	seq_i.upper_set_uninit(bound);
       }
+      else
+	seq_i.upper_set_uninit(UNBOUNDED);
       // Evaluate optimal lower bound.
-      seq_i.lower_set(UNBOUNDED);
       lp.set_optimization_mode(MINIMIZATION);
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
-	lp.evaluate_objective_function(g, num, den);
-	assign_r(bound.get_num(), num, ROUND_NOT_NEEDED);
-	assign_r(bound.get_den(), den, ROUND_NOT_NEEDED);
-	refine_existential(seq_i, GREATER_OR_EQUAL, bound);
+	lp.evaluate_objective_function(g, bound.get_num(), bound.get_den());
+	seq_i.lower_set_uninit(bound);
       }
+      else
+	seq_i.lower_set_uninit(UNBOUNDED);
     }
   }
 
