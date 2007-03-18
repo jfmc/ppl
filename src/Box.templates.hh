@@ -361,6 +361,7 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, bound.get_num(), bound.get_den());
+	bound.canonicalize();
 	seq_i.upper_set_uninit(bound);
       }
       else
@@ -370,6 +371,7 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
       if (lp.solve() == OPTIMIZED_MIP_PROBLEM) {
 	g = lp.optimizing_point();
 	lp.evaluate_objective_function(g, bound.get_num(), bound.get_den());
+	bound.canonicalize();
 	seq_i.lower_set_uninit(bound);
       }
       else
@@ -391,8 +393,6 @@ Box<Interval>::Box(const Polyhedron& ph, Complexity_Class complexity)
 template <typename Interval>
 Box<Interval>::Box(const Grid& gr, Complexity_Class)
   : seq(gr.space_dimension()), empty(false), empty_up_to_date(true) {
-  for (dimension_type i = space_dimension(); i-- > 0; )
-    seq[i].assign(UNIVERSE);
 
   // FIXME: here we are not taking advantage of intervals with restrictions!
 
@@ -448,17 +448,18 @@ Box<Interval>::Box(const Grid& gr, Complexity_Class)
   // generator point.
   assert(first_point != 0);
   const Grid_Generator& point = *first_point;
-  mpq_class bound;
+  DIRTY_TEMP(mpq_class, bound);
   const Coefficient& divisor = point.divisor();
   for (dimension_type i = space_dim; i-- > 0; ) {
     Interval& seq_i = seq[i];
-    seq_i.assign(UNIVERSE);
     if (bounded_interval[i]) {
       assign_r(bound.get_num(), point[i+1], ROUND_NOT_NEEDED);
       assign_r(bound.get_den(), divisor, ROUND_NOT_NEEDED);
       bound.canonicalize();
-      refine_existential(seq_i, EQUAL, bound);
+      seq_i.assign(bound);
     }
+    else
+      seq_i.assign(UNIVERSE);
   }
 }
 
