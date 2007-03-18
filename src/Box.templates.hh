@@ -1569,7 +1569,7 @@ refine_no_check_check_result(Result r, Ternary& open) {
     return false;
   case V_LE:
   case V_GE:
-    if (open == T_NO)
+    if (open != T_YES)
       open = T_MAYBE;
     return false;
   case V_EQ:
@@ -1586,7 +1586,146 @@ template <typename Interval>
 void
 Box<Interval>::refine_no_check(const Constraint& c) {
   assert(c.space_dimension() <= space_dimension());
-if (open == T_MAYBE)
+
+  typedef
+    typename Select_Temp_Boundary_Type<typename Interval::boundary_type>::type
+    Temp_Boundary_Type;
+
+  dimension_type c_space_dim = c.space_dimension();
+  Constraint::Type c_type = c.type();
+  const Coefficient& c_inhomogeneous_term = c.inhomogeneous_term();
+  Result r;
+  Temp_Boundary_Type t_bound;
+  Temp_Boundary_Type t_a;
+  Temp_Boundary_Type t_x;
+  Ternary open;
+  for (dimension_type k = c_space_dim; k-- > 0; ) {
+    const Coefficient& a_k = c.coefficient(Variable(k));
+    int sgn_a_k = sgn(a_k);
+    if (sgn_a_k == 0)
+      continue;
+    if (sgn_a_k > 0) {
+      open = (c_type == Constraint::STRICT_INEQUALITY) ? T_YES : T_NO;
+      r = assign_r(t_bound, c_inhomogeneous_term, ROUND_UP);
+      if (refine_no_check_check_result(r, open))
+	goto maybe_refine_upper_1;
+      r = neg_assign_r(t_bound, t_bound, ROUND_DOWN);
+      if (refine_no_check_check_result(r, open))
+	goto maybe_refine_upper_1;
+      for (dimension_type i = c_space_dim; i-- > 0; ) {
+	if (i == k)
+	  continue;
+	const Coefficient& a_i = c.coefficient(Variable(i));
+	int sgn_a_i = sgn(a_i);
+	if (sgn_a_i == 0)
+	  continue;
+	Interval& x_i = seq[i];
+	if (sgn_a_i < 0) {
+	  if (x_i.lower_is_unbounded())
+	    goto maybe_refine_upper_1;
+	  r = assign_r(t_a, a_i, ROUND_DOWN);
+	  if (refine_no_check_check_result(r, open))
+	    goto maybe_refine_upper_1;
+	  r = assign_r(t_x, x_i.lower(), ROUND_DOWN);
+	  if (refine_no_check_check_result(r, open))
+	    goto maybe_refine_upper_1;
+	  if (x_i.lower_is_open())
+	    open = T_YES;
+	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_DOWN);
+	  if (refine_no_check_check_result(r, open))
+	    goto maybe_refine_upper_1;
+	}
+	else {
+	  assert(sgn_a_i > 0);
+	  if (x_i.upper_is_unbounded())
+	    goto maybe_refine_upper_1;
+	  r = assign_r(t_a, a_i, ROUND_UP);
+	  if (refine_no_check_check_result(r, open))
+	    goto maybe_refine_upper_1;
+	  r = assign_r(t_x, x_i.upper(), ROUND_UP);
+	  if (refine_no_check_check_result(r, open))
+	    goto maybe_refine_upper_1;
+	  if (x_i.upper_is_open())
+	    open = T_YES;
+	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_DOWN);
+	  if (refine_no_check_check_result(r, open))
+	    goto maybe_refine_upper_1;
+	}
+      }
+      r = assign_r(t_a, a_k, ROUND_UP);
+      if (refine_no_check_check_result(r, open))
+	goto maybe_refine_upper_1;
+      r = div_assign_r(t_bound, t_bound, t_a, ROUND_DOWN);
+      if (refine_no_check_check_result(r, open))
+	goto maybe_refine_upper_1;
+
+      // Refine the lower bound of `seq[k]' with `t_bound'.
+      if (open == T_MAYBE)
+	// FIXME: check the inexact flag here.
+	;
+      refine_existential(seq[k],
+			 (open == T_YES ? GREATER_THAN : GREATER_OR_EQUAL),
+			 t_bound);
+      empty_up_to_date = false;
+    maybe_refine_upper_1:
+      if (c_type != Constraint::EQUALITY)
+	continue;
+      open = T_NO;
+      r = assign_r(t_bound, c_inhomogeneous_term, ROUND_DOWN);
+      if (refine_no_check_check_result(r, open))
+	goto next_k;
+      r = neg_assign_r(t_bound, t_bound, ROUND_UP);
+      if (refine_no_check_check_result(r, open))
+	goto next_k;
+      for (dimension_type i = c_space_dim; i-- > 0; ) {
+	if (i == k)
+	  continue;
+	const Coefficient& a_i = c.coefficient(Variable(i));
+	int sgn_a_i = sgn(a_i);
+	if (sgn_a_i == 0)
+	  continue;
+	Interval& x_i = seq[i];
+	if (sgn_a_i < 0) {
+	  if (x_i.upper_is_unbounded())
+	    goto next_k;
+	  r = assign_r(t_a, a_i, ROUND_UP);
+	  if (refine_no_check_check_result(r, open))
+	    goto next_k;
+	  r = assign_r(t_x, x_i.upper(), ROUND_UP);
+	  if (refine_no_check_check_result(r, open))
+	    goto next_k;
+	  if (x_i.upper_is_open())
+	    open = T_YES;
+	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
+	  if (refine_no_check_check_result(r, open))
+	    goto next_k;
+	}
+	else {
+	  assert(sgn_a_i > 0);
+	  if (x_i.lower_is_unbounded())
+	    goto next_k;
+	  r = assign_r(t_a, a_i, ROUND_DOWN);
+	  if (refine_no_check_check_result(r, open))
+	    goto next_k;
+	  r = assign_r(t_x, x_i.lower(), ROUND_DOWN);
+	  if (refine_no_check_check_result(r, open))
+	    goto next_k;
+	  if (x_i.lower_is_open())
+	    open = T_YES;
+	  r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
+	  if (refine_no_check_check_result(r, open))
+	    goto next_k;
+	}
+      }
+      r = assign_r(t_a, a_k, ROUND_DOWN);
+      if (refine_no_check_check_result(r, open))
+	goto next_k;
+      r = div_assign_r(t_bound, t_bound, t_a, ROUND_UP);
+      if (refine_no_check_check_result(r, open))
+	goto next_k;
+
+      // Refine the upper bound of seq[k] with t_bound.
+      if (open == T_MAYBE)
 	// FIXME: check the inexact flag here.
 	;
       refine_existential(seq[k],
