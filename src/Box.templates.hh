@@ -1665,9 +1665,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      refine_existential(seq[k],
-			 (open == T_YES ? GREATER_THAN : GREATER_OR_EQUAL),
-			 t_bound);
+      seq[k].lower_narrow(t_bound, open == T_YES);
       empty_up_to_date = false;
     maybe_refine_upper_1:
       if (c_type != Constraint::EQUALITY)
@@ -1731,9 +1729,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      refine_existential(seq[k],
-			 (open == T_YES ? LESS_THAN : LESS_OR_EQUAL),
-			 t_bound);
+      seq[k].upper_narrow(t_bound, open == T_YES);
       empty_up_to_date = false;
     }
     else {
@@ -1798,9 +1794,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      refine_existential(seq[k],
-			 (open == T_YES ? LESS_THAN : LESS_OR_EQUAL),
-			 t_bound);
+      seq[k].upper_narrow(t_bound, open == T_YES);
       empty_up_to_date = false;
     maybe_refine_upper_2:
       if (c_type != Constraint::EQUALITY)
@@ -1864,9 +1858,7 @@ Box<Interval>::refine_no_check(const Constraint& c) {
       if (open == T_MAYBE
 	  && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
 	open = T_YES;
-      refine_existential(seq[k],
-			 (open == T_YES ? GREATER_THAN : GREATER_OR_EQUAL),
-			 t_bound);
+      seq[k].lower_narrow(t_bound, open == T_YES);
       empty_up_to_date = false;
     }
   next_k:
